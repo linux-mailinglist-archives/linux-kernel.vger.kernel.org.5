@@ -1,131 +1,217 @@
-Return-Path: <linux-kernel+bounces-24720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E50982C14B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:04:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18D9D82C150
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:04:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A54E285ED2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:04:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C18E81F270E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:04:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88BA26D1CB;
-	Fri, 12 Jan 2024 14:03:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SpLx4LW0"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95ED06BB3E;
-	Fri, 12 Jan 2024 14:03:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso4610133a12.3;
-        Fri, 12 Jan 2024 06:03:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705068230; x=1705673030; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O088ye5Vczz+Cex9AYDIz9lw484DzSeXBcQhFwm7euY=;
-        b=SpLx4LW0KhbAWhI/zwklsOpY0CiwX1oi7lrNMT37dCXW/mnhSJEqt03mtnD2nWoaxR
-         FtMI8l/I/vP9Id+tchNZd84FHya+4MK91wbBCm/dkF3XnFNwKgNkruvJaxxYDrh9aPP0
-         6SAb1dYnRSheukqO7Futeig/YHjky8YaRgHjIHTee8DWM3cdnIbpd8aAeQ+6w4LW5ByV
-         Bu/8Z1bAQoRFGIXi8ekJCxTqj3PEliIQteAditJaW+7Sr1mfFvz9n4EMYRT4jW3UzD5m
-         3FB4c06GV9DD+2OO9vcFVAOocfhwAlsHg6okTikjA61XIxbc3sD4H/jkJ5vm6JwJn7sk
-         i+lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705068230; x=1705673030;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O088ye5Vczz+Cex9AYDIz9lw484DzSeXBcQhFwm7euY=;
-        b=puKrDaGMPZ4kvGXXorejmjIgf6TEkOxxQNVbzis6+tp4sQN9cXf3jnQkCmGvSVw3ak
-         1DrcZ39GZNsqaIdYXasS4h6He26bNmgiUy+aUKCnSKH49hcGj0ewZUg5ai+4SMM2IGXp
-         PhOE1qJXCtGdtKR3EG/cvG+sfjBlTTnAGhw3yLzyMqAI8sngUt0GtZqrDRrSqEXddJqT
-         A8dRMganNf8Roq/Z98/B39l3cGWy8jxgOEwzDJLiraLMbofoZbz72gjCRqMVXwDlUs1X
-         YX2jI2eaRPH2JdMAEI+1dYEfMVPaArKj2t6P/n2WsxPNEKFwzfnp6Wrd2WdgPTLoluCg
-         GFZA==
-X-Gm-Message-State: AOJu0Yy8tr7zUxddO5cVBNRDD7JYHLR0ujIGr2h3pSWpR+Q29ompJdIC
-	nUgebWrwvenc09hV2xmaA5o=
-X-Google-Smtp-Source: AGHT+IFb65ZbUbd5LdSxD4vK9Kx1NokhkW3hZLtNs1TCetui1BAjq6vV8mvo7uqTFUSb7P/g0K/iqw==
-X-Received: by 2002:a17:90a:318a:b0:28b:e124:1b00 with SMTP id j10-20020a17090a318a00b0028be1241b00mr1276932pjb.4.1705068229859;
-        Fri, 12 Jan 2024 06:03:49 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id cz13-20020a17090ad44d00b0028c8a2a9c73sm4141066pjb.25.2024.01.12.06.03.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 06:03:49 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id 527C818503882; Fri, 12 Jan 2024 21:03:43 +0700 (WIB)
-Date: Fri, 12 Jan 2024 21:03:42 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Networking <netdev@vger.kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: What to do on MIA maintainers?
-Message-ID: <ZaFGvkA-ZoZ1OTID@archie.me>
-References: <ZZ_JuZd0RJUzIrgY@archie.me>
- <20240111094055.3efa6157@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF736D1C8;
+	Fri, 12 Jan 2024 14:04:33 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C35B6BB41;
+	Fri, 12 Jan 2024 14:04:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2176D1FB;
+	Fri, 12 Jan 2024 06:05:16 -0800 (PST)
+Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E21A93F5A1;
+	Fri, 12 Jan 2024 06:04:26 -0800 (PST)
+Message-ID: <2c920dda-fdd3-436a-85cc-ead018f28ee4@arm.com>
+Date: Fri, 12 Jan 2024 14:04:25 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vVBsWQof3GLpBVhI"
-Content-Disposition: inline
-In-Reply-To: <20240111094055.3efa6157@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 7/7] coresight: config: Add preloaded configuration
+Content-Language: en-US
+To: Linu Cherian <lcherian@marvell.com>, mike.leach@linaro.org,
+ james.clark@arm.com, leo.yan@linaro.org
+Cc: linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ devicetree@vger.kernel.org, sgoutham@marvell.com, gcherian@marvell.com
+References: <20240105055840.1977897-1-lcherian@marvell.com>
+ <20240105055840.1977897-8-lcherian@marvell.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20240105055840.1977897-8-lcherian@marvell.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+On 05/01/2024 05:58, Linu Cherian wrote:
+> Add a preloaded configuration for generating
+> external trigger on address match. This can be
+> used by CTI and ETR blocks to stop trace capture
+> on kernel panic.
+> 
+> Kernel address for panic function to be
+> programmed as below.
+> 
+> $cd /config/cs-syscfg/features/gen_etrig/params
+> $echo <panic_address> > address/value
+> 
+> Signed-off-by: Linu Cherian <lcherian@marvell.com>
+> ---
+> Changelog from v5:
+> * No changes
+> 
+>   drivers/hwtracing/coresight/Makefile          |  2 +-
+>   .../coresight/coresight-cfg-preload.c         |  2 +
+>   .../coresight/coresight-cfg-preload.h         |  2 +
+>   .../hwtracing/coresight/coresight-cfg-pstop.c | 83 +++++++++++++++++++
+>   4 files changed, 88 insertions(+), 1 deletion(-)
+>   create mode 100644 drivers/hwtracing/coresight/coresight-cfg-pstop.c
+> 
+> diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
+> index 995d3b2c76df..68b15c8d9462 100644
+> --- a/drivers/hwtracing/coresight/Makefile
+> +++ b/drivers/hwtracing/coresight/Makefile
+> @@ -5,7 +5,7 @@
+>   obj-$(CONFIG_CORESIGHT) += coresight.o
+>   coresight-y := coresight-core.o  coresight-etm-perf.o coresight-platform.o \
+>   		coresight-sysfs.o coresight-syscfg.o coresight-config.o \
+> -		coresight-cfg-preload.o coresight-cfg-afdo.o \
+> +		coresight-cfg-preload.o coresight-cfg-afdo.o coresight-cfg-pstop.o \
+>   		coresight-syscfg-configfs.o coresight-trace-id.o
+>   obj-$(CONFIG_CORESIGHT_LINK_AND_SINK_TMC) += coresight-tmc.o
+>   coresight-tmc-y := coresight-tmc-core.o coresight-tmc-etf.o \
+> diff --git a/drivers/hwtracing/coresight/coresight-cfg-preload.c b/drivers/hwtracing/coresight/coresight-cfg-preload.c
+> index e237a4edfa09..4980e68483c5 100644
+> --- a/drivers/hwtracing/coresight/coresight-cfg-preload.c
+> +++ b/drivers/hwtracing/coresight/coresight-cfg-preload.c
+> @@ -13,6 +13,7 @@
+>   static struct cscfg_feature_desc *preload_feats[] = {
+>   #if IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X)
+>   	&strobe_etm4x,
+> +	&gen_etrig_etm4x,
+>   #endif
+>   	NULL
+>   };
+> @@ -20,6 +21,7 @@ static struct cscfg_feature_desc *preload_feats[] = {
+>   static struct cscfg_config_desc *preload_cfgs[] = {
+>   #if IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X)
+>   	&afdo_etm4x,
+> +	&pstop_etm4x,
+>   #endif
+>   	NULL
+>   };
+> diff --git a/drivers/hwtracing/coresight/coresight-cfg-preload.h b/drivers/hwtracing/coresight/coresight-cfg-preload.h
+> index 21299e175477..291ba530a6a5 100644
+> --- a/drivers/hwtracing/coresight/coresight-cfg-preload.h
+> +++ b/drivers/hwtracing/coresight/coresight-cfg-preload.h
+> @@ -10,4 +10,6 @@
+>   #if IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X)
+>   extern struct cscfg_feature_desc strobe_etm4x;
+>   extern struct cscfg_config_desc afdo_etm4x;
+> +extern struct cscfg_feature_desc gen_etrig_etm4x;
+> +extern struct cscfg_config_desc pstop_etm4x;
+>   #endif
+> diff --git a/drivers/hwtracing/coresight/coresight-cfg-pstop.c b/drivers/hwtracing/coresight/coresight-cfg-pstop.c
+> new file mode 100644
+> index 000000000000..037d6773fab8
+> --- /dev/null
+> +++ b/drivers/hwtracing/coresight/coresight-cfg-pstop.c
+> @@ -0,0 +1,83 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright(C) 2023  Marvell.
+> + * Based on coresight-cfg-afdo.c
+> + */
+> +
+> +#include "coresight-config.h"
+> +
+> +/* ETMv4 includes and features */
+> +#if IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X)
+> +#include "coresight-etm4x-cfg.h"
+> +
+> +/* preload configurations and features */
+> +
+> +/* preload in features for ETMv4 */
+> +
+> +/* panic_stop feature */
+> +static struct cscfg_parameter_desc gen_etrig_params[] = {
+> +	{
+> +		.name = "address",
+> +		.value = 0x0,
+> +	},
+> +};
+> +
+> +static struct cscfg_regval_desc gen_etrig_regs[] = {
+> +	/* resource selector */
+> +	{
+> +		.type = CS_CFG_REG_TYPE_RESOURCE,
+> +		.offset = TRCRSCTLRn(2),
+> +		.hw_info = ETM4_CFG_RES_SEL,
+> +		.val32 = 0x40001,
+> +	},
+> +	/* single address comparator */
+> +	{
+> +		.type = CS_CFG_REG_TYPE_RESOURCE | CS_CFG_REG_TYPE_VAL_64BIT |
+> +			CS_CFG_REG_TYPE_VAL_PARAM,
+> +		.offset =  TRCACVRn(0),
+> +		.val32 = 0x0,
+> +	},
+> +	{
+> +		.type = CS_CFG_REG_TYPE_RESOURCE,
+> +		.offset = TRCACATRn(0),
+> +		.val64 = 0xf00,
+> +	},
+> +	/* Driver external output[0] with comparator out */
+> +	{
+> +		.type = CS_CFG_REG_TYPE_RESOURCE,
+> +		.offset = TRCEVENTCTL0R,
+> +		.val32 = 0x2,
+> +	},
+> +	/* end of regs */
+> +};
+> +
+> +struct cscfg_feature_desc gen_etrig_etm4x = {
+> +	.name = "gen_etrig",
+> +	.description = "Generate external trigger on address match\n"
+> +		       "parameter \'address\': address of kernel address\n",
+> +	.match_flags = CS_CFG_MATCH_CLASS_SRC_ETM4,
+> +	.nr_params = ARRAY_SIZE(gen_etrig_params),
+> +	.params_desc = gen_etrig_params,
+> +	.nr_regs = ARRAY_SIZE(gen_etrig_regs),
+> +	.regs_desc = gen_etrig_regs,
+> +};
+> +
+> +/* create a panic stop configuration */
+> +
+> +/* the total number of parameters in used features */
+> +#define PSTOP_NR_PARAMS	ARRAY_SIZE(gen_etrig_params)
+> +
+> +static const char *pstop_ref_names[] = {
+> +	"gen_etrig",
+> +};
+> +
+> +struct cscfg_config_desc pstop_etm4x = {
+> +	.name = "panicstop",
+> +	.description = "Stop ETM on kernel panic\n",
+
+Since this is actually generic, i.e., Stop trace on a Kernel address, we
+could rename this ?  Or why don't we pre-populate the address of "panic"
+at load time. That way the user doesn't have to figure out the kernel
+address (e.g., if KASLR is enabled)
+
+Suzuki
 
 
---vVBsWQof3GLpBVhI
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> +	.nr_feat_refs = ARRAY_SIZE(pstop_ref_names),
+> +	.feat_ref_names = pstop_ref_names,
+> +	.nr_total_params = PSTOP_NR_PARAMS,
+> +};
+> +
+> +/* end of ETM4x configurations */
+> +#endif	/* IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X) */
 
-On Thu, Jan 11, 2024 at 09:40:55AM -0800, Jakub Kicinski wrote:
-> On Thu, 11 Jan 2024 17:58:01 +0700 Bagas Sanjaya wrote:
-> > Earlier in late last December, I sent a patch removing Karsten Keil
-> > <isdn@linux-pingi.de> from MAINTAINERS due to inactivity [1], but Greg =
-was
-> > unsure about that [2]. So I privately tried to reach Karsten (asking for
-> > confirmation), but until now he is still not responding to my outreach,=
- hence
-> > IMO he is MIA.
-> >=20
-> > What to do on this situation? Should he be removed from MAINTAINERS?
->=20
-> Well. I'm not sure you should do anything about it.. In an ideal world
-> with properly set up maintainer structure it should be up to the next
-> level maintainer to decide when to do the cleanups. Random people
-> initiating that sort of work can backfire in too many ways. IDK what
-> a good analogy would be here, but you wouldn't for example come up
-> to an employee in a store, when you think they aren't doing anything,
-> and tell them to go stock shelves.
->=20
-> If there are patches on the list that needs reviewing and the person
-> is not reviewing them, or questions being asked / regressions being
-> reported and they go unanswered - the upper level maintainer can act.
-> But trust me, it's impossible for someone who is not an upper
-> maintainer to judge the situation.
-
-OK, thanks!
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---vVBsWQof3GLpBVhI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZaFGugAKCRD2uYlJVVFO
-o6McAP4pJHlnOCwtmMryoqnye3GFaq011ELb3GasFQdH8Yu5FwEA5vZbESmCEPLz
-ulK8wueqFc4PAcM6CyWfFekrKDX0JQI=
-=saio
------END PGP SIGNATURE-----
-
---vVBsWQof3GLpBVhI--
 
