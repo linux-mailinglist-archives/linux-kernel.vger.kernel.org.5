@@ -1,102 +1,100 @@
-Return-Path: <linux-kernel+bounces-24804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45F7D82C2C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:33:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8235182C2C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:32:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C6AA1C21D24
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:33:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19A681F22CB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:32:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BC5173164;
-	Fri, 12 Jan 2024 15:32:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4242773161;
+	Fri, 12 Jan 2024 15:32:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="KOsCe2Ix"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3y1nE+Km";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="WZEb6gDp"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0313373178;
-	Fri, 12 Jan 2024 15:32:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=85qADMULPEZDkA2EsspL4/DXh5uWHSumVah5xCfPd2c=; b=KOsCe2IxmDGDyoQUwKb0peqW9f
-	kaGwxaLExgF6q2FNPLMh6Nkz8r3GYtx5n8L+6cNdYF23OTcBQGHASobbH3TAl0Gk3Ng/eAtyhyzyz
-	rEHJS9UHfOXg3SWSOTmXt7wWw0SuHWEWBZc/pFqqlmimPtCer+21e2e5dmH1goS93QyQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rOJW2-0055MK-GA; Fri, 12 Jan 2024 16:32:14 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3926C6EB73
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 15:32:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1705073535;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iM3HwRhzvPrfiWg1aI0QfH1zhPKXDcv1jxncJ33B+Ec=;
+	b=3y1nE+Km5QRt+ZoZTcfYmD+hl/rmV8xjMpQUy0ZK0C2q3101XmFXZv7Ok11jP7t4wyhCIZ
+	o+jYWioP2zrhJyay5mNOyLdK6MBPTO0owy+2t+aAPCxm3LmAnMsj25xJqiBL9aDBbv1sq2
+	dH5JGu0f1ZE7cTfwe3NiUDOly685100LNi5qnq5Ym8ahVMVLcZ75Q/Ic8uzDiaWc/8sC6w
+	ZXiX0GXez6lqJ80Wtng2SBtlxH9WB2Wl/+oCYJU+looSZnRtZRPK4KlsYJA5KMGuwKiGHU
+	vx9mV+++LfqWJeLfmXIt9hLVjprSIIg7zVILj9DIfkjroR1SPHSlvH73v1U0ZQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1705073535;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iM3HwRhzvPrfiWg1aI0QfH1zhPKXDcv1jxncJ33B+Ec=;
+	b=WZEb6gDpCXhVvte4mljy4AJ+h/0L2s5NC7Fa3ezS5cK8R0cJdf4TAizYyQSsL84YovC+HO
+	PQLbWg+Z3tvkpqDg==
+To: kernel test robot <lkp@intel.com>, Thadeu Lima de Souza Cascardo
+ <cascardo@canonical.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org, "Paul E.
+ McKenney" <paulmck@kernel.org>, Christian Brauner <brauner@kernel.org>
+Subject: Re: fs/exec.c:1307:26: sparse: sparse: incorrect type in argument 1
+ (different address spaces)
+In-Reply-To: <202401111036.STMizmwE-lkp@intel.com>
+References: <202401111036.STMizmwE-lkp@intel.com>
 Date: Fri, 12 Jan 2024 16:32:14 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Kunwu Chan <chentao@kylinos.cn>
-Cc: hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	f.fainelli@gmail.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: phy: Fix possible NULL pointer dereference
- issues caused by phy_attached_info_irq
-Message-ID: <627c9558-04df-43a6-b6e4-a13f24a8bc1d@lunn.ch>
-References: <20240112095724.154197-1-chentao@kylinos.cn>
+Message-ID: <87jzoein41.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240112095724.154197-1-chentao@kylinos.cn>
+Content-Type: text/plain
 
-On Fri, Jan 12, 2024 at 05:57:24PM +0800, Kunwu Chan wrote:
-> kasprintf() returns a pointer to dynamically allocated memory
-> which can be NULL upon failure. Ensure the allocation was successful
-> by checking the pointer validity.
-> 
-> Fixes: e27f178793de ("net: phy: Added IRQ print to phylink_bringup_phy()")
-> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-> ---
->  drivers/net/phy/phy_device.c | 3 +++
->  drivers/net/phy/phylink.c    | 2 ++
->  2 files changed, 5 insertions(+)
-> 
-> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> index 3611ea64875e..10fa99d957c0 100644
-> --- a/drivers/net/phy/phy_device.c
-> +++ b/drivers/net/phy/phy_device.c
-> @@ -1299,6 +1299,9 @@ void phy_attached_print(struct phy_device *phydev, const char *fmt, ...)
->  	const char *unbound = phydev->drv ? "" : "[unbound] ";
->  	char *irq_str = phy_attached_info_irq(phydev);
->  
-> +	if (!irq_str)
-> +		return;
-> +
->  	if (!fmt) {
->  		phydev_info(phydev, ATTACHED_FMT "\n", unbound,
->  			    phydev_name(phydev), irq_str);
+On Thu, Jan 11 2024 at 10:44, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   acc657692aed438e9931438f8c923b2b107aebf9
+> commit: e362359ace6f87c201531872486ff295df306d13 posix-cpu-timers: Cleanup CPU timers before freeing them during exec
+> date:   1 year, 5 months ago
 
-This part looks O.K.
+I'm amused that it took 17 month ....
 
-> diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
-> index ed0b4ccaa6a6..db0a545c9468 100644
-> --- a/drivers/net/phy/phylink.c
-> +++ b/drivers/net/phy/phylink.c
-> @@ -1884,6 +1884,8 @@ static int phylink_bringup_phy(struct phylink *pl, struct phy_device *phy,
->  	phy->phy_link_change = phylink_phy_change;
->  
->  	irq_str = phy_attached_info_irq(phy);
-> +	if (!irq_str)
-> +		return -ENOMEM;
+>>> fs/exec.c:1307:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+>   1305	
+>   1306	#ifdef CONFIG_POSIX_TIMERS
+>> 1307		spin_lock_irq(&me->sighand->siglock);
+>   1308		posix_cpu_timers_exit(me);
+>   1309		spin_unlock_irq(&me->sighand->siglock);
+>   1310		exit_itimers(me);
+>   1311		flush_itimer_signals();
+>   1312	#endif
 
-Here, i would just skip the print and continue with the reset of the
-function. The print is just useful information, its not a big problem
-if its not printed. However, if this function does not complete, the
-network interface is likely to be dead.
+So this warning is clearly wrong because 'current->sighand->siglock' is
+safe to dereference w/o RCU protection for 'current'.
 
-	Andrew
+The real issue is this commit:
+
+   913292c97d75 ("sched.h: Annotate sighand_struct with __rcu")
+
+which blindly 'fixed' a sparse warning in signal.c w/o even trying to
+look at the consequences. There are 170+ instances of spin_[un]lock()
+variants which should emit exactly the same warning...
+
+I think the right fix is to annotate this legit case of derefencing
+current->sighand->siglock so sparse knows that this is safe.
+
+Thanks,
+
+        tglx
+
+
 
