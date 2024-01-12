@@ -1,178 +1,100 @@
-Return-Path: <linux-kernel+bounces-25080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75E5282C75B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 23:37:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2BC282C760
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 23:40:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4F64B241DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 22:37:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7A3D1F2481F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 22:40:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBB4D18053;
-	Fri, 12 Jan 2024 22:37:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C26C4182AE;
+	Fri, 12 Jan 2024 22:40:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dqw1iPxv"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="IIc4+vCn"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FFD91803E
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 22:37:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a28b1095064so773361466b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 14:37:08 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 877E1182A1
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 22:40:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50e7c6f0487so7767178e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 14:40:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705099027; x=1705703827; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0leS6hZ0DcZYl4DKzwe7v8pus4rqe1fDKXfntZRCqTg=;
-        b=dqw1iPxvpYN9NH+wq9oJMl1pId9u400cfxeXrZdeHZrt2YDF0QeUC+ZN1VLn/9rQpd
-         uWZmxztyzsawbjd//0VmhpRMFEwBnNmKA0laGPNF/OACeTSdApK8tFkC3OYKVOnSqbox
-         O15mkhVK9NEY7Ylv455Q60v/ig7jRRy87V92Uw6hwFUslOzoF+s2tmriuyR+Ez+N1pxX
-         VmsEGaxR8ZSQjxRMIvkydJPZV85BfCsjQOeRkc1206H7qvtjoRYrNnMiOpPJc9NEbohj
-         KMJMEXLwLQppPzNFIG7zeulMNB65AZCryrI8u13qziwGa9d6oUOpoRBhUwPqFgz/WUgt
-         c+QA==
+        d=chromium.org; s=google; t=1705099230; x=1705704030; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:user-agent
+         :from:references:in-reply-to:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=32kOpc7jmHfTKnUipGkgywWo/WFBVKADG1CFjMO63QA=;
+        b=IIc4+vCnY6m6uYTPT3feMgpLWU0jUnTycmofqEUYLWgsoiTM3gcq8M6va6dZbt0bgv
+         y0fNw3ANaPTdY7atwqHlzGgGNm83CSGxu9uHy4CDVQvulTNCc/Yg/vn/zbj0sWX7F9B4
+         3QnG1dNLvFGy2a+7mxl8HA+iD/fy1rnb4Atxk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705099027; x=1705703827;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0leS6hZ0DcZYl4DKzwe7v8pus4rqe1fDKXfntZRCqTg=;
-        b=amYc4zod45nO7XgbXpl0W2Fy2ePoE6/lQSUrJPy9bux66fG5Fjw3ko5HGzHV/GsEAC
-         GvaOwEoUZ6TdciQpNXyyEkoFwmjZxigWiiKMgPJrg3p7i9DbZdCuRuvBdN2q6IZgy+K9
-         +aGjBNO8QCH25kxS/aFeZ2q1Kvjmt1ZV1kmk3voZujbcb3tZBkXcrkx0CWZ1EHqb4IsI
-         PRbk8mFobGLa8Miz0/KAZ+lw/8JE3VZLW1ZksxKWAf+t8pul4EmARkxm+Z7mSu5TAPf2
-         SvopP3rjLxTvYp1Z5ed12xtCJKGmHcX5ebZ1CS62lzCSuXJy8N4PnxhCi2Yl4WpOW6V9
-         1LBw==
-X-Gm-Message-State: AOJu0Yx70eCy2cIgECTcQUQdXyf3etRO1C/RuZ/nNNWT3onlbx/Dar4P
-	wJDRm8lJx798gcdTP214GvplgYhsZXr6vA==
-X-Google-Smtp-Source: AGHT+IFYfL+XbWBb98zkfcqsCfe55RxOOq99xlv4gLhqJrYEridFURPMKn+2U5mwNzzeZSOYqQAVfg==
-X-Received: by 2002:a17:906:c094:b0:a2c:4b7e:2c27 with SMTP id f20-20020a170906c09400b00a2c4b7e2c27mr574752ejz.250.1705099026524;
-        Fri, 12 Jan 2024 14:37:06 -0800 (PST)
-Received: from [192.168.174.25] (178235179017.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.17])
-        by smtp.gmail.com with ESMTPSA id i2-20020a170906090200b00a2a04c9226asm2184486ejd.194.2024.01.12.14.37.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Jan 2024 14:37:05 -0800 (PST)
-Message-ID: <c278d89d-4eba-4ea7-8cf5-6b1de90dedbe@linaro.org>
-Date: Fri, 12 Jan 2024 23:37:03 +0100
+        d=1e100.net; s=20230601; t=1705099230; x=1705704030;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:user-agent
+         :from:references:in-reply-to:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=32kOpc7jmHfTKnUipGkgywWo/WFBVKADG1CFjMO63QA=;
+        b=UyZI/QW6zam6txKnSE8tRYtVeG/9tFP/T+4hRjMazRR5SNjGjG2E3vO721k4/Hnpyj
+         GnrmdQGJO/tjCtvZE8cYoQ4HjP18MZt20568SpVE4YdmRXukdMCQ/Cx1d8FhOFSsDsuM
+         VHFptBkBTxUFlFdjSvm8wO8amwETYUbkUVkw2A1GFZnJEwexvIO2IKSYBVnT10W0fe8Y
+         m15E0VL11YW3TF3H9i8Zfn4GabQ5xtSSi8TTNgMXIgO/4KDNDwwPOzT9ojTn8iDloap1
+         xLkxz35ETydQN9gXjAOj/eu6PF0jD92eVVDWblxjFdfp5JoEYKQ1k+bjXSvIvCP1d3pL
+         XFAA==
+X-Gm-Message-State: AOJu0Yye8rJizyxRPLPQCdonag2+auT1EWIb7mwgYKMNqIfjIc1lDMXv
+	eCd82YGU1SEj51XnqbSji3PwZOeFjDxK4yB9MGg5KoHhAMcg
+X-Google-Smtp-Source: AGHT+IFAGDRltzrOuwOjfQw3BbOLAGH99OOdLrJfIuQiRQpUY3N7PM2+1jOwKqS+5bXXF/pZCJmDPVeNB9k5DbXpKmQ=
+X-Received: by 2002:a19:9116:0:b0:50e:ab9b:c1d with SMTP id
+ t22-20020a199116000000b0050eab9b0c1dmr695685lfd.37.1705099230506; Fri, 12 Jan
+ 2024 14:40:30 -0800 (PST)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 12 Jan 2024 14:40:29 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 3/6] PCI: qcom: Add missing icc bandwidth vote for cpu
- to PCIe path
-Content-Language: en-US
-To: Johan Hovold <johan@kernel.org>,
- Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
- Bjorn Helgaas <bhelgaas@google.com>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Manivannan Sadhasivam <mani@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Johan Hovold <johan+linaro@kernel.org>,
- Brian Masney <bmasney@redhat.com>, Georgi Djakov <djakov@kernel.org>,
- linux-arm-msm@vger.kernel.org, vireshk@kernel.org,
- quic_vbadigan@quicinc.com, quic_skananth@quicinc.com,
- quic_nitegupt@quicinc.com, linux-pci@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-References: <20240112-opp_support-v6-0-77bbf7d0cc37@quicinc.com>
- <20240112-opp_support-v6-3-77bbf7d0cc37@quicinc.com>
- <ZaFhzOCTpZYlAh60@hovoldconsulting.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <ZaFhzOCTpZYlAh60@hovoldconsulting.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20240112142032.909736-1-nfraprado@collabora.com>
+References: <20240112142032.909736-1-nfraprado@collabora.com>
+From: Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.10
+Date: Fri, 12 Jan 2024 14:40:29 -0800
+Message-ID: <CAE-0n52sbshmkROspU4Hg=G_-RzhkG11q8ktc9uzHuo0JXn93w@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: dts: mt8183: jacuzzi: Remove CrosEC base
+ detection node
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, 
+	=?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>
+Cc: kernel@collabora.com, Chen-Yu Tsai <wenst@chromium.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Enric Balletbo i Serra <eballetbo@kernel.org>, 
+	Ikjoon Jang <ikjn@chromium.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 12.01.2024 16:59, Johan Hovold wrote:
-> On Fri, Jan 12, 2024 at 07:52:02PM +0530, Krishna chaitanya chundru wrote:
->> CPU-PCIe path consits for registers PCIe BAR space, config space.
-> 
-> consits?
-> 
->> As there is less access on this path compared to pcie to mem path
->> add minimum vote i.e GEN1x1 bandwidth always.
-> 
-> gen1 bandwidth can't be right.
-> 
->> In suspend remove the cpu vote after register space access is done.
->>
->> Fixes: c4860af88d0c ("PCI: qcom: Add basic interconnect support")
->> cc: stable@vger.kernel.org
-> 
-> This does not look like a fix so drop the above.
-> 
-> The commit you refer to explicitly left this path unconfigured for now
-> and only added support for the configuring the mem path as needed on
-> sc8280xp which otherwise would crash.
+Quoting N=C3=ADcolas F. R. A. Prado (2024-01-12 06:20:28)
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi b/arc=
+h/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
+> index 7592e3b86037..8c9f7435cf4c 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
+> @@ -484,3 +484,6 @@ volup-btn-odl {
+>         };
+>  };
+>
+> +&cros_ec {
+> +       /delete-node/ cbas;
+> +};
 
-I only sorta agree. I'd include a fixes tag but point it to either 8450
-addition or original driver introduction, as this is patching up a real
-hole (see my reply to Bryan).
-
-> 
->> @@ -1573,7 +1588,7 @@ static int qcom_pcie_suspend_noirq(struct device *dev)
->>  	 */
->>  	ret = icc_set_bw(pcie->icc_mem, 0, kBps_to_icc(1));
->>  	if (ret) {
->> -		dev_err(dev, "Failed to set interconnect bandwidth: %d\n", ret);
->> +		dev_err(dev, "Failed to set interconnect bandwidth for pcie-mem: %d\n", ret);
->>  		return ret;
->>  	}
->>  
->> @@ -1597,6 +1612,12 @@ static int qcom_pcie_suspend_noirq(struct device *dev)
->>  		pcie->suspended = true;
->>  	}
->>  
->> +	/* Remove cpu path vote after all the register access is done */
->> +	ret = icc_set_bw(pcie->icc_cpu, 0, 0);
-> 
-> I believe you should use icc_disable() here.
-
-Oh, TIL this exists!
-
-Konrad
+Usually we add nodes instead of delete them. Can you move the cbas node
+addition to the other files that include mt8183-kukui.dtsi instead? It
+will be a larger patch in number of lines but then we don't run into
+problems where the node is moved later and this breaks because 'cbas'
+doesn't exist.
 
