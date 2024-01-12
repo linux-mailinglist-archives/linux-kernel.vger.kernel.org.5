@@ -1,98 +1,127 @@
-Return-Path: <linux-kernel+bounces-24733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6455E82C189
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:23:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0857382C1A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:25:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7078F1C22107
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:23:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E3111F23B06
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:25:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED4E6DD13;
-	Fri, 12 Jan 2024 14:22:35 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A96E6DD01;
-	Fri, 12 Jan 2024 14:22:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D5A3C433C7;
-	Fri, 12 Jan 2024 14:22:33 +0000 (UTC)
-Date: Fri, 12 Jan 2024 09:22:30 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Linus Torvalds <torvalds@linux-foundation.org>, Al Viro
- <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] tracefs/eventfs: Use root and instance inodes as
- default ownership
-Message-ID: <20240112092230.6107bc94@rorschach.local.home>
-In-Reply-To: <20240112085344.30540d10@rorschach.local.home>
-References: <20240105-wegstecken-sachkenntnis-6289842d6d01@brauner>
-	<20240105095954.67de63c2@gandalf.local.home>
-	<20240107-getrickst-angeeignet-049cea8cad13@brauner>
-	<20240107132912.71b109d8@rorschach.local.home>
-	<20240108-ortsrand-ziehen-4e9a9a58e708@brauner>
-	<20240108102331.7de98cab@gandalf.local.home>
-	<20240110-murren-extra-cd1241aae470@brauner>
-	<20240110080746.50f7767d@gandalf.local.home>
-	<20240111-unzahl-gefegt-433acb8a841d@brauner>
-	<20240111165319.4bb2af76@gandalf.local.home>
-	<20240112-normierung-knipsen-dccb7cac7efc@brauner>
-	<20240112085344.30540d10@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BAFD74E03;
+	Fri, 12 Jan 2024 14:23:48 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD858745F1
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 14:23:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 987091FB;
+	Fri, 12 Jan 2024 06:24:31 -0800 (PST)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7BD8D3F5A1;
+	Fri, 12 Jan 2024 06:23:43 -0800 (PST)
+Message-ID: <4405adb5-0b16-4716-9542-47d8bb1737ee@arm.com>
+Date: Fri, 12 Jan 2024 15:23:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [GIT PULL] Scheduler changes for v6.8
+Content-Language: en-US
+To: Vincent Guittot <vincent.guittot@linaro.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+ Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Juri Lelli <juri.lelli@redhat.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Valentin Schneider <vschneid@redhat.com>
+References: <ZTz9RpZxfxysYCmt@gmail.com> <ZZwBi/YmnMqm7zrO@gmail.com>
+ <CAHk-=wgWcYX2oXKtgvNN2LLDXP7kXkbo-xTfumEjmPbjSer2RQ@mail.gmail.com>
+ <CAHk-=wiXpsxMcQb7MhL-AxOityTajK0G8eWeBOzX-qBJ9X2DSw@mail.gmail.com>
+ <CAHk-=wjK28MUqBZzBSMEM8vdJhDOuXGSWPmmp04GEt9CXtW6Pw@mail.gmail.com>
+ <ZZ+ixagkxRPYyTCE@vingu-book>
+ <CAHk-=wj75Er8k4QY-KF34NBCWkDpr3D26XptOpkfDcTyGEA7iA@mail.gmail.com>
+ <CAHk-=whK-cuBUQ2hECtkGu3LR-ipai+tmB85M=C7n3b1M8B4gQ@mail.gmail.com>
+ <CAKfTPtCnT9VLqiQGL5kyhzqv=WAUNRA3tVDVoKjB7jX-00Un+g@mail.gmail.com>
+From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <CAKfTPtCnT9VLqiQGL5kyhzqv=WAUNRA3tVDVoKjB7jX-00Un+g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On Fri, 12 Jan 2024 08:53:44 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> > // We managed to open the directory so we have permission to list
-> > // directory entries in "xfs".
-> > fd = open("/sys/kernel/tracing/events/xfs");
-> > 
-> > // Remove ownership so we can't open the directory anymore
-> > chown("/sys/kernel/tracing/events/xfs", 0, 0);
-> > 
-> > // Or just remove exec bit for the group and restrict to owner
-> > chmod("/sys/kernel/tracing/events/xfs", 700);
-> > 
-> > // Drop caches to force an eventfs_root_lookup() on everything
-> > write("/proc/sys/vm/drop_caches", "3", 1);  
+On 11/01/2024 19:16, Vincent Guittot wrote:
+> On Thu, 11 Jan 2024 at 18:53, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+>>
+>> On Thu, 11 Jan 2024 at 09:45, Linus Torvalds
+>> <torvalds@linux-foundation.org> wrote:
+>>>
+>>> On Thu, 11 Jan 2024 at 00:11, Vincent Guittot
+>>> <vincent.guittot@linaro.org> wrote:
+>>>>
+>>>> Could you confirm that cpufreq governor is schedutil and the driver is
+>>>> amd-pstate on your system ?
+>>>
+>>> schedutil yes, amd-pstate no. I actually just use acpi_cpufreq
+>>
+>> Bah. Hit 'send' mistakenly too soon, thus the abrupt end and
+>> unfinished quoting removal.
+>>
+>> And don't ask me why it's acpi_pstate-driven. I have X86_AMD_PSTATE=y, but
+>>
+>>     /sys/devices/system/cpu/cpufreq/policy0/scaling_driver
+>>
+>> clearly says 'acpi-cpufreq'. Maybe I'm looking in the wrong place. My dmesg says
 > 
-> This requires opening the directory, then having it's permissions
-> change, and then immediately dropping the caches.
+> That seems to be the right place to look
 > 
-> > 
-> > // Returns 0 even though directory has a lot of entries and we should be
-> > // able to list them
-> > getdents64(fd, ...);  
+>>
+>>     amd_pstate: the _CPC object is not present in SBIOS or ACPI disabled
+>>
+>> which is presumably the reason my machine uses acpi-pstate.
+>>
+>> I will also test out your other questions, but I need to go back and
+>> do more pull requests first.
 > 
-> And do we care?
+> ok, thanks
+> 
+> I'm going to continue checking what else could trigger such regression
+> having in mind that your system should not have beeb impacted by this
+> changes
 
-Hmm, maybe the issue you have is with the inconsistency of the action?
+I can't see the regression on my
 
-For this to fail, it would require the admin to do both change the
-permission and to flush caches. If you don't flush the caches then the
-task with the dir open can still read it regardless. If the dentries
-were already created.
+  20-core (40-thread) Intel Xeon CPU E5-2690 v2
 
-In that case I'm fine if we change the creation of the dentries to not
-check the permission.
+with 'schedutil' and 'acpi-cpufreq'.
 
-But for now, it's just a weird side effect that I don't really see how
-it would affect any user's workflow.
+f12560779f9d - sched/cpufreq: Rework iowait boost                              <- (w/ patches)
+9c0b4bb7f630 - sched/cpufreq: Rework schedutil governor performance estimation
+50181c0cff31 - sched/pelt: Avoid underestimation of task utilization           <- (base)
+..
 
--- Steve
+# cpufreq-info -c 0 -e
+..
+analyzing CPU 0:
+  driver: acpi-cpufreq
+  CPUs which run at the same hardware frequency: 0
+  CPUs which need to have their frequency coordinated by software: 0
+  maximum transition latency: 10.0 us.
+  hardware limits: 1.20 GHz - 3.00 GHz
+  available frequency steps: 3.00 GHz, 3.00 GHz, 2.90 GHz, 2.70 GHz, 2.60 GHz, 2.50 GHz, 2.40 GHz, 2.20 GHz,
+                             2.10 GHz, 2.00 GHz, 1.80 GHz, 1.70 GHz, 1.60 GHz, 1.50 GHz, 1.30 GHz, 1.20 GHz
+  available cpufreq governors: conservative, ondemand, userspace, powersave, performance, schedutil
+  current policy: frequency should be within 1.20 GHz and 3.00 GHz.
+                  The governor "schedutil" may decide which speed to use
+                  within this range.
+  current CPU frequency is 1.20 GHz (asserted by call to hardware).
 
+
+cpufreq is still fast-switching, so no schedutil 'sugov' DL threads.
 
