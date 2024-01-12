@@ -1,269 +1,257 @@
-Return-Path: <linux-kernel+bounces-25058-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61EA782C708
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 23:15:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8237682C70E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 23:16:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA1C41F23A58
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 22:15:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A3381C21946
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 22:16:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE9D217745;
-	Fri, 12 Jan 2024 22:15:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B69BA17730;
+	Fri, 12 Jan 2024 22:15:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L8pCtRWZ"
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="j6bRLQsI"
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D67117734
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 22:15:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7ce603b9051so1873201241.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 14:15:18 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 575CC1772F
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 22:15:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-428405a0205so19981cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 14:15:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705097717; x=1705702517; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1705097756; x=1705702556; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mhMe8z8Sw2vM4e+MnbwTOmnay90Wc0ycXpHjBgOQgjI=;
-        b=L8pCtRWZFDXxjUQ49dRWiWoTtTU+lqbiLDj8Tt8M2PzHtvm17ad83Or4x5sYISAjbT
-         ZTggisDPw2w5YhCbD15PYsprgSm28Vx7kOTAP2/wCOPVO3QRmMZt2PSz2DhfodLBNMCO
-         W14R/BTYtZxCH0SybEt2nJXN7OZvK0idk79TYHBWCHqspzmwDoEWPUAzwX8xGxMwvFB8
-         e4vbeok3pcLmu5u6Upsw4FkF1zWpGi2tHUHg89UQ+dytPO/+RR6QMKSZR7dATYpqIVwg
-         IiFp9G+VE9Z9SUFP7119Dq9TmncW/lZqxsqsATUUM1nv3S6Lils9skTzrjEPzfIk1k+Q
-         Iuhw==
+        bh=oP5fGZzgpZ9SrgGeq8dIeW2tXFSQwQhUhlpKAu1DbqQ=;
+        b=j6bRLQsIMTu7MjvtVYm+17W91DlDKOc09sNbaC9blJe5qhzFrdfpTT1m9UpqhmOLLR
+         upRgU+xo+hlvbJLqxazgh/wuHcsPB4QLrlLy4WH416z4rpDQtqSC+ye+Tksw58vq/s03
+         Tw1tDb7sGYaXOF9sL6z9KrHe0Zg8xhTJy91486DJrx8SBdT7GwUw1VumiG+SRRX+EsiL
+         sByZ5aWvIGXvSw8uaf1gKd5M/AE4LNIh2jlvzQFhglOZYYVM7KP/orZuU2BFqT9K2Kt3
+         4ws/pnGNKQ8NKsUNqaxXdEr1BLepE5Jm+D1nmM3xJVBNZE/Nqw8NgUX1vh2BVG6xsqgJ
+         ONAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705097717; x=1705702517;
+        d=1e100.net; s=20230601; t=1705097756; x=1705702556;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mhMe8z8Sw2vM4e+MnbwTOmnay90Wc0ycXpHjBgOQgjI=;
-        b=nvOrd0rBGejPj0/5nhAFo2Otn6+HNDNXKhZd9ebN1j7k6AXQd+B8nOVorh5FD+nP4F
-         wtxMlZdUq1QfS1TRxGMQe1lW9kv3bPyR5BeXUxhEzQ3mJ1XWJnl+1yqQnws4C3Y82f2f
-         S7lVv7qpWGIYIEEUoJUlt4gBc7tAcLeGMHfjB5z1zEOibIjQu8eQ2JUjRXn2+ndUcGIS
-         Ow2aGnUR/y/3bYoz74GG3UEBCk+rPOo6Xzw/ab9idbTw+gJMoBNqcntW44f8B6lrH3h2
-         ulha/8WEVtf5LkY5yRV7mmzOD2fjxSHKb/1lzi9hqyKHadKOnS42TkEIL7nlgPmaCBtZ
-         7qmw==
-X-Gm-Message-State: AOJu0YwrCOVqc9BsJXOFy35hzUdJn71KiD4XSbFLR/FqfdCrLDDN/IlO
-	tkkv0gq4eiTqM2HQMtEVOwi+NgcIp1vtAJO3nZ0snWSdUQmeog==
-X-Google-Smtp-Source: AGHT+IEeNFxFQtUxxk8Cp92BdPQ9DeDWBFE8dPARbDo7V83RFzc6XAOBg7gwxYZ1n6iIa85TJzyW4YgtF7Umz8vsdQs=
-X-Received: by 2002:a05:6122:4491:b0:4b7:8199:5d17 with SMTP id
- cz17-20020a056122449100b004b781995d17mr1742638vkb.25.1705097717189; Fri, 12
- Jan 2024 14:15:17 -0800 (PST)
+        bh=oP5fGZzgpZ9SrgGeq8dIeW2tXFSQwQhUhlpKAu1DbqQ=;
+        b=T8BwEHXAXxiRq4NkBTvUHZhPxqaG4m/sZnRmexjADcoyP1Uc2CLyy8TXKIKd7fBDoM
+         g+g0m18pdvNIvXTIVOLVwGXNQ1UEHhJm4nW74qkJgHQzcnLk+RKyny63NgsQpnCNiyPZ
+         ium6GL9a181f2FkBeJhElyn/kgTepLPzFob52T9qQ4Yzs0EhHhhFJCHaiEOygl9LeYsh
+         SaNdulfWdePkpQoLv33cUiHGG9g0CVWNUFAnD4VPfocMosnkukzn2VNn/M5cnYKuHj85
+         cq6riJQwkMTHR9q9CUnqbxv8SkEweAndyIbxBm8h6aoYFWAVgp2yZiiURq/uTFnFmsgH
+         9nRg==
+X-Gm-Message-State: AOJu0Yx7g9HHNZ8TBfFzFkxJp4g0+TwpurJcvTTvmfM7UOKHSKxq9ziq
+	ab3vPLougjcl20v3UcaCdGyiZq8ATLF2AynOAr9hTxeCHhE7
+X-Google-Smtp-Source: AGHT+IFFoU3MTUjYQMJj8EicBpziSzS7VeX+N1XmF+YFP6bUz5fPV3J53vSVX9kFH6naS1msjeDVFB3ysZ6ZaVwLbG8=
+X-Received: by 2002:a05:622a:174d:b0:429:cba2:8628 with SMTP id
+ l13-20020a05622a174d00b00429cba28628mr312680qtk.24.1705097755996; Fri, 12 Jan
+ 2024 14:15:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231228143152.1543509-1-chao@kernel.org> <CACOAw_xXGUt=2JJgq5yfW5ZG7EfZMm1iNTVxvfA9FoJVDwbH_A@mail.gmail.com>
- <dcefc352-d528-41e3-bc7a-5cb388f43240@kernel.org> <CACOAw_z=kVrD8ZctrK=ejh8TSMgzMf0-jaUM7q6CYtB3=Bqb8A@mail.gmail.com>
-In-Reply-To: <CACOAw_z=kVrD8ZctrK=ejh8TSMgzMf0-jaUM7q6CYtB3=Bqb8A@mail.gmail.com>
-From: Daeho Jeong <daeho43@gmail.com>
-Date: Fri, 12 Jan 2024 14:15:06 -0800
-Message-ID: <CACOAw_y-nnM3ms-TAiHMxGRw9n+Ad5qdf+40yzQ-jVYg4uR-TA@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH v3 1/6] f2fs: compress: fix to guarantee
- persisting compressed blocks by CP
-To: Chao Yu <chao@kernel.org>
-Cc: jaegeuk@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net
+References: <20231111014933.1934562-1-davidai@google.com> <20231111014933.1934562-2-davidai@google.com>
+ <20231208124503.unhka7c6ihzrrwhu@bogus>
+In-Reply-To: <20231208124503.unhka7c6ihzrrwhu@bogus>
+From: Saravana Kannan <saravanak@google.com>
+Date: Fri, 12 Jan 2024 14:15:20 -0800
+Message-ID: <CAGETcx9p8y7uN08_KyO45KygDU9i4KnU4HLd1XGhK+k0e9sahA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: cpufreq: add virtual cpufreq device
+To: Sudeep Holla <sudeep.holla@arm.com>
+Cc: David Dai <davidai@google.com>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Viresh Kumar <viresh.kumar@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Quentin Perret <qperret@google.com>, Masami Hiramatsu <mhiramat@google.com>, Will Deacon <will@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Pavan Kondeti <quic_pkondeti@quicinc.com>, 
+	Gupta Pankaj <pankaj.gupta@amd.com>, Mel Gorman <mgorman@suse.de>, kernel-team@android.com, 
+	linux-pm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Daeho Jeong <daehojeong@google.com>
+On Fri, Dec 8, 2023 at 4:47=E2=80=AFAM Sudeep Holla <sudeep.holla@arm.com> =
+wrote:
+>
+> On Fri, Nov 10, 2023 at 05:49:29PM -0800, David Dai wrote:
+> > Adding bindings to represent a virtual cpufreq device.
+> >
+> > Virtual machines may expose MMIO regions for a virtual cpufreq device
+> > for guests to read frequency information or to request frequency
+> > selection. The virtual cpufreq device has an individual controller for
+> > each frequency domain.
+> >
+> > Co-developed-by: Saravana Kannan <saravanak@google.com>
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > Signed-off-by: David Dai <davidai@google.com>
+> > ---
+> >  .../cpufreq/qemu,cpufreq-virtual.yaml         | 99 +++++++++++++++++++
+> >  1 file changed, 99 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/cpufreq/qemu,cpuf=
+req-virtual.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-vir=
+tual.yaml b/Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.=
+yaml
+> > new file mode 100644
+> > index 000000000000..16606cf1fd1a
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.ya=
+ml
+> > @@ -0,0 +1,99 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/cpufreq/qemu,cpufreq-virtual.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Virtual CPUFreq
+> > +
+> > +maintainers:
+> > +  - David Dai <davidai@google.com>
+> > +  - Saravana Kannan <saravanak@google.com>
+> > +
+> > +description:
+> > +  Virtual CPUFreq is a virtualized driver in guest kernels that sends =
+frequency
+> > +  selection of its vCPUs as a hint to the host through MMIO regions. E=
+ach vCPU
+> > +  is associated with a frequency domain which can be shared with other=
+ vCPUs.
+> > +  Each frequency domain has its own set of registers for frequency con=
+trols.
+> > +
+>
+> Are these register controls described somewhere ? The reason I ask is we
+> should be able to have single implementation of this virtual cpufreq
+> irrespective of the firmware used(DT vs ACPI) IMO.
 
-On Thu, Jan 11, 2024 at 9:17=E2=80=AFAM Daeho Jeong <daeho43@gmail.com> wro=
-te:
+Agree that we want the same driver to work for DT and ACPI. This doc
+was written to be similar to other DT binding docs that don't describe
+the registers in the DT binding. The registers are pretty straight
+forward (can tell from the code too). One register to "set" the
+frequency and another to "get" the current frequency. We don't have
+any ACPI expertise/hardware to test this on or care about it right
+now. But David looked at some ACPI drivers and we think it should be
+trivial to add ACPI support to this. Just a different set of probe
+functions to register and populate the CPUfreq table.
+
 >
-> On Wed, Jan 10, 2024 at 5:26=E2=80=AFPM Chao Yu <chao@kernel.org> wrote:
+> > +properties:
+> > +  compatible:
+> > +    const: qemu,virtual-cpufreq
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +    description:
+> > +      Address and size of region containing frequency controls for eac=
+h of the
+> > +      frequency domains. Regions for each frequency domain is placed
+> > +      contiugously and contain registers for controlling DVFS(Dynamic =
+Frequency
+> > +      and Voltage) characteristics. The size of the region is proporti=
+onal to
+> > +      total number of frequency domains.
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    // This example shows a two CPU configuration with a frequency dom=
+ain
+> > +    // for each CPU.
+> > +    cpus {
+> > +      #address-cells =3D <1>;
+> > +      #size-cells =3D <0>;
+> > +
+> > +      cpu@0 {
+> > +        compatible =3D "arm,armv8";
+> > +        device_type =3D "cpu";
+> > +        reg =3D <0x0>;
+> > +        operating-points-v2 =3D <&opp_table0>;
+> > +      };
+> > +
+> > +      cpu@1 {
+> > +        compatible =3D "arm,armv8";
+> > +        device_type =3D "cpu";
+> > +        reg =3D <0x0>;
+> > +        operating-points-v2 =3D <&opp_table1>;
+> > +      };
+> > +    };
+> > +
+> > +    opp_table0: opp-table-0 {
+> > +      compatible =3D "operating-points-v2";
+> > +      opp-shared;
+> > +
+> > +      opp1098000000 {
+> > +        opp-hz =3D /bits/ 64 <1098000000>;
+> > +        opp-level =3D <1>;
+> > +      };
+> > +
+> > +      opp1197000000 {
+> > +        opp-hz =3D /bits/ 64 <1197000000>;
+> > +        opp-level =3D <2>;
+> > +      };
+> > +    };
+> > +
+> > +    opp_table1: opp-table-1 {
+> > +      compatible =3D "operating-points-v2";
+> > +      opp-shared;
+> > +
+> > +      opp1106000000 {
+> > +        opp-hz =3D /bits/ 64 <1106000000>;
+> > +        opp-level =3D <1>;
+> > +      };
+> > +
+> > +      opp1277000000 {
+> > +        opp-hz =3D /bits/ 64 <1277000000>;
+> > +        opp-level =3D <2>;
+> > +      };
+> > +    };
 > >
-> > On 2024/1/11 8:55, Daeho Jeong wrote:
-> > > On Thu, Dec 28, 2023 at 6:33=E2=80=AFAM Chao Yu <chao@kernel.org> wro=
-te:
-> > >>
-> > >> If data block in compressed cluster is not persisted with metadata
-> > >> during checkpoint, after SPOR, the data may be corrupted, let's
-> > >> guarantee to write compressed page by checkpoint.
-> > >>
-> > >> Fixes: 4c8ff7095bef ("f2fs: support data compression")
-> > >> Signed-off-by: Chao Yu <chao@kernel.org>
-> > >> ---
-> > >> v3:
-> > >> - treat compressed page as CP guaranteed data explictly.
-> > >>   fs/f2fs/compress.c |  4 +++-
-> > >>   fs/f2fs/data.c     | 17 +++++++++--------
-> > >>   fs/f2fs/f2fs.h     |  4 +++-
-> > >>   3 files changed, 15 insertions(+), 10 deletions(-)
-> > >>
-> > >> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> > >> index c5a4364c4482..9940b7886e5d 100644
-> > >> --- a/fs/f2fs/compress.c
-> > >> +++ b/fs/f2fs/compress.c
-> > >> @@ -1418,6 +1418,8 @@ void f2fs_compress_write_end_io(struct bio *bi=
-o, struct page *page)
-> > >>          struct f2fs_sb_info *sbi =3D bio->bi_private;
-> > >>          struct compress_io_ctx *cic =3D
-> > >>                          (struct compress_io_ctx *)page_private(page=
-);
-> > >> +       enum count_type type =3D WB_DATA_TYPE(page,
-> > >> +                               f2fs_is_compressed_page(page));
-> > >>          int i;
-> > >>
-> > >>          if (unlikely(bio->bi_status))
-> > >> @@ -1425,7 +1427,7 @@ void f2fs_compress_write_end_io(struct bio *bi=
-o, struct page *page)
-> > >>
-> > >>          f2fs_compress_free_page(page);
-> > >>
-> > >> -       dec_page_count(sbi, F2FS_WB_DATA);
-> > >> +       dec_page_count(sbi, type);
-> > >>
-> > >>          if (atomic_dec_return(&cic->pending_pages))
-> > >>                  return;
-> > >> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> > >> index dce8defdf4c7..81f9e2cc49e2 100644
-> > >> --- a/fs/f2fs/data.c
-> > >> +++ b/fs/f2fs/data.c
-> > >> @@ -48,7 +48,7 @@ void f2fs_destroy_bioset(void)
-> > >>          bioset_exit(&f2fs_bioset);
-> > >>   }
-> > >>
-> > >> -static bool __is_cp_guaranteed(struct page *page)
-> > >> +bool f2fs_is_cp_guaranteed(struct page *page)
-> > >>   {
-> > >>          struct address_space *mapping =3D page->mapping;
-> > >>          struct inode *inode;
-> > >> @@ -65,8 +65,6 @@ static bool __is_cp_guaranteed(struct page *page)
-> > >>                          S_ISDIR(inode->i_mode))
-> > >>                  return true;
-> > >>
-> > >> -       if (f2fs_is_compressed_page(page))
-> > >> -               return false;
-> > >
-> > > Out of curiosity, why don't we simply change the above to "return tru=
-e"?
-> >
-> > Daeho,
-> >
-> > I used the implementation, please check v1 and related comments
-> > from Jaegeuk and me, let me know if that was not clear enough. :)
-> >
-> > https://lore.kernel.org/linux-f2fs-devel/aae654e7-8a7e-478d-9f5a-65807a=
-0e0343@kernel.org/
 >
-> Oh, I missed it. Sorry~
+> I think using OPP with absolute frequencies seems not appropriate here.
+> Why can't these fetched from the registers and have some abstract values
+> instead ?
+
+Whether the frequencies are real or you want to cap it to 1024 and
+normalize it, you still need to populate the CPUfreq table. And we
+didn't want to reinvent the wheel and want to use existing means of
+representing the table in as cross-architecture as possible -- so, DT
+and ACPI should cover them all. For example, if we want to say CPU0
+and 1 for a single CPUfreq policy, that's all already doable in DT. We
+don't want to reinvent new schemes/register interfaces for that.
+
 >
-> >
-> > >
-> > >>          if ((S_ISREG(inode->i_mode) && IS_NOQUOTA(inode)) ||
-> > >>                          page_private_gcing(page))
-> > >>                  return true;
-> > >> @@ -338,7 +336,7 @@ static void f2fs_write_end_io(struct bio *bio)
-> > >>
-> > >>          bio_for_each_segment_all(bvec, bio, iter_all) {
-> > >>                  struct page *page =3D bvec->bv_page;
-> > >> -               enum count_type type =3D WB_DATA_TYPE(page);
-> > >> +               enum count_type type =3D WB_DATA_TYPE(page, false);
-> > >>
-> > >>                  if (page_private_dummy(page)) {
-> > >>                          clear_page_private_dummy(page);
-> > >> @@ -762,7 +760,7 @@ int f2fs_submit_page_bio(struct f2fs_io_info *fi=
-o)
-> > >>                  wbc_account_cgroup_owner(fio->io_wbc, fio->page, PA=
-GE_SIZE);
-> > >>
-> > >>          inc_page_count(fio->sbi, is_read_io(fio->op) ?
-> > >> -                       __read_io_type(page) : WB_DATA_TYPE(fio->pag=
-e));
-> > >> +                       __read_io_type(page) : WB_DATA_TYPE(fio->pag=
-e, false));
-> > >>
-> > >>          if (is_read_io(bio_op(bio)))
-> > >>                  f2fs_submit_read_bio(fio->sbi, bio, fio->type);
-> > >> @@ -973,7 +971,7 @@ int f2fs_merge_page_bio(struct f2fs_io_info *fio=
-)
-> > >>          if (fio->io_wbc)
-> > >>                  wbc_account_cgroup_owner(fio->io_wbc, fio->page, PA=
-GE_SIZE);
-> > >>
-> > >> -       inc_page_count(fio->sbi, WB_DATA_TYPE(page));
-> > >> +       inc_page_count(fio->sbi, WB_DATA_TYPE(page, false));
-> > >>
-> > >>          *fio->last_block =3D fio->new_blkaddr;
-> > >>          *fio->bio =3D bio;
-> > >> @@ -1007,6 +1005,7 @@ void f2fs_submit_page_write(struct f2fs_io_inf=
-o *fio)
-> > >>          enum page_type btype =3D PAGE_TYPE_OF_BIO(fio->type);
-> > >>          struct f2fs_bio_info *io =3D sbi->write_io[btype] + fio->te=
-mp;
-> > >>          struct page *bio_page;
-> > >> +       enum count_type type;
-> > >>
-> > >>          f2fs_bug_on(sbi, is_read_io(fio->op));
-> > >>
-> > >> @@ -1046,7 +1045,8 @@ void f2fs_submit_page_write(struct f2fs_io_inf=
-o *fio)
-> > >>          /* set submitted =3D true as a return value */
-> > >>          fio->submitted =3D 1;
-> > >>
-> > >> -       inc_page_count(sbi, WB_DATA_TYPE(bio_page));
-> > >> +       type =3D WB_DATA_TYPE(bio_page, fio->compressed_page);
-> > >> +       inc_page_count(sbi, type);
-> > >>
-> > >>          if (io->bio &&
-> > >>              (!io_is_mergeable(sbi, io->bio, io, fio, io->last_block=
-_in_bio,
-> > >> @@ -1059,7 +1059,8 @@ void f2fs_submit_page_write(struct f2fs_io_inf=
-o *fio)
-> > >>                  if (F2FS_IO_ALIGNED(sbi) &&
-> > >>                                  (fio->type =3D=3D DATA || fio->type=
- =3D=3D NODE) &&
-> > >>                                  fio->new_blkaddr & F2FS_IO_SIZE_MAS=
-K(sbi)) {
-> > >> -                       dec_page_count(sbi, WB_DATA_TYPE(bio_page));
-> > >> +                       dec_page_count(sbi, WB_DATA_TYPE(bio_page,
-> > >> +                                               fio->compressed_page=
-));
-> > >>                          fio->retry =3D 1;
-> > >>                          goto skip;
-> > >>                  }
-> > >> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> > >> index 65294e3b0bef..50f3d546ded8 100644
-> > >> --- a/fs/f2fs/f2fs.h
-> > >> +++ b/fs/f2fs/f2fs.h
-> > >> @@ -1080,7 +1080,8 @@ struct f2fs_sm_info {
-> > >>    * f2fs monitors the number of several block types such as on-writ=
-eback,
-> > >>    * dirty dentry blocks, dirty node blocks, and dirty meta blocks.
-> > >>    */
-> > >> -#define WB_DATA_TYPE(p)        (__is_cp_guaranteed(p) ? F2FS_WB_CP_=
-DATA : F2FS_WB_DATA)
-> > >> +#define WB_DATA_TYPE(p, f)                     \
-> > >> +       (f || f2fs_is_cp_guaranteed(p) ? F2FS_WB_CP_DATA : F2FS_WB_D=
-ATA)
-> > >>   enum count_type {
-> > >>          F2FS_DIRTY_DENTS,
-> > >>          F2FS_DIRTY_DATA,
-> > >> @@ -3804,6 +3805,7 @@ void f2fs_init_ckpt_req_control(struct f2fs_sb=
-_info *sbi);
-> > >>    */
-> > >>   int __init f2fs_init_bioset(void);
-> > >>   void f2fs_destroy_bioset(void);
-> > >> +bool f2fs_is_cp_guaranteed(struct page *page);
-> > >>   int f2fs_init_bio_entry_cache(void);
-> > >>   void f2fs_destroy_bio_entry_cache(void);
-> > >>   void f2fs_submit_read_bio(struct f2fs_sb_info *sbi, struct bio *bi=
-o,
-> > >> --
-> > >> 2.40.1
-> > >>
-> > >>
-> > >>
-> > >> _______________________________________________
-> > >> Linux-f2fs-devel mailing list
-> > >> Linux-f2fs-devel@lists.sourceforge.net
-> > >> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> > +    soc {
+> > +      #address-cells =3D <1>;
+> > +      #size-cells =3D <1>;
+> > +
+> > +      cpufreq@1040000 {
+> > +        compatible =3D "qemu,virtual-cpufreq";
+> > +        reg =3D <0x1040000 0x10>;
+>
+> So just 16bytes for 2 CPU system ? How does the register layout look like=
+ ?
+> I assume just 4 x 32bit registers: 2 for reading and 2 for setting the
+> frequencies ?
+
+Yup. 2 registers per CPU frequency domain or policy.
+
+Thanks,
+Saravana
 
