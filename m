@@ -1,194 +1,168 @@
-Return-Path: <linux-kernel+bounces-24306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8ECF82BAB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 06:15:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1825482BAB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 06:15:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 110C7B23D67
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 05:15:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3932F1C2085A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 05:15:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA6F65B5C7;
-	Fri, 12 Jan 2024 05:15:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 606C25B5BE;
+	Fri, 12 Jan 2024 05:15:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="BdpRQDvN"
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vGC/Nqe5"
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1CC05B5BD
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 05:14:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com [209.85.161.72])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C9C0741031
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 05:14:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1705036496;
-	bh=KcsNW4XGwdT5mdkOZIOJuntQk1RU/yR0/w+M4PaMpUQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=BdpRQDvNjHkgxkGda7FI98/b5d2AmnDMAYGsEn+oK/RRq0rAyJyuNgfc+wRR39lu/
-	 fLFPtbE7JoUqZt3mLplqnFkYFXmmzjNz7/nln4eqP9uDUkvvWRjsROBIhGTcZg456W
-	 36F7D7VHE0r0rujxUNzJmAyp0QYC4xnDNl1iZjmRi1l3ltBL0Xc1MVp8H/NiHVMDfr
-	 qrFKZucjwnjRGFIOw5toPR3wxoeuuEJdEJ2CbBSr4KM4RiTZQw8bJb9s4e3Wh1CDRC
-	 X/6bjtEiDHTWZ6RGcyh8bdudGugHaCUUW55cnd1ilHqZqnjVG7odYkO+ae9YvWOrRx
-	 X5RZdyVXd3ntw==
-Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-598c510039fso425062eaf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 21:14:56 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 002AF5B5BD
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 05:15:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4b7e4a2808bso1860420e0c.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 21:15:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705036519; x=1705641319; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=IgIz5Jw3xaCiRypp9t/7nFofZKzAWe2AVuDOEAahvJw=;
+        b=vGC/Nqe5b8zoxuNTMT11BGceNiK9EAD5XFiS/mTY0E1eMw59b+LhSBeef1jUAfErXI
+         1SQ4BQqFIUi6DeC7geoI6u/PBiredB38f7PMOnAtkEaU5MphhQ2gubUsVyduWHQ0y6D/
+         3XnvZsgZc/DDZq+LCr2pLvamFrG4ZyCB5K/9tiNGWWR7cg7JVnWMhcEcVC3hvYb9nsBw
+         6J934nTWv516j2WiWias9tp6pye+rmpOWy3mneQwC9c4YV8RxBYFIUOLHYBhVFIPE2V1
+         X0G3woKW6RSoZzpPIPjWHXftdBob+L2YCkrT2izX1yW1WLO8WdZYD8TjR0Rn6jMXeMpX
+         DaXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705036495; x=1705641295;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KcsNW4XGwdT5mdkOZIOJuntQk1RU/yR0/w+M4PaMpUQ=;
-        b=YYchLbwzBc5nmU6FmS5n1+nzq2QlwWJV0/DCIOY3OpVRNRiwHnVQbjfIHhUtIAZak0
-         AYx14Jfm5jw3uxZ/7/onNRNQ1bgylOkA5yAMSIMIwKakkhfPF7JMaQyq7NARr8eeT6XK
-         Swvg2O5xazuC3wzyBOy7XmQ7YY/2+3zUTUfrqvgh7SKYSRTfIayPwWcC993XdJRVELIO
-         hY+hQ/f0e9x/eAiXvTSqzLHB9iLsBLpVy0FahhS+mKkdDv+O7iXISLz3bDz9SB6gIsM+
-         RnEi1lQDGRK3mk+pR2Jf5QevWwP0o1OzYZIhdNHyaW0mSu4jxa7pxsc0snFS9QPkFw1g
-         ynug==
-X-Gm-Message-State: AOJu0YwS+rEksQAuLi2XVsMaOfAuBHv5qZo9batkZ1qZeBLOAdcc98GI
-	aKUxCwgGH/4b6LlHTIlZNW74fTqE2lfdIhj7ukyKaBwBwAYdg2aaXahtm7N1dTX+d6kzgdA5QM3
-	oQmTZZHiWh5suF+FeAoAXgEBBfkSPS/keROZKn6tL3bZ54UoWaY4IDuQCrvlJRSBK
-X-Received: by 2002:a05:6359:28f:b0:175:5db7:43af with SMTP id ek15-20020a056359028f00b001755db743afmr850405rwb.54.1705036495437;
-        Thu, 11 Jan 2024 21:14:55 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFurhzfhLUDJo7dyJGnEfzFdfgxm46jWxvPCkp/fW9ViwZ75X4/qUkc+g8aTxqgdTmjADIujzWqriEA9QjtSa0=
-X-Received: by 2002:a05:6359:28f:b0:175:5db7:43af with SMTP id
- ek15-20020a056359028f00b001755db743afmr850398rwb.54.1705036495153; Thu, 11
- Jan 2024 21:14:55 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705036519; x=1705641319;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IgIz5Jw3xaCiRypp9t/7nFofZKzAWe2AVuDOEAahvJw=;
+        b=aQD1Hv2vGfAj/8hO/KQfOqXhthvWVo8GZNq0ueE95pVn1vZFfVEXLE4JNv9iom0lXe
+         MkCifyD+3OLjiDKdG38+UCFo2J1GOaY4nu8Po3YKyWnX44c2Ah3svF8fftBxioMs+OXE
+         wtfYdj7EfOeY0P1o7d9OHQ4VPhVNnE+QOC2d3aZW7nX05YHDxxTMU6J5oCSeRdB2rDUN
+         fJ8uU3P6E953OzvWAh68RCQlpZA54WYZj5WnCpEsc8dcyZXQzwZ+W9ePmwDC2AqTHTeJ
+         jt5tpFFGP1Ik6QF4MobB0Oko/eRBAkHvcGI5WExZ4QY5F/QVUmPai4cAoq6NlOiODV2d
+         YO7g==
+X-Gm-Message-State: AOJu0YwvtGpWGEGxQbFIKP8+udOsXT/QqxJg6KOQo3T3bR+0uCCGCkLF
+	yZ/trKjkqg+r7eOZlwJHLG8/zW2tC7ckETExMCppZNxqLtUUyA==
+X-Google-Smtp-Source: AGHT+IHPLvPAb+MT+s200UzDgvlLJVHSQjmJYTb0cHfWBa5Vn8ew9C7G9AwMneG0HO+in1yTFy80+h7ZYa1cXDFsG/w=
+X-Received: by 2002:a05:6122:4d0e:b0:4b7:a95b:7b3 with SMTP id
+ fi14-20020a0561224d0e00b004b7a95b07b3mr706190vkb.26.1705036518758; Thu, 11
+ Jan 2024 21:15:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231221032147.434647-1-kai.heng.feng@canonical.com> <20240105211911.GA1867400@bhelgaas>
-In-Reply-To: <20240105211911.GA1867400@bhelgaas>
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date: Fri, 12 Jan 2024 13:14:42 +0800
-Message-ID: <CAAd53p7ZwYNau1c=SDpGd+cqP2qO_7km9Q3-bow-Jqzo6STVFA@mail.gmail.com>
-Subject: Re: [PATCH v2] mmc: sdhci-pci-gli: GL975x: Mask rootport's replay
- timer timeout during suspend
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: adrian.hunter@intel.com, ulf.hansson@linaro.org, 
-	Victor Shih <victor.shih@genesyslogic.com.tw>, Ben Chuang <benchuanggli@gmail.com>, 
-	linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Fri, 12 Jan 2024 10:45:08 +0530
+Message-ID: <CA+G9fYu1hB2OMf0EFrt_86OE=0Ug3y6nQd3=OZeEeM1jp3P92g@mail.gmail.com>
+Subject: Re: scsi: block: ioprio: Clean up interface definition -
+ ioprio_set03.c:40: TFAIL: ioprio_set IOPRIO_CLASS_BE prio 8 should not work
+To: linux-block <linux-block@vger.kernel.org>, LTP List <ltp@lists.linux.it>, 
+	Linux Regressions <regressions@lists.linux.dev>, lkft-triage@lists.linaro.org, 
+	open list <linux-kernel@vger.kernel.org>
+Cc: Anders Roxell <anders.roxell@linaro.org>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	chrubis <chrubis@suse.cz>, Petr Vorel <pvorel@suse.cz>, Damien Le Moal <dlemoal@kernel.org>, 
+	Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>, Niklas Cassel <niklas.cassel@wdc.com>, 
+	"Martin K. Petersen" <martin.petersen@oracle.com>, Jens Axboe <axboe@kernel.dk>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jan 6, 2024 at 5:19=E2=80=AFAM Bjorn Helgaas <helgaas@kernel.org> w=
-rote:
->
-> On Thu, Dec 21, 2023 at 11:21:47AM +0800, Kai-Heng Feng wrote:
-> > Spamming `lspci -vv` can still observe the replay timer timeout error
-> > even after commit 015c9cbcf0ad ("mmc: sdhci-pci-gli: GL9750: Mask the
-> > replay timer timeout of AER"), albeit with a lower reproduce rate.
->
-> I'm not sure what this is telling me.  By "spamming `lspci -vv`, do
-> you mean that if you run lspci continually, you still see Replay Timer
-> Timeout logged, e.g.,
->
->   CESta:        ... Timeout+
+The LTP test 'iopri_set03' fails on all the devices.
+It fails on linux kernel >= v6.5. ( on Debian rootfs ).
+Test fail confirmed on LTP release 20230929 and 20230516.
 
-Yes it's logged and the AER IRQ is raised.
+Test failed log:
+------------
+tst_test.c:1690: TINFO: LTP version: 20230929
+tst_test.c:1574: TINFO: Timeout per run is 0h 05m 00s
+ioprio_set03.c:40: TFAIL: ioprio_set IOPRIO_CLASS_BE prio 8 should not work
+ioprio_set03.c:48: TINFO: tested illegal priority with class NONE
+ioprio_set03.c:51: TPASS: returned correct error for wrong prio: EINVAL (22)
 
->
-> 015c9cbcf0ad uses hard-coded PCI_GLI_9750_CORRERR_MASK offset and
-> PCI_GLI_9750_CORRERR_MASK_REPLAY_TIMER_TIMEOUT value, which look like
-> they *could* be PCI_ERR_COR_MASK and PCI_ERR_COR_REP_TIMER, but
-> without the lspci output I can't tell for sure.  If they are, it would
-> be nice to use the generic macros instead of defining new ones so it's
-> easier to analyze PCI_ERR_COR_MASK usage.
->
-> If 015c9cbcf0ad is updating the generic PCI_ERR_COR_MASK, it should
-> only prevent sending ERR_COR.  It should not affect the *logging* in
-> PCI_ERR_COR_STATUS (see PCIe r6.0, sec 6.2.3.2.2), so it shouldn't
-> affect the lspci output.
+Investigation:
+----------
+Bisecting this test between kernel v6.4 and v6.5 shows patch
+eca2040972b4 ("scsi: block: ioprio: Clean up interface definition")
+as the first faulty commit.
 
-PCI_GLI_9750_CORRERR_MASK is specific to GLI 975x devices, so it
-doesn't conform to generic PCI_ERR_COR_STATUS behavior.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-The Timeout is masked with or without commit 015c9cbcf0ad:
-CEMsk:  ... Timeout+
+Links:
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240109/testrun/22021120/suite/ltp-syscalls/test/ioprio_set03/details/
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240110/testrun/22034175/suite/ltp-syscalls/test/ioprio_set03/history/
 
-
->
-> > Such AER interrupt can still prevent the system from suspending, so let
-> > root port mask and unmask replay timer timeout during suspend and
-> > resume, respectively.
->
-> 015c9cbcf0ad looks like it masks PCI_ERR_COR_REP_TIMER in the gl975x
-> Endpoint, while this patch masks it in the upstream bridge (which
-> might be either a Root Port or a Switch Downstream Port, so the
-> subject and this sentence are not quite right).
-
-OK, will change it to upstream bridge in next revision.
-
->
-> 015c9cbcf0ad says it is related to a hardware defect, and maybe this
-> patch is also (mention it if so).  Both patches can prevent ERR_COR
-> messages and the eventual AER interrupt, depending on whether the
-> Downstream Port or the Endpoint detects the Replay Timer Timeout.
-> Maybe this should have a Fixes: tag for 015c9cbcf0ad to try to keep
-> these together?
-
-Sure. This patch is intend to cover more ground based on 015c9cbcf0ad.
+Steps to reproduce:
+---------------
+This is how you can reproduce it easily:
+Install podman or docker, tuxmake and tuxrun, if docker please change
+the --runtime below to docker.
+cd into the kernel you want to build:
+$ tuxmake --runtime podman --target-arch arm64 --toolchain gcc-13
+--kconfig defconfig --results-hook 'tuxrun --runtime podman --device
+qemu-arm64 --boot-args rw --tuxmake ./ --rootfs
+https://storage.tuxboot.com/debian/bookworm/arm64/rootfs.ext4.xz
+--parameters SKIPFILE=skipfile-lkft.yaml --timeouts boot=30 --overlay
+https://storage.tuxboot.com/overlays/debian/bookworm/arm64/ltp/20230929/ltp.tar.xz
+/ --save-outputs --log-file - -- "cd /opt/ltp && ./runltp -s
+ioprio_set03"'
 
 
->
-> If 015c9cbcf0ad is actually updating PCI_ERR_COR_MASK, it would be
-> nice to clean that up, too.  And maybe PCI_ERR_COR_REP_TIMER should be
-> masked/restored at the same place for both the Downstream Port and the
-> Endpoint?
+Bisection log:
+------------
+# bad: [2dde18cd1d8fac735875f2e4987f11817cc0bc2c] Linux 6.5
+# good: [6995e2de6891c724bfeb2db33d7b87775f913ad1] Linux 6.4
+git bisect start 'v6.5' 'v6.4'
+# good: [b775d6c5859affe00527cbe74263de05cfe6b9f9] Merge tag
+'mips_6.5' of git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux
+git bisect good b775d6c5859affe00527cbe74263de05cfe6b9f9
+# bad: [56cbceab928d7ac3702de172ff8dcc1da2a6aaeb] Merge tag
+'usb-6.5-rc1' of
+git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb
+git bisect bad 56cbceab928d7ac3702de172ff8dcc1da2a6aaeb
+# good: [b30d7a77c53ec04a6d94683d7680ec406b7f3ac8] Merge tag
+'perf-tools-for-v6.5-1-2023-06-28' of
+git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next
+git bisect good b30d7a77c53ec04a6d94683d7680ec406b7f3ac8
+# bad: [dfab92f27c600fea3cadc6e2cb39f092024e1fef] Merge tag
+'nfs-for-6.5-1' of git://git.linux-nfs.org/projects/trondmy/linux-nfs
+git bisect bad dfab92f27c600fea3cadc6e2cb39f092024e1fef
+# bad: [28968f384be3c064d66954aac4c534a5e76bf973] Merge tag
+'pinctrl-v6.5-1' of
+git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl
+git bisect bad 28968f384be3c064d66954aac4c534a5e76bf973
+# bad: [af92c02fb2090692f4920ea4b74870940260cf49] Merge patch series
+"scsi: fixes for targets with many LUNs, and scsi_target_block rework"
+git bisect bad af92c02fb2090692f4920ea4b74870940260cf49
+# bad: [2e2fe5ac695a00ab03cab4db1f4d6be07168ed9d] scsi: 3w-xxxx: Add
+error handling for initialization failure in tw_probe()
+git bisect bad 2e2fe5ac695a00ab03cab4db1f4d6be07168ed9d
+# good: [8759924ddb93498bd5777f0b05b6bc9cacf4ffe3] Merge patch series
+"scsi: hisi_sas: Some misc changes"
+git bisect good 8759924ddb93498bd5777f0b05b6bc9cacf4ffe3
+# good: [7907ad748bdba8ac9ca47f0a650cc2e5d2ad6e24] Merge patch series
+"Use block pr_ops in LIO"
+git bisect good 7907ad748bdba8ac9ca47f0a650cc2e5d2ad6e24
+# bad: [390e2d1a587405a522dc6b433d45648f895a352c] scsi: sd: Handle
+read/write CDL timeout failures
+git bisect bad 390e2d1a587405a522dc6b433d45648f895a352c
+# bad: [734326937b65cec7ffd00bfbbce0f791ac4aac84] scsi: core: Rename
+and move get_scsi_ml_byte()
+git bisect bad 734326937b65cec7ffd00bfbbce0f791ac4aac84
+# bad: [6c913257226a25879bfd6226e0ee265e98904ce6] scsi: block:
+Introduce ioprio hints
+git bisect bad 6c913257226a25879bfd6226e0ee265e98904ce6
+# bad: [eca2040972b411ec27483bf75dc8b84e730e88ff] scsi: block: ioprio:
+Clean up interface definition
+git bisect bad eca2040972b411ec27483bf75dc8b84e730e88ff
+# first bad commit: [eca2040972b411ec27483bf75dc8b84e730e88ff] scsi:
+block: ioprio: Clean up interface definition
 
-Since PCI_ERR_COR_REP_TIMER is already masked before 015c9cbcf0ad, so
-I didn't think that's necessary.
-Do you think it should still be masked just to be safe?
 
->
-> > +#ifdef CONFIG_PCIEAER
-> > +static void mask_replay_timer_timeout(struct pci_dev *pdev)
-> > +{
-> > +     struct pci_dev *parent =3D pci_upstream_bridge(pdev);
-> > +     u32 val;
-> > +
-> > +     if (!parent || !parent->aer_cap)
-> > +             return;
-> > +
-> > +     pci_read_config_dword(parent, parent->aer_cap + PCI_ERR_COR_MASK,=
- &val);
-> > +     val |=3D PCI_ERR_COR_REP_TIMER;
-> > +     pci_write_config_dword(parent, parent->aer_cap + PCI_ERR_COR_MASK=
-, val);
-> > +}
-> > +
-> > +static void unmask_replay_timer_timeout(struct pci_dev *pdev)
-> > +{
-> > +     struct pci_dev *parent =3D pci_upstream_bridge(pdev);
-> > +     u32 val;
-> > +
-> > +     if (!parent || !parent->aer_cap)
-> > +             return;
-> > +
-> > +     pci_read_config_dword(pdev, parent->aer_cap + PCI_ERR_COR_MASK, &=
-val);
-> > +     val &=3D ~PCI_ERR_COR_REP_TIMER;
->
-> I think I would save the previous PCI_ERR_COR_REP_TIMER value and
-> restore it here, so it is preserved if there is ever a generic
-> interface via sysfs or similar to manage correctable error masking.
-
-Makes sense, will do in next revision.
-
-Kai-Heng
-
->
-> > +     pci_write_config_dword(pdev, parent->aer_cap + PCI_ERR_COR_MASK, =
-val);
-> > +}
+--
+Linaro LKFT
+https://lkft.linaro.org
 
