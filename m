@@ -1,175 +1,146 @@
-Return-Path: <linux-kernel+bounces-24385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A147182BBDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:39:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0436082BBDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:39:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17AB1B22C3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:38:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3F25282D46
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:39:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71BB45D737;
-	Fri, 12 Jan 2024 07:38:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A2D25D726;
+	Fri, 12 Jan 2024 07:39:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="V+x2yjxW"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AhuOaNR0"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C8EB1370
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 07:38:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40e60e137aaso13911295e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 23:38:42 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4B085C90C;
+	Fri, 12 Jan 2024 07:39:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6d9cdd0a5e6so3696431b3a.3;
+        Thu, 11 Jan 2024 23:39:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705045121; x=1705649921; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=iDp8DOinr9gJiQ2caAeolBWLcVUyNvP+wqwEKaD3vBg=;
-        b=V+x2yjxW1x81RaK7jn0GLICumotl1ZEaO+3uooC0TUYV2H3yc10kjvIKt3NaV90DHA
-         WSjIxEYv/CASi1G0QMROkTaAjnEpXcMke0/Lx6PUCdnR0sgq1TuRmTUMxi13DLKyf/wX
-         rhT4sztojhtuU26XpeKQ2mX8DjnbaXm3miJSwcMPM3rIT0xE0bhxLHZuRwh86lmsOdir
-         1bCCDTMQLNN5FpHLpeLSexH36VDNKKTRfABMijwjkPatN9sRsn8hqL6rvnEg5n1e4Ovn
-         L1c6kOxD8MqEHZRF4luIeWWJ/QbsQS0c8Jh41cuhDh59vrv1iLSQ5mY0THAYt2o5WO+/
-         LGwg==
+        d=gmail.com; s=20230601; t=1705045151; x=1705649951; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ltxfqdn8oMs6HiFEgPdU5d3jRUgHJ3wntYFCndBlEL0=;
+        b=AhuOaNR0pSJdkFQuwOxyK/b+ALALPGdN+knq/7Nz+ZiLKnzr42VEUvIB6C0wAb+lLQ
+         iw+NxI045owqxnRWew7nA9pydu0QuTP6+CDhD9Vj6W3iD2xp50tionHGh5njl1DtCC8Y
+         rbWf3aI3OGCpt1PIPLXhW0B2IM+kuqUYcrAzzDB3gnWCVs3S9yvySfWHO0inAAfJGg1D
+         TyRN8vHfahW8kcwZUL8wioTzM83ZMsGu+vR1VTFdFFCoxpQSn58QMBsJZi+A1hGlzsyc
+         tFcIw1VMBYymTW7YfBZHAw2WAQ/zO63v7CyhXDVUIFKCrj/tb51UMJi9vfqa3odonm+y
+         OSVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705045121; x=1705649921;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iDp8DOinr9gJiQ2caAeolBWLcVUyNvP+wqwEKaD3vBg=;
-        b=Idf406nVPFxiKqTk8yNIEprAutVcXesd7XYijzhv3Q2JbLwaUCCOP/FsnGKHn31nGo
-         D7BgWn91dj7T++TU8dVcTHlW6huUs8ic//+qdeGDoxoIvtpOqdfPk/ZHEE5HP0trL4TK
-         pPA1IGwmAg0DNd/7YPO+5Yi3MlKMu0PAvJpMg7bN4hrthBudjvdXFiLbhfVopzuheC9X
-         wKn0LZu+in1RIWbMJxmQDvh03KagW8dNbvu8X72swrXJ7NGaGsZ7Vu/gAGJiv85h28Fk
-         KxTZ8FfxBtataHsVboFlRrS3YXDn3gb3/ZosY+BUZUkK7Vivl7xdol4pdwd1aOAWezfV
-         7ulw==
-X-Gm-Message-State: AOJu0YyxStp7qwfbexxt/uP8/gDJoPcHIGhVhzD5pxs2Swr4wkWIFXMr
-	mafibyo9erx/r9zsX5Nc7HbpMPuKbmYliA==
-X-Google-Smtp-Source: AGHT+IFNScRG8y28Q84hdUVIzxVba8kAQufG74CduMidAqwTiwiDmYzWuDabEwi6C9HDdadF49leKQ==
-X-Received: by 2002:a05:600c:332a:b0:40e:42e7:4c42 with SMTP id q42-20020a05600c332a00b0040e42e74c42mr472136wmp.60.1705045121265;
-        Thu, 11 Jan 2024 23:38:41 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id u6-20020a05600c138600b0040d5a9d6b68sm8713498wmf.6.2024.01.11.23.38.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jan 2024 23:38:40 -0800 (PST)
-Message-ID: <3c0be658-e7a6-4231-b206-86ffb47e0cb2@linaro.org>
-Date: Fri, 12 Jan 2024 08:38:39 +0100
+        d=1e100.net; s=20230601; t=1705045151; x=1705649951;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ltxfqdn8oMs6HiFEgPdU5d3jRUgHJ3wntYFCndBlEL0=;
+        b=PbuAG5MdgrEoyADk99a6m7ZqnaUmM/0N5jocaRUdK0phYPx4yCbs6mkw7MKnNoeBV2
+         Eo6pDzv+f2NoqeXPyz/2ewhZCrWMTipjmTDZXfCeMth1jorYv9T0an3ipV/cU1x/+DFK
+         sfbalUDROK6Mbb/Q43FL1GYQSVd+PwfKFCy1ZMcIKQUZxC8nOuUDCeo/692axVSyhEuE
+         2SasWymN3TGYpi/bGMAR8hbEaRrSNdpYHP9CzBbXGV4lazLMLS5u1s9a0dhyDnUNbvyN
+         wa+UDagVNLc6EB7Zc13k71KMtNko+cv6EJJX57EgJWnfQD8WYN9ZAeVR5oJfJS1izERm
+         VzyA==
+X-Gm-Message-State: AOJu0YyenFN72QPgNBX8R7Mtp7TTGzMtf4HHO9AtZ6HwBVWft6suBIv7
+	C+C4TwzBecgkNqIw9EKci9E=
+X-Google-Smtp-Source: AGHT+IHHyM4INeewJgDCfByb1wR/DWXGrSMUSzpTM4WgHiY4EFQ9S7QWLIsDnv8bY2tCOBNXv8rW+w==
+X-Received: by 2002:aa7:9e52:0:b0:6d9:a0a2:a7c0 with SMTP id z18-20020aa79e52000000b006d9a0a2a7c0mr388151pfq.66.1705045150890;
+        Thu, 11 Jan 2024 23:39:10 -0800 (PST)
+Received: from g2039B650.. ([106.39.42.152])
+        by smtp.gmail.com with ESMTPSA id ka6-20020a056a00938600b006d991505b4csm2565570pfb.76.2024.01.11.23.39.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jan 2024 23:39:10 -0800 (PST)
+From: Gui-Dong Han <2045gemini@gmail.com>
+To: dmitry.torokhov@gmail.com,
+	arnd@kernel.org,
+	schnelle@linux.ibm.com
+Cc: linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	baijiaju1990@outlook.com,
+	Gui-Dong Han <2045gemini@gmail.com>,
+	stable@vger.kernel.org
+Subject: [PATCH] Input: fix atomicity violation in gameport_run_poll_handler
+Date: Fri, 12 Jan 2024 15:38:55 +0800
+Message-Id: <20240112073855.16594-1-2045gemini@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/7] dt-bindings: i3c: svc: add compatible string i3c:
- silvaco,i3c-target-v1
-Content-Language: en-US
-To: Frank Li <Frank.Li@nxp.com>, robh@kernel.org
-Cc: alexandre.belloni@bootlin.com, conor.culhane@silvaco.com,
- gregkh@linuxfoundation.org, imx@lists.linux.dev, jirislaby@kernel.org,
- joe@perches.com, linux-i3c@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
- miquel.raynal@bootlin.com, zbigniew.lukwinski@linux.intel.com,
- devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org
-References: <20240110175221.2335480-1-Frank.Li@nxp.com>
- <20240110175221.2335480-3-Frank.Li@nxp.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240110175221.2335480-3-Frank.Li@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 10/01/2024 18:52, Frank Li wrote:
-> Add compatible string 'silvaco,i3c-target-v1' for target mode.
+In gameport_run_poll_handler():
+    ...
+    if (gameport->poll_cnt)
+        mod_timer(&gameport->poll_timer, jiffies + ...));
 
-Your subject has some multiple prefixes? Why there is one more ":"?
-Just: add XYZ device
+In gameport_stop_polling():
+    spin_lock(&gameport->timer_lock);
+    if (!--gameport->poll_cnt)
+        del_timer(&gameport->poll_timer);
+    spin_unlock(&gameport->timer_lock);
 
+An atomicity violation occurs due to the concurrent execution of
+gameport_run_poll_handler() and gameport_stop_polling(). The current check
+for gameport->poll_cnt in gameport_run_poll_handler() is not effective
+because poll_cnt can be decremented to 0 and del_timer can be called in
+gameport_stop_polling() before mod_timer is called in
+gameport_run_poll_handler(). This situation leads to the risk of calling
+mod_timer for a timer that has already been deleted in
+gameport_stop_polling(). Since calling mod_timer on a deleted timer
+reactivates it, this atomicity violation could result in the timer being
+activated while the poll_cnt value is 0.
 
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  .../devicetree/bindings/i3c/silvaco,i3c-master.yaml        | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml b/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
-> index 133855f11b4f5..17849c91d4d2b 100644
-> --- a/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
-> +++ b/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
-> @@ -4,7 +4,7 @@
->  $id: http://devicetree.org/schemas/i3c/silvaco,i3c-master.yaml#
->  $schema: http://devicetree.org/meta-schemas/core.yaml#
->  
-> -title: Silvaco I3C master
-> +title: Silvaco I3C master/target
->  
->  maintainers:
->    - Conor Culhane <conor.culhane@silvaco.com>
-> @@ -14,8 +14,9 @@ allOf:
->  
->  properties:
->    compatible:
-> -    const: silvaco,i3c-master-v1
+This possible bug is found by an experimental static analysis tool
+developed by our team, BassCheck[1]. This tool analyzes the locking APIs
+to extract function pairs that can be concurrently executed, and then
+analyzes the instructions in the paired functions to identify possible
+concurrency bugs including data races and atomicity violations. The above
+possible bug is reported when our tool analyzes the source code of
+Linux 5.17.
 
-NAK, you got comment, didn't you? Why did you ignore it? It's like third
-time you try to push it ignoring what we keep asking. Pushing the same
-without resolving anything in previous discussion is not acceptable and
-it feels like waste of my time.
+To resolve this issue, it is suggested to add a spinlock pair in
+gameport_run_poll_handler() to ensure atomicity. With this patch applied,
+our tool no longer reports the bug, with the kernel configuration
+allyesconfig for x86_64. Due to the absence of the requisite hardware, we
+are unable to conduct runtime testing of the patch. Therefore, our
+verification is solely based on code logic analysis.
 
+[1] https://sites.google.com/view/basscheck/
 
-> -
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: stable@vger.kernel.org
+Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
+---
+ drivers/input/gameport/gameport.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Why are you removing the blank line?
-
-
-Best regards,
-Krzysztof
+diff --git a/drivers/input/gameport/gameport.c b/drivers/input/gameport/gameport.c
+index 34f416a3ebcb..12af46d3c059 100644
+--- a/drivers/input/gameport/gameport.c
++++ b/drivers/input/gameport/gameport.c
+@@ -202,8 +202,13 @@ static void gameport_run_poll_handler(struct timer_list *t)
+ 	struct gameport *gameport = from_timer(gameport, t, poll_timer);
+ 
+ 	gameport->poll_handler(gameport);
++
++	spin_lock(&gameport->timer_lock);
++
+ 	if (gameport->poll_cnt)
+ 		mod_timer(&gameport->poll_timer, jiffies + msecs_to_jiffies(gameport->poll_interval));
++
++	spin_unlock(&gameport->timer_lock);
+ }
+ 
+ /*
+-- 
+2.34.1
 
 
