@@ -1,175 +1,172 @@
-Return-Path: <linux-kernel+bounces-24832-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B33D782C328
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:58:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A56AC82C32D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:59:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A149B22E5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:58:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 309591F251B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:59:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38A0473178;
-	Fri, 12 Jan 2024 15:57:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCC817316A;
+	Fri, 12 Jan 2024 15:58:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iipc3rQa"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Kbxrpbff"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF9456EB45;
-	Fri, 12 Jan 2024 15:57:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-558b5f4cf2dso1487356a12.2;
-        Fri, 12 Jan 2024 07:57:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705075069; x=1705679869; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i3LR7JHWsG5WnJs6U2d88UYiHWMdGc0ZzpsAbd+9k2w=;
-        b=iipc3rQa3Sk1LCIO80zGODnnts7uWVKjRwdVFTUo2cOpxRRGIxuZdcxopFdrduBrsd
-         KlpH2dg4sAdYAOIOXRx5IDm9wIL2ayvQGHC6uUjD8vygN9+AZzkOCDCTf9g2bcOn/h5r
-         M81cPHiO3bZ5VbdMPjrkq2Vs6cUsGH5xuJN9gK1VNH5REnKP0trOLSELIPBUn3Ax/lBm
-         DNMEKoJJz6R2Z4Gms7CYkaeyZBuKygj1aK5RBAnGXoz2CK14zbvFMDLv3mOCb6Z7KJqq
-         HXEZRMykHBxMvxx1ZNsjPTQQuDN87AYyX8uy/59uXDvrhXVQMy/L2dgJatM7h0AQOWqU
-         cHmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705075069; x=1705679869;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i3LR7JHWsG5WnJs6U2d88UYiHWMdGc0ZzpsAbd+9k2w=;
-        b=Qtgn/pxuGt5XMHBtsQS64gqqOfFHf/8d3MrwARnn7p1iXtsz2v49u8g5UosiyPXWuL
-         N33w+68O7I5dLEku6cp163PFAYiZU7F3jW0MSMTLnVhVlEYYw5j6Wcr6MI80MuxH0IiC
-         cSMzS2mIGSrGkulQ+e2eJqk7M8GLT3VRjUOCyMWIdXnKHP42UkaEVoYysnC3TTo3VcYL
-         Mzo00nomXWlbTVZxXPF4p4b0kmLSQE52nn5bQ9DGBWib3HcgyXDCPMRKHynwfGVVLVGV
-         ffpRImLouonuUASAuEyqNU/rn9ujXKcp2cNlB5aGCiu1E7u3ZgOtfo4n8MWVScaIDIDv
-         f4Ow==
-X-Gm-Message-State: AOJu0Yxttzx2r4CIAd/iQzPhWo8JYyVxTIGtv7gFll/B0qQG4iQsRvip
-	2J7tGHtXMOnlNmWoj0y/cPfbvjWtxzYLlwObdaw=
-X-Google-Smtp-Source: AGHT+IFmoeegZBMTNiFZZdCfLc9xHzLnK5XjPQ27p3qgMhoQ0YPlLF9quVd/qIxt91xPL0cwv3QoAAEuGj2nXPJ7Hy8=
-X-Received: by 2002:aa7:c549:0:b0:558:83e5:9937 with SMTP id
- s9-20020aa7c549000000b0055883e59937mr734942edr.8.1705075068823; Fri, 12 Jan
- 2024 07:57:48 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A03F36EB6E;
+	Fri, 12 Jan 2024 15:58:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40CFvDN5008091;
+	Fri, 12 Jan 2024 15:58:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=umIvhVQFdfu5j7yWCR+DT9vrCGxIx/eDKZ2S7nS+Eb0=; b=Kb
+	xrpbffFOHy8048S/g5bL/2xCxnnqJiPew3btiOGGJJ0Qq2g3FK+378RAxxeCQSCP
+	FzEWoaoCmz97io1lwXDylAwu443axuuMTkDVv0pl+g6epHlJGV968zYnr1hxdof/
+	gwXJnkwXm1xrCE8kU+d8KfeMHH7ZWA74m7RAMVZLWXFeAr2WVc+fyGBxtpC/6K/2
+	geLrzrtHyooraSXtu247LBpNGZZ2B6qm2/RhqHAy2sRIkK+Ok5YvXQHSAwXcXanu
+	NvhNUZ/Krirn85LingM7Iy1qczEKVYR7eybTdgWYTSOJmu/XkaV97AF6MXXMzuK0
+	PVypmCjxxD450bdYNwmw==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vk43xgjm1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Jan 2024 15:58:38 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40CFwbbU026499
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Jan 2024 15:58:37 GMT
+Received: from [10.253.78.164] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 12 Jan
+ 2024 07:58:33 -0800
+Message-ID: <73b3b6c5-5196-49fd-8e42-cc2d3dfbd30c@quicinc.com>
+Date: Fri, 12 Jan 2024 23:58:30 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108195016.156583-1-robdclark@gmail.com> <27e64458-7cb1-99a4-f67e-60d911f28f44@collabora.com>
-In-Reply-To: <27e64458-7cb1-99a4-f67e-60d911f28f44@collabora.com>
-From: Rob Clark <robdclark@gmail.com>
-Date: Fri, 12 Jan 2024 07:57:36 -0800
-Message-ID: <CAF6AEGvBFdXe9rHjbwWv9eLUMv2YEP7cfMoXcWgZ30Wn4LzOjw@mail.gmail.com>
-Subject: Re: [PATCH] drm/ci: Add msm tests
-To: Vignesh Raman <vignesh.raman@collabora.com>
-Cc: dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>, 
-	Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	open list <linux-kernel@vger.kernel.org>, Maxime Ripard <mripard@kernel.org>, 
-	Helen Koike <helen.koike@collabora.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, freedreno@lists.freedesktop.org, 
-	Daniel Stone <daniel@fooishbar.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/6] arm64: dts: qcom: ipq5332: Add MDIO device tree
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Andrew Lunn <andrew@lunn.ch>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <quic_kkumarcs@quicinc.com>, <quic_suruchia@quicinc.com>,
+        <quic_soni@quicinc.com>, <quic_pavir@quicinc.com>,
+        <quic_souravp@quicinc.com>, <quic_linchen@quicinc.com>,
+        <quic_leiwei@quicinc.com>
+References: <20240110112059.2498-1-quic_luoj@quicinc.com>
+ <20240110112059.2498-4-quic_luoj@quicinc.com>
+ <4bc0aff5-8a1c-44a6-89d8-460961a61310@lunn.ch>
+ <e893c298-fbfa-4ae4-9b76-72a5030a5530@quicinc.com>
+ <CAA8EJppB4cDGv1BEfeacPpi37Ut+PLgWvCDeOSj4DU4Q5uC-1g@mail.gmail.com>
+From: Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <CAA8EJppB4cDGv1BEfeacPpi37Ut+PLgWvCDeOSj4DU4Q5uC-1g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: XMZxN6kV2EgeScVyB3cSmk0lnzEPHDhP
+X-Proofpoint-GUID: XMZxN6kV2EgeScVyB3cSmk0lnzEPHDhP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
+ spamscore=0 impostorscore=0 lowpriorityscore=0 bulkscore=0 phishscore=0
+ priorityscore=1501 mlxlogscore=687 mlxscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2401120125
 
-On Fri, Jan 12, 2024 at 3:42=E2=80=AFAM Vignesh Raman
-<vignesh.raman@collabora.com> wrote:
->
-> Hi Rob,
->
->
-> On 09/01/24 01:20, Rob Clark wrote:
-> > From: Rob Clark <robdclark@chromium.org>
-> >
-> > The msm tests should skip on non-msm hw, so I think it should be safe t=
-o
-> > enable everywhere.
-> >
-> > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > ---
-> >   drivers/gpu/drm/ci/testlist.txt | 49 ++++++++++++++++++++++++++++++++=
-+
-> >   1 file changed, 49 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/ci/testlist.txt b/drivers/gpu/drm/ci/testl=
-ist.txt
-> > index f82cd90372f4..eaeb751bb0ad 100644
-> > --- a/drivers/gpu/drm/ci/testlist.txt
-> > +++ b/drivers/gpu/drm/ci/testlist.txt
-> > @@ -2910,3 +2910,52 @@ kms_writeback@writeback-invalid-parameters
-> >   kms_writeback@writeback-fb-id
-> >   kms_writeback@writeback-check-output
-> >   prime_mmap_kms@buffer-sharing
-> > +msm_shrink@copy-gpu-sanitycheck-8
-> > +msm_shrink@copy-gpu-sanitycheck-32
-> > +msm_shrink@copy-gpu-8
-> > +msm_shrink@copy-gpu-32
-> > +msm_shrink@copy-gpu-madvise-8
-> > +msm_shrink@copy-gpu-madvise-32
-> > +msm_shrink@copy-gpu-oom-8
-> > +msm_shrink@copy-gpu-oom-32
-> > +msm_shrink@copy-mmap-sanitycheck-8
-> > +msm_shrink@copy-mmap-sanitycheck-32
-> > +msm_shrink@copy-mmap-8
-> > +msm_shrink@copy-mmap-32
-> > +msm_shrink@copy-mmap-madvise-8
-> > +msm_shrink@copy-mmap-madvise-32
-> > +msm_shrink@copy-mmap-oom-8
-> > +msm_shrink@copy-mmap-oom-32
-> > +msm_shrink@copy-mmap-dmabuf-sanitycheck-8
-> > +msm_shrink@copy-mmap-dmabuf-sanitycheck-32
-> > +msm_shrink@copy-mmap-dmabuf-8
-> > +msm_shrink@copy-mmap-dmabuf-32
-> > +msm_shrink@copy-mmap-dmabuf-madvise-8
-> > +msm_shrink@copy-mmap-dmabuf-madvise-32
-> > +msm_shrink@copy-mmap-dmabuf-oom-8
-> > +msm_shrink@copy-mmap-dmabuf-oom-32
-> > +msm_mapping@ring
-> > +msm_mapping@sqefw
-> > +msm_mapping@shadow
-> > +msm_submitoverhead@submitbench-10-bos
-> > +msm_submitoverhead@submitbench-10-bos-no-implicit-sync
-> > +msm_submitoverhead@submitbench-100-bos
-> > +msm_submitoverhead@submitbench-100-bos-no-implicit-sync
-> > +msm_submitoverhead@submitbench-250-bos
-> > +msm_submitoverhead@submitbench-250-bos-no-implicit-sync
-> > +msm_submitoverhead@submitbench-500-bos
-> > +msm_submitoverhead@submitbench-500-bos-no-implicit-sync
-> > +msm_submitoverhead@submitbench-1000-bos
-> > +msm_submitoverhead@submitbench-1000-bos-no-implicit-sync
-> > +msm_recovery@hangcheck
-> > +msm_recovery@gpu-fault
-> > +msm_recovery@gpu-fault-parallel
-> > +msm_recovery@iova-fault
-> > +msm_submit@empty-submit
-> > +msm_submit@invalid-queue-submit
-> > +msm_submit@invalid-flags-submit
-> > +msm_submit@invalid-in-fence-submit
-> > +msm_submit@invalid-duplicate-bo-submit
-> > +msm_submit@invalid-cmd-idx-submit
-> > +msm_submit@invalid-cmd-type-submit
-> > +msm_submit@valid-submit
->
-> I tested this patch with latest drm-misc/drm-misc-next and there was
-> some failures seen for the newly added msm tests. I have updated the
-> xfails with below commit,
->
-> https://gitlab.freedesktop.org/vigneshraman/linux/-/commit/d012893597a661=
-d6ebbb755bf2607dfb055524a1
->
-> I will notify the maintainers about the flaky tests, update the url in
-> the flakes.txt, and submit a separate patch for this change.
 
-Thanks, it looks like you also have a relatively recent igt (there
-were some msm_submit fails until I fixed the test)..
 
-BR,
--R
+On 1/12/2024 12:13 AM, Dmitry Baryshkov wrote:
+> On Thu, 11 Jan 2024 at 18:00, Jie Luo <quic_luoj@quicinc.com> wrote:
+>>
+>>
+>>
+>> On 1/10/2024 9:35 PM, Andrew Lunn wrote:
+>>> On Wed, Jan 10, 2024 at 07:20:56PM +0800, Luo Jie wrote:
+>>>> Add the MDIO device tree of ipq5332.
+>>>>
+>>>> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
+>>>> ---
+>>>>    arch/arm64/boot/dts/qcom/ipq5332.dtsi | 44 +++++++++++++++++++++++++++
+>>>>    1 file changed, 44 insertions(+)
+>>>>
+>>>> diff --git a/arch/arm64/boot/dts/qcom/ipq5332.dtsi b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+>>>> index bc89480820cb..e6c780e69d6e 100644
+>>>> --- a/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+>>>> +++ b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+>>>> @@ -214,6 +214,38 @@ serial_0_pins: serial0-state {
+>>>>                               drive-strength = <8>;
+>>>>                               bias-pull-up;
+>>>>                       };
+>>>> +
+>>>> +                    mdio0_pins: mdio0-state {
+>>>> +                            mux_0 {
+>>>> +                                    pins = "gpio25";
+>>>> +                                    function = "mdc0";
+>>>> +                                    drive-strength = <8>;
+>>>> +                                    bias-disable;
+>>>> +                            };
+>>>> +
+>>>> +                            mux_1 {
+>>>> +                                    pins = "gpio26";
+>>>> +                                    function = "mdio0";
+>>>> +                                    drive-strength = <8>;
+>>>> +                                    bias-pull-up;
+>>>> +                            };
+>>>> +                    };
+>>>> +
+>>>> +                    mdio1_pins: mdio1-state {
+>>>> +                            mux_0 {
+>>>> +                                    pins = "gpio27";
+>>>> +                                    function = "mdc1";
+>>>> +                                    drive-strength = <8>;
+>>>> +                                    bias-disable;
+>>>> +                            };
+>>>> +
+>>>> +                            mux_1 {
+>>>> +                                    pins = "gpio28";
+>>>> +                                    function = "mdio1";
+>>>> +                                    drive-strength = <8>;
+>>>> +                                    bias-pull-up;
+>>>> +                            };
+>>>
+>>> I don't know why i'm asking this, because i don't really expect a
+>>> usable answer. What sort of MUX is this? Should you be using one of
+>>> the muxes in drivers/net/mdio/mdio-mux-* or something similar?
+>>>
+>>>       Andrew
+>>
+>> Sorry for the confusion, the pin nodes are for the MDIO and MDC, these
+>> PINs are used by the dedicated hardware MDIO block in the SoC. I will
+>> update the node name from mux_0 to MDC, mux_1 to MDIO, to make it clear.
+>> The driver for this node is drivers/net/mdio/mdio-ipq4019.c, it is not
+>> related to the mdio-mux-* code.
+> 
+> Have you read Documentation/devicetree/bindings/pinctrl/qcom,ipq5332-tlmm.yaml
+> ? Have you validated your DTSI files against DT schema? How many
+> warnings will you observe if you rename the mux_0 node to MDC?
+> 
+Sorry for this error, we will follow the DTSI validation process and 
+update the patch with the right updates after validation, when the patch 
+series resumes.
 
-> Regards,
-> Vignesh
+Thanks for correction and the pointer to the tlmm YAML file.
+
 
