@@ -1,175 +1,647 @@
-Return-Path: <linux-kernel+bounces-24241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46B9682B9A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 03:36:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CAD182B9A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 03:39:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0EBD1F24B4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 02:36:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50B9B1C2133B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 02:39:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4037C17E8;
-	Fri, 12 Jan 2024 02:36:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4167D15B9;
+	Fri, 12 Jan 2024 02:38:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="h0EivvFO";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="KFF31bw1"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nZIV76YB"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A04E763F;
-	Fri, 12 Jan 2024 02:36:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40BNwrtE007178;
-	Fri, 12 Jan 2024 02:35:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2023-11-20;
- bh=2637quazIyMqkqj4QMhnqOsqZdpAg0PMp/loMxBYx0I=;
- b=h0EivvFOiyfVNui6clmCbpjOSm/n+GFUy5x7nwPz8i521EdU9meQlxX/SwMbC/mLlnUC
- yjc3CllxxMybqxTRjq2GUwFe2d4OjSn1L7LGqSo+c8W2/7FbZeac0ugTbDkA9PempUZL
- 3c4azzTrQ0PW+thnzYzXS9luwuOXzj9L5OWDrjF2wwC6X69EsAK6xzvW77LMdZXXrW50
- GAGtrsD703bk4wGQAPmoUpJ7u98ffPNbuC37woKEJyL76Bs7ooM0g1FdYMyu8OffhS4q
- tpyQ563caCMNmMpIj8sKIU//BM8elyCsZKkMJ+A/jXGEmpgbow2ZIWApvkBDtbtJ3CE4 xg== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vjjb6sq1f-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 12 Jan 2024 02:35:57 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40C0e0Z9012177;
-	Fri, 12 Jan 2024 02:35:55 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2041.outbound.protection.outlook.com [104.47.57.41])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3vfuwmx1g0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 12 Jan 2024 02:35:55 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PKK7OkdBL9/rCoUEGrvylnsD43Olc90kWYxrrYVFftCJ8FCABEZlf86i3ucxwbJcWuG5LetLU0r5JDYLx1lG6XAz9oC19BYdB1bagaiD7u0frGA7sMrtpK5RD06nNUjo20dXR4B9D8vniMIiuFX0hgtIj44Y8dDQN+Uihpp/N9SvKPWzRwLK886wHWCdbEmgzw1+B5ccjlAw2jAJR8W6NM6rk00HRT/0QZxDWgWBYsNgCNpBqavxaMGkxfdI32gSumsumn03DN7FDIw2RCZSZnP43cNw3pZBx4SK6TI1poH6srB21wSm7OSqaBpQkIM6QIPbvfmIh/9KDhr0vIIHdw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2637quazIyMqkqj4QMhnqOsqZdpAg0PMp/loMxBYx0I=;
- b=oDlIQz9kAZR+PqafgPegLKLoG/0RD57joZCvPR1+3zuiXTYfHS1E9mCUAOmnaEe5ZTchUEXgZs3lOs1RvYiDUbV41LzqVMW8oq7dy2id4oPlssV2n8lSkIQU/fp4V3TJS8RjVxA7rZBup4rEhYALQx/Zqi7Gx6DNN5PmixPD3XBuRRjF8gKuCT14i6Ha0Lx0zcFpPbawvasWcjN/ZEM8naFe1OhvmcTfFVfaabZuXafp4CWZ2EA5GlouAahF3zPKMzjpWWvl/mDnRjHTmPZ4HMCB82CdH/ehm3mDdKTiIo5N+Nn4BCoQsvSF+QjCn1y/UpyvawIfxvOboNm8AnS64g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93C55136B
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 02:38:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e5f3b390fso12108695e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 18:38:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2637quazIyMqkqj4QMhnqOsqZdpAg0PMp/loMxBYx0I=;
- b=KFF31bw1eW51rN1OnqT6XfPpaQ6VWkLG2S6DUCQs1DQ+pO2OJzpNbTj1V9B6Gije45GPAPkzFalI/bFCT/9Z4F+WyI1MtxH42eWIFvTALPt0ZL9CBAQUoWelgHmtd1FKa9GEsA7gvUIEuk+Ny1p67g/y2NtLT4vP2WUVnBhkCgo=
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by IA0PR10MB7641.namprd10.prod.outlook.com (2603:10b6:208:484::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Fri, 12 Jan
- 2024 02:35:53 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::2b0c:62b3:f9a9:5972]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::2b0c:62b3:f9a9:5972%4]) with mapi id 15.20.7181.019; Fri, 12 Jan 2024
- 02:35:53 +0000
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Karan Tilak Kumar <kartilak@cisco.com>,
-        Satish Kharat
- <satishkh@cisco.com>,
-        Sesidhar Baddela <sebaddel@cisco.com>,
-        "James E.J.
- Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen"
- <martin.petersen@oracle.com>,
-        Arulprabhu Ponnusamy <arulponn@cisco.com>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] scsi: fnic: unlock on error path in fnic_queuecommand()
-From: "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq134v35ldu.fsf@ca-mkp.ca.oracle.com>
-References: <5360fa20-74bc-4c22-a78e-ea8b18c5410d@moroto.mountain>
-Date: Thu, 11 Jan 2024 21:35:49 -0500
-In-Reply-To: <5360fa20-74bc-4c22-a78e-ea8b18c5410d@moroto.mountain> (Dan
-	Carpenter's message of "Wed, 10 Jan 2024 21:41:55 +0300")
-Content-Type: text/plain
-X-ClientProxiedBy: LO4P123CA0333.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:18c::14) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        d=gmail.com; s=20230601; t=1705027134; x=1705631934; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yggLNlcD+Vr3O3v/JSMp2/FPyreRgsEDcSVU2gS+9Rk=;
+        b=nZIV76YBWMAUvDaCUXuDLwUWkZz6pSx2DbVyNySH6yhDE3QBI2QTNcOkxdVL/jVoFX
+         VCHUtEfOzalmQ1tSy114qxSB6koxNMuzMcJK8btTBu0CEP6S7biwQyeF+o/nk07zPedQ
+         4ShsgnPuvJWlvNkIecNV7wgQmXKp63alAWLSMOlOIx9D/ALNYWs6CHQrPR7bkTCJfnOH
+         //M+Gt8nuJq5YGB/TQwu8cp7LK1twIrh3n3rssQTJvx7B+Id+iTTwpFEkEanSOs7A1mt
+         vdpF24RYq/EgId3MeYM4DnN9JTFoceyAJ34V92KUFDfjD0Aj2w3GYGWKiVYVC9pAnJGD
+         wQSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705027134; x=1705631934;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yggLNlcD+Vr3O3v/JSMp2/FPyreRgsEDcSVU2gS+9Rk=;
+        b=hEWaD9KXWD+oqXXlBNMZPSC1Go1aMDQIgYiyqjeaiYunC1SPpGDzeXzLtUGLuG5yvx
+         rKiemV4RvMDkVLFp6jIJpuZLgPxueNdXaaNE85qhLaP+O8k38HNj7ZhC1B21mggHQbSL
+         IDi6AvYBiz7OI0spzai95ycDrABZahrUc9ZNwoo9N5G1KSTPK81laCS7EpUdQHdEu6Yh
+         +kvU6bxsQS5Z9bSfPqxeI56iYbpGlaPUXHt+ZI5wyVGXDspfuYo1ACJ4LKq8Ns10bC17
+         iiO50tUhE2malcKlO1UghqFiT7JPiauuzm68h+WuVMOgKkXmlZeahzrlZyXZbh8IyKxi
+         dI7w==
+X-Gm-Message-State: AOJu0YwJmP+a/QcMW13e6IFJtawYeG0jHhQH/yJS1JD8o1MQBl7Zschc
+	D3sOkWx9Env4CoLKEufXfU+Lz1o+cUdTzYe0Eoc=
+X-Google-Smtp-Source: AGHT+IGP0e6RB2OZBIus43ub0XNtmwCRJCli7HOVmHJ/kkT2gJbY2Lt+Uh9Gs7hzwdDAiQS++jwxIHE0ieX8SezQCKs=
+X-Received: by 2002:adf:ef88:0:b0:337:68ab:617f with SMTP id
+ d8-20020adfef88000000b0033768ab617fmr321236wro.15.1705027133584; Thu, 11 Jan
+ 2024 18:38:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|IA0PR10MB7641:EE_
-X-MS-Office365-Filtering-Correlation-Id: c78db4a1-4624-44f2-cdfb-08dc13173274
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	CvKsf5jxVL5MN4uBqJJBoq9nBNYhF5srklDmuf0l/3IZ8LDiP9sb+DC7Qeio/KMiyBu3+mNwD6PomiijsgXR5ABVclB1ZjYu4T/fH4nv/WfXAPGK41dABRfGLPMxFzrzxKrPXlB60cvd73aDJKjEDc+LbDAwcfShep2Sqdrg7RXvMuGEwQnvfV0rco6qR5oM2oy31xNh3n7XRLaroCIaA6tthDNjH/TmgQfqyGeQKoGr4C2H5C1Cy5H4T4bFGCQ6LGeTsQJ6IZS4pJGfFmgWiI08fFnkF3Q7QkSTz1qHFE+CIIaRMFzguZ0UIbXwvfWxci54CU2BrWriDjEuBxCz91t+Wzp4cmeYyrxK5ZDuQljtqpIJ2Op7WJaq6f46jbLlDwE0E6oY2+ygHOsP8vsnXAu3SzwYAwlQMY+xutO5GMpbF49/tRHFJzA1ykEX61OUXL6i2ghPLMfqV3Swffmj2ys1ZF2TNNsyNWsRtJuY5D9LwVM7vFfC8kXl7Ep7WPhVClVv39JgQR945Mf8wlbube3YnPzOHInXRV/Fe3fOtS/7CE2cNnEXmcYJ5DCZp9kF
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(346002)(39860400002)(396003)(376002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(83380400001)(26005)(6506007)(6512007)(66556008)(5660300002)(38100700002)(8676002)(8936002)(2906002)(478600001)(6916009)(66476007)(6486002)(54906003)(36916002)(4326008)(316002)(6666004)(41300700001)(86362001)(558084003)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?RBAZN/xxNGlgW5maapuicoSNN6HbLFZRGHQKE8VnLmRHgik2Dul2d3O9sUQZ?=
- =?us-ascii?Q?bTHWxFMUgFQzgm+cyhNOwbOeDpDAVNRG4nFiTnR9L0di0bL2yrTVaBvkyS5Y?=
- =?us-ascii?Q?dpGu40xYkp8tyNFaWmJWBCz5i1dg7gc1LYUE1Xa4CeDZOE92N1edPFaVvdEn?=
- =?us-ascii?Q?gEkD1mqZ874JYvVjpbB483giQ8JFPZ3fNunE82UujPeA2TgUSK6qyfv2Bqth?=
- =?us-ascii?Q?bTsgbSMJq6tDVkfBVhzSc7JmSZg+vJhaBM/0SDFJb7+yAQfOwgCFU1Fqk5Y4?=
- =?us-ascii?Q?W+sRqQOpzcHnERYqg/QI+9hiRgUs8+b60h5T7svKBnDEEmJaD7Zq6OicDLZh?=
- =?us-ascii?Q?WHdBJQ7dFT/RGO5xWCK82XJkR8FAwmwHtK9HQOlOhqfqrqpdE1/C9jsTi7aL?=
- =?us-ascii?Q?62of6n4s9uePkycL77UMRSUGiBTItDDvkfWhyxMqKxMKGyDf1EWtKMIkTj5F?=
- =?us-ascii?Q?u8LlOeDWg/J/hnE1Z2pv9AH+1kWqCHpOXC0JeuX4NY7ToN/F/qsho/EjWCn3?=
- =?us-ascii?Q?RyiOSGu5myqPOy3mvGjrZjVbGhz8iin8Fl563pniEUYO/xuEqlM1TY/9btga?=
- =?us-ascii?Q?4ZCqCMmQKI8auCq/LBomRYKT2odVsvoxaXI8OMjnfzq5uj2Lrf0mYWlh65OV?=
- =?us-ascii?Q?NhZfmhFxBWuOeiAVddMiIIPsHHyw3F4Nrh94Yx+7cAglwuQKEQK4ixq52dI0?=
- =?us-ascii?Q?CyJEKYg4+KhGAzmfGa1NACZbjDMnctHCzVr9UxaQ4keCUzIzyerLikdM1dpr?=
- =?us-ascii?Q?sb+8ypo8VTAoV3PqPs/ZrfBWn5N1Np9RhZMPi+9FZbfFXWkJYnbdpH+rdicL?=
- =?us-ascii?Q?xFZ+OfweLpY+APVYFU8NTb4ARb6OEJrMTb2Un5p7lYgPh8z+dys0w+rpPdYs?=
- =?us-ascii?Q?Aa0k8KbhG6xkk21MdXl+UngWGTY+NGE7aD9FcJCwy7n9z5Vf+Z7Bq+Aoc207?=
- =?us-ascii?Q?zWL7+m21CXPfbmS84LstI9+5P+Hvn4cmEJBmhVjtauaY2etfs2nARx0YhRKv?=
- =?us-ascii?Q?elKNd4xnYy8ehr1znQs9QCj1o7CP1X2Qh3smbjKRL+afOP64Ihst0MalUCQN?=
- =?us-ascii?Q?JfKIjtdhXbWTCIvzXZqCi82hevqydSGDtO9Fx/W60JOv+lvIJglqTQTYIY91?=
- =?us-ascii?Q?/oMYIMAh3j92y4cTsjbnsK+XHKCs3lhR0udRiifLgBp2RneGPu28XGurXPvL?=
- =?us-ascii?Q?RmPzMUIU1UbafnI7LWRR+U8V9lKDgJfpKI6AlY6q2ZvvHWSNXEK4Mg3b8W4M?=
- =?us-ascii?Q?J3YwuEEFVwvLTDWAaYoJw93I6m7J1aBPPN0anMSi5in+axMxE2CqrYKkMko8?=
- =?us-ascii?Q?Y3Q+oLv+wdyhxOB9jNLuwuPks7WSVVo+cUUzlazlAtwNHFxG+0Hu51zeAAoz?=
- =?us-ascii?Q?7e9Fo8YpXQODtPKrujB/3QoxIh+nYJ4V7g48wA4h0D40HHNUqMeqDHFekAZT?=
- =?us-ascii?Q?R0JvnijdH443TZsgTmRPbtGQgxk6h+OSJdNrSHDo/xzNtxaHtboLsOwDQpHQ?=
- =?us-ascii?Q?aXk4MAQ4yxe/VU8K84ghhekfUwt3ziEDLkrb+aIxq81nRRJTlYhebhGto1R7?=
- =?us-ascii?Q?+r7GLyzVrZRiyIjDi1sjhNGg/P/c6P3tjrNctBPnGgTH7YV3SNWl2mh5eIrf?=
- =?us-ascii?Q?/g=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	gwZCcAHRKH2ZFfhSHtqA7TPa3Sw36/vVrTT9dJKCJBibLaDHAExW40TBxONLBIa/7KAe+85rqCHcrflkhYFurUJ4RX+pOPEdOEW58M830nUC5zJgF9/wo0v06TCcuNdw8u495ruF7veNjL4ftCGWiSELZuojCP+n2/1Im4YsrwDZ4RMXHbHi5OzxLHvdul6CR3k9nLmO3dCZYyZM/8DfuKnejcQkCdNTtcURTKEmW+jnypJnP4qxzvh1GoodeW/KtvWgBxSmKJL3FmTbromxLK0e5JmJY4wAxsYpUM2n0zmxfczIXRQUXQ7bbxn512mEzpkJyfpkJ96GcRXZnZ+jRF1mN0EDpJCqSXkJegKAKhRjMC4xlLv0pomwY3xk+7k0yeiw5i9/062z9t3rmLpmhFFZjCQ46pc4GqmjqUi9RO34wZ+G3UTzJIFptgElukGbK7S48dHHj1givXjk9qvv9d0VhQNxaQEZ5jf8Lg01Gpn4R/8GxkTGPv5Yn6swus2Jlzn8GhftFIxTVltHjRdREnvRiQIbRt+2nOwzswbRuh0/aJnwoMBcY0iwLX7fmJQlP1o+nk2veKqRoJz6kpLasweqHKYdWTWlL1dlLUPh8Rg=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c78db4a1-4624-44f2-cdfb-08dc13173274
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2024 02:35:53.2488
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0r1naVlhsWxpdnCMz3wqyhF0QAY/ROWe9U5Nk0rTEfLKVAGUoSaky3C4c2Mc5Ok+lmekADvZOl8btFqNA49y80KaqbXTmi4WcNO51f8ZXzY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR10MB7641
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-11_15,2024-01-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
- mlxlogscore=747 adultscore=0 spamscore=0 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2401120016
-X-Proofpoint-GUID: CyCPYKWXW25OXwF3sk_0WPoDErhEInfC
-X-Proofpoint-ORIG-GUID: CyCPYKWXW25OXwF3sk_0WPoDErhEInfC
+References: <cover.1700502145.git.andreyknvl@google.com> <9f81ffcc4bb422ebb6326a65a770bf1918634cbb.1700502145.git.andreyknvl@google.com>
+ <ZZUlgs69iTTlG8Lh@localhost.localdomain> <87sf34lrn3.fsf@linux.intel.com>
+ <CANpmjNNdWwGsD3JRcEqpq_ywwDFoxsBjz6n=6vL5YksNsPyqHw@mail.gmail.com>
+ <ZZ_gssjTCyoWjjhP@tassilo> <ZaA8oQG-stLAVTbM@elver.google.com>
+In-Reply-To: <ZaA8oQG-stLAVTbM@elver.google.com>
+From: Andrey Konovalov <andreyknvl@gmail.com>
+Date: Fri, 12 Jan 2024 03:38:42 +0100
+Message-ID: <CA+fCnZeS=OrqSK4QVUVdS6PwzGrpg8CBj8i2Uq=VMgMcNg1FYw@mail.gmail.com>
+Subject: Re: [PATCH v4 12/22] lib/stackdepot: use read/write lock
+To: Marco Elver <elver@google.com>
+Cc: Andi Kleen <ak@linux.intel.com>, Oscar Salvador <osalvador@suse.de>, andrey.konovalov@linux.dev, 
+	Andrew Morton <akpm@linux-foundation.org>, Alexander Potapenko <glider@google.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com, 
+	Evgenii Stepanov <eugenis@google.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Jan 11, 2024 at 8:08=E2=80=AFPM Marco Elver <elver@google.com> wrot=
+e:
+>
+> On Thu, Jan 11, 2024 at 04:36AM -0800, Andi Kleen wrote:
+> > > stackdepot is severely limited in what kernel facilities it may use
+> > > due to being used by such low level facilities as the allocator
+> > > itself.
+> >
+> > RCU can be done quite low level too (e.g. there is NMI safe RCU)
+>
+> How about the below? This should get us back the performance of the old
+> lock-less version. Although it's using rculist, we don't actually need
+> to synchronize via RCU.
+>
+> Thanks,
+> -- Marco
+>
+> ------ >8 ------
+>
+> From: Marco Elver <elver@google.com>
+> Date: Tue, 9 Jan 2024 10:21:56 +0100
+> Subject: [PATCH] stackdepot: make fast paths lock-less again
+>
+> stack_depot_put() unconditionally takes the pool_rwlock as a writer.
+> This is unnecessary if the stack record is not going to be freed.
+> Furthermore, reader-writer locks have inherent cache contention, which
+> does not scale well on machines with large CPU counts.
+>
+> Instead, rework the synchronization story of stack depot to again avoid
+> taking any locks in the fast paths. This is done by relying on RCU
+> primitives to give us lock-less list traversal. See code comments for
+> more details.
+>
+> Fixes: 108be8def46e ("lib/stackdepot: allow users to evict stack traces")
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+>  lib/stackdepot.c | 222 ++++++++++++++++++++++++++++-------------------
+>  1 file changed, 133 insertions(+), 89 deletions(-)
+>
+> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+> index a0be5d05c7f0..9eaf46f8abc4 100644
+> --- a/lib/stackdepot.c
+> +++ b/lib/stackdepot.c
+> @@ -19,10 +19,13 @@
+>  #include <linux/kernel.h>
+>  #include <linux/kmsan.h>
+>  #include <linux/list.h>
+> +#include <linux/llist.h>
+>  #include <linux/mm.h>
+>  #include <linux/mutex.h>
+>  #include <linux/percpu.h>
+>  #include <linux/printk.h>
+> +#include <linux/rculist.h>
+> +#include <linux/rcupdate.h>
+>  #include <linux/refcount.h>
+>  #include <linux/slab.h>
+>  #include <linux/spinlock.h>
+> @@ -67,7 +70,8 @@ union handle_parts {
+>  };
+>
+>  struct stack_record {
+> -       struct list_head list;          /* Links in hash table or freelis=
+t */
+> +       struct list_head hash_list;     /* Links in the hash table */
+> +       struct llist_node free_list;    /* Links in the freelist */
+>         u32 hash;                       /* Hash in hash table */
+>         u32 size;                       /* Number of stored frames */
+>         union handle_parts handle;
+> @@ -104,7 +108,7 @@ static void *new_pool;
+>  /* Number of pools in stack_pools. */
+>  static int pools_num;
+>  /* Freelist of stack records within stack_pools. */
+> -static LIST_HEAD(free_stacks);
+> +static LLIST_HEAD(free_stacks);
+>  /*
+>   * Stack depot tries to keep an extra pool allocated even before it runs=
+ out
+>   * of space in the currently used pool. This flag marks whether this ext=
+ra pool
+> @@ -112,8 +116,8 @@ static LIST_HEAD(free_stacks);
+>   * yet allocated or if the limit on the number of pools is reached.
+>   */
+>  static bool new_pool_required =3D true;
+> -/* Lock that protects the variables above. */
+> -static DEFINE_RWLOCK(pool_rwlock);
+> +/* The lock must be held when performing pool or free list modifications=
+ */
+> +static DEFINE_RAW_SPINLOCK(pool_lock);
+>
+>  static int __init disable_stack_depot(char *str)
+>  {
+> @@ -263,9 +267,7 @@ static void depot_init_pool(void *pool)
+>  {
+>         int offset;
+>
+> -       lockdep_assert_held_write(&pool_rwlock);
+> -
+> -       WARN_ON(!list_empty(&free_stacks));
+> +       lockdep_assert_held(&pool_lock);
+>
+>         /* Initialize handles and link stack records into the freelist. *=
+/
+>         for (offset =3D 0; offset <=3D DEPOT_POOL_SIZE - DEPOT_STACK_RECO=
+RD_SIZE;
+> @@ -276,18 +278,25 @@ static void depot_init_pool(void *pool)
+>                 stack->handle.offset =3D offset >> DEPOT_STACK_ALIGN;
+>                 stack->handle.extra =3D 0;
+>
+> -               list_add(&stack->list, &free_stacks);
+> +               llist_add(&stack->free_list, &free_stacks);
+> +               INIT_LIST_HEAD(&stack->hash_list);
+>         }
+>
+>         /* Save reference to the pool to be used by depot_fetch_stack(). =
+*/
+>         stack_pools[pools_num] =3D pool;
+> -       pools_num++;
+> +
+> +       /*
+> +        * Release of pool pointer assignment above. Pairs with the
+> +        * smp_load_acquire() in depot_fetch_stack().
+> +        */
+> +       smp_store_release(&pools_num, pools_num + 1);
+> +       ASSERT_EXCLUSIVE_WRITER(pools_num);
+>  }
+>
+>  /* Keeps the preallocated memory to be used for a new stack depot pool. =
+*/
+>  static void depot_keep_new_pool(void **prealloc)
+>  {
+> -       lockdep_assert_held_write(&pool_rwlock);
+> +       lockdep_assert_held(&pool_lock);
+>
+>         /*
+>          * If a new pool is already saved or the maximum number of
+> @@ -310,16 +319,16 @@ static void depot_keep_new_pool(void **prealloc)
+>          * number of pools is reached. In either case, take note that
+>          * keeping another pool is not required.
+>          */
+> -       new_pool_required =3D false;
+> +       WRITE_ONCE(new_pool_required, false);
+>  }
+>
+>  /* Updates references to the current and the next stack depot pools. */
+>  static bool depot_update_pools(void **prealloc)
+>  {
+> -       lockdep_assert_held_write(&pool_rwlock);
+> +       lockdep_assert_held(&pool_lock);
+>
+>         /* Check if we still have objects in the freelist. */
+> -       if (!list_empty(&free_stacks))
+> +       if (!llist_empty(&free_stacks))
+>                 goto out_keep_prealloc;
+>
+>         /* Check if we have a new pool saved and use it. */
+> @@ -329,7 +338,7 @@ static bool depot_update_pools(void **prealloc)
+>
+>                 /* Take note that we might need a new new_pool. */
+>                 if (pools_num < DEPOT_MAX_POOLS)
+> -                       new_pool_required =3D true;
+> +                       WRITE_ONCE(new_pool_required, true);
+>
+>                 /* Try keeping the preallocated memory for new_pool. */
+>                 goto out_keep_prealloc;
+> @@ -362,20 +371,19 @@ static struct stack_record *
+>  depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **pre=
+alloc)
+>  {
+>         struct stack_record *stack;
+> +       struct llist_node *free;
+>
+> -       lockdep_assert_held_write(&pool_rwlock);
+> +       lockdep_assert_held(&pool_lock);
+>
+>         /* Update current and new pools if required and possible. */
+>         if (!depot_update_pools(prealloc))
+>                 return NULL;
+>
+>         /* Check if we have a stack record to save the stack trace. */
+> -       if (list_empty(&free_stacks))
+> +       free =3D llist_del_first(&free_stacks);
+> +       if (!free)
+>                 return NULL;
+> -
+> -       /* Get and unlink the first entry from the freelist. */
+> -       stack =3D list_first_entry(&free_stacks, struct stack_record, lis=
+t);
+> -       list_del(&stack->list);
+> +       stack =3D llist_entry(free, struct stack_record, free_list);
+>
+>         /* Limit number of saved frames to CONFIG_STACKDEPOT_MAX_FRAMES. =
+*/
+>         if (size > CONFIG_STACKDEPOT_MAX_FRAMES)
+> @@ -385,7 +393,6 @@ depot_alloc_stack(unsigned long *entries, int size, u=
+32 hash, void **prealloc)
+>         stack->hash =3D hash;
+>         stack->size =3D size;
+>         /* stack->handle is already filled in by depot_init_pool(). */
+> -       refcount_set(&stack->count, 1);
+>         memcpy(stack->entries, entries, flex_array_size(stack, entries, s=
+ize));
+>
+>         /*
+> @@ -394,21 +401,30 @@ depot_alloc_stack(unsigned long *entries, int size,=
+ u32 hash, void **prealloc)
+>          */
+>         kmsan_unpoison_memory(stack, DEPOT_STACK_RECORD_SIZE);
+>
+> +       /*
+> +        * Release saving of the stack trace. Pairs with smp_mb() in
+> +        * depot_fetch_stack().
+> +        */
+> +       smp_mb__before_atomic();
+> +       refcount_set(&stack->count, 1);
+> +
+>         return stack;
+>  }
+>
+>  static struct stack_record *depot_fetch_stack(depot_stack_handle_t handl=
+e)
+>  {
+> +       /* Acquire the pool pointer written in depot_init_pool(). */
+> +       const int pools_num_cached =3D smp_load_acquire(&pools_num);
+>         union handle_parts parts =3D { .handle =3D handle };
+>         void *pool;
+>         size_t offset =3D parts.offset << DEPOT_STACK_ALIGN;
+>         struct stack_record *stack;
+>
+> -       lockdep_assert_held(&pool_rwlock);
+> +       lockdep_assert_not_held(&pool_lock);
+>
+> -       if (parts.pool_index > pools_num) {
+> +       if (parts.pool_index > pools_num_cached) {
+>                 WARN(1, "pool index %d out of bounds (%d) for stack id %0=
+8x\n",
+> -                    parts.pool_index, pools_num, handle);
+> +                    parts.pool_index, pools_num_cached, handle);
+>                 return NULL;
+>         }
+>
+> @@ -417,15 +433,35 @@ static struct stack_record *depot_fetch_stack(depot=
+_stack_handle_t handle)
+>                 return NULL;
+>
+>         stack =3D pool + offset;
+> +
+> +       /*
+> +        * Acquire the stack trace. Pairs with smp_mb() in depot_alloc_st=
+ack().
+> +        *
+> +        * This does not protect against a stack_depot_put() freeing the =
+record
+> +        * and having it subsequently being reused. Callers are responsib=
+le to
+> +        * avoid using stack depot handles after passing to stack_depot_p=
+ut().
+> +        */
+> +       if (!refcount_read(&stack->count))
+> +               return NULL;
 
-Dan,
+Can this happen? It seems that depot_fetch_stack should only be called
+for handles that were returned from stack_depot_save_flags before all
+puts and thus the the refcount should > 0. Or is this a safeguard
+against improper API usage?
 
-> Call spin_unlock_irqrestore(&fnic->wq_copy_lock[hwq], flags) before
-> returning.
+> +       smp_mb__after_atomic();
+> +
+>         return stack;
+>  }
+>
+>  /* Links stack into the freelist. */
+>  static void depot_free_stack(struct stack_record *stack)
+>  {
+> -       lockdep_assert_held_write(&pool_rwlock);
+> +       unsigned long flags;
+> +
+> +       lockdep_assert_not_held(&pool_lock);
+> +
+> +       raw_spin_lock_irqsave(&pool_lock, flags);
+> +       printk_deferred_enter();
+> +       list_del_rcu(&stack->hash_list);
+> +       printk_deferred_exit();
+> +       raw_spin_unlock_irqrestore(&pool_lock, flags);
+>
+> -       list_add(&stack->list, &free_stacks);
+> +       llist_add(&stack->free_list, &free_stacks);
 
-Applied to 6.8/scsi-staging, thanks!
+This llist_add is outside of the lock just because we can (i.e.
+llist_add can run concurrently with the other free_stacks operations,
+which are all under the lock), right? This slightly contradicts the
+comment above the free_stacks definition.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+If we put this under the lock and use normal list instead of llist, I
+think we can then combine the hash_list with the free_list like before
+to save up on some space for stack_record. Would that make sense?
+
+>  }
+>
+>  /* Calculates the hash for a stack. */
+> @@ -453,22 +489,55 @@ int stackdepot_memcmp(const unsigned long *u1, cons=
+t unsigned long *u2,
+>
+>  /* Finds a stack in a bucket of the hash table. */
+>  static inline struct stack_record *find_stack(struct list_head *bucket,
+> -                                            unsigned long *entries, int =
+size,
+> -                                            u32 hash)
+> +                                             unsigned long *entries, int=
+ size,
+> +                                             u32 hash, depot_flags_t fla=
+gs)
+>  {
+> -       struct list_head *pos;
+> -       struct stack_record *found;
+> +       struct stack_record *stack, *ret =3D NULL;
+>
+> -       lockdep_assert_held(&pool_rwlock);
+> +       /*
+> +        * Due to being used from low-level code paths such as the alloca=
+tors,
+> +        * NMI, or even RCU itself, stackdepot cannot rely on primitives =
+that
+> +        * would sleep (such as synchronize_rcu()) or end up recursively =
+call
+> +        * into stack depot again (such as call_rcu()).
+> +        *
+> +        * Instead, lock-less readers only rely on RCU primitives for cor=
+rect
+> +        * memory ordering, but do not use RCU-based synchronization othe=
+rwise.
+> +        * Instead, we perform 3-pass validation below to ensure that the=
+ stack
+> +        * record we accessed is actually valid. If we fail to obtain a v=
+alid
+> +        * stack record here, the slow-path in stack_depot_save_flags() w=
+ill
+> +        * retry to avoid inserting duplicates.
+> +        *
+> +        * If STACK_DEPOT_FLAG_GET is not used, it is undefined behaviour=
+ to
+> +        * call stack_depot_put() later - i.e. in the non-refcounted case=
+, we do
+> +        * not have to worry that the entry will be recycled.
+> +        */
+> +
+> +       list_for_each_entry_rcu(stack, bucket, hash_list) {
+
+So we don't need rcu_read_lock here, because we don't rely on call_rcu
+etc., right?
+
+> +               /* 1. Check if this entry could potentially match. */
+> +               if (data_race(stack->hash !=3D hash || stack->size !=3D s=
+ize))
+> +                       continue;
+> +
+> +               /*
+> +                * 2. Increase refcount if not zero. If this is successfu=
+l, we
+> +                *    know that this stack record is valid and will not b=
+e freed by
+> +                *    stack_depot_put().
+> +                */
+> +               if ((flags & STACK_DEPOT_FLAG_GET) && unlikely(!refcount_=
+inc_not_zero(&stack->count)))
+> +                       continue;
+> +
+> +               /* 3. Do full validation of the record. */
+> +               if (likely(stack->hash =3D=3D hash && stack->size =3D=3D =
+size &&
+> +                          !stackdepot_memcmp(entries, stack->entries, si=
+ze))) {
+> +                       ret =3D stack;
+> +                       break;
+> +               }
+>
+> -       list_for_each(pos, bucket) {
+> -               found =3D list_entry(pos, struct stack_record, list);
+> -               if (found->hash =3D=3D hash &&
+> -                   found->size =3D=3D size &&
+> -                   !stackdepot_memcmp(entries, found->entries, size))
+> -                       return found;
+> +               /* Undo refcount - could have raced with stack_depot_put(=
+). */
+> +               if ((flags & STACK_DEPOT_FLAG_GET) && unlikely(refcount_d=
+ec_and_test(&stack->count)))
+> +                       depot_free_stack(stack);
+>         }
+> -       return NULL;
+> +
+> +       return ret;
+>  }
+>
+>  depot_stack_handle_t stack_depot_save_flags(unsigned long *entries,
+> @@ -482,7 +551,6 @@ depot_stack_handle_t stack_depot_save_flags(unsigned =
+long *entries,
+>         struct page *page =3D NULL;
+>         void *prealloc =3D NULL;
+>         bool can_alloc =3D depot_flags & STACK_DEPOT_FLAG_CAN_ALLOC;
+> -       bool need_alloc =3D false;
+>         unsigned long flags;
+>         u32 hash;
+>
+> @@ -505,31 +573,16 @@ depot_stack_handle_t stack_depot_save_flags(unsigne=
+d long *entries,
+>         hash =3D hash_stack(entries, nr_entries);
+>         bucket =3D &stack_table[hash & stack_hash_mask];
+>
+> -       read_lock_irqsave(&pool_rwlock, flags);
+> -       printk_deferred_enter();
+> -
+> -       /* Fast path: look the stack trace up without full locking. */
+> -       found =3D find_stack(bucket, entries, nr_entries, hash);
+> -       if (found) {
+> -               if (depot_flags & STACK_DEPOT_FLAG_GET)
+> -                       refcount_inc(&found->count);
+> -               printk_deferred_exit();
+> -               read_unlock_irqrestore(&pool_rwlock, flags);
+> +       /* Fast path: look the stack trace up without locking. */
+> +       found =3D find_stack(bucket, entries, nr_entries, hash, depot_fla=
+gs);
+> +       if (found)
+>                 goto exit;
+> -       }
+> -
+> -       /* Take note if another stack pool needs to be allocated. */
+> -       if (new_pool_required)
+> -               need_alloc =3D true;
+> -
+> -       printk_deferred_exit();
+> -       read_unlock_irqrestore(&pool_rwlock, flags);
+>
+>         /*
+>          * Allocate memory for a new pool if required now:
+>          * we won't be able to do that under the lock.
+>          */
+> -       if (unlikely(can_alloc && need_alloc)) {
+> +       if (unlikely(can_alloc && READ_ONCE(new_pool_required))) {
+>                 /*
+>                  * Zero out zone modifiers, as we don't have specific zon=
+e
+>                  * requirements. Keep the flags related to allocation in =
+atomic
+> @@ -543,31 +596,33 @@ depot_stack_handle_t stack_depot_save_flags(unsigne=
+d long *entries,
+>                         prealloc =3D page_address(page);
+>         }
+>
+> -       write_lock_irqsave(&pool_rwlock, flags);
+> +       raw_spin_lock_irqsave(&pool_lock, flags);
+>         printk_deferred_enter();
+>
+> -       found =3D find_stack(bucket, entries, nr_entries, hash);
+> +       /* Try to find again, to avoid concurrently inserting duplicates.=
+ */
+> +       found =3D find_stack(bucket, entries, nr_entries, hash, depot_fla=
+gs);
+>         if (!found) {
+>                 struct stack_record *new =3D
+>                         depot_alloc_stack(entries, nr_entries, hash, &pre=
+alloc);
+>
+>                 if (new) {
+> -                       list_add(&new->list, bucket);
+> +                       /*
+> +                        * This releases the stack record into the bucket=
+ and
+> +                        * makes it visible to readers in find_stack().
+> +                        */
+> +                       list_add_rcu(&new->hash_list, bucket);
+>                         found =3D new;
+>                 }
+> -       } else {
+> -               if (depot_flags & STACK_DEPOT_FLAG_GET)
+> -                       refcount_inc(&found->count);
+> +       } else if (prealloc) {
+>                 /*
+>                  * Stack depot already contains this stack trace, but let=
+'s
+>                  * keep the preallocated memory for future.
+>                  */
+> -               if (prealloc)
+> -                       depot_keep_new_pool(&prealloc);
+> +               depot_keep_new_pool(&prealloc);
+>         }
+>
+>         printk_deferred_exit();
+> -       write_unlock_irqrestore(&pool_rwlock, flags);
+> +       raw_spin_unlock_irqrestore(&pool_lock, flags);
+>  exit:
+>         if (prealloc) {
+>                 /* Stack depot didn't use this memory, free it. */
+> @@ -592,7 +647,6 @@ unsigned int stack_depot_fetch(depot_stack_handle_t h=
+andle,
+>                                unsigned long **entries)
+>  {
+>         struct stack_record *stack;
+> -       unsigned long flags;
+>
+>         *entries =3D NULL;
+>         /*
+> @@ -604,13 +658,12 @@ unsigned int stack_depot_fetch(depot_stack_handle_t=
+ handle,
+>         if (!handle || stack_depot_disabled)
+>                 return 0;
+>
+> -       read_lock_irqsave(&pool_rwlock, flags);
+> -       printk_deferred_enter();
+> -
+>         stack =3D depot_fetch_stack(handle);
+> -
+> -       printk_deferred_exit();
+> -       read_unlock_irqrestore(&pool_rwlock, flags);
+> +       /*
+> +        * Should never be NULL, otherwise this is a use-after-put.
+> +        */
+> +       if (WARN_ON(!stack))
+> +               return 0;
+>
+>         *entries =3D stack->entries;
+>         return stack->size;
+> @@ -620,29 +673,20 @@ EXPORT_SYMBOL_GPL(stack_depot_fetch);
+>  void stack_depot_put(depot_stack_handle_t handle)
+>  {
+>         struct stack_record *stack;
+> -       unsigned long flags;
+>
+>         if (!handle || stack_depot_disabled)
+>                 return;
+>
+> -       write_lock_irqsave(&pool_rwlock, flags);
+> -       printk_deferred_enter();
+> -
+>         stack =3D depot_fetch_stack(handle);
+> +       /*
+> +        * Should always be able to find the stack record, otherwise this=
+ is an
+> +        * unbalanced put attempt.
+> +        */
+>         if (WARN_ON(!stack))
+> -               goto out;
+> -
+> -       if (refcount_dec_and_test(&stack->count)) {
+> -               /* Unlink stack from the hash table. */
+> -               list_del(&stack->list);
+> +               return;
+>
+> -               /* Free stack. */
+> +       if (refcount_dec_and_test(&stack->count))
+>                 depot_free_stack(stack);
+> -       }
+> -
+> -out:
+> -       printk_deferred_exit();
+> -       write_unlock_irqrestore(&pool_rwlock, flags);
+>  }
+>  EXPORT_SYMBOL_GPL(stack_depot_put);
+>
+> --
+> 2.43.0.275.g3460e3d667-goog
+>
+
+Looks good to me from the functional perspective (modulo the
+clarification comments I left above), but it would be great to get a
+review from someone with a better understanding of the low-level
+synchronization primitives.
+
+Thank you!
 
