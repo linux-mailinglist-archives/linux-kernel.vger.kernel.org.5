@@ -1,73 +1,63 @@
-Return-Path: <linux-kernel+bounces-24536-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F52C82BE01
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:01:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8C9E82BD86
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:46:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0FE1EB23B8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:00:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A64D1C253F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:46:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9691D57876;
-	Fri, 12 Jan 2024 10:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A076E5730F;
+	Fri, 12 Jan 2024 09:46:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L0LGiOv5"
-Received: from mail-oi1-f194.google.com (mail-oi1-f194.google.com [209.85.167.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ur+3HXno"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9556057869;
-	Fri, 12 Jan 2024 10:00:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f194.google.com with SMTP id 5614622812f47-3bbd6e37a9bso5248786b6e.0;
-        Fri, 12 Jan 2024 02:00:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705053628; x=1705658428; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gZSg4xRXWuoNbqdqrgRfE1U45ctI7Mu0MbXHLSoUnsA=;
-        b=L0LGiOv5wsGksE0dbpmQUJ3sMhYaABqx8w8PBcV0SpIz2pIDI6LaxED7fs9xZNrrXS
-         qPGQTDgRlnHmFCN5UiXhLcEzKDIWIKoRABUjSiLf0atURM9jgTpwfytaAuuWncJYKUet
-         eSEqfjdaAMOnQsx2IzmKxPcz3Tx2pYivlmUrhHuA5VwhZDJOH3+7pd7sR0z/vX5JtHuH
-         P2is0NG4UT43VuCZQmBAYLv6O/yF3hrSQMzzMYG9pDq62jvWHCuZ9ijLcYWaDuLEqCtZ
-         99NgGWaRJsx6weQNkcY0rEqEnYs6DkMHx17RDhiIL3CpeRvaoddGUhpr/5FhR7s3n9/r
-         n6Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705053628; x=1705658428;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gZSg4xRXWuoNbqdqrgRfE1U45ctI7Mu0MbXHLSoUnsA=;
-        b=pu7UCiWHLOMBEcOivFcS8lgn+vcQS1fYVq46HbNJA8hJ6T+gtqLkMwyVu+ATluQBTG
-         xzMCzNU7Adm/rsCOg6768p3tfKctXEKzQzhhuaifns8UNtOxCMv+fFu2ZkRl2t9iVKi4
-         cDbk5tuzuXdy4KMc9Lm6Da60rFnBCH1IlWtScdfTJtoUtS46Bngdq0rVx3dlK9pLTrrV
-         JCHtwfp01h0MbRK/Y8f/qd9RAcqS+OpaB7sveIHkaEHqP1Q5sJ3ilPjsaqmYzNkqBLmv
-         v+drdiMIJsKYSgatsFeRseqf77wu5Io+EQsKnQVqjtEJ+lbL9y8dSgYn5h97t0lWWOd9
-         vcMw==
-X-Gm-Message-State: AOJu0Yzqjiiw+l8Z6+/+PrivOBONVz6LqqRj04XEY20PbDpJPCEPXA1m
-	UwVtBss3Hk8uq/tH5gI+n7s=
-X-Google-Smtp-Source: AGHT+IGfUvt1DlpPEjdKl8TX7I5/J1+w+tswdIzAK9AIhkH2QlACj1OPQxrLv06jnyb4/pucE9F19A==
-X-Received: by 2002:a05:6808:2387:b0:3bd:6342:e2a0 with SMTP id bp7-20020a056808238700b003bd6342e2a0mr421499oib.6.1705053628002;
-        Fri, 12 Jan 2024 02:00:28 -0800 (PST)
-Received: from localhost.localdomain ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id n26-20020aa7985a000000b006d96bb5db5esm2910962pfq.96.2024.01.12.02.00.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 02:00:27 -0800 (PST)
-From: Menglong Dong <menglong8.dong@gmail.com>
-To: edumazet@google.com
-Cc: davem@davemloft.net,
-	dsahern@kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	netdev@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A52356B99;
+	Fri, 12 Jan 2024 09:46:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705052798;
+	bh=HqzPxaHeFCyZfYh2e01L+xQeMw072rSkCaHc++QlYdQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ur+3HXnozCFZCBDVPEloAp4tOGWzuYqHUeQqBNucoBZKkCLYf48oCaxuLKH3FBgl8
+	 Tks7oB8WPXocfxErw6gaDvsiwIz57UElYZt+s8J0kvLjNZd2OS1C4AG5WE/TeLrE6C
+	 NDhvPKkxTS59bcT0eBH+Pz0mEE8ZreeTQWB8NCkM6/K0Ut9GEANxi6EHPT4P+299v5
+	 vsOn661GzfO9RgqONhMM4/VRTR1lMh3b9uNYEKKbGs31cGVb4mBLtPQpGpp1nJUUyz
+	 Iq4O196KG+f5HG7KMQnz1iX5YI17yjErN3O3Ieb+75lceTZWAdcIyV9Ow4/QhZMIOn
+	 q8r2qIj1Z9xgw==
+Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8E8F33781FCF;
+	Fri, 12 Jan 2024 09:46:37 +0000 (UTC)
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+To: linux-mediatek@lists.infradead.org
+Cc: robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	wenst@chromium.org,
+	hsinyi@chromium.org,
+	nfraprado@collabora.com,
+	macpaul.lin@mediatek.com,
+	sean.wang@mediatek.com,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Menglong Dong <menglong8.dong@gmail.com>
-Subject: [RFC PATCH net-next v2] net: tcp: accept old ack during closing
-Date: Fri, 12 Jan 2024 17:46:03 +0800
-Message-Id: <20240112094603.23706-1-menglong8.dong@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	linux-arm-kernel@lists.infradead.org,
+	kernel@collabora.com
+Subject: [PATCH 00/15] MediaTek: Introduce MT8395 Radxa NIO 12L devicetree
+Date: Fri, 12 Jan 2024 10:46:17 +0100
+Message-ID: <20240112094632.66310-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,73 +66,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-For now, the packet with an old ack is not accepted if we are in
-FIN_WAIT1 state, which can cause retransmission. Taking the following
-case as an example:
+This series adds a device tree for the Radxa NIO 12L SBC, powered by
+the MediaTek Genio 1200 (MT8395).
+Not all features of this board are included in this first series but
+it's already quite usable, as the eMMC internal storage works and can
+be used to boot the system (as much as MicroSD external storage), the
+connectivity via ethernet and WiFi (PCI-Express) are working as well.
 
-    Client                               Server
-      |                                    |
-  FIN_WAIT1(Send FIN, seq=10)          FIN_WAIT1(Send FIN, seq=20, ack=10)
-      |                                    |
-      |                                Send ACK(seq=21, ack=11)
-   Recv ACK(seq=21, ack=11)
-      |
-   Recv FIN(seq=20, ack=10)
+The two I2C, two SPI and the two UART ports are also ok.
 
-In the case above, simultaneous close is happening, and the FIN and ACK
-packet that send from the server is out of order. Then, the FIN will be
-dropped by the client, as it has an old ack. Then, the server has to
-retransmit the FIN, which can cause delay if the server has set the
-SO_LINGER on the socket.
+What is missing (and what's next...!):
+ - UFS storage is not working yet (but eMMC works)
+ - Type-C role switching is not yet implemented, driver is there but
+   mt8195.dtsi has no MTU3 yet, needs some research to avoid breaking
+   compatibility with MT8195 Chromebooks
+ - HDMI Input port: no driver yet
+ - HDMI Output (from SoC HDMI IP): no driver yet
+ - Audio (sound card driver needs some love)
+ - MIPI Camera
+ - System LEDs
+ - "F15" Button
 
-Old ack is accepted in the ESTABLISHED and TIME_WAIT state, and I think
-it should be better to keep the same logic.
+This series depends on the MT6360 TCPC series at [1].
 
-In this commit, we accept old ack in FIN_WAIT1/FIN_WAIT2/CLOSING/LAST_ACK
-states. Maybe we should limit it to FIN_WAIT1 for now?
+[1]: https://lore.kernel.org/all/20240112094538.65639-1-angelogioacchino.delregno@collabora.com
 
-Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
----
-v2:
-- fix the compiling error
----
- net/ipv4/tcp_input.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+Cheers,
+Angelo
 
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index df7b13f0e5e0..70642bb08f3a 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -6699,17 +6699,21 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb)
- 		return 0;
- 
- 	/* step 5: check the ACK field */
--	acceptable = tcp_ack(sk, skb, FLAG_SLOWPATH |
--				      FLAG_UPDATE_TS_RECENT |
--				      FLAG_NO_CHALLENGE_ACK) > 0;
-+	reason = tcp_ack(sk, skb, FLAG_SLOWPATH |
-+				  FLAG_UPDATE_TS_RECENT |
-+				  FLAG_NO_CHALLENGE_ACK);
- 
--	if (!acceptable) {
-+	if (reason <= 0) {
- 		if (sk->sk_state == TCP_SYN_RECV)
- 			return 1;	/* send one RST */
--		tcp_send_challenge_ack(sk);
--		SKB_DR_SET(reason, TCP_OLD_ACK);
--		goto discard;
-+		/* accept old ack during closing */
-+		if (reason < 0) {
-+			tcp_send_challenge_ack(sk);
-+			reason = -reason;
-+			goto discard;
-+		}
- 	}
-+	SKB_DR_SET(reason, NOT_SPECIFIED);
- 	switch (sk->sk_state) {
- 	case TCP_SYN_RECV:
- 		tp->delivered++; /* SYN-ACK delivery isn't tracked in tcp_ack */
+AngeloGioacchino Del Regno (15):
+  dt-bindings: arm64: mediatek: Add MT8395 Radxa NIO 12L board
+    compatible
+  arm64: dts: mediatek: Introduce the MT8395 Radxa NIO 12L board
+  arm64: dts: mediatek: radxa-nio-12l: Enable I2C 2/4/6 busses
+  arm64: dts: mediatek: radxa-nio-12l: Add external MT6360 PMIC on I2C6
+  arm64: dts: mediatek: radxa-nio-12l: Configure board regulators
+  arm64: dts: mediatek: radxa-nio-12l: Add Ethernet controller and
+    Xceiver
+  arm64: dts: mediatek: radxa-nio-12l: Add MT6360 battery charger
+  arm64: dts: mediatek: radxa-nio-12l: Add support for eMMC and MicroSD
+  arm64: dts: mediatek: radxa-nio-12l: Enable System Companion Processor
+  arm64: dts: mediatek: radxa-nio-12l: Enable PCI-Express 0 for USB HUB
+  arm64: dts: mediatek: radxa-nio-12l: Enable the USB XHCI controllers
+  arm64: dts: mediatek: radxa-nio-12l: Enable PCI-Express 1 for WiFi
+  arm64: dts: mediatek: radxa-nio-12l: Enable SPI1/2 for 40pin header
+  arm64: dts: mediatek: radxa-nio-12l: Enable UART1 for 40pin header
+  arm64: dts: mediatek: radxa-nio-12l: Enable Panfrost for Mali GPU
+
+ .../devicetree/bindings/arm/mediatek.yaml     |   1 +
+ arch/arm64/boot/dts/mediatek/Makefile         |   1 +
+ .../dts/mediatek/mt8395-radxa-nio-12l.dts     | 747 ++++++++++++++++++
+ 3 files changed, 749 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8395-radxa-nio-12l.dts
+
 -- 
-2.39.2
+2.43.0
 
 
