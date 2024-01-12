@@ -1,145 +1,265 @@
-Return-Path: <linux-kernel+bounces-24260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28B0282B9E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 04:07:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FC3E82B9E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 04:14:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FCD91C20FA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 03:07:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 954CD28452A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 03:14:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 312101846;
-	Fri, 12 Jan 2024 03:07:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7F2F15C6;
+	Fri, 12 Jan 2024 03:14:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZnagKHVt"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hlDIU+Sk"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 742B3805;
-	Fri, 12 Jan 2024 03:07:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E5079C433F1;
-	Fri, 12 Jan 2024 03:07:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705028862;
-	bh=n9MqZcEV8yupS47tT5sl4+gL1xBsGKmEaUgifpv190o=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=ZnagKHVtg84b06PpjbwyBcpBZhFR56iO57gOoEpz/I92g1h0yRCyDTzlM225G+h/R
-	 SndNGy4vQlKn0eAqz5gWkIJcnTnZULAymE0WL023xG9goJo4Pe2UgQYCIjGb4ZWlfW
-	 SsljE2UjR2A3BNqFxuLLii234s7G+seTz+wPoPbvkNWMkyn28Pm2NVVcoA/KHjs0oB
-	 III4ceIfC/UW89jGot0vVvSR7oZJbVhO9pzL/607BwOPXLawC8B/Z6J/XTW7iNcVes
-	 JGU5dLN1ksMo9tes9c/6OCKumRLCOiuVACW5kLQwO4az3M/grKNRKodjSprncA8FLU
-	 YV7WhoVpfkz9g==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8B63C4707C;
-	Fri, 12 Jan 2024 03:07:41 +0000 (UTC)
-From: Hui Liu via B4 Relay <devnull+quic_huliu.quicinc.com@kernel.org>
-Date: Fri, 12 Jan 2024 11:05:23 +0800
-Subject: [PATCH v4] arm64: dts: qcom: qcs6490-idp: Add definition for three
- LEDs.
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B0241846;
+	Fri, 12 Jan 2024 03:14:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705029282; x=1736565282;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=cwgXaGkg+9dlKT7vM6fOfd1vb77DgMTDItkjEAJYj2w=;
+  b=hlDIU+SkWcvRkn4O7AqzDoPYOmJhFg7keLGT1k892pIL0PFYZbmEx+iT
+   J0J9zYjaiJbqC25/kp6kw7WCQAorWnhfKLoN9zleCc/NQ6FQyzHty9SuS
+   fLK6YZcG+wgbdSbBVXBhESpHJ2mau3bQHgDQ2CCEcNFSBVQiWDvtOzN1w
+   WjgFtwatOL+9WZGD0thqn3SMoxVCB/lQSmDzGu+ZlkYUYpDOpuCBwYdSn
+   DpsOfObpU8054/E5yBwtft2hDtmLnnX3OQziAqH9kJ6qb6EF9PYxIYn8v
+   Nn7LvGt1NW4x9Y5QZRwyiIktXSy9P7XscvJ3B3D1U4lNvVpvRUi2VW0OP
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="397948519"
+X-IronPort-AV: E=Sophos;i="6.04,188,1695711600"; 
+   d="scan'208";a="397948519"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 19:14:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="732453627"
+X-IronPort-AV: E=Sophos;i="6.04,188,1695711600"; 
+   d="scan'208";a="732453627"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 11 Jan 2024 19:14:36 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rO80A-000906-0B;
+	Fri, 12 Jan 2024 03:14:34 +0000
+Date: Fri, 12 Jan 2024 11:13:54 +0800
+From: kernel test robot <lkp@intel.com>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	lgirdwood@gmail.com
+Cc: oe-kbuild-all@lists.linux.dev, broonie@kernel.org, perex@perex.cz,
+	tiwai@suse.com, matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com, ribalda@chromium.org,
+	nicolas.ferre@microchip.com, u.kleine-koenig@pengutronix.de,
+	kuninori.morimoto.gx@renesas.com, nfraprado@collabora.com,
+	alsa-devel@alsa-project.org, trevor.wu@mediatek.com,
+	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 6/7] ASoC: mediatek: mt8192-afe-pcm: Simplify with
+ dev_err_probe()
+Message-ID: <202401121019.EC2g0hQM-lkp@intel.com>
+References: <20240111105247.117766-7-angelogioacchino.delregno@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240112-lpg-v4-1-c4004026686b@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIAHOsoGUC/1WOwQqDMBAFf0Vy7hY3UVt66n8UKTHZaECNJja0i
- P/e6KX0ODBveCsL5C0FdstW5inaYN2YoDhlTHVybAmsTsx4zgVyLKGfWiik1FpciiuiZMmcPBn
- 7PiqPOrHxboCl8yR/W8QcZuWGZ086QOSAIJTUaJpGVaW8zy+r7KjOSdmTnQ2L85/jVxR7+P9CF
- ClQENdNriptSvMXqLdt+wIYOIwp2wAAAA==
-To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Hui Liu <quic_huliu@quicinc.com>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1705028860; l=1784;
- i=quic_huliu@quicinc.com; s=20230823; h=from:subject:message-id;
- bh=3J2JAmE3HrG4pHWMcjf5Ib9yX4UdsBMnHOiWMa/2sVY=;
- b=4oaVWMLN1he3cUfY5Yh3QWaWm4vA/7unhwaDc9/wahU6XZdUUep1PyqUWSuYjECf9jRZS3vXc
- Pxi6qLX+FD7BUa1/QrNmtBqQtRV+oD7j8TqIsC9Ut5cLC16wAu5PnML
-X-Developer-Key: i=quic_huliu@quicinc.com; a=ed25519;
- pk=1z+A50UnTuKe/FdQv2c0W3ajDsJOYddwIHo2iivhTTA=
-X-Endpoint-Received:
- by B4 Relay for quic_huliu@quicinc.com/20230823 with auth_id=80
-X-Original-From: Hui Liu <quic_huliu@quicinc.com>
-Reply-To: <quic_huliu@quicinc.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240111105247.117766-7-angelogioacchino.delregno@collabora.com>
 
-From: Hui Liu <quic_huliu@quicinc.com>
+Hi AngeloGioacchino,
 
-Add definition for three LEDs to make sure they can
-be enabled base on QCOM LPG LED driver.
+kernel test robot noticed the following build warnings:
 
-Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
----
-Changes in v4:
-- Removed "label" definition and added "function" definition.
-- Link to v3: https://lore.kernel.org/r/20231215-lpg-v3-1-4e2db0c6df5f@quicinc.com
+[auto build test WARNING on broonie-sound/for-next]
+[also build test WARNING on broonie-spi/for-next tiwai-sound/for-next tiwai-sound/for-linus linus/master v6.7 next-20240111]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Changes in v3:
-- Rephrased commit text and updated the nodes to qcm6490-idp board file.
-- Link to v2: https://lore.kernel.org/all/20231110-qcom_leds-v2-1-3cad1fbbc65a@quicinc.com/
+url:    https://github.com/intel-lab-lkp/linux/commits/AngeloGioacchino-Del-Regno/ASoC-mediatek-mt8173-afe-pcm-Convert-to-devm_pm_runtime_enable/20240111-185734
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+patch link:    https://lore.kernel.org/r/20240111105247.117766-7-angelogioacchino.delregno%40collabora.com
+patch subject: [PATCH 6/7] ASoC: mediatek: mt8192-afe-pcm: Simplify with dev_err_probe()
+config: arm64-defconfig (https://download.01.org/0day-ci/archive/20240112/202401121019.EC2g0hQM-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240112/202401121019.EC2g0hQM-lkp@intel.com/reproduce)
 
-Changes in v2:
-- Rephrased commit text and updated the nodes to board file.
-- Link to v1: https://lore.kernel.org/r/20231108-qcom_leds-v1-1-c3e1c8572cb0@quicinc.com
----
- arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401121019.EC2g0hQM-lkp@intel.com/
 
-diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-index 37c91fdf3ab9..8268fad505e7 100644
---- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-@@ -5,6 +5,7 @@
- 
- /dts-v1/;
- 
-+#include <dt-bindings/leds/common.h>
- #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
- #include "sc7280.dtsi"
- #include "pm7325.dtsi"
-@@ -414,6 +415,28 @@ vreg_bob_3p296: bob {
- 	};
- };
- 
-+&pm8350c_pwm {
-+	function = LED_FUNCTION_STATUS;
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	status = "okay";
-+
-+	led@1 {
-+		reg = <1>;
-+		color = <LED_COLOR_ID_RED>;
-+	};
-+
-+	led@2 {
-+		reg = <2>;
-+		color = <LED_COLOR_ID_GREEN>;
-+	};
-+
-+	led@3 {
-+		reg = <3>;
-+		color = <LED_COLOR_ID_BLUE>;
-+	};
-+};
-+
- &qupv3_id_0 {
- 	status = "okay";
- };
+All warnings (new ones prefixed by >>):
 
----
-base-commit: 17cb8a20bde66a520a2ca7aad1063e1ce7382240
-change-id: 20231215-lpg-4aadd374811a
+   sound/soc/mediatek/mt8192/mt8192-afe-pcm.c: In function 'mt8192_afe_pcm_dev_probe':
+>> sound/soc/mediatek/mt8192/mt8192-afe-pcm.c:2284:67: warning: format '%d' expects a matching 'int' argument [-Wformat=]
+    2284 |                         return dev_err_probe(afe->dev, ret, "dai %d register fail");
+         |                                                                  ~^
+         |                                                                   |
+         |                                                                   int
 
-Best regards,
+
+vim +2284 sound/soc/mediatek/mt8192/mt8192-afe-pcm.c
+
+  2172	
+  2173	static int mt8192_afe_pcm_dev_probe(struct platform_device *pdev)
+  2174	{
+  2175		struct mtk_base_afe *afe;
+  2176		struct mt8192_afe_private *afe_priv;
+  2177		struct device *dev;
+  2178		struct reset_control *rstc;
+  2179		int i, ret, irq_id;
+  2180	
+  2181		ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(34));
+  2182		if (ret)
+  2183			return ret;
+  2184	
+  2185		afe = devm_kzalloc(&pdev->dev, sizeof(*afe), GFP_KERNEL);
+  2186		if (!afe)
+  2187			return -ENOMEM;
+  2188		platform_set_drvdata(pdev, afe);
+  2189	
+  2190		afe->platform_priv = devm_kzalloc(&pdev->dev, sizeof(*afe_priv),
+  2191						  GFP_KERNEL);
+  2192		if (!afe->platform_priv)
+  2193			return -ENOMEM;
+  2194		afe_priv = afe->platform_priv;
+  2195	
+  2196		afe->dev = &pdev->dev;
+  2197		dev = afe->dev;
+  2198	
+  2199		/* init audio related clock */
+  2200		ret = mt8192_init_clock(afe);
+  2201		if (ret) {
+  2202			dev_err(dev, "init clock error\n");
+  2203			return ret;
+  2204		}
+  2205	
+  2206		/* reset controller to reset audio regs before regmap cache */
+  2207		rstc = devm_reset_control_get_exclusive(dev, "audiosys");
+  2208		if (IS_ERR(rstc))
+  2209			return dev_err_probe(dev, PTR_ERR(rstc), "could not get audiosys reset\n");
+  2210	
+  2211		ret = reset_control_reset(rstc);
+  2212		if (ret)
+  2213			return dev_err_probe(dev, ret, "failed to trigger audio reset\n");
+  2214	
+  2215		ret = devm_pm_runtime_enable(&pdev->dev);
+  2216		if (ret)
+  2217			return ret;
+  2218	
+  2219		/* regmap init */
+  2220		afe->regmap = syscon_node_to_regmap(dev->parent->of_node);
+  2221		if (IS_ERR(afe->regmap))
+  2222			return dev_err_probe(dev, PTR_ERR(afe->regmap),
+  2223					     "could not get regmap from parent");
+  2224	
+  2225		ret = regmap_attach_dev(dev, afe->regmap, &mt8192_afe_regmap_config);
+  2226		if (ret)
+  2227			return dev_err_probe(dev, ret, "regmap_attach_dev fail\n");
+  2228	
+  2229		/* enable clock for regcache get default value from hw */
+  2230		afe_priv->pm_runtime_bypass_reg_ctl = true;
+  2231		pm_runtime_get_sync(&pdev->dev);
+  2232	
+  2233		ret = regmap_reinit_cache(afe->regmap, &mt8192_afe_regmap_config);
+  2234		if (ret)
+  2235			return dev_err_probe(dev, ret, "regmap_reinit_cache fail\n");
+  2236	
+  2237		pm_runtime_put_sync(&pdev->dev);
+  2238		afe_priv->pm_runtime_bypass_reg_ctl = false;
+  2239	
+  2240		regcache_cache_only(afe->regmap, true);
+  2241		regcache_mark_dirty(afe->regmap);
+  2242	
+  2243		/* init memif */
+  2244		afe->memif_size = MT8192_MEMIF_NUM;
+  2245		afe->memif = devm_kcalloc(dev, afe->memif_size, sizeof(*afe->memif),
+  2246					  GFP_KERNEL);
+  2247		if (!afe->memif)
+  2248			return -ENOMEM;
+  2249	
+  2250		for (i = 0; i < afe->memif_size; i++) {
+  2251			afe->memif[i].data = &memif_data[i];
+  2252			afe->memif[i].irq_usage = memif_irq_usage[i];
+  2253			afe->memif[i].const_irq = 1;
+  2254		}
+  2255	
+  2256		mutex_init(&afe->irq_alloc_lock);	/* needed when dynamic irq */
+  2257	
+  2258		/* init irq */
+  2259		afe->irqs_size = MT8192_IRQ_NUM;
+  2260		afe->irqs = devm_kcalloc(dev, afe->irqs_size, sizeof(*afe->irqs),
+  2261					 GFP_KERNEL);
+  2262		if (!afe->irqs)
+  2263			return -ENOMEM;
+  2264	
+  2265		for (i = 0; i < afe->irqs_size; i++)
+  2266			afe->irqs[i].irq_data = &irq_data[i];
+  2267	
+  2268		/* request irq */
+  2269		irq_id = platform_get_irq(pdev, 0);
+  2270		if (irq_id < 0)
+  2271			return irq_id;
+  2272	
+  2273		ret = devm_request_irq(dev, irq_id, mt8192_afe_irq_handler,
+  2274				       IRQF_TRIGGER_NONE, "asys-isr", (void *)afe);
+  2275		if (ret)
+  2276			return dev_err_probe(dev, ret, "could not request_irq for Afe_ISR_Handle\n");
+  2277	
+  2278		/* init sub_dais */
+  2279		INIT_LIST_HEAD(&afe->sub_dais);
+  2280	
+  2281		for (i = 0; i < ARRAY_SIZE(dai_register_cbs); i++) {
+  2282			ret = dai_register_cbs[i](afe);
+  2283			if (ret)
+> 2284				return dev_err_probe(afe->dev, ret, "dai %d register fail");
+  2285		}
+  2286	
+  2287		/* init dai_driver and component_driver */
+  2288		ret = mtk_afe_combine_sub_dai(afe);
+  2289		if (ret)
+  2290			return dev_err_probe(afe->dev, ret, "mtk_afe_combine_sub_dai fail\n");
+  2291	
+  2292		/* others */
+  2293		afe->mtk_afe_hardware = &mt8192_afe_hardware;
+  2294		afe->memif_fs = mt8192_memif_fs;
+  2295		afe->irq_fs = mt8192_irq_fs;
+  2296		afe->get_dai_fs = mt8192_get_dai_fs;
+  2297		afe->get_memif_pbuf_size = mt8192_get_memif_pbuf_size;
+  2298		afe->memif_32bit_supported = 1;
+  2299	
+  2300		afe->runtime_resume = mt8192_afe_runtime_resume;
+  2301		afe->runtime_suspend = mt8192_afe_runtime_suspend;
+  2302	
+  2303		/* register platform */
+  2304		ret = devm_snd_soc_register_component(&pdev->dev,
+  2305						      &mt8192_afe_component, NULL, 0);
+  2306		if (ret)
+  2307			return dev_err_probe(dev, ret, "Couldn't register AFE component\n");
+  2308	
+  2309		ret = devm_snd_soc_register_component(&pdev->dev,
+  2310						      &mt8192_afe_pcm_component,
+  2311						      afe->dai_drivers,
+  2312						      afe->num_dai_drivers);
+  2313		if (ret)
+  2314			return dev_err_probe(dev, ret, "Couldn't register AFE-PCM component\n");
+  2315	
+  2316		return 0;
+  2317	}
+  2318	
+
 -- 
-Hui Liu <quic_huliu@quicinc.com>
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
