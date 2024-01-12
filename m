@@ -1,58 +1,55 @@
-Return-Path: <linux-kernel+bounces-24372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D55782BBAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:23:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 779C082BBA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 08:21:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 635FC1C2508A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:23:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35BD81F22FD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 07:21:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA0055DF2A;
-	Fri, 12 Jan 2024 07:22:02 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E7565C910;
+	Fri, 12 Jan 2024 07:21:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="F+XHcFcW"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 054195D919;
-	Fri, 12 Jan 2024 07:21:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 477e03e742094c3a81d7a56c68d3f3f1-20240112
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:bfa888c2-196b-4123-afef-3393926d8296,IP:20,
-	URL:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-	ION:release,TS:30
-X-CID-INFO: VERSION:1.1.35,REQID:bfa888c2-196b-4123-afef-3393926d8296,IP:20,UR
-	L:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:30
-X-CID-META: VersionHash:5d391d7,CLOUDID:f1f92c8e-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:2401121521451LMTVSBG,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
-	02,TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL
-	:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 477e03e742094c3a81d7a56c68d3f3f1-20240112
-X-User: chentao@kylinos.cn
-Received: from kernel.. [(116.128.244.171)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1529031778; Fri, 12 Jan 2024 15:21:43 +0800
-From: Kunwu Chan <chentao@kylinos.cn>
-To: diana.craciun@oss.nxp.com,
-	alex.williamson@redhat.com
-Cc: eric.auger@redhat.com,
-	Bharat.Bhushan@nxp.com,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] vfio/fsl-mc: Remove unnecessary free in vfio_set_trigger
-Date: Fri, 12 Jan 2024 15:21:28 +0800
-Message-Id: <20240112072128.141954-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FDE35C8FF;
+	Fri, 12 Jan 2024 07:21:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705044099;
+	bh=rRQZLwAtR4o/VCOAcxTzVSxdZ70bLgI9faWJJSJCsAc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=F+XHcFcWnw2ojCsRoBMmjj+t+/NROO0ERHC+NcXTC1y95tjpFGNQU9p+yDqGag/5c
+	 Sja7dnvAsNlzLkXnNtZ3CbGpZnInpGXWKBWs+VIO0QL887i5YfauEdXtQW6p2NFRwq
+	 Wd0ZEJmxdHeGgbXpmzLCAgctyEjN5rg1lek5IMCtX3q/3Vg/NG9K5nSRpVzRjULXMb
+	 akMZWrWUkeNfSIfxFRj/vyeljJ3YB024sgNgqiCBAhxIzZWgxDIdWjHmRDJEKVDUPB
+	 4o8d/C6KimRHHjhxRqWvg0vUQOZu1HhrMrAof2aos5eNOIBqE+EsHDjsaG0i9o5tYW
+	 C8JpWe7vqaB1A==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A39453780894;
+	Fri, 12 Jan 2024 07:21:37 +0000 (UTC)
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	kernel@collabora.com,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/7] selftests/mm: hugepage-shm: conform test to TAP format output
+Date: Fri, 12 Jan 2024 12:21:34 +0500
+Message-ID: <20240112072144.620098-1-usama.anjum@collabora.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,28 +58,101 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-'irq->name' is initialed by kasprintf, so there is no need
-to free it before initializing.
+Conform the layout, informational and status messages to TAP. No
+functional change is intended other than the layout of output messages.
 
-Fixes: cc0ee20bd969 ("vfio/fsl-mc: trigger an interrupt via eventfd")
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+The "." was being printed inside for loop to indicate the writes
+progress. This was extraneous and hence removed in the patch.
+
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
 ---
- drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c | 1 -
- 1 file changed, 1 deletion(-)
+ tools/testing/selftests/mm/hugepage-shm.c | 47 +++++++++++------------
+ 1 file changed, 22 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c b/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
-index d62fbfff20b8..31f0716e7ab3 100644
---- a/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
-+++ b/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
-@@ -69,7 +69,6 @@ static int vfio_set_trigger(struct vfio_fsl_mc_device *vdev,
- 	hwirq = vdev->mc_dev->irqs[index]->virq;
- 	if (irq->trigger) {
- 		free_irq(hwirq, irq);
--		kfree(irq->name);
- 		eventfd_ctx_put(irq->trigger);
- 		irq->trigger = NULL;
+diff --git a/tools/testing/selftests/mm/hugepage-shm.c b/tools/testing/selftests/mm/hugepage-shm.c
+index 478bb1e989e9..f949dbbc3454 100644
+--- a/tools/testing/selftests/mm/hugepage-shm.c
++++ b/tools/testing/selftests/mm/hugepage-shm.c
+@@ -34,11 +34,10 @@
+ #include <sys/ipc.h>
+ #include <sys/shm.h>
+ #include <sys/mman.h>
++#include "../kselftest.h"
+ 
+ #define LENGTH (256UL*1024*1024)
+ 
+-#define dprintf(x)  printf(x)
+-
+ /* Only ia64 requires this */
+ #ifdef __ia64__
+ #define ADDR (void *)(0x8000000000000000UL)
+@@ -54,44 +53,42 @@ int main(void)
+ 	unsigned long i;
+ 	char *shmaddr;
+ 
++	ksft_print_header();
++	ksft_set_plan(1);
++
+ 	shmid = shmget(2, LENGTH, SHM_HUGETLB | IPC_CREAT | SHM_R | SHM_W);
+-	if (shmid < 0) {
+-		perror("shmget");
+-		exit(1);
+-	}
+-	printf("shmid: 0x%x\n", shmid);
++	if (shmid < 0)
++		ksft_exit_fail_msg("shmget: %s\n", strerror(errno));
++
++	ksft_print_msg("shmid: 0x%x\n", shmid);
+ 
+ 	shmaddr = shmat(shmid, ADDR, SHMAT_FLAGS);
+ 	if (shmaddr == (char *)-1) {
+-		perror("Shared memory attach failure");
+ 		shmctl(shmid, IPC_RMID, NULL);
+-		exit(2);
++		ksft_exit_fail_msg("Shared memory attach failure: %s\n", strerror(errno));
  	}
+-	printf("shmaddr: %p\n", shmaddr);
+ 
+-	dprintf("Starting the writes:\n");
+-	for (i = 0; i < LENGTH; i++) {
++	ksft_print_msg("shmaddr: %p\n", shmaddr);
++
++	ksft_print_msg("Starting the writes:");
++	for (i = 0; i < LENGTH; i++)
+ 		shmaddr[i] = (char)(i);
+-		if (!(i % (1024 * 1024)))
+-			dprintf(".");
+-	}
+-	dprintf("\n");
++	ksft_print_msg("Done.\n");
+ 
+-	dprintf("Starting the Check...");
++	ksft_print_msg("Starting the Check...");
+ 	for (i = 0; i < LENGTH; i++)
+-		if (shmaddr[i] != (char)i) {
+-			printf("\nIndex %lu mismatched\n", i);
+-			exit(3);
+-		}
+-	dprintf("Done.\n");
++		if (shmaddr[i] != (char)i)
++			ksft_exit_fail_msg("\nIndex %lu mismatched\n", i);
++	ksft_print_msg("Done.\n");
+ 
+ 	if (shmdt((const void *)shmaddr) != 0) {
+-		perror("Detach failure");
+ 		shmctl(shmid, IPC_RMID, NULL);
+-		exit(4);
++		ksft_exit_fail_msg("Detach failure: %s\n", strerror(errno));
+ 	}
+ 
+ 	shmctl(shmid, IPC_RMID, NULL);
+ 
+-	return 0;
++	ksft_test_result_pass("Completed test\n");
++
++	ksft_finished();
+ }
 -- 
-2.39.2
+2.42.0
 
 
