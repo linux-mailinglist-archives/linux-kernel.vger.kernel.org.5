@@ -1,163 +1,172 @@
-Return-Path: <linux-kernel+bounces-24994-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24995-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A741E82C5C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 20:16:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 428C782C5D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 20:24:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA0981C21AC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 19:16:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A660286756
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 19:24:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DC6C15AF7;
-	Fri, 12 Jan 2024 19:16:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 336F815AFC;
+	Fri, 12 Jan 2024 19:24:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MZZn/68n"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="ruNVJavn"
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02olkn2021.outbound.protection.outlook.com [40.92.44.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C67E0156EB;
-	Fri, 12 Jan 2024 19:16:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75404C43390;
-	Fri, 12 Jan 2024 19:16:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705087003;
-	bh=Am1A9i2lBbnw4qGcrTrX1i0DCJ+vBKAzCbY9dPPryfI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MZZn/68nray6hRjqWId84rTXwl/BOanKKwZBHsc5J/MPtmSiQiYjQZxsmbSzS1Nwc
-	 PA2va7IUQP+O3rlxu6CS2NE+zcsVt0wWEGP1LKkbixm4x87RorzmDMhN6Odr3Gr1bU
-	 PMmtGZFpoyqBxhZdcbpkIjITklMb9RLn3zrMPHZ5aNP8CUmTAYkvds2WdTN6OOawe+
-	 UCHmhpIu3U+X/MB1YSHTtdATdkgtWkrGukQzxjuXolePBp9vFVNUrhdQ3lp+EyLexp
-	 ydlBlGmqHW/OSZDavq7UsQzNN1WbUNqDo3mPvXMrR4kmU7QNdUmH+CEOorNYIj7jTY
-	 skI22dH3Rg4Qg==
-Date: Fri, 12 Jan 2024 19:16:33 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
-	tudor.ambarus@linaro.org, pratyush@kernel.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	sbinding@opensource.cirrus.com, lee@kernel.org,
-	james.schulman@cirrus.com, david.rhodes@cirrus.com,
-	rf@opensource.cirrus.com, perex@perex.cz, tiwai@suse.com,
-	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	michael@walle.cc, linux-mtd@lists.infradead.org,
-	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-	claudiu.beznea@tuxon.dev, michal.simek@amd.com,
-	linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
-	git@amd.com, amitrkcian2002@gmail.com
-Subject: Re: [PATCH v11 03/10] spi: Add multi-cs memories support in SPI core
-Message-ID: <d21e76ce-8b55-48b1-ade0-9ec22092caeb@sirena.org.uk>
-References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
- <20231125092137.2948-4-amit.kumar-mahapatra@amd.com>
- <3d3a11b1-8396-4d8e-9bb3-61ecb67e7efa@roeck-us.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4766114F6D;
+	Fri, 12 Jan 2024 19:24:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dKiCuSwa4kg0FeFMkR+yqKL2wQ5pzmdZ03s3i/Fj7IMBGyCC33b7vAXJK9qEfSEmGHi1kGHuqWCoHTvUR6GLfX5FRzhxR3kKLRmlh/EqxUFMzFQtzJfbZDrqM0Hzi3p0V8BmQjx/jI4dve5mqBAV9qlRqK5E4UO08UKzZPrLDMYYytZ/3leEtlV7fQxWz/4mdjEMo17HfoyLze3RZ00HIzSHkBkORS9cyXt+a1icKTLuV0nkxN7VdQkQf6+kU+EhK11kVmWghd0VYvYodnvgt4U3O0MqKmHYTR855mIxtLUCZwWDl0qY9wgO0xUrMLlQnNUA650WyGcj5wOKlLDEqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5dfK6ONCMxanrqKmaQRg5KEHujvyZ3GrkgVC0WH9fcY=;
+ b=fFVN/cQHRbx14JdUWs5GIoe144NZi9vmSmTWbrjdro0UuIf6ctKfiCR+6CWo03R361umJ7Ym4g74Srek9gumwtqh5SWT1V8Gkm5ms4QQZNDXp9BZSjhzZFv8UvtyA4QVe2yfrKB/Cb7SsHE3VQsCZ2MquESVzUslzfyn53uXkWIytk1sPz58fOgf/i/ZdhMk6y2+zVV98QkbdSfgO2wy6fBUC52yUugOf1NZD86TC0+tiel0NoBJdw6+ZtMPlu41NtsOVzFoyLswe1yNgilB/7uvL6UOCaYJSbBFCLsWc/dLL/62wJ2K9Cq82ezB7HvBNyCtKoocbLQR6rR5aynhOg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5dfK6ONCMxanrqKmaQRg5KEHujvyZ3GrkgVC0WH9fcY=;
+ b=ruNVJavnTo4tTIoupWssNdOAEf9nkIf2WCC9bc6ChL9SFZUwknNXS2qilIt2L4bvXLW9PfHUoxJo7+wOfTFyMZ7IjbTZb5gakHWqFVC9KTm00MWYU7IrjBXIb4ZNEGPZEdO8f7WCUtzvX+b8XTqy9ceeZ/3c2MVFOlbeEMUKM9g5mJFMQDeAxk1KVDF1H8WnNxY1mOhOlXfRorQnQlKj/4EanLaeO7kIadMpaFmvjq+mRPriIZDq3EQ5lPauNREz9UbLIyVVSttmMtkadMeq33lSusecc5f1YcrSMUc4eW23piBzr4WvdFz35aCrMCK9SRzeSIP8bnmtlSHCFv0A3Q==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by PH0PR02MB7224.namprd02.prod.outlook.com (2603:10b6:510:17::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.23; Fri, 12 Jan
+ 2024 19:24:35 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::3524:e4b3:632d:d8b2]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::3524:e4b3:632d:d8b2%4]) with mapi id 15.20.7181.015; Fri, 12 Jan 2024
+ 19:24:35 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>, "ardb@kernel.org"
+	<ardb@kernel.org>, "Lutomirski, Andy" <luto@kernel.org>, "hch@infradead.org"
+	<hch@infradead.org>, "dave.hansen@linux.intel.com"
+	<dave.hansen@linux.intel.com>, "thomas.lendacky@amd.com"
+	<thomas.lendacky@amd.com>, "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+	"mingo@redhat.com" <mingo@redhat.com>, "seanjc@google.com"
+	<seanjc@google.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "tglx@linutronix.de" <tglx@linutronix.de>,
+	"Cui, Dexuan" <decui@microsoft.com>, "urezki@gmail.com" <urezki@gmail.com>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-hyperv@vger.kernel.org"
+	<linux-hyperv@vger.kernel.org>, "peterz@infradead.org"
+	<peterz@infradead.org>, "hpa@zytor.com" <hpa@zytor.com>, "bp@alien8.de"
+	<bp@alien8.de>, "wei.liu@kernel.org" <wei.liu@kernel.org>, "Rodel, Jorg"
+	<jroedel@suse.de>, "sathyanarayanan.kuppuswamy@linux.intel.com"
+	<sathyanarayanan.kuppuswamy@linux.intel.com>, "lstoakes@gmail.com"
+	<lstoakes@gmail.com>, "x86@kernel.org" <x86@kernel.org>
+Subject: RE: [PATCH v3 1/3] x86/hyperv: Use slow_virt_to_phys() in page
+ transition hypervisor callback
+Thread-Topic: [PATCH v3 1/3] x86/hyperv: Use slow_virt_to_phys() in page
+ transition hypervisor callback
+Thread-Index: AQHaQAVimv7uqsPUukqF0M02BKDa3rDVauWAgADjM5CAACg+AIAAIslw
+Date: Fri, 12 Jan 2024 19:24:35 +0000
+Message-ID:
+ <SN6PR02MB415720444A3D848D444BB58AD46F2@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240105183025.225972-1-mhklinux@outlook.com>
+	 <20240105183025.225972-2-mhklinux@outlook.com>
+	 <9dcdd088494b3fa285781cccfd35cd47a70d69c3.camel@intel.com>
+	 <SN6PR02MB4157B123128F6C2F6C3600D9D46F2@SN6PR02MB4157.namprd02.prod.outlook.com>
+ <3ddc237d9fbbe0aa8838babf0df790076017e9f7.camel@intel.com>
+In-Reply-To: <3ddc237d9fbbe0aa8838babf0df790076017e9f7.camel@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [qcSC9gfHTdX5OGwYzpIUOPfVqwbGTdjX]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|PH0PR02MB7224:EE_
+x-ms-office365-filtering-correlation-id: 75457c14-8ff7-4d31-c04a-08dc13a41c8e
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 62BuYVsfHXjfPmMZL86fR65dCck/x+nTXlg6dt1DSrzsGdMSm3lFaFnm/aQccVqTcG7Ym+EteXyJR9orHJOuHKQvZKY2sNkLS3tvPiVckpQNcYeWd2BuF3VU1bZa+xPlY6yVWsHdr3YtLPaH7d2RLcODaJgrqf79bF7nieqPJX3D+z+ZUTka3XnROVKicqzaDUrUpLlFGecEFzyKFcQc30zDV1L9SF519XA8YrDGJQJqmQwXEKGRk5DegD0VP57eaJnvjPYIIQck5ZkorSHV1EU3pkAFG9NYxf/6oS1IhoV4bxFc4+9H0TqvyIn3tTKrVsMOEFAiBKHMhj9OecPvMsaWiRCLjlEV/hZudojiA/vjhoH/5LWFvHTauJReBpFG098eMuirnyuWk7lA/LaHEkbhZ94wjpCtivqBd8ZOpXfW10MErBbr/+etliQSMTN841aBYZ8GX2xwkqhowdhzo9dnfZlHb8esbNlT8kUBEohDPtKNHmN7Ne4ERf3ykKOL8ij49gRGIW1AUw7NrWmI2SD6qyKh6cKH+P3Pe1souAs=
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?QnFmblNXL280QUhOK3BONzJPako2TUFmdk53Q0VmbjBObmFHL1pOU3NLeHdT?=
+ =?utf-8?B?TWNyRzNEclBjMHVsTjhJeHc2SDd3UVhWZ3MxWGt2TTN3SGZoc1U1WS90K25v?=
+ =?utf-8?B?NFpRcWZ1VjlFUVV6WWEyM2hxWk9NU3RGb0hQOGVhOWhmSGZFbTZIOUsxODBs?=
+ =?utf-8?B?cG9hZEx0czBkcllGV1ZuNlI0ZzAyd3BMazJjdmRvUFF1aEVKUTBLWGw4NWdO?=
+ =?utf-8?B?TDM3MURaZWd1RjZRbkZFbmRJQ3Rub2R2UDZGM1RzWnRsd0NHZUQwaXgrSW5w?=
+ =?utf-8?B?OEdlTzRieEg3OEo0bHBVRi85Umdxd2FMbDFMRW9hSGVCcFZEYW1lR3B4cDgw?=
+ =?utf-8?B?R3VJdWNVS1NtMTd3Wm5RalFoOWZPaXN1ampobXQ5WjZXbjlFR1YwcDgzWmVX?=
+ =?utf-8?B?UWs2WnRaZUYvbEMrQU9vWjZIQ0U0bnRNaG9LYmZkYzNDMEJmRzNSM0dpY3hX?=
+ =?utf-8?B?L2ptRnd2NVNEdkpVLytTclNUM0VYd05zSGdiRXJWTUJWbXhGOCt4UHozRjlN?=
+ =?utf-8?B?ZERDOVpJTlBGaUYvMGhFcGdKTU5SeFQ5NTF0UFdYckxXb3M4V0FVUlBkcHNQ?=
+ =?utf-8?B?ZkQvYytpY3htMTdFTTBPQ3diTHJMSmtQd1ZEekJTa2k3ZnpNSCtEb0lPUmpn?=
+ =?utf-8?B?S2lOVGUwRTRDMnoxbERncGxuN0JaRlIvU0VVSEcrSG8zUnQzVGZidUJLaG9B?=
+ =?utf-8?B?TGJmWEo3UDJmcURnd1VxcCtud0tXTU83UFd1RTQrM2VYc0RWR2k2WDQ2UnMv?=
+ =?utf-8?B?WHY2Q2JJSk5DZEhXUHJGTW5QVUN2NitWK1JpbDF2RXgvQmxyY0plZG9YOGMx?=
+ =?utf-8?B?alFtZVdDWnhvQlZhMFgyamVYSWJpVHo0anRUYzRaUHRDMDdlZFlyeXhvSHQ0?=
+ =?utf-8?B?Y1RqRzJLb0pJMU1tb1RTdTJPZDE3WC9zek9yejVRODdQU3pzVjFRemhGTUlu?=
+ =?utf-8?B?RUYyYXFlOVdNd3lBNnBORkYxaVowMUt4ekxPRzl4eUlxUEVydmdQbTlrVHAw?=
+ =?utf-8?B?QTlxWnhHaTdzR2szbnJ6Sy94a1c4dUp4ZTFRNUVFVy9WcmpVUWdDVGlWZUZI?=
+ =?utf-8?B?VFErdEJKeEhheUNWODZ3MzBjY1VIVnYyOFlBVmk4YkpJZ2RGdEtPVTh4V0xq?=
+ =?utf-8?B?RGtMcWpHVVIvaGR6dUxHd3FqT0tyRldxNVlTYm9PNm4yUVlzQXJzcTVOa29a?=
+ =?utf-8?B?M3FGOHlZUTZzaWpVT3FNZjhqTjU1QTBvQzNLUUJURXpiOVNuTitHZ2VZNUJ6?=
+ =?utf-8?B?dllPQ2ZxZmpoaS9YT0Z1aDAwVjVlMnROVG5VTkpqV3dDaDB2QUxUUmxDRjN2?=
+ =?utf-8?B?NWZ3eUNCT1Aya3VjYTBYc2cvc3lKSVpnL3Y4OWtMWVo2ZVU4MU04bTNFNmpa?=
+ =?utf-8?B?MXVBdCtwZ080bG43NEl5SWEzWHJrNFY2MTNjWXdrdWtqVmQvUXlOM2djbFJK?=
+ =?utf-8?B?RUxPZm9DWFNNMDV0cmlCMUJ1Y0wrek9vTVRDSUE3MEtnY0FVYytITXhMRit5?=
+ =?utf-8?B?ZzJRUHFvc1l3MXJibnNJMVB3RzVWdjZHcURKRU80WW03VGcvbzIwWUphdmoy?=
+ =?utf-8?B?QjN2OVdENjQyNkJVV2pxY0xia2tqVWZyZTUzTTNlaFRic3NGV3owVCtzUXM5?=
+ =?utf-8?B?UDhoRWNCVWJmSGc0WjJ1SDlSWmtxb1E9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="n9fB7lgLUAsxqCcd"
-Content-Disposition: inline
-In-Reply-To: <3d3a11b1-8396-4d8e-9bb3-61ecb67e7efa@roeck-us.net>
-X-Cookie: I want a WESSON OIL lease!!
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 75457c14-8ff7-4d31-c04a-08dc13a41c8e
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2024 19:24:35.4233
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR02MB7224
 
-
---n9fB7lgLUAsxqCcd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Jan 12, 2024 at 11:11:07AM -0800, Guenter Roeck wrote:
-> On Sat, Nov 25, 2023 at 02:51:30PM +0530, Amit Kumar Mahapatra wrote:
-
-> > AMD-Xilinx GQSPI controller has two advanced mode that allows the
-> > controller to consider two flashes as one single device.
-
-=2E..
-
-> With this patch in the mainline kernel, two of my qemu emulations
-> (quanta-q71l-bmc and almetto-bmc) fail to instantiate the first SPI
-> controller and thus fail to boot from SPI. The error message is
-
-Not sure what quanta-q711-bmc is - is almetto-bmc really palmetto-bmc
-(which has a mainline DT with a SPI flash)?
-
->=20
-> [    3.006458] spi_master spi0: No. of CS is more than max. no. of suppor=
-ted CS
-> [    3.006775] spi_master spi0: Failed to create SPI device for /ahb/spi@=
-1e620000/flash@0
->=20
-> The problem is no longer seen after reverting this patch.
->=20
-> Bisect log attached for reference.
->=20
-> Guenter
->=20
-> ---
-> # bad: [70d201a40823acba23899342d62bc2644051ad2e] Merge tag 'f2fs-for-6.8=
--rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs
-> # good: [0dd3ee31125508cd67f7e7172247f05b7fd1753a] Linux 6.7
-> git bisect start 'HEAD' 'v6.7'
-> # bad: [de927f6c0b07d9e698416c5b287c521b07694cac] Merge tag 's390-6.8-1' =
-of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux
-> git bisect bad de927f6c0b07d9e698416c5b287c521b07694cac
-> # bad: [35f11a3710cdcbbc5090d14017a6295454e0cc73] Merge tag 'mtd/for-6.8'=
- of git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux
-> git bisect bad 35f11a3710cdcbbc5090d14017a6295454e0cc73
-> # good: [d30e51aa7b1f6fa7dd78d4598d1e4c047fcc3fb9] Merge tag 'slab-for-6.=
-8' of git://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab
-> git bisect good d30e51aa7b1f6fa7dd78d4598d1e4c047fcc3fb9
-> # good: [fb46e22a9e3863e08aef8815df9f17d0f4b9aede] Merge tag 'mm-stable-2=
-024-01-08-15-31' of git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
-> git bisect good fb46e22a9e3863e08aef8815df9f17d0f4b9aede
-> # good: [063a7ce32ddc2c4f2404b0dfd29e60e3dbcdffac] Merge tag 'lsm-pr-2024=
-0105' of git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/lsm
-> git bisect good 063a7ce32ddc2c4f2404b0dfd29e60e3dbcdffac
-> # bad: [f6cd66231aa58599526584ff4df1bdde8d86eac8] spi: stm32: add st,stm3=
-2mp25-spi compatible supporting STM32MP25 soc
-> git bisect bad f6cd66231aa58599526584ff4df1bdde8d86eac8
-> # good: [18f78b5e609b19b56237f0dae47068d44b8b0ecd] spi: axi-spi-engine: i=
-mprovements round 2
-> git bisect good 18f78b5e609b19b56237f0dae47068d44b8b0ecd
-> # bad: [9d93c8d97b4cdb5edddb4c5530881c90eecb7e44] spi: spi-ti-qspi: switc=
-h to use modern name
-> git bisect bad 9d93c8d97b4cdb5edddb4c5530881c90eecb7e44
-> # bad: [e6b7e64cb11966b26646a362677ca5a08481157e] spi: st-ssc4: switch to=
- use modern name
-> git bisect bad e6b7e64cb11966b26646a362677ca5a08481157e
-> # bad: [c3aeaf2f0ec8af93189488bda3928a1ac7752388] spi: pxa2xx: Use inclus=
-ive language
-> git bisect bad c3aeaf2f0ec8af93189488bda3928a1ac7752388
-> # good: [f05e2f61fe88092e0d341ea27644a84e3386358d] ALSA: hda/cs35l56: Use=
- set/get APIs to access spi->chip_select
-> git bisect good f05e2f61fe88092e0d341ea27644a84e3386358d
-> # bad: [88a50c1663ffa9f6b31705c6bf7a887a2c8d9434] spi: Add support for st=
-acked/parallel memories
-> git bisect bad 88a50c1663ffa9f6b31705c6bf7a887a2c8d9434
-> # bad: [4d8ff6b0991d5e86b17b235fc46ec62e9195cb9b] spi: Add multi-cs memor=
-ies support in SPI core
-> git bisect bad 4d8ff6b0991d5e86b17b235fc46ec62e9195cb9b
-> # first bad commit: [4d8ff6b0991d5e86b17b235fc46ec62e9195cb9b] spi: Add m=
-ulti-cs memories support in SPI core
-
---n9fB7lgLUAsxqCcd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWhkBAACgkQJNaLcl1U
-h9C2wgf/ZtMyG4HQA/GSK+rebVCqjyVQet/jKh7v1dsFkCT/xutY7+75Q5AZe3h3
-B8U0Euv952q9dUWjbmiZlQRTigIDwJDNNiJkqcu3/oHPCh+p1xERe9f/Qwu8sDMY
-toSk5Dtg4TuBE1qEpVZwrd2fzorgxLzvKGHVb8RdZ4pVFm64TT1vXXEyGOaNoyAp
-/k30MZdWqi9cvJvgMFW2/XpsIa0kBtWC6o/L6RHjiJluOqVc2BYkDuQboA+qtOE5
-jIptXuVM1sOt3vmGr95303roCxKHBxvADD0hwZumLIX5xMd3LSIwBCJ4T7WmNrNm
-t0U5a7D4yjLZQ7mOmYsa9uKHAo2Xbw==
-=MtQn
------END PGP SIGNATURE-----
-
---n9fB7lgLUAsxqCcd--
+RnJvbTogRWRnZWNvbWJlLCBSaWNrIFAgPHJpY2sucC5lZGdlY29tYmVAaW50ZWwuY29tPiBTZW50
+OiBGcmlkYXksIEphbnVhcnkgMTIsIDIwMjQgOToxNyBBTQ0KPiANCj4gT24gRnJpLCAyMDI0LTAx
+LTEyIGF0IDE1OjA3ICswMDAwLCBNaWNoYWVsIEtlbGxleSB3cm90ZToNCj4gPiBUaGUgY29tbWVu
+dCBpcyBLaXJpbGwgU2h1dGVtb3YncyBzdWdnZXN0aW9uIGJhc2VkIG9uIGNvbW1lbnRzIGluDQo+
+ID4gYW4gZWFybGllciB2ZXJzaW9uIG9mIHRoZSBwYXRjaCBzZXJpZXMuwqAgU2VlIFsxXS7CoMKg
+IFRoZSBpbnRlbnQgaXMgdG8NCj4gPiBwcmV2ZW50DQo+ID4gc29tZSBsYXRlciByZXZpc2lvbiB0
+byBzbG93X3ZpcnRfdG9fcGh5cygpIGZyb20gYWRkaW5nIGEgY2hlY2sgZm9yDQo+ID4gdGhlDQo+
+ID4gcHJlc2VudCBiaXQgYW5kIGJyZWFraW5nIHRoZSBDb0NvIFZNIGh5cGVydmlzb3IgY2FsbGJh
+Y2suwqAgWWVzLCB0aGUNCj4gPiBjb21tZW50IGNvdWxkIGdldCBzdGFsZSwgYnV0IEknbSBub3Qg
+c3VyZSBob3cgZWxzZSB0byBjYWxsIG91dCB0aGUNCj4gPiBpbXBsaWNpdCBkZXBlbmRlbmN5LsKg
+IFRoZSBpZGVhIG9mIGNyZWF0aW5nIGEgcHJpdmF0ZSB2ZXJzaW9uIG9mDQo+ID4gc2xvd192aXJ0
+X3RvX3BoeXMoKSBmb3IgdXNlIG9ubHkgaW4gdGhlIENvQ28gVk0gaHlwZXJ2aXNvciBjYWxsYmFj
+aw0KPiA+IGlzIGFsc28gZGlzY3Vzc2VkIGluIHRoZSB0aHJlYWQsIGJ1dCB0aGF0IHNlZW1zIHdv
+cnNlIG92ZXJhbGwuDQo+IA0KPiBXZWxsLCBpdCdzIG5vdCBhIGh1Z2UgZGVhbCwgYnV0IEkgd291
+bGQgaGF2ZSBqdXN0IHB1dCBhIGNvbW1lbnQgYXQgdGhlDQo+IGNhbGxlciBsaWtlOg0KPiANCj4g
+LyoNCj4gICogVXNlIHNsb3dfdmlydF90b19waHlzKCkgaW5zdGVhZCBvZiB2bWFsbG9jX3RvX3Bh
+Z2UoKSwgYmVjYXVzZSBpdA0KPiAgKiByZXR1cm5zIHRoZSBQRk4gZXZlbiBmb3IgTlAgUFRFcy4N
+Cj4gICovDQoNClllcywgdGhhdCBjb21tZW50IGlzIGFkZGVkIGluIHRoaXMgcGF0Y2guDQoNCj4g
+DQo+IElmIHNvbWVvbmUgaXMgY2hhbmdpbmcgc2xvd192aXJ0X3RvX3BoeXMoKSB0aGV5IHNob3Vs
+ZCBjaGVjayB0aGUNCj4gY2FsbGVycyB0byBtYWtlIHN1cmUgdGhleSB3b24ndCBicmVhayBhbnl0
+aGluZy4gVGhleSBjYW4gc2VlIHRoZQ0KPiBjb21tZW50IHRoZW4gYW5kIGhhdmUgYW4gZWFzeSB0
+aW1lLg0KPiANCj4gQW4gb3B0aW9uYWwgY29tbWVudCBhdCBzbG93X3ZpcnRfdG9fcGh5cygpIGNv
+dWxkIGV4cGxhaW4gaG93IHRoZQ0KPiBmdW5jdGlvbiB3b3JrcyBpbiByZWdhcmRzIHRvIHRoZSBw
+cmVzZW50IGJpdCwgYnV0IG5vdCBpbmNsdWRlIGRldGFpbHMNCj4gYWJvdXQgQ29Db08gVk0gcGFn
+ZSB0cmFuc2l0aW9uJ3MgdXNhZ2Ugb2YgdGhlIHByZXNlbnQgYml0LiBUaGUgcHJvcG9zZWQNCj4g
+Y29tbWVudCB0ZXh0IGxvb2tzIGxpa2Ugc29tZXRoaW5nIG1vcmUgYXBwcm9wcmlhdGUgZm9yIGEg
+Y29tbWl0IGxvZy4NCg0KS2lyaWxsIC0tIHlvdSBvcmlnaW5hbGx5IGFza2VkIGZvciBhIGNvbW1l
+bnQgaW4gc2xvd192aXJ0X3RvX3BoeXMoKS4gWzFdDQpBcmUgeW91IE9LIHdpdGggUmljaydzIHBy
+b3Bvc2FsPw0KDQpNaWNoYWVsDQoNClsxXSBodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sLzIw
+MjMwODI4MjIxMzMzLjVibHNob3N5cWFmYmd3bGNAYm94LnNodXRlbW92Lm5hbWUvDQoNCg==
 
