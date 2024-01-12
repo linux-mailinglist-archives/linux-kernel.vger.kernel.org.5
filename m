@@ -1,46 +1,55 @@
-Return-Path: <linux-kernel+bounces-24297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CADB82BA90
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 06:01:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABB3082BA8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 06:00:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A2AB1C2162D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 05:01:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 962111C25289
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 05:00:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0547D5B5BC;
-	Fri, 12 Jan 2024 05:01:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 521FD5B5C0;
+	Fri, 12 Jan 2024 05:00:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="mzhBGFgJ"
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F0685B5B5
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 05:01:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=/NYM0
-	Ugmi9mOXgsDU9vW/LSp9grSGNGvGGp9Ka4NfHY=; b=mzhBGFgJL6JvI8ncjQB7i
-	gsn5Lyr+ZN2TKLBWFaFCurIyUq9VUo4JbpytpeSNyul/2GLjwR2PRw/mLquIa8Re
-	tpoEgIQpfHqPjE2AnEeQ+cQZEQ6gW3t/WUcLMsyE/etY58HfdWiguwnQWkr/0s/y
-	vYfzmg9z1n9ocDgHJGTPR0=
-Received: from localhost.localdomain (unknown [36.4.236.25])
-	by zwqz-smtp-mta-g2-1 (Coremail) with SMTP id _____wDnTxtWx6BlkUenAA--.40024S4;
-	Fri, 12 Jan 2024 13:00:34 +0800 (CST)
-From: Lizhe <sensor1010@163.com>
-To: tglx@linutronix.de,
-	ilpo.jarvinen@linux.intel.com,
-	agk@redhat.com,
-	snitzer@kernel.org,
-	mpatocka@redhat.com
-Cc: dm-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Lizhe <sensor1010@163.com>
-Subject: [PATCH] drivers/dm-crypt.c : remove redundant state settings after waking up
-Date: Thu, 11 Jan 2024 21:00:05 -0800
-Message-Id: <20240112050005.4952-1-sensor1010@163.com>
-X-Mailer: git-send-email 2.25.1
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="UxrURFed"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF96E5B5B3;
+	Fri, 12 Jan 2024 05:00:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=vgJoxByM6oiQwE5/ygczGmqmO8QxfCFpN0WkRcWZdaI=; b=UxrURFedLIFFev9h7SzxjxxSkP
+	ZdSRg+Bf00xFEa/Ui5X3S9ZM6KCAK4it19SE97RrMyyzB4B3OVkA55kmH7AGoBheJOlsAqsMRru1M
+	Xoq74z38STTsPniQ4RTMMMXv1njlBPwizQNCqCEtXCbtZyL1DSehvOBas1PZ6rdlwjTV3to3UN+Hq
+	DGgXeKt/UnPnbhierGwrRpsqvvGbFviUDYtKOq9Ojzlhx/Ty8l65n04//4Xp0YP0hCeUQqsv/ZEEu
+	32Bp1S4AyyM3kIWGcXst+7G3YQgzooHuLk+AGnS0a2fZSomE5p+BKoLyxeH51p0ga30j8gpnQ9Zwa
+	B0Cb4ylg==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rO9eM-001tOt-2V;
+	Fri, 12 Jan 2024 05:00:10 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Jon Maloy <jmaloy@redhat.com>,
+	Ying Xue <ying.xue@windriver.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org,
+	Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH] tipc: node: remove Excess struct member kernel-doc warnings
+Date: Thu, 11 Jan 2024 21:00:10 -0800
+Message-ID: <20240112050010.25626-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,32 +57,35 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDnTxtWx6BlkUenAA--.40024S4
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjTRjNtxUUUUU
-X-CM-SenderInfo: 5vhq20jurqiii6rwjhhfrp/xtbBXhVjq2VOA8ircwAAs7
 
-The task status has been set to TASK_RUNNING in schedule().
-No need to set again here.
+Remove 2 kernel-doc descriptions to squelch warnings:
 
-Signed-off-by: Lizhe <sensor1010@163.com>
+node.c:150: warning: Excess struct member 'inputq' description in 'tipc_node'
+node.c:150: warning: Excess struct member 'namedq' description in 'tipc_node'
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jon Maloy <jmaloy@redhat.com>
+Cc: Ying Xue <ying.xue@windriver.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org
+Cc: Jonathan Corbet <corbet@lwn.net>
 ---
- drivers/md/dm-crypt.c | 1 -
- 1 file changed, 1 deletion(-)
+ net/tipc/node.c |    2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index 855b482cbff1..ab1e30630e64 100644
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -1948,7 +1948,6 @@ static int dmcrypt_write(void *data)
- 
- 		schedule();
- 
--		set_current_state(TASK_RUNNING);
- 		spin_lock_irq(&cc->write_thread_lock);
- 		goto continue_locked;
- 
--- 
-2.25.1
-
+diff -- a/net/tipc/node.c b/net/tipc/node.c
+--- a/net/tipc/node.c
++++ b/net/tipc/node.c
+@@ -86,8 +86,6 @@ struct tipc_bclink_entry {
+  * @lock: rwlock governing access to structure
+  * @net: the applicable net namespace
+  * @hash: links to adjacent nodes in unsorted hash chain
+- * @inputq: pointer to input queue containing messages for msg event
+- * @namedq: pointer to name table input queue with name table messages
+  * @active_links: bearer ids of active links, used as index into links[] array
+  * @links: array containing references to all links to node
+  * @bc_entry: broadcast link entry
 
