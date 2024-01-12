@@ -1,193 +1,136 @@
-Return-Path: <linux-kernel+bounces-24826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0220482C30D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:49:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E22382C31B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 16:50:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63BD81F2506B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:48:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69CAF1C219C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:50:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 796576EB6E;
-	Fri, 12 Jan 2024 15:48:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C56067317A;
+	Fri, 12 Jan 2024 15:50:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UwfzX2mE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="eHPoiG6N"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B79506EB4E;
-	Fri, 12 Jan 2024 15:48:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F028DC433F1;
-	Fri, 12 Jan 2024 15:48:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705074526;
-	bh=LjNh32+q3C0+BqK8BlI5tSSM8lb3tGzw35+W/e7lDGA=;
-	h=Date:From:To:Subject:From;
-	b=UwfzX2mEQlMs7lKRKyPel2evCsbDKSF3FUJWhz2ja/dq05Zf8E2LeyAKqtghulLpq
-	 ZdITG9xio8wsxb3aEbE66gvbl7xwWfvDC8zdLdBfbo6nDoRr5K/2FYDwTMSP+1aTXO
-	 yUapVQDcRnDBzXNxRRXJVIhKYuatcVQScCr1aNn99StcNxluNspXVxAkY7wkvGptIm
-	 oD7706f5h6O5euzgYr+ywxiZRoCebK5twcPV36/yj6KaSt08ogPP1B41RPoh9XIAT/
-	 zB0rf6PqQbiPbnenPeiqIGWpAWP/2mdtPBD3Fp/wfdd8IEze9+H8kGf9NSFQSPu3qL
-	 GoUDR079kJFZw==
-Date: Fri, 12 Jan 2024 16:48:41 +0100
-From: Helge Deller <deller@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	Dave Airlie <airlied@redhat.com>, linux-kernel@vger.kernel.org,
-	linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [GIT PULL] fbdev fixes and updates for v6.8-rc1
-Message-ID: <ZaFfWY-bB_b9dGrO@carbonx1>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9D2C6EB6E;
+	Fri, 12 Jan 2024 15:50:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40CEhLdd009370;
+	Fri, 12 Jan 2024 15:49:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=godOMp+xB/8b+SwNVvmIz5aXGAQrkx1QMjaDlquO9Jc=; b=eH
+	PoiG6N3Z2r7zwDho/Kv/Xbcmza0okC+lwRUpP/vTKuSS5n1EZNU+vjLsbfJk8Ox5
+	hRcocNO+5nvsRbhaer3Ip0PFBVusfMmjNhIWt5nWvJ/FvKTh/CMGSJLBLUfitB2I
+	TdwAHyQdS705MYTeFF58LxyeN7AcFQo5USMQpcXU14WWFl9LRsAhuUObsn26tiWd
+	sBuwpr8lWzKjbZJ+VbysqjyWNHUE6c10+6x9IZvnD6fCyEAInMLaVfIpJqv86GFQ
+	tWLHgAY7qEiMBtjyen5D4b5nZtA5jwcEpe2jhBDAdv/IcDPnVwfxG1XxpsP+6Cc5
+	y6vdR2ame3JkNQcLWOsw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vk6ee88y6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Jan 2024 15:49:51 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40CFnowV017974
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Jan 2024 15:49:50 GMT
+Received: from [10.253.78.164] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 12 Jan
+ 2024 07:49:37 -0800
+Message-ID: <29d744c3-b06b-4959-acc1-288b2804356d@quicinc.com>
+Date: Fri, 12 Jan 2024 23:49:35 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 00/20] net: ethernet: Add qcom PPE driver
+Content-Language: en-US
+To: Simon Horman <horms@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski@linaro.org>
+CC: <agross@kernel.org>, <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <corbet@lwn.net>, <catalin.marinas@arm.com>, <will@kernel.org>,
+        <p.zabel@pengutronix.de>, <linux@armlinux.org.uk>,
+        <shannon.nelson@amd.com>, <anthony.l.nguyen@intel.com>,
+        <jasowang@redhat.com>, <brett.creeley@amd.com>,
+        <rrameshbabu@nvidia.com>, <joshua.a.hay@intel.com>, <arnd@arndb.de>,
+        <geert+renesas@glider.be>, <neil.armstrong@linaro.org>,
+        <dmitry.baryshkov@linaro.org>, <nfraprado@collabora.com>,
+        <m.szyprowski@samsung.com>, <u-kumar1@ti.com>,
+        <jacob.e.keller@intel.com>, <andrew@lunn.ch>, <netdev@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <ryazanov.s.a@gmail.com>,
+        <ansuelsmth@gmail.com>, <quic_kkumarcs@quicinc.com>,
+        <quic_suruchia@quicinc.com>, <quic_soni@quicinc.com>,
+        <quic_pavir@quicinc.com>, <quic_souravp@quicinc.com>,
+        <quic_linchen@quicinc.com>, <quic_leiwei@quicinc.com>
+References: <20240110114033.32575-1-quic_luoj@quicinc.com>
+ <a72405c2-c891-4db5-9ac5-42ca1c36cafb@linaro.org>
+ <20240110154414.GH9296@kernel.org>
+From: Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <20240110154414.GH9296@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ybGN_sbOMlh8_paMCeNBYLvIpmaTQ9IS
+X-Proofpoint-GUID: ybGN_sbOMlh8_paMCeNBYLvIpmaTQ9IS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ lowpriorityscore=0 mlxlogscore=999 clxscore=1015 malwarescore=0
+ impostorscore=0 mlxscore=0 adultscore=0 spamscore=0 priorityscore=1501
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401120124
 
-Hi Linus,
 
-please pull the fbdev changes for kernel 6.8-rc1.
 
-Three fbdev drivers (~8500 lines of code) will be dropped:
-The Carillo Ranch fbdev driver is for an Intel product which was never shipped,
-and for the intelfb and the amba-clcd drivers the drm drivers can be used
-instead. 
+On 1/10/2024 11:44 PM, Simon Horman wrote:
+> On Wed, Jan 10, 2024 at 01:24:06PM +0100, Krzysztof Kozlowski wrote:
+>> On 10/01/2024 12:40, Luo Jie wrote:
+>>> The PPE(packet process engine) hardware block is available in Qualcomm
+>>> IPQ chipsets that support PPE architecture, such as IPQ9574 and IPQ5332.
+>>> The PPE includes integrated ethernet MAC and PCS(uniphy), which is used
+>>> to connect with external PHY devices by PCS. The PPE also includes
+>>> various packet processing offload capabilities such as routing and
+>>> briding offload, L2 switch capability, VLAN and tunnel processing
+>>> offload.
+>>>
+>>> This patch series enables support for the PPE driver which intializes
+>>> and configures the PPE, and provides various services for higher level
+>>> network drivers in the system such as EDMA (Ethernet DMA) driver or a
+>>> DSA switch driver for PPE L2 Switch, for Qualcomm IPQ SoCs.
+>>
+>> net-next is closed.
+> 
+> Also, please try to avoid sending patch-sets with more than 15 patches
+> for net or net-next.
+> 
+> https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#dividing-work-into-patches
 
-The other code changes are minor:
-Some fb_deferred_io flushing fixes, imxfb margin fixes and stifb cleanups.
+Got it, at a later point when this review resumes, we will split the PPE 
+driver patches into two series, one is for PPE switch core feature, 
+another is for MAC/UNIPHY features. Hope this is fine.
 
-Please note that there is a merge conflict with the drm tree for those files:
-- drivers/video/fbdev/amba-clcd.c
-- drivers/video/fbdev/vermilion/vermilion.c
-They were modified in the drm tree, but deleted in the fbdev tree.
-In case you don't want to deal with this upcoming merge conflict I offer
-to resend a rebased pull request after you pulled drm.
+Thanks for this comment.
 
-Thanks!
-Helge
-
-----------------------------------------------------------------
-The following changes since commit de927f6c0b07d9e698416c5b287c521b07694cac:
-
-  Merge tag 's390-6.8-1' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux (2024-01-10 18:18:20 -0800)
-
-are available in the Git repository at:
-
-  http://git.kernel.org/pub/scm/linux/kernel/git/deller/linux-fbdev.git tags/fbdev-for-6.8-rc1
-
-for you to fetch changes up to 689237ab37c59b9909bc9371d7fece3081683fba:
-
-  fbdev/intelfb: Remove driver (2024-01-12 12:38:37 +0100)
-
-----------------------------------------------------------------
-fbdev fixes and cleanups for 6.8-rc1:
-
-- Remove intelfb fbdev driver (Thomas Zimmermann)
-- Remove amba-clcd fbdev driver (Linus Walleij)
-- Remove vmlfb Carillo Ranch fbdev driver (Matthew Wilcox)
-- fb_deferred_io flushing fixes (Nam Cao)
-- imxfb code fixes and cleanups (Dario Binacchi)
-- stifb primary screen detection cleanups (Thomas Zimmermann)
-
-----------------------------------------------------------------
-Colin Ian King (1):
-      video/logo: use %u format specifier for unsigned int values
-
-Dario Binacchi (11):
-      fbdev: imxfb: fix left margin setting
-      fbdev: imxfb: move PCR bitfields near their offset
-      fbdev: imxfb: use BIT, FIELD_{GET,PREP} and GENMASK macros
-      fbdev: imxfb: replace some magic numbers with constants
-      fbdev: imxfb: add missing SPDX tag
-      fbdev: imxfb: drop ftrace-like logging
-      fbdev: imxfb: add missing spaces after ','
-      fbdev: imxfb: Fix style warnings relating to printk()
-      fbdev: imxfb: use __func__ for function name
-      fbdev: imxfb: add '*/' on a separate line in block comment
-      fbdev: mmp: Fix typo and wording in code comment
-
-Linus Walleij (1):
-      fbdev: amba-clcd: Delete the old CLCD driver
-
-Matthew Wilcox (Oracle) (1):
-      fbdev: Remove support for Carillo Ranch driver
-
-Nam Cao (2):
-      fbdev: flush deferred work in fb_deferred_io_fsync()
-      fbdev: flush deferred IO before closing
-
-Randy Dunlap (1):
-      fbdev: hgafb: fix kernel-doc comments
-
-Stanislav Kinsburskii (1):
-      fbdev: fsl-diu-fb: Fix sparse warning due to virt_to_phys() prototype change
-
-Thomas Zimmermann (10):
-      video/sticore: Store ROM device in STI struct
-      fbdev/stifb: Allocate fb_info instance with framebuffer_alloc()
-      arch/parisc: Detect primary video device from device instance
-      video/sticore: Remove info field from STI struct
-      fbdev/sis: Remove dependency on screen_info
-      drm/hyperv: Remove firmware framebuffers with aperture helper
-      fbdev/hyperv_fb: Remove firmware framebuffers with aperture helpers
-      firmware/sysfb: Clear screen_info state after consuming it
-      fbdev/hyperv_fb: Do not clear global screen_info
-      fbdev/intelfb: Remove driver
-
- Documentation/fb/index.rst                         |    1 -
- Documentation/fb/intelfb.rst                       |  155 --
- Documentation/userspace-api/ioctl/ioctl-number.rst |    1 -
- MAINTAINERS                                        |   12 -
- arch/parisc/video/fbdev.c                          |    2 +-
- drivers/Makefile                                   |    3 +-
- drivers/firmware/sysfb.c                           |   14 +-
- drivers/gpu/drm/hyperv/hyperv_drm_drv.c            |    8 +-
- drivers/video/backlight/Kconfig                    |    7 -
- drivers/video/backlight/Makefile                   |    1 -
- drivers/video/backlight/cr_bllcd.c                 |  264 ---
- drivers/video/fbdev/Kconfig                        |   72 -
- drivers/video/fbdev/Makefile                       |    2 -
- drivers/video/fbdev/amba-clcd.c                    |  984 ---------
- drivers/video/fbdev/core/fb_defio.c                |    8 +-
- drivers/video/fbdev/fsl-diu-fb.c                   |    2 +-
- drivers/video/fbdev/hgafb.c                        |   13 +-
- drivers/video/fbdev/hyperv_fb.c                    |   20 +-
- drivers/video/fbdev/imxfb.c                        |  179 +-
- drivers/video/fbdev/intelfb/Makefile               |    8 -
- drivers/video/fbdev/intelfb/intelfb.h              |  382 ----
- drivers/video/fbdev/intelfb/intelfb_i2c.c          |  209 --
- drivers/video/fbdev/intelfb/intelfbdrv.c           | 1680 ----------------
- drivers/video/fbdev/intelfb/intelfbhw.c            | 2115 --------------------
- drivers/video/fbdev/intelfb/intelfbhw.h            |  609 ------
- drivers/video/fbdev/mmp/hw/mmp_spi.c               |    2 +-
- drivers/video/fbdev/sis/sis_main.c                 |   37 -
- drivers/video/fbdev/stifb.c                        |  109 +-
- drivers/video/fbdev/vermilion/Makefile             |    6 -
- drivers/video/fbdev/vermilion/cr_pll.c             |  195 --
- drivers/video/fbdev/vermilion/vermilion.c          | 1173 -----------
- drivers/video/fbdev/vermilion/vermilion.h          |  245 ---
- drivers/video/logo/pnmtologo.c                     |    6 +-
- drivers/video/sticore.c                            |    5 +
- include/linux/amba/clcd-regs.h                     |   87 -
- include/linux/amba/clcd.h                          |  290 ---
- include/video/sticore.h                            |    6 +-
- 37 files changed, 208 insertions(+), 8704 deletions(-)
- delete mode 100644 Documentation/fb/intelfb.rst
- delete mode 100644 drivers/video/backlight/cr_bllcd.c
- delete mode 100644 drivers/video/fbdev/amba-clcd.c
- delete mode 100644 drivers/video/fbdev/intelfb/Makefile
- delete mode 100644 drivers/video/fbdev/intelfb/intelfb.h
- delete mode 100644 drivers/video/fbdev/intelfb/intelfb_i2c.c
- delete mode 100644 drivers/video/fbdev/intelfb/intelfbdrv.c
- delete mode 100644 drivers/video/fbdev/intelfb/intelfbhw.c
- delete mode 100644 drivers/video/fbdev/intelfb/intelfbhw.h
- delete mode 100644 drivers/video/fbdev/vermilion/Makefile
- delete mode 100644 drivers/video/fbdev/vermilion/cr_pll.c
- delete mode 100644 drivers/video/fbdev/vermilion/vermilion.c
- delete mode 100644 drivers/video/fbdev/vermilion/vermilion.h
- delete mode 100644 include/linux/amba/clcd-regs.h
- delete mode 100644 include/linux/amba/clcd.h
 
