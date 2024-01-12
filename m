@@ -1,225 +1,105 @@
-Return-Path: <linux-kernel+bounces-25019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AE2082C635
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 21:09:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C6B7182C638
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 21:10:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22FC51F2548E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 20:09:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62B881F25E87
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 20:10:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 055C017980;
-	Fri, 12 Jan 2024 20:07:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A50716436;
+	Fri, 12 Jan 2024 20:08:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W9/SlA7d"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="KNNfilfS"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 470E117730;
-	Fri, 12 Jan 2024 20:07:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51766C43394;
-	Fri, 12 Jan 2024 20:07:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705090075;
-	bh=ua+X20080YRjcHe0C1o6t3ehjcRZtGl3WAk/t15eQ/k=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=W9/SlA7dwlMSfXI4eTDVjMoPuCuC9FE1VqpmUJNPyPwQcZ8vlOb3P4KZF4WInPPrS
-	 D8k7Eg93W+UcWyPzE34O9t7/0Rr/Jc5XD6DXkEd93rA65eBuxCnEml4DGbpVStHG91
-	 KfzR94Rm5w+TjxilnrPr76MZfQCzXDw0Dnl4o8kaSyQYVsyfxyMT8lW7R/dRKq3C0K
-	 4eCSbmy0jRzfvTWgthjDeZ4Q1Knu8TPgS+6KWnQYxLighp/oo63e1pZ3JTdIiz0hea
-	 iA41au/DcqhZ+iLg00zV0JqHCZ0cLYgx2ywejUbFVJO4av9lBILwhzoqmlQq8qLy9V
-	 uRIv5ur7Xhdug==
-From: Stephen Boyd <sboyd@kernel.org>
-To: Rob Herring <robh+dt@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev,
-	linux-um@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	kunit-dev@googlegroups.com,
-	linux-kselftest@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	Frank Rowand <frowand.list@gmail.com>,
-	David Gow <davidgow@google.com>,
-	Brendan Higgins <brendan.higgins@linux.dev>
-Subject: [PATCH 6/6] of: Add KUnit test to confirm DTB is loaded
-Date: Fri, 12 Jan 2024 12:07:49 -0800
-Message-ID: <20240112200750.4062441-7-sboyd@kernel.org>
-X-Mailer: git-send-email 2.43.0.275.g3460e3d667-goog
-In-Reply-To: <20240112200750.4062441-1-sboyd@kernel.org>
-References: <20240112200750.4062441-1-sboyd@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53BC616410;
+	Fri, 12 Jan 2024 20:08:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 77B0540E01BB;
+	Fri, 12 Jan 2024 20:08:33 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 8kA7_vDH_yh5; Fri, 12 Jan 2024 20:08:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1705090111; bh=e1SfatK6kMuNuuwBDPnqHfNy3+Q98jf/weW6sPVIkD0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KNNfilfSV90nTYo01g8OipC9QBf4EsV5uS9Xh50yk1Yr/QWJAE4vpzA35JE3Nm9jG
+	 K0Q0RGMJS81gbue1mMgxIQPF8PZ9hs45zU2p05e8jyHqp5+5F385NOYXSI7LSGnyfw
+	 VodDIr+WPeasUIY4n93LC1K/wYVm8GHl2vfE9zBKj7PAkAocnwrYzjeWzldE2R29Go
+	 oMH30Yk1lxnm5za+ZQ1ShL1YQ4x5+Bd6Hd2X8lp7YLVJPHGCOtSExwNftBX/22cgWT
+	 Jb+R+FkOZGi1ibwlHJ8CDX67dOtESWRxXAHL3wjLzxxJ15WlLJD7dOBUUPSlI011pt
+	 YNYY+FUeS5kK2E3roloMIFvGd9F0ASqwfkms7Tgi94Np8PV8o/dmv/41axAi3xEqXc
+	 bMFohTfAYalOMlv/MRyfLsm6FhqzZg/0b/iiPmNyIJ9krTZUOkVYjkubIGTEjq59/4
+	 OkhtzKGnhXsA9rWEKO/KX1QZ9AhzRtZ1Kqioqkdg7qjPjq5SxqXYUZQezqU2groGuN
+	 T/8uiUWLxQhK86uU3X7YZb3PpoAnWJ+jrGnu35UajKR2lGck6bvk7b8VvNDqVEB9d0
+	 BvFgn/IBTM8lchd34kUpkgHg1dIl6e7ldu/5XcXG0HhNmap/MhQ383+sgVTB3IictL
+	 9g8wUqDg3EIOHRw8iFm8pukE=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F3A4240E00C5;
+	Fri, 12 Jan 2024 20:07:51 +0000 (UTC)
+Date: Fri, 12 Jan 2024 21:07:51 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: Michael Roth <michael.roth@amd.com>, x86@kernel.org,
+	kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
+	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org,
+	pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+	jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
+	slp@redhat.com, pgonda@google.com, peterz@infradead.org,
+	srinivas.pandruvada@linux.intel.com, rientjes@google.com,
+	tobin@ibm.com, vbabka@suse.cz, kirill@shutemov.name,
+	ak@linux.intel.com, tony.luck@intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+	pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com,
+	Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v1 11/26] x86/sev: Invalidate pages from the direct map
+ when adding them to the RMP table
+Message-ID: <20240112200751.GHZaGcF0-OZVJiIB7y@fat_crate.local>
+References: <20231230161954.569267-1-michael.roth@amd.com>
+ <20231230161954.569267-12-michael.roth@amd.com>
+ <cb604c37-aeb5-45bd-b6db-246ae724e4ca@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <cb604c37-aeb5-45bd-b6db-246ae724e4ca@intel.com>
 
-Add a KUnit test that confirms a DTB has been loaded, i.e. there is a
-root node, and that the of_have_populated_dt() API works properly.
+On Fri, Jan 12, 2024 at 12:00:01PM -0800, Dave Hansen wrote:
+> On 12/30/23 08:19, Michael Roth wrote:
+> > If the kernel uses a 2MB directmap mapping to write to an address, and
+> > that 2MB range happens to contain a 4KB page that set to private in the
+> > RMP table, that will also lead to a page-fault exception.
+> 
+> I thought we agreed long ago to just demote the whole direct map to 4k
+> on kernels that might need to act as SEV-SNP hosts.  That should be step
+> one and this can be discussed as an optimization later.
 
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Frank Rowand <frowand.list@gmail.com>
-Cc: David Gow <davidgow@google.com>
-Cc: Brendan Higgins <brendan.higgins@linux.dev>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
----
- drivers/of/.kunitconfig |  3 ++
- drivers/of/Kconfig      |  9 ++++
- drivers/of/Makefile     |  2 +
- drivers/of/of_test.c    | 98 +++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 112 insertions(+)
- create mode 100644 drivers/of/.kunitconfig
- create mode 100644 drivers/of/of_test.c
+What would be the disadvantage here? Higher TLB pressure when running
+kernel code I guess...
 
-diff --git a/drivers/of/.kunitconfig b/drivers/of/.kunitconfig
-new file mode 100644
-index 000000000000..5a8fee11978c
---- /dev/null
-+++ b/drivers/of/.kunitconfig
-@@ -0,0 +1,3 @@
-+CONFIG_KUNIT=y
-+CONFIG_OF=y
-+CONFIG_OF_KUNIT_TEST=y
-diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
-index 9628e48baa15..a527ba8451d9 100644
---- a/drivers/of/Kconfig
-+++ b/drivers/of/Kconfig
-@@ -37,6 +37,15 @@ config OF_UNITTEST
- 
- 	  If unsure, say N here. This option is not safe to enable.
- 
-+config OF_KUNIT_TEST
-+	tristate "Devicetree KUnit DTB Test" if !KUNIT_ALL_TESTS
-+	depends on KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+	  This option builds KUnit unit tests for device tree infrastructure.
-+
-+	  If unsure, say N here, but this option is safe to enable.
-+
- config OF_ALL_DTBS
- 	bool "Build all Device Tree Blobs"
- 	depends on COMPILE_TEST
-diff --git a/drivers/of/Makefile b/drivers/of/Makefile
-index df305348d1cb..251d33532148 100644
---- a/drivers/of/Makefile
-+++ b/drivers/of/Makefile
-@@ -19,4 +19,6 @@ obj-y	+= kexec.o
- endif
- endif
- 
-+obj-$(CONFIG_OF_KUNIT_TEST) += of_test.o
-+
- obj-$(CONFIG_OF_UNITTEST) += unittest-data/
-diff --git a/drivers/of/of_test.c b/drivers/of/of_test.c
-new file mode 100644
-index 000000000000..7609ad3081b9
---- /dev/null
-+++ b/drivers/of/of_test.c
-@@ -0,0 +1,98 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * KUnit tests for OF APIs
-+ */
-+#include <linux/module.h>
-+#include <linux/of.h>
-+
-+#include <kunit/test.h>
-+
-+/*
-+ * Test that the root node "/" exists.
-+ */
-+static void dtb_root_node_found_by_path(struct kunit *test)
-+{
-+	struct device_node *np;
-+
-+	np = of_find_node_by_path("/");
-+	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, np);
-+	of_node_put(np);
-+}
-+
-+/*
-+ * Test that the of_root global variable is always populated when DT
-+ * code is enabled.
-+ */
-+static void dtb_root_node_populates_of_root(struct kunit *test)
-+{
-+	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, of_root);
-+}
-+
-+static struct kunit_case dtb_test_cases[] = {
-+	KUNIT_CASE(dtb_root_node_found_by_path),
-+	KUNIT_CASE(dtb_root_node_populates_of_root),
-+	{}
-+};
-+
-+/*
-+ * Test suite to confirm a live DTB is loaded.
-+ */
-+static struct kunit_suite dtb_suite = {
-+	.name = "dtb",
-+	.test_cases = dtb_test_cases,
-+};
-+
-+/*
-+ * Test that calling of_have_populated_dt() returns false when
-+ * the OF_EMPTY_ROOT flag isn't set.
-+ */
-+static void of_have_populated_dt_false_when_flag_set(struct kunit *test)
-+{
-+	bool was_set;
-+
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, of_root);
-+
-+	was_set = of_node_test_and_set_flag(of_root, OF_EMPTY_ROOT);
-+	KUNIT_EXPECT_FALSE(test, of_have_populated_dt());
-+
-+	if (!was_set)
-+		of_node_clear_flag(of_root, OF_EMPTY_ROOT);
-+}
-+
-+/*
-+ * Test that calling of_have_populated_dt() returns false when
-+ * the OF_EMPTY_ROOT flag isn't set.
-+ */
-+static void of_have_populated_dt_true_when_flag_clear(struct kunit *test)
-+{
-+	bool was_set;
-+
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, of_root);
-+
-+	was_set = of_node_check_flag(of_root, OF_EMPTY_ROOT);
-+	of_node_set_flag(of_root, OF_EMPTY_ROOT);
-+	KUNIT_EXPECT_FALSE(test, of_have_populated_dt());
-+
-+	if (was_set)
-+		of_node_set_flag(of_root, OF_EMPTY_ROOT);
-+}
-+
-+static struct kunit_case of_have_populated_dt_test_cases[] = {
-+	KUNIT_CASE(of_have_populated_dt_false_when_flag_set),
-+	KUNIT_CASE(of_have_populated_dt_true_when_flag_clear),
-+	{}
-+};
-+
-+/*
-+ * Test suite to confirm behavior of of_have_populated_dt().
-+ */
-+static struct kunit_suite of_have_populated_dt_suite = {
-+	.name = "of_have_populated_dt",
-+	.test_cases = of_have_populated_dt_test_cases,
-+};
-+
-+kunit_test_suites(
-+	&dtb_suite,
-+	&of_have_populated_dt_suite,
-+);
-+MODULE_LICENSE("GPL");
 -- 
-https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
-https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
