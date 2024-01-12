@@ -1,90 +1,93 @@
-Return-Path: <linux-kernel+bounces-24158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 535F382B867
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 01:04:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDBBE82B86D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 01:05:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0CFD1F26719
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 00:04:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38178B24E1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 00:05:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F8CBDF52;
-	Fri, 12 Jan 2024 00:04:30 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB6F665E;
+	Fri, 12 Jan 2024 00:05:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xenobhv8"
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5537AB646
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 00:04:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bf0305ded5so69862239f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 16:04:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705017867; x=1705622667;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8xpDiqNEwArw50N7Lg2HZuMoMi1N+LpphpiDT2blddI=;
-        b=OHwG6GAE6aSWIHqhpaZj34JWzvkz192kYlSRt3wrL6A/gEAYUKaQY4qMKMYPMf06vT
-         coAzFU+XwB9ADeIUxozqDTIJ7oeiD4Mjypr8DK6+7LZuofUynA+fispEHf42IfGDIudY
-         4yQYlUjltvyE9F8+Jb4QWJ231ZQxjsTk41B0q9GGY5nZpxav6/kqHvUccWN9bTPUtVCF
-         VpcH4a7aSz0VdyI5UuBc8SAGTakODh4AsgD4/Wdtu5Vt4foO3TQZh4wOqr3TIiEHtw0b
-         jWmW0/vFxRZaWqFqgPn7UIeuLX9oyWPB8tIOjqpL4900oxhQIa1ZoLomnUlSs903fK0Z
-         GkJw==
-X-Gm-Message-State: AOJu0YxmUXYtFBfAjlFZfXHTlmfIgTsUYiplYAnpw+sI8bz1ObBb54Oa
-	qrYG7KImhnBGp+CT1mb2RE1EynDC32klFjPRiLLRxLoQEQDA
-X-Google-Smtp-Source: AGHT+IGChu8fGl9D+SA4BIa887LqB3kDIlxbCu5Ph+kisWPnmpq6voLkoaimmlGJZtFxYd1krdrvUSiHQ2qbOk1drakhziO+jjCy
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D71217988;
+	Fri, 12 Jan 2024 00:05:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 11 Jan 2024 19:05:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705017914;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ja/rCrslI1ygahysbrKqDdK7cEumA4q0GUIhaAsj41s=;
+	b=xenobhv8UAJbqxw9LEhIHklm8eVbdXfTgNl4eYnpAViLGg4XD2eqzldprWOoacL63BDc66
+	BhihY9pLUMlJLCbhlThvPSFIJemt2OOM/BllXPeft/BR9O6jxPLpGmLTJ2+mEjU3riEAbF
+	GTS2N0EYRkJF6RTp4E1sJZ+mst/yXos=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Kees Cook <keescook@chromium.org>
+Cc: Matthew Wilcox <willy@infradead.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs updates for 6.8
+Message-ID: <zocgn7zzr4wo3egjnq2vpmh7kpuxcj7gvo3a5tlbidt6wdh4rs@2udxphdcgeug>
+References: <wq27r7e3n5jz4z6pn2twwrcp2zklumcfibutcpxrw6sgaxcsl5@m5z7rwxyuh72>
+ <202401101525.112E8234@keescook>
+ <6pbl6vnzkwdznjqimowfssedtpawsz2j722dgiufi432aldjg4@6vn573zspwy3>
+ <202401101625.3664EA5B@keescook>
+ <xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
+ <CAHk-=wigjbr7d0ZLo+6wbMk31bBMn8sEwHEJCYBRFuNRhzO+Kw@mail.gmail.com>
+ <ZaByTq3uy0NfYuQs@casper.infradead.org>
+ <202401111534.859084884C@keescook>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1918:b0:46e:5dfe:42bc with SMTP id
- p24-20020a056638191800b0046e5dfe42bcmr17819jal.0.1705017867308; Thu, 11 Jan
- 2024 16:04:27 -0800 (PST)
-Date: Thu, 11 Jan 2024 16:04:27 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000511463060eb468d7@google.com>
-Subject: [syzbot] Monthly nfc report (Jan 2024)
-From: syzbot <syzbot+list2e368c73436f97eb5665@syzkaller.appspotmail.com>
-To: krzysztof.kozlowski@linaro.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202401111534.859084884C@keescook>
+X-Migadu-Flow: FLOW_OUT
 
-Hello nfc maintainers/developers,
+On Thu, Jan 11, 2024 at 03:42:19PM -0800, Kees Cook wrote:
+> On Thu, Jan 11, 2024 at 10:57:18PM +0000, Matthew Wilcox wrote:
+> > On Wed, Jan 10, 2024 at 05:47:20PM -0800, Linus Torvalds wrote:
+> > > No, because the whole idea of "let me mark something deprecated and
+> > > then not just remove it" is GARBAGE.
+> > > 
+> > > If somebody wants to deprecate something, it is up to *them* to finish
+> > > the job. Not annoy thousands of other developers with idiotic
+> > > warnings.
+> > 
+> > What would be nice is something that warned about _new_ uses being
+> > added.  ie checkpatch.  Let's at least not make the problem worse.
+> 
+> For now, we've just kind of "dealt with it". For things that show up
+> with new -W options we've enlisted sfr to do the -next builds with it
+> explicitly added (but not to the tree) so he could generate nag emails
+> when new warnings appeared. That could happen if we added it to W=1
+> builds, or some other flag like REPORT_DEPRECATED=1.
+> 
+> Another ugly idea would be to do a treewide replacement of "func" to
+> "func_deprecated", and make "func" just a wrapper for it that is marked
+> with __deprecated. Then only new instances would show up (assuming people
+> weren't trying to actively bypass the deprecation work by adding calls to
+> "func_deprecated"). :P Then the refactoring to replace "func_deprecated"
+> could happen a bit more easily.
+> 
+> Most past deprecations have pretty narrow usage. This is not true with
+> the string functions, which is why it's more noticeable here. :P
 
-This is a 31-day syzbot report for the nfc subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/nfc
-
-During the period, 2 new issues were detected and 1 were fixed.
-In total, 11 issues are still open and 20 have been fixed so far.
-
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 715     Yes   INFO: task hung in rfkill_global_led_trigger_worker (2)
-                  https://syzkaller.appspot.com/bug?extid=2e39bc6569d281acbcfb
-<2> 110     Yes   INFO: task hung in nfc_rfkill_set_block
-                  https://syzkaller.appspot.com/bug?extid=3e3c2f8ca188e30b1427
-<3> 88      Yes   KMSAN: uninit-value in nci_rx_work
-                  https://syzkaller.appspot.com/bug?extid=d7b4dc6cd50410152534
-<4> 10      Yes   KMSAN: uninit-value in nci_ntf_packet
-                  https://syzkaller.appspot.com/bug?extid=29b5ca705d2e0f4a44d2
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Before doing the renaming - why not just leave a kdoc comment that marks
+it as deprecated? Seems odd that checkpatch was patched, but I can't
+find anything marking it as deprecated when I cscope to it.
 
