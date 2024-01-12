@@ -1,109 +1,116 @@
-Return-Path: <linux-kernel+bounces-24736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76D9A82C193
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:23:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9961982C179
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 15:21:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D6761C221AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:23:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE7961C2210A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 14:21:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 394086DCEF;
-	Fri, 12 Jan 2024 14:22:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4C796DCEC;
+	Fri, 12 Jan 2024 14:20:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="5IswpgLy"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZM7i33VK"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27AD46EB44;
-	Fri, 12 Jan 2024 14:22:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705069361;
-	bh=2cBD3Lbpl2cRVVQBqOcu4sRyjCaGrfbaTxuW4Uf9u2k=;
-	h=From:To:Cc:Subject:Date:From;
-	b=5IswpgLyvJQ/mJIsfPnF4WKCupnP39c+fFVV1tvMQdxIs1duZkylkmsmdnG3dTY07
-	 ffU5rLJyazvVoCGTVMnM3eI1JJm0HpPt9psFhDvT9Vei0roUZZ2t3EAY57K2jTcQfF
-	 F7kRJttqjHnpy/UQk0lHe9sBm1h4NRgMtwUUVSfD5Jad7f5ciCtGMD1RmEcoghPr5y
-	 qZrHeSFeACqYw1ZaOmdxbX+SfaPisa2qOCR3/8+qwIaHzvfy9gyO2SXFcKThx1NWf8
-	 uBTVqheYQrpVpOLQRjPPjmPs8K7plC4OJJtWnsKT7fVp17PpmtDBihD+AtuR8wns9c
-	 6WE44Hi7+6Wcg==
-Received: from localhost.localdomain (zone.collabora.co.uk [167.235.23.81])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 0605A3780624;
-	Fri, 12 Jan 2024 14:22:35 +0000 (UTC)
-From: =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= <nfraprado@collabora.com>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>
-Cc: kernel@collabora.com,
-	Chen-Yu Tsai <wenst@chromium.org>,
-	=?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= <nfraprado@collabora.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Enric Balletbo i Serra <eballetbo@kernel.org>,
-	Ikjoon Jang <ikjn@chromium.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Stephen Boyd <swboyd@chromium.org>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH v2] arm64: dts: mt8183: jacuzzi: Remove CrosEC base detection node
-Date: Fri, 12 Jan 2024 11:20:28 -0300
-Message-ID: <20240112142032.909736-1-nfraprado@collabora.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDDDA6D1DC
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 14:20:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6d9344f30caso4473858b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 06:20:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705069249; x=1705674049; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2sON2zsEgmOr2oRLYLHAKX2KUxW1/7chOQU/DqL3AV4=;
+        b=ZM7i33VKYCX1edB2L20HggEYeq92vLAv03XZkFWET0Me19h+/e42BJDieztjJEvEtx
+         +Dr8P3Cw5XA+ku9VijxxP+3PIIQ7132NSim5mamdOqCkja5zsEqOiW6eCGP1BP1NkKgv
+         sHEVpwCSHOoec0F0ZnIHtzm4XF4T4cJlqFDgz2qTjEkMa8ZIWYRm9ttFedeLyso6myrd
+         8LZqO2n7tmILBmYwEjYzcOMquXYcQro414C2B5IFxOpYP0p9cy/hGcc9IoUmmRhuOg51
+         jfg6L0Fsdy9of/Vn9h9bCwr6cjXmLSLkQ8aiPdF6QQQ/wlhRl5uvTZECfNB8cLfhbUWp
+         v6EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705069249; x=1705674049;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2sON2zsEgmOr2oRLYLHAKX2KUxW1/7chOQU/DqL3AV4=;
+        b=YiWVCkqgNhyWzgco8lm84uUYomx5lS6a0xWc6JDYiIYiW1o6kUXZI6Q9ub+JOfa2JB
+         xpAD/VlTzLTbGv8J9x3zxtss6EviZqccAS6eA3cmmcs2K4ByirrcI5epu9GEUj+XV1Mq
+         nA3yQBbbEFhf3iOVMJZXTyzdkQi1Thjmh5bG+pEcVkHwnpQqM7WzsV++7CQP9uwvqCa4
+         aHx0MdF7pRovYD0lv3WDYqOM4HAbVLARosEMaItRdtEo3GJQSeCR58lxerCmuJE7JAyQ
+         1rTifoHjmoRuh3LBc3bRV1PXRlw3WkRhVjUg/tlf63N8Irgum/AUtI1gEUgzw3HGPG6a
+         5muQ==
+X-Gm-Message-State: AOJu0YyhxFAX/0WAdGhdzZsED5Pn0LNSQgCyhLK+mya+M89ivqyCDvN8
+	hQ02DhE6r7kKGnDqHaH3l2c=
+X-Google-Smtp-Source: AGHT+IGEI+FxtB7YCv0q78LKq6Lhf6thYTjYnOOjc2RxTqiVGhRFJeuJkzcDbU6KfHBrh+/NGHAYWQ==
+X-Received: by 2002:a05:6a00:3a1c:b0:6d9:baf0:b8a2 with SMTP id fj28-20020a056a003a1c00b006d9baf0b8a2mr1589144pfb.4.1705069249175;
+        Fri, 12 Jan 2024 06:20:49 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id g26-20020aa79f1a000000b006dab0d72cd0sm3221775pfr.214.2024.01.12.06.20.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jan 2024 06:20:48 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id 6C65B18503882; Fri, 12 Jan 2024 21:20:45 +0700 (WIB)
+Date: Fri, 12 Jan 2024 21:20:45 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jakub Kicinski <kuba@kernel.org>
+Subject: Deliberately sending partial patch sets?
+Message-ID: <ZaFKvZg-MtZgbCKA@archie.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="YnDQqZwqJe9COSOd"
+Content-Disposition: inline
 
-The cbas node is used to describe base detection functionality in the
-ChromeOS EC, which is used for units that have a detachable keyboard and
-thus rely on this functionality to switch between tablet and laptop
-mode.
 
-All machines in the jacuzzi family are either clamshells (ie normal
-laptops) or convertibles, meaning the keyboard can be flipped but not
-detached. The detection for the keyboard getting flipped is handled by
-the driver bound to the keyboard-controller node in the EC.
+--YnDQqZwqJe9COSOd
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Since there is no base detection in these machines, and the device
-backed by this node fails to probe and goes unused, delete the node from
-the DT.
+Hi,
 
-Fixes: 4fa8492d1e5b ("arm64: dts: mt8183: add cbas node under cros_ec")
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+Let's say that there is a contributor who wish to send a patch set (e.g.
+20-30 patches in the series) to LKML. But instead of sending the full
+series, he either do one of the following:
 
----
+* Send only the cover letter (analogous to movie trailers)
+* Send only a few arbitrary patches in a series that are most important
+  (e.g. patch [01,04,11,18,23/30]) (analogous to match highlights)
+* Send only the first few patches in a series (i.e. subject of one of
+  patches says [09/30]) (analogous to sample book chapters)
 
-Changes in v2:
-- Moved cbas node removal to jacuzzi dtsi
+The rest of patches are behind closed doors (i.e. not sent), possibly
+behind charm-priced (pay)walls.
 
- arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
+Is the submission like above acceptable (when in review)?
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
-index 7592e3b86037..8c9f7435cf4c 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
-@@ -484,3 +484,6 @@ volup-btn-odl {
- 	};
- };
- 
-+&cros_ec {
-+	/delete-node/ cbas;
-+};
--- 
-2.43.0
+Thanks.
 
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--YnDQqZwqJe9COSOd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZaFKuQAKCRD2uYlJVVFO
+oyK3AP9E9wtVBSlPGAo0UtbWhvTCnSDB86LMRwdKtVCcAfIGJAD/dV+/2leBp+jD
+89GKopwZUgbpZg+Rv4SkXMeeLXtxbQE=
+=UalB
+-----END PGP SIGNATURE-----
+
+--YnDQqZwqJe9COSOd--
 
