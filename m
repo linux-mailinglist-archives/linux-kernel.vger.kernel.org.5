@@ -1,150 +1,106 @@
-Return-Path: <linux-kernel+bounces-24966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24967-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90F4882C560
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 19:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C417C82C563
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 19:27:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0AF61C2257E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:26:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8D9F1C22638
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:27:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92E9817C8D;
-	Fri, 12 Jan 2024 18:26:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42BD1175B7;
+	Fri, 12 Jan 2024 18:27:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b="jEbrZzQ3"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z8ElmKwQ"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8E87175B0;
-	Fri, 12 Jan 2024 18:26:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1705083982; x=1705688782; i=erick.archer@gmx.com;
-	bh=+Gybv52t9GG+h/zrvAoxV5B+3VXNY3CX5/ikX0He3fo=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=jEbrZzQ3DAJzHbArawwFAvrR3181x7bOeVmyz70JTzN8gjaDzZUtwD2U8RbwN+0a
-	 Xz6YYW0D2OXBs7c4Y7ynAFvshBDL/ej7VETNM0GTfrlVzGSvwRGtnCzLS6dJaualA
-	 TSLoTKSXfcgHM2qSnhdlCoxsZ6MiMFRNeWs5QLlXEyfXIPHtXPKI7wLi6R26VZdrZ
-	 12hvSDtCme+m6/xAiZHjnX5/1BaRgHQWo7LB4H7jsQ4DcPcsNglU+oOG45JapofVU
-	 Q0KlcZAb4GIy+oiZuNnYL6nxm+uWAjv1iIJnd/Eya8s4r0gNHH9m59nj9cTqVMBX+
-	 AeUQBGIqOknavJlISQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from localhost.localdomain ([79.157.194.183]) by mail.gmx.net
- (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1MQ5rU-1rkRSf3fuq-00M3wH; Fri, 12 Jan 2024 19:26:22 +0100
-From: Erick Archer <erick.archer@gmx.com>
-To: "James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Erick Archer <erick.archer@gmx.com>,
-	Kees Cook <keescook@chromium.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	linux-scsi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] scsi: csiostor: Use kcalloc() instead of kzalloc()
-Date: Fri, 12 Jan 2024 19:26:03 +0100
-Message-Id: <20240112182603.11048-1-erick.archer@gmx.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 176B225619
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 18:26:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a28fb463a28so725552266b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 10:26:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705084016; x=1705688816; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BX2OIRKYqtC0J//p7kMK9Nn7FSvWIPNl2OJ4Auc3QVg=;
+        b=Z8ElmKwQLqD7ksbSoVyp8nqXSYdCtuST22Ca+GPwj7MQ4aQFIGvcAopS9A6NC59/LZ
+         MahKtOc1HESgf1s9wCPLB80kcGUl2sInhE27NPnSVikGE5yvyv6d71QYKUnVkGqIPpQI
+         DB42+Av3LPKk5DwHHTZIx46L3m2gUoEncugV2Vy06AV8rvf8K6ipCmAdzyTpxg3FQnJW
+         3GQFfl8QmMPNq8FYKWoOqIAGHJLWH3Bm8ZU1bL3y8Ae4k5eUVDE5nzFXUWeuHtiIBM4W
+         JF0bONvOkgobcEdKCkt313N7ycyHfAstN8zPUjm3sBgNeXV192mNmOVmYa9h07ONS7E/
+         PzUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705084016; x=1705688816;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BX2OIRKYqtC0J//p7kMK9Nn7FSvWIPNl2OJ4Auc3QVg=;
+        b=WcfpNyN7SiKR8Zn0jUPbsdEGK8DA1nvjImd8mSomYf06Kkmxn1+L/sOf3GhQPw+MA8
+         eTE1fFYlT8YTwGuOV0+xOgGbX4OaBnqsLvlasSifC1weF7iJiBCzyblPTqVHS7RjxPvb
+         uT4eWGO4y4rvlBiGLkVhLe4lNzhMdd4VaWOgE1Mb6Ze9KGnHe8zfA2lSg4qPLsgjRPiy
+         /NFnEmtxmxB7a8Ws5vqOzwk0Z+ML+InnpkuAKG1O2uSN/L1gXvvoVO8ZLOAwZoE5qt2z
+         hPzECvMNDKVkSWZ5+WcA1GnzmRg+F7blPMDuFvWpxmWFJL6aC1CLsEeqAxY+spGjEaUe
+         Ihtw==
+X-Gm-Message-State: AOJu0YzahRnJmZcPjoxG4PAWzeUdG4VJdH8pimHo/zq5Lho/LM848KX5
+	7TmeHRiLYfGztrE6JCvoV+E=
+X-Google-Smtp-Source: AGHT+IHDCHmwvZIDF1k+St+jTaCt9HJQUMS2UP+ZZIPy7es1LE4HuBzP68Hd790Z/5UA9ZXntOkJ9Q==
+X-Received: by 2002:a17:906:88a:b0:a28:b71d:6801 with SMTP id n10-20020a170906088a00b00a28b71d6801mr840254eje.149.1705084016358;
+        Fri, 12 Jan 2024 10:26:56 -0800 (PST)
+Received: from gmail.com (1F2EF3FE.nat.pool.telekom.hu. [31.46.243.254])
+        by smtp.gmail.com with ESMTPSA id ll5-20020a170907190500b00a2cc5199dd0sm876407ejc.135.2024.01.12.10.26.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jan 2024 10:26:55 -0800 (PST)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Fri, 12 Jan 2024 19:26:53 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>,
+	linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>
+Subject: Re: [GIT PULL] Scheduler changes for v6.8
+Message-ID: <ZaGEbaa3bWVYiqhY@gmail.com>
+References: <ZTz9RpZxfxysYCmt@gmail.com>
+ <ZZwBi/YmnMqm7zrO@gmail.com>
+ <CAHk-=wgWcYX2oXKtgvNN2LLDXP7kXkbo-xTfumEjmPbjSer2RQ@mail.gmail.com>
+ <CAHk-=wiXpsxMcQb7MhL-AxOityTajK0G8eWeBOzX-qBJ9X2DSw@mail.gmail.com>
+ <CAHk-=wjK28MUqBZzBSMEM8vdJhDOuXGSWPmmp04GEt9CXtW6Pw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:VqSrX2QEK19EdjFd/yQN1WWLQ7POmZiuBsYckjEvZYo0v8/G3HX
- qVv85dL9MOxFSzsVUJBbubAuAQ4L0jePv3wpZwc3baUgn2dDWqC8tXUU2t08/r74MetNjUZ
- 3ZmF3fe/n0Is9WPmpv6bhGd/FoHp3ZpqVxMjni0QhkOl2Y6mBzRBzz3VJCWoLLzfz9y7m+x
- 0F7OSGrOna4uMSQBisglQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:gYeDrLFe1ck=;KD7kEcholIXzrSPNj27MNUcZjiV
- hy89Hnf1tkqrMmy37I0Y3eiF/8Az5bONZGq6EfvT7jTMFYnCMc08D+1ejNys8TUCJrKCqZE3I
- ypJDVqkS0c4sS2qhoLmCr94aJXmCA/3cOLEcFEMBK80eClLILo4ghKy3yvrtIOYJL0aUvzD+6
- aSZwI3rtxlG0E6iCBqAlBhD8elVhh2X5mSwa9IbdHwNIEERMX/LXVvtj7DmAKb8MQf4Ti8WS+
- hfwJQbhVV36bTvFVUD3jCLVOny/EXoz2G/Fh1ZSO/W0Y7UDK7b5Aji0rtFPXYrggMo50pbUOp
- ubJDN5guxEchE+OVtthlVuKZ1qqCTinn/J4xKe9ewBjLEFo53Adt7FhC4S8mSuNZHy1k3IUdC
- CIJy/8foyCctV1eo+1lfT7rigwliSeCfCGXFrKeFmmtb2bIiu+4q88BbCqMk+ITgTFoVOovnW
- HmX4x2Ho7PD06ekbNCJ0uBXipdsnKdbZnUUp9O3A1Oj6f3Lme8kpVTWnReYvjK/FLllBKFyM/
- LQ+eQDaieYhxyk4zK4SvuAxDDMNqTOiWHNHkirb5KiX21rHpflJXNZ5HjQ/1FGk3di1gdgaoE
- gZ/GZJAOsUueQYjtSR2a3Qe7xIYzt59EsuGA6FFwyhjtbtoYHcp0IBPxBEQUBM5B3Dog9oSZo
- fSelG2p4GknyONSeduDNoihF4oSmV0Lw86pJN+8BQgZSYL5w9WRrdqhdzhw44N1foNWGaKsQD
- HYApzDY5GXCGdUAcSaeNk43n3UuYGnsxaAPCpGPQNee+ZeM5KplKNvb7R1d2ogF7lVFMt8uc5
- zBY+ZA0n/Bgd22wugyhv/7/uaw3fs2rafepy8G1Ch0ymQ5DuO1ppsZvkhc9TKaHbAPnKuROSI
- rhMUJnXgbxQl/F+wRVntax6xyr+793O1BnY/bt6IaXuYQ0AGPxkJsBhKw1OScKig7jFiBRcJ6
- uldUNMT8v2sysQQyOISacVd6D/o=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjK28MUqBZzBSMEM8vdJhDOuXGSWPmmp04GEt9CXtW6Pw@mail.gmail.com>
 
-Use 2-factor multiplication argument form kcalloc() instead
-of kzalloc().
 
-Link: https://github.com/KSPP/linux/issues/162
-Signed-off-by: Erick Archer <erick.archer@gmx.com>
-=2D--
- drivers/scsi/csiostor/csio_init.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+* Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-diff --git a/drivers/scsi/csiostor/csio_init.c b/drivers/scsi/csiostor/csi=
-o_init.c
-index d649b7a2a879..d72892e44fd1 100644
-=2D-- a/drivers/scsi/csiostor/csio_init.c
-+++ b/drivers/scsi/csiostor/csio_init.c
-@@ -698,8 +698,7 @@ csio_lnodes_block_request(struct csio_hw *hw)
- 	struct csio_lnode **lnode_list;
- 	int cur_cnt =3D 0, ii;
+> This is on a 32-core (64-thread) AMD Ryzen Threadripper 3970X, fwiw.
 
--	lnode_list =3D kzalloc((sizeof(struct csio_lnode *) * hw->num_lns),
--			GFP_KERNEL);
-+	lnode_list =3D kcalloc(hw->num_lns, sizeof(*lnode_list), GFP_KERNEL);
- 	if (!lnode_list) {
- 		csio_err(hw, "Failed to allocate lnodes_list");
- 		return;
-@@ -737,8 +736,7 @@ csio_lnodes_unblock_request(struct csio_hw *hw)
- 	struct csio_lnode **lnode_list;
- 	int cur_cnt =3D 0, ii;
+Same here:
 
--	lnode_list =3D kzalloc((sizeof(struct csio_lnode *) * hw->num_lns),
--			GFP_KERNEL);
-+	lnode_list =3D kcalloc(hw->num_lns, sizeof(*lnode_list), GFP_KERNEL);
- 	if (!lnode_list) {
- 		csio_err(hw, "Failed to allocate lnodes_list");
- 		return;
-@@ -775,8 +773,7 @@ csio_lnodes_block_by_port(struct csio_hw *hw, uint8_t =
-portid)
- 	struct csio_lnode **lnode_list;
- 	int cur_cnt =3D 0, ii;
+   model name	: AMD Ryzen Threadripper 3970X 32-Core Processor
 
--	lnode_list =3D kzalloc((sizeof(struct csio_lnode *) * hw->num_lns),
--			GFP_KERNEL);
-+	lnode_list =3D kcalloc(hw->num_lns, sizeof(*lnode_list), GFP_KERNEL);
- 	if (!lnode_list) {
- 		csio_err(hw, "Failed to allocate lnodes_list");
- 		return;
-@@ -816,8 +813,7 @@ csio_lnodes_unblock_by_port(struct csio_hw *hw, uint8_=
-t portid)
- 	struct csio_lnode **lnode_list;
- 	int cur_cnt =3D 0, ii;
+Could you please send me your desktop system's .config privately?
 
--	lnode_list =3D kzalloc((sizeof(struct csio_lnode *) * hw->num_lns),
--			GFP_KERNEL);
-+	lnode_list =3D kcalloc(hw->num_lns, sizeof(*lnode_list), GFP_KERNEL);
- 	if (!lnode_list) {
- 		csio_err(hw, "Failed to allocate lnodes_list");
- 		return;
-@@ -855,8 +851,7 @@ csio_lnodes_exit(struct csio_hw *hw, bool npiv)
- 	struct csio_lnode **lnode_list;
- 	int cur_cnt =3D 0, ii;
+If it's triggered by something in the .config, I might be able to 
+reproduce.
 
--	lnode_list =3D kzalloc((sizeof(struct csio_lnode *) * hw->num_lns),
--			GFP_KERNEL);
-+	lnode_list =3D kcalloc(hw->num_lns, sizeof(*lnode_list), GFP_KERNEL);
- 	if (!lnode_list) {
- 		csio_err(hw, "lnodes_exit: Failed to allocate lnodes_list.\n");
- 		return;
-=2D-
-2.25.1
+Thanks,
 
+	Ingo
 
