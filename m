@@ -1,193 +1,215 @@
-Return-Path: <linux-kernel+bounces-24535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB82482BDFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:00:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D21E282BE03
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 11:01:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7E4D1C25B92
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:00:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E85EB249AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:01:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18DA25D8E7;
-	Fri, 12 Jan 2024 10:00:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C21D57864;
+	Fri, 12 Jan 2024 10:01:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OpOcctWq"
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="V5GRtRoC"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00FCA5D739
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 10:00:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-28ca63fd071so3380045a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 02:00:24 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4C0557328
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 10:01:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50e7d6565b5so7212124e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 02:01:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705053624; x=1705658424; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=dRYoalgnwKVYfdSiaBfDRevKcT4wc2GOJqsALypTOmU=;
-        b=OpOcctWqWBe3ajchwYGTl3RxOwVKYQiBfBqLvQPnN9D8/8aHpnJz3q8CFxEqBfsUz5
-         JCacvo4unw0zaCQBdj4M6F5i5WoCuGpCHuOYKV7nE+rvVqchOgHOsECliAMxK3y51HLF
-         rzi2gvAQUP7nPGrQ9WApRk9fws2Q2gJarzBju1s7MBOYwc9VHLYA7fkVglDsvqCeeFiE
-         HMZv7RO/ch4OuvWpErEJumEsS1cnaCnNgBIOKwgGGRrYTpMJX1G+kmIsRzVirT88jPKj
-         A+6UBi8td/SRVZ17mRI3eMvlyjP5TqYKFmvFKPuFutppLVyrVbJiu7TXitHS5rFPrKyL
-         6Y8g==
+        d=linaro.org; s=google; t=1705053683; x=1705658483; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=n6BjmcfWjZQ9/+4cG+gO0wA5RcUkVwPj/srDhWTeVkw=;
+        b=V5GRtRoCbV0UdeRaGPrx1hssWP2IkGtm9X1OiS3/2BfzJMH6EhsC5hhpdx/VDg7zVq
+         enTu9Xzt7ckmL2JByPXWkGtbDufp0k8zlFi6iV6CAJs5q2CTACYMD98AmpwhMOxHrq7Q
+         NMB2SPKznzpwer5TpjobKdso3u5JjHw6CuIyAROv40j4/LVhgBp9f5gwvN6mcep8HIsN
+         tQeWdNwzuK+NpP9baoVTNp5ZkcCRz73ZrARumsZk0vyc0AqNqJFqolxGCfqQ7U9skz5u
+         9C+0eskPZ273MO57LY3VRO3XLJpeq5MO9FopY/rB4OMEDDTrmwiACcgtIuHQnu+6CSoE
+         7kYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705053624; x=1705658424;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1705053683; x=1705658483;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dRYoalgnwKVYfdSiaBfDRevKcT4wc2GOJqsALypTOmU=;
-        b=qzZ5S1fABEaZzqjRB1fpRu5KnUW1hOSoj92qfbFmyTqt0oEnv6i1cT63r4YmjY+O7E
-         DyX+QwW0NNjzmQ5f2ukifB+Jm/r/OupcSqEbGrPHw4+H33lcBIMp1PhKXfaPhcfHouy0
-         2THc4fe6Udd1ujLgbDqQzH/udo4JB8EHX1BshpuMt7U7S5SCcoi28nvioDdzRVB0dWV3
-         QhEzvW7/7PDg32AxB74K6o+7BvWZsGwFrpmN+1oO6lhzYz5Dr9v6jbFkP6JLxfGUpBy0
-         XVykVL/yoyA5aPo2gcgqsnyi49csxtbdMiKlcf2b3iNG3DP3FgfMHJiAwcC4LzCUsM/s
-         zmaw==
-X-Gm-Message-State: AOJu0YyUqj7mRxIlxHc+tQZQI7cbEZwZGVtYxtlJqGzGE55YnMqLGI6O
-	VcIwHBOXw/TQIzz32Jdr5AUJYQCnQkfz
-X-Google-Smtp-Source: AGHT+IGVBuc/bzfWDGIQZBxbBGBGgbQ8hy2U6+QesiLzQrB5AGxj9ilSJ5pZ8u646RBth+dnJjW/eA==
-X-Received: by 2002:a17:90a:898b:b0:28d:2b9d:e273 with SMTP id v11-20020a17090a898b00b0028d2b9de273mr917862pjn.74.1705053624143;
-        Fri, 12 Jan 2024 02:00:24 -0800 (PST)
-Received: from google.com (108.93.126.34.bc.googleusercontent.com. [34.126.93.108])
-        by smtp.gmail.com with ESMTPSA id px12-20020a17090b270c00b0028e17b2f27esm58229pjb.13.2024.01.12.02.00.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 02:00:23 -0800 (PST)
-Date: Fri, 12 Jan 2024 15:30:15 +0530
-From: Ajay Agarwal <ajayagarwal@google.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Johan Hovold <johan@kernel.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Bjorn Andersson <quic_bjorande@quicinc.com>,
-	Sajid Dalvi <sdalvi@google.com>
-Subject: Re: [PATCH] Revert "PCI: dwc: Wait for link up only if link is
- started"
-Message-ID: <ZaENr7jQ35winQAe@google.com>
-References: <20230706082610.26584-1-johan+linaro@kernel.org>
- <20230706125811.GD4808@thinkpad>
- <ZKgJfG5Mi-e77LQT@hovoldconsulting.com>
- <ZKwwAin4FcCETGq/@google.com>
- <20230711073719.GA36617@thinkpad>
+        bh=n6BjmcfWjZQ9/+4cG+gO0wA5RcUkVwPj/srDhWTeVkw=;
+        b=rI6LQkgK/MCpE0WH6Ip4zo9+FIlf79sSSbVrBph4LgGxHiGNRchip/YAMKbAF8hIq5
+         gUhv9mM9+Up+UDABgTLLBfj5x856Wk34U+FOJA0bH6fKUCa8aU1XK9KRYT4j0CtT8meQ
+         jEyDIpQCJ+rDhbd7D2tRY5WOs5Vjy/uF8t5KaaLaC9vznlyEaz7iz1WwoTLxxUMz1Yq7
+         jw6jYRdGE2585QzwUWGbZuj/FXTZxKx37SXryhGn9VmFJYq/s/4+axpyI7lf+yV+zBR1
+         0Kj851EXzKTfVpJfzZ0beFoazDVZBYlSTqN/u+mqWOljJPqr+Pfneappq5PzvLiZ3Ceo
+         SmVQ==
+X-Gm-Message-State: AOJu0Ywxtl4oLwoMFTqGRLs135UQLNKwyQnDaJMSDteA3deKxeSr62yn
+	7n1FSXeXXP8fWsMXDsH+s9Rbt5HLTjVIHg==
+X-Google-Smtp-Source: AGHT+IFdf6AxtBCMz972hyGa8aRUo2uXDlIRk0LRgwUwwY0TdQHup04VCkl99x6SMm/BPp1uDhJs3g==
+X-Received: by 2002:a2e:8007:0:b0:2cd:63e4:75ff with SMTP id j7-20020a2e8007000000b002cd63e475ffmr517106ljg.35.1705053682887;
+        Fri, 12 Jan 2024 02:01:22 -0800 (PST)
+Received: from [172.30.204.205] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id x7-20020a2e9c87000000b002cd0435c50bsm407024lji.72.2024.01.12.02.01.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Jan 2024 02:01:22 -0800 (PST)
+Message-ID: <babd9514-6202-486f-a7c5-51ad793aaca6@linaro.org>
+Date: Fri, 12 Jan 2024 11:01:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 3/5] iommu/arm-smmu: introduction of ACTLR for custom
+ prefetcher settings
+To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>,
+ Pavan Kondeti <quic_pkondeti@quicinc.com>
+Cc: will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
+ dmitry.baryshkov@linaro.org, jsnitsel@redhat.com, quic_bjorande@quicinc.com,
+ mani@kernel.org, quic_eberman@quicinc.com, robdclark@chromium.org,
+ u.kleine-koenig@pengutronix.de, robh@kernel.org, vladimir.oltean@nxp.com,
+ quic_molvera@quicinc.com, linux-arm-msm@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <20240109114220.30243-1-quic_bibekkum@quicinc.com>
+ <20240109114220.30243-4-quic_bibekkum@quicinc.com>
+ <2ad70157-27d1-41df-8866-c226af690cf6@quicinc.com>
+ <ec31fafa-b912-454a-8b64-e0593911aaf2@quicinc.com>
+ <4a595815-7fcc-47e2-b22c-dac349af6d79@quicinc.com>
+ <492aeca3-a4df-47a3-9c77-02ea4235d736@linaro.org>
+ <1a1f9b11-5a6d-41f7-8bcd-533a61a27a65@quicinc.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <1a1f9b11-5a6d-41f7-8bcd-533a61a27a65@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230711073719.GA36617@thinkpad>
 
-On Tue, Jul 11, 2023 at 01:07:19PM +0530, Manivannan Sadhasivam wrote:
-> On Mon, Jul 10, 2023 at 09:51:22PM +0530, Ajay Agarwal wrote:
-> > On Fri, Jul 07, 2023 at 02:47:56PM +0200, Johan Hovold wrote:
-> > > On Thu, Jul 06, 2023 at 06:28:11PM +0530, Manivannan Sadhasivam wrote:
-> > > > On Thu, Jul 06, 2023 at 10:26:10AM +0200, Johan Hovold wrote:
-> > > 
-> > > > > Finally, note that the intel-gw driver is the only driver currently not
-> > > > > providing a start_link callback and instead starts the link in its
-> > > > > host_init callback, and which may avoid an additional one-second timeout
-> > > > > during probe by making the link-up wait conditional. If anyone cares,
-> > > > > that can be done in a follow-up patch with a proper motivation.
-> > > 
-> > > > The offending commit is bogus since it makes the intel-gw _special_ w.r.t
-> > > > waiting for the link up. Most of the drivers call dw_pcie_host_init() during the
-> > > > probe time and they all have to wait for 1 sec if the slot is empty.
-> > Mani, can you please explain how my commit made the intel-gw driver
-> > special? The intel driver actually fails the dw_pcie_host_init if the
-> > link does not come up. That was my motivation behind adding the fail
-> > logic in the core driver as well.
-> 
-> Your commit ended up failing the probe, if dw_pcie_wait_for_link() fails for
-> SoCs defining start_link() callback, which is the case for all the drivers
-> except intel-gw. I take back my _special_ argument since it was special before
-> your commit and now you just made its behavior applicable to all SoCs.
->
-You are right. I should not have returned an error from the
-dw_pcie_wait_for_link check. Raised v5 with the error return removed:
-https://lore.kernel.org/all/20240112093006.2832105-1-ajayagarwal@google.com/
 
-> > > 
-> > > Just to clarify, the intel-gw driver starts the link and waits for link
-> > > up in its host_init() callback, which is called during probe. That wait
-> > > could possibly just be dropped in favour of the one in
-> > > dw_pcie_host_init() and/or the driver could be reworked to implement
-> > > start_link().
-> > > 
-> > > Either way, the call in dw_pcie_host_init() will only add an additional
-> > > 1 second delay in cases where the link did *not* come up.
-> > > 
-> > > > As Johan noted, intel-gw should make use of the async probe to avoid the boot
-> > > > delay instead of adding a special case.
-> > > 
-> > > Indeed.
-> > > 
-> > > Johan
-> > Johan, Mani
-> > My apologies for adding this regression in some of the SOCs.
-> > May I suggest to keep my patch and make the following change instead?
-> > This shall keep the existing behavior as is, and save the boot time
-> > for drivers that do not define the start_link()?
-> > 
-> 
-> No, IMO the offending commit was wrong in serving its purpose so a revert makes
-> sense. Because, if the intention was to reduce the boot delay then it did not
-> fix that because dw_pcie_wait_for_link() is still called from intel-gw's
-> host_init() callback. You just skipped another instance which is there in
-> dw_pcie_host_init().
-> 
-> So to fix this issue properly intel-gw needs to do 2 things:
-> 
-> 1. Move the ltssm_enable to start_link() callback and get rid of
-> dw_pcie_wait_for_link() from its host_init() callback. If there is any special
-> reason to not do this way, please explain.
-> 
-> 2. Enable async probe so that other drivers can continue probing while this
-> driver waits for the link to be up. This will almost make the delay negligible.
-> 
-> The above 2 should be done in separate patches.
-> 
-> - Mani
->
-Mani, the intention is not to fix the intel-gw driver in any manner. It
-calls dw_pcie_wait_for_link explicitly in the probe path and checks for
-the error as well. So it has to live with the delay and the probe
-failure if the link does not come up.
 
-My intention is just to get rid of the 1 sec delay for the drivers that
-do not define the start_link callback, and hence do not expect that the
-link will come up during probe anyway.
-
-> > ```
-> > diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> > index cf61733bf78d..af6a7cd060b1 100644
-> > --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> > +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> > @@ -492,11 +492,8 @@ int dw_pcie_host_init(struct dw_pcie_rp *pp)
-> >                 if (ret)
-> >                         goto err_remove_edma;
-> > 
-> > -               if (pci->ops && pci->ops->start_link) {
-> > -                       ret = dw_pcie_wait_for_link(pci);
-> > -                       if (ret)
-> > -                               goto err_stop_link;
-> > -               }
-> > +               if (pci->ops && pci->ops->start_link)
-> > +                       dw_pcie_wait_for_link(pci);
-> >         }
-> > 
-> >         bridge->sysdata = pp;
-> > ```
+On 1/11/24 19:09, Bibek Kumar Patro wrote:
 > 
-> -- 
-> மணிவண்ணன் சதாசிவம்
+> 
+> On 1/10/2024 11:26 PM, Konrad Dybcio wrote:
+>>
+>>
+>> On 1/10/24 13:55, Bibek Kumar Patro wrote:
+>>>
+>>>
+>>> On 1/10/2024 4:46 PM, Bibek Kumar Patro wrote:
+>>>>
+>>>>
+>>>> On 1/10/2024 9:36 AM, Pavan Kondeti wrote:
+>>>
+>>> [...]
+>>>
+>>>>>> @@ -274,6 +321,21 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
+>>>>>>   static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+>>>>>>           struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+>>>>>>   {
+>>>>>> +    struct arm_smmu_device *smmu = smmu_domain->smmu;
+>>>>>> +    struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
+>>>>>> +    const struct actlr_variant *actlrvar;
+>>>>>> +    int cbndx = smmu_domain->cfg.cbndx;
+>>>>>> +
+>>>>>> +    if (qsmmu->data->actlrvar) {
+>>>>>> +        actlrvar = qsmmu->data->actlrvar;
+>>>>>> +        for (; actlrvar->io_start; actlrvar++) {
+>>>>>> +            if (actlrvar->io_start == smmu->ioaddr) {
+>>>>>> +                qcom_smmu_set_actlr(dev, smmu, cbndx, actlrvar->actlrcfg);
+>>>>>> +                break;
+>>>>>> +            }
+>>>>>> +        }
+>>>>>> +    }
+>>>>>> +
+>>>>>
+>>>>> This block and the one in qcom_adreno_smmu_init_context() are exactly
+>>>>> the same. Possible to do some refactoring?
+>>>>>
+>>>>
+>>>> I will check if this repeated blocks can be accomodated this into qcom_smmu_set_actlr function if that would be fine.
+>>>>
+>>>
+>>> Also adding to this, this might increase the number of indentation inside qcom_smmu_set_actlr as well, to around 5. So wouldn't this
+>>> be an issue?
+>>
+>> By the way, we can refactor this:
+>>
+>> if (qsmmu->data->actlrvar) {
+>>      actlrvar = qsmmu->data->actlrvar;
+>>      for (; actlrvar->io_start; actlrvar++) {
+>>          if (actlrvar->io_start == smmu->ioaddr) {
+>>              qcom_smmu_set_actlr(dev, smmu, cbndx, actlrvar->actlrcfg);
+>>              break;
+>>          }
+>>      }
+>> }
+>>
+>> into
+>>
+>> // add const u8 num_actlrcfgs to struct actrl_variant to
+>> // save on sentinel space:
+>> //   sizeof(u8) < sizeof(ptr) + sizeof(resource_size_t)
+>>
+> 
+> Git it, Would it be better to add this in struct qcom_smmu_match_data ?
+
+Yes, right.
+
+> Posted a sample below.
+> 
+>>
+>> [declarations]
+>> const struct actlr_variant *actlrvar = qsmmu->data->actlrvar;
+>> int i;
+>>
+>> [rest of the functions]
+>>
+>> if (!actlrvar)
+>>      return 0;
+>>  > for (i = 0; i < actrlvar->num_actrlcfgs; i++) {
+>>      if (actlrvar[i].io_start == smmu->ioaddr) {
+>>          qcom_smmu_set_actlr(dev, smmu, cbndx, actlrvar->actlrcfg);
+>>          break;
+>>      }
+>> }
+>>  > Saving both on .TEXT size and indentation levels :)
+>>
+> Thanks for this suggestion Konrad, will try to implement this, as it would reduce the indent levels to good extent.
+> Would something like this be okay?
+> 
+> static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+>       struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
+>       const struct actlr_variant *actlrvar;
+>       int cbndx = smmu_domain->cfg.cbndx;
+> +    int i;
+> 
+> +    actlrvar = qsmmu->data->actlrvar;
+> +
+> +    if (!actlrvar)
+> +        goto end;
+> +
+> +    for (i = 0; i < qsmmu->data->num_smmu ; i++) {
+> +        if (actlrvar[i].io_start == smmu->ioaddr) {
+> +            qcom_smmu_set_actlr(dev, smmu, cbndx,
+> +                        actlrvar[i].actlrcfg);
+> +            break;
+>           }
+>       }
+> 
+> +end:
+>       smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
+
+If you move this assignment before the actlrvar checking (there's no
+dependency between them), you will get rid of the goto.
+
+I also noticed that qcom_smmu_match_data.actlrvar could likely be
+const struct actlr_variant * const (const pointer to a const
+resource), similarly for actlr_variant.actlrcfg
+
+Konrad
 
