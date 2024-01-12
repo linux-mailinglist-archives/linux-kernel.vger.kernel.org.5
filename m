@@ -1,73 +1,72 @@
-Return-Path: <linux-kernel+bounces-25114-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2B6782C818
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 00:44:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B5B282C81C
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 00:50:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DAD51F24003
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 23:44:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7ED4DB224B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 23:50:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B12091A5BB;
-	Fri, 12 Jan 2024 23:44:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 183731A700;
+	Fri, 12 Jan 2024 23:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=atishpatra.org header.i=@atishpatra.org header.b="olMGn6cm"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	dkim=pass (1024-bit key) header.d=atishpatra.org header.i=@atishpatra.org header.b="DwH8nF/b"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 985741A71A
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 23:44:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61A481A5AC
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 23:50:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atishpatra.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atishpatra.org
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2cd1a1c5addso81010391fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 15:44:22 -0800 (PST)
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2ccae380df2so76822011fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 15:50:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google; t=1705103061; x=1705707861; darn=vger.kernel.org;
+        d=atishpatra.org; s=google; t=1705103426; x=1705708226; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ao22g8SE+SCQO5FocxYUg5Y/fOEd09Z5JYkiaEBGenk=;
-        b=olMGn6cmFGwXZO0mtBxc0bhjAxIDcDw8ZrQ2ujQ5ZE7PV4fs0Ys2VvfJM3vCFpL3Ng
-         fKefqD1K+Bj0jyfTz0GF44KD1i13EidLzcBy+HUqFApjbCOHpUtxMg3vVdYpBkV8ywX3
-         0XEL1xL0SHbGtaQSta3tUf3HNvTd8Mvuu7VdA=
+        bh=KdVVm44GspY1vrqagFO17oKocrrGuSEpWF2qOryhvaY=;
+        b=DwH8nF/bCe0bcTBpKXmgiKKqi1Uik75coJ0vWRCb/lgd26I+xyo9zVEpJc0v08JYsc
+         qLqLD68GLWtfhqHt2H5HHeoBp4BMLZDjd6AIS6PTlezls0nUFNavMOTKAJzRZrX77F0j
+         9OuunS/PewiZBn+wYJXnvakqQCFmWaGLL9fkg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705103061; x=1705707861;
+        d=1e100.net; s=20230601; t=1705103426; x=1705708226;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ao22g8SE+SCQO5FocxYUg5Y/fOEd09Z5JYkiaEBGenk=;
-        b=dLkK2H9B4uAlHyAIR5TxQCU92F5xfHRye6mlfiHfk203JpnCuR3Xlhwl1IndlZoE7i
-         fiKYq1FOKz12i9FO6vJHJiV1elR2tCSvwW69bBQXl6WmKSo64z+XM1rUI9QoY/dcoI6Z
-         sfjsYKoj8xaoD8bJNBxz0IRZpJnsgGIB/7uIHwYnbn1rkerY8tAYKiL4snb4UPg7NaF9
-         mXs9BLe0q3vMT1/dZ2mZEINwFJEBkCL7UbsLbT8BHDzFmZTsE7UxfWQN4k/oSpca6d1/
-         qhYEuSZNzKv2TfumFwQ7byQcbDfSoO6aP8/McTyiUgmp95/0hNGfZyCQDqvPrTE8FCLa
-         zFzw==
-X-Gm-Message-State: AOJu0Ywr5owCP2BVGkmS3JNp8WPW957QSgN3UrJMWXvzC86JRKoJAxAZ
-	EaHdThn+MPjmuPIPXaPgFU/L/p/NmvIILZDeVvCvWumKbvG3
-X-Google-Smtp-Source: AGHT+IHI7ywsV+fD9Gr/cA4gFCTeftXlfz+IEzwto5Cqz7c12ZJRt4oUXNh36gnywJ2pR7pW+AGwuuXRMdvQtIZ4YNc=
-X-Received: by 2002:a2e:8481:0:b0:2cd:7ac4:f9b5 with SMTP id
- b1-20020a2e8481000000b002cd7ac4f9b5mr1032757ljh.14.1705103059822; Fri, 12 Jan
- 2024 15:44:19 -0800 (PST)
+        bh=KdVVm44GspY1vrqagFO17oKocrrGuSEpWF2qOryhvaY=;
+        b=lmgmsvdF+XEwie0ImCNLyW+bUDA2j3145cPgJYb9a+/d0ysBFhx1PSS0gh1esryCWG
+         cFIPY7MZZFnmCrAsIC71i9u0SqISp5a5dUBTHTOQyGbduns+2AYD4bnjUqIMpEtZ8tDe
+         4xXjogFGZJ75ZKgwPz9TnI5l8+wg+WXDrZ1wVH25y2acva9b4kTALH9gS6fM5L1WI2mO
+         ruoEkxgAwV7TQkzTTZqp1xLLSwd1kRZyzrfD4Ofo0YpvQSWNVRncAVIpQNn4KbjGXa3U
+         6trjFdTMPOLF2p0Wrd6L6BEXrosQbIsunpZRLZq1Qzv4+ggYK3J9X3fwgqoVesdcgRaL
+         q+OQ==
+X-Gm-Message-State: AOJu0Yz4R+6vwvBuOEwM5o9yRvRiq02FjBLw1Vc2u0UCubhUGvnPpIdk
+	IMhhwsboQz0jzFutzp6tvA4CTBKRLwDAC3dzJVEqZCkCRT1j
+X-Google-Smtp-Source: AGHT+IG74fXTZOq2nIQGkABoTQvuIWpEvgArH4ko847NqdeZiegoSZ+CvkTfc7jJcqd/iuL4Jfoat0JYTgOT3NmkpCw=
+X-Received: by 2002:a2e:a36e:0:b0:2cd:8fe0:70ab with SMTP id
+ i14-20020a2ea36e000000b002cd8fe070abmr1011564ljn.16.1705103426437; Fri, 12
+ Jan 2024 15:50:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240110073917.2398826-1-peterlin@andestech.com>
- <20240110073917.2398826-3-peterlin@andestech.com> <CAAhSdy1KLSFBA_vD+NX15wuiOsz5QadQWj4ZWOK11qfL1LuHqA@mail.gmail.com>
-In-Reply-To: <CAAhSdy1KLSFBA_vD+NX15wuiOsz5QadQWj4ZWOK11qfL1LuHqA@mail.gmail.com>
+References: <20240110073917.2398826-1-peterlin@andestech.com> <20240110073917.2398826-5-peterlin@andestech.com>
+In-Reply-To: <20240110073917.2398826-5-peterlin@andestech.com>
 From: Atish Patra <atishp@atishpatra.org>
-Date: Fri, 12 Jan 2024 15:44:08 -0800
-Message-ID: <CAOnJCU+-GZVUUBXxm=biqLjqJwL+AR=PR7_gBAVHUqPPQ2G9og@mail.gmail.com>
-Subject: Re: [PATCH v7 02/16] irqchip/riscv-intc: Allow large non-standard
- interrupt number
-To: Anup Patel <anup@brainfault.org>
-Cc: Yu Chien Peter Lin <peterlin@andestech.com>, acme@kernel.org, adrian.hunter@intel.com, 
-	ajones@ventanamicro.com, alexander.shishkin@linux.intel.com, 
-	andre.przywara@arm.com, aou@eecs.berkeley.edu, conor+dt@kernel.org, 
+Date: Fri, 12 Jan 2024 15:50:15 -0800
+Message-ID: <CAOnJCUJ0fN5=+b4jDx+NPqUwgwGKuBNYt7d86dXYNyjzUYFAWQ@mail.gmail.com>
+Subject: Re: [PATCH v7 04/16] dt-bindings: riscv: Add Andes interrupt
+ controller compatible string
+To: Yu Chien Peter Lin <peterlin@andestech.com>
+Cc: acme@kernel.org, adrian.hunter@intel.com, ajones@ventanamicro.com, 
+	alexander.shishkin@linux.intel.com, andre.przywara@arm.com, 
+	anup@brainfault.org, aou@eecs.berkeley.edu, conor+dt@kernel.org, 
 	conor.dooley@microchip.com, conor@kernel.org, devicetree@vger.kernel.org, 
 	dminus@andestech.com, evan@rivosinc.com, geert+renesas@glider.be, 
 	guoren@kernel.org, heiko@sntech.de, irogers@google.com, 
@@ -83,154 +82,79 @@ Cc: Yu Chien Peter Lin <peterlin@andestech.com>, acme@kernel.org, adrian.hunter@
 	sunilvl@ventanamicro.com, tglx@linutronix.de, tim609@andestech.com, 
 	uwu@icenowy.me, wens@csie.org, will@kernel.org, ycliang@andestech.com, 
 	inochiama@outlook.com, chao.wei@sophgo.com, unicorn_wang@outlook.com, 
-	wefu@redhat.com, Randolph <randolph@andestech.com>
+	wefu@redhat.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 10, 2024 at 7:11=E2=80=AFAM Anup Patel <anup@brainfault.org> wr=
-ote:
+On Tue, Jan 9, 2024 at 11:40=E2=80=AFPM Yu Chien Peter Lin
+<peterlin@andestech.com> wrote:
 >
-> On Wed, Jan 10, 2024 at 1:10=E2=80=AFPM Yu Chien Peter Lin
-> <peterlin@andestech.com> wrote:
-> >
-> > Currently, the implementation of the RISC-V INTC driver uses the
-> > interrupt cause as the hardware interrupt number, with a maximum of
-> > 64 interrupts. However, the platform can expand the interrupt number
-> > further for custom local interrupts.
-> >
-> > To fully utilize the available local interrupt sources, switch
-> > to using irq_domain_create_tree() that creates the radix tree
-> > map, add global variables (riscv_intc_nr_irqs, riscv_intc_custom_base
-> > and riscv_intc_custom_nr_irqs) to determine the valid range of local
-> > interrupt number (hwirq).
-> >
-> > Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
-> > Reviewed-by: Randolph <randolph@andestech.com>
+> Add "andestech,cpu-intc" compatible string to indicate that
+> Andes specific local interrupt is supported on the core,
+> e.g. AX45MP cores have 3 types of non-standard local interrupt
+> which can be handled in supervisor mode:
 >
-> Looks good to me.
->
-> Reviewed-by: Anup Patel <anup@brainfault.org>
->
-> Regards,
-> Anup
->
-> > ---
-> > Changes v1 -> v2:
-> >   - Fixed irq mapping failure checking (suggested by Cl=C3=A9ment and A=
-nup)
-> > Changes v2 -> v3:
-> >   - No change
-> > Changes v3 -> v4: (Suggested by Thomas [1])
-> >   - Use pr_warn_ratelimited instead
-> >   - Fix coding style and commit message
-> > Changes v4 -> v5: (Suggested by Thomas)
-> >   - Fix commit message
-> > Changes v5 -> v6: (Suggested by Anup [2])
-> >   - Add riscv_intc_* global variables for checking range in riscv_intc_=
-domain_alloc()
-> >   - Advertise the number of interrupts allowed
-> > Changes v6 -> v7:
-> >   - No functional change
-> >
-> > [1] https://patchwork.kernel.org/project/linux-riscv/patch/202310230041=
-00.2663486-3-peterlin@andestech.com/#25573085
-> > [2] https://patchwork.kernel.org/project/linux-riscv/patch/202312130703=
-01.1684751-3-peterlin@andestech.com/#25636589
-> > ---
-> >  drivers/irqchip/irq-riscv-intc.c | 30 +++++++++++++++++++++++-------
-> >  1 file changed, 23 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-ris=
-cv-intc.c
-> > index e8d01b14ccdd..b13a16b164c9 100644
-> > --- a/drivers/irqchip/irq-riscv-intc.c
-> > +++ b/drivers/irqchip/irq-riscv-intc.c
-> > @@ -19,15 +19,17 @@
-> >  #include <linux/smp.h>
-> >
-> >  static struct irq_domain *intc_domain;
-> > +static unsigned int riscv_intc_nr_irqs __ro_after_init;
-> > +static unsigned int riscv_intc_custom_base __ro_after_init;
-> > +static unsigned int riscv_intc_custom_nr_irqs __ro_after_init;
-> >
-> >  static asmlinkage void riscv_intc_irq(struct pt_regs *regs)
-> >  {
-> >         unsigned long cause =3D regs->cause & ~CAUSE_IRQ_FLAG;
-> >
-> > -       if (unlikely(cause >=3D BITS_PER_LONG))
-> > -               panic("unexpected interrupt cause");
-> > -
-> > -       generic_handle_domain_irq(intc_domain, cause);
-> > +       if (generic_handle_domain_irq(intc_domain, cause))
-> > +               pr_warn_ratelimited("Failed to handle interrupt (cause:=
- %ld)\n",
-> > +                                   cause);
-> >  }
-> >
-> >  /*
-> > @@ -93,6 +95,14 @@ static int riscv_intc_domain_alloc(struct irq_domain=
- *domain,
-> >         if (ret)
-> >                 return ret;
-> >
-> > +       /*
-> > +        * Only allow hwirq for which we have corresponding standard or
-> > +        * custom interrupt enable register.
-> > +        */
-> > +       if ((riscv_intc_nr_irqs <=3D hwirq && hwirq < riscv_intc_custom=
-_base) ||
-> > +           (riscv_intc_custom_base + riscv_intc_custom_nr_irqs) <=3D h=
-wirq)
-> > +               return -EINVAL;
-> > +
-> >         for (i =3D 0; i < nr_irqs; i++) {
-> >                 ret =3D riscv_intc_domain_map(domain, virq + i, hwirq +=
- i);
-> >                 if (ret)
-> > @@ -117,8 +127,7 @@ static int __init riscv_intc_init_common(struct fwn=
-ode_handle *fn)
-> >  {
-> >         int rc;
-> >
-> > -       intc_domain =3D irq_domain_create_linear(fn, BITS_PER_LONG,
-> > -                                              &riscv_intc_domain_ops, =
-NULL);
-> > +       intc_domain =3D irq_domain_create_tree(fn, &riscv_intc_domain_o=
-ps, NULL);
-> >         if (!intc_domain) {
-> >                 pr_err("unable to add IRQ domain\n");
-> >                 return -ENXIO;
-> > @@ -132,7 +141,10 @@ static int __init riscv_intc_init_common(struct fw=
-node_handle *fn)
-> >
-> >         riscv_set_intc_hwnode_fn(riscv_intc_hwnode);
-> >
-> > -       pr_info("%d local interrupts mapped\n", BITS_PER_LONG);
-> > +       pr_info("%d local interrupts mapped\n", riscv_intc_nr_irqs);
-> > +       if (riscv_intc_custom_nr_irqs)
-> > +               pr_info("%d custom local interrupts mapped\n",
-> > +                       riscv_intc_custom_nr_irqs);
-> >
-> >         return 0;
-> >  }
-> > @@ -166,6 +178,10 @@ static int __init riscv_intc_init(struct device_no=
-de *node,
-> >                 return 0;
-> >         }
-> >
-> > +       riscv_intc_nr_irqs =3D BITS_PER_LONG;
-> > +       riscv_intc_custom_base =3D riscv_intc_nr_irqs;
-> > +       riscv_intc_custom_nr_irqs =3D 0;
-> > +
-> >         return riscv_intc_init_common(of_node_to_fwnode(node));
-> >  }
-> >
-> > --
-> > 2.34.1
-> >
 
+PATCH1 in this series renames everything from ANDESTECH to ANDES to be
+consistent.
+Here you are adding DT binding with "andestech". Is there any
+fundamental difference between these two to demand
+this change ?
 
-Reviewed-by: Atish Patra <atishp@rivosinc.com>
+FYI: I don't mind either way as I don't have skin in the game. Just
+something I noticed while reviewing the series.
+
+> - Slave port ECC error interrupt
+> - Bus write transaction error interrupt
+> - Performance monitor overflow interrupt
+>
+> These interrupts are enabled/disabled via a custom register
+> SLIE instead of the standard interrupt enable register SIE.
+>
+> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+> Changes v1 -> v2:
+>   - New patch
+> Changes v2 -> v3:
+>   - Updated commit message
+>   - Fixed possible compatibles for Andes INTC
+> Changes v3 -> v4:
+>   - Add const entry instead of enum (Suggested by Conor)
+> Changes v4 -> v5:
+>   - Include Conor's Acked-by
+>   - Include Prabhakar's Reviewed-by
+> Changes v5 -> v6:
+>   - No change
+> Changes v6 -> v7:
+>   - No change
+> ---
+>  Documentation/devicetree/bindings/riscv/cpus.yaml | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Document=
+ation/devicetree/bindings/riscv/cpus.yaml
+> index 23646b684ea2..33c2b620a59f 100644
+> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
+> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
+> @@ -101,7 +101,11 @@ properties:
+>          const: 1
+>
+>        compatible:
+> -        const: riscv,cpu-intc
+> +        oneOf:
+> +          - items:
+> +              - const: andestech,cpu-intc
+> +              - const: riscv,cpu-intc
+> +          - const: riscv,cpu-intc
+>
+>        interrupt-controller: true
+>
+> --
+> 2.34.1
+>
+
 
 --=20
 Regards,
