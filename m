@@ -1,152 +1,134 @@
-Return-Path: <linux-kernel+bounces-24917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B533282C4A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:24:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90C4382C4A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 18:24:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69C1F1F24C74
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:24:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D46D1F24C4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 17:24:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E16C22627;
-	Fri, 12 Jan 2024 17:23:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F45E175B7;
+	Fri, 12 Jan 2024 17:24:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="coh+Fnu1";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="coh+Fnu1"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VLSyzMAp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E45F22618;
-	Fri, 12 Jan 2024 17:23:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 145DF1F396;
-	Fri, 12 Jan 2024 17:23:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705080226; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xHxzNkl3+lg5RxMKF+f20439C0qvkhGvp+j1/UrE0ss=;
-	b=coh+Fnu1UJz13gGiunWRvCcSzWJD2fwZrkHJ5sUDzW6vhjdNim8KWDD2ba23fDxBMIh1lB
-	Jp5SehF/gfoh3YoHmxoQ9FtbDGLOeqgz3mVfxnA2nOI4th84z5IY4S80dEy8XvzzBee4jM
-	BbATxr1ambWoEyMxadVor+ufkHahK20=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705080226; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xHxzNkl3+lg5RxMKF+f20439C0qvkhGvp+j1/UrE0ss=;
-	b=coh+Fnu1UJz13gGiunWRvCcSzWJD2fwZrkHJ5sUDzW6vhjdNim8KWDD2ba23fDxBMIh1lB
-	Jp5SehF/gfoh3YoHmxoQ9FtbDGLOeqgz3mVfxnA2nOI4th84z5IY4S80dEy8XvzzBee4jM
-	BbATxr1ambWoEyMxadVor+ufkHahK20=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EAE3E136A4;
-	Fri, 12 Jan 2024 17:23:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id uTxdNqF1oWW+OAAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Fri, 12 Jan 2024 17:23:45 +0000
-Date: Fri, 12 Jan 2024 18:23:45 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
-	Dan Schatzberg <schatzberg.dan@gmail.com>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: memcontrol: don't throttle dying tasks on memory.high
-Message-ID: <ZaF1oQyovAOMA3be@tiehlicka>
-References: <20240111132902.389862-1-hannes@cmpxchg.org>
- <ZaAsbwFP-ttYNwIe@P9FQF9L96D>
- <20240111192807.GA424308@cmpxchg.org>
- <ZaFxn7JC8FeR-Si0@tiehlicka>
- <ZaFyiTFC-ped0IdA@P9FQF9L96D.corp.robot.car>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E06222612;
+	Fri, 12 Jan 2024 17:24:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68526C433C7;
+	Fri, 12 Jan 2024 17:24:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705080282;
+	bh=X9aIgnasVq1ypHKDDLf+2qteQS6RYhO2XgOOTnuWQ50=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VLSyzMApkgq1DzOQ/6xVeUI4wOXZ1Z6Y1UCqgLE/5psQwLRfxRCvEYZ0Hq2hMoEB6
+	 lH2jLkWUcUgB6kaMgCmt7lB1EdoliSJZrvEeiEl1dHf3e9MGVA8KQLgIuyqtHFZysG
+	 enZKmO8TkEsGOGwW/YRACj5bE7cdFPbs0R9h0lyJwws+R5a8Oig/iMpqObQssOQXHk
+	 8RmfxU7RlI0LwQTUAL8AL+SWOIEwlKQkrM3JfRKwKmC7awmaR8ZW8UfFaK8vAiuH2P
+	 jTm45jbyKMA8OYk9r+aSqrnHvBsR8gQM9nB2HVlHsBq5BNuVU3hTc8I2yJv5Ti1EXf
+	 sNdTIJFDQLKPA==
+Date: Fri, 12 Jan 2024 17:24:38 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Ninad Palsule <ninad@linux.ibm.com>
+Cc: peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca,
+	Joel Stanley <joel@jms.id.au>, linux-integrity@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Lukas Wunner <lukas@wunner.de>
+Subject: Re: [PATCH v1 1/1] tpm: tis-i2c: Add more compatible strings
+Message-ID: <20240112-unrevised-wafer-649c0ebffda5@spud>
+References: <20231214144954.3833998-1-ninad@linux.ibm.com>
+ <20231214144954.3833998-2-ninad@linux.ibm.com>
+ <20240109-saddling-nintendo-c7fbb46bb0dd@spud>
+ <77fe0ccd-53ff-4773-9787-0d038434297f@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="5Qj7R76LV+2xqmCh"
+Content-Disposition: inline
+In-Reply-To: <77fe0ccd-53ff-4773-9787-0d038434297f@linux.ibm.com>
+
+
+--5Qj7R76LV+2xqmCh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZaFyiTFC-ped0IdA@P9FQF9L96D.corp.robot.car>
-X-Spam-Level: 
-X-Spamd-Bar: /
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=coh+Fnu1
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [0.36 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.13)[67.72%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[cmpxchg.org,linux-foundation.org,google.com,linux.dev,kernel.org,gmail.com,vger.kernel.org,kvack.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: 0.36
-X-Rspamd-Queue-Id: 145DF1F396
-X-Spam-Flag: NO
+Content-Transfer-Encoding: quoted-printable
 
-On Fri 12-01-24 09:10:33, Roman Gushchin wrote:
-> On Fri, Jan 12, 2024 at 06:06:39PM +0100, Michal Hocko wrote:
-> > On Thu 11-01-24 14:28:07, Johannes Weiner wrote:
-> > [...]
-> > > @@ -2867,11 +2882,17 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
-> > >  		}
-> > >  	} while ((memcg = parent_mem_cgroup(memcg)));
-> > >  
-> > > +	/*
-> > > +	 * Reclaim is set up above to be called from the userland
-> > > +	 * return path. But also attempt synchronous reclaim to avoid
-> > > +	 * excessive overrun while the task is still inside the
-> > > +	 * kernel. If this is successful, the return path will see it
-> > > +	 * when it rechecks the overage and simply bail out.
-> > > +	 */
-> > >  	if (current->memcg_nr_pages_over_high > MEMCG_CHARGE_BATCH &&
-> > >  	    !(current->flags & PF_MEMALLOC) &&
-> > > -	    gfpflags_allow_blocking(gfp_mask)) {
-> > > +	    gfpflags_allow_blocking(gfp_mask))
-> > >  		mem_cgroup_handle_over_high(gfp_mask);
-> > 
-> > Have you lost the check for the dying task here?
-> 
-> It was moved into mem_cgroup_handle_over_high()'s body.
+On Thu, Jan 11, 2024 at 10:43:08AM -0600, Ninad Palsule wrote:
+> Hello Conor,
+>=20
+> On 1/9/24 11:11, Conor Dooley wrote:
+> > On Thu, Dec 14, 2023 at 08:49:53AM -0600, Ninad Palsule wrote:
+> > > From: Joel Stanley <joel@jms.id.au>
+> > >=20
+> > > The NPCT75x TPM is TIS compatible. It has an I2C and SPI interface.
+> > >=20
+> > > https://www.nuvoton.com/products/cloud-computing/security/trusted-pla=
+tform-module-tpm/
+> > >=20
+> > > Add a compatible string for it, and the generic compatible.
+> > >=20
+> > > Signed-off-by: Joel Stanley <joel@jms.id.au>
+> > > Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > > Link: https://lore.kernel.org/r/20220928043957.2636877-4-joel@jms.id.=
+au
+> > > Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
+> > I don't understand why you broke this series up and dropped patches.
+> > NAK, these compatibles are not documented.
+> >=20
+> The original series has three patches:
+>=20
+> 1) Adding compatibility string which I am adding in this series.
+>=20
+> 2) Adding schema for the TIS I2c devices which is already covered by Luka=
+s's
+> patch (already merged in linux-next) https://lore.kernel.org/all/3f56f0a2=
+bb90697a23e83583a21684b75dc7eea2.1701093036.git.lukas@wunner.de/
+>=20
+> 3) Removing "Infineon,slb9673" from trivial-devices.yaml which is not done
+> as it is already added in the TPM specific file. I will add it in my patc=
+h.
+> Good catch!
 
-Ohh, right. Somehow overlooked that even when I was staring at that
-path.
+Dropping this should be a standalone patch (with a Fixes tag I suppose).
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Looking at what got merged:
+      - description: Generic TPM 2.0 chips conforming to TCG PTP interface
+        items:
+          - enum:
+              - infineon,slb9673
+              - nuvoton,npct75x
+          - const: tcg,tpm-tis-i2c
 
-Thanks!
+There's no need to add "nuvoton,npct75x" to this driver, since a
+fallback to tcg,tpm-tis-i2c is required by the binding. Adding the
+generic compatible however makes sense.
 
--- 
-Michal Hocko
-SUSE Labs
+If there's a good reason to add it (like existing QEMU releases that do
+not have the generic compatible, but claim to have the npct75x) then
+please note why we should make an exception in your commit message.
+
+You need not carry the NAK, the motivation behind patch is fine.
+
+Thanks,
+Conor.
+
+--5Qj7R76LV+2xqmCh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaF11gAKCRB4tDGHoIJi
+0oZjAP9cSm6dL8yxX6MY+K9Mp7w5I9vyiWifxFTd3DFY1N+KmQD7BHbpqKGn/WSc
+/8WU0cPvQfINzbW93T1Avxc1wvV8Bgo=
+=QpGa
+-----END PGP SIGNATURE-----
+
+--5Qj7R76LV+2xqmCh--
 
