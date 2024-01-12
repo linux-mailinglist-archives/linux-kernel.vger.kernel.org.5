@@ -1,93 +1,120 @@
-Return-Path: <linux-kernel+bounces-24160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDBBE82B86D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 01:05:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF19382B86B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 01:05:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38178B24E1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 00:05:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44E871F2632F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 00:05:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB6F665E;
-	Fri, 12 Jan 2024 00:05:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AABD15EBB;
+	Fri, 12 Jan 2024 00:05:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xenobhv8"
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="V94TzYNx"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D71217988;
-	Fri, 12 Jan 2024 00:05:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 11 Jan 2024 19:05:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705017914;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ja/rCrslI1ygahysbrKqDdK7cEumA4q0GUIhaAsj41s=;
-	b=xenobhv8UAJbqxw9LEhIHklm8eVbdXfTgNl4eYnpAViLGg4XD2eqzldprWOoacL63BDc66
-	BhihY9pLUMlJLCbhlThvPSFIJemt2OOM/BllXPeft/BR9O6jxPLpGmLTJ2+mEjU3riEAbF
-	GTS2N0EYRkJF6RTp4E1sJZ+mst/yXos=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Kees Cook <keescook@chromium.org>
-Cc: Matthew Wilcox <willy@infradead.org>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs updates for 6.8
-Message-ID: <zocgn7zzr4wo3egjnq2vpmh7kpuxcj7gvo3a5tlbidt6wdh4rs@2udxphdcgeug>
-References: <wq27r7e3n5jz4z6pn2twwrcp2zklumcfibutcpxrw6sgaxcsl5@m5z7rwxyuh72>
- <202401101525.112E8234@keescook>
- <6pbl6vnzkwdznjqimowfssedtpawsz2j722dgiufi432aldjg4@6vn573zspwy3>
- <202401101625.3664EA5B@keescook>
- <xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
- <CAHk-=wigjbr7d0ZLo+6wbMk31bBMn8sEwHEJCYBRFuNRhzO+Kw@mail.gmail.com>
- <ZaByTq3uy0NfYuQs@casper.infradead.org>
- <202401111534.859084884C@keescook>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D11414F6D
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 00:05:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33765009941so4655587f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 16:05:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705017911; x=1705622711; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yUeW4cbpZ4DyBVhP3Gp3OihLg4kH7ejzOns3IWU+5Ug=;
+        b=V94TzYNxrIGl4Ql1KDfj2dIQRwVR9b1dQrxA1cZQEojq6YhzPCVfSVjfN/IiscAxOM
+         8bUuW5xHjn7OlmX3CPNDqDlhhYBnv9R1joYXwOQWJNiCcd5+sRFpPAODZfN9imaGzyWL
+         LaMDDlaBorSvEZglhXzI+54J6UQ4VS0IarLYknJiOulo5LskRn/VkNKd512E2KD2iPED
+         aY1NtlIz9hBilBL2tqM8pyDjIjvyaFpkAit99k7l6MjT2FjBohbk+T6xNRQ3VDdtFVYN
+         P50s3DC7BkCr4P9ZNN0f44CYmQPvp+KuMmDUMELhNFjFFVHfJscIVEVOIYqHzYoyLZdZ
+         ys1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705017911; x=1705622711;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yUeW4cbpZ4DyBVhP3Gp3OihLg4kH7ejzOns3IWU+5Ug=;
+        b=IUy931ckH2pxA67Wm6wJRnauTp6irNZNe16/51lxEQJtD2ETh/7Q+owcUuBViP9ujv
+         0DL3BiNwRc6wFuoqHx01Uv0jcJhnTeVaXjSXseF5pS7jCoy89D8MtQayIbGF5CAdoIwl
+         duFo7TtwFsleEpTjPlbhjgMJ0rnXwOuhZ9GeqQ0TtFFWOtO4BtorKh3+2YfvzWqIVtbF
+         WS4E3KlX3IUlvzYaYNRKKIDd1hzhHdFLKM4kyFO1raPVl8BQj9ixCWt+bZc2dnDJqPmm
+         lqrGgznSV/6QUV3WsVAQTEP5rHaqYD3pOp2IVcxx65zw4dSc+PbqcKDCfuBEIHb6p7IK
+         JI0Q==
+X-Gm-Message-State: AOJu0YzNqVQqncrNjnIzhVVO7KLN/zn0zBkBupVKglLOJdxB/D3is+bE
+	KcbwQWWcBmj6U+b72dSlME59CHpnEOkidw==
+X-Google-Smtp-Source: AGHT+IHCdDVdU5Stel0+XBc70+8iYoGyZHbMKQqAFOmwuvJLM/lTb1tAB1c6+WSy2s9dD19FKm9UCw==
+X-Received: by 2002:a05:6000:10c8:b0:337:7bde:f03e with SMTP id b8-20020a05600010c800b003377bdef03emr294510wrx.16.1705017911388;
+        Thu, 11 Jan 2024 16:05:11 -0800 (PST)
+Received: from [192.168.100.86] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id l5-20020adfe9c5000000b0033673ddd81csm2314450wrn.112.2024.01.11.16.05.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Jan 2024 16:05:10 -0800 (PST)
+Message-ID: <39b4a009-1883-4e66-b743-6b69f0846418@linaro.org>
+Date: Fri, 12 Jan 2024 00:05:10 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202401111534.859084884C@keescook>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/5] media: qcom: camss: Add sc8280xp support
+Content-Language: en-US
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Robert Foss <rfoss@kernel.org>, Todor Tomov <todor.too@gmail.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240111-linux-next-24-01-09-sc8280xp-camss-changes-v1-0-b92a650121ba@linaro.org>
+ <cd3d3034-ce98-4b96-8cdc-fbd5b66ca7a8@linaro.org>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <cd3d3034-ce98-4b96-8cdc-fbd5b66ca7a8@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 11, 2024 at 03:42:19PM -0800, Kees Cook wrote:
-> On Thu, Jan 11, 2024 at 10:57:18PM +0000, Matthew Wilcox wrote:
-> > On Wed, Jan 10, 2024 at 05:47:20PM -0800, Linus Torvalds wrote:
-> > > No, because the whole idea of "let me mark something deprecated and
-> > > then not just remove it" is GARBAGE.
-> > > 
-> > > If somebody wants to deprecate something, it is up to *them* to finish
-> > > the job. Not annoy thousands of other developers with idiotic
-> > > warnings.
-> > 
-> > What would be nice is something that warned about _new_ uses being
-> > added.  ie checkpatch.  Let's at least not make the problem worse.
+On 11/01/2024 20:13, Konrad Dybcio wrote:
 > 
-> For now, we've just kind of "dealt with it". For things that show up
-> with new -W options we've enlisted sfr to do the -next builds with it
-> explicitly added (but not to the tree) so he could generate nag emails
-> when new warnings appeared. That could happen if we added it to W=1
-> builds, or some other flag like REPORT_DEPRECATED=1.
 > 
-> Another ugly idea would be to do a treewide replacement of "func" to
-> "func_deprecated", and make "func" just a wrapper for it that is marked
-> with __deprecated. Then only new instances would show up (assuming people
-> weren't trying to actively bypass the deprecation work by adding calls to
-> "func_deprecated"). :P Then the refactoring to replace "func_deprecated"
-> could happen a bit more easily.
+> On 1/11/24 20:57, Bryan O'Donoghue wrote:
+>> A minimal set of patches to switch on sc8280xp support in CAMSS
+>> upstream. Most of the SoC dependencies are either merged - CAMCC or very
+>> close to being merged - CAMSS/CCI dtsi.
+>>
+>> Alot of prior work means we have far less interventions to make in this
+>> driver to support this new SoC.
+>>
+>> Most of this series is already reviewed however it is gated on merge of
+>> the CAMSS compat string here =>
+>>
+>> Link: 
+>> https://lore.kernel.org/linux-arm-msm/20240111-linux-next-24-01-02-sc8280xp-camss-core-dtsi-v4-2-cdd5c57ff1dc@linaro.org/
+>> Link: 
+>> https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/linux-next-24-01-09-sc8280xp-camss-changes
+>>
+>> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>> ---
+> What happened to the "vN" in the subject and the changelog?
 > 
-> Most past deprecations have pretty narrow usage. This is not true with
-> the string functions, which is why it's more noticeable here. :P
+> Konrad
 
-Before doing the renaming - why not just leave a kdoc comment that marks
-it as deprecated? Seems odd that checkpatch was patched, but I can't
-find anything marking it as deprecated when I cscope to it.
+Hmm it "felt" like a new series
+
+Checking though - yep this should be v5
+
+https://lwn.net/Articles/950887/
+
+I'll resend
+
+---
+bod
 
