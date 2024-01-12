@@ -1,208 +1,225 @@
-Return-Path: <linux-kernel+bounces-24496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4381882BD78
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:44:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B4AA82BDC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:52:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA0B2B213E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:44:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E5B11C2584A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:52:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0287557303;
-	Fri, 12 Jan 2024 09:43:50 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11D515DF00;
-	Fri, 12 Jan 2024 09:43:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 86EF71FB;
-	Fri, 12 Jan 2024 01:44:32 -0800 (PST)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E25593F64C;
-	Fri, 12 Jan 2024 01:43:43 -0800 (PST)
-Message-ID: <bfc274b8-8b60-4d7d-a8bf-467bc8ebbf1c@arm.com>
-Date: Fri, 12 Jan 2024 09:43:42 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D42245EE85;
+	Fri, 12 Jan 2024 09:50:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="KxXVGemJ";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="quDMObbP";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="KxXVGemJ";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="quDMObbP"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D6145EE64;
+	Fri, 12 Jan 2024 09:50:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 19EE81FC24;
+	Fri, 12 Jan 2024 09:50:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705053003; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ReYYQ24dDdwkzstlOyhbwj79vd3njz9x5QKkdHbs/9c=;
+	b=KxXVGemJA7zgnWrPEG2IPW/2azUB47Hs3WDdpqynSP+jVXWmX288myR+Hg6F82vLpZdV46
+	rGwDW42xn32QaG1btjzNyN/rrYtQcB8x+iuuILJ2C33wEvLuc26Fq3fYgQd7RhuIariBNJ
+	3m/ITQ9q795Gq/8JjyN8a5I0W5dIL8U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705053003;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ReYYQ24dDdwkzstlOyhbwj79vd3njz9x5QKkdHbs/9c=;
+	b=quDMObbPxXFR2Z9zZujc7nnvf2Ljrpnb44peg23QAkmT7pM4AqGNLk8Pt9yPrKHUeGZwov
+	u+wt5H+zGpyvbjBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705053003; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ReYYQ24dDdwkzstlOyhbwj79vd3njz9x5QKkdHbs/9c=;
+	b=KxXVGemJA7zgnWrPEG2IPW/2azUB47Hs3WDdpqynSP+jVXWmX288myR+Hg6F82vLpZdV46
+	rGwDW42xn32QaG1btjzNyN/rrYtQcB8x+iuuILJ2C33wEvLuc26Fq3fYgQd7RhuIariBNJ
+	3m/ITQ9q795Gq/8JjyN8a5I0W5dIL8U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705053003;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ReYYQ24dDdwkzstlOyhbwj79vd3njz9x5QKkdHbs/9c=;
+	b=quDMObbPxXFR2Z9zZujc7nnvf2Ljrpnb44peg23QAkmT7pM4AqGNLk8Pt9yPrKHUeGZwov
+	u+wt5H+zGpyvbjBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7ECB413782;
+	Fri, 12 Jan 2024 09:50:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id lnSfHUoLoWVmOgAAD6G6ig
+	(envelope-from <tzimmermann@suse.de>); Fri, 12 Jan 2024 09:50:02 +0000
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: ardb@kernel.org,
+	nathan@kernel.org,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	bhelgaas@google.com,
+	arnd@arndb.de,
+	zohar@linux.ibm.com,
+	dmitry.kasatkin@gmail.com,
+	paul@paul-moore.com,
+	jmorris@namei.org,
+	serge@hallyn.com,
+	javierm@redhat.com
+Cc: linux-arch@vger.kernel.org,
+	linux-efi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	linux-integrity@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH v5 0/4] arch/x86: Remove unnecessary dependencies on bootparam.h
+Date: Fri, 12 Jan 2024 10:44:35 +0100
+Message-ID: <20240112095000.8952-1-tzimmermann@suse.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 8/8] coresight-tpdm: Add msr register support for CMB
-Content-Language: en-US
-To: Tao Zhang <quic_taozha@quicinc.com>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Konrad Dybcio <konradybcio@gmail.com>, Mike Leach <mike.leach@linaro.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: Jinlong Mao <quic_jinlmao@quicinc.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, coresight@lists.linaro.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Tingwei Zhang <quic_tingweiz@quicinc.com>,
- Yuanfang Zhang <quic_yuanfang@quicinc.com>,
- Trilok Soni <quic_tsoni@quicinc.com>, Song Chai <quic_songchai@quicinc.com>,
- linux-arm-msm@vger.kernel.org, andersson@kernel.org
-References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
- <1700533494-19276-9-git-send-email-quic_taozha@quicinc.com>
- <185b23e7-a42f-4a12-85ba-8a093bc5ea58@arm.com>
- <4409f3cf-7ca9-407f-92c0-5aa7ba6f7b61@quicinc.com>
- <d8262a32-cc3c-4889-a5f0-a6b128b7e9d6@arm.com>
- <3e27b0e2-afb2-4706-9996-f567e33e35ba@quicinc.com>
- <94f504c4-76dd-4139-a8e0-c2858b7937bb@quicinc.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <94f504c4-76dd-4139-a8e0-c2858b7937bb@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=KxXVGemJ;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=quDMObbP
+X-Spamd-Result: default: False [3.19 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RLfgmttzabnpkr34rizty4fwu5)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 FREEMAIL_TO(0.00)[kernel.org,linutronix.de,redhat.com,alien8.de,linux.intel.com,zytor.com,google.com,arndb.de,linux.ibm.com,gmail.com,paul-moore.com,namei.org,hallyn.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[23];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 3.19
+X-Rspamd-Queue-Id: 19EE81FC24
+X-Spam-Level: ***
+X-Spam-Flag: NO
+X-Spamd-Bar: +++
 
-On 12/01/2024 09:12, Tao Zhang wrote:
-> 
-> On 12/20/2023 5:06 PM, Tao Zhang wrote:
->>
->> On 12/19/2023 10:09 PM, Suzuki K Poulose wrote:
->>> On 19/12/2023 06:58, Tao Zhang wrote:
->>>>
->>>> On 12/18/2023 7:02 PM, Suzuki K Poulose wrote:
->>>>> On 21/11/2023 02:24, Tao Zhang wrote:
->>>>>> Add the nodes for CMB subunit MSR(mux select register) support.
->>>>>> CMB MSRs(mux select registers) is to separate mux,arbitration,
->>>>>> ,interleaving,data packing control from stream filtering control.
->>>>>>
->>>>>> Reviewed-by: James Clark <james.clark@arm.com>
->>>>>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
->>>>>> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
->>>>>> ---
->>>>>>   .../testing/sysfs-bus-coresight-devices-tpdm  |  8 ++
->>>>>>   drivers/hwtracing/coresight/coresight-tpdm.c  | 86 
->>>>>> +++++++++++++++++++
->>>>>>   drivers/hwtracing/coresight/coresight-tpdm.h  | 16 +++-
->>>>>>   3 files changed, 109 insertions(+), 1 deletion(-)
->>>>>>
->>>>>> diff --git 
->>>>>> a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm 
->>>>>> b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
->>>>>> index e0b77107be13..914f3fd81525 100644
->>>>>> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
->>>>>> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
->>>>>> @@ -249,3 +249,11 @@ Description:
->>>>>>           Accepts only one of the 2 values -  0 or 1.
->>>>>>           0 : Disable the timestamp of all trace packets.
->>>>>>           1 : Enable the timestamp of all trace packets.
->>>>>> +
->>>>>> +What: /sys/bus/coresight/devices/<tpdm-name>/cmb_msr/msr[0:31]
->>>>>> +Date:        September 2023
->>>>>> +KernelVersion    6.7
->>>>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao 
->>>>>> Zhang (QUIC) <quic_taozha@quicinc.com>
->>>>>> +Description:
->>>>>> +        (RW) Set/Get the MSR(mux select register) for the CMB 
->>>>>> subunit
->>>>>> +        TPDM.
->>>>>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c 
->>>>>> b/drivers/hwtracing/coresight/coresight-tpdm.c
->>>>>> index f6cda5616e84..7e331ea436cc 100644
->>>>>> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
->>>>>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
->>>>>> @@ -86,6 +86,11 @@ static ssize_t tpdm_simple_dataset_show(struct 
->>>>>> device *dev,
->>>>>>               return -EINVAL;
->>>>>>           return sysfs_emit(buf, "0x%x\n",
->>>>>> drvdata->cmb->patt_mask[tpdm_attr->idx]);
->>>>>> +    case CMB_MSR:
->>>>>> +        if (tpdm_attr->idx >= drvdata->cmb_msr_num)
->>>>>> +            return -EINVAL;
->>>>>> +        return sysfs_emit(buf, "0x%x\n",
->>>>>> + drvdata->cmb->msr[tpdm_attr->idx]);
->>>>>>       }
->>>>>>       return -EINVAL;
->>>>>>   }
->>>>>> @@ -162,6 +167,12 @@ static ssize_t 
->>>>>> tpdm_simple_dataset_store(struct device *dev,
->>>>>>           else
->>>>>>               ret = -EINVAL;
->>>>>>           break;
->>>>>> +    case CMB_MSR:
->>>>>> +        if (tpdm_attr->idx < drvdata->cmb_msr_num)
->>>>>> +            drvdata->cmb->msr[tpdm_attr->idx] = val;
->>>>>> +        else
->>>>>> +            ret = -EINVAL;
->>>>>
->>>>>
->>>>> minor nit: Could we not break from here instead of adding return 
->>>>> -EINVAL
->>>>> for each case ? (I understand it has been done for the existing cases.
->>>>> But I think we should clean up all of that, including the ones you 
->>>>> added
->>>>> in Patch 5. Similarly for the dataset_show()
->>>>
->>>> Sure, do I also need to change the DSB corresponding code? If so, 
->>>> how about
->>>>
->>>> if I add a new patch to the next patch series to change the previous 
->>>> existing cases?
->>>
->>> You could fix the existing cases as a preparatory patch of the next 
->>> version of this series. I can pick it up and push it to next as I see 
->>> fit.
->>
->> Got it. I will update this to the next patch series.
-> 
-> Hi Suzuki,
-> 
-> 
-> Since the dataset data is configured with spin lock protection, it needs 
-> to be unlock before return.
-> 
-> List my modification below. Would you mind help review to see if it is 
-> good for you.
-> 
-> static ssize_t tpdm_simple_dataset_store(struct device *dev,
->                       struct device_attribute *attr,
->                       const char *buf,
->                       size_t size)
-> {
->      unsigned long val;
-> 
->      struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
->      struct tpdm_dataset_attribute *tpdm_attr =
->          container_of(attr, struct tpdm_dataset_attribute, attr);
-> 
->      if (kstrtoul(buf, 0, &val))
->          return -EINVAL;
-> 
->      spin_lock(&drvdata->spinlock);
+Reduce build time in some cases by removing unnecessary include statements
+for <asm/bootparam.h>. Reorganize some header files accordingly.
 
-Use guard() to avoid explicit unlock on return and then you don't need 
-the spin_unlock() everywhere. It would be done on return from the
-function implicitly.
+While working on the kernel's boot-up graphics, I noticed that touching
+include/linux/screen_info.h triggers a complete rebuild of the kernel
+on x86. It turns out that the architecture's PCI and EFI headers include
+<asm/bootparam.h>, which depends on <linux/screen_info.h>. But none of
+the drivers have any business with boot parameters or the screen_info
+state.
 
+The patchset moves code from bootparam.h and efi.h into separate header
+files and removes obsolete include statements on x86. I did
 
->      switch (tpdm_attr->mem) {
->      case DSB_TRIG_PATT:
+  make allmodconfig
+  make -j28
+  touch include/linux/screen_info.h
+  time make -j28
 
-With guard() in place:
+to measure the time it takes to rebuild. Results without the patchset
+are around 20 minutes.
 
-	ret = -EINVAL;
+  real    20m46,705s
+  user    354m29,166s
+  sys     28m27,359s
 
-	switch () {
-	case XXX:
+And with the patchset applied it goes down to less than one minute.
 
-	   if (tpdm_attr->idx < TPDM_XXXX_IDX) {
-		   drvdata->dsb->trig_patt[tpdm_attr->idx] = val;
-		   ret = size;
-	   }
-	   break;
-	case ...
-		...
-	}
+  real    0m56,643s
+  user    4m0,661s
+  sys     0m32,956s
 
-	return ret;
+The test system is an Intel i5-13500.
 
+v5:
+	* silence clang warnings for real-mode code (Nathan)
+	* revert boot/compressed/misc.h (kernel test robot)
+v4:
+	* fix fwd declaration in compressed/misc.h (Ard)
+v3:
+	* keep setup_header in bootparam.h (Ard)
+	* implement arch_ima_efi_boot_mode() in source file (Ard)
+v2:
+	* only keep struct boot_params in bootparam.h (Ard)
+	* simplify arch_ima_efi_boot_mode define (Ard)
+	* updated cover letter
 
-Suzuki
+Thomas Zimmermann (4):
+  arch/x86: Move UAPI setup structures into setup_data.h
+  arch/x86: Move internal setup_data structures into setup_data.h
+  arch/x86: Implement arch_ima_efi_boot_mode() in source file
+  arch/x86: Do not include <asm/bootparam.h> in several files
+
+ arch/x86/Makefile                      |  3 +
+ arch/x86/boot/compressed/acpi.c        |  2 +
+ arch/x86/boot/compressed/cmdline.c     |  2 +
+ arch/x86/boot/compressed/efi.c         |  2 +
+ arch/x86/boot/compressed/efi.h         |  9 ---
+ arch/x86/boot/compressed/pgtable_64.c  |  1 +
+ arch/x86/boot/compressed/sev.c         |  1 +
+ arch/x86/include/asm/efi.h             | 14 +----
+ arch/x86/include/asm/kexec.h           |  1 -
+ arch/x86/include/asm/mem_encrypt.h     |  2 +-
+ arch/x86/include/asm/pci.h             | 13 ----
+ arch/x86/include/asm/setup_data.h      | 32 ++++++++++
+ arch/x86/include/asm/sev.h             |  3 +-
+ arch/x86/include/asm/x86_init.h        |  2 -
+ arch/x86/include/uapi/asm/bootparam.h  | 72 +---------------------
+ arch/x86/include/uapi/asm/setup_data.h | 83 ++++++++++++++++++++++++++
+ arch/x86/kernel/crash.c                |  1 +
+ arch/x86/kernel/sev-shared.c           |  2 +
+ arch/x86/platform/efi/efi.c            |  5 ++
+ arch/x86/platform/pvh/enlighten.c      |  1 +
+ arch/x86/xen/enlighten_pvh.c           |  1 +
+ arch/x86/xen/vga.c                     |  1 -
+ 22 files changed, 143 insertions(+), 110 deletions(-)
+ create mode 100644 arch/x86/include/asm/setup_data.h
+ create mode 100644 arch/x86/include/uapi/asm/setup_data.h
+
+-- 
+2.43.0
 
 
