@@ -1,202 +1,103 @@
-Return-Path: <linux-kernel+bounces-24293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55FE482BA81
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 05:52:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 61F7F82BA84
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 05:52:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEF3028737E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 04:52:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11E8B2875D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 04:52:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8267F5B5B7;
-	Fri, 12 Jan 2024 04:52:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D42BA5B5BA;
+	Fri, 12 Jan 2024 04:52:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fkl8goRk"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cqYuSoHZ"
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F39B05B5AA
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 04:52:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705035135;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PQJ9hOz9qN8Mqz2MuXKMKk0sGzrFbCj0fCm3cv5Fn6A=;
-	b=fkl8goRkPhDKzhX7IAkmTslwPXHXhEZJn89cyoiO4I/2saJfpDUsFWjqGHur4arLS9bkE/
-	obmlpvKAIYdWOqb+Y6snBWE2u7SGpCPb+9ZcPxm4odK/4RppBeKQgJiCfxkLCRhl2w4FIx
-	rUkcixYtQRO07fZGSvcWkvJAYwSILL0=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-67-Pzar8MfmPUiRq9c0eNUBEw-1; Thu,
- 11 Jan 2024 23:52:12 -0500
-X-MC-Unique: Pzar8MfmPUiRq9c0eNUBEw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8C855282FA19;
-	Fri, 12 Jan 2024 04:52:11 +0000 (UTC)
-Received: from [10.22.16.77] (unknown [10.22.16.77])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 10CB92166B33;
-	Fri, 12 Jan 2024 04:52:11 +0000 (UTC)
-Message-ID: <b2e3f866-3644-4730-b2d3-6b84b1433a9d@redhat.com>
-Date: Thu, 11 Jan 2024 23:52:10 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E410A5B5B1
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 04:52:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-58e256505f7so3047801eaf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jan 2024 20:52:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705035167; x=1705639967; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SMzzmG1PU01z52zMYQ4mz/0VyGI2Cib5puWp6/ySFDQ=;
+        b=cqYuSoHZ7WeTBp/qJWmgN7JLSB9Tc72zccUIwUz7WBGExHFgV5qMRQgPDdbSmnjUnb
+         sbuBlSoJstPMBHGOKgnKK6fWAVYx+5jdtZhET4QCZf5N82wyWjXXTKs02jT2XdzAWogi
+         aJwjOysOivmYx0gqp6J7ezbf1cvQN/ALXfWayvxasqbB3DL3/np94ReyGHDzxQYgURl/
+         xgRkZatZJ871rKjtmTBwDC9y0qI0txjY6YJkeAy36DldmkurMvPeZK3tpCHu2QYo2cfz
+         CUCHa88e229sGJHQ88dc7n0GvKZjSJIwxhKHi3/PLi0NCuOrql0kTOCdOZES7UVND22M
+         O/lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705035167; x=1705639967;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SMzzmG1PU01z52zMYQ4mz/0VyGI2Cib5puWp6/ySFDQ=;
+        b=a91ioObLbVYASMLpjS75eD0N1oHYAXDOWTd0JULJahFw1Z724OdBJXU3NbBXH+A7HJ
+         V7v/0jKKRAFKBXimGYbkTYlnu9GrMueii1R+gne9xNOy/FXKMpHA7/I58HOCCe0tER2O
+         oKhhG69VfL434g5F372djqXE8ai+xfNu214jaRw+fC1YoMOM4672VkgL/kWMFPrfwuyC
+         eQPbKAISjTzB+Ss8u4LUvmVUS4T+8thqryN5iu/+p9e9UR7H8XOO2gj3Bqbx2/M/yvI7
+         cNuZYvlH5ZVvFWgt54GsNbKYPwEUXBfBc7jvo+Uoi7RAZluoqZezM0ku8Dsvzew8fxZ4
+         Eu1g==
+X-Gm-Message-State: AOJu0YwlllZ4JhspkkM+sgD35RxMB5Bw9xdfj3vAKakWm0KhNa5Okx7l
+	H0MyS8jNoxVE5TQAPCJnJv0=
+X-Google-Smtp-Source: AGHT+IFJgzyRwboVdy9LT1n7++9wIf2SdbFJSaOXKeS6HdcURnC4aOSek9WjGWLY9zlN65VH6PnX9g==
+X-Received: by 2002:a05:6358:6a44:b0:16e:271d:1db7 with SMTP id c4-20020a0563586a4400b0016e271d1db7mr965001rwh.2.1705035166719;
+        Thu, 11 Jan 2024 20:52:46 -0800 (PST)
+Received: from pop-os ([27.4.4.207])
+        by smtp.gmail.com with ESMTPSA id l22-20020a62be16000000b006d9b38f2e75sm2183645pff.32.2024.01.11.20.52.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jan 2024 20:52:46 -0800 (PST)
+Date: Fri, 12 Jan 2024 10:22:43 +0530
+From: Pranav Athreya <pranavsubbu@gmail.com>
+To: Forest Bond <forest@alittletooquiet.net>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Pranav Athreya <pranavsubbu@gmail.com>
+Subject: [PATCH v2] staging: vt6655: Remove extra blank lines between code
+ blocks
+Message-ID: <ZaDFm6XX7HiGWn58@pop-os>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/3] locking: Add rwsem_assert_held() and
- rwsem_assert_held_write()
-Content-Language: en-US
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Chandan Babu R <chandan.babu@oracle.com>
-Cc: linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
- "Darrick J . Wong" <djwong@kernel.org>, Mateusz Guzik <mjguzik@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Will Deacon <will@kernel.org>
-References: <20240111212424.3572189-1-willy@infradead.org>
- <20240111212424.3572189-2-willy@infradead.org>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20240111212424.3572189-2-willy@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+Adhere to Linux kernel coding style.
 
-On 1/11/24 16:24, Matthew Wilcox (Oracle) wrote:
-> Modelled after lockdep_assert_held() and lockdep_assert_held_write(),
-> but are always active, even when lockdep is disabled.  Of course, they
-> don't test that _this_ thread is the owner, but it's sufficient to catch
-> many bugs and doesn't incur the same performance penalty as lockdep.
+Reported by checkpatch:
 
-I don't mind the new *assert_held*nolockdep APIs. The only nit that I 
-have is that their behavior is slightly different from the corresponding 
-lockdep counterparts as they don't imply the current process is holding 
-the lock. So we may need to have some comment to document the difference 
-and set the right expectation. Of course it can be done with a follow-up 
-patch.
+drivers/staging/vt6655/rxtx.h:22: CHECK: Please don't use multiple blank lines
 
-Acked-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Pranav Athreya <pranavsubbu@gmail.com>
+---
+v2: Fixed commit message to only mention files that are being changed.
 
->
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->   include/linux/rwbase_rt.h |  9 ++++++--
->   include/linux/rwsem.h     | 46 ++++++++++++++++++++++++++++++++++-----
->   2 files changed, 48 insertions(+), 7 deletions(-)
->
-> diff --git a/include/linux/rwbase_rt.h b/include/linux/rwbase_rt.h
-> index 1d264dd08625..29c4e4f243e4 100644
-> --- a/include/linux/rwbase_rt.h
-> +++ b/include/linux/rwbase_rt.h
-> @@ -26,12 +26,17 @@ struct rwbase_rt {
->   	} while (0)
->   
->   
-> -static __always_inline bool rw_base_is_locked(struct rwbase_rt *rwb)
-> +static __always_inline bool rw_base_is_locked(const struct rwbase_rt *rwb)
->   {
->   	return atomic_read(&rwb->readers) != READER_BIAS;
->   }
->   
-> -static __always_inline bool rw_base_is_contended(struct rwbase_rt *rwb)
-> +static inline void rw_base_assert_held_write(const struct rwbase_rt *rwb)
-> +{
-> +	WARN_ON(atomic_read(&rwb->readers) != WRITER_BIAS);
-> +}
-> +
-> +static __always_inline bool rw_base_is_contended(const struct rwbase_rt *rwb)
->   {
->   	return atomic_read(&rwb->readers) > 0;
->   }
-> diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
-> index 9c29689ff505..4f1c18992f76 100644
-> --- a/include/linux/rwsem.h
-> +++ b/include/linux/rwsem.h
-> @@ -66,14 +66,24 @@ struct rw_semaphore {
->   #endif
->   };
->   
-> -/* In all implementations count != 0 means locked */
-> +#define RWSEM_UNLOCKED_VALUE		0UL
-> +#define RWSEM_WRITER_LOCKED		(1UL << 0)
-> +#define __RWSEM_COUNT_INIT(name)	.count = ATOMIC_LONG_INIT(RWSEM_UNLOCKED_VALUE)
-> +
->   static inline int rwsem_is_locked(struct rw_semaphore *sem)
->   {
-> -	return atomic_long_read(&sem->count) != 0;
-> +	return atomic_long_read(&sem->count) != RWSEM_UNLOCKED_VALUE;
->   }
->   
-> -#define RWSEM_UNLOCKED_VALUE		0L
-> -#define __RWSEM_COUNT_INIT(name)	.count = ATOMIC_LONG_INIT(RWSEM_UNLOCKED_VALUE)
-> +static inline void rwsem_assert_held_nolockdep(const struct rw_semaphore *sem)
-> +{
-> +	WARN_ON(atomic_long_read(&sem->count) == RWSEM_UNLOCKED_VALUE);
-> +}
-> +
-> +static inline void rwsem_assert_held_write_nolockdep(const struct rw_semaphore *sem)
-> +{
-> +	WARN_ON(!(atomic_long_read(&sem->count) & RWSEM_WRITER_LOCKED));
-> +}
->   
->   /* Common initializer macros and functions */
->   
-> @@ -152,11 +162,21 @@ do {								\
->   	__init_rwsem((sem), #sem, &__key);			\
->   } while (0)
->   
-> -static __always_inline int rwsem_is_locked(struct rw_semaphore *sem)
-> +static __always_inline int rwsem_is_locked(const struct rw_semaphore *sem)
->   {
->   	return rw_base_is_locked(&sem->rwbase);
->   }
->   
-> +static inline void rwsem_assert_held_nolockdep(const struct rw_semaphore *sem)
-> +{
-> +	WARN_ON(!rwsem_is_locked(sem));
-> +}
-> +
-> +static inline void rwsem_assert_held_write_nolockdep(const struct rw_semaphore *sem)
-> +{
-> +	rw_base_assert_held_write(sem);
-> +}
-> +
->   static __always_inline int rwsem_is_contended(struct rw_semaphore *sem)
->   {
->   	return rw_base_is_contended(&sem->rwbase);
-> @@ -169,6 +189,22 @@ static __always_inline int rwsem_is_contended(struct rw_semaphore *sem)
->    * the RT specific variant.
->    */
->   
-> +static inline void rwsem_assert_held(const struct rw_semaphore *sem)
-> +{
-> +	if (IS_ENABLED(CONFIG_LOCKDEP))
-> +		lockdep_assert_held(sem);
-> +	else
-> +		rwsem_assert_held_nolockdep(sem);
-> +}
-> +
-> +static inline void rwsem_assert_held_write(const struct rw_semaphore *sem)
-> +{
-> +	if (IS_ENABLED(CONFIG_LOCKDEP))
-> +		lockdep_assert_held_write(sem);
-> +	else
-> +		rwsem_assert_held_write_nolockdep(sem);
-> +}
-> +
->   /*
->    * lock for reading
->    */
+ drivers/staging/vt6655/rxtx.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/staging/vt6655/rxtx.h b/drivers/staging/vt6655/rxtx.h
+index a67757c9bb5c..be1e5180d57b 100644
+--- a/drivers/staging/vt6655/rxtx.h
++++ b/drivers/staging/vt6655/rxtx.h
+@@ -19,7 +19,6 @@
+ #define DEFAULT_MSDU_LIFETIME_RES_64us	8000 /* 64us */
+ #define DEFAULT_MGN_LIFETIME_RES_64us	125  /* 64us */
+ 
+-
+ /*---------------------  Export Definitions -------------------------*/
+ 
+ /*---------------------  Export Variables  --------------------------*/
+-- 
+2.34.1
 
 
