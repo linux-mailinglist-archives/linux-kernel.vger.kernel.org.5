@@ -1,163 +1,127 @@
-Return-Path: <linux-kernel+bounces-24469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6000382BCFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:24:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1A2182BD0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 10:25:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2F6A1F21183
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:24:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64EA1B2395C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jan 2024 09:25:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5CD556B7A;
-	Fri, 12 Jan 2024 09:23:00 +0000 (UTC)
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC33956B92;
+	Fri, 12 Jan 2024 09:25:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EhH7HmOM"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EAEB55C1A;
-	Fri, 12 Jan 2024 09:22:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5e89ba9810aso53716167b3.2;
-        Fri, 12 Jan 2024 01:22:58 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8744E55C1A
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 09:25:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40e6275e9beso6002995e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 01:25:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705051523; x=1705656323; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q3bfVv8WtMnQ2fP3XkB2eOBLDf/LsCJjP8wfwX/T4wM=;
+        b=EhH7HmOMlMI500FvCSNs1tYIqwNUcTYHKojQQCS60nhwLIfhEAPQEJuXKDQAcRDsoh
+         4K195kuJL1Kax5yCN03yf896jMcQ1m7949PDudgYELHRmDpHF+rNL6vUVddC+x4qrGmf
+         0nFuR4a+LUHFFy8nqxLJycw0eRm0krZbJvqxXNrkPx6Rx6l/ex37WbpfIIEGNoCiyXO8
+         95KrfTsKi8KoClPIe+foCeMeHC77830g56nVSx8F5bH0213X3MwbCx9h2wEby2NrLJLu
+         XwD+9DpULZq0U42xpKWELUd2JPd+Npg/ddOd33rJ6yYz7ZzjXxk54C+bjoz0G8qwJ2IL
+         2xGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705051377; x=1705656177;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1705051523; x=1705656323;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oZ+2Dp9TWzBAJs7a7HXex6+HAK1whEFISVpRMsIzFtY=;
-        b=kz4Rh6tATK+ePkChxTffCB9o+LAq6zBjbkDfXI6KrDfscKzvxXI01Me3Ig/oKKwgnh
-         F/fm3ooHu0iDL858CU7KoFwM+rmNwYZAIpLj2WMuesIFJt0uTqLjVwGJr95JprWaPeTA
-         ZMS/mMy1duXu1z02b9X458aq+ZGgrwp4OM1/mjoaDK25qH7HeXWQ5iMy04XrARfHdZjU
-         KsY9yOW/k1uHcDQ2j006IrLzVi/pvnqMTSfU1klrt5+iExv8BlfvSCjI9SwPZVDz9mCM
-         /olV2pj97GcsWyYLiWLBt9MChS2Oyfj9MHoP/+uEWAZkRPbNaSwiEZ64FulvrHL22xP0
-         C8LA==
-X-Gm-Message-State: AOJu0YxxA6j94SUnMr2pYu/8XC/gHImIJPaTp40blv99ARFOyhdj7Se7
-	64K6HjkIxW5N9drUM+xmpIr5HyR0ayfa7w==
-X-Google-Smtp-Source: AGHT+IFg5IMMzLpSbtw/b/cT8GfZQlvcBjGu28hUCRjpVSb+ZtQCVo1usFysauBc/fg372QgmQpzpA==
-X-Received: by 2002:a81:6c54:0:b0:5fb:7671:477d with SMTP id h81-20020a816c54000000b005fb7671477dmr994872ywc.46.1705051377320;
-        Fri, 12 Jan 2024 01:22:57 -0800 (PST)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
-        by smtp.gmail.com with ESMTPSA id ft18-20020a05690c361200b005fa813ac693sm1160169ywb.48.2024.01.12.01.22.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Jan 2024 01:22:56 -0800 (PST)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5e89ba9810aso53715957b3.2;
-        Fri, 12 Jan 2024 01:22:56 -0800 (PST)
-X-Received: by 2002:a81:4522:0:b0:5fa:7e0a:b133 with SMTP id
- s34-20020a814522000000b005fa7e0ab133mr895241ywa.79.1705051375948; Fri, 12 Jan
- 2024 01:22:55 -0800 (PST)
+        bh=Q3bfVv8WtMnQ2fP3XkB2eOBLDf/LsCJjP8wfwX/T4wM=;
+        b=N8Q5tVMS/28FNr8/79eMFdsvAn9aCuWf+w/9H15KGzrEQcBv1m1TDsmk7Fl5b5wy15
+         cBsNScN0tngJbem/2sCfbTkL9cSc3XO/nQpwsLUG9TD4Iwl1gQmyWjKU3+RtFJiJat7h
+         GMB9HiJo3Y2UGQFRobXij+901qOTJoW9dkZb4B6xXz66jEZ8epuefwPRFsyeqcgv87Gv
+         HkUGFl79XZuIItEYTyVcYOYKiN4SHfCdAQxckLvSVKDwxaQDKDuY5LufKpZ4n+EZ4kem
+         bz40U9nXli9jpujBKLWXk8M4ny5bVWE48RYa71trkqOh3M08fXtmJE0K4wKJrqhR3zyQ
+         ppSw==
+X-Gm-Message-State: AOJu0Yw2ngp8ZzfGgyOTWtYr6H98BlaywQ0PlA7rNT0D54t5v1qPI5PN
+	//TCSxO+TbqDA1lfr+hXUqbJ8K4c+CKerA==
+X-Google-Smtp-Source: AGHT+IEMwKZ9XV3E5enGXhcHiQsIucq3Zsj1wJo8Uj7nGouthpJzDE5uay5WsPpo048DpY1o1KYFwg==
+X-Received: by 2002:a05:600c:6a19:b0:40d:8881:4d1e with SMTP id jj25-20020a05600c6a1900b0040d88814d1emr550199wmb.66.1705051522693;
+        Fri, 12 Jan 2024 01:25:22 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id l6-20020a7bc346000000b0040d81ca11casm4901880wmj.28.2024.01.12.01.25.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jan 2024 01:25:22 -0800 (PST)
+From: neil.armstrong@linaro.org
+To: Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Sandy Huang <hjc@rock-chips.com>,
+	Mark Yao <markyao0591@gmail.com>,
+	Diederik de Haas <didi.debian@cknow.org>,
+	Segfault <awarnecke002@hotmail.com>,
+	Arnaud Ferraris <aferraris@debian.org>,
+	Danct12 <danct12@riseup.net>,
+	Ondrej Jirman <megi@xff.cz>,
+	Manuel Traut <manut@mecka.net>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>,
+	dri-devel@lists.freedesktop.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: (subset) [PATCH v3 0/4] arm64: rockchip: Pine64 PineTab2 support
+Date: Fri, 12 Jan 2024 10:25:18 +0100
+Message-Id: <170505150474.933870.7165654280857450168.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240102-pinetab2-v3-0-cb1aa69f8c30@mecka.net>
+References: <20240102-pinetab2-v3-0-cb1aa69f8c30@mecka.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240111162419.12406-1-pmladek@suse.com>
-In-Reply-To: <20240111162419.12406-1-pmladek@suse.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 12 Jan 2024 10:22:44 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW1XyimybybSwAfwgzeUyFj6riRZZZzQK7zjTVUJziX-Q@mail.gmail.com>
-Message-ID: <CAMuHMdW1XyimybybSwAfwgzeUyFj6riRZZZzQK7zjTVUJziX-Q@mail.gmail.com>
-Subject: Re: [PATCH] scsi: core: Safe warning about bad dev info string
-To: Petr Mladek <pmladek@suse.com>
-Cc: "James E . J . Bottomley" <jejb@linux.ibm.com>, "Martin K . Petersen" <martin.petersen@oracle.com>, 
-	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Chris Down <chris@chrisdown.name>, oe-kbuild-all@lists.linux.dev, 
-	kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Hi Petr,
+From: Neil Armstrong <neil.armstrong@linaro.org>
 
-On Thu, Jan 11, 2024 at 5:26=E2=80=AFPM Petr Mladek <pmladek@suse.com> wrot=
-e:
-> Both "model" and "strflags" are passed to "%s" even when one or both
-> are NULL.
->
-> It is safe because vsprintf() would detect the NULL pointer and print
-> "(null)". But it is a kernel-specific feature and compiler warns
-> about it:
->
-> <warning>
->    In file included from include/linux/kernel.h:19,
->                     from arch/x86/include/asm/percpu.h:27,
->                     from arch/x86/include/asm/current.h:6,
->                     from include/linux/sched.h:12,
->                     from include/linux/blkdev.h:5,
->                     from drivers/scsi/scsi_devinfo.c:3:
->    drivers/scsi/scsi_devinfo.c: In function 'scsi_dev_info_list_add_str':
-> >> include/linux/printk.h:434:44: warning: '%s' directive argument is nul=
-l [-Wformat-overflow=3D]
->      434 | #define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__V=
-A_ARGS__)
->          |                                            ^
->    include/linux/printk.h:430:3: note: in definition of macro 'printk_ind=
-ex_wrap'
->      430 |   _p_func(_fmt, ##__VA_ARGS__);    \
->          |   ^~~~~~~
->    drivers/scsi/scsi_devinfo.c:551:4: note: in expansion of macro 'printk=
-'
->      551 |    printk(KERN_ERR "%s: bad dev info string '%s' '%s'"
->          |    ^~~~~~
->    drivers/scsi/scsi_devinfo.c:552:14: note: format string is defined her=
-e
->      552 |           " '%s'\n", __func__, vendor, model,
->          |              ^~
-> </warning>
->
-> Do not rely on the kernel specific behavior and print the message a safe =
-way.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202401112002.AOjwMNM0-lkp@i=
-ntel.com/
-> Signed-off-by: Petr Mladek <pmladek@suse.com>
-> ---
-> Note: The patch is only compile tested.
->
->  drivers/scsi/scsi_devinfo.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/scsi/scsi_devinfo.c b/drivers/scsi/scsi_devinfo.c
-> index 3fcaf10a9dfe..ba7237e83863 100644
-> --- a/drivers/scsi/scsi_devinfo.c
-> +++ b/drivers/scsi/scsi_devinfo.c
-> @@ -551,9 +551,9 @@ static int scsi_dev_info_list_add_str(char *dev_list)
->                 if (model)
->                         strflags =3D strsep(&next, next_check);
->                 if (!model || !strflags) {
-> -                       printk(KERN_ERR "%s: bad dev info string '%s' '%s=
-'"
-> -                              " '%s'\n", __func__, vendor, model,
-> -                              strflags);
-> +                       pr_err("%s: bad dev info string '%s' '%s' '%s'\n"=
-,
-> +                              __func__, vendor, model ? model : "",
-> +                              strflags ? strflags : "");
+Hi,
 
-Do we really want to make this change?
-The kernel's vsprintf() implementation has supported NULL pointers
-since forever, and lots of code relies on that behavior.
+On Tue, 02 Jan 2024 17:15:43 +0100, Manuel Traut wrote:
+> This adds support for the BOE TH101MB31IG002 LCD Panel used in PineTab2 [1] and
+> PineTab-V [2] as well as the devictrees for the PineTab2 v0.1 and v2.0.
+> 
+> The BOE LCD Panel patch was retrieved from [3]. The function-name prefix has
+> been adapted and the LCD init section was simplified.
+> 
+> The PineTab2 devicetree patch was retrieved from [4]. Some renaming was needed
+> to pass the dtb-checks, the brightness-levels are specified as range and steps
+> instead of a list of values.
+> 
+> [...]
 
-Perhaps this warning can be disabled instead?
+Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
 
->                         res =3D -EINVAL;
->                 } else
->                         res =3D scsi_dev_info_list_add(0 /* compatible */=
-, vendor,
+[1/4] dt-bindings: display: panel: Add BOE TH101MB31IG002-28A panel
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=baae3a0b10c499d4228514a701602f6fd2a8d6b4
+[2/4] drm/panel: Add driver for BOE TH101MB31IG002-28A panel
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=420186db1483da4e16cd5d5a472f511a35dbc1b7
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+-- 
+Neil
 
