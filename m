@@ -1,92 +1,74 @@
-Return-Path: <linux-kernel+bounces-25181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADB3682C92B
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 03:45:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8608782C928
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 03:45:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F6471F25127
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 02:45:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D83B6282A9D
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 02:45:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C462748A;
-	Sat, 13 Jan 2024 02:45:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84266CA62;
+	Sat, 13 Jan 2024 02:44:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marun.edu.tr header.i=@marun.edu.tr header.b="IeawEYCX"
-Received: from mx1.marmara.edu.tr (mx1.marmara.edu.tr [193.140.143.23])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="feGcgba9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72B82CA78;
-	Sat, 13 Jan 2024 02:45:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=marun.edu.tr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marun.edu.tr
-Received: from mx1.marmara.edu.tr (localhost.localdomain [127.0.0.1])
-	by mx1.marmara.edu.tr (Proxmox) with ESMTP id DFD418463D;
-	Sat, 13 Jan 2024 05:37:44 +0300 (+03)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marun.edu.tr; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:from:from:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=mx; bh=enLySNBZNDXysPx4FKcckBCSCxA9UJHEJk2lktUGMLk=; b=Ie
-	awEYCXKd0FMy1qG1y1mchL7xZiVpcjj2xqsJDKlecWhwSheAvE6onkIoJbKa+kPX
-	M1aapx6E564+WdMoI0XJxYRyw8k3CW+ZjiKUFf9OIs10LmvBkzaW87+j+XhoRsYP
-	d435+DqBdMU1UsELOslWZp+C1Zg9aVzxhEA4mLY4vjJj/FxbDpOIJqr8fesueetx
-	AymR81Jpzgy2tDL3V1BH4Ajp2naQkdX4zHnkA0JRMQV1nyDWGH6571fAbvbTuYiP
-	OgEbkrgd+rKBbO5B7llHn+S5u7/fnFpK5YeHNE40oCHJ/fEYf4jY+0lmvq+M8Odg
-	IynSPgaWsofyQLZzE8cj//ZP3rTNdjef2/iyep8s1aA6jVEtkC1SxFKNdpZT9iRb
-	yK59vFXHwWClKsGW9GpOSMdBSyMN85jGiU+X9MV3tdqhjC45lDpeoc92U9DT+Diq
-	c7OHs+hDlR+C8i4wn8HOsNCVu1JHs2/qWjvS/3pIIVzjv/h4kOy66R5Jey3fYyKK
-	cAGFzN0Vs/XEiuDmZN0HEPhM5a17q69ba3ny4TSj/bqum2R4U0ML525+kZIWkqWy
-	RO/JK3O1bFXFoADEAe0g7bARGexDjxF7xWGcWMkQMTWHx+CBvuLQwUkT4bByAnAM
-	qiS7+PyB5pR7VdV2UYAjU2ZDBwHqy6d5gETByvfzU=
-From: =?UTF-8?q?=C3=87a=C4=9Fhan=20Demir?= <caghandemir@marun.edu.tr>
-To: 
-Cc: =?UTF-8?q?=C3=87a=C4=9Fhan=20Demir?= <caghandemir@marun.edu.tr>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: hda/relatek: Enable Mute LED on HP Laptop 15s-fq2xxx
-Date: Sat, 13 Jan 2024 05:37:33 +0300
-Message-ID: <20240113023734.10817-2-caghandemir@marun.edu.tr>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFAC21C2E;
+	Sat, 13 Jan 2024 02:44:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBF57C433F1;
+	Sat, 13 Jan 2024 02:44:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705113898;
+	bh=BzT25cXi1cMZyRyCto2mcPnNVmM/UVdj5o9CdlbbAbE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=feGcgba9BKLJGGc2npBabHiVmw5NHLR+0ul8vA9DpZsrY2ffhdB6AqWvuY8Po5jYs
+	 jT08umgtShrLTuyZvY7YHOJWb5si/wW6LrYy5/ZmTG+54gFnwn+GKvWXLxI9zjluYZ
+	 1fbRkccoaRqv6oAetob/q3Jg+1wAEB8ABngOqL3AwtSVrW5AVem4nIacVNkNs8Gvek
+	 wztUGMGp7xeU9i+tW6u9cog9iysUb8+FPLeo0FcEMtCDBaMReJcBd4OdI6kYTXtbXr
+	 JZO5hUWIpg8IixFGnjoQaB5GNqBMchYcEJyh6oLGpUZpSLPQyXwVPP1+rXI+UBwihz
+	 Y3avb2F4/Zy2A==
+Date: Fri, 12 Jan 2024 18:44:56 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Herbert Xu
+ <herbert@gondor.apana.org.au>, kernel@pengutronix.de,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: netdev_queue: netdev_txq_completed_mb(): fix wake
+ condition
+Message-ID: <20240112184456.107a3756@kernel.org>
+In-Reply-To: <20240112-netdev_queue-v1-1-102c2d57e20a@pengutronix.de>
+References: <20240112-netdev_queue-v1-1-102c2d57e20a@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-This HP Laptop uses ALC236 codec with COEF 0x07 idx 1 controlling
-the mute LED. This patch enables the already existing quirk for
-this device.
+On Fri, 12 Jan 2024 17:13:14 +0100 Marc Kleine-Budde wrote:
+> netif_txq_try_stop() uses "get_desc >= start_thrs" as the check for
+> the call to netif_tx_start_queue().
+> 
+> Use ">=" i netdev_txq_completed_mb(), too.
+> 
+> Fixes: c91c46de6bbc ("net: provide macros for commonly copied lockless queue stop/wake code")
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+> I'm currently converting a networking driver with a TX-FIFO depth of
+> 1 (CAN device with lots of errata :/) to the netdev_queue.h helpers
+> and stumbled over an off-by-one error on __netif_txq_completed_wake().
 
-Signed-off-by: Çağhan Demir <caghandemir@marun.edu.tr>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+Makes sense, could be copy'n'paste from one of the drivers this is
+based on. A bit unsure if it deserves the Fixes tag and net as we don't
+know of any current user that would be suffering. start_thrs == ring size
+is a bit of an extreme use case indeed :) Either way:
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index b68c94757..124bee526 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9876,6 +9876,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8870, "HP ZBook Fury 15.6 Inch G8 Mobile Workstation PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x8873, "HP ZBook Studio 15.6 Inch G8 Mobile Workstation PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x887a, "HP Laptop 15s-eq2xxx", ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
-+	SND_PCI_QUIRK(0x103c, 0x87FE, "HP Laptop 15s-fq2xxx", ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
- 	SND_PCI_QUIRK(0x103c, 0x888a, "HP ENVY x360 Convertible 15-eu0xxx", ALC245_FIXUP_HP_X360_MUTE_LEDS),
- 	SND_PCI_QUIRK(0x103c, 0x888d, "HP ZBook Power 15.6 inch G8 Mobile Workstation PC", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8895, "HP EliteBook 855 G8 Notebook PC", ALC285_FIXUP_HP_SPEAKERS_MICMUTE_LED),
--- 
-2.43.0
-
-
-
---
-Bu e-posta mesajı ve içeriği gizli veya özel bilgiler içerebilir. Mesajın içeriğinde bulunan tüm fikir ve görüşler sadece göndericiye ait olup, Marmara Üniversitesi’nin resmi görüşünü yansıtmaz. Kurumumuz bu e-posta içeriğindeki bilgilerin kullanılması nedeniyle hiç kimseye karşı sorumlu tutulamaz. Mesajın belirlenen alıcılardan biri değilseniz, mesaj içeriğini ya da eklerini kullanmayınız, kopyalamayınız, yaymayınız, başka kişilere yönlendirmeyiniz ve mesajı gönderen kişiyi derhal e-posta yoluyla haberdar ederek bu mesajı ve eklerini herhangi bir kopyasını muhafaza etmeksizin siliniz. Kurumumuz size, mesajın ve bilgilerinin değişikliğe uğramaması, bütünlüğünün ve gizliliğin korunması konusunda garanti vermemekte olup, e-posta içeriğine yetkisiz olarak yapılan müdahale, virüs içermesi ve/veya bilgisayar sisteminize verebileceği herhangi bir zarardan da sorumlu değildir.This e-mail message and its content may cont
- ain confidential or proprietary information. All ideas and opinions contained in the message are solely those of the sender and do not reflect the official opinion of Marmara University. Our institution cannot be held responsible to anyone for the use of the information contained in this e-mail. If you are not one of the designated recipients of the message, do not use, copy, disseminate, forward the message content or attachments, and immediately notify the sender of the message via e-mail and delete this message and its attachments without retaining any copies. Our institution does not guarantee you that the message and its information will not be changed, its integrity and confidentiality will be protected, and is not responsible for any unauthorized intervention to the e-mail content, viruses and/or any damage it may cause to your computer system.
-
+Acked-by: Jakub Kicinski <kuba@kernel.org>
 
