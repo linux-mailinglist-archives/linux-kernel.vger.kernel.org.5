@@ -1,118 +1,137 @@
-Return-Path: <linux-kernel+bounces-25355-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB2D782CE2D
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 19:41:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA75682CE2A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 19:38:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69455B22732
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 18:41:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B769A1C211BA
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 18:38:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D09B263B3;
-	Sat, 13 Jan 2024 18:41:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCB9F63C7;
+	Sat, 13 Jan 2024 18:38:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aurel32.net header.i=@aurel32.net header.b="s6GswYBU"
-Received: from hall.aurel32.net (hall.aurel32.net [195.154.113.88])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="p8n4+Yhs"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A23963A6;
-	Sat, 13 Jan 2024 18:41:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aurel32.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aurel32.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=aurel32.net
-	; s=202004.hall; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:
-	Subject:Cc:To:From:Content-Type:From:Reply-To:Subject:Content-ID:
-	Content-Description:In-Reply-To:References:X-Debbugs-Cc;
-	bh=RuJgwh+4GbW/+hxO9wfk+hS1gNlricVg+fWINBANyag=; b=s6GswYBUChRyFi0RUQt7eFa348
-	THJNVCSfF9dsOWDNXQ2FyYVugMB2FDC7WvDNfGy6Ub8SxZ1fbGUolaOirL8G0fDVKIyUmFY3VsvfV
-	iSHyPD0pkTADxfCse4NF8BlBkXEN9Fqa9BpS3FFcKOJwHjdD6iMcl79QZl05Y91WfIX+QU+MrIfn2
-	bQ4uKuxrr63dBE8vqAydFK0b8Opj6Cx3T2RT/3o+xMuz1NPCLfyeR1JZIt6HmibnsU2OQzrbGj3c6
-	N7BkRNkTDIbAleC4mkFNs201XSU3vS48Ov1Ec4/yQEUjAAaiqS2RHtZSW+OrU+sJykf/ZuNWfoA0u
-	UIt+sGkw==;
-Received: from ohm.aurel32.net ([2001:bc8:30d7:111::2] helo=ohm.rr44.fr)
-	by hall.aurel32.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <aurelien@aurel32.net>)
-	id 1rOip8-00HYMM-1w;
-	Sat, 13 Jan 2024 19:33:38 +0100
-From: Aurelien Jarno <aurelien@aurel32.net>
-To: linux-kernel@vger.kernel.org,
-	Bluecherry Maintainers <maintainers@bluecherrydvr.com>,
-	Anton Sviridenko <anton@corp.bluecherry.net>,
-	Andrey Utkin <andrey_utkin@fastmail.com>,
-	Ismael Luceno <ismael@iodev.co.uk>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org (open list:SOFTLOGIC 6x10 MPEG CODEC)
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
-	Andrew Morton' <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Christoph Hellwig' <hch@infradead.org>,
-	"Jason A . Donenfeld" <Jason@zx2c4.com>,
-	Aurelien Jarno <aurelien@aurel32.net>,
-	Jiri Slaby <jirislaby@gmail.com>,
-	stable@vger.kernel.org,
-	David Laight <David.Laight@ACULAB.COM>
-Subject: [PATCH] media: solo6x10: replace max(a, min(b, c)) by clamp(b, a, c)
-Date: Sat, 13 Jan 2024 19:33:31 +0100
-Message-ID: <20240113183334.1690740-1-aurelien@aurel32.net>
-X-Mailer: git-send-email 2.42.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DAE263A6
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 18:37:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33694bf8835so5724956f8f.3
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 10:37:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1705171077; x=1705775877; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zLHitRwn8P5MWByWsP9MWy9vMCnP3S50sHRU56/35w8=;
+        b=p8n4+YhskKkLSgcKfSp21kg9qGeGyPiOGtU74MFo6Rg01D4eoSqG+VOnOFEtbwzPGw
+         WTZV24eh5Shv4IcQjX/vcycLq8U08GChHPexcEAkqPV3DDibzZC5DNcsSlAmyDFnyBCX
+         uo8JqpK88KP+zVSTqT+AJrQ+jCjt3WBxvdaTV3TOk7KKcM+EhFcVcUV5wf2ZmIhr4Uax
+         1n1wGiNAQYfCeI6sXlkmkbXfIRb2ALp6SiScZDeIavBHmkM1YmRGfzdOsaBJyNIeGCmp
+         MNvEMFbsfGG9tUQYxWJiFHNjd+JXPEa/D5tfMEmVg3Adj6NasdnClZ4BPa7/Yr8mdfU6
+         nYuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705171077; x=1705775877;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zLHitRwn8P5MWByWsP9MWy9vMCnP3S50sHRU56/35w8=;
+        b=puSMlhYkUc0vuNfr1D92AS+SyS6HSkYZ38dDDxPdFah3NtULChO1shadYwIaPNsHfo
+         tULMF3cDbRBf8u4haWMMWB/lkrBwSIhm2p5MbBKTsznkKaIfahut39nVWuiKfI9JMgQx
+         MAPy8drtGXBLTxNq6B6zsVUXagqsLFcEQ6EYkPWjPyl1Qj75o/OMyTxi+unjvgPRuak/
+         zdHkliHB83co/2D1ZJXJkW6iPkMwC/mHxEWYuof4RJt82QIPwhWS6IfrlFjqBCdlCYam
+         BlKi8ueHql1PPevVGg0xlZzDDs+flj/2UkStFJhjxqV3DwTcOCXFhNxYU3c+2t0A2ykE
+         Vf5Q==
+X-Gm-Message-State: AOJu0Yy/iMxl58bfwOZAyMVtZ/fz9Vl0JOmdbYFmJ8NTbhV/IBw+nKuj
+	q9pNhEyPyRueanzw1FWUd22Z6L8KkykpPg==
+X-Google-Smtp-Source: AGHT+IGx+typfGV6pw88t0MhNDVovMTO/6LAQT5VVf/hJ8arArE+DoukPULemtHJk7obzpVYRYbGeg==
+X-Received: by 2002:a5d:4087:0:b0:336:ca46:2ce1 with SMTP id o7-20020a5d4087000000b00336ca462ce1mr1687719wrp.122.1705171077431;
+        Sat, 13 Jan 2024 10:37:57 -0800 (PST)
+Received: from airbuntu (host109-154-205-127.range109-154.btcentralplus.com. [109.154.205.127])
+        by smtp.gmail.com with ESMTPSA id c17-20020a5d63d1000000b003365fcc1846sm7297613wrw.52.2024.01.13.10.37.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Jan 2024 10:37:57 -0800 (PST)
+Date: Sat, 13 Jan 2024 18:37:55 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>
+Subject: Re: [GIT PULL] Scheduler changes for v6.8
+Message-ID: <20240113183755.3gppkooy2g72f3qn@airbuntu>
+References: <CAHk-=whK-cuBUQ2hECtkGu3LR-ipai+tmB85M=C7n3b1M8B4gQ@mail.gmail.com>
+ <CAKfTPtCnT9VLqiQGL5kyhzqv=WAUNRA3tVDVoKjB7jX-00Un+g@mail.gmail.com>
+ <4405adb5-0b16-4716-9542-47d8bb1737ee@arm.com>
+ <20240112181805.bjvrkvvkszdfa7co@airbuntu>
+ <CAKfTPtBQZcDpiPMF2sjJopNueMe+Lv0cziPzAMAaxH1XbfHiUQ@mail.gmail.com>
+ <CAHk-=wiwRb50-q6EFU9RgjxOXHC2=x_ddQ6yzWTs5ah0nVeXPw@mail.gmail.com>
+ <CAHk-=wh-RR5DMb8jttBGT3Y+W0=X=dSBHZxWpNECT4Dw0_1erQ@mail.gmail.com>
+ <CAHk-=whCt-Eem=BbDo+f0VoDerYQNbvnPCdh6fcBNDnLyZyvfA@mail.gmail.com>
+ <20240113010432.xe25lxqogxuvl72t@airbuntu>
+ <CAHk-=wgfS+F+QNbFPurhnZTVLkw4xDOmmaSD3qdQLUoE2VsGTw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgfS+F+QNbFPurhnZTVLkw4xDOmmaSD3qdQLUoE2VsGTw@mail.gmail.com>
 
-This patch replaces max(a, min(b, c)) by clamp(b, a, c) in the solo6x10
-driver. This improves the readability and more importantly, for the
-solo6x10-p2m.c file, this reduces on my system (x86-64, gcc 13):
-- the preprocessed size from 121 MiB to 4.5 MiB;
-- the build CPU time from 46.8 s to 1.6 s;
-- the build memory from 2786 MiB to 98MiB.
+On 01/12/24 17:24, Linus Torvalds wrote:
+> On Fri, 12 Jan 2024 at 17:04, Qais Yousef <qyousef@layalina.io> wrote:
+> >
+> > That is odd. I can't see how the patch can cause this yet, could you try with
+> > a different compiler if possible?
+> 
+> I use two different compilers - I do my allmodconfig builds with gcc,
+> and the kernels I boot with clang, so my problems have been with a
+> kernel built with
+> 
+>    clang version 17.0.6
+> 
+> but to check that it's not a compiler issue I just did another try
+> with my current public tip of tree (ie *without* any reverts for this
+> issue) and gcc:
+> 
+>     gcc version 13.2.1
+> 
+> and the behavior is exactly the same: all cores are stuck at 2.2GHz.
+> 
+> So no, it's not compiler-dependent.
+> 
+> > I usually use perfetto but it should be easy to see frequency updates from
+> > power/cpu_frequency trace event.
+> >
+> >         echo 1 | sudo tee /sys/kernel/tracing/tracing_on
+> >         echo 1 | sudo tee /sys/kernel/tracing/events/power/cpu_frequency/enable
+> >         sudo cat /sys/kernel/tracing/trace
+> 
+> Shows absolutely nothing. Or rather, it shows the header with
+> 
+>   # entries-in-buffer/entries-written: 0/0   #P:64
+> 
+> and that's it.
+> 
+> With a *working* kernel, I get events, setting the frequency to either
+> 2.2GHz (idle) or 3.8GHz (work).
+> 
+> IOW, the tracing output is 100% consistent with "that commit breaks everything".
 
-In fine, this allows this relatively simple C file to be built on a
-32-bit system.
-
-Reported-by: Jiri Slaby <jirislaby@gmail.com>
-Closes: https://lore.kernel.org/lkml/18c6df0d-45ed-450c-9eda-95160a2bbb8e@gmail.com/
-Cc: stable@vger.kernel.org # v6.7+
-Suggested-by: David Laight <David.Laight@ACULAB.COM>
-Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
----
- drivers/media/pci/solo6x10/solo6x10-offsets.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/media/pci/solo6x10/solo6x10-offsets.h b/drivers/media/pci/solo6x10/solo6x10-offsets.h
-index f414ee1316f2..fdbb817e6360 100644
---- a/drivers/media/pci/solo6x10/solo6x10-offsets.h
-+++ b/drivers/media/pci/solo6x10/solo6x10-offsets.h
-@@ -57,16 +57,16 @@
- #define SOLO_MP4E_EXT_ADDR(__solo) \
- 	(SOLO_EREF_EXT_ADDR(__solo) + SOLO_EREF_EXT_AREA(__solo))
- #define SOLO_MP4E_EXT_SIZE(__solo) \
--	max((__solo->nr_chans * 0x00080000),				\
--	    min(((__solo->sdram_size - SOLO_MP4E_EXT_ADDR(__solo)) -	\
--		 __SOLO_JPEG_MIN_SIZE(__solo)), 0x00ff0000))
-+	clamp(__solo->sdram_size - SOLO_MP4E_EXT_ADDR(__solo) -	\
-+	      __SOLO_JPEG_MIN_SIZE(__solo),			\
-+	      __solo->nr_chans * 0x00080000, 0x00ff0000)
- 
- #define __SOLO_JPEG_MIN_SIZE(__solo)		(__solo->nr_chans * 0x00080000)
- #define SOLO_JPEG_EXT_ADDR(__solo) \
- 		(SOLO_MP4E_EXT_ADDR(__solo) + SOLO_MP4E_EXT_SIZE(__solo))
- #define SOLO_JPEG_EXT_SIZE(__solo) \
--	max(__SOLO_JPEG_MIN_SIZE(__solo),				\
--	    min((__solo->sdram_size - SOLO_JPEG_EXT_ADDR(__solo)), 0x00ff0000))
-+	clamp(__solo->sdram_size - SOLO_JPEG_EXT_ADDR(__solo),	\
-+	      __SOLO_JPEG_MIN_SIZE(__solo), 0x00ff0000)
- 
- #define SOLO_SDRAM_END(__solo) \
- 	(SOLO_JPEG_EXT_ADDR(__solo) + SOLO_JPEG_EXT_SIZE(__solo))
--- 
-2.42.0
-
+Thanks for all the info. It seems for some reason we no longer think we need to
+update the frequency. Not sure why yet. It's strange I can't reproduce too even
+running from top of your tree. I ran with these patches on M1, Pixel, Intel and
+now AMD and haven't noticed anything since they got merged.
 
