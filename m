@@ -1,183 +1,179 @@
-Return-Path: <linux-kernel+bounces-25238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25239-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1AC482CAD5
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 10:32:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E32E582CAE0
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 10:37:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60CBE1F21F4C
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 09:32:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89C36B222E5
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 09:37:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7456815C9;
-	Sat, 13 Jan 2024 09:32:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DAC51841;
+	Sat, 13 Jan 2024 09:37:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="Aj872vFT"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GDzN14Pi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCD557FF;
-	Sat, 13 Jan 2024 09:32:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 83DA4C0002;
-	Sat, 13 Jan 2024 09:32:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1705138349;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=uTfZ42YMdPsc//kAzPHZ2G81y8NgAM6Sfpnm9pJXkZE=;
-	b=Aj872vFTK+K4/JTWrCU6DEE/lK2ElJNHEfPdF0aCeV0q0v6Ulr9HVnwqswPw+yo7uLyUaB
-	GplVrG3ENZDb+IgDKCP2AUPw6RB38CXZLWk2N7jshRa9yGUQ5SSxA8iH6ctEFz6BhSbhxV
-	ufN5MRbfPd4C8uFp1VXHpZPdylHSspFpQy4uLD9Bs2lm4qny3DmvnJab1yy5EW9/UxeK3z
-	Uzc4nNojGRv5Ai+e0odsaMMv9yP7Tzr4OsENVWls8CUD5Xo/vh4HGbJXSBmovU8v0AhV41
-	bieR6CADy+1fV8mYimtpd0TmQnqLu76bYl+FMp4QO3l/ZkgTOFopuTWyLRGODA==
-From: =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
-To: =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
-	Daniel Golle <daniel@makrotopia.org>,
-	Landen Chao <Landen.Chao@mediatek.com>,
-	DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: David Bauer <mail@david-bauer.net>,
-	mithat.guner@xeront.com,
-	erkin.bozoglu@xeront.com,
-	Luiz Angelo Daros de Luca <luizluca@gmail.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [RFC PATCH net-next] net: dsa: mt7530: support OF-based registration of switch MDIO bus
-Date: Sat, 13 Jan 2024 12:32:16 +0300
-Message-Id: <20240113093216.42391-1-arinc.unal@arinc9.com>
-X-Mailer: git-send-email 2.40.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B695DA2A;
+	Sat, 13 Jan 2024 09:37:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28057C433C7;
+	Sat, 13 Jan 2024 09:37:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705138656;
+	bh=w/zSBBUrOCogh8TXa7vV7+1viFBuWmgXZKnDrd+wg/4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=GDzN14Pi0f4Pnq/RXyJZlmAXb+3jQHnB1NEEcUgJRyc5RkgaIN2MEh1c664bOhaoF
+	 Q4c/L96XzgDV//riRy4W8fbXJ9fouhbrHQ4Z9RWNidU/t+EwYXSlIveNgaQo9ct8Tb
+	 sZkGT0PgXZH2kAog8sFRSSlK8lr/EDywrl+BD9TCuX8XdBjSW4Etv0Oahnbkxr6gQK
+	 DNiS3LlLvQr6zvg4KBKL5bXqhiblv3zBY05QgINrxYlR4ehLhxWk8iZdV/QmCS2PlU
+	 hd32/uCQIhxGcNC5FrGNOiEo3i1VXkNHis3AsJ6+uwmKO6dZcD1za70LP39r7pkQWy
+	 wa/Lh3v3mrMMQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rOaSL-00BMls-Kk;
+	Sat, 13 Jan 2024 09:37:33 +0000
+Date: Sat, 13 Jan 2024 09:37:33 +0000
+Message-ID: <86zfx98tgi.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Saravana Kannan <saravanak@google.com>
+Cc: David Dai <davidai@google.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Quentin Perret <qperret@google.com>,
+	Masami Hiramatsu <mhiramat@google.com>,
+	Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Pavan Kondeti <quic_pkondeti@quicinc.com>,
+	Gupta Pankaj <pankaj.gupta@amd.com>,
+	Mel Gorman <mgorman@suse.de>,
+	kernel-team@android.com,
+	linux-pm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: cpufreq: add virtual cpufreq device
+In-Reply-To: <CAGETcx_8x4p7WTwqQiVGdtHftVjFUJruXsOXwJXgDi0GdEtLNA@mail.gmail.com>
+References: <20231111014933.1934562-1-davidai@google.com>
+	<20231111014933.1934562-2-davidai@google.com>
+	<865y231jvj.wl-maz@kernel.org>
+	<CAGETcx9-n0z5buWgtLZ+6VxW2jEko1GWzkGtGhFiZEq-x_G4nw@mail.gmail.com>
+	<867clpaxel.wl-maz@kernel.org>
+	<CAGETcx_8x4p7WTwqQiVGdtHftVjFUJruXsOXwJXgDi0GdEtLNA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: saravanak@google.com, davidai@google.com, rafael@kernel.org, viresh.kumar@linaro.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, sudeep.holla@arm.com, qperret@google.com, mhiramat@google.com, will@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org, oliver.upton@linux.dev, dietmar.eggemann@arm.com, quic_pkondeti@quicinc.com, pankaj.gupta@amd.com, mgorman@suse.de, kernel-team@android.com, linux-pm@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-Currently the MDIO bus of the switches the MT7530 DSA subdriver controls
-can only be registered as non-OF-based. Bring support for registering the
-bus OF-based.
+On Fri, 12 Jan 2024 22:02:39 +0000,
+Saravana Kannan <saravanak@google.com> wrote:
+>=20
+> Sorry for the delay in response. Was very busy for a while and then
+> holidays started.
+>=20
+> On Fri, Dec 8, 2023 at 12:52=E2=80=AFAM Marc Zyngier <maz@kernel.org> wro=
+te:
+> >
+> > On Thu, 07 Dec 2023 22:44:36 +0000,
+> > Saravana Kannan <saravanak@google.com> wrote:
+> > >
+> > > On Wed, Nov 15, 2023 at 12:49=E2=80=AFAM Marc Zyngier <maz@kernel.org=
+> wrote:
+> > > >
+> > > > On Sat, 11 Nov 2023 01:49:29 +0000,
+> > > > David Dai <davidai@google.com> wrote:
+> > > > >
+> > > > > Adding bindings to represent a virtual cpufreq device.
+> > > > >
+> > > > > Virtual machines may expose MMIO regions for a virtual cpufreq de=
+vice
+> > > > > for guests to read frequency information or to request frequency
+> > > > > selection. The virtual cpufreq device has an individual controlle=
+r for
+> > > > > each frequency domain.
+> > > >
+> > > > I would really refrain form having absolute frequencies here. A
+> > > > virtual machine can be migrated, and there are *zero* guarantees th=
+at
+> > > > the target system has the same clock range as the source.
+> > > >
+> > > > This really should be a relative number, much like the capacity. Th=
+at,
+> > > > at least, can be migrated across systems.
+> > >
+> > > There's nothing in this patch that mandates absolute frequency.
+> > > In true KVM philosophy, we leave it to the VMM to decide.
+> >
+> > This has nothing to do with KVM. It would apply to any execution
+> > environment, including QEMU in TCG mode.
+> >
+> > To quote the original patch:
+> >
+> > +    description:
+> > +      Address and size of region containing frequency controls for eac=
+h of the
+> > +      frequency domains. Regions for each frequency domain is placed
+> > +      contiugously and contain registers for controlling DVFS(Dynamic =
+Frequency
+> > +      and Voltage) characteristics. The size of the region is proporti=
+onal to
+> > +      total number of frequency domains.
+> >
+> > What part of that indicates that *relative* frequencies are
+> > acceptable? The example explicitly uses the opp-v2 binding, which
+> > clearly is about absolute frequency.
+>=20
+> We can update the doc to make that clearer and update the example too.
+>=20
+> > To reiterate: absolute frequencies are not the right tool for the job,
+> > and they should explicitly be described as relative in the spec. Not
+> > left as a "whatev'" option for the execution environment to interpret.
+>=20
+> I think it depends on the use case. If there's no plan to migrate the
+> VM across different devices, there's no need to do the unnecessary
+> normalization back and forth.
 
-The subdrivers that control switches [with MDIO bus] probed on OF must
-follow this logic to support all cases properly:
+VM migration is a given, specially when QEMU is involved. Designing
+something that doesn't support it is a bug, plain and simple.
 
-No switch MDIO bus defined: Populate ds->user_mii_bus, register the MDIO
-bus, set the interrupts for PHYs if "interrupt-controller" is defined at
-the switch node. This case should only be covered for the switches which
-their dt-bindings documentation didn't document the MDIO bus from the
-start. This is to keep supporting the device trees that do not describe the
-MDIO bus on the device tree but the MDIO bus is being used nonetheless.
+> And if we can translate between pCPU frequency and a normalized
+> frequency, we can do the same for whatever made up frequencies too. In
+> fact, we plan to do exactly that in our internal use cases for this.
+> There's nothing here that prevents the VMM from doing that.
+>
+> Also, if there are hardware virtualized performance counters (AMU,
+> CPPC, etc) that are used for frequency normalization, then we have to
+> use the real frequencies in those devices otherwise the "current
+> frequency" can be 2 GHz while the max normalized frequency is 1024
+> KHz. That'll mess up load tracking.
 
-Switch MDIO bus defined: Don't populate ds->user_mii_bus, register the MDIO
-bus, set the interrupts for PHYs if ["interrupt-controller" is defined at
-the switch node and "interrupts" is defined at the PHY nodes under the
-switch MDIO bus node].
+And that's exactly why this shouldn't be a *frequency*, but a
+performance scale or some other unit-less coefficient. Just like the
+big-little capacity.
 
-Switch MDIO bus defined but explicitly disabled: If the device tree says
-status = "disabled" for the MDIO bus, we shouldn't need an MDIO bus at all.
-Instead, just exit as early as possible and do not call any MDIO API.
+	M.
 
-The use of ds->user_mii_bus is inappropriate when the MDIO bus of the
-switch is described on the device tree [1], which is why we don't populate
-ds->user_mii_bus in that case.
-
-Link: https://lore.kernel.org/netdev/20231213120656.x46fyad6ls7sqyzv@skbuf/ [1]
-Suggested-by: David Bauer <mail@david-bauer.net>
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
----
- drivers/net/dsa/mt7530.c | 34 ++++++++++++++++++++++++++--------
- 1 file changed, 26 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 391c4dbdff42..cf2ff7680c15 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -2146,24 +2146,40 @@ mt7530_free_irq_common(struct mt7530_priv *priv)
- static void
- mt7530_free_irq(struct mt7530_priv *priv)
- {
--	mt7530_free_mdio_irq(priv);
-+	struct device_node *mnp, *np = priv->dev->of_node;
-+
-+	mnp = of_get_child_by_name(np, "mdio");
-+	if (!mnp)
-+		mt7530_free_mdio_irq(priv);
-+	of_node_put(mnp);
-+
- 	mt7530_free_irq_common(priv);
- }
- 
- static int
- mt7530_setup_mdio(struct mt7530_priv *priv)
- {
-+	struct device_node *mnp, *np = priv->dev->of_node;
- 	struct dsa_switch *ds = priv->ds;
- 	struct device *dev = priv->dev;
- 	struct mii_bus *bus;
- 	static int idx;
--	int ret;
-+	int ret = 0;
-+
-+	mnp = of_get_child_by_name(np, "mdio");
-+
-+	if (mnp && !of_device_is_available(mnp))
-+		goto out;
- 
- 	bus = devm_mdiobus_alloc(dev);
--	if (!bus)
--		return -ENOMEM;
-+	if (!bus) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	if (!mnp)
-+		ds->user_mii_bus = bus;
- 
--	ds->user_mii_bus = bus;
- 	bus->priv = priv;
- 	bus->name = KBUILD_MODNAME "-mii";
- 	snprintf(bus->id, MII_BUS_ID_SIZE, KBUILD_MODNAME "-%d", idx++);
-@@ -2174,16 +2190,18 @@ mt7530_setup_mdio(struct mt7530_priv *priv)
- 	bus->parent = dev;
- 	bus->phy_mask = ~ds->phys_mii_mask;
- 
--	if (priv->irq)
-+	if (priv->irq && !mnp)
- 		mt7530_setup_mdio_irq(priv);
- 
--	ret = devm_mdiobus_register(dev, bus);
-+	ret = devm_of_mdiobus_register(dev, bus, mnp);
- 	if (ret) {
- 		dev_err(dev, "failed to register MDIO bus: %d\n", ret);
--		if (priv->irq)
-+		if (priv->irq && !mnp)
- 			mt7530_free_mdio_irq(priv);
- 	}
- 
-+out:
-+	of_node_put(mnp);
- 	return ret;
- }
- 
--- 
-2.40.1
-
+--=20
+Without deviation from the norm, progress is not possible.
 
