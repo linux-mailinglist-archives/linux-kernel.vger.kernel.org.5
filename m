@@ -1,158 +1,135 @@
-Return-Path: <linux-kernel+bounces-25283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A81A382CCA0
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 13:17:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DB2E182CC9A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 13:16:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47B0A1F22CF7
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 12:17:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4456D1F22D46
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 12:16:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FCF32135C;
-	Sat, 13 Jan 2024 12:16:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCDB9210E8;
+	Sat, 13 Jan 2024 12:16:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="rBdODkxM"
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TfjJG+Cb"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DE3220DF7;
-	Sat, 13 Jan 2024 12:16:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
-Received: from localhost.ispras.ru (unknown [10.10.165.8])
-	by mail.ispras.ru (Postfix) with ESMTPSA id E84F740762E4;
-	Sat, 13 Jan 2024 12:16:14 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru E84F740762E4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1705148175;
-	bh=UXsO+FATYJuTPtjVESRdxfPqcMfgJ+Z5TRk9Ig/cU7s=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rBdODkxMg1L5H2zTmGYLSPw2S0CURDXH1HU32selNRUiQC7bDtQiED74SYYfHrq+G
-	 6qL+D97qMSSKzxcWDtVNeZCWKugYZ+eB4jMUvCaDc3TjBixl3RikLhIYO4YlSvIZt6
-	 weSxaEwRWSQ3XwZdgAJK0FCQ2VOZhkjGb8zdm3yA=
-From: Fedor Pchelkin <pchelkin@ispras.ru>
-To: John Johansen <john.johansen@canonical.com>
-Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
-	Paul Moore <paul@paul-moore.com>,
-	James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	apparmor@lists.ubuntu.com,
-	linux-security-module@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Alexey Khoroshilov <khoroshilov@ispras.ru>,
-	lvc-project@linuxtesting.org
-Subject: [PATCH 2/2] apparmor: fix namespace check in serialized stream headers from the same policy load
-Date: Sat, 13 Jan 2024 15:15:52 +0300
-Message-ID: <20240113121556.12948-3-pchelkin@ispras.ru>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240113121556.12948-1-pchelkin@ispras.ru>
-References: <20240113121556.12948-1-pchelkin@ispras.ru>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B935C20DF7
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 12:16:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5537dd673e5so5935596a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 04:16:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705148167; x=1705752967; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zwASn8C7UEZZZoWNwFdQpTrZjLvObf4QOT7LkGKv8Rw=;
+        b=TfjJG+CbhJnRT19dDv2VnH94J8DwWEjMPUrelLiJ355XC4fL9A2+NyGlEyw08wBJO5
+         uYkFqfQ6mZ09KcK47M5JYH7C1aY6o48ncbSHzmXe6RFgsbe765vZDzALbHeCSgXRC9gq
+         fZ8Rt/WHR4npBtRTcVK7FDbdWqgryVDVEaaxdqe3jQUbP4TFfpa3p4k7EoBgVrzpUlkS
+         y3oFttIrgNTAert55sZXlDrYpFsZz83FuArDoowNl6IcjpzOce6HVP7orn54Gp1P+Ggl
+         ZjpwCR3nlhGWzWYVUHSjOrGNhldENunib15M22YFoTTXznN7KJ2Iqt2ZZOrziYhS6Mnl
+         8z3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705148167; x=1705752967;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zwASn8C7UEZZZoWNwFdQpTrZjLvObf4QOT7LkGKv8Rw=;
+        b=WztnAljT6T9YafCPYdkC1D2CZz6K2s2pmqnV6SLmqF9AmEzmy+f+sb2WEAfU6wzjAS
+         i2dBIKG6ik9JHrD2AvtLPTc5vc/AvfcnZujPpX9WgEC4siwxz+DdES/TuDwu25HjFV0Q
+         ftHIhID6bVEualpiWV0ImOp0C8kdnzwoC7Pg23dGuBbBLNmAzBw1+X/FafbyS9yUGx8O
+         JaBk6896nL2EiVJogvkvK5AFUMyudiBZhjXRCAaq7+CJenP9rl6jFA9ItgpPDLZOdQFw
+         naBSmX200jYo0aaLoJbzyVv0+pYGY0N05SwN8m3vAwxqJjD028KDZ6SD4ZWMzVo56bdN
+         8C5w==
+X-Gm-Message-State: AOJu0Yw2CNpRT/Z4haM9LMwzTdKeN1uZ2EUGWttjf7/RZ9JNzcKbcKry
+	K75t1XvW01P7o2imtiL7b9K0saFREAyd6Q==
+X-Google-Smtp-Source: AGHT+IGZvjC3FPhJYs+PlP8FIl1bVQickoygZOA+9cUxJxIHk9EEJj80ffU7Y8CaYc9IAfAr4I7O+Q==
+X-Received: by 2002:a05:6402:5210:b0:558:d206:3bba with SMTP id s16-20020a056402521000b00558d2063bbamr1553275edd.20.1705148167105;
+        Sat, 13 Jan 2024 04:16:07 -0800 (PST)
+Received: from [192.168.174.25] (178235179017.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.17])
+        by smtp.gmail.com with ESMTPSA id b11-20020aa7dc0b000000b00558fc426affsm630422edu.88.2024.01.13.04.16.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 13 Jan 2024 04:16:06 -0800 (PST)
+Message-ID: <a4ff0c32-6eef-44d5-9bfb-ae076bdd7487@linaro.org>
+Date: Sat, 13 Jan 2024 13:16:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] clk: qcom: gcc-sm8150: Add gcc video resets for
+ sm8150
+Content-Language: en-US
+To: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+ Taniya Das <quic_tdas@quicinc.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ Ajit Pandey <quic_ajipan@quicinc.com>,
+ Imran Shaik <quic_imrashai@quicinc.com>,
+ Jagadeesh Kona <quic_jkona@quicinc.com>
+References: <20240111-sm8150-dfs-support-v2-0-6edb44c83d3b@quicinc.com>
+ <20240111-sm8150-dfs-support-v2-3-6edb44c83d3b@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240111-sm8150-dfs-support-v2-3-6edb44c83d3b@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Per commit 04dc715e24d0 ("apparmor: audit policy ns specified in policy
-load"), profiles in a single load must specify the same namespace. It is
-supposed to be detected inside aa_replace_profiles() and verify_header(),
-but seems not to be implemented correctly in the second function.
+On 11.01.2024 07:32, Satya Priya Kakitapalli wrote:
+> Add gcc video axic, axi0 and axi1 resets for the global clock
+> controller on sm8150.
+> 
+> Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
+> ---
 
-Consider we have the following profile load
+Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-  profile :ns1:profile1 ... {}
-  profile :ns2:profile2 ... {}
-
-The profiles specify different policy namespaces but if they are loaded as
-a single binary where the serialized stream headers contain different
-namespace values, it eventually leads to the profiles specified with
-different namespaces be included into the same one without any specific
-indication to user.
-
-*ns is assigned NULL in verify_header(), and the branch indicating an
-"invalid ns change" message is a dead code.
-
-Moreover, some of *ns strings is leaked as they are allocated every time
-verify_header() reads a namespace string.
-
-Actually, *ns is already assigned NULL in aa_unpack(), before the multiple
-profiles unpacking loop. So make verify_header() check if every new
-unpacked namespace declaration differs from the previous one in the same
-load.
-
-Note that similar to the namespace check in aa_replace_profiles(), if
-one profile in the load specifies some namespace declaration in the header
-and the other one doesn't specify any namespace in the header - it is also
-considered invalid, e.g. the following multiple profiles load will fail
-after this patch
-
-  profile profile1 ... {}
-  profile :ns:profile2 ... {}
-
-Found by Linux Verification Center (linuxtesting.org).
-
-Fixes: dd51c8485763 ("apparmor: provide base for multiple profiles to be replaced at once")
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
----
- security/apparmor/policy_unpack.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
-
-diff --git a/security/apparmor/policy_unpack.c b/security/apparmor/policy_unpack.c
-index 54f7b4346506..5bd8ab7f1c88 100644
---- a/security/apparmor/policy_unpack.c
-+++ b/security/apparmor/policy_unpack.c
-@@ -1120,7 +1120,6 @@ static int verify_header(struct aa_ext *e, int start, const char **ns)
- {
- 	int error = -EPROTONOSUPPORT;
- 	const char *name = NULL;
--	*ns = NULL;
- 
- 	/* get the interface version */
- 	if (!aa_unpack_u32(e, &e->version, "version")) {
-@@ -1142,20 +1141,35 @@ static int verify_header(struct aa_ext *e, int start, const char **ns)
- 		return error;
- 	}
- 
--	/* read the namespace if present */
-+	/* read the namespace if present and check it against policy load
-+	 * namespace specified in the data start header
-+	 */
- 	if (aa_unpack_str(e, &name, "namespace")) {
- 		if (*name == '\0') {
- 			audit_iface(NULL, NULL, NULL, "invalid namespace name",
- 				    e, error);
- 			return error;
- 		}
-+
-+		/* don't allow different namespaces be specified in the same
-+		 * policy load set
-+		 */
-+		error = -EACCES;
- 		if (*ns && strcmp(*ns, name)) {
--			audit_iface(NULL, NULL, NULL, "invalid ns change", e,
-+			audit_iface(NULL, NULL, NULL,
-+				    "policy load has mixed namespaces", e,
- 				    error);
--		} else if (!*ns) {
-+			return error;
-+		} else if (!*ns && start) {
-+			/* fill current policy load namespace at data start */
- 			*ns = kstrdup(name, GFP_KERNEL);
- 			if (!*ns)
- 				return -ENOMEM;
-+		} else if (!*ns) {
-+			audit_iface(NULL, NULL, NULL,
-+				    "policy load has mixed namespaces", e,
-+				    error);
-+			return error;
- 		}
- 	}
- 
--- 
-2.43.0
-
+Konrad
 
