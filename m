@@ -1,127 +1,116 @@
-Return-Path: <linux-kernel+bounces-25207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 516BF82CA53
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 08:00:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2F2382CA57
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 08:05:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDF2F1F23735
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 07:00:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F7371F23A58
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 07:05:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE5D613FF4;
-	Sat, 13 Jan 2024 06:59:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6C6018046;
+	Sat, 13 Jan 2024 07:05:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zu0BG6xh"
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="o289cWW8"
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1C81EAEA
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 06:59:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5955a4a9b23so3814949eaf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 22:59:52 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C84A912E56
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 07:05:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-67ff241c2bcso45343716d6.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 23:05:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705129192; x=1705733992; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NlgYvwiglw69wHFjINoNp8yqad8MaijuxDEGtBymTH8=;
-        b=Zu0BG6xhXPB+9YCtjst74ANp7drr2eT4LToTYTo/OpCu+J0jfMcN7sQPQ9SQalD8Ga
-         g+N0UWDYbarA/voMTpVDIXuYOVFsnF4N4yBev3n+3zmc11Btam2CCWfzYCO8ht6pmYq+
-         izgyY0VFdQVbp3S1t9wBwvvoJp9j4RleDByIG/HbjWaQk1iVIavI+TySUHvo1JBaUCVm
-         7yv2//mi7qAdFkpwCDtTyEqg419Wif1BvxEYWtuPDyiD051BjG05B2FmWwRsOCFEvgqw
-         uj8oO6v5jUSm0vkRkpSr2yJlZYs1407NVu9n6GZ6hhq8GUDYzOz3oRqsK+isWVDsZacc
-         8hNQ==
+        d=linaro.org; s=google; t=1705129519; x=1705734319; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GqUVJ8s7EGwnf8VW2qN30KaMR9GjPb0OJdm4xU8DVmE=;
+        b=o289cWW8aNxAKsdsbqumdVPwhE2vleIrcKu9YwaWzWJTXxR2BN30pi9gTTCPhvpw0E
+         QPp2eM+ppILjGs/huoeth7SKWJvGO+rNJstbSaFtqhzBrW916WDAFoLClStwpqw9C9l5
+         53/StuPRbHuIMoByk9mG+TG0B7MtTqo+BKqmQOoclDR1xdKmgoqXt2FMUcbl0cSqOWNf
+         iCi0XQbC8MU+MnTs+fKthnb5qkliqVMQJNDoVIXH4VHSETxIeszsYKZz1uQFY9IYGM4K
+         etJ3XFDvTPP1F+r1UPVjsUyBrhp2WUxj7NKMrUHJN53xpCKLmu119KZPtJWRAOuCGX10
+         n4cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705129192; x=1705733992;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NlgYvwiglw69wHFjINoNp8yqad8MaijuxDEGtBymTH8=;
-        b=bbYwGTfC+6PAiQJacN/t0mM4s3m/YctbEaC4I3L8S500lZ3G0XVAAygMYWWk+xh2EJ
-         vI9tHSkZHMaeQWaOLR/l5hRLUWDWixW/Lp8QZ2bcZ2gjFF7WNLOOz+8KAPXxdZOb2ahJ
-         mzKjDAjNlrw69IUQzs6Xss3MUb7qvZo/mLkVvAvAsKyExx9icTFJ1ZmgCl7c8Xd6nmxC
-         RvkBX91wwr+qn7ETCXo4SgnfcOzV6AtCJ8/FVw9cdbvVnn+sO0GO3mBy1lypM4AqqbLD
-         051AlzuQjkIfZ/10a2/Kf58ptdtSBfGh0wKE7yFllXBeExVYLGt6aFaXShpMoE1GGzMm
-         ktZA==
-X-Gm-Message-State: AOJu0YzzzQwlotctMqTju8JBbMy+flr8Mu3aJittFJyhT95kCnzfFGV2
-	ig8OZovwbMcBJujp3lpNig0=
-X-Google-Smtp-Source: AGHT+IGMlNH1KGB9T9u3vnj/HuPr6ixY9mPlH6aUgxMBF5/o5PkKsuQfSQCr7mnvkgyvCPRBJZOtSw==
-X-Received: by 2002:a05:6870:d886:b0:1fb:75a:de75 with SMTP id oe6-20020a056870d88600b001fb075ade75mr3376971oac.99.1705129191682;
-        Fri, 12 Jan 2024 22:59:51 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id px8-20020a17090b270800b0028dc4b598b7sm7306985pjb.55.2024.01.12.22.59.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 22:59:51 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id 2798A184F261F; Sat, 13 Jan 2024 13:59:47 +0700 (WIB)
-Date: Sat, 13 Jan 2024 13:59:47 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>
-Subject: Re: Deliberately sending partial patch sets?
-Message-ID: <ZaI04-HDHbBxKYbS@archie.me>
-References: <ZaFKvZg-MtZgbCKA@archie.me>
- <2024011247-caregiver-compacted-2e6b@gregkh>
+        d=1e100.net; s=20230601; t=1705129519; x=1705734319;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GqUVJ8s7EGwnf8VW2qN30KaMR9GjPb0OJdm4xU8DVmE=;
+        b=RCtceJGLcACYu2HEr3bdI6Pzi3uJJQbAQCilAgLpeDD+1yN4yh5RNNEL6jxsOH/W2p
+         EfghdZ2DEHLRdaXzamCtrFTrhAiJhrFgQ2FgdCslyLZrdmigCS1hWoy6lYAOzd3MgUVE
+         JkwPzM2MJVk2HINoqsgtknnyviSQWQpeMet26xcBPHRDi/yC0G2IYGOTwtK9pXmD9JFa
+         an2hOpT0gR8oKStJpl8dD27V0Y8O3/3gzLNls+E1bwcQp07zsoHMPcVWA3pkD7KBHy7/
+         1qCCaXUcyIwyMH+Q+QUbZGm1StlLyLuNVREVxzCapn5ypTtIJPnfv3Y+X8HHikZMLCmF
+         m0Pw==
+X-Gm-Message-State: AOJu0YxGy/YDxa08h4CnyUrqZWlS9ZihQ7R/qfkdLBjOLK5VYOfGf+4g
+	ILLvvl1L5TFJnmSdmgKcPHemvZ38Ih1e/4BZdOmubS193TUGCA==
+X-Google-Smtp-Source: AGHT+IFc0y2uSmt7xB6X4CM/6iYzv7XLzqDXm1OMDLNeYk0eIgGxUlMEo1QaTfdT2BHiqR6aEvzb2Y8BVfmQGNWecLs=
+X-Received: by 2002:ad4:5be2:0:b0:681:3b95:cedd with SMTP id
+ k2-20020ad45be2000000b006813b95ceddmr2122750qvc.59.1705129519531; Fri, 12 Jan
+ 2024 23:05:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="6erqZN2grqY835Et"
-Content-Disposition: inline
-In-Reply-To: <2024011247-caregiver-compacted-2e6b@gregkh>
+References: <CA+G9fYu1hB2OMf0EFrt_86OE=0Ug3y6nQd3=OZeEeM1jp3P92g@mail.gmail.com>
+ <11a31e09-2e11-43a4-8995-ae70c5bef8bf@kernel.org>
+In-Reply-To: <11a31e09-2e11-43a4-8995-ae70c5bef8bf@kernel.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Sat, 13 Jan 2024 12:35:08 +0530
+Message-ID: <CA+G9fYthC3qsH8ey=j3RvCr4-0zp1S3Ysr5QvY6SptorHpju1g@mail.gmail.com>
+Subject: Re: scsi: block: ioprio: Clean up interface definition -
+ ioprio_set03.c:40: TFAIL: ioprio_set IOPRIO_CLASS_BE prio 8 should not work
+To: Damien Le Moal <dlemoal@kernel.org>
+Cc: linux-block <linux-block@vger.kernel.org>, LTP List <ltp@lists.linux.it>, 
+	Linux Regressions <regressions@lists.linux.dev>, lkft-triage@lists.linaro.org, 
+	open list <linux-kernel@vger.kernel.org>, Anders Roxell <anders.roxell@linaro.org>, 
+	Dan Carpenter <dan.carpenter@linaro.org>, chrubis <chrubis@suse.cz>, Petr Vorel <pvorel@suse.cz>, 
+	Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>, Niklas Cassel <niklas.cassel@wdc.com>, 
+	"Martin K. Petersen" <martin.petersen@oracle.com>, Jens Axboe <axboe@kernel.dk>
+Content-Type: text/plain; charset="UTF-8"
 
+On Fri, 12 Jan 2024 at 10:49, Damien Le Moal <dlemoal@kernel.org> wrote:
+>
+> On 1/12/24 14:15, Naresh Kamboju wrote:
+> > The LTP test 'iopri_set03' fails on all the devices.
+> > It fails on linux kernel >= v6.5. ( on Debian rootfs ).
+> > Test fail confirmed on LTP release 20230929 and 20230516.
+> >
+> > Test failed log:
+> > ------------
+> > tst_test.c:1690: TINFO: LTP version: 20230929
+> > tst_test.c:1574: TINFO: Timeout per run is 0h 05m 00s
+> > ioprio_set03.c:40: TFAIL: ioprio_set IOPRIO_CLASS_BE prio 8 should not work
+> > ioprio_set03.c:48: TINFO: tested illegal priority with class NONE
+> > ioprio_set03.c:51: TPASS: returned correct error for wrong prio: EINVAL (22)
+> >
+> > Investigation:
+> > ----------
+> > Bisecting this test between kernel v6.4 and v6.5 shows patch
+> > eca2040972b4 ("scsi: block: ioprio: Clean up interface definition")
+> > as the first faulty commit.
+> >
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>
+> This is fixed in LTP. Please update your LTP setup to avoid this issue.
 
---6erqZN2grqY835Et
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Please point me to the fixed commit id.
 
-On Fri, Jan 12, 2024 at 08:37:10PM +0100, Greg Kroah-Hartman wrote:
-> On Fri, Jan 12, 2024 at 09:20:45PM +0700, Bagas Sanjaya wrote:
-> > Hi,
-> >=20
-> > Let's say that there is a contributor who wish to send a patch set (e.g.
-> > 20-30 patches in the series) to LKML. But instead of sending the full
-> > series, he either do one of the following:
-> >=20
-> > * Send only the cover letter (analogous to movie trailers)
-> > * Send only a few arbitrary patches in a series that are most important
-> >   (e.g. patch [01,04,11,18,23/30]) (analogous to match highlights)
-> > * Send only the first few patches in a series (i.e. subject of one of
-> >   patches says [09/30]) (analogous to sample book chapters)
-> >=20
-> > The rest of patches are behind closed doors (i.e. not sent), possibly
-> > behind charm-priced (pay)walls.
-> >=20
-> > Is the submission like above acceptable (when in review)?
->=20
-> No, kernel development is done in public.
+I have the latest LTP release test results as ioprio_set03 has failed.
 
-That is, the submitter must send the full series, right? Why not partial
-like above?
+ioprio_set03.c:40: TFAIL: ioprio_set IOPRIO_CLASS_BE prio 8 should not work
+LTP Version: 20230929-258-gec0a8f18b
+on Debian rootfs.
 
-Confused...
+Links:
+ - https://qa-reports.linaro.org/lkft/ltp-master/build/v6.6.10_20230929-258-gec0a8f18b/testrun/22035919/suite/ltp-syscalls/test/ioprio_set03/history/
+ - https://qa-reports.linaro.org/lkft/ltp-master/build/v6.6.10_20230929-258-gec0a8f18b/testrun/22035919/suite/ltp-syscalls/test/ioprio_set03/details/
 
---=20
-An old man doll... just what I always wanted! - Clara
-
---6erqZN2grqY835Et
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZaI03wAKCRD2uYlJVVFO
-o4SMAQDgU6LGkJ5QHxX1OJjYE93Cm81LrGipy16/+a/lCQM+bQEA8SJnbFfqHUkX
-TiJGS0czcU8L6YELBlsXKRUGcP59bQQ=
-=zqMT
------END PGP SIGNATURE-----
-
---6erqZN2grqY835Et--
+- Naresh
 
