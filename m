@@ -1,147 +1,270 @@
-Return-Path: <linux-kernel+bounces-25241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0695482CAED
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 10:48:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DB2482CAEF
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 10:49:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 012051C217A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 09:48:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 188632859A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 09:49:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EDF91841;
-	Sat, 13 Jan 2024 09:48:00 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15F0B1C14;
+	Sat, 13 Jan 2024 09:49:20 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 762F817E8;
-	Sat, 13 Jan 2024 09:47:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.105] (31.173.83.83) by msexch01.omp.ru (10.188.4.12)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sat, 13 Jan
- 2024 12:47:49 +0300
-Subject: Re: [PATCH] net: ravb: Fix wrong dma_unmap_single() calls in ring
- unmapping
-To: Nikita Yushchenko <nikita.yoush@cogentembedded.com>, "David S. Miller"
-	<davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>
-CC: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, Yoshihiro Shimoda
-	<yoshihiro.shimoda.uh@renesas.com>, Wolfram Sang
-	<wsa+renesas@sang-engineering.com>, =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?=
-	<u.kleine-koenig@pengutronix.de>, <netdev@vger.kernel.org>,
-	<linux-renesas-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240113044721.481131-1-nikita.yoush@cogentembedded.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <c40ebf74-e7a7-4fa6-098c-42341a030bb5@omp.ru>
-Date: Sat, 13 Jan 2024 12:47:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1E3515AF
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 09:49:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7ba97338185so738752539f.1
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 01:49:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705139357; x=1705744157;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FiI0A5jMyNodzXTEyWgURRm2S6ff8rPyhAhG1y0SIkM=;
+        b=Ou5HU8JGYHb5eN8DGEhK6TWhrzn+72aoPqd4OzXAJQx/Z4zlNo6iIC5cyuYRTTF8XQ
+         VewPsjUdmykXhaWFPje430pX8XRrcKfih9PnPJcB+EpzNG/s3KQjGoYxiEJTZMvubW0Z
+         Xz+CS9JypP/LreVWgYfv3y+OX1Q3ilFysjBbdhbm3LbI5rV27y4h6YIC0nhH3XI0gf03
+         LqybOnpMCW9LGpF66aTJrNOwT5RDox0R1Omoc8bm6+udauZbOiQpy+aNg+is6AKfIn/4
+         PMpVysvy0OAhWe6dgSTsYQnEEy3V5CLkj+dmNmnQhAr0mfG25nvskzXVG7+eE1Dc5Fgq
+         etXw==
+X-Gm-Message-State: AOJu0YxugMRta00xgrQzN8mSkwLcxz/ekc6JXQacSmrkJ7URfWWn7EWF
+	pg+OXwBnadi2tmg70cWF7S9eUeZUu7bBUCJgNXPCgBo/WA38
+X-Google-Smtp-Source: AGHT+IFDlnUyi20FJE3MtGHhbtbZ/1l0ofmvTXJNnB+tLPyngVrhjozRvjutyEgU4aSU6wUg+SGYLtJtW7xBp/CfrH22NJksZh3T
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240113044721.481131-1-nikita.yoush@cogentembedded.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/13/2024 09:34:15
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 182619 [Jan 13 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.83.83 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.83.83 in (user) dbl.spamhaus.org}
-X-KSE-AntiSpam-Info:
-	127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.83.83
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 01/13/2024 09:38:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 1/13/2024 6:00:00 AM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Received: by 2002:a05:6e02:1b85:b0:35f:f01e:bb1d with SMTP id
+ h5-20020a056e021b8500b0035ff01ebb1dmr310049ili.5.1705139357007; Sat, 13 Jan
+ 2024 01:49:17 -0800 (PST)
+Date: Sat, 13 Jan 2024 01:49:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000aac725060ed0b15c@google.com>
+Subject: [syzbot] [f2fs?] KASAN: slab-use-after-free Read in destroy_device_list
+From: syzbot <syzbot+a5e651ca75fa0260acd5@syzkaller.appspotmail.com>
+To: chao@kernel.org, jaegeuk@kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 1/13/24 7:47 AM, Nikita Yushchenko wrote:
+Hello,
 
-> When unmapping ring entries on Rx ring release, ravb driver needs to
-> unmap only those entries that have been mapped successfully.
-> 
-> To check if an entry needs to be unmapped, currently the address stored
-> inside descriptor is passed to dma_mapping_error() call. But, address
-> field inside descriptor is 32-bit, while dma_mapping_error() is
-> implemented by comparing it's argument with DMA_MAPPING_ERROR constant
-> that is 64-bit when dma_addr_t is 64-bit. So the comparison gets wrong,
-> resulting into ravb driver calling dma_unnmap_single() for 0xffffffff
+syzbot found the following issue on:
 
-   It's dma_unmap_single(). :-)
+HEAD commit:    23a80d462c67 Merge tag 'rcu.release.v6.8' of https://githu..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=140d9913e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7c8840a4a09eab8
+dashboard link: https://syzkaller.appspot.com/bug?extid=a5e651ca75fa0260acd5
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10071683e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15f2e4dde80000
 
-> address.
-> 
-> When the ring entries are mapped, in case of mapping failure the driver
-> sets descriptor's size field to zero (which is a signal to hardware to
-> not use this descriptor). Fix ring unmapping to detect if an entry needs
-> to be unmapped by checking for zero size field.
-> 
-> Fixes: a47b70ea86bd ("ravb: unmap descriptors when freeing rings")
-> Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-23a80d46.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/786a4e8b6bd9/vmlinux-23a80d46.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/8778a236d47f/bzImage-23a80d46.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/24774803a66f/mount_0.gz
 
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a5e651ca75fa0260acd5@syzkaller.appspotmail.com
 
-[...]
+F2FS-fs (loop0): Can't find valid F2FS filesystem in 1th superblock
+F2FS-fs (loop0): Unrecognized mount option "noacl	fastboot" or missing value
+==================================================================
+BUG: KASAN: slab-use-after-free in destroy_device_list+0x195/0x200 fs/f2fs/super.c:1606
+Read of size 4 at addr ffff88802356d77c by task syz-executor178/5154
 
-> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> index 0e3731f50fc2..4d4b5d44c4e7 100644
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> @@ -256,8 +256,7 @@ static void ravb_rx_ring_free_gbeth(struct net_device *ndev, int q)
->  	for (i = 0; i < priv->num_rx_ring[q]; i++) {
->  		struct ravb_rx_desc *desc = &priv->gbeth_rx_ring[i];
->  
-> -		if (!dma_mapping_error(ndev->dev.parent,
-> -				       le32_to_cpu(desc->dptr)))
-> +		if (le16_to_cpu(desc->ds_cc) != 0)
+CPU: 3 PID: 5154 Comm: syz-executor178 Not tainted 6.7.0-syzkaller-09918-g23a80d462c67 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:488
+ kasan_report+0xda/0x110 mm/kasan/report.c:601
+ destroy_device_list+0x195/0x200 fs/f2fs/super.c:1606
+ kill_f2fs_super+0x2c6/0x430 fs/f2fs/super.c:4932
+ deactivate_locked_super+0xbc/0x1a0 fs/super.c:477
+ mount_bdev+0x277/0x2d0 fs/super.c:1665
+ legacy_get_tree+0x109/0x220 fs/fs_context.c:662
+ vfs_get_tree+0x8c/0x370 fs/super.c:1784
+ do_new_mount fs/namespace.c:3352 [inline]
+ path_mount+0x14e6/0x1f20 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount fs/namespace.c:3875 [inline]
+ __x64_sys_mount+0x293/0x310 fs/namespace.c:3875
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f30633d797a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe0148d918 EFLAGS: 00000286 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffe0148d930 RCX: 00007f30633d797a
+RDX: 0000000020000040 RSI: 0000000020000080 RDI: 00007ffe0148d930
+RBP: 0000000000000004 R08: 00007ffe0148d970 R09: 002c65686361635f
+R10: 0000000000000000 R11: 0000000000000286 R12: 0000000000000000
+R13: 00007ffe0148d970 R14: 0000000000000003 R15: 00000000013bd7ef
+ </TASK>
 
-   It's not that != 0 or le16_to_cpu() are necessary here but we're on
-the little-endian platforms anyways...
+Allocated by task 5154:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:47
+ kasan_save_track+0x14/0x30 mm/kasan/common.c:68
+ poison_kmalloc_redzone mm/kasan/common.c:372 [inline]
+ __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:389
+ kmalloc include/linux/slab.h:590 [inline]
+ kzalloc include/linux/slab.h:711 [inline]
+ f2fs_fill_super+0xfe/0x8e50 fs/f2fs/super.c:4397
+ mount_bdev+0x1df/0x2d0 fs/super.c:1663
+ legacy_get_tree+0x109/0x220 fs/fs_context.c:662
+ vfs_get_tree+0x8c/0x370 fs/super.c:1784
+ do_new_mount fs/namespace.c:3352 [inline]
+ path_mount+0x14e6/0x1f20 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount fs/namespace.c:3875 [inline]
+ __x64_sys_mount+0x293/0x310 fs/namespace.c:3875
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-[...]
-> @@ -281,8 +280,7 @@ static void ravb_rx_ring_free_rcar(struct net_device *ndev, int q)
->  	for (i = 0; i < priv->num_rx_ring[q]; i++) {
->  		struct ravb_ex_rx_desc *desc = &priv->rx_ring[q][i];
->  
-> -		if (!dma_mapping_error(ndev->dev.parent,
-> -				       le32_to_cpu(desc->dptr)))
-> +		if (le16_to_cpu(desc->ds_cc) != 0)
->  			dma_unmap_single(ndev->dev.parent,
->  					 le32_to_cpu(desc->dptr),
->  					 RX_BUF_SZ,
+Freed by task 5154:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:47
+ kasan_save_track+0x14/0x30 mm/kasan/common.c:68
+ kasan_save_free_info+0x3f/0x60 mm/kasan/generic.c:634
+ poison_slab_object mm/kasan/common.c:241 [inline]
+ __kasan_slab_free+0x121/0x1b0 mm/kasan/common.c:257
+ kasan_slab_free include/linux/kasan.h:184 [inline]
+ slab_free_hook mm/slub.c:2121 [inline]
+ slab_free mm/slub.c:4299 [inline]
+ kfree+0x124/0x360 mm/slub.c:4409
+ f2fs_fill_super+0x270c/0x8e50 fs/f2fs/super.c:4882
+ mount_bdev+0x1df/0x2d0 fs/super.c:1663
+ legacy_get_tree+0x109/0x220 fs/fs_context.c:662
+ vfs_get_tree+0x8c/0x370 fs/super.c:1784
+ do_new_mount fs/namespace.c:3352 [inline]
+ path_mount+0x14e6/0x1f20 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount fs/namespace.c:3875 [inline]
+ __x64_sys_mount+0x293/0x310 fs/namespace.c:3875
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-MBR, Sergey
+The buggy address belongs to the object at ffff88802356c000
+ which belongs to the cache kmalloc-8k of size 8192
+The buggy address is located 6012 bytes inside of
+ freed 8192-byte region [ffff88802356c000, ffff88802356e000)
+
+The buggy address belongs to the physical page:
+page:ffffea00008d5a00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x23568
+head:ffffea00008d5a00 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+ksm flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff888013043180 ffffea0000954e00 dead000000000003
+raw: 0000000000000000 0000000080020002 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd28c0(GFP_NOWAIT|__GFP_IO|__GFP_FS|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 4877, tgid 4877 (dhcpcd), ts 26455000649, free_ts 26430514243
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2d0/0x350 mm/page_alloc.c:1533
+ prep_new_page mm/page_alloc.c:1540 [inline]
+ get_page_from_freelist+0xa28/0x3780 mm/page_alloc.c:3311
+ __alloc_pages+0x22f/0x2440 mm/page_alloc.c:4567
+ __alloc_pages_node include/linux/gfp.h:238 [inline]
+ alloc_pages_node include/linux/gfp.h:261 [inline]
+ alloc_slab_page mm/slub.c:2190 [inline]
+ allocate_slab mm/slub.c:2354 [inline]
+ new_slab+0xcc/0x3a0 mm/slub.c:2407
+ ___slab_alloc+0x4af/0x19a0 mm/slub.c:3540
+ __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3625
+ __slab_alloc_node mm/slub.c:3678 [inline]
+ slab_alloc_node mm/slub.c:3850 [inline]
+ __do_kmalloc_node mm/slub.c:3980 [inline]
+ __kmalloc_node_track_caller+0x35b/0x460 mm/slub.c:4001
+ kmalloc_reserve+0xef/0x260 net/core/skbuff.c:582
+ __alloc_skb+0x12b/0x330 net/core/skbuff.c:651
+ alloc_skb include/linux/skbuff.h:1296 [inline]
+ netlink_dump+0x2e5/0xca0 net/netlink/af_netlink.c:2231
+ netlink_recvmsg+0x9ff/0xf20 net/netlink/af_netlink.c:1990
+ sock_recvmsg_nosec net/socket.c:1046 [inline]
+ sock_recvmsg+0xe2/0x170 net/socket.c:1068
+ ____sys_recvmsg+0x21f/0x5c0 net/socket.c:2803
+ ___sys_recvmsg+0x115/0x1a0 net/socket.c:2845
+ __sys_recvmsg+0x114/0x1e0 net/socket.c:2875
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
+page last free pid 4877 tgid 4877 stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1140 [inline]
+ free_unref_page_prepare+0x51f/0xb10 mm/page_alloc.c:2346
+ free_unref_page+0x33/0x3c0 mm/page_alloc.c:2486
+ __put_partials+0x14c/0x160 mm/slub.c:2922
+ qlink_free mm/kasan/quarantine.c:160 [inline]
+ qlist_free_all+0x58/0x150 mm/kasan/quarantine.c:176
+ kasan_quarantine_reduce+0x18e/0x1d0 mm/kasan/quarantine.c:283
+ __kasan_slab_alloc+0x65/0x90 mm/kasan/common.c:324
+ kasan_slab_alloc include/linux/kasan.h:201 [inline]
+ slab_post_alloc_hook mm/slub.c:3813 [inline]
+ slab_alloc_node mm/slub.c:3860 [inline]
+ kmem_cache_alloc+0x136/0x320 mm/slub.c:3867
+ kmem_cache_zalloc include/linux/slab.h:701 [inline]
+ __kernfs_new_node+0xd3/0x890 fs/kernfs/dir.c:615
+ kernfs_new_node+0x94/0x110 fs/kernfs/dir.c:679
+ __kernfs_create_file+0x53/0x340 fs/kernfs/file.c:1025
+ sysfs_add_file_mode_ns+0x1ff/0x3b0 fs/sysfs/file.c:307
+ create_files fs/sysfs/group.c:64 [inline]
+ internal_create_group+0x31c/0xb50 fs/sysfs/group.c:152
+ internal_create_groups+0x9d/0x150 fs/sysfs/group.c:192
+ device_add_groups drivers/base/core.c:2727 [inline]
+ device_add_attrs drivers/base/core.c:2847 [inline]
+ device_add+0xf66/0x1aa0 drivers/base/core.c:3579
+ netdev_register_kobject+0x187/0x3e0 net/core/net-sysfs.c:2055
+ register_netdevice+0x1385/0x1da0 net/core/dev.c:10261
+
+Memory state around the buggy address:
+ ffff88802356d600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88802356d680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88802356d700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                                ^
+ ffff88802356d780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88802356d800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
