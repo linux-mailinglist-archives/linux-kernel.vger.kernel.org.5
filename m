@@ -1,172 +1,110 @@
-Return-Path: <linux-kernel+bounces-25202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2916E82CA3E
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 07:30:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E09B82CA41
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 07:32:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F67F1C2277E
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 06:30:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C26DF1F239E7
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 06:32:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07287154AD;
-	Sat, 13 Jan 2024 06:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D901168C2;
+	Sat, 13 Jan 2024 06:32:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="SrEsonQz"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67BD537E;
-	Sat, 13 Jan 2024 06:30:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1099)
-	id E26B720B3CF2; Fri, 12 Jan 2024 22:30:38 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E26B720B3CF2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1705127438;
-	bh=fxr73g95E5MYVxFDJezyB06iH7LUFljRdUOESeGdmAY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SrEsonQzos//LpGrhTt/KpAAuKXgfq2LLUhR+r/WtOWmPUq0kGwI0FWVaJnDZ5Shq
-	 9SSiDkPDM7+uIRgr+gGQHLxWvr1TIaa6mdzu6cUVOch6gr776H5MgCABBgtyNj/4Uf
-	 fEEIm9nspmAhiaBZKHdl+/ySsPtOQE+O4XrIkMLk=
-Date: Fri, 12 Jan 2024 22:30:38 -0800
-From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-To: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: Michael Kelley <mhklinux@outlook.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	KY Srinivasan <kys@microsoft.com>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"edumazet@google.com" <edumazet@google.com>,
-	"kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>,
-	Long Li <longli@microsoft.com>, "leon@kernel.org" <leon@kernel.org>,
-	"cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
-	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-	"vkuznets@redhat.com" <vkuznets@redhat.com>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	Souradeep Chakrabarti <schakrabarti@microsoft.com>,
-	Paul Rosswurm <paulros@microsoft.com>
-Subject: Re: [PATCH 3/4 net-next] net: mana: add a function to spread IRQs
- per CPUs
-Message-ID: <20240113063038.GD5436@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1704797478-32377-1-git-send-email-schakrabarti@linux.microsoft.com>
- <1704797478-32377-4-git-send-email-schakrabarti@linux.microsoft.com>
- <SN6PR02MB4157CB3CB55A17255AE61BF6D46A2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <ZZ3Wsxq8rHShTUdA@yury-ThinkPad>
- <SN6PR02MB415704D36B82D5793CC4558FD4692@SN6PR02MB4157.namprd02.prod.outlook.com>
- <20240111061319.GC5436@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <SN6PR02MB4157234176238D6C1F35B90BD46F2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <DS1PEPF00012A5F513F916690B9F94D3262CA6F2@DS1PEPF00012A5F.namprd21.prod.outlook.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ERuGwVMN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90EF1E574;
+	Sat, 13 Jan 2024 06:32:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB52AC433F1;
+	Sat, 13 Jan 2024 06:32:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705127550;
+	bh=2iJy/IbcVSngH7U5FJKIAQpRVXxlDL+ZrRZ3nGMmnv0=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=ERuGwVMND9FQF8XVkStT34HR626Nz5XACBfcQn0Hzhl8FbkAFyXeuGrZpyDSzUK/D
+	 KcQtY0n7pARwbPlxBtZHT9AuZGDKx+LMvb9UnUNaIxTg5SW5mwp6LK6YIo1xXA0teC
+	 vGZPj/8Yz+6ldD7/OKOipQiddjWdiz+I71xPpzZslpCBOK2haas3SdtfLbegjVujx5
+	 sxqY9MXRIHiumh9dVJvreaH1mjV+Qe8YjvpZvjdkXhK6c8nG62GVSA3fC/afonYeSg
+	 sORtiMn1y8uKxDUPdEYzN3DwDuSjsvXg/NbwQIYpQRyi5V0m+nbemqQ//3gUCHtiTC
+	 exBGzSMpZ1Hlw==
+From: Kalle Valo <kvalo@kernel.org>
+To: Brent Pappas <bpappas@pappasbrent.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>,  "David S. Miller"
+ <davem@davemloft.net>,  Eric Dumazet <edumazet@google.com>,  Jakub
+ Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>,
+  linux-wireless@vger.kernel.org,  netdev@vger.kernel.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] wifi: mac80211: tx: Add __must_hold() annotation
+References: <20240113011145.10888-2-bpappas@pappasbrent.com>
+Date: Sat, 13 Jan 2024 08:32:26 +0200
+In-Reply-To: <20240113011145.10888-2-bpappas@pappasbrent.com> (Brent Pappas's
+	message of "Fri, 12 Jan 2024 20:11:45 -0500")
+Message-ID: <87sf31hhfp.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DS1PEPF00012A5F513F916690B9F94D3262CA6F2@DS1PEPF00012A5F.namprd21.prod.outlook.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain
 
-On Fri, Jan 12, 2024 at 06:30:44PM +0000, Haiyang Zhang wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Michael Kelley <mhklinux@outlook.com>
-> > Sent: Friday, January 12, 2024 11:37 AM
-> > To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-> > Cc: Yury Norov <yury.norov@gmail.com>; KY Srinivasan <kys@microsoft.com>;
-> > Haiyang Zhang <haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
-> > <decui@microsoft.com>; davem@davemloft.net; edumazet@google.com;
-> > kuba@kernel.org; pabeni@redhat.com; Long Li <longli@microsoft.com>;
-> > leon@kernel.org; cai.huoqing@linux.dev; ssengar@linux.microsoft.com;
-> > vkuznets@redhat.com; tglx@linutronix.de; linux-hyperv@vger.kernel.org;
-> > netdev@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
-> > rdma@vger.kernel.org; Souradeep Chakrabarti <schakrabarti@microsoft.com>;
-> > Paul Rosswurm <paulros@microsoft.com>
-> > Subject: RE: [PATCH 3/4 net-next] net: mana: add a function to spread
-> > IRQs per CPUs
-> > 
-> > [Some people who received this message don't often get email from
-> > mhklinux@outlook.com. Learn why this is important at
-> > https://aka.ms/LearnAboutSenderIdentification ]
-> > 
-> > From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com> Sent:
-> > Wednesday, January 10, 2024 10:13 PM
-> > >
-> > > The test topology was used to check the performance between
-> > > cpu_local_spread() and the new approach is :
-> > > Case 1
-> > > IRQ     Nodes  Cores CPUs
-> > > 0       1      0     0-1
-> > > 1       1      1     2-3
-> > > 2       1      2     4-5
-> > > 3       1      3     6-7
-> > >
-> > > and with existing cpu_local_spread()
-> > > Case 2
-> > > IRQ    Nodes  Cores CPUs
-> > > 0      1      0     0
-> > > 1      1      0     1
-> > > 2      1      1     2
-> > > 3      1      1     3
-> > >
-> > > Total 4 channels were used, which was set up by ethtool.
-> > > case 1 with ntttcp has given 15 percent better performance, than
-> > > case 2. During the test irqbalance was disabled as well.
-> > >
-> > > Also you are right, with 64CPU system this approach will spread
-> > > the irqs like the cpu_local_spread() but in the future we will offer
-> > > MANA nodes, with more than 64 CPUs. There it this new design will
-> > > give better performance.
-> > >
-> > > I will add this performance benefit details in commit message of
-> > > next version.
-> > 
-> > Here are my concerns:
-> > 
-> > 1.  The most commonly used VMs these days have 64 or fewer
-> > vCPUs and won't see any performance benefit.
-> > 
-> > 2.  Larger VMs probably won't see the full 15% benefit because
-> > all vCPUs in the local NUMA node will be assigned IRQs.  For
-> > example, in a VM with 96 vCPUs and 2 NUMA nodes, all 48
-> > vCPUs in NUMA node 0 will all be assigned IRQs.  The remaining
-> > 16 IRQs will be spread out on the 48 CPUs in NUMA node 1
-> > in a way that avoids sharing a core.  But overall the means
-> > that 75% of the IRQs will still be sharing a core and
-> > presumably not see any perf benefit.
-> > 
-> > 3.  Your experiment was on a relatively small scale:   4 IRQs
-> > spread across 2 cores vs. across 4 cores.  Have you run any
-> > experiments on VMs with 128 vCPUs (for example) where
-> > most of the IRQs are not sharing a core?  I'm wondering if
-> > the results with 4 IRQs really scale up to 64 IRQs.  A lot can
-> > be different in a VM with 64 cores and 2 NUMA nodes vs.
-> > 4 cores in a single node.
-> > 
-> > 4.  The new algorithm prefers assigning to all vCPUs in
-> > each NUMA hop over assigning to separate cores.  Are there
-> > experiments showing that is the right tradeoff?  What
-> > are the results if assigning to separate cores is preferred?
-> 
-> I remember in a customer case, putting the IRQs on the same 
-> NUMA node has better perf. But I agree, this should be re-tested
-> on MANA nic.
-1) and 2) The change will not decrease the existing performance, but for system
-with high number of CPU, will be benefited after this.
+Brent Pappas <bpappas@pappasbrent.com> writes:
 
-3) The result has shown around 6 percent improvement.
+> Annotates ieee80211_set_beacon_cntdwn() with a __must_hold() annotation to
+> make it clear that ieee80211_set_beacon_cntdwn() is only intended to be
+> called when the caller has a lock on the argument "link."
+>
+> Signed-off-by: Brent Pappas <bpappas@pappasbrent.com>
+> ---
+>
+> Currently, ieee80211_set_beacon_cntdwn() calls rcu_dereference(), but
+> without calling rcu_read_lock() beforehand and rcu_read_unlock()
+> afterward.  At first I thought this was a bug, since (if I understand the
+> RCU API correctly) rcu_dereference() should only be called in RCU
+> read-side critical sections. However, upon closer inspection of the code,
+> I realized that ieee80211_set_beacon_cntdwn() is only ever called inside
+> critical sections. Therefore it seems appropriate to me to annotate
+> ieee80211_set_beacon_cntdwn() with a __must_hold() annotation to make this
+> apparent precondition explicit.
+>
+> This is my first time submitting an RCU-related patch so please tell me if
+> I am misunderstanding the RCU API.
+>
+>  net/mac80211/tx.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
+> index 314998fdb1a5..7245f2e641ba 100644
+> --- a/net/mac80211/tx.c
+> +++ b/net/mac80211/tx.c
+> @@ -10,6 +10,7 @@
+>   * Transmit and frame generation functions.
+>   */
+>  
+> +#include "linux/compiler_types.h"
+>  #include <linux/kernel.h>
+>  #include <linux/slab.h>
+>  #include <linux/skbuff.h>
+> @@ -4974,6 +4975,7 @@ static int ieee80211_beacon_add_tim(struct ieee80211_sub_if_data *sdata,
+>  static void ieee80211_set_beacon_cntdwn(struct ieee80211_sub_if_data *sdata,
+>  					struct beacon_data *beacon,
+>  					struct ieee80211_link_data *link)
+> +	__must_hold(link)
 
-4)The test result has shown around 10 percent difference when IRQs are spread
-on multiple numa nodes.
-> 
-> - Haiyang
-> 
+Oh, never seen __must_hold() before and looks very useful. So does this
+work with RCU, mutexes and spinlocks?
+
+In case others are interested, here's the documentation I was able to find:
+
+https://docs.kernel.org/dev-tools/sparse.html#using-sparse-for-lock-checking
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
