@@ -1,67 +1,114 @@
-Return-Path: <linux-kernel+bounces-25322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4CFC82CD7D
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 16:31:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8449982CD7E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 16:33:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73D2C283C29
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 15:31:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 966FC1C21085
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 15:33:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 345F41FBB;
-	Sat, 13 Jan 2024 15:31:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4489A23A8;
+	Sat, 13 Jan 2024 15:33:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q2lTsrhz"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l8dSd36e"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F73F23A3;
-	Sat, 13 Jan 2024 15:31:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 441A6C433C7;
-	Sat, 13 Jan 2024 15:31:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ACA31C16;
+	Sat, 13 Jan 2024 15:33:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B3BEC433F1;
+	Sat, 13 Jan 2024 15:33:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705159878;
-	bh=Qfs2cj7JCte0gKHDzV5NLUlHh1kvgCNmTYtxJZN4Udo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=q2lTsrhz19T9Qzi32wC8wO2nmB4DPfrFdByFTjnPFx5TB3OvNG9IP23ZfZR1EytTi
-	 7xo+o7UWigD8GN3cfrDiPVX8p7nNxpnN0KY3eI9VowCwJC987LpdfuU7+/DTnev4LF
-	 pvBHaMcT+t3BrKvl0Q10TtC2vcGJ/qxegUxtXd6V9JEgwEsMK8vbmRHTHm9M/DbPlk
-	 eDQzovLgNfgtyBUmA8yfY2rgjaNYpRRcBZEa3Lfesnhe5QPln/i4aqVJGPgKDcWfqu
-	 PejJKnQ6Eh8DivbnwxK0X4I/Ld5YSzcf7Z5kVHbBTuuz9ro+dvprwrbBQeSmLPoGm9
-	 8Sr6OJS4qn8dA==
-Date: Sat, 13 Jan 2024 15:31:12 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: <cy_huang@richtek.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?=
- <u.kleine-koenig@pengutronix.de>, <linux-iio@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 0/2] RTQ6056: Add compatible for the same chip family
-Message-ID: <20240113153112.42d3b978@jic23-huawei>
-In-Reply-To: <cover.1704676198.git.cy_huang@richtek.com>
-References: <cover.1704676198.git.cy_huang@richtek.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-pc-linux-gnu)
+	s=k20201202; t=1705159998;
+	bh=a6Ra8/vW20LqIUs9s37sHdzXHXZxogXvoS1zUc0El3w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=l8dSd36ej497TKceU3Qsy8VxpLEUAfUPXC6n1FJE54MokQT4OwMUHEYC/czQFaZQw
+	 uTbccaH3L+xnx114iixt7ab12pWgT5tiaSi9A4iNY77nQmbdROGYbjU+rDkOjIV+qM
+	 uSqd/vN9YJDuPo7sRpNjU6nWK+eg+Hxz7Z5jbSOjZ0g7AqZzDl+o/hHNkjbpgnYePJ
+	 QtVzy5c5/94vJhSZK5wYRlFWqZYWh66LlRBBWSmh39KWPdcOvSyrJD/WC9T2k/uzdi
+	 eAw1txfsm4R3d71W6NXI4E7mOXLjUl5/w/YV0ThY02uCFj4zX5fC+EVUZfCCtqE2dz
+	 lbnSzMwZot9bg==
+Date: Sat, 13 Jan 2024 15:33:13 +0000
+From: Simon Horman <horms@kernel.org>
+To: Zhipeng Lu <alexious@zju.edu.cn>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maor Gottlieb <maorg@mellanox.com>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v3] net/mlx5e: fix a double-free in arfs_create_groups
+Message-ID: <20240113153313.GH392144@kernel.org>
+References: <20240112072916.3726945-1-alexious@zju.edu.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240112072916.3726945-1-alexious@zju.edu.cn>
 
-On Mon, 8 Jan 2024 09:47:26 +0800
-<cy_huang@richtek.com> wrote:
+On Fri, Jan 12, 2024 at 03:29:16PM +0800, Zhipeng Lu wrote:
+> When `in` allocated by kvzalloc fails, arfs_create_groups will free
+> ft->g and return an error. However, arfs_create_table, the only caller of
+> arfs_create_groups, will hold this error and call to
+> mlx5e_destroy_flow_table, in which the ft->g will be freed again.
+> 
+> Fixes: 1cabe6b0965e ("net/mlx5e: Create aRFS flow tables")
+> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
 
-> From: ChiYuan Huang <cy_huang@richtek.com>
+Thanks, I think this is getting close.
 
-Applied to the togreg branch of iio.git but for now only pushed out as testing
-as I will be rebasing my tree on rc1 once it is available.
+Can you please prepare a v4 with the nits below fixed?
+And please target at the 'net' tree, by making sure it
+is based on the main branch of that tree, and marking
+the subject as follows:
 
-Thanks,
+	Subject: [PATCH net v3] ...
 
-Jonathan
+> ---
+> Changelog:
+> 
+> v2: free ft->g just in arfs_create_groups with a unwind ladder.
+> v3: split the allocation of ft->g and in. Rename the error label.
+>     remove some refector change in v2.
+> ---
+>  .../net/ethernet/mellanox/mlx5/core/en_arfs.c | 26 +++++++++++--------
+>  1 file changed, 15 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
+> index bb7f86c993e5..0424ae068a60 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
+> @@ -254,11 +254,13 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
+>  
+>  	ft->g = kcalloc(MLX5E_ARFS_NUM_GROUPS,
+>  			sizeof(*ft->g), GFP_KERNEL);
+> -	in = kvzalloc(inlen, GFP_KERNEL);
+> -	if  (!in || !ft->g) {
+> -		kfree(ft->g);
+> -		kvfree(in);
+> +	if(!ft->g)
+
+nit: (one) space after if, please
+
+>  		return -ENOMEM;
+> +
+> +	in = kvzalloc(inlen, GFP_KERNEL);
+> +	if  (!in) {
+
+nit: one space is enough after if
+
+> +		err = -ENOMEM;
+> +		goto err_free_g;
+>  	}
+>  
+>  	mc = MLX5_ADDR_OF(create_flow_group_in, in, match_criteria);
+
+..
 
