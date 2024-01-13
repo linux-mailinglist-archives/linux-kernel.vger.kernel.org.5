@@ -1,86 +1,144 @@
-Return-Path: <linux-kernel+bounces-25161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A4F682C8CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 02:33:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77B4882C8D5
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 02:39:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11436287591
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 01:33:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 712BDB22821
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 01:39:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96F6018640;
-	Sat, 13 Jan 2024 01:33:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C139118AF1;
+	Sat, 13 Jan 2024 01:39:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cbH4SvXV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iOKbQ0TN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC6C51A594;
-	Sat, 13 Jan 2024 01:33:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C7D7C433C7;
-	Sat, 13 Jan 2024 01:33:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E81212E65;
+	Sat, 13 Jan 2024 01:39:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EA86C433F1;
+	Sat, 13 Jan 2024 01:39:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705109612;
-	bh=PHzx3gJ6hnCv3VfcEhNzHYMyKUNAcxT04KDHTrh9tAI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=cbH4SvXVjyY0LR+FiwUrFbH4h6iqSSMwz5QQJ9LYT7KxjHyJcqnG0MD4Oy5y127I7
-	 VHTWzDnCwihFwGfw6Gfzoyyp2s334edjiQavmppF7HSGv3NUvkiFQt/xBWqW2uGIim
-	 YFGuqmz16qH8q8bthOgFKn5ywYQbrr4shwbyZnF1ZoglLN2PK4glVBXrR3S4V3pBkW
-	 RdnNlCPLjpBCmEQ393uThtjVypEDb8CLkASrZrpbSFPt5x1SOcAPVjTzBhpz4fBqC9
-	 haYz95cdA/LunkoWpbGHxPSfF5KzR9s0Uz9I7XMWS6L2NqLAs/DlNCfJr9BvY0FHOE
-	 k2hvBCVsA0cSQ==
-Date: Fri, 12 Jan 2024 17:33:30 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Michal =?UTF-8?B?S291dG7DvQ==?= <mkoutny@suse.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, cake@lists.bufferbloat.net, "David S . Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang
- <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Toke =?UTF-8?B?SMO4?=
- =?UTF-8?B?aWxhbmQtSsO4cmdlbnNlbg==?= <toke@toke.dk>, Vinicius Costa Gomes
- <vinicius.gomes@intel.com>, Stephen Hemminger <stephen@networkplumber.org>,
- Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>, Martin
- Wilck <mwilck@suse.com>
-Subject: Re: [PATCH v3 0/4] net/sched: Load modules via alias
-Message-ID: <20240112173330.075e5969@kernel.org>
-In-Reply-To: <20240112180646.13232-1-mkoutny@suse.com>
-References: <20240112180646.13232-1-mkoutny@suse.com>
+	s=k20201202; t=1705109959;
+	bh=f+z+aCoBo/R1LCbcJ/n9MFR1O7qF/679Gxl5cb/3qHg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iOKbQ0TNrYHcl5QI2C8ytgTBbYZICCBxplvkmGjmc1SM07yILLF980Ljta5Zubsze
+	 Dhag6XvXmcIREpCusq3qVaqlC/OBITak58S+ICjWxG0N9TrgyNHpLkZsY3eoOP6N4Q
+	 QRickthm8JPRvfXeoffubHSVucXtyxlwaMTflMIZnpm2XznavfAnk0QPX0K4Nv6Zr8
+	 xpfpTlEBfxYb8qH23h6lY3tgAYyNoXL91IkXDh0bm67NuUOVCjyi1j0l3F6q03xXn+
+	 fqaJz+aE9r2cpqoH1ABqsHNEQ0ZsCMTOfASUFM4K+xrOIqHYNcOo8wrD0YsFTWc1vj
+	 ItCDSd/fDh/yA==
+Date: Fri, 12 Jan 2024 19:39:17 -0600
+From: Rob Herring <robh@kernel.org>
+To: Christoph Winklhofer <cj.winklhofer@gmail.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Jonathan Corbet <corbet@lwn.net>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] dt-bindings: w1: UART 1-Wire bus
+Message-ID: <20240113013917.GA3795949-robh@kernel.org>
+References: <20240106-w1-uart-v4-0-7fe1378a8b3e@gmail.com>
+ <20240106-w1-uart-v4-1-7fe1378a8b3e@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240106-w1-uart-v4-1-7fe1378a8b3e@gmail.com>
 
-On Fri, 12 Jan 2024 19:06:42 +0100 Michal Koutn=C3=BD wrote:
-> These modules may be loaded lazily without user's awareness and
-> control. Add respective aliases to modules and request them under these
-> aliases so that modprobe's blacklisting mechanism (through aliases)
-> works for them. (The same pattern exists e.g. for filesystem
-> modules.)
+On Sat, Jan 06, 2024 at 05:02:24PM +0100, Christoph Winklhofer wrote:
+> Add device tree binding for UART 1-Wire bus.
+> 
+> Signed-off-by: Christoph Winklhofer <cj.winklhofer@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/w1/w1-uart.yaml | 62 +++++++++++++++++++++++
+>  1 file changed, 62 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/w1/w1-uart.yaml b/Documentation/devicetree/bindings/w1/w1-uart.yaml
+> new file mode 100644
+> index 000000000000..6b90693b2ca0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/w1/w1-uart.yaml
+> @@ -0,0 +1,62 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/w1/w1-uart.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: UART 1-Wire Bus
+> +
+> +maintainers:
+> +  - Christoph Winklhofer <cj.winklhofer@gmail.com>
+> +
+> +description: |
+> +  UART 1-wire bus. Utilizes the UART interface via the Serial Device Bus
+> +  to create the 1-Wire timing patterns.
+> +
+> +  The UART peripheral must support full-duplex and operate in open-drain
+> +  mode. The timing patterns are generated by a specific combination of
+> +  baud-rate and transmitted byte, which corresponds to a 1-Wire read bit,
+> +  write bit or reset pulse.
+> +
+> +  The default baud-rate for reset and presence detection is 9600 and for
+> +  a 1-Wire read or write operation 115200. In case the actual baud-rate
+> +  is different from the requested one, the transmitted byte is adapted
+> +  to generate the 1-Wire timing patterns.
+> +
+> +  https://www.analog.com/en/technical-articles/using-a-uart-to-implement-a-1wire-bus-master.html
+> +
+> +
+> +properties:
+> +  compatible:
+> +    const: w1-uart
+> +
+> +  reset-speed:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 9600
+> +    description: |
 
-## Form letter - net-next-closed
+Don't need '|' if no formatting
 
-The merge window for v6.8 has begun and we have already posted our pull
-request. Therefore net-next is closed for new drivers, features, code
-refactoring and optimizations. We are currently accepting bug fixes only.
+> +      The baud rate for the 1-Wire reset and presence detect.
+> +
+> +  touch_0-speed:
 
-Please repost when net-next reopens after January 22nd.
+Don't use '_' in property names.
 
-RFC patches sent for review only are obviously welcome at any time.
+I'm somewhat familar with 1-wire, but I don't get what 'touch' means 
+here. I assume these are low and high times which are a function of the 
+baudrate.
 
-See: https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#de=
-velopment-cycle
---=20
-pw-bot: defer
+
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 115200
+> +    description: |
+> +      The baud rate for the 1-Wire write-0 cycle (touch bit 0).
+> +
+> +  touch_1-speed:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 115200
+> +    description: |
+> +      The baud rate for the 1-Wire write-1 and read cycle (touch bit 1).
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: false
+
+w1.txt says there can be a child node for the 1-wire device. You need 
+'type: object'. Or w1.txt needs to be converted to schema and referenced 
+here (along with using unevaluatedProperties here instead).
+
+Rob
 
