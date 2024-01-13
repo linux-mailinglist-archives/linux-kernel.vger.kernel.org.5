@@ -1,141 +1,252 @@
-Return-Path: <linux-kernel+bounces-25196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62E8C82C963
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 05:54:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92A5A82C98E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 06:40:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6FAD1F239F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 04:54:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42FA1285FDE
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 05:40:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E667F505;
-	Sat, 13 Jan 2024 04:54:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32DDEF9EB;
+	Sat, 13 Jan 2024 05:40:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="WypgN0AS"
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W1gsDvkj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 442C9FBE7
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 04:54:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-5989e17b01fso1800806eaf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 20:54:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705121648; x=1705726448; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HyhhtLBlwuT0db1cYCnecKMxo/jq/0bSomGEhxEpXvw=;
-        b=WypgN0AS6Gb78YKgNiTH5rOJBw9THj+eXva0jvZgze7AGKu4R/kKH0aqu5leUbGZIt
-         rGI3M9ui3yQMLXhJpusOIx4BBvBdb0dVFw8NXhyNpHw8ja/1lPGcXFhgAamjTDdyivuI
-         TDvdOlPGXAR63SQOV6Zj6YfaBo/waWrXwxsf8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705121648; x=1705726448;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HyhhtLBlwuT0db1cYCnecKMxo/jq/0bSomGEhxEpXvw=;
-        b=ksD4tmUBVhB5MthXpVEdSLYth6BAFwQahaf1NFh8pi64dF3JR25wY60mqH2QPDB91F
-         S9gPDpbzhjYL0yIMkX7GhKkxLIcCxeewUGF3LoVCDx9MYrv9uZ/D5uanLMNfg/EKI/ra
-         KWny2UPM8Uvm7d36s5GD639m5rsgDhNA42zbQTOUoa5dfb5ewCG23GMI8pgoT3UF/C0t
-         aunChKwqL3iNL+NhC1blXbDgSyfDdXhgGJPVCsYXEuLdTKw3JIBzokNvSo7AwRIjkuAD
-         4KTJuMHdAlOJFd8NzEmw8TRiFGEKuMtY+e3B/zL6hSIF7J/KVE5jTEcFqNYg6x77zqKC
-         PrnA==
-X-Gm-Message-State: AOJu0Yy7tB9GxLg0a8FV+sq84OqMK5ab0xgtHWdvKlIjiHKfFOTFpRmI
-	uuUg707QKFKJb48H9ITbgBW17LleAdqSAd2yfOsOnkgSvehM
-X-Google-Smtp-Source: AGHT+IHzkZaupeuSQK5mqO9eQjZXMCaJS2zpdQc0QR94VMAtSjhMCO8pJt9SmwC9iCAiC7cwW8GkxCRJM6gO1Jf8YA0=
-X-Received: by 2002:a05:6870:9a1b:b0:206:bd2a:b222 with SMTP id
- fo27-20020a0568709a1b00b00206bd2ab222mr2104109oab.72.1705121648191; Fri, 12
- Jan 2024 20:54:08 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B0B0F510;
+	Sat, 13 Jan 2024 05:40:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF29BC43390;
+	Sat, 13 Jan 2024 05:40:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705124443;
+	bh=O3ohrsXSkj1hsucv+3a30SU0eUUg7ceQUZsUsRmu5Wk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=W1gsDvkjaWTsDoyZ/ZMiBsHhN2cDtribY2vxcLlSWkK3rSzdRQobfsAi660rYWqDM
+	 Vr4ghxnHkRipb8TsDVrMgCWLq0IWXem0RfNzL2+WfP1UfhVy0fVy55//pYKmZxSTU1
+	 2KRcYa91buX4YSNoNDNfKO2KvD5cpL5QDJ27IJlEHGJTl76fL8XoyM4/8xEOivRoB8
+	 cqDC+fExvJig692MpmCOCjamUv9UrpMOFNwKZapwTb383XuOo17jHQ8Ow2dfS7kucK
+	 WgCUtXNl2T/EFN9XOQ9yN0uSfxn9GowGCP4TEieO8NmX/louM/r6B/Iqyk29Upd6S1
+	 Os3k/4EA5JqmA==
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6dde5d308c6so2484759a34.0;
+        Fri, 12 Jan 2024 21:40:43 -0800 (PST)
+X-Gm-Message-State: AOJu0YwfROd//1FF4V1VbCT0b1/aD4xcfcElHxfzuUKQuIQrXXWas94T
+	j1KZOoVsQcBm2LBuQ7OJLb+LrvLeI39Fgp3/NQM=
+X-Google-Smtp-Source: AGHT+IHPsRlEXgHx2ZFurUp2lo7jQQOWgwageyfZGDFdYcwB35V4gpQDFM1VBA95/PyjPKIls8FwnJTBiFufQOzrCyo=
+X-Received: by 2002:a05:6871:e419:b0:205:f2ad:2948 with SMTP id
+ py25-20020a056871e41900b00205f2ad2948mr2733807oac.114.1705124443157; Fri, 12
+ Jan 2024 21:40:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240111234142.2944934-1-jeffxu@chromium.org> <c65170fe-f596-4ce0-96e3-ba83f4e60eaf@infradead.org>
-In-Reply-To: <c65170fe-f596-4ce0-96e3-ba83f4e60eaf@infradead.org>
-From: Jeff Xu <jeffxu@chromium.org>
-Date: Fri, 12 Jan 2024 20:53:57 -0800
-Message-ID: <CABi2SkXt2_eBS=7QkPST0uHGaaEszRJbVLajbwM95RWJrbDXwQ@mail.gmail.com>
-Subject: Re: [PATCH v6 0/4] Introduce mseal()
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com, 
-	sroettger@google.com, willy@infradead.org, gregkh@linuxfoundation.org, 
-	torvalds@linux-foundation.org, usama.anjum@collabora.com, jeffxu@google.com, 
-	jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
-	dave.hansen@intel.com, linux-hardening@vger.kernel.org, deraadt@openbsd.org
+References: <c2adb439-0dea-4de1-996e-5a0caa5c729d@alu.unizg.hr>
+ <ZaALOOhEdBP70lDH@bergen.fjasle.eu> <827b5e97-a436-47a7-a097-13657bcda948@alu.unizg.hr>
+In-Reply-To: <827b5e97-a436-47a7-a097-13657bcda948@alu.unizg.hr>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sat, 13 Jan 2024 14:40:05 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAToNP0hFvhzr_gYw6TXMxkJuCN4idWZvqmq3mSTNOHtSQ@mail.gmail.com>
+Message-ID: <CAK7LNAToNP0hFvhzr_gYw6TXMxkJuCN4idWZvqmq3mSTNOHtSQ@mail.gmail.com>
+Subject: Re: [PROBLEM] Very long .deb package build times for bindeb-pkg build target
+To: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc: Nicolas Schier <nicolas@fjasle.eu>, Mirsad Todorovac <mirsad.todorovac@alu.hr>, 
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 12, 2024 at 6:20=E2=80=AFPM Randy Dunlap <rdunlap@infradead.org=
-> wrote:
+On Fri, Jan 12, 2024 at 7:48=E2=80=AFAM Mirsad Todorovac
+<mirsad.todorovac@alu.unizg.hr> wrote:
 >
->
->
-> On 1/11/24 15:41, jeffxu@chromium.org wrote:
-> > From: Jeff Xu <jeffxu@google.com>
+> On 11. 01. 2024. 16:37, Nicolas Schier wrote:
+> > Hi Mirsad,
 > >
-> > This patchset proposes a new mseal() syscall for the Linux kernel.
+> > On Thu 11 Jan 2024 13:22:39 GMT, Mirsad Todorovac wrote:
+> >> Hi,
+> >>
+> >> With this new release, it seems that Debian kernel build uses "xz" in =
+single-
+> >> threaded mode:
+
+
+
+New release of what?
+
+
+
+
+> >>
+> >> Tasks: 484 total,   2 running, 481 sleeping,   0 stopped,   1 zombie
+> >> %Cpu(s):  2.5 us,  2.2 sy,  6.3 ni, 85.1 id,  2.3 wa,  0.0 hi,  1.7 si=
+,  0.0 st
+> >> MiB Mem :  64128.3 total,    524.3 free,   5832.0 used,  58540.9 buff/=
+cache
+> >> MiB Swap:  32760.0 total,  32758.7 free,      1.2 used.  58296.3 avail=
+ Mem
+> >>
+> >>     PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+
+> >> COMMAND
+> >>
+> >>  978084 marvin    30  10  112440  97792   2432 R 100.0   0.1  29:30.23=
+ xz
+> >>
+> >>
+> >> Before dpkg-deb was using up to 3200% of CPU time on a 16 core SMT CPU=
+.
+> >>
+> >> Can it be something with dpkg-deb --thread-max=3D%n option?
 > >
+> > I cannot find any --thread-max option in Linux tree.  Do you call
+> > dpkg-deb manually or somehow induce a thread maximum?
+> >
+> >> Waiting for half an hour just for the build of linux-image-...-dbg pac=
+kage
+> >> seems like an overkill ...
+> >
+> > With current v6.7 release tree I do not see the reported slow-downs
+> > when building bindeb-pkg; I tested by cross-compiling for arm64 on
+> > amd64 with CONFIG_MODULE_COMPRESS_XZ=3Dy and =3Dn).
+> >
+> > Both take roughly 5mins on my 24-core i9 system.
+> >
+> > Kind regards,
+> > Nicolas
 >
-> Jeff,
-> Building arm64 defconfig, on linux-next-20240112, I get:
+> I am perplexed too, but you can see from the top output the
+> single-threaded xz with 29:30m processor time.
 >
-I don't quite get how this is related to my change.
-Can you please send me the steps to reproduce ?  I don't usually build arm.
-
-Thanks
--Jeff
-
-
->   CC      arch/arm64/kernel/asm-offsets.s
-> In file included from ../include/uapi/linux/mman.h:5,
->                  from ../include/linux/mm.h:33,
->                  from ../include/linux/memblock.h:12,
->                  from ../arch/arm64/include/asm/acpi.h:14,
->                  from ../include/acpi/acpi_io.h:7,
->                  from ../include/linux/acpi.h:39,
->                  from ../include/acpi/apei.h:9,
->                  from ../include/acpi/ghes.h:5,
->                  from ../include/linux/arm_sdei.h:8,
->                  from ../arch/arm64/kernel/asm-offsets.c:10:
-> ../arch/arm64/include/asm/mman.h: In function 'arch_calc_vm_prot_bits':
-> ../arch/arm64/include/asm/mman.h:15:24: error: 'VM_ARM64_BTI' undeclared =
-(first use in this function); did you mean 'ARM64_BTI'?
->    15 |                 ret |=3D VM_ARM64_BTI;
->       |                        ^~~~~~~~~~~~
->       |                        ARM64_BTI
-> ../arch/arm64/include/asm/mman.h:15:24: note: each undeclared identifier =
-is reported only once for each function it appears in
-> ../arch/arm64/include/asm/mman.h:18:24: error: 'VM_MTE' undeclared (first=
- use in this function); did you mean 'VM_MAP'?
->    18 |                 ret |=3D VM_MTE;
->       |                        ^~~~~~
->       |                        VM_MAP
-> ../arch/arm64/include/asm/mman.h: In function 'arch_calc_vm_flag_bits':
-> ../arch/arm64/include/asm/mman.h:32:24: error: 'VM_MTE_ALLOWED' undeclare=
-d (first use in this function)
->    32 |                 return VM_MTE_ALLOWED;
->       |                        ^~~~~~~~~~~~~~
-> ../arch/arm64/include/asm/mman.h: In function 'arch_validate_flags':
-> ../arch/arm64/include/asm/mman.h:59:29: error: 'VM_MTE' undeclared (first=
- use in this function); did you mean 'VM_MAP'?
->    59 |         return !(vm_flags & VM_MTE) || (vm_flags & VM_MTE_ALLOWED=
-);
->       |                             ^~~~~~
->       |                             VM_MAP
-> ../arch/arm64/include/asm/mman.h:59:52: error: 'VM_MTE_ALLOWED' undeclare=
-d (first use in this function)
->    59 |         return !(vm_flags & VM_MTE) || (vm_flags & VM_MTE_ALLOWED=
-);
->       |                                                    ^~~~~~~~~~~~~~
+> On my laptop with the sam Ubuntu 23.10 mantic minotaur, I have
+> dpkg-deb version 1.20.12 and it shows things like 400% and 3200%
+> CPU time, so it is working multithreaded.
 >
+> On desktop machine with the same Ubuntu 23.10 and the same git
+> torvalds tree, it starts single-threaded xz from dpkg-deb instead.
+
+
+You built the same mainline git tree on your laptop and desktop.
+The former runs xz multi-threaded, the latter single-threaded.
+
+So, this is not about the kernel code, but about your environment,
+isn't it?
+
+
+
+You mentioned you were using Ubuntu 23.10, where
+dpkg-deb version is 1.22.0
+
+
+Your dpkg-deb version, 1.20.12, is too old for Ubuntu 23.10.
+Is it a self-built one?
+
+
+
+
+
+dpkg-deb usually compresses binary packages, but the default
+compression type depends on the distro.
+(It is determined at "./configure" time)
+
+
+
+On Ubuntu, the default compression type for dpkg-deb is "zstd"
+(while it is "xz" on Debian)
+
+
+Check "man dpkg-deb" on your Ubuntu machine.
+
+
+  -Zcompress=E2=80=90type
+      Specify which compression type to use when building a package.
+      Allowed values are gzip, xz (since dpkg 1.15.6),
+      zstd (since dpkg 1.21.18) and none (default is zstd).
+
+
+
+
+You are still allowed to use xz with "make KDEB_COMPRESS=3Dxz deb-pkg".
+Is this your case?
+
+
+
+
+Overall, your report is not sensible.
+
+
+You should check what you are seeing.
+
+
+
+
+> I tried things like this:
+>
+> diff --git a/scripts/package/builddeb b/scripts/package/builddeb
+> index d7dd0d04c70c..b2319c23db34 100755
+> --- a/scripts/package/builddeb
+> +++ b/scripts/package/builddeb
+> @@ -38,7 +38,7 @@ create_package() {
+>
+>         # Fix ownership and permissions
+>         if [ "$DEB_RULES_REQUIRES_ROOT" =3D "no" ]; then
+> -               dpkg_deb_opts=3D"--root-owner-group"
+> +               dpkg_deb_opts=3D"--threads-max=3D0 --root-owner-group"
+>         else
+>                 chown -R root:root "$pdir"
+>         fi
+>
+> and it didn't work either - dpkg-deb --threads-max=3D0 still spawned a
+> single-threaded xz that ran 30 minutes.
+>
+> Then the workaround was a very simple xz shell script that adds option --=
+threads=3D0
+> and calls system xz:
+>
+> ~/bin/xz:
+> ----------------------------------------------------------------
+> #!/bin/bash -f
+>
+> /usr/bin/xz --threads=3D0 "$@"
+> ----------------------------------------------------------------
+>
+> This finally worked, but sometimes I get:
+>
+> marvin@defiant:~/linux/kernel$ xz -9 --memlimit-compress=3D8000MiB linux-=
+image-6.7.0-rc8-dbg_6.7.0-rc8-6_amd64.deb
+> /usr/bin/xz: Reduced the number of threads from 8 to 6 to not exceed the =
+memory usage limit of 8000 MiB
+>
+> (This is of course just an example of compressing a large file, as .deb i=
+s already compressed.)
+>
+> I used the default Ubuntu 23.10 config, with .pems excluded, and I think =
+module compression
+> did not work either. I had to turn it off ...
+>
+> Hope this helps.
+>
+> Regards,
+> Mirsad
 >
 > --
-> #Randy
+> Mirsad Goran Todorovac
+> Sistem in=C5=BEenjer
+> Grafi=C4=8Dki fakultet | Akademija likovnih umjetnosti
+> Sveu=C4=8Dili=C5=A1te u Zagrebu
+>
+> System engineer
+> Faculty of Graphic Arts | Academy of Fine Arts
+> University of Zagreb, Republic of Croatia
+> The European Union
+>
+> "I see something approaching fast ... Will it be friends with me?"
+>
+>
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
