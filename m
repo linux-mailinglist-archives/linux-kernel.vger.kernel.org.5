@@ -1,98 +1,96 @@
-Return-Path: <linux-kernel+bounces-25374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8DA182CEC2
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 22:19:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F13882CEC8
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 22:32:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 129B0B21882
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 21:19:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08486B21DE9
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 21:32:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E90D1643D;
-	Sat, 13 Jan 2024 21:19:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 753CE16439;
+	Sat, 13 Jan 2024 21:32:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JSHz/DwC"
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="bqzdy+tG"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 982071096F
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 21:18:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-7831806c51bso802918685a.1
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 13:18:58 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AEFF15AF9
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 21:32:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55783b7b47aso7888015a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 13:32:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705180737; x=1705785537; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
+        d=linux-foundation.org; s=google; t=1705181519; x=1705786319; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pF267Ysjv3yeYbmL5BLV4HmrOUtS1bnSSAX8PIAFU4E=;
-        b=JSHz/DwCP08/K3W4ctmgcIi32pa7dyzXSgbCOs5vgRdDqOUnbFIPSbvEzDdw1zhUDO
-         f0Y9BfhT1IR0jbcZI/BiRm1jqRbY5YtPEddcGyDDc9saOwgMmSEEXLgwwy83k5Ot7qX2
-         9aTqnl8y3VmJ/IzyI2cIRaYU1bmd7Lihx4oEi9C+FeDVM/ydwOK3LIJCA0RGSXioAdry
-         mhIZS4S1gI1AoIZvolIDuYqTnrpridHgdPf1wdgkzfIyoChjTR3B/xlayMtkL0XCimkP
-         PV8tnPNrdtGw6FrVi5mpxP4sMDZ6Qrxjb7ypRxIdjR6IJHCJxVpJEHl40J1txeVWciLs
-         Smvw==
+        bh=VKoNNUqlg2Xe5jxTp3GCnMUwSPY8/bQZCKu1byOc4Gc=;
+        b=bqzdy+tGH6VL2pBYE6u+as7QwNYLUJmtZTVbnI0604KxGMPpincJC3JcDRbRED9LAh
+         X2d65WQ4NOwZcEmD/xgI5dY6/MISB2h8SfF4B7ndXf+ahpLi6ZOPxlTjGxR4qr8RQjFJ
+         uOHwGN2QEbouGfcsnpZCDQUcOWjTqXM6ny2ew=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705180737; x=1705785537;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
+        d=1e100.net; s=20230601; t=1705181519; x=1705786319;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pF267Ysjv3yeYbmL5BLV4HmrOUtS1bnSSAX8PIAFU4E=;
-        b=lNf8RUc98ZQvyoGyM7wnY2EGGbEEDuKF0rbD0B7keqcDjLiHQyIQWEyOkWL+xKg9om
-         OTU1RO87ewNR927ZQNQb7yJFZ3983llb20xaTlzXJiHUvigN5m1eAtAa1zq2NaBRwfls
-         bKrL0uNe3nDbkzahCoSO+IFJHuIwHSCTewvGKPFGZzLawLjC2FJzmPL4EC/CZgBBlYjE
-         ABh5G0h9t6MJe+uagPPNH9fSvMSYP8uu+MlYrIcSPulVXOe0vVOwnA3R4pvtc+bEXS7p
-         4ykjViDXl/+ezbC+kH736cZDih1Tx7IbSQWXDpW2XZBxSJQpnhMwbGEsdKl8WOmZFg+L
-         ZM5g==
-X-Gm-Message-State: AOJu0YxckyGQq2SiwEJMsYdAIiPcS4XUPEGF/KESe5IQ1qZmO4eLxJZH
-	HMHA4jHivRkcLibkTzdqnloNdlb/aANRHswoY++jV3lU/PEJzDQGLNaXnjIKmstD91HB
-X-Google-Smtp-Source: AGHT+IFW5WFJ1VVn2gfjgR6yZAmOCMsb23RNVbx4JnwY4Xn0MjzArTCCtrJfArzBn+QB7riuISNuBSsR4XFia86J6V4=
-X-Received: by 2002:a05:620a:2181:b0:783:528e:6c25 with SMTP id
- g1-20020a05620a218100b00783528e6c25mr1412770qka.49.1705180737425; Sat, 13 Jan
- 2024 13:18:57 -0800 (PST)
+        bh=VKoNNUqlg2Xe5jxTp3GCnMUwSPY8/bQZCKu1byOc4Gc=;
+        b=Mb0/OazrT2dxRcbTpLILzNn0sLHJUM+S/BJlehV847d0s/2lsW7Pz/nOZcYmjLIB97
+         DXYtb4+TzQBS83JSwOb9x7HHstLWC8RhswpKqYHxjdB+40qWh3C22X2p3roEhbOoYqbL
+         G0Pym3XuoaJHQvMUJOyAg6+WBwxA+A/rN4oWOUHe4BIyqs+UO8sJWWIpsqUJ/uaJMAtL
+         97evdhNiKrlpJ+i7mg68Eq1fZFY49yeRDUW6mX06rQ7f7ujPT4Ain8GfEpWCJJDJZcc7
+         RIm0ejmSl73SwwwCxNQSqi3VyWfS8rwylrlA2+034wRank9QIpji2gRTQ5pI2SKMCAzs
+         K5lA==
+X-Gm-Message-State: AOJu0YyoGroMeffgdgpmiFFvINTHt9URLzQ14HtveEmNlByDJVmAp05N
+	p5t1BuEukLmDKDKWcbo5nebLm4rDWlYqyxXuqp0CB0782VH1/D0/
+X-Google-Smtp-Source: AGHT+IGbuVxc5YWqozuZakjbj7NG4iBRMyo3b8HDlawca6YNPUcUicXdGSTbDVoUXgJFS/GDKm+5sw==
+X-Received: by 2002:a05:6402:2c4:b0:54c:4837:7583 with SMTP id b4-20020a05640202c400b0054c48377583mr1605745edx.47.1705181519265;
+        Sat, 13 Jan 2024 13:31:59 -0800 (PST)
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
+        by smtp.gmail.com with ESMTPSA id e3-20020a50ec83000000b005585049ddc9sm3381705edr.45.2024.01.13.13.31.57
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 13 Jan 2024 13:31:57 -0800 (PST)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-559058418faso487419a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 13:31:57 -0800 (PST)
+X-Received: by 2002:a17:906:934e:b0:a2a:da46:3a82 with SMTP id
+ p14-20020a170906934e00b00a2ada463a82mr1318644ejw.58.1705181517281; Sat, 13
+ Jan 2024 13:31:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230717-topic-branch_aon_cleanup-v6-0-46d136a4e8d0@linaro.org> <20230717-topic-branch_aon_cleanup-v6-1-46d136a4e8d0@linaro.org>
-In-Reply-To: <20230717-topic-branch_aon_cleanup-v6-1-46d136a4e8d0@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Sat, 13 Jan 2024 23:18:46 +0200
-Message-ID: <CAA8EJpoaQi57ERjSkGbNj_YbO-Gv-ybyreG6Dm+KQhp5uQM2zQ@mail.gmail.com>
-Subject: Re: [PATCH v6 01/12] clk: qcom: branch: Add a helper for setting the
- enable bit
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Andy Gross <agross@kernel.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Marijn Suijten <marijn.suijten@somainline.org>, linux-arm-msm@vger.kernel.org, 
-	linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, Johan Hovold <johan+linaro@kernel.org>, 
-	"Bryan O'Donoghue" <bryan.odonoghue@linaro.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sat, 13 Jan 2024 13:31:39 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjMWpmXtKeiN__vnNO4TcttZR-8dVvd_oBq+hjeSsWUwg@mail.gmail.com>
+Message-ID: <CAHk-=wjMWpmXtKeiN__vnNO4TcttZR-8dVvd_oBq+hjeSsWUwg@mail.gmail.com>
+Subject: Heads up - effectively offline for now
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Thomas Gleixner <tglx@linutronix.de>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 13 Jan 2024 at 16:51, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->
-> We hardcode some clocks to be always-on, as they're essential to the
-> functioning of the SoC / some peripherals. Add a helper to do so
-> to make the writes less magic.
->
-> Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
-> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  drivers/clk/qcom/clk-branch.h | 7 +++++++
->  1 file changed, 7 insertions(+)
+Just a note to say that the merge window is paused as far as I'm
+concerned, because we've lost power and internet thanks to a winter
+storm. Of course, this is Oregon, so "storm" here is what some people
+would probably consider "somewhat windy", and "winter" here means that
+the temperature is approaching -10=C2=B0C.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+There's apparently about 100k people without power, and I doubt our
+neighborhood is the priority, so I expect to be without power for some
+time still. I hope I'm wrong, but a few years ago it took more than a
+week to restore power due to all the downed trees. It's hopefully
+nowhere near that, but..
 
+And before anybody says "just go to a Starbucks and work from there",
+the scariest thing out there - apart from possibly downed trees and
+power lines - is other drivers.  I'll stay put.
 
--- 
-With best wishes
-Dmitry
+             Linus
 
