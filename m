@@ -1,154 +1,105 @@
-Return-Path: <linux-kernel+bounces-25199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3106982CA0A
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 06:57:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AC7F82CA2E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 07:10:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BA492861AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 05:57:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8038D1C2265E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 06:10:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A78CFC14;
-	Sat, 13 Jan 2024 05:57:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1603134DD;
+	Sat, 13 Jan 2024 06:10:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="h5M/1VGt"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WKF91vYX"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C530EF4F5;
-	Sat, 13 Jan 2024 05:57:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=yS6I6mddaN1yhy8N4LUTGdLFHpiWXV0zrUgAi9pBpv4=; b=h5M/1VGtX+ODHUeJEoWo69qsbW
-	z6FFC22WSyh33kzA7XO2XfdN5fg60WbujwazNJUVxZC0wrH9qzw+Zd5rfqk4DpGaGyFd7651Y3pJa
-	5l0Ol3isbnzMD1khnGn/sinOaf7tsVIQGZ969EPt/zIf4PrS0MN3ce6nYiv6K+cIhSO3WSFJYWPLu
-	kMhy412zKba0Nso3hCjJw3bqc7sfCgzEiItUuinmJmWOyHQdPLgT8UfCn275137linx2xBu5aM1Vh
-	Fg634eI7ESNhLxbYXpCj+X8zTzl8GrrlP4KGg8cRWwzbiQ56xQf3OH4N1miNeVRsVU8G5oeKNG5x8
-	A+0Vr+kA==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rOX16-004aGO-0f;
-	Sat, 13 Jan 2024 05:57:12 +0000
-Message-ID: <84df0f74-b165-4076-97bc-9f90e29410d4@infradead.org>
-Date: Fri, 12 Jan 2024 21:57:04 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B3FCFBE1;
+	Sat, 13 Jan 2024 06:10:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705126240; x=1736662240;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Eld4MoQpbkUQ2AJhP3wOklAVBHkSsTYQWgcDlJwGMEo=;
+  b=WKF91vYXXfBwK7dbFj69h2eyzfTvOslUEiN6TPU1o5wYsr+iiyNSV2C5
+   L2H8FIkpyOCWJDw2PHP7ZljqJYxctinILX3rVo4TELvpYc/7htNYXGuls
+   s04sz0ro6RnbODD/xSCgE+HzZTSuckwlDk3z7rK9FwvZiBptv/pr5bwqT
+   wrPc6BuXkgTcl1yC5hivmjRVPG49foMBW3Ocgs58kgx0Oq+Q7Vck2eXBr
+   ppKlu0uQWcvOEla8NZP3FEafyOxxIyFf5QxF8oaHoD5WDb5xa9SLv4GZp
+   zxjhAVBfW/uA/dZGUTHc2IZaj9oRmtYzdI3ZGQB1KuIB29IPcyS3m6Ks4
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="6074976"
+X-IronPort-AV: E=Sophos;i="6.04,191,1695711600"; 
+   d="scan'208";a="6074976"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 22:10:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="783260272"
+X-IronPort-AV: E=Sophos;i="6.04,191,1695711600"; 
+   d="scan'208";a="783260272"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 12 Jan 2024 22:10:35 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rOXE0-000A9q-1g;
+	Sat, 13 Jan 2024 06:10:32 +0000
+Date: Sat, 13 Jan 2024 14:10:02 +0800
+From: kernel test robot <lkp@intel.com>
+To: Catalin Popescu <catalin.popescu@leica-geosystems.com>,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, afd@ti.com,
+	andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk
+Cc: oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Catalin Popescu <catalin.popescu@leica-geosystems.com>
+Subject: Re: [PATCH 1/3] dt-bindings: net: dp83826: add ti,cfg-dac-minus
+ binding
+Message-ID: <202401131320.WhWHSzeD-lkp@intel.com>
+References: <20240111161927.3689084-1-catalin.popescu@leica-geosystems.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 0/4] Introduce mseal()
-Content-Language: en-US
-To: Jeff Xu <jeffxu@chromium.org>
-Cc: akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com,
- sroettger@google.com, willy@infradead.org, gregkh@linuxfoundation.org,
- torvalds@linux-foundation.org, usama.anjum@collabora.com, jeffxu@google.com,
- jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
- pedro.falcato@gmail.com, dave.hansen@intel.com,
- linux-hardening@vger.kernel.org, deraadt@openbsd.org
-References: <20240111234142.2944934-1-jeffxu@chromium.org>
- <c65170fe-f596-4ce0-96e3-ba83f4e60eaf@infradead.org>
- <CABi2SkXt2_eBS=7QkPST0uHGaaEszRJbVLajbwM95RWJrbDXwQ@mail.gmail.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <CABi2SkXt2_eBS=7QkPST0uHGaaEszRJbVLajbwM95RWJrbDXwQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240111161927.3689084-1-catalin.popescu@leica-geosystems.com>
 
+Hi Catalin,
 
+kernel test robot noticed the following build warnings:
 
-On 1/12/24 20:53, Jeff Xu wrote:
-> On Fri, Jan 12, 2024 at 6:20 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->>
->>
->> On 1/11/24 15:41, jeffxu@chromium.org wrote:
->>> From: Jeff Xu <jeffxu@google.com>
->>>
->>> This patchset proposes a new mseal() syscall for the Linux kernel.
->>>
->>
->> Jeff,
->> Building arm64 defconfig, on linux-next-20240112, I get:
->>
-> I don't quite get how this is related to my change.
-> Can you please send me the steps to reproduce ?  I don't usually build arm.
+[auto build test WARNING on robh/for-next]
+[also build test WARNING on net-next/main net/main linus/master v6.7 next-20240112]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-I don't get how it's related either, but when I build arm64 defconfig without
-your patches, it builds without errors. After applying your patches, it has
-errors... I did it 2 times just to make sure.
+url:    https://github.com/intel-lab-lkp/linux/commits/Catalin-Popescu/dt-bindings-net-dp83826-add-ti-cfg-dac-plus-binding/20240112-002701
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/20240111161927.3689084-1-catalin.popescu%40leica-geosystems.com
+patch subject: [PATCH 1/3] dt-bindings: net: dp83826: add ti,cfg-dac-minus binding
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20240113/202401131320.WhWHSzeD-lkp@intel.com/reproduce)
 
-It may just be some difference between x86_64 headers (is that what you
-build?) and arm64 headers.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401131320.WhWHSzeD-lkp@intel.com/
 
-Install the x86_64-hosted arm64 compiler from
-https://mirrors.edge.kernel.org/pub/tools/crosstool/ in
-e.g. /opt/crosstool .
-
-
-In the kernel source tree:
-mkdir ARM64
-
-make ARCH=arm64 O=ARM64 defconfig
-make -j25 CROSS_COMPILE=/opt/crosstool/gcc-13.2.0-nolibc/aarch64-linux/bin/aarch64-linux- ARCH=arm64 O=ARM64 all 2>&1 | tee aa64defcon.lst
-
-make ARCH=arm64 O=ARM64 clean
-<apply your mseal patches>
-make -j25 CROSS_COMPILE=/opt/crosstool/gcc-13.2.0-nolibc/aarch64-linux/bin/aarch64-linux- ARCH=arm64 O=ARM64 all 2>&1 | tee aa64mseal.lst
-
-
-If that does not reproduce the problem, please let me know.
-
-(I use a script, but that's the essence of the script.)
-
-
-
->>   CC      arch/arm64/kernel/asm-offsets.s
->> In file included from ../include/uapi/linux/mman.h:5,
->>                  from ../include/linux/mm.h:33,
->>                  from ../include/linux/memblock.h:12,
->>                  from ../arch/arm64/include/asm/acpi.h:14,
->>                  from ../include/acpi/acpi_io.h:7,
->>                  from ../include/linux/acpi.h:39,
->>                  from ../include/acpi/apei.h:9,
->>                  from ../include/acpi/ghes.h:5,
->>                  from ../include/linux/arm_sdei.h:8,
->>                  from ../arch/arm64/kernel/asm-offsets.c:10:
->> ../arch/arm64/include/asm/mman.h: In function 'arch_calc_vm_prot_bits':
->> ../arch/arm64/include/asm/mman.h:15:24: error: 'VM_ARM64_BTI' undeclared (first use in this function); did you mean 'ARM64_BTI'?
->>    15 |                 ret |= VM_ARM64_BTI;
->>       |                        ^~~~~~~~~~~~
->>       |                        ARM64_BTI
->> ../arch/arm64/include/asm/mman.h:15:24: note: each undeclared identifier is reported only once for each function it appears in
->> ../arch/arm64/include/asm/mman.h:18:24: error: 'VM_MTE' undeclared (first use in this function); did you mean 'VM_MAP'?
->>    18 |                 ret |= VM_MTE;
->>       |                        ^~~~~~
->>       |                        VM_MAP
->> ../arch/arm64/include/asm/mman.h: In function 'arch_calc_vm_flag_bits':
->> ../arch/arm64/include/asm/mman.h:32:24: error: 'VM_MTE_ALLOWED' undeclared (first use in this function)
->>    32 |                 return VM_MTE_ALLOWED;
->>       |                        ^~~~~~~~~~~~~~
->> ../arch/arm64/include/asm/mman.h: In function 'arch_validate_flags':
->> ../arch/arm64/include/asm/mman.h:59:29: error: 'VM_MTE' undeclared (first use in this function); did you mean 'VM_MAP'?
->>    59 |         return !(vm_flags & VM_MTE) || (vm_flags & VM_MTE_ALLOWED);
->>       |                             ^~~~~~
->>       |                             VM_MAP
->> ../arch/arm64/include/asm/mman.h:59:52: error: 'VM_MTE_ALLOWED' undeclared (first use in this function)
->>    59 |         return !(vm_flags & VM_MTE) || (vm_flags & VM_MTE_ALLOWED);
->>       |                                                    ^~~~~~~~~~~~~~
->>
->>
->> --
->> #Randy
-> 
+dtcheck warnings: (new ones prefixed by >>)
+>> Documentation/devicetree/bindings/net/ti,dp83822.yaml: ti,cfg-dac-minus: missing type definition
+   Documentation/devicetree/bindings/net/snps,dwmac.yaml: mac-mode: missing type definition
 
 -- 
-#Randy
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
