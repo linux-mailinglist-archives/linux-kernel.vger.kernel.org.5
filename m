@@ -1,105 +1,175 @@
-Return-Path: <linux-kernel+bounces-25126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25127-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E45E82C844
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 01:18:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84F9F82C847
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 01:19:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA1981F233D7
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 00:18:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01666288B46
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 00:19:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 494B336C;
-	Sat, 13 Jan 2024 00:18:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 934BD7F6;
+	Sat, 13 Jan 2024 00:19:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UMs/GMZ0"
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XLmCdfsw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58575195
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 00:18:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5ce10b5ee01so5010162a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 16:18:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705105084; x=1705709884; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WcdqPz1bbjH9uZhuGQcoiXTrvGelHZMyP88Xqr6kyhE=;
-        b=UMs/GMZ0M2uvhxlwYzs/vSjqHFOb0ymFEkzm2fs0470rf71ck8EGoeC/wyWa8/sQIb
-         1NJSlWF8Tx/tUGQdlp4wRQBWxQND6AMPYZF+szDVatvJgzJADHArgz4nhG9tPrpH537/
-         D31lovG0aA/7H94+LNO+uSoEtwbjkfdwbYUua0b9lYPjoUA+8j8D5nS21reeTSa7WAA2
-         XBnf4jSEhgQxcgrDg5cMRCx2T84SUAxqBTQUZKeglGbZNMaIepQW1GRjiSCLHyGQmF5b
-         yUwtq4DAtesv6p/fyaSqhBPhriEryL9cM7P8OpFH8t7/k137p9gZkKWdfcn6xGf8O50j
-         UKvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705105084; x=1705709884;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WcdqPz1bbjH9uZhuGQcoiXTrvGelHZMyP88Xqr6kyhE=;
-        b=Qag+2VU8Pf9qIDZj56iVuvL3jGeI2mQ+4p18zyjC0vdmy3Ir2KDh642pjXZwwBy0Sm
-         fSawIUqcCLD7aQn53aOsCV7gUh+kBXc7lhgEBsdU5ITrOSdaX1bewbzxT048mCXB2fuX
-         JJ6DXfgfBE1xkBLgdi9wPmjTmYwvqN8tbHqGKENMPQHVvQKTK4t69/+o2GNdTFuK3DBm
-         MApsJCHiLKpWqMt3ifXZ6U+/n3j/Vc96f5i2YvWM+hZ4Lze4fj6NHEeOivEIiv2R2nZ/
-         PeaJiPg2vcGWi3VCqzmqK026Z4qr+mmoChYy83sHrzImhycQ5wELMJpwb6CJ4dtYmAQE
-         JBzA==
-X-Gm-Message-State: AOJu0YzmmauEa9e5WB0gxxZfM4Qa3jOY6U0bmHfc8Sm5ePJxVgrV5Jux
-	wdC1uXjo4qOuOuTKSIdfVFp8MRZkoDI=
-X-Google-Smtp-Source: AGHT+IEziLiBF8V16Hax+QLmCJNPxoXFMKapyFF2TaJ7mLHwAYWCj8QC7Kzff3YZONAC3ZCSiVS0Kw==
-X-Received: by 2002:a17:90b:612:b0:28c:ee69:c1c6 with SMTP id gb18-20020a17090b061200b0028cee69c1c6mr4600072pjb.41.1705105084428;
-        Fri, 12 Jan 2024 16:18:04 -0800 (PST)
-Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
-        by smtp.gmail.com with ESMTPSA id sm2-20020a17090b2e4200b0028d134a9223sm7201163pjb.8.2024.01.12.16.18.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 16:18:04 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 12 Jan 2024 14:18:02 -1000
-From: Tejun Heo <tj@kernel.org>
-To: jiangshanlai@gmail.com
-Cc: linux-kernel@vger.kernel.org, Naohiro.Aota@wdc.com,
-	kernel-team@meta.com
-Subject: Re: [PATCH 10/10] workqueue: Reimplement ordered workqueue using
- shared nr_active
-Message-ID: <ZaHWukHxfndSWAOK@slm.duckdns.org>
-References: <20231220072529.1036099-1-tj@kernel.org>
- <20231220072529.1036099-11-tj@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF955364;
+	Sat, 13 Jan 2024 00:19:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1428CC433C7;
+	Sat, 13 Jan 2024 00:19:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705105154;
+	bh=jkYHmyccI1i0Ro3AnbMF7bjGr5rPQLyGrDauXfxXpDI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XLmCdfswI58RUzss1uuJ0ktawrWsZUBtQj+a6Ep/XyC4PAZ5Ze5y4X6DdsPXVVa2n
+	 aJnYdXmdsy3EU+Fnkl24ZjoPqp4RaDaG+auyHTCo2TuYHQKjbobfa6oaG8mGRGmkDR
+	 Xxr3mCSxf5axMay7yjiSJ6d9TqU3hACc5b9rK06j1dI7b5GHsiwPSg67WLkNUJxnXU
+	 DrqAkQVtVD35t8xAdWjPQqIfUdMRw0l4qPIEOM8qic3d1518GZukE0EdZKKS/x5EL1
+	 MacBhfkQnOEblZmKk1O33hrIXuC7ZAsaBNUciaRf5J6sB+UskC60LvOfSNkjQr21nq
+	 XFn6IhthHn6Vg==
+Date: Sat, 13 Jan 2024 00:19:02 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Atish Patra <atishp@atishpatra.org>
+Cc: Yu Chien Peter Lin <peterlin@andestech.com>, acme@kernel.org,
+	adrian.hunter@intel.com, ajones@ventanamicro.com,
+	alexander.shishkin@linux.intel.com, andre.przywara@arm.com,
+	anup@brainfault.org, aou@eecs.berkeley.edu, conor+dt@kernel.org,
+	conor.dooley@microchip.com, devicetree@vger.kernel.org,
+	dminus@andestech.com, evan@rivosinc.com, geert+renesas@glider.be,
+	guoren@kernel.org, heiko@sntech.de, irogers@google.com,
+	jernej.skrabec@gmail.com, jolsa@kernel.org, jszhang@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	locus84@andestech.com, magnus.damm@gmail.com, mark.rutland@arm.com,
+	mingo@redhat.com, n.shubin@yadro.com, namhyung@kernel.org,
+	palmer@dabbelt.com, paul.walmsley@sifive.com, peterz@infradead.org,
+	prabhakar.mahadev-lad.rj@bp.renesas.com, rdunlap@infradead.org,
+	robh+dt@kernel.org, samuel@sholland.org, sunilvl@ventanamicro.com,
+	tglx@linutronix.de, tim609@andestech.com, uwu@icenowy.me,
+	wens@csie.org, will@kernel.org, ycliang@andestech.com,
+	inochiama@outlook.com, chao.wei@sophgo.com,
+	unicorn_wang@outlook.com, wefu@redhat.com
+Subject: Re: [PATCH v7 04/16] dt-bindings: riscv: Add Andes interrupt
+ controller compatible string
+Message-ID: <20240113-sensuous-scraggly-dee35f3e213f@spud>
+References: <20240110073917.2398826-1-peterlin@andestech.com>
+ <20240110073917.2398826-5-peterlin@andestech.com>
+ <CAOnJCUJ0fN5=+b4jDx+NPqUwgwGKuBNYt7d86dXYNyjzUYFAWQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="9j3hNYTLiVCjPwOZ"
 Content-Disposition: inline
-In-Reply-To: <20231220072529.1036099-11-tj@kernel.org>
+In-Reply-To: <CAOnJCUJ0fN5=+b4jDx+NPqUwgwGKuBNYt7d86dXYNyjzUYFAWQ@mail.gmail.com>
 
-On Wed, Dec 20, 2023 at 04:24:41PM +0900, Tejun Heo wrote:
-> Because nr_active used to be tied to pwq, an ordered workqueue had to have a
-> single pwq to guarantee strict ordering. This led to several contortions to
-> avoid creating multiple pwqs.
-> 
-> Now that nr_active can be shared across multiple pwqs, we can simplify
-> ordered workqueue implementation. All that's necessary is ensuring that a
-> single wq_node_nr_active is shared across all pwqs, which is achieved by
-> making wq_node_nr_active() always return wq->node_nr_active[nr_node_ids] for
-> ordered workqueues.
-> 
-> The new implementation is simpler and allows ordered workqueues to share
-> locality aware worker_pools with other unbound workqueues which should
-> improve execution locality.
-> 
-> Signed-off-by: Tejun Heo <tj@kernel.org>
 
-This patch breaks ordered workqueues as the inactive pwq RR logic doesn't
-follow work item queueing order. I could reproduce severe perf degradations
-and outright hangs. I'm dropping this patch.
+--9j3hNYTLiVCjPwOZ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks.
+On Fri, Jan 12, 2024 at 03:50:15PM -0800, Atish Patra wrote:
+> On Tue, Jan 9, 2024 at 11:40=E2=80=AFPM Yu Chien Peter Lin
+> <peterlin@andestech.com> wrote:
+> >
+> > Add "andestech,cpu-intc" compatible string to indicate that
+> > Andes specific local interrupt is supported on the core,
+> > e.g. AX45MP cores have 3 types of non-standard local interrupt
+> > which can be handled in supervisor mode:
+> >
+>=20
+> PATCH1 in this series renames everything from ANDESTECH to ANDES to be
+> consistent.
+> Here you are adding DT binding with "andestech". Is there any
+> fundamental difference between these two to demand
+> this change ?
 
--- 
-tejun
+This one is the vendor prefix and the company has been assigned
+"andestech" and they're not getting a second one. The rename of the
+variables is a bit gratuitous tbf.
+
+Cheers,
+Conor.
+
+> FYI: I don't mind either way as I don't have skin in the game. Just
+> something I noticed while reviewing the series.
+>=20
+> > - Slave port ECC error interrupt
+> > - Bus write transaction error interrupt
+> > - Performance monitor overflow interrupt
+> >
+> > These interrupts are enabled/disabled via a custom register
+> > SLIE instead of the standard interrupt enable register SIE.
+> >
+> > Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> > Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > ---
+> > Changes v1 -> v2:
+> >   - New patch
+> > Changes v2 -> v3:
+> >   - Updated commit message
+> >   - Fixed possible compatibles for Andes INTC
+> > Changes v3 -> v4:
+> >   - Add const entry instead of enum (Suggested by Conor)
+> > Changes v4 -> v5:
+> >   - Include Conor's Acked-by
+> >   - Include Prabhakar's Reviewed-by
+> > Changes v5 -> v6:
+> >   - No change
+> > Changes v6 -> v7:
+> >   - No change
+> > ---
+> >  Documentation/devicetree/bindings/riscv/cpus.yaml | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Docume=
+ntation/devicetree/bindings/riscv/cpus.yaml
+> > index 23646b684ea2..33c2b620a59f 100644
+> > --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
+> > +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
+> > @@ -101,7 +101,11 @@ properties:
+> >          const: 1
+> >
+> >        compatible:
+> > -        const: riscv,cpu-intc
+> > +        oneOf:
+> > +          - items:
+> > +              - const: andestech,cpu-intc
+> > +              - const: riscv,cpu-intc
+> > +          - const: riscv,cpu-intc
+> >
+> >        interrupt-controller: true
+> >
+> > --
+> > 2.34.1
+> >
+>=20
+>=20
+> --=20
+> Regards,
+> Atish
+
+--9j3hNYTLiVCjPwOZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaHW9gAKCRB4tDGHoIJi
+0k35AP9VKffvTBJtcf4LlW9yLeSkC4w/hmPUD8G6HFAB6oraGAEA3gp73X31G721
+TR1o3EqGGSx+AvLvQPGz0Q4EWLyWFQc=
+=ur8w
+-----END PGP SIGNATURE-----
+
+--9j3hNYTLiVCjPwOZ--
 
