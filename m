@@ -1,72 +1,91 @@
-Return-Path: <linux-kernel+bounces-25275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37D4282CC87
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 12:44:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4973182CC8B
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 12:44:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FECC1F22E12
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 11:44:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B32431F22DDF
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 11:44:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 750C9210E3;
-	Sat, 13 Jan 2024 11:43:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDF45210E8;
+	Sat, 13 Jan 2024 11:44:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ddYwYgoK"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="QBqRwCjY";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="cxTlClfH";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="QBqRwCjY";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="cxTlClfH"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C77A63C;
-	Sat, 13 Jan 2024 11:43:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705146232; x=1736682232;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Tf0eWA3hj90xu6pHB6QFQrMGVnMq18WpJ+KIdyvU3L0=;
-  b=ddYwYgoKvq2Fxm+YreFreCWpE5QMXTj9NPtWvA3B7H70ftdpH4lPIE9n
-   0vapJ/rtbEy+yT/U3R+Hqmx6wFu0QsGhEny4nY2pS11EFgpQpVve2uzfe
-   VIM9xAFcdxtp8w+Ce0uie5OLnpmSG+IMDy/w98V06HKHEjoLeYIVqQZ7N
-   0ZoDyxANRwaqUM2CAyuPrPESmYJJp4cLn44yni3TX58YhDquro2U8A3RC
-   Rna0IAAAvmTnrM3wAE1gv36qOPopCpc25t2jQJ403horIiuBM/rHT2vg3
-   f8ByyTnNgj8CVQEywT7cdP4MzuHs/IiKLLio47p+qsJh2JaJ76YpjU5pZ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="398240054"
-X-IronPort-AV: E=Sophos;i="6.04,192,1695711600"; 
-   d="scan'208";a="398240054"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2024 03:43:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,192,1695711600"; 
-   d="scan'208";a="24992514"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 13 Jan 2024 03:43:47 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rOcQR-000AQO-32;
-	Sat, 13 Jan 2024 11:43:43 +0000
-Date: Sat, 13 Jan 2024 19:43:20 +0800
-From: kernel test robot <lkp@intel.com>
-To: Prabhakar <prabhakar.csengg@gmail.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>
-Cc: oe-kbuild-all@lists.linux.dev, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org, Prabhakar <prabhakar.csengg@gmail.com>,
-	Biju Das <biju.das.jz@bp.renesas.com>,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: Re: [PATCH v4 2/4] pinctrl: renesas: rzg2l: Include pinmap in
- RZG2L_GPIO_PORT_PACK() macro
-Message-ID: <202401131928.oie6xLjA-lkp@intel.com>
-References: <20240112142621.13525-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C608210E1
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 11:44:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2C08B22494;
+	Sat, 13 Jan 2024 11:44:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705146245; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=beRgYZefzbmH7GpUrflrikEV7hbo1wnhlCtbtjwBvw0=;
+	b=QBqRwCjY5AbbkY84o8xdiQJtaNihGh5swn6KogKa/MudIBthDR5W1kNlbWu+FAgieJ5V1y
+	7QhjKp3afN93LuvaObOXboy6rUzd12xxYKKGksahRWe7fFYt+OmS7e9vpx3LXTfW8Ihh6z
+	MAVexs1E/OgpGmV9Uimi+PVRnSkkMoo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705146245;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=beRgYZefzbmH7GpUrflrikEV7hbo1wnhlCtbtjwBvw0=;
+	b=cxTlClfH3JLnH0I37jVw1ZRQj8ePbl4aumwXqGnCfvyhCs52ftdXQrymC12JBCpWrMF1UE
+	70wzexzl05tZOPDw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705146245; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=beRgYZefzbmH7GpUrflrikEV7hbo1wnhlCtbtjwBvw0=;
+	b=QBqRwCjY5AbbkY84o8xdiQJtaNihGh5swn6KogKa/MudIBthDR5W1kNlbWu+FAgieJ5V1y
+	7QhjKp3afN93LuvaObOXboy6rUzd12xxYKKGksahRWe7fFYt+OmS7e9vpx3LXTfW8Ihh6z
+	MAVexs1E/OgpGmV9Uimi+PVRnSkkMoo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705146245;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=beRgYZefzbmH7GpUrflrikEV7hbo1wnhlCtbtjwBvw0=;
+	b=cxTlClfH3JLnH0I37jVw1ZRQj8ePbl4aumwXqGnCfvyhCs52ftdXQrymC12JBCpWrMF1UE
+	70wzexzl05tZOPDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 20C3C13508;
+	Sat, 13 Jan 2024 11:44:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 7rP5B4V3omUXHQAAD6G6ig
+	(envelope-from <jwiesner@suse.de>); Sat, 13 Jan 2024 11:44:05 +0000
+Received: by incl.suse.cz (Postfix, from userid 1000)
+	id C05299C60A; Sat, 13 Jan 2024 12:44:00 +0100 (CET)
+Date: Sat, 13 Jan 2024 12:44:00 +0100
+From: Jiri Wiesner <jwiesner@suse.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, John Stultz <jstultz@google.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Feng Tang <feng.tang@intel.com>
+Subject: Re: [PATCH v2] clocksource: Skip watchdog check for large watchdog
+ intervals
+Message-ID: <20240113114400.GH3303@incl>
+References: <20240110192623.GA7158@incl>
+ <875xzyijl5.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,372 +94,143 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240112142621.13525-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <875xzyijl5.ffs@tglx>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-2.60 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -2.60
 
-Hi Prabhakar,
+On Fri, Jan 12, 2024 at 05:48:22PM +0100, Thomas Gleixner wrote:
+> On Wed, Jan 10 2024 at 20:26, Jiri Wiesner wrote:
+> > The measured clocksource skew - the absolute difference between cs_nsec
+> > and wd_nsec - was 668 microseconds:
+> >> cs_nsec - wd_nsec = 14524115132 - 14523447520 = 667612
+> >
+> > The kernel (based on 5.14.21) used 200 microseconds for the
+> > uncertainty_margin of both the clocksource and watchdog, resulting in a
+> > threshold of 400 microseconds.  The discrepancy is that the measured
+> > clocksource skew was evaluated against a threshold suited for watchdog
+> > intervals of roughly WATCHDOG_INTERVAL, i.e. HZ >> 1, which is 0.5
+> > second.
+> 
+> This really took some time to decode. What you are trying to explain is:
+> 
+>    The comparison between the clocksource and the watchdog is not
+>    working for large readout intervals because the conversion to
+>    nanoseconds is imprecise. The reason is that the initialization
+>    values of the shift/mult pairs which are used for conversion are not
+>    sufficiently accurate and the accumulated inaccuracy causes the
+>    comparison to exceed the threshold.
 
-kernel test robot noticed the following build warnings:
+The root cause of the bug does not concern the precision of the conversion 
+to nanoseconds. The shift/mult pair of the TSC can convert diffs as large 
+as 600 seconds. The HPET is limited to 179.0 seconds on account of being a 
+32-bit counter. The acpi_pm can convert only 4.7 seconds. With the 
+CONFIG_CLOCKSOURCE_VALIDATE_LAST_CYCLE option enabled, the ranges are 
+reduced to a half. The example above showed the TSC as the clocksource and 
+the HPET as a watchdog both of which should be able to convert a diff of 
+14.5 seconds to nanoseconds with sufficient precision.
 
-[auto build test WARNING on geert-renesas-drivers/renesas-pinctrl]
-[also build test WARNING on geert-renesas-devel/next linus/master v6.7]
-[cannot apply to linusw-pinctrl/devel linusw-pinctrl/for-next next-20240112]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I could change the description to:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Prabhakar/pinctrl-renesas-rzg2l-Improve-code-for-readability/20240112-222833
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git renesas-pinctrl
-patch link:    https://lore.kernel.org/r/20240112142621.13525-3-prabhakar.mahadev-lad.rj%40bp.renesas.com
-patch subject: [PATCH v4 2/4] pinctrl: renesas: rzg2l: Include pinmap in RZG2L_GPIO_PORT_PACK() macro
-config: powerpc-randconfig-r081-20240113 (https://download.01.org/0day-ci/archive/20240113/202401131928.oie6xLjA-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240113/202401131928.oie6xLjA-lkp@intel.com/reproduce)
+The kernel (based on 5.14.21) used 200 microseconds for the 
+uncertainty_margin of both the clocksource and watchdog, resulting in a 
+threshold of 400 microseconds (the md variable). The root cause of the 
+issue is that the measured clocksource skew, 668 microseconds, was 
+evaluated against a threshold (the md variable) which is suited for 
+watchdog intervals of roughly WATCHDOG_INTERVAL, i.e. HZ >> 1, which is 
+0.5 second. Both the cs_nsec and the wd_nsec value indicate that the 
+watchdog interval was circa 14.5 seconds.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401131928.oie6xLjA-lkp@intel.com/
+The intention of 2e27e793e280 ("clocksource: Reduce clocksource-skew 
+threshold") was to tighten the threshold for evaluating skew and set the 
+lower bound for the uncertainty_margin of clocksources to twice 
+WATCHDOG_MAX_SKEW. Later in c37e85c135ce ("clocksource: Loosen clocksource 
+watchdog constraints"), the WATCHDOG_MAX_SKEW constant was increased to 
+125 microseconds to fit the limit of NTP, which is able to use 
+a clocksource that suffers from up to 500 microseconds of skew per second. 
+Both the TSC and the HPET use default uncertainty_margin. When the 
+watchdog interval gets stretched the default uncertainty_margin is no 
+longer a suitable lower bound for evaluating skew - it imposes a limit 
+that is stricter than the skew with which NTP can deal. The longer the 
+watchdog interval is the larger the threshold should be. For evaluating 
+skew in a watchdog interval of 14.5 seconds, a proportional threshold 
+should be used, which should be 14500 microseconds (7250 coming from the 
+TSC, 7250 coming from the HPET).
 
-All warnings (new ones prefixed by >>):
+> So yes, limiting the maximum readout interval and skipping the check is
+> sensible.
 
->> drivers/pinctrl/renesas/pinctrl-rzg2l.c:571:24: warning: shift count is negative [-Wshift-count-negative]
-           u8 pinmap = FIELD_GET(PIN_CFG_PIN_MAP_MASK, cfg);
-                       ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/pinctrl/renesas/pinctrl-rzg2l.c:83:31: note: expanded from macro 'PIN_CFG_PIN_MAP_MASK'
-   #define PIN_CFG_PIN_MAP_MASK            GENMASK(35, 28)
-                                           ^
-   include/linux/bits.h:37:31: note: expanded from macro 'GENMASK'
-           (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-                                        ^
-   include/linux/bits.h:35:11: note: expanded from macro '__GENMASK'
-            (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-                    ^
-   note: (skipping 3 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler_types.h:435:22: note: expanded from macro 'compiletime_assert'
-           _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-           ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:423:23: note: expanded from macro '_compiletime_assert'
-           __compiletime_assert(condition, msg, prefix, suffix)
-           ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:415:9: note: expanded from macro '__compiletime_assert'
-                   if (!(condition))                                       \
-                         ^~~~~~~~~
->> drivers/pinctrl/renesas/pinctrl-rzg2l.c:571:24: warning: shift count is negative [-Wshift-count-negative]
-           u8 pinmap = FIELD_GET(PIN_CFG_PIN_MAP_MASK, cfg);
-                       ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/pinctrl/renesas/pinctrl-rzg2l.c:83:31: note: expanded from macro 'PIN_CFG_PIN_MAP_MASK'
-   #define PIN_CFG_PIN_MAP_MASK            GENMASK(35, 28)
-                                           ^
-   include/linux/bits.h:37:31: note: expanded from macro 'GENMASK'
-           (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-                                        ^
-   include/linux/bits.h:35:11: note: expanded from macro '__GENMASK'
-            (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-                    ^
-   note: (skipping 3 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler_types.h:435:22: note: expanded from macro 'compiletime_assert'
-           _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-           ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:423:23: note: expanded from macro '_compiletime_assert'
-           __compiletime_assert(condition, msg, prefix, suffix)
-           ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:415:9: note: expanded from macro '__compiletime_assert'
-                   if (!(condition))                                       \
-                         ^~~~~~~~~
->> drivers/pinctrl/renesas/pinctrl-rzg2l.c:571:24: warning: shift count is negative [-Wshift-count-negative]
-           u8 pinmap = FIELD_GET(PIN_CFG_PIN_MAP_MASK, cfg);
-                       ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/pinctrl/renesas/pinctrl-rzg2l.c:83:31: note: expanded from macro 'PIN_CFG_PIN_MAP_MASK'
-   #define PIN_CFG_PIN_MAP_MASK            GENMASK(35, 28)
-                                           ^
-   include/linux/bits.h:37:31: note: expanded from macro 'GENMASK'
-           (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-                                        ^
-   include/linux/bits.h:35:11: note: expanded from macro '__GENMASK'
-            (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-                    ^
-   note: (skipping 3 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler_types.h:435:22: note: expanded from macro 'compiletime_assert'
-           _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-           ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:423:23: note: expanded from macro '_compiletime_assert'
-           __compiletime_assert(condition, msg, prefix, suffix)
-           ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:415:9: note: expanded from macro '__compiletime_assert'
-                   if (!(condition))                                       \
-                         ^~~~~~~~~
->> drivers/pinctrl/renesas/pinctrl-rzg2l.c:571:24: warning: shift count is negative [-Wshift-count-negative]
-           u8 pinmap = FIELD_GET(PIN_CFG_PIN_MAP_MASK, cfg);
-                       ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/pinctrl/renesas/pinctrl-rzg2l.c:83:31: note: expanded from macro 'PIN_CFG_PIN_MAP_MASK'
-   #define PIN_CFG_PIN_MAP_MASK            GENMASK(35, 28)
-                                           ^
-   include/linux/bits.h:37:31: note: expanded from macro 'GENMASK'
-           (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-                                        ^
-   include/linux/bits.h:35:11: note: expanded from macro '__GENMASK'
-            (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-                    ^
-   note: (skipping 4 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler_types.h:435:22: note: expanded from macro 'compiletime_assert'
-           _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-           ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:423:23: note: expanded from macro '_compiletime_assert'
-           __compiletime_assert(condition, msg, prefix, suffix)
-           ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:415:9: note: expanded from macro '__compiletime_assert'
-                   if (!(condition))                                       \
-                         ^~~~~~~~~
->> drivers/pinctrl/renesas/pinctrl-rzg2l.c:571:24: warning: shift count is negative [-Wshift-count-negative]
-           u8 pinmap = FIELD_GET(PIN_CFG_PIN_MAP_MASK, cfg);
-                       ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/pinctrl/renesas/pinctrl-rzg2l.c:83:31: note: expanded from macro 'PIN_CFG_PIN_MAP_MASK'
-   #define PIN_CFG_PIN_MAP_MASK            GENMASK(35, 28)
-                                           ^
-   include/linux/bits.h:37:31: note: expanded from macro 'GENMASK'
-           (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-                                        ^
-   include/linux/bits.h:35:11: note: expanded from macro '__GENMASK'
-            (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-                    ^
-   note: (skipping 4 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler_types.h:435:22: note: expanded from macro 'compiletime_assert'
-           _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-           ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:423:23: note: expanded from macro '_compiletime_assert'
-           __compiletime_assert(condition, msg, prefix, suffix)
-           ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:415:9: note: expanded from macro '__compiletime_assert'
-                   if (!(condition))                                       \
-                         ^~~~~~~~~
->> drivers/pinctrl/renesas/pinctrl-rzg2l.c:571:24: warning: shift count is negative [-Wshift-count-negative]
-           u8 pinmap = FIELD_GET(PIN_CFG_PIN_MAP_MASK, cfg);
-                       ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/pinctrl/renesas/pinctrl-rzg2l.c:83:31: note: expanded from macro 'PIN_CFG_PIN_MAP_MASK'
-   #define PIN_CFG_PIN_MAP_MASK            GENMASK(35, 28)
-                                           ^
-   include/linux/bits.h:37:31: note: expanded from macro 'GENMASK'
-           (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-                                        ^
-   include/linux/bits.h:35:11: note: expanded from macro '__GENMASK'
-            (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-                    ^
-   note: (skipping 5 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler_types.h:435:22: note: expanded from macro 'compiletime_assert'
-           _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-           ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:423:23: note: expanded from macro '_compiletime_assert'
-           __compiletime_assert(condition, msg, prefix, suffix)
-           ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:415:9: note: expanded from macro '__compiletime_assert'
-                   if (!(condition))                                       \
-                         ^~~~~~~~~
->> drivers/pinctrl/renesas/pinctrl-rzg2l.c:571:24: warning: shift count is negative [-Wshift-count-negative]
-           u8 pinmap = FIELD_GET(PIN_CFG_PIN_MAP_MASK, cfg);
-                       ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/pinctrl/renesas/pinctrl-rzg2l.c:83:31: note: expanded from macro 'PIN_CFG_PIN_MAP_MASK'
-   #define PIN_CFG_PIN_MAP_MASK            GENMASK(35, 28)
-                                           ^
-   include/linux/bits.h:37:31: note: expanded from macro 'GENMASK'
-           (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-                                        ^
-   include/linux/bits.h:35:11: note: expanded from macro '__GENMASK'
-            (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-                    ^
-   note: (skipping 6 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler_types.h:435:22: note: expanded from macro 'compiletime_assert'
-           _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-           ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:423:23: note: expanded from macro '_compiletime_assert'
-           __compiletime_assert(condition, msg, prefix, suffix)
-           ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:415:9: note: expanded from macro '__compiletime_assert'
-                   if (!(condition))                                       \
-                         ^~~~~~~~~
->> drivers/pinctrl/renesas/pinctrl-rzg2l.c:571:24: warning: shift count is negative [-Wshift-count-negative]
-           u8 pinmap = FIELD_GET(PIN_CFG_PIN_MAP_MASK, cfg);
-                       ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/pinctrl/renesas/pinctrl-rzg2l.c:83:31: note: expanded from macro 'PIN_CFG_PIN_MAP_MASK'
-   #define PIN_CFG_PIN_MAP_MASK            GENMASK(35, 28)
-                                           ^
-   include/linux/bits.h:37:31: note: expanded from macro 'GENMASK'
-           (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-                                        ^
-   include/linux/bits.h:35:11: note: expanded from macro '__GENMASK'
-            (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-                    ^
-   note: (skipping 5 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler_types.h:435:22: note: expanded from macro 'compiletime_assert'
-           _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-           ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:423:23: note: expanded from macro '_compiletime_assert'
-           __compiletime_assert(condition, msg, prefix, suffix)
-           ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:415:9: note: expanded from macro '__compiletime_assert'
-                   if (!(condition))                                       \
-                         ^~~~~~~~~
->> drivers/pinctrl/renesas/pinctrl-rzg2l.c:571:24: warning: shift count is negative [-Wshift-count-negative]
-           u8 pinmap = FIELD_GET(PIN_CFG_PIN_MAP_MASK, cfg);
-                       ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/pinctrl/renesas/pinctrl-rzg2l.c:83:31: note: expanded from macro 'PIN_CFG_PIN_MAP_MASK'
-   #define PIN_CFG_PIN_MAP_MASK            GENMASK(35, 28)
-                                           ^
-   include/linux/bits.h:37:31: note: expanded from macro 'GENMASK'
-           (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-                                        ^
-   include/linux/bits.h:35:11: note: expanded from macro '__GENMASK'
-            (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-                    ^
-   note: (skipping 6 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler_types.h:435:22: note: expanded from macro 'compiletime_assert'
-           _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-           ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:423:23: note: expanded from macro '_compiletime_assert'
-           __compiletime_assert(condition, msg, prefix, suffix)
-           ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:415:9: note: expanded from macro '__compiletime_assert'
-                   if (!(condition))                                       \
-                         ^~~~~~~~~
->> drivers/pinctrl/renesas/pinctrl-rzg2l.c:571:24: warning: shift count is negative [-Wshift-count-negative]
-           u8 pinmap = FIELD_GET(PIN_CFG_PIN_MAP_MASK, cfg);
-                       ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/pinctrl/renesas/pinctrl-rzg2l.c:83:31: note: expanded from macro 'PIN_CFG_PIN_MAP_MASK'
-   #define PIN_CFG_PIN_MAP_MASK            GENMASK(35, 28)
-                                           ^
-   include/linux/bits.h:37:31: note: expanded from macro 'GENMASK'
-           (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-                                        ^
-   include/linux/bits.h:35:11: note: expanded from macro '__GENMASK'
-            (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-                    ^
-   include/linux/bitfield.h:155:30: note: expanded from macro 'FIELD_GET'
-                   (typeof(_mask))(((_reg) & (_mask)) >> __bf_shf(_mask)); \
-                                              ^~~~~
->> drivers/pinctrl/renesas/pinctrl-rzg2l.c:571:24: warning: shift count is negative [-Wshift-count-negative]
-           u8 pinmap = FIELD_GET(PIN_CFG_PIN_MAP_MASK, cfg);
-                       ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/pinctrl/renesas/pinctrl-rzg2l.c:83:31: note: expanded from macro 'PIN_CFG_PIN_MAP_MASK'
-   #define PIN_CFG_PIN_MAP_MASK            GENMASK(35, 28)
-                                           ^
-   include/linux/bits.h:37:31: note: expanded from macro 'GENMASK'
-           (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-                                        ^
-   include/linux/bits.h:35:11: note: expanded from macro '__GENMASK'
-            (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-                    ^
-   include/linux/bitfield.h:155:50: note: expanded from macro 'FIELD_GET'
-                   (typeof(_mask))(((_reg) & (_mask)) >> __bf_shf(_mask)); \
-                                                         ~~~~~~~~~^~~~~~
-   include/linux/bitfield.h:45:38: note: expanded from macro '__bf_shf'
-   #define __bf_shf(x) (__builtin_ffsll(x) - 1)
-                                        ^
-   drivers/pinctrl/renesas/pinctrl-rzg2l.c:1619:32: warning: shift count is negative [-Wshift-count-negative]
-               bit >= hweight8(FIELD_GET(PIN_CFG_PIN_MAP_MASK, data->port_pin_configs[port])))
-                      ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/pinctrl/renesas/pinctrl-rzg2l.c:83:31: note: expanded from macro 'PIN_CFG_PIN_MAP_MASK'
-   #define PIN_CFG_PIN_MAP_MASK            GENMASK(35, 28)
-                                           ^
-   include/linux/bits.h:37:31: note: expanded from macro 'GENMASK'
-           (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-                                        ^
-   include/linux/bits.h:35:11: note: expanded from macro '__GENMASK'
-            (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-                    ^
-   note: (skipping 4 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler_types.h:423:23: note: expanded from macro '_compiletime_assert'
-           __compiletime_assert(condition, msg, prefix, suffix)
-                                ^
-   include/linux/compiler_types.h:415:9: note: expanded from macro '__compiletime_assert'
-                   if (!(condition))                                       \
-                         ^
-   include/asm-generic/bitops/const_hweight.h:26:44: note: expanded from macro 'hweight8'
-   #define hweight8(w)  (__builtin_constant_p(w) ? __const_hweight8(w)  : __arch_hweight8(w))
-                                              ^
-   drivers/pinctrl/renesas/pinctrl-rzg2l.c:1619:32: warning: shift count is negative [-Wshift-count-negative]
-               bit >= hweight8(FIELD_GET(PIN_CFG_PIN_MAP_MASK, data->port_pin_configs[port])))
-                      ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/pinctrl/renesas/pinctrl-rzg2l.c:83:31: note: expanded from macro 'PIN_CFG_PIN_MAP_MASK'
-   #define PIN_CFG_PIN_MAP_MASK            GENMASK(35, 28)
-                                           ^
-   include/linux/bits.h:37:31: note: expanded from macro 'GENMASK'
-           (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-                                        ^
-   include/linux/bits.h:35:11: note: expanded from macro '__GENMASK'
-            (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-                    ^
-   note: (skipping 4 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler_types.h:423:23: note: expanded from macro '_compiletime_assert'
-           __compiletime_assert(condition, msg, prefix, suffix)
-                                ^
-   include/linux/compiler_types.h:415:9: note: expanded from macro '__compiletime_assert'
-                   if (!(condition))                                       \
-                         ^
-   include/asm-generic/bitops/const_hweight.h:26:44: note: expanded from macro 'hweight8'
-   #define hweight8(w)  (__builtin_constant_p(w) ? __const_hweight8(w)  : __arch_hweight8(w))
-                                              ^
-   drivers/pinctrl/renesas/pinctrl-rzg2l.c:1619:32: warning: shift count is negative [-Wshift-count-negative]
-               bit >= hweight8(FIELD_GET(PIN_CFG_PIN_MAP_MASK, data->port_pin_configs[port])))
-                      ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/pinctrl/renesas/pinctrl-rzg2l.c:83:31: note: expanded from macro 'PIN_CFG_PIN_MAP_MASK'
-   #define PIN_CFG_PIN_MAP_MASK            GENMASK(35, 28)
-                                           ^
-   include/linux/bits.h:37:31: note: expanded from macro 'GENMASK'
-           (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-                                        ^
-   include/linux/bits.h:35:11: note: expanded from macro '__GENMASK'
-            (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-                    ^
-   note: (skipping 4 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler_types.h:423:23: note: expanded from macro '_compiletime_assert'
-           __compiletime_assert(condition, msg, prefix, suffix)
-                                ^
-   include/linux/compiler_types.h:415:9: note: expanded from macro '__compiletime_assert'
-                   if (!(condition))                                       \
-                         ^
-   include/asm-generic/bitops/const_hweight.h:26:44: note: expanded from macro 'hweight8'
-   #define hweight8(w)  (__builtin_constant_p(w) ? __const_hweight8(w)  : __arch_hweight8(w))
-                                              ^
-   drivers/pinctrl/renesas/pinctrl-rzg2l.c:1619:32: warning: shift count is negative [-Wshift-count-negative]
-               bit >= hweight8(FIELD_GET(PIN_CFG_PIN_MAP_MASK, data->port_pin_configs[port])))
-                      ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/pinctrl/renesas/pinctrl-rzg2l.c:83:31: note: expanded from macro 'PIN_CFG_PIN_MAP_MASK'
-   #define PIN_CFG_PIN_MAP_MASK            GENMASK(35, 28)
-                                           ^
-   include/linux/bits.h:37:31: note: expanded from macro 'GENMASK'
-           (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-                                        ^
-   include/linux/bits.h:35:11: note: expanded from macro '__GENMASK'
-            (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-                    ^
-   note: (skipping 5 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler_types.h:423:23: note: expanded from macro '_compiletime_assert'
-           __compiletime_assert(condition, msg, prefix, suffix)
-                                ^
-   include/linux/compiler_types.h:415:9: note: expanded from macro '__compiletime_assert'
+It is a bug to mark a clocksource unstable if the skew is 668 microseconds 
+in 14.5 seconds. One possible solution is to skip the check. I originally 
+posted a patch scaling the uncertainty_margin of clocksources but it got 
+no support and the feedback I got was to avoid the calculation and skip 
+the current check in order to keep the code simple:
+https://lore.kernel.org/lkml/20231221160517.GA22919@incl/#t
+Since skipping the check solves issue as well I sent a patch.
 
+> >  /*
+> >   * Interval: 0.5sec.
+> >   */
+> > -#define WATCHDOG_INTERVAL (HZ >> 1)
+> > +#define WATCHDOG_INTERVAL	(HZ >> 1)
+> > +#define WATCHDOG_INTR_MAX_NS	((WATCHDOG_INTERVAL + (WATCHDOG_INTERVAL >> 1))\
+> > +				 * (NSEC_PER_SEC / HZ))
+> 
+> That 1.5 * WATCHDOG_INTERVAL seems to be rather arbitrary. One second
+> should be safe enough, no?
 
-vim +571 drivers/pinctrl/renesas/pinctrl-rzg2l.c
+Yes, it is arbitrary. The concern is how strict can we allow the skew 
+check to get. 2 * WATCHDOG_INTERVAL would mean imposing a skew threshold 
+of 250 microseconds per second for intervals that are close in their value 
+to 2 * WATCHDOG_INTERVAL. Even using 2 * WATCHDOG_INTERVAL would still be 
+many times better than using 500 microseconds to check skew in a 14.5-long 
+watchdog interval.
 
-   567	
-   568	static int rzg2l_validate_gpio_pin(struct rzg2l_pinctrl *pctrl,
-   569					   u64 cfg, u32 port, u8 bit)
-   570	{
- > 571		u8 pinmap = FIELD_GET(PIN_CFG_PIN_MAP_MASK, cfg);
-   572		u32 off = RZG2L_PIN_CFG_TO_PORT_OFFSET(cfg);
-   573		u64 data;
-   574	
-   575		if (!(pinmap & BIT(bit)) || port >= pctrl->data->n_port_pins)
-   576			return -EINVAL;
-   577	
-   578		data = pctrl->data->port_pin_configs[port];
-   579		if (off != RZG2L_PIN_CFG_TO_PORT_OFFSET(data))
-   580			return -EINVAL;
-   581	
-   582		return 0;
-   583	}
-   584	
+> > +		/*
+> > +		 * The processing of timer softirqs can get delayed (usually
+> > +		 * on account of ksoftirqd not getting to run in a timely
+> > +		 * manner), which causes the watchdog interval to stretch.
+> > +		 * Some clocksources, e.g. acpi_pm, cannot tolerate
+> > +		 * watchdog intervals longer than a few seconds.
+> 
+> What ensures that the watchdog did not wrap around then?
 
+Nothing. It has always been this way. The check usually fails when the 
+watchdog wraps around, in which case the clocksource is marked unstable 
+for no fault of its own.
+
+> > +				watchdog_max_intr = interval;
+> > +				pr_warn("Skipping watchdog check: cs_nsec: %lld wd_nsec: %lld\n",
+> > +					cs_nsec, wd_nsec);
+> 
+> This really wants to have a proper indication why the check was skipped,
+> i,e. due to a long readout interval, no?
+
+It could be changed to:
+pr_warn("Large watchdog interval, skipping check: cs_nsec: %lld wd_nsec: %lld\n",
+
+I will send a v3 incorporation all the suggestions after we have made the 
+description intelligible. Thank you for the feedback.
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Jiri Wiesner
+SUSE Labs
 
