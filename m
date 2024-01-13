@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-25183-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C90282C934
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 04:14:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98C0882C935
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 04:14:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F7681C22958
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 03:14:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 476801F23268
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 03:14:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D44612E6C;
-	Sat, 13 Jan 2024 03:14:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF2BD19456;
+	Sat, 13 Jan 2024 03:14:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IAUOSmEG"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VYQdN5bL"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20A7BFC19
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 03:14:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4479479ED
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 03:14:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d48a8ed85bso16563995ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 19:14:17 -0800 (PST)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d48a8ed85bso16564075ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 19:14:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705115657; x=1705720457; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705115660; x=1705720460; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JLymtwc9H5yinl0KgXVhcfE0CrkBjQrFclqsS4J1/G8=;
-        b=IAUOSmEGwZd0bCq/GfJo26LS+sqAGPI428epKv7lh1BCLfLNNNsfnpDJfqz3sSabNc
-         twZP3ih2yuuhekhloQ4tBipgz6zp7mk5Szg4fnH7tjmdwT2KVoA30kNPE1Q9pszn92Je
-         KZ9gRx7Tk+lYLv474th1+ZmA1ueGfOc4JNYfYBnkAz6KsYZmuSPQBcvgCUR3P+yzP3oL
-         S67Mvpm+1JX/L0cKQbn+mnudjeIbhXcPogdKlaqkM2Hb9rfEZi8CoAFHx3eqFWZs67gN
-         rsJGguZR+dkhhyFuFBxGCEYQY+i6SI7nyKf3cdrnb6HsLouKPFOYJ3k20bnHieEykzqL
-         m3DQ==
+        bh=pqal+qGElrmf6N6lWpG2H/qcx0IZTzvnDRCL9cKnE2o=;
+        b=VYQdN5bLCIKT6dS4fEHySeDPh56SMIQWCX8AEZAXVfcpU2RxWgUCmKGy4Lw5vpIPJG
+         s7vb89zadCdF6izf6wL2XcEHY5LgI1daDbsyvYJjhjEocAbdHvu1cIQ2CXT4EjjqPxD0
+         xQGEcpq+Sl12UignPdcZF6kgrNrOYPTcfrgezMJNShhD4JfME3ZIzLvmV0PInOlSMukP
+         DWgUwenOueRfj72MwQbxiywe4zAch0F4mBU69CY8Q1DOMOSzW20p/HVRpb3AnYx3UwKP
+         ndNgXupwEzH/ZvPdfs4p9g8jT9961IPrOZZh8eOWLFRtn7fN8wvdFPbiemwKTGe+ePtz
+         fiig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705115657; x=1705720457;
+        d=1e100.net; s=20230601; t=1705115660; x=1705720460;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JLymtwc9H5yinl0KgXVhcfE0CrkBjQrFclqsS4J1/G8=;
-        b=CR/ddJXReF7Br63+4t9dAmOsv/JiYIpDbfTESnOSjbLA60cLMx2m/vGazXRL7+p/m0
-         nw94TZon9S06esrRJT/coEvg7u/k0Ew5ajwq/wQfff0u4tbk0k6rirQFau7M/lyfya8m
-         yAaLXJR9YE2fBuxbbhQKHM6T7WYHsLmiJaY66quPCX6Kv6ZYrYVmPsV83txQK6Wj0h+2
-         P0571oa5CQJaYFbyXr/K8lUh9eDjGMgV2EIruRqn+WJFQ49/O1lo8Oj4ZTQdAIAi51Zg
-         iA/V/FNJgRIoROyyAtUavCdmejxXG5Jk7/6Ay13YwyNDQbp10tfIOqmScfpf5GBvC9LH
-         OWkA==
-X-Gm-Message-State: AOJu0YyoPPY4DkOQZCjm3/XGqQzc18zaYLouUoITGtDTvH075prCUC78
-	DNaeICiMe+MqdhE1LGI5rQxLQPZcUI8=
-X-Google-Smtp-Source: AGHT+IFPg72wcirR0Y8jLSTri8j94yjlsKKkNkkehTPocv2Lf+Jh/Ght75ZG+1mZvCI5tF/rGWCcOw==
-X-Received: by 2002:a17:902:c194:b0:1d4:be1e:f197 with SMTP id d20-20020a170902c19400b001d4be1ef197mr3958543pld.1.1705115657246;
-        Fri, 12 Jan 2024 19:14:17 -0800 (PST)
+        bh=pqal+qGElrmf6N6lWpG2H/qcx0IZTzvnDRCL9cKnE2o=;
+        b=cceH47Lj3GubOPSiY1YN6cam38r6WL7Z9hyJn+STlYQJNW8qgf1guE0q/uSRRM19ed
+         OJErsVuW6lpgjnW6udw53j2LWdSscxi86kWgYDYuw0dmdTRskpVtjtkOuTvW91eyxJo8
+         x7yThCVY4gNHavZKGKVFl9vxU5gtn/4jbhsV2V+9IdIZmGMjYVYljpHaYmDbepyXWoqd
+         I/0T/C4Rth9i8hqaROsuuISxfd3F4HgHCnBhl1pOzBe8yeyALA7Ny3/JeFAustonJmNq
+         GcEoi4tp/wr4V956VNysl+TkQtbMQP+B2TNPqM+Cfk8N9GtrDWx7LGdkkJ4D4MoOsNpF
+         Lmzw==
+X-Gm-Message-State: AOJu0YwCxKlJ8dwkKqfXjvO4oSafrKH7J7uRC1wkI74/uXdPYAVWzR6f
+	Yqbn2c3tYdrNEDLBMgO75TI=
+X-Google-Smtp-Source: AGHT+IFKtSa3T0mPlMMdX2BW4DMBTYd6LSyL1TosyP+aE/m6o82TsoSUnGBMmcEqGMR3/36C1abeXQ==
+X-Received: by 2002:a17:902:d50e:b0:1d4:e2bc:891c with SMTP id b14-20020a170902d50e00b001d4e2bc891cmr3922221plg.5.1705115660687;
+        Fri, 12 Jan 2024 19:14:20 -0800 (PST)
 Received: from localhost.localdomain ([140.116.154.65])
-        by smtp.gmail.com with ESMTPSA id e2-20020a170902f1c200b001d3c3d486bfsm3912551plc.163.2024.01.12.19.14.15
+        by smtp.gmail.com with ESMTPSA id e2-20020a170902f1c200b001d3c3d486bfsm3912551plc.163.2024.01.12.19.14.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 19:14:16 -0800 (PST)
+        Fri, 12 Jan 2024 19:14:20 -0800 (PST)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: akpm@linux-foundation.org
 Cc: lkml@sdf.org,
 	jserv@ccns.ncku.edu.tw,
 	linux-kernel@vger.kernel.org,
 	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH 1/2] lib/sort: Optimize heapsort for equal elements in sift-down path
-Date: Sat, 13 Jan 2024 11:13:51 +0800
-Message-Id: <20240113031352.2395118-2-visitorckw@gmail.com>
+Subject: [PATCH 2/2] lib/sort: Optimize heapsort with double-pop variation
+Date: Sat, 13 Jan 2024 11:13:52 +0800
+Message-Id: <20240113031352.2395118-3-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240113031352.2395118-1-visitorckw@gmail.com>
 References: <20240113031352.2395118-1-visitorckw@gmail.com>
@@ -76,34 +76,79 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, when searching for the sift-down path and encountering equal
-elements, the algorithm chooses the left child. However, considering
-that the height of the right subtree may be one less than that of the
-left subtree, selecting the right child in such cases can potentially
-reduce the number of comparisons and swaps.
+Instead of popping only the maximum element from the heap during each
+iteration, we now pop the two largest elements at once. Although this
+introduces an additional comparison to determine the second largest
+element, it enables a reduction in the height of the tree by one during
+the heapify operations starting from root's left/right child. This
+reduction in tree height by one leads to a decrease of one comparison
+and one swap.
 
-For instance, when sorting an array of 10,000 identical elements, the
-current implementation requires 247,209 comparisons. With this patch,
-the number of comparisons can be reduced to 227,241.
+This optimization results in saving approximately 0.5 * n swaps without
+increasing the number of comparisons. Additionally, the heap size
+during heapify is now one less than the original size, offering a
+chance for further reduction in comparisons and swaps.
 
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
- lib/sort.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+
+The following experimental data is based on the array generated using
+get_random_u32().
+
+| N     | swaps (old) | swaps (new) | comparisons (old) | comparisons (new) |
+|-------|-------------|-------------|-------------------|-------------------|
+| 1000  | 9054        | 8569        | 10328             | 10320             |
+| 2000  | 20137       | 19182       | 22634             | 22587             |
+| 3000  | 32062       | 30623       | 35833             | 35752             |
+| 4000  | 44274       | 42282       | 49332             | 49306             |
+| 5000  | 57195       | 54676       | 63300             | 63294             |
+| 6000  | 70205       | 67202       | 77599             | 77557             |
+| 7000  | 83276       | 79831       | 92113             | 92032             |
+| 8000  | 96630       | 92678       | 106635            | 106617            |
+| 9000  | 110349      | 105883      | 121505            | 121404            |
+| 10000 | 124165      | 119202      | 136628            | 136617            |
+
+ lib/sort.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
 diff --git a/lib/sort.c b/lib/sort.c
-index b399bf10d675..fe4efd4a1410 100644
+index fe4efd4a1410..a0509088f82a 100644
 --- a/lib/sort.c
 +++ b/lib/sort.c
-@@ -262,7 +262,7 @@ void sort_r(void *base, size_t num, size_t size,
- 		 * average, 3/4 worst-case.)
- 		 */
- 		for (b = a; c = 2*b + size, (d = c + size) < n;)
--			b = do_cmp(base + c, base + d, cmp_func, priv) >= 0 ? c : d;
-+			b = do_cmp(base + c, base + d, cmp_func, priv) > 0 ? c : d;
- 		if (d == n)	/* Special case last leaf with no sibling */
- 			b = c;
+@@ -215,6 +215,7 @@ void sort_r(void *base, size_t num, size_t size,
+ 	/* pre-scale counters for performance */
+ 	size_t n = num * size, a = (num/2) * size;
+ 	const unsigned int lsbit = size & -size;  /* Used to find parent */
++	size_t shift = 0;
  
+ 	if (!a)		/* num < 2 || size == 0 */
+ 		return;
+@@ -242,12 +243,21 @@ void sort_r(void *base, size_t num, size_t size,
+ 	for (;;) {
+ 		size_t b, c, d;
+ 
+-		if (a)			/* Building heap: sift down --a */
+-			a -= size;
+-		else if (n -= size)	/* Sorting: Extract root to --n */
++		if (a)			/* Building heap: sift down a */
++			a -= size << shift;
++		else if (n > 3 * size) { /* Sorting: Extract two largest elements */
++			n -= size;
+ 			do_swap(base, base + n, size, swap_func, priv);
+-		else			/* Sort complete */
++			shift = do_cmp(base + size, base + 2 * size, cmp_func, priv) <= 0;
++			a = size << shift;
++			n -= size;
++			do_swap(base + a, base + n, size, swap_func, priv);
++		} else if (n > size) {	/* Sorting: Extract root */
++			n -= size;
++			do_swap(base, base + n, size, swap_func, priv);
++		} else	{		/* Sort complete */
+ 			break;
++		}
+ 
+ 		/*
+ 		 * Sift element at "a" down into heap.  This is the
 -- 
 2.25.1
 
