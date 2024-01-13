@@ -1,222 +1,209 @@
-Return-Path: <linux-kernel+bounces-25292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25293-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6CDC82CCC9
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 14:18:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B113E82CCD0
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 14:36:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B742284B1C
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 13:18:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B783284A3F
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 13:36:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB70219FC;
-	Sat, 13 Jan 2024 13:17:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A656321113;
+	Sat, 13 Jan 2024 13:36:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="DwwyCPkU"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ePDXl8Hn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23148210FE;
-	Sat, 13 Jan 2024 13:17:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1705151847; x=1736687847;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=f/zLXvwgj4jxgYwgj1jMUxPl7GNVSbhmhNkWrqRyWW8=;
-  b=DwwyCPkU3MWbXMH98kTwH1n99DMfxTQSz0/yxaMwJ+ZpWYtYMlG3Vc/l
-   Bq7RmIGznPmGwdmL3Li2MJMrHeQuljYFcRv6vYCVGJ+Ie+1x+NGvgTmsG
-   8I4yTMvUEOSkKzDEGye5CpCi7uTi+3c7eknGWDnftUMQEKu+kfifkac1c
-   Hu+THrrIKc4I6kRvOsgMj3TzvdNO9fiDDg/AzBR+uwU37YLYIscY4vwV3
-   xoiPZAB+3GBQUXsLigqE2WB7XyNPUAmyNDtH6XJGg1aHmz8SIq7uib4NJ
-   Qz/JCCdkY+uV5ycSreksvwwNUDsvyOeaJpw8QFu6dBER4ISyqBKv9NEqN
-   Q==;
-X-CSE-ConnectionGUID: IbxK4g7OS92kjFhowD7KHA==
-X-CSE-MsgGUID: z9b/JqlIRiWwUEdaoUa8TA==
-X-IronPort-AV: E=Sophos;i="6.04,192,1695711600"; 
-   d="scan'208";a="245432937"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 Jan 2024 06:17:24 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sat, 13 Jan 2024 06:17:10 -0700
-Received: from DEN-DL-M31836.microsemi.net (10.10.85.11) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Sat, 13 Jan 2024 06:17:07 -0700
-From: Horatiu Vultur <horatiu.vultur@microchip.com>
-To: <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <richardcochran@gmail.com>,
-	<Divya.Koppera@microchip.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<UNGLinuxDriver@microchip.com>, Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net 2/2] net: micrel: Fix set/get PHC time for lan8814
-Date: Sat, 13 Jan 2024 14:15:21 +0100
-Message-ID: <20240113131521.1051921-3-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240113131521.1051921-1-horatiu.vultur@microchip.com>
-References: <20240113131521.1051921-1-horatiu.vultur@microchip.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D818717554;
+	Sat, 13 Jan 2024 13:36:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA540C43390;
+	Sat, 13 Jan 2024 13:36:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705152982;
+	bh=KwWlHa+r+/FAyunmRdmhSZNBRluZIk0FSNu0g26o/fk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ePDXl8HnuvFr27V6A837IHl55K1RpcxXO9+HOuhMEFD+lKVWGxL4QEd6kh201XJhp
+	 3tvbWJb2oh/6XS68ZxTZFO7ANa9QnQt5ALwk/iQYTwK/OiYKVRznM7s9LsKRrv7f6+
+	 Kjp3hk+nMv9R+izm+1ZRUm+54eWQFw0OYG/0aKY8FoLuMx9h+wVYF4A71aFcqNBj2U
+	 ZRLmv2zlZan5t1NzGdGSyqKn3xEdzkPIsJ7NhTAaBW9o+qW9w5zIh8Gygn+Pu107Op
+	 fz3VBMNyzeZ2dsfRi651qlyte7Wx+rHPxsXpZf7C1bCRDTr1FdYzfyGpw3RAOegalJ
+	 bTaLbNRtxG1Lg==
+Date: Sat, 13 Jan 2024 22:36:18 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Vincent Donnefort <vdonnefort@google.com>
+Cc: rostedt@goodmis.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+ kernel-team@android.com
+Subject: Re: [PATCH v11 4/5] Documentation: tracing: Add ring-buffer mapping
+Message-Id: <20240113223618.2532e413d6bff8bb140ef5f1@kernel.org>
+In-Reply-To: <20240111161712.1480333-5-vdonnefort@google.com>
+References: <20240111161712.1480333-1-vdonnefort@google.com>
+	<20240111161712.1480333-5-vdonnefort@google.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 
-When setting or getting PHC time, the higher bits of the second time (>32
-bits) they were ignored. Meaning that setting some time in the future like
-year 2150, it was failing to set this.
+On Thu, 11 Jan 2024 16:17:11 +0000
+Vincent Donnefort <vdonnefort@google.com> wrote:
 
-The issue can be reproduced like this:
+> It is now possible to mmap() a ring-buffer to stream its content. Add
+> some documentation and a code example.
+> 
+> Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
+> 
+> diff --git a/Documentation/trace/index.rst b/Documentation/trace/index.rst
+> index 5092d6c13af5..0b300901fd75 100644
+> --- a/Documentation/trace/index.rst
+> +++ b/Documentation/trace/index.rst
+> @@ -29,6 +29,7 @@ Linux Tracing Technologies
+>     timerlat-tracer
+>     intel_th
+>     ring-buffer-design
+> +   ring-buffer-map
+>     stm
+>     sys-t
+>     coresight/index
+> diff --git a/Documentation/trace/ring-buffer-map.rst b/Documentation/trace/ring-buffer-map.rst
+> new file mode 100644
+> index 000000000000..2ba7b5339178
+> --- /dev/null
+> +++ b/Documentation/trace/ring-buffer-map.rst
+> @@ -0,0 +1,105 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +==================================
+> +Tracefs ring-buffer memory mapping
+> +==================================
+> +
+> +:Author: Vincent Donnefort <vdonnefort@google.com>
+> +
+> +Overview
+> +========
+> +Tracefs ring-buffer memory map provides an efficient method to stream data
+> +as no memory copy is necessary. The application mapping the ring-buffer becomes
+> +then a consumer for that ring-buffer, in a similar fashion to trace_pipe.
+> +
+> +Memory mapping setup
+> +====================
+> +The mapping works with a mmap() of the trace_pipe_raw interface.
+> +
+> +The first system page of the mapping contains ring-buffer statistics and
+> +description. It is referred as the meta-page. One of the most important field of
+> +the meta-page is the reader. It contains the subbuf ID which can be safely read
+> +by the mapper (see ring-buffer-design.rst).
+> +
+> +The meta-page is followed by all the subbuf, ordered by ascendant ID. It is
+> +therefore effortless to know where the reader starts in the mapping:
+> +
+> +.. code-block:: c
+> +
+> +        reader_id = meta->reader->id;
+> +        reader_offset = meta->meta_page_size + reader_id * meta->subbuf_size;
+> +
+> +When the application is done with the current reader, it can get a new one using
+> +the trace_pipe_raw ioctl() TRACE_MMAP_IOCTL_GET_READER. This ioctl also updates
+> +the meta-page fields.
+> +
+> +Limitations
+> +===========
+> +When a mapping is in place on a Tracefs ring-buffer, it is not possible to
+> +either resize it (either by increasing the entire size of the ring-buffer or
+> +each subbuf). It is also not possible to use snapshot or splice.
+> +
+> +Concurrent readers (either another application mapping that ring-buffer or the
+> +kernel with trace_pipe) are allowed but not recommended. They will compete for
+> +the ring-buffer and the output is unpredictable.
+> +
+> +Example
+> +=======
+> +
+> +.. code-block:: c
+> +
+> +        #include <fcntl.h>
+> +        #include <stdio.h>
+> +        #include <stdlib.h>
+> +        #include <unistd.h>
+> +
+> +        #include <linux/trace_mmap.h>
+> +
+> +        #include <sys/mman.h>
+> +        #include <sys/ioctl.h>
+> +
+> +        #define TRACE_PIPE_RAW "/sys/kernel/tracing/per_cpu/cpu0/trace_pipe_raw"
+> +
+> +        int main(void)
+> +        {
+> +                int page_size = getpagesize(), fd, reader_id;
+> +                unsigned long meta_len, data_len;
+> +                struct trace_buffer_meta *meta;
+> +                void *map, *reader, *data;
 
- # phc_ctl /dev/ptp1 set 10000000000
- phc_ctl[118.619]: set clock time to 4294967295.000000000 or Sun Feb  7 06:28:15 2106
+nit: this example code has a compile warning.
 
- # phc_ctl /dev/ptp1 get
- phc_ctl[120.858]: clock time is 1.238620924 or Thu Jan  1 00:00:01 1970
+rbmap.c: In function ‘main’:
+rbmap.c:18:21: warning: variable ‘reader’ set but not used [-Wunused-but-set-variable]
+   18 |         void *map, *reader, *data;
+      |                     ^~~~~~
 
-Fixes: ece19502834d ("net: phy: micrel: 1588 support for LAN8814 phy")
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- drivers/net/phy/micrel.c | 61 +++++++++++++++++++---------------------
- 1 file changed, 29 insertions(+), 32 deletions(-)
 
-diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-index 1752eaeadc42e..d9eabbb5af37f 100644
---- a/drivers/net/phy/micrel.c
-+++ b/drivers/net/phy/micrel.c
-@@ -152,11 +152,13 @@
- #define PTP_CMD_CTL_PTP_LTC_STEP_SEC_		BIT(5)
- #define PTP_CMD_CTL_PTP_LTC_STEP_NSEC_		BIT(6)
- 
-+#define PTP_CLOCK_SET_SEC_HI			0x0205
- #define PTP_CLOCK_SET_SEC_MID			0x0206
- #define PTP_CLOCK_SET_SEC_LO			0x0207
- #define PTP_CLOCK_SET_NS_HI			0x0208
- #define PTP_CLOCK_SET_NS_LO			0x0209
- 
-+#define PTP_CLOCK_READ_SEC_HI			0x0229
- #define PTP_CLOCK_READ_SEC_MID			0x022A
- #define PTP_CLOCK_READ_SEC_LO			0x022B
- #define PTP_CLOCK_READ_NS_HI			0x022C
-@@ -2590,35 +2592,31 @@ static bool lan8814_rxtstamp(struct mii_timestamper *mii_ts, struct sk_buff *skb
- }
- 
- static void lan8814_ptp_clock_set(struct phy_device *phydev,
--				  u32 seconds, u32 nano_seconds)
-+				  time64_t sec, u32 nsec)
- {
--	u32 sec_low, sec_high, nsec_low, nsec_high;
--
--	sec_low = seconds & 0xffff;
--	sec_high = (seconds >> 16) & 0xffff;
--	nsec_low = nano_seconds & 0xffff;
--	nsec_high = (nano_seconds >> 16) & 0x3fff;
--
--	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_LO, sec_low);
--	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_MID, sec_high);
--	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_LO, nsec_low);
--	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_HI, nsec_high);
-+	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_LO, lower_16_bits(sec));
-+	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_MID, upper_16_bits(sec));
-+	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_HI, upper_32_bits(sec));
-+	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_LO, lower_16_bits(nsec));
-+	lanphy_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_HI, upper_16_bits(nsec));
- 
- 	lanphy_write_page_reg(phydev, 4, PTP_CMD_CTL, PTP_CMD_CTL_PTP_CLOCK_LOAD_);
- }
- 
- static void lan8814_ptp_clock_get(struct phy_device *phydev,
--				  u32 *seconds, u32 *nano_seconds)
-+				  time64_t *sec, u32 *nsec)
- {
- 	lanphy_write_page_reg(phydev, 4, PTP_CMD_CTL, PTP_CMD_CTL_PTP_CLOCK_READ_);
- 
--	*seconds = lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_MID);
--	*seconds = (*seconds << 16) |
--		   lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_LO);
-+	*sec = lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_HI);
-+	*sec <<= 16;
-+	*sec |= lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_MID);
-+	*sec <<= 16;
-+	*sec |= lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_LO);
- 
--	*nano_seconds = lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_HI);
--	*nano_seconds = ((*nano_seconds & 0x3fff) << 16) |
--			lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_LO);
-+	*nsec = lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_HI);
-+	*nsec <<= 16;
-+	*nsec |= lanphy_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_LO);
- }
- 
- static int lan8814_ptpci_gettime64(struct ptp_clock_info *ptpci,
-@@ -2628,7 +2626,7 @@ static int lan8814_ptpci_gettime64(struct ptp_clock_info *ptpci,
- 							  ptp_clock_info);
- 	struct phy_device *phydev = shared->phydev;
- 	u32 nano_seconds;
--	u32 seconds;
-+	time64_t seconds;
- 
- 	mutex_lock(&shared->shared_lock);
- 	lan8814_ptp_clock_get(phydev, &seconds, &nano_seconds);
-@@ -2658,38 +2656,37 @@ static void lan8814_ptp_clock_step(struct phy_device *phydev,
- {
- 	u32 nano_seconds_step;
- 	u64 abs_time_step_ns;
--	u32 unsigned_seconds;
-+	time64_t set_seconds;
- 	u32 nano_seconds;
- 	u32 remainder;
- 	s32 seconds;
- 
- 	if (time_step_ns >  15000000000LL) {
- 		/* convert to clock set */
--		lan8814_ptp_clock_get(phydev, &unsigned_seconds, &nano_seconds);
--		unsigned_seconds += div_u64_rem(time_step_ns, 1000000000LL,
--						&remainder);
-+		lan8814_ptp_clock_get(phydev, &set_seconds, &nano_seconds);
-+		set_seconds += div_u64_rem(time_step_ns, 1000000000LL,
-+					   &remainder);
- 		nano_seconds += remainder;
- 		if (nano_seconds >= 1000000000) {
--			unsigned_seconds++;
-+			set_seconds++;
- 			nano_seconds -= 1000000000;
- 		}
--		lan8814_ptp_clock_set(phydev, unsigned_seconds, nano_seconds);
-+		lan8814_ptp_clock_set(phydev, set_seconds, nano_seconds);
- 		return;
- 	} else if (time_step_ns < -15000000000LL) {
- 		/* convert to clock set */
- 		time_step_ns = -time_step_ns;
- 
--		lan8814_ptp_clock_get(phydev, &unsigned_seconds, &nano_seconds);
--		unsigned_seconds -= div_u64_rem(time_step_ns, 1000000000LL,
--						&remainder);
-+		lan8814_ptp_clock_get(phydev, &set_seconds, &nano_seconds);
-+		set_seconds -= div_u64_rem(time_step_ns, 1000000000LL,
-+					   &remainder);
- 		nano_seconds_step = remainder;
- 		if (nano_seconds < nano_seconds_step) {
--			unsigned_seconds--;
-+			set_seconds--;
- 			nano_seconds += 1000000000;
- 		}
- 		nano_seconds -= nano_seconds_step;
--		lan8814_ptp_clock_set(phydev, unsigned_seconds,
--				      nano_seconds);
-+		lan8814_ptp_clock_set(phydev, set_seconds, nano_seconds);
- 		return;
- 	}
- 
+> +
+> +                fd = open(TRACE_PIPE_RAW, O_RDONLY);
+> +                if (fd < 0)
+> +                        exit(EXIT_FAILURE);
+> +
+> +                map = mmap(NULL, page_size, PROT_READ, MAP_SHARED, fd, 0);
+> +                if (map == MAP_FAILED)
+> +                        exit(EXIT_FAILURE);
+> +
+> +                meta = (struct trace_buffer_meta *)map;
+> +                meta_len = meta->meta_page_size;
+> +
+> +                printf("entries:        %lu\n", meta->entries);
+> +                printf("overrun:        %lu\n", meta->overrun);
+> +                printf("read:           %lu\n", meta->read);
+> +                printf("subbufs_touched:%lu\n", meta->subbufs_touched);
+> +                printf("subbufs_lost:   %lu\n", meta->subbufs_lost);
+> +                printf("subbufs_read:   %lu\n", meta->subbufs_read);
+> +                printf("nr_subbufs:     %u\n", meta->nr_subbufs);
+> +
+> +                data_len = meta->subbuf_size * meta->nr_subbufs;
+> +                data = mmap(NULL, data_len, PROT_READ, MAP_SHARED, fd, data_len);
+> +                if (data == MAP_FAILED)
+> +                        exit(EXIT_FAILURE);
+> +
+> +                if (ioctl(fd, TRACE_MMAP_IOCTL_GET_READER) < 0)
+> +                        exit(EXIT_FAILURE);
+> +
+> +                reader_id = meta->reader.id;
+> +                reader = data + meta->subbuf_size * reader_id;
+
+So here, maybe you need;
+
+			printf("Current read sub-buffer address: %p\n", reader);
+
+Thank you,
+
+> +
+> +                munmap(data, data_len);
+> +                munmap(meta, meta_len);
+> +                close (fd);
+> +
+> +                return 0;
+> +        }
+> -- 
+> 2.43.0.275.g3460e3d667-goog
+> 
+
+
 -- 
-2.34.1
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
