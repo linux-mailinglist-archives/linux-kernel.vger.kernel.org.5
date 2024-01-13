@@ -1,71 +1,70 @@
-Return-Path: <linux-kernel+bounces-25145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8064982C877
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 01:50:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC68D82C883
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 01:58:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3637F28670E
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 00:50:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B475B23F24
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 00:58:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBAB0107B2;
-	Sat, 13 Jan 2024 00:50:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C11E107B2;
+	Sat, 13 Jan 2024 00:58:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AEOC2OeI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nV22CbmX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4321DA5F;
-	Sat, 13 Jan 2024 00:50:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EACFC433F1;
-	Sat, 13 Jan 2024 00:50:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D73CCF4FE;
+	Sat, 13 Jan 2024 00:58:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A3C23C433F1;
+	Sat, 13 Jan 2024 00:58:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705107033;
-	bh=pfdjHlc34Ggp8MtnAo8+a9gm20lTD0y1NPMB984TS5A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AEOC2OeIgJWORoNggX2s3ubvbGWWUSILtQ10fdulphVoZokeuz3ef5roZFFJGoq+K
-	 GsPp/iiyBiQCPF4p3qAotSu9Pi4cbJO1OWN03+m4S+ZUp3N04iYjTOdOP1DhARHuwv
-	 PdC7zxWukUThkA0sMlgjSOnytQ5sygutC2IC0bDpE/B6V9vxF+sd6BVBMRxKH9mwak
-	 AofUjx/i1nw4/wDjpZB6IPC00vQH4mDn7uGljXYfR3Uc38Syy2YS74xybcM83ypBie
-	 SGue5mayN1JVetKMleJMnC2kDih9CDc8wvG+jiykOl5K0btdD4EF44X2SSqCbYDL+l
-	 12Uzv8nv76hwQ==
-Date: Fri, 12 Jan 2024 16:50:31 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: syzbot <syzbot+8f477ac014ff5b32d81f@syzkaller.appspotmail.com>
-Cc: chao@kernel.org, jaegeuk@kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [f2fs?] KASAN: slab-use-after-free Read in
- kill_f2fs_super
-Message-ID: <20240113005031.GA1147@sol.localdomain>
-References: <0000000000006cb174060ec34502@google.com>
- <000000000000ec3dd2060ec8e941@google.com>
+	s=k20201202; t=1705107505;
+	bh=/4QD6IGM7rqcDr7taj1p6wJy2jiV6FU2MzO0WL0hSo8=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=nV22CbmXrjhf1Ew++1qd51+BmDPn4IBYWnC9I/wPHGBrC+878fgtAVMbEZF8mgDW+
+	 IdrN0ylWvG+tqNnvAgIKQjbkDTq3W/KcfUWHFMUsoXd6n21ilyNRW/kCaKtnv5P76+
+	 wPkT4euxkWq13pDstlzXKKzLhl9BKGixxf9HCM3UeXgSfXGvYWCoaO2DJ3oE7f1dOv
+	 qyiX+yCy7dPb6i7PowMvW7ooKHTGjmPSpNpgpN0UHvZEvX7+tQ9bGKqqrwIW+9gmV7
+	 TqlBpNggIS1WoCBkXFC7JqAXphIOK02FcnxWXvfxqpH6o0mC9PjZBuLF/gxTfmqhzo
+	 hQp3gUJj0YrSg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8DDBFD8C96D;
+	Sat, 13 Jan 2024 00:58:25 +0000 (UTC)
+Subject: Re: [GIT PULL] RCU changes for v6.8
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20231223021434.GA2714@neeraj.linux>
+References: <20231223021434.GA2714@neeraj.linux>
+X-PR-Tracked-List-Id: <rcu.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20231223021434.GA2714@neeraj.linux>
+X-PR-Tracked-Remote: https://github.com/neeraju/linux.git tags/rcu.release.v6.8
+X-PR-Tracked-Commit-Id: 7dfb03dd24d43b9e7a725e70d2e8a83bb29df294
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 23a80d462c67406303df852d58b745b8618acc4a
+Message-Id: <170510750556.1054.15219442074526332796.pr-tracker-bot@kernel.org>
+Date: Sat, 13 Jan 2024 00:58:25 +0000
+To: "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>
+Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org, frederic@kernel.org, mingo@kernel.org, tglx@linutronix.de, rcu@vger.kernel.org, boqun.feng@gmail.com, joel@joelfernandes.org, neeraj.upadhyay@amd.com, urezki@gmail.com, qiang.zhang1211@gmail.com
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000ec3dd2060ec8e941@google.com>
 
-On Fri, Jan 12, 2024 at 04:32:21PM -0800, syzbot wrote:
-> loop0: detected capacity change from 0 to 63271
-> F2FS-fs (loop0): Mismatch start address, segment0(512) cp_blkaddr(605)
-> F2FS-fs (loop0): Can't find valid F2FS filesystem in 1th superblock
-> F2FS-fs (loop0): invalid crc value
-> F2FS-fs (loop0): SIT is corrupted node# 0 vs 1
-> F2FS-fs (loop0): Failed to initialize F2FS segment manager (-117)
-> ==================================================================
-> BUG: KASAN: slab-use-after-free in destroy_device_list fs/f2fs/super.c:1606 [inline]
-> BUG: KASAN: slab-use-after-free in kill_f2fs_super+0x618/0x690 fs/f2fs/super.c:4932
-> Read of size 4 at addr ffff888023bdd77c by task syz-executor275/5046
+The pull request you sent on Sat, 23 Dec 2023 07:44:34 +0530:
 
-Sorry, this is my fault.  I'll fix this.
+> https://github.com/neeraju/linux.git tags/rcu.release.v6.8
 
-- Eric
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/23a80d462c67406303df852d58b745b8618acc4a
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
