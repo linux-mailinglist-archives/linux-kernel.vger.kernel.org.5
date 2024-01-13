@@ -1,114 +1,213 @@
-Return-Path: <linux-kernel+bounces-25323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25324-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8449982CD7E
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 16:33:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6DB482CD85
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 16:35:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 966FC1C21085
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 15:33:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A2E61F225EA
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 15:35:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4489A23A8;
-	Sat, 13 Jan 2024 15:33:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76B7F23A3;
+	Sat, 13 Jan 2024 15:35:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l8dSd36e"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IQVO27fD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ACA31C16;
-	Sat, 13 Jan 2024 15:33:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B3BEC433F1;
-	Sat, 13 Jan 2024 15:33:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C07CC1C16;
+	Sat, 13 Jan 2024 15:35:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF087C433C7;
+	Sat, 13 Jan 2024 15:35:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705159998;
-	bh=a6Ra8/vW20LqIUs9s37sHdzXHXZxogXvoS1zUc0El3w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=l8dSd36ej497TKceU3Qsy8VxpLEUAfUPXC6n1FJE54MokQT4OwMUHEYC/czQFaZQw
-	 uTbccaH3L+xnx114iixt7ab12pWgT5tiaSi9A4iNY77nQmbdROGYbjU+rDkOjIV+qM
-	 uSqd/vN9YJDuPo7sRpNjU6nWK+eg+Hxz7Z5jbSOjZ0g7AqZzDl+o/hHNkjbpgnYePJ
-	 QtVzy5c5/94vJhSZK5wYRlFWqZYWh66LlRBBWSmh39KWPdcOvSyrJD/WC9T2k/uzdi
-	 eAw1txfsm4R3d71W6NXI4E7mOXLjUl5/w/YV0ThY02uCFj4zX5fC+EVUZfCCtqE2dz
-	 lbnSzMwZot9bg==
-Date: Sat, 13 Jan 2024 15:33:13 +0000
-From: Simon Horman <horms@kernel.org>
-To: Zhipeng Lu <alexious@zju.edu.cn>
-Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Maor Gottlieb <maorg@mellanox.com>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v3] net/mlx5e: fix a double-free in arfs_create_groups
-Message-ID: <20240113153313.GH392144@kernel.org>
-References: <20240112072916.3726945-1-alexious@zju.edu.cn>
+	s=k20201202; t=1705160144;
+	bh=n2el2oEmSVM6jBq5Bm0mWVcLdER3YEV7FbeXd9Wt9m4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=IQVO27fDAPLkTgMXnKIS48uZglh8scp8o5AReAf8lnDHggI9mFzjUgwCNafn5MIXe
+	 skdJOP6r9jEH1jPxLAN+ZEo839N/+V11ZvMMcxewwTYzzlkoBcDwI5CY7Yo6q5AL2w
+	 Y1mOoxwy9ggDh/x7N4broE4Ja4mk4YbCCEvPBYQEh69hfFfzHJ0YVSIrS7PaW7qrNm
+	 9WqQqnkwHyCoJPAEAA04Hk695uQFqUQsU8B5Z77I33QMEr69bKFvr+uPpIghQoZyHj
+	 3kZg8Jk9oP2RCT85AfikWyvSiY4NMeP04lmZ8mvmavRB3xpgQoSRSXS1FxWxx+CnrQ
+	 EIu7PSmNE5iYA==
+Date: Sat, 13 Jan 2024 15:35:37 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Dumitru Ceclan <mitrutzceclan@gmail.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Ceclan Dumitru
+ <dumitru.ceclan@analog.com>
+Subject: Re: [PATCH v2 3/4] iio: amplifiers: hmc425a: move conversion logic
+Message-ID: <20240113153537.4a2aae40@jic23-huawei>
+In-Reply-To: <20240110153757.5754-4-mitrutzceclan@gmail.com>
+References: <20240110153757.5754-1-mitrutzceclan@gmail.com>
+	<20240110153757.5754-4-mitrutzceclan@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240112072916.3726945-1-alexious@zju.edu.cn>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jan 12, 2024 at 03:29:16PM +0800, Zhipeng Lu wrote:
-> When `in` allocated by kvzalloc fails, arfs_create_groups will free
-> ft->g and return an error. However, arfs_create_table, the only caller of
-> arfs_create_groups, will hold this error and call to
-> mlx5e_destroy_flow_table, in which the ft->g will be freed again.
+On Wed, 10 Jan 2024 17:37:11 +0200
+Dumitru Ceclan <mitrutzceclan@gmail.com> wrote:
+
+> Move gain-dB<->code conversion logic from read_raw and write_raw to
+> hmc425a_gain_dB_to_code() and hmc425a_code_to_gain_dB().
 > 
-> Fixes: 1cabe6b0965e ("net/mlx5e: Create aRFS flow tables")
-> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+> Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
+A couple of trivial formatting suggestions if you end up doing a v3.
+If not I might make the tweaks whilst applying,
 
-Thanks, I think this is getting close.
-
-Can you please prepare a v4 with the nits below fixed?
-And please target at the 'net' tree, by making sure it
-is based on the main branch of that tree, and marking
-the subject as follows:
-
-	Subject: [PATCH net v3] ...
+Jonathan
 
 > ---
-> Changelog:
+>  drivers/iio/amplifiers/hmc425a.c | 100 ++++++++++++++++++-------------
+>  1 file changed, 57 insertions(+), 43 deletions(-)
 > 
-> v2: free ft->g just in arfs_create_groups with a unwind ladder.
-> v3: split the allocation of ft->g and in. Rename the error label.
->     remove some refector change in v2.
-> ---
->  .../net/ethernet/mellanox/mlx5/core/en_arfs.c | 26 +++++++++++--------
->  1 file changed, 15 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-> index bb7f86c993e5..0424ae068a60 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-> @@ -254,11 +254,13 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
+> diff --git a/drivers/iio/amplifiers/hmc425a.c b/drivers/iio/amplifiers/hmc425a.c
+> index ed4d72922696..b5fd19403d15 100644
+> --- a/drivers/iio/amplifiers/hmc425a.c
+> +++ b/drivers/iio/amplifiers/hmc425a.c
+> @@ -56,35 +56,70 @@ static int hmc425a_write(struct iio_dev *indio_dev, u32 value)
+>  	return 0;
+>  }
 >  
->  	ft->g = kcalloc(MLX5E_ARFS_NUM_GROUPS,
->  			sizeof(*ft->g), GFP_KERNEL);
-> -	in = kvzalloc(inlen, GFP_KERNEL);
-> -	if  (!in || !ft->g) {
-> -		kfree(ft->g);
-> -		kvfree(in);
-> +	if(!ft->g)
-
-nit: (one) space after if, please
-
->  		return -ENOMEM;
+> +static int hmc425a_gain_dB_to_code(struct hmc425a_state *st, int val, int val2, int *code)
+> +{
+> +	struct hmc425a_chip_info *inf = st->chip_info;
+> +	int gain, temp;
 > +
-> +	in = kvzalloc(inlen, GFP_KERNEL);
-> +	if  (!in) {
+> +	if (val < 0)
+> +		gain = (val * 1000) - (val2 / 1000);
+> +	else
+> +		gain = (val * 1000) + (val2 / 1000);
+> +
+> +	if (gain > inf->gain_max || gain < inf->gain_min)
+> +		return -EINVAL;
+> +
+> +	switch (st->type) {
+> +	case ID_HMC425A:
+> +		*code = ~((abs(gain) / 500) & 0x3F);
+> +		break;
+> +	case ID_HMC540S:
+> +		*code = ~((abs(gain) / 1000) & 0xF);
+> +		break;
+> +	case ID_ADRF5740:
+> +		temp = (abs(gain) / 2000) & 0xF;
+> +		*code = temp & BIT(3) ? temp | BIT(2) : temp;
+> +		break;
+> +	}
+trivial preference for blank line here.
 
-nit: one space is enough after if
+> +	return 0;
+> +}
+> +
+> +static int hmc425a_code_to_gain_dB(struct hmc425a_state *st, int *val, int *val2)
+> +{
+> +	int code, gain;
+> +
+> +	code = st->gain;
+> +	switch (st->type) {
+> +	case ID_HMC425A:
+> +		gain = ~code * -500;
+> +		break;
+> +	case ID_HMC540S:
+> +		gain = ~code * -1000;
+> +		break;
+> +	case ID_ADRF5740:
+> +		code = code & BIT(3) ? code & ~BIT(2) : code;
+> +		gain = code * -2000;
+> +		break;
+> +	}
+> +
+> +	*val = gain / 1000;
+> +	*val2 = (gain % 1000) * 1000;
 
-> +		err = -ENOMEM;
-> +		goto err_free_g;
->  	}
+As above. It's godo to have a blank line before a 'bare' return like this.
+
+> +	return 0;
+> +}
+> +
+>  static int hmc425a_read_raw(struct iio_dev *indio_dev,
+>  			    struct iio_chan_spec const *chan, int *val,
+>  			    int *val2, long m)
+>  {
+>  	struct hmc425a_state *st = iio_priv(indio_dev);
+> -	int code, gain = 0;
+>  	int ret;
 >  
->  	mc = MLX5_ADDR_OF(create_flow_group_in, in, match_criteria);
+>  	mutex_lock(&st->lock);
+>  	switch (m) {
+>  	case IIO_CHAN_INFO_HARDWAREGAIN:
+> -		code = st->gain;
+> -
+> -		switch (st->type) {
+> -		case ID_HMC425A:
+> -			gain = ~code * -500;
+> -			break;
+> -		case ID_HMC540S:
+> -			gain = ~code * -1000;
+> -			break;
+> -		case ID_ADRF5740:
+> -			code = code & BIT(3) ? code & ~BIT(2) : code;
+> -			gain = code * -2000;
+> +		ret = hmc425a_code_to_gain_dB(st, val, val2);
+> +		if (ret)
+>  			break;
+> -		}
+> -
+> -		*val = gain / 1000;
+> -		*val2 = (gain % 1000) * 1000;
+> -
+>  		ret = IIO_VAL_INT_PLUS_MICRO_DB;
+>  		break;
+>  	default:
+> @@ -100,36 +135,15 @@ static int hmc425a_write_raw(struct iio_dev *indio_dev,
+>  			     int val2, long mask)
+>  {
+>  	struct hmc425a_state *st = iio_priv(indio_dev);
+> -	struct hmc425a_chip_info *inf = st->chip_info;
+> -	int code = 0, gain;
+> -	int ret;
+> -
+> -	if (val < 0)
+> -		gain = (val * 1000) - (val2 / 1000);
+> -	else
+> -		gain = (val * 1000) + (val2 / 1000);
+> -
+> -	if (gain > inf->gain_max || gain < inf->gain_min)
+> -		return -EINVAL;
+> -
+> -	switch (st->type) {
+> -	case ID_HMC425A:
+> -		code = ~((abs(gain) / 500) & 0x3F);
+> -		break;
+> -	case ID_HMC540S:
+> -		code = ~((abs(gain) / 1000) & 0xF);
+> -		break;
+> -	case ID_ADRF5740:
+> -		code = (abs(gain) / 2000) & 0xF;
+> -		code = code & BIT(3) ? code | BIT(2) : code;
+> -		break;
+> -	}
+> +	int code = 0, ret;
+>  
+>  	mutex_lock(&st->lock);
+>  	switch (mask) {
+>  	case IIO_CHAN_INFO_HARDWAREGAIN:
+> +		ret = hmc425a_gain_dB_to_code(st, val, val2, &code);
+> +		if (ret)
+> +			break;
+>  		st->gain = code;
+> -
+>  		ret = hmc425a_write(indio_dev, st->gain);
+>  		break;
+>  	default:
 
-..
 
