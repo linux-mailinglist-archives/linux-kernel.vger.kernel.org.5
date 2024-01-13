@@ -1,150 +1,118 @@
-Return-Path: <linux-kernel+bounces-25365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07EA482CE66
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 21:38:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2652082CE6D
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 21:41:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B47C31C21097
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 20:38:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 640F4283ADD
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 20:41:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0C9914F6D;
-	Sat, 13 Jan 2024 20:38:37 +0000 (UTC)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FE7C12B81;
+	Sat, 13 Jan 2024 20:41:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qn4xslFV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0465DF70
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 20:38:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nod.at
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 6129064103FF;
-	Sat, 13 Jan 2024 21:38:25 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id QIpaonAs35a3; Sat, 13 Jan 2024 21:38:25 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 03BA163434F8;
-	Sat, 13 Jan 2024 21:38:25 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Y492wK1HQJKy; Sat, 13 Jan 2024 21:38:24 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id E13A164103FF;
-	Sat, 13 Jan 2024 21:38:24 +0100 (CET)
-Date: Sat, 13 Jan 2024 21:38:24 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: torvalds <torvalds@linux-foundation.org>
-Cc: linux-um <linux-um@lists.infradead.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <618175332.231559.1705178304902.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UML updates for v6.8-rc1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5134579E5;
+	Sat, 13 Jan 2024 20:41:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62DA4C433F1;
+	Sat, 13 Jan 2024 20:40:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705178460;
+	bh=c8BIQyP1H8lJObZSyl18dvJBZNh2pJY7zSNOX401RyQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qn4xslFVH3tcADj40i6pWVh6bZyn8WaSie6SIWR0WkQSXBtyJJJ9lUMuUJctrEXxM
+	 J0orl6gEIo61FRKwl2wq+Rbruo4hrelO5oD7OBsjGXsefe3ku26FyKy7gqh5Y8jVqL
+	 R9gRghwdeQRGyixCVKKVnaDGR78+pekJu6fwIn/LsY36kaLkWImdmUk4zAG5/ubgqI
+	 4pMqhjNxXMJsVoXEoD+EnZR7GoNBihD93TeMJyvvcCalZynDqiKmfTumxdEVJDZYVZ
+	 kB0uLDJ3o6Y4PgZcqvm77scHlMb2HGwUlkOirDnNc2N51LyKAyF4FU54Ow9cbZD61/
+	 Pcw6rICC9g1wg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Index: idAAwHz3fxN2fDnKC6CSXjTnRbLUJQ==
-Thread-Topic: UML updates for v6.8-rc1
+Content-Type: text/plain; charset=UTF-8
+Date: Sat, 13 Jan 2024 22:40:54 +0200
+Message-Id: <CYDVBBKUZ314.1VU7WLWB1IMM3@kernel.org>
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "David Howells" <dhowells@redhat.com>, "Linus Torvalds"
+ <torvalds@linux-foundation.org>, "Edward Adam Davis" <eadavis@qq.com>,
+ "Pengfei Xu" <pengfei.xu@intel.com>
+Cc: "Simon Horman" <horms@kernel.org>, "Markus Suvanto"
+ <markus.suvanto@gmail.com>, "Jeffrey E Altman" <jaltman@auristor.com>,
+ "Marc Dionne" <marc.dionne@auristor.com>, "Wang Lei"
+ <wang840925@gmail.com>, "Jeff Layton" <jlayton@redhat.com>, "Steve French"
+ <smfrench@gmail.com>, "David S. Miller" <davem@davemloft.net>, "Eric
+ Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>, "Paolo
+ Abeni" <pabeni@redhat.com>, <linux-afs@lists.infradead.org>,
+ <keyrings@vger.kernel.org>, <linux-cifs@vger.kernel.org>,
+ <linux-nfs@vger.kernel.org>, <ceph-devel@vger.kernel.org>,
+ <netdev@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] keys, dns: Fix size check of V1 server-list header
+X-Mailer: aerc 0.16.0
+References: <1850031.1704921100@warthog.procyon.org.uk>
+In-Reply-To: <1850031.1704921100@warthog.procyon.org.uk>
 
-Linus,
+On Wed Jan 10, 2024 at 11:11 PM EET, David Howells wrote:
+>    =20
+> Fix the size check added to dns_resolver_preparse() for the V1 server-lis=
+t
+> header so that it doesn't give EINVAL if the size supplied is the same as
+> the size of the header struct (which should be valid).
+>
+> This can be tested with:
+>
+>         echo -n -e '\0\0\01\xff\0\0' | keyctl padd dns_resolver desc @p
+>
+> which will give "add_key: Invalid argument" without this fix.
+>
+> Fixes: 1997b3cb4217 ("keys, dns: Fix missing size check of V1 server-list=
+ header")
+> Reported-by: Pengfei Xu <pengfei.xu@intel.com>
+> Link: https://lore.kernel.org/r/ZZ4fyY4r3rqgZL+4@xpf.sh.intel.com/
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Edward Adam Davis <eadavis@qq.com>
+> cc: Linus Torvalds <torvalds@linux-foundation.org>
+> cc: Simon Horman <horms@kernel.org>
+> Cc: Jarkko Sakkinen <jarkko@kernel.org>
+> Cc: Jeffrey E Altman <jaltman@auristor.com>
+> Cc: Wang Lei <wang840925@gmail.com>
+> Cc: Jeff Layton <jlayton@redhat.com>
+> Cc: Steve French <sfrench@us.ibm.com>
+> Cc: Marc Dionne <marc.dionne@auristor.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> ---
+>  net/dns_resolver/dns_key.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/net/dns_resolver/dns_key.c b/net/dns_resolver/dns_key.c
+> index f18ca02aa95a..c42ddd85ff1f 100644
+> --- a/net/dns_resolver/dns_key.c
+> +++ b/net/dns_resolver/dns_key.c
+> @@ -104,7 +104,7 @@ dns_resolver_preparse(struct key_preparsed_payload *p=
+rep)
+>  		const struct dns_server_list_v1_header *v1;
+> =20
+>  		/* It may be a server list. */
+> -		if (datalen <=3D sizeof(*v1))
+> +		if (datalen < sizeof(*v1))
+>  			return -EINVAL;
+> =20
+>  		v1 =3D (const struct dns_server_list_v1_header *)data;
 
-The following changes since commit 861deac3b092f37b2c5e6871732f3e11486f7082=
-:
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-  Linux 6.7-rc7 (2023-12-23 16:25:56 -0800)
+BR, Jarkko
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-=
-linus-6.8-rc1
-
-for you to fetch changes up to 83aec96c631e0fa75cfe6d6a1b113a32151aaa88:
-
-  um: Mark 32bit syscall helpers as clobbering memory (2024-01-05 16:28:57 =
-+0100)
-
-----------------------------------------------------------------
-This pull request contains the following changes for UML:
-
-- Clang coverage support
-- Many cleanups from Benjamin Berg
-- Various minor fixes
-
-----------------------------------------------------------------
-Anton Ivanov (2):
-      um: Fix naming clash between UML and scheduler
-      um: document arch_futex_atomic_op_inuser
-
-Benjamin Berg (11):
-      um: Drop support for hosts without SYSEMU_SINGLESTEP support
-      um: Drop NULL check from start_userspace
-      um: Make errors to stop ptraced child fatal during startup
-      um: Don't use vfprintf() for os_info()
-      um: Do not use printk in SIGWINCH helper thread
-      um: Reap winch thread if it fails
-      um: Do not use printk in userspace trampoline
-      um: Always inline stub functions
-      um: Rely on PTRACE_SETREGSET to set FS/GS base registers
-      um: Remove unused register save/restore functions
-      um: Mark 32bit syscall helpers as clobbering memory
-
-Johannes Berg (2):
-      um: mmu: remove stub_pages
-      um: time-travel: fix time corruption
-
-Micha=C5=82 Winiarski (2):
-      arch: um: Add Clang coverage support
-      Documentation: kunit: Add clang UML coverage example
-
-Nathan Chancellor (1):
-      um: net: Fix return type of uml_net_start_xmit()
-
-Vincent Whitchurch (1):
-      um: virt-pci: fix platform map offset
-
- Documentation/dev-tools/kunit/running_tips.rst |  11 +++
- arch/um/Makefile-skas                          |   5 ++
- arch/um/drivers/chan_user.c                    |  42 +++++----
- arch/um/drivers/line.c                         |  13 +--
- arch/um/drivers/net_kern.c                     |   2 +-
- arch/um/drivers/virt-pci.c                     |   2 +-
- arch/um/include/asm/mmu.h                      |   1 -
- arch/um/include/asm/processor-generic.h        |   1 -
- arch/um/include/shared/kern_util.h             |   5 +-
- arch/um/include/shared/os.h                    |   3 -
- arch/um/include/shared/ptrace_user.h           |  41 ---------
- arch/um/include/shared/registers.h             |   2 -
- arch/um/kernel/process.c                       |  14 +--
- arch/um/kernel/ptrace.c                        |   2 -
- arch/um/kernel/signal.c                        |  12 ---
- arch/um/kernel/skas/uaccess.c                  |   4 +-
- arch/um/kernel/time.c                          |  32 +++++--
- arch/um/os-Linux/helper.c                      |   6 +-
- arch/um/os-Linux/registers.c                   |  20 -----
- arch/um/os-Linux/skas/process.c                | 117 ++++++++-------------=
-----
- arch/um/os-Linux/start_up.c                    | 111 ++++-----------------=
---
- arch/um/os-Linux/util.c                        |  19 +++-
- arch/x86/um/asm/elf.h                          |   4 +-
- arch/x86/um/asm/processor_64.h                 |   3 -
- arch/x86/um/os-Linux/Makefile                  |   1 -
- arch/x86/um/os-Linux/prctl.c                   |  12 ---
- arch/x86/um/ptrace_32.c                        |  24 -----
- arch/x86/um/ptrace_64.c                        |  26 ------
- arch/x86/um/shared/sysdep/ptrace_32.h          |   4 -
- arch/x86/um/shared/sysdep/ptrace_user.h        |  12 ++-
- arch/x86/um/shared/sysdep/stub_32.h            |  39 +++++----
- arch/x86/um/shared/sysdep/stub_64.h            |  17 ++--
- arch/x86/um/syscalls_64.c                      |  62 +++----------
- arch/x86/um/tls_64.c                           |   2 +-
- 34 files changed, 212 insertions(+), 459 deletions(-)
- delete mode 100644 arch/x86/um/os-Linux/prctl.c
 
