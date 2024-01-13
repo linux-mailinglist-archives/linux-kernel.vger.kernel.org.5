@@ -1,96 +1,251 @@
-Return-Path: <linux-kernel+bounces-25278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0769182CC8E
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 12:51:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 429EB82CC85
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 12:33:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03D39B2184D
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 11:51:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBE1A2848AE
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 11:33:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E669C210F3;
-	Sat, 13 Jan 2024 11:51:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF47F210E6;
+	Sat, 13 Jan 2024 11:32:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="C3cVHZwz"
-Received: from out203-205-221-202.mail.qq.com (out203-205-221-202.mail.qq.com [203.205.221.202])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="InKI3efF"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AF06210E1;
-	Sat, 13 Jan 2024 11:51:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1705146666; bh=9hZq7TcGcl2DGxECsv0Ebzbyr1A9X1v0BNjSFl+A1aU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=C3cVHZwzmYsW+jqADlOsss0kZPQgBa9jKPwDAyqOTrFbzCgRpmMFRbWp4XUr0yCP+
-	 01Hb3PHGK+XoeaHaLPqGnfNmH4tbvCZdrkrrE75BXW2vT+rAFsAnw9eduSrLiuAacI
-	 Q+trbCcNcxOttxRBEGoV4vF1qunKUEA5lyKI1cUY=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
-	id 7238E448; Sat, 13 Jan 2024 19:28:35 +0800
-X-QQ-mid: xmsmtpt1705145315tbfs81lrf
-Message-ID: <tencent_BEF36CE365896CC3B36456B765576766C105@qq.com>
-X-QQ-XMAILINFO: NyTsQ4JOu2J2w0/HgP7bscZFbrNQ6Z0syXFbsb9Ax6uOONSKscJtVTVn8sxCYS
-	 0VjKj33QxKGXISBSHshLRWBhU86KQ8KgM/LL6hMEn/zkEL6UlDZK09ijsxUOTQUZA3e/iQ/wJFo3
-	 d9Osf4cg7OsOIEQD1vfV0uBhorlv5s/XlpCfM4ivUgqFYUr4q2r8N9ubtb5URDldo6qtu9o+D3QU
-	 X5zcYN7ip2o/LPFE46ycXAWjE/y8+/nWH0ejHR+HWb9Kkmlc0R7GWMgOFEJ+PhLFmi8EtZHgg5Tu
-	 5f9sQ2rR36mym0GgBtc4AFxqoTuVFB573eTtCkgOHIqyw4AbhFuCYZRwd5yuZYkms4GU7AHlFwxe
-	 Fmi6foZN5ZWO5WYAU2dQKuSZ0A5INDHF249n4up705CZ/0+BkUKIaE0427MCLt3ReUUEnl+SN5Bl
-	 CLq+dkxElreY4WW2ArLKW00B7i43/sReYjVNZ1NJt9SSJuEadUAyeHFic8seENnt40uKwMzfnyRM
-	 9V54vt/GCN1gfO0SE0uXED4sNBoYVNRrFbjzlHaXN7tEmUtYApevUit5s7jelfZJ6Iy9MQMiSSzw
-	 F6hL6iKNtKdJBqEfAHO7JlMyVhlLCNuuwMxC7dFYqdD4RjY7jBTWKo2eEQrbnPgmZJxz8MOAzjgf
-	 Gcrf+h6r/R3LhRA+03nb8bn2qiGKg2rYI4WGsTB8jorEIw5o50gtNnNSfpO6MNc40cAfVffTKFJY
-	 13DmxDk+L6595jxI9o1dMz3slt+Esp3m6BigGNsvkENUTjJti7dYlCKCJIuXdaqrT1xxM6mTqH6J
-	 uV55l5cvWACvvFFsB2BHYb3fQ2k/JwKGfhLf0UB8Dfl2sjkwp0c1KDxyAfLcR6F28Pc+SqMB1Cr8
-	 E4OIzw9oh6qW9Nk6puiU1HjDZgK7xnyNahj60gZy51smUz9MqKocFHz55li9keR+J/R2wQRLcr
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+a5e651ca75fa0260acd5@syzkaller.appspotmail.com
-Cc: chao@kernel.org,
-	jaegeuk@kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: [PATCH] f2fs: fix uaf in destroy_device_list
-Date: Sat, 13 Jan 2024 19:28:31 +0800
-X-OQ-MSGID: <20240113112830.1732178-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000aac725060ed0b15c@google.com>
-References: <000000000000aac725060ed0b15c@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DC3020DE3;
+	Sat, 13 Jan 2024 11:32:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705145570; x=1736681570;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Du3qdD4Uv77R7v4lmk2V7UBcI5SCGfYhkI4KA6VQIw0=;
+  b=InKI3efFvvcbWfP6i+Agft7QegQWYtaHsUaCeCMpZWpadQXFJDqIV2S8
+   nHrDT4czatxtRvQg8ALB+Kb7K52wisdMVthKTNYgCs/ATt+qorvF/PXiv
+   YlHiIBRy9tFOKaSYNVJSHYIWjU43Ot7mKrs0PfUiWmac/tua+sjy/Imfk
+   +nlaA7YMHwn8MFe/swZb5Pl7ymY38x3c1uc/fm3O7bq/nZXxsS9sznGyr
+   NS9DRoTbop3BcKLNQ0O/JEOce1jCBMzPwXR8fz+Kzm0/n57T8H5KKXi+f
+   UL3o+Eo2QTYBhp5GOarK0hpJLNsD6GpEJ5V1ndT3CiuKj2ae6eeXeuFhZ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="12850526"
+X-IronPort-AV: E=Sophos;i="6.04,192,1695711600"; 
+   d="scan'208";a="12850526"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2024 03:32:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="783310511"
+X-IronPort-AV: E=Sophos;i="6.04,192,1695711600"; 
+   d="scan'208";a="783310511"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 13 Jan 2024 03:32:46 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rOcFn-000AQA-2j;
+	Sat, 13 Jan 2024 11:32:43 +0000
+Date: Sat, 13 Jan 2024 19:31:52 +0800
+From: kernel test robot <lkp@intel.com>
+To: Julien Massot <julien.massot@collabora.com>,
+	linux-media@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, kernel@collabora.com,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	mchehab@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	Julien Massot <julien.massot@collabora.com>
+Subject: Re: [PATCH v3 4/4] media: i2c: add MAX96714 driver
+Message-ID: <202401131916.MpdR8A2O-lkp@intel.com>
+References: <20240111130349.2776699-5-julien.massot@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240111130349.2776699-5-julien.massot@collabora.com>
 
-When the call to f2fs_fill_super() fails, only the memory occupied by sbi is 
-released, but s_fs_info is not set to NULL, this will cause the current issue
-to occur. 
+Hi Julien,
 
-Reported-and-tested-by: syzbot+a5e651ca75fa0260acd5@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- fs/f2fs/super.c | 1 +
- 1 file changed, 1 insertion(+)
+kernel test robot noticed the following build errors:
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index d00d21a8b53a..9939e2445b1e 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -4879,6 +4879,7 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
- free_sbi:
- 	if (sbi->s_chksum_driver)
- 		crypto_free_shash(sbi->s_chksum_driver);
-+	sb->s_fs_info = NULL;
- 	kfree(sbi);
- 
- 	/* give only one another chance */
+[auto build test ERROR on media-tree/master]
+[also build test ERROR on linuxtv-media-stage/master linus/master next-20240112]
+[cannot apply to sailus-media-tree/streams]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Julien-Massot/dt-bindings-media-add-Maxim-MAX96717F-GMSL2-Serializer/20240111-210740
+base:   git://linuxtv.org/media_tree.git master
+patch link:    https://lore.kernel.org/r/20240111130349.2776699-5-julien.massot%40collabora.com
+patch subject: [PATCH v3 4/4] media: i2c: add MAX96714 driver
+config: i386-randconfig-r071-20240112 (https://download.01.org/0day-ci/archive/20240113/202401131916.MpdR8A2O-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240113/202401131916.MpdR8A2O-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401131916.MpdR8A2O-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   ld: drivers/media/i2c/max96714.o: in function `max96714_parse_dt_txport':
+>> drivers/media/i2c/max96714.c:827: undefined reference to `__moddi3'
+   ld: drivers/media/i2c/max96714.o: in function `max96714_init_tx_port':
+>> drivers/media/i2c/max96714.c:725: undefined reference to `__udivdi3'
+
+
+vim +827 drivers/media/i2c/max96714.c
+
+   714	
+   715	static int max96714_init_tx_port(struct max96714_priv *priv)
+   716	{
+   717		struct v4l2_mbus_config_mipi_csi2 *mipi;
+   718		unsigned long lanes_used = 0;
+   719		u8 val, lane;
+   720		int ret;
+   721	
+   722		ret = max96714_disable_tx_port(priv);
+   723	
+   724		mipi = &priv->vep.bus.mipi_csi2;
+ > 725		val = *priv->vep.link_frequencies * 2 / MHZ(100);
+   726	
+   727		cci_update_bits(priv->regmap, MAX96714_BACKTOP25,
+   728				CSI_DPLL_FREQ_MASK, val, &ret);
+   729	
+   730		val = FIELD_PREP(MAX96714_CSI2_LANE_CNT_MASK, mipi->num_data_lanes - 1);
+   731		cci_update_bits(priv->regmap, MAX96714_MIPI_LANE_CNT,
+   732				MAX96714_CSI2_LANE_CNT_MASK, val, &ret);
+   733	
+   734		/* lanes polarity */
+   735		val = 0;
+   736		for (lane = 0; lane < mipi->num_data_lanes + 1; lane++) {
+   737			if (!mipi->lane_polarities[lane])
+   738				continue;
+   739			if (lane == 0)
+   740				/* clock lane */
+   741				val |= BIT(5);
+   742			else if (lane < 3)
+   743				/* Lane D0 and D1 */
+   744				val |= BIT(lane - 1);
+   745			else
+   746				/* D2 and D3 */
+   747				val |= BIT(lane);
+   748		}
+   749	
+   750		cci_update_bits(priv->regmap, MAX96714_MIPI_POLARITY,
+   751				MAX96714_MIPI_POLARITY_MASK, val, &ret);
+   752	
+   753		/* lanes mapping */
+   754		val = 0;
+   755		for (lane = 0; lane < mipi->num_data_lanes; lane++) {
+   756			val |= (mipi->data_lanes[lane] - 1) << (lane * 2);
+   757			lanes_used |= BIT(mipi->data_lanes[lane] - 1);
+   758		}
+   759	
+   760		/* Unused lanes need to be mapped as well to not have
+   761		 * the same lanes mapped twice.
+   762		 */
+   763		for (; lane < 4; lane++) {
+   764			unsigned int idx = find_first_zero_bit(&lanes_used, 4);
+   765	
+   766			val |= idx << (lane * 2);
+   767			lanes_used |= BIT(idx);
+   768		}
+   769	
+   770		return cci_write(priv->regmap, MAX96714_MIPI_LANE_MAP, val, &ret);
+   771	}
+   772	
+   773	static int max96714_rxport_enable_poc(struct max96714_priv *priv)
+   774	{
+   775		struct max96714_rxport *rxport = &priv->rxport;
+   776	
+   777		if (!rxport->poc)
+   778			return 0;
+   779	
+   780		return regulator_enable(rxport->poc);
+   781	}
+   782	
+   783	static int max96714_rxport_disable_poc(struct max96714_priv *priv)
+   784	{
+   785		struct max96714_rxport *rxport = &priv->rxport;
+   786	
+   787		if (!rxport->poc)
+   788			return 0;
+   789	
+   790		return regulator_disable(rxport->poc);
+   791	}
+   792	
+   793	static int max96714_parse_dt_txport(struct max96714_priv *priv)
+   794	{
+   795		struct device *dev = &priv->client->dev;
+   796		struct fwnode_handle *ep_fwnode;
+   797		u32 num_data_lanes;
+   798		s64 dpll_freq;
+   799		int ret;
+   800	
+   801		ep_fwnode = fwnode_graph_get_endpoint_by_id(dev_fwnode(dev),
+   802							    MAX96714_PAD_SOURCE, 0, 0);
+   803		if (!ep_fwnode)
+   804			return -EINVAL;
+   805	
+   806		priv->vep.bus_type = V4L2_MBUS_UNKNOWN;
+   807	
+   808		ret = v4l2_fwnode_endpoint_alloc_parse(ep_fwnode, &priv->vep);
+   809		fwnode_handle_put(ep_fwnode);
+   810		if (ret) {
+   811			dev_err(dev, "tx: failed to parse endpoint data\n");
+   812			return -EINVAL;
+   813		}
+   814	
+   815		if (priv->vep.bus_type != V4L2_MBUS_CSI2_DPHY) {
+   816			dev_err(&priv->client->dev, "Unsupported bus-type %u\n",
+   817				priv->vep.bus_type);
+   818			return -EINVAL;
+   819		}
+   820	
+   821		if (priv->vep.nr_of_link_frequencies != 1) {
+   822			ret = -EINVAL;
+   823			goto err_free_vep;
+   824		}
+   825	
+   826		/* DPLL freq is twice the link frequency */
+ > 827		dpll_freq = priv->vep.link_frequencies[0] * 2;
+   828	
+   829		/* 100Mbps step, Min 100Mbps, Max 2500Mbps */
+   830		if (dpll_freq % MHZ(100) || dpll_freq < MHZ(100) ||
+   831		    dpll_freq > MHZ(2500)) {
+   832			dev_err(dev, "tx: invalid link frequency\n");
+   833			ret = -EINVAL;
+   834			goto err_free_vep;
+   835		}
+   836	
+   837		num_data_lanes = priv->vep.bus.mipi_csi2.num_data_lanes;
+   838		if (num_data_lanes < 1 || num_data_lanes > 4) {
+   839			dev_err(dev,
+   840				"tx: invalid number of data lanes should be 1 to 4\n");
+   841			ret = -EINVAL;
+   842			goto err_free_vep;
+   843		}
+   844	
+   845		return 0;
+   846	
+   847	err_free_vep:
+   848		v4l2_fwnode_endpoint_free(&priv->vep);
+   849	
+   850		return ret;
+   851	};
+   852	
+
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
