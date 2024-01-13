@@ -1,236 +1,92 @@
-Return-Path: <linux-kernel+bounces-25179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13CCE82C921
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 03:34:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADB3682C92B
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 03:45:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6149B1F229F1
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 02:34:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F6471F25127
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 02:45:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20CC85692;
-	Sat, 13 Jan 2024 02:33:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C462748A;
+	Sat, 13 Jan 2024 02:45:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a22o6Q/P"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marun.edu.tr header.i=@marun.edu.tr header.b="IeawEYCX"
+Received: from mx1.marmara.edu.tr (mx1.marmara.edu.tr [193.140.143.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 446E2184D
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 02:33:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 018F2C433C7;
-	Sat, 13 Jan 2024 02:33:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705113237;
-	bh=hxcwXtTvwEHn6hIQwj9BeBtKbKvjTpJufYYmYZ76Hcc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=a22o6Q/PR0XxzNMbRJ0lqUljE0DaQkZIGPeZ8wj0c3H6cPgAcOQZlHEDplgZPSa2U
-	 4AK1Drk9r6PI+xPpKxDhm1F709eDC+FCo4+DSNDg2RLmvNFJayOz9ZrDvSNPTXedGf
-	 J7y/rkQi8huqRGqvENo63tghL3fWBbwJ/EP/F9JZDtKFnZ3xVV1MNvM9rD1fjz1bFm
-	 AA2QhB31sDiRNngAsLqEch/Eohdp0pjeEB9Ns+fCatnL9kgQBwPv1VOyEnbeauOWhF
-	 Ba0GVu2w8W0gjTd5BIP5EWPusiqVKVstDAAjLajdPnG13Gshshn7DXTAprjC8C0UJd
-	 G0FoRWBrABVoA==
-Message-ID: <09ca35ab-e599-41c3-86ce-73a0cb776858@kernel.org>
-Date: Sat, 13 Jan 2024 10:33:54 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72B82CA78;
+	Sat, 13 Jan 2024 02:45:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=marun.edu.tr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marun.edu.tr
+Received: from mx1.marmara.edu.tr (localhost.localdomain [127.0.0.1])
+	by mx1.marmara.edu.tr (Proxmox) with ESMTP id DFD418463D;
+	Sat, 13 Jan 2024 05:37:44 +0300 (+03)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marun.edu.tr; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:from:from:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=mx; bh=enLySNBZNDXysPx4FKcckBCSCxA9UJHEJk2lktUGMLk=; b=Ie
+	awEYCXKd0FMy1qG1y1mchL7xZiVpcjj2xqsJDKlecWhwSheAvE6onkIoJbKa+kPX
+	M1aapx6E564+WdMoI0XJxYRyw8k3CW+ZjiKUFf9OIs10LmvBkzaW87+j+XhoRsYP
+	d435+DqBdMU1UsELOslWZp+C1Zg9aVzxhEA4mLY4vjJj/FxbDpOIJqr8fesueetx
+	AymR81Jpzgy2tDL3V1BH4Ajp2naQkdX4zHnkA0JRMQV1nyDWGH6571fAbvbTuYiP
+	OgEbkrgd+rKBbO5B7llHn+S5u7/fnFpK5YeHNE40oCHJ/fEYf4jY+0lmvq+M8Odg
+	IynSPgaWsofyQLZzE8cj//ZP3rTNdjef2/iyep8s1aA6jVEtkC1SxFKNdpZT9iRb
+	yK59vFXHwWClKsGW9GpOSMdBSyMN85jGiU+X9MV3tdqhjC45lDpeoc92U9DT+Diq
+	c7OHs+hDlR+C8i4wn8HOsNCVu1JHs2/qWjvS/3pIIVzjv/h4kOy66R5Jey3fYyKK
+	cAGFzN0Vs/XEiuDmZN0HEPhM5a17q69ba3ny4TSj/bqum2R4U0ML525+kZIWkqWy
+	RO/JK3O1bFXFoADEAe0g7bARGexDjxF7xWGcWMkQMTWHx+CBvuLQwUkT4bByAnAM
+	qiS7+PyB5pR7VdV2UYAjU2ZDBwHqy6d5gETByvfzU=
+From: =?UTF-8?q?=C3=87a=C4=9Fhan=20Demir?= <caghandemir@marun.edu.tr>
+To: 
+Cc: =?UTF-8?q?=C3=87a=C4=9Fhan=20Demir?= <caghandemir@marun.edu.tr>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: hda/relatek: Enable Mute LED on HP Laptop 15s-fq2xxx
+Date: Sat, 13 Jan 2024 05:37:33 +0300
+Message-ID: <20240113023734.10817-2-caghandemir@marun.edu.tr>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/6] f2fs: compress: fix to cover normal cluster write
- with cp_rwsem
-Content-Language: en-US
-To: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-References: <20240111064208.2969599-1-chao@kernel.org>
- <20240111064208.2969599-2-chao@kernel.org> <ZaHp4to18RtGShWS@google.com>
-From: Chao Yu <chao@kernel.org>
-Autocrypt: addr=chao@kernel.org; keydata=
- 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
-In-Reply-To: <ZaHp4to18RtGShWS@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Thanks, let me resend v5 w/ blow cleanups.
+This HP Laptop uses ALC236 codec with COEF 0x07 idx 1 controlling
+the mute LED. This patch enables the already existing quirk for
+this device.
 
-On 2024/1/13 9:39, Jaegeuk Kim wrote:
-> Cleaned up a bit:
-> 
-> --- a/fs/f2fs/compress.c
-> +++ b/fs/f2fs/compress.c
-> @@ -1443,13 +1443,14 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
->   }
-> 
->   static int f2fs_write_raw_pages(struct compress_ctx *cc,
-> -                                       int *submitted,
-> +                                       int *submitted_p,
->                                          struct writeback_control *wbc,
->                                          enum iostat_type io_type)
->   {
->          struct address_space *mapping = cc->inode->i_mapping;
->          struct f2fs_sb_info *sbi = F2FS_M_SB(mapping);
-> -       int _submitted, compr_blocks, ret = 0, i;
-> +       int submitted, compr_blocks, i;
-> +       int ret = 0;
-> 
->          compr_blocks = f2fs_compressed_blocks(cc);
-> 
-> @@ -1492,7 +1493,7 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
->                  if (!clear_page_dirty_for_io(cc->rpages[i]))
->                          goto continue_unlock;
-> 
-> -               ret = f2fs_write_single_data_page(cc->rpages[i], &_submitted,
-> +               ret = f2fs_write_single_data_page(cc->rpages[i], &submitted,
->                                                  NULL, NULL, wbc, io_type,
->                                                  compr_blocks, false);
->                  if (ret) {
-> @@ -1514,7 +1515,7 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
->                          goto out;
->                  }
-> 
-> -               *submitted += _submitted;
-> +               *submitted_p += submitted;
->          }
-> 
->   out:
-> 
-> On 01/11, Chao Yu wrote:
->> When we overwrite compressed cluster w/ normal cluster, we should
->> not unlock cp_rwsem during f2fs_write_raw_pages(), otherwise data
->> will be corrupted if partial blocks were persisted before CP & SPOR,
->> due to cluster metadata wasn't updated atomically.
->>
->> Fixes: 4c8ff7095bef ("f2fs: support data compression")
->> Signed-off-by: Chao Yu <chao@kernel.org>
->> ---
->>   fs/f2fs/compress.c | 20 ++++++++++++++------
->>   fs/f2fs/data.c     |  3 ++-
->>   2 files changed, 16 insertions(+), 7 deletions(-)
->>
->> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
->> index 9940b7886e5d..bf4cfab67aec 100644
->> --- a/fs/f2fs/compress.c
->> +++ b/fs/f2fs/compress.c
->> @@ -1448,7 +1448,8 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
->>   					enum iostat_type io_type)
->>   {
->>   	struct address_space *mapping = cc->inode->i_mapping;
->> -	int _submitted, compr_blocks, ret, i;
->> +	struct f2fs_sb_info *sbi = F2FS_M_SB(mapping);
->> +	int _submitted, compr_blocks, ret = 0, i;
->>   
->>   	compr_blocks = f2fs_compressed_blocks(cc);
->>   
->> @@ -1463,6 +1464,10 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
->>   	if (compr_blocks < 0)
->>   		return compr_blocks;
->>   
->> +	/* overwrite compressed cluster w/ normal cluster */
->> +	if (compr_blocks > 0)
->> +		f2fs_lock_op(sbi);
->> +
->>   	for (i = 0; i < cc->cluster_size; i++) {
->>   		if (!cc->rpages[i])
->>   			continue;
->> @@ -1495,26 +1500,29 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
->>   				unlock_page(cc->rpages[i]);
->>   				ret = 0;
->>   			} else if (ret == -EAGAIN) {
->> +				ret = 0;
->>   				/*
->>   				 * for quota file, just redirty left pages to
->>   				 * avoid deadlock caused by cluster update race
->>   				 * from foreground operation.
->>   				 */
->>   				if (IS_NOQUOTA(cc->inode))
->> -					return 0;
->> -				ret = 0;
->> +					goto out;
->>   				f2fs_io_schedule_timeout(DEFAULT_IO_TIMEOUT);
->>   				goto retry_write;
->>   			}
->> -			return ret;
->> +			goto out;
->>   		}
->>   
->>   		*submitted += _submitted;
->>   	}
->>   
->> -	f2fs_balance_fs(F2FS_M_SB(mapping), true);
->> +out:
->> +	if (compr_blocks > 0)
->> +		f2fs_unlock_op(sbi);
->>   
->> -	return 0;
->> +	f2fs_balance_fs(sbi, true);
->> +	return ret;
->>   }
->>   
->>   int f2fs_write_multi_pages(struct compress_ctx *cc,
->> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->> index 81f9e2cc49e2..b171a9980f6a 100644
->> --- a/fs/f2fs/data.c
->> +++ b/fs/f2fs/data.c
->> @@ -2839,7 +2839,7 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
->>   		.encrypted_page = NULL,
->>   		.submitted = 0,
->>   		.compr_blocks = compr_blocks,
->> -		.need_lock = LOCK_RETRY,
->> +		.need_lock = compr_blocks ? LOCK_DONE : LOCK_RETRY,
->>   		.post_read = f2fs_post_read_required(inode) ? 1 : 0,
->>   		.io_type = io_type,
->>   		.io_wbc = wbc,
->> @@ -2920,6 +2920,7 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
->>   	if (err == -EAGAIN) {
->>   		err = f2fs_do_write_data_page(&fio);
->>   		if (err == -EAGAIN) {
->> +			f2fs_bug_on(sbi, compr_blocks);
->>   			fio.need_lock = LOCK_REQ;
->>   			err = f2fs_do_write_data_page(&fio);
->>   		}
->> -- 
->> 2.40.1
+Signed-off-by: Çağhan Demir <caghandemir@marun.edu.tr>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index b68c94757..124bee526 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9876,6 +9876,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8870, "HP ZBook Fury 15.6 Inch G8 Mobile Workstation PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x8873, "HP ZBook Studio 15.6 Inch G8 Mobile Workstation PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x887a, "HP Laptop 15s-eq2xxx", ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
++	SND_PCI_QUIRK(0x103c, 0x87FE, "HP Laptop 15s-fq2xxx", ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
+ 	SND_PCI_QUIRK(0x103c, 0x888a, "HP ENVY x360 Convertible 15-eu0xxx", ALC245_FIXUP_HP_X360_MUTE_LEDS),
+ 	SND_PCI_QUIRK(0x103c, 0x888d, "HP ZBook Power 15.6 inch G8 Mobile Workstation PC", ALC236_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8895, "HP EliteBook 855 G8 Notebook PC", ALC285_FIXUP_HP_SPEAKERS_MICMUTE_LED),
+-- 
+2.43.0
+
+
+
+--
+Bu e-posta mesajı ve içeriği gizli veya özel bilgiler içerebilir. Mesajın içeriğinde bulunan tüm fikir ve görüşler sadece göndericiye ait olup, Marmara Üniversitesi’nin resmi görüşünü yansıtmaz. Kurumumuz bu e-posta içeriğindeki bilgilerin kullanılması nedeniyle hiç kimseye karşı sorumlu tutulamaz. Mesajın belirlenen alıcılardan biri değilseniz, mesaj içeriğini ya da eklerini kullanmayınız, kopyalamayınız, yaymayınız, başka kişilere yönlendirmeyiniz ve mesajı gönderen kişiyi derhal e-posta yoluyla haberdar ederek bu mesajı ve eklerini herhangi bir kopyasını muhafaza etmeksizin siliniz. Kurumumuz size, mesajın ve bilgilerinin değişikliğe uğramaması, bütünlüğünün ve gizliliğin korunması konusunda garanti vermemekte olup, e-posta içeriğine yetkisiz olarak yapılan müdahale, virüs içermesi ve/veya bilgisayar sisteminize verebileceği herhangi bir zarardan da sorumlu değildir.This e-mail message and its content may cont
+ ain confidential or proprietary information. All ideas and opinions contained in the message are solely those of the sender and do not reflect the official opinion of Marmara University. Our institution cannot be held responsible to anyone for the use of the information contained in this e-mail. If you are not one of the designated recipients of the message, do not use, copy, disseminate, forward the message content or attachments, and immediately notify the sender of the message via e-mail and delete this message and its attachments without retaining any copies. Our institution does not guarantee you that the message and its information will not be changed, its integrity and confidentiality will be protected, and is not responsible for any unauthorized intervention to the e-mail content, viruses and/or any damage it may cause to your computer system.
+
 
