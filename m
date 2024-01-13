@@ -1,103 +1,178 @@
-Return-Path: <linux-kernel+bounces-25334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47BE582CDBE
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 17:26:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2ADD82CDC0
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 17:26:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB29F1F21CDA
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 16:26:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E3A2283C8D
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 16:26:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 082FB4417;
-	Sat, 13 Jan 2024 16:26:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE83D4C89;
+	Sat, 13 Jan 2024 16:26:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mq1CvpJD"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="G/I/b9oK"
+Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E15A3FDB;
-	Sat, 13 Jan 2024 16:26:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29DF5C433C7;
-	Sat, 13 Jan 2024 16:26:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705163176;
-	bh=faSWsUlIKQgmxLiSOdVQbwBE0dKKRlGfgL2TWtQf0vY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=mq1CvpJDlFCzPCgK+YICMMfHhsZfHYJLobqPZpeL7A3GPqHTa6JFh8Esnyw3Y7QrF
-	 /NBIGQX/olpIXCtjI+Jhk73cSIvNe5kE1DqCivHYMT/Ti4N2qQvKTrQ2C30ikVqQaR
-	 GMvOqyBgfcTlcICK5V+mwBtAiU1T4WxLll+CrWvtOIaPFbS2cvpmoSjURVmF2evwQL
-	 n7CvPUuDusg9LWtmOSo8erAFZjK25vU5/tVNXDb5bGNCNgVR8lDbh1AVapFOe9aKRO
-	 sXt9WmnS/bcYgjevYsOmotrY1zXV43Z3K4HxNMf9dXvTzvlo+qcmaYAB8FNtmA9lHd
-	 ISmhTkmqCAJyg==
-Date: Sat, 13 Jan 2024 16:26:09 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, Andrea Merello <andrea.merello@iit.it>,
- Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org
-Subject: Re: [PATCH] iio: imu: bno055: serdev requires REGMAP
-Message-ID: <20240113162609.3e950ae8@jic23-huawei>
-In-Reply-To: <20240110185611.19723-1-rdunlap@infradead.org>
-References: <20240110185611.19723-1-rdunlap@infradead.org>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9102B4C65;
+	Sat, 13 Jan 2024 16:26:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mess.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+	t=1705163200; bh=RQlY+jEYkNLZGSgB/4+Cf47fWKFdF0+OLYk1Sb7uF+w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=G/I/b9oKpQhGjP/14desRRYG8sMKpLx0JWeRFYydyZP7r/cFiUD/Y11H2OamR/UNm
+	 OkEGffzV7F0OAAUeJQqTvGegggOR/usBXKq6LPgePZuFk525StbLlBi6+gc9+RY8gP
+	 iy/UNECCrwYRIBhq43eBj8CISLvN1l7AHeUO6fPP3DrD+7EuV4lIl5WSUe6dTc6bPW
+	 WVoV9gN74SHfkAVy3Cu9T/A9uvkA0PI/sMNePG1Hn8xsL2x3uOBysXFOhRpMJN5Imu
+	 SI1c2JtdZnP37Rq3iGD82NCNpvyKF0360mVtffbiRlqqGG3rPMRzWZov9rX1a8qlSk
+	 MTjIfaslZq4uQ==
+Received: by gofer.mess.org (Postfix, from userid 1000)
+	id 6091C1000C6; Sat, 13 Jan 2024 16:26:40 +0000 (GMT)
+Date: Sat, 13 Jan 2024 16:26:40 +0000
+From: Sean Young <sean@mess.org>
+To: Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+Cc: daniel.lezcano@linaro.org, tglx@linutronix.de,
+	linux-kernel@vger.kernel.org, tony@atomide.com,
+	linux-pwm@vger.kernel.org
+Subject: Re: [PATCH] drivers/clocksource/timer-ti-dm: Don't call
+ clk_get_rate() in stop function
+Message-ID: <ZaK5wOHxf2CvzZrk@gofer.mess.org>
+References: <1696312220-11550-1-git-send-email-ivo.g.dimitrov.75@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1696312220-11550-1-git-send-email-ivo.g.dimitrov.75@gmail.com>
 
-On Wed, 10 Jan 2024 10:56:11 -0800
-Randy Dunlap <rdunlap@infradead.org> wrote:
+Hi Ivaylo,
 
-> There are a ton of build errors when REGMAP is not set, so select
-> REGMAP to fix all of them.
-> 
-> Examples (not all of them):
-> 
-> ../drivers/iio/imu/bno055/bno055_ser_core.c:495:15: error: variable 'bno055_ser_regmap_bus' has initializer but incomplete type
->   495 | static struct regmap_bus bno055_ser_regmap_bus = {
-> ../drivers/iio/imu/bno055/bno055_ser_core.c:496:10: error: 'struct regmap_bus' has no member named 'write'
->   496 |         .write = bno055_ser_write_reg,
-> ../drivers/iio/imu/bno055/bno055_ser_core.c:497:10: error: 'struct regmap_bus' has no member named 'read'
->   497 |         .read = bno055_ser_read_reg,
-> ../drivers/iio/imu/bno055/bno055_ser_core.c: In function 'bno055_ser_probe':
-> ../drivers/iio/imu/bno055/bno055_ser_core.c:532:18: error: implicit declaration of function 'devm_regmap_init'; did you mean 'vmem_map_init'? [-Werror=implicit-function-declaration]
->   532 |         regmap = devm_regmap_init(&serdev->dev, &bno055_ser_regmap_bus,
-> ../drivers/iio/imu/bno055/bno055_ser_core.c:532:16: warning: assignment to 'struct regmap *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
->   532 |         regmap = devm_regmap_init(&serdev->dev, &bno055_ser_regmap_bus,
-> ../drivers/iio/imu/bno055/bno055_ser_core.c: At top level:
-> ../drivers/iio/imu/bno055/bno055_ser_core.c:495:26: error: storage size of 'bno055_ser_regmap_bus' isn't known
->   495 | static struct regmap_bus bno055_ser_regmap_bus = {
-> 
-> Fixes: 2eef5a9cc643 ("iio: imu: add BNO055 serdev driver")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Andrea Merello <andrea.merello@iit.it>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: linux-iio@vger.kernel.org
-Applied to the fixes-togreg branch of iio.git and marked for stable.
+On Tue, Oct 03, 2023 at 08:50:20AM +0300, Ivaylo Dimitrov wrote:
+> clk_get_rate() might sleep, and that prevents dm-timer based PWM from being
+> used from atomic context.
+
+Now that this is merged, pwm-ir-tx can only use the pwm in atomic context
+if pwm-omap-timer.c sets the atomic field like the rpi pwm does here:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pwm/pwm-bcm2835.c#n175
+
+see pwm-ir-tx here:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/media/rc/pwm-ir-tx.c#n170
+
+It would be nice to have this tested and working properly for the n900.
 
 Thanks,
-Jonathan
 
-> ---
->  drivers/iio/imu/bno055/Kconfig |    1 +
->  1 file changed, 1 insertion(+)
+Sean
+
+
 > 
-> diff -- a/drivers/iio/imu/bno055/Kconfig b/drivers/iio/imu/bno055/Kconfig
-> --- a/drivers/iio/imu/bno055/Kconfig
-> +++ b/drivers/iio/imu/bno055/Kconfig
-> @@ -8,6 +8,7 @@ config BOSCH_BNO055
->  config BOSCH_BNO055_SERIAL
->  	tristate "Bosch BNO055 attached via UART"
->  	depends on SERIAL_DEV_BUS
-> +	select REGMAP
->  	select BOSCH_BNO055
->  	help
->  	  Enable this to support Bosch BNO055 IMUs attached via UART.
-
+> Fix that by getting fclk rate in probe() and using a notifier in case rate
+> changes.
+> 
+> Fixes: af04aa856e93 ("ARM: OMAP: Move dmtimer driver out of plat-omap to drivers under clocksource")
+> Signed-off-by: Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+> ---
+>  drivers/clocksource/timer-ti-dm.c | 36 ++++++++++++++++++++++++++++--------
+>  1 file changed, 28 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/clocksource/timer-ti-dm.c b/drivers/clocksource/timer-ti-dm.c
+> index 09ab29c..5f60f6b 100644
+> --- a/drivers/clocksource/timer-ti-dm.c
+> +++ b/drivers/clocksource/timer-ti-dm.c
+> @@ -140,6 +140,8 @@ struct dmtimer {
+>  	struct platform_device *pdev;
+>  	struct list_head node;
+>  	struct notifier_block nb;
+> +	struct notifier_block fclk_nb;
+> +	unsigned long fclk_rate;
+>  };
+>  
+>  static u32 omap_reserved_systimers;
+> @@ -253,8 +255,7 @@ static inline void __omap_dm_timer_enable_posted(struct dmtimer *timer)
+>  	timer->posted = OMAP_TIMER_POSTED;
+>  }
+>  
+> -static inline void __omap_dm_timer_stop(struct dmtimer *timer,
+> -					unsigned long rate)
+> +static inline void __omap_dm_timer_stop(struct dmtimer *timer)
+>  {
+>  	u32 l;
+>  
+> @@ -269,7 +270,7 @@ static inline void __omap_dm_timer_stop(struct dmtimer *timer,
+>  		 * Wait for functional clock period x 3.5 to make sure that
+>  		 * timer is stopped
+>  		 */
+> -		udelay(3500000 / rate + 1);
+> +		udelay(3500000 / timer->fclk_rate + 1);
+>  #endif
+>  	}
+>  
+> @@ -348,6 +349,21 @@ static int omap_timer_context_notifier(struct notifier_block *nb,
+>  	return NOTIFY_OK;
+>  }
+>  
+> +static int omap_timer_fclk_notifier(struct notifier_block *nb,
+> +				    unsigned long event, void *data)
+> +{
+> +	struct clk_notifier_data *clk_data = data;
+> +	struct dmtimer *timer = container_of(nb, struct dmtimer, fclk_nb);
+> +
+> +	switch (event) {
+> +	case POST_RATE_CHANGE:
+> +		timer->fclk_rate = clk_data->new_rate;
+> +		return NOTIFY_OK;
+> +	default:
+> +		return NOTIFY_DONE;
+> +	}
+> +}
+> +
+>  static int omap_dm_timer_reset(struct dmtimer *timer)
+>  {
+>  	u32 l, timeout = 100000;
+> @@ -754,7 +770,6 @@ static int omap_dm_timer_stop(struct omap_dm_timer *cookie)
+>  {
+>  	struct dmtimer *timer;
+>  	struct device *dev;
+> -	unsigned long rate = 0;
+>  
+>  	timer = to_dmtimer(cookie);
+>  	if (unlikely(!timer))
+> @@ -762,10 +777,7 @@ static int omap_dm_timer_stop(struct omap_dm_timer *cookie)
+>  
+>  	dev = &timer->pdev->dev;
+>  
+> -	if (!timer->omap1)
+> -		rate = clk_get_rate(timer->fclk);
+> -
+> -	__omap_dm_timer_stop(timer, rate);
+> +	__omap_dm_timer_stop(timer);
+>  
+>  	pm_runtime_put_sync(dev);
+>  
+> @@ -1124,6 +1136,14 @@ static int omap_dm_timer_probe(struct platform_device *pdev)
+>  		timer->fclk = devm_clk_get(dev, "fck");
+>  		if (IS_ERR(timer->fclk))
+>  			return PTR_ERR(timer->fclk);
+> +
+> +		timer->fclk_nb.notifier_call = omap_timer_fclk_notifier;
+> +		ret = devm_clk_notifier_register(dev, timer->fclk,
+> +						 &timer->fclk_nb);
+> +		if (ret)
+> +			return ret;
+> +
+> +		timer->fclk_rate = clk_get_rate(timer->fclk);
+>  	} else {
+>  		timer->fclk = ERR_PTR(-ENODEV);
+>  	}
+> -- 
+> 1.9.1
 
