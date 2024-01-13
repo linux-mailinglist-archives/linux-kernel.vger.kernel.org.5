@@ -1,81 +1,104 @@
-Return-Path: <linux-kernel+bounces-25157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 564CE82C8B4
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 02:28:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59CE882C8BC
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 02:29:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0398C1F2317A
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 01:28:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E78B1C22842
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 01:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA8931549F;
-	Sat, 13 Jan 2024 01:28:06 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5205171DD;
+	Sat, 13 Jan 2024 01:29:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jZ2H2lYC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 248B512E62
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 01:28:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7b7f98e777cso643053139f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 17:28:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705109284; x=1705714084;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yO/xdw8mUiUeRo79DAK0wxdvi30bQpvVBNatj0IZ9bQ=;
-        b=FlFH1KW+pn4s2ZzksGPwH4lLSU36M/jynI0L8tEK1MRyJBCGPc1I+SY0kaz53qNfTX
-         xkZQV71cI3rElrWgucM6J4guv7rUQCdMcXT94ibQ2bcmGliEB+k5sRQtFiuNcYRgBEZ9
-         TiiIk4OfZLn5VKJH8e9vBncArBN73zwPTLw2WHl3a7WZIAR/r4dhNFiOc+TbMOrBMqZN
-         EEt2zuaiTPWCUCI79qxnDoEsUpBEo9qMpsyRYF/Y/WOKj+pPh5hVW1Cb1r390e1n2T5p
-         xvpFQd0nXXqQiEZsPytLnyHfoIkzeObi/DmioXXanxi2A+YQD4kOGFxHm6XUdCZzpjyh
-         NTXw==
-X-Gm-Message-State: AOJu0YxX9YvXBUUEzr9pWoCdjQfnviQJIOxb1KmvBXrmu5AjNtIL8Sm3
-	xG9lWlzV/SJfcox+UvaAGUkS2QJKmvv2x1AllsOoZ7EBHaUC
-X-Google-Smtp-Source: AGHT+IGcMUlOs/Tzd0+a1Uuk+acyfi90LBsot4shAq3B70+iVAprve0XWavepzODdBa0BESDLdRg+h02+m2jOZGlDkT26zifC63/
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 367AE18E0F;
+	Sat, 13 Jan 2024 01:29:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C7C3C433C7;
+	Sat, 13 Jan 2024 01:29:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705109358;
+	bh=3gfJsBCOj95iGvlfeaMcYo6PaAxu7sDaTS+k0H9585s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jZ2H2lYC3WdyBqBjE/fndSo8j0bRYU8r17RvS+62ATm/UOXEVY1CMwgGtAsHTXJkE
+	 QndEsSMVPn35VPcC5HNKtUFUU5c7zXFSTh8CKVMnPcktXfCp41220wr+aQ0yULSIj5
+	 GXjStD13/wSc7tTpF+MLiNUmjU66HEptfh67W4S7sp658vAHHFhw7uR86MkMwAkRUN
+	 KXQ6pv7w8KtwayBNAZBpKnJ2v2q6J3X/Cr525enlKGZHZdXzm8BslncFhNrsLcyJgC
+	 ajbYvMZpEkXgPWM30x4KQxZTw2H3M7hSieCQEo+DkUSAe6Y5KbB8I8r121z7Z6qLJ/
+	 hQofdf5OZO5IA==
+Date: Fri, 12 Jan 2024 19:29:16 -0600
+From: Rob Herring <robh@kernel.org>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Russell King <linux@armlinux.org.uk>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Jakub Kicinski <kuba@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>, Lee Jones <lee@kernel.org>,
+	Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+	William Zhang <william.zhang@broadcom.com>,
+	Pavel Machek <pavel@ucw.cz>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Kursad Oney <kursad.oney@broadcom.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-leds@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+	linux-kernel@vger.kernel.org,
+	Sven Schwermer <sven.schwermer@disruptive-technologies.com>,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+	Anand Gore <anand.gore@broadcom.com>,
+	=?iso-8859-1?Q?Fern=E1ndez?= Rojas <noltari@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org
+Subject: Re: [net-next PATCH v9 1/5] dt-bindings: net: phy: Make LED
+ active-low property common
+Message-ID: <170510935584.3795106.4060460999461861209.robh@kernel.org>
+References: <20240105142719.11042-1-ansuelsmth@gmail.com>
+ <20240105142719.11042-2-ansuelsmth@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a07:b0:35f:d5ea:8a86 with SMTP id
- s7-20020a056e021a0700b0035fd5ea8a86mr194343ild.5.1705109284375; Fri, 12 Jan
- 2024 17:28:04 -0800 (PST)
-Date: Fri, 12 Jan 2024 17:28:04 -0800
-In-Reply-To: <0000000000009e798305fe8e95ac@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000032d485060ec9b172@google.com>
-Subject: Re: [syzbot] [jfs?] kernel BUG in txEnd
-From: syzbot <syzbot+3699edf4da1e736b317b@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, 
-	jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, shaggy@kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240105142719.11042-2-ansuelsmth@gmail.com>
 
-syzbot suspects this issue was fixed by commit:
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+On Fri, 05 Jan 2024 15:27:13 +0100, Christian Marangi wrote:
+> Move LED active-low property to common.yaml. This property is currently
+> defined multiple times by bcm LEDs. This property will now be supported
+> in a generic way for PHY LEDs with the use of a generic function.
+> 
+> With active-low bool property not defined, active-high is always
+> assumed.
+> 
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> ---
+> Changes v5:
+> - Make active-low generic
+> Changes v4:
+> - Drop support for global active-low
+> - Rework to polarity option (for marvell10g series support)
+> Changes v3:
+> - Out of RFC
+> Changes v2:
+> - Add this patch
+> 
+>  Documentation/devicetree/bindings/leds/common.yaml          | 6 ++++++
+>  Documentation/devicetree/bindings/leds/leds-bcm63138.yaml   | 4 ----
+>  Documentation/devicetree/bindings/leds/leds-bcm6328.yaml    | 4 ----
+>  Documentation/devicetree/bindings/leds/leds-bcm6358.txt     | 2 --
+>  .../devicetree/bindings/leds/leds-pwm-multicolor.yaml       | 4 ----
+>  Documentation/devicetree/bindings/leds/leds-pwm.yaml        | 5 -----
+>  6 files changed, 6 insertions(+), 19 deletions(-)
+> 
 
-    fs: Block writes to mounted block devices
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1280b62be80000
-start commit:   692b7dc87ca6 Merge tag 'hyperv-fixes-signed-20230619' of g..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e74b395fe4978721
-dashboard link: https://syzkaller.appspot.com/bug?extid=3699edf4da1e736b317b
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b373a7280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1749e8f3280000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: fs: Block writes to mounted block devices
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
