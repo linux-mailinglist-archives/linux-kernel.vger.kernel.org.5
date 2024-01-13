@@ -1,47 +1,49 @@
-Return-Path: <linux-kernel+bounces-25294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 165CA82CCD1
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 14:38:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9743B82CCD3
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 14:39:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D0BF284A0E
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 13:38:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 409FA283C34
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 13:39:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF2DF21116;
-	Sat, 13 Jan 2024 13:38:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7D8E2111E;
+	Sat, 13 Jan 2024 13:39:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jE7vgett"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XTaV2lm3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31401210F5;
-	Sat, 13 Jan 2024 13:38:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F07C7C433F1;
-	Sat, 13 Jan 2024 13:38:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2918621340;
+	Sat, 13 Jan 2024 13:39:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95D21C433F1;
+	Sat, 13 Jan 2024 13:39:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705153108;
-	bh=SC7yxX48nNARM4zUOANK65x2NyUG2tY3vzPMRpzF+LM=;
+	s=k20201202; t=1705153190;
+	bh=30UFseJtYbMgi4KrTjNXLIsc4Cc9xJPODHdnxx2gh5I=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=jE7vgettR+MRr/hJePpzqL/3b14WDhBRhyrYPfY9Gb3wtzC7OTRCkuMoE1Gwd5102
-	 +8qNv8U7UGCVrxOvoDmdr7FGSY13M3qryfAs98IaOqG4efcbgccIe0rgD9SW2grxOH
-	 n0+odZa1vSn4gWFT6bt4EZRwhOdiUPOBPISXtjhEtMwrC1w9ojQv79QH8QwCm7csLF
-	 +QInt34OnInHL0L8nR3rlGfRc9Td2F8gL0SK5po1QmJ4bI0blEk5qYymaUsELqzDTB
-	 EvgJolaqSomy2Ct3sfY5Abvy3TZE2qZ8iHEXwzlA6d6sgX7ypFk764HQCjJwlYPfDi
-	 71QMcnDZYd2TQ==
-Date: Sat, 13 Jan 2024 22:38:24 +0900
+	b=XTaV2lm3LjFhAt0Ms15Stx6/GnWmCr7ucgwy+FwbIvaxdLEnwk3UocGwtmNKx89+a
+	 oADt0PKz7O7XRP/aDMAveYlOrSeRavFBGs4oYvxY2MQoPt50cHgRcaLvEAsq6q+KRP
+	 ZPvgNGqliehp24+L9tZ/DS8EsJCIPc5IIaFviDzdQSyy9gWZAkBqi+ysarE71QjFpc
+	 ++mJVpSN2l4ZYuk0BeM30jK3imXb0M8WiPfi4auZrlZbD4xYlPQsDOo9kWRr2n+zvQ
+	 zG6Ftmvl5q+brLLCTRX+JSewmU+4xoXY3tWGVYrCLZvWLu6RYkkvgvggkbwNHQepCd
+	 OCjXblZsWrCFg==
+Date: Sat, 13 Jan 2024 22:39:46 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To: Vincent Donnefort <vdonnefort@google.com>
 Cc: rostedt@goodmis.org, linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
- kernel-team@android.com
-Subject: Re: [PATCH v11 1/5] ring-buffer: Zero ring-buffer sub-buffers
-Message-Id: <20240113223824.3e9eed42cf10748e4255afde@kernel.org>
-In-Reply-To: <20240111161712.1480333-2-vdonnefort@google.com>
+ kernel-team@android.com, Shuah Khan <shuah@kernel.org>, Shuah Khan
+ <skhan@linuxfoundation.org>, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v11 5/5] ring-buffer/selftest: Add ring-buffer mapping
+ test
+Message-Id: <20240113223946.9c463c5a4787dc0261789e65@kernel.org>
+In-Reply-To: <20240111161712.1480333-6-vdonnefort@google.com>
 References: <20240111161712.1480333-1-vdonnefort@google.com>
-	<20240111161712.1480333-2-vdonnefort@google.com>
+	<20240111161712.1480333-6-vdonnefort@google.com>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -52,55 +54,240 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 11 Jan 2024 16:17:08 +0000
+On Thu, 11 Jan 2024 16:17:12 +0000
 Vincent Donnefort <vdonnefort@google.com> wrote:
 
-> In preparation for the ring-buffer memory mapping where each subbuf will
-> be accessible to user-space, zero all the page allocations.
+> This test maps a ring-buffer and validate the meta-page after reset and
+> after emitting few events.
 > 
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Shuah Khan <skhan@linuxfoundation.org>
+> Cc: linux-kselftest@vger.kernel.org
 > Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
 
-Looks good to me.
+Looks good to me and tested.
 
 Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Tested-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Thank you!
+Thank you,
 
 > 
-> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-> index 173d2595ce2d..db73e326fa04 100644
-> --- a/kernel/trace/ring_buffer.c
-> +++ b/kernel/trace/ring_buffer.c
-> @@ -1466,7 +1466,8 @@ static int __rb_allocate_pages(struct ring_buffer_per_cpu *cpu_buffer,
->  
->  		list_add(&bpage->list, pages);
->  
-> -		page = alloc_pages_node(cpu_to_node(cpu_buffer->cpu), mflags,
-> +		page = alloc_pages_node(cpu_to_node(cpu_buffer->cpu),
-> +					mflags | __GFP_ZERO,
->  					cpu_buffer->buffer->subbuf_order);
->  		if (!page)
->  			goto free_pages;
-> @@ -1551,7 +1552,8 @@ rb_allocate_cpu_buffer(struct trace_buffer *buffer, long nr_pages, int cpu)
->  
->  	cpu_buffer->reader_page = bpage;
->  
-> -	page = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL, cpu_buffer->buffer->subbuf_order);
-> +	page = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL | __GFP_ZERO,
-> +				cpu_buffer->buffer->subbuf_order);
->  	if (!page)
->  		goto fail_free_reader;
->  	bpage->page = page_address(page);
-> @@ -5525,7 +5527,8 @@ ring_buffer_alloc_read_page(struct trace_buffer *buffer, int cpu)
->  	if (bpage->data)
->  		goto out;
->  
-> -	page = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL | __GFP_NORETRY,
-> +	page = alloc_pages_node(cpu_to_node(cpu),
-> +				GFP_KERNEL | __GFP_NORETRY | __GFP_ZERO,
->  				cpu_buffer->buffer->subbuf_order);
->  	if (!page) {
->  		kfree(bpage);
+> diff --git a/tools/testing/selftests/ring-buffer/Makefile b/tools/testing/selftests/ring-buffer/Makefile
+> new file mode 100644
+> index 000000000000..627c5fa6d1ab
+> --- /dev/null
+> +++ b/tools/testing/selftests/ring-buffer/Makefile
+> @@ -0,0 +1,8 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +CFLAGS += -Wl,-no-as-needed -Wall
+> +CFLAGS += $(KHDR_INCLUDES)
+> +CFLAGS += -D_GNU_SOURCE
+> +
+> +TEST_GEN_PROGS = map_test
+> +
+> +include ../lib.mk
+> diff --git a/tools/testing/selftests/ring-buffer/config b/tools/testing/selftests/ring-buffer/config
+> new file mode 100644
+> index 000000000000..ef8214661612
+> --- /dev/null
+> +++ b/tools/testing/selftests/ring-buffer/config
+> @@ -0,0 +1 @@
+> +CONFIG_FTRACE=y
+> diff --git a/tools/testing/selftests/ring-buffer/map_test.c b/tools/testing/selftests/ring-buffer/map_test.c
+> new file mode 100644
+> index 000000000000..49107e8da5e9
+> --- /dev/null
+> +++ b/tools/testing/selftests/ring-buffer/map_test.c
+> @@ -0,0 +1,188 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Ring-buffer memory mapping tests
+> + *
+> + * Copyright (c) 2024 Vincent Donnefort <vdonnefort@google.com>
+> + */
+> +#include <fcntl.h>
+> +#include <sched.h>
+> +#include <stdbool.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <unistd.h>
+> +
+> +#include <linux/trace_mmap.h>
+> +
+> +#include <sys/mman.h>
+> +#include <sys/ioctl.h>
+> +
+> +#include "../user_events/user_events_selftests.h" /* share tracefs setup */
+> +#include "../kselftest_harness.h"
+> +
+> +#define TRACEFS_ROOT "/sys/kernel/tracing"
+> +
+> +static int __tracefs_write(const char *path, const char *value)
+> +{
+> +	FILE *file;
+> +
+> +	file = fopen(path, "w");
+> +	if (!file)
+> +		return -1;
+> +
+> +	fputs(value, file);
+> +	fclose(file);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __tracefs_write_int(const char *path, int value)
+> +{
+> +	char *str;
+> +	int ret;
+> +
+> +	if (asprintf(&str, "%d", value) < 0)
+> +		return -1;
+> +
+> +	ret = __tracefs_write(path, str);
+> +
+> +	free(str);
+> +
+> +	return ret;
+> +}
+> +
+> +#define tracefs_write_int(path, value) \
+> +	ASSERT_EQ(__tracefs_write_int((path), (value)), 0)
+> +
+> +static int tracefs_reset(void)
+> +{
+> +	if (__tracefs_write_int(TRACEFS_ROOT"/tracing_on", 0))
+> +		return -1;
+> +	if (__tracefs_write_int(TRACEFS_ROOT"/trace", 0))
+> +		return -1;
+> +	if (__tracefs_write(TRACEFS_ROOT"/set_event", ""))
+> +		return -1;
+> +
+> +	return 0;
+> +}
+> +
+> +FIXTURE(map) {
+> +	struct trace_buffer_meta	*meta;
+> +	void				*data;
+> +	int				cpu_fd;
+> +	bool				umount;
+> +};
+> +
+> +FIXTURE_VARIANT(map) {
+> +	int	subbuf_size;
+> +};
+> +
+> +FIXTURE_VARIANT_ADD(map, subbuf_size_4k) {
+> +	.subbuf_size = 4,
+> +};
+> +
+> +FIXTURE_VARIANT_ADD(map, subbuf_size_8k) {
+> +	.subbuf_size = 8,
+> +};
+> +
+> +FIXTURE_SETUP(map)
+> +{
+> +	int cpu = sched_getcpu(), page_size = getpagesize();
+> +	unsigned long meta_len, data_len;
+> +	char *cpu_path, *message;
+> +	bool fail, umount;
+> +	cpu_set_t cpu_mask;
+> +	void *map;
+> +
+> +	if (!tracefs_enabled(&message, &fail, &umount)) {
+> +		if (fail) {
+> +			TH_LOG("Tracefs setup failed: %s", message);
+> +			ASSERT_FALSE(fail);
+> +		}
+> +		SKIP(return, "Skipping: %s", message);
+> +	}
+> +
+> +	self->umount = umount;
+> +
+> +	ASSERT_GE(cpu, 0);
+> +
+> +	ASSERT_EQ(tracefs_reset(), 0);
+> +
+> +	tracefs_write_int(TRACEFS_ROOT"/buffer_subbuf_size_kb", variant->subbuf_size);
+> +
+> +	ASSERT_GE(asprintf(&cpu_path,
+> +			   TRACEFS_ROOT"/per_cpu/cpu%d/trace_pipe_raw",
+> +			   cpu), 0);
+> +
+> +	self->cpu_fd = open(cpu_path, O_RDONLY | O_NONBLOCK);
+> +	ASSERT_GE(self->cpu_fd, 0);
+> +	free(cpu_path);
+> +
+> +	map = mmap(NULL, page_size, PROT_READ, MAP_SHARED, self->cpu_fd, 0);
+> +	ASSERT_NE(map, MAP_FAILED);
+> +	self->meta = (struct trace_buffer_meta *)map;
+> +
+> +	meta_len = self->meta->meta_page_size;
+> +	data_len = self->meta->subbuf_size * self->meta->nr_subbufs;
+> +
+> +	map = mmap(NULL, data_len, PROT_READ, MAP_SHARED, self->cpu_fd, meta_len);
+> +	ASSERT_NE(map, MAP_FAILED);
+> +	self->data = map;
+> +
+> +	/*
+> +	 * Ensure generated events will be found on this very same ring-buffer.
+> +	 */
+> +	CPU_ZERO(&cpu_mask);
+> +	CPU_SET(cpu, &cpu_mask);
+> +	ASSERT_EQ(sched_setaffinity(0, sizeof(cpu_mask), &cpu_mask), 0);
+> +}
+> +
+> +FIXTURE_TEARDOWN(map)
+> +{
+> +	tracefs_reset();
+> +
+> +	if (self->umount)
+> +		tracefs_unmount();
+> +
+> +	munmap(self->data, self->meta->subbuf_size * self->meta->nr_subbufs);
+> +	munmap(self->meta, self->meta->meta_page_size);
+> +	close(self->cpu_fd);
+> +}
+> +
+> +TEST_F(map, meta_page_check)
+> +{
+> +	int cnt = 0;
+> +
+> +	ASSERT_EQ(self->meta->entries, 0);
+> +	ASSERT_EQ(self->meta->overrun, 0);
+> +	ASSERT_EQ(self->meta->read, 0);
+> +	ASSERT_EQ(self->meta->subbufs_touched, 0);
+> +	ASSERT_EQ(self->meta->subbufs_lost, 0);
+> +	ASSERT_EQ(self->meta->subbufs_read, 0);
+> +
+> +	ASSERT_EQ(self->meta->reader.id, 0);
+> +	ASSERT_EQ(self->meta->reader.read, 0);
+> +
+> +	ASSERT_EQ(ioctl(self->cpu_fd, TRACE_MMAP_IOCTL_GET_READER), 0);
+> +	ASSERT_EQ(self->meta->reader.id, 0);
+> +
+> +	tracefs_write_int(TRACEFS_ROOT"/tracing_on", 1);
+> +	for (int i = 0; i < 16; i++)
+> +		tracefs_write_int(TRACEFS_ROOT"/trace_marker", i);
+> +again:
+> +	ASSERT_EQ(ioctl(self->cpu_fd, TRACE_MMAP_IOCTL_GET_READER), 0);
+> +
+> +	ASSERT_EQ(self->meta->entries, 16);
+> +	ASSERT_EQ(self->meta->overrun, 0);
+> +	ASSERT_EQ(self->meta->read, 16);
+> +	/* subbufs_touched doesn't take into account the commit page */
+> +	ASSERT_EQ(self->meta->subbufs_touched, 0);
+> +	ASSERT_EQ(self->meta->subbufs_lost, 0);
+> +	ASSERT_EQ(self->meta->subbufs_read, 1);
+> +
+> +	ASSERT_EQ(self->meta->reader.id, 1);
+> +
+> +	if (!(cnt++))
+> +		goto again;
+> +}
+> +
+> +TEST_HARNESS_MAIN
 > -- 
 > 2.43.0.275.g3460e3d667-goog
 > 
