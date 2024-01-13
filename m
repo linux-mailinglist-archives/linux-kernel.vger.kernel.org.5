@@ -1,147 +1,163 @@
-Return-Path: <linux-kernel+bounces-25369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 428B782CEAD
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 22:03:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32C6182CEAF
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 22:05:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB2EBB223EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 21:03:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D07F3281F73
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 21:05:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6C3E14F6D;
-	Sat, 13 Jan 2024 21:03:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29E4015E94;
+	Sat, 13 Jan 2024 21:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jr8yqAgd"
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rYV8Ky+6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAD306AC2;
-	Sat, 13 Jan 2024 21:03:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-78324e302d4so491384785a.1;
-        Sat, 13 Jan 2024 13:03:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705179800; x=1705784600; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lwGZt+LYnLHak1ltwS+QAks1XkzaNXbIWxpfqvUkZFA=;
-        b=jr8yqAgd6yeibVuRAJGaLfe+mL3b0d/IDzKkJH6CheaF6XxmVCl1KCX83QCY+X0h7N
-         1JfX179D17POrbvxnwXZW8rK1CV5PQ8SLNFzdrXCmBgPmjd3OiZW3NikH5Uau4KtslAm
-         qwiEGRTfEhltnSBb5YRbgKEGpv3aK2XLNm3FuCQsqtUNmoA87/Dzi2JIy/5j3UZStpQt
-         Bhn1rN2qoOcGZwNM1DLzKiu4cMo5CpGx05prFouR40REagAk2Yuv6p4/XJeP5NpcWFdE
-         PCqr6h6H+GfegCLBjDgX00T1BClreb0/hgVx4xuDOPNM6+C4NLdihA1fsh+SJZoLs8TH
-         JufA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705179800; x=1705784600;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lwGZt+LYnLHak1ltwS+QAks1XkzaNXbIWxpfqvUkZFA=;
-        b=XzDe4S6gqPHHdLND6EMY+FGzbFjuZyMaTb+/h0ZQlw58RzGOcsePmANYkxgsoMhslB
-         46Lts0JKePQOIz4PZ8zx8xqcY9LeucnvpUN2qs51ZaAyNawICl69unb9vHkY1cf5M1Kg
-         4E/Te/FkXVtfqkUqIV0+SSbcunFRCuAt0ITSUJGYeXx7HutJfYCGDnysDbantrXYazFE
-         uIpAiF6CFR8KEpWyJoteHQrZ7od8qjGjTwiu+u6TWE1YgLakBDuaHaRs1fqY8/aTOJ8A
-         7Eofm8LSE0I7mLOwqA2MSGVgJM4iuZjQNO8hrySE8NMJ1id37JefCVuM4IHDKW+0D1wa
-         NPjw==
-X-Gm-Message-State: AOJu0Yx+XuLr8MgGRntsx4m5J8mx7DnfP74AcClTTeyP40FX5XHOLyxu
-	sWk82pEMquHaANtz4/gq7MKD5u6odrg=
-X-Google-Smtp-Source: AGHT+IGbxErjGWFWKmTzFu4egE9j5Lq9cRNPWHG3lNeFxq2gbH69rsptiKCjgoP3nItdc2YZ0sTNFw==
-X-Received: by 2002:a05:620a:4155:b0:783:3579:242e with SMTP id k21-20020a05620a415500b007833579242emr4293728qko.55.1705179800496;
-        Sat, 13 Jan 2024 13:03:20 -0800 (PST)
-Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
-        by smtp.gmail.com with ESMTPSA id gf13-20020a0561224e8d00b004b77e4dfcc8sm215117vkb.19.2024.01.13.13.03.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 13 Jan 2024 13:03:17 -0800 (PST)
-Message-ID: <5750a0c0-3ad6-409c-9b76-82c5c015e719@gmail.com>
-Date: Sat, 13 Jan 2024 13:03:14 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D180107A6;
+	Sat, 13 Jan 2024 21:05:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86632C433C7;
+	Sat, 13 Jan 2024 21:04:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705179900;
+	bh=ux54uZJWkkoZPaHx5sQX6OQDNhSpfNHWw1t1XFJcD8w=;
+	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
+	b=rYV8Ky+6NziqG3w22urj/CYOfZu/nLd+f3GZpyP+b35d4r+ZbLzAbY+zmq9BM7gd9
+	 mIFtAAaRQ+j/xDVLJXr7OfT6W21TKrbUM6AFG1bffoOPCNzbeFFHwc63J0hGnWXNUN
+	 YrnhEF0Mt6Nk36cqXS01+6x5mD/XIzcZOXUflI6VbRqZ9LzWcecWP0DJKxPNC1zOUl
+	 YiwL+bMUooPZqwLoNX4OlVfJrCHIhM0JYX48nhRbPV78iuMjI0PFZwG2zaXLCA/TK6
+	 TgSsq2EfvmWclH++2bZpaHe0UhKDyTHbpA5pWWoR+d//iyJmU5pKBp4hg3wjW+Yar9
+	 scLX6fY1SYfiA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: ravb: Fix dma_addr_t truncation in error case
-Content-Language: en-US
-To: Nikita Yushchenko <nikita.yoush@cogentembedded.com>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>
-Cc: Sergey Shtylyov <s.shtylyov@omp.ru>,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
- Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240113042221.480650-1-nikita.yoush@cogentembedded.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; keydata=
- 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
- HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20240113042221.480650-1-nikita.yoush@cogentembedded.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Sat, 13 Jan 2024 23:04:54 +0200
+Message-Id: <CYDVTPABVUJK.1BTJY8YUF9WPI@kernel.org>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "hpa@zytor.com"
+ <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>, "tj@kernel.org"
+ <tj@kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
+ <kai.huang@intel.com>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>,
+ "anakrish@microsoft.com" <anakrish@microsoft.com>,
+ "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>, "Li,
+ Zhiquan1" <zhiquan1.li@intel.com>, "yangjie@microsoft.com"
+ <yangjie@microsoft.com>
+Subject: Re: [PATCH v6 09/12] x86/sgx: Restructure top-level EPC reclaim
+ function
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+X-Mailer: aerc 0.16.0
+References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
+ <20231030182013.40086-10-haitao.huang@linux.intel.com>
+ <c8fc40dc56b853fbff14ba22db197c80a6d31820.camel@intel.com>
+ <op.2e0yod2lwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <431c5d7f5aee7d11ec2e8aa2e526fde438fa53b4.camel@intel.com>
+ <op.2ftmyampwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <3c27bca678c1b041920a14a7da0d958c9861ebca.camel@intel.com>
+ <op.2f0eo8r1wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <73ed579be8ad81835df1c309b7c69b491b7f2c8e.camel@intel.com>
+ <op.2hf1t7sywjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.2hf1t7sywjvjmi@hhuan26-mobl.amr.corp.intel.com>
 
+On Fri Jan 12, 2024 at 7:07 PM EET, Haitao Huang wrote:
+> On Sun, 17 Dec 2023 19:44:56 -0600, Huang, Kai <kai.huang@intel.com> wrot=
+e:
+>
+> >
+> >> >
+> >> > The point is, with or w/o this patch, you can only reclaim 16 EPC =
+=20
+> >> pages
+> >> > in one
+> >> > function call (as you have said you are going to remove
+> >> > SGX_NR_TO_SCAN_MAX,
+> >> > which is a cipher to both of us).  The only difference I can see is,
+> >> > with this
+> >> > patch, you can have multiple calls of "isolate" and then call the
+> >> > "do_reclaim"
+> >> > once.
+> >> >
+> >> > But what's the good of having the "isolate" if the "do_reclaim" can =
+=20
+> >> only
+> >> > reclaim
+> >> > 16 pages anyway?
+> >> >
+> >> > Back to my last reply, are you afraid of any LRU has less than 16 =
+=20
+> >> pages
+> >> > to
+> >> > "isolate", therefore you need to loop LRUs of descendants to get 16?
+> >> > Cause I
+> >> > really cannot think of any other reason why you are doing this.
+> >> >
+> >> >
+> >>
+> >> I think I see your point. By capping pages reclaimed per cycle to 16,
+> >> there is not much difference even if those 16 pages are spread in =20
+> >> separate
+> >> LRUs . The difference is only significant when we ever raise that cap.=
+ =20
+> >> To
+> >> preserve the current behavior of ewb loops independent on number of LR=
+Us
+> >> to loop through for each reclaiming cycle, regardless of the exact val=
+ue
+> >> of the page cap, I would still think current approach in the patch is
+> >> reasonable choice.  What do you think?
+> >
+> > To me I won't bother to do that.  Having less than 16 pages in one LRU =
+is
+> > *extremely rare* that should never happen in practice.  It's pointless =
+=20
+> > to make
+> > such code adjustment at this stage.
+> >
+> > Let's focus on enabling functionality first.  When you have some real
+> > performance issue that is related to this, we can come back then.
+> >
+>
+> I have done some rethinking about this and realize this does save quite =
+=20
+> some significant work: without breaking out isolation part from =20
+> sgx_reclaim_pages(), I can remove the changes to use a list for isolated =
+=20
+> pages, and no need to introduce "state" such as RECLAIM_IN_PROGRESS. Abou=
+t =20
+> 1/3 of changes for per-cgroup reclamation will be gone.
+>
+> So I think I'll go this route now. The only downside may be performance i=
+f =20
+> a enclave spreads its pages in different cgroups and even that is minimum=
+ =20
+> impact as we limit reclamation to 16 pages a time. Let me know if someone=
+ =20
+> feel strongly we need dealt with that and see some other potential issues=
+ =20
+> I may have missed.
 
+We could deal with possible performance regression later on (if there
+is need). I mean there should we a workload first that would so that
+sort stimulus...
 
-On 1/12/2024 8:22 PM, Nikita Yushchenko wrote:
-> In ravb_start_xmit(), ravb driver uses u32 variable to store result of
-> dma_map_single() call. Since ravb hardware has 32-bit address fields in
-> descriptors, this works properly when mapping is successful - it is
-> platform's job to provide mapping addresses that fit into hardware
-> limitations.
-> 
-> However, in failure case dma_map_single() returns DMA_MAPPING_ERROR
-> constant that is 64-bit when dma_addr_t is 64-bit. Storing this constant
-> in u32 leads to truncation, and further call to dma_mapping_error()
-> fails to notice the error.
-> 
-> Fix that by storing result of dma_map_single() in a dma_addr_t
-> variable.
-> 
-> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
-> Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+> Thanks
+>
+> Haitao
 
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
-
-Nit: since this is a bug fix you should prefix your patches with "[PATCH 
-net]", see:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/maintainer-netdev.rst#n62
--- 
-Florian
+BR, Jarkko
 
