@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-25178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA2D482C91C
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 03:24:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13CCE82C921
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 03:34:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D5DB2871D1
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 02:24:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6149B1F229F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 02:34:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EE8F18EBE;
-	Sat, 13 Jan 2024 02:24:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20CC85692;
+	Sat, 13 Jan 2024 02:33:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UcwrKIYT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a22o6Q/P"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE2F818C3D
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 02:24:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A3CCC433F1;
-	Sat, 13 Jan 2024 02:24:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 446E2184D
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 02:33:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 018F2C433C7;
+	Sat, 13 Jan 2024 02:33:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705112678;
-	bh=wdMMbXoPATC3XorPezwweQTuHvplH7bKZOEhfAintxU=;
+	s=k20201202; t=1705113237;
+	bh=hxcwXtTvwEHn6hIQwj9BeBtKbKvjTpJufYYmYZ76Hcc=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=UcwrKIYTN0bGlBXesIx1JNRz1sbmph2PBzPh5jGEs0WixinHE7jbwrcXWU8osraxG
-	 u3aiLwcCdw28QwsnJIjLlnYgjokUS2IWo15vV2qZxwNcgJpEClJw++jBeWAe2Iw7Fm
-	 7ewS/yMoEwDMFD0uMXXVS7kltSB75pZF77gPujQgEMhtlt95GVEHgqyXgsiNU9QyzD
-	 tv2W8cXTFm/YfZwXNelXFDJc6fznPDXA0hBP1jQMQQOy7bJjQEaUHDfdMD4SD64rdI
-	 cvv5TI8sAyyPd2PeDgW35WV2AAlKKH9yKFznaa13kFmxArERG/xKX0x2FvCP8u6W9C
-	 HD93ovU6eutMw==
-Message-ID: <56bdcf95-2b15-4f5b-9146-e9b37bd5b62a@kernel.org>
-Date: Sat, 13 Jan 2024 10:24:35 +0800
+	b=a22o6Q/PR0XxzNMbRJ0lqUljE0DaQkZIGPeZ8wj0c3H6cPgAcOQZlHEDplgZPSa2U
+	 4AK1Drk9r6PI+xPpKxDhm1F709eDC+FCo4+DSNDg2RLmvNFJayOz9ZrDvSNPTXedGf
+	 J7y/rkQi8huqRGqvENo63tghL3fWBbwJ/EP/F9JZDtKFnZ3xVV1MNvM9rD1fjz1bFm
+	 AA2QhB31sDiRNngAsLqEch/Eohdp0pjeEB9Ns+fCatnL9kgQBwPv1VOyEnbeauOWhF
+	 Ba0GVu2w8W0gjTd5BIP5EWPusiqVKVstDAAjLajdPnG13Gshshn7DXTAprjC8C0UJd
+	 G0FoRWBrABVoA==
+Message-ID: <09ca35ab-e599-41c3-86ce-73a0cb776858@kernel.org>
+Date: Sat, 13 Jan 2024 10:33:54 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -40,13 +40,13 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [f2fs-dev] [PATCH] f2fs: remove unnecessary f2fs_put_page in
- f2fs_rename
+Subject: Re: [PATCH v4 2/6] f2fs: compress: fix to cover normal cluster write
+ with cp_rwsem
 Content-Language: en-US
-To: Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-References: <20240112171645.3929428-1-jaegeuk@kernel.org>
+To: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <20240111064208.2969599-1-chao@kernel.org>
+ <20240111064208.2969599-2-chao@kernel.org> <ZaHp4to18RtGShWS@google.com>
 From: Chao Yu <chao@kernel.org>
 Autocrypt: addr=chao@kernel.org; keydata=
  xsFNBFYs6bUBEADJuxYGZRMvAEySns+DKVtVQRKDYcHlmj+s9is35mtlhrLyjm35FWJY099R
@@ -90,27 +90,147 @@ Autocrypt: addr=chao@kernel.org; keydata=
  92Qh98hAj3cMFKtEVbLKJvrc2AO+mQlS7zl1qWblEhpZnXi05S1AoT0gDW2lwe54VfT3ySon
  8Klpbp5W4eEoY21tLwuNzgUMxmycfM4GaJWNCncKuMT4qGVQO9SPFs0vgUrdBUC5Pn5ZJ46X
  mZA0DUz0S8BJtYGI0DUC/jAKhIgy1vAx39y7sAshwu2VILa71tXJ
-In-Reply-To: <20240112171645.3929428-1-jaegeuk@kernel.org>
+In-Reply-To: <ZaHp4to18RtGShWS@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 2024/1/13 1:16, Jaegeuk Kim wrote:
-> [1] changed the below condition, which made f2fs_put_page() voided.
-> This patch reapplies the AL's resolution in -next from [2].
-> 
-> -       if (S_ISDIR(old_inode->i_mode)) {
-> +       if (old_is_dir && old_dir != new_dir) {
->                  old_dir_entry = f2fs_parent_dir(old_inode, &old_dir_page);
->                  if (!old_dir_entry) {
->                          if (IS_ERR(old_dir_page))
-> 
-> [1] 7deee77b993a ("f2fs: Avoid reading renamed directory if parent does not change")
-> [2] https://lore.kernel.org/all/20231220013402.GW1674809@ZenIV/
-> 
-> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Thanks, let me resend v5 w/ blow cleanups.
 
-Reviewed-by: Chao Yu <chao@kernel.org>
-
-Thanks,
+On 2024/1/13 9:39, Jaegeuk Kim wrote:
+> Cleaned up a bit:
+> 
+> --- a/fs/f2fs/compress.c
+> +++ b/fs/f2fs/compress.c
+> @@ -1443,13 +1443,14 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
+>   }
+> 
+>   static int f2fs_write_raw_pages(struct compress_ctx *cc,
+> -                                       int *submitted,
+> +                                       int *submitted_p,
+>                                          struct writeback_control *wbc,
+>                                          enum iostat_type io_type)
+>   {
+>          struct address_space *mapping = cc->inode->i_mapping;
+>          struct f2fs_sb_info *sbi = F2FS_M_SB(mapping);
+> -       int _submitted, compr_blocks, ret = 0, i;
+> +       int submitted, compr_blocks, i;
+> +       int ret = 0;
+> 
+>          compr_blocks = f2fs_compressed_blocks(cc);
+> 
+> @@ -1492,7 +1493,7 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
+>                  if (!clear_page_dirty_for_io(cc->rpages[i]))
+>                          goto continue_unlock;
+> 
+> -               ret = f2fs_write_single_data_page(cc->rpages[i], &_submitted,
+> +               ret = f2fs_write_single_data_page(cc->rpages[i], &submitted,
+>                                                  NULL, NULL, wbc, io_type,
+>                                                  compr_blocks, false);
+>                  if (ret) {
+> @@ -1514,7 +1515,7 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
+>                          goto out;
+>                  }
+> 
+> -               *submitted += _submitted;
+> +               *submitted_p += submitted;
+>          }
+> 
+>   out:
+> 
+> On 01/11, Chao Yu wrote:
+>> When we overwrite compressed cluster w/ normal cluster, we should
+>> not unlock cp_rwsem during f2fs_write_raw_pages(), otherwise data
+>> will be corrupted if partial blocks were persisted before CP & SPOR,
+>> due to cluster metadata wasn't updated atomically.
+>>
+>> Fixes: 4c8ff7095bef ("f2fs: support data compression")
+>> Signed-off-by: Chao Yu <chao@kernel.org>
+>> ---
+>>   fs/f2fs/compress.c | 20 ++++++++++++++------
+>>   fs/f2fs/data.c     |  3 ++-
+>>   2 files changed, 16 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+>> index 9940b7886e5d..bf4cfab67aec 100644
+>> --- a/fs/f2fs/compress.c
+>> +++ b/fs/f2fs/compress.c
+>> @@ -1448,7 +1448,8 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
+>>   					enum iostat_type io_type)
+>>   {
+>>   	struct address_space *mapping = cc->inode->i_mapping;
+>> -	int _submitted, compr_blocks, ret, i;
+>> +	struct f2fs_sb_info *sbi = F2FS_M_SB(mapping);
+>> +	int _submitted, compr_blocks, ret = 0, i;
+>>   
+>>   	compr_blocks = f2fs_compressed_blocks(cc);
+>>   
+>> @@ -1463,6 +1464,10 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
+>>   	if (compr_blocks < 0)
+>>   		return compr_blocks;
+>>   
+>> +	/* overwrite compressed cluster w/ normal cluster */
+>> +	if (compr_blocks > 0)
+>> +		f2fs_lock_op(sbi);
+>> +
+>>   	for (i = 0; i < cc->cluster_size; i++) {
+>>   		if (!cc->rpages[i])
+>>   			continue;
+>> @@ -1495,26 +1500,29 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
+>>   				unlock_page(cc->rpages[i]);
+>>   				ret = 0;
+>>   			} else if (ret == -EAGAIN) {
+>> +				ret = 0;
+>>   				/*
+>>   				 * for quota file, just redirty left pages to
+>>   				 * avoid deadlock caused by cluster update race
+>>   				 * from foreground operation.
+>>   				 */
+>>   				if (IS_NOQUOTA(cc->inode))
+>> -					return 0;
+>> -				ret = 0;
+>> +					goto out;
+>>   				f2fs_io_schedule_timeout(DEFAULT_IO_TIMEOUT);
+>>   				goto retry_write;
+>>   			}
+>> -			return ret;
+>> +			goto out;
+>>   		}
+>>   
+>>   		*submitted += _submitted;
+>>   	}
+>>   
+>> -	f2fs_balance_fs(F2FS_M_SB(mapping), true);
+>> +out:
+>> +	if (compr_blocks > 0)
+>> +		f2fs_unlock_op(sbi);
+>>   
+>> -	return 0;
+>> +	f2fs_balance_fs(sbi, true);
+>> +	return ret;
+>>   }
+>>   
+>>   int f2fs_write_multi_pages(struct compress_ctx *cc,
+>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+>> index 81f9e2cc49e2..b171a9980f6a 100644
+>> --- a/fs/f2fs/data.c
+>> +++ b/fs/f2fs/data.c
+>> @@ -2839,7 +2839,7 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
+>>   		.encrypted_page = NULL,
+>>   		.submitted = 0,
+>>   		.compr_blocks = compr_blocks,
+>> -		.need_lock = LOCK_RETRY,
+>> +		.need_lock = compr_blocks ? LOCK_DONE : LOCK_RETRY,
+>>   		.post_read = f2fs_post_read_required(inode) ? 1 : 0,
+>>   		.io_type = io_type,
+>>   		.io_wbc = wbc,
+>> @@ -2920,6 +2920,7 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
+>>   	if (err == -EAGAIN) {
+>>   		err = f2fs_do_write_data_page(&fio);
+>>   		if (err == -EAGAIN) {
+>> +			f2fs_bug_on(sbi, compr_blocks);
+>>   			fio.need_lock = LOCK_REQ;
+>>   			err = f2fs_do_write_data_page(&fio);
+>>   		}
+>> -- 
+>> 2.40.1
 
