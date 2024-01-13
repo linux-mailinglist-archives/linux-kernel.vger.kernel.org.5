@@ -1,57 +1,75 @@
-Return-Path: <linux-kernel+bounces-25339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25342-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B02A782CDEA
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 18:29:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D50BF82CDFA
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 18:33:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F37F1F223FC
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 17:29:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B475283562
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 17:33:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E97A538A;
-	Sat, 13 Jan 2024 17:28:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1083253AF;
+	Sat, 13 Jan 2024 17:33:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kyuhyuk.kr header.i=@kyuhyuk.kr header.b="AETQMjxv"
-Received: from pv50p00im-ztdg10021901.me.com (pv50p00im-ztdg10021901.me.com [17.58.6.55])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="ukzssRAC"
+Received: from out203-205-221-191.mail.qq.com (out203-205-221-191.mail.qq.com [203.205.221.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B525231
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 17:28:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kyuhyuk.kr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kyuhyuk.kr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kyuhyuk.kr; s=sig1;
-	t=1705166936; bh=Ncm/r4hpmcrpUhX1fSR5itLc4xrV7NoGJc5rt7JL7Tk=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version;
-	b=AETQMjxvQQErbY/lyVVbUU9dD1xPLM3nvimfEzzmbmeH6FLrS1lOzpI6foZeUMm76
-	 0zpgHM0NKLBKwi5k3kY790IdIBAne+Ot/mHhAHFOCTr5KkVqu+pdz1+muGiP9x3tLN
-	 dnxwNFbF0halDD5Hkex4vr2AOvzA8O/k7J9m+AJZ7qS1TznxA6tBeV5tfBWbrQ2L2F
-	 ucmMAgC7NQANWVL7ab3pDjCxjmGDyE3ZiFZhSyWAxojmZCf5+PEiOgHF02tOE90NJ0
-	 8t8Gua0FNFhBgkiYchSpcjH4ZzxGOXuRpW2Vkfo1KNCN8+WhoNzOIZLy/Q9jnu4uFn
-	 ecItlGyztNdPg==
-Received: from KyuDevelop.. (pv50p00im-dlb-asmtp-mailmevip.me.com [17.56.9.10])
-	by pv50p00im-ztdg10021901.me.com (Postfix) with ESMTPSA id C3CC9813EB;
-	Sat, 13 Jan 2024 17:28:52 +0000 (UTC)
-From: KyuHyuk Lee <lee@kyuhyuk.kr>
-To: Rob Herring <robh+dt@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Chris Morgan <macromorgan@hotmail.com>,
-	Jagan Teki <jagan@edgeble.ai>,
-	Tianling Shen <cnsztl@gmail.com>,
-	Andy Yan <andyshrk@163.com>,
-	Ondrej Jirman <megi@xff.cz>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B7185663;
+	Sat, 13 Jan 2024 17:32:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1705166867; bh=9n72WKKKGYhqMdswP9Jj7VEaJwHs3IyzRS4xEll9rYI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=ukzssRACnz3BFOQ4m0PrtOBC+c3ULmzJzKNt2HiTP2zC7dzmPLW+FHncUgy76IUE4
+	 bBSFdgBVxfqt3ilig5ltgbGZKNlqBnwvrADPa0YP4lfB4HrJGDn5rUl3BbiJvb9e3P
+	 f5Md6MBUvXZU9MQybaI0l9rZ76Crk8hUiMtlUkkE=
+Received: from cyy-pc.lan ([218.70.255.58])
+	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
+	id 6B9BD474; Sun, 14 Jan 2024 01:26:57 +0800
+X-QQ-mid: xmsmtpt1705166817tpw8s6zxo
+Message-ID: <tencent_F9568C6D8872E30EDFAF20ADF686A31D6E06@qq.com>
+X-QQ-XMAILINFO: MpYZqmNm/7vMFQChzuZcNMPEZCicAYxwA3bgPt5oBo3Izruh5SDSD1/vjfZIJe
+	 7IBevBAJJvXhgU9B+SMnjtsigosK99wXz45XosSRmglerB4jvY07z2ypp/fWsmUwQLZ3rc4lgw08
+	 0I7c4e9ssoe0Ldzh7aDfnOwg3ItEwflH/BF3rnY12bJD7xRo/M9ZSFqZABHgOKsvejN9E8BhUm2D
+	 boo2oTfkaKEQcLeunqTCbSyoFYN07nmPJtRl8ODOOCFEIFDrcTWZHY0wX7tuAYx6PuS1SJSjXYS2
+	 bOEVhUBovGWI01NTW0yrPLyhFe33CdafAdJAf1SrjfgmRNyBqHdsDLZz7UlH9vHjFxvMrmU3dy5N
+	 45B3OLgeNOTV6WEfUAL3IRazwMFr8aKB9LH+gkUjByXzXtwcrFHxXmMsjpssUiAlF1duH66p4Avr
+	 84W1XexcvjfBXHBgXn5BFW2+ogGmclzTetljdN04BAku6PGLStHt7Vs8LRhxh82ARYq6o+Md+kgL
+	 NJxin6UVnpDBzYjg39bVX6PvJK3U699wPbe+uQtu79mMUgZ8WzO3iGxiOmirlrq0y8rVSXD7t5iM
+	 GYsxJ8FGK+3+d6K/ILCMvSeHJKdwbCtWTtAdunvZubJwOzaynOeC1geHeMxH34ZZztsMnz79vLpe
+	 YGChZ7mLTbp5fUDptY+VCdcdL4Fy7KWDgIBg7MTpy9RLjNazovEqG5960r71+VO+2pza3/A/dviG
+	 n0++0sT/QAFpxAF7w8YGMItABROQoWSr+xES2srhGGf311gs4BzoOgOKZhvP5I3hexb4JG++/Bt2
+	 OrIfwjVtIS7Tr5jYRQvXT+uKYpMsexCp3J8Xip53EB0io7BHq+H8zipn5FRMnuzONGJrAQAd9WC+
+	 I81SztmB19m/xMFkY6qEQ5yrj6ENCd3r8gON2zNjMQDmvw7Tdjfni3yzimGkBOehL2PYtcjs/KFk
+	 RJDRSTS7yAifSWQWUnc3KxIF9qzMRd
+X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
+From: Yangyu Chen <cyy@cyyself.name>
+To: charlie@rivosinc.com
+Cc: alexghiti@rivosinc.com,
+	anup@brainfault.org,
+	aou@eecs.berkeley.edu,
+	conor@kernel.org,
+	jrtc27@jrtc27.com,
+	konstantin@linuxfoundation.org,
+	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	KyuHyuk Lee <lee@kyuhyuk.kr>
-Subject: [PATCH v2] dt-bindings: rockchip: Add Hardkernel ODROID-M1S board
-Date: Sun, 14 Jan 2024 02:21:03 +0900
-Message-Id: <20240113172102.6890-1-lee@kyuhyuk.kr>
-X-Mailer: git-send-email 2.34.1
+	linux-kselftest@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-riscv@lists.infradead.org,
+	mick@ics.forth.gr,
+	palmer@rivosinc.com,
+	paul.walmsley@sifive.com,
+	rdunlap@infradead.org
+Subject: Re: [PATCH v10 0/4] RISC-V: mm: Make SV48 the default address space
+Date: Sun, 14 Jan 2024 01:26:57 +0800
+X-OQ-MSGID: <20240113172657.997104-1-cyy@cyyself.name>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20230809232218.849726-1-charlie@rivosinc.com>
+References: <20230809232218.849726-1-charlie@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,41 +77,36 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: s5LNHj3FkFfaIArGgtvgU_W7ExD_8Rdg
-X-Proofpoint-GUID: s5LNHj3FkFfaIArGgtvgU_W7ExD_8Rdg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-13_07,2024-01-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
- mlxlogscore=735 mlxscore=0 adultscore=0 suspectscore=0 clxscore=1030
- bulkscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2308100000 definitions=main-2401130147
 
-Add device tree binding for Hardkernel ODROID-M1S board based on
-RK3566 SoC.
+Hi, Charlie
 
-Signed-off-by: KyuHyuk Lee <lee@kyuhyuk.kr>
----
- Documentation/devicetree/bindings/arm/rockchip.yaml | 5 +++++
- 1 file changed, 5 insertions(+)
+Although this patchset has been merged I still have some questions about
+this patchset. Because it breaks regular mmap if address >= 38 bits on
+sv48 / sv57 capable systems like qemu. For example, If a userspace program
+wants to mmap an anonymous page to addr=(1<<45) on an sv48 capable system,
+it will fail and kernel will mmaped to another sv39 address since it does
+not meet the requirement to use sv48 as you wrote:
 
-diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
-index 5cf5cbef2cf5..9a65f7269a27 100644
---- a/Documentation/devicetree/bindings/arm/rockchip.yaml
-+++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
-@@ -566,6 +566,11 @@ properties:
-           - const: rockchip,rk3568-odroid-m1
-           - const: rockchip,rk3568
- 
-+      - description: Hardkernel Odroid M1S
-+        items:
-+          - const: hardkernel,rk3566-odroid-m1s
-+          - const: rockchip,rk3566
-+
-       - description: Hugsun X99 TV Box
-         items:
-           - const: hugsun,x99
--- 
-2.34.1
+>	else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >= VA_BITS_SV48)) \
+>		mmap_end = VA_USER_SV48;			\
+>	else							\
+>		mmap_end = VA_USER_SV39;			\
+
+Then, How can a userspace program create a mmap with a hint if the address
+>= (1<<38) after your patch without MAP_FIXED? The only way to do this is
+to pass a hint >= (1<<47) on mmap syscall then kernel will return a random
+address in sv48 address space but the hint address gets lost. I think this
+violate the principle of mmap syscall as kernel should take the hint and
+attempt to create the mapping there.
+
+I don't think patching in this way is right. However, if we only revert
+this patch, some programs relying on mmap to return address with effective
+bits <= 48 will still be an issue and it might expand to other ISAs if
+they implement larger virtual address space like RISC-V sv57. A better way
+to solve this might be adding a MAP_48BIT flag to mmap like MAP_32BIT has
+been introduced for decades.
+
+Thanks,
+Yangyu Chen
 
 
