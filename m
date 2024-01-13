@@ -1,134 +1,112 @@
-Return-Path: <linux-kernel+bounces-25213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4028882CA81
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 09:31:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A64782CA84
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 09:36:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC7201F22A8A
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 08:31:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D6211C2241C
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 08:36:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8853E7FF;
-	Sat, 13 Jan 2024 08:31:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ragnatech.se header.i=@ragnatech.se header.b="Acm24Q4k"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B69817E8;
+	Sat, 13 Jan 2024 08:36:39 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B3DC384
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 08:31:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ragnatech.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ragnatech.se
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2cca5d81826so95759621fa.2
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 00:31:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech.se; s=google; t=1705134680; x=1705739480; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=0gF3sw/Ea39zWxuD0gLzKFUce26V5brwlX/JeoC/CYQ=;
-        b=Acm24Q4k027vz2xM+HhYdbmskOzawnZ2RHCM/5Yr7kdOSHZkEthTSDtiMl3IvuqpSI
-         S+7b5YJZ6FsrBQNvQLCuwxjDBOAJsidCbMWm9hgFVl9cEHKCT/1uSesVOWuAcKTt9UhV
-         wDHLbzX94KH2Tolvn6Lp87OHLrOCx+K6XCF3xRFnpZfUPKI+H+6R/BTG1U57b0rMBxCz
-         FzW9ULLg7YVGAJVJzCde6c/Pjd4luIhmNC52QgXyA02hYxJVWP7oxHd/y1vO2aQxG1qx
-         +tEogBfsWosntcMyCDiE+NmUjhCmZcwrWGiOQdjIaWhkvSXx7w2bIn/eME4x3qJ78o5I
-         CwWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705134680; x=1705739480;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0gF3sw/Ea39zWxuD0gLzKFUce26V5brwlX/JeoC/CYQ=;
-        b=PGN9jfUGjVWXRolpOTxlhT45EGDWsaqn0ZWsqNsOUTqkQvjhI1jI8Ke2sG3krrjQzO
-         2Hmvs0e4Rhr1ZRU2hb7h4hBAORfGKFGDrsqReQyUCFFMQlt6WLTEZzMPjBaFLltE8mkC
-         K31Cz9BGu39JTJ2I+64RNt+6NtzrMbsU++myiNvuOWJysTJvNA/MfeU01KNR9VoKbzZE
-         y00jmbFgeg1eEqFjB//iQLZTMBc+skjkX4/pkP37ANGBfOkbzvuegKFIvu13A8hUS9kp
-         conwo6pdUjibfu4ByNrpx3gc6M8fQsdzmzzW7Nazfq3M3JHIYxWc1bfn+LOyn7Y085V3
-         TkSA==
-X-Gm-Message-State: AOJu0YzWLnb80EL8jNoSl0MrTX/MYlr7Pb/kAlFygxKgDxokdtKUL0/d
-	qPy8OaiQZeAgy5Ue829ImVq0JTiNNwlkEw==
-X-Google-Smtp-Source: AGHT+IFclI/5HicsKwUTEr7skf591nEgQRXaAa9kiQQu/l4k9zf0rvOYj4zDXmS1hH+xO3HBGCxOkw==
-X-Received: by 2002:a05:6512:390e:b0:50e:74ec:75f6 with SMTP id a14-20020a056512390e00b0050e74ec75f6mr1161110lfu.136.1705134679578;
-        Sat, 13 Jan 2024 00:31:19 -0800 (PST)
-Received: from localhost (h-46-59-36-113.A463.priv.bahnhof.se. [46.59.36.113])
-        by smtp.gmail.com with ESMTPSA id x26-20020a19f61a000000b0050e7e21b338sm773810lfe.14.2024.01.13.00.31.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Jan 2024 00:31:18 -0800 (PST)
-Date: Sat, 13 Jan 2024 09:31:17 +0100
-From: Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
-To: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: ravb: Fix dma_addr_t truncation in error case
-Message-ID: <20240113083117.GI1643864@ragnatech.se>
-References: <20240113042221.480650-1-nikita.yoush@cogentembedded.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65E961110
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 08:36:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rOZV4-0001Dg-GF; Sat, 13 Jan 2024 09:36:18 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rOZV1-002KTB-EC; Sat, 13 Jan 2024 09:36:15 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rOZV1-008mAD-19;
+	Sat, 13 Jan 2024 09:36:15 +0100
+Date: Sat, 13 Jan 2024 09:36:12 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Thierry Reding <thierry.reding@gmail.com>
+Cc: Sean Young <sean@mess.org>, 
+	Florian Fainelli <florian.fainelli@broadcom.com>, Ray Jui <rjui@broadcom.com>, 
+	Scott Branden <sbranden@broadcom.com>, 
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, linux-pwm@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] pwm: bcm2835: Remove duplicate call to
+ clk_rate_exclusive_put()
+Message-ID: <2nropn2obzpwedkbm5vtgdgvhjg26jici4wxawvn2xmk2cypzy@z7h54tcqurte>
+References: <20231222131312.174491-1-sean@mess.org>
+ <sbcslehlbdhjggyb4thughrzuzjrbc3knbh3ulfhhi6mcrvayd@rbheyjouom6d>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="dw56ztajnxfvlpqz"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240113042221.480650-1-nikita.yoush@cogentembedded.com>
+In-Reply-To: <sbcslehlbdhjggyb4thughrzuzjrbc3knbh3ulfhhi6mcrvayd@rbheyjouom6d>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Hello Nikita,
 
-Thanks for your patch.
+--dw56ztajnxfvlpqz
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-01-13 10:22:21 +0600, Nikita Yushchenko wrote:
-> In ravb_start_xmit(), ravb driver uses u32 variable to store result of
-> dma_map_single() call. Since ravb hardware has 32-bit address fields in
-> descriptors, this works properly when mapping is successful - it is
-> platform's job to provide mapping addresses that fit into hardware
-> limitations.
-> 
-> However, in failure case dma_map_single() returns DMA_MAPPING_ERROR
-> constant that is 64-bit when dma_addr_t is 64-bit. Storing this constant
-> in u32 leads to truncation, and further call to dma_mapping_error()
-> fails to notice the error.
-> 
-> Fix that by storing result of dma_map_single() in a dma_addr_t
-> variable.
-> 
-> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
-> Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Hello,
 
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+On Wed, Jan 03, 2024 at 01:28:25PM +0100, Uwe Kleine-K=F6nig wrote:
+> this patch should be added to your for-next branch and then your PR for
+> the next merge window.
 
-> ---
->  drivers/net/ethernet/renesas/ravb_main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> index 8649b3e90edb..0e3731f50fc2 100644
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> @@ -1949,7 +1949,7 @@ static netdev_tx_t ravb_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->  	struct ravb_tstamp_skb *ts_skb;
->  	struct ravb_tx_desc *desc;
->  	unsigned long flags;
-> -	u32 dma_addr;
-> +	dma_addr_t dma_addr;
->  	void *buffer;
->  	u32 entry;
->  	u32 len;
-> -- 
-> 2.39.2
-> 
-> 
+This was missed for the pwm/for-6.8-rc1 PR. I added it to my for-next
+branch at
+https://git.kernel.org/pub/scm/linux/kernel/git/ukleinek/linux.git pwm/for-=
+next
+now with the intention to send it for inclusion in 6.8-rc after being in
+next for a few days.
 
--- 
-Kind Regards,
-Niklas Söderlund
+> Also "pwm: linux/pwm.h: fix Excess kernel-doc description warning"
+> (Message-Id: 20231223050621.13994-1-rdunlap@infradead.org) should be
+> added IMHO.
+
+This one was already cared for.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--dw56ztajnxfvlpqz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWiS3sACgkQj4D7WH0S
+/k404gf9ErhEB0EJr7iIV3AKWiF/4ExmJVwTk4lujHFh1ZKePPvpgNWoz4m4iXwc
+Nfd0bW2dHZmjPoFd5sogsotaIyHqw6IvUZx65HOxVSPNEuFThfjYeQLqsTWYU3Gs
+2rp+MT9a3Sw7hMDgJxL+vCjaazfXEB6gUl4abDpNzHKTIJAh9s6kChBUoEgv978p
+/kpHlkoyE3KSfx/BCMLHMONbPtBm/qamCxNbEdaOjv4lM7tACOl1VnJzzziAJrHL
+vMvnrUlbHtlJjXsEU2giXIqGbEQc1IUwXo3OnS53uXYKaaNlTVbFXWPMORz6FyTv
+WIATKyy6iRMhjbPCWKaAJ2P2yUNYYw==
+=8z34
+-----END PGP SIGNATURE-----
+
+--dw56ztajnxfvlpqz--
 
