@@ -1,70 +1,74 @@
-Return-Path: <linux-kernel+bounces-25129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 889C882C852
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 01:29:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 269C782C853
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 01:29:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14DE91F236EF
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 00:29:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 843982837BB
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 00:29:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1851E376;
-	Sat, 13 Jan 2024 00:29:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7FD0139B;
+	Sat, 13 Jan 2024 00:29:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a40PLkwe"
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JA2e2a8T"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98E35364
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 00:29:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A9AB366
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 00:29:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6ddeb7b4366so2458009a34.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 16:29:15 -0800 (PST)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d40eec5e12so59730415ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 16:29:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705105754; x=1705710554; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=eSG5ztmcIaHot7lAtpsgHB4EezOFFUn1/h9jzxA+QYE=;
-        b=a40PLkweHsIubsq2jPc0APtm5F4istQjqngzFEmVQb7qmM5INDghHdT6p44nRWt+JS
-         jCD3hm4cn8gpOOZDiNIAa538Y3LJqKv1slGhfkjM3XHWK2A3LYlLJoVjvCquNhwZUGzg
-         pnCqVtokLJeKM2/PM0RM/all5dr9rdVhVySf1EKmR41UTOqUJezEkykrIeZc684PI24a
-         0Yydf0XC/ESnl8J8cMETzbRdb0rYpR7bX6xIIDBWTI8qihAlTMRf8blvHIz43aPOlYpN
-         2u6W2nHMygU+Qtfxx0FC/T5fMG3gMv6laU2qMLdIgGx73MOLCunGcnXSIYYDMnX55b1d
-         o2Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705105754; x=1705710554;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1705105756; x=1705710556; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eSG5ztmcIaHot7lAtpsgHB4EezOFFUn1/h9jzxA+QYE=;
-        b=SJlDIdeZ+V6+o0HMFJMzq8ieHhhcofZCm7mlzkQei6jKNaBRc+sQ60jZBzKmewFRjL
-         WL/KGGDSS++mduIffsp3WGdYZKbGFgmRm/4okXBU3ygNO8JCj/VH03m76Hcp8Qs8utbn
-         aSFwTmAKmfPgnjmZWZcz0PVYKssdtolEnIO1X98Qqe20NJ0miWmrQB7oXUV/jJEc4jXV
-         Hmc/tAdsCsrQQjlWBxTrADtf8GE5IsSAry6Xxg8l8Q63SoyJrYdvc0RpwFpjGG/n4aSg
-         wBMrO+9gFXwGkguT3P4Kr1cHwL6YR507Qre2mCeJ7X5s9E60IPIEOXFQwQs15UiiSLh7
-         9u0A==
-X-Gm-Message-State: AOJu0Yxe0W5rd1Ps2DTQhTxiIWTvg7LJj9ERe2jZANepIjvrA1UtZ8EK
-	WSh0mvtCLR+IdFRlffkkvAw=
-X-Google-Smtp-Source: AGHT+IGKkykmK2v9uX/+XFjR2c1sdlkgHaS/ANv/GEwJUpurH0dMI49JsWQZWl26fkhMgvKe+qRH1A==
-X-Received: by 2002:a05:6808:3a0e:b0:3bd:4bcf:42bb with SMTP id gr14-20020a0568083a0e00b003bd4bcf42bbmr2511334oib.4.1705105754389;
-        Fri, 12 Jan 2024 16:29:14 -0800 (PST)
+        bh=axKJ0i3ogoNGsDkLhBCodaoDDJvR3L1aScZ9kKcgSQ4=;
+        b=JA2e2a8TJSgTqUahnefLMYZHPT1MBAt1+4xC4sGTzNYnRbMoOamk1OsAz9HHb6YDnT
+         8whx4b53lZZ1OqdpecRDe3XNZgw29F8FACwSvlzTd1Z6YJ6hWwpwQ8a6f3SO8EQhRmNA
+         6jPj/NPD2YsFX39Y2pkU/6N79xQt0nYq6k4QrsziIiVXUIZAt34bNjMnAbj5B3OO82d0
+         TsTdRg9yuadD4hB4PJXFVEYvssZf90jUCLtFTRMKNXQbLGdomqdMcqpev5Tsb3DBp5CF
+         /9UR/TAOxMzPFz6EkPP1pm9XBOoDdc7oZsT+8LUeQD7h1l+0E10A5FGlx+yK2mZR0Zsa
+         YT5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705105756; x=1705710556;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=axKJ0i3ogoNGsDkLhBCodaoDDJvR3L1aScZ9kKcgSQ4=;
+        b=Wu/pJ1T/h6FYe8mDWE6fJHugIDR14tPcn8QUZI/HCvAkYXK7mlEUaSUwLIVH2ybSjB
+         aIiNrCspzxZZCJZjk/WaAzJXdU7co6yj2BpUYEocFZUOYbIaC18xkWMD24b+nitsfbGu
+         mamGnwW+7vQWRm3vrca+RrfrC3F18rNDMlunrpurglTMoZAv+Rnmha6UCN0NtvPX9YyR
+         +IkPlrLcBuDtqhVrQm/7gAskcLj9387CFB6+L7oOScNWBTr+IimLzJxUr0a5a3FZfUYS
+         1pjyrM7BDmsKkY22X0YVkjQTLnyDVyHNlhCOtVmC6KV71qbK6cjnX3xKp+/D2hZXv2HD
+         kmcQ==
+X-Gm-Message-State: AOJu0YwwPnJX7zgsXm1JPMHn+o6XfReRhPfadZnYvzzKT34Dl+U/5gem
+	06rpEcgizxYLqtufH1WVK7E=
+X-Google-Smtp-Source: AGHT+IHolF/V3AvKUbqP/e0/tf57Rc6RHw3J9blTMOWyaURreIovMl86TrdBoiCI6j5DHAHVxZF6gA==
+X-Received: by 2002:a17:902:d4ce:b0:1d4:7f08:46db with SMTP id o14-20020a170902d4ce00b001d47f0846dbmr2613704plg.119.1705105756248;
+        Fri, 12 Jan 2024 16:29:16 -0800 (PST)
 Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
-        by smtp.gmail.com with ESMTPSA id pl9-20020a17090b268900b0028e027c13edsm2859295pjb.7.2024.01.12.16.29.13
+        by smtp.gmail.com with ESMTPSA id n17-20020a170903111100b001d3ffb7c4c7sm3745489plh.40.2024.01.12.16.29.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jan 2024 16:29:13 -0800 (PST)
+        Fri, 12 Jan 2024 16:29:15 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
 From: Tejun Heo <tj@kernel.org>
 To: jiangshanlai@gmail.com
 Cc: linux-kernel@vger.kernel.org,
 	Naohiro.Aota@wdc.com,
-	kernel-team@meta.com
-Subject: [PATCHSET v2 wq/for-6.8] workqueue: Implement system-wide max_active for unbound workqueues
-Date: Fri, 12 Jan 2024 14:28:44 -1000
-Message-ID: <20240113002911.406791-1-tj@kernel.org>
+	kernel-team@meta.com,
+	Tejun Heo <tj@kernel.org>
+Subject: [PATCH 1/9] workqueue: Move pwq->max_active to wq->max_active
+Date: Fri, 12 Jan 2024 14:28:45 -1000
+Message-ID: <20240113002911.406791-2-tj@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240113002911.406791-1-tj@kernel.org>
+References: <20240113002911.406791-1-tj@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,140 +77,299 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hello,
+max_active is a workqueue-wide setting and the configured value is stored in
+wq->saved_max_active; however, the effective value was stored in
+pwq->max_active. While this is harmless, it makes max_active update process
+more complicated and gets in the way of the planned max_active semantic
+updates for unbound workqueues.
 
-This is v2. Changes from v1
-(http://lkml.kernel.org/r/20231220072529.1036099-1-tj@kernel.org):
+This patches moves pwq->max_active to wq->max_active. This simplifies the
+code and makes freezing and noop max_active updates cheaper too. No
+user-visible behavior change is intended.
 
-- wq->max_active now uses WRITE/READ_ONCE() as suggested by Lai.
+As wq->max_active is updated while holding wq mutex but read without any
+locking, it now uses WRITE/READ_ONCE(). A new locking locking rule WO is
+added for it.
 
-- __queue_work() is updated to alwyas delay the work item if there already
-  are inactive work items on the pwq. This prevents work item reordering
-  inside the pwq when max_active is increased thus maintaining execution
-  order for ordered workqueues. This issue was noticed by Lai.
+v2: - wq->max_active now uses WRITE/READ_ONCE() as suggested by Lai.
 
-- In 0008-workqueue-Introduce-struct-wq_node_nr_active.patch, Lai pointed
-  out that pwq_tryinc_nr_active() incorrectly dropped pwq->max_active check.
-  Restored. As the next patch replaces the max_active enforcement mechanism,
-  this doesn't change the end result.
+    - __queue_work() is updated to alwyas delay the work item if there
+      already are inactive work items on the pwq. This prevents work item
+      reordering inside the pwq when max_active is increased thus
+      maintaining execution order for ordered workqueues. This issue was
+      noticed by Lai.
 
-- 0010-workqueue-Reimplement-ordered-workqueue-using-shared.patch was broken
-  and could reorder work items in ordered workqueues leading to severe perf
-  regressions and hangs with certain workloads. Dropped.
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+---
+ kernel/workqueue.c | 134 ++++++++++++++++++++++-----------------------
+ 1 file changed, 66 insertions(+), 68 deletions(-)
 
-A pool_workqueue (pwq) represents the connection between a workqueue and a
-worker_pool. One of the roles that a pwq plays is enforcement of the
-max_active concurrency limit. Before 636b927eba5b ("workqueue: Make unbound
-workqueues to use per-cpu pool_workqueues"), there was one pwq per each CPU
-for per-cpu workqueues and per each NUMA node for unbound workqueues, which
-was a natural result of per-cpu workqueues being served by per-cpu pools and
-unbound by per-NUMA pools.
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 76e60faed892..8bf1d143e911 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -143,6 +143,9 @@ enum {
+  *
+  * WR: wq->mutex protected for writes.  RCU protected for reads.
+  *
++ * WO: wq->mutex protected for writes. Updated with WRITE_ONCE() and can be read
++ *     with READ_ONCE() without locking.
++ *
+  * MD: wq_mayday_lock protected.
+  *
+  * WD: Used internally by the watchdog.
+@@ -250,7 +253,6 @@ struct pool_workqueue {
+ 	 * is marked with WORK_STRUCT_INACTIVE iff it is in pwq->inactive_works.
+ 	 */
+ 	int			nr_active;	/* L: nr of active works */
+-	int			max_active;	/* L: max active works */
+ 	struct list_head	inactive_works;	/* L: inactive works */
+ 	struct list_head	pwqs_node;	/* WR: node on wq->pwqs */
+ 	struct list_head	mayday_node;	/* MD: node on wq->maydays */
+@@ -298,7 +300,8 @@ struct workqueue_struct {
+ 	struct worker		*rescuer;	/* MD: rescue worker */
+ 
+ 	int			nr_drainers;	/* WQ: drain in progress */
+-	int			saved_max_active; /* WQ: saved pwq max_active */
++	int			max_active;	/* WO: max active works */
++	int			saved_max_active; /* WQ: saved max_active */
+ 
+ 	struct workqueue_attrs	*unbound_attrs;	/* PW: only for unbound wqs */
+ 	struct pool_workqueue	*dfl_pwq;	/* PW: only for unbound wqs */
+@@ -1492,7 +1495,7 @@ static void pwq_dec_nr_in_flight(struct pool_workqueue *pwq, unsigned long work_
+ 		pwq->nr_active--;
+ 		if (!list_empty(&pwq->inactive_works)) {
+ 			/* one down, submit an inactive one */
+-			if (pwq->nr_active < pwq->max_active)
++			if (pwq->nr_active < READ_ONCE(pwq->wq->max_active))
+ 				pwq_activate_first_inactive(pwq);
+ 		}
+ 	}
+@@ -1793,7 +1796,13 @@ static void __queue_work(int cpu, struct workqueue_struct *wq,
+ 	pwq->nr_in_flight[pwq->work_color]++;
+ 	work_flags = work_color_to_flags(pwq->work_color);
+ 
+-	if (likely(pwq->nr_active < pwq->max_active)) {
++	/*
++	 * Limit the number of concurrently active work items to max_active.
++	 * @work must also queue behind existing inactive work items to maintain
++	 * ordering when max_active changes. See wq_adjust_max_active().
++	 */
++	if (list_empty(&pwq->inactive_works) &&
++	    pwq->nr_active < READ_ONCE(pwq->wq->max_active)) {
+ 		if (list_empty(&pool->worklist))
+ 			pool->watchdog_ts = jiffies;
+ 
+@@ -4142,50 +4151,6 @@ static void pwq_release_workfn(struct kthread_work *work)
+ 	}
+ }
+ 
+-/**
+- * pwq_adjust_max_active - update a pwq's max_active to the current setting
+- * @pwq: target pool_workqueue
+- *
+- * If @pwq isn't freezing, set @pwq->max_active to the associated
+- * workqueue's saved_max_active and activate inactive work items
+- * accordingly.  If @pwq is freezing, clear @pwq->max_active to zero.
+- */
+-static void pwq_adjust_max_active(struct pool_workqueue *pwq)
+-{
+-	struct workqueue_struct *wq = pwq->wq;
+-	bool freezable = wq->flags & WQ_FREEZABLE;
+-	unsigned long flags;
+-
+-	/* for @wq->saved_max_active */
+-	lockdep_assert_held(&wq->mutex);
+-
+-	/* fast exit for non-freezable wqs */
+-	if (!freezable && pwq->max_active == wq->saved_max_active)
+-		return;
+-
+-	/* this function can be called during early boot w/ irq disabled */
+-	raw_spin_lock_irqsave(&pwq->pool->lock, flags);
+-
+-	/*
+-	 * During [un]freezing, the caller is responsible for ensuring that
+-	 * this function is called at least once after @workqueue_freezing
+-	 * is updated and visible.
+-	 */
+-	if (!freezable || !workqueue_freezing) {
+-		pwq->max_active = wq->saved_max_active;
+-
+-		while (!list_empty(&pwq->inactive_works) &&
+-		       pwq->nr_active < pwq->max_active)
+-			pwq_activate_first_inactive(pwq);
+-
+-		kick_pool(pwq->pool);
+-	} else {
+-		pwq->max_active = 0;
+-	}
+-
+-	raw_spin_unlock_irqrestore(&pwq->pool->lock, flags);
+-}
+-
+ /* initialize newly allocated @pwq which is associated with @wq and @pool */
+ static void init_pwq(struct pool_workqueue *pwq, struct workqueue_struct *wq,
+ 		     struct worker_pool *pool)
+@@ -4218,9 +4183,6 @@ static void link_pwq(struct pool_workqueue *pwq)
+ 	/* set the matching work_color */
+ 	pwq->work_color = wq->work_color;
+ 
+-	/* sync max_active to the current setting */
+-	pwq_adjust_max_active(pwq);
+-
+ 	/* link in @pwq */
+ 	list_add_rcu(&pwq->pwqs_node, &wq->pwqs);
+ }
+@@ -4658,6 +4620,52 @@ static int init_rescuer(struct workqueue_struct *wq)
+ 	return 0;
+ }
+ 
++/**
++ * wq_adjust_max_active - update a wq's max_active to the current setting
++ * @wq: target workqueue
++ *
++ * If @wq isn't freezing, set @wq->max_active to the saved_max_active and
++ * activate inactive work items accordingly. If @wq is freezing, clear
++ * @wq->max_active to zero.
++ */
++static void wq_adjust_max_active(struct workqueue_struct *wq)
++{
++	struct pool_workqueue *pwq;
++
++	lockdep_assert_held(&wq->mutex);
++
++	if ((wq->flags & WQ_FREEZABLE) && workqueue_freezing) {
++		WRITE_ONCE(wq->max_active, 0);
++		return;
++	}
++
++	if (wq->max_active == wq->saved_max_active)
++		return;
++
++	/*
++	 * Update @wq->max_active and then kick inactive work items if more
++	 * active work items are allowed. This doesn't break work item ordering
++	 * because new work items are always queued behind existing inactive
++	 * work items if there are any.
++	 */
++	WRITE_ONCE(wq->max_active, wq->saved_max_active);
++
++	for_each_pwq(pwq, wq) {
++		unsigned long flags;
++
++		/* this function can be called during early boot w/ irq disabled */
++		raw_spin_lock_irqsave(&pwq->pool->lock, flags);
++
++		while (!list_empty(&pwq->inactive_works) &&
++		       pwq->nr_active < wq->max_active)
++			pwq_activate_first_inactive(pwq);
++
++		kick_pool(pwq->pool);
++
++		raw_spin_unlock_irqrestore(&pwq->pool->lock, flags);
++	}
++}
++
+ __printf(1, 4)
+ struct workqueue_struct *alloc_workqueue(const char *fmt,
+ 					 unsigned int flags,
+@@ -4665,7 +4673,6 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
+ {
+ 	va_list args;
+ 	struct workqueue_struct *wq;
+-	struct pool_workqueue *pwq;
+ 
+ 	/*
+ 	 * Unbound && max_active == 1 used to imply ordered, which is no longer
+@@ -4700,6 +4707,7 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
+ 
+ 	/* init wq */
+ 	wq->flags = flags;
++	wq->max_active = max_active;
+ 	wq->saved_max_active = max_active;
+ 	mutex_init(&wq->mutex);
+ 	atomic_set(&wq->nr_pwqs_to_flush, 0);
+@@ -4728,8 +4736,7 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
+ 	mutex_lock(&wq_pool_mutex);
+ 
+ 	mutex_lock(&wq->mutex);
+-	for_each_pwq(pwq, wq)
+-		pwq_adjust_max_active(pwq);
++	wq_adjust_max_active(wq);
+ 	mutex_unlock(&wq->mutex);
+ 
+ 	list_add_tail_rcu(&wq->list, &workqueues);
+@@ -4867,8 +4874,6 @@ EXPORT_SYMBOL_GPL(destroy_workqueue);
+  */
+ void workqueue_set_max_active(struct workqueue_struct *wq, int max_active)
+ {
+-	struct pool_workqueue *pwq;
+-
+ 	/* disallow meddling with max_active for ordered workqueues */
+ 	if (WARN_ON(wq->flags & __WQ_ORDERED_EXPLICIT))
+ 		return;
+@@ -4879,10 +4884,7 @@ void workqueue_set_max_active(struct workqueue_struct *wq, int max_active)
+ 
+ 	wq->flags &= ~__WQ_ORDERED;
+ 	wq->saved_max_active = max_active;
+-
+-	for_each_pwq(pwq, wq)
+-		pwq_adjust_max_active(pwq);
+-
++	wq_adjust_max_active(wq);
+ 	mutex_unlock(&wq->mutex);
+ }
+ EXPORT_SYMBOL_GPL(workqueue_set_max_active);
+@@ -5128,8 +5130,8 @@ static void show_pwq(struct pool_workqueue *pwq)
+ 	pr_info("  pwq %d:", pool->id);
+ 	pr_cont_pool_info(pool);
+ 
+-	pr_cont(" active=%d/%d refcnt=%d%s\n",
+-		pwq->nr_active, pwq->max_active, pwq->refcnt,
++	pr_cont(" active=%d refcnt=%d%s\n",
++		pwq->nr_active, pwq->refcnt,
+ 		!list_empty(&pwq->mayday_node) ? " MAYDAY" : "");
+ 
+ 	hash_for_each(pool->busy_hash, bkt, worker, hentry) {
+@@ -5677,7 +5679,6 @@ EXPORT_SYMBOL_GPL(work_on_cpu_safe_key);
+ void freeze_workqueues_begin(void)
+ {
+ 	struct workqueue_struct *wq;
+-	struct pool_workqueue *pwq;
+ 
+ 	mutex_lock(&wq_pool_mutex);
+ 
+@@ -5686,8 +5687,7 @@ void freeze_workqueues_begin(void)
+ 
+ 	list_for_each_entry(wq, &workqueues, list) {
+ 		mutex_lock(&wq->mutex);
+-		for_each_pwq(pwq, wq)
+-			pwq_adjust_max_active(pwq);
++		wq_adjust_max_active(wq);
+ 		mutex_unlock(&wq->mutex);
+ 	}
+ 
+@@ -5752,7 +5752,6 @@ bool freeze_workqueues_busy(void)
+ void thaw_workqueues(void)
+ {
+ 	struct workqueue_struct *wq;
+-	struct pool_workqueue *pwq;
+ 
+ 	mutex_lock(&wq_pool_mutex);
+ 
+@@ -5764,8 +5763,7 @@ void thaw_workqueues(void)
+ 	/* restore max_active and repopulate worklist */
+ 	list_for_each_entry(wq, &workqueues, list) {
+ 		mutex_lock(&wq->mutex);
+-		for_each_pwq(pwq, wq)
+-			pwq_adjust_max_active(pwq);
++		wq_adjust_max_active(wq);
+ 		mutex_unlock(&wq->mutex);
+ 	}
+ 
+-- 
+2.43.0
 
-In terms of max_active enforcement, this was, while not perfect, workable.
-For per-cpu workqueues, it was fine. For unbound, it wasn't great in that
-NUMA machines would get max_active that's multiplied by the number of nodes
-but didn't cause huge problems because NUMA machines are relatively rare and
-the node count is usually pretty low.
-
-However, cache layouts are more complex now and sharing a worker pool across
-a whole node didn't really work well for unbound workqueues. Thus, a series
-of commits culminating on 8639ecebc9b1 ("workqueue: Make unbound workqueues
-to use per-cpu pool_workqueues") implemented more flexible affinity
-mechanism for unbound workqueues which enables using e.g. last-level-cache
-aligned pools. In the process, 636b927eba5b ("workqueue: Make unbound
-workqueues to use per-cpu pool_workqueues") made unbound workqueues use
-per-cpu pwqs like per-cpu workqueues.
-
-While the change was necessary to enable more flexible affinity scopes, this
-came with the side effect of blowing up the effective max_active for unbound
-workqueues. Before, the effective max_active for unbound workqueues was
-multiplied by the number of nodes. After, by the number of CPUs.
-
-636b927eba5b ("workqueue: Make unbound workqueues to use per-cpu
-pool_workqueues") claims that this should generally be okay. It is okay for
-users which self-regulates concurrency level which are the vast majority;
-however, there are enough use cases which actually depend on max_active to
-prevent the level of concurrency from going bonkers including several IO
-handling workqueues that can issue a work item for each in-flight IO. With
-targeted benchmarks, the misbehavior can easily be exposed as reported in
-http://lkml.kernel.org/r/dbu6wiwu3sdhmhikb2w6lns7b27gbobfavhjj57kwi2quafgwl@htjcc5oikcr3.
-
-Unfortunately, there is no way to express what these use cases need using
-per-cpu max_active. A CPU may issue most of in-flight IOs, so we don't want
-to set max_active too low but as soon as we increase max_active a bit, we
-can end up with unreasonable number of in-flight work items when many CPUs
-issue IOs at the same time. ie. The acceptable lowest max_active is higher
-than the acceptable highest max_active.
-
-Ideally, max_active for an unbound workqueue should be system-wide so that
-the users can regulate the total level of concurrency regardless of node and
-cache layout. The reasons workqueue hasn't implemented that yet are:
-
-- One max_active enforcement decouples from pool boundaires, chaining
-  execution after a work item finishes requires inter-pool operations which
-  would require lock dancing, which is nasty.
-
-- Sharing a single nr_active count across the whole system can be pretty
-  expensive on NUMA machines.
-
-- Per-pwq enforcement had been more or less okay while we were using
-  per-node pools.
-
-It looks like we no longer can avoid decoupling max_active enforcement from
-pool boundaries. This patchset implements system-wide nr_active mechanism
-with the following design characteristics:
-
-- To avoid sharing a single counter across multiple nodes, the configured
-  max_active is split across nodes according to the proportion of online
-  CPUs per node. e.g. A node with twice more online CPUs will get twice
-  higher portion of max_active.
-
-- Workqueue used to be able to process a chain of interdependent work items
-  which is as long as max_active. We can't do this anymore as max_active is
-  distributed across the nodes. Instead, a new parameter min_active is
-  introduced which determines the minimum level of concurrency within a node
-  regardless of how max_active distribution comes out to be.
-
-  It is set to the smaller of max_active and WQ_DFL_MIN_ACTIVE which is 8.
-  This can lead to higher effective max_weight than configured and also
-  deadlocks if a workqueue was depending on being able to handle chains of
-  interdependent work items that are longer than 8.
-
-  I believe these should be fine given that the number of CPUs in each NUMA
-  node is usually higher than 8 and work item chain longer than 8 is pretty
-  unlikely. However, if these assumptions turn out to be wrong, we'll need
-  to add an interface to adjust min_active.
-
-- Each unbound wq has an array of struct wq_node_nr_active which tracks
-  per-node nr_active. When its pwq wants to run a work item, it has to
-  obtain the matching node's nr_active. If over the node's max_active, the
-  pwq is queued on wq_node_nr_active->pending_pwqs. As work items finish,
-  the completion path round-robins the pending pwqs activating the first
-  inactive work item of each, which involves some pool lock dancing and
-  kicking other pools. It's not the simplest code but doesn't look too bad.
-
-This patchset includes the following patches:
-
- 0001-workqueue-Move-pwq-max_active-to-wq-max_active.patch
- 0002-workqueue-Factor-out-pwq_is_empty.patch
- 0003-workqueue-Replace-pwq_activate_inactive_work-with-__.patch
- 0004-workqueue-Move-nr_active-handling-into-helpers.patch
- 0005-workqueue-Make-wq_adjust_max_active-round-robin-pwqs.patch
- 0006-workqueue-Add-first_possible_node-and-node_nr_cpus.patch
- 0007-workqueue-Move-pwq_dec_nr_in_flight-to-the-end-of-wo.patch
- 0008-workqueue-Introduce-struct-wq_node_nr_active.patch
- 0009-workqueue-Implement-system-wide-nr_active-enforcemen.patch
-
-This pachset is also available in the following git branch.
-
- https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git unbound-system-wide-max_active-v2
-
-diffstat follows.
-
- include/linux/workqueue.h |   35 ++
- kernel/workqueue.c        |  644 ++++++++++++++++++++++++++++++++++++++--------
- 2 files changed, 576 insertions(+), 103 deletions(-)
-
---
-tejun
 
