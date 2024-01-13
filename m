@@ -1,51 +1,45 @@
-Return-Path: <linux-kernel+bounces-25162-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77B4882C8D5
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 02:39:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D16C482C8D8
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 02:39:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 712BDB22821
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 01:39:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F45D2831FA
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 01:39:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C139118AF1;
-	Sat, 13 Jan 2024 01:39:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DF7718E01;
+	Sat, 13 Jan 2024 01:39:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iOKbQ0TN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KC+e+Nqh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E81212E65;
-	Sat, 13 Jan 2024 01:39:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EA86C433F1;
-	Sat, 13 Jan 2024 01:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C71018AF1
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 01:39:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEA4AC433F1;
+	Sat, 13 Jan 2024 01:39:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705109959;
-	bh=f+z+aCoBo/R1LCbcJ/n9MFR1O7qF/679Gxl5cb/3qHg=;
+	s=k20201202; t=1705109988;
+	bh=pzmGx/Cqn9yoKWW1PX3E2wDCNFvPFHwZ66zWLOpzMMY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iOKbQ0TNrYHcl5QI2C8ytgTBbYZICCBxplvkmGjmc1SM07yILLF980Ljta5Zubsze
-	 Dhag6XvXmcIREpCusq3qVaqlC/OBITak58S+ICjWxG0N9TrgyNHpLkZsY3eoOP6N4Q
-	 QRickthm8JPRvfXeoffubHSVucXtyxlwaMTflMIZnpm2XznavfAnk0QPX0K4Nv6Zr8
-	 xpfpTlEBfxYb8qH23h6lY3tgAYyNoXL91IkXDh0bm67NuUOVCjyi1j0l3F6q03xXn+
-	 fqaJz+aE9r2cpqoH1ABqsHNEQ0ZsCMTOfASUFM4K+xrOIqHYNcOo8wrD0YsFTWc1vj
-	 ItCDSd/fDh/yA==
-Date: Fri, 12 Jan 2024 19:39:17 -0600
-From: Rob Herring <robh@kernel.org>
-To: Christoph Winklhofer <cj.winklhofer@gmail.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Jonathan Corbet <corbet@lwn.net>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] dt-bindings: w1: UART 1-Wire bus
-Message-ID: <20240113013917.GA3795949-robh@kernel.org>
-References: <20240106-w1-uart-v4-0-7fe1378a8b3e@gmail.com>
- <20240106-w1-uart-v4-1-7fe1378a8b3e@gmail.com>
+	b=KC+e+NqhvI7SWl9nfNtjScBcJoQKv3cTdJpYGp/GVQ4wf+NA1IhaNcQlVFk9jtUeO
+	 bPJ80Poq8zwahqWg/TjhdKkOlnpDrh/8WTfiM8K0L/mcfy1VTeJ/TFpquWzkzE5yaT
+	 EYkmPiz48dmUhdAbuCeDSfXTtbalVr3UTwKfSyB0CM7Zv+QGhizshSoww5ooDWc/Go
+	 OI7cjSAUlC+kb0RYowCNDhBJc5zgiLxgtkDBMZNyphg/GHXub0XXrMhYjNH0kOucC7
+	 TRS6DwbanrQ5cKBJ3ZCANyEz6kCxs+f/BPAsrEJugudMk9J1Rnm9aWLMs04ePTg6sd
+	 bza1i4GrXJ4cQ==
+Date: Fri, 12 Jan 2024 17:39:46 -0800
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+To: Chao Yu <chao@kernel.org>
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/6] f2fs: compress: fix to cover normal cluster write
+ with cp_rwsem
+Message-ID: <ZaHp4to18RtGShWS@google.com>
+References: <20240111064208.2969599-1-chao@kernel.org>
+ <20240111064208.2969599-2-chao@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,91 +48,142 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240106-w1-uart-v4-1-7fe1378a8b3e@gmail.com>
+In-Reply-To: <20240111064208.2969599-2-chao@kernel.org>
 
-On Sat, Jan 06, 2024 at 05:02:24PM +0100, Christoph Winklhofer wrote:
-> Add device tree binding for UART 1-Wire bus.
+Cleaned up a bit:
+
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -1443,13 +1443,14 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
+ }
+
+ static int f2fs_write_raw_pages(struct compress_ctx *cc,
+-                                       int *submitted,
++                                       int *submitted_p,
+                                        struct writeback_control *wbc,
+                                        enum iostat_type io_type)
+ {
+        struct address_space *mapping = cc->inode->i_mapping;
+        struct f2fs_sb_info *sbi = F2FS_M_SB(mapping);
+-       int _submitted, compr_blocks, ret = 0, i;
++       int submitted, compr_blocks, i;
++       int ret = 0;
+
+        compr_blocks = f2fs_compressed_blocks(cc);
+
+@@ -1492,7 +1493,7 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
+                if (!clear_page_dirty_for_io(cc->rpages[i]))
+                        goto continue_unlock;
+
+-               ret = f2fs_write_single_data_page(cc->rpages[i], &_submitted,
++               ret = f2fs_write_single_data_page(cc->rpages[i], &submitted,
+                                                NULL, NULL, wbc, io_type,
+                                                compr_blocks, false);
+                if (ret) {
+@@ -1514,7 +1515,7 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
+                        goto out;
+                }
+
+-               *submitted += _submitted;
++               *submitted_p += submitted;
+        }
+
+ out:
+
+On 01/11, Chao Yu wrote:
+> When we overwrite compressed cluster w/ normal cluster, we should
+> not unlock cp_rwsem during f2fs_write_raw_pages(), otherwise data
+> will be corrupted if partial blocks were persisted before CP & SPOR,
+> due to cluster metadata wasn't updated atomically.
 > 
-> Signed-off-by: Christoph Winklhofer <cj.winklhofer@gmail.com>
+> Fixes: 4c8ff7095bef ("f2fs: support data compression")
+> Signed-off-by: Chao Yu <chao@kernel.org>
 > ---
->  Documentation/devicetree/bindings/w1/w1-uart.yaml | 62 +++++++++++++++++++++++
->  1 file changed, 62 insertions(+)
+>  fs/f2fs/compress.c | 20 ++++++++++++++------
+>  fs/f2fs/data.c     |  3 ++-
+>  2 files changed, 16 insertions(+), 7 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/w1/w1-uart.yaml b/Documentation/devicetree/bindings/w1/w1-uart.yaml
-> new file mode 100644
-> index 000000000000..6b90693b2ca0
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/w1/w1-uart.yaml
-> @@ -0,0 +1,62 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/w1/w1-uart.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> index 9940b7886e5d..bf4cfab67aec 100644
+> --- a/fs/f2fs/compress.c
+> +++ b/fs/f2fs/compress.c
+> @@ -1448,7 +1448,8 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
+>  					enum iostat_type io_type)
+>  {
+>  	struct address_space *mapping = cc->inode->i_mapping;
+> -	int _submitted, compr_blocks, ret, i;
+> +	struct f2fs_sb_info *sbi = F2FS_M_SB(mapping);
+> +	int _submitted, compr_blocks, ret = 0, i;
+>  
+>  	compr_blocks = f2fs_compressed_blocks(cc);
+>  
+> @@ -1463,6 +1464,10 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
+>  	if (compr_blocks < 0)
+>  		return compr_blocks;
+>  
+> +	/* overwrite compressed cluster w/ normal cluster */
+> +	if (compr_blocks > 0)
+> +		f2fs_lock_op(sbi);
 > +
-> +title: UART 1-Wire Bus
-> +
-> +maintainers:
-> +  - Christoph Winklhofer <cj.winklhofer@gmail.com>
-> +
-> +description: |
-> +  UART 1-wire bus. Utilizes the UART interface via the Serial Device Bus
-> +  to create the 1-Wire timing patterns.
-> +
-> +  The UART peripheral must support full-duplex and operate in open-drain
-> +  mode. The timing patterns are generated by a specific combination of
-> +  baud-rate and transmitted byte, which corresponds to a 1-Wire read bit,
-> +  write bit or reset pulse.
-> +
-> +  The default baud-rate for reset and presence detection is 9600 and for
-> +  a 1-Wire read or write operation 115200. In case the actual baud-rate
-> +  is different from the requested one, the transmitted byte is adapted
-> +  to generate the 1-Wire timing patterns.
-> +
-> +  https://www.analog.com/en/technical-articles/using-a-uart-to-implement-a-1wire-bus-master.html
-> +
-> +
-> +properties:
-> +  compatible:
-> +    const: w1-uart
-> +
-> +  reset-speed:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    default: 9600
-> +    description: |
-
-Don't need '|' if no formatting
-
-> +      The baud rate for the 1-Wire reset and presence detect.
-> +
-> +  touch_0-speed:
-
-Don't use '_' in property names.
-
-I'm somewhat familar with 1-wire, but I don't get what 'touch' means 
-here. I assume these are low and high times which are a function of the 
-baudrate.
-
-
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    default: 115200
-> +    description: |
-> +      The baud rate for the 1-Wire write-0 cycle (touch bit 0).
-> +
-> +  touch_1-speed:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    default: 115200
-> +    description: |
-> +      The baud rate for the 1-Wire write-1 and read cycle (touch bit 1).
-> +
-> +required:
-> +  - compatible
-> +
-> +additionalProperties: false
-
-w1.txt says there can be a child node for the 1-wire device. You need 
-'type: object'. Or w1.txt needs to be converted to schema and referenced 
-here (along with using unevaluatedProperties here instead).
-
-Rob
+>  	for (i = 0; i < cc->cluster_size; i++) {
+>  		if (!cc->rpages[i])
+>  			continue;
+> @@ -1495,26 +1500,29 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
+>  				unlock_page(cc->rpages[i]);
+>  				ret = 0;
+>  			} else if (ret == -EAGAIN) {
+> +				ret = 0;
+>  				/*
+>  				 * for quota file, just redirty left pages to
+>  				 * avoid deadlock caused by cluster update race
+>  				 * from foreground operation.
+>  				 */
+>  				if (IS_NOQUOTA(cc->inode))
+> -					return 0;
+> -				ret = 0;
+> +					goto out;
+>  				f2fs_io_schedule_timeout(DEFAULT_IO_TIMEOUT);
+>  				goto retry_write;
+>  			}
+> -			return ret;
+> +			goto out;
+>  		}
+>  
+>  		*submitted += _submitted;
+>  	}
+>  
+> -	f2fs_balance_fs(F2FS_M_SB(mapping), true);
+> +out:
+> +	if (compr_blocks > 0)
+> +		f2fs_unlock_op(sbi);
+>  
+> -	return 0;
+> +	f2fs_balance_fs(sbi, true);
+> +	return ret;
+>  }
+>  
+>  int f2fs_write_multi_pages(struct compress_ctx *cc,
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index 81f9e2cc49e2..b171a9980f6a 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -2839,7 +2839,7 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
+>  		.encrypted_page = NULL,
+>  		.submitted = 0,
+>  		.compr_blocks = compr_blocks,
+> -		.need_lock = LOCK_RETRY,
+> +		.need_lock = compr_blocks ? LOCK_DONE : LOCK_RETRY,
+>  		.post_read = f2fs_post_read_required(inode) ? 1 : 0,
+>  		.io_type = io_type,
+>  		.io_wbc = wbc,
+> @@ -2920,6 +2920,7 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
+>  	if (err == -EAGAIN) {
+>  		err = f2fs_do_write_data_page(&fio);
+>  		if (err == -EAGAIN) {
+> +			f2fs_bug_on(sbi, compr_blocks);
+>  			fio.need_lock = LOCK_REQ;
+>  			err = f2fs_do_write_data_page(&fio);
+>  		}
+> -- 
+> 2.40.1
 
