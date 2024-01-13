@@ -1,76 +1,71 @@
-Return-Path: <linux-kernel+bounces-25165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90EAE82C8E3
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 02:45:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 417A582C8E8
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 02:51:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C28AB22813
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 01:45:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 481481C21E02
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 01:51:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F17F118C29;
-	Sat, 13 Jan 2024 01:45:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KZ0QOeWf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD86618B00;
+	Sat, 13 Jan 2024 01:51:15 +0000 (UTC)
+Received: from mail115-80.sinamail.sina.com.cn (mail115-80.sinamail.sina.com.cn [218.30.115.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4507715EA6;
-	Sat, 13 Jan 2024 01:45:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77C24C433F1;
-	Sat, 13 Jan 2024 01:45:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705110317;
-	bh=DxZsLmyA+1sUvE1Z4U11K/YS97w9VOdx+PTvM4XU75M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KZ0QOeWfGn3Jr0c1lfBR5vr7csr92mBGDsDu9qaQyCIFJv4bhUDIDMslc59cfr9fM
-	 Cjpk1cN+OkUBqAGsLnlou7/4RIFhYzC/dr4aEoJTJuOsIJjqi7vv8NlmKlwrNderj7
-	 wWmjWiHx/Ws2CnOBg1FHYKno8WdhiRflVrscGc0MCsOfs8MIXZD4inuHzmyWHtuqTo
-	 g5QAeIhLAY4V6oOmyJswoYq8RFYLNngxNw76ohYHQm2J01TTWvKTr3A4PZjSMw9Voq
-	 nVCg5bjAoYTxrJsgAR0QXaq2qF8aRMS6h1wPGbWZtnolaTpepnxZ1aWwQ1dPGic56+
-	 kcWtdpVDS3bhg==
-Date: Fri, 12 Jan 2024 19:45:15 -0600
-From: Rob Herring <robh@kernel.org>
-To: Siddharth Vadapalli <s-vadapalli@ti.com>
-Cc: linux-arm-kernel@lists.infradead.org, bhelgaas@google.com, kw@linux.com,
-	devicetree@vger.kernel.org, srk@ti.com, conor+dt@kernel.org,
-	linux-pci@vger.kernel.org, lpieralisi@kernel.org,
-	linux-kernel@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org
-Subject: Re: [RFC PATCH] dt-bindings: PCI: ti,j721e-pci-host: Add device-id
- for TI's J784S4 SoC
-Message-ID: <170511031475.3817032.5482957589582376350.robh@kernel.org>
-References: <20240108050735.512445-1-s-vadapalli@ti.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26986F4EB
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 01:51:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.64.30])
+	by sina.com (10.75.12.45) with ESMTP
+	id 65A1EC5B0000762C; Sat, 13 Jan 2024 09:50:21 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 90088631457670
+X-SMAIL-UIID: B13976DB0B9D4F018A34C556A2878719-20240113-095021-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+8f477ac014ff5b32d81f@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [f2fs?] KASAN: slab-use-after-free Read in kill_f2fs_super
+Date: Sat, 13 Jan 2024 09:50:11 +0800
+Message-Id: <20240113015011.581-1-hdanton@sina.com>
+In-Reply-To: <0000000000007ab192060ec3a224@google.com>
+References: <0000000000006cb174060ec34502@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240108050735.512445-1-s-vadapalli@ti.com>
+Content-Transfer-Encoding: 8bit
 
+On Fri, 12 Jan 2024 10:14:27 -0800
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    70d201a40823 Merge tag 'f2fs-for-6.8-rc1' of git://git.ker..
+> git tree:       upstream
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b910ede80000
 
-On Mon, 08 Jan 2024 10:37:35 +0530, Siddharth Vadapalli wrote:
-> Add the device-id of 0xb012 for the PCIe controller on the J784S4 SoC as
-> described in the CTRL_MMR_PCI_DEVICE_ID register's PCI_DEVICE_ID_DEVICE_ID
-> field. The Register descriptions and the Technical Reference Manual for
-> J784S4 SoC can be found at: https://www.ti.com/lit/zip/spruj52
-> 
-> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-> ---
-> 
-> This patch is based on linux-next tagged next-20240105.
-> 
-> Regards,
-> Siddharth.
-> 
->  Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
 
-Acked-by: Rob Herring <robh@kernel.org>
-
+--- x/fs/f2fs/super.c
++++ y/fs/f2fs/super.c
+@@ -4880,6 +4880,7 @@ free_sbi:
+ 	if (sbi->s_chksum_driver)
+ 		crypto_free_shash(sbi->s_chksum_driver);
+ 	kfree(sbi);
++	sb->s_fs_info = NULL;
+ 
+ 	/* give only one another chance */
+ 	if (retry_cnt > 0 && skip_recovery) {
+--
 
