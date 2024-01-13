@@ -1,179 +1,113 @@
-Return-Path: <linux-kernel+bounces-25239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E32E582CAE0
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 10:37:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37BDB82CAE9
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 10:43:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89C36B222E5
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 09:37:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AE82284E92
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 09:43:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DAC51841;
-	Sat, 13 Jan 2024 09:37:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GDzN14Pi"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAA501841;
+	Sat, 13 Jan 2024 09:43:18 +0000 (UTC)
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B695DA2A;
-	Sat, 13 Jan 2024 09:37:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28057C433C7;
-	Sat, 13 Jan 2024 09:37:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705138656;
-	bh=w/zSBBUrOCogh8TXa7vV7+1viFBuWmgXZKnDrd+wg/4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=GDzN14Pi0f4Pnq/RXyJZlmAXb+3jQHnB1NEEcUgJRyc5RkgaIN2MEh1c664bOhaoF
-	 Q4c/L96XzgDV//riRy4W8fbXJ9fouhbrHQ4Z9RWNidU/t+EwYXSlIveNgaQo9ct8Tb
-	 sZkGT0PgXZH2kAog8sFRSSlK8lr/EDywrl+BD9TCuX8XdBjSW4Etv0Oahnbkxr6gQK
-	 DNiS3LlLvQr6zvg4KBKL5bXqhiblv3zBY05QgINrxYlR4ehLhxWk8iZdV/QmCS2PlU
-	 hd32/uCQIhxGcNC5FrGNOiEo3i1VXkNHis3AsJ6+uwmKO6dZcD1za70LP39r7pkQWy
-	 wa/Lh3v3mrMMQ==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rOaSL-00BMls-Kk;
-	Sat, 13 Jan 2024 09:37:33 +0000
-Date: Sat, 13 Jan 2024 09:37:33 +0000
-Message-ID: <86zfx98tgi.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Saravana Kannan <saravanak@google.com>
-Cc: David Dai <davidai@google.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Quentin Perret <qperret@google.com>,
-	Masami Hiramatsu <mhiramat@google.com>,
-	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Pavan Kondeti <quic_pkondeti@quicinc.com>,
-	Gupta Pankaj <pankaj.gupta@amd.com>,
-	Mel Gorman <mgorman@suse.de>,
-	kernel-team@android.com,
-	linux-pm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] dt-bindings: cpufreq: add virtual cpufreq device
-In-Reply-To: <CAGETcx_8x4p7WTwqQiVGdtHftVjFUJruXsOXwJXgDi0GdEtLNA@mail.gmail.com>
-References: <20231111014933.1934562-1-davidai@google.com>
-	<20231111014933.1934562-2-davidai@google.com>
-	<865y231jvj.wl-maz@kernel.org>
-	<CAGETcx9-n0z5buWgtLZ+6VxW2jEko1GWzkGtGhFiZEq-x_G4nw@mail.gmail.com>
-	<867clpaxel.wl-maz@kernel.org>
-	<CAGETcx_8x4p7WTwqQiVGdtHftVjFUJruXsOXwJXgDi0GdEtLNA@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0646715AF;
+	Sat, 13 Jan 2024 09:43:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.105] (31.173.83.83) by msexch01.omp.ru (10.188.4.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sat, 13 Jan
+ 2024 12:43:04 +0300
+Subject: Re: [PATCH] net: ravb: Fix dma_addr_t truncation in error case
+To: Nikita Yushchenko <nikita.yoush@cogentembedded.com>, "David S. Miller"
+	<davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>
+CC: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, Yoshihiro Shimoda
+	<yoshihiro.shimoda.uh@renesas.com>, Wolfram Sang
+	<wsa+renesas@sang-engineering.com>, =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?=
+	<u.kleine-koenig@pengutronix.de>, <netdev@vger.kernel.org>,
+	<linux-renesas-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240113042221.480650-1-nikita.yoush@cogentembedded.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <bc89d250-0a08-e98c-588f-49c96e8e5474@omp.ru>
+Date: Sat, 13 Jan 2024 12:43:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: saravanak@google.com, davidai@google.com, rafael@kernel.org, viresh.kumar@linaro.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, sudeep.holla@arm.com, qperret@google.com, mhiramat@google.com, will@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org, oliver.upton@linux.dev, dietmar.eggemann@arm.com, quic_pkondeti@quicinc.com, pankaj.gupta@amd.com, mgorman@suse.de, kernel-team@android.com, linux-pm@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+In-Reply-To: <20240113042221.480650-1-nikita.yoush@cogentembedded.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/13/2024 09:25:44
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182619 [Jan 13 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.83.83 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info:
+	omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.83.83
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 01/13/2024 09:30:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 1/13/2024 6:00:00 AM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-On Fri, 12 Jan 2024 22:02:39 +0000,
-Saravana Kannan <saravanak@google.com> wrote:
->=20
-> Sorry for the delay in response. Was very busy for a while and then
-> holidays started.
->=20
-> On Fri, Dec 8, 2023 at 12:52=E2=80=AFAM Marc Zyngier <maz@kernel.org> wro=
-te:
-> >
-> > On Thu, 07 Dec 2023 22:44:36 +0000,
-> > Saravana Kannan <saravanak@google.com> wrote:
-> > >
-> > > On Wed, Nov 15, 2023 at 12:49=E2=80=AFAM Marc Zyngier <maz@kernel.org=
-> wrote:
-> > > >
-> > > > On Sat, 11 Nov 2023 01:49:29 +0000,
-> > > > David Dai <davidai@google.com> wrote:
-> > > > >
-> > > > > Adding bindings to represent a virtual cpufreq device.
-> > > > >
-> > > > > Virtual machines may expose MMIO regions for a virtual cpufreq de=
-vice
-> > > > > for guests to read frequency information or to request frequency
-> > > > > selection. The virtual cpufreq device has an individual controlle=
-r for
-> > > > > each frequency domain.
-> > > >
-> > > > I would really refrain form having absolute frequencies here. A
-> > > > virtual machine can be migrated, and there are *zero* guarantees th=
-at
-> > > > the target system has the same clock range as the source.
-> > > >
-> > > > This really should be a relative number, much like the capacity. Th=
-at,
-> > > > at least, can be migrated across systems.
-> > >
-> > > There's nothing in this patch that mandates absolute frequency.
-> > > In true KVM philosophy, we leave it to the VMM to decide.
-> >
-> > This has nothing to do with KVM. It would apply to any execution
-> > environment, including QEMU in TCG mode.
-> >
-> > To quote the original patch:
-> >
-> > +    description:
-> > +      Address and size of region containing frequency controls for eac=
-h of the
-> > +      frequency domains. Regions for each frequency domain is placed
-> > +      contiugously and contain registers for controlling DVFS(Dynamic =
-Frequency
-> > +      and Voltage) characteristics. The size of the region is proporti=
-onal to
-> > +      total number of frequency domains.
-> >
-> > What part of that indicates that *relative* frequencies are
-> > acceptable? The example explicitly uses the opp-v2 binding, which
-> > clearly is about absolute frequency.
->=20
-> We can update the doc to make that clearer and update the example too.
->=20
-> > To reiterate: absolute frequencies are not the right tool for the job,
-> > and they should explicitly be described as relative in the spec. Not
-> > left as a "whatev'" option for the execution environment to interpret.
->=20
-> I think it depends on the use case. If there's no plan to migrate the
-> VM across different devices, there's no need to do the unnecessary
-> normalization back and forth.
+On 1/13/24 7:22 AM, Nikita Yushchenko wrote:
 
-VM migration is a given, specially when QEMU is involved. Designing
-something that doesn't support it is a bug, plain and simple.
+> In ravb_start_xmit(), ravb driver uses u32 variable to store result of
+> dma_map_single() call. Since ravb hardware has 32-bit address fields in
+> descriptors, this works properly when mapping is successful - it is
+> platform's job to provide mapping addresses that fit into hardware
+> limitations.
+> 
+> However, in failure case dma_map_single() returns DMA_MAPPING_ERROR
+> constant that is 64-bit when dma_addr_t is 64-bit. Storing this constant
+> in u32 leads to truncation, and further call to dma_mapping_error()
+> fails to notice the error.
+> 
+> Fix that by storing result of dma_map_single() in a dma_addr_t
+> variable.
+> 
+> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
+> Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
 
-> And if we can translate between pCPU frequency and a normalized
-> frequency, we can do the same for whatever made up frequencies too. In
-> fact, we plan to do exactly that in our internal use cases for this.
-> There's nothing here that prevents the VMM from doing that.
->
-> Also, if there are hardware virtualized performance counters (AMU,
-> CPPC, etc) that are used for frequency normalization, then we have to
-> use the real frequencies in those devices otherwise the "current
-> frequency" can be 2 GHz while the max normalized frequency is 1024
-> KHz. That'll mess up load tracking.
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-And that's exactly why this shouldn't be a *frequency*, but a
-performance scale or some other unit-less coefficient. Just like the
-big-little capacity.
+[...]
 
-	M.
-
---=20
-Without deviation from the norm, progress is not possible.
+MBR, Sergey
 
