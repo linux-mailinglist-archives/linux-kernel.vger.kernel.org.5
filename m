@@ -1,125 +1,208 @@
-Return-Path: <linux-kernel+bounces-25152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66CDC82C89D
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 02:17:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B34982C8A9
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 02:23:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99033B24371
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 01:17:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 544EB1C22923
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jan 2024 01:23:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F7DE14001;
-	Sat, 13 Jan 2024 01:17:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE53815AF5;
+	Sat, 13 Jan 2024 01:23:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D3Pu4PuP"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nVAzNk+w"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2170C199AA;
-	Sat, 13 Jan 2024 01:17:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705108654; x=1736644654;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=E438uW/rLScP3NrrSZ/+vU2ZbR/Hk3/BAayHZre5Mjg=;
-  b=D3Pu4PuPrTly6TDwFNVNo4Gn0oOucpdB+PKluoGmmYHm7BXXa4dY/Irt
-   wG2Tu0HA7M4bn6V6/+GPq4Zh+sm7nuzJvYxzEar34/NlHzf0j/Cltiyaj
-   L+4tTc8/iHp9+K8ZF0L5ZX0gIGRhdTFP6ZdO1/qlJidEijbog60biFzdk
-   v1LJjjTRwAJI1mkhmZjoU6hkmhSNaw9ntWg9n2kbjpvA+yINd/VuLNR9D
-   v5TOqop4wBl5CaUv2ywqVKzbCpkbiTkjz+R0Jk/VZrSD5CWJYtyQpbEhs
-   iRhw/k6g51kSOxnCvkenNSoaC0V4/CLlhkj+Wdy1jcC7zJJr4SX9liMqb
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="389777274"
-X-IronPort-AV: E=Sophos;i="6.04,191,1695711600"; 
-   d="scan'208";a="389777274"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2024 17:17:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10951"; a="1030096755"
-X-IronPort-AV: E=Sophos;i="6.04,191,1695711600"; 
-   d="scan'208";a="1030096755"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 12 Jan 2024 17:17:29 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rOSeM-0009xP-0b;
-	Sat, 13 Jan 2024 01:17:26 +0000
-Date: Sat, 13 Jan 2024 09:17:05 +0800
-From: kernel test robot <lkp@intel.com>
-To: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>, patrick@stwcx.xyz,
-	Avi Fishman <avifishman70@gmail.com>,
-	Tomer Maimon <tmaimon77@gmail.com>,
-	Tali Perry <tali.perry1@gmail.com>,
-	Patrick Venture <venture@google.com>, Nancy Yuen <yuenn@google.com>,
-	Benjamin Fair <benjaminfair@google.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev,
-	Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
-	Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-	openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] ARM64: dts: nuvoton: Add initial yosemitev4
- device tree
-Message-ID: <202401130946.VGBtdkKu-lkp@intel.com>
-References: <20240112013654.1424451-3-Delphine_CC_Chiu@wiwynn.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A123A34
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 01:23:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40e68a3641dso18955e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jan 2024 17:23:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705109001; x=1705713801; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mM/RZNODygz3tcx3iBW5QQla7ILOiDn5Z5q0jGfqFBA=;
+        b=nVAzNk+wJzifbTMHg5gQsgTogGzSXLeZnbAYinxcCXcVaZHi+xFvNTKex0rVAUX60S
+         NG67klpZxv6qClviL3HGsR/LU1AmiKieCCQ4fgCYowhjjZ/gkwRn7zRaNUDsEMkbd0Nx
+         KTjY9ssbnSWjOCVIgA/asTbCaeB6ezw8F8gl7NEuaw01NIg19M4FV60yRstOhL/+rgBx
+         /oOyLA5SWOYveYkiTjB8jrsKYFoAGaT5meoNIC9uz8RIxZZgURyajDONq/ZI//UJNdP/
+         t4rn7m5qrl5XFXEhLiCO/AXpzUf/llGQMuj2S6KuyxmM5m7Mfw2Vfe8fz+kxT4mC7tCU
+         xWHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705109001; x=1705713801;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mM/RZNODygz3tcx3iBW5QQla7ILOiDn5Z5q0jGfqFBA=;
+        b=CtA6N8M8OvdOoHsegH0ifgtyDdD1x0alVhsd4ODqrdklgKuaGDrvaw3GJ5pHkKG1KI
+         GeZCv3p3SbZ3pBJ1qdA6E+Wl5dcb9oS9QiucDYTF1H/UABzwGLTbridMe+52Ki7AEZLT
+         WhiapsoA38Vyls+RnNE5cURoYurk+U9mDDs6wyOPR9Y1lP+tCma9FOzDxPleEeyOkXPX
+         /RErCXoAixBBTtmlXKoS3X7lDMcBWcL+T6IjvBp+mVHhyV2CRIx46V0+H9RGt5/BkYWO
+         QLB34P+9oinn75CmOjQPKMo9BfYHWLB7Qf6zvlnINrHzCtkA5dMUmNZCNnYZifVFfMY2
+         eNYA==
+X-Gm-Message-State: AOJu0Yy3vKw7j2D9kU22ukNxIeE3EkrcL9qNz24teXqvsEdQ5sjd1Aw8
+	GFt1O1ueWzabRmwHUvWER0HlDfSICo+UFsdziS4hiP0tn/o=
+X-Google-Smtp-Source: AGHT+IG/+qOlk4ymLnRUPXBnV0zsSF5F2DLjgpluok3fjIXdmyv0TwrSAfnNPRC7q4VbUcI/uz5Z7ZFuE7x5bsdIM1U=
+X-Received: by 2002:a1c:721a:0:b0:40e:4990:d573 with SMTP id
+ n26-20020a1c721a000000b0040e4990d573mr396698wmc.4.1705109000593; Fri, 12 Jan
+ 2024 17:23:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240112013654.1424451-3-Delphine_CC_Chiu@wiwynn.com>
+References: <20240112092014.23999-1-yong.wu@mediatek.com> <20240112092014.23999-4-yong.wu@mediatek.com>
+ <CANDhNCrxpeqEhJD0xJzu3vm8a4jMXD2v+_dbDNvaKhLsLB5-4g@mail.gmail.com>
+ <CA+ddPcNdniUTpE_pJb-fL7+MHNSUZTkQojL48iqvW9JPr-Tc-g@mail.gmail.com>
+ <CANDhNCqieBaH-Wi=vy3NSKTpwHcWef6qMOFi-7sgdGiDW7JtwA@mail.gmail.com> <CA+ddPcP9bgApNw_Nu7bxcV-oK_s3Bq1i5qun+vNSuRUO9tPEkA@mail.gmail.com>
+In-Reply-To: <CA+ddPcP9bgApNw_Nu7bxcV-oK_s3Bq1i5qun+vNSuRUO9tPEkA@mail.gmail.com>
+From: John Stultz <jstultz@google.com>
+Date: Fri, 12 Jan 2024 17:23:07 -0800
+Message-ID: <CANDhNCrGxhHJLA2ct-iqemLAsQRt3C8m5=xAD3_dDdKH6Njrdg@mail.gmail.com>
+Subject: Re: [PATCH v4 3/7] dma-buf: heaps: restricted_heap: Add private heap ops
+To: Jeffrey Kardatzke <jkardatzke@google.com>
+Cc: Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh+dt@kernel.org>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, christian.koenig@amd.com, 
+	Sumit Semwal <sumit.semwal@linaro.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Benjamin Gaignard <benjamin.gaignard@collabora.com>, Brian Starkey <Brian.Starkey@arm.com>, 
+	tjmercier@google.com, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+	Robin Murphy <robin.murphy@arm.com>, Vijayanand Jitta <quic_vjitta@quicinc.com>, 
+	Joakim Bech <joakim.bech@linaro.org>, Pavel Machek <pavel@ucw.cz>, Simon Ser <contact@emersion.fr>, 
+	Pekka Paalanen <ppaalanen@gmail.com>, jianjiao.zeng@mediatek.com, kuohong.wang@mediatek.com, 
+	youlin.pei@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Delphine,
+On Fri, Jan 12, 2024 at 4:13=E2=80=AFPM Jeffrey Kardatzke <jkardatzke@googl=
+e.com> wrote:
+> On Fri, Jan 12, 2024 at 3:51=E2=80=AFPM John Stultz <jstultz@google.com> =
+wrote:
+> >
+> > On Fri, Jan 12, 2024 at 3:27=E2=80=AFPM Jeffrey Kardatzke <jkardatzke@g=
+oogle.com> wrote:
+> > > On Fri, Jan 12, 2024 at 2:52=E2=80=AFPM John Stultz <jstultz@google.c=
+om> wrote:
+> > > > I know part of this effort here is to start to centralize all these
+> > > > vendor specific restricted buffer implementations, which I think is
+> > > > great, but I just worry that in doing it in the dmabuf heap interfa=
+ce,
+> > > > it is a bit too user-facing. The likelihood of encoding a particula=
+r
+> > > > semantic to the singular "restricted_heap" name seems high.
+> > >
+> > > In patch #5 it has the actual driver implementation for the MTK heap
+> > > that includes the heap name of "restricted_mtk_cm", so there shouldn'=
+t
+> > > be a heap named "restricted_heap" that's actually getting exposed. Th=
+e
+> >
+> > Ah, I appreciate that clarification! Indeed, you're right the name is
+> > passed through. Apologies for missing that detail.
+> >
+> > > restricted_heap code is a framework, and not a driver itself.  Unless
+> > > I'm missing something in this patchset...but that's the way it's
+> > > *supposed* to be.
+> >
+> > So I guess I'm not sure I understand the benefit of the extra
+> > indirection. What then does the restricted_heap.c logic itself
+> > provide?
+> > The dmabuf heaps framework already provides a way to add heap implement=
+ations.
+>
+> So in the v1 patchset, it was done with just a Mediatek specific heap
+> with no framework or abstractions for another vendor to build on top
+> of. The feedback was to make this more generic since Mediatek won't be
+> the only vendor who wants a restricted heap..which is how it ended up
+> here. There was more code in the framework before relating to TEE
+> calls, but then that was moved to the vendor specific code since not
+> all restricted heaps are allocated through a TEE.
 
-kernel test robot noticed the following build errors:
+Yeah. I apologize, as I know how frustrating the contradictory
+feedback can be. I don't mean to demotivate. :(
 
-[auto build test ERROR on robh/for-next]
-[also build test ERROR on linus/master v6.7 next-20240112]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I think folks would very much like to see consolidation around the
+various implementations, and I agree!
+I just worry that creating the common framework for this concept in a
+dmabuf heaps driver is maybe too peripheral/close to userland.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Delphine-CC-Chiu/dt-bindings-arm-nuvoton-add-Facebook-Yosemite-4-board/20240112-094033
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/20240112013654.1424451-3-Delphine_CC_Chiu%40wiwynn.com
-patch subject: [PATCH v1 2/2] ARM64: dts: nuvoton: Add initial yosemitev4 device tree
-config: arm64-defconfig (https://download.01.org/0day-ci/archive/20240113/202401130946.VGBtdkKu-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240113/202401130946.VGBtdkKu-lkp@intel.com/reproduce)
+> This was also desirable for the V4L2 pieces since there's going to be
+> a V4L2 flag set when using restricted dma_bufs (and it wants to
+> validate that)....so in order to keep that more generic, there should
+> be a higher level concept of restricted dma_bufs that isn't specific
+> to a single vendor.  One other thing that would ideally come out of
+> this is a cleaner way to check that a dma_buf is restricted or not.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401130946.VGBtdkKu-lkp@intel.com/
+Yeah. If there is a clear meaning to "restricted" here, I think having
+a query method on the dmabuf is reasonable.
+My only fret is if the meaning is too vague and userland starts
+depending on it meaning what it meant for vendor1, but doesn't mean
+for vendor2.
 
-All errors (new ones prefixed by >>):
+So we need some clarity in what "restricted" really means.  For
+instance, it being not cpu mappable vs other potential variations like
+being cpu mappable, but not cpu accessible.  Or not cpu mappable, but
+only mappable between a set of 3 devices (Which 3 devices?! How can we
+tell?).
 
->> arch/arm64/boot/dts/nuvoton/nuvoton-npcm845-yosemite4.dts:6:10: fatal error: nuvoton-npcm845-pincfg-evb.dtsi: No such file or directory
-       6 | #include "nuvoton-npcm845-pincfg-evb.dtsi"
-         |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   compilation terminated.
+And if there is variation, maybe we need to enumerate the types of
+"restricted" buffers so we can be specific when it's queried.
 
+That's where maybe having the framework for this be more central or
+closer to the kernel mm code and not just a sub-type of a dmabuf heap
+driver might be better?
 
-vim +6 arch/arm64/boot/dts/nuvoton/nuvoton-npcm845-yosemite4.dts
+> The current V4L2 patchset just attaches the dma_buf and then checks if
+> the page table is empty....and if so, it's restricted. But now I see
+> there's other feedback indicating attaching a restricted dma_buf
+> shouldn't even be allowed, so we'll need another strategy for
+> detecting them. Ideally there is some function/macro like
+> is_dma_buf_restricted(struct dma_buf*) that can indicate that...but we
+> haven't come up with a good way to do that yet which doesn't involve
+> adding another field to dma_buf or to dma_buf_ops (and if such a thing
+> would be fine, then OK...but I had assumed we would get pushback on
+> modifying either of those structs).
 
-     3	
-     4	/dts-v1/;
-     5	#include "nuvoton-npcm845.dtsi"
-   > 6	#include "nuvoton-npcm845-pincfg-evb.dtsi"
-     7	#include <dt-bindings/i2c/i2c.h>
-     8	
+If there's a need and the best place to put something is in the
+dma_buf or dma_buf_ops, that's where it should go.  Folks may
+reasonably disagree if it's the best place (there may be yet better
+spots for the state to sit in the abstractions), but for stuff going
+upstream, there's no reason to try to hack around things or smuggle
+state just to avoid changing core structures. Especially if core
+structures are internal only and have no ABI implications.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Sima's suggestion that attachments should fail if the device cannot
+properly map the restricted buffer makes sense to me. Though I don't
+quite see why all attachments should fail, and I don't really like the
+idea of a private api, but I need to look more at the suggested virtio
+example (but even they said that wasn't their preferred route).
+
+My sense of attach was only that it was supposed to connect a device's
+interest in the buffer, allowing lazy allocation to satisfy various
+device constraints before first mapping - a design feature that I
+don't think anyone ever implemented.  So my sense was it didn't have
+much meaning otherwise (but was a requirement to call before map). But
+that may have evolved since the early days.
+
+And I'm sure the method to figure out if the attachment can work with
+the device may be complicated/difficult, so it sounding reasonable can
+be far from it being reasonable to implement.
+
+And again, I don't mean to frustrate or demotivate here. I'm really
+excited to see this effort being pushed upstream!
+
+thanks
+-john
 
