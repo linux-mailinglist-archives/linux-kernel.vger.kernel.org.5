@@ -1,193 +1,162 @@
-Return-Path: <linux-kernel+bounces-25403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0607F82CFCE
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 06:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41F1182CFD1
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 06:26:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C92DB21D41
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 05:18:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E09A5B21CAC
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 05:26:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D25E51851;
-	Sun, 14 Jan 2024 05:18:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 854A11852;
+	Sun, 14 Jan 2024 05:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="SS2nx5Ka"
-Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AN8QShjQ"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B67537E;
-	Sun, 14 Jan 2024 05:17:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=subdimension.ro
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=subdimension.ro
-Received: from sunspire (unknown [188.24.94.216])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by mail.subdimension.ro (Postfix) with ESMTPSA id C1AA128B531;
-	Sun, 14 Jan 2024 05:17:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
-	s=skycaves; t=1705209469;
-	bh=m5rbK86AKeu5AdwO2INoRZbJcky2jWLDyHoyzlO++ks=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=SS2nx5KavZNnMHqHVj1M93PQesX+sTVegFz/dIzoou7zUpmPaZ1Xab/B8BK2kVxP/
-	 vlZAllkQK9xR2Z7eOm9vJgbXi4Q3WJxknI8jY/OqiEq8Bt6vI6VzJETWFJtD/qfWJ7
-	 YJyI8hHE4UMfCfLZzTitTHLlOc5gGHSgo6PGXyoo=
-Date: Sun, 14 Jan 2024 07:17:47 +0200
-From: Petre Rodan <petre.rodan@subdimension.ro>
-To: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 6/6] iio: pressure: hsc030pa add sleep mode
-Message-ID: <ZaNue0JgTw-WEhCw@sunspire>
-References: <20240110172306.31273-1-petre.rodan@subdimension.ro>
- <20240110172306.31273-7-petre.rodan@subdimension.ro>
- <20240112171356.00003e88@Huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 404E87E
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 05:26:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a26fa294e56so796331766b.0
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Jan 2024 21:26:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705209968; x=1705814768; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=TpE1NVzdyPA0spfsjRgU83ibssIx5B/4cCpoCd3mwSo=;
+        b=AN8QShjQgGjube4/eiKK3X8iaKhSrk+EzuwitwVwU8aJ7oYdscIupoE3iBIj11W+RG
+         wzKayDK+NRt9LNQLi5VnuEDjeyfH4r80uFVQMgxPebXTJRdtooLecyCqhP7Qlm3NN0DV
+         LmzJag1tRXJ+tf6/tGL3rNbCgwU24fRjsze81QzAMuxazKlsXG/wgSyxNI1SSFR/trf6
+         pGt4ryEYAN3dNX1QznkbSvFkrr42rmvx/oPIM6gR8AOQn45M0o9KznrdvuyqJ3OdGoYi
+         c23Z5CQnAScBYDmMkT4VHzPJf46P5leCi1rl/aXgQbPzNfBZ6e8r1YjyhCf6tqZ/ExQW
+         vztw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705209968; x=1705814768;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TpE1NVzdyPA0spfsjRgU83ibssIx5B/4cCpoCd3mwSo=;
+        b=B/8PUd6iau+OZgc4rtjDLoPaScxZkdcQjUQvkjImdFzkd84WXNGydRDvdU9r6OUh2L
+         z/ksL/e/2sOtRNpbVVaNmAWDfP22HVDFtCwIbTrU28EhG5meRcgmuuM0p35BwMyvl7ul
+         oiWbMuh8+6/GBz0+5JPmiRpy7fFtAxOMXzVqS1vsbg3QdcSZiaUUdjGj+IBmBmxz51Vu
+         mWGkVTi7FifyfytKRe3fIO7lxTQ6j1+lpGjxdkCQ/1IeGgox0ijY2MzyR6Q1aWpL5RqT
+         um4Yb9vKWSeV1EHmMXsgEKPZ5c9yYZ3HJG4OerUTFCpKpDds/WIBDfeBPbGI6bmOydWf
+         s6rA==
+X-Gm-Message-State: AOJu0YxazNLNE9SKgu9J2LuHrfpbAwNvehx4K27nbDW1tD67/OHXN97f
+	ECzjdw3bVAbXxRjifTRcoVcKni/KXRz/eoWi8pO6lH4XSwA=
+X-Google-Smtp-Source: AGHT+IGnSzDmqYH9Ez2JzEhhW/pxEtLuWhRtuF2EPADK6g9bJOtwNGGld3t7qmdSbg3+jrCGSbQ2AdfJAyP8yrN11UA=
+X-Received: by 2002:a17:906:30d9:b0:a28:526c:a3e6 with SMTP id
+ b25-20020a17090630d900b00a28526ca3e6mr1532111ejb.152.1705209968272; Sat, 13
+ Jan 2024 21:26:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="80EMe14M5nvbaxA/"
-Content-Disposition: inline
-In-Reply-To: <20240112171356.00003e88@Huawei.com>
-
-
---80EMe14M5nvbaxA/
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Date: Sat, 13 Jan 2024 23:25:56 -0600
+Message-ID: <CABb+yY0AC-_0xfYf3veAkY5X_+=daYZEc4_wnKZ+fUpX82BCZg@mail.gmail.com>
+Subject: [GIT PULL] Mailbox changes for v6.8
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
+Hi Linus,
 
-Hi Jonathan,
+The following changes since commit 610a9b8f49fbcf1100716370d3b5f6f884a2835a=
+:
 
-On Fri, Jan 12, 2024 at 05:13:56PM +0000, Jonathan Cameron wrote:
-> On Wed, 10 Jan 2024 19:22:41 +0200
-> Petre Rodan <petre.rodan@subdimension.ro> wrote:
->=20
-> > Some custom chips from this series require a wakeup sequence before the
-> > measurement cycle is started.
-> >=20
-[..]
-> > +	if (data->capabilities & HSC_CAP_SLEEP) {
-> > +		/*
-> > +		 * Send the Full Measurement Request (FMR) command on the CS
-> > +		 * line in order to wake up the sensor as per
-> > +		 * "Sleep Mode for Use with Honeywell Digital Pressure Sensors"
-> > +		 * technical note (consult the datasheet link in the header).
-> > +		 *
-> > +		 * These specifications require a dummy packet comprised only by
-> > +		 * a single byte that contains the 7bit slave address and the
-> > +		 * READ bit followed by a STOP.
-> > +		 * Because the i2c API does not allow packets without a payload,
-> > +		 * the driver sends two bytes in this implementation.
-> > +		 */
-> > +		ret =3D i2c_master_recv(client, &buf, 1);
-> > +		if (ret < 0)
-> > +			return ret;
-> > +	}
-> > +
-[..]
-> > diff --git a/drivers/iio/pressure/hsc030pa_spi.c b/drivers/iio/pressure=
-/hsc030pa_spi.c
-> > index 737197eddff0..1c139cdfe856 100644
-> > --- a/drivers/iio/pressure/hsc030pa_spi.c
-> > +++ b/drivers/iio/pressure/hsc030pa_spi.c
-> > @@ -25,12 +25,40 @@ static int hsc_spi_recv(struct hsc_data *data)
-> >  	struct spi_device *spi =3D to_spi_device(data->dev);
-> >  	struct spi_transfer xfer =3D {
-> >  		.tx_buf =3D NULL,
-> > -		.rx_buf =3D data->buffer,
-> > -		.len =3D HSC_REG_MEASUREMENT_RD_SIZE,
-> > +		.rx_buf =3D NULL,
-> > +		.len =3D 0,
-> >  	};
-> > +	u16 orig_cs_setup_value;
-> > +	u8 orig_cs_setup_unit;
-> > +
-> > +	if (data->capabilities & HSC_CAP_SLEEP) {
-> > +		/*
-> > +		 * Send the Full Measurement Request (FMR) command on the CS
-> > +		 * line in order to wake up the sensor as per
-> > +		 * "Sleep Mode for Use with Honeywell Digital Pressure Sensors"
-> > +		 * technical note (consult the datasheet link in the header).
-> > +		 *
-> > +		 * These specifications require the CS line to be held asserted
-> > +		 * for at least 8=B5s without any payload being generated.
-> > +		 */
-> > +		orig_cs_setup_value =3D spi->cs_setup.value;
-> > +		orig_cs_setup_unit =3D spi->cs_setup.unit;
-> > +		spi->cs_setup.value =3D 8;
-> > +		spi->cs_setup.unit =3D SPI_DELAY_UNIT_USECS;
-> > +		/*
-> > +		 * Send a dummy 0-size packet so that CS gets toggled.
-> > +		 * Trying to manually call spi->controller->set_cs() instead
-> > +		 * does not work as expected during the second call.
-> > +		 */
->
-> Do you have a reference that says the CS must be toggled on 0 length tran=
-sfer?
-> If that's not specified in the SPI core somewhere then you will need to s=
-end
-> something...
->
-> > +		spi_sync_transfer(spi, &xfer, 1);
-> > +		spi->cs_setup.value =3D orig_cs_setup_value;
-> > +		spi->cs_setup.unit =3D orig_cs_setup_unit;
-> > +	}
+  Linux 6.7-rc8 (2023-12-31 12:51:25 -0800)
 
-first of all thank you for the review.
+are available in the Git repository at:
 
-I was afraid that this block will not be taken too well since I'm trying to
-achieve something that the SPI subsystem was not designed for.
+  git://git.kernel.org/pub/scm/linux/kernel/git/jassibrar/mailbox.git
+tags/mailbox-v6.8
 
-the code does exactly what the datasheet specs require on my SPI controller=
-, but
-indeed the API might change at some point making the code non-functional.
+for you to fetch changes up to cd795fb0c352c1f70e5fa437b01572c8693e1b77:
 
-by 'sending something' you mean on the SPI bus or are you pushing me toward=
- a
-patch to SPI core?
+  mailbox: mtk-cmdq: Add CMDQ driver support for mt8188 (2024-01-13
+23:08:51 -0600)
 
-unfortunately this chip feature is a special request only, there is no way =
-for
-me to test what happens if the wakeup sequence also contains a payload (in =
-both
-i2c and spi cases). the i2c wakeup code was inspired from the abp060mg driv=
-er,
-but I can't reach its maintainer to ask for details. I also can't seem to r=
-each
-Honeywell. oh well.
+----------------------------------------------------------------
+mediatek: add CMDQ support for mt8188
+mhuv2: fix channel window status
+qcom: document X1E80100 IPC controller
+  misc cleanup
+xlnx: add Versal bindings
+misc: Convert to platform remove callback returning void
 
-best regards,
-peter
+----------------------------------------------------------------
+Abel Vesa (1):
+      dt-bindings: mailbox: qcom-ipcc: document the X1E80100
+Inter-Processor Communication Controller
 
---=20
-petre rodan
+Jason-JH.Lin (3):
+      mailbox: mtk-cmdq: Rename gce_plat variable with SoC name postfix
+      mailbox: mtk-cmdq: Sort cmdq platform data by compatible name
+      mailbox: mtk-cmdq: Add CMDQ driver support for mt8188
 
---80EMe14M5nvbaxA/
-Content-Type: application/pgp-signature; name="signature.asc"
+Krzysztof Kozlowski (3):
+      dt-bindings: mailbox: qcom,apcs-kpss-global: drop duplicated
+qcom,ipq8074-apcs-apps-global
+      dt-bindings: mailbox: qcom,apcs-kpss-global: use fallbacks
+      mailbox: qcom-apcs-ipc: re-organize compatibles with fallbacks
 
------BEGIN PGP SIGNATURE-----
+Randy Dunlap (1):
+      mailbox: zynqmp-ipi: fix an Excess struct member kernel-doc warning
 
-iQIzBAABCAAdFiEE2Ap/wXYVGTXsPl+pzyaZmYROfzAFAmWjbncACgkQzyaZmYRO
-fzCTjQ//Xg/d2FKzXNqDpBObwUh3stVXaWNJtmitlauqLYiZaGx4H5ZtDGz5qZFM
-c9Wd5yMvEYvLIg7x7Xm0vF+uBzS1CNtYm/OehqLvDtjnWndwb/53QpFj1dZgaPN5
-/4Z6xmWmosrpcpwg1ANRNt070YQkvEOw0h5NUQs+fbWeLBhdYN1DfmKFYwhvrbqq
-HyFftZUgSZQSo3z7BJ86fRBh/nuVz1fOiLIkvZ8Nm3tgeqBzGN4J4BD85rgrkjem
-LoMKtm7MHqESunk9EaAmsd4pMkZjsuNCdwe8EIUAaV8i8jb0wiPqf+cbL+ijRVaH
-Uq0jciKYX861rwyeeX8sOtQy5wTTshZTmGPG3tmJBUieWTAGxqxmdOr0rN+bic+Y
-cP7aAy+pvo0qrjTeeRwUR2HWTJFX+tMQD+megFGZqnVgU+MKLvOAaV1Qq6SjPHZ7
-aynEELrw4FaZhcp2R00+4g44oavjPTzdGErz2sc++mCet7SFNF+R4n0BdoOxSJJp
-M5mHBLdyF+KfP7Nt+y/aaHxHHnkjznlFZOJwYDH3UuleUkt7dAxFVZjEozn/3L+i
-nKlihMPThY3WBSQzTmK1Jnb8OZPiFgq2iZD7YvB842v/eGLFNhvh53v742z9ZMEz
-VO/j6e8Xt4++gVewxv98Cayk3xB9qKdto6aLHe1f7iVvB4hS74c=
-=tD9a
------END PGP SIGNATURE-----
+Tanmay Shah (2):
+      dt-bindings: mailbox: zynqmp: extend required list
+      dt-bindings: mailbox: add Versal IPI bindings
 
---80EMe14M5nvbaxA/--
+Uwe Kleine-K=C3=B6nig (12):
+      mailbox: bcm-flexrm: Convert to platform remove callback returning vo=
+id
+      mailbox: bcm-pdc: Convert to platform remove callback returning void
+      mailbox: imx: Convert to platform remove callback returning void
+      mailbox: mailbox-test: Convert to platform remove callback returning =
+void
+      mailbox: mtk-cmdq: Convert to platform remove callback returning void
+      mailbox: omap: Convert to platform remove callback returning void
+      mailbox: qcom-apcs-ipc: Convert to platform remove callback returning=
+ void
+      mailbox: qcom-ipcc: Convert to platform remove callback returning voi=
+d
+      mailbox: stm32-ipcc: Convert to platform remove callback returning vo=
+id
+      mailbox: sun6i-msgbox: Convert to platform remove callback returning =
+void
+      mailbox: tegra-hsp: Convert to platform remove callback returning voi=
+d
+      mailbox: zynqmp-ipi: Convert to platform remove callback returning vo=
+id
+
+Xiaowu.ding (1):
+      mailbox: arm_mhuv2: Fix a bug for mhuv2_sender_interrupt
+
+ .../bindings/mailbox/qcom,apcs-kpss-global.yaml    |  62 +++++++---
+ .../devicetree/bindings/mailbox/qcom-ipcc.yaml     |   1 +
+ .../bindings/mailbox/xlnx,zynqmp-ipi-mailbox.yaml  | 132 +++++++++++++++++=
+++--
+ drivers/mailbox/arm_mhuv2.c                        |   3 +-
+ drivers/mailbox/bcm-flexrm-mailbox.c               |   6 +-
+ drivers/mailbox/bcm-pdc-mailbox.c                  |   5 +-
+ drivers/mailbox/imx-mailbox.c                      |   6 +-
+ drivers/mailbox/mailbox-test.c                     |   6 +-
+ drivers/mailbox/mtk-cmdq-mailbox.c                 |  49 ++++----
+ drivers/mailbox/omap-mailbox.c                     |   6 +-
+ drivers/mailbox/qcom-apcs-ipc-mailbox.c            |  16 ++-
+ drivers/mailbox/qcom-ipcc.c                        |   6 +-
+ drivers/mailbox/stm32-ipcc.c                       |   6 +-
+ drivers/mailbox/sun6i-msgbox.c                     |   6 +-
+ drivers/mailbox/tegra-hsp.c                        |   6 +-
+ drivers/mailbox/zynqmp-ipi-mailbox.c               |   7 +-
+ 16 files changed, 220 insertions(+), 103 deletions(-)
 
