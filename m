@@ -1,65 +1,82 @@
-Return-Path: <linux-kernel+bounces-25482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E020182D0E9
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 15:34:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A25B82D0EF
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 15:37:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 791591F21695
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 14:34:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E3D0B214E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 14:37:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DED4323C6;
-	Sun, 14 Jan 2024 14:34:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YRArPb4R"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00C5C2900;
+	Sun, 14 Jan 2024 14:37:07 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3330F2570;
-	Sun, 14 Jan 2024 14:34:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79AF5C433F1;
-	Sun, 14 Jan 2024 14:34:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705242846;
-	bh=EszImnKYJnEnKFk1wt073gthk8M6xM7ENBGQn/T0edM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YRArPb4RPBK5ot3z0ZMSvwVELOPnXJAKuuuJj9y66aWMPRrNCtvXuxwYfTIi7G5eD
-	 C1FHSsamBbHNJeu3dMT/fYJXcbaTcofAAP6gYcV3adLquCsCXqxQs0kse1ALhluIIO
-	 It0E4jdkX8FSI78tOaSAy8mv2M1JIXUv2sXPZVxRBuTxxQabC8jwuOnjv+fAgm/jxE
-	 h9sqSe+9jF4gkFSBFm1a3sLN6iVmiX9WTU33xgknss7HFnQF1gXfY3ohSJIInIgTTL
-	 9hhF/Fl5RUTeIWp8ucrBo4SeNSfQnlWN6wAvvq4nJH5aj/9BZGtY4CVmfFqAQCR4cC
-	 N4P5HOW9L59sA==
-Date: Sun, 14 Jan 2024 09:34:05 -0500
-From: Sasha Levin <sashal@kernel.org>
-To: David Airlie <airlied@redhat.com>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Dave Airlie <airlied@gmail.com>, kherbst@redhat.com,
-	lyude@redhat.com, dakr@redhat.com, daniel@ffwll.ch,
-	bskeggs@redhat.com, dri-devel@lists.freedesktop.org,
-	nouveau@lists.freedesktop.org
-Subject: Re: [PATCH AUTOSEL 6.1 5/5] nouveau: fix disp disabling with GSP
-Message-ID: <ZaPw3WAmT2OwHY98@sashalap>
-References: <20240108122823.2090312-1-sashal@kernel.org>
- <20240108122823.2090312-5-sashal@kernel.org>
- <CAMwc25rAm1ndSiofWMMmQ1BeB0XxBvsHpcvaDKXUwEZp72iwEA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5462E39D
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 14:37:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-35fedd5e6beso72886145ab.3
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 06:37:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705243024; x=1705847824;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7wt6VIBHV5JomMb6G/SAzgkJ/CF86v9+FpIHEpcIi30=;
+        b=hixMNTn8on5stYFsa1uIzDgCYlEEx5ojb7kv6pofx0480/IkoOUJ7ys03NFkFfQYkm
+         Db32/FH7mQOgQXL996c41kPt81eq1lKWp55NryxchaQ8+RtWVl/EomqaPQ0YZPWH7bO6
+         meJt0D/3xoJ30OfuzytSBSYocr6AhxIUqGytLikHs/JO+CO2ZZ2W0r9RwfMnI1VaFGmS
+         iDlOKfsP3vXMiCevHbsX4Gy/0vvBsySp5k/KJfIBbmipU7JXBJJaoqZu3b0/ZDBp5fcd
+         Lb7qteIyjqqcOY1af8HoqoVd+XRD1ziaiDtV5Yl95Xk106FzB6OJEar+8YscCdgmd6x8
+         f7Jw==
+X-Gm-Message-State: AOJu0YwF1geJxjXmSZ2VVc+CX2cPGra/ae71BkIlpIvA5q5NJPgAQFus
+	DX8+E+lyfYYpbRgVK+0yCJucbY3XRG698Y9rF+u4CWMBilrf
+X-Google-Smtp-Source: AGHT+IHZJp1y0/eT4Y5XcGEZHHluMb+1c3lYitvG1gsjKxbDv/arVmEig0IQH/tbT08VemxEN1ZaDQXwh5BN04ZeASt4LhxR5rpZ
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAMwc25rAm1ndSiofWMMmQ1BeB0XxBvsHpcvaDKXUwEZp72iwEA@mail.gmail.com>
+X-Received: by 2002:a05:6e02:1a8a:b0:35f:d260:57b3 with SMTP id
+ k10-20020a056e021a8a00b0035fd26057b3mr398021ilv.3.1705243024532; Sun, 14 Jan
+ 2024 06:37:04 -0800 (PST)
+Date: Sun, 14 Jan 2024 06:37:04 -0800
+In-Reply-To: <0000000000005ab984060371583e@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bbb70f060ee8d44b@google.com>
+Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Read in hci_send_acl
+From: syzbot <syzbot+a0c80b06ae2cb8895bc4@syzkaller.appspotmail.com>
+To: davem@davemloft.net, edumazet@google.com, hdanton@sina.com, 
+	johan.hedberg@gmail.com, kuba@kernel.org, linux-bluetooth@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, luiz.dentz@gmail.com, luiz.von.dentz@intel.com, 
+	marcel@holtmann.org, netdev@vger.kernel.org, pabeni@redhat.com, pav@iki.fi, 
+	syzkaller-bugs@googlegroups.com, william.xuanziyang@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Jan 09, 2024 at 06:51:25AM +1000, David Airlie wrote:
->NAK for backporting this to anything, it is just a fix for 6.7
+syzbot suspects this issue was fixed by commit:
 
-Dropped it from everywhere, thanks!
+commit 181a42edddf51d5d9697ecdf365d72ebeab5afb0
+Author: Ziyang Xuan <william.xuanziyang@huawei.com>
+Date:   Wed Oct 11 09:57:31 2023 +0000
 
--- 
-Thanks,
-Sasha
+    Bluetooth: Make handle of hci_conn be unique
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=127944c1e80000
+start commit:   4b2b606075e5 ipv4/fib: send notify when delete source addr..
+git tree:       net
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d594086f139d167
+dashboard link: https://syzkaller.appspot.com/bug?extid=a0c80b06ae2cb8895bc4
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=138aad9e680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=125e0b92680000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: Bluetooth: Make handle of hci_conn be unique
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
