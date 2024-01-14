@@ -1,93 +1,109 @@
-Return-Path: <linux-kernel+bounces-25555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99AE882D294
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 00:13:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AD0482D297
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 00:15:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B0B51F213AD
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 23:13:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FD2E1F213EC
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 23:15:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62B902C686;
-	Sun, 14 Jan 2024 23:13:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69EAF2C68A;
+	Sun, 14 Jan 2024 23:15:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="uCt225ef"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="mr9Rkc7M"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 859C52C680;
-	Sun, 14 Jan 2024 23:13:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=eMAehrgdOex157gcLIzKgIOwhrQ8V1YSfEKTBwqKato=; b=uCt225eflj2P3CxFEEs4l2+Q8d
-	5gmB86zPZ3b4r7l+unS32A0UUt4w1ixOSWvtlY82S/YKkL4WOrPeilKM6bvWMpu95wOTT23HuGfLR
-	t8qy0Mc21OavxXXVlEnbj3jltGGScd1Z5mSWcVAtrj0y50vPUUbz4Znlk39Q022W9uF8FuVmZaYMO
-	Jqy3oaWB+Btvw+MT5fvrTLSWJneO1w1Ldg3di+5xOH1BzPfe7vuNm9yCOLfA10Fbmk1tbIqfPbevc
-	v0D30wyizRHZ5wUIZvY79CK1SQYzy95YulqMdefKj41bZWRViSOcxte8rZE9JhV1fmscZ7KEH/+pq
-	ETtBUWSw==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rP9fN-007UEI-03;
-	Sun, 14 Jan 2024 23:13:21 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	linux-rtc@vger.kernel.org
-Subject: [PATCH] rtc: ac100: remove misuses of kernel-doc
-Date: Sun, 14 Jan 2024 15:13:20 -0800
-Message-ID: <20240114231320.31437-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B93B2C680;
+	Sun, 14 Jan 2024 23:15:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6d9344f30caso5427403b3a.1;
+        Sun, 14 Jan 2024 15:15:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705274137; x=1705878937;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=QGViPHtjJMlurFPTzBSSPEkkat6LUsMaxd6YuoP9bZE=;
+        b=EcFTMhO9K8bAo2qqynDYDOxpGUtrvnKoYTgY703Xzif0ajJsSiqIIJnCIg9E9xX3wp
+         Ff/22/J+DjlKkOd6SWlrrTOkFvpuiMRKCkdyJONj52If/ilkY7I8nPExP9uHnY0ypmbu
+         Aflyqq/Df9sqwlHUiSuRnchEiApEvbUBaP5Wv5beD4qIdfgQWhjucgKWpU1NUmSGUNzI
+         GFWsojrYKORPMvADN1SaacgOM+yd2u8q6M4o4EOottzAzJRQpF+T0CH0RAhbEIouBrTg
+         kQYaJAVq7Zti0f7xkWuNv5FvW9cxFK/RcqaRiuBmsR1pTBczl+sg4ONWfTRBBuOy+l3Z
+         IByw==
+X-Gm-Message-State: AOJu0Yx0u3LY4gL1sUcapCiH6esjnlXKt109EL0np/bBDANhDhhlEq1E
+	0iURAIJrZOp8pUNVQcfPc6I=
+X-Google-Smtp-Source: AGHT+IGX6Pz3j6wT5XGBdGkNsTcNQay3wFitLsf0ZTkMu21EsbWQmrDkQcFXNxS/GAzmihrtd2gFnQ==
+X-Received: by 2002:a05:6a00:4b0d:b0:6d9:bf50:196e with SMTP id kq13-20020a056a004b0d00b006d9bf50196emr5766190pfb.19.1705274137340;
+        Sun, 14 Jan 2024 15:15:37 -0800 (PST)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id ei6-20020a056a0080c600b006dae1c8c817sm6495523pfb.74.2024.01.14.15.15.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Jan 2024 15:15:36 -0800 (PST)
+Date: Sun, 14 Jan 2024 20:15:38 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2023; t=1705274134;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QGViPHtjJMlurFPTzBSSPEkkat6LUsMaxd6YuoP9bZE=;
+	b=mr9Rkc7M5rCAcuie0IEgYS6HZeCbDJJr9e0HB5GhSydRms/1CC31Db9XU/abTy3Rt3+wxY
+	/WCIUdOnJKbyNGP3ul8Bl4JC+DR7eLl+/7mPa531B/x8WSVL5VpYns9AjVVh6+X7VaJ6gs
+	k5boUZ7+XYk1K0rAjcmDb3KGXp0SST4SaQPW77BqTGHakjURR3oYPPSXQc+G4y1g4BENmq
+	nAE+vZzxjx0ow/g/rCllZdsP+3cZwddxZPeGDPk2HM5IQitjHtO2QhFHuMJ9Yfs4nHl0hP
+	ypaN/9p1M0d4Mk0jAXJL8/jesps+V1C/KvA8D1XUd+BpYGkNUXY8fjsAMlLrEQ==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, 
+	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org, 
+	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com, f.fainelli@gmail.com, 
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, 
+	allen.lkml@gmail.com
+Subject: Re: [PATCH 6.6 0/1] 6.6.12-rc1 review
+Message-ID: <k4fx6zf7tohistdg4dt2vuz7h2by3k3w4u2xulzta5drkvevye@2nki7zdt4j4l>
+References: <20240113094204.275569789@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240113094204.275569789@linuxfoundation.org>
 
-Prevent kernel-doc warnings by changing "/**" to common comment
-format "/*" in non-kernel-doc comments:
+On 13 Jan 10:50, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.12 release.
+> There are 1 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Mon, 15 Jan 2024 09:41:55 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.12-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-drivers/rtc/rtc-ac100.c:103: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- * Clock controls for 3 clock output pins
-drivers/rtc/rtc-ac100.c:382: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- * RTC related bits
+System runs fine, no noticeable regressions.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Chen-Yu Tsai <wens@csie.org>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: linux-rtc@vger.kernel.org
----
- drivers/rtc/rtc-ac100.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+[    0.000000] Linux version 6.6.12-rc1-ktest-gf44c56831910 (rbmarliere@debian) (gcc (Debian 13.2.0-9) 13.2.0, GNU ld (GNU Binutils for Debian) 2.41.50.20231227) #2 SMP PREEMPT_DYNAMIC Sun Jan 14 19:53:04 -03 2024
 
-diff -- a/drivers/rtc/rtc-ac100.c b/drivers/rtc/rtc-ac100.c
---- a/drivers/rtc/rtc-ac100.c
-+++ b/drivers/rtc/rtc-ac100.c
-@@ -99,7 +99,7 @@ struct ac100_rtc_dev {
- 	struct clk_hw_onecell_data *clk_data;
- };
- 
--/**
-+/*
-  * Clock controls for 3 clock output pins
-  */
- 
-@@ -378,7 +378,7 @@ static void ac100_rtc_unregister_clks(st
- 	clk_unregister_fixed_rate(chip->rtc_32k_clk->clk);
- }
- 
--/**
-+/*
-  * RTC related bits
-  */
- static int ac100_rtc_get_time(struct device *dev, struct rtc_time *rtc_tm)
+Tested-by: Ricardo B. Marliere <ricardo@marliere.net>
+
+Thanks!
+-	Ricardo
 
