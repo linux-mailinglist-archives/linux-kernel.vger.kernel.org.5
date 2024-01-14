@@ -1,121 +1,99 @@
-Return-Path: <linux-kernel+bounces-25515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66D7A82D18E
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 18:06:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 523B982D190
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 18:08:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14595281F55
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 17:06:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB161B21291
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 17:08:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E16855399;
-	Sun, 14 Jan 2024 17:06:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5A1A5392;
+	Sun, 14 Jan 2024 17:08:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Vgi2LRGB"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YEKWtib+"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50B8E3C36;
-	Sun, 14 Jan 2024 17:06:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACE6D23A6;
+	Sun, 14 Jan 2024 17:08:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705251993; x=1736787993;
+  t=1705252100; x=1736788100;
   h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=kBypvo3nEuuDndZPzEooAarNiHapFV9jzwSKYnqP4Ss=;
-  b=Vgi2LRGB1y72El36q9UJ7MXjaAG1tm7r83zy8MRfiPK9eocmFHKCZ96a
-   V+c/vHksOWc9E4e9cC1qlZ98raftTBxahB/sBtzHX81wGj9HucHiGKGmw
-   jo12A03ZKOWxifW5929s9A9aWHm2TuspsddowrgKEeE1G7GB6WPGlLayb
-   eJbmEiz+u2QYJgYFqHMsfrLu1EfCjeO8MkCcPSIHYJmW7s2tGVvrg29Jy
-   Y0PNGg4HqyR4tNGg6b/x3jxIdkYNCPyA6yiI772oToIPL+gw6y4BY6f+p
-   0iyU6PrATxS2iKuA14tQvUv7svHGBRIJ5PMQ/qX3xGUtICrnAU7Aw3W0k
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="18081194"
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=UzgFjM2CD1QtXNQP46Z3RkFdGjU5fivGIZd8OKaOVwY=;
+  b=YEKWtib+YqxYs6DzJO6TN8gzeyExwgQufbV6MRG5kGNBQQpzt2KjJuaZ
+   VEw49nocHXsxESG4648px4qLFoj+G3oJOgpVaxCCaNe9JXDcROfU9nMqS
+   6OrdZq97CSnLlLa7jb32Kki9CoF3Q/CZbSLM+u+YlsCWI0TmuJpeuQSqS
+   C42wo33JBV4jysQZHekLCh+BFk4YYx0AOZTTDs/uZcPg5Qx04gWa5OvCG
+   2nGRB49ZDszXrNvDef8QfCBGrfrIJN2ltHGIsDCpc4lW9thGGt+u0qUEC
+   8l/FwVst4M7SgF0fIZL5BBNltX39Z+3rHfZru8ZOSxlzcC32bff40J8oO
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="396621295"
 X-IronPort-AV: E=Sophos;i="6.04,194,1695711600"; 
-   d="scan'208";a="18081194"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 09:06:32 -0800
+   d="scan'208";a="396621295"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 09:08:19 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="783579560"
+X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="786869958"
 X-IronPort-AV: E=Sophos;i="6.04,194,1695711600"; 
-   d="scan'208";a="783579560"
+   d="scan'208";a="786869958"
 Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 09:06:28 -0800
+  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 09:08:16 -0800
 Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rP3pP-0000000Dy2n-46Gw;
-	Sun, 14 Jan 2024 18:59:19 +0200
-Date: Sun, 14 Jan 2024 18:59:19 +0200
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Hardik Gajjar <hgajjar@de.adit-jv.com>,
-	Ferry Toth <ftoth@exalondelft.nl>
-Cc: gregkh@linuxfoundation.org, s.hauer@pengutronix.de,
-	jonathanh@nvidia.com, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org, quic_linyyuan@quicinc.com,
-	paul@crapouillou.net, quic_eserrao@quicinc.com,
-	erosca@de.adit-jv.com
-Subject: Re: [PATCH v4] usb: gadget: u_ether: Replace netif_stop_queue with
- netif_device_detach
-Message-ID: <ZaQS5x-XK08Jre6I@smile.fi.intel.com>
-References: <20231006153808.9758-1-hgajjar@de.adit-jv.com>
- <20231006155646.12938-1-hgajjar@de.adit-jv.com>
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rP3y1-0000000DyAP-1bfe;
+	Sun, 14 Jan 2024 19:08:13 +0200
+Date: Sun, 14 Jan 2024 19:08:13 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado <nfraprado@collabora.com>
+Cc: Tzung-Bi Shih <tzungbi@kernel.org>, kernel@collabora.com,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Abhijit Gangurde <abhijit.gangurde@amd.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Nipun Gupta <nipun.gupta@amd.com>,
+	Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>,
+	Umang Jain <umang.jain@ideasonboard.com>,
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] firmware: coreboot: Generate aliases for coreboot
+ modules
+Message-ID: <ZaQU_QqGXwkSgU_Y@smile.fi.intel.com>
+References: <20240111151226.842603-1-nfraprado@collabora.com>
+ <20240111151226.842603-3-nfraprado@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231006155646.12938-1-hgajjar@de.adit-jv.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240111151226.842603-3-nfraprado@collabora.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-+Cc: Ferry.
+On Thu, Jan 11, 2024 at 12:11:47PM -0300, Nícolas F. R. A. Prado wrote:
+> Generate aliases for coreboot modules to allow automatic module probing.
 
-On Fri, Oct 06, 2023 at 05:56:46PM +0200, Hardik Gajjar wrote:
-> This patch replaces the usage of netif_stop_queue with netif_device_detach
-> in the u_ether driver. The netif_device_detach function not only stops all
-> tx queues by calling netif_tx_stop_all_queues but also marks the device as
-> removed by clearing the __LINK_STATE_PRESENT bit.
-> 
-> This change helps notify user space about the disconnection of the device
-> more effectively, compared to netif_stop_queue, which only stops a single
-> transmit queue.
+..
 
-This change effectively broke my USB ether setup.
+> +/**
+> + * struct coreboot_device_id - Identifies a coreboot table entry
+> + * @tag: tag ID
+> + */
+> +struct coreboot_device_id {
+> +	__u32 tag;
+> +};
 
-git bisect start
-# status: waiting for both good and bad commits
-# good: [1f24458a1071f006e3f7449c08ae0f12af493923] Merge tag 'tty-6.7-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty
-git bisect good 1f24458a1071f006e3f7449c08ae0f12af493923
-# status: waiting for bad commit, 1 good commit known
-# bad: [2c40c1c6adab90ee4660caf03722b3a3ec67767b] Merge tag 'usb-6.7-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb
-git bisect bad 2c40c1c6adab90ee4660caf03722b3a3ec67767b
-# bad: [17d6b82d2d6d467149874b883cdba844844b996d] usb/usbip: fix wrong data added to platform device
-git bisect bad 17d6b82d2d6d467149874b883cdba844844b996d
-# good: [ba6b83a910b6d8a9379bda55cbf06cb945473a96] usb: xhci-mtk: add a bandwidth budget table
-git bisect good ba6b83a910b6d8a9379bda55cbf06cb945473a96
-# good: [dddc00f255415b826190cfbaa5d6dbc87cd9ded1] Revert "usb: gadget: uvc: cleanup request when not in correct state"
-git bisect good dddc00f255415b826190cfbaa5d6dbc87cd9ded1
-# bad: [8f999ce60ea3d47886b042ef1f22bb184b6e9c59] USB: typec: tps6598x: Refactor tps6598x port registration
-git bisect bad 8f999ce60ea3d47886b042ef1f22bb184b6e9c59
-# bad: [f49449fbc21e7e9550a5203902d69c8ae7dfd918] usb: gadget: u_ether: Replace netif_stop_queue with netif_device_detach
-git bisect bad f49449fbc21e7e9550a5203902d69c8ae7dfd918
-# good: [97475763484245916735a1aa9a3310a01d46b008] USB: usbip: fix stub_dev hub disconnect
-git bisect good 97475763484245916735a1aa9a3310a01d46b008
-# good: [0f5aa1b01263b8b621bc4f031a1f2983ef8517b7] usb: usbtest: fix a type promotion bug
-git bisect good 0f5aa1b01263b8b621bc4f031a1f2983ef8517b7
-# first bad commit: [f49449fbc21e7e9550a5203902d69c8ae7dfd918] usb: gadget: u_ether: Replace netif_stop_queue with netif_device_detach
-
-Note, revert indeed helps. Should I send a revert?
-
-I use configfs to setup USB EEM function and it worked till this commit.
-If needed, I can share my scripts, but I believe it's not needed as here
-we see a clear regression.
+Don't you want to have a driver data or so associated with this?
 
 -- 
 With Best Regards,
