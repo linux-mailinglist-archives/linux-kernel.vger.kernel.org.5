@@ -1,85 +1,231 @@
-Return-Path: <linux-kernel+bounces-25479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37F6882D0E1
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 15:26:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA82082D0E3
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 15:27:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9861B2822E0
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 14:26:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 836DD2822C4
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 14:27:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41C9623D6;
-	Sun, 14 Jan 2024 14:26:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC25D522C;
+	Sun, 14 Jan 2024 14:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="JuH9bEwT"
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nv2IRevP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CD6823BC
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 14:26:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-55b5a37acb6so701061a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 06:26:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1705242401; x=1705847201; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YgvPicHYAHMSP7JaCkgKQ3HWaYi8D+Ul7BveqF0AB+g=;
-        b=JuH9bEwT9J7AYUOuIRFPg0fmN1VRX+Fbi9up8TuEaZdGW+4SAaHi7iOd+y+fP7pV77
-         OXqXFegLgBvnvBG5yi7sPpyDbcmj1ThfTgoj0xSzCdkKq8BKYmt1ao8PD9EPZ+9YELQg
-         nnSTJS7Few22gArcFfYjw7+XyXy9N9W2C7IZxN3/hDIcEtYf7i7QivGpB6PRqP0ZzvLx
-         f2rb+847Ot4HdaHXuHyUvaRmhDOVKI9+XaeRqVv0bpkZRgzT/x4i29Z0ZMH/zic2M7/e
-         unfZAzZCANTNbsKDUtzOp9LR375gG2EDzXrn7bO15gi8oUuLWYgrk3EaP1TnoFccxbkY
-         YFvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705242401; x=1705847201;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YgvPicHYAHMSP7JaCkgKQ3HWaYi8D+Ul7BveqF0AB+g=;
-        b=fhejihIgIpnkc/FObAFIPFuq7a0D+8HOlqzKhtL47qS0g1DnB+7sqSHQwei1nRbnk6
-         Mobjj4DGiaAodrnpkAO/o3iaZGGycv2tn9Hrc7LQ081Mbeu/lI42OFchtJOsz7qgGQPl
-         po8xe8Q4pRr0KbpVltnOUIONCqRTeoqxxnArLwwBWwnE05szMYX8psUfq8DfPAuQQFBA
-         j3PCYyCdLRPXxgUWoDXWbeQpLQjzT0nFTLAoCYeL/5vBavcoKS1RXDkwAp9XmSRWb+kt
-         LK/xIuXIXfLRqBG73Dm689MsX5YYJYhXO7lM2W2z40IwpXz0eqptger5Ahs4648qVEtk
-         Hovg==
-X-Gm-Message-State: AOJu0Yz7YBBkdfz9iQNjOLCuCx163XVH3ADyCbe679d4TO+VTeasHH17
-	Or8BOoRct6TGN173C1FdSHCOGZzJWYRuzA==
-X-Google-Smtp-Source: AGHT+IG+tMcQu41vVh0L3LIA054UD7wMMv66Ufg/tQuvhLxO/ZBv8yoj12TsjTayOaLkYMOSHf22Tg==
-X-Received: by 2002:a05:6a00:17a8:b0:6da:83a2:1f15 with SMTP id s40-20020a056a0017a800b006da83a21f15mr10128998pfg.0.1705242401255;
-        Sun, 14 Jan 2024 06:26:41 -0800 (PST)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id u20-20020a056a00099400b006da76842a66sm6055101pfg.85.2024.01.14.06.26.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Jan 2024 06:26:39 -0800 (PST)
-Message-ID: <3bf0382a-8e7f-4464-9b22-b9cf4fd37ba7@kernel.dk>
-Date: Sun, 14 Jan 2024 07:26:38 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8C7E3FDB;
+	Sun, 14 Jan 2024 14:26:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEC7EC433F1;
+	Sun, 14 Jan 2024 14:26:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705242407;
+	bh=GcCGLWtzi5+3fm3L+xigl1G2ldOGAJ5wiXYz+codqYE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=nv2IRevPOOlkEXkPBkKrhGjA6EGg4e+QY8ijbCDYn3QWPsAHXLN/CWAwSAvrz+y/O
+	 wRDibTZvlpx+Pt19UgAivL5xFpOnPj0uKuehXkmCRYbygveMLc0otFA2grobWFDNwC
+	 QhCHJML/Argl5gS4Y8miIlFFsj14ioFmAqQmsC5fALHMAiDv3sgsB29blIMyoa6lCA
+	 05aINzVj9/eKl1hNvvLEirqot4/igzs/refumi4dvDYLNz+kqpwmw2hrXyaewWi7Dp
+	 RCXtre85S/9AHm8ePn6+jbbHcQtu97neWTRjAyCMpt4YzG3lZQiLNU05ed7ra+Athx
+	 LnguUHkCHJqNA==
+Date: Sun, 14 Jan 2024 23:26:43 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Vincent Donnefort <vdonnefort@google.com>
+Cc: rostedt@goodmis.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+ kernel-team@android.com
+Subject: Re: [PATCH v11 4/5] Documentation: tracing: Add ring-buffer mapping
+Message-Id: <20240114232643.ed27554959afea426446e9b5@kernel.org>
+In-Reply-To: <20240111161712.1480333-5-vdonnefort@google.com>
+References: <20240111161712.1480333-1-vdonnefort@google.com>
+	<20240111161712.1480333-5-vdonnefort@google.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [io-uring?] KMSAN: uninit-value in io_rw_fail
-Content-Language: en-US
-To: syzbot <syzbot+8d9c06e026c513a69f2f@syzkaller.appspotmail.com>,
- asml.silence@gmail.com, io-uring@vger.kernel.org,
- linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000e06949060ee528f1@google.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <000000000000e06949060ee528f1@google.com>
-Content-Type: text/plain; charset=UTF-8
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-#syz fix: io_uring/rw: ensure io->bytes_done is always initialized
+Hi Vincent,
+
+On Thu, 11 Jan 2024 16:17:11 +0000
+Vincent Donnefort <vdonnefort@google.com> wrote:
+
+> It is now possible to mmap() a ring-buffer to stream its content. Add
+> some documentation and a code example.
+> 
+> Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
+> 
+> diff --git a/Documentation/trace/index.rst b/Documentation/trace/index.rst
+> index 5092d6c13af5..0b300901fd75 100644
+> --- a/Documentation/trace/index.rst
+> +++ b/Documentation/trace/index.rst
+> @@ -29,6 +29,7 @@ Linux Tracing Technologies
+>     timerlat-tracer
+>     intel_th
+>     ring-buffer-design
+> +   ring-buffer-map
+>     stm
+>     sys-t
+>     coresight/index
+> diff --git a/Documentation/trace/ring-buffer-map.rst b/Documentation/trace/ring-buffer-map.rst
+> new file mode 100644
+> index 000000000000..2ba7b5339178
+> --- /dev/null
+> +++ b/Documentation/trace/ring-buffer-map.rst
+> @@ -0,0 +1,105 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +==================================
+> +Tracefs ring-buffer memory mapping
+> +==================================
+> +
+> +:Author: Vincent Donnefort <vdonnefort@google.com>
+> +
+> +Overview
+> +========
+> +Tracefs ring-buffer memory map provides an efficient method to stream data
+> +as no memory copy is necessary. The application mapping the ring-buffer becomes
+> +then a consumer for that ring-buffer, in a similar fashion to trace_pipe.
+> +
+> +Memory mapping setup
+> +====================
+> +The mapping works with a mmap() of the trace_pipe_raw interface.
+> +
+> +The first system page of the mapping contains ring-buffer statistics and
+> +description. It is referred as the meta-page. One of the most important field of
+> +the meta-page is the reader. It contains the subbuf ID which can be safely read
+> +by the mapper (see ring-buffer-design.rst).
+> +
+> +The meta-page is followed by all the subbuf, ordered by ascendant ID. It is
+> +therefore effortless to know where the reader starts in the mapping:
+> +
+> +.. code-block:: c
+> +
+> +        reader_id = meta->reader->id;
+> +        reader_offset = meta->meta_page_size + reader_id * meta->subbuf_size;
+> +
+> +When the application is done with the current reader, it can get a new one using
+> +the trace_pipe_raw ioctl() TRACE_MMAP_IOCTL_GET_READER. This ioctl also updates
+> +the meta-page fields.
+> +
+> +Limitations
+> +===========
+> +When a mapping is in place on a Tracefs ring-buffer, it is not possible to
+> +either resize it (either by increasing the entire size of the ring-buffer or
+> +each subbuf). It is also not possible to use snapshot or splice.
+
+I've played with the sample code.
+
+- "free_buffer" just doesn't work when the process is mmap the ring buffer.
+- After mmap the buffers, when the snapshot took, the IOCTL returns an error.
+
+OK, but I rather like to fail snapshot with -EBUSY when the buffer is mmaped.
+
+> +
+> +Concurrent readers (either another application mapping that ring-buffer or the
+> +kernel with trace_pipe) are allowed but not recommended. They will compete for
+> +the ring-buffer and the output is unpredictable.
+> +
+> +Example
+> +=======
+> +
+> +.. code-block:: c
+> +
+> +        #include <fcntl.h>
+> +        #include <stdio.h>
+> +        #include <stdlib.h>
+> +        #include <unistd.h>
+> +
+> +        #include <linux/trace_mmap.h>
+> +
+> +        #include <sys/mman.h>
+> +        #include <sys/ioctl.h>
+> +
+> +        #define TRACE_PIPE_RAW "/sys/kernel/tracing/per_cpu/cpu0/trace_pipe_raw"
+> +
+> +        int main(void)
+> +        {
+> +                int page_size = getpagesize(), fd, reader_id;
+> +                unsigned long meta_len, data_len;
+> +                struct trace_buffer_meta *meta;
+> +                void *map, *reader, *data;
+> +
+> +                fd = open(TRACE_PIPE_RAW, O_RDONLY);
+> +                if (fd < 0)
+> +                        exit(EXIT_FAILURE);
+> +
+> +                map = mmap(NULL, page_size, PROT_READ, MAP_SHARED, fd, 0);
+> +                if (map == MAP_FAILED)
+> +                        exit(EXIT_FAILURE);
+> +
+> +                meta = (struct trace_buffer_meta *)map;
+> +                meta_len = meta->meta_page_size;
+> +
+> +                printf("entries:        %lu\n", meta->entries);
+> +                printf("overrun:        %lu\n", meta->overrun);
+> +                printf("read:           %lu\n", meta->read);
+> +                printf("subbufs_touched:%lu\n", meta->subbufs_touched);
+> +                printf("subbufs_lost:   %lu\n", meta->subbufs_lost);
+> +                printf("subbufs_read:   %lu\n", meta->subbufs_read);
+> +                printf("nr_subbufs:     %u\n", meta->nr_subbufs);
+> +
+> +                data_len = meta->subbuf_size * meta->nr_subbufs;
+> +                data = mmap(NULL, data_len, PROT_READ, MAP_SHARED, fd, data_len);
+> +                if (data == MAP_FAILED)
+> +                        exit(EXIT_FAILURE);
+> +
+> +                if (ioctl(fd, TRACE_MMAP_IOCTL_GET_READER) < 0)
+> +                        exit(EXIT_FAILURE);
+> +
+> +                reader_id = meta->reader.id;
+> +                reader = data + meta->subbuf_size * reader_id;
+
+Also, this caused a bus error if I add below 2 lines here.
+
+        printf("reader_id: %d, addr: %p\n", reader_id, reader);
+        printf("read data head: %lx\n", *(unsigned long *)reader);
+
+-----
+/ # cd /sys/kernel/tracing/
+/sys/kernel/tracing # echo 1 > events/enable 
+[   17.941894] Scheduler tracepoints stat_sleep, stat_iowait, stat_blocked and stat_runtime require the kernel parameter schedstats=enable or kernel.sched_schedstats=1
+/sys/kernel/tracing # 
+/sys/kernel/tracing # echo 1 > buffer_percent 
+/sys/kernel/tracing # /mnt/rbmap2 
+entries:        245291
+overrun:        203741
+read:           0
+subbufs_touched:2041
+subbufs_lost:   1688
+subbufs_read:   0
+nr_subbufs:     355
+reader_id: 1, addr: 0x7f0cde51a000
+Bus error
+-----
+
+Is this expected behavior? how can I read the ring buffer?
+
+Thank you,
+
+> +
+> +                munmap(data, data_len);
+> +                munmap(meta, meta_len);
+> +                close (fd);
+> +
+> +                return 0;
+> +        }
+> -- 
+> 2.43.0.275.g3460e3d667-goog
+> 
+
 
 -- 
-Jens Axboe
-
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
