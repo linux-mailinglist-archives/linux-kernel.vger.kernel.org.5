@@ -1,122 +1,138 @@
-Return-Path: <linux-kernel+bounces-25531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7AA082D1FD
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 20:38:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD7A682D1FE
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 20:43:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F14961C20A99
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 19:38:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99F861C209B7
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 19:43:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90F6212E5E;
-	Sun, 14 Jan 2024 19:38:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 183A211CA0;
+	Sun, 14 Jan 2024 19:43:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="hhHwxQ8T"
-Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="N01dN+PV"
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1C151097D
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 19:38:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
-Received: from eig-obgw-5006a.ext.cloudfilter.net ([10.0.29.179])
-	by cmsmtp with ESMTPS
-	id P2vzrijXlAxAkP6JRrkD7t; Sun, 14 Jan 2024 19:38:29 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-	by cmsmtp with ESMTPS
-	id P6JArIjxyim6EP6JBr9gkW; Sun, 14 Jan 2024 19:38:13 +0000
-X-Authority-Analysis: v=2.4 cv=Qft1A+Xv c=1 sm=1 tr=0 ts=65a43825
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=//1wSoDB8IatMhJ5Neix5676JKUeChEZw1HzdKw1pYg=; b=hhHwxQ8Ts6VzkAFcIG5zNmvm2l
-	JktJbOu0PQRBMvR0GHgBNK1bnDO6MKiXrKHjblxxF5XCvbkIPnU8DSBVonvUXuLbWD2qShUs9oYN3
-	wtNfIKHVJCxeOxBdueX3ZS9yXTSJB7bA/BwwnAAm+Q50X84SdE5JbWNagc1wr6Pqu4GORyFX+11QP
-	NS+8x2xvYTLGjio171I1m4YY/yBSSbLSz5Pu9uwgC22yUYFer6kmCdz5Xz7I0xIuf1s/bKFmUObGb
-	q73+pVkK2VLCB7p9mlucnjPIgAWK0z3PajUyBStOYUePX1e5bJ1FamEeJgHBdfk6DGfqW1/4nzb9f
-	1gpHM4Ig==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:35226 helo=[10.0.1.47])
-	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <re@w6rz.net>)
-	id 1rP6J8-0037bd-1a;
-	Sun, 14 Jan 2024 12:38:10 -0700
-Subject: Re: [PATCH 6.1 0/4] 6.1.73-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-References: <20240113094204.017594027@linuxfoundation.org>
-In-Reply-To: <20240113094204.017594027@linuxfoundation.org>
-From: Ron Economos <re@w6rz.net>
-Message-ID: <72c4d415-f169-18f3-54fa-a5c07b811f89@w6rz.net>
-Date: Sun, 14 Jan 2024 11:38:08 -0800
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7A43F9D8
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 19:43:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-115-247.bstnma.fios.verizon.net [173.48.115.247])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 40EJh2ka006080
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 14 Jan 2024 14:43:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1705261384; bh=a75MRiqS9CjUQICmsOz6vLm4VvbBzhVgndG6jX7qNGk=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=N01dN+PVpl/brM0NjN29+9kPca7ppSxnfjf60nGIVY9NprZlJwjxjxKKMVC/nNp2+
+	 B0rjauTe60PGS6437w0vG/rduGC6fSKZTnwckmKszNMq+KVTzJ4NCzHFnkz7DOgYeF
+	 bN6wT8RRl+pMMlnGhXPiiHqn1MMSOPqBOpg0/aDm4889x+vEuGyXKVCjkN1Lf1SsYP
+	 PFNxyT+dylCS77yrA1iJasIrTUW6/qYG7po3nnX9O+KAz2R6HcNUiMp199c4ClN++z
+	 IbX7KGnnQwMllq7FfbHfeyfFefhCywSpBXJdLPFg5pWAHecZNgF9kuZkEm5LRyXgTn
+	 WKLhstsa4HUtA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 170EB15C0278; Sun, 14 Jan 2024 14:43:02 -0500 (EST)
+Date: Sun, 14 Jan 2024 14:43:02 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Gui-Dong Han <2045gemini@gmail.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        baijiaju1990@outlook.com, stable@vger.kernel.org
+Subject: Re: [PATCH] tty: fix atomicity violation in n_tty_read
+Message-ID: <20240114194302.GC911245@mit.edu>
+References: <20240112125801.2650-1-2045gemini@gmail.com>
+ <2024011212-disbelief-respect-5230@gregkh>
+ <CAOPYjvZYdPSiZ+jX4vhwPQ3AKRvW15XT1znAa8vd9a6DVoor5w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1rP6J8-0037bd-1a
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:35226
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Org: HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfI7AW9h66sJ3AYd0D21gETot+zDouSkiskD9dBQX0aYPUrtpJMPMKphE/fJXFSFwVlQVpAIG2L+3xDNHsmJVDMLFcYo3gTMtpnUNTPHniZZHr954qY87
- iS22jCXtHEWAsn8hDhGycR1YXZRDRNo3Kd3Ex/PWCwfHhseYaw8zbLSWR6o7IwYlK375BAkOPpgtpGmobD0LJ0GMKApHx7IV8kI=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOPYjvZYdPSiZ+jX4vhwPQ3AKRvW15XT1znAa8vd9a6DVoor5w@mail.gmail.com>
 
-On 1/13/24 1:50 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.73 release.
-> There are 4 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Mon, 15 Jan 2024 09:41:55 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.73-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Sat, Jan 13, 2024 at 12:59:11AM +0800, Gui-Dong Han wrote:
+> 
+> I apologize for any confusion caused by my reference to Linux 5.17 in
+> the patch description. I'm currently working on a project involving
+> kernel static analysis to identify atomicity violations, and part of
+> this work involves comparison with a previous study that supports up
+> to Linux 5.17. Therefore, I initially ran my tool on 5.17 to filter
+> potential bugs that are still unaddressed in the upstream. I want to
+> clarify that the patch was developed and tested on linux-next. I
+> realize now that this may have led to misunderstandings, and I will
+> ensure clearer communication in future submissions.
+> My experience with Linux kernel contributions is still growing, and I
+> acknowledge that my recent submission might have been hasty and lacked
+> thorough consideration, especially regarding the critical nature of
+> n_tty_read and the potential impacts of the patch, like performance
+> concerns. I will take more care in future assessments before
+> submitting patches and continue to familiarize myself with the rules
+> and practices of the Linux kernel community.
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+In general, static analysis tools need to be supplemented by an
+attempt to understand what the code is trying to do.  This code is
+related to the packet mode, which is related to pseudo-tty's --- *not*
+the linux serial driver.
 
-Tested-by: Ron Economos <re@w6rz.net>
+From the man page for tty_ioctl:
 
+       TIOCPKT
+              Argument: const int *argp
+
+              Enable (when *argp is nonzero) or disable packet mode.
+              Can be applied to the master side of a pseudoterminal
+              only (and will return ENOTTY otherwise).  In packet
+              mode, each subsequent read(2) will return a packet that
+              either contains a single nonzero control byte, or has a
+              single byte containing zero ('\0') followed by data
+              written on the slave side of the pseudoterminal.  If the
+              first byte is not TI‐ OCPKT_DATA (0), it is an OR of one
+              or more of the following bits:
+
+              TIOCPKT_FLUSHREAD    The read queue for the terminal is flushed.
+              TIOCPKT_FLUSHWRITE   The write queue for the terminal is flushed.
+              TIOCPKT_STOP         Output to the terminal is stopped.
+              TIOCPKT_START        Output to the terminal is restarted.
+              TIOCPKT_DOSTOP       The start and stop characters are ^S/^Q.
+
+              TIOCPKT_NOSTOP       The start and stop characters are not ^S/^Q.
+
+              While  packet  mode is in use, the presence of control status informa‐
+              tion to be read from the master side may be detected  by  a  select(2)
+              for exceptional conditions or a poll(2) for the POLLPRI event.
+
+              This  mode  is used by rlogin(1) and rlogind(8) to implement a remote-
+              echoed, locally ^S/^Q flow-controlled remote login.
+
+The n_tty_read() function is called by the userspace program on the
+master side of the pty pair.  This is not, strictly speaking a hot
+path; it's not on the interrupt service path of the serial driver, for
+example.  So it's unliklely that "fixing" this problem is going to
+result an measurable performance impact.
+
+It's also the case that not taking the spinlock before checking the
+packet mode is not necessarily going to be disastrous.  Yes, it might
+mean that when the user types ^S, sshd might not stop sending
+characters to the client right away, and the status report about the
+status of the pty gets delayed by a millisecond or two.
+
+So it's actually *not* a big deal.  Now, if you want to make the
+argument that it would be nice if these sorts of "false positives" are
+suppressed so that it's easier to find real bugs, that's one thing.
+But if you're looking at proof that your static checker is actually
+fixing Real Bugs (tm), this is probably not the best example.
+
+Cheers,
+
+					- Ted
 
