@@ -1,94 +1,258 @@
-Return-Path: <linux-kernel+bounces-25553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25554-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDB9282D242
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 23:53:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF82482D291
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 00:11:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6116D281768
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 22:53:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E0FA1C20A0D
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 23:11:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 435C72C1BF;
-	Sun, 14 Jan 2024 22:52:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 358052C684;
+	Sun, 14 Jan 2024 23:10:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="cxMyM7oC"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X497RmJp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84CC4F4F3
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 22:52:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id CA69440002;
-	Sun, 14 Jan 2024 22:52:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1705272763;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=E+pmWiFAk9xDSX3xHw8tyfQSE8GLes3W457god8mEvU=;
-	b=cxMyM7oCZSziHqrnDSE/nfEKYLW0fXqfDBpGGENQQPEuhUNCwFwSAu0y+EMs7OhvVo0fKa
-	DTYGi4nUcDKVXHasP2EWXiJ7F1EhVxuqquW8tpHDTis9+86a8C9spd83ty1qlKbAL2wccr
-	VSOxNdzRdSKi7vMgSkB8FemMfOiQTZq9ZLZRY1xzIpYbNCXIvYaS5ZOSUftnJJKHYQzLT/
-	2RnSR+f6VaYg8GafFi3eFNA9W3pCJmXAuckix2LHpTPN2BhSiqXuVwYRbksTwqnaj/C7uT
-	ZqbZ9w3kqMFTXfKLwGdsAH604MvxAB+AjF8OXlq1/oXfGT6XJUb2sGIplZUlng==
-From: alexandre.belloni@bootlin.com
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: linux-i3c@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] i3c: document hotjoin sysfs entry
-Date: Sun, 14 Jan 2024 23:52:25 +0100
-Message-ID: <20240114225232.140860-1-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60BA413AE9;
+	Sun, 14 Jan 2024 23:10:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F6CDC433F1;
+	Sun, 14 Jan 2024 23:10:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705273851;
+	bh=4/J2DlKzYXXiP0hp5Un/b/TpU09wYZRPVW0CwMsJcDg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=X497RmJpq1P3lLfqgKzHzraF738L/fJ/u39IipcL386D31flZuGww0b7G/Ljj/1us
+	 lE/pjp5P7N3fcJWwJ+HGiVAPt4J+p/0K18RT3AQ54hFUl/NA9iLGSfHOwBSu1sPOQY
+	 jjh4OYlcTXPvHDIpqzm3zYB+AkSJP79WjDbImTV3KkUu243stFgAGsNNWRuGdThj2V
+	 Rk8Ex2RMG1aVCq+XAUXoRktNEDEBo1jhBalXKQcwRIcNNu1dfT2N3nKKC1m1aVWZEK
+	 eqLlEWBD15Br4mkN7qkbjWGROukFZxZEVe5du9V4UdDAyH1T8OWzzGeWSM/qTY5Gu0
+	 LaW3DmKjUggTg==
+Date: Mon, 15 Jan 2024 08:10:47 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Vincent Donnefort <vdonnefort@google.com>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+ kernel-team@android.com
+Subject: Re: [PATCH v11 4/5] Documentation: tracing: Add ring-buffer mapping
+Message-Id: <20240115081047.c7edecc6e6d9ee038e9474f4@kernel.org>
+In-Reply-To: <20240114112324.0ddbb457@rorschach.local.home>
+References: <20240111161712.1480333-1-vdonnefort@google.com>
+	<20240111161712.1480333-5-vdonnefort@google.com>
+	<20240114232643.ed27554959afea426446e9b5@kernel.org>
+	<20240114112324.0ddbb457@rorschach.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alexandre.belloni@bootlin.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+On Sun, 14 Jan 2024 11:23:24 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-The hotjoin syfs entry allows to enable or disable Hot-Join on the Current
-Controller of the I3C Bus.
+> On Sun, 14 Jan 2024 23:26:43 +0900
+> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> 
+> > Hi Vincent,
+> > 
+> > On Thu, 11 Jan 2024 16:17:11 +0000
+> > Vincent Donnefort <vdonnefort@google.com> wrote:
+> > 
+> > > It is now possible to mmap() a ring-buffer to stream its content. Add
+> > > some documentation and a code example.
+> > > 
+> > > Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
+> > > 
+> > > diff --git a/Documentation/trace/index.rst b/Documentation/trace/index.rst
+> > > index 5092d6c13af5..0b300901fd75 100644
+> > > --- a/Documentation/trace/index.rst
+> > > +++ b/Documentation/trace/index.rst
+> > > @@ -29,6 +29,7 @@ Linux Tracing Technologies
+> > >     timerlat-tracer
+> > >     intel_th
+> > >     ring-buffer-design
+> > > +   ring-buffer-map
+> > >     stm
+> > >     sys-t
+> > >     coresight/index
+> > > diff --git a/Documentation/trace/ring-buffer-map.rst b/Documentation/trace/ring-buffer-map.rst
+> > > new file mode 100644
+> > > index 000000000000..2ba7b5339178
+> > > --- /dev/null
+> > > +++ b/Documentation/trace/ring-buffer-map.rst
+> > > @@ -0,0 +1,105 @@
+> > > +.. SPDX-License-Identifier: GPL-2.0
+> > > +
+> > > +==================================
+> > > +Tracefs ring-buffer memory mapping
+> > > +==================================
+> > > +
+> > > +:Author: Vincent Donnefort <vdonnefort@google.com>
+> > > +
+> > > +Overview
+> > > +========
+> > > +Tracefs ring-buffer memory map provides an efficient method to stream data
+> > > +as no memory copy is necessary. The application mapping the ring-buffer becomes
+> > > +then a consumer for that ring-buffer, in a similar fashion to trace_pipe.
+> > > +
+> > > +Memory mapping setup
+> > > +====================
+> > > +The mapping works with a mmap() of the trace_pipe_raw interface.
+> > > +
+> > > +The first system page of the mapping contains ring-buffer statistics and
+> > > +description. It is referred as the meta-page. One of the most important field of
+> > > +the meta-page is the reader. It contains the subbuf ID which can be safely read
+> > > +by the mapper (see ring-buffer-design.rst).
+> > > +
+> > > +The meta-page is followed by all the subbuf, ordered by ascendant ID. It is
+> > > +therefore effortless to know where the reader starts in the mapping:
+> > > +
+> > > +.. code-block:: c
+> > > +
+> > > +        reader_id = meta->reader->id;
+> > > +        reader_offset = meta->meta_page_size + reader_id * meta->subbuf_size;
+> > > +
+> > > +When the application is done with the current reader, it can get a new one using
+> > > +the trace_pipe_raw ioctl() TRACE_MMAP_IOCTL_GET_READER. This ioctl also updates
+> > > +the meta-page fields.
+> > > +
+> > > +Limitations
+> > > +===========
+> > > +When a mapping is in place on a Tracefs ring-buffer, it is not possible to
+> > > +either resize it (either by increasing the entire size of the ring-buffer or
+> > > +each subbuf). It is also not possible to use snapshot or splice.  
+> > 
+> > I've played with the sample code.
+> > 
+> > - "free_buffer" just doesn't work when the process is mmap the ring buffer.
+> > - After mmap the buffers, when the snapshot took, the IOCTL returns an error.
+> > 
+> > OK, but I rather like to fail snapshot with -EBUSY when the buffer is mmaped.
+> > 
+> > > +
+> > > +Concurrent readers (either another application mapping that ring-buffer or the
+> > > +kernel with trace_pipe) are allowed but not recommended. They will compete for
+> > > +the ring-buffer and the output is unpredictable.
+> > > +
+> > > +Example
+> > > +=======
+> > > +
+> > > +.. code-block:: c
+> > > +
+> > > +        #include <fcntl.h>
+> > > +        #include <stdio.h>
+> > > +        #include <stdlib.h>
+> > > +        #include <unistd.h>
+> > > +
+> > > +        #include <linux/trace_mmap.h>
+> > > +
+> > > +        #include <sys/mman.h>
+> > > +        #include <sys/ioctl.h>
+> > > +
+> > > +        #define TRACE_PIPE_RAW "/sys/kernel/tracing/per_cpu/cpu0/trace_pipe_raw"
+> > > +
+> > > +        int main(void)
+> > > +        {
+> > > +                int page_size = getpagesize(), fd, reader_id;
+> > > +                unsigned long meta_len, data_len;
+> > > +                struct trace_buffer_meta *meta;
+> > > +                void *map, *reader, *data;
+> > > +
+> > > +                fd = open(TRACE_PIPE_RAW, O_RDONLY);
+> > > +                if (fd < 0)
+> > > +                        exit(EXIT_FAILURE);
+> > > +
+> > > +                map = mmap(NULL, page_size, PROT_READ, MAP_SHARED, fd, 0);
+> > > +                if (map == MAP_FAILED)
+> > > +                        exit(EXIT_FAILURE);
+> > > +
+> > > +                meta = (struct trace_buffer_meta *)map;
+> > > +                meta_len = meta->meta_page_size;
+> > > +
+> > > +                printf("entries:        %lu\n", meta->entries);
+> > > +                printf("overrun:        %lu\n", meta->overrun);
+> > > +                printf("read:           %lu\n", meta->read);
+> > > +                printf("subbufs_touched:%lu\n", meta->subbufs_touched);
+> > > +                printf("subbufs_lost:   %lu\n", meta->subbufs_lost);
+> > > +                printf("subbufs_read:   %lu\n", meta->subbufs_read);
+> > > +                printf("nr_subbufs:     %u\n", meta->nr_subbufs);
+> > > +
+> > > +                data_len = meta->subbuf_size * meta->nr_subbufs;
+> > > +                data = mmap(NULL, data_len, PROT_READ, MAP_SHARED, fd, data_len);
+> 
+> The above is buggy. It should be:
+> 
+> 		data = mmap(NULL, data_len, PROT_READ, MAP_SHARED, fd, meta_len);
+> 
+> The last parameter is where to start the mapping from, which is just
+> after the meta page. The code is currently starting the map far away
+> from that.
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- Documentation/ABI/testing/sysfs-bus-i3c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+Ah, indeed! I confirmed that fixed the bus error.
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-i3c b/Documentation/ABI/testing/sysfs-bus-i3c
-index e5248fd67a56..c812ab180ff4 100644
---- a/Documentation/ABI/testing/sysfs-bus-i3c
-+++ b/Documentation/ABI/testing/sysfs-bus-i3c
-@@ -88,6 +88,21 @@ Description:
- 		This entry describes the HDRCAP of the master controller
- 		driving the bus.
- 
-+What:		/sys/bus/i3c/devices/i3c-<bus-id>/hotjoin
-+KernelVersion:  6.8
-+Contact:	linux-i3c@vger.kernel.org
-+Description:
-+		I3C’s Hot-Join mechanism allows an I3C Device to inform the
-+		Active Controller that a newly-joined Target is present on the
-+		I3C Bus and is ready to receive a Dynamic Address, in order to
-+		become fully functional on the Bus. Hot-Join is used when the
-+		Target is mounted on the same I3C bus and remains depowered
-+		until needed or until the Target is physically inserted into the
-+		I3C bus
-+
-+		This entry allows to enable or disable Hot-join of the Current
-+		Controller driving the bus.
-+
- What:		/sys/bus/i3c/devices/i3c-<bus-id>/<bus-id>-<device-pid>
- KernelVersion:  5.0
- Contact:	linux-i3c@vger.kernel.org
+Thank you!
+
+> 
+> -- Steve
+> 
+> > > +                if (data == MAP_FAILED)
+> > > +                        exit(EXIT_FAILURE);
+> > > +
+> > > +                if (ioctl(fd, TRACE_MMAP_IOCTL_GET_READER) < 0)
+> > > +                        exit(EXIT_FAILURE);
+> > > +
+> > > +                reader_id = meta->reader.id;
+> > > +                reader = data + meta->subbuf_size * reader_id;  
+> > 
+> > Also, this caused a bus error if I add below 2 lines here.
+> > 
+> >         printf("reader_id: %d, addr: %p\n", reader_id, reader);
+> >         printf("read data head: %lx\n", *(unsigned long *)reader);
+> > 
+> > -----
+> > / # cd /sys/kernel/tracing/
+> > /sys/kernel/tracing # echo 1 > events/enable 
+> > [   17.941894] Scheduler tracepoints stat_sleep, stat_iowait, stat_blocked and stat_runtime require the kernel parameter schedstats=enable or kernel.sched_schedstats=1
+> > /sys/kernel/tracing # 
+> > /sys/kernel/tracing # echo 1 > buffer_percent 
+> > /sys/kernel/tracing # /mnt/rbmap2 
+> > entries:        245291
+> > overrun:        203741
+> > read:           0
+> > subbufs_touched:2041
+> > subbufs_lost:   1688
+> > subbufs_read:   0
+> > nr_subbufs:     355
+> > reader_id: 1, addr: 0x7f0cde51a000
+> > Bus error
+> > -----
+> > 
+> > Is this expected behavior? how can I read the ring buffer?
+> > 
+> > Thank you,
+> > 
+> > > +
+> > > +                munmap(data, data_len);
+> > > +                munmap(meta, meta_len);
+> > > +                close (fd);
+> > > +
+> > > +                return 0;
+> > > +        }
+> > > -- 
+> > > 2.43.0.275.g3460e3d667-goog
+> > >   
+> > 
+> > 
+> 
+
+
 -- 
-2.43.0
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
