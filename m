@@ -1,171 +1,125 @@
-Return-Path: <linux-kernel+bounces-25447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1CD482D061
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 11:56:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6F9882D058
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 11:54:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 879491C20B53
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 10:55:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 529DA282652
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 10:54:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90F7F1FD1;
-	Sun, 14 Jan 2024 10:55:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A68EB1FDB;
+	Sun, 14 Jan 2024 10:54:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mK9zSmx2"
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b="oYL6mnaZ"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84EEB1FBF
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 10:55:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3bd5f1711e3so1427453b6e.3
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 02:55:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705229747; x=1705834547; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5su21lrElvoMrT51RPv9OkcSkDVz35FwFqaxlZOVWbQ=;
-        b=mK9zSmx24nhr8nzBAhajiTAOmoiANmrHUdBjpQ4aB6ofA030UFF90r+0qY/5195GS4
-         ohehMQPIjFhE1REldqMj7CzgCpY9jq+hege2331QIGjBn4KqcR1vIpUQ7WjVcY0xiqix
-         EIhD8iYGBjys5gHymubLpo0911aPzgxnFQ4+nqOfi1Onrl/pSDJLx74awbjwH41E79fy
-         i4ZTm2BYM1rdWI9GpgvAZ15ukXBcx0y+3Wd8mKAhyG8FcY2RI1KeOrB9BU6YVqexFfN/
-         3cpuSvq2XZAt1+lD/P2m7SStP2Zhd36xC5PdUJvro7hMrd0HkPZ14W4id0VUSWAFikYW
-         GEJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705229747; x=1705834547;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5su21lrElvoMrT51RPv9OkcSkDVz35FwFqaxlZOVWbQ=;
-        b=IXCBbYuSaQPxkwdDK7vKVGF6PRCmqPpdXtmWcDQDRYZss6cyv4IhrusQj0J9MVzVd1
-         xY62F3KgUpaXOhiI9f8RmQ9biGsXFnhJBbMk9lToY0kSC3rQ6mDIJK8+cp5Cl54ZvVNn
-         +Fqipfjj/M0UX6UI2Aaxad62oaAEt4UslJ1415BLbUhYH3wLTSHTo1lLXoLfQHZ9uMzQ
-         CQJKAdnFRjfiSZw6gt6XYcIGdg7mRfX3jQBxwN1mnnUUoeewzr246Fr1dkoUf+TVtwl2
-         hxd8246PCjGVzCqkjj/8bzHzSKIGJ4msuPiy0JWI0M64yxcwDGNHLetvxoo7zO0dpzev
-         Oe5Q==
-X-Gm-Message-State: AOJu0YxD+fGGmhUMY7V7T/wdNspvNwccmiHKbuXUiwLRS56hbrm3Gg6b
-	w+DIffBkoiJkjarH0LdtDZs=
-X-Google-Smtp-Source: AGHT+IFs9diLCTJ1nBrxwBQXGsP8bvdXH3LQIBAmfSAPjpj7ka1Atnu/olzG2jnoWxV9ed533jKCkA==
-X-Received: by 2002:a05:6808:2f0d:b0:3bd:5f35:58f6 with SMTP id gu13-20020a0568082f0d00b003bd5f3558f6mr6080166oib.37.1705229747410;
-        Sun, 14 Jan 2024 02:55:47 -0800 (PST)
-Received: from anfanite396-Predator-PH315-51.. ([202.43.120.125])
-        by smtp.gmail.com with ESMTPSA id t3-20020a6564c3000000b005ce033f3b54sm5469576pgv.27.2024.01.14.02.55.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jan 2024 02:55:46 -0800 (PST)
-From: Dipam Turkar <dipamt1729@gmail.com>
-To: mripard@kernel.org
-Cc: maarten.lankhorst@linux.intel.com,
-	tzimmermann@suse.de,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	mairacanal@riseup.net,
-	javierm@redhat.com,
-	christian.koenig@amd.com,
-	dri-devel@lists.freedesktop.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E52797E;
+	Sun, 14 Jan 2024 10:54:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1705229640; x=1705834440; i=erick.archer@gmx.com;
+	bh=NvqscB2Ajcq34snKdM9C0SC/kgMq8em8xsX/ESZhuI0=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=oYL6mnaZcUBPgRW4lhwHrVSSF1ZVz8dicxM7Jb1QQD/sHCZ7Zp/nW+v/dbZS9PbP
+	 mUd4VgOfSk3RTi5NR2QoS7bI8Y81xVmxrgzSgrhj3BwswSvOFH6NhgMAthSmXOPkW
+	 PKMAgDB/qPB6uDXnOxXdaD6Ho2Sx1ptbb6wyiiVi93+oZ60pslrlxtle8I3Ule1jp
+	 55klY41Cu25YwtI1kQNahHYjUuIzrQQN10NTMOpPjG8ZlrJ2eijNmlTmvpWvIciMw
+	 5m7BiKnaWsQYMgFNJOMcGSAVi2jV44pIcwMYd2Ywg2fFtH+pL1YdCoTPnFb5I7uDt
+	 Pe2wxdoQ9UvCi1IQMg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from localhost.localdomain ([79.157.194.183]) by mail.gmx.net
+ (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1MK3W0-1rjNKD3Cwg-00LXzZ; Sun, 14 Jan 2024 11:53:59 +0100
+From: Erick Archer <erick.archer@gmx.com>
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Erick Archer <erick.archer@gmx.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	linux-kernel@vger.kernel.org,
-	Dipam Turkar <dipamt1729@gmail.com>
-Subject: [PATCH v4 1/1] drm/tests: Add KUnit tests for drm_mode_create_dvi_i_properties()
-Date: Sun, 14 Jan 2024 16:23:38 +0530
-Message-Id: <20240114105337.480807-1-dipamt1729@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	linux-trace-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] eventfs: Use kcalloc() instead of kzalloc()
+Date: Sun, 14 Jan 2024 11:53:40 +0100
+Message-Id: <20240114105340.5746-1-erick.archer@gmx.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ZD/CHY3f8YxUcmuXSP/UsOL9TwcrS0cxnqxldgYRKuRielakJvN
+ UZUaPvJdD1nEmFf9pmULtagMqRl2eWPOAAgRvDpEDRTCzxDsdrxG8EHZNghUHfqa+E3qCHF
+ 52EMawhwIahKcCLaeD12tn8fUSrQX9xUNT19uvdVeGmmbqXlxbHd1vfVPkMrrUPzGdHOIhW
+ 9PoG4N83FtExvS/oUNk+A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:R+04s8OMMks=;5eFZI2q0bx8yuRXSfu6hd4yHemc
+ GxFb8R62x6GrSQeZxHJYqcn83Cxa/jRVRlbZqqd1wy92IE6t0RFMLjhYnmVxb86glqNVsGj9G
+ iugCzdFaC+9mPxhAm3mgwn7Q9pxx1qq/b234PW8oFnPenPbjWBBsmuLHzpUPwY+O+/IgghwH3
+ NamJnA/yvvdykEDifQkEj0GR5RrMS5Nk4LJdPymP9CufLora8F0ohVOSxGVRSGTNMOu8Gp0WZ
+ MPGpnO6Ynhw3a04aEdiQO9n7JwRd6mhD1KtkOAZQ5iW7b5ofcC0m9o6hlGSkpFoqrQ38VJzRn
+ D+vrzO1j9ZEKG4NfndHaVHSdZ2b4lIKadKRfywj0PhvwmGYIH4gK8BK81WQTJ4fN/pNpbQm1v
+ qykeLsjpkWQjHu8NUoFCtqIa4C0wxGYJORz61K40vzMYqBCcMykO/TAbBuYWppnEVTQcjfL8X
+ R7qSRuLAupO+UvREWTr1Ipl5baG4VHHGVbMSWoP8iJ6rDtkiT2QQc3Jy6nP50tCmwTMa8xyYy
+ vai/NDTt9GL7cS6qf3LgZN5urI6EkwkNv6/8lYmPiROGRqcFt3cmR7NCbRs3NZT50wvzP6VL/
+ Cp3OAcjhnQk3OOneMgFoa/5Ehg1gJxQVcxTSlINYVJ/Qq4R47CClh3Y4L/lx27VFENL3Dw1By
+ YM4YysGxa8mF1avzPWpjYmcqHxk2+UxxUZsDbrvuR3lja2Ofz/jDT9Z59YIt5Jh/aZeiixajt
+ w6zV3dnZLWpGQtjsaHrdLXmFYuV8a2yQzz7kDcbyhZaxkh5ehXX6nH/K+wLRxzZlFPl0479p7
+ w36/cEF6G0GaIOeBkU1+mbxyyUy528nB3q3HfV0AsVEx3X3YLhRgcMVEHKtB5xsr8IcRaBIoz
+ WgvcF8+A8WNDCYtPbBbo+0E0F4l93SSOWiW6tR55dBVdZCsU/gBP3/HXPirRkCKSnTPmzzBlg
+ UoPR1OkehClNwjbCoG/lWEXh46s=
 
-Introduce unit tests for the drm_mode_create_dvi_i_properties() function to ensure
-the proper creation of DVI-I specific connector properties and success if called 
-multiple times.
+Use 2-factor multiplication argument form kcalloc() instead
+of kzalloc().
 
-Signed-off-by: Dipam Turkar <dipamt1729@gmail.com>
----
- drivers/gpu/drm/tests/drm_connector_test.c | 58 ++++++++++++++++++++++
- 1 file changed, 58 insertions(+)
+Link: https://github.com/KSPP/linux/issues/162
+Signed-off-by: Erick Archer <erick.archer@gmx.com>
+=2D--
+ fs/tracefs/event_inode.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/tests/drm_connector_test.c b/drivers/gpu/drm/tests/drm_connector_test.c
-index c66aa2dc8d9d..217c0988171e 100644
---- a/drivers/gpu/drm/tests/drm_connector_test.c
-+++ b/drivers/gpu/drm/tests/drm_connector_test.c
-@@ -4,6 +4,9 @@
-  */
- 
- #include <drm/drm_connector.h>
-+#include <drm/drm_device.h>
-+#include <drm/drm_drv.h>
-+#include <drm/drm_kunit_helpers.h>
- 
- #include <kunit/test.h>
- 
-@@ -70,7 +73,62 @@ static struct kunit_suite drm_get_tv_mode_from_name_test_suite = {
- 	.test_cases = drm_get_tv_mode_from_name_tests,
- };
- 
-+/*
-+ * Test that drm_mode_create_dvi_i_properties() succeeds and
-+ * DVI-I subconnector and select subconectors properties have
-+ * been created.
-+ */
-+static void drm_test_mode_create_dvi_i_properties(struct kunit *test)
-+{
-+	struct drm_device *drm;
-+	struct device *dev;
-+
-+	dev = drm_kunit_helper_alloc_device(test);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dev);
-+
-+	drm = __drm_kunit_helper_alloc_drm_device(test, dev, sizeof(*drm), 0, DRIVER_MODESET);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, drm);
-+
-+	KUNIT_EXPECT_EQ(test, drm_mode_create_dvi_i_properties(drm), 0);
-+	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, drm->mode_config.dvi_i_select_subconnector_property);
-+	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, drm->mode_config.dvi_i_subconnector_property);
-+}
-+
-+/*
-+ * Test that drm_mode_create_dvi_i_properties() doesn't fail if called twice.
-+ */
-+static void drm_test_mode_create_dvi_i_properties_repeated(struct kunit *test)
-+{
-+	struct drm_device *drm;
-+	struct device *dev;
-+
-+	dev = drm_kunit_helper_alloc_device(test);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dev);
-+
-+	drm = __drm_kunit_helper_alloc_drm_device(test, dev, sizeof(*drm), 0, DRIVER_MODESET);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, drm);
-+
-+	KUNIT_EXPECT_EQ(test, drm_mode_create_dvi_i_properties(drm), 0);
-+	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, drm->mode_config.dvi_i_select_subconnector_property);
-+	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, drm->mode_config.dvi_i_subconnector_property);
-+
-+	/* Expect the function to return 0 if called twice. */
-+	KUNIT_EXPECT_EQ(test, drm_mode_create_dvi_i_properties(drm), 0);
-+}
-+
-+static struct kunit_case drm_mode_create_dvi_i_properties_tests[] = {
-+	KUNIT_CASE(drm_test_mode_create_dvi_i_properties),
-+	KUNIT_CASE(drm_test_mode_create_dvi_i_properties_repeated),
-+	{ }
-+};
-+
-+static struct kunit_suite drm_mode_create_dvi_i_properties_test_suite = {
-+	.name = "drm_mode_create_dvi_i_properties",
-+	.test_cases = drm_mode_create_dvi_i_properties_tests,
-+};
-+
- kunit_test_suite(drm_get_tv_mode_from_name_test_suite);
-+kunit_test_suite(drm_mode_create_dvi_i_properties_test_suite);
- 
- MODULE_AUTHOR("Maxime Ripard <maxime@cerno.tech>");
- MODULE_LICENSE("GPL");
--- 
-2.34.1
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index fdff53d5a1f8..f8196289692c 100644
+=2D-- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -93,7 +93,7 @@ static int eventfs_set_attr(struct mnt_idmap *idmap, str=
+uct dentry *dentry,
+ 	/* Preallocate the children mode array if necessary */
+ 	if (!(dentry->d_inode->i_mode & S_IFDIR)) {
+ 		if (!ei->entry_attrs) {
+-			ei->entry_attrs =3D kzalloc(sizeof(*ei->entry_attrs) * ei->nr_entries,
++			ei->entry_attrs =3D kcalloc(ei->nr_entries, sizeof(*ei->entry_attrs),
+ 						  GFP_NOFS);
+ 			if (!ei->entry_attrs) {
+ 				ret =3D -ENOMEM;
+@@ -874,7 +874,7 @@ struct eventfs_inode *eventfs_create_dir(const char *n=
+ame, struct eventfs_inode
+ 	}
+
+ 	if (size) {
+-		ei->d_children =3D kzalloc(sizeof(*ei->d_children) * size, GFP_KERNEL);
++		ei->d_children =3D kcalloc(size, sizeof(*ei->d_children), GFP_KERNEL);
+ 		if (!ei->d_children) {
+ 			kfree_const(ei->name);
+ 			kfree(ei);
+@@ -941,7 +941,7 @@ struct eventfs_inode *eventfs_create_events_dir(const =
+char *name, struct dentry
+ 		goto fail;
+
+ 	if (size) {
+-		ei->d_children =3D kzalloc(sizeof(*ei->d_children) * size, GFP_KERNEL);
++		ei->d_children =3D kcalloc(size, sizeof(*ei->d_children), GFP_KERNEL);
+ 		if (!ei->d_children)
+ 			goto fail;
+ 	}
+=2D-
+2.25.1
 
 
