@@ -1,206 +1,202 @@
-Return-Path: <linux-kernel+bounces-25538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBF4082D20A
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 21:04:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B4B7882D211
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 21:38:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BF101F21049
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 20:04:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38C0A1F213AF
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 20:38:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A27112E67;
-	Sun, 14 Jan 2024 20:04:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C856014010;
+	Sun, 14 Jan 2024 20:38:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ePGXnL/D"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=automattic.com header.i=@automattic.com header.b="OqV6FvjD";
+	dkim=pass (2048-bit key) header.d=automattic.com header.i=@automattic.com header.b="AcJGB87P";
+	dkim=pass (2048-bit key) header.d=automattic.com header.i=@automattic.com header.b="Z3IkPjCm";
+	dkim=neutral (0-bit key) header.d=automattic.com header.i=@automattic.com header.b="lsCbvzNq"
+Received: from mx1.dfw.automattic.com (mx1.dfw.automattic.com [192.0.84.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C558D1640B;
-	Sun, 14 Jan 2024 20:04:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-50eac018059so9977143e87.0;
-        Sun, 14 Jan 2024 12:04:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705262655; x=1705867455; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1M8TnteeflGvZ6cvygRfCUgIwPLJ+AIgzs8KqJCXdg4=;
-        b=ePGXnL/DTRZnOCEow+iLh6xmQfk3bqzVWRVSDQjZPbt3iPIfuSOQQlTl6Kpmf0CAP0
-         RsxegdLDhNiwESojT0olQs4j2jklg5e8L2ghy93NtMRk3UJ/dn9+Cxqc9q5t7VrAHxXF
-         LA5TtIwbv1x5GZiOm1agY1C7IirFeWIWNZwamcfTCK5QO7jf5pCglPtnKuNWhXPd8KGH
-         kZD5TY/94I7vobcKzUV/Pfj4VMGXHqCMq7d4DLsfUu8h4mmLzmOGJALckBvxET5tbLuT
-         MKt0MHGf87PLSC6T4rixj8Iz9ZSOARVxic6k2FVsHBbb9wufekqOTq2EniBbt00N880j
-         yZRA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 806A010796
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 20:38:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=automattic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=automattic.com
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mx1.dfw.automattic.com (Postfix) with ESMTP id C40121DBF3B
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 20:38:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=automattic.com;
+	 h=x-mailer:references:message-id:content-transfer-encoding:date
+	:date:in-reply-to:subject:subject:mime-version:content-type
+	:content-type:from:from:received:received:received:received
+	:received:received; s=automattic1; t=1705264699; bh=JK7HNffr/C9T
+	rH1PWI9+u9zScMQVF+0GyVoL3PqcCQM=; b=OqV6FvjDt1USCqae+o6qk/PRjEoX
+	7XsyZn0Gtqmt1h83FJRjp0JPX7Qns5ogreKxoNtrPbkQdQiTbB7xcj6sItv91zL7
+	xFjRwRggJ6zrC9vySI/pwMGPvkNf+8u1BkgUX1/5HdkwoaynGc2hhpO2MIVSr0vE
+	ZnYhGuMEhjgAIiyB2OxV3CBkpj6DSP6H3zHnII+5SPPjWTECVMD6Nr2ebersmwXb
+	oiapL0lMkkklXcW8ejDbQQ/oY/0W5AKECKibCYDsPzKMuCRhF3IDv/iPCN895rE5
+	zkBvFq5z0Aa4sUMDqJ4N5gSYfQZtmqeyug2GARI18LlsDtsqw8F6OKdnBA==
+X-Virus-Scanned: Debian amavisd-new at wordpress.com
+Received: from mx1.dfw.automattic.com ([127.0.0.1])
+	by localhost (mx1.dfw.automattic.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 0JgNE8njSbtO for <linux-kernel@vger.kernel.org>;
+	Sun, 14 Jan 2024 20:38:19 +0000 (UTC)
+Received: from smtp-gw.dca.automattic.com (smtp-gw.dca.automattic.com [192.0.97.210])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx1.dfw.automattic.com (Postfix) with ESMTPS id 258BD1DBF1B
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 20:38:19 +0000 (UTC)
+Authentication-Results: mail.automattic.com;
+	dkim=pass (2048-bit key; unprotected) header.d=automattic.com header.i=@automattic.com header.b="AcJGB87P";
+	dkim=pass (2048-bit key; unprotected) header.d=automattic.com header.i=@automattic.com header.b="Z3IkPjCm";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=automattic.com header.i=@automattic.com header.b="lsCbvzNq";
+	dkim-atps=neutral
+Received: from smtp-gw.dca.automattic.com (localhost.localdomain [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-gw.dca.automattic.com (Postfix) with ESMTPS id BE532A073B
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 20:38:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=automattic.com;
+	s=automattic2; t=1705264698;
+	bh=JK7HNffr/C9TrH1PWI9+u9zScMQVF+0GyVoL3PqcCQM=;
+	h=From:Subject:In-Reply-To:Date:Cc:References:To:From;
+	b=AcJGB87PY7J7bgtdT6Ft28aXI7lHxeWCrVY0/nQtwk0l3IN+KWNKzKZLLJwSfNl4h
+	 Ez5FULksF5Jti6xFAGVwx7du/T/sJreuiHWFpJu0GCls4SA3Q0b1haBFYqRkZfFSKs
+	 TkotAB1eYmoHPRBeIgLgrck2lVg1iRzNdhYh6K5J5v5n5RtXd4GlqqqDTs+0A3gOu8
+	 s5Puw5WKv7qq2gDXyS6EH7R1L5/fLpTB3YCMqqfbHEvk3Z9ent67EETsq8SfcaF5Ht
+	 8/lRJmKv4uQ4kbq0a6SreXLZfJNYsQT0BiktUTY1aVcjrpehqR1Cn+0YJvd8Zyl1Kg
+	 10nxd8ScieUeg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=automattic.com;
+	s=automattic1; t=1705264698;
+	bh=JK7HNffr/C9TrH1PWI9+u9zScMQVF+0GyVoL3PqcCQM=;
+	h=From:Subject:In-Reply-To:Date:Cc:References:To:From;
+	b=Z3IkPjCmJT8fsZmEadfr9N2xAH3YyoQYwq2nmZWYC4aw4oB1BD4OnqKEU4h1fBv6Z
+	 ZiELs71zBJUsuB+83E7xBipyQGoqWQj39sXz7CJLX/dL9mrk5kHaVqDzzcjNM0qb5Y
+	 B8tGPMNi56GmxdUHARWLRPkFbJtLCMfsxsS2CijVp1PtK6AmT4gC0882FtI3EV1hTi
+	 xEs9o0WalnNYsNHYmk95pjnvRxqmYovYPS4Qo8Wc8gJK/nSOUNePvqA6pxKLpPb4xb
+	 uQLuIUtPrtSpcs7UcJd4NCoR4Nl/v705uGQYiMm4Yi12YDoM3V3Z74ls4QKVw0WHNY
+	 mzj5fIZ4J0qUA==
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-gw.dca.automattic.com (Postfix) with ESMTPS id 9C1CCA025D
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 20:38:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=automattic.com;
+	s=automattic2; t=1705264698;
+	bh=JK7HNffr/C9TrH1PWI9+u9zScMQVF+0GyVoL3PqcCQM=;
+	h=From:Subject:In-Reply-To:Date:Cc:References:To:From;
+	b=lsCbvzNqO64yKljNAOkvjrBNvWz5jD7CilTQhedoP7i1ns+fhKCMzAdkb2uE0XAWf
+	 HVWz+1pvC7nRCA9UXoHdQMIcqhqVkUD1m/FZn0JtgrAYNw/EM8fT9PsVipAJHofkQN
+	 VI+Af0m78URMzlt+SK9I40oaOYRXLUChzUP0sPbh5tBEHqXF2YnbRqZVcB85r1GZOr
+	 9MxdEN1LybZNhcR0bwrkXHEDUFfinOCUi9MrDbEBRpKrqcrdvZ17AEPESjZKpZzN7e
+	 RfaJzeULstTjWaoST+KqsmyTeosxctkGfIY+TLzV640UCK3OyanzuDNCmQ6YqhJVa0
+	 6zir0W5WIDsng==
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3368c707b03so4775483f8f.3
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 12:38:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705262655; x=1705867455;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1M8TnteeflGvZ6cvygRfCUgIwPLJ+AIgzs8KqJCXdg4=;
-        b=Z1O8HvA1eDFeKhXxMXKLF+6l/lsAzc6mUNDf9gRRuIvSAtLFvFodKJJCgHyMThQM7F
-         bsSDieOO9YtBq9w7luSkcq5ECbvKeoF3c2du1Li2TlVBFpf+I5nLiNSIo4DibUdIga+d
-         KYe47+gjeZ7vnW8rDF/8ppsqvGjnfpyipIiRhz3Il02XC9gyIZExDTUmNwTkwSTrNoQO
-         vDtFMWKLIA7pyzy6SpOsuJGKft/ocfLBEyjAZcGhvVBvAGs0g3B2DnY1ujGDbaV/5oaw
-         z/hJuCz406/XZxEHg9/0GLWYJ6BAbpZ/pjBHSgPVQHTDCpbYEMxLPwcv9EgzpCdrZgi3
-         nNBw==
-X-Gm-Message-State: AOJu0Yy/pS5bk29TbPeTyjmDO7I7C2F5g8mDuiUlyVymnh/2MzXN2QA4
-	a5toLnmYjKjZEcISw+27YjozrQVFr8wZ2w==
-X-Google-Smtp-Source: AGHT+IGkfOIZ8AVDwrJ3tiwAvZND/IC123Qo5/HJeTyhG0YWZvGHJ+zfFrj5/AiOSJAZV8MOyELKXw==
-X-Received: by 2002:ac2:4249:0:b0:50e:378b:5187 with SMTP id m9-20020ac24249000000b0050e378b5187mr2083619lfl.41.1705262654407;
-        Sun, 14 Jan 2024 12:04:14 -0800 (PST)
-Received: from [192.168.1.99] ([151.62.194.53])
-        by smtp.gmail.com with ESMTPSA id t10-20020a170906178a00b00a28ba0c3821sm4421996eje.101.2024.01.14.12.04.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Jan 2024 12:04:14 -0800 (PST)
-Message-ID: <053a5c27-68fd-41b1-8b40-783dfb83d488@gmail.com>
-Date: Sun, 14 Jan 2024 21:04:12 +0100
+        d=1e100.net; s=20230601; t=1705264697; x=1705869497;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:subject:mime-version:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JK7HNffr/C9TrH1PWI9+u9zScMQVF+0GyVoL3PqcCQM=;
+        b=KCkBinuy4axOsEWu7KHDpwWnM9w7SB/MUaUpDKXBf6sd/bolShVdN7EaJE+yQ3b27a
+         nWrCj3wBw7cIjv9yaqFDpg1boBCRC3Lw4vap2P5etdwUha/fs+tdCmGAocEgse+tfC6g
+         StvZJqWk9Yi0kMiM9pA3Y0qg8fJIPdqX+0Kg5QyLCP+/MXaHsbelSb4pEixx/DzffPax
+         GJFI3JJdKka9MGbf182RsDGzPt7WVLfIF+KrAj6ykGM0/rPYxkL/gGW8Vvy5dPeBVPo6
+         skFI63ywG/OcEtN8PpJa2beihKUa1QgnoWfEG4sTydx0i6nqcS9wnO/x3YyrnA+45WH/
+         TxBQ==
+X-Gm-Message-State: AOJu0YyDaCtSASy/pnZxU/SykVRJZjG/Nh++p/PtxbNfa8hWXdRzDKc8
+	C0y35K3WJGC4i3B17VA+WVwC/MMu3hjLc23dZiAu3glkXDU5cRkzP9mv/PtInoKu1t36sR6O5hN
+	cdIi0zt0pAln7VV6lQ+RgwpxNuWu6voX4
+X-Received: by 2002:a5d:6743:0:b0:337:989c:15c with SMTP id l3-20020a5d6743000000b00337989c015cmr2462788wrw.90.1705264697782;
+        Sun, 14 Jan 2024 12:38:17 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHI49B2lNvsFdpJLZUO65pJcLhGGni6QMQBRlh0oMxGwKa8sj9CemFXPIqh/9AI0Gb1S285jg==
+X-Received: by 2002:a5d:6743:0:b0:337:989c:15c with SMTP id l3-20020a5d6743000000b00337989c015cmr2462782wrw.90.1705264697493;
+        Sun, 14 Jan 2024 12:38:17 -0800 (PST)
+Received: from smtpclient.apple (2-234-153-233.ip223.fastwebnet.it. [2.234.153.233])
+        by smtp.gmail.com with ESMTPSA id z11-20020a5d44cb000000b00336898daceasm9906403wrr.96.2024.01.14.12.38.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 14 Jan 2024 12:38:17 -0800 (PST)
+From: Ale Crismani <ale.crismani@automattic.com>
+X-Google-Original-From: Ale Crismani <ale.crismani@automattic.com>
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: iio: iio-trig-hrtimer bug on suspend/resume when used with bmi160
- and bmi323
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
- linux-kernel@vger.kernel.org, Jagath Jog J <jagathjog1996@gmail.com>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-References: <31d7f7aa-e834-4fd0-a66a-e0ff528425dc@gmail.com>
- <20240113174351.47a20239@jic23-huawei>
-Content-Language: en-US, en-US-large
-From: Denis Benato <benato.denis96@gmail.com>
-In-Reply-To: <20240113174351.47a20239@jic23-huawei>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-On 1/13/24 18:46, Jonathan Cameron wrote:
-> On Wed, 10 Jan 2024 23:35:01 +0100
-> Denis Benato <benato.denis96@gmail.com> wrote:
-> 
->> Hello,
->>
->> With this mail I am submitting bug report that is probably related to
->> iio-trig-hrtimer but there is also the possibility for it to be
->> specific to bmi160 and bmi323.
->>
->> The described problem have been reproduced on my handheld PC (Asus
->> RC71L) and in another handheld PC with two different gyroscope
->> drivers: bmi323 (backported by me on v6.7, on RC71L) and bmi160.
->>
->> My target hardware (RC71L that yeld to this discovery) has a bmi323
->> chip that does not have any interrupt pins reaching the CPU, yet I
->> need to fetch periodically data from said device, therefore I used
->> iio-trig-hrtimer: created a trigger, set the device and trigger
->> sampling frequencies, bound the trigger to the device and enabled
->> buffer: data is being read and available over /dev/iio:device0.
->>
->> While in this state if I suspend my handheld I receive (from dmesg)
->> the warning reported below and at resume data is not coming out of
->> the iio device and the hrtimer appears to not be working. If I create
->> a new trigger and bind the new trigger to said iio device and
->> re-enable buffer data does come out of /dev/iio:device0 once more,
->> until the next sleep.
->>
->> Since this is important to me I have taken the time to look at both
->> drivers and iio-trig-hrtimer and I have identified three possible
->> reasons:
->>
->> 1) iio-trig-hrtimer won't work after suspend regardless of how it is
->> used (this is what I believe is the cause)
-> me too.
-who and how should investigate this issue? Would putting a kprintf in the hrtimer callback be enough to check?
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
+Subject: Re: Performance regression in ip_set_swap on 6.7.0
+X-Priority: 3
+In-Reply-To: <41662e12.d59.18d0673507e.Coremail.00107082@163.com>
+Date: Sun, 14 Jan 2024 21:38:05 +0100
+Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>,
+ linux-kernel@vger.kernel.org,
+ netfilter-devel@vger.kernel.org,
+ Pablo Neira Ayuso <pablo@netfilter.org>,
+ xiaolinkui@kylinos.cn
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <D2070167-F299-455C-AE4B-5D047ABD5B28@automattic.com>
+References: <b333bc85-83ea-8869-ccf7-374c9456d93c@blackhole.kfki.hu>
+ <20240111145330.18474-1-00107082@163.com>
+ <d5c24887-b2d4-bcc-f5a4-bd3d2670d16@blackhole.kfki.hu>
+ <41662e12.d59.18d0673507e.Coremail.00107082@163.com>
+To: David Wang <00107082@163.com>
+X-Mailer: Apple Mail (2.3731.700.6)
 
 
-Just to make sure I understood correctly: is this a separate issue from the warning I receive or are those linked?
-> 
->> 2) iio-trig-hrtimer is stopped by the -ESHTDOWN returned by the
->> function printing "Transfer while suspended", however that stack
->> trace does not include function calls related to iio-trig-hrtimer and
->> this seems less plausible 3) bmi160 and bmi323 appears to be similar
->> and maybe are sharing a common bug with suspend (this is also why I
->> have maintainers of those drivers in the recipient list)
->>
->> Thanks for your time, patience and understanding,
-> 
-> Hi Denis,
-> 
-> I suspect this is the legacy of the platform I used to test the hrtimer
-> and similar triggers on never had working suspend and resume (we ripped
-> support for that board out of the kernel a while back now...)
-> Hence those paths were never tested by me and others may not have cared
-> about this particular case.
-> 
-> Anyhow, so I think what is going on is fairly simple.
-> 
-> There is no way for a driver to indicate to a trigger provided by a separate
-> module / hardware device that it should stop triggering data capture.
-> The driver in question doesn't block data capture when suspended, which
-> would be easy enough to add but doesn't feel like the right solution.
-> 
-> So my initial thought is that we should add suspend and resume callbacks to
-> iio_trigger_ops and call them manually from iio device drivers in their
-> suspend and resume callbacks.  These would simply pause whatever the
-> trigger source was so that no attempts are made to trigger the use of
-> the device when it is suspended.
-> 
-> It gets a little messy though as triggers can be shared between
-> multiple devices so we'd need to reference count suspend and resume
-> for the trigger to make sure we only resume once all consumers of
-> the trigger have said they are ready to cope with triggers again.
-> 
-> As mentioned, the alternative would be to block the triggers at ingress
-> to the bmi323 and bmi160 drivers.  There may be a helpful pm flag that could
-> be used but if not, then setting an is_suspended flag under the data->mutex
-> to avoid races. and reading it in the trigger_handler to decide whether
-> to talk to the device should work.
-I was thinking of doing this too, but I don't know if adding a mutex to frequently invoked functions is going to introduce some timing problems and so I was waiting for some comments on that matter. If nothing bad is expected I can surely try it.
-> 
-> I'd kind of like the generic solution of actually letting the trigger
-> know, but not sure how much work it would turn out to be.  Either way there
-> are a lot of drivers to fix this problem in as in theory most triggers can
-> be used with most drivers that support buffered data capture.
-> There may also be fun corners where a hardware trigger from one IIO
-> device A is being used by another B and the suspend timing is such that B
-> finishing with the trigger results in A taking an action (in the try_reenable
-> callback) that could result in bus traffic.
-> That one is going to be much more fiddly to handle than the simpler case
-> you have run into.
-Since more and more handheld PCs are coming and provided many vendors such as asus tends to improve what they did built on previous generations I think a general solution would be desirable.
 
-Plus there are handheld PCs that does not yet have a driver (bmi270) or are using an existing one and it would be very difficult to fix it in every of them as of now, in the future I fear it will become almost impossible or extremely time consuming as market expands.
-> 
-> Thanks for the detailed bug report btw.   To get it fixed a few
-> questions:
-> 1) Are you happy to test proposed fixes?
-> 2) Do you want to have a go at fixing it yourself? (I'd suggest trying
->    the fix in the bmi323 driver first rather than looking at the other 
->    solution)
->    If we eventually implement the more general version, then a bmi323
->    additional protection against this problem would not be a problem.
-> 
-> Clearly I'd like the answers to be yes to both questions, but up to you!
-> 
-> Jonathan
-> 
-> 
-Hello Jonathan and thank you kindly for you answer,
+> Il giorno 14 gen 2024, alle ore 06:30, David Wang <00107082@163.com> =
+ha scritto:
+>=20
+>=20
+> At 2024-01-14 02:24:07, "Jozsef Kadlecsik" <kadlec@blackhole.kfki.hu> =
+wrote:
+>> On Thu, 11 Jan 2024, David Wang wrote:
+>>=20
+>>> I tested the patch with code stressing swap->destroy->create->add =
+10000=20
+>>> times, the performance regression still happens, and now it is=20
+>>> ip_set_destroy. (I pasted the test code at the end of this mail)
+>=20
+>>>=20
+>>> They all call wait_for_completion, which may sleep on something on=20=
 
-I am very interested in the iio ecosystem as in those aforementioned handheld PCs the gyroscope plays the role as a mouse so it's a pretty important input device.
+>>> purpose, I guess...
+>>=20
+>> That's OK because ip_set_destroy() calls rcu_barrier() which is =
+needed to=20
+>> handle flush in list type of sets.
+>>=20
+>> However, rcu_barrier() with call_rcu() together makes multiple =
+destroys=20
+>> one after another slow. But rcu_barrier() is needed for list type of =
+sets=20
+>> only and that can be handled separately. So could you test the patch=20=
 
-I am writing to lkml not just as a single developer, but as part of a larger community in this matter: this means we will be able to test any solution and in more than just one hardware.
+>> below? According to my tests it is even a little bit faster than the=20=
 
-To answers your questions:
-1) yes, we all will be very happy to
-2) as I am very busy right now I might be unable to do that immediately, but I will surely do it if one general solution cannot be found or is impractical.
+>> original code before synchronize_rcu() was added to swap.
+>=20
+> Confirmed~! This patch does fix the performance regression in my case.
+>=20
+> Hope it can fix ale.crismani@automattic.com's original issue.
+>=20
+>=20
+>=20
+> Thanks~
+> David
 
-As of my limited knowledge the number of drivers now existing that are affected are 2, and the number of drivers that will be affected, once the driver is written, will be at least 3.
 
-Thank you very much for your answer,
-Denis
+Thanks for all the help on this, I'll try the patch tomorrow hopefully =
+and will report back!
+
+best wishes,
+Ale=
 
