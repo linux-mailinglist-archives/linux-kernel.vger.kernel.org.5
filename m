@@ -1,364 +1,119 @@
-Return-Path: <linux-kernel+bounces-25450-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6BCE82D06C
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 12:18:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C6BA82D06B
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 12:18:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0C5AB21304
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 11:18:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 923871C20A13
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 11:18:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C620C2582;
-	Sun, 14 Jan 2024 11:18:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 747BD2100;
+	Sun, 14 Jan 2024 11:18:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RS4yG+7i"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	dkim=pass (2048-bit key) header.d=yahoo.de header.i=@yahoo.de header.b="UiCNCxTE"
+Received: from sonic314-19.consmr.mail.ir2.yahoo.com (sonic314-19.consmr.mail.ir2.yahoo.com [77.238.177.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C30457E
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 11:18:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-336897b6bd6so7560362f8f.2
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 03:18:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705231089; x=1705835889; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=yG+7EMaMjgQ2b/xtnts46+u5PmtaH8N17UlmONtsmGc=;
-        b=RS4yG+7iMinhlcH8z+AXNPgqjHmMgrvonUA9jI4nLktrBH9zw5GQAyJg6IZmg/OoR3
-         rqCDwAbPgtGgdUtUO3VI7QgOAWHsorynWmZL7tfZYZq/9MKtcnTL9M59P1Wge/fbLpRx
-         3pycBwqSAjsyePpNBxh8++yfiV+xMERkUhYN0ImxJSlTDcnkJ/gWBv0SSQAVOsRQMG/C
-         vx07X0PUGzYgd/jg150J6KafcS98zJY59ARdINJQ78GQCY7uUFwdrCo1RMxIwT6DK5o3
-         pyK5ws5ZZt0Vf8DbapveB3Thi2ZdQM6YBr3ytU7LZ/buHXZ9owOIBINJtrDW5U22yk+h
-         h4aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705231089; x=1705835889;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yG+7EMaMjgQ2b/xtnts46+u5PmtaH8N17UlmONtsmGc=;
-        b=RNB00ROVnEJ3Og8VOt2MMyi3GV3MLpyFMpbePX9hkTA0u0FmTUSINVTxJzLvc5LApT
-         ME6JzYOrKgUoPle3cRZOqzQyOx9WyGdbDsCeLoU7BmNnTYr6+azfTwg0mU8ZU2PmxCW3
-         8uZ2UuBq2KdEauWuDX+2tk+znmsah31l7BJaq6bvzicitctbchvtbwUkzFb2R9PgLxgi
-         94mPdtYQRXlDbmukMeDAT/0s+YHdME4Ps68WXLy8MgdsBCBsrNGXwPCbGljGHPVEPW31
-         uu4RFBGyo2XMpR1XfMt0P4p1ZgPhC7eoJQLwSlIFKYdhx8PtBeY4FRYnRYjQfKPc40D+
-         ZfCg==
-X-Gm-Message-State: AOJu0YwaBnhbvGCp3kU9lH2n/5oPqXPaQjjE9Q8HVNM9aMIRB4D8Ggyn
-	Nqw/FTH64xb9QNmeLxC6hbe116+9uvWdvw==
-X-Google-Smtp-Source: AGHT+IHuv+xkCXGK2LoEAjjrfDQoA4LwnjrklPU2Sn1m8xRyHRNQcvSnH6Nf++9R5dMFGe0cCrHk0A==
-X-Received: by 2002:a05:600c:1913:b0:40e:4d1c:392e with SMTP id j19-20020a05600c191300b0040e4d1c392emr1987176wmq.16.1705231088839;
-        Sun, 14 Jan 2024 03:18:08 -0800 (PST)
-Received: from vingu-book ([2a01:e0a:f:6020:6389:1f58:77fa:5f22])
-        by smtp.gmail.com with ESMTPSA id r7-20020a05600c35c700b0040d1bd0e716sm12258209wmq.9.2024.01.14.03.18.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jan 2024 03:18:08 -0800 (PST)
-Date: Sun, 14 Jan 2024 12:18:06 +0100
-From: Vincent Guittot <vincent.guittot@linaro.org>
-To: Wyes Karny <wkarny@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Qais Yousef <qyousef@layalina.io>, Ingo Molnar <mingo@kernel.org>,
-	linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>
-Subject: Re: [GIT PULL] Scheduler changes for v6.8
-Message-ID: <ZaPC7o44lEswxOXp@vingu-book>
-References: <ZTz9RpZxfxysYCmt@gmail.com>
- <ZZwBi/YmnMqm7zrO@gmail.com>
- <CAHk-=wgWcYX2oXKtgvNN2LLDXP7kXkbo-xTfumEjmPbjSer2RQ@mail.gmail.com>
- <CAHk-=wiXpsxMcQb7MhL-AxOityTajK0G8eWeBOzX-qBJ9X2DSw@mail.gmail.com>
- <CAHk-=wjK28MUqBZzBSMEM8vdJhDOuXGSWPmmp04GEt9CXtW6Pw@mail.gmail.com>
- <20240114091240.xzdvqk75ifgfj5yx@wyes-pc>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B85B77E
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 11:17:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.de; s=s2048; t=1705231078; bh=PPUeWA3hsgKvXXfk+8EK6nK6N40f1RHcnTddCLgPkz8=; h=Date:From:Subject:To:References:From:Subject:Reply-To; b=UiCNCxTETCEVuP3tWpeGBaJO06XY7iHoDSyaCVqbA/4mGI1M72ryLW7+09yUR+wwezf2lKYjIJ9QnzU3io1wT8tsoupMUDkjJ11Z9XKvqDSxi1vZfI1PmAMopXlgiFWlwIeUr0Brk8gehBNpstByzHa0oi2BjrxO4Xfzz0nRlmV+ZY94CiVeqd18P5Miolf/5zzI1FzGV+7Sx53COX583c/LO+dshE2OzaacnQQVhoXi/87us8P760zDq6y6a2wc5+e1W65fi32doSphd6gYusxwtc+7WH8Cxe+b2cDVmRlKgZtYbYQn0IRQ3EYCX0+1WailGN2m4i+N/xOl7tOL3w==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1705231078; bh=y59RtRxc6xwc8c3SWC2EdcnsS/EQv4dqB3DsB/uj4mz=; h=X-Sonic-MF:Date:From:Subject:To:From:Subject; b=EF5RWZEIx6fslVbhFCvYXiwIbgwIhVfYqJtPXls0/Pt3HkXokTXli6LbSUk29yTDVidzhmyLJnTOygj+j+RebEp/C1+h/lx1W88zZ9nQvD3HP+UniVdqmazAHAy5dBIV3DFLbLMTQ+JLYJ2zWwARavKY5pPMNwmxsow6TbB7nUi2AIVicYajhzLxlYb0kpK7xKUGAcqjcT8dWmGUG4B2SulMLYI31o2KDS8vOLf+0QTu3n7K3t5ctgZchR4IJOoDBVG0PQEEc4U51ALIkj6weN+A2Ptx/tNhb8Mz+MFtzfkO8bF+LudWVJ+gMB3osN0v56U4O4Tq9k929xWEU21wrg==
+X-YMail-OSG: th6FXykVM1kTy4u3VPZQ4UpX.9CUE1iQQW.hFM_o9gNradz4O26VgxNgil.Fdbe
+ .6lb4k3xZkfTeE502fnVPmc6d7iMCr7uw7qBhaswC6A1fMHOZIi1SmzpxYDpq8e8mxdf9aJ6G1mL
+ vXQuGjIQ9RDRUAsUEmxfJ2CbUcyFSnV1KtEx4262mHZW3781jqidd88IM3PndYB92O6vpmhcdg4t
+ lCnTdaQuJkppJhGPvOgb0khpff7kN5fXUc_0Dws3BKSXTXXvLr09S2W9e1Ype_Zyz0urcq8aZvnj
+ g3_uyzyui5_FU9xtDKQ6aSBZrimALu.m6VmDqm.2rZdkwVNBFKFk4uQHts3KjmQc1RV1_7WBdP6c
+ No7lYQfJ6y9fNj02euZn0xJ2Z9ww9mbcd_o60WbT0.exmsiMI8vlwVxiJh2PXf5d5m9WXTm6KveR
+ UeIJiCNnnvFQiK88RV0kNhbRUZA7fIp5d99JZFIY0YkYYSldyym53SD05K_sbZY6uUNogXWFYibx
+ OxNmaBE_L.VfIxVRavUbiWMlLAsiQr_Z0rdyFTjkX5zGEuz3L87flt33YDvwxQlopyg9IQl3br5D
+ MbJpbr5BBj4BEKEpx00dV59I5G9gJ8CoRbg_Wq3Ay42htBlenTjNkAu2ceZRa2T4Pf3rqCR5pYZ.
+ oRpiIphgoePb20pp8JMOnbtLcl2W6unqDDvV3mv2p_k5oeE.jaE2UNu6xLZlmbYnEFY4uIOmdDeM
+ PFDDPBonhZJHFQrD4XXjddYZthSbDGRZhqHnSnQiaJ0.DljfSEmuR7WS6OfjKfBpa07VEb8psyvU
+ gWlVaC.7CjbZkmKeRDQnZBPSlYwxNc0IGwHKoqjzWnVemtSEnpfR_ax8jIpn6F3FXvUn0v5mLaII
+ 27GcA12glp6GSFILjAH7ePaKfgyd37pJ1lxHvdL1_uiUgjk.821FZaaLwBMeFEKIXMIue2oqMia1
+ tks4JW_1WFFM4tIBZe6WRO8yQ.4zPTVJHaV5c7PILD7979dm0PupKZER03PfYUzT_Hvr74ppJ03P
+ LLKANd9YXkP1Lqq6IzBK9_CW6lpGz0B1jprWaeKOgdB69IFMiCg4KQ44GieUAYMQ6D3tWUYEik2T
+ jLMjemDD.RYQNm94uLOP4MJfMbLsYBZI5Hl9PM0DVOVEHw3U58JWF7mNVihkeTsNlApl0yC9Of3A
+ 5U3YddcU5pextZKT2NiEC9XR09ceAm9Ay_fcJQ20BSb2Di5hmLxH6Z.gPMQXRueKLg4yqAc0nPWy
+ zCCtB0DCWpuw9K3FVT6D4Tsz8e1QLKElw4msBM6Z1prfYtxeWCdt7ANZ9RjQ93376rjrh16msgN2
+ IPfbcnHW4Ba.Fnx0rRYtTchuoLQQkRrlgYSjaloUThX6pw6s0OclcUYOpNxjygShJFeVPG_p0zwK
+ hWwOgjv93dDia.UBbuzNPwfy30BYU0YgRvt8xjnwqaazCoyJGVqpFNCaJDozDUVMd69AHogayJyV
+ jqU8RZNaeb1gMTUzfuzqlLDx7q1cYf3QZuGJXSzAbqg0va3qhj79bykOc8Pj32f4QnnOydP4VgEu
+ OZBwjUfpDNg4scVW1j3PG2QtnEvL5hfFp3NrkSEo.hJVmXfTBgkZFV_oJ5EAnKl.Ym39iui1H.sp
+ wbLcI6dytSiWg7D6WUG4EVcK0behliJs9hQRjgMBkQnA58WPXpZYsc7CW0kRRxWtfx8FLR8xh8tH
+ GSa3fSyhVJY2MnoX68vFFzmHPumrno4oBctPvYdGEk6tPf7wwXv6m27EuAL9loF8CmWiOAx4F4bF
+ GxRWl.dYKKn8N1EX4kHjlNJidE6z4znUVhGWkXBJfD5Z8z.nIy3RrCMBOVE1_NcetC5eogg.sPH0
+ Hiq6R4pYn1DdE1E9.y4Ch.0sH0cXoNTZb0yYf86yx95VWNF9OmjinCfKLfe6r8n1GxwunWr4cK9f
+ b0a5WzxC5SshFWXZq8eWYSm6l_M4pO5yMAKAmEu4Bcl0yr9MPfzI5WqcZXTaydGedFxVMSG7g3LD
+ hBUOvtFYf87etfubShVnopMzEmj1B07A6MP8XTjM0Z26VOK3MLj3qSEx9daSxLgWa1PMGi6Yhm9s
+ 5BJ0MmglMAf4kn1F9jNbc_b.2_SicM1POe5LrJJqu7rtdtEsEEtwg4TTPl40r3n9ao8i19nxZCv1
+ o8GhogDQzb.tCUmNcg8fvQZoSJd4zE7h8ofrtPMpFkJqfaHeza1Sf6oHM_rH7pEbe6u_KUkziaSt
+ a7eOSiUF7Nog-
+X-Sonic-MF: <hkopp22@yahoo.de>
+X-Sonic-ID: 91b2a64e-0248-42fe-a33f-4a6d1369e878
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic314.consmr.mail.ir2.yahoo.com with HTTP; Sun, 14 Jan 2024 11:17:58 +0000
+Received: by hermes--production-ir2-7cc8d8ff75-p5cgp (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 2b92f031ec94ccfe06fcd93c95fb275f;
+          Sun, 14 Jan 2024 11:17:55 +0000 (UTC)
+Message-ID: <0219492d-3971-f8e0-8b46-22d442a2d442@yahoo.de>
+Date: Sun, 14 Jan 2024 12:20:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240114091240.xzdvqk75ifgfj5yx@wyes-pc>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+From: "Dr. Henning Kopp" <hkopp22@yahoo.de>
+Subject: Why does Linux not implement pthread_suspend() and pthread_resume()?
+Content-Language: en-US
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+References: <0219492d-3971-f8e0-8b46-22d442a2d442.ref@yahoo.de>
+X-Mailer: WebService/1.1.22010 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
-Hi Wyes,
+Hi everyone,
 
-Le dimanche 14 janv. 2024 à 14:42:40 (+0530), Wyes Karny a écrit :
-> On Wed, Jan 10, 2024 at 02:57:14PM -0800, Linus Torvalds wrote:
-> > On Wed, 10 Jan 2024 at 14:41, Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > >
-> > > It's one of these two:
-> > >
-> > >   f12560779f9d sched/cpufreq: Rework iowait boost
-> > >   9c0b4bb7f630 sched/cpufreq: Rework schedutil governor performance estimation
-> > >
-> > > one more boot to go, then I'll try to revert whichever causes my
-> > > machine to perform horribly much worse.
-> > 
-> > I guess it should come as no surprise that the result is
-> > 
-> >    9c0b4bb7f6303c9c4e2e34984c46f5a86478f84d is the first bad commit
-> > 
-> > but to revert cleanly I will have to revert all of
-> > 
-> >       b3edde44e5d4 ("cpufreq/schedutil: Use a fixed reference frequency")
-> >       f12560779f9d ("sched/cpufreq: Rework iowait boost")
-> >       9c0b4bb7f630 ("sched/cpufreq: Rework schedutil governor
-> > performance estimation")
-> > 
-> > This is on a 32-core (64-thread) AMD Ryzen Threadripper 3970X, fwiw.
-> > 
-> > I'll keep that revert in my private test-tree for now (so that I have
-> > a working machine again), but I'll move it to my main branch soon
-> > unless somebody has a quick fix for this problem.
-> 
-> Hi Linus,
-> 
-> I'm able to reproduce this issue with my AMD Ryzen 5600G system.  But
-> only if I disable CPPC in BIOS and boot with acpi-cpufreq + schedutil.
-> (I believe for your case also CPPC is diabled as log "_CPC object is not
-> present" came). Enabling CPPC in BIOS issue not seen in my system.  For
-> AMD acpi-cpufreq also uses _CPC object to determine the boost ratio.
-> When CPPC is disabled in BIOS something is going wrong and max
-> capacity is becoming zero.
-> 
-> Hi Vincent, Qais,
-> 
-> I have collected some data with bpftracing:
+I have a question regarding pthreads. In particular, I was wondering why 
+there is no way to suspend and resume a thread in Linux.
 
-Thanks for your tests results
+In Windows, there is SuspendThread() and ResumeThread() from 
+processthreadsapi.h. However in Linux, there does not seem to be a 
+similar function in pthread.h.
 
-> 
-> sudo bpftrace -e 'kretprobe:effective_cpu_util /cpu == 1/ { @eff_util = lhist(retval, 0, 1200, 50);} kprobe:get_next_freq /cpu == 1/ { @sugov_eff_util = lhist(arg1, 0, 1200, 50); @sugov_max_cap = lhist(arg2, 0, 1000, 2);} kretprobe:get_next_freq /cpu == 1/ { @sugov_freq = lhist(retval, 1000000, 5000000, 100000);}'
-> 
-> with running: taskset -c 1 make
-> 
-> issue case:
-> 
-> Attaching 3 probes...
-> @eff_util:
-> [0, 50)             1263 |@                                                   |
-> [50, 100)            517 |                                                    |
-> [100, 150)           233 |                                                    |
-> [150, 200)           297 |                                                    |
-> [200, 250)           162 |                                                    |
-> [250, 300)            98 |                                                    |
-> [300, 350)            75 |                                                    |
-> [350, 400)           205 |                                                    |
-> [400, 450)           210 |                                                    |
-> [450, 500)            16 |                                                    |
-> [500, 550)          1532 |@                                                   |
-> [550, 600)          1026 |                                                    |
-> [600, 650)           761 |                                                    |
-> [650, 700)           876 |                                                    |
-> [700, 750)          1085 |                                                    |
-> [750, 800)           891 |                                                    |
-> [800, 850)           816 |                                                    |
-> [850, 900)           983 |                                                    |
-> [900, 950)           661 |                                                    |
-> [950, 1000)          759 |                                                    |
-> [1000, 1050)       57433 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-> 
+When researching this issue i found multiple ways to work around the 
+inability of suspending a thread, such as using mutexes. But my question 
+is why nobody bothered implementing suspending/resuming threads.
 
-ok so the output of effective_cpu_util() seems correct or at least to maw utilization
-value. In order to be correct, it means that arch_scale_cpu_capacity(cpu) is not zero
-because of :
+I found one answer on stackoverflow [1] that mentions that 
+pthread_suspend and pthread_resume_np is in the "Unix specification", 
+but not implemented in Linux. I tried to follow up on this hint and get 
+access to the Posix spec, but i am not affiliated with a university 
+anymore, so i was unable to download the spec.
 
-unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
-				 unsigned long *min,
-				 unsigned long *max)
-{
-	unsigned long util, irq, scale;
-	struct rq *rq = cpu_rq(cpu);
+I read "man 7 pthreads". It mentions that there are two Linux 
+implementations of Posix threads, that differ in some details from the 
+Posix spec. However, it does not mention suspending or resuming threads 
+at all.
 
-	scale = arch_scale_cpu_capacity(cpu);
+I hope this is the right mailing list for my question. If it is 
+off-topic, please accept my apologies.
 
-	/*
-	 * Early check to see if IRQ/steal time saturates the CPU, can be
-	 * because of inaccuracies in how we track these -- see
-	 * update_irq_load_avg().
-	 */
-	irq = cpu_util_irq(rq);
-	if (unlikely(irq >= scale)) {
-		if (min)
-			*min = scale;
-		if (max)
-			*max = scale;
-		return scale;
-	}
-..
-}
+So my question is: What is the reason that Linux does not implement 
+functions for suspending and resuming threads?
 
-If arch_scale_cpu_capacity(cpu) returns 0 then effective_cpu_util() should returns
-0 too.
 
-Now see below
+Best regards
+Henning
 
-> @sugov_eff_util:
-> [0, 50)             1074 |                                                    |
-> [50, 100)            571 |                                                    |
-> [100, 150)           259 |                                                    |
-> [150, 200)           169 |                                                    |
-> [200, 250)           237 |                                                    |
-> [250, 300)           156 |                                                    |
-> [300, 350)            91 |                                                    |
-> [350, 400)            46 |                                                    |
-> [400, 450)            52 |                                                    |
-> [450, 500)           195 |                                                    |
-> [500, 550)           175 |                                                    |
-> [550, 600)            46 |                                                    |
-> [600, 650)           493 |                                                    |
-> [650, 700)          1424 |@                                                   |
-> [700, 750)           646 |                                                    |
-> [750, 800)           628 |                                                    |
-> [800, 850)           612 |                                                    |
-> [850, 900)           840 |                                                    |
-> [900, 950)           893 |                                                    |
-> [950, 1000)          640 |                                                    |
-> [1000, 1050)       60679 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-> 
-> @sugov_freq:
-> [1400000, 1500000)   69911 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-> 
-> @sugov_max_cap:
-> [0, 2)             69926 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
 
-In get_next_freq(struct sugov_policy *sg_policy, unsigned long util, unsigned long max)
+[1] 
+https://stackoverflow.com/questions/11468333/linux-threads-suspend-resume/13399592#13399592 
 
-max is 0 and we comes from this path:
-
-static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
-				     unsigned int flags)
-{
-
-..
-	max_cap = arch_scale_cpu_capacity(sg_cpu->cpu);
-
-	if (!sugov_update_single_common(sg_cpu, time, max_cap, flags))
-		return;
-
-	next_f = get_next_freq(sg_policy, sg_cpu->util, max_cap);
-..
-
-so here arch_scale_cpu_capacity(sg_cpu->cpu) returns 0 ...
-
-AFAICT, AMD platform uses the default 
-static __always_inline
-unsigned long arch_scale_cpu_capacity(int cpu)
-{
-	return SCHED_CAPACITY_SCALE;
-}
-
-I'm missing something here
-
-> 
-> 
-> good case:
-> 
-> Attaching 3 probes...
-> @eff_util:
-> [0, 50)              246 |@                                                   |
-> [50, 100)            150 |@                                                   |
-> [100, 150)           191 |@                                                   |
-> [150, 200)           239 |@                                                   |
-> [200, 250)           117 |                                                    |
-> [250, 300)          2101 |@@@@@@@@@@@@@@@                                     |
-> [300, 350)          2284 |@@@@@@@@@@@@@@@@                                    |
-> [350, 400)           713 |@@@@@                                               |
-> [400, 450)           151 |@                                                   |
-> [450, 500)           154 |@                                                   |
-> [500, 550)          1121 |@@@@@@@@                                            |
-> [550, 600)          1901 |@@@@@@@@@@@@@                                       |
-> [600, 650)          1208 |@@@@@@@@                                            |
-> [650, 700)           606 |@@@@                                                |
-> [700, 750)           557 |@@@                                                 |
-> [750, 800)           872 |@@@@@@                                              |
-> [800, 850)          1092 |@@@@@@@                                             |
-> [850, 900)          1416 |@@@@@@@@@@                                          |
-> [900, 950)          1107 |@@@@@@@                                             |
-> [950, 1000)         1051 |@@@@@@@                                             |
-> [1000, 1050)        7260 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-> 
-> @sugov_eff_util:
-> [0, 50)              241 |                                                    |
-> [50, 100)            149 |                                                    |
-> [100, 150)            72 |                                                    |
-> [150, 200)            95 |                                                    |
-> [200, 250)            43 |                                                    |
-> [250, 300)            49 |                                                    |
-> [300, 350)            19 |                                                    |
-> [350, 400)            56 |                                                    |
-> [400, 450)            22 |                                                    |
-> [450, 500)            29 |                                                    |
-> [500, 550)          1840 |@@@@@@                                              |
-> [550, 600)          1476 |@@@@@                                               |
-> [600, 650)          1027 |@@@                                                 |
-> [650, 700)           473 |@                                                   |
-> [700, 750)           366 |@                                                   |
-> [750, 800)           627 |@@                                                  |
-> [800, 850)           930 |@@@                                                 |
-> [850, 900)          1285 |@@@@                                                |
-> [900, 950)           971 |@@@                                                 |
-> [950, 1000)          946 |@@@                                                 |
-> [1000, 1050)       13839 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-> 
-> @sugov_freq:
-> [1400000, 1500000)     648 |@                                                   |
-> [1500000, 1600000)       0 |                                                    |
-> [1600000, 1700000)       0 |                                                    |
-> [1700000, 1800000)      25 |                                                    |
-> [1800000, 1900000)       0 |                                                    |
-> [1900000, 2000000)       0 |                                                    |
-> [2000000, 2100000)       0 |                                                    |
-> [2100000, 2200000)       0 |                                                    |
-> [2200000, 2300000)       0 |                                                    |
-> [2300000, 2400000)       0 |                                                    |
-> [2400000, 2500000)       0 |                                                    |
-> [2500000, 2600000)       0 |                                                    |
-> [2600000, 2700000)       0 |                                                    |
-> [2700000, 2800000)       0 |                                                    |
-> [2800000, 2900000)       0 |                                                    |
-> [2900000, 3000000)       0 |                                                    |
-> [3000000, 3100000)       0 |                                                    |
-> [3100000, 3125K)       0 |                                                    |
-> [3125K, 3300000)       0 |                                                    |
-> [3300000, 3400000)       0 |                                                    |
-> [3400000, 3500000)       0 |                                                    |
-> [3500000, 3600000)       0 |                                                    |
-> [3600000, 3700000)       0 |                                                    |
-> [3700000, 3800000)       0 |                                                    |
-> [3800000, 3900000)       0 |                                                    |
-> [3900000, 4000000)   23879 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-> 
-> @sugov_max_cap:
-> [0, 2)             24555 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-> 
-> In both case max_cap is zero but selected freq is incorrect in bad case.
-
-Also we have in get_next_freq():
-	freq = map_util_freq(util, freq, max);
-	       --> util * freq /max
-
-If max was 0, we should have been an error ?
-
-There is something strange that I don't understand
-
-Could you trace on the return of sugov_get_util()
-the value of sg_cpu->util ?
-
-Thanks for you help
-Vincent
-
-> 
-> Thanks,
-> Wyes
-> 
 
