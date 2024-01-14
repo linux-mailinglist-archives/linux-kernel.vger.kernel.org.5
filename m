@@ -1,176 +1,247 @@
-Return-Path: <linux-kernel+bounces-25524-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5BFE82D1D3
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 19:08:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08C3482D1D4
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 19:11:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 564BDB212A5
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 18:08:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19E8C1C208D4
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 18:11:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77CF1107A6;
-	Sun, 14 Jan 2024 18:08:07 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 964D610958;
+	Sun, 14 Jan 2024 18:11:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d7mr7pg/"
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29BE3EAF4;
-	Sun, 14 Jan 2024 18:08:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.105] (31.173.83.169) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sun, 14 Jan
- 2024 21:07:52 +0300
-Subject: Re: [PATCH net-next v3 08/19] net: ravb: Move the IRQs get and
- request in the probe function
-To: claudiu beznea <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
-	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <geert+renesas@glider.be>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-References: <20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com>
- <20240105082339.1468817-9-claudiu.beznea.uj@bp.renesas.com>
- <02548b1b-d32c-78b1-f1b6-5fdb505d31bb@omp.ru>
- <ee783b61-95fc-44ab-a311-0ca7d058ac39@tuxon.dev>
- <dce944a1-9557-9ab0-d30d-7a51a47c6d96@omp.ru>
- <3e430f8e-b327-485f-ae19-6f1938083dd3@tuxon.dev>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <0ef3553a-9a7d-d93a-7920-0bd4aa49e5cb@omp.ru>
-Date: Sun, 14 Jan 2024 21:07:51 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DF391078B
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 18:11:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6dde173384aso3809913a34.1
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 10:11:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705255870; x=1705860670; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=BZ1LMv/V8F731Aa0Wog+VsjYAtCsiVQiJWnq/qLkV70=;
+        b=d7mr7pg/CjQdZjaJvEpWP7RfrlbZwLtxeTKuMpun1eihJbi1r3Shqs48Sw0ZKGLJyT
+         NxARB6Id5poOARF1HmwHysE29xd4mI/3ABEWVSzW+fKLAedd6jJUaivHKjk7cn9bypp0
+         fH7ETs73pLgJBteGHVzGwMRm1ynGcuW7C7yB9L8y+Gr14h7xPVK/nrM45EGcoMEIGVDi
+         02Oz1dqniscHgfyelRrjKgcJ3UCiRVhJBuFMOJZUNNsFatHClK4EFTPNW9vjpR2OM84P
+         jcyijXL7sxFZYKjtaPcg4Gnr0QIxsxAlnBc6pjeF7Cqc7kF2DqrohpyoI/oV2pKO0Xjp
+         N9CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705255870; x=1705860670;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BZ1LMv/V8F731Aa0Wog+VsjYAtCsiVQiJWnq/qLkV70=;
+        b=HcqreAr8Mg33PLMPrVEjJJNvIlWL30BHqe6fWz6fqZL0q34909rTKY9vTZzk/f+MW8
+         P/IG92QZbr8Rw1TTZVpjn2YmkJzxv5nena8iF3fYaIDI0KQHJvO/Stgjd5qb8Sj0g5Bg
+         37rtD5J9IKnNE77dGieygydk1VKbtbB5Zwy1POrPVkCPXAclt5RaAM6vewzgLzYvN1iJ
+         ZVXsCmALjOKwugVLKKeEBAd99rzueVtZNwrB2+xfKEi8ByDf615DokIqpDhpBbzCoU2t
+         2CVtReIpuxd4VFML+WzaAmwXKCeVz9rXd47ELB0q6kiMC0YbimYZL/PYV/6KdIR4zTfR
+         hDNw==
+X-Gm-Message-State: AOJu0Ywxjfrpan0Mokf6oKQZ6ludixYfJ2l7j1QWc2nJ1lWLQQsR0/pT
+	HcBppQk0a1cFYkNjuqkPZwA=
+X-Google-Smtp-Source: AGHT+IFagQPEANMgGe9/Qn4DBHkhHr7qPf1BcTDVNd3i4ROBc+O0QL0eg4iwI2Jvw+ct0diqm6sW3A==
+X-Received: by 2002:a05:6830:18e6:b0:6dd:e242:28fd with SMTP id d6-20020a05683018e600b006dde24228fdmr4841175otf.53.1705255870330;
+        Sun, 14 Jan 2024 10:11:10 -0800 (PST)
+Received: from wyes-pc ([2401:4900:1cc5:6bb8:c7e3:ac96:f3b2:a36a])
+        by smtp.gmail.com with ESMTPSA id 15-20020aa7924f000000b006d9a48882f7sm6210866pfp.118.2024.01.14.10.11.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Jan 2024 10:11:09 -0800 (PST)
+Date: Sun, 14 Jan 2024 23:41:03 +0530
+From: Wyes Karny <wkarny@gmail.com>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Qais Yousef <qyousef@layalina.io>, Ingo Molnar <mingo@kernel.org>,
+	linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>
+Subject: Re: [GIT PULL] Scheduler changes for v6.8
+Message-ID: <20240114181103.osrjpvtibmy7cmcq@wyes-pc>
+References: <ZTz9RpZxfxysYCmt@gmail.com>
+ <ZZwBi/YmnMqm7zrO@gmail.com>
+ <CAHk-=wgWcYX2oXKtgvNN2LLDXP7kXkbo-xTfumEjmPbjSer2RQ@mail.gmail.com>
+ <CAHk-=wiXpsxMcQb7MhL-AxOityTajK0G8eWeBOzX-qBJ9X2DSw@mail.gmail.com>
+ <CAHk-=wjK28MUqBZzBSMEM8vdJhDOuXGSWPmmp04GEt9CXtW6Pw@mail.gmail.com>
+ <20240114091240.xzdvqk75ifgfj5yx@wyes-pc>
+ <ZaPC7o44lEswxOXp@vingu-book>
+ <20240114123759.pjs7ctexcpc6pshl@wyes-pc>
+ <CAKfTPtCz+95dR38c_u6_7JbkVt=czj5N2dKYVV-zk9dgbk16hw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <3e430f8e-b327-485f-ae19-6f1938083dd3@tuxon.dev>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/14/2024 17:51:39
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 182622 [Jan 14 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.83.169 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info:
-	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.83.169
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 01/14/2024 17:56:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 1/14/2024 4:54:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKfTPtCz+95dR38c_u6_7JbkVt=czj5N2dKYVV-zk9dgbk16hw@mail.gmail.com>
 
-On 1/10/24 2:55 PM, claudiu beznea wrote:
+On Sun, Jan 14, 2024 at 02:03:14PM +0100, Vincent Guittot wrote:
+> On Sun, 14 Jan 2024 at 13:38, Wyes Karny <wkarny@gmail.com> wrote:
+> >
+> > On Sun, Jan 14, 2024 at 12:18:06PM +0100, Vincent Guittot wrote:
+> > > Hi Wyes,
+> > >
+> > > Le dimanche 14 janv. 2024 à 14:42:40 (+0530), Wyes Karny a écrit :
+> > > > On Wed, Jan 10, 2024 at 02:57:14PM -0800, Linus Torvalds wrote:
+> > > > > On Wed, 10 Jan 2024 at 14:41, Linus Torvalds
+> > > > > <torvalds@linux-foundation.org> wrote:
+> > > > > >
+> > > > > > It's one of these two:
+> > > > > >
+> > > > > >   f12560779f9d sched/cpufreq: Rework iowait boost
+> > > > > >   9c0b4bb7f630 sched/cpufreq: Rework schedutil governor performance estimation
+> > > > > >
+> > > > > > one more boot to go, then I'll try to revert whichever causes my
+> > > > > > machine to perform horribly much worse.
+> > > > >
+> > > > > I guess it should come as no surprise that the result is
+> > > > >
+> > > > >    9c0b4bb7f6303c9c4e2e34984c46f5a86478f84d is the first bad commit
+> > > > >
+> > > > > but to revert cleanly I will have to revert all of
+> > > > >
+> > > > >       b3edde44e5d4 ("cpufreq/schedutil: Use a fixed reference frequency")
+> > > > >       f12560779f9d ("sched/cpufreq: Rework iowait boost")
+> > > > >       9c0b4bb7f630 ("sched/cpufreq: Rework schedutil governor
+> > > > > performance estimation")
+> > > > >
+> > > > > This is on a 32-core (64-thread) AMD Ryzen Threadripper 3970X, fwiw.
+> > > > >
+> > > > > I'll keep that revert in my private test-tree for now (so that I have
+> > > > > a working machine again), but I'll move it to my main branch soon
+> > > > > unless somebody has a quick fix for this problem.
+> > > >
+> > > > Hi Linus,
+> > > >
+> > > > I'm able to reproduce this issue with my AMD Ryzen 5600G system.  But
+> > > > only if I disable CPPC in BIOS and boot with acpi-cpufreq + schedutil.
+> > > > (I believe for your case also CPPC is diabled as log "_CPC object is not
+> > > > present" came). Enabling CPPC in BIOS issue not seen in my system.  For
+> > > > AMD acpi-cpufreq also uses _CPC object to determine the boost ratio.
+> > > > When CPPC is disabled in BIOS something is going wrong and max
+> > > > capacity is becoming zero.
+> > > >
+> > > > Hi Vincent, Qais,
+> > > >
+> 
+> ...
+> 
+> > >
+> > > There is something strange that I don't understand
+> > >
+> > > Could you trace on the return of sugov_get_util()
+> > > the value of sg_cpu->util ?
+> >
+> > Yeah, correct something was wrong in the bpftrace readings, max_cap is
+> > not zero in traces.
+> >
+> >              git-5511    [001] d.h1.   427.159763: get_next_freq.constprop.0: [DEBUG] : freq 1400000, util 1024, max 1024
+> >              git-5511    [001] d.h1.   427.163733: sugov_get_util: [DEBUG] : util 1024, sg_cpu->util 1024
+> >              git-5511    [001] d.h1.   427.163735: get_next_freq.constprop.0: [DEBUG] : freq 1400000, util 1024, max 1024
+> >              git-5511    [001] d.h1.   427.167706: sugov_get_util: [DEBUG] : util 1024, sg_cpu->util 1024
+> >              git-5511    [001] d.h1.   427.167708: get_next_freq.constprop.0: [DEBUG] : freq 1400000, util 1024, max 1024
+> >              git-5511    [001] d.h1.   427.171678: sugov_get_util: [DEBUG] : util 1024, sg_cpu->util 1024
+> >              git-5511    [001] d.h1.   427.171679: get_next_freq.constprop.0: [DEBUG] : freq 1400000, util 1024, max 1024
+> >              git-5511    [001] d.h1.   427.175653: sugov_get_util: [DEBUG] : util 1024, sg_cpu->util 1024
+> >              git-5511    [001] d.h1.   427.175655: get_next_freq.constprop.0: [DEBUG] : freq 1400000, util 1024, max 1024
+> >              git-5511    [001] d.s1.   427.175665: sugov_get_util: [DEBUG] : util 1024, sg_cpu->util 1024
+> >              git-5511    [001] d.s1.   427.175665: get_next_freq.constprop.0: [DEBUG] : freq 1400000, util 1024, max 1024
+> >
+> > Debug patch applied:
+> >
+> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> > index 95c3c097083e..5c9b3e1de7a0 100644
+> > --- a/kernel/sched/cpufreq_schedutil.c
+> > +++ b/kernel/sched/cpufreq_schedutil.c
+> > @@ -166,6 +166,7 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
+> >
+> >         freq = get_capacity_ref_freq(policy);
+> >         freq = map_util_freq(util, freq, max);
+> > +       trace_printk("[DEBUG] : freq %llu, util %llu, max %llu\n", freq, util, max);
+> >
+> >         if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
+> >                 return sg_policy->next_freq;
+> > @@ -199,6 +200,7 @@ static void sugov_get_util(struct sugov_cpu *sg_cpu, unsigned long boost)
+> >         util = max(util, boost);
+> >         sg_cpu->bw_min = min;
+> >         sg_cpu->util = sugov_effective_cpu_perf(sg_cpu->cpu, util, min, max);
+> > +       trace_printk("[DEBUG] : util %llu, sg_cpu->util %llu\n", util, sg_cpu->util);
+> >  }
+> >
+> >  /**
+> >
+> >
+> > So, I guess map_util_freq going wrong somewhere.
+> 
+> Thanks for the trace. It was really helpful and I think that I got the
+> root cause.
+> 
+> The problem comes from get_capacity_ref_freq() which returns current
+> freq when arch_scale_freq_invariant() is not enable, and the fact that
+> we apply map_util_perf() earlier in the path now which is then capped
+> by max capacity.
+> 
+> Could you try the below ?
+> 
+> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> index e420e2ee1a10..611c621543f4 100644
+> --- a/kernel/sched/cpufreq_schedutil.c
+> +++ b/kernel/sched/cpufreq_schedutil.c
+> @@ -133,7 +133,7 @@ unsigned long get_capacity_ref_freq(struct
+> cpufreq_policy *policy)
+>         if (arch_scale_freq_invariant())
+>                 return policy->cpuinfo.max_freq;
+> 
+> -       return policy->cur;
+> +       return policy->cur + policy->cur >> 2;
+>  }
+> 
+>  /**
 
-[...]
+Issue seems to be fixed with this (but bit modified by me for arithmetic precedence):
 
->>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>>>
->>>>> The runtime PM implementation will disable clocks at the end of
->>>>> ravb_probe(). As some IP variants switch to reset mode as a result of
->>>>> setting module standby through clock disable APIs, to implement runtime PM
->>>>> the resource parsing and requesting are moved in the probe function and IP
->>>>> settings are moved in the open function. This is done because at the end of
->>>>> the probe some IP variants will switch anyway to reset mode and the
->>>>> registers content is lost. Also keeping only register specific operations
->>>>> in the ravb_open()/ravb_close() functions will make them faster.
->>>>>
->>>>> Commit moves IRQ requests to ravb_probe() to have all the IRQs ready when
->>>>> the interface is open. As now IRQs gets and requests are in a single place
->>>>> there is no need to keep intermediary data (like ravb_rx_irqs[] and
->>>>> ravb_tx_irqs[] arrays or IRQs in struct ravb_private).
->>>>
->>>>    There's one thing that you probably didn't take into account: after
->>>> you call request_irq(), you should be able to handle your IRQ as it's
->>>> automatically unmasked, unless you pass IRQF_NO_AUTOEN to request_irq().
->>>> Your device may be held i reset or even powered off but if you pass
->>>> IRQF_SHARED to request_irq() (you do in a single IRQ config), you must
->>>> be prepared to get your device's registers read (in order to ascertain
->>
->>    And, at least on arm32, reading a powered off (or not clocked?) device's
->> register causes an imprecise external abort exception -- which results in a
->> kernel oops...
->>
->>>> whether it's your IRQ or not). And you can't even pass IRQF_NO_AUTOEN
->>>> along with IRQF_SHARED, according to my reading of the IRQ code...
->>>
->>> Good point!
+patch:
 
-   Iff we can come up with a robust check whether the device is powered on,
-we can overcome even the IRQF_SHARED issue though...
-   I'm seeing pm_runtime_active() API and wondering whether we can use it
-from the IRQ context. Alternatively, we can add a is_opened flag, like
-sh_eth.c does...
+@@ -133,7 +133,7 @@ unsigned long get_capacity_ref_freq(struct cpufreq_policy *policy)
+        if (arch_scale_freq_invariant())
+                return policy->cpuinfo.max_freq;
+ 
+-       return policy->cur;
++       return policy->cur + (policy->cur >> 2);
+ }
+ 
+ /**
 
->>>>> This is a preparatory change to add runtime PM support for all IP variants.
->>>>
->>>>   I don't readily see why this is necessary for the full-fledged RPM
->>>> support...
->>>
->>> I tried to speed up the ravb_open()/ravb_close() but missed the IRQF_SHARED
->>
->>    I doubt that optimizing ravb_{open,close}() is worth pursuing, frankly...
+trace:
+            make-7912    [001] d..2.   182.070005: sugov_get_util: [DEBUG] : util 595, sg_cpu->util 743
+            make-7912    [001] d..2.   182.070006: get_next_freq.constprop.0: [DEBUG] : freq 3537231, util 743, max 1024
+              sh-7956    [001] d..2.   182.070494: sugov_get_util: [DEBUG] : util 835, sg_cpu->util 1024
+              sh-7956    [001] d..2.   182.070495: get_next_freq.constprop.0: [DEBUG] : freq 4875000, util 1024, max 1024
+              sh-7956    [001] d..2.   182.070576: sugov_get_util: [DEBUG] : util 955, sg_cpu->util 1024
+              sh-7956    [001] d..2.   182.070576: get_next_freq.constprop.0: [DEBUG] : freq 4875000, util 1024, max 1024
+              sh-7957    [001] d.h1.   182.072120: sugov_get_util: [DEBUG] : util 990, sg_cpu->util 1024
+              sh-7957    [001] d.h1.   182.072121: get_next_freq.constprop.0: [DEBUG] : freq 4875000, util 1024, max 1024
+              nm-7957    [001] dNh1.   182.076088: sugov_get_util: [DEBUG] : util 1024, sg_cpu->util 1024
+              nm-7957    [001] dNh1.   182.076089: get_next_freq.constprop.0: [DEBUG] : freq 4875000, util 1024, max 1024
+            grep-7958    [001] d..2.   182.076833: sugov_get_util: [DEBUG] : util 1024, sg_cpu->util 1024
 
-   OTOH, we'll get a simpler/cleaner code if we do this...
-   Previously, I was under an impression that it's common behavior of
-the networking drivers to call request_irq() from their ndo_open() methods.
-Apparently, it's not true anymore (probably with the introduction of the
-managed device API) -- the newer drivers often call devm_request_irq()
-from their probe() methods instead...
 
->>> IRQ. As there is only one IRQ requested w/ IRQF_SHARED, are you OK with
->>> still keeping the rest of IRQs handled as proposed by this patch?
->>
->>    I'm not, as this doesn't really seem necessary for your main goal.
->> It's not clear in what state U-Boot leaves EtherAVB...
-
-   This still seems an issue though... My prior experience with the R-Car
-MMC driver tells me that U-Boot may leave interrupts enabled... :-/
-
-> Ok. One other reason I did this is, as commit message states, to keep
-> resource parsing and allocation/freeing in probe/remove and hardware
-> settings in open/close.
->  
-> Anyway, I'll revert all the changes IRQ related.
-
-   Now I've changed my mind -- let's retain your patch! It needs some work
-though...
-
-> Thank you,
-> Claudiu Beznea
-
-[...]
-
-MBR, Sergey
+Thanks,
+Wyes
 
