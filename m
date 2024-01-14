@@ -1,166 +1,124 @@
-Return-Path: <linux-kernel+bounces-25466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77EDA82D0B6
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 14:05:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 687CB82D0BA
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 14:13:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27D952815E9
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 13:05:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 154D5B215C7
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 13:13:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E28E2114;
-	Sun, 14 Jan 2024 13:05:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C754E23BC;
+	Sun, 14 Jan 2024 13:13:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="F4+9TElV"
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UStKnDil"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9B6B374
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 13:05:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6dddf12f280so4199582a34.0
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 05:05:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705237532; x=1705842332; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nMGvKPofY5MOpXk13/yiBWLqSi/Ty5WsGrwDjyyvUgE=;
-        b=F4+9TElVhlzLvaIp508Ktooj1XR/BkrNe6+BwbLgrgv8cHcYztaSWWqfHgane5BQl/
-         VzgsgX6n7Z5tH8BAuD2DsyDn9uvUypI7bi0PBuPg0VFvy+5+qtINqn5FqwK/0Xsquxj5
-         uh5vV3kopFfUG89wi1MAYKtFAoLwi/KoaIiZqzicK9UBE90exoqpB110uC6vseVToHZV
-         mVYVgVjY+ENGaxpxlDacZI5QIU37LKMXJorc01TBZ9at//gWg6w0TtnUAhcC9ielrV5/
-         kTsu20dNvKrvGtgf5Foj/IDLVq5Hn4UNwDlbbDT7T/gWIwzpm7kDbA+uXYX0Tjse6h0S
-         TxpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705237532; x=1705842332;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nMGvKPofY5MOpXk13/yiBWLqSi/Ty5WsGrwDjyyvUgE=;
-        b=SJZvR3wIbn/2r247q31VaY1wj3ycfhAasHRxpRQ3LwriHHiDWFFkL1+O5th/721tXU
-         ldZe9V40OWxDopI9K7ULVQUdzB+sD/n7L2phP+HqQNQd/YZoaCRl89Zzc3F2VPcsGYK/
-         Fm79lrw27mybF1QWM0P2sqgtK7+EwhJCdfErzoR6AD+lrWjcREevtcFDQyYN+ygfUj3O
-         oT0+oznLTRNYfQk3SvqWyR4UHC15bJe21tDy0xughVevO7AxXlixVzWBnZPagY2VP5xo
-         GaV779Ducw1vS3/sYRmc6XDfsf18moS2qSfxkJ+KputJOBSvsk9QFueYJeZL1/FNnphm
-         S5bw==
-X-Gm-Message-State: AOJu0YwJBhciGex+2oBjyBTKoX9FPx3Hf8xj7cWFdcD7p4suT37Rh+np
-	0J8UYDBrXQCOs3TeLHONlsoLp5YC6RAqtQXPqoGxG2deZ3CIuw==
-X-Google-Smtp-Source: AGHT+IFu0DqfdEL2pbwtk/XR/VL48EolFlG6D4HB/lvjHnB11ldd1amMuKJzSdEWLdB639ArP/Uc8UdrPCh0311JXBM=
-X-Received: by 2002:a05:6870:8999:b0:206:81c:4af5 with SMTP id
- f25-20020a056870899900b00206081c4af5mr6201815oaq.108.1705237531984; Sun, 14
- Jan 2024 05:05:31 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82B6223B9;
+	Sun, 14 Jan 2024 13:13:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705238006; x=1736774006;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=H1A4/qffyCpAVBjkSooDaLmud7wmIzZtJsCV04rZkQE=;
+  b=UStKnDilTLIvxyPoajOFx+Th129kBs4YYquNw0rn6Vr8ufWYuJaLc7lr
+   AY0mBPF7NhIDJAfsPYHW4RJaK8yoG6Xgh2Pz/wJ+CnlClOL3gcrCnm8/v
+   LWc3de5oXYpkZJDAj8Zq4Mmabnj7JBUuJYGJ+yy8cg1z5gFu6qEnAiNnr
+   Kw8lDzk12TvPC3hLTkKecJYAkfanZ0O9h7bTT+zrvG1CvhkhY6xvpKt0y
+   e9qNsjOn9KqH3Is2MNzwlhwb+gabOBBhZwH3TBDhm9Vw+/LVzx4V5zi6J
+   MFsjGFTEtFd3X/JakHtRhSrLxmuoDxTPb5Zvqf/Wp5heyLNNQDFnNe7j2
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10952"; a="20936356"
+X-IronPort-AV: E=Sophos;i="6.04,194,1695711600"; 
+   d="scan'208";a="20936356"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 05:13:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10952"; a="786838999"
+X-IronPort-AV: E=Sophos;i="6.04,194,1695711600"; 
+   d="scan'208";a="786838999"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.215.17]) ([10.254.215.17])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 05:13:22 -0800
+Message-ID: <293a5643-ef36-4a34-9b6b-0f5b47061c2e@linux.intel.com>
+Date: Sun, 14 Jan 2024 21:13:19 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZTz9RpZxfxysYCmt@gmail.com> <ZZwBi/YmnMqm7zrO@gmail.com>
- <CAHk-=wgWcYX2oXKtgvNN2LLDXP7kXkbo-xTfumEjmPbjSer2RQ@mail.gmail.com>
- <CAHk-=wiXpsxMcQb7MhL-AxOityTajK0G8eWeBOzX-qBJ9X2DSw@mail.gmail.com>
- <CAHk-=wjK28MUqBZzBSMEM8vdJhDOuXGSWPmmp04GEt9CXtW6Pw@mail.gmail.com>
- <20240114091240.xzdvqk75ifgfj5yx@wyes-pc> <ZaPC7o44lEswxOXp@vingu-book>
- <20240114123759.pjs7ctexcpc6pshl@wyes-pc> <711c20cf-4aa7-4380-b076-195736bc4978@arm.com>
-In-Reply-To: <711c20cf-4aa7-4380-b076-195736bc4978@arm.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Sun, 14 Jan 2024 14:05:20 +0100
-Message-ID: <CAKfTPtA8dQoT404AzHE_O9sP+ecx0vpKG_2ErjgusSUWRUgXxQ@mail.gmail.com>
-Subject: Re: [GIT PULL] Scheduler changes for v6.8
-To: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Wyes Karny <wkarny@gmail.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	Qais Yousef <qyousef@layalina.io>, Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org, 
-	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Juri Lelli <juri.lelli@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, Jason Gunthorpe <jgg@ziepe.ca>,
+ Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
+ Jacob Pan <jacob.jun.pan@linux.intel.com>, iommu@lists.linux.dev,
+ linux-kselftest@vger.kernel.org, virtualization@lists.linux-foundation.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] IOMMUFD: Deliver IO page faults to user space
+To: Joel Granados <j.granados@samsung.com>
+References: <20231026024930.382898-1-baolu.lu@linux.intel.com>
+ <CGME20240112215609eucas1p1eedeeee8e1cca2c935b41816a50f56f6@eucas1p1.samsung.com>
+ <20240112215606.36sth724y6zcj43k@localhost>
+Content-Language: en-US
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20240112215606.36sth724y6zcj43k@localhost>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sun, 14 Jan 2024 at 14:02, Dietmar Eggemann <dietmar.eggemann@arm.com> w=
-rote:
->
-> On 14/01/2024 13:37, Wyes Karny wrote:
-> > On Sun, Jan 14, 2024 at 12:18:06PM +0100, Vincent Guittot wrote:
-> >> Hi Wyes,
-> >>
-> >> Le dimanche 14 janv. 2024 =C3=AF=C2=BF=C2=BD 14:42:40 (+0530), Wyes Ka=
-rny a =C3=AF=C2=BF=C2=BDcrit :
-> >>> On Wed, Jan 10, 2024 at 02:57:14PM -0800, Linus Torvalds wrote:
-> >>>> On Wed, 10 Jan 2024 at 14:41, Linus Torvalds
-> >>>> <torvalds@linux-foundation.org> wrote:
->
-> [...]
->
-> > Yeah, correct something was wrong in the bpftrace readings, max_cap is
-> > not zero in traces.
-> >
-> >              git-5511    [001] d.h1.   427.159763: get_next_freq.constp=
-rop.0: [DEBUG] : freq 1400000, util 1024, max 1024
-> >              git-5511    [001] d.h1.   427.163733: sugov_get_util: [DEB=
-UG] : util 1024, sg_cpu->util 1024
-> >              git-5511    [001] d.h1.   427.163735: get_next_freq.constp=
-rop.0: [DEBUG] : freq 1400000, util 1024, max 1024
-> >              git-5511    [001] d.h1.   427.167706: sugov_get_util: [DEB=
-UG] : util 1024, sg_cpu->util 1024
-> >              git-5511    [001] d.h1.   427.167708: get_next_freq.constp=
-rop.0: [DEBUG] : freq 1400000, util 1024, max 1024
-> >              git-5511    [001] d.h1.   427.171678: sugov_get_util: [DEB=
-UG] : util 1024, sg_cpu->util 1024
-> >              git-5511    [001] d.h1.   427.171679: get_next_freq.constp=
-rop.0: [DEBUG] : freq 1400000, util 1024, max 1024
-> >              git-5511    [001] d.h1.   427.175653: sugov_get_util: [DEB=
-UG] : util 1024, sg_cpu->util 1024
-> >              git-5511    [001] d.h1.   427.175655: get_next_freq.constp=
-rop.0: [DEBUG] : freq 1400000, util 1024, max 1024
-> >              git-5511    [001] d.s1.   427.175665: sugov_get_util: [DEB=
-UG] : util 1024, sg_cpu->util 1024
-> >              git-5511    [001] d.s1.   427.175665: get_next_freq.constp=
-rop.0: [DEBUG] : freq 1400000, util 1024, max 1024
-> >
-> > Debug patch applied:
-> >
-> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_sc=
-hedutil.c
-> > index 95c3c097083e..5c9b3e1de7a0 100644
-> > --- a/kernel/sched/cpufreq_schedutil.c
-> > +++ b/kernel/sched/cpufreq_schedutil.c
-> > @@ -166,6 +166,7 @@ static unsigned int get_next_freq(struct sugov_poli=
-cy *sg_policy,
-> >
-> >         freq =3D get_capacity_ref_freq(policy);
-> >         freq =3D map_util_freq(util, freq, max);
-> > +       trace_printk("[DEBUG] : freq %llu, util %llu, max %llu\n", freq=
-, util, max);
-> >
-> >         if (freq =3D=3D sg_policy->cached_raw_freq && !sg_policy->need_=
-freq_update)
-> >                 return sg_policy->next_freq;
-> > @@ -199,6 +200,7 @@ static void sugov_get_util(struct sugov_cpu *sg_cpu=
-, unsigned long boost)
-> >         util =3D max(util, boost);
-> >         sg_cpu->bw_min =3D min;
-> >         sg_cpu->util =3D sugov_effective_cpu_perf(sg_cpu->cpu, util, mi=
-n, max);
-> > +       trace_printk("[DEBUG] : util %llu, sg_cpu->util %llu\n", util, =
-sg_cpu->util);
-> >  }
-> >
-> >  /**
-> >
-> >
-> > So, I guess map_util_freq going wrong somewhere.
->
-> sugov_update_single_freq() -> get_next_freq() -> get_capacity_ref_freq()
->
-> Is arch_scale_freq_invariant() true in both cases, so that
-> get_capacity_ref_freq() returns 'policy->cpuinfo.max_freq' and not just
-> 'policy->cur'?
+On 2024/1/13 5:56, Joel Granados wrote:
+> On Thu, Oct 26, 2023 at 10:49:24AM +0800, Lu Baolu wrote:
+>> Hi folks,
+>>
+>> This series implements the functionality of delivering IO page faults to
+>> user space through the IOMMUFD framework for nested translation. Nested
+>> translation is a hardware feature that supports two-stage translation
+>> tables for IOMMU. The second-stage translation table is managed by the
+>> host VMM, while the first-stage translation table is owned by user
+>> space. This allows user space to control the IOMMU mappings for its
+>> devices.
+>>
+>> When an IO page fault occurs on the first-stage translation table, the
+>> IOMMU hardware can deliver the page fault to user space through the
+>> IOMMUFD framework. User space can then handle the page fault and respond
+>> to the device top-down through the IOMMUFD. This allows user space to
+>> implement its own IO page fault handling policies.
+>>
+>> User space indicates its capability of handling IO page faults by
+>> setting the IOMMU_HWPT_ALLOC_IOPF_CAPABLE flag when allocating a
+>> hardware page table (HWPT). IOMMUFD will then set up its infrastructure
+>> for page fault delivery. On a successful return of HWPT allocation, the
+>> user can retrieve and respond to page faults by reading and writing to
+>> the file descriptor (FD) returned in out_fault_fd.
+>>
+>> The iommu selftest framework has been updated to test the IO page fault
+>> delivery and response functionality.
+>>
+>> This series is based on the latest implementation of nested translation
+>> under discussion [1] and the page fault handling framework refactoring in
+>> the IOMMU core [2].
+>>
+>> The series and related patches are available on GitHub: [3]
+>>
+>> [1]https://lore.kernel.org/linux-iommu/20230921075138.124099-1-yi.l.liu@intel.com/
+>> [2]https://lore.kernel.org/linux-iommu/20230928042734.16134-1-baolu.lu@linux.intel.com/
+>> [3]https://github.com/LuBaolu/intel-iommu/commits/iommufd-io-pgfault-delivery-v2
+> I was working with this branch that included Yi Liu's
+> wip/iommufd_nesting branch. Now Yi Lui has updated his work in this post
+> https://lore.kernel.org/all/20240102143834.146165-1-yi.l.liu@intel.com.
+> Is there an updated version of the page fault work that is rebased on
+> top of Liu's new version?
 
-That's also my assumption and the change that I sent shoulf fix it
+Yes. I am preparing the new version and will post it for discussion
+after the merge window.
 
->
+Best regards,
+baolu
 
