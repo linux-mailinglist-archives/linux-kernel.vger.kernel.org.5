@@ -1,336 +1,107 @@
-Return-Path: <linux-kernel+bounces-25477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BECB382D0DE
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 15:17:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46B6482D0E0
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 15:20:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 467581F21570
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 14:17:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9610282251
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 14:20:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 469A123C9;
-	Sun, 14 Jan 2024 14:17:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC99923D2;
+	Sun, 14 Jan 2024 14:20:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PUMEoCTt"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fKA48/2Q"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68A703FDB;
-	Sun, 14 Jan 2024 14:17:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82D87C433F1;
-	Sun, 14 Jan 2024 14:17:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705241835;
-	bh=GSd4/6Q2GY9ClYmTvPkZzhnkWFq0MV66B26YxE+YpE0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=PUMEoCTtvIl6AnM3fvh+O0dTEQJroufErYC+rqmpbcknb/LGBYrxc8PB7krjX4WLX
-	 Din62AVTIkrZKeK6UUM1YYyTZXFHISgvBQOdX3hBPM/BWsoKqgtJ/CpppbfXGZNP4e
-	 mhS8VkKkCssYDZaYnKanEMBX4EeUdrt1hHGHK3ugR1Cm4YtXj2dfHEH1x99HJwVbG8
-	 NbN4Y7HdABBQkb6CvIbAs+vgx9Kb7s1fATqwx2KSPB+RR7dXc/79PVudZk0UdY+9P4
-	 e4sP81boa3ThJw3WsbZBvYe+humvhsyD33eLrmc2Lsmma7BEJcUs0ZVi2p8hZuhiD/
-	 lE5dWi/DLYB7g==
-Date: Sun, 14 Jan 2024 23:17:11 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Cc: Vincent Donnefort <vdonnefort@google.com>, rostedt@goodmis.org,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- mathieu.desnoyers@efficios.com, kernel-team@android.com, Shuah Khan
- <shuah@kernel.org>, Shuah Khan <skhan@linuxfoundation.org>,
- linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v11 5/5] ring-buffer/selftest: Add ring-buffer mapping
- test
-Message-Id: <20240114231711.0959180366d8823dd8543241@kernel.org>
-In-Reply-To: <20240113223946.9c463c5a4787dc0261789e65@kernel.org>
-References: <20240111161712.1480333-1-vdonnefort@google.com>
-	<20240111161712.1480333-6-vdonnefort@google.com>
-	<20240113223946.9c463c5a4787dc0261789e65@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 211A323BC;
+	Sun, 14 Jan 2024 14:20:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d427518d52so57545345ad.0;
+        Sun, 14 Jan 2024 06:20:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705242002; x=1705846802; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gtafRdDX1KPPk8LDrTZjwEYrzHp2ogBbEYR2dmJ/5nM=;
+        b=fKA48/2QF/x4anRSKqPEjSvrbwKGmii+Ti/0Eq7uPG+YDqfFmgfVCKJx4r4baztAPe
+         C9vC9sAPjHzUWr6HcXZEe1lCnJVbCiYKTgyT9WoTLbHzgsVLEVHGOhzCUs9FbCeIIL51
+         9hPVJi25cGh8aeleeVHFhRxTwTphjPqG+Lh9ZiYQh1BOnPINOg7Cl4edfAFFaMMb4/WI
+         EOU78I/LGwlfU1WZgzNLsSkwY9KxxBNn93nOFPXwFYlvnAy2VwILhuUZQyen1EuaFjnl
+         JbrPl0kHBvlPBr0qE34njLBK4rJrnhq1kmVtRfPHJbfw+QJxDW/lAcgvgCxQ9Ulc25iS
+         uImw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705242002; x=1705846802;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gtafRdDX1KPPk8LDrTZjwEYrzHp2ogBbEYR2dmJ/5nM=;
+        b=r4bCu/qhiMx8YvCqtZCzBws5PfP9Ne96NJTDPrTX58GyPF82WmIyxmNzd/TvnQQPvT
+         hAJFYKfxJwzk2QS2aC6k4ebU6KM3oCpl9gIo2T74bV7SIWsXYnwRPPoCnjkU5ucODnCx
+         TQb73CaPpNwiVL/CtE0GbI0F0SWCr4B/HC+m7PHA6ivlknetZ5rmBhR1HEqeASZ/Metd
+         1XgXKkhAHxO5U1lRG5LKFmMxVsEPWiumDLPgIfbFmTuYeAf+FIJdFa0Vmk+Fr22wjr9I
+         x0GqtyOjeVgPgXydJkFrdqMNDPryPi6BKnrD93xWrTPh2U5tgeH+0peQowsHJ2QLD8iC
+         +mXg==
+X-Gm-Message-State: AOJu0YzU6A3UQmvRA6AkrTngxgVZakmVqk44Y5TyXvsw6Eqtoh3iIq0r
+	60N3XZngtHFvabwN1RRZy8o=
+X-Google-Smtp-Source: AGHT+IHON/ba7BJlURy7ZKVMNQmvS5Vrkn+9Zev/oWacyJsE3xJdSda5ULrlFwSPGZUzXZm0v58owA==
+X-Received: by 2002:a17:902:d489:b0:1d4:e22f:8424 with SMTP id c9-20020a170902d48900b001d4e22f8424mr4810187plg.55.1705242002002;
+        Sun, 14 Jan 2024 06:20:02 -0800 (PST)
+Received: from rigel (60-241-235-125.tpgi.com.au. [60.241.235.125])
+        by smtp.gmail.com with ESMTPSA id u6-20020a17090282c600b001cc2ebd2c2csm6069834plz.256.2024.01.14.06.19.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Jan 2024 06:20:01 -0800 (PST)
+Date: Sun, 14 Jan 2024 22:19:57 +0800
+From: Kent Gibson <warthog618@gmail.com>
+To: Andy Shevchenko <andy@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, brgl@bgdev.pl,
+	linus.walleij@linaro.org
+Subject: Re: [PATCH 0/5] gpio: uapi: documentation improvements
+Message-ID: <20240114141957.GA99741@rigel>
+References: <20240109140221.77725-1-warthog618@gmail.com>
+ <ZaPrbi6GxqlfysWe@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZaPrbi6GxqlfysWe@smile.fi.intel.com>
 
-Hi Vincent,
+On Sun, Jan 14, 2024 at 04:10:54PM +0200, Andy Shevchenko wrote:
+> On Tue, Jan 09, 2024 at 10:02:16PM +0800, Kent Gibson wrote:
+> > This is a series of minor clarifications and formatting tidy ups for
+> > the GPIO uAPI kernel doc.
+> >
+> > The series is intended as a companion to my character device
+> > uAPI documentation series, but makes sense on its own too.
+> >
+> > The patches are self contained and trivial so not much to add here.
+>
+> Reviewed-by: Andy Shevchenko <andy@kernel.org>
+>
+> for patches starting from the second one.
+>
+> The first one I personally don't understand why, but I'm not a native speaker!
+> I believe, it's correct, although the original version seems okay to me.
+>
 
-On Sat, 13 Jan 2024 22:39:46 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+The problem isn't the language, unless you mean I'm explaining poorly, it
+is the logic.  The original says "zero or negative value means error", but
+in case of an error the kernel does not actually set the fd.  So if the
+user sends a request containing a positive fd they might incorrectly infer
+that the positive fd being returned implies success.
 
-> On Thu, 11 Jan 2024 16:17:12 +0000
-> Vincent Donnefort <vdonnefort@google.com> wrote:
-> 
-> > This test maps a ring-buffer and validate the meta-page after reset and
-> > after emitting few events.
-> > 
-> > Cc: Shuah Khan <shuah@kernel.org>
-> > Cc: Shuah Khan <skhan@linuxfoundation.org>
-> > Cc: linux-kselftest@vger.kernel.org
-> > Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
-> 
-> Looks good to me and tested.
-> 
-> Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> Tested-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+The new wording is that the returned fd is only valid on success.
 
-Sorry, I should cancel these. I found this test did not pass if I set
-the function tracer on.
+And thanks for the review.
 
-/ # cd /sys/kernel/tracing/
-/sys/kernel/tracing # echo function > current_tracer 
-/sys/kernel/tracing # /mnt/map_test 
-TAP version 13
-1..2
-# Starting 2 tests from 2 test cases.
-#  RUN           map.subbuf_size_4k.meta_page_check ...
-# map_test.c:174:meta_page_check:Expected self->meta->entries (15293) == 16 (16)
-# meta_page_check: Test terminated by assertion
-#          FAIL  map.subbuf_size_4k.meta_page_check
-not ok 1 map.subbuf_size_4k.meta_page_check
-#  RUN           map.subbuf_size_8k.meta_page_check ...
-# map_test.c:174:meta_page_check:Expected self->meta->entries (15270) == 16 (16)
-# meta_page_check: Test terminated by assertion
-#          FAIL  map.subbuf_size_8k.meta_page_check
-not ok 2 map.subbuf_size_8k.meta_page_check
-# FAILED: 0 / 2 tests passed.
-# Totals: pass:0 fail:2 xfail:0 xpass:0 skip:0 error:0
-
-Does this depend on "nop" tracer?
-
-Thank you,
-
-> 
-> Thank you,
-> 
-> > 
-> > diff --git a/tools/testing/selftests/ring-buffer/Makefile b/tools/testing/selftests/ring-buffer/Makefile
-> > new file mode 100644
-> > index 000000000000..627c5fa6d1ab
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/ring-buffer/Makefile
-> > @@ -0,0 +1,8 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +CFLAGS += -Wl,-no-as-needed -Wall
-> > +CFLAGS += $(KHDR_INCLUDES)
-> > +CFLAGS += -D_GNU_SOURCE
-> > +
-> > +TEST_GEN_PROGS = map_test
-> > +
-> > +include ../lib.mk
-> > diff --git a/tools/testing/selftests/ring-buffer/config b/tools/testing/selftests/ring-buffer/config
-> > new file mode 100644
-> > index 000000000000..ef8214661612
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/ring-buffer/config
-> > @@ -0,0 +1 @@
-> > +CONFIG_FTRACE=y
-> > diff --git a/tools/testing/selftests/ring-buffer/map_test.c b/tools/testing/selftests/ring-buffer/map_test.c
-> > new file mode 100644
-> > index 000000000000..49107e8da5e9
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/ring-buffer/map_test.c
-> > @@ -0,0 +1,188 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Ring-buffer memory mapping tests
-> > + *
-> > + * Copyright (c) 2024 Vincent Donnefort <vdonnefort@google.com>
-> > + */
-> > +#include <fcntl.h>
-> > +#include <sched.h>
-> > +#include <stdbool.h>
-> > +#include <stdio.h>
-> > +#include <stdlib.h>
-> > +#include <unistd.h>
-> > +
-> > +#include <linux/trace_mmap.h>
-> > +
-> > +#include <sys/mman.h>
-> > +#include <sys/ioctl.h>
-> > +
-> > +#include "../user_events/user_events_selftests.h" /* share tracefs setup */
-> > +#include "../kselftest_harness.h"
-> > +
-> > +#define TRACEFS_ROOT "/sys/kernel/tracing"
-> > +
-> > +static int __tracefs_write(const char *path, const char *value)
-> > +{
-> > +	FILE *file;
-> > +
-> > +	file = fopen(path, "w");
-> > +	if (!file)
-> > +		return -1;
-> > +
-> > +	fputs(value, file);
-> > +	fclose(file);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int __tracefs_write_int(const char *path, int value)
-> > +{
-> > +	char *str;
-> > +	int ret;
-> > +
-> > +	if (asprintf(&str, "%d", value) < 0)
-> > +		return -1;
-> > +
-> > +	ret = __tracefs_write(path, str);
-> > +
-> > +	free(str);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +#define tracefs_write_int(path, value) \
-> > +	ASSERT_EQ(__tracefs_write_int((path), (value)), 0)
-> > +
-> > +static int tracefs_reset(void)
-> > +{
-> > +	if (__tracefs_write_int(TRACEFS_ROOT"/tracing_on", 0))
-> > +		return -1;
-> > +	if (__tracefs_write_int(TRACEFS_ROOT"/trace", 0))
-> > +		return -1;
-> > +	if (__tracefs_write(TRACEFS_ROOT"/set_event", ""))
-> > +		return -1;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +FIXTURE(map) {
-> > +	struct trace_buffer_meta	*meta;
-> > +	void				*data;
-> > +	int				cpu_fd;
-> > +	bool				umount;
-> > +};
-> > +
-> > +FIXTURE_VARIANT(map) {
-> > +	int	subbuf_size;
-> > +};
-> > +
-> > +FIXTURE_VARIANT_ADD(map, subbuf_size_4k) {
-> > +	.subbuf_size = 4,
-> > +};
-> > +
-> > +FIXTURE_VARIANT_ADD(map, subbuf_size_8k) {
-> > +	.subbuf_size = 8,
-> > +};
-> > +
-> > +FIXTURE_SETUP(map)
-> > +{
-> > +	int cpu = sched_getcpu(), page_size = getpagesize();
-> > +	unsigned long meta_len, data_len;
-> > +	char *cpu_path, *message;
-> > +	bool fail, umount;
-> > +	cpu_set_t cpu_mask;
-> > +	void *map;
-> > +
-> > +	if (!tracefs_enabled(&message, &fail, &umount)) {
-> > +		if (fail) {
-> > +			TH_LOG("Tracefs setup failed: %s", message);
-> > +			ASSERT_FALSE(fail);
-> > +		}
-> > +		SKIP(return, "Skipping: %s", message);
-> > +	}
-> > +
-> > +	self->umount = umount;
-> > +
-> > +	ASSERT_GE(cpu, 0);
-> > +
-> > +	ASSERT_EQ(tracefs_reset(), 0);
-> > +
-> > +	tracefs_write_int(TRACEFS_ROOT"/buffer_subbuf_size_kb", variant->subbuf_size);
-> > +
-> > +	ASSERT_GE(asprintf(&cpu_path,
-> > +			   TRACEFS_ROOT"/per_cpu/cpu%d/trace_pipe_raw",
-> > +			   cpu), 0);
-> > +
-> > +	self->cpu_fd = open(cpu_path, O_RDONLY | O_NONBLOCK);
-> > +	ASSERT_GE(self->cpu_fd, 0);
-> > +	free(cpu_path);
-> > +
-> > +	map = mmap(NULL, page_size, PROT_READ, MAP_SHARED, self->cpu_fd, 0);
-> > +	ASSERT_NE(map, MAP_FAILED);
-> > +	self->meta = (struct trace_buffer_meta *)map;
-> > +
-> > +	meta_len = self->meta->meta_page_size;
-> > +	data_len = self->meta->subbuf_size * self->meta->nr_subbufs;
-> > +
-> > +	map = mmap(NULL, data_len, PROT_READ, MAP_SHARED, self->cpu_fd, meta_len);
-> > +	ASSERT_NE(map, MAP_FAILED);
-> > +	self->data = map;
-> > +
-> > +	/*
-> > +	 * Ensure generated events will be found on this very same ring-buffer.
-> > +	 */
-> > +	CPU_ZERO(&cpu_mask);
-> > +	CPU_SET(cpu, &cpu_mask);
-> > +	ASSERT_EQ(sched_setaffinity(0, sizeof(cpu_mask), &cpu_mask), 0);
-> > +}
-> > +
-> > +FIXTURE_TEARDOWN(map)
-> > +{
-> > +	tracefs_reset();
-> > +
-> > +	if (self->umount)
-> > +		tracefs_unmount();
-> > +
-> > +	munmap(self->data, self->meta->subbuf_size * self->meta->nr_subbufs);
-> > +	munmap(self->meta, self->meta->meta_page_size);
-> > +	close(self->cpu_fd);
-> > +}
-> > +
-> > +TEST_F(map, meta_page_check)
-> > +{
-> > +	int cnt = 0;
-> > +
-> > +	ASSERT_EQ(self->meta->entries, 0);
-> > +	ASSERT_EQ(self->meta->overrun, 0);
-> > +	ASSERT_EQ(self->meta->read, 0);
-> > +	ASSERT_EQ(self->meta->subbufs_touched, 0);
-> > +	ASSERT_EQ(self->meta->subbufs_lost, 0);
-> > +	ASSERT_EQ(self->meta->subbufs_read, 0);
-> > +
-> > +	ASSERT_EQ(self->meta->reader.id, 0);
-> > +	ASSERT_EQ(self->meta->reader.read, 0);
-> > +
-> > +	ASSERT_EQ(ioctl(self->cpu_fd, TRACE_MMAP_IOCTL_GET_READER), 0);
-> > +	ASSERT_EQ(self->meta->reader.id, 0);
-> > +
-> > +	tracefs_write_int(TRACEFS_ROOT"/tracing_on", 1);
-> > +	for (int i = 0; i < 16; i++)
-> > +		tracefs_write_int(TRACEFS_ROOT"/trace_marker", i);
-> > +again:
-> > +	ASSERT_EQ(ioctl(self->cpu_fd, TRACE_MMAP_IOCTL_GET_READER), 0);
-> > +
-> > +	ASSERT_EQ(self->meta->entries, 16);
-> > +	ASSERT_EQ(self->meta->overrun, 0);
-> > +	ASSERT_EQ(self->meta->read, 16);
-> > +	/* subbufs_touched doesn't take into account the commit page */
-> > +	ASSERT_EQ(self->meta->subbufs_touched, 0);
-> > +	ASSERT_EQ(self->meta->subbufs_lost, 0);
-> > +	ASSERT_EQ(self->meta->subbufs_read, 1);
-> > +
-> > +	ASSERT_EQ(self->meta->reader.id, 1);
-> > +
-> > +	if (!(cnt++))
-> > +		goto again;
-> > +}
-> > +
-> > +TEST_HARNESS_MAIN
-> > -- 
-> > 2.43.0.275.g3460e3d667-goog
-> > 
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Cheers,
+Kent.
 
