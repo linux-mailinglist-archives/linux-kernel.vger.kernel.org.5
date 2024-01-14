@@ -1,117 +1,105 @@
-Return-Path: <linux-kernel+bounces-25547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B21B582D230
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 23:31:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1240982D232
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 23:37:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 477981F21384
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 22:31:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39CD0281463
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 22:37:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A54D225DC;
-	Sun, 14 Jan 2024 22:31:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 239A52C680;
+	Sun, 14 Jan 2024 22:37:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A63vyc27"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="ZsXSJ60S"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63F1B225DA;
-	Sun, 14 Jan 2024 22:31:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84F25C433C7;
-	Sun, 14 Jan 2024 22:31:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705271494;
-	bh=hTSJz+G1XtA211Jnofo+R0wXKdoqASJ5wAO62Dsi5rY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=A63vyc27CxJ8dp+AB136BZws1uryqgpyFCTJppv+P8VK+O12e+Dg65spsr7pL41Y1
-	 SKPJj1DtPIAOLL9faVAoHLDtSfltplwBno7rf3HNZRzxce7XLKB/upTc52obb3lM5M
-	 UAdzso+ojZAO9RDpWOi33NrpTaDYfNo9VfTuQ449qM9ZK1eJ5mK6NrWAeShtBjLjtz
-	 Ui/9IUxK4V/As2GK/x9oIpm5vQwJ2m0cn3GH+fKDxEF9sF8Qx0BLQQ4m3RLTkZCJyX
-	 Dxj3slSrVAYsVErwwRmkg0KsqwYTMT3Zp1KKgrXY6JpPrLbZ9VdAfy23s+2QHFvBPK
-	 G77FMQMQGWm5w==
-Date: Sun, 14 Jan 2024 16:31:32 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Jim Quinlan <james.quinlan@broadcom.com>
-Cc: linux-pci@vger.kernel.org, Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-	Cyril Brulebois <kibi@debian.org>,
-	Phil Elwell <phil@raspberrypi.com>,
-	bcm-kernel-feedback-list@broadcom.com,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Jim Quinlan <jim2101024@gmail.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	"moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" <linux-rpi-kernel@lists.infradead.org>,
-	"moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 2/2] PCI: brcmstb: Configure HW CLKREQ# mode
- appropriate for downstream device
-Message-ID: <20240114223132.GA2358466@bhelgaas>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EEEC1F17B
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 22:37:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3376ead25e1so6240570f8f.3
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 14:37:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1705271824; x=1705876624; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6s2rXWc/tMH4uago23e498UJr39tRJPeqGDGZSoMKEY=;
+        b=ZsXSJ60ScqbTnUW7xSp7xhB+KU4YxDESsQ90vQNlOKNvuUy3BmymTqVnl/vJAibJII
+         QmkKR/b53Fl+cYxwZpAsnPROqFUnw6KAKJR3bSKiIBX1k+JNyORRq2FqNe/9W8y1MX//
+         wjc4sxn+HcMEiuApYx32TK0TlyD9NN+9cdiA1GnO3AL/iqY5e89wJno8o28CvEjElutJ
+         qMPVGgpGjBXDLx85uDvZUpco1N0xqFAqyuikSZPFGMK1WkI3YhJyVm4nMor7JmEIkRAm
+         xAZxC4yFtFsTJnEcTm6kSaUTD/7Nuwl+pEvUdadQxM5uh4MvoUMah/DP/LNAm+7vVxeR
+         KQxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705271824; x=1705876624;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6s2rXWc/tMH4uago23e498UJr39tRJPeqGDGZSoMKEY=;
+        b=xIzLDHC7cU+LuY4gKHBa5VHJKE9HzhhJmRjk3kuwblqd9I034vDRAEo1RX+Z9/i6GY
+         bW3Q0KSOKOKDP7ABBM2o4/DJYDXfgqF58mPYIoxxSw1eMHMHUseYX/CG3G2NxKAwePwR
+         oEipG4/QFQ/Qt8tzXYzhdCLbAA8QFdtQRUFjqDaf+vL3uKy9WqO/HzmuoTS8c5nVMdpV
+         tWE8Xh/qXUVEX36aZnXcQ6SXxHEEzmF9kahf18Aajkg+V5fUIb9kKzVFzZQKNy+NYiqt
+         nCE/exwXsA+NBuHeA9HUUHL7SGVOERKbsnUSoxZQDoDpvOjiLRQ18v9k7Aqrp07GWc9z
+         TBKg==
+X-Gm-Message-State: AOJu0Yze6Z2iKjBuVgKxSgGvGNraAiyrIlSdQGX6UPiokfstFknOQ9o+
+	Op0PGxi72gT9BYdsR3LqaxRyhg0xDJf2yA==
+X-Google-Smtp-Source: AGHT+IE/oNt1I05yQ0MgN0/ZAU8lJPlEIlxDBObZH0WRwddH9azig9/gV4iLyh69uziPn6VmpPiBOg==
+X-Received: by 2002:a05:6000:11cc:b0:337:6e32:1812 with SMTP id i12-20020a05600011cc00b003376e321812mr2196492wrx.35.1705271824318;
+        Sun, 14 Jan 2024 14:37:04 -0800 (PST)
+Received: from vermeer.ba.rivosinc.com (lfbn-mon-1-1176-165.w90-113.abo.wanadoo.fr. [90.113.119.165])
+        by smtp.gmail.com with ESMTPSA id v10-20020a5d610a000000b0033719111458sm10158693wrt.36.2024.01.14.14.37.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Jan 2024 14:37:03 -0800 (PST)
+From: Samuel Ortiz <sameo@rivosinc.com>
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: linux-coco@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v1 0/4] tsm: Runtime measurement registers ABI
+Date: Sun, 14 Jan 2024 23:35:26 +0100
+Message-ID: <20240114223532.290550-1-sameo@rivosinc.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+-6iNyLZV42KqeBwYEE-sxhbE3bbwwbSVii3fY4nmrd0W_LkA@mail.gmail.com>
 
-On Sun, Jan 14, 2024 at 05:03:43PM -0500, Jim Quinlan wrote:
-> On Thu, Jan 11, 2024 at 3:54 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > On Thu, Jan 11, 2024 at 01:20:48PM -0500, Jim Quinlan wrote:
-> > > On Thu, Jan 11, 2024 at 12:28 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > On Mon, Nov 13, 2023 at 01:56:06PM -0500, Jim Quinlan wrote:
-> ...
+Some confidential computing architectures (Intel TDX, ARM CCA, RISC-V
+CoVE) provide their guests with a set of measurements registers that can
+be extended at runtime, i.e. after the initial, host-initiated
+measurements of the TVM are finalized. Those runtime measurement
+registers (RTMR) are isolated from the host accessible ones but TSMs
+include them in their signed attestation reports.
 
-> > > > > Note: Since L1 substates are now possible, a modification was made
-> > > > > regarding an internal bus timeout: During long periods of the PCIe RC HW
-> > > > > being in an L1SS sleep state, there may be a timeout on an internal bus
-> > > > > access, even though there may not be any PCIe access involved.  Such a
-> > > > > timeout will cause a subsequent CPU abort.
-> > > >
-> > > > This sounds scary.  If a NIC is put in L1.2, does this mean will we
-> > > > see this CPU abort if there's no traffic for a long time?  What is
-> > > > needed to avoid the CPU abort?
-> > >
-> > > I don't think this happens in normal practice as there are a slew
-> > > of low-level TLPs and LTR messages that are sent on a regular
-> > > basis.
-> >
-> > OK, I'll have to take your word for this.  I don't know enough about
-> > PCIe to know what sort of periodic transmissions are required when a
-> > device is idle.
-> >
-> > LTR messages are required when endpoint service requirements change,
-> > but I wouldn't expect those if the device is idle.
-> >
-> > > The only time this timeout occured is when  a major customer
-> > > was doing a hack: IIRC, their endpoint device has to reboot itself
-> > > after link-up and driver probe,  so it goes into L1.2 to execute
-> > > this to reboot and while doing so the connection is completely
-> > > silent.
-> >
-> > > > What does this mean for users?  L1SS is designed for long periods of
-> > > > the device being idle, so this leaves me feeling that using L1SS is
-> > > > unsafe in general.  Hopefully this impression is unwarranted, and all
-> > > > we need is some clarification here.
-> > >
-> > > I don't think it will affect most users, if any.
-> >
-> > I'll try to get this into -next today or tomorrow.
-> 
-> Bjorn, you are right -- I need to cajole our PCIe HW team to tell me
-> why this timeout can never
-> happen and/or why it is not a bug.
+All architectures supporting RTMRs expose a similar interface to their
+TVMs: An extension command/call that takes a measurement value and an
+RTMR index to extend it with, and a readback command for reading an RTMR
+value back (taking an RTMR index as an argument as well). This patch series
+builds an architecture agnostic, configfs-based ABI for userspace to extend
+and read RTMR values back. It extends the current TSM ops structure and
+each confidential computing architecture can implement this extension to
+provide RTMR support.
 
-It'll be good to hear what they have to say.  I will include this
-patch in my pull request for v6.8 unless you want me to wait on it.
-I hope to send the pull request tomorrow or Tuesday at the latest.
+---
+Samuel Ortiz (4):
+  tsm: Runtime measurement register support
+  tsm: Add RTMRs to the configfs-tsm hierarchy
+  tsm: Allow for mapping RTMRs to TCG TPM PCRs
+  tsm: Allow for extending and reading configured RTMRs
 
-Bjorn
+ drivers/virt/coco/Kconfig |   1 +
+ drivers/virt/coco/tsm.c   | 362 ++++++++++++++++++++++++++++++++++++++
+ include/linux/tsm.h       |  28 ++-
+ 3 files changed, 390 insertions(+), 1 deletion(-)
+
+-- 
+2.42.0
+
 
