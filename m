@@ -1,188 +1,73 @@
-Return-Path: <linux-kernel+bounces-25496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7529382D123
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 16:17:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1821482D126
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 16:17:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 367C7282239
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 15:16:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 578601C20C0A
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 15:17:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF29290B;
-	Sun, 14 Jan 2024 15:16:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00E362599;
+	Sun, 14 Jan 2024 15:17:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="yfYDL8jm";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="/53U8nSP";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="yfYDL8jm";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="/53U8nSP"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jfudFVxB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F15767E;
-	Sun, 14 Jan 2024 15:16:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 186791F800;
-	Sun, 14 Jan 2024 15:16:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1705245397; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=076w5od7kF2YEfcTBD90+IgJV1k7VqdmZs66NXRF1w0=;
-	b=yfYDL8jmRHrYLP1P3/b+p8/5f41dvrGZYO3I/L44lcNDJT4+e41uPLBWksgu5YJ4HjIrx0
-	8sdsdPj1IBivyW270ZP0rv5iW7oN5XpTYK3w7cp6x2RI1jLls7Ox1wNAHMb4AuO0PNbYIM
-	FbbkkdC/bBWahJtlHhUUgUuPFRsjWxw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1705245397;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=076w5od7kF2YEfcTBD90+IgJV1k7VqdmZs66NXRF1w0=;
-	b=/53U8nSPl7no6mmAQ+hhQd4II6sI5yAJKA5s7N5j6WeQW9wN8cXREX7IP2Hhg0A1lZ8Yft
-	Jz0rt5cr7/+VkPBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1705245397; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=076w5od7kF2YEfcTBD90+IgJV1k7VqdmZs66NXRF1w0=;
-	b=yfYDL8jmRHrYLP1P3/b+p8/5f41dvrGZYO3I/L44lcNDJT4+e41uPLBWksgu5YJ4HjIrx0
-	8sdsdPj1IBivyW270ZP0rv5iW7oN5XpTYK3w7cp6x2RI1jLls7Ox1wNAHMb4AuO0PNbYIM
-	FbbkkdC/bBWahJtlHhUUgUuPFRsjWxw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1705245397;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=076w5od7kF2YEfcTBD90+IgJV1k7VqdmZs66NXRF1w0=;
-	b=/53U8nSPl7no6mmAQ+hhQd4II6sI5yAJKA5s7N5j6WeQW9wN8cXREX7IP2Hhg0A1lZ8Yft
-	Jz0rt5cr7/+VkPBg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id DBCDB1331A;
-	Sun, 14 Jan 2024 15:16:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id R2QKI9L6o2UQWAAAn2gu4w
-	(envelope-from <colyli@suse.de>); Sun, 14 Jan 2024 15:16:34 +0000
-Date: Sun, 14 Jan 2024 23:16:31 +0800
-From: Coly Li <colyli@suse.de>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, 
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-bcache@vger.kernel.org
-Subject: Re: [PATCH] bcache: Remove usage of the deprecated ida_simple_xx()
- API
-Message-ID: <y2c3dt325d4xzcknmwtyd6gungco6jqucz3fsrm6lsyjtiwpp4@ozmsw6vp67jk>
-References: <2f038df3860c2f44d5c7f5d06d03ca663cdbc651.1705235398.git.christophe.jaillet@wanadoo.fr>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CE3E7E;
+	Sun, 14 Jan 2024 15:17:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4871C433C7;
+	Sun, 14 Jan 2024 15:17:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705245462;
+	bh=jollSml2+OM4Sa0F+IOmTJVXk53FpYSt8/GqaTL4RT0=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=jfudFVxBK71G0oW06zEROGpzorXRfUYL12QXEEG4r3NWje6A6JYor4oR7Mj5YhuOx
+	 BmZvb5epwfyNICraTP/4Fdmxtw5gyMOdbie4ehD50UPQXfZpwsIyOASzqDM482qMgo
+	 3x4a/zMwxSGHmKlJggrPo0lw5l3IaE80WNw64Rujj6oJQAaEpqw9G4HxIxlrF0GRop
+	 /FUM5IXWoKICk8QBy+8xOjbOZxSG3BT70cllLbHBGefA/Gi2qloa6bKji1mrKRqswu
+	 ZEjhO0QzBtaHjVHUa8YOW+mwDDmq3Y2eI1iNcd3AQhvTeNsNsXknMf3ExQPUvIr+jO
+	 dVLGn00aVkIiQ==
+From: Kalle Valo <kvalo@kernel.org>
+To: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: <ath11k@lists.infradead.org>,  <linux-wireless@vger.kernel.org>,
+  <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] wifi: ath11k: document HAL_RX_BUF_RBM_SW4_BM
+References: <20240111-document-hal_rx_buf_rbm_sw4_bm-v1-1-ad277e8ab3cc@quicinc.com>
+Date: Sun, 14 Jan 2024 17:17:39 +0200
+In-Reply-To: <20240111-document-hal_rx_buf_rbm_sw4_bm-v1-1-ad277e8ab3cc@quicinc.com>
+	(Jeff Johnson's message of "Thu, 11 Jan 2024 11:24:23 -0800")
+Message-ID: <874jfg7xm4.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2f038df3860c2f44d5c7f5d06d03ca663cdbc651.1705235398.git.christophe.jaillet@wanadoo.fr>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=yfYDL8jm;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="/53U8nSP"
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.01 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[wanadoo.fr];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FREEMAIL_TO(0.00)[wanadoo.fr];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -1.01
-X-Rspamd-Queue-Id: 186791F800
-X-Spam-Flag: NO
+Content-Type: text/plain
 
-On Sun, Jan 14, 2024 at 01:30:16PM +0100, Christophe JAILLET wrote:
-> ida_alloc() and ida_free() should be preferred to the deprecated
-> ida_simple_get() and ida_simple_remove().
-> 
-> Note that the upper limit of ida_simple_get() is exclusive, but the one of
-> ida_alloc_max() is inclusive. So a -1 has been added when needed.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Jeff Johnson <quic_jjohnson@quicinc.com> writes:
 
-It looks good to me. Add this patch into my testing directory.
+> Commit 7636c9a6e7d7 ("wifi: ath11k: Add multi TX ring support for WCN6750")
+> added HAL_RX_BUF_RBM_SW4_BM to enum hal_rx_buf_return_buf_manager. However,
+> as flagged by the kernel-doc script, the documentation was not updated:
+>
+> drivers/net/wireless/ath/ath11k/hal.h:689: warning: Enum value 'HAL_RX_BUF_RBM_SW4_BM' not described in enum 'hal_rx_buf_return_buf_manager'
+>
+> So update the documentation. No functional changes, compile tested only.
+>
+> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 
-Thanks.
-
-Coly Li
-
-
-> ---
->  drivers/md/bcache/super.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-> index dc3f50f69714..a2eecd1db126 100644
-> --- a/drivers/md/bcache/super.c
-> +++ b/drivers/md/bcache/super.c
-> @@ -881,8 +881,8 @@ static void bcache_device_free(struct bcache_device *d)
->  		bcache_device_detach(d);
->  
->  	if (disk) {
-> -		ida_simple_remove(&bcache_device_idx,
-> -				  first_minor_to_idx(disk->first_minor));
-> +		ida_free(&bcache_device_idx,
-> +			 first_minor_to_idx(disk->first_minor));
->  		put_disk(disk);
->  	}
->  
-> @@ -926,8 +926,8 @@ static int bcache_device_init(struct bcache_device *d, unsigned int block_size,
->  	if (!d->full_dirty_stripes)
->  		goto out_free_stripe_sectors_dirty;
->  
-> -	idx = ida_simple_get(&bcache_device_idx, 0,
-> -				BCACHE_DEVICE_IDX_MAX, GFP_KERNEL);
-> +	idx = ida_alloc_max(&bcache_device_idx, BCACHE_DEVICE_IDX_MAX - 1,
-> +			    GFP_KERNEL);
->  	if (idx < 0)
->  		goto out_free_full_dirty_stripes;
->  
-> @@ -980,7 +980,7 @@ static int bcache_device_init(struct bcache_device *d, unsigned int block_size,
->  out_bioset_exit:
->  	bioset_exit(&d->bio_split);
->  out_ida_remove:
-> -	ida_simple_remove(&bcache_device_idx, idx);
-> +	ida_free(&bcache_device_idx, idx);
->  out_free_full_dirty_stripes:
->  	kvfree(d->full_dirty_stripes);
->  out_free_stripe_sectors_dirty:
-> -- 
-> 2.43.0
-> 
+I'm not really a fan of kernel-doc in wireless drivers, it feels more
+unnecessary work. Should we remove the kernel-doc markings from ath11k
+altogether?
 
 -- 
-Coly Li
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
