@@ -1,185 +1,117 @@
-Return-Path: <linux-kernel+bounces-25500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25506-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 634E182D130
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 16:28:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B915082D14D
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 16:44:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12F0828226F
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 15:28:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21D16B2134F
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 15:44:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D73B3259C;
-	Sun, 14 Jan 2024 15:28:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 613683C2D;
+	Sun, 14 Jan 2024 15:44:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H+NeV4Mb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a0hdRpNE"
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D97F23CA;
-	Sun, 14 Jan 2024 15:28:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF684C433C7;
-	Sun, 14 Jan 2024 15:28:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705246085;
-	bh=XqE4zwcpZP6BKmHgnhqMegwV+ZjrEakoNJeSEJ8lkmE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=H+NeV4MbLBHlJrpvQQZIIilEiBFq9JV4Wu5i8d+EdnOp26YkAsBN5g3rLyAlq03Fe
-	 RTfyvyxn7VNjR9+aBvK5TS9GZF56w6MTNmTaA7vsREt/8PmlE7mHrLLQ6ud9sGc8lj
-	 UEa8hHngUDPPvRfRZNpYXbdCGo+w5O3LxQYbDO7QnXudnZv4F4woYiKkL6lJDEjioZ
-	 i8Ug9gaLtxdbvQaQwcDJ6TmWTAM0Ho8pnV1rFiRzbT+VzZl/SYS3tVsmocVljd5lUR
-	 jdmh38U9zsAyODkhwhoOPfJgwxydIpxubp38WwEKev+lVUhNvIBPmr0IxQngqMOjkF
-	 MerWYTN9eS3Tg==
-Date: Sun, 14 Jan 2024 15:27:34 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Petre Rodan <petre.rodan@subdimension.ro>
-Cc: Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
- linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, Lars-Peter Clausen
- <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 6/6] iio: pressure: hsc030pa add sleep mode
-Message-ID: <20240114152734.0ecdd090@jic23-huawei>
-In-Reply-To: <ZaNue0JgTw-WEhCw@sunspire>
-References: <20240110172306.31273-1-petre.rodan@subdimension.ro>
-	<20240110172306.31273-7-petre.rodan@subdimension.ro>
-	<20240112171356.00003e88@Huawei.com>
-	<ZaNue0JgTw-WEhCw@sunspire>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7879A23D6;
+	Sun, 14 Jan 2024 15:43:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6e0a89b98e4so1161548a34.1;
+        Sun, 14 Jan 2024 07:43:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705247037; x=1705851837; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z6fsnynes0vO+z8SDnt6jjjUyKp+VvnkB7fpxe78CwY=;
+        b=a0hdRpNEOgp6tfMDBhnZbvIHUpAapuJbdJcEkcxvJWaIJUmF9yAsMxO2HcPi+gB0D2
+         /GciiVt/hPb8IackUUHKoRFAVSym90SKt/Lf0Fx9TVv4ZULWgHGmVtWc4LO5YXq88tI0
+         bEdO/GCkpzAdmhcjq/lqUiXpg3lZ4FgTUUET6p+5b1XzNvU9IBUG70t6q9Gy1OJyMmS+
+         wL582Hl3fLwjv7H60PCxZJKLocZOP6FAR/AtoHdkUeUuNX2TPDNjJnhHnn8QzKCpf+ZB
+         3YyRC2eOB6y12VyF+0xTrc+laXSrJt+XW7Vvh3jMY1gt/DC0b/pGAofWnq9gPWLHhbFm
+         2qoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705247037; x=1705851837;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Z6fsnynes0vO+z8SDnt6jjjUyKp+VvnkB7fpxe78CwY=;
+        b=TpsI0zUSaWMjw/JhO6E52QrEB6q3DXUoLHJ9G0+oEMfvfa34/gYVZliDvA+QRoo/Ob
+         Q8eu5QMTDK66KdhgskGwbo28dEZ8PvLpvoLccdXLpdnsVS7TlIC/PPVCRuZzap8r0p64
+         E+zPaUafzHf9d2KiczaFHjSL9M8fdYLzvtPcg/nYENSS4VSfeq6pNLODpXeDXCTV2gcW
+         ZQhm70SIjLOCpI7uDV1UCkO1d+6eWPbuS7VKO1WA+9wNNu34pzkXhS0+14LGwyBQqkwd
+         07iKP9DI5LfrjGcfBz4d6O+Ye4F2k2lS1Lck9qU+2/1sNwaZn2/UYX5IBhi1b4B2EdFG
+         trHw==
+X-Gm-Message-State: AOJu0YylZxXOGhbL4ZbmSCesCiRKCuZY/eePSysBYAzuKnfOJ6w8C/J6
+	CBfSXWsjTL9YNsGf1hNdkVV8hOZEuDI5PnyxxXU=
+X-Google-Smtp-Source: AGHT+IEBUS1Lk9KquvNh+AEEgwGYDkKmF9ia0vinlcAsqnTVB/V+nqiprHElf2rORE5ktsStx+qC6yV6xTNuDc/rWoc=
+X-Received: by 2002:a05:6359:2ea2:b0:175:ca98:881b with SMTP id
+ rp34-20020a0563592ea200b00175ca98881bmr2063172rwb.34.1705247037364; Sun, 14
+ Jan 2024 07:43:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20240108032117.215171-1-wangrui@loongson.cn> <ZZ2fn0scbDKBXWe5@boqun-archlinux>
+ <CAHirt9iox8FGV2wrMyxwFRjab2avfOcyLKvBc9K=AqiHxqHXKg@mail.gmail.com>
+ <ZZ38XMQw18mw2sTA@Boquns-Mac-mini.home> <CAHirt9jQSVvBF=1wc=sT9FxngeSP30P4FDpu8m0JH_0fOPSO-w@mail.gmail.com>
+ <CANiq72=X3cggAn0HLMi7jVFAfypBhog=ZkPB57yfaX4ZUzT-HA@mail.gmail.com> <CAHirt9hdtGSsEofxDb0FCtcFeAw9n9LKJALz23Qdqh4n2=Ua5A@mail.gmail.com>
+In-Reply-To: <CAHirt9hdtGSsEofxDb0FCtcFeAw9n9LKJALz23Qdqh4n2=Ua5A@mail.gmail.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Sun, 14 Jan 2024 16:43:46 +0100
+Message-ID: <CANiq72n7K8LcKrs+beF2sbt1XLdr4zEhEw4xcy3yh4wgTrvYeg@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] Rust enablement for LoongArch
+To: WANG Rui <wangrui@loongson.cn>
+Cc: Boqun Feng <boqun.feng@gmail.com>, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Huacai Chen <chenhuacai@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, WANG Xuerui <kernel@xen0n.name>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-doc@vger.kernel.org, loongson-kernel@lists.loongnix.cn
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 14 Jan 2024 07:17:47 +0200
-Petre Rodan <petre.rodan@subdimension.ro> wrote:
+On Thu, Jan 11, 2024 at 4:16=E2=80=AFAM WANG Rui <wangrui@loongson.cn> wrot=
+e:
+>
+> 6.8
 
-> Hi Jonathan,
->=20
-> On Fri, Jan 12, 2024 at 05:13:56PM +0000, Jonathan Cameron wrote:
-> > On Wed, 10 Jan 2024 19:22:41 +0200
-> > Petre Rodan <petre.rodan@subdimension.ro> wrote:
-> >  =20
-> > > Some custom chips from this series require a wakeup sequence before t=
-he
-> > > measurement cycle is started.
-> > >  =20
-> [..]
-> > > +	if (data->capabilities & HSC_CAP_SLEEP) {
-> > > +		/*
-> > > +		 * Send the Full Measurement Request (FMR) command on the CS
-> > > +		 * line in order to wake up the sensor as per
-> > > +		 * "Sleep Mode for Use with Honeywell Digital Pressure Sensors"
-> > > +		 * technical note (consult the datasheet link in the header).
-> > > +		 *
-> > > +		 * These specifications require a dummy packet comprised only by
-> > > +		 * a single byte that contains the 7bit slave address and the
-> > > +		 * READ bit followed by a STOP.
-> > > +		 * Because the i2c API does not allow packets without a payload,
-> > > +		 * the driver sends two bytes in this implementation.
-> > > +		 */
-> > > +		ret =3D i2c_master_recv(client, &buf, 1);
-> > > +		if (ret < 0)
-> > > +			return ret;
-> > > +	}
-> > > + =20
-> [..]
-> > > diff --git a/drivers/iio/pressure/hsc030pa_spi.c b/drivers/iio/pressu=
-re/hsc030pa_spi.c
-> > > index 737197eddff0..1c139cdfe856 100644
-> > > --- a/drivers/iio/pressure/hsc030pa_spi.c
-> > > +++ b/drivers/iio/pressure/hsc030pa_spi.c
-> > > @@ -25,12 +25,40 @@ static int hsc_spi_recv(struct hsc_data *data)
-> > >  	struct spi_device *spi =3D to_spi_device(data->dev);
-> > >  	struct spi_transfer xfer =3D {
-> > >  		.tx_buf =3D NULL,
-> > > -		.rx_buf =3D data->buffer,
-> > > -		.len =3D HSC_REG_MEASUREMENT_RD_SIZE,
-> > > +		.rx_buf =3D NULL,
-> > > +		.len =3D 0,
-> > >  	};
-> > > +	u16 orig_cs_setup_value;
-> > > +	u8 orig_cs_setup_unit;
-> > > +
-> > > +	if (data->capabilities & HSC_CAP_SLEEP) {
-> > > +		/*
-> > > +		 * Send the Full Measurement Request (FMR) command on the CS
-> > > +		 * line in order to wake up the sensor as per
-> > > +		 * "Sleep Mode for Use with Honeywell Digital Pressure Sensors"
-> > > +		 * technical note (consult the datasheet link in the header).
-> > > +		 *
-> > > +		 * These specifications require the CS line to be held asserted
-> > > +		 * for at least 8=C2=B5s without any payload being generated.
-> > > +		 */
-> > > +		orig_cs_setup_value =3D spi->cs_setup.value;
-> > > +		orig_cs_setup_unit =3D spi->cs_setup.unit;
-> > > +		spi->cs_setup.value =3D 8;
-> > > +		spi->cs_setup.unit =3D SPI_DELAY_UNIT_USECS;
-> > > +		/*
-> > > +		 * Send a dummy 0-size packet so that CS gets toggled.
-> > > +		 * Trying to manually call spi->controller->set_cs() instead
-> > > +		 * does not work as expected during the second call.
-> > > +		 */ =20
-> >
-> > Do you have a reference that says the CS must be toggled on 0 length tr=
-ansfer?
-> > If that's not specified in the SPI core somewhere then you will need to=
- send
-> > something...
-> > =20
-> > > +		spi_sync_transfer(spi, &xfer, 1);
-> > > +		spi->cs_setup.value =3D orig_cs_setup_value;
-> > > +		spi->cs_setup.unit =3D orig_cs_setup_unit;
-> > > +	} =20
->=20
-> first of all thank you for the review.
->=20
-> I was afraid that this block will not be taken too well since I'm trying =
-to
-> achieve something that the SPI subsystem was not designed for.
->=20
-> the code does exactly what the datasheet specs require on my SPI controll=
-er, but
-> indeed the API might change at some point making the code non-functional.
->=20
-> by 'sending something' you mean on the SPI bus or are you pushing me towa=
-rd a
-> patch to SPI core?
-Should have said receive 'something' - that means that we'd clock some data
-whether or not the device had any to provide.
+Thanks, that is quite expedited...
 
->=20
-> unfortunately this chip feature is a special request only, there is no wa=
-y for
-> me to test what happens if the wakeup sequence also contains a payload (i=
-n both
-> i2c and spi cases). the i2c wakeup code was inspired from the abp060mg dr=
-iver,
-> but I can't reach its maintainer to ask for details. I also can't seem to=
- reach
-> Honeywell. oh well.
->=20
-+CC Mark.  Discussion is about whether a zero length SPI transfer is guaran=
-teed
-to pulse the chip select.
+Please `rustfmt` the code to avoid failing the `rustfmtcheck` target.
+I see you already created the 6.8 tag but I have not seen it in
+linux-next yet and you did not send the PR, so it would be ideal if
+you could fix this before it goes to Linus.
 
-If this is something we need, I'd prefer to see it as something a given SPI
-controller would opt in to supporting or some other way of knowing it would
-actually happen such as some docs that say it will work for an SPI controll=
-er
-(which I doubt is the case)
+diff --git a/scripts/generate_rust_target.rs b/scripts/generate_rust_target=
+rs
+index 3edda6a10..0da52b548 100644
+--- a/scripts/generate_rust_target.rs
++++ b/scripts/generate_rust_target.rs
+@@ -163,10 +163,7 @@ fn main() {
+         ts.push("target-pointer-width", "64");
+     } else if cfg.has("LOONGARCH") {
+         ts.push("arch", "loongarch64");
+-        ts.push(
+-            "data-layout",
+-            "e-m:e-p:64:64-i64:64-i128:128-n64-S128",
+-        );
++        ts.push("data-layout", "e-m:e-p:64:64-i64:64-i128:128-n64-S128");
+         ts.push("features", "-f,-d");
+         ts.push("llvm-target", "loongarch64-linux-gnusf");
+         ts.push("llvm-abiname", "lp64s");
 
-Jonathan
+Thanks!
 
-
-
-
-
-> best regards,
-> peter
->=20
-
+Cheers,
+Miguel
 
