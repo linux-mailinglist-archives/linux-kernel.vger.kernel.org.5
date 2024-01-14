@@ -1,137 +1,142 @@
-Return-Path: <linux-kernel+bounces-25434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D489182D038
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 11:10:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE4B182D03E
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 11:14:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2F6D282643
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 10:10:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A2751F21C94
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 10:14:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 961D31FDB;
-	Sun, 14 Jan 2024 10:10:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="LBwRvL1l"
-Received: from smtp.smtpout.orange.fr (smtp-29.smtpout.orange.fr [80.12.242.29])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 063CB2119;
+	Sun, 14 Jan 2024 10:14:19 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4F2F1FAD
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 10:10:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from fedora.home ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id OxRbrry6VIwxKOxRbrHroW; Sun, 14 Jan 2024 11:10:21 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1705227021;
-	bh=52Rd6d5faJ4c/W4ztruf+D+m4SC9RWyWzcn6xVRATJk=;
-	h=From:To:Cc:Subject:Date;
-	b=LBwRvL1lmo0J+pYr4CMZ064bd7yJzvGgTeJOFdtg92EgWa4i4z7dxsTO5VG9H6C2j
-	 ISGyBX7ioUXQY+4pExpZy2tlMVuts4NGOtwM8nv/YY4SlZ5g+bXNcpduc2PLWcYOMJ
-	 5CCrQfag8OM1kmKnGPodNse+LY+TS+1rPJfBGC5SMbx5YH/NNrRWFvgc3h7Xpk4Mia
-	 h9BD8vwIIQDUqEJmGwef4VjnkVFi42t3xhxVUurV/83flw+OhEv33ViGVABXJh/O2C
-	 c8t2ujbqS1R/gP8Q9Xy3rEBtIFxtwStUCM80AG99exOk0IkAR1s2YXlhD19Og0DIrw
-	 zFliSMuH3cYxQ==
-X-ME-Helo: fedora.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 14 Jan 2024 11:10:21 +0100
-X-ME-IP: 92.140.202.140
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Sven Van Asbroeck <TheSven73@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-staging@lists.linux.dev
-Subject: [PATCH] staging: fieldbus: Remove usage of the deprecated ida_simple_xx() API
-Date: Sun, 14 Jan 2024 11:10:15 +0100
-Message-ID: <d305b97b1064ba7e026232fb8c2a0783ba1b1098.1705227001.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234FD1C3E
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 10:14:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-35fffb6fe5bso76130425ab.2
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 02:14:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705227256; x=1705832056;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=++zUQFlQO1jJCn2oGGjsjqpi/zbkWdKQOFSazaQqWLM=;
+        b=k6Ll1L63Kpsp8lKcdW24RudzdK7fS4A5Q6JuWN/sSw7Y5zMFyTb9Mr6YeOVj3Y2SA7
+         N84+YnJRHIskgyPDuFAAOTKt8FuwjSKNBfaZGq1PbLo3ZIZ6W2ashg1pT0Zoe/RqDHQV
+         spWgkcjeSD2v+NpUqJ3OzQzvVVB6l4+I+KzfsuTCNDf/TBxiaRZ9mq8y8GCVhNw7L8ym
+         eabPl47eIysUXQ5A9GhiS5l80/CcvfYHbsiALamL9qsqj3ygj7IAVFdoRFgjGfjsZqO6
+         ikcC6h2SlN5e2Z2/3pqmzE60XPh/o/sBeRftO//G1eVnjC87d4wP2FFOfVsc7bLUYja5
+         X/MA==
+X-Gm-Message-State: AOJu0Yxx61bPBdpGbIUg1ANGy5viEBMbiIccdf5gc83OKOYSD+g6m/oA
+	6h4XYO9ko3UUl/WRY3rlTFcLr7Baprf6SQJg9qstVMaa3KtH
+X-Google-Smtp-Source: AGHT+IFuF0rQEiObRoW/C9j4Ipq9ayuERPEJrHyCIA/CXrKUYY1vLljh+rJ4yQchsGkbwShXhr0pzMhLVfpAgsv2MJXPA0j3WWHn
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:194a:b0:360:620a:24eb with SMTP id
+ x10-20020a056e02194a00b00360620a24ebmr560177ilu.4.1705227256357; Sun, 14 Jan
+ 2024 02:14:16 -0800 (PST)
+Date: Sun, 14 Jan 2024 02:14:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e06949060ee528f1@google.com>
+Subject: [syzbot] [io-uring?] KMSAN: uninit-value in io_rw_fail
+From: syzbot <syzbot+8d9c06e026c513a69f2f@syzkaller.appspotmail.com>
+To: asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-ida_alloc() and ida_free() should be preferred to the deprecated
-ida_simple_get() and ida_simple_remove().
+Hello,
 
-Note that the upper limit of ida_simple_get() is exclusive, but the one of
-ida_alloc_max() is inclusive. So a -1 has been added when needed.
+syzbot found the following issue on:
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+HEAD commit:    99d99825fc07 Merge tag 'nfs-for-6.6-1' of git://git.linux-..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=10c292a8680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e9fadcd263e8d242
+dashboard link: https://syzkaller.appspot.com/bug?extid=8d9c06e026c513a69f2f
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1358d7dfa80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c99d9fa80000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/7e9fa7fad7d0/disk-99d99825.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/424ca21fc443/vmlinux-99d99825.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d4de08b26e5b/bzImage-99d99825.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8d9c06e026c513a69f2f@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in io_fixup_rw_res io_uring/rw.c:273 [inline]
+BUG: KMSAN: uninit-value in io_rw_fail+0x1a7/0x1b0 io_uring/rw.c:996
+ io_fixup_rw_res io_uring/rw.c:273 [inline]
+ io_rw_fail+0x1a7/0x1b0 io_uring/rw.c:996
+ io_req_defer_failed+0x217/0x3e0 io_uring/io_uring.c:1030
+ io_queue_sqe_fallback+0x1f4/0x260 io_uring/io_uring.c:2063
+ io_submit_state_end io_uring/io_uring.c:2308 [inline]
+ io_submit_sqes+0x2b83/0x2ff0 io_uring/io_uring.c:2426
+ __do_sys_io_uring_enter io_uring/io_uring.c:3620 [inline]
+ __se_sys_io_uring_enter+0x491/0x43f0 io_uring/io_uring.c:3554
+ __x64_sys_io_uring_enter+0x11b/0x1a0 io_uring/io_uring.c:3554
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Uninit was created at:
+ slab_post_alloc_hook+0x12f/0xb70 mm/slab.h:767
+ slab_alloc_node mm/slub.c:3478 [inline]
+ __kmem_cache_alloc_node+0x536/0x8d0 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1022 [inline]
+ __kmalloc+0x121/0x3c0 mm/slab_common.c:1036
+ kmalloc include/linux/slab.h:603 [inline]
+ io_alloc_async_data io_uring/io_uring.c:1745 [inline]
+ io_req_prep_async+0x384/0x5a0 io_uring/io_uring.c:1766
+ io_queue_sqe_fallback+0x95/0x260 io_uring/io_uring.c:2060
+ io_submit_state_end io_uring/io_uring.c:2308 [inline]
+ io_submit_sqes+0x2b83/0x2ff0 io_uring/io_uring.c:2426
+ __do_sys_io_uring_enter io_uring/io_uring.c:3620 [inline]
+ __se_sys_io_uring_enter+0x491/0x43f0 io_uring/io_uring.c:3554
+ __x64_sys_io_uring_enter+0x11b/0x1a0 io_uring/io_uring.c:3554
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+CPU: 0 PID: 4988 Comm: syz-executor352 Not tainted 6.5.0-syzkaller-09276-g99d99825fc07 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+=====================================================
+
+
 ---
- drivers/staging/fieldbus/anybuss/arcx-anybus.c | 6 +++---
- drivers/staging/fieldbus/dev_core.c            | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/staging/fieldbus/anybuss/arcx-anybus.c b/drivers/staging/fieldbus/anybuss/arcx-anybus.c
-index 34d18b09bedd..fcd3e3722ae0 100644
---- a/drivers/staging/fieldbus/anybuss/arcx-anybus.c
-+++ b/drivers/staging/fieldbus/anybuss/arcx-anybus.c
-@@ -285,7 +285,7 @@ static int controller_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	id = ida_simple_get(&controller_index_ida, 0, 0, GFP_KERNEL);
-+	id = ida_alloc(&controller_index_ida, GFP_KERNEL);
- 	if (id < 0) {
- 		err = id;
- 		goto out_reset;
-@@ -318,7 +318,7 @@ static int controller_probe(struct platform_device *pdev)
- out_dev:
- 	put_device(cd->class_dev);
- out_ida:
--	ida_simple_remove(&controller_index_ida, id);
-+	ida_free(&controller_index_ida, id);
- out_reset:
- 	gpiod_set_value_cansleep(cd->reset_gpiod, 1);
- 	return err;
-@@ -330,7 +330,7 @@ static void controller_remove(struct platform_device *pdev)
- 	int id = cd->class_dev->id;
- 
- 	device_unregister(cd->class_dev);
--	ida_simple_remove(&controller_index_ida, id);
-+	ida_free(&controller_index_ida, id);
- 	gpiod_set_value_cansleep(cd->reset_gpiod, 1);
- }
- 
-diff --git a/drivers/staging/fieldbus/dev_core.c b/drivers/staging/fieldbus/dev_core.c
-index bf1812d8924f..370a229443a1 100644
---- a/drivers/staging/fieldbus/dev_core.c
-+++ b/drivers/staging/fieldbus/dev_core.c
-@@ -247,7 +247,7 @@ static void __fieldbus_dev_unregister(struct fieldbus_dev *fb)
- 		return;
- 	device_destroy(&fieldbus_class, fb->cdev.dev);
- 	cdev_del(&fb->cdev);
--	ida_simple_remove(&fieldbus_ida, fb->id);
-+	ida_free(&fieldbus_ida, fb->id);
- }
- 
- void fieldbus_dev_unregister(struct fieldbus_dev *fb)
-@@ -267,7 +267,7 @@ static int __fieldbus_dev_register(struct fieldbus_dev *fb)
- 		return -EINVAL;
- 	if (!fb->read_area || !fb->write_area || !fb->fieldbus_id_get)
- 		return -EINVAL;
--	fb->id = ida_simple_get(&fieldbus_ida, 0, MAX_FIELDBUSES, GFP_KERNEL);
-+	fb->id = ida_alloc_max(&fieldbus_ida, MAX_FIELDBUSES - 1, GFP_KERNEL);
- 	if (fb->id < 0)
- 		return fb->id;
- 	devno = MKDEV(MAJOR(fieldbus_devt), fb->id);
-@@ -290,7 +290,7 @@ static int __fieldbus_dev_register(struct fieldbus_dev *fb)
- err_dev_create:
- 	cdev_del(&fb->cdev);
- err_cdev:
--	ida_simple_remove(&fieldbus_ida, fb->id);
-+	ida_free(&fieldbus_ida, fb->id);
- 	return err;
- }
- 
--- 
-2.43.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
