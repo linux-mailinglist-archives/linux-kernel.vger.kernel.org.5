@@ -1,95 +1,193 @@
-Return-Path: <linux-kernel+bounces-25402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66B7682CFCC
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 06:17:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0607F82CFCE
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 06:18:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00A091F21E3E
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 05:17:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C92DB21D41
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 05:18:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB6B21852;
-	Sun, 14 Jan 2024 05:17:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D25E51851;
+	Sun, 14 Jan 2024 05:18:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Vno/ZvQi"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="SS2nx5Ka"
+Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D47A7E
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 05:17:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=CPQtu7/pS8bzdUYTqORQKwX5wbUpg7ZbTKuka+g4g+4=; b=Vno/ZvQisOZVmXFVrUOwfSARPa
-	W6KsXT5zGr66smHvPNjZMlGKvJIaRZ8R57NoUvE6uVEzfuHQafRqNFWR6RWorj1ru6ZU4RV4qiLSg
-	4FJ08z/en0ZhreYm1sI54GC/hNc/b3/NmCujm46VXVXbc64TnmFjdk9oGvLJ2DLeGI3/+uEsOOEgl
-	xv7+YGrZTc5accYinJoDantOV/hrsSU1DE5a2b/3ZDA8o2N3ICWBQ1LV+5IO9wgAoNt0+Mh/FCf9I
-	ijfdqSFmZAmwrDbcebgNDJn+azYcRnTLEZg/3tVgs/1CDkEQtsnLLmBpJE8bk6JptoqnEwI+hh1z8
-	JzCT9gzQ==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rOssK-006CHT-2s;
-	Sun, 14 Jan 2024 05:17:36 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Michal Simek <michal.simek@amd.com>,
-	Russell King <linux@armlinux.org.uk>,
-	linux-arm-kernel@lists.infradead.org,
-	patches@armlinux.org.uk
-Subject: [PATCH] ARM: zynq: slcr: fix function prototype kernel-doc warnings
-Date: Sat, 13 Jan 2024 21:17:30 -0800
-Message-ID: <20240114051730.16796-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B67537E;
+	Sun, 14 Jan 2024 05:17:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=subdimension.ro
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=subdimension.ro
+Received: from sunspire (unknown [188.24.94.216])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.subdimension.ro (Postfix) with ESMTPSA id C1AA128B531;
+	Sun, 14 Jan 2024 05:17:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
+	s=skycaves; t=1705209469;
+	bh=m5rbK86AKeu5AdwO2INoRZbJcky2jWLDyHoyzlO++ks=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=SS2nx5KavZNnMHqHVj1M93PQesX+sTVegFz/dIzoou7zUpmPaZ1Xab/B8BK2kVxP/
+	 vlZAllkQK9xR2Z7eOm9vJgbXi4Q3WJxknI8jY/OqiEq8Bt6vI6VzJETWFJtD/qfWJ7
+	 YJyI8hHE4UMfCfLZzTitTHLlOc5gGHSgo6PGXyoo=
+Date: Sun, 14 Jan 2024 07:17:47 +0200
+From: Petre Rodan <petre.rodan@subdimension.ro>
+To: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 6/6] iio: pressure: hsc030pa add sleep mode
+Message-ID: <ZaNue0JgTw-WEhCw@sunspire>
+References: <20240110172306.31273-1-petre.rodan@subdimension.ro>
+ <20240110172306.31273-7-petre.rodan@subdimension.ro>
+ <20240112171356.00003e88@Huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="80EMe14M5nvbaxA/"
+Content-Disposition: inline
+In-Reply-To: <20240112171356.00003e88@Huawei.com>
 
-Use the same name in the function prototype description and the function
-to prevent kernel-doc warnings:
 
-slcr.c:158: warning: expecting prototype for zynq_slcr_cpu_state(). Prototype was for zynq_slcr_cpu_state_read() instead
-slcr.c:176: warning: expecting prototype for zynq_slcr_cpu_state(). Prototype was for zynq_slcr_cpu_state_write() instead
+--80EMe14M5nvbaxA/
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Michal Simek <michal.simek@amd.com>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: patches@armlinux.org.uk
----
-KernelVersion: 0dd3ee31125508cd67f7e717
 
- arch/arm/mach-zynq/slcr.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hi Jonathan,
 
-diff -- a/arch/arm/mach-zynq/slcr.c b/arch/arm/mach-zynq/slcr.c
---- a/arch/arm/mach-zynq/slcr.c
-+++ b/arch/arm/mach-zynq/slcr.c
-@@ -146,7 +146,7 @@ void zynq_slcr_cpu_stop(int cpu)
- }
- 
- /**
-- * zynq_slcr_cpu_state - Read/write cpu state
-+ * zynq_slcr_cpu_state_read - Read cpu state
-  * @cpu:	cpu number
-  *
-  * SLCR_REBOOT_STATUS save upper 2 bits (31/30 cpu states for cpu0 and cpu1)
-@@ -165,7 +165,7 @@ bool zynq_slcr_cpu_state_read(int cpu)
- }
- 
- /**
-- * zynq_slcr_cpu_state - Read/write cpu state
-+ * zynq_slcr_cpu_state_write - Write cpu state
-  * @cpu:	cpu number
-  * @die:	cpu state - true if cpu is going to die
-  *
+On Fri, Jan 12, 2024 at 05:13:56PM +0000, Jonathan Cameron wrote:
+> On Wed, 10 Jan 2024 19:22:41 +0200
+> Petre Rodan <petre.rodan@subdimension.ro> wrote:
+>=20
+> > Some custom chips from this series require a wakeup sequence before the
+> > measurement cycle is started.
+> >=20
+[..]
+> > +	if (data->capabilities & HSC_CAP_SLEEP) {
+> > +		/*
+> > +		 * Send the Full Measurement Request (FMR) command on the CS
+> > +		 * line in order to wake up the sensor as per
+> > +		 * "Sleep Mode for Use with Honeywell Digital Pressure Sensors"
+> > +		 * technical note (consult the datasheet link in the header).
+> > +		 *
+> > +		 * These specifications require a dummy packet comprised only by
+> > +		 * a single byte that contains the 7bit slave address and the
+> > +		 * READ bit followed by a STOP.
+> > +		 * Because the i2c API does not allow packets without a payload,
+> > +		 * the driver sends two bytes in this implementation.
+> > +		 */
+> > +		ret =3D i2c_master_recv(client, &buf, 1);
+> > +		if (ret < 0)
+> > +			return ret;
+> > +	}
+> > +
+[..]
+> > diff --git a/drivers/iio/pressure/hsc030pa_spi.c b/drivers/iio/pressure=
+/hsc030pa_spi.c
+> > index 737197eddff0..1c139cdfe856 100644
+> > --- a/drivers/iio/pressure/hsc030pa_spi.c
+> > +++ b/drivers/iio/pressure/hsc030pa_spi.c
+> > @@ -25,12 +25,40 @@ static int hsc_spi_recv(struct hsc_data *data)
+> >  	struct spi_device *spi =3D to_spi_device(data->dev);
+> >  	struct spi_transfer xfer =3D {
+> >  		.tx_buf =3D NULL,
+> > -		.rx_buf =3D data->buffer,
+> > -		.len =3D HSC_REG_MEASUREMENT_RD_SIZE,
+> > +		.rx_buf =3D NULL,
+> > +		.len =3D 0,
+> >  	};
+> > +	u16 orig_cs_setup_value;
+> > +	u8 orig_cs_setup_unit;
+> > +
+> > +	if (data->capabilities & HSC_CAP_SLEEP) {
+> > +		/*
+> > +		 * Send the Full Measurement Request (FMR) command on the CS
+> > +		 * line in order to wake up the sensor as per
+> > +		 * "Sleep Mode for Use with Honeywell Digital Pressure Sensors"
+> > +		 * technical note (consult the datasheet link in the header).
+> > +		 *
+> > +		 * These specifications require the CS line to be held asserted
+> > +		 * for at least 8=B5s without any payload being generated.
+> > +		 */
+> > +		orig_cs_setup_value =3D spi->cs_setup.value;
+> > +		orig_cs_setup_unit =3D spi->cs_setup.unit;
+> > +		spi->cs_setup.value =3D 8;
+> > +		spi->cs_setup.unit =3D SPI_DELAY_UNIT_USECS;
+> > +		/*
+> > +		 * Send a dummy 0-size packet so that CS gets toggled.
+> > +		 * Trying to manually call spi->controller->set_cs() instead
+> > +		 * does not work as expected during the second call.
+> > +		 */
+>
+> Do you have a reference that says the CS must be toggled on 0 length tran=
+sfer?
+> If that's not specified in the SPI core somewhere then you will need to s=
+end
+> something...
+>
+> > +		spi_sync_transfer(spi, &xfer, 1);
+> > +		spi->cs_setup.value =3D orig_cs_setup_value;
+> > +		spi->cs_setup.unit =3D orig_cs_setup_unit;
+> > +	}
+
+first of all thank you for the review.
+
+I was afraid that this block will not be taken too well since I'm trying to
+achieve something that the SPI subsystem was not designed for.
+
+the code does exactly what the datasheet specs require on my SPI controller=
+, but
+indeed the API might change at some point making the code non-functional.
+
+by 'sending something' you mean on the SPI bus or are you pushing me toward=
+ a
+patch to SPI core?
+
+unfortunately this chip feature is a special request only, there is no way =
+for
+me to test what happens if the wakeup sequence also contains a payload (in =
+both
+i2c and spi cases). the i2c wakeup code was inspired from the abp060mg driv=
+er,
+but I can't reach its maintainer to ask for details. I also can't seem to r=
+each
+Honeywell. oh well.
+
+best regards,
+peter
+
+--=20
+petre rodan
+
+--80EMe14M5nvbaxA/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEE2Ap/wXYVGTXsPl+pzyaZmYROfzAFAmWjbncACgkQzyaZmYRO
+fzCTjQ//Xg/d2FKzXNqDpBObwUh3stVXaWNJtmitlauqLYiZaGx4H5ZtDGz5qZFM
+c9Wd5yMvEYvLIg7x7Xm0vF+uBzS1CNtYm/OehqLvDtjnWndwb/53QpFj1dZgaPN5
+/4Z6xmWmosrpcpwg1ANRNt070YQkvEOw0h5NUQs+fbWeLBhdYN1DfmKFYwhvrbqq
+HyFftZUgSZQSo3z7BJ86fRBh/nuVz1fOiLIkvZ8Nm3tgeqBzGN4J4BD85rgrkjem
+LoMKtm7MHqESunk9EaAmsd4pMkZjsuNCdwe8EIUAaV8i8jb0wiPqf+cbL+ijRVaH
+Uq0jciKYX861rwyeeX8sOtQy5wTTshZTmGPG3tmJBUieWTAGxqxmdOr0rN+bic+Y
+cP7aAy+pvo0qrjTeeRwUR2HWTJFX+tMQD+megFGZqnVgU+MKLvOAaV1Qq6SjPHZ7
+aynEELrw4FaZhcp2R00+4g44oavjPTzdGErz2sc++mCet7SFNF+R4n0BdoOxSJJp
+M5mHBLdyF+KfP7Nt+y/aaHxHHnkjznlFZOJwYDH3UuleUkt7dAxFVZjEozn/3L+i
+nKlihMPThY3WBSQzTmK1Jnb8OZPiFgq2iZD7YvB842v/eGLFNhvh53v742z9ZMEz
+VO/j6e8Xt4++gVewxv98Cayk3xB9qKdto6aLHe1f7iVvB4hS74c=
+=tD9a
+-----END PGP SIGNATURE-----
+
+--80EMe14M5nvbaxA/--
 
