@@ -1,94 +1,120 @@
-Return-Path: <linux-kernel+bounces-25425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8467F82D013
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 10:01:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 816B282D016
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 10:04:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 229341F21BA7
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 09:01:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2642C1F21CE3
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 09:04:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 419D51878;
-	Sun, 14 Jan 2024 09:01:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 124B71FB4;
+	Sun, 14 Jan 2024 09:04:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="h4vzcQ2q"
-Received: from smtp.smtpout.orange.fr (smtp-29.smtpout.orange.fr [80.12.242.29])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j7EWKLgM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FEE523A6
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 09:01:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from fedora.home ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id OwMXrDZZKBraWOwMYrneAT; Sun, 14 Jan 2024 10:01:02 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1705222862;
-	bh=y3+/aQ4vgOniKlgATVWb92D72XQcu/VbbHayVguyuRk=;
-	h=From:To:Cc:Subject:Date;
-	b=h4vzcQ2qZd99EaMkQ1rmDICJKBOtuszqY2QT5GC4vUGpzqg6qv+Cy+/nlwcYrpdBL
-	 +CcRL7hQ4ZXXHwNY1Kw1lXnd+dF2W7i5LgS98cZePgCUoCREDPZzz4VF/RBnksAf7N
-	 /ZPtTqd9OBtUe+/soZJQd9Q71wQkAwkFemaH0AtolzWo3rlCl90E4eRJa9CKvjxqXc
-	 w6n1TlL/xuP3xeKN0HdXPtQIjXNPkbw4JJK3CKAUW1O1cnhyg8VN3UonBCHyPTKgNU
-	 0G6KFqNpyxNelc9xWVGRLjyg0q716Th6zehyR8XIzDrFyLOHpoWq9bUSIFSZHZNzJG
-	 YiGWsU7Ar5kqg==
-X-ME-Helo: fedora.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 14 Jan 2024 10:01:02 +0100
-X-ME-IP: 92.140.202.140
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-block@vger.kernel.org
-Subject: [PATCH] null_blk: Remove usage of the deprecated ida_simple_xx() API
-Date: Sun, 14 Jan 2024 10:00:59 +0100
-Message-ID: <bf257b1078475a415cdc3344c6a750842946e367.1705222845.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F33F1877;
+	Sun, 14 Jan 2024 09:04:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B730C433C7;
+	Sun, 14 Jan 2024 09:04:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705223078;
+	bh=w8Q0P/nO1Ttc/jNJcZgeZODT8KyoJPF9QBejXOikut8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=j7EWKLgMbXgzxklZqkuzw+TeEMRjd+A+JEH8lP/fUD3uhLULsjEiDTEkGfnBZBNFI
+	 GSmcjhP+L1Im8eVvyQJf15TDwRvYKCYpC88LV9AwimlyreoeAH2EDCcHs/wSL015FZ
+	 uwOhTVckNmqz+MxIYpKj5GhVeHBE6h+4AjpuAPcKXUG8w6YGFjW6372qjp/EtoPRZU
+	 giMFwbFzgmh7zxzITNIFzXv9gh59ZuIr2EB1UiDEKE6e87bnw0HwWJ1JgoOZHPD78R
+	 x0gx2B81yDhqTh6R6N/gdHYNA/odqGQD9+L2bwyjgeKAKeSGNgH8ZIy8g6JbPW9hTl
+	 iy+FJ1ly1I8kA==
+Date: Sun, 14 Jan 2024 11:04:34 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Zhipeng Lu <alexious@zju.edu.cn>
+Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Jubin John <jubin.john@intel.com>,
+	Mitko Haralanov <mitko.haralanov@intel.com>,
+	Ravi Krishnaswamy <ravi.krishnaswamy@intel.com>,
+	Harish Chegondi <harish.chegondi@intel.com>,
+	Brendan Cunningham <brendan.cunningham@intel.com>,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] IB/hfi1: fix a memleak in init_credit_return
+Message-ID: <20240114090434.GD6404@unreal>
+References: <20240112085523.3731720-1-alexious@zju.edu.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240112085523.3731720-1-alexious@zju.edu.cn>
 
-ida_alloc() and ida_free() should be preferred to the deprecated
-ida_simple_get() and ida_simple_remove().
+On Fri, Jan 12, 2024 at 04:55:23PM +0800, Zhipeng Lu wrote:
+> When dma_alloc_coherent fails to allocate dd->cr_base[i].va,
+> init_credit_return should deallocate dd->cr_base and
+> dd->cr_base[i] that allocated before. Or those resources
+> would be never freed and a memleak is triggered.
+> 
+> Fixes: 7724105686e7 ("IB/hfi1: add driver files")
+> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+> ---
+>  drivers/infiniband/hw/hfi1/pio.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/hw/hfi1/pio.c b/drivers/infiniband/hw/hfi1/pio.c
+> index 68c621ff59d0..5a91cbda4aee 100644
+> --- a/drivers/infiniband/hw/hfi1/pio.c
+> +++ b/drivers/infiniband/hw/hfi1/pio.c
+> @@ -2086,7 +2086,7 @@ int init_credit_return(struct hfi1_devdata *dd)
+>  				   "Unable to allocate credit return DMA range for NUMA %d\n",
+>  				   i);
+>  			ret = -ENOMEM;
+> -			goto done;
+> +			goto free_cr_base;
+>  		}
+>  	}
+>  	set_dev_node(&dd->pcidev->dev, dd->node);
+> @@ -2094,6 +2094,10 @@ int init_credit_return(struct hfi1_devdata *dd)
+>  	ret = 0;
+>  done:
+>  	return ret;
+> +
+> +free_cr_base:
+> +	free_credit_return(dd);
 
-This is less verbose.
+Dennis,
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/block/null_blk/main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The idea of this patch is right, but it made me wonder, if
+free_credit_return() is correct.
 
-diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
-index b1271de64d36..293f24cc4122 100644
---- a/drivers/block/null_blk/main.c
-+++ b/drivers/block/null_blk/main.c
-@@ -1825,7 +1825,7 @@ static void null_del_dev(struct nullb *nullb)
- 
- 	dev = nullb->dev;
- 
--	ida_simple_remove(&nullb_indexes, nullb->index);
-+	ida_free(&nullb_indexes, nullb->index);
- 
- 	list_del_init(&nullb->list);
- 
-@@ -2159,7 +2159,7 @@ static int null_add_dev(struct nullb_device *dev)
- 	blk_queue_flag_set(QUEUE_FLAG_NONROT, nullb->q);
- 
- 	mutex_lock(&lock);
--	rv = ida_simple_get(&nullb_indexes, 0, 0, GFP_KERNEL);
-+	rv = ida_alloc(&nullb_indexes, GFP_KERNEL);
- 	if (rv < 0) {
- 		mutex_unlock(&lock);
- 		goto out_cleanup_zone;
--- 
-2.43.0
+init_credit_return() iterates with help of for_each_node_with_cpus():
 
+  2062 int init_credit_return(struct hfi1_devdata *dd)
+  2063 {
+..
+  2075         for_each_node_with_cpus(i) {
+  2076                 int bytes = TXE_NUM_CONTEXTS * sizeof(struct credit_return);
+  2077
+
+But free_credit_return uses something else:
+  2099 void free_credit_return(struct hfi1_devdata *dd)
+  2100 {
+..
+  2105         for (i = 0; i < node_affinity.num_possible_nodes; i++) {
+  2106                 if (dd->cr_base[i].va) {
+
+Thanks
+
+> +	goto done;
+>  }
+>  
+>  void free_credit_return(struct hfi1_devdata *dd)
+> -- 
+> 2.34.1
+> 
 
