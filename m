@@ -1,87 +1,78 @@
-Return-Path: <linux-kernel+bounces-25406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E910F82CFD5
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 06:30:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA7AD82CFD7
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 06:31:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13FB81C20F24
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 05:30:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EE721F21DF9
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 05:31:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EB9D1846;
-	Sun, 14 Jan 2024 05:30:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 329AC1852;
+	Sun, 14 Jan 2024 05:31:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="n4eFp0J6"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50CFA7E
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 05:30:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=wm51K5Htr3Ae/2H+wXzef7Us8N7W+cWvSmN+vmOjbmY=; b=n4eFp0J6e/DOVCVat1qdtilTRz
-	nngad6ACZYV7spragk76yGSFCdQiNG3ralPaCGNhuOeh0Bl/0QOT2N5BP+1e1m8YI64ACey9oSzFQ
-	MHweGDvbroMBuMkTnMbWqkwiYhlhCmsaNPBq8X+Q/ojBXJXURHNR4U747+UBIT45I9EkXKMFxAODT
-	d7YFEJfRQVuk9bXhaK36kGsc2+nRNEMP73sr4uFKgTINk4IQfKWi/lxYmVd2NgTzhxiivuHHLVoDS
-	FcyRpVZIO2Bn7QzmBN1GSkJsHDE9MBQRynV0WoPtMukmRmk2qHN2dpMIY1xH6CbW4lFmVOTBJKxAt
-	FNs/ph9Q==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rOt4s-006DDI-2S;
-	Sun, 14 Jan 2024 05:30:34 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Russell King <linux@armlinux.org.uk>,
-	linux-arm-kernel@lists.infradead.org,
-	patches@armlinux.org.uk
-Subject: [PATCH v2] arm: mm: init: remove misuse of kernel-doc comment
-Date: Sat, 13 Jan 2024 21:30:34 -0800
-Message-ID: <20240114053034.6097-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.0
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="N8LnvvTb"
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 913077E;
+	Sun, 14 Jan 2024 05:31:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
+	Message-ID; bh=mnX4TlYD1IAE/ynrPPGqCTpsWWnb3+9QkFs/jH0hltg=; b=N
+	8LnvvTbUIE1Ra9PG54OVVx8RIlQnXE3ejcgv0KbFpiKQ31SKdPkpGoRH5Jjn7Z6B
+	yolLSsfxH8wfSCi29wwnLotRbBmPiuNAy3FZna54Pv3VjubV9u8EvNg6e/wpIodZ
+	7TpRJ6laMl7M201agJXjA1ZGoGky5dlY19i19RcUXE=
+Received: from 00107082$163.com ( [111.35.185.31] ) by
+ ajax-webmail-wmsvr-40-120 (Coremail) ; Sun, 14 Jan 2024 13:30:37 +0800
+ (CST)
+Date: Sun, 14 Jan 2024 13:30:37 +0800 (CST)
+From: "David Wang" <00107082@163.com>
+To: "Jozsef Kadlecsik" <kadlec@blackhole.kfki.hu>, ale.crismani@automattic.com
+Cc: linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org, 
+	"Pablo Neira Ayuso" <pablo@netfilter.org>, xiaolinkui@kylinos.cn
+Subject: Re:Performance regression in ip_set_swap on 6.7.0
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
+ Copyright (c) 2002-2024 www.mailtech.cn 163com
+In-Reply-To: <d5c24887-b2d4-bcc-f5a4-bd3d2670d16@blackhole.kfki.hu>
+References: <b333bc85-83ea-8869-ccf7-374c9456d93c@blackhole.kfki.hu>
+ <20240111145330.18474-1-00107082@163.com>
+ <d5c24887-b2d4-bcc-f5a4-bd3d2670d16@blackhole.kfki.hu>
+X-NTES-SC: AL_Qu2bB/6av0oo4SCcbOkXn0oTju85XMCzuv8j3YJeN500qiTVwCIGRUdABVf16++IFB+wiCCHVgdS1udTd4hbeo9FUoS7lNBbr/tiiWi+//4h
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <41662e12.d59.18d0673507e.Coremail.00107082@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:_____wDXf3F+caNlq7s9AA--.27681W
+X-CM-SenderInfo: qqqrilqqysqiywtou0bp/1tbiqAllqmVOBpjcjQADsJ
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 
-Change the "/**" beginning of comment to the common "/*" comment
-since the comment is not in kernel-doc format. This prevents a
-kernel-doc warning:
-
-arch/arm/mm/init.c:422: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- * update_sections_early intended to be called only through stop_machine
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: patches@armlinux.org.uk
----
-KernelVersion: 0dd3ee31125508cd67f7e717
-
-v2: limit KernelVersion to 30 characters max.
-
- arch/arm/mm/init.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff -- a/arch/arm/mm/init.c b/arch/arm/mm/init.c
---- a/arch/arm/mm/init.c
-+++ b/arch/arm/mm/init.c
-@@ -418,7 +418,7 @@ static void set_section_perms(struct sec
- 
- }
- 
--/**
-+/*
-  * update_sections_early intended to be called only through stop_machine
-  * framework and executed by only one CPU while all other CPUs will spin and
-  * wait, so no locking is required in this function.
+CkF0IDIwMjQtMDEtMTQgMDI6MjQ6MDcsICJKb3pzZWYgS2FkbGVjc2lrIiA8a2FkbGVjQGJsYWNr
+aG9sZS5rZmtpLmh1PiB3cm90ZToKPk9uIFRodSwgMTEgSmFuIDIwMjQsIERhdmlkIFdhbmcgd3Jv
+dGU6Cj4KPj4gSSB0ZXN0ZWQgdGhlIHBhdGNoIHdpdGggY29kZSBzdHJlc3Npbmcgc3dhcC0+ZGVz
+dHJveS0+Y3JlYXRlLT5hZGQgMTAwMDAgCj4+IHRpbWVzLCB0aGUgcGVyZm9ybWFuY2UgcmVncmVz
+c2lvbiBzdGlsbCBoYXBwZW5zLCBhbmQgbm93IGl0IGlzIAo+PiBpcF9zZXRfZGVzdHJveS4gKEkg
+cGFzdGVkIHRoZSB0ZXN0IGNvZGUgYXQgdGhlIGVuZCBvZiB0aGlzIG1haWwpCgo+PiAKPj4gVGhl
+eSBhbGwgY2FsbCB3YWl0X2Zvcl9jb21wbGV0aW9uLCB3aGljaCBtYXkgc2xlZXAgb24gc29tZXRo
+aW5nIG9uIAo+PiBwdXJwb3NlLCBJIGd1ZXNzLi4uCj4KPlRoYXQncyBPSyBiZWNhdXNlIGlwX3Nl
+dF9kZXN0cm95KCkgY2FsbHMgcmN1X2JhcnJpZXIoKSB3aGljaCBpcyBuZWVkZWQgdG8gCj5oYW5k
+bGUgZmx1c2ggaW4gbGlzdCB0eXBlIG9mIHNldHMuCj4KPkhvd2V2ZXIsIHJjdV9iYXJyaWVyKCkg
+d2l0aCBjYWxsX3JjdSgpIHRvZ2V0aGVyIG1ha2VzIG11bHRpcGxlIGRlc3Ryb3lzIAo+b25lIGFm
+dGVyIGFub3RoZXIgc2xvdy4gQnV0IHJjdV9iYXJyaWVyKCkgaXMgbmVlZGVkIGZvciBsaXN0IHR5
+cGUgb2Ygc2V0cyAKPm9ubHkgYW5kIHRoYXQgY2FuIGJlIGhhbmRsZWQgc2VwYXJhdGVseS4gU28g
+Y291bGQgeW91IHRlc3QgdGhlIHBhdGNoIAo+YmVsb3c/IEFjY29yZGluZyB0byBteSB0ZXN0cyBp
+dCBpcyBldmVuIGEgbGl0dGxlIGJpdCBmYXN0ZXIgdGhhbiB0aGUgCj5vcmlnaW5hbCBjb2RlIGJl
+Zm9yZSBzeW5jaHJvbml6ZV9yY3UoKSB3YXMgYWRkZWQgdG8gc3dhcC4KCkNvbmZpcm1lZH4hIFRo
+aXMgcGF0Y2ggZG9lcyBmaXggdGhlIHBlcmZvcm1hbmNlIHJlZ3Jlc3Npb24gaW4gbXkgY2FzZS4K
+CkhvcGUgaXQgY2FuIGZpeCBhbGUuY3Jpc21hbmlAYXV0b21hdHRpYy5jb20ncyBvcmlnaW5hbCBp
+c3N1ZS4KCgoKVGhhbmtzfgpEYXZpZA==
 
