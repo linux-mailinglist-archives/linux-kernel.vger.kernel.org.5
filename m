@@ -1,221 +1,176 @@
-Return-Path: <linux-kernel+bounces-25521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AA2182D1BF
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 18:42:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5BFE82D1D3
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 19:08:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3C2F281F89
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 17:42:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 564BDB212A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 18:08:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02E20F4F3;
-	Sun, 14 Jan 2024 17:42:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JcStc1g3"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77CF1107A6;
+	Sun, 14 Jan 2024 18:08:07 +0000 (UTC)
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8163CEAED
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 17:42:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2cd8bd6ce1bso35094221fa.1
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 09:42:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705254150; x=1705858950; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FopLFC80dOf1fsN3Wz4ZFt4KjR5ko9Ne4EZUQ437vhE=;
-        b=JcStc1g3/IksF3nJchore6a7jw7/r80wr3FSt9jc91hw0mQ46t+R1aG1+4nECZ/Bgv
-         LSfmtVyu9+Q8rEadZFxzpe0TftXwUlwgWPr7E254GWDUFUbDlJWQA7Eq5NosHwbYivbt
-         1phubtrNH8NPMZzrYS8ipSYdBytU3mRbJ7/PyjaoWngUg7Goe2ai3Q6uRT25I3dCATfb
-         HCi3Xq5eZsqLosfFxJO+h0TnxrUTtn/XUyinfOtvrt6gcIaOP6aiT5BVUCIm5LQ3pdc3
-         Hd73MCiQQ++NIidbSvKv1NA09ppzzt6uhvFFzTemCJUKadnCk3BISw9Zoqr8s7B4euAw
-         rFOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705254150; x=1705858950;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FopLFC80dOf1fsN3Wz4ZFt4KjR5ko9Ne4EZUQ437vhE=;
-        b=G6g+L6HEeBRW5Zye/02RLC1pc/1IRPThab2AYMHufE0yUV2F6swiEf/1xpkgxKQXu4
-         qVpvDBwhFhkdZb0INslEa+HX038CjhR9ZoYUbsPH0pKIKYNgFRmqbQtfT+nsOx41clKV
-         M+cwTdoYPn6xRPx6sPdo23rbeIwslvg9kP8zWx3cGiKQVGL+oLb6AuzzSHHfwVB6dXhT
-         ncLYUSzfy7uHL5s3wAF9q7mz/q4qBwvbdCXfUdRe/N8ihmwkWqetp6P53bNIsPOOuPb/
-         3R7EQQPB/3+9PimytelvhFSEa9bV6hcXNm79QYkJmud+B6weIME+XfZPujjxtfeinijb
-         B20A==
-X-Gm-Message-State: AOJu0YyRvZBCPcfiteobfZZ3VWa+JJ4c/XY3GWipspDKhFBZ4Oak717a
-	wGx0B3qosSOHZAVp2pwH4aPee3+dnbwHaga7WHg=
-X-Google-Smtp-Source: AGHT+IHzaIBlNFz6Pu5GIxN523Wrwgv14ieBgneCLoBprg3Rp5Zg+w6u++LKXVswLVwFcxbGoNHkDJMBFV+EHHqaGOs=
-X-Received: by 2002:a2e:8447:0:b0:2cd:7f14:9b33 with SMTP id
- u7-20020a2e8447000000b002cd7f149b33mr1079998ljh.51.1705254150168; Sun, 14 Jan
- 2024 09:42:30 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29BE3EAF4;
+	Sun, 14 Jan 2024 18:08:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.105] (31.173.83.169) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sun, 14 Jan
+ 2024 21:07:52 +0300
+Subject: Re: [PATCH net-next v3 08/19] net: ravb: Move the IRQs get and
+ request in the probe function
+To: claudiu beznea <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
+	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <geert+renesas@glider.be>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240105082339.1468817-9-claudiu.beznea.uj@bp.renesas.com>
+ <02548b1b-d32c-78b1-f1b6-5fdb505d31bb@omp.ru>
+ <ee783b61-95fc-44ab-a311-0ca7d058ac39@tuxon.dev>
+ <dce944a1-9557-9ab0-d30d-7a51a47c6d96@omp.ru>
+ <3e430f8e-b327-485f-ae19-6f1938083dd3@tuxon.dev>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <0ef3553a-9a7d-d93a-7920-0bd4aa49e5cb@omp.ru>
+Date: Sun, 14 Jan 2024 21:07:51 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240111183321.19984-1-ryncsn@gmail.com> <20240111183321.19984-2-ryncsn@gmail.com>
- <CAAPL-u8dMX11CiaUxQdx0bK-RDMuNV40JFDYyXBPJ+ex+Kx4rw@mail.gmail.com>
-In-Reply-To: <CAAPL-u8dMX11CiaUxQdx0bK-RDMuNV40JFDYyXBPJ+ex+Kx4rw@mail.gmail.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Mon, 15 Jan 2024 01:42:12 +0800
-Message-ID: <CAMgjq7Bv7L_J4pfbHnopsbOzrqZfgfqTYuJUMXo94Z6vp+74-Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] mm, lru_gen: batch update counters on againg
-To: Wei Xu <weixugc@google.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
-	Yu Zhao <yuzhao@google.com>, Chris Li <chrisl@kernel.org>, 
-	Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org, 
-	Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <3e430f8e-b327-485f-ae19-6f1938083dd3@tuxon.dev>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/14/2024 17:51:39
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182622 [Jan 14 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.83.169 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info:
+	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.83.169
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 01/14/2024 17:56:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 1/14/2024 4:54:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-Wei Xu <weixugc@google.com> =E4=BA=8E2024=E5=B9=B41=E6=9C=8813=E6=97=A5=E5=
-=91=A8=E5=85=AD 05:01=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Thu, Jan 11, 2024 at 10:33=E2=80=AFAM Kairui Song <ryncsn@gmail.com> w=
-rote:
-> >
-> > From: Kairui Song <kasong@tencent.com>
-> >
-> > When lru_gen is aging, it will update mm counters page by page,
-> > which causes a higher overhead if age happens frequently or there
-> > are a lot of pages in one generation getting moved.
-> > Optimize this by doing the counter update in batch.
-> >
-> > Although most __mod_*_state has its own caches the overhead
-> > is still observable.
-> >
-> > Tested in a 4G memcg on a EPYC 7K62 with:
-> >
-> >   memcached -u nobody -m 16384 -s /tmp/memcached.socket \
-> >     -a 0766 -t 16 -B binary &
-> >
-> >   memtier_benchmark -S /tmp/memcached.socket \
-> >     -P memcache_binary -n allkeys \
-> >     --key-minimum=3D1 --key-maximum=3D16000000 -d 1024 \
-> >     --ratio=3D1:0 --key-pattern=3DP:P -c 2 -t 16 --pipeline 8 -x 6
-> >
-> > Average result of 18 test runs:
-> >
-> > Before: 44017.78 Ops/sec
-> > After:  44687.08 Ops/sec (+1.5%)
->
-> I see the same performance numbers get quoted in all the 3 patches.
-> How much performance improvements does this particular patch provide
-> (the same for the other 2 patches)? If as the cover letter says, the
-> most performance benefits come from patch 3 (prefetching), can we just
-> have that patch alone to avoid the extra complexities.
+On 1/10/24 2:55 PM, claudiu beznea wrote:
 
-Hi Wei,
+[...]
 
-Indeed these are two different optimization technique, I can reorder
-the series, prefetch is the first one and should be more acceptable,
-other optimizations can come later. And add standalone info about
-improvement of batch operations.
+>>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>>>
+>>>>> The runtime PM implementation will disable clocks at the end of
+>>>>> ravb_probe(). As some IP variants switch to reset mode as a result of
+>>>>> setting module standby through clock disable APIs, to implement runtime PM
+>>>>> the resource parsing and requesting are moved in the probe function and IP
+>>>>> settings are moved in the open function. This is done because at the end of
+>>>>> the probe some IP variants will switch anyway to reset mode and the
+>>>>> registers content is lost. Also keeping only register specific operations
+>>>>> in the ravb_open()/ravb_close() functions will make them faster.
+>>>>>
+>>>>> Commit moves IRQ requests to ravb_probe() to have all the IRQs ready when
+>>>>> the interface is open. As now IRQs gets and requests are in a single place
+>>>>> there is no need to keep intermediary data (like ravb_rx_irqs[] and
+>>>>> ravb_tx_irqs[] arrays or IRQs in struct ravb_private).
+>>>>
+>>>>    There's one thing that you probably didn't take into account: after
+>>>> you call request_irq(), you should be able to handle your IRQ as it's
+>>>> automatically unmasked, unless you pass IRQF_NO_AUTOEN to request_irq().
+>>>> Your device may be held i reset or even powered off but if you pass
+>>>> IRQF_SHARED to request_irq() (you do in a single IRQ config), you must
+>>>> be prepared to get your device's registers read (in order to ascertain
+>>
+>>    And, at least on arm32, reading a powered off (or not clocked?) device's
+>> register causes an imprecise external abort exception -- which results in a
+>> kernel oops...
+>>
+>>>> whether it's your IRQ or not). And you can't even pass IRQF_NO_AUTOEN
+>>>> along with IRQF_SHARED, according to my reading of the IRQ code...
+>>>
+>>> Good point!
 
->
-> > Signed-off-by: Kairui Song <kasong@tencent.com>
-> > ---
-> >  mm/vmscan.c | 64 +++++++++++++++++++++++++++++++++++++++++++++--------
-> >  1 file changed, 55 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index 4f9c854ce6cc..185d53607c7e 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -3113,9 +3113,47 @@ static int folio_update_gen(struct folio *folio,=
- int gen)
-> >         return ((old_flags & LRU_GEN_MASK) >> LRU_GEN_PGOFF) - 1;
-> >  }
-> >
-> > +/*
-> > + * Update LRU gen in batch for each lru_gen LRU list. The batch is lim=
-ited to
-> > + * each gen / type / zone level LRU. Batch is applied after finished o=
-r aborted
-> > + * scanning one LRU list.
-> > + */
-> > +struct gen_update_batch {
-> > +       int delta[MAX_NR_GENS];
-> > +};
-> > +
-> > +static void lru_gen_update_batch(struct lruvec *lruvec, int type, int =
-zone,
-> > +                                struct gen_update_batch *batch)
-> > +{
-> > +       int gen;
-> > +       int promoted =3D 0;
-> > +       struct lru_gen_folio *lrugen =3D &lruvec->lrugen;
-> > +       enum lru_list lru =3D type ? LRU_INACTIVE_FILE : LRU_INACTIVE_A=
-NON;
-> > +
-> > +       for (gen =3D 0; gen < MAX_NR_GENS; gen++) {
-> > +               int delta =3D batch->delta[gen];
-> > +
-> > +               if (!delta)
-> > +                       continue;
-> > +
-> > +               WRITE_ONCE(lrugen->nr_pages[gen][type][zone],
-> > +                          lrugen->nr_pages[gen][type][zone] + delta);
-> > +
-> > +               if (lru_gen_is_active(lruvec, gen))
-> > +                       promoted +=3D delta;
-> > +       }
-> > +
-> > +       if (promoted) {
-> > +               __update_lru_size(lruvec, lru, zone, -promoted);
-> > +               __update_lru_size(lruvec, lru + LRU_ACTIVE, zone, promo=
-ted);
-> > +       }
-> > +}
-> > +
-> >  /* protect pages accessed multiple times through file descriptors */
-> > -static int folio_inc_gen(struct lruvec *lruvec, struct folio *folio, b=
-ool reclaiming)
-> > +static int folio_inc_gen(struct lruvec *lruvec, struct folio *folio,
-> > +                        bool reclaiming, struct gen_update_batch *batc=
-h)
-> >  {
-> > +       int delta =3D folio_nr_pages(folio);
-> >         int type =3D folio_is_file_lru(folio);
-> >         struct lru_gen_folio *lrugen =3D &lruvec->lrugen;
-> >         int new_gen, old_gen =3D lru_gen_from_seq(lrugen->min_seq[type]=
-);
-> > @@ -3138,7 +3176,8 @@ static int folio_inc_gen(struct lruvec *lruvec, s=
-truct folio *folio, bool reclai
-> >                         new_flags |=3D BIT(PG_reclaim);
-> >         } while (!try_cmpxchg(&folio->flags, &old_flags, new_flags));
-> >
-> > -       lru_gen_update_size(lruvec, folio, old_gen, new_gen);
-> > +       batch->delta[old_gen] -=3D delta;
-> > +       batch->delta[new_gen] +=3D delta;
-> >
-> >         return new_gen;
-> >  }
-> > @@ -3672,6 +3711,7 @@ static bool inc_min_seq(struct lruvec *lruvec, in=
-t type, bool can_swap)
-> >  {
-> >         int zone;
-> >         int remaining =3D MAX_LRU_BATCH;
-> > +       struct gen_update_batch batch =3D { };
->
-> Can this batch variable be moved away from the stack?  We (Google) use
-> a much larger value for MAX_NR_GENS internally. This large stack
-> allocation from "struct gen_update_batch batch" can significantly
-> increase the risk of stack overflow for our use cases.
->
+   Iff we can come up with a robust check whether the device is powered on,
+we can overcome even the IRQF_SHARED issue though...
+   I'm seeing pm_runtime_active() API and wondering whether we can use it
+from the IRQ context. Alternatively, we can add a is_opened flag, like
+sh_eth.c does...
 
-Thanks for the info.
-Do you have any suggestion about where we should put the batch info? I
-though about merging it with lru_gen_mm_walk but that depend on
-kzalloc and not useable for slow allocation path, the overhead could
-be larger than benefit in many cases.
+>>>>> This is a preparatory change to add runtime PM support for all IP variants.
+>>>>
+>>>>   I don't readily see why this is necessary for the full-fledged RPM
+>>>> support...
+>>>
+>>> I tried to speed up the ravb_open()/ravb_close() but missed the IRQF_SHARED
+>>
+>>    I doubt that optimizing ravb_{open,close}() is worth pursuing, frankly...
 
-Not sure if we can use some thing like a preallocated per-cpu cache
-here to avoid all the issues.
+   OTOH, we'll get a simpler/cleaner code if we do this...
+   Previously, I was under an impression that it's common behavior of
+the networking drivers to call request_irq() from their ndo_open() methods.
+Apparently, it's not true anymore (probably with the introduction of the
+managed device API) -- the newer drivers often call devm_request_irq()
+from their probe() methods instead...
+
+>>> IRQ. As there is only one IRQ requested w/ IRQF_SHARED, are you OK with
+>>> still keeping the rest of IRQs handled as proposed by this patch?
+>>
+>>    I'm not, as this doesn't really seem necessary for your main goal.
+>> It's not clear in what state U-Boot leaves EtherAVB...
+
+   This still seems an issue though... My prior experience with the R-Car
+MMC driver tells me that U-Boot may leave interrupts enabled... :-/
+
+> Ok. One other reason I did this is, as commit message states, to keep
+> resource parsing and allocation/freeing in probe/remove and hardware
+> settings in open/close.
+>  
+> Anyway, I'll revert all the changes IRQ related.
+
+   Now I've changed my mind -- let's retain your patch! It needs some work
+though...
+
+> Thank you,
+> Claudiu Beznea
+
+[...]
+
+MBR, Sergey
 
