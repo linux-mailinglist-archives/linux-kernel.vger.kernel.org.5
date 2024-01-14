@@ -1,122 +1,214 @@
-Return-Path: <linux-kernel+bounces-25432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF92E82D02C
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 10:41:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D435682D033
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 10:57:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8725C1F21BC1
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 09:41:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 748AA2829FF
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 09:57:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C0031FC4;
-	Sun, 14 Jan 2024 09:41:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C26A1FBE;
+	Sun, 14 Jan 2024 09:57:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="g/IbegEI"
-Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="OZLsa+cG"
+Received: from smtp.smtpout.orange.fr (smtp-20.smtpout.orange.fr [80.12.242.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02DA51FA3
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 09:41:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
-Received: from eig-obgw-6006a.ext.cloudfilter.net ([10.0.30.182])
-	by cmsmtp with ESMTPS
-	id Oor5rtYmv8uLROwzgrD8pH; Sun, 14 Jan 2024 09:41:28 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-	by cmsmtp with ESMTPS
-	id OwzfrkObvYjq0OwzgrIlgK; Sun, 14 Jan 2024 09:41:28 +0000
-X-Authority-Analysis: v=2.4 cv=afxyIDkt c=1 sm=1 tr=0 ts=65a3ac48
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=CgIWkzQF1333AAWbJpCgmT5k6SyV4mmwshRIMMQqQOo=; b=g/IbegEIDfXnB/pvjIfRog+Q7V
-	5anza1eXomXXt/1M00sdxgJbZlqQ6aP+XT17Q90KmxMs6ww+aTpFtROb0iU2gdhe2A9ideM31IPhS
-	JxXGWoOvGKWthsvQriGX4Cfil594UQmJJRaNWCqv17OEtcPqirt9bHXM7MH3HCAbE1Fk02UtY+2bv
-	mFckOIOXMD6KMGKQR/y/AP0GCQjJFRVV41J4nTmGavNLsU5AOLfSXsftNHS8/G45bwhjOUQxnydT6
-	90rZPqa6lsUWDzidhUPw0fTUxaDIccfPtA75fDwPPwE0UmmbxF3erUp036orRmiWmGKQgspibuZli
-	tZj8iYeQ==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:35196 helo=[10.0.1.47])
-	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <re@w6rz.net>)
-	id 1rOwzd-0045k3-1d;
-	Sun, 14 Jan 2024 02:41:25 -0700
-Subject: Re: [PATCH 5.15 00/59] 5.15.147-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-References: <20240113094209.301672391@linuxfoundation.org>
-In-Reply-To: <20240113094209.301672391@linuxfoundation.org>
-From: Ron Economos <re@w6rz.net>
-Message-ID: <22cc7b9a-90c8-1d3c-f7d5-9fcedaff502c@w6rz.net>
-Date: Sun, 14 Jan 2024 01:41:23 -0800
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E02B1FA3
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 09:57:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from fedora.home ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id OxEsri9TbPUoqOxEsr29aG; Sun, 14 Jan 2024 10:57:11 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1705226231;
+	bh=lqzv3ZLxuAAMhNo6bpMj22uaPMyMoPdULdX0yVOZDFo=;
+	h=From:To:Cc:Subject:Date;
+	b=OZLsa+cGkeNE3acSjtG9Rpfl/q1SQ/ND8zZ0J8UJJ+Cv9dXcAAOWllJKok/Ycr59a
+	 Hefs//IBAtWUrcGbOsR9XN9IMKLTBa1zlDpbmuH8+3SJ69AgG2dPawvayP78jPW7Yx
+	 Q89X9SRD7/9wASbLVW33qKX2jE4nxhELqGJxt5h1RdZR8M4r9KMs8ILGd2TUE58m6b
+	 oxeYctlUsSeW/8JDtW0omTcCn00rl8PxJCdv8qF4nJJ+hm5MEBSxaD9wM0fXneGCL7
+	 NGs+ab67jwKVOI5cTpCozYurSnwzf3k/HPl5fWrJoi8kz013tEW7Lnt7Lmy5WARz0g
+	 DE/pIR4ymc7Jw==
+X-ME-Helo: fedora.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 14 Jan 2024 10:57:11 +0100
+X-ME-IP: 92.140.202.140
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Johan Hovold <johan@kernel.org>,
+	Alex Elder <elder@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	greybus-dev@lists.linaro.org
+Subject: [PATCH] greybus: Remove usage of the deprecated ida_simple_xx() API
+Date: Sun, 14 Jan 2024 10:57:02 +0100
+Message-ID: <26425379d3eb9ba1b9af44468576ee20c77eb248.1705226208.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1rOwzd-0045k3-1d
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:35196
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Org: HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfPIUIb7eubaxn6e4CW/TO53qFbIgn/Fv8lZJchDjMTnZKrz3tXe2X/4YAV2yXGCvWiWJWckypAmREa2qhLcTFkPgkE/zQe1U3cmD6p+A9HxvabGgwPmF
- 4/crK33wox02Gk3ALE7tPrcdT8I/3a7vugR3OgrBUiZm8n9n1KJAWw3Y0GIK5Eda12gOSZoNRTrSJbkP1gfC9mMvre7CcTd7FMc=
+Content-Transfer-Encoding: 8bit
 
-On 1/13/24 1:49 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.147 release.
-> There are 59 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Mon, 15 Jan 2024 09:41:55 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.147-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+ida_alloc() and ida_free() should be preferred to the deprecated
+ida_simple_get() and ida_simple_remove().
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+Note that the upper limit of ida_simple_get() is exclusive, but the one of
+ida_alloc_range()/ida_alloc_max() is inclusive. So a -1 has been added when
+needed.
 
-Tested-by: Ron Economos <re@w6rz.net>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/greybus/es2.c       |  8 ++++----
+ drivers/greybus/hd.c        | 16 ++++++++--------
+ drivers/greybus/interface.c |  9 ++++-----
+ 3 files changed, 16 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/greybus/es2.c b/drivers/greybus/es2.c
+index e89cca015095..1ee78d0d90b4 100644
+--- a/drivers/greybus/es2.c
++++ b/drivers/greybus/es2.c
+@@ -513,16 +513,16 @@ static int es2_cport_allocate(struct gb_host_device *hd, int cport_id,
+ 
+ 	if (cport_id < 0) {
+ 		ida_start = 0;
+-		ida_end = hd->num_cports;
++		ida_end = hd->num_cports - 1;
+ 	} else if (cport_id < hd->num_cports) {
+ 		ida_start = cport_id;
+-		ida_end = cport_id + 1;
++		ida_end = cport_id;
+ 	} else {
+ 		dev_err(&hd->dev, "cport %d not available\n", cport_id);
+ 		return -EINVAL;
+ 	}
+ 
+-	return ida_simple_get(id_map, ida_start, ida_end, GFP_KERNEL);
++	return ida_alloc_range(id_map, ida_start, ida_end, GFP_KERNEL);
+ }
+ 
+ static void es2_cport_release(struct gb_host_device *hd, u16 cport_id)
+@@ -535,7 +535,7 @@ static void es2_cport_release(struct gb_host_device *hd, u16 cport_id)
+ 		return;
+ 	}
+ 
+-	ida_simple_remove(&hd->cport_id_map, cport_id);
++	ida_free(&hd->cport_id_map, cport_id);
+ }
+ 
+ static int cport_enable(struct gb_host_device *hd, u16 cport_id,
+diff --git a/drivers/greybus/hd.c b/drivers/greybus/hd.c
+index 72b21bf2d7d3..bc5fd2f53d8b 100644
+--- a/drivers/greybus/hd.c
++++ b/drivers/greybus/hd.c
+@@ -50,7 +50,7 @@ int gb_hd_cport_reserve(struct gb_host_device *hd, u16 cport_id)
+ 	struct ida *id_map = &hd->cport_id_map;
+ 	int ret;
+ 
+-	ret = ida_simple_get(id_map, cport_id, cport_id + 1, GFP_KERNEL);
++	ret = ida_alloc_range(id_map, cport_id, cport_id, GFP_KERNEL);
+ 	if (ret < 0) {
+ 		dev_err(&hd->dev, "failed to reserve cport %u\n", cport_id);
+ 		return ret;
+@@ -64,7 +64,7 @@ void gb_hd_cport_release_reserved(struct gb_host_device *hd, u16 cport_id)
+ {
+ 	struct ida *id_map = &hd->cport_id_map;
+ 
+-	ida_simple_remove(id_map, cport_id);
++	ida_free(id_map, cport_id);
+ }
+ EXPORT_SYMBOL_GPL(gb_hd_cport_release_reserved);
+ 
+@@ -80,16 +80,16 @@ int gb_hd_cport_allocate(struct gb_host_device *hd, int cport_id,
+ 
+ 	if (cport_id < 0) {
+ 		ida_start = 0;
+-		ida_end = hd->num_cports;
++		ida_end = hd->num_cports - 1;
+ 	} else if (cport_id < hd->num_cports) {
+ 		ida_start = cport_id;
+-		ida_end = cport_id + 1;
++		ida_end = cport_id;
+ 	} else {
+ 		dev_err(&hd->dev, "cport %d not available\n", cport_id);
+ 		return -EINVAL;
+ 	}
+ 
+-	return ida_simple_get(id_map, ida_start, ida_end, GFP_KERNEL);
++	return ida_alloc_range(id_map, ida_start, ida_end, GFP_KERNEL);
+ }
+ 
+ /* Locking: Caller guarantees serialisation */
+@@ -100,7 +100,7 @@ void gb_hd_cport_release(struct gb_host_device *hd, u16 cport_id)
+ 		return;
+ 	}
+ 
+-	ida_simple_remove(&hd->cport_id_map, cport_id);
++	ida_free(&hd->cport_id_map, cport_id);
+ }
+ 
+ static void gb_hd_release(struct device *dev)
+@@ -111,7 +111,7 @@ static void gb_hd_release(struct device *dev)
+ 
+ 	if (hd->svc)
+ 		gb_svc_put(hd->svc);
+-	ida_simple_remove(&gb_hd_bus_id_map, hd->bus_id);
++	ida_free(&gb_hd_bus_id_map, hd->bus_id);
+ 	ida_destroy(&hd->cport_id_map);
+ 	kfree(hd);
+ }
+@@ -162,7 +162,7 @@ struct gb_host_device *gb_hd_create(struct gb_hd_driver *driver,
+ 	if (!hd)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	ret = ida_simple_get(&gb_hd_bus_id_map, 1, 0, GFP_KERNEL);
++	ret = ida_alloc_min(&gb_hd_bus_id_map, 1, GFP_KERNEL);
+ 	if (ret < 0) {
+ 		kfree(hd);
+ 		return ERR_PTR(ret);
+diff --git a/drivers/greybus/interface.c b/drivers/greybus/interface.c
+index 9ec949a438ef..c3cfd62831ff 100644
+--- a/drivers/greybus/interface.c
++++ b/drivers/greybus/interface.c
+@@ -131,9 +131,8 @@ static int gb_interface_route_create(struct gb_interface *intf)
+ 	int ret;
+ 
+ 	/* Allocate an interface device id. */
+-	ret = ida_simple_get(&svc->device_id_map,
+-			     GB_SVC_DEVICE_ID_MIN, GB_SVC_DEVICE_ID_MAX + 1,
+-			     GFP_KERNEL);
++	ret = ida_alloc_range(&svc->device_id_map, GB_SVC_DEVICE_ID_MIN,
++			      GB_SVC_DEVICE_ID_MAX, GFP_KERNEL);
+ 	if (ret < 0) {
+ 		dev_err(&intf->dev, "failed to allocate device id: %d\n", ret);
+ 		return ret;
+@@ -165,7 +164,7 @@ static int gb_interface_route_create(struct gb_interface *intf)
+ 	 * XXX anymore.
+ 	 */
+ err_ida_remove:
+-	ida_simple_remove(&svc->device_id_map, device_id);
++	ida_free(&svc->device_id_map, device_id);
+ 
+ 	return ret;
+ }
+@@ -178,7 +177,7 @@ static void gb_interface_route_destroy(struct gb_interface *intf)
+ 		return;
+ 
+ 	gb_svc_route_destroy(svc, svc->ap_intf_id, intf->interface_id);
+-	ida_simple_remove(&svc->device_id_map, intf->device_id);
++	ida_free(&svc->device_id_map, intf->device_id);
+ 	intf->device_id = GB_INTERFACE_DEVICE_ID_BAD;
+ }
+ 
+-- 
+2.43.0
 
 
