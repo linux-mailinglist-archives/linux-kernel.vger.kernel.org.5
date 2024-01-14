@@ -1,159 +1,122 @@
-Return-Path: <linux-kernel+bounces-25431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A62A882D027
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 10:38:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF92E82D02C
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 10:41:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFD211C20ACC
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 09:38:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8725C1F21BC1
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 09:41:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3B751FCC;
-	Sun, 14 Jan 2024 09:38:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C0031FC4;
+	Sun, 14 Jan 2024 09:41:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="WokYC7HL"
-Received: from smtp.smtpout.orange.fr (smtp-14.smtpout.orange.fr [80.12.242.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="g/IbegEI"
+Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6221C186B
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 09:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from fedora.home ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id OwwArzcRJMVYzOwwArhxJM; Sun, 14 Jan 2024 10:37:52 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1705225072;
-	bh=g/cnRG5kQoVFxCJ6XTY9uiVH37ch6zIzpDiOmb5ySos=;
-	h=From:To:Cc:Subject:Date;
-	b=WokYC7HLNqEwgZ7H2R8YxBu5WibjJ0DxLMMYUB9bZnfG2P41ogXIl4mTA+7y54B52
-	 ylcgxHcwqVwDYY9AnGN129YpqLKIFkuACkW9sKPLvhvjHR8MYU44ijqnWTr7EG/b7+
-	 sJ/6Z74m0LFlgREbLANLaZwSTVv8iNa6iaG0e303tiYObo/K1ITQ6taBkIkjnQ00Le
-	 fgl8P/Qc9bmBL9JF1q7+AeVXKOH0lao6mzr0x24yked0QQLMoJh3tExjZnivvnv+wJ
-	 lY1B7i55RTX5TaAT2fNFl5EEeLw+6L4xsrvBpHFW+U1Kic6uLsM0X/afCow5xLvNNu
-	 dgekMzAPbX/Jg==
-X-ME-Helo: fedora.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 14 Jan 2024 10:37:52 +0100
-X-ME-IP: 92.140.202.140
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Bjorn Andersson <andersson@kernel.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-remoteproc@vger.kernel.org
-Subject: [PATCH] rpmsg: Remove usage of the deprecated ida_simple_xx() API
-Date: Sun, 14 Jan 2024 10:37:43 +0100
-Message-ID: <c09ee5b66d451bf97d14c167048549aa0824ee06.1705225049.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02DA51FA3
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 09:41:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
+Received: from eig-obgw-6006a.ext.cloudfilter.net ([10.0.30.182])
+	by cmsmtp with ESMTPS
+	id Oor5rtYmv8uLROwzgrD8pH; Sun, 14 Jan 2024 09:41:28 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+	by cmsmtp with ESMTPS
+	id OwzfrkObvYjq0OwzgrIlgK; Sun, 14 Jan 2024 09:41:28 +0000
+X-Authority-Analysis: v=2.4 cv=afxyIDkt c=1 sm=1 tr=0 ts=65a3ac48
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=CgIWkzQF1333AAWbJpCgmT5k6SyV4mmwshRIMMQqQOo=; b=g/IbegEIDfXnB/pvjIfRog+Q7V
+	5anza1eXomXXt/1M00sdxgJbZlqQ6aP+XT17Q90KmxMs6ww+aTpFtROb0iU2gdhe2A9ideM31IPhS
+	JxXGWoOvGKWthsvQriGX4Cfil594UQmJJRaNWCqv17OEtcPqirt9bHXM7MH3HCAbE1Fk02UtY+2bv
+	mFckOIOXMD6KMGKQR/y/AP0GCQjJFRVV41J4nTmGavNLsU5AOLfSXsftNHS8/G45bwhjOUQxnydT6
+	90rZPqa6lsUWDzidhUPw0fTUxaDIccfPtA75fDwPPwE0UmmbxF3erUp036orRmiWmGKQgspibuZli
+	tZj8iYeQ==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:35196 helo=[10.0.1.47])
+	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <re@w6rz.net>)
+	id 1rOwzd-0045k3-1d;
+	Sun, 14 Jan 2024 02:41:25 -0700
+Subject: Re: [PATCH 5.15 00/59] 5.15.147-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+References: <20240113094209.301672391@linuxfoundation.org>
+In-Reply-To: <20240113094209.301672391@linuxfoundation.org>
+From: Ron Economos <re@w6rz.net>
+Message-ID: <22cc7b9a-90c8-1d3c-f7d5-9fcedaff502c@w6rz.net>
+Date: Sun, 14 Jan 2024 01:41:23 -0800
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1rOwzd-0045k3-1d
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:35196
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org: HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfPIUIb7eubaxn6e4CW/TO53qFbIgn/Fv8lZJchDjMTnZKrz3tXe2X/4YAV2yXGCvWiWJWckypAmREa2qhLcTFkPgkE/zQe1U3cmD6p+A9HxvabGgwPmF
+ 4/crK33wox02Gk3ALE7tPrcdT8I/3a7vugR3OgrBUiZm8n9n1KJAWw3Y0GIK5Eda12gOSZoNRTrSJbkP1gfC9mMvre7CcTd7FMc=
 
-ida_alloc() and ida_free() should be preferred to the deprecated
-ida_simple_get() and ida_simple_remove().
+On 1/13/24 1:49 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.147 release.
+> There are 59 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Mon, 15 Jan 2024 09:41:55 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.147-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Note that the upper limit of ida_simple_get() is exclusive, but the one of
-ida_alloc_max() is inclusive. So a -1 has been added when needed.
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/rpmsg/rpmsg_char.c | 12 ++++++------
- drivers/rpmsg/rpmsg_ctrl.c | 12 ++++++------
- 2 files changed, 12 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-index 09833ad05da7..1cb8d7474428 100644
---- a/drivers/rpmsg/rpmsg_char.c
-+++ b/drivers/rpmsg/rpmsg_char.c
-@@ -399,8 +399,8 @@ static void rpmsg_eptdev_release_device(struct device *dev)
- {
- 	struct rpmsg_eptdev *eptdev = dev_to_eptdev(dev);
- 
--	ida_simple_remove(&rpmsg_ept_ida, dev->id);
--	ida_simple_remove(&rpmsg_minor_ida, MINOR(eptdev->dev.devt));
-+	ida_free(&rpmsg_ept_ida, dev->id);
-+	ida_free(&rpmsg_minor_ida, MINOR(eptdev->dev.devt));
- 	kfree(eptdev);
- }
- 
-@@ -441,12 +441,12 @@ static int rpmsg_chrdev_eptdev_add(struct rpmsg_eptdev *eptdev, struct rpmsg_cha
- 
- 	eptdev->chinfo = chinfo;
- 
--	ret = ida_simple_get(&rpmsg_minor_ida, 0, RPMSG_DEV_MAX, GFP_KERNEL);
-+	ret = ida_alloc_max(&rpmsg_minor_ida, RPMSG_DEV_MAX - 1, GFP_KERNEL);
- 	if (ret < 0)
- 		goto free_eptdev;
- 	dev->devt = MKDEV(MAJOR(rpmsg_major), ret);
- 
--	ret = ida_simple_get(&rpmsg_ept_ida, 0, 0, GFP_KERNEL);
-+	ret = ida_alloc(&rpmsg_ept_ida, GFP_KERNEL);
- 	if (ret < 0)
- 		goto free_minor_ida;
- 	dev->id = ret;
-@@ -462,9 +462,9 @@ static int rpmsg_chrdev_eptdev_add(struct rpmsg_eptdev *eptdev, struct rpmsg_cha
- 	return ret;
- 
- free_ept_ida:
--	ida_simple_remove(&rpmsg_ept_ida, dev->id);
-+	ida_free(&rpmsg_ept_ida, dev->id);
- free_minor_ida:
--	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
-+	ida_free(&rpmsg_minor_ida, MINOR(dev->devt));
- free_eptdev:
- 	put_device(dev);
- 	kfree(eptdev);
-diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
-index 433253835690..c312794ba4b3 100644
---- a/drivers/rpmsg/rpmsg_ctrl.c
-+++ b/drivers/rpmsg/rpmsg_ctrl.c
-@@ -130,8 +130,8 @@ static void rpmsg_ctrldev_release_device(struct device *dev)
- {
- 	struct rpmsg_ctrldev *ctrldev = dev_to_ctrldev(dev);
- 
--	ida_simple_remove(&rpmsg_ctrl_ida, dev->id);
--	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
-+	ida_free(&rpmsg_ctrl_ida, dev->id);
-+	ida_free(&rpmsg_minor_ida, MINOR(dev->devt));
- 	kfree(ctrldev);
- }
- 
-@@ -156,12 +156,12 @@ static int rpmsg_ctrldev_probe(struct rpmsg_device *rpdev)
- 	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
- 	ctrldev->cdev.owner = THIS_MODULE;
- 
--	ret = ida_simple_get(&rpmsg_minor_ida, 0, RPMSG_DEV_MAX, GFP_KERNEL);
-+	ret = ida_alloc_max(&rpmsg_minor_ida, RPMSG_DEV_MAX - 1, GFP_KERNEL);
- 	if (ret < 0)
- 		goto free_ctrldev;
- 	dev->devt = MKDEV(MAJOR(rpmsg_major), ret);
- 
--	ret = ida_simple_get(&rpmsg_ctrl_ida, 0, 0, GFP_KERNEL);
-+	ret = ida_alloc(&rpmsg_ctrl_ida, GFP_KERNEL);
- 	if (ret < 0)
- 		goto free_minor_ida;
- 	dev->id = ret;
-@@ -179,9 +179,9 @@ static int rpmsg_ctrldev_probe(struct rpmsg_device *rpdev)
- 	return ret;
- 
- free_ctrl_ida:
--	ida_simple_remove(&rpmsg_ctrl_ida, dev->id);
-+	ida_free(&rpmsg_ctrl_ida, dev->id);
- free_minor_ida:
--	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
-+	ida_free(&rpmsg_minor_ida, MINOR(dev->devt));
- free_ctrldev:
- 	put_device(dev);
- 	kfree(ctrldev);
--- 
-2.43.0
+Tested-by: Ron Economos <re@w6rz.net>
 
 
