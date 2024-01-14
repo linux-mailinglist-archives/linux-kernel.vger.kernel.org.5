@@ -1,106 +1,75 @@
-Return-Path: <linux-kernel+bounces-25470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6833382D0C5
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 14:42:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 78FFB82D0C7
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 14:43:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF1BF281F31
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 13:42:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27673282013
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 13:43:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 554AF23C6;
-	Sun, 14 Jan 2024 13:42:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oAZCHPLz"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A87E85228;
+	Sun, 14 Jan 2024 13:43:06 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 207C12100;
-	Sun, 14 Jan 2024 13:42:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705239766; x=1736775766;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0SdNNY8cR3/JqcCcTMz3H6BUbuomCCtkQgHAbuevA64=;
-  b=oAZCHPLzKIuuAoJEJpHIkybBTh5WJZncEApPe3H7nhJdd/i346hBy51K
-   bAhg0y0JwpTKSmL1KTZMF+tazZPXkFVeVUA/gd3kfmM52zHhHQ6muuYoh
-   oZl/WLBEBIvmnn7yC7nRyX30572LadsGqC1szTcRibH7MU4dfrsY7IVPw
-   Gn/dURF+hd10mjZPj/IV17qDmOgQC6kHUKr5VN7SRvpRCRi/FHD13Z4tz
-   Bqsq9Gt/d+EqX20RIw8haj15NLDMyuxFWJlm1h3e7HCJt7Db+109go78r
-   4Ml/PUrQAA/CV/1EdtFlFi6UL20J089nfxXeKMRZOeqyL8c2pMkTHKxwk
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10952"; a="465841160"
-X-IronPort-AV: E=Sophos;i="6.04,194,1695711600"; 
-   d="scan'208";a="465841160"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 05:42:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10952"; a="817567764"
-X-IronPort-AV: E=Sophos;i="6.04,194,1695711600"; 
-   d="scan'208";a="817567764"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 05:42:43 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rP0l5-0000000Dtxx-47nJ;
-	Sun, 14 Jan 2024 15:42:39 +0200
-Date: Sun, 14 Jan 2024 15:42:39 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-	christophe.jaillet@wanadoo.fr, David.Laight@aculab.com,
-	ddiss@suse.de, geert@linux-m68k.org
-Subject: Re: [PATCH v3 0/4] kstrtox: introduce memparse_safe()
-Message-ID: <ZaPkz7gU42Eahf4L@smile.fi.intel.com>
-References: <cover.1704324320.git.wqu@suse.com>
- <ZZllAi_GbsoDF5Eg@smile.fi.intel.com>
- <7708fc8b-738c-4d58-b89e-801ce6a4832a@gmx.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E42513FE0
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 13:43:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-35fc70bd879so63914505ab.3
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 05:43:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705239784; x=1705844584;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kjA9NqzawmaS/3nEtDF48BsDD+cFNWsitCCxUTooQ78=;
+        b=ix1Iqv7KP95EI96SZwS5fe5wKmvXN8urzb2jUcDpd64a5/2G20XZ88WABT3whWt+XN
+         nFwyi/rTLpN5LSWrLxEB4BvmCuM2IHlC3meJoEDWhqaD5ZbYdbcLMasrdLKgoFLHvfO2
+         xxIalo+ULd6kzMXpfllctnqHGq9PmJySgmqQuTM05qlPhLFErtYyh7MJ42jQu4zXKO1D
+         JliewIp3eCoQ58+wvYZaBy0R+srrRuhBx0KGcSUEptViOGIX0bob6n2Ain1Uyt1Bi/D+
+         ZjdU9y6BvhNUl7mFtRAHsCScSarBhLy/z01mcbjtUFp3XTEcRiRfm3X+mLLCGDCqrmlU
+         b6BA==
+X-Gm-Message-State: AOJu0Yw+JJPos3h3Nk76DytJ8xDSG8rD4lVdRkYkjqI1rqTP4TMzzSD0
+	Ik9eLjH4oYTl2AyKjqlJbjxzpniBSA7eUaamiJU9q5SqBhH6
+X-Google-Smtp-Source: AGHT+IG9jgfyBX3yhCEW4q/QVjn+eQox3Y1EMySJDX/BNCJYG0IuP+zRs8LrCPsmnu5JFbIBH+s4WtjylwqyG3QRiNnv/dFAajsD
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7708fc8b-738c-4d58-b89e-801ce6a4832a@gmx.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Received: by 2002:a05:6e02:17c7:b0:35f:e976:32b1 with SMTP id
+ z7-20020a056e0217c700b0035fe97632b1mr699432ilu.0.1705239784091; Sun, 14 Jan
+ 2024 05:43:04 -0800 (PST)
+Date: Sun, 14 Jan 2024 05:43:04 -0800
+In-Reply-To: <20240114124745.773-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000967859060ee81367@google.com>
+Subject: Re: [syzbot] [ntfs3?] INFO: task hung in ni_readpage_cmpr
+From: syzbot <syzbot+9877b6999a2554291c7d@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, Jan 07, 2024 at 07:28:27AM +1030, Qu Wenruo wrote:
-> On 2024/1/7 01:04, Andy Shevchenko wrote:
-> > On Thu, Jan 04, 2024 at 09:57:47AM +1030, Qu Wenruo wrote:
+Hello,
 
-..
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-> > Having test cases is quite good, thanks!
-> > But as I understood what Alexey wanted, is not using the kstrtox files for this.
-> > You can introduce it in the cmdline.c, correct? Just include local "kstrtox.h".
-> 
-> Not really possible, all the needed parsing helpers are internal inside
-> kstrtox.c.
+Reported-and-tested-by: syzbot+9877b6999a2554291c7d@syzkaller.appspotmail.com
 
-I'm not sure I follow. The functions are available to other library (built-in)
-modules.
+Tested on:
 
-> Furthermore, this also means memparse() can not be enhanced due to:
-> 
-> - Lack of ways to return errors
+commit:         052d5343 Merge tag 'exfat-for-6.8-rc1' of git://git.ke..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=15ae8135e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fd9cd6563b562315
+dashboard link: https://syzkaller.appspot.com/bug?extid=9877b6999a2554291c7d
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
-What does this mean?
-
-> - Unable to call the parsing helpers inside cmdline.c
-
-??? (see above)
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Note: no patches were applied.
+Note: testing is done by a robot and is best-effort only.
 
