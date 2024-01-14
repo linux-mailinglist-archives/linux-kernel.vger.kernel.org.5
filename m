@@ -1,74 +1,44 @@
-Return-Path: <linux-kernel+bounces-25556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AD0482D297
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 00:15:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A98C82D29B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 00:29:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FD2E1F213EC
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 23:15:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F7A428178F
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 23:29:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69EAF2C68A;
-	Sun, 14 Jan 2024 23:15:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C6EE2C68D;
+	Sun, 14 Jan 2024 23:29:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="mr9Rkc7M"
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="MiMDevn8"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B93B2C680;
-	Sun, 14 Jan 2024 23:15:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6d9344f30caso5427403b3a.1;
-        Sun, 14 Jan 2024 15:15:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705274137; x=1705878937;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=QGViPHtjJMlurFPTzBSSPEkkat6LUsMaxd6YuoP9bZE=;
-        b=EcFTMhO9K8bAo2qqynDYDOxpGUtrvnKoYTgY703Xzif0ajJsSiqIIJnCIg9E9xX3wp
-         Ff/22/J+DjlKkOd6SWlrrTOkFvpuiMRKCkdyJONj52If/ilkY7I8nPExP9uHnY0ypmbu
-         Aflyqq/Df9sqwlHUiSuRnchEiApEvbUBaP5Wv5beD4qIdfgQWhjucgKWpU1NUmSGUNzI
-         GFWsojrYKORPMvADN1SaacgOM+yd2u8q6M4o4EOottzAzJRQpF+T0CH0RAhbEIouBrTg
-         kQYaJAVq7Zti0f7xkWuNv5FvW9cxFK/RcqaRiuBmsR1pTBczl+sg4ONWfTRBBuOy+l3Z
-         IByw==
-X-Gm-Message-State: AOJu0Yx0u3LY4gL1sUcapCiH6esjnlXKt109EL0np/bBDANhDhhlEq1E
-	0iURAIJrZOp8pUNVQcfPc6I=
-X-Google-Smtp-Source: AGHT+IGX6Pz3j6wT5XGBdGkNsTcNQay3wFitLsf0ZTkMu21EsbWQmrDkQcFXNxS/GAzmihrtd2gFnQ==
-X-Received: by 2002:a05:6a00:4b0d:b0:6d9:bf50:196e with SMTP id kq13-20020a056a004b0d00b006d9bf50196emr5766190pfb.19.1705274137340;
-        Sun, 14 Jan 2024 15:15:37 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id ei6-20020a056a0080c600b006dae1c8c817sm6495523pfb.74.2024.01.14.15.15.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jan 2024 15:15:36 -0800 (PST)
-Date: Sun, 14 Jan 2024 20:15:38 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2023; t=1705274134;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB6E72C681
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 23:29:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 32DA320002;
+	Sun, 14 Jan 2024 23:28:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1705274935;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QGViPHtjJMlurFPTzBSSPEkkat6LUsMaxd6YuoP9bZE=;
-	b=mr9Rkc7M5rCAcuie0IEgYS6HZeCbDJJr9e0HB5GhSydRms/1CC31Db9XU/abTy3Rt3+wxY
-	/WCIUdOnJKbyNGP3ul8Bl4JC+DR7eLl+/7mPa531B/x8WSVL5VpYns9AjVVh6+X7VaJ6gs
-	k5boUZ7+XYk1K0rAjcmDb3KGXp0SST4SaQPW77BqTGHakjURR3oYPPSXQc+G4y1g4BENmq
-	nAE+vZzxjx0ow/g/rCllZdsP+3cZwddxZPeGDPk2HM5IQitjHtO2QhFHuMJ9Yfs4nHl0hP
-	ypaN/9p1M0d4Mk0jAXJL8/jesps+V1C/KvA8D1XUd+BpYGkNUXY8fjsAMlLrEQ==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, 
-	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org, 
-	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com, f.fainelli@gmail.com, 
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, 
-	allen.lkml@gmail.com
-Subject: Re: [PATCH 6.6 0/1] 6.6.12-rc1 review
-Message-ID: <k4fx6zf7tohistdg4dt2vuz7h2by3k3w4u2xulzta5drkvevye@2nki7zdt4j4l>
-References: <20240113094204.275569789@linuxfoundation.org>
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=Ekj1BIKc/p7PMvxdbAIJtXPBTFLeIHgU2AxKmlazIDg=;
+	b=MiMDevn8ZcZvevdrLRQVM9K5HqIy8Xu1qveVBRn0BxKzb2sUfB7EabEPjzzbzbl/EvCs74
+	dFvia3LBGA35jGYC2UGvTaJHh2Csnz94bRzKvg4iEM9RiTTgnTxbvH3gQWTSENw3ks5gDH
+	IEXzAt7aCkaT28criefjGd7NWiWA9JQpIslwcuMrheIbycvlc1CKZNUK/eXh8lFsJ2GS7S
+	sdtPqJUqvFi560S612Z7LL+i5WAPvnpaYY3KuCSbeXrOAVAnT4irOjgCqy5A7iakex+t8H
+	XTVhudIHEAsqmh1MQkJT5V7OOgTMNOPrmiW3twpSC34lQd4sSmZnBoo7AeMuZQ==
+Date: Mon, 15 Jan 2024 00:28:54 +0100
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] I3C changes for 6.8
+Message-ID: <2024011423285495e8345d@mail.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,33 +47,80 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240113094204.275569789@linuxfoundation.org>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
-On 13 Jan 10:50, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.6.12 release.
-> There are 1 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Mon, 15 Jan 2024 09:41:55 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.12-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
 
-System runs fine, no noticeable regressions.
+Hello Linus,
 
-[    0.000000] Linux version 6.6.12-rc1-ktest-gf44c56831910 (rbmarliere@debian) (gcc (Debian 13.2.0-9) 13.2.0, GNU ld (GNU Binutils for Debian) 2.41.50.20231227) #2 SMP PREEMPT_DYNAMIC Sun Jan 14 19:53:04 -03 2024
+Here is the i3c subsytem pull request for 6.8. We are continuing to see
+more fixes as hardware is available and code is actually getting tested.
 
-Tested-by: Ricardo B. Marliere <ricardo@marliere.net>
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
 
-Thanks!
--	Ricardo
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/i3c/linux.git tags/i3c/for-6.8
+
+for you to fetch changes up to 4fa0888f6f3e6a67cac5afafb23e33f8222cfdd0:
+
+  i3c: document hotjoin sysfs entry (2024-01-15 00:21:14 +0100)
+
+----------------------------------------------------------------
+I3C for 6.7
+
+Core:
+ - Add a sysfs control for hotjoin
+ - Add fallback method for GETMXDS CCC
+
+Drivers:
+ - cdns: fix prescale for i2c clock
+ - mipi-i3c-hci: more fixes now that the driver is used
+ - svc: hotjoin enabling/disabling support
+
+----------------------------------------------------------------
+Alexandre Belloni (1):
+      i3c: document hotjoin sysfs entry
+
+Frank Li (6):
+      i3c: master: add enable(disable) hot join in sys entry
+      i3c: master: svc: add hot join support
+      i3c: add actual_len in i3c_priv_xfer
+      i3c: master: svc: rename read_len as actual_len
+      i3c: master: svc: return actual transfer data len
+      i3c: master: fix kernel-doc check warning
+
+Harshit Shah (1):
+      i3c: master: cdns: Update maximum prescaler value for i2c clock
+
+Jarkko Nikula (5):
+      i3c: mipi-i3c-hci: Report NACK response from CCC command to core
+      i3c: mipi-i3c-hci: Do not overallocate transfers in hci_cmd_v1_daa()
+      i3c: mipi-i3c-hci: Handle I3C address header error in hci_cmd_v1_daa()
+      i3c: mipi-i3c-hci: Add DMA bounce buffer for private transfers
+      i3c: master: Fix build error
+
+Joshua Yeong (1):
+      i3c: Add fallback method for GETMXDS CCC
+
+Randy Dunlap (1):
+      i3c: master: fix Excess kernel-doc description warning
+
+ Documentation/ABI/testing/sysfs-bus-i3c  | 15 +++++
+ drivers/i3c/master.c                     | 95 +++++++++++++++++++++++++++++++-
+ drivers/i3c/master/i3c-master-cdns.c     |  7 ++-
+ drivers/i3c/master/mipi-i3c-hci/cmd_v1.c |  7 ++-
+ drivers/i3c/master/mipi-i3c-hci/core.c   | 49 +++++++++++++++-
+ drivers/i3c/master/mipi-i3c-hci/dma.c    |  4 +-
+ drivers/i3c/master/mipi-i3c-hci/hci.h    |  1 +
+ drivers/i3c/master/svc-i3c-master.c      | 95 ++++++++++++++++++++++++++------
+ include/linux/i3c/device.h               |  2 +
+ include/linux/i3c/master.h               |  9 ++-
+ 10 files changed, 256 insertions(+), 28 deletions(-)
+
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
