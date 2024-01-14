@@ -1,258 +1,93 @@
-Return-Path: <linux-kernel+bounces-25554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF82482D291
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 00:11:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99AE882D294
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 00:13:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E0FA1C20A0D
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 23:11:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B0B51F213AD
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 23:13:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 358052C684;
-	Sun, 14 Jan 2024 23:10:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62B902C686;
+	Sun, 14 Jan 2024 23:13:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X497RmJp"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="uCt225ef"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60BA413AE9;
-	Sun, 14 Jan 2024 23:10:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F6CDC433F1;
-	Sun, 14 Jan 2024 23:10:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705273851;
-	bh=4/J2DlKzYXXiP0hp5Un/b/TpU09wYZRPVW0CwMsJcDg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=X497RmJpq1P3lLfqgKzHzraF738L/fJ/u39IipcL386D31flZuGww0b7G/Ljj/1us
-	 lE/pjp5P7N3fcJWwJ+HGiVAPt4J+p/0K18RT3AQ54hFUl/NA9iLGSfHOwBSu1sPOQY
-	 jjh4OYlcTXPvHDIpqzm3zYB+AkSJP79WjDbImTV3KkUu243stFgAGsNNWRuGdThj2V
-	 Rk8Ex2RMG1aVCq+XAUXoRktNEDEBo1jhBalXKQcwRIcNNu1dfT2N3nKKC1m1aVWZEK
-	 eqLlEWBD15Br4mkN7qkbjWGROukFZxZEVe5du9V4UdDAyH1T8OWzzGeWSM/qTY5Gu0
-	 LaW3DmKjUggTg==
-Date: Mon, 15 Jan 2024 08:10:47 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Vincent Donnefort <vdonnefort@google.com>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
- kernel-team@android.com
-Subject: Re: [PATCH v11 4/5] Documentation: tracing: Add ring-buffer mapping
-Message-Id: <20240115081047.c7edecc6e6d9ee038e9474f4@kernel.org>
-In-Reply-To: <20240114112324.0ddbb457@rorschach.local.home>
-References: <20240111161712.1480333-1-vdonnefort@google.com>
-	<20240111161712.1480333-5-vdonnefort@google.com>
-	<20240114232643.ed27554959afea426446e9b5@kernel.org>
-	<20240114112324.0ddbb457@rorschach.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 859C52C680;
+	Sun, 14 Jan 2024 23:13:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=eMAehrgdOex157gcLIzKgIOwhrQ8V1YSfEKTBwqKato=; b=uCt225eflj2P3CxFEEs4l2+Q8d
+	5gmB86zPZ3b4r7l+unS32A0UUt4w1ixOSWvtlY82S/YKkL4WOrPeilKM6bvWMpu95wOTT23HuGfLR
+	t8qy0Mc21OavxXXVlEnbj3jltGGScd1Z5mSWcVAtrj0y50vPUUbz4Znlk39Q022W9uF8FuVmZaYMO
+	Jqy3oaWB+Btvw+MT5fvrTLSWJneO1w1Ldg3di+5xOH1BzPfe7vuNm9yCOLfA10Fbmk1tbIqfPbevc
+	v0D30wyizRHZ5wUIZvY79CK1SQYzy95YulqMdefKj41bZWRViSOcxte8rZE9JhV1fmscZ7KEH/+pq
+	ETtBUWSw==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rP9fN-007UEI-03;
+	Sun, 14 Jan 2024 23:13:21 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	linux-rtc@vger.kernel.org
+Subject: [PATCH] rtc: ac100: remove misuses of kernel-doc
+Date: Sun, 14 Jan 2024 15:13:20 -0800
+Message-ID: <20240114231320.31437-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Sun, 14 Jan 2024 11:23:24 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Prevent kernel-doc warnings by changing "/**" to common comment
+format "/*" in non-kernel-doc comments:
 
-> On Sun, 14 Jan 2024 23:26:43 +0900
-> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> 
-> > Hi Vincent,
-> > 
-> > On Thu, 11 Jan 2024 16:17:11 +0000
-> > Vincent Donnefort <vdonnefort@google.com> wrote:
-> > 
-> > > It is now possible to mmap() a ring-buffer to stream its content. Add
-> > > some documentation and a code example.
-> > > 
-> > > Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
-> > > 
-> > > diff --git a/Documentation/trace/index.rst b/Documentation/trace/index.rst
-> > > index 5092d6c13af5..0b300901fd75 100644
-> > > --- a/Documentation/trace/index.rst
-> > > +++ b/Documentation/trace/index.rst
-> > > @@ -29,6 +29,7 @@ Linux Tracing Technologies
-> > >     timerlat-tracer
-> > >     intel_th
-> > >     ring-buffer-design
-> > > +   ring-buffer-map
-> > >     stm
-> > >     sys-t
-> > >     coresight/index
-> > > diff --git a/Documentation/trace/ring-buffer-map.rst b/Documentation/trace/ring-buffer-map.rst
-> > > new file mode 100644
-> > > index 000000000000..2ba7b5339178
-> > > --- /dev/null
-> > > +++ b/Documentation/trace/ring-buffer-map.rst
-> > > @@ -0,0 +1,105 @@
-> > > +.. SPDX-License-Identifier: GPL-2.0
-> > > +
-> > > +==================================
-> > > +Tracefs ring-buffer memory mapping
-> > > +==================================
-> > > +
-> > > +:Author: Vincent Donnefort <vdonnefort@google.com>
-> > > +
-> > > +Overview
-> > > +========
-> > > +Tracefs ring-buffer memory map provides an efficient method to stream data
-> > > +as no memory copy is necessary. The application mapping the ring-buffer becomes
-> > > +then a consumer for that ring-buffer, in a similar fashion to trace_pipe.
-> > > +
-> > > +Memory mapping setup
-> > > +====================
-> > > +The mapping works with a mmap() of the trace_pipe_raw interface.
-> > > +
-> > > +The first system page of the mapping contains ring-buffer statistics and
-> > > +description. It is referred as the meta-page. One of the most important field of
-> > > +the meta-page is the reader. It contains the subbuf ID which can be safely read
-> > > +by the mapper (see ring-buffer-design.rst).
-> > > +
-> > > +The meta-page is followed by all the subbuf, ordered by ascendant ID. It is
-> > > +therefore effortless to know where the reader starts in the mapping:
-> > > +
-> > > +.. code-block:: c
-> > > +
-> > > +        reader_id = meta->reader->id;
-> > > +        reader_offset = meta->meta_page_size + reader_id * meta->subbuf_size;
-> > > +
-> > > +When the application is done with the current reader, it can get a new one using
-> > > +the trace_pipe_raw ioctl() TRACE_MMAP_IOCTL_GET_READER. This ioctl also updates
-> > > +the meta-page fields.
-> > > +
-> > > +Limitations
-> > > +===========
-> > > +When a mapping is in place on a Tracefs ring-buffer, it is not possible to
-> > > +either resize it (either by increasing the entire size of the ring-buffer or
-> > > +each subbuf). It is also not possible to use snapshot or splice.  
-> > 
-> > I've played with the sample code.
-> > 
-> > - "free_buffer" just doesn't work when the process is mmap the ring buffer.
-> > - After mmap the buffers, when the snapshot took, the IOCTL returns an error.
-> > 
-> > OK, but I rather like to fail snapshot with -EBUSY when the buffer is mmaped.
-> > 
-> > > +
-> > > +Concurrent readers (either another application mapping that ring-buffer or the
-> > > +kernel with trace_pipe) are allowed but not recommended. They will compete for
-> > > +the ring-buffer and the output is unpredictable.
-> > > +
-> > > +Example
-> > > +=======
-> > > +
-> > > +.. code-block:: c
-> > > +
-> > > +        #include <fcntl.h>
-> > > +        #include <stdio.h>
-> > > +        #include <stdlib.h>
-> > > +        #include <unistd.h>
-> > > +
-> > > +        #include <linux/trace_mmap.h>
-> > > +
-> > > +        #include <sys/mman.h>
-> > > +        #include <sys/ioctl.h>
-> > > +
-> > > +        #define TRACE_PIPE_RAW "/sys/kernel/tracing/per_cpu/cpu0/trace_pipe_raw"
-> > > +
-> > > +        int main(void)
-> > > +        {
-> > > +                int page_size = getpagesize(), fd, reader_id;
-> > > +                unsigned long meta_len, data_len;
-> > > +                struct trace_buffer_meta *meta;
-> > > +                void *map, *reader, *data;
-> > > +
-> > > +                fd = open(TRACE_PIPE_RAW, O_RDONLY);
-> > > +                if (fd < 0)
-> > > +                        exit(EXIT_FAILURE);
-> > > +
-> > > +                map = mmap(NULL, page_size, PROT_READ, MAP_SHARED, fd, 0);
-> > > +                if (map == MAP_FAILED)
-> > > +                        exit(EXIT_FAILURE);
-> > > +
-> > > +                meta = (struct trace_buffer_meta *)map;
-> > > +                meta_len = meta->meta_page_size;
-> > > +
-> > > +                printf("entries:        %lu\n", meta->entries);
-> > > +                printf("overrun:        %lu\n", meta->overrun);
-> > > +                printf("read:           %lu\n", meta->read);
-> > > +                printf("subbufs_touched:%lu\n", meta->subbufs_touched);
-> > > +                printf("subbufs_lost:   %lu\n", meta->subbufs_lost);
-> > > +                printf("subbufs_read:   %lu\n", meta->subbufs_read);
-> > > +                printf("nr_subbufs:     %u\n", meta->nr_subbufs);
-> > > +
-> > > +                data_len = meta->subbuf_size * meta->nr_subbufs;
-> > > +                data = mmap(NULL, data_len, PROT_READ, MAP_SHARED, fd, data_len);
-> 
-> The above is buggy. It should be:
-> 
-> 		data = mmap(NULL, data_len, PROT_READ, MAP_SHARED, fd, meta_len);
-> 
-> The last parameter is where to start the mapping from, which is just
-> after the meta page. The code is currently starting the map far away
-> from that.
+drivers/rtc/rtc-ac100.c:103: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ * Clock controls for 3 clock output pins
+drivers/rtc/rtc-ac100.c:382: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ * RTC related bits
 
-Ah, indeed! I confirmed that fixed the bus error.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Chen-Yu Tsai <wens@csie.org>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: linux-rtc@vger.kernel.org
+---
+ drivers/rtc/rtc-ac100.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thank you!
-
-> 
-> -- Steve
-> 
-> > > +                if (data == MAP_FAILED)
-> > > +                        exit(EXIT_FAILURE);
-> > > +
-> > > +                if (ioctl(fd, TRACE_MMAP_IOCTL_GET_READER) < 0)
-> > > +                        exit(EXIT_FAILURE);
-> > > +
-> > > +                reader_id = meta->reader.id;
-> > > +                reader = data + meta->subbuf_size * reader_id;  
-> > 
-> > Also, this caused a bus error if I add below 2 lines here.
-> > 
-> >         printf("reader_id: %d, addr: %p\n", reader_id, reader);
-> >         printf("read data head: %lx\n", *(unsigned long *)reader);
-> > 
-> > -----
-> > / # cd /sys/kernel/tracing/
-> > /sys/kernel/tracing # echo 1 > events/enable 
-> > [   17.941894] Scheduler tracepoints stat_sleep, stat_iowait, stat_blocked and stat_runtime require the kernel parameter schedstats=enable or kernel.sched_schedstats=1
-> > /sys/kernel/tracing # 
-> > /sys/kernel/tracing # echo 1 > buffer_percent 
-> > /sys/kernel/tracing # /mnt/rbmap2 
-> > entries:        245291
-> > overrun:        203741
-> > read:           0
-> > subbufs_touched:2041
-> > subbufs_lost:   1688
-> > subbufs_read:   0
-> > nr_subbufs:     355
-> > reader_id: 1, addr: 0x7f0cde51a000
-> > Bus error
-> > -----
-> > 
-> > Is this expected behavior? how can I read the ring buffer?
-> > 
-> > Thank you,
-> > 
-> > > +
-> > > +                munmap(data, data_len);
-> > > +                munmap(meta, meta_len);
-> > > +                close (fd);
-> > > +
-> > > +                return 0;
-> > > +        }
-> > > -- 
-> > > 2.43.0.275.g3460e3d667-goog
-> > >   
-> > 
-> > 
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+diff -- a/drivers/rtc/rtc-ac100.c b/drivers/rtc/rtc-ac100.c
+--- a/drivers/rtc/rtc-ac100.c
++++ b/drivers/rtc/rtc-ac100.c
+@@ -99,7 +99,7 @@ struct ac100_rtc_dev {
+ 	struct clk_hw_onecell_data *clk_data;
+ };
+ 
+-/**
++/*
+  * Clock controls for 3 clock output pins
+  */
+ 
+@@ -378,7 +378,7 @@ static void ac100_rtc_unregister_clks(st
+ 	clk_unregister_fixed_rate(chip->rtc_32k_clk->clk);
+ }
+ 
+-/**
++/*
+  * RTC related bits
+  */
+ static int ac100_rtc_get_time(struct device *dev, struct rtc_time *rtc_tm)
 
