@@ -1,231 +1,112 @@
-Return-Path: <linux-kernel+bounces-25480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA82082D0E3
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 15:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E24EB82D0E5
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 15:31:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 836DD2822C4
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 14:27:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77AB92821B1
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jan 2024 14:31:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC25D522C;
-	Sun, 14 Jan 2024 14:26:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01DBA23DE;
+	Sun, 14 Jan 2024 14:31:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nv2IRevP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bhBah/QS"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8C7E3FDB;
-	Sun, 14 Jan 2024 14:26:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEC7EC433F1;
-	Sun, 14 Jan 2024 14:26:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705242407;
-	bh=GcCGLWtzi5+3fm3L+xigl1G2ldOGAJ5wiXYz+codqYE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=nv2IRevPOOlkEXkPBkKrhGjA6EGg4e+QY8ijbCDYn3QWPsAHXLN/CWAwSAvrz+y/O
-	 wRDibTZvlpx+Pt19UgAivL5xFpOnPj0uKuehXkmCRYbygveMLc0otFA2grobWFDNwC
-	 QhCHJML/Argl5gS4Y8miIlFFsj14ioFmAqQmsC5fALHMAiDv3sgsB29blIMyoa6lCA
-	 05aINzVj9/eKl1hNvvLEirqot4/igzs/refumi4dvDYLNz+kqpwmw2hrXyaewWi7Dp
-	 RCXtre85S/9AHm8ePn6+jbbHcQtu97neWTRjAyCMpt4YzG3lZQiLNU05ed7ra+Athx
-	 LnguUHkCHJqNA==
-Date: Sun, 14 Jan 2024 23:26:43 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Vincent Donnefort <vdonnefort@google.com>
-Cc: rostedt@goodmis.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
- kernel-team@android.com
-Subject: Re: [PATCH v11 4/5] Documentation: tracing: Add ring-buffer mapping
-Message-Id: <20240114232643.ed27554959afea426446e9b5@kernel.org>
-In-Reply-To: <20240111161712.1480333-5-vdonnefort@google.com>
-References: <20240111161712.1480333-1-vdonnefort@google.com>
-	<20240111161712.1480333-5-vdonnefort@google.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D13B823BD;
+	Sun, 14 Jan 2024 14:30:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a26fa294e56so819078466b.0;
+        Sun, 14 Jan 2024 06:30:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705242656; x=1705847456; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PGgDW1TWbu/IxiNbUJKSvwDw7b9go5u/b638eBN6ezo=;
+        b=bhBah/QSA78acaw0yPLtExnhqNAiHX5WH4KbtpL5jbn5iujAK/CdZ9Z8zFPGVhcdMg
+         ImjCjeiF0LDiomd6d3ymSNLL7/cYBDsJXrKh6fSljbRDJmu1LA3h8L4XcfZHzGbJDc45
+         /kFj3na2Ie0DFjbIBniljEe76eyJCXmFrGQUsFkjqHp2E3e2+sHCJ3ZCDWqXJnZVMZQq
+         nqepg367cK1kbCKvbIUD3A6Xj6LBD3HPa3r88Kr4KydHzm4NG7tdvjKvcBuYhDvwvpSO
+         nUciuLJI2sLV+WoAcqyjRmu8BazSD+1A1iamOWgDs5tZTUQKKkeERvP9USxtWeQ0VKjn
+         HAZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705242656; x=1705847456;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PGgDW1TWbu/IxiNbUJKSvwDw7b9go5u/b638eBN6ezo=;
+        b=S1j5a4Q8bExfCAlmYKyQgzohpmfJjGxYHtr6aV7RDaEGPEJV4WbrVGZeXk8/LLhWQq
+         wF3AXhYGU8+6uuzhA9XGdsFdWP/IcHiZuha9Bls+LzrDXKPQ8J8fDUQgRO7pBtZlkSaz
+         KzR5wPRLkSuq66+0yTVP3NaQG/whhSEC9xnSZMEqqd6li6Q7JaiTGUEjNP5Cb1bOu3bY
+         FfunacZfEnUJEsC5izVZRc2EIyAPPvrqUM1a/NJqzW4gDPX/4MJXDg3BHzoHaXBNQLOk
+         XWvm9hGvc9ZhOyukuRaB9tJEsCsAGfjKt+mOBQyDcRMwnDSWTFv4TPEsk5x+O1Z21+oY
+         85yg==
+X-Gm-Message-State: AOJu0Yw83KJSXzO/bbU/WNTXsj0PbzdrzYZR81zm9weTJxUpcH+EnWoL
+	65Q6xbJrP4f7DyRl8AGkOSZGw90fOD4bM55HZNw=
+X-Google-Smtp-Source: AGHT+IFLoSu+vMFwbQVcKYlBqjuE4eeLhavD+dG3mIJpEazMtvQYHKbfpjqoGMzTclqC5OCyURmUeAkZh2FoPndb1ic=
+X-Received: by 2002:a17:906:33d0:b0:a28:c06d:2e0a with SMTP id
+ w16-20020a17090633d000b00a28c06d2e0amr1968824eja.70.1705242655969; Sun, 14
+ Jan 2024 06:30:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240109140221.77725-1-warthog618@gmail.com> <ZaPrbi6GxqlfysWe@smile.fi.intel.com>
+ <20240114141957.GA99741@rigel>
+In-Reply-To: <20240114141957.GA99741@rigel>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Sun, 14 Jan 2024 16:30:19 +0200
+Message-ID: <CAHp75VcdE-DfoSLOYyg5RdouBCs1QJ3AO6Ru49P_84-vTKi4DA@mail.gmail.com>
+Subject: Re: [PATCH 0/5] gpio: uapi: documentation improvements
+To: Kent Gibson <warthog618@gmail.com>
+Cc: Andy Shevchenko <andy@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, brgl@bgdev.pl, linus.walleij@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Vincent,
+On Sun, Jan 14, 2024 at 4:20=E2=80=AFPM Kent Gibson <warthog618@gmail.com> =
+wrote:
+> On Sun, Jan 14, 2024 at 04:10:54PM +0200, Andy Shevchenko wrote:
+> > On Tue, Jan 09, 2024 at 10:02:16PM +0800, Kent Gibson wrote:
+> > > This is a series of minor clarifications and formatting tidy ups for
+> > > the GPIO uAPI kernel doc.
+> > >
+> > > The series is intended as a companion to my character device
+> > > uAPI documentation series, but makes sense on its own too.
+> > >
+> > > The patches are self contained and trivial so not much to add here.
+> >
+> > Reviewed-by: Andy Shevchenko <andy@kernel.org>
+> >
+> > for patches starting from the second one.
+> >
+> > The first one I personally don't understand why, but I'm not a native s=
+peaker!
+> > I believe, it's correct, although the original version seems okay to me=
+.
+>
+> The problem isn't the language, unless you mean I'm explaining poorly, it
+> is the logic.  The original says "zero or negative value means error", bu=
+t
+> in case of an error the kernel does not actually set the fd.  So if the
+> user sends a request containing a positive fd they might incorrectly infe=
+r
+> that the positive fd being returned implies success.
+>
+> The new wording is that the returned fd is only valid on success.
 
-On Thu, 11 Jan 2024 16:17:11 +0000
-Vincent Donnefort <vdonnefort@google.com> wrote:
+Ah, thanks for elaboration, now I understand the issue. Okay, feel
+free to extend the Rb to the first patch.
 
-> It is now possible to mmap() a ring-buffer to stream its content. Add
-> some documentation and a code example.
-> 
-> Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
-> 
-> diff --git a/Documentation/trace/index.rst b/Documentation/trace/index.rst
-> index 5092d6c13af5..0b300901fd75 100644
-> --- a/Documentation/trace/index.rst
-> +++ b/Documentation/trace/index.rst
-> @@ -29,6 +29,7 @@ Linux Tracing Technologies
->     timerlat-tracer
->     intel_th
->     ring-buffer-design
-> +   ring-buffer-map
->     stm
->     sys-t
->     coresight/index
-> diff --git a/Documentation/trace/ring-buffer-map.rst b/Documentation/trace/ring-buffer-map.rst
-> new file mode 100644
-> index 000000000000..2ba7b5339178
-> --- /dev/null
-> +++ b/Documentation/trace/ring-buffer-map.rst
-> @@ -0,0 +1,105 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +==================================
-> +Tracefs ring-buffer memory mapping
-> +==================================
-> +
-> +:Author: Vincent Donnefort <vdonnefort@google.com>
-> +
-> +Overview
-> +========
-> +Tracefs ring-buffer memory map provides an efficient method to stream data
-> +as no memory copy is necessary. The application mapping the ring-buffer becomes
-> +then a consumer for that ring-buffer, in a similar fashion to trace_pipe.
-> +
-> +Memory mapping setup
-> +====================
-> +The mapping works with a mmap() of the trace_pipe_raw interface.
-> +
-> +The first system page of the mapping contains ring-buffer statistics and
-> +description. It is referred as the meta-page. One of the most important field of
-> +the meta-page is the reader. It contains the subbuf ID which can be safely read
-> +by the mapper (see ring-buffer-design.rst).
-> +
-> +The meta-page is followed by all the subbuf, ordered by ascendant ID. It is
-> +therefore effortless to know where the reader starts in the mapping:
-> +
-> +.. code-block:: c
-> +
-> +        reader_id = meta->reader->id;
-> +        reader_offset = meta->meta_page_size + reader_id * meta->subbuf_size;
-> +
-> +When the application is done with the current reader, it can get a new one using
-> +the trace_pipe_raw ioctl() TRACE_MMAP_IOCTL_GET_READER. This ioctl also updates
-> +the meta-page fields.
-> +
-> +Limitations
-> +===========
-> +When a mapping is in place on a Tracefs ring-buffer, it is not possible to
-> +either resize it (either by increasing the entire size of the ring-buffer or
-> +each subbuf). It is also not possible to use snapshot or splice.
-
-I've played with the sample code.
-
-- "free_buffer" just doesn't work when the process is mmap the ring buffer.
-- After mmap the buffers, when the snapshot took, the IOCTL returns an error.
-
-OK, but I rather like to fail snapshot with -EBUSY when the buffer is mmaped.
-
-> +
-> +Concurrent readers (either another application mapping that ring-buffer or the
-> +kernel with trace_pipe) are allowed but not recommended. They will compete for
-> +the ring-buffer and the output is unpredictable.
-> +
-> +Example
-> +=======
-> +
-> +.. code-block:: c
-> +
-> +        #include <fcntl.h>
-> +        #include <stdio.h>
-> +        #include <stdlib.h>
-> +        #include <unistd.h>
-> +
-> +        #include <linux/trace_mmap.h>
-> +
-> +        #include <sys/mman.h>
-> +        #include <sys/ioctl.h>
-> +
-> +        #define TRACE_PIPE_RAW "/sys/kernel/tracing/per_cpu/cpu0/trace_pipe_raw"
-> +
-> +        int main(void)
-> +        {
-> +                int page_size = getpagesize(), fd, reader_id;
-> +                unsigned long meta_len, data_len;
-> +                struct trace_buffer_meta *meta;
-> +                void *map, *reader, *data;
-> +
-> +                fd = open(TRACE_PIPE_RAW, O_RDONLY);
-> +                if (fd < 0)
-> +                        exit(EXIT_FAILURE);
-> +
-> +                map = mmap(NULL, page_size, PROT_READ, MAP_SHARED, fd, 0);
-> +                if (map == MAP_FAILED)
-> +                        exit(EXIT_FAILURE);
-> +
-> +                meta = (struct trace_buffer_meta *)map;
-> +                meta_len = meta->meta_page_size;
-> +
-> +                printf("entries:        %lu\n", meta->entries);
-> +                printf("overrun:        %lu\n", meta->overrun);
-> +                printf("read:           %lu\n", meta->read);
-> +                printf("subbufs_touched:%lu\n", meta->subbufs_touched);
-> +                printf("subbufs_lost:   %lu\n", meta->subbufs_lost);
-> +                printf("subbufs_read:   %lu\n", meta->subbufs_read);
-> +                printf("nr_subbufs:     %u\n", meta->nr_subbufs);
-> +
-> +                data_len = meta->subbuf_size * meta->nr_subbufs;
-> +                data = mmap(NULL, data_len, PROT_READ, MAP_SHARED, fd, data_len);
-> +                if (data == MAP_FAILED)
-> +                        exit(EXIT_FAILURE);
-> +
-> +                if (ioctl(fd, TRACE_MMAP_IOCTL_GET_READER) < 0)
-> +                        exit(EXIT_FAILURE);
-> +
-> +                reader_id = meta->reader.id;
-> +                reader = data + meta->subbuf_size * reader_id;
-
-Also, this caused a bus error if I add below 2 lines here.
-
-        printf("reader_id: %d, addr: %p\n", reader_id, reader);
-        printf("read data head: %lx\n", *(unsigned long *)reader);
-
------
-/ # cd /sys/kernel/tracing/
-/sys/kernel/tracing # echo 1 > events/enable 
-[   17.941894] Scheduler tracepoints stat_sleep, stat_iowait, stat_blocked and stat_runtime require the kernel parameter schedstats=enable or kernel.sched_schedstats=1
-/sys/kernel/tracing # 
-/sys/kernel/tracing # echo 1 > buffer_percent 
-/sys/kernel/tracing # /mnt/rbmap2 
-entries:        245291
-overrun:        203741
-read:           0
-subbufs_touched:2041
-subbufs_lost:   1688
-subbufs_read:   0
-nr_subbufs:     355
-reader_id: 1, addr: 0x7f0cde51a000
-Bus error
------
-
-Is this expected behavior? how can I read the ring buffer?
-
-Thank you,
-
-> +
-> +                munmap(data, data_len);
-> +                munmap(meta, meta_len);
-> +                close (fd);
-> +
-> +                return 0;
-> +        }
-> -- 
-> 2.43.0.275.g3460e3d667-goog
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+--=20
+With Best Regards,
+Andy Shevchenko
 
