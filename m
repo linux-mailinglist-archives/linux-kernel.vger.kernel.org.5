@@ -1,112 +1,194 @@
-Return-Path: <linux-kernel+bounces-25576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C1A682D2E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 02:12:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43B4782D2E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 02:16:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87A8F1F211D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 01:12:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A0CA281538
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 01:16:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F040415BB;
-	Mon, 15 Jan 2024 01:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9508B15B3;
+	Mon, 15 Jan 2024 01:16:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ICUEfyU5"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=apertussolutions.com header.i=dpsmith@apertussolutions.com header.b="REKN8IlM"
+Received: from sender4-of-o50.zoho.com (sender4-of-o50.zoho.com [136.143.188.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDEE8137B;
-	Mon, 15 Jan 2024 01:11:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-559533e2503so205686a12.1;
-        Sun, 14 Jan 2024 17:11:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705281104; x=1705885904; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y1rZ/h3cbN1N5NXVmLdpqMA/KIcAJWlHyWzl1o7Zy9M=;
-        b=ICUEfyU5ZyebGEpHJk6XSwwGV8RT38NUSDqt0sHTSvEmsLEqRPGc50HTGylvxMxxm8
-         23PE0ykJHp4HZKx9yyA81QgkMZ0J9G2WaBc4FdsVJZARt3tH+c4HuckKyiELawhpjzc4
-         kTZDXwYOExHXFeEwijUy91EBxmvgNcsZiFg01w9ll6eH2bNdgEwMc02c0jIJEZtGLN44
-         ly/NbwW462XMH6iuP8i63FmCtlvXLx5/97hbm6W5qjcsvgl5pnaPr+A+LRFsnjZG8Fum
-         fyq8Y6b3EhEMwWj+oK/gaK2DZmnp9VmqifjfymB9TBZA/rvTB6Shd8r0MtaxaKxUXi74
-         T5ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705281104; x=1705885904;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y1rZ/h3cbN1N5NXVmLdpqMA/KIcAJWlHyWzl1o7Zy9M=;
-        b=iBdx12SXOBnZVeu6Brj8yPH9liTSvbYK7sFZZm64de5111VV19kkpBXKJSvX1PPytr
-         wxRlTL3PZMmsYgvV1ps2QVNctHLu13WrxBnsdnL3GvhMqB92bMxcfWzTUsu4CwecCr6J
-         oUCxPueBiGH8V6k53ACJMwbq+mtjiqj+IRZm6lWHnUF8XmepM1W7XUh1gL3xIYa3Tn89
-         rEdt1A8b/3eeCHjkActHinkE4of6q0xMR2Xr41DBe2HhBO2SVvC2/8M4epdzmP9XTzHT
-         CZpzCgYoJji4cr8cs8XYwm509SqDrxSrFUAhUP+apBr7DYtcdyMlupHpHYno8lJMWJJp
-         CWCw==
-X-Gm-Message-State: AOJu0YyNUMGk2dFwdasyi56pXeET15WRE0810uiHs/7MlfEvyqMJ5SdH
-	wZddDvm4ERlXarfXHbXuJqfe/k0WyShzuxsz/0DOAB5cpjRmfw==
-X-Google-Smtp-Source: AGHT+IGMzGMmVfbToyYFSO6pXP0C/5IE8vYyXQKoEkr5uVIYZy80btPqqri76tSRyYSertCLltSpl2M2gBRTfFS6+K8=
-X-Received: by 2002:a17:907:c284:b0:a2c:b1f0:eb5b with SMTP id
- tk4-20020a170907c28400b00a2cb1f0eb5bmr2252890ejc.43.1705281103803; Sun, 14
- Jan 2024 17:11:43 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B087137B;
+	Mon, 15 Jan 2024 01:16:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=apertussolutions.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=apertussolutions.com
+Delivered-To: dpsmith@apertussolutions.com
+ARC-Seal: i=1; a=rsa-sha256; t=1705281357; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=jAuUvxVU8D23KdA/HZzdCYNvhAgM+U2WBQn/wpcFl3at/a7pKAY6U5Y8n9xcyCPfABMDNOCWj55cmjZ0rN7Xv3Mz2o8uWEOKV7WK7s9P+o8U7PB2PJh1e4SiPEDZcsJLE0SeAXhU0QIASsZFzZ4/HQTizxx6W1W2tWDTEZbbiCc=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1705281357; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=zLf9QVptryF0InKzR9EnfMAiKSvtoQon6fPnRpBNJf8=; 
+	b=AVEbSNz512ykrZY1XLGhjtJNfbD1VYDoe/IzDbx8nOqrKSI982N6IdpKErV3vzquzvC5YSvCt7wgoeJ8hy91bhpPSAam46SC6qqxzz8F0igywFLcrCYAY/32OnEvMrmcaFKkbalL2qaTYZGtH6OmllNd1HB+fRPDfzeTHBDyoqQ=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=apertussolutions.com;
+	spf=pass  smtp.mailfrom=dpsmith@apertussolutions.com;
+	dmarc=pass header.from=<dpsmith@apertussolutions.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1705281357;
+	s=zoho; d=apertussolutions.com; i=dpsmith@apertussolutions.com;
+	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-Id:Message-Id:MIME-Version:Content-Transfer-Encoding:Reply-To;
+	bh=zLf9QVptryF0InKzR9EnfMAiKSvtoQon6fPnRpBNJf8=;
+	b=REKN8IlMTZyPV8JlO3ggYaFu6+/zE+z2855+XdJ+CJ4Z3kYVyBr1achSluEl8lQ3
+	z9w5VcizG8PhPrkirrcC+6XQ9+ri5dKUY9i76jpBff/Z5lN9ELhTrrb8nwXz4qTfx4S
+	yN8E8gMManHaWMD9NRr2O//JG7ELgFWOA+jlzU0o=
+Received: from sisyou.hme. (static-72-81-132-2.bltmmd.fios.verizon.net [72.81.132.2]) by mx.zohomail.com
+	with SMTPS id 1705281355612388.34342267689556; Sun, 14 Jan 2024 17:15:55 -0800 (PST)
+From: "Daniel P. Smith" <dpsmith@apertussolutions.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>,
+	Jarkko Sakkinen <jarkko@kernel.org>,
+	Lino Sanfilippo <l.sanfilippo@kunbus.com>,
+	Sasha Levin <sashal@kernel.org>,
+	linux-integrity@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: "Daniel P. Smith" <dpsmith@apertussolutions.com>,
+	Ross Philipson <ross.philipson@oracle.com>,
+	Kanth Ghatraju <kanth.ghatraju@oracle.com>,
+	Peter Huewe <peterhuewe@gmx.de>
+Subject: [PATCH] tpm: make locality handling resilient
+Date: Sun, 14 Jan 2024 20:15:44 -0500
+Message-Id: <20240115011546.21193-1-dpsmith@apertussolutions.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240115004847.22369-1-warthog618@gmail.com> <20240115004847.22369-2-warthog618@gmail.com>
-In-Reply-To: <20240115004847.22369-2-warthog618@gmail.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Mon, 15 Jan 2024 03:11:07 +0200
-Message-ID: <CAHp75Vc=oZK=VR6vZ+kTapq5WpySgKVjAfuO6mxcPqPfQe6VRg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/9] Documentation: gpio: add chardev userspace API documentation
-To: Kent Gibson <warthog618@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	linux-doc@vger.kernel.org, brgl@bgdev.pl, linus.walleij@linaro.org, 
-	andy@kernel.org, corbet@lwn.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 
-On Mon, Jan 15, 2024 at 2:49=E2=80=AFAM Kent Gibson <warthog618@gmail.com> =
-wrote:
->
-> Add documentation for the GPIO character device userspace API.
->
-> Added to the userspace-api book, but also provide a link from the
-> admin-guide book, as historically the GPIO documentation has been
-> there.
+Commit 933bfc5ad213 introduced the use of a locality counter to control when
+locality request was actually sent to the TPM. This locality counter created a
+hard enforcement that the TPM had no active locality at the time of the driver
+initialization. The reality is that this may not always be the case coupled
+with the fact that the commit indiscriminately decremented the counter created
+the condition for integer underflow of the counter. The underflow was triggered
+by the first pair of request/relinquish calls made in tpm_tis_init_core and all
+subsequent calls to request/relinquished calls would have the counter flipping
+between the underflow value and 0. The result is that it appeared all calls to
+request/relinquish were successful, but they were not. The end result is that
+the locality that was active when the driver loaded would always remain active,
+to include after the driver shutdown. This creates a significant issue when
+using Intel TXT and Locality 2 is active at boot. After the GETSEC[SEXIT]
+instruction is called, the PCH will close access to Locality 2 MMIO address
+space, leaving the TPM locked in Locality 2 with no means to relinquish the
+locality until system reset.
 
-..
+The commit seeks to address this situation through three changes. The first is
+to walk the localities during initialization and close any open localities to
+ensure the TPM is in the assumed state. Next is to put guards around the
+counter and the requested locality to ensure they remain within valid values.
+The last change is to make the request locality functions be consistent in
+their return values. The functions will either return the locality requested if
+successful or a negative error code.
 
-> +.. note::
-> +   Do NOT abuse userspace APIs to control hardware that has proper kerne=
-l
-> +   drivers. There may already be a driver for your use case, and an exis=
-ting
-> +   kernel driver is sure to provide a superior solution to bitbashing
-> +   from userspace.
-> +
-> +   Read Documentation/driver-api/gpio/drivers-on-gpio.rst to avoid reinv=
-enting
-> +   kernel wheels in userspace.
-> +
-> +   Similarly, for multi-function lines there may be other subsystems, su=
-ch as
-> +   Documentation/spi/index.rst, Documentation/i2c/index.rst,
-> +   Documentation/driver-api/pwm.rst, Documentation/w1/index.rst etc, tha=
-t
-> +   provide suitable drivers and APIs for your hardware.
+Signed-off-by: Daniel P. Smith <dpsmith@apertussolutions.com>
+Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
+Reported-by: Kanth Ghatraju <kanth.ghatraju@oracle.com>
+Fixes: 933bfc5ad213 ("tpm, tpm: Implement usage counter for locality")
+---
+ drivers/char/tpm/tpm-chip.c     |  2 +-
+ drivers/char/tpm/tpm_tis_core.c | 20 +++++++++++++++-----
+ include/linux/tpm.h             |  2 ++
+ 3 files changed, 18 insertions(+), 6 deletions(-)
 
-Very good note and would be nice to convince users to follow it:
-https://stackoverflow.com/q/77683532/2511795
-(OOH you might be proud it's Rust, OTOH as described above)
+diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+index 42b1062e33cd..e7293f85335a 100644
+--- a/drivers/char/tpm/tpm-chip.c
++++ b/drivers/char/tpm/tpm-chip.c
+@@ -49,7 +49,7 @@ static int tpm_request_locality(struct tpm_chip *chip)
+ 		return rc;
+ 
+ 	chip->locality = rc;
+-	return 0;
++	return chip->locality;
+ }
+ 
+ static void tpm_relinquish_locality(struct tpm_chip *chip)
+diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+index 1b350412d8a6..c8b9b0b199dc 100644
+--- a/drivers/char/tpm/tpm_tis_core.c
++++ b/drivers/char/tpm/tpm_tis_core.c
+@@ -180,7 +180,8 @@ static int tpm_tis_relinquish_locality(struct tpm_chip *chip, int l)
+ 	struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+ 
+ 	mutex_lock(&priv->locality_count_mutex);
+-	priv->locality_count--;
++	if (priv->locality_count > 0)
++		priv->locality_count--;
+ 	if (priv->locality_count == 0)
+ 		__tpm_tis_relinquish_locality(priv, l);
+ 	mutex_unlock(&priv->locality_count_mutex);
+@@ -226,18 +227,21 @@ static int __tpm_tis_request_locality(struct tpm_chip *chip, int l)
+ 			tpm_msleep(TPM_TIMEOUT);
+ 		} while (time_before(jiffies, stop));
+ 	}
+-	return -1;
++	return -EBUSY;
+ }
+ 
+ static int tpm_tis_request_locality(struct tpm_chip *chip, int l)
+ {
+ 	struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+-	int ret = 0;
++	int ret = -EIO;
++
++	if (l > TPM_MAX_LOCALITY)
++		return -EINVAL;
+ 
+ 	mutex_lock(&priv->locality_count_mutex);
+ 	if (priv->locality_count == 0)
+ 		ret = __tpm_tis_request_locality(chip, l);
+-	if (!ret)
++	if (ret >= 0)
+ 		priv->locality_count++;
+ 	mutex_unlock(&priv->locality_count_mutex);
+ 	return ret;
+@@ -1108,7 +1112,7 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+ 	u32 intmask;
+ 	u32 clkrun_val;
+ 	u8 rid;
+-	int rc, probe;
++	int rc, probe, locality;
+ 	struct tpm_chip *chip;
+ 
+ 	chip = tpmm_chip_alloc(dev, &tpm_tis);
+@@ -1169,6 +1173,12 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+ 		goto out_err;
+ 	}
+ 
++	/* It is not safe to assume localities are closed on startup */
++	for (locality = 0; locality <= TPM_MAX_LOCALITY; locality++) {
++		if (check_locality(chip, locality))
++			tpm_tis_relinquish_locality(chip, locality);
++	}
++
+ 	/* Take control of the TPM's interrupt hardware and shut it off */
+ 	rc = tpm_tis_read32(priv, TPM_INT_ENABLE(priv->locality), &intmask);
+ 	if (rc < 0)
+diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+index 4ee9d13749ad..f2651281f02e 100644
+--- a/include/linux/tpm.h
++++ b/include/linux/tpm.h
+@@ -116,6 +116,8 @@ struct tpm_chip_seqops {
+ 	const struct seq_operations *seqops;
+ };
+ 
++#define TPM_MAX_LOCALITY		4
++
+ struct tpm_chip {
+ 	struct device dev;
+ 	struct device devs;
+-- 
+2.30.2
 
---=20
-With Best Regards,
-Andy Shevchenko
 
