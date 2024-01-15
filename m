@@ -1,109 +1,142 @@
-Return-Path: <linux-kernel+bounces-25811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C115582D633
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:40:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 268C082D639
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:42:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47D3CB20F69
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:40:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9BE81F21D61
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:42:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66227E541;
-	Mon, 15 Jan 2024 09:40:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E438101D0;
+	Mon, 15 Jan 2024 09:42:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wO25eBCQ"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="kZq7oIgp"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B5E2D514
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 09:40:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40d6b4e2945so98531645e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 01:40:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705311638; x=1705916438; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=DUjf8EcUmZjVmkCxTDXwKlHM+fZcUzkgPqOKaASP32c=;
-        b=wO25eBCQEDqcF+ewIp4Mzemnhyr6HY8lXKm70HUUpQAWitOB6+433tKtd/dRPP0iq9
-         GxKvQfuaIGQoVOkP6n0aOed4trdZpTTyrWWk49nyne+S9T+V5V8YM9ziihw/CgP9m+nv
-         4ddXcWC5ZqZk6tVebIASexYlynve37EcHPMjikVfvrz8Mnx0wSQkZepirLxDiXNB40Cv
-         UsgJRQpPr7jmCgu3yJBDSfrdBO1PM2iEtMfrRdD4j567eTOwr4rGtjv6ePxR7zTGCdqR
-         e7u2K31C7oDkoVn5CEnlK7gn1nQL74irwlfR3+9QNYkGAdQ2uPPivPjTBJu3lQ8dXsIB
-         4/MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705311638; x=1705916438;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DUjf8EcUmZjVmkCxTDXwKlHM+fZcUzkgPqOKaASP32c=;
-        b=N98cPsVQxqKX6vSxy/f+eM5+raBxgRNJRLx0Z7mzExmSO4krj/Mb8JdrjFogg+zE8+
-         QPgJfZ+T/XNPMuLorRYVzS6oem2BCr3a53klvzGA+ImdAPq1Euct/25q/IGJNv4K2of4
-         zO5FMHCCsEihaxGbrF1RnZ5cy7EVBBmQ73m/ewtOX8703klHUd1ibhEWTycUv0ty2dBB
-         Eofed0GEcedV8BX3bb8Zd5YeM9YVYnYL+VKLGZctwqY4T7ReC/Ne8c6QqM7w1qfy1A3X
-         OuSPsevZtV8duAzF7Ak+GVyZ8wIPPf9iuYHOnZ/EmLPEBUf/J7wIBjgbxgcWVKndmbqw
-         OOjA==
-X-Gm-Message-State: AOJu0YxyfRDGu6/iYCaVs+TyRo6L+Er4JYFTdLOmFDtUBx+O60NbF+un
-	lr6nZUSZdXt73GgRM4AZeO+BUDgAqdVygjzPFcze/IMy0CriDA==
-X-Google-Smtp-Source: AGHT+IEJTyA6VGQ1pmR0QXu684SA+wL8v5iXMyFClIBeK7v/xkZcbvvbRveYDGi29Y53uIPAxZpchw==
-X-Received: by 2002:a1c:7705:0:b0:40e:78ee:cb61 with SMTP id t5-20020a1c7705000000b0040e78eecb61mr431104wmi.94.1705311638683;
-        Mon, 15 Jan 2024 01:40:38 -0800 (PST)
-Received: from draszik.lan ([80.111.64.44])
-        by smtp.gmail.com with ESMTPSA id w4-20020a05600c474400b0040d5ae2906esm19227470wmo.30.2024.01.15.01.40.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 01:40:38 -0800 (PST)
-Message-ID: <bcd89ef7a43eb7d652f045c029d8e108adf7ba32.camel@linaro.org>
-Subject: Re: [PATCH] dt-bindings: ignore paths outside kernel for
- DT_SCHEMA_FILES
-From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
-To: Michal Simek <michal.simek@amd.com>, Rob Herring <robh@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Masahiro Yamada
- <masahiroy@kernel.org>,  Conor Dooley <conor+dt@kernel.org>, Mathieu
- Poirier <mathieu.poirier@linaro.org>,  linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>
-Date: Mon, 15 Jan 2024 09:40:37 +0000
-In-Reply-To: <827695c3-bb33-4a86-8586-2c7323530398@amd.com>
-References: <20231220145537.2163811-1-andre.draszik@linaro.org>
-	 <170432630603.2042234.10993333941885772911.robh@kernel.org>
-	 <827695c3-bb33-4a86-8586-2c7323530398@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1-1 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04EF9F9D3;
+	Mon, 15 Jan 2024 09:42:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 367D240E016C;
+	Mon, 15 Jan 2024 09:41:59 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id gbcYK8KndIZR; Mon, 15 Jan 2024 09:41:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1705311716; bh=XBIKxlNsZUJPRPkrxlOi1GzgwTad37xoV2mYozz4U4g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kZq7oIgpoPYNJEFRmQ9JE48d2cPjKOwShniYdb8svdbjNuXaCXgkI4vm7t9jN3tk3
+	 0SyquZx6f4o+581UG8SQEF/a5JXBrhlewfKVgs0DWSPD7Xhu3x7KPorhxYHOrW/ZkW
+	 /WkS4JM23S0qQa6J6k/PMJ9/UFQC3c3EAtxAAudXnxy2OfmMr6GryU5ieNcRB0VUqF
+	 Kk56gR6BWxDGFlGlKPXEkv3AS1x2RjKgRjF4rN71FCEKHAR7JQV8a9ePmr0epXg4nr
+	 +K8OUef+fdVPdl9dDUwxnKAIEtAaEqwy5hTxtLcpu+fZI3TyrfY91wAV77MqGaQJX+
+	 I9TV8Vr7MDR6A+XR2gzKocxtwZwUaUPYPtI71n52jydUwNRUFbuLfcJmGPHLs6vmCc
+	 GT15I5hrWJ5oS44BqXuvuQz7Gn+RxvthADl5Xqp7KraalD4OGnhM3sIkHtrlPoA+SP
+	 ElIlzTj3x2wO4UdsT9YEgQcRKXep+r2BCZohCYiRrppaZJ8uagtla5VglupvrYmOSB
+	 Uz8ExwhjAP5m15h1O0Q7sQH1RYxDEBqFCXtAiJLE2g5DCXhPEhpyNgmdJIGvMFTeRG
+	 6p+xjuV3jBjkoXBYS7fHf89rG4lL2UmaOvBIU5i6yOHaa7F3eHhKV/VzYkAGlTfiYe
+	 I7Bqk/56DF97nG5LMUix8SaU=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AC6A940E01A9;
+	Mon, 15 Jan 2024 09:41:19 +0000 (UTC)
+Date: Mon, 15 Jan 2024 10:41:12 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Michael Roth <michael.roth@amd.com>
+Cc: x86@kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+	linux-mm@kvack.org, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+	rientjes@google.com, tobin@ibm.com, vbabka@suse.cz,
+	kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+	pankaj.gupta@amd.com,
+	"liam.merwick@oracle.com Brijesh Singh" <brijesh.singh@amd.com>
+Subject: Re: [PATCH v1 12/26] crypto: ccp: Define the SEV-SNP commands
+Message-ID: <20240115094103.GFZaT9r4zX8V_ax8lv@fat_crate.local>
+References: <20231230161954.569267-1-michael.roth@amd.com>
+ <20231230161954.569267-13-michael.roth@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231230161954.569267-13-michael.roth@amd.com>
 
-Hi,
+On Sat, Dec 30, 2023 at 10:19:40AM -0600, Michael Roth wrote:
+> From: Brijesh Singh <brijesh.singh@amd.com>
+> 
+> AMD introduced the next generation of SEV called SEV-SNP (Secure Nested
+> Paging). SEV-SNP builds upon existing SEV and SEV-ES functionality
+> while adding new hardware security protection.
+> 
+> Define the commands and structures used to communicate with the AMD-SP
+> when creating and managing the SEV-SNP guests. The SEV-SNP firmware spec
+> is available at developer.amd.com/sev.
+> 
+> Co-developed-by: Ashish Kalra <ashish.kalra@amd.com>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> [mdr: update SNP command list and SNP status struct based on current
+>       spec, use C99 flexible arrays, fix kernel-doc issues]
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
+> ---
+>  drivers/crypto/ccp/sev-dev.c |  16 +++
+>  include/linux/psp-sev.h      | 264 +++++++++++++++++++++++++++++++++++
+>  include/uapi/linux/psp-sev.h |  56 ++++++++
+>  3 files changed, 336 insertions(+)
 
-On Mon, 2024-01-15 at 10:20 +0100, Michal Simek wrote:
-> This patch is causing issue for me. Look at log below.
-> I am running it directly on the latest linux-next/master.
->=20
-> Thanks,
-> Michal
->=20
-> $ make DT_SCHEMA_FILES=3D"Documentation/devicetree/bindings/arm/arm,cci-4=
-00.yaml"=20
-> dt_binding_check
+More ignored feedback:
 
-It'll work if you drop the 'Documentation/devicetree/bindings' part from th=
-e path, as
-it is implied since bindings can only be in that directory anyway:
+https://lore.kernel.org/r/20231124143630.GKZWC07hjqxkf60ni4@fat_crate.local
 
-    make DT_SCHEMA_FILES=3D"arm/arm,cci-400.yaml" dt_binding_check
-    make DT_SCHEMA_FILES=3D"arm,cci-400.yaml" dt_binding_check
+Lemme send it to you as a diff then - it'll work then perhaps.
 
-both work.
+diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
+index 983d314b5ff5..1a76b5297f03 100644
+--- a/include/linux/psp-sev.h
++++ b/include/linux/psp-sev.h
+@@ -104,7 +104,7 @@ enum sev_cmd {
+ 	SEV_CMD_SNP_PAGE_RECLAIM	= 0x0C7,
+ 	SEV_CMD_SNP_PAGE_UNSMASH	= 0x0C8,
+ 	SEV_CMD_SNP_CONFIG		= 0x0C9,
+-	SEV_CMD_SNP_DOWNLOAD_FIRMWARE_EX	= 0x0CA,
++	SEV_CMD_SNP_DOWNLOAD_FIRMWARE_EX = 0x0CA,
+ 	SEV_CMD_SNP_COMMIT		= 0x0CB,
+ 	SEV_CMD_SNP_VLEK_LOAD		= 0x0CD,
+ 
+@@ -624,7 +624,8 @@ enum {
+  * @gctx_paddr: system physical address of guest context page
+  * @page_size: page size 0 indicates 4K and 1 indicates 2MB page
+  * @page_type: encoded page type
+- * @imi_page: indicates that this page is part of the IMI of the guest
++ * @imi_page: indicates that this page is part of the IMI (Incoming
++ * Migration Image) of the guest
+  * @rsvd: reserved
+  * @rsvd2: reserved
+  * @address: system physical address of destination page to encrypt
 
-Cheers,
-Andre'
+-- 
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
