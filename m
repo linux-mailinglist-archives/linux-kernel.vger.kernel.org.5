@@ -1,133 +1,124 @@
-Return-Path: <linux-kernel+bounces-25581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 822AF82D2F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 02:31:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86A6882D2F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 02:31:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B2ED2815E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 01:31:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C097A1C20A80
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 01:31:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B3CA17CB;
-	Mon, 15 Jan 2024 01:30:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5349D28F6;
+	Mon, 15 Jan 2024 01:30:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AuDXEtqB"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nV7CMGsR"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 685E315A8;
-	Mon, 15 Jan 2024 01:30:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705282250; x=1736818250;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=FYm/uYLEot1cwBUToB4S5iqxG0QfXYPebBZ4he6s0Dk=;
-  b=AuDXEtqBsoux0NP7/3hZOMyNu+W2BshPASe36c4eRuE6HaX6muaNpBoh
-   jzCoxOp2ItVjQSfFk7HT6aLKTu8LV+g5AGlD2kAQGkY9ZaLwH64XRhYTu
-   4ZZ0UZw7KIwZTFH57oqqaXTbSYyIG3ZNRB7sOHzkzlTFTskwS+kpgwgWO
-   TmDLgTXQnaCcN3XQ/yDtvml9QTEa9DhdveIoRumykUgQXHpvwfi01My0K
-   r0JmL+hUozEeTk1MzohlB23AX4O7BuWfSW4920VtXxI381kQksGsuSmz5
-   XijNkPCQWua7dd6Ewk5FRhfoW3yTOZRHW4PsOci0XkutkI0QcBeqOV0qA
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="465890558"
-X-IronPort-AV: E=Sophos;i="6.04,195,1695711600"; 
-   d="scan'208";a="465890558"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 17:30:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="786936902"
-X-IronPort-AV: E=Sophos;i="6.04,195,1695711600"; 
-   d="scan'208";a="786936902"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by fmsmga007.fm.intel.com with ESMTP; 14 Jan 2024 17:30:45 -0800
-Message-ID: <0e305e0e-ae8b-4a2c-9f69-a5f8ccfc5adf@linux.intel.com>
-Date: Mon, 15 Jan 2024 09:25:24 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ADFC2566;
+	Mon, 15 Jan 2024 01:30:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6daf9d5f111so6658048b3a.0;
+        Sun, 14 Jan 2024 17:30:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705282256; x=1705887056; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=1SMr9r1P9ntLQdKlqfO558DPhNCAuaDs7tWm9gTvsU4=;
+        b=nV7CMGsRHiLsiRasqE5EcNC64Jmv1LjGXyrAuIezN+CWh3YJI9dYW+oHvgw/FFcG63
+         OVgcf5xyY97EQwegiyQiG4+qgnIUaoS6aSTI4gLwdtT9dTxws99JbPakItlD1OCTaOqT
+         VuEzx6BxUwTLHxQ2MDCsFTA6j9V46UA3XK0vTK6s0XggD28ntDem7hyknhhFsFYwYbLg
+         FQVMZgJMXfAlbF1JhR/5qSSIaieXrb1W7/qWJAMvXYiC63uXkrv7s378Sre7tBC0VvBb
+         GfjrRukKObFD7vIgy8KVqiiwtyor3jQ8dz+MdqNDHbVQtzNNqRrmgldPB5Hwnxg8BB/+
+         SUQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705282256; x=1705887056;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1SMr9r1P9ntLQdKlqfO558DPhNCAuaDs7tWm9gTvsU4=;
+        b=f/aT19EwaUUnta292h7foqsedqe9vYob5Yk7F62EH/RwVdgQKVZV0eK+o7MlfBzjqt
+         0H5NfWCgamw35bJy6cI6WH9Zyp4iqHGpDcy6slHRZRSvFCNf2LmhVpnuMartTRaQFxwl
+         qZJ3ZkDfCTn3vQEIcDaEfIvI5ao//pUpeqbKin449Io8ldDf6bkomE14T1gv2cMOShFk
+         aJr0GIsE4gKeLuVruzpEg8d3NZQLAzyVnMOuPzktt8PPBxxGMAlZ9+iEXZDpoPI+sk9T
+         Sy0e05bKz4EkqVfTHoyDo4QLNyu2c0uk7/e6m2BXo3/tCBjEyiiHvx+8s5NtvKlruJP8
+         o5JA==
+X-Gm-Message-State: AOJu0YzoShXgPl1p9UIixOb0ftX5TocUZb92uMrMcXEYSGdQGwUW/4Ml
+	QsaXexf3eIuKY7r2fNiA1XM=
+X-Google-Smtp-Source: AGHT+IEUrsl4+PPW7stJomKebbDxC5gxCyEQseFCOWI63q2e9W2MLh69fxNp5sQtjdaY02sFQZ5rJA==
+X-Received: by 2002:a62:ce8d:0:b0:6da:e557:8132 with SMTP id y135-20020a62ce8d000000b006dae5578132mr4842403pfg.14.1705282256606;
+        Sun, 14 Jan 2024 17:30:56 -0800 (PST)
+Received: from rigel (60-241-235-125.tpgi.com.au. [60.241.235.125])
+        by smtp.gmail.com with ESMTPSA id k30-20020a63ba1e000000b005ac384b71cbsm6122379pgf.60.2024.01.14.17.30.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Jan 2024 17:30:56 -0800 (PST)
+Date: Mon, 15 Jan 2024 09:30:51 +0800
+From: Kent Gibson <warthog618@gmail.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+	linux-doc@vger.kernel.org, brgl@bgdev.pl, linus.walleij@linaro.org,
+	andy@kernel.org, corbet@lwn.net
+Subject: Re: [PATCH v2 1/9] Documentation: gpio: add chardev userspace API
+ documentation
+Message-ID: <20240115013051.GA27189@rigel>
+References: <20240115004847.22369-1-warthog618@gmail.com>
+ <20240115004847.22369-2-warthog618@gmail.com>
+ <CAHp75Vc=oZK=VR6vZ+kTapq5WpySgKVjAfuO6mxcPqPfQe6VRg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Jason Gunthorpe <jgg@ziepe.ca>,
- Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
- Jacob Pan <jacob.jun.pan@linux.intel.com>, iommu@lists.linux.dev,
- linux-kselftest@vger.kernel.org, virtualization@lists.linux-foundation.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] IOMMUFD: Deliver IO page faults to user space
-Content-Language: en-US
-To: Joel Granados <j.granados@samsung.com>
-References: <20231026024930.382898-1-baolu.lu@linux.intel.com>
- <CGME20240112215609eucas1p1eedeeee8e1cca2c935b41816a50f56f6@eucas1p1.samsung.com>
- <20240112215606.36sth724y6zcj43k@localhost>
- <293a5643-ef36-4a34-9b6b-0f5b47061c2e@linux.intel.com>
- <20240114171850.mwcoutrrjxn7ltlf@localhost>
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20240114171850.mwcoutrrjxn7ltlf@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75Vc=oZK=VR6vZ+kTapq5WpySgKVjAfuO6mxcPqPfQe6VRg@mail.gmail.com>
 
-On 1/15/24 1:18 AM, Joel Granados wrote:
-> On Sun, Jan 14, 2024 at 09:13:19PM +0800, Baolu Lu wrote:
->> On 2024/1/13 5:56, Joel Granados wrote:
->>> On Thu, Oct 26, 2023 at 10:49:24AM +0800, Lu Baolu wrote:
->>>> Hi folks,
->>>>
->>>> This series implements the functionality of delivering IO page faults to
->>>> user space through the IOMMUFD framework for nested translation. Nested
->>>> translation is a hardware feature that supports two-stage translation
->>>> tables for IOMMU. The second-stage translation table is managed by the
->>>> host VMM, while the first-stage translation table is owned by user
->>>> space. This allows user space to control the IOMMU mappings for its
->>>> devices.
->>>>
->>>> When an IO page fault occurs on the first-stage translation table, the
->>>> IOMMU hardware can deliver the page fault to user space through the
->>>> IOMMUFD framework. User space can then handle the page fault and respond
->>>> to the device top-down through the IOMMUFD. This allows user space to
->>>> implement its own IO page fault handling policies.
->>>>
->>>> User space indicates its capability of handling IO page faults by
->>>> setting the IOMMU_HWPT_ALLOC_IOPF_CAPABLE flag when allocating a
->>>> hardware page table (HWPT). IOMMUFD will then set up its infrastructure
->>>> for page fault delivery. On a successful return of HWPT allocation, the
->>>> user can retrieve and respond to page faults by reading and writing to
->>>> the file descriptor (FD) returned in out_fault_fd.
->>>>
->>>> The iommu selftest framework has been updated to test the IO page fault
->>>> delivery and response functionality.
->>>>
->>>> This series is based on the latest implementation of nested translation
->>>> under discussion [1] and the page fault handling framework refactoring in
->>>> the IOMMU core [2].
->>>>
->>>> The series and related patches are available on GitHub: [3]
->>>>
->>>> [1]https://lore.kernel.org/linux-iommu/20230921075138.124099-1-yi.l.liu@intel.com/
->>>> [2]https://lore.kernel.org/linux-iommu/20230928042734.16134-1-baolu.lu@linux.intel.com/
->>>> [3]https://github.com/LuBaolu/intel-iommu/commits/iommufd-io-pgfault-delivery-v2
->>> I was working with this branch that included Yi Liu's
->>> wip/iommufd_nesting branch. Now Yi Lui has updated his work in this post
->>> https://lore.kernel.org/all/20240102143834.146165-1-yi.l.liu@intel.com.
->>> Is there an updated version of the page fault work that is rebased on
->>> top of Liu's new version?
->> Yes. I am preparing the new version and will post it for discussion
->> after the merge window.
-> Great to hear and thx for getting back to me.
-> 
-> I'll be on the look out for your post. Would it be possible for you to
-> add me to the CC when you send it?
+On Mon, Jan 15, 2024 at 03:11:07AM +0200, Andy Shevchenko wrote:
+> On Mon, Jan 15, 2024 at 2:49 AM Kent Gibson <warthog618@gmail.com> wrote:
+> >
+> > Add documentation for the GPIO character device userspace API.
+> >
+> > Added to the userspace-api book, but also provide a link from the
+> > admin-guide book, as historically the GPIO documentation has been
+> > there.
+>
+> ...
+>
+> > +.. note::
+> > +   Do NOT abuse userspace APIs to control hardware that has proper kernel
+> > +   drivers. There may already be a driver for your use case, and an existing
+> > +   kernel driver is sure to provide a superior solution to bitbashing
+> > +   from userspace.
+> > +
+> > +   Read Documentation/driver-api/gpio/drivers-on-gpio.rst to avoid reinventing
+> > +   kernel wheels in userspace.
+> > +
+> > +   Similarly, for multi-function lines there may be other subsystems, such as
+> > +   Documentation/spi/index.rst, Documentation/i2c/index.rst,
+> > +   Documentation/driver-api/pwm.rst, Documentation/w1/index.rst etc, that
+> > +   provide suitable drivers and APIs for your hardware.
+>
+> Very good note and would be nice to convince users to follow it:
+> https://stackoverflow.com/q/77683532/2511795
+> (OOH you might be proud it's Rust, OTOH as described above)
+>
 
-Sure.
+Not familiar with that sensor.  And wasn't sure what they were up to or
+why, so didn't comment.  You do a good job reminding people in the
+forums, though, as above, not sure how many listen.
 
-Best regards,
-baolu
+I'm language agnostic, so choose the language that suits your use case.
+You can still do stupid things in any language, though the language may
+constrain the set of stupid things you have to play with, or throw in
+some bonus ones you didn't realise you were getting (I'm looking at you
+C++).
+
+Cheers,
+Kent.
 
