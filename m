@@ -1,89 +1,103 @@
-Return-Path: <linux-kernel+bounces-25560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3511082D2A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 01:13:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 938D582D2AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 01:13:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B58C1C20926
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 00:13:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B4FB281682
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 00:13:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EB9764E;
-	Mon, 15 Jan 2024 00:12:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DD9617CF;
+	Mon, 15 Jan 2024 00:13:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ZQId7CQe"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hlwrgbtr"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 486E2160;
-	Mon, 15 Jan 2024 00:12:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=SMPOLVGSAewxtdJLwZCxtwBam7ckyoDfh8pKl1H1lAA=; b=ZQId7CQe2soeI2QWsAGfrsGh4A
-	XyrPMK7kI6Cagrm8FAQLidr0ltmcvk6fYFlYOBoIpXoRBUasyp8pHDBdkdZ9X5P32TP0Y2SgyNPGU
-	eXOoK9oy1pEL9hiWPcEWUwu0Nfi05BQjI76qLXvD1GtUnfbExIPtsIltGhWLT+CaY508JScUAFl2O
-	RuavmMV0LbrMAafEQ8p/0Zm8x2X/udHxpKLKA/WyJ/vTs/k5E93jZv2dem7FEtJo4mCCw9VsbMeKD
-	AAtG8LmFIj9X4vaXOrvMiE4usgCLATg0Lr2XSe007mehC2iHBl/MHTbUzDEBS3R81yIQILAcGxX+9
-	reo1MkYA==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rPAb2-007XAr-0d;
-	Mon, 15 Jan 2024 00:12:56 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Nishanth Menon <nm@ti.com>,
-	Tero Kristo <kristo@kernel.org>,
-	Santosh Shilimkar <ssantosh@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	linux-clk@vger.kernel.org
-Subject: [PATCH] clk: keystone: sci-clk: match func name comment to actual
-Date: Sun, 14 Jan 2024 16:12:55 -0800
-Message-ID: <20240115001255.4124-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92C5E15A5;
+	Mon, 15 Jan 2024 00:13:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 520D1C433F1;
+	Mon, 15 Jan 2024 00:13:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705277595;
+	bh=9d8JNOymYGZ3/p+9qqiDWzbARwPOR0ThFsLa+omTDVE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=HlwrgbtrQaMjHk6Rl1IBwvE+2sWuIYEn5he/RDz7dSWZhfu/UENTUW929466EuROU
+	 ior5hw4k52TxL8Vd87EW5a2iJgmNEZyPJjUeJDXTntdTbsmyE7/SdwiV9EIAoWldtM
+	 joQIkSN5rhwPYMbpNAK3l2gctjvZ8darjJfrPCu6ArKul1KdEfX0EljfJHR0GcDq8I
+	 uJ5sgUQkwp4kyuYVEfe5WbAbcBCxmlvvQ8OjSovamjWsXmvTtmOD1lEoXGgTETRAHf
+	 JWgsmDt9yubJJ1Y8LE/OL8dmm5WIdxR8Lpz2+GgASw13adcD8MlMMS4Jgj7HCSAQDl
+	 MmaVWl/5A75dQ==
+Message-ID: <b5c9a4d9-894c-4812-8dbf-e623cb1baad2@kernel.org>
+Date: Mon, 15 Jan 2024 09:13:11 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: scsi: block: ioprio: Clean up interface definition -
+ ioprio_set03.c:40: TFAIL: ioprio_set IOPRIO_CLASS_BE prio 8 should not work
+Content-Language: en-US
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: linux-block <linux-block@vger.kernel.org>, LTP List <ltp@lists.linux.it>,
+ Linux Regressions <regressions@lists.linux.dev>,
+ lkft-triage@lists.linaro.org, open list <linux-kernel@vger.kernel.org>,
+ Anders Roxell <anders.roxell@linaro.org>,
+ Dan Carpenter <dan.carpenter@linaro.org>, chrubis <chrubis@suse.cz>,
+ Petr Vorel <pvorel@suse.cz>, Hannes Reinecke <hare@suse.de>,
+ Christoph Hellwig <hch@lst.de>, Niklas Cassel <niklas.cassel@wdc.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Jens Axboe <axboe@kernel.dk>
+References: <CA+G9fYu1hB2OMf0EFrt_86OE=0Ug3y6nQd3=OZeEeM1jp3P92g@mail.gmail.com>
+ <11a31e09-2e11-43a4-8995-ae70c5bef8bf@kernel.org>
+ <CA+G9fYthC3qsH8ey=j3RvCr4-0zp1S3Ysr5QvY6SptorHpju1g@mail.gmail.com>
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <CA+G9fYthC3qsH8ey=j3RvCr4-0zp1S3Ysr5QvY6SptorHpju1g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Correct the function name in the kernel-doc comment to match the
-actual function name to avoid a kernel-doc warning:
+On 1/13/24 16:05, Naresh Kamboju wrote:
+> On Fri, 12 Jan 2024 at 10:49, Damien Le Moal <dlemoal@kernel.org> wrote:
+>>
+>> On 1/12/24 14:15, Naresh Kamboju wrote:
+>>> The LTP test 'iopri_set03' fails on all the devices.
+>>> It fails on linux kernel >= v6.5. ( on Debian rootfs ).
+>>> Test fail confirmed on LTP release 20230929 and 20230516.
+>>>
+>>> Test failed log:
+>>> ------------
+>>> tst_test.c:1690: TINFO: LTP version: 20230929
+>>> tst_test.c:1574: TINFO: Timeout per run is 0h 05m 00s
+>>> ioprio_set03.c:40: TFAIL: ioprio_set IOPRIO_CLASS_BE prio 8 should not work
+>>> ioprio_set03.c:48: TINFO: tested illegal priority with class NONE
+>>> ioprio_set03.c:51: TPASS: returned correct error for wrong prio: EINVAL (22)
+>>>
+>>> Investigation:
+>>> ----------
+>>> Bisecting this test between kernel v6.4 and v6.5 shows patch
+>>> eca2040972b4 ("scsi: block: ioprio: Clean up interface definition")
+>>> as the first faulty commit.
+>>>
+>>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>>
+>> This is fixed in LTP. Please update your LTP setup to avoid this issue.
+> 
+> Please point me to the fixed commit id.
 
-drivers/clk/keystone/sci-clk.c:287: warning: expecting prototype for _sci_clk_get(). Prototype was for _sci_clk_build() instead
+git log --author="Damien Le Moal"
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Nishanth Menon <nm@ti.com>
-Cc: Tero Kristo <kristo@kernel.org>
-Cc: Santosh Shilimkar <ssantosh@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: Michael Turquette <mturquette@baylibre.com>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: linux-clk@vger.kernel.org
----
- drivers/clk/keystone/sci-clk.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+And of course you need to make sure that you are compiling LTP against the
+kernel headers of the target test kernel.
 
-diff -- a/drivers/clk/keystone/sci-clk.c b/drivers/clk/keystone/sci-clk.c
---- a/drivers/clk/keystone/sci-clk.c
-+++ b/drivers/clk/keystone/sci-clk.c
-@@ -272,7 +272,7 @@ static const struct clk_ops sci_clk_ops
- };
- 
- /**
-- * _sci_clk_get - Gets a handle for an SCI clock
-+ * _sci_clk_build - Gets a handle for an SCI clock
-  * @provider: Handle to SCI clock provider
-  * @sci_clk: Handle to the SCI clock to populate
-  *
+
+-- 
+Damien Le Moal
+Western Digital Research
+
 
