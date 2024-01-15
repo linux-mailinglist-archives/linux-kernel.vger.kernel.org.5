@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-25987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A98182D957
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:59:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 060EC82D95E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:01:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCA2C1F222F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:59:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9DB57B21247
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:01:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90A0F171AE;
-	Mon, 15 Jan 2024 12:58:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97EED168B7;
+	Mon, 15 Jan 2024 13:01:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Wvy+MS05"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TPh2GCt2"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D040171A3
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 12:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5542a7f1f3cso10514152a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 04:58:09 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AD3D15AF9;
+	Mon, 15 Jan 2024 13:01:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50e5a9bcec9so10580675e87.3;
+        Mon, 15 Jan 2024 05:01:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705323487; x=1705928287; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20230601; t=1705323693; x=1705928493; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=OLJ8dQUYpTz4YaYY9rIIi5OWibaVHDrrajtcmBRhHgU=;
-        b=Wvy+MS05lfiHmHBprKjAS1O+byuIuaxMRrcDvsxW952bFcfkzjhrFToB6kb1EUWQT5
-         ItsDZ30C56peSZitCVc3J6T3bGQQbDYYJ06PVOXQQHxJ21khknYXSsoMnQ/7/1KwehQQ
-         qjBHAwyk2BEztyx3IJ3c2Suj+oR56wWBVhiAmNlG/KcfxSGOCbtl+3V2I5kMlo22Mzhj
-         ftGYKohjbMxoH9JMyuW5fxVRzUx7sCxSzpqDOtij2IstVvckgNapJGKrh885NyWXN7ef
-         Hd3JBFl35iFngk0ex/+YYMO5YzsPQ4NNYKEzGGxdbfL/jEPxoTfyVxMBYQMT7Iki19Zz
-         jNGQ==
+        bh=m+5+Wznx7Rlg/3OxfhTEbZdgMDExRp4/plSS+QMv9OQ=;
+        b=TPh2GCt28yKYDHlphc2jUFn90IuGcsLjgv865gxkNqr6bK0QscuSP0k8exEfggYvpk
+         h5wtsdHeGT4eC/VFO7XHSpxmnm0qx/l23lntAhFsnkD+qJR8Lj7ciw3IcgaGqBw2TKwK
+         ud1h5oREkQoxQYvv+4bszRXCDqGAJgmKCUHRvVZuXgi72ETMS50vkbOtp4f6sFdBCtIe
+         YkLMcHX8zbK6eK6mIYoBS8x3BSOxUwVrV0EWKZf7hRkiXWOyblu7n7wkJ1pZzQNxgzHn
+         AuItm9Ojc2tdA65RyqpfdrEl9p5cJULy7wJ+lxP1YvdMTygyAv87DSuga0htoZCk3AMr
+         JXEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705323487; x=1705928287;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1705323693; x=1705928493;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OLJ8dQUYpTz4YaYY9rIIi5OWibaVHDrrajtcmBRhHgU=;
-        b=Kk+ewqJeUoDceFwUvhBvGgUHgOqNgZ57Ag17oqqtiRoiRQMHHsXJh6RjYQEJJuplFP
-         SXRoORr7ZQ1jHrUGXaORMDPxhvFzg78q2yHyNgC/TCB4A7oG0grURWzKq+3Y/niDy9Ok
-         PRGEERHogEtJIon4flKa6hZwOOip+/bKvYXecLfYL5eG1htFkLBZ8lCqba543hmGfljn
-         szwKR/p525AOtVEn1Qe0n+hF2wd68+PafrTtDHf4gf3lbVKq21FZoh3nxYdYZwqsiS9E
-         86p4dZv6jZmStjxO3o8V1DLbAoxttPYGdIfWFiaBlYYKOGjsdsDmklxh45KGiJqLHz+r
-         wBXA==
-X-Gm-Message-State: AOJu0YwVxkYN6L67y3LrMdza2Dm4lVPx2A6+Zy/8lpMJXeF0WejpnYzo
-	vW5uBPjgpNc7RNbJedMxI1KxL5IFf1SNdQ==
-X-Google-Smtp-Source: AGHT+IELJkRceRe+cZ9yMTICyrBDyA9ApZkxNyYFNzC79wOGLzAYNHrBGiD8FyNz/s7Rl642MGfwbA==
-X-Received: by 2002:aa7:d88c:0:b0:54c:b889:9c12 with SMTP id u12-20020aa7d88c000000b0054cb8899c12mr2414461edq.18.1705323487729;
-        Mon, 15 Jan 2024 04:58:07 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id q8-20020a056402040800b0055703db2c9fsm5468958edv.1.2024.01.15.04.58.05
+        bh=m+5+Wznx7Rlg/3OxfhTEbZdgMDExRp4/plSS+QMv9OQ=;
+        b=eZHrNa7rLGa7mXUjce8WZY5mfdHvhfC2I+Yi8LB5RCbsrTTYnEQG0oC5jJ8oV37QWz
+         Y+9zIwuWzwiQm9IcN5LygGtQq9J0pUYRL+UmKs4NCalf61uWAzI98yfENGvIw1kmPABv
+         3CCaXYAaBJJr5Db26dWdRj8ZKBLNMUVGRQQkLEtSG6uGilv+t4YwVY3Ba/hBsTAn1e0n
+         dC02wr8kaLakBVpvQk1V+zatvaVKI6ARSIdCmk2nCDtuasYwErlMsr9ZcVkgKlBisW3c
+         xzX0VjRGdF4kxuW8NeudIZB1eVUqTGhO1qScRBoQBjHvUP8eu93S/ZgXW5rfO3dHHvpP
+         EBVg==
+X-Gm-Message-State: AOJu0Yw5EPETCvQEhflCmDKLmnNKqZqT/SO40Iti6tf0IPfo+Eqwj+UZ
+	qpyUjT1W5pBb5KH/bs5beYYms+CLciM=
+X-Google-Smtp-Source: AGHT+IFEs/BZBKo6tHlk+fqfeBt9LJdKrbOX987CA39O7ePmrigBLwcqHzHR9oQ1sMTjXlPWT5eVhg==
+X-Received: by 2002:a05:6512:3fb:b0:50e:7b2c:9013 with SMTP id n27-20020a05651203fb00b0050e7b2c9013mr2299243lfq.132.1705323692864;
+        Mon, 15 Jan 2024 05:01:32 -0800 (PST)
+Received: from ?IPV6:2001:14ba:7426:df00::3? (drtxq0yyyyyyyyyyyyybt-3.rev.dnainternet.fi. [2001:14ba:7426:df00::3])
+        by smtp.gmail.com with ESMTPSA id 28-20020ac2483c000000b0050e7740b871sm1447973lft.159.2024.01.15.05.01.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jan 2024 04:58:07 -0800 (PST)
-Message-ID: <d2152458-9d12-40f4-8bc7-7c7635ff41b6@linaro.org>
-Date: Mon, 15 Jan 2024 13:58:05 +0100
+        Mon, 15 Jan 2024 05:01:32 -0800 (PST)
+Message-ID: <ff962e6a-5e2b-4a72-9043-80b8fc218642@gmail.com>
+Date: Mon, 15 Jan 2024 15:01:32 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,80 +65,94 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: vendor-prefixes: add XMOS
-Content-Language: en-US
-To: Javier Carrasco <javier.carrasco@wolfvision.net>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Cc: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org
-References: <20240115-feature-xvf3500_driver-v1-0-ed9cfb48bb85@wolfvision.net>
- <20240115-feature-xvf3500_driver-v1-1-ed9cfb48bb85@wolfvision.net>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240115-feature-xvf3500_driver-v1-1-ed9cfb48bb85@wolfvision.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 2/3] iio: test: test gain-time-scale helpers
+Content-Language: en-US, en-GB
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+ Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org,
+ linux-iio@vger.kernel.org
+References: <cover.1704881096.git.mazziesaccount@gmail.com>
+ <6b839dd533fd93b75c2e6f6a8f2286233d4901fb.1704881096.git.mazziesaccount@gmail.com>
+ <20240113161229.48d63b54@jic23-huawei>
+From: Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <20240113161229.48d63b54@jic23-huawei>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 15/01/2024 10:16, Javier Carrasco wrote:
-> Add prefix for XMOS Limited, a fabless semiconductor company that
-> develops audio products and multicore microcontrollers.
+On 1/13/24 18:12, Jonathan Cameron wrote:
+> On Wed, 10 Jan 2024 12:12:55 +0200
+> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
 > 
-> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
+>> Some light sensors can adjust both the HW-gain and integration time.
+>> There are cases where adjusting the integration time has similar impact
+>> to the scale of the reported values as gain setting has.
+>>
+>> IIO users do typically expect to handle scale by a single writable 'scale'
+>> entry. Driver should then adjust the gain/time accordingly.
+>>
+>> It however is difficult for a driver to know whether it should change
+>> gain or integration time to meet the requested scale. Usually it is
+>> preferred to have longer integration time which usually improves
+>> accuracy, but there may be use-cases where long measurement times can be
+>> an issue. Thus it can be preferable to allow also changing the
+>> integration time - but mitigate the scale impact by also changing the gain
+>> underneath. Eg, if integration time change doubles the measured values,
+>> the driver can reduce the HW-gain to half.
+>>
+>> The theory of the computations of gain-time-scale is simple. However,
+>> some people (undersigned) got that implemented wrong for more than once.
+>> Hence some gain-time-scale helpers were introduced.
+>>
+>> Add some simple tests to verify the most hairy functions.
+>>
+>> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
+>>
+
+..
+
+>> +static void test_iio_gts_chk_scales_all(struct kunit *test, struct iio_gts *gts,
+>> +					const int *vals, int len)
+>> +{
+>> +	static const int gains[] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512,
+>> +				    1024, 2048, 4096, 4096 * 2, 4096 * 4,
+>> +				    4096 * 8};
+>> +
+>> +	int expected[ARRAY_SIZE(gains) * 2];
+>> +	int i, ret;
+>> +	int exp_len = ARRAY_SIZE(gains) * 2;
 > 
+> Use this for expected[*] just above?
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Doing:
+const int exp_len = ARRAY_SIZE(gains) * 2;
+int expected[exp_len];
 
-Best regards,
-Krzysztof
+gives me:
+warning: ISO C90 forbids variable length array ‘expected’ [-Wvla]
+
+I could drop the whole exp_len variable, but I prefer test code which is 
+as obvious as it gets if any of the checks fails. For me the check:
+
+>> +	KUNIT_EXPECT_EQ(test, exp_len, len);
+>> +	if (len != exp_len)
+>> +		return;
+
+is (very slightly) more obvious than:
+	KUNIT_EXPECT_EQ(test, ARRAY_SIZE(gains) * 2, len);
+	if (len != ARRAY_SIZE(gains) * 2)
+		return;
+
+I guess I'll leave this one as it is. Just kick me in v2 if I 
+misunderstood you :)
+
+Yours,
+	-- Matti
+
+-- 
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
+
+~~ When things go utterly wrong vim users can always type :help! ~~
 
 
