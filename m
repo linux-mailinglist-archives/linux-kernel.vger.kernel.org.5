@@ -1,295 +1,199 @@
-Return-Path: <linux-kernel+bounces-25731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9966E82D50F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:28:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7338C82D513
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:28:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12A261F219B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:28:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 221B92813EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:28:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FB4563B6;
-	Mon, 15 Jan 2024 08:28:23 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E90995C98;
-	Mon, 15 Jan 2024 08:28:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 643A02F4;
-	Mon, 15 Jan 2024 00:29:05 -0800 (PST)
-Received: from [10.34.100.129] (unknown [10.34.100.129])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CF6313F5A1;
-	Mon, 15 Jan 2024 00:28:16 -0800 (PST)
-Message-ID: <49356b25-771b-4b42-acd6-c5fae95f0bef@arm.com>
-Date: Mon, 15 Jan 2024 09:28:11 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 305D56ABA;
+	Mon, 15 Jan 2024 08:28:43 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BDA06FC3;
+	Mon, 15 Jan 2024 08:28:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 31fcfcd4b01b40ad874ece7b38f63cfa-20240115
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:c198143f-5398-429d-a0b1-52b983a3fae0,IP:10,
+	URL:0,TC:0,Content:-25,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,AC
+	TION:release,TS:-30
+X-CID-INFO: VERSION:1.1.35,REQID:c198143f-5398-429d-a0b1-52b983a3fae0,IP:10,UR
+	L:0,TC:0,Content:-25,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-30
+X-CID-META: VersionHash:5d391d7,CLOUDID:bf175c7f-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:240115162832CZL9Y6XZ,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,
+	TF_CID_SPAM_ULS
+X-UUID: 31fcfcd4b01b40ad874ece7b38f63cfa-20240115
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 334138515; Mon, 15 Jan 2024 16:28:28 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id A2D93E000EB9;
+	Mon, 15 Jan 2024 16:28:28 +0800 (CST)
+X-ns-mid: postfix-65A4ECAC-547880103
+Received: from kernel.. (unknown [172.20.15.234])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 8996AE000EB9;
+	Mon, 15 Jan 2024 16:28:26 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: jesse.brandeburg@intel.com,
+	anthony.l.nguyen@intel.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: jacob.e.keller@intel.com,
+	przemyslaw.kitszel@intel.com,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>,
+	Kunwu Chan <kunwu.chan@hotmail.com>
+Subject: [PATCH v3] igb: Fix string truncation warnings in igb_set_fw_version
+Date: Mon, 15 Jan 2024 16:28:25 +0800
+Message-Id: <20240115082825.28343-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/16] arm64: dts: ti: k3-am625: Add MIT license along
- with GPL-2.0
-Content-Language: en-US
-To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tero Kristo <kristo@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- Guillaume La Roque <glaroque@baylibre.com>,
- Julien Panis <jpanis@baylibre.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Roger Quadros <rogerq@kernel.org>, Ronald Wahl <ronald.wahl@raritan.com>,
- Sarah Walker <sarah.walker@imgtec.com>, Tony Lindgren <tony@atomide.com>
-References: <20240110140903.4090946-1-nm@ti.com>
- <20240110140903.4090946-4-nm@ti.com>
-From: Pierre Gondois <pierre.gondois@arm.com>
-In-Reply-To: <20240110140903.4090946-4-nm@ti.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
-For all the patches of the serie that require it:
-Acked-by: Pierre Gondois <pierre.gondois@arm.com>
+Commit 1978d3ead82c ("intel: fix string truncation warnings")
+fixes '-Wformat-truncation=3D' warnings in igb_main.c by using kasprintf.
 
-On 1/10/24 15:08, Nishanth Menon wrote:
-> Modify license to include dual licensing as GPL-2.0-only OR MIT
-> license for SoC and TI evm device tree files. This allows for Linux
-> kernel device tree to be used in other Operating System ecosystems
-> such as Zephyr or FreeBSD.
-> 
-> While at this, update the GPL-2.0 to be GPL-2.0-only to be in sync
-> with latest SPDX conventions (GPL-2.0 is deprecated).
-> 
-> While at this, update the TI copyright year to sync with current year
-> to indicate license change (and add it at least for one file which was
-> missing TI copyright).
-> 
-> Cc: Guillaume La Roque <glaroque@baylibre.com>
-> Cc: Julien Panis <jpanis@baylibre.com>
-> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Cc: Pierre Gondois <pierre.gondois@arm.com>
-> Cc: Roger Quadros <rogerq@kernel.org>
-> Cc: Ronald Wahl <ronald.wahl@raritan.com>
-> Cc: Sarah Walker <sarah.walker@imgtec.com>
-> Cc: Tony Lindgren <tony@atomide.com>
-> 
-> Signed-off-by: Nishanth Menon <nm@ti.com>
-> ---
->   arch/arm64/boot/dts/ti/k3-am62-lp-sk.dts                 | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am62-main.dtsi                 | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi                  | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am62-thermal.dtsi              | 5 ++++-
->   arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi               | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am62.dtsi                      | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am625-sk.dts                   | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am625.dtsi                     | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi           | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-imx219.dtso      | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-ov5640.dtso      | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-tevi-ov5640.dtso | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am62x-sk-hdmi-audio.dtso       | 4 ++--
->   13 files changed, 28 insertions(+), 25 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62-lp-sk.dts b/arch/arm64/boot/dts/ti/k3-am62-lp-sk.dts
-> index 5e6feb8cd125..c4149059a4c5 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62-lp-sk.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am62-lp-sk.dts
-> @@ -1,8 +1,8 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /*
->    * AM62x LP SK: https://www.ti.com/tool/SK-AM62-LP
->    *
-> - * Copyright (C) 2021-2023 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2021-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   /dts-v1/;
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> index 464b7565d085..fe0cc4a9a501 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> @@ -1,8 +1,8 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /*
->    * Device Tree Source for AM625 SoC Family Main Domain peripherals
->    *
-> - * Copyright (C) 2020-2022 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2020-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   &cbass_main {
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi
-> index 0e0b234581c6..e66d486ef1f2 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi
-> @@ -1,8 +1,8 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /*
->    * Device Tree Source for AM625 SoC Family MCU Domain peripherals
->    *
-> - * Copyright (C) 2020-2022 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2020-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   &cbass_mcu {
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62-thermal.dtsi b/arch/arm64/boot/dts/ti/k3-am62-thermal.dtsi
-> index a358757e26f0..12ba833002a1 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62-thermal.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62-thermal.dtsi
-> @@ -1,4 +1,7 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
-> +/*
-> + * Copyright (C) 2023-2024 Texas Instruments Incorporated - https://www.ti.com/
-> + */
->   
->   #include <dt-bindings/thermal/thermal.h>
->   
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi
-> index fef76f52a52e..a0bba5ddd409 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi
-> @@ -1,8 +1,8 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /*
->    * Device Tree Source for AM625 SoC Family Wakeup Domain peripherals
->    *
-> - * Copyright (C) 2020-2022 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2020-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   &cbass_wakeup {
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62.dtsi b/arch/arm64/boot/dts/ti/k3-am62.dtsi
-> index f1e15206e1ce..f0781f2bea29 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62.dtsi
-> @@ -1,8 +1,8 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /*
->    * Device Tree Source for AM62 SoC Family
->    *
-> - * Copyright (C) 2020-2022 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2020-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   #include <dt-bindings/gpio/gpio.h>
-> diff --git a/arch/arm64/boot/dts/ti/k3-am625-sk.dts b/arch/arm64/boot/dts/ti/k3-am625-sk.dts
-> index b18092497c9a..ae81ebb39d02 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am625-sk.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am625-sk.dts
-> @@ -1,8 +1,8 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /*
->    * AM625 SK: https://www.ti.com/lit/zip/sprr448
->    *
-> - * Copyright (C) 2021-2022 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2021-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   /dts-v1/;
-> diff --git a/arch/arm64/boot/dts/ti/k3-am625.dtsi b/arch/arm64/boot/dts/ti/k3-am625.dtsi
-> index 4193c2b3eed6..4014add6320d 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am625.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am625.dtsi
-> @@ -1,10 +1,10 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /*
->    * Device Tree Source for AM625 SoC family in Quad core configuration
->    *
->    * TRM: https://www.ti.com/lit/pdf/spruiv7
->    *
-> - * Copyright (C) 2020-2022 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2020-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   /dts-v1/;
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
-> index 33768c02d8eb..05b762602a65 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
-> @@ -1,8 +1,8 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /*
->    * Common dtsi for AM62x SK and derivatives
->    *
-> - * Copyright (C) 2021-2023 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2021-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   #include <dt-bindings/leds/common.h>
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-imx219.dtso b/arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-imx219.dtso
-> index 6f4cd73c2f43..76ca02127f95 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-imx219.dtso
-> +++ b/arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-imx219.dtso
-> @@ -1,7 +1,7 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /*
->    * IMX219 (RPi v2) Camera Module
-> - * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2023-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   /dts-v1/;
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-ov5640.dtso b/arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-ov5640.dtso
-> index 9323a4b38389..ccc7f5e43184 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-ov5640.dtso
-> +++ b/arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-ov5640.dtso
-> @@ -1,7 +1,7 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /*
->    * ALINX AN5641 & Digilent PCam 5C - OV5640 camera module
-> - * Copyright (C) 2022-2023 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2022-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   /dts-v1/;
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-tevi-ov5640.dtso b/arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-tevi-ov5640.dtso
-> index dcaa33a4c8d3..4eaf9d757dd0 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-tevi-ov5640.dtso
-> +++ b/arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-tevi-ov5640.dtso
-> @@ -1,7 +1,7 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /*
->    * Technexion TEVI-OV5640-*-RPI - OV5640 camera module
-> - * Copyright (C) 2022-2023 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2022-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   /dts-v1/;
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62x-sk-hdmi-audio.dtso b/arch/arm64/boot/dts/ti/k3-am62x-sk-hdmi-audio.dtso
-> index 08eb2e894bbc..18c3082f68e6 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62x-sk-hdmi-audio.dtso
-> +++ b/arch/arm64/boot/dts/ti/k3-am62x-sk-hdmi-audio.dtso
-> @@ -1,4 +1,4 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->   /**
->    * Audio playback via HDMI for AM625-SK and AM62-LP SK.
->    *
-> @@ -6,7 +6,7 @@
->    * AM625 SK: https://www.ti.com/tool/SK-AM62
->    * AM62-LP SK: https://www.ti.com/tool/SK-AM62-LP
->    *
-> - * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
-> + * Copyright (C) 2023-2024 Texas Instruments Incorporated - https://www.ti.com/
->    */
->   
->   /dts-v1/;
+drivers/net/ethernet/intel/igb/igb_main.c:3092:53: warning=EF=BC=9A=E2=80=
+=98%d=E2=80=99 directive output may be truncated writing between 1 and 5 =
+bytes into a region of size between 1 and 13 [-Wformat-truncation=3D]
+ 3092 |                                  "%d.%d, 0x%08x, %d.%d.%d",
+      |                                                     ^~
+drivers/net/ethernet/intel/igb/igb_main.c:3092:34: note=EF=BC=9Adirective=
+ argument in the range [0, 65535]
+ 3092 |                                  "%d.%d, 0x%08x, %d.%d.%d",
+      |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/intel/igb/igb_main.c:3092:34: note=EF=BC=9Adirective=
+ argument in the range [0, 65535]
+drivers/net/ethernet/intel/igb/igb_main.c:3090:25: note=EF=BC=9A=E2=80=98=
+snprintf=E2=80=99 output between 23 and 43 bytes into a destination of si=
+ze 32
+
+kasprintf() returns a pointer to dynamically allocated memory
+which can be NULL upon failure.
+
+Fix this warning by using a larger space for adapter->fw_version,
+and then fall back and continue to use snprintf.
+
+Fixes: 1978d3ead82c ("intel: fix string truncation warnings")
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+Cc: Kunwu Chan <kunwu.chan@hotmail.com>
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+---
+v2: Fall back to use snprintf and a larger space,as suggested by
+https://lore.kernel.org/all/20231212132637.1b0fb8aa@kernel.org/
+v3: Add detailed warnings to the commit msg ,no functional change
+---
+ drivers/net/ethernet/intel/igb/igb.h      |  2 +-
+ drivers/net/ethernet/intel/igb/igb_main.c | 35 ++++++++++++-----------
+ 2 files changed, 19 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/igb/igb.h b/drivers/net/ethernet/=
+intel/igb/igb.h
+index a2b759531cb7..3c2dc7bdebb5 100644
+--- a/drivers/net/ethernet/intel/igb/igb.h
++++ b/drivers/net/ethernet/intel/igb/igb.h
+@@ -637,7 +637,7 @@ struct igb_adapter {
+ 		struct timespec64 period;
+ 	} perout[IGB_N_PEROUT];
+=20
+-	char fw_version[32];
++	char fw_version[48];
+ #ifdef CONFIG_IGB_HWMON
+ 	struct hwmon_buff *igb_hwmon_buff;
+ 	bool ets;
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethe=
+rnet/intel/igb/igb_main.c
+index b2295caa2f0a..ce762d77d2c1 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -3069,7 +3069,6 @@ void igb_set_fw_version(struct igb_adapter *adapter=
+)
+ {
+ 	struct e1000_hw *hw =3D &adapter->hw;
+ 	struct e1000_fw_version fw;
+-	char *lbuf;
+=20
+ 	igb_get_fw_version(hw, &fw);
+=20
+@@ -3077,34 +3076,36 @@ void igb_set_fw_version(struct igb_adapter *adapt=
+er)
+ 	case e1000_i210:
+ 	case e1000_i211:
+ 		if (!(igb_get_flash_presence_i210(hw))) {
+-			lbuf =3D kasprintf(GFP_KERNEL, "%2d.%2d-%d",
+-					 fw.invm_major, fw.invm_minor,
+-					 fw.invm_img_type);
++			snprintf(adapter->fw_version,
++				 sizeof(adapter->fw_version),
++				 "%2d.%2d-%d",
++				 fw.invm_major, fw.invm_minor,
++				 fw.invm_img_type);
+ 			break;
+ 		}
+ 		fallthrough;
+ 	default:
+ 		/* if option rom is valid, display its version too */
+ 		if (fw.or_valid) {
+-			lbuf =3D kasprintf(GFP_KERNEL, "%d.%d, 0x%08x, %d.%d.%d",
+-					 fw.eep_major, fw.eep_minor,
+-					 fw.etrack_id, fw.or_major, fw.or_build,
+-					 fw.or_patch);
++			snprintf(adapter->fw_version,
++				 sizeof(adapter->fw_version),
++				 "%d.%d, 0x%08x, %d.%d.%d",
++				 fw.eep_major, fw.eep_minor, fw.etrack_id,
++				 fw.or_major, fw.or_build, fw.or_patch);
+ 		/* no option rom */
+ 		} else if (fw.etrack_id !=3D 0X0000) {
+-			lbuf =3D kasprintf(GFP_KERNEL, "%d.%d, 0x%08x",
+-					 fw.eep_major, fw.eep_minor,
+-					 fw.etrack_id);
++			snprintf(adapter->fw_version,
++				 sizeof(adapter->fw_version),
++				 "%d.%d, 0x%08x",
++				 fw.eep_major, fw.eep_minor, fw.etrack_id);
+ 		} else {
+-			lbuf =3D kasprintf(GFP_KERNEL, "%d.%d.%d", fw.eep_major,
+-					 fw.eep_minor, fw.eep_build);
++			snprintf(adapter->fw_version,
++				 sizeof(adapter->fw_version),
++				 "%d.%d.%d",
++				 fw.eep_major, fw.eep_minor, fw.eep_build);
+ 		}
+ 		break;
+ 	}
+-
+-	/* the truncate happens here if it doesn't fit */
+-	strscpy(adapter->fw_version, lbuf, sizeof(adapter->fw_version));
+-	kfree(lbuf);
+ }
+=20
+ /**
+--=20
+2.39.2
+
 
