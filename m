@@ -1,87 +1,111 @@
-Return-Path: <linux-kernel+bounces-26459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C47282E13D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 21:05:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A01DE82E144
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 21:06:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED2B5283830
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:05:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C56DF1C221DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:06:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EFC718EB2;
-	Mon, 15 Jan 2024 20:05:29 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3357C18E2A
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 20:05:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF7A82F4;
-	Mon, 15 Jan 2024 12:06:12 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 190513F73F;
-	Mon, 15 Jan 2024 12:05:23 -0800 (PST)
-Message-ID: <0880d81b-9c80-423c-95e6-2fe973e7d739@arm.com>
-Date: Mon, 15 Jan 2024 21:05:22 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A80E1947E;
+	Mon, 15 Jan 2024 20:06:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D4NHu6N7"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D46518E2A;
+	Mon, 15 Jan 2024 20:06:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55969c01168so1388652a12.1;
+        Mon, 15 Jan 2024 12:06:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705349188; x=1705953988; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=87z/U/eZmGA0TAuJWEdp0n7QdUhBeveGTh40YHaQDwQ=;
+        b=D4NHu6N7CpjfCfWhuL4FAv97HkJvhuR++KXjQqvRchEjgm4it5w07ETx6kIibNpSoh
+         k1IYEhVen57wNaqlcdaGcPrqEqVgLrWsA7qbUayk9LmWUAMWFBk2TUfpiZuPgK6VMf9P
+         Z+UVfGyF5o/bomXrtPJ8+1m3rfRAXVLkZmpImtf6bGj0O79gqtM0ZYFVZlCcUV5y9i7H
+         p1TJjLqJlVj+HOFBS6w69XscaYQEUpq20EkIK+tTwl0soYPyDumEyrReu576ABF97Yv/
+         Xv9QPtNNqBKICnErO1j+TirzygBVTswYHPLdZ/A2dyneX7b8ZBrd5mLbjGs7bqhvL6Vz
+         msug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705349188; x=1705953988;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=87z/U/eZmGA0TAuJWEdp0n7QdUhBeveGTh40YHaQDwQ=;
+        b=OiuEc0kKIVnTo8lzucNDyfidTHW7lq7mWG2KBMavhhPtzjxn7BYKQlR47VAdXPO/mZ
+         0SWoftjlhfxQeOf6zAl3LnjrrgJ0fpPiiojphTZ0LduRFBBD26VwckZEP1YkmY4/nNJZ
+         T/F9I7Dmp4R39Cx4pZWeME8VKywKOki2ggYYISFkQfMbsUo3awy2L1KXnjgpq2I5KIy9
+         4CJdaY28ELccP+pOtdkpORzOhzpE7HmDW5vYL0DiybC+tCrT9x7dXOanBxriXMbhbGd7
+         mrl+Jf3Br71bBT8HwBKef/rOdX9oPCndoZj4SX1cUQkPma3ixxuVEV2ZYIAbFacVlFoQ
+         jnOg==
+X-Gm-Message-State: AOJu0YxCFZ9oXxJULJpvh0XPv+kf0+NG6+OHp1A6PIN7mFyLZ+WvOmB4
+	tvy2W29+IDWSAKQ4gSMQXdpa618PVpBoqdn8AXo=
+X-Google-Smtp-Source: AGHT+IHsGuZhFMr80G5DfnYOLEnb6oIGs7BJiiLJfQW8ZbTBFNvUcUSdt4iuoqGylqjyWRGa+ORIiKkxjeS8hFu9nm0=
+X-Received: by 2002:a17:907:3dac:b0:a23:690e:48bf with SMTP id
+ he44-20020a1709073dac00b00a23690e48bfmr7583783ejc.12.1705349188168; Mon, 15
+ Jan 2024 12:06:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] Scheduler changes for v6.8
-Content-Language: en-US
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Qais Yousef <qyousef@layalina.io>, Wyes Karny <wkarny@gmail.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
- Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
- Juri Lelli <juri.lelli@redhat.com>, Steven Rostedt <rostedt@goodmis.org>,
- Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
- Daniel Bristot de Oliveira <bristot@redhat.com>,
- Valentin Schneider <vschneid@redhat.com>
-References: <CAHk-=wiXpsxMcQb7MhL-AxOityTajK0G8eWeBOzX-qBJ9X2DSw@mail.gmail.com>
- <CAHk-=wjK28MUqBZzBSMEM8vdJhDOuXGSWPmmp04GEt9CXtW6Pw@mail.gmail.com>
- <20240114091240.xzdvqk75ifgfj5yx@wyes-pc> <ZaPC7o44lEswxOXp@vingu-book>
- <20240114123759.pjs7ctexcpc6pshl@wyes-pc>
- <CAKfTPtCz+95dR38c_u6_7JbkVt=czj5N2dKYVV-zk9dgbk16hw@mail.gmail.com>
- <20240114151250.5wfexq44o3mdm3nh@airbuntu>
- <CAKfTPtAMxiTbvAYav1JQw+MhjzDPCZDrMLL2JOfsc0GWp+FnOA@mail.gmail.com>
- <20240114195815.nes4bn53tc25djbh@airbuntu>
- <CAKfTPtCGgJiFDrZYpynCiHBnQx48A9RsAY9-6Hshduo4ymGJLQ@mail.gmail.com>
- <20240115120915.fukpcdumntdsllwi@airbuntu>
- <CAKfTPtAMacH4hKLyttLuQJjzc=D4m864MFaEEwZLG4K8RKTDYA@mail.gmail.com>
- <dfde5b4f-0d5e-49b6-a787-0766eff23f91@arm.com>
- <CAKfTPtB72Oa8XvH_xRFiKy+bfyEKUMdndKphFAD3dixePBUohQ@mail.gmail.com>
-From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <CAKfTPtB72Oa8XvH_xRFiKy+bfyEKUMdndKphFAD3dixePBUohQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com> <20240102-j7200-pcie-s2r-v1-4-84e55da52400@bootlin.com>
+In-Reply-To: <20240102-j7200-pcie-s2r-v1-4-84e55da52400@bootlin.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Mon, 15 Jan 2024 22:05:52 +0200
+Message-ID: <CAHp75VdtL+RncgLWghTy0qneobM+UUFr6Wnc78maOmeLZEpQOA@mail.gmail.com>
+Subject: Re: [PATCH 04/14] mux: mmio: Add resume support
+To: Thomas Richard <thomas.richard@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
+	Andy Shevchenko <andy@kernel.org>, Tony Lindgren <tony@atomide.com>, 
+	Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
+	Aaro Koskinen <aaro.koskinen@iki.fi>, Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
+	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, Vinod Koul <vkoul@kernel.org>, 
+	Kishon Vijay Abraham I <kishon@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
+	Tom Joseph <tjoseph@cadence.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	linux-phy@lists.infradead.org, linux-pci@vger.kernel.org, 
+	gregory.clement@bootlin.com, theo.lebrun@bootlin.com, 
+	thomas.petazzoni@bootlin.com, u-kumar1@ti.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 15/01/2024 16:26, Vincent Guittot wrote:
-> On Mon, 15 Jan 2024 at 15:03, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->>
->> On 15/01/2024 14:26, Vincent Guittot wrote:
->>> On Mon, 15 Jan 2024 at 13:09, Qais Yousef <qyousef@layalina.io> wrote:
->>>>
->>>> On 01/15/24 09:21, Vincent Guittot wrote:
+On Mon, Jan 15, 2024 at 6:16=E2=80=AFPM Thomas Richard
+<thomas.richard@bootlin.com> wrote:
+>
+> From: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+>
+> Implement resume support
 
-[...]
+Why?
 
-> Now, util can't be higher than max to handle clamping use cases
-> whereas it could be the case before. The jump to next OPP was
-> previously done with util being higher than max and it's now done with
-> freq being higher than policy->cur
+..
 
-Ah, OK:
+> +#ifdef CONFIG_PM
 
-  util = map_util_perf(util)     <- (1) util *= 1.25
+No ifdeffery, use proper macros.
 
-in the old code was doing this. And you do this now via frequency for
-the !freq_inv case. I just saw that you already mention this in the
-patch header of:
-https://lkml.kernel.org/r/20240114183600.135316-1-vincent.guittot@linaro.org
+..
+
+> +                       dev_err(dev, "control %u: error restoring mux: %d=
+\n", i, ret);
+
+Won't anything go wrong and spam the log buffer?
+
+--=20
+With Best Regards,
+Andy Shevchenko
 
