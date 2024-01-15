@@ -1,110 +1,105 @@
-Return-Path: <linux-kernel+bounces-26499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C8F382E229
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 22:18:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 368CC82E22C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 22:20:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B255C1C22255
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 21:18:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1372282EC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 21:20:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 856CE1B274;
-	Mon, 15 Jan 2024 21:18:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44F591B27A;
+	Mon, 15 Jan 2024 21:20:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="qi9LY7tq";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="u+R1L62k"
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FPRx8b8m"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BE0E1B26E
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 21:18:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailout.west.internal (Postfix) with ESMTP id 7AAF23200AFB;
-	Mon, 15 Jan 2024 16:18:47 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Mon, 15 Jan 2024 16:18:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm1; t=1705353526; x=1705439926; bh=DnYQw2I6Yjs9w8Mtfh1LZ
-	VGt5d51hfEJAUokeBtPaXk=; b=qi9LY7tqP/sGENNpaE1hw2SDDC20vdmw/oqSS
-	3fHsL9VTjVoq2pzllMIUnnqqs27tj5iit1y+MpK1X3EWq94zvIQUjY58yPoAjZh4
-	63al+U1TqiOIGkSG4cI4ZLveKWfrS8DhwtLr3Wv/yDfqBnn0TkVio7HTnRpNkj7i
-	eW9idRjdFWo4qKrk8xZbHs31FQuMa34FHnultQf7tRPRMvxc+w7qs8mWa5V9rI6y
-	UGDnEB1ka15I70/dmFYVq49jquwtEjg8um8TR2v17FlmBVdfMtrpWIL8loHusBqe
-	uN/jlb7tzyv8KLy5iHf4OSJrBm5+IZZXpL040SCqZZnmDOhMg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1705353526; x=1705439926; bh=DnYQw2I6Yjs9w8Mtfh1LZVGt5d51
-	hfEJAUokeBtPaXk=; b=u+R1L62kESwe1dbe2NmkM1MY63zncow9Wes0H8UPpurk
-	41K3EHiPeH1FE/83WF0ugQnhsYgj7OmNQwCQnhLSlbQpAtR7ZZGo2XKxZa+nZ2SI
-	kcwl5Ee+cZrDn+SSSTqie5AC3ho5/oBLoVXOikE7ysmKk3eMBXsfvHIryuUH1wDL
-	Sno1B7CC5U/pbHRQnYi7Bf8FJnS+1XQDHqiwSKbK14Wp6nRRuI030AlGF+d2jaW/
-	ZeY5GVejvvyRlwleSCSX6RTfPgulDzWhpNxpCUtBaDCrrhBaa+k4eSObwW5OJeRM
-	elY1Qrlw64zkn9ahCFeXSDzBFXdiVz2lySU1A7o5DA==
-X-ME-Sender: <xms:NqGlZc66muWRbuH1s9KymEZHkoF1_S50XGhYxuaWx8Gk3t6r0C50ww>
-    <xme:NqGlZd65lOiDFlo2u2A4Xy0kAFZE3OGb7f5vNzy7ia4pSGO_eqvjAIWJjRBOg3dmB
-    qmWSBvhW9ccjX02QHw>
-X-ME-Received: <xmr:NqGlZbfvWHr39ApGZ_MCbuxdSLJTMiraMWfspRUKn1Ui62qAUCtNoz-Zt4Y>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdejuddgudeglecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekre
-    dtredttdenucfhrhhomhepfdfnuhhkvgcuffdrucflohhnvghsfdcuoehluhhkvgeslhhj
-    ohhnvghsrdguvghvqeenucggtffrrghtthgvrhhnpefgudejtdfhuddukefffeekiefftd
-    dtvdfhgeduudeuffeuhfefgfegfeetvedvgeenucevlhhushhtvghrufhiiigvpedtnecu
-    rfgrrhgrmhepmhgrihhlfhhrohhmpehluhhkvgeslhhjohhnvghsrdguvghv
-X-ME-Proxy: <xmx:NqGlZRLn0_IFMadBblId2CQAPZ8COgTDF3S2dUAHGC0nkXEo7zbK5g>
-    <xmx:NqGlZQJTr6IZBheQeFIW88Ozp2Hw1CsaYUmEOzWxw0V3PFlAZK0UBw>
-    <xmx:NqGlZSzA-Is8GzWFiBGeALQg1m2YSS-ayDv4bV9eMjckKilGyne-cw>
-    <xmx:NqGlZaysGXl3s38e-ZQKQHBw85Sl5zCP-hWT4_AqVFDxDFLFclthmA>
-Feedback-ID: i5ec1447f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 15 Jan 2024 16:18:44 -0500 (EST)
-From: "Luke D. Jones" <luke@ljones.dev>
-To: linux-kernel@vger.kernel.org
-Cc: hdegoede@redhat.com,
-	"Luke D. Jones" <luke@ljones.dev>
-Subject: [PATCH] MAINTAINERS: add Luke Jones as maintainer for asus notebooks
-Date: Tue, 16 Jan 2024 10:18:29 +1300
-Message-ID: <20240115211829.48251-1-luke@ljones.dev>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C9BB1AADF;
+	Mon, 15 Jan 2024 21:20:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-55783b7b47aso9696823a12.0;
+        Mon, 15 Jan 2024 13:20:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705353623; x=1705958423; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=39ozkC0HqQZ+Edap3Ljm8Xvwn44jjjAD+L2Y5G1YxR4=;
+        b=FPRx8b8metkJYINl5JNHd7k+WMBSgfOrpipy4cSCnml4rlQtbxC93FMPc6hvSixIbj
+         jpswHTUPBZoZCTPsJS3iV5S0emPcwC7sZ5IfrvrfDrosso+pPTcknMm6aKC4Nvxp7dx7
+         QJzVugUOg8a10aUsu17qt+ml6VBySC26OVu3WfFPidvX0XgeSolV+yJLKNwFGowxSbzf
+         kzdrzUwtI6TIzdhj7EtSmChUb7k3G/aRaogNZfr0yirccY/pvxyZeXrgXM/xm+cK983o
+         L2cGLRd24DtJXT+oM2sKe4D4QwNDTwBKAvHc7OIAB9dRjis8loAvEKF9XNpDDq5FD88P
+         IHlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705353623; x=1705958423;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=39ozkC0HqQZ+Edap3Ljm8Xvwn44jjjAD+L2Y5G1YxR4=;
+        b=OyN6yC42kTRzxAFIPCVsYruaioUsCgufHTbGfk6arZu43v6UJLvECErq0Aq9tHWj6S
+         39UsyspHmbry7UKod7bG+NyDWieho6dhyxV6XXiA0qF++WunOOwL82GfjSzBghbCG1sR
+         GLysGYqSA3TiijqCFHQ0XfReO8qSdMmKh4WbolCD3tx+p2zgFM3GZOSIl6lFOD0xXNz1
+         QAvVH2LM2vikPOQWN1OXosuI6wCi6WIvtqWgJBkQuTEjr2dIGWIwRh3ZEWkSyIaBFxga
+         xG9moBd8Bv/X6bfwUdCup8NVlPlax0GQMHmowtvyeoMnlVDeaJvfcU0hvJMF+SBBEnvU
+         1sLw==
+X-Gm-Message-State: AOJu0YxJEKaWIaUfneVohV/AHbUqLpfbtNHwtXLZecvA7/OTmG0cwYPD
+	tS2EXFRvNnuIbvCO/36PTQI=
+X-Google-Smtp-Source: AGHT+IHv3NyJLuT0FGCd+kbmIzXlKGmCwoOcQxRz6260TRiuR4kLFOFZNS/jjOerZLceilUQrzbFDw==
+X-Received: by 2002:a05:6402:b12:b0:54c:b24d:a3b6 with SMTP id bm18-20020a0564020b1200b0054cb24da3b6mr2793991edb.20.1705353623234;
+        Mon, 15 Jan 2024 13:20:23 -0800 (PST)
+Received: from skbuf ([188.25.255.36])
+        by smtp.gmail.com with ESMTPSA id c25-20020a50d659000000b00557c51910e4sm6104974edj.85.2024.01.15.13.20.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 13:20:22 -0800 (PST)
+Date: Mon, 15 Jan 2024 23:20:20 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc: Daniel Golle <daniel@makrotopia.org>,
+	Landen Chao <Landen.Chao@mediatek.com>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+	Luiz Angelo Daros de Luca <luizluca@gmail.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [RFC PATCH net-next 4/8] net: dsa: mt7530: move XTAL check to
+ mt7530_setup()
+Message-ID: <20240115212020.oaw3hx65feetplve@skbuf>
+References: <20240113102529.80371-1-arinc.unal@arinc9.com>
+ <20240113102529.80371-5-arinc.unal@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240113102529.80371-5-arinc.unal@arinc9.com>
 
-Add myself as maintainer for "ASUS NOTEBOOKS AND EEEPC ACPI/WMI EXTRAS
-DRIVERS" as suggested by Hans de Goede based on my history of
-contributions.
+On Sat, Jan 13, 2024 at 01:25:25PM +0300, Arınç ÜNAL wrote:
+> The crystal frequency concerns the switch core. The frequency should be
+> checked when the switch is being set up so the driver can reject the
+> unsupported hardware earlier and without requiring port 6 to be used.
+> 
+> Move it to mt7530_setup(). Drop the unnecessary function printing.
+> 
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> ---
 
-Signed-off-by: Luke D. Jones <luke@ljones.dev>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f5c2450fa4ec..e7843beaa589 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3147,6 +3147,7 @@ F:	drivers/hwmon/asus-ec-sensors.c
- 
- ASUS NOTEBOOKS AND EEEPC ACPI/WMI EXTRAS DRIVERS
- M:	Corentin Chary <corentin.chary@gmail.com>
-+M:	Luke D. Jones <luke@lones.dev>
- L:	acpi4asus-user@lists.sourceforge.net
- L:	platform-driver-x86@vger.kernel.org
- S:	Maintained
--- 
-2.43.0
-
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 
