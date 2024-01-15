@@ -1,145 +1,160 @@
-Return-Path: <linux-kernel+bounces-26339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52CD182DEC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:59:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2663C82DEC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:59:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA25C28342B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:59:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 847791F22C9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:59:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 286F218627;
-	Mon, 15 Jan 2024 17:59:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C88ED182A0;
+	Mon, 15 Jan 2024 17:59:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sCD+wizW"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="SQASNvCD"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2072.outbound.protection.outlook.com [40.107.220.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0378818625
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 17:59:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a2c375d2430so571351366b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 09:59:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705341545; x=1705946345; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gNTcUvI+e7x+QSMSoU1H+XR2/SWz56YvoL0encJllnY=;
-        b=sCD+wizWSiTdF/4NTzCFAnMUV+Sfn+kqgmzso/xc+z8ldMp67n6EF02yIl7xRvkx+c
-         5XE9JjAm8bb4uxjYhlBfMtrGnrsztX6XpmSw0mCN+qscV6EdRKjWCD1n76JPDD4uO6gs
-         gAI45YFlQBD50lDQ8iiIREWMoz3EDanVOJTN7rjnhoraG5wBszzvH6Vt25y9wOW3Sn6i
-         yxEGKYThjoLoSCw/iWnziL5NPwDDVddM8HC9LDxbyR07DQfX+cQcUINB/PvNhUnmMqVL
-         Bmzck3J5c09x/z0AGhl2Oiqo1nJqXxsGUUagq/2vuiKqAZXkMb9CE/n/uYH8xHnAa5cs
-         EoEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705341545; x=1705946345;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gNTcUvI+e7x+QSMSoU1H+XR2/SWz56YvoL0encJllnY=;
-        b=KfC0W5XtdmYjLeSt1/fgPHedykngCPgxQW73nsGpT7DRYAxDEOtqJ3+LzEB3ALSO/l
-         tkxbQz8dM+JWmfbzzxnOXKARrmiPLrH/q04GabhW1IESpxixCS+z1KljdhgjNxA/3QDY
-         yAtkl/5od3Sr/5s84qXZFN6AeOAGt7tQImPKPy6A6zq9e7qU6VhoEspfchEWGPBKwM+t
-         S7GwQCoMKWbEBCB6yicnarGMLClpU9KFRnJRc4ccaqsUTbDdjxmYZRIXZGDjxgd+tzBX
-         XNowUeJRnkdbsJv9isEtF89HxMCjlH8jH3B+cbVgkZarveXD/T3vpYWQB/dMhpbpHoSt
-         633A==
-X-Gm-Message-State: AOJu0YzCEuIZrFwbSE7xAOfzzEFSzrGg+k+9wOf3L5WELsqjmvifnnmo
-	sGW9beJ8w2VzzxyYVk49IgglXtvL1Wpdqg==
-X-Google-Smtp-Source: AGHT+IEAUypA2S5oAjj6p1iCfYBirwB5RLojjF4Ss+1PhjRDkyxe4yNAz/OGtX+n80N61BMF9YPqSQ==
-X-Received: by 2002:a17:906:380e:b0:a28:e7b8:c57e with SMTP id v14-20020a170906380e00b00a28e7b8c57emr2550440ejc.130.1705341545383;
-        Mon, 15 Jan 2024 09:59:05 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id h20-20020a170906261400b00a28d438a1b0sm5494840ejc.83.2024.01.15.09.59.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jan 2024 09:59:05 -0800 (PST)
-Message-ID: <96928df4-75ca-4a55-829b-b8ab0583e3b5@linaro.org>
-Date: Mon, 15 Jan 2024 18:59:01 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9144F18046
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 17:59:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R17Qka/rylLOUkUyaQp91yKUuZzVpS75yLHTMXO4PUgdrN/hW+I3udZhKCeUT+c4cHjFUi0nBjwWczHYPYAJw8BGvZmQ8bNBFNU0TJKscGfM3APnAe9myk1LQZPUgJ7mmNzfhY4l/w6F7mtYFjVZkDdpVa3uWiDfeelAQiusDJDUqBHAXiQcPOR8KjZzIGUrQDCqDwvXp35mTHjwRf7BkxBD3Ufg/gF1KwRc/hLkjhaKK3hG78qWQwS0dODXWo7eFLQ85w5mOifhOz6H8Kr4CTLAcLPbhVB9eH0fZV5eGc8GLoOMyItaQSAT7iyrluNG+/QFeTgavpwTlEDtiLkXsw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ksLpePSBq6PmjKCW2M5ZXa1Htde2E50HKivahBQ1Bmc=;
+ b=F9mCn5sBiyytU0XeS0+c/DemXWxlD56ffTOwVyBqroAHm+DxqbpvUenyA6O7SFm3zZhsupQ7GXK1Er+eMyyHMtt7Hf4KrTYO8U/GPBbBGSdhQxhdBUYPQWKDUvj1YD3MwjpY9kUyC7S3BSlfziVZBjwIC/karVRvp082WNmL99kYby4Mx13H5IOHa1RXv8DAVs/TFjxanHc400Jgs3xBdEuKLMSMqY6OFw3Vijt6yvGIPVmBUACfhnGFTDLb89/G8YN5I8NUBsePDUPxXnW1HMnZPbC9oR4q9ER5LYqHZ8pNYZQOmTnGY3xr95+6W46Hy8/mU4rooaThWQdC6FiExA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ksLpePSBq6PmjKCW2M5ZXa1Htde2E50HKivahBQ1Bmc=;
+ b=SQASNvCDU09gG/AlbvBR+aLjw2e9TKnny4IW+2hSa9NsX6sRBisDU9r3Lm9M58v/F+eOeiJt0QOJkpF2xVW62cJW+q0rylGupFJ6V3677CAFRnzTEWh3JEECAy/4W5K8D2zuqhyxgPgp4XY4yvYZoesUoJUtof8sc3WGCF/u8N9Y9I4D+2AwSYe7m/FM+lzf2/9sz+qKNQurdOEzneCTkZzu8AaE5C/HL4XcI5IOEEe6xxEaV7Rcn45jFUdWgDnKVa5fq86nMdeFq6JgecdHpRNK+k+aXHRsaUi0ugcgg8CdJbqqCKIaNt21L7Fv2IQi88QAEPc/dkDoAQQVHVMwbw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by PH8PR12MB7447.namprd12.prod.outlook.com (2603:10b6:510:215::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Mon, 15 Jan
+ 2024 17:59:30 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::96dd:1160:6472:9873]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::96dd:1160:6472:9873%6]) with mapi id 15.20.7181.020; Mon, 15 Jan 2024
+ 17:59:30 +0000
+Date: Mon, 15 Jan 2024 13:59:29 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: peterx@redhat.com
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	James Houghton <jthoughton@google.com>,
+	David Hildenbrand <david@redhat.com>,
+	"Kirill A . Shutemov" <kirill@shutemov.name>,
+	Yang Shi <shy828301@gmail.com>, linux-riscv@lists.infradead.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+	Rik van Riel <riel@surriel.com>,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Mike Rapoport <rppt@kernel.org>, John Hubbard <jhubbard@nvidia.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Andrew Jones <andrew.jones@linux.dev>,
+	linuxppc-dev@lists.ozlabs.org,
+	Mike Kravetz <mike.kravetz@oracle.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	linux-arm-kernel@lists.infradead.org,
+	Christoph Hellwig <hch@infradead.org>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v2 04/13] mm: Make HPAGE_PXD_* macros even if !THP
+Message-ID: <20240115175929.GQ734935@nvidia.com>
+References: <20240103091423.400294-1-peterx@redhat.com>
+ <20240103091423.400294-5-peterx@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240103091423.400294-5-peterx@redhat.com>
+X-ClientProxiedBy: MN2PR15CA0063.namprd15.prod.outlook.com
+ (2603:10b6:208:237::32) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] interconnect: qcom: sm8450: Revert "interconnect: qcom:
- sm8450: Enable sync_state"
-Content-Language: en-US
-To: Georgi Djakov <djakov@kernel.org>, Bjorn Andersson
- <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
- Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
-References: <20240115153420.1525037-1-krzysztof.kozlowski@linaro.org>
- <201733c1-dc24-4d77-9967-f52c8e81d35b@kernel.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <201733c1-dc24-4d77-9967-f52c8e81d35b@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH8PR12MB7447:EE_
+X-MS-Office365-Filtering-Correlation-Id: faaa8dad-fea4-4bb0-1971-08dc15f3b8d4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	DcKa+wRpHTJ+inz0qDwjVN+ozM5Y75YTSNe9FudoYpRKLX/6M766n844UDiyw3QewU12+3k/d7QXkyLR19S++8ND+Bw3BPccDTBirU4J5bIBeo8ZZb08SeoynS8EgEnynDyTjaF0ybnHf+OEsXbs7L/x5H1zcm0/v7QhBKYv0w9HM/2SERVxbagGkKGyY1MBffTC6SDR7ceLCOKC2v6rWrOFUtat0Q6V0ElS33h4lpGMGIcqZ0+vngsB14DqyD0eNv9K8W4ixThRkLTUzouhkT1y1Z35CYIllJX29cXm7TGZEGlwmln72aO64WK0i2pJ4D/+c5GhiOKodNsYg5sHvqestCcY8sxMqsRy9NE92u4UxoUelniKizT/iNclT3jQi2u1deuRPiFMWH5s1R6O5CgvS8DFBYFJPCp6jBswA5Uim37IPHZVRFKBHptq+BlfQzEyAe+/1n5oo7SKwM6dcmK8fsobrFEWBRBOK20inDy6NbsfYyhzgwxfA84/BY0Szf7jfmSNAwMDZxhfi1tmViV82uL3OHVB1mbXQigiiTIE1Jz5N+1u9WOssaNaB7lBugpY+cWkJpT8rUwwJqHvfWSjzwv4HTXhVtkNsBMBbFS5L7Jv2RnG3OxKJmdBOiyY
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(346002)(366004)(136003)(39860400002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(5660300002)(2906002)(7416002)(4744005)(33656002)(6486002)(86362001)(2616005)(6506007)(83380400001)(1076003)(26005)(36756003)(478600001)(6512007)(316002)(4326008)(41300700001)(38100700002)(8936002)(8676002)(54906003)(66556008)(66946007)(6916009)(66476007)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?VwBIHHNaxz8P3ZKJyy+BP3O/i3l15Ec+UPvMiMccJsW7okBHBJg4VXZEzUO2?=
+ =?us-ascii?Q?q1//rhxv83SGO4CjpnrbAhpTpWrGWpV6OFQR7cYpu5iZPDyCjxCO4qNX5Srz?=
+ =?us-ascii?Q?sdr7932rAEnvKtqXJT3YX8+574oPV+yah5CMwm+N17eTjGfVddiwCgs47JZf?=
+ =?us-ascii?Q?tCYP1mWKKD/YxaW4Rg6Odmor0maLUYJMkJWD3bLytdPRxK5LZwfqgpy8K4bh?=
+ =?us-ascii?Q?mSeZriVMCS0m/GO9GrepGs0YDQTnmXutpMSwj9Q4LroRfeqhGUbTkVMDAtU4?=
+ =?us-ascii?Q?2pyb3spwKMeVgeirDTfW74VzjcvuY9aoRDL2xprFd6DFQTeojq02UDYMzFPN?=
+ =?us-ascii?Q?qRCn2SgSRkBfRG4imRRt4A7m367Kve0NMebqZV3kt+Hy6FEclh4pk5U46b8U?=
+ =?us-ascii?Q?4JmCvzs7TfXF4nlRCFDMs/g47f5Q+TNwFMUVnlfKQcwYDfQaetqOrbvfOY8Y?=
+ =?us-ascii?Q?p7rydTsBQKNcqR8tJYpJ1S+kkKuWLgycWrZcbm5IK5bu7fief1siJ3lg1OAV?=
+ =?us-ascii?Q?rR79BljsXmSpELhsrPRjUhM+JM7KOxBWVa67nAr4VGGScASJFFpTdwBfgLHp?=
+ =?us-ascii?Q?U5aUYzYmugRcLTgEAQduKbR1XvNseKdjl/gk1I0dXWpsETZqlnX7KFo1PcSQ?=
+ =?us-ascii?Q?G0nQCCuquOf8kNk+IupcaclH/Hev3wkJL4kKj6yMjDnv6BqtWCvPjt+1GHEv?=
+ =?us-ascii?Q?059upiAHwIvg/Rko599l3b6mjJ5ivHH3Sr1B1fXOdgU2niwmoPDDMkG+PCWd?=
+ =?us-ascii?Q?biNG+UDSVa9iTyon56oS192vFhBCjZ9wFNhHb/9oC7P48nhaCAT+d07MyN8R?=
+ =?us-ascii?Q?2VwAuHal69goITBylee/G9jYgweD/QVOLW2Dg9MF/QAssZyKOptjxpFj1iEQ?=
+ =?us-ascii?Q?ZleFABEHq+Rlv1NdHwjVmPqz3JDKOa3PMb8nFZo/9Lik3juBPanntDem6wGe?=
+ =?us-ascii?Q?aWeaXoCiv0JPzjLkyAvYeYHqgtcjNUSdRbmSojnqeEwifskhPt/6ZBgDUwZo?=
+ =?us-ascii?Q?+31clwO8uZlVLkGRvnb/EztWweHo8h0Vb2nVQiUkVSByjmdjv+u9ftVFQgTI?=
+ =?us-ascii?Q?w+vHKPR9mwMaQxj1Wwhq1DTFxMNar0lyMPjrNxoGAcGCRtb2UnoI3U7j/cO7?=
+ =?us-ascii?Q?wS9FhCADISJ8cI8KCt36z89Ud72flA89uYdnE435jpWHGPzG/Tw+QFEKFQnT?=
+ =?us-ascii?Q?Km96TX0j4mhOHfRAlYQanyp6hrAnWj/kEpric/y5Z6M0HHEY3ppvGj6pfM86?=
+ =?us-ascii?Q?mmwU94q39fTiDy8f+HkUs7GxUNSpuXrc6c0on2L1RKjmSVWAsshOmKGNNrZ8?=
+ =?us-ascii?Q?GpNbz6fVXJbTeHfNcZibNrUtZd9rYJCwoVv/iJxKz6/G6oNUm41tPF5b4s+2?=
+ =?us-ascii?Q?W217ajxEFfa2lfh0xAPPewE8ewQtTNkapHFbCkgBDgVAYvm+2sRExO2tGdFt?=
+ =?us-ascii?Q?xTmRP8Gu6O4wa/gMFOElCPsAdgfHik1HtctJazm38BiO25Tt4hCoeDU3MT1d?=
+ =?us-ascii?Q?GrvYdcxnxVUqRxuRxPSsZ+4bLkyOBFw7V05T3/tASy7oB2ohtzs6pWnjGaTE?=
+ =?us-ascii?Q?CVtFOmUDXhZsEJfPEuOapDj/Qzq5JaU+zZEu2qYA?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: faaa8dad-fea4-4bb0-1971-08dc15f3b8d4
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2024 17:59:30.3327
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: d0xMPm6PzUQr0909ReNgMfD5+dpRNn55evNuKhFVlyrndL5W/LNmjry1oiBsmkdw
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7447
 
-On 15/01/2024 17:44, Georgi Djakov wrote:
-> On 15.01.24 17:34, Krzysztof Kozlowski wrote:
->> Revert commit 16862f1b2110 ("interconnect: qcom: sm8450: Enable
->> sync_state"), because it causes serial console to corrupt, later freeze
->> and become either entirely corrupted or only print without accepting any
->> input.
+On Wed, Jan 03, 2024 at 05:14:14PM +0800, peterx@redhat.com wrote:
+> From: Peter Xu <peterx@redhat.com>
 > 
-> Sounds like some driver is not requesting bandwidth and is relying on
-> bandwidth requests made by other drivers. Maybe we are missing some
-> "interconnects" property in DT?
+> These macros can be helpful when we plan to merge hugetlb code into generic
+> code.  Move them out and define them even if !THP.
+> 
+> We actually already defined HPAGE_PMD_NR for other reasons even if !THP.
+> Reorganize these macros.
+> 
+> Reviewed-by: Christoph Hellwig <hch@infradead.org>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>  include/linux/huge_mm.h | 17 ++++++-----------
+>  1 file changed, 6 insertions(+), 11 deletions(-)
 
-Yes, the debug UART (console) misses the interconnects. They could be
-added but it does not change the fact that console is broken since v6.6
-and this was probably never tested on actual hardware :/
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Best regards,
-Krzysztof
-
+Jason
 
