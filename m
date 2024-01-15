@@ -1,94 +1,246 @@
-Return-Path: <linux-kernel+bounces-25844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25845-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F74A82D69E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:01:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BEC7882D6A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:02:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3ECE01F2210E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:01:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AE591F21B7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:02:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3478F9E8;
-	Mon, 15 Jan 2024 10:01:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DC3EF508;
+	Mon, 15 Jan 2024 10:01:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="V9AB7rvA";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="S3Guhbe6"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XjeNwgA3"
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C80092BAE5;
-	Mon, 15 Jan 2024 10:01:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1705312875;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/vWTc/rSFrzy3/1ggxjf061xaIHiQjwGl/dNAu/MBe0=;
-	b=V9AB7rvAvU5jeVp2ZvQSW2veFTbKb1r/5ksnjWT4pQtkgIWS718ocgud4l/BoNKpLdscKu
-	HGfOAcgTea2rMp5PvoX5UCsRKj0ajYQxGigZSLlJr5cU532V7TPHA35JZB6ioOKQ3dCa2Z
-	+vj6iy1k9slxbdqN8QTjmcRy/o13wVPgYF+Ixn6Yia9Y86PSwAxohIq73jQoWOZ0KApqKK
-	fJERj6csfYUbM2mJ3n9gHSco9zrCkQxbldecj0/bI35D5Xc01S31hVHX+DpG2tqG2FbdNx
-	Q21wuVrZipVX0UVOv0HfcfEA964EOqCM8YF4/qhAynqSqq3CKexCmqMQdNMCIw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1705312875;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/vWTc/rSFrzy3/1ggxjf061xaIHiQjwGl/dNAu/MBe0=;
-	b=S3Guhbe6wuhdaC/74RW11fsc3I1Ea+q+qR9gSrKQCw+5w1ZHCT51pbbcjcykM4w3Zx2fPg
-	lqSQ1qqOUKgKt3Ag==
-To: Vidya Sagar <vidyas@nvidia.com>, bhelgaas@google.com,
- rdunlap@infradead.org, ilpo.jarvinen@linux.intel.com,
- jiang.liu@linux.intel.com
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- treding@nvidia.com, jonathanh@nvidia.com, sdonthineni@nvidia.com,
- kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH V3] PCI/MSI: Fix MSI hwirq truncation
-In-Reply-To: <b9a7b855-af2b-4858-b9d8-3340a0421cfe@nvidia.com>
-References: <20240108120522.1368240-1-vidyas@nvidia.com>
- <20240111052814.713016-1-vidyas@nvidia.com> <87bk9qim4p.ffs@tglx>
- <b9a7b855-af2b-4858-b9d8-3340a0421cfe@nvidia.com>
-Date: Mon, 15 Jan 2024 11:01:15 +0100
-Message-ID: <877ckahq50.ffs@tglx>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DBF12BAE9
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 10:01:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-7cc6c88fb12so4199122241.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 02:01:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705312896; x=1705917696; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mkEfzu4mMXddQZ/Sz0Ukt1X6OmhWIm+0FNHN20uxA2Y=;
+        b=XjeNwgA3rrI/0VguGhOYXmk5md52FyV0LFzftmkzJwD7chRrTQdUB6etb38Pyphshn
+         9eDEukLmHF6RFxUK73YyfAx8vNFC54No0SevzMrSYSLESZfoiyirfAlXOqZTracTkV+3
+         aw6YhIdQFutss0hBpyBQe2fDH9Pn0H6Gx2tQZ7Y52Fp6XhJWIuL4k0QLc7sH6a18CLlV
+         aSKAIFVQpN1ENLC0u7833BgfN66XSn0C7sN5ctEnDv04AJXMSK4TtTTROT6LPAgwRJce
+         +1WOF49EKSLtJ2h27uc++FgdteFC8Xloa9Qz8gawE+SBKwqGRvooDV07mqYslPH33gvo
+         pkJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705312896; x=1705917696;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mkEfzu4mMXddQZ/Sz0Ukt1X6OmhWIm+0FNHN20uxA2Y=;
+        b=GHOmq2pM5of4vYz3il4b4BRONCrg14DQ+QVma+gRSvEdOl+d+kja1sr80QM6noVkXy
+         u0w0+K8VRRD3XZUZkhCAqnQemmnepL2Q083tjFmgTj221Ab5j4y+QVUTLVcifJeIJPYd
+         7l1fSs+1TDwaThKuuCwYU+O+xjeKlOg+giCfEBn5JS4eaVva3jgxfOtgep3YitTeQUHF
+         m4Wajr8PE67H/1fHVMh5Hr/F4zllU1/HhyKfQaEhIq+A1/7UWyvmL6EQT0ljBhYNUKn7
+         hWUaIJa5n3EIUnwyYPOj901YYH2vgLFMWQy+VjkLJkXYwdIF02WU5IwM+FZU9GpXMRrD
+         k5Aw==
+X-Gm-Message-State: AOJu0Ywt+2cNSSRJImsVfSLsdS8tHPfyxvSBJVnCU/+z+Xw+bSLQ2QHl
+	Xh4vNqXgeYnMQfvJ6aC80BBZIgasuz1otGA1Z1OVbPvyvfgFSg==
+X-Google-Smtp-Source: AGHT+IF8BFiFWm3ualWb7Gjmgs5qXXzN13P12cr22iMtnJAHgVarMnIPYedgeRVyuTIDHnhg9etA9Ii1k66yE6jG/Sc=
+X-Received: by 2002:a05:6102:ac6:b0:467:efd0:f0b4 with SMTP id
+ m6-20020a0561020ac600b00467efd0f0b4mr3999606vsh.23.1705312896039; Mon, 15 Jan
+ 2024 02:01:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240113094209.301672391@linuxfoundation.org>
+In-Reply-To: <20240113094209.301672391@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Mon, 15 Jan 2024 15:31:24 +0530
+Message-ID: <CA+G9fYu9XP80HSzMBGZe2_2e-jjOb=Cbjw9QR7ajp8Ex0DEXEQ@mail.gmail.com>
+Subject: Re: [PATCH 5.15 00/59] 5.15.147-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 12 2024 at 23:03, Vidya Sagar wrote:
-> On 1/12/2024 9:23 PM, Thomas Gleixner wrote:
->> On Thu, Jan 11 2024 at 10:58, Vidya Sagar wrote:
->>> So, cast the PCI domain number to 'irq_hw_number_t' before left shifting
->>> it to calculate hwirq number.
->> 
->> This still does not explain that this fixes it only on 64-bit platforms
->> and why we don't care for 32-bit systems.
-> Agree that this fixes the issue only on 64-bit platforms. It doesn't
-> change the behavior on 32-bit platforms. My understanding is that the
-> issue surfaces only if there are too many PCIe controllers in the system
-> which usually is the case in modern server systems and it is arguable if
-> the server systems really run 32-bit kernels.
+On Sat, 13 Jan 2024 at 15:30, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.15.147 release.
+> There are 59 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Mon, 15 Jan 2024 09:41:55 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.15.147-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.15.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Arguably people who do that can keep the pieces.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-> One way to fix it for both 32-bit and 64-bit systems is by changing the
-> type of 'hwirq' to u64. This may cause two memory reads in 32-bit
-> systems whenever 'hwirq' is accessed and that may intern cause some perf
-> impact?? Is this the way you think I should be handling it?
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-No. Leave it as is. What I'm asking for is that it's properly documented
-in the changelog.
+## Build
+* kernel: 5.15.147-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.15.y
+* git commit: f40fefd14722e8606bc4d5c3b52e22bc8d5ea362
+* git describe: v5.15.146-60-gf40fefd14722
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15=
+146-60-gf40fefd14722/
 
-Thanks,
+## Test Regressions (compared to v5.15.145)
 
-        tglx
+## Metric Regressions (compared to v5.15.145)
 
+## Test Fixes (compared to v5.15.145)
+
+## Metric Fixes (compared to v5.15.145)
+
+## Test result summary
+total: 175918, pass: 139063, fail: 4306, skip: 32380, xfail: 169
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 117 total, 117 passed, 0 failed
+* arm64: 44 total, 44 passed, 0 failed
+* i386: 33 total, 33 passed, 0 failed
+* mips: 24 total, 24 passed, 0 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 26 total, 26 passed, 0 failed
+* riscv: 11 total, 11 passed, 0 failed
+* s390: 11 total, 11 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 38 total, 38 passed, 0 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* libgpiod
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
