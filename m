@@ -1,399 +1,206 @@
-Return-Path: <linux-kernel+bounces-26476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C5B082E1B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 21:23:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B23A482E1CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 21:26:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0CEDB21EF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:23:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B40D31C22194
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:26:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD09E199AF;
-	Mon, 15 Jan 2024 20:22:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C69199B2;
+	Mon, 15 Jan 2024 20:26:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="I86YFgCg"
-Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="H+HpQ4aB";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="BJ2f9vBu"
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D9419474
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 20:22:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from fedora.home ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id PTTir1ptWH4TlPTTirsAw4; Mon, 15 Jan 2024 21:22:41 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1705350161;
-	bh=KLEUXPxcl4S2K+yijIUmXn33V7/4C3/BfvWp16xY4Co=;
-	h=From:To:Cc:Subject:Date;
-	b=I86YFgCgO6G/h+knHPdkW5D98gIRsLPDog8+Wcz7suvnoOQAFVkQUtlrzAHk1PI1y
-	 KWT9DzS1q/HuMLx1nACmGXlQbCiSLPL72Rzr9JHbtJ9g/3vFPFPD5bMZqRXLKh8DjU
-	 vLvu+cZdiO9qewaB39mV3n8QmJa8UTX65fQbo2PhbxVRZYuhh1bv4g8ukBHpai44/F
-	 3iCx2dwHnxte71IqQaBWAvx0pkaIjCG0jPJmWxYq89tA50IE25oOl5KngJMdIEKlpU
-	 WUdzm/LsbOK90Ix6jxe43FUy1UR1VuOIBQXU9pJlE9M0F6ko0NCnXkS7s87WZFcU/P
-	 e0oKbUGl1Kq5A==
-X-ME-Helo: fedora.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 15 Jan 2024 21:22:41 +0100
-X-ME-IP: 92.140.202.140
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Vaibhav Agarwal <vaibhav.sr@gmail.com>,
-	Mark Greer <mgreer@animalcreek.com>,
-	Johan Hovold <johan@kernel.org>,
-	Alex Elder <elder@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Viresh Kumar <vireshk@kernel.org>,
-	"Bryan O'Donoghue" <pure.logic@nexus-software.ie>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	greybus-dev@lists.linaro.org,
-	linux-staging@lists.linux.dev
-Subject: [PATCH] staging: greybus: Remove usage of the deprecated ida_simple_xx() API
-Date: Mon, 15 Jan 2024 21:22:29 +0100
-Message-ID: <2e7bbdaf8a495bb1273396395b5c779363287581.1705350141.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7945118E10;
+	Mon, 15 Jan 2024 20:26:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.west.internal (Postfix) with ESMTP id E9F573200AA9;
+	Mon, 15 Jan 2024 15:26:00 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 15 Jan 2024 15:26:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1705350360; x=1705436760; bh=7QOLzz2DrL
+	3dLpbkUpynFUGyDkNPTfHQ0AhJK1jrjEY=; b=H+HpQ4aBuRJk35JY0M2TKMgCL0
+	9N3PQ0MliVNK0IfmHx3EApwk2AlGpH+md/1Y25MRmlSKUaBxySEh5+n2ail2Ed37
+	9b1PAeOrf/yzS/oUqI1pOjI5HQeww3GOw/Ho/xBzzJ8ae5lrfVk+9mAsNNuxLN8x
+	3IR9OOqHYMmRSIiR6C7UOXTOVOplGlRfpWAynXAzDYF7//CSUmfYh3F1r8gTRLMm
+	+7ow5hcO2mTup+mrcQt48mr3YDDD5MaJ8YtqLqjRGPAAL10iYAxVIpV8dQuHimrW
+	KyO5+8s6phkq/S8J8g4pDUN6FVSqvvab81Kfy6Rs6rnIymbv4IM0uuDW7lIQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1705350360; x=1705436760; bh=7QOLzz2DrL3dLpbkUpynFUGyDkNP
+	TfHQ0AhJK1jrjEY=; b=BJ2f9vBu2F5eyRP65jUmrCroVNndxMoewDeDIuog9A5D
+	Zh8Meo3VhKrq0KlzBvc2rJ8YmuVcUQ4gJ41OT4tSG1cZR/3os/D42RZqAkuTVbio
+	ZpJR/8o+gY5vKnsZN3C8RBkUp1ThKsHtmaYBIZMh8I5y1OfdbMKXJw6COP+l3LIG
+	o+gT5nawt9p8z7OiievMnMeRmPpWLrnq9OpM6PO4KuCwMBdb1yIdaxcOl20xB87P
+	LQFBNMxXken4XV8As42m/q5K9msB/eUazPXGiOLlOHc/jOyzmaKAYtucx2URxJq2
+	896zCqvV49tER9GWWtLOj483m5wlvgaHy5ONijT8IA==
+X-ME-Sender: <xms:2JSlZUCs-6hZ87eLDS-xS510Wr5Eszigme-Ogm0ZsPlJmp-2jMGw_g>
+    <xme:2JSlZWjz36Je4zbOEBE4_KWmzPRNPHan8kxFlxWINxXHQZqv-hGPPj5JIOvi--Rv2
+    D3rRAGYMXHbS95fN1M>
+X-ME-Received: <xmr:2JSlZXlrShkySNZuZIT2rNlbhV8czwZ-5MxLjaB8_8t9hU6_h7zzfis7YkTOQKiYYimGNQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdejuddgudefkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffuvfevkfgjfhfogggtsehttdertdertddvnecuhfhrohhmpefnuhhk
+    vgculfhonhgvshcuoehluhhkvgeslhhjohhnvghsrdguvghvqeenucggtffrrghtthgvrh
+    hnpedvvdegledtheefieejgfevgeefiefhtdevteefteduhfevtdefleethfetgeeluden
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehluhhkvg
+    eslhhjohhnvghsrdguvghv
+X-ME-Proxy: <xmx:2JSlZazkref_ESiuBUtod2ZEiBgGjeXQiR49Iczbo9I7DpKMl_GF1Q>
+    <xmx:2JSlZZSpUBMRnkhSomleGTmr079yxkoSt0YzHdcwGRzBAH28rgRu9g>
+    <xmx:2JSlZVbICd9otsPg1EeCEa78EohZ6GGRUywkUgvR2eGz8KG-Tzp4yw>
+    <xmx:2JSlZXNRCyGnAIU8ry2Sv95qZ2j9_uNYeouza4-T3LKgfJG7FYjPzg>
+Feedback-ID: i5ec1447f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 15 Jan 2024 15:25:53 -0500 (EST)
+Date: Tue, 16 Jan 2024 09:25:31 +1300
+From: Luke Jones <luke@ljones.dev>
+Subject: Re: [PATCH] platform/x86: asus-wmi: Re-enable custom fan curves after
+ setting throttle_thermal_policy
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Andrei Sabalenka <mechakotik@gmail.com>, corentin.chary@gmail.com,
+	ilpo.jarvinen@linux.intel.com, acpi4asus-user@lists.sourceforge.net,
+	platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <JQKB7S.8ATKNVGHLV1L@ljones.dev>
+In-Reply-To: <e776db0e-2376-415b-8688-f166118d4007@redhat.com>
+References: <20240115122315.10250-1-mechakotik@gmail.com>
+	<e776db0e-2376-415b-8688-f166118d4007@redhat.com>
+X-Mailer: geary/44.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
 
-ida_alloc() and ida_free() should be preferred to the deprecated
-ida_simple_get() and ida_simple_remove().
 
-Note that the upper limit of ida_simple_get() is exclusive, buInputt the one of
-ida_alloc_range()/ida_alloc_max() is inclusive. So a -1 has been added when
-needed.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/staging/greybus/audio_manager.c  |  8 ++++----
- drivers/staging/greybus/authentication.c |  6 +++---
- drivers/staging/greybus/fw-download.c    |  7 +++----
- drivers/staging/greybus/fw-management.c  | 20 +++++++++-----------
- drivers/staging/greybus/gbphy.c          |  6 +++---
- drivers/staging/greybus/loopback.c       |  6 +++---
- drivers/staging/greybus/raw.c            |  6 +++---
- drivers/staging/greybus/vibrator.c       |  6 +++---
- 8 files changed, 31 insertions(+), 34 deletions(-)
+On Mon, Jan 15 2024 at 13:38:16 +01:00:00, Hans de Goede 
+<hdegoede@redhat.com> wrote:
+> Hi,
+> 
+> On 1/15/24 13:22, Andrei Sabalenka wrote:
+>>  When changing throttle_thermal_policy, all the custom fan curves 
+>> are getting disabled. This patch re-enables all the custom fan 
+>> curves that were enabled before changing throttle_thermal_policy.
+>> 
+>>  I believe it makes asus-wmi sysfs interface more convenient, as it 
+>> allows userspace to manage fan curves independently from 
+>> platform_profile and throttle_thermal_policy. At the kernel level, 
+>> custom fan curves should not be tied to "power profiles" scheme in 
+>> any way, as it gives the user less freedom of controlling them.
+> 
+> Setting a high performance power-profile typically also involves 
+> ramping up
+> the fans harder. So I don't think this patch is a good idea.
+> 
+> If you really want this behavior then you can always re-enable the 
+> custom
+> curve after changing the profile.
+> 
+> Luke, do you have any opinion on this?
 
-diff --git a/drivers/staging/greybus/audio_manager.c b/drivers/staging/greybus/audio_manager.c
-index 9a3f7c034ab4..fa43d35bbcec 100644
---- a/drivers/staging/greybus/audio_manager.c
-+++ b/drivers/staging/greybus/audio_manager.c
-@@ -44,14 +44,14 @@ int gb_audio_manager_add(struct gb_audio_manager_module_descriptor *desc)
- 	int id;
- 	int err;
- 
--	id = ida_simple_get(&module_id, 0, 0, GFP_KERNEL);
-+	id = ida_alloc(&module_id, GFP_KERNEL);
- 	if (id < 0)
- 		return id;
- 
- 	err = gb_audio_manager_module_create(&module, manager_kset,
- 					     id, desc);
- 	if (err) {
--		ida_simple_remove(&module_id, id);
-+		ida_free(&module_id, id);
- 		return err;
- 	}
- 
-@@ -78,7 +78,7 @@ int gb_audio_manager_remove(int id)
- 	list_del(&module->list);
- 	kobject_put(&module->kobj);
- 	up_write(&modules_rwsem);
--	ida_simple_remove(&module_id, id);
-+	ida_free(&module_id, id);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(gb_audio_manager_remove);
-@@ -92,7 +92,7 @@ void gb_audio_manager_remove_all(void)
- 
- 	list_for_each_entry_safe(module, next, &modules_list, list) {
- 		list_del(&module->list);
--		ida_simple_remove(&module_id, module->id);
-+		ida_free(&module_id, module->id);
- 		kobject_put(&module->kobj);
- 	}
- 
-diff --git a/drivers/staging/greybus/authentication.c b/drivers/staging/greybus/authentication.c
-index b67315641d18..d53e58f92e81 100644
---- a/drivers/staging/greybus/authentication.c
-+++ b/drivers/staging/greybus/authentication.c
-@@ -324,7 +324,7 @@ int gb_cap_connection_init(struct gb_connection *connection)
- 	if (ret)
- 		goto err_list_del;
- 
--	minor = ida_simple_get(&cap_minors_map, 0, NUM_MINORS, GFP_KERNEL);
-+	minor = ida_alloc_max(&cap_minors_map, NUM_MINORS - 1, GFP_KERNEL);
- 	if (minor < 0) {
- 		ret = minor;
- 		goto err_connection_disable;
-@@ -351,7 +351,7 @@ int gb_cap_connection_init(struct gb_connection *connection)
- err_del_cdev:
- 	cdev_del(&cap->cdev);
- err_remove_ida:
--	ida_simple_remove(&cap_minors_map, minor);
-+	ida_free(&cap_minors_map, minor);
- err_connection_disable:
- 	gb_connection_disable(connection);
- err_list_del:
-@@ -375,7 +375,7 @@ void gb_cap_connection_exit(struct gb_connection *connection)
- 
- 	device_destroy(&cap_class, cap->dev_num);
- 	cdev_del(&cap->cdev);
--	ida_simple_remove(&cap_minors_map, MINOR(cap->dev_num));
-+	ida_free(&cap_minors_map, MINOR(cap->dev_num));
- 
- 	/*
- 	 * Disallow any new ioctl operations on the char device and wait for
-diff --git a/drivers/staging/greybus/fw-download.c b/drivers/staging/greybus/fw-download.c
-index 543692c567f9..2a5c6d1b049c 100644
---- a/drivers/staging/greybus/fw-download.c
-+++ b/drivers/staging/greybus/fw-download.c
-@@ -63,8 +63,7 @@ static void fw_req_release(struct kref *kref)
- 	 * just hope that it never happens.
- 	 */
- 	if (!fw_req->timedout)
--		ida_simple_remove(&fw_req->fw_download->id_map,
--				  fw_req->firmware_id);
-+		ida_free(&fw_req->fw_download->id_map, fw_req->firmware_id);
- 
- 	kfree(fw_req);
- }
-@@ -171,7 +170,7 @@ static struct fw_request *find_firmware(struct fw_download *fw_download,
- 		return ERR_PTR(-ENOMEM);
- 
- 	/* Allocate ids from 1 to 255 (u8-max), 0 is an invalid id */
--	ret = ida_simple_get(&fw_download->id_map, 1, 256, GFP_KERNEL);
-+	ret = ida_alloc_range(&fw_download->id_map, 1, 255, GFP_KERNEL);
- 	if (ret < 0) {
- 		dev_err(fw_download->parent,
- 			"failed to allocate firmware id (%d)\n", ret);
-@@ -212,7 +211,7 @@ static struct fw_request *find_firmware(struct fw_download *fw_download,
- 	return fw_req;
- 
- err_free_id:
--	ida_simple_remove(&fw_download->id_map, fw_req->firmware_id);
-+	ida_free(&fw_download->id_map, fw_req->firmware_id);
- err_free_req:
- 	kfree(fw_req);
- 
-diff --git a/drivers/staging/greybus/fw-management.c b/drivers/staging/greybus/fw-management.c
-index 93137a3c4907..3054f084d777 100644
---- a/drivers/staging/greybus/fw-management.c
-+++ b/drivers/staging/greybus/fw-management.c
-@@ -165,7 +165,7 @@ static int fw_mgmt_load_and_validate_operation(struct fw_mgmt *fw_mgmt,
- 	}
- 
- 	/* Allocate ids from 1 to 255 (u8-max), 0 is an invalid id */
--	ret = ida_simple_get(&fw_mgmt->id_map, 1, 256, GFP_KERNEL);
-+	ret = ida_alloc_range(&fw_mgmt->id_map, 1, 255, GFP_KERNEL);
- 	if (ret < 0) {
- 		dev_err(fw_mgmt->parent, "failed to allocate request id (%d)\n",
- 			ret);
-@@ -180,8 +180,7 @@ static int fw_mgmt_load_and_validate_operation(struct fw_mgmt *fw_mgmt,
- 				GB_FW_MGMT_TYPE_LOAD_AND_VALIDATE_FW, &request,
- 				sizeof(request), NULL, 0);
- 	if (ret) {
--		ida_simple_remove(&fw_mgmt->id_map,
--				  fw_mgmt->intf_fw_request_id);
-+		ida_free(&fw_mgmt->id_map, fw_mgmt->intf_fw_request_id);
- 		fw_mgmt->intf_fw_request_id = 0;
- 		dev_err(fw_mgmt->parent,
- 			"load and validate firmware request failed (%d)\n",
-@@ -220,7 +219,7 @@ static int fw_mgmt_interface_fw_loaded_operation(struct gb_operation *op)
- 		return -ENODEV;
- 	}
- 
--	ida_simple_remove(&fw_mgmt->id_map, fw_mgmt->intf_fw_request_id);
-+	ida_free(&fw_mgmt->id_map, fw_mgmt->intf_fw_request_id);
- 	fw_mgmt->intf_fw_request_id = 0;
- 	fw_mgmt->intf_fw_status = request->status;
- 	fw_mgmt->intf_fw_major = le16_to_cpu(request->major);
-@@ -316,7 +315,7 @@ static int fw_mgmt_backend_fw_update_operation(struct fw_mgmt *fw_mgmt,
- 	}
- 
- 	/* Allocate ids from 1 to 255 (u8-max), 0 is an invalid id */
--	ret = ida_simple_get(&fw_mgmt->id_map, 1, 256, GFP_KERNEL);
-+	ret = ida_alloc_range(&fw_mgmt->id_map, 1, 255, GFP_KERNEL);
- 	if (ret < 0) {
- 		dev_err(fw_mgmt->parent, "failed to allocate request id (%d)\n",
- 			ret);
-@@ -330,8 +329,7 @@ static int fw_mgmt_backend_fw_update_operation(struct fw_mgmt *fw_mgmt,
- 				GB_FW_MGMT_TYPE_BACKEND_FW_UPDATE, &request,
- 				sizeof(request), NULL, 0);
- 	if (ret) {
--		ida_simple_remove(&fw_mgmt->id_map,
--				  fw_mgmt->backend_fw_request_id);
-+		ida_free(&fw_mgmt->id_map, fw_mgmt->backend_fw_request_id);
- 		fw_mgmt->backend_fw_request_id = 0;
- 		dev_err(fw_mgmt->parent,
- 			"backend %s firmware update request failed (%d)\n", tag,
-@@ -369,7 +367,7 @@ static int fw_mgmt_backend_fw_updated_operation(struct gb_operation *op)
- 		return -ENODEV;
- 	}
- 
--	ida_simple_remove(&fw_mgmt->id_map, fw_mgmt->backend_fw_request_id);
-+	ida_free(&fw_mgmt->id_map, fw_mgmt->backend_fw_request_id);
- 	fw_mgmt->backend_fw_request_id = 0;
- 	fw_mgmt->backend_fw_status = request->status;
- 
-@@ -617,7 +615,7 @@ int gb_fw_mgmt_connection_init(struct gb_connection *connection)
- 	if (ret)
- 		goto err_list_del;
- 
--	minor = ida_simple_get(&fw_mgmt_minors_map, 0, NUM_MINORS, GFP_KERNEL);
-+	minor = ida_alloc_max(&fw_mgmt_minors_map, NUM_MINORS - 1, GFP_KERNEL);
- 	if (minor < 0) {
- 		ret = minor;
- 		goto err_connection_disable;
-@@ -645,7 +643,7 @@ int gb_fw_mgmt_connection_init(struct gb_connection *connection)
- err_del_cdev:
- 	cdev_del(&fw_mgmt->cdev);
- err_remove_ida:
--	ida_simple_remove(&fw_mgmt_minors_map, minor);
-+	ida_free(&fw_mgmt_minors_map, minor);
- err_connection_disable:
- 	gb_connection_disable(connection);
- err_list_del:
-@@ -669,7 +667,7 @@ void gb_fw_mgmt_connection_exit(struct gb_connection *connection)
- 
- 	device_destroy(&fw_mgmt_class, fw_mgmt->dev_num);
- 	cdev_del(&fw_mgmt->cdev);
--	ida_simple_remove(&fw_mgmt_minors_map, MINOR(fw_mgmt->dev_num));
-+	ida_free(&fw_mgmt_minors_map, MINOR(fw_mgmt->dev_num));
- 
- 	/*
- 	 * Disallow any new ioctl operations on the char device and wait for
-diff --git a/drivers/staging/greybus/gbphy.c b/drivers/staging/greybus/gbphy.c
-index 6a7d8cf2a1eb..93b74a236ab1 100644
---- a/drivers/staging/greybus/gbphy.c
-+++ b/drivers/staging/greybus/gbphy.c
-@@ -46,7 +46,7 @@ static void gbphy_dev_release(struct device *dev)
- {
- 	struct gbphy_device *gbphy_dev = to_gbphy_dev(dev);
- 
--	ida_simple_remove(&gbphy_id, gbphy_dev->id);
-+	ida_free(&gbphy_id, gbphy_dev->id);
- 	kfree(gbphy_dev);
- }
- 
-@@ -225,13 +225,13 @@ static struct gbphy_device *gb_gbphy_create_dev(struct gb_bundle *bundle,
- 	int retval;
- 	int id;
- 
--	id = ida_simple_get(&gbphy_id, 1, 0, GFP_KERNEL);
-+	id = ida_alloc_min(&gbphy_id, 1, GFP_KERNEL);
- 	if (id < 0)
- 		return ERR_PTR(id);
- 
- 	gbphy_dev = kzalloc(sizeof(*gbphy_dev), GFP_KERNEL);
- 	if (!gbphy_dev) {
--		ida_simple_remove(&gbphy_id, id);
-+		ida_free(&gbphy_id, id);
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
-diff --git a/drivers/staging/greybus/loopback.c b/drivers/staging/greybus/loopback.c
-index d7b39f3bb652..bb33379b5297 100644
---- a/drivers/staging/greybus/loopback.c
-+++ b/drivers/staging/greybus/loopback.c
-@@ -1028,7 +1028,7 @@ static int gb_loopback_probe(struct gb_bundle *bundle,
- 	gb->file = debugfs_create_file(name, S_IFREG | 0444, gb_dev.root, gb,
- 				       &gb_loopback_dbgfs_latency_fops);
- 
--	gb->id = ida_simple_get(&loopback_ida, 0, 0, GFP_KERNEL);
-+	gb->id = ida_alloc(&loopback_ida, GFP_KERNEL);
- 	if (gb->id < 0) {
- 		retval = gb->id;
- 		goto out_debugfs_remove;
-@@ -1079,7 +1079,7 @@ static int gb_loopback_probe(struct gb_bundle *bundle,
- out_connection_disable:
- 	gb_connection_disable(connection);
- out_ida_remove:
--	ida_simple_remove(&loopback_ida, gb->id);
-+	ida_free(&loopback_ida, gb->id);
- out_debugfs_remove:
- 	debugfs_remove(gb->file);
- out_connection_destroy:
-@@ -1121,7 +1121,7 @@ static void gb_loopback_disconnect(struct gb_bundle *bundle)
- 	spin_unlock_irqrestore(&gb_dev.lock, flags);
- 
- 	device_unregister(gb->dev);
--	ida_simple_remove(&loopback_ida, gb->id);
-+	ida_free(&loopback_ida, gb->id);
- 
- 	gb_connection_destroy(gb->connection);
- 	kfree(gb);
-diff --git a/drivers/staging/greybus/raw.c b/drivers/staging/greybus/raw.c
-index b9c6eff7cdc1..836d35e5fa85 100644
---- a/drivers/staging/greybus/raw.c
-+++ b/drivers/staging/greybus/raw.c
-@@ -181,7 +181,7 @@ static int gb_raw_probe(struct gb_bundle *bundle,
- 	raw->connection = connection;
- 	greybus_set_drvdata(bundle, raw);
- 
--	minor = ida_simple_get(&minors, 0, 0, GFP_KERNEL);
-+	minor = ida_alloc(&minors, GFP_KERNEL);
- 	if (minor < 0) {
- 		retval = minor;
- 		goto error_connection_destroy;
-@@ -214,7 +214,7 @@ static int gb_raw_probe(struct gb_bundle *bundle,
- 	gb_connection_disable(connection);
- 
- error_remove_ida:
--	ida_simple_remove(&minors, minor);
-+	ida_free(&minors, minor);
- 
- error_connection_destroy:
- 	gb_connection_destroy(connection);
-@@ -235,7 +235,7 @@ static void gb_raw_disconnect(struct gb_bundle *bundle)
- 	device_destroy(&raw_class, raw->dev);
- 	cdev_del(&raw->cdev);
- 	gb_connection_disable(connection);
--	ida_simple_remove(&minors, MINOR(raw->dev));
-+	ida_free(&minors, MINOR(raw->dev));
- 	gb_connection_destroy(connection);
- 
- 	mutex_lock(&raw->list_lock);
-diff --git a/drivers/staging/greybus/vibrator.c b/drivers/staging/greybus/vibrator.c
-index 227e18d92a95..89bef8045549 100644
---- a/drivers/staging/greybus/vibrator.c
-+++ b/drivers/staging/greybus/vibrator.c
-@@ -153,7 +153,7 @@ static int gb_vibrator_probe(struct gb_bundle *bundle,
- 	 * there is a "real" device somewhere in the kernel for this, but I
- 	 * can't find it at the moment...
- 	 */
--	vib->minor = ida_simple_get(&minors, 0, 0, GFP_KERNEL);
-+	vib->minor = ida_alloc(&minors, GFP_KERNEL);
- 	if (vib->minor < 0) {
- 		retval = vib->minor;
- 		goto err_connection_disable;
-@@ -173,7 +173,7 @@ static int gb_vibrator_probe(struct gb_bundle *bundle,
- 	return 0;
- 
- err_ida_remove:
--	ida_simple_remove(&minors, vib->minor);
-+	ida_free(&minors, vib->minor);
- err_connection_disable:
- 	gb_connection_disable(connection);
- err_connection_destroy:
-@@ -197,7 +197,7 @@ static void gb_vibrator_disconnect(struct gb_bundle *bundle)
- 		turn_off(vib);
- 
- 	device_unregister(vib->dev);
--	ida_simple_remove(&minors, vib->minor);
-+	ida_free(&minors, vib->minor);
- 	gb_connection_disable(vib->connection);
- 	gb_connection_destroy(vib->connection);
- 	kfree(vib);
--- 
-2.43.0
+I see some misconceptions that should be addressed:
+1. ASUS themselves set separate fan curves per "platform profile", both 
+standard and custom
+2. fan curves are not tied to platform profiles, they are tied to the 
+throttle_thermal_policy, and this is actually done in the acpi - so the 
+code here is a mirror of that
+3. platform-profiles are tied to throttle_thermal_policy
+
+There is no lack of user control at all, a decent tool (like asusctl) 
+can set fan curves without issues but it's perhaps not convenient for 
+manually setting via a script etc.
+
+The main reason that a curve is disabled for the policy being switched 
+to is for safety. It was a paranoid choice I made at the time. The 
+kernel (and acpi) can't guarantee that a user set a reasonable default 
+for that policy so the safest thing is to force an explicit re-enable 
+of it.
+
+Having said that: I know that the curve was previously set for that 
+profile/policy and in theory should be fine plus it is already used by 
+the user, it is also not possible to set a curve for a different 
+profile to the one a user is currently in -  this is forced in ACPI as 
+you can set only the curve for the profile you are in (the kernel code 
+also mirrors this).
+
+So this patch should be fine.
+
+Signed-off-by: Luke D. Jones <luke@ljones.dev>
+
+> 
+>> 
+>>  Signed-off-by: Andrei Sabalenka <mechakotik@gmail.com>
+>>  ---
+>>   drivers/platform/x86/asus-wmi.c | 29 ++++++++++++++++++++++-------
+>>   1 file changed, 22 insertions(+), 7 deletions(-)
+>> 
+>>  diff --git a/drivers/platform/x86/asus-wmi.c 
+>> b/drivers/platform/x86/asus-wmi.c
+>>  index 18be35fdb..c2e38f6d8 100644
+>>  --- a/drivers/platform/x86/asus-wmi.c
+>>  +++ b/drivers/platform/x86/asus-wmi.c
+>>  @@ -3441,13 +3441,28 @@ static int 
+>> throttle_thermal_policy_write(struct asus_wmi *asus)
+>>   		return -EIO;
+>>   	}
+>> 
+>>  -	/* Must set to disabled if mode is toggled */
+>>  -	if (asus->cpu_fan_curve_available)
+>>  -		asus->custom_fan_curves[FAN_CURVE_DEV_CPU].enabled = false;
+>>  -	if (asus->gpu_fan_curve_available)
+>>  -		asus->custom_fan_curves[FAN_CURVE_DEV_GPU].enabled = false;
+>>  -	if (asus->mid_fan_curve_available)
+>>  -		asus->custom_fan_curves[FAN_CURVE_DEV_MID].enabled = false;
+>>  +	/* Re-enable fan curves after profile change */
+>>  +	if (asus->cpu_fan_curve_available && 
+>> asus->custom_fan_curves[FAN_CURVE_DEV_CPU].enabled) {
+>>  +		err = fan_curve_write(asus, 
+>> &asus->custom_fan_curves[FAN_CURVE_DEV_CPU]);
+>>  +		if (err) {
+>>  +			pr_warn("Failed to re-enable CPU fan curve: %d\n", err);
+>>  +			return err;
+>>  +		}
+>>  +	}
+>>  +	if (asus->gpu_fan_curve_available && 
+>> asus->custom_fan_curves[FAN_CURVE_DEV_GPU].enabled) {
+>>  +		err = fan_curve_write(asus, 
+>> &asus->custom_fan_curves[FAN_CURVE_DEV_GPU]);
+>>  +		if (err) {
+>>  +			pr_warn("Failed to re-enable GPU fan curve: %d\n", err);
+>>  +			return err;
+>>  +		}
+>>  +	}
+>>  +	if (asus->mid_fan_curve_available && 
+>> asus->custom_fan_curves[FAN_CURVE_DEV_MID].enabled) {
+>>  +		err = fan_curve_write(asus, 
+>> &asus->custom_fan_curves[FAN_CURVE_DEV_MID]);
+>>  +		if (err) {
+>>  +			pr_warn("Failed to re-enable MID fan curve: %d\n", err);
+>>  +			return err;
+>>  +		}
+>>  +	}
+>> 
+>>   	return 0;
+>>   }
+> 
+
 
 
