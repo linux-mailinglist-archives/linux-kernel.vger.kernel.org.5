@@ -1,295 +1,226 @@
-Return-Path: <linux-kernel+bounces-25654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2D1F82D428
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:20:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEC6482D42E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:25:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB8031C2112B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 06:20:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACDAE1C21078
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 06:25:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A89483C0E;
-	Mon, 15 Jan 2024 06:20:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B90883C3B;
+	Mon, 15 Jan 2024 06:25:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="aeGe2dnk"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nfmLDcUh"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CA3F5666;
-	Mon, 15 Jan 2024 06:20:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40F5o4Tg023177;
-	Mon, 15 Jan 2024 06:20:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=x8hpvfgiH0ufZBd7EUg+hoR0eUXRhwJF5jxRhzyCfOg=; b=ae
-	Ge2dnkHVTU4El8jgo4kIkNEqG1KYIRfUzhV1ZK2v1Qdx195lmXFOQPBbQZm6l5p6
-	/MqdEMbOPW+pZS3oqFS/jaXrbcuH6LBB0zAIItJ/giptq/kg+vr80nepxfUASF5N
-	QCgmz4NsyP9GOIutpne2ccPlrnCgt/yQFcKC4K7jzvjlOHdYGLwmv1Ri9LS+HZr8
-	BMWT1g/gK2jlmUNWZYUoI9kfGlAjgLBqSftarpCg+ootKsUdYlUQJouiNKtpLKek
-	tZ8EI+7x67XY4ndCsgYyTU8PuJjc7VX/TR7/NVMaqAsrsONbDTak8vmcVv5HjCuh
-	qqT6hiTbvBMnv8gEsAWA==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vkmkcjrbe-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Jan 2024 06:20:20 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40F6KIHn029383
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Jan 2024 06:20:19 GMT
-Received: from [10.239.133.211] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 14 Jan
- 2024 22:20:14 -0800
-Message-ID: <ef2d485f-1a43-46b1-ba71-12623332e7bf@quicinc.com>
-Date: Mon, 15 Jan 2024 14:20:11 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6CD13C0B
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 06:25:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5cdfbd4e8caso6384949a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 22:25:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705299916; x=1705904716; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VVKYXAtlG1NhIdc9ro4+8eFxw3bRne6O3DtIFZICp6A=;
+        b=nfmLDcUhTJ+VG68xkYDysWruQyNQmTYZiOUyzJTTzFIK3/LCYa3QCg9qKJE8AUSlov
+         u5ZZ02IvEWuBrlkfWoRS0T+gOUap+WtRS7M63ZhmaZCj31PK1wPjhLlZavqXxPkpp71c
+         FifqSFWvzA4GIj/PArgcqovy+mKX8GTEScHjQ5dj0xLuGTCxZJ7jkDyrSOQNWrui2fWh
+         yBcQawnqpCGnEuC0qTC9ZXghYY9kVW0PgIbUJcibZXjW1YzzC+u1hL49qrohxpDJH3yV
+         kEH37WyugMA4JDJotF1UZXiXvE5amb3HqycfRV9+0qgt0c9o9S/0n80tG/xBxbPrWcXK
+         zGjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705299916; x=1705904716;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VVKYXAtlG1NhIdc9ro4+8eFxw3bRne6O3DtIFZICp6A=;
+        b=ny/sQMN3xFRcDNSGJFhCEta9VIobjCcs7WhQyerZl75qnva2LdbcN6LgGTUqRJn52p
+         zKdgkjssl8Z4b3x8tLsAnlGAJK6jTyOh6pKl+U/ZSY7a0RFAMwooPdU2otcOEAOavtiN
+         rBA76nmnSk0nDuoRyE7gIMO2Zuw3jxsnVtZ5YrjP3gXlO1MLQiK3fF0NsRttepxwAD9J
+         Ssswhq0CGv9EvVa6K2ceaaqkEPw1I1jXbgt7weeotegjVRFBoyiwMsj4gF3WOQVacdMa
+         D9arHL5F/4ozgTCa2Eyd9jtOF/IqYgdtA4GBH/0DDOHr5YZi/jqhhT3tFTK+QRTGXneV
+         Og/w==
+X-Gm-Message-State: AOJu0YyplNqtYfdqNGuW338gj8e+RIJ0u+bGsj189ZnOlSIJtYYdwTEM
+	tggEhyivAiisJWW+kh+yesar0mZp/IT5ng/eqt8=
+X-Google-Smtp-Source: AGHT+IF2B9DQP1WW+6Eke4AIaQtFXZB8BmAXub3Mxp/GyjqLFYzOfAiU9WrZmqu+Dh70kaoTO4Wz7XB4CtNKcdLydd8=
+X-Received: by 2002:a05:6a20:938d:b0:199:a43f:db4 with SMTP id
+ x13-20020a056a20938d00b00199a43f0db4mr5221320pzh.80.1705299915906; Sun, 14
+ Jan 2024 22:25:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 8/8] coresight-tpdm: Add msr register support for CMB
-Content-Language: en-US
-To: Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mathieu Poirier
-	<mathieu.poirier@linaro.org>,
-        Alexander Shishkin
-	<alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Mike Leach <mike.leach@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-CC: Jinlong Mao <quic_jinlmao@quicinc.com>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni
-	<quic_tsoni@quicinc.com>,
-        Song Chai <quic_songchai@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <andersson@kernel.org>
-References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
- <1700533494-19276-9-git-send-email-quic_taozha@quicinc.com>
- <185b23e7-a42f-4a12-85ba-8a093bc5ea58@arm.com>
- <4409f3cf-7ca9-407f-92c0-5aa7ba6f7b61@quicinc.com>
- <d8262a32-cc3c-4889-a5f0-a6b128b7e9d6@arm.com>
- <3e27b0e2-afb2-4706-9996-f567e33e35ba@quicinc.com>
- <94f504c4-76dd-4139-a8e0-c2858b7937bb@quicinc.com>
- <bfc274b8-8b60-4d7d-a8bf-467bc8ebbf1c@arm.com>
-From: Tao Zhang <quic_taozha@quicinc.com>
-In-Reply-To: <bfc274b8-8b60-4d7d-a8bf-467bc8ebbf1c@arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ldAlP4uE_fcNPL1Nae5IWTDlo0pvKWal
-X-Proofpoint-ORIG-GUID: ldAlP4uE_fcNPL1Nae5IWTDlo0pvKWal
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- impostorscore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
- adultscore=0 clxscore=1015 malwarescore=0 mlxlogscore=999 suspectscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401150044
+References: <CAHk-=wgWcYX2oXKtgvNN2LLDXP7kXkbo-xTfumEjmPbjSer2RQ@mail.gmail.com>
+ <CAHk-=wiXpsxMcQb7MhL-AxOityTajK0G8eWeBOzX-qBJ9X2DSw@mail.gmail.com>
+ <CAHk-=wjK28MUqBZzBSMEM8vdJhDOuXGSWPmmp04GEt9CXtW6Pw@mail.gmail.com>
+ <20240114091240.xzdvqk75ifgfj5yx@wyes-pc> <ZaPC7o44lEswxOXp@vingu-book>
+ <20240114123759.pjs7ctexcpc6pshl@wyes-pc> <CAKfTPtCz+95dR38c_u6_7JbkVt=czj5N2dKYVV-zk9dgbk16hw@mail.gmail.com>
+ <20240114151250.5wfexq44o3mdm3nh@airbuntu> <CAKfTPtAMxiTbvAYav1JQw+MhjzDPCZDrMLL2JOfsc0GWp+FnOA@mail.gmail.com>
+ <20240114195815.nes4bn53tc25djbh@airbuntu> <20240114233728.hrmyelo66beaajhp@airbuntu>
+In-Reply-To: <20240114233728.hrmyelo66beaajhp@airbuntu>
+From: Wyes Karny <wkarny@gmail.com>
+Date: Mon, 15 Jan 2024 11:55:04 +0530
+Message-ID: <CAAE01kGAdczPmWZ5VqrF397FeOHexWfHDi9eYXv8LogDbuWiHQ@mail.gmail.com>
+Subject: Re: [GIT PULL] Scheduler changes for v6.8
+To: Qais Yousef <qyousef@layalina.io>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>, 
+	linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Juri Lelli <juri.lelli@redhat.com>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Qais,
 
-On 1/12/2024 5:43 PM, Suzuki K Poulose wrote:
-> On 12/01/2024 09:12, Tao Zhang wrote:
->>
->> On 12/20/2023 5:06 PM, Tao Zhang wrote:
->>>
->>> On 12/19/2023 10:09 PM, Suzuki K Poulose wrote:
->>>> On 19/12/2023 06:58, Tao Zhang wrote:
->>>>>
->>>>> On 12/18/2023 7:02 PM, Suzuki K Poulose wrote:
->>>>>> On 21/11/2023 02:24, Tao Zhang wrote:
->>>>>>> Add the nodes for CMB subunit MSR(mux select register) support.
->>>>>>> CMB MSRs(mux select registers) is to separate mux,arbitration,
->>>>>>> ,interleaving,data packing control from stream filtering control.
->>>>>>>
->>>>>>> Reviewed-by: James Clark <james.clark@arm.com>
->>>>>>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
->>>>>>> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
->>>>>>> ---
->>>>>>>   .../testing/sysfs-bus-coresight-devices-tpdm  |  8 ++
->>>>>>>   drivers/hwtracing/coresight/coresight-tpdm.c  | 86 
->>>>>>> +++++++++++++++++++
->>>>>>>   drivers/hwtracing/coresight/coresight-tpdm.h  | 16 +++-
->>>>>>>   3 files changed, 109 insertions(+), 1 deletion(-)
->>>>>>>
->>>>>>> diff --git 
->>>>>>> a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm 
->>>>>>> b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
->>>>>>> index e0b77107be13..914f3fd81525 100644
->>>>>>> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
->>>>>>> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
->>>>>>> @@ -249,3 +249,11 @@ Description:
->>>>>>>           Accepts only one of the 2 values -  0 or 1.
->>>>>>>           0 : Disable the timestamp of all trace packets.
->>>>>>>           1 : Enable the timestamp of all trace packets.
->>>>>>> +
->>>>>>> +What: /sys/bus/coresight/devices/<tpdm-name>/cmb_msr/msr[0:31]
->>>>>>> +Date:        September 2023
->>>>>>> +KernelVersion    6.7
->>>>>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao 
->>>>>>> Zhang (QUIC) <quic_taozha@quicinc.com>
->>>>>>> +Description:
->>>>>>> +        (RW) Set/Get the MSR(mux select register) for the CMB 
->>>>>>> subunit
->>>>>>> +        TPDM.
->>>>>>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c 
->>>>>>> b/drivers/hwtracing/coresight/coresight-tpdm.c
->>>>>>> index f6cda5616e84..7e331ea436cc 100644
->>>>>>> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
->>>>>>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
->>>>>>> @@ -86,6 +86,11 @@ static ssize_t 
->>>>>>> tpdm_simple_dataset_show(struct device *dev,
->>>>>>>               return -EINVAL;
->>>>>>>           return sysfs_emit(buf, "0x%x\n",
->>>>>>> drvdata->cmb->patt_mask[tpdm_attr->idx]);
->>>>>>> +    case CMB_MSR:
->>>>>>> +        if (tpdm_attr->idx >= drvdata->cmb_msr_num)
->>>>>>> +            return -EINVAL;
->>>>>>> +        return sysfs_emit(buf, "0x%x\n",
->>>>>>> + drvdata->cmb->msr[tpdm_attr->idx]);
->>>>>>>       }
->>>>>>>       return -EINVAL;
->>>>>>>   }
->>>>>>> @@ -162,6 +167,12 @@ static ssize_t 
->>>>>>> tpdm_simple_dataset_store(struct device *dev,
->>>>>>>           else
->>>>>>>               ret = -EINVAL;
->>>>>>>           break;
->>>>>>> +    case CMB_MSR:
->>>>>>> +        if (tpdm_attr->idx < drvdata->cmb_msr_num)
->>>>>>> + drvdata->cmb->msr[tpdm_attr->idx] = val;
->>>>>>> +        else
->>>>>>> +            ret = -EINVAL;
->>>>>>
->>>>>>
->>>>>> minor nit: Could we not break from here instead of adding return 
->>>>>> -EINVAL
->>>>>> for each case ? (I understand it has been done for the existing 
->>>>>> cases.
->>>>>> But I think we should clean up all of that, including the ones 
->>>>>> you added
->>>>>> in Patch 5. Similarly for the dataset_show()
->>>>>
->>>>> Sure, do I also need to change the DSB corresponding code? If so, 
->>>>> how about
->>>>>
->>>>> if I add a new patch to the next patch series to change the 
->>>>> previous existing cases?
->>>>
->>>> You could fix the existing cases as a preparatory patch of the next 
->>>> version of this series. I can pick it up and push it to next as I 
->>>> see fit.
->>>
->>> Got it. I will update this to the next patch series.
->>
->> Hi Suzuki,
->>
->>
->> Since the dataset data is configured with spin lock protection, it 
->> needs to be unlock before return.
->>
->> List my modification below. Would you mind help review to see if it 
->> is good for you.
->>
->> static ssize_t tpdm_simple_dataset_store(struct device *dev,
->>                       struct device_attribute *attr,
->>                       const char *buf,
->>                       size_t size)
->> {
->>      unsigned long val;
->>
->>      struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
->>      struct tpdm_dataset_attribute *tpdm_attr =
->>          container_of(attr, struct tpdm_dataset_attribute, attr);
->>
->>      if (kstrtoul(buf, 0, &val))
->>          return -EINVAL;
->>
->>      spin_lock(&drvdata->spinlock);
+On Mon, Jan 15, 2024 at 5:07=E2=80=AFAM Qais Yousef <qyousef@layalina.io> w=
+rote:
 >
-> Use guard() to avoid explicit unlock on return and then you don't need 
-> the spin_unlock() everywhere. It would be done on return from the
-> function implicitly.
+> On 01/14/24 19:58, Qais Yousef wrote:
 >
+> > > This is not correct because you will have to wait to reach full
+> > > utilization at the current OPP possibly the lowest OPP before moving
+> > > directly to max OPP
+> >
+> > Isn't this already the case? The ratio (util+headroom/max) will be less=
+ than
+> > 1 until util is 80% (with 25% headroom). And for all values <=3D 80% * =
+max, we
+> > will request a frequency smaller than/equal policy->cur, no?
+> >
+> > ie:
+> >
+> >       util =3D 600
+> >       max =3D 1024
+> >
+> >       freq =3D 1.25 * 600 * policy->cur / 1024 =3D 0.73 * policy->cur
+> >
+> > (util+headroom/max) must be greater than 1 for us to start going above
+> > policy->cur - which seems to have been working by accident IIUC.
+> >
+> > So yes my proposal is incorrect, but it seems the conversion is not rig=
+ht to me
+> > now.
+> >
+> > I could reproduce the problem now (thanks Wyes!). I have 3 freqs on my =
+system
+> >
+> > 2.2GHz, 2.8GHz and 3.8GHz
+> >
+> > which (I believe) translates into capacities
+> >
+> > ~592, ~754, 1024
+> >
+> > which means we should pick 2.8GHz as soon as util * 1.25 > 592; which
+> > translates into util =3D ~473.
+> >
+> > But what I see is that we go to 2.8GHz when we jump from 650 to 680 (se=
+e
+> > attached picture), which is what you'd expect since we apply two headro=
+oms now,
+> > which means the ratio (util+headroom/max) will be greater than 1 after =
+go above
+> > this value
+> >
+> >       1024 * 0.8 * 0.8 =3D ~655
+> >
+> > So I think the math makes sense logically, but we're missing some other
+> > correction factor.
+> >
+> > When I re-enable CPPC I see for the same test that we go into 3.8GHz st=
+raight
+> > away. My test is simple busyloop via
+> >
+> >       cat /dev/zero > /dev/null
+> >
+> > I see the CPU util_avg is at 523 at fork. I expected us to run to 2.8GH=
+z here
+> > to be honest, but I am not sure if util_cfs_boost() and util_est() are =
+maybe
+> > causing us to be slightly above 523 and that's why we start with max fr=
+eq.
+> >
+> > Or I've done the math wrong :-) But the two don't behave the same for t=
+he same
+> > kernel with and without CPPC.
 >
->>      switch (tpdm_attr->mem) {
->>      case DSB_TRIG_PATT:
+> I think the relationship should be:
 >
-> With guard() in place:
->
->     ret = -EINVAL;
->
->     switch () {
->     case XXX:
->
->        if (tpdm_attr->idx < TPDM_XXXX_IDX) {
->            drvdata->dsb->trig_patt[tpdm_attr->idx] = val;
->            ret = size;
->        }
->        break;
->     case ...
->         ...
->     }
->
->     return ret;
+>         freq =3D util * f_curr / cap_curr
 
-Thanks for your suggestion. I will update the code like below.
-
-I will update it in the next version of the patch series if it meets 
-your expectation.
-
-static ssize_t tpdm_simple_dataset_store(struct device *dev,
-                      struct device_attribute *attr,
-                      const char *buf,
-                      size_t size)
-{
-     unsigned long val;
-     ssize_t ret = -EINVAL;
-
-     struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-     struct tpdm_dataset_attribute *tpdm_attr =
-         container_of(attr, struct tpdm_dataset_attribute, attr);
-
-     if (kstrtoul(buf, 0, &val))
-         return ret;
-
-     guard(spinlock)(&drvdata->spinlock);
-     switch (tpdm_attr->mem) {
-     case DSB_TRIG_PATT:
-         if (tpdm_attr->idx < TPDM_DSB_MAX_PATT) {
-             drvdata->dsb->trig_patt[tpdm_attr->idx] = val;
-             ret =size;
-         }
-         break;
-     case ...
-
-         ...
-     }
-     return ret;
-}
-
-Best,
-
-Tao
+I guess to know the curr_cap correctly we need to know the max_freq,
+which is not available when CPPC is disabled.
 
 >
+> (patch below)
 >
-> Suzuki
+> with that I see (almost) the expected behavior (picture attached). We go =
+to
+> 2.8GHz when we are above 500. But the move to 3.8GHz is a bit earlier at =
+581
+> (instead of 754 * 0.8 =3D 603). Not sure why. With 25% headroom 581 is 72=
+6. So
+> it's a tad too early.
 >
+>
+> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_sche=
+dutil.c
+> index 95c3c097083e..155f96a44fa0 100644
+> --- a/kernel/sched/cpufreq_schedutil.c
+> +++ b/kernel/sched/cpufreq_schedutil.c
+> @@ -123,7 +123,8 @@ static void sugov_deferred_update(struct sugov_policy=
+ *sg_policy)
+>   * Return: the reference CPU frequency to compute a capacity.
+>   */
+>  static __always_inline
+> -unsigned long get_capacity_ref_freq(struct cpufreq_policy *policy)
+> +unsigned long get_capacity_ref_freq(struct cpufreq_policy *policy,
+> +                                   unsigned long *max)
+>  {
+>         unsigned int freq =3D arch_scale_freq_ref(policy->cpu);
+>
+> @@ -133,6 +134,9 @@ unsigned long get_capacity_ref_freq(struct cpufreq_po=
+licy *policy)
+>         if (arch_scale_freq_invariant())
+>                 return policy->cpuinfo.max_freq;
+>
+> +       if (max)
+> +               *max =3D policy->cur * (*max) / policy->cpuinfo.max_freq;
+
+But when freq_invaiant is disabled we don't have policy->cpuinfo.max_freq.
+
+Thanks,
+Wyes
+> +
+>         return policy->cur;
+>  }
+>
+> @@ -164,7 +168,7 @@ static unsigned int get_next_freq(struct sugov_policy=
+ *sg_policy,
+>         struct cpufreq_policy *policy =3D sg_policy->policy;
+>         unsigned int freq;
+>
+> -       freq =3D get_capacity_ref_freq(policy);
+> +       freq =3D get_capacity_ref_freq(policy, &max);
+>         freq =3D map_util_freq(util, freq, max);
+>
+>         if (freq =3D=3D sg_policy->cached_raw_freq && !sg_policy->need_fr=
+eq_update)
+
+
+
+--=20
+Thanks & Regards
+Wyes
 
