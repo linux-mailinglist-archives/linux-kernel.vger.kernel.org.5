@@ -1,165 +1,109 @@
-Return-Path: <linux-kernel+bounces-25959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15FA182D8CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:17:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D635682D8D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:21:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D1411C21913
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:17:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76A64B2169C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:21:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF902C6AC;
-	Mon, 15 Jan 2024 12:17:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D832C6A7;
+	Mon, 15 Jan 2024 12:21:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LjOF42nU";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LjOF42nU"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="OGbdXgrS"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D06C42C699;
-	Mon, 15 Jan 2024 12:16:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BEC801F84E;
-	Mon, 15 Jan 2024 12:16:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705321015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xcBuIksqeddwzDRn2EfzHYBcKJWb6r0wGsUV/u7lfA4=;
-	b=LjOF42nUhYCQyNhjwxSDZcbTbPnEII5drs0yggelA/qOje17Ug0GcszOPYCzpH39zJlbmA
-	+dNbQ8hYqP1jaLTCmAAQSCWX0C91wEwj05xz0tbHRMFSkkiWcfamj9MF5i56G/q6ASiabG
-	LEXc/nw2/aCHYrtpXm0rbRqoz98fE5c=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705321015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xcBuIksqeddwzDRn2EfzHYBcKJWb6r0wGsUV/u7lfA4=;
-	b=LjOF42nUhYCQyNhjwxSDZcbTbPnEII5drs0yggelA/qOje17Ug0GcszOPYCzpH39zJlbmA
-	+dNbQ8hYqP1jaLTCmAAQSCWX0C91wEwj05xz0tbHRMFSkkiWcfamj9MF5i56G/q6ASiabG
-	LEXc/nw2/aCHYrtpXm0rbRqoz98fE5c=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 68D66132FA;
-	Mon, 15 Jan 2024 12:16:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id X9suGTcipWXUSgAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Mon, 15 Jan 2024 12:16:55 +0000
-Date: Mon, 15 Jan 2024 13:16:54 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Pedro Tammela <pctammela@mojatatu.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, cake@lists.bufferbloat.net, 
-	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, 
-	Jiri Pirko <jiri@resnulli.us>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>, 
-	Vinicius Costa Gomes <vinicius.gomes@intel.com>, Stephen Hemminger <stephen@networkplumber.org>, 
-	Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>, 
-	Martin Wilck <mwilck@suse.com>
-Subject: Re: [PATCH v3 1/4] net/sched: Add helper macros with module names
-Message-ID: <hjq6ce7stwsvkpsgnk6hakroctokduw7mgout6oyeyt6okokgj@huhmqx2755ff>
-References: <20240112180646.13232-1-mkoutny@suse.com>
- <20240112180646.13232-2-mkoutny@suse.com>
- <d570871f-1b59-4d75-a473-b3b0a21fe6c2@mojatatu.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 866472C69D;
+	Mon, 15 Jan 2024 12:21:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1705321261; x=1736857261;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6uiGgKOYeoijZXNs4JR31BgEsE6com5xM6jwtC4X6eU=;
+  b=OGbdXgrSG6+53Jmct6kH06gmovz+iORRXEvkudAnWHRwGM9hBJ66zYAM
+   BPJbo1+J+A8J+q+3CofFapUcFV0nse032FPsNdLrpZivWaIe4RrbNppIh
+   CRNgBRaZ/rNtLctsTj4ocu7cCQQe3OBYiGS1EGKZI/tfNZ3lrg/WzJKKV
+   ixL4cpMqlsCgs0VD7BGoTXGd4LE92VIbT7q+w0eUR11fs0AQ9Wa/fgCjk
+   K9BU3nhkxkzBtqbfN24CbFzA/aFmOmZyhekHMAy51x8g3SY3HshRgj7eo
+   WZbb8JcACnCKA/6jlP6wpPfwves71FF4fqYRTuaz6U7SdIzUb7l3z1cng
+   A==;
+X-CSE-ConnectionGUID: HseR1VJsSLqKdYBiAuMLMA==
+X-CSE-MsgGUID: IijWf9yfQIC9NYX6qqchgQ==
+X-IronPort-AV: E=Sophos;i="6.04,196,1695711600"; 
+   d="asc'?scan'208";a="181979590"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 15 Jan 2024 05:20:54 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 15 Jan 2024 05:20:49 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Mon, 15 Jan 2024 05:20:45 -0700
+Date: Mon, 15 Jan 2024 12:20:09 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: <stable@vger.kernel.org>, <patches@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>, <torvalds@linux-foundation.org>,
+	<akpm@linux-foundation.org>, <linux@roeck-us.net>, <shuah@kernel.org>,
+	<patches@kernelci.org>, <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+	<jonathanh@nvidia.com>, <f.fainelli@gmail.com>, <sudipm.mukherjee@gmail.com>,
+	<srw@sladewatkins.net>, <rwarsow@gmx.de>, <conor@kernel.org>,
+	<allen.lkml@gmail.com>
+Subject: Re: [PATCH 6.1 0/4] 6.1.73-rc1 review
+Message-ID: <20240115-unclamped-doze-108d5c282743@wendy>
+References: <20240113094204.017594027@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="5surq3w7pmvniitm"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="0ezr28PRs4Tsf82y"
 Content-Disposition: inline
-In-Reply-To: <d570871f-1b59-4d75-a473-b3b0a21fe6c2@mojatatu.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=LjOF42nU
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.21 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLhcw5w5rtick65589d1tggrs1)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 SIGNED_PGP(-2.00)[];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 BAYES_HAM(-0.60)[81.81%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[29];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,lists.bufferbloat.net,davemloft.net,google.com,kernel.org,redhat.com,mojatatu.com,gmail.com,resnulli.us,iogearbox.net,linux.dev,toke.dk,intel.com,networkplumber.org,suse.cz,suse.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -2.21
-X-Rspamd-Queue-Id: BEC801F84E
-X-Spam-Flag: NO
+In-Reply-To: <20240113094204.017594027@linuxfoundation.org>
 
-
---5surq3w7pmvniitm
+--0ezr28PRs4Tsf82y
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 12, 2024 at 03:38:34PM -0300, Pedro Tammela <pctammela@mojatatu=
-=2Ecom> wrote:
-> request_module(TC_CLS_ALIAS_PREFIX "%s", cls_name);
-
-Yeah, that would be more systemic without proliferating literal strings.
-
-> Would look better. In any case, net-next is currently closed. You will ne=
-ed
-> to repost once it reopens.
+On Sat, Jan 13, 2024 at 10:50:38AM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.73 release.
+> There are 4 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >=20
-> It seems you are also missing a rebase. We recently removed act_ipt :).
+> Responses should be made by Mon, 15 Jan 2024 09:41:55 +0000.
+> Anything received after that time might be too late.
 
-I see, I rebased only on torvalds/master then (commit de927f6c0b07
-("Merge tag 's390-6.8-1' of
-git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux")).
-I'm not familiar with netdev tree, I will post after Jan 22 as
-suggested.
+It may be too late, but
+Tested-by: Conor Dooley <conor.dooley@microchip.com>
 
-Thanks,
-Michal
+Cheers,
+Conor.
 
---5surq3w7pmvniitm
+--0ezr28PRs4Tsf82y
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZaUiNAAKCRAGvrMr/1gc
-joKcAQD6yZsniLleSd4IMIop4YCU01zNNd4RVQqk9P/iGC9iRQEAmNK9zIQqjaIo
-FO23i1EHvkh9LUJw1tfsRuw+z5tleQo=
-=EIJ0
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaUi+QAKCRB4tDGHoIJi
+0pL+AQDxDTyPAlv0llGnMtomfluUfHekZeRStBZ9r3iNZig6kAD+IT5T9ekWA24F
+pJUIm3XHu8Y366kPx2s05pHOLfbxnAA=
+=SISq
 -----END PGP SIGNATURE-----
 
---5surq3w7pmvniitm--
+--0ezr28PRs4Tsf82y--
 
