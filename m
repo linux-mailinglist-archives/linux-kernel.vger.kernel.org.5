@@ -1,49 +1,46 @@
-Return-Path: <linux-kernel+bounces-26532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDC6C82E34A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:25:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CB3382E34C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:25:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C9811C211BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:25:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5D6CB20F86
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:25:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DB481BC2D;
-	Mon, 15 Jan 2024 23:24:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BA3D1BC43;
+	Mon, 15 Jan 2024 23:24:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cql1fMnL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t+IFcWzB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 960BE1B97A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5D041BC36;
+	Mon, 15 Jan 2024 23:24:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECE4BC43390;
 	Mon, 15 Jan 2024 23:24:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B4C4C433F1;
-	Mon, 15 Jan 2024 23:24:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705361042;
-	bh=Of/M26tgjIFZ0crMR+t05m6NUaI2n91rEQ/liJl3EMs=;
+	s=k20201202; t=1705361043;
+	bh=8ec++whlYR1eYM36jqi2vAPcu4JKlNRIurHaykpqnWI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Cql1fMnLtlv20UAtMj0mlQ+JRXWrCm5nS480776nKHDv/bNwcZB4A4AbaWiBO+kEE
-	 UFwz+1T8yi0ReqMrgiC8NBjA9hQaDeKMknWpNDBpAtaCKMnamRNJNzN4gAfMzdURPd
-	 j13xTKhkiyrYcvFOOwPnuhDAIOQqHrMUBsrN9r4ewZCgH8TEAToNJgf3u4LEn5XkwE
-	 fIGhJ45cm/cT7jQilitRaFENbMBaNkw3VfWJu/t0+r/1IKp9tek/mFfKjlG4k2/QLU
-	 fGXCbhIB7PdFaC+iFf9uHNrFJMTGFvUoyIbeg82T4sJcfMuP5HA3Uj8pEA90UxH2Cz
-	 tuTNi3IUkUx9A==
+	b=t+IFcWzBUVxsW+qZag54aOIjO2AfptR12H3em+erEMA4Owxk+VBk/ybvYs4a/6wLO
+	 lS+cbkilKx0sqKqWksE5jq9gez0PAe20Y9QO20GOs38NRh32WGWVBQXS89+HHTnPM6
+	 590UnyeCkvlnPPUyciWUs7FFHOfh3RptSxoQf/y3Ub+JChKLLtAGl05+Vh19MbqSTp
+	 xtMySwZSRZ0W6i8Uovv9PrniOWwzU9Z4FCSHi5u4uEF9y26xGPacJ326zwgkVsJ/Tr
+	 KfUzz2q3HOr7UrPWzaMZssHzMQ32pp4hBpuIe0jZiX7P1muG1yk0D0fqiTzat1T71m
+	 dUWmHZlaHkmhg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Huang Shijie <shijie@os.amperecomputing.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
+Cc: Mark Rutland <mark.rutland@arm.com>,
 	Will Deacon <will@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	gregkh@linuxfoundation.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-arch@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 04/14] arm64: irq: set the correct node for VMAP stack
-Date: Mon, 15 Jan 2024 18:23:18 -0500
-Message-ID: <20240115232351.208489-4-sashal@kernel.org>
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.7 05/14] drivers/perf: pmuv3: don't expose SW_INCR event in sysfs
+Date: Mon, 15 Jan 2024 18:23:19 -0500
+Message-ID: <20240115232351.208489-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240115232351.208489-1-sashal@kernel.org>
 References: <20240115232351.208489-1-sashal@kernel.org>
@@ -58,98 +55,53 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7
 Content-Transfer-Encoding: 8bit
 
-From: Huang Shijie <shijie@os.amperecomputing.com>
+From: Mark Rutland <mark.rutland@arm.com>
 
-[ Upstream commit 75b5e0bf90bffaca4b1f19114065dc59f5cc161f ]
+[ Upstream commit ca6f537e459e2da4b331fe8928d1a0b0f9301f42 ]
 
-In current code, init_irq_stacks() will call cpu_to_node().
-The cpu_to_node() depends on percpu "numa_node" which is initialized in:
-     arch_call_rest_init() --> rest_init() -- kernel_init()
-	--> kernel_init_freeable() --> smp_prepare_cpus()
+The SW_INCR event is somewhat unusual, and depends on the specific HW
+counter that it is programmed into. When programmed into PMEVCNTR<n>,
+SW_INCR will count any writes to PMSWINC_EL0 with bit n set, ignoring
+writes to SW_INCR with bit n clear.
 
-But init_irq_stacks() is called in init_IRQ() which is before
-arch_call_rest_init().
+Event rotation means that there's no fixed relationship between
+perf_events and HW counters, so this isn't all that useful.
 
-So in init_irq_stacks(), the cpu_to_node() does not work, it
-always return 0. In NUMA, it makes the node 1 cpu accesses the IRQ stack which
-is in the node 0.
+Further, we program PMUSERENR.{SW,EN}=={0,0}, which causes EL0 writes to
+PMSWINC_EL0 to be trapped and handled as UNDEFINED, resulting in a
+SIGILL to userspace.
 
-This patch fixes it by:
-  1.) export the early_cpu_to_node(), and use it in the init_irq_stacks().
-  2.) change init_irq_stacks() to __init function.
+Given that, it's not a good idea to expose SW_INCR in sysfs. Hide it as
+we did for CHAIN back in commit:
 
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Huang Shijie <shijie@os.amperecomputing.com>
-Link: https://lore.kernel.org/r/20231124031513.81548-1-shijie@os.amperecomputing.com
+  4ba2578fa7b55701 ("arm64: perf: don't expose CHAIN event in sysfs")
+
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Link: https://lore.kernel.org/r/20231204115847.2993026-1-mark.rutland@arm.com
 Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/irq.c    | 5 +++--
- drivers/base/arch_numa.c   | 2 +-
- include/asm-generic/numa.h | 2 ++
- 3 files changed, 6 insertions(+), 3 deletions(-)
+ drivers/perf/arm_pmuv3.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/irq.c b/arch/arm64/kernel/irq.c
-index 6ad5c6ef5329..9f253d8efe90 100644
---- a/arch/arm64/kernel/irq.c
-+++ b/arch/arm64/kernel/irq.c
-@@ -22,6 +22,7 @@
- #include <linux/vmalloc.h>
- #include <asm/daifflags.h>
- #include <asm/exception.h>
-+#include <asm/numa.h>
- #include <asm/softirq_stack.h>
- #include <asm/stacktrace.h>
- #include <asm/vmap_stack.h>
-@@ -51,13 +52,13 @@ static void init_irq_scs(void)
- }
+diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+index 6ca7be05229c..0e80fdc9f9ca 100644
+--- a/drivers/perf/arm_pmuv3.c
++++ b/drivers/perf/arm_pmuv3.c
+@@ -169,7 +169,11 @@ armv8pmu_events_sysfs_show(struct device *dev,
+ 	PMU_EVENT_ATTR_ID(name, armv8pmu_events_sysfs_show, config)
  
- #ifdef CONFIG_VMAP_STACK
--static void init_irq_stacks(void)
-+static void __init init_irq_stacks(void)
- {
- 	int cpu;
- 	unsigned long *p;
- 
- 	for_each_possible_cpu(cpu) {
--		p = arch_alloc_vmap_stack(IRQ_STACK_SIZE, cpu_to_node(cpu));
-+		p = arch_alloc_vmap_stack(IRQ_STACK_SIZE, early_cpu_to_node(cpu));
- 		per_cpu(irq_stack_ptr, cpu) = p;
- 	}
- }
-diff --git a/drivers/base/arch_numa.c b/drivers/base/arch_numa.c
-index eaa31e567d1e..5b59d133b6af 100644
---- a/drivers/base/arch_numa.c
-+++ b/drivers/base/arch_numa.c
-@@ -144,7 +144,7 @@ void __init early_map_cpu_to_node(unsigned int cpu, int nid)
- unsigned long __per_cpu_offset[NR_CPUS] __read_mostly;
- EXPORT_SYMBOL(__per_cpu_offset);
- 
--static int __init early_cpu_to_node(int cpu)
-+int __init early_cpu_to_node(int cpu)
- {
- 	return cpu_to_node_map[cpu];
- }
-diff --git a/include/asm-generic/numa.h b/include/asm-generic/numa.h
-index 1a3ad6d29833..c32e0cf23c90 100644
---- a/include/asm-generic/numa.h
-+++ b/include/asm-generic/numa.h
-@@ -35,6 +35,7 @@ int __init numa_add_memblk(int nodeid, u64 start, u64 end);
- void __init numa_set_distance(int from, int to, int distance);
- void __init numa_free_distance(void);
- void __init early_map_cpu_to_node(unsigned int cpu, int nid);
-+int __init early_cpu_to_node(int cpu);
- void numa_store_cpu_info(unsigned int cpu);
- void numa_add_cpu(unsigned int cpu);
- void numa_remove_cpu(unsigned int cpu);
-@@ -46,6 +47,7 @@ static inline void numa_add_cpu(unsigned int cpu) { }
- static inline void numa_remove_cpu(unsigned int cpu) { }
- static inline void arch_numa_init(void) { }
- static inline void early_map_cpu_to_node(unsigned int cpu, int nid) { }
-+static inline int early_cpu_to_node(int cpu) { return 0; }
- 
- #endif	/* CONFIG_NUMA */
- 
+ static struct attribute *armv8_pmuv3_event_attrs[] = {
+-	ARMV8_EVENT_ATTR(sw_incr, ARMV8_PMUV3_PERFCTR_SW_INCR),
++	/*
++	 * Don't expose the sw_incr event in /sys. It's not usable as writes to
++	 * PMSWINC_EL0 will trap as PMUSERENR.{SW,EN}=={0,0} and event rotation
++	 * means we don't have a fixed event<->counter relationship regardless.
++	 */
+ 	ARMV8_EVENT_ATTR(l1i_cache_refill, ARMV8_PMUV3_PERFCTR_L1I_CACHE_REFILL),
+ 	ARMV8_EVENT_ATTR(l1i_tlb_refill, ARMV8_PMUV3_PERFCTR_L1I_TLB_REFILL),
+ 	ARMV8_EVENT_ATTR(l1d_cache_refill, ARMV8_PMUV3_PERFCTR_L1D_CACHE_REFILL),
 -- 
 2.43.0
 
