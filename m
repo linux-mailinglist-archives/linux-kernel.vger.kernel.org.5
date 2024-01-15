@@ -1,241 +1,303 @@
-Return-Path: <linux-kernel+bounces-25821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25836-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D41682D656
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:51:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78A3F82D686
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:59:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E7021C215D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:51:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E11211F2357C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:59:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66351E54C;
-	Mon, 15 Jan 2024 09:51:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34B5BF9E2;
+	Mon, 15 Jan 2024 09:58:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lbdBcxA0"
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="EEdfps8/"
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6840EF4E3
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 09:51:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vs1-f50.google.com with SMTP id ada2fe7eead31-4678c4e51a5so2074072137.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 01:51:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705312299; x=1705917099; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vA5lJ9wJk8UhO+0P3ejLOIssUp3Ur0EA5ND4sM9FrM0=;
-        b=lbdBcxA0fdWz5LyfyNpsPD6zqshCDhNuLu3PcGnMV4c1xS38okeOvPGAk9nyezQhH6
-         ju/uYUTrFSwkLTfk8Lmh6jez/bb+aRBYAeyl9hncNixYtoquPd0JMI9C486Cwi+XjymN
-         nIvYT/nN+vbbUOXsGUHLte/p2fI+Ln/g82JzeYw3S/s1T59a/lylvjgJTJD3+BZSFkGB
-         4yDcqYV+9Y7VGyYVpvDJHdN9tJhT3px1yZPLFC/j+3TwPmHH0YcR03dAUb7qtbmnEm9U
-         z7Cjmj2/1Azi1DRkHBrBwIV05OPaYcNlqvtWEpSfkagwZqE5q/GF5Y2Yy+rMRtvb4bh/
-         BAbw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E602F9C7
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 09:58:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 3FED23F694
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 09:52:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1705312330;
+	bh=jI+5qM0nAtwQLs5qbWPIA0JCeb2TgRx9NNnpwhxsqJI=;
+	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=EEdfps8/yFcDR1DZ4FnrgMgxoABrzMjXGlIyeEK+JKMcaY7xJ60aIZ+PJCR2hv4WR
+	 dzvH3SppR2H1tcpfXYR/3VVA1VVnTpTpg1DyhlxmLgAOClFgnSdO9TEj8XpnCU052w
+	 M0vvwBTrcyZX2jYgtkoprU5sprQsKqS/wWRXiku37RWIUgrzcVYs+k/AIpgK36oE0j
+	 pXtVnR7SJn47SsnECfltA+3sk6BktY5pW99YC5gyt8f1gTETnWSJrvjtGj+SIT5JPK
+	 VaTTWYLZlTxiEoNPfPR3EobWUoj21qasRxNK6G2NoMlTVO02oHAiyrd0r5RoIoO/68
+	 si6OC3Lbbr6/w==
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-429abac743fso89431581cf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 01:52:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705312299; x=1705917099;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vA5lJ9wJk8UhO+0P3ejLOIssUp3Ur0EA5ND4sM9FrM0=;
-        b=hXDj7R70+u3O19btAnMTiaPIduBRyEWPk4bdjsE8ddkzj1GogCxaoGyUTaKbPSrr+j
-         Vmdtqun53fDtKrrKYYAIItpavAQ9SosNyqWMkqXrls1WtLa//L0FzTM6ZCUGRr8532rh
-         FhHfw4RXACDfjG8m/M8CL4JaHHY1XpihkxcKvHGSQr82Yeu6wpDFjCjSyFv+wuWtpBx0
-         i4+hvV1byMkoBZGwrQD+k5UvoAjJ5or+0T7jISxigrG+SJ1jCNu1ngiV7ShqrIoNcP/f
-         hUaY1Uev79PfrWrWYTOPT6PMRSaTvtNQqkz8mwoKi1AI3vzKo4wWDsge658bvXtGpZ7L
-         T2aw==
-X-Gm-Message-State: AOJu0YzS3azjBAtNQzhDmskXtD/wFpshoxUyvuXAZII7SUjw173oxcfv
-	XP3po0/odQYbWZlqxPZ8hyBvGO7VTiOB4sLzbafN+6EKsUkGeg==
-X-Google-Smtp-Source: AGHT+IF9L74+ZtLSFFSw6v3QZjCBTRN5oABKLtgsb37VYGttVKjUPyLhRFOYDKt2Zbe/CBX507JkdzEiHbCLkWACdz8=
-X-Received: by 2002:a67:ea44:0:b0:468:d56:ab5 with SMTP id r4-20020a67ea44000000b004680d560ab5mr3259054vso.8.1705312297861;
- Mon, 15 Jan 2024 01:51:37 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705312329; x=1705917129;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jI+5qM0nAtwQLs5qbWPIA0JCeb2TgRx9NNnpwhxsqJI=;
+        b=IX+uPlQHV8pegI/h0f8JsHr0n9xifstI26h1+ScuPIb9IGEkqgmjwxPLd3bYTBqxB6
+         is1g9LYheU7f9rjCiWytMSX2RDOaTs/5ZXTMMMhR6GOg8N8TreIimFoy+w4wZ/yrM2gl
+         XeMw2lA8jALMpsi5fPcnTsValzbTqvZigv2NBYHpuAqjrbhelaI4mCFoEB4LRHbtrdeM
+         5/NjkR57LLzOG0uYpPXoLZhv3240hk6WDyFiQTHxYTwtrkCjoNQ5vawLcf3CJndLGSS3
+         raS7cYkIEKc37RkNjfnYOZ6kggCYlJKBT+QNPsVnnM+nwCuakkRHhvFFHGXI+Wos20qx
+         mmmw==
+X-Gm-Message-State: AOJu0YyDl4yQQnq+4vNWEqbo7sTkNkfZJC8HGZI01J1vTz8gDOG2aABf
+	WC0LIKnMitoAvhF31DFvTIxYdsKmiTg98ztIgJYRy2s8biexkgXUdJ1B76w3dBV5/9OZ1dk504+
+	AOCDs9Fe7XZO+R62B9WDcBOeyagV0h5DcY1YpKKEv7OErTfT9CzYhKEpyTgaYFykB
+X-Received: by 2002:a05:622a:4:b0:429:92b7:cba8 with SMTP id x4-20020a05622a000400b0042992b7cba8mr6911262qtw.126.1705312329278;
+        Mon, 15 Jan 2024 01:52:09 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE/AkHGDi3+QdcHLA4pT8OqYSnCIbpWhNwAV/2HQPH18KFSKj5wXqrL4g77KUUN4x7fOWeNOuL3M+tUhwE0B8k=
+X-Received: by 2002:a05:622a:4:b0:429:92b7:cba8 with SMTP id
+ x4-20020a05622a000400b0042992b7cba8mr6911258qtw.126.1705312328988; Mon, 15
+ Jan 2024 01:52:08 -0800 (PST)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 15 Jan 2024 04:52:08 -0500
+From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <20240110-clk-th1520-v1-3-8b0682567984@tenstorrent.com>
+References: <20240110-clk-th1520-v1-0-8b0682567984@tenstorrent.com> <20240110-clk-th1520-v1-3-8b0682567984@tenstorrent.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240113094206.930684111@linuxfoundation.org>
-In-Reply-To: <20240113094206.930684111@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 15 Jan 2024 15:21:25 +0530
-Message-ID: <CA+G9fYssTTxo2Z2MuKdOs5-iiJu0QiohvBw1=eQRALyd76wLLw@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/43] 5.10.208-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+Mime-Version: 1.0
+Date: Mon, 15 Jan 2024 04:52:08 -0500
+Message-ID: <CAJM55Z8_nTu__iSvSTbo719SPvtGcd6jKrK=UJ6YwLj1jCk2_w@mail.gmail.com>
+Subject: Re: [PATCH RFC 3/3] clk: thead: add support for T-HEAD TH1520 AP clocks
+To: Drew Fustini <dfustini@tenstorrent.com>, Jisheng Zhang <jszhang@kernel.org>, 
+	Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Yangtao Li <frank.li@vivo.com>
+Cc: linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>, Han Gao <gaohan@iscas.ac.cn>, 
+	Xi Ruoyao <xry111@xry111.site>, Robert Nelson <robertcnelson@beagleboard.org>, 
+	Jason Kridner <jkridner@beagleboard.org>, Drew Fustini <drew@tenstorrent.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, 13 Jan 2024 at 15:28, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Drew Fustini wrote:
+> From: Jisheng Zhang <jszhang@kernel.org>
 >
-> This is the start of the stable review cycle for the 5.10.208 release.
-> There are 43 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Add support for the AP sub system clock controller in the T-HEAD TH1520.
+> This include CPU, DPU, GMAC and TEE PLLs.
 >
-> Responses should be made by Mon, 15 Jan 2024 09:41:55 +0000.
-> Anything received after that time might be too late.
+> Link: https://openbeagle.org/beaglev-ahead/beaglev-ahead/-/blob/main/docs/TH1520%20System%20User%20Manual.pdf
+> Co-developed-by: Yangtao Li <frank.li@vivo.com>
+> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> [rebased on linux-next-20240110]
+> [fixed checkpatch warnings]
+> [corrected npu_clk enable bit and c910_i0_clk reg]
+> [revised commit description]
+> Signed-off-by: Drew Fustini <drew@tenstorrent.org>
+> ---
+>  MAINTAINERS                       |    1 +
+>  drivers/clk/Kconfig               |    1 +
+>  drivers/clk/Makefile              |    1 +
+>  drivers/clk/thead/Kconfig         |   12 +
+>  drivers/clk/thead/Makefile        |    2 +
+>  drivers/clk/thead/clk-th1520-ap.c | 1018 +++++++++++++++++++++++++++++++++++++
+>  6 files changed, 1035 insertions(+)
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.208-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+..
+> --- /dev/null
+> +++ b/drivers/clk/thead/clk-th1520-ap.c
+> @@ -0,0 +1,1018 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
+> + * Copyright (C) 2023 Vivo Communication Technology Co. Ltd.
+> + *  Authors: Yangtao Li <frank.li@vivo.com>
+> + */
+> +
+> +#include <dt-bindings/clock/thead,th1520-clk.h>
+> +#include <linux/clk-provider.h>
+> +#include <linux/device.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +
+> +struct ccu_internal {
+> +	u8	shift;
+> +	u8	width;
+> +};
+> +
+> +struct ccu_div_internal {
+> +	u8	shift;
+> +	u8	width;
+> +	u32	flags;
+> +};
+> +
+> +struct ccu_common {
+> +	struct regmap	*map;
+> +	u16		reg;
+> +	struct clk_hw	hw;
+> +};
+> +
+> +struct ccu_mux {
+> +	struct ccu_internal	mux;
+> +	struct ccu_common	common;
+> +};
+> +
+> +struct ccu_gate {
+> +	u32			enable;
+> +	struct ccu_common	common;
+> +};
+> +
+> +struct ccu_div {
+> +	u32			enable;
+> +	struct ccu_div_internal	div;
+> +	struct ccu_internal	mux;
+> +	struct ccu_common	common;
+> +};
+> +
+> +/*
+> + * struct ccu_mdiv - Definition of an M-D-I-V clock
+> + *
+> + * Clocks based on the formula (parent * M) / (D * I * V)
+> + */
+> +struct ccu_mdiv {
+> +	struct ccu_internal	m;
+> +	struct ccu_internal	d;
+> +	struct ccu_internal	i;
+> +	struct ccu_internal	v;
+> +	struct ccu_common	common;
+> +};
+> [...]
+> +static unsigned long ccu_mdiv_recalc_rate(struct clk_hw *hw,
+> +					  unsigned long parent_rate)
+> +{
+> +	struct ccu_mdiv *mdiv = hw_to_ccu_mdiv(hw);
+> +	unsigned long div, rate = parent_rate;
+> +	unsigned int m, d, i, v, val;
+> +
+> +	regmap_read(mdiv->common.map, mdiv->common.reg, &val);
+> +
+> +	m = val >> mdiv->m.shift;
+> +	m &= GENMASK(mdiv->m.width - 1, 0);
+> +
+> +	d = val >> mdiv->d.shift;
+> +	d &= GENMASK(mdiv->d.width - 1, 0);
+> +
+> +	i = val >> mdiv->i.shift;
+> +	i &= GENMASK(mdiv->i.width - 1, 0);
+> +
+> +	v = val >> mdiv->v.shift;
+> +	v &= GENMASK(mdiv->v.width - 1, 0);
+> +
+> +	rate = parent_rate * m;
+> +	div = d * i * v;
+> +	do_div(rate, div);
+> +
+> +	return rate;
+> +}
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Hi Drew,
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+I don't think this is right. There is an input predivider that's not handled
+here, and then the PLL multiplies the input frequency and outputs "Foutvco".
+Then this is followed by a post divider to produce "Foutpostdiv".
+Some clocks derive directly from the "Foutvco" so this should really be
+modelled as two different clocks. Also what's called D and I are the
+postdivider but V is an optional fractional divider.
+All in all I think it should be something like this:
 
-## Build
-* kernel: 5.10.208-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.10.y
-* git commit: 7884d82278ab66374f212a263f44664a0da4c76c
-* git describe: v5.10.206-52-g7884d82278ab
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-206-52-g7884d82278ab
+#define TH1520_PLL_CFG0         0x0
+#define TH1520_PLL_POSTDIV2     GENMASK(26, 24)
+#define TH1520_PLL_POSTDIV1     GENMASK(22, 20)
+#define TH1520_PLL_FBDIV        GENMASK(19, 8)
+#define TH1520_PLL_REFDIV       GENMASK(5, 0)
+#define TH1520_PLL_CFG1         0x4
+#define TH1520_PLL_BYPASS       BIT(30)
+#define TH1520_PLL_RST          BIT(29)
+#define TH1520_PLL_POSTDIVPD    BIT(28)
+#define TH1520_PLL_4PHASEPD     BIT(27)
+#define TH1520_PLL_DACPD        BIT(25)
+#define TH1520_PLL_DSMPD        BIT(24)
+#define TH1520_PLL_FRAC         GENMASK(23, 0)
+#define TH1520_PLL_FRAC_BITS    24
+#define TH1520_PLL_CFG2         0x8
+#define TH1520_PLL_CFG3         0xc
 
-## Test Regressions (compared to v5.10.206)
+static unsigned long th1520_pll_vco_recalc_rate(struct clk_hw *hw,
+                                                unsigned long parent_rate)
+{
+        struct th1520_pll *pll = th1520_pll_from_vco(hw);
+        void __iomem *cfg0reg = pll->base + TH1520_PLL_CFG0;
+        void __iomem *cfg1reg = pll->base + TH1520_PLL_CFG1;
+        unsigned long rate, mul;
+        u32 cfg0, cfg1, div;
 
-## Metric Regressions (compared to v5.10.206)
+        scoped_guard(spinlock_irqsave, pll->lock) {
+                cfg0 = readl_relaxed(cfg0reg);
+                cfg1 = readl_relaxed(cfg1reg);
+        }
 
-## Test Fixes (compared to v5.10.206)
+        mul = FIELD_GET(TH1520_PLL_FBDIV, cfg0);
+        div = FIELD_GET(TH1520_PLL_REFDIV, cfg0);
+        if (!(cfg1 & TH1520_PLL_DSMPD)) {
+                mul <<= TH1520_PLL_FRAC_BITS;
+                mul += FIELD_GET(TH1520_PLL_FRAC, cfg1);
+                div <<= TH1520_PLL_FRAC_BITS;
+        }
+        rate = parent_rate * mul;
+        do_div(rate, div);
+        return rate;
+}
 
-## Metric Fixes (compared to v5.10.206)
+static unsigned long th1520_pll_postdiv_recalc_rate(struct clk_hw *hw,
+                                                    unsigned long parent_rate)
+{
+        struct th1520_pll *pll = th1520_pll_from_postdiv(hw);
+        void __iomem *cfg0reg = pll->base + TH1520_PLL_CFG0;
+        void __iomem *cfg1reg = pll->base + TH1520_PLL_CFG1;
+        unsigned long rate = parent_rate;
+        u32 cfg0, cfg1;
 
-## Test result summary
-total: 177915, pass: 136401, fail: 5687, skip: 35672, xfail: 155
+        scoped_guard(spinlock_irqsave, pll->lock) {
+                cfg0 = readl_relaxed(cfg0reg);
+                cfg1 = readl_relaxed(cfg1reg);
+        }
 
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 222 total, 222 passed, 0 failed
-* arm64: 74 total, 74 passed, 0 failed
-* i386: 58 total, 58 passed, 0 failed
-* mips: 46 total, 46 passed, 0 failed
-* parisc: 6 total, 0 passed, 6 failed
-* powerpc: 48 total, 48 passed, 0 failed
-* riscv: 20 total, 20 passed, 0 failed
-* s390: 21 total, 21 passed, 0 failed
-* sh: 20 total, 20 passed, 0 failed
-* sparc: 14 total, 14 passed, 0 failed
-* x86_64: 63 total, 63 passed, 0 failed
+        if (cfg1 & TH1520_PLL_BYPASS)
+                return rate;
 
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
+        do_div(rate,
+               FIELD_GET(TH1520_PLL_POSTDIV1, cfg0) *
+               FIELD_GET(TH1520_PLL_POSTDIV2, cfg0));
+        return rate;
+}
 
---
-Linaro LKFT
-https://lkft.linaro.org
+(Here D = POSTDIV1, I = POSTDIV2 and V = FRAC)
+
+However, have a look at Chen Wang's series at
+
+https://lore.kernel.org/linux-riscv/cdb7aed766aa6411e61ec25a6f1cb22a1aef4a21.1704694903.git.unicorn_wang@outlook.com/
+
+The PLL implementation there is very similar to the TH1520. At first I thought
+it was exactly the same, but on closer inspection it seems like the bitfields
+are arranged a little different unfortunately.
+
+The rest of the clocks in this driver seem to be generic gate and mux
+implementations that should probably be replaced by the versions in Linux
+already. Eg. devm_clk_hw_register_gate*() and devm_clk_hw_register_mux*().
+
+Lastly this only implements the clocks in the AP_SUBSYS memory range, but there
+are also AON_SUBSYS, DDR_SUBSYS, MISC_SUBSYS, VI_SUBSYS, VO_SUBSYS, VP_SUBSYS,
+DSP_SUBSYS and AUDIO_SUBSYS. Upstreaming one of them first in fine, but make
+sure to consider how the others should be added.
+
+/Emil
 
