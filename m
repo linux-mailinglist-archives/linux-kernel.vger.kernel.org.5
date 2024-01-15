@@ -1,281 +1,202 @@
-Return-Path: <linux-kernel+bounces-25933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AAD382D881
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:40:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 840FF82D8B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:05:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1CB3B2168A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:40:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E09E4282A48
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:05:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A44C72C6B4;
-	Mon, 15 Jan 2024 11:40:21 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7EE22C698;
+	Mon, 15 Jan 2024 12:05:22 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BE072C683;
-	Mon, 15 Jan 2024 11:40:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 579C7C433C7;
-	Mon, 15 Jan 2024 11:40:19 +0000 (UTC)
-Message-ID: <8d143985-d9f3-48de-a9a4-150c776b75ca@xs4all.nl>
-Date: Mon, 15 Jan 2024 12:40:17 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3A4D1E867
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 12:05:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4TD9Lz0VXbzNlC3;
+	Mon, 15 Jan 2024 19:45:47 +0800 (CST)
+Received: from kwepemd100006.china.huawei.com (unknown [7.221.188.47])
+	by mail.maildlp.com (Postfix) with ESMTPS id 40844180071;
+	Mon, 15 Jan 2024 19:46:30 +0800 (CST)
+Received: from huawei.com (10.175.112.208) by kwepemd100006.china.huawei.com
+ (7.221.188.47) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Mon, 15 Jan
+ 2024 19:46:29 +0800
+From: Zhang Zekun <zhangzekun11@huawei.com>
+To: <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
+	<jgg@ziepe.ca>, <nicolinc@nvidia.com>, <mshavit@google.com>,
+	<iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>
+CC: <zhangzekun11@huawei.com>
+Subject: [PATCH] iommu/arm-smmu-v3: Add a threshold to avoid potential soft lockup
+Date: Mon, 15 Jan 2024 19:40:40 +0800
+Message-ID: <20240115114040.6279-1-zhangzekun11@huawei.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v16 3/8] media: core: Rework how create_buf index returned
- value is computed
-Content-Language: en-US, nl
-From: Hans Verkuil <hverkuil@xs4all.nl>
-To: Benjamin Gaignard <benjamin.gaignard@collabora.com>, mchehab@kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
- kernel@collabora.com
-References: <20231215090813.15610-1-benjamin.gaignard@collabora.com>
- <20231215090813.15610-4-benjamin.gaignard@collabora.com>
- <b371b3f3-44af-4224-a07e-841e318696bb@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <b371b3f3-44af-4224-a07e-841e318696bb@xs4all.nl>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemd100006.china.huawei.com (7.221.188.47)
 
-On 15/01/2024 12:00, Hans Verkuil wrote:
-> On 15/12/2023 10:08, Benjamin Gaignard wrote:
->> When DELETE_BUFS will be introduced holes could created in bufs array.
->> To be able to reuse these unused indices reworking how create->index
->> is set is mandatory.
->> Let __vb2_queue_alloc() decide which first index is correct and
->> forward this to the caller.
->>
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> ---
->>  .../media/common/videobuf2/videobuf2-core.c   | 22 ++++++++++++-------
->>  .../media/common/videobuf2/videobuf2-v4l2.c   | 20 +++++++++++------
->>  include/media/videobuf2-core.h                |  5 ++++-
->>  3 files changed, 31 insertions(+), 16 deletions(-)
->>
->> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
->> index a183edf11586..cd2b9e51b9b0 100644
->> --- a/drivers/media/common/videobuf2/videobuf2-core.c
->> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
->> @@ -447,11 +447,12 @@ static void vb2_queue_remove_buffer(struct vb2_buffer *vb)
->>   */
-> 
-> You should update the comment before this function to explain what is
-> returned in first_index.
-> 
->>  static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
->>  			     unsigned int num_buffers, unsigned int num_planes,
->> -			     const unsigned plane_sizes[VB2_MAX_PLANES])
->> +			     const unsigned int plane_sizes[VB2_MAX_PLANES],
->> +			     unsigned int *first_index)
->>  {
->> -	unsigned int q_num_buffers = vb2_get_num_buffers(q);
->>  	unsigned int buffer, plane;
->>  	struct vb2_buffer *vb;
->> +	unsigned long index;
->>  	int ret;
->>  
->>  	/*
->> @@ -459,7 +460,11 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
->>  	 * in the queue is below q->max_num_buffers
->>  	 */
->>  	num_buffers = min_t(unsigned int, num_buffers,
->> -			    q->max_num_buffers - q_num_buffers);
->> +			    q->max_num_buffers - vb2_get_num_buffers(q));
->> +
->> +	index = vb2_get_num_buffers(q);
-> 
-> Perhaps move this line up, then you can use 'index' instead of
-> vb2_get_num_buffers() in the min_t line. Starting with the next
-> patch vb2_get_num_buffers becomes a more expensive operation.
+The commit d5afb4b47e13 ("iommu/arm-smmu-v3: Fix soft lockup triggered
+by arm_smmu_mm_invalidate_range") has fix a soft lockup problem when
+running SVA case, but code paths from iommu_unmap and dma APIs still
+remain unfixed which could also cause potential soft lockup.
 
-Never mind, this changes in the next patch.
+When cmdq is quite busy and don't have much space for batch submitting
+cmds, and size passed to __arm_smmu_tlb_inv_range() is large (1G in this
+case), the following softlockup is triggered.
 
-That said, I would prefer to keep the q_num_buffers variable here and
-use it in the min_t and index, and replace it in the next patch.
+WARN: soft lockup - CPU#71 stuck for 12s! [qemu-kvm:1303]
+..
+Call trace:
+ dump_backtrace+0x0/0x200
+ show_stack+0x20/0x30
+ dump_stack+0xf0/0x138
+ watchdog_print_info+0x48/0x54
+ watchdog_process_before_softlockup+0x9c/0xa0
+ watchdog_timer_fn+0x1ac/0x2f0
+ __run_hrtimer+0x98/0x2b4
+ __hrtimer_run_queues+0xc0/0x13c
+ hrtimer_interrupt+0x150/0x3e4
+ arch_timer_handler_phys+0x3c/0x50
+ handle_percpu_devid_irq+0x90/0x1f4
+ __handle_domain_irq+0x84/0xfc
+ gic_handle_irq+0x88/0x2b0
+ el1_irq+0xb8/0x140
+ arm_smmu_cmdq_issue_cmdlist+0x184/0x5f4
+ __arm_smmu_tlb_inv_range+0x114/0x22c
+ arm_smmu_tlb_inv_walk+0x88/0x120
+ __arm_lpae_unmap+0x188/0x2c0
+ __arm_lpae_unmap+0x104/0x2c0
+ arm_lpae_unmap+0x68/0x80
+ arm_smmu_unmap+0x24/0x40
+ __iommu_unmap+0xd8/0x210
+ iommu_unmap+0x44/0x9c
+..
 
-It is a bit confusing in this patch, it makes more sense in the next.
+The basic idea is use the actual granual size instead of PAGE_SIZE used
+in SVA scenarios to calculate a threshold. When smmu without
+ARM_SMMU_FEAT_RANGE_INV need to invalid a TLB range larger than the
+threshold, we use the granularity of asid or vmid to invalid the TLB. The
+calculation logic is similar to calculate 'bits_per_level' when allocating
+io-pgtable, which could also been applyed to calculate the existing
+threshold in SVA scenarios. Besides, change the comment "MAX_TLBI_OPS" to
+"MAX_DVM_OPS", because it is has been renamed in commit ec1c3b9ff160
+("arm64: tlbflush: Rename MAX_TLBI_OPS")
 
-Regards,
+Signed-off-by: Zhang Zekun <zhangzekun11@huawei.com>
+---
+ .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   | 11 +--------
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   | 23 +++++++++++++++----
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   | 10 ++++++++
+ 3 files changed, 30 insertions(+), 14 deletions(-)
 
-	Hans
-
-> 
-> General note: it is perhaps a good idea to check all the users of
-> vb2_get_num_buffers to make sure it is not called unnecessarily.>
->> +
->> +	*first_index = index;
->>  
->>  	for (buffer = 0; buffer < num_buffers; ++buffer) {
->>  		/* Allocate vb2 buffer structures */
->> @@ -479,7 +484,7 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
->>  			vb->planes[plane].min_length = plane_sizes[plane];
->>  		}
->>  
->> -		vb2_queue_add_buffer(q, vb, q_num_buffers + buffer);
->> +		vb2_queue_add_buffer(q, vb, index++);
->>  		call_void_bufop(q, init_buffer, vb);
->>  
->>  		/* Allocate video buffer memory for the MMAP type */
->> @@ -820,7 +825,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->>  	unsigned int q_num_bufs = vb2_get_num_buffers(q);
->>  	unsigned plane_sizes[VB2_MAX_PLANES] = { };
->>  	bool non_coherent_mem = flags & V4L2_MEMORY_FLAG_NON_COHERENT;
->> -	unsigned int i;
->> +	unsigned int i, first_index;
->>  	int ret = 0;
->>  
->>  	if (q->streaming) {
->> @@ -906,7 +911,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->>  
->>  	/* Finally, allocate buffers and video memory */
->>  	allocated_buffers =
->> -		__vb2_queue_alloc(q, memory, num_buffers, num_planes, plane_sizes);
->> +		__vb2_queue_alloc(q, memory, num_buffers, num_planes, plane_sizes, &first_index);
->>  	if (allocated_buffers == 0) {
->>  		dprintk(q, 1, "memory allocation failed\n");
->>  		ret = -ENOMEM;
->> @@ -980,7 +985,8 @@ EXPORT_SYMBOL_GPL(vb2_core_reqbufs);
->>  int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->>  			 unsigned int flags, unsigned int *count,
->>  			 unsigned int requested_planes,
->> -			 const unsigned int requested_sizes[])
->> +			 const unsigned int requested_sizes[],
->> +			 unsigned int *first_index)
->>  {
->>  	unsigned int num_planes = 0, num_buffers, allocated_buffers;
->>  	unsigned plane_sizes[VB2_MAX_PLANES] = { };
->> @@ -1042,7 +1048,7 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->>  
->>  	/* Finally, allocate buffers and video memory */
->>  	allocated_buffers = __vb2_queue_alloc(q, memory, num_buffers,
->> -				num_planes, plane_sizes);
->> +				num_planes, plane_sizes, first_index);
->>  	if (allocated_buffers == 0) {
->>  		dprintk(q, 1, "memory allocation failed\n");
->>  		ret = -ENOMEM;
->> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
->> index 54d572c3b515..3c0c423c5674 100644
->> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
->> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
->> @@ -797,11 +797,16 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
->>  	for (i = 0; i < requested_planes; i++)
->>  		if (requested_sizes[i] == 0)
->>  			return -EINVAL;
->> -	return ret ? ret : vb2_core_create_bufs(q, create->memory,
->> -						create->flags,
->> -						&create->count,
->> -						requested_planes,
->> -						requested_sizes);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = vb2_core_create_bufs(q, create->memory,
-> 
-> This can just be a direct 'return vb2_core_create_bufs(...'
-> 
->> +				   create->flags,
->> +				   &create->count,
->> +				   requested_planes,
->> +				   requested_sizes,
->> +				   &create->index);
->> +	return ret;
->>  }
->>  EXPORT_SYMBOL_GPL(vb2_create_bufs);
->>  
->> @@ -1029,15 +1034,16 @@ int vb2_ioctl_create_bufs(struct file *file, void *priv,
->>  	int res = vb2_verify_memory_type(vdev->queue, p->memory,
->>  			p->format.type);
->>  
->> -	p->index = vdev->queue->num_buffers;
->>  	fill_buf_caps(vdev->queue, &p->capabilities);
->>  	validate_memory_flags(vdev->queue, p->memory, &p->flags);
->>  	/*
->>  	 * If count == 0, then just check if memory and type are valid.
->>  	 * Any -EBUSY result from vb2_verify_memory_type can be mapped to 0.
->>  	 */
->> -	if (p->count == 0)
->> +	if (p->count == 0) {
->> +		p->index = vb2_get_num_buffers(vdev->queue);
->>  		return res != -EBUSY ? res : 0;
->> +	}
->>  	if (res)
->>  		return res;
->>  	if (vb2_queue_is_busy(vdev->queue, file))
->> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
->> index 7b84b4e2e273..607f2ba7a905 100644
->> --- a/include/media/videobuf2-core.h
->> +++ b/include/media/videobuf2-core.h
->> @@ -821,6 +821,8 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->>   * @count: requested buffer count.
->>   * @requested_planes: number of planes requested.
->>   * @requested_sizes: array with the size of the planes.
->> + * @first_index: index of the first created buffer, all allocated buffers have
->> + *		 indices in the range [first..first+count]
->>   *
->>   * Videobuf2 core helper to implement VIDIOC_CREATE_BUFS() operation. It is
->>   * called internally by VB2 by an API-specific handler, like
->> @@ -837,7 +839,8 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->>  int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->>  			 unsigned int flags, unsigned int *count,
->>  			 unsigned int requested_planes,
->> -			 const unsigned int requested_sizes[]);
->> +			 const unsigned int requested_sizes[],
->> +			 unsigned int *first_index);
->>  
->>  /**
->>   * vb2_core_prepare_buf() - Pass ownership of a buffer from userspace
-> 
-> Regards,
-> 
-> 	Hans
-> 
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
+index 05722121f00e..164a218a4d41 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
+@@ -203,15 +203,6 @@ static void arm_smmu_free_shared_cd(struct arm_smmu_ctx_desc *cd)
+ 	}
+ }
+ 
+-/*
+- * Cloned from the MAX_TLBI_OPS in arch/arm64/include/asm/tlbflush.h, this
+- * is used as a threshold to replace per-page TLBI commands to issue in the
+- * command queue with an address-space TLBI command, when SMMU w/o a range
+- * invalidation feature handles too many per-page TLBI commands, which will
+- * otherwise result in a soft lockup.
+- */
+-#define CMDQ_MAX_TLBI_OPS		(1 << (PAGE_SHIFT - 3))
+-
+ static void arm_smmu_mm_arch_invalidate_secondary_tlbs(struct mmu_notifier *mn,
+ 						struct mm_struct *mm,
+ 						unsigned long start,
+@@ -228,7 +219,7 @@ static void arm_smmu_mm_arch_invalidate_secondary_tlbs(struct mmu_notifier *mn,
+ 	 */
+ 	size = end - start;
+ 	if (!(smmu_domain->smmu->features & ARM_SMMU_FEAT_RANGE_INV)) {
+-		if (size >= CMDQ_MAX_TLBI_OPS * PAGE_SIZE)
++		if (size >= CMDQ_MAX_TLBI_OPS(PAGE_SIZE) * PAGE_SIZE)
+ 			size = 0;
+ 	} else {
+ 		if (size == ULONG_MAX)
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index 0ffb1cf17e0b..cecccba17511 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -1997,6 +1997,14 @@ static void arm_smmu_tlb_inv_page_nosync(struct iommu_iotlb_gather *gather,
+ static void arm_smmu_tlb_inv_walk(unsigned long iova, size_t size,
+ 				  size_t granule, void *cookie)
+ {
++	struct arm_smmu_domain *smmu_domain = cookie;
++	struct arm_smmu_device *smmu = smmu_domain->smmu;
++
++	if (!(smmu->features & ARM_SMMU_FEAT_RANGE_INV) &&
++	    size >= CMDQ_MAX_TLBI_OPS(granule) * granule) {
++		arm_smmu_tlb_inv_context(cookie);
++		return;
++	}
+ 	arm_smmu_tlb_inv_range_domain(iova, size, granule, false, cookie);
+ }
+ 
+@@ -2502,13 +2510,20 @@ static void arm_smmu_iotlb_sync(struct iommu_domain *domain,
+ 				struct iommu_iotlb_gather *gather)
+ {
+ 	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
++	struct arm_smmu_device *smmu = smmu_domain->smmu;
++	size_t size = gather->end - gather->start + 1;
++	size_t granule = gather->pgsize;
+ 
+-	if (!gather->pgsize)
++	if (!granule)
+ 		return;
+ 
+-	arm_smmu_tlb_inv_range_domain(gather->start,
+-				      gather->end - gather->start + 1,
+-				      gather->pgsize, true, smmu_domain);
++	if (!(smmu->features & ARM_SMMU_FEAT_RANGE_INV) &&
++	    size >= CMDQ_MAX_TLBI_OPS(granule) * granule) {
++		arm_smmu_tlb_inv_context(smmu_domain);
++		return;
++	}
++	arm_smmu_tlb_inv_range_domain(gather->start, size,
++				      granule, true, smmu_domain);
+ }
+ 
+ static phys_addr_t
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+index 65fb388d5173..a9a7376c0437 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+@@ -431,6 +431,16 @@ struct arm_smmu_ste {
+ #define MSI_IOVA_BASE			0x8000000
+ #define MSI_IOVA_LENGTH			0x100000
+ 
++/*
++ * Similar to MAX_DVM_OPS in arch/arm64/include/asm/tlbflush.h, this is used
++ * as a threshold to replace per-page TLBI commands to issue in the command
++ * queue with an address-space TLBI command, when SMMU w/o a range invalidation
++ * feature handles too many per-page TLBI commands, which will otherwise result
++ * in a soft lockup.
++ */
++
++#define CMDQ_MAX_TLBI_OPS(granule)    (1 << (ilog2(granule) - 3))
++
+ enum pri_resp {
+ 	PRI_RESP_DENY = 0,
+ 	PRI_RESP_FAIL = 1,
+-- 
+2.17.1
 
 
