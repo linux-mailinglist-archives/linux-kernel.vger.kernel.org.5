@@ -1,162 +1,124 @@
-Return-Path: <linux-kernel+bounces-26067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EC8582DAD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:00:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AABC82DAE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:02:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E4C91F21967
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:00:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4D1B28188F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:02:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 726FD17596;
-	Mon, 15 Jan 2024 14:00:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DJu7BBnO"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4162817597;
+	Mon, 15 Jan 2024 14:02:24 +0000 (UTC)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CBED17583;
-	Mon, 15 Jan 2024 14:00:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705327221; x=1736863221;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=n/RLhgyGoa+DPRyRCqq45dasWWYKEjc9SvpU3zeNWxA=;
-  b=DJu7BBnOuNj/SImDyBXORRaeLfB5ec7RkBklriuacBBKeIivqpouC2Fd
-   oArlJNI5YQxFshQTZxWRXd/ljUWeir9uGZTbJjI+Gbs/JZBDgH8YZM2OR
-   pNEBuBxGbV6rOzHg53Cm14Xkkp+E8f+NZtnicRiyahA/WHxeg6OmzgenN
-   6GKm1S19K0gvoVPqClRb2ZVT08D4hHMAXtD+CnxTQGff+90WqtVC+rYr8
-   4OoM/+p+IPbnkHVdF3iF7LVsuvglH+PVfmKmjQCPDXjpMKMCj7/biUYoK
-   ZkB54Fm/Y0WfOxuC/6vC8N19RV0Ku8OmTZc5kKks0dxYzBDPwRMlcBhrZ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="463900313"
-X-IronPort-AV: E=Sophos;i="6.04,196,1695711600"; 
-   d="scan'208";a="463900313"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 06:00:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="733312147"
-X-IronPort-AV: E=Sophos;i="6.04,196,1695711600"; 
-   d="scan'208";a="733312147"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
-  by orsmga003.jf.intel.com with ESMTP; 15 Jan 2024 06:00:14 -0800
-Message-ID: <2178e799-2068-7443-59b2-310dfdd1ddee@linux.intel.com>
-Date: Mon, 15 Jan 2024 16:01:43 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F1CE17571;
+	Mon, 15 Jan 2024 14:02:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5f588ce1b6dso66987817b3.1;
+        Mon, 15 Jan 2024 06:02:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705327341; x=1705932141;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SmpeOIqaC6PrGt9qvY+jgYWHyktprhcCdGj8iUM5P0I=;
+        b=Yt4xlFkzSpjqRxhces7okltFQMXhwfO05Hlv8AD7dk+eVKltsf7BJ6pX9njOy1+sk6
+         H9UMBZRI2rmvXW90PQhI0tDLkb90K7NVnGH1gl6XX+U9ZSEYfBE1/fdQzCXzuwdJHT2N
+         9E8NBgLx0ffjS6qvGAgHBvNeq7zEO2W7u96RxaVfDf5uSMJ9Gs2rbbCvf2WER1SKPHvh
+         eAgieqtnFDlO/79/bQ0J+NLXZNGp9nPPmET1RKEN7arHQyFxoxbqc9+0Pm2aQjARItIN
+         ouYXgcPhX6O7nFcYK5k0soyeEbUAdp3uqgoceIEmG77WotkczCoKRwWeHWCWLYL1uWWt
+         a7Lw==
+X-Gm-Message-State: AOJu0YygMe1NckHxlY2dFQiFZvk93OlAdHkPVvrHqgpradDCGZYTZGKj
+	l+J4CdXi+il8oq+aCevUXasdXrCSragDKg==
+X-Google-Smtp-Source: AGHT+IE/elFYKN9BF86sLVhHM6ET7LPCmUG2/Qxw0T/S8lXbarHLYNVLV8XKSGAiXDjukIXZPgKM1A==
+X-Received: by 2002:a81:c14c:0:b0:5e2:af70:4f11 with SMTP id e12-20020a81c14c000000b005e2af704f11mr3882804ywl.38.1705327339616;
+        Mon, 15 Jan 2024 06:02:19 -0800 (PST)
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
+        by smtp.gmail.com with ESMTPSA id a16-20020a0dd810000000b005e847caa1f0sm3972757ywe.29.2024.01.15.06.02.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Jan 2024 06:02:18 -0800 (PST)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5f2aab1c0c5so76364847b3.0;
+        Mon, 15 Jan 2024 06:02:18 -0800 (PST)
+X-Received: by 2002:a05:690c:fc3:b0:5ed:b2a2:1279 with SMTP id
+ dg3-20020a05690c0fc300b005edb2a21279mr3185157ywb.16.1705327338023; Mon, 15
+ Jan 2024 06:02:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v12 04/41] usb: host: xhci-mem: Cleanup pending secondary
- event ring events
-Content-Language: en-US
-To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
- mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
- corbet@lwn.net, gregkh@linuxfoundation.org, lgirdwood@gmail.com,
- andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- konrad.dybcio@linaro.org, Thinh.Nguyen@synopsys.com, broonie@kernel.org,
- bgoswami@quicinc.com, tiwai@suse.com, robh+dt@kernel.org, agross@kernel.org
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
- alsa-devel@alsa-project.org
-References: <20240102214549.22498-1-quic_wcheng@quicinc.com>
- <20240102214549.22498-5-quic_wcheng@quicinc.com>
- <734591a1-50b4-6dc7-0b93-077355ec12e4@linux.intel.com>
- <7b2ec96b-b72f-c848-7c35-36e61a4072ac@quicinc.com>
- <b254f73b-a1bc-3dd4-f485-a3acf556835d@quicinc.com>
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
-In-Reply-To: <b254f73b-a1bc-3dd4-f485-a3acf556835d@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <cover.1704788539.git.ysato@users.sourceforge.jp> <17c6381a733d34e8460fd2979f8b53804e808e04.1704788539.git.ysato@users.sourceforge.jp>
+In-Reply-To: <17c6381a733d34e8460fd2979f8b53804e808e04.1704788539.git.ysato@users.sourceforge.jp>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 15 Jan 2024 15:02:06 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVSa0j_npPwcPqH0W2XG8je_A5osy4WjAe0nM_DpC7Ffw@mail.gmail.com>
+Message-ID: <CAMuHMdVSa0j_npPwcPqH0W2XG8je_A5osy4WjAe0nM_DpC7Ffw@mail.gmail.com>
+Subject: Re: [DO NOT MERGE v6 25/37] dt-bindings: vendor-prefixes: Add iodata
+To: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Michael Turquette <mturquette@baylibre.com>, 
+	Stephen Boyd <sboyd@kernel.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Thomas Gleixner <tglx@linutronix.de>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Jiri Slaby <jirislaby@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>, Rich Felker <dalias@libc.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Lee Jones <lee@kernel.org>, 
+	Helge Deller <deller@gmx.de>, Heiko Stuebner <heiko@sntech.de>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
+	Yang Xiwen <forbidden405@foxmail.com>, Sebastian Reichel <sre@kernel.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, Randy Dunlap <rdunlap@infradead.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@suse.cz>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+	David Rientjes <rientjes@google.com>, Baoquan He <bhe@redhat.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Guenter Roeck <linux@roeck-us.net>, 
+	Stephen Rothwell <sfr@canb.auug.org.au>, Azeem Shaikh <azeemshaikh38@gmail.com>, 
+	Javier Martinez Canillas <javierm@redhat.com>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Palmer Dabbelt <palmer@rivosinc.com>, Bin Meng <bmeng@tinylab.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Jacky Huang <ychuang3@nuvoton.com>, 
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
+	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+	Sam Ravnborg <sam@ravnborg.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
+	Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>, 
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, linux-ide@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org, 
+	linux-serial@vger.kernel.org, linux-fbdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 10.1.2024 1.42, Wesley Cheng wrote:
-> Hi Mathias,
-> 
-> On 1/8/2024 12:51 PM, Wesley Cheng wrote:
->> Hi Mathias,
->>
->> On 1/4/2024 6:48 AM, Mathias Nyman wrote:
->>> On 2.1.2024 23.45, Wesley Cheng wrote:
->>>> As part of xHCI bus suspend, the XHCI is halted.  However, if there are
->>>> pending events in the secondary event ring, it is observed that the xHCI
->>>> controller stops responding to further commands upon host or device
->>>> initiated bus resume.  Iterate through all pending events and update the
->>>> dequeue pointer to the beginning of the event ring.
->>>>
->>>> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
->>> ...
->>>> +/*
->>>> + * Move the event ring dequeue pointer to skip events kept in the secondary
->>>> + * event ring.  This is used to ensure that pending events in the ring are
->>>> + * acknowledged, so the XHCI HCD can properly enter suspend/resume. The
->>>> + * secondary ring is typically maintained by an external component.
->>>> + */
->>>> +void xhci_skip_sec_intr_events(struct xhci_hcd *xhci,
->>>> +    struct xhci_ring *ring,    struct xhci_interrupter *ir)
->>>> +{
->>>> +    union xhci_trb *erdp_trb, *current_trb;
->>>> +    u64 erdp_reg;
->>>> +    u32 iman_reg;
->>>> +    dma_addr_t deq;
->>>> +
->>>> +    /* disable irq, ack pending interrupt and ack all pending events */
->>>> +    xhci_disable_interrupter(ir);
->>>> +    iman_reg = readl_relaxed(&ir->ir_set->irq_pending);
->>>> +    if (iman_reg & IMAN_IP)
->>>> +        writel_relaxed(iman_reg, &ir->ir_set->irq_pending);
->>>> +
->>>> +    /* last acked event trb is in erdp reg  */
->>>> +    erdp_reg = xhci_read_64(xhci, &ir->ir_set->erst_dequeue);
->>>> +    deq = (dma_addr_t)(erdp_reg & ERST_PTR_MASK);
->>>> +    if (!deq) {
->>>> +        xhci_err(xhci, "event ring handling not required\n");
->>>> +        return;
->>>> +    }
->>>> +
->>>> +    erdp_trb = current_trb = ir->event_ring->dequeue;
->>>> +    /* read cycle state of the last acked trb to find out CCS */
->>>> +    ring->cycle_state = le32_to_cpu(current_trb->event_cmd.flags) & TRB_CYCLE;
->>>> +
->>>> +    while (1) {
->>>> +        inc_deq(xhci, ir->event_ring);
->>>> +        erdp_trb = ir->event_ring->dequeue;
->>>> +        /* cycle state transition */
->>>> +        if ((le32_to_cpu(erdp_trb->event_cmd.flags) & TRB_CYCLE) !=
->>>> +            ring->cycle_state)
->>>> +            break;
->>>> +    }
->>>> +
->>>> +    xhci_update_erst_dequeue(xhci, ir, current_trb, true);
->>>> +}
->>>
->>> Code above is very similar to the existing event ring processing parts of xhci_irq()
->>> and xhci_handle_event()
->>>
->>> I'll see if I can refactor the existing event ring processing, decouple it from
->>> event handling so that it could be used by primary and secondary interrupters with
->>> handlers, and this case where we just want to clear the event ring.
->>>
->>
->> Thanks, that makes sense.  Will take a look as well.
->>
-> 
-> How about something like the below?  Tested this on my set up and everything looks to be working fine.  Had to add another param to struct xhci_interrupters to tell the XHCI interrupt handler to say if that particular interrupter wants to skip_events (handling).  This way, its something that the class driver utilizing the interrupter will have to tell XHCI sideband.  It would allow the user to determine if they want to use the interrupter to actually handle events or not on the proc running Linux.
-> 
+On Tue, Jan 9, 2024 at 9:24=E2=80=AFAM Yoshinori Sato
+<ysato@users.sourceforge.jp> wrote:
+> Add IO DATA DEVICE INC.
+> https://www.iodata.com/
+>
+> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
 
-Yes, I have something similar.
-I'll share it soon, just need to
-clean it up a bit fist.
+My
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+on v3 is still valid.
 
-Thanks
-Mathias
+Gr{oetje,eeting}s,
 
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
