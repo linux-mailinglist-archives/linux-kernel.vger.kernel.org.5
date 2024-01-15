@@ -1,61 +1,51 @@
-Return-Path: <linux-kernel+bounces-26588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A2BE82E3E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:41:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52B3682E3E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:41:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62B452846CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:41:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5B581F25208
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:41:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE5011B967;
-	Mon, 15 Jan 2024 23:28:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8874A241F2;
+	Mon, 15 Jan 2024 23:28:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kvv0ISua"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ONXqJbBy"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47E84241F2;
-	Mon, 15 Jan 2024 23:28:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAFE9C433F1;
-	Mon, 15 Jan 2024 23:28:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D58DE24200;
+	Mon, 15 Jan 2024 23:28:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84EAEC43390;
+	Mon, 15 Jan 2024 23:28:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705361316;
-	bh=rmxwLMqcNQGFBDU4aY7ZNqQH+fQ13vgYth09YopBCi0=;
+	s=k20201202; t=1705361319;
+	bh=ZvaOKzgKFwoaukW86jM5QIayiAfil0J9RLQyEN0JOR0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kvv0ISua0cNF2KgsVC6ysXYlIi9jXgebvMjeErf4FLhqO9DTEcqQkCZPq6gLyYspk
-	 7LsYxcTEYwVIw7F27WXd1cPxKUbO7Di5jKC4bUmKCnhq8aLbkxGWMjAl/gX3gXskK8
-	 kch7+BJZlTwpI3YxJqopbhZ9tu7fe0ssAmwmrlFqA1TJvkjGANzXoz3EnbqxvbtKfR
-	 O2X36w5KLxGOmrQBgoN4wVQlHSNK/O6vSDPtKsHAs4DHe2JmKsRvg8EbUHOQhRMLFo
-	 scbOAQOaojcnluCgYaFrnNem5JLhVUpyuMrrtftFtqUpXR+qrJy+HXcs2od/fppGap
-	 BBSgklczPrKGA==
+	b=ONXqJbByJd/lQotTDvBOtir7DSTakhEmV07b3vWVTcmgaAF50jGKDCX67Mzel722H
+	 TuBa6kFUby5A8hP5wHE+crsKOJ6nxgYdhNWtLp2530luwhZH/alaXScsRyvzBxQd41
+	 Jl0+8Q22LrqeyihlaMV84svRNS3ql73NW8GXpcVJt5uAOLeA/1qISD67+RSzqrQPRq
+	 1aHSXVWk7Za5jkIqX2QhAqlwgxopIEoUFNE/uT26b+PNJ7nQ6rYfmyUthJnJG8rXto
+	 3BBB6OhRPcJK/wVQ/4gNK9mZe/J1BSkOxRWA3eR1nYe0xIdpPc50Z7PX+KF1EWlf2C
+	 vKhXd4cM4zThA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jun'ichi Nomura <junichi.nomura@nec.com>,
-	Derek Barbosa <debarbos@redhat.com>,
-	Ingo Molnar <mingo@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Andy Lutomirski <luto@kernel.org>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+	Michael Ellerman <mpe@ellerman.id.au>,
 	Sasha Levin <sashal@kernel.org>,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	kirill.shutemov@linux.intel.com,
-	thomas.lendacky@amd.com,
-	nikunj@amd.com,
-	ardb@kernel.org
-Subject: [PATCH AUTOSEL 5.10 06/10] x86/boot: Ignore NMIs during very early boot
-Date: Mon, 15 Jan 2024 18:27:55 -0500
-Message-ID: <20240115232818.210010-6-sashal@kernel.org>
+	akpm@linux-foundation.org,
+	arnd@arndb.de,
+	christophe.leroy@csgroup.eu,
+	aneesh.kumar@linux.ibm.com,
+	vishal.moola@gmail.com,
+	linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 5.10 07/10] powerpc: pmd_move_must_withdraw() is only needed for CONFIG_TRANSPARENT_HUGEPAGE
+Date: Mon, 15 Jan 2024 18:27:56 -0500
+Message-ID: <20240115232818.210010-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240115232818.210010-1-sashal@kernel.org>
 References: <20240115232818.210010-1-sashal@kernel.org>
@@ -70,92 +60,53 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.208
 Content-Transfer-Encoding: 8bit
 
-From: Jun'ichi Nomura <junichi.nomura@nec.com>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
 
-[ Upstream commit 78a509fba9c9b1fcb77f95b7c6be30da3d24823a ]
+[ Upstream commit 0d555b57ee660d8a871781c0eebf006e855e918d ]
 
-When there are two racing NMIs on x86, the first NMI invokes NMI handler and
-the 2nd NMI is latched until IRET is executed.
+The linux-next build of powerpc64 allnoconfig fails with:
 
-If panic on NMI and panic kexec are enabled, the first NMI triggers
-panic and starts booting the next kernel via kexec. Note that the 2nd
-NMI is still latched. During the early boot of the next kernel, once
-an IRET is executed as a result of a page fault, then the 2nd NMI is
-unlatched and invokes the NMI handler.
+  arch/powerpc/mm/book3s64/pgtable.c:557:5: error: no previous prototype for 'pmd_move_must_withdraw'
+    557 | int pmd_move_must_withdraw(struct spinlock *new_pmd_ptl,
+        |     ^~~~~~~~~~~~~~~~~~~~~~
 
-However, NMI handler is not set up at the early stage of boot, which
-results in a boot failure.
+Caused by commit:
 
-Avoid such problems by setting up a NOP handler for early NMIs.
+  c6345dfa6e3e ("Makefile.extrawarn: turn on missing-prototypes globally")
 
-[ mingo: Refined the changelog. ]
+Fix it by moving the function definition under
+CONFIG_TRANSPARENT_HUGEPAGE like the prototype. The function is only
+called when CONFIG_TRANSPARENT_HUGEPAGE=y.
 
-Signed-off-by: Jun'ichi Nomura <junichi.nomura@nec.com>
-Signed-off-by: Derek Barbosa <debarbos@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+[mpe: Flesh out change log from linux-next patch]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://msgid.link/20231127132809.45c2b398@canb.auug.org.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/boot/compressed/ident_map_64.c    | 5 +++++
- arch/x86/boot/compressed/idt_64.c          | 1 +
- arch/x86/boot/compressed/idt_handlers_64.S | 1 +
- arch/x86/boot/compressed/misc.h            | 1 +
- 4 files changed, 8 insertions(+)
+ arch/powerpc/mm/book3s64/pgtable.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/boot/compressed/ident_map_64.c b/arch/x86/boot/compressed/ident_map_64.c
-index f4a2e6d373b2..1e4eb3894ec4 100644
---- a/arch/x86/boot/compressed/ident_map_64.c
-+++ b/arch/x86/boot/compressed/ident_map_64.c
-@@ -367,3 +367,8 @@ void do_boot_page_fault(struct pt_regs *regs, unsigned long error_code)
- 	 */
- 	add_identity_map(address, end);
+diff --git a/arch/powerpc/mm/book3s64/pgtable.c b/arch/powerpc/mm/book3s64/pgtable.c
+index e18ae50a275c..a86d932a7c30 100644
+--- a/arch/powerpc/mm/book3s64/pgtable.c
++++ b/arch/powerpc/mm/book3s64/pgtable.c
+@@ -446,6 +446,7 @@ void ptep_modify_prot_commit(struct vm_area_struct *vma, unsigned long addr,
+ 	set_pte_at(vma->vm_mm, addr, ptep, pte);
  }
-+
-+void do_boot_nmi_trap(struct pt_regs *regs, unsigned long error_code)
-+{
-+	/* Empty handler to ignore NMI during early boot */
-+}
-diff --git a/arch/x86/boot/compressed/idt_64.c b/arch/x86/boot/compressed/idt_64.c
-index 804a502ee0d2..eb30bb20c33b 100644
---- a/arch/x86/boot/compressed/idt_64.c
-+++ b/arch/x86/boot/compressed/idt_64.c
-@@ -45,6 +45,7 @@ void load_stage2_idt(void)
- 	boot_idt_desc.address = (unsigned long)boot_idt;
  
- 	set_idt_entry(X86_TRAP_PF, boot_page_fault);
-+	set_idt_entry(X86_TRAP_NMI, boot_nmi_trap);
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ /*
+  * For hash translation mode, we use the deposited table to store hash slot
+  * information and they are stored at PTRS_PER_PMD offset from related pmd
+@@ -467,6 +468,7 @@ int pmd_move_must_withdraw(struct spinlock *new_pmd_ptl,
  
- #ifdef CONFIG_AMD_MEM_ENCRYPT
- 	set_idt_entry(X86_TRAP_VC, boot_stage2_vc);
-diff --git a/arch/x86/boot/compressed/idt_handlers_64.S b/arch/x86/boot/compressed/idt_handlers_64.S
-index 22890e199f5b..4d03c8562f63 100644
---- a/arch/x86/boot/compressed/idt_handlers_64.S
-+++ b/arch/x86/boot/compressed/idt_handlers_64.S
-@@ -70,6 +70,7 @@ SYM_FUNC_END(\name)
- 	.code64
+ 	return true;
+ }
++#endif
  
- EXCEPTION_HANDLER	boot_page_fault do_boot_page_fault error_code=1
-+EXCEPTION_HANDLER	boot_nmi_trap do_boot_nmi_trap error_code=0
- 
- #ifdef CONFIG_AMD_MEM_ENCRYPT
- EXCEPTION_HANDLER	boot_stage1_vc do_vc_no_ghcb		error_code=1
-diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
-index d9a631c5973c..0ccc32718483 100644
---- a/arch/x86/boot/compressed/misc.h
-+++ b/arch/x86/boot/compressed/misc.h
-@@ -156,6 +156,7 @@ extern struct desc_ptr boot_idt_desc;
- 
- /* IDT Entry Points */
- void boot_page_fault(void);
-+void boot_nmi_trap(void);
- void boot_stage1_vc(void);
- void boot_stage2_vc(void);
- 
+ /*
+  * Does the CPU support tlbie?
 -- 
 2.43.0
 
