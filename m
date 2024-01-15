@@ -1,52 +1,70 @@
-Return-Path: <linux-kernel+bounces-26422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1DD282E062
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 19:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C95A82E1E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 21:42:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEEC01C22081
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:58:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB3011C221BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:42:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4348B18658;
-	Mon, 15 Jan 2024 18:56:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 657A91AACA;
+	Mon, 15 Jan 2024 20:42:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EYoFAnHK"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="Ug9FFR/K"
+Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D544D18657;
-	Mon, 15 Jan 2024 18:56:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=MwV1nlLRs/zdcFC+GsCWfD3zD/uMILfGMm+jraJw7W0=; b=EYoFAnHKkNJMmuVryhMBt74eTh
-	+j4kTftzTZFwN4NFootNhBf06+xeaLuthgwlj3kjTuGhqNDMMeOcOWqtj54REAzNV21XN5f1AW80F
-	/VCW7GvI2zoc3Yv6nRSYpRNMveDlt3x0B0fJ9ykvrCDXEKdQVk2NAwNBFUQY3K0cwQ5rOBYZmLPqb
-	/HQ2dXzA6krTknFd5wRNR4Pmho1cygry/Uvy+OVqk0iOE/DB2Zxku6SZAfLT19zr430506m6VWT6o
-	PHmdDGshQqkBsPziv18P9Oe98zgjS9xGumv7EYb1jNLyvParumvbS0/m26nTqP/oFuhBBiDr9UZR8
-	9BECG3Cg==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rPS8f-00A0xV-2A;
-	Mon, 15 Jan 2024 18:56:49 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	John Crispin <john@phrozen.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Felix Fietkau <nbd@nbd.name>,
-	linux-gpio@vger.kernel.org
-Subject: [PATCH v3] gpio: EN7523: fix kernel-doc warnings
-Date: Mon, 15 Jan 2024 10:56:47 -0800
-Message-ID: <20240115185647.30663-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CABB199DC;
+	Mon, 15 Jan 2024 20:42:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1705351332;
+	bh=0GZMuy83Qkf0CT/wQsE+OjcK1LFAZ6r3ajEM94ed9LM=;
+	h=From:To:Cc:Subject:Date;
+	b=Ug9FFR/KsLbVoL5B811EdsJ/O1Zm6j1L9J0D1ecV4MZKvKLvqbMMJn5OuuThujw6k
+	 mObChAZmRLKX7Az1jtOIH5gBZWPvT9lU4cf2vLqVasOpbFeKJNS2zzAGmdlaHXbfq9
+	 V3NkTFqjeIBPie+58H1P4DckWWMDe9XtucoW3FxM=
+Received: from localhost.localdomain ([2409:8a60:2a63:2f30:a63a:c84e:620:9928])
+	by newxmesmtplogicsvrszc5-2.qq.com (NewEsmtp) with SMTP
+	id 6CEB9CA0; Mon, 15 Jan 2024 23:27:14 +0800
+X-QQ-mid: xmsmtpt1705332434ty7d94vs3
+Message-ID: <tencent_B0B3D2BD9861FD009E03AB18A81783322709@qq.com>
+X-QQ-XMAILINFO: OZsapEVPoiO6cs2bsyymhyvFqUuhCAPk9ul8rNUG4VgNtxtY0dH5g0uBkpcTsB
+	 Xht6BF+QP6s/SL7G30S5jJjmR9o9pGVmdbyo0afFDoykRUnsEIRuL/slsLeyxIsSMcSpSRJK9nsa
+	 BGOIcuOBVl0f8IjUpdQidRA2UVg7Jcc/fMhtNUYkq4v8IkhJGn2++cmIX1kANYAgqumj6aiArSQi
+	 spHPN5Bsa+kzRM2OsW65efjjbaoSE7yIvQ67OfC3jhn/loPgArhha3ZanBxWUbijIl/7t40PO+xI
+	 cyWe/Esj80/zuIQ4cAgOjMvZgMIb+FfHLjHCoeDFXk8ou5mGPwa2jjN+5WGE/UoKtSZ/ZYFjD/GI
+	 /hq9Pzp0YU7IkC1HZLLI9wZN6KpSJqotegBefXd6GBgQbF7eMGTD/BrTqGfACRAPoH+IkbXMXTMG
+	 JmOVE6WmtbmFKfDSXUdTzvVWWQmJa5YUhTQop0dn5jmRQQ1/BWDR4LlttoaBIhJdUKyO2L1eLOW1
+	 ZtnDQrySnyr3Opx4GNpUE76ruKiXMGVHbGGNyl9gvKNIhgSCyx9c+jJfVCP8p+csJjTmnDYeeXmu
+	 TufLAOGpht3SEYSeWGi9i73wh2rKk93v/ipkSuO3syhB0hy7fkgeMWUDAHWMOGOCr20QLV9+/g+K
+	 2sONJK53otXGWAG39h+cq+Q36Hxnjz1tE4Xw8jF363dsUql1p3KY8Z/FJqlRJsCPfZ6nmjYn+gka
+	 G4TndEWzv3wMPbhgwC/NpNiDU6vNC9t8nBkcIhBmjSE6S/+HZcvaumWTCwLklRPZl/ukMsNmNA77
+	 gleYm58lShb6aW6HckH1eZmQspSiu+Y404pzf0R+A1SKTaF1p7Z1yZs27XmvTRTkByd1RAspEmO7
+	 dNEXFz4NInc0Uxxt7vCPwLIzjd6O20lXL+22MrbZfGD1wBhRX/QydfetnLSTsHhJnmQBK+L+l3Eh
+	 xJox79qv8uVd9ClDyzaRkpQtw8Lq6GCvKEINwtUeoOp7goGQbQZ57E3QSaHz1HJQUXO2+EPckXm0
+	 PIx4CMkr9TNZVs54qr
+X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
+From: wenyang.linux@foxmail.com
+To: Christian Brauner <brauner@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Wen Yang <wenyang.linux@foxmail.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Dylan Yudaken <dylany@fb.com>,
+	David Woodhouse <dwmw@amazon.co.uk>,
+	Matthew Wilcox <willy@infradead.org>,
+	Eric Biggers <ebiggers@google.com>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3] eventfd: move 'eventfd-count' printing out of spinlock
+Date: Mon, 15 Jan 2024 23:27:00 +0800
+X-OQ-MSGID: <20240115152700.9478-1-wenyang.linux@foxmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,44 +73,56 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add "struct" keyword and explain the @dir array differently to
-prevent kernel-doc warnings:
+From: Wen Yang <wenyang.linux@foxmail.com>
 
-gpio-en7523.c:22: warning: cannot understand function prototype: 'struct airoha_gpio_ctrl '
-gpio-en7523.c:27: warning: Function parameter or struct member 'dir' not described in 'airoha_gpio_ctrl'
-gpio-en7523.c:27: warning: Excess struct member 'dir0' description in 'airoha_gpio_ctrl'
-gpio-en7523.c:27: warning: Excess struct member 'dir1' description in 'airoha_gpio_ctrl'
+When printing eventfd->count, interrupts will be disabled and a spinlock
+will be obtained, competing with eventfd_write(). By moving the
+"eventfd-count" print out of the spinlock and merging multiple
+seq_printf() into one, it could improve a bit, just like timerfd_show().
 
-Fixes: 0868ad385aff ("gpio: Add support for Airoha EN7523 GPIO controller")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: John Crispin <john@phrozen.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Felix Fietkau <nbd@nbd.name>
-Cc: linux-gpio@vger.kernel.org
+Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Dylan Yudaken <dylany@fb.com>
+Cc: David Woodhouse <dwmw@amazon.co.uk>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Eric Biggers <ebiggers@google.com>
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 ---
-v2: Add commit text.
-v3: add Fixes tag.
+ fs/eventfd.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
- drivers/gpio/gpio-en7523.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff -- a/drivers/gpio/gpio-en7523.c b/drivers/gpio/gpio-en7523.c
---- a/drivers/gpio/gpio-en7523.c
-+++ b/drivers/gpio/gpio-en7523.c
-@@ -12,11 +12,11 @@
- #define AIROHA_GPIO_MAX		32
+diff --git a/fs/eventfd.c b/fs/eventfd.c
+index ad8186d47ba7..a6fa6ee748df 100644
+--- a/fs/eventfd.c
++++ b/fs/eventfd.c
+@@ -283,13 +283,18 @@ static ssize_t eventfd_write(struct file *file, const char __user *buf, size_t c
+ static void eventfd_show_fdinfo(struct seq_file *m, struct file *f)
+ {
+ 	struct eventfd_ctx *ctx = f->private_data;
++	unsigned long long cnt;
  
- /**
-- * airoha_gpio_ctrl - Airoha GPIO driver data
-+ * struct airoha_gpio_ctrl - Airoha GPIO driver data
-  * @gc: Associated gpio_chip instance.
-  * @data: The data register.
-- * @dir0: The direction register for the lower 16 pins.
-- * @dir1: The direction register for the higher 16 pins.
-+ * @dir: [0] The direction register for the lower 16 pins.
-+ * [1]: The direction register for the higher 16 pins.
-  * @output: The output enable register.
-  */
- struct airoha_gpio_ctrl {
+ 	spin_lock_irq(&ctx->wqh.lock);
+-	seq_printf(m, "eventfd-count: %16llx\n",
+-		   (unsigned long long)ctx->count);
++	cnt = ctx->count;
+ 	spin_unlock_irq(&ctx->wqh.lock);
+-	seq_printf(m, "eventfd-id: %d\n", ctx->id);
+-	seq_printf(m, "eventfd-semaphore: %d\n",
++
++	seq_printf(m,
++		   "eventfd-count: %16llx\n"
++		   "eventfd-id: %d\n"
++		   "eventfd-semaphore: %d\n",
++		   cnt,
++		   ctx->id,
+ 		   !!(ctx->flags & EFD_SEMAPHORE));
+ }
+ #endif
+-- 
+2.25.1
+
 
