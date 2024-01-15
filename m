@@ -1,47 +1,86 @@
-Return-Path: <linux-kernel+bounces-25944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C85B82D8A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:58:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 604CA82D8A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:59:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD8D5282A29
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:58:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 124181F225D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:59:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F7D72C69B;
-	Mon, 15 Jan 2024 11:58:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5212D2C690;
+	Mon, 15 Jan 2024 11:59:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mgbiphD0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="O5JVqAyJ"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDC5C1E865;
-	Mon, 15 Jan 2024 11:58:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83F2EC433C7;
-	Mon, 15 Jan 2024 11:58:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705319925;
-	bh=rAzO/EbAjp/RyapW0byiwCjRX0nFnY82gnHGAzPPPos=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mgbiphD0IcbgJG+qVE73R65/MPGiT5oH4pY9nHEdFNrJ/B1YENiz50WUwj82bcC8Q
-	 m+d3vkxXpDemGgesnLkobL4u7XZlmBHFsHFsc0WQRKm1PWZ/GdZ6S6n2rAOYkN8txk
-	 ADYyqM+Ujw9kY8bWk/w0ha/GTdG/BAg5eNnbKFMZNf9e9pk1c/UWMelLT3h0HKr9Pi
-	 YGItqc6m+w3BhuPv67siyXW+25KV6LTNw/ycldehMxW3FF5IQWm14WCcNtAzkTkmPA
-	 rPAd2h/bO2zIVxeIvXLTjoNtaYq1/dzr7qJT9Xg1eaJ9rkVsrHA5QZuXKKopnGS1i6
-	 CbSzqREnrhokA==
-Date: Mon, 15 Jan 2024 11:58:41 +0000
-From: Simon Horman <horms@kernel.org>
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: edumazet@google.com, davem@davemloft.net, dsahern@kernel.org,
-	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next v2] net: tcp: accept old ack during closing
-Message-ID: <20240115115841.GS392144@kernel.org>
-References: <20240112094603.23706-1-menglong8.dong@gmail.com>
- <20240113154632.GI392144@kernel.org>
- <CADxym3a6qNcb47R_DfXMsac9Ou_zkz5hR3bGY9tr7Jhsdw3y-Q@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9380A2C68B
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 11:59:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2cdc1af60b2so9948791fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 03:59:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1705319971; x=1705924771; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=O5hovQlCyFfUT1w/kNP0sdfTe0f7KSxDUv62cZRI4N4=;
+        b=O5JVqAyJb3xJ/YlGzK5uxnzHuLtwlUaTUXSM0LsNV6hGLVf2rcGdW97vmQ6V/OONrT
+         9FVCTToz3M/hLp8mOswnf59x0yxPqeVEbZA1DSAq5xpAEwtXinrKAYtCKe1Gil/ObPUf
+         QR7+WMRuzxKGv93FoCGNxCGYvuxvvPiv+iJOg74c5S6R7+kVUJbGhtYkdyAqUFZeZqdI
+         8FwHM65K7CTyIAcWEHrHxPsIjvzmLL5vWaVmlNR+1j6yhPQxZVH6PE+OFmnD7XTSM9rJ
+         wS1v+57pUg5uDRTsWl3fzXaax2FC44WkXtrAmJChpWcqpb66m/gi8PaxLhRDvwlZls8b
+         n5vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705319971; x=1705924771;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O5hovQlCyFfUT1w/kNP0sdfTe0f7KSxDUv62cZRI4N4=;
+        b=L0QhRKxb3801uo3G+dLAA2ygroOmDue6RqYEEtqdK5ex205nZx/8eatJrbWcdsZJ0k
+         4HgQqlT/teuEMFqmfusarKpfTRvbfmEMyis0VyxLxP9X+JdT8DHJk9OL96X0DHx+LNEh
+         GyIjW7B1Rp9ibuxDhvcU11j1REXaXJeoHpY4Stb6PTyxdZOdqZ+LRgL9zt+H3F6jtD72
+         dGZ+5LQVrfgGezFk0zluXlnUF/p71Mw3WY64699HbGlgGBnLufE6v4xjfUBBD3WrRHQ7
+         wfqwrI2JRz+BSnWmBOQARCHcVew+QOUB4DrXLsmQwKQN+Y0KpmYPCZo1gH81L0FwBH8x
+         sDIA==
+X-Gm-Message-State: AOJu0YwvpHAu/0tGFVF2j0zpXjrVW7T8uX1zzFyW7HvYhF0itDnW5ctC
+	EQYhhXa0YpU2qq+XAWob7xK2P8sArpppVA==
+X-Google-Smtp-Source: AGHT+IHGRHMo4VhBXy6hSCYZ1XRFQETsAjSrKVsA9kDbBeh41BdpUKjBl7BOI0qixDQnObQ3xK/bYA==
+X-Received: by 2002:a2e:9595:0:b0:2cc:df3f:9f83 with SMTP id w21-20020a2e9595000000b002ccdf3f9f83mr2379829ljh.64.1705319971394;
+        Mon, 15 Jan 2024 03:59:31 -0800 (PST)
+Received: from airbuntu (host109-154-205-127.range109-154.btcentralplus.com. [109.154.205.127])
+        by smtp.gmail.com with ESMTPSA id w26-20020a2e301a000000b002cd7fe5655asm1351741ljw.88.2024.01.15.03.59.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 03:59:30 -0800 (PST)
+Date: Mon, 15 Jan 2024 11:59:28 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: Wyes Karny <wkarny@gmail.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>
+Subject: Re: [GIT PULL] Scheduler changes for v6.8
+Message-ID: <20240115115928.rxafxbrf7i55hepj@airbuntu>
+References: <CAHk-=wjK28MUqBZzBSMEM8vdJhDOuXGSWPmmp04GEt9CXtW6Pw@mail.gmail.com>
+ <20240114091240.xzdvqk75ifgfj5yx@wyes-pc>
+ <ZaPC7o44lEswxOXp@vingu-book>
+ <20240114123759.pjs7ctexcpc6pshl@wyes-pc>
+ <CAKfTPtCz+95dR38c_u6_7JbkVt=czj5N2dKYVV-zk9dgbk16hw@mail.gmail.com>
+ <20240114151250.5wfexq44o3mdm3nh@airbuntu>
+ <CAKfTPtAMxiTbvAYav1JQw+MhjzDPCZDrMLL2JOfsc0GWp+FnOA@mail.gmail.com>
+ <20240114195815.nes4bn53tc25djbh@airbuntu>
+ <20240114233728.hrmyelo66beaajhp@airbuntu>
+ <CAAE01kGAdczPmWZ5VqrF397FeOHexWfHDi9eYXv8LogDbuWiHQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -50,91 +89,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADxym3a6qNcb47R_DfXMsac9Ou_zkz5hR3bGY9tr7Jhsdw3y-Q@mail.gmail.com>
+In-Reply-To: <CAAE01kGAdczPmWZ5VqrF397FeOHexWfHDi9eYXv8LogDbuWiHQ@mail.gmail.com>
 
-On Mon, Jan 15, 2024 at 10:40:56AM +0800, Menglong Dong wrote:
-> On Sat, Jan 13, 2024 at 11:46 PM Simon Horman <horms@kernel.org> wrote:
-> >
-> > On Fri, Jan 12, 2024 at 05:46:03PM +0800, Menglong Dong wrote:
-> > > For now, the packet with an old ack is not accepted if we are in
-> > > FIN_WAIT1 state, which can cause retransmission. Taking the following
-> > > case as an example:
-> > >
-> > >     Client                               Server
-> > >       |                                    |
-> > >   FIN_WAIT1(Send FIN, seq=10)          FIN_WAIT1(Send FIN, seq=20, ack=10)
-> > >       |                                    |
-> > >       |                                Send ACK(seq=21, ack=11)
-> > >    Recv ACK(seq=21, ack=11)
-> > >       |
-> > >    Recv FIN(seq=20, ack=10)
-> > >
-> > > In the case above, simultaneous close is happening, and the FIN and ACK
-> > > packet that send from the server is out of order. Then, the FIN will be
-> > > dropped by the client, as it has an old ack. Then, the server has to
-> > > retransmit the FIN, which can cause delay if the server has set the
-> > > SO_LINGER on the socket.
-> > >
-> > > Old ack is accepted in the ESTABLISHED and TIME_WAIT state, and I think
-> > > it should be better to keep the same logic.
-> > >
-> > > In this commit, we accept old ack in FIN_WAIT1/FIN_WAIT2/CLOSING/LAST_ACK
-> > > states. Maybe we should limit it to FIN_WAIT1 for now?
-> > >
-> > > Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
-> > > ---
-> > > v2:
-> > > - fix the compiling error
-> > > ---
-> > >  net/ipv4/tcp_input.c | 18 +++++++++++-------
-> > >  1 file changed, 11 insertions(+), 7 deletions(-)
-> > >
-> > > diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-> > > index df7b13f0e5e0..70642bb08f3a 100644
-> > > --- a/net/ipv4/tcp_input.c
-> > > +++ b/net/ipv4/tcp_input.c
-> > > @@ -6699,17 +6699,21 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb)
-> > >               return 0;
-> > >
-> > >       /* step 5: check the ACK field */
-> > > -     acceptable = tcp_ack(sk, skb, FLAG_SLOWPATH |
-> > > -                                   FLAG_UPDATE_TS_RECENT |
-> > > -                                   FLAG_NO_CHALLENGE_ACK) > 0;
-> > > +     reason = tcp_ack(sk, skb, FLAG_SLOWPATH |
-> > > +                               FLAG_UPDATE_TS_RECENT |
-> > > +                               FLAG_NO_CHALLENGE_ACK);
-> >
-> > Hi Menglong Dong,
-> >
-> > Probably I am missing something terribly obvious,
-> > but I am confused about the types used here.
-> >
-> > The type of reason is enum skb_drop_reason.
-> > For which, which on my system, the compiler uses an unsigned entity.
-> > i.e. it is an unsigned integer.
-> >
-> > But tcp_ack returns a (signed) int. And below reason is checked
-> > for values less than zero, and negated. This doesn't seem right.
-> >
-> 
-> Hello! You are right, and it seems that I make the same
-> mistake with Eric in this commit:
-> 
-> 843f77407eeb ("tcp: fix signed/unsigned comparison")
-> 
-> I should convert it to signed int before comparing it
-> like this:
-> 
->   if ((int)reason <= 0) {
->       ......
->       if ((int)reason < 0) {
->           ....
->       }
->   }
+Hi Wyes
 
-Thanks. FWIIW, I would probably assign the unsigned value to an unsigned
-local variable.
+On 01/15/24 11:55, Wyes Karny wrote:
 
-..
+> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> > index 95c3c097083e..155f96a44fa0 100644
+> > --- a/kernel/sched/cpufreq_schedutil.c
+> > +++ b/kernel/sched/cpufreq_schedutil.c
+> > @@ -123,7 +123,8 @@ static void sugov_deferred_update(struct sugov_policy *sg_policy)
+> >   * Return: the reference CPU frequency to compute a capacity.
+> >   */
+> >  static __always_inline
+> > -unsigned long get_capacity_ref_freq(struct cpufreq_policy *policy)
+> > +unsigned long get_capacity_ref_freq(struct cpufreq_policy *policy,
+> > +                                   unsigned long *max)
+> >  {
+> >         unsigned int freq = arch_scale_freq_ref(policy->cpu);
+> >
+> > @@ -133,6 +134,9 @@ unsigned long get_capacity_ref_freq(struct cpufreq_policy *policy)
+> >         if (arch_scale_freq_invariant())
+> >                 return policy->cpuinfo.max_freq;
+> >
+> > +       if (max)
+> > +               *max = policy->cur * (*max) / policy->cpuinfo.max_freq;
+> 
+> But when freq_invaiant is disabled we don't have policy->cpuinfo.max_freq.
+
+They are reported as 3.8GHz correctly for me
+
+$ grep . /sys/devices/system/cpu/cpufreq/policy*/cpuinfo_max_freq
+/sys/devices/system/cpu/cpufreq/policy0/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy10/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy11/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy12/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy13/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy14/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy15/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy16/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy17/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy18/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy19/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy1/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy20/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy21/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy22/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy23/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy2/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy3/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy5/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy6/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy7/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy8/cpuinfo_max_freq:3800000
+/sys/devices/system/cpu/cpufreq/policy9/cpuinfo_max_freq:3800000
 
