@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-26523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1401782E2C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:53:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B498182E2C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:53:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6757AB2221A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 22:53:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3140AB2218F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 22:53:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EA3A1B7E8;
-	Mon, 15 Jan 2024 22:52:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 982641B802;
+	Mon, 15 Jan 2024 22:52:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="wps0UqRW"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2046.outbound.protection.outlook.com [40.107.92.46])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="zFHUSuiF"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1322D1B7E0;
-	Mon, 15 Jan 2024 22:52:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 042FE1B7E0;
+	Mon, 15 Jan 2024 22:52:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ShfTrGWhVwnV3lZgjweUsP37bF4vFc9Syr8ZnHBmWFS4fw5pWRvQPpQtnDvEru9jHnV/9dZkAmRg33gsZa+CRT/HBR06dnHR/kaClWU8EpiGgqJ+Vy6WO2Igo6U0fYfwR5Y2uARmBUYhN8769YbhREMvS05xttWqxA2RRmeKTQSpXYpjRWsyFlkFqphZwJt1HfDN9zOITluM3yYleL0ax2C6Nz9NsHIMLvrkvnkqvZxj29W9uCAFggXzypyvReQKFa/flJ9OFNvB8KB+IYlwXxkhJ06UNJt480J9X2HswQWMlfRLgZhme+9RzrMFWgDwbjw6uloArk8yQg1t1WYpNg==
+ b=Ykzc9y8xw/f3u3Sud4JwYfQY1krkx8J6uP/vndKT9uZ9JFrev37mtC0wby5EumfVAC9EcPbCa5sOKyhRaStnnjyzgXU6gfNNJ/kTQjVc2PbluUt4Bn55tgWq1muqBVnqLYs6wjtMpMl5Of+OuRN3B+wEzB24rQavsfjNFw8biumhzOWIU8hD8zwwYf+ecsKofmLfheTvimfdfaQJOpfwPgJp7f8gbhkNTivaHmGKlsAemdSLzxiOgAiIs1GECgl3p/iFmHlw7sz2QyRY6QY+ogbgbx50Rm0cMe2EhXUs5doemmi+6yjjMCKSYUsIRRzCm8N+fibZFtHKEPC5m+7cXA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=p6HdITWySLMK7+lq8N18uwiSxuYrxpF+PLKl3ahDomM=;
- b=k/R3CH2NYamns/9m857+4gXz/OD44OAgPOaBCT/BqvILxJzI02036fweiEb8YaOcbLMrmCJ+wv8xKDzSxbM/kRq3O+7PKfUQv5JXEft9UL+I0mGTDSs4jMQaSkd2uK91dMFhPlnfFNzVGS3wPtV5UHV1NfXP0X2Tg7+7uGZwvgVh+WtNiGcn8mzc3YPU1qKZR7hGYgh3LRC7tvayafSzvSE7PvP0JH/JTogdA/pMH71fL6Ad6Bt3IiDCYznoR5BstpiG0m54xrvmK/nDUxUV/CRPYtjSACZoGZhDahvrpWckisN5D/8YHYqmxBSn1U17/SEekW+VqhoJbD3apREMaw==
+ bh=gev5sQ1aLWAuQpiBQ8AY6LcTNAzx/mZ5pZ6jLyaBLzc=;
+ b=d/jDbM+KTXgFYrCvG4HcNbN2btcfgn98wNNAzhe8d78V6PVc9denTekQfElsoGs9rhkSGuUzcAdQzn07/1i81m7JZpqYyz5groRGekSbcOpHMrMDV+PlmprFb6Z/SwHWqgDbtPoqiz+7ncF4gZc2Uy8Z5/SQC1NGkPxRFfVuuBhLBujuCtWtNjFqoqURz6kex4BxfPmpO25kou2BNIf+3laHMeufjz9DWXeUTLMwPjgOIqbK5pLzIGWXrJX8EY8tp/47l08vil8uzasOZYVuhvgyTWltjsLAouSAYTxczNBrSpsSCXkz5jXKrYxu3arAqotSQcYNleAkGdhSB6A/Lw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=lwn.net smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p6HdITWySLMK7+lq8N18uwiSxuYrxpF+PLKl3ahDomM=;
- b=wps0UqRWNWizP72vZ87Z7N+Jvg2DhRePBj4+BExC1D7EM+EakBJwDtTUh9NHhbv2hrFR7kXoVyLF2SxhaP5t/Die8VIf0LTOgSvpdIxNre7OKN8riq+8ZRdvED8ge33uXBv6ymQ9lmNvlf7yM7XxG8rXSrA8/DXpVg4lAW4gIOo=
-Received: from SN7P222CA0002.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:124::14)
- by BY5PR12MB4178.namprd12.prod.outlook.com (2603:10b6:a03:20e::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.21; Mon, 15 Jan
- 2024 22:52:43 +0000
-Received: from SN1PEPF0002BA4E.namprd03.prod.outlook.com
- (2603:10b6:806:124:cafe::d1) by SN7P222CA0002.outlook.office365.com
- (2603:10b6:806:124::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.23 via Frontend
- Transport; Mon, 15 Jan 2024 22:52:43 +0000
+ bh=gev5sQ1aLWAuQpiBQ8AY6LcTNAzx/mZ5pZ6jLyaBLzc=;
+ b=zFHUSuiFogtgHn9d5VkFdNST+Bv21vljGSv0R1Exb0rwFu3tpwhliEy7/YWJ3qXJgVmL8SrojtfYPSicfK8q2DjhJua5GX21uT7gVq4fFs7iyvjR4Roh0UtNDd4Bb7WT5Mwyc31ppZ+3VVeWJKShfVU3nO7IBNTN1dyRdIuGbtU=
+Received: from SN4PR0501CA0062.namprd05.prod.outlook.com
+ (2603:10b6:803:41::39) by DS0PR12MB6488.namprd12.prod.outlook.com
+ (2603:10b6:8:c3::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Mon, 15 Jan
+ 2024 22:52:53 +0000
+Received: from SN1PEPF0002BA51.namprd03.prod.outlook.com
+ (2603:10b6:803:41:cafe::a0) by SN4PR0501CA0062.outlook.office365.com
+ (2603:10b6:803:41::39) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.15 via Frontend
+ Transport; Mon, 15 Jan 2024 22:52:53 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -53,13 +53,13 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SN1PEPF0002BA4E.mail.protection.outlook.com (10.167.242.71) with Microsoft
+ SN1PEPF0002BA51.mail.protection.outlook.com (10.167.242.74) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7202.16 via Frontend Transport; Mon, 15 Jan 2024 22:52:43 +0000
+ 15.20.7202.16 via Frontend Transport; Mon, 15 Jan 2024 22:52:51 +0000
 Received: from bmoger-ubuntu.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Mon, 15 Jan
- 2024 16:52:41 -0600
+ 2024 16:52:50 -0600
 From: Babu Moger <babu.moger@amd.com>
 To: <corbet@lwn.net>, <fenghua.yu@intel.com>, <reinette.chatre@intel.com>,
 	<tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
@@ -74,9 +74,9 @@ CC: <x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
 	<maciej.wieczor-retman@intel.com>, <linux-doc@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, <eranian@google.com>,
 	<peternewman@google.com>, <dhagiani@amd.com>
-Subject: [PATCH v5 1/2] x86/resctrl: Remove hard-coded memory bandwidth limit
-Date: Mon, 15 Jan 2024 16:52:27 -0600
-Message-ID: <c26a8ca79d399ed076cf8bf2e9fbc58048808289.1705359148.git.babu.moger@amd.com>
+Subject: [PATCH v5 2/2] x86/resctrl: Read supported bandwidth sources using CPUID command
+Date: Mon, 15 Jan 2024 16:52:28 -0600
+Message-ID: <669896fa512c7451319fa5ca2fdb6f7e015b5635.1705359148.git.babu.moger@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231201005720.235639-1-babu.moger@amd.com>
 References: <20231201005720.235639-1-babu.moger@amd.com>
@@ -92,99 +92,151 @@ X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA4E:EE_|BY5PR12MB4178:EE_
-X-MS-Office365-Filtering-Correlation-Id: 92ea1f0d-2ae4-4c0b-517c-08dc161caf57
+X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA51:EE_|DS0PR12MB6488:EE_
+X-MS-Office365-Filtering-Correlation-Id: 14630462-b43c-4552-33f0-08dc161cb43e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	WXItU872YqD+uybYw/igxX1O+G2DvpN71ZNWqOvOfSCGCBIOnbUBXAzjiV9DkWJl/HXUiRKgR+SiUHU1nzxpFoGzrexlmUHo04MkkGyREByGsB91q1OnYOPkSFgnt04cdpyXnS/MiHOYqkhqHH8hTPX5/kCwaZailohDTSvCzIsVWtF89gbpMpMweNCsyuS6ssefufXP5vHMzRLor2GFYoKtKpLB7XKFPMYt2qUJK/499ZpKbp+m6b7FBmnoqcFLdf7Z+Hvv2kHZ8vCXkKm4YChoyqhDD3iCx0WvBdU5ma898VDHfbPxXMOVP4jMSSJwAuMZn/XJt0yisk4I65PoHsrAmsLKToDl44IlmG5i24f4kNgZ1ePnWZbsEccYcPIa0HvRagbb35Od6kIQ9vdDlhzgWgoXUTZvBxeMxrX3c7l2J8TST17Vb/Z+nEbHmoN/AzsRNCeqT+HX/M7X2GhV7YxQdVBpkWp3PjJ3zeFy7lggXMhCJU/qOxJhw0NNCZxC8Myz7grimmM6bbdRSQcnRlnTkwS1QtWWhXWxw7Iy91MZXt4WfYBuav5CfZVNGp4Hkilk+NH7YZAVZTM8vYPL4XdzedY+9KftJHhMG0Z/nmfJE7KlnKsiRdnO0BIc8PycKFLz9NU9zYzUNvl/WvBy/P9CsPn7eUBkH/SXFrveAB/KWorknvsAl/nGE3FDSRWDDp7vsIuNrIqZoPnKRTRQE30lznfmpAzeTBKG4YZ9WDUHE5AefdoW4GkFW2Q212YBMFQQskPg+6c9VuovmdxU3RPs0ZsS+XvczUhqjzLIZvA=
+	8UQwFcJhj+I/F8RoHzd1NHXRx/MmbE+3niGKQXUyhZ0dIbFCYBzuAqF+1VCzv4ua9t44gC9mbNanN0/C+tBorSujM7H//zrwFdrlVtWeJWdb3sgIplw6jxrPA0t1PMaIj7SgmVQXSXTxpKl3FxNHQD0W0yn7TyF9NMa5Lc/bBcwtxFoEjkPquuLvB8bu6VDnzRiaSCZ3d/6RnFzpkFBfqVqtghQFfWJPtf6NOAV+klc3xcdUJ8vvGj7rGxmT3o1YsQz5vYepX42+w34DAESRNbhqgA8Wjd5pPLU7TnFAzLB5Sas7uFI1juNT1ix0AhBVM4l7RxalEv93EF/YOhgW+FESAuzHm5wUc7IBSm5bkXeV+o4Ldpcuw1FR+UKjnlx4GGelBvsCeq3zg8Cq8VyPckOYaGTyrE0wh1ye+k8w5wBRw/3VmyYmTQF3ew+pKhG1KwBuiU5h7F8/FaWBuflg+5ex9VPJ3dOpDy0QelhpMi5f8HinkqMhPomxPR/vB3i18wk7EyrK8tPMaQPpssurWbzbjKlzRfpCxiWKT4/XrklM1e/JVuAX1wkkrWpPtxAM+0438+Ki64XElcIK2rXM1aWow8C6N81y/idqsBHZS1HkVNfCaIrG8YtQ7aJbtG5b5ryoKvbdgmGJgQ23r/bsMnVcUpO+GLzCHE6F8EI7EqDZHymabk2nrxqjNKrYsQ5APEVIcKOo3zaHji4PDJNDRDgXWiQPLAJar3LqQo7+fWELdKWbRJnDsgzNnTcRHjY9jnw1We1kGKqkOokIfMpxgW2xEoPrvBXTBFp/e3ZQzKU=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(39860400002)(396003)(136003)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(82310400011)(36840700001)(40470700004)(46966006)(426003)(336012)(356005)(6666004)(16526019)(26005)(2616005)(966005)(7696005)(478600001)(36860700001)(83380400001)(4326008)(5660300002)(2906002)(44832011)(47076005)(70586007)(110136005)(316002)(54906003)(7416002)(8936002)(70206006)(8676002)(82740400003)(81166007)(86362001)(36756003)(41300700001)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(136003)(376002)(396003)(230922051799003)(1800799012)(186009)(451199024)(82310400011)(64100799003)(36840700001)(46966006)(40470700004)(26005)(7696005)(82740400003)(6666004)(16526019)(478600001)(426003)(336012)(36860700001)(966005)(47076005)(83380400001)(5660300002)(44832011)(2906002)(7416002)(41300700001)(4326008)(110136005)(70586007)(8936002)(316002)(54906003)(70206006)(8676002)(356005)(86362001)(36756003)(81166007)(2616005)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2024 22:52:43.5773
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2024 22:52:51.8013
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 92ea1f0d-2ae4-4c0b-517c-08dc161caf57
+X-MS-Exchange-CrossTenant-Network-Message-Id: 14630462-b43c-4552-33f0-08dc161cb43e
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF0002BA4E.namprd03.prod.outlook.com
+	SN1PEPF0002BA51.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4178
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6488
 
-The QOS Memory Bandwidth Enforcement Limit is reported by
-CPUID_Fn80000020_EAX_x01 and CPUID_Fn80000020_EAX_x02.
-Bits Description
-31:0 BW_LEN: Size of the QOS Memory Bandwidth Enforcement Limit.
+If the BMEC (Bandwidth Monitoring Event Configuration) feature is
+supported, the bandwidth events can be configured. The maximum supported
+bandwidth bitmask can be determined by following CPUID command.
 
-Newer processors can support higher bandwidth limit than the current
-hard-coded value. Remove the hard-coded value and detect using CPUID
-command. Also update the register variables eax and edx to match the
-AMD CPUID definition.
+CPUID_Fn80000020_ECX_x03 [Platform QoS Monitoring Bandwidth Event
+Configuration] Read-only. Reset: 0000_007Fh.
+Bits    Description
+31:7    Reserved
+ 6:0    Identifies the bandwidth sources that can be tracked.
+
+The bandwidth sources can change with the processor generations.
+Read the supported bandwidth sources using the CPUID command.
+
+While at it, move the mask checking to mon_config_write() before
+iterating over all the domains. Also, print the valid bitmask when
+the user tries to configure invalid event configuration value.
 
 The CPUID details are documented in the PPR listed below [1].
 [1] Processor Programming Reference (PPR) Vol 1.1 for AMD Family 19h Model
 11h B1 - 55901 Rev 0.25.
 
-Fixes: 4d05bf71f157 ("x86/resctrl: Introduce AMD QOS feature")
+Fixes: dc2a3e857981 ("x86/resctrl: Add interface to read mbm_total_bytes_config")
 Signed-off-by: Babu Moger <babu.moger@amd.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
 Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
 ---
-v5: No changes.
+v5: Revised the text in mon_config_write when user tries invalid config.
+    Few other comment update.
+
 v4: Minor text changes and re-order of commit tags.
-v3: No change. Just updated with Reviewed-by
+    Moved the mask check to mon_config_write() before iterating over all the
+    domains.
 
-v2: Earlier Sent as a part of ABMC feature.
+v3: Changed the event_mask name to mbm_cfg_mask. Added comments about the field.
+    Reverted the masking of event configuration to original code.
+    Few minor comment changes.
+
+v2: Earlier sent as a part of ABMC feature.
     https://lore.kernel.org/lkml/20231201005720.235639-1-babu.moger@amd.com/
-    Sending it separate now. Addressed comments from Reinette about registers
-    being used from Intel definition. Also updated commit message.
+    But this is not related to ABMC. Sending it separate now.
+    Removed the global resctrl_max_evt_bitmask. Added event_mask as part of
+    the resource.
 ---
- arch/x86/kernel/cpu/resctrl/core.c     | 10 ++++------
- arch/x86/kernel/cpu/resctrl/internal.h |  1 -
- 2 files changed, 4 insertions(+), 7 deletions(-)
+ arch/x86/kernel/cpu/resctrl/internal.h |  3 +++
+ arch/x86/kernel/cpu/resctrl/monitor.c  |  6 ++++++
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 14 ++++++++------
+ 3 files changed, 17 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index 19e0681f0435..d04371e851b4 100644
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -231,9 +231,7 @@ static bool __get_mem_config_intel(struct rdt_resource *r)
- static bool __rdt_get_mem_config_amd(struct rdt_resource *r)
- {
- 	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
--	union cpuid_0x10_3_eax eax;
--	union cpuid_0x10_x_edx edx;
--	u32 ebx, ecx, subleaf;
-+	u32 eax, ebx, ecx, edx, subleaf;
- 
- 	/*
- 	 * Query CPUID_Fn80000020_EDX_x01 for MBA and
-@@ -241,9 +239,9 @@ static bool __rdt_get_mem_config_amd(struct rdt_resource *r)
- 	 */
- 	subleaf = (r->rid == RDT_RESOURCE_SMBA) ? 2 :  1;
- 
--	cpuid_count(0x80000020, subleaf, &eax.full, &ebx, &ecx, &edx.full);
--	hw_res->num_closid = edx.split.cos_max + 1;
--	r->default_ctrl = MAX_MBA_BW_AMD;
-+	cpuid_count(0x80000020, subleaf, &eax, &ebx, &ecx, &edx);
-+	hw_res->num_closid = edx + 1;
-+	r->default_ctrl = 1 << eax;
- 
- 	/* AMD does not use delay */
- 	r->membw.delay_linear = false;
 diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index a4f1aa15f0a2..d2979748fae4 100644
+index d2979748fae4..e3dc35a00a19 100644
 --- a/arch/x86/kernel/cpu/resctrl/internal.h
 +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -18,7 +18,6 @@
- #define MBM_OVERFLOW_INTERVAL		1000
- #define MAX_MBA_BW			100u
- #define MBA_IS_LINEAR			0x4
--#define MAX_MBA_BW_AMD			0x800
- #define MBM_CNTR_WIDTH_OFFSET_AMD	20
+@@ -394,6 +394,8 @@ struct rdt_parse_data {
+  * @msr_update:		Function pointer to update QOS MSRs
+  * @mon_scale:		cqm counter * mon_scale = occupancy in bytes
+  * @mbm_width:		Monitor width, to detect and correct for overflow.
++ * @mbm_cfg_mask:	Bandwidth sources that can be tracked when Bandwidth
++ *			Monitoring Event Configuration (BMEC) is supported.
+  * @cdp_enabled:	CDP state of this resource
+  *
+  * Members of this structure are either private to the architecture
+@@ -408,6 +410,7 @@ struct rdt_hw_resource {
+ 				 struct rdt_resource *r);
+ 	unsigned int		mon_scale;
+ 	unsigned int		mbm_width;
++	unsigned int		mbm_cfg_mask;
+ 	bool			cdp_enabled;
+ };
  
- #define RMID_VAL_ERROR			BIT_ULL(63)
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index f136ac046851..acca577e2b06 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -813,6 +813,12 @@ int __init rdt_get_mon_l3_config(struct rdt_resource *r)
+ 		return ret;
+ 
+ 	if (rdt_cpu_has(X86_FEATURE_BMEC)) {
++		u32 eax, ebx, ecx, edx;
++
++		/* Detect list of bandwidth sources that can be tracked */
++		cpuid_count(0x80000020, 3, &eax, &ebx, &ecx, &edx);
++		hw_res->mbm_cfg_mask = ecx & MAX_EVT_CONFIG_BITS;
++
+ 		if (rdt_cpu_has(X86_FEATURE_CQM_MBM_TOTAL)) {
+ 			mbm_total_event.configurable = true;
+ 			mbm_config_rftype_init("mbm_total_bytes_config");
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 69a1de92384a..2b69e560b05f 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -1620,12 +1620,6 @@ static int mbm_config_write_domain(struct rdt_resource *r,
+ 	struct mon_config_info mon_info = {0};
+ 	int ret = 0;
+ 
+-	/* mon_config cannot be more than the supported set of events */
+-	if (val > MAX_EVT_CONFIG_BITS) {
+-		rdt_last_cmd_puts("Invalid event configuration\n");
+-		return -EINVAL;
+-	}
+-
+ 	/*
+ 	 * Read the current config value first. If both are the same then
+ 	 * no need to write it again.
+@@ -1663,6 +1657,7 @@ static int mbm_config_write_domain(struct rdt_resource *r,
+ 
+ static int mon_config_write(struct rdt_resource *r, char *tok, u32 evtid)
+ {
++	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
+ 	char *dom_str = NULL, *id_str;
+ 	unsigned long dom_id, val;
+ 	struct rdt_domain *d;
+@@ -1686,6 +1681,13 @@ static int mon_config_write(struct rdt_resource *r, char *tok, u32 evtid)
+ 		return -EINVAL;
+ 	}
+ 
++	/* Value from user cannot be more than the supported set of events */
++	if ((val & hw_res->mbm_cfg_mask) != val) {
++		rdt_last_cmd_printf("Invalid event configuration: max valid mask is 0x%02x\n",
++				    hw_res->mbm_cfg_mask);
++		return -EINVAL;
++	}
++
+ 	list_for_each_entry(d, &r->domains, list) {
+ 		if (d->id == dom_id) {
+ 			ret = mbm_config_write_domain(r, d, evtid, val);
 -- 
 2.34.1
 
