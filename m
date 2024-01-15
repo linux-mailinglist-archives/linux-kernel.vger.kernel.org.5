@@ -1,170 +1,162 @@
-Return-Path: <linux-kernel+bounces-26068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06D9482DAD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:00:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EC8582DAD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:00:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E750281AA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:00:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E4C91F21967
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:00:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A5D1175BD;
-	Mon, 15 Jan 2024 14:00:25 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 726FD17596;
+	Mon, 15 Jan 2024 14:00:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DJu7BBnO"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D212C1757A;
-	Mon, 15 Jan 2024 14:00:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TDDL969ZXz4f3jq2;
-	Mon, 15 Jan 2024 22:00:17 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id EEC511A0BAE;
-	Mon, 15 Jan 2024 22:00:19 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP2 (Coremail) with SMTP id Syh0CgBXeg1xOqVlBRm1Aw--.63466S2;
-	Mon, 15 Jan 2024 22:00:19 +0800 (CST)
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Skip callback tests if jit
- is disabled in test_verifier
-To: Tiezhu Yang <yangtiezhu@loongson.cn>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>
-Cc: Eduard Zingerman <eddyz87@gmail.com>,
- John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240115070010.12338-1-yangtiezhu@loongson.cn>
- <20240115070010.12338-3-yangtiezhu@loongson.cn>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <84e15d1c-c2a6-9af4-c123-beea01893a8f@huaweicloud.com>
-Date: Mon, 15 Jan 2024 22:00:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CBED17583;
+	Mon, 15 Jan 2024 14:00:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705327221; x=1736863221;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=n/RLhgyGoa+DPRyRCqq45dasWWYKEjc9SvpU3zeNWxA=;
+  b=DJu7BBnOuNj/SImDyBXORRaeLfB5ec7RkBklriuacBBKeIivqpouC2Fd
+   oArlJNI5YQxFshQTZxWRXd/ljUWeir9uGZTbJjI+Gbs/JZBDgH8YZM2OR
+   pNEBuBxGbV6rOzHg53Cm14Xkkp+E8f+NZtnicRiyahA/WHxeg6OmzgenN
+   6GKm1S19K0gvoVPqClRb2ZVT08D4hHMAXtD+CnxTQGff+90WqtVC+rYr8
+   4OoM/+p+IPbnkHVdF3iF7LVsuvglH+PVfmKmjQCPDXjpMKMCj7/biUYoK
+   ZkB54Fm/Y0WfOxuC/6vC8N19RV0Ku8OmTZc5kKks0dxYzBDPwRMlcBhrZ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="463900313"
+X-IronPort-AV: E=Sophos;i="6.04,196,1695711600"; 
+   d="scan'208";a="463900313"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 06:00:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="733312147"
+X-IronPort-AV: E=Sophos;i="6.04,196,1695711600"; 
+   d="scan'208";a="733312147"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by orsmga003.jf.intel.com with ESMTP; 15 Jan 2024 06:00:14 -0800
+Message-ID: <2178e799-2068-7443-59b2-310dfdd1ddee@linux.intel.com>
+Date: Mon, 15 Jan 2024 16:01:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240115070010.12338-3-yangtiezhu@loongson.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v12 04/41] usb: host: xhci-mem: Cleanup pending secondary
+ event ring events
 Content-Language: en-US
-X-CM-TRANSID:Syh0CgBXeg1xOqVlBRm1Aw--.63466S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGr4rAw48WF1kAr17Zr4DXFb_yoW5tw4rpF
-	4kJ3WqkF10va429r17Zwn7GFWYvw4kXw4UGryfW3y8AF4DJr13Jrn3KrWYvF93GrWrWa4S
-	va109r45Ww1UJFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
-	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
-	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04
-	k26cxKx2IYs7xG6r4j6FyUMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
-	xVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UQzVbUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
+ mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
+ corbet@lwn.net, gregkh@linuxfoundation.org, lgirdwood@gmail.com,
+ andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ konrad.dybcio@linaro.org, Thinh.Nguyen@synopsys.com, broonie@kernel.org,
+ bgoswami@quicinc.com, tiwai@suse.com, robh+dt@kernel.org, agross@kernel.org
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
+ alsa-devel@alsa-project.org
+References: <20240102214549.22498-1-quic_wcheng@quicinc.com>
+ <20240102214549.22498-5-quic_wcheng@quicinc.com>
+ <734591a1-50b4-6dc7-0b93-077355ec12e4@linux.intel.com>
+ <7b2ec96b-b72f-c848-7c35-36e61a4072ac@quicinc.com>
+ <b254f73b-a1bc-3dd4-f485-a3acf556835d@quicinc.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
+In-Reply-To: <b254f73b-a1bc-3dd4-f485-a3acf556835d@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi,
+On 10.1.2024 1.42, Wesley Cheng wrote:
+> Hi Mathias,
+> 
+> On 1/8/2024 12:51 PM, Wesley Cheng wrote:
+>> Hi Mathias,
+>>
+>> On 1/4/2024 6:48 AM, Mathias Nyman wrote:
+>>> On 2.1.2024 23.45, Wesley Cheng wrote:
+>>>> As part of xHCI bus suspend, the XHCI is halted.  However, if there are
+>>>> pending events in the secondary event ring, it is observed that the xHCI
+>>>> controller stops responding to further commands upon host or device
+>>>> initiated bus resume.  Iterate through all pending events and update the
+>>>> dequeue pointer to the beginning of the event ring.
+>>>>
+>>>> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+>>> ...
+>>>> +/*
+>>>> + * Move the event ring dequeue pointer to skip events kept in the secondary
+>>>> + * event ring.  This is used to ensure that pending events in the ring are
+>>>> + * acknowledged, so the XHCI HCD can properly enter suspend/resume. The
+>>>> + * secondary ring is typically maintained by an external component.
+>>>> + */
+>>>> +void xhci_skip_sec_intr_events(struct xhci_hcd *xhci,
+>>>> +    struct xhci_ring *ring,    struct xhci_interrupter *ir)
+>>>> +{
+>>>> +    union xhci_trb *erdp_trb, *current_trb;
+>>>> +    u64 erdp_reg;
+>>>> +    u32 iman_reg;
+>>>> +    dma_addr_t deq;
+>>>> +
+>>>> +    /* disable irq, ack pending interrupt and ack all pending events */
+>>>> +    xhci_disable_interrupter(ir);
+>>>> +    iman_reg = readl_relaxed(&ir->ir_set->irq_pending);
+>>>> +    if (iman_reg & IMAN_IP)
+>>>> +        writel_relaxed(iman_reg, &ir->ir_set->irq_pending);
+>>>> +
+>>>> +    /* last acked event trb is in erdp reg  */
+>>>> +    erdp_reg = xhci_read_64(xhci, &ir->ir_set->erst_dequeue);
+>>>> +    deq = (dma_addr_t)(erdp_reg & ERST_PTR_MASK);
+>>>> +    if (!deq) {
+>>>> +        xhci_err(xhci, "event ring handling not required\n");
+>>>> +        return;
+>>>> +    }
+>>>> +
+>>>> +    erdp_trb = current_trb = ir->event_ring->dequeue;
+>>>> +    /* read cycle state of the last acked trb to find out CCS */
+>>>> +    ring->cycle_state = le32_to_cpu(current_trb->event_cmd.flags) & TRB_CYCLE;
+>>>> +
+>>>> +    while (1) {
+>>>> +        inc_deq(xhci, ir->event_ring);
+>>>> +        erdp_trb = ir->event_ring->dequeue;
+>>>> +        /* cycle state transition */
+>>>> +        if ((le32_to_cpu(erdp_trb->event_cmd.flags) & TRB_CYCLE) !=
+>>>> +            ring->cycle_state)
+>>>> +            break;
+>>>> +    }
+>>>> +
+>>>> +    xhci_update_erst_dequeue(xhci, ir, current_trb, true);
+>>>> +}
+>>>
+>>> Code above is very similar to the existing event ring processing parts of xhci_irq()
+>>> and xhci_handle_event()
+>>>
+>>> I'll see if I can refactor the existing event ring processing, decouple it from
+>>> event handling so that it could be used by primary and secondary interrupters with
+>>> handlers, and this case where we just want to clear the event ring.
+>>>
+>>
+>> Thanks, that makes sense.  Will take a look as well.
+>>
+> 
+> How about something like the below?  Tested this on my set up and everything looks to be working fine.  Had to add another param to struct xhci_interrupters to tell the XHCI interrupt handler to say if that particular interrupter wants to skip_events (handling).  This way, its something that the class driver utilizing the interrupter will have to tell XHCI sideband.  It would allow the user to determine if they want to use the interrupter to actually handle events or not on the proc running Linux.
+> 
 
-On 1/15/2024 3:00 PM, Tiezhu Yang wrote:
-> If CONFIG_BPF_JIT_ALWAYS_ON is not set and bpf_jit_enable is 0, there
-> exist 6 failed tests.
->
->   [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
->   [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
->   [root@linux bpf]# ./test_verifier | grep FAIL
->   #106/p inline simple bpf_loop call FAIL
->   #107/p don't inline bpf_loop call, flags non-zero FAIL
->   #108/p don't inline bpf_loop call, callback non-constant FAIL
->   #109/p bpf_loop_inline and a dead func FAIL
->   #110/p bpf_loop_inline stack locations for loop vars FAIL
->   #111/p inline bpf_loop call in a big program FAIL
->   Summary: 768 PASSED, 15 SKIPPED, 6 FAILED
->
-> The test log shows that callbacks are not allowed in non-JITed programs,
-> interpreter doesn't support them yet, thus these tests should be skipped
-> if jit is disabled, copy some check functions from the other places under
-> tools directory, and then handle this case in do_test_single().
->
-> With this patch:
->
->   [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
->   [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
->   [root@linux bpf]# ./test_verifier | grep FAIL
->   Summary: 768 PASSED, 21 SKIPPED, 0 FAILED
->
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  tools/testing/selftests/bpf/test_verifier.c | 23 +++++++++++++++++++++
->  1 file changed, 23 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-> index 1a09fc34d093..70f903e869b7 100644
-> --- a/tools/testing/selftests/bpf/test_verifier.c
-> +++ b/tools/testing/selftests/bpf/test_verifier.c
-> @@ -74,6 +74,7 @@
->  		    1ULL << CAP_BPF)
->  #define UNPRIV_SYSCTL "kernel/unprivileged_bpf_disabled"
->  static bool unpriv_disabled = false;
-> +static bool jit_disabled;
->  static int skips;
->  static bool verbose = false;
->  static int verif_log_level = 0;
-> @@ -1355,6 +1356,16 @@ static bool is_skip_insn(struct bpf_insn *insn)
->  	return memcmp(insn, &skip_insn, sizeof(skip_insn)) == 0;
->  }
->  
-> +static bool is_ldimm64_insn(struct bpf_insn *insn)
-> +{
-> +	return insn->code == (BPF_LD | BPF_IMM | BPF_DW);
-> +}
-> +
-> +static bool insn_is_pseudo_func(struct bpf_insn *insn)
-> +{
-> +	return is_ldimm64_insn(insn) && insn->src_reg == BPF_PSEUDO_FUNC;
-> +}
-> +
->  static int null_terminated_insn_len(struct bpf_insn *seq, int max_len)
->  {
->  	int i;
-> @@ -1619,6 +1630,16 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
->  		goto close_fds;
->  	}
->  
-> +	if (fd_prog < 0 && saved_errno == EINVAL && jit_disabled) {
-> +		for (i = 0; i < prog_len; i++, prog++) {
-> +			if (insn_is_pseudo_func(prog)) {
-> +				printf("SKIP (callbacks are not allowed in non-JITed programs)\n");
-> +				skips++;
-> +				goto close_fds;
-> +			}
-> +		}
-> +	}
+Yes, I have something similar.
+I'll share it soon, just need to
+clean it up a bit fist.
 
-I ran test_verifier before applying the patch set, it seems all
-expected_ret for these failed programs are ACCEPT, so I think it would
-be better to move the not-allowed-checking into "if (expected_ret ==
-ACCEPT || expected_ret == VERBOSE_ACCEPT)" block. I should suggest such
-modification in v2, sorry about that.
-> +
->  	alignment_prevented_execution = 0;
->  
->  	if (expected_ret == ACCEPT || expected_ret == VERBOSE_ACCEPT) {
-> @@ -1844,6 +1865,8 @@ int main(int argc, char **argv)
->  		return EXIT_FAILURE;
->  	}
->  
-> +	jit_disabled = !is_jit_enabled();
-> +
->  	/* Use libbpf 1.0 API mode */
->  	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
->  
+Thanks
+Mathias
 
 
