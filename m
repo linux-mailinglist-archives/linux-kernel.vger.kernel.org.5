@@ -1,194 +1,317 @@
-Return-Path: <linux-kernel+bounces-26170-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6329C82DC49
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:26:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97C9882DC4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:26:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC18D2810CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:25:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 222051F21CBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:26:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A7E17BA5;
-	Mon, 15 Jan 2024 15:25:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C46B41798C;
+	Mon, 15 Jan 2024 15:25:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="S04UjvDx"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="euQlCMkL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E210D179B2
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 15:25:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-557bfc7f7b4so13188307a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 07:25:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1705332317; x=1705937117; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=V3Au/gRaaczdqwoxq154l1Vb0TSRdBUZsRRgmxL/3EA=;
-        b=S04UjvDxCv+YJv+ugX5uV3+beXSeeLRov+lehLqMSpkd8QTum/jqGWqjflt2haN3CS
-         CgpZQfYEWBqrmyGJK7Q17nS+eP++ks0juctFVvZ7xw3MMVPVA6hIwGuydFHDg37hglOq
-         2WyzuOIOvdzPfebTb/bYQxVkH+Pzach3nstMq9E2ysVmddap+CgvI585VE40ujQnrXjS
-         IwRjXSZWZsOwRkPWaSSswZZ1xU2KjJD4waZniGCHroTmFWRpushu8Z6PoFCig8DkrYZ0
-         x3oM+J8dBoyTpBi1faJR5FX2yD8Smgqm4DQIkhmh9vUG+pFcYtgg5IwB92VKv7niRhgN
-         ejjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705332317; x=1705937117;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=V3Au/gRaaczdqwoxq154l1Vb0TSRdBUZsRRgmxL/3EA=;
-        b=kgNSSQY2qFgvDJjmo1cSaNdopZugpysaN8cJG36T3mDw+wQF78II2hKfeBEZ0pYo5t
-         +XDOfh+ieZf0IrDtS+JY9IRblD3nuDmiJFPBcHTk2oDn/OCOgnUdYzrJ/2npqNOobMVv
-         s2pIabv0hgnZNVxejluuIFp1YHdWcTxJ8xLs6EHf/oQ3Nh1V1Yeds5VeWm7xuYcolfO2
-         H+R43dePIKxbpjKF5J+esZnf5o0iSicrh41jgLEL/6WcoTd5efWNhKiKj8iVRULasl55
-         jE4h1z9rr+M6CrPY9VakTopLWYYmCHIPfM6HFFpY9VZDfnFXibtfrxXwDZHF4U+bx3Fi
-         1D2w==
-X-Gm-Message-State: AOJu0YwvRZqOc4YLl/94CbeEbTWM5Ht9iymKq3zFJQRl+eb4X1o+mJR3
-	46Q6jrRfb1W7P+o4CRlycHPfPdhyXYgW1A==
-X-Google-Smtp-Source: AGHT+IFVcJIOzgkm0o7Kllwec4Tc/GzqZS761LXVytipb32050OjQDT49hpCnD8tQxYIJBuIt52jzA==
-X-Received: by 2002:a05:6402:1ca8:b0:558:b48a:b5f1 with SMTP id cz8-20020a0564021ca800b00558b48ab5f1mr6094220edb.7.1705332317286;
-        Mon, 15 Jan 2024 07:25:17 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id b23-20020a056402139700b0055920196ddesm2446466edv.54.2024.01.15.07.25.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 07:25:16 -0800 (PST)
-Date: Mon, 15 Jan 2024 16:25:16 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Sunil V L <sunilvl@ventanamicro.com>
-Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	"Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Anup Patel <anup@brainfault.org>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Conor Dooley <conor@kernel.org>, Atish Kumar Patra <atishp@rivosinc.com>, 
-	Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH v2 -next 2/3] ACPI: RISC-V: Add LPI driver
-Message-ID: <20240115-94bdb396ea417ca1d834548d@orel>
-References: <20240115101056.429471-1-sunilvl@ventanamicro.com>
- <20240115101056.429471-3-sunilvl@ventanamicro.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C13391773A;
+	Mon, 15 Jan 2024 15:25:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEB19C433C7;
+	Mon, 15 Jan 2024 15:25:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705332344;
+	bh=F+KShPyxC2iWhYtXbRbIEplYrB9q6J1tUU6JHTlPDX8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=euQlCMkLJcL2D4vkC4R75T4/MgQt/FWOdjmTNjrXW4LWTF5fO3uKIJgoyQbjAjJw8
+	 yOw0BRyBdyTB8uEyoeBz2SwjbRkeJkkXg0NVYq9Be0KYlNPjNIawRM0z0JgQ1/8OG4
+	 dt9O64QiNHoyhyJbInor9qAWkq/0P+1Ifvd1qPNdA+K+fGD27Gm/yh5J7pBalsPt7e
+	 5rYpN3eiJcY86z1aWyN+75ZKXeahea2OgZcr/YVbZbadEbA3aKzjteTvvAbXlD7rS4
+	 j6HRMuiNpSOYk42xBoikwMHecf3dD9SVE+ChIiIChjfpD3XLERLKr19YPRz6djluow
+	 P/19UNpHxSYRA==
+Date: Mon, 15 Jan 2024 16:25:41 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Sebastian Wick <sebastian.wick@redhat.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>, Jonathan Corbet <corbet@lwn.net>, 
+	Sandy Huang <hjc@rock-chips.com>, Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>, 
+	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Samuel Holland <samuel@sholland.org>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Hans Verkuil <hverkuil@xs4all.nl>, 
+	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Subject: Re: Re: [PATCH v5 08/44] drm/connector: hdmi: Add Broadcast RGB
+ property
+Message-ID: <jpcov2bvhpabws36ueywr4xjfnbmwjsd42b4tpcicyi66qkjs2@3xn5mdl4zyus>
+References: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
+ <20231207-kms-hdmi-connector-state-v5-8-6538e19d634d@kernel.org>
+ <20240115143308.GA159345@toolbox>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="yd3mop6hvuqz5nhz"
 Content-Disposition: inline
-In-Reply-To: <20240115101056.429471-3-sunilvl@ventanamicro.com>
+In-Reply-To: <20240115143308.GA159345@toolbox>
 
-On Mon, Jan 15, 2024 at 03:40:55PM +0530, Sunil V L wrote:
-> Enable Low Power Idle (LPI) based cpuidle driver for RISC-V platforms.
-> It depends on SBI HSM calls for idle state transitions.
-> 
-> Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
-> ---
->  drivers/acpi/riscv/Makefile  |  3 +-
->  drivers/acpi/riscv/cpuidle.c | 81 ++++++++++++++++++++++++++++++++++++
->  2 files changed, 83 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/acpi/riscv/cpuidle.c
-> 
-> diff --git a/drivers/acpi/riscv/Makefile b/drivers/acpi/riscv/Makefile
-> index 8b3b126e0b94..7309d92dd477 100644
-> --- a/drivers/acpi/riscv/Makefile
-> +++ b/drivers/acpi/riscv/Makefile
-> @@ -1,2 +1,3 @@
->  # SPDX-License-Identifier: GPL-2.0-only
-> -obj-y 	+= rhct.o
-> +obj-y					+= rhct.o
-> +obj-$(CONFIG_ACPI_PROCESSOR_IDLE)	+= cpuidle.o
-> diff --git a/drivers/acpi/riscv/cpuidle.c b/drivers/acpi/riscv/cpuidle.c
-> new file mode 100644
-> index 000000000000..052ec3942902
-> --- /dev/null
-> +++ b/drivers/acpi/riscv/cpuidle.c
-> @@ -0,0 +1,81 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2024, Ventana Micro Systems Inc
-> + *	Author: Sunil V L <sunilvl@ventanamicro.com>
-> + *
-> + */
-> +
-> +#include <linux/acpi.h>
-> +#include <acpi/processor.h>
-> +#include <linux/cpu_pm.h>
-> +#include <linux/cpuidle.h>
-> +#include <linux/suspend.h>
-> +#include <asm/cpuidle.h>
-> +#include <asm/sbi.h>
-> +#include <asm/suspend.h>
-> +
-> +#define RISCV_FFH_LPI_TYPE_MASK	GENMASK_ULL(63, 60)
-> +#define RISCV_FFH_LPI_RSVD_MASK	GENMASK_ULL(59, 32)
-> +
-> +#define RISCV_FFH_LPI_TYPE_SBI	BIT_ULL(60)
-> +
-> +static int acpi_cpu_init_idle(unsigned int cpu)
-> +{
-> +	int i;
-> +	struct acpi_lpi_state *lpi;
-> +	struct acpi_processor *pr = per_cpu(processors, cpu);
-> +
-> +	if (unlikely(!pr || !pr->flags.has_lpi))
-> +		return -EINVAL;
-> +
-> +	if (!is_sbi_hsm_supported())
-> +		return -ENODEV;
-> +
-> +	if (pr->power.count <= 1)
-> +		return -ENODEV;
-> +
-> +	for (i = 1; i < pr->power.count; i++) {
-> +		u32 state;
-> +
-> +		lpi = &pr->power.lpi_states[i];
-> +
-> +		/*
-> +		 * Validate Entry Method as per FFH spec.
-> +		 * bits[63:60] should be 0x1
-> +		 * bits[59:32] should be 0x0
-> +		 * bits[31:0] represent a SBI power_state
-> +		 */
-> +		if (((lpi->address & RISCV_FFH_LPI_TYPE_MASK) != RISCV_FFH_LPI_TYPE_SBI) ||
-> +		    (lpi->address & RISCV_FFH_LPI_RSVD_MASK)) {
-> +			pr_warn("Invalid LPI entry method %#llx\n", lpi->address);
-> +			return -EINVAL;
-> +		}
-> +
-> +		state = lpi->address;
-> +		if (!sbi_suspend_state_is_valid(state)) {
-> +			pr_warn("Invalid SBI power state %#x\n", state);
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +int acpi_processor_ffh_lpi_probe(unsigned int cpu)
-> +{
-> +	return acpi_cpu_init_idle(cpu);
-> +}
-> +
-> +int acpi_processor_ffh_lpi_enter(struct acpi_lpi_state *lpi)
-> +{
-> +	u32 state = lpi->address;
-> +
-> +	if (state & SBI_HSM_SUSP_NON_RET_BIT)
-> +		return CPU_PM_CPU_IDLE_ENTER_PARAM(sbi_suspend,
-> +						   lpi->index,
-> +						   state);
-> +	else
-> +		return CPU_PM_CPU_IDLE_ENTER_RETENTION_PARAM(sbi_suspend,
-> +							     lpi->index,
-> +							     state);
-> +}
-> -- 
-> 2.34.1
->
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+--yd3mop6hvuqz5nhz
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jan 15, 2024 at 03:33:08PM +0100, Sebastian Wick wrote:
+> On Thu, Dec 07, 2023 at 04:49:31PM +0100, Maxime Ripard wrote:
+> > The i915 driver has a property to force the RGB range of an HDMI output.
+> > The vc4 driver then implemented the same property with the same
+> > semantics. KWin has support for it, and a PR for mutter is also there to
+> > support it.
+> >=20
+> > Both drivers implementing the same property with the same semantics,
+> > plus the userspace having support for it, is proof enough that it's
+> > pretty much a de-facto standard now and we can provide helpers for it.
+> >=20
+> > Let's plumb it into the newly created HDMI connector.
+> >=20
+> > Signed-off-by: Maxime Ripard <mripard@kernel.org>
+> > ---
+> >  Documentation/gpu/kms-properties.csv               |   1 -
+> >  drivers/gpu/drm/drm_atomic.c                       |   5 +
+> >  drivers/gpu/drm/drm_atomic_state_helper.c          |  17 +
+> >  drivers/gpu/drm/drm_atomic_uapi.c                  |   4 +
+> >  drivers/gpu/drm/drm_connector.c                    |  76 +++++
+> >  drivers/gpu/drm/tests/Makefile                     |   1 +
+> >  .../gpu/drm/tests/drm_atomic_state_helper_test.c   | 376 +++++++++++++=
+++++++++
+> >  drivers/gpu/drm/tests/drm_connector_test.c         | 117 ++++++-
+> >  drivers/gpu/drm/tests/drm_kunit_edid.h             | 106 ++++++
+> >  include/drm/drm_connector.h                        |  36 ++
+> >  10 files changed, 737 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/Documentation/gpu/kms-properties.csv b/Documentation/gpu/k=
+ms-properties.csv
+> > index 0f9590834829..caef14c532d4 100644
+> > --- a/Documentation/gpu/kms-properties.csv
+> > +++ b/Documentation/gpu/kms-properties.csv
+> > @@ -17,7 +17,6 @@ Owner Module/Drivers,Group,Property Name,Type,Propert=
+y Values,Object attached,De
+> >  ,Virtual GPU,=E2=80=9Csuggested X=E2=80=9D,RANGE,"Min=3D0, Max=3D0xfff=
+fffff",Connector,property to suggest an X offset for a connector
+> >  ,,=E2=80=9Csuggested Y=E2=80=9D,RANGE,"Min=3D0, Max=3D0xffffffff",Conn=
+ector,property to suggest an Y offset for a connector
+> >  ,Optional,"""aspect ratio""",ENUM,"{ ""None"", ""4:3"", ""16:9"" }",Co=
+nnector,TDB
+> > -i915,Generic,"""Broadcast RGB""",ENUM,"{ ""Automatic"", ""Full"", ""Li=
+mited 16:235"" }",Connector,"When this property is set to Limited 16:235 an=
+d CTM is set, the hardware will be programmed with the result of the multip=
+lication of CTM by the limited range matrix to ensure the pixels normally i=
+n the range 0..1.0 are remapped to the range 16/255..235/255."
+> >  ,,=E2=80=9Caudio=E2=80=9D,ENUM,"{ ""force-dvi"", ""off"", ""auto"", ""=
+on"" }",Connector,TBD
+> >  ,SDVO-TV,=E2=80=9Cmode=E2=80=9D,ENUM,"{ ""NTSC_M"", ""NTSC_J"", ""NTSC=
+_443"", ""PAL_B"" } etc.",Connector,TBD
+> >  ,,"""left_margin""",RANGE,"Min=3D0, Max=3D SDVO dependent",Connector,T=
+BD
+> > diff --git a/drivers/gpu/drm/drm_atomic.c b/drivers/gpu/drm/drm_atomic.c
+> > index c31fc0b48c31..1465a7f09a0b 100644
+> > --- a/drivers/gpu/drm/drm_atomic.c
+> > +++ b/drivers/gpu/drm/drm_atomic.c
+> > @@ -1142,6 +1142,11 @@ static void drm_atomic_connector_print_state(str=
+uct drm_printer *p,
+> >  	drm_printf(p, "\tmax_requested_bpc=3D%d\n", state->max_requested_bpc);
+> >  	drm_printf(p, "\tcolorspace=3D%s\n", drm_get_colorspace_name(state->c=
+olorspace));
+> > =20
+> > +	if (connector->connector_type =3D=3D DRM_MODE_CONNECTOR_HDMIA ||
+> > +	    connector->connector_type =3D=3D DRM_MODE_CONNECTOR_HDMIB)
+> > +		drm_printf(p, "\tbroadcast_rgb=3D%s\n",
+> > +			   drm_hdmi_connector_get_broadcast_rgb_name(state->hdmi.broadcast_=
+rgb));
+> > +
+> >  	if (connector->connector_type =3D=3D DRM_MODE_CONNECTOR_WRITEBACK)
+> >  		if (state->writeback_job && state->writeback_job->fb)
+> >  			drm_printf(p, "\tfb=3D%d\n", state->writeback_job->fb->base.id);
+> > diff --git a/drivers/gpu/drm/drm_atomic_state_helper.c b/drivers/gpu/dr=
+m/drm_atomic_state_helper.c
+> > index e69c0cc1c6da..10d98620a358 100644
+> > --- a/drivers/gpu/drm/drm_atomic_state_helper.c
+> > +++ b/drivers/gpu/drm/drm_atomic_state_helper.c
+> > @@ -583,6 +583,7 @@ EXPORT_SYMBOL(drm_atomic_helper_connector_tv_reset);
+> >  void __drm_atomic_helper_connector_hdmi_reset(struct drm_connector *co=
+nnector,
+> >  					      struct drm_connector_state *new_state)
+> >  {
+> > +	new_state->hdmi.broadcast_rgb =3D DRM_HDMI_BROADCAST_RGB_AUTO;
+> >  }
+> >  EXPORT_SYMBOL(__drm_atomic_helper_connector_hdmi_reset);
+> > =20
+> > @@ -650,6 +651,22 @@ EXPORT_SYMBOL(drm_atomic_helper_connector_tv_check=
+);
+> >  int drm_atomic_helper_connector_hdmi_check(struct drm_connector *conne=
+ctor,
+> >  					   struct drm_atomic_state *state)
+> >  {
+> > +	struct drm_connector_state *old_state =3D
+> > +		drm_atomic_get_old_connector_state(state, connector);
+> > +	struct drm_connector_state *new_state =3D
+> > +		drm_atomic_get_new_connector_state(state, connector);
+> > +
+> > +	if (old_state->hdmi.broadcast_rgb !=3D new_state->hdmi.broadcast_rgb)=
+ {
+> > +		struct drm_crtc *crtc =3D new_state->crtc;
+> > +		struct drm_crtc_state *crtc_state;
+> > +
+> > +		crtc_state =3D drm_atomic_get_crtc_state(state, crtc);
+> > +		if (IS_ERR(crtc_state))
+> > +			return PTR_ERR(crtc_state);
+> > +
+> > +		crtc_state->mode_changed =3D true;
+> > +	}
+> > +
+> >  	return 0;
+> >  }
+> >  EXPORT_SYMBOL(drm_atomic_helper_connector_hdmi_check);
+> > diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_at=
+omic_uapi.c
+> > index aee4a65d4959..3eb4f4bc8b71 100644
+> > --- a/drivers/gpu/drm/drm_atomic_uapi.c
+> > +++ b/drivers/gpu/drm/drm_atomic_uapi.c
+> > @@ -818,6 +818,8 @@ static int drm_atomic_connector_set_property(struct=
+ drm_connector *connector,
+> >  		state->max_requested_bpc =3D val;
+> >  	} else if (property =3D=3D connector->privacy_screen_sw_state_propert=
+y) {
+> >  		state->privacy_screen_sw_state =3D val;
+> > +	} else if (property =3D=3D connector->broadcast_rgb_property) {
+> > +		state->hdmi.broadcast_rgb =3D val;
+> >  	} else if (connector->funcs->atomic_set_property) {
+> >  		return connector->funcs->atomic_set_property(connector,
+> >  				state, property, val);
+> > @@ -901,6 +903,8 @@ drm_atomic_connector_get_property(struct drm_connec=
+tor *connector,
+> >  		*val =3D state->max_requested_bpc;
+> >  	} else if (property =3D=3D connector->privacy_screen_sw_state_propert=
+y) {
+> >  		*val =3D state->privacy_screen_sw_state;
+> > +	} else if (property =3D=3D connector->broadcast_rgb_property) {
+> > +		*val =3D state->hdmi.broadcast_rgb;
+> >  	} else if (connector->funcs->atomic_get_property) {
+> >  		return connector->funcs->atomic_get_property(connector,
+> >  				state, property, val);
+> > diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_conn=
+ector.c
+> > index d9961cce8245..929b0a911f62 100644
+> > --- a/drivers/gpu/drm/drm_connector.c
+> > +++ b/drivers/gpu/drm/drm_connector.c
+> > @@ -1183,6 +1183,29 @@ static const u32 dp_colorspaces =3D
+> >  	BIT(DRM_MODE_COLORIMETRY_BT2020_CYCC) |
+> >  	BIT(DRM_MODE_COLORIMETRY_BT2020_YCC);
+> > =20
+> > +static const struct drm_prop_enum_list broadcast_rgb_names[] =3D {
+> > +	{ DRM_HDMI_BROADCAST_RGB_AUTO, "Automatic" },
+> > +	{ DRM_HDMI_BROADCAST_RGB_FULL, "Full" },
+> > +	{ DRM_HDMI_BROADCAST_RGB_LIMITED, "Limited 16:235" },
+> > +};
+> > +
+> > +/*
+> > + * drm_hdmi_connector_get_broadcast_rgb_name - Return a string for HDM=
+I connector RGB broadcast selection
+> > + * @broadcast_rgb: Broadcast RGB selection to compute name of
+> > + *
+> > + * Returns: the name of the Broadcast RGB selection, or NULL if the ty=
+pe
+> > + * is not valid.
+> > + */
+> > +const char *
+> > +drm_hdmi_connector_get_broadcast_rgb_name(enum drm_hdmi_broadcast_rgb =
+broadcast_rgb)
+> > +{
+> > +	if (broadcast_rgb > DRM_HDMI_BROADCAST_RGB_LIMITED)
+> > +		return NULL;
+> > +
+> > +	return broadcast_rgb_names[broadcast_rgb].name;
+> > +}
+> > +EXPORT_SYMBOL(drm_hdmi_connector_get_broadcast_rgb_name);
+> > +
+> >  /**
+> >   * DOC: standard connector properties
+> >   *
+> > @@ -1655,6 +1678,26 @@ EXPORT_SYMBOL(drm_connector_attach_dp_subconnect=
+or_property);
+> >  /**
+> >   * DOC: HDMI connector properties
+> >   *
+> > + * Broadcast RGB
+> > + *      Indicates the RGB Quantization Range (Full vs Limited) used.
+> > + *      Infoframes will be generated according to that value.
+> > + *
+> > + *      The value of this property can be one of the following:
+> > + *
+> > + *      Automatic:
+> > + *              RGB Range is selected automatically based on the mode
+> > + *              according to the HDMI specifications.
+> > + *
+> > + *      Full:
+> > + *              Full RGB Range is forced.
+> > + *
+> > + *      Limited 16:235:
+> > + *              Limited RGB Range is forced. Unlike the name suggests,
+> > + *              this works for any number of bits-per-component.
+> > + *
+> > + *      Drivers can set up this property by calling
+> > + *      drm_connector_attach_broadcast_rgb_property().
+> > + *
+>=20
+> This is a good time to document this in more detail.
+
+I have the feeling that it already is documented in more detail. But
+anyway, last time we discussed it the answer was basically to not bother
+and just merge the thing. So I'm getting some mixed signals here.
+
+> There might be two different things being affected:
+>=20
+> 1. The signalling (InfoFrame/SDP/...)
+> 2. The color pipeline processing
+>=20
+> All values of Broadcast RGB always affect the color pipeline processing
+> such that a full-range input to the CRTC is converted to either full- or
+> limited-range, depending on what the monitor is supposed to accept.
+>=20
+> When automatic is selected, does that mean that there is no signalling,
+> or that the signalling matches what the monitor is supposed to accept
+> according to the spec?
+
+The doc states that "Infoframes will be generated according to that
+value". Is it ambiguous?
+
+> Also, is this really HDMI specific?
+
+Probably not, but it can easily be expanded to other connector types
+when needs be.
+
+> When full or limited is selected and the monitor doesn't support the
+> signalling, what happens?
+
+I would expect colors to be off
+
+Maxime
+
+--yd3mop6hvuqz5nhz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZaVOdAAKCRDj7w1vZxhR
+xVZ6AQCBIsao3/wYmeGvcP81lWBqUDOqug3y4nijDxhLDsn2gQEAjbAujKqIXO3q
+T2U8XyzbANX2DfajXGwDY+9QrqnI/QY=
+=i+f4
+-----END PGP SIGNATURE-----
+
+--yd3mop6hvuqz5nhz--
 
