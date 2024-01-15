@@ -1,52 +1,50 @@
-Return-Path: <linux-kernel+bounces-26571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B7B082E3B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:36:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA6F782E3B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:37:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EC0E1C22179
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:36:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5356FB22825
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:37:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 108F11C281;
-	Mon, 15 Jan 2024 23:27:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E66C1C2A0;
+	Mon, 15 Jan 2024 23:27:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="opdx5ahX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hmh40ORZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CDC71B7E3;
-	Mon, 15 Jan 2024 23:27:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACB2EC433C7;
-	Mon, 15 Jan 2024 23:27:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BACC1C290;
+	Mon, 15 Jan 2024 23:27:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D4AAC433C7;
+	Mon, 15 Jan 2024 23:27:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705361241;
-	bh=4k9GUBLYvchpOD/KUw5lkivxzcmbwmvaOSYuP68VHJU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=opdx5ahXb2bx37XjH6fF3x9WzUT0tKbz9MG9b81Bu+WHWkZM5E3Gc6UT4lsVjW+A6
-	 +AK6IgGtO/+xsMf1jb/yW28KUr67rFINhNxE0WdBO4b7jI2heLB2/+AI7zEQSxaeOI
-	 N10qTw/CvBMDXFjyHrZ6YfEtjQnnEDFZmQ1lmRz8AS9jd5+0DVMM9S529p9pF+t//u
-	 VMMqHcmS2Mas3FYnWi7Tyon28Pk3eO9W6JikVg6TAyKoN2VDU/8fcAp9URUFZfp1UH
-	 kr2byTPk/MYa8+O6dH2nN76H3SDoujzntF/XSamRh2Qr3m4fXdHGSAidmFUJvneOot
-	 D/TJT3A5zZtJQ==
+	s=k20201202; t=1705361244;
+	bh=gWVu0DGyxjlmkVChVPoGAddpi9m+zYf8NRgtJQVpRo8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Hmh40ORZZpGpoORDB80DGQBqFmHL4VYy+zUD/wCsd8o12Xl9NhNmKunXd6Pq2HTC7
+	 4hFvBEivSGZHMjhwnVoK2v6kWyYAeM/OdSWrxtnB+WbRMwQjYaJdUKkhXdF9s8ryg+
+	 12fnTRvx3KKan7OMfCiQG9vSUIOCHqxVAp1Mom0uaB770ee0aiHrjhlk3hXCCRYeKC
+	 tt+9AswSKVHlXdxPz/dwGzzbboAo2aWQho3/cuYk4IbWtC9PVrQDNDllcrbWST4BRq
+	 L5XbfuuIq7XWP2U7kDYBn9xlBOS0uAzKBkMYimHqucsUgNaxBlL/TRs9bO9RCyyUOl
+	 M07PHu7R0VVvg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dmitry Antipov <dmantipov@yandex.ru>,
-	Christian Brauner <brauner@kernel.org>,
+Cc: Kunwu Chan <chentao@kylinos.cn>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Michael Ellerman <mpe@ellerman.id.au>,
 	Sasha Levin <sashal@kernel.org>,
-	airlied@redhat.com,
-	code@siddh.me,
-	mcgrof@kernel.org,
-	pstanner@redhat.com,
-	ddiss@suse.de,
-	nick.alcock@oracle.com
-Subject: [PATCH AUTOSEL 5.15 01/12] watch_queue: fix kcalloc() arguments order
-Date: Mon, 15 Jan 2024 18:26:46 -0500
-Message-ID: <20240115232718.209642-1-sashal@kernel.org>
+	linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 5.15 02/12] powerpc/mm: Fix null-pointer dereference in pgtable_cache_add
+Date: Mon, 15 Jan 2024 18:26:47 -0500
+Message-ID: <20240115232718.209642-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240115232718.209642-1-sashal@kernel.org>
+References: <20240115232718.209642-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,43 +56,46 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.147
 Content-Transfer-Encoding: 8bit
 
-From: Dmitry Antipov <dmantipov@yandex.ru>
+From: Kunwu Chan <chentao@kylinos.cn>
 
-[ Upstream commit 1bfc466b13cf6652ba227c282c27a30ffede69a5 ]
+[ Upstream commit f46c8a75263f97bda13c739ba1c90aced0d3b071 ]
 
-When compiling with gcc version 14.0.0 20231220 (experimental)
-and W=1, I've noticed the following warning:
+kasprintf() returns a pointer to dynamically allocated memory
+which can be NULL upon failure. Ensure the allocation was successful
+by checking the pointer validity.
 
-kernel/watch_queue.c: In function 'watch_queue_set_size':
-kernel/watch_queue.c:273:32: warning: 'kcalloc' sizes specified with 'sizeof'
-in the earlier argument and not in the later argument [-Wcalloc-transposed-args]
-  273 |         pages = kcalloc(sizeof(struct page *), nr_pages, GFP_KERNEL);
-      |                                ^~~~~~
-
-Since 'n' and 'size' arguments of 'kcalloc()' are multiplied to
-calculate the final size, their actual order doesn't affect the
-result and so this is not a bug. But it's still worth to fix it.
-
-Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
-Link: https://lore.kernel.org/r/20231221090139.12579-1-dmantipov@yandex.ru
-Signed-off-by: Christian Brauner <brauner@kernel.org>
+Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://msgid.link/20231204023223.2447523-1-chentao@kylinos.cn
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/watch_queue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/mm/init-common.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/watch_queue.c b/kernel/watch_queue.c
-index ae31bf8d2feb..bf86e1d71cd3 100644
---- a/kernel/watch_queue.c
-+++ b/kernel/watch_queue.c
-@@ -275,7 +275,7 @@ long watch_queue_set_size(struct pipe_inode_info *pipe, unsigned int nr_notes)
- 		goto error;
+diff --git a/arch/powerpc/mm/init-common.c b/arch/powerpc/mm/init-common.c
+index 3a82f89827a5..4bc8f0c893a2 100644
+--- a/arch/powerpc/mm/init-common.c
++++ b/arch/powerpc/mm/init-common.c
+@@ -105,7 +105,7 @@ void pgtable_cache_add(unsigned int shift)
+ 	 * as to leave enough 0 bits in the address to contain it. */
+ 	unsigned long minalign = max(MAX_PGTABLE_INDEX_SIZE + 1,
+ 				     HUGEPD_SHIFT_MASK + 1);
+-	struct kmem_cache *new;
++	struct kmem_cache *new = NULL;
  
- 	ret = -ENOMEM;
--	pages = kcalloc(sizeof(struct page *), nr_pages, GFP_KERNEL);
-+	pages = kcalloc(nr_pages, sizeof(struct page *), GFP_KERNEL);
- 	if (!pages)
- 		goto error;
+ 	/* It would be nice if this was a BUILD_BUG_ON(), but at the
+ 	 * moment, gcc doesn't seem to recognize is_power_of_2 as a
+@@ -118,7 +118,8 @@ void pgtable_cache_add(unsigned int shift)
+ 
+ 	align = max_t(unsigned long, align, minalign);
+ 	name = kasprintf(GFP_KERNEL, "pgtable-2^%d", shift);
+-	new = kmem_cache_create(name, table_size, align, 0, ctor(shift));
++	if (name)
++		new = kmem_cache_create(name, table_size, align, 0, ctor(shift));
+ 	if (!new)
+ 		panic("Could not allocate pgtable cache for order %d", shift);
  
 -- 
 2.43.0
