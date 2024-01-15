@@ -1,93 +1,107 @@
-Return-Path: <linux-kernel+bounces-26118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E00E82DB8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:43:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6E9682DB91
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:44:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E68B31F22982
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:43:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6299F283056
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:44:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39B8D17BA0;
-	Mon, 15 Jan 2024 14:40:11 +0000 (UTC)
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62A0717732;
+	Mon, 15 Jan 2024 14:43:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PhAQmqlS"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A80017995;
-	Mon, 15 Jan 2024 14:40:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0W-j1yLV_1705329597;
-Received: from 30.27.74.27(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W-j1yLV_1705329597)
-          by smtp.aliyun-inc.com;
-          Mon, 15 Jan 2024 22:39:59 +0800
-Message-ID: <931bcf87-efdf-478f-869b-fcb1260ac1cc@linux.alibaba.com>
-Date: Mon, 15 Jan 2024 22:39:57 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4406B17596;
+	Mon, 15 Jan 2024 14:43:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a28bd9ca247so1049458766b.1;
+        Mon, 15 Jan 2024 06:43:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705329790; x=1705934590; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B3unoLz8qq5gzyLWgjX+DKaq8Yqof9OjzZksC+6350U=;
+        b=PhAQmqlSEaNhq82wZ4DoACN+ByC9PpZg2CJoB8CqF29+pHUZT6VAGKcIjYeKNi1exY
+         xR7VgsdzmhuU9YMeIU3yC7Q7o3Mox/K/e5cMmViLBTRd09Xxmvc1OxVOEqOLZvtsJEVj
+         K6mfJBKzevfbeWuXjbg/7WaU1MBS8o3j1sFRs9Zs+yDEMaSNYyLo/bnX1fwDF1l1K6qR
+         MN6b31gpeIl1tB0AiEFgwb3hRJFbXGgMUIkFt1XG6fa2LMb0U8JIqSf3HZ1d6FRjJ0vN
+         xMqoMAEEvfjC0zGIevXFTh6qyLDu3qd6VynHnMW3bRKoCDaPxrt5HZV6Dne9ss9Uri1B
+         jFxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705329790; x=1705934590;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B3unoLz8qq5gzyLWgjX+DKaq8Yqof9OjzZksC+6350U=;
+        b=azlaXdXOQvKuVTYG4zXSHti61sR8oZ2LPGYx4HDEOXpZwlAJwbwvkVw1vm80VS2M7R
+         yZWXu7R7PO16SQHwVcGZGTX+mPh4sEqrN6RirRUgFfvc4Qvg8oe19jib/NtyOrUB1VqP
+         +YwK8Wsu/tU/zwUoMP+0ENjw11ZgOLnNdU5nvf34SZXfuLOT4a1bquh3nr35My1dfgvy
+         GAuIogKwxJqd872oFn2f8AAouIr01HMRsIIygg9IStaRjB7skAkhAfmly0OmWhYldRW2
+         MdEzwgouMYhChVvAx0ZJqNM59JLgd2tZEvLAdg10wrmN3mONzPyWJs00hPplXouW5cs7
+         XJ2A==
+X-Gm-Message-State: AOJu0YxWzZCL04oyZNwAlYiOg6XqfM95Lru6cxDbTf9aL/EkiC4flbRU
+	Pfvr9DtQs+RSiQcjdWx3wIw=
+X-Google-Smtp-Source: AGHT+IESbfZkbhBP4aXLa6lup3Yu+AK6r90FuUDsmJEoatAKesIlHCTEasijVWlVlTz7Z0z8YaK7gg==
+X-Received: by 2002:a17:906:fe05:b0:a28:d103:dffb with SMTP id wy5-20020a170906fe0500b00a28d103dffbmr3228911ejb.78.1705329790244;
+        Mon, 15 Jan 2024 06:43:10 -0800 (PST)
+Received: from felia.fritz.box ([2a02:810d:7e40:14b0:d1f6:7ceb:4655:5666])
+        by smtp.gmail.com with ESMTPSA id h6-20020a170906584600b00a2aef1e0731sm5339019ejs.77.2024.01.15.06.43.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 06:43:09 -0800 (PST)
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To: Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	linux-arm-kernel@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] arm64: drop the no-effect select ARM_SMC_MBOX in config ARCH_STM32
+Date: Mon, 15 Jan 2024 15:43:07 +0100
+Message-Id: <20240115144307.27409-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/4] erofs: Don't use certain internal folio_*()
- functions
-To: Matthew Wilcox <willy@infradead.org>
-Cc: linux-cachefs@redhat.com, linux-fsdevel@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, David Howells <dhowells@redhat.com>,
- Christian Brauner <christian@brauner.io>, Jeff Layton <jlayton@kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, Chao Yu <chao@kernel.org>,
- Yue Hu <huyue2@coolpad.com>, Jeffle Xu <jefflexu@linux.alibaba.com>
-References: <20240115083337.1355191-1-hsiangkao@linux.alibaba.com>
- <ZaU75cT0jx9Ya+6G@casper.infradead.org>
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <ZaU75cT0jx9Ya+6G@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hi Matthew,
+Commit 9e4e24414cc6 ("arm64: introduce STM32 family on Armv8 architecture")
+adds the config ARCH_STM32, which selects the non-existing config
+ARM_SMC_MBOX. The config ARM_SMC_MBOX was once proposed on the mailing list
+(see Link), but it was never merged.
 
-On 2024/1/15 22:06, Matthew Wilcox wrote:
-> On Mon, Jan 15, 2024 at 04:33:37PM +0800, Gao Xiang wrote:
->> From: David Howells <dhowells@redhat.com>
->>
->> Filesystems should use folio->index and folio->mapping, instead of
->> folio_index(folio), folio_mapping() and folio_file_mapping() since
->> they know that it's in the pagecache.
->>
->> Change this automagically with:
->>
->> perl -p -i -e 's/folio_mapping[(]([^)]*)[)]/\1->mapping/g' fs/erofs/*.c
->> perl -p -i -e 's/folio_file_mapping[(]([^)]*)[)]/\1->mapping/g' fs/erofs/*.c
->> perl -p -i -e 's/folio_index[(]([^)]*)[)]/\1->index/g' fs/erofs/*.c
->>
->> Reported-by: Matthew Wilcox <willy@infradead.org>
->> Signed-off-by: David Howells <dhowells@redhat.com>
->> Reviewed-by: Jeff Layton <jlayton@kernel.org>
->> Cc: Chao Yu <chao@kernel.org>
->> Cc: Yue Hu <huyue2@coolpad.com>
->> Cc: Jeffle Xu <jefflexu@linux.alibaba.com>
->> Cc: linux-erofs@lists.ozlabs.org
->> Cc: linux-fsdevel@vger.kernel.org
->> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
->> ---
->> Hi folks,
->>
->> I tend to apply this patch upstream since compressed data fscache
->> adaption touches this part too.  If there is no objection, I'm
->> going to take this patch separately for -next shortly..
-> 
-> Could you change the subject?  It's not that the functions are
-> "internal", it's that filesystems don't need to use them because they're
-> guaranteed to not see swap pages.  Maybe just s/internal/unnecessary/
+It seems though that this STM32 architecture works fine without this
+driver---otherwise, the users and contributor would have already noticed
+this by now.
 
-Yes, the subject line was inherited from the original one.
+Drop this no-effect select ARM_SMC_MBOX in config ARCH_STM32.
 
-Such helpers are useful if the type of a folio is unknown,
-let me revise it.
+Link: https://lore.kernel.org/lkml/1575281525-1549-1-git-send-email-peng.fan@nxp.com/
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ arch/arm64/Kconfig.platforms | 1 -
+ 1 file changed, 1 deletion(-)
 
-Thanks,
-Gao Xiang
+diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
+index 24335565bad5..50ace066d57b 100644
+--- a/arch/arm64/Kconfig.platforms
++++ b/arch/arm64/Kconfig.platforms
+@@ -302,7 +302,6 @@ config ARCH_STM32
+ 	select GPIOLIB
+ 	select PINCTRL
+ 	select PINCTRL_STM32MP257
+-	select ARM_SMC_MBOX
+ 	select ARM_SCMI_PROTOCOL
+ 	select COMMON_CLK_SCMI
+ 	help
+-- 
+2.17.1
+
 
