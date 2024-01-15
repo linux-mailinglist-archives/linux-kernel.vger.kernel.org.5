@@ -1,109 +1,109 @@
-Return-Path: <linux-kernel+bounces-25642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD8C782D3FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 06:52:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F4F382D450
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:54:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDF331C2100A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 05:52:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2901281689
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 06:54:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C28D2563;
-	Mon, 15 Jan 2024 05:52:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B9483C23;
+	Mon, 15 Jan 2024 06:54:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JqQ4D7QE"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="V8Xpxit+"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A3AC23BE
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 05:52:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705297952; x=1736833952;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=uATe+e5CjpkVcqztHy4wZ6l46M5a/EeuYW06h1yi6oU=;
-  b=JqQ4D7QEX8VhXwvqH3nLmXiTxDe44rjBP8Aj2nPVuevpZzih2LLglv4R
-   GsgORbT3kVbjlKhsaAYG2TOEOsZIDchT3ZI2ppHu2jcfA8nGJ1NGFNXu6
-   ONsxuBhzanbqQGyyKbPiIyr14LAciR9NuiPM3+/2OAXhKICP9n/MXq7ol
-   VTGo0jVw6pmSJjFQBEB+kbLp9AVuia3zFKRQtAgZ3IogRVJVFIJa1bMCp
-   YYAIyyhWLyCXNT4Lf6lc48RMWdgF6vdKs9Iamk+RsAcioK1D1gvaKlwin
-   ImKIIaPiUwjJ5V9xbOuApYKnLObbMXSKdYNzFsQC2y8U+5Z6aqgr3e2UV
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="13019427"
-X-IronPort-AV: E=Sophos;i="6.04,195,1695711600"; 
-   d="scan'208";a="13019427"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 21:52:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="1114837426"
-X-IronPort-AV: E=Sophos;i="6.04,195,1695711600"; 
-   d="scan'208";a="1114837426"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 21:52:28 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Yang Shi <shy828301@gmail.com>
-Cc: oliver.sang@intel.com,  riel@surriel.com,  fengwei.yin@intel.com,
-  willy@infradead.org,  cl@linux.com,  akpm@linux-foundation.org,
-  linux-kernel@vger.kernel.org,  linux-mm@kvack.org
-Subject: Re: [PATCH 1/2] mm: mmap: no need to call khugepaged_enter_vma()
- for stack
-In-Reply-To: <20231221065943.2803551-1-shy828301@gmail.com> (Yang Shi's
-	message of "Wed, 20 Dec 2023 22:59:42 -0800")
-References: <20231221065943.2803551-1-shy828301@gmail.com>
-Date: Mon, 15 Jan 2024 13:50:30 +0800
-Message-ID: <877ckb16xl.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D7096FA1;
+	Mon, 15 Jan 2024 06:54:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40F5qfME121268;
+	Sun, 14 Jan 2024 23:52:41 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1705297961;
+	bh=kHXNzqbBb5FPPwGvP0vugldGfFsecWuQTVR1E17V5YQ=;
+	h=From:To:CC:Subject:Date;
+	b=V8Xpxit+Nl1Idr2XbZF5kvWzK+mDoHOe4e3/WYprvQckWQejoanEM2vQIvte67ImM
+	 vcP90DIrGQc/GlV+R291FQyTDSp3Y8cgBMU4GnxhosQJ9fYi3tzb5quEQH1svs2p+f
+	 5gFSwSJCj60hZ564Z+aWzxFzJprPZMDZzQtDQRyE=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40F5qfYU026086
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Sun, 14 Jan 2024 23:52:41 -0600
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 14
+ Jan 2024 23:52:40 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sun, 14 Jan 2024 23:52:40 -0600
+Received: from uda0492258.dhcp.ti.com (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40F5qbWo065972;
+	Sun, 14 Jan 2024 23:52:37 -0600
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+To: <lpieralisi@kernel.org>, <kw@linux.com>, <robh@kernel.org>,
+        <bhelgaas@google.com>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC: <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <srk@ti.com>, <s-vadapalli@ti.com>
+Subject: [PATCH v2] dt-bindings: PCI: ti,j721e-pci-host: Add device-id for TI's J784S4 SoC
+Date: Mon, 15 Jan 2024 11:22:36 +0530
+Message-ID: <20240115055236.1840255-1-s-vadapalli@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Yang Shi <shy828301@gmail.com> writes:
+Add the device-id of 0xb012 for the PCIe controller on the J784S4 SoC as
+described in the CTRL_MMR_PCI_DEVICE_ID register's PCI_DEVICE_ID_DEVICE_ID
+field. The Register descriptions and the Technical Reference Manual for
+J784S4 SoC can be found at: https://www.ti.com/lit/zip/spruj52
 
-> From: Yang Shi <yang@os.amperecomputing.com>
->
-> We avoid allocating THP for temporary stack, even tnough
-                                                    ~~~~~~
-                                                    though?
+Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
 
---
-Best Regards,
-Huang, Ying
+This patch is based on linux-next tagged next-20240112.
 
-> khugepaged_enter_vma() is called for stack VMAs, it actualy returns
-> false.  So no need to call it in the first place at all.
->
-> Signed-off-by: Yang Shi <yang@os.amperecomputing.com>
-> ---
->  mm/mmap.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index b78e83d351d2..2ff79b1d1564 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -2046,7 +2046,6 @@ static int expand_upwards(struct vm_area_struct *vma, unsigned long address)
->  		}
->  	}
->  	anon_vma_unlock_write(vma->anon_vma);
-> -	khugepaged_enter_vma(vma, vma->vm_flags);
->  	mas_destroy(&mas);
->  	validate_mm(mm);
->  	return error;
-> @@ -2140,7 +2139,6 @@ int expand_downwards(struct vm_area_struct *vma, unsigned long address)
->  		}
->  	}
->  	anon_vma_unlock_write(vma->anon_vma);
-> -	khugepaged_enter_vma(vma, vma->vm_flags);
->  	mas_destroy(&mas);
->  	validate_mm(mm);
->  	return error;
+v1:
+https://lore.kernel.org/r/20240108050735.512445-1-s-vadapalli@ti.com/
+Changes since v1:
+- Rebased patch on linux-next tagged next-20240112.
+- Collected Acked-by tag from Rob Herring <robh@kernel.org>
+  https://lore.kernel.org/r/170511031475.3817032.5482957589582376350.robh@kernel.org/
+
+Regards,
+Siddharth.
+
+ Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+index b7a534cef24d..0b1f21570ed0 100644
+--- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
++++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+@@ -68,6 +68,7 @@ properties:
+       - 0xb00d
+       - 0xb00f
+       - 0xb010
++      - 0xb012
+       - 0xb013
+ 
+   msi-map: true
+-- 
+2.34.1
+
 
