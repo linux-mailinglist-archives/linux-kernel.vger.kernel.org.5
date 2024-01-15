@@ -1,245 +1,241 @@
-Return-Path: <linux-kernel+bounces-26064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A22A482DABB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:58:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3247F82DAC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:59:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FF34280DB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:58:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B8DEB21090
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:59:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9214F1757D;
-	Mon, 15 Jan 2024 13:58:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="vUiy9kGi"
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2053.outbound.protection.outlook.com [40.107.6.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41EB81758F;
+	Mon, 15 Jan 2024 13:59:25 +0000 (UTC)
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8CB41754C;
-	Mon, 15 Jan 2024 13:58:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fr7Z/ot9nQkp+MnEpC2x/Jl7Iy2h5jZRTc6tg5T2ifeIda8MNy8UNOpFL3SAdtT6VTHsyG6CMsvSCKHFroeFWYEWRiIz6utJHCB1OukQsunQhO+GaLEDyQS6N0gUmf27evMyz0HCSHvco2sqa0X+oYtj2FzjOlV+COqq8DChLZ7yT7OdoIzCnzmDRneeWYO6zcbkFTffSuSd/m3baf+dXi4i0WvZhiKf6H1ym0Veopvof56tqz7qW2cLKNsRQtKCzkHN/aV8QRi9Fjmmp3hOLSSatZnPhHXB8gso9j2aylSbom5fniTBlqjr4jzhR5X6nLNwcMtPaB+XPDFB75Iqzw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=br46TWzz8VRKPDC4imWbrMVSscmUVPipLXGI6K5S5HY=;
- b=TSM7+8aanHyoURh+nYJ1G2q1biun8fbDM251jecpfBHp4d5cIL0u+BxMbbyIlsV4ZDiUwjuesi+VWMGbL+rHi/hAixsaxXDgEdrGcN7sMrshOlptvztwXRZjwikr5qt/4mxa1jtmzED1ON8UQRCed00brx2Cr56v69RtsfqgaZWdXWXU7JRLvPP4i7BNueiocYq3sD9E4BxeTUIOSfyXkbA+5motaDrJVwwMToC1zJwNKanItiqlqEWn282U+CBEyHT+q4r2gRGw2pePw3QLQTr09TzHRfN9esMxHPC/VXT4/QpBnf+PI20YPKKd0CHdpNPcvMuEU6C0/lg+9h/18Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=br46TWzz8VRKPDC4imWbrMVSscmUVPipLXGI6K5S5HY=;
- b=vUiy9kGi4RCIk2KHel24XaiJ09ABnlXX8LO4CG7Y1XnGeS8+tn4UJu1OtUmBnDVmbq32A1LBdXcpzUWNLLIXbJ4RE0Hrmt+X9streziKP97yU6SOTZBhgs1+QSGv8GufOXppEHzGzskDJRtCwc8a1E46FCSWU9C7bRGN7pFps7w=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wolfvision.net;
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
- by PAWPR08MB8959.eurprd08.prod.outlook.com (2603:10a6:102:33f::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.23; Mon, 15 Jan
- 2024 13:58:29 +0000
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::6b40:1e6f:7c94:71dc]) by VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::6b40:1e6f:7c94:71dc%4]) with mapi id 15.20.7181.026; Mon, 15 Jan 2024
- 13:58:28 +0000
-Message-ID: <96abddcc-fa65-4f27-84fe-2281fe0fcf1c@wolfvision.net>
-Date: Mon, 15 Jan 2024 14:58:26 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] ASoC: dt-bindings: xmos,xvf3500: add bindings for
- XMOS XVF3500
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Cc: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org
-References: <20240115-feature-xvf3500_driver-v1-0-ed9cfb48bb85@wolfvision.net>
- <20240115-feature-xvf3500_driver-v1-2-ed9cfb48bb85@wolfvision.net>
- <333c2986-c7c2-4a46-90cf-b59ae206e55a@linaro.org>
-Content-Language: en-US
-From: Javier Carrasco <javier.carrasco@wolfvision.net>
-In-Reply-To: <333c2986-c7c2-4a46-90cf-b59ae206e55a@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-X-ClientProxiedBy: VI1PR04CA0072.eurprd04.prod.outlook.com
- (2603:10a6:802:2::43) To VE1PR08MB4974.eurprd08.prod.outlook.com
- (2603:10a6:803:111::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE90C17584;
+	Mon, 15 Jan 2024 13:59:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dbedb1ee3e4so7115395276.3;
+        Mon, 15 Jan 2024 05:59:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705327161; x=1705931961;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nCoI6wmXQhas4p+QHjRACvDabiOp6RlTb///RFp+bYk=;
+        b=tiSTZFK9+adD4pS2CiBp3H8TjNvhxoFkiEeyDJM3qLno8Xx43Uvjdy/whJLepRGP40
+         f/JUNxXcbwBC1NiMKrPQ5O6mjxsEMayOZw+l7hP+OGkvJ0cIlp9/xrESL6ud2rc14k5c
+         +g4LU/CdOIf1P42IpSu7NCDGmFEWWr8a34O/gElzv6KrM0MO5K/Qxo1/E4zAPazwrvcz
+         iAzMy4H6DJ4l8hwdexcGGRgmLQxnHtYDmYYfHnlNJC6S723bxAXTI6frA3GfAEDGGtJ0
+         idx+3WYRQKDVqknRh6cJB2Lh44m1MIyWNgsSDwT+H0KWkJS4ugZ3/y4ecfpbQ2cOsGwi
+         VyKw==
+X-Gm-Message-State: AOJu0Yw+ysJ8APvGt4ir1qpo8FTztilyNSmmUF09L5UA6NgCR2jYtVdT
+	g/D3hUPw+w1FiPxLKxUmpTfNug4I8TlWKw==
+X-Google-Smtp-Source: AGHT+IE88cEfoMkTPLs3uXh1bjP2h2ZDA1PqvxGd+SApFuHgdVhtMFJ+iBdwagRwRd4K9ubiXU6JRg==
+X-Received: by 2002:a05:6902:2687:b0:db5:c77d:1fae with SMTP id dx7-20020a056902268700b00db5c77d1faemr2834232ybb.29.1705327161525;
+        Mon, 15 Jan 2024 05:59:21 -0800 (PST)
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
+        by smtp.gmail.com with ESMTPSA id c6-20020a25a2c6000000b00d9caecd5c86sm3481218ybn.62.2024.01.15.05.59.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Jan 2024 05:59:20 -0800 (PST)
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dbed5d2ad18so7074363276.0;
+        Mon, 15 Jan 2024 05:59:20 -0800 (PST)
+X-Received: by 2002:a25:ad8b:0:b0:dbe:e4d3:bbb7 with SMTP id
+ z11-20020a25ad8b000000b00dbee4d3bbb7mr2479427ybi.99.1705327159968; Mon, 15
+ Jan 2024 05:59:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|PAWPR08MB8959:EE_
-X-MS-Office365-Filtering-Correlation-Id: b22aa0ba-ec63-4a69-6bd9-08dc15d20cf8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	CwUgcXkmuxGg/xlEiUC7fsWzesGV6w9inbrhJB9UafRS/wt6aMwENjbCdyCZrJ98zX/0vJN5MmmhsVWJJBkRfvMErKbrl2eJvmJMrJSuIBqCZO4K7m+g506ljyjJjK5zuuzQ/W8i9z7R2ewlwRfjF2ghkpzkcuXD6PanyA6Eo9GBqVpx8i8nAEPQKlkL+kVRT5+tvoWV0pJX0VMB1Te487/0ztClwKL+1GyJnrWYOwT/JIOXWI9VtlCsUuyqWhjD2R/EKUH7a8Jx7KcdwaEmJrXHHM6Ri/TE0COA6ZB87MjyBZos+Jh3lao/zNJ0aAMI49Cn9YxKD1JmXpC5hAjG6vs1oaAsP0MoOeyd25vlNbWJdH5Jjz9Tm+IHrzyNSZWgYut5dxrd7sFjzPdsV7FJZVhWR3D0XSyuujmM5/d3eVr2WnS4+UuPPieSpgdB/G9aPTModCMUHBb9CIoHpFtEs1N9n1LxD3u1j3Gg4tk1vaWJJmki7Bn7wHzDYB7nosK74MyjjoiE0sVSgyWunsMj1hCFLa7yFire6xbC7OgYE6mEmw5TjQjDTHsmWZbQ4/dOKGFrGss8bL/OsEXlJM3TBcuVoDCJPMSDV48tpiIWaCyyyi0bphxcbWvcdC/+lK1DAyRN/nlH7/WVBCoQ/V/COw==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(39850400004)(346002)(136003)(376002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(31696002)(86362001)(38100700002)(2616005)(31686004)(26005)(36756003)(83380400001)(6506007)(6512007)(966005)(316002)(6486002)(66476007)(110136005)(53546011)(66556008)(66946007)(2906002)(8936002)(44832011)(8676002)(7416002)(45080400002)(5660300002)(4326008)(478600001)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?a2pqM093MnlsSy9BcU9GVFYyRnFhL0NzcWFiTVl6ckFTZy93MGxkZFA3WEd0?=
- =?utf-8?B?S2UySzF4Z053STBhRWdvRXVGYzJCQWlqK3ZwWjdyOWg4ZUExREpQZG42aHBP?=
- =?utf-8?B?WmE3MTlXbnA4cjRreEk1U0s2VldXelFucy9xZ1hoOWgxeEVDR1FZY1A4L3Iv?=
- =?utf-8?B?alQ5ZmxCeUtoVm94VXNZSDNMODZuTGlnb2pyTWtwZERuM3owVkE0QUZtTFd0?=
- =?utf-8?B?d0R3WmVlT2FWSnpPTHRDUUdkZ0pMbUVZQ1FNUmlWb0VLZit6TnY2MWYvVlJ3?=
- =?utf-8?B?amlOdkRETDBTYVFvS3FXYitBbjZOcG9pMGdzWXZlT3lRUXl4MFlhQmJxMDRG?=
- =?utf-8?B?ZEhuVjQvV1c5WVdiQ2ptV3pPSDJrTTVrRjVhWmZ6R1ZQcDN0bHNvK3doSWJy?=
- =?utf-8?B?MnYwUWd2Ry9rcitUN3ZCVnh2bnhkdUJhbEd3TGtxWUhhREhkaVU1RHVmL1VO?=
- =?utf-8?B?TUFYMkdhemlNejZKc3NmeVhUWjQ3ZXJIK2lYMTAySGFrSDk4dHRicFNIdXV4?=
- =?utf-8?B?dUFaN1JJVUFYVGdNVm5hQzR2enRJL3U0cEJNckpUMGhPSnNDQTlMNkgydENs?=
- =?utf-8?B?QTB6ZjhGVXBnWXpOY3JSK2drM0lkMDJLbG9CZno1OEZQSE41OEJSQVFvclZ3?=
- =?utf-8?B?bzIxMUVSVmJUS3FYOHNKR1haRDJuVTViZ2dycEhKUUZ4WU9hRElMS0hGMVBQ?=
- =?utf-8?B?akRhaWV4NmcyamtId2tXOXN0ZGQrd0c1SFhWQXMyYlhwcFN5Yno1eTE0LzY2?=
- =?utf-8?B?WktDZkRNT2VmN0M2NFFkU1J5SE5FMlJjc05aSnRYNDdzT203RmIwTUtxaE56?=
- =?utf-8?B?clNsZU85NXI5RnlKdG9nWVZDYkFRdjdJNXdYME1objZOb2FwOGM2Y2k2ZFVy?=
- =?utf-8?B?ZU1teCtocGwzRXVBdkFpUGQ3dWxrZzNmK1Jnd2pNalpOa2R5Q2VNQlZRRDg1?=
- =?utf-8?B?Y1NSVXhaM1dxd3p2a2FXaCtuMUVLZVlaMENDVlBIakhxOFNjcWozb0pKMEI1?=
- =?utf-8?B?VEJRaEVuT0FLdU9LUThnS3gxdTFvdGhWZUNlYnhBL2xxWVg1cWRLNy9BVit4?=
- =?utf-8?B?S3RsZ0Q3UzZLc0p4Y0lGa3N3c2o2dUloSXB1bmYzME5qeVdtWjRERkp2Z05N?=
- =?utf-8?B?NG4yR0dJK1J0ejNSaW1YaWRKalBlVlpDTWptWGwveUcwakhVQlovZ1IxUS94?=
- =?utf-8?B?bEFMbGE2R3BvTTRYSCtOanZKdGlndHppTGMxamVZc0x2ZjVxRWxvQW1jNmxK?=
- =?utf-8?B?RlZVSGdMUWxLUkZVZ2hHbWNacWtDaG5uSXZOSUl3cVRIRWthVWNjYkJnazhi?=
- =?utf-8?B?UGc1TTlmU2dhQkllUlpYZGt1Wnh5OVI3czZEcUREQUhwU3dFdkNjNTRZQ2hE?=
- =?utf-8?B?RXhZbXp1MUdvK01WMkJZMFVac05zYU1Lem5CZnpQQlFtRXUrNnJ6WXVFOGZk?=
- =?utf-8?B?OGpxRmFmdDRwS3VmbXRUL1FsNG1YK1FKeEIzNTNGUEI5bXFJdVBVOTNVbjFs?=
- =?utf-8?B?Z0dDaTljdnZNc0RTUnlzTmExNHA3RFRhZ2VLR0JsUGhIVU1nSjYwTU9Uc09p?=
- =?utf-8?B?MGtPeEJySkVHM0xZM1JBMEQ3b05WdUI3SjUxZFNrVzQwU3JvVWNTTE01RkFY?=
- =?utf-8?B?MU41Y0YvMTZWNE1TVHd1THpJZktKNjdYSTdna1RBb0F1R3FrdmN4UHdnd0Vk?=
- =?utf-8?B?cXcwYUFRU3JJSitKd1E0VW5JcHBWYVArUzNadzhHN0Nvd3NYQWZDSVlVcWxp?=
- =?utf-8?B?MG9nVXBMbko4Y3BpWHhYSDNwOWVFczQwZFlIQWkwcnV6VVk3YTRuWGlVVGxv?=
- =?utf-8?B?aURzZ1k1b2poVmtWd2FmSk45azN3V1Zsc1MzQmZRczRHeU5KbUVKVjFqSDA1?=
- =?utf-8?B?SWE4bHlXTUsxZ3E5RitHSHg5MDNpL1JkQUZnTUg2cGluenB4cThRL3hyclJu?=
- =?utf-8?B?VkE5S3dEc3VTVmJHdVVralRpVXYrUEpsVVJSWjE3WTFaTDYxSFp3eUIyeTVp?=
- =?utf-8?B?OGhUZjZwbVMyYThLbHlVOC9HdjhJZWVnOE9NdDBvOGJ4NVpCOW82cDZNSXpv?=
- =?utf-8?B?TVR4Qktac2RaY2M0Vk9hT2p0dVVNV3c5ZE9rdVBISVFYRnRjZUhlTGVLWDJl?=
- =?utf-8?B?U09aK3RscUtpWVhWZ2E1b0FJczhqaVBWb1lidFZhRFJjb25vVitoYTVRdDZx?=
- =?utf-8?B?VHc9PQ==?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: b22aa0ba-ec63-4a69-6bd9-08dc15d20cf8
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2024 13:58:28.6663
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ECv/6sgTRpZ/6yzohvve1M8bOfi9sZn3jThv0IB/RbJpGUgTqbhqPmn0pAqTnUtpRKqPubFOp3K8j1G4g9hXXQrpJDq1rz7m5xxpK5DPaQA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR08MB8959
+References: <cover.1704788539.git.ysato@users.sourceforge.jp> <183bc01316cab97a7ae96df525a5a450c477210d.1704788539.git.ysato@users.sourceforge.jp>
+In-Reply-To: <183bc01316cab97a7ae96df525a5a450c477210d.1704788539.git.ysato@users.sourceforge.jp>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 15 Jan 2024 14:59:08 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdW-Ak6P3nFH7cdomSYec9=WZf8mZaVwmG=qoYHz1thLMQ@mail.gmail.com>
+Message-ID: <CAMuHMdW-Ak6P3nFH7cdomSYec9=WZf8mZaVwmG=qoYHz1thLMQ@mail.gmail.com>
+Subject: Re: [DO NOT MERGE v6 09/37] dt-bindings: timer: renesas,tmu: add renesas,tmu-sh7750
+To: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Michael Turquette <mturquette@baylibre.com>, 
+	Stephen Boyd <sboyd@kernel.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Thomas Gleixner <tglx@linutronix.de>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Jiri Slaby <jirislaby@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>, Rich Felker <dalias@libc.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Lee Jones <lee@kernel.org>, 
+	Helge Deller <deller@gmx.de>, Heiko Stuebner <heiko@sntech.de>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
+	Yang Xiwen <forbidden405@foxmail.com>, Sebastian Reichel <sre@kernel.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, Randy Dunlap <rdunlap@infradead.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@suse.cz>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+	David Rientjes <rientjes@google.com>, Baoquan He <bhe@redhat.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Guenter Roeck <linux@roeck-us.net>, 
+	Stephen Rothwell <sfr@canb.auug.org.au>, Azeem Shaikh <azeemshaikh38@gmail.com>, 
+	Javier Martinez Canillas <javierm@redhat.com>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Palmer Dabbelt <palmer@rivosinc.com>, Bin Meng <bmeng@tinylab.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Jacky Huang <ychuang3@nuvoton.com>, 
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
+	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+	Sam Ravnborg <sam@ravnborg.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
+	Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>, 
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, linux-ide@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org, 
+	linux-serial@vger.kernel.org, linux-fbdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 15.01.24 14:02, Krzysztof Kozlowski wrote:
-> On 15/01/2024 10:16, Javier Carrasco wrote:
->> The XMOS XVF3500 VocalFusion Voice Processor[1] is a low-latency, 32-bit
->> multicore controller for voice processing.
->>
->> Add new bindings to define the device properties.
-> 
-> I don't see any bus, so how does it work? How do you get the voice data
-> from it? I also do not see any DAI: neither here nor in the driver...
-> 
-The voice data and any other information can be retrieved directly via
-USB from userspace. Once in normal operation, the device acts as a
-regular "onboard" USB device and the driver does not need to do any
-further management.
-> If there is going to be any new version, then implement all following
-> comments:
-> 
-> A nit, subject: drop second/last, redundant "bindings for". The
-> "dt-bindings" prefix is already stating that these are bindings.
-> See also:
-> https://elixir.bootlin.com/linux/v6.7-rc8/source/Documentation/devicetree/bindings/submitting-patches.rst#L18
-> 
-> 
->>
->> [1] https://www.xmos.com/xvf3500/
->>
->> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
->> ---
->>  .../devicetree/bindings/sound/xmos,xvf3500.yaml    | 51 ++++++++++++++++++++++
->>  1 file changed, 51 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/sound/xmos,xvf3500.yaml b/Documentation/devicetree/bindings/sound/xmos,xvf3500.yaml
->> new file mode 100644
->> index 000000000000..e93a735a0f1a
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/xmos,xvf3500.yaml
->> @@ -0,0 +1,51 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/sound/xmos,xvf3500.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: XMOS XVF3500 VocalFusion Voice Processor
->> +
->> +maintainers:
->> +  - Javier Carrasco <javier.carrasco@wolfvision.net>
->> +
->> +description: |-
-> 
-> Do not need '|-' unless you need to preserve formatting.
-> 
-> 
->> +  The XMOS XVF3500 VocalFusion Voice Processor is a low-latency, 32-bit
->> +  multicore controller for voice processing.
->> +  https://www.xmos.com/xvf3500/
->> +
->> +properties:
->> +  compatible:
->> +    const: xmos,xvf3500
->> +
->> +  reset-gpios:
->> +    maxItems: 1
->> +
->> +  vcc1v0-supply:
->> +    description: |
-> 
-> Do not need '|' unless you need to preserve formatting.
-> 
-> 
->> +      Regulator for the 1V0 supply.
->> +
->> +  vcc3v3-supply:
->> +    description: |
-> 
-> Do not need '|' unless you need to preserve formatting.
-> 
->> +      Regulator for the 3V3 supply.
->> +
->> +additionalProperties: false
-> 
-> This goes after required: block.
-> 
->> +
->> +required:
->> +  - compatible
->> +  - reset-gpios
->> +  - vcc1v0-supply
->> +  - vcc3v3-supply
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/gpio/gpio.h>
->> +
->> +    xvf3500: voice-processor {
-> 
-> Drop unused label.
-> 
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
-Thank you for your feedback and best regards,
-Javier Carrasco
+Hi Sato-san,
+
+On Tue, Jan 9, 2024 at 9:23=E2=80=AFAM Yoshinori Sato
+<ysato@users.sourceforge.jp> wrote:
+> Add SH7750 TMU entry.
+>
+> I wanted to replace interrupts and interrupt-names in the if compatible i=
+s
+> "renesas,tmu-7750", but it seems that I can't rewrite it as expected.
+> This resulted in a redundant conditional statement.
+>
+> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
+
+Thanks for your patch!
+
+> --- a/Documentation/devicetree/bindings/timer/renesas,tmu.yaml
+> +++ b/Documentation/devicetree/bindings/timer/renesas,tmu.yaml
+> @@ -39,14 +39,15 @@ properties:
+>            - renesas,tmu-r8a779a0 # R-Car V3U
+>            - renesas,tmu-r8a779f0 # R-Car S4-8
+>            - renesas,tmu-r8a779g0 # R-Car V4H
+> +          - renesas,tmu-sh7750   # SH7750
+
+OK
+
+>        - const: renesas,tmu
+>
+>    reg:
+>      maxItems: 1
+>
+> -  interrupts:
+> -    minItems: 2
+> -    maxItems: 3
+> +  interrupts: true
+> +
+> +  interrupt-names: true
+
+I would drop this change (see below).
+
+>
+>    clocks:
+>      maxItems: 1
+> @@ -75,21 +76,55 @@ required:
+>    - clock-names
+>    - power-domains
+>
+> -if:
+> -  not:
+> -    properties:
+> -      compatible:
+> -        contains:
+> -          enum:
+> -            - renesas,tmu-r8a7740
+> -            - renesas,tmu-r8a7778
+> -            - renesas,tmu-r8a7779
+> -then:
+> -  required:
+> -    - resets
+> -
+>  additionalProperties: false
+>
+> +allOf:
+> +  - if:
+> +      not:
+> +        properties:
+> +          compatible:
+> +            contains:
+> +              enum:
+> +                - renesas,tmu-r8a7740
+> +                - renesas,tmu-r8a7778
+> +                - renesas,tmu-r8a7779
+> +                - renesas,tmu-sh7750
+
+Adding renesas,tmu-sh7750 to this list is OK.
+
+> +
+> +    then:
+> +      required:
+> +        - resets
+> +
+> +  - if:
+> +      not:
+> +        properties:
+> +          compatible:
+> +            contains:
+> +              enum:
+> +                - renesas,tmu-sh7750
+> +
+> +    then:
+> +      properties:
+> +        interrupts:
+> +          minItems: 2
+> +          maxItems: 3
+> +        interrupt-names:
+> +          items:
+> +            - const: tuni0
+> +            - const: tuni1
+> +            - const: tuni2
+> +
+> +    else:
+> +      properties:
+> +        interrupts:
+> +          minItems: 2
+> +          maxItems: 4
+> +        interrupt-names:
+> +          items:
+> +            - const: tuni0
+> +            - const: tuni1
+> +            - const: tuni2
+> +            - const: ticpi2
+> +
+>  examples:
+>    - |
+>      #include <dt-bindings/clock/r8a7779-clock.h>
+
+The new interrupt logic is not really correct: several TMU instances
+on other SoCs do support the fourth interrupt.  It just was not
+documented before, or supported by the driver.
+
+I have sent a patch to document the fourth interrupt[1].  Once that
+patch has been applied, adding support for sh7751 involves adding just
+two new lines.
+
+[1] "PATCH] dt-bindings: timer: renesas,tmu: Document input capture
+     interrupt"
+    https://lore.kernel.org/r/fb1e38c93e62221f94304edd980a2fb79c1f2995.1705=
+325608.git.geert+renesas@glider.be
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
