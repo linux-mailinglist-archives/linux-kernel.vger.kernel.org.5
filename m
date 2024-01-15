@@ -1,140 +1,109 @@
-Return-Path: <linux-kernel+bounces-25587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8D6482D309
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 03:03:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF1AC82D30C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 03:08:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18CE11C20A42
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 02:03:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE02E1C208F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 02:08:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2307917F6;
-	Mon, 15 Jan 2024 02:03:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lGS2kXG/"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A9B815BB;
-	Mon, 15 Jan 2024 02:03:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705284189; x=1736820189;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ZmyJ1bc7ue0Ua4ANfQvvo7h5UHL8+CslhMKn7IpmOoE=;
-  b=lGS2kXG/gozNtjp8t5cgZsXlwcEmMOpoZQR9dinNwDyXxmIhpcexcz0y
-   QY4DTlopJADE+YI50RfsPMdViGEIW/Uzk/DhK28OMnucdq7TfUI89nuti
-   hkPZFqhlwKFwNgXGFrDxgGb2YkoWSto4CuZsf9UccM5s2SFrNvbDgNH5v
-   0/6NF6GQ1vLLC7O4R7AxcLHQ2xjx/5a/l2lMq1Es3GIADEu5W1idhWBhq
-   yLbgwgoy7xEHYG1TRpAWceCHQF6XZsf3sO6yZqWRvEwUUDgXmAU3Lpr5U
-   MLXSZHGeiPeVIJgwLbyAvx9QFI8Us+nHsMpLrsjEX7fUihi4WVEWRnjP5
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="6271488"
-X-IronPort-AV: E=Sophos;i="6.04,195,1695711600"; 
-   d="scan'208";a="6271488"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 18:03:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="853847180"
-X-IronPort-AV: E=Sophos;i="6.04,195,1695711600"; 
-   d="scan'208";a="853847180"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.5.98]) ([10.93.5.98])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 18:03:06 -0800
-Message-ID: <cce0483f-539b-4be3-838d-af0ec91db8f0@linux.intel.com>
-Date: Mon, 15 Jan 2024 10:03:04 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DACC117CF;
+	Mon, 15 Jan 2024 02:08:37 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A24215BB
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 02:08:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d85ff70000001748-cd-65a493978fc8
+Date: Mon, 15 Jan 2024 11:08:18 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, akpm@linux-foundation.org,
+	ying.huang@intel.com, namit@vmware.com, xhao@linux.alibaba.com,
+	mgorman@techsingularity.net, hughd@google.com, david@redhat.com,
+	peterz@infradead.org, luto@kernel.org, tglx@linutronix.de,
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com
+Subject: Re: [v5 4/7] mm: Separate move/undo doing on folio list from
+ migrate_pages_batch()
+Message-ID: <20240115020817.GA56966@system.software.com>
+References: <20240111060757.13563-1-byungchul@sk.com>
+ <20240111060757.13563-5-byungchul@sk.com>
+ <ZaAMf5JX2D3N7Epi@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 16/29] KVM: selftests: Test Intel PMU architectural
- events on gp counters
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
- linux-kernel@vger.kernel.org, Kan Liang <kan.liang@linux.intel.com>,
- Jim Mattson <jmattson@google.com>, Jinrong Liang <cloudliang@tencent.com>,
- Aaron Lewis <aaronlewis@google.com>, Like Xu <likexu@tencent.com>
-References: <20240109230250.424295-1-seanjc@google.com>
- <20240109230250.424295-17-seanjc@google.com>
- <5f51fda5-bc07-42ac-a723-d09d90136961@linux.intel.com>
- <ZaGxNsrf_pUHkFiY@google.com>
-Content-Language: en-US
-From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <ZaGxNsrf_pUHkFiY@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZaAMf5JX2D3N7Epi@casper.infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNIsWRmVeSWpSXmKPExsXC9ZZnoe70yUtSDbZNkLGYs34Nm8XnDf/Y
+	LF5saGe0+Lr+F7PF0099LBaXd81hs7i35j+rxflda1ktdizdx2Rx6cACJovrux4yWhzvPcBk
+	sXnTVGaL3z+A6uZMsbI4OWsyi4OAx/fWPhaPBZtKPTav0PJYvOclk8emVZ1sHps+TWL3eHfu
+	HLvHiRm/WTx2PrT0mHcy0OP9vqtsHlt/2Xl83iTn8W7+W7YAvigum5TUnMyy1CJ9uwSujKvd
+	p9kL5nBWvO+by9LAuIK9i5GTQ0LARGLj5XvMMPaRxpmMIDaLgKrElI2zWEBsNgF1iRs3fgLV
+	cHCICGhIvNli1MXIxcEs8JpJ4tn/fUwgNcICsRIfT28Eq+cVsJB40P6HHaRISKCbUaLj9U42
+	iISgxMmZT8CKmAW0JG78e8kEMpRZQFpi+T8OkDAn0A2Pfn4Eu0FUQFniwLbjTCBzJATWsUuc
+	ODmVCeJQSYmDK26wTGAUmIVk7CwkY2chjF3AyLyKUSgzryw3MTPHRC+jMi+zQi85P3cTIzAK
+	l9X+id7B+OlC8CFGAQ5GJR7eH38XpwqxJpYVV+YeYpTgYFYS4T34fEGqEG9KYmVValF+fFFp
+	TmrxIUZpDhYlcV6jb+UpQgLpiSWp2ampBalFMFkmDk6pBsb+Pc8mzRBueuW+n/Xu9T6Fx06L
+	tn299JI/c1Od2Jsd/qsrdioZtE1/27KnuFciZMGT+F6Ov2cjEgWaBOZzeCxauGnFQseJkr9d
+	T2q6c7y5zsZ/Lm1Niq274IcrmS8zcjymz//Hknjy4fty5q1v3tbp5xbcvjzZ10xtaqTq/fzf
+	dx61u9xWfBShxFKckWioxVxUnAgAVlQlk74CAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEIsWRmVeSWpSXmKPExsXC5WfdrDt98pJUg0MTeSzmrF/DZvF5wz82
+	ixcb2hktvq7/xWzx9FMfi8XhuSdZLS7vmsNmcW/Nf1aL87vWslrsWLqPyeLSgQVMFtd3PWS0
+	ON57gMli86apzBa/fwDVzZliZXFy1mQWB0GP7619LB4LNpV6bF6h5bF4z0smj02rOtk8Nn2a
+	xO7x7tw5do8TM36zeOx8aOkx72Sgx/t9V9k8Fr/4wOSx9Zedx+dNch7v5r9lC+CP4rJJSc3J
+	LEst0rdL4Mq42n2avWAOZ8X7vrksDYwr2LsYOTkkBEwkjjTOZASxWQRUJaZsnMUCYrMJqEvc
+	uPGTuYuRg0NEQEPizRajLkYuDmaB10wSz/7vYwKpERaIlfh4eiNYPa+AhcSD9j/sIEVCAt2M
+	Eh2vd7JBJAQlTs58AlbELKAlcePfSyaQocwC0hLL/3GAhDmBbnj08yPYDaICyhIHth1nmsDI
+	OwtJ9ywk3bMQuhcwMq9iFMnMK8tNzMwx1SvOzqjMy6zQS87P3cQIjKlltX8m7mD8ctn9EKMA
+	B6MSD++Pv4tThVgTy4orcw8xSnAwK4nwHny+IFWINyWxsiq1KD++qDQntfgQozQHi5I4r1d4
+	aoKQQHpiSWp2ampBahFMlomDU6qBMXpxcaXPzysvg70EpXd4/lZf8jUzIH/p4csve4LeSirz
+	vtMQSNRz7lrOsbKiY/LDQ8Ff2cxNmN2D5mg95/wuoHH/RH5M0dzwmSXnQ5e7LEhaOq3LItFx
+	7q20Fw3Nl97mSHH9z3slz15+Ly05OuXCm2jxlITjnB/4Ft2Wt88+mt9hfF8o65a6EktxRqKh
+	FnNRcSIA8ieXD6UCAAA=
+X-CFilter-Loop: Reflected
 
+On Thu, Jan 11, 2024 at 03:42:55PM +0000, Matthew Wilcox wrote:
+> On Thu, Jan 11, 2024 at 03:07:54PM +0900, Byungchul Park wrote:
+> > +static void migrate_folios_move(struct list_head *src_folios,
+> > +		struct list_head *dst_folios,
+> > +		free_folio_t put_new_folio, unsigned long private,
+> > +		enum migrate_mode mode, int reason,
+> > +		struct list_head *ret_folios,
+> > +		struct migrate_pages_stats *stats,
+> > +		int *retry, int *thp_retry, int *nr_failed,
+> > +		int *nr_retry_pages)
+> > +{
+> > +	struct folio *folio, *folio2, *dst, *dst2;
+> > +	bool is_thp;
+> > +	int nr_pages;
+> > +	int rc;
+> > +
+> > +	dst = list_first_entry(dst_folios, struct folio, lru);
+> > +	dst2 = list_next_entry(dst, lru);
+> > +	list_for_each_entry_safe(folio, folio2, src_folios, lru) {
+> > +		is_thp = folio_test_large(folio) && folio_test_pmd_mappable(folio);
+> 
+> You don't need to call folio_test_large() first.  folio_order() includes
+> a call to test_large() so it can return 0.
+> 
+> > +		nr_pages = folio_nr_pages(folio);
+> 
+> ... or since you're calculating this anyway,
+> 
+> 		is_thp = nr_pages >= HPAGE_PMD_NR
 
-On 1/13/2024 5:37 AM, Sean Christopherson wrote:
-> On Fri, Jan 12, 2024, Dapeng Mi wrote:
->> On 1/10/2024 7:02 AM, Sean Christopherson wrote:
->>> +/*
->>> + * If an architectural event is supported and guaranteed to generate at least
->>> + * one "hit, assert that its count is non-zero.  If an event isn't supported or
->>> + * the test can't guarantee the associated action will occur, then all bets are
->>> + * off regarding the count, i.e. no checks can be done.
->>> + *
->>> + * Sanity check that in all cases, the event doesn't count when it's disabled,
->>> + * and that KVM correctly emulates the write of an arbitrary value.
->>> + */
->>> +static void guest_assert_event_count(uint8_t idx,
->>> +				     struct kvm_x86_pmu_feature event,
->>> +				     uint32_t pmc, uint32_t pmc_msr)
->>> +{
->>> +	uint64_t count;
->>> +
->>> +	count = _rdpmc(pmc);
->>> +	if (!this_pmu_has(event))
->>> +		goto sanity_checks;
->>> +
->>> +	switch (idx) {
->>> +	case INTEL_ARCH_INSTRUCTIONS_RETIRED_INDEX:
->>> +		GUEST_ASSERT_EQ(count, NUM_INSNS_RETIRED);
->>> +		break;
->>> +	case INTEL_ARCH_BRANCHES_RETIRED_INDEX:
->>> +		GUEST_ASSERT_EQ(count, NUM_BRANCHES);
->>> +		break;
->>> +	case INTEL_ARCH_CPU_CYCLES_INDEX:
->>> +	case INTEL_ARCH_REFERENCE_CYCLES_INDEX:
->> Since we already support slots event in below guest_test_arch_event(), we
->> can add check for INTEL_ARCH_TOPDOWN_SLOTS_INDEX here.
-> Can that actually be tested at this point, since KVM doesn't support
-> X86_PMU_FEATURE_TOPDOWN_SLOTS, i.e. this_pmu_has() above should always fail, no?
+Cool. Thanks.
 
-I suppose X86_PMU_FEATURE_TOPDOWN_SLOTS has been supported in KVM.  The 
-following output comes from a guest with latest kvm-x86 code on the 
-Sapphire Rapids platform.
+	Byungchul
 
-sudo cpuid -l 0xa
-CPU 0:
-    Architecture Performance Monitoring Features (0xa):
-       version ID                               = 0x2 (2)
-       number of counters per logical processor = 0x8 (8)
-       bit width of counter                     = 0x30 (48)
-       length of EBX bit vector                 = 0x8 (8)
-       core cycle event                         = available
-       instruction retired event                = available
-       reference cycles event                   = available
-       last-level cache ref event               = available
-       last-level cache miss event              = available
-       branch inst retired event                = available
-       branch mispred retired event             = available
-       top-down slots event                     = available
-
-Current KVM doesn't support fixed counter 3 and pseudo slots event yet, 
-but the architectural slots event is supported and can be programed on a 
-GP counter. Current test code can cover this case, so I think we'd 
-better add the check for the slots count.
-
-
->
-> I'm hesitant to add an assertion of any king without the ability to actually test
-> the code.
+> perhaps
 
