@@ -1,195 +1,230 @@
-Return-Path: <linux-kernel+bounces-25761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BCAF82D566
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:57:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C09682D569
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:57:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4F341F21BEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:57:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BFD5B214D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:57:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 780121E53A;
-	Mon, 15 Jan 2024 08:55:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75AA3C130;
+	Mon, 15 Jan 2024 08:57:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="eSo9RdXW";
-	dkim=permerror (0-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="pFlSZHjw"
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.82])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Tnw5ofq7"
+Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC50C8EA;
-	Mon, 15 Jan 2024 08:55:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goldelico.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
-ARC-Seal: i=1; a=rsa-sha256; t=1705308912; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=qjzfTZXIn8ULyATbJ8kYws4bzV++on2FpfW1SqbtHT2ZnlgpuuvjMFc9zWdYkSUb1P
-    pflMhVIuUbCfLuoxbfOdW/zf8sM4TwYDjmW3ythMRZUO8lnVMlOM+QZSMHstRbG8VtiX
-    5pwr2BiVJ8tdtG3poAmvrV+xsIuYkRT1GgmC8BDbXpdWsN0ctXi7pD4TNEpj/lq2pZtL
-    k5pdszBql0UT/kPieggXIZvTKJN+RftG6PAfZYMvuyDyo1qhrOsV6EbbV3/PajMnlMUp
-    1YUs2dJHnFqWnbil9Jo1DCF5ZxyOlev+0ttwdR9LtJTWIkOeqAavF9AGa1aW9v9FJ8+r
-    UYYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1705308912;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=yHFJRaGiqBFJv2kzsrvLiyk/a/j3+Epn1Hl4IwAPpOQ=;
-    b=FczWUnwFJvS7KFS7oNsI/m5tBh2F7SkhYobWhH96170UEzMMHAY7/a2uyfmRbvRKow
-    XxzFEyTyBSOpP3cF9pfgWkeza1nyq9zf9oi94YsTKyXshRdfn0d2e1F+xcLv8awnUM+t
-    23KGqjcyo8asdDAHzV7uXyl/kvjTh+b7fZuuWlVKtZu1rjuGlDcrRzDinWOIgoWMA5Wj
-    BjA/4lR6aUUN4OyCAwPXkzDxTN3a2Q2m2k5Q1wNMeAa9JuH9RN0wdEAwdz/qZhjKuvPI
-    3BU/3b5PpiRq+EPUwQ3qjVOGVG+kh3rXnC5BHkVFSwaAoihtAP+/XoV4p90kDDcSAdoh
-    GEiA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1705308912;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=yHFJRaGiqBFJv2kzsrvLiyk/a/j3+Epn1Hl4IwAPpOQ=;
-    b=eSo9RdXWhAdoaMENfvhNPTzvKpEwOCUl0YycnoU2xzRMAOQMB9qGX0yeiCQFmhzBUq
-    wtqDF7H9q9nFpN3AhXoAtzXmn353mljOaUrGVy5EQHo30O7NtvmPjMuX37RJgZbC6sND
-    fRtz6wn5n3MdFHaakYwZD88U4bjAkBC5emYMKMDFoqqzbgcrbDVGevUornxZP935h3Cu
-    tv41U+52zsH5KQm3PgvBNVFAjwQ7rqiUTmOaI152R9JDBW8y9aOthnrXVhPSOrkEfVnn
-    LjPFWcJGYSWQ9UEoWZWcV1FktKs5lSlXM1XvdZO0b1hLY5YrsGsr5UvkO108hZlxyai4
-    634A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1705308912;
-    s=strato-dkim-0003; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=yHFJRaGiqBFJv2kzsrvLiyk/a/j3+Epn1Hl4IwAPpOQ=;
-    b=pFlSZHjwt8Te0l07++VZwoZT0mvrVr31djwxtUJKVo9l8cKGGgl9Ds9Oo6Q5eOqrsf
-    5kYGQb7B3DxK7iUUj3Bw==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Apz9PSN6LgsXcGZhzY="
-Received: from smtpclient.apple
-    by smtp.strato.de (RZmta 49.10.2 DYNA|AUTH)
-    with ESMTPSA id dbe64400F8tBUDl
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-	(Client did not present a certificate);
-    Mon, 15 Jan 2024 09:55:11 +0100 (CET)
-Content-Type: text/plain;
-	charset=us-ascii
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E50E5C123
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 08:57:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-7cc7bae27b5so2966817241.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 00:57:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705309044; x=1705913844; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K4v1AdI32Kp8Z1EODc0dmNDkAUnEI1s57YhrdMHhuH8=;
+        b=Tnw5ofq7dMPkzIctKmJNqZ1GLMGCnqhhHnNmRYVERoTn7KFLVV5uIn9Qks8syrfKa8
+         BRyXhV4gAgLsGobg5pCknH66rgDxuWzdu+K0oLg0dU/J35LRgI1bDXGtvIGMF6ozhNyj
+         rTznATisC3AmT5PL3JyMFZDHMAsPxPnd5TkudVx7Xqb2w6FISqwMwDOGWUBDw3lwbdOi
+         MYhnn7AxdHvdFXtP4u7jV0XPScHzlrzJLnvtU5bbiW5a7hSGgRYaaxJu/tH2XpwKJDTR
+         llMvHEqtTbqT41FBESWgY2nj+Pg7yLGWbWqLhEwQfO9Q/zFJx53RL3EWHiRMf2cLv9n9
+         XJ6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705309044; x=1705913844;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K4v1AdI32Kp8Z1EODc0dmNDkAUnEI1s57YhrdMHhuH8=;
+        b=dmFmgnuJCTp2/M0J+LCmHorfPsmMC9+K8JCdu0Rjv0ifFiFZZY2+7slc7gaP5c4bGJ
+         72qg1n8bBJGLg3Ld448TD+NL6tG8ZhWdd2LVXV/qmZsyTJ5meARzAwFM46fj14RyDBIJ
+         c/2TVHquB1xskokbvCeu8AC3Ftze8pIZQCFCMKnggMOCJeBDFGTQGkTllb69/p5kUIRO
+         AhDT9h675bdJFmDUwCDnm+U04rs6UaiQieKybbEjc3n8flRrFNTbFzqlUp3jQu03Rx5F
+         a67ybMwhrt+v310Rb1gRwA+3li0PgpJjLDNIFWAsrbwFyUvHKN/Rh6UOxPPvK/nxmsBF
+         lS8w==
+X-Gm-Message-State: AOJu0YwT82rxfyBwJVz8xeSeibu8o39MB6HnSGdU/e9J+VGWfqIzT3Zx
+	/p1D4hE+SKhA7oMURT0Ffb2mP5zCYDhP/j0vcyCKr4y4sV8zRA==
+X-Google-Smtp-Source: AGHT+IHMmYxzI3mAVJDcEJEplNVxfmygp9nd+wcU/5sYY2iOvEMAdLZZg203zoyPOGUGbPTazWIMJJ4PrLmYbvV5IGw=
+X-Received: by 2002:a67:e9ce:0:b0:467:ed7d:27bb with SMTP id
+ q14-20020a67e9ce000000b00467ed7d27bbmr3166740vso.14.1705309043703; Mon, 15
+ Jan 2024 00:57:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
-Subject: Re: [PATCH RFC v2 04/11] ARM: dts: omap4: Add device tree entry for
- SGX GPU
-From: "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <vpcgccul53oibwoqb3barj3rjxoyskoldjyfvjdzmytic3tonm@wq4aqsenk7rp>
-Date: Mon, 15 Jan 2024 09:55:00 +0100
-Cc: Andrew Davis <afd@ti.com>,
- Frank Binns <frank.binns@imgtec.com>,
- Donald Robson <donald.robson@imgtec.com>,
- Matt Coster <matt.coster@imgtec.com>,
- Adam Ford <aford173@gmail.com>,
- Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Chen-Yu Tsai <wens@csie.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>,
- =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
- Tony Lindgren <tony@atomide.com>,
- Nishanth Menon <nm@ti.com>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Tero Kristo <kristo@kernel.org>,
- Paul Cercueil <paul@crapouillou.net>,
- dri-devel@lists.freedesktop.org,
- devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev,
- linux-omap@vger.kernel.org,
- linux-mips@vger.kernel.org
+MIME-Version: 1.0
+References: <20240113094205.025407355@linuxfoundation.org>
+In-Reply-To: <20240113094205.025407355@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Mon, 15 Jan 2024 14:27:12 +0530
+Message-ID: <CA+G9fYv71kU78tJNO-gZ-SRf4aOSgYveudKuyffq8N3-5oFvAQ@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/25] 4.19.305-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <7BC64F03-A4DF-411F-9B6F-6BCA436D9B50@goldelico.com>
-References: <20240108183302.255055-1-afd@ti.com>
- <20240108183302.255055-5-afd@ti.com>
- <122DC5ED-2AA7-46A0-845F-083922458385@goldelico.com>
- <vpcgccul53oibwoqb3barj3rjxoyskoldjyfvjdzmytic3tonm@wq4aqsenk7rp>
-To: Maxime Ripard <mripard@kernel.org>
-X-Mailer: Apple Mail (2.3774.300.61.1.2)
 
-Hi,
+On Sat, 13 Jan 2024 at 15:25, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.305 release.
+> There are 25 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Mon, 15 Jan 2024 09:41:55 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.305-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-> Am 15.01.2024 um 09:25 schrieb Maxime Ripard <mripard@kernel.org>:
->=20
-> Hi,
->=20
-> On Fri, Jan 12, 2024 at 06:33:58PM +0100, H. Nikolaus Schaller wrote:
->>> Am 08.01.2024 um 19:32 schrieb Andrew Davis <afd@ti.com>:
->>>=20
->>> Add SGX GPU device entry to base OMAP4 dtsi file.
->>>=20
->>> Signed-off-by: Andrew Davis <afd@ti.com>
->>> ---
->>> arch/arm/boot/dts/ti/omap/omap4.dtsi | 9 +++++----
->>> 1 file changed, 5 insertions(+), 4 deletions(-)
->>>=20
->>> diff --git a/arch/arm/boot/dts/ti/omap/omap4.dtsi =
-b/arch/arm/boot/dts/ti/omap/omap4.dtsi
->>> index 2bbff9032be3e..559b2bfe4ca7c 100644
->>> --- a/arch/arm/boot/dts/ti/omap/omap4.dtsi
->>> +++ b/arch/arm/boot/dts/ti/omap/omap4.dtsi
->>> @@ -501,10 +501,11 @@ sgx_module: target-module@56000000 {
->>> #size-cells =3D <1>;
->>> ranges =3D <0 0x56000000 0x2000000>;
->>>=20
->>> - /*
->>> - * Closed source PowerVR driver, no child device
->>> - * binding or driver in mainline
->>> - */
->>> + gpu@0 {
->>=20
->> I wonder why we don't add a "gpu:" label here.
->>=20
->> Almost all other subsystem nodes have one (e.g. emif:, aes:, dss:, =
-dsi:, hdmi:, etc.),
->> obviously for convenience when using a .dtsi file.
->>=20
->> It would allow a board-specific DTS to easily add status =3D =
-"disabled" to avoid driver
->> probing or disabling the GPU (e.g. if there is no display).
->=20
-> There's no reason to disable it in the DT: the hardware block would
-> still be there and it's rendering to memory so it still could be =
-useful.
 
-Well, if you know that the board does not have a dm3730 but a dm3725 =
-without
-GPU it is better to disable the GPU completely instead of loading the =
-driver
-and make it detect by some internal bits that it has no GPU on the SoC.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-> If there's no display on the board and you really don't want the GPU
-> driver, then you can disable the driver or block the module loading, =
-but
-> it should be a distro / package / user decision, not a DT / kernel one
-> still.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-The same holds for aes: dss: dsi: hdmi: etc. If they are not used by =
-some
-board file, they don't change a single bit of the DTB [1] which IMHO =
-would
-be of reasonable concern to question additional labels.
+## Build
+* kernel: 4.19.305-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-4.19.y
+* git commit: cb74230da5071e4cb54b342a0d079296ecc14a98
+* git describe: v4.19.304-26-gcb74230da507
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
+304-26-gcb74230da507
 
-BR and thanks,
-Nikolaus
+## Test Regressions (compared to v4.19.304)
 
-[1] =
-https://devicetree-specification.readthedocs.io/en/stable/source-language.=
-html
-"Labels are only used in the devicetree source format and are not =
-encoded into the
-DTB binary."
+## Metric Regressions (compared to v4.19.304)
 
+## Test Fixes (compared to v4.19.304)
+
+## Metric Fixes (compared to v4.19.304)
+
+## Test result summary
+total: 103058, pass: 89229, fail: 1698, skip: 12065, xfail: 66
+
+## Build Summary
+* arc: 20 total, 20 passed, 0 failed
+* arm: 216 total, 204 passed, 12 failed
+* arm64: 65 total, 55 passed, 10 failed
+* i386: 36 total, 30 passed, 6 failed
+* mips: 40 total, 40 passed, 0 failed
+* parisc: 6 total, 0 passed, 6 failed
+* powerpc: 48 total, 48 passed, 0 failed
+* s390: 12 total, 12 passed, 0 failed
+* sh: 20 total, 20 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x86_64: 54 total, 44 passed, 10 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-user
+* kselftest-vm
+* kselftest-zram
+* kunit
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-crypto
+* ltp-cve
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* rcutorture
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
