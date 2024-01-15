@@ -1,129 +1,245 @@
-Return-Path: <linux-kernel+bounces-26410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26411-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44E5682E036
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 19:44:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 710BE82E03B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 19:49:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED5671F2276E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:44:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A209285D5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:49:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6419018E17;
-	Mon, 15 Jan 2024 18:44:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA59818AE8;
+	Mon, 15 Jan 2024 18:49:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Znq/b9en"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="UD6NHVoP"
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2070.outbound.protection.outlook.com [40.107.101.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6603E18E0A
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 18:44:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--glider.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbe9dacc912so10603575276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 10:44:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705344275; x=1705949075; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uCCPLj9WIEdpIVdqzT004aXc52PF8jQhxejOjNa7h3c=;
-        b=Znq/b9enri1PtLBoq2Pn5Nt7SFZS4GE7Ruk+jCT7WeCif/PrT3RGMsmyUU0CRNuURe
-         6e/D0oQwq+CuLNUtoaRsjt12HOa1FRvfaJvQdVihS0P+fAaighc0h5ku+S2UnTB3/oF1
-         YigNiU63kNCthc46CPaEEmkA+A8st7kdG4j181w0VLm1MVYk14QEIr+I3/q4DRN4RVDJ
-         PiRLaOA5v1QtpOrm5ZI9wy2Zp9TwjWZAMzmR1eVTfc8qKQ/aKDFf6aAGu64ZS5w2eK1e
-         3a5iw/4wupQosRRxpwG+p1Emez16m1/RRNfZfYoxLSGDv6S/IitzMutML3bVhCrk9NnE
-         Lm8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705344275; x=1705949075;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uCCPLj9WIEdpIVdqzT004aXc52PF8jQhxejOjNa7h3c=;
-        b=krBDyvv3ISbv9YVrjYlpO0+5RPFnCxjY0Hdg3kwFwo/A07HX/j83DCc5XzpD6LFjkW
-         h7esecr/tJFtFyCiSzxQwAFKBuJRcGX911eed+k8KNqG/+qVCuyO+7rc3sEBcbTordqP
-         S5XdNbIWswzOxG32S9CMizVRLoZKIb0O7+TfMBGUmO1auEj6fmcSwrDKEfxkteoJqjnT
-         FFRxMuoJkn0psCpU3GGCziTpWAkJNaExZ2F8EruP+0MRolt/ckxtRdHuv0rCcjGtWaTh
-         kVxeOBjbPFfEvcB/5q1Tu7xVqYsgKNZXlFts8H8YPLSSUE9PTEkBkhv0sQNazvDeUpD8
-         tLEw==
-X-Gm-Message-State: AOJu0Yyu53DlvuCJIbuBoLbKgUMAS4mPCx5zc24Bn69/xd8KvwGTu2AQ
-	I3ZluD2//wjzRsaPLl/XKkGwWNdInjs0nCHhmQ==
-X-Google-Smtp-Source: AGHT+IFCJ46CqM1/C8q96wk9dmF/Gg8dE6SjoZ0eTf1WG2ltKm+jUuofZWPaIYijnmKF8B+lilmt6hSO/Lc=
-X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:c671:6fb:2d64:ae58])
- (user=glider job=sendgmr) by 2002:a25:5181:0:b0:dbe:a0c2:df25 with SMTP id
- f123-20020a255181000000b00dbea0c2df25mr268706ybb.8.1705344275329; Mon, 15 Jan
- 2024 10:44:35 -0800 (PST)
-Date: Mon, 15 Jan 2024 19:44:30 +0100
-In-Reply-To: <1697202267-23600-1-git-send-email-quic_charante@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FA3918639
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 18:49:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EftCtHw1ouSxiI33ipl+QAn4uT/T5pkHtVLImHGe2Vrak+fhVfpJaxB23dBLXIbwYlGXnktn7Hpr9+GdK9KHgbzdbq3UnNrVIUVpL1A1owE2OiXtn3k89HcfJ48CCm6qCygn+ZD3WuMF6Gy798U/afWA9s6fsqCQEuI0n+Il5gesfXAXSBy2O/L3+WivPgY0FdZM5ZcFVCKjpRDWpl64hM8Uy4/XprbbIbl9b64a3xv/dug3Q7DgSzYKlQvfltv/yu7r/4OixF/sDt8GohJvGo17c7D5Q4LmmDEMem7iUiyFvs9hTlpa3SFqRp0xCEb2NRwo7R0IrAHDdbMnFrZtRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jMEteKoefsg/B6DYISqjwDpYoPWCilc8deuZZQd6xTs=;
+ b=ircoqMJKsneh4rro5udtSXd6gLc+BNhKYjWJ66kjJ2V1p0BaW8bBFe9KUvpwaHrVo8vCYTdryCmYSbbd23K/BPHW16EnCwCsf+YCHI+gdCSwpZj00fXN1OSfibmotGbMycLCvSF/uEZRGBgbGO2yJHQkHaIR9GD8pp/DjwKiIdEYEJDqEP5deX7nswERCd4bUKsbgtCMjcP0GZMJJZhwTL1rVED1aVqUc2camlOEle/RS35VQ/+QFb/kXXBmNXDmevgn6PYcY+mCrwHJplszVZIW6MCuLIAZ2VQQE1DWg9wUSXn7iZPY/3EIaj97J89CWyCMo5JvPq1Cb1yNVmjuLA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jMEteKoefsg/B6DYISqjwDpYoPWCilc8deuZZQd6xTs=;
+ b=UD6NHVoPfxI8XOU96ZcAgsapsWZbcsxtmY1LOC1heEBLaOx05PHQOBdg8e0gRe2Qpr3U2W8044wEbRmH+85X6bzdQzpSHupcR2LyZalnKH5qQUGW6IoRU7Vdw8cQ5EI8rVve+zxZK6uIXvwzhFh5r2E8lB62eXry03vaVpN3RpGXMjXSmdRS2N4kofZgTMYEoLQtqbAPcVzwVFapjQrsaPl0OJoAXZ6weyW3DvlBzSWlhQ5VeZZQxbibEv5BqeTJnptNiTV1emRLSEs1PkjG07crRdW5kK+nUvPt6gsPMr8Gxnm/Y0mYWaN31a6pEi/V+FAbKXfYC7GtYSgJkmF/WQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by DM4PR12MB5769.namprd12.prod.outlook.com (2603:10b6:8:60::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7181.21; Mon, 15 Jan 2024 18:49:02 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::96dd:1160:6472:9873]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::96dd:1160:6472:9873%6]) with mapi id 15.20.7181.020; Mon, 15 Jan 2024
+ 18:49:02 +0000
+Date: Mon, 15 Jan 2024 14:49:00 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: peterx@redhat.com
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	James Houghton <jthoughton@google.com>,
+	David Hildenbrand <david@redhat.com>,
+	"Kirill A . Shutemov" <kirill@shutemov.name>,
+	Yang Shi <shy828301@gmail.com>, linux-riscv@lists.infradead.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+	Rik van Riel <riel@surriel.com>,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Mike Rapoport <rppt@kernel.org>, John Hubbard <jhubbard@nvidia.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Andrew Jones <andrew.jones@linux.dev>,
+	linuxppc-dev@lists.ozlabs.org,
+	Mike Kravetz <mike.kravetz@oracle.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	linux-arm-kernel@lists.infradead.org,
+	Christoph Hellwig <hch@infradead.org>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v2 10/13] mm/gup: Handle huge pud for follow_pud_mask()
+Message-ID: <20240115184900.GV734935@nvidia.com>
+References: <20240103091423.400294-1-peterx@redhat.com>
+ <20240103091423.400294-11-peterx@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240103091423.400294-11-peterx@redhat.com>
+X-ClientProxiedBy: BL1P222CA0012.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:208:2c7::17) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <1697202267-23600-1-git-send-email-quic_charante@quicinc.com>
-X-Mailer: git-send-email 2.43.0.381.gb435a96ce8-goog
-Message-ID: <20240115184430.2710652-1-glider@google.com>
-Subject: Re: [PATCH] mm/sparsemem: fix race in accessing memory_section->usage
-From: Alexander Potapenko <glider@google.com>
-To: quic_charante@quicinc.com
-Cc: akpm@linux-foundation.org, aneesh.kumar@linux.ibm.com, 
-	dan.j.williams@intel.com, david@redhat.com, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, mgorman@techsingularity.net, osalvador@suse.de, 
-	vbabka@suse.cz, Alexander Potapenko <glider@google.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, 
-	Ilya Leoshkevich <iii@linux.ibm.com>, Nicholas Miehlbradt <nicholas@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM4PR12MB5769:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7df37c85-ec0d-4449-fd25-08dc15faa454
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	5rMXHldge6YBjMMsjPwt7tvwN9+mbiDdf/UGr13mhrWm9S9TnboN2t4e7NcJw3V/iZ8DplcFuc2q8TG40Tv8tI5c+tCVBTrK+A+rjvJPZTyd7POl105zJAR9Q478YfHbKgbzIp+V65frshLt2jAo4ZWp9ai6NA1nHk3+biYXV7G6X4OTVfnM7ZhXMO781l/N5DkGRJiCIFE1kOeoIcxCAXOzbYh5FJXj13Wtwdf8BDy40DilmO38UxDkSBSpRtddF3Ol2KS2NvKIhtJFJOIgdJEdwP+mGGXq9kvrF3iOA0FvVU+L1jAiMUBhgjIK+oN+x+FpI53j/lO/zabgt1F+u+ccy22srQG7EzX3KF4ogajabiTkwLOBVqEBRVYjR7W7j0S7YsKY0HhhYEEeYwV3lztO5iQ31nM7qC58ajrHJCQ0Qv6hmN6SuCpr4KpM494lye7mZwbm47plZvEHUcDa9Gurcm2PrkxksrB7IKK2DUy62ZDR7d4Po16yRkIYTgVPmWklqePneJpuMYUUc73TN5WI2yppDn0ihPgm3c34xQb6yq8i5GkChgyct5PxvuwJN1+fNZz0gOGzAG15+fz+A+iLLIte497/dXdLEzBgXyeTVlhlCZUpvhElWOUvLyZV
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(366004)(39860400002)(346002)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(66946007)(36756003)(316002)(66556008)(6916009)(66476007)(54906003)(6506007)(6512007)(478600001)(6486002)(41300700001)(8936002)(8676002)(4326008)(2906002)(7416002)(38100700002)(83380400001)(5660300002)(33656002)(26005)(1076003)(86362001)(2616005)(27376004)(14583001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?Xbawbzfm98gnNL2b1C7Y1xfdrPC94p9mJt5uYRvvx3olbf6JeeYXYxIY1gqM?=
+ =?us-ascii?Q?KwHBWQD7lLxCTll3qavOzkMeInfj31f8e9QGgdXQqh85m7OVRaEhdL2USuaE?=
+ =?us-ascii?Q?HZ718tmFt/TBZapr3diLksMNnXW8zYyMfouP2lx/hgyxcgIXa37k9AOxALhI?=
+ =?us-ascii?Q?wEK1EAd7U6IN5RiZV+mDHtMkOnYw/lDmq0dq8etHMYbJEf8ZQHfDx8X5d/Ng?=
+ =?us-ascii?Q?XsDr1PFeQFvnK2Ow86uT2oz8HsMc5zNVr5GdV+4NO4ekUhHfW7qrNFBiyftB?=
+ =?us-ascii?Q?ncEItTe8crRWnWFOSElGPzlbqvZv6DYaqT+JzVZ2byew1Jrl/XQ/azHslzYb?=
+ =?us-ascii?Q?QohpBXpcXK4m3lZlvfhUzDRbhHBmHmdp+ELgypARuU+Fmq+Ms9mo+gioy06W?=
+ =?us-ascii?Q?QOgtARqAjcP8DYRwGYxvOtg2Huw6LDCCnPgr2T39YZqzZjh5PHj+iLgAVofA?=
+ =?us-ascii?Q?GLxFzT3CCNX01eIHcbmzs8BCTWO7HUgflXfAzfH/JB3N4K0U09LuR0gEvmfU?=
+ =?us-ascii?Q?KOC15Q4EJjU0hV3LV/chqeb56svSAv8mKNKmTmG70EyuziXGiGrOFI+9bujV?=
+ =?us-ascii?Q?QPMPjrIWXNNi9NVaE/o1SNIlis7LopHp8bmdiTVIX6azN1P7uFLJrZGKGMao?=
+ =?us-ascii?Q?n6kNSwB1wYw/F7ogb0NMlAf609DQeoRa/QHu6+V9L9wTF6Dp0VazUL6c2a/i?=
+ =?us-ascii?Q?uX+rztMqpk5G+w7N7rhXV7lywGIpR7eygyA8QquDbqTq5v7pFRDyCT+SNFJs?=
+ =?us-ascii?Q?X2LL0Au80KztxRkNj0auhVxOYEpDysKVHayrNc79MAVow7cIOsYgtY3GfWmk?=
+ =?us-ascii?Q?xBj+u6S3THlBK5GP940obRfc/FVzcLvXxlIGKBKeNecislg4p2iJNNYklg8H?=
+ =?us-ascii?Q?hmAmFUA2xOlhTFyMUNRYWnqOure5c+mPHyfmtYMYSu8B3plQWg/l2oNWkLXd?=
+ =?us-ascii?Q?394kXIpkpPvCksew0F2kqyePIpa86ButQohzVNKgnQU8EGR6SQkmIUjCmc9f?=
+ =?us-ascii?Q?0CPdmTbgcVTVum6jpBcRxW93P/E9tE2Dr9o7lmwIAiVZgl/98H0Rftau1Qlf?=
+ =?us-ascii?Q?XZWddXkrJ1tMfB/jvQd4GCBezrwcw5POaXnuA9eaOsYOjJf9+e/HQAwB6fGF?=
+ =?us-ascii?Q?cIL0SUFoalMnJJIt4PWQClXp0LYTPyfQ+JAalrJyjuZK+GvOr9dSbFOXztVW?=
+ =?us-ascii?Q?3EjU0XIRkmVsSdNzkEScZIqn+mYQPrJ9OC2m74fzan0+G0d2jc4xzsmWfMfn?=
+ =?us-ascii?Q?9/ZSdTBBb1t+2348BvBLpqtzFQCAQfG6XBsqJmHqDoCJ89c824CgjdkMgR4m?=
+ =?us-ascii?Q?1pImngL8iQAHOuJVSIxbTugycyNKrbBgnQwItCJsgo429RLfC43GBblqqFcy?=
+ =?us-ascii?Q?kZaDVR/HQXTwl1Q2veGHhMPhzsIIWSPT+LF51DX/BFac73tZ96Vz1mUruXRX?=
+ =?us-ascii?Q?4fMK6z/yDh5M2CT4log3toW2FeC5xSAgMJv1XhVocL8By301gvxoFxUAana4?=
+ =?us-ascii?Q?NIOeNaB+Xm1TXIXRZkH5QdlVAE4j9f2qrnEzFHAu4Emw4ODDBUcmsv2Mv+/X?=
+ =?us-ascii?Q?cDEGQIq4qHIXd13ZZxaAkxgbUEMIQH70QUmVXSWF?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7df37c85-ec0d-4449-fd25-08dc15faa454
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2024 18:49:02.3876
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6mapq9JFYBeeRd0N7JKlP1GSn4tML8UzLriThEAs7LONP73z6fRPwPkPF7Dhb53p
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5769
 
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Marco Elver <elver@google.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: kasan-dev@googlegroups.com
-Cc: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: Nicholas Miehlbradt <nicholas@linux.ibm.com>
+On Wed, Jan 03, 2024 at 05:14:20PM +0800, peterx@redhat.com wrote:
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 63845b3ec44f..760406180222 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -525,6 +525,70 @@ static struct page *no_page_table(struct vm_area_struct *vma,
+>  	return NULL;
+>  }
+>  
+> +#ifdef CONFIG_PGTABLE_HAS_HUGE_LEAVES
+> +static struct page *follow_huge_pud(struct vm_area_struct *vma,
+> +				    unsigned long addr, pud_t *pudp,
+> +				    int flags, struct follow_page_context *ctx)
+> +{
+> +	struct mm_struct *mm = vma->vm_mm;
+> +	struct page *page;
+> +	pud_t pud = *pudp;
+> +	unsigned long pfn = pud_pfn(pud);
+> +	int ret;
+> +
+> +	assert_spin_locked(pud_lockptr(mm, pudp));
+> +
+> +	if ((flags & FOLL_WRITE) && !pud_write(pud))
+> +		return NULL;
+> +
+> +	if (!pud_present(pud))
+> +		return NULL;
+> +
+> +	pfn += (addr & ~PUD_MASK) >> PAGE_SHIFT;
+> +
+> +#ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+> +	if (pud_devmap(pud)) {
 
-Hi folks,
+Can this use IS_ENABLED(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) ?
 
-(adding KMSAN reviewers and IBM people who are currently porting KMSAN to other
-architectures, plus Paul for his opinion on refactoring RCU)
+> +		/*
+> +		 * device mapped pages can only be returned if the caller
+> +		 * will manage the page reference count.
+> +		 *
+> +		 * At least one of FOLL_GET | FOLL_PIN must be set, so
+> +		 * assert that here:
+> +		 */
+> +		if (!(flags & (FOLL_GET | FOLL_PIN)))
+> +			return ERR_PTR(-EEXIST);
+> +
+> +		if (flags & FOLL_TOUCH)
+> +			touch_pud(vma, addr, pudp, flags & FOLL_WRITE);
+> +
+> +		ctx->pgmap = get_dev_pagemap(pfn, ctx->pgmap);
+> +		if (!ctx->pgmap)
+> +			return ERR_PTR(-EFAULT);
+> +	}
+> +#endif	/* CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
+> +	page = pfn_to_page(pfn);
+> +
+> +	if (!pud_devmap(pud) && !pud_write(pud) &&
+> +	    gup_must_unshare(vma, flags, page))
+> +		return ERR_PTR(-EMLINK);
+> +
+> +	ret = try_grab_page(page, flags);
+> +	if (ret)
+> +		page = ERR_PTR(ret);
+> +	else
+> +		ctx->page_mask = HPAGE_PUD_NR - 1;
+> +
+> +	return page;
+> +}
+> +#else  /* CONFIG_PGTABLE_HAS_HUGE_LEAVES */
+> +static struct page *follow_huge_pud(struct vm_area_struct *vma,
+> +				    unsigned long addr, pud_t *pudp,
+> +				    int flags, struct follow_page_context *ctx)
+> +{
+> +	return NULL;
+> +}
+> +#endif	/* CONFIG_PGTABLE_HAS_HUGE_LEAVES */
+> +
+>  static int follow_pfn_pte(struct vm_area_struct *vma, unsigned long address,
+>  		pte_t *pte, unsigned int flags)
+>  {
+> @@ -760,11 +824,11 @@ static struct page *follow_pud_mask(struct vm_area_struct *vma,
+>  
+>  	pudp = pud_offset(p4dp, address);
+>  	pud = READ_ONCE(*pudp);
+> -	if (pud_none(pud))
+> +	if (pud_none(pud) || !pud_present(pud))
+>  		return no_page_table(vma, flags, address);
 
-this patch broke x86 KMSAN in a subtle way.
+Isn't 'pud_none() || !pud_present()' redundent? A none pud is
+non-present, by definition?
 
-For every memory access in the code instrumented by KMSAN we call
-kmsan_get_metadata() to obtain the metadata for the memory being accessed. For
-virtual memory the metadata pointers are stored in the corresponding `struct
-page`, therefore we need to call virt_to_page() to get them.
+> -	if (pud_devmap(pud)) {
+> +	if (pud_huge(pud)) {
+>  		ptl = pud_lock(mm, pudp);
+> -		page = follow_devmap_pud(vma, address, pudp, flags, &ctx->pgmap);
+> +		page = follow_huge_pud(vma, address, pudp, flags, ctx);
+>  		spin_unlock(ptl);
+>  		if (page)
+>  			return page;
 
-According to the comment in arch/x86/include/asm/page.h, virt_to_page(kaddr)
-returns a valid pointer iff virt_addr_valid(kaddr) is true, so KMSAN needs to
-call virt_addr_valid() as well.
+Otherwise it looks OK to me
 
-To avoid recursion, kmsan_get_metadata() must not call instrumented code,
-therefore ./arch/x86/include/asm/kmsan.h forks parts of arch/x86/mm/physaddr.c
-to check whether a virtual address is valid or not.
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-But the introduction of rcu_read_lock() to pfn_valid() added instrumented RCU
-API calls to virt_to_page_or_null(), which is called by kmsan_get_metadata(),
-so there is an infinite recursion now. I do not think it is correct to stop that
-recursion by doing kmsan_enter_runtime()/kmsan_exit_runtime() in
-kmsan_get_metadata(): that would prevent instrumented functions called from
-within the runtime from tracking the shadow values, which might introduce false
-positives.
-
-I am currently looking into inlining __rcu_read_lock()/__rcu_read_unlock(), into
-KMSAN code to prevent it from being instrumented, but that might require factoring
-out parts of kernel/rcu/tree_plugin.h into a non-private header. Do you think this
-is feasible?
-
-Another option is to cut some edges in the code calling virt_to_page(). First,
-my observation is that virt_addr_valid() is quite rare in the kernel code, i.e.
-not all cases of calling virt_to_page() are covered with it. Second, every
-memory access to KMSAN metadata residing in virt_to_page(kaddr)->shadow always
-accompanies an access to `kaddr` itself, so if there is a race on a PFN then
-the access to `kaddr` will probably also trigger a fault. Third, KMSAN metadata
-accesses are inherently non-atomic, and even if we ensure pfn_valid() is
-returning a consistent value for a single memory access, calling it twice may
-already return different results.
-
-Considering the above, how bad would it be to drop synchronization for KMSAN's
-version of pfn_valid() called from kmsan_virt_addr_valid()?
+Jason
 
