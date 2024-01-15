@@ -1,142 +1,114 @@
-Return-Path: <linux-kernel+bounces-25815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 268C082D639
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:42:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D2A882D637
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:42:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9BE81F21D61
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:42:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02DA61C21573
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:42:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E438101D0;
-	Mon, 15 Jan 2024 09:42:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98055F4E3;
+	Mon, 15 Jan 2024 09:41:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="kZq7oIgp"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="c0I81QZm"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04EF9F9D3;
-	Mon, 15 Jan 2024 09:42:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 367D240E016C;
-	Mon, 15 Jan 2024 09:41:59 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id gbcYK8KndIZR; Mon, 15 Jan 2024 09:41:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1705311716; bh=XBIKxlNsZUJPRPkrxlOi1GzgwTad37xoV2mYozz4U4g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kZq7oIgpoPYNJEFRmQ9JE48d2cPjKOwShniYdb8svdbjNuXaCXgkI4vm7t9jN3tk3
-	 0SyquZx6f4o+581UG8SQEF/a5JXBrhlewfKVgs0DWSPD7Xhu3x7KPorhxYHOrW/ZkW
-	 /WkS4JM23S0qQa6J6k/PMJ9/UFQC3c3EAtxAAudXnxy2OfmMr6GryU5ieNcRB0VUqF
-	 Kk56gR6BWxDGFlGlKPXEkv3AS1x2RjKgRjF4rN71FCEKHAR7JQV8a9ePmr0epXg4nr
-	 +K8OUef+fdVPdl9dDUwxnKAIEtAaEqwy5hTxtLcpu+fZI3TyrfY91wAV77MqGaQJX+
-	 I9TV8Vr7MDR6A+XR2gzKocxtwZwUaUPYPtI71n52jydUwNRUFbuLfcJmGPHLs6vmCc
-	 GT15I5hrWJ5oS44BqXuvuQz7Gn+RxvthADl5Xqp7KraalD4OGnhM3sIkHtrlPoA+SP
-	 ElIlzTj3x2wO4UdsT9YEgQcRKXep+r2BCZohCYiRrppaZJ8uagtla5VglupvrYmOSB
-	 Uz8ExwhjAP5m15h1O0Q7sQH1RYxDEBqFCXtAiJLE2g5DCXhPEhpyNgmdJIGvMFTeRG
-	 6p+xjuV3jBjkoXBYS7fHf89rG4lL2UmaOvBIU5i6yOHaa7F3eHhKV/VzYkAGlTfiYe
-	 I7Bqk/56DF97nG5LMUix8SaU=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AC6A940E01A9;
-	Mon, 15 Jan 2024 09:41:19 +0000 (UTC)
-Date: Mon, 15 Jan 2024 10:41:12 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Michael Roth <michael.roth@amd.com>
-Cc: x86@kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
-	linux-mm@kvack.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-	rientjes@google.com, tobin@ibm.com, vbabka@suse.cz,
-	kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-	pankaj.gupta@amd.com,
-	"liam.merwick@oracle.com Brijesh Singh" <brijesh.singh@amd.com>
-Subject: Re: [PATCH v1 12/26] crypto: ccp: Define the SEV-SNP commands
-Message-ID: <20240115094103.GFZaT9r4zX8V_ax8lv@fat_crate.local>
-References: <20231230161954.569267-1-michael.roth@amd.com>
- <20231230161954.569267-13-michael.roth@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A28ADDDD6
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 09:41:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705311713;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C+Jk1nbj3uW6migT2Vqo+VfpLTraUaZDdhQVwMiE/20=;
+	b=c0I81QZmwUhWfcKFSfi9cd1bJlhXMyA/f0LeJTkKtOGnJzkd9rmxtzqecCKbvuCPZaVQ47
+	TAKg4ZcgebSDwtK8Y1MqEqqa3Ze2ZJN92NhqHCjCz3t4sF/Gx5/NwBxcFLX+gdH2i4V28L
+	BoUnFKxHjHiPrnsS5Up4j82RCLKU+Fk=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-544-nrcTZ4UcNuyIsOZ_j6BWeQ-1; Mon, 15 Jan 2024 04:41:51 -0500
+X-MC-Unique: nrcTZ4UcNuyIsOZ_j6BWeQ-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-681476b6bb3so34475466d6.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 01:41:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705311709; x=1705916509;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=C+Jk1nbj3uW6migT2Vqo+VfpLTraUaZDdhQVwMiE/20=;
+        b=RBtVpZzLDo9s23f872iWLfvZjaLrFbw+7BSb/DySaKNFm0Aqo2+KOP0IYGG7EagA46
+         eXolA8Y7/B8Zw6aysaI8qxMyGcTTl7/ivQ6ifmykXFvLxEN77fwV89hTezk7muS/QQ3m
+         RzKmY6Y4us6k9vIW/106reCioz0C+5wZxS9863LTREnY1VZpRZPsEeQGGHa/TbDkFVJg
+         YhzFZopOAiio+KD8LA/2l7AoJXoQ8eTbp0O8td9GC6R+dv20+28+jZy3YKHBzD3AyNUe
+         Sn1qm5jwyorlnVbgYatqCszxPWe9JtA0Dd/lDCP0s/uOr1IXfNbOQR4l373701FPcRvo
+         wFNQ==
+X-Gm-Message-State: AOJu0YzBiIMS28eVVMCLjNHrnfGa4Tjc9XR+6V1zjbuPIoj35RApAby/
+	zCAHgwOIDEh0ggpPumSUWyKm7Hjgl0PKcO+/zZZB8Dl99CPrf1SZE303KjBhFCHS4rpNrtr/DOp
+	GtX0WMgmPUFZQ4wRk9r37kTSOLyHwiXHW7C5wdjPYPS9UcJKF9zW0tTIgoq4SltDU/wNfkDo2LL
+	+oMwCYbu0+LcjNZVBY
+X-Received: by 2002:ad4:5ba9:0:b0:681:656f:4990 with SMTP id 9-20020ad45ba9000000b00681656f4990mr301112qvq.4.1705311709641;
+        Mon, 15 Jan 2024 01:41:49 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHAOOoM1Bm+v8qEYAvYKrGoQCl6CNZBl4IdAdptOpUkzfuoO62Z5TqjIUAbKxWrq0EP1glzaQ==
+X-Received: by 2002:ad4:5ba9:0:b0:681:656f:4990 with SMTP id 9-20020ad45ba9000000b00681656f4990mr301089qvq.4.1705311709206;
+        Mon, 15 Jan 2024 01:41:49 -0800 (PST)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id x19-20020ad44593000000b0067f678747ffsm3189342qvu.50.2024.01.15.01.41.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 01:41:48 -0800 (PST)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Yong-Xuan Wang <yongxuan.wang@sifive.com>, linux-riscv@lists.infradead.org
+Cc: greentime.hu@sifive.com, vincent.chen@sifive.com, Yong-Xuan Wang
+ <yongxuan.wang@sifive.com>, Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Marc Zyngier <maz@kernel.org>, Anup Patel <apatel@ventanamicro.com>, Atish
+ Patra <atishp@rivosinc.com>, Conor Dooley <conor.dooley@microchip.com>,
+ Samuel Holland <samuel.holland@sifive.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] RISC-V: add IPI tracepoints
+In-Reply-To: <20240115071246.32675-1-yongxuan.wang@sifive.com>
+References: <20240115071246.32675-1-yongxuan.wang@sifive.com>
+Date: Mon, 15 Jan 2024 10:41:44 +0100
+Message-ID: <xhsmhh6jfhr1j.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231230161954.569267-13-michael.roth@amd.com>
+Content-Type: text/plain
 
-On Sat, Dec 30, 2023 at 10:19:40AM -0600, Michael Roth wrote:
-> From: Brijesh Singh <brijesh.singh@amd.com>
-> 
-> AMD introduced the next generation of SEV called SEV-SNP (Secure Nested
-> Paging). SEV-SNP builds upon existing SEV and SEV-ES functionality
-> while adding new hardware security protection.
-> 
-> Define the commands and structures used to communicate with the AMD-SP
-> when creating and managing the SEV-SNP guests. The SEV-SNP firmware spec
-> is available at developer.amd.com/sev.
-> 
-> Co-developed-by: Ashish Kalra <ashish.kalra@amd.com>
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> [mdr: update SNP command list and SNP status struct based on current
->       spec, use C99 flexible arrays, fix kernel-doc issues]
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
-> ---
->  drivers/crypto/ccp/sev-dev.c |  16 +++
->  include/linux/psp-sev.h      | 264 +++++++++++++++++++++++++++++++++++
->  include/uapi/linux/psp-sev.h |  56 ++++++++
->  3 files changed, 336 insertions(+)
+On 15/01/24 07:12, Yong-Xuan Wang wrote:
+> The strings used to list IPIs in /proc/interrupts are reused for tracing
+> purposes. Also slightly clean up the code by removing send_ipi_single().
+>
 
-More ignored feedback:
+So this is adding trace events for sending & receiving IPIs.
 
-https://lore.kernel.org/r/20231124143630.GKZWC07hjqxkf60ni4@fat_crate.local
+Regarding reception, AFAICT arm/arm64 had that historically because IPIs
+were handled directly by the irqchip (see rambling on the first part of the
+cover letter at [1]), but now that this is no longer the case they are
+obsolete: they show up in trace_irq_handler* events.
 
-Lemme send it to you as a diff then - it'll work then perhaps.
+I don't know riscv IRQ handling, but riscv_ipi_set_virq_range() looks
+awfully similar to arm64's set_smp_ipi_range() and does a "proper"
+request_percpu_irq() for handle_IPI(). So if one wants a trace footprint of
+IPI reception, there already is infrastructure for it.
 
-diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
-index 983d314b5ff5..1a76b5297f03 100644
---- a/include/linux/psp-sev.h
-+++ b/include/linux/psp-sev.h
-@@ -104,7 +104,7 @@ enum sev_cmd {
- 	SEV_CMD_SNP_PAGE_RECLAIM	= 0x0C7,
- 	SEV_CMD_SNP_PAGE_UNSMASH	= 0x0C8,
- 	SEV_CMD_SNP_CONFIG		= 0x0C9,
--	SEV_CMD_SNP_DOWNLOAD_FIRMWARE_EX	= 0x0CA,
-+	SEV_CMD_SNP_DOWNLOAD_FIRMWARE_EX = 0x0CA,
- 	SEV_CMD_SNP_COMMIT		= 0x0CB,
- 	SEV_CMD_SNP_VLEK_LOAD		= 0x0CD,
- 
-@@ -624,7 +624,8 @@ enum {
-  * @gctx_paddr: system physical address of guest context page
-  * @page_size: page size 0 indicates 4K and 1 indicates 2MB page
-  * @page_type: encoded page type
-- * @imi_page: indicates that this page is part of the IMI of the guest
-+ * @imi_page: indicates that this page is part of the IMI (Incoming
-+ * Migration Image) of the guest
-  * @rsvd: reserved
-  * @rsvd2: reserved
-  * @address: system physical address of destination page to encrypt
+Regarding sending IPIs, there now is trace_ipi_send_cpu{mask} which is in
+the core kernel and thus benefits all architectures, though it
+only covers IPI_RESCHEDULE, IPI_CALL_FUNC and IPI_IRQ_WORK.
 
--- 
-Regards/Gruss,
-    Boris.
+Long story short, I know the ipi_raise and ipi_{entry_exit} TPs already
+exist and we can't remove them, but IMO they're not that helpful because
+they just give a string rather than an actual function pointer, *and* they
+have to be manually added to the right place in each architecture. I'd
+rather see trace_ipi_send_cpu{mask} extended to cover the missing cases.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+[1]: https://lore.kernel.org/lkml/20230307143558.294354-1-vschneid@redhat.com/
+
 
