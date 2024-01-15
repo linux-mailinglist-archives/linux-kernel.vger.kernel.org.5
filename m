@@ -1,149 +1,163 @@
-Return-Path: <linux-kernel+bounces-26052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C77E382DA87
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:50:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB7B282DA58
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:41:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E5A51F22814
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:50:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6874F280F1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:41:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BDDD1755A;
-	Mon, 15 Jan 2024 13:50:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C460182BF;
+	Mon, 15 Jan 2024 13:41:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=openadk.org header.i=@openadk.org header.b="DX6Ey8Np"
-Received: from helium.openadk.org (helium.openadk.org [89.238.66.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jUtq8cYK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PurxCMc+";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jUtq8cYK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PurxCMc+"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EE3017547;
-	Mon, 15 Jan 2024 13:50:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openadk.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openadk.org
-Received: by helium.openadk.org (Postfix, from userid 1000)
-	id 72F6135210AB; Mon, 15 Jan 2024 14:41:22 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=openadk.org; s=2022;
-	t=1705326082; bh=oxu8ri+2lNAJGmWaelZR/DAbUPHgJwlAGo7y/CzxD4E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DX6Ey8NpU5GrlvEu3ZRCkLwI5kBRnUvpr23wJSVaSMxIvKcwenahJ6FnpxnlCpzvT
-	 q00OflPoW7AF8uLs4+x/C0//3TcLaD7fuJWk3adpvG8BfJL/B5c8yVJ+2pKol1WuZ+
-	 hXP81V9hyEpCoS7AKFE+l1KA+iCWIjBaPsusSRwfwCsJWzdAVRc7quDLtRl99U+GB5
-	 vZ8tq3rEaqKwyMKsPNvqa8yhU6Xz2PkbZZsreGoz/vomjnBebeI4AOolJ32GaW/Mmo
-	 qO7Ah7Eon0nLF4vBUP3bfqcjzzORYmhkrwk+dBf/iwB3cmChCKQvD9qZ3FYOXh0Nn8
-	 ZD+QMa3ub/EkA==
-Date: Mon, 15 Jan 2024 14:41:22 +0100
-From: Waldemar Brodkorb <wbx@openadk.org>
-To: Petr Vorel <pvorel@suse.cz>
-Cc: Greg Ungerer <gerg@linux-m68k.org>, Petr Vorel <pvorel@suse.cz>,
-	Rob Landley <rob@landley.net>, Tim Bird <tim.bird@sony.com>,
-	Niklas Cassel <niklas.cassel@wdc.com>,
-	Andrea Cervesato <andrea.cervesato@suse.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Linux-sh list <linux-sh@vger.kernel.org>,
-	Christophe Lyon <christophe.lyon@linaro.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Li Wang <liwang@redhat.com>,
-	"linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Linux ARM <linux-arm-kernel@lists.infradead.org>,
-	Cyril Hrubis <chrubis@suse.cz>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	linux-riscv <linux-riscv@lists.infradead.org>,
-	"buildroot@buildroot.org" <buildroot@buildroot.org>,
-	"ltp@lists.linux.it" <ltp@lists.linux.it>,
-	"automated-testing@lists.yoctoproject.org" <automated-testing@lists.yoctoproject.org>
-Subject: Re: [Buildroot] [Automated-testing] Call for nommu LTP maintainer
- [was: Re: [PATCH 00/36] Remove UCLINUX from LTP]
-Message-ID: <ZaU2Ag1wg1Sne9zZ@waldemar-brodkorb.de>
-References: <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
- <20240105131135.GA1484621@pevik>
- <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
- <20240108090338.GA1552643@pevik>
- <ZZvJXTshFUYSaMVH@yuki>
- <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
- <20240110141455.GC1698252@pevik>
- <40996ea1-3417-1c2f-ddd2-e6ed45cb6f4b@landley.net>
- <81c07a13-305a-404b-b14c-3aff8fde3f67@linux-m68k.org>
- <d3a26b8e-8823-8f3c-b815-4396cbac1dc3@landley.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 243F7182A1;
+	Mon, 15 Jan 2024 13:41:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3C30721EF0;
+	Mon, 15 Jan 2024 13:41:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705326101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6jA5Cu9AWaUNPG7ZmLl1Q9dS9vTQjhzxdsBE+iAkyms=;
+	b=jUtq8cYKSaU3axuFDd9TAXNHTpSqZ0HO0f61mPKt8OnTYiqjB2lbm9z1vKjcp/0eY/pJQh
+	+p1pA6Lq5fpDBScDPHVJKSqufWbdrKP3/Oarhj1yg0DIy/tIKewTVeqnu7OtGcW8cH3kZ9
+	HNBJjfkgaP5EHDbaaE04lesB18Bu1rk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705326101;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6jA5Cu9AWaUNPG7ZmLl1Q9dS9vTQjhzxdsBE+iAkyms=;
+	b=PurxCMc+LLigIrY8HAOAcwkNZ2VpzAZI+H5VTJhjNosVrLykFaplsTvf9s7i+11uriEpE/
+	Ru/z7dKQP7JLuQDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705326101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6jA5Cu9AWaUNPG7ZmLl1Q9dS9vTQjhzxdsBE+iAkyms=;
+	b=jUtq8cYKSaU3axuFDd9TAXNHTpSqZ0HO0f61mPKt8OnTYiqjB2lbm9z1vKjcp/0eY/pJQh
+	+p1pA6Lq5fpDBScDPHVJKSqufWbdrKP3/Oarhj1yg0DIy/tIKewTVeqnu7OtGcW8cH3kZ9
+	HNBJjfkgaP5EHDbaaE04lesB18Bu1rk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705326101;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6jA5Cu9AWaUNPG7ZmLl1Q9dS9vTQjhzxdsBE+iAkyms=;
+	b=PurxCMc+LLigIrY8HAOAcwkNZ2VpzAZI+H5VTJhjNosVrLykFaplsTvf9s7i+11uriEpE/
+	Ru/z7dKQP7JLuQDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2ACC9136F5;
+	Mon, 15 Jan 2024 13:41:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 0GxnChU2pWWkZAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 15 Jan 2024 13:41:41 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id DBD14A07EA; Mon, 15 Jan 2024 14:41:40 +0100 (CET)
+Date: Mon, 15 Jan 2024 14:41:40 +0100
+From: Jan Kara <jack@suse.cz>
+To: syzbot <syzbot+f91c29a5d5a01ada051a@syzkaller.appspotmail.com>
+Cc: almaz.alexandrovich@paragon-software.com, axboe@kernel.dk,
+	brauner@kernel.org, bvanassche@acm.org, hch@lst.de, jack@suse.cz,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev, martin.petersen@oracle.com, nathan@kernel.org,
+	ndesaulniers@google.com, ntfs3@lists.linux.dev,
+	syzkaller-bugs@googlegroups.com, trix@redhat.com,
+	viro@zeniv.linux.org.uk, yanaijie@huawei.com
+Subject: Re: [syzbot] [ntfs3?] possible deadlock in ntfs_set_state
+Message-ID: <20240115134140.a2jcs5dosdsizorj@quack3>
+References: <000000000000ed1df405f05224aa@google.com>
+ <0000000000008942ff060edc57fb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d3a26b8e-8823-8f3c-b815-4396cbac1dc3@landley.net>
-X-Operating-System: Linux 5.10.0-27-amd64 x86_64
+In-Reply-To: <0000000000008942ff060edc57fb@google.com>
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=jUtq8cYK;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=PurxCMc+
+X-Spamd-Result: default: False [2.68 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=94632a8e2ffd08bb];
+	 TAGGED_RCPT(0.00)[f91c29a5d5a01ada051a];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BAYES_HAM(-0.01)[51.24%];
+	 R_RATELIMIT(0.00)[to_ip_from(RLgtcj9mh9ghuanj5qgfrqcyig)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[18];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 SUBJECT_HAS_QUESTION(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 2.68
+X-Rspamd-Queue-Id: 3C30721EF0
+X-Spam-Level: **
+X-Spam-Flag: NO
+X-Spamd-Bar: ++
 
-Hi,
+On Sat 13-01-24 15:43:04, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
+> 
+> commit 6f861765464f43a71462d52026fbddfc858239a5
+> Author: Jan Kara <jack@suse.cz>
+> Date:   Wed Nov 1 17:43:10 2023 +0000
+> 
+>     fs: Block writes to mounted block devices
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10f71683e80000
+> start commit:   8f6f76a6a29f Merge tag 'mm-nonmm-stable-2023-11-02-14-08' ..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=94632a8e2ffd08bb
+> dashboard link: https://syzkaller.appspot.com/bug?extid=f91c29a5d5a01ada051a
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15af0317680000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10de04b0e80000
+> 
+> If the result looks correct, please mark the issue as fixed by replying with:
 
-I want to clarify some things of the point of view of uClibc-ng
-support.
+Makes sense
+ 
+#syz fix: fs: Block writes to mounted block devices
 
-There is support for following configurations for noMMU targets:
-ARM:
- - FLAT with Linuxthreads supported (for Qemu you need a Linux patch)
- - FDPIC with NPTL supported (NPTL works only on real hardware not in Qemu)
- - ELF with Thread support not working
-
-M68k:
- - FLAT with Linuxthreads supported
- - ELF with Thread support not working
-
-RISCV64:
- - FLAT without Thread support
- - ELF with Thread support not working
-
-RISCV32:
- - FLAT without Thread support, needs a small Linux Kernel patch
-
-SH2/J2:
- - FLAT with Linuxthreads supported
-
-Xtensa:
- - FLAT with Linuxthreads supported
-
-There are some obsolete architectures supported by uClibc-ng, but
-no longer supported by Linux:
-
-Blackfin:
- - FLAT with Linuxthreads supported
- - FDPIC
-
-H8300:
- - FLAT with Linuxthreads supported
-
-C6X:
- - DSBT 
-
-LM32:
- - FLAT
-
-LTP requires NPTL to work, so the only testable platform is ARM with
-FDPIC right now.
-Unfortunately LTP 20230929 needs fork for some files:
-
-RANLIB libltp.a
-/home/wbx/arm/toolchain_st-stm32f746g_uclibc-ng_cortex_m7_soft_eabi_thumb_nommu/usr/lib/gcc/arm-openadk-uclinuxfdpiceabi/13.2.0/../../../../arm-openadk-uclinuxfdpiceabi/bin/ld: ../../lib/libltp.a(tst_res.o): in function `tst_fork':
-/home/wbx/arm/build_st-stm32f746g_uclibc-ng_cortex_m7_soft_eabi_thumb_nommu/w-ltp-20230929-1/ltp-full-20230929/lib/tst_res.c:430:(.text+0x952): undefined reference to `fork'
-/home/wbx/arm/toolchain_st-stm32f746g_uclibc-ng_cortex_m7_soft_eabi_thumb_nommu/usr/lib/gcc/arm-openadk-uclinuxfdpiceabi/13.2.0/../../../../arm-openadk-uclinuxfdpiceabi/bin/ld: ../../lib/libltp.a(tst_test.o): in function `fork_testrun':
-/home/wbx/arm/build_st-stm32f746g_uclibc-ng_cortex_m7_soft_eabi_thumb_nommu/w-ltp-20230929-1/ltp-full-20230929/lib/tst_test.c:1597:(.text+0xf4e): undefined reference to `fork'
-/home/wbx/arm/toolchain_st-stm32f746g_uclibc-ng_cortex_m7_soft_eabi_thumb_nommu/usr/lib/gcc/arm-openadk-uclinuxfdpiceabi/13.2.0/../../../../arm-openadk-uclinuxfdpiceabi/bin/ld: ../../lib/libltp.a(tst_test.o): in function `safe_fork':
-/home/wbx/arm/build_st-stm32f746g_uclibc-ng_cortex_m7_soft_eabi_thumb_nommu/w-ltp-20230929-1/ltp-full-20230929/lib/tst_test.c:435:(.text+0x345c): undefined reference to `fork'
-collect2: error: ld returned 1 exit status
-gmake[8]: *** [../../include/mk/rules.mk:45: test01] Error 1
-gmake[7]: *** [../include/mk/generic_trunk_target.inc:108: all] Error 2
-gmake[6]: *** [Makefile:94: lib-all] Error 2
-gmake[5]: *** [/home/wbx/arm/mk/pkg-bottom.mk:141: /home/wbx/arm/build_st-stm32f746g_uclibc-ng_cortex_m7_soft_eabi_thumb_nommu/w-ltp-20230929-1/ltp-full-20230929/.build_done] Error 2
-gmake[4]: *** [Makefile:61: ltp-compile] Error 2
-gmake[3]: *** [mk/build.mk:221: package/compile] Error 2
-gmake[2]: *** [/home/wbx/arm/mk/build.mk:176: world] Error 2
-
-So there is really work to be done to make the existing code work on noMMU.
-
-best regards
- Waldemar
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
