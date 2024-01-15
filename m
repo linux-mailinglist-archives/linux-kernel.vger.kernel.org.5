@@ -1,28 +1,28 @@
-Return-Path: <linux-kernel+bounces-26091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 255AD82DB5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:35:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7DA282DB5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:35:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B94671F22911
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:35:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BACE2826B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:35:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFD201773F;
-	Mon, 15 Jan 2024 14:34:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FFB61798A;
+	Mon, 15 Jan 2024 14:34:45 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 977FF17F3
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 14:34:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01BD117743
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 14:34:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8ADF8FEC;
-	Mon, 15 Jan 2024 06:35:26 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A047150C;
+	Mon, 15 Jan 2024 06:35:29 -0800 (PST)
 Received: from e126645.arm.com (e126645.nice.arm.com [10.34.100.129])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 13F2E3F6C4;
-	Mon, 15 Jan 2024 06:34:37 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B64623F6C4;
+	Mon, 15 Jan 2024 06:34:40 -0800 (PST)
 From: Pierre Gondois <pierre.gondois@arm.com>
 To: linux-kernel@vger.kernel.org
 Cc: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>,
@@ -38,9 +38,9 @@ Cc: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>,
 	Daniel Bristot de Oliveira <bristot@redhat.com>,
 	Valentin Schneider <vschneid@redhat.com>,
 	Huang Ying <ying.huang@intel.com>
-Subject: [PATCH v2 1/3] sched/topology: Annotate RCU pointers properly
-Date: Mon, 15 Jan 2024 15:34:24 +0100
-Message-Id: <20240115143427.1820628-2-pierre.gondois@arm.com>
+Subject: [PATCH v2 2/3] sched/fair: Use rq in idle_cpu_without()
+Date: Mon, 15 Jan 2024 15:34:25 +0100
+Message-Id: <20240115143427.1820628-3-pierre.gondois@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240115143427.1820628-1-pierre.gondois@arm.com>
 References: <20240115143427.1820628-1-pierre.gondois@arm.com>
@@ -52,74 +52,64 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Cleanup RCU-related spare errors by annotating RCU pointers.
+idle_cpu_without() could receive a 'struct rq' instead of a
+CPU number to avoid converting the CPU number to a 'struct rq'
+two times. Indeed update_sg_wakeup_stats() already makes the
+conversion.
+idle_cpu_without() is also renamed to idle_rq_without()
+to match the input parameter.
 
-sched_domains_numa_distance:
-  error: incompatible types in comparison expression
-  (different address spaces):
-      int [noderef] __rcu *
-      int *
-
-sched_domains_numa_masks:
-  error: incompatible types in comparison expression
-  (different address spaces):
-      struct cpumask **[noderef] __rcu *
-      struct cpumask ***
-
-The cast to (void *) adds the following sparse warning:
-  warning: cast removes address space '__rcu' of expression
-but this should be normal.
-
-Fixes: 0fb3978b0aac ("sched/numa: Fix NUMA topology for systems with CPU-less nodes")
+Reviewed-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
 Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
 ---
- kernel/sched/topology.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ kernel/sched/fair.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 10d1391e7416..2a2da9b33e31 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -1542,8 +1542,8 @@ static int			sched_domains_numa_levels;
- static int			sched_domains_curr_level;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index d7a3c63a2171..97d9e0d32337 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -10105,23 +10105,21 @@ static unsigned int task_running_on_cpu(int cpu, struct task_struct *p)
+ }
  
- int				sched_max_numa_distance;
--static int			*sched_domains_numa_distance;
--static struct cpumask		***sched_domains_numa_masks;
-+static int			__rcu *sched_domains_numa_distance;
-+static struct cpumask		** __rcu *sched_domains_numa_masks;
- #endif
- 
- /*
-@@ -1988,8 +1988,8 @@ void sched_init_numa(int offline_node)
- 
- static void sched_reset_numa(void)
+ /**
+- * idle_cpu_without - would a given CPU be idle without p ?
+- * @cpu: the processor on which idleness is tested.
++ * idle_rq_without - would a given rq be idle without p ?
++ * @rq: the rq on which idleness is tested.
+  * @p: task which should be ignored.
+  *
+- * Return: 1 if the CPU would be idle. 0 otherwise.
++ * Return: 1 if the rq would be idle. 0 otherwise.
+  */
+-static int idle_cpu_without(int cpu, struct task_struct *p)
++static int idle_rq_without(struct rq *rq, struct task_struct *p)
  {
--	int nr_levels, *distances;
--	struct cpumask ***masks;
-+	int nr_levels, __rcu *distances;
-+	struct cpumask ** __rcu *masks;
+-	struct rq *rq = cpu_rq(cpu);
+-
+ 	if (rq->curr != rq->idle && rq->curr != p)
+ 		return 0;
  
- 	nr_levels = sched_domains_numa_levels;
- 	sched_domains_numa_levels = 0;
-@@ -2003,7 +2003,7 @@ static void sched_reset_numa(void)
- 		int i, j;
+ 	/*
+ 	 * rq->nr_running can't be used but an updated version without the
+ 	 * impact of p on cpu must be used instead. The updated nr_running
+-	 * be computed and tested before calling idle_cpu_without().
++	 * be computed and tested before calling idle_rq_without().
+ 	 */
  
- 		synchronize_rcu();
--		kfree(distances);
-+		kfree((void *)distances);
- 		for (i = 0; i < nr_levels && masks; i++) {
- 			if (!masks[i])
- 				continue;
-@@ -2011,7 +2011,7 @@ static void sched_reset_numa(void)
- 				kfree(masks[i][j]);
- 			kfree(masks[i]);
- 		}
--		kfree(masks);
-+		kfree((void *)masks);
- 	}
- 	if (sched_domain_topology_saved) {
- 		kfree(sched_domain_topology);
+ #ifdef CONFIG_SMP
+@@ -10166,9 +10164,9 @@ static inline void update_sg_wakeup_stats(struct sched_domain *sd,
+ 		sgs->sum_nr_running += nr_running;
+ 
+ 		/*
+-		 * No need to call idle_cpu_without() if nr_running is not 0
++		 * No need to call idle_rq_without() if nr_running is not 0
+ 		 */
+-		if (!nr_running && idle_cpu_without(i, p))
++		if (!nr_running && idle_rq_without(rq, p))
+ 			sgs->idle_cpus++;
+ 
+ 		/* Check if task fits in the CPU */
 -- 
 2.25.1
 
