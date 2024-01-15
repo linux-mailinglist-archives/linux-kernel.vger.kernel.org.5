@@ -1,53 +1,63 @@
-Return-Path: <linux-kernel+bounces-25649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F037182D412
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:07:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CCA482D418
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:08:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B42F28180D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 06:07:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1463A1C210AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 06:08:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3016228E3;
-	Mon, 15 Jan 2024 06:07:21 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C2183D72;
+	Mon, 15 Jan 2024 06:08:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="of+JNQdv"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B266823BF;
-	Mon, 15 Jan 2024 06:07:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: b6efbbf3342945eeb8cd3bce98c8798a-20240115
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:15b0c6fb-d15b-4e9a-b893-df26ffdc9a02,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-5
-X-CID-INFO: VERSION:1.1.35,REQID:15b0c6fb-d15b-4e9a-b893-df26ffdc9a02,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:5d391d7,CLOUDID:6057da82-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:2401122330500VLWRBFO,BulkQuantity:4,Recheck:0,SF:44|64|66|24|17|19|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL
-	:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: b6efbbf3342945eeb8cd3bce98c8798a-20240115
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 982530335; Mon, 15 Jan 2024 14:07:09 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id B3869E000EB9;
-	Mon, 15 Jan 2024 14:07:09 +0800 (CST)
-X-ns-mid: postfix-65A4CB8D-608913184
-Received: from [172.20.15.234] (unknown [172.20.15.234])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 6CC8DE000EB9;
-	Mon, 15 Jan 2024 14:07:09 +0800 (CST)
-Message-ID: <9e917782-03cd-493e-b6f1-c6170a265a38@kylinos.cn>
-Date: Mon, 15 Jan 2024 14:07:08 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92DEC23C5
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 06:08:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e7d8d119aso1773095e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 22:08:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1705298905; x=1705903705; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=psrO8ysP5KQkyXx2iDli7R9JaH/czE23JBWLZP2hF6Y=;
+        b=of+JNQdvV+y0T6efuQKInZXfrYeq7oRuwGXp+gPHSW94NGQvx71MxTNdP9F7mIccv/
+         Z8Awxe0BwJaRs7Tk2+ys4/dxesxHVOUgZBatiEA6iKM46AcUZasIBO9l4/0ME9+rXhZ+
+         KdAkCQnMCM77yTK6w34Au3bde3r7ap/Gmim8faC3ebSGuaknht2yWNS8gSfyT4kXg+5j
+         QilO9r8eL/5RgMpLreKpIiMdN2eWdWnkcQ9s9gxfM9PYbupmAxT1n0+ACS3Gn0Lle26A
+         CkcQ/h+YlrsTVZccFuVFsRSFCmq9LOdY5pyOxsWOG60zjIRNtWmMjy3ywDIu/+VBi8ri
+         oJ6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705298905; x=1705903705;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=psrO8ysP5KQkyXx2iDli7R9JaH/czE23JBWLZP2hF6Y=;
+        b=qwxTXcKYS2wmJbwb8jnJ5wmMnMQ/J28HYIyD3qg95aIlXl8MrCAxjkrN5GbEbPn5/t
+         MNp9KXoKxxyKSlvedz802V60FLqV3RqV6ewQ6b2Twkdd/F1u5UwyNDmVWlLzqgNZhqHC
+         EO/cjGbU/DMsiyAnzrIv6IM4TEASSK+cO6CLGoseYsmHzXhjIPcaz7i+gW5iTWgJYClK
+         CNZuDQ1fbslje/81WL2P9RCcRLij/U+DZrrJd/rYX0pwOJVlr3Fp+sFZQRKCLHzdnxtW
+         sLU+/r3AeXaTDYVbRChdIJbMCI4NxvyRR6B4Gk3zNAW+SwOAXcQ+j7EwLFlfbh/i9Xc+
+         Dw1w==
+X-Gm-Message-State: AOJu0Yw1b/IxI5tE8hjCIiLYpwLj24tZ7gmNshJdhzkZMDMjKQP5sGJz
+	cp6Y57T8+IX9R6KPxxWQkchTTt+ZoNgjGg==
+X-Google-Smtp-Source: AGHT+IH5OShb4hhtSROS3CploGhi1S8b/OCgr07G0OUJA+ZIGTCrkqbF2Da08w9/6IjxEf6TjbE5nA==
+X-Received: by 2002:a05:600c:3c84:b0:40d:8587:a781 with SMTP id bg4-20020a05600c3c8400b0040d8587a781mr1496032wmb.188.1705298904551;
+        Sun, 14 Jan 2024 22:08:24 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.46])
+        by smtp.gmail.com with ESMTPSA id f6-20020a05600c4e8600b0040d6ffae526sm18649129wmq.39.2024.01.14.22.08.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 14 Jan 2024 22:08:24 -0800 (PST)
+Message-ID: <720e045a-1d5e-432e-9da8-5508eaa96720@tuxon.dev>
+Date: Mon, 15 Jan 2024 08:08:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,62 +65,86 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] vfio: Fix NULL pointer dereference in
- vfio_pci_bus_notifier
+Subject: Re: [PATCH net-next v3 17/19] net: ravb: Return cached statistics if
+ the interface is down
+To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ richardcochran@gmail.com, p.zabel@pengutronix.de,
+ yoshihiro.shimoda.uh@renesas.com, wsa+renesas@sang-engineering.com
+Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, geert+renesas@glider.be,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240105082339.1468817-18-claudiu.beznea.uj@bp.renesas.com>
+ <af5ab82e-5904-c33b-983e-b37844dab3f5@omp.ru>
+ <aed6534b-ad5e-4f5c-9861-9a784968adcc@tuxon.dev>
+ <28754087-8685-015e-7e8a-d8c3ed26930c@omp.ru>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
 Content-Language: en-US
-To: Alex Williamson <alex.williamson@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240112062221.135681-1-chentao@kylinos.cn>
- <20240112083026.7fd01b41.alex.williamson@redhat.com>
-From: Kunwu Chan <chentao@kylinos.cn>
-In-Reply-To: <20240112083026.7fd01b41.alex.williamson@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <28754087-8685-015e-7e8a-d8c3ed26930c@omp.ru>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2024/1/12 23:30, Alex Williamson wrote:
-> On Fri, 12 Jan 2024 14:22:21 +0800
-> Kunwu Chan <chentao@kylinos.cn> wrote:
+
+
+On 14.01.2024 14:22, Sergey Shtylyov wrote:
+> On 1/10/24 4:17 PM, claudiu beznea wrote:
 > 
->> kasprintf() returns a pointer to dynamically allocated memory
->> which can be NULL upon failure. Ensure the allocation was successful
->> by checking the pointer validity.
+> [...]
+> 
+>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>>
+>>>> Return the cached statistics in case the interface is down. There should be
+>>>> no drawback to this, as cached statistics are updated in ravb_close().
+>>>>
+>>>> The commit prepares the code for the addition of runtime PM support.
+>>>>
+>>>> Suggested-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>> [...]
+>>>
+>>>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+>>>> index 76035afd4054..168b6208db37 100644
+>>>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>>>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+>>>> @@ -2117,6 +2117,9 @@ static struct net_device_stats *ravb_get_stats(struct net_device *ndev)
+>>>>  	const struct ravb_hw_info *info = priv->info;
+>>>>  	struct net_device_stats *nstats, *stats0, *stats1;
+>>>>  
+>>>> +	if (!(ndev->flags & IFF_UP))
+>>>
+>>>    Well, I guess it's OK to read the counters in the reset mode... BUT
+>>> won't this race with pm_runtime_put_autosuspend() when its call gets added
+>>> to ravb_close()?
 >>
->> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
->> ---
->>   drivers/vfio/pci/vfio_pci_core.c | 2 ++
->>   1 file changed, 2 insertions(+)
+>> I re-checked it and, yes, this is true. A sync runtime suspend would be
+>> better here. But, as of my current investigation, even with this
+> 
+>    No, the sync form of the RPM call won't fix the race...
+> 
+>> ravb_get_stats() can still race with ravb_open()/ravb_close() as they are
+>> called though different locking scheme (ravb_open()/ravb_close() is called
+>> with rtnl locked while ravb_get_stats() can be called only with
+>> dev_base_lock rwlock locked for reading).
 >>
->> diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
->> index 1cbc990d42e0..74e5b89a3a0c 100644
->> --- a/drivers/vfio/pci/vfio_pci_core.c
->> +++ b/drivers/vfio/pci/vfio_pci_core.c
->> @@ -2047,6 +2047,8 @@ static int vfio_pci_bus_notifier(struct notifier_block *nb,
->>   			 pci_name(pdev));
->>   		pdev->driver_override = kasprintf(GFP_KERNEL, "%s",
->>   						  vdev->vdev.ops->name);
->> +		if (!pdev->driver_override)
->> +			return -ENOMEM;
->>   	} else if (action == BUS_NOTIFY_BOUND_DRIVER &&
->>   		   pdev->is_virtfn && physfn == vdev->pdev) {
->>   		struct pci_driver *drv = pci_dev_driver(pdev);
+>> A mutex in the driver should to help with this.
 > 
-> This is a blocking notifier callback, so errno isn't a proper return
-> value, nor does it accomplish anything.  We're into the realm of
-> worrying about small allocation failures here, which I understand
-> essentially cannot happen, but about the best we could do at this
-> point would be to WARN_ON if we weren't able to allocate an override.
-Thanks for your reply.
-I'll update v2 patch use WARN_ON to print some callstack msgs when we 
-weren't able to allocate an override.
+>    Why don't you want to mimic what the sh_eth driver does?
 
-These msgs could reduce some of the worries and help us to find what happed.
+I thought it can be replaced by the already existing IFF_UP flag from
+ndev->flags.
 
-> Thanks,
+Investigating it further while trying to address this concurrency issue
+made me realize that it fits to address the issue you mentioned here.
+
+Thank you,
+Claudiu Beznea
+
 > 
-> Alex
+>> Thank you,
+>> Claudiu Beznea
 > 
--- 
-Thanks,
-   Kunwu
-
+> [...]
+> 
+> MBR, Sergey
 
