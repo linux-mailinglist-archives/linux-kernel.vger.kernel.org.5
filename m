@@ -1,146 +1,416 @@
-Return-Path: <linux-kernel+bounces-26281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A47982DDFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:55:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CA2982DE06
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:56:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D5361C21BDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:55:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C830F1F22A73
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9070017C62;
-	Mon, 15 Jan 2024 16:55:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QJb0gT1P"
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7748F17C6E;
+	Mon, 15 Jan 2024 16:56:29 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 721D017BDC
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 16:55:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5f07f9d57b9so86367787b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 08:55:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705337705; x=1705942505; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UCNjbbRtiRrrLG8qS/Xc9TIQUVtwQUGSg1R0IufXxj4=;
-        b=QJb0gT1PpLktx/0uPXAcr1WeWa+07jrV9nnunkQxy829tIb24fkSjSrAqC7d8BDDqP
-         ZP273IzDmOHkXUIclucJr+nmBkSPsIw15Im+j9ZUq1HRSJFz6mmhNJNBAFxtbddBTFdm
-         mfifwOBmjUzwgp2foOYetcg6Lc3vXUGaqzBexwb58eMjb/M1gW3TUqg6AayBP1cdFlpr
-         C+w+Op1PofYHTF65SyjNlwqf6vBx2Ym0WDlVfIbblZpHHyVWFQPt5ig/nOpYtRWNpMvL
-         QxxrJDsgizMAYMcltKQHzVsmNhCtbhstOjttiFTQc3c2mj5pfVZNuEE5h0U+PS8gv9if
-         LowA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705337705; x=1705942505;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UCNjbbRtiRrrLG8qS/Xc9TIQUVtwQUGSg1R0IufXxj4=;
-        b=lQ3DlNHbhIl0qDlaZOvWtcx2TWRKzCW3iRx/FqE4RqjOcMOB0hA169cVbvQDkQp2oJ
-         XMtuvHUG/YGy7pG+fHB1LBV5hPJbBCqWVsJk6fDNtFL0l02EFKjMnlB9qmEOf/ww1Zzm
-         NZdpBJ7Gv1DAxPzXvmKGxoYRy8DJJEe/sa+Bls0041iObc8Ti2Yg+YYXmibGxjxVRGCU
-         Q7yw6w/k1GyOtPZDWabiWRGmQEff+sbt3M5V9lARBICs9kvh0+XHguHnIM4JpkPbAaSY
-         qVse3eebEhesena8WOKFx2uuJTDq4noCawsgktsxisr4Drh4FogD1axs7zX1KviTDz5v
-         f+Zw==
-X-Gm-Message-State: AOJu0YyHNX0B4McutFze2KOWzAxuRNrJS2TN/iZNIEVlOW988b6CdscY
-	B3FLyb+DbFUEPcVIKQ5TMiEdBS+Z30GqZjzSDjO8bVHusWA=
-X-Google-Smtp-Source: AGHT+IG2jMx+j6CJIDShCnx/rmWa6ip/gJjEbKiYmOsyaZrgvmYXndu/Zek46SW/oXggmuhODiVRIQ==
-X-Received: by 2002:a5b:8c8:0:b0:dbe:a4a2:c942 with SMTP id w8-20020a5b08c8000000b00dbea4a2c942mr2793432ybq.25.1705337705379;
-        Mon, 15 Jan 2024 08:55:05 -0800 (PST)
-Received: from ?IPV6:2a05:6e02:1041:c10:439d:3bc0:a764:73dc? ([2a05:6e02:1041:c10:439d:3bc0:a764:73dc])
-        by smtp.googlemail.com with ESMTPSA id d193-20020a25cdca000000b00da082362238sm3703878ybf.0.2024.01.15.08.55.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jan 2024 08:55:05 -0800 (PST)
-Message-ID: <ecb33c61-bb40-43a0-94a1-8973d70dc0b4@linaro.org>
-Date: Mon, 15 Jan 2024 17:55:02 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E5A217BDF
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 16:56:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rPQFY-00024V-3M; Mon, 15 Jan 2024 17:55:48 +0100
+Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rPQFU-0003aU-Od; Mon, 15 Jan 2024 17:55:44 +0100
+Received: from pza by lupine with local (Exim 4.96)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rPQFU-0008va-2C;
+	Mon, 15 Jan 2024 17:55:44 +0100
+Message-ID: <568dc713f0c2fa29e5ba7b25c2d1d0e2be96fa95.camel@pengutronix.de>
+Subject: Re: [PATCH v3 2/5] reset: Instantiate reset GPIO controller for
+ shared reset-gpios
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Bjorn Andersson
+ <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Srinivas
+ Kandagatla <srinivas.kandagatla@linaro.org>, Banajit Goswami
+ <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
+ <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
+ Peter Rosin <peda@axentia.se>, Jaroslav Kysela <perex@perex.cz>,  Takashi
+ Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org,
+ alsa-devel@alsa-project.org,  linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ linux-i2c@vger.kernel.org
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Chris Packham
+ <chris.packham@alliedtelesis.co.nz>, Sean Anderson <sean.anderson@seco.com>
+Date: Mon, 15 Jan 2024 17:55:44 +0100
+In-Reply-To: <20240112163608.528453-3-krzysztof.kozlowski@linaro.org>
+References: <20240112163608.528453-1-krzysztof.kozlowski@linaro.org>
+	 <20240112163608.528453-3-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] thermal/debugfs: Remove unnecessary
- debugfs_create_dir() error check in thermal_debug_init()
-Content-Language: en-US
-To: "Rafael J. Wysocki" <rafael@kernel.org>, Minjie Du <duminjie@vivo.com>
-Cc: Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
- "open list:THERMAL" <linux-pm@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>, opensource.kernel@vivo.com
-References: <20240115082507.29651-1-duminjie@vivo.com>
- <CAJZ5v0jPeYgGc9xmSrnLsg6RkhzmU=TfPdhrzxWBd_d_dmJh+Q@mail.gmail.com>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <CAJZ5v0jPeYgGc9xmSrnLsg6RkhzmU=TfPdhrzxWBd_d_dmJh+Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On 15/01/2024 16:52, Rafael J. Wysocki wrote:
-> On Mon, Jan 15, 2024 at 9:25 AM Minjie Du <duminjie@vivo.com> wrote:
->>
->> This patch removes the debugfs_create_dir() error checking in
->> thermal_debug_init(). Because the debugfs_create_dir() is developed
->> in a way that the caller can safely handle the errors that
->> occur during the creation of DebugFS nodes.
-> 
-> I honestly don't see what the purpose of this patch is.
+On Fr, 2024-01-12 at 17:36 +0100, Krzysztof Kozlowski wrote:
+[...]
+> diff --git a/drivers/reset/core.c b/drivers/reset/core.c
+> index 4d5a78d3c085..86e33a703ad2 100644
+> --- a/drivers/reset/core.c
+> +++ b/drivers/reset/core.c
+[...]
+> @@ -813,13 +832,183 @@ static void __reset_control_put_internal(struct re=
+set_control *rstc)
+>  	kref_put(&rstc->refcnt, __reset_control_release);
+>  }
+> =20
+> +static bool __reset_gpios_args_match(const struct of_phandle_args *a1,
+> +				     const struct of_phandle_args *a2)
+> +{
+> +	unsigned int i;
+> +
+> +	if (!a2)
+> +		return false;
+> +
+> +	if (a1->args_count !=3D a2->args_count)
+> +		return false;
+> +
+> +	for (i =3D 0; i < a1->args_count; i++)
+> +		if (a1->args[i] !=3D a2->args[i])
+> +			return false;
+> +
+> +	return true;
+> +}
 
-I think it is because the recent debugfs changes were about to reduce as 
-much as possible the code related to the error handling as the debugfs 
-is not supposed to go in production system.
+How about making this
 
-So for instance debugfs_create_dir() will not fail if the parent is NULL 
-and will create the entry in the debugfs topdir.
+	return a2 &&
+	       a1->np =3D=3D a2->np &&
+	       a1->args_count =3D=3D a2->args_count &&
+	       !memcmp(a1->args, a2->args, sizeof(a1->args[0]) * a1->args_count);
 
-At the end we are ending up with:
+?
 
-d_root = debugfs_create_dir("thermal", NULL);
-d_cdev = debugfs_create_dir("cooling_devices", d_root);
-d_tz = debugfs_create_dir("thermal_zones", d_root);
+There's similar code in include/linux/cpufreq.h, maybe this could later
+be lifted into a common of_phandle_args_equal().
 
-The current code will avoid creating lost entries in /sys/kernel/debug
+> +
+> +static int __reset_add_reset_gpio_lookup(int id, struct device_node *np,
+> +					 unsigned int gpio,
+> +					 unsigned int of_flags)
+> +{
+> +	struct gpiod_lookup_table *lookup __free(kfree) =3D NULL;
+> +	struct gpio_device *gdev __free(gpio_device_put) =3D NULL;
+> +	char *label __free(kfree) =3D NULL;
+> +	unsigned int lookup_flags;
+> +
+> +	/*
+> +	 * Later we map GPIO flags between OF and Linux, however not all
+> +	 * constants from include/dt-bindings/gpio/gpio.h and
+> +	 * include/linux/gpio/machine.h match each other.
+> +	 */
+> +	if (of_flags > GPIO_ACTIVE_LOW) {
+> +		pr_err("reset-gpio code does not support GPIO flags %u for GPIO %u\n",
+> +			of_flags, gpio);
+> +		return -EINVAL;
+> +	}
+> +
+> +	gdev =3D gpio_device_find_by_fwnode(of_fwnode_handle(np));
+> +	if (!gdev)
+> +		return -EPROBE_DEFER;
+> +
+> +	label =3D kstrdup(gpio_device_get_label(gdev), GFP_KERNEL);
+> +	if (!label)
+> +		return -EINVAL;
 
-The proposed change will create those in /sys/kernel/debug in case of error.
+The kstrdup() failure looks like it should be -ENOMEM to me.
+I'd check the gpio_device_get_label(gdev) return value separately.
 
-Note I reduced as much as possible the error handling in this function. 
-So it is a matter to reduce it even more but may be resulting in junk in 
-/sys/kernel/debug in case of error
+Is this going to be in v6.8-rc1, or does using gpio_device_get_label()
+introduce a dependency?
 
-TBH, I'm 50/50  :)
+> +
+> +	/* Size: one lookup entry plus sentinel */
+> +	lookup =3D kzalloc(struct_size(lookup, table, 2), GFP_KERNEL);
+> +	if (!lookup)
+> +		return -ENOMEM;
+> +
+> +	lookup->dev_id =3D kasprintf(GFP_KERNEL, "reset-gpio.%d", id);
+> +	if (!lookup->dev_id)
+> +		return -ENOMEM;
+> +
+> +	lookup_flags =3D GPIO_PERSISTENT;
+> +	lookup_flags |=3D of_flags & GPIO_ACTIVE_LOW;
+> +	lookup->table[0] =3D GPIO_LOOKUP(no_free_ptr(label), gpio, "reset",
+> +				       lookup_flags);
+> +
+> +	gpiod_add_lookup_table(no_free_ptr(lookup));
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * @reset_args:	phandle to the GPIO provider with all the args like GPIO=
+ number
 
->> Signed-off-by: Minjie Du <duminjie@vivo.com>
->> ---
->>   drivers/thermal/thermal_debugfs.c | 4 ----
->>   1 file changed, 4 deletions(-)
->>
->> diff --git a/drivers/thermal/thermal_debugfs.c b/drivers/thermal/thermal_debugfs.c
->> index a3fa09235da1..695253559a61 100644
->> --- a/drivers/thermal/thermal_debugfs.c
->> +++ b/drivers/thermal/thermal_debugfs.c
->> @@ -172,12 +172,8 @@ struct thermal_debugfs {
->>   void thermal_debug_init(void)
->>   {
->>          d_root = debugfs_create_dir("thermal", NULL);
->> -       if (!d_root)
->> -               return;
->>
->>          d_cdev = debugfs_create_dir("cooling_devices", d_root);
->> -       if (!d_cdev)
->> -               return;
->>
->>          d_tz = debugfs_create_dir("thermal_zones", d_root);
->>   }
->> --
+s/reset_//
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> + */
+> +static int __reset_add_reset_gpio_device(const struct of_phandle_args *a=
+rgs)
+> +{
+> +	struct reset_gpio_lookup *rgpio_dev;
+> +	struct platform_device *pdev;
+> +	int id, ret;
+> +
+> +	/*
+> +	 * Registering reset-gpio device might cause immediate
+> +	 * bind, resulting in its probe() registering new reset controller thus
+> +	 * taking reset_list_mutex lock via reset_controller_register().
+> +	 */
+> +	lockdep_assert_not_held(&reset_list_mutex);
+> +
+> +	mutex_lock(&reset_gpio_lookup_mutex);
+> +
+> +	list_for_each_entry(rgpio_dev, &reset_gpio_lookup_list, list) {
+> +		if (args->np =3D=3D rgpio_dev->of_args.np) {
+> +			if (__reset_gpios_args_match(args, &rgpio_dev->of_args))
+> +				goto out; /* Already on the list, done */
+> +		}
+> +	}
+> +
+> +	id =3D ida_alloc(&reset_gpio_ida, GFP_KERNEL);
+> +	if (id < 0) {
+> +		ret =3D id;
+> +		goto err_unlock;
+> +	}
+> +
+> +	/*
+> +	 * Not freed in normal path, persisent subsystem data (which is assumed
+> +	 * also in the reset-gpio driver).
+> +	 */
+> +	rgpio_dev =3D kzalloc(sizeof(*rgpio_dev), GFP_KERNEL);
+> +	if (!rgpio_dev) {
+> +		ret =3D -ENOMEM;
+> +		goto err_ida_free;
+> +	}
+> +
+> +	ret =3D __reset_add_reset_gpio_lookup(id, args->np, args->args[0],
+> +					    args->args[1]);
+> +	if (ret < 0)
+> +		goto err_kfree;
+> +
+> +	rgpio_dev->of_args =3D *args;
+> +	/*
+> +	 * We keep the device_node reference, but of_args.np is put at the end
+> +	 * of __of_reset_control_get(), so get it one more time.
+> +	 * Hold reference as long as rgpio_dev memory is valid.
+> +	 */
+> +	of_node_get(rgpio_dev->of_args.np);
+> +	pdev =3D platform_device_register_data(NULL, "reset-gpio", id,
+> +					     &rgpio_dev->of_args,
+> +					     sizeof(rgpio_dev->of_args));
+> +	ret =3D PTR_ERR_OR_ZERO(pdev);
+> +	if (ret)
+> +		goto err_put;
+> +
+> +	list_add(&rgpio_dev->list, &reset_gpio_lookup_list);
+> +
+> +out:
+> +	mutex_unlock(&reset_gpio_lookup_mutex);
+> +
+> +	return 0;
+> +
+> +err_put:
+> +	of_node_put(rgpio_dev->of_args.np);
+> +err_kfree:
+> +	kfree(rgpio_dev);
+> +err_ida_free:
+> +	ida_free(&reset_gpio_ida, id);
+> +err_unlock:
+> +	mutex_unlock(&reset_gpio_lookup_mutex);
+> +
+> +	return ret;
+> +}
+> +
+> +static struct reset_controller_dev *__reset_find_rcdev(const struct of_p=
+handle_args *args,
+> +						       bool gpio_fallback)
+> +{
+> +	struct reset_controller_dev *r, *rcdev;
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Now that this is moved into a function, there's no need for the r,
+rcdev split anymore. Just return a match when found, and NULL at the
+end:
 
+	struct reset_controller_dev *rcdev;
+
+> +
+> +	lockdep_assert_held(&reset_list_mutex);
+> +
+> +	rcdev =3D NULL;
+> +	list_for_each_entry(r, &reset_controller_list, list) {
+
+	list_for_each_entry(rcdev, &reset_controller_list, list) {
+
+> +		if (args->np =3D=3D r->of_node) {
+> +			if (gpio_fallback) {
+> +				if (__reset_gpios_args_match(args, r->of_args)) {
+> +					rcdev =3D r;
+> +					break;
+
+					return rcdev;
+
+> +				}
+> +			} else {
+> +				rcdev =3D r;
+> +				break;
+> +			}
+> +		}
+
+With the np check moved into __reset_gpios_args_match() above, the
+whole loop could be turned into:
+
+		if (gpio_fallback) {
+			if (__reset_gpios_args_match(args, rcdev->of_args))
+				return rcdev;
+		} else {
+			if (args->np =3D=3D rcdev->of_node)
+				return rcdev;
+		}
+
+Explicitly checking against rcdev->of_args->np instead of rcdev-
+>of_node in gpio_fallback mode could avoid false positives in case
+anybody ever creates a combined GPIO and reset controller device and
+then uses its GPIOs to drive a shared reset line..
+
+> +	}
+> +
+> +	return rcdev;
+
+	return NULL;
+
+> +}
+>=20
+>  struct reset_control *
+>  __of_reset_control_get(struct device_node *node, const char *id, int ind=
+ex,
+>  		       bool shared, bool optional, bool acquired)
+>  {
+> +	struct of_phandle_args args =3D {0};
+
+Is this still needed?
+
+> +	bool gpio_fallback =3D false;
+>  	struct reset_control *rstc;
+> -	struct reset_controller_dev *r, *rcdev;
+> -	struct of_phandle_args args;
+> +	struct reset_controller_dev *rcdev;
+>  	int rstc_id;
+>  	int ret;
+> =20
+> @@ -839,39 +1028,49 @@ __of_reset_control_get(struct device_node *node, c=
+onst char *id, int index,
+>  					 index, &args);
+>  	if (ret =3D=3D -EINVAL)
+>  		return ERR_PTR(ret);
+> -	if (ret)
+> -		return optional ? NULL : ERR_PTR(ret);
+> +	if (ret) {
+> +		/*
+> +		 * There can be only one reset-gpio for regular devices, so
+> +		 * don't bother with GPIO index.
+> +		 */
+> +		ret =3D of_parse_phandle_with_args(node, "reset-gpios", "#gpio-cells",
+> +						 0, &args);
+> +		if (ret)
+> +			return optional ? NULL : ERR_PTR(ret);
+> =20
+> -	mutex_lock(&reset_list_mutex);
+> -	rcdev =3D NULL;
+> -	list_for_each_entry(r, &reset_controller_list, list) {
+> -		if (args.np =3D=3D r->of_node) {
+> -			rcdev =3D r;
+> -			break;
+> +		gpio_fallback =3D true;
+> +
+> +		ret =3D __reset_add_reset_gpio_device(&args);
+> +		if (ret) {
+> +			rstc =3D ERR_PTR(ret);
+> +			goto out_put;
+>  		}
+>  	}
+> =20
+> +	mutex_lock(&reset_list_mutex);
+> +	rcdev =3D __reset_find_rcdev(&args, gpio_fallback);
+>  	if (!rcdev) {
+>  		rstc =3D ERR_PTR(-EPROBE_DEFER);
+> -		goto out;
+> +		goto out_unlock;
+>  	}
+> =20
+>  	if (WARN_ON(args.args_count !=3D rcdev->of_reset_n_cells)) {
+
+Nice. I like that the __of_reset_control_get() changes are much less
+invasive now.
+
+>  		rstc =3D ERR_PTR(-EINVAL);
+> -		goto out;
+> +		goto out_unlock;
+>  	}
+> =20
+>  	rstc_id =3D rcdev->of_xlate(rcdev, &args);
+>  	if (rstc_id < 0) {
+>  		rstc =3D ERR_PTR(rstc_id);
+> -		goto out;
+> +		goto out_unlock;
+>  	}
+> =20
+>  	/* reset_list_mutex also protects the rcdev's reset_control list */
+>  	rstc =3D __reset_control_get_internal(rcdev, rstc_id, shared, acquired)=
+;
+> =20
+> -out:
+> +out_unlock:
+>  	mutex_unlock(&reset_list_mutex);
+> +out_put:
+>  	of_node_put(args.np);
+> =20
+>  	return rstc;
+> diff --git a/include/linux/reset-controller.h b/include/linux/reset-contr=
+oller.h
+> index 0fa4f60e1186..e064473215de 100644
+> --- a/include/linux/reset-controller.h
+> +++ b/include/linux/reset-controller.h
+> @@ -61,6 +61,9 @@ struct reset_control_lookup {
+>   * @dev: corresponding driver model device struct
+>   * @of_node: corresponding device tree node as phandle target
+>   * @of_reset_n_cells: number of cells in reset line specifiers
+> + * TODO: of_args have of_node, so we have here duplication
+
+Any plans what to do about this? With the above changes we could
+mandate that either of_node or of_args should be set, never both.
+
+> + * @of_args: for reset-gpios controllers: corresponding phandle args wit=
+h GPIO
+> + *           number complementing of_node
+
+regards
+Philipp
 
