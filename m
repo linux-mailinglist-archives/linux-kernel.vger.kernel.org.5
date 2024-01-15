@@ -1,381 +1,86 @@
-Return-Path: <linux-kernel+bounces-25667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E009C82D459
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:59:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46A7182D45C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:00:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A93F2816B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 06:59:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 557C31C20BB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:00:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA7C63C1D;
-	Mon, 15 Jan 2024 06:59:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="x4G0IDWO"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 958123C0B;
-	Mon, 15 Jan 2024 06:59:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705301966;
-	bh=PUNiFql2LzYt4AfUj6+kFyjiKSLCP2jzF69eYRLV3m8=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=x4G0IDWOY9mEwa96umEJ9cNBDjBE4yobVBcd4b24K9J2SDz+Xbq91JY3wHcD3J0XY
-	 cxAEJCIb0PbJP2BRUiPQEJs4eIztkhtfEUAbFOT1ySKJTdmf186KS+TL6RT0TD3hDe
-	 XitrekO2fzeO27o9ECzEkxPKXgENniSs/eO5lUGceSw8JL1xyulBqytWZoce0ZRJKh
-	 eeZcMa8E9aCWCvLNd4dUETYLqhjVgSa6yQR6wAl541jhZIjTQf1aQLbgQfRdoWHl2S
-	 RjwXQxpYLfShFF79t0I+JbDNYqByetDJwhxoxx6/5so3WJSn06WGK15wAwgz9S6NNC
-	 EPOpkWzGzaqBw==
-Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1CB6E3780C35;
-	Mon, 15 Jan 2024 06:59:24 +0000 (UTC)
-Message-ID: <dc244d6a-c9ac-4b21-90ca-ac54e6ebe39a@collabora.com>
-Date: Mon, 15 Jan 2024 11:59:33 +0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 157014409;
+	Mon, 15 Jan 2024 07:00:23 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A54A01FB9;
+	Mon, 15 Jan 2024 07:00:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8DxmfD816RlhkMAAA--.1415S3;
+	Mon, 15 Jan 2024 15:00:12 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Ax3c7716RlzbIBAA--.8673S2;
+	Mon, 15 Jan 2024 15:00:11 +0800 (CST)
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: Eduard Zingerman <eddyz87@gmail.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Hou Tao <houtao@huaweicloud.com>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v3 0/2] Skip callback tests if jit is disabled in test_verifier
+Date: Mon, 15 Jan 2024 15:00:08 +0800
+Message-ID: <20240115070010.12338-1-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>,
- kernel@collabora.com, linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/7] selftests/mm: hugetlb-read-hwpoison: conform test
- to TAP format output
-Content-Language: en-US
-To: Jiaqi Yan <jiaqiyan@google.com>
-References: <20240112072144.620098-1-usama.anjum@collabora.com>
- <20240112072144.620098-5-usama.anjum@collabora.com>
- <CACw3F51dwDhuaRxy+ud3CWfTt5ZcoS8=7jLU74KXJHJaCcc8Dw@mail.gmail.com>
- <0b5a7c8c-d46b-496c-b705-fafc54a91ff0@collabora.com>
- <CACw3F50OXfYYSGzbp3+eHjVxj=VU4sJiQO-=yrDTEUX=Map6gQ@mail.gmail.com>
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <CACw3F50OXfYYSGzbp3+eHjVxj=VU4sJiQO-=yrDTEUX=Map6gQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8Ax3c7716RlzbIBAA--.8673S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj9xXoW7Xr48tFW8Wr4ftFyxZF47trc_yoW3JFgE9a
+	yUta4kXrs8ZFn8AFy7WFn8urWDGw45Wr1UtF4rX3y5trW7ZF43GF4kZrZ8Za48Way5Ca42
+	vF4kXFyfGr4UXosvyTuYvTs0mTUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUj1kv1TuYvT
+	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+	cSsGvfJTRUUUb7AYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+	vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE
+	14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
+	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
+	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF
+	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
+	CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8zwZ7UUUUU==
 
-On 1/15/24 11:52 AM, Jiaqi Yan wrote:
-> On Sun, Jan 14, 2024 at 10:32 PM Muhammad Usama Anjum
-> <usama.anjum@collabora.com> wrote:
->>
->> On 1/13/24 6:08 AM, Jiaqi Yan wrote:
->>> On Thu, Jan 11, 2024 at 11:21 PM Muhammad Usama Anjum
->>> <usama.anjum@collabora.com> wrote:
->>>>
->>>> Conform the layout, informational and status messages to TAP. No
->>>> functional change is intended other than the layout of output messages.
->>>>
->>>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->>>> ---
->>>> Tested this by reverting the patch a08c7193e4f18dc8508f2d07d0de2c5b94cb39a3
->>>> ("mm/filemap: remove hugetlb special casing in filemap.c") as it has
->>>> broken the test. The bug report can be found at [1].
->>>>
->>>> Tested with proposed fix as well [2].
->>>>
->>>> [1] https://lore.kernel.org/all/079335ab-190f-41f7-b832-6ffe7528fd8b@collabora.com
->>>> [2] https://lore.kernel.org/all/a20e7bdb-7344-306d-e8f5-5ee69af7d5ea@oracle.com
->>>> ---
->>>>  .../selftests/mm/hugetlb-read-hwpoison.c      | 116 +++++++++---------
->>>>  1 file changed, 56 insertions(+), 60 deletions(-)
->>>>
->>>> diff --git a/tools/testing/selftests/mm/hugetlb-read-hwpoison.c b/tools/testing/selftests/mm/hugetlb-read-hwpoison.c
->>>> index ba6cc6f9cabc..193ad7275df5 100644
->>>> --- a/tools/testing/selftests/mm/hugetlb-read-hwpoison.c
->>>> +++ b/tools/testing/selftests/mm/hugetlb-read-hwpoison.c
->>>> @@ -58,8 +58,8 @@ static bool verify_chunk(char *buf, size_t len, char val)
->>>>
->>>>         for (i = 0; i < len; ++i) {
->>>>                 if (buf[i] != val) {
->>>> -                       printf(PREFIX ERROR_PREFIX "check fail: buf[%lu] = %u != %u\n",
->>>> -                               i, buf[i], val);
->>>> +                       ksft_print_msg(PREFIX ERROR_PREFIX "check fail: buf[%lu] = %u != %u\n",
->>>> +                                      i, buf[i], val);
->>>>                         return false;
->>>>                 }
->>>>         }
->>>> @@ -75,9 +75,9 @@ static bool seek_read_hugepage_filemap(int fd, size_t len, size_t wr_chunk_size,
->>>>         ssize_t total_ret_count = 0;
->>>>         char val = offset / wr_chunk_size + offset % wr_chunk_size;
->>>>
->>>> -       printf(PREFIX PREFIX "init val=%u with offset=0x%lx\n", val, offset);
->>>> -       printf(PREFIX PREFIX "expect to read 0x%lx bytes of data in total\n",
->>>> -              expected);
->>>> +       ksft_print_msg(PREFIX PREFIX "init val=%u with offset=0x%lx\n", val, offset);
->>>> +       ksft_print_msg(PREFIX PREFIX "expect to read 0x%lx bytes of data in total\n",
->>>> +                      expected);
->>>>         if (lseek(fd, offset, SEEK_SET) < 0) {
->>>>                 perror(PREFIX ERROR_PREFIX "seek failed");
->>>>                 return false;
->>>> @@ -86,7 +86,7 @@ static bool seek_read_hugepage_filemap(int fd, size_t len, size_t wr_chunk_size,
->>>>         while (offset + total_ret_count < len) {
->>>>                 ret_count = read(fd, buf, wr_chunk_size);
->>>>                 if (ret_count == 0) {
->>>> -                       printf(PREFIX PREFIX "read reach end of the file\n");
->>>> +                       ksft_print_msg(PREFIX PREFIX "read reach end of the file\n");
->>>>                         break;
->>>>                 } else if (ret_count < 0) {
->>>>                         perror(PREFIX ERROR_PREFIX "read failed");
->>>> @@ -98,8 +98,8 @@ static bool seek_read_hugepage_filemap(int fd, size_t len, size_t wr_chunk_size,
->>>>
->>>>                 total_ret_count += ret_count;
->>>>         }
->>>> -       printf(PREFIX PREFIX "actually read 0x%lx bytes of data in total\n",
->>>> -              total_ret_count);
->>>> +       ksft_print_msg(PREFIX PREFIX "actually read 0x%lx bytes of data in total\n",
->>>> +                      total_ret_count);
->>>>
->>>>         return total_ret_count == expected;
->>>>  }
->>>> @@ -112,15 +112,15 @@ static bool read_hugepage_filemap(int fd, size_t len,
->>>>         ssize_t total_ret_count = 0;
->>>>         char val = 0;
->>>>
->>>> -       printf(PREFIX PREFIX "expect to read 0x%lx bytes of data in total\n",
->>>> -              expected);
->>>> +       ksft_print_msg(PREFIX PREFIX "expect to read 0x%lx bytes of data in total\n",
->>>> +                      expected);
->>>>         while (total_ret_count < len) {
->>>>                 ret_count = read(fd, buf, wr_chunk_size);
->>>>                 if (ret_count == 0) {
->>>> -                       printf(PREFIX PREFIX "read reach end of the file\n");
->>>> +                       ksft_print_msg(PREFIX PREFIX "read reach end of the file\n");
->>>>                         break;
->>>>                 } else if (ret_count < 0) {
->>>> -                       perror(PREFIX ERROR_PREFIX "read failed");
->>>> +                       ksft_print_msg(PREFIX ERROR_PREFIX "read failed");
->>>
->>> Should we also include strerror(errno) in log msg, like you did below?
->> Looks like I missed it. I'll post a v3.
->>>
->>> Actually, would ksft_perror be a better choice for perror()s?
->> It may or may not be. There aren't ksft_*_perror macros for printing the
->> logs at this time. I prefer using just whatever macros are available. They
->> aren't generic enough. Maybe mm tests use perror whenever error occurs, but
->> other tests don't.
-> 
-> can't you use this ksft_perror available today?
-> https://github.com/torvalds/linux/blob/master/tools/testing/selftests/kselftest.h#L161C25-L172
-Sorry, I wan't able to find it. It has missing signature in header comment
-as well. I'll just update this current test. I'll use ksft_perror in future
-patches. Thanks for mentining it.
+v3:
+  -- Rebase on the latest bpf-next tree.
+  -- Address the review comments by Hou Tao,
+     remove the second argument "0" of open(),
+     check only once whether jit is disabled,
+     check fd_prog, saved_errno and jit_disabled to skip.
 
-> 
->>
->>>
->>>>
->>>>                         break;
->>>>                 }
->>>>                 ++val;
->>>> @@ -129,8 +129,8 @@ static bool read_hugepage_filemap(int fd, size_t len,
->>>>
->>>>                 total_ret_count += ret_count;
->>>>         }
->>>> -       printf(PREFIX PREFIX "actually read 0x%lx bytes of data in total\n",
->>>> -              total_ret_count);
->>>> +       ksft_print_msg(PREFIX PREFIX "actually read 0x%lx bytes of data in total\n",
->>>> +                      total_ret_count);
->>>>
->>>>         return total_ret_count == expected;
->>>>  }
->>>> @@ -142,14 +142,15 @@ test_hugetlb_read(int fd, size_t len, size_t wr_chunk_size)
->>>>         char *filemap = NULL;
->>>>
->>>>         if (ftruncate(fd, len) < 0) {
->>>> -               perror(PREFIX ERROR_PREFIX "ftruncate failed");
->>>> +               ksft_print_msg(PREFIX ERROR_PREFIX "ftruncate failed: %s\n", strerror(errno));
->>>>                 return status;
->>>>         }
->>>>
->>>>         filemap = mmap(NULL, len, PROT_READ | PROT_WRITE,
->>>>                        MAP_SHARED | MAP_POPULATE, fd, 0);
->>>>         if (filemap == MAP_FAILED) {
->>>> -               perror(PREFIX ERROR_PREFIX "mmap for primary mapping failed");
->>>> +               ksft_print_msg(PREFIX ERROR_PREFIX "mmap for primary mapping failed: %s\n",
->>>> +                              strerror(errno));
->>>>                 goto done;
->>>>         }
->>>>
->>>> @@ -162,7 +163,8 @@ test_hugetlb_read(int fd, size_t len, size_t wr_chunk_size)
->>>>         munmap(filemap, len);
->>>>  done:
->>>>         if (ftruncate(fd, 0) < 0) {
->>>> -               perror(PREFIX ERROR_PREFIX "ftruncate back to 0 failed");
->>>> +               ksft_print_msg(PREFIX ERROR_PREFIX "ftruncate back to 0 failed : %s\n",
->>>> +                              strerror(errno));
->>>>                 status = TEST_FAILED;
->>>>         }
->>>>
->>>> @@ -179,14 +181,15 @@ test_hugetlb_read_hwpoison(int fd, size_t len, size_t wr_chunk_size,
->>>>         const unsigned long pagesize = getpagesize();
->>>>
->>>>         if (ftruncate(fd, len) < 0) {
->>>> -               perror(PREFIX ERROR_PREFIX "ftruncate failed");
->>>> +               ksft_print_msg(PREFIX ERROR_PREFIX "ftruncate failed: %s\n", strerror(errno));
->>>>                 return status;
->>>>         }
->>>>
->>>>         filemap = mmap(NULL, len, PROT_READ | PROT_WRITE,
->>>>                        MAP_SHARED | MAP_POPULATE, fd, 0);
->>>>         if (filemap == MAP_FAILED) {
->>>> -               perror(PREFIX ERROR_PREFIX "mmap for primary mapping failed");
->>>> +               ksft_print_msg(PREFIX ERROR_PREFIX "mmap for primary mapping failed: %s\n",
->>>> +                              strerror(errno));
->>>>                 goto done;
->>>>         }
->>>>
->>>> @@ -201,7 +204,7 @@ test_hugetlb_read_hwpoison(int fd, size_t len, size_t wr_chunk_size,
->>>>          */
->>>>         hwp_addr = filemap + len / 2 + pagesize;
->>>>         if (madvise(hwp_addr, pagesize, MADV_HWPOISON) < 0) {
->>>> -               perror(PREFIX ERROR_PREFIX "MADV_HWPOISON failed");
->>>> +               ksft_print_msg(PREFIX ERROR_PREFIX "MADV_HWPOISON failed: %s\n", strerror(errno));
->>>>                 goto unmap;
->>>>         }
->>>>
->>>> @@ -228,7 +231,8 @@ test_hugetlb_read_hwpoison(int fd, size_t len, size_t wr_chunk_size,
->>>>         munmap(filemap, len);
->>>>  done:
->>>>         if (ftruncate(fd, 0) < 0) {
->>>> -               perror(PREFIX ERROR_PREFIX "ftruncate back to 0 failed");
->>>> +               ksft_print_msg(PREFIX ERROR_PREFIX "ftruncate back to 0 failed: %s\n",
->>>> +                              strerror(errno));
->>>>                 status = TEST_FAILED;
->>>>         }
->>>>
->>>> @@ -240,27 +244,32 @@ static int create_hugetlbfs_file(struct statfs *file_stat)
->>>>         int fd;
->>>>
->>>>         fd = memfd_create("hugetlb_tmp", MFD_HUGETLB);
->>>> -       if (fd < 0) {
->>>> -               perror(PREFIX ERROR_PREFIX "could not open hugetlbfs file");
->>>> -               return -1;
->>>> -       }
->>>> +       if (fd < 0)
->>>> +               ksft_exit_fail_msg(PREFIX ERROR_PREFIX "could not open hugetlbfs file: %s\n",
->>>> +                                  strerror(errno));
->>>>
->>>>         memset(file_stat, 0, sizeof(*file_stat));
->>>> +
->>>>         if (fstatfs(fd, file_stat)) {
->>>> -               perror(PREFIX ERROR_PREFIX "fstatfs failed");
->>>> -               goto close;
->>>> +               close(fd);
->>>> +               ksft_exit_fail_msg(PREFIX ERROR_PREFIX "fstatfs failed: %s\n", strerror(errno));
->>>>         }
->>>>         if (file_stat->f_type != HUGETLBFS_MAGIC) {
->>>> -               printf(PREFIX ERROR_PREFIX "not hugetlbfs file\n");
->>>> -               goto close;
->>>> +               close(fd);
->>>> +               ksft_exit_fail_msg(PREFIX ERROR_PREFIX "not hugetlbfs file\n");
->>>>         }
->>>>
->>>>         return fd;
->>>> -close:
->>>> -       close(fd);
->>>> -       return -1;
->>>>  }
->>>>
->>>> +#define KSFT_PRINT_MSG(status, fmt, ...)                                       \
->>>> +       do {                                                                    \
->>>> +               if (status == TEST_SKIPPED)                                     \
->>>> +                       ksft_test_result_skip(fmt, __VA_ARGS__);                \
->>>> +               else                                                            \
->>>> +                       ksft_test_result(status == TEST_PASSED, fmt, __VA_ARGS__); \
->>>> +       } while (0)
->>>> +
->>>>  int main(void)
->>>>  {
->>>>         int fd;
->>>> @@ -273,50 +282,37 @@ int main(void)
->>>>         };
->>>>         size_t i;
->>>>
->>>> +       ksft_print_header();
->>>> +       ksft_set_plan(12);
->>>> +
->>>>         for (i = 0; i < ARRAY_SIZE(wr_chunk_sizes); ++i) {
->>>> -               printf("Write/read chunk size=0x%lx\n",
->>>> -                      wr_chunk_sizes[i]);
->>>> +               ksft_print_msg("Write/read chunk size=0x%lx\n",
->>>> +                              wr_chunk_sizes[i]);
->>>>
->>>>                 fd = create_hugetlbfs_file(&file_stat);
->>>> -               if (fd < 0)
->>>> -                       goto create_failure;
->>>> -               printf(PREFIX "HugeTLB read regression test...\n");
->>>> +               ksft_print_msg(PREFIX "HugeTLB read regression test...\n");
->>>>                 status = test_hugetlb_read(fd, file_stat.f_bsize,
->>>>                                            wr_chunk_sizes[i]);
->>>> -               printf(PREFIX "HugeTLB read regression test...%s\n",
->>>> -                      status_to_str(status));
->>>> +               KSFT_PRINT_MSG(status, PREFIX "HugeTLB read regression test...%s\n",
->>>> +                              status_to_str(status));
->>>>                 close(fd);
->>>> -               if (status == TEST_FAILED)
->>>> -                       return -1;
->>>>
->>>>                 fd = create_hugetlbfs_file(&file_stat);
->>>> -               if (fd < 0)
->>>> -                       goto create_failure;
->>>> -               printf(PREFIX "HugeTLB read HWPOISON test...\n");
->>>> +               ksft_print_msg(PREFIX "HugeTLB read HWPOISON test...\n");
->>>>                 status = test_hugetlb_read_hwpoison(fd, file_stat.f_bsize,
->>>>                                                     wr_chunk_sizes[i], false);
->>>> -               printf(PREFIX "HugeTLB read HWPOISON test...%s\n",
->>>> -                      status_to_str(status));
->>>> +               KSFT_PRINT_MSG(status, PREFIX "HugeTLB read HWPOISON test..%s\n",
->>>> +                              status_to_str(status));
->>>>                 close(fd);
->>>> -               if (status == TEST_FAILED)
->>>> -                       return -1;
->>>>
->>>>                 fd = create_hugetlbfs_file(&file_stat);
->>>> -               if (fd < 0)
->>>> -                       goto create_failure;
->>>> -               printf(PREFIX "HugeTLB seek then read HWPOISON test...\n");
->>>> +               ksft_print_msg(PREFIX "HugeTLB seek then read HWPOISON test...\n");
->>>>                 status = test_hugetlb_read_hwpoison(fd, file_stat.f_bsize,
->>>>                                                     wr_chunk_sizes[i], true);
->>>> -               printf(PREFIX "HugeTLB seek then read HWPOISON test...%s\n",
->>>> -                      status_to_str(status));
->>>> +               KSFT_PRINT_MSG(status, PREFIX "HugeTLB seek then read HWPOISON test...%s\n",
->>>> +                              status_to_str(status));
->>>>                 close(fd);
->>>> -               if (status == TEST_FAILED)
->>>> -                       return -1;
->>>>         }
->>>>
->>>> -       return 0;
->>>> -
->>>> -create_failure:
->>>> -       printf(ERROR_PREFIX "Abort test: failed to create hugetlbfs file\n");
->>>> -       return -1;
->>>> +       ksft_finished();
->>>>  }
->>>> --
->>>> 2.42.0
->>>>
->>>>
->>>
->>
->> --
->> BR,
->> Muhammad Usama Anjum
-> 
+Tiezhu Yang (2):
+  selftests/bpf: Move is_jit_enabled() to testing_helpers
+  selftests/bpf: Skip callback tests if jit is disabled in test_verifier
+
+ tools/testing/selftests/bpf/test_progs.c      | 18 ---------------
+ tools/testing/selftests/bpf/test_verifier.c   | 23 +++++++++++++++++++
+ tools/testing/selftests/bpf/testing_helpers.c | 18 +++++++++++++++
+ tools/testing/selftests/bpf/testing_helpers.h |  1 +
+ 4 files changed, 42 insertions(+), 18 deletions(-)
 
 -- 
-BR,
-Muhammad Usama Anjum
+2.42.0
+
 
