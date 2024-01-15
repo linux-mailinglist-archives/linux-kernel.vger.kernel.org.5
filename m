@@ -1,52 +1,48 @@
-Return-Path: <linux-kernel+bounces-26538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44E1F82E358
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:26:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FD8282E35B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:27:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D75231F21271
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:26:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B680D1C2227F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:27:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158E11BF54;
-	Mon, 15 Jan 2024 23:24:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F4EE1C292;
+	Mon, 15 Jan 2024 23:24:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TqHmdG4d"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uRDpK0dC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 634A91BF50;
-	Mon, 15 Jan 2024 23:24:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD84CC433C7;
-	Mon, 15 Jan 2024 23:24:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68AB51C287;
+	Mon, 15 Jan 2024 23:24:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60E2BC433F1;
+	Mon, 15 Jan 2024 23:24:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705361062;
-	bh=dqb77Rt8PB08y5Wdbe/RldnhMjI3HCf3kzBM+fRDupQ=;
+	s=k20201202; t=1705361064;
+	bh=pGGBRDwKPQsgICX+Gp2vBlcwQ0JgR164d4rsVT7OX4Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TqHmdG4ddX+t6mO3IkhgYB7BzGGoD+018lHvLI5IMw2Eui/5k8kEwdTRNPFpzvZtd
-	 8WbOvB6PBeCFJXUDGM1RFAwlVchalu537Zh/j6cJJH4mEMhs7dX+H5VJ2VV6qpo/3g
-	 E8FdBQXdW7laCCFUKCyted7LtBaVh7WIuHTz03AbsK+/YTSJDKuP2JlIDnqplBFmzH
-	 QWdxUF2ClkUSEsjxQSFF7ouxSLrTqu8ohFAFsMlr1OKOcScu/c7VsY8b0Kt0FEflQQ
-	 3PORG4o9b1m0/eMxPo7wpOIL/V4k0Uz4xTmwVLk+/WaSzpBhIKKA80ecC6w4CYS0FK
-	 eEl8p/U//ohfw==
+	b=uRDpK0dCxpeE82xC3GSb0QFje5HLKB13Af13GTwptt0/653l2P3tTU38AnH2h5GAh
+	 oYT8OoFwabdcaO5L7ULBARcMxQ8c804fwyxUViESB+KgqkaK3Y5Bs47wJE72icFOrZ
+	 nQLddSeI/u3zHlj3ljDm3e0drI/GuahAJUpnvjfKEDUxL9UUlexkRhV1MKC4qNRBJ5
+	 RiGBHM4bYD9mWVWCcTVWEWtIz5p31mAOo1L/wnuJLK8hv3SGP6oLLDRkK2Ti89do3H
+	 k9Y4nwuuSAqVHTH76W/ru+6dB+koZlvjBILGrIS577iEYhfJ09O0D4HnxhdkwrzLGf
+	 2NYGqf5LJlNvg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+Cc: Naveen N Rao <naveen@kernel.org>,
+	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
 	Michael Ellerman <mpe@ellerman.id.au>,
 	Sasha Levin <sashal@kernel.org>,
-	akpm@linux-foundation.org,
-	arnd@arndb.de,
-	rppt@kernel.org,
 	christophe.leroy@csgroup.eu,
-	vishal.moola@gmail.com,
-	aneesh.kumar@linux.ibm.com,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 6.7 10/14] powerpc: pmd_move_must_withdraw() is only needed for CONFIG_TRANSPARENT_HUGEPAGE
-Date: Mon, 15 Jan 2024 18:23:24 -0500
-Message-ID: <20240115232351.208489-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.7 11/14] powerpc/lib: Validate size for vector operations
+Date: Mon, 15 Jan 2024 18:23:25 -0500
+Message-ID: <20240115232351.208489-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240115232351.208489-1-sashal@kernel.org>
 References: <20240115232351.208489-1-sashal@kernel.org>
@@ -61,53 +57,69 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7
 Content-Transfer-Encoding: 8bit
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
+From: Naveen N Rao <naveen@kernel.org>
 
-[ Upstream commit 0d555b57ee660d8a871781c0eebf006e855e918d ]
+[ Upstream commit 8f9abaa6d7de0a70fc68acaedce290c1f96e2e59 ]
 
-The linux-next build of powerpc64 allnoconfig fails with:
+Some of the fp/vmx code in sstep.c assume a certain maximum size for the
+instructions being emulated. The size of those operations however is
+determined separately in analyse_instr().
 
-  arch/powerpc/mm/book3s64/pgtable.c:557:5: error: no previous prototype for 'pmd_move_must_withdraw'
-    557 | int pmd_move_must_withdraw(struct spinlock *new_pmd_ptl,
-        |     ^~~~~~~~~~~~~~~~~~~~~~
+Add a check to validate the assumption on the maximum size of the
+operations, so as to prevent any unintended kernel stack corruption.
 
-Caused by commit:
-
-  c6345dfa6e3e ("Makefile.extrawarn: turn on missing-prototypes globally")
-
-Fix it by moving the function definition under
-CONFIG_TRANSPARENT_HUGEPAGE like the prototype. The function is only
-called when CONFIG_TRANSPARENT_HUGEPAGE=y.
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-[mpe: Flesh out change log from linux-next patch]
+Signed-off-by: Naveen N Rao <naveen@kernel.org>
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Build-tested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://msgid.link/20231127132809.45c2b398@canb.auug.org.au
+Link: https://msgid.link/20231123071705.397625-1-naveen@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/mm/book3s64/pgtable.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/powerpc/lib/sstep.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/powerpc/mm/book3s64/pgtable.c b/arch/powerpc/mm/book3s64/pgtable.c
-index be229290a6a7..3438ab72c346 100644
---- a/arch/powerpc/mm/book3s64/pgtable.c
-+++ b/arch/powerpc/mm/book3s64/pgtable.c
-@@ -542,6 +542,7 @@ void ptep_modify_prot_commit(struct vm_area_struct *vma, unsigned long addr,
- 	set_pte_at(vma->vm_mm, addr, ptep, pte);
- }
+diff --git a/arch/powerpc/lib/sstep.c b/arch/powerpc/lib/sstep.c
+index a4ab8625061a..6af97dc0f6d5 100644
+--- a/arch/powerpc/lib/sstep.c
++++ b/arch/powerpc/lib/sstep.c
+@@ -586,6 +586,8 @@ static int do_fp_load(struct instruction_op *op, unsigned long ea,
+ 	} u;
  
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
- /*
-  * For hash translation mode, we use the deposited table to store hash slot
-  * information and they are stored at PTRS_PER_PMD offset from related pmd
-@@ -563,6 +564,7 @@ int pmd_move_must_withdraw(struct spinlock *new_pmd_ptl,
+ 	nb = GETSIZE(op->type);
++	if (nb > sizeof(u))
++		return -EINVAL;
+ 	if (!address_ok(regs, ea, nb))
+ 		return -EFAULT;
+ 	rn = op->reg;
+@@ -636,6 +638,8 @@ static int do_fp_store(struct instruction_op *op, unsigned long ea,
+ 	} u;
  
- 	return true;
- }
-+#endif
+ 	nb = GETSIZE(op->type);
++	if (nb > sizeof(u))
++		return -EINVAL;
+ 	if (!address_ok(regs, ea, nb))
+ 		return -EFAULT;
+ 	rn = op->reg;
+@@ -680,6 +684,9 @@ static nokprobe_inline int do_vec_load(int rn, unsigned long ea,
+ 		u8 b[sizeof(__vector128)];
+ 	} u = {};
  
- /*
-  * Does the CPU support tlbie?
++	if (size > sizeof(u))
++		return -EINVAL;
++
+ 	if (!address_ok(regs, ea & ~0xfUL, 16))
+ 		return -EFAULT;
+ 	/* align to multiple of size */
+@@ -707,6 +714,9 @@ static nokprobe_inline int do_vec_store(int rn, unsigned long ea,
+ 		u8 b[sizeof(__vector128)];
+ 	} u;
+ 
++	if (size > sizeof(u))
++		return -EINVAL;
++
+ 	if (!address_ok(regs, ea & ~0xfUL, 16))
+ 		return -EFAULT;
+ 	/* align to multiple of size */
 -- 
 2.43.0
 
