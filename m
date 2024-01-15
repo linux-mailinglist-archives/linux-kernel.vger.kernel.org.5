@@ -1,206 +1,150 @@
-Return-Path: <linux-kernel+bounces-26247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26248-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D88C282DD7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:21:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E022982DD80
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:21:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84FAE2832EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:20:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E8CDB21C6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:21:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 833C41A734;
-	Mon, 15 Jan 2024 16:16:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97FD817BCB;
+	Mon, 15 Jan 2024 16:17:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="cYFsUOgl"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KSmmcdu8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA961A282;
-	Mon, 15 Jan 2024 16:16:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B13B1C0013;
-	Mon, 15 Jan 2024 16:16:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1705335391;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Xl/fBZ1aUKL0hWMZVIAmwRdTreoofQFnHKDzk938IBg=;
-	b=cYFsUOgl6y7i2QuPpsxsXWBrOBwsQ90mM3tk+a1DxY/7dFN4h/eO7KKH3s1uiLM6iQv4KK
-	04a/UkuS2hDma7uli8r7cwrd/YRBsweBdnep0Ox3XvjPj9dsvdV0+V8Dz/mBzypQ5Iqu9z
-	HB+xGlK9bIWWSpoz4LZZvDOyYWdFJ8mISjZ7AsF/+karA/IsfPBU/T0SzhQQLhz03pnaWI
-	nxu4Hd+kFzQ6zYEt+zZViZQSiFWITjkIdicyPh22QOS9CXNnLh7P6X0CKHiDvRccg7gwHC
-	Ff5Z32FMODVnAQ963/KoO/YhyuurA4DFam8aB5kK61mZElvfDZSOG5C/qh8iDg==
-From: Thomas Richard <thomas.richard@bootlin.com>
-Date: Mon, 15 Jan 2024 17:14:55 +0100
-Subject: [PATCH 14/14] PCI: j721e: add suspend and resume support
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E435517BB1;
+	Mon, 15 Jan 2024 16:17:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CFB1C3277D;
+	Mon, 15 Jan 2024 16:17:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705335432;
+	bh=R7wYv89WuvE+UdIk/00VqgnE5zrK2xX9FX1H5cIHu4Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KSmmcdu8Ut/hJbGoxzczBG3o82C+I8aeXFwsON62BLraBsvzsCAShnE03PlTlzLLn
+	 CPmHxbM4A+kCVFM0v9EQAVSTW6PUyTV1611SCU4ElEjwGi+3edZk7gLTCLNOUp1F3B
+	 1BEo5XovFEv8Xwe6bX8hwBGOVEHbuI8wO2pXjuDlwztaN9FBASREtXuD8N+pVcuAP7
+	 DhmWCTkRnyJWPQbKsguH7KuWWum4homKcB+Gvs0Oqa9c0aVKs8hyIkd0BzTNKbIbmE
+	 MVWhMU8B6P/5ioWw+00td5+LIc4tC3pFY5aKYX72V8es44m2GT+liSZK9NgKpAXkFx
+	 o2KPNXdThNGGA==
+Date: Mon, 15 Jan 2024 16:17:06 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Devarsh Thakkar <devarsht@ti.com>
+Cc: jyri.sarha@iki.fi, tomi.valkeinen@ideasonboard.com, airlied@gmail.com,
+	daniel@ffwll.ch, maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org, tzimmermann@suse.de, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, praneeth@ti.com, nm@ti.com,
+	vigneshr@ti.com, a-bhatia1@ti.com, j-luthra@ti.com,
+	kristo@kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: display: ti,am65x-dss: Add support for
+ common1 region
+Message-ID: <20240115-craftsman-capricorn-d2930678c222@spud>
+References: <20240115125716.560363-1-devarsht@ti.com>
+ <20240115125716.560363-2-devarsht@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240102-j7200-pcie-s2r-v1-14-84e55da52400@bootlin.com>
-References: <20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com>
-In-Reply-To: <20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com>
-To: Linus Walleij <linus.walleij@linaro.org>, 
- Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, 
- Tony Lindgren <tony@atomide.com>, 
- Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
- Aaro Koskinen <aaro.koskinen@iki.fi>, 
- Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
- Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, 
- Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, 
- Philipp Zabel <p.zabel@pengutronix.de>, Tom Joseph <tjoseph@cadence.com>, 
- Lorenzo Pieralisi <lpieralisi@kernel.org>, 
- =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, 
- linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org, 
- linux-pci@vger.kernel.org, gregory.clement@bootlin.com, 
- theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com, 
- Thomas Richard <thomas.richard@bootlin.com>
-X-Mailer: b4 0.12.0
-X-GND-Sasl: thomas.richard@bootlin.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="6UE2VM8YXmjg8HrJ"
+Content-Disposition: inline
+In-Reply-To: <20240115125716.560363-2-devarsht@ti.com>
 
-From: Théo Lebrun <theo.lebrun@bootlin.com>
 
-Add suspend and resume support for rc mode.
+--6UE2VM8YXmjg8HrJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
-Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
----
- drivers/pci/controller/cadence/pci-j721e.c    | 72 +++++++++++++++++++++++++++
- drivers/pci/controller/cadence/pcie-cadence.h |  3 +-
- 2 files changed, 74 insertions(+), 1 deletion(-)
+On Mon, Jan 15, 2024 at 06:27:15PM +0530, Devarsh Thakkar wrote:
+> TI keystone display subsystem present in AM65 and other SoCs such as AM62
 
-diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
-index 477275d72257..51867a3f2499 100644
---- a/drivers/pci/controller/cadence/pci-j721e.c
-+++ b/drivers/pci/controller/cadence/pci-j721e.c
-@@ -6,6 +6,7 @@
-  * Author: Kishon Vijay Abraham I <kishon@ti.com>
-  */
- 
-+#include <linux/clk-provider.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
-@@ -554,6 +555,76 @@ static void j721e_pcie_remove(struct platform_device *pdev)
- 	pm_runtime_disable(dev);
- }
- 
-+#ifdef CONFIG_PM
-+static int j721e_pcie_suspend_noirq(struct device *dev)
-+{
-+	struct j721e_pcie *pcie = dev_get_drvdata(dev);
-+
-+	if (pcie->mode == PCI_MODE_RC) {
-+		if (pcie->reset_gpio)
-+			gpiod_set_value_cansleep(pcie->reset_gpio, 0);
-+
-+		clk_disable_unprepare(pcie->refclk);
-+	}
-+
-+	cdns_pcie_disable_phy(pcie->cdns_pcie);
-+
-+	return 0;
-+}
-+
-+static int j721e_pcie_resume_noirq(struct device *dev)
-+{
-+	struct j721e_pcie *pcie = dev_get_drvdata(dev);
-+	struct cdns_pcie *cdns_pcie = pcie->cdns_pcie;
-+	int ret;
-+
-+	ret = j721e_pcie_ctrl_init(pcie);
-+	if (ret < 0) {
-+		dev_err(dev, "j721e_pcie_ctrl_init failed\n");
-+		return ret;
-+	}
-+
-+	j721e_pcie_config_link_irq(pcie);
-+
-+	/*
-+	 * This is not called explicitly in the probe, it is called by
-+	 * cdns_pcie_init_phy.
-+	 */
-+	ret = cdns_pcie_enable_phy(pcie->cdns_pcie);
-+	if (ret < 0) {
-+		dev_err(dev, "cdns_pcie_enable_phy failed\n");
-+		return -ENODEV;
-+	}
-+
-+	if (pcie->mode == PCI_MODE_RC) {
-+		struct cdns_pcie_rc *rc = cdns_pcie_to_rc(cdns_pcie);
-+
-+		ret = clk_prepare_enable(pcie->refclk);
-+		if (ret < 0) {
-+			dev_err(dev, "clk_prepare_enable failed\n");
-+			return -ENODEV;
-+		}
-+
-+		if (pcie->reset_gpio) {
-+			usleep_range(100, 200);
-+			gpiod_set_value_cansleep(pcie->reset_gpio, 1);
-+		}
-+
-+		ret = cdns_pcie_host_setup(rc, false);
-+		if (ret < 0) {
-+			clk_disable_unprepare(pcie->refclk);
-+			return -ENODEV;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops j721e_pcie_pm_ops = {
-+	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(j721e_pcie_suspend_noirq, j721e_pcie_resume_noirq)
-+};
-+#endif
-+
- static struct platform_driver j721e_pcie_driver = {
- 	.probe  = j721e_pcie_probe,
- 	.remove_new = j721e_pcie_remove,
-@@ -561,6 +632,7 @@ static struct platform_driver j721e_pcie_driver = {
- 		.name	= "j721e-pcie",
- 		.of_match_table = of_j721e_pcie_match,
- 		.suppress_bind_attrs = true,
-+		.pm	= pm_ptr(&j721e_pcie_pm_ops),
- 	},
- };
- builtin_platform_driver(j721e_pcie_driver);
-diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
-index 3b0da889ed64..05d4b96fc71d 100644
---- a/drivers/pci/controller/cadence/pcie-cadence.h
-+++ b/drivers/pci/controller/cadence/pcie-cadence.h
-@@ -331,6 +331,8 @@ struct cdns_pcie_rc {
- 	unsigned int		quirk_detect_quiet_flag:1;
- };
- 
-+#define cdns_pcie_to_rc(p) container_of(p, struct cdns_pcie_rc, pcie)
-+
- /**
-  * struct cdns_pcie_epf - Structure to hold info about endpoint function
-  * @epf: Info about virtual functions attached to the physical function
-@@ -381,7 +383,6 @@ struct cdns_pcie_ep {
- 	unsigned int		quirk_disable_flr:1;
- };
- 
--
- /* Register access */
- static inline void cdns_pcie_writel(struct cdns_pcie *pcie, u32 reg, u32 value)
- {
+Do all 3 SoCs supported by this binding (am625 am62a7 am65x) have this
+common1 register? If not, you should limit it the platforms that do have
+it.
 
--- 
-2.39.2
+Thanks,
+Conor.
 
+> support two separate register spaces namely "common" and "common1" which
+> can be used by two separate hosts to program the display controller as
+> described in respective Technical Reference Manuals [1].
+>=20
+> The common1 register space has similar set of configuration registers as
+> supported in common register space except the global configuration
+> registers which are exclusive to common region.
+>=20
+> This adds binding for "common1" register region too as supported by the
+> hardware.
+>=20
+> [1]:
+> AM62x TRM:
+> https://www.ti.com/lit/pdf/spruiv7 (Section 14.8.9.1 DSS Registers)
+>=20
+> AM65x TRM:
+> https://www.ti.com/lit/pdf/spruid7 (Section 12.6.5 DSS Registers)
+>=20
+> Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+> ---
+>  .../devicetree/bindings/display/ti/ti,am65x-dss.yaml       | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.ya=
+ml b/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
+> index b6767ef0d24d..55e3e490d0e6 100644
+> --- a/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
+> +++ b/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
+> @@ -37,6 +37,7 @@ properties:
+>        - description: OVR2 overlay manager for vp2
+>        - description: VP1 video port 1
+>        - description: VP2 video port 2
+> +      - description: common1 DSS register area
+> =20
+>    reg-names:
+>      items:
+> @@ -47,6 +48,7 @@ properties:
+>        - const: ovr2
+>        - const: vp1
+>        - const: vp2
+> +      - const: common1
+> =20
+>    clocks:
+>      items:
+> @@ -147,9 +149,10 @@ examples:
+>                      <0x04a07000 0x1000>, /* ovr1 */
+>                      <0x04a08000 0x1000>, /* ovr2 */
+>                      <0x04a0a000 0x1000>, /* vp1 */
+> -                    <0x04a0b000 0x1000>; /* vp2 */
+> +                    <0x04a0b000 0x1000>, /* vp2 */
+> +                    <0x04a01000 0x1000>; /* common1 */
+>              reg-names =3D "common", "vidl1", "vid",
+> -                    "ovr1", "ovr2", "vp1", "vp2";
+> +                    "ovr1", "ovr2", "vp1", "vp2", "common1";
+>              ti,am65x-oldi-io-ctrl =3D <&dss_oldi_io_ctrl>;
+>              power-domains =3D <&k3_pds 67 TI_SCI_PD_EXCLUSIVE>;
+>              clocks =3D        <&k3_clks 67 1>,
+> --=20
+> 2.34.1
+>=20
+
+--6UE2VM8YXmjg8HrJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaVaggAKCRB4tDGHoIJi
+0ofxAP9644IoFXpzq15LHVlrL0JW2/U7emx4AxBos1MWHgBw7wD+J8ZVW2G1GO2O
+Vy00E4ucrIaKQkVECBpcSKeGws8qFgA=
+=J3/J
+-----END PGP SIGNATURE-----
+
+--6UE2VM8YXmjg8HrJ--
 
