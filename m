@@ -1,42 +1,63 @@
-Return-Path: <linux-kernel+bounces-26306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16D4982DE4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:16:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DA6182DE51
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:17:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E29E1F228CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:16:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C52D52848A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:17:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D95518028;
-	Mon, 15 Jan 2024 17:16:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49CEC17C95;
+	Mon, 15 Jan 2024 17:17:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="sgPKvRIr"
-Received: from mout.web.de (mout.web.de [212.227.15.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="szsKY+HQ"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38C5017C70;
-	Mon, 15 Jan 2024 17:16:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1705338964; x=1705943764; i=markus.elfring@web.de;
-	bh=/Ca96eOJyuxZcGSv7l/iefKgmthOd3AabqprAzeuaDY=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=sgPKvRIrBelWyeNzCjHkNZaM2fDhYHQ0kNneSgD1vuY6lY9XR7GqE5qdQ08EazWZ
-	 jcjnsqrZsoC+wSJDq6Jqvj6eXNElZxygAZ5lC8ysod5DEWSeqKtDmn41Zhrllf3Ko
-	 2LvpYP0x0ZV6RPaHg6TQ2nnWK7JxhudTgOY098If0ONgDJUkVNITIpdRin3o5o4ku
-	 4t18SJI6FTXAIyBiMe05+tPlQSHL6H1EuvacnlNgM/zQdiK1qoje7RmfvM6fchNtu
-	 ZfNL/r2ZEV54o8NCQeMpXrSsYm0fYAdc8ewWkqJ9YL3vlOYKjidLi4pqWZZoaoZ/3
-	 n+zjN42TImfT2rZ6gw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.91.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MEUWM-1rNkoY35Y2-00FyPF; Mon, 15
- Jan 2024 18:16:04 +0100
-Message-ID: <f1977c1c-1c55-4194-9f72-f77120b2e4e5@web.de>
-Date: Mon, 15 Jan 2024 18:16:01 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E912817C70
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 17:17:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40e5f746ac4so54043415e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 09:17:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705339024; x=1705943824; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=o0P8zi1O1BsFyc/QcMbP4EfgnKZLLfc/05doi60umnc=;
+        b=szsKY+HQBCg/IJtjKeKnS3qa+MQ6MrLYBxDw2ySZiyoaUyRATmMP7cxUlFhunBj5ix
+         CMotryP/jo8zTgT5WHXUay9qfhribLxBicMTo7R8jCgJ6A0/eiMCayG3YXB1BX/7wQjc
+         N295SSRowssYMff8UlbscVxsIKjBjUrgwMqof5xRBJSiHmyWpie8A6bW1ss7RN9LryQh
+         KU8GGtdjtPmI62pd0JHElTe2cGCcvbl8MMVOVL4tWdu2NwdNkWuV8KHQbNeJOEud7P22
+         5g4cOZIOQU9sIGR/MLYm4kLFGcUPu7V/zfNPA6ZsnQwM2QFFlt8XNTljTIkmjTstRYFu
+         Johg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705339024; x=1705943824;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=o0P8zi1O1BsFyc/QcMbP4EfgnKZLLfc/05doi60umnc=;
+        b=oDddHJF1blfzFYXblNcS8xXUYm7op7EOHV2wBnEaFzEESCf4WEUPz07bVvcEH6VPCx
+         vPwv5aCe4xR4+v0OFboUwKTJ5v74ObQ2Lp/yg493bYMLXHolnwkgClJOe4KEeDXdLU7X
+         NtFNRksuusN9YvefQjlbw5TxV5BlRPMBEWpybBOHDjmlxhHke90mTA3QoHaXHgXzjc4V
+         RxXYF0pSPjvipzYY5mj3G2G8cWVszDuY/+InTfKFry/8uIiuVdJJHOoyPlMFwVE3Nniw
+         IqugF7scKwfq9aiZ02g/EsmkF1DVB2nb3o1IfmDQUQMJ/5wpx0dhBbYll+mGilYX13ce
+         v9tg==
+X-Gm-Message-State: AOJu0Yxr3ZQIejwFMk57Dl2vBUWtNsVSbc8kWy+pguny1RrZyVoJ5nsQ
+	Pscts6iyodi2KKjxaBQdiaey2bQKOMUXag==
+X-Google-Smtp-Source: AGHT+IHfy/8kGwKw5ffOHy4HjEPFr4yjVRGg7ZTYNQhomagiR/zhQsqEQNRbNqYL/w5O68RAm+Nq0g==
+X-Received: by 2002:a05:600c:4f53:b0:40e:4245:eb6f with SMTP id m19-20020a05600c4f5300b0040e4245eb6fmr3369428wmq.161.1705339023956;
+        Mon, 15 Jan 2024 09:17:03 -0800 (PST)
+Received: from ?IPV6:2a05:6e02:1041:c10:439d:3bc0:a764:73dc? ([2a05:6e02:1041:c10:439d:3bc0:a764:73dc])
+        by smtp.googlemail.com with ESMTPSA id i17-20020a05600c355100b0040d5f466deesm16425627wmq.38.2024.01.15.09.17.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Jan 2024 09:17:03 -0800 (PST)
+Message-ID: <415ca710-1b28-47e5-bffa-3f9f76c59041@linaro.org>
+Date: Mon, 15 Jan 2024 18:17:03 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -44,79 +65,118 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: kvm@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Alex Williamson <alex.williamson@redhat.com>,
- Eric Auger <eric.auger@redhat.com>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] vfio/platform: Use common error handling code in
- vfio_set_trigger()
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Z7qzU6jLC5cPn/dLevgbgCx8zj31z9p9BzGnlUo6qnRP8d4y1Q4
- +LgCokwPLR5G9VadGZiu3ppi8llxC69DKuh3llJFNC6FiVQ+lswHbYdPzkGGPNUOBOlbCZz
- WIbrZQxOwm/G0FgSVHUwZUOW9jbGaBJZxNUPCLXMpKfI6tbRbQ2/IiFYhrw0LxbcSJEXNas
- DYbpsn2HWi/vpboCkYmlg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:RiqAqZK9y5E=;sYOKqyUlk+kJ4LlOPo3PXmIH83z
- pLTFVm2Les9olu7Uh211G5dElkH0PLTZHc0+i6Q6sjrOb8aneyH9PTlfzJr3O2eIvDvvq6Xf6
- qnR0o+e7TTAtFZFz3HkRly3edKY31eqbapPqVKji3GONpLBiJdF+h3XA3qoNhlRuqHMNDVkCH
- tV7K5DvGJ9Fs94RKL+s7zPWVaJgA1u8QM1uQnls50/y6dGgHwOpCXp0mkr+USqBzLTYy+9wEq
- r0fn9aCVUEg5/TNStg6AaOPLcu8z4KJWMS1eRx0WSMJaaMUBFEK0oOAlO4O9TYxF5NzkzFVuf
- GoD/VqVGnXJCYJyFl5Lr9V1JUlHqL75mpw7rkl92M1h10y7rBNfMC7QTrCHWB6zNFJFpFvrR7
- qTF1haSFmMdfAh+4P9X9cpMcTaI80gw0sQ9exKnOn/wZplLT/jd/otlpG7UUb+9gnQieSApQf
- JJBA9tuyzM7EnvgAE/kjy2lyS4UuQ8sMQGqKQZca8ZOeyExfvYcL+SiDlQ39ZtXVLd7arf/Lb
- SRy3UCgk6c1aO5mIcChHP+7a7FG1n5odboFiOJyUBCpfSKr2yDh115DfUfPeX8e8KaBBAs8t1
- zJgKfnUVHvo51Jj7OCCod7dQ2eE3LDV/sbH2IAKbfsBO1X1yUV7fgIZ4xBdh2sLz08AmVbrbr
- atd4nZ88pRufV0grZPqiSwQjBna/gmeHmLvUMmLHx93bmKIgE6Ht5cKAuXoiIkOtdaCdAXxXA
- B0VHsc7xwFvp0nCz9R8UmxPxJw13KsqeZnw/vJbvTTfOs/OzApL/yTJDGOXzfBxGsIYaXIGkw
- GWVewi5mfXCzNvqhp8ktmAV59SRLZ+BIzVy3ugjneh0/vNyoh2gVtUx7dcdCjWkYhbfeJWmWW
- cfx5OH4LpTFEvCJT0wdkQe3JmtaBjNuPTscVmFzNoi2739kp55BXZNLzY8OEI9T6RfJCthJ7w
- OAV3KA==
+Subject: Re: [RFC PATCH 02/26] thermal/of: Migrate to
+ thermal_zone_device_register()
+Content-Language: en-US
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: rafael@kernel.org, rui.zhang@intel.com, lukasz.luba@arm.com,
+ linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <20231221124825.149141-1-angelogioacchino.delregno@collabora.com>
+ <20231221124825.149141-3-angelogioacchino.delregno@collabora.com>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <20231221124825.149141-3-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Mon, 15 Jan 2024 18:08:29 +0100
+On 21/12/2023 13:48, AngeloGioacchino Del Regno wrote:
+> The thermal API has a new thermal_zone_device_register() function which
+> is deprecating the older thermal_zone_device_register_with_trips() and
+> thermal_tripless_zone_device_register().
+> 
+> Migrate to the new thermal zone device registration function.
 
-Add a jump target so that a bit of exception handling can be better reused
-in an if branch of this function.
+Sounds good to me.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/vfio/platform/vfio_platform_irq.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+May be add "No functional change intended" ?
 
-diff --git a/drivers/vfio/platform/vfio_platform_irq.c b/drivers/vfio/plat=
-form/vfio_platform_irq.c
-index 61a1bfb68ac7..8604ce4f3fee 100644
-=2D-- a/drivers/vfio/platform/vfio_platform_irq.c
-+++ b/drivers/vfio/platform/vfio_platform_irq.c
-@@ -193,8 +193,8 @@ static int vfio_set_trigger(struct vfio_platform_devic=
-e *vdev, int index,
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com > ---
+>   drivers/thermal/thermal_of.c | 37 ++++++++++++++++--------------------
+>   1 file changed, 16 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
+> index 1e0655b63259..62a903ad649f 100644
+> --- a/drivers/thermal/thermal_of.c
+> +++ b/drivers/thermal/thermal_of.c
+> @@ -471,16 +471,12 @@ static struct thermal_zone_device *thermal_of_zone_register(struct device_node *
+>   							    const struct thermal_zone_device_ops *ops)
+>   {
+>   	struct thermal_zone_device *tz;
+> -	struct thermal_trip *trips;
+> -	struct thermal_zone_params tzp = {};
+> -	struct thermal_zone_device_ops *of_ops;
+> +	struct thermal_zone_device_params tzdp;
+>   	struct device_node *np;
+> -	int delay, pdelay;
+> -	int ntrips, mask;
+>   	int ret;
+>   
+> -	of_ops = kmemdup(ops, sizeof(*ops), GFP_KERNEL);
+> -	if (!of_ops)
+> +	tzdp.ops = kmemdup(ops, sizeof(*ops), GFP_KERNEL);
+> +	if (!tzdp.ops)
+>   		return ERR_PTR(-ENOMEM);
+>   
+>   	np = of_thermal_zone_find(sensor, id);
+> @@ -490,30 +486,29 @@ static struct thermal_zone_device *thermal_of_zone_register(struct device_node *
+>   		ret = PTR_ERR(np);
+>   		goto out_kfree_of_ops;
+>   	}
+> +	tzdp.type = np->name;
+>   
+> -	trips = thermal_of_trips_init(np, &ntrips);
+> -	if (IS_ERR(trips)) {
+> +	tzdp.trips = thermal_of_trips_init(np, &tzdp.num_trips);
+> +	if (IS_ERR(tzdp.trips)) {
+>   		pr_err("Failed to find trip points for %pOFn id=%d\n", sensor, id);
+> -		ret = PTR_ERR(trips);
+> +		ret = PTR_ERR(tzdp.trips);
+>   		goto out_kfree_of_ops;
+>   	}
+>   
+> -	ret = thermal_of_monitor_init(np, &delay, &pdelay);
+> +	ret = thermal_of_monitor_init(np, &tzdp.polling_delay, &tzdp.passive_delay);
+>   	if (ret) {
+>   		pr_err("Failed to initialize monitoring delays from %pOFn\n", np);
+>   		goto out_kfree_trips;
+>   	}
+>   
+> -	thermal_of_parameters_init(np, &tzp);
+> +	thermal_of_parameters_init(np, &tzdp.tzp);
+>   
+> -	of_ops->bind = thermal_of_bind;
+> -	of_ops->unbind = thermal_of_unbind;
+> +	tzdp.ops->bind = thermal_of_bind;
+> +	tzdp.ops->unbind = thermal_of_unbind;
+> +	tzdp.mask = GENMASK_ULL((tzdp.num_trips) - 1, 0);
+> +	tzdp.devdata = data;
+>   
+> -	mask = GENMASK_ULL((ntrips) - 1, 0);
+> -
+> -	tz = thermal_zone_device_register_with_trips(np->name, trips, ntrips,
+> -						     mask, data, of_ops, &tzp,
+> -						     pdelay, delay);
+> +	tz = thermal_zone_device_register(&tzdp);
+>   	if (IS_ERR(tz)) {
+>   		ret = PTR_ERR(tz);
+>   		pr_err("Failed to register thermal zone %pOFn: %d\n", np, ret);
+> @@ -531,9 +526,9 @@ static struct thermal_zone_device *thermal_of_zone_register(struct device_node *
+>   	return tz;
+>   
+>   out_kfree_trips:
+> -	kfree(trips);
+> +	kfree(tzdp.trips);
+>   out_kfree_of_ops:
+> -	kfree(of_ops);
+> +	kfree(tzdp.ops);
+>   
+>   	return ERR_PTR(ret);
+>   }
 
- 	trigger =3D eventfd_ctx_fdget(fd);
- 	if (IS_ERR(trigger)) {
--		kfree(irq->name);
--		return PTR_ERR(trigger);
-+		ret =3D PTR_ERR(trigger);
-+		goto free_name;
- 	}
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
- 	irq->trigger =3D trigger;
-@@ -202,9 +202,10 @@ static int vfio_set_trigger(struct vfio_platform_devi=
-ce *vdev, int index,
- 	irq_set_status_flags(irq->hwirq, IRQ_NOAUTOEN);
- 	ret =3D request_irq(irq->hwirq, handler, 0, irq->name, irq);
- 	if (ret) {
--		kfree(irq->name);
- 		eventfd_ctx_put(trigger);
- 		irq->trigger =3D NULL;
-+free_name:
-+		kfree(irq->name);
- 		return ret;
- 	}
-
-=2D-
-2.43.0
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
 
