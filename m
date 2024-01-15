@@ -1,208 +1,108 @@
-Return-Path: <linux-kernel+bounces-26330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A52AD82DEA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:54:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D90682DEB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:58:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD252B21859
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:54:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E2702833D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:58:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCD7218054;
-	Mon, 15 Jan 2024 17:54:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hC1AK2sL"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9676718659;
+	Mon, 15 Jan 2024 17:57:44 +0000 (UTC)
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D48A71803D
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 17:54:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705341279; x=1736877279;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GDOv+KMLJXKRPES2lOk9CeXDyPmRMw69IQKLB2cntJM=;
-  b=hC1AK2sL56oDLqXiKpty4KCY/9JR/u/EQDk1D/5QyxSe6Uu6c80FqhCU
-   zo9Lstco4rGFeg4GvYKLVF0GC2j92FXQtK736lrAyiStdGCF+3Q8yZ1eV
-   fzVUIay4JphJpLA5kqSEbmkCWrvJT55rGKyM1XxiCjwLRsU9hQCYSPX4j
-   htjX7QOcrhwW7z8m6Y/tvtO4WXOWmoFv+BqWZ1Ssu0+nB0P9cwHvPf70r
-   XeGrO6XUQoNLOrFsM1DFOd+lEfYY3ovbU+iJTy6Ihhs3XpkpZJ6QioPAt
-   Ka9sGISeOBCTp4fWK56islziU6/7dCTEPwq5FwG0yRw/CynvYGAnutp7i
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="466045451"
-X-IronPort-AV: E=Sophos;i="6.04,197,1695711600"; 
-   d="scan'208";a="466045451"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 09:54:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,197,1695711600"; 
-   d="scan'208";a="32190049"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 15 Jan 2024 09:54:31 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rPRAF-000Ce0-1n;
-	Mon, 15 Jan 2024 17:54:27 +0000
-Date: Tue, 16 Jan 2024 01:54:23 +0800
-From: kernel test robot <lkp@intel.com>
-To: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>,
-	victor.liu@nxp.com, andrzej.hajda@intel.com,
-	neil.armstrong@linaro.org, rfoss@kernel.org, jonas@kwiboo.se,
-	jernej.skrabec@gmail.com, maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
-	daniel@ffwll.ch, shawnguo@kernel.org, s.hauer@pengutronix.de,
-	kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-	khilman@baylibre.com, jbrunet@baylibre.com,
-	martin.blumenstingl@googlemail.com, hjc@rock-chips.com,
-	heiko@sntech.de, yannick.fertre@foss.st.com,
-	raphael.gallais-pou@foss.st.com, philippe.cornu@foss.st.com,
-	mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-amlogic@lists.infradead.org
-Cc: oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH] drm/bridge: synopsys: dw-mipi-dsi: fix deferred dsi host
- probe breaks dsi device probe
-Message-ID: <202401160108.j5Lqkppm-lkp@intel.com>
-References: <20240112180737.551318-1-farouk.bouabid@theobroma-systems.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFB74182AA;
+	Mon, 15 Jan 2024 17:57:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id 286ea037ab555c88; Mon, 15 Jan 2024 18:57:32 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 205486692F2;
+	Mon, 15 Jan 2024 18:57:32 +0100 (CET)
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Lukasz Luba <lukasz.luba@arm.com>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Zhang Rui <rui.zhang@intel.com>
+Subject: [PATCH  v1 1/2] thermal: gov_fair_share: Fix dependency on trip points ordering
+Date: Mon, 15 Jan 2024 18:55:13 +0100
+Message-ID: <4918593.31r3eYUQgx@kreacher>
+In-Reply-To: <12389773.O9o76ZdvQC@kreacher>
+References: <12389773.O9o76ZdvQC@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240112180737.551318-1-farouk.bouabid@theobroma-systems.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdejuddguddtjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeeipdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtohepshhr
+ ihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
 
-Hi Farouk,
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-kernel test robot noticed the following build warnings:
+The computation in the fair share governor's get_trip_level() function
+currently works under the assumption that the temperature ordering of
+trips[] in a thermal zone is ascending, which need not be the case.
 
-[auto build test WARNING on drm-misc/drm-misc-next]
-[also build test WARNING on drm/drm-next linus/master v6.7 next-20240112]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+However, get_trip_level() can be made work regardless of whether or not
+the trips table is ordered by temperature in any way, so change it
+accordingly.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Farouk-Bouabid/drm-bridge-synopsys-dw-mipi-dsi-fix-deferred-dsi-host-probe-breaks-dsi-device-probe/20240113-020945
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/20240112180737.551318-1-farouk.bouabid%40theobroma-systems.com
-patch subject: [PATCH] drm/bridge: synopsys: dw-mipi-dsi: fix deferred dsi host probe breaks dsi device probe
-config: i386-buildonly-randconfig-002-20240115 (https://download.01.org/0day-ci/archive/20240116/202401160108.j5Lqkppm-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240116/202401160108.j5Lqkppm-lkp@intel.com/reproduce)
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/thermal/gov_fair_share.c |   16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401160108.j5Lqkppm-lkp@intel.com/
+Index: linux-pm/drivers/thermal/gov_fair_share.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/gov_fair_share.c
++++ linux-pm/drivers/thermal/gov_fair_share.c
+@@ -18,22 +18,24 @@
+ static int get_trip_level(struct thermal_zone_device *tz)
+ {
+ 	const struct thermal_trip *trip, *level_trip = NULL;
+-	int trip_level;
++	int trip_level = -1;
+ 
+ 	for_each_trip(tz, trip) {
+ 		if (trip->temperature >= tz->temperature)
+-			break;
++			continue;
+ 
+-		level_trip = trip;
++		trip_level++;
++
++		if (!level_trip || trip->temperature > level_trip->temperature)
++			level_trip = trip;
+ 	}
+ 
+ 	/*  Bail out if the temperature is not greater than any trips. */
+-	if (!level_trip)
++	if (trip_level < 0)
+ 		return 0;
+ 
+-	trip_level = thermal_zone_trip_id(tz, level_trip);
+-
+-	trace_thermal_zone_trip(tz, trip_level, level_trip->type);
++	trace_thermal_zone_trip(tz, thermal_zone_trip_id(tz, level_trip),
++				level_trip->type);
+ 
+ 	return trip_level;
+ }
 
-All warnings (new ones prefixed by >>):
-
->> drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c:1187:5: warning: no previous prototype for '__dw_mipi_dsi_probe' [-Wmissing-prototypes]
-    1187 | int __dw_mipi_dsi_probe(struct platform_device *pdev,
-         |     ^~~~~~~~~~~~~~~~~~~
 
 
-vim +/__dw_mipi_dsi_probe +1187 drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-
-  1186	
-> 1187	int __dw_mipi_dsi_probe(struct platform_device *pdev,
-  1188			    const struct dw_mipi_dsi_plat_data *plat_data, struct dw_mipi_dsi **dsi_p)
-  1189	{
-  1190		struct device *dev = &pdev->dev;
-  1191		struct reset_control *apb_rst;
-  1192		struct dw_mipi_dsi *dsi;
-  1193		int ret;
-  1194	
-  1195		*dsi_p = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
-  1196		if (!*dsi_p)
-  1197			return -ENOMEM;
-  1198	
-  1199		dsi = *dsi_p;
-  1200	
-  1201		dsi->dev = dev;
-  1202		dsi->plat_data = plat_data;
-  1203	
-  1204		if (!plat_data->phy_ops->init || !plat_data->phy_ops->get_lane_mbps ||
-  1205		    !plat_data->phy_ops->get_timing) {
-  1206			DRM_ERROR("Phy not properly configured\n");
-  1207			return -ENODEV;
-  1208		}
-  1209	
-  1210		if (!plat_data->base) {
-  1211			dsi->base = devm_platform_ioremap_resource(pdev, 0);
-  1212			if (IS_ERR(dsi->base))
-  1213				return -ENODEV;
-  1214	
-  1215		} else {
-  1216			dsi->base = plat_data->base;
-  1217		}
-  1218	
-  1219		dsi->pclk = devm_clk_get(dev, "pclk");
-  1220		if (IS_ERR(dsi->pclk)) {
-  1221			ret = PTR_ERR(dsi->pclk);
-  1222			dev_err(dev, "Unable to get pclk: %d\n", ret);
-  1223			return ret;
-  1224		}
-  1225	
-  1226		/*
-  1227		 * Note that the reset was not defined in the initial device tree, so
-  1228		 * we have to be prepared for it not being found.
-  1229		 */
-  1230		apb_rst = devm_reset_control_get_optional_exclusive(dev, "apb");
-  1231		if (IS_ERR(apb_rst)) {
-  1232			ret = PTR_ERR(apb_rst);
-  1233	
-  1234			if (ret != -EPROBE_DEFER)
-  1235				dev_err(dev, "Unable to get reset control: %d\n", ret);
-  1236	
-  1237			return ret;
-  1238		}
-  1239	
-  1240		if (apb_rst) {
-  1241			ret = clk_prepare_enable(dsi->pclk);
-  1242			if (ret) {
-  1243				dev_err(dev, "%s: Failed to enable pclk\n", __func__);
-  1244				return ret;
-  1245			}
-  1246	
-  1247			reset_control_assert(apb_rst);
-  1248			usleep_range(10, 20);
-  1249			reset_control_deassert(apb_rst);
-  1250	
-  1251			clk_disable_unprepare(dsi->pclk);
-  1252		}
-  1253	
-  1254		dw_mipi_dsi_debugfs_init(dsi);
-  1255		pm_runtime_enable(dev);
-  1256	
-  1257		dsi->dsi_host.ops = &dw_mipi_dsi_host_ops;
-  1258		dsi->dsi_host.dev = dev;
-  1259		dsi->bridge.driver_private = dsi;
-  1260		dsi->bridge.funcs = &dw_mipi_dsi_bridge_funcs;
-  1261		dsi->bridge.of_node = pdev->dev.of_node;
-  1262	
-  1263		ret = mipi_dsi_host_register(&dsi->dsi_host);
-  1264		if (ret) {
-  1265			dev_err(dev, "Failed to register MIPI host: %d\n", ret);
-  1266			pm_runtime_disable(dev);
-  1267			dw_mipi_dsi_debugfs_remove(dsi);
-  1268			return ret;
-  1269		}
-  1270	
-  1271	
-  1272		return 0;
-  1273	}
-  1274	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
