@@ -1,131 +1,109 @@
-Return-Path: <linux-kernel+bounces-25727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25729-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFDEA82D507
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:25:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F6C582D50A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:27:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B2CD281AF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:25:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EAD61C211CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:27:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E277363D1;
-	Mon, 15 Jan 2024 08:25:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCE156FB6;
+	Mon, 15 Jan 2024 08:27:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CoV0R374"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DYVeSxhj"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AD005689;
-	Mon, 15 Jan 2024 08:25:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BC49C433C7;
-	Mon, 15 Jan 2024 08:25:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705307133;
-	bh=bkFxuxf0iCghKC8GrzWqXKXAFsRRBXSZ7feexi45UVk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CoV0R374tK5kCtzfve7eyQAekaInOpN0kUMbDADJ0KXk63eiqZTQu9MWzErWMYAfj
-	 BDp82RgAyoC0OgaHWM5EFeBKTwr8e+VuBEiW9BLrJAQoXyQcvdypB5Jg9rqF3Eto5u
-	 u+EbR/pWzZwUzdc53sIOnvkoHlbqKwwykR0GFpAgmNhCKrLV97kkbrFH0THj6m9hNd
-	 rlhyTBEwVAXw3ZeYbwAxM/EyfKlfjSXTiTQg5oBwZxiTqrTSdiuaD5tS8mwlRYdcK1
-	 J5IYOw8SdFTdWr6BorUsL3PvlYJxuPS7BKs7hxmNaGe84+JruinkUhmnF8916wcMt5
-	 vzHB0zIfM8/Ew==
-Date: Mon, 15 Jan 2024 09:25:30 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc: Andrew Davis <afd@ti.com>, Frank Binns <frank.binns@imgtec.com>, 
-	Donald Robson <donald.robson@imgtec.com>, Matt Coster <matt.coster@imgtec.com>, 
-	Adam Ford <aford173@gmail.com>, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
-	=?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>, 
-	Paul Cercueil <paul@crapouillou.net>, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-sunxi@lists.linux.dev, linux-omap@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: Re: Re: [PATCH RFC v2 04/11] ARM: dts: omap4: Add device tree entry
- for SGX GPU
-Message-ID: <vpcgccul53oibwoqb3barj3rjxoyskoldjyfvjdzmytic3tonm@wq4aqsenk7rp>
-References: <20240108183302.255055-1-afd@ti.com>
- <20240108183302.255055-5-afd@ti.com>
- <122DC5ED-2AA7-46A0-845F-083922458385@goldelico.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B31666FA1
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 08:27:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a2c179aa5c4so494718266b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 00:27:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705307219; x=1705912019; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XwFP484EL/42mEA8eP3U7iCZLLGzI7yfwJRI9zN584M=;
+        b=DYVeSxhjFzxDNYgA8lkpIacieQSXGTUr1abf+1vJWPrmrcy7XCFNPraoD4y7mhQeQo
+         2fWLXfc2qqv2/tnyD9zhl5T6AoZDugsEjJYZeXrIzAC15CDUCSx3Of6VEQgezgEKWNlM
+         WGSWM7yTay8+7wWkufvhHt6BmjSunad2wOgB/xjzr2WLA1rSIgyyQMuynoXev+f94Lf6
+         aVMebctPK+RKEYHnc2zpnsBPsqMd0RVxF+e8sBOn2FJD0f1Q6EJa20k12u9ws7ie1z24
+         hmrtanyE58uQeI3PTnIPxAzbOeYWsLNCzPkWbI8Xq0qQGdgh/U18u1Ckjn1/5Ptrf/pb
+         8lIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705307219; x=1705912019;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XwFP484EL/42mEA8eP3U7iCZLLGzI7yfwJRI9zN584M=;
+        b=Yxx3v8lQzeoIJo6P/Ld6dUtUMNtlJTxh96Enk+6CFwYIENXmGky4NqqoJF3N+ic5g4
+         4BOD5no7zWA1JvruX1ebwCoJvJzbIfu/HHXrs7qSpxg6zYAo9dxc/BCAG3WFZDFW6+qp
+         ACNpi4dp63nZoiWCFl5B/DM4MKprLkU4FehWadN6aIEmNlBKEGx9HNhpw3bo1wykPNP6
+         AHK8KXJxyFIgyC4jmIQHZ+d716ZE4mN+SO334PemTbc8K9Ni4W2r6r+s8QOX9s9U/vKI
+         eiKHxLuwUzPHUIwBGMu/PjXvB2ePneugY7zlhKB29K+1eYHYqCInox3d5WycHD/O5MX/
+         jU8Q==
+X-Gm-Message-State: AOJu0YyOajk8QnrS0spSK9d4BoxcuUMCJeJfW67nFNe/2AuGoUzxrhSV
+	FsfCKIeT3ors2dt5UYmxnpA+juMFK7tc1YMMpxdtmqvfVIG9aQ==
+X-Google-Smtp-Source: AGHT+IF4k1vq/KWZ/UThsgPFVJPprdVcyL3s0TAS6ZWzFuWcDmGKlFdr94xCGFOqT/9hdzR7N9CZn4dOFhklG8DmJ60=
+X-Received: by 2002:a17:907:740e:b0:a26:9829:1f84 with SMTP id
+ gj14-20020a170907740e00b00a2698291f84mr2033034ejc.116.1705307218905; Mon, 15
+ Jan 2024 00:26:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="5bv4mdxrrdvnbudo"
-Content-Disposition: inline
-In-Reply-To: <122DC5ED-2AA7-46A0-845F-083922458385@goldelico.com>
-
-
---5bv4mdxrrdvnbudo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240115075425.108134-1-meir6264@Gmail.com> <15008951-9c0d-4bf8-8bc6-a639a6726105@moroto.mountain>
+In-Reply-To: <15008951-9c0d-4bf8-8bc6-a639a6726105@moroto.mountain>
+From: meir elisha <meir6264@gmail.com>
+Date: Mon, 15 Jan 2024 10:26:47 +0200
+Message-ID: <CAHdEp8-APpMA-m7kUjMPF0a9NXaBSTjVJn4UJepv=RUn4w=8Cg@mail.gmail.com>
+Subject: Re: [PATCH] Staging: rtl8723bs: rtw_ieee80211: Remove extra space
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-staging@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Sure. Thanks for your reply! sending v2 patch.
 
-On Fri, Jan 12, 2024 at 06:33:58PM +0100, H. Nikolaus Schaller wrote:
-> > Am 08.01.2024 um 19:32 schrieb Andrew Davis <afd@ti.com>:
-> >=20
-> > Add SGX GPU device entry to base OMAP4 dtsi file.
-> >=20
-> > Signed-off-by: Andrew Davis <afd@ti.com>
+=E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=91=D7=
+=B3, 15 =D7=91=D7=99=D7=A0=D7=95=D7=B3 2024 =D7=91-10:01 =D7=9E=D7=90=D7=AA=
+ =E2=80=AADan Carpenter=E2=80=AC=E2=80=8F
+<=E2=80=AAdan.carpenter@linaro.org=E2=80=AC=E2=80=8F>:=E2=80=AC
+>
+> On Mon, Jan 15, 2024 at 09:54:25AM +0200, Meir Elisha wrote:
+> > Fix checkpatch warning: please, no space before tabs
+> >
+> > Signed-off-by: Meir Elisha <meir6264@Gmail.com>
 > > ---
-> > arch/arm/boot/dts/ti/omap/omap4.dtsi | 9 +++++----
-> > 1 file changed, 5 insertions(+), 4 deletions(-)
-> >=20
-> > diff --git a/arch/arm/boot/dts/ti/omap/omap4.dtsi b/arch/arm/boot/dts/t=
-i/omap/omap4.dtsi
-> > index 2bbff9032be3e..559b2bfe4ca7c 100644
-> > --- a/arch/arm/boot/dts/ti/omap/omap4.dtsi
-> > +++ b/arch/arm/boot/dts/ti/omap/omap4.dtsi
-> > @@ -501,10 +501,11 @@ sgx_module: target-module@56000000 {
-> > #size-cells =3D <1>;
-> > ranges =3D <0 0x56000000 0x2000000>;
-> >=20
-> > - /*
-> > - * Closed source PowerVR driver, no child device
-> > - * binding or driver in mainline
-> > - */
-> > + gpu@0 {
->=20
-> I wonder why we don't add a "gpu:" label here.
->=20
-> Almost all other subsystem nodes have one (e.g. emif:, aes:, dss:, dsi:, =
-hdmi:, etc.),
-> obviously for convenience when using a .dtsi file.
->=20
-> It would allow a board-specific DTS to easily add status =3D "disabled" t=
-o avoid driver
-> probing or disabling the GPU (e.g. if there is no display).
-
-There's no reason to disable it in the DT: the hardware block would
-still be there and it's rendering to memory so it still could be useful.
-
-If there's no display on the board and you really don't want the GPU
-driver, then you can disable the driver or block the module loading, but
-it should be a distro / package / user decision, not a DT / kernel one
-still.
-
-Maxime
-
---5bv4mdxrrdvnbudo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZaTr7AAKCRDj7w1vZxhR
-xSybAP96mNxOy9DrBryPZmmu4a4Y6AfuRKXr9+Uh2C3OhAPO3QEA1j3KoeAhpYrF
-0pDWtJkRFUHwyOTCz3HpiAeRG3RSqwM=
-=GRcK
------END PGP SIGNATURE-----
-
---5bv4mdxrrdvnbudo--
+> >  drivers/staging/rtl8723bs/core/rtw_ieee80211.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c b/drivers/s=
+taging/rtl8723bs/core/rtw_ieee80211.c
+> > index 30e7457a9c31..cfa994835008 100644
+> > --- a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
+> > +++ b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
+> > @@ -1036,7 +1036,7 @@ void rtw_get_bcn_info(struct wlan_network *pnetwo=
+rk)
+> >       struct HT_info_element *pht_info =3D NULL;
+> >       struct ieee80211_ht_cap *pht_cap =3D NULL;
+> >       unsigned int            len;
+>                     ^^^^^^^^^^^
+> How about we delete these as well.
+>
+> > -     unsigned char   *p;
+> > +     unsigned char *p;
+> >       __le16 le_cap;
+>
+> regards,
+> dan carpenter
+>
 
