@@ -1,133 +1,107 @@
-Return-Path: <linux-kernel+bounces-26258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26259-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B45FE82DD9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:28:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 596A082DD9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:29:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81AB41C21B03
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:28:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08AB928291D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:29:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6AF817BBB;
-	Mon, 15 Jan 2024 16:28:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9FF17BAF;
+	Mon, 15 Jan 2024 16:29:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PkmLG2NR"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sIx8PqGD"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61FAC20E3
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 16:28:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705336125;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xeFxX+daWDMSkrH7ZOnVTZoSM9dN+DP2BZ6PwiIA2qo=;
-	b=PkmLG2NRJAc9a0AIjZf7fie3YJ/+A0I2SGf4oaDPQdDzFQ7kVc4BhYd7YXH7tvQuEaesAi
-	STxUjdH2t9Dkuc7qFQEnXSf9iNUEkxtONKmR7SbcwVwc1DYQZx9WMFI9/hQq9ZfdflkDSW
-	iPOuvBbM6hlTeqNMi9tD9pcFOkxxfgA=
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
- [209.85.166.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-639-LTHc2U00MGCdSlaZlaYqNg-1; Mon, 15 Jan 2024 11:28:44 -0500
-X-MC-Unique: LTHc2U00MGCdSlaZlaYqNg-1
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7baa6cc3af2so843339939f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 08:28:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705336123; x=1705940923;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xeFxX+daWDMSkrH7ZOnVTZoSM9dN+DP2BZ6PwiIA2qo=;
-        b=BhlahZLQ7vFs0VjmeH7k7DvtIGCNSIffFnO2YIfd+KbqvyQBGQKHIgaQ9gV4WasA94
-         +H8lj6nF2pYeY3HVUNIsuMIAUonPbRWo+LO35AGoB7Qegbf3rK/eVnFBVt4F9nJKKic7
-         lzCfs5ow5Hzx2UmJj0Layt/Zc4elN/PNlY0XMaGQlF6xfDrZaHeE95g/32MOSbokOcxz
-         9WkzpP2jYZtFlcSIOuKQM3DBmQmlT+g18kOOJk8HAVjSFsB2Q/QkIZEG7uOIvvGAulrO
-         bwC4GYoemj3btGemkQpi1e7p9mzIjKmnrdsnYIM7EVKGFkNjmeO6DLcGjcwYimIABClj
-         eRPQ==
-X-Gm-Message-State: AOJu0YwCZIIHEfm6OGjLek5HKBDkyJ6Opea2MIFvGPfmtfxWHExH3ERN
-	ziP+EHwsGQWdoZ3amTJWTAZdsO23Bnj7Q9zSlXPBlCcjyop/9bPIGpLcM4KDoG2G0h/3BRR3kfW
-	F6JAcdbBXVNHtdlrZhyZhNYQX1CaBbbyH
-X-Received: by 2002:a5e:c745:0:b0:7bf:444a:1ac with SMTP id g5-20020a5ec745000000b007bf444a01acmr1850343iop.43.1705336123295;
-        Mon, 15 Jan 2024 08:28:43 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFb5zNWdn3eaZ1y+CeTf8VwTR+AfnhjZIvIzBsaZ7tYdGNeAwEtzXRKfbGWez3YXRA9BZyJEQ==
-X-Received: by 2002:a5e:c745:0:b0:7bf:444a:1ac with SMTP id g5-20020a5ec745000000b007bf444a01acmr1850336iop.43.1705336122981;
-        Mon, 15 Jan 2024 08:28:42 -0800 (PST)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id t9-20020a02c489000000b0046e7235c740sm1367316jam.106.2024.01.15.08.28.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 08:28:42 -0800 (PST)
-Date: Mon, 15 Jan 2024 09:28:41 -0700
-From: Alex Williamson <alex.williamson@redhat.com>
-To: "Wang, Wei W" <wei.w.wang@intel.com>
-Cc: Kunwu Chan <chentao@kylinos.cn>, "kvm@vger.kernel.org"
- <kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] vfio: Use WARN_ON for low-probability allocation
- failure issue in vfio_pci_bus_notifier
-Message-ID: <20240115092841.19dc32f6.alex.williamson@redhat.com>
-In-Reply-To: <DS0PR11MB6373BAF9CFEC4D67DEAAB1F7DC6C2@DS0PR11MB6373.namprd11.prod.outlook.com>
-References: <20240115063434.20278-1-chentao@kylinos.cn>
-	<DS0PR11MB6373BAF9CFEC4D67DEAAB1F7DC6C2@DS0PR11MB6373.namprd11.prod.outlook.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92CA317C60;
+	Mon, 15 Jan 2024 16:29:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FBFAC433C7;
+	Mon, 15 Jan 2024 16:29:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705336167;
+	bh=v4JtTtNp1XjaHbqrDnU21jrjvuE4hRW/h7O6EdQVHVE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sIx8PqGDhvLUU6iKrLE9NIqw0b98BVF6tcEZWjKxRok4xzM5ozF7Op+pCsUqPh3O0
+	 NPo8qmWgkPBo3IaARReSo3WIJGWIWjUkMKWOiEmIaGfOfrkdTgm8cMgJa6JrTWXp+o
+	 xOO+h9Wlet9Mkt9c9bkVdV4WFqeQveQvmXUiDvNgr8e9KdyNp8VZZAJEEoqfNwsdhR
+	 F2gmEqrWmu7MZDxO34373mEK3sZz1TNy0WQHwycd8fZP1ud5ZolYEssUh6uV82YFmS
+	 /VG2cmDygYplGcxQKv0CrR+fxCNRfyM0qXGeucKjo9I5Uz3varPR3WZpF0DXUled/R
+	 wDRnQPACEKWhw==
+Date: Mon, 15 Jan 2024 16:29:22 +0000
+From: Conor Dooley <conor@kernel.org>
+To: =?iso-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+Cc: Michal Simek <michal.simek@amd.com>, Rob Herring <robh@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Subject: Re: [PATCH] dt-bindings: ignore paths outside kernel for
+ DT_SCHEMA_FILES
+Message-ID: <20240115-fragment-clean-95ef01dd8b20@spud>
+References: <20231220145537.2163811-1-andre.draszik@linaro.org>
+ <170432630603.2042234.10993333941885772911.robh@kernel.org>
+ <827695c3-bb33-4a86-8586-2c7323530398@amd.com>
+ <bcd89ef7a43eb7d652f045c029d8e108adf7ba32.camel@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="BnbWovGOalBWOCff"
+Content-Disposition: inline
+In-Reply-To: <bcd89ef7a43eb7d652f045c029d8e108adf7ba32.camel@linaro.org>
 
-On Mon, 15 Jan 2024 15:41:02 +0000
-"Wang, Wei W" <wei.w.wang@intel.com> wrote:
 
-> On Monday, January 15, 2024 2:35 PM, Kunwu Chan wrote:
-> > kasprintf() returns a pointer to dynamically allocated memory which can be
-> > NULL upon failure.
-> > 
-> > This is a blocking notifier callback, so errno isn't a proper return value. Use
-> > WARN_ON to small allocation failures.
-> > 
-> > Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-> > ---
-> > v2: Use WARN_ON instead of return errno
-> > ---
-> >  drivers/vfio/pci/vfio_pci_core.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-> > index 1cbc990d42e0..61aa19666050 100644
-> > --- a/drivers/vfio/pci/vfio_pci_core.c
-> > +++ b/drivers/vfio/pci/vfio_pci_core.c
-> > @@ -2047,6 +2047,7 @@ static int vfio_pci_bus_notifier(struct notifier_block
-> > *nb,
-> >  			 pci_name(pdev));
-> >  		pdev->driver_override = kasprintf(GFP_KERNEL, "%s",
-> >  						  vdev->vdev.ops->name);
-> > +		WARN_ON(!pdev->driver_override);  
-> 
-> Saw Alex's comments on v1. Curious why not return "NOTIFY_BAD" on errors though
-> less likely? Similar examples could be found in kvm_pm_notifier_call, kasan_mem_notifier etc.
+--BnbWovGOalBWOCff
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If the statement is that there are notifier call chains that return
-NOTIFY_BAD, I would absolutely agree, but the return value needs to be
-examined from the context of the caller.  BUS_NOTIFY_ADD_DEVICE is
-notified via bus_notify() in device_add().  What does it accomplish to
-return NOTIFY_BAD in a chain that ignores the return value?  At best
-we're preventing callbacks further down the chain from being called.
-That doesn't seem obviously beneficial either.
+On Mon, Jan 15, 2024 at 09:40:37AM +0000, Andr=E9 Draszik wrote:
+> Hi,
+>=20
+> On Mon, 2024-01-15 at 10:20 +0100, Michal Simek wrote:
+> > This patch is causing issue for me. Look at log below.
+> > I am running it directly on the latest linux-next/master.
+> >=20
+> > Thanks,
+> > Michal
+> >=20
+> > $ make DT_SCHEMA_FILES=3D"Documentation/devicetree/bindings/arm/arm,cci=
+-400.yaml"=20
+> > dt_binding_check
+>=20
+> It'll work if you drop the 'Documentation/devicetree/bindings' part from =
+the path, as
+> it is implied since bindings can only be in that directory anyway:
+>=20
+>     make DT_SCHEMA_FILES=3D"arm/arm,cci-400.yaml" dt_binding_check
+>     make DT_SCHEMA_FILES=3D"arm,cci-400.yaml" dt_binding_check
+>=20
+> both work.
 
-The scenario here is similar to that in fail_iommu_bus_notify() where
-they've chosen to trigger a pr_warn() if they're unable to crease sysfs
-entries.  In fact, a pci_warn(), maybe even pci_err() might be a better
-alternative here than a WARN_ON().  Thanks,
+Requiring that is pretty user unfriendly though I think, passing the
+full path from the root directory of the kernel tree would be my
+assumption of the "default".
 
-Alex
+--BnbWovGOalBWOCff
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaVdYgAKCRB4tDGHoIJi
+0laCAP4jU0j0zR/qRpoaS6nQ8SKWYWKcVvWeRmzVmMAjz9LbVQEAxLCc8b0EM5WB
+j1LjeGr6Fpt66iuBc/xm5rVXCCCbVw0=
+=dYvI
+-----END PGP SIGNATURE-----
+
+--BnbWovGOalBWOCff--
 
