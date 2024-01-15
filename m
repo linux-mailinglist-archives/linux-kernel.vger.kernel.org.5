@@ -1,196 +1,118 @@
-Return-Path: <linux-kernel+bounces-25673-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 970BE82D476
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:13:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1A2F82D479
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:17:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0A23281512
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:13:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84466B20EC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:17:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2530A3D8E;
-	Mon, 15 Jan 2024 07:12:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4405D3D62;
+	Mon, 15 Jan 2024 07:17:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="KJEDuj/R"
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="To/Qh4W4"
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04B5B3C0B
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 07:12:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-28e4fd9e352so458206a91.3
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 23:12:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1705302772; x=1705907572; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lOtRqa7rEwU1R9Xcu357qtlvryd8Tx4xNbEfyiqNWok=;
-        b=KJEDuj/RZU5IeT4OERKXKJhrZhgOwuS80GX7F1Js4g2KvBx+danStsOLdWBpuFyI5v
-         6/0JvCLUpo7kyGXQXeDylyW6UJFPD+2+wPVZG5cQBkrvYMOWityp7MRfYx22E8BhNbFU
-         sNTfspOZdb/y1nFw/5vvLmTE4F1JcPFvfNPj1S3e7iaQ8Oc6FJQLTNRLcrGov7d7VlW5
-         MuGjpjHPFAJWe8jJNthNqJwmsAS3Jo5Di2JBWV2GGcH3OnVvuzvBSxA4MxG3en1l+Wk/
-         e7S6hmW6ZMmduAxoDGdxFPJn+DR5ZTf/BptZ5S5pX7/pRrLr0RiJOAtQ0kDf83QRW1jU
-         8njg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705302772; x=1705907572;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lOtRqa7rEwU1R9Xcu357qtlvryd8Tx4xNbEfyiqNWok=;
-        b=UPMRmL0HSEN2e5jEm6P4qJ6RV5qeT5C/ZsdFOw7sQN2HtBavYS1cOHVlKbrp3Q730d
-         4c7K59pdI5KtbAhPbkQq6nEWfHlQkpAzd0nGBVadHiAbXbWZAb+8XAwL2eeowvRgIjQJ
-         JIh8v3pyhId0vWvUTEZZQpnYzYl20G/g0a246Uhlh73sIwlYoWkGUR4GoP3YEndbZfjB
-         llUB8fwnzaVwBp3BX4fsjXKKgp24yiD9TmvA4gv64lBIojkK/SwBPiO0PlpEGiSdFjiC
-         y97a4V6ob6m2y+IIgStRDZao/KyFNt2xuozfLPo7sLD4/rlWQWqEkX5EAPr5+HvvwHf+
-         UMPQ==
-X-Gm-Message-State: AOJu0YzVeeEf0E0hSwxCH4QRoCy4m3ykiq84GPi/BTQtCd7IBJMSkgqO
-	gs0NfF+i+2uayBhMeKOCw0Q0gwvgK7URkw==
-X-Google-Smtp-Source: AGHT+IFn52n0aTLVx0IuHopQOFwKNNIX2e3zu7DgcMUSmIjqFSbJEWZdITvqr7wz6RoFDLZ50Pkb/w==
-X-Received: by 2002:a17:90a:fa8b:b0:28d:4db8:6d52 with SMTP id cu11-20020a17090afa8b00b0028d4db86d52mr3390977pjb.9.1705302772239;
-        Sun, 14 Jan 2024 23:12:52 -0800 (PST)
-Received: from hsinchu26.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id pv11-20020a17090b3c8b00b0028e5fe0115asm458214pjb.36.2024.01.14.23.12.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jan 2024 23:12:51 -0800 (PST)
-From: Yong-Xuan Wang <yongxuan.wang@sifive.com>
-To: linux-riscv@lists.infradead.org
-Cc: greentime.hu@sifive.com,
-	vincent.chen@sifive.com,
-	Yong-Xuan Wang <yongxuan.wang@sifive.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Marc Zyngier <maz@kernel.org>,
-	Anup Patel <apatel@ventanamicro.com>,
-	Atish Patra <atishp@rivosinc.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] RISC-V: add IPI tracepoints
-Date: Mon, 15 Jan 2024 07:12:40 +0000
-Message-Id: <20240115071246.32675-1-yongxuan.wang@sifive.com>
-X-Mailer: git-send-email 2.17.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75BB64401
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 07:17:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=idosch.org
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.west.internal (Postfix) with ESMTP id BC8EB3200A44;
+	Mon, 15 Jan 2024 02:17:07 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Mon, 15 Jan 2024 02:17:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1705303027; x=1705389427; bh=phMzmdFjOAKkAe7G8nrfpKSwAy4D
+	gHYOvk+P0sJcsSc=; b=To/Qh4W4hmr8MB7sDIHKrDXKYa/e1KA9x/mTaRwx72wo
+	D+D3wqUPDeVShEL2JNk4pKm8wILHPcPWsyoXIZh1SIWAqupZrZKYt8speoW0ZuPG
+	pmc/w87ox30gtBgi2es4wCEoe2dzrpBFyy5rbOtDu1D10mrieLghfs8n8ZBSusUj
+	td6qR4IstkHuj7PV++56rHcC/VdLWfC16C48KQeRDY0xPpZuKcKAhbbVC49SHvjx
+	f4xqWHhzy9bkINzZNRI3A/Zv8uhlH32oX67Mgez8+qjj7faApFNEByqo569g/CHx
+	KIkcXpy8FMIifxVGq2R5bZ7JC7f00IRGqEaVr1BvgA==
+X-ME-Sender: <xms:8tukZUHUmdgS2ZwngSGyS-tf0z2-6ZsgyfeSWlnLuKhyMDcGFCn3EA>
+    <xme:8tukZdXhE8CpIyuPIeNIPbZKxl01l276HQ1-w1r9t3kYp6NcQmbr_9gqArvTXIH7d
+    LgRM00Cvgcqo50>
+X-ME-Received: <xmr:8tukZeLdGIP1_-fZez5Ibgx7gKf7jqJkXzR8JY7SCBgt2V2Lu7ktmE2FQe5X>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdejtddguddthecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkugho
+    ucfutghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrg
+    htthgvrhhnpedvudefveekheeugeeftddvveefgfduieefudeifefgleekheegleegjeej
+    geeghfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hiughoshgthhesihguohhstghhrdhorhhg
+X-ME-Proxy: <xmx:8tukZWHxKvaxzij1gtuOCewbz8zckEr3xmZ3gPSfajKGloth2ZvCSQ>
+    <xmx:8tukZaWw1UR1WF63e1X3Fg-488xiwn-bpPoQ80n3Z7nVzKrT-FrvWw>
+    <xmx:8tukZZMQs7qAJvlbEefruf-seoOlQWC0MeRrkAHPKTNelaqr4D2VTA>
+    <xmx:89ukZVGLvRNIIS_KLLOrlfZndo_wws6kjoZOkI15UuP7IFk5Rl5-3A>
+Feedback-ID: i494840e7:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 15 Jan 2024 02:17:06 -0500 (EST)
+Date: Mon, 15 Jan 2024 09:17:04 +0200
+From: Ido Schimmel <idosch@idosch.org>
+To: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Robin Murphy <robin.murphy@arm.com>, joro@8bytes.org, will@kernel.org,
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+	zhangzekun11@huawei.com, john.g.garry@oracle.com,
+	dheerajkumar.srivastava@amd.com, jsnitsel@redhat.com
+Subject: Re: [PATCH v3 0/2] iommu/iova: Make the rcache depot properly
+ flexible
+Message-ID: <ZaTb8KorPFPgRqD6@shredder>
+References: <cover.1694535580.git.robin.murphy@arm.com>
+ <ZY1osaGLyT-sdKE8@shredder>
+ <c9cf02b5-7add-46ea-8db1-46fdce191c1c@arm.com>
+ <ZZ2AqZT4dD-s01q9@shredder>
+ <ab22c439-e7da-49b5-b20b-856daf376c02@arm.com>
+ <ZZ7atzgT6_kOvWnJ@arm.com>
+ <ZZ-ky9UCoHwbyqfn@shredder>
+ <ZZ-_LWz_4KxOkRsA@arm.com>
+ <ZaFbPnDrYT5uGqJD@shredder>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZaFbPnDrYT5uGqJD@shredder>
 
-The strings used to list IPIs in /proc/interrupts are reused for tracing
-purposes. Also slightly clean up the code by removing send_ipi_single().
+On Fri, Jan 12, 2024 at 05:31:15PM +0200, Ido Schimmel wrote:
+> On Thu, Jan 11, 2024 at 10:13:01AM +0000, Catalin Marinas wrote:
+> > On Thu, Jan 11, 2024 at 10:20:27AM +0200, Ido Schimmel wrote:
+> > > On Wed, Jan 10, 2024 at 05:58:15PM +0000, Catalin Marinas wrote:
+> > > > Transient false positives are possible, especially as the code doesn't
+> > > > use a double-linked list (for the latter, kmemleak does checksumming and
+> > > > detects the prev/next change, defers the reporting until the object
+> > > > becomes stable). That said, if a new scan is forced (echo scan >
+> > > > /sys/kernel/debug/kmemleak), are the same objects still listed as leaks?
+> > > > If yes, they may not be transient.
+> > > 
+> > > We are doing "scan" and "clear" after each test. I will disable the
+> > > "clear" and see if the leaks persist.
+> > 
+> > If it is indeed a false positive
+> 
+> Looks like the leaks are transient. After removing the "clear" step the
+> leaks do not seem to persist.
+> 
+> > you can try the patch below (I haven't given it any run-time test,
+> > only compiled):
+> 
+> Will try and let you know next week.
 
-Signed-off-by: Yong-Xuan Wang <yongxuan.wang@sifive.com>
----
- arch/riscv/kernel/smp.c | 38 +++++++++++++++++++++-----------------
- 1 file changed, 21 insertions(+), 17 deletions(-)
+Looks good. Feel free to add:
 
-diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
-index 40420afbb1a0..32c653cd3433 100644
---- a/arch/riscv/kernel/smp.c
-+++ b/arch/riscv/kernel/smp.c
-@@ -26,6 +26,8 @@
- #include <asm/cacheflush.h>
- #include <asm/cpu_ops.h>
- 
-+#include <trace/events/ipi.h>
-+
- enum ipi_message_type {
- 	IPI_RESCHEDULE,
- 	IPI_CALL_FUNC,
-@@ -36,6 +38,15 @@ enum ipi_message_type {
- 	IPI_MAX
- };
- 
-+static const char * const ipi_names[] __tracepoint_string = {
-+	[IPI_RESCHEDULE]	= "Rescheduling interrupts",
-+	[IPI_CALL_FUNC]		= "Function call interrupts",
-+	[IPI_CPU_STOP]		= "CPU stop interrupts",
-+	[IPI_CPU_CRASH_STOP]	= "CPU stop (for crash dump) interrupts",
-+	[IPI_IRQ_WORK]		= "IRQ work interrupts",
-+	[IPI_TIMER]		= "Timer broadcast interrupts",
-+};
-+
- unsigned long __cpuid_to_hartid_map[NR_CPUS] __ro_after_init = {
- 	[0 ... NR_CPUS-1] = INVALID_HARTID
- };
-@@ -96,18 +107,14 @@ static inline void ipi_cpu_crash_stop(unsigned int cpu, struct pt_regs *regs)
- 
- static void send_ipi_mask(const struct cpumask *mask, enum ipi_message_type op)
- {
-+	trace_ipi_raise(mask, ipi_names[op]);
- 	__ipi_send_mask(ipi_desc[op], mask);
- }
- 
--static void send_ipi_single(int cpu, enum ipi_message_type op)
--{
--	__ipi_send_mask(ipi_desc[op], cpumask_of(cpu));
--}
--
- #ifdef CONFIG_IRQ_WORK
- void arch_irq_work_raise(void)
- {
--	send_ipi_single(smp_processor_id(), IPI_IRQ_WORK);
-+	send_ipi_mask(cpumask_of(smp_processor_id()), IPI_IRQ_WORK);
- }
- #endif
- 
-@@ -115,6 +122,9 @@ static irqreturn_t handle_IPI(int irq, void *data)
- {
- 	int ipi = irq - ipi_virq_base;
- 
-+	if ((unsigned int)ipi < IPI_MAX)
-+		trace_ipi_entry(ipi_names[ipi]);
-+
- 	switch (ipi) {
- 	case IPI_RESCHEDULE:
- 		scheduler_ipi();
-@@ -141,6 +151,9 @@ static irqreturn_t handle_IPI(int irq, void *data)
- 		break;
- 	}
- 
-+	if ((unsigned int)ipi < IPI_MAX)
-+		trace_ipi_exit(ipi_names[ipi]);
-+
- 	return IRQ_HANDLED;
- }
- 
-@@ -205,15 +218,6 @@ void riscv_ipi_set_virq_range(int virq, int nr, bool use_for_rfence)
- 		static_branch_disable(&riscv_ipi_for_rfence);
- }
- 
--static const char * const ipi_names[] = {
--	[IPI_RESCHEDULE]	= "Rescheduling interrupts",
--	[IPI_CALL_FUNC]		= "Function call interrupts",
--	[IPI_CPU_STOP]		= "CPU stop interrupts",
--	[IPI_CPU_CRASH_STOP]	= "CPU stop (for crash dump) interrupts",
--	[IPI_IRQ_WORK]		= "IRQ work interrupts",
--	[IPI_TIMER]		= "Timer broadcast interrupts",
--};
--
- void show_ipi_stats(struct seq_file *p, int prec)
- {
- 	unsigned int cpu, i;
-@@ -234,7 +238,7 @@ void arch_send_call_function_ipi_mask(struct cpumask *mask)
- 
- void arch_send_call_function_single_ipi(int cpu)
- {
--	send_ipi_single(cpu, IPI_CALL_FUNC);
-+	send_ipi_mask(cpumask_of(cpu), IPI_CALL_FUNC);
- }
- 
- #ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
-@@ -329,6 +333,6 @@ bool smp_crash_stop_failed(void)
- 
- void arch_smp_send_reschedule(int cpu)
- {
--	send_ipi_single(cpu, IPI_RESCHEDULE);
-+	send_ipi_mask(cpumask_of(cpu), IPI_RESCHEDULE);
- }
- EXPORT_SYMBOL_GPL(arch_smp_send_reschedule);
--- 
-2.17.1
+Tested-by: Ido Schimmel <idosch@nvidia.com>
 
+Thanks!
 
