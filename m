@@ -1,144 +1,138 @@
-Return-Path: <linux-kernel+bounces-26356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2D3B82DEFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 19:17:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57B2D82DEF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 19:17:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DE0B2834C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:17:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 674C01C21FE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:17:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8181E182BE;
-	Mon, 15 Jan 2024 18:17:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CADF182AE;
+	Mon, 15 Jan 2024 18:17:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b="SZBZngzm"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PoYl0srb"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8327B1863E;
-	Mon, 15 Jan 2024 18:17:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1705342640; x=1705947440; i=erick.archer@gmx.com;
-	bh=vIOTPgNBydSqKCJCF1Y+JqsAan+pT9TC0MylL9uW2R0=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=SZBZngzmcE79+RU29xAXD5HwuZCh3qMwSour3m5zDk4uewVeaKodI2gao7uoBbea
-	 acofFyGAfCxq4uIhwmLxC2PBPqJGNR7NHntU6LjUEnDLtInPcixI0k33SDWs1RdZc
-	 W4JdogS8GYwHjZJBZcCCM5X3gbZMh/Up/1qy3XCJRSCSpoDOthd1W+fejpJH8A46u
-	 JMtZuP6DlpmvNsP/yEmFAKkKcE6h0F/V9t8dIWUPOxDwEgG+XYL1qMutBNvH75Cbn
-	 zhiit5CN1u6xoWx+JtqVZy6CEI25tieLYJVAjWEmeXK+u2os7mw6VPOYyo0BYjlgs
-	 ebAfHlwOYrh1CZr+mg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from localhost.localdomain ([79.157.194.183]) by mail.gmx.net
- (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1MhlKs-1qulTT3wJc-00dk5q; Mon, 15 Jan 2024 19:17:20 +0100
-From: Erick Archer <erick.archer@gmx.com>
-To: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Erick Archer <erick.archer@gmx.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH v2] eventfs: Use kcalloc() instead of kzalloc()
-Date: Mon, 15 Jan 2024 19:16:58 +0100
-Message-Id: <20240115181658.4562-1-erick.archer@gmx.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C800182A1
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 18:17:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55965fd00aeso879669a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 10:17:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705342636; x=1705947436; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ONrJRmAYGOIocV1TaXZm7gL7rutvMwXPfE4iqEwyFPc=;
+        b=PoYl0srbD9EFyvr4gPlCs3zNyvhlcNPxSKQhHFDrOEBP9P1OKm/qtamajDO9M4E55G
+         XkdWcoW2y3J/qKN0TJjc0Ce4IU0N1e09qA+EOlTQfMGVqlT8+PjiEUFuAgGvdetIKRCi
+         tcmG3Bwcdr/1sSh1Fvu+Ny0a2ujKuDlikbqAN5Pj5oqdZr5dmQmLThCdPfTlGAMBrxSA
+         wM2emdhDQujxF9lgDQWFigntUGCFtTT1e4WAA/m9XmeS+HShoBtwBAO1EZSMAQjk4oRf
+         l2LzJpQuJskXy3OIiW4+rd+PgRL2n6swaazIHEn2BSyEIGq5LxX1Wn08BSkbUrIVIRMB
+         EOhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705342636; x=1705947436;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ONrJRmAYGOIocV1TaXZm7gL7rutvMwXPfE4iqEwyFPc=;
+        b=DdvImCcqnUSdxgjrFtbVRRm5PWU7TfMAjoGigAexL/JhfdqGoBDVlbCUhZeuTNr8Z0
+         cQOI/YUsDBFoR2PZQvQpVIVx/wPoFjzJ89P7AnmNSSah5DaWeVZvaGpJCrjFAq7FMLLa
+         yaOZRMwhb5mzzwJAOWg2AaW5BFw8FcgiBN4dvJLLzJdo51IVQ/CLsI59fiuKGC6icjws
+         uiOvGm/oQbxlHjBl+ZlvTE2wBFFQglVz8mZFOH9eSoO+xRZIxDET3MZhv77wJhUeNXtD
+         +fBU25+kW3SsS+snw0CnF2qTqD7s+xlwDrNsFJXlAxhZpxdH9OtdXpftSzfP3GcCtZCM
+         0Jlw==
+X-Gm-Message-State: AOJu0Yy8pVQVFNqewi5z+NyRkXRxpeZo1p3PMjWcOr15EVTzsQpiZGcw
+	iaCTDO4AcJ10adXq4WXyA/SOyNEfSkSsVca/1Dh8wIvPLrw=
+X-Google-Smtp-Source: AGHT+IHkcc7u1FWPuYceUCKz3DBIl/vUsuKPMumLJC1NjafJoIlnGoXR9vhME8swkxJukn0sQnu3PA==
+X-Received: by 2002:aa7:c513:0:b0:557:fe5:a682 with SMTP id o19-20020aa7c513000000b005570fe5a682mr2767954edq.80.1705342636527;
+        Mon, 15 Jan 2024 10:17:16 -0800 (PST)
+Received: from [192.168.174.25] (178235179017.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.17])
+        by smtp.gmail.com with ESMTPSA id es18-20020a056402381200b00554b1d1a934sm5708181edb.27.2024.01.15.10.17.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Jan 2024 10:17:16 -0800 (PST)
+Message-ID: <93bc06a3-8af9-4d50-bfee-d54e04bade51@linaro.org>
+Date: Mon, 15 Jan 2024 19:17:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:0g1HcZkBjgXbdwH65/z58cKfoG4eUSOlTy25Nx06xre/KJiWz4m
- SkPbpl8fGlc4UQ18ujM97F85F9hLPqeA2rmTQVOdDPLmgvPVXEW1+wNQghH23fXjERqJgn8
- 5+0mZwbu/iR2h9imQ5RadyEP5N7gCOamNmJflA7sQTdjSJNCULkcOre6u+k6EUGN0ctsMvF
- NGLVPUEJAccHJyXBkloCQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:VxCX+FbTuiU=;wa/Qu/GPbrz8jMjfxFIdVgsNWZl
- PxHOAK6x+m+be9+s4+J1CKTt3/gvAAtZusqrYKVLAwKKm1Tqd5wk/7jm6HAVRHQYGjrCCZp+j
- fo+CeafPcQ+uQFCbuZHJbHxuESYX9IKw/OBOY4jwarZBdSFcAH7mlpmlaCAExWqTyFhHeBpYv
- NYE9lRDSrAHDajnxZNJOaP2BiuN8YCZWjeAKxDS8H5wWLz7ueE6Z9aqnHOzXZm3pex2gpnWDh
- hD2oCNXd9WIDMrkppIbG7ut6y4u5X1dWZWXAfRxnbCDG7onwZT12SCWJvY5cw6OZ6bTsiRs5P
- Qr9p0StE0I4MtJOPvHnYsK/1XE/vvAF32pOGssQMIogxDV187555ry2EWoYHTIa8BOtTCClTe
- /aM/bUfbUUnJUBTOq1+U6lgRXW6f3Hd9ojET5h6ht7VXcpQ7/Tn6XaPPa97qy/fJ96+CUWhUU
- r3DsZISn79iXPvjLv5vHrD8T3SAcikgdN72hZN7pEfmFjxjY1JcgQiacCFcrmkJazQcoCmrcH
- JsenuGsEKgI0KZ+kbEKsOqo6prl6FW8inPOCi3QokB5WYGGuFIzug9v9GQi9l/sv5HBjJHUuf
- /BWcZsMlgOkKk1WOIlqPuoMoU2cXPraaRnoOIh8Vw4k77UdYNPaKB3TyOug6BBKYu3trhhYDE
- 4p/RcrUGXC+2zSa9h2rY0Cw17ArTOUkFy/Xo2ByPIv+lQhojXLtoDFkJtJxDe6tQrpmYi5W1v
- 5AMtnvkw7wTBC49m9mlX/5ox8LT0pHwIItNprhmg+IkaB/VLDtjWSF3MpPyaeLSesf3BCDCxU
- 8ZhdlqjjmJBrx7JkBPRVq6mR8/5bBndmifJyNZ8l2Qy5jIwBCTPOEJ+wQSiBAxBeg13rBgBYa
- FjZ4mULJPtQrUHS5KldLCD74/9bESBW+VCLqiq0nt2HlwbRwRg/Ikj1Mi+fr4UPzDjH+yi8Gr
- 7p/I7Q==
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] interconnect: qcom: sm8450: Revert "interconnect: qcom:
+ sm8450: Enable sync_state"
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Georgi Djakov <djakov@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+References: <20240115153420.1525037-1-krzysztof.kozlowski@linaro.org>
+ <201733c1-dc24-4d77-9967-f52c8e81d35b@kernel.org>
+ <96928df4-75ca-4a55-829b-b8ab0583e3b5@linaro.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <96928df4-75ca-4a55-829b-b8ab0583e3b5@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-As noted in the "Deprecated Interfaces, Language Features, Attributes,
-and Conventions" documentation [1], size calculations (especially
-multiplication) should not be performed in memory allocator (or similar)
-function arguments due to the risk of them overflowing. This could lead
-to values wrapping around and a smaller allocation being made than the
-caller was expecting. Using those allocations could lead to linear
-overflows of heap memory and other misbehaviors.
+On 15.01.2024 18:59, Krzysztof Kozlowski wrote:
+> On 15/01/2024 17:44, Georgi Djakov wrote:
+>> On 15.01.24 17:34, Krzysztof Kozlowski wrote:
+>>> Revert commit 16862f1b2110 ("interconnect: qcom: sm8450: Enable
+>>> sync_state"), because it causes serial console to corrupt, later freeze
+>>> and become either entirely corrupted or only print without accepting any
+>>> input.
+>>
+>> Sounds like some driver is not requesting bandwidth and is relying on
+>> bandwidth requests made by other drivers. Maybe we are missing some
+>> "interconnects" property in DT?
+> 
+> Yes, the debug UART (console) misses the interconnects. They could be
+> added but it does not change the fact that console is broken since v6.6
+> and this was probably never tested on actual hardware :/
 
-So, use the purpose specific kcalloc() function instead of the argument
-size * count in the kzalloc() function.
+This patch? I definitely tested it out on a headless remote board..
 
-[1] https://www.kernel.org/doc/html/next/process/deprecated.html#open-code=
-d-arithmetic-in-allocator-arguments
-
-Link: https://github.com/KSPP/linux/issues/162
-Signed-off-by: Erick Archer <erick.archer@gmx.com>
-=2D--
-Changes in v2:
-- Update the commit message to better explain the changes (Mark Rutland)
-
-Previous versions:
-v1: https://lore.kernel.org/linux-hardening/20240114105340.5746-1-erick.ar=
-cher@gmx.com/
-=2D--
- fs/tracefs/event_inode.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index fdff53d5a1f8..f8196289692c 100644
-=2D-- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -93,7 +93,7 @@ static int eventfs_set_attr(struct mnt_idmap *idmap, str=
-uct dentry *dentry,
- 	/* Preallocate the children mode array if necessary */
- 	if (!(dentry->d_inode->i_mode & S_IFDIR)) {
- 		if (!ei->entry_attrs) {
--			ei->entry_attrs =3D kzalloc(sizeof(*ei->entry_attrs) * ei->nr_entries,
-+			ei->entry_attrs =3D kcalloc(ei->nr_entries, sizeof(*ei->entry_attrs),
- 						  GFP_NOFS);
- 			if (!ei->entry_attrs) {
- 				ret =3D -ENOMEM;
-@@ -874,7 +874,7 @@ struct eventfs_inode *eventfs_create_dir(const char *n=
-ame, struct eventfs_inode
- 	}
-
- 	if (size) {
--		ei->d_children =3D kzalloc(sizeof(*ei->d_children) * size, GFP_KERNEL);
-+		ei->d_children =3D kcalloc(size, sizeof(*ei->d_children), GFP_KERNEL);
- 		if (!ei->d_children) {
- 			kfree_const(ei->name);
- 			kfree(ei);
-@@ -941,7 +941,7 @@ struct eventfs_inode *eventfs_create_events_dir(const =
-char *name, struct dentry
- 		goto fail;
-
- 	if (size) {
--		ei->d_children =3D kzalloc(sizeof(*ei->d_children) * size, GFP_KERNEL);
-+		ei->d_children =3D kcalloc(size, sizeof(*ei->d_children), GFP_KERNEL);
- 		if (!ei->d_children)
- 			goto fail;
- 	}
-=2D-
-2.25.1
-
+Konrad
 
