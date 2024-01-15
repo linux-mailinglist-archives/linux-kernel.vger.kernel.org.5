@@ -1,126 +1,85 @@
-Return-Path: <linux-kernel+bounces-26603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A367282E407
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:45:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87FA282E40B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:46:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 303AB1F2526C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:45:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F303E1C223E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:45:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07F0A286AD;
-	Mon, 15 Jan 2024 23:29:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A830A1B80D;
+	Mon, 15 Jan 2024 23:38:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uZ4dkR3T"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="u5ejN0U8"
+Received: from out203-205-221-210.mail.qq.com (out203-205-221-210.mail.qq.com [203.205.221.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5639D286AC;
-	Mon, 15 Jan 2024 23:29:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECE4CC433F1;
-	Mon, 15 Jan 2024 23:29:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705361385;
-	bh=4sz/D6BUjVTtSNq5aU5z2RxJVXyWrK9kgwUbcjvX90I=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uZ4dkR3TJr4dlj79rA9Br15XrZi+Mtd8nduH4UyO3C83RMqH/+Jyo+UqG6tOmW+/9
-	 BBnmpFLIqYkJZ7bX3FabT9rYSYujiqjXpM+YKW1hOPYvycshbkmM3NilLf1++XGjWq
-	 bBY1dVpbZwkwGE5e7lk08BgbBthXAP9vT7sCwXq9dhjoy/N1Pk7z0KcjRAzuyzM1vQ
-	 HSfgGe5rbBuBBDuszmv92kSOgTQNyrOAU+v9Byf+CiN63Dbhj61/h8X8WlwxHLubRP
-	 2xlLpaccXW5jx+R0rLCkC5atXUTPDoRt15TTqr1ph+U3t7OuADvxRhlsYqtXiEH+lV
-	 p5xAB4oiMEXcQ==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Naveen N Rao <naveen@kernel.org>,
-	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Sasha Levin <sashal@kernel.org>,
-	christophe.leroy@csgroup.eu,
-	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 4.19 4/4] powerpc/lib: Validate size for vector operations
-Date: Mon, 15 Jan 2024 18:29:29 -0500
-Message-ID: <20240115232935.210529-4-sashal@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A280E1B7FE
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 23:38:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1705361895; bh=cz6IinuqhcZZWy7+5NFz+ILkSqS4auojx7jE1pMxmhw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=u5ejN0U8GLmwakf7b9WsHNnugxNTqBITNK2FyV5WGVox/Fk79QgG7LZdgJvpvgpQr
+	 pLoSCv+wTpQ6THQyqEYNiAZhOGdAgsHeFOn1tkgLYs4tFfF7O3EXDVy3jIvX22kI5R
+	 /x4zIFuHakYKHEp2uaCKvEyngiBFYoDcZ4dgX6nc=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
+	id 8090DECD; Tue, 16 Jan 2024 07:32:09 +0800
+X-QQ-mid: xmsmtpt1705361529tio0y97up
+Message-ID: <tencent_BDD63DCB3762971636DA4B4474F177116609@qq.com>
+X-QQ-XMAILINFO: NafziRg7Bx69+OV4WSENK3vpXadt+cQi1jkRzHoxn7eCx7k+C+Z9y/J0bfNC00
+	 HeZXzJWnDLYi2TNbzLUENqQCv81K2tpaon7D9BUiAFqtFWmUfpYI12Nt6D5y60jAtU77yCm68Nkd
+	 vRYNqMWtIpfptD7JQVuVksuQ9M3x79LeC2Efj3OP/matWrcdbLBv5UFQg5bHhmNqbKcEnbI7lf0I
+	 C7PJECx5Gs8KvstfaD6b0fkF0EyLKfkK552Eb8iiCAKSF17xoARQIxrMawdGjA/c54QqrPqd50aL
+	 edIrHCcqT34eHQfmSp4ZvlmWyWnHw9M+NFNb8zc8M9u0XgfNeTTryHlk0yl7W48gO1I4pNV0UZ9S
+	 169m5mowanaAreXYmS2D9xM+ZLnST6DM3FPqMq46ua6DDBIAgEwgADS1RoGKLkaClwsHZdkGYpqt
+	 JEJb0pdg4AX54SUD+U6NeCoPdwjTaqBOKZsFzfOZbDoMB6HPYHL4z2jxoy9vMrIxH67NXFZFYbLd
+	 cKk5y/iGPorvRy+7eVuL9VY96dt22hTUwO5Ww98ECzxtihe1nxwkoOKTg2YtyolDgeyiy2Rpps1v
+	 WSS3CR1ZfXr7TZ4jYuArJbHzLP6ota+X28cH7TJefYI2iRJDMzvVpVVsDq2f6N03ynCrfbi64mHB
+	 kdUxxPYQpyo5iBikD9PoqP4ljYfuQVMqMG8V3To21uPCHyJ7APF6hW7EG++cSL1J+QBP7eBU+5OF
+	 l2gJf55POkmCVuE84d5klCXSv4cyn/XmTfPbZPCtAKX0+1gMDFnqY26jTuyT9vzRl7Qv44DhEJhF
+	 SddH7WblxeGJENUnwlh1qtG5KxgzlqongiL2FQJX9CIh5uSI5GQ7ttiqoNXte+BelRP44jSnclOG
+	 6xXOITsE5Eyd55Rpbv2iitTFGtFgdsWwl3aWdIguxKbCXo1BPo+U4TKsQumnZVxIv35PVYzytS
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [btrfs?] KASAN: slab-out-of-bounds Read in getname_kernel (2)
+Date: Tue, 16 Jan 2024 07:32:10 +0800
+X-OQ-MSGID: <20240115233209.4164697-2-eadavis@qq.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240115232935.210529-1-sashal@kernel.org>
-References: <20240115232935.210529-1-sashal@kernel.org>
+In-Reply-To: <000000000000d1a1d1060cc9c5e7@google.com>
+References: <000000000000d1a1d1060cc9c5e7@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.305
 Content-Transfer-Encoding: 8bit
 
-From: Naveen N Rao <naveen@kernel.org>
+please test slab-out-of-bounds Read in getname_kernel
 
-[ Upstream commit 8f9abaa6d7de0a70fc68acaedce290c1f96e2e59 ]
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 3bd7d7488169
 
-Some of the fp/vmx code in sstep.c assume a certain maximum size for the
-instructions being emulated. The size of those operations however is
-determined separately in analyse_instr().
-
-Add a check to validate the assumption on the maximum size of the
-operations, so as to prevent any unintended kernel stack corruption.
-
-Signed-off-by: Naveen N Rao <naveen@kernel.org>
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Build-tested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://msgid.link/20231123071705.397625-1-naveen@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/powerpc/lib/sstep.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/arch/powerpc/lib/sstep.c b/arch/powerpc/lib/sstep.c
-index 30c434abe861..3da6290e3ccc 100644
---- a/arch/powerpc/lib/sstep.c
-+++ b/arch/powerpc/lib/sstep.c
-@@ -473,6 +473,8 @@ static int do_fp_load(struct instruction_op *op, unsigned long ea,
- 	} u;
+diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+index 1502d664c892..58ffaede8d16 100644
+--- a/fs/btrfs/dev-replace.c
++++ b/fs/btrfs/dev-replace.c
+@@ -741,6 +741,8 @@ int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
+ 	if ((args->start.srcdevid == 0 && args->start.srcdev_name[0] == '\0') ||
+ 	    args->start.tgtdev_name[0] == '\0')
+ 		return -EINVAL;
++	args->start.srcdev_name[BTRFS_PATH_NAME_MAX] = 0;
++	args->start.tgtdev_name[BTRFS_PATH_NAME_MAX] = 0;
  
- 	nb = GETSIZE(op->type);
-+	if (nb > sizeof(u))
-+		return -EINVAL;
- 	if (!address_ok(regs, ea, nb))
- 		return -EFAULT;
- 	rn = op->reg;
-@@ -523,6 +525,8 @@ static int do_fp_store(struct instruction_op *op, unsigned long ea,
- 	} u;
- 
- 	nb = GETSIZE(op->type);
-+	if (nb > sizeof(u))
-+		return -EINVAL;
- 	if (!address_ok(regs, ea, nb))
- 		return -EFAULT;
- 	rn = op->reg;
-@@ -567,6 +571,9 @@ static nokprobe_inline int do_vec_load(int rn, unsigned long ea,
- 		u8 b[sizeof(__vector128)];
- 	} u = {};
- 
-+	if (size > sizeof(u))
-+		return -EINVAL;
-+
- 	if (!address_ok(regs, ea & ~0xfUL, 16))
- 		return -EFAULT;
- 	/* align to multiple of size */
-@@ -594,6 +601,9 @@ static nokprobe_inline int do_vec_store(int rn, unsigned long ea,
- 		u8 b[sizeof(__vector128)];
- 	} u;
- 
-+	if (size > sizeof(u))
-+		return -EINVAL;
-+
- 	if (!address_ok(regs, ea & ~0xfUL, 16))
- 		return -EFAULT;
- 	/* align to multiple of size */
--- 
-2.43.0
+ 	ret = btrfs_dev_replace_start(fs_info, args->start.tgtdev_name,
+ 					args->start.srcdevid,
 
 
