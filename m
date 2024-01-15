@@ -1,140 +1,173 @@
-Return-Path: <linux-kernel+bounces-26468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80ED182E15B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 21:13:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F37C582E156
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 21:12:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 951091C221FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:13:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8AE31F22DAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:12:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BBE11A28A;
-	Mon, 15 Jan 2024 20:12:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE5B3199A9;
+	Mon, 15 Jan 2024 20:12:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="Fvt/V/E3"
-Received: from smtp.smtpout.orange.fr (smtp-20.smtpout.orange.fr [80.12.242.20])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="qkxkutBw"
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0A7619BCE
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 20:12:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from fedora.home ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id PTJsreNfxZ1tSPTJsr3DED; Mon, 15 Jan 2024 21:12:29 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1705349550;
-	bh=Zag1tyR6DZ8o6qntEb3YzGjDPt9iK1tzSJavyfJS+3c=;
-	h=From:To:Cc:Subject:Date;
-	b=Fvt/V/E3sZtxVJf+mQhWHRGR9UNENrZh+TtJZiiT94FKJKCLoKfIhOWzFRNOlOL6S
-	 2ANyEWnTwBUJwHzg7yqtS8/Xj28GYXpAbsuMBZ4KvDMCExUgkmLwovLs5DAyNJQEV/
-	 a1/OQUCeh+xlIvp7U8OCVkTZn45UOszSqr4K7PpP48W1IC618W+VxNlTKP/S5qw3rk
-	 kI9zZtbWY1rK3KDRybgAhVZEZp4l59LGeF3AtEKkLVHe3oT8CcURsphSxQ5v/fscFG
-	 rWyhFzmmaGJrXZ6lGL4yimXGK0QUDdGGRI5LZH8xIuWkj1kH6Hs0KMCO4rr5velLWT
-	 VD28KI6E4UjJA==
-X-ME-Helo: fedora.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 15 Jan 2024 21:12:30 +0100
-X-ME-IP: 92.140.202.140
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Marcel Holtmann <marcel@holtmann.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D8F219470
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 20:12:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-598e01ce434so1173462eaf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 12:12:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1705349545; x=1705954345; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OoGYdHuOEch5eGoOUgb3CbwIdtVZ1B+1VuVUe8FdGw8=;
+        b=qkxkutBwONnkNLDxt2Rt7GfUg+ZG8foCxf/FhUNUN4cDCJdsbhrDbCV2tQf6U6Hi82
+         hlC3R03m5a/Cnqo32GQDSAIr3SmLcRSG9CQ7szwJumS6/aX/mRWjF6h8Ijug7gnTXkRI
+         gyUTqOmZYIzD7lK2vLgRvpLKwrQXNEUcZldaxcWxs8K2TViwEj9K7REjJPdfYt9BwlRD
+         ynzovUHmAw+Phs+hkAeQU5NYW06Y0SlW5F1LprGIZADaZfVY+7etv6NJzBDKRmXXPu87
+         Cc1HBckSML0F9ZNs1TtPRwAcuJptqLqLFcfObgGsqkPEdQrHtNCAqZMENmP0jqBj1IYE
+         jxqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705349545; x=1705954345;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OoGYdHuOEch5eGoOUgb3CbwIdtVZ1B+1VuVUe8FdGw8=;
+        b=BYwpA3DZHe5bf6XoBwCHHe+ws78aajvzGwxT7xFTZq99FqmNV+z7Gk4mYwQOBDXpj4
+         /hQ5uq7PDrU4oRKj3NIA0lzs/3W9CXlXwtlywCJ5Y3D5AN1LPjadBsh/7jidx6Jom6tp
+         O63GPAS2kRwCx6acNKkoxBANBuTkwBpRq+n6yc2zNxK9jmhsIy1lDPyQlurdzO7c9Ss4
+         FdU87lJrsKZuMgMtWhY1xiGJj+J2soV3HcVwotc6/mq/z31b13fMj3jGo/2VssbBTNyB
+         jJPxjLUM4vOwENL2jXAk0iit+C44aC829cOioblctUvV3oYVz3EtG8Ko8QHs6TNjehgD
+         53fQ==
+X-Gm-Message-State: AOJu0Yzvd4LEBZITZcf2QjoFzP6Lp4zHsFAlNVQ268si8E8a7alxfFTo
+	S0yCUYiWhGmX7r1gR36TztrgvXccmva6CQ==
+X-Google-Smtp-Source: AGHT+IHnusVFj+YA3xivR599tPImC6bULBVIHPYSM+PjDD1HCrUKJZuqs61Cdx3c+wH2pjzpb2J/hQ==
+X-Received: by 2002:a05:6359:6b81:b0:170:64cd:8aac with SMTP id ta1-20020a0563596b8100b0017064cd8aacmr4081881rwb.62.1705349545406;
+        Mon, 15 Jan 2024 12:12:25 -0800 (PST)
+Received: from workbox.taildc8f3.ts.net (d24-150-219-207.home.cgocable.net. [24.150.219.207])
+        by smtp.gmail.com with ESMTPSA id y26-20020ac8525a000000b004298b33cdcasm4219170qtn.50.2024.01.15.12.12.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 12:12:25 -0800 (PST)
+From: Trevor Gamblin <tgamblin@baylibre.com>
+To: linux-pwm@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-bluetooth@vger.kernel.org
-Subject: [PATCH] Bluetooth: Remove usage of the deprecated ida_simple_xx() API
-Date: Mon, 15 Jan 2024 21:12:19 +0100
-Message-ID: <3b3523b475d0f5cadf81b3131bb1a38b7476b020.1705349526.git.christophe.jaillet@wanadoo.fr>
+	u.kleine-koenig@pengutronix.de,
+	michael.hennerich@analog.com,
+	nuno.sa@analog.com,
+	devicetree@vger.kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org
+Subject: [PATCH 1/2] dt-bindings: pwm: Add bindings for AXI PWM generator
+Date: Mon, 15 Jan 2024 15:12:20 -0500
+Message-ID: <20240115201222.1423626-2-tgamblin@baylibre.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240115201222.1423626-1-tgamblin@baylibre.com>
+References: <20240115201222.1423626-1-tgamblin@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-ida_alloc() and ida_free() should be preferred to the deprecated
-ida_simple_get() and ida_simple_remove().
+From: Drew Fustini <dfustini@baylibre.com>
 
-Note that the upper limit of ida_simple_get() is exclusive, but the one of
-ida_alloc_max() is inclusive. So a -1 has been added when needed.
+Add bindings for Analog Devices AXI PWM generator.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://wiki.analog.com/resources/fpga/docs/axi_pwm_gen
+Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+Co-developed-by: Trevor Gamblin <tgamblin@baylibre.com>
+Signed-off-by: Trevor Gamblin <tgamblin@baylibre.com>
 ---
-I've not been able to find the rational for the HCI_MAX_ID value (i.e.
-10000) is the BT spec I've found.
+ .../bindings/pwm/adi,axi-pwmgen.yaml          | 48 +++++++++++++++++++
+ MAINTAINERS                                   |  8 ++++
+ 2 files changed, 56 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/adi,axi-pwmgen.yaml
 
-Instead of having these HCI_MAX_ID-1 in the code, we could also change
-the value of HCI_MAX_ID to 9999.
-I don't know what makes the more sense.
----
- net/bluetooth/hci_core.c | 9 +++++----
- net/bluetooth/hci_sock.c | 4 ++--
- 2 files changed, 7 insertions(+), 6 deletions(-)
-
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index e5cb618fa6d3..41d2d1956527 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -2639,10 +2639,11 @@ int hci_register_dev(struct hci_dev *hdev)
- 	 */
- 	switch (hdev->dev_type) {
- 	case HCI_PRIMARY:
--		id = ida_simple_get(&hci_index_ida, 0, HCI_MAX_ID, GFP_KERNEL);
-+		id = ida_alloc_max(&hci_index_ida, HCI_MAX_ID - 1, GFP_KERNEL);
- 		break;
- 	case HCI_AMP:
--		id = ida_simple_get(&hci_index_ida, 1, HCI_MAX_ID, GFP_KERNEL);
-+		id = ida_alloc_range(&hci_index_ida, 1, HCI_MAX_ID - 1,
-+				     GFP_KERNEL);
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -2741,7 +2742,7 @@ int hci_register_dev(struct hci_dev *hdev)
- 	destroy_workqueue(hdev->workqueue);
- 	destroy_workqueue(hdev->req_workqueue);
- err:
--	ida_simple_remove(&hci_index_ida, hdev->id);
-+	ida_free(&hci_index_ida, hdev->id);
+diff --git a/Documentation/devicetree/bindings/pwm/adi,axi-pwmgen.yaml b/Documentation/devicetree/bindings/pwm/adi,axi-pwmgen.yaml
+new file mode 100644
+index 000000000000..8f16b2e14154
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pwm/adi,axi-pwmgen.yaml
+@@ -0,0 +1,48 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pwm/adi,axi-pwmgen.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Analog Devices AXI PWM generator
++
++maintainers:
++  - Michael Hennerich <Michael.Hennerich@analog.com>
++  - Nuno Sá <nuno.sa@analog.com>
++
++description:
++  The Analog Devices AXI PWM generator can generate PWM signals
++  with variable pulse width and period.
++
++  https://wiki.analog.com/resources/fpga/docs/axi_pwm_gen
++
++allOf:
++  - $ref: pwm.yaml#
++
++properties:
++  compatible:
++    const: adi,axi-pwmgen-1.00.a
++
++  reg:
++    maxItems: 1
++
++  "#pwm-cells":
++    const: 2
++
++  clocks:
++    maxItems: 1
++
++unevaluatedProperties: false
++
++required:
++  - reg
++  - clocks
++
++examples:
++  - |
++    pwm@44b00000 {
++       compatible = "adi,axi-pwmgen-1.00.a";
++       reg = <0x44b00000 0x1000>;
++       clocks = <&spi_clk>;
++       #pwm-cells = <2>;
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index c6c7b50e6ef6..7b0f3aec5381 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3415,6 +3415,14 @@ W:	https://ez.analog.com/linux-software-drivers
+ F:	Documentation/devicetree/bindings/hwmon/adi,axi-fan-control.yaml
+ F:	drivers/hwmon/axi-fan-control.c
  
- 	return error;
- }
-@@ -2824,7 +2825,7 @@ void hci_release_dev(struct hci_dev *hdev)
- 	hci_dev_unlock(hdev);
- 
- 	ida_destroy(&hdev->unset_handle_ida);
--	ida_simple_remove(&hci_index_ida, hdev->id);
-+	ida_free(&hci_index_ida, hdev->id);
- 	kfree_skb(hdev->sent_cmd);
- 	kfree_skb(hdev->recv_event);
- 	kfree(hdev);
-diff --git a/net/bluetooth/hci_sock.c b/net/bluetooth/hci_sock.c
-index 3e7cd330d731..4ee1b976678b 100644
---- a/net/bluetooth/hci_sock.c
-+++ b/net/bluetooth/hci_sock.c
-@@ -101,7 +101,7 @@ static bool hci_sock_gen_cookie(struct sock *sk)
- 	int id = hci_pi(sk)->cookie;
- 
- 	if (!id) {
--		id = ida_simple_get(&sock_cookie_ida, 1, 0, GFP_KERNEL);
-+		id = ida_alloc_min(&sock_cookie_ida, 1, GFP_KERNEL);
- 		if (id < 0)
- 			id = 0xffffffff;
- 
-@@ -119,7 +119,7 @@ static void hci_sock_free_cookie(struct sock *sk)
- 
- 	if (id) {
- 		hci_pi(sk)->cookie = 0xffffffff;
--		ida_simple_remove(&sock_cookie_ida, id);
-+		ida_free(&sock_cookie_ida, id);
- 	}
- }
- 
++AXI PWM GENERATOR
++M:	Michael Hennerich <michael.hennerich@analog.com>
++M:	Nuno Sá <nuno.sa@analog.com>
++L:	linux-pwm@vger.kernel.org
++S:	Supported
++W:	https://ez.analog.com/linux-software-drivers
++F:	Documentation/devicetree/bindings/pwm/adi,axi-pwmgen.yaml
++
+ AXXIA I2C CONTROLLER
+ M:	Krzysztof Adamski <krzysztof.adamski@nokia.com>
+ L:	linux-i2c@vger.kernel.org
 -- 
 2.43.0
 
