@@ -1,1050 +1,344 @@
-Return-Path: <linux-kernel+bounces-26095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BBFA82DB67
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:37:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E55A82DB6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:38:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DC5B281A35
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:37:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 029181C21B89
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:38:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 031AC175A4;
-	Mon, 15 Jan 2024 14:37:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F8E31775E;
+	Mon, 15 Jan 2024 14:38:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XwGmrLGj"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="AlrbNIyM";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="7ePDnipz"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 505AB17735
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 14:37:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705329446;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9767F17735
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 14:38:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1705329482;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0P/Ry/bifyODG3jc/xwN6z3VN2lZfa5MZ71QVlNDmM8=;
-	b=XwGmrLGjtMdtm6iCBx3gWn5/VFWLejBa6sRLy0HoiharliiDNApE9Rv5sCsE9ZYLo2O2k9
-	z+4gM3o0bLAzcIPd6NAOp9d37+XemQBr1x1Q2Dv6MBKCIAFwL4nQqBEvMn06Ntu/OAgtRv
-	OsxKG0cr559Ss/EkreXdRk1BWPPWJrg=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-266-YrczU6d4MJiJ1cuesVUPGw-1; Mon, 15 Jan 2024 09:37:24 -0500
-X-MC-Unique: YrczU6d4MJiJ1cuesVUPGw-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40e479a51e4so36580875e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 06:37:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705329443; x=1705934243;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0P/Ry/bifyODG3jc/xwN6z3VN2lZfa5MZ71QVlNDmM8=;
-        b=PqInEDmCl3Khtk1bDM+YBMPdeZG1kMpbPTPBsa3Ez2X2UggqV0IcmOwUT6/tKRkCaR
-         oZWJkLYJ8B+Nu4+SPWM9IAHyN7HR9mXvEXD7lNHOPqvwSDuPOILjJYoQIO0JhVQdqmxk
-         m9QYFvIdF6DulizBZylM6CvydGQqV/w8gG+BfAXMK7Qzf1i207Ds1CZfuYhLWLLrYHr8
-         zj7en5tBylpK10ReC44RrHbnJ487JbNLSPqw0T9hRyL8dF3xkpPx1JLAoNq6BIvvdFHj
-         shrIfB8jXvuwA3K5oFKV4uF4g6FKveilj2i5DbOvmbUAokl/jJOPwf+m8P1+/RmceSu9
-         7I3g==
-X-Gm-Message-State: AOJu0Ywkb6Ol4GQ6i+yCV/wCrSea73Rb2RdDCP4O3ojuR+jVK+jWaxW5
-	tBzHO04kOG7fv6tbS6hSe/Zvqb0N1VDSw4TKyUBN4IhCgyL5EA/McDbLGz5j3myCG3SHIfjqBe5
-	W0EPZ8+iOQXT7EQd4L3zGFE7hJ2a1ykv7
-X-Received: by 2002:a05:600c:4446:b0:40e:7852:9947 with SMTP id v6-20020a05600c444600b0040e78529947mr847863wmn.165.1705329443300;
-        Mon, 15 Jan 2024 06:37:23 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFUzdT5xU1sVf6BlLsAbm0wMLME7RDvKcEkYs4WH7QaXA5cIHhvh7BgfvcwqcTW3CkeFNoBnA==
-X-Received: by 2002:a05:600c:4446:b0:40e:7852:9947 with SMTP id v6-20020a05600c444600b0040e78529947mr847837wmn.165.1705329442768;
-        Mon, 15 Jan 2024 06:37:22 -0800 (PST)
-Received: from toolbox ([2001:9e8:8996:a800:5fa3:a411:5e47:8fe5])
-        by smtp.gmail.com with ESMTPSA id f18-20020a05600c155200b0040d87100733sm16221215wmg.39.2024.01.15.06.37.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 06:37:22 -0800 (PST)
-Date: Mon, 15 Jan 2024 15:37:20 +0100
-From: Sebastian Wick <sebastian.wick@redhat.com>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Emma Anholt <emma@anholt.net>, Jonathan Corbet <corbet@lwn.net>,
-	Sandy Huang <hjc@rock-chips.com>,
-	Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v5 08/44] drm/connector: hdmi: Add Broadcast RGB property
-Message-ID: <20240115143720.GA160656@toolbox>
-References: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
- <20231207-kms-hdmi-connector-state-v5-8-6538e19d634d@kernel.org>
- <20240115143308.GA159345@toolbox>
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=HL8/FIrmak+PbgDcxh0XefuJmF2bYuW9UqqPFeIrMP8=;
+	b=AlrbNIyMB+XttPoxGJq1+UgJDq31jjd81BVzR4LWHehavqbVQaqMHU0+PRexuUUIv5BaYa
+	FARbSJHSPct3jP1cA+E+hDV2wyKeWWJVzq79bXbgklVjJm35LxfJu5Fy0xkl0cQztZ/GoJ
+	uxBvrqGqOe76bDwcLIWH5vno2HQPUQWTwPmiCDo4y2G33XxCw4K4tDJ941cGs7rUSPBn1a
+	w+nxfBczTRNFUMYz1htrN47QlHo0p3tyhSxxMvfPH9BCnaTfcwhZWB7lCcbU0jF7IJ11iT
+	riqTKp58P7Do/n4sjur/17POcUcF5dea3v83dkTZd7XsZJPehUvdp02djEpXWg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1705329482;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=HL8/FIrmak+PbgDcxh0XefuJmF2bYuW9UqqPFeIrMP8=;
+	b=7ePDnipzXAYHOaGmIbZXlm93xRCdacqTBZu9lJwQJbvj6WUerqH0sBopz+rd4NBVhfRdrZ
+	cHGY2CvowbntV4Bg==
+To: linux-kernel@vger.kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>,
+	John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Eric Dumazet <edumazet@google.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	Arjan van de Ven <arjan@infradead.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Rik van Riel <riel@surriel.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sebastian Siewior <bigeasy@linutronix.de>,
+	Giovanni Gherdovich <ggherdovich@suse.cz>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>
+Subject: [PATCH v10 00/20] timers: Move from a push remote at enqueue to a pull at expiry model
+Date: Mon, 15 Jan 2024 15:37:23 +0100
+Message-Id: <20240115143743.27827-1-anna-maria@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240115143308.GA159345@toolbox>
 
-On Mon, Jan 15, 2024 at 03:33:08PM +0100, Sebastian Wick wrote:
-> On Thu, Dec 07, 2023 at 04:49:31PM +0100, Maxime Ripard wrote:
-> > The i915 driver has a property to force the RGB range of an HDMI output.
-> > The vc4 driver then implemented the same property with the same
-> > semantics. KWin has support for it, and a PR for mutter is also there to
-> > support it.
-> > 
-> > Both drivers implementing the same property with the same semantics,
-> > plus the userspace having support for it, is proof enough that it's
-> > pretty much a de-facto standard now and we can provide helpers for it.
-> > 
-> > Let's plumb it into the newly created HDMI connector.
-> > 
-> > Signed-off-by: Maxime Ripard <mripard@kernel.org>
-> > ---
-> >  Documentation/gpu/kms-properties.csv               |   1 -
-> >  drivers/gpu/drm/drm_atomic.c                       |   5 +
-> >  drivers/gpu/drm/drm_atomic_state_helper.c          |  17 +
-> >  drivers/gpu/drm/drm_atomic_uapi.c                  |   4 +
-> >  drivers/gpu/drm/drm_connector.c                    |  76 +++++
-> >  drivers/gpu/drm/tests/Makefile                     |   1 +
-> >  .../gpu/drm/tests/drm_atomic_state_helper_test.c   | 376 +++++++++++++++++++++
-> >  drivers/gpu/drm/tests/drm_connector_test.c         | 117 ++++++-
-> >  drivers/gpu/drm/tests/drm_kunit_edid.h             | 106 ++++++
-> >  include/drm/drm_connector.h                        |  36 ++
-> >  10 files changed, 737 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/Documentation/gpu/kms-properties.csv b/Documentation/gpu/kms-properties.csv
-> > index 0f9590834829..caef14c532d4 100644
-> > --- a/Documentation/gpu/kms-properties.csv
-> > +++ b/Documentation/gpu/kms-properties.csv
-> > @@ -17,7 +17,6 @@ Owner Module/Drivers,Group,Property Name,Type,Property Values,Object attached,De
-> >  ,Virtual GPU,“suggested X”,RANGE,"Min=0, Max=0xffffffff",Connector,property to suggest an X offset for a connector
-> >  ,,“suggested Y”,RANGE,"Min=0, Max=0xffffffff",Connector,property to suggest an Y offset for a connector
-> >  ,Optional,"""aspect ratio""",ENUM,"{ ""None"", ""4:3"", ""16:9"" }",Connector,TDB
-> > -i915,Generic,"""Broadcast RGB""",ENUM,"{ ""Automatic"", ""Full"", ""Limited 16:235"" }",Connector,"When this property is set to Limited 16:235 and CTM is set, the hardware will be programmed with the result of the multiplication of CTM by the limited range matrix to ensure the pixels normally in the range 0..1.0 are remapped to the range 16/255..235/255."
-> >  ,,“audio”,ENUM,"{ ""force-dvi"", ""off"", ""auto"", ""on"" }",Connector,TBD
-> >  ,SDVO-TV,“mode”,ENUM,"{ ""NTSC_M"", ""NTSC_J"", ""NTSC_443"", ""PAL_B"" } etc.",Connector,TBD
-> >  ,,"""left_margin""",RANGE,"Min=0, Max= SDVO dependent",Connector,TBD
-> > diff --git a/drivers/gpu/drm/drm_atomic.c b/drivers/gpu/drm/drm_atomic.c
-> > index c31fc0b48c31..1465a7f09a0b 100644
-> > --- a/drivers/gpu/drm/drm_atomic.c
-> > +++ b/drivers/gpu/drm/drm_atomic.c
-> > @@ -1142,6 +1142,11 @@ static void drm_atomic_connector_print_state(struct drm_printer *p,
-> >  	drm_printf(p, "\tmax_requested_bpc=%d\n", state->max_requested_bpc);
-> >  	drm_printf(p, "\tcolorspace=%s\n", drm_get_colorspace_name(state->colorspace));
-> >  
-> > +	if (connector->connector_type == DRM_MODE_CONNECTOR_HDMIA ||
-> > +	    connector->connector_type == DRM_MODE_CONNECTOR_HDMIB)
-> > +		drm_printf(p, "\tbroadcast_rgb=%s\n",
-> > +			   drm_hdmi_connector_get_broadcast_rgb_name(state->hdmi.broadcast_rgb));
-> > +
-> >  	if (connector->connector_type == DRM_MODE_CONNECTOR_WRITEBACK)
-> >  		if (state->writeback_job && state->writeback_job->fb)
-> >  			drm_printf(p, "\tfb=%d\n", state->writeback_job->fb->base.id);
-> > diff --git a/drivers/gpu/drm/drm_atomic_state_helper.c b/drivers/gpu/drm/drm_atomic_state_helper.c
-> > index e69c0cc1c6da..10d98620a358 100644
-> > --- a/drivers/gpu/drm/drm_atomic_state_helper.c
-> > +++ b/drivers/gpu/drm/drm_atomic_state_helper.c
-> > @@ -583,6 +583,7 @@ EXPORT_SYMBOL(drm_atomic_helper_connector_tv_reset);
-> >  void __drm_atomic_helper_connector_hdmi_reset(struct drm_connector *connector,
-> >  					      struct drm_connector_state *new_state)
-> >  {
-> > +	new_state->hdmi.broadcast_rgb = DRM_HDMI_BROADCAST_RGB_AUTO;
-> >  }
-> >  EXPORT_SYMBOL(__drm_atomic_helper_connector_hdmi_reset);
-> >  
-> > @@ -650,6 +651,22 @@ EXPORT_SYMBOL(drm_atomic_helper_connector_tv_check);
-> >  int drm_atomic_helper_connector_hdmi_check(struct drm_connector *connector,
-> >  					   struct drm_atomic_state *state)
-> >  {
-> > +	struct drm_connector_state *old_state =
-> > +		drm_atomic_get_old_connector_state(state, connector);
-> > +	struct drm_connector_state *new_state =
-> > +		drm_atomic_get_new_connector_state(state, connector);
-> > +
-> > +	if (old_state->hdmi.broadcast_rgb != new_state->hdmi.broadcast_rgb) {
-> > +		struct drm_crtc *crtc = new_state->crtc;
-> > +		struct drm_crtc_state *crtc_state;
-> > +
-> > +		crtc_state = drm_atomic_get_crtc_state(state, crtc);
-> > +		if (IS_ERR(crtc_state))
-> > +			return PTR_ERR(crtc_state);
-> > +
-> > +		crtc_state->mode_changed = true;
-> > +	}
-> > +
-> >  	return 0;
-> >  }
-> >  EXPORT_SYMBOL(drm_atomic_helper_connector_hdmi_check);
-> > diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic_uapi.c
-> > index aee4a65d4959..3eb4f4bc8b71 100644
-> > --- a/drivers/gpu/drm/drm_atomic_uapi.c
-> > +++ b/drivers/gpu/drm/drm_atomic_uapi.c
-> > @@ -818,6 +818,8 @@ static int drm_atomic_connector_set_property(struct drm_connector *connector,
-> >  		state->max_requested_bpc = val;
-> >  	} else if (property == connector->privacy_screen_sw_state_property) {
-> >  		state->privacy_screen_sw_state = val;
-> > +	} else if (property == connector->broadcast_rgb_property) {
-> > +		state->hdmi.broadcast_rgb = val;
-> >  	} else if (connector->funcs->atomic_set_property) {
-> >  		return connector->funcs->atomic_set_property(connector,
-> >  				state, property, val);
-> > @@ -901,6 +903,8 @@ drm_atomic_connector_get_property(struct drm_connector *connector,
-> >  		*val = state->max_requested_bpc;
-> >  	} else if (property == connector->privacy_screen_sw_state_property) {
-> >  		*val = state->privacy_screen_sw_state;
-> > +	} else if (property == connector->broadcast_rgb_property) {
-> > +		*val = state->hdmi.broadcast_rgb;
-> >  	} else if (connector->funcs->atomic_get_property) {
-> >  		return connector->funcs->atomic_get_property(connector,
-> >  				state, property, val);
-> > diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
-> > index d9961cce8245..929b0a911f62 100644
-> > --- a/drivers/gpu/drm/drm_connector.c
-> > +++ b/drivers/gpu/drm/drm_connector.c
-> > @@ -1183,6 +1183,29 @@ static const u32 dp_colorspaces =
-> >  	BIT(DRM_MODE_COLORIMETRY_BT2020_CYCC) |
-> >  	BIT(DRM_MODE_COLORIMETRY_BT2020_YCC);
-> >  
-> > +static const struct drm_prop_enum_list broadcast_rgb_names[] = {
-> > +	{ DRM_HDMI_BROADCAST_RGB_AUTO, "Automatic" },
-> > +	{ DRM_HDMI_BROADCAST_RGB_FULL, "Full" },
-> > +	{ DRM_HDMI_BROADCAST_RGB_LIMITED, "Limited 16:235" },
-> > +};
-> > +
-> > +/*
-> > + * drm_hdmi_connector_get_broadcast_rgb_name - Return a string for HDMI connector RGB broadcast selection
-> > + * @broadcast_rgb: Broadcast RGB selection to compute name of
-> > + *
-> > + * Returns: the name of the Broadcast RGB selection, or NULL if the type
-> > + * is not valid.
-> > + */
-> > +const char *
-> > +drm_hdmi_connector_get_broadcast_rgb_name(enum drm_hdmi_broadcast_rgb broadcast_rgb)
-> > +{
-> > +	if (broadcast_rgb > DRM_HDMI_BROADCAST_RGB_LIMITED)
-> > +		return NULL;
-> > +
-> > +	return broadcast_rgb_names[broadcast_rgb].name;
-> > +}
-> > +EXPORT_SYMBOL(drm_hdmi_connector_get_broadcast_rgb_name);
-> > +
-> >  /**
-> >   * DOC: standard connector properties
-> >   *
-> > @@ -1655,6 +1678,26 @@ EXPORT_SYMBOL(drm_connector_attach_dp_subconnector_property);
-> >  /**
-> >   * DOC: HDMI connector properties
-> >   *
-> > + * Broadcast RGB
-> > + *      Indicates the RGB Quantization Range (Full vs Limited) used.
-> > + *      Infoframes will be generated according to that value.
-> > + *
-> > + *      The value of this property can be one of the following:
-> > + *
-> > + *      Automatic:
-> > + *              RGB Range is selected automatically based on the mode
-> > + *              according to the HDMI specifications.
-> > + *
-> > + *      Full:
-> > + *              Full RGB Range is forced.
-> > + *
-> > + *      Limited 16:235:
-> > + *              Limited RGB Range is forced. Unlike the name suggests,
-> > + *              this works for any number of bits-per-component.
-> > + *
-> > + *      Drivers can set up this property by calling
-> > + *      drm_connector_attach_broadcast_rgb_property().
-> > + *
-> 
-> This is a good time to document this in more detail. There might be two
-> different things being affected:
-> 
-> 1. The signalling (InfoFrame/SDP/...)
-> 2. The color pipeline processing
-> 
-> All values of Broadcast RGB always affect the color pipeline processing
-> such that a full-range input to the CRTC is converted to either full- or
-> limited-range, depending on what the monitor is supposed to accept.
-> 
-> When automatic is selected, does that mean that there is no signalling,
-> or that the signalling matches what the monitor is supposed to accept
-> according to the spec? Also, is this really HDMI specific?
-> 
-> When full or limited is selected and the monitor doesn't support the
-> signalling, what happens?
+Hi,
 
-Forgot to mention: user-space still has no control over RGB vs YCbCr on
-the cable, so is this only affecting RGB? If not, how does it affect
-YCbCr?
+the cleanup patches are already applied and so the contains only two parts:
 
-> 
-> >   * content type (HDMI specific):
-> >   *	Indicates content type setting to be used in HDMI infoframes to indicate
-> >   *	content type for the external device, so that it adjusts its display
-> > @@ -2517,6 +2560,39 @@ int drm_connector_attach_hdr_output_metadata_property(struct drm_connector *conn
-> >  }
-> >  EXPORT_SYMBOL(drm_connector_attach_hdr_output_metadata_property);
-> >  
-> > +/**
-> > + * drm_connector_attach_broadcast_rgb_property - attach "Broadcast RGB" property
-> > + * @connector: connector to attach the property on.
-> > + *
-> > + * This is used to add support for forcing the RGB range on a connector
-> > + *
-> > + * Returns:
-> > + * Zero on success, negative errno on failure.
-> > + */
-> > +int drm_connector_attach_broadcast_rgb_property(struct drm_connector *connector)
-> > +{
-> > +	struct drm_device *dev = connector->dev;
-> > +	struct drm_property *prop;
-> > +
-> > +	prop = connector->broadcast_rgb_property;
-> > +	if (!prop) {
-> > +		prop = drm_property_create_enum(dev, DRM_MODE_PROP_ENUM,
-> > +						"Broadcast RGB",
-> > +						broadcast_rgb_names,
-> > +						ARRAY_SIZE(broadcast_rgb_names));
-> > +		if (!prop)
-> > +			return -EINVAL;
-> > +
-> > +		connector->broadcast_rgb_property = prop;
-> > +	}
-> > +
-> > +	drm_object_attach_property(&connector->base, prop,
-> > +				   DRM_HDMI_BROADCAST_RGB_AUTO);
-> > +
-> > +	return 0;
-> > +}
-> > +EXPORT_SYMBOL(drm_connector_attach_broadcast_rgb_property);
-> > +
-> >  /**
-> >   * drm_connector_attach_colorspace_property - attach "Colorspace" property
-> >   * @connector: connector to attach the property on.
-> > diff --git a/drivers/gpu/drm/tests/Makefile b/drivers/gpu/drm/tests/Makefile
-> > index d6183b3d7688..b29ddfd90596 100644
-> > --- a/drivers/gpu/drm/tests/Makefile
-> > +++ b/drivers/gpu/drm/tests/Makefile
-> > @@ -4,6 +4,7 @@ obj-$(CONFIG_DRM_KUNIT_TEST_HELPERS) += \
-> >  	drm_kunit_helpers.o
-> >  
-> >  obj-$(CONFIG_DRM_KUNIT_TEST) += \
-> > +	drm_atomic_state_helper_test.o \
-> >  	drm_buddy_test.o \
-> >  	drm_cmdline_parser_test.o \
-> >  	drm_connector_test.o \
-> > diff --git a/drivers/gpu/drm/tests/drm_atomic_state_helper_test.c b/drivers/gpu/drm/tests/drm_atomic_state_helper_test.c
-> > new file mode 100644
-> > index 000000000000..21e6f796ee13
-> > --- /dev/null
-> > +++ b/drivers/gpu/drm/tests/drm_atomic_state_helper_test.c
-> > @@ -0,0 +1,376 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +/*
-> > + * Kunit test for drm_atomic_state_helper functions
-> > + */
-> > +
-> > +#include <drm/drm_atomic.h>
-> > +#include <drm/drm_atomic_state_helper.h>
-> > +#include <drm/drm_atomic_uapi.h>
-> > +#include <drm/drm_drv.h>
-> > +#include <drm/drm_edid.h>
-> > +#include <drm/drm_connector.h>
-> > +#include <drm/drm_fourcc.h>
-> > +#include <drm/drm_kunit_helpers.h>
-> > +#include <drm/drm_managed.h>
-> > +#include <drm/drm_modeset_helper_vtables.h>
-> > +#include <drm/drm_probe_helper.h>
-> > +
-> > +#include <drm/drm_print.h>
-> > +#include "../drm_crtc_internal.h"
-> > +
-> > +#include <kunit/test.h>
-> > +
-> > +#include "drm_kunit_edid.h"
-> > +
-> > +struct drm_atomic_helper_connector_hdmi_priv {
-> > +	struct drm_device drm;
-> > +	struct drm_plane *plane;
-> > +	struct drm_crtc *crtc;
-> > +	struct drm_encoder encoder;
-> > +	struct drm_connector connector;
-> > +
-> > +	const char *current_edid;
-> > +	size_t current_edid_len;
-> > +};
-> > +
-> > +#define connector_to_priv(c) \
-> > +	container_of_const(c, struct drm_atomic_helper_connector_hdmi_priv, connector)
-> > +
-> > +static struct drm_display_mode *find_preferred_mode(struct drm_connector *connector)
-> > +{
-> > +	struct drm_device *drm = connector->dev;
-> > +	struct drm_display_mode *mode, *preferred;
-> > +
-> > +	mutex_lock(&drm->mode_config.mutex);
-> > +	preferred = list_first_entry(&connector->modes, struct drm_display_mode, head);
-> > +	list_for_each_entry(mode, &connector->modes, head)
-> > +		if (mode->type & DRM_MODE_TYPE_PREFERRED)
-> > +			preferred = mode;
-> > +	mutex_unlock(&drm->mode_config.mutex);
-> > +
-> > +	return preferred;
-> > +}
-> > +
-> > +static int light_up_connector(struct kunit *test,
-> > +			      struct drm_device *drm,
-> > +			      struct drm_crtc *crtc,
-> > +			      struct drm_connector *connector,
-> > +			      struct drm_display_mode *mode,
-> > +			      struct drm_modeset_acquire_ctx *ctx)
-> > +{
-> > +	struct drm_atomic_state *state;
-> > +	struct drm_connector_state *conn_state;
-> > +	struct drm_crtc_state *crtc_state;
-> > +	int ret;
-> > +
-> > +	state = drm_kunit_helper_atomic_state_alloc(test, drm, ctx);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, state);
-> > +
-> > +	conn_state = drm_atomic_get_connector_state(state, connector);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, conn_state);
-> > +
-> > +	ret = drm_atomic_set_crtc_for_connector(conn_state, crtc);
-> > +	KUNIT_EXPECT_EQ(test, ret, 0);
-> > +
-> > +	crtc_state = drm_atomic_get_crtc_state(state, crtc);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, crtc_state);
-> > +
-> > +	ret = drm_atomic_set_mode_for_crtc(crtc_state, mode);
-> > +	KUNIT_EXPECT_EQ(test, ret, 0);
-> > +
-> > +	crtc_state->enable = true;
-> > +	crtc_state->active = true;
-> > +
-> > +	ret = drm_atomic_commit(state);
-> > +	KUNIT_ASSERT_EQ(test, ret, 0);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int set_connector_edid(struct kunit *test, struct drm_connector *connector,
-> > +			      const char *edid, size_t edid_len)
-> > +{
-> > +	struct drm_atomic_helper_connector_hdmi_priv *priv =
-> > +		connector_to_priv(connector);
-> > +	struct drm_device *drm = connector->dev;
-> > +	int ret;
-> > +
-> > +	priv->current_edid = edid;
-> > +	priv->current_edid_len = edid_len;
-> > +
-> > +	mutex_lock(&drm->mode_config.mutex);
-> > +	ret = connector->funcs->fill_modes(connector, 4096, 4096);
-> > +	mutex_unlock(&drm->mode_config.mutex);
-> > +	KUNIT_ASSERT_GT(test, ret, 0);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int dummy_connector_get_modes(struct drm_connector *connector)
-> > +{
-> > +	struct drm_atomic_helper_connector_hdmi_priv *priv =
-> > +		connector_to_priv(connector);
-> > +	const struct drm_edid *edid;
-> > +	unsigned int num_modes;
-> > +
-> > +	edid = drm_edid_alloc(priv->current_edid, priv->current_edid_len);
-> > +	if (!edid)
-> > +		return -EINVAL;
-> > +
-> > +	drm_edid_connector_update(connector, edid);
-> > +	num_modes = drm_edid_connector_add_modes(connector);
-> > +
-> > +	drm_edid_free(edid);
-> > +
-> > +	return num_modes;
-> > +}
-> > +
-> > +static const struct drm_connector_helper_funcs dummy_connector_helper_funcs = {
-> > +	.atomic_check	= drm_atomic_helper_connector_hdmi_check,
-> > +	.get_modes	= dummy_connector_get_modes,
-> > +};
-> > +
-> > +static void dummy_hdmi_connector_reset(struct drm_connector *connector)
-> > +{
-> > +	drm_atomic_helper_connector_reset(connector);
-> > +	__drm_atomic_helper_connector_hdmi_reset(connector, connector->state);
-> > +}
-> > +
-> > +static const struct drm_connector_funcs dummy_connector_funcs = {
-> > +	.atomic_destroy_state	= drm_atomic_helper_connector_destroy_state,
-> > +	.atomic_duplicate_state	= drm_atomic_helper_connector_duplicate_state,
-> > +	.fill_modes		= drm_helper_probe_single_connector_modes,
-> > +	.reset			= dummy_hdmi_connector_reset,
-> > +};
-> > +
-> > +static
-> > +struct drm_atomic_helper_connector_hdmi_priv *
-> > +drm_atomic_helper_connector_hdmi_init(struct kunit *test)
-> > +{
-> > +	struct drm_atomic_helper_connector_hdmi_priv *priv;
-> > +	struct drm_connector *conn;
-> > +	struct drm_encoder *enc;
-> > +	struct drm_device *drm;
-> > +	struct device *dev;
-> > +	int ret;
-> > +
-> > +	dev = drm_kunit_helper_alloc_device(test);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dev);
-> > +
-> > +	priv = drm_kunit_helper_alloc_drm_device(test, dev,
-> > +						 struct drm_atomic_helper_connector_hdmi_priv, drm,
-> > +						 DRIVER_MODESET | DRIVER_ATOMIC);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv);
-> > +	test->priv = priv;
-> > +
-> > +	drm = &priv->drm;
-> > +	priv->plane = drm_kunit_helper_create_primary_plane(test, drm,
-> > +							    NULL,
-> > +							    NULL,
-> > +							    NULL, 0,
-> > +							    NULL);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv->plane);
-> > +
-> > +	priv->crtc = drm_kunit_helper_create_crtc(test, drm,
-> > +						  priv->plane, NULL,
-> > +						  NULL,
-> > +						  NULL);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv->crtc);
-> > +
-> > +	enc = &priv->encoder;
-> > +	ret = drmm_encoder_init(drm, enc, NULL, DRM_MODE_ENCODER_TMDS, NULL);
-> > +	KUNIT_ASSERT_EQ(test, ret, 0);
-> > +
-> > +	enc->possible_crtcs = drm_crtc_mask(priv->crtc);
-> > +
-> > +	conn = &priv->connector;
-> > +	ret = drmm_connector_hdmi_init(drm, conn,
-> > +				       &dummy_connector_funcs,
-> > +				       DRM_MODE_CONNECTOR_HDMIA,
-> > +				       NULL);
-> > +	KUNIT_ASSERT_EQ(test, ret, 0);
-> > +
-> > +	drm_connector_helper_add(conn, &dummy_connector_helper_funcs);
-> > +	drm_connector_attach_encoder(conn, enc);
-> > +
-> > +	drm_mode_config_reset(drm);
-> > +
-> > +	ret = set_connector_edid(test, conn,
-> > +				 test_edid_hdmi_1080p_rgb_max_200mhz,
-> > +				 ARRAY_SIZE(test_edid_hdmi_1080p_rgb_max_200mhz));
-> > +	KUNIT_ASSERT_EQ(test, ret, 0);
-> > +
-> > +	return priv;
-> > +}
-> > +
-> > +/*
-> > + * Test that if we change the RGB quantization property to a different
-> > + * value, we trigger a mode change on the connector's CRTC, which will
-> > + * in turn disable/enable the connector.
-> > + */
-> > +static void drm_test_check_broadcast_rgb_crtc_mode_changed(struct kunit *test)
-> > +{
-> > +	struct drm_atomic_helper_connector_hdmi_priv *priv;
-> > +	struct drm_modeset_acquire_ctx *ctx;
-> > +	struct drm_connector_state *old_conn_state;
-> > +	struct drm_connector_state *new_conn_state;
-> > +	struct drm_crtc_state *crtc_state;
-> > +	struct drm_atomic_state *state;
-> > +	struct drm_display_mode *preferred;
-> > +	struct drm_connector *conn;
-> > +	struct drm_device *drm;
-> > +	struct drm_crtc *crtc;
-> > +	int ret;
-> > +
-> > +	priv = drm_atomic_helper_connector_hdmi_init(test);
-> > +	KUNIT_ASSERT_NOT_NULL(test, priv);
-> > +
-> > +	ctx = drm_kunit_helper_acquire_ctx_alloc(test);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
-> > +
-> > +	conn = &priv->connector;
-> > +	preferred = find_preferred_mode(conn);
-> > +	KUNIT_ASSERT_NOT_NULL(test, preferred);
-> > +
-> > +	drm = &priv->drm;
-> > +	crtc = priv->crtc;
-> > +	ret = light_up_connector(test, drm, crtc, conn, preferred, ctx);
-> > +	KUNIT_ASSERT_EQ(test, ret, 0);
-> > +
-> > +	state = drm_kunit_helper_atomic_state_alloc(test, drm, ctx);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, state);
-> > +
-> > +	new_conn_state = drm_atomic_get_connector_state(state, conn);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, new_conn_state);
-> > +
-> > +	old_conn_state = drm_atomic_get_old_connector_state(state, conn);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, old_conn_state);
-> > +
-> > +	new_conn_state->hdmi.broadcast_rgb = DRM_HDMI_BROADCAST_RGB_FULL;
-> > +
-> > +	KUNIT_ASSERT_NE(test,
-> > +			old_conn_state->hdmi.broadcast_rgb,
-> > +			new_conn_state->hdmi.broadcast_rgb);
-> > +
-> > +	ret = drm_atomic_check_only(state);
-> > +	KUNIT_ASSERT_EQ(test, ret, 0);
-> > +
-> > +	new_conn_state = drm_atomic_get_new_connector_state(state, conn);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, new_conn_state);
-> > +	KUNIT_EXPECT_EQ(test, new_conn_state->hdmi.broadcast_rgb, DRM_HDMI_BROADCAST_RGB_FULL);
-> > +
-> > +	crtc_state = drm_atomic_get_new_crtc_state(state, crtc);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, crtc_state);
-> > +	KUNIT_EXPECT_TRUE(test, crtc_state->mode_changed);
-> > +}
-> > +
-> > +/*
-> > + * Test that if we set the RGB quantization property to the same value,
-> > + * we don't trigger a mode change on the connector's CRTC and leave the
-> > + * connector unaffected.
-> > + */
-> > +static void drm_test_check_broadcast_rgb_crtc_mode_not_changed(struct kunit *test)
-> > +{
-> > +	struct drm_atomic_helper_connector_hdmi_priv *priv;
-> > +	struct drm_modeset_acquire_ctx *ctx;
-> > +	struct drm_connector_state *old_conn_state;
-> > +	struct drm_connector_state *new_conn_state;
-> > +	struct drm_crtc_state *crtc_state;
-> > +	struct drm_atomic_state *state;
-> > +	struct drm_display_mode *preferred;
-> > +	struct drm_connector *conn;
-> > +	struct drm_device *drm;
-> > +	struct drm_crtc *crtc;
-> > +	int ret;
-> > +
-> > +	priv = drm_atomic_helper_connector_hdmi_init(test);
-> > +	KUNIT_ASSERT_NOT_NULL(test, priv);
-> > +
-> > +	ctx = drm_kunit_helper_acquire_ctx_alloc(test);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
-> > +
-> > +	conn = &priv->connector;
-> > +	preferred = find_preferred_mode(conn);
-> > +	KUNIT_ASSERT_NOT_NULL(test, preferred);
-> > +
-> > +	drm = &priv->drm;
-> > +	crtc = priv->crtc;
-> > +	ret = light_up_connector(test, drm, crtc, conn, preferred, ctx);
-> > +	KUNIT_ASSERT_EQ(test, ret, 0);
-> > +
-> > +	state = drm_kunit_helper_atomic_state_alloc(test, drm, ctx);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, state);
-> > +
-> > +	new_conn_state = drm_atomic_get_connector_state(state, conn);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, new_conn_state);
-> > +
-> > +	old_conn_state = drm_atomic_get_old_connector_state(state, conn);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, old_conn_state);
-> > +
-> > +	new_conn_state->hdmi.broadcast_rgb = old_conn_state->hdmi.broadcast_rgb;
-> > +
-> > +	ret = drm_atomic_check_only(state);
-> > +	KUNIT_ASSERT_EQ(test, ret, 0);
-> > +
-> > +	old_conn_state = drm_atomic_get_old_connector_state(state, conn);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, old_conn_state);
-> > +
-> > +	new_conn_state = drm_atomic_get_new_connector_state(state, conn);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, new_conn_state);
-> > +
-> > +	KUNIT_EXPECT_EQ(test,
-> > +			old_conn_state->hdmi.broadcast_rgb,
-> > +			new_conn_state->hdmi.broadcast_rgb);
-> > +
-> > +	crtc_state = drm_atomic_get_new_crtc_state(state, crtc);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, crtc_state);
-> > +	KUNIT_EXPECT_FALSE(test, crtc_state->mode_changed);
-> > +}
-> > +
-> > +static struct kunit_case drm_atomic_helper_connector_hdmi_check_tests[] = {
-> > +	KUNIT_CASE(drm_test_check_broadcast_rgb_crtc_mode_changed),
-> > +	KUNIT_CASE(drm_test_check_broadcast_rgb_crtc_mode_not_changed),
-> > +	{ }
-> > +};
-> > +
-> > +static struct kunit_suite drm_atomic_helper_connector_hdmi_check_test_suite = {
-> > +	.name		= "drm_atomic_helper_connector_hdmi_check",
-> > +	.test_cases	= drm_atomic_helper_connector_hdmi_check_tests,
-> > +};
-> > +
-> > +/*
-> > + * Test that the value of the Broadcast RGB property out of reset is set
-> > + * to auto.
-> > + */
-> > +static void drm_test_check_broadcast_rgb_value(struct kunit *test)
-> > +{
-> > +	struct drm_atomic_helper_connector_hdmi_priv *priv;
-> > +	struct drm_connector_state *conn_state;
-> > +	struct drm_connector *conn;
-> > +
-> > +	priv = drm_atomic_helper_connector_hdmi_init(test);
-> > +	KUNIT_ASSERT_NOT_NULL(test, priv);
-> > +
-> > +	conn = &priv->connector;
-> > +	conn_state = conn->state;
-> > +	KUNIT_EXPECT_EQ(test, conn_state->hdmi.broadcast_rgb, DRM_HDMI_BROADCAST_RGB_AUTO);
-> > +}
-> > +
-> > +static struct kunit_case drm_atomic_helper_connector_hdmi_reset_tests[] = {
-> > +	KUNIT_CASE(drm_test_check_broadcast_rgb_value),
-> > +	{ }
-> > +};
-> > +
-> > +static struct kunit_suite drm_atomic_helper_connector_hdmi_reset_test_suite = {
-> > +	.name		= "drm_atomic_helper_connector_hdmi_reset",
-> > +	.test_cases 	= drm_atomic_helper_connector_hdmi_reset_tests,
-> > +};
-> > +
-> > +kunit_test_suites(
-> > +	&drm_atomic_helper_connector_hdmi_check_test_suite,
-> > +	&drm_atomic_helper_connector_hdmi_reset_test_suite,
-> > +);
-> > +
-> > +MODULE_AUTHOR("Maxime Ripard <mripard@kernel.org>");
-> > +MODULE_LICENSE("GPL");
-> > diff --git a/drivers/gpu/drm/tests/drm_connector_test.c b/drivers/gpu/drm/tests/drm_connector_test.c
-> > index 8f070cacab3b..41d33dea30af 100644
-> > --- a/drivers/gpu/drm/tests/drm_connector_test.c
-> > +++ b/drivers/gpu/drm/tests/drm_connector_test.c
-> > @@ -12,6 +12,8 @@
-> >  
-> >  #include <kunit/test.h>
-> >  
-> > +#include "../drm_crtc_internal.h"
-> > +
-> >  struct drm_connector_init_priv {
-> >  	struct drm_device drm;
-> >  	struct drm_connector connector;
-> > @@ -357,10 +359,123 @@ static struct kunit_suite drm_get_tv_mode_from_name_test_suite = {
-> >  	.test_cases = drm_get_tv_mode_from_name_tests,
-> >  };
-> >  
-> > +struct drm_hdmi_connector_get_broadcast_rgb_name_test {
-> > +	unsigned int kind;
-> > +	const char *expected_name;
-> > +};
-> > +
-> > +#define BROADCAST_RGB_TEST(_kind, _name)	\
-> > +	{					\
-> > +		.kind = _kind,			\
-> > +		.expected_name = _name,		\
-> > +	}
-> > +
-> > +static void drm_test_drm_hdmi_connector_get_broadcast_rgb_name(struct kunit *test)
-> > +{
-> > +	const struct drm_hdmi_connector_get_broadcast_rgb_name_test *params =
-> > +		test->param_value;
-> > +
-> > +	KUNIT_EXPECT_STREQ(test,
-> > +			   drm_hdmi_connector_get_broadcast_rgb_name(params->kind),
-> > +			   params->expected_name);
-> > +}
-> > +
-> > +static const
-> > +struct drm_hdmi_connector_get_broadcast_rgb_name_test
-> > +drm_hdmi_connector_get_broadcast_rgb_name_valid_tests[] = {
-> > +	BROADCAST_RGB_TEST(DRM_HDMI_BROADCAST_RGB_AUTO, "Automatic"),
-> > +	BROADCAST_RGB_TEST(DRM_HDMI_BROADCAST_RGB_FULL, "Full"),
-> > +	BROADCAST_RGB_TEST(DRM_HDMI_BROADCAST_RGB_LIMITED, "Limited 16:235"),
-> > +};
-> > +
-> > +static void
-> > +drm_hdmi_connector_get_broadcast_rgb_name_valid_desc(const struct drm_hdmi_connector_get_broadcast_rgb_name_test *t,
-> > +						     char *desc)
-> > +{
-> > +	sprintf(desc, "%s", t->expected_name);
-> > +}
-> > +
-> > +KUNIT_ARRAY_PARAM(drm_hdmi_connector_get_broadcast_rgb_name_valid,
-> > +		  drm_hdmi_connector_get_broadcast_rgb_name_valid_tests,
-> > +		  drm_hdmi_connector_get_broadcast_rgb_name_valid_desc);
-> > +
-> > +static void drm_test_drm_hdmi_connector_get_broadcast_rgb_name_invalid(struct kunit *test)
-> > +{
-> > +	KUNIT_EXPECT_NULL(test, drm_hdmi_connector_get_broadcast_rgb_name(3));
-> > +};
-> > +
-> > +static struct kunit_case drm_hdmi_connector_get_broadcast_rgb_name_tests[] = {
-> > +	KUNIT_CASE_PARAM(drm_test_drm_hdmi_connector_get_broadcast_rgb_name,
-> > +			 drm_hdmi_connector_get_broadcast_rgb_name_valid_gen_params),
-> > +	KUNIT_CASE(drm_test_drm_hdmi_connector_get_broadcast_rgb_name_invalid),
-> > +	{ }
-> > +};
-> > +
-> > +static struct kunit_suite drm_hdmi_connector_get_broadcast_rgb_name_test_suite = {
-> > +	.name = "drm_hdmi_connector_get_broadcast_rgb_name",
-> > +	.test_cases = drm_hdmi_connector_get_broadcast_rgb_name_tests,
-> > +};
-> > +
-> > +static void drm_test_drm_connector_attach_broadcast_rgb_property(struct kunit *test)
-> > +{
-> > +	struct drm_connector_init_priv *priv = test->priv;
-> > +	struct drm_connector *connector = &priv->connector;
-> > +	struct drm_property *prop;
-> > +	int ret;
-> > +
-> > +	ret = drmm_connector_init(&priv->drm, connector,
-> > +				  &dummy_funcs,
-> > +				  DRM_MODE_CONNECTOR_HDMIA,
-> > +				  &priv->ddc);
-> > +	KUNIT_ASSERT_EQ(test, ret, 0);
-> > +
-> > +	ret = drm_connector_attach_broadcast_rgb_property(connector);
-> > +	KUNIT_ASSERT_EQ(test, ret, 0);
-> > +
-> > +	prop = connector->broadcast_rgb_property;
-> > +	KUNIT_ASSERT_NOT_NULL(test, prop);
-> > +	KUNIT_EXPECT_NOT_NULL(test, drm_mode_obj_find_prop_id(&connector->base, prop->base.id));
-> > +}
-> > +
-> > +static void drm_test_drm_connector_attach_broadcast_rgb_property_hdmi_connector(struct kunit *test)
-> > +{
-> > +	struct drm_connector_init_priv *priv = test->priv;
-> > +	struct drm_connector *connector = &priv->connector;
-> > +	struct drm_property *prop;
-> > +	int ret;
-> > +
-> > +	ret = drmm_connector_hdmi_init(&priv->drm, connector,
-> > +				       &dummy_funcs,
-> > +				       DRM_MODE_CONNECTOR_HDMIA,
-> > +				       &priv->ddc);
-> > +	KUNIT_EXPECT_EQ(test, ret, 0);
-> > +
-> > +	ret = drm_connector_attach_broadcast_rgb_property(connector);
-> > +	KUNIT_ASSERT_EQ(test, ret, 0);
-> > +
-> > +	prop = connector->broadcast_rgb_property;
-> > +	KUNIT_ASSERT_NOT_NULL(test, prop);
-> > +	KUNIT_EXPECT_NOT_NULL(test, drm_mode_obj_find_prop_id(&connector->base, prop->base.id));
-> > +}
-> > +
-> > +static struct kunit_case drm_connector_attach_broadcast_rgb_property_tests[] = {
-> > +	KUNIT_CASE(drm_test_drm_connector_attach_broadcast_rgb_property),
-> > +	KUNIT_CASE(drm_test_drm_connector_attach_broadcast_rgb_property_hdmi_connector),
-> > +	{ }
-> > +};
-> > +
-> > +static struct kunit_suite drm_connector_attach_broadcast_rgb_property_test_suite = {
-> > +	.name = "drm_connector_attach_broadcast_rgb_property",
-> > +	.init = drm_test_connector_init,
-> > +	.test_cases = drm_connector_attach_broadcast_rgb_property_tests,
-> > +};
-> > +
-> >  kunit_test_suites(
-> >  	&drmm_connector_hdmi_init_test_suite,
-> >  	&drmm_connector_init_test_suite,
-> > -	&drm_get_tv_mode_from_name_test_suite
-> > +	&drm_connector_attach_broadcast_rgb_property_test_suite,
-> > +	&drm_get_tv_mode_from_name_test_suite,
-> > +	&drm_hdmi_connector_get_broadcast_rgb_name_test_suite
-> >  );
-> >  
-> >  MODULE_AUTHOR("Maxime Ripard <maxime@cerno.tech>");
-> > diff --git a/drivers/gpu/drm/tests/drm_kunit_edid.h b/drivers/gpu/drm/tests/drm_kunit_edid.h
-> > new file mode 100644
-> > index 000000000000..2bba316de064
-> > --- /dev/null
-> > +++ b/drivers/gpu/drm/tests/drm_kunit_edid.h
-> > @@ -0,0 +1,106 @@
-> > +#ifndef DRM_KUNIT_EDID_H_
-> > +#define DRM_KUNIT_EDID_H_
-> > +
-> > +/*
-> > + * edid-decode (hex):
-> > + *
-> > + * 00 ff ff ff ff ff ff 00 31 d8 2a 00 00 00 00 00
-> > + * 00 21 01 03 81 a0 5a 78 02 00 00 00 00 00 00 00
-> > + * 00 00 00 20 00 00 01 01 01 01 01 01 01 01 01 01
-> > + * 01 01 01 01 01 01 02 3a 80 18 71 38 2d 40 58 2c
-> > + * 45 00 40 84 63 00 00 1e 00 00 00 fc 00 54 65 73
-> > + * 74 20 45 44 49 44 0a 20 20 20 00 00 00 fd 00 32
-> > + * 46 1e 46 0f 00 0a 20 20 20 20 20 20 00 00 00 10
-> > + * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 92
-> > + *
-> > + * 02 03 1b 81 e3 05 00 20 41 10 e2 00 4a 6d 03 0c
-> > + * 00 12 34 00 28 20 00 00 00 00 00 00 00 00 00 00
-> > + * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > + * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > + * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > + * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > + * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > + * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 d0
-> > + *
-> > + * ----------------
-> > + *
-> > + * Block 0, Base EDID:
-> > + *   EDID Structure Version & Revision: 1.3
-> > + *   Vendor & Product Identification:
-> > + *     Manufacturer: LNX
-> > + *     Model: 42
-> > + *     Made in: 2023
-> > + *   Basic Display Parameters & Features:
-> > + *     Digital display
-> > + *     DFP 1.x compatible TMDS
-> > + *     Maximum image size: 160 cm x 90 cm
-> > + *     Gamma: 2.20
-> > + *     Monochrome or grayscale display
-> > + *     First detailed timing is the preferred timing
-> > + *   Color Characteristics:
-> > + *     Red  : 0.0000, 0.0000
-> > + *     Green: 0.0000, 0.0000
-> > + *     Blue : 0.0000, 0.0000
-> > + *     White: 0.0000, 0.0000
-> > + *   Established Timings I & II:
-> > + *     DMT 0x04:   640x480    59.940476 Hz   4:3     31.469 kHz     25.175000 MHz
-> > + *   Standard Timings: none
-> > + *   Detailed Timing Descriptors:
-> > + *     DTD 1:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz (1600 mm x 900 mm)
-> > + *                  Hfront   88 Hsync  44 Hback  148 Hpol P
-> > + *                  Vfront    4 Vsync   5 Vback   36 Vpol P
-> > + *     Display Product Name: 'Test EDID'
-> > + *     Display Range Limits:
-> > + *       Monitor ranges (GTF): 50-70 Hz V, 30-70 kHz H, max dotclock 150 MHz
-> > + *     Dummy Descriptor:
-> > + *   Extension blocks: 1
-> > + * Checksum: 0x92
-> > + *
-> > + * ----------------
-> > + *
-> > + * Block 1, CTA-861 Extension Block:
-> > + *   Revision: 3
-> > + *   Underscans IT Video Formats by default
-> > + *   Native detailed modes: 1
-> > + *   Colorimetry Data Block:
-> > + *     sRGB
-> > + *   Video Data Block:
-> > + *     VIC  16:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz
-> > + *   Video Capability Data Block:
-> > + *     YCbCr quantization: No Data
-> > + *     RGB quantization: Selectable (via AVI Q)
-> > + *     PT scan behavior: No Data
-> > + *     IT scan behavior: Always Underscanned
-> > + *     CE scan behavior: Always Underscanned
-> > + *   Vendor-Specific Data Block (HDMI), OUI 00-0C-03:
-> > + *     Source physical address: 1.2.3.4
-> > + *     Maximum TMDS clock: 200 MHz
-> > + *     Extended HDMI video details:
-> > + * Checksum: 0xd0  Unused space in Extension Block: 100 bytes
-> > + */
-> > +const unsigned char test_edid_hdmi_1080p_rgb_max_200mhz[] = {
-> > +  0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x31, 0xd8, 0x2a, 0x00,
-> > +  0x00, 0x00, 0x00, 0x00, 0x00, 0x21, 0x01, 0x03, 0x81, 0xa0, 0x5a, 0x78,
-> > +  0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20,
-> > +  0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
-> > +  0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x02, 0x3a, 0x80, 0x18, 0x71, 0x38,
-> > +  0x2d, 0x40, 0x58, 0x2c, 0x45, 0x00, 0x40, 0x84, 0x63, 0x00, 0x00, 0x1e,
-> > +  0x00, 0x00, 0x00, 0xfc, 0x00, 0x54, 0x65, 0x73, 0x74, 0x20, 0x45, 0x44,
-> > +  0x49, 0x44, 0x0a, 0x20, 0x20, 0x20, 0x00, 0x00, 0x00, 0xfd, 0x00, 0x32,
-> > +  0x46, 0x00, 0x00, 0xc4, 0x00, 0x0a, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
-> > +  0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-> > +  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x41, 0x02, 0x03, 0x1b, 0x81,
-> > +  0xe3, 0x05, 0x00, 0x20, 0x41, 0x10, 0xe2, 0x00, 0x4a, 0x6d, 0x03, 0x0c,
-> > +  0x00, 0x12, 0x34, 0x00, 0x28, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-> > +  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-> > +  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-> > +  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-> > +  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-> > +  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-> > +  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-> > +  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-> > +  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-> > +  0x00, 0x00, 0x00, 0xd0
-> > +};
-> > +
-> > +#endif // DRM_KUNIT_EDID_H_
-> > diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-> > index 000a2a156619..3867a4c01b78 100644
-> > --- a/include/drm/drm_connector.h
-> > +++ b/include/drm/drm_connector.h
-> > @@ -368,6 +368,30 @@ enum drm_panel_orientation {
-> >  	DRM_MODE_PANEL_ORIENTATION_RIGHT_UP,
-> >  };
-> >  
-> > +/**
-> > + * enum drm_hdmi_broadcast_rgb - Broadcast RGB Selection for an HDMI @drm_connector
-> > + */
-> > +enum drm_hdmi_broadcast_rgb {
-> > +	/**
-> > +	 * @DRM_HDMI_BROADCAST_RGB_AUTO: The RGB range is selected
-> > +	 * automatically based on the mode.
-> > +	 */
-> > +	DRM_HDMI_BROADCAST_RGB_AUTO,
-> > +
-> > +	/**
-> > +	 * @DRM_HDMI_BROADCAST_RGB_FULL: Full range RGB is forced.
-> > +	 */
-> > +	DRM_HDMI_BROADCAST_RGB_FULL,
-> > +
-> > +	/**
-> > +	 * @DRM_HDMI_BROADCAST_RGB_LIMITED: Limited range RGB is forced.
-> > +	 */
-> > +	DRM_HDMI_BROADCAST_RGB_LIMITED,
-> > +};
-> > +
-> > +const char *
-> > +drm_hdmi_connector_get_broadcast_rgb_name(enum drm_hdmi_broadcast_rgb broadcast_rgb);
-> > +
-> >  /**
-> >   * struct drm_monitor_range_info - Panel's Monitor range in EDID for
-> >   * &drm_display_info
-> > @@ -1037,6 +1061,11 @@ struct drm_connector_state {
-> >  	 * @drm_atomic_helper_connector_hdmi_check().
-> >  	 */
-> >  	struct {
-> > +		/**
-> > +		 * @broadcast_rgb: Connector property to pass the
-> > +		 * Broadcast RGB selection value.
-> > +		 */
-> > +		enum drm_hdmi_broadcast_rgb broadcast_rgb;
-> >  	} hdmi;
-> >  };
-> >  
-> > @@ -1706,6 +1735,12 @@ struct drm_connector {
-> >  	 */
-> >  	struct drm_property *privacy_screen_hw_state_property;
-> >  
-> > +	/**
-> > +	 * @broadcast_rgb_property: Connector property to set the
-> > +	 * Broadcast RGB selection to output with.
-> > +	 */
-> > +	struct drm_property *broadcast_rgb_property;
-> > +
-> >  #define DRM_CONNECTOR_POLL_HPD (1 << 0)
-> >  #define DRM_CONNECTOR_POLL_CONNECT (1 << 1)
-> >  #define DRM_CONNECTOR_POLL_DISCONNECT (1 << 2)
-> > @@ -2026,6 +2061,7 @@ int drm_connector_attach_scaling_mode_property(struct drm_connector *connector,
-> >  					       u32 scaling_mode_mask);
-> >  int drm_connector_attach_vrr_capable_property(
-> >  		struct drm_connector *connector);
-> > +int drm_connector_attach_broadcast_rgb_property(struct drm_connector *connector);
-> >  int drm_connector_attach_colorspace_property(struct drm_connector *connector);
-> >  int drm_connector_attach_hdr_output_metadata_property(struct drm_connector *connector);
-> >  bool drm_connector_atomic_hdr_metadata_equal(struct drm_connector_state *old_state,
-> > 
-> > -- 
-> > 2.43.0
-> > 
+- Patches 1 - 4: timer base idle marking rework with two preparatory
+  changes. See the section below for more details.
+
+- Patches 5 - 20: Updated timer pull model on top of timer idle rework
+
+
+The queue is available here:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel timers/pushpull
+
+
+Move marking timer bases as idle into tick_nohz_stop_tick()
+-----------------------------------------------------------
+
+The idle marking of timer bases is done in get_next_timer_interrupt()
+whenever possible. The timer bases are idle, even if the tick will not be
+stopped. This lead to an IPI when a new first timer is enqueued remote. To
+prevent this, setting timer_base->in_idle flag is postponed to
+tick_nohz_stop_tick().
+
+Furthermore this synchronizes the states of timer base is_idle and
+tick_stopped. With the timer pull model in place, also the idle state in
+the hierarchy of a CPU is synchronized with the other idle related states.
+
+
+Timer pull model
+----------------
+
+Placing timers at enqueue time on a target CPU based on dubious heuristics
+does not make any sense:
+
+ 1) Most timer wheel timers are canceled or rearmed before they expire.
+
+ 2) The heuristics to predict which CPU will be busy when the timer expires
+    are wrong by definition.
+
+So placing the timers at enqueue wastes precious cycles.
+
+The proper solution to this problem is to always queue the timers on the
+local CPU and allow the non pinned timers to be pulled onto a busy CPU at
+expiry time.
+
+Therefore split the timer storage into local pinned and global timers:
+Local pinned timers are always expired on the CPU on which they have been
+queued. Global timers can be expired on any CPU.
+
+As long as a CPU is busy it expires both local and global timers. When a
+CPU goes idle it arms for the first expiring local timer. If the first
+expiring pinned (local) timer is before the first expiring movable timer,
+then no action is required because the CPU will wake up before the first
+movable timer expires. If the first expiring movable timer is before the
+first expiring pinned (local) timer, then this timer is queued into a idle
+timerqueue and eventually expired by some other active CPU.
+
+To avoid global locking the timerqueues are implemented as a hierarchy. The
+lowest level of the hierarchy holds the CPUs. The CPUs are associated to
+groups of 8, which are separated per node. If more than one CPU group
+exist, then a second level in the hierarchy collects the groups. Depending
+on the size of the system more than 2 levels are required. Each group has a
+"migrator" which checks the timerqueue during the tick for remote timers to
+be expired.
+
+If the last CPU in a group goes idle it reports the first expiring event in
+the group up to the next group(s) in the hierarchy. If the last CPU goes
+idle it arms its timer for the first system wide expiring timer to ensure
+that no timer event is missed.
+
+
+Testing
+~~~~~~~
+
+Enqueue
+^^^^^^^
+
+The impact of wasting cycles during enqueue by using the heuristic in
+contrast to always queuing the timer on the local CPU was measured with a
+micro benchmark. Therefore a timer is enqueued and dequeued in a loop with
+1000 repetitions on a isolated CPU. The time the loop takes is measured. A
+quarter of the remaining CPUs was kept busy. This measurement was repeated
+several times. With the patch queue the average duration was reduced by
+approximately 25%.
+
+	145ns	plain v6
+	109ns	v6 with patch queue
+
+
+Furthermore the impact of residence in deep idle states of an idle system
+was investigated. The patch queue doesn't downgrade this behavior.
+
+dbench test
+^^^^^^^^^^^
+
+A dbench test starting X pairs of client servers are used to create load on
+the system. The measurable value is the throughput. The tests were executed
+on a zen3 machine. The base is the tip tree branch timers/core which is
+based on a v6.6-rc1.
+
+governor menu
+
+NR	timers/core	pull-model	impact
+----------------------------------------------
+1	353.19 (0.19)	353.45 (0.30)	0.07%
+2	700.10 (0.96)	687.00 (0.20)	-1.87%
+4	1329.37 (0.63)	1282.91 (0.64)	-3.49%
+8	2561.16 (1.28)	2493.56	(1.76)	-2.64%
+16	4959.96 (0.80)	4914.59 (0.64)	-0.91%
+32	9741.92 (3.44)	8979.83 (1.13)	-7.82%
+64	16535.40 (2.84)	16388.47 (4.02)	-0.89%
+128	22136.83 (2.42)	23174.50 (1.43)	4.69%
+256	39256.77 (4.48)	38994.00 (0.39)	-0.67%
+512	36799.03 (1.83)	38091.10 (0.63)	3.51%
+1024	32903.03 (0.86)	35370.70 (0.89)	7.50%
+
+
+governor teo
+
+NR	timers/core	pull-model	impact
+----------------------------------------------
+1	350.83 (1.27)	352.45 (0.96)	0.46%
+2	699.52 (0.85)	690.10 (0.54)	-1.35%
+4	1339.53 (1.99)	1294.71 (2.71)	-3.35%
+8	2574.10 (0.76)	2495.46 (1.97)	-3.06%
+16	4898.50 (1.74)	4783.06 (1.64)	-2.36%
+32	9115.50 (4.63)	9037.83 (1.58)	-0.85%
+64	16663.90 (3.80)	16042.00 (1.72)	-3.73%
+128	25044.93 (1.11)	23250.03 (1.08)	-7.17%
+256	38059.53 (1.70)	39658.57 (2.98)	4.20%
+512	36369.30 (0.39)	38890.13 (0.36)	6.93%
+1024	33956.83 (1.14)	35514.83 (0.29)	4.59%
+
+
+
+Ping Pong Oberservation
+^^^^^^^^^^^^^^^^^^^^^^^
+
+During testing on a mostly idle machine a ping pong game could be observed:
+a process_timeout timer is expired remotely on a non idle CPU. Then the CPU
+where the schedule_timeout() was executed to enqueue the timer comes out of
+idle and restarts the timer using schedule_timeout() and goes back to idle
+again. This is due to the fair scheduler which tries to keep the task on
+the CPU which it previously executed on.
+
+
+
+
+Possible Next Steps
+~~~~~~~~~~~~~~~~~~~
+
+Simple deferrable timers are no longer required as they can be converted to
+global timers. If a CPU goes idle, a formerly deferrable timer will not
+prevent the CPU to sleep as long as possible. Only the last migrator CPU
+has to take care of them. Deferrable timers with timer pinned flags needs
+to be expired on the specified CPU but must not prevent CPU from going
+idle. They require their own timer base which is never taken into account
+when calculating the next expiry time. This conversation and required
+cleanup will be done in a follow up series.
+
+
+v9..v10: https://lore.kernel.org/r/20231201092654.34614-1-anna-maria@linutronix.de/
+  - Address review Feedback of Bigeasy
+
+
+v8..v9: https://lore.kernel.org/r/20231004123454.15691-1-anna-maria@linutronix.de
+  - Address review feedback
+  - Add more minor cleanup fixes
+  - fixes inconsistent idle related states
+
+
+v7..v8: https://lore.kernel.org/r/20230524070629.6377-1-anna-maria@linutronix.de
+  - Address review feedback
+  - Move marking timer base idle into tick_nohz_stop_tick()
+  - Look ahead function to determine possible sleep lenght
+
+
+v6..v7:
+  - Address review feedback of Frederic and bigeasy
+  - Change lock, unlock fetch next timer interrupt logic after remote expiry
+  - Move timer_expire_remote() into tick-internal.h
+  - Add documentation section about "Required event and timerqueue update
+    after remote expiry"
+  - Fix fallout of kernel test robot
+
+
+v5..v6:
+
+  - Address review of Frederic Weisbecker and Peter Zijlstra (spelling,
+    locking, race in tmigr_handle_remote_cpu())
+
+  - unconditionally set TIMER_PINNED flag in add_timer_on(); introduce
+    add_timer() variants which set/unset TIMER_PINNED flag; drop fixing
+    add_timer_on() call sites, as TIMER_PINNED flag is set implicitly;
+    Fixing workqueue to use add_timer_global() instead of simply
+    add_timer() for unbound work.
+
+  - Drop support for siblings to end up in the same level 0 group (could be
+    added again in a better way as an improvement later on)
+
+  - Do not send IPI for new first deferrable timers
+
+v4..v5:
+  - address review feedback of Frederic Weisbecker
+  - fix issue with group timer update after remote expiry
+
+v3..v4:
+  - address review feedback of Frederic Weisbecker
+  - address kernel test robot fallout
+  - Move patch 16 "add_timer_on(): Make sure callers have TIMER_PINNED
+    flag" at the begin of the queue to prevent timers to end up in global
+    timer base when they were queued using add_timer_on()
+  - Fix some comments and typos
+
+v2..v3: https://lore.kernel.org/r/20170418111102.490432548@linutronix.de/
+  - Minimize usage of locks by storing data using atomic_cmpxchg() for
+    migrator information and information about active cpus.
+
+
+Thanks,
+
+	Anna-Maria
+
+
+
+
+Anna-Maria Behnsen (18):
+  timers: Restructure get_next_timer_interrupt()
+  timers: Split out get next timer interrupt
+  timers: Move marking timer bases idle into tick_nohz_stop_tick()
+  timers: Optimization for timer_base_try_to_set_idle()
+  timers: Introduce add_timer() variants which modify timer flags
+  workqueue: Use global variant for add_timer()
+  timers: add_timer_on(): Make sure TIMER_PINNED flag is set
+  timers: Ease code in run_local_timers()
+  timers: Split next timer interrupt logic
+  timers: Keep the pinned timers separate from the others
+  timers: Retrieve next expiry of pinned/non-pinned timers separately
+  timers: Split out "get next timer interrupt" functionality
+  timers: Add get next timer interrupt functionality for remote CPUs
+  timers: Check if timers base is handled already
+  timers: Introduce function to check timer base is_idle flag
+  timers: Implement the hierarchical pull model
+  timer_migration: Add tracepoints
+  timers: Always queue timers on the local CPU
+
+Richard Cochran (linutronix GmbH) (2):
+  timers: Restructure internal locking
+  tick/sched: Split out jiffies update helper function
+
+ MAINTAINERS                            |    1 +
+ include/linux/cpuhotplug.h             |    1 +
+ include/linux/timer.h                  |   16 +-
+ include/trace/events/timer_migration.h |  297 +++++
+ kernel/time/Makefile                   |    3 +
+ kernel/time/tick-internal.h            |   14 +
+ kernel/time/tick-sched.c               |   65 +-
+ kernel/time/timer.c                    |  505 +++++--
+ kernel/time/timer_migration.c          | 1693 ++++++++++++++++++++++++
+ kernel/time/timer_migration.h          |  147 ++
+ kernel/workqueue.c                     |    2 +-
+ 11 files changed, 2629 insertions(+), 115 deletions(-)
+ create mode 100644 include/trace/events/timer_migration.h
+ create mode 100644 kernel/time/timer_migration.c
+ create mode 100644 kernel/time/timer_migration.h
+
+-- 
+2.39.2
 
 
