@@ -1,97 +1,208 @@
-Return-Path: <linux-kernel+bounces-26329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7E3782DEA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:54:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A52AD82DEA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:54:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAABD1C21DF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:54:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD252B21859
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45600182AE;
-	Mon, 15 Jan 2024 17:53:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCD7218054;
+	Mon, 15 Jan 2024 17:54:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="OPEg1FsT"
-Received: from smtp.smtpout.orange.fr (smtp-19.smtpout.orange.fr [80.12.242.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hC1AK2sL"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2835718040
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 17:53:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from fedora.home ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id PR9Xr0TyYx8edPR9Xryrz3; Mon, 15 Jan 2024 18:53:43 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1705341223;
-	bh=YQ342wzKG8l+HvEf+kwqJXG/SRijPi9FKSwNRrk06AQ=;
-	h=From:To:Cc:Subject:Date;
-	b=OPEg1FsTJjzZGTiT1H6UWm7uJzM+eOAIJVSnhT9wY+QhMSg6uv9EFGHOW5g5EsPc2
-	 eSFbY4YFUv/zgOJyNDV6d50kRAbA1lEMr2r+QsLgYUCL6Ou3jZYmLI+OPrZtQw7emZ
-	 QG4oV1vSEFN2A5FhQsCjF+eNK/30biNwKSOevKYdI2f3IcF7UIHPrBSDVywARfopC1
-	 mJTcnV6wRiCnTrFOL9FuWhvtwq9qicA/6pqcosV80fm/4cnON4oEPzSOZ9Xom0aiWa
-	 eq2+yZENB+yQ7b+3wfVMN20bjKi0cvp5bEUScvjliGMkVgKrE8JZDLVaQzxXwVWGav
-	 IsHMoBV32/++Q==
-X-ME-Helo: fedora.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 15 Jan 2024 18:53:43 +0100
-X-ME-IP: 92.140.202.140
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: 
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-fsdevel@vger.kernel.org
-Subject: [PATCH] proc: Remove usage of the deprecated ida_simple_xx() API
-Date: Mon, 15 Jan 2024 18:53:37 +0100
-Message-ID: <f235bd25763bd530ff5508084989f63e020c3606.1705341186.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D48A71803D
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 17:54:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705341279; x=1736877279;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GDOv+KMLJXKRPES2lOk9CeXDyPmRMw69IQKLB2cntJM=;
+  b=hC1AK2sL56oDLqXiKpty4KCY/9JR/u/EQDk1D/5QyxSe6Uu6c80FqhCU
+   zo9Lstco4rGFeg4GvYKLVF0GC2j92FXQtK736lrAyiStdGCF+3Q8yZ1eV
+   fzVUIay4JphJpLA5kqSEbmkCWrvJT55rGKyM1XxiCjwLRsU9hQCYSPX4j
+   htjX7QOcrhwW7z8m6Y/tvtO4WXOWmoFv+BqWZ1Ssu0+nB0P9cwHvPf70r
+   XeGrO6XUQoNLOrFsM1DFOd+lEfYY3ovbU+iJTy6Ihhs3XpkpZJ6QioPAt
+   Ka9sGISeOBCTp4fWK56islziU6/7dCTEPwq5FwG0yRw/CynvYGAnutp7i
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="466045451"
+X-IronPort-AV: E=Sophos;i="6.04,197,1695711600"; 
+   d="scan'208";a="466045451"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 09:54:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,197,1695711600"; 
+   d="scan'208";a="32190049"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa001.jf.intel.com with ESMTP; 15 Jan 2024 09:54:31 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rPRAF-000Ce0-1n;
+	Mon, 15 Jan 2024 17:54:27 +0000
+Date: Tue, 16 Jan 2024 01:54:23 +0800
+From: kernel test robot <lkp@intel.com>
+To: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>,
+	victor.liu@nxp.com, andrzej.hajda@intel.com,
+	neil.armstrong@linaro.org, rfoss@kernel.org, jonas@kwiboo.se,
+	jernej.skrabec@gmail.com, maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
+	daniel@ffwll.ch, shawnguo@kernel.org, s.hauer@pengutronix.de,
+	kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+	khilman@baylibre.com, jbrunet@baylibre.com,
+	martin.blumenstingl@googlemail.com, hjc@rock-chips.com,
+	heiko@sntech.de, yannick.fertre@foss.st.com,
+	raphael.gallais-pou@foss.st.com, philippe.cornu@foss.st.com,
+	mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-amlogic@lists.infradead.org
+Cc: oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH] drm/bridge: synopsys: dw-mipi-dsi: fix deferred dsi host
+ probe breaks dsi device probe
+Message-ID: <202401160108.j5Lqkppm-lkp@intel.com>
+References: <20240112180737.551318-1-farouk.bouabid@theobroma-systems.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240112180737.551318-1-farouk.bouabid@theobroma-systems.com>
 
-ida_alloc() and ida_free() should be preferred to the deprecated
-ida_simple_get() and ida_simple_remove().
+Hi Farouk,
 
-Note that the upper limit of ida_simple_get() is exclusive, but the one of
-ida_alloc_max() is inclusive. So a -1 has been added when needed.
+kernel test robot noticed the following build warnings:
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- fs/proc/generic.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+[auto build test WARNING on drm-misc/drm-misc-next]
+[also build test WARNING on drm/drm-next linus/master v6.7 next-20240112]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/fs/proc/generic.c b/fs/proc/generic.c
-index 775ce0bcf08c..c02f1e63f82d 100644
---- a/fs/proc/generic.c
-+++ b/fs/proc/generic.c
-@@ -202,8 +202,8 @@ int proc_alloc_inum(unsigned int *inum)
- {
- 	int i;
- 
--	i = ida_simple_get(&proc_inum_ida, 0, UINT_MAX - PROC_DYNAMIC_FIRST + 1,
--			   GFP_KERNEL);
-+	i = ida_alloc_max(&proc_inum_ida, UINT_MAX - PROC_DYNAMIC_FIRST,
-+			  GFP_KERNEL);
- 	if (i < 0)
- 		return i;
- 
-@@ -213,7 +213,7 @@ int proc_alloc_inum(unsigned int *inum)
- 
- void proc_free_inum(unsigned int inum)
- {
--	ida_simple_remove(&proc_inum_ida, inum - PROC_DYNAMIC_FIRST);
-+	ida_free(&proc_inum_ida, inum - PROC_DYNAMIC_FIRST);
- }
- 
- static int proc_misc_d_revalidate(struct dentry *dentry, unsigned int flags)
+url:    https://github.com/intel-lab-lkp/linux/commits/Farouk-Bouabid/drm-bridge-synopsys-dw-mipi-dsi-fix-deferred-dsi-host-probe-breaks-dsi-device-probe/20240113-020945
+base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
+patch link:    https://lore.kernel.org/r/20240112180737.551318-1-farouk.bouabid%40theobroma-systems.com
+patch subject: [PATCH] drm/bridge: synopsys: dw-mipi-dsi: fix deferred dsi host probe breaks dsi device probe
+config: i386-buildonly-randconfig-002-20240115 (https://download.01.org/0day-ci/archive/20240116/202401160108.j5Lqkppm-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240116/202401160108.j5Lqkppm-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401160108.j5Lqkppm-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c:1187:5: warning: no previous prototype for '__dw_mipi_dsi_probe' [-Wmissing-prototypes]
+    1187 | int __dw_mipi_dsi_probe(struct platform_device *pdev,
+         |     ^~~~~~~~~~~~~~~~~~~
+
+
+vim +/__dw_mipi_dsi_probe +1187 drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+
+  1186	
+> 1187	int __dw_mipi_dsi_probe(struct platform_device *pdev,
+  1188			    const struct dw_mipi_dsi_plat_data *plat_data, struct dw_mipi_dsi **dsi_p)
+  1189	{
+  1190		struct device *dev = &pdev->dev;
+  1191		struct reset_control *apb_rst;
+  1192		struct dw_mipi_dsi *dsi;
+  1193		int ret;
+  1194	
+  1195		*dsi_p = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
+  1196		if (!*dsi_p)
+  1197			return -ENOMEM;
+  1198	
+  1199		dsi = *dsi_p;
+  1200	
+  1201		dsi->dev = dev;
+  1202		dsi->plat_data = plat_data;
+  1203	
+  1204		if (!plat_data->phy_ops->init || !plat_data->phy_ops->get_lane_mbps ||
+  1205		    !plat_data->phy_ops->get_timing) {
+  1206			DRM_ERROR("Phy not properly configured\n");
+  1207			return -ENODEV;
+  1208		}
+  1209	
+  1210		if (!plat_data->base) {
+  1211			dsi->base = devm_platform_ioremap_resource(pdev, 0);
+  1212			if (IS_ERR(dsi->base))
+  1213				return -ENODEV;
+  1214	
+  1215		} else {
+  1216			dsi->base = plat_data->base;
+  1217		}
+  1218	
+  1219		dsi->pclk = devm_clk_get(dev, "pclk");
+  1220		if (IS_ERR(dsi->pclk)) {
+  1221			ret = PTR_ERR(dsi->pclk);
+  1222			dev_err(dev, "Unable to get pclk: %d\n", ret);
+  1223			return ret;
+  1224		}
+  1225	
+  1226		/*
+  1227		 * Note that the reset was not defined in the initial device tree, so
+  1228		 * we have to be prepared for it not being found.
+  1229		 */
+  1230		apb_rst = devm_reset_control_get_optional_exclusive(dev, "apb");
+  1231		if (IS_ERR(apb_rst)) {
+  1232			ret = PTR_ERR(apb_rst);
+  1233	
+  1234			if (ret != -EPROBE_DEFER)
+  1235				dev_err(dev, "Unable to get reset control: %d\n", ret);
+  1236	
+  1237			return ret;
+  1238		}
+  1239	
+  1240		if (apb_rst) {
+  1241			ret = clk_prepare_enable(dsi->pclk);
+  1242			if (ret) {
+  1243				dev_err(dev, "%s: Failed to enable pclk\n", __func__);
+  1244				return ret;
+  1245			}
+  1246	
+  1247			reset_control_assert(apb_rst);
+  1248			usleep_range(10, 20);
+  1249			reset_control_deassert(apb_rst);
+  1250	
+  1251			clk_disable_unprepare(dsi->pclk);
+  1252		}
+  1253	
+  1254		dw_mipi_dsi_debugfs_init(dsi);
+  1255		pm_runtime_enable(dev);
+  1256	
+  1257		dsi->dsi_host.ops = &dw_mipi_dsi_host_ops;
+  1258		dsi->dsi_host.dev = dev;
+  1259		dsi->bridge.driver_private = dsi;
+  1260		dsi->bridge.funcs = &dw_mipi_dsi_bridge_funcs;
+  1261		dsi->bridge.of_node = pdev->dev.of_node;
+  1262	
+  1263		ret = mipi_dsi_host_register(&dsi->dsi_host);
+  1264		if (ret) {
+  1265			dev_err(dev, "Failed to register MIPI host: %d\n", ret);
+  1266			pm_runtime_disable(dev);
+  1267			dw_mipi_dsi_debugfs_remove(dsi);
+  1268			return ret;
+  1269		}
+  1270	
+  1271	
+  1272		return 0;
+  1273	}
+  1274	
+
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
