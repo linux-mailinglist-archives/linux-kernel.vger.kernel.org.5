@@ -1,147 +1,140 @@
-Return-Path: <linux-kernel+bounces-26229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88FE682DD13
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:10:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B026B82DD2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:15:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10034B21A2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:10:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F3121F24211
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:15:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8365717BA3;
-	Mon, 15 Jan 2024 16:10:35 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E5C517BAE;
+	Mon, 15 Jan 2024 16:15:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="iY3DUK4+";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="eybOU38d"
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42BDA17BA4;
-	Mon, 15 Jan 2024 16:10:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TDH9R1xYwz67pnj;
-	Tue, 16 Jan 2024 00:07:55 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id D1F801400CD;
-	Tue, 16 Jan 2024 00:10:29 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 15 Jan
- 2024 16:10:29 +0000
-Date: Mon, 15 Jan 2024 16:10:28 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Matti Vaittinen <mazziesaccount@gmail.com>
-CC: Jonathan Cameron <jic23@kernel.org>, Matti Vaittinen
-	<matti.vaittinen@fi.rohmeurope.com>, Lars-Peter Clausen <lars@metafoo.de>,
-	<linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-Subject: Re: [PATCH 2/3] iio: test: test gain-time-scale helpers
-Message-ID: <20240115161028.0000771b@Huawei.com>
-In-Reply-To: <ff962e6a-5e2b-4a72-9043-80b8fc218642@gmail.com>
-References: <cover.1704881096.git.mazziesaccount@gmail.com>
-	<6b839dd533fd93b75c2e6f6a8f2286233d4901fb.1704881096.git.mazziesaccount@gmail.com>
-	<20240113161229.48d63b54@jic23-huawei>
-	<ff962e6a-5e2b-4a72-9043-80b8fc218642@gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C644F17BA1;
+	Mon, 15 Jan 2024 16:15:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id 317F13200A24;
+	Mon, 15 Jan 2024 11:15:07 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 15 Jan 2024 11:15:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1705335306; x=1705421706; bh=OwwV079+Ib
+	4EhCbveDYoIfXqeXgw7sWlHiHGG0LHoH0=; b=iY3DUK4+l4x1zKVZt/k7PFIF2T
+	9GDD31aL2Nj9MbIq/iW7zEJNz9xwhZSOc8HNPXnB4499+tAIHkyhQOxRcdkA8UI0
+	6bZrxDFvUpAuE5HvEcMDHuRRQKMgpwH5AHEiMEYz2eHblWWvEnRxz/RI+nal6KfK
+	qiLKDTtWqA/mJxfiuoW0YMRibjnO67CI0PTGamje4QsXWuD8pjxM7cuJapiZwzYr
+	8VL49wvb+zmV7024PyQn/cl/SjVr1H5v49CHj5RY739qeryfkqHOmQf9F6DJcoM9
+	UndCI49i5EKETL7YRzJ0AP1oejWlcO2XEt/dkkVgMoto8/eQ2qrBYjJizW3g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1705335306; x=1705421706; bh=OwwV079+Ib4EhCbveDYoIfXqeXgw
+	7sWlHiHGG0LHoH0=; b=eybOU38d2C55AfxnNCB5YYoTKubKkcYLl1HuKNMxsaAE
+	CYwHMEPVdF+HoQWWmEp7ZfUhPy55abq7fsr82qLxEE35BLgUxAn0LylyfO0Y5xlT
+	VxhrN1ddFTZa5mDYp5WDc8qS/z8MW5I5nbxWi0XMcp2fEVpAo+bBm0cZGEteVLBH
+	/YLr6Cuwubvtb+4b1aO2JSI9PqTtkMZfFg9LpKiB77EaXO+4VND95uwRZep+Vr5J
+	pAj5l/2q245PGZPp0bgzDAY8f2dnfaqp+5dDT3AWjLkby0x2mKpFgH80tRLSTyxj
+	v+HL0W/cPsVxVZ+ZRFR3nJuL/29wIUoq0gfi8qXBtQ==
+X-ME-Sender: <xms:ClqlZb1bvHx7W99HefEkf9N086keHr4jvu_Lj4nJhtw23wQnRVdodw>
+    <xme:ClqlZaH50Bb-xmchKsdP4PZRqDkyI1MohXKydXLAd1sJjc69yfUB6elhMCEha_khI
+    0yzScobDup4WIA-XOE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdejuddgkeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepkeehtefguddvleejvdeileeifffhueevgedvheeiudfhueevgfehkeeitedu
+    keeknecuffhomhgrihhnpehsohhurhgtvgifrghrvgdrohhrghenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:ClqlZb5HDS1LRxqzJYVDnneQGoXfUI4iXL1UE667Uq4EAlfyErYR-A>
+    <xmx:ClqlZQ2sJ0mYSBIQueyA14P8y33zfIvxjBHlTG9Yl1fNcrvKw-pTpQ>
+    <xmx:ClqlZeGzt-jgAjwSwZCzrFkES_TEU0o48wygK48rMRWIJj8M-JbYkw>
+    <xmx:ClqlZbPv0bAFj_XAFQDrV-UIFIReuNBf2XAj8ch4tTyPK6TnOvagCg>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 58AA2B6008D; Mon, 15 Jan 2024 11:15:06 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1374-gc37f3abe3d-fm-20240102.001-gc37f3abe
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Message-Id: <faf84e13-a927-4679-b837-2509f0209f82@app.fastmail.com>
+In-Reply-To: <20be7b9d5b8c0bef2a35da3d207c15eae75bfd4d.camel@mwa.re>
+References: <c812ea74dd02d1baf85dc6fb32701e103984d25d.camel@mwa.re>
+ <ZYEFCHBC75rjCE0n@google.com>
+ <9e97eb50-f9a6-4655-9422-fa1106fff97a@app.fastmail.com>
+ <491250ba57be2ab983048ffcf5ffd2aec2bedb9e.camel@mwa.re>
+ <1a528414-f193-4ac0-a911-af426bb48d64@app.fastmail.com>
+ <caa041d27b0fa45aad09a9a262038e3ae4099ca2.camel@mwa.re>
+ <20be7b9d5b8c0bef2a35da3d207c15eae75bfd4d.camel@mwa.re>
+Date: Mon, 15 Jan 2024 17:11:50 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Antonios Salios" <antonios@mwa.re>,
+ "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
+ "Deepa Dinamani" <deepa.kernel@gmail.com>
+Cc: rydberg@bitmath.org, linux-input@vger.kernel.org,
+ linux-kernel@vger.kernel.org, "Jan Henrik Weinstock" <jan@mwa.re>,
+ =?UTF-8?Q?Lukas_J=C3=BCnger?= <lukas@mwa.re>
+Subject: Re: element sizes in input_event struct on riscv32
+Content-Type: text/plain
 
-On Mon, 15 Jan 2024 15:01:32 +0200
-Matti Vaittinen <mazziesaccount@gmail.com> wrote:
+On Mon, Jan 15, 2024, at 16:46, Antonios Salios wrote:
+> On Thu, 2023-12-21 at 14:38 +0100, Antonios Salios wrote:
+>> On Thu, 2023-12-21 at 12:28 +0000, Arnd Bergmann wrote:
+>> > On Thu, Dec 21, 2023, at 08:56, Antonios Salios wrote:
+>> > > On Tue, 2023-12-19 at 13:53 +0000, Arnd Bergmann wrote:
+>> > > > On Tue, Dec 19, 2023, at 02:50, Dmitry Torokhov wrote:
+>> > 
+>> > I don't know what __TIMESIZE is, this is not part of the kernel ABI
+>> > as far as I can tell. __USE_TIME_BITS64 should be set by any 32-bit
+>> > architecture if the C library defines a 64-bit time_t, otherwise
+>> > the
+>> > kernel headers have no way of picking the correct definitions based
+>> > on preprocessor logic.
+>> 
+>> Okay, I agree that this might be a libc problem then. I'll ask the
+>> glibc maintainers.
+>> 
+>
+> According to a glibc maintainer, __USE_TIME_BITS64 is not set on
+> architectures that use 64-bit time_t as default such as riscv32.
+> This can also be seen here [1].
+>
+> Perhaps the kernel header needs to check the size of time_t in some
+> other way?
+>
+> [1]
+> https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/features-time64.h;hb=glibc-2.37
 
-> On 1/13/24 18:12, Jonathan Cameron wrote:
-> > On Wed, 10 Jan 2024 12:12:55 +0200
-> > Matti Vaittinen <mazziesaccount@gmail.com> wrote:
-> >  =20
-> >> Some light sensors can adjust both the HW-gain and integration time.
-> >> There are cases where adjusting the integration time has similar impact
-> >> to the scale of the reported values as gain setting has.
-> >>
-> >> IIO users do typically expect to handle scale by a single writable 'sc=
-ale'
-> >> entry. Driver should then adjust the gain/time accordingly.
-> >>
-> >> It however is difficult for a driver to know whether it should change
-> >> gain or integration time to meet the requested scale. Usually it is
-> >> preferred to have longer integration time which usually improves
-> >> accuracy, but there may be use-cases where long measurement times can =
-be
-> >> an issue. Thus it can be preferable to allow also changing the
-> >> integration time - but mitigate the scale impact by also changing the =
-gain
-> >> underneath. Eg, if integration time change doubles the measured values,
-> >> the driver can reduce the HW-gain to half.
-> >>
-> >> The theory of the computations of gain-time-scale is simple. However,
-> >> some people (undersigned) got that implemented wrong for more than onc=
-e.
-> >> Hence some gain-time-scale helpers were introduced.
-> >>
-> >> Add some simple tests to verify the most hairy functions.
-> >>
-> >> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
-> >> =20
->=20
-> ...
->=20
-> >> +static void test_iio_gts_chk_scales_all(struct kunit *test, struct ii=
-o_gts *gts,
-> >> +					const int *vals, int len)
-> >> +{
-> >> +	static const int gains[] =3D {1, 2, 4, 8, 16, 32, 64, 128, 256, 512,
-> >> +				    1024, 2048, 4096, 4096 * 2, 4096 * 4,
-> >> +				    4096 * 8};
-> >> +
-> >> +	int expected[ARRAY_SIZE(gains) * 2];
-> >> +	int i, ret;
-> >> +	int exp_len =3D ARRAY_SIZE(gains) * 2; =20
-> >=20
-> > Use this for expected[*] just above? =20
->=20
-> Doing:
-> const int exp_len =3D ARRAY_SIZE(gains) * 2;
-> int expected[exp_len];
->=20
-> gives me:
-> warning: ISO C90 forbids variable length array =E2=80=98expected=E2=80=99=
- [-Wvla]
+I don't see any better way, the kernel headers started using this
+in 2018 based on the glibc design documents and discussions
+with glibc maintainers, see the section on ioctls in
+https://sourceware.org/glibc/wiki/Y2038ProofnessDesign
 
-Huh.  That's a compiler being impressively stupid :(
+The kernel only relies on this macro for the sound and
+input subsystem, but there are numerous applications and
+libraries that copied the kernel definition because that
+was defined as the only reliable method.
 
-Just leave it as it is - maybe add a comment to so no one tries to tidy this
-up in future.
+Maybe you can work around by patching the glibc sources
+yourself?
 
->=20
-> I could drop the whole exp_len variable, but I prefer test code which is=
-=20
-> as obvious as it gets if any of the checks fails. For me the check:
->=20
-> >> +	KUNIT_EXPECT_EQ(test, exp_len, len);
-> >> +	if (len !=3D exp_len)
-> >> +		return; =20
->=20
-> is (very slightly) more obvious than:
-> 	KUNIT_EXPECT_EQ(test, ARRAY_SIZE(gains) * 2, len);
-> 	if (len !=3D ARRAY_SIZE(gains) * 2)
-> 		return;
->=20
-> I guess I'll leave this one as it is. Just kick me in v2 if I=20
-> misunderstood you :)
-
-yeah, leave it be. Annoying but such is life.
-
->=20
-> Yours,
-> 	-- Matti
->=20
-
+     Arnd
 
