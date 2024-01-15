@@ -1,316 +1,289 @@
-Return-Path: <linux-kernel+bounces-25585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29FA782D305
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 02:55:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE3FA82D308
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 02:56:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A91D1F21052
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 01:54:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13A211C208EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 01:56:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0259B17CB;
-	Mon, 15 Jan 2024 01:54:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D87B186A;
+	Mon, 15 Jan 2024 01:56:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WYw4zg2n"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FqLbxoSS"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FC8315B3
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 01:54:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8287815BB;
+	Mon, 15 Jan 2024 01:55:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705283688; x=1736819688;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=1bf2SLo/GP3dv+Ga8QLo6O3BQdW9hoHYWPcbbwFWbfg=;
-  b=WYw4zg2nzx/2S0Gw1088CX4LL1fljdhxMVLnA93wF4Zobf2rOc/1OKlM
-   eu+AWOzr7gdj8QNpcDrpF9ldFH5aMVfnFYv7zGgXtAqs8zSsISX245Uy+
-   31+OvlhzWBDJ/VXtgOHi78izhpYkFLXNjEdK97vUX08ciYJ/FLkX0wyxI
-   2xil6eD4UCHYACC/ESmOY2JYe58V82A8MLwvpBUop9iKDc/hR6pcOHuge
-   IShjKYbJkHMeSueI3P38MjKm82zk4rkgW+/2djy1fTHRIMRvOW6fxnC6i
-   pJhPOf54YrD+gD9wWEIlA2k7p03pxGzgTSIMXZ7xjYfURJHDEuKzEvJkI
+  t=1705283757; x=1736819757;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=ysNGEkQ5iXgKHi/gw+1r6JErZvnXEL2+lGHfvAE8RSs=;
+  b=FqLbxoSSXDvmqQNj2RwWgXJhH4upLsZcD+np0ukkZ7dy7iOgTjscb5Bs
+   2wTRyAvkgaR4iHSNfGW8OkP28ah/vHmb5OIuimT8KPZpGB9bvWa8fTatc
+   kZndKhAwZKh6Miyia9gdIIB2HtSxPb14ijQUXuZdS3sKAY697SnBGAHJ9
+   IZLqiZTzhhCTjOSKENjB5MoXwXc/g205W0TVdkI20m/S96sLIc5hCdRCi
+   HW+AS/Kem+3YAvYRt/EyMDwdV3gUOdDj2nubH3GgMjsxvhgE1uL4/cyUk
+   v6vwRh74w62Z4zo9uz2OonTDNFHhQjPs4hI3UkeVrG3tgW9y9y2PtRK7F
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="6270127"
+X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="20991614"
 X-IronPort-AV: E=Sophos;i="6.04,195,1695711600"; 
-   d="scan'208";a="6270127"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 17:54:47 -0800
+   d="scan'208";a="20991614"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 17:55:56 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="926976585"
+X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="817668073"
 X-IronPort-AV: E=Sophos;i="6.04,195,1695711600"; 
-   d="scan'208";a="926976585"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 17:54:44 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Kairui Song <ryncsn@gmail.com>
-Cc: linux-mm@kvack.org,  Andrew Morton <akpm@linux-foundation.org>,  Chris
- Li <chrisl@kernel.org>,  Hugh Dickins <hughd@google.com>,  Johannes Weiner
- <hannes@cmpxchg.org>,  Matthew Wilcox <willy@infradead.org>,  Michal Hocko
- <mhocko@suse.com>,  Yosry Ahmed <yosryahmed@google.com>,  David
- Hildenbrand <david@redhat.com>,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 8/9] mm/swap: introduce a helper for swapin without
- vmfault
-In-Reply-To: <CAMgjq7DkyZU0udhSUEfCMMT84Vad20UauXz9pzQp4c=cVFtiMw@mail.gmail.com>
-	(Kairui Song's message of "Wed, 10 Jan 2024 11:32:21 +0800")
-References: <20240102175338.62012-1-ryncsn@gmail.com>
-	<20240102175338.62012-9-ryncsn@gmail.com>
-	<875y039utw.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<CAMgjq7DkyZU0udhSUEfCMMT84Vad20UauXz9pzQp4c=cVFtiMw@mail.gmail.com>
-Date: Mon, 15 Jan 2024 09:52:46 +0800
-Message-ID: <87sf2z1hxt.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+   d="scan'208";a="817668073"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Jan 2024 17:55:56 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 14 Jan 2024 17:55:56 -0800
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 14 Jan 2024 17:55:55 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Sun, 14 Jan 2024 17:55:55 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sun, 14 Jan 2024 17:55:55 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ja9Ub3qiQnUHCpOylay9dvmMTJGe5Ci5kwnrEkVbx2HK5ThYWYJfcE0u2SWCXjCLuNu14XuwFbcyzEMcp+9g5AW6DV7tL5e9y8iQXLclWUGDFjvgRH91Hta4WBhPQKBMJWQ1YPvCaUGsrSoA/KQhmbeGzlFClbloM24W6G8oj5RbTbAxaAR/EFydG9TIvIlsmlLpMMaAJrulEpHV3rBnqDaIwS/adDPRNUjMKc3WCNdFPWhhtFrdWkqXINKHOaPcMmhQXQoNIDPWrIhPxgqSBGh83W/Qxod5AX6cZp8tqL0M8IZeT1BZRM2hYmDtbyjNG6sm9yZmZFueUn8ptgkx3Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RJQwkvgk+5I68IxZkq1fFrkp7TfdfHIBQsb5kKjoiMo=;
+ b=oNQomo8w3f8T7F2t5io0qjlfzfusmYCRuS+QCwoFAlmZU/CGnYfjnJpeSnSTqtoaNye10puB0remg9NecGVeUl+VAtyNVO50gJrxO15YgUwa7uKaFlqGPhxX84oeQXD+NVyyRxr+Yf2SB3REO6m/Y3/velDnLTEfemR7YKGxaruSkWrw7xXi76UBPPZl52CA1eI2L0LNv4110fwJtu07Q5bZwh7usIzOamgw+cj3XK+FO9Ip28HIQWplrRsutIBa8t8VVppXwYhBgDpLpyMcXzShHWiH09/TqGiFv+/Mh9INWXFBLppJDxQiHYsz2/AEefja3rb8seG5Af5tZ3Nvng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB8665.namprd11.prod.outlook.com (2603:10b6:8:1b8::6) by
+ PH8PR11MB6855.namprd11.prod.outlook.com (2603:10b6:510:22c::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.21; Mon, 15 Jan
+ 2024 01:55:53 +0000
+Received: from DS0PR11MB8665.namprd11.prod.outlook.com
+ ([fe80::c66e:b76c:59ae:2c5d]) by DS0PR11MB8665.namprd11.prod.outlook.com
+ ([fe80::c66e:b76c:59ae:2c5d%7]) with mapi id 15.20.7159.020; Mon, 15 Jan 2024
+ 01:55:53 +0000
+Date: Mon, 15 Jan 2024 09:55:43 +0800
+From: Chao Gao <chao.gao@intel.com>
+To: "Yang, Weijiang" <weijiang.yang@intel.com>
+CC: Sean Christopherson <seanjc@google.com>, Rick P Edgecombe
+	<rick.p.edgecombe@intel.com>, Dave Hansen <dave.hansen@intel.com>,
+	"peterz@infradead.org" <peterz@infradead.org>, "john.allen@amd.com"
+	<john.allen@amd.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "pbonzini@redhat.com" <pbonzini@redhat.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "mlevitsk@redhat.com"
+	<mlevitsk@redhat.com>
+Subject: Re: [PATCH v8 00/26] Enable CET Virtualization
+Message-ID: <ZaSQn7RCRTaBK1bc@chao-email>
+References: <5f57ce03-9568-4739-b02d-e9fac6ed381a@intel.com>
+ <6179ddcb25c683bd178e74e7e2455cee63ba74de.camel@intel.com>
+ <ZZdLG5W5u19PsnTo@google.com>
+ <a2344e2143ef2b9eca0d153c86091e58e596709d.camel@intel.com>
+ <ZZdSSzCqvd-3sdBL@google.com>
+ <8f070910-2b2e-425d-995e-dfa03a7695de@intel.com>
+ <ZZgsipXoXTKyvCZT@google.com>
+ <06fdd362-cb7f-47df-9d1a-9b85d2ed05b5@intel.com>
+ <ZZ1h9GW93ckc3FlE@google.com>
+ <cf043809-430a-4072-b0fd-201cd469b602@intel.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cf043809-430a-4072-b0fd-201cd469b602@intel.com>
+X-ClientProxiedBy: SI2PR06CA0017.apcprd06.prod.outlook.com
+ (2603:1096:4:186::15) To DS0PR11MB8665.namprd11.prod.outlook.com
+ (2603:10b6:8:1b8::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB8665:EE_|PH8PR11MB6855:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0a8f98ac-a8b6-4240-0278-08dc156d1b12
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yYgCCBLxHJmiZ1LFCwqmC7MAWJBsHMyicVzZ1NIKUxINVqPaMvyUxaXNyPKClRi6QdomnhaAOkJbKnQmD0D9m4Vu0PBlqijF8XvlnLeSw+1jacZx90iGRMd/5Hqd+tAn9ZtOKabf9knLCb7azCx2iawRr9u2wdCF4sXIC7ne64Y8snRyZxjx5S2J2VAv+deuICPwIQWHlGnb7RXejAWfGt2KUVPmVoQx+D69ptZqKYnXCcWc5687+opLogK27FBVQzdmX27v0VX/bEXNv1L4gsGORVO+ucc/vKlDvLzqSol33/R+/bSm6Yokk8kdbR/24OPx8QrS8Z+R4m1p9pYSz3284J4tXsspCqPYHGJZ7QYDqXrIWOyoQHvKReiZuS6QFpCTzrKMx29A6PY1BlqqXwJUSnYhXQaTpVQ1wU1diew2dozKx9AEB6BWJIwxCZWPl9N33OgWhd4rVzuSg31ngN3EQ2GHceh8HKOV3gbm2ZvxcNm90X8y/O7hBDlqsBR0H7g86bzTCUVh4woTVNAEwdBtjrZW7LumqKxDWf+THbtqUsqSb+U0SqxvBpBoghMg
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8665.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(396003)(136003)(376002)(39860400002)(346002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(6512007)(82960400001)(38100700002)(33716001)(86362001)(6486002)(478600001)(6636002)(66946007)(54906003)(44832011)(6666004)(53546011)(9686003)(6506007)(316002)(66476007)(66556008)(5660300002)(2906002)(8936002)(6862004)(4326008)(8676002)(41300700001)(83380400001)(26005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?GpxsuWMU8L9UFbRmwTtvmxSaMx3PruJlPQhFZyKoJq/A699WLAtiyHJYxQ?=
+ =?iso-8859-1?Q?3CTOC5h4+kvXu+q2OUBOe5jjaLTs4NNH2kN5qCIjhb/9LApzXJSl81n4HQ?=
+ =?iso-8859-1?Q?8iiFKaTERq1FcnwLRptpmBfAqNNtISoZcNchaNkk54f6UBEicavypPilQT?=
+ =?iso-8859-1?Q?/ZyfdjMwtHil+C9ZP0V/LMjHJWIMvJ2nQYGtvlc/zspdnlEVgVm9Pz78fv?=
+ =?iso-8859-1?Q?crE1Xx+mcgfOfoj8iJROWzOMXJFrplpx9CqN1lQf7dqyN0y81U2Rl+Friy?=
+ =?iso-8859-1?Q?0WYETOJOFwE+mR7pT2ljYnZVhpmGlGQEN6dSm19CkkKXxMaMqfBmlFeHel?=
+ =?iso-8859-1?Q?WY7MtA/r48+1a8oYZl0HeNQtX9XK3c/EmFmkE4G/dziqGZMQI1LFVOB7hc?=
+ =?iso-8859-1?Q?5XCfKAvvRzxmP7myGmdBL6WI/f8Z6cOoFAsD6jbAMdN0ZWkqHyN74QCC48?=
+ =?iso-8859-1?Q?ztOQCisTrQZ3IfFXDR9psvUSbD/iBGeE7m39Lzlz+QsJqJCmrVqTd+gT+j?=
+ =?iso-8859-1?Q?0O6bOipUkueVN5/Z0pfL5P+GTMg3knjRbzh4+N9yqHHgaL90h1H3ntdaiS?=
+ =?iso-8859-1?Q?DCRHGxKM07sp+q+PTOJC5eQU7QZ7y6ppXKsiQNyD0ilEbIwxcdBuTliajo?=
+ =?iso-8859-1?Q?lf/Hpy5RTqNWjyPnWKH91Ckn61v9BhpDEBbf4kGgp0MLLe0sqcsEIk555y?=
+ =?iso-8859-1?Q?N0HNJbV1KnThNg2TgiInf8EBN/tLywrzVa1n4YOshArli/qhAL3oPYHIpn?=
+ =?iso-8859-1?Q?D69GFJWnd2wXcpJjUVF8WxqzTuJIwYykNDw4fEhESLC0cv8+TskxRKQhfq?=
+ =?iso-8859-1?Q?0PV4ic6Z7yWug7m5YTWuSnZISglDJUWjvMwofKWzh2iF+qwzX3+RQJCTjO?=
+ =?iso-8859-1?Q?rkGTjY87T9tizR9e72AUD9QmVd43XawYh1tXI1RARcDhmxcl3gK6LaC85t?=
+ =?iso-8859-1?Q?qCoe9tdeGTmloCyYND5Zo0JlEhczE4JVvmULbaSRaY1J+ru5F/inQo5z1F?=
+ =?iso-8859-1?Q?RjsEgm4g7fk2KZ7Qzt1Bej9UBHR6tTPc6RnOZ7hR+mPLxlynCjgaKKf5oG?=
+ =?iso-8859-1?Q?XXSWWsmc9BiUPrclAIec2+5y/mNN/+ZjVskbj/XU5pF9YCy+rwjHUt1WC8?=
+ =?iso-8859-1?Q?zpxlEr1A+OhkXKWJV0d8CvCDNqMCuxbT5dek3YpG5aEERzAhP+5ECFvZ5J?=
+ =?iso-8859-1?Q?TR8VTAUQsRq1VRFg+ut7euDbt0QXRZ+86KIHKs9zwWctUbF8U3exUD1hti?=
+ =?iso-8859-1?Q?ohVaNKYaGVzvKoWeKnAKbRHouW0TD1Bw6LcFyRUtb+tlqIxAQPs4xuoV2K?=
+ =?iso-8859-1?Q?aMnqyOkkckFuI6TQwwdbMVGP2Bwi7nLO4lmL1CHU9DDI1Wo0mZcje31tUP?=
+ =?iso-8859-1?Q?0EJk87HlV2/AF+6VZ3tWrn8XAaDYryyXJMoRxadRIL/zlFuBbf1l4g/tB1?=
+ =?iso-8859-1?Q?78VlsvbL0ksQxKK9djUl9VOjfHq1YqBsxozcTVo+ykrlpf+KpF82GtS17q?=
+ =?iso-8859-1?Q?1RBxYfmdfRjI0j8NiJzkwYf0yMlp9U1SToddGseBvBnPJPKbRHC0sd4Vaa?=
+ =?iso-8859-1?Q?Jbc17Ewlequ6Uu5afh8atPLLKpY9xjwErk1XRd9nZaKT71un/q+W4CUzK1?=
+ =?iso-8859-1?Q?9gmgHc48QSJD1wM+g8ahjIbDtWDWHLYwfV?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0a8f98ac-a8b6-4240-0278-08dc156d1b12
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8665.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2024 01:55:53.2624
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bGRMPd/4rwzVaS1JuWalLKC2cTjWTioKdNOt8L83wYSKGYczRkvzzwkMAkCOREilN7hhRqnnhTe7ezu/qgKZQQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6855
+X-OriginatorOrg: intel.com
 
-Kairui Song <ryncsn@gmail.com> writes:
-
-> Huang, Ying <ying.huang@intel.com> =E4=BA=8E2024=E5=B9=B41=E6=9C=889=E6=
-=97=A5=E5=91=A8=E4=BA=8C 09:11=E5=86=99=E9=81=93=EF=BC=9A
->>
->> Kairui Song <ryncsn@gmail.com> writes:
->>
->> > From: Kairui Song <kasong@tencent.com>
->> >
->> > There are two places where swapin is not caused by direct anon page fa=
-ult:
->> > - shmem swapin, invoked indirectly through shmem mapping
->> > - swapoff
->> >
->> > They used to construct a pseudo vmfault struct for swapin function.
->> > Shmem has dropped the pseudo vmfault recently in commit ddc1a5cbc05d
->> > ("mempolicy: alloc_pages_mpol() for NUMA policy without vma"). Swapoff
->> > path is still using one.
->> >
->> > Introduce a helper for them both, this help save stack usage for swapo=
-ff
->> > path, and help apply a unified swapin cache and readahead policy check.
->> >
->> > Due to missing vmfault info, the caller have to pass in mempolicy
->> > explicitly, make it different from swapin_entry and name it
->> > swapin_entry_mpol.
->> >
->> > This commit convert swapoff to use this helper, follow-up commits will
->> > convert shmem to use it too.
->> >
->> > Signed-off-by: Kairui Song <kasong@tencent.com>
->> > ---
->> >  mm/swap.h       |  9 +++++++++
->> >  mm/swap_state.c | 40 ++++++++++++++++++++++++++++++++--------
->> >  mm/swapfile.c   | 15 ++++++---------
->> >  3 files changed, 47 insertions(+), 17 deletions(-)
->> >
->> > diff --git a/mm/swap.h b/mm/swap.h
->> > index 9180411afcfe..8f790a67b948 100644
->> > --- a/mm/swap.h
->> > +++ b/mm/swap.h
->> > @@ -73,6 +73,9 @@ struct folio *swap_cluster_readahead(swp_entry_t ent=
-ry, gfp_t flag,
->> >               struct mempolicy *mpol, pgoff_t ilx);
->> >  struct folio *swapin_entry(swp_entry_t entry, gfp_t flag,
->> >                           struct vm_fault *vmf, enum swap_cache_result=
- *result);
->> > +struct folio *swapin_entry_mpol(swp_entry_t entry, gfp_t gfp_mask,
->> > +                             struct mempolicy *mpol, pgoff_t ilx,
->> > +                             enum swap_cache_result *result);
->> >
->> >  static inline unsigned int folio_swap_flags(struct folio *folio)
->> >  {
->> > @@ -109,6 +112,12 @@ static inline struct folio *swapin_entry(swp_entr=
-y_t swp, gfp_t gfp_mask,
->> >       return NULL;
->> >  }
->> >
->> > +static inline struct page *swapin_entry_mpol(swp_entry_t entry, gfp_t=
- gfp_mask,
->> > +             struct mempolicy *mpol, pgoff_t ilx, enum swap_cache_res=
-ult *result)
->> > +{
->> > +     return NULL;
->> > +}
->> > +
->> >  static inline int swap_writepage(struct page *p, struct writeback_con=
-trol *wbc)
->> >  {
->> >       return 0;
->> > diff --git a/mm/swap_state.c b/mm/swap_state.c
->> > index 21badd4f0fc7..3edf4b63158d 100644
->> > --- a/mm/swap_state.c
->> > +++ b/mm/swap_state.c
->> > @@ -880,14 +880,13 @@ static struct folio *swap_vma_readahead(swp_entr=
-y_t targ_entry, gfp_t gfp_mask,
->> >   * in.
->> >   */
->> >  static struct folio *swapin_direct(swp_entry_t entry, gfp_t gfp_mask,
->> > -                               struct vm_fault *vmf, void *shadow)
->> > +                                struct mempolicy *mpol, pgoff_t ilx,
->> > +                                void *shadow)
->> >  {
->> > -     struct vm_area_struct *vma =3D vmf->vma;
->> >       struct folio *folio;
->> >
->> > -     /* skip swapcache */
->> > -     folio =3D vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0,
->> > -                             vma, vmf->address, false);
->> > +     folio =3D (struct folio *)alloc_pages_mpol(gfp_mask, 0,
->> > +                     mpol, ilx, numa_node_id());
->> >       if (folio) {
->> >               if (mem_cgroup_swapin_charge_folio(folio, NULL,
->> >                                                  GFP_KERNEL, entry)) {
->> > @@ -943,18 +942,18 @@ struct folio *swapin_entry(swp_entry_t entry, gf=
-p_t gfp_mask,
->> >               goto done;
->> >       }
->> >
->> > +     mpol =3D get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
->> >       if (swap_use_no_readahead(swp_swap_info(entry), entry)) {
->> > -             folio =3D swapin_direct(entry, gfp_mask, vmf, shadow);
->> > +             folio =3D swapin_direct(entry, gfp_mask, mpol, ilx, shad=
-ow);
->> >               cache_result =3D SWAP_CACHE_BYPASS;
->> >       } else {
->> > -             mpol =3D get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
->> >               if (swap_use_vma_readahead())
->> >                       folio =3D swap_vma_readahead(entry, gfp_mask, mp=
-ol, ilx, vmf);
->> >               else
->> >                       folio =3D swap_cluster_readahead(entry, gfp_mask=
-, mpol, ilx);
->> > -             mpol_cond_put(mpol);
->> >               cache_result =3D SWAP_CACHE_MISS;
->> >       }
->> > +     mpol_cond_put(mpol);
->> >  done:
->> >       if (result)
->> >               *result =3D cache_result;
->> > @@ -962,6 +961,31 @@ struct folio *swapin_entry(swp_entry_t entry, gfp=
-_t gfp_mask,
->> >       return folio;
->> >  }
->> >
->> > +struct folio *swapin_entry_mpol(swp_entry_t entry, gfp_t gfp_mask,
->> > +                             struct mempolicy *mpol, pgoff_t ilx,
->> > +                             enum swap_cache_result *result)
->> > +{
->> > +     enum swap_cache_result cache_result;
->> > +     void *shadow =3D NULL;
->> > +     struct folio *folio;
->> > +
->> > +     folio =3D swap_cache_get_folio(entry, NULL, 0, &shadow);
->> > +     if (folio) {
->> > +             cache_result =3D SWAP_CACHE_HIT;
->> > +     } else if (swap_use_no_readahead(swp_swap_info(entry), entry)) {
->> > +             folio =3D swapin_direct(entry, gfp_mask, mpol, ilx, shad=
-ow);
->> > +             cache_result =3D SWAP_CACHE_BYPASS;
->> > +     } else {
->> > +             folio =3D swap_cluster_readahead(entry, gfp_mask, mpol, =
-ilx);
->> > +             cache_result =3D SWAP_CACHE_MISS;
->> > +     }
->> > +
->> > +     if (result)
->> > +             *result =3D cache_result;
->> > +
->> > +     return folio;
->> > +}
->> > +
->> >  #ifdef CONFIG_SYSFS
->> >  static ssize_t vma_ra_enabled_show(struct kobject *kobj,
->> >                                    struct kobj_attribute *attr, char *=
-buf)
->> > diff --git a/mm/swapfile.c b/mm/swapfile.c
->> > index 5aa44de11edc..2f77bf143af8 100644
->> > --- a/mm/swapfile.c
->> > +++ b/mm/swapfile.c
->> > @@ -1840,18 +1840,13 @@ static int unuse_pte_range(struct vm_area_stru=
-ct *vma, pmd_t *pmd,
->> >       do {
->> >               struct folio *folio;
->> >               unsigned long offset;
->> > +             struct mempolicy *mpol;
->> >               unsigned char swp_count;
->> >               swp_entry_t entry;
->> > +             pgoff_t ilx;
->> >               int ret;
->> >               pte_t ptent;
->> >
->> > -             struct vm_fault vmf =3D {
->> > -                     .vma =3D vma,
->> > -                     .address =3D addr,
->> > -                     .real_address =3D addr,
->> > -                     .pmd =3D pmd,
->> > -             };
->> > -
->> >               if (!pte++) {
->> >                       pte =3D pte_offset_map(pmd, addr);
->> >                       if (!pte)
->> > @@ -1871,8 +1866,10 @@ static int unuse_pte_range(struct vm_area_struc=
-t *vma, pmd_t *pmd,
->> >               pte_unmap(pte);
->> >               pte =3D NULL;
->> >
->> > -             folio =3D swapin_entry(entry, GFP_HIGHUSER_MOVABLE,
->> > -                                  &vmf, NULL);
->> > +             mpol =3D get_vma_policy(vma, addr, 0, &ilx);
->> > +             folio =3D swapin_entry_mpol(entry, GFP_HIGHUSER_MOVABLE,
->> > +                                       mpol, ilx, NULL);
->> > +             mpol_cond_put(mpol);
->> >               if (!folio) {
->> >                       /*
->> >                        * The entry could have been freed, and will not
->>
->> IIUC, after the change, we will always use cluster readahead for
->> swapoff.  This may be OK.  But, at least we need some test results which
->> show that this will not cause any issue for this behavior change.  And
->> the behavior change should be described explicitly in patch description.
+On Thu, Jan 11, 2024 at 10:56:55PM +0800, Yang, Weijiang wrote:
+>On 1/9/2024 11:10 PM, Sean Christopherson wrote:
+>> On Mon, Jan 08, 2024, Weijiang Yang wrote:
+>> > On 1/6/2024 12:21 AM, Sean Christopherson wrote:
+>> > > On Fri, Jan 05, 2024, Weijiang Yang wrote:
+>> > > > On 1/5/2024 8:54 AM, Sean Christopherson wrote:
+>> > > > > On Fri, Jan 05, 2024, Rick P Edgecombe wrote:
+>> > > > > > > For CALL/RET (and presumably any branch instructions with IBT?) other
+>> > > > > > > instructions that are directly affected by CET, the simplest thing would
+>> > > > > > > probably be to disable those in KVM's emulator if shadow stacks and/or IBT
+>> > > > > > > are enabled, and let KVM's failure paths take it from there.
+>> > > > > > Right, that is what I was wondering might be the normal solution for
+>> > > > > > situations like this.
+>> > > > > If KVM can't emulate something, it either retries the instruction (with some
+>> > > > > decent logic to guard against infinite retries) or punts to userspace.
+>> > > > What kind of error is proper if KVM has to punt to userspace?
+>> > > KVM_INTERNAL_ERROR_EMULATION.  See prepare_emulation_failure_exit().
+>> > > 
+>> > > > Or just inject #UD into guest on detecting this case?
+>> > > No, do not inject #UD or do anything else that deviates from architecturally
+>> > > defined behavior.
+>> > Thanks!
+>> > But based on current KVM implementation and patch 24, seems that if CET is exposed
+>> > to guest, the emulation code or shadow paging mode couldn't be activated at the same time:
+>> No, requiring unrestricted guest only disables the paths where KVM *delibeately*
+>> emulates the entire guest code stream.  In no way, shape, or form does it prevent
+>> KVM from attempting to emulate arbitrary instructions.
 >
-> Hi Ying
+>Yes, also need to prevent sporadic emulation, how about adding below patch in emulator?
 >
-> Actually there is a swap_use_no_readahead check in swapin_entry_mpol,
-> so when readahaed is not needed (SYNC_IO), it's just skipped.
 >
-> And I think VMA readahead is not helpful swapoff, swapoff is already
-> walking the VMA, mostly uninterrupted in kernel space. With VMA
-> readahead or not, it will issue IO page by page.
-> The benchmark result I posted before is actually VMA readhead vs
-> no-readahead for ZRAM, sorry I didn't make it clear. It's obvious
-> no-readahead is faster.
+>diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+>index e223043ef5b2..e817d8560ceb 100644
+>--- a/arch/x86/kvm/emulate.c
+>+++ b/arch/x86/kvm/emulate.c
+>@@ -178,6 +178,7 @@
+> #define IncSP       ((u64)1 << 54)  /* SP is incremented before ModRM calc */
+> #define TwoMemOp    ((u64)1 << 55)  /* Instruction has two memory operand */
+> #define IsBranch    ((u64)1 << 56)  /* Instruction is considered a branch. */
+>+#define IsProtected ((u64)1 << 57)  /* Instruction is protected by CET. */
 >
-> For actual block device, cluster readahead might be a good choice for
-> swapoff, since all pages will be read for swapoff, there has to be
-> enough memory for all swapcached page to stay in memory or swapoff
-> will fail anyway, and cluster read is faster for block devices.
-
-It's possible.  But please run the tests on some actual block devices
-and show your results.  Random memory accessing pattern should be
-tested, and the swap space usage should be > 50% to show some not so
-friendly situation.
-
->>
->> And I don't think it's a good abstraction to make swapin_entry_mpol()
->> always use cluster swapin, while swapin_entry() will try to use vma
->> swapin.  I think we can add "struct mempolicy *mpol" and "pgoff_t ilx"
->> to swapin_entry() as parameters, and use them if vmf =3D=3D NULL.  If we
->> want to enforce cluster swapin in swapoff path, it will be better to add
->> some comments to describe why.
+> #define DstXacc     (DstAccLo | SrcAccHi | SrcWrite)
 >
-> Good suggestion, I thought extending swapin_entry may make its
-> arguments list get too long, but seems mpol and ilx are the only thing
-> needed here. I'll update it.
+>@@ -4098,9 +4099,9 @@ static const struct opcode group4[] = {
+> static const struct opcode group5[] = {
+>        F(DstMem | SrcNone | Lock,              em_inc),
+>        F(DstMem | SrcNone | Lock,              em_dec),
+>-       I(SrcMem | NearBranch | IsBranch,       em_call_near_abs),
+>-       I(SrcMemFAddr | ImplicitOps | IsBranch, em_call_far),
+>-       I(SrcMem | NearBranch | IsBranch,       em_jmp_abs),
+>+       I(SrcMem | NearBranch | IsBranch | IsProtected, em_call_near_abs),
+>+       I(SrcMemFAddr | ImplicitOps | IsBranch | IsProtected, em_call_far),
+>+       I(SrcMem | NearBranch | IsBranch | IsProtected, em_jmp_abs),
+>        I(SrcMemFAddr | ImplicitOps | IsBranch, em_jmp_far),
+>        I(SrcMem | Stack | TwoMemOp,            em_push), D(Undefined),
+> };
+>@@ -4362,11 +4363,11 @@ static const struct opcode opcode_table[256] = {
+>        /* 0xC8 - 0xCF */
+>        I(Stack | SrcImmU16 | Src2ImmByte | IsBranch, em_enter),
+>        I(Stack | IsBranch, em_leave),
+>-       I(ImplicitOps | SrcImmU16 | IsBranch, em_ret_far_imm),
+>-       I(ImplicitOps | IsBranch, em_ret_far),
+>-       D(ImplicitOps | IsBranch), DI(SrcImmByte | IsBranch, intn),
+>+       I(ImplicitOps | SrcImmU16 | IsBranch | IsProtected, em_ret_far_imm),
+>+       I(ImplicitOps | IsBranch | IsProtected, em_ret_far),
+>+       D(ImplicitOps | IsBranch), DI(SrcImmByte | IsBranch | IsProtected, intn),
+>        D(ImplicitOps | No64 | IsBranch),
+>-       II(ImplicitOps | IsBranch, em_iret, iret),
+>+       II(ImplicitOps | IsBranch | IsProtected, em_iret, iret),
+>        /* 0xD0 - 0xD7 */
+>        G(Src2One | ByteOp, group2), G(Src2One, group2),
+>        G(Src2CL | ByteOp, group2), G(Src2CL, group2),
+>@@ -4382,7 +4383,7 @@ static const struct opcode opcode_table[256] = {
+>        I2bvIP(SrcImmUByte | DstAcc, em_in,  in,  check_perm_in),
+>        I2bvIP(SrcAcc | DstImmUByte, em_out, out, check_perm_out),
+>        /* 0xE8 - 0xEF */
+>-       I(SrcImm | NearBranch | IsBranch, em_call),
+>+       I(SrcImm | NearBranch | IsBranch | IsProtected, em_call),
+>        D(SrcImm | ImplicitOps | NearBranch | IsBranch),
+>        I(SrcImmFAddr | No64 | IsBranch, em_jmp_far),
+>        D(SrcImmByte | ImplicitOps | NearBranch | IsBranch),
+>@@ -4401,7 +4402,7 @@ static const struct opcode opcode_table[256] = {
+> static const struct opcode twobyte_table[256] = {
+>        /* 0x00 - 0x0F */
+>        G(0, group6), GD(0, &group7), N, N,
+>-       N, I(ImplicitOps | EmulateOnUD | IsBranch, em_syscall),
+>+       N, I(ImplicitOps | EmulateOnUD | IsBranch | IsProtected, em_syscall),
+>        II(ImplicitOps | Priv, em_clts, clts), N,
+>        DI(ImplicitOps | Priv, invd), DI(ImplicitOps | Priv, wbinvd), N, N,
+>        N, D(ImplicitOps | ModRM | SrcMem | NoAccess), N, N,
+>@@ -4432,8 +4433,8 @@ static const struct opcode twobyte_table[256] = {
+>        IIP(ImplicitOps, em_rdtsc, rdtsc, check_rdtsc),
+>        II(ImplicitOps | Priv, em_rdmsr, rdmsr),
+>        IIP(ImplicitOps, em_rdpmc, rdpmc, check_rdpmc),
+>-       I(ImplicitOps | EmulateOnUD | IsBranch, em_sysenter),
+>-       I(ImplicitOps | Priv | EmulateOnUD | IsBranch, em_sysexit),
+>+       I(ImplicitOps | EmulateOnUD | IsBranch | IsProtected, em_sysenter),
+>+       I(ImplicitOps | Priv | EmulateOnUD | IsBranch | IsProtected, em_sysexit),
+>        N, N,
+>        N, N, N, N, N, N, N, N,
+>        /* 0x40 - 0x4F */
+>@@ -4971,6 +4972,12 @@ int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len, int
+>        if (ctxt->d == 0)
+>                return EMULATION_FAILED;
+>+       if ((opcode.flags & IsProtected) &&
+>+           (ctxt->ops->get_cr(ctxt, 4) & X86_CR4_CET)) {
 
-Thanks!
+CR4.CET doesn't necessarily mean IBT or shadow stack is enabled. why not check
+CPL and IA32_S/U_CET?
 
---
-Best Regards,
-Huang, Ying
+>+               WARN_ONCE(1, "CET is active, emulation aborted.\n");
+
+remove this WARN_ONCE(). Guest can trigger this at will and overflow host dmesg.
+
+if you really want to tell usespace the emulation_failure is due to CET, maybe
+you can add a new flag like KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES.
+for now, I won't bother to add this because probably userspace just terminates
+the VM on any instruction failure (i.e., won't try to figure out the reason of
+the instruction failure and fix it).
 
