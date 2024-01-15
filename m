@@ -1,114 +1,197 @@
-Return-Path: <linux-kernel+bounces-26272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C98882DDD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:45:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A75782DDDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:47:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BAF71F22A91
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:45:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9725281096
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:47:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 957F617BD6;
-	Mon, 15 Jan 2024 16:45:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D41D17BDC;
+	Mon, 15 Jan 2024 16:47:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BVngNTTM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="CXTf4ULA"
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD80D17BC7;
-	Mon, 15 Jan 2024 16:45:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D9F9C433C7;
-	Mon, 15 Jan 2024 16:45:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705337118;
-	bh=ViDfJVgPPtY9rthYpqceej159xuom9miTC+tJZsNboU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BVngNTTMNIP4L6CU5fdgNjvv0Oo1gRZ1Is6CiKzne5UWuyW0DqTGU2+DN3MKVUcQa
-	 rnUNKBQHsfgmUBfWCDMzbAvbgu8gxoToUN0ze8+oVpne9kBYwTSjStn1fJHhOzcoag
-	 NditqqFyScWwP2uajbi4zzkAKu3S7LNqPjBQaM7dKDVrANUUWz86SDF9keMPrOJl5E
-	 ZQ4jKNhEF/t1XoSqHbYDjMhm41NtUrPh0Nw79iKPY1AW69+Af9H7Je6lmGflg2Wi8Z
-	 pXmDv5gkNhPKkvuNXyThTO0M/ylG5VM//Kwpzzx1GWqqeL7unf9yIuWczs+OPUtvwi
-	 tYIA6yFx2Ho4A==
-Date: Mon, 15 Jan 2024 16:45:13 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: KyuHyuk Lee <lee@kyuhyuk.kr>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Chris Morgan <macromorgan@hotmail.com>,
-	Jagan Teki <jagan@edgeble.ai>, Tianling Shen <cnsztl@gmail.com>,
-	Andy Yan <andyshrk@163.com>, Ondrej Jirman <megi@xff.cz>,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: rockchip: Add Hardkernel ODROID-M1S
- board
-Message-ID: <20240115-elk-paralyses-e308f1d9cc2f@spud>
-References: <20240112134230.28055-1-lee@kyuhyuk.kr>
- <20240112-granola-underline-36a525dc789c@spud>
- <dc4e9808-cd36-4b99-afd9-8dd4cd16a2a9@linaro.org>
- <20240112-headsman-concur-1d47da7e3e14@spud>
- <21a8feea-7306-4016-9a58-6e5bf8fe30a8@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D55A817BBB
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 16:47:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-42987bc95ffso62273171cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 08:47:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1705337244; x=1705942044; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2crKgiTXcC8UeiyKNQE9cMBlk/o9KLy3IDkuGS6sULY=;
+        b=CXTf4ULANBlsxZH7fNrB1jHo8dsybZRvmn/EjjxEh5KnfABZN9bZP0941evoYudrr9
+         lXHtL/ZPsnc43eRgTP4YzRQWaeulBc7pZOrsSNUAwEYPLu23TM7kiHLPN1phL9Mk171o
+         xNwq+psMRxKXTchZ1aAqJVYRntT+T+KE9WvWaF94GsuvaPJ8inFA6h29AwS3Lo5EwSRn
+         xch7dkqd8KzQhYnO0PgwKVJXi+4HUIpeaLL6SkXDS59lKU1AZ4Lr6zBzidXrue+QzQqh
+         075QbzLJARYzcaQg+rlLfRu2HBC4noVa8lH2UAvrSa8PYP06xMgqaYA4kRQUCtnx9g1Z
+         r45g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705337244; x=1705942044;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2crKgiTXcC8UeiyKNQE9cMBlk/o9KLy3IDkuGS6sULY=;
+        b=B1OvbtK7z74MWemeWFUcxrRP2ES6Za5ClhTVDImlBq1oMLZEl7pmQ0ye1hTL17vvf8
+         JmJYf+xHq9MGsTN/nXhJIyPtjWnbfnOyG+yomqKe3rtkWUcFGWNIFWREgFXhcZ4pLCFa
+         et+b4Qvgn+ZL6gFvvhm37I1Z5qLAyeL/g9HACKjThANmuTDJ5V3cSti0CDdQiNmzii6B
+         3hdkJhUMes8SK8NiqvvINsJpuV8hGrIsW/iSqOCtc6plHLIiwHlveBmw4Gdd73QIjFkV
+         sedFTGMokbh6ZcLFotQmzlvENrUXh4UN9OIiGg7DNFwWHGsv7kxumG+PN4+lSKIAt34Y
+         sAZQ==
+X-Gm-Message-State: AOJu0YxcDuhehjsQHQLRAUqDaXbgmOzV/iA9Dt8o27DfSAWdBUwinD+b
+	bx1osPjvw7Foq7cKIQwbpj8WzTxnFhMVuA==
+X-Google-Smtp-Source: AGHT+IHytem9ZiSpp/IMZZ23Px9ow/WDIS5U8JgImTeFhW9KwLcIg20JNrAqcGdlqr/VIaHDsAnzDg==
+X-Received: by 2002:a05:622a:11ca:b0:429:ffda:679c with SMTP id n10-20020a05622a11ca00b00429ffda679cmr139180qtk.25.1705337244703;
+        Mon, 15 Jan 2024 08:47:24 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id eh18-20020a05622a579200b00425b3fd33f2sm4023338qtb.90.2024.01.15.08.47.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 08:47:24 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rPQ7P-003tM0-9N;
+	Mon, 15 Jan 2024 12:47:23 -0400
+Date: Mon, 15 Jan 2024 12:47:23 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+Cc: Lu Baolu <baolu.lu@linux.intel.com>, Kevin Tian <kevin.tian@intel.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
+	Jacob Pan <jacob.jun.pan@linux.intel.com>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"virtualization@lists.linux-foundation.org" <virtualization@lists.linux-foundation.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/6] iommufd: Deliver fault messages to user space
+Message-ID: <20240115164723.GB50608@ziepe.ca>
+References: <20231026024930.382898-1-baolu.lu@linux.intel.com>
+ <20231026024930.382898-5-baolu.lu@linux.intel.com>
+ <b822096cc3b441309d99832c587be25a@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="riS/1QbGyvUIkYNO"
-Content-Disposition: inline
-In-Reply-To: <21a8feea-7306-4016-9a58-6e5bf8fe30a8@linaro.org>
-
-
---riS/1QbGyvUIkYNO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <b822096cc3b441309d99832c587be25a@huawei.com>
 
-On Fri, Jan 12, 2024 at 06:43:33PM +0100, Krzysztof Kozlowski wrote:
-> On 12/01/2024 18:26, Conor Dooley wrote:
-> >>> if the vendor for this board is hardkernel...
-> >>>
-> >>>> +        items:
-> >>>> +          - const: rockchip,rk3566-odroid-m1s
-> >>>
-> >>> ...why is the vendor prefix here rockchip?
-> >>
-> >> Uh, good catch. I missed it when acking their earlier mistake year ago
-> >> :( Would be nice if they fixed that one too.
-> >=20
-> > Maybe they will if they got your email, they did not get mine
-> > apparently:
-> > <lee@kyuhyuk.kr>: host mx02.mail.icloud.com[17.57.155.34] said: 554 5.7=
-=2E1
-> >     [HM08] Message rejected due to local policy. Please visit
-> >     https://support.apple.com/en-us/HT204137 (in reply to end of DATA c=
-ommand)
->=20
-> Uh, what did you do to Apple to be denied by their policy? Admit, you
-> have an Android phone?
+On Fri, Jan 12, 2024 at 05:46:13PM +0000, Shameerali Kolothum Thodi wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Lu Baolu <baolu.lu@linux.intel.com>
+> > Sent: Thursday, October 26, 2023 3:49 AM
+> > To: Jason Gunthorpe <jgg@ziepe.ca>; Kevin Tian <kevin.tian@intel.com>; Joerg
+> > Roedel <joro@8bytes.org>; Will Deacon <will@kernel.org>; Robin Murphy
+> > <robin.murphy@arm.com>; Jean-Philippe Brucker <jean-philippe@linaro.org>;
+> > Nicolin Chen <nicolinc@nvidia.com>; Yi Liu <yi.l.liu@intel.com>; Jacob Pan
+> > <jacob.jun.pan@linux.intel.com>
+> > Cc: iommu@lists.linux.dev; linux-kselftest@vger.kernel.org;
+> > virtualization@lists.linux-foundation.org; linux-kernel@vger.kernel.org; Lu
+> > Baolu <baolu.lu@linux.intel.com>
+> > Subject: [PATCH v2 4/6] iommufd: Deliver fault messages to user space
+> > 
+> [...]
+> 
+> Hi,
+> 
+> > +static ssize_t hwpt_fault_fops_write(struct file *filep,
+> > +				     const char __user *buf,
+> > +				     size_t count, loff_t *ppos)
+> > +{
+> > +	size_t response_size = sizeof(struct iommu_hwpt_page_response);
+> > +	struct hw_pgtable_fault *fault = filep->private_data;
+> > +	struct iommu_hwpt_page_response response;
+> > +	struct iommufd_hw_pagetable *hwpt;
+> > +	struct iopf_group *iter, *group;
+> > +	struct iommufd_device *idev;
+> > +	size_t done = 0;
+> > +	int rc = 0;
+> > +
+> > +	if (*ppos || count % response_size)
+> > +		return -ESPIPE;
+> > +
+> > +	mutex_lock(&fault->mutex);
+> > +	while (!list_empty(&fault->response) && count > done) {
+> > +		rc = copy_from_user(&response, buf + done, response_size);
+> > +		if (rc)
+> > +			break;
+> > +
+> > +		/* Get the device that this response targets at. */
+> > +		idev = container_of(iommufd_get_object(fault->ictx,
+> > +						       response.dev_id,
+> > +						       IOMMUFD_OBJ_DEVICE),
+> > +				    struct iommufd_device, obj);
+> > +		if (IS_ERR(idev)) {
+> > +			rc = PTR_ERR(idev);
+> > +			break;
+> > +		}
+> > +
+> > +		/*
+> > +		 * Get the hw page table that this response was generated for.
+> > +		 * It must match the one stored in the fault data.
+> > +		 */
+> > +		hwpt = container_of(iommufd_get_object(fault->ictx,
+> > +						       response.hwpt_id,
+> > +
+> > IOMMUFD_OBJ_HW_PAGETABLE),
+> > +				    struct iommufd_hw_pagetable, obj);
+> > +		if (IS_ERR(hwpt)) {
+> > +			iommufd_put_object(&idev->obj);
+> > +			rc = PTR_ERR(hwpt);
+> > +			break;
+> > +		}
+> > +
+> > +		if (hwpt != fault->hwpt) {
+> > +			rc = -EINVAL;
+> > +			goto put_obj;
+> > +		}
+> > +
+> > +		group = NULL;
+> > +		list_for_each_entry(iter, &fault->response, node) {
+> > +			if (response.grpid != iter->last_fault.fault.prm.grpid)
+> > +				continue;
+> > +
+> > +			if (idev->dev != iter->dev)
+> > +				continue;
+> > +
+> > +			if ((iter->last_fault.fault.prm.flags &
+> > +			     IOMMU_FAULT_PAGE_REQUEST_PASID_VALID) &&
+> > +			    response.pasid != iter->last_fault.fault.prm.pasid)
+> > +				continue;
+> 
+> I am trying to get vSVA working with this series and got hit by the above check.
+> On ARM platforms, page responses to stall events(CMD_RESUME) do not have
+> an associated pasid.  I think, either we need to check here using
+> IOMMU_FAULT_PAGE_RESPONSE_NEEDS_PASID or remove the check 
+> as it will be eventually done in iommu_page_response(). 
 
-I do. I guess that puts me on -1 social credit score. I have a macbook,
-but I run linux on it, so I guess that is a +1 -0.5 sorta deal, leaving
-me negative overall.
+That doesn't sound right..
 
-Either way, not sure what causes it. Maybe the fact that I sign all my
-mail is a contributing factor, but I may not be the only @kernel.org
-address that KyuHyuk Lee is not receiving mail from.
+The PASID is the only information we have for userspace to identify
+the domain that is being faulted. It cannot be optional on the request
+side.
 
---riS/1QbGyvUIkYNO
-Content-Type: application/pgp-signature; name="signature.asc"
+If it is valid when userspace does read() then it should be valid when
+userspace does write() too.
 
------BEGIN PGP SIGNATURE-----
+It is the only way the kernel can actually match request and response
+here.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaVhGQAKCRB4tDGHoIJi
-0uviAP4vY6e5kowaPAGO9WitJXCjm8YoC2PCKDXRVbYxWNgtCQD/XT84O8/v1mMh
-C1CpXZDjrgNrmxMCmlEXsjq8g9mDEAo=
-=gT6T
------END PGP SIGNATURE-----
+So, I think you have a userspace issue to not provide the right
+pasid??
 
---riS/1QbGyvUIkYNO--
+Jason
 
