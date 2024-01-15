@@ -1,194 +1,194 @@
-Return-Path: <linux-kernel+bounces-26171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B121F82DC4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:26:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6329C82DC49
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:26:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 501E01F218AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:26:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC18D2810CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:25:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8D7617BB1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A7E17BA5;
 	Mon, 15 Jan 2024 15:25:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ZBg/EZ6P"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="S04UjvDx"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69C3B1798A;
-	Mon, 15 Jan 2024 15:25:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705332317;
-	bh=HVjzZol2YaSQvlH2u0E4z0OgdDsSojVsQEcmojBRQKE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ZBg/EZ6PRgpO7GQYZQmOaC581c1P+P7totUX4FFU+zxgZVcLPE5JSxBFK4sg5su/X
-	 V1Yv2M5JSeUjb6Axet3tr085MWgjtgSFfB4NrHlFtOrwEUz5zpWP19j77/UdOqbs3r
-	 7U3IqsnT4lkyrIjEsasUZ06SWHARnpD30T2AoQCalr+jxPjwtjEv//acFkzOvI0yVz
-	 rXtARLOGNoMNEAInCMiWdgkMns2EgS4/arZe43m0Mxs99ftzioQOZeeKivEDVh4Kiu
-	 tgRe1AroeVfy6yYR3+OmvwXbgehHQrbbaTqntahbsMHH3Q8RLWlNcjiC3zt95f2Cp8
-	 SptbqVRaiLvQQ==
-Received: from [100.95.196.25] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: koike)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 3340337813DA;
-	Mon, 15 Jan 2024 15:25:13 +0000 (UTC)
-Message-ID: <933b14a9-004c-4528-a02d-f38843a7e093@collabora.com>
-Date: Mon, 15 Jan 2024 12:25:13 -0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E210D179B2
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 15:25:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-557bfc7f7b4so13188307a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 07:25:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1705332317; x=1705937117; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=V3Au/gRaaczdqwoxq154l1Vb0TSRdBUZsRRgmxL/3EA=;
+        b=S04UjvDxCv+YJv+ugX5uV3+beXSeeLRov+lehLqMSpkd8QTum/jqGWqjflt2haN3CS
+         CgpZQfYEWBqrmyGJK7Q17nS+eP++ks0juctFVvZ7xw3MMVPVA6hIwGuydFHDg37hglOq
+         2WyzuOIOvdzPfebTb/bYQxVkH+Pzach3nstMq9E2ysVmddap+CgvI585VE40ujQnrXjS
+         IwRjXSZWZsOwRkPWaSSswZZ1xU2KjJD4waZniGCHroTmFWRpushu8Z6PoFCig8DkrYZ0
+         x3oM+J8dBoyTpBi1faJR5FX2yD8Smgqm4DQIkhmh9vUG+pFcYtgg5IwB92VKv7niRhgN
+         ejjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705332317; x=1705937117;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V3Au/gRaaczdqwoxq154l1Vb0TSRdBUZsRRgmxL/3EA=;
+        b=kgNSSQY2qFgvDJjmo1cSaNdopZugpysaN8cJG36T3mDw+wQF78II2hKfeBEZ0pYo5t
+         +XDOfh+ieZf0IrDtS+JY9IRblD3nuDmiJFPBcHTk2oDn/OCOgnUdYzrJ/2npqNOobMVv
+         s2pIabv0hgnZNVxejluuIFp1YHdWcTxJ8xLs6EHf/oQ3Nh1V1Yeds5VeWm7xuYcolfO2
+         H+R43dePIKxbpjKF5J+esZnf5o0iSicrh41jgLEL/6WcoTd5efWNhKiKj8iVRULasl55
+         jE4h1z9rr+M6CrPY9VakTopLWYYmCHIPfM6HFFpY9VZDfnFXibtfrxXwDZHF4U+bx3Fi
+         1D2w==
+X-Gm-Message-State: AOJu0YwvRZqOc4YLl/94CbeEbTWM5Ht9iymKq3zFJQRl+eb4X1o+mJR3
+	46Q6jrRfb1W7P+o4CRlycHPfPdhyXYgW1A==
+X-Google-Smtp-Source: AGHT+IFVcJIOzgkm0o7Kllwec4Tc/GzqZS761LXVytipb32050OjQDT49hpCnD8tQxYIJBuIt52jzA==
+X-Received: by 2002:a05:6402:1ca8:b0:558:b48a:b5f1 with SMTP id cz8-20020a0564021ca800b00558b48ab5f1mr6094220edb.7.1705332317286;
+        Mon, 15 Jan 2024 07:25:17 -0800 (PST)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id b23-20020a056402139700b0055920196ddesm2446466edv.54.2024.01.15.07.25.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 07:25:16 -0800 (PST)
+Date: Mon, 15 Jan 2024 16:25:16 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Sunil V L <sunilvl@ventanamicro.com>
+Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	"Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Anup Patel <anup@brainfault.org>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Conor Dooley <conor@kernel.org>, Atish Kumar Patra <atishp@rivosinc.com>, 
+	Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH v2 -next 2/3] ACPI: RISC-V: Add LPI driver
+Message-ID: <20240115-94bdb396ea417ca1d834548d@orel>
+References: <20240115101056.429471-1-sunilvl@ventanamicro.com>
+ <20240115101056.429471-3-sunilvl@ventanamicro.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/ci: Add msm tests
-To: Vignesh Raman <vignesh.raman@collabora.com>,
- Rob Clark <robdclark@gmail.com>
-Cc: dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>,
- Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- open list <linux-kernel@vger.kernel.org>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, freedreno@lists.freedesktop.org,
- Daniel Stone <daniel@fooishbar.org>
-References: <20240108195016.156583-1-robdclark@gmail.com>
- <27e64458-7cb1-99a4-f67e-60d911f28f44@collabora.com>
- <CAF6AEGvBFdXe9rHjbwWv9eLUMv2YEP7cfMoXcWgZ30Wn4LzOjw@mail.gmail.com>
- <CAF6AEGuXi1wTbE0j6FmSnqw_EVUYSdnk5WeFL6abD=zeNutPpg@mail.gmail.com>
- <33024b12-2530-3a2e-5bcf-f5a466d9a767@collabora.com>
-Content-Language: en-US
-From: Helen Koike <helen.koike@collabora.com>
-In-Reply-To: <33024b12-2530-3a2e-5bcf-f5a466d9a767@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240115101056.429471-3-sunilvl@ventanamicro.com>
 
-
-
-On 15/01/2024 07:22, Vignesh Raman wrote:
-> Hi Rob,
+On Mon, Jan 15, 2024 at 03:40:55PM +0530, Sunil V L wrote:
+> Enable Low Power Idle (LPI) based cpuidle driver for RISC-V platforms.
+> It depends on SBI HSM calls for idle state transitions.
 > 
-> On 12/01/24 22:44, Rob Clark wrote:
->> On Fri, Jan 12, 2024 at 7:57 AM Rob Clark <robdclark@gmail.com> wrote:
->>>
->>> On Fri, Jan 12, 2024 at 3:42 AM Vignesh Raman
->>> <vignesh.raman@collabora.com> wrote:
->>>>
->>>> Hi Rob,
->>>>
->>>>
->>>> On 09/01/24 01:20, Rob Clark wrote:
->>>>> From: Rob Clark <robdclark@chromium.org>
->>>>>
->>>>> The msm tests should skip on non-msm hw, so I think it should be 
->>>>> safe to
->>>>> enable everywhere.
->>>>>
->>>>> Signed-off-by: Rob Clark <robdclark@chromium.org>
-
-Acked-by: Helen Koike <helen.koike@collabora.com>
-
->>>>> ---
->>>>>    drivers/gpu/drm/ci/testlist.txt | 49 
->>>>> +++++++++++++++++++++++++++++++++
->>>>>    1 file changed, 49 insertions(+)
->>>>>
->>>>> diff --git a/drivers/gpu/drm/ci/testlist.txt 
->>>>> b/drivers/gpu/drm/ci/testlist.txt
->>>>> index f82cd90372f4..eaeb751bb0ad 100644
->>>>> --- a/drivers/gpu/drm/ci/testlist.txt
->>>>> +++ b/drivers/gpu/drm/ci/testlist.txt
->>>>> @@ -2910,3 +2910,52 @@ kms_writeback@writeback-invalid-parameters
->>>>>    kms_writeback@writeback-fb-id
->>>>>    kms_writeback@writeback-check-output
->>>>>    prime_mmap_kms@buffer-sharing
->>>>> +msm_shrink@copy-gpu-sanitycheck-8
->>>>> +msm_shrink@copy-gpu-sanitycheck-32
->>>>> +msm_shrink@copy-gpu-8
->>>>> +msm_shrink@copy-gpu-32
->>>>> +msm_shrink@copy-gpu-madvise-8
->>>>> +msm_shrink@copy-gpu-madvise-32
->>>>> +msm_shrink@copy-gpu-oom-8
->>>>> +msm_shrink@copy-gpu-oom-32
->>>>> +msm_shrink@copy-mmap-sanitycheck-8
->>>>> +msm_shrink@copy-mmap-sanitycheck-32
->>>>> +msm_shrink@copy-mmap-8
->>>>> +msm_shrink@copy-mmap-32
->>>>> +msm_shrink@copy-mmap-madvise-8
->>>>> +msm_shrink@copy-mmap-madvise-32
->>>>> +msm_shrink@copy-mmap-oom-8
->>>>> +msm_shrink@copy-mmap-oom-32
->>>>> +msm_shrink@copy-mmap-dmabuf-sanitycheck-8
->>>>> +msm_shrink@copy-mmap-dmabuf-sanitycheck-32
->>>>> +msm_shrink@copy-mmap-dmabuf-8
->>>>> +msm_shrink@copy-mmap-dmabuf-32
->>>>> +msm_shrink@copy-mmap-dmabuf-madvise-8
->>>>> +msm_shrink@copy-mmap-dmabuf-madvise-32
->>>>> +msm_shrink@copy-mmap-dmabuf-oom-8
->>>>> +msm_shrink@copy-mmap-dmabuf-oom-32
->>>>> +msm_mapping@ring
->>>>> +msm_mapping@sqefw
->>>>> +msm_mapping@shadow
->>>>> +msm_submitoverhead@submitbench-10-bos
->>>>> +msm_submitoverhead@submitbench-10-bos-no-implicit-sync
->>>>> +msm_submitoverhead@submitbench-100-bos
->>>>> +msm_submitoverhead@submitbench-100-bos-no-implicit-sync
->>>>> +msm_submitoverhead@submitbench-250-bos
->>>>> +msm_submitoverhead@submitbench-250-bos-no-implicit-sync
->>>>> +msm_submitoverhead@submitbench-500-bos
->>>>> +msm_submitoverhead@submitbench-500-bos-no-implicit-sync
->>>>> +msm_submitoverhead@submitbench-1000-bos
->>>>> +msm_submitoverhead@submitbench-1000-bos-no-implicit-sync
->>>>> +msm_recovery@hangcheck
->>>>> +msm_recovery@gpu-fault
->>>>> +msm_recovery@gpu-fault-parallel
->>>>> +msm_recovery@iova-fault
->>>>> +msm_submit@empty-submit
->>>>> +msm_submit@invalid-queue-submit
->>>>> +msm_submit@invalid-flags-submit
->>>>> +msm_submit@invalid-in-fence-submit
->>>>> +msm_submit@invalid-duplicate-bo-submit
->>>>> +msm_submit@invalid-cmd-idx-submit
->>>>> +msm_submit@invalid-cmd-type-submit
->>>>> +msm_submit@valid-submit
->>>>
->>>> I tested this patch with latest drm-misc/drm-misc-next and there was
->>>> some failures seen for the newly added msm tests. I have updated the
->>>> xfails with below commit,
->>>>
->>>> https://gitlab.freedesktop.org/vigneshraman/linux/-/commit/d012893597a661d6ebbb755bf2607dfb055524a1
->>>>
->>>> I will notify the maintainers about the flaky tests, update the url in
->>>> the flakes.txt, and submit a separate patch for this change.
->>
->> Oh, you should probably move msm_mapping@* to skips on sdm845.  I had
->> a closer look at those, and they are failing due to a bootloader/fw
->> issue.  We work around this in mesa CI with these two patches:
->>
->> https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/4b49f902ec6f2bb382cbbf489870573f4b43371e
->> https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/38cdf4c5559771e2474ae0fecef8469f65147bc1
->>
->> But given that sdm845 is similar to sc7180 as far as kernel gpu
->> driver, it is probably just better to skip these on sdm845 (with a
->> comment referring to the hack patches we use in mesa CI)
+> Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+> ---
+>  drivers/acpi/riscv/Makefile  |  3 +-
+>  drivers/acpi/riscv/cpuidle.c | 81 ++++++++++++++++++++++++++++++++++++
+>  2 files changed, 83 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/acpi/riscv/cpuidle.c
 > 
-> I have sent a patch with these changes,
+> diff --git a/drivers/acpi/riscv/Makefile b/drivers/acpi/riscv/Makefile
+> index 8b3b126e0b94..7309d92dd477 100644
+> --- a/drivers/acpi/riscv/Makefile
+> +++ b/drivers/acpi/riscv/Makefile
+> @@ -1,2 +1,3 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -obj-y 	+= rhct.o
+> +obj-y					+= rhct.o
+> +obj-$(CONFIG_ACPI_PROCESSOR_IDLE)	+= cpuidle.o
+> diff --git a/drivers/acpi/riscv/cpuidle.c b/drivers/acpi/riscv/cpuidle.c
+> new file mode 100644
+> index 000000000000..052ec3942902
+> --- /dev/null
+> +++ b/drivers/acpi/riscv/cpuidle.c
+> @@ -0,0 +1,81 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (C) 2024, Ventana Micro Systems Inc
+> + *	Author: Sunil V L <sunilvl@ventanamicro.com>
+> + *
+> + */
+> +
+> +#include <linux/acpi.h>
+> +#include <acpi/processor.h>
+> +#include <linux/cpu_pm.h>
+> +#include <linux/cpuidle.h>
+> +#include <linux/suspend.h>
+> +#include <asm/cpuidle.h>
+> +#include <asm/sbi.h>
+> +#include <asm/suspend.h>
+> +
+> +#define RISCV_FFH_LPI_TYPE_MASK	GENMASK_ULL(63, 60)
+> +#define RISCV_FFH_LPI_RSVD_MASK	GENMASK_ULL(59, 32)
+> +
+> +#define RISCV_FFH_LPI_TYPE_SBI	BIT_ULL(60)
+> +
+> +static int acpi_cpu_init_idle(unsigned int cpu)
+> +{
+> +	int i;
+> +	struct acpi_lpi_state *lpi;
+> +	struct acpi_processor *pr = per_cpu(processors, cpu);
+> +
+> +	if (unlikely(!pr || !pr->flags.has_lpi))
+> +		return -EINVAL;
+> +
+> +	if (!is_sbi_hsm_supported())
+> +		return -ENODEV;
+> +
+> +	if (pr->power.count <= 1)
+> +		return -ENODEV;
+> +
+> +	for (i = 1; i < pr->power.count; i++) {
+> +		u32 state;
+> +
+> +		lpi = &pr->power.lpi_states[i];
+> +
+> +		/*
+> +		 * Validate Entry Method as per FFH spec.
+> +		 * bits[63:60] should be 0x1
+> +		 * bits[59:32] should be 0x0
+> +		 * bits[31:0] represent a SBI power_state
+> +		 */
+> +		if (((lpi->address & RISCV_FFH_LPI_TYPE_MASK) != RISCV_FFH_LPI_TYPE_SBI) ||
+> +		    (lpi->address & RISCV_FFH_LPI_RSVD_MASK)) {
+> +			pr_warn("Invalid LPI entry method %#llx\n", lpi->address);
+> +			return -EINVAL;
+> +		}
+> +
+> +		state = lpi->address;
+> +		if (!sbi_suspend_state_is_valid(state)) {
+> +			pr_warn("Invalid SBI power state %#x\n", state);
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int acpi_processor_ffh_lpi_probe(unsigned int cpu)
+> +{
+> +	return acpi_cpu_init_idle(cpu);
+> +}
+> +
+> +int acpi_processor_ffh_lpi_enter(struct acpi_lpi_state *lpi)
+> +{
+> +	u32 state = lpi->address;
+> +
+> +	if (state & SBI_HSM_SUSP_NON_RET_BIT)
+> +		return CPU_PM_CPU_IDLE_ENTER_PARAM(sbi_suspend,
+> +						   lpi->index,
+> +						   state);
+> +	else
+> +		return CPU_PM_CPU_IDLE_ENTER_RETENTION_PARAM(sbi_suspend,
+> +							     lpi->index,
+> +							     state);
+> +}
+> -- 
+> 2.34.1
+>
 
-Thanks!
-
-Helen
-
-> 
-> https://lore.kernel.org/dri-devel/20240115101750.27077-1-vignesh.raman@collabora.com/T/#u
-> 
-> Thanks.
-> 
-> Regards,
-> Vignesh
-> 
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
