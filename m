@@ -1,125 +1,145 @@
-Return-Path: <linux-kernel+bounces-25846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEF5882D6A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 96BEA82D6AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:05:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B8FD284DFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:02:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 336FE281AF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:05:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F5ED1E866;
-	Mon, 15 Jan 2024 10:01:56 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEC0FF51B;
+	Mon, 15 Jan 2024 10:05:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c5kX0zqd"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C150EE579
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 10:01:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: aa12db9f76434887ab78b70d05aa83c1-20240115
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:169b8540-1950-4393-b39b-1669d3541b89,IP:10,
-	URL:0,TC:0,Content:-5,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACT
-	ION:release,TS:25
-X-CID-INFO: VERSION:1.1.35,REQID:169b8540-1950-4393-b39b-1669d3541b89,IP:10,UR
-	L:0,TC:0,Content:-5,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:25
-X-CID-META: VersionHash:5d391d7,CLOUDID:81fadc82-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:240115180146O41PND0C,BulkQuantity:0,Recheck:0,SF:100|17|42|74|66|38|
-	24|19|101|102,TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,
-	BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: aa12db9f76434887ab78b70d05aa83c1-20240115
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 181003448; Mon, 15 Jan 2024 18:01:45 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 4FC6BE000EB9;
-	Mon, 15 Jan 2024 18:01:45 +0800 (CST)
-X-ns-mid: postfix-65A50289-20367574
-Received: from kernel.. (unknown [172.20.15.234])
-	by mail.kylinos.cn (NSMail) with ESMTPA id BD46DE000EB9;
-	Mon, 15 Jan 2024 18:01:40 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: jgross@suse.com,
-	boris.ostrovsky@oracle.com,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	hpa@zytor.com
-Cc: xen-devel@lists.xenproject.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03098EAE7;
+	Mon, 15 Jan 2024 10:05:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6d9344f30caso5681133b3a.1;
+        Mon, 15 Jan 2024 02:05:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705313131; x=1705917931; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pJ//Ume4cKU0XBJl4XFsVMEeQipDNvrkP5O8JhW2P+A=;
+        b=c5kX0zqdbUv9DQ6e43H7fYZVpjNnWA2TkNVdvDo6xlDnGHzImGsuAHT3NbIUUokOK/
+         YgMZb0fw5sw/dTE8cF9jfZFczXEJRM6UykKFvpfYRlozUH6sldvz8ilMasS32oBdoBYL
+         lR+kSAhalLw9lal6cfOWoMIru/bywi8VMSOlP3FyXT+Fi9SatCMWsEwh+hoMKRDOgYKz
+         PeNM8flmYFGwTGoNiksARf1sPxpT9Du1w+6XZsMygROirug+XKl+gyZu9c896m4GL0ei
+         iqOrov/+67S5XsCwuxJb5Vwby8x0vaoW68QhDqJWnkLbXKCTJUzXggh1dXvJVCy4//44
+         1uyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705313131; x=1705917931;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pJ//Ume4cKU0XBJl4XFsVMEeQipDNvrkP5O8JhW2P+A=;
+        b=n/zFNxAtbtmPdEKKhJ7Xop2XNS5ehRpQI/Qiv8RSFzbYr9LqSIkbbFG5PjuxtEpoFY
+         YXxh5Vy/qghtnTRF0T0LWCC/Qi+yrB+v7NVX9M/p77pbvokIADWeCL3ymk7G9F8xwpRN
+         sCtTeSYqZpnV3IcypAlcmYfIP2VTBfgMgHVvANbl3T9ed+FVAC1e268+5IMSdPn5zOQD
+         mQ/5wfo3Y+/qduN7EbfTwoFgib5C5kUYHWpAmmEpoc/Z8t4Z6KULvRmmVRCrBhl4Y6Go
+         H6GcWfrKg2yCer5A9Tgy+VAD0txfzcRbE0GmU15KtRu3IrUZkUW7+acPc+D6G7v/fzDX
+         wbAg==
+X-Gm-Message-State: AOJu0YyiuWpQ18tKQomiYFS3uTMe5Yu5gCptsv4rQjkrq3VFgVsAKNow
+	AonvCRwC0hEm8gz22eHmAZs=
+X-Google-Smtp-Source: AGHT+IHUU+y7APDBX696xOHg/QH2IAbBmLmFJsGYqruQCmtTG/xwfOSx8GzQUEQvmWq+c6UoDG0MHA==
+X-Received: by 2002:a05:6a00:1408:b0:6d9:b9ba:fc7b with SMTP id l8-20020a056a00140800b006d9b9bafc7bmr6365741pfu.33.1705313131147;
+        Mon, 15 Jan 2024 02:05:31 -0800 (PST)
+Received: from cosmo-ubuntu-2204.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
+        by smtp.gmail.com with ESMTPSA id d10-20020a65424a000000b005cda7a1d72dsm6870712pgq.74.2024.01.15.02.05.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 02:05:30 -0800 (PST)
+From: Cosmo Chou <chou.cosmo@gmail.com>
+To: linux@roeck-us.net,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	jdelvare@suse.com,
+	corbet@lwn.net,
+	broonie@kernel.org,
+	naresh.solanki@9elements.com,
+	vincent@vtremblay.dev,
+	patrick.rudolph@9elements.com,
+	luca.ceresoli@bootlin.com,
+	bhelgaas@google.com,
+	festevam@denx.de,
+	alexander.stein@ew.tq-group.com,
+	heiko@sntech.de,
+	jernej.skrabec@gmail.com,
+	macromorgan@hotmail.com,
+	forbidden405@foxmail.com,
+	sre@kernel.org,
+	linus.walleij@linaro.org
+Cc: devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] x86/xen: Fix some null pointer dereference issues in smp.c
-Date: Mon, 15 Jan 2024 18:01:38 +0800
-Message-Id: <20240115100138.34340-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	linux-hwmon@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	chou.cosmo@gmail.com,
+	cosmo.chou@quantatw.com
+Subject: [PATCH v4 0/3] hwmon: Add driver for Astera Labs PT5161L retimer
+Date: Mon, 15 Jan 2024 18:05:15 +0800
+Message-Id: <20240115100518.2887549-1-chou.cosmo@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-kasprintf() returns a pointer to dynamically allocated memory
-which can be NULL upon failure. Ensure the allocation was successful
-by checking the pointer validity.
+This driver implements support for temperature monitoring of Astera Labs
+PT5161L series PCIe retimer chips.
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- arch/x86/xen/smp.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+LINK: [v1] https://lore.kernel.org/all/20231205074723.3546295-1-chou.cosmo@gmail.com/
 
-diff --git a/arch/x86/xen/smp.c b/arch/x86/xen/smp.c
-index 4b0d6fff88de..f27608ed80a0 100644
---- a/arch/x86/xen/smp.c
-+++ b/arch/x86/xen/smp.c
-@@ -65,6 +65,8 @@ int xen_smp_intr_init(unsigned int cpu)
- 	char *resched_name, *callfunc_name, *debug_name;
-=20
- 	resched_name =3D kasprintf(GFP_KERNEL, "resched%d", cpu);
-+	if (!resched_name)
-+		goto fail;
- 	per_cpu(xen_resched_irq, cpu).name =3D resched_name;
- 	rc =3D bind_ipi_to_irqhandler(XEN_RESCHEDULE_VECTOR,
- 				    cpu,
-@@ -77,6 +79,8 @@ int xen_smp_intr_init(unsigned int cpu)
- 	per_cpu(xen_resched_irq, cpu).irq =3D rc;
-=20
- 	callfunc_name =3D kasprintf(GFP_KERNEL, "callfunc%d", cpu);
-+	if (!callfunc_name)
-+		goto fail;
- 	per_cpu(xen_callfunc_irq, cpu).name =3D callfunc_name;
- 	rc =3D bind_ipi_to_irqhandler(XEN_CALL_FUNCTION_VECTOR,
- 				    cpu,
-@@ -90,6 +94,8 @@ int xen_smp_intr_init(unsigned int cpu)
-=20
- 	if (!xen_fifo_events) {
- 		debug_name =3D kasprintf(GFP_KERNEL, "debug%d", cpu);
-+		if (!debug_name)
-+			goto fail;
- 		per_cpu(xen_debug_irq, cpu).name =3D debug_name;
- 		rc =3D bind_virq_to_irqhandler(VIRQ_DEBUG, cpu,
- 					     xen_debug_interrupt,
-@@ -101,6 +107,8 @@ int xen_smp_intr_init(unsigned int cpu)
- 	}
-=20
- 	callfunc_name =3D kasprintf(GFP_KERNEL, "callfuncsingle%d", cpu);
-+	if (!callfunc_name)
-+		goto fail;
- 	per_cpu(xen_callfuncsingle_irq, cpu).name =3D callfunc_name;
- 	rc =3D bind_ipi_to_irqhandler(XEN_CALL_FUNCTION_SINGLE_VECTOR,
- 				    cpu,
---=20
-2.39.2
+v4:
+  - Rebased
+
+v3:
+  - Revise pt5161l.rst
+  - Revise the style of comments
+  - Remove unused pec_enable
+  - Add back safe access wide registers
+  - fix build warning
+
+v2:
+  - Add "asteralabs,pt5161l" to trivial-devices.yaml
+  - Change naming PT516XX/pt516xx to PT5161L/pt5161l
+  - Separated debugfs files for health status
+  - Revise the style of comments
+  - Remove unused defines
+  - Remove including unused header files
+  - Remove unnecessary debugging messages
+  - Revise the data parsing for a big-endian system
+  - Use read_block_data instead of accessing wide registers
+  - Remove the debugfs files when the device is unloaded
+  - Add acpi_match_table
+
+Cosmo Chou (3):
+  dt-bindings: vendor-prefixes: add asteralabs
+  dt-bindings: trivial-devices: add Astera Labs PT5161L
+  hwmon: Add driver for Astera Labs PT5161L retimer
+
+ .../devicetree/bindings/trivial-devices.yaml  |   2 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ Documentation/hwmon/index.rst                 |   1 +
+ Documentation/hwmon/pt5161l.rst               |  42 ++
+ MAINTAINERS                                   |   7 +
+ drivers/hwmon/Kconfig                         |  10 +
+ drivers/hwmon/Makefile                        |   1 +
+ drivers/hwmon/pt5161l.c                       | 670 ++++++++++++++++++
+ 8 files changed, 735 insertions(+)
+ create mode 100644 Documentation/hwmon/pt5161l.rst
+ create mode 100644 drivers/hwmon/pt5161l.c
+
+-- 
+2.34.1
 
 
