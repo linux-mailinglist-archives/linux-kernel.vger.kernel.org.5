@@ -1,266 +1,175 @@
-Return-Path: <linux-kernel+bounces-25826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE62D82D66C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:53:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15F6982D672
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:54:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D8FD1F2282F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:53:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C6401C215F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:54:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F39411190;
-	Mon, 15 Jan 2024 09:52:51 +0000 (UTC)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 529E3E541;
+	Mon, 15 Jan 2024 09:54:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LIeVukvy"
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54944FC11;
-	Mon, 15 Jan 2024 09:52:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5e76948cda7so77666167b3.3;
-        Mon, 15 Jan 2024 01:52:49 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F373CE54C
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 09:54:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5ec7a5a4b34so90224997b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 01:54:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705312449; x=1705917249; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Km0Qtz7q4pHjc67v0RYg5L+Ylsfr/XKzPScLyVzzc6Y=;
+        b=LIeVukvySD5Rmx82CeO8DpbZwXc+rJAvX5rdWtSFqvtUts5FtnqIjEDJ4QAPOGg3Rj
+         8AD5E8jw9cX2hZPAohLby2F5bSNAZLFqoOaSQ9Ndcr06N58Ito+SjT6rpd5aFVCl/spg
+         EG9ydIuZV8h0rnUyrQ9ZTZ/6L6sy1yW3dWgJnCPWNqXowIXZMOZzzWSx83tVODyqoJHD
+         Zd//VSrnFL3i4zba7d7IlYHzjtNIUDqUCpM9ff3herThRWFpnYcfuGgkMa8wT7ZIFgly
+         ItujrBTEzCT1SkXBgSDlIpIaUEpkUVq3mTkeYCyEF1GHBKtGGx84CHRgpbQvmP+Z7X0C
+         aGFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705312368; x=1705917168;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wsMhOFSC0mxjAJYvrikbFmAm65pBG0U6QI3j9yJqaic=;
-        b=NqW2mCDtcUyTwgZFAA/rkTMwmahWtBYNzWc32YZPKxNlkm0yMW0+8HOjveMxShuxBy
-         CQcHx+Msh/CWIuQxKxaPkIPXMN/G+5Z2e8g8ISXK/Yjc4+w8vNr3nUS9fgey+uTk+fK2
-         oZzyLlN2CaMWRWehm60qBBYaXqBTu1GEtBVOQH0QeL96x1EN+koc3aPHVxdo6atY5h3R
-         LRf/i8kG84+bhDXyaHj+Lu81cV0ZSKJV8bSKDsaOSjH7n/TWEOtQPeuM8nTNKWhFKvGX
-         Zo7uJl/lwyrGDQzCIk5PIReijBY10X23ny24PH0mO2I69pGmfNF7H7iMjU1mI4muKq8b
-         i7qA==
-X-Gm-Message-State: AOJu0YyjDcFNHqPCE7Bn5PhldVqqWrg8jbyb6Z/+i9fnqy8Rf+XHhjUe
-	lVw2vQYIGyA0BD9THlzr3wSSNvnngfGL5A==
-X-Google-Smtp-Source: AGHT+IEX6uvZVQqpdyFdUkuf26ZeiFhzlynOzPs10JRGhXeNHWRABsgvivhCcxnO9Zwq6nEck/W7MQ==
-X-Received: by 2002:a81:7613:0:b0:5f7:b18e:9298 with SMTP id r19-20020a817613000000b005f7b18e9298mr3674121ywc.67.1705312368108;
-        Mon, 15 Jan 2024 01:52:48 -0800 (PST)
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
-        by smtp.gmail.com with ESMTPSA id l6-20020a0de206000000b005ff3b4a89a8sm271889ywe.107.2024.01.15.01.52.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jan 2024 01:52:47 -0800 (PST)
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5e76948cda7so77665967b3.3;
-        Mon, 15 Jan 2024 01:52:47 -0800 (PST)
-X-Received: by 2002:a81:6d41:0:b0:5f6:46b:b0be with SMTP id
- i62-20020a816d41000000b005f6046bb0bemr2963784ywc.61.1705312367679; Mon, 15
- Jan 2024 01:52:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705312449; x=1705917249;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Km0Qtz7q4pHjc67v0RYg5L+Ylsfr/XKzPScLyVzzc6Y=;
+        b=Ra7YOxKjdjOfp0NfxtgOHwBhWkjQqnsREE7Zv6dbhFJ3RFPvVvE2ycrfql+9pXjFfX
+         0E4BaJoYrH3gWzEh2xUhG1GaN1JrDibBtpYFRIDr5DoITd0ZZLGzVjCCwDhsbqO68MHn
+         FJ4nbbWQBoKJZmBhL+qREUXxRGvFC0hEQpfiZQQ6xRBYw0mA2lSC1sFEY2nRdQH6UdpX
+         u/zTCGGI5Xqq8e/BHyeGaAn0yTDTrqN0Ne9q0AbyP35ZbaJJrmuJWPIJORwmU4VETH64
+         gkAZXXnNHVEznNFQOqyuVpufGJ/iWOCgrT196u0Q+ykfaCMZTJibCHix6mMzSK1pk1rT
+         Unng==
+X-Gm-Message-State: AOJu0YwB3DY/Ql/N+/6sf3ZF5etvfjvu7YKhf3VILRt5pW6swTlheWvY
+	QgJEFtaHocsl2dN8MAN/6MbO/U4p2JUK15W4ReSnYnyNzpSEuQ==
+X-Google-Smtp-Source: AGHT+IHgPr4mySPIKN0GZxQVkUboa43McGL/GwUZ+1Mj1PlmzOjQHJxG4eujLEV9NPTQruJeaT4oSS/65+x1zvItebg=
+X-Received: by 2002:a0d:d74f:0:b0:5ea:448b:cf12 with SMTP id
+ z76-20020a0dd74f000000b005ea448bcf12mr3624493ywd.67.1705312448979; Mon, 15
+ Jan 2024 01:54:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1704788539.git.ysato@users.sourceforge.jp> <9c3a9caaa1e2fc7e515cac67f07a20af071bd1be.1704788539.git.ysato@users.sourceforge.jp>
-In-Reply-To: <9c3a9caaa1e2fc7e515cac67f07a20af071bd1be.1704788539.git.ysato@users.sourceforge.jp>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 15 Jan 2024 10:52:36 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWSR3ikL7VZYkNOb1Y8mPU5LaUnc8+WLj-Ec99EOWxs_w@mail.gmail.com>
-Message-ID: <CAMuHMdWSR3ikL7VZYkNOb1Y8mPU5LaUnc8+WLj-Ec99EOWxs_w@mail.gmail.com>
-Subject: Re: [DO NOT MERGE v6 22/37] dt-bindings: display: smi,sm501: SMI
- SM501 binding json-schema
-To: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
+References: <20240112-lpg-v4-1-c4004026686b@quicinc.com> <CAA8EJppdjVRpzrdqm4VOZwUO+khjTdRbY6jN2E2VGmCKSd8inA@mail.gmail.com>
+ <8e51796a-49b6-4217-877b-e393d65ff398@quicinc.com>
+In-Reply-To: <8e51796a-49b6-4217-877b-e393d65ff398@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 15 Jan 2024 11:53:58 +0200
+Message-ID: <CAA8EJpr_W2Uj=yU=xxn=5aUm7B6_6DXZnkNHendXa3zW_VL2=w@mail.gmail.com>
+Subject: Re: [PATCH v4] arm64: dts: qcom: qcs6490-idp: Add definition for
+ three LEDs.
+To: hui liu <quic_huliu@quicinc.com>
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Thomas Gleixner <tglx@linutronix.de>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Jiri Slaby <jirislaby@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, Rich Felker <dalias@libc.org>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Lee Jones <lee@kernel.org>, 
-	Helge Deller <deller@gmx.de>, Heiko Stuebner <heiko@sntech.de>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
-	Yang Xiwen <forbidden405@foxmail.com>, Sebastian Reichel <sre@kernel.org>, 
-	Linus Walleij <linus.walleij@linaro.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@suse.cz>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-	David Rientjes <rientjes@google.com>, Baoquan He <bhe@redhat.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Guenter Roeck <linux@roeck-us.net>, 
-	Stephen Rothwell <sfr@canb.auug.org.au>, Azeem Shaikh <azeemshaikh38@gmail.com>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Palmer Dabbelt <palmer@rivosinc.com>, Bin Meng <bmeng@tinylab.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Jacky Huang <ychuang3@nuvoton.com>, 
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	Sam Ravnborg <sam@ravnborg.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
-	Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>, 
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, linux-ide@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org, 
-	linux-serial@vger.kernel.org, linux-fbdev@vger.kernel.org
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Sato-san,
+On Mon, 15 Jan 2024 at 07:53, hui liu <quic_huliu@quicinc.com> wrote:
+> On 1/12/2024 11:36 AM, Dmitry Baryshkov wrote:
+> > On Fri, 12 Jan 2024 at 05:07, Hui Liu via B4 Relay
+> > <devnull+quic_huliu.quicinc.com@kernel.org> wrote:
+> >>
+> >> From: Hui Liu <quic_huliu@quicinc.com>
+> >>
+> >> Add definition for three LEDs to make sure they can
+> >> be enabled base on QCOM LPG LED driver.
+> >>
+> >> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+> >> ---
+> >> Changes in v4:
+> >> - Removed "label" definition and added "function" definition.
+> >
+> > You have removed "label", but you didn't add "function".
+> I added function node "function = LED_FUNCTION_STATUS;"
+> Don't you mean this function node? I didn't get your mean.
 
-On Tue, Jan 9, 2024 at 9:24=E2=80=AFAM Yoshinori Sato
-<ysato@users.sourceforge.jp> wrote:
-> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
+The "function" is a property of the LED (each of them) rather than
+being a top-level property.
 
-Thanks for your patch!
+> >
+> > BTW: the commit subject is still wrong. Compare "qmp6490-idp" vs "qcs6490-idp"
+> OK, I will update it to qcm6490-idp.
+> >
+> >> - Link to v3: https://lore.kernel.org/r/20231215-lpg-v3-1-4e2db0c6df5f@quicinc.com
+> >>
+> >> Changes in v3:
+> >> - Rephrased commit text and updated the nodes to qcm6490-idp board file.
+> >> - Link to v2: https://lore.kernel.org/all/20231110-qcom_leds-v2-1-3cad1fbbc65a@quicinc.com/
+> >>
+> >> Changes in v2:
+> >> - Rephrased commit text and updated the nodes to board file.
+> >> - Link to v1: https://lore.kernel.org/r/20231108-qcom_leds-v1-1-c3e1c8572cb0@quicinc.com
+> >> ---
+> >>   arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 23 +++++++++++++++++++++++
+> >>   1 file changed, 23 insertions(+)
+> >>
+> >> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+> >> index 37c91fdf3ab9..8268fad505e7 100644
+> >> --- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+> >> +++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+> >> @@ -5,6 +5,7 @@
+> >>
+> >>   /dts-v1/;
+> >>
+> >> +#include <dt-bindings/leds/common.h>
+> >>   #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+> >>   #include "sc7280.dtsi"
+> >>   #include "pm7325.dtsi"
+> >> @@ -414,6 +415,28 @@ vreg_bob_3p296: bob {
+> >>          };
+> >>   };
+> >>
+> >> +&pm8350c_pwm {
+> >> +       function = LED_FUNCTION_STATUS;
+> >> +       #address-cells = <1>;
+> >> +       #size-cells = <0>;
+> >> +       status = "okay";
+> >> +
+> >> +       led@1 {
+> >> +               reg = <1>;
+> >> +               color = <LED_COLOR_ID_RED>;
+> >> +       };
+> >> +
+> >> +       led@2 {
+> >> +               reg = <2>;
+> >> +               color = <LED_COLOR_ID_GREEN>;
+> >> +       };
+> >> +
+> >> +       led@3 {
+> >> +               reg = <3>;
+> >> +               color = <LED_COLOR_ID_BLUE>;
+> >> +       };
+> >> +};
+> >> +
+> >>   &qupv3_id_0 {
+> >>          status = "okay";
+> >>   };
+> >>
+> >> ---
+> >> base-commit: 17cb8a20bde66a520a2ca7aad1063e1ce7382240
+> >> change-id: 20231215-lpg-4aadd374811a
+> >>
+> >> Best regards,
+> >> --
+> >> Hui Liu <quic_huliu@quicinc.com>
+> >>
+> >>
+> >
+> >
 
-> ---
->  .../bindings/display/smi,sm501.yaml           | 417 ++++++++++++++++++
->  1 file changed, 417 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/smi,sm501.y=
-aml
 
-Surely Documentation/devicetree/bindings/display/sm501fb.txt should
-be removed, too?
 
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/smi,sm501.yaml
-
-> +  crt:
-> +    type: object
-> +    description: CRT output control
-> +    properties:
-> +      edid:
-> +        $ref: /schemas/types.yaml#/definitions/uint8-array
-> +        description: |
-> +          verbatim EDID data block describing attached display.
-> +          Data from the detailed timing descriptor will be used to
-> +          program the display controller.
-> +
-> +      smi,flags:
-> +        $ref: /schemas/types.yaml#/definitions/string-array
-> +        description: Display control flags.
-> +        items:
-> +          anyOf:
-> +            - const: use-init-done
-> +            - const: disable-at-exit
-> +            - const: use-hwcursor
-> +            - const: use-hwaccel
-
-The "use-*" flags look like software policy, not hardware description,
-and thus do not belong in DT?
-
-> +            - const: panel-no-fpen
-> +            - const: panel-no-vbiasen
-> +            - const: panel-inv-fpen
-> +            - const: panel-inv-vbiasen
-> +        maxItems: 8
-> +
-> +      bpp:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: Color depth
-> +
-> +  panel:
-> +    type: object
-> +    description: Panel output control
-> +    properties:
-> +      edid:
-> +        $ref: /schemas/types.yaml#/definitions/uint8-array
-> +        description: |
-> +          verbatim EDID data block describing attached display.
-> +          Data from the detailed timing descriptor will be used to
-> +          program the display controller.
-> +
-> +      smi,flags:
-> +        $ref: /schemas/types.yaml#/definitions/string-array
-> +        description: Display control flags.
-> +        items:
-> +          anyOf:
-> +            - const: use-init-done
-> +            - const: disable-at-exit
-> +            - const: use-hwcursor
-> +            - const: use-hwaccel
-
-The "use-*" flags look like software policy, not hardware description,
-and thus do not belong in DT?
-
-> +            - const: panel-no-fpen
-> +            - const: panel-no-vbiasen
-> +            - const: panel-inv-fpen
-> +            - const: panel-inv-vbiasen
-> +        maxItems: 8
-> +
-> +      bpp:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: Color depth
-> +
-> +  smi,devices:
-> +    $ref: /schemas/types.yaml#/definitions/string-array
-> +    description: Select SM501 device functions.
-> +    items:
-> +      anyOf:
-> +        - const: usb-host
-> +        - const: usb-slave
-> +        - const: ssp0
-> +        - const: ssp1
-> +        - const: uart0
-> +        - const: uart1
-> +        - const: fbaccel
-> +        - const: ac97
-> +        - const: i2s
-> +        - const: gpio
-> +    minItems: 1
-> +    maxItems: 10
-
-I think it would be better to have individual subnodes for the sub devices,
-with status =3D "ok"/"disabled".
-
-If you go that route, you do need some fallback code to handle the lack
-of subnodes in the existing user in arch/powerpc/boot/dts/charon.dts.
-
-BTW, why can sm501_pci_initdata get away with setting ".devices
-=3D SM501_USE_ALL"?  Or, would it hurt to enable all subdevices
-unconditionally?
-
-> +
-> +  smi,mclk:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: mclk frequency.
-> +
-> +  smi,m1xclk:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: m1xclk frequency.
-
-These two should be clock specifiers (i.e. phandles pointing to clock
-nodes + optional clock indices).
-
-> +
-> +  misc-timing:
-> +    type: object
-> +    description: Miscellaneous Timing register values.
-> +    properties:
-> +      ex:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: Extend bus holding time.
-> +        enum: [0, 16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192, =
-208, 224, 240]
-> +
-> +      xc:
-> +        $ref: /schemas/types.yaml#/definitions/string
-> +        description: Xscale clock input select.
-> +        items:
-> +          enum:
-> +            - internal-pll
-> +            - hclk
-> +            - gpio33
-
-Software policy instead of hardware description again?
-
-I am not familiar with how the SM501 works, so I cannot comment on
-the other properties, but several of them look like they need rework.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+-- 
+With best wishes
+Dmitry
 
