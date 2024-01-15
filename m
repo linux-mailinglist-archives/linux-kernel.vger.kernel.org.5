@@ -1,168 +1,161 @@
-Return-Path: <linux-kernel+bounces-25912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F7A782D80E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:06:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BB3582D816
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:07:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AEECDB213EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:06:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D39F11F20D48
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:06:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A37AD29411;
-	Mon, 15 Jan 2024 11:06:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A30EF2C6AB;
+	Mon, 15 Jan 2024 11:06:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="BrASkF+H"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="If4u5sBw"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C4DE1E86A;
-	Mon, 15 Jan 2024 11:06:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705316784;
-	bh=9McWAV60PkhZi7zD5efm3VtPNye+yEcAzKdSklegtGg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=BrASkF+HM2Gm7Wsa52sDK8N9HzfyyrdcZxgzb42a/CyxwcT2wUo9E+pQdDnc9Cn4b
-	 Rdc+Ajh+t8fQH/aPj2vvCSsFvsk+knr+fDDupQ30g+kf3iktme0u3B77VWK9FQku+A
-	 rFjz1wbp8RJHLUrljs90IBQmOQh/hMYW+FCBQbrOfD+95GLrwz6+Bd/bBR0RCaXVf7
-	 SiOpewF/4s7ZnjYHWvkfgfCWaVbXlareuQxg1VJScbj/pKDlax2SByf4jA0AJSiu/b
-	 5V4MLbyCwlpb92VXdI1DQLPCAqYQTS2Ujv7/a3in5QPR08c+G9ow0WUMxBwzkzJhuN
-	 Hh5Zwaj6/cgow==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 0FACE378134F;
-	Mon, 15 Jan 2024 11:06:22 +0000 (UTC)
-Message-ID: <2b28421b-d3a9-46f5-a60e-bed84191c9f8@collabora.com>
-Date: Mon, 15 Jan 2024 12:06:22 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C43628DD1;
+	Mon, 15 Jan 2024 11:06:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=B8snCTk6m/S/IySGz0MUr7RGvF9ztHAy1wNv3isU/8A=; b=If4u5sBwSs6B37nBXDgiTbTUGN
+	lDo8qxPOFMMLR9tdUyLFo9NhxhiAei6ak3C/e+2MynMriUcITyfJLZRCR7Ly9EwLVRyTpXgvcUB3V
+	dwGg8WGAGKz7K/mPA9CiHN8UfYztvfbPPXOI0b0S+WLTsoNs8EV0O1R9IOUUphih0SDSGEtoXqkyc
+	uB4sWSh8b+qMXC/2xsfM+PilLtcS9vlGpghLJvk9GXVZXiWY3hrSNwUQ65+M5e30MzDBuRHWV1QU/
+	jXo3DcbVxcVsJSrnfHOPq2fWintWikuBFLjvQHJE8GaX60F8EKAbY9S+jDwY+ZggmQThypOLb+Xcb
+	DtnjfwcQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:60190)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rPKnW-0002Kh-1U;
+	Mon, 15 Jan 2024 11:06:30 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rPKnV-0002tb-9h; Mon, 15 Jan 2024 11:06:29 +0000
+Date: Mon, 15 Jan 2024 11:06:29 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
+	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	jianyong.wu@arm.com, justin.he@arm.com,
+	James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 03/21] ACPI: processor: Register CPUs that are
+ online, but not described in the DSDT
+Message-ID: <ZaURtUvWQyjYfiiO@shell.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+ <E1rDOg2-00Dvjk-RI@rmk-PC.armlinux.org.uk>
+ <CAJZ5v0ju1JHgpjuFLHZVs4NZiARG6iBZN_wza6c2e0kDhZjK0w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/8] Add MT8195 HDMI support
-Content-Language: en-US
-To: Guillaume Ranquet <granquet@baylibre.com>,
- Chunfeng Yun <chunfeng.yun@mediatek.com>,
- Kishon Vijay Abraham I <kishon@ti.com>, Vinod Koul <vkoul@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Chun-Kuang Hu <chunkuang.hu@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, CK Hu <ck.hu@mediatek.com>,
- Jitao shi <jitao.shi@mediatek.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, mac.shen@mediatek.com,
- stuart.lee@mediatek.com
-References: <20220919-v4-0-687f09a06dd9@baylibre.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20220919-v4-0-687f09a06dd9@baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0ju1JHgpjuFLHZVs4NZiARG6iBZN_wza6c2e0kDhZjK0w@mail.gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-Il 29/05/23 16:30, Guillaume Ranquet ha scritto:
-> Add support for HDMI Tx on MT8195.
+On Mon, Dec 18, 2023 at 09:22:03PM +0100, Rafael J. Wysocki wrote:
+> On Wed, Dec 13, 2023 at 1:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
+> >
+> > From: James Morse <james.morse@arm.com>
+> >
+> > ACPI has two descriptions of CPUs, one in the MADT/APIC table, the other
+> > in the DSDT. Both are required. (ACPI 6.5's 8.4 "Declaring Processors"
+> > says "Each processor in the system must be declared in the ACPI
+> > namespace"). Having two descriptions allows firmware authors to get
+> > this wrong.
+> >
+> > If CPUs are described in the MADT/APIC, they will be brought online
+> > early during boot. Once the register_cpu() calls are moved to ACPI,
+> > they will be based on the DSDT description of the CPUs. When CPUs are
+> > missing from the DSDT description, they will end up online, but not
+> > registered.
+> >
+> > Add a helper that runs after acpi_init() has completed to register
+> > CPUs that are online, but weren't found in the DSDT. Any CPU that
+> > is registered by this code triggers a firmware-bug warning and kernel
+> > taint.
+> >
+> > Qemu TCG only describes the first CPU in the DSDT, unless cpu-hotplug
+> > is configured.
 > 
-> This includes a split of the current "legacy" hdmi driver into a common
-> library of functions and two dedicated compilation units with specific
-> code for mt8167 and another for the "v2" mt8195 SoC.
-> 
-> Support for the new mt8195 dpi/drm_drv adjustments to support hdmi.
-> 
-> Based on next-20230523
-> 
-> Still in my TODO-list for v5:
+> So why is this a kernel problem?
 
-Hello,
-sorry for bumping a year old topic; are you still interested in upstreaming this?
+So what are you proposing should be the behaviour here? What this
+statement seems to be saying is that QEMU as it exists today only
+describes the first CPU in DSDT.
 
-Cheers,
-Angelo
+As this patch series changes when arch_register_cpu() gets called (as
+described in the paragraph above) we obviously need to preserve the
+_existing_ behaviour to avoid causing regressions. So, if changing the
+kernel causes user visible regressions (e.g. sysfs entries to
+disappear) then it obviously _is_ a kernel problem that needs to be
+solved.
 
-> 
-> - Removal of the 'is_internal_hdmi' flag in mtk_dpi. [1]
->      I Couldn't find a way to get rid of it with the way things are done
->      in mtk_drm_drv/mtk_ddp_comp.
-> - Do not use a "virtual" device for the ddc v2 hw as it is embedded in
->    the hdmi IP. [2]
->      Seems that a lot of work is done by the framework when using a
->      proper device-tree entry that can be linked as the ddc-i2c-bus of
->      the hdmi-connector.
->      I will keep the virtual device unless I find a way to avoid
->      rewriting the framework code that handles this.
-> 
-> [1] : https://lore.kernel.org/all/988b0a7a-69bb-34e4-e777-1d9516221077@collabora.com/
-> [2] : https://lore.kernel.org/all/7da1e73a0cca6867a060d5b69d45e8d4dfc89748.camel@mediatek.com/
-> 
-> Signed-off-by: Guillaume Ranquet <granquet@baylibre.com>
-> ---
-> 
-> Changes in v4:
-> - Split phy related patches to another series (merged)
-> - Removed regmap wrappers in mtk_hdmi
-> - Removed colorimetry related changes as this initial version only
->    support one color depth
-> - Fixed dt-bindings properties
-> - Removed some now useless clocks from mtk_hdmi_v2 and mtk_dpi
-> - Link to v3: https://lore.kernel.org/r/20220919-v3-0-a803f2660127@baylibre.com
-> 
-> Changes in v3:
-> - phy: Grouped register and bit definition together to add clarity
-> - dt-bindings: Addressed comments
-> - Link to v2: https://lore.kernel.org/r/20220919-v2-0-8419dcf4f09d@baylibre.com
-> 
-> Changes in v2:
-> - Removed syscon requirement from the hdmi node
-> - Use as much as possible bit FIELD_PREP/FIELD_GET macros across all the
->    patches
-> - Make cec optional dynamically instead of hardcoded with a flag
-> - Renamed hdmi variants to v1 (legacy) and v2 (mt8195) while waiting for
->    a better name
-> - Rework hdmi v2 code to use a connector (same as v1)
-> - Remove "magic" 0x43 addr special handling in hdmi ddc code
-> - Link to v1: https://lore.kernel.org/r/20220919-v1-0-4844816c9808@baylibre.com
-> 
-> ---
-> Guillaume Ranquet (8):
->        dt-bindings: display: mediatek: add MT8195 hdmi bindings
->        drm/mediatek: hdmi: use a regmap instead of iomem
->        drm/mediatek: extract common functions from the mtk hdmi driver
->        drm/mediatek: hdmi: make the cec dev optional
->        drm/mediatek: hdmi: add v2 support
->        drm/mediatek: hdmi: v2: add audio support
->        dt-bindings: display: mediatek: dpi: Add compatible for MediaTek MT8195
->        drm/mediatek: dpi: Add mt8195 hdmi to DPI driver
-> 
->   .../bindings/display/mediatek/mediatek,dpi.yaml    |    1 +
->   .../bindings/display/mediatek/mediatek,hdmi.yaml   |   59 +-
->   .../display/mediatek/mediatek,mt8195-hdmi-ddc.yaml |   45 +
->   drivers/gpu/drm/mediatek/Kconfig                   |    2 +
->   drivers/gpu/drm/mediatek/Makefile                  |    5 +-
->   drivers/gpu/drm/mediatek/mtk_dpi.c                 |  121 +-
->   drivers/gpu/drm/mediatek/mtk_dpi_regs.h            |    5 +
->   drivers/gpu/drm/mediatek/mtk_hdmi.c                |  773 ++----------
->   drivers/gpu/drm/mediatek/mtk_hdmi.h                |   18 +
->   drivers/gpu/drm/mediatek/mtk_hdmi_common.c         |  437 +++++++
->   drivers/gpu/drm/mediatek/mtk_hdmi_common.h         |  208 ++++
->   drivers/gpu/drm/mediatek/mtk_hdmi_ddc_v2.c         |  362 ++++++
->   drivers/gpu/drm/mediatek/mtk_hdmi_regs_v2.h        |  276 +++++
->   drivers/gpu/drm/mediatek/mtk_hdmi_v2.c             | 1303 ++++++++++++++++++++
->   drivers/gpu/drm/mediatek/mtk_hdmi_v2.h             |   32 +
->   15 files changed, 2955 insertions(+), 692 deletions(-)
-> ---
-> base-commit: c8a64c6a78c54887da437098d97dc2accc689e89
-> change-id: 20220919-hdmi_mtk
-> 
-> Best regards,
+We can't say "well fix QEMU then" without invoking the wrath of Linus.
 
+> > Signed-off-by: James Morse <james.morse@arm.com>
+> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > Reviewed-by: Gavin Shan <gshan@redhat.com>
+> > Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> > ---
+> >  drivers/acpi/acpi_processor.c | 19 +++++++++++++++++++
+> >  1 file changed, 19 insertions(+)
+> >
+> > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> > index 6a542e0ce396..0511f2bc10bc 100644
+> > --- a/drivers/acpi/acpi_processor.c
+> > +++ b/drivers/acpi/acpi_processor.c
+> > @@ -791,6 +791,25 @@ void __init acpi_processor_init(void)
+> >         acpi_pcc_cpufreq_init();
+> >  }
+> >
+> > +static int __init acpi_processor_register_missing_cpus(void)
+> > +{
+> > +       int cpu;
+> > +
+> > +       if (acpi_disabled)
+> > +               return 0;
+> > +
+> > +       for_each_online_cpu(cpu) {
+> > +               if (!get_cpu_device(cpu)) {
+> > +                       pr_err_once(FW_BUG "CPU %u has no ACPI namespace description!\n", cpu);
+> > +                       add_taint(TAINT_FIRMWARE_WORKAROUND, LOCKDEP_STILL_OK);
+> > +                       arch_register_cpu(cpu);
+> 
+> Which part of this code is related to ACPI?
+
+That's a good question, and I suspect it would be more suited to being
+placed in drivers/base/cpu.c except for the problem that the error
+message refers to ACPI.
+
+As long as we keep the acpi_disabled test, I guess that's fine.
+cpu_dev_register_generic() there already tests acpi_disabled.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
