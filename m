@@ -1,25 +1,25 @@
-Return-Path: <linux-kernel+bounces-26104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2879E82DB71
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:39:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D87ED82DB75
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:40:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8B321F2293F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:39:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DBC4B20EA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:40:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBC7F18028;
-	Mon, 15 Jan 2024 14:38:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 212F018AF9;
+	Mon, 15 Jan 2024 14:38:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="xLLcLooz";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="p1SCOwxx"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OOfR+TFm";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="L1MnTz91"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C678179BC
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 14:38:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B240917C9B
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 14:38:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: Anna-Maria Behnsen <anna-maria@linutronix.de>
@@ -29,21 +29,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JNIN8XCUDE1sXjDFOsAqNC/m2dPziZPst5V05kZh90Q=;
-	b=xLLcLoozEBINigPBjKzXzLZqUlO4iXEH+bnYjLA8s9NsrzOM8ZdRuhFAooFDJdtoI7/Xzd
-	aMwRjpebAWtxtl0NSl3/wnCFU5Ygagq0zg7hqzyyLeWBLhxnc7oI8qMYJECx97wGadrptu
-	2No2XTcbRpniHVJ/O7Y3cWbkSpPu94dyWNhFVcuKzWxOLIKy1iC3GjlBq05Gpm0YtRe+Sc
-	PqmExnHcc5n0fOTTQfGChQssf8GUqb7mMsQLGnHw+MkWLLxGOCZ0Mi3dgw+PO3q3ix/y29
-	gP6fOiahz/2/xp5AP4hSrJTKmKsvnOH4KlAkHk01BLejV5ImgxJd8CUaozruLw==
+	bh=zEgGcKW6JMWXT3RCg8hyceZW3QBGqilSX6gklxOWvpk=;
+	b=OOfR+TFmuoq1rA3vYVTvo3+FzOeggKrZ0WzzTutc+zcu82SfPSvzII9tkIgID4XXXAh9dt
+	k+oXrDafspOpKlLO38OMfkEKP5cfwQZBxe8n5j0gGKL8PLw/ebdeVKCya5hmmL6dOx0s3W
+	83b6felodkEXVLPDvtWIQk3S6we2XlVYc4apue+mjtBhV8Xedo87lBh5pAA8mtQaHVzIXk
+	gn6DNUDU323/F5HMOxrRSzAP8y+szN/MoKB4STfcoOK0Mnvptx6/CiW4jjvkNxPO6YifMd
+	BRW6UhFXMmRaQQG9OY7D92EhOeTK4bCEWULip4QU1Oq8pBZRaG2K/COFUc5jwQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1705329487;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JNIN8XCUDE1sXjDFOsAqNC/m2dPziZPst5V05kZh90Q=;
-	b=p1SCOwxxFeN90cEaCj5jTm16QNT7JNWHQUUHeBYm8MRqtexuXM2Hn/RJJ7TY6rd4sgZiTK
-	WJpMEkxX9GZiTdAg==
+	bh=zEgGcKW6JMWXT3RCg8hyceZW3QBGqilSX6gklxOWvpk=;
+	b=L1MnTz91citajB5OnIT2JeXGPJE4ZPdnJSdsCoXRfjHBiBtM4QgSeuuvk95svk0gN9DCrB
+	mgk/Ocz6V6BIXMBA==
 To: linux-kernel@vger.kernel.org
 Cc: Peter Zijlstra <peterz@infradead.org>,
 	John Stultz <jstultz@google.com>,
@@ -62,9 +62,9 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
 	K Prateek Nayak <kprateek.nayak@amd.com>,
 	Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: [PATCH v10 08/20] timers: Ease code in run_local_timers()
-Date: Mon, 15 Jan 2024 15:37:31 +0100
-Message-Id: <20240115143743.27827-9-anna-maria@linutronix.de>
+Subject: [PATCH v10 09/20] timers: Split next timer interrupt logic
+Date: Mon, 15 Jan 2024 15:37:32 +0100
+Message-Id: <20240115143743.27827-10-anna-maria@linutronix.de>
 In-Reply-To: <20240115143743.27827-1-anna-maria@linutronix.de>
 References: <20240115143743.27827-1-anna-maria@linutronix.de>
 Precedence: bulk
@@ -75,48 +75,82 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The logic for raising a softirq the way it is implemented right now, is
-readable for two timer bases. When increasing numbers of timer bases, code
-gets harder to read. With the introduction of the timer migration
-hierarchy, there will be three timer bases.
+Split the logic for getting next timer interrupt (no matter of recalculated
+or already stored in base->next_expiry) into a separate function named
+next_timer_interrupt(). Make it available to local call sites only.
 
-Therefore ease the code. No functional change.
+No functional change.
 
 Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 ---
-v5: New patch to decrease patch size of follow up patches
+v10: Reword commit message
+
+v9: Adapt to the fix for empty timer bases.
 ---
- kernel/time/timer.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ kernel/time/timer.c | 32 +++++++++++++++++++-------------
+ 1 file changed, 19 insertions(+), 13 deletions(-)
 
 diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index fc4c406c9ec7..793848167852 100644
+index 793848167852..4d6cf49a2fd1 100644
 --- a/kernel/time/timer.c
 +++ b/kernel/time/timer.c
-@@ -2135,16 +2135,14 @@ static void run_local_timers(void)
- 	struct timer_base *base = this_cpu_ptr(&timer_bases[BASE_STD]);
- 
- 	hrtimer_run_queues();
--	/* Raise the softirq only if required. */
--	if (time_before(jiffies, base->next_expiry)) {
--		if (!IS_ENABLED(CONFIG_NO_HZ_COMMON))
--			return;
--		/* CPU is awake, so check the deferrable base. */
--		base++;
--		if (time_before(jiffies, base->next_expiry))
-+
-+	for (int i = 0; i < NR_BASES; i++, base++) {
-+		/* Raise the softirq only if required. */
-+		if (time_after_eq(jiffies, base->next_expiry)) {
-+			raise_softirq(TIMER_SOFTIRQ);
- 			return;
-+		}
- 	}
--	raise_softirq(TIMER_SOFTIRQ);
+@@ -1951,12 +1951,29 @@ static u64 cmp_next_hrtimer_event(u64 basem, u64 expires)
+ 	return DIV_ROUND_UP_ULL(nextevt, TICK_NSEC) * TICK_NSEC;
  }
  
- /*
++static unsigned long next_timer_interrupt(struct timer_base *base,
++					  unsigned long basej)
++{
++	if (base->next_expiry_recalc)
++		next_expiry_recalc(base);
++
++	/*
++	 * Move next_expiry for the empty base into the future to prevent an
++	 * unnecessary raise of the timer softirq when the next_expiry value
++	 * will be reached even if there is no timer pending.
++	 */
++	if (!base->timers_pending)
++		base->next_expiry = basej + NEXT_TIMER_MAX_DELTA;
++
++	return base->next_expiry;
++}
++
+ static inline u64 __get_next_timer_interrupt(unsigned long basej, u64 basem,
+ 					     bool *idle)
+ {
+ 	struct timer_base *base = this_cpu_ptr(&timer_bases[BASE_STD]);
+-	unsigned long nextevt = basej + NEXT_TIMER_MAX_DELTA;
+ 	u64 expires = KTIME_MAX;
++	unsigned long nextevt;
+ 
+ 	/*
+ 	 * Pretend that there is no timer pending if the cpu is offline.
+@@ -1969,24 +1986,13 @@ static inline u64 __get_next_timer_interrupt(unsigned long basej, u64 basem,
+ 	}
+ 
+ 	raw_spin_lock(&base->lock);
+-	if (base->next_expiry_recalc)
+-		next_expiry_recalc(base);
++	nextevt = next_timer_interrupt(base, basej);
+ 
+ 	if (base->timers_pending) {
+-		nextevt = base->next_expiry;
+-
+ 		/* If we missed a tick already, force 0 delta */
+ 		if (time_before(nextevt, basej))
+ 			nextevt = basej;
+ 		expires = basem + (u64)(nextevt - basej) * TICK_NSEC;
+-	} else {
+-		/*
+-		 * Move next_expiry for the empty base into the future to
+-		 * prevent a unnecessary raise of the timer softirq when the
+-		 * next_expiry value will be reached even if there is no timer
+-		 * pending.
+-		 */
+-		base->next_expiry = nextevt;
+ 	}
+ 
+ 	/*
 -- 
 2.39.2
 
