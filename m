@@ -1,80 +1,381 @@
-Return-Path: <linux-kernel+bounces-25665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AF7F82D452
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:54:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E009C82D459
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:59:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9EEC1C20DF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 06:54:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A93F2816B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 06:59:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E13C66AA4;
-	Mon, 15 Jan 2024 06:54:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA7C63C1D;
+	Mon, 15 Jan 2024 06:59:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="duDvVlZi"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="x4G0IDWO"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD54D63AE
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 06:54:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=hJrN8gZT/HYpbOMm+1QDv4p0H4Brjpdl0colo6KhxYM=; b=duDvVlZiKsVGlGusgzwGo3i5/+
-	6De1nttWvMKpJbVZom4lqFwcwDbyC5+iGfM105rwq++rkD56TWmKxcPshaVHxdtlcnkcHl8si3eee
-	RNXzRjFKsCKP+B9URGDky1Kaw5+W86dPKGjiXuhzoJ7hyCBTNSvbxoMaUy6vXfDrI6iX87jhTlW8y
-	1hu2LmlYMnXaSCHCv5UgBNuYX51zf0hhzDKWeUVWRaEu5xVCFwM2Z/e0MtIbz3I7U18B3z2k+UBem
-	0TLskF+m9jidYpZVGFgxtTXpnUBiZBv3xRz1BkG8mLIkXjZxCdcPfUC2wqFd9KwzFWZqX6yK+92Ho
-	nbMad+JA==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rPGro-002cLQ-1N;
-	Mon, 15 Jan 2024 06:54:40 +0000
-Date: Mon, 15 Jan 2024 06:54:40 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Li kunyu <kunyu@nfschina.com>
-Cc: linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] utsname: Optimize clone_uts_ns()
-Message-ID: <20240115065440.GF1674809@ZenIV>
-References: <20240115061127.30836-1-kunyu@nfschina.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 958123C0B;
+	Mon, 15 Jan 2024 06:59:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705301966;
+	bh=PUNiFql2LzYt4AfUj6+kFyjiKSLCP2jzF69eYRLV3m8=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=x4G0IDWOY9mEwa96umEJ9cNBDjBE4yobVBcd4b24K9J2SDz+Xbq91JY3wHcD3J0XY
+	 cxAEJCIb0PbJP2BRUiPQEJs4eIztkhtfEUAbFOT1ySKJTdmf186KS+TL6RT0TD3hDe
+	 XitrekO2fzeO27o9ECzEkxPKXgENniSs/eO5lUGceSw8JL1xyulBqytWZoce0ZRJKh
+	 eeZcMa8E9aCWCvLNd4dUETYLqhjVgSa6yQR6wAl541jhZIjTQf1aQLbgQfRdoWHl2S
+	 RjwXQxpYLfShFF79t0I+JbDNYqByetDJwhxoxx6/5so3WJSn06WGK15wAwgz9S6NNC
+	 EPOpkWzGzaqBw==
+Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1CB6E3780C35;
+	Mon, 15 Jan 2024 06:59:24 +0000 (UTC)
+Message-ID: <dc244d6a-c9ac-4b21-90ca-ac54e6ebe39a@collabora.com>
+Date: Mon, 15 Jan 2024 11:59:33 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240115061127.30836-1-kunyu@nfschina.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>,
+ kernel@collabora.com, linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/7] selftests/mm: hugetlb-read-hwpoison: conform test
+ to TAP format output
+Content-Language: en-US
+To: Jiaqi Yan <jiaqiyan@google.com>
+References: <20240112072144.620098-1-usama.anjum@collabora.com>
+ <20240112072144.620098-5-usama.anjum@collabora.com>
+ <CACw3F51dwDhuaRxy+ud3CWfTt5ZcoS8=7jLU74KXJHJaCcc8Dw@mail.gmail.com>
+ <0b5a7c8c-d46b-496c-b705-fafc54a91ff0@collabora.com>
+ <CACw3F50OXfYYSGzbp3+eHjVxj=VU4sJiQO-=yrDTEUX=Map6gQ@mail.gmail.com>
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <CACw3F50OXfYYSGzbp3+eHjVxj=VU4sJiQO-=yrDTEUX=Map6gQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 15, 2024 at 02:11:27PM +0800, Li kunyu wrote:
-> Optimize the err variable assignment location so that the err variable
-> is manually modified when an error occurs.
+On 1/15/24 11:52 AM, Jiaqi Yan wrote:
+> On Sun, Jan 14, 2024 at 10:32 PM Muhammad Usama Anjum
+> <usama.anjum@collabora.com> wrote:
+>>
+>> On 1/13/24 6:08 AM, Jiaqi Yan wrote:
+>>> On Thu, Jan 11, 2024 at 11:21 PM Muhammad Usama Anjum
+>>> <usama.anjum@collabora.com> wrote:
+>>>>
+>>>> Conform the layout, informational and status messages to TAP. No
+>>>> functional change is intended other than the layout of output messages.
+>>>>
+>>>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+>>>> ---
+>>>> Tested this by reverting the patch a08c7193e4f18dc8508f2d07d0de2c5b94cb39a3
+>>>> ("mm/filemap: remove hugetlb special casing in filemap.c") as it has
+>>>> broken the test. The bug report can be found at [1].
+>>>>
+>>>> Tested with proposed fix as well [2].
+>>>>
+>>>> [1] https://lore.kernel.org/all/079335ab-190f-41f7-b832-6ffe7528fd8b@collabora.com
+>>>> [2] https://lore.kernel.org/all/a20e7bdb-7344-306d-e8f5-5ee69af7d5ea@oracle.com
+>>>> ---
+>>>>  .../selftests/mm/hugetlb-read-hwpoison.c      | 116 +++++++++---------
+>>>>  1 file changed, 56 insertions(+), 60 deletions(-)
+>>>>
+>>>> diff --git a/tools/testing/selftests/mm/hugetlb-read-hwpoison.c b/tools/testing/selftests/mm/hugetlb-read-hwpoison.c
+>>>> index ba6cc6f9cabc..193ad7275df5 100644
+>>>> --- a/tools/testing/selftests/mm/hugetlb-read-hwpoison.c
+>>>> +++ b/tools/testing/selftests/mm/hugetlb-read-hwpoison.c
+>>>> @@ -58,8 +58,8 @@ static bool verify_chunk(char *buf, size_t len, char val)
+>>>>
+>>>>         for (i = 0; i < len; ++i) {
+>>>>                 if (buf[i] != val) {
+>>>> -                       printf(PREFIX ERROR_PREFIX "check fail: buf[%lu] = %u != %u\n",
+>>>> -                               i, buf[i], val);
+>>>> +                       ksft_print_msg(PREFIX ERROR_PREFIX "check fail: buf[%lu] = %u != %u\n",
+>>>> +                                      i, buf[i], val);
+>>>>                         return false;
+>>>>                 }
+>>>>         }
+>>>> @@ -75,9 +75,9 @@ static bool seek_read_hugepage_filemap(int fd, size_t len, size_t wr_chunk_size,
+>>>>         ssize_t total_ret_count = 0;
+>>>>         char val = offset / wr_chunk_size + offset % wr_chunk_size;
+>>>>
+>>>> -       printf(PREFIX PREFIX "init val=%u with offset=0x%lx\n", val, offset);
+>>>> -       printf(PREFIX PREFIX "expect to read 0x%lx bytes of data in total\n",
+>>>> -              expected);
+>>>> +       ksft_print_msg(PREFIX PREFIX "init val=%u with offset=0x%lx\n", val, offset);
+>>>> +       ksft_print_msg(PREFIX PREFIX "expect to read 0x%lx bytes of data in total\n",
+>>>> +                      expected);
+>>>>         if (lseek(fd, offset, SEEK_SET) < 0) {
+>>>>                 perror(PREFIX ERROR_PREFIX "seek failed");
+>>>>                 return false;
+>>>> @@ -86,7 +86,7 @@ static bool seek_read_hugepage_filemap(int fd, size_t len, size_t wr_chunk_size,
+>>>>         while (offset + total_ret_count < len) {
+>>>>                 ret_count = read(fd, buf, wr_chunk_size);
+>>>>                 if (ret_count == 0) {
+>>>> -                       printf(PREFIX PREFIX "read reach end of the file\n");
+>>>> +                       ksft_print_msg(PREFIX PREFIX "read reach end of the file\n");
+>>>>                         break;
+>>>>                 } else if (ret_count < 0) {
+>>>>                         perror(PREFIX ERROR_PREFIX "read failed");
+>>>> @@ -98,8 +98,8 @@ static bool seek_read_hugepage_filemap(int fd, size_t len, size_t wr_chunk_size,
+>>>>
+>>>>                 total_ret_count += ret_count;
+>>>>         }
+>>>> -       printf(PREFIX PREFIX "actually read 0x%lx bytes of data in total\n",
+>>>> -              total_ret_count);
+>>>> +       ksft_print_msg(PREFIX PREFIX "actually read 0x%lx bytes of data in total\n",
+>>>> +                      total_ret_count);
+>>>>
+>>>>         return total_ret_count == expected;
+>>>>  }
+>>>> @@ -112,15 +112,15 @@ static bool read_hugepage_filemap(int fd, size_t len,
+>>>>         ssize_t total_ret_count = 0;
+>>>>         char val = 0;
+>>>>
+>>>> -       printf(PREFIX PREFIX "expect to read 0x%lx bytes of data in total\n",
+>>>> -              expected);
+>>>> +       ksft_print_msg(PREFIX PREFIX "expect to read 0x%lx bytes of data in total\n",
+>>>> +                      expected);
+>>>>         while (total_ret_count < len) {
+>>>>                 ret_count = read(fd, buf, wr_chunk_size);
+>>>>                 if (ret_count == 0) {
+>>>> -                       printf(PREFIX PREFIX "read reach end of the file\n");
+>>>> +                       ksft_print_msg(PREFIX PREFIX "read reach end of the file\n");
+>>>>                         break;
+>>>>                 } else if (ret_count < 0) {
+>>>> -                       perror(PREFIX ERROR_PREFIX "read failed");
+>>>> +                       ksft_print_msg(PREFIX ERROR_PREFIX "read failed");
+>>>
+>>> Should we also include strerror(errno) in log msg, like you did below?
+>> Looks like I missed it. I'll post a v3.
+>>>
+>>> Actually, would ksft_perror be a better choice for perror()s?
+>> It may or may not be. There aren't ksft_*_perror macros for printing the
+>> logs at this time. I prefer using just whatever macros are available. They
+>> aren't generic enough. Maybe mm tests use perror whenever error occurs, but
+>> other tests don't.
+> 
+> can't you use this ksft_perror available today?
+> https://github.com/torvalds/linux/blob/master/tools/testing/selftests/kselftest.h#L161C25-L172
+Sorry, I wan't able to find it. It has missing signature in header comment
+as well. I'll just update this current test. I'll use ksft_perror in future
+patches. Thanks for mentining it.
 
-First of all, this is *not* an optimization in any meaningful sense -
-compiler is perfectly capable to shift those assignments (from either
-form) and choose whatever it prefers.
+> 
+>>
+>>>
+>>>>
+>>>>                         break;
+>>>>                 }
+>>>>                 ++val;
+>>>> @@ -129,8 +129,8 @@ static bool read_hugepage_filemap(int fd, size_t len,
+>>>>
+>>>>                 total_ret_count += ret_count;
+>>>>         }
+>>>> -       printf(PREFIX PREFIX "actually read 0x%lx bytes of data in total\n",
+>>>> -              total_ret_count);
+>>>> +       ksft_print_msg(PREFIX PREFIX "actually read 0x%lx bytes of data in total\n",
+>>>> +                      total_ret_count);
+>>>>
+>>>>         return total_ret_count == expected;
+>>>>  }
+>>>> @@ -142,14 +142,15 @@ test_hugetlb_read(int fd, size_t len, size_t wr_chunk_size)
+>>>>         char *filemap = NULL;
+>>>>
+>>>>         if (ftruncate(fd, len) < 0) {
+>>>> -               perror(PREFIX ERROR_PREFIX "ftruncate failed");
+>>>> +               ksft_print_msg(PREFIX ERROR_PREFIX "ftruncate failed: %s\n", strerror(errno));
+>>>>                 return status;
+>>>>         }
+>>>>
+>>>>         filemap = mmap(NULL, len, PROT_READ | PROT_WRITE,
+>>>>                        MAP_SHARED | MAP_POPULATE, fd, 0);
+>>>>         if (filemap == MAP_FAILED) {
+>>>> -               perror(PREFIX ERROR_PREFIX "mmap for primary mapping failed");
+>>>> +               ksft_print_msg(PREFIX ERROR_PREFIX "mmap for primary mapping failed: %s\n",
+>>>> +                              strerror(errno));
+>>>>                 goto done;
+>>>>         }
+>>>>
+>>>> @@ -162,7 +163,8 @@ test_hugetlb_read(int fd, size_t len, size_t wr_chunk_size)
+>>>>         munmap(filemap, len);
+>>>>  done:
+>>>>         if (ftruncate(fd, 0) < 0) {
+>>>> -               perror(PREFIX ERROR_PREFIX "ftruncate back to 0 failed");
+>>>> +               ksft_print_msg(PREFIX ERROR_PREFIX "ftruncate back to 0 failed : %s\n",
+>>>> +                              strerror(errno));
+>>>>                 status = TEST_FAILED;
+>>>>         }
+>>>>
+>>>> @@ -179,14 +181,15 @@ test_hugetlb_read_hwpoison(int fd, size_t len, size_t wr_chunk_size,
+>>>>         const unsigned long pagesize = getpagesize();
+>>>>
+>>>>         if (ftruncate(fd, len) < 0) {
+>>>> -               perror(PREFIX ERROR_PREFIX "ftruncate failed");
+>>>> +               ksft_print_msg(PREFIX ERROR_PREFIX "ftruncate failed: %s\n", strerror(errno));
+>>>>                 return status;
+>>>>         }
+>>>>
+>>>>         filemap = mmap(NULL, len, PROT_READ | PROT_WRITE,
+>>>>                        MAP_SHARED | MAP_POPULATE, fd, 0);
+>>>>         if (filemap == MAP_FAILED) {
+>>>> -               perror(PREFIX ERROR_PREFIX "mmap for primary mapping failed");
+>>>> +               ksft_print_msg(PREFIX ERROR_PREFIX "mmap for primary mapping failed: %s\n",
+>>>> +                              strerror(errno));
+>>>>                 goto done;
+>>>>         }
+>>>>
+>>>> @@ -201,7 +204,7 @@ test_hugetlb_read_hwpoison(int fd, size_t len, size_t wr_chunk_size,
+>>>>          */
+>>>>         hwp_addr = filemap + len / 2 + pagesize;
+>>>>         if (madvise(hwp_addr, pagesize, MADV_HWPOISON) < 0) {
+>>>> -               perror(PREFIX ERROR_PREFIX "MADV_HWPOISON failed");
+>>>> +               ksft_print_msg(PREFIX ERROR_PREFIX "MADV_HWPOISON failed: %s\n", strerror(errno));
+>>>>                 goto unmap;
+>>>>         }
+>>>>
+>>>> @@ -228,7 +231,8 @@ test_hugetlb_read_hwpoison(int fd, size_t len, size_t wr_chunk_size,
+>>>>         munmap(filemap, len);
+>>>>  done:
+>>>>         if (ftruncate(fd, 0) < 0) {
+>>>> -               perror(PREFIX ERROR_PREFIX "ftruncate back to 0 failed");
+>>>> +               ksft_print_msg(PREFIX ERROR_PREFIX "ftruncate back to 0 failed: %s\n",
+>>>> +                              strerror(errno));
+>>>>                 status = TEST_FAILED;
+>>>>         }
+>>>>
+>>>> @@ -240,27 +244,32 @@ static int create_hugetlbfs_file(struct statfs *file_stat)
+>>>>         int fd;
+>>>>
+>>>>         fd = memfd_create("hugetlb_tmp", MFD_HUGETLB);
+>>>> -       if (fd < 0) {
+>>>> -               perror(PREFIX ERROR_PREFIX "could not open hugetlbfs file");
+>>>> -               return -1;
+>>>> -       }
+>>>> +       if (fd < 0)
+>>>> +               ksft_exit_fail_msg(PREFIX ERROR_PREFIX "could not open hugetlbfs file: %s\n",
+>>>> +                                  strerror(errno));
+>>>>
+>>>>         memset(file_stat, 0, sizeof(*file_stat));
+>>>> +
+>>>>         if (fstatfs(fd, file_stat)) {
+>>>> -               perror(PREFIX ERROR_PREFIX "fstatfs failed");
+>>>> -               goto close;
+>>>> +               close(fd);
+>>>> +               ksft_exit_fail_msg(PREFIX ERROR_PREFIX "fstatfs failed: %s\n", strerror(errno));
+>>>>         }
+>>>>         if (file_stat->f_type != HUGETLBFS_MAGIC) {
+>>>> -               printf(PREFIX ERROR_PREFIX "not hugetlbfs file\n");
+>>>> -               goto close;
+>>>> +               close(fd);
+>>>> +               ksft_exit_fail_msg(PREFIX ERROR_PREFIX "not hugetlbfs file\n");
+>>>>         }
+>>>>
+>>>>         return fd;
+>>>> -close:
+>>>> -       close(fd);
+>>>> -       return -1;
+>>>>  }
+>>>>
+>>>> +#define KSFT_PRINT_MSG(status, fmt, ...)                                       \
+>>>> +       do {                                                                    \
+>>>> +               if (status == TEST_SKIPPED)                                     \
+>>>> +                       ksft_test_result_skip(fmt, __VA_ARGS__);                \
+>>>> +               else                                                            \
+>>>> +                       ksft_test_result(status == TEST_PASSED, fmt, __VA_ARGS__); \
+>>>> +       } while (0)
+>>>> +
+>>>>  int main(void)
+>>>>  {
+>>>>         int fd;
+>>>> @@ -273,50 +282,37 @@ int main(void)
+>>>>         };
+>>>>         size_t i;
+>>>>
+>>>> +       ksft_print_header();
+>>>> +       ksft_set_plan(12);
+>>>> +
+>>>>         for (i = 0; i < ARRAY_SIZE(wr_chunk_sizes); ++i) {
+>>>> -               printf("Write/read chunk size=0x%lx\n",
+>>>> -                      wr_chunk_sizes[i]);
+>>>> +               ksft_print_msg("Write/read chunk size=0x%lx\n",
+>>>> +                              wr_chunk_sizes[i]);
+>>>>
+>>>>                 fd = create_hugetlbfs_file(&file_stat);
+>>>> -               if (fd < 0)
+>>>> -                       goto create_failure;
+>>>> -               printf(PREFIX "HugeTLB read regression test...\n");
+>>>> +               ksft_print_msg(PREFIX "HugeTLB read regression test...\n");
+>>>>                 status = test_hugetlb_read(fd, file_stat.f_bsize,
+>>>>                                            wr_chunk_sizes[i]);
+>>>> -               printf(PREFIX "HugeTLB read regression test...%s\n",
+>>>> -                      status_to_str(status));
+>>>> +               KSFT_PRINT_MSG(status, PREFIX "HugeTLB read regression test...%s\n",
+>>>> +                              status_to_str(status));
+>>>>                 close(fd);
+>>>> -               if (status == TEST_FAILED)
+>>>> -                       return -1;
+>>>>
+>>>>                 fd = create_hugetlbfs_file(&file_stat);
+>>>> -               if (fd < 0)
+>>>> -                       goto create_failure;
+>>>> -               printf(PREFIX "HugeTLB read HWPOISON test...\n");
+>>>> +               ksft_print_msg(PREFIX "HugeTLB read HWPOISON test...\n");
+>>>>                 status = test_hugetlb_read_hwpoison(fd, file_stat.f_bsize,
+>>>>                                                     wr_chunk_sizes[i], false);
+>>>> -               printf(PREFIX "HugeTLB read HWPOISON test...%s\n",
+>>>> -                      status_to_str(status));
+>>>> +               KSFT_PRINT_MSG(status, PREFIX "HugeTLB read HWPOISON test..%s\n",
+>>>> +                              status_to_str(status));
+>>>>                 close(fd);
+>>>> -               if (status == TEST_FAILED)
+>>>> -                       return -1;
+>>>>
+>>>>                 fd = create_hugetlbfs_file(&file_stat);
+>>>> -               if (fd < 0)
+>>>> -                       goto create_failure;
+>>>> -               printf(PREFIX "HugeTLB seek then read HWPOISON test...\n");
+>>>> +               ksft_print_msg(PREFIX "HugeTLB seek then read HWPOISON test...\n");
+>>>>                 status = test_hugetlb_read_hwpoison(fd, file_stat.f_bsize,
+>>>>                                                     wr_chunk_sizes[i], true);
+>>>> -               printf(PREFIX "HugeTLB seek then read HWPOISON test...%s\n",
+>>>> -                      status_to_str(status));
+>>>> +               KSFT_PRINT_MSG(status, PREFIX "HugeTLB seek then read HWPOISON test...%s\n",
+>>>> +                              status_to_str(status));
+>>>>                 close(fd);
+>>>> -               if (status == TEST_FAILED)
+>>>> -                       return -1;
+>>>>         }
+>>>>
+>>>> -       return 0;
+>>>> -
+>>>> -create_failure:
+>>>> -       printf(ERROR_PREFIX "Abort test: failed to create hugetlbfs file\n");
+>>>> -       return -1;
+>>>> +       ksft_finished();
+>>>>  }
+>>>> --
+>>>> 2.42.0
+>>>>
+>>>>
+>>>
+>>
+>> --
+>> BR,
+>> Muhammad Usama Anjum
+> 
 
-Incidentally, it might end up lifting the store out of if - it's
-entirely possible that
-	r1 = v
-	flag = (r2 == 0)
-	if flag goto fail
-is better than
-	flag = (r2 == 0)
-	if flag goto l
-	...
-l:
-	r1 = v
-	goto fail
-provided that assignment to r1 and checking r2 can be done in parallel
-and that's assuming that it will figure out that branch is unlikely.
-
-Readability might be a good reason; optimization... no.  Leave that to
-compiler; it will override your choice here anyway.
+-- 
+BR,
+Muhammad Usama Anjum
 
