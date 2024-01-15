@@ -1,91 +1,86 @@
-Return-Path: <linux-kernel+bounces-25915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1AF882D81C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:09:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BECCA82D81F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:09:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89EE31C218DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:09:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DD531F222A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:09:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA7CF27701;
-	Mon, 15 Jan 2024 11:09:11 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADF9C2C6A0;
+	Mon, 15 Jan 2024 11:09:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fIxX8Hd5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF9851E867
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 11:09:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav111.sakura.ne.jp (fsav111.sakura.ne.jp [27.133.134.238])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 40FB91nb026996;
-	Mon, 15 Jan 2024 20:09:01 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav111.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav111.sakura.ne.jp);
- Mon, 15 Jan 2024 20:09:01 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav111.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 40FB90l7026993
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Mon, 15 Jan 2024 20:09:00 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <199a52ed-59d0-4651-b361-3b3d0692a2bf@I-love.SAKURA.ne.jp>
-Date: Mon, 15 Jan 2024 20:08:58 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1A042BB06;
+	Mon, 15 Jan 2024 11:09:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7EDEC433C7;
+	Mon, 15 Jan 2024 11:09:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705316951;
+	bh=u5h2QQBP6fhgiKwHjsHHAv7nLPOgzXKmoQfDD5Bd5Xg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fIxX8Hd5rBfP0r5teoC/V9pf4fzdq1XLqNdrl71NceoOqWpFHJAjRLmIPEdW3+kkN
+	 EnP5GzQYBMRQWvhU8a9N0RR8oXnsdF5ySK3JbNcPy9gjIb+ogxD/E9mwT44Oms/b5c
+	 +EZ5tyhBRvanH4yFfKXN6NCIUl+Oc+agV6Iw7G9HwC7lxWAyJp4hgG5S8EE5wWGDdo
+	 o3bf7StzVZcQcUzYX3qMaD7UUWrIz1PVavZDcuFlGaw/xVcgYf5ZiZyiiQkYJtDj3M
+	 G2kRomH8XW/tjz/3ZCvzwpXqNMCwGb2DXXKfY5ChqTjPrNviNvHH0ZvToTC3oSuRkz
+	 aGd1z/6cZdvBg==
+Date: Mon, 15 Jan 2024 11:09:05 +0000
+From: Simon Horman <horms@kernel.org>
+To: Zhipeng Lu <alexious@zju.edu.cn>
+Cc: Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>,
+	Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>,
+	Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Simo Sorce <simo@redhat.com>, Steve Dickson <steved@redhat.com>,
+	Kevin Coffman <kwc@citi.umich.edu>, linux-nfs@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v2] SUNRPC: fix a memleak in gss_import_v2_context
+Message-ID: <20240115110905.GR392144@kernel.org>
+References: <20240112084540.3729001-1-alexious@zju.edu.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] nfc/nci: fix task hung in nfc_targets_found
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Edward Adam Davis <eadavis@qq.com>,
-        syzbot+2b131f51bb4af224ab40@syzkaller.appspotmail.com
-Cc: davem@davemloft.net, edumazet@google.com, gregkh@linuxfoundation.org,
-        hdanton@sina.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com, stern@rowland.harvard.edu,
-        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org
-References: <000000000000a041b0060eb045ec@google.com>
- <tencent_E44436084AA874977705670A3CDD37BE9609@qq.com>
- <10fa514a-7fa0-449f-a7fd-cd3bfb0180d7@linaro.org>
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <10fa514a-7fa0-449f-a7fd-cd3bfb0180d7@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240112084540.3729001-1-alexious@zju.edu.cn>
 
-On 2024/01/15 18:36, Krzysztof Kozlowski wrote:
->> diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
->> index 6c9592d05120..9a277228a875 100644
->> --- a/net/nfc/nci/core.c
->> +++ b/net/nfc/nci/core.c
->> @@ -145,6 +145,8 @@ inline int nci_request(struct nci_dev *ndev,
->>  {
->>  	int rc;
->>  
->> +	if (test_bit(NCI_UNREG, &ndev->flags))
->> +		return -ENODEV;
-> 
-> nci_close_device() clears the NCI_UP, which is tested here, just after
-> acquiring mutex. And there is explicit comment about it just below your
-> code. Why it is not relevant?
+On Fri, Jan 12, 2024 at 04:45:38PM +0800, Zhipeng Lu wrote:
+> The ctx->mech_used.data allocated by kmemdup is not freed in neither
+> gss_import_v2_context nor it only caller radeon_driver_open_kms.
 
-Because the deadlock happens at mutex_lock(&ndev->req_lock), which is
-before test_bit(NCI_UP, &ndev->flags) is called. Please see
-https://lkml.kernel.org/r/d314e471-0251-461e-988d-70add0c6ebf6@I-love.SAKURA.ne.jp .
+Should radeon_driver_open_kms be gss_krb5_import_sec_context?
 
-> 
-> Your code looks really unnecessary, at least with that code flow from
-> commit msg. Especially considering you do it outside of mutex, so how
-> does it solve anything?
-> 
-> Best regards,
-> Krzysztof
-> 
+Also, perhaps it is useful to write something like this:
 
+.. gss_krb5_import_sec_context, which frees ctx on error.
+
+> Thus, this patch reform the last call of gss_import_v2_context to the
+> gss_krb5_import_ctx_v2, preventing the memleak while keepping the return
+> formation.
+> 
+> Fixes: 47d848077629 ("gss_krb5: handle new context format from gssd")
+> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+
+Hi Zhipeng Lu,
+
+Other than the comment above, I agree with your analysis.
+And that although the problem has changed form slightly,
+it was originally introduced by the cited commit.
+I also agree that your fix.
+
+..
 
