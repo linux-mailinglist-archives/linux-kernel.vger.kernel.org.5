@@ -1,148 +1,184 @@
-Return-Path: <linux-kernel+bounces-26392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE5A082DFFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 19:33:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 22F3882E000
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 19:34:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BD2F28310F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:33:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFFE4283D45
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:34:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BFB518644;
-	Mon, 15 Jan 2024 18:33:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AB1018646;
+	Mon, 15 Jan 2024 18:34:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="x5qe/2my";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3XOZ3xoW"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ChLSa9V4"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57B55134A2
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 18:33:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 15 Jan 2024 19:33:38 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1705343620;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=afQqCEnlGzWVpTgc36uxJWvLgG0N7VejWUgUSPxIKZQ=;
-	b=x5qe/2myKKVBvba2tYrSJ7Ca4yU7IwUXSRYpjXD9AM7BBKzDB2OsqmXAcvFwjLArdi31dL
-	wEOWk+1Mghjh+IVE8mDlHwGEpxOKQHG8KgrZqrXA30qfS6rXxCbZ4LgRK+5ZmiHVyime1q
-	zGW4nPziazsSA4ERApaX5qwE25p8FaRGqdX5qWIWwQWxd9AKO2cUGkHtslwTzk244jNk+W
-	cBT5GS0TChGW6HEUlzriVNeXYxiz5XqWi6pA0IbAUyorKW0hgpeLRhIfsHmgeUwz1RdsUr
-	XHf+cJG3gaHp8Vq4QmRy0dPHFbaY8iRTlcF+gSHkwg6ZiN+PUug200TuA9/WpA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1705343620;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=afQqCEnlGzWVpTgc36uxJWvLgG0N7VejWUgUSPxIKZQ=;
-	b=3XOZ3xoW7ohtt4gyGihogiGhT8UKV66w8dGW5XLPHK7M1tmgYT8EuCaWCPMWgXJOcGTYFQ
-	wwXiuVUELjETbEAg==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Jiri Slaby <jirislaby@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	boqun.feng@gmail.com, bristot@redhat.com, bsegall@google.com,
-	dietmar.eggemann@arm.com, jstultz@google.com, juri.lelli@redhat.com,
-	longman@redhat.com, mgorman@suse.de, mingo@redhat.com,
-	rostedt@goodmis.org, swood@redhat.com, vincent.guittot@linaro.org,
-	vschneid@redhat.com, will@kernel.org
-Subject: Re: [PATCH v3 7/7] locking/rtmutex: Acquire the hb lock via trylock
- after wait-proxylock.
-Message-ID: <20240115183338.xW3GS3Ex@linutronix.de>
-References: <20230908162254.999499-1-bigeasy@linutronix.de>
- <20230908162254.999499-8-bigeasy@linutronix.de>
- <20230911141135.GB9098@noisy.programming.kicks-ass.net>
- <87fs3f1tl0.ffs@tglx>
- <20230915151943.GD6743@noisy.programming.kicks-ass.net>
- <4611bcf2-44d0-4c34-9b84-17406f881003@kernel.org>
- <9f75eb59-9b7a-4b49-9081-e6a3cbb00187@kernel.org>
- <c737a604-d441-49c6-a5cd-ef01e9f2a454@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 899B518C05
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 18:34:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d4a2526a7eso49335045ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 10:34:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705343684; x=1705948484; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JZFlmy7BEwywSiV8spelsk1ZtaQWPPF5+4+sReYmSWw=;
+        b=ChLSa9V4bm2V4qsVVPy2jAnElpifyDfKa1aunT3UaNJgj3YMNIK1VUesBr9tPmcaOq
+         zRCjOQdymmNdVuV53hZ312xtiT8VmD1+eb7Z4A25uqvMi9GCVtNPLO+scp/CtX6tR7pC
+         VtZmVCzWKqC7sdbmbcKMZDZog+O8bXmgAAPvnakeiF9ZiKBFyYBoZbz65xOfgbeS3KNY
+         VGowNqxjNDNEWJ628xpU+txcqWTSyktVzwUouXgrpo6BsuH5u/YwhzWWPdwdS2zD5wms
+         6J2PojOJcvscqHvEhUgm7eWDDSOF1IwoostITewz4x4mqAK0Dxmhe8weIP0/GZltEN8x
+         AaXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705343684; x=1705948484;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JZFlmy7BEwywSiV8spelsk1ZtaQWPPF5+4+sReYmSWw=;
+        b=DSScoTHw+HgrJ45WBSOuRCr75Hv+pRdFpVxXAyBLI0MADC/Wol8ijA7ysVLgmGKfyy
+         ANduklQnSewt1/oxHem9kfwZhWce4xnXMccctgPul48Nz7VqD10QUUNighEoM+t6jLxk
+         X40soVJzmjaFLuVTcMM2pj8ufpQGtkWxeD84FAIWs7eNRofl0SZ3BSnJFwc6IlRftJlC
+         5pC419UJB1fs/wtCshWyFRG9+76hBkRti4Efr4+OvBXJNldbnB2zv57u/QGIuFFYjtzW
+         X/S827+wEsm5IQ46la2dDxcB978kOAfuimeLsT7sqTZiIR/lDUIFhInfR9xwAeRKJaf9
+         tYtQ==
+X-Gm-Message-State: AOJu0YzGUy0ZQYSNYsJHi2x5pfiQRaLdcaNfVh6nJ+02yApXLWeWfkS8
+	JCJw6sMseK0c0lURUTGwYpgkviDbEJvI5w==
+X-Google-Smtp-Source: AGHT+IFVo39doGrlpm6PCXcFggJ9N+UcWB3vS/3WT5T9cSsVWvXYfyWpabs7SSfBYUzkE94TLt49zg==
+X-Received: by 2002:a17:902:834c:b0:1d4:75e5:8feb with SMTP id z12-20020a170902834c00b001d475e58febmr3004149pln.35.1705343683810;
+        Mon, 15 Jan 2024 10:34:43 -0800 (PST)
+Received: from p14s ([2604:3d09:148c:c800::5ced])
+        by smtp.gmail.com with ESMTPSA id ku6-20020a170903288600b001d555735b6bsm7910033plb.239.2024.01.15.10.34.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 10:34:43 -0800 (PST)
+Date: Mon, 15 Jan 2024 11:34:41 -0700
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Bjorn Andersson <andersson@kernel.org>, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org, linux-remoteproc@vger.kernel.org
+Subject: Re: [PATCH] rpmsg: Remove usage of the deprecated ida_simple_xx() API
+Message-ID: <ZaV6wd8GghPy+Ti7@p14s>
+References: <c09ee5b66d451bf97d14c167048549aa0824ee06.1705225049.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c737a604-d441-49c6-a5cd-ef01e9f2a454@kernel.org>
+In-Reply-To: <c09ee5b66d451bf97d14c167048549aa0824ee06.1705225049.git.christophe.jaillet@wanadoo.fr>
 
-On 2024-01-15 13:54:32 [+0100], Jiri Slaby wrote:
-> A simplified reproducer attached (in particular, no APR anymore). Build with
-> -pthread, obviously. If you see
-> BADx rv=22
+Hi Christophe,
+
+On Sun, Jan 14, 2024 at 10:37:43AM +0100, Christophe JAILLET wrote:
+> ida_alloc() and ida_free() should be preferred to the deprecated
+> ida_simple_get() and ida_simple_remove().
 > 
-> that's bad.
+> Note that the upper limit of ida_simple_get() is exclusive, but the one of
+> ida_alloc_max() is inclusive. So a -1 has been added when needed.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/rpmsg/rpmsg_char.c | 12 ++++++------
+>  drivers/rpmsg/rpmsg_ctrl.c | 12 ++++++------
+>  2 files changed, 12 insertions(+), 12 deletions(-)
+> 
 
-So task1 owns the futex, task2 does lock_pi_futex(). task2 setups the pi
-state and everything for task1. Then task1 times out on the lock and
-does not want the lock no more. And we break user state vs kernel via:
+I will apply this patch when the next rc1 comes out.
 
+Thanks,
+Mathieu
 
-task1			task2
-
-futex_unlock_pi();	futex_lock_pi();
-			rt_mutex_wait_proxy_lock() // ETIMEDOUT
-spin_lock(&hb->lock);
-			rt_mutex_cleanup_proxy_lock()
-			/* now the lock is still owned by task1, and the
-			 * task2 removed itself as the waiter but its
-			 * futex_q is still queued
-			 */
-			spin_lock(&hb->lock); /* block */
-
-top_waiter = futex_top_waiter(hb, &key);
-/* top_wait is task2's */
-rt_waiter = rt_mutex_top_waiter(&pi_state->pi_mutex);
-/* rt_waiter is NULL and the 
-   futex is unlocked in userland via uaddr 
-*/
-
-and now
-
-task 3			task4
-locks in userland
-			futex_lock_pi();
-			futex_lock_pi_atomic();
-			   -EINVAL = attach_to_pi_state()
-			   /*
-			    * becauase pi_state says owner
-			    * is task1 but uaddr says task3.
-			    */
-
-\*/
-
-This is due to the new lock ordering and the guarantees we no longer
-have since the commit cited. The pi-state is cleaned/ removed by the last
-one that wants the lock so in the unlock path there is either pi-state
-with a waiter or nothing.
-
-This duct tape at the end waits until the pi-state leaves or we get a
-waiter. So this works but is not a fix.
-
-diff --git a/kernel/futex/pi.c b/kernel/futex/pi.c
-index 90e5197f4e56..f504ae864cc9 100644
---- a/kernel/futex/pi.c
-+++ b/kernel/futex/pi.c
-@@ -1182,6 +1182,9 @@ int futex_unlock_pi(u32 __user *uaddr, unsigned int flags)
- 		rt_waiter = rt_mutex_top_waiter(&pi_state->pi_mutex);
- 		if (!rt_waiter) {
- 			raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
-+			spin_unlock(&hb->lock);
-+			cpu_relax();
-+			goto retry;
- 			goto do_uncontended;
- 		}
- 
--- 
-2.43.0
-
-> regards,
-
-Sebastian
+> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> index 09833ad05da7..1cb8d7474428 100644
+> --- a/drivers/rpmsg/rpmsg_char.c
+> +++ b/drivers/rpmsg/rpmsg_char.c
+> @@ -399,8 +399,8 @@ static void rpmsg_eptdev_release_device(struct device *dev)
+>  {
+>  	struct rpmsg_eptdev *eptdev = dev_to_eptdev(dev);
+>  
+> -	ida_simple_remove(&rpmsg_ept_ida, dev->id);
+> -	ida_simple_remove(&rpmsg_minor_ida, MINOR(eptdev->dev.devt));
+> +	ida_free(&rpmsg_ept_ida, dev->id);
+> +	ida_free(&rpmsg_minor_ida, MINOR(eptdev->dev.devt));
+>  	kfree(eptdev);
+>  }
+>  
+> @@ -441,12 +441,12 @@ static int rpmsg_chrdev_eptdev_add(struct rpmsg_eptdev *eptdev, struct rpmsg_cha
+>  
+>  	eptdev->chinfo = chinfo;
+>  
+> -	ret = ida_simple_get(&rpmsg_minor_ida, 0, RPMSG_DEV_MAX, GFP_KERNEL);
+> +	ret = ida_alloc_max(&rpmsg_minor_ida, RPMSG_DEV_MAX - 1, GFP_KERNEL);
+>  	if (ret < 0)
+>  		goto free_eptdev;
+>  	dev->devt = MKDEV(MAJOR(rpmsg_major), ret);
+>  
+> -	ret = ida_simple_get(&rpmsg_ept_ida, 0, 0, GFP_KERNEL);
+> +	ret = ida_alloc(&rpmsg_ept_ida, GFP_KERNEL);
+>  	if (ret < 0)
+>  		goto free_minor_ida;
+>  	dev->id = ret;
+> @@ -462,9 +462,9 @@ static int rpmsg_chrdev_eptdev_add(struct rpmsg_eptdev *eptdev, struct rpmsg_cha
+>  	return ret;
+>  
+>  free_ept_ida:
+> -	ida_simple_remove(&rpmsg_ept_ida, dev->id);
+> +	ida_free(&rpmsg_ept_ida, dev->id);
+>  free_minor_ida:
+> -	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
+> +	ida_free(&rpmsg_minor_ida, MINOR(dev->devt));
+>  free_eptdev:
+>  	put_device(dev);
+>  	kfree(eptdev);
+> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
+> index 433253835690..c312794ba4b3 100644
+> --- a/drivers/rpmsg/rpmsg_ctrl.c
+> +++ b/drivers/rpmsg/rpmsg_ctrl.c
+> @@ -130,8 +130,8 @@ static void rpmsg_ctrldev_release_device(struct device *dev)
+>  {
+>  	struct rpmsg_ctrldev *ctrldev = dev_to_ctrldev(dev);
+>  
+> -	ida_simple_remove(&rpmsg_ctrl_ida, dev->id);
+> -	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
+> +	ida_free(&rpmsg_ctrl_ida, dev->id);
+> +	ida_free(&rpmsg_minor_ida, MINOR(dev->devt));
+>  	kfree(ctrldev);
+>  }
+>  
+> @@ -156,12 +156,12 @@ static int rpmsg_ctrldev_probe(struct rpmsg_device *rpdev)
+>  	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
+>  	ctrldev->cdev.owner = THIS_MODULE;
+>  
+> -	ret = ida_simple_get(&rpmsg_minor_ida, 0, RPMSG_DEV_MAX, GFP_KERNEL);
+> +	ret = ida_alloc_max(&rpmsg_minor_ida, RPMSG_DEV_MAX - 1, GFP_KERNEL);
+>  	if (ret < 0)
+>  		goto free_ctrldev;
+>  	dev->devt = MKDEV(MAJOR(rpmsg_major), ret);
+>  
+> -	ret = ida_simple_get(&rpmsg_ctrl_ida, 0, 0, GFP_KERNEL);
+> +	ret = ida_alloc(&rpmsg_ctrl_ida, GFP_KERNEL);
+>  	if (ret < 0)
+>  		goto free_minor_ida;
+>  	dev->id = ret;
+> @@ -179,9 +179,9 @@ static int rpmsg_ctrldev_probe(struct rpmsg_device *rpdev)
+>  	return ret;
+>  
+>  free_ctrl_ida:
+> -	ida_simple_remove(&rpmsg_ctrl_ida, dev->id);
+> +	ida_free(&rpmsg_ctrl_ida, dev->id);
+>  free_minor_ida:
+> -	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
+> +	ida_free(&rpmsg_minor_ida, MINOR(dev->devt));
+>  free_ctrldev:
+>  	put_device(dev);
+>  	kfree(ctrldev);
+> -- 
+> 2.43.0
+> 
 
