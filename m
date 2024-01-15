@@ -1,143 +1,138 @@
-Return-Path: <linux-kernel+bounces-26427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2DCD82E077
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:10:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2589482E078
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:10:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 757D51F230CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 19:10:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CFB81C21357
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 19:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ED2D18C15;
-	Mon, 15 Jan 2024 19:09:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BC5E18ED4;
+	Mon, 15 Jan 2024 19:09:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JRgaE4bo"
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DqDGp8n5"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86CBB18EB2;
-	Mon, 15 Jan 2024 19:09:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4970718EBD
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 19:09:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-6ddf05b1922so3711135a34.2;
-        Mon, 15 Jan 2024 11:09:33 -0800 (PST)
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50e7f58c5fbso12183616e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 11:09:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1705345772; x=1705950572; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1mHwvM4blA4hdTN8rJtKbZmIV2WtMVvP+MTN+cXQTtU=;
-        b=JRgaE4bouYG04bMCnD3AvGNcihnHQI5BS4VMbTYDCizYO8qViauiHAUCzoPdC8ymJB
-         Y4YXLRZ/0w/kmgOLf4Oi+7O4Sca5Q8FS19c9YdN6Fe99cIPoxmuLTfdCsfwl1RmVdL5V
-         B1k8e9u/b31CuyaG/uPsTiCqIgRus/olGSoA1jCH7fOSL9hXCIqvDB6sT2BO0x4RHE0g
-         MsiMFAzoTpKyQQsF5vthY+RyUBKgxpDVMWHMoec8ciM5RJ9TDCDPS2c05V7HTUurECeb
-         MavI9J3yVczlqZiwE7BzCIPhIJyztLkl7fRuOL1w7yNB3ILvHK1fdDSlQ8BXbY4kg6+x
-         YOtg==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=G1a7253dNU4a2MSBXxXCeQK7ThZfa8a5dh+VEk56Y+0=;
+        b=DqDGp8n5c539xBNQYEhbeLvq+uxDNQrrSaIhroUpgtfAibuUmIlWPO+LWnaAHCJT35
+         1UVQCLkcLsk9qRnCpM0ypTmeXykzFXtOc301UHWjaJg2GxSeEJS0dDyQavczJdAfRUvI
+         VNz6RaBEtF2NTnVFJ0Zv7lrAir4XYBGAWdrUq1A7mdNmbgS6TdtlQNhGXZevaGN3DYfq
+         oRbDagTb0xaB+3F4sjO1gLqokbgWehC/Mn59K3iFKFYz3RCoJ7Teo5cT1Cp+rrK/XG4q
+         ulMo38/560zON0f9qOfUSCt3tXKt0YoC6EJ1m4v9nSFNe424EggN7ICrc4VcMKJnw3ZJ
+         NgYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1705345772; x=1705950572;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1mHwvM4blA4hdTN8rJtKbZmIV2WtMVvP+MTN+cXQTtU=;
-        b=NmCE0X/7AMIj9A2MMhTPO0vouaTRtppgiPIlpl7OExjGSjZudUhT7Vt1MGrKtK3CKX
-         D4VwSaAJjkaypGyWGsVtM68aH5rsAfQvxgdwdnoBKe8GFpeFxXwXoGOQAfQ+/3vSQSDt
-         SCNbIBgy9iiRXk4t3CLtk/q68aOdHitdMH8vVM6JksM7W3s1ClpR2FMNWp9PnGiYF5EP
-         aFN2VehuruuRXku4jF7wvcUL240O2wJjl0xa7V+oGlhi/+6Wk2Nv8PEh3p0A/5GKil0Y
-         /s/ai3YeMYLiAx79M1fVm0gnQ/6Sxukluk1hq/x9NXMWaB6N2MVONdnOnxnRDmUdSrjj
-         smcA==
-X-Gm-Message-State: AOJu0YxpgRXN5YGEYkIV05RfPaD4gdhwSBOHMq2D14Px1dmn52gaL2Ao
-	8l7N/eLDTgeT4FGgIXRJnQU=
-X-Google-Smtp-Source: AGHT+IEiSFoaDDreKOyWssVScDnZ5pUUo6AK9LNP2viSwZNKCYcubSWqKvRDZdC5Ke0FudmpVI/ZcA==
-X-Received: by 2002:a05:6830:438b:b0:6dd:e1e2:eacd with SMTP id s11-20020a056830438b00b006dde1e2eacdmr7010952otv.73.1705345772489;
-        Mon, 15 Jan 2024 11:09:32 -0800 (PST)
-Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
-        by smtp.gmail.com with ESMTPSA id pl6-20020ad44686000000b0067f859a8ef5sm3498189qvb.105.2024.01.15.11.09.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G1a7253dNU4a2MSBXxXCeQK7ThZfa8a5dh+VEk56Y+0=;
+        b=VxIKXtigDTTgbG2pbKYcjx+hLald55b/KcSYjqwp0g3/CZvwRvIQ9D8sPsiTXtji+N
+         Hbq+1qDPZU9AXgehQKw7aEvUyDQ3Qxtizy7V7niuYqqEoTxJTvuViwe1naNfNmykJWE7
+         7vIMLEp3nT9bWOSNHptVmj0C7zm00S2MktNQraVQUyUS8u4fHXCLKOxQ/pY7Ux+UkFxR
+         DZi1W/hyezUld9ylRtAQmsbhFy/L7KdipxJwHgDlqVNd5HHYsYvYQi2eksvHGnmK23v7
+         aTc8ZGQZCbXf51LKBsCMj3E48it6k7gwC7ttIVnm/wbxwilpjSkr0JjGJAV01lNKdsB8
+         PpCg==
+X-Gm-Message-State: AOJu0YztANrLWqKycsZN3eHI2GArhJ3gzxhY337p54i+oCMQdPsbAgbE
+	Wohi78XrXANNIhhED6ytdS0=
+X-Google-Smtp-Source: AGHT+IHr3cFy9mv+SiGi6cqh5ydwfEFrWo8HMNEimL88GvtST76NarrqSXvtGV6Qd1FEkIFCzsZn9A==
+X-Received: by 2002:a05:6512:159f:b0:50e:d5e2:92cc with SMTP id bp31-20020a056512159f00b0050ed5e292ccmr3845250lfb.81.1705345771992;
         Mon, 15 Jan 2024 11:09:31 -0800 (PST)
-Message-ID: <61607c85-2df4-410b-9025-b2d263e6a218@gmail.com>
-Date: Mon, 15 Jan 2024 11:09:29 -0800
+Received: from pc636 (host-90-233-221-202.mobileonline.telia.com. [90.233.221.202])
+        by smtp.gmail.com with ESMTPSA id b8-20020ac25628000000b0050eac86fc74sm1541332lff.87.2024.01.15.11.09.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 11:09:31 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Mon, 15 Jan 2024 20:09:29 +0100
+To: Dave Chinner <david@fromorbit.com>
+Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v3 10/11] mm: vmalloc: Set nr_nodes based on CPUs in a
+ system
+Message-ID: <ZaWC6TRs4P1vq9TQ@pc636>
+References: <20240102184633.748113-1-urezki@gmail.com>
+ <20240102184633.748113-11-urezki@gmail.com>
+ <ZZ+z8vBl645FvxPq@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 0/4] 6.1.73-rc1 review
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
- conor@kernel.org, allen.lkml@gmail.com
-References: <20240113094204.017594027@linuxfoundation.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; keydata=
- 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
- HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20240113094204.017594027@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZ+z8vBl645FvxPq@dread.disaster.area>
 
-
-
-On 1/13/2024 1:50 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.73 release.
-> There are 4 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Tue, Jan 02, 2024 at 07:46:32PM +0100, Uladzislau Rezki (Sony) wrote:
+> > A number of nodes which are used in the alloc/free paths is
+> > set based on num_possible_cpus() in a system. Please note a
+> > high limit threshold though is fixed and corresponds to 128
+> > nodes.
 > 
-> Responses should be made by Mon, 15 Jan 2024 09:41:55 +0000.
-> Anything received after that time might be too late.
+> Large CPU count machines are NUMA machines. ALl of the allocation
+> and reclaim is NUMA node based i.e. a pgdat per NUMA node.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.73-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
+> Shrinkers are also able to be run in a NUMA aware mode so that
+> per-node structures can be reclaimed similar to how per-node LRU
+> lists are scanned for reclaim.
 > 
-> thanks,
+> Hence I'm left to wonder if it would be better to have a vmalloc
+> area per pgdat (or sub-node cluster) rather than just base the
+> number on CPU count and then have an arbitrary maximum number when
+> we get to 128 CPU cores. We can have 128 CPU cores in a
+> single socket these days, so not being able to scale the vmalloc
+> areas beyond a single socket seems like a bit of a limitation.
 > 
-> greg k-h
+>
+> Hence I'm left to wonder if it would be better to have a vmalloc
+> area per pgdat (or sub-node cluster) rather than just base the
+>
+> Scaling out the vmalloc areas in a NUMA aware fashion allows the
+> shrinker to be run in numa aware mode, which gets rid of the need
+> for the global shrinker to loop over every single vmap area in every
+> shrinker invocation. Only the vm areas on the node that has a memory
+> shortage need to be scanned and reclaimed, it doesn't need reclaim
+> everything globally when a single node runs out of memory.
+> 
+> Yes, this may not give quite as good microbenchmark scalability
+> results, but being able to locate each vm area in node local memory
+> and have operation on them largely isolated to node-local tasks and
+> vmalloc area reclaim will work much better on large multi-socket
+> NUMA machines.
+> 
+Currently i fix the max nodes number to 128. This is because i do not
+have an access to such big NUMA systems whereas i do have an access to
+around ~128 ones. That is why i have decided to stop on that number as
+of now.
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+We can easily set nr_nodes to num_possible_cpus() and let it scale for
+anyone. But before doing this, i would like to give it a try as a first
+step because i have not tested it well on really big NUMA systems.
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+Thanks for you NUMA-aware input.
+
+--
+Uladzislau Rezki
 
