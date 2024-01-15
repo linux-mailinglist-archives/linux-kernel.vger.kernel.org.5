@@ -1,176 +1,195 @@
-Return-Path: <linux-kernel+bounces-25870-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C556582D70D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:18:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 381F782D711
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:18:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59DA3281C61
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:18:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF141B213B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:18:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33B0BF9F5;
-	Mon, 15 Jan 2024 10:18:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 710B81E86C;
+	Mon, 15 Jan 2024 10:18:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ozoQk38z"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2050.outbound.protection.outlook.com [40.107.237.50])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PcNn570d"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF9571E864;
-	Mon, 15 Jan 2024 10:18:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F1KKTmdmz+JdIL0doeBHVXbPHRtsr6E5ukRp3tx/DvcMhTf2OvO4kfZSrgDxDZHr/I/70N6yEUWRyluxcFsk3BA3S3lNeCa34q8uptA+txC2LBiLVbTp8IBHZF5JpaK1y0WCVxW4r/g1Fxc5F1LzHrUHC7pxBHVxBvlKquEcsvnHxR79onrMkjPBLxGQv9QNCoctATaUYf56KpeKjUeTPxRbGq1MMOW/R/oMKLR7SmdlFS13WLVdWwa8Qhfqu0P1zO9pUL51xjLy+gw/8wLKK93z0C0r5qr/T6rkYT6wUN0HZExuheU+AlHr2/GEMuLZmqIrM8NN+fxVZaxCemklvQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WNfV+wIly9C8ZiIj9ep7ytPI61Mo+O46h8fiYVrEylk=;
- b=HxBdoaI/fAJCyEZGNb3BR3KLyp8MKXAvquhItC8g8hS4GkPJduPpys8Imp3ilnHOf/ts8KyE6O970K51MORScV1qcFyBmRZQiAl8QoMHTt5fuyI4wB6IE+eihctNO62LouJp0nMDhYmhIj/E8kXCJXRPGChymaLlLKXVld4Nj7RbzFXd6sCn4KN8eopfQ7UAxAjBHeseYm5o/x3kBg6f8I2s0H6RBTtAEqoKtMaxOJ0kxAcZp2XHmC6HGPNgx3rjy5XUZShxjU6yCAVmsPYLUXcjyx8nLQpp7smkxcm6SOqcu4gDBA1KZHL+bX238NINhz0gT0Cvgp9ExWyKg/RM/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WNfV+wIly9C8ZiIj9ep7ytPI61Mo+O46h8fiYVrEylk=;
- b=ozoQk38zItexX+YN1DiPXPLs2pj1JrrYRAGPtm5Hjo6pP9hhqxA3ykh8fL+A3iSNTSC6ORQDAeIFTrhtDERSNwtfY1w8UhvOeHN/hsdTEyoTqfeT3OfVuyRPA58dOJ4rVSUgyG6nV6WHDHU7pP6AEiCn7fReeoYF93M3Eu/M7ek=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by CY5PR12MB6297.namprd12.prod.outlook.com (2603:10b6:930:22::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.21; Mon, 15 Jan
- 2024 10:18:03 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653%4]) with mapi id 15.20.7159.020; Mon, 15 Jan 2024
- 10:18:03 +0000
-Message-ID: <ebd2d3ef-f222-42ed-8103-c8dd61c99742@amd.com>
-Date: Mon, 15 Jan 2024 11:17:56 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amdgpu: Remove usage of the deprecated
- ida_simple_xx() API
-Content-Language: en-US
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Alex Deucher <alexander.deucher@amd.com>, "Pan, Xinhui"
- <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>
-Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
- amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-References: <c3b8e4bfb819d901e532e90a2ae0efa9eb661c55.1705245232.git.christophe.jaillet@wanadoo.fr>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <c3b8e4bfb819d901e532e90a2ae0efa9eb661c55.1705245232.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR5P281CA0022.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:f1::8) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37415F9C2;
+	Mon, 15 Jan 2024 10:18:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40F8CFDM028424;
+	Mon, 15 Jan 2024 10:18:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=BcTltSVcdGatbrBUU6zTKBg6pJMPZtwaqVsNWEXHsVQ=; b=Pc
+	Nn570deNxiOAGf4LVoqq41hLF22XRiVYM8WdW3IoFDjc5S7rL7nvUPO4OARRMQFl
+	wEd0lvNGOekV2z+J9QHr2jDKv27dmNh7x+XnX/2XxFX9y6pSbnLX73OTBU3HrFr7
+	jcA4MP7VY8G3PlJKIfUAv3GxVDGYHL3ZBAiuO9VZ2mPa7VOE8FTnYTpRe4njPvKM
+	sijepxsMqkUjZC4HM2dB1izcxBq0OEdO5TuIDPgsaPAWPmRk9bN+1cB9y8EqJmR7
+	ZV3gzy4u8OEoXlgQPCpeYf+l6ywBc5FMCG9QnK7iyWHv7zFLLDARAIreLlQutG7d
+	IhSeAcwDF23yTYJLZSAQ==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vkmefu5uw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Jan 2024 10:18:12 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40FAIB3n019860
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Jan 2024 10:18:11 GMT
+Received: from [10.238.139.231] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 15 Jan
+ 2024 02:18:08 -0800
+Message-ID: <e16f5ff1-9b12-4f90-89d5-f95cbfb859e7@quicinc.com>
+Date: Mon, 15 Jan 2024 18:18:05 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|CY5PR12MB6297:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3e3c3c88-0af7-4992-a0ca-08dc15b341e2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	d0gfyBIFXr8Q6nEEfK+ltXGzwLr6Bj1+Zs6bxLmqmS75ryr0Khszu31qqMfhE8t514n7kLKfwwuWzQUk+4rdI1mpznxLbfUPom4nGJ4tO4jjPBqGiOsmCO+4Ebrm8etdDPs5SpjU/nfBS+IneCt7dXv1DUAHfgQRuTWEQ/Uej7m2fGPeCB4w+EeGtEMKc1F1Ugcni8BRHoWBQbC529qA2vd1lfZt78ewZmUmhjT9Ro+IlBQUJnr8yFx/pIcUscyjH4vasIMGhlMXdywcRuyIz3GjMTYWI+XQPsu6r8kTRkmx/bKKPgYyHxH7sApEp2UIOFo2YE1kbLr15v17Wys3qePYTL5yfbCSCqzTvLRaeG7i7+pWrIPhWSOqnSFriiHBUSwFb9YMiMBk08h1S1vkhj9v1/9aIE6SFMEpXalkskmVa1QZCCpFgEcO84P7BzTalH/KhUH3vPBomgdoo185+cHa1gbUIKdOLB5ZH/OamiyErgJC8i+kYIMkpaRCTjlpIM/omPDGwBpkiV4pJZ01254j3PLCAIeO5SmpOkGxi5uh9GDep4XRkCTjxyn5K+ozXpeg78RlGxjYmpPInnwoIIweoGSmwL7KNLlo3GvHZEFKjCtx53JKfZFkICugLOvPrCuapXj31xe+HAMbyh33WA==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(376002)(366004)(396003)(346002)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(83380400001)(2616005)(66574015)(26005)(41300700001)(5660300002)(6486002)(31686004)(36756003)(31696002)(86362001)(316002)(6512007)(6506007)(2906002)(8676002)(66946007)(8936002)(110136005)(4326008)(66556008)(66476007)(38100700002)(6666004)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ZGowTHVKYk5zVG8yQjJiV285YjdQekpEVkJwZlpmU09DdlBWUVdacThjYk1y?=
- =?utf-8?B?K3J1Q0Z3VXB5d3JYMkcwUVBxNzRLSWUrTmxnSStPZ0hQcTdQVUF1T3kzZ1ow?=
- =?utf-8?B?RlNWdkRKcG84TVFUYldYTWtQUmlaRUFzbjlUd1EwU2g4T3N0Mi81c2Y2UGZP?=
- =?utf-8?B?UHU1TlY1TldJekJPNHIydXRkZkdxSER6YUFCMlJ0ZW9FQmRDMzBnTlUwZDJ2?=
- =?utf-8?B?RmhDNDMrZ2hoUkdiMjRKM1l3OGMxcEhLNktLMFkzZmdONENKMm9xUHRlOTRp?=
- =?utf-8?B?WmF6QVNYOFZWRnNaOXZoYjhHanlObGNTYkZvamkwcXcxQ2ZES0JkcVJ0ZGpQ?=
- =?utf-8?B?dVN1OUhjS21VQWtTTjhEOVdQYTNvSm4vNEdnTEV1Q1FXSldsVlFKS09WLzgr?=
- =?utf-8?B?UzREcmQ4NnZqcmxaNTNRWDNsclNuNlFmQkNPZlVtcTBid013STFhb2xoaUxV?=
- =?utf-8?B?TmxtallQUWp4dWt0QlBiM2tES1B1K0M5YkRKcys5YXdXRlA4MzJwN3NiaEY0?=
- =?utf-8?B?SWFwN29XNW5DNVJkVVNXaW5YYjdXa0FpY0FNcmpXSzdBL2oraGNjVFZGL2FX?=
- =?utf-8?B?cFNjNlFnaXpONjBLMGhFWnVTdUJxWEk3T2pldVZjMHoxL2NhNWNPdjlUbTk2?=
- =?utf-8?B?bWZZZzJmV3dyeE9KTE80MTRQZ2xVRm9veHd1ZDdLcFB3d0pVMS9JcEhVR09n?=
- =?utf-8?B?UGxYQ0xiV0EwTlc5MkxxWVNXVzJTdmhIY0VHajNncEg4SjQ1UmVLWms3eUIw?=
- =?utf-8?B?NGFKVk8wTHF3elJEekExaWoxRHNsVDhlcC9qV2pKSzdVMVc2cUhOU09hVHk3?=
- =?utf-8?B?Zm0xK0FQVXdqakQ3bDU0QUxkZTBZVWwrcm5PY2tzZHhaUUVSckNpbXNxdmtj?=
- =?utf-8?B?VmtlWWRUQ3pwRmU3UHVzTk5vNnU4VlphNk9ValNBU3JPdVFnNVVFc3RmdTcz?=
- =?utf-8?B?N2NLVnNMNGZIUG5TQXdrWG1lQ2ZjTFdOMTlZN0RqcWt1amRoaVErbE9YNnA2?=
- =?utf-8?B?S0tUbFRnK0dkeEdNcU1oSEwzOTVnb1J3TkV4Zi9McW9WRDNndU92YnNUbEpH?=
- =?utf-8?B?MUROb0xBbDVBenFmM1MxbnJuZ29BaTRCTytEdWpodFJjYklSQ3JCSktKek9L?=
- =?utf-8?B?dHVrcFZEMWZJSlF1K3lLY0dGRmExblAxQ0xDUVVJQkJaV0lMbEFLLzZ0TEps?=
- =?utf-8?B?NmNjTHJHb2NIRXlHdUpQZmlGMTIwK2d6aXdDTWoyQUxLcTNmTmt1UlBGRE5T?=
- =?utf-8?B?TWpXSUx5cmJMVDVCSGw3QU1vVndyYmZ3UU85MiswNHNGUFFiSFVob0MzWlpa?=
- =?utf-8?B?TDlBVk54TVJBQlo5SFJZa05aTTZtZmhuaGtkRkNTazBoMUFxWWQwU1ppREov?=
- =?utf-8?B?elQ4SHhzenFBNFVTcWRaWW8vSTdWNk5pMDZmN2dpV2s3TzI4VUJmU0lkQmlF?=
- =?utf-8?B?TUkwRFE0bFZEV2tUQmx5VEpVWVF5Y3FSL3lVYTVGNDdmUUJ5UjB2RW5WSzJk?=
- =?utf-8?B?M2UxaWZDS21mTFdwUExGL2dFdlg5TWhmUEtHc2d2ckllOHZYMXlKM0E1SE0v?=
- =?utf-8?B?RXQvcU9MZFhoWHRraE9OZUJEeFZPcUdxUUZ0bmxRRWIzWUxkc3JOSDYxOEtQ?=
- =?utf-8?B?TWdIVVE5WXBhZm9ua0tna0ptQ2d5SldsazhDNXp4U1UyaWNzWHRQTjJwTC9E?=
- =?utf-8?B?bmVoQjBQcTF2bVhOVytpWVQzZng3VEVLU2pITHlzSVNSS2ZCZkR4SWVwWi9W?=
- =?utf-8?B?dG1maGo1WGljZjZlTDhJbjdCdmUycXpCeWpZbkxSN0prL0FIbkpacXd6V3pa?=
- =?utf-8?B?VXhrNlJ2NExhSDlzSU5MbVhwZUpUWWpJc2RxYmFmcWMvVitRalJ1Nis3Y0wv?=
- =?utf-8?B?b1FTbVEza2ZTV09WNjR2ZVd1MWpBR1FSZ1EvdXVrRWlDVUlOekprSVVrRmJ2?=
- =?utf-8?B?Zkh5WWV4ZmhPYXJtZ1I0NnpQYWxlZ1dCeDV5d0I3VnRkWlhYNzRXOFZnUm5k?=
- =?utf-8?B?ZDkrUnlheFlNWEJVdVlDMEVwYVV0dStlNkszT2JwaUw3N3pybkRadW9tbUYx?=
- =?utf-8?B?Qm5Fc01ONTZ1b0tjaTNFeWhSYXNySE43K2M5b3ppQm5NWDdLcnc1SjlBU0tB?=
- =?utf-8?Q?zpT5JmREVSWhlBQQbKBWGt1xo?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3e3c3c88-0af7-4992-a0ca-08dc15b341e2
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2024 10:18:03.0939
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: S65iTwGO4/4PBdFkhVeN8gLNEHb5szd5ky9Zu4IMsGtTZfQcWZvLKaMAYpjLpRTA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6297
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5] arm64: dts: qcom: qcm6490-idp: Add definition for
+ three LEDs
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240115-lpg-v5-1-3c56f77f9cec@quicinc.com>
+ <CAA8EJpoemnXTmshWrArVOCm0GRSkWZ5tH557nbAjRL1Tgg-Dig@mail.gmail.com>
+From: hui liu <quic_huliu@quicinc.com>
+In-Reply-To: <CAA8EJpoemnXTmshWrArVOCm0GRSkWZ5tH557nbAjRL1Tgg-Dig@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: U7i25dWANcFUdMluCwtOkccBACL9wKdR
+X-Proofpoint-ORIG-GUID: U7i25dWANcFUdMluCwtOkccBACL9wKdR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
+ suspectscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0 phishscore=0
+ clxscore=1015 mlxlogscore=815 priorityscore=1501 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401150074
 
-Am 14.01.24 um 16:14 schrieb Christophe JAILLET:
-> ida_alloc() and ida_free() should be preferred to the deprecated
-> ida_simple_get() and ida_simple_remove().
->
-> Note that the upper limit of ida_simple_get() is exclusive, but the one of
-> ida_alloc_range() is inclusive. So a -1 has been added when needed.
->
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
 
-> ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c | 7 +++----
->   1 file changed, 3 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
-> index ddd0891da116..3d7fcdeaf8cf 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
-> @@ -62,9 +62,8 @@ int amdgpu_pasid_alloc(unsigned int bits)
->   	int pasid = -EINVAL;
->   
->   	for (bits = min(bits, 31U); bits > 0; bits--) {
-> -		pasid = ida_simple_get(&amdgpu_pasid_ida,
-> -				       1U << (bits - 1), 1U << bits,
-> -				       GFP_KERNEL);
-> +		pasid = ida_alloc_range(&amdgpu_pasid_ida, 1U << (bits - 1),
-> +					(1U << bits) - 1, GFP_KERNEL);
->   		if (pasid != -ENOSPC)
->   			break;
->   	}
-> @@ -82,7 +81,7 @@ int amdgpu_pasid_alloc(unsigned int bits)
->   void amdgpu_pasid_free(u32 pasid)
->   {
->   	trace_amdgpu_pasid_freed(pasid);
-> -	ida_simple_remove(&amdgpu_pasid_ida, pasid);
-> +	ida_free(&amdgpu_pasid_ida, pasid);
->   }
->   
->   static void amdgpu_pasid_free_cb(struct dma_fence *fence,
+On 1/15/2024 5:56 PM, Dmitry Baryshkov wrote:
+> On Mon, 15 Jan 2024 at 11:48, Hui Liu via B4 Relay
+> <devnull+quic_huliu.quicinc.com@kernel.org> wrote:
+>>
+>> From: Hui Liu <quic_huliu@quicinc.com>
+>>
+>> Add definition for three LEDs to make sure they can
+>> be enabled base on QCOM LPG LED driver.
+> 
+> The "function" property is still placed incorrectly. Posting the next
+> iteration before concluding the discussion on the previous one is not
+> the best idea.
+Do you mean I should update it as below? Seems there is no consumer to 
+use the function config, do we need to add now?
+pm8350c_pwm {
+  +       function = LED_FUNCTION_STATUS;
+  +       #address-cells = <1>;
+  +       #size-cells = <0>;
+  +       status = "okay";
+  +
+  +       led@1 {
+  +               reg = <1>;
+  +               color = <LED_COLOR_ID_RED>;
+  +		 function = LED_FUNCTION_STATUS;
+  +       };
+  + ...
 
+> 
+>>
+>> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+>> ---
+>> Changes in v5:
+>> - Rephrased commit text, replaced qcs6490-idp to qcm6490-idp.
+>> - Removed the unnecessary full.
+>> - Link to v4: https://lore.kernel.org/r/20240112-lpg-v4-1-c4004026686b@quicinc.com
+>>
+>> Changes in v4:
+>> - Removed "label" definition and added "function" definition.
+>> - Link to v3: https://lore.kernel.org/r/20231215-lpg-v3-1-4e2db0c6df5f@quicinc.com
+>>
+>> Changes in v3:
+>> - Rephrased commit text and updated the nodes to qcm6490-idp board file.
+>> - Link to v2: https://lore.kernel.org/all/20231110-qcom_leds-v2-1-3cad1fbbc65a@quicinc.com/
+>>
+>> Changes in v2:
+>> - Rephrased commit text and updated the nodes to board file.
+>> - Link to v1: https://lore.kernel.org/r/20231108-qcom_leds-v1-1-c3e1c8572cb0@quicinc.com
+>> ---
+>>   arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 23 +++++++++++++++++++++++
+>>   1 file changed, 23 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+>> index 37c91fdf3ab9..8268fad505e7 100644
+>> --- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+>> +++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+>> @@ -5,6 +5,7 @@
+>>
+>>   /dts-v1/;
+>>
+>> +#include <dt-bindings/leds/common.h>
+>>   #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+>>   #include "sc7280.dtsi"
+>>   #include "pm7325.dtsi"
+>> @@ -414,6 +415,28 @@ vreg_bob_3p296: bob {
+>>          };
+>>   };
+>>
+>> +&pm8350c_pwm {
+>> +       function = LED_FUNCTION_STATUS;
+>> +       #address-cells = <1>;
+>> +       #size-cells = <0>;
+>> +       status = "okay";
+>> +
+>> +       led@1 {
+>> +               reg = <1>;
+>> +               color = <LED_COLOR_ID_RED>;
+>> +       };
+>> +
+>> +       led@2 {
+>> +               reg = <2>;
+>> +               color = <LED_COLOR_ID_GREEN>;
+>> +       };
+>> +
+>> +       led@3 {
+>> +               reg = <3>;
+>> +               color = <LED_COLOR_ID_BLUE>;
+>> +       };
+>> +};
+>> +
+>>   &qupv3_id_0 {
+>>          status = "okay";
+>>   };
+>>
+>> ---
+>> base-commit: 17cb8a20bde66a520a2ca7aad1063e1ce7382240
+>> change-id: 20231215-lpg-4aadd374811a
+>>
+>> Best regards,
+>> --
+>> Hui Liu <quic_huliu@quicinc.com>
+>>
+>>
+> 
+> 
 
