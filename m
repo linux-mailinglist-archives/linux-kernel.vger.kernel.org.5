@@ -1,94 +1,234 @@
-Return-Path: <linux-kernel+bounces-25841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 113BE82D696
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:01:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB96482D67C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:56:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2002B1C21676
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:01:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5364A2821BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:56:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D385F50E;
-	Mon, 15 Jan 2024 10:00:57 +0000 (UTC)
-Received: from cstnet.cn (smtp20.cstnet.cn [159.226.251.20])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52D98EAFB;
-	Mon, 15 Jan 2024 10:00:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iie.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iie.ac.cn
-Received: from mengjingzi$iie.ac.cn ( [121.195.114.118] ) by
- ajax-webmail-APP-10 (Coremail) ; Mon, 15 Jan 2024 17:55:22 +0800
- (GMT+08:00)
-Date: Mon, 15 Jan 2024 17:55:22 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: =?UTF-8?B?5a2f5pWs5ae/?= <mengjingzi@iie.ac.cn>
-To: "Greg KH" <gregkh@linuxfoundation.org>
-Cc: jirislaby@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-serial@vger.kernel.org
-Subject: Re: [PATCH] tty: change the privilege required for tty operarions
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.15 build 20230921(8ad33efc)
- Copyright (c) 2002-2024 www.mailtech.cn cnic.cn
-In-Reply-To: <2024011523-lifter-narrow-fed3@gregkh>
-References: <2024010247-polio-brittle-1b23@gregkh>
- <20240115082420.13372-1-mengjingzi@iie.ac.cn>
- <2024011523-lifter-narrow-fed3@gregkh>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2567DEAF8;
+	Mon, 15 Jan 2024 09:56:03 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2593E54E;
+	Mon, 15 Jan 2024 09:55:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 60D632F4;
+	Mon, 15 Jan 2024 01:56:45 -0800 (PST)
+Received: from [192.168.1.100] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 86C463F6C4;
+	Mon, 15 Jan 2024 01:55:56 -0800 (PST)
+Message-ID: <de1af807-2298-a0f9-0122-2333741ab934@arm.com>
+Date: Mon, 15 Jan 2024 09:55:55 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <2fed8f4.8c4.18d0c8c1269.Coremail.mengjingzi@iie.ac.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:tACowADnPoALAaVlM2wFAA--.59155W
-X-CM-SenderInfo: pphqwyxlqj6xo6llvhldfou0/1tbiDAgRE2Wk5CJVSAAAsc
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWkKw
-	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-	daVFxhVjvjDU=
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3 8/8] coresight-tpdm: Add msr register support for CMB
+Content-Language: en-US
+To: Tao Zhang <quic_taozha@quicinc.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Jinlong Mao <quic_jinlmao@quicinc.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, coresight@lists.linaro.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Tingwei Zhang <quic_tingweiz@quicinc.com>,
+ Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+ Trilok Soni <quic_tsoni@quicinc.com>, Song Chai <quic_songchai@quicinc.com>,
+ linux-arm-msm@vger.kernel.org, andersson@kernel.org,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Konrad Dybcio <konradybcio@gmail.com>, Mike Leach <mike.leach@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
+ <1700533494-19276-9-git-send-email-quic_taozha@quicinc.com>
+ <185b23e7-a42f-4a12-85ba-8a093bc5ea58@arm.com>
+ <4409f3cf-7ca9-407f-92c0-5aa7ba6f7b61@quicinc.com>
+ <d8262a32-cc3c-4889-a5f0-a6b128b7e9d6@arm.com>
+ <3e27b0e2-afb2-4706-9996-f567e33e35ba@quicinc.com>
+ <94f504c4-76dd-4139-a8e0-c2858b7937bb@quicinc.com>
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <94f504c4-76dd-4139-a8e0-c2858b7937bb@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Jmd0OyBUZXN0ZWQgaG93PyAgCgpGaXJzdCBvZiBhbGwsIHRoaXMgY2hhbmdlIGlzIG5vdCBhYm91
-dCBmdW5jdGlvbmFsaXR5LCBvbmx5IGFib3V0IHBlcm1pc3Npb25zLiAKSSB3cm90ZSAzIHRlc3Rj
-YXNlcyB3aGljaCBjYWxscyBpb2N0bCgpIHdpdGggVElPQ1NUSSwgVElPQ0NPTlMsIFRJT0NWSEFO
-R1VQIApyZXNwZWN0aXZlbHkuIFRoZW4gZXhlY3V0ZSB0aGVtIG9uIHRoZSBvcmlnaW4ga2VybmVs
-IGFuZCBwYXRjaGVkIGtlcm5lbC4gClJ1bm5pbmcgaXQgb24gYm90aCBzZXRzIG9mIGtlcm5lbHMg
-Z2l2ZXMgdGhlIHNhbWUgcmVzdWx0LiBIb3dldmVyLCB0aHJvdWdoCnRoZSBzeXN0ZW0gZXJyb3Ig
-bWVzc2FnZSwgYW5kIHRoZSBrZXJuZWwgbG9nIG91dHB1dCBJIGFkZGVkLCBJIGNvbmZpcm1lZCAK
-dGhhdCB0aGUgcmVsZXZhbnQgZnVuY3Rpb25hbGl0eSB1bmRlciB0aGUgb3JpZ2luIGtlcm5lbCBy
-ZXF1aXJlcyBzeXNfYWRtaW4sIAphbmQgdW5kZXIgdGhlIHBhdGNoZWQga2VybmVsIHJlcXVpcmVz
-IHN5c190dHlfY29uZmlnLgoKSW5kZWVkLCBpdCBkb2Vzbid0IGhhdmUgbXVjaCB0byBkbyB3aXRo
-IHRoZSBkaXN0cm8gZWl0aGVyLCBJIGp1c3QgdGVzdGVkIGl0IApvbiBEZWJpYW4sIGFuZCBzaW1p
-bGFyIHRlc3RzIGNhbiBiZSBkb25lIG9uIG90aGVyIGRpc3Ryb3MuCgoKJmd0OyBXaHkgZGlkIHlv
-dSBqdXN0IGNoYW5nZSB0aGVzZSAzIHVzYWdlcywgYW5kIG5vdCBhbGwgb2YgdGhlbT8gIFdoeSBh
-cmUKJmd0OyB0aGVzZSAic2FmZSIgYnV0IHRoZSBvdGhlcnMgbm90PwoKVGhlcmUgYXJlIDUgY2Fw
-YWJpbGl0eSBjaGVja3MgaW4gdGhpcyBmaWxlLCBhbGwgdXNpbmcgc3lzX2FkbWluLiBUaGUgZmly
-c3QgCm9uZSBpcyBpbiB0aGUgdGlvY3N0aSBmdW5jdGlvbiwgaW4gY29tbWl0IDY5MGM4YjgwNGFk
-MiAoIlRJT0NTVEk6IGFsd2F5cyAKZW5hYmxlIGZvciBDQVBfU1lTX0FETUlOIiksIHN5c19hZG1p
-biB3YXMgaW50cm9kdWNlZCBmb3IgYSBzcGVjaWFsIAphcHBsaWNhdGlvbiBCUkxUVFksIHNvIEkg
-aGVzaXRhdGVkIHRvIGNoYW5nZSBpdC4gSW4gZmFjdCwgQlJMVFRZIGhhcyBib3RoIApzeXNfYWRt
-aW4gYW5kIHN5c190dHlfY29uZmlnLCBzbyBtb2RpZnkgdGhlIGtlcm5lbCdzIHBlcm1pc3Npb24g
-Y2hlY2ssIHdpbGwgCm5vdCBhZmZlY3QgQlJMVFRZJ3MgZnVuY3Rpb24uIFRoZSBvdGhlciBwZXJt
-aXNzaW9uIGNoZWNrIGlzIGxvY2F0ZWQgaW4gYSAKZGlmZmVyZW50IGZ1bmN0aW9uLCBub3QgdHJp
-Z2dlcmVkIGJ5IGlvY3RsLCBzbyBpdCdzIG5vdCB3cml0dGVuIHRvZ2V0aGVyLgoKJmd0OyBBbmQg
-bW9zdCBpbXBvcnRhbnRseSBvZiBhbGwsIHdoeSBtYWtlIHRoaXMgY2hhbmdlIGF0IGFsbD8gIFdo
-byBpcyB1c2luZwomZ3Q7IGNhcGFiaWxpdGllcyB0aGVzZSBkYXlzIGluIGEgZmluZS1ncmFpbmVk
-IHdheSB0byB3YXJyZW50IHRoaXMgdHlwZSBvZgomZ3Q7IG1vZGlmaWNhdGlvbj8KCkkgZ3Vlc3Mg
-eW91IGFyZSByaWdodCwgdGhlcmUncyBub3QgYSBsb3Qgb2YgcGVvcGxlIHVzaW5nIGNhcGFiaWxp
-dGllcy4gCkJ1dCB0aGUgaWRlYSBvZiBhIGxlYXN0IHByaXZpbGVnZSBkZXNpZ24gaXMgc3RpbGwg
-dGVtcHRpbmcgZnJvbSBhIApzZWN1cml0eSBwb2ludCBvZiB2aWV3LiBUaGUgc2NhcmNlIHVzZSBv
-ZiBjYXBhYmlsaXRpZXMgaXMgcmVsYXRlZCB0byAKaXRzIHByb2JsZW1hdGljIGltcGxlbWVudGF0
-aW9uLCBhbmQgd2UgaG9wZSB0byBwcm9tb3RlIGl0cyB1c2UgYnkgCmltcHJvdmluZyBpdHMgaW1w
-bGVtZW50YXRpb24uIHN5c19hZG1pbiBpcyBhIHJlbGF0aXZlbHkgbGFyZ2UgcHJpdmlsZWdlLCAK
-d2hpY2ggbWF5IHBvc2UgYSByaXNrIHRvIHRoZSBzeXN0ZW0g77yIY2hlY2sgdGhlIGN2ZSBsaXN0
-OgpodHRwczovL2N2ZS5taXRyZS5vcmcvY2dpLWJpbi9jdmVrZXkuY2dpP2tleXdvcmQ9Q0FQX1NZ
-U19BRE1JTiApLCBhbmQgYnkgCnJlZHVjaW5nIHRoZSB1bm5lY2Vzc2FyeSB1c2Ugb2Ygc3lzX2Fk
-bWluLCB3ZSBjYW4gYXZvaWQgc29tZSBvZiB0aGUgcmlza3MuIApJbiBwYXJ0aWN1bGFyLCB0aGUg
-bGludXggY2FwYWJpbGl0eSBoYXMgYmVlbiBkZXNpZ25lZCB3aXRoIHN5c190dHlfY29uZmlnLCAK
-c28gaXQgc2hvdWxkIHRha2Ugb3ZlciB0aGUgcHJpdmlsZWdlcyBvcmlnaW5hbGx5IG1hbmFnZWQg
-Ynkgc3lzX2FkbWluIApyZWxhdGVkIHRvIFRUWS4KCkJlc3QgcmVnYXJkcywKSmluZ3ppCg==
+
+
+On 12/01/2024 09:12, Tao Zhang wrote:
+> 
+> On 12/20/2023 5:06 PM, Tao Zhang wrote:
+>>
+>> On 12/19/2023 10:09 PM, Suzuki K Poulose wrote:
+>>> On 19/12/2023 06:58, Tao Zhang wrote:
+>>>>
+>>>> On 12/18/2023 7:02 PM, Suzuki K Poulose wrote:
+>>>>> On 21/11/2023 02:24, Tao Zhang wrote:
+>>>>>> Add the nodes for CMB subunit MSR(mux select register) support.
+>>>>>> CMB MSRs(mux select registers) is to separate mux,arbitration,
+>>>>>> ,interleaving,data packing control from stream filtering control.
+>>>>>>
+>>>>>> Reviewed-by: James Clark <james.clark@arm.com>
+>>>>>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+>>>>>> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
+>>>>>> ---
+>>>>>>   .../testing/sysfs-bus-coresight-devices-tpdm  |  8 ++
+>>>>>>   drivers/hwtracing/coresight/coresight-tpdm.c  | 86
+>>>>>> +++++++++++++++++++
+>>>>>>   drivers/hwtracing/coresight/coresight-tpdm.h  | 16 +++-
+>>>>>>   3 files changed, 109 insertions(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git
+>>>>>> a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>>>>> b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>>>>> index e0b77107be13..914f3fd81525 100644
+>>>>>> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>>>>> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>>>>> @@ -249,3 +249,11 @@ Description:
+>>>>>>           Accepts only one of the 2 values -  0 or 1.
+>>>>>>           0 : Disable the timestamp of all trace packets.
+>>>>>>           1 : Enable the timestamp of all trace packets.
+>>>>>> +
+>>>>>> +What: /sys/bus/coresight/devices/<tpdm-name>/cmb_msr/msr[0:31]
+>>>>>> +Date:        September 2023
+>>>>>> +KernelVersion    6.7
+>>>>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao
+>>>>>> Zhang (QUIC) <quic_taozha@quicinc.com>
+>>>>>> +Description:
+>>>>>> +        (RW) Set/Get the MSR(mux select register) for the CMB
+>>>>>> subunit
+>>>>>> +        TPDM.
+>>>>>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c
+>>>>>> b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>>>>> index f6cda5616e84..7e331ea436cc 100644
+>>>>>> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
+>>>>>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>>>>> @@ -86,6 +86,11 @@ static ssize_t tpdm_simple_dataset_show(struct
+>>>>>> device *dev,
+>>>>>>               return -EINVAL;
+>>>>>>           return sysfs_emit(buf, "0x%x\n",
+>>>>>> drvdata->cmb->patt_mask[tpdm_attr->idx]);
+>>>>>> +    case CMB_MSR:
+>>>>>> +        if (tpdm_attr->idx >= drvdata->cmb_msr_num)
+>>>>>> +            return -EINVAL;
+>>>>>> +        return sysfs_emit(buf, "0x%x\n",
+>>>>>> + drvdata->cmb->msr[tpdm_attr->idx]);
+>>>>>>       }
+>>>>>>       return -EINVAL;
+>>>>>>   }
+>>>>>> @@ -162,6 +167,12 @@ static ssize_t
+>>>>>> tpdm_simple_dataset_store(struct device *dev,
+>>>>>>           else
+>>>>>>               ret = -EINVAL;
+>>>>>>           break;
+>>>>>> +    case CMB_MSR:
+>>>>>> +        if (tpdm_attr->idx < drvdata->cmb_msr_num)
+>>>>>> +            drvdata->cmb->msr[tpdm_attr->idx] = val;
+>>>>>> +        else
+>>>>>> +            ret = -EINVAL;
+>>>>>
+>>>>>
+>>>>> minor nit: Could we not break from here instead of adding return
+>>>>> -EINVAL
+>>>>> for each case ? (I understand it has been done for the existing cases.
+>>>>> But I think we should clean up all of that, including the ones you
+>>>>> added
+>>>>> in Patch 5. Similarly for the dataset_show()
+>>>>
+>>>> Sure, do I also need to change the DSB corresponding code? If so,
+>>>> how about
+>>>>
+>>>> if I add a new patch to the next patch series to change the previous
+>>>> existing cases?
+>>>
+>>> You could fix the existing cases as a preparatory patch of the next
+>>> version of this series. I can pick it up and push it to next as I see
+>>> fit.
+>>
+>> Got it. I will update this to the next patch series.
+> 
+> Hi Suzuki,
+> 
+> 
+> Since the dataset data is configured with spin lock protection, it needs
+> to be unlock before return.
+> 
+> List my modification below. Would you mind help review to see if it is
+> good for you.
+> 
+> static ssize_t tpdm_simple_dataset_store(struct device *dev,
+>                      struct device_attribute *attr,
+>                      const char *buf,
+>                      size_t size)
+> {
+>     unsigned long val;
+> 
+>     struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>     struct tpdm_dataset_attribute *tpdm_attr =
+>         container_of(attr, struct tpdm_dataset_attribute, attr);
+> 
+>     if (kstrtoul(buf, 0, &val))
+>         return -EINVAL;
+> 
+>     spin_lock(&drvdata->spinlock);
+>     switch (tpdm_attr->mem) {
+>     case DSB_TRIG_PATT:
+>         if (tpdm_attr->idx < TPDM_DSB_MAX_PATT)
+>             drvdata->dsb->trig_patt[tpdm_attr->idx] = val;
+>         else {
+>             spin_unlock(&drvdata->spinlock);
+>             return -EINVAL;
+>         }
+>     case DSB_TRIG_PATT_MASK:
+>         if (tpdm_attr->idx < TPDM_DSB_MAX_PATT)
+>             drvdata->dsb->trig_patt_mask[tpdm_attr->idx] = val;
+>         else{
+>             spin_unlock(&drvdata->spinlock);
+>             return -EINVAL;
+>         }
+>     case DSB_PATT:
+>         if (tpdm_attr->idx < TPDM_DSB_MAX_PATT)
+>             drvdata->dsb->patt_val[tpdm_attr->idx] = val;
+>         else{
+>             spin_unlock(&drvdata->spinlock);
+>             return -EINVAL;
+>         }
+>     case DSB_PATT_MASK:
+>         if (tpdm_attr->idx < TPDM_DSB_MAX_PATT)
+>             drvdata->dsb->patt_mask[tpdm_attr->idx] = val;
+>         else{
+>             spin_unlock(&drvdata->spinlock);
+>             return -EINVAL;
+>         }
+>     case DSB_MSR:
+>         if (tpdm_attr->idx < drvdata->dsb_msr_num)
+>             drvdata->dsb->msr[tpdm_attr->idx] = val;
+>         else{
+>             spin_unlock(&drvdata->spinlock);
+>             return -EINVAL;
+>         }
+>     default:
+>         spin_unlock(&drvdata->spinlock);
+>         return -EINVAL;
+>     }
+>     return size;
+> 
+> 
+> Best,
+> 
+> Tao
+> 
+
+This looks like a good fit for the new
+guard(spinlock)(&drvdata->spinlock) thing. Then there is no need to do
+all the manual unlocking.
+
 
