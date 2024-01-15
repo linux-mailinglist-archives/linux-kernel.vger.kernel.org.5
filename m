@@ -1,78 +1,72 @@
-Return-Path: <linux-kernel+bounces-25898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70E1882D7B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:46:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9145C82D7BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:47:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48F131C2188A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:46:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6FCC1C218A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:47:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 191841E523;
-	Mon, 15 Jan 2024 10:46:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23FFB22071;
+	Mon, 15 Jan 2024 10:47:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dm6pMYfA"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Sz3CtW8T"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9867E54C;
-	Mon, 15 Jan 2024 10:46:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50e7c6f0487so9692693e87.3;
-        Mon, 15 Jan 2024 02:46:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705315596; x=1705920396; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=juHn9YHI5BJWefTaNGWxRPjBm81wcum9lPgwzlsZd+A=;
-        b=dm6pMYfArz8YBARa7ZXOsnpRUETZY5GnxrfQn4qdWX4gnrQF/QrdfsUe85loApPHph
-         x6qVWOOGWI1t7VVAO551NxY2x3Qp02a7XyfcIgYF+8eWy2NgdwDgfNMxJ4bOfnVnb+G6
-         P9TQlXsCnlE5XhqKok2/JyfJN7ElG3EtR3reWjLCGm+yJ/mQYdbZMk2Gwso8x0OZ4k+s
-         VD3pEhzlciRV4NCI/FjBhGlY1qBD6qOhikjcxKSHyyQGQktjNB8dU7pnGSz5X3TOP568
-         NqQbIbQDf9fFLPZCppYqA1l7dXKFHqo8BuSjrEHbyAzHpf9BgBLMSedq+W3ebt2zdLly
-         SQWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705315596; x=1705920396;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=juHn9YHI5BJWefTaNGWxRPjBm81wcum9lPgwzlsZd+A=;
-        b=luwhUUzx8PlLE0/Z465s6N/D+8PU9rHh+vy0d1H9o/UaVHVd8tu5DvrconLmXoGqAg
-         2yE8iFl8Mm7t1uagLK6FfSUYzq84sBlgSHEbOgVRrpq95JKIfSBK+h6w8a+kgyl4wKeO
-         VZdyLfL7hZdKlLFGUPxoDy01WO4HjHvcdMSw9dgOWaxqqrAMpnLfflML0c9WmU+Blktz
-         alVk2bR5ltLrdllxHKEqUtzqX4WljD7t3CM9pLIh4VzXh7RXO5nqjDgBc5oYmtIfawFL
-         PJlOdNEb6nhPymcj/s1ltg0VjgKR1qbNPWeJ+1OsfFskT/3hr5/hSEpNrGoXE7Fc195B
-         n3XQ==
-X-Gm-Message-State: AOJu0YyM5ojL+jVPZJBtYiNv2Pkh7WfKUZPBLGcCYciDTdcd0PlmHIo/
-	q49+4gGg+Jy9quQtljRHjOcyEHIbh74=
-X-Google-Smtp-Source: AGHT+IFtKO2sD1f5WuvFhkT1INzIL0OFjBllVqZjxhLrAjosY4V7F+6aksjKuOw6jXcTA2bZXJluLQ==
-X-Received: by 2002:ac2:520f:0:b0:50e:78dd:ef53 with SMTP id a15-20020ac2520f000000b0050e78ddef53mr1372411lfl.89.1705315595589;
-        Mon, 15 Jan 2024 02:46:35 -0800 (PST)
-Received: from pc636 (host-90-233-221-202.mobileonline.telia.com. [90.233.221.202])
-        by smtp.gmail.com with ESMTPSA id bi40-20020a0565120ea800b0050ea9d5b667sm1399048lfb.278.2024.01.15.02.46.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 02:46:35 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Mon, 15 Jan 2024 11:46:32 +0100
-To: Z qiang <qiang.zhang1211@gmail.com>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v4 4/4] rcu: Support direct wake-up of synchronize_rcu()
- users
-Message-ID: <ZaUNCJyYREsw7O3h@pc636>
-References: <20240104162510.72773-1-urezki@gmail.com>
- <20240104162510.72773-5-urezki@gmail.com>
- <CALm+0cUM=5bg0eKQ4D-mm7ZaAnQbf+2NjetUYnqHOLq5uR0w5g@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B5462BB00;
+	Mon, 15 Jan 2024 10:47:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=BZWJhywUMRRIXvtL5doMOpnSiLPQBWG9w9WPF2MUO4c=; b=Sz3CtW8TvMYVj95XL1EZCET2A+
+	QamuonxIFNT3zYkRLRtfqxw7SE6Ou+c1sDlHOm3gafCTRQqOLJZCqlQDm5FD6J4qrogV6aC9NBqKU
+	UvioOgQ7gVTi/liinVC4kVe/e4buW1OQKg1r4GMXP3iDla1Qt5/Ci+N1I7TqyALOM7ZH/njEyXM+O
+	kqJMAfgr9yHj6be0TqV5AqRnblBaGfn2ZJHMunrt6qJ0b7/ZJ87rjdKUjRsvXgIYphw4O44+TlX5o
+	PSgdX1SN3rxuaPmO/lCvJycV2gVlF4hse5S9MWc2dj0rsOcECr0O+epZD/m8Mped50SRNjDOgOXs2
+	5FXDnxHg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39864)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rPKUr-0002Ja-0t;
+	Mon, 15 Jan 2024 10:47:13 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rPKUm-0002tU-5o; Mon, 15 Jan 2024 10:47:08 +0000
+Date: Mon, 15 Jan 2024 10:47:08 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
+	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	jianyong.wu@arm.com, justin.he@arm.com,
+	James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 02/21] ACPI: processor: Add support for processors
+ described as container packages
+Message-ID: <ZaUNLMvIYChv6qai@shell.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+ <E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
+ <CAJZ5v0iB0bS6nmjQ++pV1zp5YSGuigbffK5VD3wsX+8bY9MA5w@mail.gmail.com>
+ <20240111175908.00002f46@Huawei.com>
+ <ZaA3l4yjgCXxSiVg@shell.armlinux.org.uk>
+ <20240112092520.00001278@Huawei.com>
+ <CAJZ5v0g2CFPrSfNzHKBz_Spwt304QEQtR6w57VR11i5APPrD8Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,29 +75,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALm+0cUM=5bg0eKQ4D-mm7ZaAnQbf+2NjetUYnqHOLq5uR0w5g@mail.gmail.com>
+In-Reply-To: <CAJZ5v0g2CFPrSfNzHKBz_Spwt304QEQtR6w57VR11i5APPrD8Q@mail.gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-Hello, Zqiang.
+On Fri, Jan 12, 2024 at 04:01:40PM +0100, Rafael J. Wysocki wrote:
+> In any case, it is always better to work on top of the current
+> mainline code IMO.
 
-> >
-> >         // concurrent sr_normal_gp_cleanup work might observe this update.
-> >         smp_store_release(&rcu_state.srs_done_tail, wait_tail);
-> >         ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
-> >
-> > -       if (wait_tail)
-> > +       if (wait_tail->next)
-> >                 queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
-> >
-> 
-> I'm testing these patches :) , one question is as follows:
-> Can we use (WQ_MEM_RECLAIM | WQ_HIGHPR)type of workqueue to perform
-> wake-up actions? avoid kworker creation failure under memory pressure, causing
-> the wake-up action to be delayed.
-> 
-I do not have any objections in not doing that, so we can add.
+That's fine if one is starting to do some work now, but that is not the
+case with this. The first posting was almost a year ago:
 
-Thank for testing this!
+	https://lwn.net/Articles/922127/
 
---
-Uladzislau Rezki
+which likely means that it's been around for at 18 months or more, and
+we can also see that this patch was in that original patch set. What
+the history of this patch is before the first posting... only James
+would be able to answer that and I feel that we're highly unlikely to
+get any kind of response.
+
+Anyway, consider this patch dropped from the series.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
