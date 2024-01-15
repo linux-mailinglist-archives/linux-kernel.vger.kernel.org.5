@@ -1,123 +1,153 @@
-Return-Path: <linux-kernel+bounces-26520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCCE982E2A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:32:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CE3782E2A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:33:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 788FA283B2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 22:32:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 045F9283B4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 22:33:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEE861B7F1;
-	Mon, 15 Jan 2024 22:32:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64BFB1B5BA;
+	Mon, 15 Jan 2024 22:32:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b34SvOSf"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=NETORG5796793.onmicrosoft.com header.i=@NETORG5796793.onmicrosoft.com header.b="tzasYck1"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2077.outbound.protection.outlook.com [40.107.93.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BBC41B5B1
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 22:32:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705357955;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eP0VxXSEEil+R0UNdZpa6aVY75gYpHAxm/3u1ydWXpo=;
-	b=b34SvOSfG922P84297/sD9KEjCH1AImm3GvBtbgeZwPTPqViaWwlH3vHFede7peqQxtz7P
-	kK4e2hSf5LBJLHTBbcdMagjkW06YzMF3YMfcgxjNO3TioEbBhRXOngIWA7CNV6Js5c4sEU
-	+aiYf73K3RYsKpI+VudSo1NQ+amnzdk=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-480-NZoR3yuQMRWCMolG-AZ_wg-1; Mon, 15 Jan 2024 17:32:27 -0500
-X-MC-Unique: NZoR3yuQMRWCMolG-AZ_wg-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40e6e3c46bfso20014085e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 14:32:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705357946; x=1705962746;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eP0VxXSEEil+R0UNdZpa6aVY75gYpHAxm/3u1ydWXpo=;
-        b=cqVhJ/GYxcfqJAQBN50RlVicvfS3AEVUB2nqiKbg5Qump5CWqRbx6OaPgOgMFR9RTV
-         UsmlIT1Igd9+hxy0yCqnq1YFXTy5czveP9rIANFTthHXc7BcS9kdYLBaxKwlKQb08dvZ
-         pZHKd+BCUksBZhHVdDW+Frby85QvkKS+//DuWeDoC4fQ2YwtykPNtHPMe+Ndm3CqvoAb
-         zIdIqbXKRg4Gt9YMznoQM5HUbyUm/fAy8CkFLgjMqfxpkGgYmeHZPIclmBY+l2SE0p/c
-         IrQ7Ww30LozX2YC2/f7OfL/vGJ3f+JZOpH1dabhgRTSJfU/QteHbXZ2jWeKVCmASpqNt
-         xPhA==
-X-Gm-Message-State: AOJu0YyxdTaWfUUoY+c6HFMEDIwBec3GV3P52cLm5xyVd4luZ7527wyK
-	lwH0koFN5xmXqcYA+w0gWa5a6MH9e1ynsI/E7xhL+bfUW0ykVBXinZ/cnbq4vyjz+2UMPTgnOMe
-	5zK82z3uVH3CM6c249kk5Eg1zInBVmfWy
-X-Received: by 2002:a05:600c:4a9b:b0:40e:57f2:5948 with SMTP id b27-20020a05600c4a9b00b0040e57f25948mr2946996wmp.72.1705357946073;
-        Mon, 15 Jan 2024 14:32:26 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEkeJKqYDhM/whQk/nCZZw+VXl4wzetnaox4MjVkcLxDiSEjq0eYyRMgzXTkyhuF5WMBxlqJQ==
-X-Received: by 2002:a05:600c:4a9b:b0:40e:57f2:5948 with SMTP id b27-20020a05600c4a9b00b0040e57f25948mr2946992wmp.72.1705357945790;
-        Mon, 15 Jan 2024 14:32:25 -0800 (PST)
-Received: from redhat.com ([2.52.29.192])
-        by smtp.gmail.com with ESMTPSA id m8-20020adfe948000000b00336710ddea0sm12980913wrn.59.2024.01.15.14.32.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 14:32:25 -0800 (PST)
-Date: Mon, 15 Jan 2024 17:32:21 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Andrew Melnychenko <andrew@daynix.com>
-Cc: jasowang@redhat.com, kvm@vger.kernel.org,
-	virtualization@lists.linux.dev, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, yuri.benditovich@daynix.com,
-	yan@daynix.com
-Subject: Re: [PATCH 1/1] vhost: Added pad cleanup if vnet_hdr is not present.
-Message-ID: <20240115172837-mutt-send-email-mst@kernel.org>
-References: <20240115194840.1183077-1-andrew@daynix.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15E31B7E1;
+	Mon, 15 Jan 2024 22:32:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=labundy.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=labundy.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QTWoNTjeudLY3BrYbuB26Jkqs0FJbbJXZEwxAB2MYbOuYSaU5a7n4g4gUPOE4jUkBY/cAyLJ/crGKBdXw2toaRWhZ0iOCj8/gqra5PSpb2R771S3+PoKzoCtDG/u1cwAVfanY1AQ8E2fxrG4CZF6Mq0IZtc0uuSYwb9rHa3OozbXQh5YAUX8U7eLTkremW0qbsFQJGA1BcUYjmT9wps42zNDJ5b9iMtxVagFnEDLsZVM2bkrV6q5iKcmc+FXe0KZcU4mzWlImRHxHS0xJHUx4/QXGjemTyGMtA1pV27TmisfJyFHyDLFLGhYiRCgtz8dCXyHGL/6pD+bIpnrDvCGaA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YX4ge0X79Ea3Mf9lDE+FahfR5jXSJp8kMcxhSVNbB2c=;
+ b=e9yHgeXcprpAYXCdEgnHu/M6l8pfgnoH5LKLmOhJgfIcyga1oNciVw4fM/1SNUmnS4Dj0QPukZv7H8C90tQ9kBpdgGOVuvsZ+u63rzRm0P5dPvh75DFQZ+EP5r1q0wakQZSC/xXMmmgAcRuQN4z3osaN+1FnTJfDXb2kfgx08O2uQt+4clNnRaT8nWErU1eBF/u1FpXIPC2rXfhwol88EnXvco/hWg2+F7Nv2CBumM8+xL/KcWAHZa3VTpHMhs5Uerl9RVUpQYmtTjnp+5pefsZKWu2pOoeGlDXvHnNWF5XtklFOsX2PLRdU6xFK4LyFc+SlqL6038vtbPMjv9NRaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=labundy.com; dmarc=pass action=none header.from=labundy.com;
+ dkim=pass header.d=labundy.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=NETORG5796793.onmicrosoft.com; s=selector1-NETORG5796793-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YX4ge0X79Ea3Mf9lDE+FahfR5jXSJp8kMcxhSVNbB2c=;
+ b=tzasYck1osJEcr/P5crrd5a1H09Q0xAH5k77iIbHV/IK70E/PJDTNph9iraNIiuv8EUjRB06wNUTSnfY1wHDxIPJ2tQSTiGj4+7X1EQW1nhOT6wQma73jMZTPsLqFRMQ/tIYZAEpJb4p2gFgTE2BI4drWY+D1m5jWdU8LMNH+Zs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=labundy.com;
+Received: from SN4PR0801MB3774.namprd08.prod.outlook.com
+ (2603:10b6:803:43::21) by MW5PR08MB8192.namprd08.prod.outlook.com
+ (2603:10b6:303:1c1::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Mon, 15 Jan
+ 2024 22:32:41 +0000
+Received: from SN4PR0801MB3774.namprd08.prod.outlook.com
+ ([fe80::6438:cab:eaa0:104e]) by SN4PR0801MB3774.namprd08.prod.outlook.com
+ ([fe80::6438:cab:eaa0:104e%3]) with mapi id 15.20.7202.017; Mon, 15 Jan 2024
+ 22:32:40 +0000
+Date: Mon, 15 Jan 2024 16:32:36 -0600
+From: Jeff LaBundy <jeff@labundy.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mfd: iqs62x: Do not override firmware-name
+ $ref
+Message-ID: <ZaWyhLcS86Xlw0Vt@nixie71>
+References: <20240115182042.1610134-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240115182042.1610134-1-krzysztof.kozlowski@linaro.org>
+X-ClientProxiedBy: SN6PR2101CA0004.namprd21.prod.outlook.com
+ (2603:10b6:805:106::14) To SN4PR0801MB3774.namprd08.prod.outlook.com
+ (2603:10b6:803:43::21)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240115194840.1183077-1-andrew@daynix.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN4PR0801MB3774:EE_|MW5PR08MB8192:EE_
+X-MS-Office365-Filtering-Correlation-Id: fac17534-c64c-4ee2-e8b5-08dc1619e1ab
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	WcF6ktaCBqBWMmGGSiiPkPZp0zTJJ46LMRMhzl0ezNQAaQ6S9CQWc3hLjCG6R927yI7fdqDVCB7SAZQu3UvaQsZ9cAj3uUkTqV1oumARZc+0b/rF5CUdUNH2NnkvPlJ3qgNvOiGQ3PfoNNX6yjXwAXv1rx2b9QI72A546NxONY2qf45JDpX7P6M434te2PQhJOGNICV0Nia0qLNr0CWZyoW6ZafIZzj0VSfo3XN2O0YJDhcOJUg5tztAKD6lQ2PZJDs7yyh24XCY+NB3QJbyitsgMkNdHdpTuvboAqbmEa38IHyTQ/Bn0TVy2GVAVxLXpavgJzKFUPHTOnYm8svrHt4XYcQIHF/vsyW4UtvnePUrtRQ9sMLYENpQ61JJEaj7/aSmfaMFojadFBmV8D+Fej2IKrJzIezh/Np420A0PL2Whw4Yuu9PFdYBUoU8iWy3tLocPa79Qoqm6VHlVObdDzyKmi+nKunkgDNp/2YORepq6/+P2h1bYQeSEm7uNxu0f8p1iPzfr8PTJ/WOuKoZp8Biu4hB7SYpXAoK9A+0P55tpGqlH7wJe1nm/tF/lAGR
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0801MB3774.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(346002)(136003)(396003)(366004)(376002)(39830400003)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(38100700002)(86362001)(83380400001)(6666004)(9686003)(6512007)(6506007)(6486002)(8676002)(8936002)(4326008)(478600001)(66476007)(54906003)(66556008)(6916009)(26005)(316002)(66946007)(41300700001)(33716001)(2906002)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?jw8eRONuZBzzcMAz4W0IwFb5ZOdJaoQjvi7cCDJv8bvdlOPB0dHEiKLCuh1W?=
+ =?us-ascii?Q?T4znowcQURUFNq8ym/T3WlApvX+C80X08m7jNzIan4eQ2EobtYSJ0zkF/4jt?=
+ =?us-ascii?Q?3jnztPf1V5bzFl3mis+CQT7SSAIqM8J8pmzuKprremzs2uUh2iKbFuL56+gO?=
+ =?us-ascii?Q?42qkiYt6rSKbyVoxE6w4pZHhx6lrdenerZPjXYyMHlxh8qG9HKLTnokMlGX+?=
+ =?us-ascii?Q?TFHx240XyhWch7YmQYuB030HsFlpCj8ScsrO8NuleMTgNgSJV2iD/I0RlDIz?=
+ =?us-ascii?Q?JwxQotbY/7RG4ZYJ2jLu266QEN8L65kDPisAuiDI9ok2aC396O25dCZsnrHf?=
+ =?us-ascii?Q?1zKx4DO/NUzrk0gu717PN7VnqR4cxh/IitW3EvI+R9Wektojd8SHjc0VEefG?=
+ =?us-ascii?Q?2qJef7maavQhhWC+lRfzFpVeEEUzSn5MND1IYOzuEWrYX33kB+7HvhyPx7FV?=
+ =?us-ascii?Q?6MnZwi3zoGvwpPin8hHTSD99wmwPO17bhPTAk4sZL3S7LqFJg2ThkUpe5u3U?=
+ =?us-ascii?Q?nRkVrXFRdpf9YeRq0xbVCVuyA8mwyRidlEqjwqbsbUcMFIo17k8ff9Tgdiio?=
+ =?us-ascii?Q?EwbpasguTf9FNdGgrA3NFUdHvkTOpgXbcJ2WT+RjgMM70q+IRp+5SGWNQR0c?=
+ =?us-ascii?Q?SNr6ezBCQpSBS0jZJEGB4X4prf+qHBFVl28msCVpHhJVfvHSC5Wv6BI7mBOz?=
+ =?us-ascii?Q?qCBPwZIFY5zxH4Vvchx8NK+F0iVHSs1LOZR4C+x89FyBYNRqsv4e375hy+jb?=
+ =?us-ascii?Q?Hn8Iyg/oz6UVe2JgaQTZq5mG2Mr/j4iEiE40goVI5EZviWt1iaFZkn0nLvHm?=
+ =?us-ascii?Q?N+FTGoa73QbqZgbLZ2KO5Yhs7zaGGe7eDhm2fgXvVTFUsX2N9TxtBiktOeyB?=
+ =?us-ascii?Q?GIEGRO+SOkEm2R6WoJPhqQYpvw+0WMQMBvLIoMbmzlaG0ZviYCjM0P7lz9QV?=
+ =?us-ascii?Q?a4Hrcg5wIwX23FDsDFYP/TE0Yz73Ssr78FB0u+Ajg4qksCw7I20U7oHsqEyL?=
+ =?us-ascii?Q?/GFvx35t+S8cV/FTwG87Y4maP0Oj7VGh/n5psyLAVfmx6vfA5he0juCEQuX0?=
+ =?us-ascii?Q?UOuEXToIy6Q4UGgSN0bsE/VWlFCrk631rlym/AxNJCtWINV/+cZACpbm8bSu?=
+ =?us-ascii?Q?J4eqaWryrfr0TAn2uBvzN30Z9HJqr3jOyBQltfLSnMQTgEq0Fe/5xfxL7ykc?=
+ =?us-ascii?Q?MpCtyrYn+1srPIV754YhM48BVTT3QQx0hTEv1sATIv6Yt3Gm2gY6CpeUi2XX?=
+ =?us-ascii?Q?WL/c2Eb5zHJTddGNQCapVRtsaSfYucLSJPlJ/rEU8JTdq6F88BxwA2pdHAwg?=
+ =?us-ascii?Q?CJVVNAWmiK6xmudGE+7Rmtzyv6vIS51HBFCAQykraDV7DCgfw8WlxYcNypWa?=
+ =?us-ascii?Q?ieYtjS25+BIwm6qI76NaNC23gQ+raxeYm2tDSGnL16unCofzBlJVaHLJVjRK?=
+ =?us-ascii?Q?C4poPqRF3FOXf+GirTMpKdonCXPebwolZy/yc+xgxh+TfHOhDSoC9IjBZrZp?=
+ =?us-ascii?Q?L3auuqUa2PLQhuqKAycyYz8rLLBfTxfZ1c5Zf7eBlTscMTbGr2u+m5U5sO6k?=
+ =?us-ascii?Q?iMljqdcVhnmWllsA4nweb5zckeYJ3sTvxlATl1wt?=
+X-OriginatorOrg: labundy.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fac17534-c64c-4ee2-e8b5-08dc1619e1ab
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0801MB3774.namprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2024 22:32:40.4703
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 00b69d09-acab-4585-aca7-8fb7c6323e6f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Yb6mkjOUJ5I6FH14l1xj+ufL0RrY+0vKHKdKe4BnXGWAPMqdDW0PpploFUT2yqiOShHp/WznCpWp+zBN5uyaxA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR08MB8192
 
-On Mon, Jan 15, 2024 at 09:48:40PM +0200, Andrew Melnychenko wrote:
-> When the Qemu launched with vhost but without tap vnet_hdr,
-> vhost tries to copy vnet_hdr from socket iter with size 0
-> to the page that may contain some trash.
-> That trash can be interpreted as unpredictable values for
-> vnet_hdr.
-> That leads to dropping some packets and in some cases to
-> stalling vhost routine when the vhost_net tries to process
-> packets and fails in a loop.
+On Mon, Jan 15, 2024 at 07:20:42PM +0100, Krzysztof Kozlowski wrote:
+> dtschema package defines firmware-name as string-array, so individual
+> bindings should not make it a string but instead just narrow the number
+> of expected firmware file names.
 > 
-> Qemu options:
->   -netdev tap,vhost=on,vnet_hdr=off,...
-> 
-> Signed-off-by: Andrew Melnychenko <andrew@daynix.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Acked-by: Jeff LaBundy <jeff@labundy.com>
+
 > ---
->  drivers/vhost/net.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  Documentation/devicetree/bindings/mfd/iqs62x.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-> index f2ed7167c848..57411ac2d08b 100644
-> --- a/drivers/vhost/net.c
-> +++ b/drivers/vhost/net.c
-> @@ -735,6 +735,9 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
->  	hdr = buf;
->  	gso = &hdr->gso;
+> diff --git a/Documentation/devicetree/bindings/mfd/iqs62x.yaml b/Documentation/devicetree/bindings/mfd/iqs62x.yaml
+> index 044cd7542c2b..f438c2374966 100644
+> --- a/Documentation/devicetree/bindings/mfd/iqs62x.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/iqs62x.yaml
+> @@ -31,7 +31,7 @@ properties:
+>      maxItems: 1
 >  
-> +	if (!sock_hlen)
-> +		memset(buf, 0, pad);
-> +
->  	if ((gso->flags & VIRTIO_NET_HDR_F_NEEDS_CSUM) &&
->  	    vhost16_to_cpu(vq, gso->csum_start) +
->  	    vhost16_to_cpu(vq, gso->csum_offset) + 2 >
-
-
-Hmm need to analyse it to make sure there are no cases where we leak
-some data to guest here in case where sock_hlen is set ...
+>    firmware-name:
+> -    $ref: /schemas/types.yaml#/definitions/string
+> +    maxItems: 1
+>      description:
+>        Specifies the name of the calibration and configuration file selected by
+>        the driver. If this property is omitted, the name is chosen based on the
 > -- 
-> 2.43.0
-
+> 2.34.1
+> 
 
