@@ -1,391 +1,169 @@
-Return-Path: <linux-kernel+bounces-26467-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26469-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AC5682E15A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 21:12:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5762582E160
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 21:13:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C53522837E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:12:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB75A1F22D5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:13:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A74199D4;
-	Mon, 15 Jan 2024 20:12:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32C7E199B9;
+	Mon, 15 Jan 2024 20:13:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="ec6KjOdQ"
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="dRJZqrjO";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="L1/gDlIK"
+Received: from wnew1-smtp.messagingengine.com (wnew1-smtp.messagingengine.com [64.147.123.26])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64F6A19473
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 20:12:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-429ca07044eso27506351cf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 12:12:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1705349546; x=1705954346; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jlyjMbXX7dD5x9ylf1SatJOm6rOrNdvCTEfPJ8hoU0M=;
-        b=ec6KjOdQVrK6LYJXM1YcZLxgRvPuTtyQxcnpc9BLtK2PQtyw/qJXE7ec/N0c0T90AB
-         mxNY6Pu+9vnvGD+uyJKtTPXFHDSc+0BaOikdYXdXcdyyENMTEdx2VYYfcUeEtwwAtuYJ
-         No7cjVJ5XzDhJRnb1/Aa7reoTns4+wtWemYvjCEm6ICDQE+213V2a4Ai02lakv7x2kqO
-         hmtZByBSPdsUPkVGMbySaPwny4f5HOtwJALO0G7KmT0fsIsqT0RXe1M6bazOWNVBWsqA
-         vIcmfkZKzBE6lce2HfetY9UjVSDYCjQnCFUN+FXJwRGoIqC+1J5GZE+rm5g4c6ge2oDT
-         8SEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705349546; x=1705954346;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jlyjMbXX7dD5x9ylf1SatJOm6rOrNdvCTEfPJ8hoU0M=;
-        b=d04E6OJdhO0FdjhVpXULNTFCwuQBATrTYC3tf0Lr9/4fVcvCOnXEWfJ/plvd/45yo8
-         HStClaqUeek4aJt/ImQA3QqzCdv8aiwNjN3uTKQ9s6WpXXLXfe3q3MhFKBfXUlC4ZyT7
-         TMCPGGdt+FZuuX7glYiKiGaI4FPLGcrSXNtKou1EoQ1FgUeL4uyTKm9R5QTf4VLQAASr
-         WdbaK98XvKei8LKDGah0iWiAc/1oA3PZhedEJ7knxJioOShxHvpu/jmV1JIYQ7b2q8s/
-         8A7EqrFUOoSPqVxI622p71wsQff5M/s2ih5zDgvy0rendYDghoNrugS7M9zc9B4NoWUx
-         FFPg==
-X-Gm-Message-State: AOJu0Yy2IFjZn7fbQJqrJGO39bl40iOv5kPMa0zCUKtbHGDqlzjs6LZZ
-	//zY79YwXSKcR/dYglVMwk9sIDEAk7TM5w==
-X-Google-Smtp-Source: AGHT+IHsFPnlDe8aM68LuUQaHgo/5cq5TNgRW9YoSSPFEEgOy1wK5a6BjNA7QiTisgd5YcIpmQ5pgQ==
-X-Received: by 2002:a05:622a:1ba4:b0:429:f4f8:8143 with SMTP id bp36-20020a05622a1ba400b00429f4f88143mr1982881qtb.61.1705349546342;
-        Mon, 15 Jan 2024 12:12:26 -0800 (PST)
-Received: from workbox.taildc8f3.ts.net (d24-150-219-207.home.cgocable.net. [24.150.219.207])
-        by smtp.gmail.com with ESMTPSA id y26-20020ac8525a000000b004298b33cdcasm4219170qtn.50.2024.01.15.12.12.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 12:12:26 -0800 (PST)
-From: Trevor Gamblin <tgamblin@baylibre.com>
-To: linux-pwm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	u.kleine-koenig@pengutronix.de,
-	michael.hennerich@analog.com,
-	nuno.sa@analog.com,
-	devicetree@vger.kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org
-Subject: [PATCH 2/2] pwm: Add driver for AXI PWM generator
-Date: Mon, 15 Jan 2024 15:12:21 -0500
-Message-ID: <20240115201222.1423626-3-tgamblin@baylibre.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240115201222.1423626-1-tgamblin@baylibre.com>
-References: <20240115201222.1423626-1-tgamblin@baylibre.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F322199A2;
+	Mon, 15 Jan 2024 20:13:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailnew.west.internal (Postfix) with ESMTP id 34D172B0043D;
+	Mon, 15 Jan 2024 15:13:05 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 15 Jan 2024 15:13:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1705349584; x=1705356784; bh=WdU1eULlnA
+	Z4y1Psn2lr/4ciqsXjdF2H+kLwgj/RjG0=; b=dRJZqrjO/i4b/Hivwr6QNpxtLE
+	hUNPzax1RlJ7jBwW8aApfBBSMZWZtyc8kfFPO2IbdvjhWAtPyp76fohB6oiWAdQq
+	/cZnT2NKufW8KplzYy8MZg6LYJkwkTugMTqbFbMgyUIEcva7tOQgFQMyz3MenNcR
+	8HkfnX4FmWJ5xPaQ46lTB3cVvxT9Kxc7/q8q0DpQSvxPBIKv8KM8zxqWZLhfSU6S
+	9yFF3wZ+SNU7AzZ2GzkT8OwQBuP8Ozgc8jSOChd/YsxymuDnYjDyTJbRFISLKcvc
+	TXiTttdllcP5+7wU3JV7hcni7qpgg0jLvUVQjJC0jG8wqVNNa/T6Mvu4K2QQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1705349584; x=1705356784; bh=WdU1eULlnAZ4y1Psn2lr/4ciqsXj
+	dF2H+kLwgj/RjG0=; b=L1/gDlIKsedlGIAdpzy1JHG60lVIkwu8Ap2Ml1yrVwVt
+	JCA/BFgyJseFU9qhETWfdrvaWRxcWELVfAcEO35NvtqfZbsJBHY+V0GG5aOwAScJ
+	BU/IRB3IZpmFlgZllG3SD39zowPu1dtnIiSNEbmabe4YYUO2rVYuxFW43HqjF6iK
+	6e1hj4OMri43lwqlqcHXwPNIfbFUjLp4lkiqRlkv9vuks+0ensu/7Id58KdKv3Ou
+	Ty8fLe2ilf6IW+yAS1zCU/guCNx3f2AUPiM4csOucm7w9f9IXO2faDIJpFeTBeL6
+	yfVzgU+lJXFGog2KnueGhS4d74P3PMxKNbrKGkrvxQ==
+X-ME-Sender: <xms:0JGlZSKQtyfcOh8fqCXfdTdlIKeQPOCVEB8NEwYJxr7hGzDgXFLAzg>
+    <xme:0JGlZaIG9XeFvl-zKp_uWpF9-1csJy-CLEWsdgIYcENas9Fahz99Va9aUTRpT0JaY
+    QqyS34QZpOgyQ>
+X-ME-Received: <xmr:0JGlZSu3AcjSAA64DJ-kShg4hO3RjVc5bNcBhThkbvOKov5sZVZrf5Tjmq1D9A5xE67zkViucNQzoz9NQwf69B1bg56-ZpXcmg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdejuddgudefhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgv
+    ghcumffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeehge
+    dvvedvleejuefgtdduudfhkeeltdeihfevjeekjeeuhfdtueefhffgheekteenucevlhhu
+    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhroh
+    grhhdrtghomh
+X-ME-Proxy: <xmx:0JGlZXYL0x2rbE95X14jqQB2-G6QlgnbTYVHPfJKiqNalR9wERHRSg>
+    <xmx:0JGlZZapM3COJ0C6MmMhEBCh-_TA4CyvAhO1pMqA8NtvBktg19NXQQ>
+    <xmx:0JGlZTCVihtcg4okFMAPZU5K2cQeK0M_GeSiO3OhSjXdkKksxzn_Kg>
+    <xmx:0JGlZWJjMSrqV4jfjDD2bxuZrQOfjv6B7YPuTRJYzoqCyGL38LpYdYRdgGw>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 15 Jan 2024 15:13:03 -0500 (EST)
+Date: Mon, 15 Jan 2024 21:13:01 +0100
+From: Greg KH <greg@kroah.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Mark Brown <broonie@kernel.org>, Neal Gompa <neal@gompa.dev>,
+	Kees Cook <keescook@chromium.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+	Nikolai Kondrashov <spbnick@gmail.com>,
+	Philip Li <philip.li@intel.com>,
+	Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [GIT PULL] bcachefs updates for 6.8
+Message-ID: <2024011532-mortician-region-8302@gregkh>
+References: <6pbl6vnzkwdznjqimowfssedtpawsz2j722dgiufi432aldjg4@6vn573zspwy3>
+ <202401101625.3664EA5B@keescook>
+ <xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
+ <be2fa62f-f4d3-4b1c-984d-698088908ff3@sirena.org.uk>
+ <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
+ <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
+ <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
+ <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
+ <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
+ <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
 
-From: Drew Fustini <dfustini@baylibre.com>
+On Mon, Jan 15, 2024 at 01:42:53PM -0500, Kent Overstreet wrote:
+> > That sounds more like a "(reproducible) tests don't exist" complaint
+> > which is a different thing again to people going off and NIHing fancy
+> > frameworks.
+> 
+> No, it's a leadership/mentorship thing.
+> 
+> And this is something that's always been lacking in kernel culture.
+> Witness the kind of general grousing that goes on at maintainer summits;
+> maintainers complain about being overworked and people not stepping up
+> to help with the grungy responsibilities, while simultaneously we still
+> very much have a "fuck off if you haven't proven yourself" attitude
+> towards newcomers. Understandable given the historical realities (this
+> shit is hard and the penalties of fucking up are high, so there does
+> need to be a barrier to entry), but it's left us with some real gaps.
+> 
+> We don't have enough a people in the senier engineer role who lay out
+> designs and organise people to take on projects that are bigger than one
+> single person can do, or that are necessary but not "fun".
+> 
+> Tests and test infrastructure fall into the necessary but not fun
+> category, so they languish.
 
-Add support for the Analog Devices AXI PWM Generator. This device is an
-FPGA-implemented peripheral used as PWM signal generator and can be
-interfaced with AXI4. The register map of this peripheral makes it
-possible to configure the period and duty cycle of the output signal.
+No, they fall into the "no company wants to pay someone to do the work"
+category, so it doesn't get done.
 
-Link: https://wiki.analog.com/resources/fpga/docs/axi_pwm_gen
-Co-developed-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
-Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
-Co-developed-by: David Lechner <dlechner@baylibre.com>
-Signed-off-by: David Lechner <dlechner@baylibre.com>
-Signed-off-by: Drew Fustini <dfustini@baylibre.com>
-Co-developed-by: Trevor Gamblin <tgamblin@baylibre.com>
-Signed-off-by: Trevor Gamblin <tgamblin@baylibre.com>
----
- MAINTAINERS                  |   1 +
- drivers/pwm/Kconfig          |  12 ++
- drivers/pwm/Makefile         |   1 +
- drivers/pwm/pwm-axi-pwmgen.c | 229 +++++++++++++++++++++++++++++++++++
- 4 files changed, 243 insertions(+)
- create mode 100644 drivers/pwm/pwm-axi-pwmgen.c
+It's not a "leadership" issue, what is the "leadership" supposed to do
+here, refuse to take any new changes unless someone ponys up and does
+the infrastructure and testing work first?  That's not going to fly, for
+valid reasons.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7b0f3aec5381..3abe90dec82e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3422,6 +3422,7 @@ L:	linux-pwm@vger.kernel.org
- S:	Supported
- W:	https://ez.analog.com/linux-software-drivers
- F:	Documentation/devicetree/bindings/pwm/adi,axi-pwmgen.yaml
-+F:	drivers/pwm/pwm-axi-pwmgen.c
- 
- AXXIA I2C CONTROLLER
- M:	Krzysztof Adamski <krzysztof.adamski@nokia.com>
-diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index 4b956d661755..b105c0db4936 100644
---- a/drivers/pwm/Kconfig
-+++ b/drivers/pwm/Kconfig
-@@ -98,6 +98,18 @@ config PWM_ATMEL_TCB
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called pwm-atmel-tcb.
- 
-+config PWM_AXI_PWMGEN
-+	tristate "Analog Devices AXI PWM generator"
-+	select REGMAP_MMIO
-+	help
-+	  This enables support for the Analog Devices AXI PWM generator.
-+
-+	  This is a configurable PWM generator with variable pulse width and
-+	  period.
-+
-+	  To compile this driver as a module, choose M here: the module will be
-+	  called pwm-axi-pwmgen.
-+
- config PWM_BCM_IPROC
- 	tristate "iProc PWM support"
- 	depends on ARCH_BCM_IPROC || COMPILE_TEST
-diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-index c5ec9e168ee7..8322089954e9 100644
---- a/drivers/pwm/Makefile
-+++ b/drivers/pwm/Makefile
-@@ -6,6 +6,7 @@ obj-$(CONFIG_PWM_APPLE)		+= pwm-apple.o
- obj-$(CONFIG_PWM_ATMEL)		+= pwm-atmel.o
- obj-$(CONFIG_PWM_ATMEL_HLCDC_PWM)	+= pwm-atmel-hlcdc.o
- obj-$(CONFIG_PWM_ATMEL_TCB)	+= pwm-atmel-tcb.o
-+obj-$(CONFIG_PWM_AXI_PWMGEN)	+= pwm-axi-pwmgen.o
- obj-$(CONFIG_PWM_BCM_IPROC)	+= pwm-bcm-iproc.o
- obj-$(CONFIG_PWM_BCM_KONA)	+= pwm-bcm-kona.o
- obj-$(CONFIG_PWM_BCM2835)	+= pwm-bcm2835.o
-diff --git a/drivers/pwm/pwm-axi-pwmgen.c b/drivers/pwm/pwm-axi-pwmgen.c
-new file mode 100644
-index 000000000000..5e91636b88b4
---- /dev/null
-+++ b/drivers/pwm/pwm-axi-pwmgen.c
-@@ -0,0 +1,229 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Analog Devices AXI PWM generator
-+ *
-+ * Copyright 2024 Analog Devices Inc.
-+ * Copyright 2024 Baylibre SAS
-+ */
-+#include <linux/bits.h>
-+#include <linux/clk.h>
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/pwm.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+
-+#define AXI_PWMGEN_NPWM			4
-+#define AXI_PWMGEN_REG_CORE_VERSION	0x00
-+#define AXI_PWMGEN_REG_ID		0x04
-+#define AXI_PWMGEN_REG_SCRATCHPAD	0x08
-+#define AXI_PWMGEN_REG_CORE_MAGIC	0x0C
-+#define AXI_PWMGEN_REG_CONFIG		0x10
-+#define AXI_PWMGEN_REG_NPWM		0x14
-+#define AXI_PWMGEN_CH_PERIOD_BASE	0x40
-+#define AXI_PWMGEN_CH_DUTY_BASE		0x44
-+#define AXI_PWMGEN_CH_OFFSET_BASE	0x48
-+#define AXI_PWMGEN_CHX_PERIOD(ch)	(AXI_PWMGEN_CH_PERIOD_BASE + (12 * (ch)))
-+#define AXI_PWMGEN_CHX_DUTY(ch)		(AXI_PWMGEN_CH_DUTY_BASE + (12 * (ch)))
-+#define AXI_PWMGEN_CHX_OFFSET(ch)	(AXI_PWMGEN_CH_OFFSET_BASE + (12 * (ch)))
-+#define AXI_PWMGEN_TEST_DATA		0x5A0F0081
-+#define AXI_PWMGEN_LOAD_CONFIG		BIT(1)
-+#define AXI_PWMGEN_RESET		BIT(0)
-+#define AXI_PWMGEN_MAX_REGISTER		0x6C
-+
-+struct axi_pwmgen {
-+	struct pwm_chip		chip;
-+	struct clk		*clk;
-+	struct regmap		*regmap;
-+
-+	/* Used to store the period when the channel is disabled */
-+	unsigned int		ch_period[AXI_PWMGEN_NPWM];
-+	bool			ch_enabled[AXI_PWMGEN_NPWM];
-+};
-+
-+static const struct regmap_config axi_pwm_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+	.max_register = AXI_PWMGEN_MAX_REGISTER,
-+};
-+
-+static struct axi_pwmgen *to_axi_pwmgen(struct pwm_chip *chip)
-+{
-+	return container_of(chip, struct axi_pwmgen, chip);
-+}
-+
-+static int axi_pwmgen_apply(struct pwm_chip *chip, struct pwm_device *device,
-+			    const struct pwm_state *state)
-+{
-+	struct axi_pwmgen *pwm = to_axi_pwmgen(chip);
-+	unsigned long clk_rate_hz = clk_get_rate(pwm->clk);
-+	unsigned int ch = device->hwpwm;
-+	struct regmap *regmap = pwm->regmap;
-+	u64 period_cnt, duty_cnt;
-+	int ret;
-+
-+	if (!clk_rate_hz)
-+		return -EINVAL;
-+
-+	period_cnt = DIV_ROUND_UP_ULL(state->period * clk_rate_hz, NSEC_PER_SEC);
-+	if (period_cnt > UINT_MAX)
-+		return -EINVAL;
-+
-+	pwm->ch_period[ch] = period_cnt;
-+	pwm->ch_enabled[ch] = state->enabled;
-+	ret = regmap_write(regmap, AXI_PWMGEN_CHX_PERIOD(ch), state->enabled ? period_cnt : 0);
-+	if (ret)
-+		return ret;
-+
-+	duty_cnt = DIV_ROUND_UP_ULL(state->duty_cycle * clk_rate_hz, NSEC_PER_SEC);
-+	ret = regmap_write(regmap, AXI_PWMGEN_CHX_DUTY(ch), duty_cnt);
-+	if (ret)
-+		return ret;
-+
-+	return regmap_write(regmap, AXI_PWMGEN_REG_CONFIG, AXI_PWMGEN_LOAD_CONFIG);
-+}
-+
-+static int axi_pwmgen_get_state(struct pwm_chip *chip, struct pwm_device *device,
-+				struct pwm_state *state)
-+{
-+	struct axi_pwmgen *pwm = to_axi_pwmgen(chip);
-+	unsigned long clk_rate_hz = clk_get_rate(pwm->clk);
-+	struct regmap *regmap = pwm->regmap;
-+	unsigned int ch = device->hwpwm;
-+	u32 cnt;
-+	int ret;
-+
-+	if (!clk_rate_hz) {
-+		dev_err(device->chip->dev, "axi pwm clock has no frequency\n");
-+		return -EINVAL;
-+	}
-+
-+	state->enabled = pwm->ch_enabled[ch];
-+
-+	if (state->enabled) {
-+		ret = regmap_read(regmap, AXI_PWMGEN_CHX_PERIOD(ch), &cnt);
-+		if (ret)
-+			return ret;
-+	} else {
-+		cnt = pwm->ch_period[ch];
-+	}
-+
-+	state->period = DIV_ROUND_CLOSEST_ULL((u64)cnt * NSEC_PER_SEC, clk_rate_hz);
-+
-+	ret = regmap_read(regmap, AXI_PWMGEN_CHX_DUTY(ch), &cnt);
-+	if (ret)
-+		return ret;
-+
-+	state->duty_cycle = DIV_ROUND_CLOSEST_ULL((u64)cnt * NSEC_PER_SEC, clk_rate_hz);
-+
-+	return 0;
-+}
-+
-+static const struct pwm_ops axi_pwmgen_pwm_ops = {
-+	.apply = axi_pwmgen_apply,
-+	.get_state = axi_pwmgen_get_state,
-+};
-+
-+static int axi_pwmgen_setup(struct axi_pwmgen *pwm, struct device *dev)
-+{
-+	struct regmap *regmap = pwm->regmap;
-+	int idx;
-+	int ret;
-+	u32 val;
-+
-+	ret = regmap_write(regmap, AXI_PWMGEN_REG_SCRATCHPAD, AXI_PWMGEN_TEST_DATA);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_read(regmap, AXI_PWMGEN_REG_SCRATCHPAD, &val);
-+	if (ret)
-+		return ret;
-+
-+	if (val != AXI_PWMGEN_TEST_DATA)
-+		return dev_err_probe(dev, -EIO, "failed to access the device registers\n");
-+
-+	ret = regmap_read(regmap, AXI_PWMGEN_REG_NPWM, &pwm->chip.npwm);
-+	if (ret)
-+		return ret;
-+
-+	if (pwm->chip.npwm > AXI_PWMGEN_NPWM) {
-+		dev_warn(dev, "driver is limited to %d channels but hardware reported %u\n",
-+				AXI_PWMGEN_NPWM, pwm->chip.npwm);
-+		pwm->chip.npwm = AXI_PWMGEN_NPWM;
-+	}
-+
-+	/* Disable all the outputs */
-+	for (idx = 0; idx < pwm->chip.npwm; idx++) {
-+		ret = regmap_write(regmap, AXI_PWMGEN_CHX_PERIOD(idx), 0);
-+		if (ret)
-+			return ret;
-+
-+		ret = regmap_write(regmap, AXI_PWMGEN_CHX_DUTY(idx), 0);
-+		if (ret)
-+			return ret;
-+
-+		ret = regmap_write(regmap, AXI_PWMGEN_CHX_OFFSET(idx), 0);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	/* Enable the core */
-+	return regmap_update_bits(regmap, AXI_PWMGEN_REG_CONFIG, AXI_PWMGEN_RESET, 0);
-+}
-+
-+static int axi_pwmgen_probe(struct platform_device *pdev)
-+{
-+	struct axi_pwmgen *pwm;
-+	void __iomem *io_base;
-+	int ret;
-+
-+	pwm = devm_kzalloc(&pdev->dev, sizeof(*pwm), GFP_KERNEL);
-+	if (!pwm)
-+		return -ENOMEM;
-+
-+	io_base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(io_base))
-+		return PTR_ERR(io_base);
-+
-+	pwm->regmap = devm_regmap_init_mmio(&pdev->dev, io_base, &axi_pwm_regmap_config);
-+	if (IS_ERR(pwm->regmap))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(pwm->regmap),
-+				     "failed to init register map\n");
-+
-+	pwm->clk = devm_clk_get_enabled(&pdev->dev, NULL);
-+	if (IS_ERR(pwm->clk))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(pwm->clk), "failed to get clock\n");
-+
-+	pwm->chip.dev = &pdev->dev;
-+	pwm->chip.ops = &axi_pwmgen_pwm_ops;
-+	pwm->chip.base = -1;
-+
-+	ret = axi_pwmgen_setup(pwm, &pdev->dev);
-+	if (ret < 0)
-+		return ret;
-+
-+	return devm_pwmchip_add(&pdev->dev, &pwm->chip);
-+}
-+
-+static const struct of_device_id axi_pwmgen_ids[] = {
-+	{ .compatible = "adi,axi-pwmgen-1.00.a" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, axi_pwmgen_ids);
-+
-+static struct platform_driver axi_pwmgen_driver = {
-+	.driver = {
-+		.name = "axi-pwmgen",
-+		.of_match_table = axi_pwmgen_ids,
-+	},
-+	.probe = axi_pwmgen_probe,
-+};
-+
-+module_platform_driver(axi_pwmgen_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Sergiu Cuciurean <sergiu.cuciurean@analog.com>");
-+MODULE_DESCRIPTION("Driver for the Analog Devices AXI PWM generator");
--- 
-2.43.0
+And as proof of this, we have had many real features, that benefit
+everyone, called out as "please, companies, pay for this to be done, you
+all want it, and so do we!" and yet, no one does it.  One real example
+is the RT work, it has a real roadmap, people to do the work, a tiny
+price tag, yet almost no one sponsoring it.  Yes, for that specific
+issue it's slowly getting there and better, but it is one example of how
+you view of this might not be all that correct.
 
+I have loads of things I would love to see done.  And I get interns at
+times to chip away at them, but my track record with interns is that
+almost all of them go off and get real jobs at companies doing kernel
+work (and getting paid well), and my tasks don't get finished, so it's
+back up to me to do them.  And that's fine, and wonderful, I want those
+interns to get good jobs, that's why we do this.
+
+> They are also things that you don't really learn the value of until
+> you've been doing this stuff for a decade or so and you've learned by
+> experience that yes, good tests really make life easier, as well as how
+> to write effective tests, and that's knowledge that needs to be
+> instilled.
+
+And you will see that we now have the infrastructure in places for this.
+The great kunit testing framework, the kselftest framework, and the
+stuff tying it all together is there.  All it takes is people actually
+using it to write their tests, which is slowly happening.
+
+So maybe, the "leadership" here is working, but in a nice organic way of
+"wouldn't it be nice if you cleaned that out-of-tree unit test framework
+up and get it merged" type of leadership, not mandates-from-on-high that
+just don't work.  So organic you might have missed it :)
+
+Anyway, just my my 2c, what do I know...
+
+greg k-h
 
