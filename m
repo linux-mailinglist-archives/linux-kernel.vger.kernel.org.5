@@ -1,124 +1,130 @@
-Return-Path: <linux-kernel+bounces-26074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9612D82DB0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:09:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7298082DAEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:07:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4448B282092
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:09:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EDF21C216BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:06:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 475EA1759D;
-	Mon, 15 Jan 2024 14:09:11 +0000 (UTC)
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7EE517590;
+	Mon, 15 Jan 2024 14:06:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="vATJg++B"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AB0E17584;
-	Mon, 15 Jan 2024 14:09:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6ddf1e88e51so3758154a34.0;
-        Mon, 15 Jan 2024 06:09:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705327748; x=1705932548;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=I77TmnyBV7p1SE2Y2oqkytZuiHCFq9qru4QC+6Q3tDs=;
-        b=U9uViIBqH/AD4sbOTMV4ejA7ZX48hzG2GZFhd3N9cyB1saPhD1AMagV8rvq8mmFon6
-         uffWvqTWQ1Jj701Ne24vHN7Z5l9sMieIl7CChOOEjwFp6xohyXagu3pPBkbU/oljpWXo
-         BktDfjEbVaDzx8J1vIJKEJkETen+XJAOyoPmMA3LL+zUb7pKNZdBGs3jLw6kzdptPQGj
-         7lSyc1rREr2Tdr440cx+8etRAJ8ziyPy9myQkaeL1vcZV1Z5rNGwK+1yqA02zMHKhzSH
-         NVnU0NrXQ9bj4d25PuIi9JaFH+QT/HR9JwrE6r5cVf78ICP90k+61KPc5UphkIF8GhOi
-         vrcQ==
-X-Gm-Message-State: AOJu0YxSjoeYcjX8phln59nx8gSkG/Mr4l/EOE6qxLlHg9xqPaE+Yl25
-	eAPTTggoUURnAoaTRQUYWkvm/K5jYKIzyQ==
-X-Google-Smtp-Source: AGHT+IGUhcozFviZ+UpZqAISh6crRPgTFd8RXsYdibuZdgCpNvHjXlQTJgtyNeXSh97xjtJwlnqQWA==
-X-Received: by 2002:a05:6870:c085:b0:1fb:75a:de6f with SMTP id c5-20020a056870c08500b001fb075ade6fmr7377850oad.93.1705327748372;
-        Mon, 15 Jan 2024 06:09:08 -0800 (PST)
-Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com. [209.85.160.48])
-        by smtp.gmail.com with ESMTPSA id so11-20020a056871818b00b001fb42001fa7sm2478078oab.36.2024.01.15.06.09.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jan 2024 06:09:08 -0800 (PST)
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-2044ecf7035so6013496fac.0;
-        Mon, 15 Jan 2024 06:09:08 -0800 (PST)
-X-Received: by 2002:a81:410d:0:b0:5f4:a5ab:4105 with SMTP id
- o13-20020a81410d000000b005f4a5ab4105mr2813928ywa.8.1705327425927; Mon, 15 Jan
- 2024 06:03:45 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B97FA17584;
+	Mon, 15 Jan 2024 14:06:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=k+DYOQ+yWRd2pgMIRz/5wGINWA2P7yC/o6J+Q7W5b70=; b=vATJg++BpawwIU6E3l3nCyM/fl
+	CR1jGpmQB/8Vq7OxY1+wQ2R/Hf3ne8n0WN2AvXfif1DigL2m2rVPRPfBIGHsnUly6m2P18LQsHeeE
+	pv+B6kcZ03YpFkpKUaN87vnGX7uiFbMHtRfudt/fZlAfUY3gjxMPFrspblYKei4oeLsyxJS6XNYy4
+	LqB76AJULX5LYDl+H6w6rAl7am/wUSRx0JzXHryKNdYAP90XSPckLxOj9SUfy7eZIE7Kyi9Iei+Yr
+	r2XvhpG935/rETqKfQZjY4lEZGAuxuj/0flXZIbbrxN+farXylvZfJ9RJiRByx9wkGofpA3ZAue1Z
+	aDzeDz7g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rPNbh-009rfH-Cs; Mon, 15 Jan 2024 14:06:29 +0000
+Date: Mon, 15 Jan 2024 14:06:29 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc: linux-cachefs@redhat.com, linux-fsdevel@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, David Howells <dhowells@redhat.com>,
+	Christian Brauner <christian@brauner.io>,
+	Jeff Layton <jlayton@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>, Chao Yu <chao@kernel.org>,
+	Yue Hu <huyue2@coolpad.com>, Jeffle Xu <jefflexu@linux.alibaba.com>
+Subject: Re: [PATCH v2 3/4] erofs: Don't use certain internal folio_*()
+ functions
+Message-ID: <ZaU75cT0jx9Ya+6G@casper.infradead.org>
+References: <20240115083337.1355191-1-hsiangkao@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1704788539.git.ysato@users.sourceforge.jp> <edd42bb5aa30ac3eb26a9e08b1dc6fc9041aa3b1.1704788539.git.ysato@users.sourceforge.jp>
-In-Reply-To: <edd42bb5aa30ac3eb26a9e08b1dc6fc9041aa3b1.1704788539.git.ysato@users.sourceforge.jp>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 15 Jan 2024 15:03:34 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdU=CZVSc16FeVDc6YmTKw=xa71RUzOE3bappLwH2W8Z4w@mail.gmail.com>
-Message-ID: <CAMuHMdU=CZVSc16FeVDc6YmTKw=xa71RUzOE3bappLwH2W8Z4w@mail.gmail.com>
-Subject: Re: [DO NOT MERGE v6 01/37] sh: passing FDT address to kernel startup.
-To: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Thomas Gleixner <tglx@linutronix.de>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Jiri Slaby <jirislaby@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, Rich Felker <dalias@libc.org>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Lee Jones <lee@kernel.org>, 
-	Helge Deller <deller@gmx.de>, Heiko Stuebner <heiko@sntech.de>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
-	Yang Xiwen <forbidden405@foxmail.com>, Sebastian Reichel <sre@kernel.org>, 
-	Linus Walleij <linus.walleij@linaro.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@suse.cz>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-	David Rientjes <rientjes@google.com>, Baoquan He <bhe@redhat.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Guenter Roeck <linux@roeck-us.net>, 
-	Stephen Rothwell <sfr@canb.auug.org.au>, Azeem Shaikh <azeemshaikh38@gmail.com>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Palmer Dabbelt <palmer@rivosinc.com>, Bin Meng <bmeng@tinylab.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Jacky Huang <ychuang3@nuvoton.com>, 
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	Sam Ravnborg <sam@ravnborg.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
-	Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>, 
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, linux-ide@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org, 
-	linux-serial@vger.kernel.org, linux-fbdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240115083337.1355191-1-hsiangkao@linux.alibaba.com>
 
-On Tue, Jan 9, 2024 at 9:23=E2=80=AFAM Yoshinori Sato
-<ysato@users.sourceforge.jp> wrote:
-> R4 is caller saved in SH ABI.
-> Save it so it doesn't get corrupted until it's needed for initialization.
->
-> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
+On Mon, Jan 15, 2024 at 04:33:37PM +0800, Gao Xiang wrote:
+> From: David Howells <dhowells@redhat.com>
+> 
+> Filesystems should use folio->index and folio->mapping, instead of
+> folio_index(folio), folio_mapping() and folio_file_mapping() since
+> they know that it's in the pagecache.
+> 
+> Change this automagically with:
+> 
+> perl -p -i -e 's/folio_mapping[(]([^)]*)[)]/\1->mapping/g' fs/erofs/*.c
+> perl -p -i -e 's/folio_file_mapping[(]([^)]*)[)]/\1->mapping/g' fs/erofs/*.c
+> perl -p -i -e 's/folio_index[(]([^)]*)[)]/\1->index/g' fs/erofs/*.c
+> 
+> Reported-by: Matthew Wilcox <willy@infradead.org>
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> Reviewed-by: Jeff Layton <jlayton@kernel.org>
+> Cc: Chao Yu <chao@kernel.org>
+> Cc: Yue Hu <huyue2@coolpad.com>
+> Cc: Jeffle Xu <jefflexu@linux.alibaba.com>
+> Cc: linux-erofs@lists.ozlabs.org
+> Cc: linux-fsdevel@vger.kernel.org
+> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> ---
+> Hi folks,
+> 
+> I tend to apply this patch upstream since compressed data fscache
+> adaption touches this part too.  If there is no objection, I'm
+> going to take this patch separately for -next shortly..
 
-My
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-on v3 is still valid.
+Could you change the subject?  It's not that the functions are
+"internal", it's that filesystems don't need to use them because they're
+guaranteed to not see swap pages.  Maybe just s/internal/unnecessary/
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+> Thanks,
+> Gao Xiang
+> 
+> Change since v1:
+>  - a better commit message pointed out by Jeff Layton.
+> 
+>  fs/erofs/fscache.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/erofs/fscache.c b/fs/erofs/fscache.c
+> index 87ff35bff8d5..bc12030393b2 100644
+> --- a/fs/erofs/fscache.c
+> +++ b/fs/erofs/fscache.c
+> @@ -165,10 +165,10 @@ static int erofs_fscache_read_folios_async(struct fscache_cookie *cookie,
+>  static int erofs_fscache_meta_read_folio(struct file *data, struct folio *folio)
+>  {
+>  	int ret;
+> -	struct erofs_fscache *ctx = folio_mapping(folio)->host->i_private;
+> +	struct erofs_fscache *ctx = folio->mapping->host->i_private;
+>  	struct erofs_fscache_request *req;
+>  
+> -	req = erofs_fscache_req_alloc(folio_mapping(folio),
+> +	req = erofs_fscache_req_alloc(folio->mapping,
+>  				folio_pos(folio), folio_size(folio));
+>  	if (IS_ERR(req)) {
+>  		folio_unlock(folio);
+> @@ -276,7 +276,7 @@ static int erofs_fscache_read_folio(struct file *file, struct folio *folio)
+>  	struct erofs_fscache_request *req;
+>  	int ret;
+>  
+> -	req = erofs_fscache_req_alloc(folio_mapping(folio),
+> +	req = erofs_fscache_req_alloc(folio->mapping,
+>  			folio_pos(folio), folio_size(folio));
+>  	if (IS_ERR(req)) {
+>  		folio_unlock(folio);
+> -- 
+> 2.39.3
+> 
 
