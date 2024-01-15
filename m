@@ -1,187 +1,109 @@
-Return-Path: <linux-kernel+bounces-26449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26450-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 362E282E102
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:54:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3C7082E10B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:57:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAC681F22C53
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 19:54:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 611B51F22CC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 19:57:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F6FC18EB0;
-	Mon, 15 Jan 2024 19:54:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 726631946B;
+	Mon, 15 Jan 2024 19:56:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="YBn4l2yZ"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l1+TXjzr"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 706601946B;
-	Mon, 15 Jan 2024 19:54:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 56E6340E00C5;
-	Mon, 15 Jan 2024 19:54:33 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id lrd4RczTfciN; Mon, 15 Jan 2024 19:54:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1705348470; bh=I4BKZtuvMD15eVn77Cz+lQijb+Y1S7XFupTLxcf4oE0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YBn4l2yZDBQIdtVHUG8a/mOmP6/3Gsh4aeEBRtuGaPtmexmHp9kFY1/oxtGOL4UYa
-	 byrLcZvvavZIyKQXHlRtjcatJJJr29tl0I+HSVSOF91YUAIdFzSMAks3ALhb/PETHD
-	 H9uYUaveM/qbFTCzNqzcFTy/1/KR0wThYlzGFZBfJiKh8G3B44+eMQU0jAUkQsXwms
-	 qS77R7rzVDiTXfPSUwPf5YUCIGq4M64Md7a5So9m6Fr/PdJrBkgXCNjZt87URhdQI9
-	 M9pcMqxja2+9qVAxfGVlpWOhCjJ3kRR65KwNUr03se5p7bKnEJXofDla+jH7XZq6nS
-	 yJiQURs13J92fCnMQWuSv+rdJrAF5x6iljCW6KoJEnTBn/ewoimrWG2pwBe1k5YECH
-	 AjGDCzLWCMgLH4KpDxHieorQmia3aXKaP79KMaeOYcQw9fTRDDC4ZcHF/aPSGhb0DX
-	 IS3ma6xVNYVSSbVPXjCKH1jOTXKUWjOZR7un2qb4kwf68oKEHLirOqbZl2Bu2I85Lg
-	 C2BWKxYh21FEPaiI8g49UfEtWR64ZOenqxUUPDDitJY3hvPwqG4LzrwHwB/4yv/QmP
-	 VX8c+VRNBbgKnLBFjxesXBr0SLgN5UDSA6TJ/NxCX9+OJZRmK9C8pKIdnNL3F4fhyQ
-	 JqZY8OigMA3mcN8cIvohNEEA=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AF81F40E01A9;
-	Mon, 15 Jan 2024 19:53:52 +0000 (UTC)
-Date: Mon, 15 Jan 2024 20:53:46 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Michael Roth <michael.roth@amd.com>
-Cc: x86@kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
-	linux-mm@kvack.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-	rientjes@google.com, tobin@ibm.com, vbabka@suse.cz,
-	kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-	pankaj.gupta@amd.com,
-	"liam.merwick@oracle.com Brijesh Singh" <brijesh.singh@amd.com>,
-	Jarkko Sakkinen <jarkko@profian.com>
-Subject: Re: [PATCH v1 13/26] crypto: ccp: Add support to initialize the
- AMD-SP for SEV-SNP
-Message-ID: <20240115195334.GHZaWNPiqbTg82QS_A@fat_crate.local>
-References: <20231230161954.569267-1-michael.roth@amd.com>
- <20231230161954.569267-14-michael.roth@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DA361798F;
+	Mon, 15 Jan 2024 19:56:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40e586a62f7so68259225e9.2;
+        Mon, 15 Jan 2024 11:56:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705348605; x=1705953405; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9VpU6+YHkvn08adzjTfnX/FYJd9oIMlOMtpUIvBTFqE=;
+        b=l1+TXjzrwEaAtVkA9xpaTv4TV4xPhRinXvJ0Ja5eg/nbIKHRilBrTs8T96Cc2nehH9
+         nXvxaLS4bB0x3cXRa2EpDEhUjPuV4FRdARv9iEHYaaKPD1FZJKrLY8IUA/3IdmKcu0JX
+         PFgj46MxGB2VBVm+YVHhPV8z7evrmGL6G/9xJe0F/xVUdrSXwM6OI9nxyD1bIVi1Uz29
+         GzXYpgj/xJG0Yw/7XIlmfN01Lc20l5GmsX+iPDk8S+i+/xTp3OJ0YKhornWVBNXyZkJy
+         XK2VV58zNHgHyumkSKsyHRKjIGgxXhS2KMQesOG6tYoaL3XkEMiTXsVTLFll4y+8IdAZ
+         ovSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705348605; x=1705953405;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9VpU6+YHkvn08adzjTfnX/FYJd9oIMlOMtpUIvBTFqE=;
+        b=sjVPwcUHtFcRj07mJZz+TBrW7gjQuaTwckhkVd8yQo6aNpK+hA/Lh71msTszf0TxiP
+         1j3SQJlIM/XnIdInhEKzWoe2S/K88DofxHC54OhG83ERi4s/Z+otYm4brJEnfJFDHGsV
+         DhGRN5T5u0OCRK0kdl1I6zbtoDHCXjJrrKc6LA5boFv/+Lw5ucMGttdKrYTfoGfzOIiA
+         ceR0mj7RT6AEQ2Y2OcT9lRE4LiqvoJvwHZjvq1sW8i81Jh9JwukuZtn/kwl1Jdntuai2
+         F0euL8kMWGBDeCTfcdTo1mPXu/biREN7MD8MWno3uYau/WKZjGvZJk16YuP3HomqvnQw
+         g9hQ==
+X-Gm-Message-State: AOJu0YxHgGh8KNNXgVTol+mEd21L1uQNWe+FdCSXNcWGtGXymkTGGBlN
+	Lc076mQu3w+A6kSx7vJvqtYV1/W8AS/bOdQTL9U=
+X-Google-Smtp-Source: AGHT+IG2g/dlkMceaiIBkgJJPIAHDRblBc7tqNn4N7kSwdW5ytNtvwVcSmdmsn+PEXzA0l4KSS3qI1/vQowfZ0sqVlU=
+X-Received: by 2002:a05:600c:1d95:b0:40e:6dfb:7b3f with SMTP id
+ p21-20020a05600c1d9500b0040e6dfb7b3fmr2194829wms.95.1705348605229; Mon, 15
+ Jan 2024 11:56:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231230161954.569267-14-michael.roth@amd.com>
+References: <20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com> <20240102-j7200-pcie-s2r-v1-1-84e55da52400@bootlin.com>
+In-Reply-To: <20240102-j7200-pcie-s2r-v1-1-84e55da52400@bootlin.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Mon, 15 Jan 2024 21:56:09 +0200
+Message-ID: <CAHp75VezeBp3Umg4prvdS83WrHViyTs-hBV0SejVD2BBnGYEvg@mail.gmail.com>
+Subject: Re: [PATCH 01/14] gpio: pca953x: move suspend/resume to suspend_noirq/resume_noirq
+To: Thomas Richard <thomas.richard@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
+	Andy Shevchenko <andy@kernel.org>, Tony Lindgren <tony@atomide.com>, 
+	Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
+	Aaro Koskinen <aaro.koskinen@iki.fi>, Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
+	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, Vinod Koul <vkoul@kernel.org>, 
+	Kishon Vijay Abraham I <kishon@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
+	Tom Joseph <tjoseph@cadence.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	linux-phy@lists.infradead.org, linux-pci@vger.kernel.org, 
+	gregory.clement@bootlin.com, theo.lebrun@bootlin.com, 
+	thomas.petazzoni@bootlin.com, u-kumar1@ti.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Dec 30, 2023 at 10:19:41AM -0600, Michael Roth wrote:
-> From: Brijesh Singh <brijesh.singh@amd.com>
-> 
-> Before SNP VMs can be launched, the platform must be appropriately
-> configured and initialized. Platform initialization is accomplished via
-> the SNP_INIT command. Make sure to do a WBINVD and issue DF_FLUSH
-> command to prepare for the first SNP guest launch after INIT.
-							  ^^^^^^
-Which "INIT"?
+On Mon, Jan 15, 2024 at 6:16=E2=80=AFPM Thomas Richard
+<thomas.richard@bootlin.com> wrote:
+>
+> Some IOs can be needed during suspend_noirq/resume_noirq.
 
-Sounds like after hipervisor's init...
+->suspend_noirq() / ->resume_noirq()
 
-> During the execution of SNP_INIT command, the firmware configures
-> and enables SNP security policy enforcement in many system components.
-> Some system components write to regions of memory reserved by early
-> x86 firmware (e.g. UEFI). Other system components write to regions
-> provided by the operation system, hypervisor, or x86 firmware.
-> Such system components can only write to HV-fixed pages or Default
-> pages. They will error when attempting to write to other page states
+> So move suspend/resume callbacks to noirq.
 
-"... to pages in other page states... "
+..
 
-> after SNP_INIT enables their SNP enforcement.
+> -static DEFINE_SIMPLE_DEV_PM_OPS(pca953x_pm_ops, pca953x_suspend, pca953x=
+_resume);
+> +static const struct dev_pm_ops pca953x_pm_ops =3D {
+> +       SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pca953x_suspend_noirq, pca953x_resu=
+me_noirq)
+> +};
 
-And yes, this version looks much better. Some text cleanups ontop:
+Please, use correct / modern macro.
 
----
-diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index 85634d4f8cfe..7942ec730525 100644
---- a/drivers/crypto/ccp/sev-dev.c
-+++ b/drivers/crypto/ccp/sev-dev.c
-@@ -549,24 +549,22 @@ static int __sev_snp_init_locked(int *error)
- 		return 0;
- 	}
- 
--	/*
--	 * The SNP_INIT requires the MSR_VM_HSAVE_PA must be set to 0h
--	 * across all cores.
--	 */
-+	/* SNP_INIT requires MSR_VM_HSAVE_PA to be cleared on all CPUs. */
- 	on_each_cpu(snp_set_hsave_pa, NULL, 1);
- 
- 	/*
--	 * Starting in SNP firmware v1.52, the SNP_INIT_EX command takes a list of
--	 * system physical address ranges to convert into the HV-fixed page states
--	 * during the RMP initialization.  For instance, the memory that UEFI
--	 * reserves should be included in the range list. This allows system
-+	 * Starting in SNP firmware v1.52, the SNP_INIT_EX command takes a list
-+	 * of system physical address ranges to convert into HV-fixed page
-+	 * states during the RMP initialization.  For instance, the memory that
-+	 * UEFI reserves should be included in the that list. This allows system
- 	 * components that occasionally write to memory (e.g. logging to UEFI
--	 * reserved regions) to not fail due to RMP initialization and SNP enablement.
-+	 * reserved regions) to not fail due to RMP initialization and SNP
-+	 * enablement.
- 	 */
- 	if (sev_version_greater_or_equal(SNP_MIN_API_MAJOR, 52)) {
- 		/*
- 		 * Firmware checks that the pages containing the ranges enumerated
--		 * in the RANGES structure are either in the Default page state or in the
-+		 * in the RANGES structure are either in the default page state or in the
- 		 * firmware page state.
- 		 */
- 		snp_range_list = kzalloc(PAGE_SIZE, GFP_KERNEL);
-@@ -577,7 +575,7 @@ static int __sev_snp_init_locked(int *error)
- 		}
- 
- 		/*
--		 * Retrieve all reserved memory regions setup by UEFI from the e820 memory map
-+		 * Retrieve all reserved memory regions from the e820 memory map
- 		 * to be setup as HV-fixed pages.
- 		 */
- 		rc = walk_iomem_res_desc(IORES_DESC_NONE, IORESOURCE_MEM, 0, ~0,
-@@ -599,14 +597,13 @@ static int __sev_snp_init_locked(int *error)
- 	}
- 
- 	/*
--	 * The following sequence must be issued before launching the
--	 * first SNP guest to ensure all dirty cache lines are flushed,
--	 * including from updates to the RMP table itself via RMPUPDATE
--	 * instructions:
-+	 * The following sequence must be issued before launching the first SNP
-+	 * guest to ensure all dirty cache lines are flushed, including from
-+	 * updates to the RMP table itself via the RMPUPDATE instruction:
- 	 *
--	 * - WBINDV on all running CPUs
-+	 * - WBINVD on all running CPUs
- 	 * - SEV_CMD_SNP_INIT[_EX] firmware command
--	 * - WBINDV on all running CPUs
-+	 * - WBINVD on all running CPUs
- 	 * - SEV_CMD_SNP_DF_FLUSH firmware command
- 	 */
- 	wbinvd_on_all_cpus();
-
-
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--=20
+With Best Regards,
+Andy Shevchenko
 
