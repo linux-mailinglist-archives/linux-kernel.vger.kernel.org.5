@@ -1,112 +1,75 @@
-Return-Path: <linux-kernel+bounces-25651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25652-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE0E982D419
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:09:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51C5682D41C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:11:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 082461C210E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 06:09:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 910972817DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 06:11:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A1673C16;
-	Mon, 15 Jan 2024 06:08:54 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E708523C9;
-	Mon, 15 Jan 2024 06:08:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: c819a6a9dd5b4ea4a0338b9af8a220bd-20240115
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:da766e3f-bb81-409e-8a90-63581af6cbea,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:1
-X-CID-INFO: VERSION:1.1.35,REQID:da766e3f-bb81-409e-8a90-63581af6cbea,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:1
-X-CID-META: VersionHash:5d391d7,CLOUDID:a056418e-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:240112233534SC8MATGQ,BulkQuantity:5,Recheck:0,SF:17|19|42|74|64|66|2
-	4|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,
-	COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-UUID: c819a6a9dd5b4ea4a0338b9af8a220bd-20240115
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1677585220; Mon, 15 Jan 2024 14:08:41 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 4D48CE000EB9;
-	Mon, 15 Jan 2024 14:08:40 +0800 (CST)
-X-ns-mid: postfix-65A4CBE8-226863207
-Received: from [172.20.15.234] (unknown [172.20.15.234])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 22C68E000EB9;
-	Mon, 15 Jan 2024 14:08:39 +0800 (CST)
-Message-ID: <0063df77-aede-4365-819e-5ec8eb6c5b3f@kylinos.cn>
-Date: Mon, 15 Jan 2024 14:08:39 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC9E03C3B;
+	Mon, 15 Jan 2024 06:11:50 +0000 (UTC)
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id 2D3D53C0E
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 06:11:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nfschina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nfschina.com
+Received: from localhost.localdomain (unknown [219.141.250.2])
+	by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id F261D602521A5;
+	Mon, 15 Jan 2024 14:11:33 +0800 (CST)
+X-MD-Sfrom: kunyu@nfschina.com
+X-MD-SrcIP: 219.141.250.2
+From: Li kunyu <kunyu@nfschina.com>
+To: linux-kernel@vger.kernel.org
+Cc: Li kunyu <kunyu@nfschina.com>
+Subject: [PATCH] utsname: Optimize clone_uts_ns()
+Date: Mon, 15 Jan 2024 14:11:27 +0800
+Message-Id: <20240115061127.30836-1-kunyu@nfschina.com>
+X-Mailer: git-send-email 2.18.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] vfio/platform: Remove unnecessary free in
- vfio_set_trigger
-Content-Language: en-US
-To: Alex Williamson <alex.williamson@redhat.com>
-Cc: eric.auger@redhat.com, a.motakis@virtualopensystems.com,
- b.reynal@virtualopensystems.com, kvm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240112064107.137384-1-chentao@kylinos.cn>
- <20240112083447.750ad1c6.alex.williamson@redhat.com>
-From: Kunwu Chan <chentao@kylinos.cn>
-In-Reply-To: <20240112083447.750ad1c6.alex.williamson@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 2024/1/12 23:34, Alex Williamson wrote:
-> On Fri, 12 Jan 2024 14:41:07 +0800
-> Kunwu Chan <chentao@kylinos.cn> wrote:
-> 
->> commit 57f972e2b341 ("vfio/platform: trigger an interrupt via eventfd")
->> add 'name' as member for vfio_platform_irq,it's initialed by kasprintf,
->> so there is no need to free it before initializing.
-> 
-> What?!  Just look at the call path where vfio_set_trigger() is called
-> with a valid fd and existing trigger.  This change would leak irq->name
-> as it's reallocated via kasprintf().  Thanks,
-> 
-> Alex
->   
->> Fixes: 57f972e2b341 ("vfio/platform: trigger an interrupt via eventfd")
->> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
->> ---
->>   drivers/vfio/platform/vfio_platform_irq.c | 1 -
->>   1 file changed, 1 deletion(-)
->>
->> diff --git a/drivers/vfio/platform/vfio_platform_irq.c b/drivers/vfio/platform/vfio_platform_irq.c
->> index 61a1bfb68ac7..5e3fd1926366 100644
->> --- a/drivers/vfio/platform/vfio_platform_irq.c
->> +++ b/drivers/vfio/platform/vfio_platform_irq.c
->> @@ -179,7 +179,6 @@ static int vfio_set_trigger(struct vfio_platform_device *vdev, int index,
->>   	if (irq->trigger) {
->>   		irq_clear_status_flags(irq->hwirq, IRQ_NOAUTOEN);
->>   		free_irq(irq->hwirq, irq);
->> -		kfree(irq->name);
->>   		eventfd_ctx_put(irq->trigger);
->>   		irq->trigger = NULL;
->>   	}
-> 
-Thanks for your reply.
+Optimize the err variable assignment location so that the err variable
+is manually modified when an error occurs.
 
-It's my bad.I misunderstood. Sorry to bother you.
+Signed-off-by: Li kunyu <kunyu@nfschina.com>
+---
+ kernel/utsname.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/utsname.c b/kernel/utsname.c
+index b1ac3ca870f24..f55568e00927c 100644
+--- a/kernel/utsname.c
++++ b/kernel/utsname.c
+@@ -49,15 +49,17 @@ static struct uts_namespace *clone_uts_ns(struct user_namespace *user_ns,
+ 	struct ucounts *ucounts;
+ 	int err;
+ 
+-	err = -ENOSPC;
+ 	ucounts = inc_uts_namespaces(user_ns);
+-	if (!ucounts)
++	if (!ucounts) {
++		err = -ENOSPC;
+ 		goto fail;
++	}
+ 
+-	err = -ENOMEM;
+ 	ns = create_uts_ns();
+-	if (!ns)
++	if (!ns) {
++		err = -ENOMEM;
+ 		goto fail_dec;
++	}
+ 
+ 	err = ns_alloc_inum(&ns->ns);
+ 	if (err)
 -- 
-Thanks,
-   Kunwu
+2.18.2
 
 
