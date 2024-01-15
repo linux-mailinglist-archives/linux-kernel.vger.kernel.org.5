@@ -1,176 +1,149 @@
-Return-Path: <linux-kernel+bounces-26047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A378C82DA64
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:43:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C77E382DA87
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:50:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50E491F21BFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:43:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E5A51F22814
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:50:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B6FD17595;
-	Mon, 15 Jan 2024 13:42:54 +0000 (UTC)
-Received: from wp716.webpack.hosteurope.de (wp716.webpack.hosteurope.de [80.237.130.238])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BDDD1755A;
+	Mon, 15 Jan 2024 13:50:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=openadk.org header.i=@openadk.org header.b="DX6Ey8Np"
+Received: from helium.openadk.org (helium.openadk.org [89.238.66.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1F7F1757D;
-	Mon, 15 Jan 2024 13:42:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=alumni.tu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=alumni.tu-berlin.de
-Received: from dynamic-2a01-0c23-606a-b500-b981-1935-c9f7-1531.c23.pool.telefonica.de ([2a01:c23:606a:b500:b981:1935:c9f7:1531] helo=jt.fritz.box); authenticated
-	by wp716.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	id 1rPNEg-0006AL-4K; Mon, 15 Jan 2024 14:42:42 +0100
-From: =?UTF-8?q?J=C3=B6rn-Thorben=20Hinz?= <j-t.hinz@alumni.tu-berlin.de>
-To: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Cc: =?UTF-8?q?J=C3=B6rn-Thorben=20Hinz?= <j-t.hinz@alumni.tu-berlin.de>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Deepa Dinamani <deepa.kernel@gmail.com>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Subject: [PATCH bpf-next] bpf: Allow setting SO_TIMESTAMPING* with bpf_setsockopt()
-Date: Mon, 15 Jan 2024 14:41:10 +0100
-Message-Id: <20240115134110.11624-1-j-t.hinz@alumni.tu-berlin.de>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EE3017547;
+	Mon, 15 Jan 2024 13:50:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openadk.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openadk.org
+Received: by helium.openadk.org (Postfix, from userid 1000)
+	id 72F6135210AB; Mon, 15 Jan 2024 14:41:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=openadk.org; s=2022;
+	t=1705326082; bh=oxu8ri+2lNAJGmWaelZR/DAbUPHgJwlAGo7y/CzxD4E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DX6Ey8NpU5GrlvEu3ZRCkLwI5kBRnUvpr23wJSVaSMxIvKcwenahJ6FnpxnlCpzvT
+	 q00OflPoW7AF8uLs4+x/C0//3TcLaD7fuJWk3adpvG8BfJL/B5c8yVJ+2pKol1WuZ+
+	 hXP81V9hyEpCoS7AKFE+l1KA+iCWIjBaPsusSRwfwCsJWzdAVRc7quDLtRl99U+GB5
+	 vZ8tq3rEaqKwyMKsPNvqa8yhU6Xz2PkbZZsreGoz/vomjnBebeI4AOolJ32GaW/Mmo
+	 qO7Ah7Eon0nLF4vBUP3bfqcjzzORYmhkrwk+dBf/iwB3cmChCKQvD9qZ3FYOXh0Nn8
+	 ZD+QMa3ub/EkA==
+Date: Mon, 15 Jan 2024 14:41:22 +0100
+From: Waldemar Brodkorb <wbx@openadk.org>
+To: Petr Vorel <pvorel@suse.cz>
+Cc: Greg Ungerer <gerg@linux-m68k.org>, Petr Vorel <pvorel@suse.cz>,
+	Rob Landley <rob@landley.net>, Tim Bird <tim.bird@sony.com>,
+	Niklas Cassel <niklas.cassel@wdc.com>,
+	Andrea Cervesato <andrea.cervesato@suse.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Linux-sh list <linux-sh@vger.kernel.org>,
+	Christophe Lyon <christophe.lyon@linaro.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Li Wang <liwang@redhat.com>,
+	"linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Linux ARM <linux-arm-kernel@lists.infradead.org>,
+	Cyril Hrubis <chrubis@suse.cz>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	linux-riscv <linux-riscv@lists.infradead.org>,
+	"buildroot@buildroot.org" <buildroot@buildroot.org>,
+	"ltp@lists.linux.it" <ltp@lists.linux.it>,
+	"automated-testing@lists.yoctoproject.org" <automated-testing@lists.yoctoproject.org>
+Subject: Re: [Buildroot] [Automated-testing] Call for nommu LTP maintainer
+ [was: Re: [PATCH 00/36] Remove UCLINUX from LTP]
+Message-ID: <ZaU2Ag1wg1Sne9zZ@waldemar-brodkorb.de>
+References: <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
+ <20240105131135.GA1484621@pevik>
+ <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
+ <20240108090338.GA1552643@pevik>
+ <ZZvJXTshFUYSaMVH@yuki>
+ <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
+ <20240110141455.GC1698252@pevik>
+ <40996ea1-3417-1c2f-ddd2-e6ed45cb6f4b@landley.net>
+ <81c07a13-305a-404b-b14c-3aff8fde3f67@linux-m68k.org>
+ <d3a26b8e-8823-8f3c-b815-4396cbac1dc3@landley.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;j-t.hinz@alumni.tu-berlin.de;1705326171;87aeb70d;
-X-HE-SMSGID: 1rPNEg-0006AL-4K
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <d3a26b8e-8823-8f3c-b815-4396cbac1dc3@landley.net>
+X-Operating-System: Linux 5.10.0-27-amd64 x86_64
 
-A BPF application, e.g., a TCP congestion control, might benefit from or
-even require precise (=hardware) packet timestamps. These timestamps are
-already available through __sk_buff.hwtstamp and
-bpf_sock_ops.skb_hwtstamp, but could not be requested: BPF programs were
-not allowed to set SO_TIMESTAMPING* on sockets.
+Hi,
 
-Enable BPF programs to actively request the generation of timestamps
-from a stream socket. The also required ioctl(SIOCSHWTSTAMP) on the
-network device must still be done separately, in user space.
+I want to clarify some things of the point of view of uClibc-ng
+support.
 
-This patch had previously been submitted in a two-part series (first
-link below). The second patch has been independently applied in commit
-7f6ca95d16b9 ("net: Implement missing getsockopt(SO_TIMESTAMPING_NEW)")
-(second link below).
+There is support for following configurations for noMMU targets:
+ARM:
+ - FLAT with Linuxthreads supported (for Qemu you need a Linux patch)
+ - FDPIC with NPTL supported (NPTL works only on real hardware not in Qemu)
+ - ELF with Thread support not working
 
-On the earlier submission, there was the open question whether to only
-allow, thus enforce, SO_TIMESTAMPING_NEW in this patch:
+M68k:
+ - FLAT with Linuxthreads supported
+ - ELF with Thread support not working
 
-For a BPF program, this won't make a difference: A timestamp, when
-accessed through the fields mentioned above, is directly read from
-skb_shared_info.hwtstamps, independent of the places where NEW/OLD is
-relevant. See bpf_convert_ctx_access() besides others.
+RISCV64:
+ - FLAT without Thread support
+ - ELF with Thread support not working
 
-I am unsure, though, when it comes to the interconnection of user space
-and BPF "space", when both are interested in the timestamps. I think it
-would cause an unsolvable conflict when user space is bound to use
-SO_TIMESTAMPING_OLD with a BPF program only allowed to set
-SO_TIMESTAMPING_NEW *on the same socket*? Please correct me if I'm
-mistaken.
+RISCV32:
+ - FLAT without Thread support, needs a small Linux Kernel patch
 
-Link: https://lore.kernel.org/lkml/20230703175048.151683-1-jthinz@mailbox.tu-berlin.de/
-Link: https://lore.kernel.org/all/20231221231901.67003-1-jthinz@mailbox.tu-berlin.de/
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Deepa Dinamani <deepa.kernel@gmail.com>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Signed-off-by: Jörn-Thorben Hinz <j-t.hinz@alumni.tu-berlin.de>
----
- include/uapi/linux/bpf.h                            | 3 ++-
- net/core/filter.c                                   | 2 ++
- tools/include/uapi/linux/bpf.h                      | 3 ++-
- tools/testing/selftests/bpf/progs/bpf_tracing_net.h | 2 ++
- tools/testing/selftests/bpf/progs/setget_sockopt.c  | 4 ++++
- 5 files changed, 12 insertions(+), 2 deletions(-)
+SH2/J2:
+ - FLAT with Linuxthreads supported
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 754e68ca8744..8825d0648efe 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -2734,7 +2734,8 @@ union bpf_attr {
-  * 		  **SO_RCVBUF**, **SO_SNDBUF**, **SO_MAX_PACING_RATE**,
-  * 		  **SO_PRIORITY**, **SO_RCVLOWAT**, **SO_MARK**,
-  * 		  **SO_BINDTODEVICE**, **SO_KEEPALIVE**, **SO_REUSEADDR**,
-- * 		  **SO_REUSEPORT**, **SO_BINDTOIFINDEX**, **SO_TXREHASH**.
-+ * 		  **SO_REUSEPORT**, **SO_BINDTOIFINDEX**, **SO_TXREHASH**,
-+ * 		  **SO_TIMESTAMPING_NEW**, **SO_TIMESTAMPING_OLD**.
-  * 		* **IPPROTO_TCP**, which supports the following *optname*\ s:
-  * 		  **TCP_CONGESTION**, **TCP_BPF_IW**,
-  * 		  **TCP_BPF_SNDCWND_CLAMP**, **TCP_SAVE_SYN**,
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 8c9f67c81e22..4f5280874fd8 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -5144,6 +5144,8 @@ static int sol_socket_sockopt(struct sock *sk, int optname,
- 	case SO_MAX_PACING_RATE:
- 	case SO_BINDTOIFINDEX:
- 	case SO_TXREHASH:
-+	case SO_TIMESTAMPING_NEW:
-+	case SO_TIMESTAMPING_OLD:
- 		if (*optlen != sizeof(int))
- 			return -EINVAL;
- 		break;
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 7f24d898efbb..09eaafa6ab43 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -2734,7 +2734,8 @@ union bpf_attr {
-  * 		  **SO_RCVBUF**, **SO_SNDBUF**, **SO_MAX_PACING_RATE**,
-  * 		  **SO_PRIORITY**, **SO_RCVLOWAT**, **SO_MARK**,
-  * 		  **SO_BINDTODEVICE**, **SO_KEEPALIVE**, **SO_REUSEADDR**,
-- * 		  **SO_REUSEPORT**, **SO_BINDTOIFINDEX**, **SO_TXREHASH**.
-+ * 		  **SO_REUSEPORT**, **SO_BINDTOIFINDEX**, **SO_TXREHASH**,
-+ * 		  **SO_TIMESTAMPING_NEW**, **SO_TIMESTAMPING_OLD**.
-  * 		* **IPPROTO_TCP**, which supports the following *optname*\ s:
-  * 		  **TCP_CONGESTION**, **TCP_BPF_IW**,
-  * 		  **TCP_BPF_SNDCWND_CLAMP**, **TCP_SAVE_SYN**,
-diff --git a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-index 1bdc680b0e0e..95f5f169819e 100644
---- a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-@@ -15,8 +15,10 @@
- #define SO_RCVLOWAT		18
- #define SO_BINDTODEVICE		25
- #define SO_MARK			36
-+#define SO_TIMESTAMPING_OLD     37
- #define SO_MAX_PACING_RATE	47
- #define SO_BINDTOIFINDEX	62
-+#define SO_TIMESTAMPING_NEW     65
- #define SO_TXREHASH		74
- #define __SO_ACCEPTCON		(1 << 16)
- 
-diff --git a/tools/testing/selftests/bpf/progs/setget_sockopt.c b/tools/testing/selftests/bpf/progs/setget_sockopt.c
-index 7a438600ae98..54205d10793c 100644
---- a/tools/testing/selftests/bpf/progs/setget_sockopt.c
-+++ b/tools/testing/selftests/bpf/progs/setget_sockopt.c
-@@ -48,6 +48,10 @@ static const struct sockopt_test sol_socket_tests[] = {
- 	{ .opt = SO_MARK, .new = 0xeb9f, .expected = 0xeb9f, },
- 	{ .opt = SO_MAX_PACING_RATE, .new = 0xeb9f, .expected = 0xeb9f, },
- 	{ .opt = SO_TXREHASH, .flip = 1, },
-+	{ .opt = SO_TIMESTAMPING_NEW, .new = SOF_TIMESTAMPING_RX_HARDWARE,
-+		.expected = SOF_TIMESTAMPING_RX_HARDWARE, },
-+	{ .opt = SO_TIMESTAMPING_OLD, .new = SOF_TIMESTAMPING_RX_HARDWARE,
-+		.expected = SOF_TIMESTAMPING_RX_HARDWARE, },
- 	{ .opt = 0, },
- };
- 
--- 
-2.39.2
+Xtensa:
+ - FLAT with Linuxthreads supported
 
+There are some obsolete architectures supported by uClibc-ng, but
+no longer supported by Linux:
+
+Blackfin:
+ - FLAT with Linuxthreads supported
+ - FDPIC
+
+H8300:
+ - FLAT with Linuxthreads supported
+
+C6X:
+ - DSBT 
+
+LM32:
+ - FLAT
+
+LTP requires NPTL to work, so the only testable platform is ARM with
+FDPIC right now.
+Unfortunately LTP 20230929 needs fork for some files:
+
+RANLIB libltp.a
+/home/wbx/arm/toolchain_st-stm32f746g_uclibc-ng_cortex_m7_soft_eabi_thumb_nommu/usr/lib/gcc/arm-openadk-uclinuxfdpiceabi/13.2.0/../../../../arm-openadk-uclinuxfdpiceabi/bin/ld: ../../lib/libltp.a(tst_res.o): in function `tst_fork':
+/home/wbx/arm/build_st-stm32f746g_uclibc-ng_cortex_m7_soft_eabi_thumb_nommu/w-ltp-20230929-1/ltp-full-20230929/lib/tst_res.c:430:(.text+0x952): undefined reference to `fork'
+/home/wbx/arm/toolchain_st-stm32f746g_uclibc-ng_cortex_m7_soft_eabi_thumb_nommu/usr/lib/gcc/arm-openadk-uclinuxfdpiceabi/13.2.0/../../../../arm-openadk-uclinuxfdpiceabi/bin/ld: ../../lib/libltp.a(tst_test.o): in function `fork_testrun':
+/home/wbx/arm/build_st-stm32f746g_uclibc-ng_cortex_m7_soft_eabi_thumb_nommu/w-ltp-20230929-1/ltp-full-20230929/lib/tst_test.c:1597:(.text+0xf4e): undefined reference to `fork'
+/home/wbx/arm/toolchain_st-stm32f746g_uclibc-ng_cortex_m7_soft_eabi_thumb_nommu/usr/lib/gcc/arm-openadk-uclinuxfdpiceabi/13.2.0/../../../../arm-openadk-uclinuxfdpiceabi/bin/ld: ../../lib/libltp.a(tst_test.o): in function `safe_fork':
+/home/wbx/arm/build_st-stm32f746g_uclibc-ng_cortex_m7_soft_eabi_thumb_nommu/w-ltp-20230929-1/ltp-full-20230929/lib/tst_test.c:435:(.text+0x345c): undefined reference to `fork'
+collect2: error: ld returned 1 exit status
+gmake[8]: *** [../../include/mk/rules.mk:45: test01] Error 1
+gmake[7]: *** [../include/mk/generic_trunk_target.inc:108: all] Error 2
+gmake[6]: *** [Makefile:94: lib-all] Error 2
+gmake[5]: *** [/home/wbx/arm/mk/pkg-bottom.mk:141: /home/wbx/arm/build_st-stm32f746g_uclibc-ng_cortex_m7_soft_eabi_thumb_nommu/w-ltp-20230929-1/ltp-full-20230929/.build_done] Error 2
+gmake[4]: *** [Makefile:61: ltp-compile] Error 2
+gmake[3]: *** [mk/build.mk:221: package/compile] Error 2
+gmake[2]: *** [/home/wbx/arm/mk/build.mk:176: world] Error 2
+
+So there is really work to be done to make the existing code work on noMMU.
+
+best regards
+ Waldemar
 
