@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-26286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E343F82DE19
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:01:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E4E0D82DE1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:02:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 949E51F22AD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:01:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95FC41F22A37
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:01:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05F7E1802E;
-	Mon, 15 Jan 2024 17:01:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BAD318046;
+	Mon, 15 Jan 2024 17:01:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kzEIH7ib"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aM57N1Ez"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D3D618021
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 17:01:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 473DB18027
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 17:01:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705338095; x=1736874095;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=m8GjS5wZqsYvI+/FgqsVOw65DnUXGTviCMTTBgL69MQ=;
-  b=kzEIH7ibo/iYH14Q2vK54qvN2aWM171aafH6w3r89WhADD1e1IjPhdXG
-   P1yim7KokZChiuf5QJj5J4b2SsHCIVmwQ6ZV4hRN91QcllZK6nVjrTotm
-   Fi3s2c9s55qI7ok5Ago0suO0yckmaVA49mTyLZO7SxGQG/y4K8Bf76ozV
-   Z7Ah1b3TmxgkqOsT70DcPbqqyjNH9lJMPy3yiHjx/JB7aQQ9HtTpxStnG
-   jG5DmHESELI4/4JMmgfNX5CiNNO1PbpHYeG4pCGFfvl24geKLf+eNOeco
-   qTAIeZMF+HPssVA8McfRDP4sn8bLoGArBr9BlF4/89XELV/EV+B4zEGFe
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="6408192"
+  t=1705338097; x=1736874097;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=rDlcveJOd/QxYfdylxHGM+KIbu+7YyGNcC1nda6F/iw=;
+  b=aM57N1Eze0zbGuhan2KsgmvcXVwyYiXCFEdnFhCw/Pax4p6I6tMC2O2O
+   qWMrq5O7dA9lwuCIW1QP0QvTx3Xn0WAmdCxw0DNZVeCqejDh8U9nnsxPS
+   gk8ZJOzN1CEf3P4vhIumtpglnoW1jiFhpjLf3FLA8V4fxU7pPjc8GW6Mj
+   evERt0Ol69SU00KYNHsape+jIPTLN9RcW53Tozic7CNlGf95ij/dEVi3J
+   2w1G9J5nyfZxlJD04uUHaPH0hDT9md5gukvYz5y5OKTs3B4Qi1QRiKpiT
+   727QoUsjIIYfN1k/f/S5WcBlVyWiHceSEbsaF3vW4ij7kJ4VQuL/SEIh4
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="6408196"
 X-IronPort-AV: E=Sophos;i="6.04,197,1695711600"; 
-   d="scan'208";a="6408192"
+   d="scan'208";a="6408196"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 09:01:34 -0800
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 09:01:37 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="907101286"
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="907101324"
 X-IronPort-AV: E=Sophos;i="6.04,197,1695711600"; 
-   d="scan'208";a="907101286"
+   d="scan'208";a="907101324"
 Received: from mleonvig-mobl1.ger.corp.intel.com (HELO localhost.localdomain) ([10.213.223.101])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 09:01:28 -0800
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 09:01:31 -0800
 From: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
 To: linux-kernel@vger.kernel.org,
 	tvrtko.ursulin@linux.intel.com
@@ -52,10 +52,12 @@ Cc: Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Umesh Nerlige Ramappa <umesh.nerlige.ramappa@intel.com>,
 	Aravind Iddamsetty <aravind.iddamsetty@linux.intel.com>
-Subject: [RFC 0/3] Fixing i915 PMU use after free after driver unbind
-Date: Mon, 15 Jan 2024 17:01:17 +0000
-Message-Id: <20240115170120.662220-1-tvrtko.ursulin@linux.intel.com>
+Subject: [RFC 1/3] perf: Add new late event free callback
+Date: Mon, 15 Jan 2024 17:01:18 +0000
+Message-Id: <20240115170120.662220-2-tvrtko.ursulin@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240115170120.662220-1-tvrtko.ursulin@linux.intel.com>
+References: <20240115170120.662220-1-tvrtko.ursulin@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,63 +68,80 @@ Content-Transfer-Encoding: 8bit
 
 From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 
-Hi Peter, all,
+This allows drivers to implement a PMU with support for unbinding the
+device, for example by making event->pmu reference counted on the driver
+side and its lifetime matching the struct perf_event init/free.
 
-This is an early RFC to outline a newly discovered problem in the current
-handling of driver unbind with active perf fds.
+Otherwise, if an open perf fd is kept past driver unbind, the perf code
+can dereference the potentially freed struct pmu from the _free_event
+steps which follow the existing destroy callback.
 
-The sequence is basically this:
+TODO/FIXME/QQQ:
 
-1. Open a perf fd
-2. Unbind a driver
-3. Close the dangling fd
+A simpler version could be to simply move the ->destroy() callback to
+later in _free_event(). However a comment there claims there are steps
+which need to run after the existing destroy callbacks, hence I opted for
+an initially cautious approach.
 
-Or a slightly more evil variant:
-
-1. Open a perf fd
-2. Unbind a driver
-3. Bind the driver again
-4. Close the dangling fd
-
-I thought we had this covered by recording the unbound status (pmu->closed in
-i915_pmu.c) and making sure the struct i915_pmu (and struct perf_pmu) remain
-active until the last event is closed (via internal reference counting). But
-what I missed until now are two things:
-
-1)
-core.c: _free_event() will dereference event->pmu _after_ event->destroy().
-
-KASAN catches this easily and patches 1 & 2 are the attempt to fix that.
-
-2)
-A more evil case where pmu->cpu_pmu_context per-cpu allocation gets re-used
-_before_ the old perf fd is closed.
-
-There things can nicely explode on the list_del_init inside event_sched_out on
-list_del_init(&event->active_list); (with list debugging turned on of course).
-
-Most easily reproducible by simply re-binding i915, which happens to grab the
-same per-cpu block and then the new perf_pmu_register zaps the list_head which
-the old event will try to unlink itself from.
-
-This is what the third patch attempts to deal with. It is a bit incomplete
-though, as I was unsure what is the best approach to fix and so thought to send
-it out early for some guidance.
-
+Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Umesh Nerlige Ramappa <umesh.nerlige.ramappa@intel.com>
 Cc: Aravind Iddamsetty <aravind.iddamsetty@linux.intel.com>
+---
+ include/linux/perf_event.h |  1 +
+ kernel/events/core.c       | 13 +++++++++++--
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-Tvrtko Ursulin (3):
-  perf: Add new late event free callback
-  drm/i915/pmu: Move i915 reference drop to new event->free()
-  perf: Reference count struct perf_cpu_pmu_context to fix driver unbind
-
- drivers/gpu/drm/i915/i915_pmu.c |  4 ++--
- include/linux/perf_event.h      |  2 ++
- kernel/events/core.c            | 34 ++++++++++++++++++++++++---------
- 3 files changed, 29 insertions(+), 11 deletions(-)
-
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 5547ba68e6e4..a567d2d98be1 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -799,6 +799,7 @@ struct perf_event {
+ 	struct perf_event		*aux_event;
+ 
+ 	void (*destroy)(struct perf_event *);
++	void (*free)(struct perf_event *);
+ 	struct rcu_head			rcu_head;
+ 
+ 	struct pid_namespace		*ns;
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index a64165af45c1..4b62d2201ca7 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -5242,6 +5242,9 @@ static void _free_event(struct perf_event *event)
+ 	exclusive_event_destroy(event);
+ 	module_put(event->pmu->module);
+ 
++	if (event->free)
++		event->free(event);
++
+ 	call_rcu(&event->rcu_head, free_event_rcu);
+ }
+ 
+@@ -11662,8 +11665,12 @@ static int perf_try_init_event(struct pmu *pmu, struct perf_event *event)
+ 		    event_has_any_exclude_flag(event))
+ 			ret = -EINVAL;
+ 
+-		if (ret && event->destroy)
+-			event->destroy(event);
++		if (ret) {
++			if (event->destroy)
++				event->destroy(event);
++			if (event->free)
++				event->free(event);
++		}
+ 	}
+ 
+ 	if (ret)
+@@ -12090,6 +12097,8 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
+ 		perf_detach_cgroup(event);
+ 	if (event->destroy)
+ 		event->destroy(event);
++	if (event->free)
++		event->free(event);
+ 	module_put(pmu->module);
+ err_ns:
+ 	if (event->hw.target)
 -- 
 2.40.1
 
