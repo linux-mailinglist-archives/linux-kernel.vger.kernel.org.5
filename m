@@ -1,150 +1,109 @@
-Return-Path: <linux-kernel+bounces-26470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5FA282E168
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 21:14:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0E2782E16F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 21:17:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48EE7B21604
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:14:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 204DE1C221F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:17:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FF5A199A9;
-	Mon, 15 Jan 2024 20:14:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 534CA1947C;
+	Mon, 15 Jan 2024 20:17:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eSNJhFI2"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oPqEnLF5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 429D018EB2;
-	Mon, 15 Jan 2024 20:14:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a28b2e1a13fso955521366b.3;
-        Mon, 15 Jan 2024 12:14:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705349642; x=1705954442; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w5Ok4CQAPkpysNJkJjEPQdxy0iDAuR07BorZIgMZAwk=;
-        b=eSNJhFI2HC3yags6sB4AhEGf5FSISrPystjo2EVRZjn+vsZq98eD/Nt2g67m5JQIwe
-         GEOeJCgTLZhQtczML86nPfgnf5fmHR9ly+l79DM7eS+dG6hA766mAiN/L59p1jY9vD2p
-         Uu6/NlFRZaNlg/ANmVjU1zC86MJ7wvny7uVXQB2SJIksNKUBpPEOicgDVzf4N4gsdXD1
-         dCmJpo2ekYok5tmyNJS5HrUWqQwcNy8ojcG5Q2YrsZblEXekGNhIPU7o1Esbtvd9AQaY
-         iDjaMOQQnxyvVrgqXFQtCcIaUSsuZ7tYWngNuDXkyFe/5AydaVwOE281GRDTt1uiSAHU
-         TRDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705349642; x=1705954442;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w5Ok4CQAPkpysNJkJjEPQdxy0iDAuR07BorZIgMZAwk=;
-        b=WKwa9KvlewsK4SgdcEgwyw6j9aUvZZYVx93UyrUmi1kh1dWjziI50XUJ2g8HnUAauW
-         2Crp1bH8MDeJdgNmV4IHKg3ZQ1Lpj7QY3yRq3+ZN2edpC/xOAsgXshhigFUztE7E23nQ
-         wIwX3E6ghOwYeAa+E2pOR4dZv1D8NO6gtUr1XXGfHU0x8Oo61qrLJjXwcRPpsT+54JTN
-         Rma9NVG03Ku1PFI5BUAjkGE25YxV0fcpO/2ROiSKdrBclxvsFYXPBvHcyeqSEKFpohGX
-         vtpr+GukD7lZ0HVWHITZ3b1taj6GK64ygjdluZS6iuCobjjonxBqSSEuJKbrpfVBJLOg
-         9UYw==
-X-Gm-Message-State: AOJu0YyUs54ibGrX9OXvSy855xVV8MhKrgmCGxcMC0PNrvYOaMgutwLt
-	WGlNG/XpTJ57I79Rx8Nlpd1A+K/Akpm/HaXSY6I=
-X-Google-Smtp-Source: AGHT+IF9hVIc0IofPq072tyoQiEbT9WWWMhwNrqZiDf3VofbR8YwcHsdBo838dWQyfyviH1gTOzEGh3uQ+XWN1I60MM=
-X-Received: by 2002:a17:906:39c6:b0:a27:bac8:1000 with SMTP id
- i6-20020a17090639c600b00a27bac81000mr2579905eje.96.1705349642324; Mon, 15 Jan
- 2024 12:14:02 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DC4518EB2;
+	Mon, 15 Jan 2024 20:17:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4E72C433C7;
+	Mon, 15 Jan 2024 20:17:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705349866;
+	bh=hbvF2zJNkvnNPZrMPX0XPRUfiPsnEZS1lIR4xv3NkoU=;
+	h=From:Date:Subject:To:Cc:From;
+	b=oPqEnLF5Hexfow5DJQAq4T/eH1P+1dujL4Tlv5skvCXd7yDnG3IjP2hKFqspl/85x
+	 DzLAqlxJRXoiZQTuG0Tg6stu6PWVrFQNeITf9wAapW7GNZNCfDp8Mh38W3WGc89HHz
+	 /zP6pddK5st4IMmlsqq8Y/2105eKYOo6hzcVofk1qP9QEcvAJzbW1PLgxcx8t9Th9b
+	 r85jhp4KW0uOALQm04tiuBBZiPcdQgT/2jXZ2TTz7GgQClVVQHxYKE1srm5vrqFm0x
+	 kQoTvM4CPOSnFUqUsfCN8RsOpkok7s7wjsmTGJYFxWqkk9ZujOdvAqANKI135+NRPk
+	 YnDkdJAARAcFg==
+From: Mark Brown <broonie@kernel.org>
+Date: Mon, 15 Jan 2024 20:15:46 +0000
+Subject: [PATCH] arm64/sme: Always exit sme_alloc() early with existing
+ storage
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com> <20240102-j7200-pcie-s2r-v1-14-84e55da52400@bootlin.com>
-In-Reply-To: <20240102-j7200-pcie-s2r-v1-14-84e55da52400@bootlin.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Mon, 15 Jan 2024 22:13:25 +0200
-Message-ID: <CAHp75VfPQz4PWdzFUU_n+R=XohBjyXM0zsjD-bUD2jmb42ds8Q@mail.gmail.com>
-Subject: Re: [PATCH 14/14] PCI: j721e: add suspend and resume support
-To: Thomas Richard <thomas.richard@bootlin.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
-	Andy Shevchenko <andy@kernel.org>, Tony Lindgren <tony@atomide.com>, 
-	Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
-	Aaro Koskinen <aaro.koskinen@iki.fi>, Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
-	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, Vinod Koul <vkoul@kernel.org>, 
-	Kishon Vijay Abraham I <kishon@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
-	Tom Joseph <tjoseph@cadence.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-phy@lists.infradead.org, linux-pci@vger.kernel.org, 
-	gregory.clement@bootlin.com, theo.lebrun@bootlin.com, 
-	thomas.petazzoni@bootlin.com, u-kumar1@ti.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240115-arm64-sme-flush-v1-1-7472bd3459b7@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAHGSpWUC/x3MTQqAIBBA4avErBtQkaCuEi1SxxzoD4ciCO+et
+ PwW770glJkEhuaFTDcLH3uFbhvwad4XQg7VYJSxSmuDc946i7IRxvWShKp3wVvlnI0eanVmivz
+ 8x3Eq5QOsnnR1YQAAAA==
+To: Catalin Marinas <catalin.marinas@arm.com>, 
+ Will Deacon <will@kernel.org>
+Cc: Dave Martin <dave.martin@arm.com>, linux-arm-kernel@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, 
+ stable@vger.kernel.org
+X-Mailer: b4 0.13-dev-5c066
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1379; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=hbvF2zJNkvnNPZrMPX0XPRUfiPsnEZS1lIR4xv3NkoU=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlpZLnCdbCdkfdcefQ47pJjfDfPa6LkOOGHaTIu1aI
+ QVlccIeJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZaWS5wAKCRAk1otyXVSH0AKNB/
+ 4+VX/uyNw6PWsdrgvLLVtIVBln/gopyMmLZWzHYQOqOpAtlmvOUyeZc8TB/bfTLBSOuvtmeQszlGGw
+ Mk/7SGEkxrRVo0wVNfM2R5/sH+dIb1+fZ3EtM63SRKsO6nUTxKiXb5tAyng6HzyB/kwrHSwd4ZwA/2
+ YI8ACoXNvV5R2cu7qRYhnzI0GOa2CxqhSam0KXFvTvb9ST/LzmAc0qYwppCAvRCacZPG8mPEW7/bsp
+ wH+6MEL2sRYseLh8np2x5mT03Dico0+/yRgGekjLn5/wB1UYw+O0piMgpgJ+Sextu8dj/pqvZsyXz+
+ TleshIECm9xi+IYUEFp4LTFcB33EcR
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 
-On Mon, Jan 15, 2024 at 6:16=E2=80=AFPM Thomas Richard
-<thomas.richard@bootlin.com> wrote:
->
-> From: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
->
-> Add suspend and resume support for rc mode.
+When sme_alloc() is called with existing storage and we are not flushing we
+will always allocate new storage, both leaking the existing storage and
+corrupting the state. Fix this by separating the checks for flushing and
+for existing storage as we do for SVE.
 
-Same comments as for earlier patches.
-Since it's wide, please, check the whole series for the same issues
-and address them.
+Callers that reallocate (eg, due to changing the vector length) should
+call sme_free() themselves.
 
-..
+Fixes: 5d0a8d2fba50 (arm64/ptrace: Ensure that SME is set up for target when writing SSVE state)
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc:  <stable@vger.kernel.org>
+---
+ arch/arm64/kernel/fpsimd.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-> +               if (pcie->reset_gpio)
+diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
+index 1559c706d32d..7363f2eb98e8 100644
+--- a/arch/arm64/kernel/fpsimd.c
++++ b/arch/arm64/kernel/fpsimd.c
+@@ -1245,8 +1245,10 @@ void fpsimd_release_task(struct task_struct *dead_task)
+  */
+ void sme_alloc(struct task_struct *task, bool flush)
+ {
+-	if (task->thread.sme_state && flush) {
+-		memset(task->thread.sme_state, 0, sme_state_size(task));
++	if (task->thread.sme_state) {
++		if (flush)
++			memset(task->thread.sme_state, 0,
++			       sme_state_size(task));
+ 		return;
+ 	}
+ 
 
-Dup, why?
+---
+base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+change-id: 20240112-arm64-sme-flush-09bdc40bb4fc
 
-> +                       gpiod_set_value_cansleep(pcie->reset_gpio, 0);
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
 
-..
-
-> +               if (pcie->reset_gpio) {
-> +                       usleep_range(100, 200);
-
-fsleep() ?
-Btw, why is it needed here, perhaps a comment?
-
-> +                       gpiod_set_value_cansleep(pcie->reset_gpio, 1);
-> +               }
-
-..
-
-> +               ret =3D cdns_pcie_host_setup(rc, false);
-> +               if (ret < 0) {
-> +                       clk_disable_unprepare(pcie->refclk);
-> +                       return -ENODEV;
-
-Why is the error code being shadowed?
-
-> +               }
-
-..
-
-> +#define cdns_pcie_to_rc(p) container_of(p, struct cdns_pcie_rc, pcie)
-
-Is container_of.h included in this file?
-
-..
-
-> @@ -381,7 +383,6 @@ struct cdns_pcie_ep {
->         unsigned int            quirk_disable_flr:1;
->  };
->
-> -
->  /* Register access */
->  static inline void cdns_pcie_writel(struct cdns_pcie *pcie, u32 reg, u32=
- value)
->  {
-
-Stray change.
-
---=20
-With Best Regards,
-Andy Shevchenko
 
