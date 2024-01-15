@@ -1,152 +1,136 @@
-Return-Path: <linux-kernel+bounces-25593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC15282D31F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 03:35:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BDD382D320
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 03:35:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE89628157E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 02:35:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE03B1F21380
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 02:35:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 466B21FDD;
-	Mon, 15 Jan 2024 02:35:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F0511872;
+	Mon, 15 Jan 2024 02:35:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="WhpEtCzP"
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="KwML1vnH"
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 435E815BB
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 02:35:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3bd6581bc62so1540010b6e.2
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 18:35:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705286103; x=1705890903; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=NGPrP85irDsGWFe70TUihAZuFbLk81immVZNahh9t4E=;
-        b=WhpEtCzPpEeSvXkUTLwOwv1V04MRh4v4V9jx6rGL6uiegvpqQwbc8Qs0RsXtRrgUTN
-         qRF51wwqJ+yGkitd5++rOxp+UuQCxjUXsVKG9ygcxvqTt+XSbNu5p6XVy5FxUSWbQDQF
-         /sXsSz0+L6vzpQug7iF62OGrGPhkGjs8k05hk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705286103; x=1705890903;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NGPrP85irDsGWFe70TUihAZuFbLk81immVZNahh9t4E=;
-        b=WZtiJn/f+o5bXpCg1URZDqrW25c0BSWt/tibOp+BBFCYldyAiFoPbsdR4lxS+4D6pT
-         ku91U0d6Z/NgXbcmjHZObiw5RnL8saj53rTQGb4t4bPR2Z6Li+XtKEqI8bDMxHZhnK2V
-         5xwAgrx11A08JkHwDZs+YzirTwecQxmZGqx1/e3L8o8fIpYsU3VmFpei6UxIEzChmnpT
-         H/Jf0ZfSySV9jd0E+7cIUVFnmtOTvRcnG8uJwzwLuKc4neE+yOQkc49kmAl6RQBbSaKw
-         7suqaUrNRMoeghEqiuLT7GX32NQKm+yRc6Q86GFm7osZz5AiKDz2940WMeLWWsmCESgN
-         PBfw==
-X-Gm-Message-State: AOJu0YzukL1hXMimvc7b8rI4iDk9rqULuty1LqiqIxuLvLFX0dY44rs1
-	Ul28oBESmbqFUGCRlNDmxD6wtqU0KfwV
-X-Google-Smtp-Source: AGHT+IFRv0AmoFvgwlkkyp85zuO26TKlaEUoD5VXtzgftfHYB8FPUF8Ah1DQeJR85v80fBf0JBJ+HQ==
-X-Received: by 2002:a05:6808:11c5:b0:3bd:5b4d:3e30 with SMTP id p5-20020a05680811c500b003bd5b4d3e30mr5318468oiv.81.1705286103273;
-        Sun, 14 Jan 2024 18:35:03 -0800 (PST)
-Received: from google.com (KD124209171220.ppp-bb.dion.ne.jp. [124.209.171.220])
-        by smtp.gmail.com with ESMTPSA id b6-20020aa78106000000b006d9b31f670esm6840339pfi.143.2024.01.14.18.35.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jan 2024 18:35:02 -0800 (PST)
-Date: Mon, 15 Jan 2024 11:34:57 +0900
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: Barry Song <21cnbao@gmail.com>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>, minchan@kernel.org,
-	axboe@kernel.dk, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] zram: easy the allocation of zcomp_strm's buffers with 2
- pages
-Message-ID: <20240115023457.GA1504420@google.com>
-References: <20240103003011.211382-1-v-songbaohua@oppo.com>
- <20240106013021.GA123449@google.com>
- <CAGsJ_4xp7HFuYbDp3UjMqFKSuz2HJn+5JnJdB-PP_GmucQqOpg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF82517D5
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 02:35:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-115-247.bstnma.fios.verizon.net [173.48.115.247])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 40F2ZUVk013181
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 14 Jan 2024 21:35:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1705286131; bh=nGSs9A/OQKM+DwGbB0yCNA2AmKHoEfpifzwjfANTesw=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=KwML1vnH98QwAtIBCuBWczuUMSCBMqWPyrxoZ0brxi6PovfnOox6oN/4af8UDV7wr
+	 d/iOuICFqrkN3RRRTPTCuSH79ObTKucNZ6GzipJ5m5LTMMpKvEN6VAsNEMoAJ15juK
+	 DKCx+qA0E1gHohchbgyJf8IV6+Bc6Vn90VaFmUCZVbFDspDnFzr4aaCR381IqUIsRF
+	 IN15bMntxPJl39tSwFvyjkak7w0+tDi7gnYcWmmE8YKfBfj3K7Mvcj1+01DuoQraKP
+	 LUAg/ut71H6P9yPCsrRHlevVWQl4y/TpvNVYmsB95YEJZV6bVTN/fzNb17w+0mQNyi
+	 ojh1im5wCLqkQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 531A315C0278; Sun, 14 Jan 2024 21:35:30 -0500 (EST)
+Date: Sun, 14 Jan 2024 21:35:30 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: "Dr. Henning Kopp" <hkopp22@yahoo.de>
+Cc: linux-kernel@vger.kernel.org
+Subject: Re: Why does Linux not implement pthread_suspend() and
+ pthread_resume()?
+Message-ID: <20240115023530.GE911245@mit.edu>
+References: <0219492d-3971-f8e0-8b46-22d442a2d442.ref@yahoo.de>
+ <0219492d-3971-f8e0-8b46-22d442a2d442@yahoo.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGsJ_4xp7HFuYbDp3UjMqFKSuz2HJn+5JnJdB-PP_GmucQqOpg@mail.gmail.com>
+In-Reply-To: <0219492d-3971-f8e0-8b46-22d442a2d442@yahoo.de>
 
-On (24/01/06 15:38), Barry Song wrote:
-> On Sat, Jan 6, 2024 at 9:30 AM Sergey Senozhatsky
-> <senozhatsky@chromium.org> wrote:
-> >
-> > On (24/01/03 13:30), Barry Song wrote:
-> > > There is no need to keep zcomp_strm's buffers contiguous physically.
-> > > And rarely, 1-order allocation can fail while buddy is seriously
-> > > fragmented.
-> >
-> > Dunno. Some of these don't sound like convincing reasons, I'm afraid.
-> > We don't allocate compression streams all the time, we do it once
-> > per-CPU. And if the system is under such a terrible memory pressure
+On Sun, Jan 14, 2024 at 12:20:04PM +0100, Dr. Henning Kopp wrote:
 > 
-> We actually do it many times actually because we free it while unplugging and
-> re-allocate it during hotplugging. this can happen quite often for systems like
-> Android using hotplug for power management.
+> I found one answer on stackoverflow [1] that mentions that pthread_suspend
+> and pthread_resume_np is in the "Unix specification"
 
-Okay, makes sense.
-Do you see these problems in real life? I don't recall any reports.
+This is not correct.  It is *not* part of the Single Unix
+Specification.  The listing what is in the SUS can be found here:
 
-> > then one probably should not use zram at all, because zsmalloc needs
-> > pages for its pool.
-> 
-> In my humble opinion, 1-order allocation and 0-order allocation are different
-> things, 1-order is still more difficult though it is easier than
-> 2-order which was
-> a big pain causing allocation latency for tasks' kernel stacks and negatively
-> affecting user experience. it has now been replaced by vmalloc and makes
-> life easier :-)
+https://pubs.opengroup.org/onlinepubs/7908799/xsh/threads.html
 
-Sure.
+HPUX seems to have implemented pthread_suspend, but it is not a formal
+part of the Posix or Single Unix Specification's definition of Posix
+Threads.
 
-> > I also wonder whether Android uses HW compression, in which case we
-> > may need to have physically contig pages. Not to mention TLB shootdowns
-> > that virt contig pages add to the picture.
-> 
-> I don't understand how HW compression and TLB shootdown are related as zRAM
-> is using a traditional comp API.
+> I read "man 7 pthreads". It mentions that there are two Linux
+> implementations of Posix threads, that differ in some details from the Posix
+> spec. However, it does not mention suspending or resuming threads at all.
 
-Oh, those are not related. TLB shootdowns are what now will be added to
-all compressions/decompressions, so it's sort of extra cost.
-HW compression (which android may be doing?) is another story.
+It states that LinuxThreads was shipped as part of glibc until 2.4.
+Since 2.4, NPTL is the implementation that has been shipped.  Note
+that glibc 2.4 was shipped in 2006.  This is just that man page is
+quite old, and there is some information which is mostly ancient
+history that hasn't been removed yet.  There is also comments about
+various aspects of NPTL that weren't fully POSIX compliant until
+various 2.6.x kernels --- well the Linux 3.0 kernel was released in
+2011, so again, there's just a lot of stuff there which can be safely
+ignored as no longer relevant.
 
-Did you run any perf tests on zram w/ and w/o the patch?
+> So my question is: What is the reason that Linux does not implement
+> functions for suspending and resuming threads?
 
-> We are always passing a virtual address, traditional HW drivers use their own
-> buffers to do DMA.
-> 
-> int crypto_comp_compress(struct crypto_comp *comp,
-> const u8 *src, unsigned int slen,
-> u8 *dst, unsigned int *dlen);
-> int crypto_comp_decompress(struct crypto_comp *comp,
->   const u8 *src, unsigned int slen,
->   u8 *dst, unsigned int *dlen);
-> 
-> In new acomp API, we are passing a sg - users' buffers to drivers directly,
-> sg_init_one(&input, src, entry->length);
-> sg_init_table(&output, 1);
-> sg_set_page(&output, page, PAGE_SIZE, 0);
-> acomp_request_set_params(acomp_ctx->req, &input, &output, entry->length, dlen);
-> ret = crypto_wait_req(crypto_acomp_decompress(acomp_ctx->req),
-> &acomp_ctx->wait);
-> 
-> but i agree one-nents sg might have some advantage in scompress case
+Quoting from the Linux Threads FAQ:
 
-Right.
+   E.4: How can I suspend and resume a thread from another thread?
+   Solaris has the thr_suspend() and thr_resume() functions to do
+   that; why don't you?
+   
+   The POSIX standard provides no mechanism by which a thread A can
+   suspend the execution of another thread B, without cooperation from
+   B. The only way to implement a suspend/restart mechanism is to have
+   B check periodically some global variable for a suspend request and
+   then suspend itself on a condition variable, which another thread
+   can signal later to restart B.
+   
+   Notice that thr_suspend() is inherently dangerous and prone to race
+   conditions. For one thing, there is no control on where the target
+   thread stops: it can very well be stopped in the middle of a
+   critical section, while holding mutexes. Also, there is no
+   guarantee on when the target thread will actually stop. For these
+   reasons, you'd be much better off using mutexes and conditions
+   instead. The only situations that really require the ability to
+   suspend a thread are debuggers and some kind of garbage collectors.
 
-> after we move
-> to new acomp APIs if we have this patch I sent recently [patch 3/3],
-> https://lore.kernel.org/linux-mm/20240103095006.608744-1-21cnbao@gmail.com/
+   https://www.enseignement.polytechnique.fr/profs/informatique/Leo.Liberti/public/computing/parallel/threads/linuxthreads/linuxthreads-FAQ.html#E
 
-Nice.
+Yes, LinuxThreads has been obsolete since 2006.  But the rationale
+that (a) suspending threads is dangerous, and handing a footgun to
+application writesr might not be wise, and (b) therefore Posix
+specification does not include the capability to suspend a thread, is
+still true.
+
+There is a non-standard way that you can suspend an individual thread
+--- you need to get the Linux tid (note: *not* the pthread id; that's
+different) and then you can send a SIGSTOP signal to the Linux thread
+which will cause the kernel to suspend the thread, and you can send it
+a SIGCONT thread that will cause the kernel to resume the thread.
+This is not something that can be intercepted by the application, and
+so there's nothing the Posix Thread library can do to make things
+better for the application.  If the application happens to be in a
+critical section, holding some mutex when it no longer is allowed to
+run, it might cause your program to wedge until it the SIGCONT signal
+is send to the thread, and this might not be what you want.
+
+Cheers,
+
+					- Ted
 
