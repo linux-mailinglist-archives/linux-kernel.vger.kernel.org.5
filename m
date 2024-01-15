@@ -1,113 +1,68 @@
-Return-Path: <linux-kernel+bounces-25609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30A8A82D378
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 04:47:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8123482D38C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 04:56:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C6301C20A85
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 03:47:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CD24281515
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 03:56:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B9A820E3;
-	Mon, 15 Jan 2024 03:47:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DMSAOjlS"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38E90186A;
-	Mon, 15 Jan 2024 03:47:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705290461; x=1736826461;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=cpCFBsSH/4SlXTqGSHw0GnglPpDmXBuS/gJX+HbsERc=;
-  b=DMSAOjlSb0sI+XfQbFXvPU/HrLAXXadm2Cqc8+ajdhe+y8UYLQ/rShcS
-   oiOjy3poAkkkwd91rDwu0Yu9//TJ6fUGWj1k2wRj74GOjW1LZgb38sR7j
-   iVm48M04iGO35A/LIUXggMGET3ImZ1ra/KSCA5cRG93IVykzPsG2Idnz+
-   MlWiWSk5o99+S9cP5OhMCqRW2qQGvczAknM+Tfw1dKfG3Gtvq4FnwR13R
-   UqPkqaARrveXh4Zb7RIERUGXSslwnzi2OYkJfvoilz34mwVfK8/DOlS5o
-   DFWPa0ilcm42F0bX47F1kb/bwMLim8AiMyDyNqVvG1CXURe00WMBBG//s
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="6284464"
-X-IronPort-AV: E=Sophos;i="6.04,195,1695711600"; 
-   d="scan'208";a="6284464"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 19:47:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="776608748"
-X-IronPort-AV: E=Sophos;i="6.04,195,1695711600"; 
-   d="scan'208";a="776608748"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 14 Jan 2024 19:47:36 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rPDwZ-000C5o-0T;
-	Mon, 15 Jan 2024 03:47:26 +0000
-Date: Mon, 15 Jan 2024 11:46:04 +0800
-From: kernel test robot <lkp@intel.com>
-To: Hu Yadi <hu.yadi@h3c.com>, jmorris@namei.org, serge@hallyn.com,
-	shuah@kernel.org, mathieu.desnoyers@efficios.com, mic@digikod.net
-Cc: oe-kbuild-all@lists.linux.dev, linux-api@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, 514118380@qq.com,
-	"Hu.Yadi" <hu.yadi@h3c.com>
-Subject: Re: [PATCH v3] selftests/landlock:Fix two build issues
-Message-ID: <202401151147.T1s11iHJ-lkp@intel.com>
-References: <20240112071245.669-1-hu.yadi@h3c.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8663D2568;
+	Mon, 15 Jan 2024 03:56:29 +0000 (UTC)
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id 2C63920F4;
+	Mon, 15 Jan 2024 03:56:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nfschina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nfschina.com
+Received: from localhost.localdomain (unknown [219.141.250.2])
+	by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 161F46019B694;
+	Mon, 15 Jan 2024 11:56:18 +0800 (CST)
+X-MD-Sfrom: zeming@nfschina.com
+X-MD-SrcIP: 219.141.250.2
+From: Li zeming <zeming@nfschina.com>
+To: mcgrof@kernel.org,
+	keescook@chromium.org,
+	yzaikin@google.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	Li zeming <zeming@nfschina.com>
+Subject: [PATCH] proc: proc_sysctl: Optimize proc_sys_fill_cache() variable
+Date: Mon, 15 Jan 2024 11:56:14 +0800
+Message-Id: <20240115035614.26187-1-zeming@nfschina.com>
+X-Mailer: git-send-email 2.18.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240112071245.669-1-hu.yadi@h3c.com>
 
-Hi Hu,
+The ino and type variables are assigned values before use, and they do
+not need to be assigned values when defined.
 
-kernel test robot noticed the following build errors:
+Signed-off-by: Li zeming <zeming@nfschina.com>
+---
+ fs/proc/proc_sysctl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-[auto build test ERROR on shuah-kselftest/next]
-[also build test ERROR on shuah-kselftest/fixes linus/master v6.7 next-20240112]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Hu-Yadi/selftests-landlock-Fix-two-build-issues/20240112-151805
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git next
-patch link:    https://lore.kernel.org/r/20240112071245.669-1-hu.yadi%40h3c.com
-patch subject: [PATCH v3] selftests/landlock:Fix two build issues
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240115/202401151147.T1s11iHJ-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401151147.T1s11iHJ-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> net_test.c:25:14: error: static declaration of 'gettid' follows non-static declaration
-      25 | static pid_t gettid(void)
-         |              ^~~~~~
-   In file included from /usr/include/unistd.h:1218,
-                    from /usr/include/x86_64-linux-gnu/bits/sigstksz.h:24,
-                    from /usr/include/signal.h:328,
-                    from /usr/include/x86_64-linux-gnu/sys/wait.h:36,
-                    from common.h:16,
-                    from net_test.c:22:
-   /usr/include/x86_64-linux-gnu/bits/unistd_ext.h:34:16: note: previous declaration of 'gettid' with type '__pid_t(void)' {aka 'int(void)'}
-      34 | extern __pid_t gettid (void) __THROW;
-         |                ^~~~~~
-
+diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+index c88854df0b624..cdda684551599 100644
+--- a/fs/proc/proc_sysctl.c
++++ b/fs/proc/proc_sysctl.c
+@@ -683,8 +683,8 @@ static bool proc_sys_fill_cache(struct file *file,
+ 	struct dentry *child, *dir = file->f_path.dentry;
+ 	struct inode *inode;
+ 	struct qstr qname;
+-	ino_t ino = 0;
+-	unsigned type = DT_UNKNOWN;
++	ino_t ino;
++	unsigned type;
+ 
+ 	qname.name = table->procname;
+ 	qname.len  = strlen(table->procname);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.18.2
+
 
