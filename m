@@ -1,84 +1,52 @@
-Return-Path: <linux-kernel+bounces-26154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F8C382DC11
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:06:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 340BC82DC1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:08:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACF7C282A85
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:06:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8E14B218D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:08:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2B9217BAB;
-	Mon, 15 Jan 2024 15:06:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15E20175BF;
+	Mon, 15 Jan 2024 15:08:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D70gF/h1"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="aNuSjlCh"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 861B1179B8
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 15:06:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705331173;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J6KAw5sRd/rBCtYAadIrUr1C0nBvKZvSQmMmvlANPe0=;
-	b=D70gF/h10weCzk/gxPhi/oE1nak5FNb118mVhCkguepTtFzXVgCcUlP6R8LQfNcPEzvWON
-	c6twpX5/yp/mcPJa/ZSwkGwklrsFJKpKXW/pnkg1LievDGVmEzrUU6DXePt9+cWYVAqCzf
-	afyRdGjHrWBvoZjkb3114iNDMIaq6PA=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-321--2Lsal1JONWo4viFMWXplA-1; Mon, 15 Jan 2024 10:06:09 -0500
-X-MC-Unique: -2Lsal1JONWo4viFMWXplA-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3367e2bd8b0so5885303f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 07:06:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705331166; x=1705935966;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J6KAw5sRd/rBCtYAadIrUr1C0nBvKZvSQmMmvlANPe0=;
-        b=TWrvqsRhuP8XOmEMVkyksYypvcOcluC56R2bOn+0MwXqk2vZQ/d6p95KQJjUK25t8c
-         EiEaRJzhVJyZze+iJdUDBqHhFkEi70RYUdY2iFaKixEPyMzJib5W+E8EReDOVmpp8OIV
-         bIMCFQ01m5C4DDM0NDJ2Uw5W7zQYX0xNHDFEIqO6lv5wdcVryuvI3xrGDLJIIvqA2/O+
-         6xN6dJ8qkafhBWcszBuGXusBereAaw03KWgD3XjITK2+0CwzU/1BZUOrCWjoF6osVZcZ
-         CO/S2Rt+G2Xe4uYCEMqpXE7MUV5N1wHqruY7KyYCO1XgKuVqrVX5oWrhOhRRcvAxn6m/
-         kb7A==
-X-Gm-Message-State: AOJu0YwJpwzpfZWe1I9krpnp/daSTaZ3caNX8f6ufGagnaAKObJGZM8B
-	mRQB+/k71ziS5T16BBfS8ID7Slh1k7/IRaAWtpZ2oMiuMggmVyvxFj7hL8Q3ilDHYOaiMWylmrP
-	deL85w1tLSks+6A4IGAcfQgFYUaFFZ59VtGgdCyuHiCA=
-X-Received: by 2002:a5d:4d47:0:b0:337:61aa:9682 with SMTP id a7-20020a5d4d47000000b0033761aa9682mr2972936wru.110.1705331165985;
-        Mon, 15 Jan 2024 07:06:05 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFUUbGFoHl37nmlBps1shDre7Yn9gKUXHYUdoSEBRHHdGC4aQD0Ng5BPuhKqCteY6MZ7Iq1Bg==
-X-Received: by 2002:a5d:4d47:0:b0:337:61aa:9682 with SMTP id a7-20020a5d4d47000000b0033761aa9682mr2972874wru.110.1705331162657;
-        Mon, 15 Jan 2024 07:06:02 -0800 (PST)
-Received: from toolbox ([2001:9e8:8996:a800:5fa3:a411:5e47:8fe5])
-        by smtp.gmail.com with ESMTPSA id e19-20020a5d5953000000b0033609b71825sm12088386wri.35.2024.01.15.07.06.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 07:06:02 -0800 (PST)
-Date: Mon, 15 Jan 2024 16:06:00 +0100
-From: Sebastian Wick <sebastian.wick@redhat.com>
-To: Arthur Grillo <arthurgrillo@riseup.net>
-Cc: Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
-	Haneen Mohammed <hamohammed.sa@gmail.com>,
-	Harry Wentland <harry.wentland@amd.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	=?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
-	Melissa Wen <melissa.srw@gmail.com>,
-	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] Add YUV formats to VKMS
-Message-ID: <20240115150600.GC160656@toolbox>
-References: <20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C50C7175B7;
+	Mon, 15 Jan 2024 15:08:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=h1zJVN/StgdtGJ+KvowsDPSUZpuVAQLtb4Gk0WK6sxU=; b=aNuSjlChQOa5cvpTN5zXyWQTQs
+	P71JqXtroWZ63bfc4xkj1dF/AqNZArT6Ohf9opFouJrwod6mEL/QCECd9A9YiOByYWqgANJ51MIxB
+	NgXvJ/qbRyEMsKUE9ANEEQ7t2ColgxlZ4X0DEfa49MW/SxKD7E+r070K/jdaiWDyfeuKfrwawA2kP
+	iZjdPET9Nz5F9Qy5Z7jiU2Zh2n46cyC8T8UlIRO0F1ZU5nsjzRaXDfz6j4hEKg3CYr31HCVmHlAyE
+	0Ws04qhwYB6ZOVBBRVziJCG/yrQWDb+ULrqYDN3TbwGGi0G3UdAfNyBxsA1i3pPGVZMlR7Co49WoH
+	7LK+S/Tw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rPOZO-00A0HG-59; Mon, 15 Jan 2024 15:08:10 +0000
+Date: Mon, 15 Jan 2024 15:08:10 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Muchun Song <muchun.song@linux.dev>
+Cc: Sidhartha Kumar <sidhartha.kumar@oracle.com>,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	akpm@linux-foundation.org, usama.anjum@collabora.com,
+	jiaqiyan@google.com, linmiaohe@huawei.com, naoya.horiguchi@nec.com,
+	shy828301@gmail.com, jthoughton@google.com, jane.chu@oracle.com,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v2] fs/hugetlbfs/inode.c: mm/memory-failure.c: fix
+ hugetlbfs hwpoison handling
+Message-ID: <ZaVKWox1/yTLThma@casper.infradead.org>
+References: <20240112180840.367006-1-sidhartha.kumar@oracle.com>
+ <03168121-080f-41e4-a242-02638f5787f7@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,108 +55,67 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net>
+In-Reply-To: <03168121-080f-41e4-a242-02638f5787f7@linux.dev>
 
-On Wed, Jan 10, 2024 at 02:44:00PM -0300, Arthur Grillo wrote:
-> This patchset aims to add support for additional buffer YUV formats.
-> More specifically, it adds support to:
+On Mon, Jan 15, 2024 at 08:02:51PM +0800, Muchun Song wrote:
+> On 2024/1/13 02:08, Sidhartha Kumar wrote:
+> > has_extra_refcount() makes the assumption that the page cache adds a ref
+> > count of 1 and subtracts this in the extra_pins case. Commit a08c7193e4f1
+> > (mm/filemap: remove hugetlb special casing in filemap.c) modifies
+> > __filemap_add_folio() by calling folio_ref_add(folio, nr); for all cases
+> > (including hugtetlb) where nr is the number of pages in the folio. We
+> > should adjust the number of references coming from the page cache by
+> > subtracing the number of pages rather than 1.
+> > 
+> > In hugetlbfs_read_iter(), folio_test_has_hwpoisoned() is testing the wrong
+> > flag as, in the hugetlb case, memory-failure code calls
+> > folio_test_set_hwpoison() to indicate poison. folio_test_hwpoison() is the
+> > correct function to test for that flag.
+> > 
+> > After these fixes, the hugetlb hwpoison read selftest passes all cases.
+> > 
+> > Fixes: a08c7193e4f1 ("mm/filemap: remove hugetlb special casing in filemap.c")
+> > Closes: https://lore.kernel.org/linux-mm/20230713001833.3778937-1-jiaqiyan@google.com/T/#m8e1469119e5b831bbd05d495f96b842e4a1c5519
+> > Cc: <stable@vger.kernel.org> # 6.7+
+> > Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+> > Reported-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> > ---
+> > 
+> > v1 -> v2:
+> >      move ref_count adjustment to if(extra_pins) block as that represents
+> >      ref counts from the page cache per Miaohe Lin.
+> > 
+> >   fs/hugetlbfs/inode.c | 2 +-
+> >   mm/memory-failure.c  | 2 +-
+> >   2 files changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+> > index 36132c9125f9..3a248e4f7e93 100644
+> > --- a/fs/hugetlbfs/inode.c
+> > +++ b/fs/hugetlbfs/inode.c
+> > @@ -340,7 +340,7 @@ static ssize_t hugetlbfs_read_iter(struct kiocb *iocb, struct iov_iter *to)
+> >   		} else {
+> >   			folio_unlock(folio);
+> > -			if (!folio_test_has_hwpoisoned(folio))
+> > +			if (!folio_test_hwpoison(folio))
+> >   				want = nr;
+> >   			else {
+> >   				/*
+> > diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> > index d8c853b35dbb..ef7ae73b65bd 100644
+> > --- a/mm/memory-failure.c
+> > +++ b/mm/memory-failure.c
+> > @@ -976,7 +976,7 @@ static bool has_extra_refcount(struct page_state *ps, struct page *p,
+> >   	int count = page_count(p) - 1;
+> >   	if (extra_pins)
+> > -		count -= 1;
+> > +		count -= folio_nr_pages(page_folio(p));
 > 
-> Semi-planar formats:
-> 
-> - NV12
-> - NV16
-> - NV24
-> - NV21
-> - NV61
-> - NV42
-> 
-> Planar formats:
-> 
-> - YUV440
-> - YUV422
-> - YUV444
-> - YVU440
-> - YVU422
-> - YVU444
-> 
-> These formats have more than one plane, and most have chroma
-> subsampling. These properties don't have support on VKMS, so I had to
-> work on this before.
-> 
-> To ensure that the conversions from YUV to RGB are working, I wrote a
-> KUnit test. As the work from Harry on creating KUnit tests on VKMS[1] is
-> not yet merged, I took the setup part (Kconfig entry and .kunitfile)
-> from it.
-> 
-> Furthermore, I couldn't find any sources with the conversion matrices,
-> so I had to work out the values myself based on the ITU papers[2][3][4].
-> So, I'm not 100% sure if the values are accurate. I'd appreciate some
-> input if anyone has more knowledge in this area.
+> IIUC, It seems than this also fix shmem of THP, because has_extra_refcount()
+> is called
+> from me_pagecache_clean(), right?
 
-H.273 CICP [1] has concise descriptions of the required values for most
-widely used formats and the colour python framework [2] also can be used
-to quickly get to the desired information most of the time.
-
-[1]: https://www.itu.int/rec/T-REC-H.273
-[2]: https://www.colour-science.org/
-
-> Also, I used two IGT tests to check if the formats were having a correct
-> conversion (all with the --extended flag):
-> 
-> - kms_plane@pixel_format
-> - kms_plane@pixel_format_source_clamping.
-> 
-> The nonsubsampled formats don't have support on IGT, so I sent a patch
-> fixing this[5].
-> 
-> Currently, this patchset does not add those formats to the writeback, as
-> it would require a rewrite of how the conversions are done (similar to
-> what was done on a previous patch[6]). So, I would like to review this
-> patchset before I start the work on this other part.
-> 
-> [1]: https://lore.kernel.org/all/20231108163647.106853-5-harry.wentland@amd.com/
-> [2]: https://www.itu.int/rec/R-REC-BT.601-7-201103-I/en
-> [3]: https://www.itu.int/rec/R-REC-BT.709-6-201506-I/en
-> [4]: https://www.itu.int/rec/R-REC-BT.2020-2-201510-I/en
-> [5]: https://lists.freedesktop.org/archives/igt-dev/2024-January/066937.html
-> [6]: https://lore.kernel.org/dri-devel/20230414135151.75975-2-mcanal@igalia.com/
-> 
-> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
-> ---
-> Changes in v2:
-> - Use EXPORT_SYMBOL_IF_KUNIT instead of including the .c test
->   file (Maxime)
-> - Link to v1: https://lore.kernel.org/r/20240105-vkms-yuv-v1-0-34c4cd3455e0@riseup.net
-> 
-> ---
-> Arthur Grillo (7):
->       drm/vkms: Use drm_frame directly
->       drm/vkms: Add support for multy-planar framebuffers
->       drm/vkms: Add range and encoding properties to pixel_read function
->       drm/vkms: Add chroma subsampling
->       drm/vkms: Add YUV support
->       drm/vkms: Drop YUV formats TODO
->       drm/vkms: Create KUnit tests for YUV conversions
-> 
->  Documentation/gpu/vkms.rst                    |   3 +-
->  drivers/gpu/drm/vkms/Kconfig                  |  15 ++
->  drivers/gpu/drm/vkms/Makefile                 |   1 +
->  drivers/gpu/drm/vkms/tests/.kunitconfig       |   4 +
->  drivers/gpu/drm/vkms/tests/Makefile           |   3 +
->  drivers/gpu/drm/vkms/tests/vkms_format_test.c | 156 ++++++++++++++++
->  drivers/gpu/drm/vkms/vkms_drv.h               |   6 +-
->  drivers/gpu/drm/vkms/vkms_formats.c           | 247 ++++++++++++++++++++++----
->  drivers/gpu/drm/vkms/vkms_formats.h           |   9 +
->  drivers/gpu/drm/vkms/vkms_plane.c             |  26 ++-
->  drivers/gpu/drm/vkms/vkms_writeback.c         |   5 -
->  11 files changed, 426 insertions(+), 49 deletions(-)
-> ---
-> base-commit: eeb8e8d9f124f279e80ae679f4ba6e822ce4f95f
-> change-id: 20231226-vkms-yuv-6f7859f32df8
-> 
-> Best regards,
-> -- 
-> Arthur Grillo <arthurgrillo@riseup.net>
-> 
-
+Usually we split THPs before we get to this point, but we always poison
+an entire hugetlb page.  This should probably change, but it's not high
+on my list of things to do.
 
