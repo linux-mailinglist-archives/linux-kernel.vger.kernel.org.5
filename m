@@ -1,174 +1,74 @@
-Return-Path: <linux-kernel+bounces-26046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D69882DA5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C9E082DA74
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:45:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE70D1F21C03
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:43:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CAA31F21D80
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:45:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71AB417553;
-	Mon, 15 Jan 2024 13:42:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA0991756A;
+	Mon, 15 Jan 2024 13:45:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pcH3yYh8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o4EpZHYE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B081718625;
-	Mon, 15 Jan 2024 13:42:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83E9FC433F1;
-	Mon, 15 Jan 2024 13:42:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E157171BB;
+	Mon, 15 Jan 2024 13:45:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 849DBC43390;
+	Mon, 15 Jan 2024 13:45:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705326164;
-	bh=B6AZ1EUyCAneRia2lXu32aM3w0CF1GNXsC7SMPqT/Fc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pcH3yYh8sqk+63egc0J/m2eQ915+IQPVC487lb7VKPtvGIxKGSO8O5kPFIiZMJb5O
-	 EVWNYctiCAnLx+kgkDyCZYrA95D3/XX5OquSgva/Nt3MyyUfEnj3z5+fZkJCQkJ7Y4
-	 JB9fnXL6fuLPMHvv80+2kfGXLjlXls3EgtZ5fq6nQEHS8lKwpQJ3PdsrFQjvaZT053
-	 9MGmV41J9i/ATJAQ/aQHoRx0qgWzVvQJUw8rFN5rfAuvaXyw5K30kTKQxJTQOmnBID
-	 zguURX04XKKI1vVYglaeCc4XSM6iJw2efZ1HTt+SlCeSMhWWqLGlr+JL9l2YWX/+4A
-	 kM+iBvi6fFBzQ==
-Date: Mon, 15 Jan 2024 13:42:38 +0000
-From: Simon Horman <horms@kernel.org>
-To: Qiang Ma <maqianga@uniontech.com>
-Cc: alexandre.torgue@foss.st.com, joabreu@synopsys.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH] net: stmmac: ethtool: Fixed calltrace caused by
- unbalanced disable_irq_wake calls
-Message-ID: <20240115134238.GA430968@kernel.org>
-References: <20240112021249.24598-1-maqianga@uniontech.com>
+	s=k20201202; t=1705326324;
+	bh=3CYq5m9c0Z2YmumV52JE15z62NoUEsxe7VfwOd+rpf0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=o4EpZHYE4CsLFI3cR+A1UgmZAYtPlvqTHIIyHAeZAUabjWiH3V8xJsWPLRxHWMdSJ
+	 EXLMqJ9hafmfr6zBox8Jq47WwvGfGw/f7JomKbvknyiyo1UwhARhGO2I2H4P6kgfD5
+	 yLvcLZtfgOsQns7AeGG8Dn5e3WleZ46JmMe/KE8Ky4oR1BSqDbcClbjVHMLuUBosPA
+	 SRNcnABEIpx7j4/G1dxFLJ2/6bb2a07y1ABgv3lxJBtd1h4MKq5MN1riE3dE3jv0IG
+	 1aTqcjau+tUrFAhGup4rIQutQnPL8nGdROkZSYTRRaO0/pMArFgyqZnY2fMFMv9iiK
+	 mxBX6Q1ZbswKw==
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: Jiri Kosina <jikos@kernel.org>, 
+ Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
+ linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ kernel-janitors@vger.kernel.org
+In-Reply-To: <305898fb-6bd4-4749-806c-05ec51bbeb80@moroto.mountain>
+References: <305898fb-6bd4-4749-806c-05ec51bbeb80@moroto.mountain>
+Subject: Re: [PATCH 1/2] HID: hid-steam: remove pointless error message
+Message-Id: <170532632324.1146873.6182162741847699008.b4-ty@kernel.org>
+Date: Mon, 15 Jan 2024 14:45:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240112021249.24598-1-maqianga@uniontech.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.4
 
-+ Florian Fainelli <f.fainelli@gmail.com>
-
-On Fri, Jan 12, 2024 at 10:12:49AM +0800, Qiang Ma wrote:
-> We found the following dmesg calltrace when testing the GMAC NIC notebook:
+On Fri, 12 Jan 2024 17:34:14 +0300, Dan Carpenter wrote:
+> This error message doesn't really add any information.  If modprobe
+> fails then the user will already know what the error code is.  In the
+> case of kmalloc() it's a style violation to print an error message for
+> that because kmalloc has it's own better error messages built in.
 > 
-> [9.448656] ------------[ cut here ]------------
-> [9.448658] Unbalanced IRQ 43 wake disable
-> [9.448673] WARNING: CPU: 3 PID: 1083 at kernel/irq/manage.c:688 irq_set_irq_wake+0xe0/0x128
-> [9.448717] CPU: 3 PID: 1083 Comm: ethtool Tainted: G           O      4.19 #1
-> [9.448773]         ...
-> [9.448774] Call Trace:
-> [9.448781] [<9000000000209b5c>] show_stack+0x34/0x140
-> [9.448788] [<9000000000d52700>] dump_stack+0x98/0xd0
-> [9.448794] [<9000000000228610>] __warn+0xa8/0x120
-> [9.448797] [<9000000000d2fb60>] report_bug+0x98/0x130
-> [9.448800] [<900000000020a418>] do_bp+0x248/0x2f0
-> [9.448805] [<90000000002035f4>] handle_bp_int+0x4c/0x78
-> [9.448808] [<900000000029ea40>] irq_set_irq_wake+0xe0/0x128
-> [9.448813] [<9000000000a96a7c>] stmmac_set_wol+0x134/0x150
-> [9.448819] [<9000000000be6ed0>] dev_ethtool+0x1368/0x2440
-> [9.448824] [<9000000000c08350>] dev_ioctl+0x1f8/0x3e0
-> [9.448827] [<9000000000bb2a34>] sock_ioctl+0x2a4/0x450
-> [9.448832] [<900000000046f044>] do_vfs_ioctl+0xa4/0x738
-> [9.448834] [<900000000046f778>] ksys_ioctl+0xa0/0xe8
-> [9.448837] [<900000000046f7d8>] sys_ioctl+0x18/0x28
-> [9.448840] [<9000000000211ab4>] syscall_common+0x20/0x34
-> [9.448842] ---[ end trace 40c18d9aec863c3e ]---
 > 
-> Multiple disable_irq_wake() calls will keep decreasing the IRQ
-> wake_depth, When wake_depth is 0, calling disable_irq_wake() again,
-> will report the above calltrace.
-> 
-> Due to the need to appear in pairs, we cannot call disable_irq_wake()
-> without calling enable_irq_wake(). Fix this by making sure there are
-> no unbalanced disable_irq_wake() calls.
 
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git (for-6.8/upstream-fixes), thanks!
 
-Hi Qiang Ma,
+[1/2] HID: hid-steam: remove pointless error message
+      https://git.kernel.org/hid/hid/c/a96681699611
+[2/2] HID: hid-steam: Fix cleanup in probe()
+      https://git.kernel.org/hid/hid/c/a9f1da09c69f
 
-This seems to be a fix, so I think it should be targeted at net:
+Cheers,
+-- 
+Benjamin Tissoires <bentiss@kernel.org>
 
-	Subject: [PATCH net] ...
-
-And have a fixes tag, perhaps:
-
-	Fixes: 3172d3afa998 ("stmmac: support wake up irq from external sources (v3)")
-
-I don't think there is a need to repost this patch because of the above,
-but please keep it in mind for next time.
-
-> Signed-off-by: Qiang Ma <maqianga@uniontech.com>
-
-I see that the approach taken here is the same as that taken
-by bcm_sysport_set_wol() to what seems to be a similar problem [1].
-So the code change itself looks good to me.
-
-Reviewed-by: Simon Horman <horms@kernel.org>
-
-[1] 61b423a8a0bd ("net: systemport: avoid unbalanced enable_irq_wake calls")
-    https://git.kernel.org/torvalds/c/61b423a8a0bd
-
-> ---
->  drivers/net/ethernet/stmicro/stmmac/stmmac.h         |  1 +
->  drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c | 10 ++++++++--
->  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c    |  1 +
->  3 files changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> index cd7a9768de5f..b8c93b881a65 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> @@ -255,6 +255,7 @@ struct stmmac_priv {
->  	u32 msg_enable;
->  	int wolopts;
->  	int wol_irq;
-> +	bool wol_irq_disabled;
->  	int clk_csr;
->  	struct timer_list eee_ctrl_timer;
->  	int lpi_irq;
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-> index f628411ae4ae..9a4d9492a781 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-> @@ -825,10 +825,16 @@ static int stmmac_set_wol(struct net_device *dev, struct ethtool_wolinfo *wol)
->  	if (wol->wolopts) {
->  		pr_info("stmmac: wakeup enable\n");
->  		device_set_wakeup_enable(priv->device, 1);
-> -		enable_irq_wake(priv->wol_irq);
-> +		/* Avoid unbalanced enable_irq_wake calls */
-> +		if (priv->wol_irq_disabled)
-> +			enable_irq_wake(priv->wol_irq);
-> +		priv->wol_irq_disabled = false;
->  	} else {
->  		device_set_wakeup_enable(priv->device, 0);
-> -		disable_irq_wake(priv->wol_irq);
-> +		/* Avoid unbalanced disable_irq_wake calls */
-> +		if (!priv->wol_irq_disabled)
-> +			disable_irq_wake(priv->wol_irq);
-> +		priv->wol_irq_disabled = true;
->  	}
->  
->  	mutex_lock(&priv->lock);
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> index 37e64283f910..baa396621ed8 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -3565,6 +3565,7 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
->  	/* Request the Wake IRQ in case of another line
->  	 * is used for WoL
->  	 */
-> +	priv->wol_irq_disabled = true;
->  	if (priv->wol_irq > 0 && priv->wol_irq != dev->irq) {
->  		int_name = priv->int_name_wol;
->  		sprintf(int_name, "%s:%s", dev->name, "wol");
-> -- 
-> 2.20.1
-> 
 
