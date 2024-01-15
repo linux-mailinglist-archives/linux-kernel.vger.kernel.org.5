@@ -1,234 +1,195 @@
-Return-Path: <linux-kernel+bounces-25756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF0D282D559
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:55:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BCAF82D566
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:57:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC6101C213A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:55:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4F341F21BEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:57:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7803C8EA;
-	Mon, 15 Jan 2024 08:55:08 +0000 (UTC)
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 780121E53A;
+	Mon, 15 Jan 2024 08:55:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="eSo9RdXW";
+	dkim=permerror (0-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="pFlSZHjw"
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.82])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D3E0C8C2
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 08:55:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from SHSQR01.spreadtrum.com (localhost [127.0.0.2] (may be forged))
-	by SHSQR01.spreadtrum.com with ESMTP id 40F8t014047556
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 16:55:00 +0800 (+08)
-	(envelope-from Zhiguo.Niu@unisoc.com)
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 40F8rkXH042583;
-	Mon, 15 Jan 2024 16:53:46 +0800 (+08)
-	(envelope-from Zhiguo.Niu@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TD5NJ1vNzz2RCYp0;
-	Mon, 15 Jan 2024 16:46:40 +0800 (CST)
-Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
- BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Mon, 15 Jan 2024 16:53:44 +0800
-From: Zhiguo Niu <zhiguo.niu@unisoc.com>
-To: <peterz@infradead.org>, <mingo@redhat.com>, <will@kernel.org>,
-        <longman@redhat.com>, <boqun.feng@gmail.com>
-CC: <linux-kernel@vger.kernel.org>, <niuzhiguo84@gmail.com>,
-        <zhiguo.niu@unisoc.com>, <ke.wang@unisoc.com>, <xuewen.yan@unisoc.com>
-Subject: [PATCH] lockdep: fix deadlock issue between lockdep and rcu
-Date: Mon, 15 Jan 2024 16:53:16 +0800
-Message-ID: <1705308796-13547-1-git-send-email-zhiguo.niu@unisoc.com>
-X-Mailer: git-send-email 1.9.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC50C8EA;
+	Mon, 15 Jan 2024 08:55:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goldelico.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
+ARC-Seal: i=1; a=rsa-sha256; t=1705308912; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=qjzfTZXIn8ULyATbJ8kYws4bzV++on2FpfW1SqbtHT2ZnlgpuuvjMFc9zWdYkSUb1P
+    pflMhVIuUbCfLuoxbfOdW/zf8sM4TwYDjmW3ythMRZUO8lnVMlOM+QZSMHstRbG8VtiX
+    5pwr2BiVJ8tdtG3poAmvrV+xsIuYkRT1GgmC8BDbXpdWsN0ctXi7pD4TNEpj/lq2pZtL
+    k5pdszBql0UT/kPieggXIZvTKJN+RftG6PAfZYMvuyDyo1qhrOsV6EbbV3/PajMnlMUp
+    1YUs2dJHnFqWnbil9Jo1DCF5ZxyOlev+0ttwdR9LtJTWIkOeqAavF9AGa1aW9v9FJ8+r
+    UYYg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1705308912;
+    s=strato-dkim-0002; d=strato.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=yHFJRaGiqBFJv2kzsrvLiyk/a/j3+Epn1Hl4IwAPpOQ=;
+    b=FczWUnwFJvS7KFS7oNsI/m5tBh2F7SkhYobWhH96170UEzMMHAY7/a2uyfmRbvRKow
+    XxzFEyTyBSOpP3cF9pfgWkeza1nyq9zf9oi94YsTKyXshRdfn0d2e1F+xcLv8awnUM+t
+    23KGqjcyo8asdDAHzV7uXyl/kvjTh+b7fZuuWlVKtZu1rjuGlDcrRzDinWOIgoWMA5Wj
+    BjA/4lR6aUUN4OyCAwPXkzDxTN3a2Q2m2k5Q1wNMeAa9JuH9RN0wdEAwdz/qZhjKuvPI
+    3BU/3b5PpiRq+EPUwQ3qjVOGVG+kh3rXnC5BHkVFSwaAoihtAP+/XoV4p90kDDcSAdoh
+    GEiA==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1705308912;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=yHFJRaGiqBFJv2kzsrvLiyk/a/j3+Epn1Hl4IwAPpOQ=;
+    b=eSo9RdXWhAdoaMENfvhNPTzvKpEwOCUl0YycnoU2xzRMAOQMB9qGX0yeiCQFmhzBUq
+    wtqDF7H9q9nFpN3AhXoAtzXmn353mljOaUrGVy5EQHo30O7NtvmPjMuX37RJgZbC6sND
+    fRtz6wn5n3MdFHaakYwZD88U4bjAkBC5emYMKMDFoqqzbgcrbDVGevUornxZP935h3Cu
+    tv41U+52zsH5KQm3PgvBNVFAjwQ7rqiUTmOaI152R9JDBW8y9aOthnrXVhPSOrkEfVnn
+    LjPFWcJGYSWQ9UEoWZWcV1FktKs5lSlXM1XvdZO0b1hLY5YrsGsr5UvkO108hZlxyai4
+    634A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1705308912;
+    s=strato-dkim-0003; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=yHFJRaGiqBFJv2kzsrvLiyk/a/j3+Epn1Hl4IwAPpOQ=;
+    b=pFlSZHjwt8Te0l07++VZwoZT0mvrVr31djwxtUJKVo9l8cKGGgl9Ds9Oo6Q5eOqrsf
+    5kYGQb7B3DxK7iUUj3Bw==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Apz9PSN6LgsXcGZhzY="
+Received: from smtpclient.apple
+    by smtp.strato.de (RZmta 49.10.2 DYNA|AUTH)
+    with ESMTPSA id dbe64400F8tBUDl
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+	(Client did not present a certificate);
+    Mon, 15 Jan 2024 09:55:11 +0100 (CET)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
- BJMBX02.spreadtrum.com (10.0.64.8)
-X-MAIL:SHSQR01.spreadtrum.com 40F8rkXH042583
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
+Subject: Re: [PATCH RFC v2 04/11] ARM: dts: omap4: Add device tree entry for
+ SGX GPU
+From: "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <vpcgccul53oibwoqb3barj3rjxoyskoldjyfvjdzmytic3tonm@wq4aqsenk7rp>
+Date: Mon, 15 Jan 2024 09:55:00 +0100
+Cc: Andrew Davis <afd@ti.com>,
+ Frank Binns <frank.binns@imgtec.com>,
+ Donald Robson <donald.robson@imgtec.com>,
+ Matt Coster <matt.coster@imgtec.com>,
+ Adam Ford <aford173@gmail.com>,
+ Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>,
+ =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+ Tony Lindgren <tony@atomide.com>,
+ Nishanth Menon <nm@ti.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Tero Kristo <kristo@kernel.org>,
+ Paul Cercueil <paul@crapouillou.net>,
+ dri-devel@lists.freedesktop.org,
+ devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-sunxi@lists.linux.dev,
+ linux-omap@vger.kernel.org,
+ linux-mips@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <7BC64F03-A4DF-411F-9B6F-6BCA436D9B50@goldelico.com>
+References: <20240108183302.255055-1-afd@ti.com>
+ <20240108183302.255055-5-afd@ti.com>
+ <122DC5ED-2AA7-46A0-845F-083922458385@goldelico.com>
+ <vpcgccul53oibwoqb3barj3rjxoyskoldjyfvjdzmytic3tonm@wq4aqsenk7rp>
+To: Maxime Ripard <mripard@kernel.org>
+X-Mailer: Apple Mail (2.3774.300.61.1.2)
 
-There is a deadlock scenario between lockdep and rcu when
-rcu nocb feature is enabled, just as following call stack:
+Hi,
 
-     rcuop/x
--000|queued_spin_lock_slowpath(lock = 0xFFFFFF817F2A8A80, val = ?)
--001|queued_spin_lock(inline) // try to hold nocb_gp_lock
--001|do_raw_spin_lock(lock = 0xFFFFFF817F2A8A80)
--002|__raw_spin_lock_irqsave(inline)
--002|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F2A8A80)
--003|wake_nocb_gp_defer(inline)
--003|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F30B680)
--004|__call_rcu_common(inline)
--004|call_rcu(head = 0xFFFFFFC082EECC28, func = ?)
--005|call_rcu_zapped(inline)
--005|free_zapped_rcu(ch = ?)// hold graph lock
--006|rcu_do_batch(rdp = 0xFFFFFF817F245680)
--007|nocb_cb_wait(inline)
--007|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F245680)
--008|kthread(_create = 0xFFFFFF80803122C0)
--009|ret_from_fork(asm)
+> Am 15.01.2024 um 09:25 schrieb Maxime Ripard <mripard@kernel.org>:
+>=20
+> Hi,
+>=20
+> On Fri, Jan 12, 2024 at 06:33:58PM +0100, H. Nikolaus Schaller wrote:
+>>> Am 08.01.2024 um 19:32 schrieb Andrew Davis <afd@ti.com>:
+>>>=20
+>>> Add SGX GPU device entry to base OMAP4 dtsi file.
+>>>=20
+>>> Signed-off-by: Andrew Davis <afd@ti.com>
+>>> ---
+>>> arch/arm/boot/dts/ti/omap/omap4.dtsi | 9 +++++----
+>>> 1 file changed, 5 insertions(+), 4 deletions(-)
+>>>=20
+>>> diff --git a/arch/arm/boot/dts/ti/omap/omap4.dtsi =
+b/arch/arm/boot/dts/ti/omap/omap4.dtsi
+>>> index 2bbff9032be3e..559b2bfe4ca7c 100644
+>>> --- a/arch/arm/boot/dts/ti/omap/omap4.dtsi
+>>> +++ b/arch/arm/boot/dts/ti/omap/omap4.dtsi
+>>> @@ -501,10 +501,11 @@ sgx_module: target-module@56000000 {
+>>> #size-cells =3D <1>;
+>>> ranges =3D <0 0x56000000 0x2000000>;
+>>>=20
+>>> - /*
+>>> - * Closed source PowerVR driver, no child device
+>>> - * binding or driver in mainline
+>>> - */
+>>> + gpu@0 {
+>>=20
+>> I wonder why we don't add a "gpu:" label here.
+>>=20
+>> Almost all other subsystem nodes have one (e.g. emif:, aes:, dss:, =
+dsi:, hdmi:, etc.),
+>> obviously for convenience when using a .dtsi file.
+>>=20
+>> It would allow a board-specific DTS to easily add status =3D =
+"disabled" to avoid driver
+>> probing or disabling the GPU (e.g. if there is no display).
+>=20
+> There's no reason to disable it in the DT: the hardware block would
+> still be there and it's rendering to memory so it still could be =
+useful.
 
-     rcuop/y
--000|queued_spin_lock_slowpath(lock = 0xFFFFFFC08291BBC8, val = 0)
--001|queued_spin_lock()
--001|lockdep_lock()
--001|graph_lock() // try to hold graph lock
--002|lookup_chain_cache_add()
--002|validate_chain()
--003|lock_acquire
--004|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F211D80)
--005|lock_timer_base(inline)
--006|mod_timer(inline)
--006|wake_nocb_gp_defer(inline)// hold nocb_gp_lock
--006|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F2A8680)
--007|__call_rcu_common(inline)
--007|call_rcu(head = 0xFFFFFFC0822E0B58, func = ?)
--008|call_rcu_hurry(inline)
--008|rcu_sync_call(inline)
--008|rcu_sync_func(rhp = 0xFFFFFFC0822E0B58)
--009|rcu_do_batch(rdp = 0xFFFFFF817F266680)
--010|nocb_cb_wait(inline)
--010|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F266680)
--011|kthread(_create = 0xFFFFFF8080363740)
--012|ret_from_fork(asm)
+Well, if you know that the board does not have a dm3730 but a dm3725 =
+without
+GPU it is better to disable the GPU completely instead of loading the =
+driver
+and make it detect by some internal bits that it has no GPU on the SoC.
 
-rcuop/x and rcuop/y are rcu nocb threads with the same nocb gp thread.
+> If there's no display on the board and you really don't want the GPU
+> driver, then you can disable the driver or block the module loading, =
+but
+> it should be a distro / package / user decision, not a DT / kernel one
+> still.
 
-This patch release the graph lock before lockdep call_rcu.
+The same holds for aes: dss: dsi: hdmi: etc. If they are not used by =
+some
+board file, they don't change a single bit of the DTB [1] which IMHO =
+would
+be of reasonable concern to question additional labels.
 
-Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
----
- kernel/locking/lockdep.c | 38 +++++++++++++++++++++++++-------------
- 1 file changed, 25 insertions(+), 13 deletions(-)
+BR and thanks,
+Nikolaus
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 151bd3d..c1d432a 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -6186,23 +6186,29 @@ static struct pending_free *get_pending_free(void)
- /*
-  * Schedule an RCU callback if no RCU callback is pending. Must be called with
-  * the graph lock held.
-+ *
-+ * Return true if graph lock need be released by the caller, otherwise false
-+ * means graph lock is released by itself.
-  */
--static void call_rcu_zapped(struct pending_free *pf)
-+static bool call_rcu_zapped(struct pending_free *pf)
- {
- 	WARN_ON_ONCE(inside_selftest());
- 
- 	if (list_empty(&pf->zapped))
--		return;
-+		return true;
- 
- 	if (delayed_free.scheduled)
--		return;
-+		return true;
- 
- 	delayed_free.scheduled = true;
- 
- 	WARN_ON_ONCE(delayed_free.pf + delayed_free.index != pf);
- 	delayed_free.index ^= 1;
- 
-+	lockdep_unlock();
- 	call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
-+
-+	return false;
- }
- 
- /* The caller must hold the graph lock. May be called from RCU context. */
-@@ -6228,6 +6234,7 @@ static void free_zapped_rcu(struct rcu_head *ch)
- {
- 	struct pending_free *pf;
- 	unsigned long flags;
-+	bool need_unlock;
- 
- 	if (WARN_ON_ONCE(ch != &delayed_free.rcu_head))
- 		return;
-@@ -6243,9 +6250,9 @@ static void free_zapped_rcu(struct rcu_head *ch)
- 	/*
- 	 * If there's anything on the open list, close and start a new callback.
- 	 */
--	call_rcu_zapped(delayed_free.pf + delayed_free.index);
--
--	lockdep_unlock();
-+	need_unlock = call_rcu_zapped(delayed_free.pf + delayed_free.index);
-+	if (need_unlock)
-+		lockdep_unlock();
- 	raw_local_irq_restore(flags);
- }
- 
-@@ -6286,6 +6293,7 @@ static void lockdep_free_key_range_reg(void *start, unsigned long size)
- {
- 	struct pending_free *pf;
- 	unsigned long flags;
-+	bool need_unlock;
- 
- 	init_data_structures_once();
- 
-@@ -6293,8 +6301,9 @@ static void lockdep_free_key_range_reg(void *start, unsigned long size)
- 	lockdep_lock();
- 	pf = get_pending_free();
- 	__lockdep_free_key_range(pf, start, size);
--	call_rcu_zapped(pf);
--	lockdep_unlock();
-+	need_unlock = call_rcu_zapped(pf);
-+	if (need_unlock)
-+		lockdep_unlock();
- 	raw_local_irq_restore(flags);
- 
- 	/*
-@@ -6390,6 +6399,7 @@ static void lockdep_reset_lock_reg(struct lockdep_map *lock)
- 	struct pending_free *pf;
- 	unsigned long flags;
- 	int locked;
-+	bool need_unlock;
- 
- 	raw_local_irq_save(flags);
- 	locked = graph_lock();
-@@ -6398,9 +6408,9 @@ static void lockdep_reset_lock_reg(struct lockdep_map *lock)
- 
- 	pf = get_pending_free();
- 	__lockdep_reset_lock(pf, lock);
--	call_rcu_zapped(pf);
--
--	graph_unlock();
-+	need_unlock = call_rcu_zapped(pf);
-+	if (need_unlock)
-+		graph_unlock();
- out_irq:
- 	raw_local_irq_restore(flags);
- }
-@@ -6446,6 +6456,7 @@ void lockdep_unregister_key(struct lock_class_key *key)
- 	struct pending_free *pf;
- 	unsigned long flags;
- 	bool found = false;
-+	bool need_unlock = true;
- 
- 	might_sleep();
- 
-@@ -6466,9 +6477,10 @@ void lockdep_unregister_key(struct lock_class_key *key)
- 	if (found) {
- 		pf = get_pending_free();
- 		__lockdep_free_key_range(pf, key, 1);
--		call_rcu_zapped(pf);
-+		need_unlock = call_rcu_zapped(pf);
- 	}
--	lockdep_unlock();
-+	if (need_unlock)
-+		lockdep_unlock();
- 	raw_local_irq_restore(flags);
- 
- 	/* Wait until is_dynamic_key() has finished accessing k->hash_entry. */
--- 
-1.9.1
+[1] =
+https://devicetree-specification.readthedocs.io/en/stable/source-language.=
+html
+"Labels are only used in the devicetree source format and are not =
+encoded into the
+DTB binary."
 
 
