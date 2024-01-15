@@ -1,134 +1,140 @@
-Return-Path: <linux-kernel+bounces-25948-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33FF382D8B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:03:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C85B82D8A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:58:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B58A6282B2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:03:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD8D5282A29
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:58:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09A6F2C69E;
-	Mon, 15 Jan 2024 12:03:25 +0000 (UTC)
-Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C7C81E865;
-	Mon, 15 Jan 2024 12:03:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
-Received: by cae.in-ulm.de (Postfix, from userid 1000)
-	id F0DD414035E; Mon, 15 Jan 2024 12:57:23 +0100 (CET)
-Date: Mon, 15 Jan 2024 12:57:23 +0100
-From: "Christian A. Ehrhardt" <lk@c--e.de>
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: linux-usb@vger.kernel.org, Dell.Client.Kernel@dell.com,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Jack Pham <quic_jackp@quicinc.com>,
-	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-	Samuel =?utf-8?B?xIxhdm9q?= <samuel@cavoj.net>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F7D72C69B;
+	Mon, 15 Jan 2024 11:58:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mgbiphD0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDC5C1E865;
+	Mon, 15 Jan 2024 11:58:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83F2EC433C7;
+	Mon, 15 Jan 2024 11:58:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705319925;
+	bh=rAzO/EbAjp/RyapW0byiwCjRX0nFnY82gnHGAzPPPos=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mgbiphD0IcbgJG+qVE73R65/MPGiT5oH4pY9nHEdFNrJ/B1YENiz50WUwj82bcC8Q
+	 m+d3vkxXpDemGgesnLkobL4u7XZlmBHFsHFsc0WQRKm1PWZ/GdZ6S6n2rAOYkN8txk
+	 ADYyqM+Ujw9kY8bWk/w0ha/GTdG/BAg5eNnbKFMZNf9e9pk1c/UWMelLT3h0HKr9Pi
+	 YGItqc6m+w3BhuPv67siyXW+25KV6LTNw/ycldehMxW3FF5IQWm14WCcNtAzkTkmPA
+	 rPAd2h/bO2zIVxeIvXLTjoNtaYq1/dzr7qJT9Xg1eaJ9rkVsrHA5QZuXKKopnGS1i6
+	 CbSzqREnrhokA==
+Date: Mon, 15 Jan 2024 11:58:41 +0000
+From: Simon Horman <horms@kernel.org>
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: edumazet@google.com, davem@davemloft.net, dsahern@kernel.org,
+	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] usb: ucsi: Apply UCSI_ACK_CONNECTOR_CHANGE_ACK_CMD
- to Dell systems
-Message-ID: <ZaUdowRhVjAxAIM+@cae.in-ulm.de>
-References: <20240107001701.130535-1-lk@c--e.de>
- <20240107001701.130535-5-lk@c--e.de>
- <ZaTp5rQLu4rh3Xhm@kuha.fi.intel.com>
+Subject: Re: [RFC PATCH net-next v2] net: tcp: accept old ack during closing
+Message-ID: <20240115115841.GS392144@kernel.org>
+References: <20240112094603.23706-1-menglong8.dong@gmail.com>
+ <20240113154632.GI392144@kernel.org>
+ <CADxym3a6qNcb47R_DfXMsac9Ou_zkz5hR3bGY9tr7Jhsdw3y-Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <ZaTp5rQLu4rh3Xhm@kuha.fi.intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADxym3a6qNcb47R_DfXMsac9Ou_zkz5hR3bGY9tr7Jhsdw3y-Q@mail.gmail.com>
 
+On Mon, Jan 15, 2024 at 10:40:56AM +0800, Menglong Dong wrote:
+> On Sat, Jan 13, 2024 at 11:46 PM Simon Horman <horms@kernel.org> wrote:
+> >
+> > On Fri, Jan 12, 2024 at 05:46:03PM +0800, Menglong Dong wrote:
+> > > For now, the packet with an old ack is not accepted if we are in
+> > > FIN_WAIT1 state, which can cause retransmission. Taking the following
+> > > case as an example:
+> > >
+> > >     Client                               Server
+> > >       |                                    |
+> > >   FIN_WAIT1(Send FIN, seq=10)          FIN_WAIT1(Send FIN, seq=20, ack=10)
+> > >       |                                    |
+> > >       |                                Send ACK(seq=21, ack=11)
+> > >    Recv ACK(seq=21, ack=11)
+> > >       |
+> > >    Recv FIN(seq=20, ack=10)
+> > >
+> > > In the case above, simultaneous close is happening, and the FIN and ACK
+> > > packet that send from the server is out of order. Then, the FIN will be
+> > > dropped by the client, as it has an old ack. Then, the server has to
+> > > retransmit the FIN, which can cause delay if the server has set the
+> > > SO_LINGER on the socket.
+> > >
+> > > Old ack is accepted in the ESTABLISHED and TIME_WAIT state, and I think
+> > > it should be better to keep the same logic.
+> > >
+> > > In this commit, we accept old ack in FIN_WAIT1/FIN_WAIT2/CLOSING/LAST_ACK
+> > > states. Maybe we should limit it to FIN_WAIT1 for now?
+> > >
+> > > Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
+> > > ---
+> > > v2:
+> > > - fix the compiling error
+> > > ---
+> > >  net/ipv4/tcp_input.c | 18 +++++++++++-------
+> > >  1 file changed, 11 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+> > > index df7b13f0e5e0..70642bb08f3a 100644
+> > > --- a/net/ipv4/tcp_input.c
+> > > +++ b/net/ipv4/tcp_input.c
+> > > @@ -6699,17 +6699,21 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb)
+> > >               return 0;
+> > >
+> > >       /* step 5: check the ACK field */
+> > > -     acceptable = tcp_ack(sk, skb, FLAG_SLOWPATH |
+> > > -                                   FLAG_UPDATE_TS_RECENT |
+> > > -                                   FLAG_NO_CHALLENGE_ACK) > 0;
+> > > +     reason = tcp_ack(sk, skb, FLAG_SLOWPATH |
+> > > +                               FLAG_UPDATE_TS_RECENT |
+> > > +                               FLAG_NO_CHALLENGE_ACK);
+> >
+> > Hi Menglong Dong,
+> >
+> > Probably I am missing something terribly obvious,
+> > but I am confused about the types used here.
+> >
+> > The type of reason is enum skb_drop_reason.
+> > For which, which on my system, the compiler uses an unsigned entity.
+> > i.e. it is an unsigned integer.
+> >
+> > But tcp_ack returns a (signed) int. And below reason is checked
+> > for values less than zero, and negated. This doesn't seem right.
+> >
+> 
+> Hello! You are right, and it seems that I make the same
+> mistake with Eric in this commit:
+> 
+> 843f77407eeb ("tcp: fix signed/unsigned comparison")
+> 
+> I should convert it to signed int before comparing it
+> like this:
+> 
+>   if ((int)reason <= 0) {
+>       ......
+>       if ((int)reason < 0) {
+>           ....
+>       }
+>   }
 
-Hi Heikki,
+Thanks. FWIIW, I would probably assign the unsigned value to an unsigned
+local variable.
 
-On Mon, Jan 15, 2024 at 11:05:36AM +0200, Heikki Krogerus wrote:
-> Hi Christian,
->=20
-> On Sun, Jan 07, 2024 at 01:17:01AM +0100, Christian A. Ehrhardt wrote:
-> > Apply the UCSI_ACK_CONNECTOR_CHANGE_ACK_CMD to all Dell systems.
-> >=20
-> > There are various reports that ucsi does not work on Dell systems
-> > with "GET_CONNECTOR_STATUS failed". At least some of these are
-> > most likely due to the need for this quirk.
-> >=20
-> > If the logic is wrong users can still use the new quirk override
-> > for the typec_ucsi module to disable the quirk.
-> >=20
-> > Signed-off-by: Christian A. Ehrhardt <lk@c--e.de>
-> > ---
-> >  drivers/usb/typec/ucsi/ucsi_acpi.c | 36 +++++++++++++++++++++++++-----
-> >  1 file changed, 31 insertions(+), 5 deletions(-)
-> >=20
-> > diff --git a/drivers/usb/typec/ucsi/ucsi_acpi.c b/drivers/usb/typec/ucs=
-i/ucsi_acpi.c
-> > index 78a0d13584ad..690d5e55bdc4 100644
-> > --- a/drivers/usb/typec/ucsi/ucsi_acpi.c
-> > +++ b/drivers/usb/typec/ucsi/ucsi_acpi.c
-> > @@ -27,6 +27,11 @@ struct ucsi_acpi {
-> >  	u64 cmd;
-> >  };
-> > =20
-> > +struct ucsi_acpi_attach_data {
-> > +	const struct ucsi_operations *ops;
-> > +	unsigned int quirks;
-> > +};
-> > +
-> >  static int ucsi_acpi_dsm(struct ucsi_acpi *ua, int func)
-> >  {
-> >  	union acpi_object *obj;
-> > @@ -121,12 +126,30 @@ static const struct ucsi_operations ucsi_zenbook_=
-ops =3D {
-> >  	.async_write =3D ucsi_acpi_async_write
-> >  };
-> > =20
-> > -static const struct dmi_system_id zenbook_dmi_id[] =3D {
-> > +static const struct ucsi_acpi_attach_data ucsi_acpi_default_attach_dat=
-a =3D {
-> > +	.ops =3D &ucsi_acpi_ops,
-> > +	.quirks =3D 0
-> > +};
-> > +
-> > +static const struct dmi_system_id ucsi_acpi_quirks[] =3D {
-> >  	{
-> >  		.matches =3D {
-> >  			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-> >  			DMI_MATCH(DMI_PRODUCT_NAME, "ZenBook UX325UA_UM325UA"),
-> >  		},
-> > +		.driver_data =3D &(struct ucsi_acpi_attach_data) {
-> > +			.ops =3D &ucsi_zenbook_ops,
-> > +			.quirks =3D 0
-> > +		},
-> > +	},
-> > +	{
-> > +		.matches =3D {
-> > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-> > +		},
-> > +		.driver_data =3D &(struct ucsi_acpi_attach_data) {
-> > +			.ops =3D &ucsi_acpi_ops,
-> > +			.quirks =3D UCSI_ACK_CONNECTOR_CHANGE_ACK_CMD
->=20
-> Please don't add any more quirk flags like that for single user (you
-> may never have more than the one user for it). Let's just first handle
-> this with only Dell's like I proposed.
->=20
-> If there are other platforms that need the same quirk, then we can
-> start looking at how to share the quirk.
-
-Ok, thanks for the feedback. Will do.
-
-However, please note that it is not clear if it is all or only some
-dells that need this. This is the prime reason why I was looking for
-a way to enable/disable the quirk.
-
-     regards   Christian
-
+..
 
