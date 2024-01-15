@@ -1,124 +1,92 @@
-Return-Path: <linux-kernel+bounces-25920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67DF382D841
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:20:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71C2782D850
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:28:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1B971F222AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:20:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23A761F2234D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:28:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCD322C697;
-	Mon, 15 Jan 2024 11:20:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0D512C6A9;
+	Mon, 15 Jan 2024 11:28:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="c9ibmYOW"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="YSYyAuxi"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAB8D2208A;
-	Mon, 15 Jan 2024 11:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id C7BEE40E016C;
-	Mon, 15 Jan 2024 11:20:23 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 1FAqnwMpb_Zd; Mon, 15 Jan 2024 11:20:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1705317621; bh=nCwtoIhn1fv1DIHX6b7LJt+v8CCENhFJbxBqG4Uf3iw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=c9ibmYOWC60KK4KJuKNxRjp9cTDl/t4NGMCh/hIKwI8C8n85ZPub0L2koL6V6bEcL
-	 DnLO99QtKwXchL36UkyaqZXBS5DH7fP3jHL9Q/Ctm4+fh8YQ/Zi44hPI/hQd/pdAI4
-	 hF/dZoekSuQo4hLubKrITPpOBld2No3hKm8/53/0LY+40mMrigZM8I3pfNjZm2DoIk
-	 UROnl9HdofZnPLJ6LMgGqBqaDafsnEMfGqPyc1AfVYJRxj4jSf2YNhaeWiCk9E/3A2
-	 a3kH6iByD969PW9vbwfK+YiMd0D9SY1TtpWky0g3RTJAF0hq+BELR+pCArKET/9zsi
-	 qWGNTjOJNmElWJ+LYDgjQXdiTHPiLtkxN0MZLSX8sXLtARN3Gs1imoyDUCgjd7VCZC
-	 J9vT3kwHNvW4Kf8TVcvfdGoJS6jNtP7zMsdEveUfXAGsMoXMdd0HGdiWKiEuoKaYNA
-	 EPtLG2zJlKmm50rZEOmCQzZpToDW7Nw49E+B7wCUUoN+R/Zp/A/UYJ71G3L+X51uGD
-	 46T9n5gOcZdmqK0u48Y8hXTy3YOBjU897Pw0gioBU1PMLttNUhCbrT7GUSTA/Bnr02
-	 Mj7zI4H0tzj0gA4NTS5FNbwPFc3ylTElAZVRO6fzZXitlK8u8u1qXnQK/5HSONYAJJ
-	 l7i/ggtKLhd5cb4XvcaoXjgQ=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1B87140E00C5;
-	Mon, 15 Jan 2024 11:19:44 +0000 (UTC)
-Date: Mon, 15 Jan 2024 12:19:37 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Michael Roth <michael.roth@amd.com>
-Cc: x86@kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
-	linux-mm@kvack.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-	rientjes@google.com, tobin@ibm.com, vbabka@suse.cz,
-	kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-	pankaj.gupta@amd.com,
-	"liam.merwick@oracle.com Brijesh Singh" <brijesh.singh@amd.com>,
-	Jarkko Sakkinen <jarkko@profian.com>
-Subject: Re: [PATCH v1 13/26] crypto: ccp: Add support to initialize the
- AMD-SP for SEV-SNP
-Message-ID: <20240115111930.GGZaUUwpmmZqxVcBEu@fat_crate.local>
-References: <20231230161954.569267-1-michael.roth@amd.com>
- <20231230161954.569267-14-michael.roth@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08FDB2C6A2;
+	Mon, 15 Jan 2024 11:28:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Mg9rkN4qdp0wGiNpTxlcLmFAeg1D4VoqNkVDYwsxzS0=; b=YSYyAuxiM5XGO/kFZsBnmz6ISy
+	MNBM6C7m9vMs0Ew/BT/iDEzyoEduc+TmkSI5OXXQM1pS3n6jyhrZZVYBkYwkViEqyhe0v3xYfCiAK
+	HVUm4TlQ7ZUWQOpQCDK1NO0D6qYaTagGg8/QGJL4qr4F/LZrlGFEOZSr4o1dvlnbv4c8g5wRnmc/s
+	6FAb/Ut+nOPb8u/EyjCjfMXKy9zToRwTcQPy+4Inuetqsop9JWrWrqQMC2r35NOOaTLMju2zOtI5B
+	G0nnJ4k58XWLX9RwsouWvflgK5lRIvBhU5pi5tExSYYpugQT8rUvMa76ryT7vfenmqrmgxAeqOP9N
+	3fPDjk/Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36022)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rPL8b-0002Lx-0h;
+	Mon, 15 Jan 2024 11:28:18 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rPL8Y-0002ud-8c; Mon, 15 Jan 2024 11:28:14 +0000
+Date: Mon, 15 Jan 2024 11:28:14 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Kunwu Chan <chentao@kylinos.cn>
+Cc: andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	f.fainelli@gmail.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v2] net: phy: Fix possible NULL pointer dereference
+ issues caused by phy_attached_info_irq
+Message-ID: <ZaUWztbMPhbApPIH@shell.armlinux.org.uk>
+References: <20240115085018.30300-1-chentao@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231230161954.569267-14-michael.roth@amd.com>
+In-Reply-To: <20240115085018.30300-1-chentao@kylinos.cn>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Sat, Dec 30, 2023 at 10:19:41AM -0600, Michael Roth wrote:
-> +	/*
-> +	 * The following sequence must be issued before launching the
-> +	 * first SNP guest to ensure all dirty cache lines are flushed,
-> +	 * including from updates to the RMP table itself via RMPUPDATE
-> +	 * instructions:
-> +	 *
-> +	 * - WBINDV on all running CPUs
-> +	 * - SEV_CMD_SNP_INIT[_EX] firmware command
-> +	 * - WBINDV on all running CPUs
-> +	 * - SEV_CMD_SNP_DF_FLUSH firmware command
-> +	 */
+On Mon, Jan 15, 2024 at 04:50:18PM +0800, Kunwu Chan wrote:
+> diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
+> index ed0b4ccaa6a6..819574a06036 100644
+> --- a/drivers/net/phy/phylink.c
+> +++ b/drivers/net/phy/phylink.c
+> @@ -1886,7 +1886,7 @@ static int phylink_bringup_phy(struct phylink *pl, struct phy_device *phy,
+>  	irq_str = phy_attached_info_irq(phy);
+>  	phylink_info(pl,
+>  		     "PHY [%s] driver [%s] (irq=%s)\n",
+> -		     dev_name(&phy->mdio.dev), phy->drv->name, irq_str);
+> +		     dev_name(&phy->mdio.dev), phy->drv->name, irq_str ? irq_str : "");
 
-Typos:
 
----
-diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index 85634d4f8cfe..ce0c56006900 100644
---- a/drivers/crypto/ccp/sev-dev.c
-+++ b/drivers/crypto/ccp/sev-dev.c
-@@ -604,9 +604,9 @@ static int __sev_snp_init_locked(int *error)
- 	 * including from updates to the RMP table itself via RMPUPDATE
- 	 * instructions:
- 	 *
--	 * - WBINDV on all running CPUs
-+	 * - WBINVD on all running CPUs
- 	 * - SEV_CMD_SNP_INIT[_EX] firmware command
--	 * - WBINDV on all running CPUs
-+	 * - WBINVD on all running CPUs
- 	 * - SEV_CMD_SNP_DF_FLUSH firmware command
- 	 */
- 	wbinvd_on_all_cpus();
+		     dev_name(&phy->mdio.dev), phy->drv->name,
+		     irq_str ? irq_str : "");
+
+please.
+
+Also, please hold off posting v3 until at least 24 hours have passed.
+
+Thanks.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
