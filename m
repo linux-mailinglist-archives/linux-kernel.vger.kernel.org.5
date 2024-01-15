@@ -1,137 +1,109 @@
-Return-Path: <linux-kernel+bounces-25822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D5E182D659
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:52:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C115582D633
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:40:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB53A1F21EF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:52:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47D3CB20F69
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:40:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D082E563;
-	Mon, 15 Jan 2024 09:52:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66227E541;
+	Mon, 15 Jan 2024 09:40:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bgPQwTTe"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wO25eBCQ"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F090EDF4C
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 09:52:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CA35C433C7;
-	Mon, 15 Jan 2024 09:52:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705312321;
-	bh=tq1LvtkAdS6HI+mHnlrvFlhiN8d0NA5zwM1YvZL8ZFk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bgPQwTTe4RTIKeCVwYiJ3gZtH8k9IwZRLxoNXGyudIrDIPo/LLsrsqso1hKgHCCPq
-	 3ycEzmBPIvjcFlId4OAnU/8rcFHZ8S5la9ja47trpHFwGG/xEECGvolMGVTokBMSf5
-	 gauD6KYIiLtyPZhyLHM5P5l7Hi4VbI7/S7KgBk0DlqoUta773ywklm58ApKD0fuuYa
-	 lj40KwuWtvA/NU3fSrmGMT2M3bXGuvhIRwJ0bQ7Il9eji6KbPt5vffEy0gRvnDU5mj
-	 3jEjwqHl4/JuraOkUNVKyGJujHdmySkyx62VhL+oxI1huP7sIGyu/NRCbwpHCIndrY
-	 SEWKxai0V+XHA==
-Date: Mon, 15 Jan 2024 17:39:10 +0800
-From: Jisheng Zhang <jszhang@kernel.org>
-To: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] riscv: mm: still create swiotlb buffer for kmalloc()
- bouncing if required
-Message-ID: <ZaT9Pi06h70LWVA+@xhacker>
-References: <20231202134224.4029-1-jszhang@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B5E2D514
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 09:40:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40d6b4e2945so98531645e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 01:40:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705311638; x=1705916438; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=DUjf8EcUmZjVmkCxTDXwKlHM+fZcUzkgPqOKaASP32c=;
+        b=wO25eBCQEDqcF+ewIp4Mzemnhyr6HY8lXKm70HUUpQAWitOB6+433tKtd/dRPP0iq9
+         GxKvQfuaIGQoVOkP6n0aOed4trdZpTTyrWWk49nyne+S9T+V5V8YM9ziihw/CgP9m+nv
+         4ddXcWC5ZqZk6tVebIASexYlynve37EcHPMjikVfvrz8Mnx0wSQkZepirLxDiXNB40Cv
+         UsgJRQpPr7jmCgu3yJBDSfrdBO1PM2iEtMfrRdD4j567eTOwr4rGtjv6ePxR7zTGCdqR
+         e7u2K31C7oDkoVn5CEnlK7gn1nQL74irwlfR3+9QNYkGAdQ2uPPivPjTBJu3lQ8dXsIB
+         4/MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705311638; x=1705916438;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DUjf8EcUmZjVmkCxTDXwKlHM+fZcUzkgPqOKaASP32c=;
+        b=N98cPsVQxqKX6vSxy/f+eM5+raBxgRNJRLx0Z7mzExmSO4krj/Mb8JdrjFogg+zE8+
+         QPgJfZ+T/XNPMuLorRYVzS6oem2BCr3a53klvzGA+ImdAPq1Euct/25q/IGJNv4K2of4
+         zO5FMHCCsEihaxGbrF1RnZ5cy7EVBBmQ73m/ewtOX8703klHUd1ibhEWTycUv0ty2dBB
+         Eofed0GEcedV8BX3bb8Zd5YeM9YVYnYL+VKLGZctwqY4T7ReC/Ne8c6QqM7w1qfy1A3X
+         OuSPsevZtV8duAzF7Ak+GVyZ8wIPPf9iuYHOnZ/EmLPEBUf/J7wIBjgbxgcWVKndmbqw
+         OOjA==
+X-Gm-Message-State: AOJu0YxyfRDGu6/iYCaVs+TyRo6L+Er4JYFTdLOmFDtUBx+O60NbF+un
+	lr6nZUSZdXt73GgRM4AZeO+BUDgAqdVygjzPFcze/IMy0CriDA==
+X-Google-Smtp-Source: AGHT+IEJTyA6VGQ1pmR0QXu684SA+wL8v5iXMyFClIBeK7v/xkZcbvvbRveYDGi29Y53uIPAxZpchw==
+X-Received: by 2002:a1c:7705:0:b0:40e:78ee:cb61 with SMTP id t5-20020a1c7705000000b0040e78eecb61mr431104wmi.94.1705311638683;
+        Mon, 15 Jan 2024 01:40:38 -0800 (PST)
+Received: from draszik.lan ([80.111.64.44])
+        by smtp.gmail.com with ESMTPSA id w4-20020a05600c474400b0040d5ae2906esm19227470wmo.30.2024.01.15.01.40.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 01:40:38 -0800 (PST)
+Message-ID: <bcd89ef7a43eb7d652f045c029d8e108adf7ba32.camel@linaro.org>
+Subject: Re: [PATCH] dt-bindings: ignore paths outside kernel for
+ DT_SCHEMA_FILES
+From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+To: Michal Simek <michal.simek@amd.com>, Rob Herring <robh@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>, Masahiro Yamada
+ <masahiroy@kernel.org>,  Conor Dooley <conor+dt@kernel.org>, Mathieu
+ Poirier <mathieu.poirier@linaro.org>,  linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>
+Date: Mon, 15 Jan 2024 09:40:37 +0000
+In-Reply-To: <827695c3-bb33-4a86-8586-2c7323530398@amd.com>
+References: <20231220145537.2163811-1-andre.draszik@linaro.org>
+	 <170432630603.2042234.10993333941885772911.robh@kernel.org>
+	 <827695c3-bb33-4a86-8586-2c7323530398@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1-1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231202134224.4029-1-jszhang@kernel.org>
 
-On Sat, Dec 02, 2023 at 09:42:24PM +0800, Jisheng Zhang wrote:
-> After commit f51f7a0fc2f4 ("riscv: enable DMA_BOUNCE_UNALIGNED_KMALLOC
-> for !dma_coherent"), for non-coherent platforms with less than 4GB
-> memory, we rely on users to pass "swiotlb=mmnn,force" kernel parameters
-> to enable DMA bouncing for unaligned kmalloc() buffers. Now let's go
-> further: If no bouncing needed for ZONE_DMA, let kernel automatically
-> allocate 1MB swiotlb buffer per 1GB of RAM for kmalloc() bouncing on
-> non-coherent platforms, so that no need to pass "swiotlb=mmnn,force"
-> any more.
-> 
-> The math of "1MB swiotlb buffer per 1GB of RAM for kmalloc() bouncing"
-> is taken from arm64. Users can still force smaller swiotlb buffer by
-> passing "swiotlb=mmnn".
+Hi,
 
-and this one is missed either. let me know if there's something need to
-be done for merging.
+On Mon, 2024-01-15 at 10:20 +0100, Michal Simek wrote:
+> This patch is causing issue for me. Look at log below.
+> I am running it directly on the latest linux-next/master.
+>=20
+> Thanks,
+> Michal
+>=20
+> $ make DT_SCHEMA_FILES=3D"Documentation/devicetree/bindings/arm/arm,cci-4=
+00.yaml"=20
+> dt_binding_check
 
-Thanks in advance,
+It'll work if you drop the 'Documentation/devicetree/bindings' part from th=
+e path, as
+it is implied since bindings can only be in that directory anyway:
 
-> 
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> ---
-> 
-> since v2:
->  - fix build error if CONFIG_RISCV_DMA_NONCOHERENT=n
-> 
->  arch/riscv/include/asm/cache.h |  2 +-
->  arch/riscv/mm/init.c           | 16 +++++++++++++++-
->  2 files changed, 16 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/riscv/include/asm/cache.h b/arch/riscv/include/asm/cache.h
-> index 2174fe7bac9a..570e9d8acad1 100644
-> --- a/arch/riscv/include/asm/cache.h
-> +++ b/arch/riscv/include/asm/cache.h
-> @@ -26,8 +26,8 @@
->  
->  #ifndef __ASSEMBLY__
->  
-> -#ifdef CONFIG_RISCV_DMA_NONCOHERENT
->  extern int dma_cache_alignment;
-> +#ifdef CONFIG_RISCV_DMA_NONCOHERENT
->  #define dma_get_cache_alignment dma_get_cache_alignment
->  static inline int dma_get_cache_alignment(void)
->  {
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 2e011cbddf3a..cbcb9918f721 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -162,11 +162,25 @@ static void print_vm_layout(void) { }
->  
->  void __init mem_init(void)
->  {
-> +	bool swiotlb = max_pfn > PFN_DOWN(dma32_phys_limit);
->  #ifdef CONFIG_FLATMEM
->  	BUG_ON(!mem_map);
->  #endif /* CONFIG_FLATMEM */
->  
-> -	swiotlb_init(max_pfn > PFN_DOWN(dma32_phys_limit), SWIOTLB_VERBOSE);
-> +	if (IS_ENABLED(CONFIG_DMA_BOUNCE_UNALIGNED_KMALLOC) && !swiotlb &&
-> +	    dma_cache_alignment != 1) {
-> +		/*
-> +		 * If no bouncing needed for ZONE_DMA, allocate 1MB swiotlb
-> +		 * buffer per 1GB of RAM for kmalloc() bouncing on
-> +		 * non-coherent platforms.
-> +		 */
-> +		unsigned long size =
-> +			DIV_ROUND_UP(memblock_phys_mem_size(), 1024);
-> +		swiotlb_adjust_size(min(swiotlb_size_or_default(), size));
-> +		swiotlb = true;
-> +	}
-> +
-> +	swiotlb_init(swiotlb, SWIOTLB_VERBOSE);
->  	memblock_free_all();
->  
->  	print_vm_layout();
-> -- 
-> 2.42.0
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+    make DT_SCHEMA_FILES=3D"arm/arm,cci-400.yaml" dt_binding_check
+    make DT_SCHEMA_FILES=3D"arm,cci-400.yaml" dt_binding_check
+
+both work.
+
+Cheers,
+Andre'
+
 
