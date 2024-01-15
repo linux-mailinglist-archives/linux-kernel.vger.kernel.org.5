@@ -1,190 +1,133 @@
-Return-Path: <linux-kernel+bounces-26257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C49F682DD9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:28:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B45FE82DD9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:28:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C65D1F229E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:28:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81AB41C21B03
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:28:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F72E17BBE;
-	Mon, 15 Jan 2024 16:28:21 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6B4120E3;
-	Mon, 15 Jan 2024 16:28:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D01582F4;
-	Mon, 15 Jan 2024 08:29:04 -0800 (PST)
-Received: from [10.57.8.58] (unknown [10.57.8.58])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6CE913F5A1;
-	Mon, 15 Jan 2024 08:28:15 -0800 (PST)
-Message-ID: <f2e94d3b-bf2e-492f-a72d-f7978125d7d4@arm.com>
-Date: Mon, 15 Jan 2024 16:28:13 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6AF817BBB;
+	Mon, 15 Jan 2024 16:28:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PkmLG2NR"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61FAC20E3
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 16:28:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705336125;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xeFxX+daWDMSkrH7ZOnVTZoSM9dN+DP2BZ6PwiIA2qo=;
+	b=PkmLG2NRJAc9a0AIjZf7fie3YJ/+A0I2SGf4oaDPQdDzFQ7kVc4BhYd7YXH7tvQuEaesAi
+	STxUjdH2t9Dkuc7qFQEnXSf9iNUEkxtONKmR7SbcwVwc1DYQZx9WMFI9/hQq9ZfdflkDSW
+	iPOuvBbM6hlTeqNMi9tD9pcFOkxxfgA=
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
+ [209.85.166.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-639-LTHc2U00MGCdSlaZlaYqNg-1; Mon, 15 Jan 2024 11:28:44 -0500
+X-MC-Unique: LTHc2U00MGCdSlaZlaYqNg-1
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7baa6cc3af2so843339939f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 08:28:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705336123; x=1705940923;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xeFxX+daWDMSkrH7ZOnVTZoSM9dN+DP2BZ6PwiIA2qo=;
+        b=BhlahZLQ7vFs0VjmeH7k7DvtIGCNSIffFnO2YIfd+KbqvyQBGQKHIgaQ9gV4WasA94
+         +H8lj6nF2pYeY3HVUNIsuMIAUonPbRWo+LO35AGoB7Qegbf3rK/eVnFBVt4F9nJKKic7
+         lzCfs5ow5Hzx2UmJj0Layt/Zc4elN/PNlY0XMaGQlF6xfDrZaHeE95g/32MOSbokOcxz
+         9WkzpP2jYZtFlcSIOuKQM3DBmQmlT+g18kOOJk8HAVjSFsB2Q/QkIZEG7uOIvvGAulrO
+         bwC4GYoemj3btGemkQpi1e7p9mzIjKmnrdsnYIM7EVKGFkNjmeO6DLcGjcwYimIABClj
+         eRPQ==
+X-Gm-Message-State: AOJu0YwCZIIHEfm6OGjLek5HKBDkyJ6Opea2MIFvGPfmtfxWHExH3ERN
+	ziP+EHwsGQWdoZ3amTJWTAZdsO23Bnj7Q9zSlXPBlCcjyop/9bPIGpLcM4KDoG2G0h/3BRR3kfW
+	F6JAcdbBXVNHtdlrZhyZhNYQX1CaBbbyH
+X-Received: by 2002:a5e:c745:0:b0:7bf:444a:1ac with SMTP id g5-20020a5ec745000000b007bf444a01acmr1850343iop.43.1705336123295;
+        Mon, 15 Jan 2024 08:28:43 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFb5zNWdn3eaZ1y+CeTf8VwTR+AfnhjZIvIzBsaZ7tYdGNeAwEtzXRKfbGWez3YXRA9BZyJEQ==
+X-Received: by 2002:a5e:c745:0:b0:7bf:444a:1ac with SMTP id g5-20020a5ec745000000b007bf444a01acmr1850336iop.43.1705336122981;
+        Mon, 15 Jan 2024 08:28:42 -0800 (PST)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id t9-20020a02c489000000b0046e7235c740sm1367316jam.106.2024.01.15.08.28.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 08:28:42 -0800 (PST)
+Date: Mon, 15 Jan 2024 09:28:41 -0700
+From: Alex Williamson <alex.williamson@redhat.com>
+To: "Wang, Wei W" <wei.w.wang@intel.com>
+Cc: Kunwu Chan <chentao@kylinos.cn>, "kvm@vger.kernel.org"
+ <kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] vfio: Use WARN_ON for low-probability allocation
+ failure issue in vfio_pci_bus_notifier
+Message-ID: <20240115092841.19dc32f6.alex.williamson@redhat.com>
+In-Reply-To: <DS0PR11MB6373BAF9CFEC4D67DEAAB1F7DC6C2@DS0PR11MB6373.namprd11.prod.outlook.com>
+References: <20240115063434.20278-1-chentao@kylinos.cn>
+	<DS0PR11MB6373BAF9CFEC4D67DEAAB1F7DC6C2@DS0PR11MB6373.namprd11.prod.outlook.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/2] dt-bindings: cpufreq: add virtual cpufreq device
-To: David Dai <davidai@google.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Viresh Kumar <viresh.kumar@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>,
- Saravana Kannan <saravanak@google.com>
-Cc: Quentin Perret <qperret@google.com>,
- Masami Hiramatsu <mhiramat@google.com>, Will Deacon <will@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Vincent Guittot <vincent.guittot@linaro.org>, Marc Zyngier <maz@kernel.org>,
- Oliver Upton <oliver.upton@linux.dev>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Pavan Kondeti <quic_pkondeti@quicinc.com>,
- Gupta Pankaj <pankaj.gupta@amd.com>, Mel Gorman <mgorman@suse.de>,
- kernel-team@android.com, linux-pm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231111014933.1934562-1-davidai@google.com>
- <20231111014933.1934562-2-davidai@google.com>
-Content-Language: en-US
-From: Hongyan Xia <hongyan.xia2@arm.com>
-In-Reply-To: <20231111014933.1934562-2-davidai@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 11/11/2023 01:49, David Dai wrote:
-> Adding bindings to represent a virtual cpufreq device.
-> 
-> Virtual machines may expose MMIO regions for a virtual cpufreq device
-> for guests to read frequency information or to request frequency
-> selection. The virtual cpufreq device has an individual controller for
-> each frequency domain.
-> 
-> Co-developed-by: Saravana Kannan <saravanak@google.com>
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> Signed-off-by: David Dai <davidai@google.com>
-> ---
->   .../cpufreq/qemu,cpufreq-virtual.yaml         | 99 +++++++++++++++++++
->   1 file changed, 99 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.yaml b/Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.yaml
-> new file mode 100644
-> index 000000000000..16606cf1fd1a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.yaml
-> @@ -0,0 +1,99 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/cpufreq/qemu,cpufreq-virtual.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Virtual CPUFreq
-> +
-> +maintainers:
-> +  - David Dai <davidai@google.com>
-> +  - Saravana Kannan <saravanak@google.com>
-> +
-> +description:
-> +  Virtual CPUFreq is a virtualized driver in guest kernels that sends frequency
-> +  selection of its vCPUs as a hint to the host through MMIO regions. Each vCPU
-> +  is associated with a frequency domain which can be shared with other vCPUs.
-> +  Each frequency domain has its own set of registers for frequency controls.
-> +
-> +properties:
-> +  compatible:
-> +    const: qemu,virtual-cpufreq
-> +
-> +  reg:
-> +    maxItems: 1
-> +    description:
-> +      Address and size of region containing frequency controls for each of the
-> +      frequency domains. Regions for each frequency domain is placed
-> +      contiugously and contain registers for controlling DVFS(Dynamic Frequency
-> +      and Voltage) characteristics. The size of the region is proportional to
-> +      total number of frequency domains.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    // This example shows a two CPU configuration with a frequency domain
-> +    // for each CPU.
-> +    cpus {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      cpu@0 {
-> +        compatible = "arm,armv8";
-> +        device_type = "cpu";
-> +        reg = <0x0>;
-> +        operating-points-v2 = <&opp_table0>;
-> +      };
-> +
-> +      cpu@1 {
-> +        compatible = "arm,armv8";
-> +        device_type = "cpu";
-> +        reg = <0x0>;
-> +        operating-points-v2 = <&opp_table1>;
-> +      };
-> +    };
-> +
-> +    opp_table0: opp-table-0 {
-> +      compatible = "operating-points-v2";
-> +      opp-shared;
-> +
-> +      opp1098000000 {
-> +        opp-hz = /bits/ 64 <1098000000>;
-> +        opp-level = <1>;
-> +      };
-> +
-> +      opp1197000000 {
-> +        opp-hz = /bits/ 64 <1197000000>;
-> +        opp-level = <2>;
-> +      };
-> +    };
-> +
-> +    opp_table1: opp-table-1 {
-> +      compatible = "operating-points-v2";
-> +      opp-shared;
-> +
-> +      opp1106000000 {
-> +        opp-hz = /bits/ 64 <1106000000>;
-> +        opp-level = <1>;
-> +      };
-> +
-> +      opp1277000000 {
-> +        opp-hz = /bits/ 64 <1277000000>;
-> +        opp-level = <2>;
-> +      };
-> +    };
+On Mon, 15 Jan 2024 15:41:02 +0000
+"Wang, Wei W" <wei.w.wang@intel.com> wrote:
 
-NIT: If my understanding is correct, it might be worth re-iterating that 
-these OPPs should mirror the host frequency domain this vCPU is pinned to.
+> On Monday, January 15, 2024 2:35 PM, Kunwu Chan wrote:
+> > kasprintf() returns a pointer to dynamically allocated memory which can be
+> > NULL upon failure.
+> > 
+> > This is a blocking notifier callback, so errno isn't a proper return value. Use
+> > WARN_ON to small allocation failures.
+> > 
+> > Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+> > ---
+> > v2: Use WARN_ON instead of return errno
+> > ---
+> >  drivers/vfio/pci/vfio_pci_core.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
+> > index 1cbc990d42e0..61aa19666050 100644
+> > --- a/drivers/vfio/pci/vfio_pci_core.c
+> > +++ b/drivers/vfio/pci/vfio_pci_core.c
+> > @@ -2047,6 +2047,7 @@ static int vfio_pci_bus_notifier(struct notifier_block
+> > *nb,
+> >  			 pci_name(pdev));
+> >  		pdev->driver_override = kasprintf(GFP_KERNEL, "%s",
+> >  						  vdev->vdev.ops->name);
+> > +		WARN_ON(!pdev->driver_override);  
+> 
+> Saw Alex's comments on v1. Curious why not return "NOTIFY_BAD" on errors though
+> less likely? Similar examples could be found in kvm_pm_notifier_call, kasan_mem_notifier etc.
 
-Also, since VM migration has been mentioned elsewhere in this thread, am 
-I right in saying that you can't change these OPPs after registration? 
-So, even if one wants to migrate, one has to migrate to an SoC with the 
-same frequency domains anyway, otherwise the OPPs in the VM are entirely 
-bogus?
+If the statement is that there are notifier call chains that return
+NOTIFY_BAD, I would absolutely agree, but the return value needs to be
+examined from the context of the caller.  BUS_NOTIFY_ADD_DEVICE is
+notified via bus_notify() in device_add().  What does it accomplish to
+return NOTIFY_BAD in a chain that ignores the return value?  At best
+we're preventing callbacks further down the chain from being called.
+That doesn't seem obviously beneficial either.
 
-> +
-> +    soc {
-> +      #address-cells = <1>;
-> +      #size-cells = <1>;
-> +
-> +      cpufreq@1040000 {
-> +        compatible = "qemu,virtual-cpufreq";
-> +        reg = <0x1040000 0x10>;
-> +      };
-> +    };
+The scenario here is similar to that in fail_iommu_bus_notify() where
+they've chosen to trigger a pr_warn() if they're unable to crease sysfs
+entries.  In fact, a pci_warn(), maybe even pci_err() might be a better
+alternative here than a WARN_ON().  Thanks,
+
+Alex
+
 
