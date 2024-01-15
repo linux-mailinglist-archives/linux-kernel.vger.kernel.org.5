@@ -1,68 +1,66 @@
-Return-Path: <linux-kernel+bounces-26433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 490A782E08F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:21:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BB4982E092
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:21:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34F1C1C22178
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 19:21:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74593B21A4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 19:21:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A907018C19;
-	Mon, 15 Jan 2024 19:20:51 +0000 (UTC)
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05olkn2054.outbound.protection.outlook.com [40.92.89.54])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A77018C1B;
+	Mon, 15 Jan 2024 19:21:09 +0000 (UTC)
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05olkn2018.outbound.protection.outlook.com [40.92.89.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9822118AF0;
-	Mon, 15 Jan 2024 19:20:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3902818B06;
+	Mon, 15 Jan 2024 19:21:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.de
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aA9R9IyJcCA8L/e9I7Yq8HzHbTJqqVya+ZFVDT+XK9Q49+60GuI1MBxzf5cIZdAmjXF+MPSmwlZar7DRCCPP2rKab07FGwC9zG4Y8DhekGavVKBv6wVXm7h0LAY/BfFpb9+GiP6nznZP0jllvi1QusoU5ZgXDmlbIG8OdRNw/euRt3pyhV6NLelNqBD9J4FtUuhRB6HD5Dqm7RzYe1nkoIfkIFl1iTahdn7buPph1o8YXB07K8zJ+mK6MSI1mfPUYMkdMQ8lVG+1EJc7Sa7041+xl1Gan3QWiv94u/4nUqWt0O8fd5lYUfurvFI5kkXHIbJ6PNUMCPYQ5hD/0VUPTg==
+ b=gL13MTG1jBs/bOZwWbe99GtS7RqPFove1yz7oKIeEFu+4+sdh1YJqzHZRzhj3a7s4QbpsuFz0r3TeOG95xgbxhIJFYtk2/6eQvkqRkhfS4Z8dd8mQmrrkuC9UA/5irDAW5hxool+TNOLFk9cQE9UwxXFCdrvs5Vf5JcKc4Ry+7M0tRXnLpZlo+ZMUxApjuKfZkMGJB93Hnm9/r+ujN2mf2riDOMKnodpKMH1ehjCH61rRsPPT1F/QkdvEOJCtNGy8SPE3P92Jn2zr2ksIkaaN4pYMxnDlKYXVsssAtFxmasG2JA7Q3ocN4O0C2xSIl9da3sFq/v52SErj+1P3O7rEw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6jPTxL5OpRVaxkWWCXA1XtnX6eQpMGzPtpdmv9RgZlE=;
- b=FkwJJvY3hLmylshszJzoF7PO3aMg8wQjOG+G8eFhHBiBFsxhhOHyH/hFySpGz7P2uSLMGIOVJq3pP4EAJC9QSF/Yrp1AQeePLgQ+j0aQV86Ztvj6E2bp/wRNiejsjPfeW/O/Jjr9z7VN+ChALa7lsHR3ekkjslJywNAVFEA+3Dz75WM2yF23O7ERCyoy880CiCh7eXie+9UucRgPB+t1xxTeyeG8V39UWeAQWVyIVh+bvyY9+wKf0in+IuAo5M4JdziXt7Q0jcCqUvShFCMQPZhDfH5h4dZd0j6Y6gGkUd/SCC/tQN2ZWMxDQcK/4kcdl9/+HFzV3oO65X+dW3CWSw==
+ bh=prKcv9FFHnoPvw/RQdUAK33x217BpS9lQMjRrsTAOTs=;
+ b=APzSbBSDeZgUcWHONOA3UXWeG90/BLLRoy7ELx5sYv4JoWxE6qKoFXC0yhTSWQOWjPlWERoV0TBndsdySPc8c2oaA3OrCULBj8nUYibDfpbD/xwhvv1Awjmtg6LZPs2qdagzC0EBBc8YnzDt4EndvVCNU1bKKpOeUBLZpsN/tD7svxcYDgJqw0DQXAKcvVk6p602p9yh1FnLFLDkJADCjRldbaegHLxeIfzxcTSO4d9O5p2uhAiw+Vyt7nHIjTa6aeKQcgYDU9pL0Zj+TmNxAB2C+hKPWF9N+eB9gNE5+9eR9NrQn5w7nUIDAdMWZ6Fbkqgt4yL4UF4oCh+FPGT1yw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 Received: from AS8P193MB1285.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:333::21)
  by AM0P193MB0769.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:16d::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.23; Mon, 15 Jan
- 2024 19:20:47 +0000
+ 2024 19:21:05 +0000
 Received: from AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
  ([fe80::897e:cfd5:b29b:c611]) by AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
  ([fe80::897e:cfd5:b29b:c611%6]) with mapi id 15.20.7181.019; Mon, 15 Jan 2024
- 19:20:46 +0000
+ 19:21:05 +0000
 Message-ID:
- <AS8P193MB1285EEAFE30C0DE7B201D33CE46C2@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
-Date: Mon, 15 Jan 2024 20:21:42 +0100
+ <AS8P193MB1285304CE97348D62021C878E46C2@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+Date: Mon, 15 Jan 2024 20:22:01 +0100
 User-Agent: Mozilla Thunderbird
 From: Bernd Edlinger <bernd.edlinger@hotmail.de>
-Subject: [PATCH v2] net: stmmac: Wait a bit for the reset to take effect
-To: Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin
- <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org,
+Subject: [PATCH v2] Fix error handling in begin_new_exec
+To: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Kees Cook <keescook@chromium.org>,
+ "Eric W. Biederman" <ebiederm@xmission.com>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ linux-mm@kvack.org,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Jiri Pirko <jiri@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>
-References: <AS8P193MB1285DECD77863E02EF45828BE4A1A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+ Andrew Morton <akpm@linux-foundation.org>
+References: <AM8PR10MB47081071E64EAAB343196D5AE4399@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
 Content-Language: en-US
-In-Reply-To: <AS8P193MB1285DECD77863E02EF45828BE4A1A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+In-Reply-To: <AM8PR10MB47081071E64EAAB343196D5AE4399@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-TMN: [awWvB8M45afXTdq0zJngE/LO/0atHbZDLwB6sZo2A9pBAuJIjOQOuTWYzCpl2Dq8]
+X-TMN: [SHb+zh4RstG5HI6Uz4EIV8cNfO6mMuavuQoYeNtxz0ZHc25xJCfsSIX4ELUrdsGJ]
 X-ClientProxiedBy: FR3P281CA0205.DEUP281.PROD.OUTLOOK.COM
  (2603:10a6:d10:a5::17) To AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
  (2603:10a6:20b:333::21)
 X-Microsoft-Original-Message-ID:
- <f6be722e-8265-4eb2-a91f-857e55dcf659@hotmail.de>
+ <70d177c8-9bfd-4dd9-bf05-50b9d0f968d8@hotmail.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,47 +70,47 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AS8P193MB1285:EE_|AM0P193MB0769:EE_
-X-MS-Office365-Filtering-Correlation-Id: cbe21b6d-df57-428c-057b-08dc15ff1340
+X-MS-Office365-Filtering-Correlation-Id: 02e9d96b-5296-4a6c-a742-08dc15ff1e19
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	FAOybPWN+qdlZCcWoVUxF0Q7xokWhTgkX+1Kdolkck1Q9Dt7P0peyR/WSz/cE73SGgq3Cn0w/RoYKrXjDIHUv5JFQVHeCiOsfffLh0+O29P8wybyco3hyWUGV2dE1X8dtwUju+psuM7DFe+SzbfTy+pAh5dk3cYMEMHACFvH8ISLvX9mMT8Ah5tZIqbR75rT7HRCuASiMhwBz7rAP3uuSSGZP3GrQ9V9Ajw6UAbZyWcjnQ+5iBJ6EEDmps2L2iv944v7zaeAu8vLAPNWpUd0PCR71FY5kTXMAHovK65GL2Uur10/vS0SjYRNXH/Bv0X6zOH1B6YfeolFvbR8l7SGtT8Raj/gBPFHI1JtUdr9vGu7MCHq0u7J8T9MYxMku0YrvnIql8izDV3cHy3u/bdX/Pt/Lix0rN0EES0wIr73kuvbm864qN5zmmnD1lu1z1I85oDIHWNzQuEfGUw9PVK9a00LbfzT6XrE+qAuM1Om6JY1MweRuyDJhadiQBN6J7HK9qGEbuQZTk1pZWBKW6RexNU7joFhG9CvX8nhyMwjLbzPaI36a3olzOWjjPyf+Oxkduo94WBOgg1wzkIDdAcSgAJIZgY9fB1KX5lTCpE2F48=
+	qsgKRZUqQTFb0YD5iFDICxYFdJvPAy56QXkEB2QVnlxk5Ii3HEO3TZckaty8ixaTBX5V8R4831XfBN9Rb3Z+BbcGB0mOJXDQflZxCDN7+BsdNejzHejnzcpCyqViJSj1QZNH6rejj103c/fFf2xSflIjsR7QvURXH8mXCrNjXo9p9FyYJQ4YJZOFNoZhx/RbXCkJooXyiJfg0TBfhAweELpQKbxYCaHEcxkZ50iAJNYtcmq10fqiv/WsdrwGMCvJpdwMXddRwGbt2bTgbljSR0bg7l3HGqQoqHu/vofKdUtWs8HU3xmrIZXdOFWBViXXTchjYfJUfOFiLmOU86/xxdKtCVkJx759xWBkZ5i8qeDqN50gSsnjgsL57ArnHP6WMqU9BMivQrstR2jIAYqgXUR70O4+s3jFTT8sn/f0g9zdnqCE1f+BtpXu1xxpR0sO6e9K14PJQWd8u4tJPfj9+S/i4iyxLapatXziJUoS8HTic00HAynk/pLIscPz89XKJYXHff1ei3d1Yr0ChSabYJHBHDONEeegMlSOrZ4p6fMNG/KNZpLpyv/obE+u7hBU6UEcbX1OCj5RJ+0axvi8BMm8ajG8r3NE350y8fN6eNg=
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?KzVrSmFyK2k3VWRiaUpaNzN4MW1za3RMM0hsT01vajdIVGhzV1k0WjE0M0Nn?=
- =?utf-8?B?SVp5NlpIZ0x4blBqdjYwSk5la3VoNE1YK3VBWDJRZkl6WWJtRHBIa3FaS3Vj?=
- =?utf-8?B?bVR5cmtWOGJDajVocERCcTVxVkQ0SFJTYnBIaTdCWDZpQWFpUVFXaDVvM1g4?=
- =?utf-8?B?dHpkK1lqNmdYRy9ET2xLTjdwUUlzQWhhNlllRjdtNnpqS3ZTLzRjeG5OTWJY?=
- =?utf-8?B?QkZVYWY5WUlIU3ZyS2VCMHJaL2o3a3JoUXc5a2o5b1ltNjJGK1hYS1h0ejNJ?=
- =?utf-8?B?dEp0NnY5THVJUk5SNG9Gamo0Z29ISzlGdHllVWM4c0JjUzBsVG82amx1Yk9q?=
- =?utf-8?B?Q3JKYTRVcDNScWxPTTFWa0wrUkt6MTV2Rm92TGVKU3AzeHhrbkwvT3hVNHNK?=
- =?utf-8?B?ZlZPQ0JDVVNyRVlCRDBESythOXFHVjFxMmd4dWRHMFpHZVVQcUpZSmhhMnZS?=
- =?utf-8?B?R3dMZ2J6OUVXSkZRVkZNQ2hSVXdFa0dmWGo4ZTZVVExwZnN2V0QzWWcvQThv?=
- =?utf-8?B?akJvcmNJWHo2eXl2b1FzMDRqMnBsd2xvWCtYWWw5WExKMVg3TzY1NHJBQU44?=
- =?utf-8?B?S1dLTUxsMFpFSGp1eXF2b2pRYkFTM1BxUVZNamFxVjd3U3BMUy95YXpHQStx?=
- =?utf-8?B?TkNDM1haWmx4V3luYjBnTjU0UVRjZjB5dWwrNS9rME44V2hRemNIOGJRSUh4?=
- =?utf-8?B?dnBBU0xLMVJ3d2hNNFpjVFJ2NUZIeG5IdU9ZdG1rbkZ1Y09DRGZWT1RSNVkv?=
- =?utf-8?B?NHFzdkx0VnVoSlBwZ3pwM2FvV3Y5ZjBTdndVaFQ5VCs2V2d5ZU1Ta291STB5?=
- =?utf-8?B?TzVCY1BxZEdBZUFIUTZ0SWhweHphbW5hT3NjZGk0Ky80UHgxS3lZN2NvNENN?=
- =?utf-8?B?aUh1WVlEQXVBN3pqNXluWTlzNlpIUTNBUzRhbWtBMTVneXJydkJCNGJpT2Qy?=
- =?utf-8?B?b1N6YW92c1YxYU9ydjNQd21ySXlEUzFvdEtUWDlEbDFxSWJmdkFBMDVVY1A3?=
- =?utf-8?B?ZDVKRnRPVC9XejIwUnE0NkRsZURnMnpnb2ZkSFZySDBjQStOSnN3eVlJcHhj?=
- =?utf-8?B?S0ZhTWM5aExubjM2NFBxM2NBR2ZXd05LaE5LSXFOQm5MeDY1eDJjU3E4cUV6?=
- =?utf-8?B?TUpCeHlGclBLNFlVTVBWSHdEbzBrRG01dEFVOGRLTUpyT3dqSGl6UUEvUmRl?=
- =?utf-8?B?azExL1NMUG9nUllRaEdmSCt6YUhUTXFkRVZLTWM2Z2VaMHAzSjE3TUI1RXdB?=
- =?utf-8?B?VzN1eGh3M01WcFo4WjdvaTdKODFkRnVXeVhvS3VFblhyUTNUSzM2VVFUSWo1?=
- =?utf-8?B?eDV5Mmc4NHpNR0ZORzB2UWtNRG51WVF1REVFU1hhN0V6ZmlheXAyUUVwSitI?=
- =?utf-8?B?STZEcExBM0VHUjlIUUs0WllFMGg1NVVSYnIxd29WZnZOa3hINjIrWUNhcUdq?=
- =?utf-8?B?UU5Nc0ZGUkpuOUIvNXFwck5iNUFhaFd1NEZlNnR6bEdpdmczWmxHbUR1SFAr?=
- =?utf-8?B?aDJvWnN2QUphUXNZWUpMb2JXZ2lyOUF3cEhvNVpZNFl3RW9ld29Hb1IrZm02?=
- =?utf-8?B?OEVMa0p3aGE3YjBqS05oZlgvYzhuOWlseUxrejc1N1dLdCttVUxnQzJCNUZH?=
- =?utf-8?B?MzVRaGhVVGQ4dUd1V2FTQjZnR2hrSHZHYUNBSUdNVTRaVHpHSlQ0Wi90N3Nx?=
- =?utf-8?B?NU9hYlluWGFET2c0blNXaFlPNDJRWStoeTljV0l1N0g3bUFmOE5tWVJQYjRu?=
- =?utf-8?Q?BFLE/rhKobmfAK5kzM=3D?=
+	=?utf-8?B?YTA0MW5KTmlhQUtnU0t1VnpsU0l5OFhaTUtJR01FeThwL3JPTmtNRmErQWU1?=
+ =?utf-8?B?Q2V3UVhIdGRoODFtZW5iZVlMODVZcmJuL3VrOU0xUmxCRko3bDRzT0ZwMWhk?=
+ =?utf-8?B?aU4vcE9HaUtScW8xbk5tY3NIRFlpYmZlWjYyRWNsaWV3ajBQdTMrbFJudjFz?=
+ =?utf-8?B?R1JaS0taYWhjNTNmNmR1VFIrdWkzdmcydFhSME1xYTBrbUJtL3VabkEyaTFI?=
+ =?utf-8?B?S2tycHN0R00vZmlOeFh4QkhJWW1TL1ZIVFA1Z0tKVUJmVm1OdVg2SE1RbmlF?=
+ =?utf-8?B?QXQ1WjBvTElxRGhUcHhIM1ozWWZKQnBRUmJDeVNmaU5SRk50RGpVb1l5Z1JI?=
+ =?utf-8?B?aEJMTlpnVFdqU2xmRTlSaHZDMmZJNUhpTk51YktOTFREaTUzTlBuMWdaZWtU?=
+ =?utf-8?B?RVJUelFGd0lXcmJZTUc1bWZFT0h0NGgzUDgyK1BHM0o5aTl2aTBqTzJhZUhq?=
+ =?utf-8?B?NGJsa3I2V2oxcTBybkl1T3dHTnJobm9ZVzhXeDFSOHRieFRtS2ZldkpoSFJK?=
+ =?utf-8?B?dWU4QytDYko2bVk4dWI5MjFsRVg5M3NpNkY1dDJnUnFzNVBGK1UvcnBYdlRw?=
+ =?utf-8?B?aUtYd1hMcUZGQWNRazlUNmVEWnZNeHYvVW8wUGxjK0E4KzhYaW5vUWRXUEpn?=
+ =?utf-8?B?YjBpeDIrS2s1ejQ4dythQzNzUUNvYmZjZjVVbStpMXg1QlJVc2R0Ny9jMVk0?=
+ =?utf-8?B?V0VOdFNTZ3RKSENHSzdCSFBmcU9FdjNiN2x0ZVFUSWxpTXhPNGJ1VHdtR1Vo?=
+ =?utf-8?B?OFNtcnREU2FXMytDSE5FMEZGUHdoMFU0MnBhMHF0aXhKclBGTzNJWk1oaFFv?=
+ =?utf-8?B?bk5jS1ZJMTlRMisvY1JvNEI0TkVoa3poK2FKUExsUm5STnFVb1lWditKcnhD?=
+ =?utf-8?B?T2dhVldFdmV2S1dONUpsSzQwRkpNa2RvUHJrdnF0NDFrSDFPK0tNV1F6VDQ0?=
+ =?utf-8?B?WSs1NThEYyt3MTdvMnN6V09yUjB4KzE5T09mNi9iNllaR2lTcUlDb1Z6bFNr?=
+ =?utf-8?B?QWtMZmdXZ0dTcGIyVmo4cGhRMDNLTy8vZWU5NDkwOUEwdkJYMlhmaWFmUnJ2?=
+ =?utf-8?B?UG1mMEpqU0oyNWQxN1lOQkJUOWdYK3o2dHVLWElHb1lyd1ErMVEycVRubnBS?=
+ =?utf-8?B?OERhSmhtcTk0L1J6V3E3dnNNNFhDV1FYNHlISGNvU3VrOC9rOVJNRlVZVFpy?=
+ =?utf-8?B?Vktla1JZdDYxSlY2SGFxRStVQmNzR2RXNm1CRVJlYmRyR0VVb0pCYmI3UEtz?=
+ =?utf-8?B?S0luV1FUZ1g3bWEzMnhLcXhsaUdXMnUyTThwZU95aCtpTXZ2WTZEeE00OXRH?=
+ =?utf-8?B?RE93c0RPTGhTdUVjOEdBTFErelhpV1hnWWhBcktsYWNWZHRLUFgvMXliL0lI?=
+ =?utf-8?B?bDRxbjQxakp3WHVUTTZMVEl4YjlMSWtMN1NaRHVWOEVCSUJqUDdwU0RoSng5?=
+ =?utf-8?B?YlQ5Q1h5dFpiQmo5SFI5Q2ZkcVVMRFRDMVhuVCtpc1JHQ013ZUxNcmkyckpR?=
+ =?utf-8?B?eVJhaHVYdlplMXNFOW1Gek5tQk1PWDZWN2tCK0dPK1cyTHlqSDhKaEFnYmJ5?=
+ =?utf-8?B?c2pKZnNEeTAzWHdmd2VaT0MxYlA0VUxLVHVNZll1OUEwTnpIR2J4SVpyaktF?=
+ =?utf-8?B?SUdxRDB5QVFWZDhZdHVLbXhEZWlTNEZPOER1bHMwcnF1RVlBbVdMTXB6cnE2?=
+ =?utf-8?B?WmJZVFh2NXZUSVZTVWRETFg0R2JKdUozdFk2YUkrdkhSeEdOTWN2V0xXWi9U?=
+ =?utf-8?Q?6vDfcgrwhLPrFpisks=3D?=
 X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-80ceb.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: cbe21b6d-df57-428c-057b-08dc15ff1340
+X-MS-Exchange-CrossTenant-Network-Message-Id: 02e9d96b-5296-4a6c-a742-08dc15ff1e19
 X-MS-Exchange-CrossTenant-AuthSource: AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2024 19:20:46.8394
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2024 19:21:04.9906
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -120,63 +118,45 @@ X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
 	00000000-0000-0000-0000-000000000000
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0P193MB0769
 
-otherwise the synopsys_id value may be read out wrong,
-because the GMAC_VERSION register might still be in reset
-state, for at least 1 us after the reset is de-asserted.
+If get_unused_fd_flags() fails, the error handling is incomplete
+because bprm->cred is already set to NULL, and therefore
+free_bprm will not unlock the cred_guard_mutex.
+Note there are two error conditions which end up here,
+one before and one after bprm->cred is cleared.
 
-Add a wait for 10 us before continuing to be on the safe side.
-
-> From what have you got that delay value?
-
-Just try and error, with very old linux versions and old gcc versions
-the synopsys_id was read out correctly most of the time (but not always),
-with recent linux versions and recnet gcc versions it was read out
-wrongly most of the time, but again not always.
-I don't have access to the VHDL code in question, so I cannot
-tell why it takes so long to get the correct values, I also do not
-have more than a few hardware samples, so I cannot tell how long
-this timeout must be in worst case.
-Experimentally I can tell that the register is read several times
-as zero immediately after the reset is de-asserted, also adding several
-no-ops is not enough, adding a printk is enough, also udelay(1) seems to
-be enough but I tried that not very often, and I have not access to many
-hardware samples to be 100% sure about the necessary delay.
-And since the udelay here is only executed once per device instance,
-it seems acceptable to delay the boot for 10 us.
-
-BTW: my hardware's synopsys id is 0x37.
+Fixes: b8a61c9e7b4a ("exec: Generic execfd support")
 
 Signed-off-by: Bernd Edlinger <bernd.edlinger@hotmail.de>
 
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 3 +++
+ fs/exec.c | 3 +++
  1 file changed, 3 insertions(+)
 
 v2: rebased to v6.7, retested and updated the commit message
-as suggested Serge Semins review comment:
-https://lore.kernel.org/lkml/b4mpa62b2juln47374x6xxnbozb7fcfgztrc5ounk4tvscs3wg@mixnvsoqno7j/
-and retained Jiri Pirkos Reviwed-by from:
-https://lore.kernel.org/lkml/ZT+Zq4j9iQj1+Xai@nanopsycho/
+to fix a checkpatch.pl style nit about the too short sha1 hash
+in the Fixes: statement.
+And retained Eric's Acked-by from:
+https://lore.kernel.org/lkml/87mts2kcrm.fsf@disp2133/
 
 
 Thanks
 Bernd.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 37e64283f910..b8e8f6e963f2 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -7440,6 +7440,9 @@ int stmmac_dvr_probe(struct device *device,
- 		dev_err(priv->device, "unable to bring out of ahb reset: %pe\n",
- 			ERR_PTR(ret));
+diff --git a/fs/exec.c b/fs/exec.c
+index 4aa19b24f281..6d9ed2d765ef 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1408,6 +1408,9 @@ int begin_new_exec(struct linux_binprm * bprm)
  
-+	/* Wait a bit for the reset to take effect */
-+	udelay(10);
+ out_unlock:
+ 	up_write(&me->signal->exec_update_lock);
++	if (!bprm->cred)
++		mutex_unlock(&me->signal->cred_guard_mutex);
 +
- 	/* Init MAC and get the capabilities */
- 	ret = stmmac_hw_init(priv);
- 	if (ret)
+ out:
+ 	return retval;
+ }
 -- 
 2.39.2
 
