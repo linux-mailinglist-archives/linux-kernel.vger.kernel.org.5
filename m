@@ -1,237 +1,187 @@
-Return-Path: <linux-kernel+bounces-25680-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25681-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A028882D487
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:24:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ED2A82D489
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:24:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E52E1C21149
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:24:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 019C11F2150F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:24:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACD434402;
-	Mon, 15 Jan 2024 07:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80BD96AA2;
+	Mon, 15 Jan 2024 07:24:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a0Min/Bp"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oIrkWxrU"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 858C88814;
-	Mon, 15 Jan 2024 07:23:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d51ba18e1bso71735725ad.0;
-        Sun, 14 Jan 2024 23:23:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A8BB63AE
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 07:24:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a2821884a09so703386366b.2
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 23:24:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705303408; x=1705908208; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kZ5LQrtGOef2RhCQexh0DzGghwnp1zT6hJb7zIaDJYU=;
-        b=a0Min/BpgERqnBz4GkjZawDm1Tmtq7QwVUZqZp9TbVGFiLQ46BxC5h6oqGn4HxfC+x
-         Pqz1yhNI6uptsKTplg10oBlA1rJPMnJpf9Y6eGThSxgdoADrC4v0JDgMmCDiHAatzpZI
-         iIfo+wm0vSfR9J+Jx4G465RiVx4ToJ7OF1zyaJ3AWc+R282Oh8orfRBbXWddF/3tncJK
-         e84eZfw4dttpMMbCQ72YB6SS85wipxc37dABfuEJ7EAIuFtLR/oi+cVdi/2YLw3h8eqQ
-         A720EKQT7jfOPSIles8MBeYQpts+o/9Suq0GYBjTALuTbr8B65mPIa4bkav43ifVwFzK
-         dIQA==
+        d=linaro.org; s=google; t=1705303445; x=1705908245; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PvuHUaA4z/E3GMVXik3pZT0dq5C3GN9SWjTPsSxtY9w=;
+        b=oIrkWxrUJlIC4zSAsuFFqyZ0jufd+PU8UhE5hFQ8ItyQre7y1ddQAj9EhrCpGQYRZ3
+         4LC5WTDQqU5ITQQ5YDDBNR/ttRD0/TK4+GK5DRyF6CANiilSLmzw6F+iVn+xsUxYpNQB
+         o4sG2K53DVg6G1vWl4YWaJJe47AZtAm77p31PtNsOr6mw3jrrmYRu83yEdlZuR2rTkCC
+         qqT3ic8APCB1pkyCrL9FoND36t95kfo4qrs7uL9g1bJzYDsTVo9QtDGEdK6pC3PcWBuX
+         HuhzdXab83qAnRq/FsSKtAvxh6iZBv55L0VfahosoQH6D+tSiD5y4GPZC2R4elhWuzvf
+         kmYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705303408; x=1705908208;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kZ5LQrtGOef2RhCQexh0DzGghwnp1zT6hJb7zIaDJYU=;
-        b=lMb9/GC/tp8/xMvYLlBBGaQkc1w1RSa5mfmP72oVESn7g+LmqiuJWRH+mBeiclZB4g
-         zreJvnu0z2I5VGPxBX1mHFLFOn+4iajAsff9ePOtZhoZDa7uiV1TPDAgZrRDdAYcN6+9
-         Mg6xgY8LNOlIJxqRWfh2zIEkJelNN5yi4hy/g/HsJxcCR45kRAKeRUjad1b33lRmjUv2
-         PuF5RoXm8J0RE4ba56KEAOk3evO6ZQ+h+UmMi+zsGgEW1cW3//fvXlPUeHfnq1RLVVRO
-         o2qcsWysKEQutGYeh5IyiTkxOqg+IOrBbDVfgcEUhOX5tEcLnKBK+B/c9inhsFenPpuJ
-         PdPg==
-X-Gm-Message-State: AOJu0YzOcqDClTzG9m8+aCuCMw6y0q0g9KUIgMrUQIe/nOgSMzYX88Or
-	82HxkSYCtliB8ptqVnzkdFY=
-X-Google-Smtp-Source: AGHT+IE7XD6hPXg4Mob0qJPGLGIM9saQIso5Je8CuomGJn7KGPsIOjR+XO9RI88DsLW7kxGQ8P7EbA==
-X-Received: by 2002:a17:902:e78a:b0:1d3:ee1f:ce54 with SMTP id cp10-20020a170902e78a00b001d3ee1fce54mr6201200plb.89.1705303407872;
-        Sun, 14 Jan 2024 23:23:27 -0800 (PST)
-Received: from localhost.localdomain ([203.205.141.87])
-        by smtp.googlemail.com with ESMTPSA id mp13-20020a170902fd0d00b001d4ac8ac969sm6990545plb.275.2024.01.14.23.23.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jan 2024 23:23:27 -0800 (PST)
-From: Ze Gao <zegao2021@gmail.com>
-X-Google-Original-From: Ze Gao <zegao@tencent.com>
-To: Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
-	Ze Gao <zegao@tencent.com>
-Subject: [PATCH 4/4] perf sched: Commit to evsel__taskstate() to parse task state info
-Date: Mon, 15 Jan 2024 02:23:06 -0500
-Message-ID: <20240115072306.303993-5-zegao@tencent.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20240115072306.303993-1-zegao@tencent.com>
-References: <20240115072306.303993-1-zegao@tencent.com>
+        d=1e100.net; s=20230601; t=1705303445; x=1705908245;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PvuHUaA4z/E3GMVXik3pZT0dq5C3GN9SWjTPsSxtY9w=;
+        b=vpCjm/p0yn/10TxM0lmU3+NtNIKjAko8n9pA7C/jl3X0aEtGszzizkoX74u88OYHHB
+         VI2QwjEpzcWZbVVVZt2iX7LOEEmSxC2hJShGQZQCLxA8VVsfsJ1BYyoVuzgPk/gezM9t
+         b76Z7HvDhAMzxD42xVjnnVtbvI1qXEoB10X9p6L+VpqNBO14z/B4aODc1xw+p/ZmhRuG
+         Y9DqntICn7RrjlEldNkY3E8gPQiYIMrooNO4oeK9asm2yFnBc9980Lb0xI5MOZTRcpcR
+         vGZ0T4KVUb75Vg43S+j7LSPsjGZAEC5z9g7pEm2OlgxFczMMZrCuPSwSJDRoosrZw6lW
+         aSWw==
+X-Gm-Message-State: AOJu0Yx89+0Eu0AEWM4sw53R6LZlMq6MIRNJbtBzC12/ewF8t2Zrosg4
+	bVhdafaPRl1QH6JMKig0ybv8nvamcEvAmg==
+X-Google-Smtp-Source: AGHT+IERT4GBwuxqReY5Crqo1ydyMoaJn0qS7TClwaeiapqVLsxc2pqc4WVzSUfCdQx+eAQCgE2+fg==
+X-Received: by 2002:a17:907:a70d:b0:a2d:3579:ecfb with SMTP id vw13-20020a170907a70d00b00a2d3579ecfbmr1274272ejc.31.1705303445408;
+        Sun, 14 Jan 2024 23:24:05 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id t19-20020a1709067c1300b00a2ca9d38654sm4030783ejo.85.2024.01.14.23.24.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 14 Jan 2024 23:24:04 -0800 (PST)
+Message-ID: <b7458f01-8022-4ed4-8404-9e7d6f567ff4@linaro.org>
+Date: Mon, 15 Jan 2024 08:24:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/4] dt-bindings: perf: fsl-imx-ddr: Add i.MX95
+ compatible
+Content-Language: en-US
+To: Xu Yang <xu.yang_2@nxp.com>, Frank Li <frank.li@nxp.com>,
+ "will@kernel.org" <will@kernel.org>,
+ "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "festevam@gmail.com" <festevam@gmail.com>,
+ "john.g.garry@oracle.com" <john.g.garry@oracle.com>,
+ "jolsa@kernel.org" <jolsa@kernel.org>,
+ "namhyung@kernel.org" <namhyung@kernel.org>,
+ "irogers@google.com" <irogers@google.com>
+Cc: dl-linux-imx <linux-imx@nxp.com>,
+ "mike.leach@linaro.org" <mike.leach@linaro.org>,
+ "leo.yan@linaro.org" <leo.yan@linaro.org>,
+ "peterz@infradead.org" <peterz@infradead.org>,
+ "mingo@redhat.com" <mingo@redhat.com>, "acme@kernel.org" <acme@kernel.org>,
+ "alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>,
+ "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>
+References: <20231208085402.2106904-1-xu.yang_2@nxp.com>
+ <DU2PR04MB882292D4D284A000A9342EA58C6C2@DU2PR04MB8822.eurprd04.prod.outlook.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <DU2PR04MB882292D4D284A000A9342EA58C6C2@DU2PR04MB8822.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Now that we have evsel__taskstate() which no longer relies on the
-hardcoded task state string and has good backward compatibility,
-we have a good reason to use it.
+On 15/01/2024 07:03, Xu Yang wrote:
+> 
+>> Subject: [PATCH v2 1/4] dt-bindings: perf: fsl-imx-ddr: Add i.MX95 compatible
+>>
+>> i.MX95 has a DDR pmu. This will add a compatible for it.
+>>
+>> Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
+>>
+>> ---
+>> Changes in v2:
+>>  - no changes
+>> ---
+>>  Documentation/devicetree/bindings/perf/fsl-imx-ddr.yaml | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/perf/fsl-imx-ddr.yaml b/Documentation/devicetree/bindings/perf/fsl-
+>> imx-ddr.yaml
+>> index e9fad4b3de68..1bc7bf1c8368 100644
+>> --- a/Documentation/devicetree/bindings/perf/fsl-imx-ddr.yaml
+>> +++ b/Documentation/devicetree/bindings/perf/fsl-imx-ddr.yaml
+>> @@ -20,6 +20,7 @@ properties:
+>>            - fsl,imx8mn-ddr-pmu
+>>            - fsl,imx8mp-ddr-pmu
+>>            - fsl,imx93-ddr-pmu
+>> +          - fsl,imx95-ddr-pmu
+>>        - items:
+>>            - enum:
+>>                - fsl,imx8mm-ddr-pmu
+>> --
+>> 2.34.1
+> 
+> A gentle ping.
 
-Note TASK_STATE_TO_CHAR_STR and task bitmasks are useless now so
-we remove them for good. And now we pass the state info back and
-forth in a symbolic char which explains itself well instead.
+What do you mean? Weren't you asked to fix things, were you? Why do you
+ping then?
 
-Signed-off-by: Ze Gao <zegao@tencent.com>
----
- tools/perf/builtin-sched.c | 46 +++++++++-----------------------------
- 1 file changed, 10 insertions(+), 36 deletions(-)
-
-diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
-index ced6fffe8110..f1d62f6b6cab 100644
---- a/tools/perf/builtin-sched.c
-+++ b/tools/perf/builtin-sched.c
-@@ -92,13 +92,6 @@ struct sched_atom {
- 	struct task_desc	*wakee;
- };
- 
--#define TASK_STATE_TO_CHAR_STR "RSDTtXZPI"
--
--/* task state bitmask, copied from include/linux/sched.h */
--#define TASK_RUNNING		0
--#define TASK_INTERRUPTIBLE	1
--#define TASK_UNINTERRUPTIBLE	2
--
- enum thread_state {
- 	THREAD_SLEEPING = 0,
- 	THREAD_WAIT_CPU,
-@@ -255,7 +248,7 @@ struct thread_runtime {
- 	u64 total_preempt_time;
- 	u64 total_delay_time;
- 
--	int last_state;
-+	char last_state;
- 
- 	char shortname[3];
- 	bool comm_changed;
-@@ -425,7 +418,7 @@ static void add_sched_event_wakeup(struct perf_sched *sched, struct task_desc *t
- }
- 
- static void add_sched_event_sleep(struct perf_sched *sched, struct task_desc *task,
--				  u64 timestamp, u64 task_state __maybe_unused)
-+				  u64 timestamp, const char task_state __maybe_unused)
- {
- 	struct sched_atom *event = get_new_event(task, timestamp);
- 
-@@ -849,7 +842,7 @@ static int replay_switch_event(struct perf_sched *sched,
- 		   *next_comm  = evsel__strval(evsel, sample, "next_comm");
- 	const u32 prev_pid = evsel__intval(evsel, sample, "prev_pid"),
- 		  next_pid = evsel__intval(evsel, sample, "next_pid");
--	const u64 prev_state = evsel__intval(evsel, sample, "prev_state");
-+	const char prev_state = evsel__taskstate(evsel, sample, "prev_state");
- 	struct task_desc *prev, __maybe_unused *next;
- 	u64 timestamp0, timestamp = sample->time;
- 	int cpu = sample->cpu;
-@@ -1039,13 +1032,6 @@ static int thread_atoms_insert(struct perf_sched *sched, struct thread *thread)
- 	return 0;
- }
- 
--static char sched_out_state(u64 prev_state)
--{
--	const char *str = TASK_STATE_TO_CHAR_STR;
--
--	return str[prev_state];
--}
--
- static int
- add_sched_out_event(struct work_atoms *atoms,
- 		    char run_state,
-@@ -1121,7 +1107,7 @@ static int latency_switch_event(struct perf_sched *sched,
- {
- 	const u32 prev_pid = evsel__intval(evsel, sample, "prev_pid"),
- 		  next_pid = evsel__intval(evsel, sample, "next_pid");
--	const u64 prev_state = evsel__intval(evsel, sample, "prev_state");
-+	const char prev_state = evsel__taskstate(evsel, sample, "prev_state");
- 	struct work_atoms *out_events, *in_events;
- 	struct thread *sched_out, *sched_in;
- 	u64 timestamp0, timestamp = sample->time;
-@@ -1157,7 +1143,7 @@ static int latency_switch_event(struct perf_sched *sched,
- 			goto out_put;
- 		}
- 	}
--	if (add_sched_out_event(out_events, sched_out_state(prev_state), timestamp))
-+	if (add_sched_out_event(out_events, prev_state, timestamp))
- 		return -1;
- 
- 	in_events = thread_atoms_search(&sched->atom_root, sched_in, &sched->cmp_pid);
-@@ -2022,24 +2008,12 @@ static void timehist_header(struct perf_sched *sched)
- 	printf("\n");
- }
- 
--static char task_state_char(struct thread *thread, int state)
--{
--	static const char state_to_char[] = TASK_STATE_TO_CHAR_STR;
--	unsigned bit = state ? ffs(state) : 0;
--
--	/* 'I' for idle */
--	if (thread__tid(thread) == 0)
--		return 'I';
--
--	return bit < sizeof(state_to_char) - 1 ? state_to_char[bit] : '?';
--}
--
- static void timehist_print_sample(struct perf_sched *sched,
- 				  struct evsel *evsel,
- 				  struct perf_sample *sample,
- 				  struct addr_location *al,
- 				  struct thread *thread,
--				  u64 t, int state)
-+				  u64 t, const char state)
- {
- 	struct thread_runtime *tr = thread__priv(thread);
- 	const char *next_comm = evsel__strval(evsel, sample, "next_comm");
-@@ -2080,7 +2054,7 @@ static void timehist_print_sample(struct perf_sched *sched,
- 	print_sched_time(tr->dt_run, 6);
- 
- 	if (sched->show_state)
--		printf(" %5c ", task_state_char(thread, state));
-+		printf(" %5c ", thread->tid == 0 ? 'I' : state);
- 
- 	if (sched->show_next) {
- 		snprintf(nstr, sizeof(nstr), "next: %s[%d]", next_comm, next_pid);
-@@ -2152,9 +2126,9 @@ static void timehist_update_runtime_stats(struct thread_runtime *r,
- 		else if (r->last_time) {
- 			u64 dt_wait = tprev - r->last_time;
- 
--			if (r->last_state == TASK_RUNNING)
-+			if (r->last_state == 'R')
- 				r->dt_preempt = dt_wait;
--			else if (r->last_state == TASK_UNINTERRUPTIBLE)
-+			else if (r->last_state == 'D')
- 				r->dt_iowait = dt_wait;
- 			else
- 				r->dt_sleep = dt_wait;
-@@ -2579,7 +2553,7 @@ static int timehist_sched_change_event(struct perf_tool *tool,
- 	struct thread_runtime *tr = NULL;
- 	u64 tprev, t = sample->time;
- 	int rc = 0;
--	int state = evsel__intval(evsel, sample, "prev_state");
-+	const char state = evsel__taskstate(evsel, sample, "prev_state");
- 
- 	addr_location__init(&al);
- 	if (machine__resolve(machine, &al, sample) < 0) {
--- 
-2.41.0
+Best regards,
+Krzysztof
 
 
