@@ -1,909 +1,222 @@
-Return-Path: <linux-kernel+bounces-25850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F31182D6B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:06:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2617582D6B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:06:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 783831C2163F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:06:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29F1F1C21749
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:06:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07C67F9D7;
-	Mon, 15 Jan 2024 10:05:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40F0F101D0;
+	Mon, 15 Jan 2024 10:06:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cZNpGgU0"
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b="I5Hjuwjy"
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2064.outbound.protection.outlook.com [40.107.20.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 982E72BAE7;
-	Mon, 15 Jan 2024 10:05:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bd67e9d6ceso1095122b6e.3;
-        Mon, 15 Jan 2024 02:05:49 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51C1A2BAE7;
+	Mon, 15 Jan 2024 10:05:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=solid-run.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=solid-run.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eK5g5VwmeIYkDv7O5vyU6DcugJtuDNkVpRmyGnutzzSpD9CytfMIsV1wCPJrVGcOXdQEWWEVPUKwZxfDt+5F60RAH66XoYfNvtpxCyv3nTu0+AW+ed2fo3nkBJZ+EcddvwE8AT/MGo3U4TyoPRjuE/IJmq0L0HIFR9AO8Nw5riBPXC+BdiCWUJ9jyNM8tl//p2lEL8FsLeXvSlUSNooIJqcXOc63J5xvz4XnlumlBgVaFAAF+61PyLgDXqE4L9h/b5ChVMucV6r1xiAA5uOv2aRCwYYuRwCCTcphWG2AaQsdnrnv8Ebi81iziyu1RhvoAfg4IrgNpLObunWgUIVfUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZO3Hl01wNnQnikEZ390QmfftcYmpHjfh8X4zo/gVmQM=;
+ b=B2zyZcG7z9/4JJjlT6Uswo2pLq3+qgeSHyZwfvj0W0QCnGm40IhcN+qxMaX9W5dlXJnXMe6gSyF80vKGl6NtTWJxHCiwWDx4l0U5kBPBF9z82i7mZI6WM0fTRWUzvQTd41T5ka5RmFud3b8mU1/NKHxLS+TNjKMMxzzsjV/PG6DPC9vqvmE0lXUXkA0yr7JfoKOdP9Le+d4wSAcJ9kjW3+0JSXfEqVZyXhblzegdV9cIkchl56f8NGMfaR5HwRBn3P+ld5S27WtDzOHF/WxkUJYFlU0ywhw6B5tV+aDcGzt+02OOermYd4ZQvR1gjiY4TKG0NYiK5HoVfHNk6eDQyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=solid-run.com; dmarc=pass action=none
+ header.from=solid-run.com; dkim=pass header.d=solid-run.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705313148; x=1705917948; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cE/sruch355aNPyWFCJ0Jm77E7XLyVymxmRq0m4YSas=;
-        b=cZNpGgU0pF6pYV1Hj3BgMVhycPng/vyMWQBz6YviobfLeX7hCEMFeRewU4FvZEPGds
-         1/XiROr1FPkB6ingX96gWw+WQ7B7sKaptquWqsHBbcv030bwvJ/QcuZZxs1206TaIf2Z
-         KbYoTYXzT4sW6qB14RAY0WAmLvItmNp9UZTqHHwu8roa3qfY6UuFo97q+c6rwl+XhRE1
-         KZDKzl4BiEtflmPOuVwQaj8bPE4uhV1QKCDzCsWxKvhMlwI6kagqdE92gaKqZfEvb6TG
-         kpxnQCwwvWIiXcnioqGVJOteeVnzv9ezoArUEnW3xqF1PCBG+ygYrGaqHF5bCGzVftO/
-         duaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705313148; x=1705917948;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cE/sruch355aNPyWFCJ0Jm77E7XLyVymxmRq0m4YSas=;
-        b=V3wm7Sxs/TOcZaRea0Anaqskh6X4/jJrcHumKaVvEkIk7HxtzR8NM1ktO0HAkdE/wV
-         toKR4nBuhaAdRNK6qxoguSYZU8c+TLGamoROnKOvCb71EYioGzyMLr7RzLTfrk8CshC/
-         WZ2E8M2kxT+FpLNk7s86sOJtcV+3z68bWm2/GFNE7PaIjyYc7ysXLEEdd0QK87fJIzRE
-         PtYSslzQ1aeupSz3bhfN8eI+sSGTrT/vmwLEpsSASAltSI0vEvMKIgJ4ABgUftpTgf+M
-         APvBPKk409GWCVy3ZYLGXTK3rzcGC8jn9OF6+Inu66QHtI0C73+WysFTc+Dx5mwOTSIO
-         dKAQ==
-X-Gm-Message-State: AOJu0YybJDMHo0HXU3+StNMwjB96C8LXnUsrX8YSFDllX2Dl1DNzDqjP
-	1BaFIWY4uU9J9SA/+CCxJ6w=
-X-Google-Smtp-Source: AGHT+IHNlAuvI1Yy0qjR74ZU34fbPHYJni2lfQQutXRngLMyw9BQESnCEMkjUkUL3lYkD96bLZjiPw==
-X-Received: by 2002:a05:6358:c11a:b0:175:7201:5785 with SMTP id fh26-20020a056358c11a00b0017572015785mr3967014rwb.7.1705313148317;
-        Mon, 15 Jan 2024 02:05:48 -0800 (PST)
-Received: from cosmo-ubuntu-2204.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
-        by smtp.gmail.com with ESMTPSA id d10-20020a65424a000000b005cda7a1d72dsm6870712pgq.74.2024.01.15.02.05.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 02:05:47 -0800 (PST)
-From: Cosmo Chou <chou.cosmo@gmail.com>
-To: linux@roeck-us.net,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	jdelvare@suse.com,
-	corbet@lwn.net,
-	broonie@kernel.org,
-	naresh.solanki@9elements.com,
-	vincent@vtremblay.dev,
-	patrick.rudolph@9elements.com,
-	luca.ceresoli@bootlin.com,
-	bhelgaas@google.com,
-	festevam@denx.de,
-	alexander.stein@ew.tq-group.com,
-	heiko@sntech.de,
-	jernej.skrabec@gmail.com,
-	macromorgan@hotmail.com,
-	forbidden405@foxmail.com,
-	sre@kernel.org,
-	linus.walleij@linaro.org
-Cc: devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hwmon@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	chou.cosmo@gmail.com,
-	cosmo.chou@quantatw.com
-Subject: [PATCH v4 3/3] hwmon: Add driver for Astera Labs PT5161L retimer
-Date: Mon, 15 Jan 2024 18:05:18 +0800
-Message-Id: <20240115100518.2887549-4-chou.cosmo@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240115100518.2887549-1-chou.cosmo@gmail.com>
-References: <20240115100518.2887549-1-chou.cosmo@gmail.com>
+ d=solidrn.onmicrosoft.com; s=selector1-solidrn-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZO3Hl01wNnQnikEZ390QmfftcYmpHjfh8X4zo/gVmQM=;
+ b=I5HjuwjyavyIqqxxeJNc6PObCqKl9AVpnBxCiQUpSQdiu7cO1P3ZPuQ1qBu3o2NKnby3QJ525cn08bE5sonUIk/YRGQB7nBYk3uerXfiTjvm1wYX7CEgJWyHuAxLskQLvRg7FTu5U5IY1HvsOHJDua/ZyPhueNi9Q1G8d34Lnm8=
+Received: from AS8PR04MB8963.eurprd04.prod.outlook.com (2603:10a6:20b:42e::18)
+ by AS4PR04MB9623.eurprd04.prod.outlook.com (2603:10a6:20b:4cd::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.23; Mon, 15 Jan
+ 2024 10:05:56 +0000
+Received: from AS8PR04MB8963.eurprd04.prod.outlook.com
+ ([fe80::daf2:8c54:d469:793d]) by AS8PR04MB8963.eurprd04.prod.outlook.com
+ ([fe80::daf2:8c54:d469:793d%7]) with mapi id 15.20.7181.020; Mon, 15 Jan 2024
+ 10:05:56 +0000
+From: Josua Mayer <josua@solid-run.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Nishanth Menon
+	<nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo
+	<kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Alessandro Zummo <a.zummo@towertech.it>, Alexandre Belloni
+	<alexandre.belloni@bootlin.com>
+CC: Yazan Shhady <yazan.shhady@solid-run.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-rtc@vger.kernel.org"
+	<linux-rtc@vger.kernel.org>
+Subject: Re: [PATCH v2 4/5] arm64: dts: add description for solidrun am642 som
+ and evaluation board
+Thread-Topic: [PATCH v2 4/5] arm64: dts: add description for solidrun am642
+ som and evaluation board
+Thread-Index: AQHaRXqNRxBDBTIBFEOB99P14tzvurDWbMUAgALwy4CAASCFAIAAK9IA
+Date: Mon, 15 Jan 2024 10:05:56 +0000
+Message-ID: <2879689e-5a4e-4242-a23b-d2aa9f004b1d@solid-run.com>
+References: <20240112-add-am64-som-v2-0-1385246c428c@solid-run.com>
+ <20240112-add-am64-som-v2-4-1385246c428c@solid-run.com>
+ <60d78882-0ec5-4cd1-b68d-f75b73cb6cdb@linaro.org>
+ <1656bf68-c3b4-476d-984e-f231541058f6@solid-run.com>
+ <0b03af70-7dc4-4a4f-b9dc-218ef365c237@linaro.org>
+In-Reply-To: <0b03af70-7dc4-4a4f-b9dc-218ef365c237@linaro.org>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=solid-run.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AS8PR04MB8963:EE_|AS4PR04MB9623:EE_
+x-ms-office365-filtering-correlation-id: 3d20b8e4-de97-4240-9e0d-08dc15b190f0
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ KwVD724ADbS2N17ryphrNxNnwXgbDmmKmptIANqIIwZE6bJ4zlIMDDaqnGTb+VPztNxVBOsfLc5gCHaF6nu8/mEkJiUS0pEo7s2TMSDPcxppQH0LI79C8b5Em9smYxxpmcbFWA4H/MQmqiQEgrYK8OR4WKsmukWvCbLbeJennZOaMz6XiU3iP9veTOGEo+jagQjZUyZc7bfhXQLaX1GStHqwdaZmCutQYKZTgsWYyo8AihRZ2Bx5Nlu0LtNHNz8dDmFGZJc/njStgqr5t/wPfPj6vHQoXEwJH1t2+IH3c+v3q3aJMqrGsS/V+6P6pt/lgOIEUXpB9G4y3S/maYeIBbXiCht74HWAxqkiIzNU6Xm4NYXloKBu/R2PWok/EziY8Epi9X6jL9D781PWW0vNZpQtEtBZ93P883giaoo0KkzpxYVvklE4EK3Iug3nkQHgndO9wq45AtiatRdbIcJlWAf3mX6S5Y0WwVnVDZcFXwhvCIeNcqudhBQ5PZgedEylAEAi+dH4HBL7L2MV3ohE8dqlhI1T/FhvJw53v1XJe44VTe8PNcmb5ISCiehRz7QSQtd1kXj1bCqaDiMlX7v7REXGztymWHuyQHfe7/ZQ3KrJmmkf4AWMfAYnGEjqMeSI
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8963.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(346002)(39840400004)(366004)(376002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(31686004)(83380400001)(86362001)(31696002)(36756003)(38070700009)(8676002)(8936002)(4326008)(5660300002)(53546011)(2616005)(26005)(38100700002)(122000001)(71200400001)(66946007)(76116006)(66556008)(316002)(66446008)(66476007)(64756008)(54906003)(110136005)(91956017)(966005)(2906002)(41300700001)(6512007)(6506007)(7416002)(478600001)(6486002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?T1JDUGhTdXh1ZkJNNzVtMGpMSGdSQWhPdU1PVVZBNitQVVNCTFpHOFVmdUZq?=
+ =?utf-8?B?MXBhaDUwVFAyb28yNG1nOTFKZXZ6eFVaNy9aL0FEcWJ0KzNvdWhkWGNuUkY4?=
+ =?utf-8?B?bnRlRCtndklEanpUMlBZTnBVZmJWckJqbVlvM1BwOXpNVUhGZ09YclZEaDZP?=
+ =?utf-8?B?V095ck03ZWllMTZvVTJsalJ5djFTVzgyWktOZXZzWmxJQW82Y1ViMmIzRWF4?=
+ =?utf-8?B?N054bHdDWGxxYW02dk4zWGhSa1d1dVc4VFg5NE5PVTVINlZDc05PbFIzZVJ0?=
+ =?utf-8?B?MFI0dTFjeGNNSFpRS3lLSTlLQkl2TUNnRjVoS3hWVVo3UEswRkppYldNejJt?=
+ =?utf-8?B?K3M5bWxEL21jOWVJdTA3dzdESGd5bFc2YjFhVFJtbENpLzgxci80aVRZdm9E?=
+ =?utf-8?B?QmJOY01XWTIxY1J1aXVXdWdEN0VRbFIyK0k0TTNPTW11KzVkRzNYVTdjckFU?=
+ =?utf-8?B?SGMwdVlETnBsZVFUMzBjQ2JQcDd5ZGpLTTNWenVGRkUzUWlxVzVIOURCcUlT?=
+ =?utf-8?B?bG42ODdsb3lDdmh6bkZEcUgwMmg3M2kxMzRreDlxUUlma2g4bnR0Z3JPTUNR?=
+ =?utf-8?B?bjJpZmw0ZkF2K2svWTdtN0U0OE1tQlZrVnA3V09SQ1F3WmxYazdQNUIvVHZv?=
+ =?utf-8?B?NktzR3BocUZVbHFCckE3S2U5MjdlVG5pQ1djc0VoL08yZmhaaDYvZkVDbGda?=
+ =?utf-8?B?ekRJSHJ0ZkpMbWFVa1YyVCtsejBZY3pGN2Jqd3h2Y0N1TEt2S1BoUVhYT3RO?=
+ =?utf-8?B?Ti9FMDVEOE11Q1JMNVJQcFpmdmQ4am5Fb2lBSHljNlhNS05VK3I1R0g3Q2d2?=
+ =?utf-8?B?Q1I2djBtWTZHZW1JVlllazhGdU1HSjRobnVjM2ZmbkpqTkg3QnkxTVhrbUJ3?=
+ =?utf-8?B?Vm83R0NJUmRYd2F2UFpjaS9ncFlxUmNUTC9pTHlsei8relcxQ0lYUmFzM2RT?=
+ =?utf-8?B?TGd0cjFHS3M3NFU4NTRITS9vRG44RnExWW5nZU5RM1dhYk12dVlsN2lwZVZT?=
+ =?utf-8?B?YTNSRTNpSEIrNE9vSXVoUkY4eWlBOURZaDdJSkpSMWdGaHErTUk5RFhPUExB?=
+ =?utf-8?B?Yk9HOVU5ZkVZZDhoR0oraFRFU2VLZjhBK3BCbzhoMkM2cUswSjg5cWtLTHlj?=
+ =?utf-8?B?ZmZxR0RBcUtuMVgvb3cxWmlmQzBiYlN1aCtJMmFjalowcHJlWlhiaHFVV2Nw?=
+ =?utf-8?B?eEVZNmVlYzB2SzFNalZZSnFXVkxsQ2FNTGxINm9PWUkrTm1jZTQvaGxuQUlJ?=
+ =?utf-8?B?bjlyMHRUWUJVejU3eUdQZ1k4d1BIZnQrN0xsMmhvTTVLdCt2UXN5YnJxQWli?=
+ =?utf-8?B?NldaNms2U1lueWd0a3h1OEhhdDBUajNydHIxcmtHeWFYT2tXSlFicXRwOXFR?=
+ =?utf-8?B?V3huazJrNFF1Y2ZzMjRyNGhqaDhRa1RTUGlmQm5DNTZJVXlRdUhGMnRJK00z?=
+ =?utf-8?B?QjYvaUE3VERCUVhtY2dhK25UamxDT3cycEtvcFM3Uld4bytUeDZvNXY1emZN?=
+ =?utf-8?B?U3c2cW9EUDN4UEE5ZllUNEt6QnF3bjdWdG5vNWU4T3B2aG9OZTJpUTl0dnBa?=
+ =?utf-8?B?ZFpmY1ZMdGtsRC9PYmxNdnUwakVsRDdDbEtWc3E2c0dUajJ2WThNd0w1Skxi?=
+ =?utf-8?B?SHAvd28yWWorUkVwelI2VzFndkhyR2d3TTlobUhJT2N5bnNBUGNoUG4wK0J3?=
+ =?utf-8?B?Y2Npc1BwVW1QV0x1Qm8yR2cxWmlTYWRHUytYdHo0bGFrYUd3OTRTc3hlS1Y0?=
+ =?utf-8?B?N2N3MklEQTY3Q1RmZkFxV1pualc3S0pOWndWSXkydEI0OXE5M1ZjcFNuMnNP?=
+ =?utf-8?B?VWorWEg0WFBEOUtBL2hJZXZoSkRrNFJtOXk5QXg0M3JjSU5BbnNXSzA2ckpF?=
+ =?utf-8?B?YW1VbVFIQWhwUTUzenZBRVN1MnBiUEhReFRYN2RWTXJibEYyaVVQOTJ3dWlS?=
+ =?utf-8?B?a0ViMlZxdGx0bUdGSHNQVU1FU2xaTFFUd1NCa3M4akliNGhYMGhYSFpoWVFS?=
+ =?utf-8?B?bFZnKzFCQ2QySzZib01hYzdIdW1kaGx4UE53T2o0K3ppOE53akdvZzVlMTBa?=
+ =?utf-8?B?OERETjMvZ2VpODZaM1d1REZMUUMyWEphb2tyZ2tST3FEQWpMdXBqY3Zta1ZS?=
+ =?utf-8?Q?Cnmh87mcid4MlsHaGmfhpz36w?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <464547BAE77F8E41A8C3021188814EB1@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: solid-run.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8963.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d20b8e4-de97-4240-9e0d-08dc15b190f0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jan 2024 10:05:56.4392
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a4a8aaf3-fd27-4e27-add2-604707ce5b82
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Q80NppglxMDuwT28HjolANPjyyCenRV6fu6nHHFmIvYyW46Ixr9uJIPC+5vFsSY7EBzJ5JuF1t9RARQi8Wy0Jg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR04MB9623
 
-This driver implements support for temperature monitoring of Astera Labs
-PT5161L series PCIe retimer chips.
-
-This driver implementation originates from the CSDK available at
-Link: https://github.com/facebook/openbmc/tree/helium/common/recipes-lib/retimer-v2.14
-The communication protocol utilized is based on the I2C/SMBus standard.
-
-Signed-off-by: Cosmo Chou <chou.cosmo@gmail.com>
----
- Documentation/hwmon/index.rst   |   1 +
- Documentation/hwmon/pt5161l.rst |  42 ++
- MAINTAINERS                     |   7 +
- drivers/hwmon/Kconfig           |  10 +
- drivers/hwmon/Makefile          |   1 +
- drivers/hwmon/pt5161l.c         | 670 ++++++++++++++++++++++++++++++++
- 6 files changed, 731 insertions(+)
- create mode 100644 Documentation/hwmon/pt5161l.rst
- create mode 100644 drivers/hwmon/pt5161l.c
-
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index c7ed1f73ac06..9f5f215fcb2d 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -185,6 +185,7 @@ Hardware Monitoring Kernel Drivers
-    pmbus
-    powerz
-    powr1220
-+   pt5161l
-    pxe1610
-    pwm-fan
-    q54sj108a2
-diff --git a/Documentation/hwmon/pt5161l.rst b/Documentation/hwmon/pt5161l.rst
-new file mode 100644
-index 000000000000..1b97336991ea
---- /dev/null
-+++ b/Documentation/hwmon/pt5161l.rst
-@@ -0,0 +1,42 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Kernel driver pt5161l
-+=====================
-+
-+Supported chips:
-+
-+  * Astera Labs PT5161L
-+
-+    Prefix: 'pt5161l'
-+
-+    Addresses scanned: I2C 0x20 - 0x27
-+
-+    Datasheet: Not publicly available.
-+
-+Authors: Cosmo Chou <cosmo.chou@quantatw.com>
-+
-+Description
-+-----------
-+
-+This driver implements support for temperature monitoring of Astera Labs
-+PT5161L series PCIe retimer chips.
-+
-+This driver implementation originates from the CSDK available at
-+https://github.com/facebook/openbmc/tree/helium/common/recipes-lib/retimer-v2.14
-+The communication protocol utilized is based on the I2C/SMBus standard.
-+
-+Sysfs entries
-+----------------
-+
-+================ ==============================================
-+temp1_input      Measured temperature (in millidegrees Celsius)
-+================ ==============================================
-+
-+Debugfs entries
-+----------------
-+
-+================ ===============================
-+fw_load_status   Firmware load status
-+fw_ver           Firmware version of the retimer
-+heartbeat_status Heartbeat status
-+================ ===============================
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 391bbb855cbe..e194246f3c5c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17568,6 +17568,13 @@ F:	fs/pstore/
- F:	include/linux/pstore*
- K:	\b(pstore|ramoops)
- 
-+PT5161L HARDWARE MONITOR DRIVER
-+M:	Cosmo Chou <cosmo.chou@quantatw.com>
-+L:	linux-hwmon@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/hwmon/pt5161l.rst
-+F:	drivers/hwmon/pt5161l.c
-+
- PTP HARDWARE CLOCK SUPPORT
- M:	Richard Cochran <richardcochran@gmail.com>
- L:	netdev@vger.kernel.org
-diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-index a608264da87d..c8d86a695f66 100644
---- a/drivers/hwmon/Kconfig
-+++ b/drivers/hwmon/Kconfig
-@@ -1714,6 +1714,16 @@ source "drivers/hwmon/peci/Kconfig"
- 
- source "drivers/hwmon/pmbus/Kconfig"
- 
-+config SENSORS_PT5161L
-+	tristate "Astera Labs PT5161L PCIe retimer hardware monitoring"
-+	depends on I2C
-+	help
-+	  If you say yes here you get support for temperature monitoring
-+	  on the Astera Labs PT5161L PCIe retimer.
-+
-+	  This driver can also be built as a module. If so, the module
-+	  will be called pt5161l.
-+
- config SENSORS_PWM_FAN
- 	tristate "PWM fan"
- 	depends on (PWM && OF) || COMPILE_TEST
-diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-index 47be39af5c03..0554d3ccb09a 100644
---- a/drivers/hwmon/Makefile
-+++ b/drivers/hwmon/Makefile
-@@ -180,6 +180,7 @@ obj-$(CONFIG_SENSORS_PC87427)	+= pc87427.o
- obj-$(CONFIG_SENSORS_PCF8591)	+= pcf8591.o
- obj-$(CONFIG_SENSORS_POWERZ)	+= powerz.o
- obj-$(CONFIG_SENSORS_POWR1220)  += powr1220.o
-+obj-$(CONFIG_SENSORS_PT5161L)	+= pt5161l.o
- obj-$(CONFIG_SENSORS_PWM_FAN)	+= pwm-fan.o
- obj-$(CONFIG_SENSORS_RASPBERRYPI_HWMON)	+= raspberrypi-hwmon.o
- obj-$(CONFIG_SENSORS_SBTSI)	+= sbtsi_temp.o
-diff --git a/drivers/hwmon/pt5161l.c b/drivers/hwmon/pt5161l.c
-new file mode 100644
-index 000000000000..d7a47889bacf
---- /dev/null
-+++ b/drivers/hwmon/pt5161l.c
-@@ -0,0 +1,670 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+
-+#include <linux/debugfs.h>
-+#include <linux/delay.h>
-+#include <linux/err.h>
-+#include <linux/i2c.h>
-+#include <linux/init.h>
-+#include <linux/hwmon.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+
-+/* Aries current average temp ADC code CSR */
-+#define ARIES_CURRENT_AVG_TEMP_ADC_CSR	0x42c
-+
-+/* Device Load check register */
-+#define ARIES_CODE_LOAD_REG	0x605
-+/* Value indicating FW was loaded properly, [3:1] = 3'b111 */
-+#define ARIES_LOAD_CODE	0xe
-+
-+/* Main Micro Heartbeat register */
-+#define ARIES_MM_HEARTBEAT_ADDR	0x923
-+
-+/* Reg offset to specify Address for MM assisted accesses */
-+#define ARIES_MM_ASSIST_REG_ADDR_OFFSET	0xd99
-+/* Reg offset to specify Command for MM assisted accesses */
-+#define ARIES_MM_ASSIST_CMD_OFFSET	0xd9d
-+/* Reg offset to MM SPARE 0 used specify Address[7:0] */
-+#define ARIES_MM_ASSIST_SPARE_0_OFFSET	0xd9f
-+/* Reg offset to MM SPARE 3 used specify Data Byte 0 */
-+#define ARIES_MM_ASSIST_SPARE_3_OFFSET	0xda2
-+/* Wide register reads */
-+#define ARIES_MM_RD_WIDE_REG_2B	0x1d
-+#define ARIES_MM_RD_WIDE_REG_3B	0x1e
-+#define ARIES_MM_RD_WIDE_REG_4B	0x1f
-+#define ARIES_MM_RD_WIDE_REG_5B	0x20
-+
-+/* Time delay between checking MM status of EEPROM write (microseconds) */
-+#define ARIES_MM_STATUS_TIME	5000
-+
-+/* AL Main SRAM DMEM offset (A0) */
-+#define AL_MAIN_SRAM_DMEM_OFFSET	(64 * 1024)
-+/* SRAM read command */
-+#define AL_TG_RD_LOC_IND_SRAM	0x16
-+
-+/* Offset for main micro FW info */
-+#define ARIES_MAIN_MICRO_FW_INFO	(96 * 1024 - 128)
-+/* FW Info (Major) offset location in struct */
-+#define ARIES_MM_FW_VERSION_MAJOR	0
-+/* FW Info (Minor) offset location in struct */
-+#define ARIES_MM_FW_VERSION_MINOR	1
-+/* FW Info (Build no.) offset location in struct */
-+#define ARIES_MM_FW_VERSION_BUILD	2
-+
-+#define ARIES_TEMP_CAL_CODE_DEFAULT	84
-+
-+/* Struct defining FW version loaded on an Aries device */
-+struct pt5161l_fw_ver {
-+	u8 major;
-+	u8 minor;
-+	u16 build;
-+};
-+
-+/* Each client has this additional data */
-+struct pt5161l_data {
-+	struct i2c_client *client;
-+	struct dentry *debugfs;
-+	struct pt5161l_fw_ver fw_ver;
-+	struct mutex lock;
-+	bool init_done;
-+	bool code_load_okay; /* indicate if code load reg value is expected */
-+	bool mm_heartbeat_okay; /* indicate if Main Micro heartbeat is good */
-+	bool mm_wide_reg_access; /* MM assisted wide register access */
-+};
-+
-+static struct dentry *pt5161l_debugfs_dir;
-+
-+/*
-+ * Write multiple data bytes to Aries over I2C
-+ */
-+static int pt5161l_write_block_data(struct pt5161l_data *data, u32 address,
-+				    u8 len, u8 *val)
-+{
-+	struct i2c_client *client = data->client;
-+	int ret;
-+	u8 remain_len = len;
-+	u8 xfer_len, curr_len;
-+	u8 buf[16];
-+	u8 cmd = 0x0F; /* [7]:pec_en, [4:2]:func, [1]:start, [0]:end */
-+	u8 config = 0x40; /* [6]:cfg_type, [4:1]:burst_len, [0]:address bit16 */
-+
-+	while (remain_len > 0) {
-+		if (remain_len > 4) {
-+			curr_len = 4;
-+			remain_len -= 4;
-+		} else {
-+			curr_len = remain_len;
-+			remain_len = 0;
-+		}
-+
-+		buf[0] = config | (curr_len - 1) << 1 | ((address >> 16) & 0x1);
-+		buf[1] = (address >> 8) & 0xff;
-+		buf[2] = address & 0xff;
-+		memcpy(&buf[3], val, curr_len);
-+
-+		xfer_len = 3 + curr_len;
-+		ret = i2c_smbus_write_block_data(client, cmd, xfer_len, buf);
-+		if (ret)
-+			return ret;
-+
-+		val += curr_len;
-+		address += curr_len;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * Read multiple data bytes from Aries over I2C
-+ */
-+static int pt5161l_read_block_data(struct pt5161l_data *data, u32 address,
-+				   u8 len, u8 *val)
-+{
-+	struct i2c_client *client = data->client;
-+	int ret, tries;
-+	u8 remain_len = len;
-+	u8 curr_len;
-+	u8 wbuf[16], rbuf[24];
-+	u8 cmd = 0x08; /* [7]:pec_en, [4:2]:func, [1]:start, [0]:end */
-+	u8 config = 0x00; /* [6]:cfg_type, [4:1]:burst_len, [0]:address bit16 */
-+
-+	while (remain_len > 0) {
-+		if (remain_len > 16) {
-+			curr_len = 16;
-+			remain_len -= 16;
-+		} else {
-+			curr_len = remain_len;
-+			remain_len = 0;
-+		}
-+
-+		wbuf[0] = config | (curr_len - 1) << 1 |
-+			  ((address >> 16) & 0x1);
-+		wbuf[1] = (address >> 8) & 0xff;
-+		wbuf[2] = address & 0xff;
-+
-+		for (tries = 0; tries < 3; tries++) {
-+			ret = i2c_smbus_write_block_data(client, (cmd | 0x2), 3,
-+							 wbuf);
-+			if (ret)
-+				return ret;
-+
-+			ret = i2c_smbus_read_block_data(client, (cmd | 0x1),
-+							rbuf);
-+			if (ret == curr_len)
-+				break;
-+		}
-+		if (tries >= 3)
-+			return ret;
-+
-+		memcpy(val, rbuf, curr_len);
-+		val += curr_len;
-+		address += curr_len;
-+	}
-+
-+	return 0;
-+}
-+
-+static int pt5161l_read_wide_reg(struct pt5161l_data *data, u32 address,
-+				 u8 width, u8 *val)
-+{
-+	int ret, tries;
-+	u8 buf[8];
-+	u8 status;
-+
-+	/*
-+	 * Safely access wide registers using mailbox method to prevent
-+	 * risking conflict with Aries firmware; otherwise fallback to
-+	 * legacy, less secure method.
-+	 */
-+	if (data->mm_wide_reg_access) {
-+		buf[0] = address & 0xff;
-+		buf[1] = (address >> 8) & 0xff;
-+		buf[2] = (address >> 16) & 0x1;
-+		ret = pt5161l_write_block_data(
-+			data, ARIES_MM_ASSIST_SPARE_0_OFFSET, 3, buf);
-+		if (ret)
-+			return ret;
-+
-+		/* Set command based on width */
-+		switch (width) {
-+		case 2:
-+			buf[0] = ARIES_MM_RD_WIDE_REG_2B;
-+			break;
-+		case 3:
-+			buf[0] = ARIES_MM_RD_WIDE_REG_3B;
-+			break;
-+		case 4:
-+			buf[0] = ARIES_MM_RD_WIDE_REG_4B;
-+			break;
-+		case 5:
-+			buf[0] = ARIES_MM_RD_WIDE_REG_5B;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+		ret = pt5161l_write_block_data(data, ARIES_MM_ASSIST_CMD_OFFSET,
-+					       1, buf);
-+		if (ret)
-+			return ret;
-+
-+		status = 0xff;
-+		for (tries = 0; tries < 100; tries++) {
-+			ret = pt5161l_read_block_data(
-+				data, ARIES_MM_ASSIST_CMD_OFFSET, 1, &status);
-+			if (ret)
-+				return ret;
-+
-+			if (status == 0)
-+				break;
-+
-+			usleep_range(ARIES_MM_STATUS_TIME,
-+				     ARIES_MM_STATUS_TIME + 1000);
-+		}
-+		if (status != 0)
-+			return -ETIMEDOUT;
-+
-+		ret = pt5161l_read_block_data(
-+			data, ARIES_MM_ASSIST_SPARE_3_OFFSET, width, val);
-+		if (ret)
-+			return ret;
-+	} else {
-+		return pt5161l_read_block_data(data, address, width, val);
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * Read multiple (up to eight) data bytes from micro SRAM over I2C
-+ */
-+static int
-+pt5161l_read_block_data_main_micro_indirect(struct pt5161l_data *data,
-+					    u32 address, u8 len, u8 *val)
-+{
-+	int ret, tries;
-+	u8 buf[8];
-+	u8 i, status;
-+	u32 uind_offs = ARIES_MM_ASSIST_REG_ADDR_OFFSET;
-+	u32 eeprom_base, eeprom_addr;
-+
-+	/* No multi-byte indirect support here. Hence read a byte at a time */
-+	eeprom_base = address - AL_MAIN_SRAM_DMEM_OFFSET;
-+	for (i = 0; i < len; i++) {
-+		eeprom_addr = eeprom_base + i;
-+		buf[0] = eeprom_addr & 0xff;
-+		buf[1] = (eeprom_addr >> 8) & 0xff;
-+		buf[2] = (eeprom_addr >> 16) & 0xff;
-+		ret = pt5161l_write_block_data(data, uind_offs, 3, buf);
-+		if (ret)
-+			return ret;
-+
-+		buf[0] = AL_TG_RD_LOC_IND_SRAM;
-+		ret = pt5161l_write_block_data(data, uind_offs + 4, 1, buf);
-+		if (ret)
-+			return ret;
-+
-+		status = 0xff;
-+		for (tries = 0; tries < 255; tries++) {
-+			ret = pt5161l_read_block_data(data, uind_offs + 4, 1,
-+						      &status);
-+			if (ret)
-+				return ret;
-+
-+			if (status == 0)
-+				break;
-+		}
-+		if (status != 0)
-+			return -ETIMEDOUT;
-+
-+		ret = pt5161l_read_block_data(data, uind_offs + 3, 1, buf);
-+		if (ret)
-+			return ret;
-+
-+		val[i] = buf[0];
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * Check firmware load status
-+ */
-+static int pt5161l_fw_load_check(struct pt5161l_data *data)
-+{
-+	int ret;
-+	u8 buf[8];
-+
-+	ret = pt5161l_read_block_data(data, ARIES_CODE_LOAD_REG, 1, buf);
-+	if (ret)
-+		return ret;
-+
-+	if (buf[0] < ARIES_LOAD_CODE) {
-+		dev_dbg(&data->client->dev,
-+			"Code Load reg unexpected. Not all modules are loaded %x\n",
-+			buf[0]);
-+		data->code_load_okay = false;
-+	} else {
-+		data->code_load_okay = true;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * Check main micro heartbeat
-+ */
-+static int pt5161l_heartbeat_check(struct pt5161l_data *data)
-+{
-+	int ret, tries;
-+	u8 buf[8];
-+	u8 heartbeat;
-+	bool hb_changed = false;
-+
-+	ret = pt5161l_read_block_data(data, ARIES_MM_HEARTBEAT_ADDR, 1, buf);
-+	if (ret)
-+		return ret;
-+
-+	heartbeat = buf[0];
-+	for (tries = 0; tries < 100; tries++) {
-+		ret = pt5161l_read_block_data(data, ARIES_MM_HEARTBEAT_ADDR, 1,
-+					      buf);
-+		if (ret)
-+			return ret;
-+
-+		if (buf[0] != heartbeat) {
-+			hb_changed = true;
-+			break;
-+		}
-+	}
-+	data->mm_heartbeat_okay = hb_changed;
-+
-+	return 0;
-+}
-+
-+/*
-+ * Check the status of firmware
-+ */
-+static int pt5161l_fwsts_check(struct pt5161l_data *data)
-+{
-+	int ret;
-+	u8 buf[8];
-+	u8 major = 0, minor = 0;
-+	u16 build = 0;
-+
-+	ret = pt5161l_fw_load_check(data);
-+	if (ret)
-+		return ret;
-+
-+	ret = pt5161l_heartbeat_check(data);
-+	if (ret)
-+		return ret;
-+
-+	if (data->code_load_okay && data->mm_heartbeat_okay) {
-+		ret = pt5161l_read_block_data_main_micro_indirect(
-+			data,
-+			ARIES_MAIN_MICRO_FW_INFO + ARIES_MM_FW_VERSION_MAJOR, 1,
-+			&major);
-+		if (ret)
-+			return ret;
-+
-+		ret = pt5161l_read_block_data_main_micro_indirect(
-+			data,
-+			ARIES_MAIN_MICRO_FW_INFO + ARIES_MM_FW_VERSION_MINOR, 1,
-+			&minor);
-+		if (ret)
-+			return ret;
-+
-+		ret = pt5161l_read_block_data_main_micro_indirect(
-+			data,
-+			ARIES_MAIN_MICRO_FW_INFO + ARIES_MM_FW_VERSION_BUILD, 2,
-+			buf);
-+		if (ret)
-+			return ret;
-+		build = buf[1] << 8 | buf[0];
-+	}
-+	data->fw_ver.major = major;
-+	data->fw_ver.minor = minor;
-+	data->fw_ver.build = build;
-+
-+	return 0;
-+}
-+
-+static int pt5161l_fw_is_at_least(struct pt5161l_data *data, u8 major, u8 minor,
-+				  u16 build)
-+{
-+	u32 ver = major << 24 | minor << 16 | build;
-+	u32 curr_ver = data->fw_ver.major << 24 | data->fw_ver.minor << 16 |
-+		       data->fw_ver.build;
-+
-+	if (curr_ver >= ver)
-+		return true;
-+
-+	return false;
-+}
-+
-+static int pt5161l_init_dev(struct pt5161l_data *data)
-+{
-+	int ret;
-+
-+	mutex_lock(&data->lock);
-+	ret = pt5161l_fwsts_check(data);
-+	mutex_unlock(&data->lock);
-+	if (ret)
-+		return ret;
-+
-+	/* Firmware 2.2.0 enables safe access to wide registers */
-+	if (pt5161l_fw_is_at_least(data, 2, 2, 0))
-+		data->mm_wide_reg_access = true;
-+
-+	data->init_done = true;
-+
-+	return 0;
-+}
-+
-+static int pt5161l_read(struct device *dev, enum hwmon_sensor_types type,
-+			u32 attr, int channel, long *val)
-+{
-+	struct pt5161l_data *data = dev_get_drvdata(dev);
-+	int ret;
-+	u8 buf[8];
-+	long adc_code;
-+
-+	switch (attr) {
-+	case hwmon_temp_input:
-+		if (!data->init_done) {
-+			ret = pt5161l_init_dev(data);
-+			if (ret)
-+				return ret;
-+		}
-+
-+		mutex_lock(&data->lock);
-+		ret = pt5161l_read_wide_reg(
-+			data, ARIES_CURRENT_AVG_TEMP_ADC_CSR, 4, buf);
-+		mutex_unlock(&data->lock);
-+		if (ret) {
-+			dev_dbg(dev, "Read adc_code failed %d\n", ret);
-+			return ret;
-+		}
-+
-+		adc_code = buf[3] << 24 | buf[2] << 16 | buf[1] << 8 | buf[0];
-+		if (adc_code == 0 || adc_code >= 0x3ff) {
-+			dev_dbg(dev, "Invalid adc_code %lx\n", adc_code);
-+			return -EIO;
-+		}
-+
-+		*val = 110000 +
-+		       ((adc_code - (ARIES_TEMP_CAL_CODE_DEFAULT + 250)) *
-+			-320);
-+		break;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return 0;
-+}
-+
-+static umode_t pt5161l_is_visible(const void *data,
-+				  enum hwmon_sensor_types type, u32 attr,
-+				  int channel)
-+{
-+	switch (attr) {
-+	case hwmon_temp_input:
-+		return 0444;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct hwmon_channel_info *pt5161l_info[] = {
-+	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT),
-+	NULL
-+};
-+
-+static const struct hwmon_ops pt5161l_hwmon_ops = {
-+	.is_visible = pt5161l_is_visible,
-+	.read = pt5161l_read,
-+};
-+
-+static const struct hwmon_chip_info pt5161l_chip_info = {
-+	.ops = &pt5161l_hwmon_ops,
-+	.info = pt5161l_info,
-+};
-+
-+static ssize_t pt5161l_debugfs_read_fw_ver(struct file *file, char __user *buf,
-+					   size_t count, loff_t *ppos)
-+{
-+	struct pt5161l_data *data = file->private_data;
-+	int ret;
-+	char ver[32];
-+
-+	mutex_lock(&data->lock);
-+	ret = pt5161l_fwsts_check(data);
-+	mutex_unlock(&data->lock);
-+	if (ret)
-+		return ret;
-+
-+	ret = snprintf(ver, sizeof(ver), "%u.%u.%u\n", data->fw_ver.major,
-+		       data->fw_ver.minor, data->fw_ver.build);
-+	if (ret < 0)
-+		return ret;
-+
-+	return simple_read_from_buffer(buf, count, ppos, ver, ret + 1);
-+}
-+
-+static const struct file_operations pt5161l_debugfs_ops_fw_ver = {
-+	.read = pt5161l_debugfs_read_fw_ver,
-+	.open = simple_open,
-+};
-+
-+static ssize_t pt5161l_debugfs_read_fw_load_sts(struct file *file,
-+						char __user *buf, size_t count,
-+						loff_t *ppos)
-+{
-+	struct pt5161l_data *data = file->private_data;
-+	int ret;
-+	bool status = false;
-+	char health[16];
-+
-+	mutex_lock(&data->lock);
-+	ret = pt5161l_fw_load_check(data);
-+	mutex_unlock(&data->lock);
-+	if (ret == 0)
-+		status = data->code_load_okay;
-+
-+	ret = snprintf(health, sizeof(health), "%s\n",
-+		       status ? "normal" : "abnormal");
-+	if (ret < 0)
-+		return ret;
-+
-+	return simple_read_from_buffer(buf, count, ppos, health, ret + 1);
-+}
-+
-+static const struct file_operations pt5161l_debugfs_ops_fw_load_sts = {
-+	.read = pt5161l_debugfs_read_fw_load_sts,
-+	.open = simple_open,
-+};
-+
-+static ssize_t pt5161l_debugfs_read_hb_sts(struct file *file, char __user *buf,
-+					   size_t count, loff_t *ppos)
-+{
-+	struct pt5161l_data *data = file->private_data;
-+	int ret;
-+	bool status = false;
-+	char health[16];
-+
-+	mutex_lock(&data->lock);
-+	ret = pt5161l_heartbeat_check(data);
-+	mutex_unlock(&data->lock);
-+	if (ret == 0)
-+		status = data->mm_heartbeat_okay;
-+
-+	ret = snprintf(health, sizeof(health), "%s\n",
-+		       status ? "normal" : "abnormal");
-+	if (ret < 0)
-+		return ret;
-+
-+	return simple_read_from_buffer(buf, count, ppos, health, ret + 1);
-+}
-+
-+static const struct file_operations pt5161l_debugfs_ops_hb_sts = {
-+	.read = pt5161l_debugfs_read_hb_sts,
-+	.open = simple_open,
-+};
-+
-+static int pt5161l_init_debugfs(struct pt5161l_data *data)
-+{
-+	data->debugfs = debugfs_create_dir(dev_name(&data->client->dev),
-+					   pt5161l_debugfs_dir);
-+
-+	debugfs_create_file("fw_ver", 0444, data->debugfs, data,
-+			    &pt5161l_debugfs_ops_fw_ver);
-+
-+	debugfs_create_file("fw_load_status", 0444, data->debugfs, data,
-+			    &pt5161l_debugfs_ops_fw_load_sts);
-+
-+	debugfs_create_file("heartbeat_status", 0444, data->debugfs, data,
-+			    &pt5161l_debugfs_ops_hb_sts);
-+
-+	return 0;
-+}
-+
-+static int pt5161l_probe(struct i2c_client *client)
-+{
-+	struct device *dev = &client->dev;
-+	struct device *hwmon_dev;
-+	struct pt5161l_data *data;
-+
-+	data = devm_kzalloc(dev, sizeof(struct pt5161l_data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	data->client = client;
-+	mutex_init(&data->lock);
-+	pt5161l_init_dev(data);
-+	dev_set_drvdata(dev, data);
-+
-+	hwmon_dev = devm_hwmon_device_register_with_info(
-+		dev, client->name, data, &pt5161l_chip_info, NULL);
-+
-+	pt5161l_init_debugfs(data);
-+
-+	return PTR_ERR_OR_ZERO(hwmon_dev);
-+}
-+
-+static void pt5161l_remove(struct i2c_client *client)
-+{
-+	struct pt5161l_data *data = i2c_get_clientdata(client);
-+
-+	debugfs_remove_recursive(data->debugfs);
-+}
-+
-+static const struct of_device_id __maybe_unused pt5161l_of_match[] = {
-+	{ .compatible = "asteralabs,pt5161l" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, pt5161l_of_match);
-+
-+static const struct acpi_device_id __maybe_unused pt5161l_acpi_match[] = {
-+	{ "PT5161L", 0 },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, pt5161l_acpi_match);
-+
-+static const struct i2c_device_id pt5161l_id[] = {
-+	{ "pt5161l", 0 },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(i2c, pt5161l_id);
-+
-+static struct i2c_driver pt5161l_driver = {
-+	.class = I2C_CLASS_HWMON,
-+	.driver = {
-+		.name = "pt5161l",
-+		.of_match_table = of_match_ptr(pt5161l_of_match),
-+		.acpi_match_table = ACPI_PTR(pt5161l_acpi_match),
-+	},
-+	.probe = pt5161l_probe,
-+	.remove = pt5161l_remove,
-+	.id_table = pt5161l_id,
-+};
-+
-+static int __init pt5161l_init(void)
-+{
-+	pt5161l_debugfs_dir = debugfs_create_dir("pt5161l", NULL);
-+	return i2c_add_driver(&pt5161l_driver);
-+}
-+
-+static void __exit pt5161l_exit(void)
-+{
-+	i2c_del_driver(&pt5161l_driver);
-+	debugfs_remove_recursive(pt5161l_debugfs_dir);
-+}
-+
-+module_init(pt5161l_init);
-+module_exit(pt5161l_exit);
-+
-+MODULE_AUTHOR("Cosmo Chou <cosmo.chou@quantatw.com>");
-+MODULE_DESCRIPTION("Hwmon driver for Astera Labs Aries PCIe retimer");
-+MODULE_LICENSE("GPL");
--- 
-2.34.1
-
+QW0gMTUuMDEuMjQgdW0gMDg6Mjkgc2NocmllYiBLcnp5c3p0b2YgS296bG93c2tpOg0KDQo+IE9u
+IDE0LzAxLzIwMjQgMTU6MTYsIEpvc3VhIE1heWVyIHdyb3RlOg0KPj4gQW0gMTIuMDEuMjQgdW0g
+MTg6MjIgc2NocmllYiBLcnp5c3p0b2YgS296bG93c2tpOg0KPj4NCj4+Pj4gKwkvKiBQUlUgRXRo
+ZXJuZXQgQ29udHJvbGxlciAqLw0KPj4+PiArCWljc3NnMV9ldGg6IGljc3NnMS1ldGggew0KPj4+
+IE5vZGUgbmFtZXMgc2hvdWxkIGJlIGdlbmVyaWMuDQo+PiBUaGlzIG5hbWUgaW50ZW50aW9uYWxs
+eSBpbmNsdWRlcyB0aGUgbmFtZSBvZiB0aGUgaXAgYmxvY2sgd2l0aGluIGFtNjQgc29jDQo+PiBw
+cm92aWRpbmcgc29mdHdhcmUtZGVmaW5lZCBldGhlcm5ldCBjb250cm9sbGVyIHRocm91Z2ggY29w
+cm9jZXNzb3JzIFRJIGNhbGwgInBydSIuDQo+IFdoeT8gVGhpcyBpbnRlbnRpb25hbGx5IHNob3Vs
+ZCBub3QgaW5jbHVkZSBzcGVjaWZpYyBuYW1lLg0KSSB1bmRlcnN0YW5kLiBXaGljaCBpcyB3aHkg
+SSBpbWFnaW5lZCBpbiB0aGUgb3RoZXIgcmVmZXJlbmNlIGhhZCBpbnRlbnRpb25hbGx5DQpkaXZl
+cmdlZCBmcm9tIHRoYXQgcnVsZS4NCj4NCj4gQWxzbywgd3JhcCB5b3VyIGVtYWlscyBhdCBwcm9w
+ZXIgbGVuZ3RoIHNvIHRoZXkgd2lsbCBiZSBtYW5hZ2VhYmxlLi4uDQo+DQo+Pj4gU2VlIGFsc28g
+YW4gZXhwbGFuYXRpb24gYW5kIGxpc3Qgb2YNCj4+PiBleGFtcGxlcyAobm90IGV4aGF1c3RpdmUp
+IGluIERUIHNwZWNpZmljYXRpb246DQo+Pj4gaHR0cHM6Ly9kZXZpY2V0cmVlLXNwZWNpZmljYXRp
+b24ucmVhZHRoZWRvY3MuaW8vZW4vbGF0ZXN0L2NoYXB0ZXIyLWRldmljZXRyZWUtYmFzaWNzLmh0
+bWwjZ2VuZXJpYy1uYW1lcy1yZWNvbW1lbmRhdGlvbg0KPj4+DQo+Pj4NCj4+Pj4gKwkJY29tcGF0
+aWJsZSA9ICJ0aSxhbTY0Mi1pY3NzZy1wcnVldGgiOw0KPj4+PiArCQlwaW5jdHJsLW5hbWVzID0g
+ImRlZmF1bHQiOw0KPj4+PiArCQlwaW5jdHJsLTAgPSA8JnBydV9yZ21paTFfcGluc19kZWZhdWx0
+PiwgPCZwcnVfcmdtaWkyX3BpbnNfZGVmYXVsdD47DQo+Pj4+ICsNCj4+Pj4gKwkJc3JhbSA9IDwm
+b2Nfc3JhbT47DQo+Pj4+ICsJCXRpLHBydXMgPSA8JnBydTFfMD4sIDwmcnR1MV8wPiwgPCZ0eF9w
+cnUxXzA+LCA8JnBydTFfMT4sIDwmcnR1MV8xPiwgPCZ0eF9wcnUxXzE+Ow0KPj4+PiArCQlmaXJt
+d2FyZS1uYW1lID0gInRpLXBydXNzL2FtNjV4LXNyMi1wcnUwLXBydWV0aC1mdy5lbGYiLA0KPj4+
+PiArCQkJCSJ0aS1wcnVzcy9hbTY1eC1zcjItcnR1MC1wcnVldGgtZncuZWxmIiwNCj4+Pj4gKwkJ
+CQkidGktcHJ1c3MvYW02NXgtc3IyLXR4cHJ1MC1wcnVldGgtZncuZWxmIiwNCj4+Pj4gKwkJCQki
+dGktcHJ1c3MvYW02NXgtc3IyLXBydTEtcHJ1ZXRoLWZ3LmVsZiIsDQo+Pj4+ICsJCQkJInRpLXBy
+dXNzL2FtNjV4LXNyMi1ydHUxLXBydWV0aC1mdy5lbGYiLA0KPj4+PiArCQkJCSJ0aS1wcnVzcy9h
+bTY1eC1zcjItdHhwcnUxLXBydWV0aC1mdy5lbGYiOw0KPj4+PiArDQo+Pj4+ICsJCXRpLHBydXNz
+LWdwLW11eC1zZWwgPSA8Mj4sCS8qIE1JSSBtb2RlICovDQo+Pj4+ICsJCQkJICAgICAgPDI+LA0K
+Pj4+PiArCQkJCSAgICAgIDwyPiwNCj4+Pj4gKwkJCQkgICAgICA8Mj4sCS8qIE1JSSBtb2RlICov
+DQo+Pj4+ICsJCQkJICAgICAgPDI+LA0KPj4+PiArCQkJCSAgICAgIDwyPjsNCj4+Pj4gKw0KPj4+
+PiArCQl0aSxtaWktZy1ydCA9IDwmaWNzc2cxX21paV9nX3J0PjsNCj4+Pj4gKwkJdGksbWlpLXJ0
+ID0gPCZpY3NzZzFfbWlpX3J0PjsNCj4+Pj4gKwkJdGksaWVwID0gPCZpY3NzZzFfaWVwMD4sIDwm
+aWNzc2cxX2llcDE+Ow0KPj4+PiArDQo+Pj4+ICsJCWludGVycnVwdC1wYXJlbnQgPSA8Jmljc3Nn
+MV9pbnRjPjsNCj4+Pj4gKwkJaW50ZXJydXB0cyA9IDwyNCAwIDI+LCA8MjUgMSAzPjsNCj4+PiBO
+b25lIG9mIHRoZXNlIGFyZSB0eXBpY2FsIGludGVycnVwdCBjb25zdGFudHMvZmxhZ3M/DQo+Pj4N
+Cj4+Pj4gKwkJaW50ZXJydXB0LW5hbWVzID0gInR4X3RzMCIsICJ0eF90czEiOw0KPj4+PiArDQo+
+Pj4+ICsJCWRtYXMgPSA8Jm1haW5fcGt0ZG1hIDB4YzIwMCAxNT4sIC8qIGVncmVzcyBzbGljZSAw
+ICovDQo+Pj4+ICsJCSAgICAgICA8Jm1haW5fcGt0ZG1hIDB4YzIwMSAxNT4sIC8qIGVncmVzcyBz
+bGljZSAwICovDQo+Pj4+ICsJCSAgICAgICA8Jm1haW5fcGt0ZG1hIDB4YzIwMiAxNT4sIC8qIGVn
+cmVzcyBzbGljZSAwICovDQo+Pj4+ICsJCSAgICAgICA8Jm1haW5fcGt0ZG1hIDB4YzIwMyAxNT4s
+IC8qIGVncmVzcyBzbGljZSAwICovDQo+Pj4+ICsJCSAgICAgICA8Jm1haW5fcGt0ZG1hIDB4YzIw
+NCAxNT4sIC8qIGVncmVzcyBzbGljZSAxICovDQo+Pj4+ICsJCSAgICAgICA8Jm1haW5fcGt0ZG1h
+IDB4YzIwNSAxNT4sIC8qIGVncmVzcyBzbGljZSAxICovDQo+Pj4+ICsJCSAgICAgICA8Jm1haW5f
+cGt0ZG1hIDB4YzIwNiAxNT4sIC8qIGVncmVzcyBzbGljZSAxICovDQo+Pj4+ICsJCSAgICAgICA8
+Jm1haW5fcGt0ZG1hIDB4YzIwNyAxNT4sIC8qIGVncmVzcyBzbGljZSAxICovDQo+Pj4+ICsJCSAg
+ICAgICA8Jm1haW5fcGt0ZG1hIDB4NDIwMCAxNT4sIC8qIGluZ3Jlc3Mgc2xpY2UgMCAqLw0KPj4+
+PiArCQkgICAgICAgPCZtYWluX3BrdGRtYSAweDQyMDEgMTU+LCAvKiBpbmdyZXNzIHNsaWNlIDEg
+Ki8NCj4+Pj4gKwkJICAgICAgIDwmbWFpbl9wa3RkbWEgMHg0MjAyIDA+LCAvKiBtZ21udCByc3Ag
+c2xpY2UgMCAqLw0KPj4+PiArCQkgICAgICAgPCZtYWluX3BrdGRtYSAweDQyMDMgMD47IC8qIG1n
+bW50IHJzcCBzbGljZSAxICovDQo+Pj4+ICsJCWRtYS1uYW1lcyA9ICJ0eDAtMCIsICJ0eDAtMSIs
+ICJ0eDAtMiIsICJ0eDAtMyIsDQo+Pj4+ICsJCQkgICAgInR4MS0wIiwgInR4MS0xIiwgInR4MS0y
+IiwgInR4MS0zIiwNCj4+Pj4gKwkJCSAgICAicngwIiwgInJ4MSI7DQo+Pj4+ICsNCj4+Pj4gKwkJ
+c3RhdHVzID0gIm9rYXkiOw0KPj4+IERyb3AuIERpZG4ndCB5b3UgZ2V0IHN1Y2ggY29tbWVudHMg
+YmVmb3JlPw0KPj4gWWVzLCBidXQgYWdhaW4gSSBjYW4gcG9pbnQgdG8gYW4gaW4tdHJlZSBleGFt
+cGxlIG9mIHRoZSBzYW1lIHN0cnVjdHVyZS4NCj4+IEkgc2VlIG5vIHJlYXNvbiBmb3IgZGVzY3Jp
+YmluZyB0aGUgc2FtZSB0aGluZyBkaWZmZXJlbnRseSBpbiBkaWZmZXJlbnQgcGxhY2VzLg0KPiBT
+byBpZiB0aGVyZSBpcyBhIGJ1ZywgeW91IGFyZSBnb2luZyB0byBkdXBsaWNhdGUgaXQuDQpJIHdh
+cyB0b3JuIGJldHdlZW4gbWFraW5nIG15IG93biBzb2x1dGlvbiwgYW5kIHVzaW5nIHJlY2VudGx5
+DQphZGRlZCBhbmQgdG9waWNhbCAodG8gbXkgc3VibWlzc2lvbikgY29kZSBhcyB0ZW1wbGF0ZS4N
+Cj4NCj4gUGxlYXNlIHByb3ZpZGUgcmVhbCBhcmd1bWVudCB3aHkgdGhpcyBpcyBuZWVkZWQsIG5v
+dCAiSSBzYXcgaXQNCj4gc29tZXdoZXJlIiwgb3IgZHJvcCBpdC4gT3RoZXJ3aXNlIGl0J3MgYSBO
+QUsgZnJvbSBtZS4NCkkgd2lsbCBhdHRlbXB0IHRvIGltcHJvdmUgdGhlIG1hZ2ljIG51bWJlcnMg
+aW4gdGhpcyB3aG9sZSBub2RlLA0KYW5kIHJlY29uc2lkZXIgdGhlIG5vZGUgbmFtZS4gVGhhbmtz
+Lg0KPg0KPj4gUGxlYXNlIHNlZSBhcmNoL2FybTY0L2Jvb3QvZHRzL3RpL2szLWFtNjU0LWlkay5k
+dHNvDQo+PiBUaGVyZSBhcmUgb25seSBzbWFsbCBkaWZmZXJlbmNlcyBmb3IgdGhpcyBmZWF0dXJl
+IGJldHdlZW4gYW02NSBhbmQgYW02NC4NCj4+IEl0J3MgaW5jbHVzaW9uIGluIHRoZSB0cmVlIHdh
+cyB2ZXJ5IHJlY2VudCwgY2xlYXJseSBpdCB3YXMgZ29vZCBlbm91Z2ggcmlnaHQ/DQo+PiBTZWUg
+YWxzbyBteSBjb3ZlciBsZXR0ZXIgZHRic19jaGVjayByZW1hcmsgb24gZG1hcyBwcm9wZXJ0eS4N
+Cj4gSG93IGRvZXMgZG1hcyBtYXR0ZXI/IFdoYXQgYXJlIHlvdSB0YWxraW5nIGFib3V0Pw0KSSBh
+bSB0cnlpbmcgdG8gZXN0YWJsaXNoIHdoZXRoZXIgSSBjYW4gdXNlIHRoYXQgYXMgZXhhbXBsZSBv
+ciBub3QuDQpDbGVhcmx5IGl0IGlzIGEgYmFkIGV4YW1wbGUsIGFuZCBJIHNob3VsZCB0cnkgZGVz
+Y3JpYmluZyBpdCBiZXR0ZXIuDQo+DQo+DQo+DQo+IEJlc3QgcmVnYXJkcywNCj4gS3J6eXN6dG9m
+DQo+DQo=
 
