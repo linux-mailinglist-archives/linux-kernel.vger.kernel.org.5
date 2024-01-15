@@ -1,140 +1,97 @@
-Return-Path: <linux-kernel+bounces-26197-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 543B082DCA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:50:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D5C782DCA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:52:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E879D1F22797
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:50:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C6A928426D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:52:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5E4D1798C;
-	Mon, 15 Jan 2024 15:49:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fdZAE68O"
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00D2B17984;
+	Mon, 15 Jan 2024 15:52:40 +0000 (UTC)
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB19717BA1;
-	Mon, 15 Jan 2024 15:49:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D71A175AE;
+	Mon, 15 Jan 2024 15:52:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dbd99c08cd6so7005346276.0;
-        Mon, 15 Jan 2024 07:49:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705333783; x=1705938583; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SL7TyLa6aUw4gCp8WNPrFTXBo1ubO4C/088ALvqvncI=;
-        b=fdZAE68OFBp4GPejeD3x4tZhnc1JCB1IhT3IFWQgiBrlL5h1VsHznBc7VBg+1ZeLH8
-         qrjbxPX7eZV1L1AD1qMJYQKjFqDETDjO61joQrfzwXuSKz/6ylxQdT4v+s4Nj6BJe/vn
-         E/porRuOMaujnqEmxYJU0Jvw8fR2Hnbnk7NXkYFY8SkZ2M2EcdijdS9XfVs5ax2pw8Ny
-         AbxIpKi+n3s1DdQTY7L/nTiTY/suC3AqOilH3ZjRhLISpya8DIo7dki2ryD9YjwGLqWR
-         iPEz003Si2ZzzAvWw2+tmcaitYraYuMKwxczuoXXOnUc+C5Oycf7hcWGHSAAw99Ozcmx
-         jygg==
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-598a2136259so487428eaf.1;
+        Mon, 15 Jan 2024 07:52:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705333783; x=1705938583;
+        d=1e100.net; s=20230601; t=1705333957; x=1705938757;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SL7TyLa6aUw4gCp8WNPrFTXBo1ubO4C/088ALvqvncI=;
-        b=CS83+SMrmENV0G2exeyJDYQ7WWT7OsqybnKrt3s8cTjK/W62jwwPhZe4KzjW7WeqOP
-         G7QsP52QgH7+Kx0IQYT4cUZbg1XIEgj5wVKJSYtEYf90xRO41rcrhQiVUbanSvYn4//N
-         idzG+QQf4wSW5bqZkX3D/DL22H9DBCF1tOx/XvgKZYmytgpF7+Mjl6dkLfjF9uV1EKWd
-         N3Am7d9Hi9PcHZobtbIJcYpJPix3nm3fXdK7659vrJfvMTa7RVCaeWDy25J8QlVDJKX1
-         IPneGuw2jNaaSWVaBvIa4q33YEWSBprINe3L0aqXDFkBh3BYcw/qcurmIOTnyvrmtr75
-         JcDA==
-X-Gm-Message-State: AOJu0YyqUUij0LaN+TQBjFmDq9ll32MDNi08+V+MvjMCIJgP4sHzdLpP
-	12tLPgiQqyED/tH/aZXo/9R4UdYAewEyeXD3Q4A=
-X-Google-Smtp-Source: AGHT+IHRvjvqz812fgPuK5VrHIBc03d7H7tW5k/POpwadt/5R3fqa0Hh1ZXXjPW5NBRtuM6eFswRhIcAM5+PcEeg3oo=
-X-Received: by 2002:a25:c503:0:b0:db7:dad0:76d2 with SMTP id
- v3-20020a25c503000000b00db7dad076d2mr2809380ybe.110.1705333783459; Mon, 15
- Jan 2024 07:49:43 -0800 (PST)
+        bh=JWCyVuLmjKCX2AH0GVEqB/8MQb1jYnVII0XyIetB79g=;
+        b=o3bCV75qcwwGmpW9oqsRwN8K37hicn0hA9FkUpBMa2QwHKW0BGsamWmgrsmPaCC/KS
+         TbCuJIFrFS3YlwNRwzqyXflM8jPR0w9FdQ8nUttCGxjoTb2ona4mlGn78xJs45EsWRk6
+         pGsotUfsZDIR8eDZ1QEhaXAqdezS57uwlHHjJon0l7NbF3u+X6KxKOFGlb05cOVA85sd
+         vqPef0q/hzE/ciNBe5JqE08A7ivnzXhUgm4TWwHL0Jfu7e4sGiY7sZeJiYgtiQOk1xpu
+         VVYs/lr+ouoEQ89de9cvW7q9lO4ZgCtOYwoILXJwwqDmjSjegD8azRy5NsuxqpSKWDQV
+         FPzQ==
+X-Gm-Message-State: AOJu0Yy41zr1UjxYfkiN9YBtY/1IEpfKTJ+88iaxkToQHGQakIaEQrdB
+	Mu6XWDYNkPzpg0cr7D8IaUKRr8PN29rnEPOhBEE=
+X-Google-Smtp-Source: AGHT+IF1ND5206O/f2aXt75nrw6gwy+BG//zXogxViI+zYpQ0ITUpymsqt5wJdR6Iqib4Ds8wbbOIYlYDjyNK+QX/zo=
+X-Received: by 2002:a05:6820:510:b0:598:c118:30d1 with SMTP id
+ m16-20020a056820051000b00598c11830d1mr11370658ooj.0.1705333957212; Mon, 15
+ Jan 2024 07:52:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231228122411.3189-1-maimon.sagi@gmail.com> <f254c189-463e-43a3-bc09-9a8869ebf819@app.fastmail.com>
- <CAMuE1bF0Hho4VwO6w3f+9z3j5TtscYzuAjj10MFt2mZXG2P8dQ@mail.gmail.com>
- <84d8e9d7-09ce-4781-8dfa-a74bb0955ae8@app.fastmail.com> <ZZ-ZNHgDsZwg9CaW@hoboy.vegasvil.org>
-In-Reply-To: <ZZ-ZNHgDsZwg9CaW@hoboy.vegasvil.org>
-From: Sagi Maimon <maimon.sagi@gmail.com>
-Date: Mon, 15 Jan 2024 17:49:32 +0200
-Message-ID: <CAMuE1bF4sSeiDr-jyebF6F8oRxGs1b2gtT39fTJ2JeaFabr6Ng@mail.gmail.com>
-Subject: Re: [PATCH v3] posix-timers: add multi_clock_gettime system call
-To: Richard Cochran <richardcochran@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>, tglx@linutronix.de, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Sohil Mehta <sohil.mehta@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
-	Nhat Pham <nphamcs@gmail.com>, Palmer Dabbelt <palmer@sifive.com>, Kees Cook <keescook@chromium.org>, 
-	Alexey Gladkov <legion@kernel.org>, Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org, 
-	linux-api@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>, 
-	Netdev <netdev@vger.kernel.org>
+References: <20240115082507.29651-1-duminjie@vivo.com>
+In-Reply-To: <20240115082507.29651-1-duminjie@vivo.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 15 Jan 2024 16:52:26 +0100
+Message-ID: <CAJZ5v0jPeYgGc9xmSrnLsg6RkhzmU=TfPdhrzxWBd_d_dmJh+Q@mail.gmail.com>
+Subject: Re: [PATCH v1] thermal/debugfs: Remove unnecessary
+ debugfs_create_dir() error check in thermal_debug_init()
+To: Minjie Du <duminjie@vivo.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, 
+	"open list:THERMAL" <linux-pm@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
+	opensource.kernel@vivo.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 11, 2024 at 9:31=E2=80=AFAM Richard Cochran
-<richardcochran@gmail.com> wrote:
+On Mon, Jan 15, 2024 at 9:25=E2=80=AFAM Minjie Du <duminjie@vivo.com> wrote=
+:
 >
-> On Tue, Jan 02, 2024 at 12:29:59PM +0100, Arnd Bergmann wrote:
->
-> > I think Andy's suggestion of exposing time offsets instead
-> > of absolute times would actually achieve that: If the
-> > interface is changed to return the offset against
-> > CLOCK_MONOTONIC, CLOCK_MONOTONIC_RAW or CLOCK_BOOTTIME
-> > (not sure what is best here), then the new syscall can use
-> > getcrosststamp() where supported for the best results or
-> > fall back to gettimex64() or gettime64() otherwise to
-> > provide a consistent user interface.
->
-> Yes, it makes more sense to provide the offset, since that is what the
-> user needs in the end.
->
-Make sense will be made on the next patch.
-> Can we change the name of the system call to "clock compare"?
->
-> int clock_compare(clockid_t a, clockid_t b,
->                   int64_t *offset, int64_t *error);
->
-> returns: zero or error code,
->  offset =3D a - b
->  error  =3D maximum error due to asymmetry
->
-> If clocks a and b are both System-V clocks, then *error=3D0 and *offset
-> can be returned directly from the kernel's time keeping state.
->
-> If getcrosststamp() is supported on a or b, then invoke it.
->
-> otherwise do this:
->
->    t1 =3D gettime(a)
->    t2 =3D gettime(b)
->    t3 - gettime(c)
->
->    *offset =3D (t1 + t3)/2 - t2
->    *error  =3D (t3 - t1)/2
->
-> There is no need for repeated measurement, since user space can call
-> again when `error` is unacceptable.
->
-Thanks for your notes, all of them will be done on the next patch (it
-will take some time due to work overload).
-The only question that I have is: why not implement it as an IOCTL?
-It makes more sense to me since it is close to another IOCTL, the
-"PTP_SYS_OFFSET" family.
-Does it make sense to you?
+> This patch removes the debugfs_create_dir() error checking in
+> thermal_debug_init(). Because the debugfs_create_dir() is developed
+> in a way that the caller can safely handle the errors that
+> occur during the creation of DebugFS nodes.
 
-> Thanks,
-> Richard
+I honestly don't see what the purpose of this patch is.
+
+> Signed-off-by: Minjie Du <duminjie@vivo.com>
+> ---
+>  drivers/thermal/thermal_debugfs.c | 4 ----
+>  1 file changed, 4 deletions(-)
 >
+> diff --git a/drivers/thermal/thermal_debugfs.c b/drivers/thermal/thermal_=
+debugfs.c
+> index a3fa09235da1..695253559a61 100644
+> --- a/drivers/thermal/thermal_debugfs.c
+> +++ b/drivers/thermal/thermal_debugfs.c
+> @@ -172,12 +172,8 @@ struct thermal_debugfs {
+>  void thermal_debug_init(void)
+>  {
+>         d_root =3D debugfs_create_dir("thermal", NULL);
+> -       if (!d_root)
+> -               return;
 >
+>         d_cdev =3D debugfs_create_dir("cooling_devices", d_root);
+> -       if (!d_cdev)
+> -               return;
 >
+>         d_tz =3D debugfs_create_dir("thermal_zones", d_root);
+>  }
+> --
 
