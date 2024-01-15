@@ -1,117 +1,98 @@
-Return-Path: <linux-kernel+bounces-26421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C8B682E060
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 19:57:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1DD282E062
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 19:58:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CDA8283A26
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:57:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEEC01C22081
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:58:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13EC018E2D;
-	Mon, 15 Jan 2024 18:55:24 +0000 (UTC)
-Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B0E118E1F;
-	Mon, 15 Jan 2024 18:55:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
-Received: by cae.in-ulm.de (Postfix, from userid 1000)
-	id EBB1314035E; Mon, 15 Jan 2024 19:55:15 +0100 (CET)
-Date: Mon, 15 Jan 2024 19:55:15 +0100
-From: "Christian A. Ehrhardt" <lk@c--e.de>
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: linux-usb@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Saranya Gopal <saranya.gopal@intel.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC] Fix stuck UCSI controller on DELL
-Message-ID: <ZaV/kwuh2MBNY5d2@cae.in-ulm.de>
-References: <20240103100635.57099-1-lk@c--e.de>
- <ZZadhlh3q9ZInxvU@kuha.fi.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4348B18658;
+	Mon, 15 Jan 2024 18:56:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EYoFAnHK"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D544D18657;
+	Mon, 15 Jan 2024 18:56:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=MwV1nlLRs/zdcFC+GsCWfD3zD/uMILfGMm+jraJw7W0=; b=EYoFAnHKkNJMmuVryhMBt74eTh
+	+j4kTftzTZFwN4NFootNhBf06+xeaLuthgwlj3kjTuGhqNDMMeOcOWqtj54REAzNV21XN5f1AW80F
+	/VCW7GvI2zoc3Yv6nRSYpRNMveDlt3x0B0fJ9ykvrCDXEKdQVk2NAwNBFUQY3K0cwQ5rOBYZmLPqb
+	/HQ2dXzA6krTknFd5wRNR4Pmho1cygry/Uvy+OVqk0iOE/DB2Zxku6SZAfLT19zr430506m6VWT6o
+	PHmdDGshQqkBsPziv18P9Oe98zgjS9xGumv7EYb1jNLyvParumvbS0/m26nTqP/oFuhBBiDr9UZR8
+	9BECG3Cg==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rPS8f-00A0xV-2A;
+	Mon, 15 Jan 2024 18:56:49 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	John Crispin <john@phrozen.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Felix Fietkau <nbd@nbd.name>,
+	linux-gpio@vger.kernel.org
+Subject: [PATCH v3] gpio: EN7523: fix kernel-doc warnings
+Date: Mon, 15 Jan 2024 10:56:47 -0800
+Message-ID: <20240115185647.30663-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZZadhlh3q9ZInxvU@kuha.fi.intel.com>
+Content-Transfer-Encoding: 8bit
 
+Add "struct" keyword and explain the @dir array differently to
+prevent kernel-doc warnings:
 
-Hi Heikki,
+gpio-en7523.c:22: warning: cannot understand function prototype: 'struct airoha_gpio_ctrl '
+gpio-en7523.c:27: warning: Function parameter or struct member 'dir' not described in 'airoha_gpio_ctrl'
+gpio-en7523.c:27: warning: Excess struct member 'dir0' description in 'airoha_gpio_ctrl'
+gpio-en7523.c:27: warning: Excess struct member 'dir1' description in 'airoha_gpio_ctrl'
 
-sorry to bother you again with this but I'm afraid there's
-a misunderstanding wrt. the nature of the quirk. See below:
+Fixes: 0868ad385aff ("gpio: Add support for Airoha EN7523 GPIO controller")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: John Crispin <john@phrozen.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Felix Fietkau <nbd@nbd.name>
+Cc: linux-gpio@vger.kernel.org
+---
+v2: Add commit text.
+v3: add Fixes tag.
 
-On Thu, Jan 04, 2024 at 01:59:02PM +0200, Heikki Krogerus wrote:
-> Hi Christian,
-> 
-> On Wed, Jan 03, 2024 at 11:06:35AM +0100, Christian A. Ehrhardt wrote:
-> > I have a DELL Latitude 5431 where typec only works somewhat.
-> > After the first plug/unplug event the PPM seems to be stuck and
-> > commands end with a timeout (GET_CONNECTOR_STATUS failed (-110)).
-> > 
-> > This patch fixes it for me but according to my reading it is in
-> > violation of the UCSI spec. On the other hand searching through
-> > the net it appears that many DELL models seem to have timeout problems
-> > with UCSI.
-> > 
-> > Do we want some kind of quirk here? There does not seem to be a quirk
-> > framework for this part of the code, yet. Or is it ok to just send the
-> > additional ACK in all cases and hope that the PPM will do the right
-> > thing?
-> 
-> We can use DMI quirks. Something like the attached diff (not tested).
-> 
-> thanks,
-> 
-> -- 
-> heikki
+ drivers/gpio/gpio-en7523.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> diff --git a/drivers/usb/typec/ucsi/ucsi_acpi.c b/drivers/usb/typec/ucsi/ucsi_acpi.c
-> index 6bbf490ac401..7e8b1fcfa024 100644
-> --- a/drivers/usb/typec/ucsi/ucsi_acpi.c
-> +++ b/drivers/usb/typec/ucsi/ucsi_acpi.c
-> @@ -113,18 +113,44 @@ ucsi_zenbook_read(struct ucsi *ucsi, unsigned int offset, void *val, size_t val_
->  	return 0;
->  }
->  
-> -static const struct ucsi_operations ucsi_zenbook_ops = {
-> -	.read = ucsi_zenbook_read,
-> -	.sync_write = ucsi_acpi_sync_write,
-> -	.async_write = ucsi_acpi_async_write
-> -};
-> +static int ucsi_dell_sync_write(struct ucsi *ucsi, unsigned int offset,
-> +				const void *val, size_t val_len)
-> +{
-> +	u64 ctrl = *(u64 *)val;
-> +	int ret;
-> +
-> +	ret = ucsi_acpi_sync_write(ucsi, offset, val, val_len);
-> +	if (ret && (ctrl & (UCSI_ACK_CC_CI | UCSI_ACK_CONNECTOR_CHANGE))) {
-> +		ctrl= UCSI_ACK_CC_CI | UCSI_ACK_COMMAND_COMPLETE;
-> +
-> +		dev_dbg(ucsi->dev->parent, "%s: ACK failed\n", __func__);
-> +		ret = ucsi_acpi_sync_write(ucsi, UCSI_CONTROL, &ctrl, sizeof(ctrl));
-> +	}
-
-Unfortunately, this has the logic reversed. The quirk (i.e. the
-additional UCSI_ACK_COMMAND_COMPLETE) is required after a _successful_
-UCSI_ACK_CONNECTOR_CHANGE. Otherwise, _subsequent_ commands will timeout
-(usually the next GET_CONNECTOR_CHANGE).
-
-This means the quirk must be applied _before_ we detect any failure.
-Consequently, the quirk has the potential to break working systems.
-
-Sorry, if that wasn't clear from my original mail. Please let me know
-if this changes how you want the quirks handled.
-
-     Thanks    Christian
-
+diff -- a/drivers/gpio/gpio-en7523.c b/drivers/gpio/gpio-en7523.c
+--- a/drivers/gpio/gpio-en7523.c
++++ b/drivers/gpio/gpio-en7523.c
+@@ -12,11 +12,11 @@
+ #define AIROHA_GPIO_MAX		32
+ 
+ /**
+- * airoha_gpio_ctrl - Airoha GPIO driver data
++ * struct airoha_gpio_ctrl - Airoha GPIO driver data
+  * @gc: Associated gpio_chip instance.
+  * @data: The data register.
+- * @dir0: The direction register for the lower 16 pins.
+- * @dir1: The direction register for the higher 16 pins.
++ * @dir: [0] The direction register for the lower 16 pins.
++ * [1]: The direction register for the higher 16 pins.
+  * @output: The output enable register.
+  */
+ struct airoha_gpio_ctrl {
 
