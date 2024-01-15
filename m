@@ -1,252 +1,134 @@
-Return-Path: <linux-kernel+bounces-25786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D86EF82D5C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:21:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0761F82D5C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:23:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 632711F210E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:21:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93476281F60
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:23:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89297C8C2;
-	Mon, 15 Jan 2024 09:21:04 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0CFADDC8;
-	Mon, 15 Jan 2024 09:21:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 493CF2F4;
-	Mon, 15 Jan 2024 01:21:47 -0800 (PST)
-Received: from [10.57.46.55] (unknown [10.57.46.55])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F3B13F6C4;
-	Mon, 15 Jan 2024 01:20:58 -0800 (PST)
-Message-ID: <8b5a5b86-5c4e-453e-a577-b69cebf22b7c@arm.com>
-Date: Mon, 15 Jan 2024 09:20:56 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11550EAD1;
+	Mon, 15 Jan 2024 09:23:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QXGm8akh"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C666F4E3
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 09:23:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40e80046263so650925e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 01:23:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705310597; x=1705915397; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rcYPhRGd43b7CefS4mS1BKKH4ql6RBhdXWhyItNiInQ=;
+        b=QXGm8akhWEgQgOgEnFYLpSCfAm69nd9/XgSfUGBwQ/26p9GN6IYNOFQiAensuENPdi
+         Eqr4YvNFNVZCI2T0X37Y1a9UeIOQisi5oB5v0UcVdKPkdxA6z+iZmVii+pLps7XBN4FK
+         FsLABLWEeDjTeSZMdrxRmTc7OcMJfn+5gGMW9FDSpJbDq2pK9SKMy1tB6YXQcljNKiOq
+         +tZk4lLrB7TEMRPufugWKIBZYguFFsQJJBt8pc0iUFkr7rFzSl6DIco3TnhmN/fKYJXr
+         4nBKRF2rg9Bth+HiwNb19iKn6DtqueegvPS7QV/49yDxo9pmzcROgaFSx5Uq3FLX8I9B
+         KrsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705310597; x=1705915397;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rcYPhRGd43b7CefS4mS1BKKH4ql6RBhdXWhyItNiInQ=;
+        b=S3lm/hd/tzaq9EgkSjorTHJIwdZB+rjJIAGQVZdCWzPxJn4thX2jIBkIbAjAE3sAT7
+         HDvKMvLRpE1M/QUF7lBC9zTeojFN4PY2wkviSJVywSepKBo6e3NkbyzgVhOFrby4W5YY
+         rin4YDtJEE8AMl+K6QUHKRQEoU2LZPs8MCMIEMemVLKNSDtzTJ6uTwmZkDvz7kAMg/Aw
+         yJXl69yjfG5xedPRIS3cr52Kq/263uzMHcXJx4LyEqDwca38lVXSmsu9+WEgK27bud7N
+         BfGWn5iPi9abPMymMARp0wvUxvaINqWp0+CDWx2nKU36zXw3tGnTTtd+0M/+k/c0oOdU
+         gQyw==
+X-Gm-Message-State: AOJu0YwaUC5jZmVVzpWoKPpDzMbj+CDoJKpgNfkCR5YvSvl84Akc4Qdk
+	dSyvyLjmFI666+xzwRlwS20/DIEDUS/b42fhJoPDDtRKqr0=
+X-Google-Smtp-Source: AGHT+IGeKmfI2DLg+B0avpu37AUIgzqNEQKAVus7WMtYV0i8ndcdKHSvZ/hVTfs72GwCpQmQhTFMYNdejIqpvBLI/Cw=
+X-Received: by 2002:a05:600c:3151:b0:40e:67a9:5d1d with SMTP id
+ h17-20020a05600c315100b0040e67a95d1dmr2277573wmo.149.1705310597141; Mon, 15
+ Jan 2024 01:23:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 8/8] coresight-tpdm: Add msr register support for CMB
-Content-Language: en-GB
-To: Tao Zhang <quic_taozha@quicinc.com>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Konrad Dybcio <konradybcio@gmail.com>, Mike Leach <mike.leach@linaro.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: Jinlong Mao <quic_jinlmao@quicinc.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, coresight@lists.linaro.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Tingwei Zhang <quic_tingweiz@quicinc.com>,
- Yuanfang Zhang <quic_yuanfang@quicinc.com>,
- Trilok Soni <quic_tsoni@quicinc.com>, Song Chai <quic_songchai@quicinc.com>,
- linux-arm-msm@vger.kernel.org, andersson@kernel.org
-References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
- <1700533494-19276-9-git-send-email-quic_taozha@quicinc.com>
- <185b23e7-a42f-4a12-85ba-8a093bc5ea58@arm.com>
- <4409f3cf-7ca9-407f-92c0-5aa7ba6f7b61@quicinc.com>
- <d8262a32-cc3c-4889-a5f0-a6b128b7e9d6@arm.com>
- <3e27b0e2-afb2-4706-9996-f567e33e35ba@quicinc.com>
- <94f504c4-76dd-4139-a8e0-c2858b7937bb@quicinc.com>
- <bfc274b8-8b60-4d7d-a8bf-467bc8ebbf1c@arm.com>
- <ef2d485f-1a43-46b1-ba71-12623332e7bf@quicinc.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <ef2d485f-1a43-46b1-ba71-12623332e7bf@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <ZZvS8rigFJR8L56c@FVFF77S0Q05N> <fb6c8253fd90e66c036a85954c3299bc2c047473.camel@xry111.site>
+ <CAJNi4rPj0Wc7ByqrS-GVLUUEnOFPZi8A5nLLCEEJErqAe16EZw@mail.gmail.com>
+ <9aef98eed96ed32962ce90499291cb30ad5e3e14.camel@xry111.site>
+ <20240109074843.GI19790@gate.crashing.org> <4ee8067e72028b070d92e10fa33ddde3a498cb48.camel@xry111.site>
+ <20240109082647.GJ19790@gate.crashing.org> <CAJNi4rM_w5JKjug1PtV+tHyk11DUhRJ-K1pSDE6P1x8KSU2wrg@mail.gmail.com>
+ <20240110141005.GL19790@gate.crashing.org> <CAJNi4rMw1rN64hGZbraoDwtOJOMOumVWL_8iLaCb=TYXAhD2Jg@mail.gmail.com>
+ <ZZ_QaIrlKlFNdDbG@FVFF77S0Q05N>
+In-Reply-To: <ZZ_QaIrlKlFNdDbG@FVFF77S0Q05N>
+From: richard clark <richard.xnu.clark@gmail.com>
+Date: Mon, 15 Jan 2024 17:23:05 +0800
+Message-ID: <CAJNi4rOKQ9DZHEJw=bMFEGUqqGDb_58Y6mxDMRbCPk2Kzwtx1Q@mail.gmail.com>
+Subject: Re: undefined reference to `__aarch64_cas4_sync' error on arm64
+ native build
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Segher Boessenkool <segher@kernel.crashing.org>, Xi Ruoyao <xry111@xry111.site>, gcc-help@gcc.gnu.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 15/01/2024 06:20, Tao Zhang wrote:
-> 
-> On 1/12/2024 5:43 PM, Suzuki K Poulose wrote:
->> On 12/01/2024 09:12, Tao Zhang wrote:
->>>
->>> On 12/20/2023 5:06 PM, Tao Zhang wrote:
->>>>
->>>> On 12/19/2023 10:09 PM, Suzuki K Poulose wrote:
->>>>> On 19/12/2023 06:58, Tao Zhang wrote:
->>>>>>
->>>>>> On 12/18/2023 7:02 PM, Suzuki K Poulose wrote:
->>>>>>> On 21/11/2023 02:24, Tao Zhang wrote:
->>>>>>>> Add the nodes for CMB subunit MSR(mux select register) support.
->>>>>>>> CMB MSRs(mux select registers) is to separate mux,arbitration,
->>>>>>>> ,interleaving,data packing control from stream filtering control.
->>>>>>>>
->>>>>>>> Reviewed-by: James Clark <james.clark@arm.com>
->>>>>>>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
->>>>>>>> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
->>>>>>>> ---
->>>>>>>>   .../testing/sysfs-bus-coresight-devices-tpdm  |  8 ++
->>>>>>>>   drivers/hwtracing/coresight/coresight-tpdm.c  | 86 
->>>>>>>> +++++++++++++++++++
->>>>>>>>   drivers/hwtracing/coresight/coresight-tpdm.h  | 16 +++-
->>>>>>>>   3 files changed, 109 insertions(+), 1 deletion(-)
->>>>>>>>
->>>>>>>> diff --git 
->>>>>>>> a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm 
->>>>>>>> b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
->>>>>>>> index e0b77107be13..914f3fd81525 100644
->>>>>>>> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
->>>>>>>> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
->>>>>>>> @@ -249,3 +249,11 @@ Description:
->>>>>>>>           Accepts only one of the 2 values -  0 or 1.
->>>>>>>>           0 : Disable the timestamp of all trace packets.
->>>>>>>>           1 : Enable the timestamp of all trace packets.
->>>>>>>> +
->>>>>>>> +What: /sys/bus/coresight/devices/<tpdm-name>/cmb_msr/msr[0:31]
->>>>>>>> +Date:        September 2023
->>>>>>>> +KernelVersion    6.7
->>>>>>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao 
->>>>>>>> Zhang (QUIC) <quic_taozha@quicinc.com>
->>>>>>>> +Description:
->>>>>>>> +        (RW) Set/Get the MSR(mux select register) for the CMB 
->>>>>>>> subunit
->>>>>>>> +        TPDM.
->>>>>>>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c 
->>>>>>>> b/drivers/hwtracing/coresight/coresight-tpdm.c
->>>>>>>> index f6cda5616e84..7e331ea436cc 100644
->>>>>>>> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
->>>>>>>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
->>>>>>>> @@ -86,6 +86,11 @@ static ssize_t 
->>>>>>>> tpdm_simple_dataset_show(struct device *dev,
->>>>>>>>               return -EINVAL;
->>>>>>>>           return sysfs_emit(buf, "0x%x\n",
->>>>>>>> drvdata->cmb->patt_mask[tpdm_attr->idx]);
->>>>>>>> +    case CMB_MSR:
->>>>>>>> +        if (tpdm_attr->idx >= drvdata->cmb_msr_num)
->>>>>>>> +            return -EINVAL;
->>>>>>>> +        return sysfs_emit(buf, "0x%x\n",
->>>>>>>> + drvdata->cmb->msr[tpdm_attr->idx]);
->>>>>>>>       }
->>>>>>>>       return -EINVAL;
->>>>>>>>   }
->>>>>>>> @@ -162,6 +167,12 @@ static ssize_t 
->>>>>>>> tpdm_simple_dataset_store(struct device *dev,
->>>>>>>>           else
->>>>>>>>               ret = -EINVAL;
->>>>>>>>           break;
->>>>>>>> +    case CMB_MSR:
->>>>>>>> +        if (tpdm_attr->idx < drvdata->cmb_msr_num)
->>>>>>>> + drvdata->cmb->msr[tpdm_attr->idx] = val;
->>>>>>>> +        else
->>>>>>>> +            ret = -EINVAL;
->>>>>>>
->>>>>>>
->>>>>>> minor nit: Could we not break from here instead of adding return 
->>>>>>> -EINVAL
->>>>>>> for each case ? (I understand it has been done for the existing 
->>>>>>> cases.
->>>>>>> But I think we should clean up all of that, including the ones 
->>>>>>> you added
->>>>>>> in Patch 5. Similarly for the dataset_show()
->>>>>>
->>>>>> Sure, do I also need to change the DSB corresponding code? If so, 
->>>>>> how about
->>>>>>
->>>>>> if I add a new patch to the next patch series to change the 
->>>>>> previous existing cases?
->>>>>
->>>>> You could fix the existing cases as a preparatory patch of the next 
->>>>> version of this series. I can pick it up and push it to next as I 
->>>>> see fit.
->>>>
->>>> Got it. I will update this to the next patch series.
->>>
->>> Hi Suzuki,
->>>
->>>
->>> Since the dataset data is configured with spin lock protection, it 
->>> needs to be unlock before return.
->>>
->>> List my modification below. Would you mind help review to see if it 
->>> is good for you.
->>>
->>> static ssize_t tpdm_simple_dataset_store(struct device *dev,
->>>                       struct device_attribute *attr,
->>>                       const char *buf,
->>>                       size_t size)
->>> {
->>>      unsigned long val;
->>>
->>>      struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
->>>      struct tpdm_dataset_attribute *tpdm_attr =
->>>          container_of(attr, struct tpdm_dataset_attribute, attr);
->>>
->>>      if (kstrtoul(buf, 0, &val))
->>>          return -EINVAL;
->>>
->>>      spin_lock(&drvdata->spinlock);
->>
->> Use guard() to avoid explicit unlock on return and then you don't need 
->> the spin_unlock() everywhere. It would be done on return from the
->> function implicitly.
->>
->>
->>>      switch (tpdm_attr->mem) {
->>>      case DSB_TRIG_PATT:
->>
->> With guard() in place:
->>
->>     ret = -EINVAL;
->>
->>     switch () {
->>     case XXX:
->>
->>        if (tpdm_attr->idx < TPDM_XXXX_IDX) {
->>            drvdata->dsb->trig_patt[tpdm_attr->idx] = val;
->>            ret = size;
->>        }
->>        break;
->>     case ...
->>         ...
->>     }
->>
->>     return ret;
-> 
-> Thanks for your suggestion. I will update the code like below.
-> 
-> I will update it in the next version of the patch series if it meets 
-> your expectation.
-> 
-> static ssize_t tpdm_simple_dataset_store(struct device *dev,
->                       struct device_attribute *attr,
->                       const char *buf,
->                       size_t size)
-> {
->      unsigned long val;
->      ssize_t ret = -EINVAL;
-> 
->      struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
->      struct tpdm_dataset_attribute *tpdm_attr =
->          container_of(attr, struct tpdm_dataset_attribute, attr);
-> 
->      if (kstrtoul(buf, 0, &val))
->          return ret;
-> 
->      guard(spinlock)(&drvdata->spinlock);
->      switch (tpdm_attr->mem) {
->      case DSB_TRIG_PATT:
->          if (tpdm_attr->idx < TPDM_DSB_MAX_PATT) {
->              drvdata->dsb->trig_patt[tpdm_attr->idx] = val;
->              ret =size;
->          }
->          break;
->      case ...
-> 
->          ...
->      }
->      return ret;
-> }
-> 
+Hi Mark,
 
-Yes that looks good to me. Please rebase this on to for-next/queue 
-branch on the coresight repository.
+On Thu, Jan 11, 2024 at 7:26=E2=80=AFPM Mark Rutland <mark.rutland@arm.com>=
+ wrote:
+>
+> On Thu, Jan 11, 2024 at 09:42:40AM +0800, richard clark wrote:
+> > On Wed, Jan 10, 2024 at 10:12=E2=80=AFPM Segher Boessenkool
+> > <segher@kernel.crashing.org> wrote:
+> > >
+> > > On Wed, Jan 10, 2024 at 01:59:53PM +0800, richard clark wrote:
+> > > > A ported driver in linux kernel calls '__sync_val_compare_and_swap'=
+,
+> > >
+> > > That is a builtin function.  It does not necessarily expand to an act=
+ual
+> > > function call.  aarch64 will typically expand it to inline code.
+> > >
+> > native gcc version:
+> > gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
+> > cross-compiler gcc version:
+> > aarch64-linux-gnu-gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
+> >
+> > Interesting, the same '__sync_val_compare_and_swap' in the .c file
+> > will be 'U __aarch64_cas4_sync' in the .o file compiled by native,
+> > will be 't __cmpxchg_case_mb_32' in the .o file compiled by
+> > aarch64-linux-gnu-gcc... don't know what the reason is
+>
+> The __cmpxchg_case_mb_32() function is kernel code from
+> arch/arm64/include/asm/cmpxchg.h, so I do not believe that's being genera=
+ted by
+> the compiler from __sync_val_compare_and_swap().
+>
+> Are you certain that's being built from the exact same C file?
+>
+> Are you able to share the code in question? Where has it come from in the=
+ first
+> place?
+>
 
-Suzuki
+Ah, double check and the misleading info about the native and cross
+compiler, the native gcc(Ubuntu 11.4.0-1ubuntu1~22.04) and the
+cross-compiler - aarch64-linux-gnu-gcc(Ubuntu 11.4.0-1ubuntu1~22.04)
+will generate the same link error, but the cross-compiler -
+aarch64-buildroot-linux-gnu-gcc.
+(aarch64-buildroot-linux-gnu-gcc.br_real (Buildroot 2020.08) 9.3.0)
+will not generate the link error, I believe it should be as you said,
+the aarch64-buildroot-linux-gnu-gcc doesn't enable '-moutline-atomics'
+by default.
 
+
+>
+> Thanks,
+> Mark.
 
