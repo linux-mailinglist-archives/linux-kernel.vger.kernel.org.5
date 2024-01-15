@@ -1,167 +1,234 @@
-Return-Path: <linux-kernel+bounces-25760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D0FE82D562
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:57:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF0D282D559
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:55:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 841FC28197A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:57:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC6101C213A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:55:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA950BE6E;
-	Mon, 15 Jan 2024 08:55:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MvDD6KWa"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7803C8EA;
+	Mon, 15 Jan 2024 08:55:08 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5C0DF51E;
-	Mon, 15 Jan 2024 08:55:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705308954; x=1736844954;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=zPtD/bN19IJuSWVPo1+D4i+VRget/n6bfsyISYsUZb4=;
-  b=MvDD6KWaw4uQPK8CNQK29H1W8IzuskOhUUmXvsyMY3xw8mi9K2k4zlpS
-   wIDJF850EqiWfrmgCsPStLaGIHEFCCS5G3hGdi5Zm/+WEjIQZ699CbzgJ
-   IL+KiShoydLIeTGg1VBLvGFDHizd5tliWDxKMexAhAmmnkbP2z1ttjRlL
-   GJ0/T0L+22KIN9ayTDfsULY+N82v9nVZeXIstXU7RGL7h3SgDtlXjsybq
-   emimSDVPdeuQbGhslC7OGkpcpNBPogfPqfhVYTjne9eFrW+0ZZIWTajjn
-   JZSFJWmTvlbCSXee/ct/ypggpwgR82rVMZcu9rCEImshtziXHPXE/AFDx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="485728197"
-X-IronPort-AV: E=Sophos;i="6.04,196,1695711600"; 
-   d="scan'208";a="485728197"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 00:55:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="853935196"
-X-IronPort-AV: E=Sophos;i="6.04,196,1695711600"; 
-   d="scan'208";a="853935196"
-Received: from amlin-018-114.igk.intel.com ([10.102.18.114])
-  by fmsmga004.fm.intel.com with ESMTP; 15 Jan 2024 00:55:51 -0800
-From: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
-To: netdev@vger.kernel.org
-Cc: vadim.fedorenko@linux.dev,
-	jiri@resnulli.us,
-	davem@davemloft.net,
-	milena.olech@intel.com,
-	linux-kernel@vger.kernel.org,
-	pabeni@redhat.com,
-	kuba@kernel.org,
-	mschmidt@redhat.com,
-	Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
-	Jan Glaza <jan.glaza@intel.com>
-Subject: [PATCH net v3 3/3] dpll: fix userspace availability of pins
-Date: Mon, 15 Jan 2024 09:52:41 +0100
-Message-Id: <20240115085241.312144-4-arkadiusz.kubalewski@intel.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20240115085241.312144-1-arkadiusz.kubalewski@intel.com>
-References: <20240115085241.312144-1-arkadiusz.kubalewski@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D3E0C8C2
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 08:55:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from SHSQR01.spreadtrum.com (localhost [127.0.0.2] (may be forged))
+	by SHSQR01.spreadtrum.com with ESMTP id 40F8t014047556
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 16:55:00 +0800 (+08)
+	(envelope-from Zhiguo.Niu@unisoc.com)
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 40F8rkXH042583;
+	Mon, 15 Jan 2024 16:53:46 +0800 (+08)
+	(envelope-from Zhiguo.Niu@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TD5NJ1vNzz2RCYp0;
+	Mon, 15 Jan 2024 16:46:40 +0800 (CST)
+Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
+ BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Mon, 15 Jan 2024 16:53:44 +0800
+From: Zhiguo Niu <zhiguo.niu@unisoc.com>
+To: <peterz@infradead.org>, <mingo@redhat.com>, <will@kernel.org>,
+        <longman@redhat.com>, <boqun.feng@gmail.com>
+CC: <linux-kernel@vger.kernel.org>, <niuzhiguo84@gmail.com>,
+        <zhiguo.niu@unisoc.com>, <ke.wang@unisoc.com>, <xuewen.yan@unisoc.com>
+Subject: [PATCH] lockdep: fix deadlock issue between lockdep and rcu
+Date: Mon, 15 Jan 2024 16:53:16 +0800
+Message-ID: <1705308796-13547-1-git-send-email-zhiguo.niu@unisoc.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
+ BJMBX02.spreadtrum.com (10.0.64.8)
+X-MAIL:SHSQR01.spreadtrum.com 40F8rkXH042583
 
-If parent pin was unregistered but child pin was not, the userspace
-would see the "zombie" pins - the ones that were registered with
-a parent pin (dpll_pin_on_pin_register(..)).
-Technically those are not available - as there is no dpll device in the
-system. Do not dump those pins and prevent userspace from any
-interaction with them. Provide a unified function to determine if the
-pin is available and use it before acting/responding for user requests.
+There is a deadlock scenario between lockdep and rcu when
+rcu nocb feature is enabled, just as following call stack:
 
-Fixes: 9431063ad323 ("dpll: core: Add DPLL framework base functions")
-Fixes: 9d71b54b65b1 ("dpll: netlink: Add DPLL framework base functions")
-Reviewed-by: Jan Glaza <jan.glaza@intel.com>
-Signed-off-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+     rcuop/x
+-000|queued_spin_lock_slowpath(lock = 0xFFFFFF817F2A8A80, val = ?)
+-001|queued_spin_lock(inline) // try to hold nocb_gp_lock
+-001|do_raw_spin_lock(lock = 0xFFFFFF817F2A8A80)
+-002|__raw_spin_lock_irqsave(inline)
+-002|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F2A8A80)
+-003|wake_nocb_gp_defer(inline)
+-003|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F30B680)
+-004|__call_rcu_common(inline)
+-004|call_rcu(head = 0xFFFFFFC082EECC28, func = ?)
+-005|call_rcu_zapped(inline)
+-005|free_zapped_rcu(ch = ?)// hold graph lock
+-006|rcu_do_batch(rdp = 0xFFFFFF817F245680)
+-007|nocb_cb_wait(inline)
+-007|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F245680)
+-008|kthread(_create = 0xFFFFFF80803122C0)
+-009|ret_from_fork(asm)
+
+     rcuop/y
+-000|queued_spin_lock_slowpath(lock = 0xFFFFFFC08291BBC8, val = 0)
+-001|queued_spin_lock()
+-001|lockdep_lock()
+-001|graph_lock() // try to hold graph lock
+-002|lookup_chain_cache_add()
+-002|validate_chain()
+-003|lock_acquire
+-004|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F211D80)
+-005|lock_timer_base(inline)
+-006|mod_timer(inline)
+-006|wake_nocb_gp_defer(inline)// hold nocb_gp_lock
+-006|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F2A8680)
+-007|__call_rcu_common(inline)
+-007|call_rcu(head = 0xFFFFFFC0822E0B58, func = ?)
+-008|call_rcu_hurry(inline)
+-008|rcu_sync_call(inline)
+-008|rcu_sync_func(rhp = 0xFFFFFFC0822E0B58)
+-009|rcu_do_batch(rdp = 0xFFFFFF817F266680)
+-010|nocb_cb_wait(inline)
+-010|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F266680)
+-011|kthread(_create = 0xFFFFFF8080363740)
+-012|ret_from_fork(asm)
+
+rcuop/x and rcuop/y are rcu nocb threads with the same nocb gp thread.
+
+This patch release the graph lock before lockdep call_rcu.
+
+Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
 ---
-v3:
-- introduce separated function to determine pin availability
-- move check for pin availablity to dpll_pin_pre_doit(..)
-- check if pin available within pin-id-get flow
-- rename patch title
+ kernel/locking/lockdep.c | 38 +++++++++++++++++++++++++-------------
+ 1 file changed, 25 insertions(+), 13 deletions(-)
 
- drivers/dpll/dpll_netlink.c | 29 +++++++++++++++++++++++++++--
- 1 file changed, 27 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/dpll/dpll_netlink.c b/drivers/dpll/dpll_netlink.c
-index 108c002537e6..7cc99d627942 100644
---- a/drivers/dpll/dpll_netlink.c
-+++ b/drivers/dpll/dpll_netlink.c
-@@ -525,6 +525,24 @@ __dpll_device_change_ntf(struct dpll_device *dpll)
- 	return dpll_device_event_send(DPLL_CMD_DEVICE_CHANGE_NTF, dpll);
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 151bd3d..c1d432a 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -6186,23 +6186,29 @@ static struct pending_free *get_pending_free(void)
+ /*
+  * Schedule an RCU callback if no RCU callback is pending. Must be called with
+  * the graph lock held.
++ *
++ * Return true if graph lock need be released by the caller, otherwise false
++ * means graph lock is released by itself.
+  */
+-static void call_rcu_zapped(struct pending_free *pf)
++static bool call_rcu_zapped(struct pending_free *pf)
+ {
+ 	WARN_ON_ONCE(inside_selftest());
+ 
+ 	if (list_empty(&pf->zapped))
+-		return;
++		return true;
+ 
+ 	if (delayed_free.scheduled)
+-		return;
++		return true;
+ 
+ 	delayed_free.scheduled = true;
+ 
+ 	WARN_ON_ONCE(delayed_free.pf + delayed_free.index != pf);
+ 	delayed_free.index ^= 1;
+ 
++	lockdep_unlock();
+ 	call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
++
++	return false;
  }
  
-+static bool dpll_pin_available(struct dpll_pin *pin)
-+{
-+	struct dpll_pin_ref *par_ref;
-+	unsigned long i;
-+
-+	if (!xa_get_mark(&dpll_pin_xa, pin->id, DPLL_REGISTERED))
-+		return false;
-+	xa_for_each(&pin->parent_refs, i, par_ref)
-+		if (xa_get_mark(&dpll_pin_xa, par_ref->pin->id,
-+				DPLL_REGISTERED))
-+			return true;
-+	xa_for_each(&pin->dpll_refs, i, par_ref)
-+		if (xa_get_mark(&dpll_device_xa, par_ref->dpll->id,
-+				DPLL_REGISTERED))
-+			return true;
-+	return false;
-+}
-+
- /**
-  * dpll_device_change_ntf - notify that the dpll device has been changed
-  * @dpll: registered dpll pointer
-@@ -551,7 +569,7 @@ dpll_pin_event_send(enum dpll_cmd event, struct dpll_pin *pin)
- 	int ret = -ENOMEM;
- 	void *hdr;
+ /* The caller must hold the graph lock. May be called from RCU context. */
+@@ -6228,6 +6234,7 @@ static void free_zapped_rcu(struct rcu_head *ch)
+ {
+ 	struct pending_free *pf;
+ 	unsigned long flags;
++	bool need_unlock;
  
--	if (!xa_get_mark(&dpll_pin_xa, pin->id, DPLL_REGISTERED))
-+	if (!dpll_pin_available(pin))
- 		return -ENODEV;
+ 	if (WARN_ON_ONCE(ch != &delayed_free.rcu_head))
+ 		return;
+@@ -6243,9 +6250,9 @@ static void free_zapped_rcu(struct rcu_head *ch)
+ 	/*
+ 	 * If there's anything on the open list, close and start a new callback.
+ 	 */
+-	call_rcu_zapped(delayed_free.pf + delayed_free.index);
+-
+-	lockdep_unlock();
++	need_unlock = call_rcu_zapped(delayed_free.pf + delayed_free.index);
++	if (need_unlock)
++		lockdep_unlock();
+ 	raw_local_irq_restore(flags);
+ }
  
- 	msg = genlmsg_new(NLMSG_GOODSIZE, GFP_KERNEL);
-@@ -1102,6 +1120,10 @@ int dpll_nl_pin_id_get_doit(struct sk_buff *skb, struct genl_info *info)
+@@ -6286,6 +6293,7 @@ static void lockdep_free_key_range_reg(void *start, unsigned long size)
+ {
+ 	struct pending_free *pf;
+ 	unsigned long flags;
++	bool need_unlock;
+ 
+ 	init_data_structures_once();
+ 
+@@ -6293,8 +6301,9 @@ static void lockdep_free_key_range_reg(void *start, unsigned long size)
+ 	lockdep_lock();
+ 	pf = get_pending_free();
+ 	__lockdep_free_key_range(pf, start, size);
+-	call_rcu_zapped(pf);
+-	lockdep_unlock();
++	need_unlock = call_rcu_zapped(pf);
++	if (need_unlock)
++		lockdep_unlock();
+ 	raw_local_irq_restore(flags);
+ 
+ 	/*
+@@ -6390,6 +6399,7 @@ static void lockdep_reset_lock_reg(struct lockdep_map *lock)
+ 	struct pending_free *pf;
+ 	unsigned long flags;
+ 	int locked;
++	bool need_unlock;
+ 
+ 	raw_local_irq_save(flags);
+ 	locked = graph_lock();
+@@ -6398,9 +6408,9 @@ static void lockdep_reset_lock_reg(struct lockdep_map *lock)
+ 
+ 	pf = get_pending_free();
+ 	__lockdep_reset_lock(pf, lock);
+-	call_rcu_zapped(pf);
+-
+-	graph_unlock();
++	need_unlock = call_rcu_zapped(pf);
++	if (need_unlock)
++		graph_unlock();
+ out_irq:
+ 	raw_local_irq_restore(flags);
+ }
+@@ -6446,6 +6456,7 @@ void lockdep_unregister_key(struct lock_class_key *key)
+ 	struct pending_free *pf;
+ 	unsigned long flags;
+ 	bool found = false;
++	bool need_unlock = true;
+ 
+ 	might_sleep();
+ 
+@@ -6466,9 +6477,10 @@ void lockdep_unregister_key(struct lock_class_key *key)
+ 	if (found) {
+ 		pf = get_pending_free();
+ 		__lockdep_free_key_range(pf, key, 1);
+-		call_rcu_zapped(pf);
++		need_unlock = call_rcu_zapped(pf);
  	}
- 	pin = dpll_pin_find_from_nlattr(info);
- 	if (!IS_ERR(pin)) {
-+		if (!dpll_pin_available(pin)) {
-+			nlmsg_free(msg);
-+			return -ENODEV;
-+		}
- 		ret = dpll_msg_add_pin_handle(msg, pin);
- 		if (ret) {
- 			nlmsg_free(msg);
-@@ -1151,6 +1173,8 @@ int dpll_nl_pin_get_dumpit(struct sk_buff *skb, struct netlink_callback *cb)
+-	lockdep_unlock();
++	if (need_unlock)
++		lockdep_unlock();
+ 	raw_local_irq_restore(flags);
  
- 	xa_for_each_marked_start(&dpll_pin_xa, i, pin, DPLL_REGISTERED,
- 				 ctx->idx) {
-+		if (!dpll_pin_available(pin))
-+			continue;
- 		hdr = genlmsg_put(skb, NETLINK_CB(cb->skb).portid,
- 				  cb->nlh->nlmsg_seq,
- 				  &dpll_nl_family, NLM_F_MULTI,
-@@ -1413,7 +1437,8 @@ int dpll_pin_pre_doit(const struct genl_split_ops *ops, struct sk_buff *skb,
- 	}
- 	info->user_ptr[0] = xa_load(&dpll_pin_xa,
- 				    nla_get_u32(info->attrs[DPLL_A_PIN_ID]));
--	if (!info->user_ptr[0]) {
-+	if (!info->user_ptr[0] ||
-+	    !dpll_pin_available(info->user_ptr[0])) {
- 		NL_SET_ERR_MSG(info->extack, "pin not found");
- 		ret = -ENODEV;
- 		goto unlock_dev;
+ 	/* Wait until is_dynamic_key() has finished accessing k->hash_entry. */
 -- 
-2.38.1
+1.9.1
 
 
