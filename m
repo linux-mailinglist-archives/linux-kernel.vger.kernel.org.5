@@ -1,387 +1,306 @@
-Return-Path: <linux-kernel+bounces-26077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C423D82DB18
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:14:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 333C082DB20
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:16:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F9F01F2277A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:14:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B37F71F2252D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:16:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8520D17592;
-	Mon, 15 Jan 2024 14:14:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98ABA17599;
+	Mon, 15 Jan 2024 14:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jI6jrBTi"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NulqloFy"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD79217586;
-	Mon, 15 Jan 2024 14:14:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705328070; x=1736864070;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=j+3JcWO0BYyNCD06ksazGEx0eILzyYsLFlgkk1u/hfo=;
-  b=jI6jrBTil+69/og+PCeihrSFldDA9p3T1msRtDqQD4DQMvjLgXoguhdg
-   igYkFrPxIU21MX6XcCmbSozX0LefYvw6IEX2J0rhJiAmwDsL0Z4h9UDMm
-   0E/m447A6n6kTFs6ixaLDHwn30PfpkKthZpRrtdsWAuAkcBIi1wG1zbbd
-   hK388rQzBWcOR93qdisf22g68tKSGQbagVBDuD5bJ8IuVbRPU0EAft5om
-   +hszVyCi5FtAlekqgvybk/azsQ00IZdaCIz1BynHORxHo/xAOtDTSra6g
-   qOPuL0OJpnVY+jlnbH9vhaTviCBAHVryJNhxoneEdFA6qTRUHXVxr2UaJ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="21099974"
-X-IronPort-AV: E=Sophos;i="6.04,196,1695711600"; 
-   d="scan'208";a="21099974"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 06:14:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10953"; a="956835423"
-X-IronPort-AV: E=Sophos;i="6.04,196,1695711600"; 
-   d="scan'208";a="956835423"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Jan 2024 06:14:28 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 15 Jan 2024 06:14:27 -0800
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 15 Jan 2024 06:14:27 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 15 Jan 2024 06:14:27 -0800
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.40) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 15 Jan 2024 06:14:27 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fE1EDL4IPuUueqOUxF4DnPdS5ytNaYPqyEnl0nlTY2rkihH9UFkVdMhggf3Oj301reHy9nGR/ii8opewEhx9pO/O/VFqPRJ8RZmsXrIuIMoeGQea3MEqYT3Dq0Fy6GhsEf9iXMb5u4umj2lcv6TJQiIgojAThsXEIIs/8poOTcqbMwzY8QCRTrae8sRI2+N5EVXqDGmX817XCsmWUHQyeOPVhJyosl4sc7yiclHWCI8EHBJnsQl6+I2M0Wt7BPiadYhX8PaOkkGI55TGUngyAVNqQJ3xRVSEblItHieT4BtvuzQ2gvoWLy2MDMppozHu1K7t/XUGx3gXn/MtJ2FvkA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sbSC/pt4096+oDOi0KbCILHZofj9u2hait2DyuFewKE=;
- b=h73+Rx8uoOl5zZsMAFqpNwNfYiStxh4XX0JJ10zOZvKAru6gJOWNGmKypN8ryhTLhHaASB8BHsyjWMbYGCM+WCBAl+3qLDv3wy3XN0roGuxM/Qhu4+ishuSK5acbU8vaqoqiSbTg38Ptu61dM4jG07kchqN11/5x/kxKg/Q5Mxiiy09Q+a/jLP3101hkvJI3AcRKVdNr2YqtUJYUlnqT6Ss9VRTUubw+R68L2Lf+4m2dckAio7WtG/EI1kob/SgiAPg9j94EL2uS7PhaD8tyHiwnQWRI/T1V7zh5Sia5zju7rfmxXVPWwLwT4WkU5sKJz2gy+Ps2t41strWowibplA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
- by MN0PR11MB6253.namprd11.prod.outlook.com (2603:10b6:208:3c6::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.26; Mon, 15 Jan
- 2024 14:14:23 +0000
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::1236:9a2e:5acd:a7f]) by LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::1236:9a2e:5acd:a7f%3]) with mapi id 15.20.7159.020; Mon, 15 Jan 2024
- 14:14:23 +0000
-Date: Mon, 15 Jan 2024 22:14:12 +0800
-From: kernel test robot <oliver.sang@intel.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, Linux Memory Management List
-	<linux-mm@kvack.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
-	<mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>, Ajay Kaher
-	<akaher@vmware.com>, Al Viro <viro@zeniv.linux.org.uk>, Christian Brauner
-	<brauner@kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-trace-kernel@vger.kernel.org>, <oliver.sang@intel.com>
-Subject: [linux-next:master] [eventfs]  493ec81a8f: kernel_BUG_at_fs/dcache.c
-Message-ID: <202401152142.bfc28861-oliver.sang@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-X-ClientProxiedBy: SG2PR06CA0222.apcprd06.prod.outlook.com
- (2603:1096:4:68::30) To LV3PR11MB8603.namprd11.prod.outlook.com
- (2603:10b6:408:1b6::9)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F208B17586;
+	Mon, 15 Jan 2024 14:16:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40FDPHDr016268;
+	Mon, 15 Jan 2024 14:15:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=GBUMB1Oa+WrLvY+IA9lT65sFdYZOIh0PA5Y2HSV/RGA=; b=Nu
+	lqloFy4lUXM2RqcY8MU6LnEe16eQRhLdxNmYMVRwrCwqMUic2aucugMF5Zi42jST
+	LwlSiQ1Kh/tZajovhRc9rWic2KGaqiA8O2/9D+P13PlKEDucobL95/ZneC8dQ0fP
+	m0QxMq/TFMjGyrC4UdSnhBloPylb6DLDXYkDGOenx8SLfadB/bhAolv2V0RPuu7U
+	tX73jpsJBfmUDXBkX96EXX7jyWe7g9VKVGl1Ac7iUfXGYtj9QbRDbvCLGYxnLYgh
+	9AOikJ5kCn2JB6Fo2DeL9uCKUOVxi6sNfMRaaD9wEQy0a/FHWTSnTIs6GkiHU7Vr
+	eG80b75hbohaO6Oce9TQ==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vkmd9kk2f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Jan 2024 14:15:50 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40FEFnFk029633
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Jan 2024 14:15:49 GMT
+Received: from [10.239.133.211] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 15 Jan
+ 2024 06:15:44 -0800
+Message-ID: <2d6a1c05-64a3-4985-8a3a-728509cfa2b1@quicinc.com>
+Date: Mon, 15 Jan 2024 22:15:42 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|MN0PR11MB6253:EE_
-X-MS-Office365-Filtering-Correlation-Id: 700003a4-d816-4d31-836d-08dc15d445c5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: t4AaA91zTcbEx90VyY4R9msU2SH6f9s8/9xvow8ghj18L5PBNMQzvNqQ/jadKWg1MmJS2kFtIwkMcs48TuU+7jjLlS0tLxD9GP1lJLhKasXyUdd+cE7rYMJhYDxjPsnudz6WjQSx92NSReWB3Hlan1tEBkewmioiA5HCALWT1cdFWm9ipaYUm9Z6hQO7mUguF3rzraAI0VxnUh2mIv3yBZz8Kh7O08OpZDiE5+f0EKR2Vnu6E7na2mcbrCfEjOJyjwUsPFPXR3XgaJ6E+bXmwvSHI2R7wKC/FmywR6NpO8ytAX9vfTmw2DsYZwJ9qnZuI7ScGBR2SLX7KrEcm83WwIDfUF+qu23SL1D1NNFhwXjaP4KrfhMtATxvZeIFRzvGWID84ZM6Y9v9396jcGP7phXim9yss+lQDZr0Ey3CbgiSoMO/LzuFmQRZ5CV93loC3OWdvRtYOVhmQ6CYFFaFy26RBo+fdF/hC43GxUMgOi6i1AqYlJZdYCA12J0YzJv1d55wLQLDrgVqc4B1LrrirfzNk5aViqIv/HG4AFUtpa6sXVMhFP2/wx938HbrzOjc7XD0VV+EvPYtLaAnHrlPQg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(396003)(346002)(39860400002)(376002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(83380400001)(107886003)(26005)(2616005)(1076003)(66946007)(38100700002)(5660300002)(6512007)(8676002)(4326008)(8936002)(316002)(41300700001)(7416002)(66556008)(6506007)(6666004)(478600001)(966005)(6486002)(45080400002)(66476007)(54906003)(6916009)(2906002)(86362001)(36756003)(82960400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cElPoJHdN+eho18DOwXGwAu6ATmTqgpZbWjiIkEoBxhLG7Y0uEzLHQBe6v07?=
- =?us-ascii?Q?lAasTnnW9Sfst4awxuAj7zzk6qlybnt2MHhc6/DJALaWkyVQlntcgqgzzfpy?=
- =?us-ascii?Q?Z3LVdQbIy66/E0j35Vr+ZRvyNYEFaToiiJscjzbdv/Na6SBisE0s+0soDnz+?=
- =?us-ascii?Q?tGOZFX3X1pZoa6EMKDJLApEuBSIdSDXF1swFkk187AXBjl+ba/omBFo8zYwE?=
- =?us-ascii?Q?5IUO2HKNtun4QjMFwwdfQN5EI4+u4LiZ3pfUpOQNI3duAJSc/yxX1LdwurQK?=
- =?us-ascii?Q?EXEVTken/3Mzadp5B7Ademi+evt4QXv63iJ4GAIKR225BmSf+BuwcNnsTEU8?=
- =?us-ascii?Q?ToRvD3eliCMImlEsF7WcNflxEBsJZqvO3v7NQ4wfbO7flpYQSHChjuOxtB5a?=
- =?us-ascii?Q?h4w45Bwdt/gmFLoxEu5XgOHFcmq7Fw9dV5NIM0Dl5bCiSPVOrkFdXjQqujiq?=
- =?us-ascii?Q?ucCaN9fRsxNu2v5Fj8SbV3QZm/34dLTUUq2xv4uSY5fXvfp6JgmdQkU6B+ui?=
- =?us-ascii?Q?N+NJFwu0TrRxc2GGAnTW3e9JlJ3/Bj/eYuEsbiPMW/uxhpmAaSA/cwlMHB4n?=
- =?us-ascii?Q?OWo40lI9vYsigqjX+Rn+t7qtL2GimdOC0tVU5yIy5jPwC8AfLt5EVZSZwjHG?=
- =?us-ascii?Q?Mk5+7n1pWR86Hvvno5xTk5KMZAcGzsR5OhdQX1Sm6gpuBUlXAPrq72At6o8G?=
- =?us-ascii?Q?OmyfLYiC0C9pukDSGyJ52ppjobGQI93fJO6S1I3AhxQZQyZhMnJeEjDMFPo4?=
- =?us-ascii?Q?d9VpKeLPSRlVvZoPINuJOiZSwzmnMeQSfjCbEaYu/6+CXJOmeVB8O72H7SPy?=
- =?us-ascii?Q?eE94XnsnGh/DilqMsszoX81DaznnY4oet0OkgzOdlbWsZkKeMAm/zew80vOK?=
- =?us-ascii?Q?ot6pUGnA841vHgXr71yIpUxuEJQxIgLQRI1EmtnxDoXthyzWiKJ03ee7bMkh?=
- =?us-ascii?Q?v8Frf/6YRZapBpQ5GBXYJT4aJ7aTwp5czj83+fqXjjzkLF4EJWOLGkGp4ISb?=
- =?us-ascii?Q?DcDpIZDysBTBT4NLlVEDT7dLV0lCusm6/9refUoklSfc97OCbahGbWhnBQN4?=
- =?us-ascii?Q?nxAv8yVRCGpouknZZOJObRkgmZH4nhva2Q6jB6yDnEePI3CyTGU0Yc9PMC9y?=
- =?us-ascii?Q?K6uymMGuqvdMjnAbCHwEgdYjHtA3ev/qYrC5O8UuFynhcsPgjDTKjjnBLCDE?=
- =?us-ascii?Q?hFVfvCYZLfKSr72O6FzvOHAcbW9uAlfokZfFclnDGyCtnydc6R+Ha2Y0Tz+u?=
- =?us-ascii?Q?bnx/lcKaSz5hzAnTWFEUuJ4kzmnb0jp4D1emFCZq0rpzNelrUH+jFa5caXRC?=
- =?us-ascii?Q?RrKmZhYoHXvZK3/+4MKD9q5yIrXJ2JXK8rr6x10UDlHQba9DPJWFi7lc1yqL?=
- =?us-ascii?Q?xXTAoRDPCUlmmUw+qSiA/6njPQPkRYiH9vwN6sn1fOqYDBDbr3O6jSjPC4E2?=
- =?us-ascii?Q?yKFi/u0gzjmXaG2raGKIqpNnaFjJpRSKzS2/d0R7LsrEQeCOatNHW0Q7PeCP?=
- =?us-ascii?Q?p9Z+ImVmmYDPW84Q1XHGqqAC7EM5MFxEUbBYPtj4CoUEs0UNyw+IfiQ9Adn5?=
- =?us-ascii?Q?Mg1xyliyL48iszvnEEFsYEs/pKn0m559KWD8Eh6MgL2MOER6wL6v80zQtJaT?=
- =?us-ascii?Q?bA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 700003a4-d816-4d31-836d-08dc15d445c5
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2024 14:14:23.0745
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1qlCi4WWEguCyyfXozoBt70FkjeOSgTxOXjfHJV4kAPb3G8UHQOwQP045TowTKogXZ65CxGDDLvnzOp6D62tzA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR11MB6253
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 8/8] coresight-tpdm: Add msr register support for CMB
+Content-Language: en-US
+To: Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mathieu Poirier
+	<mathieu.poirier@linaro.org>,
+        Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC: Jinlong Mao <quic_jinlmao@quicinc.com>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni
+	<quic_tsoni@quicinc.com>,
+        Song Chai <quic_songchai@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <andersson@kernel.org>
+References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
+ <1700533494-19276-9-git-send-email-quic_taozha@quicinc.com>
+ <185b23e7-a42f-4a12-85ba-8a093bc5ea58@arm.com>
+ <4409f3cf-7ca9-407f-92c0-5aa7ba6f7b61@quicinc.com>
+ <d8262a32-cc3c-4889-a5f0-a6b128b7e9d6@arm.com>
+ <3e27b0e2-afb2-4706-9996-f567e33e35ba@quicinc.com>
+ <94f504c4-76dd-4139-a8e0-c2858b7937bb@quicinc.com>
+ <bfc274b8-8b60-4d7d-a8bf-467bc8ebbf1c@arm.com>
+ <ef2d485f-1a43-46b1-ba71-12623332e7bf@quicinc.com>
+ <8b5a5b86-5c4e-453e-a577-b69cebf22b7c@arm.com>
+From: Tao Zhang <quic_taozha@quicinc.com>
+In-Reply-To: <8b5a5b86-5c4e-453e-a577-b69cebf22b7c@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Vn9_FI1aAPC1RxtfIjU4FTanDsjAUHVe
+X-Proofpoint-ORIG-GUID: Vn9_FI1aAPC1RxtfIjU4FTanDsjAUHVe
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ adultscore=0 spamscore=0 suspectscore=0 impostorscore=0 priorityscore=1501
+ mlxscore=0 mlxlogscore=999 lowpriorityscore=0 clxscore=1015 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2401150103
 
 
+On 1/15/2024 5:20 PM, Suzuki K Poulose wrote:
+> On 15/01/2024 06:20, Tao Zhang wrote:
+>>
+>> On 1/12/2024 5:43 PM, Suzuki K Poulose wrote:
+>>> On 12/01/2024 09:12, Tao Zhang wrote:
+>>>>
+>>>> On 12/20/2023 5:06 PM, Tao Zhang wrote:
+>>>>>
+>>>>> On 12/19/2023 10:09 PM, Suzuki K Poulose wrote:
+>>>>>> On 19/12/2023 06:58, Tao Zhang wrote:
+>>>>>>>
+>>>>>>> On 12/18/2023 7:02 PM, Suzuki K Poulose wrote:
+>>>>>>>> On 21/11/2023 02:24, Tao Zhang wrote:
+>>>>>>>>> Add the nodes for CMB subunit MSR(mux select register) support.
+>>>>>>>>> CMB MSRs(mux select registers) is to separate mux,arbitration,
+>>>>>>>>> ,interleaving,data packing control from stream filtering control.
+>>>>>>>>>
+>>>>>>>>> Reviewed-by: James Clark <james.clark@arm.com>
+>>>>>>>>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+>>>>>>>>> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
+>>>>>>>>> ---
+>>>>>>>>>   .../testing/sysfs-bus-coresight-devices-tpdm  | 8 ++
+>>>>>>>>>   drivers/hwtracing/coresight/coresight-tpdm.c  | 86 
+>>>>>>>>> +++++++++++++++++++
+>>>>>>>>>   drivers/hwtracing/coresight/coresight-tpdm.h  | 16 +++-
+>>>>>>>>>   3 files changed, 109 insertions(+), 1 deletion(-)
+>>>>>>>>>
+>>>>>>>>> diff --git 
+>>>>>>>>> a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm 
+>>>>>>>>> b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>>>>>>>> index e0b77107be13..914f3fd81525 100644
+>>>>>>>>> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>>>>>>>> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>>>>>>>> @@ -249,3 +249,11 @@ Description:
+>>>>>>>>>           Accepts only one of the 2 values -  0 or 1.
+>>>>>>>>>           0 : Disable the timestamp of all trace packets.
+>>>>>>>>>           1 : Enable the timestamp of all trace packets.
+>>>>>>>>> +
+>>>>>>>>> +What: /sys/bus/coresight/devices/<tpdm-name>/cmb_msr/msr[0:31]
+>>>>>>>>> +Date:        September 2023
+>>>>>>>>> +KernelVersion    6.7
+>>>>>>>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, 
+>>>>>>>>> Tao Zhang (QUIC) <quic_taozha@quicinc.com>
+>>>>>>>>> +Description:
+>>>>>>>>> +        (RW) Set/Get the MSR(mux select register) for the CMB 
+>>>>>>>>> subunit
+>>>>>>>>> +        TPDM.
+>>>>>>>>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c 
+>>>>>>>>> b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>>>>>>>> index f6cda5616e84..7e331ea436cc 100644
+>>>>>>>>> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
+>>>>>>>>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>>>>>>>> @@ -86,6 +86,11 @@ static ssize_t 
+>>>>>>>>> tpdm_simple_dataset_show(struct device *dev,
+>>>>>>>>>               return -EINVAL;
+>>>>>>>>>           return sysfs_emit(buf, "0x%x\n",
+>>>>>>>>> drvdata->cmb->patt_mask[tpdm_attr->idx]);
+>>>>>>>>> +    case CMB_MSR:
+>>>>>>>>> +        if (tpdm_attr->idx >= drvdata->cmb_msr_num)
+>>>>>>>>> +            return -EINVAL;
+>>>>>>>>> +        return sysfs_emit(buf, "0x%x\n",
+>>>>>>>>> + drvdata->cmb->msr[tpdm_attr->idx]);
+>>>>>>>>>       }
+>>>>>>>>>       return -EINVAL;
+>>>>>>>>>   }
+>>>>>>>>> @@ -162,6 +167,12 @@ static ssize_t 
+>>>>>>>>> tpdm_simple_dataset_store(struct device *dev,
+>>>>>>>>>           else
+>>>>>>>>>               ret = -EINVAL;
+>>>>>>>>>           break;
+>>>>>>>>> +    case CMB_MSR:
+>>>>>>>>> +        if (tpdm_attr->idx < drvdata->cmb_msr_num)
+>>>>>>>>> + drvdata->cmb->msr[tpdm_attr->idx] = val;
+>>>>>>>>> +        else
+>>>>>>>>> +            ret = -EINVAL;
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> minor nit: Could we not break from here instead of adding 
+>>>>>>>> return -EINVAL
+>>>>>>>> for each case ? (I understand it has been done for the existing 
+>>>>>>>> cases.
+>>>>>>>> But I think we should clean up all of that, including the ones 
+>>>>>>>> you added
+>>>>>>>> in Patch 5. Similarly for the dataset_show()
+>>>>>>>
+>>>>>>> Sure, do I also need to change the DSB corresponding code? If 
+>>>>>>> so, how about
+>>>>>>>
+>>>>>>> if I add a new patch to the next patch series to change the 
+>>>>>>> previous existing cases?
+>>>>>>
+>>>>>> You could fix the existing cases as a preparatory patch of the 
+>>>>>> next version of this series. I can pick it up and push it to next 
+>>>>>> as I see fit.
+>>>>>
+>>>>> Got it. I will update this to the next patch series.
+>>>>
+>>>> Hi Suzuki,
+>>>>
+>>>>
+>>>> Since the dataset data is configured with spin lock protection, it 
+>>>> needs to be unlock before return.
+>>>>
+>>>> List my modification below. Would you mind help review to see if it 
+>>>> is good for you.
+>>>>
+>>>> static ssize_t tpdm_simple_dataset_store(struct device *dev,
+>>>>                       struct device_attribute *attr,
+>>>>                       const char *buf,
+>>>>                       size_t size)
+>>>> {
+>>>>      unsigned long val;
+>>>>
+>>>>      struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>>>      struct tpdm_dataset_attribute *tpdm_attr =
+>>>>          container_of(attr, struct tpdm_dataset_attribute, attr);
+>>>>
+>>>>      if (kstrtoul(buf, 0, &val))
+>>>>          return -EINVAL;
+>>>>
+>>>>      spin_lock(&drvdata->spinlock);
+>>>
+>>> Use guard() to avoid explicit unlock on return and then you don't 
+>>> need the spin_unlock() everywhere. It would be done on return from the
+>>> function implicitly.
+>>>
+>>>
+>>>>      switch (tpdm_attr->mem) {
+>>>>      case DSB_TRIG_PATT:
+>>>
+>>> With guard() in place:
+>>>
+>>>     ret = -EINVAL;
+>>>
+>>>     switch () {
+>>>     case XXX:
+>>>
+>>>        if (tpdm_attr->idx < TPDM_XXXX_IDX) {
+>>>            drvdata->dsb->trig_patt[tpdm_attr->idx] = val;
+>>>            ret = size;
+>>>        }
+>>>        break;
+>>>     case ...
+>>>         ...
+>>>     }
+>>>
+>>>     return ret;
+>>
+>> Thanks for your suggestion. I will update the code like below.
+>>
+>> I will update it in the next version of the patch series if it meets 
+>> your expectation.
+>>
+>> static ssize_t tpdm_simple_dataset_store(struct device *dev,
+>>                       struct device_attribute *attr,
+>>                       const char *buf,
+>>                       size_t size)
+>> {
+>>      unsigned long val;
+>>      ssize_t ret = -EINVAL;
+>>
+>>      struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>      struct tpdm_dataset_attribute *tpdm_attr =
+>>          container_of(attr, struct tpdm_dataset_attribute, attr);
+>>
+>>      if (kstrtoul(buf, 0, &val))
+>>          return ret;
+>>
+>>      guard(spinlock)(&drvdata->spinlock);
+>>      switch (tpdm_attr->mem) {
+>>      case DSB_TRIG_PATT:
+>>          if (tpdm_attr->idx < TPDM_DSB_MAX_PATT) {
+>>              drvdata->dsb->trig_patt[tpdm_attr->idx] = val;
+>>              ret =size;
+>>          }
+>>          break;
+>>      case ...
+>>
+>>          ...
+>>      }
+>>      return ret;
+>> }
+>>
+>
+> Yes that looks good to me. Please rebase this on to for-next/queue 
+> branch on the coresight repository.
 
-Hello,
-
-kernel test robot noticed "kernel_BUG_at_fs/dcache.c" on:
-
-commit: 493ec81a8fb8e4ada6f223b8b73791a1280d4774 ("eventfs: Stop using dcache_readdir() for getdents()")
-https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
-
-[test failed on linux-next/master 8cb47d7cd090a690c1785385b2f3d407d4a53ad0]
-[test failed on fix commit 1e4624eb5a0ecaae0d2c4e3019bece119725bb98]
-
-in testcase: stress-ng
-version: stress-ng-x86_64-3040a078a-1_20231212
-with following parameters:
-
-	nr_threads: 10%
-	disk: 1HDD
-	testtime: 60s
-	fs: btrfs
-	class: filesystem
-	test: getdent
-	cpufreq_governor: performance
-
-
-
-compiler: gcc-12
-test machine: 64 threads 2 sockets Intel(R) Xeon(R) Gold 6346 CPU @ 3.10GHz (Ice Lake) with 256G memory
-
-(please refer to attached dmesg/kmsg for entire log/backtrace)
-
-
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202401152142.bfc28861-oliver.sang@intel.com
-
-
-[   41.602502][ T4375] ------------[ cut here ]------------
-[   41.602519][ T4376] ------------[ cut here ]------------
-[   41.602607][ T4374] ------------[ cut here ]------------
-[   41.602607][ T4378] ------------[ cut here ]------------
-[   41.602608][ T4374] kernel BUG at fs/dcache.c:2031!
-[   41.602608][ T4378] kernel BUG at fs/dcache.c:2031!
-[   41.602613][ T4374] invalid opcode: 0000 [#1] SMP NOPTI
-[   41.602616][ T4374] CPU: 50 PID: 4374 Comm: stress-ng-getde Not tainted 6.7.0-rc2-00042-g493ec81a8fb8 #1
-[   41.602618][ T4374] Hardware name: Inspur NF5180M6/NF5180M6, BIOS 06.00.04 04/12/2022
-[ 41.602619][ T4374] RIP: 0010:d_instantiate (fs/dcache.c:2031 (discriminator 1)) 
-[   41.602623][ T4377] ------------[ cut here ]------------
-[ 41.602623][ T4374] Code: e8 92 c0 1c 00 4c 89 e7 e8 0a 79 b8 00 48 89 ef 48 89 de e8 7f fc ff ff 4c 89 e7 c6 07 00 0f 1f 00 5b 5d 41 5c c3 cc cc cc cc <0f> 0b 66 66 2e 0f 1f 84 00 00 00 00 00 66 66 2e 0f 1f 84 00 00 00
-All code
-========
-   0:	e8 92 c0 1c 00       	callq  0x1cc097
-   5:	4c 89 e7             	mov    %r12,%rdi
-   8:	e8 0a 79 b8 00       	callq  0xb87917
-   d:	48 89 ef             	mov    %rbp,%rdi
-  10:	48 89 de             	mov    %rbx,%rsi
-  13:	e8 7f fc ff ff       	callq  0xfffffffffffffc97
-  18:	4c 89 e7             	mov    %r12,%rdi
-  1b:	c6 07 00             	movb   $0x0,(%rdi)
-  1e:	0f 1f 00             	nopl   (%rax)
-  21:	5b                   	pop    %rbx
-  22:	5d                   	pop    %rbp
-  23:	41 5c                	pop    %r12
-  25:	c3                   	retq   
-  26:	cc                   	int3   
-  27:	cc                   	int3   
-  28:	cc                   	int3   
-  29:	cc                   	int3   
-  2a:*	0f 0b                	ud2    		<-- trapping instruction
-  2c:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
-  33:	00 00 00 00 
-  37:	66                   	data16
-  38:	66                   	data16
-  39:	2e                   	cs
-  3a:	0f                   	.byte 0xf
-  3b:	1f                   	(bad)  
-  3c:	84 00                	test   %al,(%rax)
-	...
-
-Code starting with the faulting instruction
-===========================================
-   0:	0f 0b                	ud2    
-   2:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
-   9:	00 00 00 00 
-   d:	66                   	data16
-   e:	66                   	data16
-   f:	2e                   	cs
-  10:	0f                   	.byte 0xf
-  11:	1f                   	(bad)  
-  12:	84 00                	test   %al,(%rax)
-	...
-[   41.602625][ T4377] kernel BUG at fs/dcache.c:2031!
-[   41.602625][ T4374] RSP: 0018:ffa000000fcdfcd0 EFLAGS: 00010286
-[   41.602629][ T4374] RAX: 0000000000000002 RBX: ff11000109392980 RCX: 0000000000000000
-[   41.602630][ T4374] RDX: 0000000000000000 RSI: ff1100405e46c6f0 RDI: ff1100405f05afc0
-[   41.602631][ T4374] RBP: ff1100405f05afc0 R08: ffffffff830ad0e0 R09: 0000000000000000
-[   41.602632][ T4374] R10: 0000000000000280 R11: ffffffff8162036a R12: 0000000000000000
-[   41.602633][ T4374] R13: ff1100405e46c6f0 R14: ff1100405f05aff8 R15: 0000000000000000
-[   41.602634][ T4374] FS:  00007f2582ff9740(0000) GS:ff1100407fa80000(0000) knlGS:0000000000000000
-[   41.602635][ T4374] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   41.602635][ T4374] CR2: 00005624511f3328 CR3: 000000208a342006 CR4: 0000000000771ef0
-[   41.602636][ T4374] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   41.602637][ T4374] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   41.602638][ T4374] PKRU: 55555554
-[   41.602638][ T4374] Call Trace:
-[   41.602640][ T4374]  <TASK>
-[ 41.602642][ T4374] ? die (arch/x86/kernel/dumpstack.c:421 arch/x86/kernel/dumpstack.c:434 arch/x86/kernel/dumpstack.c:447) 
-[ 41.602644][ T4374] ? do_trap (arch/x86/kernel/traps.c:112 arch/x86/kernel/traps.c:153) 
-[ 41.602645][ T4374] ? d_instantiate (fs/dcache.c:2031 (discriminator 1)) 
-[ 41.602647][ T4374] ? do_error_trap (arch/x86/include/asm/traps.h:59 arch/x86/kernel/traps.c:174) 
-[ 41.602648][ T4374] ? d_instantiate (fs/dcache.c:2031 (discriminator 1)) 
-[ 41.602649][ T4374] ? exc_invalid_op (arch/x86/kernel/traps.c:265) 
-[ 41.602652][ T4374] ? d_instantiate (fs/dcache.c:2031 (discriminator 1)) 
-[ 41.602653][ T4374] ? asm_exc_invalid_op (arch/x86/include/asm/idtentry.h:568) 
-[ 41.602655][ T4374] ? tracefs_alloc_inode (fs/tracefs/inode.c:38) 
-[ 41.602657][ T4374] ? d_instantiate (fs/dcache.c:2031 (discriminator 1)) 
-[ 41.602659][ T4374] create_dir_dentry (fs/tracefs/event_inode.c:329 fs/tracefs/event_inode.c:516) 
-[ 41.602661][ T4374] eventfs_root_lookup (fs/tracefs/event_inode.c:611) 
-[ 41.602662][ T4374] ? terminate_walk (fs/namei.c:691) 
-[ 41.602665][ T4374] __lookup_slow (fs/namei.c:1694) 
-[ 41.602667][ T4374] lookup_one_len (fs/namei.c:2746 (discriminator 1)) 
-[ 41.602669][ T4374] eventfs_start_creating (fs/tracefs/inode.c:536) 
-[ 41.602671][ T4374] create_dir_dentry (fs/tracefs/event_inode.c:309 fs/tracefs/event_inode.c:516) 
-[ 41.602673][ T4374] eventfs_iterate (fs/tracefs/event_inode.c:701) 
-[ 41.602674][ T4374] ? atime_needs_update (fs/inode.c:1842 fs/inode.c:1994) 
-[ 41.602677][ T4374] iterate_dir (fs/readdir.c:106) 
-[ 41.602680][ T4374] __x64_sys_getdents (fs/readdir.c:323 fs/readdir.c:307 fs/readdir.c:307) 
-[ 41.602682][ T4374] ? __pfx_filldir (fs/readdir.c:260) 
-[ 41.602684][ T4374] do_syscall_64 (arch/x86/entry/common.c:51 arch/x86/entry/common.c:82) 
-[ 41.602686][ T4374] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:129) 
-[   41.602690][ T4374] RIP: 0033:0x7f2583190f29
-[ 41.602691][ T4374] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 37 8f 0d 00 f7 d8 64 89 01 48
-All code
-========
-   0:	00 c3                	add    %al,%bl
-   2:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
-   9:	00 00 00 
-   c:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
-  11:	48 89 f8             	mov    %rdi,%rax
-  14:	48 89 f7             	mov    %rsi,%rdi
-  17:	48 89 d6             	mov    %rdx,%rsi
-  1a:	48 89 ca             	mov    %rcx,%rdx
-  1d:	4d 89 c2             	mov    %r8,%r10
-  20:	4d 89 c8             	mov    %r9,%r8
-  23:	4c 8b 4c 24 08       	mov    0x8(%rsp),%r9
-  28:	0f 05                	syscall 
-  2a:*	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax		<-- trapping instruction
-  30:	73 01                	jae    0x33
-  32:	c3                   	retq   
-  33:	48 8b 0d 37 8f 0d 00 	mov    0xd8f37(%rip),%rcx        # 0xd8f71
-  3a:	f7 d8                	neg    %eax
-  3c:	64 89 01             	mov    %eax,%fs:(%rcx)
-  3f:	48                   	rex.W
-
-Code starting with the faulting instruction
-===========================================
-   0:	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax
-   6:	73 01                	jae    0x9
-   8:	c3                   	retq   
-   9:	48 8b 0d 37 8f 0d 00 	mov    0xd8f37(%rip),%rcx        # 0xd8f47
-  10:	f7 d8                	neg    %eax
-  12:	64 89 01             	mov    %eax,%fs:(%rcx)
-  15:	48                   	rex.W
-[   41.602692][ T4374] RSP: 002b:00007ffe038f3e28 EFLAGS: 00000246 ORIG_RAX: 000000000000004e
-[   41.602694][ T4374] RAX: ffffffffffffffda RBX: 0000000000001000 RCX: 00007f2583190f29
-[   41.602695][ T4374] RDX: 0000000000001000 RSI: 0000562451159150 RDI: 0000000000000008
-[   41.602695][ T4374] RBP: 00007f2582fcd398 R08: 00007f2582fcd398 R09: 00007f2582fcd398
-[   41.602696][ T4374] R10: 00007f2582fcd398 R11: 0000000000000246 R12: 00007f2582fcd398
-[   41.602696][ T4374] R13: 0000562451159150 R14: 00007ffe038f80d8 R15: 0000000000000008
-[   41.602697][ T4374]  </TASK>
-[   41.602698][ T4374] Modules linked in: binfmt_misc dm_mod intel_rapl_msr intel_rapl_common btrfs blake2b_generic x86_pkg_temp_thermal xor coretemp raid6_pq libcrc32c kvm_intel ipmi_ssif kvm irqbypass nvme crct10dif_pclmul crc32_pclmul sd_mod crc32c_intel nvme_core sg ghash_clmulni_intel sha512_ssse3 ahci t10_pi rapl libahci ast intel_cstate mei_me crc64_rocksoft_generic drm_shmem_helper intel_uncore dax_hmem acpi_ipmi ioatdma i2c_i801 crc64_rocksoft megaraid_sas crc64 ipmi_si libata drm_kms_helper mei i2c_smbus intel_pch_thermal joydev dca wmi ipmi_devintf ipmi_msghandler acpi_power_meter drm fuse ip_tables
-[   41.602723][ T4374] ---[ end trace 0000000000000000 ]---
-[   41.602724][ T4378] invalid opcode: 0000 [#2] SMP NOPTI
-[   41.602726][ T4378] CPU: 27 PID: 4378 Comm: stress-ng-getde Tainted: G      D            6.7.0-rc2-00042-g493ec81a8fb8 #1
-[   41.602728][ T4378] Hardware name: Inspur NF5180M6/NF5180M6, BIOS 06.00.04 04/12/2022
-[ 41.602729][ T4378] RIP: 0010:d_instantiate (fs/dcache.c:2031 (discriminator 1)) 
-[ 41.602733][ T4378] Code: e8 92 c0 1c 00 4c 89 e7 e8 0a 79 b8 00 48 89 ef 48 89 de e8 7f fc ff ff 4c 89 e7 c6 07 00 0f 1f 00 5b 5d 41 5c c3 cc cc cc cc <0f> 0b 66 66 2e 0f 1f 84 00 00 00 00 00 66 66 2e 0f 1f 84 00 00 00
-All code
-========
-   0:	e8 92 c0 1c 00       	callq  0x1cc097
-   5:	4c 89 e7             	mov    %r12,%rdi
-   8:	e8 0a 79 b8 00       	callq  0xb87917
-   d:	48 89 ef             	mov    %rbp,%rdi
-  10:	48 89 de             	mov    %rbx,%rsi
-  13:	e8 7f fc ff ff       	callq  0xfffffffffffffc97
-  18:	4c 89 e7             	mov    %r12,%rdi
-  1b:	c6 07 00             	movb   $0x0,(%rdi)
-  1e:	0f 1f 00             	nopl   (%rax)
-  21:	5b                   	pop    %rbx
-  22:	5d                   	pop    %rbp
-  23:	41 5c                	pop    %r12
-  25:	c3                   	retq   
-  26:	cc                   	int3   
-  27:	cc                   	int3   
-  28:	cc                   	int3   
-  29:	cc                   	int3   
-  2a:*	0f 0b                	ud2    		<-- trapping instruction
-  2c:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
-  33:	00 00 00 00 
-  37:	66                   	data16
-  38:	66                   	data16
-  39:	2e                   	cs
-  3a:	0f                   	.byte 0xf
-  3b:	1f                   	(bad)  
-  3c:	84 00                	test   %al,(%rax)
-	...
-
-Code starting with the faulting instruction
-===========================================
-   0:	0f 0b                	ud2    
-   2:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
-   9:	00 00 00 00 
-   d:	66                   	data16
-   e:	66                   	data16
-   f:	2e                   	cs
-  10:	0f                   	.byte 0xf
-  11:	1f                   	(bad)  
-  12:	84 00                	test   %al,(%rax)
+Got it. Thanks for your mention.
 
 
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20240115/202401152142.bfc28861-oliver.sang@intel.com
+Best,
 
+Tao
 
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+>
+> Suzuki
+>
 
