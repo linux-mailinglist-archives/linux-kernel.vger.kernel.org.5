@@ -1,72 +1,55 @@
-Return-Path: <linux-kernel+bounces-25899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9145C82D7BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:47:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0756482D7CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:51:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6FCC1C218A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:47:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E3CC1C218ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:51:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23FFB22071;
-	Mon, 15 Jan 2024 10:47:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65CD027701;
+	Mon, 15 Jan 2024 10:51:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Sz3CtW8T"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E33T4eJr"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B5462BB00;
-	Mon, 15 Jan 2024 10:47:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=BZWJhywUMRRIXvtL5doMOpnSiLPQBWG9w9WPF2MUO4c=; b=Sz3CtW8TvMYVj95XL1EZCET2A+
-	QamuonxIFNT3zYkRLRtfqxw7SE6Ou+c1sDlHOm3gafCTRQqOLJZCqlQDm5FD6J4qrogV6aC9NBqKU
-	UvioOgQ7gVTi/liinVC4kVe/e4buW1OQKg1r4GMXP3iDla1Qt5/Ci+N1I7TqyALOM7ZH/njEyXM+O
-	kqJMAfgr9yHj6be0TqV5AqRnblBaGfn2ZJHMunrt6qJ0b7/ZJ87rjdKUjRsvXgIYphw4O44+TlX5o
-	PSgdX1SN3rxuaPmO/lCvJycV2gVlF4hse5S9MWc2dj0rsOcECr0O+epZD/m8Mped50SRNjDOgOXs2
-	5FXDnxHg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39864)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rPKUr-0002Ja-0t;
-	Mon, 15 Jan 2024 10:47:13 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rPKUm-0002tU-5o; Mon, 15 Jan 2024 10:47:08 +0000
-Date: Mon, 15 Jan 2024 10:47:08 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
-	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	jianyong.wu@arm.com, justin.he@arm.com,
-	James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 02/21] ACPI: processor: Add support for processors
- described as container packages
-Message-ID: <ZaUNLMvIYChv6qai@shell.armlinux.org.uk>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
- <E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
- <CAJZ5v0iB0bS6nmjQ++pV1zp5YSGuigbffK5VD3wsX+8bY9MA5w@mail.gmail.com>
- <20240111175908.00002f46@Huawei.com>
- <ZaA3l4yjgCXxSiVg@shell.armlinux.org.uk>
- <20240112092520.00001278@Huawei.com>
- <CAJZ5v0g2CFPrSfNzHKBz_Spwt304QEQtR6w57VR11i5APPrD8Q@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DC4A1B805;
+	Mon, 15 Jan 2024 10:51:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9302BC43390;
+	Mon, 15 Jan 2024 10:51:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705315887;
+	bh=75tohajdaNNSPQm1NiUNmFzTTszByQKiAf3bidIzYO0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=E33T4eJrLn3MtUX8dt+Z2uWqCT8mCfq1WxhCMB+oeOZ7OnujjCMb6cSs8+dGjfU8g
+	 V7lVD32+MqY4D29AAALS1yMetYaEH2MQ4PDhB/M42C89VYCqK65ws6GxVgFnVSQFqq
+	 D0b5CMu313a+qFulKN1AEFcEfyH1bJIwCUtD72j3EyR2H2fqb39cUYLo9fRCJkNnJU
+	 UuqTH/ZMHECrigKnpLsy9iWSX8DZJBHGUog5wdrK6GeAC5HDJk+/SXoucahYvynVi6
+	 hu8uODrAyU+H+qNdMv/Y11wWXnO3vGWnf7OLf7o/mMTg/NW6D70xliV2g0cTQb5X3E
+	 5l3YadTHesFYg==
+Date: Mon, 15 Jan 2024 10:51:20 +0000
+From: Simon Horman <horms@kernel.org>
+To: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Florian Westphal <fw@strlen.de>, David Ahern <dsahern@kernel.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Kees Cook <keescook@chromium.org>,
+	Nikolay Aleksandrov <razor@blackwall.org>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Roopa Prabhu <roopa@nvidia.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, bridge@lists.linux.dev, kernel@openvz.org
+Subject: Re: [PATCH v3 1/4] netfilter: nfnetlink_log: use proper helper for
+ fetching physinif
+Message-ID: <20240115105120.GO392144@kernel.org>
+References: <20240111150645.85637-1-ptikhomirov@virtuozzo.com>
+ <20240111150645.85637-2-ptikhomirov@virtuozzo.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,27 +58,16 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJZ5v0g2CFPrSfNzHKBz_Spwt304QEQtR6w57VR11i5APPrD8Q@mail.gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20240111150645.85637-2-ptikhomirov@virtuozzo.com>
 
-On Fri, Jan 12, 2024 at 04:01:40PM +0100, Rafael J. Wysocki wrote:
-> In any case, it is always better to work on top of the current
-> mainline code IMO.
+On Thu, Jan 11, 2024 at 11:06:37PM +0800, Pavel Tikhomirov wrote:
+> We don't use physindev in __build_packet_message except for getting
+> physinif from it. So let's switch to nf_bridge_get_physinif to get what
+> we want directly.
+> 
+> Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
 
-That's fine if one is starting to do some work now, but that is not the
-case with this. The first posting was almost a year ago:
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-	https://lwn.net/Articles/922127/
-
-which likely means that it's been around for at 18 months or more, and
-we can also see that this patch was in that original patch set. What
-the history of this patch is before the first posting... only James
-would be able to answer that and I feel that we're highly unlikely to
-get any kind of response.
-
-Anyway, consider this patch dropped from the series.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+..
 
