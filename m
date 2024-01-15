@@ -1,117 +1,125 @@
-Return-Path: <linux-kernel+bounces-26188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 520F882DC84
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:42:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C92682DC8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:46:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6365B1C21D2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:42:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CDF88B21531
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:46:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EC1617C67;
-	Mon, 15 Jan 2024 15:41:32 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 621BF17BDD
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 15:41:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1AA122F4;
-	Mon, 15 Jan 2024 07:42:15 -0800 (PST)
-Received: from [10.34.100.129] (e126645.nice.arm.com [10.34.100.129])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8A5243F73F;
-	Mon, 15 Jan 2024 07:41:26 -0800 (PST)
-Message-ID: <fcc07133-c43d-4423-bf92-b1d720c7e864@arm.com>
-Date: Mon, 15 Jan 2024 16:41:25 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72A0A1775A;
+	Mon, 15 Jan 2024 15:46:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mwa.re header.i=@mwa.re header.b="NibfqV5Y"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07BC01774A
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 15:46:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mwa.re
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mwa.re
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40e8004628dso4440145e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 07:46:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mwa.re; s=google; t=1705333578; x=1705938378; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=yJEZxzOzncv1QTVfRspOT86NVOhhPss/crA1KTOsfTg=;
+        b=NibfqV5Yfxu4BAV7W0H7G2cYqD5BOWLMs92JqjnvG9fTpD01sD4S6vMxk+hoODu/t1
+         XlJUr5ByeoYQLRrdDzfLjH+F6gpOMVQkU+wpahr6IwT2VcNiDJlu/M4QLSseHPJtqUzG
+         LJU3wgFUFWSyLyGBnoDcb6SQpkasMNU3OVJc/Jv0B5JLmM3zi8SkStNYSR/vVqRKOq9S
+         K1YaYM/waZUGfycXPEqKmgMCPu3MmDA7oKdUgRd3eew3lyt/4glxJGEPzR31eCW7eOZO
+         DkYmgmFf/UDz/djkj3UtZJe+olIvXRWQmfyoPOslkUqOL5bhrRAUrJ7YHPuRHCrL9ah8
+         8PSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705333578; x=1705938378;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yJEZxzOzncv1QTVfRspOT86NVOhhPss/crA1KTOsfTg=;
+        b=aC5fYoNyRt+VkpVktIcNZ7bURHLuE3da7JKEa3Ue2za5TTawDTQtTPLARvk89c/63a
+         8q7qngcSrPaI4TgwD3kCWZEv9t9l6X4eSboPV0qHeHLNVYHmfclm+iX46rKhlJdH9Pwi
+         bOpz7/aLuzK2dHYFYUqWaxDD84ndJtqZ8URv4rfPSFb9gkGF9MfKi6/kqlx+BtDyNGY4
+         +1LzcZY0lD2HqKDD0SA4GTth9RWRw5zX2G2DIxm/EAg9q+h7haMemEoNv5k+GXq664LX
+         /PE/J0GlaiRuITW4dqVPDR8R3+3/sz9EPmKyXOTSsXx/+FC+7f4A3hp7dh4/v3YrHz41
+         0asQ==
+X-Gm-Message-State: AOJu0Yx893ILHbe3DVyLhc1pzPQdln6uqR0UBgxeCApsFrSbwM0bxLWi
+	iqrnxYI4owUoIQpxgvg5qn0jbtbNaiK9Dg==
+X-Google-Smtp-Source: AGHT+IE4Dm6sXrNHWBvvv49O1+4ZjHQ+czCsBSqDjST+9zXk1PRfk8HFLb751anMBW37+qKALcDaAQ==
+X-Received: by 2002:a05:600c:3111:b0:40d:8794:8535 with SMTP id g17-20020a05600c311100b0040d87948535mr2962745wmo.160.1705333578032;
+        Mon, 15 Jan 2024 07:46:18 -0800 (PST)
+Received: from electron.fritz.box ([2a0a:a549:33a5:0:44e2:8957:612:a313])
+        by smtp.gmail.com with ESMTPSA id n18-20020a05600c501200b0040e77ce8768sm4450228wmr.16.2024.01.15.07.46.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 07:46:17 -0800 (PST)
+Message-ID: <20be7b9d5b8c0bef2a35da3d207c15eae75bfd4d.camel@mwa.re>
+Subject: Re: element sizes in input_event struct on riscv32
+From: Antonios Salios <antonios@mwa.re>
+To: Arnd Bergmann <arnd@arndb.de>, Dmitry Torokhov
+ <dmitry.torokhov@gmail.com>,  Deepa Dinamani <deepa.kernel@gmail.com>
+Cc: rydberg@bitmath.org, linux-input@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Jan Henrik Weinstock <jan@mwa.re>, Lukas
+	=?ISO-8859-1?Q?J=FCnger?=
+	 <lukas@mwa.re>
+Date: Mon, 15 Jan 2024 16:46:16 +0100
+In-Reply-To: <caa041d27b0fa45aad09a9a262038e3ae4099ca2.camel@mwa.re>
+References: <c812ea74dd02d1baf85dc6fb32701e103984d25d.camel@mwa.re>
+	 <ZYEFCHBC75rjCE0n@google.com>
+	 <9e97eb50-f9a6-4655-9422-fa1106fff97a@app.fastmail.com>
+	 <491250ba57be2ab983048ffcf5ffd2aec2bedb9e.camel@mwa.re>
+	 <1a528414-f193-4ac0-a911-af426bb48d64@app.fastmail.com>
+	 <caa041d27b0fa45aad09a9a262038e3ae4099ca2.camel@mwa.re>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] sched/idle: Prevent stopping the tick when there is no
- cpuidle driver
-Content-Language: en-US
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>, linux-kernel@vger.kernel.org,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
- <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>
-References: <20231215130501.24542-1-anna-maria@linutronix.de>
- <c09fb78b-5bf9-4c0b-b93f-10fd19a4ab36@arm.com> <87ttnmiif9.fsf@somnus>
- <06a2561f-557b-4eaa-8f11-75883bbbaef9@arm.com> <87a5pag6q7.fsf@somnus>
- <d0f1617e-0088-4bd9-bea6-e89c63b0e2ae@arm.com> <87mstaioy6.ffs@tglx>
- <fe5038e1-e06b-41dd-9584-cbd992bef1fe@arm.com>
- <CAKfTPtC3kN7gsgh+W4YZutQDMfs6TeT_F+Y5ba9txcM2jbbX6g@mail.gmail.com>
-From: Pierre Gondois <pierre.gondois@arm.com>
-In-Reply-To: <CAKfTPtC3kN7gsgh+W4YZutQDMfs6TeT_F+Y5ba9txcM2jbbX6g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
+On Thu, 2023-12-21 at 14:38 +0100, Antonios Salios wrote:
+> On Thu, 2023-12-21 at 12:28 +0000, Arnd Bergmann wrote:
+> > On Thu, Dec 21, 2023, at 08:56, Antonios Salios wrote:
+> > > On Tue, 2023-12-19 at 13:53 +0000, Arnd Bergmann wrote:
+> > > > On Tue, Dec 19, 2023, at 02:50, Dmitry Torokhov wrote:
+> >=20
+> > I don't know what __TIMESIZE is, this is not part of the kernel ABI
+> > as far as I can tell. __USE_TIME_BITS64 should be set by any 32-bit
+> > architecture if the C library defines a 64-bit time_t, otherwise
+> > the
+> > kernel headers have no way of picking the correct definitions based
+> > on preprocessor logic.
+>=20
+> Okay, I agree that this might be a libc problem then. I'll ask the
+> glibc maintainers.
+>=20
 
+According to a glibc maintainer, __USE_TIME_BITS64 is not set on
+architectures that use 64-bit time_t as default such as riscv32.
+This can also be seen here [1].
 
-On 1/15/24 14:29, Vincent Guittot wrote:
-> On Mon, 15 Jan 2024 at 13:40, Pierre Gondois <pierre.gondois@arm.com> wrote:
->>
->> Hello Thomas,
->>
->> On 1/12/24 15:52, Thomas Gleixner wrote:
->>> On Fri, Jan 12 2024 at 14:39, Pierre Gondois wrote:
->>>> On 1/12/24 11:56, Anna-Maria Behnsen wrote:
->>>>> Pierre Gondois <pierre.gondois@arm.com> writes:
->>>>>> I agree that the absence of cpuidle driver prevents from reaching deep
->>>>>> idle states. FWIU, there is however still benefits in stopping the tick
->>>>>> on such platform.
->>>>>
->>>>> What's the benefit?
->>>>
->>>> I did the following test:
->>>> - on an arm64 Juno-r2 platform (2 big A-72 and 4 little A-53 CPUs)
->>>> - booting with 'cpuidle.off=1'
->>>> - using the energy counters of the platforms
->>>>      (the counters measure energy for the whole cluster of big/little CPUs)
->>>> - letting the platform idling during 10s
->>>>
->>>> So the energy consumption would be up:
->>>> - ~6% for the big CPUs
->>>> - ~10% for the litte CPUs
->>>
->>> Fair enough, but what's the actual usecase?
->>>
->>> NOHZ w/o cpuidle driver seems a rather academic exercise to me.
-> 
-> Don't know if it's really a valid use case but can't we have VMs in
-> such a configuration ?
-> NOHZ enabled and no cpuidle driver as VM doesn't manage HW anyway ?
+Perhaps the kernel header needs to check the size of time_t in some
+other way?
 
-Yes right,
-I tried with a kvmtool generated VM and it seemed to be the case:
+[1]
+https://sourceware.org/git/?p=3Dglibc.git;a=3Dblob;f=3Dsysdeps/unix/sysv/li=
+nux/features-time64.h;hb=3Dglibc-2.37
 
-$ grep . /sys/devices/system/cpu/cpuidle/*
-/sys/devices/system/cpu/cpuidle/available_governors:menu
-/sys/devices/system/cpu/cpuidle/current_driver:none
-/sys/devices/system/cpu/cpuidle/current_governor:menu
-/sys/devices/system/cpu/cpuidle/current_governor_ro:menu
+--=20
+Antonios Salios
+Software Engineer
 
+MachineWare GmbH | www.machineware.de
+H=C3=BChnermarkt 19, 52062 Aachen, Germany
+Amtsgericht Aachen HRB25734
 
-> 
->>
->> I thought Anna-Maria had a use-case for this.
->> I just wanted to point out that this patch could potentially
->> increase the energy consumption for her use-case, nothing more,
->>
->> Regards,
->> Pierre
->>
->>>
->>> Thanks,
->>>
->>>           tglx
+Gesch=C3=A4ftsf=C3=BChrung
+Lukas J=C3=BCnger
+Dr.-Ing. Jan Henrik Weinstock
 
