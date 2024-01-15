@@ -1,115 +1,112 @@
-Return-Path: <linux-kernel+bounces-25766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A11F582D576
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:02:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1921882D57C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:03:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D574281537
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:02:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCFA02816D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:03:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB0F0C2C4;
-	Mon, 15 Jan 2024 09:02:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5551E568;
+	Mon, 15 Jan 2024 09:02:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="SAOPBhxw"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="K8KFxOQd"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38E584428;
-	Mon, 15 Jan 2024 09:02:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id AD92740E01B0;
-	Mon, 15 Jan 2024 09:02:12 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id SUKdvpsWbZhK; Mon, 15 Jan 2024 09:02:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1705309330; bh=StldW18DJW9RHvhpFLIMw8/y8Xdlf7u+BI435bxm9gE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SAOPBhxwbXpACDVHP9Vgo+tBOgk6enmMbPub2YjCJOSM2Toof/rV7Tf6Q7KI0mS1g
-	 ZEBocmEh81odQ2fQbDeCt9YY3bAHX7XPTnpw7Un7NF9qjc3oa1yXKaibzSuoQDj/x3
-	 evyCIOERFXEiSoe5cyAhmDl1c1pRyM8HLcaLyzQMdOF72dHMjbbRjLv0doHYVPOaCh
-	 hlygnPuXr/lh3jKPd04u9kqpmeR2RvvB11xD0OZbMX98qSlIrtzWdjd/EJwIPPXF/e
-	 3B4uJK5neFbWsFBfVhuCn823FkTrBaGCd/C4SUl+MIBS8hD67NvSqMRUxA5BhQzE5Z
-	 olACYu2A9zCwGqxAR/dxdJtbefC0pED2yvzcvoMizdVumW2bIrH2gaqeVecKt5LeEE
-	 kvQxK5TJeeXq+Xc+DaFxh0DsavN4p3n6NNrZ2GYRoMMaOelAuNsYdoTKSLlPViMhxn
-	 so7gePgLsENHGpjy+x/C1Wi41H+Rl5T+SVHS7jKFXTVmIhciNEDlSkcfMY61sFbJI/
-	 o7VSoCVXWZv8qrKkhvxKf8e3Yh2FnNPraaEj7B872YIPUs96dShqtLXjHEgZWG9QqR
-	 6jgVxJglFNO/ETzSN4Oz4a+qpYt6yB52z6q81wpRVsI+ElPGIVMbmNf/lhjYS9V2T+
-	 oygAXEbBHHh/kshvJixLCzlI=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7F93DDCE;
+	Mon, 15 Jan 2024 09:02:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705309370;
+	bh=sftk4d280l+HctfqAtKqHrcK/J3Px2D7IIXq4GsVvDg=;
+	h=Date:To:Cc:From:Subject:From;
+	b=K8KFxOQdS1ydMRB9VNADqLf5mNe9FEJN1/06TE4qFR9Lqyc7B+Qypi9qYceKL8+zG
+	 4ovabva4VCYnSaU+11e1BnTcVk+HsdOuxb1KjiRhfQH1jaKTds3SoUiLbncEZLFbC1
+	 BB+d+LT0TnCytncAhroB2BuEJyLxr7FDThSROanO5Am2NBVRdBFeV11JtlDRrvf/L2
+	 gPvmhsNekyzZdD6YhAKXypLKszsH+ZV4wdnGa1aPgbAVXQl3g7rv6RFyQxqbDjdTGw
+	 TCwi/TvbdwQObmNmDh8RGAAYhbhl5uXJ6shrxVkHIoRSMS6YuByhA2oBW0GUatYo5L
+	 i8gUcn8SZ90vA==
+Received: from [100.66.96.193] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 008B940E01A9;
-	Mon, 15 Jan 2024 09:01:31 +0000 (UTC)
-Date: Mon, 15 Jan 2024 10:01:26 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Michael Roth <michael.roth@amd.com>
-Cc: x86@kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
-	linux-mm@kvack.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-	rientjes@google.com, tobin@ibm.com, vbabka@suse.cz,
-	kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-	pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com,
-	Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v1 11/26] x86/sev: Invalidate pages from the direct map
- when adding them to the RMP table
-Message-ID: <20240115090126.GEZaT0ZnSPIPsnUiyt@fat_crate.local>
-References: <20231230161954.569267-1-michael.roth@amd.com>
- <20231230161954.569267-12-michael.roth@amd.com>
+	(Authenticated sender: vignesh)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 179043781F80;
+	Mon, 15 Jan 2024 09:02:41 +0000 (UTC)
+Message-ID: <46287831-edfa-78e8-6055-d7a08831c445@collabora.com>
+Date: Mon, 15 Jan 2024 14:32:38 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231230161954.569267-12-michael.roth@amd.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ freedreno@lists.freedesktop.org
+Cc: airlied@gmail.com, daniel@ffwll.ch, daniel@fooishbar.org,
+ helen.koike@collabora.com, david.heidelberg@collabora.com,
+ guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
+ robdclark@gmail.com, quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org,
+ sean@poorly.run, marijn.suijten@somainline.org, linux-kernel@vger.kernel.org
+From: Vignesh Raman <vignesh.raman@collabora.com>
+Subject: Flaky tests for msm sdm845
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sat, Dec 30, 2023 at 10:19:39AM -0600, Michael Roth wrote:
-> +	/*
-> +	 * If the kernel uses a 2MB directmap mapping to write to an address,
-> +	 * and that 2MB range happens to contain a 4KB page that set to private
-> +	 * in the RMP table, an RMP #PF will trigger and cause a host crash.
+Hi Maintainers,
 
-Also:
+There are some flaky tests reported for sdm845 msm driver testing in 
+drm-ci with commit 
+https://patchwork.kernel.org/project/linux-arm-msm/patch/20240108195016.156583-1-robdclark@gmail.com/
 
-diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
-index 7d294d1a620b..2ad83e7fb2da 100644
---- a/arch/x86/virt/svm/sev.c
-+++ b/arch/x86/virt/svm/sev.c
-@@ -415,8 +415,9 @@ static int rmpupdate(u64 pfn, struct rmp_state *state)
- 
- 	/*
- 	 * If the kernel uses a 2MB directmap mapping to write to an address,
--	 * and that 2MB range happens to contain a 4KB page that set to private
--	 * in the RMP table, an RMP #PF will trigger and cause a host crash.
-+	 * and that 2MB range happens to contain a 4KB page that has been set
-+	 * to private in the RMP table, an RMP #PF will trigger and cause a
-+	 * host crash.
- 	 *
- 	 * Prevent this by removing pages from the directmap prior to setting
- 	 * them as private in the RMP table.
+=== msm:sdm845 ===
+# Board Name: msm:sdm845
+# Failure Rate: 50
+# IGT Version: 1.28-gd2af13d9f
+# Linux Version: 6.7.0-rc3
 
--- 
-Regards/Gruss,
-    Boris.
+Pipeline url:
+https://gitlab.freedesktop.org/vigneshraman/linux/-/jobs/53737049
+https://gitlab.freedesktop.org/vigneshraman/linux/-/jobs/53737050
+https://gitlab.freedesktop.org/vigneshraman/linux/-/jobs/53734294
+https://gitlab.freedesktop.org/vigneshraman/linux/-/jobs/53714642
+https://gitlab.freedesktop.org/vigneshraman/linux/-/jobs/53667209
+https://gitlab.freedesktop.org/vigneshraman/linux/-/jobs/53647868
+https://gitlab.freedesktop.org/vigneshraman/linux/-/jobs/53734121
+https://gitlab.freedesktop.org/vigneshraman/linux/-/jobs/53647999
 
-https://people.kernel.org/tglx/notes-about-netiquette
+# Reported by deqp-runner
+kms_cursor_legacy@basic-flip-after-cursor-legacy
+kms_cursor_legacy@flip-vs-cursor-toggle
+kms_cursor_legacy@flip-vs-cursor-varying-size
+kms_cursor_legacy@short-flip-after-cursor-toggle
+kms_cursor_legacy@short-flip-before-cursor-atomic-transitions
+kms_cursor_legacy@short-flip-before-cursor-atomic-transitions-varying-size
+msm_shrink@copy-gpu-oom-32
+
+# The below test shows inconsistency across multiple runs, giving
+# results of Pass and Fail/Crash alternately.
+kms_cursor_legacy@basic-flip-before-cursor-varying-size
+kms_cursor_legacy@flip-vs-cursor-atomic-transitions
+kms_cursor_legacy@short-flip-after-cursor-atomic-transitions
+kms_cursor_legacy@short-flip-after-cursor-atomic-transitions-varying-size
+msm_shrink@copy-gpu-32
+
+I will add these tests in 
+drivers/gpu/drm/ci/xfails/msm-sdm845-flakes.txt 
+(https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/Documentation/gpu/automated_testing.rst#n70)
+
+Please could you have a look at these test results and let us know if 
+you need more information. Thank you.
+
+Regards,
+Vignesh
 
