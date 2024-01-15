@@ -1,219 +1,122 @@
-Return-Path: <linux-kernel+bounces-26305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE1D682DE4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:15:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16D4982DE4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:16:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00BE31C21E66
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:15:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E29E1F228CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:16:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D85818E12;
-	Mon, 15 Jan 2024 17:14:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D95518028;
+	Mon, 15 Jan 2024 17:16:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EZGFLgta"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="sgPKvRIr"
+Received: from mout.web.de (mout.web.de [212.227.15.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A3CA18E11
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 17:14:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705338867; x=1736874867;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=Iw0VZEJ+HFEd6paKWv5g2Vn0NbAPDmus/BwEoKJu0q0=;
-  b=EZGFLgtaxBSbaP57VpRNJkF7b67XQdjmhvoo98c0RRSFwI8VPMk+wfRK
-   MGFliLQ8/bwQykFzkyouIANLFV8djjHjAZ+qkBYHPs/v3I6nnTUgrIkd+
-   TYR1AlISN0F5C2i6qTrnkLBUuG+yxoPAn5RIZU9W/k/eB9yg+OQUGu24I
-   SdG83WrXjs+jYGdA045yxFmDdb4szP2ETdmat899NWXlPQzlwoDhQuaJq
-   HggO1M7N+9tjXsa2snT6P3jQj26EAPjgUG4fc4G8J84sknlTDYhU9Rnp6
-   KUBj05jNV92QK1XlSDp1JD/T/rkuseOUjig653svJreKJWoNhVXcbn+H5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="21139075"
-X-IronPort-AV: E=Sophos;i="6.04,197,1695711600"; 
-   d="scan'208";a="21139075"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 09:14:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="854063885"
-X-IronPort-AV: E=Sophos;i="6.04,197,1695711600"; 
-   d="scan'208";a="854063885"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Jan 2024 09:14:26 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 15 Jan 2024 09:14:26 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 15 Jan 2024 09:14:26 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 15 Jan 2024 09:14:25 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nem4TSHaWaYccEpKhNjHJe8VbVTayE6mTHjGkc2r701o6D4Y/x1TGdP2Q+PXdyue5RG8xSzh74YZR4vSB/MnE97ocHSX/MyCnwrjB4jzV9e7d50ocyjB2DNONF4ROSPqTUHbodGJiQrkAYDBd+Y4a/Yp/p8vzLsX964Qmbz+FK6sbtlQpzRmL+wYmY0ypGd4LIH3jFpNWjTj1sFg6xVIxhxMypt7rcj/gFe7VtTvmVblaYum6Ubl0ezkP4a3k53mIU1X8VVd8jILscqQPW/ETI8wSTsdXOwSb81IIX7AFnL6S8Z6n7gPGawQGeyoq932uwsMmgiPkPABU0JFY5OWXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MQcC7ohGVAYgzqfN/kkAjJJfljR/41ywz9GsUAACHcA=;
- b=EPXTd/uwpKqntFMyZeIhmdSvqJUD66yF+JqHLY/tiw1w2Jxjp3vX2JIYkvNlVoHpmmLbIF0V1gDIbINtEpvxvRgCvApYuHAGhG+YOkmNjWFAMwYboj5C48TJsqlBAmQbC48ZdEGjfht1ueUz71joAHJfQFJgukhP3qyAWoGyoZcMIO56axJQuRub9BvIi2U5a0l19Zy/84xh/McbmcYfU4WAEvdXxjo73yG7thEMs03g9RQLXsufBIh5UNjywaFPhYVFvHeK6djxAxkMIonkHJIRF9YQtn0+JJh+6KqOtyk+RfeGz4rgJsjao75Yd2gknntpABSRbjjyGsE+jNoIRQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB5373.namprd11.prod.outlook.com (2603:10b6:5:394::7) by
- CY5PR11MB6391.namprd11.prod.outlook.com (2603:10b6:930:38::21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7181.18; Mon, 15 Jan 2024 17:14:23 +0000
-Received: from DM4PR11MB5373.namprd11.prod.outlook.com
- ([fe80::f105:47dd:6794:6821]) by DM4PR11MB5373.namprd11.prod.outlook.com
- ([fe80::f105:47dd:6794:6821%4]) with mapi id 15.20.7181.020; Mon, 15 Jan 2024
- 17:14:20 +0000
-From: =?UTF-8?q?Micha=C5=82=20Winiarski?= <michal.winiarski@intel.com>
-To: <intel-xe@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-	<linux-kernel@vger.kernel.org>
-CC: Rodrigo Vivi <rodrigo.vivi@intel.com>, Michal Wajdeczko
-	<michal.wajdeczko@intel.com>, Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>, Javier Martinez Canillas
-	<javierm@redhat.com>, =?UTF-8?q?Ma=C3=ADra=20Canal?= <mcanal@igalia.com>,
-	=?UTF-8?q?Micha=C5=82=20Winiarski?= <michal.winiarski@intel.com>
-Subject: [PATCH v5 5/5] drm/tests: managed: Add a simple test for drmm_managed_release
-Date: Mon, 15 Jan 2024 18:13:51 +0100
-Message-ID: <20240115171351.504264-6-michal.winiarski@intel.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240115171351.504264-1-michal.winiarski@intel.com>
-References: <20240115171351.504264-1-michal.winiarski@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR3P281CA0160.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a2::15) To DM4PR11MB5373.namprd11.prod.outlook.com
- (2603:10b6:5:394::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38C5017C70;
+	Mon, 15 Jan 2024 17:16:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1705338964; x=1705943764; i=markus.elfring@web.de;
+	bh=/Ca96eOJyuxZcGSv7l/iefKgmthOd3AabqprAzeuaDY=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=sgPKvRIrBelWyeNzCjHkNZaM2fDhYHQ0kNneSgD1vuY6lY9XR7GqE5qdQ08EazWZ
+	 jcjnsqrZsoC+wSJDq6Jqvj6eXNElZxygAZ5lC8ysod5DEWSeqKtDmn41Zhrllf3Ko
+	 2LvpYP0x0ZV6RPaHg6TQ2nnWK7JxhudTgOY098If0ONgDJUkVNITIpdRin3o5o4ku
+	 4t18SJI6FTXAIyBiMe05+tPlQSHL6H1EuvacnlNgM/zQdiK1qoje7RmfvM6fchNtu
+	 ZfNL/r2ZEV54o8NCQeMpXrSsYm0fYAdc8ewWkqJ9YL3vlOYKjidLi4pqWZZoaoZ/3
+	 n+zjN42TImfT2rZ6gw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.91.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MEUWM-1rNkoY35Y2-00FyPF; Mon, 15
+ Jan 2024 18:16:04 +0100
+Message-ID: <f1977c1c-1c55-4194-9f72-f77120b2e4e5@web.de>
+Date: Mon, 15 Jan 2024 18:16:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB5373:EE_|CY5PR11MB6391:EE_
-X-MS-Office365-Filtering-Correlation-Id: c76bf226-f372-4391-dbd1-08dc15ed69db
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fokfRYOHgP09IOIvLSUrxDQSmcgwtm2GAkb3LP1HRLKqv5QcWsbk+MHHfMgv2nHQ/sC7jmi0lOnIhNqUgS/EqQa24pIFyI8Qa/CsaidstMIPsSgtmACS/kjGR5fHGknlpIXU7F8VVqw3M7am3Yfiars/Fn13FuJtrpDuwECUL/49Eyl2YeeUi34SxZRwRnoNqiAD6EbxT9meWtwabl+/EbNG3Yu1Ty3VclNConzfFZGNr1fo+GGzpWkSPfv45f6lYF4rYt7Y5IPauyGcgJdXJ32XyATTNgiyun45J9IZp4rG7AbG6uRbvARS9U9lEO7HVNMvEquhlC70hE48l+c948GnNw4pOvsyGyoGqjV/nmoPP/YzmMY6sXXnAtQuOZJAtbjHHdH9Cuj6ngWcCJ9syz7xFzgqa3cUu/LQYA19ZR/W9gHKYyYrVXFIxvnOREtiDolm22NzIX6YMmkt/ohGEsh1COBvsile56ZoXCBR5Xf1hcQKLtDXgDzr2S0nG6U5L0CGJjYylriWqCAvCJMjG4pTP41vToB8toBfv3y0qj6JZMCpkrlJ9g1pWqVN5q4X
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5373.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(39860400002)(366004)(376002)(396003)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(66946007)(6506007)(1076003)(6666004)(2616005)(478600001)(82960400001)(66476007)(86362001)(316002)(6486002)(66556008)(26005)(54906003)(5660300002)(8676002)(36756003)(6512007)(41300700001)(7416002)(38100700002)(4326008)(8936002)(2906002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R2F3TUkyWEhVMEFISGFLaGluYzZvN00vb0V3d0M5QTBRSms0WHNyakJvemtm?=
- =?utf-8?B?ZlRvdVpOT3IwTlNEajc3QkIzTkNNaXRoZjFZK1VnQXNDTndHREdmVGxNSUJS?=
- =?utf-8?B?Y21jV1NvaGZWdExxbFgvUTVBcHRoVStDbnNYMTVJZm1qRjNVcndQdE1MN3F3?=
- =?utf-8?B?N0cwVDAxTzh5RG1ZM1pPcXBoRHdKSkdWN0FCTjdqNVNQWjZtK3hYY2JPM2NZ?=
- =?utf-8?B?L0Fwd05FR0VMdVg3M1ExZTZBZEtSaWxlRFNmQ1h1YUltMnA2bUdRRHhEejdj?=
- =?utf-8?B?SEtUYk9XSXdqOGhtSTR6bW5TbitJai9yNENGNy9iOEV2akdCSkhLeHdqSEVS?=
- =?utf-8?B?QndIdDN3blcrYS81ZmpQVU5aZWhSb1BraHc5RXpBaXVmSmZRU2w4NTJoYnhZ?=
- =?utf-8?B?bjNGR1ZyNER2WlYrRkk1YldqOVAwNm90WndPb3Q1RmlOMDlWbVppM2t6K3FX?=
- =?utf-8?B?V3Brb1BxOTJ6VmpGVHpCV2JuOUJXcWcwQ0hKR0thOHRQWm82MUV1TTVCWDBX?=
- =?utf-8?B?a096N3FtYjdLMFpoNk9IUVYwLytDbDRtYjJhZTVVc1JkU3VQd3kxK3AxalBW?=
- =?utf-8?B?S3gxSDZvVHZYNkZkK2lUSW1VZldhTTBZaGVUZDRBbWk2K3hxaEh0OXY2TTNx?=
- =?utf-8?B?QWlpMWlmQktaVlBJQWE4cmNDenJLOERhNTRkODl6eWVHaGxmenJScDFFbnN0?=
- =?utf-8?B?ejgvNG9oTjNVRis5bWZsWis4Q3dOTE95Nk5lUTZjVHd0bXpJNTFwTG5XSWVz?=
- =?utf-8?B?Q25qNWdJY21rY3AvL29uVm9sNjNnOHJEV3Rwa2dMQStDV2ZVSmN2RWhjSm9S?=
- =?utf-8?B?NW9vUFBVRmhkeHppdDVqK3lTMEMvSGRWRCtVYWkwaHNTMFkwbkpKby9IdkFv?=
- =?utf-8?B?UGZqWE5MSFk0MDd5cWpkeTFSRUJDbmxPRW1HZWZ6ZWdhNVc5TkpjaWM0VW5u?=
- =?utf-8?B?dENkZjd2MWJadldEOHgxVER3eHVoRytsdXVKS0k2N2xWcW1rS3A4SG96Y3Vz?=
- =?utf-8?B?cklKaVdxclJkWjcvQUN0NTg5d3Q4c2h6OUVLSUFva1lFSWtIRnF5eHZYVjA5?=
- =?utf-8?B?OXlyV01aTW11QnlCMmZpMmFUd2tkaXEvTkdCOUNnZEZIRFprMnB5SXQ5REtJ?=
- =?utf-8?B?cXVIakZQa0ZuUG9XdGFaazh5Wk9ZTTAxQzBmZFJwRmJCdFJGUU9wMUQ1dkxR?=
- =?utf-8?B?cjRPeTZCdGtzbDR4dUF6dTdoTFErMXg4bmRmeFNxd0REd1NHc0RBOEY3ekhj?=
- =?utf-8?B?TE0yUXV5WkM1QWk5cjFxZ0VIRFNaUUw3cWlZVzY0Mk1Hd014MTl3MW81cGZS?=
- =?utf-8?B?RU5aM214aXR4OFFzdzhVUFR1anZ3Zkh2VVlPZlFGenBGc3phNEc3NklVbmxZ?=
- =?utf-8?B?UUZlbTZETTlRNEFvOHJOc3k5aTFDbDVOdG04cER1NGRKbkZ6V01PTWM1RkR1?=
- =?utf-8?B?bEk4V0FzMlpWajRvWEN2T0xXOTRubEdDdGsrSTZCMUh5Ung0dEdmVnhKMmhx?=
- =?utf-8?B?RDBTSUpLa29mS1F4dWxvbDdod3BxYisrOFJ1MTdWeW1QSGZhbDRnVytBL3dm?=
- =?utf-8?B?Sm1TY0czcmVUUGh6MHJBcGtYblpWZDQ5ZkxacG5nQzI2MEtiQllSc3JSVjly?=
- =?utf-8?B?U1ZxN1hUYTQ3Y1pSVWlOb2lKSzJiNy9TMGsvVlBaMWpiTjltU3FYYXFRSWZo?=
- =?utf-8?B?eHN1MFAzZFp3dlVOZGFFK1VXR1YzK2UxUUZSbTdLQXk2U2JVV0orWHFFN0Zi?=
- =?utf-8?B?eXptZXREM05Ccyt0TkJoU2FwSFRjV1BQLzRZbkIvcmpvSWJIQlpOQTdhSlRr?=
- =?utf-8?B?UjcwWE5aWDlqaUxNSnl1MHFQUDh5WFY4SEFvUEY1RlJzVml5L3NHamo2MVNC?=
- =?utf-8?B?NkQxRjVPNnVYVlJ1S2JicWhUb3hsdXZyZlduWU1YVVZydHZ4QmhCL2lJNnhY?=
- =?utf-8?B?SzN2bk5UQ1RLM3htcnVGYjJBZExCQ1E1SjJFRitadDRxb3pYaWdETWJnYVRM?=
- =?utf-8?B?cTNMbGRxVm4vc1JndDVpR1N3NFZIUjVSOTh1Yyt4N1ZaWXI4MjlQa1p5bTRN?=
- =?utf-8?B?T3VKYnkxdDkxOU5reEQ4OHhVQlJRa2xnT1pZYVF0b1J2ZTR4SVZqZ25mbzdL?=
- =?utf-8?B?Ylh0Unkrd2NhajZQZy9ybTNoaEFtODNnVEUwSWtjR3d2OE4yMVNwWE4rbXZr?=
- =?utf-8?B?M1E9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c76bf226-f372-4391-dbd1-08dc15ed69db
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5373.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2024 17:14:20.8118
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: E9HVE2Ut+lwuvj6HXWoLn1/lKyhFINQDmt82N3ZezEgf8HpvVSDCtohPiMorAWw+xItzOoAznV1RBmQPlli8hJXdP4fu4UH1QS8cRZjhfMw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6391
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+To: kvm@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Alex Williamson <alex.williamson@redhat.com>,
+ Eric Auger <eric.auger@redhat.com>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] vfio/platform: Use common error handling code in
+ vfio_set_trigger()
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Z7qzU6jLC5cPn/dLevgbgCx8zj31z9p9BzGnlUo6qnRP8d4y1Q4
+ +LgCokwPLR5G9VadGZiu3ppi8llxC69DKuh3llJFNC6FiVQ+lswHbYdPzkGGPNUOBOlbCZz
+ WIbrZQxOwm/G0FgSVHUwZUOW9jbGaBJZxNUPCLXMpKfI6tbRbQ2/IiFYhrw0LxbcSJEXNas
+ DYbpsn2HWi/vpboCkYmlg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:RiqAqZK9y5E=;sYOKqyUlk+kJ4LlOPo3PXmIH83z
+ pLTFVm2Les9olu7Uh211G5dElkH0PLTZHc0+i6Q6sjrOb8aneyH9PTlfzJr3O2eIvDvvq6Xf6
+ qnR0o+e7TTAtFZFz3HkRly3edKY31eqbapPqVKji3GONpLBiJdF+h3XA3qoNhlRuqHMNDVkCH
+ tV7K5DvGJ9Fs94RKL+s7zPWVaJgA1u8QM1uQnls50/y6dGgHwOpCXp0mkr+USqBzLTYy+9wEq
+ r0fn9aCVUEg5/TNStg6AaOPLcu8z4KJWMS1eRx0WSMJaaMUBFEK0oOAlO4O9TYxF5NzkzFVuf
+ GoD/VqVGnXJCYJyFl5Lr9V1JUlHqL75mpw7rkl92M1h10y7rBNfMC7QTrCHWB6zNFJFpFvrR7
+ qTF1haSFmMdfAh+4P9X9cpMcTaI80gw0sQ9exKnOn/wZplLT/jd/otlpG7UUb+9gnQieSApQf
+ JJBA9tuyzM7EnvgAE/kjy2lyS4UuQ8sMQGqKQZca8ZOeyExfvYcL+SiDlQ39ZtXVLd7arf/Lb
+ SRy3UCgk6c1aO5mIcChHP+7a7FG1n5odboFiOJyUBCpfSKr2yDh115DfUfPeX8e8KaBBAs8t1
+ zJgKfnUVHvo51Jj7OCCod7dQ2eE3LDV/sbH2IAKbfsBO1X1yUV7fgIZ4xBdh2sLz08AmVbrbr
+ atd4nZ88pRufV0grZPqiSwQjBna/gmeHmLvUMmLHx93bmKIgE6Ht5cKAuXoiIkOtdaCdAXxXA
+ B0VHsc7xwFvp0nCz9R8UmxPxJw13KsqeZnw/vJbvTTfOs/OzApL/yTJDGOXzfBxGsIYaXIGkw
+ GWVewi5mfXCzNvqhp8ktmAV59SRLZ+BIzVy3ugjneh0/vNyoh2gVtUx7dcdCjWkYhbfeJWmWW
+ cfx5OH4LpTFEvCJT0wdkQe3JmtaBjNuPTscVmFzNoi2739kp55BXZNLzY8OEI9T6RfJCthJ7w
+ OAV3KA==
 
-Add a simple test that checks whether the action is called when
-drmm_managed_release is called.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Mon, 15 Jan 2024 18:08:29 +0100
 
-Signed-off-by: Michał Winiarski <michal.winiarski@intel.com>
----
- drivers/gpu/drm/tests/drm_managed_test.c | 25 ++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+Add a jump target so that a bit of exception handling can be better reused
+in an if branch of this function.
 
-diff --git a/drivers/gpu/drm/tests/drm_managed_test.c b/drivers/gpu/drm/tests/drm_managed_test.c
-index d936c879a4a30..76eb273c9b364 100644
---- a/drivers/gpu/drm/tests/drm_managed_test.c
-+++ b/drivers/gpu/drm/tests/drm_managed_test.c
-@@ -25,6 +25,30 @@ static void drm_action(struct drm_device *drm, void *ptr)
- 	wake_up_interruptible(&priv->action_wq);
- }
- 
-+/*
-+ * The test verifies that the release action is called when
-+ * drmm_release_action is called.
-+ */
-+static void drm_test_managed_release_action(struct kunit *test)
-+{
-+	struct managed_test_priv *priv = test->priv;
-+	int ret;
-+
-+	ret = drmm_add_action_or_reset(priv->drm, drm_action, priv);
-+	KUNIT_EXPECT_EQ(test, ret, 0);
-+
-+	ret = drm_dev_register(priv->drm, 0);
-+	KUNIT_ASSERT_EQ(test, ret, 0);
-+
-+	drmm_release_action(priv->drm, drm_action, priv);
-+	ret = wait_event_interruptible_timeout(priv->action_wq, priv->action_done,
-+					       msecs_to_jiffies(TEST_TIMEOUT_MS));
-+	KUNIT_EXPECT_GT(test, ret, 0);
-+
-+	drm_dev_unregister(priv->drm);
-+	drm_kunit_helper_free_device(test, priv->drm->dev);
-+}
-+
- /*
-  * The test verifies that the release action is called automatically when the
-  * device is released.
-@@ -75,6 +99,7 @@ static int drm_managed_test_init(struct kunit *test)
- }
- 
- static struct kunit_case drm_managed_tests[] = {
-+	KUNIT_CASE(drm_test_managed_release_action),
- 	KUNIT_CASE(drm_test_managed_run_action),
- 	{}
- };
--- 
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ drivers/vfio/platform/vfio_platform_irq.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/vfio/platform/vfio_platform_irq.c b/drivers/vfio/plat=
+form/vfio_platform_irq.c
+index 61a1bfb68ac7..8604ce4f3fee 100644
+=2D-- a/drivers/vfio/platform/vfio_platform_irq.c
++++ b/drivers/vfio/platform/vfio_platform_irq.c
+@@ -193,8 +193,8 @@ static int vfio_set_trigger(struct vfio_platform_devic=
+e *vdev, int index,
+
+ 	trigger =3D eventfd_ctx_fdget(fd);
+ 	if (IS_ERR(trigger)) {
+-		kfree(irq->name);
+-		return PTR_ERR(trigger);
++		ret =3D PTR_ERR(trigger);
++		goto free_name;
+ 	}
+
+ 	irq->trigger =3D trigger;
+@@ -202,9 +202,10 @@ static int vfio_set_trigger(struct vfio_platform_devi=
+ce *vdev, int index,
+ 	irq_set_status_flags(irq->hwirq, IRQ_NOAUTOEN);
+ 	ret =3D request_irq(irq->hwirq, handler, 0, irq->name, irq);
+ 	if (ret) {
+-		kfree(irq->name);
+ 		eventfd_ctx_put(trigger);
+ 		irq->trigger =3D NULL;
++free_name:
++		kfree(irq->name);
+ 		return ret;
+ 	}
+
+=2D-
 2.43.0
 
 
