@@ -1,150 +1,144 @@
-Return-Path: <linux-kernel+bounces-26266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C8CF82DDBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:39:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CFC282DDC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:43:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4B561C21E2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:39:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6A1B1F224E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:43:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA39A17BD4;
-	Mon, 15 Jan 2024 16:39:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29BB517BD5;
+	Mon, 15 Jan 2024 16:43:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tpseYO8t"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ixuzEPiI"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A516017BC2
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 16:39:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a28bd9ca247so1068015066b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 08:39:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705336783; x=1705941583; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1s6j+FrysBouv14P98ktCGarV5O8RGCf1PmuuB0Rod4=;
-        b=tpseYO8tZGVb4UQ1nnF0J2snj5NMnKQFBD0P5no56iFgD8zpqDopl0PUtPqVCWwgfG
-         UAgEFQ3UoBaTYeD3tAL2XDMdZvS8++311WGVOE3W1eRt1cjmhlm1YhaZP41pbZQ1rj9O
-         lPQkuEh3TnCrGdXlsN/VBr51CqJRuKE8nXZ2ro2S3atB9u8F1KoA6/pA3Y8P3SBBfOCA
-         2OF2k7Kk8J4yWIETIWPyvZXY9nqOzcL0CFaKoLkIF652sCvTKt/TouBVnx5fjomFXliG
-         uIfIwvWx/o2TwdbUI5Q2ljuru/h0aJVJQU5KFBcFtk8MSjZI34ZeHXuTJW6w6jDn/gt3
-         wlAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705336783; x=1705941583;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1s6j+FrysBouv14P98ktCGarV5O8RGCf1PmuuB0Rod4=;
-        b=qTpKP3/HGIHaXiJI37+PeSMiokpdNNUoPCZTFdEDJhMpCM/mjf3eM+e8H29YqwtQkF
-         mzkw9E9UCQmtFDL1lQ/29lRqbC/Ot68/72O6yy7fxsytLXjSFVdnbUQjAnjubnjJlV7w
-         6k+iIbt75jYx16tp47dzvTD7Y1wyn/ZsX8N9P9Eag+re6c5kw7oJ12/6azIcfqSnAvOk
-         22/dMDGqQWM7+NXLz05oWr6DySgqnjD1b2edf2sd2agz9M0eUBJCevA6eIZpmDy/Y5NC
-         nA1QPgx3xyMTNwJ24/c/EXV7DOdcLfzYGPvvNHJW/HU8s2v/46mYfb81kq92tPxj2v3n
-         EQvQ==
-X-Gm-Message-State: AOJu0Yw3eMqXlLTHDpoVgbEtiKl/fjCrFXRO2G/0AGTD7bxKaP+ep8+8
-	92R975mMgTzeXyKPzQLfIxYj5vJYSuYSXg==
-X-Google-Smtp-Source: AGHT+IG23mOFs8vkRBURMu/H8p+Yj+m45958ginxHcSkzR3eWp3MCA1dHVGuF4KPAbil5U/K3om3YA==
-X-Received: by 2002:a17:907:10d9:b0:a2c:ab45:13cd with SMTP id rv25-20020a17090710d900b00a2cab4513cdmr2760064ejb.26.1705336782885;
-        Mon, 15 Jan 2024 08:39:42 -0800 (PST)
-Received: from [192.168.174.25] (178235179017.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.17])
-        by smtp.gmail.com with ESMTPSA id v10-20020a1709063bca00b00a2ae69cca5asm5555174ejf.144.2024.01.15.08.39.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jan 2024 08:39:42 -0800 (PST)
-Message-ID: <c4029b89-dbc6-4035-a122-078d51f4013e@linaro.org>
-Date: Mon, 15 Jan 2024 17:39:39 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 139CC17BB6;
+	Mon, 15 Jan 2024 16:43:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40FGh86x002831;
+	Mon, 15 Jan 2024 16:43:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=2GU9LyX
+	r+wNTFXEnIuiIof23UNs/vuTcgPBQP19aeb8=; b=ixuzEPiIZ6OHrO+r6HZdTRk
+	REeTmBSjqTXhb5V0EQL/b308j6a2gCwoZ5AC1rFDTWWxkEvm1E5Ak2ylkic7Ou2v
+	at2Yq/3KDU6T4VvcB2hAtb9prUtgCS7E+9V11Z7zMc71rVOB9xsPQhPljLOm4hmc
+	Hx4OQtopVuSjJYVwV9asXbiOMaYVvEZ+HotNi5dQXGRttAi6OyBOAMMiJMvlGJt7
+	3q/w1F/FHqbKmbWkgFZMLNVZAAQ2AV4g9HuqGjOPYApQkEn9Vi86qNikOv6+63Wg
+	WdM48Oo10yYTO5N8HCwST4851Ny1VNHZKlnDF4+ZWUGKIRXxZYwDj6pWw64u5zw=
+	=
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vmxdvs666-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Jan 2024 16:43:08 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40FGh7OK016382
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Jan 2024 16:43:07 GMT
+Received: from hu-jinlmao-lv.qualcomm.com (10.49.16.6) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 15 Jan 2024 08:43:06 -0800
+From: Mao Jinlong <quic_jinlmao@quicinc.com>
+To: Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach
+	<mike.leach@linaro.org>, James Clark <james.clark@arm.com>,
+        Leo Yan
+	<leo.yan@linaro.org>,
+        Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        "Alexandre Torgue" <alexandre.torgue@foss.st.com>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Mathieu
+ Poirier" <mathieu.poirier@linaro.org>
+CC: Mao Jinlong <quic_jinlmao@quicinc.com>, <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-msm@vger.kernel.org>
+Subject: [PATCH v2 0/2] coresight: core: Add device name support
+Date: Mon, 15 Jan 2024 08:42:46 -0800
+Message-ID: <20240115164252.26510-1-quic_jinlmao@quicinc.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] interconnect: qcom: sm8450: Revert "interconnect: qcom:
- sm8450: Enable sync_state"
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>, Georgi Djakov <djakov@kernel.org>,
- Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
-References: <20240115153420.1525037-1-krzysztof.kozlowski@linaro.org>
- <0d76ebd1-5edc-44c4-80e6-315cf6579079@linaro.org>
- <858d6109-bb6a-41bb-a7fe-e0dd0a16208a@linaro.org>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <858d6109-bb6a-41bb-a7fe-e0dd0a16208a@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ddBTI-DMlorVwJV8JEcDhQHSVay9zIjh
+X-Proofpoint-ORIG-GUID: ddBTI-DMlorVwJV8JEcDhQHSVay9zIjh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ phishscore=0 spamscore=0 priorityscore=1501 lowpriorityscore=0
+ malwarescore=0 suspectscore=0 adultscore=0 mlxlogscore=999 impostorscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401150122
 
-On 15.01.2024 16:55, Krzysztof Kozlowski wrote:
-> On 15/01/2024 16:38, Konrad Dybcio wrote:
->> On 15.01.2024 16:34, Krzysztof Kozlowski wrote:
->>> Revert commit 16862f1b2110 ("interconnect: qcom: sm8450: Enable
->>> sync_state"), because it causes serial console to corrupt, later freeze
->>> and become either entirely corrupted or only print without accepting any
->>> input.
->>>
->>> Cc: <stable@vger.kernel.org>
->>> Fixes: 16862f1b2110 ("interconnect: qcom: sm8450: Enable sync_state")
->>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>> ---
->>
->> What's the board you're testing this on? And kernel base revision?
-> 
-> HDK8450
-> 
->>
->> The symptoms you mentioned happened for me with this on some recent
->> -next:
-> 
-> This was bisected, so all mainline kernels with this patch. Reverting
-> this patch helps (on top of that commit or on next).
+With current design, the name of the non-cpu bounded coresight
+component is the device type with the number. And with 'ls' command
+we can get the register address of the component. But from these
+information, we can't know what the HW or system the component belongs
+to. Add device-name in DT to support it.
 
-I don't quite get your answer. Was reverting \/ the solution for you?
+cti_sys0 -> ../../../devices/platform/soc@0/138f0000.cti/cti_sys0
+cti_sys1 -> ../../../devices/platform/soc@0/13900000.cti/cti_sys1
+tpdm0 -> ../../../devices/platform/soc@0/10b0d000.tpdm/tpdm0
+tpdm1 -> ../../../devices/platform/soc@0/10c28000.tpdm/tpdm1
+tpdm2 -> ../../../devices/platform/soc@0/10c29000.tpdm/tpdm2
 
-Konrad
-> 
->>
->> https://lore.kernel.org/lkml/f24f32f1213b4b9e9ff2b4a36922f8d6e3abac51.1704278832.git.viresh.kumar@linaro.org/
+Change since V1:
+1. Change coresight-name to device name.
+2. Add the device-name in coresight dt bindings.
+
+Mao Jinlong (2):
+  coresight: core: Add device name support
+  dt-bindings: arm: Add device-name in the coresight components
+
+ .../bindings/arm/arm,coresight-catu.yaml      |  5 +++
+ .../bindings/arm/arm,coresight-cpu-debug.yaml |  5 +++
+ .../bindings/arm/arm,coresight-cti.yaml       |  5 +++
+ .../arm/arm,coresight-dummy-sink.yaml         |  5 +++
+ .../arm/arm,coresight-dummy-source.yaml       |  5 +++
+ .../arm/arm,coresight-dynamic-funnel.yaml     |  5 +++
+ .../arm/arm,coresight-dynamic-replicator.yaml |  5 +++
+ .../bindings/arm/arm,coresight-etb10.yaml     |  5 +++
+ .../bindings/arm/arm,coresight-etm.yaml       |  5 +++
+ .../arm/arm,coresight-static-funnel.yaml      |  5 +++
+ .../arm/arm,coresight-static-replicator.yaml  |  5 +++
+ .../bindings/arm/arm,coresight-stm.yaml       |  5 +++
+ .../bindings/arm/arm,coresight-tmc.yaml       |  5 +++
+ .../bindings/arm/arm,coresight-tpiu.yaml      |  5 +++
+ .../bindings/arm/qcom,coresight-tpda.yaml     |  5 +++
+ .../bindings/arm/qcom,coresight-tpdm.yaml     |  5 +++
+ drivers/hwtracing/coresight/coresight-core.c  | 33 ++++++++++---------
+ .../hwtracing/coresight/coresight-platform.c  | 31 +++++++++++++++++
+ include/linux/coresight.h                     |  1 +
+ 19 files changed, 130 insertions(+), 15 deletions(-)
+
+-- 
+2.41.0
 
 
