@@ -1,60 +1,61 @@
-Return-Path: <linux-kernel+bounces-25676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D6B882D483
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:23:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7A6C82D484
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:23:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AA9128162A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:23:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C683F1C20E97
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E08C14428;
-	Mon, 15 Jan 2024 07:23:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5806C6AA2;
+	Mon, 15 Jan 2024 07:23:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SKggr1Zn"
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zq4GRdCj"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DB583D62;
-	Mon, 15 Jan 2024 07:23:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63D765689;
+	Mon, 15 Jan 2024 07:23:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5cda3e35b26so2916559a12.1;
-        Sun, 14 Jan 2024 23:23:14 -0800 (PST)
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6db82a57c50so139084b3a.2;
+        Sun, 14 Jan 2024 23:23:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705303394; x=1705908194; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=U3zxCYUmaML8ov7vohntDD30tq3BZHVZqgdXMQmkL3E=;
-        b=SKggr1ZnwUygXw5Kbu/Tw0lWbicsNwsRjb+cgNK+jAhgPDec+brrzIisTeoE9YOPXH
-         njkdyFvOe2t4FNobaLIyZjB7+XrQOonPNTcm+LqVPAixyE6SqR+XUslosdkJXKf0SeEC
-         xaCbenkiUNQyFVOXPVRs0YzYRwil0yiMfmiKPsX1GDABNR2qsUUcQapBWdGp5ByB9aWE
-         UYPWDutZxFkWKK7nbtbiqauogHLM8d+9pg3n7XkJA4vao65P4fOw/Dyo8VxRERgx2h+y
-         0S33SnDIeMXXFvfK88TNsqmHD6mUwH5fRUV0Q+cldw8s/c+xjPXdcdjBNwWPKsdJ0G/a
-         GoLg==
+        d=gmail.com; s=20230601; t=1705303397; x=1705908197; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8DlrDFe5Y9kinmI2EZideUfaxC8SBA39wYnKFZevMC4=;
+        b=Zq4GRdCjLOm7sEchNmh0mcQHOS4A9aiqwbcgYazxifGMNe4YsFs8Y7J8SCqhpqhgSM
+         FzLy7A1xWQw+Lh6WkH33B+eLZnUJ2O+buGTKOgCHsyMNaDYyc3pwxim8vv37rRGc4tRW
+         nBZZuWrOqD/Bt6eOD5FjxpSWEeI45sPscSdOwh/U5BQ/HEAx3J+rDYOyZUu510gWNkqC
+         BcwPhxSaZ3acYj/M7O6chnkWzntMPD70Zj6adZqGxjGR9W8JhgxO7br7rOyY3N3wYb/1
+         JsBpgim7mwjVCj7IZvAWby3H/FuJRtrnjjFPhnjIjBwCO+Voqg5ttahIVCzvyDBHltxb
+         2n9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705303394; x=1705908194;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=U3zxCYUmaML8ov7vohntDD30tq3BZHVZqgdXMQmkL3E=;
-        b=u6dfTutwj52hTKioskZDVEaj9fs/EAoOc4l0DzuFwKwTs+3KUGoY6KLqlp2oUtow2R
-         W6RMtbphmdS9UCdOCHry3eijza3w6gp3Vk3Le/uSwCmvF3lK+2J9BnPaEtNvFScFQ7xV
-         AF642LKegupsVj+b/AmxunT78JkupHfuxVwSw2RYXuWWMg9v3/c5DT/VbHVdFLVjuPtx
-         W9hbuvwRMK2cJvgPqeDdNFg+jksTIW33kuqnAYu2835xRJ/w36M8ovzh/xQDYcMfyoPc
-         eUWkfYHQhK4qx/1OmZHrrxy6Xdqd8QdVilJ+P1LKwp1+owG7PPPgSjQkFTTvroK3zQWX
-         AVbA==
-X-Gm-Message-State: AOJu0YxnayXrfwq9zdQTYpcI3q6C92csTECGsigf8uvoc9hyALfstPbm
-	c9rWJ6RlZLTAZ1H3CDTJ2h6AnA2eve8Ff/R+
-X-Google-Smtp-Source: AGHT+IH4YCLsBQ0/rvbCMji8had+gIVZ5KIpUrEMPF6T8Sm1IIjK+56a91AoPq1tBjAuqqdV1/FxEg==
-X-Received: by 2002:a17:90b:1986:b0:28b:2a79:dcd with SMTP id mv6-20020a17090b198600b0028b2a790dcdmr2461709pjb.67.1705303394200;
-        Sun, 14 Jan 2024 23:23:14 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705303397; x=1705908197;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8DlrDFe5Y9kinmI2EZideUfaxC8SBA39wYnKFZevMC4=;
+        b=XzHWUavCF26rToFBWs2WIfU5BlRPNk4C3biMj+Gh8D2otj9Otx3rQS0tjxUArLpWpX
+         Y12PjUHaWolZYrpr0c5v7ME2kXoYdz4oP2YPTIB+NLO2+RfM1DhkNy2SHc35zau65BAL
+         6ismycnN6GrHXeIO6Z3JHHBR595zJgDbcnMpPyXiDjpKjMS5V9tWlC+qr9dkZV2BRQme
+         xw48ig84MibxbKdNla5GtbTxylmfjUzei0tghqBIQZJOGv97glcqYrc0AVfXy7eaqoaL
+         8c6ehxMTExgaEsna7SaKE6BKraSNn9DmrIQyxmvxomb+j9O9GzpD48WMQfDKWzCXnB5A
+         HfHw==
+X-Gm-Message-State: AOJu0YxZoCVVTQli7JnKqyPK9Ayp69SfnU3dcLzZwzdjr/F2r7ocxVbM
+	m28f0zTmxstM1orBpyeILxE=
+X-Google-Smtp-Source: AGHT+IEULegCjFeES6wlLCswi+EwFRbBZqG4OuMyEzjUISfosAI2UtkBU7q70D6rgrdnpD/5+c/sDA==
+X-Received: by 2002:a05:6a21:1a4:b0:19a:757f:2db5 with SMTP id le36-20020a056a2101a400b0019a757f2db5mr2012329pzb.8.1705303397599;
+        Sun, 14 Jan 2024 23:23:17 -0800 (PST)
 Received: from localhost.localdomain ([203.205.141.87])
-        by smtp.googlemail.com with ESMTPSA id mp13-20020a170902fd0d00b001d4ac8ac969sm6990545plb.275.2024.01.14.23.23.10
+        by smtp.googlemail.com with ESMTPSA id mp13-20020a170902fd0d00b001d4ac8ac969sm6990545plb.275.2024.01.14.23.23.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jan 2024 23:23:13 -0800 (PST)
+        Sun, 14 Jan 2024 23:23:17 -0800 (PST)
 From: Ze Gao <zegao2021@gmail.com>
 X-Google-Original-From: Ze Gao <zegao@tencent.com>
 To: Adrian Hunter <adrian.hunter@intel.com>,
@@ -70,10 +71,12 @@ To: Adrian Hunter <adrian.hunter@intel.com>,
 Cc: linux-kernel@vger.kernel.org,
 	linux-perf-users@vger.kernel.org,
 	Ze Gao <zegao@tencent.com>
-Subject: [PATCH 0/4] perf sched: Fix task state report
-Date: Mon, 15 Jan 2024 02:23:02 -0500
-Message-ID: <20240115072306.303993-1-zegao@tencent.com>
+Subject: [PATCH 1/4] perf sched: Sync state char array with the kernel
+Date: Mon, 15 Jan 2024 02:23:03 -0500
+Message-ID: <20240115072306.303993-2-zegao@tencent.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20240115072306.303993-1-zegao@tencent.com>
+References: <20240115072306.303993-1-zegao@tencent.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,45 +85,48 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+Update state char array to match the latest kernel definitions and
+remove unused state mapping macros.
 
-The problems of task state report in both libtraceevent
-and perf sched has been reported in [1]. In short, they
-parsed the wrong state due to relying on the outdated
-hardcoded state string to interpret the raw bitmask
-from the record, which left the messes to maintain the
-backward compatibilities for both tools.
+Note this is the preparing patch for get rid of the way to parse
+process state from raw bitmask value. Instead we are going to
+parse it from the recorded tracepoint print format, and this change
+marks why we're doing it.
 
-[1] has not managed to make itself into the kernel, the
-problems and the solutions are well studied though.
+Signed-off-by: Ze Gao <zegao@tencent.com>
+---
+ tools/perf/builtin-sched.c | 13 +------------
+ 1 file changed, 1 insertion(+), 12 deletions(-)
 
-Luckily, as suggested by Steven, perf/libtraceevent
-records the print format, especially the __print_flags()
-part of the in-kernel tracepoint sched_switch in its
-metadata, and we have a chance to build the state str
-on the fly by parsing it.
-
-Now that libtraceevent has landed this solution in [2],
-we now apply the same idea to perf as well.
-
-Regards,
-
-        -- Ze
-
-[1]: https://lore.kernel.org/lkml/20230803083352.1585-1-zegao@tencent.com/
-[2]: https://lore.kernel.org/linux-trace-devel/20231224140732.7d41698d@rorschach.local.home/
-
-Ze Gao (4):
-  perf sched: Sync state char array with the kernel
-  perf util: Add helpers to parse task state string from libtraceevent
-  perf util: Add evsel__taskstate() to parse the task state info instead
-  perf sched: Commit to evsel__taskstate() to parse task state info
-
- tools/perf/builtin-sched.c |  57 +++------------
- tools/perf/util/evsel.c    | 146 +++++++++++++++++++++++++++++++++++++
- tools/perf/util/evsel.h    |   1 +
- 3 files changed, 157 insertions(+), 47 deletions(-)
-
+diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
+index dd6065afbbaf..ced6fffe8110 100644
+--- a/tools/perf/builtin-sched.c
++++ b/tools/perf/builtin-sched.c
+@@ -92,23 +92,12 @@ struct sched_atom {
+ 	struct task_desc	*wakee;
+ };
+ 
+-#define TASK_STATE_TO_CHAR_STR "RSDTtZXxKWP"
++#define TASK_STATE_TO_CHAR_STR "RSDTtXZPI"
+ 
+ /* task state bitmask, copied from include/linux/sched.h */
+ #define TASK_RUNNING		0
+ #define TASK_INTERRUPTIBLE	1
+ #define TASK_UNINTERRUPTIBLE	2
+-#define __TASK_STOPPED		4
+-#define __TASK_TRACED		8
+-/* in tsk->exit_state */
+-#define EXIT_DEAD		16
+-#define EXIT_ZOMBIE		32
+-#define EXIT_TRACE		(EXIT_ZOMBIE | EXIT_DEAD)
+-/* in tsk->state again */
+-#define TASK_DEAD		64
+-#define TASK_WAKEKILL		128
+-#define TASK_WAKING		256
+-#define TASK_PARKED		512
+ 
+ enum thread_state {
+ 	THREAD_SLEEPING = 0,
 -- 
 2.41.0
 
