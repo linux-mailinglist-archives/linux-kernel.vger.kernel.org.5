@@ -1,148 +1,189 @@
-Return-Path: <linux-kernel+bounces-26011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26013-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CE7D82D9D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:15:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EE7382D9E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:20:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2404B1F22647
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:15:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABDE4281129
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:19:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8062F179A1;
-	Mon, 15 Jan 2024 13:13:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2B3D171A2;
+	Mon, 15 Jan 2024 13:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="qd5dpkiS"
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="bCwzKauS"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 000E81798C;
-	Mon, 15 Jan 2024 13:13:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=z3BzOmqIUzMO6UAJIUQ8GAcKK4W9P4/Fhk70+J3UgU0=;
-	t=1705324423; x=1706534023; b=qd5dpkiSzAphXJFZXmns78MO5/1IaI6mRTWuzzw/sjPLt/t
-	G2HGM0iw9v3bfHHZ3DUVNVVLCKuEbOK/JpUUA05fGBw3LyKMhOXiLolTg/tiDhBYIEqhVW6tpeI4Y
-	CDE3l/toHQFh7KEIQO5+/vFjzRrON0QrmT8K3P5qZ8pgduMzvCVMq81e4OT7Kx6G+2UFVfPLBnAUz
-	waF/1zLQhtY8ZpdyHNS9ts8pd7JCQywXVfl6ABsLJau5PUBFjfwH2CTE7WReuVBJgZzpa2d5iDVgw
-	V1S9BRaDlGjOFEnDe/YxQXj5nT0XtDjqjlEvqQR1OIY+RBwos6wCGsrBUhUqAJPg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1rPMmT-00000003V7V-1PaZ;
-	Mon, 15 Jan 2024 14:13:33 +0100
-Message-ID: <26d364547d3bbb04800877e899cfebe0e1ec4dc0.camel@sipsolutions.net>
-Subject: Re: [PATCH] wifi: mac80211: tx: Add __must_hold() annotation
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Kalle Valo <kvalo@kernel.org>, Brent Pappas <bpappas@pappasbrent.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>,  linux-wireless@vger.kernel.org,
- netdev@vger.kernel.org,  linux-kernel@vger.kernel.org
-Date: Mon, 15 Jan 2024 14:13:31 +0100
-In-Reply-To: <87sf31hhfp.fsf@kernel.org>
-References: <20240113011145.10888-2-bpappas@pappasbrent.com>
-	 <87sf31hhfp.fsf@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C229915AF6
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 13:19:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40e8004629bso2593005e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 05:19:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1705324785; x=1705929585; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Q0v/N0kXAbnUMy0XtXE3gHSioK80yxhIhWRK0FxbIKw=;
+        b=bCwzKauSqoUAHcrWeskUkjjC1uVaGrYEfkD+QwbJa7by8Ws7H7SzY+RlmkgqfPpvpn
+         xjwe6U69enKFSbdBLzk014iiza9a2tGlMO7bi+VFz//bs4B43YDB3ZL//G+aGoJ/ofjh
+         ZDRZvPYM8muX3M1zd2+nVq0UY20vKm181YpXxUv90QBz0RRsAuBj/pBYiNxlSg3pphpK
+         7sUkA8L9A89QtaZhkheGyIdPOZxXiFP7+EeT6SQ77SY9/aBQDsCoMrD1PY08p8tHtUyM
+         GSzRKFd7BsK5gwVtBLzNdMBoDkZAlk2YT/q2XxENb59UFcYTrLL51KjjmqH5o1EbGWSx
+         bE6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705324785; x=1705929585;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q0v/N0kXAbnUMy0XtXE3gHSioK80yxhIhWRK0FxbIKw=;
+        b=f7qmoZ2RELAh0nZBhopYjvCiPM825V/ns8VQvWpf++hpL3jUbIymlPqN9OHg1Vww0E
+         9l+Co2JpEepIN8JusWVdSM+7aCpZoi68k7FOSSICBQyct02UnBZhXC3o59mL7TwjvlgO
+         Uxv7UUH1CbplbH0ek6q0Z9cgoKG6+s01aVL2Jc11Q6VoV6nuKDTz7/jSigi5u0VoXG51
+         4eAbr4EdtNZPiIo/kLVymfoRZZ+Z0BAbVQ6GVG+2LBMnodIqejI2kvyfUXM8bXbZc0I3
+         l6P/VA4LIBE3D4W4VIqFBtZnQlm6ywzYvI0iPDn8d8szXkeIzPc4lmMXmnaKZu/2Bs8x
+         NSIw==
+X-Gm-Message-State: AOJu0YwxFv93RQ3cefW2Dxd/6+KvwVk6SN0pNAnhCpeoBjgptUboVPwT
+	RD4vbwa/i/kUk/mNom/iBKzh1jCTpUtoEg==
+X-Google-Smtp-Source: AGHT+IEmfou+SJJzbucaZzJYGOu0aKAR3E1mpvl8rhNlPReIy38XcB//GKFyZHBfkSGj9VIw/SMfNQ==
+X-Received: by 2002:a05:600c:295:b0:40e:5f22:3d1b with SMTP id 21-20020a05600c029500b0040e5f223d1bmr1871631wmk.72.1705324785015;
+        Mon, 15 Jan 2024 05:19:45 -0800 (PST)
+Received: from ?IPV6:2a10:bac0:b000:7588:7285:c2ff:fedd:7e3a? ([2a10:bac0:b000:7588:7285:c2ff:fedd:7e3a])
+        by smtp.gmail.com with ESMTPSA id v4-20020a05600c470400b0040e5945307esm16032865wmo.40.2024.01.15.05.19.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Jan 2024 05:19:44 -0800 (PST)
+Message-ID: <fa1e3873-6218-461b-85fa-1ff353380532@suse.com>
+Date: Mon, 15 Jan 2024 15:19:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
-
-On Sat, 2024-01-13 at 08:32 +0200, Kalle Valo wrote:
->=20
-> >  static void ieee80211_set_beacon_cntdwn(struct ieee80211_sub_if_data *=
-sdata,
-> >  					struct beacon_data *beacon,
-> >  					struct ieee80211_link_data *link)
-> > +	__must_hold(link)
->=20
-> Oh, never seen __must_hold() before and looks very useful. So does this
-> work with RCU, mutexes and spinlocks?
->=20
-> In case others are interested, here's the documentation I was able to fin=
-d:
->=20
-> https://docs.kernel.org/dev-tools/sparse.html#using-sparse-for-lock-check=
-ing
->=20
-
-Except it's not actually useful, and looks more useful than it is. IMHO
-it's actually more harmful than anything else.
-
-One might even consider this patch a good example! The function
-ieee80211_set_beacon_cntdwn() is called from a number of places in this
-file, some of which acquire RCU critical section, and some of which
-acquire no locks nor RCU critical section at all. Most of them nest and
-are called in RCU.
-
-However, there's basically no way to get sparse to warn on this. Even
-inserting a function
-
-void test(void);
-void test(void)
-{
-        ieee80211_set_beacon_cntdwn(NULL, NULL, NULL);
-}
-
-will not cause sparse to complain, where this *clearly* doesn't hold an
-locks.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv5 16/16] x86/acpi: Add support for CPU offlining for ACPI
+ MADT wakeup method
+Content-Language: en-US
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+ Elena Reshetova <elena.reshetova@intel.com>,
+ Jun Nakajima <jun.nakajima@intel.com>,
+ Rick Edgecombe <rick.p.edgecombe@intel.com>,
+ Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish"
+ <ashish.kalra@amd.com>, Sean Christopherson <seanjc@google.com>,
+ "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
+ kexec@lists.infradead.org, linux-coco@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <20231222235209.32143-1-kirill.shutemov@linux.intel.com>
+ <20231222235209.32143-17-kirill.shutemov@linux.intel.com>
+From: Nikolay Borisov <nik.borisov@suse.com>
+In-Reply-To: <20231222235209.32143-17-kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-Also, as we (should) all know, the argument to __acquires(),
-__releases() and __must_check() is pretty much ignored. I tried to fix
-this in sparse many years ago, some code even got merged (and then
-reverted), and if the experience tells me anything then that it's pretty
-much not fixable.
 
-__acquires() and __releases() at least are useful for tracking that you
-don't have a mismatch, e.g. a function that __acquires() but then takes
-a lock in most paths but forgot one, for example. With __must_hold(),
-this really isn't the case.
+On 23.12.23 г. 1:52 ч., Kirill A. Shutemov wrote:
+> MADT Multiprocessor Wakeup structure version 1 brings support of CPU
+> offlining: BIOS provides a reset vector where the CPU has to jump to
+> for offlining itself. The new TEST mailbox command can be used to test
+> whether the CPU offlined itself which means the BIOS has control over
+> the CPU and can online it again via the ACPI MADT wakeup method.
+> 
+> Add CPU offling support for the ACPI MADT wakeup method by implementing
+> custom cpu_die(), play_dead() and stop_this_cpu() SMP operations.
+> 
+> CPU offlining makes is possible to hand over secondary CPUs over kexec,
+> not limiting the second kernel to a single CPU.
+> 
+> The change conforms to the approved ACPI spec change proposal. See the
+> Link.
+> 
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Link: https://lore.kernel.org/all/13356251.uLZWGnKmhe@kreacher
+> ---
+>   arch/x86/include/asm/acpi.h          |   2 +
+>   arch/x86/kernel/acpi/Makefile        |   2 +-
+>   arch/x86/kernel/acpi/madt_playdead.S |  29 +++++
+>   arch/x86/kernel/acpi/madt_wakeup.c   | 184 ++++++++++++++++++++++++++-
+>   include/acpi/actbl2.h                |  15 ++-
+>   5 files changed, 228 insertions(+), 4 deletions(-)
+>   create mode 100644 arch/x86/kernel/acpi/madt_playdead.S
+> 
+> diff --git a/arch/x86/include/asm/acpi.h b/arch/x86/include/asm/acpi.h
+> index 2625b915ae7f..021cafa214c2 100644
+> --- a/arch/x86/include/asm/acpi.h
+> +++ b/arch/x86/include/asm/acpi.h
+> @@ -81,6 +81,8 @@ union acpi_subtable_headers;
+>   int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
+>   			      const unsigned long end);
+>   
+> +void asm_acpi_mp_play_dead(u64 reset_vector, u64 pgd_pa);
+> +
+>   /*
+>    * Check if the CPU can handle C2 and deeper
+>    */
+> diff --git a/arch/x86/kernel/acpi/Makefile b/arch/x86/kernel/acpi/Makefile
+> index 8c7329c88a75..37b1f28846de 100644
+> --- a/arch/x86/kernel/acpi/Makefile
+> +++ b/arch/x86/kernel/acpi/Makefile
+> @@ -4,7 +4,7 @@ obj-$(CONFIG_ACPI)			+= boot.o
+>   obj-$(CONFIG_ACPI_SLEEP)		+= sleep.o wakeup_$(BITS).o
+>   obj-$(CONFIG_ACPI_APEI)			+= apei.o
+>   obj-$(CONFIG_ACPI_CPPC_LIB)		+= cppc.o
+> -obj-$(CONFIG_X86_ACPI_MADT_WAKEUP)	+= madt_wakeup.o
+> +obj-$(CONFIG_X86_ACPI_MADT_WAKEUP)	+= madt_wakeup.o madt_playdead.o
+>   
+>   ifneq ($(CONFIG_ACPI_PROCESSOR),)
+>   obj-y					+= cstate.o
+> diff --git a/arch/x86/kernel/acpi/madt_playdead.S b/arch/x86/kernel/acpi/madt_playdead.S
+> new file mode 100644
+> index 000000000000..e48049959513
+> --- /dev/null
+> +++ b/arch/x86/kernel/acpi/madt_playdead.S
+> @@ -0,0 +1,29 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#include <linux/linkage.h>
+> +#include <asm/nospec-branch.h>
+> +#include <asm/page_types.h>
+> +#include <asm/processor-flags.h>
+> +
+> +	.text
+> +	.align PAGE_SIZE
+> +
+> +/*
+> + * asm_acpi_mp_play_dead() - Hand over control of the CPU to the BIOS
+> + *
+> + * rdi: Address of the ACPI MADT MPWK ResetVector
+> + * rsi: PGD of the identity mapping
+> + */
+> +SYM_FUNC_START(asm_acpi_mp_play_dead)
+> +	/* Turn off global entries. Following CR3 write will flush them. */
+> +	movq	%cr4, %rdx
+> +	andq	$~(X86_CR4_PGE), %rdx
+> +	movq	%rdx, %cr4
+> +
+> +	/* Switch to identity mapping */
+> +	movq	%rsi, %rax
+> +	movq	%rax, %cr3
 
-And then we could argue that at least it has a documentation effect, but
-.. what does it even mean to "hold 'link'"? There isn't even a lock,
-mutex or otherwise, in the link. You can't "own" a reference to it, or
-anything like that. The closest thing in current kernels would be to
-maybe see if you have the wiphy mutex, but that's likely not the case in
-these paths and RCU was used to get to the link struct ...
+nit: Can't you move directly to cr3
 
+> +
+> +	/* Jump to reset vector */
+> +	ANNOTATE_RETPOLINE_SAFE
+> +	jmp	*%rdi
+> +SYM_FUNC_END(asm_acpi_mp_play_dead)
 
-IOW, I find this lacking from an implementation/validation point of
-view, and lacking if not outright confusing from a documentation point
-of view. Much better to put something lockdep_assert_held() or similar
-into the right places.
-
-As for your comment about RCU in ath11k (which points back to this
-thread): I don't find
-
-	RCU_LOCKDEP_WARN(!rcu_read_lock_held());
-or
-	WARN_ON_ONCE(!rcu_read_lock_held());
-
-very persuasive, it's much better to have it checked with
-rcu_dereference_protected(), rcu_dereference_check(), the condition
-argument to list_for_each_rcu(), or (in the case of wiphy) our wrappers
-around these like wiphy_dereference(). I cannot think of any case where
-you'd want to ensure that some code is in an RCU critical section
-without it actually using RCU - and if it does you have
-rcu_dereference() and all those things that (a) check anyway, and also
-(b) serve as their own documentation.
-
-
-Anyway, long story short: I don't see value in this patch and won't be
-applying it unless somebody here can convince me otherwise, ideally
-addressing the concerns stated above.
-
-johannes
+<snip>
 
