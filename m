@@ -1,71 +1,45 @@
-Return-Path: <linux-kernel+bounces-25911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6832482D809
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:06:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F7A782D80E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:06:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A4E61F2212E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:06:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AEECDB213EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:06:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D408D1E873;
-	Mon, 15 Jan 2024 11:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A37AD29411;
+	Mon, 15 Jan 2024 11:06:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="QQ5H9Wpk"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="BrASkF+H"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F7361FCA
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 11:05:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40FArmvJ031597;
-	Mon, 15 Jan 2024 11:05:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=n+SxP4a1Echsd2W48WiaYeGB/mW2FQoZ7a5VMYNkOkY=;
- b=QQ5H9WpkCERwUjDkb27SNrfNP4wc5fPQOHq3tusma95TUII00wYsBq85qgpV/dS+VwsH
- NZwuutrRA7MpKyIdyfoPW/Vrh6A0jYkyr/Wx7ijmDHAdP8CwkVy01uWMMQR0mXp8Obs9
- geYBj9x7zx7bwwS+VKJRClKaju2wB+IUhRRpJ68M4p3JxaWIwfOMDsEKGeKsE3PPbLU0
- KoUQ7yJrNmLNQbVyrmoQ2umZ2lpGbSpQScdI2LgDa9taYHrcJe8CqBBKu7ikLzFe9tkT
- RKJbh+NmlWDdzTg8Qvgboc9hoUFM0KzEHM46mtAiIOSMjOP9eL4zkQdk39iNpQnwP0IB zQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vmqju6a1n-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Jan 2024 11:05:27 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40FA6Jxh003268;
-	Mon, 15 Jan 2024 11:05:26 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vmqju6a1e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Jan 2024 11:05:26 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40FApW8k008775;
-	Mon, 15 Jan 2024 11:05:25 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vm57y7yax-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Jan 2024 11:05:25 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40FB5NRo20906610
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 15 Jan 2024 11:05:23 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8F26520049;
-	Mon, 15 Jan 2024 11:05:23 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 19BE320040;
-	Mon, 15 Jan 2024 11:05:23 +0000 (GMT)
-Received: from [9.171.7.113] (unknown [9.171.7.113])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 15 Jan 2024 11:05:23 +0000 (GMT)
-Message-ID: <80f1ba0d-afae-4af7-8de7-9813cb22e741@linux.ibm.com>
-Date: Mon, 15 Jan 2024 12:05:22 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C4DE1E86A;
+	Mon, 15 Jan 2024 11:06:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705316784;
+	bh=9McWAV60PkhZi7zD5efm3VtPNye+yEcAzKdSklegtGg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=BrASkF+HM2Gm7Wsa52sDK8N9HzfyyrdcZxgzb42a/CyxwcT2wUo9E+pQdDnc9Cn4b
+	 Rdc+Ajh+t8fQH/aPj2vvCSsFvsk+knr+fDDupQ30g+kf3iktme0u3B77VWK9FQku+A
+	 rFjz1wbp8RJHLUrljs90IBQmOQh/hMYW+FCBQbrOfD+95GLrwz6+Bd/bBR0RCaXVf7
+	 SiOpewF/4s7ZnjYHWvkfgfCWaVbXlareuQxg1VJScbj/pKDlax2SByf4jA0AJSiu/b
+	 5V4MLbyCwlpb92VXdI1DQLPCAqYQTS2Ujv7/a3in5QPR08c+G9ow0WUMxBwzkzJhuN
+	 Hh5Zwaj6/cgow==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 0FACE378134F;
+	Mon, 15 Jan 2024 11:06:22 +0000 (UTC)
+Message-ID: <2b28421b-d3a9-46f5-a60e-bed84191c9f8@collabora.com>
+Date: Mon, 15 Jan 2024 12:06:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,105 +47,122 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] cxl: Fix null pointer dereference in cxl_get_fd
-To: Kunwu Chan <chentao@kylinos.cn>, ajd@linux.ibm.com, arnd@arndb.de,
-        mpe@ellerman.id.au, mrochs@linux.vnet.ibm.com
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Kunwu Chan <kunwu.chan@hotmail.com>
-References: <20240112054903.133145-1-chentao@kylinos.cn>
+Subject: Re: [PATCH v4 0/8] Add MT8195 HDMI support
 Content-Language: en-US
-From: Frederic Barrat <fbarrat@linux.ibm.com>
-In-Reply-To: <20240112054903.133145-1-chentao@kylinos.cn>
+To: Guillaume Ranquet <granquet@baylibre.com>,
+ Chunfeng Yun <chunfeng.yun@mediatek.com>,
+ Kishon Vijay Abraham I <kishon@ti.com>, Vinod Koul <vkoul@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, CK Hu <ck.hu@mediatek.com>,
+ Jitao shi <jitao.shi@mediatek.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, mac.shen@mediatek.com,
+ stuart.lee@mediatek.com
+References: <20220919-v4-0-687f09a06dd9@baylibre.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20220919-v4-0-687f09a06dd9@baylibre.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: JchAga7cNIfcyPNxpbIUp0MpQ_cdTOvI
-X-Proofpoint-GUID: S8h4f2npXqJkgmLx0HW_uQuR3DTVBV7Y
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-15_06,2024-01-15_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- lowpriorityscore=0 suspectscore=0 spamscore=0 clxscore=1011
- priorityscore=1501 impostorscore=0 adultscore=0 phishscore=0 mlxscore=0
- mlxlogscore=833 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401150080
 
-
-
-On 12/01/2024 06:49, Kunwu Chan wrote:
-> kasprintf() returns a pointer to dynamically allocated memory
-> which can be NULL upon failure.
+Il 29/05/23 16:30, Guillaume Ranquet ha scritto:
+> Add support for HDMI Tx on MT8195.
 > 
-> Uniformly handle resource release in error paths. And when an
-> error occurs, an error pointer should be returned.
+> This includes a split of the current "legacy" hdmi driver into a common
+> library of functions and two dedicated compilation units with specific
+> code for mt8167 and another for the "v2" mt8195 SoC.
 > 
-> Fixes: bdecf76e319a ("cxl: Fix coredump generation when cxl_get_fd() is used")
-> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-> Cc: Kunwu Chan <kunwu.chan@hotmail.com>
-> Suggested-by: Frederic Barrat <fbarrat@linux.ibm.com>
+> Support for the new mt8195 dpi/drm_drv adjustments to support hdmi.
+> 
+> Based on next-20230523
+> 
+> Still in my TODO-list for v5:
+
+Hello,
+sorry for bumping a year old topic; are you still interested in upstreaming this?
+
+Cheers,
+Angelo
+
+> 
+> - Removal of the 'is_internal_hdmi' flag in mtk_dpi. [1]
+>      I Couldn't find a way to get rid of it with the way things are done
+>      in mtk_drm_drv/mtk_ddp_comp.
+> - Do not use a "virtual" device for the ddc v2 hw as it is embedded in
+>    the hdmi IP. [2]
+>      Seems that a lot of work is done by the framework when using a
+>      proper device-tree entry that can be linked as the ddc-i2c-bus of
+>      the hdmi-connector.
+>      I will keep the virtual device unless I find a way to avoid
+>      rewriting the framework code that handles this.
+> 
+> [1] : https://lore.kernel.org/all/988b0a7a-69bb-34e4-e777-1d9516221077@collabora.com/
+> [2] : https://lore.kernel.org/all/7da1e73a0cca6867a060d5b69d45e8d4dfc89748.camel@mediatek.com/
+> 
+> Signed-off-by: Guillaume Ranquet <granquet@baylibre.com>
 > ---
-
-Thanks!
-Acked-by: Frederic Barrat <fbarrat@linux.ibm.com>
-
-   Fred
-
-
-> v2: Deal with error path
-> ---
->   drivers/misc/cxl/api.c | 18 ++++++++++++++----
->   1 file changed, 14 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/misc/cxl/api.c b/drivers/misc/cxl/api.c
-> index d85c56530863..b49bc3d29fc0 100644
-> --- a/drivers/misc/cxl/api.c
-> +++ b/drivers/misc/cxl/api.c
-> @@ -389,19 +389,22 @@ struct file *cxl_get_fd(struct cxl_context *ctx, struct file_operations *fops,
->   			int *fd)
->   {
->   	struct file *file;
-> -	int rc, flags, fdtmp;
-> +	int rc = 0, flags, fdtmp;
->   	char *name = NULL;
->   
->   	/* only allow one per context */
-> -	if (ctx->mapping)
-> -		return ERR_PTR(-EEXIST);
-> +	if (ctx->mapping) {
-> +		rc = -EEXIST;
-> +		goto err;
-> +	}
->   
->   	flags = O_RDWR | O_CLOEXEC;
->   
->   	/* This code is similar to anon_inode_getfd() */
->   	rc = get_unused_fd_flags(flags);
->   	if (rc < 0)
-> -		return ERR_PTR(rc);
-> +		goto err;
-> +
->   	fdtmp = rc;
->   
->   	/*
-> @@ -419,6 +422,10 @@ struct file *cxl_get_fd(struct cxl_context *ctx, struct file_operations *fops,
->   		fops = (struct file_operations *)&afu_fops;
->   
->   	name = kasprintf(GFP_KERNEL, "cxl:%d", ctx->pe);
-> +	if (!name) {
-> +		rc = -ENOMEM;
-> +		goto err_fd;
-> +	}
->   	file = cxl_getfile(name, fops, ctx, flags);
->   	kfree(name);
->   	if (IS_ERR(file))
-> @@ -430,6 +437,9 @@ struct file *cxl_get_fd(struct cxl_context *ctx, struct file_operations *fops,
->   
->   err_fd:
->   	put_unused_fd(fdtmp);
-> +err:
-> +	if (rc < 0)
-> +		return ERR_PTR(rc);
->   	return NULL;
->   }
->   EXPORT_SYMBOL_GPL(cxl_get_fd);
+> Changes in v4:
+> - Split phy related patches to another series (merged)
+> - Removed regmap wrappers in mtk_hdmi
+> - Removed colorimetry related changes as this initial version only
+>    support one color depth
+> - Fixed dt-bindings properties
+> - Removed some now useless clocks from mtk_hdmi_v2 and mtk_dpi
+> - Link to v3: https://lore.kernel.org/r/20220919-v3-0-a803f2660127@baylibre.com
+> 
+> Changes in v3:
+> - phy: Grouped register and bit definition together to add clarity
+> - dt-bindings: Addressed comments
+> - Link to v2: https://lore.kernel.org/r/20220919-v2-0-8419dcf4f09d@baylibre.com
+> 
+> Changes in v2:
+> - Removed syscon requirement from the hdmi node
+> - Use as much as possible bit FIELD_PREP/FIELD_GET macros across all the
+>    patches
+> - Make cec optional dynamically instead of hardcoded with a flag
+> - Renamed hdmi variants to v1 (legacy) and v2 (mt8195) while waiting for
+>    a better name
+> - Rework hdmi v2 code to use a connector (same as v1)
+> - Remove "magic" 0x43 addr special handling in hdmi ddc code
+> - Link to v1: https://lore.kernel.org/r/20220919-v1-0-4844816c9808@baylibre.com
+> 
+> ---
+> Guillaume Ranquet (8):
+>        dt-bindings: display: mediatek: add MT8195 hdmi bindings
+>        drm/mediatek: hdmi: use a regmap instead of iomem
+>        drm/mediatek: extract common functions from the mtk hdmi driver
+>        drm/mediatek: hdmi: make the cec dev optional
+>        drm/mediatek: hdmi: add v2 support
+>        drm/mediatek: hdmi: v2: add audio support
+>        dt-bindings: display: mediatek: dpi: Add compatible for MediaTek MT8195
+>        drm/mediatek: dpi: Add mt8195 hdmi to DPI driver
+> 
+>   .../bindings/display/mediatek/mediatek,dpi.yaml    |    1 +
+>   .../bindings/display/mediatek/mediatek,hdmi.yaml   |   59 +-
+>   .../display/mediatek/mediatek,mt8195-hdmi-ddc.yaml |   45 +
+>   drivers/gpu/drm/mediatek/Kconfig                   |    2 +
+>   drivers/gpu/drm/mediatek/Makefile                  |    5 +-
+>   drivers/gpu/drm/mediatek/mtk_dpi.c                 |  121 +-
+>   drivers/gpu/drm/mediatek/mtk_dpi_regs.h            |    5 +
+>   drivers/gpu/drm/mediatek/mtk_hdmi.c                |  773 ++----------
+>   drivers/gpu/drm/mediatek/mtk_hdmi.h                |   18 +
+>   drivers/gpu/drm/mediatek/mtk_hdmi_common.c         |  437 +++++++
+>   drivers/gpu/drm/mediatek/mtk_hdmi_common.h         |  208 ++++
+>   drivers/gpu/drm/mediatek/mtk_hdmi_ddc_v2.c         |  362 ++++++
+>   drivers/gpu/drm/mediatek/mtk_hdmi_regs_v2.h        |  276 +++++
+>   drivers/gpu/drm/mediatek/mtk_hdmi_v2.c             | 1303 ++++++++++++++++++++
+>   drivers/gpu/drm/mediatek/mtk_hdmi_v2.h             |   32 +
+>   15 files changed, 2955 insertions(+), 692 deletions(-)
+> ---
+> base-commit: c8a64c6a78c54887da437098d97dc2accc689e89
+> change-id: 20220919-hdmi_mtk
+> 
+> Best regards,
+
 
