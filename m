@@ -1,257 +1,135 @@
-Return-Path: <linux-kernel+bounces-25773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C278C82D596
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:12:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 067F782D599
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:13:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E5C5281DF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:12:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 040751C21497
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:13:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EF69C2CD;
-	Mon, 15 Jan 2024 09:12:20 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C08E8C13E;
+	Mon, 15 Jan 2024 09:13:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DeFc+TNw"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15766C123
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 09:12:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7bf46c17b7dso23640739f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 01:12:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705309937; x=1705914737;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89C29E541;
+	Mon, 15 Jan 2024 09:13:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-50e7b51b0ceso8490246e87.1;
+        Mon, 15 Jan 2024 01:13:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705310026; x=1705914826; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=NR63WllAbDQWcrgD+VPWnAQ+Z0eUm8TNkhH/S7k/Ubo=;
-        b=QBEtHT4AQH4bmo0aCjj9u5+FmWlVdUQh8FsfVNvS1Os0goq5UVdRRkBFoyKSLxS3Zx
-         w1uAuY9eLuXKg42rtgGW1HPrvXc7q+Q2xUZ6zsD0QVw+hIwVR0chHS2ap1rUFz3pZ6X8
-         CIoM7Ktr+hAb/1kX8KzDSIl8zVNroaEBj/Io9660JTKRopyCw/Yq7PxYIr8HBsMAkdFW
-         cND5flrp/or9ax7+laa8OH7Cvg1+2WDE2KY7dseK7KiH0U0Fcl3ERwGSJTd+bRO3Jm4d
-         rbk4b1Pdp7VrOCGmxN58XfI6eqtOeQ1S7zLP+mf6IxMpRrFYbJMkhrrc0EszDOgQ8Bc0
-         SlyA==
-X-Gm-Message-State: AOJu0YxGnDZUE4GcR39t0pq9l6f2Y/8BKx9s/iA5Mf2WDzZcyVCMZfVB
-	hqk+4dRwONlzoXJLkFIYk0fwxcWrCTrdHu+LfXvZd4JLrW9V
-X-Google-Smtp-Source: AGHT+IGBB+aGI4iyzkTSra0B6/PtIxnXPEYbJsRyx6an5sejJWvEYm8rbxFgZOJOAgWUUPcVCTw25hMvzfg+8Tilv5ih+Ihl/UX+
+        bh=cy9fwNlwVc+gx5v4xgTuuLAslWCEht9JixYFler0ihI=;
+        b=DeFc+TNw55rLVjHJi4e5acW32/YHLUk5yvxkGIhdXuUvjkK2iuhVXT7LzNlVhhuVeL
+         8VpYby66oTbzrMghl4xN/Mvkz2EU04H5Y/2X2YAgKaTHrvl6wDuIkLooIMNVpAIoMB1P
+         R2VwqAuT70ZFWclJoHjzSDFfQ+xOSad5IpXNpjMFFJsW+Ahi2Fu+yO5kmmYPptqeVTnm
+         jsJu2IbdbDopI/oLG3+Ne/u7m+/u2v7lcZfsPr3ZMELCP3GakuiXannGll9lAaCfCKVi
+         3bX3KzfxwBRQ3i6e4k+3kwnBUtQE7LfY/aH8vL71C6Q1RZD/RqkbcZwJTJ4qbmuwVsNp
+         Vaig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705310026; x=1705914826;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cy9fwNlwVc+gx5v4xgTuuLAslWCEht9JixYFler0ihI=;
+        b=IPCv8YGOktS8VAS+CaEO4YSW4Piyzl3CxSbT2z0HCrOLIr3u5wdfUwUWgLZI/SKsFe
+         Z5UqiSmmtUFnAz+r3CjsA5gCgApgaoUYh8nmOW/qmbGp/XoF4lkpC+sJfuH2HiLUMTDp
+         +8Un7hHqfpoJUccCjQzf6chzQJjGwO1kNkerWJVF8/Z73N3OBDotEeL9hXGilFv5Wj0a
+         Nf4sV3whBgitSczuosahQv7kZy55K2+K0zo7HF5fnnh8ESCqNvQjJSJndQ7KJdURgm45
+         mZlhoEVp8iLsLMvhVb/3ETND7YooPKeZN1hM6+9CKWOegYiStihDoK64mt5+5WwhSXJ5
+         ycSA==
+X-Gm-Message-State: AOJu0Yxr6nEsl0ouoRkgfPmao8wWHYQxHh12tRpMSMpjY10Ml3D/Z/G2
+	MfTGLOQc2OYeGIyrnTmJIhc=
+X-Google-Smtp-Source: AGHT+IFVkAtsa7jY4e2HLECu8EaZkrrIuhIak/fnYBbMc0kw2BKoj/V/JALf1m9wVYgJw8E72cjsfA==
+X-Received: by 2002:a05:6512:60e:b0:50e:74f3:c320 with SMTP id b14-20020a056512060e00b0050e74f3c320mr3212853lfe.21.1705310026274;
+        Mon, 15 Jan 2024 01:13:46 -0800 (PST)
+Received: from ?IPV6:2001:14ba:7426:df00::3? (drtxq0yyyyyyyyyyyyybt-3.rev.dnainternet.fi. [2001:14ba:7426:df00::3])
+        by smtp.gmail.com with ESMTPSA id t24-20020ac24c18000000b0050e78aa4b30sm1422245lfq.42.2024.01.15.01.13.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Jan 2024 01:13:45 -0800 (PST)
+Message-ID: <1d735a95-e5bd-4891-bb44-335958e1f045@gmail.com>
+Date: Mon, 15 Jan 2024 11:13:45 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:db0d:0:b0:7be:dc77:d176 with SMTP id
- t13-20020a6bdb0d000000b007bedc77d176mr110226ioc.1.1705309937288; Mon, 15 Jan
- 2024 01:12:17 -0800 (PST)
-Date: Mon, 15 Jan 2024 01:12:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000b4e27060ef8694c@google.com>
-Subject: [syzbot] [f2fs?] KASAN: slab-use-after-free Read in f2fs_filemap_fault
-From: syzbot <syzbot+763afad57075d3f862f2@syzkaller.appspotmail.com>
-To: chao@kernel.org, jaegeuk@kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] iio: test: test gain-time-scale helpers
+Content-Language: en-US, en-GB
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+ Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org,
+ linux-iio@vger.kernel.org
+References: <cover.1704881096.git.mazziesaccount@gmail.com>
+ <6b839dd533fd93b75c2e6f6a8f2286233d4901fb.1704881096.git.mazziesaccount@gmail.com>
+ <20240113161229.48d63b54@jic23-huawei>
+From: Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <20240113161229.48d63b54@jic23-huawei>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On 1/13/24 18:12, Jonathan Cameron wrote:
+> On Wed, 10 Jan 2024 12:12:55 +0200
+> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
+> 
+>> Some light sensors can adjust both the HW-gain and integration time.
+>> There are cases where adjusting the integration time has similar impact
+>> to the scale of the reported values as gain setting has.
+>>
+>> IIO users do typically expect to handle scale by a single writable 'scale'
+>> entry. Driver should then adjust the gain/time accordingly.
+>>
+>> It however is difficult for a driver to know whether it should change
+>> gain or integration time to meet the requested scale. Usually it is
+>> preferred to have longer integration time which usually improves
+>> accuracy, but there may be use-cases where long measurement times can be
+>> an issue. Thus it can be preferable to allow also changing the
+>> integration time - but mitigate the scale impact by also changing the gain
+>> underneath. Eg, if integration time change doubles the measured values,
+>> the driver can reduce the HW-gain to half.
+>>
+>> The theory of the computations of gain-time-scale is simple. However,
+>> some people (undersigned) got that implemented wrong for more than once.
+>> Hence some gain-time-scale helpers were introduced.
+>>
+>> Add some simple tests to verify the most hairy functions.
+>>
+>> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
+>>
+> Hi Matti,
+> 
+> All seems reasonable to me. Some trivial formatting things inline
+> + I'm not planning to check the maths as you are the expert in all of
+> this so I'll just trust you!
 
-syzbot found the following issue on:
+Well, all checking is always welcome. Still, I kind of understand that 
+you won't verify everything you see... Oh, and thanks for the trust. :)
 
-HEAD commit:    052d534373b7 Merge tag 'exfat-for-6.8-rc1' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14bb9913e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=490fc2f9d4ae426c
-dashboard link: https://syzkaller.appspot.com/bug?extid=763afad57075d3f862f2
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d9fbcbe80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1422d5ebe80000
+> Also if this fails you get to pick up the pieces :)
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/51de89c7a81e/disk-052d5343.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7e03b92536a3/vmlinux-052d5343.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/3d91124eb5ff/bzImage-052d5343.xz
-mounted in repro #1: https://storage.googleapis.com/syzbot-assets/f67519526788/mount_0.gz
-mounted in repro #2: https://storage.googleapis.com/syzbot-assets/7e871268c842/mount_7.gz
+This sure helps to trust ;)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+763afad57075d3f862f2@syzkaller.appspotmail.com
+As for things you commented - Thanks! I'll fix them and respin.
 
-==================================================================
-BUG: KASAN: slab-use-after-free in f2fs_filemap_fault+0xd1/0x2c0 fs/f2fs/file.c:49
-Read of size 8 at addr ffff88807bb22680 by task syz-executor184/5058
+Yours,
+	-- Matti
 
-CPU: 0 PID: 5058 Comm: syz-executor184 Not tainted 6.7.0-syzkaller-09928-g052d534373b7 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0x163/0x540 mm/kasan/report.c:488
- kasan_report+0x142/0x170 mm/kasan/report.c:601
- f2fs_filemap_fault+0xd1/0x2c0 fs/f2fs/file.c:49
- __do_fault+0x131/0x450 mm/memory.c:4376
- do_shared_fault mm/memory.c:4798 [inline]
- do_fault mm/memory.c:4872 [inline]
- do_pte_missing mm/memory.c:3745 [inline]
- handle_pte_fault mm/memory.c:5144 [inline]
- __handle_mm_fault+0x23b7/0x72b0 mm/memory.c:5285
- handle_mm_fault+0x27e/0x770 mm/memory.c:5450
- do_user_addr_fault arch/x86/mm/fault.c:1364 [inline]
- handle_page_fault arch/x86/mm/fault.c:1507 [inline]
- exc_page_fault+0x456/0x870 arch/x86/mm/fault.c:1563
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
-RIP: 0033:0x7f808e742b50
-Code: 20 bf 02 00 00 00 e8 9f 24 04 00 48 83 f8 ff 0f 84 08 fa ff ff 48 89 05 e6 65 0c 00 e9 fc f9 ff ff 66 0f 1f 84 00 00 00 00 00 <c7> 04 25 40 00 00 20 66 32 66 73 c6 04 25 44 00 00 20 00 e9 0f fa
-RSP: 002b:00007f808e735170 EFLAGS: 00010246
+-- 
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
 
-RAX: 0000000000000000 RBX: 00007f808e80b6e8 RCX: 00007f808e784fe9
-RDX: 86d0f56bab720225 RSI: 0000000000000000 RDI: 00007f808e7355a0
-RBP: 00007f808e80b6e0 R08: 0000000000000000 R09: 00007f808e7356c0
-R10: 00007f808e80b6e0 R11: 0000000000000246 R12: 00007f808e80b6ec
-R13: 0000000000000000 R14: 00007fff41e6fc30 R15: 00007fff41e6fd18
- </TASK>
+~~ When things go utterly wrong vim users can always type :help! ~~
 
-Allocated by task 5058:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3f/0x70 mm/kasan/common.c:68
- unpoison_slab_object mm/kasan/common.c:314 [inline]
- __kasan_slab_alloc+0x66/0x70 mm/kasan/common.c:340
- kasan_slab_alloc include/linux/kasan.h:201 [inline]
- slab_post_alloc_hook mm/slub.c:3813 [inline]
- slab_alloc_node mm/slub.c:3860 [inline]
- kmem_cache_alloc+0x16f/0x340 mm/slub.c:3867
- vm_area_alloc+0x24/0x1d0 kernel/fork.c:465
- mmap_region+0xbd8/0x1f90 mm/mmap.c:2804
- do_mmap+0x76b/0xde0 mm/mmap.c:1379
- vm_mmap_pgoff+0x1e2/0x420 mm/util.c:556
- ksys_mmap_pgoff+0x4ff/0x6d0 mm/mmap.c:1425
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Freed by task 5064:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3f/0x70 mm/kasan/common.c:68
- kasan_save_free_info+0x4e/0x60 mm/kasan/generic.c:634
- poison_slab_object+0xa6/0xe0 mm/kasan/common.c:241
- __kasan_slab_free+0x34/0x60 mm/kasan/common.c:257
- kasan_slab_free include/linux/kasan.h:184 [inline]
- slab_free_hook mm/slub.c:2121 [inline]
- slab_free mm/slub.c:4299 [inline]
- kmem_cache_free+0x102/0x2a0 mm/slub.c:4363
- rcu_do_batch kernel/rcu/tree.c:2158 [inline]
- rcu_core+0xad8/0x17c0 kernel/rcu/tree.c:2433
- __do_softirq+0x2b8/0x939 kernel/softirq.c:553
-
-Last potentially related work creation:
- kasan_save_stack+0x3f/0x60 mm/kasan/common.c:47
- __kasan_record_aux_stack+0xae/0x100 mm/kasan/generic.c:580
- __call_rcu_common kernel/rcu/tree.c:2683 [inline]
- call_rcu+0x167/0xa80 kernel/rcu/tree.c:2797
- remove_vma mm/mmap.c:148 [inline]
- remove_mt mm/mmap.c:2283 [inline]
- do_vmi_align_munmap+0x159d/0x1930 mm/mmap.c:2629
- do_vmi_munmap+0x24d/0x2d0 mm/mmap.c:2693
- mmap_region+0x677/0x1f90 mm/mmap.c:2744
- do_mmap+0x76b/0xde0 mm/mmap.c:1379
- vm_mmap_pgoff+0x1e2/0x420 mm/util.c:556
- ksys_mmap_pgoff+0x4ff/0x6d0 mm/mmap.c:1425
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-The buggy address belongs to the object at ffff88807bb22660
- which belongs to the cache vm_area_struct of size 192
-The buggy address is located 32 bytes inside of
- freed 192-byte region [ffff88807bb22660, ffff88807bb22720)
-
-The buggy address belongs to the physical page:
-page:ffffea0001eec880 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x7bb22
-flags: 0xfff00000000800(slab|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000800 ffff8880142a1b40 dead000000000122 0000000000000000
-raw: 0000000000000000 00000000800f000f 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 5039, tgid 5039 (sshd), ts 50202976366, free_ts 44674399535
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1533
- prep_new_page mm/page_alloc.c:1540 [inline]
- get_page_from_freelist+0x33ea/0x3570 mm/page_alloc.c:3311
- __alloc_pages+0x255/0x680 mm/page_alloc.c:4567
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- alloc_slab_page+0x5f/0x160 mm/slub.c:2190
- allocate_slab mm/slub.c:2354 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2407
- ___slab_alloc+0xd17/0x13d0 mm/slub.c:3540
- __slab_alloc mm/slub.c:3625 [inline]
- __slab_alloc_node mm/slub.c:3678 [inline]
- slab_alloc_node mm/slub.c:3850 [inline]
- kmem_cache_alloc+0x249/0x340 mm/slub.c:3867
- vm_area_dup+0x27/0x280 kernel/fork.c:480
- dup_mmap kernel/fork.c:695 [inline]
- dup_mm kernel/fork.c:1685 [inline]
- copy_mm+0xd90/0x21b0 kernel/fork.c:1734
- copy_process+0x1d6f/0x3fb0 kernel/fork.c:2496
- kernel_clone+0x222/0x840 kernel/fork.c:2901
- __do_sys_clone kernel/fork.c:3044 [inline]
- __se_sys_clone kernel/fork.c:3028 [inline]
- __x64_sys_clone+0x258/0x2a0 kernel/fork.c:3028
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-page last free pid 5037 tgid 5037 stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1140 [inline]
- free_unref_page_prepare+0x959/0xa80 mm/page_alloc.c:2346
- free_unref_page+0x37/0x3f0 mm/page_alloc.c:2486
- pipe_buf_release include/linux/pipe_fs_i.h:219 [inline]
- pipe_update_tail fs/pipe.c:234 [inline]
- pipe_read+0x6ee/0x13e0 fs/pipe.c:354
- call_read_iter include/linux/fs.h:2079 [inline]
- new_sync_read fs/read_write.c:395 [inline]
- vfs_read+0x662/0x900 fs/read_write.c:476
- ksys_read+0x1a0/0x2c0 fs/read_write.c:619
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Memory state around the buggy address:
- ffff88807bb22580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff88807bb22600: 00 00 fc fc fc fc fc fc fc fc fc fc fa fb fb fb
->ffff88807bb22680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff88807bb22700: fb fb fb fb fc fc fc fc fc fc fc fc fc fc 00 00
- ffff88807bb22780: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
