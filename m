@@ -1,209 +1,164 @@
-Return-Path: <linux-kernel+bounces-25929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D265082D86D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:37:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4CC382D876
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:38:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BA071F21C12
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:37:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CCC81F218DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:38:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53D262C6A8;
-	Mon, 15 Jan 2024 11:36:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6EB82C696;
+	Mon, 15 Jan 2024 11:38:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="a7BCUwCY"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PFOkDXeF"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3BED29A8
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 11:36:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a28f66dc7ffso1753470066b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 03:36:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705318609; x=1705923409; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KTjUdUAVGjQbbSEjeN8Hm51/ZRU50dz0VKTW6WtWo8A=;
-        b=a7BCUwCYgR/APa53rgiG89Y0t1ADSS5njlA/MQwWQsi824NQI6NZ+sNJ5DVjXim3zw
-         gerNBl/rHJzc2oZNHXhwN3HFpG76SlUo0016m09uoLjHYicfTDfrKG7ra0iAI9x9JKzn
-         GqE0Uic0F5YCY62VK4Snotnvj7aeCJrjsoCxRBKBlxCXsHU0P5/cgZ98pw0XJUvPZ9nV
-         TwhY9XaaD6j+pC4oyb+o2vupzbJl+9Uypc8OBEt7whzgv3jL4kSIgtPZs2NLQrmXCtcR
-         q2xZz7pYOBqRiDgoXkxcXYZb++KVy4q8FfIzSSAW3/MKvo/uGXRkTRiPA+m8zl347L0k
-         Iu7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705318609; x=1705923409;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KTjUdUAVGjQbbSEjeN8Hm51/ZRU50dz0VKTW6WtWo8A=;
-        b=Eq8rQd/BBkLGlAWuuit7j+DWXhP+IBf3olgNIK30acRE4tBjObbCr8yNWiaXz0grfy
-         kJf6FX5PJ8WyvmEpjbHeyFDYW61307XHF/sTnB+w8OExlkR4rclSgn4P7pytVt2BoQsU
-         E+R8wjx9FY3Ucjfn7LTVeiPAbhkTcD6f6ufWbm0MlE4j3aogs/OmJG2LL3MvM4g6o76J
-         ADqDA7R1dyUx9xdeVXiFPLlM2GbEUSHk7R5dgTf1A41FHlhMMxl57S60v06Ye0xUq6Bv
-         JZwplSaDnAG7/8blfCvWSLBmjuSWSsr4AfAeZMuny0CLGKD8KJ0C8+TbtzxqwrpPkOiY
-         eTJg==
-X-Gm-Message-State: AOJu0YwsKK3y1u91xN9cp7S4asw7hOHPCp1XTa9epDsq9AAc/dZScpD5
-	xpSukHVEkLbvjBz8cRlz3nHZ1fsTvJZ3dw==
-X-Google-Smtp-Source: AGHT+IGiTxclcD525r0O//wVGjf7VkwRFmTVqmgCMljop427MY0ycSXo70dtRQwKE34g87/EZa3MTQ==
-X-Received: by 2002:a17:907:c09:b0:a28:aef6:9964 with SMTP id ga9-20020a1709070c0900b00a28aef69964mr7817964ejc.14.1705318609127;
-        Mon, 15 Jan 2024 03:36:49 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id v24-20020a1709067d9800b00a2a4efe7d3dsm5204355ejo.79.2024.01.15.03.36.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jan 2024 03:36:48 -0800 (PST)
-Message-ID: <4c819e89-80d9-442f-af82-4b3d084ab9df@linaro.org>
-Date: Mon, 15 Jan 2024 12:36:46 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5925E2C683
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 11:38:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705318702;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kvr1H4HWot08qDvWwNjLa4kBqu8J0KtTgh8LnyVOj1c=;
+	b=PFOkDXeFUzgWcJcUXd/4cfCYpBdc9QJb/sNFXK4i+eHBuYSRvOnBG23AF91XjRVjF79c1Z
+	7V7dR3f3aib8ahHgKklJfx1dPAydugm1dJnbx0EGMXw3R1mluNldIjXWVEIWcEAWUUbm8h
+	gfjE/AXXJxVGK4DUxwJBDypjn1Xj4Po=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-329-BdaA_Z60PCOcXjrNB-qauQ-1; Mon,
+ 15 Jan 2024 06:38:17 -0500
+X-MC-Unique: BdaA_Z60PCOcXjrNB-qauQ-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D2F2C3C29A61;
+	Mon, 15 Jan 2024 11:38:16 +0000 (UTC)
+Received: from fedora (unknown [10.72.116.28])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 1C8E0492BFA;
+	Mon, 15 Jan 2024 11:38:11 +0000 (UTC)
+Date: Mon, 15 Jan 2024 19:38:07 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: hch@lst.de, bvanassche@acm.org, axboe@kernel.dk,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH for-6.8/block] block: support to account io_ticks
+ precisely
+Message-ID: <ZaUZH8v2i7YBklyc@fedora>
+References: <20240109071332.2216253-1-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: usb: add common Type-C USB Switch schema
-Content-Language: en-US
-To: Luca Weiss <luca.weiss@fairphone.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Neil Armstrong <neil.armstrong@linaro.org>, linux-usb@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org
-References: <20240115092923.105275-1-krzysztof.kozlowski@linaro.org>
- <CYF6E9BR9QHY.3441MOKCRAB15@fairphone.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CYF6E9BR9QHY.3441MOKCRAB15@fairphone.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240109071332.2216253-1-yukuai1@huaweicloud.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-On 15/01/2024 10:34, Luca Weiss wrote:
->> diff --git a/Documentation/devicetree/bindings/usb/usb-switch.yaml b/Documentation/devicetree/bindings/usb/usb-switch.yaml
->> new file mode 100644
->> index 000000000000..0d0b60234d1f
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/usb/usb-switch.yaml
->> @@ -0,0 +1,68 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/usb/usb-switch.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: USB Orientation and Mode Switches Common Properties
->> +
->> +maintainers:
->> +  - Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> +
->> +description:
->> +  Common properties for devices handling USB mode and orientation switching.
->> +
->> +properties:
->> +  mode-switch:
->> +    description: Possible handle of altmode switching
+On Tue, Jan 09, 2024 at 03:13:32PM +0800, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
 > 
-> handle -> handler
+> Currently, io_ticks is accounted based on sampling, specifically
+> update_io_ticks() will always account io_ticks by 1 jiffies from
+> bdev_start_io_acct()/blk_account_io_start(), and the result can be
+> inaccurate, for example(HZ is 250):
+> 
+> Test script:
+> fio -filename=/dev/sda -bs=4k -rw=write -direct=1 -name=test -thinktime=4ms
+> 
+> Test result: util is about 90%, while the disk is really idle.
 
-ack
+Just be curious, what is result with this patch? 0%?
 
 > 
->> +    type: boolean
->> +
->> +  orientation-switch:
->> +    description: Possible handler of orientation switching
->> +    type: boolean
->> +
->> +  retimer-switch:
->> +    description: Possible handle of SuperSpeed signals retiming
+> In order to account io_ticks precisely, update_io_ticks() must know if
+> there are IO inflight already, and this requires overhead slightly,
+> hence precise io accounting is disabled by default, and user can enable
+> it through sysfs entry.
 > 
-> handle -> handler
-
-ack
-
+> Noted that for rq-based devcie, part_stat_local_inc/dec() and
+> part_in_flight() is used to track inflight instead of iterating tags,
+> which is not supposed to be used in fast path because 'tags->lock' is
+> grabbed in blk_mq_find_and_get_req().
 > 
->> +    type: boolean
->> +
->> +  port:
->> +    $ref: /schemas/graph.yaml#/properties/port
->> +    description:
->> +      A port node to link the device to a TypeC controller for the purpose of
->> +      handling altmode muxing and orientation switching.
->> +
->> +  ports:
->> +    $ref: /schemas/graph.yaml#/properties/ports
->> +    properties:
->> +      port@0:
->> +        $ref: /schemas/graph.yaml#/properties/port
->> +        description:
->> +          Super Speed (SS) Output endpoint to the Type-C connector
->> +
->> +      port@1:
->> +        $ref: /schemas/graph.yaml#/$defs/port-base
->> +        description:
->> +          Super Speed (SS) Input endpoint from the Super-Speed PHY
->> +        unevaluatedProperties: false
->> +
->> +        properties:
->> +          endpoint:
->> +            $ref: /schemas/graph.yaml#/$defs/endpoint-base
->> +            # additionalProperties: true
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+> Changes from RFC v1:
+>  - remove the new parameter for update_io_ticks();
+>  - simplify update_io_ticks();
+>  - use swith in queue_iostats_store();
+>  - add missing part_stat_local_dec() in blk_account_io_merge_request();
+> Changes from RFC v2:
+>  - fix that precise is ignored for the first io in update_io_ticks();
 > 
-> Don't think this should still be here?
+>  Documentation/ABI/stable/sysfs-block |  8 ++++--
+>  block/blk-core.c                     | 10 +++++--
+>  block/blk-merge.c                    |  3 ++
+>  block/blk-mq-debugfs.c               |  2 ++
+>  block/blk-mq.c                       | 11 +++++++-
+>  block/blk-sysfs.c                    | 42 ++++++++++++++++++++++++++--
+>  block/blk.h                          |  1 +
+>  block/genhd.c                        |  2 +-
+>  include/linux/blk-mq.h               |  1 +
+>  include/linux/blkdev.h               |  3 ++
+>  10 files changed, 74 insertions(+), 9 deletions(-)
 > 
+> diff --git a/Documentation/ABI/stable/sysfs-block b/Documentation/ABI/stable/sysfs-block
+> index 1fe9a553c37b..79027bf2661a 100644
+> --- a/Documentation/ABI/stable/sysfs-block
+> +++ b/Documentation/ABI/stable/sysfs-block
+> @@ -358,8 +358,12 @@ What:		/sys/block/<disk>/queue/iostats
+>  Date:		January 2009
+>  Contact:	linux-block@vger.kernel.org
+>  Description:
+> -		[RW] This file is used to control (on/off) the iostats
+> -		accounting of the disk.
+> +		[RW] This file is used to control the iostats accounting of the
+> +		disk. If this value is 0, iostats accounting is disabled; If
+> +		this value is 1, iostats accounting is enabled, but io_ticks is
+> +		accounted by sampling and the result is not accurate; If this
+> +		value is 2, iostats accounting is enabled and io_ticks is
+> +		accounted precisely, but there will be slightly more overhead.
+>  
+>  
+>  What:		/sys/block/<disk>/queue/logical_block_size
+> diff --git a/block/blk-core.c b/block/blk-core.c
+> index 9520ccab3050..c70dc311e3b7 100644
+> --- a/block/blk-core.c
+> +++ b/block/blk-core.c
+> @@ -954,11 +954,15 @@ EXPORT_SYMBOL_GPL(iocb_bio_iopoll);
+>  void update_io_ticks(struct block_device *part, unsigned long now, bool end)
+>  {
+>  	unsigned long stamp;
+> +	bool precise = blk_queue_precise_io_stat(part->bd_queue);
+>  again:
+>  	stamp = READ_ONCE(part->bd_stamp);
+> -	if (unlikely(time_after(now, stamp))) {
+> -		if (likely(try_cmpxchg(&part->bd_stamp, &stamp, now)))
+> -			__part_stat_add(part, io_ticks, end ? now - stamp : 1);
+> +	if (unlikely(time_after(now, stamp)) &&
+> +	    likely(try_cmpxchg(&part->bd_stamp, &stamp, now))) {
+> +		if (end || (precise && part_in_flight(part)))
+> +			__part_stat_add(part, io_ticks, now - stamp);
+> +		else if (!precise)
+> +			__part_stat_add(part, io_ticks, 1);
 
-Indeed, debug left-over. I'll remove it.
+It should be better or readable to move 'bool precise' into the above branch,
+given we only need to read the flag once in each tick.
 
-Best regards,
-Krzysztof
+Otherwise, this patch looks fine.
+
+Thanks,
+Ming
 
 
