@@ -1,245 +1,125 @@
-Return-Path: <linux-kernel+bounces-25751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2A6282D54E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:50:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8644082D552
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:51:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA3851C20A72
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:50:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BB7A1F21AF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:51:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EFDABE7C;
-	Mon, 15 Jan 2024 08:50:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="S+zEg/YC"
-Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5890D521;
+	Mon, 15 Jan 2024 08:50:33 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CC3BBE5A
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 08:50:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-4b87d79a7d8so1395113e0c.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 00:50:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705308615; x=1705913415; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jnB0KQ9n30qRjDbWGaCy0bZrFlz+zGMbjPXvFhazWYk=;
-        b=S+zEg/YCg0kQRHrdN1WsXg26TdPCG22tM66mOsViXlj3oJnd6+hQU7m9foE5tvKbGr
-         8EXRWNCcDLJAK6SMWBrey94QLJumiUQLR0wLsQf03bkGZuGCtD7BOeiFa4GLf+PpTxGl
-         TYfHG618xgbTlnT50BK53ZQguH1vOfmIocLD57ob5Ku4ueHubpHSJtSV9OT1r/Ofhi4i
-         +nWnzODT1K/3SVvjTdhom4hf1ZnjQNFh1YIg8iWwdzPGwpu02sNdA5FPGVuDlih+XIbY
-         2n68rdgtrptK7a12+dX5F9lCC/5FpJJWEQkjlyg9+3gGrfWDKUOCq21/aUcOSFqzVYtQ
-         +Mvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705308615; x=1705913415;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jnB0KQ9n30qRjDbWGaCy0bZrFlz+zGMbjPXvFhazWYk=;
-        b=ZIqIi1Dyoms0FChYD/t87cU4SxZD+v4RMo7LAspC8F9OYG0kIpcJaOskzJvGnYN5Wi
-         5RlhG5Z8+CvMFwshHyNZJ5hzih+HJvkdY34lyuqGnzb/zofzAffDu8/WLdIumaulM5FQ
-         P063Jyr+5HpxuWV/ItW51pwujB2FL2V9QyAdwXMMve6zujslJSf7V6Bj4+Ia+a8lKSlZ
-         zHB09iYDjcVeFACdFbSdbxaQHW1GdSw77vaKWQUVsecAw10kTkHWnHI87imB91ToBo0z
-         H1BfSuqpBmznmNqumxEHXgitbtA4SMh79W8VZnGP9Bu7c9yUXzRK0hpK+IfuFc8XnFkc
-         6c8Q==
-X-Gm-Message-State: AOJu0YxROUeDOHSKY6aVSVEVUaW2ma8rOAC+qpsgKfT0n1Iu+G/NkywE
-	8MgmmiUpchnrbz0GbqNh2gqk5u2fSbPoLVA3hqd/IO2/xp6aAw==
-X-Google-Smtp-Source: AGHT+IER2LHdcYASLqpy/PfdO8Gpg40SfDQcuW1fxoPYHs8Q2bhDpNHi14VF6ecCs7jo2egVbIqPe1MtNxnKV+D9l+8=
-X-Received: by 2002:a05:6122:448e:b0:4b6:ca2c:b420 with SMTP id
- cz14-20020a056122448e00b004b6ca2cb420mr1640394vkb.2.1705308615173; Mon, 15
- Jan 2024 00:50:15 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CE36D308;
+	Mon, 15 Jan 2024 08:50:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 583e9824b00a404c951f36b996001b4a-20240115
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:fbdb9046-cc15-4f62-8261-5b129439ce27,IP:10,
+	URL:0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,AC
+	TION:release,TS:15
+X-CID-INFO: VERSION:1.1.35,REQID:fbdb9046-cc15-4f62-8261-5b129439ce27,IP:10,UR
+	L:0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:15
+X-CID-META: VersionHash:5d391d7,CLOUDID:3b3cdc82-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:2401151650265V38VMXJ,BulkQuantity:0,Recheck:0,SF:24|17|19|44|66|38|1
+	02,TC:nil,Content:0,EDM:5,IP:-2,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,
+	COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,
+	TF_CID_SPAM_ULN
+X-UUID: 583e9824b00a404c951f36b996001b4a-20240115
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 252634715; Mon, 15 Jan 2024 16:50:24 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id B0811E000EB9;
+	Mon, 15 Jan 2024 16:50:23 +0800 (CST)
+X-ns-mid: postfix-65A4F1CF-609187206
+Received: from kernel.. (unknown [172.20.15.234])
+	by mail.kylinos.cn (NSMail) with ESMTPA id E6D60E000EB9;
+	Mon, 15 Jan 2024 16:50:21 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: andrew@lunn.ch,
+	hkallweit1@gmail.com,
+	linux@armlinux.org.uk,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: f.fainelli@gmail.com,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH net v2] net: phy: Fix possible NULL pointer dereference issues caused by phy_attached_info_irq
+Date: Mon, 15 Jan 2024 16:50:18 +0800
+Message-Id: <20240115085018.30300-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240113094204.017594027@linuxfoundation.org>
-In-Reply-To: <20240113094204.017594027@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 15 Jan 2024 14:20:04 +0530
-Message-ID: <CA+G9fYsg1tT9-HHRbPmiQAV+BZ3o7BJepQzskYmRU=JHLxucEw@mail.gmail.com>
-Subject: Re: [PATCH 6.1 0/4] 6.1.73-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 13 Jan 2024 at 15:32, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.1.73 release.
-> There are 4 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Mon, 15 Jan 2024 09:41:55 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.1.73-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+kasprintf() returns a pointer to dynamically allocated memory
+which can be NULL upon failure. Ensure the allocation was successful
+by checking the pointer validity.
 
+phylink_bringup_phy needs to be done, otherwise network interface is
+likely to be dead, so when irq_str is NULL, just print an empty string.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Fixes: e27f178793de ("net: phy: Added IRQ print to phylink_bringup_phy()"=
+)
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+Suggested-by: Andrew Lunn <andrew@lunn.ch>
+---
+v2: Print empty string when irq_str is NULL in phylink_bringup_phy
+---
+ drivers/net/phy/phy_device.c | 3 +++
+ drivers/net/phy/phylink.c    | 2 +-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index 3611ea64875e..10fa99d957c0 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -1299,6 +1299,9 @@ void phy_attached_print(struct phy_device *phydev, =
+const char *fmt, ...)
+ 	const char *unbound =3D phydev->drv ? "" : "[unbound] ";
+ 	char *irq_str =3D phy_attached_info_irq(phydev);
+=20
++	if (!irq_str)
++		return;
++
+ 	if (!fmt) {
+ 		phydev_info(phydev, ATTACHED_FMT "\n", unbound,
+ 			    phydev_name(phydev), irq_str);
+diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
+index ed0b4ccaa6a6..819574a06036 100644
+--- a/drivers/net/phy/phylink.c
++++ b/drivers/net/phy/phylink.c
+@@ -1886,7 +1886,7 @@ static int phylink_bringup_phy(struct phylink *pl, =
+struct phy_device *phy,
+ 	irq_str =3D phy_attached_info_irq(phy);
+ 	phylink_info(pl,
+ 		     "PHY [%s] driver [%s] (irq=3D%s)\n",
+-		     dev_name(&phy->mdio.dev), phy->drv->name, irq_str);
++		     dev_name(&phy->mdio.dev), phy->drv->name, irq_str ? irq_str : "")=
+;
+ 	kfree(irq_str);
+=20
+ 	mutex_lock(&phy->lock);
+--=20
+2.39.2
 
-## Build
-* kernel: 6.1.73-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.1.y
-* git commit: ccaabe94627897d3e2d2234aa6b2196c32a63325
-* git describe: v6.1.72-5-gccaabe946278
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.7=
-2-5-gccaabe946278/
-
-## Test Regressions (compared to v6.1.71)
-
-## Metric Regressions (compared to v6.1.71)
-
-## Test Fixes (compared to v6.1.71)
-
-## Metric Fixes (compared to v6.1.71)
-
-## Test result summary
-total: 253149, pass: 214510, fail: 4787, skip: 33543, xfail: 309
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 151 total, 150 passed, 1 failed
-* arm64: 52 total, 52 passed, 0 failed
-* i386: 39 total, 39 passed, 0 failed
-* mips: 26 total, 26 passed, 0 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 36 total, 36 passed, 0 failed
-* riscv: 15 total, 14 passed, 1 failed
-* s390: 16 total, 16 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 46 total, 46 passed, 0 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
