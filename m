@@ -1,25 +1,25 @@
-Return-Path: <linux-kernel+bounces-26109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26110-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4271582DB7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:40:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D483E82DB7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:40:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A0221C21C0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:40:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E711E1C21BF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:40:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A642418E39;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C0BC18E38;
 	Mon, 15 Jan 2024 14:38:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="b8GGphrl";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="j+t04NEL"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="RpM+MlQ9";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ktZOmXHD"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF23D182C3
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 14:38:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64EEC18632
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 14:38:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: Anna-Maria Behnsen <anna-maria@linutronix.de>
@@ -29,21 +29,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ia4sddnbK0Qx+BWCOb+xOAdGjZ34vg4G3iXN8bRXi4s=;
-	b=b8GGphrlLbDvJc/pDdyXU2kGAPnBE+bfQAiN++hh9wO8KyqhoTl94U9CrJSuGmSpPDyFZl
-	cLIe0e0k4amIcy5S/NJU1uzMOZvDYVocGPAJ0Mejw3owPepGbbfbh1p0KI7My6IJG2A6a6
-	oHwdiNYrIW6rAmolipJKKpjx/cBeYpKIOFLnBZ8ojnpA89TnqzcOnv14q89e1Y41EAaG9E
-	DU8pnAwafNmnZIqkH2lJ8HS5k3yqCimeJGbB54bllC7IIEDGpfk+jSOL7DyqK/ZUlzMLVr
-	vNCzqb5rmrN2pLujw2Tik888Lvz7W6SXTgr9qm6hOEl51qitzauy9SiGlvVC9A==
+	bh=Nb48Ec9P9wN/ba+vLQTCWoxnTPCDbsQyo2JqCHOzxss=;
+	b=RpM+MlQ98engTxxgTZb3m1VEMYSW7zPbVdt9EtlYVA92ZO5VCBuGDLe2A6/9XL672oLhz8
+	hXSYjXGyXyvVjkbJn77lqdYHPrwJpatsb0XPTubsfT3bbsF+gBeLyYExxM9kiBcT09cRPe
+	VfykTG5s77jURoIqGMsIiZpqAOkXGlARCipzI2ye5tp7GtgtkVj65uQ2RjEzym4Ewf64wB
+	zywAwo3/qBIHBCyruCWmsDcEJC20gf1zfxK6h2ay031x717BwY+VWkhuy5d5FP8cMGnoIv
+	jebL2aKqB99ATJBOMsN49nuHlggiEt9QxCdISlAHCOg1E8i/hTWq+FwR1Zyn2g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1705329490;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ia4sddnbK0Qx+BWCOb+xOAdGjZ34vg4G3iXN8bRXi4s=;
-	b=j+t04NELCR9FOn+3Ltaz1pEStFnL5V8hESrqaOUd7BCwDRzN1BJgcvFY9O/2TamDwtwKWQ
-	5IJD6N6eDzQki4Bw==
+	bh=Nb48Ec9P9wN/ba+vLQTCWoxnTPCDbsQyo2JqCHOzxss=;
+	b=ktZOmXHD5e+0jPN1zjCs1yytQQtNHNYadVzQ83G1DCIneFUyqWPZpmcomr3cjqK/SuTg0n
+	iPzH1Z1ilW5vU1AQ==
 To: linux-kernel@vger.kernel.org
 Cc: Peter Zijlstra <peterz@infradead.org>,
 	John Stultz <jstultz@google.com>,
@@ -61,10 +61,11 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
 	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
 	K Prateek Nayak <kprateek.nayak@amd.com>,
+	"Richard Cochran (linutronix GmbH)" <richardcochran@gmail.com>,
 	Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: [PATCH v10 13/20] timers: Add get next timer interrupt functionality for remote CPUs
-Date: Mon, 15 Jan 2024 15:37:36 +0100
-Message-Id: <20240115143743.27827-14-anna-maria@linutronix.de>
+Subject: [PATCH v10 14/20] timers: Restructure internal locking
+Date: Mon, 15 Jan 2024 15:37:37 +0100
+Message-Id: <20240115143743.27827-15-anna-maria@linutronix.de>
 In-Reply-To: <20240115143743.27827-1-anna-maria@linutronix.de>
 References: <20240115143743.27827-1-anna-maria@linutronix.de>
 Precedence: bulk
@@ -75,163 +76,79 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
- remote CPUs
+From: "Richard Cochran (linutronix GmbH)" <richardcochran@gmail.com>
 
-To prepare for the conversion of the NOHZ timer placement to a pull at
-expiry time model it's required to have functionality available getting the
-next timer interrupt on a remote CPU.
+Move the locking out from __run_timers() to the call sites, so the
+protected section can be extended at the call site. Preparatory patch for
+changing the NOHZ timer placement to a pull at expiry time model.
 
-Locking of the timer bases and getting the information for the next timer
-interrupt functionality is split into separate functions. This is required
-to be compliant with lock ordering when the new model is in place.
+No functional change.
 
+Signed-off-by: Richard Cochran (linutronix GmbH) <richardcochran@gmail.com>
 Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 ---
-v10:
- - sparse annotations for locks
+ kernel/time/timer.c | 31 +++++++++++++++++++++----------
+ 1 file changed, 21 insertions(+), 10 deletions(-)
 
-v8:
- - Update comment
-
-v7:
- - Move functions into CONFIG_SMP && CONFIG_NO_HZ_COMMON section
- - change lock, fetch functions to be unconditional
- - split out unlock function into a separate function
-
-v6:
- - introduce timer_lock_remote_bases() to fix race
----
- kernel/time/tick-internal.h | 10 +++++
- kernel/time/timer.c         | 80 ++++++++++++++++++++++++++++++++++---
- 2 files changed, 85 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/time/tick-internal.h b/kernel/time/tick-internal.h
-index 47df30b871e4..8b0c28edbd09 100644
---- a/kernel/time/tick-internal.h
-+++ b/kernel/time/tick-internal.h
-@@ -8,6 +8,11 @@
- #include "timekeeping.h"
- #include "tick-sched.h"
- 
-+struct timer_events {
-+	u64	local;
-+	u64	global;
-+};
-+
- #ifdef CONFIG_GENERIC_CLOCKEVENTS
- 
- # define TICK_DO_TIMER_NONE	-1
-@@ -154,6 +159,11 @@ extern unsigned long tick_nohz_active;
- extern void timers_update_nohz(void);
- # ifdef CONFIG_SMP
- extern struct static_key_false timers_migration_enabled;
-+extern void fetch_next_timer_interrupt_remote(unsigned long basej, u64 basem,
-+					      struct timer_events *tevt,
-+					      unsigned int cpu);
-+extern void timer_lock_remote_bases(unsigned int cpu);
-+extern void timer_unlock_remote_bases(unsigned int cpu);
- # endif
- #else /* CONFIG_NO_HZ_COMMON */
- static inline void timers_update_nohz(void) { }
 diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 9fa759dd80f5..3e2adfc15f3a 100644
+index 3e2adfc15f3a..ccb2a5c03b87 100644
 --- a/kernel/time/timer.c
 +++ b/kernel/time/timer.c
-@@ -221,11 +221,6 @@ struct timer_base {
+@@ -2223,11 +2223,7 @@ static inline void __run_timers(struct timer_base *base)
+ 	struct hlist_head heads[LVL_DEPTH];
+ 	int levels;
  
- static DEFINE_PER_CPU(struct timer_base, timer_bases[NR_BASES]);
- 
--struct timer_events {
--	u64	local;
--	u64	global;
--};
+-	if (time_before(jiffies, base->next_expiry))
+-		return;
 -
- #ifdef CONFIG_NO_HZ_COMMON
+-	timer_base_lock_expiry(base);
+-	raw_spin_lock_irq(&base->lock);
++	lockdep_assert_held(&base->lock);
  
- static DEFINE_STATIC_KEY_FALSE(timers_nohz_active);
-@@ -2031,6 +2026,81 @@ static unsigned long fetch_next_timer_interrupt(unsigned long basej, u64 basem,
- 	return nextevt;
+ 	while (time_after_eq(jiffies, base->clk) &&
+ 	       time_after_eq(jiffies, base->next_expiry)) {
+@@ -2251,21 +2247,36 @@ static inline void __run_timers(struct timer_base *base)
+ 		while (levels--)
+ 			expire_timers(base, heads + levels);
+ 	}
++}
++
++static void __run_timer_base(struct timer_base *base)
++{
++	if (time_before(jiffies, base->next_expiry))
++		return;
++
++	timer_base_lock_expiry(base);
++	raw_spin_lock_irq(&base->lock);
++	__run_timers(base);
+ 	raw_spin_unlock_irq(&base->lock);
+ 	timer_base_unlock_expiry(base);
  }
  
-+# ifdef CONFIG_SMP
-+/**
-+ * fetch_next_timer_interrupt_remote() - Store next timers into @tevt
-+ * @basej:	base time jiffies
-+ * @basem:	base time clock monotonic
-+ * @tevt:	Pointer to the storage for the expiry values
-+ * @cpu:	Remote CPU
-+ *
-+ * Stores the next pending local and global timer expiry values in the
-+ * struct pointed to by @tevt. If a queue is empty the corresponding
-+ * field is set to KTIME_MAX. If local event expires before global
-+ * event, global event is set to KTIME_MAX as well.
-+ *
-+ * Caller needs to make sure timer base locks are held (use
-+ * timer_lock_remote_bases() for this purpose).
-+ */
-+void fetch_next_timer_interrupt_remote(unsigned long basej, u64 basem,
-+				       struct timer_events *tevt,
-+				       unsigned int cpu)
++static void run_timer_base(int index)
 +{
-+	struct timer_base *base_local, *base_global;
++	struct timer_base *base = this_cpu_ptr(&timer_bases[index]);
 +
-+	/* Preset local / global events */
-+	tevt->local = tevt->global = KTIME_MAX;
-+
-+	base_local = per_cpu_ptr(&timer_bases[BASE_LOCAL], cpu);
-+	base_global = per_cpu_ptr(&timer_bases[BASE_GLOBAL], cpu);
-+
-+	lockdep_assert_held(&base_local->lock);
-+	lockdep_assert_held(&base_global->lock);
-+
-+	fetch_next_timer_interrupt(basej, basem, base_local, base_global, tevt);
++	__run_timer_base(base);
 +}
 +
-+/**
-+ * timer_unlock_remote_bases - unlock timer bases of cpu
-+ * @cpu:	Remote CPU
-+ *
-+ * Unlocks the remote timer bases.
-+ */
-+void timer_unlock_remote_bases(unsigned int cpu)
-+	__releases(timer_bases[BASE_LOCAL]->lock)
-+	__releases(timer_bases[BASE_GLOBAL]->lock)
-+{
-+	struct timer_base *base_local, *base_global;
-+
-+	base_local = per_cpu_ptr(&timer_bases[BASE_LOCAL], cpu);
-+	base_global = per_cpu_ptr(&timer_bases[BASE_GLOBAL], cpu);
-+
-+	raw_spin_unlock(&base_global->lock);
-+	raw_spin_unlock(&base_local->lock);
-+}
-+
-+/**
-+ * timer_lock_remote_bases - lock timer bases of cpu
-+ * @cpu:	Remote CPU
-+ *
-+ * Locks the remote timer bases.
-+ */
-+void timer_lock_remote_bases(unsigned int cpu)
-+	__acquires(timer_bases[BASE_LOCAL]->lock)
-+	__acquires(timer_bases[BASE_GLOBAL]->lock)
-+{
-+	struct timer_base *base_local, *base_global;
-+
-+	base_local = per_cpu_ptr(&timer_bases[BASE_LOCAL], cpu);
-+	base_global = per_cpu_ptr(&timer_bases[BASE_GLOBAL], cpu);
-+
-+	lockdep_assert_irqs_disabled();
-+
-+	raw_spin_lock(&base_local->lock);
-+	raw_spin_lock_nested(&base_global->lock, SINGLE_DEPTH_NESTING);
-+}
-+# endif /* CONFIG_SMP */
-+
- static inline u64 __get_next_timer_interrupt(unsigned long basej, u64 basem,
- 					     bool *idle)
+ /*
+  * This function runs timers and the timer-tq in bottom half context.
+  */
+ static __latent_entropy void run_timer_softirq(struct softirq_action *h)
  {
+-	struct timer_base *base = this_cpu_ptr(&timer_bases[BASE_LOCAL]);
+-
+-	__run_timers(base);
++	run_timer_base(BASE_LOCAL);
+ 	if (IS_ENABLED(CONFIG_NO_HZ_COMMON)) {
+-		__run_timers(this_cpu_ptr(&timer_bases[BASE_GLOBAL]));
+-		__run_timers(this_cpu_ptr(&timer_bases[BASE_DEF]));
++		run_timer_base(BASE_GLOBAL);
++		run_timer_base(BASE_DEF);
+ 	}
+ }
+ 
 -- 
 2.39.2
 
