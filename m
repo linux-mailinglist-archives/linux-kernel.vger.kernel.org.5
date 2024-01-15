@@ -1,60 +1,61 @@
-Return-Path: <linux-kernel+bounces-25847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96BEA82D6AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:05:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1B0482D6AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:06:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 336FE281AF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:05:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E55B5B211D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:06:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEC0FF51B;
-	Mon, 15 Jan 2024 10:05:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB277101E2;
+	Mon, 15 Jan 2024 10:05:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c5kX0zqd"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ImyIWIEy"
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03098EAE7;
-	Mon, 15 Jan 2024 10:05:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02659FC11;
+	Mon, 15 Jan 2024 10:05:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6d9344f30caso5681133b3a.1;
-        Mon, 15 Jan 2024 02:05:31 -0800 (PST)
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-20400d5b54eso6091316fac.1;
+        Mon, 15 Jan 2024 02:05:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705313131; x=1705917931; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pJ//Ume4cKU0XBJl4XFsVMEeQipDNvrkP5O8JhW2P+A=;
-        b=c5kX0zqdbUv9DQ6e43H7fYZVpjNnWA2TkNVdvDo6xlDnGHzImGsuAHT3NbIUUokOK/
-         YgMZb0fw5sw/dTE8cF9jfZFczXEJRM6UykKFvpfYRlozUH6sldvz8ilMasS32oBdoBYL
-         lR+kSAhalLw9lal6cfOWoMIru/bywi8VMSOlP3FyXT+Fi9SatCMWsEwh+hoMKRDOgYKz
-         PeNM8flmYFGwTGoNiksARf1sPxpT9Du1w+6XZsMygROirug+XKl+gyZu9c896m4GL0ei
-         iqOrov/+67S5XsCwuxJb5Vwby8x0vaoW68QhDqJWnkLbXKCTJUzXggh1dXvJVCy4//44
-         1uyQ==
+        d=gmail.com; s=20230601; t=1705313137; x=1705917937; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2xuERi+6bQR7y5tPqB1j/AvrNG5S4Bu3K4yfT+CBdxo=;
+        b=ImyIWIEyF3Ir3I5KgNM309faoN3QF+XtpSfAqLcfcqBAdduftBj/pHXb+XMexq1fVm
+         lD5dPXvHJQwz4PnI4Fau6ftjEnam/lYgHj50ehw6SzvOh3g9Pnne2aaMfnTn39VSuT6D
+         NcjGlka8daRq4TLS9AJlTkjEhjDiNzZwupG+uE1ciah/Mw0n4j3/dpHt8U/5b9NGX93o
+         1fpKVh+o62SVkAgw4yJipGkblEVpYoL27VrezuF31GhOo0c3AJA9uoiHUepLLtrwWBVi
+         JbqtvdW5xUQmJLhGsetivrrE3HUrc2Aqh4VNVmU429SmhL+ottQ13dVDHz8qQTPR7lMc
+         4tOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705313131; x=1705917931;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pJ//Ume4cKU0XBJl4XFsVMEeQipDNvrkP5O8JhW2P+A=;
-        b=n/zFNxAtbtmPdEKKhJ7Xop2XNS5ehRpQI/Qiv8RSFzbYr9LqSIkbbFG5PjuxtEpoFY
-         YXxh5Vy/qghtnTRF0T0LWCC/Qi+yrB+v7NVX9M/p77pbvokIADWeCL3ymk7G9F8xwpRN
-         sCtTeSYqZpnV3IcypAlcmYfIP2VTBfgMgHVvANbl3T9ed+FVAC1e268+5IMSdPn5zOQD
-         mQ/5wfo3Y+/qduN7EbfTwoFgib5C5kUYHWpAmmEpoc/Z8t4Z6KULvRmmVRCrBhl4Y6Go
-         H6GcWfrKg2yCer5A9Tgy+VAD0txfzcRbE0GmU15KtRu3IrUZkUW7+acPc+D6G7v/fzDX
-         wbAg==
-X-Gm-Message-State: AOJu0YyiuWpQ18tKQomiYFS3uTMe5Yu5gCptsv4rQjkrq3VFgVsAKNow
-	AonvCRwC0hEm8gz22eHmAZs=
-X-Google-Smtp-Source: AGHT+IHUU+y7APDBX696xOHg/QH2IAbBmLmFJsGYqruQCmtTG/xwfOSx8GzQUEQvmWq+c6UoDG0MHA==
-X-Received: by 2002:a05:6a00:1408:b0:6d9:b9ba:fc7b with SMTP id l8-20020a056a00140800b006d9b9bafc7bmr6365741pfu.33.1705313131147;
-        Mon, 15 Jan 2024 02:05:31 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705313137; x=1705917937;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2xuERi+6bQR7y5tPqB1j/AvrNG5S4Bu3K4yfT+CBdxo=;
+        b=ZWMCRHi5jdR6g1qY6FMTGlZEAHUiqqF5lZr2gv1MKw1Foed5zqKIfAq9H+R/i/ECMu
+         I0YIZK9YMn9ttR06DGBsdk8BeOzm2eWuILjvkj1n1z22JNvhTjiToqsOAc0Q19imBC7Q
+         xr5H5yubuiYJc+ME6NPDWOgVLAsseSWNXsFQhlyL8YByN+ujxBSy/+G3M9OwTRZNbDAZ
+         h0jzdrS2V6d4sWkYC/68tDxTkbHxBFcFYdNM9wvLmkmbDm6FGOxdW1j0WE/Z9MVXMtS/
+         HZAJbAijdu8x5bq+EPRMPiOm5DtdRSJI5ZJYvG3Mx6oiWvUzXAXKOjiuYWCbyVuxc3jz
+         Q0CA==
+X-Gm-Message-State: AOJu0YwuFkL2RbTnDg2qj4TgEy1QVJENyPq0Uw+tQI03WDWelsBWgaGZ
+	VTcwr6kFzks0N4l2s4gDbPM=
+X-Google-Smtp-Source: AGHT+IGJRg3xp69kXQGlFO0nRnfXE1MCJJVk/1Kyq0qjQ4MhVNt7O/VwtNkrJs3jJiFrhCicIqWczA==
+X-Received: by 2002:a05:6870:9a24:b0:206:81a7:9a7 with SMTP id fo36-20020a0568709a2400b0020681a709a7mr7646364oab.4.1705313137004;
+        Mon, 15 Jan 2024 02:05:37 -0800 (PST)
 Received: from cosmo-ubuntu-2204.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
-        by smtp.gmail.com with ESMTPSA id d10-20020a65424a000000b005cda7a1d72dsm6870712pgq.74.2024.01.15.02.05.26
+        by smtp.gmail.com with ESMTPSA id d10-20020a65424a000000b005cda7a1d72dsm6870712pgq.74.2024.01.15.02.05.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 02:05:30 -0800 (PST)
+        Mon, 15 Jan 2024 02:05:36 -0800 (PST)
 From: Cosmo Chou <chou.cosmo@gmail.com>
 To: linux@roeck-us.net,
 	robh+dt@kernel.org,
@@ -81,11 +82,14 @@ Cc: devicetree@vger.kernel.org,
 	linux-hwmon@vger.kernel.org,
 	linux-doc@vger.kernel.org,
 	chou.cosmo@gmail.com,
-	cosmo.chou@quantatw.com
-Subject: [PATCH v4 0/3] hwmon: Add driver for Astera Labs PT5161L retimer
-Date: Mon, 15 Jan 2024 18:05:15 +0800
-Message-Id: <20240115100518.2887549-1-chou.cosmo@gmail.com>
+	cosmo.chou@quantatw.com,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v4 1/3] dt-bindings: vendor-prefixes: add asteralabs
+Date: Mon, 15 Jan 2024 18:05:16 +0800
+Message-Id: <20240115100518.2887549-2-chou.cosmo@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240115100518.2887549-1-chou.cosmo@gmail.com>
+References: <20240115100518.2887549-1-chou.cosmo@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,51 +98,28 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This driver implements support for temperature monitoring of Astera Labs
-PT5161L series PCIe retimer chips.
+Add vendor prefix for Astera Labs, Inc.
+https://www.asteralabs.com
 
-LINK: [v1] https://lore.kernel.org/all/20231205074723.3546295-1-chou.cosmo@gmail.com/
+Signed-off-by: Cosmo Chou <chou.cosmo@gmail.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-v4:
-  - Rebased
-
-v3:
-  - Revise pt5161l.rst
-  - Revise the style of comments
-  - Remove unused pec_enable
-  - Add back safe access wide registers
-  - fix build warning
-
-v2:
-  - Add "asteralabs,pt5161l" to trivial-devices.yaml
-  - Change naming PT516XX/pt516xx to PT5161L/pt5161l
-  - Separated debugfs files for health status
-  - Revise the style of comments
-  - Remove unused defines
-  - Remove including unused header files
-  - Remove unnecessary debugging messages
-  - Revise the data parsing for a big-endian system
-  - Use read_block_data instead of accessing wide registers
-  - Remove the debugfs files when the device is unloaded
-  - Add acpi_match_table
-
-Cosmo Chou (3):
-  dt-bindings: vendor-prefixes: add asteralabs
-  dt-bindings: trivial-devices: add Astera Labs PT5161L
-  hwmon: Add driver for Astera Labs PT5161L retimer
-
- .../devicetree/bindings/trivial-devices.yaml  |   2 +
- .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
- Documentation/hwmon/index.rst                 |   1 +
- Documentation/hwmon/pt5161l.rst               |  42 ++
- MAINTAINERS                                   |   7 +
- drivers/hwmon/Kconfig                         |  10 +
- drivers/hwmon/Makefile                        |   1 +
- drivers/hwmon/pt5161l.c                       | 670 ++++++++++++++++++
- 8 files changed, 735 insertions(+)
- create mode 100644 Documentation/hwmon/pt5161l.rst
- create mode 100644 drivers/hwmon/pt5161l.c
-
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 02aaa1f538b2..ec8cfe1b46b0 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -157,6 +157,8 @@ patternProperties:
+     description: ASPEED Technology Inc.
+   "^asrock,.*":
+     description: ASRock Inc.
++  "^asteralabs,.*":
++    description: Astera Labs, Inc.
+   "^asus,.*":
+     description: AsusTek Computer Inc.
+   "^atheros,.*":
 -- 
 2.34.1
 
