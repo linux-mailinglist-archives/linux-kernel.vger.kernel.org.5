@@ -1,36 +1,36 @@
-Return-Path: <linux-kernel+bounces-26563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41C2582E3A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:34:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDEBC82E3A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:34:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3A4F1F216C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:34:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD970284DD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:34:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1BCF1BF35;
-	Mon, 15 Jan 2024 23:26:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B8FE208C0;
+	Mon, 15 Jan 2024 23:26:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QU2FraWZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MetDaALC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A0072033E;
-	Mon, 15 Jan 2024 23:26:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B4C1C433F1;
-	Mon, 15 Jan 2024 23:26:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CE3A208BC;
+	Mon, 15 Jan 2024 23:26:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F56CC433C7;
+	Mon, 15 Jan 2024 23:26:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705361189;
-	bh=e+winwTUPh48HP5HIJ+DxorKmipE0BqhIAfvlk4PNfY=;
+	s=k20201202; t=1705361192;
+	bh=ErGYLm5tSR7DH+ivbIrGjwlkUo9tshP+VMkyXbit+i8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QU2FraWZ8OGxv7Is7adBfCrBNABNldDLnbTg1JwrFYGRjrEGYHi47w/cipo5cpxZb
-	 /yVe+YaJalTnnPGEkKPoDPu3WAn3FsF1mdDM++ppaGm6dGL63bZiF7zKyGdaNClDxX
-	 EBEdu/HJicmLQoyBZF7H4IJ6QEWp9eBWgYU9d0C50La62UG086Zn/qgWzZaW4H94vo
-	 3X1nPPRdRIHWla9Josgn/O8RXbc3iznkuHiNg5WC8p0SMSS2ckRuuj1ebM4dyNOwnJ
-	 Nljn0jkrmirmysMxmHq/xXJhDscCggH+VpizsRYd2tewBYyOfBij7VnpU/i99w26wc
-	 hSBk8dY/z8qZA==
+	b=MetDaALCth0H2gWFdiqu1RzCwVPgTYeuvqVVJcOtES7TqJ/s9G0yg8GeLd6DAbftc
+	 LQRbw26nhrVlX1HClbx75j5S9hQoPfUszyyKR/aNVtvzSBNu1TcRge3oGqfNA6oeRT
+	 jKeD4/X/FD68HCzve4GQbWae47K7ttUsA6+8MLogenhAeLX6MLcuFhGzbTBe+SuNtv
+	 ZY49WnjUKfjA1xKh3lALZQs9Sbm4GPrLTty8rkOmSd9cLNbRYw71IOiCFvDl2kc8pN
+	 4jAQtHrLoR2XP7EO9Gh7nyB1Cf+Cbd4sqGg/vWjj2UWkDFMkS5q3qBYyB6acjSKSvR
+	 GC/mO6IRFaaiA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -38,9 +38,9 @@ Cc: Michael Ellerman <mpe@ellerman.id.au>,
 	Sasha Levin <sashal@kernel.org>,
 	christophe.leroy@csgroup.eu,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 6.1 07/14] powerpc/mm: Fix build failures due to arch_reserved_kernel_pages()
-Date: Mon, 15 Jan 2024 18:25:41 -0500
-Message-ID: <20240115232611.209265-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 08/14] powerpc/64s: Fix CONFIG_NUMA=n build due to create_section_mapping()
+Date: Mon, 15 Jan 2024 18:25:42 -0500
+Message-ID: <20240115232611.209265-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240115232611.209265-1-sashal@kernel.org>
 References: <20240115232611.209265-1-sashal@kernel.org>
@@ -58,61 +58,58 @@ Content-Transfer-Encoding: 8bit
 
 From: Michael Ellerman <mpe@ellerman.id.au>
 
-[ Upstream commit d8c3f243d4db24675b653f0568bb65dae34e6455 ]
+[ Upstream commit ede66cd22441820cbd399936bf84fdc4294bc7fa ]
 
-With NUMA=n and FA_DUMP=y or PRESERVE_FA_DUMP=y the build fails with:
+With CONFIG_NUMA=n the build fails with:
 
-  arch/powerpc/kernel/fadump.c:1739:22: error: no previous prototype for ‘arch_reserved_kernel_pages’ [-Werror=missing-prototypes]
-  1739 | unsigned long __init arch_reserved_kernel_pages(void)
-       |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+  arch/powerpc/mm/book3s64/pgtable.c:275:15: error: no previous prototype for ‘create_section_mapping’ [-Werror=missing-prototypes]
+  275 | int __meminit create_section_mapping(unsigned long start, unsigned long end,
+      |               ^~~~~~~~~~~~~~~~~~~~~~
 
-The prototype for arch_reserved_kernel_pages() is in include/linux/mm.h,
-but it's guarded by __HAVE_ARCH_RESERVED_KERNEL_PAGES. The powerpc
-headers define __HAVE_ARCH_RESERVED_KERNEL_PAGES in asm/mmzone.h, which
-is not included into the generic headers when NUMA=n.
+That happens because the prototype for create_section_mapping() is in
+asm/mmzone.h, but asm/mmzone.h is only included by linux/mmzone.h
+when CONFIG_NUMA=y.
 
-Move the definition of __HAVE_ARCH_RESERVED_KERNEL_PAGES into asm/mmu.h
-which is included regardless of NUMA=n.
-
-Additionally the ifdef around __HAVE_ARCH_RESERVED_KERNEL_PAGES needs to
-also check for CONFIG_PRESERVE_FA_DUMP.
+In fact the prototype is only needed by arch/powerpc/mm code, so move
+the prototype into arch/powerpc/mm/mmu_decl.h, which also fixes the
+build error.
 
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://msgid.link/20231130114433.3053544-1-mpe@ellerman.id.au
+Link: https://msgid.link/20231129131919.2528517-5-mpe@ellerman.id.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/include/asm/mmu.h    | 4 ++++
- arch/powerpc/include/asm/mmzone.h | 3 ---
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ arch/powerpc/include/asm/mmzone.h | 5 -----
+ arch/powerpc/mm/mmu_decl.h        | 5 +++++
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/mmu.h b/arch/powerpc/include/asm/mmu.h
-index 94b981152667..07fabb054aea 100644
---- a/arch/powerpc/include/asm/mmu.h
-+++ b/arch/powerpc/include/asm/mmu.h
-@@ -417,5 +417,9 @@ extern void *abatron_pteptrs[2];
- #include <asm/nohash/mmu.h>
- #endif
- 
-+#if defined(CONFIG_FA_DUMP) || defined(CONFIG_PRESERVE_FA_DUMP)
-+#define __HAVE_ARCH_RESERVED_KERNEL_PAGES
-+#endif
-+
- #endif /* __KERNEL__ */
- #endif /* _ASM_POWERPC_MMU_H_ */
 diff --git a/arch/powerpc/include/asm/mmzone.h b/arch/powerpc/include/asm/mmzone.h
-index 4c6c6dbd182f..3764d3585d30 100644
+index 3764d3585d30..da827d2d0866 100644
 --- a/arch/powerpc/include/asm/mmzone.h
 +++ b/arch/powerpc/include/asm/mmzone.h
-@@ -42,9 +42,6 @@ u64 memory_hotplug_max(void);
- #else
+@@ -43,10 +43,5 @@ u64 memory_hotplug_max(void);
  #define memory_hotplug_max() memblock_end_of_DRAM()
  #endif /* CONFIG_NUMA */
--#ifdef CONFIG_FA_DUMP
--#define __HAVE_ARCH_RESERVED_KERNEL_PAGES
--#endif
  
- #ifdef CONFIG_MEMORY_HOTPLUG
- extern int create_section_mapping(unsigned long start, unsigned long end,
+-#ifdef CONFIG_MEMORY_HOTPLUG
+-extern int create_section_mapping(unsigned long start, unsigned long end,
+-				  int nid, pgprot_t prot);
+-#endif
+-
+ #endif /* __KERNEL__ */
+ #endif /* _ASM_MMZONE_H_ */
+diff --git a/arch/powerpc/mm/mmu_decl.h b/arch/powerpc/mm/mmu_decl.h
+index bd9784f77f2e..71250605b784 100644
+--- a/arch/powerpc/mm/mmu_decl.h
++++ b/arch/powerpc/mm/mmu_decl.h
+@@ -179,3 +179,8 @@ static inline bool debug_pagealloc_enabled_or_kfence(void)
+ {
+ 	return IS_ENABLED(CONFIG_KFENCE) || debug_pagealloc_enabled();
+ }
++
++#ifdef CONFIG_MEMORY_HOTPLUG
++int create_section_mapping(unsigned long start, unsigned long end,
++			   int nid, pgprot_t prot);
++#endif
 -- 
 2.43.0
 
