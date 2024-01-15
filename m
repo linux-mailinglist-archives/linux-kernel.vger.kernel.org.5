@@ -1,55 +1,52 @@
-Return-Path: <linux-kernel+bounces-26570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2915682E3B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:36:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B7B082E3B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:36:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C04DCB226BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:36:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EC0E1C22179
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:36:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BBA02111D;
-	Mon, 15 Jan 2024 23:26:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 108F11C281;
+	Mon, 15 Jan 2024 23:27:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VbMahGay"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="opdx5ahX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E68371BF5C;
-	Mon, 15 Jan 2024 23:26:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B9D0C43394;
-	Mon, 15 Jan 2024 23:26:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CDC71B7E3;
+	Mon, 15 Jan 2024 23:27:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACB2EC433C7;
+	Mon, 15 Jan 2024 23:27:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705361216;
-	bh=IAAKBu3o4sQwDn5Oi2V3pX2k/oB7TFgt7tPQPHEaMe8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VbMahGayO6D5O0ZcZT3FcEbzl8KLwt8twRmM1SRSyY6K6dK/iJvyhsmjN4DrDKZkE
-	 QjzhW2aEgfvdpsLZOhPx6j1avGYHWx1C0BB8Hki/mhn7pFaY9gS+inhC15vnf59T/9
-	 Xdq8e4x7mSo/7pzbbDZbL0YdHa8FC5TtoPe5JL4IKRT4EAGgH7QZconLhz8fac5qEm
-	 frUUPz2fffhdfx4Okk/suLoTd4upUIm1r10TfH1BRA2coSR8/24IacXo40S+VBeBk1
-	 WIUiJazJ+CXbsdNJ4PvAHItmb7QDDC1XuMltEvkoDX0nz2GcUDnq38Tf5q1/FzCJ77
-	 0vKyWVAUhxlgg==
+	s=k20201202; t=1705361241;
+	bh=4k9GUBLYvchpOD/KUw5lkivxzcmbwmvaOSYuP68VHJU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=opdx5ahXb2bx37XjH6fF3x9WzUT0tKbz9MG9b81Bu+WHWkZM5E3Gc6UT4lsVjW+A6
+	 +AK6IgGtO/+xsMf1jb/yW28KUr67rFINhNxE0WdBO4b7jI2heLB2/+AI7zEQSxaeOI
+	 N10qTw/CvBMDXFjyHrZ6YfEtjQnnEDFZmQ1lmRz8AS9jd5+0DVMM9S529p9pF+t//u
+	 VMMqHcmS2Mas3FYnWi7Tyon28Pk3eO9W6JikVg6TAyKoN2VDU/8fcAp9URUFZfp1UH
+	 kr2byTPk/MYa8+O6dH2nN76H3SDoujzntF/XSamRh2Qr3m4fXdHGSAidmFUJvneOot
+	 D/TJT3A5zZtJQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Zhiquan Li <zhiquan1.li@intel.com>,
-	Youquan Song <youquan.song@intel.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Naoya Horiguchi <naoya.horiguchi@nec.com>,
+Cc: Dmitry Antipov <dmantipov@yandex.ru>,
+	Christian Brauner <brauner@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	linux-edac@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 14/14] x86/mce: Mark fatal MCE's page as poison to avoid panic in the kdump kernel
-Date: Mon, 15 Jan 2024 18:25:48 -0500
-Message-ID: <20240115232611.209265-14-sashal@kernel.org>
+	airlied@redhat.com,
+	code@siddh.me,
+	mcgrof@kernel.org,
+	pstanner@redhat.com,
+	ddiss@suse.de,
+	nick.alcock@oracle.com
+Subject: [PATCH AUTOSEL 5.15 01/12] watch_queue: fix kcalloc() arguments order
+Date: Mon, 15 Jan 2024 18:26:46 -0500
+Message-ID: <20240115232718.209642-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240115232611.209265-1-sashal@kernel.org>
-References: <20240115232611.209265-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,83 +55,47 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.73
+X-stable-base: Linux 5.15.147
 Content-Transfer-Encoding: 8bit
 
-From: Zhiquan Li <zhiquan1.li@intel.com>
+From: Dmitry Antipov <dmantipov@yandex.ru>
 
-[ Upstream commit 9f3b130048bfa2e44a8cfb1b616f826d9d5d8188 ]
+[ Upstream commit 1bfc466b13cf6652ba227c282c27a30ffede69a5 ]
 
-Memory errors don't happen very often, especially fatal ones. However,
-in large-scale scenarios such as data centers, that probability
-increases with the amount of machines present.
+When compiling with gcc version 14.0.0 20231220 (experimental)
+and W=1, I've noticed the following warning:
 
-When a fatal machine check happens, mce_panic() is called based on the
-severity grading of that error. The page containing the error is not
-marked as poison.
+kernel/watch_queue.c: In function 'watch_queue_set_size':
+kernel/watch_queue.c:273:32: warning: 'kcalloc' sizes specified with 'sizeof'
+in the earlier argument and not in the later argument [-Wcalloc-transposed-args]
+  273 |         pages = kcalloc(sizeof(struct page *), nr_pages, GFP_KERNEL);
+      |                                ^~~~~~
 
-However, when kexec is enabled, tools like makedumpfile understand when
-pages are marked as poison and do not touch them so as not to cause
-a fatal machine check exception again while dumping the previous
-kernel's memory.
+Since 'n' and 'size' arguments of 'kcalloc()' are multiplied to
+calculate the final size, their actual order doesn't affect the
+result and so this is not a bug. But it's still worth to fix it.
 
-Therefore, mark the page containing the error as poisoned so that the
-kexec'ed kernel can avoid accessing the page.
-
-  [ bp: Rewrite commit message and comment. ]
-
-Co-developed-by: Youquan Song <youquan.song@intel.com>
-Signed-off-by: Youquan Song <youquan.song@intel.com>
-Signed-off-by: Zhiquan Li <zhiquan1.li@intel.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Link: https://lore.kernel.org/r/20231014051754.3759099-1-zhiquan1.li@intel.com
+Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+Link: https://lore.kernel.org/r/20231221090139.12579-1-dmantipov@yandex.ru
+Signed-off-by: Christian Brauner <brauner@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/cpu/mce/core.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ kernel/watch_queue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index f1a748da5fab..cad6ea1911e9 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -44,6 +44,7 @@
- #include <linux/sync_core.h>
- #include <linux/task_work.h>
- #include <linux/hardirq.h>
-+#include <linux/kexec.h>
+diff --git a/kernel/watch_queue.c b/kernel/watch_queue.c
+index ae31bf8d2feb..bf86e1d71cd3 100644
+--- a/kernel/watch_queue.c
++++ b/kernel/watch_queue.c
+@@ -275,7 +275,7 @@ long watch_queue_set_size(struct pipe_inode_info *pipe, unsigned int nr_notes)
+ 		goto error;
  
- #include <asm/intel-family.h>
- #include <asm/processor.h>
-@@ -239,6 +240,7 @@ static noinstr void mce_panic(const char *msg, struct mce *final, char *exp)
- 	struct llist_node *pending;
- 	struct mce_evt_llist *l;
- 	int apei_err = 0;
-+	struct page *p;
+ 	ret = -ENOMEM;
+-	pages = kcalloc(sizeof(struct page *), nr_pages, GFP_KERNEL);
++	pages = kcalloc(nr_pages, sizeof(struct page *), GFP_KERNEL);
+ 	if (!pages)
+ 		goto error;
  
- 	/*
- 	 * Allow instrumentation around external facilities usage. Not that it
-@@ -292,6 +294,20 @@ static noinstr void mce_panic(const char *msg, struct mce *final, char *exp)
- 	if (!fake_panic) {
- 		if (panic_timeout == 0)
- 			panic_timeout = mca_cfg.panic_timeout;
-+
-+		/*
-+		 * Kdump skips the poisoned page in order to avoid
-+		 * touching the error bits again. Poison the page even
-+		 * if the error is fatal and the machine is about to
-+		 * panic.
-+		 */
-+		if (kexec_crash_loaded()) {
-+			if (final && (final->status & MCI_STATUS_ADDRV)) {
-+				p = pfn_to_online_page(final->addr >> PAGE_SHIFT);
-+				if (p)
-+					SetPageHWPoison(p);
-+			}
-+		}
- 		panic(msg);
- 	} else
- 		pr_emerg(HW_ERR "Fake kernel panic: %s\n", msg);
 -- 
 2.43.0
 
