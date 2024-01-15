@@ -1,107 +1,125 @@
-Return-Path: <linux-kernel+bounces-26119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6E9682DB91
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:44:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F316D82DB92
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:44:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6299F283056
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:44:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CAFC28330C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:44:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62A0717732;
-	Mon, 15 Jan 2024 14:43:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PhAQmqlS"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9277D17BAA;
+	Mon, 15 Jan 2024 14:44:06 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4406B17596;
-	Mon, 15 Jan 2024 14:43:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a28bd9ca247so1049458766b.1;
-        Mon, 15 Jan 2024 06:43:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705329790; x=1705934590; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B3unoLz8qq5gzyLWgjX+DKaq8Yqof9OjzZksC+6350U=;
-        b=PhAQmqlSEaNhq82wZ4DoACN+ByC9PpZg2CJoB8CqF29+pHUZT6VAGKcIjYeKNi1exY
-         xR7VgsdzmhuU9YMeIU3yC7Q7o3Mox/K/e5cMmViLBTRd09Xxmvc1OxVOEqOLZvtsJEVj
-         K6mfJBKzevfbeWuXjbg/7WaU1MBS8o3j1sFRs9Zs+yDEMaSNYyLo/bnX1fwDF1l1K6qR
-         MN6b31gpeIl1tB0AiEFgwb3hRJFbXGgMUIkFt1XG6fa2LMb0U8JIqSf3HZ1d6FRjJ0vN
-         xMqoMAEEvfjC0zGIevXFTh6qyLDu3qd6VynHnMW3bRKoCDaPxrt5HZV6Dne9ss9Uri1B
-         jFxg==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E1817BA0
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 14:44:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7bf2a953988so205497239f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 06:44:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705329790; x=1705934590;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=B3unoLz8qq5gzyLWgjX+DKaq8Yqof9OjzZksC+6350U=;
-        b=azlaXdXOQvKuVTYG4zXSHti61sR8oZ2LPGYx4HDEOXpZwlAJwbwvkVw1vm80VS2M7R
-         yZWXu7R7PO16SQHwVcGZGTX+mPh4sEqrN6RirRUgFfvc4Qvg8oe19jib/NtyOrUB1VqP
-         +YwK8Wsu/tU/zwUoMP+0ENjw11ZgOLnNdU5nvf34SZXfuLOT4a1bquh3nr35My1dfgvy
-         GAuIogKwxJqd872oFn2f8AAouIr01HMRsIIygg9IStaRjB7skAkhAfmly0OmWhYldRW2
-         MdEzwgouMYhChVvAx0ZJqNM59JLgd2tZEvLAdg10wrmN3mONzPyWJs00hPplXouW5cs7
-         XJ2A==
-X-Gm-Message-State: AOJu0YxWzZCL04oyZNwAlYiOg6XqfM95Lru6cxDbTf9aL/EkiC4flbRU
-	Pfvr9DtQs+RSiQcjdWx3wIw=
-X-Google-Smtp-Source: AGHT+IESbfZkbhBP4aXLa6lup3Yu+AK6r90FuUDsmJEoatAKesIlHCTEasijVWlVlTz7Z0z8YaK7gg==
-X-Received: by 2002:a17:906:fe05:b0:a28:d103:dffb with SMTP id wy5-20020a170906fe0500b00a28d103dffbmr3228911ejb.78.1705329790244;
-        Mon, 15 Jan 2024 06:43:10 -0800 (PST)
-Received: from felia.fritz.box ([2a02:810d:7e40:14b0:d1f6:7ceb:4655:5666])
-        by smtp.gmail.com with ESMTPSA id h6-20020a170906584600b00a2aef1e0731sm5339019ejs.77.2024.01.15.06.43.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 06:43:09 -0800 (PST)
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To: Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	linux-arm-kernel@lists.infradead.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] arm64: drop the no-effect select ARM_SMC_MBOX in config ARCH_STM32
-Date: Mon, 15 Jan 2024 15:43:07 +0100
-Message-Id: <20240115144307.27409-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        d=1e100.net; s=20230601; t=1705329844; x=1705934644;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MaitCPFvyIY9al8Q6TsPj6Cx5sAjS5Oz7uBT4t9XoyI=;
+        b=gR7ce77eQve5yE6EC1e/g8uYjovawzGpQQFTsmgRa3MfLkTNYjSxZUHJQnuOiVeWSO
+         AFqKz1s8OtyNiKeeq2ykzQ3qeH7s4M2YVd1EpodHAULPFuMz5IMwdM9bXU2ggaDlKn3J
+         +HDezBgcIC25sLW/NXvs5iS2ZbFCz19lJ8HXbTqUUwrS/sVcAxW5MeCTWuxFKkcFvEgU
+         fqrYV9kMtyAZcqusKlwZwla2iB1+p2SND07d2u5/Kitx+QEPOoQ7EfQ+v14HU8jefAxy
+         BWliQgNRZX5hXY1J1EEzwOD3MfJ7/lZnD9zIJIfrhnMaxPt9y/Sunf0mncgpT2e7AVTC
+         ZhcA==
+X-Gm-Message-State: AOJu0Ywm849u9I/u1u7GM1uIp4PZS/WlgwYB2pPqVGAh9Rc+RqjmZoH6
+	wIv7mGq99C+wILIX3uZt1uJBuLjh6E0wwKh3EqPlDrkShXt9
+X-Google-Smtp-Source: AGHT+IEa1pjWZvNmya+nzQ6zWqvdwSU1zmtbNonl5pPowCN36kaZyCEdmd8Xy11uy+OIj+GP9SNxpUcKBZuOMu/1av5ppHKR34DQ
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-Received: by 2002:a05:6602:19d8:b0:7bf:1ddd:f3a6 with SMTP id
+ ba24-20020a05660219d800b007bf1dddf3a6mr56674iob.0.1705329843954; Mon, 15 Jan
+ 2024 06:44:03 -0800 (PST)
+Date: Mon, 15 Jan 2024 06:44:03 -0800
+In-Reply-To: <tencent_E8B0751D76BD66F43CDD363296D836844A09@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000092edb0060efd0b74@google.com>
+Subject: Re: [syzbot] [net?] KMSAN: uninit-value in hsr_get_node (2)
+From: syzbot <syzbot+2ef3a8ce8e91b5a50098@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Commit 9e4e24414cc6 ("arm64: introduce STM32 family on Armv8 architecture")
-adds the config ARCH_STM32, which selects the non-existing config
-ARM_SMC_MBOX. The config ARM_SMC_MBOX was once proposed on the mailing list
-(see Link), but it was never merged.
+Hello,
 
-It seems though that this STM32 architecture works fine without this
-driver---otherwise, the users and contributor would have already noticed
-this by now.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KMSAN: uninit-value in hsr_get_node
 
-Drop this no-effect select ARM_SMC_MBOX in config ARCH_STM32.
+=====================================================
+BUG: KMSAN: uninit-value in hsr_get_node+0xca2/0xd10 net/hsr/hsr_framereg.c:248
+ hsr_get_node+0xca2/0xd10 net/hsr/hsr_framereg.c:248
+ fill_frame_info net/hsr/hsr_forward.c:577 [inline]
+ hsr_forward_skb+0xe12/0x30e0 net/hsr/hsr_forward.c:615
+ hsr_dev_xmit+0x1a1/0x270 net/hsr/hsr_device.c:223
+ __netdev_start_xmit include/linux/netdevice.h:4940 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4954 [inline]
+ xmit_one net/core/dev.c:3548 [inline]
+ dev_hard_start_xmit+0x247/0xa10 net/core/dev.c:3564
+ __dev_queue_xmit+0x33b8/0x5130 net/core/dev.c:4349
+ dev_queue_xmit include/linux/netdevice.h:3134 [inline]
+ packet_xmit+0x9c/0x6b0 net/packet/af_packet.c:276
+ packet_snd net/packet/af_packet.c:3087 [inline]
+ packet_sendmsg+0x8b1d/0x9f30 net/packet/af_packet.c:3119
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg net/socket.c:745 [inline]
+ __sys_sendto+0x735/0xa10 net/socket.c:2191
+ __do_sys_sendto net/socket.c:2203 [inline]
+ __se_sys_sendto net/socket.c:2199 [inline]
+ __x64_sys_sendto+0x125/0x1c0 net/socket.c:2199
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-Link: https://lore.kernel.org/lkml/1575281525-1549-1-git-send-email-peng.fan@nxp.com/
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- arch/arm64/Kconfig.platforms | 1 -
- 1 file changed, 1 deletion(-)
+Uninit was created at:
+ slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
+ slab_alloc_node mm/slub.c:3478 [inline]
+ kmem_cache_alloc_node+0x5e9/0xb10 mm/slub.c:3523
+ kmalloc_reserve+0x13d/0x4a0 net/core/skbuff.c:560
+ __alloc_skb+0x318/0x740 net/core/skbuff.c:651
+ alloc_skb include/linux/skbuff.h:1286 [inline]
+ alloc_skb_with_frags+0xc8/0xbd0 net/core/skbuff.c:6334
+ sock_alloc_send_pskb+0xa80/0xbf0 net/core/sock.c:2787
+ packet_alloc_skb net/packet/af_packet.c:2936 [inline]
+ packet_snd net/packet/af_packet.c:3030 [inline]
+ packet_sendmsg+0x70e8/0x9f30 net/packet/af_packet.c:3119
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg net/socket.c:745 [inline]
+ __sys_sendto+0x735/0xa10 net/socket.c:2191
+ __do_sys_sendto net/socket.c:2203 [inline]
+ __se_sys_sendto net/socket.c:2199 [inline]
+ __x64_sys_sendto+0x125/0x1c0 net/socket.c:2199
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-index 24335565bad5..50ace066d57b 100644
---- a/arch/arm64/Kconfig.platforms
-+++ b/arch/arm64/Kconfig.platforms
-@@ -302,7 +302,6 @@ config ARCH_STM32
- 	select GPIOLIB
- 	select PINCTRL
- 	select PINCTRL_STM32MP257
--	select ARM_SMC_MBOX
- 	select ARM_SCMI_PROTOCOL
- 	select COMMON_CLK_SCMI
- 	help
--- 
-2.17.1
+CPU: 0 PID: 5476 Comm: syz-executor.0 Not tainted 6.7.0-syzkaller-00562-g9f8413c4a66f-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+=====================================================
+
+
+Tested on:
+
+commit:         9f8413c4 Merge tag 'cgroup-for-6.8' of git://git.kerne..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=14df3ca5e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=656820e61b758b15
+dashboard link: https://syzkaller.appspot.com/bug?extid=2ef3a8ce8e91b5a50098
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1233e735e80000
 
 
