@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-25645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25646-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABDCC82D404
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 06:58:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3537A82D406
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 06:58:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DE6C281E5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 05:58:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 950D6B20EB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 05:58:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3D8C2568;
-	Mon, 15 Jan 2024 05:57:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F5304409;
+	Mon, 15 Jan 2024 05:57:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="Wmk3StbS"
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="Arp2SdIW"
 Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2041.outbound.protection.outlook.com [40.107.241.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 998F923BE;
-	Mon, 15 Jan 2024 05:57:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54E4D23CC;
+	Mon, 15 Jan 2024 05:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dO0YmcVnylHSIyuFpdLL+Ti6/zhY9xdtf7AtzBDacMAmYqXWaX3HBP0m/4gKSTrG/u0JKPaU5s/pxFe9X53wcIKIj3nD5f2dPq3p42LgPWgkIvxf/pa0AeFJHlwEg8/edVwEFWNpCX2Bry72FXeVLR3rVPzpoF59jMOK7pDKF4bq+o0+0abAwR7w40g6HKJlP4dONINYt9+7IsiJqV4Rxdbg2Tb6lYwSIn3fQjJjjY+tWsQjyR6LELBwQI3x4o+WvUqCIS523VGPeqVDc8QCyEzK3UHrOA+2xb8jQ1NbHDJHlPe9l6pVkWMWfDhWd+x4zGw8PE6mSuA/mYajeopGug==
+ b=l9cIO9ygUmHKDUbZCypR+Y5ZZJ1mDdzjIY3VzORmW4Nu4AVJNHA8+zFJvJtU+V5osbXn6GTkd6daKVMnZZuC9Fh5gLtD97YsoQ4ws7b5m9wcFuKWlrUfK6i+jRX006Aqy0OUYiyrIbh4s/h6C1AXPw3vCnKRHts84J8VT+k5APCCgnWT/Y7el2jzPs4MkcLlO67fpeEIzzLhlS6XgCZRYpR2PsVKXbLRtKxmhDa4e5DlBRHfw4mNgo94J/Jik7C+mwbSsUK/XrgGIkho0zyMAZaVBdkeUqxzeT+igvBSpAWbDR47OnXNE5boYsrLrcKPwZqFrQhm0+0s0koGhUvAFw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jhna6nQS1Fwdad1EOQK3HDN07T4suKZDgJQXMRxBBBs=;
- b=khDXV5RLa+FBhx2d/Mo8us+Y7KY8T8oBn5nH3FaxRTdiUpBB1QYffSZiTK/73BpANLnEWEEnzX+BIiYHlYs3hcWup3UkdaicehdVl3rJ6+HS85+8CwnRVyEE016DjaMVZkH8DL3s6MnncC23/GBkap7WJnuLktGpG/em8uw1XUXlxFvIGIErOecnvw8OYg1BsNAObg/dz3gTK+JR8muSJAlU/JbX/52cvgWta0Jz/GtKMKDjJRoyv7Mtm2QXl25UE3dVTwVoUEvLT4Q8e0e2Yi5RSYbgjzrpLKvnjgix5hWbkMubVuZl0ImWN1WDhfwKnF6gUHdjX1ADvIjtR1fc4w==
+ bh=7prCgq7aW3drmzWtI44fBPWT40AfPUsY7EKGytfDK8s=;
+ b=fuhq64Hwj5HwRtSDFPPgAxEiKZh9nHsrXJMIO+tfbQoW+8eqfR9F+Wlk0B8sTUtbsHlhHBk38xe4NWGo2cFXdTKIgTrQeAMdu4vBLCD/TCDT4KwZII+ar3OMcsF1It8l6vUmENT4QTKbjJvqCcqKweH9OCAaMtm2xQqOL3G1hQZNRUIA7X5nKrNd98rC+tbS+0MbxLjg45nfg2YksEmaMmQ6lpmy2wSwkGE7kYU5QP+85tSbetzc/aTRBpRyB2VyLxuPxxSE2bwy1PFilZnQwGI/Zh8ISTRDmyCJTUWOjxIREPBN62jXKIOwGCxg8vDXaER85L8y685Ck97XhsAsXQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jhna6nQS1Fwdad1EOQK3HDN07T4suKZDgJQXMRxBBBs=;
- b=Wmk3StbSnSzTgP6Lok6HcKVm0obI7sqRrGf6WYpGxJm9zq2dVtiEJEOJVEdYCVOsc9MDLQPaLNNZ4I/OKU1fb2nNUYhQdw6wWVelHkqS/KakisfttSnGtSL64cIAJNDesNlUqunCGjCVBonT6zmVi1wh0UX+JlelIoeLQwWbNz4=
+ bh=7prCgq7aW3drmzWtI44fBPWT40AfPUsY7EKGytfDK8s=;
+ b=Arp2SdIWJeZOmFyvJ05PhO7zMhoiYat5nOekeUs2TK5TBfwP5PrQgRQgL33FFxoJBeno63eg+mXLiFrD+VzMMiqJO/4w+awfRp8u2+ZyK2WKcqkIbs5r/LbM0MRACdYce/syCKFtqZcWnv2cOWpdl7Fy+DYYkG5jJUwXFWtcgJA=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=oss.nxp.com;
 Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
  by PA4PR04MB9269.eurprd04.prod.outlook.com (2603:10a6:102:2a4::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.23; Mon, 15 Jan
- 2024 05:57:50 +0000
+ 2024 05:57:53 +0000
 Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
  ([fe80::c499:8cef:9bb1:ced6]) by DU0PR04MB9417.eurprd04.prod.outlook.com
  ([fe80::c499:8cef:9bb1:ced6%3]) with mapi id 15.20.7181.022; Mon, 15 Jan 2024
- 05:57:50 +0000
+ 05:57:53 +0000
 From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
 To: sudeep.holla@arm.com,
 	cristian.marussi@arm.com,
@@ -56,10 +56,12 @@ Cc: linux-arm-kernel@lists.infradead.org,
 	linux-clk@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH V3 1/2] firmware: arm_scmi: Implement Clock get permissions
-Date: Mon, 15 Jan 2024 14:02:02 +0800
-Message-Id: <20240115060203.813168-1-peng.fan@oss.nxp.com>
+Subject: [PATCH V3 2/2] clk: scmi: support state_ctrl_forbidden
+Date: Mon, 15 Jan 2024 14:02:03 +0800
+Message-Id: <20240115060203.813168-2-peng.fan@oss.nxp.com>
 X-Mailer: git-send-email 2.37.1
+In-Reply-To: <20240115060203.813168-1-peng.fan@oss.nxp.com>
+References: <20240115060203.813168-1-peng.fan@oss.nxp.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: SI1PR02CA0035.apcprd02.prod.outlook.com
@@ -74,221 +76,118 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|PA4PR04MB9269:EE_
-X-MS-Office365-Filtering-Correlation-Id: eeb91b8f-91ed-4df6-ab72-08dc158ee7c5
+X-MS-Office365-Filtering-Correlation-Id: 077c68ee-c01a-494f-f7ec-08dc158ee9d6
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	U6mH3rGOAlzp00S14dgRpCJNhO+71EIRz8MZSphwoleg83FKO4Z1fHl2717US/XU/t7HuguU8VMKCR0gg+EYvc0Bh6KpAggtFdYEx8q/FMSi6PmrIqzKQh78Utf+Ifejk+sO5M2mW5used8KuAm5Ye5ZR9lBwX+0pOuVYSjvdPgyZsHMj8d3mlYm3UEcyOFc6nvvPd9SzLWXpTh1LCiKSxueyV3rz5m8sfeFiOfAUiEghIpGGa2tBmYaofKdgGSFsJLwBUGKMAD0gCzHl2fpE+fSIteJr7aqPqaOvyXLLyZ5dYEV226MBIE+1Qu3fns7pj0oKVVjMtMmFArcLSPWbnXskJO0MDb3uU1+A0ZahDzPz7HyBxhZzzbXMGY/BGArsKv87JDzAPvz8o1KsAVSinphzlUoyOZoU/Bg/DFEyqy9nwsafbqlnkrOmEaspltcoArrnzCeoTmbLqhUUdQgcekJ6mneRSXs+eI+ejqCKUy2QlgMjPImDP2jGm0iQ79Ji9Der0vgJtniRNZBXdfSnfPEZQ7V9gCVm9k3sBXy2iUwhjXcAHbk34FYeWH6/atOsFN+KqZLxgORwbHqOw5jF4ayaNPcAR9A+QQUrOo0UnxXJE1XIQfmPR98GbS5vaTeBcpriDt4mcTOQ19QQQSibw==
+	Sm6+pqItSI1ACOVeMRqrH8TzUxlhTAWNsuaQ7meBI9NEv6VQMkwE4678kxWDHPN5yVfJxZizUD2De5HL4/SnNH7km3+mW5qGHhSeWnbOFGX6bumBn+MS/uFsnC/8/N/awTDSLHpULDe+nVs534eRkqWUUeCUMKJb8FhzA9W+sLf1ONkjXPy7fbVzVQAmW2FylNDDubT/NDiBe5dtW0Px45y7qfnyaRGjGyhgf9ekTevguUp4nocAa95EO06F4yi/IRxvT3YeujZKM6re3Aa8YKy5u+Xtv3le/gvUUiAGUNHfwKB0KMGnGNxIzsp7hFZ8Tg43CVR30i7ufHFFpQWoTgzrw3/uT0lLGUxJB0BfKPIX30z2OwpxGJZoFO+ui2CdcURigI4Em9cfAwcbLck1oepBMldGattQ6DphvHulYlU0oTdu2ulzqECIZaBL6WHMPxzHtEbhgJ9s//M2lp25ZRhLDMtvb3K+yesTCa43QZ2zsoblzHGOuBf2kWcdPWFBvfAWyorQHcE04JBkavKQunHOI2MBi/qh/4gY9JOmvbphQ6PvZ+y/7bw0P73MCZ29DUWhrvwc3kMjEO/n5LhKs4VG1VNlfOYWL9sM1egYDsLY1fBo9YTF5GUDwfiNhbK0Ovi86wvn8JtsW4MeJPon1g==
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(346002)(136003)(39860400002)(366004)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(38350700005)(2616005)(1076003)(26005)(86362001)(83380400001)(38100700002)(52116002)(6512007)(6666004)(66946007)(66556008)(66476007)(316002)(5660300002)(8676002)(4326008)(8936002)(2906002)(6506007)(966005)(6486002)(41300700001)(478600001);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(346002)(136003)(39860400002)(366004)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(38350700005)(2616005)(1076003)(26005)(86362001)(83380400001)(38100700002)(52116002)(6512007)(6666004)(66946007)(66556008)(66476007)(316002)(5660300002)(8676002)(4326008)(8936002)(2906002)(6506007)(6486002)(41300700001)(478600001)(21443003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?mlPcemFOnJJb3duf6CgDf4dNLouPVDdUdxrH7eXaCYNMKB2RJvu8bE7Ge7L/?=
- =?us-ascii?Q?cRFZnW3na9a5IrOEzn3xY13Shzd1U3cJIKyo8JnMG9PJy1q1E4x7j/awWYrl?=
- =?us-ascii?Q?gg7DXQPMOn3Pdy4agkYxWhXNG48YbcjOM9yDPbjC7145ztb7lRP9VDeM8ux5?=
- =?us-ascii?Q?f/SD95qU2wa3JzNBc7RcnaNPag6Yla+HNTuCucrwnNgtbHShFg1G3jWK+Eip?=
- =?us-ascii?Q?2/Xldal0xgGYnNwdTJTqm9c6MVa6FgHFjJIGa8E048ABQf7+hG1i900HkSn5?=
- =?us-ascii?Q?zBD1XH47tZnkbgS1WpfNdUz/EMvaqd7Muy2MAQ737hebpGVBgC6juDfaP+Ed?=
- =?us-ascii?Q?NdkTFHNqa1HvKsyZiHY8HxaZqnjH5iQaFZ4l6hSg4ZcUv+InxALjE5rwKxBP?=
- =?us-ascii?Q?25l5RgnXWQYhX2+1/D3fTVVvn53RD4tSjvLeI95lO7muimjN0r5yfV1anqJk?=
- =?us-ascii?Q?Q5PhVu7DLr/pQo37/UCGcy2EH4Pyzz0/XE2iHSYwNPsU0lPvw6rVKVuZCdIG?=
- =?us-ascii?Q?UO3maJiVKda81YL7KW3ywWFY/THVNMF1Ynxzv964ZeUEtSjrqakVtab6NXqN?=
- =?us-ascii?Q?Xll2QGVpBR8pjCOVGoFIiYnOWnF1qfzJzVT+KS3ETmCWRO4UGl83pwsQ0GYE?=
- =?us-ascii?Q?FkW+jrpEodWQBMXA6QT1W9+7N/yGNh07RIHfHNbA5Pu9lkdWdvjHLyjdg56v?=
- =?us-ascii?Q?WZzQV5qUROPtawckWrSj3/EU8jLHEUUjC3G8nPXrd38AroDxQCIH/NyT/xry?=
- =?us-ascii?Q?EKMbBW8UntFo4+PAaKZLu6W18XHk0eMitZHMSeRwUIU3BBOeCu8rKfa2/Q82?=
- =?us-ascii?Q?vVAv7w+c7z3DqfvNjcpHuO9Cw4b7pOsfAHHqVFvnf0u0MzO+3Z+yovwMHJMx?=
- =?us-ascii?Q?5s60u7PoPab1tqMFwIYVZPLEmFYlKbq8z3Zjsfv0PvbbN3lbqfUzXBxguToE?=
- =?us-ascii?Q?hcGWIRsHiFLJdZZowLTqn8H3jVj52iMPel5jq9Z6SXMZSMn7R4CdyFqYHfs8?=
- =?us-ascii?Q?mjFOweL1uMMKwozUZxZRnIFTEQKfeW2FM0F86FTONNnWFZXw00nxyiX7mG7C?=
- =?us-ascii?Q?6XndohvevliHgWEadOqAGNRyYK6pYGIkzmxHgISjBgkJIWxDEsSc0IwG/abZ?=
- =?us-ascii?Q?sdHaQuSAnG9+njGow1rKqA/SAy6uIr8RACDT7+QB77L3y8Do2iYGV21djInL?=
- =?us-ascii?Q?dqCHE+eTonRv78Ftkmj8CTmjaSBBpe2yQIrKGop2T+K+m5mcS2pHmIThesbI?=
- =?us-ascii?Q?Mjtx/00IoH8wbT7TXYrlP3LICLsUCoqF14p5QE/XMFBEaj54L/PiRLiaVZwf?=
- =?us-ascii?Q?imfD4ZNCW3P17n9vE+7RGHursXH+dKmdwGwh0rn4uUrfQYhHbwrFyttrPLSB?=
- =?us-ascii?Q?iE/gjt0qqv84tf3rfMd9D5hXb/P7vNU+QzLTNxXEE5vsOaIH5p1x5+6QBCsM?=
- =?us-ascii?Q?x5an4H7wYsfvFWWhGNZIEnIEeujV/mrBTP0x8QuAM0lGSyEZRg4hHMahLqWi?=
- =?us-ascii?Q?VuKABZRPWAVOomvHBoCDyQjUzvGO1rBGmQ/lX+BJoT0ZIFbOayImhJ0xt71W?=
- =?us-ascii?Q?WA/gcEiyB6A6s0NroSRBSwLrR+n9er2WCuba/ew2?=
+	=?us-ascii?Q?/qtRrWsvpxbaeM3VgD8RFoO3N1lix1J5JIMFku0+eWxpRSupeawCKrUQi7sm?=
+ =?us-ascii?Q?H1SYx9zFeD5d9lDRC00diA5DENQLzKnO1qGK4ppOUM4HM4Z0UdRiZ2b0VFqU?=
+ =?us-ascii?Q?shIvUEX+yB3frHwPIS9w5lIzCvtd7ORC98HoRLv69QN0Fhpho5+WaQTpfBSS?=
+ =?us-ascii?Q?gzEr3lA1m5R5S2Y1c7i8rnQ23VisrkRGu6aEQaLve2FKD5peXHdYZqsPRktr?=
+ =?us-ascii?Q?lBDpXJdXwaniH+ZVK3HCnjSlYQJgBGIXBXfLmRwiUe4jGjMVgkggQqViUNer?=
+ =?us-ascii?Q?kIh+eMXa0QxeqQLQTHaHqIo45xrOmFtsGl3yHHNoVYLkY/AktpNOVX47qBvK?=
+ =?us-ascii?Q?OsnFMuBcbUNKdeP5y/DjW90q2KmpcVPIMbKA42A+jodnf+9mXwCfweXMelA8?=
+ =?us-ascii?Q?VG8dmoxBp5xMwo7yf74vlIVyuvdvSXFNCX2Fq4+0F9lXFTx6jg2DbYc98Gq8?=
+ =?us-ascii?Q?0ULaYvczypRv8je1owGEhkpNdhERiCzCFnKiA8ID0z0DtoDBfzMUXvX5oi1v?=
+ =?us-ascii?Q?P3pL4iq9Vq9uAEpV4kQpxKV+sElqu2lJj/p3hsFMhFDJG7vANf8zRN5UVC2T?=
+ =?us-ascii?Q?UWPzO1+XrQffMlVtT2KXZZHI66ir81HkXYIKMv0mifCrsVYue3bkHrI5mxn3?=
+ =?us-ascii?Q?qUmh2FbPIsK/ZIkXn7ODj11wE9uAZSYT6Jol78E6Wd45VbYguQDY4IdkRnVq?=
+ =?us-ascii?Q?ePmmIb0X91jWZ0Iyy3ibPomSscTvOuMUt+2tWdgl2l9T6aQAsnYqZRod/xgj?=
+ =?us-ascii?Q?QN62djMnLxQxXAFl9rFJC/qB40KNgHORZCVCsikIArmg6+FYkXigwMh9GYxv?=
+ =?us-ascii?Q?vPadr4zM/0sloJtPWFvQYoRTSubYlcJ7KhTFoayWjye1bvpvctvKJvNYq9nI?=
+ =?us-ascii?Q?TtobPoIKaq2+qG8xNJ9xUq/UyDo+lexFGLGoh/GJ+o6YEaGMm8J96A0AGXM7?=
+ =?us-ascii?Q?Unr5/6B5iwtM1UQ4rxAO/aALB8oY2tw+IEYksQI4Ozxfo8MRxWRLe063WhIb?=
+ =?us-ascii?Q?I8j2G/htJ7baIHOEf1NIbhGrhZmi/1GmFIO+KzEykBn1L2Z6e9AoGi/L8UI7?=
+ =?us-ascii?Q?SWa0m4Om0YxOMID75B299i+2MxL/jElrp4TDOPTQ7r4lV1fEqhFBQh64OQ1I?=
+ =?us-ascii?Q?e2x+ADPR3AO7gdLXGzStwehtq2TGoqxfBWcVQzteRZzgtOr4IgH+s3GQGxXf?=
+ =?us-ascii?Q?enq7uC7UzkHhZ8HWyQloGsxRfGtZwut0p/4VXQunWSjLYLnGhHClZZf09sPJ?=
+ =?us-ascii?Q?T/8SEA6iJyiqizCXrC3hb1gteL98fHUli0E/NRpCxGEXidAd/CSgG0deXcyS?=
+ =?us-ascii?Q?dSDANDYUtyXxSy+WwZV9EGOa8vw3NmzaQ8psZ/jSwuwald3koszyf0aWnZlw?=
+ =?us-ascii?Q?VjP7Bcy2S7p8Uxx2niirXOZhUssh01EepR1I5iilpsZKJPcN2SYZaab1d5zX?=
+ =?us-ascii?Q?MbPG1KpirKlj4U4IXmFRNEztcqJBSnkv+FbcdtXkXYTJ9bbsqWfoELdzNKbK?=
+ =?us-ascii?Q?fUV49YRyzz79jJm9+Q3qdN+foJghfa5J3jiX0hPaLubgDAaulDRkdzB5Xkn0?=
+ =?us-ascii?Q?NkHKrO3TUfBC3ebX2+lndEkuOg36uw8iRglUEaLC?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eeb91b8f-91ed-4df6-ab72-08dc158ee7c5
+X-MS-Exchange-CrossTenant-Network-Message-Id: 077c68ee-c01a-494f-f7ec-08dc158ee9d6
 X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2024 05:57:50.0230
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2024 05:57:53.4526
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wcRSb2tF024u0aybD9FF5ynSnR8ytmS0Hp8WMJDGdIEreGpTUK6knfTiC5XGIS8/KRe218H+SCpEJsw5+a7Q0Q==
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8Ug0yr1CM5EWMxHzNvyNu1qaqHWC6fygN6ndDBzbSbUdp5utR3Nom8/fOIeQoJ9HaSPqq/WmQAMKe2iOO11VTg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB9269
 
 From: Peng Fan <peng.fan@nxp.com>
 
-ARM SCMI Spec 3.2 introduces Clock Get Permission command. This patch
-is to add the support. Add three bool entries to scmi_clock_info to
-indicate the operation is forbidden or not. If the CLOCK_GET_PERMISSIONS
-command is not supported, the three bool variables will default
-set to false, otherwise they will be set according to the return result
-of CLOCK_GET_PERMISSIONS.
+Some clocks may exported to linux, while those clocks are not allowed
+to configure by Linux. For example:
+
+SYS_CLK1-----
+             \
+	     --MUX--->MMC1_CLK
+             /
+SYS_CLK2-----
+
+MMC1 needs set parent, so SYS_CLK1 and SYS_CLK2 are exported to Linux,
+then the clk propagation will touch SYS_CLK1 or SYS_CLK2.
+So we need bypass the failure for SYS_CLK1 or SYS_CLK2 when enable
+the clock of MMC1.
 
 Signed-off-by: Peng Fan <peng.fan@nxp.com>
 ---
 
 V3:
- Rebased on https://lore.kernel.org/linux-arm-kernel/20240110120916.2482603-1-cristian.marussi@arm.com/
- Drop attribute which is no needed
- Use scmi_clock_domain_lookup
- Update patch subject
+ Add check in atomic enable
 
 V2:
- Take Cristian's suggestion, https://lore.kernel.org/all/ZWiqqfQ73tezFmSk@pluto/
+ New. Take Cristian's suggestion
 
- drivers/firmware/arm_scmi/clock.c | 64 +++++++++++++++++++++++++++++++
- include/linux/scmi_protocol.h     |  3 ++
- 2 files changed, 67 insertions(+)
+ drivers/clk/clk-scmi.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
-index 2e4d6479a639..959e48aba1b5 100644
---- a/drivers/firmware/arm_scmi/clock.c
-+++ b/drivers/firmware/arm_scmi/clock.c
-@@ -28,8 +28,13 @@ enum scmi_clock_protocol_cmd {
- 	CLOCK_POSSIBLE_PARENTS_GET = 0xC,
- 	CLOCK_PARENT_SET = 0xD,
- 	CLOCK_PARENT_GET = 0xE,
-+	CLOCK_GET_PERMISSIONS = 0xF,
- };
- 
-+#define CLOCK_STATE_CONTROL_ALLOWED	BIT(31)
-+#define CLOCK_PARENT_CONTROL_ALLOWED	BIT(30)
-+#define CLOCK_RATE_CONTROL_ALLOWED	BIT(29)
-+
- enum clk_state {
- 	CLK_STATE_DISABLE,
- 	CLK_STATE_ENABLE,
-@@ -49,6 +54,7 @@ struct scmi_msg_resp_clock_attributes {
- #define SUPPORTS_RATE_CHANGE_REQUESTED_NOTIF(x)	((x) & BIT(30))
- #define SUPPORTS_EXTENDED_NAMES(x)		((x) & BIT(29))
- #define SUPPORTS_PARENT_CLOCK(x)		((x) & BIT(28))
-+#define SUPPORTS_GET_PERMISSIONS(x)		((x) & BIT(1))
- 	u8 name[SCMI_SHORT_NAME_MAX_SIZE];
- 	__le32 clock_enable_latency;
- };
-@@ -293,6 +299,35 @@ static int scmi_clock_possible_parents(const struct scmi_protocol_handle *ph, u3
- 	return ret;
- }
- 
-+static int
-+scmi_clock_get_permissions(const struct scmi_protocol_handle *ph, u32 clk_id,
-+			   struct scmi_clock_info *clk)
-+{
-+	struct scmi_xfer *t;
-+	u32 perm;
+diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
+index 8cbe24789c24..5327e0547741 100644
+--- a/drivers/clk/clk-scmi.c
++++ b/drivers/clk/clk-scmi.c
+@@ -119,8 +119,13 @@ static int scmi_clk_determine_rate(struct clk_hw *hw, struct clk_rate_request *r
+ static int scmi_clk_enable(struct clk_hw *hw)
+ {
+ 	struct scmi_clk *clk = to_scmi_clk(hw);
 +	int ret;
 +
-+	ret = ph->xops->xfer_get_init(ph, CLOCK_GET_PERMISSIONS,
-+				      sizeof(clk_id), sizeof(perm), &t);
-+	if (ret)
-+		return ret;
-+
-+	put_unaligned_le32(clk_id, t->tx.buf);
-+
-+	ret = ph->xops->do_xfer(ph, t);
-+	if (!ret) {
-+		perm = get_unaligned_le32(t->rx.buf);
-+
-+		clk->state_ctrl_forbidden = !(perm & CLOCK_STATE_CONTROL_ALLOWED);
-+		clk->rate_ctrl_forbidden = !(perm & CLOCK_RATE_CONTROL_ALLOWED);
-+		clk->parent_ctrl_forbidden = !(perm & CLOCK_PARENT_CONTROL_ALLOWED);
-+	}
-+
-+	ph->xops->xfer_put(ph, t);
-+
++	ret = scmi_proto_clk_ops->enable(clk->ph, clk->id, NOT_ATOMIC);
++	if (ret == -EACCES && clk->info->state_ctrl_forbidden)
++		return 0;
+ 
+-	return scmi_proto_clk_ops->enable(clk->ph, clk->id, NOT_ATOMIC);
 +	return ret;
-+}
-+
- static int scmi_clock_attributes_get(const struct scmi_protocol_handle *ph,
- 				     u32 clk_id, struct scmi_clock_info *clk,
- 				     u32 version)
-@@ -339,6 +374,8 @@ static int scmi_clock_attributes_get(const struct scmi_protocol_handle *ph,
- 			clk->rate_change_requested_notifications = true;
- 		if (SUPPORTS_PARENT_CLOCK(attributes))
- 			scmi_clock_possible_parents(ph, clk_id, clk);
-+		if (SUPPORTS_GET_PERMISSIONS(attributes))
-+			scmi_clock_get_permissions(ph, clk_id, clk);
- 	}
+ }
  
- 	return ret;
-@@ -511,6 +548,14 @@ static int scmi_clock_rate_set(const struct scmi_protocol_handle *ph,
- 	struct scmi_xfer *t;
- 	struct scmi_clock_set_rate *cfg;
- 	struct clock_info *ci = ph->get_priv(ph);
-+	struct scmi_clock_info *clk;
-+
-+	clk = scmi_clock_domain_lookup(ci, clk_id);
-+	if (IS_ERR(clk))
-+		return PTR_ERR(clk);
-+
-+	if (clk->rate_ctrl_forbidden)
-+		return -EACCES;
- 
- 	ret = ph->xops->xfer_get_init(ph, CLOCK_RATE_SET, sizeof(*cfg), 0, &t);
- 	if (ret)
-@@ -596,6 +641,9 @@ scmi_clock_set_parent(const struct scmi_protocol_handle *ph, u32 clk_id,
- 	if (parent_id >= clk->num_parents)
- 		return -EINVAL;
- 
-+	if (clk->parent_ctrl_forbidden)
-+		return -EACCES;
-+
- 	ret = ph->xops->xfer_get_init(ph, CLOCK_PARENT_SET,
- 				      sizeof(*cfg), 0, &t);
- 	if (ret)
-@@ -679,6 +727,14 @@ static int scmi_clock_enable(const struct scmi_protocol_handle *ph, u32 clk_id,
- 			     bool atomic)
+ static void scmi_clk_disable(struct clk_hw *hw)
+@@ -133,8 +138,13 @@ static void scmi_clk_disable(struct clk_hw *hw)
+ static int scmi_clk_atomic_enable(struct clk_hw *hw)
  {
- 	struct clock_info *ci = ph->get_priv(ph);
-+	struct scmi_clock_info *clk;
+ 	struct scmi_clk *clk = to_scmi_clk(hw);
++	int ret;
 +
-+	clk = scmi_clock_domain_lookup(ci, clk_id);
-+	if (IS_ERR(clk))
-+		return PTR_ERR(clk);
-+
-+	if (clk->state_ctrl_forbidden)
-+		return -EACCES;
++	ret = scmi_proto_clk_ops->enable(clk->ph, clk->id, ATOMIC);
++	if (ret == -EACCES && clk->info->state_ctrl_forbidden)
++		return 0;
  
- 	return ci->clock_config_set(ph, clk_id, CLK_STATE_ENABLE,
- 				    NULL_OEM_TYPE, 0, atomic);
-@@ -688,6 +744,14 @@ static int scmi_clock_disable(const struct scmi_protocol_handle *ph, u32 clk_id,
- 			      bool atomic)
- {
- 	struct clock_info *ci = ph->get_priv(ph);
-+	struct scmi_clock_info *clk;
-+
-+	clk = scmi_clock_domain_lookup(ci, clk_id);
-+	if (IS_ERR(clk))
-+		return PTR_ERR(clk);
-+
-+	if (clk->state_ctrl_forbidden)
-+		return -EACCES;
+-	return scmi_proto_clk_ops->enable(clk->ph, clk->id, ATOMIC);
++	return ret;
+ }
  
- 	return ci->clock_config_set(ph, clk_id, CLK_STATE_DISABLE,
- 				    NULL_OEM_TYPE, 0, atomic);
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index f2f05fb42d28..0cc40af5519a 100644
---- a/include/linux/scmi_protocol.h
-+++ b/include/linux/scmi_protocol.h
-@@ -47,6 +47,9 @@ struct scmi_clock_info {
- 	bool rate_discrete;
- 	bool rate_changed_notifications;
- 	bool rate_change_requested_notifications;
-+	bool state_ctrl_forbidden;
-+	bool rate_ctrl_forbidden;
-+	bool parent_ctrl_forbidden;
- 	union {
- 		struct {
- 			int num_rates;
+ static void scmi_clk_atomic_disable(struct clk_hw *hw)
 -- 
 2.37.1
 
