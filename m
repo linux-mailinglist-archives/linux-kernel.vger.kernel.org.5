@@ -1,106 +1,123 @@
-Return-Path: <linux-kernel+bounces-25853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5077482D6BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:07:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3846282D6C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:07:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FBE2B21686
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:07:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EC8E1C2174B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:07:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C5F717727;
-	Mon, 15 Jan 2024 10:06:35 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF1732C68B;
-	Mon, 15 Jan 2024 10:06:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B51F12F4;
-	Mon, 15 Jan 2024 02:07:18 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.91.116])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC7F43F6C4;
-	Mon, 15 Jan 2024 02:06:30 -0800 (PST)
-Date: Mon, 15 Jan 2024 10:06:24 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Erick Archer <erick.archer@gmx.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] eventfs: Use kcalloc() instead of kzalloc()
-Message-ID: <ZaUDoG5qnkC8G3qx@FVFF77S0Q05N>
-References: <20240114105340.5746-1-erick.archer@gmx.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C91172C68B;
+	Mon, 15 Jan 2024 10:06:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="RfikiN2L"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 976DE2C694;
+	Mon, 15 Jan 2024 10:06:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 84DC72000B;
+	Mon, 15 Jan 2024 10:06:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1705313197;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2sURSIiRwE+VMw4pqfsGC2UVhFnlMv9fsKlnWFF3DNM=;
+	b=RfikiN2LGt9usO6Kr2immj7tGr4jK+B73EUyXm5DpAJY2tcHu0kTW6gdS3NKOXOnAYahTN
+	jxcMl0kTA7QOAKNYHdoL8Rn+xAROzgs7NueK6Cvk/ur0dPi0PtVYPBo4x9uyjGawo+/sS8
+	FuL0K/EDJzRjU8g3FnxzhjdEYPFRtKBHsiorAFrybGqWsXTsDi4HLwXUt0FnUDpK8fA65C
+	O/Ofp1bCZtQEXgOAgIop0bEr0BAsAiFeyMDtpcAMsYj2+L44yeTmlzsUSzzR16i5vLjDhM
+	bKuYavKnHHtIXCp1AzmNNR/1wdzI4YVxfMjo2PsfHxGHKhRIR+o+AfHE6qkG7A==
+Date: Mon, 15 Jan 2024 11:06:35 +0100
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+To: Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc: <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+ <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+ <pabeni@redhat.com>, <richardcochran@gmail.com>,
+ <Divya.Koppera@microchip.com>, <netdev@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH net 1/2] net: micrel: Fix PTP frame parsing for lan8814
+Message-ID: <20240115110635.60b1884c@device-28.home>
+In-Reply-To: <20240113131521.1051921-2-horatiu.vultur@microchip.com>
+References: <20240113131521.1051921-1-horatiu.vultur@microchip.com>
+	<20240113131521.1051921-2-horatiu.vultur@microchip.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240114105340.5746-1-erick.archer@gmx.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: maxime.chevallier@bootlin.com
 
-On Sun, Jan 14, 2024 at 11:53:40AM +0100, Erick Archer wrote:
-> Use 2-factor multiplication argument form kcalloc() instead
-> of kzalloc().
+Hello Horatiu,
+
+On Sat, 13 Jan 2024 14:15:20 +0100
+Horatiu Vultur <horatiu.vultur@microchip.com> wrote:
+
+> The HW has the capability to check each frame if it is a PTP frame,
+> which domain it is, which ptp frame type it is, different ip address in
+> the frame. And if one of these checks fail then the frame is not
+> timestamp. Most of these checks were disabled except checking the field
+> minorVersionPTP inside the PTP header. Meaning that once a partner sends
+> a frame compliant to 8021AS which has minorVersionPTP set to 1, then the
+> frame was not timestamp because the HW expected by default a value of 0
+> in minorVersionPTP. This is exactly the same issue as on lan8841.
+> Fix this issue by removing this check so the userspace can decide on this.
 > 
-> Link: https://github.com/KSPP/linux/issues/162
-> Signed-off-by: Erick Archer <erick.archer@gmx.com>
+> Fixes: ece19502834d ("net: phy: micrel: 1588 support for LAN8814 phy")
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> ---
+>  drivers/net/phy/micrel.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+> index bf4053431dcb3..1752eaeadc42e 100644
+> --- a/drivers/net/phy/micrel.c
+> +++ b/drivers/net/phy/micrel.c
+> @@ -120,6 +120,9 @@
+>   */
+>  #define LAN8814_1PPM_FORMAT			17179
+>  
+> +#define PTP_RX_VERSION				0x0248
+> +#define PTP_TX_VERSION				0x0288
+> +
+>  #define PTP_RX_MOD				0x024F
+>  #define PTP_RX_MOD_BAD_UDPV4_CHKSUM_FORCE_FCS_DIS_ BIT(3)
+>  #define PTP_RX_TIMESTAMP_EN			0x024D
+> @@ -3150,6 +3153,10 @@ static void lan8814_ptp_init(struct phy_device *phydev)
+>  	lanphy_write_page_reg(phydev, 5, PTP_TX_PARSE_IP_ADDR_EN, 0);
+>  	lanphy_write_page_reg(phydev, 5, PTP_RX_PARSE_IP_ADDR_EN, 0);
+>  
+> +	/* Disable checking for minorVersionPTP field */
+> +	lanphy_write_page_reg(phydev, 5, PTP_RX_VERSION, 0xff00);
+> +	lanphy_write_page_reg(phydev, 5, PTP_TX_VERSION, 0xff00);
 
-Could you put something in the commit message explaining *why* this change
-should be made?
+Small nit: This looks a bit like magic values, from the datasheet I
+understand the upper byte is the max supported version and the lower
+byte is the min supported version, maybe this could be wrapped in
+macros ?
 
-I assume that this is so that overflows during multiplication can be caught and
-handled in some way, but the commit message doesn't say that, and nor does the
-linked github page.
+> +
+>  	skb_queue_head_init(&ptp_priv->tx_queue);
+>  	skb_queue_head_init(&ptp_priv->rx_queue);
+>  	INIT_LIST_HEAD(&ptp_priv->rx_ts_list);
 
-The patch itself looks fine.
+Besides that,
+
+Reviewed-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
 
 Thanks,
-Mark.
 
-> ---
->  fs/tracefs/event_inode.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-> index fdff53d5a1f8..f8196289692c 100644
-> --- a/fs/tracefs/event_inode.c
-> +++ b/fs/tracefs/event_inode.c
-> @@ -93,7 +93,7 @@ static int eventfs_set_attr(struct mnt_idmap *idmap, struct dentry *dentry,
->  	/* Preallocate the children mode array if necessary */
->  	if (!(dentry->d_inode->i_mode & S_IFDIR)) {
->  		if (!ei->entry_attrs) {
-> -			ei->entry_attrs = kzalloc(sizeof(*ei->entry_attrs) * ei->nr_entries,
-> +			ei->entry_attrs = kcalloc(ei->nr_entries, sizeof(*ei->entry_attrs),
->  						  GFP_NOFS);
->  			if (!ei->entry_attrs) {
->  				ret = -ENOMEM;
-> @@ -874,7 +874,7 @@ struct eventfs_inode *eventfs_create_dir(const char *name, struct eventfs_inode
->  	}
-> 
->  	if (size) {
-> -		ei->d_children = kzalloc(sizeof(*ei->d_children) * size, GFP_KERNEL);
-> +		ei->d_children = kcalloc(size, sizeof(*ei->d_children), GFP_KERNEL);
->  		if (!ei->d_children) {
->  			kfree_const(ei->name);
->  			kfree(ei);
-> @@ -941,7 +941,7 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
->  		goto fail;
-> 
->  	if (size) {
-> -		ei->d_children = kzalloc(sizeof(*ei->d_children) * size, GFP_KERNEL);
-> +		ei->d_children = kcalloc(size, sizeof(*ei->d_children), GFP_KERNEL);
->  		if (!ei->d_children)
->  			goto fail;
->  	}
-> --
-> 2.25.1
-> 
-> 
+Maxime
 
