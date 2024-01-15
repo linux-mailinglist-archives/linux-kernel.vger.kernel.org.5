@@ -1,46 +1,49 @@
-Return-Path: <linux-kernel+bounces-26547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 581C982E372
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:29:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA43582E374
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:29:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1AD6B208C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:29:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73D2C283D0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:29:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E0111CD15;
-	Mon, 15 Jan 2024 23:25:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1BBB1CD38;
+	Mon, 15 Jan 2024 23:25:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kmaziFAd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KpZK6k81"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E98691CD09;
-	Mon, 15 Jan 2024 23:25:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5F1FC433C7;
-	Mon, 15 Jan 2024 23:25:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 172DA1CD2D;
+	Mon, 15 Jan 2024 23:25:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF294C433F1;
+	Mon, 15 Jan 2024 23:25:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705361112;
-	bh=i8pcVG7uGX0/reBfk5cN6pbuBYChXtmlXMuw8ET3pwE=;
+	s=k20201202; t=1705361114;
+	bh=4klcEXXdg2M92rQa92t457C3dMUm7VRf2LMEPDiYXvs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kmaziFAdWCJVaHG4tB/2y/XmAJVN6uQ+8PzFEvg5AGh4ybpyL9OmgxF974p7AIr3U
-	 c/RDMImAbe0ncAeelqLBH8+plSi6HVwtKlVtZTc7Vj7NW3Zy8tF5JK97EbLTNd5/YS
-	 q1ezlOr6/8lTliseX0Er43bmEMZrWRDKBgBYWnI8y41UdK8XZRtmZIqGHCvAsEb111
-	 RCK3i8+aQ/QgAlqU+uJpC/BzVp5Nr8nPcapC3TV9oaikKeJe4ADPkqX0JtyuBLcCW6
-	 FzEOeat0e9H1NCLTKwP9YzR5YMeqa0RWLwpKjJpcc+b/CTNP6z7GVkNYFrppLfTMPA
-	 2o85Dg3c2cRDg==
+	b=KpZK6k81v1Z7stXq1n5VZyZYvQn/9ULMplld/HYftSvESmOckrunKUmUQ4DjwWFh8
+	 KiVwhCmpEPhqpvI3xQ5y9u1NFJrzbgzHJf3h3OLwdpK+A0LxHz067JsX2wZX7T/4En
+	 ttZko9HtPaQcKvY7WEWQofz4mpSEGoVpV5o3iWII3ky15SSRWXE0Dxbexhb/L6f0fS
+	 iXPJzRJL5o6v+43fGNm6LG/JpSeaKnD8K+Ke49bIz0pf5TsF1rI5xDY2w+u+8VpXCH
+	 qLLygBGG8nwoyZ6k9x9V0OxucfwJB4/80M2WHrxp+NBcgxlsTX6a7vHPj8JLCQTjg2
+	 2H2OAjbEcJf9A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mark Rutland <mark.rutland@arm.com>,
-	Will Deacon <will@kernel.org>,
+Cc: Michael Ellerman <mpe@ellerman.id.au>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 05/14] drivers/perf: pmuv3: don't expose SW_INCR event in sysfs
-Date: Mon, 15 Jan 2024 18:24:28 -0500
-Message-ID: <20240115232501.208889-5-sashal@kernel.org>
+	christophe.leroy@csgroup.eu,
+	bgray@linux.ibm.com,
+	naveen@kernel.org,
+	arnd@arndb.de,
+	linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 6.6 06/14] powerpc: Fix build error due to is_valid_bugaddr()
+Date: Mon, 15 Jan 2024 18:24:29 -0500
+Message-ID: <20240115232501.208889-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240115232501.208889-1-sashal@kernel.org>
 References: <20240115232501.208889-1-sashal@kernel.org>
@@ -50,58 +53,49 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.12
 Content-Transfer-Encoding: 8bit
 
-From: Mark Rutland <mark.rutland@arm.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-[ Upstream commit ca6f537e459e2da4b331fe8928d1a0b0f9301f42 ]
+[ Upstream commit f8d3555355653848082c351fa90775214fb8a4fa ]
 
-The SW_INCR event is somewhat unusual, and depends on the specific HW
-counter that it is programmed into. When programmed into PMEVCNTR<n>,
-SW_INCR will count any writes to PMSWINC_EL0 with bit n set, ignoring
-writes to SW_INCR with bit n clear.
+With CONFIG_GENERIC_BUG=n the build fails with:
 
-Event rotation means that there's no fixed relationship between
-perf_events and HW counters, so this isn't all that useful.
+  arch/powerpc/kernel/traps.c:1442:5: error: no previous prototype for ‘is_valid_bugaddr’ [-Werror=missing-prototypes]
+  1442 | int is_valid_bugaddr(unsigned long addr)
+       |     ^~~~~~~~~~~~~~~~
 
-Further, we program PMUSERENR.{SW,EN}=={0,0}, which causes EL0 writes to
-PMSWINC_EL0 to be trapped and handled as UNDEFINED, resulting in a
-SIGILL to userspace.
+The prototype is only defined, and the function is only needed, when
+CONFIG_GENERIC_BUG=y, so move the implementation under that.
 
-Given that, it's not a good idea to expose SW_INCR in sysfs. Hide it as
-we did for CHAIN back in commit:
-
-  4ba2578fa7b55701 ("arm64: perf: don't expose CHAIN event in sysfs")
-
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Link: https://lore.kernel.org/r/20231204115847.2993026-1-mark.rutland@arm.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://msgid.link/20231130114433.3053544-2-mpe@ellerman.id.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/perf/arm_pmuv3.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/powerpc/kernel/traps.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
-index d681638ec6b8..0e8f54168cb6 100644
---- a/drivers/perf/arm_pmuv3.c
-+++ b/drivers/perf/arm_pmuv3.c
-@@ -169,7 +169,11 @@ armv8pmu_events_sysfs_show(struct device *dev,
- 	PMU_EVENT_ATTR_ID(name, armv8pmu_events_sysfs_show, config)
+diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
+index fe3f720c9cd6..2de7f6dcd32b 100644
+--- a/arch/powerpc/kernel/traps.c
++++ b/arch/powerpc/kernel/traps.c
+@@ -1439,10 +1439,12 @@ static int emulate_instruction(struct pt_regs *regs)
+ 	return -EINVAL;
+ }
  
- static struct attribute *armv8_pmuv3_event_attrs[] = {
--	ARMV8_EVENT_ATTR(sw_incr, ARMV8_PMUV3_PERFCTR_SW_INCR),
-+	/*
-+	 * Don't expose the sw_incr event in /sys. It's not usable as writes to
-+	 * PMSWINC_EL0 will trap as PMUSERENR.{SW,EN}=={0,0} and event rotation
-+	 * means we don't have a fixed event<->counter relationship regardless.
-+	 */
- 	ARMV8_EVENT_ATTR(l1i_cache_refill, ARMV8_PMUV3_PERFCTR_L1I_CACHE_REFILL),
- 	ARMV8_EVENT_ATTR(l1i_tlb_refill, ARMV8_PMUV3_PERFCTR_L1I_TLB_REFILL),
- 	ARMV8_EVENT_ATTR(l1d_cache_refill, ARMV8_PMUV3_PERFCTR_L1D_CACHE_REFILL),
++#ifdef CONFIG_GENERIC_BUG
+ int is_valid_bugaddr(unsigned long addr)
+ {
+ 	return is_kernel_addr(addr);
+ }
++#endif
+ 
+ #ifdef CONFIG_MATH_EMULATION
+ static int emulate_math(struct pt_regs *regs)
 -- 
 2.43.0
 
