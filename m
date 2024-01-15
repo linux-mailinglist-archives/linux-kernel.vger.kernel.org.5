@@ -1,85 +1,116 @@
-Return-Path: <linux-kernel+bounces-26604-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87FA282E40B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:46:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70E3F82E412
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:46:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F303E1C223E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:45:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8201C2840F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:46:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A830A1B80D;
-	Mon, 15 Jan 2024 23:38:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36C941B947;
+	Mon, 15 Jan 2024 23:41:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="u5ejN0U8"
-Received: from out203-205-221-210.mail.qq.com (out203-205-221-210.mail.qq.com [203.205.221.210])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mTx61PM0"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A280E1B7FE
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 23:38:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1705361895; bh=cz6IinuqhcZZWy7+5NFz+ILkSqS4auojx7jE1pMxmhw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=u5ejN0U8GLmwakf7b9WsHNnugxNTqBITNK2FyV5WGVox/Fk79QgG7LZdgJvpvgpQr
-	 pLoSCv+wTpQ6THQyqEYNiAZhOGdAgsHeFOn1tkgLYs4tFfF7O3EXDVy3jIvX22kI5R
-	 /x4zIFuHakYKHEp2uaCKvEyngiBFYoDcZ4dgX6nc=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
-	id 8090DECD; Tue, 16 Jan 2024 07:32:09 +0800
-X-QQ-mid: xmsmtpt1705361529tio0y97up
-Message-ID: <tencent_BDD63DCB3762971636DA4B4474F177116609@qq.com>
-X-QQ-XMAILINFO: NafziRg7Bx69+OV4WSENK3vpXadt+cQi1jkRzHoxn7eCx7k+C+Z9y/J0bfNC00
-	 HeZXzJWnDLYi2TNbzLUENqQCv81K2tpaon7D9BUiAFqtFWmUfpYI12Nt6D5y60jAtU77yCm68Nkd
-	 vRYNqMWtIpfptD7JQVuVksuQ9M3x79LeC2Efj3OP/matWrcdbLBv5UFQg5bHhmNqbKcEnbI7lf0I
-	 C7PJECx5Gs8KvstfaD6b0fkF0EyLKfkK552Eb8iiCAKSF17xoARQIxrMawdGjA/c54QqrPqd50aL
-	 edIrHCcqT34eHQfmSp4ZvlmWyWnHw9M+NFNb8zc8M9u0XgfNeTTryHlk0yl7W48gO1I4pNV0UZ9S
-	 169m5mowanaAreXYmS2D9xM+ZLnST6DM3FPqMq46ua6DDBIAgEwgADS1RoGKLkaClwsHZdkGYpqt
-	 JEJb0pdg4AX54SUD+U6NeCoPdwjTaqBOKZsFzfOZbDoMB6HPYHL4z2jxoy9vMrIxH67NXFZFYbLd
-	 cKk5y/iGPorvRy+7eVuL9VY96dt22hTUwO5Ww98ECzxtihe1nxwkoOKTg2YtyolDgeyiy2Rpps1v
-	 WSS3CR1ZfXr7TZ4jYuArJbHzLP6ota+X28cH7TJefYI2iRJDMzvVpVVsDq2f6N03ynCrfbi64mHB
-	 kdUxxPYQpyo5iBikD9PoqP4ljYfuQVMqMG8V3To21uPCHyJ7APF6hW7EG++cSL1J+QBP7eBU+5OF
-	 l2gJf55POkmCVuE84d5klCXSv4cyn/XmTfPbZPCtAKX0+1gMDFnqY26jTuyT9vzRl7Qv44DhEJhF
-	 SddH7WblxeGJENUnwlh1qtG5KxgzlqongiL2FQJX9CIh5uSI5GQ7ttiqoNXte+BelRP44jSnclOG
-	 6xXOITsE5Eyd55Rpbv2iitTFGtFgdsWwl3aWdIguxKbCXo1BPo+U4TKsQumnZVxIv35PVYzytS
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [btrfs?] KASAN: slab-out-of-bounds Read in getname_kernel (2)
-Date: Tue, 16 Jan 2024 07:32:10 +0800
-X-OQ-MSGID: <20240115233209.4164697-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000d1a1d1060cc9c5e7@google.com>
-References: <000000000000d1a1d1060cc9c5e7@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BC4B1B7E0;
+	Mon, 15 Jan 2024 23:41:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5f093e7c095so10950017b3.1;
+        Mon, 15 Jan 2024 15:41:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705362109; x=1705966909; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=li88m9Aw/LCRAibakjpHlPDF8glbTaanlpZnqcTkC3Q=;
+        b=mTx61PM0RfW81476w3SxgKhunmpkb+X+BRYdcyxZD0RZrTxtvVNMXfvg8o9D8eYlNY
+         5kzmp4o6p1hISU4ISHyk2U458fgCYNDvruavKcBnvdsNv9EYXPmTy8lkDmOBbCKqxLfl
+         C9VohKLwJvjO63pPmdw4KjmaQIMGOeefcNarkcUJ1KBlUwP5BROL9kgcHCVN8+QhJ0Bd
+         G0F/zrVzlR6IA0Wv3AH2uzLoTmFwmbZ4xzh1jKC+spGfAQzjzUsDdsg9ljOeU3dssjFy
+         HA/XXQYZ5YOqd9yIIlZg0+rtI4WNqqQBBguYf+s6Q8PgNrW7IEl2IRzvj+WlEnCfaBF2
+         duvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705362109; x=1705966909;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=li88m9Aw/LCRAibakjpHlPDF8glbTaanlpZnqcTkC3Q=;
+        b=u2TE4xwssw4N10+ebMx/40pJjnrEC8SfIkb5k05oGOBMcKm/CBIVcP4rhYN+9gAff6
+         59l7QowriWoRpBYdQXpsszHIIYMX2Wk0O2lLu6i8yaRFB7uaGyFmnvLG/EX3tWLpZZQf
+         ThQrLXbBeaERlLc05awz7ZlJv944i8Te4xxwAkucx3wcRYLztkrjtqx7FnEvhd5zYyfP
+         wqloSuaqChLvy5QF4qqmzFZU5mD+tVhnAEEVqcNZctjhOh0IZkjcpFAtC6h+//VusQtG
+         f0qJwAd5jD0fq/CYeM0zX7FLLNaOpm2Q0777r8tlzhlfpKYpRcW72uLnQtcRFxgN59go
+         3ngQ==
+X-Gm-Message-State: AOJu0YxdB0QlQUjWHX8Y7HBihQyuHh2v5T0ze4UCnpV/wyZwLFieLqT6
+	mmmrXLUN9D8Jb09lDjYSstQ=
+X-Google-Smtp-Source: AGHT+IGoHxdCVz46pwuSIwlG6SlJkCKzggHGVAWjVqpMq2qgnnp1pcozB9Kcp8x25R40Z/y/SU3Z8w==
+X-Received: by 2002:a0d:d046:0:b0:5fb:d0ad:9545 with SMTP id s67-20020a0dd046000000b005fbd0ad9545mr5518884ywd.4.1705362109078;
+        Mon, 15 Jan 2024 15:41:49 -0800 (PST)
+Received: from hoboy.vegasvil.org ([2600:1700:2430:6f6f:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id cl27-20020a05690c0c1b00b005f48b0ce126sm4280575ywb.62.2024.01.15.15.41.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 15:41:48 -0800 (PST)
+Date: Mon, 15 Jan 2024 15:41:45 -0800
+From: Richard Cochran <richardcochran@gmail.com>
+To: Sagi Maimon <maimon.sagi@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>,
+	tglx@linutronix.de, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Sohil Mehta <sohil.mehta@intel.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Nhat Pham <nphamcs@gmail.com>, Palmer Dabbelt <palmer@sifive.com>,
+	Kees Cook <keescook@chromium.org>,
+	Alexey Gladkov <legion@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>,
+	Netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH v3] posix-timers: add multi_clock_gettime system call
+Message-ID: <ZaXCuV1Dy0e_E-h0@hoboy.vegasvil.org>
+References: <20231228122411.3189-1-maimon.sagi@gmail.com>
+ <f254c189-463e-43a3-bc09-9a8869ebf819@app.fastmail.com>
+ <CAMuE1bF0Hho4VwO6w3f+9z3j5TtscYzuAjj10MFt2mZXG2P8dQ@mail.gmail.com>
+ <84d8e9d7-09ce-4781-8dfa-a74bb0955ae8@app.fastmail.com>
+ <ZZ-ZNHgDsZwg9CaW@hoboy.vegasvil.org>
+ <CAMuE1bF4sSeiDr-jyebF6F8oRxGs1b2gtT39fTJ2JeaFabr6Ng@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuE1bF4sSeiDr-jyebF6F8oRxGs1b2gtT39fTJ2JeaFabr6Ng@mail.gmail.com>
 
-please test slab-out-of-bounds Read in getname_kernel
+On Mon, Jan 15, 2024 at 05:49:32PM +0200, Sagi Maimon wrote:
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 3bd7d7488169
+> Thanks for your notes, all of them will be done on the next patch (it
+> will take some time due to work overload).
 
-diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index 1502d664c892..58ffaede8d16 100644
---- a/fs/btrfs/dev-replace.c
-+++ b/fs/btrfs/dev-replace.c
-@@ -741,6 +741,8 @@ int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
- 	if ((args->start.srcdevid == 0 && args->start.srcdev_name[0] == '\0') ||
- 	    args->start.tgtdev_name[0] == '\0')
- 		return -EINVAL;
-+	args->start.srcdev_name[BTRFS_PATH_NAME_MAX] = 0;
-+	args->start.tgtdev_name[BTRFS_PATH_NAME_MAX] = 0;
- 
- 	ret = btrfs_dev_replace_start(fs_info, args->start.tgtdev_name,
- 					args->start.srcdevid,
+No hurry, glad you are keeping this going...
+
+> The only question that I have is: why not implement it as an IOCTL?
+> It makes more sense to me since it is close to another IOCTL, the
+> "PTP_SYS_OFFSET" family.
+
+I've often needed other clock offsets, like CLOCK_REALTIME - CLOCK_MONOTONIC.
+
+Those don't have a character device, and so there is no way to call
+ioctl() on them.  That is why I'd like to have a system call that
+handles any two clock_t instances, using the most accurate back end
+based on the kinds of the two clocks.
+
+Thanks,
+Richard
 
 
