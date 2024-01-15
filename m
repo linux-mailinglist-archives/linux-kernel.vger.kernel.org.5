@@ -1,125 +1,208 @@
-Return-Path: <linux-kernel+bounces-25753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8644082D552
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:51:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29E2C82D54F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:50:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BB7A1F21AF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:51:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FA4A1C213B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:50:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5890D521;
-	Mon, 15 Jan 2024 08:50:33 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CE36D308;
-	Mon, 15 Jan 2024 08:50:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 583e9824b00a404c951f36b996001b4a-20240115
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:fbdb9046-cc15-4f62-8261-5b129439ce27,IP:10,
-	URL:0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,AC
-	TION:release,TS:15
-X-CID-INFO: VERSION:1.1.35,REQID:fbdb9046-cc15-4f62-8261-5b129439ce27,IP:10,UR
-	L:0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:15
-X-CID-META: VersionHash:5d391d7,CLOUDID:3b3cdc82-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:2401151650265V38VMXJ,BulkQuantity:0,Recheck:0,SF:24|17|19|44|66|38|1
-	02,TC:nil,Content:0,EDM:5,IP:-2,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,
-	COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,
-	TF_CID_SPAM_ULN
-X-UUID: 583e9824b00a404c951f36b996001b4a-20240115
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 252634715; Mon, 15 Jan 2024 16:50:24 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id B0811E000EB9;
-	Mon, 15 Jan 2024 16:50:23 +0800 (CST)
-X-ns-mid: postfix-65A4F1CF-609187206
-Received: from kernel.. (unknown [172.20.15.234])
-	by mail.kylinos.cn (NSMail) with ESMTPA id E6D60E000EB9;
-	Mon, 15 Jan 2024 16:50:21 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: andrew@lunn.ch,
-	hkallweit1@gmail.com,
-	linux@armlinux.org.uk,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: f.fainelli@gmail.com,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH net v2] net: phy: Fix possible NULL pointer dereference issues caused by phy_attached_info_irq
-Date: Mon, 15 Jan 2024 16:50:18 +0800
-Message-Id: <20240115085018.30300-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1C6BE6C;
+	Mon, 15 Jan 2024 08:50:27 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81FB9C8D2
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 08:50:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 36B472F4;
+	Mon, 15 Jan 2024 00:51:10 -0800 (PST)
+Received: from [10.57.76.47] (unknown [10.57.76.47])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B77D3F6C4;
+	Mon, 15 Jan 2024 00:50:20 -0800 (PST)
+Message-ID: <1188e67e-5c04-4bb5-b242-78d92c3fc85c@arm.com>
+Date: Mon, 15 Jan 2024 08:50:19 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 02/10] mm: Non-pmd-mappable, large folios for
+ folio_add_new_anon_rmap()
+Content-Language: en-GB
+To: Jiri Olsa <olsajiri@gmail.com>, David Hildenbrand <david@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Yin Fengwei <fengwei.yin@intel.com>,
+ Yu Zhao <yuzhao@google.com>, Catalin Marinas <catalin.marinas@arm.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>, Yang Shi
+ <shy828301@gmail.com>, "Huang, Ying" <ying.huang@intel.com>,
+ Zi Yan <ziy@nvidia.com>, Luis Chamberlain <mcgrof@kernel.org>,
+ Itaru Kitayama <itaru.kitayama@gmail.com>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ John Hubbard <jhubbard@nvidia.com>, David Rientjes <rientjes@google.com>,
+ Vlastimil Babka <vbabka@suse.cz>, Hugh Dickins <hughd@google.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>,
+ Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Barry Song <v-songbaohua@oppo.com>
+References: <20231207161211.2374093-1-ryan.roberts@arm.com>
+ <20231207161211.2374093-3-ryan.roberts@arm.com> <ZaMR2EWN-HvlCfUl@krava>
+ <41dc7dff-1ea8-4894-a487-88d46ec2b2d8@redhat.com> <ZaRKMwKJIBmh8-lD@krava>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <ZaRKMwKJIBmh8-lD@krava>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-kasprintf() returns a pointer to dynamically allocated memory
-which can be NULL upon failure. Ensure the allocation was successful
-by checking the pointer validity.
+On 14/01/2024 20:55, Jiri Olsa wrote:
+> On Sun, Jan 14, 2024 at 06:33:56PM +0100, David Hildenbrand wrote:
+>> On 13.01.24 23:42, Jiri Olsa wrote:
+>>> On Thu, Dec 07, 2023 at 04:12:03PM +0000, Ryan Roberts wrote:
+>>>> In preparation for supporting anonymous multi-size THP, improve
+>>>> folio_add_new_anon_rmap() to allow a non-pmd-mappable, large folio to be
+>>>> passed to it. In this case, all contained pages are accounted using the
+>>>> order-0 folio (or base page) scheme.
+>>>>
+>>>> Reviewed-by: Yu Zhao <yuzhao@google.com>
+>>>> Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
+>>>> Reviewed-by: David Hildenbrand <david@redhat.com>
+>>>> Reviewed-by: Barry Song <v-songbaohua@oppo.com>
+>>>> Tested-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>>>> Tested-by: John Hubbard <jhubbard@nvidia.com>
+>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>> ---
+>>>>   mm/rmap.c | 28 ++++++++++++++++++++--------
+>>>>   1 file changed, 20 insertions(+), 8 deletions(-)
+>>>>
+>>>> diff --git a/mm/rmap.c b/mm/rmap.c
+>>>> index 2a1e45e6419f..846fc79f3ca9 100644
+>>>> --- a/mm/rmap.c
+>>>> +++ b/mm/rmap.c
+>>>> @@ -1335,32 +1335,44 @@ void page_add_anon_rmap(struct page *page, struct vm_area_struct *vma,
+>>>>    * This means the inc-and-test can be bypassed.
+>>>>    * The folio does not have to be locked.
+>>>>    *
+>>>> - * If the folio is large, it is accounted as a THP.  As the folio
+>>>> + * If the folio is pmd-mappable, it is accounted as a THP.  As the folio
+>>>>    * is new, it's assumed to be mapped exclusively by a single process.
+>>>>    */
+>>>>   void folio_add_new_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
+>>>>   		unsigned long address)
+>>>>   {
+>>>> -	int nr;
+>>>> +	int nr = folio_nr_pages(folio);
+>>>> -	VM_BUG_ON_VMA(address < vma->vm_start || address >= vma->vm_end, vma);
+>>>> +	VM_BUG_ON_VMA(address < vma->vm_start ||
+>>>> +			address + (nr << PAGE_SHIFT) > vma->vm_end, vma);
+>>>
+>>> hi,
+>>> I'm hitting this bug (console output below) with adding uprobe
+>>> on simple program like:
+>>>
+>>>    $ cat up.c
+>>>    int main(void)
+>>>    {
+>>>       return 0;
+>>>    }
+>>>
+>>>    # bpftrace -e 'uprobe:/home/jolsa/up:_start {}'
+>>>
+>>>    $ ./up
+>>>
+>>> it's on top of current linus tree master:
+>>>    052d534373b7 Merge tag 'exfat-for-6.8-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat
+>>>
+>>> before this patch it seems to work, I can send my .config if needed
 
-phylink_bringup_phy needs to be done, otherwise network interface is
-likely to be dead, so when irq_str is NULL, just print an empty string.
+Thanks for the bug report!
 
-Fixes: e27f178793de ("net: phy: Added IRQ print to phylink_bringup_phy()"=
-)
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-Suggested-by: Andrew Lunn <andrew@lunn.ch>
----
-v2: Print empty string when irq_str is NULL in phylink_bringup_phy
----
- drivers/net/phy/phy_device.c | 3 +++
- drivers/net/phy/phylink.c    | 2 +-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+>>
+>> bpf only inserts a small folio, so no magic there.
+>>
+>> It was:
+>> 	VM_BUG_ON_VMA(address < vma->vm_start || address >= vma->vm_end, vma);
+>> And now it is
+>> 	VM_BUG_ON_VMA(address < vma->vm_start || address + (nr << PAGE_SHIFT) > vma->vm_end, vma);
+>>
+>> I think this change is sane. As long as the address is aligned to full pages
+>> (which it better should be)
+>>
+>> Staring at uprobe_write_opcode, likely vaddr isn't aligned ...
+>>
+>> Likely (hopefully) that is not an issue for __folio_set_anon(), because linear_page_index()
+>> will mask these bits off.
+>>
+>>
+>> Would the following change fix it for you?
 
-diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-index 3611ea64875e..10fa99d957c0 100644
---- a/drivers/net/phy/phy_device.c
-+++ b/drivers/net/phy/phy_device.c
-@@ -1299,6 +1299,9 @@ void phy_attached_print(struct phy_device *phydev, =
-const char *fmt, ...)
- 	const char *unbound =3D phydev->drv ? "" : "[unbound] ";
- 	char *irq_str =3D phy_attached_info_irq(phydev);
-=20
-+	if (!irq_str)
-+		return;
-+
- 	if (!fmt) {
- 		phydev_info(phydev, ATTACHED_FMT "\n", unbound,
- 			    phydev_name(phydev), irq_str);
-diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
-index ed0b4ccaa6a6..819574a06036 100644
---- a/drivers/net/phy/phylink.c
-+++ b/drivers/net/phy/phylink.c
-@@ -1886,7 +1886,7 @@ static int phylink_bringup_phy(struct phylink *pl, =
-struct phy_device *phy,
- 	irq_str =3D phy_attached_info_irq(phy);
- 	phylink_info(pl,
- 		     "PHY [%s] driver [%s] (irq=3D%s)\n",
--		     dev_name(&phy->mdio.dev), phy->drv->name, irq_str);
-+		     dev_name(&phy->mdio.dev), phy->drv->name, irq_str ? irq_str : "")=
-;
- 	kfree(irq_str);
-=20
- 	mutex_lock(&phy->lock);
---=20
-2.39.2
+And thanks for fixing my mess so quickly, David.
+
+FWIW, I agree with your diagnosis. One small suggestion below.
+
+> 
+> great, that fixes it for me, you can add my
+> 
+> Tested-by: Jiri Olsa <jolsa@kernel.org>
+> 
+> thanks,
+> jirka
+> 
+>>
+>> From c640a8363e47bc96965a35115a040b5f876c4320 Mon Sep 17 00:00:00 2001
+>> From: David Hildenbrand <david@redhat.com>
+>> Date: Sun, 14 Jan 2024 18:32:57 +0100
+>> Subject: [PATCH] tmp
+>>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>> ---
+>>  kernel/events/uprobes.c | 2 +-
+>>  mm/rmap.c               | 1 +
+>>  2 files changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+>> index 485bb0389b488..929e98c629652 100644
+>> --- a/kernel/events/uprobes.c
+>> +++ b/kernel/events/uprobes.c
+>> @@ -537,7 +537,7 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_struct *mm,
+>>  		}
+>>  	}
+>> -	ret = __replace_page(vma, vaddr, old_page, new_page);
+>> +	ret = __replace_page(vma, vaddr & PAGE_MASK, old_page, new_page);
+>>  	if (new_page)
+>>  		put_page(new_page);
+>>  put_old:
+>> diff --git a/mm/rmap.c b/mm/rmap.c
+>> index f5d43edad529a..a903db4df6b97 100644
+>> --- a/mm/rmap.c
+>> +++ b/mm/rmap.c
+>> @@ -1408,6 +1408,7 @@ void folio_add_new_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
+>>  {
+>>  	int nr = folio_nr_pages(folio);
+>> +	VM_WARN_ON_FOLIO(!IS_ALIGNED(address, PAGE_SIZE), folio);
+
+nit: Is it worth also adding this to __folio_add_anon_rmap() so that
+folio_add_anon_rmap_ptes() and folio_add_anon_rmap_pmd() also benefit?
+
+Regardless:
+
+Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+
+>>  	VM_WARN_ON_FOLIO(folio_test_hugetlb(folio), folio);
+>>  	VM_BUG_ON_VMA(address < vma->vm_start ||
+>>  			address + (nr << PAGE_SHIFT) > vma->vm_end, vma);
+>> -- 
+>> 2.43.0
+>>
+>>
+>>
+>> -- 
+>> Cheers,
+>>
+>> David / dhildenb
+>>
 
 
