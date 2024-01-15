@@ -1,140 +1,421 @@
-Return-Path: <linux-kernel+bounces-26232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26230-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B026B82DD2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:15:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A02F82DD20
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:13:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F3121F24211
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:15:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F34F9283E0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:13:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E5C517BAE;
-	Mon, 15 Jan 2024 16:15:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 811FE17BA1;
+	Mon, 15 Jan 2024 16:13:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="iY3DUK4+";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="eybOU38d"
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OHS6mVyz"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C644F17BA1;
-	Mon, 15 Jan 2024 16:15:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id 317F13200A24;
-	Mon, 15 Jan 2024 11:15:07 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 15 Jan 2024 11:15:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1705335306; x=1705421706; bh=OwwV079+Ib
-	4EhCbveDYoIfXqeXgw7sWlHiHGG0LHoH0=; b=iY3DUK4+l4x1zKVZt/k7PFIF2T
-	9GDD31aL2Nj9MbIq/iW7zEJNz9xwhZSOc8HNPXnB4499+tAIHkyhQOxRcdkA8UI0
-	6bZrxDFvUpAuE5HvEcMDHuRRQKMgpwH5AHEiMEYz2eHblWWvEnRxz/RI+nal6KfK
-	qiLKDTtWqA/mJxfiuoW0YMRibjnO67CI0PTGamje4QsXWuD8pjxM7cuJapiZwzYr
-	8VL49wvb+zmV7024PyQn/cl/SjVr1H5v49CHj5RY739qeryfkqHOmQf9F6DJcoM9
-	UndCI49i5EKETL7YRzJ0AP1oejWlcO2XEt/dkkVgMoto8/eQ2qrBYjJizW3g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1705335306; x=1705421706; bh=OwwV079+Ib4EhCbveDYoIfXqeXgw
-	7sWlHiHGG0LHoH0=; b=eybOU38d2C55AfxnNCB5YYoTKubKkcYLl1HuKNMxsaAE
-	CYwHMEPVdF+HoQWWmEp7ZfUhPy55abq7fsr82qLxEE35BLgUxAn0LylyfO0Y5xlT
-	VxhrN1ddFTZa5mDYp5WDc8qS/z8MW5I5nbxWi0XMcp2fEVpAo+bBm0cZGEteVLBH
-	/YLr6Cuwubvtb+4b1aO2JSI9PqTtkMZfFg9LpKiB77EaXO+4VND95uwRZep+Vr5J
-	pAj5l/2q245PGZPp0bgzDAY8f2dnfaqp+5dDT3AWjLkby0x2mKpFgH80tRLSTyxj
-	v+HL0W/cPsVxVZ+ZRFR3nJuL/29wIUoq0gfi8qXBtQ==
-X-ME-Sender: <xms:ClqlZb1bvHx7W99HefEkf9N086keHr4jvu_Lj4nJhtw23wQnRVdodw>
-    <xme:ClqlZaH50Bb-xmchKsdP4PZRqDkyI1MohXKydXLAd1sJjc69yfUB6elhMCEha_khI
-    0yzScobDup4WIA-XOE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdejuddgkeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepkeehtefguddvleejvdeileeifffhueevgedvheeiudfhueevgfehkeeitedu
-    keeknecuffhomhgrihhnpehsohhurhgtvgifrghrvgdrohhrghenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:ClqlZb5HDS1LRxqzJYVDnneQGoXfUI4iXL1UE667Uq4EAlfyErYR-A>
-    <xmx:ClqlZQ2sJ0mYSBIQueyA14P8y33zfIvxjBHlTG9Yl1fNcrvKw-pTpQ>
-    <xmx:ClqlZeGzt-jgAjwSwZCzrFkES_TEU0o48wygK48rMRWIJj8M-JbYkw>
-    <xmx:ClqlZbPv0bAFj_XAFQDrV-UIFIReuNBf2XAj8ch4tTyPK6TnOvagCg>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 58AA2B6008D; Mon, 15 Jan 2024 11:15:06 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1374-gc37f3abe3d-fm-20240102.001-gc37f3abe
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28A6417BA0
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 16:13:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a2dc7827a97so133117166b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 08:13:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705335204; x=1705940004; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nVYrgvSB/hdaXbdnvDLjcsaxrQx0tnZ31np8n8fE/8Q=;
+        b=OHS6mVyz0+8/YcMybmKM41RZR0pXyRq5RkLOCkJgnvl971F6q2zF5+hLS8gKdO5gfV
+         Fv+iVdKYe7jnsRb6jjs9/0OkuCM8aStVUvEE1BkXnq8btG/hq84CjZqOtIPYtkZOm5VY
+         MN16wONBjrBy6uieqPTovkYpgOWFB4+/LtKvPECg1ErImnKKCCvGLX1uldj6x8hsmvOF
+         kDoFIXZGgRANe6DhYImwU7a3fTsfeucqr65apE913Xv7z2heTl1S1fc1myJwO+IdJmpo
+         t6M0NLACaFBZVi6HpH0rgH6vnzlbGZICO8ds3UykWtCXqnoOztGoZF4RyfjVStf5/X4H
+         s8iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705335204; x=1705940004;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nVYrgvSB/hdaXbdnvDLjcsaxrQx0tnZ31np8n8fE/8Q=;
+        b=SK8scNaPsYYkrzRSaVLykqe+wh5jtueCADRxpHQN4UypEJ8Iw2RqNJBVqytQ54+N5x
+         QxINGtmYlUWLa0us/JpBbFmorqxZ/whnTdyCQX6RK/ngbvBSBZsOrY5VbpY+7yDGHMUG
+         lGD0PAlN3lAfZpnqbBGc2kMcjJqYNu5sNaN1MI3e1yBgSFn7Mg5I+irbL4xWeBFw0jag
+         +Gx1fI8Kb1oivASfWT6bsa+c0rK9x0VlH+6dY9Bg0CCOui/K2+j8TZ27Z70YHuEQUwLv
+         /K//b/EXwnAEFFUBnOxQogMHr8kBPF8l4b8Zqz/ztNNDJabTBDL+/7Kb/JyciTd29Mzu
+         vqtQ==
+X-Gm-Message-State: AOJu0YzscaiyIB5O5csOh+Tz9V5Zl9xav0TsaDrDc1NLP+nymq22fSQ4
+	gocO0VulmWtMArQVM9J9lqeJweS4QFqVuA==
+X-Google-Smtp-Source: AGHT+IGX2PUGrgNUH1lPba6d05WM5SWA6bVi6QLf8xtUoGPgvtwjOCgeZxIrKQOdoDMgJW+7zFTtWQ==
+X-Received: by 2002:a17:906:37cc:b0:a2b:2615:25d3 with SMTP id o12-20020a17090637cc00b00a2b261525d3mr2642917ejc.136.1705335204374;
+        Mon, 15 Jan 2024 08:13:24 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id bm19-20020a170906c05300b00a2362c5e3dbsm5417864ejb.151.2024.01.15.08.13.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Jan 2024 08:13:23 -0800 (PST)
+Message-ID: <7f311659-9f49-44dc-ad40-977d34066d98@linaro.org>
+Date: Mon, 15 Jan 2024 17:13:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <faf84e13-a927-4679-b837-2509f0209f82@app.fastmail.com>
-In-Reply-To: <20be7b9d5b8c0bef2a35da3d207c15eae75bfd4d.camel@mwa.re>
-References: <c812ea74dd02d1baf85dc6fb32701e103984d25d.camel@mwa.re>
- <ZYEFCHBC75rjCE0n@google.com>
- <9e97eb50-f9a6-4655-9422-fa1106fff97a@app.fastmail.com>
- <491250ba57be2ab983048ffcf5ffd2aec2bedb9e.camel@mwa.re>
- <1a528414-f193-4ac0-a911-af426bb48d64@app.fastmail.com>
- <caa041d27b0fa45aad09a9a262038e3ae4099ca2.camel@mwa.re>
- <20be7b9d5b8c0bef2a35da3d207c15eae75bfd4d.camel@mwa.re>
-Date: Mon, 15 Jan 2024 17:11:50 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Antonios Salios" <antonios@mwa.re>,
- "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
- "Deepa Dinamani" <deepa.kernel@gmail.com>
-Cc: rydberg@bitmath.org, linux-input@vger.kernel.org,
- linux-kernel@vger.kernel.org, "Jan Henrik Weinstock" <jan@mwa.re>,
- =?UTF-8?Q?Lukas_J=C3=BCnger?= <lukas@mwa.re>
-Subject: Re: element sizes in input_event struct on riscv32
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/5] reset: Instantiate reset GPIO controller for
+ shared reset-gpios
+Content-Language: en-US
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Peter Rosin <peda@axentia.se>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-i2c@vger.kernel.org, Chris Packham
+ <chris.packham@alliedtelesis.co.nz>, Sean Anderson <sean.anderson@seco.com>
+References: <20240112163608.528453-1-krzysztof.kozlowski@linaro.org>
+ <20240112163608.528453-3-krzysztof.kozlowski@linaro.org>
+ <CAMRc=MdcCZP5kgv7JBdy2m_naNbTSeq4MDE_3mk+1-5UD4ntwQ@mail.gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CAMRc=MdcCZP5kgv7JBdy2m_naNbTSeq4MDE_3mk+1-5UD4ntwQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 15, 2024, at 16:46, Antonios Salios wrote:
-> On Thu, 2023-12-21 at 14:38 +0100, Antonios Salios wrote:
->> On Thu, 2023-12-21 at 12:28 +0000, Arnd Bergmann wrote:
->> > On Thu, Dec 21, 2023, at 08:56, Antonios Salios wrote:
->> > > On Tue, 2023-12-19 at 13:53 +0000, Arnd Bergmann wrote:
->> > > > On Tue, Dec 19, 2023, at 02:50, Dmitry Torokhov wrote:
->> > 
->> > I don't know what __TIMESIZE is, this is not part of the kernel ABI
->> > as far as I can tell. __USE_TIME_BITS64 should be set by any 32-bit
->> > architecture if the C library defines a 64-bit time_t, otherwise
->> > the
->> > kernel headers have no way of picking the correct definitions based
->> > on preprocessor logic.
->> 
->> Okay, I agree that this might be a libc problem then. I'll ask the
->> glibc maintainers.
->> 
->
-> According to a glibc maintainer, __USE_TIME_BITS64 is not set on
-> architectures that use 64-bit time_t as default such as riscv32.
-> This can also be seen here [1].
->
-> Perhaps the kernel header needs to check the size of time_t in some
-> other way?
->
-> [1]
-> https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/features-time64.h;hb=glibc-2.37
+On 15/01/2024 17:06, Bartosz Golaszewski wrote:
+>> +
+>> +static int __reset_add_reset_gpio_lookup(int id, struct device_node *np,
+>> +                                        unsigned int gpio,
+>> +                                        unsigned int of_flags)
+>> +{
+>> +       struct gpiod_lookup_table *lookup __free(kfree) = NULL;
+>> +       struct gpio_device *gdev __free(gpio_device_put) = NULL;
+>> +       char *label __free(kfree) = NULL;
+> 
+> I got yelled at by Linus Torvalds personally for doing it like this. I
+> know this is a common pattern in code using GLib but Linus wants auto
+> variables to be initialized where they're declared...
 
-I don't see any better way, the kernel headers started using this
-in 2018 based on the glibc design documents and discussions
-with glibc maintainers, see the section on ioctls in
-https://sourceware.org/glibc/wiki/Y2038ProofnessDesign
+Declaration is here. Initialization is here. Therefore this is
+initialized where it is declared. What's more it is initialized to a
+valid value, because __free() accepts NULLs.
 
-The kernel only relies on this macro for the sound and
-input subsystem, but there are numerous applications and
-libraries that copied the kernel definition because that
-was defined as the only reliable method.
+> 
+>> +       unsigned int lookup_flags;
+>> +
+>> +       /*
+>> +        * Later we map GPIO flags between OF and Linux, however not all
+>> +        * constants from include/dt-bindings/gpio/gpio.h and
+>> +        * include/linux/gpio/machine.h match each other.
+>> +        */
+>> +       if (of_flags > GPIO_ACTIVE_LOW) {
+>> +               pr_err("reset-gpio code does not support GPIO flags %u for GPIO %u\n",
+>> +                       of_flags, gpio);
+>> +               return -EINVAL;
+>> +       }
+>> +
+>> +       gdev = gpio_device_find_by_fwnode(of_fwnode_handle(np));
+> 
+> ... so this should become:
+> 
+>   struct gpio_device *gdev __free(gpio_device_put) = gpio_device_find(...)
+> 
+> and same for the rest.
+> 
+> Don't get me wrong, I love cleanup.h but there's a (unofficial for
+> now) coding style.
 
-Maybe you can work around by patching the glibc sources
-yourself?
+So you just want to declare it not in top-part of the function but just
+before first use?
 
-     Arnd
+> 
+>> +       if (!gdev)
+>> +               return -EPROBE_DEFER;
+>> +
+>> +       label = kstrdup(gpio_device_get_label(gdev), GFP_KERNEL);
+>> +       if (!label)
+>> +               return -EINVAL;
+>> +
+>> +       /* Size: one lookup entry plus sentinel */
+>> +       lookup = kzalloc(struct_size(lookup, table, 2), GFP_KERNEL);
+>> +       if (!lookup)
+>> +               return -ENOMEM;
+>> +
+>> +       lookup->dev_id = kasprintf(GFP_KERNEL, "reset-gpio.%d", id);
+>> +       if (!lookup->dev_id)
+>> +               return -ENOMEM;
+>> +
+>> +       lookup_flags = GPIO_PERSISTENT;
+>> +       lookup_flags |= of_flags & GPIO_ACTIVE_LOW;
+>> +       lookup->table[0] = GPIO_LOOKUP(no_free_ptr(label), gpio, "reset",
+>> +                                      lookup_flags);
+>> +
+>> +       gpiod_add_lookup_table(no_free_ptr(lookup));
+> 
+> You told me that this doesn't need to be removed or ever freed but a
+> comment on that would be in order.
+
+Sure, code further comments on this but I can make it explicit here as well.
+
+> 
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +/*
+>> + * @reset_args:        phandle to the GPIO provider with all the args like GPIO number
+>> + */
+>> +static int __reset_add_reset_gpio_device(const struct of_phandle_args *args)
+>> +{
+>> +       struct reset_gpio_lookup *rgpio_dev;
+>> +       struct platform_device *pdev;
+>> +       int id, ret;
+>> +
+>> +       /*
+>> +        * Registering reset-gpio device might cause immediate
+>> +        * bind, resulting in its probe() registering new reset controller thus
+>> +        * taking reset_list_mutex lock via reset_controller_register().
+>> +        */
+>> +       lockdep_assert_not_held(&reset_list_mutex);
+> 
+> So how does dumping the stack help here exactly?
+
+This is self-documenting code. dumping stack does not matter, the point
+is that future developers should see this lockdep before they start
+playing with new locks.
+
+> 
+>> +
+>> +       mutex_lock(&reset_gpio_lookup_mutex);
+>> +
+>> +       list_for_each_entry(rgpio_dev, &reset_gpio_lookup_list, list) {
+>> +               if (args->np == rgpio_dev->of_args.np) {
+>> +                       if (__reset_gpios_args_match(args, &rgpio_dev->of_args))
+>> +                               goto out; /* Already on the list, done */
+>> +               }
+>> +       }
+>> +
+>> +       id = ida_alloc(&reset_gpio_ida, GFP_KERNEL);
+>> +       if (id < 0) {
+>> +               ret = id;
+>> +               goto err_unlock;
+>> +       }
+>> +
+>> +       /*
+>> +        * Not freed in normal path, persisent subsystem data (which is assumed
+>> +        * also in the reset-gpio driver).
+>> +        */
+>> +       rgpio_dev = kzalloc(sizeof(*rgpio_dev), GFP_KERNEL);
+>> +       if (!rgpio_dev) {
+>> +               ret = -ENOMEM;
+>> +               goto err_ida_free;
+>> +       }
+>> +
+>> +       ret = __reset_add_reset_gpio_lookup(id, args->np, args->args[0],
+>> +                                           args->args[1]);
+>> +       if (ret < 0)
+>> +               goto err_kfree;
+>> +
+>> +       rgpio_dev->of_args = *args;
+>> +       /*
+>> +        * We keep the device_node reference, but of_args.np is put at the end
+>> +        * of __of_reset_control_get(), so get it one more time.
+>> +        * Hold reference as long as rgpio_dev memory is valid.
+>> +        */
+>> +       of_node_get(rgpio_dev->of_args.np);
+>> +       pdev = platform_device_register_data(NULL, "reset-gpio", id,
+>> +                                            &rgpio_dev->of_args,
+>> +                                            sizeof(rgpio_dev->of_args));
+>> +       ret = PTR_ERR_OR_ZERO(pdev);
+>> +       if (ret)
+>> +               goto err_put;
+>> +
+>> +       list_add(&rgpio_dev->list, &reset_gpio_lookup_list);
+>> +
+>> +out:
+>> +       mutex_unlock(&reset_gpio_lookup_mutex);
+>> +
+>> +       return 0;
+>> +
+>> +err_put:
+>> +       of_node_put(rgpio_dev->of_args.np);
+>> +err_kfree:
+>> +       kfree(rgpio_dev);
+>> +err_ida_free:
+>> +       ida_free(&reset_gpio_ida, id);
+>> +err_unlock:
+>> +       mutex_unlock(&reset_gpio_lookup_mutex);
+>> +
+> 
+> You're already using cleanup helpers above, why not here too? Would
+> make this function much more readable and allow you to drop all but
+
+Not sure how much it would be cleaner considering that these are not
+free on success.
+
+> the ida_free() here. Possibly you'd need to define the __free()
+> callback for of_node_put() though.
+> 
+>> +       return ret;
+>> +}
+>> +
+>> +static struct reset_controller_dev *__reset_find_rcdev(const struct of_phandle_args *args,
+>> +                                                      bool gpio_fallback)
+>> +{
+>> +       struct reset_controller_dev *r, *rcdev;
+>> +
+>> +       lockdep_assert_held(&reset_list_mutex);
+>> +
+>> +       rcdev = NULL;
+>> +       list_for_each_entry(r, &reset_controller_list, list) {
+>> +               if (args->np == r->of_node) {
+>> +                       if (gpio_fallback) {
+>> +                               if (__reset_gpios_args_match(args, r->of_args)) {
+>> +                                       rcdev = r;
+>> +                                       break;
+>> +                               }
+>> +                       } else {
+>> +                               rcdev = r;
+>> +                               break;
+>> +                       }
+>> +               }
+>> +       }
+>> +
+>> +       return rcdev;
+>> +}
+>> +
+>>  struct reset_control *
+>>  __of_reset_control_get(struct device_node *node, const char *id, int index,
+>>                        bool shared, bool optional, bool acquired)
+>>  {
+>> +       struct of_phandle_args args = {0};
+>> +       bool gpio_fallback = false;
+>>         struct reset_control *rstc;
+>> -       struct reset_controller_dev *r, *rcdev;
+>> -       struct of_phandle_args args;
+>> +       struct reset_controller_dev *rcdev;
+>>         int rstc_id;
+>>         int ret;
+>>
+>> @@ -839,39 +1028,49 @@ __of_reset_control_get(struct device_node *node, const char *id, int index,
+>>                                          index, &args);
+>>         if (ret == -EINVAL)
+>>                 return ERR_PTR(ret);
+>> -       if (ret)
+>> -               return optional ? NULL : ERR_PTR(ret);
+>> +       if (ret) {
+>> +               /*
+>> +                * There can be only one reset-gpio for regular devices, so
+>> +                * don't bother with GPIO index.
+>> +                */
+>> +               ret = of_parse_phandle_with_args(node, "reset-gpios", "#gpio-cells",
+>> +                                                0, &args);
+>> +               if (ret)
+>> +                       return optional ? NULL : ERR_PTR(ret);
+>>
+>> -       mutex_lock(&reset_list_mutex);
+>> -       rcdev = NULL;
+>> -       list_for_each_entry(r, &reset_controller_list, list) {
+>> -               if (args.np == r->of_node) {
+>> -                       rcdev = r;
+>> -                       break;
+>> +               gpio_fallback = true;
+>> +
+>> +               ret = __reset_add_reset_gpio_device(&args);
+>> +               if (ret) {
+>> +                       rstc = ERR_PTR(ret);
+>> +                       goto out_put;
+>>                 }
+>>         }
+>>
+>> +       mutex_lock(&reset_list_mutex);
+>> +       rcdev = __reset_find_rcdev(&args, gpio_fallback);
+>>         if (!rcdev) {
+>>                 rstc = ERR_PTR(-EPROBE_DEFER);
+>> -               goto out;
+>> +               goto out_unlock;
+>>         }
+>>
+>>         if (WARN_ON(args.args_count != rcdev->of_reset_n_cells)) {
+>>                 rstc = ERR_PTR(-EINVAL);
+>> -               goto out;
+>> +               goto out_unlock;
+>>         }
+>>
+>>         rstc_id = rcdev->of_xlate(rcdev, &args);
+>>         if (rstc_id < 0) {
+>>                 rstc = ERR_PTR(rstc_id);
+>> -               goto out;
+>> +               goto out_unlock;
+>>         }
+>>
+>>         /* reset_list_mutex also protects the rcdev's reset_control list */
+>>         rstc = __reset_control_get_internal(rcdev, rstc_id, shared, acquired);
+>>
+>> -out:
+>> +out_unlock:
+>>         mutex_unlock(&reset_list_mutex);
+>> +out_put:
+>>         of_node_put(args.np);
+> 
+> I suggest reworking this to use cleanup.h as well.
+
+It's independent task. This is an existing code and any refactoring to
+cleanup or not is independent thing.
+
+Best regards,
+Krzysztof
+
 
