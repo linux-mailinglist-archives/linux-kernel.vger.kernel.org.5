@@ -1,179 +1,149 @@
-Return-Path: <linux-kernel+bounces-26210-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26211-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04F3482DCD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:59:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1EB882DCDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:01:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99DA9B21B56
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:59:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 249A21C21B61
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:01:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C1EB179A7;
-	Mon, 15 Jan 2024 15:59:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4CD179A7;
+	Mon, 15 Jan 2024 16:01:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="HR7YVebv"
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2089.outbound.protection.outlook.com [40.107.22.89])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BEcpmpco"
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B1C61798C;
-	Mon, 15 Jan 2024 15:59:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HL/nxefhRQfahT3/cGd0ajFLZklZmZwwIkD9vyv5pqWSzc/y6uxTk0TnkNplKpjVlez/kfmCiBzYnLY6Tn1sHafzx00RXRL2xCGuUSX8SHGCuvhOXKgBHSnBL9wnhNhzcqaImMgJ6Zv3nh+5hza1JJ8aYZaykvildepJpd86tJZhTdY8Yy5vIUlDkcLuHGIIAhaSCZTgk0xk2vldaSXJyr6uLH2A4V7NQ/vOG8TzRE38jVcEboTf8dNCbzMRnA4bV0uLxIhz6jxmolT4HKs7xTzSxypZ72Eij55EGpazviJxplPnhRiAngTaPJVU7iuRIL5ooznnCleA3ETNbrMArw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xuZlw3vrAsEp3bpDkwAqT8eeRS8Mq0gVX0taiUEtCYk=;
- b=FH32O9cp4DrXt44gkc0u5QzhRgKVqvjQZhttlrjb7V1Y8BRO4fusxDT0wCMNDY/hRr8wjrIhJoKMQvtshfEOjhwdRO8FiB1TV8I4Rxyj62Wu9g6fwnDKVGthru1qQyz6mTlhDJXIu8/fcMpxehq9ezxYLhD7MG2+YxQPZ5K4m0pgoEKsaogmTSOBaARLdp/tVG+/K5/Ri9Or+maED/n9JVX78potjsEysXLkdLud8IQVFv3K/kZUAZJ6yALPMFfGFOWyrcN3R3jnj9eovdcf4//eAnHZ+QSjXNAjt/+cSd3qArK3gryYThqtt0UCMzAts/pWINsF2Jv9EsoVDMgf5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xuZlw3vrAsEp3bpDkwAqT8eeRS8Mq0gVX0taiUEtCYk=;
- b=HR7YVebvn4jskSIyEdWQJ8veoqoJqqE2TQztaMiRmIHcq/Yfb3gFvq7I43721Y9MLk44jxMwpJF/k52HftxoYzbgOMcxxxvjilu+yFeU16+aCztixHPjxzTc5BExDbylSKvmj/rxPXt4jPKHE1Rvo1OPJeVhy97LFXLho2H3kxs=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wolfvision.net;
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
- by DU5PR08MB10496.eurprd08.prod.outlook.com (2603:10a6:10:527::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.23; Mon, 15 Jan
- 2024 15:59:04 +0000
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::6b40:1e6f:7c94:71dc]) by VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::6b40:1e6f:7c94:71dc%4]) with mapi id 15.20.7181.026; Mon, 15 Jan 2024
- 15:59:04 +0000
-Message-ID: <5db4b898-93d5-446f-bfed-b57847f9967a@wolfvision.net>
-Date: Mon, 15 Jan 2024 16:59:00 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] ASoC: dt-bindings: xmos,xvf3500: add bindings for
- XMOS XVF3500
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Cc: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org
-References: <20240115-feature-xvf3500_driver-v1-0-ed9cfb48bb85@wolfvision.net>
- <20240115-feature-xvf3500_driver-v1-2-ed9cfb48bb85@wolfvision.net>
- <333c2986-c7c2-4a46-90cf-b59ae206e55a@linaro.org>
- <96abddcc-fa65-4f27-84fe-2281fe0fcf1c@wolfvision.net>
- <644f7f02-405d-47fb-bc72-4d54e897255f@linaro.org>
-From: Javier Carrasco <javier.carrasco@wolfvision.net>
-In-Reply-To: <644f7f02-405d-47fb-bc72-4d54e897255f@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: VI1P191CA0014.EURP191.PROD.OUTLOOK.COM
- (2603:10a6:800:1ba::14) To VE1PR08MB4974.eurprd08.prod.outlook.com
- (2603:10a6:803:111::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C2D17981;
+	Mon, 15 Jan 2024 16:01:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dbd715ed145so6775698276.1;
+        Mon, 15 Jan 2024 08:01:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705334474; x=1705939274; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/7vSzFgCEm7a7CdYxlSsrgd6aVbtCgT1hsw6iA1apkI=;
+        b=BEcpmpcosl0zneqk+7ZksGjZcozfmvZq23asYQJD3KJ6j+LiM3zbUuxWGgbFPxcb9l
+         KKJ+cV0+4rENHLt3TbNOKHYglOHc1QYRzSFd2CAFX5oMQTiojHKvDClC+zZW3eB2KBbU
+         FelPgVBAMluPbdlUR/JhxifzJtmBuH9/xoRTIS8+1fwH8sPwaVBSG0gKaR35WfXi/BVQ
+         up+OfFx4DHYWJxWXMoOCcVIjwrKm4Wg+zld187kEDtmC36gCa9SP6TyXZNx1u/39Vs7F
+         iWmifL28L30DFf0bug6AENts+HWwc3ForNSJUXfhPZy4sDBm7+GfqxARUpoJp5mBDJDB
+         PEig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705334474; x=1705939274;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/7vSzFgCEm7a7CdYxlSsrgd6aVbtCgT1hsw6iA1apkI=;
+        b=RGN0u4l2+LlI5ljdRIbzop36pUe9z+dHSHlTZN7QzJRAhJnlSiW/yKwsS1k6f9YmZA
+         q923uquDIW3fHVcS59CfAqOKg2PoOiw4pRoSUZ4pSWLffmKl6Vl3AMqU/BGerXU8sn8o
+         hMR3S0R0YHDJFQSHhkjp5Km9ztyf9+d8tFPvE+29kJvJECmgOYThnZdA4rb4NBZXHkhl
+         JIAvifLFikAEQOmZGLy0btYrEJNZJNxNDwLo2Onwh6WfnkVHU0wf1lWkWoOjteC5Gyke
+         Yv5zPR7+ukx9mi4M1WlDSNIAw8404QmB8Qq7i7p+jXDDPp9ipesRYcHHr+eAhFqFkpR4
+         Uu0g==
+X-Gm-Message-State: AOJu0YwAgbDyEYpffsv4LtBkhS1BM5OdiZn+XB5WXpjd1kWJn34GxAu4
+	wiK8YXOTMqsg9CCq6G+MV5hZTQUUEiYWsPsjz9I=
+X-Google-Smtp-Source: AGHT+IG3czFYcbC9F820rKyx5Oet19ap06tIU0sVWUgk+4e5C/lGHUFJB2avan00hM0s8X9o4pfy3FcQcot+sieqHYA=
+X-Received: by 2002:a25:aba2:0:b0:dc2:1ce9:7dd with SMTP id
+ v31-20020a25aba2000000b00dc21ce907ddmr269066ybi.58.1705334474342; Mon, 15 Jan
+ 2024 08:01:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|DU5PR08MB10496:EE_
-X-MS-Office365-Filtering-Correlation-Id: b7e7fde7-53d9-4e8a-8ca9-08dc15e2e5af
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	sS3V0dqEQtGl7H+QXQlLRalNRJrA5hejGzbtkSj3XDJb6wNTwZYYCwlYLpklS43wcuRmaS0jC30TqNqL84bCDMOX5+90hwo/Af/dK59MV8brU3Lr+p7vJh5ilOsUsMNYBMLBBta4RrJYsvRYWnx8dOD/VfjfTYDvZJ6hFTfJUJtpycD+Dt3wHqjEMxenu+2oiuF6/xA5RpSi+ukSd9GGkltb6o79xZxgarVY/BKD5oGg10+puN6gLCEsdgjN8r4nRSBLBD1kbVwr+5MWUJtrHoYJp7GfW8z4IKW+bqKy2SF+bZFZJqL2wVgiPqRzLerdUsyyIJALGKcwGMyec3Y8PiV85q5CBeh5cCi4vJAQQngacULh+jDB1XeoDMce5dXCQqmAvG8QTKnQidzT6RgTQzHxC5scSf58hp0qpiGMWHit1pLAYnyCBoLBwyNidnaK0nyPgWfCmfFaGaI1qb1Gqbgcy/TrA3IuI7tGVEmUnYSed38xX5uQCEVHeX+ZT9JCzY0BA5OO6pwRloIfWe+G+lweLf0UAsRUNxcKpkJ/HaR4FuQgqZkhcqyu7fbmNa9peX1/CuInvcqca1ddfv2e+oJ+cppjL2clsXtRtZefhMGvs6s4opmL+LUQMDiC9E+SWBfNRpN9EUKuRnG22ntgdA==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(136003)(366004)(396003)(376002)(346002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(38100700002)(41300700001)(36756003)(6512007)(5660300002)(7416002)(26005)(2906002)(31686004)(2616005)(6506007)(53546011)(44832011)(478600001)(966005)(6486002)(6666004)(110136005)(316002)(66476007)(66946007)(66556008)(31696002)(8676002)(4326008)(86362001)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?UEVCUkRFaW9xaUM1U3pFbEpIYW4ydXpQb3AvY2cvT2ovM0dmUU1sK1BZbXpz?=
- =?utf-8?B?bWlBN3JTOUEwYzlZdWlOc2piUGc1TkNYUUNoNWJ6QkkvQi8xQnIySEgzUVR4?=
- =?utf-8?B?RWxIODNzUGwwQW5LV2lHVnMrTEp6dGtTVmdpVE9oaTZpS25JTUhFNXBZWWxT?=
- =?utf-8?B?UW0vREJnK3dRc2kxYkRoR0tPeFYvZHNXNzRqMDhWNzY4elNZQmh5d0NUOWNG?=
- =?utf-8?B?ZFcrSmVjV3RxZHpMcS9IM3JIZzVtdHg1WWV0T0o3VGZqZGgyUmZhdVZDS01D?=
- =?utf-8?B?ME92RGpvOEtBWlJWN3BJcU5ob1ZPYmNacEN1czJ0b1YrZUpLQ2I2aGxHTm1G?=
- =?utf-8?B?RE5JbGNIbjVwK3ZoRDg3SXdKN2NtdEIzNnFOVWhxSkRZaGZ1dE44R0ZZSXNq?=
- =?utf-8?B?VStvRERBeHhCZTN4Skt3anRPYjJEa3Q1Z2RxWVVKcGMvYVEwNEczeXNSNGpr?=
- =?utf-8?B?U2pDZDE1ckxIVjhsOHJyaDN4Mk4xMVFMRjlXdTJsQktoNUJhT3VFSk8wc3hY?=
- =?utf-8?B?Szk2UE5Vd0FveDhQSkJPOFRGRkh6ZWJ3Y3RjbzJJanJIMHl0Y2REdmpnQ3Yr?=
- =?utf-8?B?cWRWd05Gbm1Jb0RUY1JzTkVydnF2d1VHQ1Q2SWdDOEwvL0dIWDcxMkJ2cER3?=
- =?utf-8?B?YkVoU3VaTk1zd01RaDJlMTByZUE0S3dSem5rYTVZYXlFTzFZYlhFWWkzQmZo?=
- =?utf-8?B?Yk9RVi9nNk9Vd0Y3aTNzTWFYV2dIMk0vdWdqNVVHcUNtdVFVMG1MRE1YSlZi?=
- =?utf-8?B?Z0d0OWRQVmJlWDRKTXpKYXBBQ0dla3RWNW9GdFhJV3pHOUNLcUhCRFVuVnpL?=
- =?utf-8?B?MVRoaUY3WWEvOVJaaGR5WE96cmpkdUpkRVN2V0UvOWxRMy95SXRRbEFNN3c3?=
- =?utf-8?B?KzFnRW1kVWNxZ3JaYUNLeDJUMHRvY1VVQkY1d3NOTVQralNIZmJrUElGS0po?=
- =?utf-8?B?TVNWa2hsSzl6bWhpMkNpenBiZllMZDhJbWFSTjVORGlLRG5vN0tsT3lkUUYy?=
- =?utf-8?B?NVdQZ1dqbzRJSnZjZXNsS2dlQUVPWlNwbWEraWdMTUc5MTdFUGFjVUh0Ky9X?=
- =?utf-8?B?a3FLUVVPc25pR0J6aTJ4eGZIQzdMUnQwQWl5VnhHb013cGdjYTQ2ZEVWR2xz?=
- =?utf-8?B?UThXd1RnV0ZUb1lDYUhCSlJ4cnNIekQ4b0NhODBrT3Y3SDV2TGUvL0JaYzR0?=
- =?utf-8?B?YnVUY0c4YjFEV1l3bmQ2bmg1TkVkMENyQU5XUndDK0VlV002SEY4U0llL09N?=
- =?utf-8?B?SVcxMXRJZDhTWDlob1pEeklJOUViMGZNdXpobkpWOUQvUWZHaWdrT0xiYk9x?=
- =?utf-8?B?Ykg5b05qY0VzMjR4cExOQzBBL3lpa3ZoenFNOVZXaXptN09pU3Rzekt1SUYy?=
- =?utf-8?B?TVpNMmN3OVZEYXVGU0k0MFZjaHREMWdqTzU4d1RIUlZxU0NKZ2FtNnFYTEhh?=
- =?utf-8?B?ckMyZ2Fqb2J3Rmxid1RmZFBCTVB0UjZQSmNlWWdDdmt5RHdHaVVNK2NaSEpj?=
- =?utf-8?B?WVVLVHA2WElDcTVZNjhEVlFxQnBOa3k0aURyZzU4ZXludU92aFB2Rm1hRHhS?=
- =?utf-8?B?K2ZVNVExamFmMTlnMUtBZDNidW9KQ2lkQnE5LzlzVVVLOVBycnZrVGRyeCsw?=
- =?utf-8?B?bW1nWVpTUVJSR2FWUWdnWXBrNHNqWTA3ZlJVSk9BVWFKSWNFbHhMWndWcm02?=
- =?utf-8?B?SWtMZzUxTWo2Q1gxNzZELzRySjNYVVNSazVGMHlSM05TRUxIR1l2a0NscDQ4?=
- =?utf-8?B?RFlwY21nZWVmWWRwQUMyQ3hZbmlXZEZBVmVOV09CQ1ZLMElnYmFVdllQbW5F?=
- =?utf-8?B?RWhLYW8wNHEvTnV2MjBENjZLMlpnLzJUWk1hRkI0U2VYYWt2K21pZGhENHlB?=
- =?utf-8?B?MnZlSVFYN0Zpdys1Y09QN3kwRmlVTVBiMU1MTkxuK3NEUW83ZEFDRHFsK2Z1?=
- =?utf-8?B?UHNmajYvMElvSk0vdU41MmhPUG5pR1BFYWlSd3R5ay9qdkZ2YVpFcjI0YXhK?=
- =?utf-8?B?b2lmdVJkYzhjQWlRcXZROWtoUmlwbkNjSTVzUXNpQ3praHNsN0QzcTcvODIy?=
- =?utf-8?B?NWNXa05iS1BHSFBSVzcxbHJUdVFHVXNYWTMrZkZ3UFgyNVlxMXJFNmJ1eUht?=
- =?utf-8?B?SFF1bmQ1UzdpYTFZYWFzSHVFWVRMcHQwODVmQ21aaFpYOExtWTdUa0p5ZkhE?=
- =?utf-8?B?OVE9PQ==?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: b7e7fde7-53d9-4e8a-8ca9-08dc15e2e5af
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2024 15:59:04.2497
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tGj8bvdYVJfHzGLaIognAfsWNdqQ3DsX86GozJojOrXyl9SofbwsDnQZmPajZlSAAiKzjkw8PkHDIw/K+7j6TqZBp3B4Nsc+0W/nlz+9y/I=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU5PR08MB10496
+References: <20240112091128.3868059-1-foxywang@tencent.com> <ZaFor2Lvdm4O2NWa@google.com>
+In-Reply-To: <ZaFor2Lvdm4O2NWa@google.com>
+From: Yi Wang <up2wing@gmail.com>
+Date: Tue, 16 Jan 2024 00:01:03 +0800
+Message-ID: <CAN35MuSkQf0XmBZ5ZXGhcpUCGD-kKoyTv9G7ya4QVD1xiqOxLg@mail.gmail.com>
+Subject: Re: [PATCH] KVM: irqchip: synchronize srcu only if needed
+To: Sean Christopherson <seanjc@google.com>
+Cc: pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, wanpengli@tencent.com, 
+	Yi Wang <foxywang@tencent.com>, Oliver Upton <oliver.upton@linux.dev>, 
+	Marc Zyngier <maz@kernel.org>, Anup Patel <anup@brainfault.org>, 
+	Atish Patra <atishp@atishpatra.org>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Janosch Frank <frankja@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 15.01.24 15:35, Krzysztof Kozlowski wrote:
-> On 15/01/2024 14:58, Javier Carrasco wrote:
->> On 15.01.24 14:02, Krzysztof Kozlowski wrote:
->>> On 15/01/2024 10:16, Javier Carrasco wrote:
->>>> The XMOS XVF3500 VocalFusion Voice Processor[1] is a low-latency, 32-bit
->>>> multicore controller for voice processing.
->>>>
->>>> Add new bindings to define the device properties.
->>>
->>> I don't see any bus, so how does it work? How do you get the voice data
->>> from it? I also do not see any DAI: neither here nor in the driver...
->>>
->> The voice data and any other information can be retrieved directly via
->> USB from userspace. Once in normal operation, the device acts as a
->> regular "onboard" USB device and the driver does not need to do any
->> further management.
-> 
-> So is this an USB device? If yes, then shouldn't be just auto-discovered
-> and you add here some bindings for other device? This looks like coding
-> power sequence not in USB node, but in some other, new node.
-> 
-> Best regards,
-> Krzysztof
-> 
-It is an USB device that requires two power supplies and a reset to
-boot. Afterwards it is auto-discovered and functions normally as a
-regular USB device. In that sense it works like the onboard USB HUBs:
+Many thanks for your such kind and detailed reply, Sean!
 
-https://github.com/torvalds/linux/blob/master/drivers/usb/misc/onboard_usb_hub.c
+On Sat, Jan 13, 2024 at 12:28=E2=80=AFAM Sean Christopherson <seanjc@google=
+com> wrote:
+>
+> +other KVM maintainers
+>
+> On Fri, Jan 12, 2024, Yi Wang wrote:
+> > From: Yi Wang <foxywang@tencent.com>
+> >
+> > We found that it may cost more than 20 milliseconds very accidentally
+> > to enable cap of KVM_CAP_SPLIT_IRQCHIP on a host which has many vms
+> > already.
+> >
+> > The reason is that when vmm(qemu/CloudHypervisor) invokes
+> > KVM_CAP_SPLIT_IRQCHIP kvm will call synchronize_srcu_expedited() and
+> > might_sleep and kworker of srcu may cost some delay during this period.
+>
+> might_sleep() yielding is not justification for changing KVM.  That's mor=
+e or
+> less saying "my task got preempted and took longer to run".  Well, yeah.
 
-The onboard USB HUB driver is of course more complex because it has to
-support other features, but the idea of enabling the power supplies and
-toggling the reset signal is essentially the same.
+Agree. But I suppose it may be one of the reasons that makes  time of
+KVM_CAP_SPLIT_IRQCHIP delayed, of course, the kworker has the biggest
+suspicion :)
 
-Best regards,
-Javier Carrasco
+>
+> > Since this happens during creating vm, it's no need to synchronize srcu
+> > now 'cause everything is not ready(vcpu/irqfd) and none uses irq_srcu n=
+ow.
+
+...
+
+> And on x86, I'm pretty sure as of commit 654f1f13ea56 ("kvm: Check irqchi=
+p mode
+> before assign irqfd"), which added kvm_arch_irqfd_allowed(), it's impossi=
+ble for
+> kvm_irq_map_gsi() to encounter a NULL irq_routing _on x86_.
+>
+> But I strongly suspect other architectures can reach kvm_irq_map_gsi() wi=
+th a
+> NULL irq_routing, e.g. RISC-V dynamically configures its interrupt contro=
+ller,
+> yet doesn't implement kvm_arch_intc_initialized().
+>
+> So instead of special casing x86, what if we instead have KVM setup an em=
+pty
+> IRQ routing table during kvm_create_vm(), and then avoid this mess entire=
+ly?
+> That way x86 and s390 no longer need to set empty/dummy routing when crea=
+ting
+> an IRQCHIP, and the worst case scenario of userspace misusing an ioctl() =
+is no
+> longer a NULL pointer deref.
+
+To setup an empty IRQ routing table during kvm_create_vm() sounds a good id=
+ea,
+at this time vCPU have not been created and kvm->lock is held so skipping
+synchronization is safe here.
+
+However, there is one drawback, if vmm wants to emulate irqchip
+itself, e.g. qemu
+with command line '-machine kernel-irqchip=3Doff' may not need irqchip
+in kernel. How
+do we handle this issue?
+
+
+---
+Best wishes
+Yi Wang
 
