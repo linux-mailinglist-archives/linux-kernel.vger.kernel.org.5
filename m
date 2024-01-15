@@ -1,101 +1,111 @@
-Return-Path: <linux-kernel+bounces-25726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDB4B82D501
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:24:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 797F782D518
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:31:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D228B20CF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:24:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 180701F218C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:31:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5501063AD;
-	Mon, 15 Jan 2024 08:24:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UUMqzTNz"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF5742F25;
+	Mon, 15 Jan 2024 08:31:18 +0000 (UTC)
+Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 664455C97
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 08:24:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705307052;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WdHL5Nw4L0E7LviK69bDEOS/TGajAce1+kECtONWdOQ=;
-	b=UUMqzTNzA8YwpfeQNOTcFeDejrxF1OHzZTHWnzmfjEDWEqQrdsCpa/3xsHB3dWzD4mcle3
-	SwQTtgqerLJsAPRy2iDsifopLt7UW6eV/9MpOl4LH2oC5CpvgDLIexoRG74kjNHYt7h1c0
-	/eKecx7THtQHjGUqAtmSaHnxCwdlFEA=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-197-XVr_iVrEM9ipj_dSsMeN3A-1; Mon, 15 Jan 2024 03:24:10 -0500
-X-MC-Unique: XVr_iVrEM9ipj_dSsMeN3A-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40e4caa37f5so49445795e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 00:24:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705307049; x=1705911849;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WdHL5Nw4L0E7LviK69bDEOS/TGajAce1+kECtONWdOQ=;
-        b=lP48utkjT9WjFpoDBoMuGBIOlcxFusPRI4CmkZUSe5fql6biB6ENoxRsay55s2feOR
-         r++rH2l03bUb8aKih2uphjbL7Af4wC/RkI/btaf1WMa0Ouog0DTF3fon3PC5av4i+VIg
-         J367pOHLjA1dLaHN57LnKCkkvjrjZNtKBmPiqEpPh5owqJiVLWTFMNQdhclj/4xb9rTa
-         EEw/wRMoW+4SeoIWyf+q23OvmbTyM5lppJBZeAiSZuVIPjxRjq084rZPsVPIb/O9/0w+
-         Ar6dFNyLuL7Gu2mPDIqeUzGCcBWBfmDEF78JLYKzofuNvlfIuTG2SU4Fem5+Aa3sHw0+
-         b8AQ==
-X-Gm-Message-State: AOJu0YzHiC51WFXnIP4907tIEQp9/YQKumY90s6WTrmr4Gvnj8i6h9zg
-	dHIJD/veRkRsGjqr9kotwgl4Ya4v0HHRf7h0QPsGkMzQKLyB7RlhmKQNYyyYR4ok2lCLhceZDl9
-	z/UsBs8JssONPcUcKKdx6f31q3gH8Sbdn
-X-Received: by 2002:a7b:ce89:0:b0:40e:616b:50f with SMTP id q9-20020a7bce89000000b0040e616b050fmr2463777wmj.141.1705307049669;
-        Mon, 15 Jan 2024 00:24:09 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGBEbtq4O+FopQ6pQyQO1trt0NUo5+q0+USaIZPNgscLYIqA4FgDvQ2PPDGSn+Q3oE/+3Jcxg==
-X-Received: by 2002:a7b:ce89:0:b0:40e:616b:50f with SMTP id q9-20020a7bce89000000b0040e616b050fmr2463771wmj.141.1705307049365;
-        Mon, 15 Jan 2024 00:24:09 -0800 (PST)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id g21-20020a05600c311500b0040d30af488asm18874042wmo.40.2024.01.15.00.24.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 00:24:09 -0800 (PST)
-From: Javier Martinez Canillas <javierm@redhat.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, dri-devel@lists.freedesktop.org,
- linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Jingoo Han <jingoohan1@gmail.com>, Daniel Thompson
- <daniel.thompson@linaro.org>, Lee Jones <lee@kernel.org>, Helge Deller
- <deller@gmx.de>
-Subject: Re: [PATCH v1 3/4] backlight: hx8357: Make use of dev_err_probe()
-In-Reply-To: <20240114152759.1040563-4-andriy.shevchenko@linux.intel.com>
-References: <20240114152759.1040563-1-andriy.shevchenko@linux.intel.com>
- <20240114152759.1040563-4-andriy.shevchenko@linux.intel.com>
-Date: Mon, 15 Jan 2024 09:24:08 +0100
-Message-ID: <875xzvovh3.fsf@minerva.mail-host-address-is-not-set>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 348E180A;
+	Mon, 15 Jan 2024 08:31:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iie.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iie.ac.cn
+Received: from localhost.localdomain (unknown [159.226.43.30])
+	by APP-01 (Coremail) with SMTP id qwCowACXnraT6qRlgmlRBw--.48870S2;
+	Mon, 15 Jan 2024 16:19:32 +0800 (CST)
+From: Jingzi Meng <mengjingzi@iie.ac.cn>
+To: gregkh@linuxfoundation.org
+Cc: jirislaby@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Subject: [PATCH] tty: change the privilege required for tty operarions
+Date: Mon, 15 Jan 2024 16:24:20 +0800
+Message-Id: <20240115082420.13372-1-mengjingzi@iie.ac.cn>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <2024010247-polio-brittle-1b23@gregkh>
+References: <2024010247-polio-brittle-1b23@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:qwCowACXnraT6qRlgmlRBw--.48870S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ur4rCrW3Gr1rZF15tF47Arb_yoW8AF1kpa
+	1rCw4jyw45trW7GFn2ya9a9FyrXFZayF9rKa4rKayavFn8C34jk3s5Aryj9F1rJr4xGrnx
+	A34q9Fy5X3ZFvwUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUk0b7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+	0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+	A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+	jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
+	A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+	w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMc
+	vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GFyl42xK82IY
+	c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+	026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF
+	0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
+	vE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUy_WFUUUUU
+X-CM-SenderInfo: pphqwyxlqj6xo6llvhldfou0/1tbiDAYRE2Wk5CIZfAAAsq
 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
+Currently, CAP_SYS_ADMIN is responsible for tty-related functions in
+tty_ioctl(): TIOCSTI, TIOCCONS, TIOCVHANGUP. CAP_SYS_ADMIN is already
+overloaded, change it to CAP_SYS_TTY_CONFIG for a more fine-grained
+and accurate access control.
 
-> Simplify the error handling in probe function by switching from
-> dev_err() to dev_err_probe().
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
+Signed-off-by: Jingzi Meng <mengjingzi@iie.ac.cn>
+---
 
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+The userland api affected by this change is the ioctl system call,
+especially when the second argument is TIOCSTI, TIOCCONS, TIOCVHANGUP,
+which now requires sys_tty_config instead of sys_admin. Tested on Debian
+with kernel 6.7.0-rc5.
 
+ drivers/tty/tty_io.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+index f3ca2105b66d..c81479366317 100644
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -2286,7 +2286,7 @@ static int tiocsti(struct tty_struct *tty, u8 __user *p)
+ 	if (!tty_legacy_tiocsti && !capable(CAP_SYS_ADMIN))
+ 		return -EIO;
+ 
+-	if ((current->signal->tty != tty) && !capable(CAP_SYS_ADMIN))
++	if ((current->signal->tty != tty) && !capable(CAP_SYS_TTY_CONFIG))
+ 		return -EPERM;
+ 	if (get_user(ch, p))
+ 		return -EFAULT;
+@@ -2390,7 +2390,7 @@ static int tiocswinsz(struct tty_struct *tty, struct winsize __user *arg)
+  */
+ static int tioccons(struct file *file)
+ {
+-	if (!capable(CAP_SYS_ADMIN))
++	if (!capable(CAP_SYS_TTY_CONFIG))
+ 		return -EPERM;
+ 	if (file->f_op->write_iter == redirected_tty_write) {
+ 		struct file *f;
+@@ -2719,7 +2719,7 @@ long tty_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	case TIOCSETD:
+ 		return tiocsetd(tty, p);
+ 	case TIOCVHANGUP:
+-		if (!capable(CAP_SYS_ADMIN))
++		if (!capable(CAP_SYS_TTY_CONFIG))
+ 			return -EPERM;
+ 		tty_vhangup(tty);
+ 		return 0;
 -- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+2.20.1
 
 
