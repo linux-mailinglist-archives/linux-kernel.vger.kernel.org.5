@@ -1,109 +1,102 @@
-Return-Path: <linux-kernel+bounces-25729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F6C582D50A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:27:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 776BD82D50C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:27:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EAD61C211CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:27:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 280DB281495
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:27:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCE156FB6;
-	Mon, 15 Jan 2024 08:27:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E0647482;
+	Mon, 15 Jan 2024 08:27:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DYVeSxhj"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GYzKJjCB"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B31666FA1
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 08:27:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a2c179aa5c4so494718266b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 00:27:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705307219; x=1705912019; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XwFP484EL/42mEA8eP3U7iCZLLGzI7yfwJRI9zN584M=;
-        b=DYVeSxhjFzxDNYgA8lkpIacieQSXGTUr1abf+1vJWPrmrcy7XCFNPraoD4y7mhQeQo
-         2fWLXfc2qqv2/tnyD9zhl5T6AoZDugsEjJYZeXrIzAC15CDUCSx3Of6VEQgezgEKWNlM
-         WGSWM7yTay8+7wWkufvhHt6BmjSunad2wOgB/xjzr2WLA1rSIgyyQMuynoXev+f94Lf6
-         aVMebctPK+RKEYHnc2zpnsBPsqMd0RVxF+e8sBOn2FJD0f1Q6EJa20k12u9ws7ie1z24
-         hmrtanyE58uQeI3PTnIPxAzbOeYWsLNCzPkWbI8Xq0qQGdgh/U18u1Ckjn1/5Ptrf/pb
-         8lIw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BFA47468
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 08:27:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705307248;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pehUlh5mpGQ5TGIbBN/xVKuXzozmXoCM9xJyPY4GLE0=;
+	b=GYzKJjCB6Ub9oM6AtPeKHLpid/ui1SptJbxTTFAtSQ3M1VeiwdaNT57zqRK+c1Fsu87sgJ
+	ljsdxlwWWkTum+hmOyHsNyP9VunlMBEOIafr8IXaoyuTjUOBb++uUH8KxHth1xr7n3MnJy
+	ABBpGtF3jEJpwzRORyFYMDWxyOdzW/A=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-678-AitCi57xMACQSGLA9mevzg-1; Mon, 15 Jan 2024 03:27:27 -0500
+X-MC-Unique: AitCi57xMACQSGLA9mevzg-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40e41740b6eso74763755e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 00:27:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705307219; x=1705912019;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XwFP484EL/42mEA8eP3U7iCZLLGzI7yfwJRI9zN584M=;
-        b=Yxx3v8lQzeoIJo6P/Ld6dUtUMNtlJTxh96Enk+6CFwYIENXmGky4NqqoJF3N+ic5g4
-         4BOD5no7zWA1JvruX1ebwCoJvJzbIfu/HHXrs7qSpxg6zYAo9dxc/BCAG3WFZDFW6+qp
-         ACNpi4dp63nZoiWCFl5B/DM4MKprLkU4FehWadN6aIEmNlBKEGx9HNhpw3bo1wykPNP6
-         AHK8KXJxyFIgyC4jmIQHZ+d716ZE4mN+SO334PemTbc8K9Ni4W2r6r+s8QOX9s9U/vKI
-         eiKHxLuwUzPHUIwBGMu/PjXvB2ePneugY7zlhKB29K+1eYHYqCInox3d5WycHD/O5MX/
-         jU8Q==
-X-Gm-Message-State: AOJu0YyOajk8QnrS0spSK9d4BoxcuUMCJeJfW67nFNe/2AuGoUzxrhSV
-	FsfCKIeT3ors2dt5UYmxnpA+juMFK7tc1YMMpxdtmqvfVIG9aQ==
-X-Google-Smtp-Source: AGHT+IF4k1vq/KWZ/UThsgPFVJPprdVcyL3s0TAS6ZWzFuWcDmGKlFdr94xCGFOqT/9hdzR7N9CZn4dOFhklG8DmJ60=
-X-Received: by 2002:a17:907:740e:b0:a26:9829:1f84 with SMTP id
- gj14-20020a170907740e00b00a2698291f84mr2033034ejc.116.1705307218905; Mon, 15
- Jan 2024 00:26:58 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705307246; x=1705912046;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pehUlh5mpGQ5TGIbBN/xVKuXzozmXoCM9xJyPY4GLE0=;
+        b=RzoxswpDloNDa8nCVTSrVh813ycyUmzmuQ8nWv2CSSsl51clL371upUqiOv5An0iie
+         kSKVf0tDUajADmOSdS0mdzim+q/EDSxVeIc/eKfXCV3Je3ZwkAKJMouS4rj5uZnSZqkp
+         hC3atwEEO20YunhPPlr6UiUz1/WHwowk/t+eNafuRjo71cAhlMllc3STrO5ZtmmvMwcP
+         yRcSHaC6sQyfYxqwQbT9JIIEoUczny+4WzjMkIbPwFSA2VfZZUR8tfztz6s9p0QdXuoN
+         5JiECYyVPPPmouzKZNaJH1XdhYbs6D0j2iQtNHDzNlNavA917ZQqZkY/OcVqP7yyF4mH
+         B84g==
+X-Gm-Message-State: AOJu0YycJnQOaOVBj+nHtKSssMORwlAVU6k409Lopt91lLuJ0eLOORY0
+	ZFUaovCmKGIJsMLYf4W9mCfj/HJP2tc+9PcW9nIpo+IZBiPtZPbHTbGpRoS1vVvZ78/BPl0lSB2
+	Ie305FIWyreIjbYEDsKnGzzqFIH6ANhdu31ln8SE6
+X-Received: by 2002:a7b:cb93:0:b0:40e:6792:ac08 with SMTP id m19-20020a7bcb93000000b0040e6792ac08mr2081311wmi.14.1705307246020;
+        Mon, 15 Jan 2024 00:27:26 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE2x/nlsctM6zk5v7GGg1IXQBdJ9MByR0vhFREzXeFeH6SHdHa07Hl7vvvScqLoCtW0k+RoYA==
+X-Received: by 2002:a7b:cb93:0:b0:40e:6792:ac08 with SMTP id m19-20020a7bcb93000000b0040e6792ac08mr2081301wmi.14.1705307245688;
+        Mon, 15 Jan 2024 00:27:25 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id g7-20020adfa487000000b00336e69fbc32sm11277592wrb.102.2024.01.15.00.27.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 00:27:25 -0800 (PST)
+From: Javier Martinez Canillas <javierm@redhat.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, dri-devel@lists.freedesktop.org,
+ linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Jingoo Han <jingoohan1@gmail.com>, Daniel Thompson
+ <daniel.thompson@linaro.org>, Lee Jones <lee@kernel.org>, Helge Deller
+ <deller@gmx.de>
+Subject: Re: [PATCH v1 4/4] backlight: hx8357: Utilise temporary variable
+ for struct device
+In-Reply-To: <20240114152759.1040563-5-andriy.shevchenko@linux.intel.com>
+References: <20240114152759.1040563-1-andriy.shevchenko@linux.intel.com>
+ <20240114152759.1040563-5-andriy.shevchenko@linux.intel.com>
+Date: Mon, 15 Jan 2024 09:27:24 +0100
+Message-ID: <8734uzovbn.fsf@minerva.mail-host-address-is-not-set>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240115075425.108134-1-meir6264@Gmail.com> <15008951-9c0d-4bf8-8bc6-a639a6726105@moroto.mountain>
-In-Reply-To: <15008951-9c0d-4bf8-8bc6-a639a6726105@moroto.mountain>
-From: meir elisha <meir6264@gmail.com>
-Date: Mon, 15 Jan 2024 10:26:47 +0200
-Message-ID: <CAHdEp8-APpMA-m7kUjMPF0a9NXaBSTjVJn4UJepv=RUn4w=8Cg@mail.gmail.com>
-Subject: Re: [PATCH] Staging: rtl8723bs: rtw_ieee80211: Remove extra space
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-staging@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-Sure. Thanks for your reply! sending v2 patch.
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
 
-=E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=91=D7=
-=B3, 15 =D7=91=D7=99=D7=A0=D7=95=D7=B3 2024 =D7=91-10:01 =D7=9E=D7=90=D7=AA=
- =E2=80=AADan Carpenter=E2=80=AC=E2=80=8F
-<=E2=80=AAdan.carpenter@linaro.org=E2=80=AC=E2=80=8F>:=E2=80=AC
+> We have a temporary variable to keep pointer to struct device.
+> Utilise it inside the ->probe() implementation.
 >
-> On Mon, Jan 15, 2024 at 09:54:25AM +0200, Meir Elisha wrote:
-> > Fix checkpatch warning: please, no space before tabs
-> >
-> > Signed-off-by: Meir Elisha <meir6264@Gmail.com>
-> > ---
-> >  drivers/staging/rtl8723bs/core/rtw_ieee80211.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c b/drivers/s=
-taging/rtl8723bs/core/rtw_ieee80211.c
-> > index 30e7457a9c31..cfa994835008 100644
-> > --- a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-> > +++ b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-> > @@ -1036,7 +1036,7 @@ void rtw_get_bcn_info(struct wlan_network *pnetwo=
-rk)
-> >       struct HT_info_element *pht_info =3D NULL;
-> >       struct ieee80211_ht_cap *pht_cap =3D NULL;
-> >       unsigned int            len;
->                     ^^^^^^^^^^^
-> How about we delete these as well.
->
-> > -     unsigned char   *p;
-> > +     unsigned char *p;
-> >       __le16 le_cap;
->
-> regards,
-> dan carpenter
->
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
 
