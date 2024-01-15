@@ -1,142 +1,194 @@
-Return-Path: <linux-kernel+bounces-26152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D52C982DC09
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:06:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F8C382DC11
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:06:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 088BE1C21B62
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:06:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACF7C282A85
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:06:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 237A917738;
-	Mon, 15 Jan 2024 15:06:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2B9217BAB;
+	Mon, 15 Jan 2024 15:06:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wDDLNaEq"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D70gF/h1"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB26C17571
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 15:06:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a28da6285c1so1589146866b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 07:06:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705331162; x=1705935962; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Du4T41Babi2QVYkfO/TtNiXvBjhZRh4V/13iobjx5qQ=;
-        b=wDDLNaEqS3d5/8UCvtx2sLAp4Ylyk3UpZKlOO33xVnmsNIPoEnDS/L+CZq27Y011Nh
-         8gPvgQdKib8P6A4UrxnrsiGIYG0taMNmA7jy+lhIL/mLcq1JctzZuRVP9k5vI55quLIK
-         N5V9iFvoJCxgiZAm7iXtyogU4A/qp1LoSavVia5+pXgTU2z+v2KbK05ElpsY7oAXVSro
-         LG/UENI1SfG2pY8B3vbf2FNYjDNwJNvCn4+/xk6VT+JpVrUzcuX073HeC+gJrH69TGB5
-         J4h6ueiIBS7kAGiubbKRneMiY1Us1PW7vs4ui5tRDtmdinUhH0p5aNXWnis+/j0xVwm9
-         W4Cg==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 861B1179B8
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 15:06:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705331173;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J6KAw5sRd/rBCtYAadIrUr1C0nBvKZvSQmMmvlANPe0=;
+	b=D70gF/h10weCzk/gxPhi/oE1nak5FNb118mVhCkguepTtFzXVgCcUlP6R8LQfNcPEzvWON
+	c6twpX5/yp/mcPJa/ZSwkGwklrsFJKpKXW/pnkg1LievDGVmEzrUU6DXePt9+cWYVAqCzf
+	afyRdGjHrWBvoZjkb3114iNDMIaq6PA=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-321--2Lsal1JONWo4viFMWXplA-1; Mon, 15 Jan 2024 10:06:09 -0500
+X-MC-Unique: -2Lsal1JONWo4viFMWXplA-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3367e2bd8b0so5885303f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 07:06:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705331162; x=1705935962;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Du4T41Babi2QVYkfO/TtNiXvBjhZRh4V/13iobjx5qQ=;
-        b=SfwJe0FlNIBAcVWrm0+d8gTD0B14+64312oR29UXZWnmeUkfAcEjiwDuBdX36kGJ8y
-         QH+GWzxJ0D07O3MzRIEEPowut9jDESEAJ534MRWO6i8MLw1/DtD6n4b+kUvk0Gl1a8z2
-         f/3hYfXTMCLFkTDHaeCUcsy7mdt2gj9F0ilp514fMOHn+cy4Q+POW+YvcGC0XbjnoaQf
-         n5ntNiZeEipBaB604fylYxBV/rDkgzpV86VBF3WxmRDql1rZ3qgQwx1L5AYA7xF/df9D
-         1jNdDQmligP9zcTsohUREusQYL/5PA3sw5CUbdj7On+XoTOa88Qo0Hw4ZcW1QMW+dEa4
-         1Jhw==
-X-Gm-Message-State: AOJu0YzObCzzxYUsFy4OgKyJGCoB9nbLLM/7jgEvV5wbKQ9XYxO2bj7v
-	jE7yggB+OUl/aEbfcgIy/YyENt5RhPiorA==
-X-Google-Smtp-Source: AGHT+IGfNsPtNSEbmw3Wex4XNIHLIcPDSoVqbFIDP6dCJ4jLLDOu2rkzAVT4vQ9M4e6GHREwoL0O9g==
-X-Received: by 2002:a17:907:c306:b0:a2e:174e:1092 with SMTP id tl6-20020a170907c30600b00a2e174e1092mr739535ejc.23.1705331162175;
+        d=1e100.net; s=20230601; t=1705331166; x=1705935966;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J6KAw5sRd/rBCtYAadIrUr1C0nBvKZvSQmMmvlANPe0=;
+        b=TWrvqsRhuP8XOmEMVkyksYypvcOcluC56R2bOn+0MwXqk2vZQ/d6p95KQJjUK25t8c
+         EiEaRJzhVJyZze+iJdUDBqHhFkEi70RYUdY2iFaKixEPyMzJib5W+E8EReDOVmpp8OIV
+         bIMCFQ01m5C4DDM0NDJ2Uw5W7zQYX0xNHDFEIqO6lv5wdcVryuvI3xrGDLJIIvqA2/O+
+         6xN6dJ8qkafhBWcszBuGXusBereAaw03KWgD3XjITK2+0CwzU/1BZUOrCWjoF6osVZcZ
+         CO/S2Rt+G2Xe4uYCEMqpXE7MUV5N1wHqruY7KyYCO1XgKuVqrVX5oWrhOhRRcvAxn6m/
+         kb7A==
+X-Gm-Message-State: AOJu0YwJpwzpfZWe1I9krpnp/daSTaZ3caNX8f6ufGagnaAKObJGZM8B
+	mRQB+/k71ziS5T16BBfS8ID7Slh1k7/IRaAWtpZ2oMiuMggmVyvxFj7hL8Q3ilDHYOaiMWylmrP
+	deL85w1tLSks+6A4IGAcfQgFYUaFFZ59VtGgdCyuHiCA=
+X-Received: by 2002:a5d:4d47:0:b0:337:61aa:9682 with SMTP id a7-20020a5d4d47000000b0033761aa9682mr2972936wru.110.1705331165985;
+        Mon, 15 Jan 2024 07:06:05 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFUUbGFoHl37nmlBps1shDre7Yn9gKUXHYUdoSEBRHHdGC4aQD0Ng5BPuhKqCteY6MZ7Iq1Bg==
+X-Received: by 2002:a5d:4d47:0:b0:337:61aa:9682 with SMTP id a7-20020a5d4d47000000b0033761aa9682mr2972874wru.110.1705331162657;
         Mon, 15 Jan 2024 07:06:02 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id vk6-20020a170907cbc600b00a2dbc664e2asm1561558ejc.89.2024.01.15.07.06.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jan 2024 07:06:01 -0800 (PST)
-Message-ID: <aae32b47-1bb0-4af0-baf0-836dc91b9427@linaro.org>
-Date: Mon, 15 Jan 2024 16:05:59 +0100
+Received: from toolbox ([2001:9e8:8996:a800:5fa3:a411:5e47:8fe5])
+        by smtp.gmail.com with ESMTPSA id e19-20020a5d5953000000b0033609b71825sm12088386wri.35.2024.01.15.07.06.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 07:06:02 -0800 (PST)
+Date: Mon, 15 Jan 2024 16:06:00 +0100
+From: Sebastian Wick <sebastian.wick@redhat.com>
+To: Arthur Grillo <arthurgrillo@riseup.net>
+Cc: Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+	Haneen Mohammed <hamohammed.sa@gmail.com>,
+	Harry Wentland <harry.wentland@amd.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	=?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
+	Melissa Wen <melissa.srw@gmail.com>,
+	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 0/7] Add YUV formats to VKMS
+Message-ID: <20240115150600.GC160656@toolbox>
+References: <20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: serial: stm32: add power-domains property
-Content-Language: en-US
-To: Valentin Caron <valentin.caron@foss.st.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org
-References: <20240111112450.1727866-1-valentin.caron@foss.st.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240111112450.1727866-1-valentin.caron@foss.st.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net>
 
-On 11/01/2024 12:24, Valentin Caron wrote:
-> Add "power-domains" property in stm32 serial binding to avoid:
+On Wed, Jan 10, 2024 at 02:44:00PM -0300, Arthur Grillo wrote:
+> This patchset aims to add support for additional buffer YUV formats.
+> More specifically, it adds support to:
 > 
-> serial@40010000: Unevaluated properties are not allowed
-> ('power-domains' were unexpected)
+> Semi-planar formats:
 > 
+> - NV12
+> - NV16
+> - NV24
+> - NV21
+> - NV61
+> - NV42
+> 
+> Planar formats:
+> 
+> - YUV440
+> - YUV422
+> - YUV444
+> - YVU440
+> - YVU422
+> - YVU444
+> 
+> These formats have more than one plane, and most have chroma
+> subsampling. These properties don't have support on VKMS, so I had to
+> work on this before.
+> 
+> To ensure that the conversions from YUV to RGB are working, I wrote a
+> KUnit test. As the work from Harry on creating KUnit tests on VKMS[1] is
+> not yet merged, I took the setup part (Kconfig entry and .kunitfile)
+> from it.
+> 
+> Furthermore, I couldn't find any sources with the conversion matrices,
+> so I had to work out the values myself based on the ITU papers[2][3][4].
+> So, I'm not 100% sure if the values are accurate. I'd appreciate some
+> input if anyone has more knowledge in this area.
 
-It would be better if you checked whether it can be part of power domain
-or not. What if the DTS is wrong?
+H.273 CICP [1] has concise descriptions of the required values for most
+widely used formats and the colour python framework [2] also can be used
+to quickly get to the desired information most of the time.
 
-Best regards,
-Krzysztof
+[1]: https://www.itu.int/rec/T-REC-H.273
+[2]: https://www.colour-science.org/
+
+> Also, I used two IGT tests to check if the formats were having a correct
+> conversion (all with the --extended flag):
+> 
+> - kms_plane@pixel_format
+> - kms_plane@pixel_format_source_clamping.
+> 
+> The nonsubsampled formats don't have support on IGT, so I sent a patch
+> fixing this[5].
+> 
+> Currently, this patchset does not add those formats to the writeback, as
+> it would require a rewrite of how the conversions are done (similar to
+> what was done on a previous patch[6]). So, I would like to review this
+> patchset before I start the work on this other part.
+> 
+> [1]: https://lore.kernel.org/all/20231108163647.106853-5-harry.wentland@amd.com/
+> [2]: https://www.itu.int/rec/R-REC-BT.601-7-201103-I/en
+> [3]: https://www.itu.int/rec/R-REC-BT.709-6-201506-I/en
+> [4]: https://www.itu.int/rec/R-REC-BT.2020-2-201510-I/en
+> [5]: https://lists.freedesktop.org/archives/igt-dev/2024-January/066937.html
+> [6]: https://lore.kernel.org/dri-devel/20230414135151.75975-2-mcanal@igalia.com/
+> 
+> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+> ---
+> Changes in v2:
+> - Use EXPORT_SYMBOL_IF_KUNIT instead of including the .c test
+>   file (Maxime)
+> - Link to v1: https://lore.kernel.org/r/20240105-vkms-yuv-v1-0-34c4cd3455e0@riseup.net
+> 
+> ---
+> Arthur Grillo (7):
+>       drm/vkms: Use drm_frame directly
+>       drm/vkms: Add support for multy-planar framebuffers
+>       drm/vkms: Add range and encoding properties to pixel_read function
+>       drm/vkms: Add chroma subsampling
+>       drm/vkms: Add YUV support
+>       drm/vkms: Drop YUV formats TODO
+>       drm/vkms: Create KUnit tests for YUV conversions
+> 
+>  Documentation/gpu/vkms.rst                    |   3 +-
+>  drivers/gpu/drm/vkms/Kconfig                  |  15 ++
+>  drivers/gpu/drm/vkms/Makefile                 |   1 +
+>  drivers/gpu/drm/vkms/tests/.kunitconfig       |   4 +
+>  drivers/gpu/drm/vkms/tests/Makefile           |   3 +
+>  drivers/gpu/drm/vkms/tests/vkms_format_test.c | 156 ++++++++++++++++
+>  drivers/gpu/drm/vkms/vkms_drv.h               |   6 +-
+>  drivers/gpu/drm/vkms/vkms_formats.c           | 247 ++++++++++++++++++++++----
+>  drivers/gpu/drm/vkms/vkms_formats.h           |   9 +
+>  drivers/gpu/drm/vkms/vkms_plane.c             |  26 ++-
+>  drivers/gpu/drm/vkms/vkms_writeback.c         |   5 -
+>  11 files changed, 426 insertions(+), 49 deletions(-)
+> ---
+> base-commit: eeb8e8d9f124f279e80ae679f4ba6e822ce4f95f
+> change-id: 20231226-vkms-yuv-6f7859f32df8
+> 
+> Best regards,
+> -- 
+> Arthur Grillo <arthurgrillo@riseup.net>
+> 
 
 
