@@ -1,166 +1,140 @@
-Return-Path: <linux-kernel+bounces-25869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AC6482D704
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:17:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E30D182D780
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:38:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FC271F21C24
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:17:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AB871F221B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:38:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E1C5F9EC;
-	Mon, 15 Jan 2024 10:17:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75D4C1E868;
+	Mon, 15 Jan 2024 10:38:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b="CDd8hdL6"
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2048.outbound.protection.outlook.com [40.107.8.48])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="D+ToKPME"
+Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADA82F9C1;
-	Mon, 15 Jan 2024 10:17:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=solid-run.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=solid-run.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lClCCwXgdxoxCSZ7/M2FlbErVKk0hmZHiR9ZXpVkPBL1iLf/p0Czhyl9nFBU93kIDRUmhEjfvtsxcyshFBws8S4FdNaPflNeTsd+Qz/TZPxQ9hMyxwok6IOQd/T20tN0h7uYKODRk6/TrXu/XEJ3FoJ72VQF5rye0F2F7qFiPtI/4/cI4Zx34SflQi4px30/jaPZTSB64M4aiPa7Uz2F8QAhPrWGcRzJTxw/8c2Thp84AFgaBF1Yr+bY40aMh7JMUEAqvrh4O3E68jPQRXeH0HCuVn3/fvzbaOwF4Aeh/D7wthREEsEEHGndavllIU+LQ6bOel2iCrncVVP2U6+rFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jhTYgZXt92oQKHampK1/tBZ8SuNP5fsgdmIpxI72uBg=;
- b=edgCcceeT6MdBpC9z0mhC7V9njKdA+UApp+zrPE/sjdTx8528Fu2VJlNZSzwKfwRO4ZOkDmi31mA5U6xxJUj82UGef3w8e5RS5L+CToKe33xl/4QF5YFvYPWchwxsBT8sNbJQDL1fOVY5QoKCqC8cAzPIxhpJ+KYzkDspHjhY8QdGlCf4lmSr7Ej+J1WBqzcdeNSNkM1ErNSJAs2w/I7GVHTtRFshOL6Y85eD7f0g5jD3tKlmp+K7/VZvkOayv7pE8zBKd/fic+mUi828K8SWILNS0fi0Zp/1b69/VCRitGhtSwPDnP8z+PWjYhJ3woZvp8wnorFR7MkT3lygi6J6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=solid-run.com; dmarc=pass action=none
- header.from=solid-run.com; dkim=pass header.d=solid-run.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=solidrn.onmicrosoft.com; s=selector1-solidrn-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jhTYgZXt92oQKHampK1/tBZ8SuNP5fsgdmIpxI72uBg=;
- b=CDd8hdL6MSZ4BHBy0eOscSDD5SjfUWJAeUbooM+O13ixLWemDLZGnxs2RqtDAfYlk3bqkudw2wmOKOs3cXc8LHHzFPf5rQLNUv1hQ/DGn9dkrnGRSpxAr4bi9DTUhfshI+zo4WPnUlscdCvWtvxmoY96ilK2qzWs5tfLkm7kncw=
-Received: from AS8PR04MB8963.eurprd04.prod.outlook.com (2603:10a6:20b:42e::18)
- by PAXPR04MB9667.eurprd04.prod.outlook.com (2603:10a6:102:242::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.23; Mon, 15 Jan
- 2024 10:17:19 +0000
-Received: from AS8PR04MB8963.eurprd04.prod.outlook.com
- ([fe80::daf2:8c54:d469:793d]) by AS8PR04MB8963.eurprd04.prod.outlook.com
- ([fe80::daf2:8c54:d469:793d%7]) with mapi id 15.20.7181.020; Mon, 15 Jan 2024
- 10:17:19 +0000
-From: Josua Mayer <josua@solid-run.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Nishanth Menon
-	<nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo
-	<kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	Alessandro Zummo <a.zummo@towertech.it>, Alexandre Belloni
-	<alexandre.belloni@bootlin.com>
-CC: Yazan Shhady <yazan.shhady@solid-run.com>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-rtc@vger.kernel.org"
-	<linux-rtc@vger.kernel.org>
-Subject: Re: [PATCH v2 2/5] dt-bindings: rtc: abx80x: convert to yaml
-Thread-Topic: [PATCH v2 2/5] dt-bindings: rtc: abx80x: convert to yaml
-Thread-Index: AQHaRXqM9m6egMxAy0iAmXaXPfibdLDWa+UAgAMNhQCAAAh5gIAA/G+AgAAuw4A=
-Date: Mon, 15 Jan 2024 10:17:19 +0000
-Message-ID: <d702f384-7c0f-443b-84bc-4333933cee7b@solid-run.com>
-References: <20240112-add-am64-som-v2-0-1385246c428c@solid-run.com>
- <20240112-add-am64-som-v2-2-1385246c428c@solid-run.com>
- <7f45aaea-6520-41c7-8788-f6dd14c5fcb2@linaro.org>
- <fa954f30-22dc-4914-b037-c0ebb311637b@solid-run.com>
- <9cbc3ab1-0621-450c-b9f5-ecb1f401d326@solid-run.com>
- <c8c41aec-1a53-4b5f-82a3-e9b786c5325b@linaro.org>
-In-Reply-To: <c8c41aec-1a53-4b5f-82a3-e9b786c5325b@linaro.org>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=solid-run.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AS8PR04MB8963:EE_|PAXPR04MB9667:EE_
-x-ms-office365-filtering-correlation-id: 63a4cf7e-43ea-423f-01a6-08dc15b32830
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- g9wOK3grfIOkAvzTlvh6InqkDADKi1UbUh/QQS9aM3eiqLxq9u1zSnp51yeN8C+kQJc1RlZjICTsIbnXlQPHnaFfShm5ZHTNOU7TEgi8ux4hzjb+oi3EIBbUJxwTl5oTqnENTSJBVtfeph6A3dAD5STwTI6ES/H4q88aoskSByRtLkByXi+TfDVjRdyuB2HA7UrgNnNkb5qqKN8azuNqTbYFOFGYT9P8vBejJJZ1pwh9X4BuEqb8QaE0NEyiRqZ+YYY/hVlltye8lqXuIKpn741ch25jHeEWzmScqJU7xCDbJhZIqezRmyhXdO0u2/f+09rVXjSelT9PAGcw8vdxjodDtk2XOBmGfU5EdOmnagj64DKCkSB6EJUWEyvL5vFfSBTAQihkSn23h2OKSsdtQi1PG7CkL2tiVhRSQPQ5xi8Kszs22XDANOIWBxOH+PKnIpssOuk/vsamSKtGkGlxpqeo8xmz4Y5ERBe5hZba6WgVUU1UIx3rOGYHYhqw4hX34ZiMwTTENe8Ls4+Q7PcjXu2Kj7Rk7cp2nlIHdpLgC4KKrfRYH11kN3M0kr0JiQM1O/1ZGHvDkjD+16prkTVJjXRRz0YRLMRW1DgWuznsTJuHslDKeq0oU/QoyjfzN+f3tktIXcUPyPNHfd5Irtj8uA==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8963.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39840400004)(376002)(396003)(136003)(346002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(38100700002)(122000001)(38070700009)(36756003)(31686004)(86362001)(31696002)(26005)(41300700001)(478600001)(316002)(6512007)(66556008)(54906003)(91956017)(76116006)(66946007)(2616005)(6506007)(71200400001)(110136005)(53546011)(64756008)(66476007)(66446008)(6486002)(2906002)(5660300002)(4326008)(7416002)(4744005)(8936002)(8676002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?eG43QWErbktQZUZ2R0NhTjFWNy8vWUFiaUUyWTZJWUlsZTdmdndQeStZV1Iv?=
- =?utf-8?B?Sjl0VXdMb3VwK1U0WmpFbGh0NmlmOGQ4dnVZdWFmNkNaSDJ1NGhvdy9lRkJs?=
- =?utf-8?B?VEtJOWF3dWZRNndQZlFIYnowM0M2ZElmVGZMc0JlSkh0MDlwNHNCY2lIeDBj?=
- =?utf-8?B?SXIzMEdBMFphK1lxZzlwdlZWVVFhMU1CdWRNQ1BCdUF1dHhIeXFReTZiMHFM?=
- =?utf-8?B?YXdoemlMT2wyRkJQczArTlQzaUdKd0JYeC9kUWFQa3NoU3JJaERSc2FvVTJv?=
- =?utf-8?B?dHpSMlpub2IwZEF3aG1CNlkydWJoL3RIUlpqMEovUDV3YkNYZ05hRjJyMWh6?=
- =?utf-8?B?NWpET291M3BRU1VSQm9MRnoxTjh0cDluSmN6UUFTUnR3T2hDMjFxNGp6SkpI?=
- =?utf-8?B?bzAzT21mSnlJMlFjbjFMb0s0amhQdlVIeFl0ZFRER0RxS0R4NzBWQjQzM2lj?=
- =?utf-8?B?SWRBenZURUM1dmk1ZGFrK3poNWQvVFpUYlhTbkhqU0sycjkvQUErT0pYL2wx?=
- =?utf-8?B?YStDQmp6OWhFK3FXdzhza3pnQ0VGY3hVbGtvL1dIVzZ3QWFNRXRtL3pnWW1i?=
- =?utf-8?B?VE13NzZ1bTkvUG94MWRzR0tNNTFmTEZQcEdHQWpxd2VNNTdlWTdPVFZhYTla?=
- =?utf-8?B?R25SQjlFc1BSd3JNN21TZWpyL2ZBRVlOcFgzQnJhZEtCbm9DeTZ5SnlXeEo4?=
- =?utf-8?B?WElUZHpna2lnekxraGFIQXpTNjlWYVBoY2ttYjU5MTUzSXIvdTlhY0czT2dK?=
- =?utf-8?B?Um5QZVlJM3ovVkVqb2VaUjE1SzVseXpvUHljYTNFNFJYNnJVaTBpNGkwRmky?=
- =?utf-8?B?RUVsL3dnUTU2VHZlSXlQSWQrOTJjS0xNRDZUUldMNkI3MHA0R1Boamxsb1c2?=
- =?utf-8?B?SHc2c3dWeXRFMnNuRGxGY25UejczelZ2ZjNBS2xmQ1NoOEdDcVZqa0JjcmRN?=
- =?utf-8?B?eW1FOSt1OXl3U291MVR1K0IzVkJNeDd5TTkybDdVa0Ivd0VoT2xrZnRvVGJ3?=
- =?utf-8?B?OEUxd0ViRFByYnAwa1NDUEtBYnJhNWk3MGs3aEdaUVIxYnFMR3V3VnZ0bkQ1?=
- =?utf-8?B?WDZMS1dnOVhaWlN1Mm1CWXB4MXE4S093QUlpTG4zMWVVU3haTXBuYWFwQ0Jz?=
- =?utf-8?B?c293VnpYbXJ3VmRLazlpV3RoWHc2OHpCbVRwN21RUjZ1c0JQR1RGb1hId2kr?=
- =?utf-8?B?K3RUMmRPek0vTVpaRDhGTWFBMWJJZ2RaMzFrbTFvRTlxQTNzR2R4c2xuMWFh?=
- =?utf-8?B?THdiU1NSRjkyNWtIeGgrMmFuOFVYemZPWVlpVDFtMEdFZVZNUytTODhDMUMr?=
- =?utf-8?B?YktteVd5bWJYbU9jRHhOVGlseGtiK2IxL284WUtuZGdSRTBNT3F6SDFMWU8z?=
- =?utf-8?B?T2o4TVdxNFg2UDcvbUdTK3duL3I4N1A5NVN5Vmp0WHRtdGtFZHRzRk1rMlRn?=
- =?utf-8?B?S1dLSTJhb2VrNVZlalRwT3QxY2FQUk1RRnREamQ4ZDRzN25XS3VjNWMvQ0sx?=
- =?utf-8?B?RHUva0JEOE82RldySkl0eXlaSkt6ditQbFdaWCtoL0doMzlUR3VITk4wRVRn?=
- =?utf-8?B?d3VhWlJRbE1IWFBTMDlMSThsZkJtZkRkY016a21xZUp1RFBDU2Y5M1lOY3c5?=
- =?utf-8?B?QlV4SjQzZnFXWU4xRGtOUHZMMlJZcXFuRkFpczZIRkhpSldTcThmUHh2RE9O?=
- =?utf-8?B?eVlTVHB5Z1FWV2RzZVg5UEJETXlQUnFDWVdrOThydUpTb1RwaldrYlVZTWhX?=
- =?utf-8?B?Y0gySHVEQlFXZ3FqR1Njb0VUcjJqTUd2UzRJR05VRW5JYXdWcldyUW9uQjA2?=
- =?utf-8?B?cEJMVmhyeC9xSzlvbHd1TGRJcTRUbUlKY1pRYUV4QTJqT1c0R3NIK0ZERTdE?=
- =?utf-8?B?REE1R1JDWWFxcVMxS3RPenJhZ0N4a1BkS0xUTFpyQXdCblpxREJ5NVZud2Rw?=
- =?utf-8?B?UjhKQnRYZVIvclFnc1Z5aVF5MlMvZ2QyN0x4SDg4OXpJb2lvT005cHlnTHF5?=
- =?utf-8?B?TTdXT0c3ZHBhWmZhWGhiU2lHWHR4TmR0dTdCcllzd2QzZFI4WnFLZWVNS29V?=
- =?utf-8?B?VTcxR1BuL1ROK25EUkhGRkZubnNsU3J6Yyt0RFVUYkVySktQWnltMzdhaGdC?=
- =?utf-8?Q?e9bnejl/jv++DzmeI5IkF1TV+?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <20B30A37652E3A47BA41D23B0B51F1AD@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AADB1E503
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 10:37:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: from relay5-d.mail.gandi.net (unknown [217.70.183.197])
+	by mslow1.mail.gandi.net (Postfix) with ESMTP id 2842AC2F46
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 10:17:59 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 06C7C1C0011;
+	Mon, 15 Jan 2024 10:17:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1705313871;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=ZEf3znytnn/5u2nQ5HISUI8I48juAUPjkUbskiAR5Kw=;
+	b=D+ToKPMERGdPs/q2d4zNP/9bvGUhVQK5CVJRXIH159Dbdok5XKx+SDxxvtWyXcnZl+cTOy
+	dL3W86EvwKpiOkK0aAxkybSxSMq9qtu97OctBkFrmHvFe0gftp3svl8uew5BfLFwZukvH8
+	jxD+NiNPB7+zisUpEPmBCMUPydiDjAPBJvIjo7lJ97qdOWGzdWXDlQXukLQIJFar083KFq
+	edoOYr0ljwhZ+dCALcpn8nmIei6LeU8A/pdQnm9MZCdkJkRvwHFzrXFgrW3zFTcHIvAKzP
+	n6NOzeTAt9wM9agfLe3th8vcIHBRBWJdza2d/Wuwr88nIU+WLv4IZO2in8cm0Q==
+Message-ID: <d3ffc899948961cd3327db1ad0e59970dcf87bca.camel@bootlin.com>
+Subject: Re: Failed to create a rescuer kthread for the amdgpu-reset-dev
+ workqueue
+From: Thomas Perrot <thomas.perrot@bootlin.com>
+To: Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>, 
+	alexander.deucher@amd.com, Xinhui.Pan@amd.com, lijo.lazar@amd.com, 
+	kenneth.feng@amd.com, guchun.chen@amd.com, evan.quan@amd.com, 
+	srinivasan.shanmugam@amd.com
+Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org
+Date: Mon, 15 Jan 2024 11:17:49 +0100
+In-Reply-To: <95e791b0-4672-4a1a-940b-684d8c96e995@amd.com>
+References: <cf1a3a2b7599b7b6900ff45aa8b204169411687f.camel@bootlin.com>
+	 <95e791b0-4672-4a1a-940b-684d8c96e995@amd.com>
+Autocrypt: addr=thomas.perrot@bootlin.com; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: multipart/signed; micalg="pgp-sha256";
+	protocol="application/pgp-signature"; boundary="=-cMV9dIg4T3JiQTgXtcRJ"
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: solid-run.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8963.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 63a4cf7e-43ea-423f-01a6-08dc15b32830
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jan 2024 10:17:19.6695
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a4a8aaf3-fd27-4e27-add2-604707ce5b82
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZMAEOG9yOJ4Lpy2wlMzG8Rb0fAU3EGjZ3J/EISd0q1MAFzcrNdeG4LBYtw5FcHhiWasGj7s+Nu3Q71jWT7SO0g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9667
+X-GND-Sasl: thomas.perrot@bootlin.com
 
-QW0gMTUuMDEuMjQgdW0gMDg6Mjkgc2NocmllYiBLcnp5c3p0b2YgS296bG93c2tpOg0KDQo+IE9u
-IDE0LzAxLzIwMjQgMTc6MjYsIEpvc3VhIE1heWVyIHdyb3RlOg0KPj4+Pj4gK21haW50YWluZXJz
-OiBbXQ0KPj4+PiBZb3UgbmVlZCBhIG5hbWUgaGVyZS4gSWYgdGhlcmUgaXMgbm8gZHJpdmVyIG1h
-aW50YWluZXIgb3IgYW55b25lDQo+Pj4+IGludGVyZXN0ZWQsIHB1dCBkZXZpY2V0cmVlIGxpc3Qu
-DQo+Pj4gQWNrLg0KPj4+Pj4gKw0KPj4+Pj4gK2FsbE9mOg0KPj4+Pj4gKyAgLSAkcmVmOiBydGMu
-eWFtbCMNCj4+ICsgJHJlZjogL3NjaGVtYXMvaW50ZXJydXB0cy55YW1sIw0KPj4NCj4+IElzIGl0
-IGFjY2VwdGFibGUgdG8gcmVmZXJlbmNlIGdlbmVyaWMgaW50ZXJydXB0cyBzY2hlbWE/Og0KPiBX
-aHk/IE5vLg0KPg0KPj4gSSBzZWUgbm8gcnRjIHlhbWwgZG9pbmcgdGhhdCwgYW5kIG9ubHkgc29t
-ZSBkZXNjcmliZSBpbnRlcnJ1cHRzIHByb3BlcnR5IGV4cGxpY2l0bHkuIEJ1dCBJbXBvcnRpbmcg
-dGhlIHNjaGVtYSB3b3VsZCBhbHNvIGNvdmVyIC1wYXJlbnQgYW5kIC1uYW1lcy4NCj4gTm8sIGl0
-IHdvdWxkbid0LiBJdCBkb2VzIG5vdCBtYXR0ZXIuIEkgZG9uJ3QgdW5kZXJzdGFuZCB3aGF0IGFy
-ZSB5b3UNCj4gdHJ5aW5nIHRvIHNvbHZlLg0KZHRic19jaGVjayBpcyBjb21wbGFpbmluZyBhYm91
-dCBpbnRlcnJ1cHQtcGFyZW50IHByb3BlcnR5LA0KYmVjYXVzZSBJIGFkZGVkIGJvdGggaW50ZXJy
-cnVwdHMgYW5kIGludGVycnVwdC1wYXJlbnQgdG8gbXkgcnRjIG5vZGUuDQoNCkFsc28gd29uZGVy
-aW5nIHdoZXRoZXIgaW50ZXJydXB0cyBwcm9wZXJ0eSBzaG91bGQgYmUgaW5jbHVkZWQgaW4NCnRo
-ZSBleGFtcGxlLg0KDQpJIGZvdW5kIHRoaXMgaWRlYSBpbiB5YW1sIGZpbGVzIG91dHNpZGUgcnRj
-Lg0KQnV0IG5vIGV4aXN0aW5nIHJ0YyB5YW1sIHJlZmVyZW5jZXMgdGhhdCBzY2hlbWEsIHNvIEkg
-YXNrZWQuDQoNCg0Kc2luY2VyZWx5DQpKb3N1YSBNYXllcg0KDQo=
+
+--=-cMV9dIg4T3JiQTgXtcRJ
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hello Christian,
+
+On Fri, 2024-01-12 at 09:17 +0100, Christian K=C3=B6nig wrote:
+> Well the driver load is interrupted for some reason.
+>=20
+> Have you set any timeout for modprobe?
+>=20
+
+We don't set a modprobe timeout.
+
+Kind regards,
+Thomas
+
+> Regards,
+> Christian.
+>=20
+> Am 12.01.24 um 09:11 schrieb Thomas Perrot:
+> > Hello,
+> >=20
+> > We are updating the kernel from the 6.1 to the 6.6 and we observe
+> > an
+> > amdgpu=E2=80=99s regression with Radeon RX580 8GB and SiFive Unmatched:
+> > =E2=80=9Cworkqueue: Failed to create a rescuer kthread for wq 'amdgpu-
+> > reset-
+> > dev': -EINTR
+> > [drm:amdgpu_reset_create_reset_domain [amdgpu]] *ERROR* Failed to
+> > allocate wq for amdgpu_reset_domain!
+> > amdgpu 0000:07:00.0: amdgpu: Fatal error during GPU init
+> > amdgpu 0000:07:00.0: amdgpu: amdgpu: finishing device.
+> > amdgpu: probe of 0000:07:00.0 failed with error -12=E2=80=9D
+> >=20
+> > We tried to figure it out without success for the moment, do you
+> > have
+> > some advice to identify the root cause and to fix it?
+> >=20
+> > Kind regards,
+> > Thomas Perrot
+> >=20
+>=20
+
+--=20
+Thomas Perrot, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+
+--=-cMV9dIg4T3JiQTgXtcRJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCAAdFiEEh0B3xqajCiMDqBIhn8ALBXH+Cu0FAmWlBk0ACgkQn8ALBXH+
+Cu2j/Qv6A5oWfrKUk0H6c+EJltETug8YjAC0uUNMXeqZc3IunJYIEvifQbnwOU6P
+M8zc1K4C75r+6C8+x/fvc5Bb7mgFjr4nR2aDmNMMmsddH4o79Mm0djnce/m60L5+
+CsgEM/vxLaYv3w3/pAefbFSpkRA7JauCJYWPSnueSMxvuSeyVZB8agqqcrMbgh1i
+6NbuLsm3TGZToHCBN0HgSvh4fhYYeLDTO0kx510Dy3Ha6C2A/4LgPtlKg0Na4+2p
+gWVDlwN7iO3qGSA8SGy2rekwfZQ3qfZYeUmzu5ZxJeecH0f7Lu7H77zCJl6j0io4
+wGI6SkbhvR3BBDDRB/kV44MjYNiVsm08lZmzZQmFrD0k3SM20VJXkfaZb76q0Si4
+oEt3RZXqLPUSafMGPhtBQmmzgeAy2w+2jk/7iHw6uLcjM9qRxw8kXwwraRLqEke+
+8GZbG8kg9hoS40RRXuYk6YgCjD+8dDVj3Mh0wZkneyz3+/mPpw4YZg9KXNAEAxk9
+pC11KECt
+=z8NM
+-----END PGP SIGNATURE-----
+
+--=-cMV9dIg4T3JiQTgXtcRJ--
 
