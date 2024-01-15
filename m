@@ -1,103 +1,130 @@
-Return-Path: <linux-kernel+bounces-25561-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 938D582D2AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 01:13:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EC6082D2AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 01:17:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B4FB281682
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 00:13:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 497C11C20A84
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 00:17:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DD9617CF;
-	Mon, 15 Jan 2024 00:13:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9402FA3D;
+	Mon, 15 Jan 2024 00:17:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hlwrgbtr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MCge9Hwl"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92C5E15A5;
-	Mon, 15 Jan 2024 00:13:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 520D1C433F1;
-	Mon, 15 Jan 2024 00:13:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705277595;
-	bh=9d8JNOymYGZ3/p+9qqiDWzbARwPOR0ThFsLa+omTDVE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=HlwrgbtrQaMjHk6Rl1IBwvE+2sWuIYEn5he/RDz7dSWZhfu/UENTUW929466EuROU
-	 ior5hw4k52TxL8Vd87EW5a2iJgmNEZyPJjUeJDXTntdTbsmyE7/SdwiV9EIAoWldtM
-	 joQIkSN5rhwPYMbpNAK3l2gctjvZ8darjJfrPCu6ArKul1KdEfX0EljfJHR0GcDq8I
-	 uJ5sgUQkwp4kyuYVEfe5WbAbcBCxmlvvQ8OjSovamjWsXmvTtmOD1lEoXGgTETRAHf
-	 JWgsmDt9yubJJ1Y8LE/OL8dmm5WIdxR8Lpz2+GgASw13adcD8MlMMS4Jgj7HCSAQDl
-	 MmaVWl/5A75dQ==
-Message-ID: <b5c9a4d9-894c-4812-8dbf-e623cb1baad2@kernel.org>
-Date: Mon, 15 Jan 2024 09:13:11 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56CF17E5;
+	Mon, 15 Jan 2024 00:17:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50eabd1c701so9879776e87.3;
+        Sun, 14 Jan 2024 16:17:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705277826; x=1705882626; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+8qRzLu2QfiYFCgn0VSRgtOrUr1VXFFkr88Zi/Lqch4=;
+        b=MCge9Hwl1iI0rZ6OhdMElwbvnoIk3KW+tr7udKXJByQ9uERr3oHJA1WpCnJcqE2nA+
+         w3oP13MW9axRM+eR/YOwsbAXZjEZyMEKpr3i8aj7s2NkcSxiktxDJcYKJDzxFSnsl4+t
+         Y81deuSVIvwivaqVyEaXw+dlTdKX4tAnZnhKTLe+59PLmshjp3s336GWsfotiKiERDSr
+         KcgzzBWjxF5CeoTea3BNKyydDTM7UY6Puc3FM8gzXIQRJ3BsY05w+S20x2KOvHC2kCDX
+         evkwV4gHxXsQlYpqL9UfhmNrEhvKBaSVrF96zoc7k/M7gadAaL/j7GZkRWnVIEyqmHQu
+         sPmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705277826; x=1705882626;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+8qRzLu2QfiYFCgn0VSRgtOrUr1VXFFkr88Zi/Lqch4=;
+        b=iADgcCXIawGUWJZ8ii8jFwXk4OocJHrZw8th0XHKtA8d/Hf4/u0Q7IHm54VLbEgg52
+         wrRXGcBPs+okRCiJDtb29z8WMWlBRHlOc91vQEXcEUd0jkGTmQwqjv42X0eIqEuYs5ag
+         BTNc3Gw3vJnyBSxgq4732SoIuThVzOuQl/w7S2EEnR3h6uo4kV31eZCzHXeIalqjvGyj
+         ax4uklbjT51N1V2zjVcjxAt8u1yewuWa2IUPLmR27+7j6moyryhBFO6+ho+VybTQNSla
+         qXwxN+gDInwbvgEbWE1Nb2TzRujzoku4R6Aweu8z2uGJHJ5L5BNS0HaJSGWxjm0KadfJ
+         z7Kg==
+X-Gm-Message-State: AOJu0YyiJcxWHkyPzdICDiVxNLSBV1OpVxNHTeZSyq+IRkcwUx4ibdcH
+	qx3CtOIFpYubDcgJuFthVeE=
+X-Google-Smtp-Source: AGHT+IHX76/xBqwm06VH93U471uaG12CWhzjYyrX7DfDHbI3X3wL3qhyEw+rrbqvcJM/ScLZ98AFxQ==
+X-Received: by 2002:ac2:4247:0:b0:50e:cccb:f5f2 with SMTP id m7-20020ac24247000000b0050ecccbf5f2mr1998756lfl.56.1705277826081;
+        Sun, 14 Jan 2024 16:17:06 -0800 (PST)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id v10-20020a1709063bca00b00a2ae69cca5asm4712357ejf.144.2024.01.14.16.17.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 14 Jan 2024 16:17:05 -0800 (PST)
+From: Wei Yang <richard.weiyang@gmail.com>
+To: masahiroy@kernel.org,
+	nathan@kernel.org,
+	nicolas@fjasle.eu
+Cc: linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Wei Yang <richard.weiyang@gmail.com>,
+	Miguel Ojeda <ojeda@kernel.org>
+Subject: [PATCH] kbuild: take vmlinux.[ao] out of single-targets
+Date: Mon, 15 Jan 2024 00:16:06 +0000
+Message-Id: <20240115001606.15477-1-richard.weiyang@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: scsi: block: ioprio: Clean up interface definition -
- ioprio_set03.c:40: TFAIL: ioprio_set IOPRIO_CLASS_BE prio 8 should not work
-Content-Language: en-US
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc: linux-block <linux-block@vger.kernel.org>, LTP List <ltp@lists.linux.it>,
- Linux Regressions <regressions@lists.linux.dev>,
- lkft-triage@lists.linaro.org, open list <linux-kernel@vger.kernel.org>,
- Anders Roxell <anders.roxell@linaro.org>,
- Dan Carpenter <dan.carpenter@linaro.org>, chrubis <chrubis@suse.cz>,
- Petr Vorel <pvorel@suse.cz>, Hannes Reinecke <hare@suse.de>,
- Christoph Hellwig <hch@lst.de>, Niklas Cassel <niklas.cassel@wdc.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Jens Axboe <axboe@kernel.dk>
-References: <CA+G9fYu1hB2OMf0EFrt_86OE=0Ug3y6nQd3=OZeEeM1jp3P92g@mail.gmail.com>
- <11a31e09-2e11-43a4-8995-ae70c5bef8bf@kernel.org>
- <CA+G9fYthC3qsH8ey=j3RvCr4-0zp1S3Ysr5QvY6SptorHpju1g@mail.gmail.com>
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <CA+G9fYthC3qsH8ey=j3RvCr4-0zp1S3Ysr5QvY6SptorHpju1g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 1/13/24 16:05, Naresh Kamboju wrote:
-> On Fri, 12 Jan 2024 at 10:49, Damien Le Moal <dlemoal@kernel.org> wrote:
->>
->> On 1/12/24 14:15, Naresh Kamboju wrote:
->>> The LTP test 'iopri_set03' fails on all the devices.
->>> It fails on linux kernel >= v6.5. ( on Debian rootfs ).
->>> Test fail confirmed on LTP release 20230929 and 20230516.
->>>
->>> Test failed log:
->>> ------------
->>> tst_test.c:1690: TINFO: LTP version: 20230929
->>> tst_test.c:1574: TINFO: Timeout per run is 0h 05m 00s
->>> ioprio_set03.c:40: TFAIL: ioprio_set IOPRIO_CLASS_BE prio 8 should not work
->>> ioprio_set03.c:48: TINFO: tested illegal priority with class NONE
->>> ioprio_set03.c:51: TPASS: returned correct error for wrong prio: EINVAL (22)
->>>
->>> Investigation:
->>> ----------
->>> Bisecting this test between kernel v6.4 and v6.5 shows patch
->>> eca2040972b4 ("scsi: block: ioprio: Clean up interface definition")
->>> as the first faulty commit.
->>>
->>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->>
->> This is fixed in LTP. Please update your LTP setup to avoid this issue.
-> 
-> Please point me to the fixed commit id.
+For current kernel, when we make vmlinux.a or vmlinux.o, following
+message would display.
 
-git log --author="Damien Le Moal"
+$make vmlinux.o
+/dir/to/kernel/Makefile:1887: warning: overriding recipe for target 'vmlinux.o'
+/dir/to/kernel/Makefile:1138: warning: ignoring old recipe for target 'vmlinux.o'
+  CALL    scripts/checksyscalls.sh
+  DESCEND objtool
+  INSTALL libsubcmd_headers
+make[2]: Nothing to be done for 'vmlinux.o'.
 
-And of course you need to make sure that you are compiling LTP against the
-kernel headers of the target test kernel.
+The reason is vmlinux.[ao] is treated as single target, while the rule
+is written in root Makefile.
 
+This patch fixes this by take them out of single-targets.
 
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+CC: Masahiro Yamada <masahiroy@kernel.org>
+CC: Miguel Ojeda <ojeda@kernel.org>
+CC: Nathan Chancellor <nathan@kernel.org>
+---
+ Makefile | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index f1b2fd977275..66fb08f6d971 100644
+--- a/Makefile
++++ b/Makefile
+@@ -280,6 +280,7 @@ no-dot-config-targets := $(clean-targets) \
+ no-sync-config-targets := $(no-dot-config-targets) %install modules_sign kernelrelease \
+ 			  image_name
+ single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.rsi %.s %.symtypes %/
++no-single-targets := vmlinux.o vmlinux.a
+ 
+ config-build	:=
+ mixed-build	:=
+@@ -315,11 +316,14 @@ ifeq ($(KBUILD_EXTMOD),)
+ endif
+ 
+ # We cannot build single targets and the others at the same time
+-ifneq ($(filter $(single-targets), $(MAKECMDGOALS)),)
++ifneq ($(filter-out $(no-single-targets), $(filter $(single-targets), $(MAKECMDGOALS))),)
+ 	single-build := 1
+ 	ifneq ($(filter-out $(single-targets), $(MAKECMDGOALS)),)
+ 		mixed-build := 1
+ 	endif
++	ifneq ($(filter $(no-single-targets), $(MAKECMDGOALS)),)
++		mixed-build := 1
++	endif
+ endif
+ 
+ # For "make -j clean all", "make -j mrproper defconfig all", etc.
 -- 
-Damien Le Moal
-Western Digital Research
+2.34.1
 
 
