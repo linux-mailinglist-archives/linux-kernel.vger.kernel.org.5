@@ -1,246 +1,274 @@
-Return-Path: <linux-kernel+bounces-26166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C63D82DC37
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:23:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFD0682DC3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:25:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17D851F21CCC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:23:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7CFA1C21D0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:25:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FA2517748;
-	Mon, 15 Jan 2024 15:23:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2197E17740;
+	Mon, 15 Jan 2024 15:24:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="O2IVJPWi"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="dHT0Rdz4"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CF0317736
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 15:23:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2dd05e02ffso104476466b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 07:23:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1705332189; x=1705936989; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sjb6yat6rTIqwLNK7lIYkpvumfmiEIYSpK/Qu84PmCs=;
-        b=O2IVJPWiID3yDnL7MA+7TC/NMo+zcAOKRDBN/JDEeAA1TROeQGo6qDmdYUAHvavkuR
-         VCuU+cMqOQGwThq30/2uP0YvH3G32lqkOCUcgA1Cr6vKmPO/nymxAvY5wl+CjoSjctuF
-         qsur+XFbgL1FW9rFpFvo2WtlMqbQ+JQ7MdROJOxdVHt1Tut7JCOcQfi/tudbzG1TKAv5
-         cgNk9SUDAvMdkDxVn0LqU6/nN8q0tYPJ9fcOfsVJnne8lDWxrMEK3OJMBnGvwna+d2DX
-         enYRsoNNUoQ9B5jTIRWyv0vLcT1BmL+QtNbeDdDCPMzVOKJUiWWfI9dWkj8LglOtQlgn
-         S2Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705332189; x=1705936989;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Sjb6yat6rTIqwLNK7lIYkpvumfmiEIYSpK/Qu84PmCs=;
-        b=qoNSagk9KBiA/T467VOc64EDnlp/kZUTh1W0KwK1EMkrhKM7JM4Pn+JENp3rWIkQnN
-         WdjjxZePxz3G9b1zaOgrgq71KzqUxpXIF06EqoMRk3GYY0JIwl+tFDOmyWW87SSR9wun
-         ZX3SSf0mwYMeHrXBLiVnMqDwihYRtOW6Tnvzsm26PVD+pf705iD82SC/R6krKkktq8uP
-         wuDz8gLbp5kHLdvg/emy2qOP/lQca3jlSa61Kr1X2CkkmItI+XNRLSE3iU2eui1CY9RO
-         pzP5yGNl6BotPtQTkJUSqQtbW0yZky1ScP4jNr7inIeTSwCUHvj0HpShB5aM8gTsAdxu
-         THWg==
-X-Gm-Message-State: AOJu0Yw+YtJ3hWeZiy0Kj2n7OOp06gmYLCPK2MNCO57sIwrlgx+gTPIV
-	IixyDaWfkp4lvgDFvspsVP30ozz3KcA1sxjdsRdjw9HTBmQ=
-X-Google-Smtp-Source: AGHT+IHA8GBVAlaQ/G9+4YlfpGBti7K7zuQDjbKGggHHhNwvPhvQd31mN7o91Q5SxIzDJNMEKz+DEQ==
-X-Received: by 2002:a17:907:3c9:b0:a2c:c648:dd03 with SMTP id su9-20020a17090703c900b00a2cc648dd03mr1381050ejb.110.1705332188553;
-        Mon, 15 Jan 2024 07:23:08 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id v8-20020a170906488800b00a27aabff0dcsm5467070ejq.179.2024.01.15.07.23.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 07:23:08 -0800 (PST)
-Date: Mon, 15 Jan 2024 16:23:07 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Sunil V L <sunilvl@ventanamicro.com>
-Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	"Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Anup Patel <anup@brainfault.org>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Conor Dooley <conor@kernel.org>, Atish Kumar Patra <atishp@rivosinc.com>, 
-	Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH v2 -next 1/3] cpuidle: RISC-V: Move few functions to
- arch/riscv
-Message-ID: <20240115-b3536efde6699e67fa15ac65@orel>
-References: <20240115101056.429471-1-sunilvl@ventanamicro.com>
- <20240115101056.429471-2-sunilvl@ventanamicro.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87D1F17735
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 15:24:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705332289;
+	bh=KXAJs/2dRy3PTXaGBrQbJM0dK9xdYx/HpB3k/oTvi8s=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=dHT0Rdz4cw12Ag4LhA2JvloaxbPy8VBEZa3wJ97LbCkJBEHLIGGYDhLcvcMtth3ju
+	 HNbssagDzYiHfGIxGKX/Jboar/C3IWjxy+qobQH5LZmHgM0oGNzlYtcKmrJmqqcYKo
+	 xTEQ5NxsFIDYA8Ipv6xq4PPcsU1c87ozaYPoW4cCKJagpTo0Z7pqj7zu9zOnfAtI7H
+	 MN8/AU6uQFIUVGodggnbK7xWUJoVWFT+T28oJMzkg9Rme4FnxpGVW8jk1l7kRMS8uy
+	 fT+0J3ciLK4x++RvP0en+XEU6V0Js2UT2HA2tiwbjRoWyYkgbz72Pel1b/XGBp8i+B
+	 RpKZAi9nepBtw==
+Received: from [100.95.196.25] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: koike)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 33A3637813DA;
+	Mon, 15 Jan 2024 15:24:45 +0000 (UTC)
+Message-ID: <c06f3ca9-e588-4012-b864-102ad3e7ea8d@collabora.com>
+Date: Mon, 15 Jan 2024 12:24:43 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240115101056.429471-2-sunilvl@ventanamicro.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] drm/ci: add tests on vkms
+Content-Language: en-US
+To: Vignesh Raman <vignesh.raman@collabora.com>,
+ dri-devel@lists.freedesktop.org
+Cc: hamohammed.sa@gmail.com, daniels@collabora.com,
+ rodrigosiqueiramelo@gmail.com, david.heidelberg@collabora.com,
+ guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
+ linux-kernel@vger.kernel.org, melissa.srw@gmail.com, mairacanal@riseup.net,
+ robdclark@gmail.com, airlied@gmail.com
+References: <20240102094129.1767591-1-vignesh.raman@collabora.com>
+From: Helen Koike <helen.koike@collabora.com>
+In-Reply-To: <20240102094129.1767591-1-vignesh.raman@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 15, 2024 at 03:40:54PM +0530, Sunil V L wrote:
-> To support ACPI Low Power Idle (LPI), few functions are required which
-> are currently static functions in the DT based cpuidle driver. Hence,
-> move them under arch/riscv so that ACPI driver also can use them.
+Hi,
+
+Thanks for picking this up.
+
+On 02/01/2024 06:41, Vignesh Raman wrote:
+> From: Helen Koike <helen.koike@collabora.com>
 > 
-> Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+> Add job that runs igt on top of vkms.
+> 
+> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+> Acked-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+> Tested-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+> Acked-by: Maxime Ripard <mripard@kernel.org>
+> Signed-off-by: Helen Koike <helen.koike@collabora.com>
 > ---
->  arch/riscv/include/asm/suspend.h    |  3 ++
->  arch/riscv/kernel/suspend.c         | 47 +++++++++++++++++++++++++++++
->  drivers/cpuidle/cpuidle-riscv-sbi.c | 41 +------------------------
->  3 files changed, 51 insertions(+), 40 deletions(-)
 > 
-> diff --git a/arch/riscv/include/asm/suspend.h b/arch/riscv/include/asm/suspend.h
-> index 02f87867389a..5c7df5ab7a16 100644
-> --- a/arch/riscv/include/asm/suspend.h
-> +++ b/arch/riscv/include/asm/suspend.h
-> @@ -55,4 +55,7 @@ int hibernate_resume_nonboot_cpu_disable(void);
->  asmlinkage void hibernate_restore_image(unsigned long resume_satp, unsigned long satp_temp,
->  					unsigned long cpu_resume);
->  asmlinkage int hibernate_core_restore_code(void);
-> +bool is_sbi_hsm_supported(void);
-> +bool sbi_suspend_state_is_valid(u32 state);
-> +int sbi_suspend(u32 state);
->  #endif
-> diff --git a/arch/riscv/kernel/suspend.c b/arch/riscv/kernel/suspend.c
-> index 239509367e42..a3b2e7e16a98 100644
-> --- a/arch/riscv/kernel/suspend.c
-> +++ b/arch/riscv/kernel/suspend.c
-> @@ -128,4 +128,51 @@ static int __init sbi_system_suspend_init(void)
->  }
->  
->  arch_initcall(sbi_system_suspend_init);
+> v2:
+> - do not mv modules to /lib/modules in the job definition, leave it to
+>    crosvm-runner.sh
+> 
+> v3:
+> - Enable CONFIG_DRM_VKMS in x86_64.config and update xfails
+> 
+> ---
+>   MAINTAINERS                                   |  1 +
+>   drivers/gpu/drm/ci/gitlab-ci.yml              |  1 +
+>   drivers/gpu/drm/ci/image-tags.yml             |  4 +--
+>   drivers/gpu/drm/ci/test.yml                   | 22 +++++++++++++
+>   drivers/gpu/drm/ci/x86_64.config              |  1 +
+>   drivers/gpu/drm/ci/xfails/vkms-none-fails.txt | 33 +++++++++++++++++++
+>   .../gpu/drm/ci/xfails/vkms-none-flakes.txt    |  9 +++++
+>   drivers/gpu/drm/ci/xfails/vkms-none-skips.txt | 14 ++++++++
+>   8 files changed, 83 insertions(+), 2 deletions(-)
+>   create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
+>   create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
+>   create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 9d959a6881f7..2c1593aa436f 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -6922,6 +6922,7 @@ L:	dri-devel@lists.freedesktop.org
+>   S:	Maintained
+>   T:	git git://anongit.freedesktop.org/drm/drm-misc
+>   F:	Documentation/gpu/vkms.rst
+> +F:	drivers/gpu/drm/ci/xfails/vkms*
+>   F:	drivers/gpu/drm/vkms/
+>   
+>   DRM DRIVER FOR VIRTUALBOX VIRTUAL GPU
+> diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
+> index 084e3ff8e3f4..4b636d39734c 100644
+> --- a/drivers/gpu/drm/ci/gitlab-ci.yml
+> +++ b/drivers/gpu/drm/ci/gitlab-ci.yml
+> @@ -108,6 +108,7 @@ stages:
+>     - rockchip
+>     - virtio-gpu
+>     - lint
+> +  - software-driver
+
+I had created this new stage with the intention to also move virtio-gpu 
+to it, so we can patch all "non-real" hardware, what do you think?
+
+>   
+>   # YAML anchors for rule conditions
+>   # --------------------------------
+> diff --git a/drivers/gpu/drm/ci/image-tags.yml b/drivers/gpu/drm/ci/image-tags.yml
+> index 7ab4f2514da8..bfa70f8cdf57 100644
+> --- a/drivers/gpu/drm/ci/image-tags.yml
+> +++ b/drivers/gpu/drm/ci/image-tags.yml
+> @@ -4,7 +4,7 @@ variables:
+>      DEBIAN_BASE_TAG: "${CONTAINER_TAG}"
+>   
+>      DEBIAN_X86_64_BUILD_IMAGE_PATH: "debian/x86_64_build"
+> -   DEBIAN_BUILD_TAG: "2023-10-08-config"
+> +   DEBIAN_BUILD_TAG: "2024-01-02-vkms"
+>   
+>      KERNEL_ROOTFS_TAG: "2023-10-06-amd"
+>   
+> @@ -12,4 +12,4 @@ variables:
+>      DEBIAN_X86_64_TEST_IMAGE_GL_PATH: "debian/x86_64_test-gl"
+>      DEBIAN_X86_64_TEST_GL_TAG: "${CONTAINER_TAG}"
+>   
+> -   ALPINE_X86_64_LAVA_SSH_TAG: "${CONTAINER_TAG}"
+> \ No newline at end of file
+> +   ALPINE_X86_64_LAVA_SSH_TAG: "${CONTAINER_TAG}"
+> diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
+> index 1705f268547a..a079f3632a95 100644
+> --- a/drivers/gpu/drm/ci/test.yml
+> +++ b/drivers/gpu/drm/ci/test.yml
+> @@ -337,3 +337,25 @@ virtio_gpu:none:
+>       - debian/x86_64_test-gl
+>       - testing:x86_64
+>       - igt:x86_64
 > +
-> +static int sbi_suspend_finisher(unsigned long suspend_type,
-> +				unsigned long resume_addr,
-> +				unsigned long opaque)
-> +{
-> +	struct sbiret ret;
+> +vkms:none:
+> +  stage: software-driver
+> +  variables:
+> +    DRIVER_NAME: vkms
+> +    GPU_VERSION: none
+> +  extends:
+> +    - .test-gl
+> +    - .test-rules
+> +  tags:
+> +    - kvm
+> +  script:
+> +    - ln -sf $CI_PROJECT_DIR/install /install
+> +    - mv install/bzImage /lava-files/bzImage
+> +    - mkdir -p /lib/modules
+> +    - mkdir -p $CI_PROJECT_DIR/results
+> +    - ln -sf $CI_PROJECT_DIR/results /results
+> +    - ./install/crosvm-runner.sh ./install/igt_runner.sh
+> +  needs:
+> +    - debian/x86_64_test-gl
+> +    - testing:x86_64
+> +    - igt:x86_64
+> diff --git a/drivers/gpu/drm/ci/x86_64.config b/drivers/gpu/drm/ci/x86_64.config
+> index 1cbd49a5b23a..ab4dcca749cc 100644
+> --- a/drivers/gpu/drm/ci/x86_64.config
+> +++ b/drivers/gpu/drm/ci/x86_64.config
+> @@ -24,6 +24,7 @@ CONFIG_DRM=y
+>   CONFIG_DRM_PANEL_SIMPLE=y
+>   CONFIG_PWM_CROS_EC=y
+>   CONFIG_BACKLIGHT_PWM=y
+> +CONFIG_DRM_VKMS=y
+
+I was wondering if this wouldn't get in the way of other tests, but I 
+guess IGT_FORCE_DRIVER can handle, we just need to make sure it is set 
+and we are testing the correct one.
+
+Thanks
+Helen
+
+>   
+>   # Strip out some stuff we don't need for graphics testing, to reduce
+>   # the build.
+> diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt b/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
+> new file mode 100644
+> index 000000000000..ce8c93008d7e
+> --- /dev/null
+> +++ b/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
+> @@ -0,0 +1,33 @@
+> +kms_cursor_crc@cursor-rapid-movement-128x128,Fail
+> +kms_cursor_crc@cursor-rapid-movement-128x42,Fail
+> +kms_cursor_crc@cursor-rapid-movement-256x256,Fail
+> +kms_cursor_crc@cursor-rapid-movement-256x85,Fail
+> +kms_cursor_crc@cursor-rapid-movement-32x10,Fail
+> +kms_cursor_crc@cursor-rapid-movement-32x32,Fail
+> +kms_cursor_crc@cursor-rapid-movement-512x170,Fail
+> +kms_cursor_crc@cursor-rapid-movement-512x512,Fail
+> +kms_cursor_crc@cursor-rapid-movement-64x21,Fail
+> +kms_cursor_crc@cursor-rapid-movement-64x64,Fail
+> +kms_cursor_legacy@basic-flip-before-cursor-atomic,Fail
+> +kms_cursor_legacy@basic-flip-before-cursor-legacy,Fail
+> +kms_cursor_legacy@cursor-vs-flip-atomic,Fail
+> +kms_cursor_legacy@cursor-vs-flip-legacy,Fail
+> +kms_cursor_legacy@cursor-vs-flip-toggle,Fail
+> +kms_cursor_legacy@cursor-vs-flip-varying-size,Fail
+> +kms_cursor_legacy@cursorA-vs-flipA-legacy,Fail
+> +kms_cursor_legacy@flip-vs-cursor-atomic,Fail
+> +kms_cursor_legacy@flip-vs-cursor-crc-atomic,Fail
+> +kms_cursor_legacy@flip-vs-cursor-crc-legacy,Fail
+> +kms_cursor_legacy@flip-vs-cursor-legacy,Fail
+> +kms_flip@flip-vs-modeset-vs-hang,Fail
+> +kms_flip@flip-vs-panning-vs-hang,Fail
+> +kms_pipe_crc_basic@nonblocking-crc,Fail
+> +kms_pipe_crc_basic@nonblocking-crc-frame-sequence,Fail
+> +kms_pipe_crc_basic@suspend-read-crc,Fail
+> +kms_plane@plane-panning-bottom-right-suspend,Fail
+> +kms_universal_plane@universal-plane-pipe-A-sanity,Fail
+> +kms_vblank@pipe-A-ts-continuation-dpms-suspend,Fail
+> +kms_writeback@writeback-check-output,Fail
+> +kms_writeback@writeback-fb-id,Fail
+> +kms_writeback@writeback-invalid-parameters,Fail
+> +kms_writeback@writeback-pixel-formats,Fail
+> diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt b/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
+> new file mode 100644
+> index 000000000000..0ccf4a9c187b
+> --- /dev/null
+> +++ b/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
+> @@ -0,0 +1,9 @@
+> +# Board Name: vkms
+> +# Bug Report: https://lore.kernel.org/dri-devel/005da8f1-8050-bffd-653c-2a87ae6376f7@collabora.com/T/#u
+> +# IGT Version: 1.28-gd2af13d9f
+> +# Linux Version: 6.7.0-rc3
+> +# Failure Rate: 50
 > +
-> +	ret = sbi_ecall(SBI_EXT_HSM, SBI_EXT_HSM_HART_SUSPEND,
-> +			suspend_type, resume_addr, opaque, 0, 0, 0);
+> +# Reported by deqp-runner
+> +kms_cursor_legacy@cursorA-vs-flipA-legacy
+> +kms_cursor_legacy@cursorA-vs-flipA-varying-size
+> diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt b/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
+> new file mode 100644
+> index 000000000000..2014653bf5b6
+> --- /dev/null
+> +++ b/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
+> @@ -0,0 +1,14 @@
+> +# Hits:
+> +# rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+> +# rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1): P749/1:b..l
+> +kms_prop_blob@invalid-get-prop
 > +
-> +	return (ret.error) ? sbi_err_map_linux_errno(ret.error) : 0;
-> +}
+> +# keeps printing vkms_vblank_simulate: vblank timer overrun and never ends
+> +kms_invalid_mode@int-max-clock
 > +
-> +int sbi_suspend(u32 state)
-
-Now that this is exported, I'd name it riscv_sbi_suspend.
-
-> +{
-> +	if (state & SBI_HSM_SUSP_NON_RET_BIT)
-> +		return cpu_suspend(state, sbi_suspend_finisher);
-> +	else
-> +		return sbi_suspend_finisher(state, 0, 0);
-> +}
+> +# Suspend seems to be broken
+> +.*suspend.*
 > +
-> +bool sbi_suspend_state_is_valid(u32 state)
-
-Also riscv_ prefix here.
-
-> +{
-> +	if (state > SBI_HSM_SUSPEND_RET_DEFAULT &&
-> +	    state < SBI_HSM_SUSPEND_RET_PLATFORM)
-> +		return false;
-> +	if (state > SBI_HSM_SUSPEND_NON_RET_DEFAULT &&
-> +	    state < SBI_HSM_SUSPEND_NON_RET_PLATFORM)
-> +		return false;
-> +	return true;
-> +}
-> +
-> +bool is_sbi_hsm_supported(void)
-
-This I would rename to riscv_sbi_hsm_is_supported
-
-> +{
-> +	/*
-> +	 * The SBI HSM suspend function is only available when:
-> +	 * 1) SBI version is 0.3 or higher
-> +	 * 2) SBI HSM extension is available
-> +	 */
-> +	if (sbi_spec_version < sbi_mk_version(0, 3) ||
-> +	    !sbi_probe_extension(SBI_EXT_HSM)) {
-> +		pr_info("HSM suspend not available\n");
-> +		return false;
-> +	}
-> +
-> +	return true;
-> +}
->  #endif /* CONFIG_RISCV_SBI */
-> diff --git a/drivers/cpuidle/cpuidle-riscv-sbi.c b/drivers/cpuidle/cpuidle-riscv-sbi.c
-> index e8094fc92491..a7f06242f67b 100644
-> --- a/drivers/cpuidle/cpuidle-riscv-sbi.c
-> +++ b/drivers/cpuidle/cpuidle-riscv-sbi.c
-> @@ -73,26 +73,6 @@ static inline bool sbi_is_domain_state_available(void)
->  	return data->available;
->  }
->  
-> -static int sbi_suspend_finisher(unsigned long suspend_type,
-> -				unsigned long resume_addr,
-> -				unsigned long opaque)
-> -{
-> -	struct sbiret ret;
-> -
-> -	ret = sbi_ecall(SBI_EXT_HSM, SBI_EXT_HSM_HART_SUSPEND,
-> -			suspend_type, resume_addr, opaque, 0, 0, 0);
-> -
-> -	return (ret.error) ? sbi_err_map_linux_errno(ret.error) : 0;
-> -}
-> -
-> -static int sbi_suspend(u32 state)
-> -{
-> -	if (state & SBI_HSM_SUSP_NON_RET_BIT)
-> -		return cpu_suspend(state, sbi_suspend_finisher);
-> -	else
-> -		return sbi_suspend_finisher(state, 0, 0);
-> -}
-> -
->  static __cpuidle int sbi_cpuidle_enter_state(struct cpuidle_device *dev,
->  					     struct cpuidle_driver *drv, int idx)
->  {
-> @@ -206,17 +186,6 @@ static const struct of_device_id sbi_cpuidle_state_match[] = {
->  	{ },
->  };
->  
-> -static bool sbi_suspend_state_is_valid(u32 state)
-> -{
-> -	if (state > SBI_HSM_SUSPEND_RET_DEFAULT &&
-> -	    state < SBI_HSM_SUSPEND_RET_PLATFORM)
-> -		return false;
-> -	if (state > SBI_HSM_SUSPEND_NON_RET_DEFAULT &&
-> -	    state < SBI_HSM_SUSPEND_NON_RET_PLATFORM)
-> -		return false;
-> -	return true;
-> -}
-> -
->  static int sbi_dt_parse_state_node(struct device_node *np, u32 *state)
->  {
->  	int err = of_property_read_u32(np, "riscv,sbi-suspend-param", state);
-> @@ -607,16 +576,8 @@ static int __init sbi_cpuidle_init(void)
->  	int ret;
->  	struct platform_device *pdev;
->  
-> -	/*
-> -	 * The SBI HSM suspend function is only available when:
-> -	 * 1) SBI version is 0.3 or higher
-> -	 * 2) SBI HSM extension is available
-> -	 */
-> -	if ((sbi_spec_version < sbi_mk_version(0, 3)) ||
-> -	    !sbi_probe_extension(SBI_EXT_HSM)) {
-> -		pr_info("HSM suspend not available\n");
-> +	if (!is_sbi_hsm_supported())
->  		return 0;
-> -	}
->  
->  	ret = platform_driver_register(&sbi_cpuidle_driver);
->  	if (ret)
-> -- 
-> 2.34.1
->
-
-Otherwise,
-
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> +# Hangs machine and timeout occurs
+> +kms_flip@flip-vs-absolute-wf_vblank-interruptible
+> +kms_invalid_mode@zero-hdisplay
 
