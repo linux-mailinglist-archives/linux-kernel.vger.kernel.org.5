@@ -1,64 +1,65 @@
-Return-Path: <linux-kernel+bounces-25986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 505D382D956
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:59:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49F4982D948
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:58:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D30DBB217E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:59:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EF111C214AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:58:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCDC3175AC;
-	Mon, 15 Jan 2024 12:58:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7676817557;
+	Mon, 15 Jan 2024 12:57:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xen.org header.i=@xen.org header.b="XI1tcitR"
-Received: from mail.xenproject.org (mail.xenproject.org [104.130.215.37])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="xCGMBLjs"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F40168DA;
-	Mon, 15 Jan 2024 12:58:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xen.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-	s=20200302mail; h=Content-Transfer-Encoding:MIME-Version:References:
-	In-Reply-To:Message-Id:Date:Subject:To:From;
-	bh=6UWySuPLxoVCZ7yeUZ1GEfShEYG+/gkZ/enEU9VsJyU=; b=XI1tcitRIQHoWZYOoLz4duq4En
-	XkOUF8jMUcuKVb39wsUzA61RT34Thot+31uGAmYBE0uvMb/blRywB0A7tOxu2vU0cEnhrmZqJ1+LG
-	dyRFu5+tlUcQoQTDNNRsQc8KgzUxpNTGKMXTy158poaTBOpLivzRPW/IRhMF629KdC4Y=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-	by mail.xenproject.org with esmtp (Exim 4.92)
-	(envelope-from <paul@xen.org>)
-	id 1rPMXL-0002kx-2B; Mon, 15 Jan 2024 12:57:55 +0000
-Received: from 54-240-197-231.amazon.com ([54.240.197.231] helo=REM-PW02S00X.ant.amazon.com)
-	by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <paul@xen.org>)
-	id 1rPMXK-0002kM-Pi; Mon, 15 Jan 2024 12:57:55 +0000
-From: Paul Durrant <paul@xen.org>
-To: Paolo Bonzini <pbonzini@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Sean Christopherson <seanjc@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Paul Durrant <paul@xen.org>,
-	Shuah Khan <shuah@kernel.org>,
-	kvm@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v12 09/20] KVM: xen: separate initialization of shared_info cache and content
-Date: Mon, 15 Jan 2024 12:56:56 +0000
-Message-Id: <20240115125707.1183-10-paul@xen.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240115125707.1183-1-paul@xen.org>
-References: <20240115125707.1183-1-paul@xen.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F69717553;
+	Mon, 15 Jan 2024 12:57:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40FCvHEa112237;
+	Mon, 15 Jan 2024 06:57:17 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1705323437;
+	bh=6iByVdVvYTCVZkLYoWSBd1ifMXk011NYhGbUvfcH5hM=;
+	h=From:To:CC:Subject:Date;
+	b=xCGMBLjs9zHNbrIUnG4ZN/d+VPZarbUZD5f8tWzRbjulXGTERhLl8kuWLOh5Yi+RZ
+	 gJPBGuZvA39VI6kSnAUeEnN5b0Nn2Pa3HhcYgOGbVaAfr4xknyxEV9gOWfTgYhETtc
+	 LxxuScoMKWNc+kYVqjW8bi54SEpLl7M87Vw4JLMk=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40FCvHph019828
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 15 Jan 2024 06:57:17 -0600
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 15
+ Jan 2024 06:57:17 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 15 Jan 2024 06:57:17 -0600
+Received: from localhost (ti.dhcp.ti.com [172.24.227.95] (may be forged))
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40FCvG9W128446;
+	Mon, 15 Jan 2024 06:57:16 -0600
+From: Devarsh Thakkar <devarsht@ti.com>
+To: <jyri.sarha@iki.fi>, <tomi.valkeinen@ideasonboard.com>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+        <tzimmermann@suse.de>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC: <praneeth@ti.com>, <nm@ti.com>, <vigneshr@ti.com>, <a-bhatia1@ti.com>,
+        <j-luthra@ti.com>, <kristo@kernel.org>, <devarsht@ti.com>
+Subject: [PATCH 0/2] Add common1 register space for TI Keystone displays
+Date: Mon, 15 Jan 2024 18:27:14 +0530
+Message-ID: <20240115125716.560363-1-devarsht@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,129 +67,30 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-From: Paul Durrant <pdurrant@amazon.com>
+Add common1 register space for SoC's supporting TI Keystone displays
+present in AM65x and AM62x SoCs. This is required to support use-cases
+where Linux may want to use common1 region instead of common region with
+the latter being controlled by another processing core.
 
-A subsequent patch will allow shared_info to be initialized using either a
-GPA or a user-space (i.e. VMM) HVA. To make that patch cleaner, separate
-the initialization of the shared_info content from the activation of the
-pfncache.
+The enumeration of common1 region in device-tree bindings seem to be a
+miss as ideally bindings should enumerate all supported register spaces
+as done in
+Documentation/devicetree/bindings/display/ti/ti,j721e-dss.yaml which
+also uses TI Keystone display subsystem albeit with some more features.
 
-Signed-off-by: Paul Durrant <pdurrant@amazon.com>
-Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
----
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: x86@kernel.org
+Devarsh Thakkar (2):
+  dt-bindings: display: ti,am65x-dss: Add support for common1 region
+  arm64: dts: ti: Add common1 register space for AM62x and AM65x SoCs
 
-v11:
- - Fix accidental regression from commit 5d6d6a7d7e66a ("KVM: x86: Refine
-   calculation of guest wall clock to use a single TSC read").
+ .../devicetree/bindings/display/ti/ti,am65x-dss.yaml       | 7 +++++--
+ arch/arm64/boot/dts/ti/k3-am62-main.dtsi                   | 5 +++--
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi                   | 5 +++--
+ 3 files changed, 11 insertions(+), 6 deletions(-)
 
-v10:
- - New in this version.
----
- arch/x86/kvm/xen.c | 55 +++++++++++++++++++++++++++-------------------
- 1 file changed, 32 insertions(+), 23 deletions(-)
-
-diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
-index f9b1e494c430..df53fea73747 100644
---- a/arch/x86/kvm/xen.c
-+++ b/arch/x86/kvm/xen.c
-@@ -34,41 +34,32 @@ static bool kvm_xen_hcall_evtchn_send(struct kvm_vcpu *vcpu, u64 param, u64 *r);
- 
- DEFINE_STATIC_KEY_DEFERRED_FALSE(kvm_xen_enabled, HZ);
- 
--static int kvm_xen_shared_info_init(struct kvm *kvm, gfn_t gfn)
-+static int kvm_xen_shared_info_init(struct kvm *kvm)
- {
- 	struct gfn_to_pfn_cache *gpc = &kvm->arch.xen.shinfo_cache;
- 	struct pvclock_wall_clock *wc;
--	gpa_t gpa = gfn_to_gpa(gfn);
- 	u32 *wc_sec_hi;
- 	u32 wc_version;
- 	u64 wall_nsec;
- 	int ret = 0;
- 	int idx = srcu_read_lock(&kvm->srcu);
- 
--	if (gfn == KVM_XEN_INVALID_GFN) {
--		kvm_gpc_deactivate(gpc);
--		goto out;
--	}
-+	read_lock_irq(&gpc->lock);
-+	while (!kvm_gpc_check(gpc, PAGE_SIZE)) {
-+		read_unlock_irq(&gpc->lock);
- 
--	do {
--		ret = kvm_gpc_activate(gpc, gpa, PAGE_SIZE);
-+		ret = kvm_gpc_refresh(gpc, PAGE_SIZE);
- 		if (ret)
- 			goto out;
- 
--		/*
--		 * This code mirrors kvm_write_wall_clock() except that it writes
--		 * directly through the pfn cache and doesn't mark the page dirty.
--		 */
--		wall_nsec = kvm_get_wall_clock_epoch(kvm);
--
--		/* It could be invalid again already, so we need to check */
- 		read_lock_irq(&gpc->lock);
-+	}
- 
--		if (gpc->valid)
--			break;
--
--		read_unlock_irq(&gpc->lock);
--	} while (1);
-+	/*
-+	 * This code mirrors kvm_write_wall_clock() except that it writes
-+	 * directly through the pfn cache and doesn't mark the page dirty.
-+	 */
-+	wall_nsec = kvm_get_wall_clock_epoch(kvm);
- 
- 	/* Paranoia checks on the 32-bit struct layout */
- 	BUILD_BUG_ON(offsetof(struct compat_shared_info, wc) != 0x900);
-@@ -639,12 +630,30 @@ int kvm_xen_hvm_set_attr(struct kvm *kvm, struct kvm_xen_hvm_attr *data)
- 		}
- 		break;
- 
--	case KVM_XEN_ATTR_TYPE_SHARED_INFO:
-+	case KVM_XEN_ATTR_TYPE_SHARED_INFO: {
-+		int idx;
-+
- 		mutex_lock(&kvm->arch.xen.xen_lock);
--		r = kvm_xen_shared_info_init(kvm, data->u.shared_info.gfn);
-+
-+		idx = srcu_read_lock(&kvm->srcu);
-+
-+		if (data->u.shared_info.gfn == KVM_XEN_INVALID_GFN) {
-+			kvm_gpc_deactivate(&kvm->arch.xen.shinfo_cache);
-+			r = 0;
-+		} else {
-+			r = kvm_gpc_activate(&kvm->arch.xen.shinfo_cache,
-+					     gfn_to_gpa(data->u.shared_info.gfn),
-+					     PAGE_SIZE);
-+		}
-+
-+		srcu_read_unlock(&kvm->srcu, idx);
-+
-+		if (!r && kvm->arch.xen.shinfo_cache.active)
-+			r = kvm_xen_shared_info_init(kvm);
-+
- 		mutex_unlock(&kvm->arch.xen.xen_lock);
- 		break;
--
-+	}
- 	case KVM_XEN_ATTR_TYPE_UPCALL_VECTOR:
- 		if (data->u.vector && data->u.vector < 0x10)
- 			r = -EINVAL;
 -- 
-2.39.2
+2.34.1
 
 
