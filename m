@@ -1,206 +1,203 @@
-Return-Path: <linux-kernel+bounces-26293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 414D482DE2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:09:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D082D82DE32
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:09:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41A601C21EBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:09:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57E2C283035
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:09:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CD571862B;
-	Mon, 15 Jan 2024 17:08:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25BFC17C96;
+	Mon, 15 Jan 2024 17:09:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IsWaigLg"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mjvCtXil"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D25A2182A7
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 17:08:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705338516;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P1P61my+Bw8+fnvo70xyLGssKK24tkeqWAOxKcUoi5E=;
-	b=IsWaigLgBWnJWUMDVhFaXIa8BS+0Bw+khEWGsMx7gZaO68OmcPX5/aFYiydQLc3smFITt7
-	p3re+pWPMyqk78dBlTuwWNn11aStIEEhA/DTF7DZI46/ROae85e2S9pCPzY3FMGj9GlQsg
-	WBMwMXbk9oftjTTQDvLodMnxrmKVN/Q=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-682-Y5a0MTknPy6oZrCgfBbapw-1; Mon, 15 Jan 2024 12:08:35 -0500
-X-MC-Unique: Y5a0MTknPy6oZrCgfBbapw-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-429abac743fso93551391cf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 09:08:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705338515; x=1705943315;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P1P61my+Bw8+fnvo70xyLGssKK24tkeqWAOxKcUoi5E=;
-        b=SDUKKXXz4zDsg1jf/iXp/Z2H/bYnFymcXjWYet+ALbNFEfYmNW9LSWLFHT1mOlLUZ6
-         JzxHC0h3x/v+o4UyYznQv+6Odq/TmuSvgq/m7veGBupBPWfyALApi9OZIlIAoLmkGiqv
-         c2pOXZxKEw6Pv1qKa4JPzyUJF6QnrGTbJsuyNrmtIMRwRhSWjaE1896G2U4gUA5/MAK3
-         Kzl8cvz1jjUbYQQBgienojvxGKWTJSSMKMbCYU8mANaO7mPIcyav5kKi9xpurNwV71Ho
-         ilRko0vXQr6JxsgihggFpffx7tIXwjeWTX5qKEcsLsTKqjSKdrCM2i8W3qBQ5AKL3Clb
-         9ClA==
-X-Gm-Message-State: AOJu0Yzn4970am1FdMtmwGX6ls5D2Te+cVT1nxX19v0Y6sx/0P2qpZNI
-	ezZdegaUB+kYDvPmak4h0T4wt5B1LXYdASAc1P0Q8CzMb9RoMrAa+1m5ewKVk80i4EUqx7LFTkU
-	GsZVXB3QvodmZ7lpczSoeDDXaHUqjIB4=
-X-Received: by 2002:a05:622a:1b9e:b0:429:cfa7:2694 with SMTP id bp30-20020a05622a1b9e00b00429cfa72694mr8278451qtb.132.1705338514908;
-        Mon, 15 Jan 2024 09:08:34 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGSo27e4aZe4IMLfNfuibFhqawYh2aJcFoKYMMlbNu9QIdvCFbQvArA0Ru5fOqmfL7xiIx6vQ==
-X-Received: by 2002:a05:622a:1b9e:b0:429:cfa7:2694 with SMTP id bp30-20020a05622a1b9e00b00429cfa72694mr8278439qtb.132.1705338514643;
-        Mon, 15 Jan 2024 09:08:34 -0800 (PST)
-Received: from [192.168.9.34] (net-2-34-31-72.cust.vodafonedsl.it. [2.34.31.72])
-        by smtp.gmail.com with ESMTPSA id fv11-20020a05622a4a0b00b00427fb1d6b44sm4089985qtb.5.2024.01.15.09.08.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jan 2024 09:08:34 -0800 (PST)
-Message-ID: <12b50394-3d02-4fe2-9b00-97788b2a64ef@redhat.com>
-Date: Mon, 15 Jan 2024 18:08:31 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E0BD18E0C;
+	Mon, 15 Jan 2024 17:09:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DCA7C433F1;
+	Mon, 15 Jan 2024 17:09:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705338545;
+	bh=EqOMEzkyzNYto3UmIip9XB66HC1aMCqtxgSe2FiBi4I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mjvCtXilB+F7tlBXPufpFIoL+uZ5s6bm559DwsOVDAOKL0F+CaraYCpFlmLbfF6/Q
+	 EjC5Fy6G41QsIgoRkD35EDwWOrihkeebauqiWVXBfQrZa1+0Y/RASisVtVmiLTuRk6
+	 eGhdOYUpbvtNChB0w/5pkNrmpzNgRHEB7wcdyCpqqI1qtqrYlQLBHHIRt9MqY0ofYh
+	 msitEc9VYqPft14r9x/yRjnosv7EZAa3ZkgZZaOK1FsLWl6iC8RmSJqovIlL/18jk/
+	 F+22h92t37oDYAe8zT+YeBvv+/CNODIP/dYDYB9N1ce1xsApQ1v7J/gnxDe6pxWzoO
+	 fhYcgGy3ZzBnA==
+Date: Mon, 15 Jan 2024 11:09:03 -0600
+From: Rob Herring <robh@kernel.org>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, u-boot@lists.denx.de,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH V3 1/6] dt-bindings: nvmem: layouts: add U-Boot
+ environment variables layout
+Message-ID: <20240115170903.GA911971-robh@kernel.org>
+References: <20231221173421.13737-1-zajec5@gmail.com>
+ <20240104001129.GA2045237-robh@kernel.org>
+ <20240104085839.5624c354@xps-13>
+ <8c8d2d38-faf2-47f2-bfbf-2e4842dded47@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Marco Pagani <marpagan@redhat.com>
-Subject: Re: [RFC 1/2] fpga: support loading from a pre-allocated buffer
-To: Nava kishore Manne <nava.kishore.manne@amd.com>
-Cc: mdf@kernel.org, hao.wu@intel.com, yilun.xu@intel.com, trix@redhat.com,
- sumit.semwal@linaro.org, christian.koenig@amd.com,
- linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
- dri-devel@lists.freedesktop.org
-References: <20231122053035.3758124-1-nava.kishore.manne@amd.com>
- <20231122053035.3758124-2-nava.kishore.manne@amd.com>
-Content-Language: en-US
-In-Reply-To: <20231122053035.3758124-2-nava.kishore.manne@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8c8d2d38-faf2-47f2-bfbf-2e4842dded47@gmail.com>
 
+On Thu, Jan 04, 2024 at 10:10:13AM +0100, Rafał Miłecki wrote:
+> On 4.01.2024 08:58, Miquel Raynal wrote:
+> > robh@kernel.org wrote on Wed, 3 Jan 2024 17:11:29 -0700:
+> > > On Thu, Dec 21, 2023 at 06:34:16PM +0100, Rafał Miłecki wrote:
+> > > > From: Rafał Miłecki <rafal@milecki.pl>
+> > > > 
+> > > > U-Boot env data is a way of storing firmware variables. It's a format
+> > > > that can be used of top of various storage devices. Its binding should
+> > > > be an NVMEM layout instead of a standalone device.
+> > > > 
+> > > > This patch adds layout binding which allows using it on top of MTD NVMEM
+> > > > device as well as any other. At the same time it deprecates the old
+> > > > combined binding.
+> > > 
+> > > I don't understand the issue. From a DT perspective, there isn't. A
+> > > partition is not a device, but is describing the layout of storage
+> > > already.
+> > 
+> > Actually I think what Rafał wants to do goes in the right direction but
+> > I also understand from a binding perspective it may be a little
+> > confusing, even more if we consider "NVMEM" a Linux specific concept.
+> > 
+> > There is today a "u-boot env" NVMEM *device* description which
+> > almost sits at the same level as eg. an eeprom device. We cannot
+> > compare "an eeprom device" and "a u-boot environment" of course. But
+> > that's truly what is currently described.
+> > 
+> > * Current situation
+> > 
+> > 	Flash device -> U-Boot env layout -> NVMEM cells
 
+Isn't it?:
 
-On 2023-11-22 06:30, Nava kishore Manne wrote:
-> Some systems are memory constrained but they need to load very
-> large Configuration files. The FPGA subsystem allows drivers to
-> request this Configuration image be loaded from the filesystem,
-> but this requires that the entire configuration data be loaded
-> into kernel memory first before it's provided to the driver.
-> This can lead to a situation where we map the configuration
-> data twice, once to load the configuration data into kernel
-> memory and once to copy the configuration data into the final
-> resting place which is nothing but a dma-able continuous buffer.
+Flash device -> fixed-partitions -> U-Boot env layout -> NVMEM cells
+
+> > 
+> > * Improved situation
+> > 
+> > 	Any storage device -> NVMEM -> U-Boot env layout -> NVMEM cells
+
+Why is this better? We don't need a container to say 'this is NVMEM 
+stuff' or 'this is MTD stuff'. 'U-Boot env layout' can tell us 'this is 
+NVMEM stuff' or whatever the kernel decides in the future.
+
+> > 
+> > The latter is of course the most relevant description as we expect
+> > storage devices to expose a storage-agnostic interface (NVMEM in
+> > this case) which can then be parsed (by NVMEM layouts) in a storage
+> > agnostic way.
+> > 
+> > In the current case, the current U-Boot env binding tells people to
+> > declare the env layout on top of a flash device (only). The current
+> > description also expects a partition node which is typical to flash
+> > devices. Whereas what we should have described in the first place is a
+> > layout that applies on any kind of NVMEM device.
+> > 
+> > Bonus point: We've been working the last couple years on clarifying
+> > bindings, especially with mtd partitions (with the partitions{}
+> > container) and NVMEM layouts (with the nvmem-layout{} container).
+> > The switch proposed in this patch makes use of the latter, of course.
 > 
-> This creates needless memory pressure and delays due to multiple
-> copies. Let's add a dmabuf handling support to the fpga manager
-> framework that allows drivers to load the Configuration data
-> directly from a pre-allocated buffer. This skips the intermediate
-> step of allocating a buffer in kernel memory to hold the
-> Configuration data.
-
-Sharing images/bitstreams using dma-buf to avoid multiple copies
-make sense to me to have a fast path for partial reconfiguration.
-However, implementing the userspace interface for importing the
-buffer at the manager level seems questionable, considering that
-the manager should be responsible only for writing images.
-
-Wouldn't it be conceptually cleaner to implement the interface for
-importing dma-buf as a separate layer on top of the manager? Such a
-layer could then program the FPGA using the standard write_sg 
-interface exported by the manager. In this way, each component would
-have its own responsibility.
-
+> Thanks Miquèl for filling bits I missed in commit description. Despite
+> years in Linux/DT I still struggle with more complex designs
+> documentation.
 > 
-> Signed-off-by: Nava kishore Manne <nava.kishore.manne@amd.com>
-> ---
->  drivers/fpga/fpga-mgr.c       | 113 ++++++++++++++++++++++++++++++++++
->  include/linux/fpga/fpga-mgr.h |  10 +++
->  2 files changed, 123 insertions(+)
 > 
-> diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
-> index 06651389c592..23d2b4d45827 100644
-> --- a/drivers/fpga/fpga-mgr.c
-> +++ b/drivers/fpga/fpga-mgr.c
-> @@ -8,6 +8,8 @@
->   * With code from the mailing list:
->   * Copyright (C) 2013 Xilinx, Inc.
->   */
-> +#include <linux/dma-buf.h>
-> +#include <linux/dma-map-ops.h>
->  #include <linux/firmware.h>
->  #include <linux/fpga/fpga-mgr.h>
->  #include <linux/idr.h>
-> @@ -519,6 +521,39 @@ static int fpga_mgr_buf_load(struct fpga_manager *mgr,
->  	return rc;
->  }
->  
-> +static int fpga_dmabuf_load(struct fpga_manager *mgr,
-> +			    struct fpga_image_info *info)
-> +{
-> +	struct dma_buf_attachment *attach;
-> +	struct sg_table *sgt;
-> +	int ret;
-> +
-> +	/* create attachment for dmabuf with the user device */
-> +	attach = dma_buf_attach(mgr->dmabuf, &mgr->dev);
-> +	if (IS_ERR(attach)) {
-> +		pr_err("failed to attach dmabuf\n");
-> +		ret = PTR_ERR(attach);
-> +		goto fail_put;
-> +	}
-> +
-> +	sgt = dma_buf_map_attachment(attach, DMA_BIDIRECTIONAL);
-> +	if (IS_ERR(sgt)) {
-> +		ret = PTR_ERR(sgt);
-> +		goto fail_detach;
-> +	}
-> +
-> +	info->sgt = sgt;
-> +	ret = fpga_mgr_buf_load_sg(mgr, info, info->sgt);
-> +	dma_buf_unmap_attachment(attach, sgt, DMA_BIDIRECTIONAL);
-> +
-> +fail_detach:
-> +	dma_buf_detach(mgr->dmabuf, attach);
-> +fail_put:
-> +	dma_buf_put(mgr->dmabuf);
-> +
-> +	return ret;
-> +}
-> +
->  /**
->   * fpga_mgr_firmware_load - request firmware and load to fpga
->   * @mgr:	fpga manager
-> @@ -573,6 +608,8 @@ int fpga_mgr_load(struct fpga_manager *mgr, struct fpga_image_info *info)
->  {
->  	info->header_size = mgr->mops->initial_header_size;
->  
-> +	if (mgr->flags & FPGA_MGR_CONFIG_DMA_BUF)
-> +		return fpga_dmabuf_load(mgr, info);
+> As per Rob's comment I think I see his point and a possible design
+> confusion. If you look from a pure DT perspective then "partitions" and
+> "nvmem-layout" serve a very similar purpose. They describe device's data
+> content structure. For fixed structures we have very similar
+> "fixed-partitions" and "fixed-cells".
+> 
+> If we were to design those bindings today I'm wondering if we couldn't
+> have s/partitions/layout/ and s/nvmem-layout/layout/.
 
-I'm not understanding the whole picture. After the dma-buf has been
-imported from userspace, who is supposed to call fpga_mgr_load() or
-fpga_region_program_fpga()? And who should load and export the dma-buf
-containing the image in the first place?
+Why!? It is just a name, and we can't get rid of the old names. We don't 
+need 2 names.
 
-I think it would be interesting to have a system that buffers a set of
-alternative configurations for each (reconfigurable) region. Alternative
-configurations could be represented and activated through a sysfs
-interface. The user could request a specific configuration by writing in
-the corresponding sysfs file, and the system would use the preloaded
-image and optionally the overlay to configure the region. What do you
-think?
+> Rob: other than having different bindings for MTD vs. NVMEM layouts I
+> think they overall design makes sense. A single device may have content
+> structurized on more than 1 level:
+> 1. You may have fixed layout at top level (multiple partitions)
+> 2. Single partitions may have their own layouts (like U-Boot env data)
 
-> [...]
+Sure. Partitions is for 1 and Layouts is for 2.
 
-Thanks,
-Marco
+> Maybe ideally above should look more like:
+> 
+> flash@0 {
+> 	compatible = "<flash-compatible>";
+> 
+> 	layout {
+> 		compatible = "fixed-layout";
 
+Why does 'partitions' and 'fixed-partitions' not work here?
+
+> 		#address-cells = <1>;
+> 		#size-cells = <1>;
+> 
+> 		partition@0 {
+> 			reg = <0x0 0x40000>;
+> 			label = "u-boot";
+> 		};
+> 
+> 		partition@40000 {
+> 			reg = <0x40000 0x10000>;
+> 			label = "u-boot-env";
+> 
+> 			layout {
+> 				compatible = "u-boot,env-layout";
+> 			};
+> 		};
+> 
+> 		partition@50000 {
+> 			reg = <0x50000 0x100000>;
+> 			label = "u-boot";
+> 		};
+> 	};
+> };
+> 
+> but I can clearly see a use for nested "layout"s. As I said maybe we
+> just shouldn't be so open in calling those MTD or NVMEM devices as that
+> is kind of Linux specific.
+
+The overall structure should be agnostic to the subsystem. Specific 
+compatibles like 'u-boot,env' can be tied to a subsystem.
+
+Maybe some things need to be both MTD and NVMEM. MTD to operate on the 
+opague region and NVMEM to access the contents.
+
+
+> I'm not sure if we should try renaming "nvmem-layout" to "layout" or
+> "partitions" in similar way at this point.
+
+You can't rename. It's an ABI though maybe the whole "nvmem-layout" is 
+new enough we can. It's looking like it was a mistake to accept any of 
+this.
+
+Rob
 
