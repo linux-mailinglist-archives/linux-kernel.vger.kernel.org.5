@@ -1,827 +1,184 @@
-Return-Path: <linux-kernel+bounces-25953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED98682D8BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:10:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 048AA82D89B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:55:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46E9B1F221A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:10:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACE751F2265A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 11:55:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3F8B2C6B5;
-	Mon, 15 Jan 2024 12:10:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="tqJQrzKA"
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F4AD2C6A4;
+	Mon, 15 Jan 2024 11:54:53 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F392A2C68E;
-	Mon, 15 Jan 2024 12:10:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id AAE46100025;
-	Mon, 15 Jan 2024 15:01:38 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru AAE46100025
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1705320098;
-	bh=2kH0PolcqNi/RYx/wcA7G8ywpGOulNyLyJi5cCVoos0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=tqJQrzKAyKoMwDfqnRkFQUoDYgl+bPKiDfxdXRslPKpyefKIYY0iraodZzIZbF+Zs
-	 C2vocwrwH5CWJwAPOINeShZwlAP502VOku2+ODnPTa/Tg7U4AbSkLEI7Y5trFS2uPz
-	 28J4Isc+YXI1SBKHjFNukpk3tly1+kIQ/2ZP9bOXgqFbKbVY9UGFENfq/pFMpCM9/T
-	 DS3GG93fODwUACEKlVLmXt1KUFecNwcSt89JbQdavnBmMa9sYe8DDYxeuXtpsghzI/
-	 fj1jcJMzDM+KJvb9N/XoCxbq9nQYY8lqXh/bQckHyHUi3iiG/fkoSGepSo6m17qeOU
-	 sFa23WLvcS6dA==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Mon, 15 Jan 2024 15:01:38 +0300 (MSK)
-Received: from [172.28.168.118] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 15 Jan 2024 15:01:37 +0300
-Message-ID: <ba08485a-452b-419f-4de6-734eddcf1616@salutedevices.com>
-Date: Mon, 15 Jan 2024 14:52:55 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD36028E3E;
+	Mon, 15 Jan 2024 11:54:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TD9Y54qVhz4f3kpH;
+	Mon, 15 Jan 2024 19:54:33 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 5984C1A0948;
+	Mon, 15 Jan 2024 19:54:37 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgBXKBH7HKVlbDqkAw--.1828S3;
+	Mon, 15 Jan 2024 19:54:37 +0800 (CST)
+Subject: Re: [PATCH for-6.8/block] block: support to account io_ticks
+ precisely
+To: Ming Lei <ming.lei@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: hch@lst.de, bvanassche@acm.org, axboe@kernel.dk,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20240109071332.2216253-1-yukuai1@huaweicloud.com>
+ <ZaUZH8v2i7YBklyc@fedora>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <bdbbaff8-bdb6-0416-b4f4-bbebb64fb1fc@huaweicloud.com>
+Date: Mon, 15 Jan 2024 19:54:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [RFC PATCH v1] vsock/test: add '--peer-port' input argument
-Content-Language: en-US
-To: Stefano Garzarella <sgarzare@redhat.com>
-CC: Stefan Hajnoczi <stefanha@redhat.com>, "David S. Miller"
-	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, "Michael S. Tsirkin"
-	<mst@redhat.com>, Jason Wang <jasowang@redhat.com>, Bobby Eshleman
-	<bobby.eshleman@bytedance.com>, <kvm@vger.kernel.org>,
-	<virtualization@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-References: <20240112212110.1906150-1-avkrasnov@salutedevices.com>
- <4uvvqjlo6ncoyts3rv3dd7joxrgrde4q2ddjd2eexclhhxx2zm@27thero57yam>
-From: Arseniy Krasnov <avkrasnov@salutedevices.com>
-In-Reply-To: <4uvvqjlo6ncoyts3rv3dd7joxrgrde4q2ddjd2eexclhhxx2zm@27thero57yam>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <ZaUZH8v2i7YBklyc@fedora>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 182641 [Jan 15 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;100.64.160.123:7.1.2;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/01/15 03:08:00 #23185691
-X-KSMG-AntiVirus-Status: Clean, skipped
+X-CM-TRANSID:cCh0CgBXKBH7HKVlbDqkAw--.1828S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxGFWxCryDXr1xtFWrZrWxtFb_yoWrZrW8pr
+	y8G3ZxKFnaqFy7uFsFva17tF1xX395Cr45JrsxGryayr1DWr1fZrs2qrWF9FZ2vrZ2ya18
+	Zr18uFyUCw4j9a7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+	6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+	1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY
+	04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
+	v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
+	1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
+	AIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0D
+	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+	VFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
+Hi,
 
-
-On 15.01.2024 14:54, Stefano Garzarella wrote:
-> Hi Arseniy,
-> thanks for this patch!
-> 
-> On Sat, Jan 13, 2024 at 12:21:10AM +0300, Arseniy Krasnov wrote:
->> Implement port for given CID as input argument instead of using
->> hardcoded value '1234'. This allows to run different test instances
->> on a single CID. Port argument is not required parameter and if it is
->> not set, then default value will be '1234' - thus we preserve previous
->> behaviour.
+�� 2024/01/15 19:38, Ming Lei д��:
+> On Tue, Jan 09, 2024 at 03:13:32PM +0800, Yu Kuai wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
 >>
->> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>> Currently, io_ticks is accounted based on sampling, specifically
+>> update_io_ticks() will always account io_ticks by 1 jiffies from
+>> bdev_start_io_acct()/blk_account_io_start(), and the result can be
+>> inaccurate, for example(HZ is 250):
+>>
+>> Test script:
+>> fio -filename=/dev/sda -bs=4k -rw=write -direct=1 -name=test -thinktime=4ms
+>>
+>> Test result: util is about 90%, while the disk is really idle.
+> 
+> Just be curious, what is result with this patch? 0%?
+
+No, it's not 0%, this actually depends on how many IO really start from
+one jiffies and complete at the next jiffies. Given that the probability
+is related to IO latency, so the result should be relatively
+accurate(Around 10% in my environment). I think we can live with that
+unless we improve time precision from jiffies to ns.
+> 
+>>
+>> In order to account io_ticks precisely, update_io_ticks() must know if
+>> there are IO inflight already, and this requires overhead slightly,
+>> hence precise io accounting is disabled by default, and user can enable
+>> it through sysfs entry.
+>>
+>> Noted that for rq-based devcie, part_stat_local_inc/dec() and
+>> part_in_flight() is used to track inflight instead of iterating tags,
+>> which is not supposed to be used in fast path because 'tags->lock' is
+>> grabbed in blk_mq_find_and_get_req().
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 >> ---
->> tools/testing/vsock/util.c                | 17 +++-
->> tools/testing/vsock/util.h                |  4 +
->> tools/testing/vsock/vsock_diag_test.c     | 18 ++++-
->> tools/testing/vsock/vsock_test.c          | 96 +++++++++++++----------
->> tools/testing/vsock/vsock_test_zerocopy.c | 12 +--
->> tools/testing/vsock/vsock_uring_test.c    | 16 +++-
->> 6 files changed, 107 insertions(+), 56 deletions(-)
+>> Changes from RFC v1:
+>>   - remove the new parameter for update_io_ticks();
+>>   - simplify update_io_ticks();
+>>   - use swith in queue_iostats_store();
+>>   - add missing part_stat_local_dec() in blk_account_io_merge_request();
+>> Changes from RFC v2:
+>>   - fix that precise is ignored for the first io in update_io_ticks();
 >>
->> diff --git a/tools/testing/vsock/util.c b/tools/testing/vsock/util.c
->> index ae2b33c21c45..554b290fefdc 100644
->> --- a/tools/testing/vsock/util.c
->> +++ b/tools/testing/vsock/util.c
->> @@ -33,8 +33,7 @@ void init_signals(void)
->>     signal(SIGPIPE, SIG_IGN);
->> }
+>>   Documentation/ABI/stable/sysfs-block |  8 ++++--
+>>   block/blk-core.c                     | 10 +++++--
+>>   block/blk-merge.c                    |  3 ++
+>>   block/blk-mq-debugfs.c               |  2 ++
+>>   block/blk-mq.c                       | 11 +++++++-
+>>   block/blk-sysfs.c                    | 42 ++++++++++++++++++++++++++--
+>>   block/blk.h                          |  1 +
+>>   block/genhd.c                        |  2 +-
+>>   include/linux/blk-mq.h               |  1 +
+>>   include/linux/blkdev.h               |  3 ++
+>>   10 files changed, 74 insertions(+), 9 deletions(-)
 >>
->> -/* Parse a CID in string representation */
->> -unsigned int parse_cid(const char *str)
->> +static unsigned int parse_uint(const char *str, const char *err_str)
->> {
->>     char *endptr = NULL;
->>     unsigned long n;
->> @@ -42,12 +41,24 @@ unsigned int parse_cid(const char *str)
->>     errno = 0;
->>     n = strtoul(str, &endptr, 10);
->>     if (errno || *endptr != '\0') {
->> -        fprintf(stderr, "malformed CID \"%s\"\n", str);
->> +        fprintf(stderr, "malformed %s \"%s\"\n", err_str, str);
->>         exit(EXIT_FAILURE);
->>     }
->>     return n;
->> }
->>
->> +/* Parse a CID in string representation */
->> +unsigned int parse_cid(const char *str)
->> +{
->> +    return parse_uint(str, "CID");
->> +}
->> +
->> +/* Parse a port in string representation */
->> +unsigned int parse_port(const char *str)
->> +{
->> +    return parse_uint(str, "port");
->> +}
->> +
->> /* Wait for the remote to close the connection */
->> void vsock_wait_remote_close(int fd)
->> {
->> diff --git a/tools/testing/vsock/util.h b/tools/testing/vsock/util.h
->> index 03c88d0cb861..e95e62485959 100644
->> --- a/tools/testing/vsock/util.h
->> +++ b/tools/testing/vsock/util.h
->> @@ -12,10 +12,13 @@ enum test_mode {
->>     TEST_MODE_SERVER
->> };
->>
->> +#define DEFAULT_PEER_PORT    1234
->> +
->> /* Test runner options */
->> struct test_opts {
->>     enum test_mode mode;
->>     unsigned int peer_cid;
->> +    unsigned int peer_port;
->> };
->>
->> /* A test case definition.  Test functions must print failures to stderr and
->> @@ -35,6 +38,7 @@ struct test_case {
->>
->> void init_signals(void);
->> unsigned int parse_cid(const char *str);
->> +unsigned int parse_port(const char *str);
->> int vsock_stream_connect(unsigned int cid, unsigned int port);
->> int vsock_bind_connect(unsigned int cid, unsigned int port,
->>                unsigned int bind_port, int type);
->> diff --git a/tools/testing/vsock/vsock_diag_test.c b/tools/testing/vsock/vsock_diag_test.c
->> index fa927ad16f8a..5e6049226b77 100644
->> --- a/tools/testing/vsock/vsock_diag_test.c
->> +++ b/tools/testing/vsock/vsock_diag_test.c
->> @@ -342,7 +342,7 @@ static void test_listen_socket_server(const struct test_opts *opts)
->>     } addr = {
->>         .svm = {
->>             .svm_family = AF_VSOCK,
->> -            .svm_port = 1234,
->> +            .svm_port = opts->peer_port,
->>             .svm_cid = VMADDR_CID_ANY,
->>         },
->>     };
->> @@ -378,7 +378,7 @@ static void test_connect_client(const struct test_opts *opts)
->>     LIST_HEAD(sockets);
->>     struct vsock_stat *st;
->>
->> -    fd = vsock_stream_connect(opts->peer_cid, 1234);
->> +    fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->>     if (fd < 0) {
->>         perror("connect");
->>         exit(EXIT_FAILURE);
->> @@ -403,7 +403,7 @@ static void test_connect_server(const struct test_opts *opts)
->>     LIST_HEAD(sockets);
->>     int client_fd;
->>
->> -    client_fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->> +    client_fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>     if (client_fd < 0) {
->>         perror("accept");
->>         exit(EXIT_FAILURE);
->> @@ -461,6 +461,11 @@ static const struct option longopts[] = {
->>         .has_arg = required_argument,
->>         .val = 'p',
->>     },
->> +    {
->> +        .name = "peer-port",
->> +        .has_arg = required_argument,
->> +        .val = 'q',
->> +    },
->>     {
->>         .name = "list",
->>         .has_arg = no_argument,
->> @@ -481,7 +486,7 @@ static const struct option longopts[] = {
->>
->> static void usage(void)
->> {
->> -    fprintf(stderr, "Usage: vsock_diag_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid> [--list] [--skip=<test_id>]\n"
->> +    fprintf(stderr, "Usage: vsock_diag_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid> [--peer-port=<port>] [--list] [--skip=<test_id>]\n"
->>         "\n"
->>         "  Server: vsock_diag_test --control-port=1234 --mode=server --peer-cid=3\n"
->>         "  Client: vsock_diag_test --control-host=192.168.0.1 --control-port=1234 --mode=client --peer-cid=2\n"
->> @@ -503,6 +508,7 @@ static void usage(void)
->>         "  --control-port <port>  Server port to listen on/connect to\n"
->>         "  --mode client|server   Server or client mode\n"
->>         "  --peer-cid <cid>       CID of the other side\n"
->> +        "  --peer-port <port>     Port of the other side\n"
+>> diff --git a/Documentation/ABI/stable/sysfs-block b/Documentation/ABI/stable/sysfs-block
+>> index 1fe9a553c37b..79027bf2661a 100644
+>> --- a/Documentation/ABI/stable/sysfs-block
+>> +++ b/Documentation/ABI/stable/sysfs-block
+>> @@ -358,8 +358,12 @@ What:		/sys/block/<disk>/queue/iostats
+>>   Date:		January 2009
+>>   Contact:	linux-block@vger.kernel.org
+>>   Description:
+>> -		[RW] This file is used to control (on/off) the iostats
+>> -		accounting of the disk.
+>> +		[RW] This file is used to control the iostats accounting of the
+>> +		disk. If this value is 0, iostats accounting is disabled; If
+>> +		this value is 1, iostats accounting is enabled, but io_ticks is
+>> +		accounted by sampling and the result is not accurate; If this
+>> +		value is 2, iostats accounting is enabled and io_ticks is
+>> +		accounted precisely, but there will be slightly more overhead.
+>>   
+>>   
+>>   What:		/sys/block/<disk>/queue/logical_block_size
+>> diff --git a/block/blk-core.c b/block/blk-core.c
+>> index 9520ccab3050..c70dc311e3b7 100644
+>> --- a/block/blk-core.c
+>> +++ b/block/blk-core.c
+>> @@ -954,11 +954,15 @@ EXPORT_SYMBOL_GPL(iocb_bio_iopoll);
+>>   void update_io_ticks(struct block_device *part, unsigned long now, bool end)
+>>   {
+>>   	unsigned long stamp;
+>> +	bool precise = blk_queue_precise_io_stat(part->bd_queue);
+>>   again:
+>>   	stamp = READ_ONCE(part->bd_stamp);
+>> -	if (unlikely(time_after(now, stamp))) {
+>> -		if (likely(try_cmpxchg(&part->bd_stamp, &stamp, now)))
+>> -			__part_stat_add(part, io_ticks, end ? now - stamp : 1);
+>> +	if (unlikely(time_after(now, stamp)) &&
+>> +	    likely(try_cmpxchg(&part->bd_stamp, &stamp, now))) {
+>> +		if (end || (precise && part_in_flight(part)))
+>> +			__part_stat_add(part, io_ticks, now - stamp);
+>> +		else if (!precise)
+>> +			__part_stat_add(part, io_ticks, 1);
 > 
-> I'd suggest adding the default value and rewording a bit. Something like this (applied on vsock_test, but should be similar):
+> It should be better or readable to move 'bool precise' into the above branch,
+> given we only need to read the flag once in each tick.
 > 
-> --- a/tools/testing/vsock/vsock_test.c
-> +++ b/tools/testing/vsock/vsock_test.c
-> @@ -1595,10 +1595,11 @@ static void usage(void)
->                 "  --control-port <port>  Server port to listen on/connect to\n"
->                 "  --mode client|server   Server or client mode\n"
->                 "  --peer-cid <cid>       CID of the other side\n"
-> -               "  --peer-port <port>     Port of the other side\n"
-> +               "  --peer-port <port>     AF_VSOCK port used for the test [default: %d]\n"
->                 "  --list                 List of tests that will be executed\n"
->                 "  --skip <test_id>       Test ID to skip;\n"
-> -               "                         use multiple --skip options to skip more tests\n"
-> +               "                         use multiple --skip options to skip more tests\n",
-> +               DEFAULT_PEER_PORT
->                 );
->         exit(EXIT_FAILURE);
->  }
-> 
->>         "  --list                 List of tests that will be executed\n"
->>         "  --skip <test_id>       Test ID to skip;\n"
->>         "                         use multiple --skip options to skip more tests\n"
->> @@ -517,6 +523,7 @@ int main(int argc, char **argv)
->>     struct test_opts opts = {
->>         .mode = TEST_MODE_UNSET,
->>         .peer_cid = VMADDR_CID_ANY,
->> +        .peer_port = DEFAULT_PEER_PORT
-> 
-> I'd add a comma:
-> 
->         .peer_port = DEFAULT_PEER_PORT,
-> 
->>     };
->>
->>     init_signals();
->> @@ -544,6 +551,9 @@ int main(int argc, char **argv)
->>         case 'p':
->>             opts.peer_cid = parse_cid(optarg);
->>             break;
->> +        case 'q':
->> +            opts.peer_port = parse_port(optarg);
->> +            break;
->>         case 'P':
->>             control_port = optarg;
->>             break;
->> diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
->> index 66246d81d654..58574f4d1fe1 100644
->> --- a/tools/testing/vsock/vsock_test.c
->> +++ b/tools/testing/vsock/vsock_test.c
->> @@ -34,7 +34,7 @@ static void test_stream_connection_reset(const struct test_opts *opts)
->>     } addr = {
->>         .svm = {
->>             .svm_family = AF_VSOCK,
->> -            .svm_port = 1234,
->> +            .svm_port = opts->peer_port,
->>             .svm_cid = opts->peer_cid,
->>         },
->>     };
->> @@ -70,7 +70,7 @@ static void test_stream_bind_only_client(const struct test_opts *opts)
->>     } addr = {
->>         .svm = {
->>             .svm_family = AF_VSOCK,
->> -            .svm_port = 1234,
->> +            .svm_port = opts->peer_port,
->>             .svm_cid = opts->peer_cid,
->>         },
->>     };
->> @@ -112,7 +112,7 @@ static void test_stream_bind_only_server(const struct test_opts *opts)
->>     } addr = {
->>         .svm = {
->>             .svm_family = AF_VSOCK,
->> -            .svm_port = 1234,
->> +            .svm_port = opts->peer_port,
->>             .svm_cid = VMADDR_CID_ANY,
->>         },
->>     };
->> @@ -138,7 +138,7 @@ static void test_stream_client_close_client(const struct test_opts *opts)
->> {
->>     int fd;
->>
->> -    fd = vsock_stream_connect(opts->peer_cid, 1234);
->> +    fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->>     if (fd < 0) {
->>         perror("connect");
->>         exit(EXIT_FAILURE);
->> @@ -152,7 +152,7 @@ static void test_stream_client_close_server(const struct test_opts *opts)
->> {
->>     int fd;
->>
->> -    fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->> +    fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>     if (fd < 0) {
->>         perror("accept");
->>         exit(EXIT_FAILURE);
->> @@ -173,7 +173,7 @@ static void test_stream_server_close_client(const struct test_opts *opts)
->> {
->>     int fd;
->>
->> -    fd = vsock_stream_connect(opts->peer_cid, 1234);
->> +    fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->>     if (fd < 0) {
->>         perror("connect");
->>         exit(EXIT_FAILURE);
->> @@ -194,7 +194,7 @@ static void test_stream_server_close_server(const struct test_opts *opts)
->> {
->>     int fd;
->>
->> -    fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->> +    fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>     if (fd < 0) {
->>         perror("accept");
->>         exit(EXIT_FAILURE);
->> @@ -215,7 +215,7 @@ static void test_stream_multiconn_client(const struct test_opts *opts)
->>     int i;
->>
->>     for (i = 0; i < MULTICONN_NFDS; i++) {
->> -        fds[i] = vsock_stream_connect(opts->peer_cid, 1234);
->> +        fds[i] = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->>         if (fds[i] < 0) {
->>             perror("connect");
->>             exit(EXIT_FAILURE);
->> @@ -239,7 +239,7 @@ static void test_stream_multiconn_server(const struct test_opts *opts)
->>     int i;
->>
->>     for (i = 0; i < MULTICONN_NFDS; i++) {
->> -        fds[i] = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->> +        fds[i] = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>         if (fds[i] < 0) {
->>             perror("accept");
->>             exit(EXIT_FAILURE);
->> @@ -267,9 +267,9 @@ static void test_msg_peek_client(const struct test_opts *opts,
->>     int i;
->>
->>     if (seqpacket)
->> -        fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
->> +        fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
->>     else
->> -        fd = vsock_stream_connect(opts->peer_cid, 1234);
->> +        fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->>
->>     if (fd < 0) {
->>         perror("connect");
->> @@ -295,9 +295,9 @@ static void test_msg_peek_server(const struct test_opts *opts,
->>     int fd;
->>
->>     if (seqpacket)
->> -        fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
->> +        fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>     else
->> -        fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->> +        fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>
->>     if (fd < 0) {
->>         perror("accept");
->> @@ -363,7 +363,7 @@ static void test_seqpacket_msg_bounds_client(const struct test_opts *opts)
->>     int msg_count;
->>     int fd;
->>
->> -    fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
->> +    fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
->>     if (fd < 0) {
->>         perror("connect");
->>         exit(EXIT_FAILURE);
->> @@ -434,7 +434,7 @@ static void test_seqpacket_msg_bounds_server(const struct test_opts *opts)
->>     struct msghdr msg = {0};
->>     struct iovec iov = {0};
->>
->> -    fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
->> +    fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>     if (fd < 0) {
->>         perror("accept");
->>         exit(EXIT_FAILURE);
->> @@ -505,7 +505,7 @@ static void test_seqpacket_msg_trunc_client(const struct test_opts *opts)
->>     int fd;
->>     char buf[MESSAGE_TRUNC_SZ];
->>
->> -    fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
->> +    fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
->>     if (fd < 0) {
->>         perror("connect");
->>         exit(EXIT_FAILURE);
->> @@ -524,7 +524,7 @@ static void test_seqpacket_msg_trunc_server(const struct test_opts *opts)
->>     struct msghdr msg = {0};
->>     struct iovec iov = {0};
->>
->> -    fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
->> +    fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>     if (fd < 0) {
->>         perror("accept");
->>         exit(EXIT_FAILURE);
->> @@ -575,7 +575,7 @@ static void test_seqpacket_timeout_client(const struct test_opts *opts)
->>     time_t read_enter_ns;
->>     time_t read_overhead_ns;
->>
->> -    fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
->> +    fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
->>     if (fd < 0) {
->>         perror("connect");
->>         exit(EXIT_FAILURE);
->> @@ -620,7 +620,7 @@ static void test_seqpacket_timeout_server(const struct test_opts *opts)
->> {
->>     int fd;
->>
->> -    fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
->> +    fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>     if (fd < 0) {
->>         perror("accept");
->>         exit(EXIT_FAILURE);
->> @@ -639,7 +639,7 @@ static void test_seqpacket_bigmsg_client(const struct test_opts *opts)
->>
->>     len = sizeof(sock_buf_size);
->>
->> -    fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
->> +    fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
->>     if (fd < 0) {
->>         perror("connect");
->>         exit(EXIT_FAILURE);
->> @@ -671,7 +671,7 @@ static void test_seqpacket_bigmsg_server(const struct test_opts *opts)
->> {
->>     int fd;
->>
->> -    fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
->> +    fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>     if (fd < 0) {
->>         perror("accept");
->>         exit(EXIT_FAILURE);
->> @@ -692,7 +692,7 @@ static void test_seqpacket_invalid_rec_buffer_client(const struct test_opts *opt
->>     unsigned char *buf2;
->>     int buf_size = getpagesize() * 3;
->>
->> -    fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
->> +    fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
->>     if (fd < 0) {
->>         perror("connect");
->>         exit(EXIT_FAILURE);
->> @@ -732,7 +732,7 @@ static void test_seqpacket_invalid_rec_buffer_server(const struct test_opts *opt
->>     int flags = MAP_PRIVATE | MAP_ANONYMOUS;
->>     int i;
->>
->> -    fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
->> +    fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>     if (fd < 0) {
->>         perror("accept");
->>         exit(EXIT_FAILURE);
->> @@ -808,7 +808,7 @@ static void test_stream_poll_rcvlowat_server(const struct test_opts *opts)
->>     int fd;
->>     int i;
->>
->> -    fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->> +    fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>     if (fd < 0) {
->>         perror("accept");
->>         exit(EXIT_FAILURE);
->> @@ -839,7 +839,7 @@ static void test_stream_poll_rcvlowat_client(const struct test_opts *opts)
->>     short poll_flags;
->>     int fd;
->>
->> -    fd = vsock_stream_connect(opts->peer_cid, 1234);
->> +    fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->>     if (fd < 0) {
->>         perror("connect");
->>         exit(EXIT_FAILURE);
->> @@ -906,9 +906,9 @@ static void test_inv_buf_client(const struct test_opts *opts, bool stream)
->>     int fd;
->>
->>     if (stream)
->> -        fd = vsock_stream_connect(opts->peer_cid, 1234);
->> +        fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->>     else
->> -        fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
->> +        fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
->>
->>     if (fd < 0) {
->>         perror("connect");
->> @@ -941,9 +941,9 @@ static void test_inv_buf_server(const struct test_opts *opts, bool stream)
->>     int fd;
->>
->>     if (stream)
->> -        fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->> +        fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>     else
->> -        fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
->> +        fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>
->>     if (fd < 0) {
->>         perror("accept");
->> @@ -986,7 +986,7 @@ static void test_stream_virtio_skb_merge_client(const struct test_opts *opts)
->> {
->>     int fd;
->>
->> -    fd = vsock_stream_connect(opts->peer_cid, 1234);
->> +    fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->>     if (fd < 0) {
->>         perror("connect");
->>         exit(EXIT_FAILURE);
->> @@ -1015,7 +1015,7 @@ static void test_stream_virtio_skb_merge_server(const struct test_opts *opts)
->>     unsigned char buf[64];
->>     int fd;
->>
->> -    fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->> +    fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>     if (fd < 0) {
->>         perror("accept");
->>         exit(EXIT_FAILURE);
->> @@ -1108,7 +1108,7 @@ static void test_stream_shutwr_client(const struct test_opts *opts)
->>
->>     sigaction(SIGPIPE, &act, NULL);
->>
->> -    fd = vsock_stream_connect(opts->peer_cid, 1234);
->> +    fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->>     if (fd < 0) {
->>         perror("connect");
->>         exit(EXIT_FAILURE);
->> @@ -1130,7 +1130,7 @@ static void test_stream_shutwr_server(const struct test_opts *opts)
->> {
->>     int fd;
->>
->> -    fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->> +    fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>     if (fd < 0) {
->>         perror("accept");
->>         exit(EXIT_FAILURE);
->> @@ -1151,7 +1151,7 @@ static void test_stream_shutrd_client(const struct test_opts *opts)
->>
->>     sigaction(SIGPIPE, &act, NULL);
->>
->> -    fd = vsock_stream_connect(opts->peer_cid, 1234);
->> +    fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->>     if (fd < 0) {
->>         perror("connect");
->>         exit(EXIT_FAILURE);
->> @@ -1170,7 +1170,7 @@ static void test_stream_shutrd_server(const struct test_opts *opts)
->> {
->>     int fd;
->>
->> -    fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->> +    fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>     if (fd < 0) {
->>         perror("accept");
->>         exit(EXIT_FAILURE);
->> @@ -1193,7 +1193,7 @@ static void test_double_bind_connect_server(const struct test_opts *opts)
->>     struct sockaddr_vm sa_client;
->>     socklen_t socklen_client = sizeof(sa_client);
->>
->> -    listen_fd = vsock_stream_listen(VMADDR_CID_ANY, 1234);
->> +    listen_fd = vsock_stream_listen(VMADDR_CID_ANY, opts->peer_port);
->>
->>     for (i = 0; i < 2; i++) {
->>         control_writeln("LISTENING");
->> @@ -1226,7 +1226,13 @@ static void test_double_bind_connect_client(const struct test_opts *opts)
->>         /* Wait until server is ready to accept a new connection */
->>         control_expectln("LISTENING");
->>
->> -        client_fd = vsock_bind_connect(opts->peer_cid, 1234, 4321, SOCK_STREAM);
->> +        /* We use 'peer_port + 1' as "some" port for the 'bind()'
->> +         * call. It is safe for overflow, but must be considered,
->> +         * when running multiple test applications simultaneously
->> +         * where 'peer-port' argument differs by 1.
->> +         */
-> 
-> It is pre-existing, but I think we can fix here:
-> Should we mention in the help/usage that we use peer_port and peer_port + 1 during the test?
-> 
-> Something like this:
-> 
-> @@ -1588,6 +1588,9 @@ static void usage(void)
->                 "connect to.\n"
->                 "\n"
->                 "The CID of the other side must be given with --peer-cid=<cid>.\n"
-> +               "During the test, two AF_VSOCK ports will be used: the port\n"
-> +               "specified with --peer-port=<port> (or the default port)\n"
-> +               "and the next one.\n"
->                 "\n"
->                 "Options:\n"
->                 "  --help                 This help message\n"
-> 
->> +        client_fd = vsock_bind_connect(opts->peer_cid, opts->peer_port,
->> +                           opts->peer_port + 1, SOCK_STREAM);
->>
->>         close(client_fd);
->>     }
->> @@ -1246,7 +1252,7 @@ static void test_stream_rcvlowat_def_cred_upd_client(const struct test_opts *opt
->>     void *buf;
->>     int fd;
->>
->> -    fd = vsock_stream_connect(opts->peer_cid, 1234);
->> +    fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->>     if (fd < 0) {
->>         perror("connect");
->>         exit(EXIT_FAILURE);
->> @@ -1282,7 +1288,7 @@ static void test_stream_credit_update_test(const struct test_opts *opts,
->>     void *buf;
->>     int fd;
->>
->> -    fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->> +    fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>     if (fd < 0) {
->>         perror("accept");
->>         exit(EXIT_FAILURE);
->> @@ -1542,6 +1548,11 @@ static const struct option longopts[] = {
->>         .has_arg = required_argument,
->>         .val = 'p',
->>     },
->> +    {
->> +        .name = "peer-port",
->> +        .has_arg = required_argument,
->> +        .val = 'q',
->> +    },
->>     {
->>         .name = "list",
->>         .has_arg = no_argument,
->> @@ -1562,7 +1573,7 @@ static const struct option longopts[] = {
->>
->> static void usage(void)
->> {
->> -    fprintf(stderr, "Usage: vsock_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid> [--list] [--skip=<test_id>]\n"
->> +    fprintf(stderr, "Usage: vsock_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid> [--peer-port=<port>] [--list] [--skip=<test_id>]\n"
->>         "\n"
->>         "  Server: vsock_test --control-port=1234 --mode=server --peer-cid=3\n"
->>         "  Client: vsock_test --control-host=192.168.0.1 --control-port=1234 --mode=client --peer-cid=2\n"
->> @@ -1584,6 +1595,7 @@ static void usage(void)
->>         "  --control-port <port>  Server port to listen on/connect to\n"
->>         "  --mode client|server   Server or client mode\n"
->>         "  --peer-cid <cid>       CID of the other side\n"
->> +        "  --peer-port <port>     Port of the other side\n"
-> 
-> Ditto (the default and rewording).
-> 
->>         "  --list                 List of tests that will be executed\n"
->>         "  --skip <test_id>       Test ID to skip;\n"
->>         "                         use multiple --skip options to         skip more tests\n"
->> @@ -1598,6 +1610,7 @@ int main(int argc, char **argv)
->>     struct test_opts opts = {
->>         .mode = TEST_MODE_UNSET,
->>         .peer_cid = VMADDR_CID_ANY,
->> +        .peer_port = DEFAULT_PEER_PORT
-> 
-> Ditto (the comma).
-> 
->>     };
->>
->>     srand(time(NULL));
->> @@ -1626,6 +1639,9 @@ int main(int argc, char **argv)
->>         case 'p':
->>             opts.peer_cid = parse_cid(optarg);
->>             break;
->> +        case 'q':
->> +            opts.peer_port = parse_port(optarg);
->> +            break;
->>         case 'P':
->>             control_port = optarg;
->>             break;
->> diff --git a/tools/testing/vsock/vsock_test_zerocopy.c b/tools/testing/vsock/vsock_test_zerocopy.c
->> index a16ff76484e6..04c376b6937f 100644
->> --- a/tools/testing/vsock/vsock_test_zerocopy.c
->> +++ b/tools/testing/vsock/vsock_test_zerocopy.c
->> @@ -152,9 +152,9 @@ static void test_client(const struct test_opts *opts,
->>     int fd;
->>
->>     if (sock_seqpacket)
->> -        fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
->> +        fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
->>     else
->> -        fd = vsock_stream_connect(opts->peer_cid, 1234);
->> +        fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->>
->>     if (fd < 0) {
->>         perror("connect");
->> @@ -248,9 +248,9 @@ static void test_server(const struct test_opts *opts,
->>     int fd;
->>
->>     if (sock_seqpacket)
->> -        fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
->> +        fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>     else
->> -        fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->> +        fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>
->>     if (fd < 0) {
->>         perror("accept");
->> @@ -323,7 +323,7 @@ void test_stream_msgzcopy_empty_errq_client(const struct test_opts *opts)
->>     ssize_t res;
->>     int fd;
->>
->> -    fd = vsock_stream_connect(opts->peer_cid, 1234);
->> +    fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->>     if (fd < 0) {
->>         perror("connect");
->>         exit(EXIT_FAILURE);
->> @@ -347,7 +347,7 @@ void test_stream_msgzcopy_empty_errq_server(const struct test_opts *opts)
->> {
->>     int fd;
->>
->> -    fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->> +    fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>     if (fd < 0) {
->>         perror("accept");
->>         exit(EXIT_FAILURE);
->> diff --git a/tools/testing/vsock/vsock_uring_test.c b/tools/testing/vsock/vsock_uring_test.c
->> index d976d35f0ba9..4e363c6d6e4d 100644
->> --- a/tools/testing/vsock/vsock_uring_test.c
->> +++ b/tools/testing/vsock/vsock_uring_test.c
->> @@ -66,7 +66,7 @@ static void vsock_io_uring_client(const struct test_opts *opts,
->>     struct msghdr msg;
->>     int fd;
->>
->> -    fd = vsock_stream_connect(opts->peer_cid, 1234);
->> +    fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->>     if (fd < 0) {
->>         perror("connect");
->>         exit(EXIT_FAILURE);
->> @@ -120,7 +120,7 @@ static void vsock_io_uring_server(const struct test_opts *opts,
->>     void *data;
->>     int fd;
->>
->> -    fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->> +    fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->>     if (fd < 0) {
->>         perror("accept");
->>         exit(EXIT_FAILURE);
->> @@ -247,6 +247,11 @@ static const struct option longopts[] = {
->>         .has_arg = required_argument,
->>         .val = 'p',
->>     },
->> +    {
->> +        .name = "peer-port",
->> +        .has_arg = required_argument,
->> +        .val = 'q',
->> +    },
->>     {
->>         .name = "help",
->>         .has_arg = no_argument,
->> @@ -257,7 +262,7 @@ static const struct option longopts[] = {
->>
->> static void usage(void)
->> {
->> -    fprintf(stderr, "Usage: vsock_uring_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid>\n"
->> +    fprintf(stderr, "Usage: vsock_uring_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid> [--peer-port=<port>]\n"
->>         "\n"
->>         "  Server: vsock_uring_test --control-port=1234 --mode=server --peer-cid=3\n"
->>         "  Client: vsock_uring_test --control-host=192.168.0.1 --control-port=1234 --mode=client --peer-cid=2\n"
->> @@ -271,6 +276,7 @@ static void usage(void)
->>         "  --control-port <port>  Server port to listen on/connect to\n"
->>         "  --mode client|server   Server or client mode\n"
->>         "  --peer-cid <cid>       CID of the other side\n"
->> +        "  --peer-port <port>     Port of the other side\n"
-> 
-> Ditto (the default and rewording).
-> 
->>         );
->>     exit(EXIT_FAILURE);
->> }
->> @@ -282,6 +288,7 @@ int main(int argc, char **argv)
->>     struct test_opts opts = {
->>         .mode = TEST_MODE_UNSET,
->>         .peer_cid = VMADDR_CID_ANY,
->> +        .peer_port = DEFAULT_PEER_PORT
-> 
-> Ditto (the comma).
-> 
->>     };
->>
->>     init_signals();
->> @@ -309,6 +316,9 @@ int main(int argc, char **argv)
->>         case 'p':
->>             opts.peer_cid = parse_cid(optarg);
->>             break;
->> +        case 'q':
->> +            opts.peer_port = parse_port(optarg);
->> +            break;
->>         case 'P':
->>             control_port = optarg;
->>             break;
->> -- 
->> 2.25.1
->>
-> 
-> The rest LGTM, I think you can send the next version without RFC,
-> targeting net-next.
-> 
+> Otherwise, this patch looks fine.
 
-Thanks for review! I'll send next version once net-next will be opened!
+Thanks for your advice, will change that in next version.
 
-Thanks, Arseniy
-
+Kuai
+> 
 > Thanks,
-> Stefano
+> Ming
 > 
+> .
+> 
+
 
