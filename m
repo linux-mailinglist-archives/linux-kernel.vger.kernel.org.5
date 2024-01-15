@@ -1,93 +1,121 @@
-Return-Path: <linux-kernel+bounces-25703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD39782D4C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:58:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D181482D4C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:58:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 561C6B20E21
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:58:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E38AA1C2126E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:58:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4663C5380;
-	Mon, 15 Jan 2024 07:58:20 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34122440D
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 07:58:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d6dff70000001748-6c-65a4e5960a1f
-Date: Mon, 15 Jan 2024 16:58:09 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, akpm@linux-foundation.org,
-	ying.huang@intel.com, namit@vmware.com, xhao@linux.alibaba.com,
-	mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
-	david@redhat.com, peterz@infradead.org, luto@kernel.org,
-	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com
-Subject: Re: [v4 0/3] Reduce TLB flushes under some specific conditions
-Message-ID: <20240115075809.GB56305@system.software.com>
-References: <20231109045908.54996-1-byungchul@sk.com>
- <64cb078b-d2e7-417f-8125-b38d423163ce@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67A165244;
+	Mon, 15 Jan 2024 07:58:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="VxkT/OF2"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DEC66AAC
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 07:58:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e76109cdeso8932915e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 23:58:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1705305512; x=1705910312; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2cbksEzYW5FMHFfGVnFvn7FNmL7/xlW3Yq6NnYOcw0M=;
+        b=VxkT/OF2oeY7ESgiPHgTNBr8UDrSYWlQDx0jAnuSTmMsyPL4gwn7Ltld8EBM44D6U0
+         baXfpqr4UOTGrn+Xm1sPfaY4gZxJE0cUo0tR+vOFzokKFsbP/CMA+m6hEge2DNEECq+H
+         72BUUdqxMl57b3RMKCX2zeZI6/WIZfzGusoMXoiBNqXQo11neo2lz018jH09YEcvMhOP
+         foZoLyf2KxTblEum1GoDp8KpMPV8cWquYOSH8X1FaHibtvGp+/gPBqRpfz/Eyyh8dKzr
+         rP528adDYhXQktOMD7o1Y2pi59jJML6b3TK0YFwYd6hM8B2grL+eSwK5UIRG8RKjGeVO
+         LAdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705305512; x=1705910312;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=2cbksEzYW5FMHFfGVnFvn7FNmL7/xlW3Yq6NnYOcw0M=;
+        b=swyc5nMIOMqNYQaZgEuuDF3AO+FQRJg6txNtOBGlQra5o3BO98uFjoqBfmu/G7Y0lb
+         qhJos52iFTsAd5o580N7xIinh2qJd12mWt78RtX583qb0bwaiYRpLZ2lO/Gw1L0aBzFd
+         qT0ktF6faWYHqCbqlAeWrcUwVDQaGO6MxrUnvNb0P9UkSVQTESUFYbOcDjfHUEqfyMfQ
+         26R0FFoL2x6V4/Wdovn0igZNeoJnmqgvt0u1JiaPVVmXvI/lfb17PUZ+TgTRWRF8EcUd
+         NpDG2idZ76RxfJHE8EcNByRwbywoSMivNv86RdI/mUhEskRbew4IQg4Vdi06oCcgnTwt
+         naSw==
+X-Gm-Message-State: AOJu0YzcBLjX9RjppKzheaJdG7qJHkx+fRs2XUwsMjc3yxuTfVGyNm8G
+	Z9xEYaLD6lEVYDdDuCCXSgqzj8Px0dWoZA==
+X-Google-Smtp-Source: AGHT+IH50Uh1Vtg8Mm/CzH27gs85mNt4yquHmdpNorid4AtOdJb3heGUJikTWSd7dGVgyt0sEeKXEg==
+X-Received: by 2002:a05:600c:5491:b0:40d:7347:f5e8 with SMTP id iv17-20020a05600c549100b0040d7347f5e8mr2761047wmb.25.1705305512573;
+        Sun, 14 Jan 2024 23:58:32 -0800 (PST)
+Received: from localhost (abordeaux-655-1-152-60.w90-5.abo.wanadoo.fr. [90.5.9.60])
+        by smtp.gmail.com with ESMTPSA id g14-20020a05600c310e00b0040e398f8cafsm14934442wmo.31.2024.01.14.23.58.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 14 Jan 2024 23:58:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <64cb078b-d2e7-417f-8125-b38d423163ce@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrPIsWRmVeSWpSXmKPExsXC9ZZnke60p0tSDdr+WlrMWb+GzeLzhn9s
-	Fp9ePmC0eLGhndHi6/pfzBZPP/WxWFzeNYfN4t6a/6wW53etZbXYsXQfk8WlAwuYLK7vesho
-	cbz3AJPF5k1TmS1+/wCqmzPFyuLkrMksDoIe31v7WDwWbCr12LxCy2PxnpdMHptWdbJ5bPo0
-	id3j3blz7B4nZvxm8dj50NJj3slAj/f7rrJ5bP1l5/F5k5zHu/lv2QL4orhsUlJzMstSi/Tt
-	Ergy9v+uLWhlr5i15SFjA+MR1i5GTg4JAROJuccvMMLY/0+2s4HYLAKqEgf+XGECsdkE1CVu
-	3PjJDGKLANmnVi5n72Lk4mAWaGKWuLZ+M9ggYQF3iV2n7oAV8QpYSFydsRusWUggQ+L46zns
-	EHFBiZMzn7CA2MwCWhI3/r0EquEAsqUllv/jAAlzCthK7G94BnaDqICyxIFtx5lAdkkIrGOX
-	mPLqITPEoZISB1fcYJnAKDALydhZSMbOQhi7gJF5FaNQZl5ZbmJmjoleRmVeZoVecn7uJkZg
-	NC6r/RO9g/HTheBDjAIcjEo8vD/+Lk4VYk0sK67MPcQowcGsJMJbfWdJqhBvSmJlVWpRfnxR
-	aU5q8SFGaQ4WJXFeo2/lKUIC6YklqdmpqQWpRTBZJg5OqQZGeUUOD7bL169ZqfoIm9U3+qSK
-	6Oyb9iOsRDpdame0Y9ReF0a2W6/ke+LMLRVfNn7r9ps1mSOSaU++cKC/bl5i1O4ZrkffvwnN
-	rpnOGrwpgl+wIfXJ3MtF9/e/Zt/Qdd487aOIUFrFlwcnTtqZxJ2ZPy95peS8H2c+HK5n+v59
-	55YfdpPDlospsRRnJBpqMRcVJwIA74qV9MICAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprGIsWRmVeSWpSXmKPExsXC5WfdrDvt6ZJUgxvbdSzmrF/DZvF5wz82
-	i08vHzBavNjQzmjxdf0vZounn/pYLA7PPclqcXnXHDaLe2v+s1qc37WW1WLH0n1MFpcOLGCy
-	uL7rIaPF8d4DTBabN01ltvj9A6huzhQri5OzJrM4CHl8b+1j8ViwqdRj8wotj8V7XjJ5bFrV
-	yeax6dMkdo93586xe5yY8ZvFY+dDS495JwM93u+7yuax+MUHJo+tv+w8Pm+S83g3/y1bAH8U
-	l01Kak5mWWqRvl0CV8b+37UFrewVs7Y8ZGxgPMLaxcjJISFgIvH/ZDsbiM0ioCpx4M8VJhCb
-	TUBd4saNn8wgtgiQfWrlcvYuRi4OZoEmZolr6zeDNQsLuEvsOnUHrIhXwELi6ozdYM1CAhkS
-	x1/PYYeIC0qcnPmEBcRmFtCSuPHvJVANB5AtLbH8HwdImFPAVmJ/wzOwG0QFlCUObDvONIGR
-	dxaS7llIumchdC9gZF7FKJKZV5abmJljqlecnVGZl1mhl5yfu4kRGFvLav9M3MH45bL7IUYB
-	DkYlHt4ffxenCrEmlhVX5h5ilOBgVhLhrb6zJFWINyWxsiq1KD++qDQntfgQozQHi5I4r1d4
-	aoKQQHpiSWp2ampBahFMlomDU6qB0XBH0AqTgptvGY8pH5AIcS8svSnsdeVYv4q8t7q494OV
-	LcHPk+TnnXhRqswXef5Lx33Fy1dsNaOVmkWbd6ixXNxae0xzwhWemXzqLHk3vsQtL668kVon
-	luWY6vJJYabsrAkKkqdXLNmzXys15v0J64Ps24srfG32p/DPLd3z4lTyurSQT8nxSizFGYmG
-	WsxFxYkAiMxD0akCAAA=
-X-CFilter-Loop: Reflected
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 15 Jan 2024 08:58:31 +0100
+Message-Id: <CYF4COXMY05V.19GSB17F6P6H3@baylibre.com>
+From: "Esteban Blanc" <eblanc@baylibre.com>
+To: "Nishanth Menon" <nm@ti.com>, "Vignesh Raghavendra" <vigneshr@ti.com>,
+ "Tero Kristo" <kristo@kernel.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Rob Herring"
+ <robh+dt@kernel.org>
+Cc: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski@linaro.org>, "Pierre Gondois"
+ <pierre.gondois@arm.com>, "Tony Lindgren" <tony@atomide.com>
+Subject: Re: [PATCH 09/16] arm64: dts: ti: k3-j721s2: Add MIT license along
+ with GPL-2.0
+X-Mailer: aerc 0.15.2
+References: <20240110140903.4090946-1-nm@ti.com>
+ <20240110140903.4090946-10-nm@ti.com>
+In-Reply-To: <20240110140903.4090946-10-nm@ti.com>
 
-On Thu, Nov 09, 2023 at 06:26:08AM -0800, Dave Hansen wrote:
-> On 11/8/23 20:59, Byungchul Park wrote:
-> > Can you believe it? I saw the number of TLB full flush reduced about
-> > 80% and iTLB miss reduced about 50%, and the time wise performance
-> > always shows at least 1% stable improvement with the workload I tested
-> > with, XSBench. However, I believe that it would help more with other
-> > ones or any real ones. It'd be appreciated to let me know if I'm missing
-> > something.
-> 
-> I see that you've moved a substantial amount of code out of arch/x86.
-> That's great.
-> 
-> But there doesn't appear to be any improvement in the justification or
-> performance data.  The page flag is also here, which is horribly frowned
-> upon.  It's an absolute no-go with this level of justification.
+On Wed Jan 10, 2024 at 3:08 PM CET, Nishanth Menon wrote:
+> Modify license to include dual licensing as GPL-2.0-only OR MIT
+> license for SoC and TI evm device tree files. This allows for Linux
+> kernel device tree to be used in other Operating System ecosystems
+> such as Zephyr or FreeBSD.
+>
+> While at this, update the GPL-2.0 to be GPL-2.0-only to be in sync
+> with latest SPDX conventions (GPL-2.0 is deprecated).
+>
+> While at this, update the TI copyright year to sync with current year
+> to indicate license change (and add it at least for one file which was
+> missing TI copyright).
+>
+> Cc: Esteban Blanc <eblanc@baylibre.com>
+> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Cc: Pierre Gondois <pierre.gondois@arm.com>
+> Cc: Tony Lindgren <tony@atomide.com>
+>
+> Signed-off-by: Nishanth Menon <nm@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/k3-am68-sk-base-board.dts         | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi               | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-j721s2-common-proc-board.dts   | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-j721s2-evm-gesi-exp-board.dtso | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-j721s2-evm-pcie1-ep.dtso       | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi               | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi         | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi             | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-j721s2-thermal.dtsi            | 5 ++++-
+>  arch/arm64/boot/dts/ti/k3-j721s2.dtsi                    | 4 ++--
+>  10 files changed, 22 insertions(+), 19 deletions(-)
 
-Okay. I won't use an additional page flag anymore from migrc v5.
+Acked-by: Esteban Blanc <eblanc@baylibre.com>
 
-Thanks.
-	Byungchul
+Best regards,
+Esteban
 
