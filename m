@@ -1,203 +1,103 @@
-Return-Path: <linux-kernel+bounces-26295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D082D82DE32
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:09:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCFAB82DE35
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:10:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57E2C283035
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:09:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 723491F22AA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:10:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25BFC17C96;
-	Mon, 15 Jan 2024 17:09:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mjvCtXil"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A7018044;
+	Mon, 15 Jan 2024 17:09:20 +0000 (UTC)
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E0BD18E0C;
-	Mon, 15 Jan 2024 17:09:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DCA7C433F1;
-	Mon, 15 Jan 2024 17:09:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705338545;
-	bh=EqOMEzkyzNYto3UmIip9XB66HC1aMCqtxgSe2FiBi4I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mjvCtXilB+F7tlBXPufpFIoL+uZ5s6bm559DwsOVDAOKL0F+CaraYCpFlmLbfF6/Q
-	 EjC5Fy6G41QsIgoRkD35EDwWOrihkeebauqiWVXBfQrZa1+0Y/RASisVtVmiLTuRk6
-	 eGhdOYUpbvtNChB0w/5pkNrmpzNgRHEB7wcdyCpqqI1qtqrYlQLBHHIRt9MqY0ofYh
-	 msitEc9VYqPft14r9x/yRjnosv7EZAa3ZkgZZaOK1FsLWl6iC8RmSJqovIlL/18jk/
-	 F+22h92t37oDYAe8zT+YeBvv+/CNODIP/dYDYB9N1ce1xsApQ1v7J/gnxDe6pxWzoO
-	 fhYcgGy3ZzBnA==
-Date: Mon, 15 Jan 2024 11:09:03 -0600
-From: Rob Herring <robh@kernel.org>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, u-boot@lists.denx.de,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH V3 1/6] dt-bindings: nvmem: layouts: add U-Boot
- environment variables layout
-Message-ID: <20240115170903.GA911971-robh@kernel.org>
-References: <20231221173421.13737-1-zajec5@gmail.com>
- <20240104001129.GA2045237-robh@kernel.org>
- <20240104085839.5624c354@xps-13>
- <8c8d2d38-faf2-47f2-bfbf-2e4842dded47@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1853F18041;
+	Mon, 15 Jan 2024 17:09:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-2057f388b2dso1805451fac.1;
+        Mon, 15 Jan 2024 09:09:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705338558; x=1705943358;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6AuNqPEQ6+Di1qW9NRwRXKxlP0o+roEfzht1wXg9bXQ=;
+        b=P9Ygee4ZoLHkGWZnLlBDjbXsEA7h6ZmC0RW7X7ffUEqucQB7YywJJgQcgFzTD29E2A
+         OuY+88Dp2ljo+ixaJOPyFOpzM3mmXAAmjGUhO8oqYXW4BPOIp8oQSw7GKyqWiI+fp6OO
+         i4TaTdlertJ2zU0SM45/4Qnbx09/tF0v16tPr31OQ0tDR5reI7WPJ3hysp9E+11klHPt
+         cMbiPVaeDJh1Wc2bwg2Z0hXEmTaQ3pEwY2yZSmPYJzTLV+ju8ZWuAeVO3vPpM2fZzb9w
+         jWgQDGHnpf52JC/Cx7y5RR1q3DUtTqEAM3Owv6sYGrvA20fvqMVdB9IFXHFD0FmUfUfs
+         41zw==
+X-Gm-Message-State: AOJu0Yw81AO/myI9we7p6cDRllDWULIjpFivKAAMSOOIX2zUo+ar3FBA
+	oNnb1KYgTggydZ4mTrixfoBx+jDfoi7Uc9twGNM=
+X-Google-Smtp-Source: AGHT+IFhfjxeCDFPecLvc0lUbEbFPHiZjVTXDe1D6aEUWaUeN7qvqVtnYqEpODTUXTjZDpIEPPGlaRk/fdN5b9nDChI=
+X-Received: by 2002:a05:6820:510:b0:598:c118:30d1 with SMTP id
+ m16-20020a056820051000b00598c11830d1mr11628098ooj.0.1705338558095; Mon, 15
+ Jan 2024 09:09:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8c8d2d38-faf2-47f2-bfbf-2e4842dded47@gmail.com>
+References: <20240115082507.29651-1-duminjie@vivo.com> <CAJZ5v0jPeYgGc9xmSrnLsg6RkhzmU=TfPdhrzxWBd_d_dmJh+Q@mail.gmail.com>
+ <ecb33c61-bb40-43a0-94a1-8973d70dc0b4@linaro.org>
+In-Reply-To: <ecb33c61-bb40-43a0-94a1-8973d70dc0b4@linaro.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 15 Jan 2024 18:09:06 +0100
+Message-ID: <CAJZ5v0hhvwz++RUtw-e4EM10Rs0ipOUQBXi4GUH0oL01iUJKrQ@mail.gmail.com>
+Subject: Re: [PATCH v1] thermal/debugfs: Remove unnecessary
+ debugfs_create_dir() error check in thermal_debug_init()
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Minjie Du <duminjie@vivo.com>, 
+	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, 
+	"open list:THERMAL" <linux-pm@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
+	opensource.kernel@vivo.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 04, 2024 at 10:10:13AM +0100, Rafał Miłecki wrote:
-> On 4.01.2024 08:58, Miquel Raynal wrote:
-> > robh@kernel.org wrote on Wed, 3 Jan 2024 17:11:29 -0700:
-> > > On Thu, Dec 21, 2023 at 06:34:16PM +0100, Rafał Miłecki wrote:
-> > > > From: Rafał Miłecki <rafal@milecki.pl>
-> > > > 
-> > > > U-Boot env data is a way of storing firmware variables. It's a format
-> > > > that can be used of top of various storage devices. Its binding should
-> > > > be an NVMEM layout instead of a standalone device.
-> > > > 
-> > > > This patch adds layout binding which allows using it on top of MTD NVMEM
-> > > > device as well as any other. At the same time it deprecates the old
-> > > > combined binding.
-> > > 
-> > > I don't understand the issue. From a DT perspective, there isn't. A
-> > > partition is not a device, but is describing the layout of storage
-> > > already.
-> > 
-> > Actually I think what Rafał wants to do goes in the right direction but
-> > I also understand from a binding perspective it may be a little
-> > confusing, even more if we consider "NVMEM" a Linux specific concept.
-> > 
-> > There is today a "u-boot env" NVMEM *device* description which
-> > almost sits at the same level as eg. an eeprom device. We cannot
-> > compare "an eeprom device" and "a u-boot environment" of course. But
-> > that's truly what is currently described.
-> > 
-> > * Current situation
-> > 
-> > 	Flash device -> U-Boot env layout -> NVMEM cells
+On Mon, Jan 15, 2024 at 5:55=E2=80=AFPM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> On 15/01/2024 16:52, Rafael J. Wysocki wrote:
+> > On Mon, Jan 15, 2024 at 9:25=E2=80=AFAM Minjie Du <duminjie@vivo.com> w=
+rote:
+> >>
+> >> This patch removes the debugfs_create_dir() error checking in
+> >> thermal_debug_init(). Because the debugfs_create_dir() is developed
+> >> in a way that the caller can safely handle the errors that
+> >> occur during the creation of DebugFS nodes.
+> >
+> > I honestly don't see what the purpose of this patch is.
+>
+> I think it is because the recent debugfs changes were about to reduce as
+> much as possible the code related to the error handling as the debugfs
+> is not supposed to go in production system.
+>
+> So for instance debugfs_create_dir() will not fail if the parent is NULL
+> and will create the entry in the debugfs topdir.
 
-Isn't it?:
+Which would be confusing IMO.
 
-Flash device -> fixed-partitions -> U-Boot env layout -> NVMEM cells
+> At the end we are ending up with:
+>
+> d_root =3D debugfs_create_dir("thermal", NULL);
+> d_cdev =3D debugfs_create_dir("cooling_devices", d_root);
+> d_tz =3D debugfs_create_dir("thermal_zones", d_root);
+>
+> The current code will avoid creating lost entries in /sys/kernel/debug
 
-> > 
-> > * Improved situation
-> > 
-> > 	Any storage device -> NVMEM -> U-Boot env layout -> NVMEM cells
+Right, and IMO it is the right thing to do, and I would even go a bit
+further and roll back the thermal debugfs initialization if any of the
+above is NULL.
 
-Why is this better? We don't need a container to say 'this is NVMEM 
-stuff' or 'this is MTD stuff'. 'U-Boot env layout' can tell us 'this is 
-NVMEM stuff' or whatever the kernel decides in the future.
-
-> > 
-> > The latter is of course the most relevant description as we expect
-> > storage devices to expose a storage-agnostic interface (NVMEM in
-> > this case) which can then be parsed (by NVMEM layouts) in a storage
-> > agnostic way.
-> > 
-> > In the current case, the current U-Boot env binding tells people to
-> > declare the env layout on top of a flash device (only). The current
-> > description also expects a partition node which is typical to flash
-> > devices. Whereas what we should have described in the first place is a
-> > layout that applies on any kind of NVMEM device.
-> > 
-> > Bonus point: We've been working the last couple years on clarifying
-> > bindings, especially with mtd partitions (with the partitions{}
-> > container) and NVMEM layouts (with the nvmem-layout{} container).
-> > The switch proposed in this patch makes use of the latter, of course.
-> 
-> Thanks Miquèl for filling bits I missed in commit description. Despite
-> years in Linux/DT I still struggle with more complex designs
-> documentation.
-> 
-> 
-> As per Rob's comment I think I see his point and a possible design
-> confusion. If you look from a pure DT perspective then "partitions" and
-> "nvmem-layout" serve a very similar purpose. They describe device's data
-> content structure. For fixed structures we have very similar
-> "fixed-partitions" and "fixed-cells".
-> 
-> If we were to design those bindings today I'm wondering if we couldn't
-> have s/partitions/layout/ and s/nvmem-layout/layout/.
-
-Why!? It is just a name, and we can't get rid of the old names. We don't 
-need 2 names.
-
-> Rob: other than having different bindings for MTD vs. NVMEM layouts I
-> think they overall design makes sense. A single device may have content
-> structurized on more than 1 level:
-> 1. You may have fixed layout at top level (multiple partitions)
-> 2. Single partitions may have their own layouts (like U-Boot env data)
-
-Sure. Partitions is for 1 and Layouts is for 2.
-
-> Maybe ideally above should look more like:
-> 
-> flash@0 {
-> 	compatible = "<flash-compatible>";
-> 
-> 	layout {
-> 		compatible = "fixed-layout";
-
-Why does 'partitions' and 'fixed-partitions' not work here?
-
-> 		#address-cells = <1>;
-> 		#size-cells = <1>;
-> 
-> 		partition@0 {
-> 			reg = <0x0 0x40000>;
-> 			label = "u-boot";
-> 		};
-> 
-> 		partition@40000 {
-> 			reg = <0x40000 0x10000>;
-> 			label = "u-boot-env";
-> 
-> 			layout {
-> 				compatible = "u-boot,env-layout";
-> 			};
-> 		};
-> 
-> 		partition@50000 {
-> 			reg = <0x50000 0x100000>;
-> 			label = "u-boot";
-> 		};
-> 	};
-> };
-> 
-> but I can clearly see a use for nested "layout"s. As I said maybe we
-> just shouldn't be so open in calling those MTD or NVMEM devices as that
-> is kind of Linux specific.
-
-The overall structure should be agnostic to the subsystem. Specific 
-compatibles like 'u-boot,env' can be tied to a subsystem.
-
-Maybe some things need to be both MTD and NVMEM. MTD to operate on the 
-opague region and NVMEM to access the contents.
-
-
-> I'm not sure if we should try renaming "nvmem-layout" to "layout" or
-> "partitions" in similar way at this point.
-
-You can't rename. It's an ABI though maybe the whole "nvmem-layout" is 
-new enough we can. It's looking like it was a mistake to accept any of 
-this.
-
-Rob
+Note that currently d_tz can be NULL and it will work in the sort of
+degraded mode with the other two, but it is not a big deal IMV.  It
+would just be more consistent to clean up everything then, but that
+can be done later.
 
