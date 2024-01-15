@@ -1,184 +1,101 @@
-Return-Path: <linux-kernel+bounces-25596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3750482D329
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 03:41:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54AE482D334
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 03:59:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57B4D2815BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 02:41:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DED531F21365
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 02:59:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D66E41FAE;
-	Mon, 15 Jan 2024 02:41:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9107A1872;
+	Mon, 15 Jan 2024 02:59:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ck1TjCxs"
-Received: from mail-yb1-f196.google.com (mail-yb1-f196.google.com [209.85.219.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b="MpuVSsQc"
+Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C122A17CB;
-	Mon, 15 Jan 2024 02:41:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f196.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so5531222276.1;
-        Sun, 14 Jan 2024 18:41:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705286467; x=1705891267; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dRiH3rKb0wRjOf3BbgKydSU389B/0RSNV5DhI9M+Ozg=;
-        b=ck1TjCxsjHLQY1ldhfv6EqDPeIrFfvcp2tS88mFgjiujhZfl7lu9++rakU1xD+UKHL
-         W+oueTCiy8oeI3SXVVwbMC0UO/Gp7C/Z/iy2pKj8KGMq6QpD3tFrIHBnxfhCUQRzZ6Fx
-         SKtezcSsnNFXmSTd9WxB5n+h9ZKGzzrZ37ZyVQwuvZTVDfvOaMBgIBqL3p81mO2sRmav
-         1xu5rsFAv/clYOuW3LuR5eiB2U1lU/3DWWTadZnuqdkKy5VCx2knriS9oZWvRMUAMg0u
-         tewdwsqpUhDN+pMgPY4qdA3As2PDZRItc/hbTnSjT+WzXpFhBFAWevSFIDsPMiBepJoF
-         iQDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705286467; x=1705891267;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dRiH3rKb0wRjOf3BbgKydSU389B/0RSNV5DhI9M+Ozg=;
-        b=gMjoDwuzBP+hqUxtt0sGYwyMEyHU0q1HIVznMcWNNA/DNz0n6wF4jEue1fmmsspCqm
-         QgWxm4IdLzl1KX7VVJrYtq8UFarK/t1rE2pF3ZXFauZiPKkpUUn40W7awDYy9MifslSB
-         3a5WC3Z9bqMa0HrZpY1ZO+fzL7yUslKk+9qMVnGbsuYIa2sAmzHoHBwUqnT1c04gN8mg
-         ljts2+5hS63nx8vfHGQC7bLmVK7VV1TCo7WB1fYVlb93InZjXDYb7gchW2xZV3ug1Vu/
-         jz+VgmdAAZMSKuCT1Y2+o8SX2S3gP8Ynv8j18Bam3nsjgj3K7vYn3jFQW+b6efmUR3W0
-         lsig==
-X-Gm-Message-State: AOJu0YzCQLE5nezAIofLElcallTYPf3ZZsWWF4h0DoDd3c1nyq9lO3iw
-	MEvMJ45OYJScYBRNT3dxePTm1e8vkQ3iU7w+SOQ=
-X-Google-Smtp-Source: AGHT+IEBFwxTzzCHfqepNUmxksnmgIQ3vF9oVF+2AKFSQiZVFTFH54QoEjst3wDA9VV67vjRCnr2HJGLFNoQ5JOgsmw=
-X-Received: by 2002:a25:d88b:0:b0:dbd:998:5fbb with SMTP id
- p133-20020a25d88b000000b00dbd09985fbbmr1629974ybg.99.1705286467574; Sun, 14
- Jan 2024 18:41:07 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC37717CB
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 02:59:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=phytec.de
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
+	q=dns/txt; i=@phytec.de; t=1705286622; x=1707878622;
+	h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=wLo4oazoGisLjK7113rgUx/vmRZgsqMoCqX03N1V9Q0=;
+	b=MpuVSsQcipF5Dxmkz30RmLUmuK4RN0DCp6otjKKVQntVDSo9ytsKHGSZ6BaIMMgj
+	C5aQn6/o9uKi+AeZiAihxHAVo8IApr5s5W2YMkYaUCeIyAahjMqlXegiWNkk1tRw
+	7GuQHBSwmUfGE1AQz4VhVbN0WBYbFWZeKWBisFitnmM=;
+X-AuditID: ac14000a-fadff7000000290d-23-65a49bdda885
+Received: from berlix.phytec.de (Unknown_Domain [172.25.0.12])
+	(using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(Client did not present a certificate)
+	by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 8B.33.10509.DDB94A56; Mon, 15 Jan 2024 03:43:41 +0100 (CET)
+Received: from [172.25.39.28] (172.25.0.11) by Berlix.phytec.de (172.25.0.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.6; Mon, 15 Jan
+ 2024 03:43:37 +0100
+Message-ID: <b67b8d82-1a4c-470d-a252-26caa79a6813@phytec.de>
+Date: Mon, 15 Jan 2024 03:43:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240112094603.23706-1-menglong8.dong@gmail.com> <20240113154632.GI392144@kernel.org>
-In-Reply-To: <20240113154632.GI392144@kernel.org>
-From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Mon, 15 Jan 2024 10:40:56 +0800
-Message-ID: <CADxym3a6qNcb47R_DfXMsac9Ou_zkz5hR3bGY9tr7Jhsdw3y-Q@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next v2] net: tcp: accept old ack during closing
-To: Simon Horman <horms@kernel.org>
-Cc: edumazet@google.com, davem@davemloft.net, dsahern@kernel.org, 
-	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 05/16] arm64: dts: ti: k3-am64: Add MIT license along with
+ GPL-2.0
+Content-Language: en-US
+To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>, Tero
+ Kristo <kristo@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring
+	<robh+dt@kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, Christian Gmeiner
+	<christian.gmeiner@gmail.com>, Krzysztof Kozlowski
+	<krzysztof.kozlowski@linaro.org>, Matthias Schiffer
+	<matthias.schiffer@ew.tq-group.com>, Pierre Gondois <pierre.gondois@arm.com>,
+	Roger Quadros <rogerq@kernel.org>, Tony Lindgren <tony@atomide.com>
+References: <20240110140903.4090946-1-nm@ti.com>
+ <20240110140903.4090946-6-nm@ti.com>
+From: Wadim Egorov <w.egorov@phytec.de>
+In-Reply-To: <20240110140903.4090946-6-nm@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: Berlix.phytec.de (172.25.0.12) To Berlix.phytec.de
+ (172.25.0.12)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrGIsWRmVeSWpSXmKPExsWyRpKBR/fu7CWpBhffm1lM2nOTyWLN3nNM
+	FvOPnGO1WP55NrtF34uHzBZ7X29lt9j0+BqrxeVdc9gs3mz9wm7x5sdZJosHqzItWvceYbc4
+	d28dq8X+K14W/89+YHfg91gzbw2jx7evk1g8Xkz4x+Sxc9Zddo9NqzrZPO5c28PmsXlJvcfx
+	G9uZPD5vkgvgjOKySUnNySxLLdK3S+DK2L5vPmvBb5aK6VNmsjcw/mfuYuTkkBAwkXi/dhpb
+	FyMXh5DAYiaJM/MmQjl3GSUWtC1nAqniFbCR+D7rMyuIzSKgKnH4/1RmiLigxMmZT1hAbFEB
+	eYn7t2awg9jCAhESjTu7GUFsZgFxiVtP5jOBDBUReM0o0XCvC2wDs8A/Jolpz9+BTRISCJc4
+	s30l2DY2AXWJOxu+gW3jFDCUOP56GSvEJAuJxW8OskPY8hLb386B6pWXeHFpOQvEP/IS0869
+	hvotVGLrl+1MExiFZyE5dhaSo2YhGTsLydgFjCyrGIVyM5OzU4sys/UKMipLUpP1UlI3MYLi
+	VoSBawdj3xyPQ4xMHIyHGCU4mJVEeA8+X5AqxJuSWFmVWpQfX1Sak1p8iFGag0VJnHd1R3Cq
+	kEB6YklqdmpqQWoRTJaJg1OqgbFHmXvZ0eMv52z9Unb0gmcdc/DXqs7Pvbdlbc5NqAzbyHLq
+	XGGVQe70Ig9WxV8RSwXkRXdazq4UaOPjUmi0eCrKU7wzzeY31+VfMS8zBPfMdjjJ8mvmku0i
+	rk8OnRYQ8Ch86jLXn6WCQVQk+Mii1CfHJ1fP+zVl5caJzQEnfVVqevle/H3wsFCJpTgj0VCL
+	uag4EQDK0mbiyQIAAA==
 
-On Sat, Jan 13, 2024 at 11:46=E2=80=AFPM Simon Horman <horms@kernel.org> wr=
-ote:
+
+Am 10.01.24 um 15:08 schrieb Nishanth Menon:
+> Modify license to include dual licensing as GPL-2.0-only OR MIT
+> license for SoC and TI evm device tree files. This allows for Linux
+> kernel device tree to be used in other Operating System ecosystems
+> such as Zephyr or FreeBSD.
 >
-> On Fri, Jan 12, 2024 at 05:46:03PM +0800, Menglong Dong wrote:
-> > For now, the packet with an old ack is not accepted if we are in
-> > FIN_WAIT1 state, which can cause retransmission. Taking the following
-> > case as an example:
-> >
-> >     Client                               Server
-> >       |                                    |
-> >   FIN_WAIT1(Send FIN, seq=3D10)          FIN_WAIT1(Send FIN, seq=3D20, =
-ack=3D10)
-> >       |                                    |
-> >       |                                Send ACK(seq=3D21, ack=3D11)
-> >    Recv ACK(seq=3D21, ack=3D11)
-> >       |
-> >    Recv FIN(seq=3D20, ack=3D10)
-> >
-> > In the case above, simultaneous close is happening, and the FIN and ACK
-> > packet that send from the server is out of order. Then, the FIN will be
-> > dropped by the client, as it has an old ack. Then, the server has to
-> > retransmit the FIN, which can cause delay if the server has set the
-> > SO_LINGER on the socket.
-> >
-> > Old ack is accepted in the ESTABLISHED and TIME_WAIT state, and I think
-> > it should be better to keep the same logic.
-> >
-> > In this commit, we accept old ack in FIN_WAIT1/FIN_WAIT2/CLOSING/LAST_A=
-CK
-> > states. Maybe we should limit it to FIN_WAIT1 for now?
-> >
-> > Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
-> > ---
-> > v2:
-> > - fix the compiling error
-> > ---
-> >  net/ipv4/tcp_input.c | 18 +++++++++++-------
-> >  1 file changed, 11 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-> > index df7b13f0e5e0..70642bb08f3a 100644
-> > --- a/net/ipv4/tcp_input.c
-> > +++ b/net/ipv4/tcp_input.c
-> > @@ -6699,17 +6699,21 @@ int tcp_rcv_state_process(struct sock *sk, stru=
-ct sk_buff *skb)
-> >               return 0;
-> >
-> >       /* step 5: check the ACK field */
-> > -     acceptable =3D tcp_ack(sk, skb, FLAG_SLOWPATH |
-> > -                                   FLAG_UPDATE_TS_RECENT |
-> > -                                   FLAG_NO_CHALLENGE_ACK) > 0;
-> > +     reason =3D tcp_ack(sk, skb, FLAG_SLOWPATH |
-> > +                               FLAG_UPDATE_TS_RECENT |
-> > +                               FLAG_NO_CHALLENGE_ACK);
+> While at this, update the GPL-2.0 to be GPL-2.0-only to be in sync
+> with latest SPDX conventions (GPL-2.0 is deprecated).
 >
-> Hi Menglong Dong,
->
-> Probably I am missing something terribly obvious,
-> but I am confused about the types used here.
->
-> The type of reason is enum skb_drop_reason.
-> For which, which on my system, the compiler uses an unsigned entity.
-> i.e. it is an unsigned integer.
->
-> But tcp_ack returns a (signed) int. And below reason is checked
-> for values less than zero, and negated. This doesn't seem right.
->
-
-Hello! You are right, and it seems that I make the same
-mistake with Eric in this commit:
-
-843f77407eeb ("tcp: fix signed/unsigned comparison")
-
-I should convert it to signed int before comparing it
-like this:
-
-  if ((int)reason <=3D 0) {
-      ......
-      if ((int)reason < 0) {
-          ....
-      }
-  }
-
-Thanks!
-Menglong Dong
-
-> >
-> > -     if (!acceptable) {
-> > +     if (reason <=3D 0) {
-> >               if (sk->sk_state =3D=3D TCP_SYN_RECV)
-> >                       return 1;       /* send one RST */
-> > -             tcp_send_challenge_ack(sk);
-> > -             SKB_DR_SET(reason, TCP_OLD_ACK);
-> > -             goto discard;
-> > +             /* accept old ack during closing */
-> > +             if (reason < 0) {
-> > +                     tcp_send_challenge_ack(sk);
-> > +                     reason =3D -reason;
-> > +                     goto discard;
-> > +             }
-> >       }
-> > +     SKB_DR_SET(reason, NOT_SPECIFIED);
-> >       switch (sk->sk_state) {
-> >       case TCP_SYN_RECV:
-> >               tp->delivered++; /* SYN-ACK delivery isn't tracked in tcp=
-_ack */
-> > --
-> > 2.39.2
-> >
+> While at this, update the TI copyright year to sync with current year
+> to indicate license change (and add it at least for one file which was
+> missing TI copyright).
+Acked-by: Wadim Egorov <w.egorov@phytec.de>
 
