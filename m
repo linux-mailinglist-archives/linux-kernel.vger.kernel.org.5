@@ -1,89 +1,80 @@
-Return-Path: <linux-kernel+bounces-25663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8738082D44D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:53:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AF7F82D452
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:54:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3952D1F20F64
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 06:53:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9EEC1C20DF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 06:54:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E2C763AB;
-	Mon, 15 Jan 2024 06:53:16 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E13C66AA4;
+	Mon, 15 Jan 2024 06:54:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="duDvVlZi"
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BA795C97
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 06:53:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: b13c22455a7543f58122e02b9107bdfc-20240115
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:de2d3315-cd84-4853-a1bb-18f2e590ddb8,IP:20,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:15
-X-CID-INFO: VERSION:1.1.35,REQID:de2d3315-cd84-4853-a1bb-18f2e590ddb8,IP:20,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:15
-X-CID-META: VersionHash:5d391d7,CLOUDID:c1deda82-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:2401151448309NCJ8U9I,BulkQuantity:1,Recheck:0,SF:66|24|17|42|101|74|
-	38|100|19|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,
-	BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-UUID: b13c22455a7543f58122e02b9107bdfc-20240115
-X-User: mengfanhui@kylinos.cn
-Received: from localhost.localdomain [(39.156.73.13)] by mailgw
-	(envelope-from <mengfanhui@kylinos.cn>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 128/128)
-	with ESMTP id 2087022929; Mon, 15 Jan 2024 14:53:03 +0800
-From: mengfanhui <mengfanhui@kylinos.cn>
-To: kbusch@kernel.org,
-	axboe@kernel.dk
-Cc: mengfanhui@kylinos.cn,
-	linux-kernel@vger.kernel.org,
-	linux-nvme@lists.infradead.org,
-	sagi@grimberg.me
-Subject: [PATCH] nvme/auth: optimize code redundancy and provide code quality
-Date: Mon, 15 Jan 2024 14:52:31 +0800
-Message-Id: <20240115065231.12733-1-mengfanhui@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD54D63AE
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 06:54:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=hJrN8gZT/HYpbOMm+1QDv4p0H4Brjpdl0colo6KhxYM=; b=duDvVlZiKsVGlGusgzwGo3i5/+
+	6De1nttWvMKpJbVZom4lqFwcwDbyC5+iGfM105rwq++rkD56TWmKxcPshaVHxdtlcnkcHl8si3eee
+	RNXzRjFKsCKP+B9URGDky1Kaw5+W86dPKGjiXuhzoJ7hyCBTNSvbxoMaUy6vXfDrI6iX87jhTlW8y
+	1hu2LmlYMnXaSCHCv5UgBNuYX51zf0hhzDKWeUVWRaEu5xVCFwM2Z/e0MtIbz3I7U18B3z2k+UBem
+	0TLskF+m9jidYpZVGFgxtTXpnUBiZBv3xRz1BkG8mLIkXjZxCdcPfUC2wqFd9KwzFWZqX6yK+92Ho
+	nbMad+JA==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rPGro-002cLQ-1N;
+	Mon, 15 Jan 2024 06:54:40 +0000
+Date: Mon, 15 Jan 2024 06:54:40 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Li kunyu <kunyu@nfschina.com>
+Cc: linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] utsname: Optimize clone_uts_ns()
+Message-ID: <20240115065440.GF1674809@ZenIV>
+References: <20240115061127.30836-1-kunyu@nfschina.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240115061127.30836-1-kunyu@nfschina.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-Improve code quality. Reduce code redundancy.
+On Mon, Jan 15, 2024 at 02:11:27PM +0800, Li kunyu wrote:
+> Optimize the err variable assignment location so that the err variable
+> is manually modified when an error occurs.
 
-Signed-off-by: mengfanhui <mengfanhui@kylinos.cn>
----
- drivers/nvme/common/auth.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+First of all, this is *not* an optimization in any meaningful sense -
+compiler is perfectly capable to shift those assignments (from either
+form) and choose whatever it prefers.
 
-diff --git a/drivers/nvme/common/auth.c b/drivers/nvme/common/auth.c
-index a23ab5c968b9..4f9d06afdc38 100644
---- a/drivers/nvme/common/auth.c
-+++ b/drivers/nvme/common/auth.c
-@@ -250,9 +250,7 @@ struct nvme_dhchap_key *nvme_auth_transform_key(
- 	if (key->hash == 0) {
- 		key_len = nvme_auth_key_struct_size(key->len);
- 		transformed_key = kmemdup(key, key_len, GFP_KERNEL);
--		if (!transformed_key)
--			return ERR_PTR(-ENOMEM);
--		return transformed_key;
-+		return transformed_key ? transformed_key : ERR_PTR(-ENOMEM);
- 	}
- 	hmac_name = nvme_auth_hmac_name(key->hash);
- 	if (!hmac_name) {
+Incidentally, it might end up lifting the store out of if - it's
+entirely possible that
+	r1 = v
+	flag = (r2 == 0)
+	if flag goto fail
+is better than
+	flag = (r2 == 0)
+	if flag goto l
+	...
+l:
+	r1 = v
+	goto fail
+provided that assignment to r1 and checking r2 can be done in parallel
+and that's assuming that it will figure out that branch is unlikely.
 
-base-commit: c29901006179c4c87f9335771e50814ec5707239
--- 
-2.25.1
-
+Readability might be a good reason; optimization... no.  Leave that to
+compiler; it will override your choice here anyway.
 
