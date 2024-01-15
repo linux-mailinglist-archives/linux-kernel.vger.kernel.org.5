@@ -1,122 +1,174 @@
-Return-Path: <linux-kernel+bounces-25722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25723-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2731782D4F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:22:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 161C382D4FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:23:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8B48281A2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:22:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C96F1C211ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:23:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6997FC132;
-	Mon, 15 Jan 2024 08:20:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 179C37489;
+	Mon, 15 Jan 2024 08:20:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yxcb6PBK"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ahkiEaD3"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 446806FAE;
-	Mon, 15 Jan 2024 08:20:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40e7065b7bdso14061785e9.3;
-        Mon, 15 Jan 2024 00:20:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705306837; x=1705911637; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xPEUBbd6YyFY5XpshsB4nRVGBOt6Lh2x1n9bnlaCTB0=;
-        b=Yxcb6PBKNeG8ktKUZfVHXVwiiy9NViRd6c3CtIXUkZRWzU5dSRD7fZXNrM3T6/CsdD
-         CCGcTi8p26xgRxfKSyA//NePTg1qN2Ug8zsx0C14EnnbvliDuk4fGFS3TCTDAUh4JAdB
-         qmBxHRKnEq0fU9GgmVx6sI/aMPyEughudux9CvxJjmo3zV636aH7QVuYelRncu6oFlH2
-         SLje4/YoHJJXwU87tAvSqCxXbULCxXdRfiuVD/bN1XRNsp+UU94EItGqXRtQjaJn9ZEY
-         tGP9io52loXi75nE0UWuUW6XYZI5OhK9JSo0sGnvIrK3jEmQ9fctox6wlvvxTUxAcvNY
-         EZhw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8DDD1E537
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 08:20:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705306850;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LRrQ9hj3v8JeCLKcpLTeqR/vnXCdHRzqkMMDMAxwZhE=;
+	b=ahkiEaD3VNLcL7mLHZn+rMh9rvoZjqiANMY1XhJkY42DI8JX0tbsPYiEi8PDAeoul60Z69
+	nyQQMuub9yckCt0Fn+zwmDfEnNZI1myyYMwhrZ5JVQw3m9LeDQI4hybpnwSD3dpOrFqLOG
+	Y/jSdbhuD8clr86gQCIVLMWA2K1pBFA=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-665-yzYmH0KHOW-sbBaq0ikc-w-1; Mon, 15 Jan 2024 03:20:48 -0500
+X-MC-Unique: yzYmH0KHOW-sbBaq0ikc-w-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40e61491b81so16094265e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 00:20:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705306837; x=1705911637;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xPEUBbd6YyFY5XpshsB4nRVGBOt6Lh2x1n9bnlaCTB0=;
-        b=VQ8nuG+KoZH50J4Zvwl0o/6RuXgrruHR+n/hyOWv952iEeFw9XRnj67fRA9C3IO4qN
-         kgONxWt/cUO8b7zFpiWUn2evbY2KhUlrUdIV9SCUgVqEdjbLwjp0/asW3mdL1vQnALzb
-         hrlMYSoY4dLSvn8WI5HxleEYI/35qLOkpHgtqrHcwmqhNMHxruMm3/bK+R5JRhH0JJYC
-         myL48UEpW6gepeZrLNaO7pBKVc+2EWTiuqhCEZO9pOt2YTso07zss21c6y69l1zhF4lt
-         viwZ+DKjHKX+pX2EBm6QBRdDCajUphUjZN32eQg0282ioDcv2wGsVBtKVMnXgslqqJ9a
-         2MGQ==
-X-Gm-Message-State: AOJu0Ywt22ZcVh76/T6mF0CtCCM7W5CgbgPrmnAw0nqvTqbGPr250bLQ
-	BZlxQbZzCtSlbttQ3Y8oFsXP9szSkQ==
-X-Google-Smtp-Source: AGHT+IHtupY3BThxNfDZY5xZCItDpyEGHgdJeJnGq9MuDhEU1VfnfnmD47+LQJ4Q89BTUm6IH2UrhQ==
-X-Received: by 2002:a05:600c:4292:b0:40d:3b0a:6edb with SMTP id v18-20020a05600c429200b0040d3b0a6edbmr1856776wmc.183.1705306837028;
-        Mon, 15 Jan 2024 00:20:37 -0800 (PST)
-Received: from staff-net-cx-3510.intern.ethz.ch (2001-67c-10ec-5784-8000--16b.net6.ethz.ch. [2001:67c:10ec:5784:8000::16b])
-        by smtp.gmail.com with ESMTPSA id u17-20020a05600c19d100b0040e47dc2e8fsm14981194wmq.6.2024.01.15.00.20.36
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 15 Jan 2024 00:20:36 -0800 (PST)
-From: Hao Sun <sunhao.th@gmail.com>
-To: bpf@vger.kernel.org
-Cc: willemb@google.com,
-	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	eddyz87@gmail.com,
-	yonghong.song@linux.dev,
-	linux-kernel@vger.kernel.org,
-	Hao Sun <sunhao.th@gmail.com>
-Subject: [PATCH v4 2/2] selftests/bpf: Add test for alu on PTR_TO_FLOW_KEYS
-Date: Mon, 15 Jan 2024 09:20:28 +0100
-Message-ID: <20240115082028.9992-2-sunhao.th@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240115082028.9992-1-sunhao.th@gmail.com>
-References: <20240115082028.9992-1-sunhao.th@gmail.com>
+        d=1e100.net; s=20230601; t=1705306848; x=1705911648;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LRrQ9hj3v8JeCLKcpLTeqR/vnXCdHRzqkMMDMAxwZhE=;
+        b=Ds7y90qv80/HII7+3bvL9bPsie7wSrTVb6cLjh5FrWrqNXAHNG5QeAf6Blt30Nchzj
+         znqC7P7q7QqHsAjVlBivYjh45TzFQa1GvjUG6phWcW9hsjD98WlTITaCkLZgUlE5hqSA
+         tW/jgkEmOP+/uCngbutYWAxsw1DwyJO7qJ9Js1pW6iB/mZQjj6ObPw6UE1WfDAXnalUW
+         eU59wmWacVP7Wit2bfTsNMB4UA55SSH2xOnnG6y0IO9XApsyh8cjMK7UOh4Z+rth5kZ6
+         haXmxAdFVAQNrlc2fIjcuwS/VuNEaDkHWKl4ZUp7zynl2Q8CC+m554eNjOsYKPBdK+IT
+         54qQ==
+X-Gm-Message-State: AOJu0Yyby4E/FToAUatH7Pe9iy+5svwqRPwUF55f58y7hbrRt8e2fWdI
+	FNde5gfkfS7+hlqsCTLN1bQ6mp5LTLpBTvD1ZeQWRkENWMvmdFW9w5llxILbGgezqIgwVSeGGLg
+	98/ue3Uegode9Rd5AN7hkVhJI/KNKprho
+X-Received: by 2002:a05:600c:8515:b0:40e:66cd:1868 with SMTP id gw21-20020a05600c851500b0040e66cd1868mr2066356wmb.88.1705306847868;
+        Mon, 15 Jan 2024 00:20:47 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEPwI3UICWY2yo54y5yNxKfPuc3OoaC2AsJ2BmiXtKiDTgSkaxoQcQyHiv07sCt2HzzIkDD2A==
+X-Received: by 2002:a05:600c:8515:b0:40e:66cd:1868 with SMTP id gw21-20020a05600c851500b0040e66cd1868mr2066345wmb.88.1705306847586;
+        Mon, 15 Jan 2024 00:20:47 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id d13-20020a056000114d00b003379d5d2f1csm5969671wrx.28.2024.01.15.00.20.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 00:20:47 -0800 (PST)
+From: Javier Martinez Canillas <javierm@redhat.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, dri-devel@lists.freedesktop.org,
+ linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Jingoo Han <jingoohan1@gmail.com>, Daniel Thompson
+ <daniel.thompson@linaro.org>, Lee Jones <lee@kernel.org>, Helge Deller
+ <deller@gmx.de>
+Subject: Re: [PATCH v1 1/4] backlight: hx8357: Make use of device properties
+In-Reply-To: <20240114152759.1040563-2-andriy.shevchenko@linux.intel.com>
+References: <20240114152759.1040563-1-andriy.shevchenko@linux.intel.com>
+ <20240114152759.1040563-2-andriy.shevchenko@linux.intel.com>
+Date: Mon, 15 Jan 2024 09:20:46 +0100
+Message-ID: <87bk9novmp.fsf@minerva.mail-host-address-is-not-set>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Add a test case for PTR_TO_FLOW_KEYS alu. Testing if alu with
-variable offset on flow_keys is rejected.
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
 
-Signed-off-by: Hao Sun <sunhao.th@gmail.com>
----
- .../bpf/progs/verifier_value_illegal_alu.c    | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+Hello Andy,
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu.c b/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu.c
-index 71814a753216..a9ab37d3b9e2 100644
---- a/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu.c
-@@ -146,4 +146,23 @@ l0_%=:	exit;						\
- 	: __clobber_all);
- }
- 
-+SEC("flow_dissector")
-+__description("flow_keys illegal alu op with variable offset")
-+__failure __msg("R7 pointer arithmetic on flow_keys prohibited")
-+__naked void flow_keys_illegal_variable_offset_alu(void)
-+{
-+	asm volatile("					\
-+	r6 = r1;					\
-+	r7 = *(u64*)(r6 + %[flow_keys_off]);		\
-+	r8 = 8;						\
-+	r8 /= 1;					\
-+	r8 &= 8;					\
-+	r7 += r8;					\
-+	r0 = *(u64*)(r7 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm_const(flow_keys_off, offsetof(struct __sk_buff, flow_keys))
-+	: __clobber_all);
-+}
-+
- char _license[] SEC("license") = "GPL";
+> Convert the module to be property provider agnostic and allow
+> it to be used on non-OF platforms.
+>
+> Include mod_devicetable.h explicitly to replace the dropped of.h
+> which included mod_devicetable.h indirectly.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/video/backlight/hx8357.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/video/backlight/hx8357.c b/drivers/video/backlight/hx8357.c
+> index bf18337ff0c2..c7fd10d55c5d 100644
+> --- a/drivers/video/backlight/hx8357.c
+> +++ b/drivers/video/backlight/hx8357.c
+> @@ -8,9 +8,9 @@
+>  #include <linux/delay.h>
+>  #include <linux/gpio/consumer.h>
+>  #include <linux/lcd.h>
+> +#include <linux/mod_devicetable.h>
+>  #include <linux/module.h>
+> -#include <linux/of.h>
+> -#include <linux/of_device.h>
+> +#include <linux/property.h>
+>  #include <linux/spi/spi.h>
+>  
+>  #define HX8357_NUM_IM_PINS	3
+> @@ -564,6 +564,8 @@ static struct lcd_ops hx8357_ops = {
+>  	.get_power	= hx8357_get_power,
+>  };
+>  
+> +typedef int (*hx8357_init)(struct lcd_device *);
+> +
+
+This kind of typedef usage is frowned upon in the Linux coding style [0]
+(per my understanding at least) and indeed in my opinion it makes harder
+to grep.
+
+[0] https://www.kernel.org/doc/Documentation/process/coding-style.rst
+
+>  static const struct of_device_id hx8357_dt_ids[] = {
+>  	{
+>  		.compatible = "himax,hx8357",
+> @@ -582,7 +584,7 @@ static int hx8357_probe(struct spi_device *spi)
+>  	struct device *dev = &spi->dev;
+>  	struct lcd_device *lcdev;
+>  	struct hx8357_data *lcd;
+> -	const struct of_device_id *match;
+> +	hx8357_init init;
+>  	int i, ret;
+>  
+>  	lcd = devm_kzalloc(&spi->dev, sizeof(*lcd), GFP_KERNEL);
+> @@ -597,8 +599,8 @@ static int hx8357_probe(struct spi_device *spi)
+>  
+>  	lcd->spi = spi;
+>  
+> -	match = of_match_device(hx8357_dt_ids, &spi->dev);
+> -	if (!match || !match->data)
+> +	init = device_get_match_data(dev);
+> +	if (!init)
+>  		return -EINVAL;
+>  
+>  	lcd->reset = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
+> @@ -627,7 +629,7 @@ static int hx8357_probe(struct spi_device *spi)
+>  
+>  	hx8357_lcd_reset(lcdev);
+>  
+> -	ret = ((int (*)(struct lcd_device *))match->data)(lcdev);
+
+This is what I mean, before it was clear what was stored in match->data.
+But after you changes, what is returned by the device_get_match_data()
+function is opaque and you need to look at the typedef hx8357_init to
+figure that out.
+
+No strong opinion though and I see other drivers doing the same (but no
+other driver in drivers/video/backlight).
+
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+
 -- 
-2.34.1
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
 
