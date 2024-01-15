@@ -1,101 +1,104 @@
-Return-Path: <linux-kernel+bounces-26333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D47D82DEB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:57:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DB3B82DEB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:58:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD3A5283377
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:57:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 954031C21F0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:58:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54BBA1805E;
-	Mon, 15 Jan 2024 17:57:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1F1E18C32;
+	Mon, 15 Jan 2024 17:57:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p35Gl/yr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96D4618AE0;
-	Mon, 15 Jan 2024 17:57:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7B96C433C7;
-	Mon, 15 Jan 2024 17:57:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705341443;
-	bh=thBhnHt9jZFGQePPNqkyQjdjPMKZmxdsMlzWKPj8+Jc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=p35Gl/yrY53OdCBI06PlYbOCPu8PAdffbIyGPu1B+JJ8LCI4uLoO8zCBoPhEbZDLS
-	 2IuoXD/t8k77ozhb8mPOLhbNFyEP4GY8mx1XWU4y7yBIbDXxNC5TLZcXn4YQydXZb+
-	 ihr5kYCGinap2g3Ra56/Q9Wdrh9KoWNBTljTqqTGVPXMUstYfVTqYHhmmbvqbuBaqQ
-	 R0D0wrr1HgN2cQjEjJrRRpn7IK2XvNg/wtd9MvHtZWsxwRCZJ8BWJdfLf157zF8Ife
-	 iEtCOl9+pCW2cWVL5OumkEzSAdDC5KxaFB7NfQJIEp+JhKI5bT6ZCPEyvbkuFrYfyK
-	 obT1KF8SeUyhQ==
-Date: Mon, 15 Jan 2024 11:57:20 -0600
-From: Rob Herring <robh@kernel.org>
-To: Stephen Boyd <sboyd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-	linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-	devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 1/6] arm64: Unconditionally call unflatten_device_tree()
-Message-ID: <20240115175720.GA1017185-robh@kernel.org>
-References: <20240112200750.4062441-1-sboyd@kernel.org>
- <20240112200750.4062441-2-sboyd@kernel.org>
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="rl1OYcPB"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06BAC18C25;
+	Mon, 15 Jan 2024 17:57:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+	by linux.microsoft.com (Postfix) with ESMTPSA id D849B20C80BA;
+	Mon, 15 Jan 2024 09:57:44 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D849B20C80BA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1705341464;
+	bh=M/7pcXQalXHcMoHN9ldxUjvdafJ22HCKPBnrDAVw1HQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=rl1OYcPBwsGLkD+Eq0xve8jCrB0U8W1ZjzLwEAnVDm5hW3UxPKKZ1Qin1249GLGKy
+	 qPxzV3n08+ba5UaeAXqN4D+7/fWoQzqNLU1PYVQvb9kh7XsCeoZrx/0dTFTG6a1qmO
+	 xqzxgip277E/ElAdmB7pM+KOVWQXk4PWMcP4zUs8=
+From: Saurabh Sengar <ssengar@linux.microsoft.com>
+To: kys@microsoft.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: ssengar@microsoft.com
+Subject: [PATCH v2] x86/hyperv: Allow 15-bit APIC IDs for VTL platforms
+Date: Mon, 15 Jan 2024 09:57:40 -0800
+Message-Id: <1705341460-18394-1-git-send-email-ssengar@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240112200750.4062441-2-sboyd@kernel.org>
 
-On Fri, Jan 12, 2024 at 12:07:44PM -0800, Stephen Boyd wrote:
-> Call this function unconditionally so that we can populate an empty DTB
-> on platforms that don't boot with a firmware provided or builtin DTB.
-> There's no harm in calling unflatten_device_tree() unconditionally. If
-> there isn't a valid initial_boot_params dtb then unflatten_device_tree()
-> returns early.
+The current method for signaling the compatibility of a Hyper-V host
+with MSIs featuring 15-bit APIC IDs relies on a synthetic cpuid leaf.
+However, for higher VTLs, this leaf is not reported, due to the absence
+of an IO-APIC.
 
-There's always a valid DTB because that's the boot params even for ACPI 
-systems. This does also create a userspace visible change that 
-/proc/device-tree will be populated. I don't see an issue with that.
+As an alternative, assume that when running at a high VTL, the host
+supports 15-bit APIC IDs. This assumption is safe, as Hyper-V does not
+employ any architectural MSIs at higher VTLs
 
-There was worry when ACPI was added that systems would pass both DT and 
-ACPI tables and that the kernel must only use ACPI. That was more to 
-force ACPI adoption, but I'm not sure if that actually exists in any 
-early system. I think we're past forcing adoption now.
+This unblocks startup of VTL2 environments with more than 256 CPUs.
 
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Frank Rowand <frowand.list@gmail.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: <linux-arm-kernel@lists.infradead.org>
-> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-> ---
->  arch/arm64/kernel/setup.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-> index 417a8a86b2db..ede3d59dabf0 100644
-> --- a/arch/arm64/kernel/setup.c
-> +++ b/arch/arm64/kernel/setup.c
-> @@ -351,8 +351,7 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
->  	/* Parse the ACPI tables for possible boot-time configuration */
->  	acpi_boot_table_init();
->  
-> -	if (acpi_disabled)
-> -		unflatten_device_tree();
-> +	unflatten_device_tree();
->  
->  	bootmem_init();
->  
-> -- 
-> https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
-> https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
-> 
+Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+---
+[V2]
+ - Modify commit message
+
+ arch/x86/hyperv/hv_vtl.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/x86/hyperv/hv_vtl.c b/arch/x86/hyperv/hv_vtl.c
+index 96e6c51..cf1b78c 100644
+--- a/arch/x86/hyperv/hv_vtl.c
++++ b/arch/x86/hyperv/hv_vtl.c
+@@ -16,6 +16,11 @@
+ extern struct boot_params boot_params;
+ static struct real_mode_header hv_vtl_real_mode_header;
+ 
++static bool __init hv_vtl_msi_ext_dest_id(void)
++{
++	return true;
++}
++
+ void __init hv_vtl_init_platform(void)
+ {
+ 	pr_info("Linux runs in Hyper-V Virtual Trust Level\n");
+@@ -38,6 +43,8 @@ void __init hv_vtl_init_platform(void)
+ 	x86_platform.legacy.warm_reset = 0;
+ 	x86_platform.legacy.reserve_bios_regions = 0;
+ 	x86_platform.legacy.devices.pnpbios = 0;
++
++	x86_init.hyper.msi_ext_dest_id = hv_vtl_msi_ext_dest_id;
+ }
+ 
+ static inline u64 hv_vtl_system_desc_base(struct ldttss_desc *desc)
+-- 
+1.8.3.1
+
 
