@@ -1,86 +1,101 @@
-Return-Path: <linux-kernel+bounces-26334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 288F682DEB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:57:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D47D82DEB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:57:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE90B1F22C4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:57:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD3A5283377
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:57:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D262182B9;
-	Mon, 15 Jan 2024 17:57:43 +0000 (UTC)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54BBA1805E;
+	Mon, 15 Jan 2024 17:57:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p35Gl/yr"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD574182A7;
-	Mon, 15 Jan 2024 17:57:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 872efcd1a58f9332; Mon, 15 Jan 2024 18:57:31 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 54BB16692F2;
-	Mon, 15 Jan 2024 18:57:31 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Lukasz Luba <lukasz.luba@arm.com>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Zhang Rui <rui.zhang@intel.com>
-Subject: [PATCH  v1 2/2] thermal: gov_bang_bang: Fix possible cooling device state ping-pong
-Date: Mon, 15 Jan 2024 18:57:06 +0100
-Message-ID: <2339862.ElGaqSPkdT@kreacher>
-In-Reply-To: <12389773.O9o76ZdvQC@kreacher>
-References: <12389773.O9o76ZdvQC@kreacher>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96D4618AE0;
+	Mon, 15 Jan 2024 17:57:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7B96C433C7;
+	Mon, 15 Jan 2024 17:57:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705341443;
+	bh=thBhnHt9jZFGQePPNqkyQjdjPMKZmxdsMlzWKPj8+Jc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=p35Gl/yrY53OdCBI06PlYbOCPu8PAdffbIyGPu1B+JJ8LCI4uLoO8zCBoPhEbZDLS
+	 2IuoXD/t8k77ozhb8mPOLhbNFyEP4GY8mx1XWU4y7yBIbDXxNC5TLZcXn4YQydXZb+
+	 ihr5kYCGinap2g3Ra56/Q9Wdrh9KoWNBTljTqqTGVPXMUstYfVTqYHhmmbvqbuBaqQ
+	 R0D0wrr1HgN2cQjEjJrRRpn7IK2XvNg/wtd9MvHtZWsxwRCZJ8BWJdfLf157zF8Ife
+	 iEtCOl9+pCW2cWVL5OumkEzSAdDC5KxaFB7NfQJIEp+JhKI5bT6ZCPEyvbkuFrYfyK
+	 obT1KF8SeUyhQ==
+Date: Mon, 15 Jan 2024 11:57:20 -0600
+From: Rob Herring <robh@kernel.org>
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+	linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+	devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 1/6] arm64: Unconditionally call unflatten_device_tree()
+Message-ID: <20240115175720.GA1017185-robh@kernel.org>
+References: <20240112200750.4062441-1-sboyd@kernel.org>
+ <20240112200750.4062441-2-sboyd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdejuddguddtjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeeipdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtohepshhr
- ihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240112200750.4062441-2-sboyd@kernel.org>
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Fri, Jan 12, 2024 at 12:07:44PM -0800, Stephen Boyd wrote:
+> Call this function unconditionally so that we can populate an empty DTB
+> on platforms that don't boot with a firmware provided or builtin DTB.
+> There's no harm in calling unflatten_device_tree() unconditionally. If
+> there isn't a valid initial_boot_params dtb then unflatten_device_tree()
+> returns early.
 
-The current behavior of thermal_zone_trip_update() in the bang-bang
-thermal governor may be problematic for trip points with 0 hysteresis,
-because when the zone temperature reaches the trip temperature and
-stays there, it will then cause the cooling device go "on" and "off"
-alternately, which is not desirable.
+There's always a valid DTB because that's the boot params even for ACPI 
+systems. This does also create a userspace visible change that 
+/proc/device-tree will be populated. I don't see an issue with that.
 
-Address this by requiring the zone temperature to actually fall below
-trip->temperature - trip->hysteresis for the cooling device to go off.
+There was worry when ACPI was added that systems would pass both DT and 
+ACPI tables and that the kernel must only use ACPI. That was more to 
+force ACPI adoption, but I'm not sure if that actually exists in any 
+early system. I think we're past forcing adoption now.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/thermal/gov_bang_bang.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-Index: linux-pm/drivers/thermal/gov_bang_bang.c
-===================================================================
---- linux-pm.orig/drivers/thermal/gov_bang_bang.c
-+++ linux-pm/drivers/thermal/gov_bang_bang.c
-@@ -49,7 +49,7 @@ static int thermal_zone_trip_update(stru
- 		if (instance->target == 0 && tz->temperature >= trip->temperature)
- 			instance->target = 1;
- 		else if (instance->target == 1 &&
--			 tz->temperature <= trip->temperature - trip->hysteresis)
-+			 tz->temperature < trip->temperature - trip->hysteresis)
- 			instance->target = 0;
- 
- 		dev_dbg(&instance->cdev->device, "target=%d\n",
-
-
-
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Frank Rowand <frowand.list@gmail.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: <linux-arm-kernel@lists.infradead.org>
+> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+> ---
+>  arch/arm64/kernel/setup.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+> index 417a8a86b2db..ede3d59dabf0 100644
+> --- a/arch/arm64/kernel/setup.c
+> +++ b/arch/arm64/kernel/setup.c
+> @@ -351,8 +351,7 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
+>  	/* Parse the ACPI tables for possible boot-time configuration */
+>  	acpi_boot_table_init();
+>  
+> -	if (acpi_disabled)
+> -		unflatten_device_tree();
+> +	unflatten_device_tree();
+>  
+>  	bootmem_init();
+>  
+> -- 
+> https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
+> https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
+> 
 
