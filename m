@@ -1,326 +1,136 @@
-Return-Path: <linux-kernel+bounces-26181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4014582DC71
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:37:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92FF982DC75
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:38:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82E27282769
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:37:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A70FB21922
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:38:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C4D1774E;
-	Mon, 15 Jan 2024 15:37:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23D1F1775A;
+	Mon, 15 Jan 2024 15:38:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OXguycoA"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="T0hMfeKH"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C890217981
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 15:37:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3368ae75082so5350544f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 07:37:37 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDF0E17985
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 15:38:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-558f523c072so2314380a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 07:38:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705333056; x=1705937856; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y6tUsZcr4kUqrqkGGAs5Qidv+T6ANjTW6bBOWgu5cXs=;
-        b=OXguycoABcFUruT1lmYR3az25/ZV927/1ABk8AiCV1QIqCdXy86sXLYauaLZ7F88+J
-         PRVyY7jJV49QLNTJPRFd4Eo9oeHnCP/tx6qvwovXt17szyFHUPt9NqZ08GKcv2zFXfK5
-         +XgzrnNSLV7IhRMDjQg2rG7R4rrygpHdH1HV+/YxdEAYZNBG58uLuRrGnwCvY6EW8Alt
-         GI5Oj7HE8aD2jqz1OBlbLTMN9cuG94DH6Aq0WKS46ibawuARIE4l3pjJTHxHBRPVt4Z7
-         +uxmf4DEsmuXqGBOqlpgXDj+L/7JD1oGnVLnOL8QgJhMWP7b2DSVgJJXryGDW8gVME68
-         SA+g==
+        d=linaro.org; s=google; t=1705333087; x=1705937887; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WQWpGlGZEznsiJ0/iDf2nP9OPfJ6gAikeNvxvkikyKQ=;
+        b=T0hMfeKHRkKojKzs3ziSdfDlqRnqI2K7IOfDsFCLX87fa/nb7TnELPWW7AJeq6TSkJ
+         aO9o42TUXhDVD9Axi5B3W4gzkoQ/b0qGhYVV1F08dX8cY/gNv9uSLxyiMsu6RmLoRmvc
+         RPUnioqVF9ycOYr4h8mqi9voxfQQkWh8ksIqrAhqZeyaMAoxhre+HT5rzAJV02uxBOxP
+         Gst7hyTAz0WOrE79P/47Jza1HEUeXPBmEwnNXpzYsaDHfDvI2j8Ka8NFqgdB3x1ERbHU
+         Zn5/v2YbPRG8fQZG3fcCSwqqTbKts/8qnq0ZlvtbcI9VfomlzlE0WRnJ6pifBVNhFpfV
+         5phg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705333056; x=1705937856;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y6tUsZcr4kUqrqkGGAs5Qidv+T6ANjTW6bBOWgu5cXs=;
-        b=l+jdHFJIovhf6g7Zbvou+9nl4KK1orZnPx3xEqWiikNgqBCA42N1B7boEIVfZtaqIG
-         xv6G5FPisnOx8F90EEwGEZFV3/edCHvfxTLlkTNrx6TQyS6QXbvIgqt4suKGbZUPBg2+
-         ltyCx4DrJzv1zpdRqlys76Rba+jgvOHRakLY4Q+JyeoTK/o26VScd78yHdpxswsNilPE
-         HIXCkOyLleYLMNhCDzho+IkdafRvtdc1IpKit0S9DGYJZoMt42tq3UKOfbBFs0//Z/cn
-         Xx169xMh2D55cNLaKDR7AfdSQDrz2RtYQ1i7n4UTiRd4oIpWMoyOmdQ2HJHF0+RA1RJj
-         Ft0g==
-X-Gm-Message-State: AOJu0Yy31fmV2vSmgP52unV7EQvHSrrSMpbzYDp30YuDERReuWmf8Cwm
-	2QpifRocfuECPU1Z+HoGDkmwQaeDG00H
-X-Google-Smtp-Source: AGHT+IH2hqghuuV8f+KFdguqRT/76+9TAI2EgxG7KJ3bMSY9Wht54psKYi1Q7fpTOdarLKbns2nHNQ==
-X-Received: by 2002:a05:600c:4f92:b0:40e:5435:bba4 with SMTP id n18-20020a05600c4f9200b0040e5435bba4mr3434481wmq.127.1705333055884;
-        Mon, 15 Jan 2024 07:37:35 -0800 (PST)
-Received: from google.com (185.83.140.34.bc.googleusercontent.com. [34.140.83.185])
-        by smtp.gmail.com with ESMTPSA id n6-20020a5d67c6000000b003377bbc2fb3sm12147506wrw.17.2024.01.15.07.37.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 07:37:35 -0800 (PST)
-Date: Mon, 15 Jan 2024 15:37:31 +0000
-From: Vincent Donnefort <vdonnefort@google.com>
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: rostedt@goodmis.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
-	kernel-team@android.com
-Subject: Re: [PATCH v11 2/5] ring-buffer: Introducing ring-buffer mapping
- functions
-Message-ID: <ZaVRO76JxaHjPwCi@google.com>
-References: <20240111161712.1480333-1-vdonnefort@google.com>
- <20240111161712.1480333-3-vdonnefort@google.com>
- <20240115134303.1a673e37b8e7d35a33d8df52@kernel.org>
+        d=1e100.net; s=20230601; t=1705333087; x=1705937887;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WQWpGlGZEznsiJ0/iDf2nP9OPfJ6gAikeNvxvkikyKQ=;
+        b=OmoRkV0W2B3gaWiYuhpYfH7U6j0Ee7Tx5k+PcSd4AJEtiHAWVIZs+K0lmUis8Z9TvK
+         6JsA1CXfEUKVLWCgVZKW/TvWSuc9JfvIwv+At0GzhRRYQP20AY4udrlGMFHkHXEZ1pRt
+         mN4lBABmU7LseZFM9BuBpX4pRKgkLFLtzKGi4eK7pNttEGQ6uBrxWGUIjhk7t2tQINcY
+         nwjgmQrzH6azBLVu7zCPZvmtxq6MNLoCgp4RPQMZX3wmd6caGvpQZOxqrUCuAb6LuBWC
+         5YTn269W6uQhlEEyp41E+uBXqVINtzGICXW+US0r52Gx/yZN0fqLM5qyKSkZSSNZYOFV
+         SPjg==
+X-Gm-Message-State: AOJu0YzSStGigxRX7SVosr9RVxusGfzreDB7oCy9BduwkAECS2nImq3t
+	iXFf+AfIL7so/peCqNP6h0W/z7SyuyHA5g==
+X-Google-Smtp-Source: AGHT+IHULikRXMrmNc71afkh2RUWCHUct+4p49qz+xsWQWuEp9zAYy/RIOB4hNsEXgTxsVOMvvyhUQ==
+X-Received: by 2002:a05:6402:38c:b0:559:391e:51d2 with SMTP id o12-20020a056402038c00b00559391e51d2mr492806edv.128.1705333087243;
+        Mon, 15 Jan 2024 07:38:07 -0800 (PST)
+Received: from [192.168.174.25] (178235179017.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.17])
+        by smtp.gmail.com with ESMTPSA id j19-20020aa7de93000000b0055900cc4640sm3243143edv.23.2024.01.15.07.38.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Jan 2024 07:38:06 -0800 (PST)
+Message-ID: <0d76ebd1-5edc-44c4-80e6-315cf6579079@linaro.org>
+Date: Mon, 15 Jan 2024 16:38:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240115134303.1a673e37b8e7d35a33d8df52@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] interconnect: qcom: sm8450: Revert "interconnect: qcom:
+ sm8450: Enable sync_state"
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>, Georgi Djakov <djakov@kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+References: <20240115153420.1525037-1-krzysztof.kozlowski@linaro.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240115153420.1525037-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 15, 2024 at 01:43:03PM +0900, Masami Hiramatsu wrote:
-> On Thu, 11 Jan 2024 16:17:09 +0000
-> Vincent Donnefort <vdonnefort@google.com> wrote:
+On 15.01.2024 16:34, Krzysztof Kozlowski wrote:
+> Revert commit 16862f1b2110 ("interconnect: qcom: sm8450: Enable
+> sync_state"), because it causes serial console to corrupt, later freeze
+> and become either entirely corrupted or only print without accepting any
+> input.
 > 
-> > In preparation for allowing the user-space to map a ring-buffer, add
-> > a set of mapping functions:
-> > 
-> >   ring_buffer_{map,unmap}()
-> >   ring_buffer_map_fault()
-> > 
-> > And controls on the ring-buffer:
-> > 
-> >   ring_buffer_map_get_reader()  /* swap reader and head */
-> > 
-> > Mapping the ring-buffer also involves:
-> > 
-> >   A unique ID for each subbuf of the ring-buffer, currently they are
-> >   only identified through their in-kernel VA.
-> > 
-> >   A meta-page, where are stored ring-buffer statistics and a
-> >   description for the current reader
-> > 
-> > The linear mapping exposes the meta-page, and each subbuf of the
-> > ring-buffer, ordered following their unique ID, assigned during the
-> > first mapping.
-> > 
-> > Once mapped, no subbuf can get in or out of the ring-buffer: the buffer
-> > size will remain unmodified and the splice enabling functions will in
-> > reality simply memcpy the data instead of swapping subbufs.
-> > 
-> > Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
-> > 
-> > diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-> > index fa802db216f9..0841ba8bab14 100644
-> > --- a/include/linux/ring_buffer.h
-> > +++ b/include/linux/ring_buffer.h
-> > @@ -6,6 +6,8 @@
-> >  #include <linux/seq_file.h>
-> >  #include <linux/poll.h>
-> >  
-> > +#include <uapi/linux/trace_mmap.h>
-> > +
-> >  struct trace_buffer;
-> >  struct ring_buffer_iter;
-> >  
-> > @@ -221,4 +223,9 @@ int trace_rb_cpu_prepare(unsigned int cpu, struct hlist_node *node);
-> >  #define trace_rb_cpu_prepare	NULL
-> >  #endif
-> >  
-> > +int ring_buffer_map(struct trace_buffer *buffer, int cpu);
-> > +int ring_buffer_unmap(struct trace_buffer *buffer, int cpu);
-> > +struct page *ring_buffer_map_fault(struct trace_buffer *buffer, int cpu,
-> > +				   unsigned long pgoff);
-> > +int ring_buffer_map_get_reader(struct trace_buffer *buffer, int cpu);
-> >  #endif /* _LINUX_RING_BUFFER_H */
-> > diff --git a/include/uapi/linux/trace_mmap.h b/include/uapi/linux/trace_mmap.h
-> > new file mode 100644
-> > index 000000000000..bde39a73ce65
-> > --- /dev/null
-> > +++ b/include/uapi/linux/trace_mmap.h
-> > @@ -0,0 +1,45 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > +#ifndef _TRACE_MMAP_H_
-> > +#define _TRACE_MMAP_H_
-> > +
-> > +#include <linux/types.h>
-> > +
-> > +/**
-> > + * struct trace_buffer_meta - Ring-buffer Meta-page description
-> > + * @entries:		Number of entries in the ring-buffer.
-> > + * @overrun:		Number of entries lost in the ring-buffer.
-> > + * @read:		Number of entries that have been read.
-> > + * @subbufs_touched:	Number of subbufs that have been filled.
-> > + * @subbufs_lost:	Number of subbufs lost to overrun.
-> > + * @subbufs_read:	Number of subbufs that have been read.
-> > + * @reader.lost_events:	Number of events lost at the time of the reader swap.
-> > + * @reader.id:		subbuf ID of the current reader. From 0 to @nr_subbufs - 1
-> > + * @reader.read:	Number of bytes read on the reader subbuf.
-> > + * @subbuf_size:	Size of each subbuf, including the header.
-> > + * @nr_subbufs:		Number of subbfs in the ring-buffer.
-> > + * @meta_page_size:	Size of this meta-page.
-> > + * @meta_struct_len:	Size of this structure.
-> > + */
-> > +struct trace_buffer_meta {
-> > +	unsigned long	entries;
-> > +	unsigned long	overrun;
-> > +	unsigned long	read;
-> > +
-> > +	unsigned long	subbufs_touched;
-> > +	unsigned long	subbufs_lost;
-> > +	unsigned long	subbufs_read;
-> > +
-> > +	struct {
-> > +		unsigned long	lost_events;
-> > +		__u32		id;
-> > +		__u32		read;
-> > +	} reader;
-> > +
-> > +	__u32		subbuf_size;
-> > +	__u32		nr_subbufs;
-> > +
-> > +	__u32		meta_page_size;
-> > +	__u32		meta_struct_len;
-> > +};
-> > +
-> > +#endif /* _TRACE_MMAP_H_ */
-> > diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-> > index db73e326fa04..e9ff1c95e896 100644
-> > --- a/kernel/trace/ring_buffer.c
-> > +++ b/kernel/trace/ring_buffer.c
-> > @@ -338,6 +338,7 @@ struct buffer_page {
-> >  	local_t		 entries;	/* entries on this page */
-> >  	unsigned long	 real_end;	/* real end of data */
-> >  	unsigned	 order;		/* order of the page */
-> > +	u32		 id;		/* ID for external mapping */
-> >  	struct buffer_data_page *page;	/* Actual data page */
-> >  };
-> >  
-> > @@ -484,6 +485,12 @@ struct ring_buffer_per_cpu {
-> >  	u64				read_stamp;
-> >  	/* pages removed since last reset */
-> >  	unsigned long			pages_removed;
-> > +
-> > +	int				mapped;
-> > +	struct mutex			mapping_lock;
-> > +	unsigned long			*subbuf_ids;	/* ID to addr */
-> > +	struct trace_buffer_meta	*meta_page;
-> > +
-> >  	/* ring buffer pages to update, > 0 to add, < 0 to remove */
-> >  	long				nr_pages_to_update;
-> >  	struct list_head		new_pages; /* new pages to add */
-> > @@ -1542,6 +1549,7 @@ rb_allocate_cpu_buffer(struct trace_buffer *buffer, long nr_pages, int cpu)
-> >  	init_irq_work(&cpu_buffer->irq_work.work, rb_wake_up_waiters);
-> >  	init_waitqueue_head(&cpu_buffer->irq_work.waiters);
-> >  	init_waitqueue_head(&cpu_buffer->irq_work.full_waiters);
-> > +	mutex_init(&cpu_buffer->mapping_lock);
-> >  
-> >  	bpage = kzalloc_node(ALIGN(sizeof(*bpage), cache_line_size()),
-> >  			    GFP_KERNEL, cpu_to_node(cpu));
-> > @@ -5160,6 +5168,23 @@ static void rb_clear_buffer_page(struct buffer_page *page)
-> >  	page->read = 0;
-> >  }
-> >  
-> > +static void rb_update_meta_page(struct ring_buffer_per_cpu *cpu_buffer)
-> > +{
-> > +	struct trace_buffer_meta *meta = cpu_buffer->meta_page;
-> > +
-> > +	WRITE_ONCE(meta->entries, local_read(&cpu_buffer->entries));
-> > +	WRITE_ONCE(meta->overrun, local_read(&cpu_buffer->overrun));
-> > +	WRITE_ONCE(meta->read, cpu_buffer->read);
-> > +
-> > +	WRITE_ONCE(meta->subbufs_touched, local_read(&cpu_buffer->pages_touched));
-> > +	WRITE_ONCE(meta->subbufs_lost, local_read(&cpu_buffer->pages_lost));
-> > +	WRITE_ONCE(meta->subbufs_read, local_read(&cpu_buffer->pages_read));
-> > +
-> > +	WRITE_ONCE(meta->reader.read, cpu_buffer->reader_page->read);
-> > +	WRITE_ONCE(meta->reader.id, cpu_buffer->reader_page->id);
-> > +	WRITE_ONCE(meta->reader.lost_events, cpu_buffer->lost_events);
-> > +}
-> > +
-> >  static void
-> >  rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer)
-> >  {
-> > @@ -5204,6 +5229,9 @@ rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer)
-> >  	cpu_buffer->lost_events = 0;
-> >  	cpu_buffer->last_overrun = 0;
-> >  
-> > +	if (cpu_buffer->mapped)
-> > +		rb_update_meta_page(cpu_buffer);
-> > +
-> >  	rb_head_page_activate(cpu_buffer);
-> >  	cpu_buffer->pages_removed = 0;
-> >  }
-> > @@ -5418,6 +5446,11 @@ int ring_buffer_swap_cpu(struct trace_buffer *buffer_a,
-> >  	cpu_buffer_a = buffer_a->buffers[cpu];
-> >  	cpu_buffer_b = buffer_b->buffers[cpu];
-> >  
-> > +	if (READ_ONCE(cpu_buffer_a->mapped) || READ_ONCE(cpu_buffer_b->mapped)) {
-> > +		ret = -EBUSY;
-> > +		goto out;
-> > +	}
-> 
-> Ah, this is not enough to stop snapshot. update_max_tr()@kernel/trace/trace.c
-> is used for swapping all CPU buffer and it does not use this function.
-> (but that should use this instead of accessing buffer directly...)
-> 
-> Maybe we need ring_buffer_swap() and it checks all cpu_buffer does not set
-> mapping bits.
-> 
-> Thank you,
+> Cc: <stable@vger.kernel.org>
+> Fixes: 16862f1b2110 ("interconnect: qcom: sm8450: Enable sync_state")
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
 
-How about instead of having ring_buffer_swap_cpu() returning -EBUSY when mapped
-we have two functions to block any mapping that trace.c could call?
+What's the board you're testing this on? And kernel base revision?
 
- int rb_swap_prepare(struct ring_buffer *cpu_buffer)
- {
-    mutex_lock(&cpu_buffer->mapping_lock);
+The symptoms you mentioned happened for me with this on some recent
+-next:
 
-    if (!cpu_buffer->mapped)
-    	return 0;
+https://lore.kernel.org/lkml/f24f32f1213b4b9e9ff2b4a36922f8d6e3abac51.1704278832.git.viresh.kumar@linaro.org/
 
-    mutex_unlock(&cpu_buffer->mapping_lock);
- }
-
- int rb_swap_done(struct ring_buffer *cpu_buffer)
- {
-    mutex_unlock(&cpu_buffer->mapping_lock);
- }
-
- int ring_buffer_swap_prepare(struct trace_buffer *buffer, int cpu)
- {
- ...
-     
-     if (cpu == RING_BUFFER_ALL_CPUS) {
-    	 int cpu_i;
-
-         for_each_buffer_cpu(buffer, cpu_i) {
-	 	err = rb_swap_prepare(buffer->buffers[cpu_i]);
-		if (err)
-			break;
-	 }
-
-	 if (err)
-	    /* Rollback ... */
-
-	 return err;
-
-     } 
-
-     return rb_swap_prepare(buffer->buffers[cpu]);
- }
-
- void ring_buffer_swap_done(struct trace_buffer *buffer, int cpu)
- {
-     if (cpu == RING_BUFFER_ALL_CPUS) {
-    	 int cpu_i;
-
-         for_each_buffer_cpu(buffer, cpu_i)
-	 	rb_swap_done(buffer->buffers[cpu_i]);
-	 return;
-     }
-
-     return rb_swap_done(buffer->buffers[cpu]);
- }
-
-[...]
+Konrad
 
