@@ -1,107 +1,165 @@
-Return-Path: <linux-kernel+bounces-25958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2AC882D8C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:16:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15FA182D8CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:17:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E094282159
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:16:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D1411C21913
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 12:17:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CD192C69D;
-	Mon, 15 Jan 2024 12:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF902C6AC;
+	Mon, 15 Jan 2024 12:17:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0VowHk1N";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ajYtVmYg"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LjOF42nU";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LjOF42nU"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C9E42C68C
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 12:16:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 15 Jan 2024 13:16:32 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1705320993;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D06C42C699;
+	Mon, 15 Jan 2024 12:16:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BEC801F84E;
+	Mon, 15 Jan 2024 12:16:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705321015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=A63dnTEunn6abrgl1DMAdxbjpOLX71DXc8GdsI+71XQ=;
-	b=0VowHk1NjlV4sPsWA/CoMJRNK0giD2At3qR0e516ghXPB/H2kHVoc/WyGV700szWe+yxJa
-	+O3vZRkN/uCUTQfgbS8EjDZcfHkml7E9f8F5uMuLN25WVTnj6jL1TqmJ4U/eZKzdOwX2GH
-	dlN/w9jLMj4Vh6RgaHf7v2+jfpayQfoTFuhGNVVA4mF1rZX7ffd5e6HbbQg6/VQT+TpFXz
-	t3FgBWa4yQlPTAmMyz+Obvvocd99+CYu+x/jwK0QlYMx4vYBYEfmS3AJ3ICFRb+JI1UCWj
-	xE0oeXw2q6VO2fUlLqEukl42KQ7UMA18iVWxh4mg2QesnvDQSIEjGDLT0MHSsw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1705320993;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	bh=xcBuIksqeddwzDRn2EfzHYBcKJWb6r0wGsUV/u7lfA4=;
+	b=LjOF42nUhYCQyNhjwxSDZcbTbPnEII5drs0yggelA/qOje17Ug0GcszOPYCzpH39zJlbmA
+	+dNbQ8hYqP1jaLTCmAAQSCWX0C91wEwj05xz0tbHRMFSkkiWcfamj9MF5i56G/q6ASiabG
+	LEXc/nw2/aCHYrtpXm0rbRqoz98fE5c=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705321015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=A63dnTEunn6abrgl1DMAdxbjpOLX71DXc8GdsI+71XQ=;
-	b=ajYtVmYgU1GYi8NrhDWfauo3tHg7qxVMD3tXPGGm86wn+JPqYNqDIwyFUBs/MQRASWGkyH
-	jX32nPdnRUzkMYAw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Jiri Slaby <jirislaby@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	boqun.feng@gmail.com, bristot@redhat.com, bsegall@google.com,
-	dietmar.eggemann@arm.com, jstultz@google.com, juri.lelli@redhat.com,
-	longman@redhat.com, mgorman@suse.de, mingo@redhat.com,
-	rostedt@goodmis.org, swood@redhat.com, vincent.guittot@linaro.org,
-	vschneid@redhat.com, will@kernel.org
-Subject: Re: [PATCH v3 7/7] locking/rtmutex: Acquire the hb lock via trylock
- after wait-proxylock.
-Message-ID: <20240115121632.FX1P0-fi@linutronix.de>
-References: <20230908162254.999499-1-bigeasy@linutronix.de>
- <20230908162254.999499-8-bigeasy@linutronix.de>
- <20230911141135.GB9098@noisy.programming.kicks-ass.net>
- <87fs3f1tl0.ffs@tglx>
- <20230915151943.GD6743@noisy.programming.kicks-ass.net>
- <4611bcf2-44d0-4c34-9b84-17406f881003@kernel.org>
- <9f75eb59-9b7a-4b49-9081-e6a3cbb00187@kernel.org>
+	bh=xcBuIksqeddwzDRn2EfzHYBcKJWb6r0wGsUV/u7lfA4=;
+	b=LjOF42nUhYCQyNhjwxSDZcbTbPnEII5drs0yggelA/qOje17Ug0GcszOPYCzpH39zJlbmA
+	+dNbQ8hYqP1jaLTCmAAQSCWX0C91wEwj05xz0tbHRMFSkkiWcfamj9MF5i56G/q6ASiabG
+	LEXc/nw2/aCHYrtpXm0rbRqoz98fE5c=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 68D66132FA;
+	Mon, 15 Jan 2024 12:16:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id X9suGTcipWXUSgAAD6G6ig
+	(envelope-from <mkoutny@suse.com>); Mon, 15 Jan 2024 12:16:55 +0000
+Date: Mon, 15 Jan 2024 13:16:54 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Pedro Tammela <pctammela@mojatatu.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, cake@lists.bufferbloat.net, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, 
+	Jiri Pirko <jiri@resnulli.us>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>, 
+	Vinicius Costa Gomes <vinicius.gomes@intel.com>, Stephen Hemminger <stephen@networkplumber.org>, 
+	Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>, 
+	Martin Wilck <mwilck@suse.com>
+Subject: Re: [PATCH v3 1/4] net/sched: Add helper macros with module names
+Message-ID: <hjq6ce7stwsvkpsgnk6hakroctokduw7mgout6oyeyt6okokgj@huhmqx2755ff>
+References: <20240112180646.13232-1-mkoutny@suse.com>
+ <20240112180646.13232-2-mkoutny@suse.com>
+ <d570871f-1b59-4d75-a473-b3b0a21fe6c2@mojatatu.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="5surq3w7pmvniitm"
+Content-Disposition: inline
+In-Reply-To: <d570871f-1b59-4d75-a473-b3b0a21fe6c2@mojatatu.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=LjOF42nU
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.21 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RLhcw5w5rtick65589d1tggrs1)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 SIGNED_PGP(-2.00)[];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 BAYES_HAM(-0.60)[81.81%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[29];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,lists.bufferbloat.net,davemloft.net,google.com,kernel.org,redhat.com,mojatatu.com,gmail.com,resnulli.us,iogearbox.net,linux.dev,toke.dk,intel.com,networkplumber.org,suse.cz,suse.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -2.21
+X-Rspamd-Queue-Id: BEC801F84E
+X-Spam-Flag: NO
+
+
+--5surq3w7pmvniitm
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <9f75eb59-9b7a-4b49-9081-e6a3cbb00187@kernel.org>
 
-On 2024-01-15 12:52:49 [+0100], Jiri Slaby wrote:
-=E2=80=A6
-> >=20
-> > The child in fact terminates on
-> > https://github.com/apache/apr/blob/trunk/test/testprocmutex.c#L93:
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 while ((rv =3D apr_proc_mutex_timedlock(proc_lock, 1)=
-)) {
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!APR_STATUS_IS_TIMEUP(rv))
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 exit(=
-1); <----- here
-> >=20
-> > The test creates 6 children and does some
-> > pthread_mutex_timedlock/unlock() repeatedly (200 times) in parallel
-> > while sleeping 1 us inside the lock. The timeout is 1 us above. And the
-> > test expects all them to fail (to time out). But the time out does not
-> > always happen in 6.7 (it's racy, so the failure is semi-random: like 1
-> > of 1000 attempts is bad).
+On Fri, Jan 12, 2024 at 03:38:34PM -0300, Pedro Tammela <pctammela@mojatatu=
+=2Ecom> wrote:
+> request_module(TC_CLS_ALIAS_PREFIX "%s", cls_name);
+
+Yeah, that would be more systemic without proliferating literal strings.
+
+> Would look better. In any case, net-next is currently closed. You will ne=
+ed
+> to repost once it reopens.
 >=20
-> This is not precise as I misinterpreted. The test is: either it succeeds =
-or
-> times out.
->=20
-> But since the commit, futex() yields 22/EINVAL, i.e. fails.
+> It seems you are also missing a rebase. We recently removed act_ipt :).
 
-Let me see if I can reproduce it here=E2=80=A6
+I see, I rebased only on torvalds/master then (commit de927f6c0b07
+("Merge tag 's390-6.8-1' of
+git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux")).
+I'm not familiar with netdev tree, I will post after Jan 22 as
+suggested.
 
-Sebastian
+Thanks,
+Michal
+
+--5surq3w7pmvniitm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZaUiNAAKCRAGvrMr/1gc
+joKcAQD6yZsniLleSd4IMIop4YCU01zNNd4RVQqk9P/iGC9iRQEAmNK9zIQqjaIo
+FO23i1EHvkh9LUJw1tfsRuw+z5tleQo=
+=EIJ0
+-----END PGP SIGNATURE-----
+
+--5surq3w7pmvniitm--
 
