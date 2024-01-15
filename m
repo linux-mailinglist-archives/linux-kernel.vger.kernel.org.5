@@ -1,90 +1,47 @@
-Return-Path: <linux-kernel+bounces-26134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E141F82DBD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:50:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4459382DBA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:47:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F98D2848F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:50:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D8F61C215AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54DCB18B06;
-	Mon, 15 Jan 2024 14:47:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OvsBgFDH"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 729F0175AF;
+	Mon, 15 Jan 2024 14:46:53 +0000 (UTC)
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 377A618638
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 14:47:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705330058;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jIzHvpzkkigfxw83x1LWeciN350K4+qfOeyYElcXkdQ=;
-	b=OvsBgFDHBCmsVrBMYQEvJrJ4nR3+j1Kze2Z282eczrlZuNoULV4+QgGwChLoHlCSQMx3lI
-	abH4ZXhk4evOY8XQ6PjHb9GlUefEmjZp9IFYvIHE0qVVgIGVPusNXmRlVvtJ9+VeBtAKFQ
-	zZyFDPKa1lB/u1dMbU6eIxUBPSV+cRI=
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
- [209.85.161.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-413-v8PhBFXBPvG--hrAP6Y7YQ-1; Mon, 15 Jan 2024 09:47:37 -0500
-X-MC-Unique: v8PhBFXBPvG--hrAP6Y7YQ-1
-Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-594cafcc66aso1838907eaf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 06:47:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705330056; x=1705934856;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jIzHvpzkkigfxw83x1LWeciN350K4+qfOeyYElcXkdQ=;
-        b=wVhMXjVgXEotnDe/16BzO/s+oyhj/RruhzWXdEvYTKm1v8J6HXdSkRoS8kZuqunve9
-         QA0fQhlwRPyoKjBxHjZ4rvTWmef7/9m1TFq5jj2wW/5l6xbvUI2ybxfb9kvksyirdabW
-         C4PsdxwEUn47xFVTLzROCfhQ1VvgV2KbY4LuP2hO8kK1xvFTOc33J/yjBISsOK4UBC0/
-         h27m7k2EVaflP1CXaL6t26aVpuYhUnXYWm39IPZVeXwrkhWfEZgbnMlV0EB/MTiOAfxf
-         VpTy97CJY2uOQB/PsI/wqjtkRL8ThEbIk5A4b+cEsXym9xfDq+pBMClhiXuyYDvxkrXT
-         VmRg==
-X-Gm-Message-State: AOJu0Yz5dB5uwwfDujY3ZfPyk0X47XFkegGU1JKThhJDxC8evH2RlJqC
-	1lezmAQo3GkXOUecCVSF8NcR0eeQns80Z64tNG6EjsqxKviHISmlQlWUjWHLyP1Ob1011nqHUPW
-	7ySe1OTA4HfV7DpMHSYDgAjzZupRRk92t
-X-Received: by 2002:a4a:dd8f:0:b0:598:b2d7:2499 with SMTP id h15-20020a4add8f000000b00598b2d72499mr7707342oov.0.1705330056429;
-        Mon, 15 Jan 2024 06:47:36 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHi7+XsSK011xhs3AvyU5Z7vMLQIc2V6iqOiH+OrjwaSbXs/XiSSr4Ft9JY9kxXHF9woE1zRQ==
-X-Received: by 2002:a4a:dd8f:0:b0:598:b2d7:2499 with SMTP id h15-20020a4add8f000000b00598b2d72499mr7707328oov.0.1705330056145;
-        Mon, 15 Jan 2024 06:47:36 -0800 (PST)
-Received: from pstanner-thinkpadt14sgen1.muc.redhat.com (nat-pool-muc-t.redhat.com. [149.14.88.26])
-        by smtp.gmail.com with ESMTPSA id ne13-20020a056214424d00b006815cf9a644sm1020720qvb.55.2024.01.15.06.47.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 06:47:35 -0800 (PST)
-From: Philipp Stanner <pstanner@redhat.com>
-To: Jonathan Corbet <corbet@lwn.net>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Philipp Stanner <pstanner@redhat.com>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	dakr@redhat.com
-Cc: linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-pci@vger.kernel.org,
-	stable@kernel.vger.org
-Subject: [PATCH 10/10] drm/vboxvideo: fix mapping leaks
-Date: Mon, 15 Jan 2024 15:46:21 +0100
-Message-ID: <20240115144655.32046-12-pstanner@redhat.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240115144655.32046-2-pstanner@redhat.com>
-References: <20240115144655.32046-2-pstanner@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE1C17596;
+	Mon, 15 Jan 2024 14:46:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0W-j2-v8_1705329996;
+Received: from e69b19392.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W-j2-v8_1705329996)
+          by smtp.aliyun-inc.com;
+          Mon, 15 Jan 2024 22:46:41 +0800
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+To: linux-cachefs@redhat.com,
+	linux-fsdevel@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org,
+	David Howells <dhowells@redhat.com>,
+	Christian Brauner <christian@brauner.io>,
+	Jeff Layton <jlayton@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Chao Yu <chao@kernel.org>,
+	Yue Hu <huyue2@coolpad.com>,
+	Jeffle Xu <jefflexu@linux.alibaba.com>,
+	Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCH v3 3/4] erofs: Don't use certain unnecessary folio_*() functions
+Date: Mon, 15 Jan 2024 22:46:35 +0800
+Message-Id: <20240115144635.1931422-1-hsiangkao@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20240115083337.1355191-1-hsiangkao@linux.alibaba.com>
+References: <20240115083337.1355191-1-hsiangkao@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,70 +50,62 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When the managed PCI-API was introduced to this driver, it was falsly
-assumed that initializing the device with pcim_enable_device() instead
-of pci_enable_device() will make all PCI functions managed.
+From: David Howells <dhowells@redhat.com>
 
-This is wrong and was caused by the quite confusing devres API for PCI:
-The function pci_iomap_range() is never managed.
+Filesystems should use folio->index and folio->mapping, instead of
+folio_index(folio), folio_mapping() and folio_file_mapping() since
+they know that it's in the pagecache.
 
-Replace pci_iomap_range() with the actually managed function
-pcim_iomap_range().
+Change this automagically with:
 
-Additionally, add a call to pcim_request_region() to ensure exclusive
-access to BAR 0.
+perl -p -i -e 's/folio_mapping[(]([^)]*)[)]/\1->mapping/g' fs/erofs/*.c
+perl -p -i -e 's/folio_file_mapping[(]([^)]*)[)]/\1->mapping/g' fs/erofs/*.c
+perl -p -i -e 's/folio_index[(]([^)]*)[)]/\1->index/g' fs/erofs/*.c
 
-CC: <stable@kernel.vger.org> # v5.10+
-Fixes: 8558de401b5f ("drm/vboxvideo: use managed pci functions")
-Signed-off-by: Philipp Stanner <pstanner@redhat.com>
+Reported-by: Matthew Wilcox <willy@infradead.org>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Cc: Chao Yu <chao@kernel.org>
+Cc: Yue Hu <huyue2@coolpad.com>
+Cc: Jeffle Xu <jefflexu@linux.alibaba.com>
+Cc: linux-erofs@lists.ozlabs.org
+Cc: linux-fsdevel@vger.kernel.org
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 ---
- drivers/gpu/drm/vboxvideo/vbox_main.c | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+change since v2:
+ - update the words s/internal/unnecessary/ in the subject line
+   pointed out by Matthew.
 
-diff --git a/drivers/gpu/drm/vboxvideo/vbox_main.c b/drivers/gpu/drm/vboxvideo/vbox_main.c
-index 42c2d8a99509..7f686a0190e6 100644
---- a/drivers/gpu/drm/vboxvideo/vbox_main.c
-+++ b/drivers/gpu/drm/vboxvideo/vbox_main.c
-@@ -42,12 +42,11 @@ static int vbox_accel_init(struct vbox_private *vbox)
- 	/* Take a command buffer for each screen from the end of usable VRAM. */
- 	vbox->available_vram_size -= vbox->num_crtcs * VBVA_MIN_BUFFER_SIZE;
+ fs/erofs/fscache.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fs/erofs/fscache.c b/fs/erofs/fscache.c
+index 87ff35bff8d5..bc12030393b2 100644
+--- a/fs/erofs/fscache.c
++++ b/fs/erofs/fscache.c
+@@ -165,10 +165,10 @@ static int erofs_fscache_read_folios_async(struct fscache_cookie *cookie,
+ static int erofs_fscache_meta_read_folio(struct file *data, struct folio *folio)
+ {
+ 	int ret;
+-	struct erofs_fscache *ctx = folio_mapping(folio)->host->i_private;
++	struct erofs_fscache *ctx = folio->mapping->host->i_private;
+ 	struct erofs_fscache_request *req;
  
--	vbox->vbva_buffers = pci_iomap_range(pdev, 0,
--					     vbox->available_vram_size,
--					     vbox->num_crtcs *
--					     VBVA_MIN_BUFFER_SIZE);
--	if (!vbox->vbva_buffers)
--		return -ENOMEM;
-+	vbox->vbva_buffers = pcim_iomap_range(
-+			pdev, 0, vbox->available_vram_size,
-+			vbox->num_crtcs * VBVA_MIN_BUFFER_SIZE);
-+	if (IS_ERR(vbox->vbva_buffers))
-+		return PTR_ERR(vbox->vbva_buffers);
+-	req = erofs_fscache_req_alloc(folio_mapping(folio),
++	req = erofs_fscache_req_alloc(folio->mapping,
+ 				folio_pos(folio), folio_size(folio));
+ 	if (IS_ERR(req)) {
+ 		folio_unlock(folio);
+@@ -276,7 +276,7 @@ static int erofs_fscache_read_folio(struct file *file, struct folio *folio)
+ 	struct erofs_fscache_request *req;
+ 	int ret;
  
- 	for (i = 0; i < vbox->num_crtcs; ++i) {
- 		vbva_setup_buffer_context(&vbox->vbva_info[i],
-@@ -115,12 +114,15 @@ int vbox_hw_init(struct vbox_private *vbox)
- 
- 	DRM_INFO("VRAM %08x\n", vbox->full_vram_size);
- 
-+	ret = pcim_request_region(pdev, 0, "vboxvideo");
-+	if (ret)
-+		return ret;
-+
- 	/* Map guest-heap at end of vram */
--	vbox->guest_heap =
--	    pci_iomap_range(pdev, 0, GUEST_HEAP_OFFSET(vbox),
--			    GUEST_HEAP_SIZE);
--	if (!vbox->guest_heap)
--		return -ENOMEM;
-+	vbox->guest_heap = pcim_iomap_range(pdev, 0,
-+			GUEST_HEAP_OFFSET(vbox), GUEST_HEAP_SIZE);
-+	if (IS_ERR(vbox->guest_heap))
-+		return PTR_ERR(vbox->guest_heap);
- 
- 	/* Create guest-heap mem-pool use 2^4 = 16 byte chunks */
- 	vbox->guest_pool = devm_gen_pool_create(vbox->ddev.dev, 4, -1,
+-	req = erofs_fscache_req_alloc(folio_mapping(folio),
++	req = erofs_fscache_req_alloc(folio->mapping,
+ 			folio_pos(folio), folio_size(folio));
+ 	if (IS_ERR(req)) {
+ 		folio_unlock(folio);
 -- 
-2.43.0
+2.39.3
 
 
