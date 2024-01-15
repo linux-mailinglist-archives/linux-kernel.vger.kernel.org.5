@@ -1,122 +1,148 @@
-Return-Path: <linux-kernel+bounces-25628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BFF182D3C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 06:03:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 714F082D3C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 06:05:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2F46B20D77
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 05:03:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CB831C20FF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 05:04:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4853B4428;
-	Mon, 15 Jan 2024 05:03:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F6C063C5;
+	Mon, 15 Jan 2024 05:04:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="lQDSz/1+"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YGuD+MFI"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECB934401
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 05:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40F1n9nt019546;
-	Mon, 15 Jan 2024 05:03:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=hDK6XIeqJ0yXWwmK9JOhzC7QMec/6y+f3iE2G+6VoUU=;
- b=lQDSz/1+6hkc3pHa8UReWz5YonYiKjPCKGpqA5e1Z8toqB20CTzSP28XRrXgwUKxRh3Y
- JCVeIZsiqKzouA+7k7Z0opTt9iR5bgvynP42L5dikU/tQlEUjYOQlPAM+731sklWn7YY
- +4iCll0YMNuq2/6a9ct0IwBvTN40QDvNXdWgJeHKyP+esWnd6291MMBG+lHTJ7k1bR6e
- K7wxsYl2QoZ4YaWFtUP58SRW1QpmMSFN1/OocxMzDiqJ+9n+YERc2+SuIB4VsYplQ8FG
- xhABpxTuSt5LjYP955pzW/fs27+2BvGxocK5c4G36b0lLFUyUGW/zmlzLAgKGplfmHDs vQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vkt87ds95-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Jan 2024 05:03:06 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40F4odcB019698;
-	Mon, 15 Jan 2024 05:03:05 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vkt87ds8e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Jan 2024 05:03:05 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40F4YjWd008657;
-	Mon, 15 Jan 2024 05:03:04 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vm6bk66m3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Jan 2024 05:03:04 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40F532NH28574190
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 15 Jan 2024 05:03:02 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0C03620040;
-	Mon, 15 Jan 2024 05:03:02 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8CFC520049;
-	Mon, 15 Jan 2024 05:03:01 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 15 Jan 2024 05:03:01 +0000 (GMT)
-Received: from jarvis.ozlabs.ibm.com (haven.au.ibm.com [9.192.254.114])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ozlabs.au.ibm.com (Postfix) with ESMTPSA id 289226015D;
-	Mon, 15 Jan 2024 16:02:59 +1100 (AEDT)
-Message-ID: <94f35d3f8ad3b8052100594bf78e915beb477a47.camel@linux.ibm.com>
-Subject: Re: [PATCH v2] cxl: Fix null pointer dereference in cxl_get_fd
-From: Andrew Donnellan <ajd@linux.ibm.com>
-To: Kunwu Chan <chentao@kylinos.cn>, fbarrat@linux.ibm.com, arnd@arndb.de,
-        mpe@ellerman.id.au, mrochs@linux.vnet.ibm.com
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Kunwu Chan
-	 <kunwu.chan@hotmail.com>
-Date: Mon, 15 Jan 2024 16:02:51 +1100
-In-Reply-To: <20240112054903.133145-1-chentao@kylinos.cn>
-References: <20240112054903.133145-1-chentao@kylinos.cn>
-Autocrypt: addr=ajd@linux.ibm.com; prefer-encrypt=mutual;
- keydata=mDMEZPaWfhYJKwYBBAHaRw8BAQdAAuMUoxVRwqphnsFua1W+WBz6I2cIn0+Ox4YypJSdBJ+0MEFuZHJldyBEb25uZWxsYW4gKElCTSBzdHVmZikgPGFqZEBsaW51eC5pYm0uY29tPoiTBBMWCgA7FiEE01kE3s9shZVYLX1Aj1Qx8QRYRqAFAmT2ln4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQj1Qx8QRYRqAdswD8DhIh4trRQYiPe+7LaM7q+0+Thz+CwUJCW3UFOf0SEO0BAPNdsi7aVV+4Oah6nYzqzH5Zbs4Tz5RY+Vsf+DD/EzUKuDgEZPaWfhIKKwYBBAGXVQEFAQEHQLN9moJRqN8Zop/kcyIjga+2qzLoVaNAL6+4diGnlr1xAwEIB4h4BBgWCgAgFiEE01kE3s9shZVYLX1Aj1Qx8QRYRqAFAmT2ln4CGwwACgkQj1Qx8QRYRqCYkwD/W+gIP9kITfU4wnLtueFUThxA0T/LF49M7k31Qb8rPCwBALeEYAlX648lzjSA07pJB68Jt39FuUno444dSVmhYtoH
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDEF963AA
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 05:04:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40e760e5b49so7898615e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 21:04:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1705295087; x=1705899887; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wYKhFg53vuL9N15IX+5EquLWs1jwGTmvz1VwrsyukZI=;
+        b=YGuD+MFICnODSXC8t459+Wsjv1qZntrm9pctwDfV3hYHPaVHOUKEugY999RqkYZt2M
+         npFi5gQ/uc7Dz/hNd3x1idMKaccT8o1x4VlSa/S8AQMxfYEGFF5c7lRmRiK4yuIxCxoe
+         ICPzVNgf8Q/7C4AeYns/9w36DPxKiYIrXIps0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705295087; x=1705899887;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wYKhFg53vuL9N15IX+5EquLWs1jwGTmvz1VwrsyukZI=;
+        b=n239nGQ20wfBSqTQfyb/wVkSsD9fZ6yduW2idIZ+tE7FDDb2UKpIUBX/fvHl1fwObT
+         5l1XNIimcBaXT0sT5oEy2KKdT3Fh1xg2KMcENVEKi20kDdb+iPK0wMeYAMm/GS30SL4v
+         Xn4nfzXqa7G+FHaNsPqCQNkTKnqrKg7eRW/FNxX8HwoXpjWl7zsPYZVWsTcuHWuwQo5l
+         hGqDaPyNf8kcy3Yir5WIPcRhaUSJM9mqf0k7KtyG9ad1RgFVqnblMaduoQJW3I6vk9zM
+         z94lHa60NjGJM+J0+toa+wc33FodyG0VM2lRB77CuXwWSYbkVSSy6FATUjYMh2pEMSQf
+         8nfg==
+X-Gm-Message-State: AOJu0YwiJ9WagbINs4ESYy9Hgl7pRZjEHKlx7ihmz/VIOo2QfUVe59Sl
+	PbpDMqEgVSljfPde+PTmRvhr0bJ7LK1cjZ+EqwRxa8WrSQ==
+X-Google-Smtp-Source: AGHT+IFAvX8s6xJhVVW8au0ypbHCysZnytiUfYG2RffIttIX8Nc0BuvuqnVOBptX0mtbUVDD0LFMSg==
+X-Received: by 2002:a05:600c:3646:b0:40e:44af:8b26 with SMTP id y6-20020a05600c364600b0040e44af8b26mr1855976wmq.63.1705295087333;
+        Sun, 14 Jan 2024 21:04:47 -0800 (PST)
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com. [209.85.221.45])
+        by smtp.gmail.com with ESMTPSA id r7-20020aa7cfc7000000b00557075b4499sm5032448edy.58.2024.01.14.21.04.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 14 Jan 2024 21:04:46 -0800 (PST)
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3367a304091so7257748f8f.3
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 21:04:46 -0800 (PST)
+X-Received: by 2002:adf:e584:0:b0:337:a43e:c3d4 with SMTP id
+ l4-20020adfe584000000b00337a43ec3d4mr658744wrm.170.1705295086160; Sun, 14 Jan
+ 2024 21:04:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: nke9wbNlsP05t5YkBuR-W4Io-xVtf_ay
-X-Proofpoint-GUID: uvhuT-yk80r3MMtNfD_GBet3gJ4EJHB6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-15_02,2024-01-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- mlxscore=0 malwarescore=0 bulkscore=0 adultscore=0 spamscore=0
- priorityscore=1501 mlxlogscore=485 clxscore=1011 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401150036
+References: <20231228054630.3595093-1-tfiga@chromium.org> <CAK7LNATBipJtprjvvRVYg8JcYOFXQdpLEyEc+4+8j1PtBQ+PUg@mail.gmail.com>
+ <CAAFQd5C3vAUJhKiQ1LPkZv3dJxNvK4QinRezV9Q8rz_Ov6FSUQ@mail.gmail.com> <CAK7LNAQcaDneE4rnjvV+GTSBBMozm5deu_q9+STTn60ervZJbA@mail.gmail.com>
+In-Reply-To: <CAK7LNAQcaDneE4rnjvV+GTSBBMozm5deu_q9+STTn60ervZJbA@mail.gmail.com>
+From: Tomasz Figa <tfiga@chromium.org>
+Date: Mon, 15 Jan 2024 14:04:26 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5DcxL80cb8w9OZs0mpD=Y3K=LmM7exG7U_DaSsMkfni7Q@mail.gmail.com>
+Message-ID: <CAAFQd5DcxL80cb8w9OZs0mpD=Y3K=LmM7exG7U_DaSsMkfni7Q@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: menuconfig: Make hidden options show as dim
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Jesse Taube <Mr.Bossman075@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2024-01-12 at 13:49 +0800, Kunwu Chan wrote:
+On Sat, Jan 13, 2024 at 8:23=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.o=
+rg> wrote:
+>
+> On Wed, Jan 10, 2024 at 10:05=E2=80=AFPM Tomasz Figa <tfiga@chromium.org>=
+ wrote:
+> >
+> > On Fri, Dec 29, 2023 at 1:10=E2=80=AFAM Masahiro Yamada <masahiroy@kern=
+el.org> wrote:
+> > >
+> > > On Thu, Dec 28, 2023 at 2:46=E2=80=AFPM Tomasz Figa <tfiga@chromium.o=
+rg> wrote:
+> > > >
+> > > > When hidden options are toggled on (using 'z'), the number of optio=
+ns
+> > > > on the screen can be overwhelming and may make it hard to distingui=
+sh
+> > > > between available and hidden ones. Make them easier to distinguish =
+by
+> > > > displaying the hidden one as dim (using the A_DIM curses attribute)=
+.
+> > > >
+> > > > Signed-off-by: Tomasz Figa <tfiga@chromium.org>
+> > >
+> > >
+> > >
+> > > Do you think this is useful?
+> > >
+> > > This changes the color only when you select a hidden item.
+> > >
+> > >
+> > > For unselected items, you cannot distinguish hidden ones,
+> > > as A_DIM has no effect to black text.
+> > >
+> > >
+> >
+> > Hmm, are you sure about that? For me it seems to dim the text. it
+> > seems to be also used in the existing code for dlg.button_inactive.atr
+> > of the mono theme:
+> >
+> > https://elixir.bootlin.com/linux/latest/source/scripts/kconfig/lxdialog=
+/util.c#L26
+>
+>
+>
+> Then, your code works only on the mono theme.
+> (when your terminal does not support color, or
+> "MENUCONFIG_COLOR=3Dmono make menuconfig")
+>
 
-> +err:
-> +	if (rc < 0)
-> +		return ERR_PTR(rc);
-> =C2=A0	return NULL;
+No, that's not what I meant. It works for me for all themes, see the
+screenshot at https://postimg.cc/sBsM0twT . The terminal is tmux
+inside hterm (which in turn is supposed to be compatible with xterm).
+I guess I can test a couple of different terminals.
 
-I don't think there's a way for this NULL to ever get returned?
+In which terminal is it not working for you?
 
-Apart from that it looks good:
-
-Reviewed-by: Andrew Donnellan <ajd@linux.ibm.com>
-
---=20
-Andrew Donnellan    OzLabs, ADL Canberra
-ajd@linux.ibm.com   IBM Australia Limited
+>
+> In the normal color mode, the foreground text is black.
+> (Just like a picture in https://en.wikipedia.org/wiki/Menuconfig)
+> A_DIM does nothing for black.
+>
+>
+>
+> --
+> Best Regards
+> Masahiro Yamada
 
