@@ -1,130 +1,126 @@
-Return-Path: <linux-kernel+bounces-26071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7298082DAEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:07:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB94282DAFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:07:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EDF21C216BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:06:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49875281DE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:07:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7EE517590;
-	Mon, 15 Jan 2024 14:06:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="vATJg++B"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE5DD17591;
+	Mon, 15 Jan 2024 14:07:24 +0000 (UTC)
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B97FA17584;
-	Mon, 15 Jan 2024 14:06:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=k+DYOQ+yWRd2pgMIRz/5wGINWA2P7yC/o6J+Q7W5b70=; b=vATJg++BpawwIU6E3l3nCyM/fl
-	CR1jGpmQB/8Vq7OxY1+wQ2R/Hf3ne8n0WN2AvXfif1DigL2m2rVPRPfBIGHsnUly6m2P18LQsHeeE
-	pv+B6kcZ03YpFkpKUaN87vnGX7uiFbMHtRfudt/fZlAfUY3gjxMPFrspblYKei4oeLsyxJS6XNYy4
-	LqB76AJULX5LYDl+H6w6rAl7am/wUSRx0JzXHryKNdYAP90XSPckLxOj9SUfy7eZIE7Kyi9Iei+Yr
-	r2XvhpG935/rETqKfQZjY4lEZGAuxuj/0flXZIbbrxN+farXylvZfJ9RJiRByx9wkGofpA3ZAue1Z
-	aDzeDz7g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rPNbh-009rfH-Cs; Mon, 15 Jan 2024 14:06:29 +0000
-Date: Mon, 15 Jan 2024 14:06:29 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc: linux-cachefs@redhat.com, linux-fsdevel@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org, David Howells <dhowells@redhat.com>,
-	Christian Brauner <christian@brauner.io>,
-	Jeff Layton <jlayton@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>, Chao Yu <chao@kernel.org>,
-	Yue Hu <huyue2@coolpad.com>, Jeffle Xu <jefflexu@linux.alibaba.com>
-Subject: Re: [PATCH v2 3/4] erofs: Don't use certain internal folio_*()
- functions
-Message-ID: <ZaU75cT0jx9Ya+6G@casper.infradead.org>
-References: <20240115083337.1355191-1-hsiangkao@linux.alibaba.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B96B17584;
+	Mon, 15 Jan 2024 14:07:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5e86fc3f1e2so71379417b3.0;
+        Mon, 15 Jan 2024 06:07:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705327642; x=1705932442;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QOou55N2EN6e58V59PT+366RWYrogOI3loiDbYwDF18=;
+        b=KYrBhJH0dCPiq1ue1VjA49OL7f4LKkx489v4pScejeIf7wAf7N+TmCa/9sPbRD8f5q
+         4G0U06QzA/NlnBGRz+bCw2lKHEjkBuOdyA1V2U8Eq1vc4roGh3qaiXU0cnWqhTeAtRxG
+         7EjITJwiIYQPWFdZRMmBXe8HZGDU0EB31JThpJHOhCvGN9yuZ4Q1Jw5gTFK3vDxPe5MM
+         2/Ih2Nt4S4pDY9ZGMN7weTEW3vycKdHBhwk88Ps64dRJiuBN0iPNxFcOYEqPA7v7mRjt
+         qAgYBw86eWZPDkvBrsRO1rE6pWBDvKMM7uTuBwJIro8nlZWEOy3HI4XU75Nnu2WEFiOd
+         JMOg==
+X-Gm-Message-State: AOJu0YxyxaJb+JMsq6sxSgfxZQb6EAN1YKFOmn67Y+cfmMZDavjHL/ZR
+	HyGRfyJ6L/8Olq5+hcdUtubxUZ3+Pj5VWQ==
+X-Google-Smtp-Source: AGHT+IFK/yvxQHDdnHwF8dC3j0/M+snFXM6wzDcXP/cq3A4zdGU+i/TtFeLRpXwi4PTL0vLUmTCeeA==
+X-Received: by 2002:a81:6d57:0:b0:5fb:700d:100d with SMTP id i84-20020a816d57000000b005fb700d100dmr4154131ywc.22.1705327642068;
+        Mon, 15 Jan 2024 06:07:22 -0800 (PST)
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
+        by smtp.gmail.com with ESMTPSA id r68-20020a0dcf47000000b005f66a83db14sm3995048ywd.131.2024.01.15.06.07.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Jan 2024 06:07:21 -0800 (PST)
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dc202317415so681315276.0;
+        Mon, 15 Jan 2024 06:07:21 -0800 (PST)
+X-Received: by 2002:a25:268b:0:b0:dbf:11e:d0a5 with SMTP id
+ m133-20020a25268b000000b00dbf011ed0a5mr2764196ybm.123.1705327641690; Mon, 15
+ Jan 2024 06:07:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240115083337.1355191-1-hsiangkao@linux.alibaba.com>
+References: <20240115130817.88456-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240115130817.88456-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20240115130817.88456-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 15 Jan 2024 15:07:10 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXGBxFbjy+WZYzCq3ARB7HrKUAQpYmKea1bDmvny3myag@mail.gmail.com>
+Message-ID: <CAMuHMdXGBxFbjy+WZYzCq3ARB7HrKUAQpYmKea1bDmvny3myag@mail.gmail.com>
+Subject: Re: [PATCH v5 4/4] riscv: dts: renesas: r9a07g043f: Update
+ gpio-ranges property
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Magnus Damm <magnus.damm@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 15, 2024 at 04:33:37PM +0800, Gao Xiang wrote:
-> From: David Howells <dhowells@redhat.com>
-> 
-> Filesystems should use folio->index and folio->mapping, instead of
-> folio_index(folio), folio_mapping() and folio_file_mapping() since
-> they know that it's in the pagecache.
-> 
-> Change this automagically with:
-> 
-> perl -p -i -e 's/folio_mapping[(]([^)]*)[)]/\1->mapping/g' fs/erofs/*.c
-> perl -p -i -e 's/folio_file_mapping[(]([^)]*)[)]/\1->mapping/g' fs/erofs/*.c
-> perl -p -i -e 's/folio_index[(]([^)]*)[)]/\1->index/g' fs/erofs/*.c
-> 
-> Reported-by: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> Reviewed-by: Jeff Layton <jlayton@kernel.org>
-> Cc: Chao Yu <chao@kernel.org>
-> Cc: Yue Hu <huyue2@coolpad.com>
-> Cc: Jeffle Xu <jefflexu@linux.alibaba.com>
-> Cc: linux-erofs@lists.ozlabs.org
-> Cc: linux-fsdevel@vger.kernel.org
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> ---
-> Hi folks,
-> 
-> I tend to apply this patch upstream since compressed data fscache
-> adaption touches this part too.  If there is no objection, I'm
-> going to take this patch separately for -next shortly..
+On Mon, Jan 15, 2024 at 2:08=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.c=
+om> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> On RZ/Five we have additional pins compared to the RZ/G2UL SoC so update
+> the gpio-ranges property in RZ/Five SoC DTSI.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Could you change the subject?  It's not that the functions are
-"internal", it's that filesystems don't need to use them because they're
-guaranteed to not see swap pages.  Maybe just s/internal/unnecessary/
+My
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+on v3 is still valid.
 
-> Thanks,
-> Gao Xiang
-> 
-> Change since v1:
->  - a better commit message pointed out by Jeff Layton.
-> 
->  fs/erofs/fscache.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/erofs/fscache.c b/fs/erofs/fscache.c
-> index 87ff35bff8d5..bc12030393b2 100644
-> --- a/fs/erofs/fscache.c
-> +++ b/fs/erofs/fscache.c
-> @@ -165,10 +165,10 @@ static int erofs_fscache_read_folios_async(struct fscache_cookie *cookie,
->  static int erofs_fscache_meta_read_folio(struct file *data, struct folio *folio)
->  {
->  	int ret;
-> -	struct erofs_fscache *ctx = folio_mapping(folio)->host->i_private;
-> +	struct erofs_fscache *ctx = folio->mapping->host->i_private;
->  	struct erofs_fscache_request *req;
->  
-> -	req = erofs_fscache_req_alloc(folio_mapping(folio),
-> +	req = erofs_fscache_req_alloc(folio->mapping,
->  				folio_pos(folio), folio_size(folio));
->  	if (IS_ERR(req)) {
->  		folio_unlock(folio);
-> @@ -276,7 +276,7 @@ static int erofs_fscache_read_folio(struct file *file, struct folio *folio)
->  	struct erofs_fscache_request *req;
->  	int ret;
->  
-> -	req = erofs_fscache_req_alloc(folio_mapping(folio),
-> +	req = erofs_fscache_req_alloc(folio->mapping,
->  			folio_pos(folio), folio_size(folio));
->  	if (IS_ERR(req)) {
->  		folio_unlock(folio);
-> -- 
-> 2.39.3
-> 
+> --- a/arch/riscv/boot/dts/renesas/r9a07g043f.dtsi
+> +++ b/arch/riscv/boot/dts/renesas/r9a07g043f.dtsi
+> @@ -46,6 +46,10 @@ cpu0_intc: interrupt-controller {
+>         };
+>  };
+>
+> +&pinctrl {
+> +       gpio-ranges =3D <&pinctrl 0 0 232>;
+> +};
+> +
+>  &soc {
+>         dma-noncoherent;
+>         interrupt-parent =3D <&plic>;
+
+I believe this has a hard dependency on the pinctrl driver changes, due to
+the following check in in rzg2l_gpio_register():
+
+    if (of_args.args[0] !=3D 0 || of_args.args[1] !=3D 0 ||
+        of_args.args[2] !=3D pctrl->data->n_port_pins) {
+            dev_err(pctrl->dev, "gpio-ranges does not match selected SOC\n"=
+);
+            return -EINVAL;
+    }
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
