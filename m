@@ -1,48 +1,65 @@
-Return-Path: <linux-kernel+bounces-26554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F37782E387
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:31:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0497582E38B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:31:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD7D51F22ED3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:31:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 674BB283C2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:31:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE6721DA3B;
-	Mon, 15 Jan 2024 23:25:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84F891BC5D;
+	Mon, 15 Jan 2024 23:25:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hwwgbvgq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YJHrTCZe"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02A261DA2F;
-	Mon, 15 Jan 2024 23:25:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D62ADC433C7;
-	Mon, 15 Jan 2024 23:25:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8E31B7F3;
+	Mon, 15 Jan 2024 23:25:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D71BFC43390;
+	Mon, 15 Jan 2024 23:25:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705361135;
-	bh=YK6VyuQzOI9wmAvuOxrLnF2nxyYKwf2VdorqgLdYVRI=;
+	s=k20201202; t=1705361145;
+	bh=2n34mhr8mAvTYsOjDIK3D6kpZT6UkHSdx6iHUGnZVtw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hwwgbvgqXXmPCBlx5CZ2g3x7Wmp6ufyOG0Drv/EDBY4a9wxG+H2juSRV9shkKjwjL
-	 m9XgjWsxxDkNSAUrHspAo5LptSL2KRYf94BkDAVARvBl/ZtVdZHmkXAk4U2FLkNuEV
-	 TQyulQ0JeqZfhnbDO7B9R01BpJl+v3gBlLJb+qukIAigY1di74KBOR+lncPX8lqGC7
-	 eQsc7N4wZg+KW5mEmDgnDLEfyAdbzNWYG933HgqoOr6tuJlkX8OaR8yC12aOmGyuRq
-	 wyX3WLWA82uaAiOuCfTiS3GqZKKuTxRXbk+JRa7fFHhV+c29ifHdECm8kpPz6FvHyA
-	 ECWWOKNxFf72A==
+	b=YJHrTCZe281NcpE6h5fsv4eAh7cS2GTNVIM80ruBMLyqo5B/XxH6TJBHXs4STlZqL
+	 g7NSjXNIk0wTeCg9KyXx2PR3xOqClvCIMl7te9DCXo1zY86HmjaolDSv3MvBQPmno8
+	 hLWNRgoKlXzflUJ41LMi7a4wAOjRxA3pwTKqBeoQPMNbJBJV4b2fty7whP2E+0/s3T
+	 2oB67j6KGnvTt6PZyAgqXzSKksiskAthiqYY1GC3RGrNJ2sZ2+l8inIsYlHhlSMEAq
+	 5hFiGfUpXlvzGTUSCebgHMWWcNA3cahfmhQHI3qj4jLF+WKzUWhpxQoEMIcrXv3wtP
+	 4VTZWlYe5v8iw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Miklos Szeredi <mszeredi@redhat.com>,
-	Ian Kent <raven@themaw.net>,
-	Christian Brauner <brauner@kernel.org>,
+Cc: "Borislav Petkov (AMD)" <bp@alien8.de>,
 	Sasha Levin <sashal@kernel.org>,
-	viro@zeniv.linux.org.uk,
-	linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 12/14] add unique mount ID
-Date: Mon, 15 Jan 2024 18:24:35 -0500
-Message-ID: <20240115232501.208889-12-sashal@kernel.org>
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	puwen@hygon.cn,
+	seanjc@google.com,
+	kim.phillips@amd.com,
+	pbonzini@redhat.com,
+	babu.moger@amd.com,
+	jmattson@google.com,
+	peterz@infradead.org,
+	ashok.raj@intel.com,
+	brgerst@gmail.com,
+	rick.p.edgecombe@intel.com,
+	mjguzik@gmail.com,
+	jpoimboe@kernel.org,
+	nik.borisov@suse.com,
+	aik@amd.com,
+	vegard.nossum@oracle.com,
+	daniel.sneddon@linux.intel.com,
+	acdunlap@google.com
+Subject: [PATCH AUTOSEL 6.6 13/14] x86/barrier: Do not serialize MSR accesses on AMD
+Date: Mon, 15 Jan 2024 18:24:36 -0500
+Message-ID: <20240115232501.208889-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240115232501.208889-1-sashal@kernel.org>
 References: <20240115232501.208889-1-sashal@kernel.org>
@@ -57,100 +74,211 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.12
 Content-Transfer-Encoding: 8bit
 
-From: Miklos Szeredi <mszeredi@redhat.com>
+From: "Borislav Petkov (AMD)" <bp@alien8.de>
 
-[ Upstream commit 98d2b43081972abeb5bb5a087bc3e3197531c46e ]
+[ Upstream commit 04c3024560d3a14acd18d0a51a1d0a89d29b7eb5 ]
 
-If a mount is released then its mnt_id can immediately be reused.  This is
-bad news for user interfaces that want to uniquely identify a mount.
+AMD does not have the requirement for a synchronization barrier when
+acccessing a certain group of MSRs. Do not incur that unnecessary
+penalty there.
 
-Implementing a unique mount ID is trivial (use a 64bit counter).
-Unfortunately userspace assumes 32bit size and would overflow after the
-counter reaches 2^32.
+There will be a CPUID bit which explicitly states that a MFENCE is not
+needed. Once that bit is added to the APM, this will be extended with
+it.
 
-Introduce a new 64bit ID alongside the old one.  Initialize the counter to
-2^32, this guarantees that the old and new IDs are never mixed up.
+While at it, move to processor.h to avoid include hell. Untangling that
+file properly is a matter for another day.
 
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Link: https://lore.kernel.org/r/20231025140205.3586473-2-mszeredi@redhat.com
-Reviewed-by: Ian Kent <raven@themaw.net>
-Signed-off-by: Christian Brauner <brauner@kernel.org>
+Some notes on the performance aspect of why this is relevant, courtesy
+of Kishon VijayAbraham <Kishon.VijayAbraham@amd.com>:
+
+On a AMD Zen4 system with 96 cores, a modified ipi-bench[1] on a VM
+shows x2AVIC IPI rate is 3% to 4% lower than AVIC IPI rate. The
+ipi-bench is modified so that the IPIs are sent between two vCPUs in the
+same CCX. This also requires to pin the vCPU to a physical core to
+prevent any latencies. This simulates the use case of pinning vCPUs to
+the thread of a single CCX to avoid interrupt IPI latency.
+
+In order to avoid run-to-run variance (for both x2AVIC and AVIC), the
+below configurations are done:
+
+  1) Disable Power States in BIOS (to prevent the system from going to
+     lower power state)
+
+  2) Run the system at fixed frequency 2500MHz (to prevent the system
+     from increasing the frequency when the load is more)
+
+With the above configuration:
+
+*) Performance measured using ipi-bench for AVIC:
+  Average Latency:  1124.98ns [Time to send IPI from one vCPU to another vCPU]
+
+  Cumulative throughput: 42.6759M/s [Total number of IPIs sent in a second from
+  				     48 vCPUs simultaneously]
+
+*) Performance measured using ipi-bench for x2AVIC:
+  Average Latency:  1172.42ns [Time to send IPI from one vCPU to another vCPU]
+
+  Cumulative throughput: 40.9432M/s [Total number of IPIs sent in a second from
+  				     48 vCPUs simultaneously]
+
+From above, x2AVIC latency is ~4% more than AVIC. However, the expectation is
+x2AVIC performance to be better or equivalent to AVIC. Upon analyzing
+the perf captures, it is observed significant time is spent in
+weak_wrmsr_fence() invoked by x2apic_send_IPI().
+
+With the fix to skip weak_wrmsr_fence()
+
+*) Performance measured using ipi-bench for x2AVIC:
+  Average Latency:  1117.44ns [Time to send IPI from one vCPU to another vCPU]
+
+  Cumulative throughput: 42.9608M/s [Total number of IPIs sent in a second from
+  				     48 vCPUs simultaneously]
+
+Comparing the performance of x2AVIC with and without the fix, it can be seen
+the performance improves by ~4%.
+
+Performance captured using an unmodified ipi-bench using the 'mesh-ipi' option
+with and without weak_wrmsr_fence() on a Zen4 system also showed significant
+performance improvement without weak_wrmsr_fence(). The 'mesh-ipi' option ignores
+CCX or CCD and just picks random vCPU.
+
+  Average throughput (10 iterations) with weak_wrmsr_fence(),
+        Cumulative throughput: 4933374 IPI/s
+
+  Average throughput (10 iterations) without weak_wrmsr_fence(),
+        Cumulative throughput: 6355156 IPI/s
+
+[1] https://github.com/bytedance/kvm-utils/tree/master/microbenchmark/ipi-bench
+
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20230622095212.20940-1-bp@alien8.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/mount.h                | 3 ++-
- fs/namespace.c            | 4 ++++
- fs/stat.c                 | 9 +++++++--
- include/uapi/linux/stat.h | 1 +
- 4 files changed, 14 insertions(+), 3 deletions(-)
+ arch/x86/include/asm/barrier.h     | 18 ------------------
+ arch/x86/include/asm/cpufeatures.h |  2 +-
+ arch/x86/include/asm/processor.h   | 18 ++++++++++++++++++
+ arch/x86/kernel/cpu/amd.c          |  3 +++
+ arch/x86/kernel/cpu/common.c       |  7 +++++++
+ arch/x86/kernel/cpu/hygon.c        |  3 +++
+ 6 files changed, 32 insertions(+), 19 deletions(-)
 
-diff --git a/fs/mount.h b/fs/mount.h
-index 130c07c2f8d2..a14f762b3f29 100644
---- a/fs/mount.h
-+++ b/fs/mount.h
-@@ -72,7 +72,8 @@ struct mount {
- 	struct fsnotify_mark_connector __rcu *mnt_fsnotify_marks;
- 	__u32 mnt_fsnotify_mask;
- #endif
--	int mnt_id;			/* mount identifier */
-+	int mnt_id;			/* mount identifier, reused */
-+	u64 mnt_id_unique;		/* mount ID unique until reboot */
- 	int mnt_group_id;		/* peer group identifier */
- 	int mnt_expiry_mark;		/* true if marked for expiry */
- 	struct hlist_head mnt_pins;
-diff --git a/fs/namespace.c b/fs/namespace.c
-index e157efc54023..e02bc5f41c7b 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -68,6 +68,9 @@ static u64 event;
- static DEFINE_IDA(mnt_id_ida);
- static DEFINE_IDA(mnt_group_ida);
+diff --git a/arch/x86/include/asm/barrier.h b/arch/x86/include/asm/barrier.h
+index 35389b2af88e..0216f63a366b 100644
+--- a/arch/x86/include/asm/barrier.h
++++ b/arch/x86/include/asm/barrier.h
+@@ -81,22 +81,4 @@ do {									\
  
-+/* Don't allow confusion with old 32bit mount ID */
-+static atomic64_t mnt_id_ctr = ATOMIC64_INIT(1ULL << 32);
+ #include <asm-generic/barrier.h>
+ 
+-/*
+- * Make previous memory operations globally visible before
+- * a WRMSR.
+- *
+- * MFENCE makes writes visible, but only affects load/store
+- * instructions.  WRMSR is unfortunately not a load/store
+- * instruction and is unaffected by MFENCE.  The LFENCE ensures
+- * that the WRMSR is not reordered.
+- *
+- * Most WRMSRs are full serializing instructions themselves and
+- * do not require this barrier.  This is only required for the
+- * IA32_TSC_DEADLINE and X2APIC MSRs.
+- */
+-static inline void weak_wrmsr_fence(void)
+-{
+-	asm volatile("mfence; lfence" : : : "memory");
+-}
+-
+ #endif /* _ASM_X86_BARRIER_H */
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index 58cb9495e40f..0091f1008314 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -308,10 +308,10 @@
+ #define X86_FEATURE_SMBA		(11*32+21) /* "" Slow Memory Bandwidth Allocation */
+ #define X86_FEATURE_BMEC		(11*32+22) /* "" Bandwidth Monitoring Event Configuration */
+ #define X86_FEATURE_USER_SHSTK		(11*32+23) /* Shadow stack support for user mode applications */
+-
+ #define X86_FEATURE_SRSO		(11*32+24) /* "" AMD BTB untrain RETs */
+ #define X86_FEATURE_SRSO_ALIAS		(11*32+25) /* "" AMD BTB untrain RETs through aliasing */
+ #define X86_FEATURE_IBPB_ON_VMEXIT	(11*32+26) /* "" Issue an IBPB only on VMEXIT */
++#define X86_FEATURE_APIC_MSRS_FENCE	(11*32+27) /* "" IA32_TSC_DEADLINE and X2APIC MSRs need fencing */
+ 
+ /* Intel-defined CPU features, CPUID level 0x00000007:1 (EAX), word 12 */
+ #define X86_FEATURE_AVX_VNNI		(12*32+ 4) /* AVX VNNI instructions */
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index a3669a7774ed..191f1d8f0506 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -734,4 +734,22 @@ bool arch_is_platform_page(u64 paddr);
+ 
+ extern bool gds_ucode_mitigated(void);
+ 
++/*
++ * Make previous memory operations globally visible before
++ * a WRMSR.
++ *
++ * MFENCE makes writes visible, but only affects load/store
++ * instructions.  WRMSR is unfortunately not a load/store
++ * instruction and is unaffected by MFENCE.  The LFENCE ensures
++ * that the WRMSR is not reordered.
++ *
++ * Most WRMSRs are full serializing instructions themselves and
++ * do not require this barrier.  This is only required for the
++ * IA32_TSC_DEADLINE and X2APIC MSRs.
++ */
++static inline void weak_wrmsr_fence(void)
++{
++	alternative("mfence; lfence", "", ALT_NOT(X86_FEATURE_APIC_MSRS_FENCE));
++}
 +
- static struct hlist_head *mount_hashtable __read_mostly;
- static struct hlist_head *mountpoint_hashtable __read_mostly;
- static struct kmem_cache *mnt_cache __read_mostly;
-@@ -131,6 +134,7 @@ static int mnt_alloc_id(struct mount *mnt)
- 	if (res < 0)
- 		return res;
- 	mnt->mnt_id = res;
-+	mnt->mnt_id_unique = atomic64_inc_return(&mnt_id_ctr);
- 	return 0;
+ #endif /* _ASM_X86_PROCESSOR_H */
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 6e4f23f314ac..bb3efc825bf4 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -1157,6 +1157,9 @@ static void init_amd(struct cpuinfo_x86 *c)
+ 	if (!cpu_has(c, X86_FEATURE_HYPERVISOR) &&
+ 	     cpu_has_amd_erratum(c, amd_erratum_1485))
+ 		msr_set_bit(MSR_ZEN4_BP_CFG, MSR_ZEN4_BP_CFG_SHARED_BTB_FIX_BIT);
++
++	/* AMD CPUs don't need fencing after x2APIC/TSC_DEADLINE MSR writes. */
++	clear_cpu_cap(c, X86_FEATURE_APIC_MSRS_FENCE);
  }
  
-diff --git a/fs/stat.c b/fs/stat.c
-index 5375be5f97cc..e2a124a2d5f3 100644
---- a/fs/stat.c
-+++ b/fs/stat.c
-@@ -247,8 +247,13 @@ static int vfs_statx(int dfd, struct filename *filename, int flags,
+ #ifdef CONFIG_X86_32
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 4e5ffc8b0e46..d98d023ae497 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1858,6 +1858,13 @@ static void identify_cpu(struct cpuinfo_x86 *c)
+ 	c->apicid = apic->phys_pkg_id(c->initial_apicid, 0);
+ #endif
  
- 	error = vfs_getattr(&path, stat, request_mask, flags);
++
++	/*
++	 * Set default APIC and TSC_DEADLINE MSR fencing flag. AMD and
++	 * Hygon will clear it in ->c_init() below.
++	 */
++	set_cpu_cap(c, X86_FEATURE_APIC_MSRS_FENCE);
++
+ 	/*
+ 	 * Vendor-specific initialization.  In this section we
+ 	 * canonicalize the feature flags, meaning if there are
+diff --git a/arch/x86/kernel/cpu/hygon.c b/arch/x86/kernel/cpu/hygon.c
+index a7b3ef4c4de9..6e738759779e 100644
+--- a/arch/x86/kernel/cpu/hygon.c
++++ b/arch/x86/kernel/cpu/hygon.c
+@@ -348,6 +348,9 @@ static void init_hygon(struct cpuinfo_x86 *c)
+ 		set_cpu_bug(c, X86_BUG_SYSRET_SS_ATTRS);
  
--	stat->mnt_id = real_mount(path.mnt)->mnt_id;
--	stat->result_mask |= STATX_MNT_ID;
-+	if (request_mask & STATX_MNT_ID_UNIQUE) {
-+		stat->mnt_id = real_mount(path.mnt)->mnt_id_unique;
-+		stat->result_mask |= STATX_MNT_ID_UNIQUE;
-+	} else {
-+		stat->mnt_id = real_mount(path.mnt)->mnt_id;
-+		stat->result_mask |= STATX_MNT_ID;
-+	}
+ 	check_null_seg_clears_base(c);
++
++	/* Hygon CPUs don't need fencing after x2APIC/TSC_DEADLINE MSR writes. */
++	clear_cpu_cap(c, X86_FEATURE_APIC_MSRS_FENCE);
+ }
  
- 	if (path.mnt->mnt_root == path.dentry)
- 		stat->attributes |= STATX_ATTR_MOUNT_ROOT;
-diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
-index 7cab2c65d3d7..2f2ee82d5517 100644
---- a/include/uapi/linux/stat.h
-+++ b/include/uapi/linux/stat.h
-@@ -154,6 +154,7 @@ struct statx {
- #define STATX_BTIME		0x00000800U	/* Want/got stx_btime */
- #define STATX_MNT_ID		0x00001000U	/* Got stx_mnt_id */
- #define STATX_DIOALIGN		0x00002000U	/* Want/got direct I/O alignment info */
-+#define STATX_MNT_ID_UNIQUE	0x00004000U	/* Want/got extended stx_mount_id */
- 
- #define STATX__RESERVED		0x80000000U	/* Reserved for future struct statx expansion */
- 
+ static void cpu_detect_tlb_hygon(struct cpuinfo_x86 *c)
 -- 
 2.43.0
 
