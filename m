@@ -1,173 +1,95 @@
-Return-Path: <linux-kernel+bounces-26053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97C4C82DA89
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E2E2C82DA8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:51:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22B8D1F2111A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:51:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FB1B1F22724
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:51:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A44C1755B;
-	Mon, 15 Jan 2024 13:50:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39C2B17595;
+	Mon, 15 Jan 2024 13:50:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="NiBquW26"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2046.outbound.protection.outlook.com [40.107.94.46])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q/EZjsy9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 089FE17546;
-	Mon, 15 Jan 2024 13:50:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dzh/zDJLoU4jzShe+34T46Pe3Hku23sQT/xJhiLxo9MyqpChEAHcNaUA8iHyAyJyiX/Ym4qwFSswxD+l+u8lab7onOGWOo8x/oG9uIpPmL5TPWXKzs7LhdcJUjew/WX40wZCj3ToO/0Kh+XhLdVBxCiv9ZwssjLELUmTwtclhgPm0RXdVmtJPQBS1Tq22f8qtLr3fY3WFWJxGcVfDHltm7nzpYKDvahlMrCpLkMEUgI53ZkdFZoUIBkt77qk9Fj1LUptQKJ9Qx2dI0GYFbFGWh1RJJM99bH+tTnZBF/wHI/6fe+OwzcPo68WS7UYmsF9mTScL07WpdI63uLYUkij/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zTfA6ekjB5ygLboA5pvvxDMiRPi0Dsxhps5tblILnWU=;
- b=DGHvuO77hZGIyB7owqWMre4bPLinjSpMHwxKnYyFTnG2yHj7SY9wiqhrH/m6qYYUbFPJiwMKWtgEML2gT8edSSJtQ8OkRlsfen/0qdRiiNu1dicvF1vmthmHpH4OCGLCEoPPO5veokksqmkr5op+fowDtSpTFuDgYfP6iMLlGZeVrDjyP5FGLxGwcsMqqy+T0sfmqgW7wbQk5J0O7sDBpUlNZgWnQgMJZdyZ/KCdnFENvEQD7QHyfmu3Cy9aNEqxPVxlvCs5rdVeGXO5K5PNH32HDIA6Xne1h3Uq1NZt+rD8yXHVT754YpX+TY5WcKE6XQ0M3p+3sSBgVbafXg/Iaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zTfA6ekjB5ygLboA5pvvxDMiRPi0Dsxhps5tblILnWU=;
- b=NiBquW26i0PO8H/LPhja83UOw1/rugi+L8/DDUhixnakeUduER5VWuQTsiMROVcmVSC0xcWOFhkn5Z6XCD3sj+LOJ1KTaNan7XfjUeQJTHfFbWAQledVUAkUT9PYqyUyEXKdaWlAVHzqounIZ3AeCby4xpHwe6s3hdDLX0BelYC4k8B8NZDO6WokEtSQPiVZ7Qy76W7JaqiaSBcuzqpsb55EhqROI1KvIp8ITUNjjsj8+weTKERrL/3jGb+Jf3Uvjz1fh8PIVR20nQkrCLfFG127GkGAUd/HiN2VLGaYVuFuycXerJSarO3EKRFrN5xJx1t32oEF/wZBYBOKbEvuZg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from PH8PR12MB6674.namprd12.prod.outlook.com (2603:10b6:510:1c1::18)
- by MW6PR12MB8663.namprd12.prod.outlook.com (2603:10b6:303:240::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Mon, 15 Jan
- 2024 13:50:48 +0000
-Received: from PH8PR12MB6674.namprd12.prod.outlook.com
- ([fe80::55f7:f35f:a684:bf3c]) by PH8PR12MB6674.namprd12.prod.outlook.com
- ([fe80::55f7:f35f:a684:bf3c%4]) with mapi id 15.20.7181.022; Mon, 15 Jan 2024
- 13:50:48 +0000
-Message-ID: <5f68453b-206b-49a5-aae5-72a14ce65cab@nvidia.com>
-Date: Mon, 15 Jan 2024 19:20:37 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V3] PCI/MSI: Fix MSI hwirq truncation
-Content-Language: en-US
-To: Thomas Gleixner <tglx@linutronix.de>, bhelgaas@google.com,
- rdunlap@infradead.org, ilpo.jarvinen@linux.intel.com,
- jiang.liu@linux.intel.com
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- treding@nvidia.com, jonathanh@nvidia.com, sdonthineni@nvidia.com,
- kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
-References: <20240108120522.1368240-1-vidyas@nvidia.com>
- <20240111052814.713016-1-vidyas@nvidia.com> <87bk9qim4p.ffs@tglx>
- <b9a7b855-af2b-4858-b9d8-3340a0421cfe@nvidia.com> <877ckahq50.ffs@tglx>
-From: Vidya Sagar <vidyas@nvidia.com>
-In-Reply-To: <877ckahq50.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MAXPR01CA0114.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:5d::32) To PH8PR12MB6674.namprd12.prod.outlook.com
- (2603:10b6:510:1c1::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70FDF17577;
+	Mon, 15 Jan 2024 13:50:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9F5AC433F1;
+	Mon, 15 Jan 2024 13:50:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705326656;
+	bh=BPKbcav8hKWyYniO8mP6S8bRiXKYHLnZvQiLfUnWJCE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=q/EZjsy9OEGxpKnOuSUsPbLrTxrXFT+yOVg5M9WUaBOZw/s8FNAWV7u5iIDQdlhNn
+	 2Q6JiJ6YSLClAKQChialuCcfOhLwdp7oszZU1qO5+hAjSqdSElJSpMO32eBQ8JISPU
+	 uFQb000fKROVzqr1DqlVmVfSe+7U6P8LI+9vRZ/h1kcX7KGt5HslG2X4xUzzkS1j6Q
+	 fgO7W9vRPruy9LMBtFh6rY+xvpgqOrOfAdy4H6HjsbpLdIf55zchy7IPMujDsfoQjr
+	 PNbM+3IE+jnay2p/EyHp7fJ8Xle1sdWulkG3ZwFeT0JrNwzjyOtYOEMbg0caKIwJ8Y
+	 hlqv1zcSRFCtw==
+Date: Mon, 15 Jan 2024 13:50:51 +0000
+From: Simon Horman <horms@kernel.org>
+To: Eric Dumazet <edumazet@google.com>
+Cc: Jens Axboe <axboe@kernel.dk>,
+	linux-kernel <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+	Eric Dumazet <eric.dumazet@gmail.com>,
+	syzbot <syzkaller@googlegroups.com>, stable@vger.kernel.org,
+	Josef Bacik <josef@toxicpanda.com>, linux-block@vger.kernel.org,
+	nbd@other.debian.org
+Subject: Re: [PATCH net] nbd: always initialize struct msghdr completely
+Message-ID: <20240115135051.GA432001@kernel.org>
+References: <20240112132657.647112-1-edumazet@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR12MB6674:EE_|MW6PR12MB8663:EE_
-X-MS-Office365-Filtering-Correlation-Id: 15f87b1f-687a-4503-1ee6-08dc15d0fa44
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	5Oj2GgDNUc9Aae3t+TUPWKoTDd84p3WtNPa6wrqsShPC/3up/V6cBuKk0JLUThD4jF/YW+8q5qpNq3k+hvMGVPMeeGYj658nTjBNflji7+eT1RcfItgwhyBuJ7At6l0SWYXusM+Eu/pjZxBaZmUXGbrvH/mHGh9EpuQcP/O5tqHbZkAVlh4MY4RF59dylzsTx75fhDdprY3Edvlm9oXZ12Cc5FPS6jox+atNciDZM4qjCcHgnzGnAg0S9+vKbz/kasHKAiuTk9pxoibvp9PpAoei+PjFDkQ489C0m4xp3sKL5Tpqq0EvTQO/rDHaws/+QG0Q69QIMW6lkiDuhfs0ppMD4CNwg/hBn0LtXuLWNRyir82jmmqz3UG2LJXCENG/1N0HmzxeqjgLCj3wGt6gMEJxCt+kYVbToNl84es0hxDSwH4+RyLmAC/BpLNGdZD/yzT8Lgr4ipgYDIDfwPMCKHPF+LyxYLEWNQJ+qidZuxl1uGwwy4txC8RxY1X7gRyvd6gktEVuRMF/CNR3TepczIytATNPJ2gfq0Qnais21aENdHHUv2NQadiSagxY8puqhuav60cbsQYWQGlvyfkYx7+uRWg9h8iO4sRldVimsdw0wDjFZhlNnPljy4eSwp/JcESZ3I8G+rSlSdJZJPKWywIuKpsCbO5Im/xiOnrXDLWfBJBerHMFQs7rRxQreRda
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR12MB6674.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(376002)(396003)(346002)(39860400002)(230922051799003)(230273577357003)(230173577357003)(64100799003)(186009)(1800799012)(451199024)(31686004)(36756003)(53546011)(6512007)(86362001)(31696002)(6486002)(5660300002)(83380400001)(6666004)(38100700002)(26005)(2906002)(41300700001)(316002)(478600001)(6506007)(66946007)(66476007)(8676002)(2616005)(66556008)(8936002)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NFJtRlBTZUNjSkNReFd5OXhzVkhnNy9RcVY2NkVvMkVpQ24wVGhhZUJnYjlE?=
- =?utf-8?B?MktPY3dIOVRwSDZ1WjdGYUVxbEw4SklqRWs2NkZKWUVtdlBrMlh6UVljQW8r?=
- =?utf-8?B?L3ZuendsSlB6WUcvemNaNU8vQW4xNDRkNFQxNitmNytGdXV6NkxacHNKS0c2?=
- =?utf-8?B?RVprajNOMG5IWEE2aUYrbEpNVjZ0bDd1TFlUZDdrbW5JNGpWUFpZQnVGSkJq?=
- =?utf-8?B?bXFvWVlpd2p2NzhnWVQzYUJ6ZEdoQ25CRWpuamxXcDgySGowY3J0TnFtd0ZF?=
- =?utf-8?B?ajhhN09YRmpRS2luTkFiZ1VGZFBMU3dkU0drdkZQV3JsWHc1dk1xemIvU2tL?=
- =?utf-8?B?NTliazNaM2xxNFF6WXV1VGVEUjM0clB4SUd4QUFBZ2tVbTA3K2paZjF1aFlP?=
- =?utf-8?B?czgrTEcvR0FwZXAwWFVXeVRNQXpUdEdxNXV1ODhQTm5GNVNnZ2NkbjVBRVpq?=
- =?utf-8?B?TFRlNDhkUk4xeS8zU2VuekFWNWUrZWhnMXJYSU1id1BWbjZpS2xWdHVuamRF?=
- =?utf-8?B?dWh6L3J3Z0RhUURWVURrR0VST3lBK3ZBem12UFpaeXVjV1pOQUQrSkhjbXh3?=
- =?utf-8?B?elh2UGhwMTZNRG45VlZxRHdOUmcwT0V3bktwWlJyS2VWSHA4QW5vV0pWaVBR?=
- =?utf-8?B?b2JYN0E1azJmdjl0UWFwTTIrVWhZTUR5YVAzN3FyTzNodExQM3JvcnQ1RGlx?=
- =?utf-8?B?bUtYZDBtQTRyMnVvQlF3ejhwQW5SNTZPNDl0QnlKbGVoc1djZ0p6RWI2ZTFT?=
- =?utf-8?B?ZmRVTGNZaFMxM1U0Y1NmenVFZlhBWjlkV04ySEJHakhyUGFpNzE3UjBBaUJK?=
- =?utf-8?B?dkpwZE9MVFNEOU53c2lEc1pNeitQZlhxUS8rQ0hjek5wcFNxZXlKbXFlWDdY?=
- =?utf-8?B?UVVWdVdVSStpWFJwTXR6dEJwN3FSSit6WktvYmU3R2dFYmRkVTBiNzRtOHdn?=
- =?utf-8?B?QmZtNTJ0RHhXWEZYRFpNRFlMU21USkVLUFMyZWtuUENjOElhZWRQNE8xQ0VU?=
- =?utf-8?B?eFJWMXIvaGFzZGI0ekZwU0dDQzVRYmtRTGYxa3d5eXRsS3V1Ky8rS2owbGFh?=
- =?utf-8?B?UFdOWFVMQXVrSytJM3BKOGY3c1NLR0ZqVFozUEdxYjN6QmNMdHA1ZkJuTzZi?=
- =?utf-8?B?alFHY2oyQnYvc1pOR0FEbGwyYnp5SnRmeS9xKzZ2aDNDS2tMQmg0R0xUMGNI?=
- =?utf-8?B?WkhLZDdlalFOSjF4MXk5Q3QyM01rc1pHbnZ2TTVkTUp5RkpiV3l2ZWhjQTJp?=
- =?utf-8?B?TnlzcXF4dW95QmFNQTVPbUhGenBOL0dyc2pkNGNDUFpJWXh0cWEzTEI3QVJu?=
- =?utf-8?B?TE5MbEZmRGxPVGdVVTZtaStmMUFiYWt1UFNYbERjSHNmSnVKNVgva2wrSkVV?=
- =?utf-8?B?SFdjTnFOYTNleTJmSGFJcklXSlpJWkJPVWFocVdRZmE0bVFjUXhuSmN5bXBJ?=
- =?utf-8?B?KzJrTzVFcmxoOWJLODVhSjRjWUxCMFJkelN5dFV6bHpzbVphSGEvcW12emFh?=
- =?utf-8?B?K2FtODRvQjFYS3g5QVFUTHF0OWZZcGZpUkFYZDNYQ09MOHdHVmM5VmVXMXVW?=
- =?utf-8?B?SC9kMDh0elRnc25jR2ZFYjdLZzhMRGZHbStlOVVvWUZlcFkvbGVzVXFKMk15?=
- =?utf-8?B?MW5VdUs5cmJ1ek82Mm4zRGVpMWZORzl6cDNyVU9RaW14dmwxc2tNSUtYTHA3?=
- =?utf-8?B?ZnVwSDI0a21oYktIZUlzRGNQVFFjSWxQSHZPeUVwdmFnMG52K0RpRTZpN2xE?=
- =?utf-8?B?d1d3bk9VcmZCeS9QdThjcFBxdVZoQzViYUNCd1dTZ1cyM1lSeWo0SytROElH?=
- =?utf-8?B?SlNqcDlBZmhvaER3UC9IYkFmMHdrK1ZzdVNtemo5andkRUZqZDRjN1NyVlhN?=
- =?utf-8?B?R2xJenRiSjZIV2R4VStaa0pnUkQ2eURnWFhTZ3IzbFM3bHBjSk1say9OaEVw?=
- =?utf-8?B?emhaNUV5cDBEU3RRVS85Vm40Z01BdVBwSXhHdndBSGtCQW1VREhVMHcwYmJ6?=
- =?utf-8?B?bzM1NVM5UlM2VEc3ZlFPSmRKaHFMdHd3REI1WFBwQUNlZ00vU2t6WDdUTmVy?=
- =?utf-8?B?NDkyd1dZWFNjdnY2WkxmVDhPeHpJMm5vU2Q2MHVjeTZuM3hHV2JWS3FnR1cz?=
- =?utf-8?Q?4UKR+YwOKABPaY3VElvOH8PXN?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 15f87b1f-687a-4503-1ee6-08dc15d0fa44
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR12MB6674.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2024 13:50:47.9165
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lCqhEO1HLzwmFSpN7UV93RQ9OXwuzcfXXoUmmBl1cTS/Z1qFlVFtH8LqKbZoNsn43gem5pNFGu073lpg/Y9sNg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8663
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240112132657.647112-1-edumazet@google.com>
 
+On Fri, Jan 12, 2024 at 01:26:57PM +0000, Eric Dumazet wrote:
+> syzbot complains that msg->msg_get_inq value can be uninitialized [1]
+> 
+> struct msghdr got many new fields recently, we should always make
+> sure their values is zero by default.
+> 
+> [1]
+>  BUG: KMSAN: uninit-value in tcp_recvmsg+0x686/0xac0 net/ipv4/tcp.c:2571
+>   tcp_recvmsg+0x686/0xac0 net/ipv4/tcp.c:2571
+>   inet_recvmsg+0x131/0x580 net/ipv4/af_inet.c:879
+>   sock_recvmsg_nosec net/socket.c:1044 [inline]
+>   sock_recvmsg+0x12b/0x1e0 net/socket.c:1066
+>   __sock_xmit+0x236/0x5c0 drivers/block/nbd.c:538
+>   nbd_read_reply drivers/block/nbd.c:732 [inline]
+>   recv_work+0x262/0x3100 drivers/block/nbd.c:863
+>   process_one_work kernel/workqueue.c:2627 [inline]
+>   process_scheduled_works+0x104e/0x1e70 kernel/workqueue.c:2700
+>   worker_thread+0xf45/0x1490 kernel/workqueue.c:2781
+>   kthread+0x3ed/0x540 kernel/kthread.c:388
+>   ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
+>   ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+> 
+> Local variable msg created at:
+>   __sock_xmit+0x4c/0x5c0 drivers/block/nbd.c:513
+>   nbd_read_reply drivers/block/nbd.c:732 [inline]
+>   recv_work+0x262/0x3100 drivers/block/nbd.c:863
+> 
+> CPU: 1 PID: 7465 Comm: kworker/u5:1 Not tainted 6.7.0-rc7-syzkaller-00041-gf016f7547aee #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+> Workqueue: nbd5-recv recv_work
+> 
+> Fixes: f94fd25cb0aa ("tcp: pass back data left in socket after receive")
+> Reported-by: syzbot <syzkaller@googlegroups.com>
+> Signed-off-by: Eric Dumazet <edumazet@google.com>
 
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-On 1/15/2024 3:31 PM, Thomas Gleixner wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> On Fri, Jan 12 2024 at 23:03, Vidya Sagar wrote:
->> On 1/12/2024 9:23 PM, Thomas Gleixner wrote:
->>> On Thu, Jan 11 2024 at 10:58, Vidya Sagar wrote:
->>>> So, cast the PCI domain number to 'irq_hw_number_t' before left shifting
->>>> it to calculate hwirq number.
->>>
->>> This still does not explain that this fixes it only on 64-bit platforms
->>> and why we don't care for 32-bit systems.
->> Agree that this fixes the issue only on 64-bit platforms. It doesn't
->> change the behavior on 32-bit platforms. My understanding is that the
->> issue surfaces only if there are too many PCIe controllers in the system
->> which usually is the case in modern server systems and it is arguable if
->> the server systems really run 32-bit kernels.
-> 
-> Arguably people who do that can keep the pieces.
-> 
->> One way to fix it for both 32-bit and 64-bit systems is by changing the
->> type of 'hwirq' to u64. This may cause two memory reads in 32-bit
->> systems whenever 'hwirq' is accessed and that may intern cause some perf
->> impact?? Is this the way you think I should be handling it?
-> 
-> No. Leave it as is. What I'm asking for is that it's properly documented
-> in the changelog.
-Sure. I'll add this extra information in the change log.
+..
 
-> 
-> Thanks,
-> 
->          tglx
-> 
 
