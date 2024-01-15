@@ -1,44 +1,43 @@
-Return-Path: <linux-kernel+bounces-25669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3065A82D45E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:00:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F08C582D457
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:58:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0F79B20CF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:00:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E28BB20A89
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 06:58:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EAED63B6;
-	Mon, 15 Jan 2024 07:00:24 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D91063C0B;
-	Mon, 15 Jan 2024 07:00:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8Bx3+v916RlkEMAAA--.1038S3;
-	Mon, 15 Jan 2024 15:00:13 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8Ax3c7716RlzbIBAA--.8673S4;
-	Mon, 15 Jan 2024 15:00:12 +0800 (CST)
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Eduard Zingerman <eddyz87@gmail.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Hou Tao <houtao@huaweicloud.com>,
-	bpf@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70FAE440D;
+	Mon, 15 Jan 2024 06:58:43 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4FC43C0B;
+	Mon, 15 Jan 2024 06:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TD2zV1ytXz4f3jM7;
+	Mon, 15 Jan 2024 14:58:30 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 514DC1A016E;
+	Mon, 15 Jan 2024 14:58:36 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+	by APP2 (Coremail) with SMTP id Syh0CgAHLA+a16RlEZuWAw--.48011S2;
+	Mon, 15 Jan 2024 14:58:36 +0800 (CST)
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+To: axboe@kernel.dk,
+	linux-block@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v3 2/2] selftests/bpf: Skip callback tests if jit is disabled in test_verifier
-Date: Mon, 15 Jan 2024 15:00:10 +0800
-Message-ID: <20240115070010.12338-3-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240115070010.12338-1-yangtiezhu@loongson.cn>
-References: <20240115070010.12338-1-yangtiezhu@loongson.cn>
+Cc: djeffery@redhat.com,
+	ming.lei@redhat.com
+Subject: [PATCH] sbitmap: remove stale comment in sbq_calc_wake_batch
+Date: Mon, 15 Jan 2024 22:56:26 +0800
+Message-Id: <20240115145626.665562-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -46,113 +45,50 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8Ax3c7716RlzbIBAA--.8673S4
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxGFW3tr1UtrW5ur1xGr1kCrX_yoW5Cry5pF
-	WkXFyqkF1UZFyI9ry7Awn3GFWY9w4kX3y8GFy5W3y8Za1kCr43Jr1xKryYvF9xGrWrWa4f
-	ZFZrurWUuw4UJFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-	tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
-	AKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
-	6r1j6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0epB3UUUUU==
+X-CM-TRANSID:Syh0CgAHLA+a16RlEZuWAw--.48011S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7XF18JF4xXF4kCw17JFW8Zwb_yoWDXrcEkF
+	WvkF18Wa9xWFn7KF1rAr4avryjk3yUZa48AFWYqFy8JFyjv393JrWkurWYyFWruay2vry7
+	CrWxWF4xtr13ZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb7AYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JFv_Gryl8c
+	AvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq
+	3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gc
+	CE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxI
+	r21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87
+	Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IY
+	c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+	026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF
+	0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
+	vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+	jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU0miiDUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-If CONFIG_BPF_JIT_ALWAYS_ON is not set and bpf_jit_enable is 0, there
-exist 6 failed tests.
+After commit 106397376c036 ("sbitmap: fix batching wakeup"), we may wake
+up more than one queue for each batch. Just remove stale comment that
+we wake up only one queue for each batch.
 
-  [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
-  [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
-  [root@linux bpf]# ./test_verifier | grep FAIL
-  #106/p inline simple bpf_loop call FAIL
-  #107/p don't inline bpf_loop call, flags non-zero FAIL
-  #108/p don't inline bpf_loop call, callback non-constant FAIL
-  #109/p bpf_loop_inline and a dead func FAIL
-  #110/p bpf_loop_inline stack locations for loop vars FAIL
-  #111/p inline bpf_loop call in a big program FAIL
-  Summary: 768 PASSED, 15 SKIPPED, 6 FAILED
-
-The test log shows that callbacks are not allowed in non-JITed programs,
-interpreter doesn't support them yet, thus these tests should be skipped
-if jit is disabled, copy some check functions from the other places under
-tools directory, and then handle this case in do_test_single().
-
-With this patch:
-
-  [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
-  [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
-  [root@linux bpf]# ./test_verifier | grep FAIL
-  Summary: 768 PASSED, 21 SKIPPED, 0 FAILED
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- tools/testing/selftests/bpf/test_verifier.c | 23 +++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ lib/sbitmap.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 1a09fc34d093..70f903e869b7 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -74,6 +74,7 @@
- 		    1ULL << CAP_BPF)
- #define UNPRIV_SYSCTL "kernel/unprivileged_bpf_disabled"
- static bool unpriv_disabled = false;
-+static bool jit_disabled;
- static int skips;
- static bool verbose = false;
- static int verif_log_level = 0;
-@@ -1355,6 +1356,16 @@ static bool is_skip_insn(struct bpf_insn *insn)
- 	return memcmp(insn, &skip_insn, sizeof(skip_insn)) == 0;
- }
+diff --git a/lib/sbitmap.c b/lib/sbitmap.c
+index d0a5081dfd12..92c6b1fd8989 100644
+--- a/lib/sbitmap.c
++++ b/lib/sbitmap.c
+@@ -388,11 +388,6 @@ static unsigned int sbq_calc_wake_batch(struct sbitmap_queue *sbq,
+ 	unsigned int shallow_depth;
  
-+static bool is_ldimm64_insn(struct bpf_insn *insn)
-+{
-+	return insn->code == (BPF_LD | BPF_IMM | BPF_DW);
-+}
-+
-+static bool insn_is_pseudo_func(struct bpf_insn *insn)
-+{
-+	return is_ldimm64_insn(insn) && insn->src_reg == BPF_PSEUDO_FUNC;
-+}
-+
- static int null_terminated_insn_len(struct bpf_insn *seq, int max_len)
- {
- 	int i;
-@@ -1619,6 +1630,16 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
- 		goto close_fds;
- 	}
- 
-+	if (fd_prog < 0 && saved_errno == EINVAL && jit_disabled) {
-+		for (i = 0; i < prog_len; i++, prog++) {
-+			if (insn_is_pseudo_func(prog)) {
-+				printf("SKIP (callbacks are not allowed in non-JITed programs)\n");
-+				skips++;
-+				goto close_fds;
-+			}
-+		}
-+	}
-+
- 	alignment_prevented_execution = 0;
- 
- 	if (expected_ret == ACCEPT || expected_ret == VERBOSE_ACCEPT) {
-@@ -1844,6 +1865,8 @@ int main(int argc, char **argv)
- 		return EXIT_FAILURE;
- 	}
- 
-+	jit_disabled = !is_jit_enabled();
-+
- 	/* Use libbpf 1.0 API mode */
- 	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
- 
+ 	/*
+-	 * For each batch, we wake up one queue. We need to make sure that our
+-	 * batch size is small enough that the full depth of the bitmap,
+-	 * potentially limited by a shallow depth, is enough to wake up all of
+-	 * the queues.
+-	 *
+ 	 * Each full word of the bitmap has bits_per_word bits, and there might
+ 	 * be a partial word. There are depth / bits_per_word full words and
+ 	 * depth % bits_per_word bits left over. In bitwise arithmetic:
 -- 
-2.42.0
+2.30.0
 
 
