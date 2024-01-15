@@ -1,64 +1,65 @@
-Return-Path: <linux-kernel+bounces-26452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6B8682E11D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 21:02:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 102C682E122
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 21:03:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 551DC1C220C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:02:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FAC6283813
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:03:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FC16199AE;
-	Mon, 15 Jan 2024 20:02:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A825199D7;
+	Mon, 15 Jan 2024 20:02:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WZ3t/+Z9"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l6k25LwR"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DC0B18EAD;
-	Mon, 15 Jan 2024 20:02:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C63019473;
+	Mon, 15 Jan 2024 20:02:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40e7fb927a3so7179475e9.3;
-        Mon, 15 Jan 2024 12:02:28 -0800 (PST)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40e60e137aaso44219665e9.0;
+        Mon, 15 Jan 2024 12:02:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705348946; x=1705953746; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705348948; x=1705953748; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=1EnS+pRSTO4R91TDbHHpG803uRr+ViRWAjg2k0SmyRQ=;
-        b=WZ3t/+Z9Rmk4/kPoFdkJlzH3YQXKUMe5DkOmko9aEYTaQTN+GYB+8dziIeriWND27I
-         NCaHbCT5uCaS6TzOe+eiH/pO97rh7W6DAw9tyzJYddCbYy38VdM9laUc5Vvd/cO9yJzR
-         PJBrUDg6z1ITXCVKmCTdSxVpQlpsq61xPuHpgwO0LpFN3biCnRJpoyY4/BB8qpmFDpfp
-         gkmWi+52Ha7jmXhb00DJDqVlsfGoYxnZkSN9ftVR3jlRFolBePSTmypbYV8gEbUOzUg2
-         w3vsruOplh4L0jHT1dp1gs7cxLig/B1HUAw1HjbpqRItwqDoKFZP9qDlODVYU6TRg8S9
-         zDbg==
+        bh=iR96KjiNOLwJsrZW9YjWEMZZO1SB3q3Gyovy8VvF6lw=;
+        b=l6k25LwRsDbc/vTBHa64vziXoka4xMWMWp9af+Ki511/xRyMLjGzRfoqHisj3plqyi
+         AZVxpPSDTzuwh4fQBFfByoPS3k0HA0o1PFV91MO4/tnkNZml75j+exbU20PP+KiOzBUO
+         iT/yF4Xdmc2Ds3PFM7o7uAf6LombgsVQYs1C02B0xFWJXhBjv1LHaEbo63v1w8PrHbkG
+         tBUPJQwmLfxkjQgmUVQNyHoHVn9e+VhTcheog+mvt7hkJF5+0UNmWuye0thLIOoT5J5a
+         epJCgKQLt0R74hciB506JwCdQrHJmfmZJaZNFNKMmwy9YH2QAV6vcqmh3RefJULQ8MiY
+         6R5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705348946; x=1705953746;
+        d=1e100.net; s=20230601; t=1705348948; x=1705953748;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1EnS+pRSTO4R91TDbHHpG803uRr+ViRWAjg2k0SmyRQ=;
-        b=Ask8Dgihhd1Qd/tEnJJQCpBxR7h4dYQPj/51aeQX5WJ4N43M+zMUtgfsiHky5D7ero
-         jh6RDazu6IxceYTUpMBb4aGVatNZCEBltX/6rvIxczjRGPvfj/oPBGta5h0qXpTLk9Sm
-         OusnN+TwBEv8WaMw2m9roHPMqoByAbtKZZEc7JDNjoQCaqn0n8t31b99wxFb1ksGpuFV
-         spLkW3qBI+bTgPiNS8+ZpmqheaA659QShzmM5wlJGO0/DH1/9Tvofe7gSfNwSSU9R5lt
-         5O+3Jr/1dqKpsAM/U8WTTqOTOPoJaZTGQs8LwEM/eVt483DsPuFh0TKypaOH2uxq8oFC
-         0Fqw==
-X-Gm-Message-State: AOJu0YzGf/3KIu5ZTcQ7rY6SB3iO0e3J4DJJfCoU3Wdt5ntPeQGqE6Kt
-	ZpZNRzwIPsvqid75RyFYk6Q=
-X-Google-Smtp-Source: AGHT+IFF2xzmoB7X5Gh4HF4VKYUfu1gqI5j/Gn/eCZweUhgkv8eMkCF/olPIO75dnA988cyZ10A/Cw==
-X-Received: by 2002:a05:600c:3512:b0:40e:7485:daee with SMTP id h18-20020a05600c351200b0040e7485daeemr1516543wmq.90.1705348946163;
-        Mon, 15 Jan 2024 12:02:26 -0800 (PST)
+        bh=iR96KjiNOLwJsrZW9YjWEMZZO1SB3q3Gyovy8VvF6lw=;
+        b=qoXNERLWhCm+XKrs8FSrv/wdXmieL69s1u1C/JJMQFrpF8m4pbLfYOVO3vokKSenPO
+         p1gW0SNulODWo+fCC7msM1UKZX/dUCvNtSH9ZjiqnXoU4kiaRJuYE4ThOaF9X/4JbZe7
+         xuBiwI+M/pQeneF5puzfOVcCILhFvXGT1GQmBNFa/mA+Q8+7rafLtO0nL1VlJgWAcDpy
+         9pfIiuhEAixg9UtK3HXWheS0mjjfU90EchD779GVMtOT1TsQL8czZ83y8L42OATcei+d
+         HdTQvOaEnJwDerll/FlriPUCRgYw/3bpXLiOWeDDEB4Xm25fftM9Z+pLZ+A2QP25/a2h
+         emUQ==
+X-Gm-Message-State: AOJu0YygzgW7rHbqZXC/HEJ8rSBmvFymayJcneBRyDtXs+twTBtrVJQ+
+	3WndvQidpMWuo/08fCDf/ek=
+X-Google-Smtp-Source: AGHT+IF/VWjuHv5O5f9qWqmE3BkrbN0yz+e3DwuXT8ubOTcN1ihqmBAfeD6hdzIwWqrmEEwJR9lmgw==
+X-Received: by 2002:a05:600c:2112:b0:40e:7f2c:9dbd with SMTP id u18-20020a05600c211200b0040e7f2c9dbdmr681930wml.13.1705348947693;
+        Mon, 15 Jan 2024 12:02:27 -0800 (PST)
 Received: from [127.0.1.1] (2a02-8389-41cf-e200-bf32-c470-1874-c1ad.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:bf32:c470:1874:c1ad])
-        by smtp.gmail.com with ESMTPSA id m26-20020a7bca5a000000b0040e54381a85sm16377924wml.26.2024.01.15.12.02.24
+        by smtp.gmail.com with ESMTPSA id m26-20020a7bca5a000000b0040e54381a85sm16377924wml.26.2024.01.15.12.02.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 12:02:25 -0800 (PST)
+        Mon, 15 Jan 2024 12:02:27 -0800 (PST)
 From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Mon, 15 Jan 2024 21:02:21 +0100
-Subject: [PATCH v5 1/5] dt-bindings: vendor-prefixes: add Amphenol
+Date: Mon, 15 Jan 2024 21:02:22 +0100
+Subject: [PATCH v5 2/5] hwmon: (core) Add support for humidity min/max
+ alarm
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,7 +68,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240115-topic-chipcap2-v5-1-0cc7a15aeece@gmail.com>
+Message-Id: <20240115-topic-chipcap2-v5-2-0cc7a15aeece@gmail.com>
 References: <20240115-topic-chipcap2-v5-0-0cc7a15aeece@gmail.com>
 In-Reply-To: <20240115-topic-chipcap2-v5-0-0cc7a15aeece@gmail.com>
 To: Rob Herring <robh+dt@kernel.org>, 
@@ -77,38 +78,69 @@ To: Rob Herring <robh+dt@kernel.org>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, 
  linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org, 
- linux-doc@vger.kernel.org, Javier Carrasco <javier.carrasco.cruz@gmail.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+ linux-doc@vger.kernel.org, Javier Carrasco <javier.carrasco.cruz@gmail.com>
 X-Mailer: b4 0.13-dev-4e032
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1705348943; l=874;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1705348943; l=2225;
  i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=PCidHchbaiTdlYu+9md1vtBsSrbu0tUQ7foLUj3NqoI=;
- b=Dyz/xAhEYcBUhWWZxZcAkiGMKzOk3KfvxQPI9D85lmxE0O6XsR52uItVaQg+9+nWIjP7o07Lv
- NpjErivZ/tqDHUa8NKlBpjiVpXhUXXMNNBbDX7M/fGwbGwgAascMfN2
+ bh=re14X9c0E+VBxIxbVskjRDUjU7zOxmCOyQzwnK834Ds=;
+ b=dd4rGLkjd9y828kruYsv6h+aliJTL24L+Inb5681K1+rd0C9CwKjEcELJmYKjdC+FqbmPrSZ9
+ vnIHAL2Mp//C+zhZvr07AomwvL67uM1HRUVizAy/oU2gAmnKh24ZmJK
 X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
  pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 
-Add vendor prefix for Amphenol (https://www.amphenol-sensors.com)
+Add min_alarm and max_alarm attributes for humidityX to support devices
+that can generate these alarms.
+Such attributes already exist for other magnitudes such as tempX.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Tested with a ChipCap 2 temperature-humidity sensor.
+
 Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/hwmon/hwmon.c | 2 ++
+ include/linux/hwmon.h | 4 ++++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 309b94c328c8..4a49f24b906b 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -105,6 +105,8 @@ patternProperties:
-     description: Amlogic, Inc.
-   "^ampere,.*":
-     description: Ampere Computing LLC
-+  "^amphenol,.*":
-+    description: Amphenol Advanced Sensors
-   "^ampire,.*":
-     description: Ampire Co., Ltd.
-   "^ams,.*":
+diff --git a/drivers/hwmon/hwmon.c b/drivers/hwmon/hwmon.c
+index c7dd3f5b2bd5..7f92984c37d9 100644
+--- a/drivers/hwmon/hwmon.c
++++ b/drivers/hwmon/hwmon.c
+@@ -579,8 +579,10 @@ static const char * const hwmon_humidity_attr_templates[] = {
+ 	[hwmon_humidity_input] = "humidity%d_input",
+ 	[hwmon_humidity_label] = "humidity%d_label",
+ 	[hwmon_humidity_min] = "humidity%d_min",
++	[hwmon_humidity_min_alarm] = "humidity%d_min_alarm",
+ 	[hwmon_humidity_min_hyst] = "humidity%d_min_hyst",
+ 	[hwmon_humidity_max] = "humidity%d_max",
++	[hwmon_humidity_max_alarm] = "humidity%d_max_alarm",
+ 	[hwmon_humidity_max_hyst] = "humidity%d_max_hyst",
+ 	[hwmon_humidity_alarm] = "humidity%d_alarm",
+ 	[hwmon_humidity_fault] = "humidity%d_fault",
+diff --git a/include/linux/hwmon.h b/include/linux/hwmon.h
+index 8cd6a6b33593..154de35e34ac 100644
+--- a/include/linux/hwmon.h
++++ b/include/linux/hwmon.h
+@@ -286,8 +286,10 @@ enum hwmon_humidity_attributes {
+ 	hwmon_humidity_input,
+ 	hwmon_humidity_label,
+ 	hwmon_humidity_min,
++	hwmon_humidity_min_alarm,
+ 	hwmon_humidity_min_hyst,
+ 	hwmon_humidity_max,
++	hwmon_humidity_max_alarm,
+ 	hwmon_humidity_max_hyst,
+ 	hwmon_humidity_alarm,
+ 	hwmon_humidity_fault,
+@@ -299,8 +301,10 @@ enum hwmon_humidity_attributes {
+ #define HWMON_H_INPUT			BIT(hwmon_humidity_input)
+ #define HWMON_H_LABEL			BIT(hwmon_humidity_label)
+ #define HWMON_H_MIN			BIT(hwmon_humidity_min)
++#define HWMON_H_MIN_ALARM		BIT(hwmon_humidity_min_alarm)
+ #define HWMON_H_MIN_HYST		BIT(hwmon_humidity_min_hyst)
+ #define HWMON_H_MAX			BIT(hwmon_humidity_max)
++#define HWMON_H_MAX_ALARM		BIT(hwmon_humidity_max_alarm)
+ #define HWMON_H_MAX_HYST		BIT(hwmon_humidity_max_hyst)
+ #define HWMON_H_ALARM			BIT(hwmon_humidity_alarm)
+ #define HWMON_H_FAULT			BIT(hwmon_humidity_fault)
 
 -- 
 2.39.2
