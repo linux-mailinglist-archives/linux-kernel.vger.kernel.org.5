@@ -1,126 +1,266 @@
-Return-Path: <linux-kernel+bounces-25824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F04682D65E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:52:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE62D82D66C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 10:53:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 347481C21636
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:52:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D8FD1F2282F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 09:53:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 180ADF4E4;
-	Mon, 15 Jan 2024 09:52:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="l3Q4DLLh"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F39411190;
+	Mon, 15 Jan 2024 09:52:51 +0000 (UTC)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2B6F4E7
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 09:52:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5592d2bc270so950136a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 01:52:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1705312354; x=1705917154; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pV7vfHddpIjdo1gvqUviCk+EZ4jPGodxukJi3Cbz8BY=;
-        b=l3Q4DLLh0/X7PRCPzveA7chRq6ngkkDoOFa2/ePiLDbfGft4L0dGQilXPAjJOvGLFI
-         ZkF3vvyoXYgwzRovMOJY+8FedS4B+K5iFUboBH5XODO1Tox5q5TYK4ByBQqiXO6Wn4sk
-         ayYuKV4FX7zv78d+RQQn4193jKd5LO562HqMPKwtMY0pxWrDquL76c75C1eJS0KwijgU
-         TNQDd0ze5TAxJuxew4VNsGauK/78kJqEWtoXLYVjS796nKeaa5Z0peMvzR5dmUZdxyMu
-         pM1zY6h5i/A5Rbqmk/KvDhIWAPNksCOAbuAkHdku2NRVq2No4fyzDXQdCDSqh2u1M+ex
-         u/bQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54944FC11;
+	Mon, 15 Jan 2024 09:52:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5e76948cda7so77666167b3.3;
+        Mon, 15 Jan 2024 01:52:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705312354; x=1705917154;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pV7vfHddpIjdo1gvqUviCk+EZ4jPGodxukJi3Cbz8BY=;
-        b=emrtlAQet130K0Fte74zvRntTew1V4S22bAUDppqDzucCWw+gUGwBHZtdOyetesnL5
-         HBjm6qQdVqtU3NRPwm+SrGG6kHSS/3JyCETK8aVEV5m4nWiwkYhP27BKHehshb5jr8jh
-         6VUarCkN7goub5LDiocxdQMgnt1P6NI16nNlOD4KscfiGte5cw1g5QG9KNdK7U/mqLTv
-         dsbCmJzDsSJUf2oXeT+cBHs8sYIPl8kZhSRkjc7Z4UUev+q9FMK5c2ZYERsChLaIca/Q
-         2uytks3rp7qTV0OiRbWi+riku1CKydXWGem5Fq9DDxVgr9qTeV51n2uXx2LO93f8FUNZ
-         Bczg==
-X-Gm-Message-State: AOJu0YyXfrygxA6uyHrVj/M3fD5HKFcsqBMdfF7v9fqR2Fwe3P8lVqpk
-	cm4HWLTohd+sq9+UsEJjqJB3VoVf994HvA==
-X-Google-Smtp-Source: AGHT+IHg4iG+SxOvbGjJMJ0Mi05uMNiQ7rB6L6vuzmWHpH8DTKCsBTCPKrMB+dvhpzz7VfL5uOZEyg==
-X-Received: by 2002:a17:906:a1d1:b0:a2a:19c8:e4ef with SMTP id bx17-20020a170906a1d100b00a2a19c8e4efmr2337014ejb.141.1705312354303;
-        Mon, 15 Jan 2024 01:52:34 -0800 (PST)
-Received: from blmsp ([2001:4091:a246:821e:6f3b:6b50:4762:8343])
-        by smtp.gmail.com with ESMTPSA id k16-20020a170906129000b00a274f3396a0sm5149479ejb.145.2024.01.15.01.52.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 01:52:33 -0800 (PST)
-Date: Mon, 15 Jan 2024 10:52:32 +0100
-From: Markus Schneider-Pargmann <msp@baylibre.com>
-To: Francesco Dolcini <francesco@dolcini.it>
-Cc: Chandrasekar Ramakrishnan <rcsekar@samsung.com>, 
-	Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Francesco Dolcini <francesco.dolcini@toradex.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] can: m_can: remove redundant check for pm_clock_support
-Message-ID: <nls37vv4rj6pn5vvrjizapb23l3mikpwkh2fk7gtrpnxgiym5b@jbmlyci4q3pg>
-References: <20240104235723.46931-1-francesco@dolcini.it>
+        d=1e100.net; s=20230601; t=1705312368; x=1705917168;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wsMhOFSC0mxjAJYvrikbFmAm65pBG0U6QI3j9yJqaic=;
+        b=NqW2mCDtcUyTwgZFAA/rkTMwmahWtBYNzWc32YZPKxNlkm0yMW0+8HOjveMxShuxBy
+         CQcHx+Msh/CWIuQxKxaPkIPXMN/G+5Z2e8g8ISXK/Yjc4+w8vNr3nUS9fgey+uTk+fK2
+         oZzyLlN2CaMWRWehm60qBBYaXqBTu1GEtBVOQH0QeL96x1EN+koc3aPHVxdo6atY5h3R
+         LRf/i8kG84+bhDXyaHj+Lu81cV0ZSKJV8bSKDsaOSjH7n/TWEOtQPeuM8nTNKWhFKvGX
+         Zo7uJl/lwyrGDQzCIk5PIReijBY10X23ny24PH0mO2I69pGmfNF7H7iMjU1mI4muKq8b
+         i7qA==
+X-Gm-Message-State: AOJu0YyjDcFNHqPCE7Bn5PhldVqqWrg8jbyb6Z/+i9fnqy8Rf+XHhjUe
+	lVw2vQYIGyA0BD9THlzr3wSSNvnngfGL5A==
+X-Google-Smtp-Source: AGHT+IEX6uvZVQqpdyFdUkuf26ZeiFhzlynOzPs10JRGhXeNHWRABsgvivhCcxnO9Zwq6nEck/W7MQ==
+X-Received: by 2002:a81:7613:0:b0:5f7:b18e:9298 with SMTP id r19-20020a817613000000b005f7b18e9298mr3674121ywc.67.1705312368108;
+        Mon, 15 Jan 2024 01:52:48 -0800 (PST)
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
+        by smtp.gmail.com with ESMTPSA id l6-20020a0de206000000b005ff3b4a89a8sm271889ywe.107.2024.01.15.01.52.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Jan 2024 01:52:47 -0800 (PST)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5e76948cda7so77665967b3.3;
+        Mon, 15 Jan 2024 01:52:47 -0800 (PST)
+X-Received: by 2002:a81:6d41:0:b0:5f6:46b:b0be with SMTP id
+ i62-20020a816d41000000b005f6046bb0bemr2963784ywc.61.1705312367679; Mon, 15
+ Jan 2024 01:52:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240104235723.46931-1-francesco@dolcini.it>
+References: <cover.1704788539.git.ysato@users.sourceforge.jp> <9c3a9caaa1e2fc7e515cac67f07a20af071bd1be.1704788539.git.ysato@users.sourceforge.jp>
+In-Reply-To: <9c3a9caaa1e2fc7e515cac67f07a20af071bd1be.1704788539.git.ysato@users.sourceforge.jp>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 15 Jan 2024 10:52:36 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWSR3ikL7VZYkNOb1Y8mPU5LaUnc8+WLj-Ec99EOWxs_w@mail.gmail.com>
+Message-ID: <CAMuHMdWSR3ikL7VZYkNOb1Y8mPU5LaUnc8+WLj-Ec99EOWxs_w@mail.gmail.com>
+Subject: Re: [DO NOT MERGE v6 22/37] dt-bindings: display: smi,sm501: SMI
+ SM501 binding json-schema
+To: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Thomas Gleixner <tglx@linutronix.de>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Jiri Slaby <jirislaby@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>, Rich Felker <dalias@libc.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Lee Jones <lee@kernel.org>, 
+	Helge Deller <deller@gmx.de>, Heiko Stuebner <heiko@sntech.de>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
+	Yang Xiwen <forbidden405@foxmail.com>, Sebastian Reichel <sre@kernel.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, Randy Dunlap <rdunlap@infradead.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@suse.cz>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+	David Rientjes <rientjes@google.com>, Baoquan He <bhe@redhat.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Guenter Roeck <linux@roeck-us.net>, 
+	Stephen Rothwell <sfr@canb.auug.org.au>, Azeem Shaikh <azeemshaikh38@gmail.com>, 
+	Javier Martinez Canillas <javierm@redhat.com>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Palmer Dabbelt <palmer@rivosinc.com>, Bin Meng <bmeng@tinylab.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Jacky Huang <ychuang3@nuvoton.com>, 
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
+	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+	Sam Ravnborg <sam@ravnborg.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
+	Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>, 
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, linux-ide@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org, 
+	linux-serial@vger.kernel.org, linux-fbdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 05, 2024 at 12:57:23AM +0100, Francesco Dolcini wrote:
-> From: Francesco Dolcini <francesco.dolcini@toradex.com>
-> 
-> m_can_clk_start() already skip starting the clock when
-> clock support is disabled, remove the redundant check in
-> m_can_class_register().
-> 
-> This also solves the imbalance with m_can_clk_stop() that is called
-> afterward in the same function before the return.
-> 
-> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+Hi Sato-san,
 
-Reviewed-by: Markus Schneider-Pargmann <msp@baylibre.com>
+On Tue, Jan 9, 2024 at 9:24=E2=80=AFAM Yoshinori Sato
+<ysato@users.sourceforge.jp> wrote:
+> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
 
-Best,
-Markus
+Thanks for your patch!
 
 > ---
-> I spotted the issue while debugging some other part of the code,
-> the patch is only compile-tested.
-> ---
->  drivers/net/can/m_can/m_can.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-> index 16ecc11c7f62..bd1d1626684d 100644
-> --- a/drivers/net/can/m_can/m_can.c
-> +++ b/drivers/net/can/m_can/m_can.c
-> @@ -2056,11 +2056,9 @@ int m_can_class_register(struct m_can_classdev *cdev)
->  {
->  	int ret;
->  
-> -	if (cdev->pm_clock_support) {
-> -		ret = m_can_clk_start(cdev);
-> -		if (ret)
-> -			return ret;
-> -	}
-> +	ret = m_can_clk_start(cdev);
-> +	if (ret)
-> +		return ret;
->  
->  	if (cdev->is_peripheral) {
->  		ret = can_rx_offload_add_manual(cdev->net, &cdev->offload,
-> -- 
-> 2.39.2
-> 
+>  .../bindings/display/smi,sm501.yaml           | 417 ++++++++++++++++++
+>  1 file changed, 417 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/smi,sm501.y=
+aml
+
+Surely Documentation/devicetree/bindings/display/sm501fb.txt should
+be removed, too?
+
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/smi,sm501.yaml
+
+> +  crt:
+> +    type: object
+> +    description: CRT output control
+> +    properties:
+> +      edid:
+> +        $ref: /schemas/types.yaml#/definitions/uint8-array
+> +        description: |
+> +          verbatim EDID data block describing attached display.
+> +          Data from the detailed timing descriptor will be used to
+> +          program the display controller.
+> +
+> +      smi,flags:
+> +        $ref: /schemas/types.yaml#/definitions/string-array
+> +        description: Display control flags.
+> +        items:
+> +          anyOf:
+> +            - const: use-init-done
+> +            - const: disable-at-exit
+> +            - const: use-hwcursor
+> +            - const: use-hwaccel
+
+The "use-*" flags look like software policy, not hardware description,
+and thus do not belong in DT?
+
+> +            - const: panel-no-fpen
+> +            - const: panel-no-vbiasen
+> +            - const: panel-inv-fpen
+> +            - const: panel-inv-vbiasen
+> +        maxItems: 8
+> +
+> +      bpp:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description: Color depth
+> +
+> +  panel:
+> +    type: object
+> +    description: Panel output control
+> +    properties:
+> +      edid:
+> +        $ref: /schemas/types.yaml#/definitions/uint8-array
+> +        description: |
+> +          verbatim EDID data block describing attached display.
+> +          Data from the detailed timing descriptor will be used to
+> +          program the display controller.
+> +
+> +      smi,flags:
+> +        $ref: /schemas/types.yaml#/definitions/string-array
+> +        description: Display control flags.
+> +        items:
+> +          anyOf:
+> +            - const: use-init-done
+> +            - const: disable-at-exit
+> +            - const: use-hwcursor
+> +            - const: use-hwaccel
+
+The "use-*" flags look like software policy, not hardware description,
+and thus do not belong in DT?
+
+> +            - const: panel-no-fpen
+> +            - const: panel-no-vbiasen
+> +            - const: panel-inv-fpen
+> +            - const: panel-inv-vbiasen
+> +        maxItems: 8
+> +
+> +      bpp:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description: Color depth
+> +
+> +  smi,devices:
+> +    $ref: /schemas/types.yaml#/definitions/string-array
+> +    description: Select SM501 device functions.
+> +    items:
+> +      anyOf:
+> +        - const: usb-host
+> +        - const: usb-slave
+> +        - const: ssp0
+> +        - const: ssp1
+> +        - const: uart0
+> +        - const: uart1
+> +        - const: fbaccel
+> +        - const: ac97
+> +        - const: i2s
+> +        - const: gpio
+> +    minItems: 1
+> +    maxItems: 10
+
+I think it would be better to have individual subnodes for the sub devices,
+with status =3D "ok"/"disabled".
+
+If you go that route, you do need some fallback code to handle the lack
+of subnodes in the existing user in arch/powerpc/boot/dts/charon.dts.
+
+BTW, why can sm501_pci_initdata get away with setting ".devices
+=3D SM501_USE_ALL"?  Or, would it hurt to enable all subdevices
+unconditionally?
+
+> +
+> +  smi,mclk:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: mclk frequency.
+> +
+> +  smi,m1xclk:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: m1xclk frequency.
+
+These two should be clock specifiers (i.e. phandles pointing to clock
+nodes + optional clock indices).
+
+> +
+> +  misc-timing:
+> +    type: object
+> +    description: Miscellaneous Timing register values.
+> +    properties:
+> +      ex:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description: Extend bus holding time.
+> +        enum: [0, 16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192, =
+208, 224, 240]
+> +
+> +      xc:
+> +        $ref: /schemas/types.yaml#/definitions/string
+> +        description: Xscale clock input select.
+> +        items:
+> +          enum:
+> +            - internal-pll
+> +            - hclk
+> +            - gpio33
+
+Software policy instead of hardware description again?
+
+I am not familiar with how the SM501 works, so I cannot comment on
+the other properties, but several of them look like they need rework.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
