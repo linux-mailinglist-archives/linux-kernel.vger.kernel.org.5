@@ -1,136 +1,105 @@
-Return-Path: <linux-kernel+bounces-26193-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BB8682DC98
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:48:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 284B582DC93
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:47:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A15E282DA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:48:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2FD1B21715
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:47:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DDB7179A1;
-	Mon, 15 Jan 2024 15:48:30 +0000 (UTC)
-Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [207.211.30.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3579517758;
+	Mon, 15 Jan 2024 15:47:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="skFXbUDC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95BA317757
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 15:48:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-107-_RghfqN5O6OKasyAw_gn3g-1; Mon,
- 15 Jan 2024 10:47:16 -0500
-X-MC-Unique: _RghfqN5O6OKasyAw_gn3g-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E73FE2825BBF;
-	Mon, 15 Jan 2024 15:47:15 +0000 (UTC)
-Received: from localhost.redhat.com (unknown [10.45.226.182])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 9B36F3C25;
-	Mon, 15 Jan 2024 15:47:14 +0000 (UTC)
-From: Alexey Gladkov <legion@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>,
-	Linux Containers <containers@lists.linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Christian Brauner <brauner@kernel.org>,
-	"Eric W . Biederman" <ebiederm@xmission.com>,
-	Joel Granados <joel.granados@gmail.com>,
-	Kees Cook <keescook@chromium.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Manfred Spraul <manfred@colorfullife.com>
-Subject: [RESEND PATCH v3 3/3] sysctl: Allow to change limits for posix messages queues
-Date: Mon, 15 Jan 2024 15:46:43 +0000
-Message-ID: <6ad67f23d1459a4f4339f74aa73bac0ecf3995e1.1705333426.git.legion@kernel.org>
-In-Reply-To: <cover.1705333426.git.legion@kernel.org>
-References: <cover.1663756794.git.legion@kernel.org> <cover.1705333426.git.legion@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8003017980;
+	Mon, 15 Jan 2024 15:47:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A87F6C433C7;
+	Mon, 15 Jan 2024 15:47:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705333621;
+	bh=CKlMsBgiRFguC4EeGf8G4YmTN9XESV+58mgkD1W4SPw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=skFXbUDCV/2M/7goc7hXpkMmxJNhc6isLScK4FQwrlU9+0IKA2Ue7/tEKI/9xiUcl
+	 QMuMMNeQlAtjNBoBcuqibBIwMirN0OAwrDE89FoCcS/zC8USBomywfB6cY22ZYX/cB
+	 WfElSbPDp0DqEDhYvF9DjIc/m0jAXJeVo26uom6+1s9eMYAizNjiZ6j6BPOUaCMPps
+	 A7iUNWfw7taRvEDEbpmWkgyHies6OKZfU9QqJgvDrvRT3onnSi/8H//NLXGRPYyIKg
+	 ydN83g3LT/GqiV7q21OZUw3K82CE2bJ1mAyVVq/xskSlX+TRtrH7GOYq5x/mPoz7da
+	 tx48yxQpVT/XA==
+Date: Mon, 15 Jan 2024 09:46:59 -0600
+From: Rob Herring <robh@kernel.org>
+To: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Cc: Yannick Fertre <yannick.fertre@foss.st.com>,
+	Philippe Cornu <philippe.cornu@foss.st.com>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/6] dt-bindings: display: add dt-bindings for STM32
+ LVDS device
+Message-ID: <20240115154659.GA815331-robh@kernel.org>
+References: <20240115132009.101718-1-raphael.gallais-pou@foss.st.com>
+ <20240115132009.101718-2-raphael.gallais-pou@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240115132009.101718-2-raphael.gallais-pou@foss.st.com>
 
-All parameters of posix messages queues (queues_max/msg_max/msgsize_max)
-end up being limited by RLIMIT_MSGQUEUE. The code in mqueue_get_inode is
-where that limiting happens.
+On Mon, Jan 15, 2024 at 02:20:04PM +0100, Raphael Gallais-Pou wrote:
+> Add "st,stm32mp25-lvds" compatible.
+> 
+> Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+> ---
+> Depends on: "dt-bindings: stm32: add clocks and reset binding for
+> 	    stm32mp25 platform" by Gabriel Fernandez
+> 
+> Changes in v3:
+> 	- Clarify commit dependency
+> 	- Fix includes in the example
+> 	- Fix YAML
+> 	- Add "clock-cells" description
+> 	- s/regroups/is composed of/
+> 	- Changed compatible to show SoC specificity
+> 
+> Changes in v2:
+> 	- Switch compatible and clock-cells related areas
+> 	- Remove faulty #include in the example.
+> 	- Add entry in MAINTAINERS
+> ---
+>  .../bindings/display/st,stm32-lvds.yaml       | 119 ++++++++++++++++++
 
-The RLIMIT_MSGQUEUE is bound to the user namespace and is counted
-hierarchically.
+Filename matching compatible.
 
-We can allow root in the user namespace to modify the posix messages
-queues parameters.
+> +properties:
+> +  compatible:
+> +    const: st,stm32mp25-lvds
 
-Signed-off-by: Alexey Gladkov <legion@kernel.org>
-Link: https://lkml.kernel.org/r/7eb21211c8622e91d226e63416b1b93c079f60ee.1663756794.git.legion@kernel.org
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
----
- ipc/mq_sysctl.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
 
-diff --git a/ipc/mq_sysctl.c b/ipc/mq_sysctl.c
-index ebb5ed81c151..21fba3a6edaf 100644
---- a/ipc/mq_sysctl.c
-+++ b/ipc/mq_sysctl.c
-@@ -12,6 +12,7 @@
- #include <linux/stat.h>
- #include <linux/capability.h>
- #include <linux/slab.h>
-+#include <linux/cred.h>
- 
- static int msg_max_limit_min = MIN_MSGMAX;
- static int msg_max_limit_max = HARD_MSGMAX;
-@@ -76,8 +77,43 @@ static int set_is_seen(struct ctl_table_set *set)
- 	return &current->nsproxy->ipc_ns->mq_set == set;
- }
- 
-+static void mq_set_ownership(struct ctl_table_header *head,
-+			     struct ctl_table *table,
-+			     kuid_t *uid, kgid_t *gid)
-+{
-+	struct ipc_namespace *ns =
-+		container_of(head->set, struct ipc_namespace, mq_set);
-+
-+	kuid_t ns_root_uid = make_kuid(ns->user_ns, 0);
-+	kgid_t ns_root_gid = make_kgid(ns->user_ns, 0);
-+
-+	*uid = uid_valid(ns_root_uid) ? ns_root_uid : GLOBAL_ROOT_UID;
-+	*gid = gid_valid(ns_root_gid) ? ns_root_gid : GLOBAL_ROOT_GID;
-+}
-+
-+static int mq_permissions(struct ctl_table_header *head, struct ctl_table *table)
-+{
-+	int mode = table->mode;
-+	kuid_t ns_root_uid;
-+	kgid_t ns_root_gid;
-+
-+	mq_set_ownership(head, table, &ns_root_uid, &ns_root_gid);
-+
-+	if (uid_eq(current_euid(), ns_root_uid))
-+		mode >>= 6;
-+
-+	else if (in_egroup_p(ns_root_gid))
-+		mode >>= 3;
-+
-+	mode &= 7;
-+
-+	return (mode << 6) | (mode << 3) | mode;
-+}
-+
- static struct ctl_table_root set_root = {
- 	.lookup = set_lookup,
-+	.permissions = mq_permissions,
-+	.set_ownership = mq_set_ownership,
- };
- 
- bool setup_mq_sysctls(struct ipc_namespace *ns)
--- 
-2.43.0
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/st,stm32mp25-rcc.h>
+> +    #include <dt-bindings/reset/st,stm32mp25-rcc.h>
+> +
+> +    lvds: lvds@48060000 {
+> +        compatible = "st,stm32-lvds";
 
+Wrong compatible.
 
