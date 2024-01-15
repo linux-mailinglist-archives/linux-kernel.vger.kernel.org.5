@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-25995-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1163182D989
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:09:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07B9682D98A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:09:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADF23282034
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:09:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19A021C2155C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:09:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BC9317573;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C725517580;
 	Mon, 15 Jan 2024 13:08:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X15Egc+Y"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c7BEy2in"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A58171B4;
-	Mon, 15 Jan 2024 13:08:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3C3171D4;
+	Mon, 15 Jan 2024 13:08:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-337984681bcso2402301f8f.1;
-        Mon, 15 Jan 2024 05:08:26 -0800 (PST)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3376d424a79so6728088f8f.1;
+        Mon, 15 Jan 2024 05:08:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705324105; x=1705928905; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705324106; x=1705928906; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9V7UZnqkue/kYImmNIRkOX5Wuc2HyDkHG/tYBjmhPD0=;
-        b=X15Egc+YobLumjDsZLj0/2aLtvtFercw8aPkTqvKmg6Ceu5HZppZEJC7LDy5SG4y80
-         qjOjm6nOPnGr/KCjkQQ9CjhXr5hPi2nQSQSw5nEvfeeKwXb4sPcvwo7itLLEvbhTR8At
-         zIPwARaY9TzSZIdM/Fp4yoeVSyjydz9MAQqg9NQN9J/gNKk7fpc1bEiLRVbhApD+S+YA
-         U5uW+HCtDFAjsKsq8PGOum7LZOt+2VffuW0WBhYhpa0N0aLBHVMzLUrwmfNIENBukRDD
-         AoEuoT4y1ep87w8muccmPelYayuxRtAJKFGkMx1Zuin9xbBruTAvytOgxfxPQKN1/V/6
-         HY8Q==
+        bh=WclvSvESBcB1ccyxeqjrdGj+frspJc0esD0QtgwrkCo=;
+        b=c7BEy2inHAh8liKaRYt9aZWfCtmK6FMbo0y3yKsVHqD4ROhT/7vCeQY7Hr76g01C8w
+         n0zlAZ6wgthxFUUAaDkcwYNQnF04UCT3zKmNkV7U63AHlCwNcbMozmr3wSzxdw/dqHZj
+         yLJPjA3wAxnid6i3w7uk4lK2aPzh/DcVUCrPY971k423nKTWoMCXzqz4PZcf9Db+nHah
+         SWIftww4gAT7Uxs/KjcuSqpXZRY02HXmeaX/A45PAujdQhFeCEyd6teo+zicffA8XqUY
+         qbt2zAUxp1tSoXEgQRMiyDJznjG98S7569PL6/bCe1jLL/07ODUnDOGZtzqa6FxRlwkH
+         JM2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705324105; x=1705928905;
+        d=1e100.net; s=20230601; t=1705324106; x=1705928906;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9V7UZnqkue/kYImmNIRkOX5Wuc2HyDkHG/tYBjmhPD0=;
-        b=F1LGtM+lkp33wqUkEhVpVTQ4ReE1B/PkmfZh65ZSC0K3kg4CxZwblMm9vGNyoBfqnr
-         gpot0N4vLToTWm28HjvcRYKEXV9KmCjuz6/3fNq294ZvDBeoGKgQK2N5Q4A4YEORrSlE
-         E8jbcDKLsWd/nFlSYAe8ewMAaXcZRhEwf64ztFTPnOOcT3ZwLm/46KbNxibSFqNzWQL3
-         OhfKrsbPJp7Y9uUK4n26vd8JOREydM9B2G0x4QIAjWDajdk25LEAKbiOQgdfkCHq7arV
-         5XE9SHvOL+fP8NbR2RfgtLTGWYVp2vWAEClq5xTTiFV+no4IJEqAHJTYzsic21f3SRq3
-         eDDA==
-X-Gm-Message-State: AOJu0YwPh36ZhKYCeT1+MQDLWLC9uBrMCOxDy0+RF46vR/Lh0gJQ40FX
-	niX0/lt98bEGb1N5fJFO5KI=
-X-Google-Smtp-Source: AGHT+IEZpIBgfF+rRBEjwe+RKi18IbWgoRBn7/KAotQQJA4PhDwn0WYKubxQIbypm90gRl4l4gWnuQ==
-X-Received: by 2002:a5d:550c:0:b0:337:3a10:675 with SMTP id b12-20020a5d550c000000b003373a100675mr3298721wrv.30.1705324104504;
-        Mon, 15 Jan 2024 05:08:24 -0800 (PST)
+        bh=WclvSvESBcB1ccyxeqjrdGj+frspJc0esD0QtgwrkCo=;
+        b=qFO8nKeqpP3Hq4a3r9MLPdSyXxX39QJ4TGcGs7HjTmdMwLBlGfYVk7NQofkEVQWUFH
+         tuwAj51cz5/HyWxRTj269ZEFF0oq7ClTvizQze+H2O3F/NiRJi+IkhOuZlvzbutGXW5a
+         EsqAQ5LxJAPBEm1jDd3SotmHTrHkh5xl+mm7T1bsIfg2aP3gfOUaId7eA7/vNJtASLHj
+         K+4WyTs/7aDIo7RydLoSTBDDn6FR452ZXsQWqUoUaeswd4kZE8X5f5+PTFGgzpG8NgBd
+         Wn3AwQ6VT4e9ZRY+cPemK4EYcNNz+oDG0jU3Ys02AFazaMouInhSvieSFM2FSFeGj5DI
+         LZ2g==
+X-Gm-Message-State: AOJu0YyojPg4fPZeOOM0Bs9kvwJyHxt2F4/FIQwS0jx5MOICNLb7YAWU
+	bhjCU75v7tbJGJDCnvQ8H4M=
+X-Google-Smtp-Source: AGHT+IGsOzQ7L6ielq7mxIFwHy6qHtdKpqdw04n+je7tcix4atLkzck0Yy0VuXqfteUT7WaM2h9fFA==
+X-Received: by 2002:adf:dd8f:0:b0:336:5f04:bff3 with SMTP id x15-20020adfdd8f000000b003365f04bff3mr2990776wrl.81.1705324105815;
+        Mon, 15 Jan 2024 05:08:25 -0800 (PST)
 Received: from prasmi.home ([2a00:23c8:2500:a01:3d67:232:2eec:2430])
-        by smtp.gmail.com with ESMTPSA id d13-20020adfef8d000000b0033739c1da1dsm11843620wro.67.2024.01.15.05.08.23
+        by smtp.gmail.com with ESMTPSA id d13-20020adfef8d000000b0033739c1da1dsm11843620wro.67.2024.01.15.05.08.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 15 Jan 2024 05:08:24 -0800 (PST)
 From: Prabhakar <prabhakar.csengg@gmail.com>
@@ -73,9 +73,9 @@ Cc: Rob Herring <robh+dt@kernel.org>,
 	Biju Das <biju.das.jz@bp.renesas.com>,
 	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
 	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v5 3/4] pinctrl: renesas: pinctrl-rzg2l: Add the missing port pins P19 to P28
-Date: Mon, 15 Jan 2024 13:08:16 +0000
-Message-Id: <20240115130817.88456-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v5 4/4] riscv: dts: renesas: r9a07g043f: Update gpio-ranges property
+Date: Mon, 15 Jan 2024 13:08:17 +0000
+Message-Id: <20240115130817.88456-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240115130817.88456-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 References: <20240115130817.88456-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
@@ -89,320 +89,29 @@ Content-Transfer-Encoding: 8bit
 
 From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Add the missing port pins P19 to P28 for RZ/Five SoC. These additional
-pins provide expanded capabilities and are exclusive to the RZ/Five SoC.
-
-Couple of port pins have different configuration and are not identical for
-the complete port so introduce struct rzg2l_variable_pin_cfg to handle
-such cases and introduce the PIN_CFG_VARIABLE macro. The actual pin config
-is then assigned in rzg2l_pinctrl_get_variable_pin_cfg().
-
-Add an additional check in rzg2l_gpio_get_gpioint() to only allow GPIO pins
-which support interrupt facility.
-
-While at define RZG2L_GPIO_PORT_PACK() using RZG2L_GPIO_PORT_SPARSE_PACK().
+On RZ/Five we have additional pins compared to the RZ/G2UL SoC so update
+the gpio-ranges property in RZ/Five SoC DTSI.
 
 Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 ---
- drivers/pinctrl/renesas/pinctrl-rzg2l.c | 213 +++++++++++++++++++++++-
- 1 file changed, 204 insertions(+), 9 deletions(-)
+ arch/riscv/boot/dts/renesas/r9a07g043f.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/pinctrl/renesas/pinctrl-rzg2l.c b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-index 066fcc515335..384d2ed12747 100644
---- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-+++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-@@ -57,6 +57,8 @@
- #define PIN_CFG_IOLH_C			BIT(13)
- #define PIN_CFG_SOFT_PS			BIT(14)
- #define PIN_CFG_OEN			BIT(15)
-+#define PIN_CFG_VARIABLE		BIT(16)
-+#define PIN_CFG_NOGPIO_INT		BIT(17)
- 
- #define RZG2L_MPXED_COMMON_PIN_FUNCS(group) \
- 					(PIN_CFG_IOLH_##group | \
-@@ -76,17 +78,23 @@
- 					 PIN_CFG_FILNUM | \
- 					 PIN_CFG_FILCLKSEL)
- 
--/*
-- * n indicates number of pins in the port, a is the register index
-- * and f is pin configuration capabilities supported.
-- */
- #define PIN_CFG_PIN_MAP_MASK		GENMASK_ULL(35, 28)
- #define PIN_CFG_PIN_REG_MASK		GENMASK(27, 20)
- #define PIN_CFG_MASK			GENMASK(19, 0)
- 
--#define RZG2L_GPIO_PORT_PACK(n, a, f)	((((1ULL << (n)) - 1) << 28) | \
--					 FIELD_PREP_CONST(PIN_CFG_PIN_REG_MASK, (a)) | \
--					 FIELD_PREP_CONST(PIN_CFG_MASK, (f)))
-+/*
-+ * m indicates the bitmap of supported pins, a is the register index
-+ * and f is pin configuration capabilities supported.
-+ */
-+#define RZG2L_GPIO_PORT_SPARSE_PACK(m, a, f)	(FIELD_PREP_CONST(PIN_CFG_PIN_MAP_MASK, (m)) | \
-+						 FIELD_PREP_CONST(PIN_CFG_PIN_REG_MASK, (a)) | \
-+						 FIELD_PREP_CONST(PIN_CFG_MASK, (f)))
-+
-+/*
-+ * n indicates number of pins in the port, a is the register index
-+ * and f is pin configuration capabilities supported.
-+ */
-+#define RZG2L_GPIO_PORT_PACK(n, a, f)	RZG2L_GPIO_PORT_SPARSE_PACK((1ULL << (n)) - 1, (a), (f))
- 
- /*
-  * BIT(63) indicates dedicated pin, p is the register index while
-@@ -200,6 +208,18 @@ struct rzg2l_dedicated_configs {
- 	u64 config;
+diff --git a/arch/riscv/boot/dts/renesas/r9a07g043f.dtsi b/arch/riscv/boot/dts/renesas/r9a07g043f.dtsi
+index d2272a0bfb61..aa3b1d2b999d 100644
+--- a/arch/riscv/boot/dts/renesas/r9a07g043f.dtsi
++++ b/arch/riscv/boot/dts/renesas/r9a07g043f.dtsi
+@@ -46,6 +46,10 @@ cpu0_intc: interrupt-controller {
+ 	};
  };
  
-+/**
-+ * struct rzg2l_variable_pin_cfg - pin data cfg
-+ * @cfg: port pin configuration
-+ * @port: port number
-+ * @pin: port pin
-+ */
-+struct rzg2l_variable_pin_cfg {
-+	u32 cfg:20;
-+	u32 port:5;
-+	u32 pin:3;
++&pinctrl {
++	gpio-ranges = <&pinctrl 0 0 232>;
 +};
 +
- struct rzg2l_pinctrl_data {
- 	const char * const *port_pins;
- 	const u64 *port_pin_configs;
-@@ -208,6 +228,8 @@ struct rzg2l_pinctrl_data {
- 	unsigned int n_port_pins;
- 	unsigned int n_dedicated_pins;
- 	const struct rzg2l_hwcfg *hwcfg;
-+	const struct rzg2l_variable_pin_cfg *variable_pin_cfg;
-+	unsigned int n_variable_pin_cfg;
- };
- 
- /**
-@@ -243,6 +265,143 @@ struct rzg2l_pinctrl {
- 
- static const u16 available_ps[] = { 1800, 2500, 3300 };
- 
-+#ifdef CONFIG_RISCV
-+static u64 rzg2l_pinctrl_get_variable_pin_cfg(struct rzg2l_pinctrl *pctrl,
-+					      u64 pincfg,
-+					      unsigned int port,
-+					      u8 pin)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; i < pctrl->data->n_variable_pin_cfg; i++) {
-+		if (pctrl->data->variable_pin_cfg[i].port == port &&
-+		    pctrl->data->variable_pin_cfg[i].pin == pin)
-+			return (pincfg & ~PIN_CFG_VARIABLE) | pctrl->data->variable_pin_cfg[i].cfg;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct rzg2l_variable_pin_cfg r9a07g043f_variable_pin_cfg[] = {
-+	{
-+		.port = 20,
-+		.pin = 0,
-+		.cfg = PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+		       PIN_CFG_FILONOFF | PIN_CFG_FILNUM | PIN_CFG_FILCLKSEL |
-+		       PIN_CFG_IEN | PIN_CFG_NOGPIO_INT,
-+	},
-+	{
-+		.port = 20,
-+		.pin = 1,
-+		.cfg = PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+		       PIN_CFG_FILONOFF | PIN_CFG_FILNUM | PIN_CFG_FILCLKSEL |
-+		       PIN_CFG_IEN | PIN_CFG_NOGPIO_INT,
-+	},
-+	{
-+		.port = 20,
-+		.pin = 2,
-+		.cfg = PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+		       PIN_CFG_FILONOFF | PIN_CFG_FILNUM | PIN_CFG_FILCLKSEL |
-+		       PIN_CFG_IEN  | PIN_CFG_NOGPIO_INT,
-+	},
-+	{
-+		.port = 20,
-+		.pin = 3,
-+		.cfg = PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+		       PIN_CFG_IEN | PIN_CFG_NOGPIO_INT,
-+	},
-+	{
-+		.port = 20,
-+		.pin = 4,
-+		.cfg = PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+		       PIN_CFG_IEN | PIN_CFG_NOGPIO_INT,
-+	},
-+	{
-+		.port = 20,
-+		.pin = 5,
-+		.cfg = PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+		       PIN_CFG_IEN | PIN_CFG_NOGPIO_INT,
-+	},
-+	{
-+		.port = 20,
-+		.pin = 6,
-+		.cfg = PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+		       PIN_CFG_IEN | PIN_CFG_NOGPIO_INT,
-+	},
-+	{
-+		.port = 20,
-+		.pin = 7,
-+		.cfg = PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+		       PIN_CFG_IEN | PIN_CFG_NOGPIO_INT,
-+	},
-+	{
-+		.port = 23,
-+		.pin = 1,
-+		.cfg = PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+		       PIN_CFG_NOGPIO_INT
-+	},
-+	{
-+		.port = 23,
-+		.pin = 2,
-+		.cfg = PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+		       PIN_CFG_NOGPIO_INT,
-+	},
-+	{
-+		.port = 23,
-+		.pin = 3,
-+		.cfg = PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+		       PIN_CFG_NOGPIO_INT,
-+	},
-+	{
-+		.port = 23,
-+		.pin = 4,
-+		.cfg = PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+		       PIN_CFG_NOGPIO_INT,
-+	},
-+	{
-+		.port = 23,
-+		.pin = 5,
-+		.cfg = PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_NOGPIO_INT,
-+	},
-+	{
-+		.port = 24,
-+		.pin = 0,
-+		.cfg = PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_NOGPIO_INT,
-+	},
-+	{
-+		.port = 24,
-+		.pin = 1,
-+		.cfg = PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+		       PIN_CFG_NOGPIO_INT,
-+	},
-+	{
-+		.port = 24,
-+		.pin = 2,
-+		.cfg = PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+		       PIN_CFG_NOGPIO_INT,
-+	},
-+	{
-+		.port = 24,
-+		.pin = 3,
-+		.cfg = PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+		       PIN_CFG_NOGPIO_INT,
-+	},
-+	{
-+		.port = 24,
-+		.pin = 4,
-+		.cfg = PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+		       PIN_CFG_NOGPIO_INT,
-+	},
-+	{
-+		.port = 24,
-+		.pin = 5,
-+		.cfg = PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+		       PIN_CFG_FILONOFF | PIN_CFG_FILNUM | PIN_CFG_FILCLKSEL |
-+		       PIN_CFG_NOGPIO_INT,
-+	},
-+};
-+#endif
-+
- static void rzg2l_pinctrl_set_pfc_mode(struct rzg2l_pinctrl *pctrl,
- 				       u8 pin, u8 off, u8 func)
- {
-@@ -1446,6 +1605,25 @@ static const u64 r9a07g043_gpio_configs[] = {
- 	RZG2L_GPIO_PORT_PACK(2, 0x20, RZG2L_MPXED_PIN_FUNCS),
- 	RZG2L_GPIO_PORT_PACK(4, 0x21, RZG2L_MPXED_PIN_FUNCS),
- 	RZG2L_GPIO_PORT_PACK(6, 0x22, RZG2L_MPXED_PIN_FUNCS),
-+#ifdef CONFIG_RISCV
-+	/* Below additional port pins (P19 - P28) are exclusively available on RZ/Five SoC only */
-+	RZG2L_GPIO_PORT_SPARSE_PACK(0x2, 0x06, PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+				    PIN_CFG_FILONOFF | PIN_CFG_FILNUM | PIN_CFG_FILCLKSEL |
-+				    PIN_CFG_IEN | PIN_CFG_NOGPIO_INT),			/* P19 */
-+	RZG2L_GPIO_PORT_PACK(8, 0x07, PIN_CFG_VARIABLE),				/* P20 */
-+	RZG2L_GPIO_PORT_SPARSE_PACK(0x2, 0x08, PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+				    PIN_CFG_IEN | PIN_CFG_NOGPIO_INT),			/* P21 */
-+	RZG2L_GPIO_PORT_PACK(4, 0x09, PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_PUPD |
-+			     PIN_CFG_IEN | PIN_CFG_NOGPIO_INT),				/* P22 */
-+	RZG2L_GPIO_PORT_SPARSE_PACK(0x3e, 0x0a, PIN_CFG_VARIABLE),			/* P23 */
-+	RZG2L_GPIO_PORT_PACK(6, 0x0b, PIN_CFG_VARIABLE),				/* P24 */
-+	RZG2L_GPIO_PORT_SPARSE_PACK(0x2, 0x0c, PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_FILONOFF |
-+				    PIN_CFG_FILNUM | PIN_CFG_FILCLKSEL |
-+				    PIN_CFG_NOGPIO_INT),				/* P25 */
-+	0x0,										/* P26 */
-+	0x0,										/* P27 */
-+	RZG2L_GPIO_PORT_PACK(6, 0x0f, RZG2L_MPXED_PIN_FUNCS | PIN_CFG_NOGPIO_INT),	/* P28 */
-+#endif
- };
- 
- static const u64 r9a08g045_gpio_configs[] = {
-@@ -1606,12 +1784,18 @@ static const struct rzg2l_dedicated_configs rzg3s_dedicated_pins[] = {
- 						       PIN_CFG_IO_VMC_SD1)) },
- };
- 
--static int rzg2l_gpio_get_gpioint(unsigned int virq, const struct rzg2l_pinctrl_data *data)
-+static int rzg2l_gpio_get_gpioint(unsigned int virq, struct rzg2l_pinctrl *pctrl)
- {
-+	const struct pinctrl_pin_desc *pin_desc = &pctrl->desc.pins[virq];
-+	const struct rzg2l_pinctrl_data *data = pctrl->data;
-+	u64 *pin_data = pin_desc->drv_data;
- 	unsigned int gpioint;
- 	unsigned int i;
- 	u32 port, bit;
- 
-+	if (*pin_data & PIN_CFG_NOGPIO_INT)
-+		return -EINVAL;
-+
- 	port = virq / 8;
- 	bit = virq % 8;
- 
-@@ -1721,7 +1905,7 @@ static int rzg2l_gpio_child_to_parent_hwirq(struct gpio_chip *gc,
- 	unsigned long flags;
- 	int gpioint, irq;
- 
--	gpioint = rzg2l_gpio_get_gpioint(child, pctrl->data);
-+	gpioint = rzg2l_gpio_get_gpioint(child, pctrl);
- 	if (gpioint < 0)
- 		return gpioint;
- 
-@@ -1907,6 +2091,13 @@ static int rzg2l_pinctrl_register(struct rzg2l_pinctrl *pctrl)
- 		if (i && !(i % RZG2L_PINS_PER_PORT))
- 			j++;
- 		pin_data[i] = pctrl->data->port_pin_configs[j];
-+#ifdef CONFIG_RISCV
-+		if (pin_data[i] & PIN_CFG_VARIABLE)
-+			pin_data[i] = rzg2l_pinctrl_get_variable_pin_cfg(pctrl,
-+									 pin_data[i],
-+									 j,
-+									 i % RZG2L_PINS_PER_PORT);
-+#endif
- 		pins[i].drv_data = &pin_data[i];
- 	}
- 
-@@ -2058,6 +2249,10 @@ static struct rzg2l_pinctrl_data r9a07g043_data = {
- 	.n_port_pins = ARRAY_SIZE(r9a07g043_gpio_configs) * RZG2L_PINS_PER_PORT,
- 	.n_dedicated_pins = ARRAY_SIZE(rzg2l_dedicated_pins.common),
- 	.hwcfg = &rzg2l_hwcfg,
-+#ifdef CONFIG_RISCV
-+	.variable_pin_cfg = r9a07g043f_variable_pin_cfg,
-+	.n_variable_pin_cfg = ARRAY_SIZE(r9a07g043f_variable_pin_cfg),
-+#endif
- };
- 
- static struct rzg2l_pinctrl_data r9a07g044_data = {
+ &soc {
+ 	dma-noncoherent;
+ 	interrupt-parent = <&plic>;
 -- 
 2.34.1
 
