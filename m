@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-26388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26389-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 268D982DFF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 19:30:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C87182DFF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 19:30:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 904601F259B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:30:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D98BD282BE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:30:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE3D818C15;
-	Mon, 15 Jan 2024 18:30:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 994D518E1C;
+	Mon, 15 Jan 2024 18:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="W9wNmuP8"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="AbyVG+SX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B68118C03;
-	Mon, 15 Jan 2024 18:30:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B26BC433C7;
-	Mon, 15 Jan 2024 18:30:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC4DC18E08;
+	Mon, 15 Jan 2024 18:30:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3864BC433F1;
+	Mon, 15 Jan 2024 18:30:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1705343425;
-	bh=6//r2hGi213i1DBnSEyfoquwrkXsIUFbZlYG5T/C5ew=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=W9wNmuP8bgiSb4nf8QpeVWPgTIAdCiIC8JqzDc0mb3kHBvYzNp8NZWbprMVRu+ha5
-	 jYkGuC4rNkokjzF5X4SCv4Og4PCi8lW/u99sNBBOBmxIjqdXIRz9ugQGpeYBRXFevF
-	 pyiOZ4scISZJqXUQC7cqAl03aeDNHrLYCi9NwOFo=
+	s=korg; t=1705343428;
+	bh=tkYJ9gQwmCP0qyHH75s39GTT5QsnaTeS1ps1TaLKpJI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=AbyVG+SX7HYZteuFzjzrNY9x9HnQblcfw8QQIKNMJw9SQm3BGn16rTCMxjiN0Nsq1
+	 p7zvja8nvjKiwu/o0nqUJHVbjCwNfwo16G6/H+/3ADudU5G4GFDl+AWRox2/Q/62zG
+	 p/9aTHYsCN1Oj0Kh70GFr14TFUoUf4g9wCcfHg+4=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: linux-kernel@vger.kernel.org,
 	akpm@linux-foundation.org,
@@ -36,12 +36,10 @@ To: linux-kernel@vger.kernel.org,
 Cc: lwn@lwn.net,
 	jslaby@suse.cz,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 6.1.73
-Date: Mon, 15 Jan 2024 19:30:16 +0100
-Message-ID: <2024011516-earthling-unsolved-574d@gregkh>
+Subject: Linux 6.6.12
+Date: Mon, 15 Jan 2024 19:30:21 +0100
+Message-ID: <2024011521-herbicide-shun-187e@gregkh>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <2024011516-congrats-mutilated-2f3c@gregkh>
-References: <2024011516-congrats-mutilated-2f3c@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -50,298 +48,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-diff --git a/Makefile b/Makefile
-index bad3387b3251..e4f2d019ca74 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 6
- PATCHLEVEL = 1
--SUBLEVEL = 72
-+SUBLEVEL = 73
- EXTRAVERSION =
- NAME = Curry Ramen
- 
-diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
-index b3b4542e31ed..573de0d49e17 100644
---- a/fs/nfsd/nfsctl.c
-+++ b/fs/nfsd/nfsctl.c
-@@ -716,10 +716,8 @@ static ssize_t __write_ports_addfd(char *buf, struct net *net, const struct cred
- 
- 	err = svc_addsock(nn->nfsd_serv, net, fd, buf, SIMPLE_TRANSACTION_LIMIT, cred);
- 
--	if (err < 0 && !nn->nfsd_serv->sv_nrthreads && !nn->keep_active)
--		nfsd_last_thread(net);
--	else if (err >= 0 &&
--		 !nn->nfsd_serv->sv_nrthreads && !xchg(&nn->keep_active, 1))
-+	if (err >= 0 &&
-+	    !nn->nfsd_serv->sv_nrthreads && !xchg(&nn->keep_active, 1))
- 		svc_get(nn->nfsd_serv);
- 
- 	nfsd_put(net);
-@@ -769,9 +767,6 @@ static ssize_t __write_ports_addxprt(char *buf, struct net *net, const struct cr
- 		svc_xprt_put(xprt);
- 	}
- out_err:
--	if (!nn->nfsd_serv->sv_nrthreads && !nn->keep_active)
--		nfsd_last_thread(net);
--
- 	nfsd_put(net);
- 	return err;
- }
-diff --git a/fs/nfsd/nfsd.h b/fs/nfsd/nfsd.h
-index 53166cce7062..09726c5b9a31 100644
---- a/fs/nfsd/nfsd.h
-+++ b/fs/nfsd/nfsd.h
-@@ -97,12 +97,7 @@ int		nfsd_pool_stats_open(struct inode *, struct file *);
- int		nfsd_pool_stats_release(struct inode *, struct file *);
- void		nfsd_shutdown_threads(struct net *net);
- 
--static inline void nfsd_put(struct net *net)
--{
--	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
--
--	svc_put(nn->nfsd_serv);
--}
-+void		nfsd_put(struct net *net);
- 
- bool		i_am_nfsd(void);
- 
-@@ -139,7 +134,6 @@ int nfsd_vers(struct nfsd_net *nn, int vers, enum vers_op change);
- int nfsd_minorversion(struct nfsd_net *nn, u32 minorversion, enum vers_op change);
- void nfsd_reset_versions(struct nfsd_net *nn);
- int nfsd_create_serv(struct net *net);
--void nfsd_last_thread(struct net *net);
- 
- extern int nfsd_max_blksize;
- 
-diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
-index 350c6c72f793..c7695ebd28dc 100644
---- a/fs/nfsd/nfssvc.c
-+++ b/fs/nfsd/nfssvc.c
-@@ -523,14 +523,9 @@ static struct notifier_block nfsd_inet6addr_notifier = {
- /* Only used under nfsd_mutex, so this atomic may be overkill: */
- static atomic_t nfsd_notifier_refcount = ATOMIC_INIT(0);
- 
--void nfsd_last_thread(struct net *net)
-+static void nfsd_last_thread(struct svc_serv *serv, struct net *net)
- {
- 	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
--	struct svc_serv *serv = nn->nfsd_serv;
--
--	spin_lock(&nfsd_notifier_lock);
--	nn->nfsd_serv = NULL;
--	spin_unlock(&nfsd_notifier_lock);
- 
- 	/* check if the notifier still has clients */
- 	if (atomic_dec_return(&nfsd_notifier_refcount) == 0) {
-@@ -540,8 +535,6 @@ void nfsd_last_thread(struct net *net)
- #endif
- 	}
- 
--	svc_xprt_destroy_all(serv, net);
--
- 	/*
- 	 * write_ports can create the server without actually starting
- 	 * any threads--if we get shut down before any threads are
-@@ -632,8 +625,7 @@ void nfsd_shutdown_threads(struct net *net)
- 	svc_get(serv);
- 	/* Kill outstanding nfsd threads */
- 	svc_set_num_threads(serv, NULL, 0);
--	nfsd_last_thread(net);
--	svc_put(serv);
-+	nfsd_put(net);
- 	mutex_unlock(&nfsd_mutex);
- }
- 
-@@ -663,6 +655,9 @@ int nfsd_create_serv(struct net *net)
- 	serv->sv_maxconn = nn->max_connections;
- 	error = svc_bind(serv, net);
- 	if (error < 0) {
-+		/* NOT nfsd_put() as notifiers (see below) haven't
-+		 * been set up yet.
-+		 */
- 		svc_put(serv);
- 		return error;
- 	}
-@@ -705,6 +700,29 @@ int nfsd_get_nrthreads(int n, int *nthreads, struct net *net)
- 	return 0;
- }
- 
-+/* This is the callback for kref_put() below.
-+ * There is no code here as the first thing to be done is
-+ * call svc_shutdown_net(), but we cannot get the 'net' from
-+ * the kref.  So do all the work when kref_put returns true.
-+ */
-+static void nfsd_noop(struct kref *ref)
-+{
-+}
-+
-+void nfsd_put(struct net *net)
-+{
-+	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
-+
-+	if (kref_put(&nn->nfsd_serv->sv_refcnt, nfsd_noop)) {
-+		svc_xprt_destroy_all(nn->nfsd_serv, net);
-+		nfsd_last_thread(nn->nfsd_serv, net);
-+		svc_destroy(&nn->nfsd_serv->sv_refcnt);
-+		spin_lock(&nfsd_notifier_lock);
-+		nn->nfsd_serv = NULL;
-+		spin_unlock(&nfsd_notifier_lock);
-+	}
-+}
-+
- int nfsd_set_nrthreads(int n, int *nthreads, struct net *net)
- {
- 	int i = 0;
-@@ -755,7 +773,7 @@ int nfsd_set_nrthreads(int n, int *nthreads, struct net *net)
- 		if (err)
- 			break;
- 	}
--	svc_put(nn->nfsd_serv);
-+	nfsd_put(net);
- 	return err;
- }
- 
-@@ -770,7 +788,6 @@ nfsd_svc(int nrservs, struct net *net, const struct cred *cred)
- 	int	error;
- 	bool	nfsd_up_before;
- 	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
--	struct svc_serv *serv;
- 
- 	mutex_lock(&nfsd_mutex);
- 	dprintk("nfsd: creating service\n");
-@@ -790,25 +807,22 @@ nfsd_svc(int nrservs, struct net *net, const struct cred *cred)
- 		goto out;
- 
- 	nfsd_up_before = nn->nfsd_net_up;
--	serv = nn->nfsd_serv;
- 
- 	error = nfsd_startup_net(net, cred);
- 	if (error)
- 		goto out_put;
--	error = svc_set_num_threads(serv, NULL, nrservs);
-+	error = svc_set_num_threads(nn->nfsd_serv, NULL, nrservs);
- 	if (error)
- 		goto out_shutdown;
--	error = serv->sv_nrthreads;
--	if (error == 0)
--		nfsd_last_thread(net);
-+	error = nn->nfsd_serv->sv_nrthreads;
- out_shutdown:
- 	if (error < 0 && !nfsd_up_before)
- 		nfsd_shutdown_net(net);
- out_put:
- 	/* Threads now hold service active */
- 	if (xchg(&nn->keep_active, 0))
--		svc_put(serv);
--	svc_put(serv);
-+		nfsd_put(net);
-+	nfsd_put(net);
- out:
- 	mutex_unlock(&nfsd_mutex);
- 	return error;
-diff --git a/fs/smb/client/cifsfs.c b/fs/smb/client/cifsfs.c
-index 2e15b182e59f..7286a56aebfa 100644
---- a/fs/smb/client/cifsfs.c
-+++ b/fs/smb/client/cifsfs.c
-@@ -1240,7 +1240,7 @@ static int cifs_flush_folio(struct inode *inode, loff_t pos, loff_t *_fstart, lo
- 	int rc = 0;
- 
- 	folio = filemap_get_folio(inode->i_mapping, index);
--	if (IS_ERR(folio))
-+	if (!folio)
- 		return 0;
- 
- 	size = folio_size(folio);
-diff --git a/include/net/dst_ops.h b/include/net/dst_ops.h
-index 88ff7bb2bb9b..632086b2f644 100644
---- a/include/net/dst_ops.h
-+++ b/include/net/dst_ops.h
-@@ -16,7 +16,7 @@ struct dst_ops {
- 	unsigned short		family;
- 	unsigned int		gc_thresh;
- 
--	int			(*gc)(struct dst_ops *ops);
-+	void			(*gc)(struct dst_ops *ops);
- 	struct dst_entry *	(*check)(struct dst_entry *, __u32 cookie);
- 	unsigned int		(*default_advmss)(const struct dst_entry *);
- 	unsigned int		(*mtu)(const struct dst_entry *);
-diff --git a/net/core/dst.c b/net/core/dst.c
-index bc9c9be4e080..d178c564138e 100644
---- a/net/core/dst.c
-+++ b/net/core/dst.c
-@@ -82,12 +82,8 @@ void *dst_alloc(struct dst_ops *ops, struct net_device *dev,
- 
- 	if (ops->gc &&
- 	    !(flags & DST_NOCOUNT) &&
--	    dst_entries_get_fast(ops) > ops->gc_thresh) {
--		if (ops->gc(ops)) {
--			pr_notice_ratelimited("Route cache is full: consider increasing sysctl net.ipv6.route.max_size.\n");
--			return NULL;
--		}
--	}
-+	    dst_entries_get_fast(ops) > ops->gc_thresh)
-+		ops->gc(ops);
- 
- 	dst = kmem_cache_alloc(ops->kmem_cachep, GFP_ATOMIC);
- 	if (!dst)
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index 0bcdb675ba2c..7f65dc750feb 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -91,7 +91,7 @@ static struct dst_entry *ip6_negative_advice(struct dst_entry *);
- static void		ip6_dst_destroy(struct dst_entry *);
- static void		ip6_dst_ifdown(struct dst_entry *,
- 				       struct net_device *dev, int how);
--static int		 ip6_dst_gc(struct dst_ops *ops);
-+static void		 ip6_dst_gc(struct dst_ops *ops);
- 
- static int		ip6_pkt_discard(struct sk_buff *skb);
- static int		ip6_pkt_discard_out(struct net *net, struct sock *sk, struct sk_buff *skb);
-@@ -3288,11 +3288,10 @@ struct dst_entry *icmp6_dst_alloc(struct net_device *dev,
- 	return dst;
- }
- 
--static int ip6_dst_gc(struct dst_ops *ops)
-+static void ip6_dst_gc(struct dst_ops *ops)
- {
- 	struct net *net = container_of(ops, struct net, ipv6.ip6_dst_ops);
- 	int rt_min_interval = net->ipv6.sysctl.ip6_rt_gc_min_interval;
--	int rt_max_size = net->ipv6.sysctl.ip6_rt_max_size;
- 	int rt_elasticity = net->ipv6.sysctl.ip6_rt_gc_elasticity;
- 	int rt_gc_timeout = net->ipv6.sysctl.ip6_rt_gc_timeout;
- 	unsigned long rt_last_gc = net->ipv6.ip6_rt_last_gc;
-@@ -3300,11 +3299,10 @@ static int ip6_dst_gc(struct dst_ops *ops)
- 	int entries;
- 
- 	entries = dst_entries_get_fast(ops);
--	if (entries > rt_max_size)
-+	if (entries > ops->gc_thresh)
- 		entries = dst_entries_get_slow(ops);
- 
--	if (time_after(rt_last_gc + rt_min_interval, jiffies) &&
--	    entries <= rt_max_size)
-+	if (time_after(rt_last_gc + rt_min_interval, jiffies))
- 		goto out;
- 
- 	fib6_run_gc(atomic_inc_return(&net->ipv6.ip6_rt_gc_expire), net, true);
-@@ -3314,7 +3312,6 @@ static int ip6_dst_gc(struct dst_ops *ops)
- out:
- 	val = atomic_read(&net->ipv6.ip6_rt_gc_expire);
- 	atomic_set(&net->ipv6.ip6_rt_gc_expire, val - (val >> rt_elasticity));
--	return entries > rt_max_size;
- }
- 
- static int ip6_nh_lookup_table(struct net *net, struct fib6_config *cfg,
-@@ -6517,7 +6514,7 @@ static int __net_init ip6_route_net_init(struct net *net)
- #endif
- 
- 	net->ipv6.sysctl.flush_delay = 0;
--	net->ipv6.sysctl.ip6_rt_max_size = 4096;
-+	net->ipv6.sysctl.ip6_rt_max_size = INT_MAX;
- 	net->ipv6.sysctl.ip6_rt_gc_min_interval = HZ / 2;
- 	net->ipv6.sysctl.ip6_rt_gc_timeout = 60*HZ;
- 	net->ipv6.sysctl.ip6_rt_gc_interval = 30*HZ;
+I'm announcing the release of the 6.6.12 kernel.
+
+All users of the 6.6 kernel series must upgrade.
+
+The updated 6.6.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-6.6.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+
+thanks,
+
+greg k-h
+
+------------
+
+ Makefile         |    2 +-
+ fs/nfsd/nfsctl.c |   31 +++++++++++++++++--------------
+ fs/nfsd/nfsd.h   |    7 -------
+ 3 files changed, 18 insertions(+), 22 deletions(-)
+
+Greg Kroah-Hartman (1):
+      Linux 6.6.12
+
+Jeff Layton (1):
+      nfsd: drop the nfsd_put helper
+
 
