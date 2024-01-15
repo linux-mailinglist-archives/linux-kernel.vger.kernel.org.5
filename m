@@ -1,165 +1,245 @@
-Return-Path: <linux-kernel+bounces-26063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C592F82DAB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:57:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A22A482DABB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:58:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EA6EB2136E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:57:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FF34280DB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 13:58:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D961B17577;
-	Mon, 15 Jan 2024 13:57:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9214F1757D;
+	Mon, 15 Jan 2024 13:58:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="JZA5ACCj"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="vUiy9kGi"
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2053.outbound.protection.outlook.com [40.107.6.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932821754C;
-	Mon, 15 Jan 2024 13:57:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8CB41754C;
+	Mon, 15 Jan 2024 13:58:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HFnP9jWqKX+/rGz+HfT/EQt5AMb3ZvM1CAt4m/fGgp0g7lqXZsLQJBQw3xDPNhODq+j8fhxFqSMhUn/+WgmI0MV4FHm39pBVX4SLYYtxZ1d2xCuY2BcnMDG1lMeGpzmyWsGcWpm8iCvvU5AhKjyHC9LWD+wWcvkj14zp2JHXx1K03BMLWh3XF1PDhPiuGmJWVAFmB1skctyLzBiJVsEn/J7IBclpZ6y+PYC9r/sj8wswx4AvoNQfQEswGZViVFkXvdTiTERcWonRGsFoJbQGzx9j0nitdXnfc8R5EUdKyq1+s6ZKWrVI+1BlAts34ChupuC1Kqcrx1cmOt4eKJ99lA==
+ b=Fr7Z/ot9nQkp+MnEpC2x/Jl7Iy2h5jZRTc6tg5T2ifeIda8MNy8UNOpFL3SAdtT6VTHsyG6CMsvSCKHFroeFWYEWRiIz6utJHCB1OukQsunQhO+GaLEDyQS6N0gUmf27evMyz0HCSHvco2sqa0X+oYtj2FzjOlV+COqq8DChLZ7yT7OdoIzCnzmDRneeWYO6zcbkFTffSuSd/m3baf+dXi4i0WvZhiKf6H1ym0Veopvof56tqz7qW2cLKNsRQtKCzkHN/aV8QRi9Fjmmp3hOLSSatZnPhHXB8gso9j2aylSbom5fniTBlqjr4jzhR5X6nLNwcMtPaB+XPDFB75Iqzw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AK34ZKqKDlUqCk2ZpO9Fwx6cd/5UWQ6FI6dB+/GvFzA=;
- b=K03ceaTPiwqLQAixohEUbeqe/E21+eo417Po+OJ4WEae3mrn/0QhOvy8KWetAdHTD6jCFTNvtSAn3Et5QrnXZIiuscxSubLe7+/4VI8SRSVvpV4ZQS7ngtn0zci4l5UN2+HwCxUriN4hRZQQXmEbAZrWIkN4yqcQwdFY5tmGl8/t/U1/o+NZRtgD8gNjhYEfd7OwzqbEXoEC9SVAsuhqEBCNjm9zGDbrYDZZEmLiW55hdzDGgsIBI+C2PUeG5aVsd0GVKisleh3nmYCzKfQL884McXd0A0meiw1TZD3A2NCWgS1hhPx2JDFHS450sLOBu1bTSq/9Xb8QaUmH+A8yow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ bh=br46TWzz8VRKPDC4imWbrMVSscmUVPipLXGI6K5S5HY=;
+ b=TSM7+8aanHyoURh+nYJ1G2q1biun8fbDM251jecpfBHp4d5cIL0u+BxMbbyIlsV4ZDiUwjuesi+VWMGbL+rHi/hAixsaxXDgEdrGcN7sMrshOlptvztwXRZjwikr5qt/4mxa1jtmzED1ON8UQRCed00brx2Cr56v69RtsfqgaZWdXWXU7JRLvPP4i7BNueiocYq3sD9E4BxeTUIOSfyXkbA+5motaDrJVwwMToC1zJwNKanItiqlqEWn282U+CBEyHT+q4r2gRGw2pePw3QLQTr09TzHRfN9esMxHPC/VXT4/QpBnf+PI20YPKKd0CHdpNPcvMuEU6C0/lg+9h/18Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AK34ZKqKDlUqCk2ZpO9Fwx6cd/5UWQ6FI6dB+/GvFzA=;
- b=JZA5ACCjSPup9Gd834hkX+Tammlx7uXFVF0delJr4QMouFlySl84JsHojNvCqD8n09XCe20hb3DUn0QJgEi0w6TzHFg8Y997jGcs5UhA861iirk28qcXhK6aYe468gJ45j+K0XwoiAb5Ss2z4LOGpNSp1NkbvykGSabPcyKS62RawTS81cBUQLaMAmhYTiYQf4raHklJqScrmlfrYUIIfBUYO0cP8Y0NCm2/Or40ns7IyeAnk3pqJFb1iKGQRxz+QXhmi6r7Ob3JgOJTPEiRK+CDuwJK+0MrxXUvqmgpJjyE9RanFAwPVQcn3fwgId17pFevbvqf/7vvxir0wuTaSw==
-Received: from MW4PR04CA0311.namprd04.prod.outlook.com (2603:10b6:303:82::16)
- by SA0PR12MB4384.namprd12.prod.outlook.com (2603:10b6:806:9f::22) with
+ bh=br46TWzz8VRKPDC4imWbrMVSscmUVPipLXGI6K5S5HY=;
+ b=vUiy9kGi4RCIk2KHel24XaiJ09ABnlXX8LO4CG7Y1XnGeS8+tn4UJu1OtUmBnDVmbq32A1LBdXcpzUWNLLIXbJ4RE0Hrmt+X9streziKP97yU6SOTZBhgs1+QSGv8GufOXppEHzGzskDJRtCwc8a1E46FCSWU9C7bRGN7pFps7w=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wolfvision.net;
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
+ by PAWPR08MB8959.eurprd08.prod.outlook.com (2603:10a6:102:33f::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.26; Mon, 15 Jan
- 2024 13:57:00 +0000
-Received: from CO1PEPF000044EF.namprd05.prod.outlook.com
- (2603:10b6:303:82:cafe::c) by MW4PR04CA0311.outlook.office365.com
- (2603:10b6:303:82::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.26 via Frontend
- Transport; Mon, 15 Jan 2024 13:57:00 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- CO1PEPF000044EF.mail.protection.outlook.com (10.167.241.69) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7202.16 via Frontend Transport; Mon, 15 Jan 2024 13:57:00 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 15 Jan
- 2024 05:56:56 -0800
-Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Mon, 15 Jan 2024 05:56:55 -0800
-Received: from vidyas-desktop.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.126.190.181) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Mon, 15 Jan 2024 05:56:52 -0800
-From: Vidya Sagar <vidyas@nvidia.com>
-To: <bhelgaas@google.com>, <rdunlap@infradead.org>,
-	<ilpo.jarvinen@linux.intel.com>, <tglx@linutronix.de>
-CC: <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<treding@nvidia.com>, <jonathanh@nvidia.com>, <sdonthineni@nvidia.com>,
-	<kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>,
-	<sagar.tv@gmail.com>
-Subject: [PATCH V4] PCI/MSI: Fix MSI hwirq truncation
-Date: Mon, 15 Jan 2024 19:26:49 +0530
-Message-ID: <20240115135649.708536-1-vidyas@nvidia.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240111052814.713016-1-vidyas@nvidia.com>
-References: <20240111052814.713016-1-vidyas@nvidia.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.23; Mon, 15 Jan
+ 2024 13:58:29 +0000
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::6b40:1e6f:7c94:71dc]) by VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::6b40:1e6f:7c94:71dc%4]) with mapi id 15.20.7181.026; Mon, 15 Jan 2024
+ 13:58:28 +0000
+Message-ID: <96abddcc-fa65-4f27-84fe-2281fe0fcf1c@wolfvision.net>
+Date: Mon, 15 Jan 2024 14:58:26 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] ASoC: dt-bindings: xmos,xvf3500: add bindings for
+ XMOS XVF3500
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+Cc: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org
+References: <20240115-feature-xvf3500_driver-v1-0-ed9cfb48bb85@wolfvision.net>
+ <20240115-feature-xvf3500_driver-v1-2-ed9cfb48bb85@wolfvision.net>
+ <333c2986-c7c2-4a46-90cf-b59ae206e55a@linaro.org>
+Content-Language: en-US
+From: Javier Carrasco <javier.carrasco@wolfvision.net>
+In-Reply-To: <333c2986-c7c2-4a46-90cf-b59ae206e55a@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+X-ClientProxiedBy: VI1PR04CA0072.eurprd04.prod.outlook.com
+ (2603:10a6:802:2::43) To VE1PR08MB4974.eurprd08.prod.outlook.com
+ (2603:10a6:803:111::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044EF:EE_|SA0PR12MB4384:EE_
-X-MS-Office365-Filtering-Correlation-Id: e43b50c1-718b-4840-2e40-08dc15d1d86e
+X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|PAWPR08MB8959:EE_
+X-MS-Office365-Filtering-Correlation-Id: b22aa0ba-ec63-4a69-6bd9-08dc15d20cf8
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	uA++PuQQ126KySYPf1STiDarV3NLMVsXJJb6VeQP5cgyleRUx1+GqgYqAgnIpDpVtWk33lRR+f6miuG55d2Saqi9TPB8kGHkCPd8gdHWVxZkG0Vp/mAl9byXdDmdr2k9E1zeNmEqUzkBNs0HnGOTbPfqiUNiy0nAt4sgaeineRH4WOcGUbQq9662BShJwHE/+ufvHvll6YyxFzyrwkbe+CD1X5f6MSCmB0Mnso3k3egJtoOHz6z1EzThkF2hQW9lHYjcxGbdx/CrLZQ6M/3OfuO/JmBV+NTCSlT1mgK3LGSex3hsLGq7Fb/iP3cFyrBeYxT9qo14ycw6TTQYNG08KHaEnGQaTzhkmOemj3Um78/zOiTOYPwR08uSVhqmel6EaF17pX57mmlVsTTqrEs/2A8bSU+dj1VzQlV8krH7vHFpq0lb+zpKQVCVgf7X2ADbqV/BqG4IJ+Ppj1odIQ5W9zmaFRSCAUOglB28rWEMFK4tW9iWuX5dXyR24aScYIkMDTf8C/9A3xEutuDu4Iia2I/Mmruje2EeJ8PbanN0nuWecHS8bYATTSzn3zo9Io/i0rBmjxQahYWiKROMMVc1ICSQQVSTpteOz3lNT7utwzGu4J69rPBSEa7bDOFVTo2p+qeOYddKJpzkff3cl+FgFAt24SHFvRvz41ATxgawtpBNTRGqlzecAyFdu04EFFcGo/vgWm/oprAthB62x/1flnhpxPtOyt8bzN76rP5XgLVEV4i1jfwKsu0dgzs/JIET
+	CwUgcXkmuxGg/xlEiUC7fsWzesGV6w9inbrhJB9UafRS/wt6aMwENjbCdyCZrJ98zX/0vJN5MmmhsVWJJBkRfvMErKbrl2eJvmJMrJSuIBqCZO4K7m+g506ljyjJjK5zuuzQ/W8i9z7R2ewlwRfjF2ghkpzkcuXD6PanyA6Eo9GBqVpx8i8nAEPQKlkL+kVRT5+tvoWV0pJX0VMB1Te487/0ztClwKL+1GyJnrWYOwT/JIOXWI9VtlCsUuyqWhjD2R/EKUH7a8Jx7KcdwaEmJrXHHM6Ri/TE0COA6ZB87MjyBZos+Jh3lao/zNJ0aAMI49Cn9YxKD1JmXpC5hAjG6vs1oaAsP0MoOeyd25vlNbWJdH5Jjz9Tm+IHrzyNSZWgYut5dxrd7sFjzPdsV7FJZVhWR3D0XSyuujmM5/d3eVr2WnS4+UuPPieSpgdB/G9aPTModCMUHBb9CIoHpFtEs1N9n1LxD3u1j3Gg4tk1vaWJJmki7Bn7wHzDYB7nosK74MyjjoiE0sVSgyWunsMj1hCFLa7yFire6xbC7OgYE6mEmw5TjQjDTHsmWZbQ4/dOKGFrGss8bL/OsEXlJM3TBcuVoDCJPMSDV48tpiIWaCyyyi0bphxcbWvcdC/+lK1DAyRN/nlH7/WVBCoQ/V/COw==
 X-Forefront-Antispam-Report:
-	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(346002)(136003)(376002)(230922051799003)(64100799003)(451199024)(1800799012)(82310400011)(186009)(36840700001)(46966006)(40470700004)(478600001)(6666004)(7696005)(426003)(336012)(26005)(1076003)(2616005)(2906002)(5660300002)(110136005)(70586007)(70206006)(54906003)(316002)(8936002)(4326008)(8676002)(36756003)(86362001)(36860700001)(83380400001)(41300700001)(47076005)(82740400003)(7636003)(356005)(40460700003)(40480700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2024 13:57:00.2434
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(39850400004)(346002)(136003)(376002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(31696002)(86362001)(38100700002)(2616005)(31686004)(26005)(36756003)(83380400001)(6506007)(6512007)(966005)(316002)(6486002)(66476007)(110136005)(53546011)(66556008)(66946007)(2906002)(8936002)(44832011)(8676002)(7416002)(45080400002)(5660300002)(4326008)(478600001)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?a2pqM093MnlsSy9BcU9GVFYyRnFhL0NzcWFiTVl6ckFTZy93MGxkZFA3WEd0?=
+ =?utf-8?B?S2UySzF4Z053STBhRWdvRXVGYzJCQWlqK3ZwWjdyOWg4ZUExREpQZG42aHBP?=
+ =?utf-8?B?WmE3MTlXbnA4cjRreEk1U0s2VldXelFucy9xZ1hoOWgxeEVDR1FZY1A4L3Iv?=
+ =?utf-8?B?alQ5ZmxCeUtoVm94VXNZSDNMODZuTGlnb2pyTWtwZERuM3owVkE0QUZtTFd0?=
+ =?utf-8?B?d0R3WmVlT2FWSnpPTHRDUUdkZ0pMbUVZQ1FNUmlWb0VLZit6TnY2MWYvVlJ3?=
+ =?utf-8?B?amlOdkRETDBTYVFvS3FXYitBbjZOcG9pMGdzWXZlT3lRUXl4MFlhQmJxMDRG?=
+ =?utf-8?B?ZEhuVjQvV1c5WVdiQ2ptV3pPSDJrTTVrRjVhWmZ6R1ZQcDN0bHNvK3doSWJy?=
+ =?utf-8?B?MnYwUWd2Ry9rcitUN3ZCVnh2bnhkdUJhbEd3TGtxWUhhREhkaVU1RHVmL1VO?=
+ =?utf-8?B?TUFYMkdhemlNejZKc3NmeVhUWjQ3ZXJIK2lYMTAySGFrSDk4dHRicFNIdXV4?=
+ =?utf-8?B?dUFaN1JJVUFYVGdNVm5hQzR2enRJL3U0cEJNckpUMGhPSnNDQTlMNkgydENs?=
+ =?utf-8?B?QTB6ZjhGVXBnWXpOY3JSK2drM0lkMDJLbG9CZno1OEZQSE41OEJSQVFvclZ3?=
+ =?utf-8?B?bzIxMUVSVmJUS3FYOHNKR1haRDJuVTViZ2dycEhKUUZ4WU9hRElMS0hGMVBQ?=
+ =?utf-8?B?akRhaWV4NmcyamtId2tXOXN0ZGQrd0c1SFhWQXMyYlhwcFN5Yno1eTE0LzY2?=
+ =?utf-8?B?WktDZkRNT2VmN0M2NFFkU1J5SE5FMlJjc05aSnRYNDdzT203RmIwTUtxaE56?=
+ =?utf-8?B?clNsZU85NXI5RnlKdG9nWVZDYkFRdjdJNXdYME1objZOb2FwOGM2Y2k2ZFVy?=
+ =?utf-8?B?ZU1teCtocGwzRXVBdkFpUGQ3dWxrZzNmK1Jnd2pNalpOa2R5Q2VNQlZRRDg1?=
+ =?utf-8?B?Y1NSVXhaM1dxd3p2a2FXaCtuMUVLZVlaMENDVlBIakhxOFNjcWozb0pKMEI1?=
+ =?utf-8?B?VEJRaEVuT0FLdU9LUThnS3gxdTFvdGhWZUNlYnhBL2xxWVg1cWRLNy9BVit4?=
+ =?utf-8?B?S3RsZ0Q3UzZLc0p4Y0lGa3N3c2o2dUloSXB1bmYzME5qeVdtWjRERkp2Z05N?=
+ =?utf-8?B?NG4yR0dJK1J0ejNSaW1YaWRKalBlVlpDTWptWGwveUcwakhVQlovZ1IxUS94?=
+ =?utf-8?B?bEFMbGE2R3BvTTRYSCtOanZKdGlndHppTGMxamVZc0x2ZjVxRWxvQW1jNmxK?=
+ =?utf-8?B?RlZVSGdMUWxLUkZVZ2hHbWNacWtDaG5uSXZOSUl3cVRIRWthVWNjYkJnazhi?=
+ =?utf-8?B?UGc1TTlmU2dhQkllUlpYZGt1Wnh5OVI3czZEcUREQUhwU3dFdkNjNTRZQ2hE?=
+ =?utf-8?B?RXhZbXp1MUdvK01WMkJZMFVac05zYU1Lem5CZnpQQlFtRXUrNnJ6WXVFOGZk?=
+ =?utf-8?B?OGpxRmFmdDRwS3VmbXRUL1FsNG1YK1FKeEIzNTNGUEI5bXFJdVBVOTNVbjFs?=
+ =?utf-8?B?Z0dDaTljdnZNc0RTUnlzTmExNHA3RFRhZ2VLR0JsUGhIVU1nSjYwTU9Uc09p?=
+ =?utf-8?B?MGtPeEJySkVHM0xZM1JBMEQ3b05WdUI3SjUxZFNrVzQwU3JvVWNTTE01RkFY?=
+ =?utf-8?B?MU41Y0YvMTZWNE1TVHd1THpJZktKNjdYSTdna1RBb0F1R3FrdmN4UHdnd0Vk?=
+ =?utf-8?B?cXcwYUFRU3JJSitKd1E0VW5JcHBWYVArUzNadzhHN0Nvd3NYQWZDSVlVcWxp?=
+ =?utf-8?B?MG9nVXBMbko4Y3BpWHhYSDNwOWVFczQwZFlIQWkwcnV6VVk3YTRuWGlVVGxv?=
+ =?utf-8?B?aURzZ1k1b2poVmtWd2FmSk45azN3V1Zsc1MzQmZRczRHeU5KbUVKVjFqSDA1?=
+ =?utf-8?B?SWE4bHlXTUsxZ3E5RitHSHg5MDNpL1JkQUZnTUg2cGluenB4cThRL3hyclJu?=
+ =?utf-8?B?VkE5S3dEc3VTVmJHdVVralRpVXYrUEpsVVJSWjE3WTFaTDYxSFp3eUIyeTVp?=
+ =?utf-8?B?OGhUZjZwbVMyYThLbHlVOC9HdjhJZWVnOE9NdDBvOGJ4NVpCOW82cDZNSXpv?=
+ =?utf-8?B?TVR4Qktac2RaY2M0Vk9hT2p0dVVNV3c5ZE9rdVBISVFYRnRjZUhlTGVLWDJl?=
+ =?utf-8?B?U09aK3RscUtpWVhWZ2E1b0FJczhqaVBWb1lidFZhRFJjb25vVitoYTVRdDZx?=
+ =?utf-8?B?VHc9PQ==?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: b22aa0ba-ec63-4a69-6bd9-08dc15d20cf8
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2024 13:58:28.6663
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e43b50c1-718b-4840-2e40-08dc15d1d86e
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF000044EF.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4384
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ECv/6sgTRpZ/6yzohvve1M8bOfi9sZn3jThv0IB/RbJpGUgTqbhqPmn0pAqTnUtpRKqPubFOp3K8j1G4g9hXXQrpJDq1rz7m5xxpK5DPaQA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR08MB8959
 
-While calculating the hwirq number for an MSI interrupt, the higher
-bits (i.e. from bit-5 onwards a.k.a domain_nr >= 32) of the PCI domain
-number gets truncated because of the shifted value casting to return
-type of pci_domain_nr() which is 'int'. This for example is resulting
-in same hwirq number for devices 0019:00:00.0 and 0039:00:00.0.
-
-So, cast the PCI domain number to 'irq_hw_number_t' before left shifting
-it to calculate hwirq number. Please note that this fixes the issue only
-on 64-bit systems and doesn't change the behavior in 32-bit systems i.e.
-the 32-bit systems continue to have the issue. Since the issue surfaces
-only if there are too many PCIe controllers in the system which usually
-is the case in modern server systems and they don't tend to run 32-bit
-kernels.
-
-Fixes: 3878eaefb89a ("PCI/MSI: Enhance core to support hierarchy irqdomain")
-Tested-by: Shanker Donthineni <sdonthineni@nvidia.com>
-Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
----
-V4:
-* Added extra information in the change log about the impact of this patch
-  in a 32-bit system as suggested by Thomas
-
-V3:
-* Addressed review comments from Thomas Gleixner
-* Added Tested-By: Shanker Donthineni <sdonthineni@nvidia.com>
-
-V2:
-* Added Fixes tag
-
- drivers/pci/msi/irqdomain.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/pci/msi/irqdomain.c b/drivers/pci/msi/irqdomain.c
-index c8be056c248d..cfd84a899c82 100644
---- a/drivers/pci/msi/irqdomain.c
-+++ b/drivers/pci/msi/irqdomain.c
-@@ -61,7 +61,7 @@ static irq_hw_number_t pci_msi_domain_calc_hwirq(struct msi_desc *desc)
- 
- 	return (irq_hw_number_t)desc->msi_index |
- 		pci_dev_id(dev) << 11 |
--		(pci_domain_nr(dev->bus) & 0xFFFFFFFF) << 27;
-+		((irq_hw_number_t)(pci_domain_nr(dev->bus) & 0xFFFFFFFF)) << 27;
- }
- 
- static void pci_msi_domain_set_desc(msi_alloc_info_t *arg,
--- 
-2.25.1
-
+On 15.01.24 14:02, Krzysztof Kozlowski wrote:
+> On 15/01/2024 10:16, Javier Carrasco wrote:
+>> The XMOS XVF3500 VocalFusion Voice Processor[1] is a low-latency, 32-bit
+>> multicore controller for voice processing.
+>>
+>> Add new bindings to define the device properties.
+> 
+> I don't see any bus, so how does it work? How do you get the voice data
+> from it? I also do not see any DAI: neither here nor in the driver...
+> 
+The voice data and any other information can be retrieved directly via
+USB from userspace. Once in normal operation, the device acts as a
+regular "onboard" USB device and the driver does not need to do any
+further management.
+> If there is going to be any new version, then implement all following
+> comments:
+> 
+> A nit, subject: drop second/last, redundant "bindings for". The
+> "dt-bindings" prefix is already stating that these are bindings.
+> See also:
+> https://elixir.bootlin.com/linux/v6.7-rc8/source/Documentation/devicetree/bindings/submitting-patches.rst#L18
+> 
+> 
+>>
+>> [1] https://www.xmos.com/xvf3500/
+>>
+>> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
+>> ---
+>>  .../devicetree/bindings/sound/xmos,xvf3500.yaml    | 51 ++++++++++++++++++++++
+>>  1 file changed, 51 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/sound/xmos,xvf3500.yaml b/Documentation/devicetree/bindings/sound/xmos,xvf3500.yaml
+>> new file mode 100644
+>> index 000000000000..e93a735a0f1a
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/sound/xmos,xvf3500.yaml
+>> @@ -0,0 +1,51 @@
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/sound/xmos,xvf3500.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: XMOS XVF3500 VocalFusion Voice Processor
+>> +
+>> +maintainers:
+>> +  - Javier Carrasco <javier.carrasco@wolfvision.net>
+>> +
+>> +description: |-
+> 
+> Do not need '|-' unless you need to preserve formatting.
+> 
+> 
+>> +  The XMOS XVF3500 VocalFusion Voice Processor is a low-latency, 32-bit
+>> +  multicore controller for voice processing.
+>> +  https://www.xmos.com/xvf3500/
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: xmos,xvf3500
+>> +
+>> +  reset-gpios:
+>> +    maxItems: 1
+>> +
+>> +  vcc1v0-supply:
+>> +    description: |
+> 
+> Do not need '|' unless you need to preserve formatting.
+> 
+> 
+>> +      Regulator for the 1V0 supply.
+>> +
+>> +  vcc3v3-supply:
+>> +    description: |
+> 
+> Do not need '|' unless you need to preserve formatting.
+> 
+>> +      Regulator for the 3V3 supply.
+>> +
+>> +additionalProperties: false
+> 
+> This goes after required: block.
+> 
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reset-gpios
+>> +  - vcc1v0-supply
+>> +  - vcc3v3-supply
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/gpio/gpio.h>
+>> +
+>> +    xvf3500: voice-processor {
+> 
+> Drop unused label.
+> 
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
+Thank you for your feedback and best regards,
+Javier Carrasco
 
