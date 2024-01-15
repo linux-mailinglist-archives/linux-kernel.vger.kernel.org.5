@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-26100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8072682DB6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:38:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C699382DB6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:39:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35F041F21B4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:38:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4ABD5281101
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 14:39:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B09CC179BF;
-	Mon, 15 Jan 2024 14:38:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FA1417C6A;
+	Mon, 15 Jan 2024 14:38:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="NlXab2cz";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="WukEzm0D"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="f57/0sSB";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="WqiDL90+"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A933F17743
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 14:38:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0776F17999
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 14:38:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: Anna-Maria Behnsen <anna-maria@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1705329484;
+	s=2020; t=1705329485;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8tyreN3+pRRCj9fddFni7Yjd9oa5LLsmYxigcZC8rcg=;
-	b=NlXab2czETZp0xP+IzFHm6awdOka425Kzdzign5GPkoImvVgJWFPet0O1EW09TvG7M0L3m
-	Y+dn4iDZS+MzOESzvSjVs7M4BV37zoPhtQ299jVWZRsGqLkETRvccoIw2UdMEDJfaZFOgH
-	uaGiiYdetxgsHsjKab2KMYxJka1GNu0bxN/NhKYHll6hFm7OldcGToYy9qqCV4dySwibWU
-	5i/fqIwQZrKElFuVBQCNTxGL83OT1hcWi1xGQlI5YvU4lDXzREJ5e2qRnx5S3OdFbC6SWG
-	075hrzrLNhmiTPkEsV2Fok+cgT+UxrqcOozjePeIX5Xtghz9xkzAMgUO9HFhGQ==
+	bh=dd7ZSY9uCCvXsEjv5hsri8WxYcwJShixETTpt1BLsE4=;
+	b=f57/0sSBXZ1JRAX3RVEVr5HFQv6Lqb5w3CD5uk8FY+PR9dgPCaun9CyEOq7cdBwCYK3TwZ
+	QV4OykKeDthyz2Q5gL0/pysVAVrZy/qsIrc4ePzSvIqEJRO3QTh+3TB4JIbsuPoKgb4SaI
+	98gmtJ/nGofxAzq1BWJ1HpmbxTdutIV7/1oo3Yis2h0Ht3WkFR8EVxHEyaXi7cfzn4hbyz
+	dPubmZNV6uAofAmMhnWHw+CP8T7VzwJGSEh9KGL6SGLwpR5gNKzzLdiQYNhcEDRrZw+efJ
+	pUBOOZ+rHMo0345vx2R+yOthEkzdKNUNqtr74EEpTZDQsNVy7ZcMvCVgxdCG9g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1705329484;
+	s=2020e; t=1705329485;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8tyreN3+pRRCj9fddFni7Yjd9oa5LLsmYxigcZC8rcg=;
-	b=WukEzm0DqpDbF2CDUItBPNFQBpgiXis0UKMUH26OhxA6gVei/m2F7wqKm8NtJaTG3Li47F
-	oGqLobTfz0ErcmCg==
+	bh=dd7ZSY9uCCvXsEjv5hsri8WxYcwJShixETTpt1BLsE4=;
+	b=WqiDL90+9AC1nMXbkvsV88JCQ77hfxzaVccWYpl01ws4yhT+L5Gkum9jw4wwsNZ9ofshe6
+	ukC2UFG/zu2l6KAA==
 To: linux-kernel@vger.kernel.org
 Cc: Peter Zijlstra <peterz@infradead.org>,
 	John Stultz <jstultz@google.com>,
@@ -62,9 +62,9 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
 	K Prateek Nayak <kprateek.nayak@amd.com>,
 	Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: [PATCH v10 04/20] timers: Optimization for timer_base_try_to_set_idle()
-Date: Mon, 15 Jan 2024 15:37:27 +0100
-Message-Id: <20240115143743.27827-5-anna-maria@linutronix.de>
+Subject: [PATCH v10 05/20] timers: Introduce add_timer() variants which modify timer flags
+Date: Mon, 15 Jan 2024 15:37:28 +0100
+Message-Id: <20240115143743.27827-6-anna-maria@linutronix.de>
 In-Reply-To: <20240115143743.27827-1-anna-maria@linutronix.de>
 References: <20240115143743.27827-1-anna-maria@linutronix.de>
 Precedence: bulk
@@ -75,58 +75,92 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When tick is stopped also the timer base is_idle flag is set. When
-reentering the timer_base_try_to_set_idle() with the tick stopped, there is
-no need to check whether the timer base needs to be set idle again. When a
-timer was enqueued in the meantime, this is already handled by the
-tick_nohz_next_event() call which was executed before
-tick_nohz_stop_tick().
+ timer flags
+
+A timer might be used as a pinned timer (using add_timer_on()) and later on
+as non-pinned timer using add_timer(). When the "NOHZ timer pull at expiry
+model" is in place, the TIMER_PINNED flag is required to be used whenever a
+timer needs to expire on a dedicated CPU. Otherwise the flag must not be
+set if expiration on a dedicated CPU is not required.
+
+add_timer_on()'s behavior will be changed during the preparation patches
+for the "NOHZ timer pull at expiry model" to unconditionally set
+TIMER_PINNED flag. To be able to clear/ set the flag when queueing a
+timer, two variants of add_timer() are introduced.
+
+This is a preparatory patch and has no functional change.
 
 Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
 ---
- kernel/time/tick-sched.c |  2 +-
- kernel/time/timer.c      | 11 ++++++++---
- 2 files changed, 9 insertions(+), 4 deletions(-)
+v10: Commit message reworded as suggested by bigeasy
 
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index c6223afc801f..27f1a2ae7f39 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -886,7 +886,7 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
- 	struct clock_event_device *dev = __this_cpu_read(tick_cpu_device.evtdev);
- 	unsigned long basejiff = ts->last_jiffies;
- 	u64 basemono = ts->timer_expires_base;
--	bool timer_idle;
-+	bool timer_idle = ts->tick_stopped;
- 	u64 expires;
+v9: Update documentation to match kernel-doc style (missing brackets after
+    function names)
+
+New in v6
+---
+ include/linux/timer.h |  2 ++
+ kernel/time/timer.c   | 34 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 36 insertions(+)
+
+diff --git a/include/linux/timer.h b/include/linux/timer.h
+index 26a545bb0153..404bb31a95c7 100644
+--- a/include/linux/timer.h
++++ b/include/linux/timer.h
+@@ -179,6 +179,8 @@ extern int timer_reduce(struct timer_list *timer, unsigned long expires);
+ #define NEXT_TIMER_MAX_DELTA	((1UL << 30) - 1)
  
- 	/* Make sure we won't be trying to stop it twice in a row. */
+ extern void add_timer(struct timer_list *timer);
++extern void add_timer_local(struct timer_list *timer);
++extern void add_timer_global(struct timer_list *timer);
+ 
+ extern int try_to_del_timer_sync(struct timer_list *timer);
+ extern int timer_delete_sync(struct timer_list *timer);
 diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 3a668060692e..2f69a485a070 100644
+index 2f69a485a070..3cf016d6fa59 100644
 --- a/kernel/time/timer.c
 +++ b/kernel/time/timer.c
-@@ -1999,13 +1999,18 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
-  * timer_base_try_to_set_idle() - Try to set the idle state of the timer bases
-  * @basej:	base time jiffies
-  * @basem:	base time clock monotonic
-- * @idle:	pointer to store the value of timer_base->is_idle
-+ * @idle:	pointer to store the value of timer_base->is_idle on return;
-+ *		*idle contains the information whether tick was already stopped
-  *
-- * Returns the tick aligned clock monotonic time of the next pending
-- * timer or KTIME_MAX if no timer is pending.
-+ * Returns the tick aligned clock monotonic time of the next pending timer or
-+ * KTIME_MAX if no timer is pending. When tick was already stopped KTIME_MAX is
-+ * returned as well.
-  */
- u64 timer_base_try_to_set_idle(unsigned long basej, u64 basem, bool *idle)
- {
-+	if (*idle)
-+		return KTIME_MAX;
-+
- 	return __get_next_timer_interrupt(basej, basem, idle);
+@@ -1245,6 +1245,40 @@ void add_timer(struct timer_list *timer)
  }
+ EXPORT_SYMBOL(add_timer);
  
++/**
++ * add_timer_local() - Start a timer on the local CPU
++ * @timer:	The timer to be started
++ *
++ * Same as add_timer() except that the timer flag TIMER_PINNED is set.
++ *
++ * See add_timer() for further details.
++ */
++void add_timer_local(struct timer_list *timer)
++{
++	if (WARN_ON_ONCE(timer_pending(timer)))
++		return;
++	timer->flags |= TIMER_PINNED;
++	__mod_timer(timer, timer->expires, MOD_TIMER_NOTPENDING);
++}
++EXPORT_SYMBOL(add_timer_local);
++
++/**
++ * add_timer_global() - Start a timer without TIMER_PINNED flag set
++ * @timer:	The timer to be started
++ *
++ * Same as add_timer() except that the timer flag TIMER_PINNED is unset.
++ *
++ * See add_timer() for further details.
++ */
++void add_timer_global(struct timer_list *timer)
++{
++	if (WARN_ON_ONCE(timer_pending(timer)))
++		return;
++	timer->flags &= ~TIMER_PINNED;
++	__mod_timer(timer, timer->expires, MOD_TIMER_NOTPENDING);
++}
++EXPORT_SYMBOL(add_timer_global);
++
+ /**
+  * add_timer_on - Start a timer on a particular CPU
+  * @timer:	The timer to be started
 -- 
 2.39.2
 
