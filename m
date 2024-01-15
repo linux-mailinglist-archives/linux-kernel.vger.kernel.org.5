@@ -1,189 +1,144 @@
-Return-Path: <linux-kernel+bounces-26423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5862E82E06D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:09:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B60F82E070
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:09:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A86811F2237C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 19:09:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEB6D282336
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 19:09:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D2AC18E0D;
-	Mon, 15 Jan 2024 19:08:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCFCB18B09;
+	Mon, 15 Jan 2024 19:09:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dZwSw0CF";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nFgLacu4";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dZwSw0CF";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nFgLacu4"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IIYuY3kw"
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 743B418C01;
-	Mon, 15 Jan 2024 19:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 4CB191FD3E;
-	Mon, 15 Jan 2024 19:08:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705345723;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aXqG9tpDXOuq5pm5OTaGvyKE6oX/ladrg2W+JHdkSeI=;
-	b=dZwSw0CFBj2OUJUusoZfn5JO6NPs4vwC+ecrRAnAOVZRsG9+clFSNNqtsfJUhJ57s9w00Z
-	mK3Ww/G4y3Yb5zMpp0Pxv44MkQzkhdo+I9xTyCE99Egsm1caw6PorLnkb5h4fXMN5VmMDc
-	VmfW20iouHWQHEEbkNxdhYl94jU7Q/M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705345723;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aXqG9tpDXOuq5pm5OTaGvyKE6oX/ladrg2W+JHdkSeI=;
-	b=nFgLacu4Yloox2cbPLv2Syy8y9GPgU+henqjrd4QjHnDs+Wbf5oWGy2fBYWI8hx5lQzZjk
-	P6hSVI4JUnYA+9DA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705345723;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aXqG9tpDXOuq5pm5OTaGvyKE6oX/ladrg2W+JHdkSeI=;
-	b=dZwSw0CFBj2OUJUusoZfn5JO6NPs4vwC+ecrRAnAOVZRsG9+clFSNNqtsfJUhJ57s9w00Z
-	mK3Ww/G4y3Yb5zMpp0Pxv44MkQzkhdo+I9xTyCE99Egsm1caw6PorLnkb5h4fXMN5VmMDc
-	VmfW20iouHWQHEEbkNxdhYl94jU7Q/M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705345723;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aXqG9tpDXOuq5pm5OTaGvyKE6oX/ladrg2W+JHdkSeI=;
-	b=nFgLacu4Yloox2cbPLv2Syy8y9GPgU+henqjrd4QjHnDs+Wbf5oWGy2fBYWI8hx5lQzZjk
-	P6hSVI4JUnYA+9DA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id EEC11139D2;
-	Mon, 15 Jan 2024 19:08:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id MfwfObqCpWXyEAAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Mon, 15 Jan 2024 19:08:42 +0000
-Date: Mon, 15 Jan 2024 20:08:25 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Edward Adam Davis <eadavis@qq.com>
-Cc: David Sterba <dsterba@suse.cz>,
-	syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com, clm@fb.com,
-	daniel@iogearbox.net, dsterba@suse.com, john.fastabend@gmail.com,
-	josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	liujian56@huawei.com, syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] btrfs: fix oob Read in getname_kernel
-Message-ID: <20240115190824.GV31555@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <tencent_44CA0665C9836EF9EEC80CB9E7E206DF5206@qq.com>
- <20240110155545.GW28693@twin.jikos.cz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D651118E15;
+	Mon, 15 Jan 2024 19:09:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-680a9796b38so64190706d6.0;
+        Mon, 15 Jan 2024 11:09:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705345761; x=1705950561; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=gcB0oLovVcMy8vSKRc8BK7jRBx+6gt82tnoE9yT0Vp4=;
+        b=IIYuY3kwaDOotP5FitH0d6/TAYCIHXvhyt7whVEISgZRqB+fD+k2KQyfKgKkZ2vSEv
+         tt8tUllM4S1MXA28HSx0Jwh1PRvlDZQupJZ6vCymcV/JldqOuzEH1r3rUjXwZimiJY7c
+         3fDZDblXP58RXgA95f98waobVZFTeYQhrGevHt3XxiMq5oaGflgJlaQY0pYb5vTYDxhZ
+         kneJB4xxzgpGmfcWcew9mTAHmVg0ZTjLrjvy20mroBwI8/Yvh+tfRzs3ua5GpSdgO70Z
+         iEAwlbYJuURBpkMzK9z5H1SClEFRxAvQvw5D1+f20MaqPP3Sm3Jlwg/PNYTzD4Y6is+u
+         CoGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705345761; x=1705950561;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gcB0oLovVcMy8vSKRc8BK7jRBx+6gt82tnoE9yT0Vp4=;
+        b=XlP2EHDccAX4muhL4ovHmxTZH01xc3bBiriL/v+j7t+lxlhqRYfOwJJGsN1fBckGV4
+         ZKzVe6IMpSxsxgEKMVYW3JjaEmtVeUv85VIeSDAc29qpYMl5eI6gNvrCPIuqOzs2VK2N
+         +0UkaQe7f5ySmn25VBooNaXQDqtWd0RLg/xOgDKQ/DiHEOJtD3ECPdsPBRshCq2Eo15Q
+         j2xoPDjD+RUSqlqVI+59rzGVlZIVKdFSuqV+bkUJA45kYJdvJFXyxsAkeNbJbJ4h3sQj
+         Q8o/2Aw/POpQlbgjTZsEsLzfOsyoTZmKJ3pksyAZvKiB+9OXZ05XSjBxGsr9zU0Rc5yj
+         yeRQ==
+X-Gm-Message-State: AOJu0Ywhh6rjfKVbSmTSgPcOFDLZDaf8EmIfzyEE62Qrf23EDpKg4xXQ
+	GcAX53TTz98wQ1w63H/zRck=
+X-Google-Smtp-Source: AGHT+IGkpgMm9bv3MPX/8FMw4NjHraS700SKGCgr08eN7R1SjJnSJbMJa/UZ9Pm3FizZzYpRrWPeXw==
+X-Received: by 2002:a05:6214:ca4:b0:681:35b:fea4 with SMTP id s4-20020a0562140ca400b00681035bfea4mr8300802qvs.41.1705345760730;
+        Mon, 15 Jan 2024 11:09:20 -0800 (PST)
+Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
+        by smtp.gmail.com with ESMTPSA id pl6-20020ad44686000000b0067f859a8ef5sm3498189qvb.105.2024.01.15.11.09.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Jan 2024 11:09:19 -0800 (PST)
+Message-ID: <14dbfd4f-f5f3-458a-8bbc-a4f827c78919@gmail.com>
+Date: Mon, 15 Jan 2024 11:09:16 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240110155545.GW28693@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -2.30
-X-Spamd-Result: default: False [-2.30 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com,qq.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[33f23b49ac24f986c9e8];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.00)[-0.022];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[qq.com:email];
-	 FREEMAIL_TO(0.00)[qq.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[suse.cz,syzkaller.appspotmail.com,fb.com,iogearbox.net,suse.com,gmail.com,toxicpanda.com,vger.kernel.org,huawei.com,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.4 00/38] 5.4.267-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+ conor@kernel.org, allen.lkml@gmail.com
+References: <20240113094206.455533180@linuxfoundation.org>
+Content-Language: en-US
+From: Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; keydata=
+ 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
+ HGuUuzv+GKZ6nsysJw==
+In-Reply-To: <20240113094206.455533180@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 10, 2024 at 04:55:46PM +0100, David Sterba wrote:
-> On Tue, Dec 19, 2023 at 06:19:10PM +0800, Edward Adam Davis wrote:
-> > If ioctl does not pass in the correct tgtdev_name string, oob will occur because
-> > "\0" cannot be found.
-> > 
-> > Reported-and-tested-by: syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com
-> > Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-> > ---
-> >  fs/btrfs/dev-replace.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-> > index f9544fda38e9..e7e96e57f682 100644
-> > --- a/fs/btrfs/dev-replace.c
-> > +++ b/fs/btrfs/dev-replace.c
-> > @@ -730,7 +730,7 @@ static int btrfs_dev_replace_start(struct btrfs_fs_info *fs_info,
-> >  int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
-> >  			    struct btrfs_ioctl_dev_replace_args *args)
-> >  {
-> > -	int ret;
-> > +	int ret, len;
-> >  
-> >  	switch (args->start.cont_reading_from_srcdev_mode) {
-> >  	case BTRFS_IOCTL_DEV_REPLACE_CONT_READING_FROM_SRCDEV_MODE_ALWAYS:
-> > @@ -740,8 +740,10 @@ int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
-> >  		return -EINVAL;
-> >  	}
-> >  
-> > +	len = strnlen(args->start.tgtdev_name, BTRFS_DEVICE_PATH_NAME_MAX + 1);
-> >  	if ((args->start.srcdevid == 0 && args->start.srcdev_name[0] == '\0') ||
-> > -	    args->start.tgtdev_name[0] == '\0')
-> > +	    args->start.tgtdev_name[0] == '\0' ||
-> > +	    len == BTRFS_DEVICE_PATH_NAME_MAX + 1)
+
+
+On 1/13/2024 1:49 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.267 release.
+> There are 38 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> I think srcdev_name would have to be checked the same way, but instead
-> of strnlen I'd do memchr(name, 0, BTRFS_DEVICE_PATH_NAME_MAX). The check
-> for 0 in [0] is probably pointless, it's just a shortcut for an empty
-> buffer. We expect a valid 0-terminated string, which could be an invalid
-> path but that will be found out later when opening the block device.
+> Responses should be made by Mon, 15 Jan 2024 09:41:55 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.267-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Please let me know if you're going to send an updated fix. I'd like to
-get this fixed to close the syzbot report but also want to give you the
-credit for debugging and fix.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-The preferred fix is something like that:
-
---- a/fs/btrfs/dev-replace.c
-+++ b/fs/btrfs/dev-replace.c
-@@ -741,6 +741,8 @@ int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
-        if ((args->start.srcdevid == 0 && args->start.srcdev_name[0] == '\0') ||
-            args->start.tgtdev_name[0] == '\0')
-                return -EINVAL;
-+       args->start.srcdev_name[BTRFS_PATH_NAME_MAX] = 0;
-+       args->start.tgtdev_name[BTRFS_PATH_NAME_MAX] = 0;
- 
-        ret = btrfs_dev_replace_start(fs_info, args->start.tgtdev_name,
-                                        args->start.srcdevid,
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
