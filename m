@@ -1,100 +1,91 @@
-Return-Path: <linux-kernel+bounces-25698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABA3C82D4B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:54:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DEF5582D4B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 08:55:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AE8E2819D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:54:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A1182818FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 07:55:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C55D05233;
-	Mon, 15 Jan 2024 07:54:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AaF2eQyX"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0CFC4402
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 07:54:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40e5afc18f5so43193525e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Jan 2024 23:54:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705305271; x=1705910071; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4Pv0xl0I8bsyuZAQfNzc0WBFUelC4XXOsiHgb/E75n8=;
-        b=AaF2eQyXtrLqkFLNF+K7d286Xh2deBsCtKFIKnJznqn9Z1yu63OdcuaIFn+LU1/Ti3
-         tOM+wEhaSc1LXHZ5LV3cuzTNnq6ZyzYowLs9ahpr+rH7l/ouvzoHbxDJtLrXFEQZZizU
-         34zzboyXoappNbXaycxo63P2+g5ANsC4MVlFVL9ajO/cAD1nc0U7gYBzMphc4b07IfX2
-         rorte1E9F1seJSMZbY5XKOSzLDiSnE8JSNjptOdrNjACL2zkPKjQAiRzOpUcL0XMUWxH
-         Uo2ldC1Xyu1nDRkZMfRsS5xx0SoOrk3BB33h3/gcLataLROFSJZzk9xspTJXmPAu9zKA
-         wSBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705305271; x=1705910071;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4Pv0xl0I8bsyuZAQfNzc0WBFUelC4XXOsiHgb/E75n8=;
-        b=TpE/QXrtlUGkjqDbg5m6QtLJFLb76Wv+UPL2f4PCWwWESTKwjsXS6bdO5B/NZ5XWzf
-         1764AmSwTuRGksb2vtgNIYR4lV1antlljuVtweNyv0udnd1wzBXcRH4F+tnnNmgj7gg+
-         HuqkoBjQH51cVezW4CpBJw6uz/uzr/XoEAXwNRapfecCMMoQaNgbVrBIrFtmOtHGtAwQ
-         a01MkV6GK/iqCn1yH56+0gPa43AWTaA1bx6YZyN+j0mpizIjdmwGZZmULpWHUKuWBfeK
-         7yJXhNwCfFMX/wQd1KauybY2wA+ZSb4elUr3QPrevmFXN6SP1+NrR911RLD8ZZ6iafrW
-         Qzdg==
-X-Gm-Message-State: AOJu0YztqTvmZOqPoFQVT+qDSd3iQQp7FTzTZDz36jS25DRUQ3qlRBde
-	IN+yU0yN2Km527NSGmOVqc8=
-X-Google-Smtp-Source: AGHT+IEqOmYvE2dB5GpvQhT+CFHYwdWtEAh8jObKO0lz1NUgtLKS6c+9RYfDHC5TVJ6cFY5mQibqNw==
-X-Received: by 2002:a05:600c:3b2a:b0:40e:621b:639b with SMTP id m42-20020a05600c3b2a00b0040e621b639bmr2680466wms.116.1705305270713;
-        Sun, 14 Jan 2024 23:54:30 -0800 (PST)
-Received: from Ubuntu22.myguest.virtualbox.org ([46.121.140.32])
-        by smtp.gmail.com with ESMTPSA id o8-20020a05600c4fc800b0040e549c77a1sm18870472wmq.32.2024.01.14.23.54.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jan 2024 23:54:30 -0800 (PST)
-From: Meir Elisha <meir6264@gmail.com>
-X-Google-Original-From: Meir Elisha <meir6264@Gmail.com>
-Received: by Ubuntu22.myguest.virtualbox.org (sSMTP sendmail emulation); Mon, 15 Jan 2024 09:54:27 +0200
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Meir Elisha <meir6264@Gmail.com>
-Subject: [PATCH] Staging: rtl8723bs: rtw_ieee80211: Remove extra space
-Date: Mon, 15 Jan 2024 09:54:25 +0200
-Message-Id: <20240115075425.108134-1-meir6264@Gmail.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C9315232;
+	Mon, 15 Jan 2024 07:55:50 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB9773D8F
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 07:55:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d85ff70000001748-db-65a4e4fd330c
+Date: Mon, 15 Jan 2024 16:55:35 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, akpm@linux-foundation.org,
+	ying.huang@intel.com, namit@vmware.com, xhao@linux.alibaba.com,
+	mgorman@techsingularity.net, hughd@google.com, david@redhat.com,
+	peterz@infradead.org, luto@kernel.org, tglx@linutronix.de,
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com
+Subject: Re: [v4 2/3] mm: Defer TLB flush by keeping both src and dst folios
+ at migration
+Message-ID: <20240115075535.GA56305@system.software.com>
+References: <20231109045908.54996-1-byungchul@sk.com>
+ <20231109045908.54996-3-byungchul@sk.com>
+ <ZUzuUf7JfhybYBgg@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUzuUf7JfhybYBgg@casper.infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrOIsWRmVeSWpSXmKPExsXC9ZZnke7fJ0tSDaauMLWYs34Nm8XnDf/Y
+	LF5saGe0+Lr+F7PF0099LBaXd81hs7i35j+rxflda1ktdizdx2Rx6cACJovrux4yWhzvPcBk
+	sXnTVGaL3z+A6uZMsbI4OWsyi4OAx/fWPhaPBZtKPTav0PJYvOclk8emVZ1sHps+TWL3eHfu
+	HLvHiRm/WTx2PrT0mHcy0OP9vqtsHlt/2Xl83iTn8W7+W7YAvigum5TUnMyy1CJ9uwSujJeX
+	z7IXPGKuaJtm18D4nqmLkYNDQsBEYtkcvy5GTjDzbOc6VhCbRUBVYvONE8wgNpuAusSNGz+Z
+	QcpFBDQk3mwx6mLk4mAWeM0k8ez/PiaQGmGBaIlTH/axg9TwClhIvH1TD1IjJNDNKLG9/wvY
+	TF4BQYmTM5+wgNjMAloSN/69BDuBWUBaYvk/DhCTE+iEJWeMQSpEBZQlDmw7zgQyRkJgHbvE
+	1lW7WCHOlJQ4uOIGywRGgVlIps5CMnUWwtQFjMyrGIUy88pyEzNzTPQyKvMyK/SS83M3MQKj
+	b1ntn+gdjJ8uBB9iFOBgVOLh/fF3caoQa2JZcWXuIUYJDmYlEd7qO0tShXhTEiurUovy44tK
+	c1KLDzFKc7AoifMafStPERJITyxJzU5NLUgtgskycXBKNTBay9vN0tuw667d3ue2j7X+1HM/
+	fX+4vjLHZSerevLBDDU78yMn3gW+29rbuazue95f9m/6Uoeim5/Prv9+WEI41Nktev/kKRO6
+	nn5UMFUKe5f1lOtl0NQSs3yRYymbS6J5N9mc0tWpdFmX4aC2bd60QvnAjMOXLNR3cOZzyT1c
+	efnWa9f1m34qsRRnJBpqMRcVJwIApDNyd7oCAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnkeLIzCtJLcpLzFFi42Lh8rNu1v37ZEmqQfdxDYs569ewWXze8I/N
+	4sWGdkaLr+t/MVs8/dTHYnF47klWi8u75rBZ3Fvzn9Xi/K61rBY7lu5jsrh0YAGTxfVdDxkt
+	jvceYLLYvGkqs8XvH0B1c6ZYWZycNZnFQdDje2sfi8eCTaUem1doeSze85LJY9OqTjaPTZ8m
+	sXu8O3eO3ePEjN8sHjsfWnrMOxno8X7fVTaPxS8+MHls/WXn8XmTnMe7+W/ZAvijuGxSUnMy
+	y1KL9O0SuDJeXj7LXvCIuaJtml0D43umLkZODgkBE4mznetYQWwWAVWJzTdOMIPYbALqEjdu
+	/ASyOThEBDQk3mwx6mLk4mAWeM0k8ez/PrBeYYFoiVMf9rGD1PAKWEi8fVMPUiMk0M0osb3/
+	C9hMXgFBiZMzn7CA2MwCWhI3/r1kAqlnFpCWWP6PA8TkBDphyRljkApRAWWJA9uOM01g5J2F
+	pHkWkuZZCM0LGJlXMYpk5pXlJmbmmOoVZ2dU5mVW6CXn525iBEbTsto/E3cwfrnsfohRgINR
+	iYf3x9/FqUKsiWXFlbmHGCU4mJVEeKvvLEkV4k1JrKxKLcqPLyrNSS0+xCjNwaIkzusVnpog
+	JJCeWJKanZpakFoEk2Xi4JRqYLxi9Xz7/y2sHRsmb31WMOXTimct2Z+PLHG6nsAnXDzR1uRn
+	6PSDd68ommtmMzllLF93uSKj1Ov5dxUOFuOL8tfL+5kXL1uw6dfNDoVYa3OWoxeV1zZWJ1wP
+	nnx7gsHZCULfjvpVOZpEc77LuiV6ZWrwPd0f90yzvnj7GXTNrxJub30tab1jWZISS3FGoqEW
+	c1FxIgCK249YogIAAA==
+X-CFilter-Loop: Reflected
 
-Fix checkpatch warning: please, no space before tabs
+On Thu, Nov 09, 2023 at 02:36:01PM +0000, Matthew Wilcox wrote:
+> On Thu, Nov 09, 2023 at 01:59:07PM +0900, Byungchul Park wrote:
+> > +++ b/include/linux/page-flags.h
+> > @@ -136,6 +136,7 @@ enum pageflags {
+> >  	PG_arch_2,
+> >  	PG_arch_3,
+> >  #endif
+> > +	PG_migrc,		/* Page is under migrc's control */
+> >  	__NR_PAGEFLAGS,
+> 
+> Yeah; no.  We're out of page flags.  And CXL is insufficiently
 
-Signed-off-by: Meir Elisha <meir6264@Gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_ieee80211.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I won't use an additional page flag any more.
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-index 30e7457a9c31..cfa994835008 100644
---- a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-@@ -1036,7 +1036,7 @@ void rtw_get_bcn_info(struct wlan_network *pnetwork)
- 	struct HT_info_element *pht_info = NULL;
- 	struct ieee80211_ht_cap *pht_cap = NULL;
- 	unsigned int		len;
--	unsigned char 	*p;
-+	unsigned char *p;
- 	__le16 le_cap;
- 
- 	memcpy((u8 *)&le_cap, rtw_get_capability_from_ie(pnetwork->network.ies), 2);
--- 
-2.34.1
+Thanks.
+	Byungchul
 
 
