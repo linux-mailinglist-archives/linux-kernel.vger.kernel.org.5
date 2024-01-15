@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-26567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D514982E3AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:35:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA45182E3AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:35:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40F8728336D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:35:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA152285DE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 23:35:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A831C20B38;
-	Mon, 15 Jan 2024 23:26:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC7B620DF8;
+	Mon, 15 Jan 2024 23:26:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bj7o05n9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EcFmxo0d"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F422C20B21;
-	Mon, 15 Jan 2024 23:26:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD7CAC43394;
-	Mon, 15 Jan 2024 23:26:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4184820DD8;
+	Mon, 15 Jan 2024 23:26:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88044C433F1;
+	Mon, 15 Jan 2024 23:26:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705361203;
-	bh=qDbhOQBbXTEZu7XYVNCaYPYNYZlxASCdbsVPh4RLvrM=;
+	s=k20201202; t=1705361206;
+	bh=jN95Ndv1QzVImSwNNjyljjDlK3K5RUphpFL638xT0Us=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Bj7o05n9gDJG6bDQv+XUObhMvrk9ZSyB710ow6JIXWSmDrFKdMRCviqpE7IaYHbgE
-	 ZcUWppCnS5X2iF3hYdtlSPr2hngdblvlMESS6Wb1qOdvjHhv/VtIGFSmWFlWucEdjM
-	 qQzY5oEDrQsk5uHmAEV948hfJeQJvvmiCruZzGySO5AVv970UpdHw9Qf1EBzWoHsiw
-	 WF732x/CqVh4jcXrpwW5NY2rIkNKpwLi/6lfiirUfzYyjTtEeg3iuudlaU+BAS1tje
-	 hR0MDqEMhvC8km/JgKNtdinlAGyGr1Rc1hJvrRcwCy4PTyWEgY0YY37j+mQEaKzj8+
-	 COKShKVde8mfg==
+	b=EcFmxo0dHpPf2F2ESAmYD0DTo9kfCPiUbuDeVnuhBo0u0iYH0sbqa2475o/oLbFsg
+	 knPGNuWRdEn7lz4xOnNkYa+VoVffn95jrxbdo695kDksh/F86mR/gyOUUnOL8Dsp0p
+	 ig39+M1a7TGgguWMhtOr+0Lpm7CJW1s0slrKH26CoezHTbgM+B1GYTU8495brrVGeG
+	 9OwV2tV6ho+d2X718UYFmVO5MFRtJQnztUKEVJuqW0zc+aAAgYX7VMcLxkGdoi/+6n
+	 uLZffF3OXhO0hPQu0/vYvC6tTw2F28yvlX01f8N9six6F+gN67x1Q1mmNnl+/grntd
+	 Hh9gpYVxwsFaw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Naveen N Rao <naveen@kernel.org>,
-	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
+Cc: Miklos Szeredi <mszeredi@redhat.com>,
+	Ian Kent <raven@themaw.net>,
+	Christian Brauner <brauner@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	christophe.leroy@csgroup.eu,
-	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 6.1 11/14] powerpc/lib: Validate size for vector operations
-Date: Mon, 15 Jan 2024 18:25:45 -0500
-Message-ID: <20240115232611.209265-11-sashal@kernel.org>
+	viro@zeniv.linux.org.uk,
+	linux-fsdevel@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 12/14] add unique mount ID
+Date: Mon, 15 Jan 2024 18:25:46 -0500
+Message-ID: <20240115232611.209265-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240115232611.209265-1-sashal@kernel.org>
 References: <20240115232611.209265-1-sashal@kernel.org>
@@ -57,69 +57,100 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.73
 Content-Transfer-Encoding: 8bit
 
-From: Naveen N Rao <naveen@kernel.org>
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-[ Upstream commit 8f9abaa6d7de0a70fc68acaedce290c1f96e2e59 ]
+[ Upstream commit 98d2b43081972abeb5bb5a087bc3e3197531c46e ]
 
-Some of the fp/vmx code in sstep.c assume a certain maximum size for the
-instructions being emulated. The size of those operations however is
-determined separately in analyse_instr().
+If a mount is released then its mnt_id can immediately be reused.  This is
+bad news for user interfaces that want to uniquely identify a mount.
 
-Add a check to validate the assumption on the maximum size of the
-operations, so as to prevent any unintended kernel stack corruption.
+Implementing a unique mount ID is trivial (use a 64bit counter).
+Unfortunately userspace assumes 32bit size and would overflow after the
+counter reaches 2^32.
 
-Signed-off-by: Naveen N Rao <naveen@kernel.org>
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Build-tested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://msgid.link/20231123071705.397625-1-naveen@kernel.org
+Introduce a new 64bit ID alongside the old one.  Initialize the counter to
+2^32, this guarantees that the old and new IDs are never mixed up.
+
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Link: https://lore.kernel.org/r/20231025140205.3586473-2-mszeredi@redhat.com
+Reviewed-by: Ian Kent <raven@themaw.net>
+Signed-off-by: Christian Brauner <brauner@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/lib/sstep.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ fs/mount.h                | 3 ++-
+ fs/namespace.c            | 4 ++++
+ fs/stat.c                 | 9 +++++++--
+ include/uapi/linux/stat.h | 1 +
+ 4 files changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/lib/sstep.c b/arch/powerpc/lib/sstep.c
-index 398b5694aeb7..ec30af8eadb7 100644
---- a/arch/powerpc/lib/sstep.c
-+++ b/arch/powerpc/lib/sstep.c
-@@ -586,6 +586,8 @@ static int do_fp_load(struct instruction_op *op, unsigned long ea,
- 	} u;
+diff --git a/fs/mount.h b/fs/mount.h
+index 130c07c2f8d2..a14f762b3f29 100644
+--- a/fs/mount.h
++++ b/fs/mount.h
+@@ -72,7 +72,8 @@ struct mount {
+ 	struct fsnotify_mark_connector __rcu *mnt_fsnotify_marks;
+ 	__u32 mnt_fsnotify_mask;
+ #endif
+-	int mnt_id;			/* mount identifier */
++	int mnt_id;			/* mount identifier, reused */
++	u64 mnt_id_unique;		/* mount ID unique until reboot */
+ 	int mnt_group_id;		/* peer group identifier */
+ 	int mnt_expiry_mark;		/* true if marked for expiry */
+ 	struct hlist_head mnt_pins;
+diff --git a/fs/namespace.c b/fs/namespace.c
+index e04a9e9e3f14..12c8e2eeda91 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -68,6 +68,9 @@ static u64 event;
+ static DEFINE_IDA(mnt_id_ida);
+ static DEFINE_IDA(mnt_group_ida);
  
- 	nb = GETSIZE(op->type);
-+	if (nb > sizeof(u))
-+		return -EINVAL;
- 	if (!address_ok(regs, ea, nb))
- 		return -EFAULT;
- 	rn = op->reg;
-@@ -636,6 +638,8 @@ static int do_fp_store(struct instruction_op *op, unsigned long ea,
- 	} u;
- 
- 	nb = GETSIZE(op->type);
-+	if (nb > sizeof(u))
-+		return -EINVAL;
- 	if (!address_ok(regs, ea, nb))
- 		return -EFAULT;
- 	rn = op->reg;
-@@ -680,6 +684,9 @@ static nokprobe_inline int do_vec_load(int rn, unsigned long ea,
- 		u8 b[sizeof(__vector128)];
- 	} u = {};
- 
-+	if (size > sizeof(u))
-+		return -EINVAL;
++/* Don't allow confusion with old 32bit mount ID */
++static atomic64_t mnt_id_ctr = ATOMIC64_INIT(1ULL << 32);
 +
- 	if (!address_ok(regs, ea & ~0xfUL, 16))
- 		return -EFAULT;
- 	/* align to multiple of size */
-@@ -707,6 +714,9 @@ static nokprobe_inline int do_vec_store(int rn, unsigned long ea,
- 		u8 b[sizeof(__vector128)];
- 	} u;
+ static struct hlist_head *mount_hashtable __read_mostly;
+ static struct hlist_head *mountpoint_hashtable __read_mostly;
+ static struct kmem_cache *mnt_cache __read_mostly;
+@@ -130,6 +133,7 @@ static int mnt_alloc_id(struct mount *mnt)
+ 	if (res < 0)
+ 		return res;
+ 	mnt->mnt_id = res;
++	mnt->mnt_id_unique = atomic64_inc_return(&mnt_id_ctr);
+ 	return 0;
+ }
  
-+	if (size > sizeof(u))
-+		return -EINVAL;
-+
- 	if (!address_ok(regs, ea & ~0xfUL, 16))
- 		return -EFAULT;
- 	/* align to multiple of size */
+diff --git a/fs/stat.c b/fs/stat.c
+index ef50573c72a2..a003e891a682 100644
+--- a/fs/stat.c
++++ b/fs/stat.c
+@@ -232,8 +232,13 @@ static int vfs_statx(int dfd, struct filename *filename, int flags,
+ 
+ 	error = vfs_getattr(&path, stat, request_mask, flags);
+ 
+-	stat->mnt_id = real_mount(path.mnt)->mnt_id;
+-	stat->result_mask |= STATX_MNT_ID;
++	if (request_mask & STATX_MNT_ID_UNIQUE) {
++		stat->mnt_id = real_mount(path.mnt)->mnt_id_unique;
++		stat->result_mask |= STATX_MNT_ID_UNIQUE;
++	} else {
++		stat->mnt_id = real_mount(path.mnt)->mnt_id;
++		stat->result_mask |= STATX_MNT_ID;
++	}
+ 
+ 	if (path.mnt->mnt_root == path.dentry)
+ 		stat->attributes |= STATX_ATTR_MOUNT_ROOT;
+diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+index 7cab2c65d3d7..2f2ee82d5517 100644
+--- a/include/uapi/linux/stat.h
++++ b/include/uapi/linux/stat.h
+@@ -154,6 +154,7 @@ struct statx {
+ #define STATX_BTIME		0x00000800U	/* Want/got stx_btime */
+ #define STATX_MNT_ID		0x00001000U	/* Got stx_mnt_id */
+ #define STATX_DIOALIGN		0x00002000U	/* Want/got direct I/O alignment info */
++#define STATX_MNT_ID_UNIQUE	0x00004000U	/* Want/got extended stx_mount_id */
+ 
+ #define STATX__RESERVED		0x80000000U	/* Reserved for future struct statx expansion */
+ 
 -- 
 2.43.0
 
