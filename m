@@ -1,282 +1,246 @@
-Return-Path: <linux-kernel+bounces-26165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BFDE82DC32
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:17:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C63D82DC37
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 16:23:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D4651F22AA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:17:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17D851F21CCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 15:23:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E402717747;
-	Mon, 15 Jan 2024 15:17:22 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FA2517748;
+	Mon, 15 Jan 2024 15:23:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="O2IVJPWi"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 330E3171C1;
-	Mon, 15 Jan 2024 15:17:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 633B6C433F1;
-	Mon, 15 Jan 2024 15:17:20 +0000 (UTC)
-Message-ID: <f73b5e20-b484-49c8-a050-40e044078bcf@xs4all.nl>
-Date: Mon, 15 Jan 2024 16:17:18 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CF0317736
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 15:23:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2dd05e02ffso104476466b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 07:23:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1705332189; x=1705936989; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Sjb6yat6rTIqwLNK7lIYkpvumfmiEIYSpK/Qu84PmCs=;
+        b=O2IVJPWiID3yDnL7MA+7TC/NMo+zcAOKRDBN/JDEeAA1TROeQGo6qDmdYUAHvavkuR
+         VCuU+cMqOQGwThq30/2uP0YvH3G32lqkOCUcgA1Cr6vKmPO/nymxAvY5wl+CjoSjctuF
+         qsur+XFbgL1FW9rFpFvo2WtlMqbQ+JQ7MdROJOxdVHt1Tut7JCOcQfi/tudbzG1TKAv5
+         cgNk9SUDAvMdkDxVn0LqU6/nN8q0tYPJ9fcOfsVJnne8lDWxrMEK3OJMBnGvwna+d2DX
+         enYRsoNNUoQ9B5jTIRWyv0vLcT1BmL+QtNbeDdDCPMzVOKJUiWWfI9dWkj8LglOtQlgn
+         S2Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705332189; x=1705936989;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Sjb6yat6rTIqwLNK7lIYkpvumfmiEIYSpK/Qu84PmCs=;
+        b=qoNSagk9KBiA/T467VOc64EDnlp/kZUTh1W0KwK1EMkrhKM7JM4Pn+JENp3rWIkQnN
+         WdjjxZePxz3G9b1zaOgrgq71KzqUxpXIF06EqoMRk3GYY0JIwl+tFDOmyWW87SSR9wun
+         ZX3SSf0mwYMeHrXBLiVnMqDwihYRtOW6Tnvzsm26PVD+pf705iD82SC/R6krKkktq8uP
+         wuDz8gLbp5kHLdvg/emy2qOP/lQca3jlSa61Kr1X2CkkmItI+XNRLSE3iU2eui1CY9RO
+         pzP5yGNl6BotPtQTkJUSqQtbW0yZky1ScP4jNr7inIeTSwCUHvj0HpShB5aM8gTsAdxu
+         THWg==
+X-Gm-Message-State: AOJu0Yw+YtJ3hWeZiy0Kj2n7OOp06gmYLCPK2MNCO57sIwrlgx+gTPIV
+	IixyDaWfkp4lvgDFvspsVP30ozz3KcA1sxjdsRdjw9HTBmQ=
+X-Google-Smtp-Source: AGHT+IHA8GBVAlaQ/G9+4YlfpGBti7K7zuQDjbKGggHHhNwvPhvQd31mN7o91Q5SxIzDJNMEKz+DEQ==
+X-Received: by 2002:a17:907:3c9:b0:a2c:c648:dd03 with SMTP id su9-20020a17090703c900b00a2cc648dd03mr1381050ejb.110.1705332188553;
+        Mon, 15 Jan 2024 07:23:08 -0800 (PST)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id v8-20020a170906488800b00a27aabff0dcsm5467070ejq.179.2024.01.15.07.23.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 07:23:08 -0800 (PST)
+Date: Mon, 15 Jan 2024 16:23:07 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Sunil V L <sunilvl@ventanamicro.com>
+Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	"Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Anup Patel <anup@brainfault.org>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Conor Dooley <conor@kernel.org>, Atish Kumar Patra <atishp@rivosinc.com>, 
+	Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH v2 -next 1/3] cpuidle: RISC-V: Move few functions to
+ arch/riscv
+Message-ID: <20240115-b3536efde6699e67fa15ac65@orel>
+References: <20240115101056.429471-1-sunilvl@ventanamicro.com>
+ <20240115101056.429471-2-sunilvl@ventanamicro.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v16 3/8] media: core: Rework how create_buf index returned
- value is computed
-Content-Language: en-US, nl
-To: Benjamin Gaignard <benjamin.gaignard@collabora.com>, mchehab@kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
- kernel@collabora.com
-References: <20231215090813.15610-1-benjamin.gaignard@collabora.com>
- <20231215090813.15610-4-benjamin.gaignard@collabora.com>
- <ea069946-adb2-4ab2-b40a-06d11846d9ee@xs4all.nl>
- <2d9296a1-1fbc-4d85-b147-90f8f10c8f5f@collabora.com>
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <2d9296a1-1fbc-4d85-b147-90f8f10c8f5f@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240115101056.429471-2-sunilvl@ventanamicro.com>
 
-On 15/01/2024 15:52, Benjamin Gaignard wrote:
+On Mon, Jan 15, 2024 at 03:40:54PM +0530, Sunil V L wrote:
+> To support ACPI Low Power Idle (LPI), few functions are required which
+> are currently static functions in the DT based cpuidle driver. Hence,
+> move them under arch/riscv so that ACPI driver also can use them.
 > 
-> Le 15/01/2024 à 13:11, Hans Verkuil a écrit :
->> On 15/12/2023 10:08, Benjamin Gaignard wrote:
->>> When DELETE_BUFS will be introduced holes could created in bufs array.
->>> To be able to reuse these unused indices reworking how create->index
->>> is set is mandatory.
->>> Let __vb2_queue_alloc() decide which first index is correct and
->>> forward this to the caller.
->>>
->>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->>> ---
->>>   .../media/common/videobuf2/videobuf2-core.c   | 22 ++++++++++++-------
->>>   .../media/common/videobuf2/videobuf2-v4l2.c   | 20 +++++++++++------
->>>   include/media/videobuf2-core.h                |  5 ++++-
->>>   3 files changed, 31 insertions(+), 16 deletions(-)
->>>
->>> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
->>> index a183edf11586..cd2b9e51b9b0 100644
->>> --- a/drivers/media/common/videobuf2/videobuf2-core.c
->>> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
->>> @@ -447,11 +447,12 @@ static void vb2_queue_remove_buffer(struct vb2_buffer *vb)
->>>    */
->>>   static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
->>>                    unsigned int num_buffers, unsigned int num_planes,
->>> -                 const unsigned plane_sizes[VB2_MAX_PLANES])
->>> +                 const unsigned int plane_sizes[VB2_MAX_PLANES],
->>> +                 unsigned int *first_index)
->>>   {
->>> -    unsigned int q_num_buffers = vb2_get_num_buffers(q);
->>>       unsigned int buffer, plane;
->>>       struct vb2_buffer *vb;
->>> +    unsigned long index;
->>>       int ret;
->>>         /*
->>> @@ -459,7 +460,11 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
->>>        * in the queue is below q->max_num_buffers
->>>        */
->>>       num_buffers = min_t(unsigned int, num_buffers,
->>> -                q->max_num_buffers - q_num_buffers);
->>> +                q->max_num_buffers - vb2_get_num_buffers(q));
->>> +
->>> +    index = vb2_get_num_buffers(q);
->>> +
->>> +    *first_index = index;
->>>         for (buffer = 0; buffer < num_buffers; ++buffer) {
->>>           /* Allocate vb2 buffer structures */
->>> @@ -479,7 +484,7 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
->>>               vb->planes[plane].min_length = plane_sizes[plane];
->>>           }
->>>   -        vb2_queue_add_buffer(q, vb, q_num_buffers + buffer);
->>> +        vb2_queue_add_buffer(q, vb, index++);
->>>           call_void_bufop(q, init_buffer, vb);
->>>             /* Allocate video buffer memory for the MMAP type */
->>> @@ -820,7 +825,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->>>       unsigned int q_num_bufs = vb2_get_num_buffers(q);
->>>       unsigned plane_sizes[VB2_MAX_PLANES] = { };
->>>       bool non_coherent_mem = flags & V4L2_MEMORY_FLAG_NON_COHERENT;
->>> -    unsigned int i;
->>> +    unsigned int i, first_index;
->>>       int ret = 0;
->>>         if (q->streaming) {
->>> @@ -906,7 +911,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->>>         /* Finally, allocate buffers and video memory */
->>>       allocated_buffers =
->>> -        __vb2_queue_alloc(q, memory, num_buffers, num_planes, plane_sizes);
->>> +        __vb2_queue_alloc(q, memory, num_buffers, num_planes, plane_sizes, &first_index);
->>>       if (allocated_buffers == 0) {
->>>           dprintk(q, 1, "memory allocation failed\n");
->>>           ret = -ENOMEM;
->>> @@ -980,7 +985,8 @@ EXPORT_SYMBOL_GPL(vb2_core_reqbufs);
->>>   int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->>>                unsigned int flags, unsigned int *count,
->>>                unsigned int requested_planes,
->>> -             const unsigned int requested_sizes[])
->>> +             const unsigned int requested_sizes[],
->>> +             unsigned int *first_index)
->>>   {
->>>       unsigned int num_planes = 0, num_buffers, allocated_buffers;
->>>       unsigned plane_sizes[VB2_MAX_PLANES] = { };
->>> @@ -1042,7 +1048,7 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->>>         /* Finally, allocate buffers and video memory */
->>>       allocated_buffers = __vb2_queue_alloc(q, memory, num_buffers,
->>> -                num_planes, plane_sizes);
->>> +                num_planes, plane_sizes, first_index);
->>>       if (allocated_buffers == 0) {
->>>           dprintk(q, 1, "memory allocation failed\n");
->>>           ret = -ENOMEM;
->>> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
->>> index 54d572c3b515..3c0c423c5674 100644
->>> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
->>> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
->>> @@ -797,11 +797,16 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
->>>       for (i = 0; i < requested_planes; i++)
->>>           if (requested_sizes[i] == 0)
->>>               return -EINVAL;
->>> -    return ret ? ret : vb2_core_create_bufs(q, create->memory,
->>> -                        create->flags,
->>> -                        &create->count,
->>> -                        requested_planes,
->>> -                        requested_sizes);
->>> +    if (ret)
->>> +        return ret;
->>> +
->>> +    ret = vb2_core_create_bufs(q, create->memory,
->>> +                   create->flags,
->>> +                   &create->count,
->>> +                   requested_planes,
->>> +                   requested_sizes,
->>> +                   &create->index);
->>> +    return ret;
->>>   }
->>>   EXPORT_SYMBOL_GPL(vb2_create_bufs);
->>>   @@ -1029,15 +1034,16 @@ int vb2_ioctl_create_bufs(struct file *file, void *priv,
->>>       int res = vb2_verify_memory_type(vdev->queue, p->memory,
->>>               p->format.type);
->>>   -    p->index = vdev->queue->num_buffers;
->>>       fill_buf_caps(vdev->queue, &p->capabilities);
->>>       validate_memory_flags(vdev->queue, p->memory, &p->flags);
->> While reviewing this, I think I found a bug in the current code:
->>
->> vb2_create_bufs() sets V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS, but
->> if p->count == 0, then that function isn't called...
->>
->>>       /*
->>>        * If count == 0, then just check if memory and type are valid.
->>>        * Any -EBUSY result from vb2_verify_memory_type can be mapped to 0.
->>>        */
->>> -    if (p->count == 0)
->>> +    if (p->count == 0) {
->>> +        p->index = vb2_get_num_buffers(vdev->queue);
->>>           return res != -EBUSY ? res : 0;
->> ...instead it just falls in this 'if'.
->>
->> It would be better to refactor this so that vb2_ioctl_create_bufs()
->> relies on vb2_create_bufs for most of the work.
->>
->> The reason for the messy code is that if p->count == 0, then it
->> should ignore any EBUSY results, since that should always work.
->>
->> Alternatively, just copy the code from vb2_create_bufs here so the
->> flag is properly set.
->>
->> In any case, fixing this is a separate patch that should go to v6.8.
+> Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+> ---
+>  arch/riscv/include/asm/suspend.h    |  3 ++
+>  arch/riscv/kernel/suspend.c         | 47 +++++++++++++++++++++++++++++
+>  drivers/cpuidle/cpuidle-riscv-sbi.c | 41 +------------------------
+>  3 files changed, 51 insertions(+), 40 deletions(-)
 > 
-> Do you want this new patch to be in the next version of this series or completely
-> separated ?
+> diff --git a/arch/riscv/include/asm/suspend.h b/arch/riscv/include/asm/suspend.h
+> index 02f87867389a..5c7df5ab7a16 100644
+> --- a/arch/riscv/include/asm/suspend.h
+> +++ b/arch/riscv/include/asm/suspend.h
+> @@ -55,4 +55,7 @@ int hibernate_resume_nonboot_cpu_disable(void);
+>  asmlinkage void hibernate_restore_image(unsigned long resume_satp, unsigned long satp_temp,
+>  					unsigned long cpu_resume);
+>  asmlinkage int hibernate_core_restore_code(void);
+> +bool is_sbi_hsm_supported(void);
+> +bool sbi_suspend_state_is_valid(u32 state);
+> +int sbi_suspend(u32 state);
+>  #endif
+> diff --git a/arch/riscv/kernel/suspend.c b/arch/riscv/kernel/suspend.c
+> index 239509367e42..a3b2e7e16a98 100644
+> --- a/arch/riscv/kernel/suspend.c
+> +++ b/arch/riscv/kernel/suspend.c
+> @@ -128,4 +128,51 @@ static int __init sbi_system_suspend_init(void)
+>  }
+>  
+>  arch_initcall(sbi_system_suspend_init);
+> +
+> +static int sbi_suspend_finisher(unsigned long suspend_type,
+> +				unsigned long resume_addr,
+> +				unsigned long opaque)
+> +{
+> +	struct sbiret ret;
+> +
+> +	ret = sbi_ecall(SBI_EXT_HSM, SBI_EXT_HSM_HART_SUSPEND,
+> +			suspend_type, resume_addr, opaque, 0, 0, 0);
+> +
+> +	return (ret.error) ? sbi_err_map_linux_errno(ret.error) : 0;
+> +}
+> +
+> +int sbi_suspend(u32 state)
 
-Completely separate. It's a fix that needs to go to v6.8.
+Now that this is exported, I'd name it riscv_sbi_suspend.
 
-Please prioritize this, once rc1 is released I'll prepare a PR with
-several that need to go in v6.8.
+> +{
+> +	if (state & SBI_HSM_SUSP_NON_RET_BIT)
+> +		return cpu_suspend(state, sbi_suspend_finisher);
+> +	else
+> +		return sbi_suspend_finisher(state, 0, 0);
+> +}
+> +
+> +bool sbi_suspend_state_is_valid(u32 state)
 
-Regards,
+Also riscv_ prefix here.
 
-	Hans
+> +{
+> +	if (state > SBI_HSM_SUSPEND_RET_DEFAULT &&
+> +	    state < SBI_HSM_SUSPEND_RET_PLATFORM)
+> +		return false;
+> +	if (state > SBI_HSM_SUSPEND_NON_RET_DEFAULT &&
+> +	    state < SBI_HSM_SUSPEND_NON_RET_PLATFORM)
+> +		return false;
+> +	return true;
+> +}
+> +
+> +bool is_sbi_hsm_supported(void)
 
-> 
-> Regards,
-> Benjamin
-> 
->>
->> Regards,
->>
->>     Hans
->>
->>> +    }
->>>       if (res)
->>>           return res;
->>>       if (vb2_queue_is_busy(vdev->queue, file))
->>> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
->>> index 7b84b4e2e273..607f2ba7a905 100644
->>> --- a/include/media/videobuf2-core.h
->>> +++ b/include/media/videobuf2-core.h
->>> @@ -821,6 +821,8 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->>>    * @count: requested buffer count.
->>>    * @requested_planes: number of planes requested.
->>>    * @requested_sizes: array with the size of the planes.
->>> + * @first_index: index of the first created buffer, all allocated buffers have
->>> + *         indices in the range [first..first+count]
->>>    *
->>>    * Videobuf2 core helper to implement VIDIOC_CREATE_BUFS() operation. It is
->>>    * called internally by VB2 by an API-specific handler, like
->>> @@ -837,7 +839,8 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->>>   int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->>>                unsigned int flags, unsigned int *count,
->>>                unsigned int requested_planes,
->>> -             const unsigned int requested_sizes[]);
->>> +             const unsigned int requested_sizes[],
->>> +             unsigned int *first_index);
->>>     /**
->>>    * vb2_core_prepare_buf() - Pass ownership of a buffer from userspace
+This I would rename to riscv_sbi_hsm_is_supported
 
+> +{
+> +	/*
+> +	 * The SBI HSM suspend function is only available when:
+> +	 * 1) SBI version is 0.3 or higher
+> +	 * 2) SBI HSM extension is available
+> +	 */
+> +	if (sbi_spec_version < sbi_mk_version(0, 3) ||
+> +	    !sbi_probe_extension(SBI_EXT_HSM)) {
+> +		pr_info("HSM suspend not available\n");
+> +		return false;
+> +	}
+> +
+> +	return true;
+> +}
+>  #endif /* CONFIG_RISCV_SBI */
+> diff --git a/drivers/cpuidle/cpuidle-riscv-sbi.c b/drivers/cpuidle/cpuidle-riscv-sbi.c
+> index e8094fc92491..a7f06242f67b 100644
+> --- a/drivers/cpuidle/cpuidle-riscv-sbi.c
+> +++ b/drivers/cpuidle/cpuidle-riscv-sbi.c
+> @@ -73,26 +73,6 @@ static inline bool sbi_is_domain_state_available(void)
+>  	return data->available;
+>  }
+>  
+> -static int sbi_suspend_finisher(unsigned long suspend_type,
+> -				unsigned long resume_addr,
+> -				unsigned long opaque)
+> -{
+> -	struct sbiret ret;
+> -
+> -	ret = sbi_ecall(SBI_EXT_HSM, SBI_EXT_HSM_HART_SUSPEND,
+> -			suspend_type, resume_addr, opaque, 0, 0, 0);
+> -
+> -	return (ret.error) ? sbi_err_map_linux_errno(ret.error) : 0;
+> -}
+> -
+> -static int sbi_suspend(u32 state)
+> -{
+> -	if (state & SBI_HSM_SUSP_NON_RET_BIT)
+> -		return cpu_suspend(state, sbi_suspend_finisher);
+> -	else
+> -		return sbi_suspend_finisher(state, 0, 0);
+> -}
+> -
+>  static __cpuidle int sbi_cpuidle_enter_state(struct cpuidle_device *dev,
+>  					     struct cpuidle_driver *drv, int idx)
+>  {
+> @@ -206,17 +186,6 @@ static const struct of_device_id sbi_cpuidle_state_match[] = {
+>  	{ },
+>  };
+>  
+> -static bool sbi_suspend_state_is_valid(u32 state)
+> -{
+> -	if (state > SBI_HSM_SUSPEND_RET_DEFAULT &&
+> -	    state < SBI_HSM_SUSPEND_RET_PLATFORM)
+> -		return false;
+> -	if (state > SBI_HSM_SUSPEND_NON_RET_DEFAULT &&
+> -	    state < SBI_HSM_SUSPEND_NON_RET_PLATFORM)
+> -		return false;
+> -	return true;
+> -}
+> -
+>  static int sbi_dt_parse_state_node(struct device_node *np, u32 *state)
+>  {
+>  	int err = of_property_read_u32(np, "riscv,sbi-suspend-param", state);
+> @@ -607,16 +576,8 @@ static int __init sbi_cpuidle_init(void)
+>  	int ret;
+>  	struct platform_device *pdev;
+>  
+> -	/*
+> -	 * The SBI HSM suspend function is only available when:
+> -	 * 1) SBI version is 0.3 or higher
+> -	 * 2) SBI HSM extension is available
+> -	 */
+> -	if ((sbi_spec_version < sbi_mk_version(0, 3)) ||
+> -	    !sbi_probe_extension(SBI_EXT_HSM)) {
+> -		pr_info("HSM suspend not available\n");
+> +	if (!is_sbi_hsm_supported())
+>  		return 0;
+> -	}
+>  
+>  	ret = platform_driver_register(&sbi_cpuidle_driver);
+>  	if (ret)
+> -- 
+> 2.34.1
+>
+
+Otherwise,
+
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
