@@ -1,145 +1,126 @@
-Return-Path: <linux-kernel+bounces-26320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A39C382DE7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:32:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54E3982DE80
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:34:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5321C2832E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:32:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 043721C21E16
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:34:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 584A618048;
-	Mon, 15 Jan 2024 17:32:34 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5612182B3;
+	Mon, 15 Jan 2024 17:34:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NDsqGDId"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7DE218041
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 17:32:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rPQom-0004EU-7Y; Mon, 15 Jan 2024 18:32:12 +0100
-Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rPQoh-00044H-MF; Mon, 15 Jan 2024 18:32:07 +0100
-Received: from pza by lupine with local (Exim 4.96)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rPQoh-000A5v-1x;
-	Mon, 15 Jan 2024 18:32:07 +0100
-Message-ID: <289c4af00bcc46e83555dacbc76f56477126d645.camel@pengutronix.de>
-Subject: Re: [PATCH v3 2/5] reset: Instantiate reset GPIO controller for
- shared reset-gpios
-From: Philipp Zabel <p.zabel@pengutronix.de>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Bartosz
- Golaszewski <brgl@bgdev.pl>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio
- <konrad.dybcio@linaro.org>, Srinivas Kandagatla
- <srinivas.kandagatla@linaro.org>,  Banajit Goswami <bgoswami@quicinc.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,  Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Peter Rosin <peda@axentia.se>, Jaroslav Kysela <perex@perex.cz>, Takashi
- Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org, 
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-i2c@vger.kernel.org, Chris Packham
- <chris.packham@alliedtelesis.co.nz>,  Sean Anderson <sean.anderson@seco.com>
-Date: Mon, 15 Jan 2024 18:32:07 +0100
-In-Reply-To: <7f311659-9f49-44dc-ad40-977d34066d98@linaro.org>
-References: <20240112163608.528453-1-krzysztof.kozlowski@linaro.org>
-	 <20240112163608.528453-3-krzysztof.kozlowski@linaro.org>
-	 <CAMRc=MdcCZP5kgv7JBdy2m_naNbTSeq4MDE_3mk+1-5UD4ntwQ@mail.gmail.com>
-	 <7f311659-9f49-44dc-ad40-977d34066d98@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B6F4182A0;
+	Mon, 15 Jan 2024 17:34:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83087C433C7;
+	Mon, 15 Jan 2024 17:34:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705340061;
+	bh=2cyFxe3uTqXct4jEHJssjWPzlGUygaQOIyDsjApVixs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=NDsqGDIdECNVMWc+uAQHFv77zTzI5T522ItTdcWbGbiidpMdS71qAqKcTWOJWnWL9
+	 +3C6sbRpMZs2bWs3h/nmboU8I2UO8EwSv8AVSssH5cCAXp7H6i4zX0kVUucRvOK4wj
+	 o4rA7dLoHtMdlxxhe+yNFIjxxHByYyLNlZhPHnbyjnUxmK6KOZZ+xSGVe2zHXQ/QiF
+	 I9tASWxZfH4n043KIl4rErlj0xolpjIUCtazroKabuEFa7b2Cb1qfPH1KzO4YeTJni
+	 q4xTI9OtbnmvHXxmQDQTGTHXWU0uJtUk0J+jFlTvEwWCdT3ALxRo0cHm/K2ZX7fqKu
+	 TTQs+myvvVlMw==
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50eabd1c701so10909227e87.3;
+        Mon, 15 Jan 2024 09:34:21 -0800 (PST)
+X-Gm-Message-State: AOJu0YxQyQ3IZ7MX0G7hkq7pIJv4FjFfPJlXFafYITsRpiWIrJKQIRZp
+	uoUDwjeaNe9i3XeN3hQqT/bgl6aXJGPcLxLBVUE=
+X-Google-Smtp-Source: AGHT+IHFo330I6ZljINXz/ysqRtL+x3YL/kuqlI40H8B493dbLWWGACXW6EkUsLbSJQXy3E03NMp49jK4CLZdbH39co=
+X-Received: by 2002:ac2:44ba:0:b0:50e:7b63:556c with SMTP id
+ c26-20020ac244ba000000b0050e7b63556cmr2378330lfm.101.1705340059757; Mon, 15
+ Jan 2024 09:34:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <mhng-8a4a5f85-faf9-405c-95a0-78cd04ec6509@palmer-ri-x1c9> <56b52d4e-9dc0-400c-a141-7e70f5c72afa@siemens.com>
+In-Reply-To: <56b52d4e-9dc0-400c-a141-7e70f5c72afa@siemens.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Mon, 15 Jan 2024 18:34:08 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGR1aQdvej+0drfim-ZP27ZhO9UR_i_PT6F+hsV0UvbJw@mail.gmail.com>
+Message-ID: <CAMj1kXGR1aQdvej+0drfim-ZP27ZhO9UR_i_PT6F+hsV0UvbJw@mail.gmail.com>
+Subject: Re: [PATCH] riscv/efistub: Ensure GP-relative addressing is not used
+To: Jan Kiszka <jan.kiszka@siemens.com>
+Cc: Palmer Dabbelt <palmer@rivosinc.com>, linux-efi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mo, 2024-01-15 at 17:13 +0100, Krzysztof Kozlowski wrote:
-> On 15/01/2024 17:06, Bartosz Golaszewski wrote:
-> > > +
-> > > +static int __reset_add_reset_gpio_lookup(int id, struct device_node =
-*np,
-> > > +                                        unsigned int gpio,
-> > > +                                        unsigned int of_flags)
-> > > +{
-> > > +       struct gpiod_lookup_table *lookup __free(kfree) =3D NULL;
-> > > +       struct gpio_device *gdev __free(gpio_device_put) =3D NULL;
-> > > +       char *label __free(kfree) =3D NULL;
-> >=20
-> > I got yelled at by Linus Torvalds personally for doing it like this. I
-> > know this is a common pattern in code using GLib but Linus wants auto
-> > variables to be initialized where they're declared...
->=20
-> Declaration is here. Initialization is here. Therefore this is
-> initialized where it is declared. What's more it is initialized to a
-> valid value, because __free() accepts NULLs.
-[...]
-> > ... so this should become:
-> >=20
-> >   struct gpio_device *gdev __free(gpio_device_put) =3D gpio_device_find=
-(...)
-> >=20
-> > and same for the rest.
-> >=20
-> > Don't get me wrong, I love cleanup.h but there's a (unofficial for
-> > now) coding style.
->=20
-> So you just want to declare it not in top-part of the function but just
-> before first use?
+On Sat, 13 Jan 2024 at 11:35, Jan Kiszka <jan.kiszka@siemens.com> wrote:
+>
+> On 12.01.24 19:56, Palmer Dabbelt wrote:
+> > On Fri, 12 Jan 2024 10:51:16 PST (-0800), Ard Biesheuvel wrote:
+> >> Hi Jan,
+> >>
+> >> On Fri, 12 Jan 2024 at 19:37, Jan Kiszka <jan.kiszka@siemens.com> wrote:
+> >>>
+> >>> From: Jan Kiszka <jan.kiszka@siemens.com>
+> >>>
+> >>> The cflags for the RISC-V efistub were missing -mno-relax, thus were
+> >>> under the risk that the compiler could use GP-relative addressing. That
+> >>> happened for _edata with binutils-2.41 and kernel 6.1, causing the
+> >>> relocation to fail due to an invalid kernel_size in handle_kernel_image.
+> >>> It was not yet observed with newer versions, but that may just be luck.
+> >>>
+> >>> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+> >>> ---
+> >>>
+> >>> Something like this should go to stable as well, but we will need
+> >>> rebased patches.
+> >>>
+> >>>  drivers/firmware/efi/libstub/Makefile | 2 +-
+> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/drivers/firmware/efi/libstub/Makefile
+> >>> b/drivers/firmware/efi/libstub/Makefile
+> >>> index 06964a3c130f..d561d7de46a9 100644
+> >>> --- a/drivers/firmware/efi/libstub/Makefile
+> >>> +++ b/drivers/firmware/efi/libstub/Makefile
+> >>> @@ -28,7 +28,7 @@ cflags-$(CONFIG_ARM)          += -DEFI_HAVE_STRLEN
+> >>> -DEFI_HAVE_STRNLEN \
+> >>>                                    -DEFI_HAVE_MEMCHR
+> >>> -DEFI_HAVE_STRRCHR \
+> >>>                                    -DEFI_HAVE_STRCMP -fno-builtin
+> >>> -fpic \
+> >>>                                    $(call
+> >>> cc-option,-mno-single-pic-base)
+> >>> -cflags-$(CONFIG_RISCV)         += -fpic -DNO_ALTERNATIVE
+> >>> +cflags-$(CONFIG_RISCV)         += -fpic -DNO_ALTERNATIVE -mno-relax
+> >>
+> >> Can we detect the presence of these references (via the relocation
+> >> type)? We already do something similar for ordinary absolute
+> >> references too.
+> >
+> > If there's no `__global_pointer$` symbol then the linker won't make
+> > GP-relative relaxations (because it doesn't know where GP is).  We
+> > usually define that symbol in the linker script, but I'm not entierly
+> > sure how libstub gets its linker script...
+> >
+>
+> The stub seems to be linked together with the rest of the kernel, thus
+> the regular arch/riscv/kernel/vmlinux.lds.S is used.
+>
 
-IIUC, Linus wants exactly this:
+Indeed - the EFI stub is part of the same executable as vmlinux, we
+just mangle the symbol names to ensure that only code that can be
+safely called from the EFI stub can be linked to it.
 
-https://lore.kernel.org/all/CAHk-=3DwgRHiV5VSxtfXA4S6aLUmcQYEuB67u3BJPJPtuE=
-Ss1JyA@mail.gmail.com/
-
-[...]
-> >=20
-> > > +               goto out_unlock;
-> > >         }
-> > >=20
-> > >         rstc_id =3D rcdev->of_xlate(rcdev, &args);
-> > >         if (rstc_id < 0) {
-> > >                 rstc =3D ERR_PTR(rstc_id);
-> > > -               goto out;
-> > > +               goto out_unlock;
-> > >         }
-> > >=20
-> > >         /* reset_list_mutex also protects the rcdev's reset_control l=
-ist */
-> > >         rstc =3D __reset_control_get_internal(rcdev, rstc_id, shared,=
- acquired);
-> > >=20
-> > > -out:
-> > > +out_unlock:
-> > >         mutex_unlock(&reset_list_mutex);
-> > > +out_put:
-> > >         of_node_put(args.np);
-> >=20
-> > I suggest reworking this to use cleanup.h as well.
->=20
-> It's independent task. This is an existing code and any refactoring to
-> cleanup or not is independent thing.
-
-Seconded. Separate cleanup very welcome, but this series is about
-adding functionality.
-
-regards
-Philipp
+If the effect of -mno-relax is to stop emitting R_RISCV_RELAX
+relocations, we should perhaps add those to the STUBCOPY_RELOC-y
+Makefile variable? (in the same file). BTW R_RISCV_HI20 doesn't seem
+like the right value there to begin with: the idea of that is to
+disallow ELF relocations that evaluate to expressions that can only be
+known at runtime (like absolute addresses for global pointer
+variables)
 
