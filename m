@@ -1,125 +1,222 @@
-Return-Path: <linux-kernel+bounces-26326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 584DF82DE98
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:43:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3576182DE9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 18:44:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC17B1F228B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:43:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31A461C21E27
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 17:44:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42EFE18049;
-	Mon, 15 Jan 2024 17:43:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K9z2HeYX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A20C818049;
+	Mon, 15 Jan 2024 17:44:19 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BF3717C98;
-	Mon, 15 Jan 2024 17:43:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E850DC433C7;
-	Mon, 15 Jan 2024 17:43:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705340623;
-	bh=TNNXHlCOpAGGqgmgfpLzL9G4VoowSCtm3Fdz6y9uqF8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=K9z2HeYXg8Ri8q/JdndsnZnWUOsgcOP7Mc1/4aLtm0m2gjnxLbig+qTSTIjOg8KEK
-	 8op721GbB2BH0EJhV5tWHjK6/i5UqFz2714NB0xtnWP6dYPdAiH8wJjKuNi/u0EQzP
-	 RFFYTPYzg8TDNvA6zgH3BdIVGR3/B8k4r6/Xc1XhJv9ifxFPgszGc0DEmE2Aq/tT+i
-	 QDy7y8bb31DhKpXgEM8qv6D8fs1bcwp/dn4Fl1GylqrlP8Jnw6pQoeZ4p4TeIl9SQK
-	 Nq0We2m3gt4YLjnY4ZDUlepnvwLFJABoFv6mbJXcRbWignsxt0plzu2XKL+hQYRZu0
-	 GAN8whVDoam3w==
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cd703e9014so79591781fa.1;
-        Mon, 15 Jan 2024 09:43:43 -0800 (PST)
-X-Gm-Message-State: AOJu0YwjbvV9weYzkJJeuhxwjBEJYvHSOQZCzS/jQtA0kq04ONbDdxtX
-	UqbmUhTdHP2dzpxWl/53VtfAtRFUJTRbBxtMRg==
-X-Google-Smtp-Source: AGHT+IEdcvEmGLc2vxkMNR7ny/nWk3upQpsAYJ5biMMTm3Rx1zQeTWmjrbuSeSUFWyhnJj8ycbxRcd55ApkN0iho+9k=
-X-Received: by 2002:a2e:b0d9:0:b0:2cc:f31b:56ea with SMTP id
- g25-20020a2eb0d9000000b002ccf31b56eamr2992580ljl.92.1705340622164; Mon, 15
- Jan 2024 09:43:42 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3517B182A1;
+	Mon, 15 Jan 2024 17:44:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TDKFZ6Xz5z6J9SV;
+	Tue, 16 Jan 2024 01:41:38 +0800 (CST)
+Received: from lhrpeml500003.china.huawei.com (unknown [7.191.162.67])
+	by mail.maildlp.com (Postfix) with ESMTPS id B08F6140594;
+	Tue, 16 Jan 2024 01:44:13 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (7.191.163.240) by
+ lhrpeml500003.china.huawei.com (7.191.162.67) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 15 Jan 2024 17:44:13 +0000
+Received: from lhrpeml500005.china.huawei.com ([7.191.163.240]) by
+ lhrpeml500005.china.huawei.com ([7.191.163.240]) with mapi id 15.01.2507.035;
+ Mon, 15 Jan 2024 17:44:13 +0000
+From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+CC: Lu Baolu <baolu.lu@linux.intel.com>, Kevin Tian <kevin.tian@intel.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, Robin Murphy
+	<robin.murphy@arm.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>, Jacob Pan
+	<jacob.jun.pan@linux.intel.com>, "iommu@lists.linux.dev"
+	<iommu@lists.linux.dev>, "linux-kselftest@vger.kernel.org"
+	<linux-kselftest@vger.kernel.org>,
+	"virtualization@lists.linux-foundation.org"
+	<virtualization@lists.linux-foundation.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 4/6] iommufd: Deliver fault messages to user space
+Thread-Topic: [PATCH v2 4/6] iommufd: Deliver fault messages to user space
+Thread-Index: AQHaB7erJOXV16DWQEa9TDH5jPoMHrDW7X2wgASoGYCAAA4dMA==
+Date: Mon, 15 Jan 2024 17:44:13 +0000
+Message-ID: <b1663110e1ca4301834f403270357bea@huawei.com>
+References: <20231026024930.382898-1-baolu.lu@linux.intel.com>
+ <20231026024930.382898-5-baolu.lu@linux.intel.com>
+ <b822096cc3b441309d99832c587be25a@huawei.com>
+ <20240115164723.GB50608@ziepe.ca>
+In-Reply-To: <20240115164723.GB50608@ziepe.ca>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220145537.2163811-1-andre.draszik@linaro.org>
- <170432630603.2042234.10993333941885772911.robh@kernel.org>
- <827695c3-bb33-4a86-8586-2c7323530398@amd.com> <bcd89ef7a43eb7d652f045c029d8e108adf7ba32.camel@linaro.org>
- <20240115-fragment-clean-95ef01dd8b20@spud> <ffd6f60e-fea9-4426-a981-badd3c68cd4d@amd.com>
- <8c5afb4e52e0c5a6dd88f6b7eaa7bc2e97ba31ad.camel@linaro.org>
-In-Reply-To: <8c5afb4e52e0c5a6dd88f6b7eaa7bc2e97ba31ad.camel@linaro.org>
-From: Rob Herring <robh@kernel.org>
-Date: Mon, 15 Jan 2024 11:43:29 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqL3ELh=i6cA+8EhH0uBw19sw5+vCyLWUODU7D80JS-D8w@mail.gmail.com>
-Message-ID: <CAL_JsqL3ELh=i6cA+8EhH0uBw19sw5+vCyLWUODU7D80JS-D8w@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: ignore paths outside kernel for DT_SCHEMA_FILES
-To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
-Cc: Michal Simek <michal.simek@amd.com>, Conor Dooley <conor@kernel.org>, 
-	Masahiro Yamada <masahiroy@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Mathieu Poirier <mathieu.poirier@linaro.org>, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 15, 2024 at 10:57=E2=80=AFAM Andr=C3=A9 Draszik <andre.draszik@=
-linaro.org> wrote:
->
-> On Mon, 2024-01-15 at 17:37 +0100, Michal Simek wrote:
+
+
+> -----Original Message-----
+> From: Jason Gunthorpe <jgg@ziepe.ca>
+> Sent: Monday, January 15, 2024 4:47 PM
+> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+> Cc: Lu Baolu <baolu.lu@linux.intel.com>; Kevin Tian <kevin.tian@intel.com=
+>;
+> Joerg Roedel <joro@8bytes.org>; Will Deacon <will@kernel.org>; Robin
+> Murphy <robin.murphy@arm.com>; Jean-Philippe Brucker <jean-
+> philippe@linaro.org>; Nicolin Chen <nicolinc@nvidia.com>; Yi Liu
+> <yi.l.liu@intel.com>; Jacob Pan <jacob.jun.pan@linux.intel.com>;
+> iommu@lists.linux.dev; linux-kselftest@vger.kernel.org;
+> virtualization@lists.linux-foundation.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH v2 4/6] iommufd: Deliver fault messages to user space
+>=20
+> On Fri, Jan 12, 2024 at 05:46:13PM +0000, Shameerali Kolothum Thodi wrote=
+:
 > >
 > >
-> > On 1/15/24 17:29, Conor Dooley wrote:
-> > > On Mon, Jan 15, 2024 at 09:40:37AM +0000, Andr=C3=A9 Draszik wrote:
-> > > > Hi,
-> > > >
-> > > > On Mon, 2024-01-15 at 10:20 +0100, Michal Simek wrote:
-> > > > > This patch is causing issue for me. Look at log below.
-> > > > > I am running it directly on the latest linux-next/master.
-> > > > >
-> > > > > Thanks,
-> > > > > Michal
-> > > > >
-> > > > > $ make DT_SCHEMA_FILES=3D"Documentation/devicetree/bindings/arm/a=
-rm,cci-400.yaml"
-> > > > > dt_binding_check
-> > > >
-> > > > It'll work if you drop the 'Documentation/devicetree/bindings' part=
- from the path, as
-> > > > it is implied since bindings can only be in that directory anyway:
-> > > >
-> > > >      make DT_SCHEMA_FILES=3D"arm/arm,cci-400.yaml" dt_binding_check
-> > > >      make DT_SCHEMA_FILES=3D"arm,cci-400.yaml" dt_binding_check
-> > > >
-> > > > both work.
+> > > -----Original Message-----
+> > > From: Lu Baolu <baolu.lu@linux.intel.com>
+> > > Sent: Thursday, October 26, 2023 3:49 AM
+> > > To: Jason Gunthorpe <jgg@ziepe.ca>; Kevin Tian <kevin.tian@intel.com>=
+;
+> Joerg
+> > > Roedel <joro@8bytes.org>; Will Deacon <will@kernel.org>; Robin
+> Murphy
+> > > <robin.murphy@arm.com>; Jean-Philippe Brucker <jean-
+> philippe@linaro.org>;
+> > > Nicolin Chen <nicolinc@nvidia.com>; Yi Liu <yi.l.liu@intel.com>; Jaco=
+b
+> Pan
+> > > <jacob.jun.pan@linux.intel.com>
+> > > Cc: iommu@lists.linux.dev; linux-kselftest@vger.kernel.org;
+> > > virtualization@lists.linux-foundation.org; linux-kernel@vger.kernel.o=
+rg;
+> Lu
+> > > Baolu <baolu.lu@linux.intel.com>
+> > > Subject: [PATCH v2 4/6] iommufd: Deliver fault messages to user space
 > > >
-> > > Requiring that is pretty user unfriendly though I think, passing the
-> > > full path from the root directory of the kernel tree would be my
-> > > assumption of the "default".
+> > [...]
 > >
-> > I am using full path like this for years.
->
-> I just just went by Documentation/devicetree/bindings/writing-schema.rst
-> which doesn't suggest adding Documentation/devicetree/bindings/. In an
-> attempt to make it more robust for anybody following this doc, I opted
-> for the current implementation.
+> > Hi,
+> >
+> > > +static ssize_t hwpt_fault_fops_write(struct file *filep,
+> > > +				     const char __user *buf,
+> > > +				     size_t count, loff_t *ppos)
+> > > +{
+> > > +	size_t response_size =3D sizeof(struct iommu_hwpt_page_response);
+> > > +	struct hw_pgtable_fault *fault =3D filep->private_data;
+> > > +	struct iommu_hwpt_page_response response;
+> > > +	struct iommufd_hw_pagetable *hwpt;
+> > > +	struct iopf_group *iter, *group;
+> > > +	struct iommufd_device *idev;
+> > > +	size_t done =3D 0;
+> > > +	int rc =3D 0;
+> > > +
+> > > +	if (*ppos || count % response_size)
+> > > +		return -ESPIPE;
+> > > +
+> > > +	mutex_lock(&fault->mutex);
+> > > +	while (!list_empty(&fault->response) && count > done) {
+> > > +		rc =3D copy_from_user(&response, buf + done, response_size);
+> > > +		if (rc)
+> > > +			break;
+> > > +
+> > > +		/* Get the device that this response targets at. */
+> > > +		idev =3D container_of(iommufd_get_object(fault->ictx,
+> > > +						       response.dev_id,
+> > > +						       IOMMUFD_OBJ_DEVICE),
+> > > +				    struct iommufd_device, obj);
+> > > +		if (IS_ERR(idev)) {
+> > > +			rc =3D PTR_ERR(idev);
+> > > +			break;
+> > > +		}
+> > > +
+> > > +		/*
+> > > +		 * Get the hw page table that this response was generated
+> for.
+> > > +		 * It must match the one stored in the fault data.
+> > > +		 */
+> > > +		hwpt =3D container_of(iommufd_get_object(fault->ictx,
+> > > +						       response.hwpt_id,
+> > > +
+> > > IOMMUFD_OBJ_HW_PAGETABLE),
+> > > +				    struct iommufd_hw_pagetable, obj);
+> > > +		if (IS_ERR(hwpt)) {
+> > > +			iommufd_put_object(&idev->obj);
+> > > +			rc =3D PTR_ERR(hwpt);
+> > > +			break;
+> > > +		}
+> > > +
+> > > +		if (hwpt !=3D fault->hwpt) {
+> > > +			rc =3D -EINVAL;
+> > > +			goto put_obj;
+> > > +		}
+> > > +
+> > > +		group =3D NULL;
+> > > +		list_for_each_entry(iter, &fault->response, node) {
+> > > +			if (response.grpid !=3D iter->last_fault.fault.prm.grpid)
+> > > +				continue;
+> > > +
+> > > +			if (idev->dev !=3D iter->dev)
+> > > +				continue;
+> > > +
+> > > +			if ((iter->last_fault.fault.prm.flags &
+> > > +			     IOMMU_FAULT_PAGE_REQUEST_PASID_VALID)
+> &&
+> > > +			    response.pasid !=3D iter->last_fault.fault.prm.pasid)
+> > > +				continue;
+> >
+> > I am trying to get vSVA working with this series and got hit by the abo=
+ve
+> check.
+> > On ARM platforms, page responses to stall events(CMD_RESUME) do not
+> have
+> > an associated pasid.  I think, either we need to check here using
+> > IOMMU_FAULT_PAGE_RESPONSE_NEEDS_PASID or remove the check
+> > as it will be eventually done in iommu_page_response().
+>=20
+> That doesn't sound right..
+>=20
+> The PASID is the only information we have for userspace to identify
+> the domain that is being faulted. It cannot be optional on the request
+> side.
+>=20
 
-It originally worked only with the full tree path. It's now enhanced
-to take any substring for a match. As that is preferred (and shorter)
-that's what the documentation has.
+Yes, it is valid on the request side. But this is on the response side.
 
-> > I can fix my scripts but would be good to consider correct path inside =
-the
-> > kernel is something what this patch should also allow.
-> > Because path above is correct and it is not outside of the kernel that'=
-s why at
-> > least commit message should be massage a little bit.
->
-> I hear you, and I'll make a v2 to not imply the bindings directory.
+> If it is valid when userspace does read() then it should be valid when
+> userspace does write() too.
+>=20
+> It is the only way the kernel can actually match request and response
+> here.
 
-A follow-up, not a v2 because v1 is already applied.
+The kernel currently checks the pasid only if IOMMU_FAULT_PAGE_RESPONSE_NEE=
+DS_PASID
+is set.
 
-Rob
+https://lore.kernel.org/linux-iommu/20200616144712.748818-1-jean-philippe@l=
+inaro.org/
+
+> So, I think you have a userspace issue to not provide the right
+> pasid??
+
+This is not just ARM stall resume case, but for some PCI devices as well as=
+ per
+the above commit log. So do we really need to track this in userspace ?
+
+Thanks,
+Shameer
 
