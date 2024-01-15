@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-26463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3C5C82E14E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 21:11:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA0E582E14F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 21:11:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C9012837CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:11:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FDCC1F22D1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:11:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCE5E19477;
-	Mon, 15 Jan 2024 20:11:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44EE01947A;
+	Mon, 15 Jan 2024 20:11:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H3dkaKTi"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ha/0V3VV"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DBB011190;
-	Mon, 15 Jan 2024 20:11:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 136EB17BAB;
+	Mon, 15 Jan 2024 20:11:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50e4e3323a6so9641764e87.0;
-        Mon, 15 Jan 2024 12:11:03 -0800 (PST)
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50eaaf2c7deso10292602e87.2;
+        Mon, 15 Jan 2024 12:11:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705349461; x=1705954261; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+        d=gmail.com; s=20230601; t=1705349505; x=1705954305; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=2scrAorqhTdNjmhFlkO+08vbWn1dSzwQYA+mCWsr0io=;
-        b=H3dkaKTiEsQCQniR3futjVveCMjVdj0J9ImSNNtlSPI6u7ku+gL2VO48FHUrMmrzuc
-         tLiUSfvqGxxBH2xMj967j8NtHKvLK9PCfX/VqKH5SSdlulAgNHRt/ryGD2mhb6sEXHC+
-         cwADzBkcbjXI/+bybojlWE62pKkciB39RwrbxMfJ0hMd8qTeeAsjRH8db3GLAkg5Byrg
-         J06dhT7DQ6qg2FEnwSIXo+hIzSkkr7ZC49Vo7yTkSeK2YeQE6BBwfhpjp3u13KvSHx3r
-         ekUWZlscnAZxrLTxplNl+TbNkr4+IpnEEp6bILaISYBdeRsJEVD2ey+Z9znZAMnaqp4l
-         20CA==
+        bh=mIzPwYM/Ny8e0mdBUhsIkDn1Q1CyUA5R1cmNmiZYEMc=;
+        b=Ha/0V3VVV6X7Mmic22cHDuJW4lhgiaUSLA5ACDtRwDfp3GIcSlDVq6qg/6mzLxD2T8
+         0HYUqbW29EzTWZCPjvb8zxPHmPR6lJOj1T1lfFjWP85fNoE9LomnQy/tzJa09L3b9KOz
+         SZNRTULn55PM35RC0SblyIHzKDt+JN26DJ5hvKaG1vPMlDAhWi6LrINF78L1xUeBgBfk
+         +NiBOQJANyWiONQ3ttmwkRdOAQ8mLgoeTk3NB4IDxIgiArAxAtA+ZDfVSn2cg8mAw5g9
+         1CfsjNgjR2pBkpvPA1/CrntIvAqKehxHrXHhXEGE1JkpFRrohAeeHbYGbmFZvPUFYFcK
+         496Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705349461; x=1705954261;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+        d=1e100.net; s=20230601; t=1705349505; x=1705954305;
+        h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2scrAorqhTdNjmhFlkO+08vbWn1dSzwQYA+mCWsr0io=;
-        b=aqncdPtFLx0zHEWHeybQpa/94PwFS0jEvfz+6fmWWasZLBvg2NrLdk0yTwbOFugdz5
-         Fs7GSOuZR6nyX5DWZryxFnJUL2CaoHU0J9eohvztnDKCZtAu7I4NI3rBhInYVAvN964P
-         A3zLfEyj4UGG4hI2eBXpJoB4yMVoec086+5B8OOpCwC9+F1eux214nPJZsp29MA0hwU0
-         y6SZr4WK76RZCrbB0blKHE5bdhX6YeSfioQ7TY3tca/Q6yg1O9vD8EuYSoNZefFuzPOF
-         rKlUFO0SFq6oUIWH+GNI33Ww39PuQ5lzU3rdOj/luSwhGajb2q8584/xRHlx4/z/t7SM
-         j4bA==
-X-Gm-Message-State: AOJu0YyeA9ZszFIFTO62puuwBvU87aW9yrHU4KPJwVeRM5uSOa9YbAnK
-	tYS6C3CyS369PuvnKF4CgtE=
-X-Google-Smtp-Source: AGHT+IElEMmJVJzUW6tGmecCRRbDwWxsBQEffklaD2hZsiqOE5iQ79epTj/lX2MYJsxAvyTwoeNy9A==
-X-Received: by 2002:a05:6512:29b:b0:50e:5770:718b with SMTP id j27-20020a056512029b00b0050e5770718bmr3939169lfp.11.1705349461208;
-        Mon, 15 Jan 2024 12:11:01 -0800 (PST)
+        bh=mIzPwYM/Ny8e0mdBUhsIkDn1Q1CyUA5R1cmNmiZYEMc=;
+        b=IcTVpLb33yimSD2j2db92/n6+3buDpbywS0XYt0Su2RXYY2cHwm69BfLC7Y4q45duB
+         wEdCmDcRHQOHpbeKnJnYdmgckEW+cnFLoFyUUa7d+8ea9s2/Gy2a7Nctnyu3Sw5xmHUL
+         pEpOCCEqRSUQgNdLNzjLDUmHhbEZ1vAbwxs2ZbwQuS2m5YVD0kGCMHvSDbSP9k0/l6gr
+         qh8rhT97SCT4mbXDQWNihu/tCttrp8E12sCk+BSJdlD660UEyHDnuFGZ0ZUPQWwTx6ZH
+         2e0+R9Lx/88OyEBuo3gdnO8bbrObbKjS4VKERnOWeUCNLsL3qTlFcSKlLcW0Tuz4hfEx
+         Ap5Q==
+X-Gm-Message-State: AOJu0Ywy3x9hMJlcLzukEkp+WfowvBf6L2JWZF121ZnjcDGcFDOJCHTY
+	l92Ja5+o9GgRD6z3S5miGEg=
+X-Google-Smtp-Source: AGHT+IGOdhTcDmH/j5CzVjjXx9n1gHAiS/+bh0UAaYWK4Uyrbcp985c8qH3vB39trmISFgq0UB07eA==
+X-Received: by 2002:a05:6512:3a91:b0:50e:fa02:2f8d with SMTP id q17-20020a0565123a9100b0050efa022f8dmr1143726lfu.62.1705349504796;
+        Mon, 15 Jan 2024 12:11:44 -0800 (PST)
 Received: from ?IPV6:2a02:a466:68ed:1:176c:f513:1187:6521? (2a02-a466-68ed-1-176c-f513-1187-6521.fixed6.kpn.net. [2a02:a466:68ed:1:176c:f513:1187:6521])
-        by smtp.gmail.com with ESMTPSA id y3-20020ac24e63000000b0050e7e92d211sm1545416lfs.45.2024.01.15.12.10.59
+        by smtp.gmail.com with ESMTPSA id y3-20020ac24e63000000b0050e7e92d211sm1545416lfs.45.2024.01.15.12.11.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jan 2024 12:11:00 -0800 (PST)
-Message-ID: <f25283fc-4550-4725-960b-2ea783fd62e1@gmail.com>
-Date: Mon, 15 Jan 2024 21:10:58 +0100
+        Mon, 15 Jan 2024 12:11:44 -0800 (PST)
+Message-ID: <8d8ee3be-3068-4a52-82d3-51678cd620c2@gmail.com>
+Date: Mon, 15 Jan 2024 21:11:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,92 +65,71 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] usb: gadget: u_ether: Replace netif_stop_queue with
- netif_device_detach
+Subject: Re: [PATCH] usb: gadget: u_ether: Re-attach netif device to mirror
+ detachment
 Content-Language: en-US
-To: Hardik Gajjar <hgajjar@de.adit-jv.com>,
- Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: Ferry Toth <ftoth@exalondelft.nl>, gregkh@linuxfoundation.org,
- s.hauer@pengutronix.de, jonathanh@nvidia.com, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, quic_linyyuan@quicinc.com,
- paul@crapouillou.net, quic_eserrao@quicinc.com, erosca@de.adit-jv.com
-References: <20231006153808.9758-1-hgajjar@de.adit-jv.com>
- <20231006155646.12938-1-hgajjar@de.adit-jv.com>
- <ZaQS5x-XK08Jre6I@smile.fi.intel.com>
- <20240115132720.GA98840@vmlxhi-118.adit-jv.com>
+To: Richard Acayan <mailingradian@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Hardik Gajjar <hgajjar@de.adit-jv.com>, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20231218164532.411125-2-mailingradian@gmail.com>
 From: Ferry Toth <fntoth@gmail.com>
-In-Reply-To: <20240115132720.GA98840@vmlxhi-118.adit-jv.com>
+In-Reply-To: <20231218164532.411125-2-mailingradian@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 Hi,
 
-Op 15-01-2024 om 14:27 schreef Hardik Gajjar:
-> On Sun, Jan 14, 2024 at 06:59:19PM +0200, Andy Shevchenko wrote:
->> +Cc: Ferry.
->>
->> On Fri, Oct 06, 2023 at 05:56:46PM +0200, Hardik Gajjar wrote:
->>> This patch replaces the usage of netif_stop_queue with netif_device_detach
->>> in the u_ether driver. The netif_device_detach function not only stops all
->>> tx queues by calling netif_tx_stop_all_queues but also marks the device as
->>> removed by clearing the __LINK_STATE_PRESENT bit.
->>>
->>> This change helps notify user space about the disconnection of the device
->>> more effectively, compared to netif_stop_queue, which only stops a single
->>> transmit queue.
->>
->> This change effectively broke my USB ether setup.
->>
->> git bisect start
->> # status: waiting for both good and bad commits
->> # good: [1f24458a1071f006e3f7449c08ae0f12af493923] Merge tag 'tty-6.7-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty
->> git bisect good 1f24458a1071f006e3f7449c08ae0f12af493923
->> # status: waiting for bad commit, 1 good commit known
->> # bad: [2c40c1c6adab90ee4660caf03722b3a3ec67767b] Merge tag 'usb-6.7-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb
->> git bisect bad 2c40c1c6adab90ee4660caf03722b3a3ec67767b
->> # bad: [17d6b82d2d6d467149874b883cdba844844b996d] usb/usbip: fix wrong data added to platform device
->> git bisect bad 17d6b82d2d6d467149874b883cdba844844b996d
->> # good: [ba6b83a910b6d8a9379bda55cbf06cb945473a96] usb: xhci-mtk: add a bandwidth budget table
->> git bisect good ba6b83a910b6d8a9379bda55cbf06cb945473a96
->> # good: [dddc00f255415b826190cfbaa5d6dbc87cd9ded1] Revert "usb: gadget: uvc: cleanup request when not in correct state"
->> git bisect good dddc00f255415b826190cfbaa5d6dbc87cd9ded1
->> # bad: [8f999ce60ea3d47886b042ef1f22bb184b6e9c59] USB: typec: tps6598x: Refactor tps6598x port registration
->> git bisect bad 8f999ce60ea3d47886b042ef1f22bb184b6e9c59
->> # bad: [f49449fbc21e7e9550a5203902d69c8ae7dfd918] usb: gadget: u_ether: Replace netif_stop_queue with netif_device_detach
->> git bisect bad f49449fbc21e7e9550a5203902d69c8ae7dfd918
->> # good: [97475763484245916735a1aa9a3310a01d46b008] USB: usbip: fix stub_dev hub disconnect
->> git bisect good 97475763484245916735a1aa9a3310a01d46b008
->> # good: [0f5aa1b01263b8b621bc4f031a1f2983ef8517b7] usb: usbtest: fix a type promotion bug
->> git bisect good 0f5aa1b01263b8b621bc4f031a1f2983ef8517b7
->> # first bad commit: [f49449fbc21e7e9550a5203902d69c8ae7dfd918] usb: gadget: u_ether: Replace netif_stop_queue with netif_device_detach
->>
->> Note, revert indeed helps. Should I send a revert?
->>
->> I use configfs to setup USB EEM function and it worked till this commit.
->> If needed, I can share my scripts, but I believe it's not needed as here
->> we see a clear regression.
->>
->> -- 
->> With Best Regards,
->> Andy Shevchenko
->>
->>
+Op 18-12-2023 om 17:45 schreef Richard Acayan:
+> In 6.7-rc1, there was a netif_device_detach call added to the
+> gether_disconnect function. This clears the __LINK_STATE_PRESENT bit of
+> the netif device and suppresses pings (ICMP messages) and TCP connection
+> requests from the connected host. If userspace temporarily disconnects
+> the gadget, such as by temporarily removing configuration in the gadget
+> configfs interface, network activity should continue to be processed
+> when the gadget is re-connected. Mirror the netif_device_detach call
+> with a netif_device_attach call in gether_connect to fix re-connecting
+> gadgets.
 > 
-> Without this patch, there may be a potential crash in a race condition, as __LINK_STATE_PRESENT is monitored at many places in the Network stack to determine the status of the link.
+> Link: https://gitlab.com/postmarketOS/pmaports/-/tree/6002e51b7090aeeb42947e0ca7ec22278d7227d0/main/postmarketos-base-ui/rootfs-usr-lib-NetworkManager-dispatcher.d-50-tethering.sh
+> Fixes: f49449fbc21e ("usb: gadget: u_ether: Replace netif_stop_queue with netif_device_detach")
+> Signed-off-by: Richard Acayan <mailingradian@gmail.com>
+> ---
+>   drivers/usb/gadget/function/u_ether.c | 2 ++
+>   1 file changed, 2 insertions(+)
 > 
-> Could you please provide details on how this patch affects your functionality? Are you experiencing connection problems or data transfer interruptions?
+> diff --git a/drivers/usb/gadget/function/u_ether.c b/drivers/usb/gadget/function/u_ether.c
+> index 9d1c40c152d8..3c5a6f6ac341 100644
+> --- a/drivers/usb/gadget/function/u_ether.c
+> +++ b/drivers/usb/gadget/function/u_ether.c
+> @@ -1163,6 +1163,8 @@ struct net_device *gether_connect(struct gether *link)
+>   		if (netif_running(dev->net))
+>   			eth_start(dev, GFP_ATOMIC);
+>   
+> +		netif_device_attach(dev->net);
+> +
+>   	/* on error, disable any endpoints  */
+>   	} else {
+>   		(void) usb_ep_disable(link->out_ep);
+This works mrfld (Intel Edison Arduino) using configfs with v6.7.0. 
+Tested using `iperf3 -s` on mrfld,
+iperf3 --bidir -c edison-usb
+[ ID][Role] Interval           Transfer     Bitrate         Retr
+[  5][TX-C]   0.00-10.00  sec   130 MBytes   109 Mbits/sec    0 
+    sender
+[  5][TX-C]   0.00-9.99   sec   129 MBytes   108 Mbits/sec 
+    receiver
+[  7][RX-C]   0.00-10.00  sec   167 MBytes   140 Mbits/sec    0 
+    sender
+[  7][RX-C]   0.00-9.99   sec   166 MBytes   139 Mbits/sec 
+    receiver
 
-In my case on mrfld (Intel Edison Arduino) using configfs with this 
-patch no config from host through dhcp is received. Manual setting 
-correct ipv4 addr / mask / gw still no connection.
+and
+iperf3 -c edison-usb
+[  5]   0.00-10.00  sec   247 MBytes   207 Mbits/sec    0             sender
+[  5]   0.00-9.99   sec   246 MBytes   206 Mbits/sec 
+receiver
 
-> Instead of reverting this patch, consider trying the upcoming patch (soon to be available in the mainline) to see if it resolves your issue.
-> 
-> https://lore.kernel.org/lkml/2023122900-commence-agenda-db2c@gregkh/T/#m36a812d3f1e5d744ee32381f6ae4185940b376de
 
-This patch works for me with v6.7.0.
-
-> Thanks,
-> Hardik
-
+Tested-by: Ferry Toth <fntoth@gmail.com> [mrfld]
 
