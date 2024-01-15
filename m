@@ -1,120 +1,87 @@
-Return-Path: <linux-kernel+bounces-26458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 855DF82E13B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 21:04:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C47282E13D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 21:05:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34B9E283881
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:04:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED2B5283830
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jan 2024 20:05:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 139F01947B;
-	Mon, 15 Jan 2024 20:04:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qt19dkz2"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E375A19473;
-	Mon, 15 Jan 2024 20:04:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a2ac304e526so875419666b.0;
-        Mon, 15 Jan 2024 12:04:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705349063; x=1705953863; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i8RSS6kBkW56tbpViMqYqGAGsyQRy2p0tJi4wBiJqmU=;
-        b=Qt19dkz21V/R2GXWp7oDtra0RNPCYrhAsjD74TMAGKgGMm/fGSdwa2qEBBlAdxzwM7
-         IrB9zuFEKyXZnMygfOv+7lIbLsKXX4dlSPkfqgJY3PTKCtKbaqIWKvDsXoMyq3V3FIFh
-         UJyfvbqQX/rBIap5NYxHKNBLN+gzB2x3nP2+htUvbxeH0OeTgFafvDdSoHqQSzsm4UvF
-         B8Ky4VDczkm3Ir6l6FN1fCsBTq81jK+gCa+rZ/qcE57sZwHsOip14PFigUrORjS3O1lk
-         yNzihSk7awcmTwVncu5fleBWu2hOw59wRc2cQf38aKA88GkpGYCu5uXNL38kIY9ljScJ
-         7y/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705349063; x=1705953863;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i8RSS6kBkW56tbpViMqYqGAGsyQRy2p0tJi4wBiJqmU=;
-        b=sMAkybBqbCA6BmvWPZS5g8L9ToetSGeXPp8KqUsNbo7NIYXKf7G4PAlitXIPuc3fEA
-         h7guLMYGWiIVKJDdEBD1RTDDbTEbMGr8RpOtGCsgE3nu+JdcczW7XKgKHAL5z0uUdzYf
-         kUjRagAGnIwB8BXtwrX4WPLsCXl/Cief52s1ZGHFcRw/FKBEm9cGxd63nAXZcL03Is+M
-         /6DuoWKgH4yfGrwUziw81IO9v/hmZzsd3VVod+OT8GQh2qeG1iuKN7ajFlYpx8wrc8Vl
-         zMCvEy36kS9S+ouupdoPACImWhyfEEvyZs2xg1/Udi5JWxx6ol0LhXj/MeB++IBiAiws
-         ZU3w==
-X-Gm-Message-State: AOJu0YzMAHJyD1tpMMXlDw4Gmm2ryRWZ2E2z4IJmveCkHM8t0UsWPRkN
-	tC8Iv9WKTbpfxnuyBkLKtSiVzQJ46iKpmcJIy/w=
-X-Google-Smtp-Source: AGHT+IFJ3GSf+wjuplgZ/O7AubrBpCxq5ZziDSX/b+fRkPr0IsBfvOcIfeT/L2dW0x0aOspKjHv4GueCmR/QMik45Zg=
-X-Received: by 2002:a17:907:d89:b0:a27:be67:1743 with SMTP id
- go9-20020a1709070d8900b00a27be671743mr3863297ejc.40.1705349063219; Mon, 15
- Jan 2024 12:04:23 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EFC718EB2;
+	Mon, 15 Jan 2024 20:05:29 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3357C18E2A
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 20:05:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF7A82F4;
+	Mon, 15 Jan 2024 12:06:12 -0800 (PST)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 190513F73F;
+	Mon, 15 Jan 2024 12:05:23 -0800 (PST)
+Message-ID: <0880d81b-9c80-423c-95e6-2fe973e7d739@arm.com>
+Date: Mon, 15 Jan 2024 21:05:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com> <20240102-j7200-pcie-s2r-v1-3-84e55da52400@bootlin.com>
-In-Reply-To: <20240102-j7200-pcie-s2r-v1-3-84e55da52400@bootlin.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Mon, 15 Jan 2024 22:03:46 +0200
-Message-ID: <CAHp75Vcr+pSjj+27WmW5GmC_QvpJu3E81C-GjxqdhrCAByevpQ@mail.gmail.com>
-Subject: Re: [PATCH 03/14] i2c: omap: wakeup the controller during suspend callback
-To: Thomas Richard <thomas.richard@bootlin.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
-	Andy Shevchenko <andy@kernel.org>, Tony Lindgren <tony@atomide.com>, 
-	Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
-	Aaro Koskinen <aaro.koskinen@iki.fi>, Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
-	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, Vinod Koul <vkoul@kernel.org>, 
-	Kishon Vijay Abraham I <kishon@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
-	Tom Joseph <tjoseph@cadence.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-phy@lists.infradead.org, linux-pci@vger.kernel.org, 
-	gregory.clement@bootlin.com, theo.lebrun@bootlin.com, 
-	thomas.petazzoni@bootlin.com, u-kumar1@ti.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [GIT PULL] Scheduler changes for v6.8
+Content-Language: en-US
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Qais Yousef <qyousef@layalina.io>, Wyes Karny <wkarny@gmail.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+ Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Juri Lelli <juri.lelli@redhat.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Valentin Schneider <vschneid@redhat.com>
+References: <CAHk-=wiXpsxMcQb7MhL-AxOityTajK0G8eWeBOzX-qBJ9X2DSw@mail.gmail.com>
+ <CAHk-=wjK28MUqBZzBSMEM8vdJhDOuXGSWPmmp04GEt9CXtW6Pw@mail.gmail.com>
+ <20240114091240.xzdvqk75ifgfj5yx@wyes-pc> <ZaPC7o44lEswxOXp@vingu-book>
+ <20240114123759.pjs7ctexcpc6pshl@wyes-pc>
+ <CAKfTPtCz+95dR38c_u6_7JbkVt=czj5N2dKYVV-zk9dgbk16hw@mail.gmail.com>
+ <20240114151250.5wfexq44o3mdm3nh@airbuntu>
+ <CAKfTPtAMxiTbvAYav1JQw+MhjzDPCZDrMLL2JOfsc0GWp+FnOA@mail.gmail.com>
+ <20240114195815.nes4bn53tc25djbh@airbuntu>
+ <CAKfTPtCGgJiFDrZYpynCiHBnQx48A9RsAY9-6Hshduo4ymGJLQ@mail.gmail.com>
+ <20240115120915.fukpcdumntdsllwi@airbuntu>
+ <CAKfTPtAMacH4hKLyttLuQJjzc=D4m864MFaEEwZLG4K8RKTDYA@mail.gmail.com>
+ <dfde5b4f-0d5e-49b6-a787-0766eff23f91@arm.com>
+ <CAKfTPtB72Oa8XvH_xRFiKy+bfyEKUMdndKphFAD3dixePBUohQ@mail.gmail.com>
+From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <CAKfTPtB72Oa8XvH_xRFiKy+bfyEKUMdndKphFAD3dixePBUohQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 15, 2024 at 6:16=E2=80=AFPM Thomas Richard
-<thomas.richard@bootlin.com> wrote:
->
-> A device may need the controller up during suspend_noirq or
-> resume_noirq.
-> But if the controller is autosuspended, there is no way to wakeup it
-> during suspend_noirq or resume_noirq because runtime pm is disabled
-> at this time.
->
-> The suspend callback wakes up the controller, so it is available until
-> its suspend_noirq callback (pm_runtime_force_suspend).
-> During the resume, it's restored by resume_noirq callback
-> (pm_runtime_force_resume). Then resume callback enables autosuspend.
->
-> So the controller is up during a little time slot in suspend and resume
-> sequences even if it's not used.
+On 15/01/2024 16:26, Vincent Guittot wrote:
+> On Mon, 15 Jan 2024 at 15:03, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>>
+>> On 15/01/2024 14:26, Vincent Guittot wrote:
+>>> On Mon, 15 Jan 2024 at 13:09, Qais Yousef <qyousef@layalina.io> wrote:
+>>>>
+>>>> On 01/15/24 09:21, Vincent Guittot wrote:
 
-Same comment
+[...]
 
-->...callback...()
+> Now, util can't be higher than max to handle clamping use cases
+> whereas it could be the case before. The jump to next OPP was
+> previously done with util being higher than max and it's now done with
+> freq being higher than policy->cur
 
-..
+Ah, OK:
 
->  }
->
-> +
+  util = map_util_perf(util)     <- (1) util *= 1.25
 
-Stray blank line is added.
-
-> +static int omap_i2c_suspend(struct device *dev)
-
---=20
-With Best Regards,
-Andy Shevchenko
+in the old code was doing this. And you do this now via frequency for
+the !freq_inv case. I just saw that you already mention this in the
+patch header of:
+https://lkml.kernel.org/r/20240114183600.135316-1-vincent.guittot@linaro.org
 
