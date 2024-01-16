@@ -1,86 +1,84 @@
-Return-Path: <linux-kernel+bounces-28374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B832682FDB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 00:19:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 588F782FDBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 00:21:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 528EE2933FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:19:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7B401F27F37
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:21:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A827A1D526;
-	Tue, 16 Jan 2024 23:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48FC967C61;
+	Tue, 16 Jan 2024 23:21:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b="OrkzfHxm"
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="vv+0GgSa"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978851BF25
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 23:19:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 115FF67C54;
+	Tue, 16 Jan 2024 23:21:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705447162; cv=none; b=fdFvAGm2VxfX2SB9bLnPY7AxWKjFiimIAhl2MBs8Yko331lIIVcoaprEBtYyZ4rW6rIvtla+hZrd8fJBPxMxiWfck8ZSHMEe98MaTUloYn9aC17P2Px0mqTJ+uAb9iqphozFmd8x1XmXUNVUZdEDMOIf/5/wj3/VrAhw7y7USX8=
+	t=1705447298; cv=none; b=NFg7aJZTidNZ2zcgYAI4fOZDtYyIZWmqIrARA4/FRkiVCP9wUTPu+i+Ttn/vZZazLanGXfqrVF/qKT2LfxVmcFL2Ix+E7c3aa/Egf12iBMYThPirzjP2cbVMiXxOa+E1ze3yF4MaDEhP4LX8o+KEWH2gxt7p0OZqj/hMfWE20IM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705447162; c=relaxed/simple;
-	bh=f61yTArnZb+nFtlOTO6rgvVxaYCJzUt/4hApF6yDLFc=;
-	h=DKIM-Signature:Received:Message-ID:Date:MIME-Version:User-Agent:
-	 To:From:Subject:Content-Type:Content-Transfer-Encoding; b=XbGnnlcuMcwbl1csdQqNU/bdZlYjs8oXe1Atj1pZbW+Hvugm6cn+uCpvu5oTrUz7sIiA0EdfOS118PRqLs16u3k81XEB7BSjDBdRgGVJ6CyTUx1kyJrdvydrmpecBs7YNVanrTngXLux9NmI+6QI78XDWzyZv+oPZxMKbAtdM+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org; spf=pass smtp.mailfrom=cu-phil.org; dkim=pass (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b=OrkzfHxm; arc=none smtp.client-ip=194.63.252.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cu-phil.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cu-phil.org
-	; s=ds202401; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
-	MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=40Wsj2ZEQ7JWfWYichK13LSJb23DRyouOF7OUSYPSzM=; b=OrkzfHxmeTcmJ8jUYhr76kbagf
-	33VZ2Z9sI4RoyPPAPrfWyxTJ+wdXqlLqH0e4DmziBqmkir8n+P6c25Gt31yt4kxKAzuJHQHeujoDQ
-	DjPSXJF7R7vHbfvHOa2BsL/nNdAKWKSucdg3B6h8vtclgyatDCpdS8R8J6P0MUL2YYPMFSLq6VGSg
-	QFo/hBVgqwDvNAHQ8oP5cjuOKiRzGZHiC34kLH/tI2hgJ+bb6rvVOg0+uvy8GA4i6KwM9mWby7/y9
-	yY+NzaAj6HsTP8a3k88IeSF6uZQEEtUsMHUY36qtz0j47WeiXAY9xo+7kASddq8W+E+L0KfvIKOni
-	e5wwKBag==;
-Received: from [84.215.119.50] (port=58267 helo=[192.168.0.2])
-	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <Ywe_Caerlyn@cu-phil.org>)
-	id 1rPsiE-002xxO-HV
-	for linux-kernel@vger.kernel.org;
-	Wed, 17 Jan 2024 00:19:18 +0100
-Message-ID: <3b3fa3e2-74a5-426d-a973-a92dea95b94b@cu-phil.org>
-Date: Wed, 17 Jan 2024 00:19:17 +0100
+	s=arc-20240116; t=1705447298; c=relaxed/simple;
+	bh=dqVyFBZEyz6eyoIIxKAAeMr8tIwXW4vzy/OcdF9P470=;
+	h=DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=Mtp2RiAmebjqZvDvDzMUZcoksIIQ2HlYlMJIwWPgxvMkMycXFa20G9ro61M0UPBAbEoJhQZ19qAQJ9B0MJRn+YphrrK5rEGfzLnJQHGA+btaO6oDZXtztbWPaEDA9PX9XVPwWcx4wvruEDt63Vm+QM0JaxIo0dmVcy6+3a0Av0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=vv+0GgSa; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=Ys+BRocRaSfqSlTq8ygwsRyVjvYBvlkbZzx4GJg0Guo=; b=vv+0GgSaEPVrB7KP9yAoX/g8Ip
+	d4TksbqqwZd2Y45PSAh1mSF9gI11uSIWDhhAQVLYxLPsX1kbnLCIb1q3Ik5Op5CqFJjCtt9IE7VYM
+	+Zuo28wEXINBKHipCWC8Ut/6Il27kD4jHZzohxoFbLJl4BhK/RZkQ2FVi1EpR0nJi6CM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rPskJ-005MZE-KR; Wed, 17 Jan 2024 00:21:27 +0100
+Date: Wed, 17 Jan 2024 00:21:27 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Tim Menninger <tmenninger@purestorage.com>
+Cc: f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: dsa: mv88e6xxx: Make *_c45 callbacks agree with
+ phy_*_c45 callbacks
+Message-ID: <da87ce82-7337-4be4-a2af-bd2136626c56@lunn.ch>
+References: <20240116193542.711482-1-tmenninger@purestorage.com>
+ <04d22048-737a-4281-a43f-b125ebe0c896@lunn.ch>
+ <CAO-L_44YVi0HDk4gC9QijMZrYNGoKtfH7qsXOwtDwM4VrFRDHw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-kernel@vger.kernel.org
-From: Ywe Caerlyn <Ywe_Caerlyn@cu-phil.org>
-Subject: Lumix, Fair Source O S with Iclamic basis (was low-jitter,
- philosophy, design concept etc)
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAO-L_44YVi0HDk4gC9QijMZrYNGoKtfH7qsXOwtDwM4VrFRDHw@mail.gmail.com>
 
-Ultimately it seem we find the concept Lumi here. A common problem in 
-the west, and after hippie culture is the association of hashish with 
-Light (Lum). Lumi means follower of The Light, and actually is a very 
-correct concept for this. Lumix means a system based on a follower of 
-The Light.
+> Hi Andrew,
+> 
+> It bubbles up as EIO (the translation happens in get_phy_c45_ids when
+> get_phy_c45_devs_in_pkg fails) and ultimately causes the probe to fail.
+> 
+> The EIO causes the scan to stop and fail immediately - the way I read
+> mdiobus_scan_bus_c45, only ENODEV is permissible.
 
-Then the other pary takes the responsibility for that association, and 
-all the wrongs associated.
+O.K. At minimum, this should be added to the commit message.
 
-This gives us max fair source angle, and the other a major disadvantage 
-if they continue idolatry and association of hashsh with Lum. (Such as 
-typical "Forbidden Apple" culture.
+However, i'm wondering if this is the correct fix. I would prefer that
+the scan code just acts on the -EOPNOTSUPP the same was as
+-ENODEV. Maybe the error code from phy_c45_probe_present() should be
+returned as is. And mdiobus_scan_bus_c45() is extended to handle
+-EOPNOTSUPP ?
 
-This should be completely fair.
-
-Ywe,
-Philosophy,
-https://cu-phil.org/
+	    Andrew
 
