@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-27084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 558BA82EA27
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:37:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 323C382EA2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:38:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B9961C2135A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:37:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD8B8B2187D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:37:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 008C311188;
-	Tue, 16 Jan 2024 07:37:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 247AD11CA9;
+	Tue, 16 Jan 2024 07:37:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ith7n4y8"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OB49gEbT"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E96C710A3F
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 07:37:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 220E1111BA
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 07:37:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705390632;
+	s=mimecast20190719; t=1705390635;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=t9a7YoYgTaMNvrbxSQpm4NYpVm30/3iqFRoXOjmXJSA=;
-	b=ith7n4y8h+utdcah9HGlnWhpmYe1JN8aGMyya2/blHAO1d9bnwD6SuqK8w4IhqaBNwwy36
-	CaVKsMpRZ9A1F1bDoDWhzRgLKdzxN1Lnf3s4+Ni3ObWrpYxGcd8Y3RuQUAn4B4viDiIVee
-	CI7o9HkctglROxKG1bXGEcGqNH6gphA=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=Ev/EHro7bSIb21ohSGiRASekMY9/Fc0MaRbZNwxLwJc=;
+	b=OB49gEbTkLQEFPrYhHvND7pp2kEZR9JwlKaDSudTMKRW2pFkNrTfrrbLSACGNrWM4UFt1P
+	PQvW0WATT0Q9a3NwVKIBH7NSJK+amfXP+qkiJZbl3Gik04NsDY3TM9mKlXyr6USHoaMUiJ
+	pbZAY5KwsXHT1aG9Y3qTGbU/+IaWZPQ=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-88-BJkHoMYCPFyEGygFVg_ZWQ-1; Tue, 16 Jan 2024 02:37:11 -0500
-X-MC-Unique: BJkHoMYCPFyEGygFVg_ZWQ-1
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-429f3c43c66so16579301cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 23:37:11 -0800 (PST)
+ us-mta-86-ldK5bRqMOJOfZEXcqyINLA-1; Tue, 16 Jan 2024 02:37:13 -0500
+X-MC-Unique: ldK5bRqMOJOfZEXcqyINLA-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-681684ca881so10823276d6.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 23:37:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705390630; x=1705995430;
+        d=1e100.net; s=20230601; t=1705390632; x=1705995432;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=t9a7YoYgTaMNvrbxSQpm4NYpVm30/3iqFRoXOjmXJSA=;
-        b=RcRK0rl4RTOBGFZLKzDBlsmUqc7U6BEyWPKv5lK7qdPN9QHIwlmQd2h9qFPoH+Im5C
-         MEkgBB7eI3HeXqFpnmt0otGnwooDZ2DV3HLfG8Ns1OcxS0o9GNSR6YtQXvU1KUMcOcyB
-         /eRxaLMwEfXRvv/jB46QUAsAbkUwwJjuZ4WPsL9okuuNE6+InyrYbm+4NkAMkoBJUv4+
-         v0ns8LuPMrYeQZaTaftbLgB9eCaYVQBjV+tnidc0JNB3MzadG7i+4xmoz+ijT9HZsK32
-         rh8mlS2VrN5+bPAUSR4AWGEZYFPedShhDS8Mq9fDO4WuzZWF7o+cpltQ1IkjonQI0r80
-         Sxkw==
-X-Gm-Message-State: AOJu0YxdlCda82aFfCrWx59raEQKuyPpkmNIAwsGPKoXYFZqad82z2Vt
-	I2Bog6jRUCq1Qii6+iAipF9DvoAKYQFdjJ5a9TKt071T4dKAIQIdSQNnpYdRtag7m3So+AMq3vH
-	s1ySM7RX8UrSSvFyl/KLGwGqH29Qbmf5tGdKwEqWz
-X-Received: by 2002:ac8:7d82:0:b0:42a:165:a216 with SMTP id c2-20020ac87d82000000b0042a0165a216mr853357qtd.136.1705390630232;
-        Mon, 15 Jan 2024 23:37:10 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEoBXmiC8fe9ZYUdR4WPMlWlaDwt97enJcNUHmw2NJlRzZEKeUUWUQutGVSJwOkOdiSj1cATw==
-X-Received: by 2002:ac8:7d82:0:b0:42a:165:a216 with SMTP id c2-20020ac87d82000000b0042a0165a216mr853351qtd.136.1705390630010;
-        Mon, 15 Jan 2024 23:37:10 -0800 (PST)
+        bh=Ev/EHro7bSIb21ohSGiRASekMY9/Fc0MaRbZNwxLwJc=;
+        b=MqnEW4YeOk2AZ+a/zKfrPrLO+6rA29GGg4Ae72ksm2Gltn4q6kUOhz5O9WeTncawKr
+         jdi8rmYDrmlz5GMNiqJo0cpgpSZegIfAbOPo4vG3lLXah4kO6JAjUmEG/wFSwEvSTOVu
+         EW64ClFNBZFT3c0nCHUG2lStsTL4idcqlNZAr92DvSCAnHI2ltbh7MHHW+kBMFi17Sy3
+         ct05kWCZ1pKa4eCmVAyyNrZAx2Vdx5LQ9OV2Xxn0Xdux4WtcHJ3Yncjp4EYCMOQgzgtA
+         4vA9+TNIG7NSyFr4jKj0LFUcH4a+xlbkxRNrSlEXMU3OMb4vH+Zar10R0AYdNOb7pzO5
+         yO4g==
+X-Gm-Message-State: AOJu0YzQPufBQYigIYaZJ7Lk4/lU12r78NDhqbIy8BwjxPUyFi9kueSr
+	07oOL39PlWf1cz0JokFhRN7neZ/J7PZJOrwFXATfF1OF74fi2KiNK4xJH1db6A+YssXOwn2IX49
+	wOmHZx/dv7MuezVPXCp92zauUSlt4vHeH
+X-Received: by 2002:ad4:5b8f:0:b0:681:5c24:723 with SMTP id 15-20020ad45b8f000000b006815c240723mr4640540qvp.46.1705390632761;
+        Mon, 15 Jan 2024 23:37:12 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGrNcqol/OiEQ5ZrUIjTn7g2kuQvDjo2VGcjjAoLMRJtf3rUoTzhAFjIwMmgvbUMKAlwvpo2Q==
+X-Received: by 2002:ad4:5b8f:0:b0:681:5c24:723 with SMTP id 15-20020ad45b8f000000b006815c240723mr4640532qvp.46.1705390632538;
+        Mon, 15 Jan 2024 23:37:12 -0800 (PST)
 Received: from LeoBras.redhat.com ([2804:1b3:a803:64aa:6db9:6544:60c:9e16])
-        by smtp.gmail.com with ESMTPSA id jc4-20020a05622a714400b00429acfe5bb4sm4650206qtb.40.2024.01.15.23.37.07
+        by smtp.gmail.com with ESMTPSA id jc4-20020a05622a714400b00429acfe5bb4sm4650206qtb.40.2024.01.15.23.37.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 23:37:09 -0800 (PST)
+        Mon, 15 Jan 2024 23:37:12 -0800 (PST)
 From: Leonardo Bras <leobras@redhat.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Jiri Slaby <jirislaby@kernel.org>,
@@ -75,9 +75,9 @@ To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 Cc: Leonardo Bras <leobras@redhat.com>,
 	linux-kernel@vger.kernel.org,
 	linux-serial@vger.kernel.org
-Subject: [RESEND RFC PATCH v1 1/2] irq/spurious: Reset irqs_unhandled if an irq_thread handles one IRQ request
-Date: Tue, 16 Jan 2024 04:36:59 -0300
-Message-ID: <20240116073701.2356171-2-leobras@redhat.com>
+Subject: [RESEND RFC PATCH v1 2/2] serial/8250: Avoid getting lock in RT atomic context
+Date: Tue, 16 Jan 2024 04:37:00 -0300
+Message-ID: <20240116073701.2356171-3-leobras@redhat.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116073701.2356171-1-leobras@redhat.com>
 References: <20240116073701.2356171-1-leobras@redhat.com>
@@ -89,65 +89,41 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When the IRQs are threaded, the part of the handler that runs in
-interruption context can be pretty fast, as per design, while letting the
-slow part to run into the thread handler.
+With PREEMPT_RT enabled, a spin_lock_irqsave() becomes a possibly sleeping
+spin_lock(), without preempt_disable() or irq_disable().
 
-In some cases, given IRQs can be triggered too fast, making it impossible
-for the irq_thread to be able to keep up handling every request.
+This allows a task T1 to get preempted or interrupted while holding the
+port->lock. If the preempting task T2 need the lock, spin_lock() code
+will schedule T1 back until it finishes using the lock, and then go back to
+T2.
 
-If two requests happen before any irq_thread handler is able to finish,
-no increment to threads_handled happen, causing threads_handled and
-threads_handled_last to be equal, which will ends up
-causing irqs_unhandled to be incremented in note_interrupt().
+There is an issue if a T1 holding port->lock is interrupted by an
+IRQ, and this IRQ handler needs to get port->lock for writting (printk):
+spin_lock() code will try to reschedule the interrupt handler, which is in
+atomic context, causing a BUG() for trying to reschedule/sleep in atomic
+context.
 
-Once irqs_unhandled gets to ~100k, the IRQ line gets disabled, disrupting
-the device work.
-
-As of today, the only way to reset irqs_unhandled before disabling the IRQ
-line is to stay 100ms without having any increment to irqs_unhandled, which
-can be pretty hard to happen if the IRQ is very busy.
-
-On top of that, some irq_thread handlers can handle requests in batches,
-effectively incrementing threads_handled only once despite dealing with a
-lot of requests, which make the irqs_unhandled to reach 100k pretty fast
-if the IRQ is getting a lot of requests.
-
-This IRQ line disable bug can be easily reproduced with a serial8250
-console on a PREEMPT_RT kernel: it only takes the user to print a lot
-of text to the console (or to ttyS0): around 300k chars should be enough.
-
-To fix this bug, reset irqs_unhandled whenever irq_thread handles at least
-one IRQ request.
-
-This fix makes possible to avoid disabling IRQs which irq_thread handlers
-can take long (while on heavy usage of the IRQ line), without losing the
-ability of disabling IRQs that actually get unhandled for too long.
+So for the case (PREEMPT_RT && in_atomic()) try to get the lock, and if it
+fails proceed anyway, just like it's done in oops_in_progress case.
 
 Signed-off-by: Leonardo Bras <leobras@redhat.com>
 ---
- kernel/irq/spurious.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/tty/serial/8250/8250_port.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/irq/spurious.c b/kernel/irq/spurious.c
-index 02b2daf074414..b60748f89738a 100644
---- a/kernel/irq/spurious.c
-+++ b/kernel/irq/spurious.c
-@@ -339,6 +339,14 @@ void note_interrupt(struct irq_desc *desc, irqreturn_t action_ret)
- 			handled |= SPURIOUS_DEFERRED;
- 			if (handled != desc->threads_handled_last) {
- 				action_ret = IRQ_HANDLED;
-+
-+				/*
-+				 * If the thread handlers handle
-+				 * one IRQ reset the unhandled
-+				 * IRQ counter.
-+				 */
-+				desc->irqs_unhandled = 0;
-+
- 				/*
- 				 * Note: We keep the SPURIOUS_DEFERRED
- 				 * bit set. We are handling the
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index 8ca061d3bbb92..8480832846319 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -3397,7 +3397,7 @@ void serial8250_console_write(struct uart_8250_port *up, const char *s,
+ 
+ 	touch_nmi_watchdog();
+ 
+-	if (oops_in_progress)
++	if (oops_in_progress || (IS_ENABLED(CONFIG_PREEMPT_RT) && in_atomic())
+ 		locked = uart_port_trylock_irqsave(port, &flags);
+ 	else
+ 		uart_port_lock_irqsave(port, &flags);
 -- 
 2.43.0
 
