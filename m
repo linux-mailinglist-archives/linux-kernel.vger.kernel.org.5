@@ -1,212 +1,202 @@
-Return-Path: <linux-kernel+bounces-28354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E899E82FD31
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:45:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D00E582FD35
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:45:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 932462946B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:45:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78150294B84
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:45:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26F52555E;
-	Tue, 16 Jan 2024 22:33:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9A5F208AB;
+	Tue, 16 Jan 2024 22:35:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="AWywaz28";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="XiSUPO+1";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="AWywaz28";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="XiSUPO+1"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mwPDuRJX"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35DA62511E;
-	Tue, 16 Jan 2024 22:33:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 580081D6BD;
+	Tue, 16 Jan 2024 22:34:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705444394; cv=none; b=Kzsiig+LWJIOGLAeChD5uuR/4kCqHU+1rvFlkR3lLLXVtqcK4XXxmpow9EGua5BOVXksq6/nD3uNOZ34vYmYMXl7qSuxxqqXVHSRF8cAkhVLktcYNxtEI4q2abzZjSTCNew1+MsHYFOh1DJz2b20SCxWOzI5GVNtJyFbx/kMis8=
+	t=1705444500; cv=none; b=sqA3c37nmpakeo3M8pZAd4kULBceqm6fxubR/nvesZScCBIjuVGKDm52Px9H0g6EKTjVzgBSR2E71TfOLqkzqxxEoQW0JKcn24ailEPfSJOseWTY+FAXpC2Mr4dcfF3HBjI5oFHagUlD2/3hyfXOE0rCCqcHFVyCy58qEJFBvYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705444394; c=relaxed/simple;
-	bh=LzNuWUOWuxjPgwDQMFFg4cjWKtlDIzeGXgODOBthCKM=;
-	h=Received:DKIM-Signature:DKIM-Signature:DKIM-Signature:
-	 DKIM-Signature:Received:Received:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version:From:To:Cc:Subject:
-	 In-reply-to:References:Date:Message-id:X-Spam-Level:
-	 X-Rspamd-Server:X-Spamd-Result:X-Spam-Score:X-Rspamd-Queue-Id:
-	 X-Spam-Flag; b=Tdq3SOhOS9kkuoNVm12/7LNRxTkapyFCj88fIJCPJ2jrSrXxs+UDtA2fQgO28VAemnTvYXisYyuIcaICDscHs3257XwiQHgf4EkBuvzlBfgq706aPqgOmqlA3xGOUS0g2qbzv8vcI2R+D2yqgLp1SqxxS7hA1mN4S3jF6jVRQcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=AWywaz28; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=XiSUPO+1; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=AWywaz28; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=XiSUPO+1; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0CA3821FD4;
-	Tue, 16 Jan 2024 22:33:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1705444391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=morGpJZ/UOKteyeelSkyoCIsz8Np/wPiujALoK37mzo=;
-	b=AWywaz28NKcr3/npizIsBc1e0ET3qBjK+FSAwoTPm7ZE0tzyPlWDQuiBH/VlPI133EAX+2
-	+0U9a/+MLNzQXKs2BZaISBFRYcHJKthRODmK0UtHpl5srj/HSeESxFhp4SipFfPxbzq+2K
-	uUQdov38gw20P4WsAyIJ9giDBzd5/kM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1705444391;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=morGpJZ/UOKteyeelSkyoCIsz8Np/wPiujALoK37mzo=;
-	b=XiSUPO+1K92nRkFceNawKLQaVGvE+77HjCafXAmo/SzKBuuMCz17JzTtobJRNYtluXVqxZ
-	FEr0h3FJR4yHD2DQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1705444391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=morGpJZ/UOKteyeelSkyoCIsz8Np/wPiujALoK37mzo=;
-	b=AWywaz28NKcr3/npizIsBc1e0ET3qBjK+FSAwoTPm7ZE0tzyPlWDQuiBH/VlPI133EAX+2
-	+0U9a/+MLNzQXKs2BZaISBFRYcHJKthRODmK0UtHpl5srj/HSeESxFhp4SipFfPxbzq+2K
-	uUQdov38gw20P4WsAyIJ9giDBzd5/kM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1705444391;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=morGpJZ/UOKteyeelSkyoCIsz8Np/wPiujALoK37mzo=;
-	b=XiSUPO+1K92nRkFceNawKLQaVGvE+77HjCafXAmo/SzKBuuMCz17JzTtobJRNYtluXVqxZ
-	FEr0h3FJR4yHD2DQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A8BA813751;
-	Tue, 16 Jan 2024 22:32:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id wegRFxkEp2UnfgAAD6G6ig
-	(envelope-from <neilb@suse.de>); Tue, 16 Jan 2024 22:32:57 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1705444500; c=relaxed/simple;
+	bh=dmGaxNFM9Z9co81GnDP7HWWiN/PTrKhRDUIvIXynA4s=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Sender:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
+	 To:Cc:References:From:Autocrypt:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=FJMnl7V4xYvBnIGnppKiLolCJrF5AQhUVdesbxxI6Vo9CQ2BAZDXoeDGDplaILuOqUwgr4GqT9UsKq9An/wneVNdcdWClUd1Udayyc1aLEXuZ78jacCguep+PqkROXJ5Ka9ejvHLa9v+HtWT5lOph8uvAj5b0gc9q9Q4UKkf3OE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mwPDuRJX; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d5cdb4a444so20436995ad.1;
+        Tue, 16 Jan 2024 14:34:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705444498; x=1706049298; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=2ObGmy+ZDmOiEep2qeMUG0WYfwliEG3p7QfyY5yhTY4=;
+        b=mwPDuRJXim4Ua3Zs6+7bOgYaXDoe0gYPLQghRv7IDFcL+h5vSmZ5xHA2Y+ve2YJu8n
+         sD79/KJFIHmptMMxCqs6BXtKl7Kw4JPZvtB/3HdloR1S9KAVViiXH2KOATV1QVpFRah9
+         FWwzpSpHooVlpBwo1eQI/ZH6A/nco4FoW2bKawNJxKAtmJVaeaY701hmD978KHCwHevJ
+         4oAePACXQF3t3++F4O2AwUtSphL5OwwHunhXpXgPQSPwvv80imWdlf/xedQNFSJYuB6D
+         aawGoFpUTVXOA7iKZQR2WzhK2D55OqrMDClbv1ubSJ4ozX4S0Ier5oT1H3wfwHCZgV48
+         +2bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705444498; x=1706049298;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2ObGmy+ZDmOiEep2qeMUG0WYfwliEG3p7QfyY5yhTY4=;
+        b=tLNAQy/xicxsQWo9l+lIWKVcTEr0qvKQk66yyrw9jc/CAMXK0OoNE5tvCGwRJa9cOZ
+         domn8zz51CQ3XN6a7/8ZlPhLWxlcNirURDiyJbPAOlyBCgAVbtJe3wY/CiqU9h56RLaW
+         k7+2QA1JvfHF32odOkcQRvMbOKs/2YMNoOHwP5FlAopQoP0Z1mwqam4QiljeXYeN6SRr
+         tJBhp+pxZh34OJ4E8eoXcTP2nqWO6XQI+2s23yS2r4WNCLmS7QtpifKuC3a8Yv0kLnQX
+         FDdG5N4Q+q7H0/lpj/Ou1XF9A3sOugLOwVWHSIJL9z9WCppFxMIPF2q7fPRRuhS6Cb++
+         ud1A==
+X-Gm-Message-State: AOJu0YxeqNF5VfCntEPlk6RFrGoJC2rjmFpp4L0XiV76MIfle0gNFm3O
+	YLTVDJfgQNnFFnsdHA9Xovg=
+X-Google-Smtp-Source: AGHT+IHG40a+VKrD24POnkYqTIt2iPkXDYVFzDIDWgt1ELxJ8FjRFnc3CRw8IGOT2riwJGQ8jbur7g==
+X-Received: by 2002:a17:902:aa44:b0:1d4:c445:c705 with SMTP id c4-20020a170902aa4400b001d4c445c705mr8257678plr.26.1705444497618;
+        Tue, 16 Jan 2024 14:34:57 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v2-20020a17090331c200b001d54c615e09sm9782856ple.252.2024.01.16.14.34.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jan 2024 14:34:57 -0800 (PST)
+Sender: groeck7 <groeck7@gmail.com>
+Message-ID: <76bd483b-e48c-4697-8cbd-05a0346090b7@roeck-us.net>
+Date: Tue, 16 Jan 2024 14:34:55 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "NeilBrown" <neilb@suse.de>
-To: "Jeff Layton" <jlayton@kernel.org>
-Cc: "Christian Brauner" <brauner@kernel.org>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Eric Van Hensbergen" <ericvh@kernel.org>,
- "Latchesar Ionkov" <lucho@ionkov.net>,
- "Dominique Martinet" <asmadeus@codewreck.org>,
- "Christian Schoenebeck" <linux_oss@crudebyte.com>,
- "David Howells" <dhowells@redhat.com>,
- "Marc Dionne" <marc.dionne@auristor.com>, "Xiubo Li" <xiubli@redhat.com>,
- "Ilya Dryomov" <idryomov@gmail.com>, "Alexander Aring" <aahringo@redhat.com>,
- "David Teigland" <teigland@redhat.com>, "Miklos Szeredi" <miklos@szeredi.hu>,
- "Andreas Gruenbacher" <agruenba@redhat.com>,
- "Trond Myklebust" <trond.myklebust@hammerspace.com>,
- "Anna Schumaker" <anna@kernel.org>, "Chuck Lever" <chuck.lever@oracle.com>,
- "Olga Kornievskaia" <kolga@netapp.com>, "Dai Ngo" <Dai.Ngo@oracle.com>,
- "Tom Talpey" <tom@talpey.com>, "Jan Kara" <jack@suse.cz>,
- "Mark Fasheh" <mark@fasheh.com>, "Joel Becker" <jlbec@evilplan.org>,
- "Joseph Qi" <joseph.qi@linux.alibaba.com>, "Steve French" <sfrench@samba.org>,
- "Paulo Alcantara" <pc@manguebit.com>, "Ronnie Sahlberg" <lsahlber@redhat.com>,
- "Shyam Prasad N" <sprasad@microsoft.com>,
- "Namjae Jeon" <linkinjeon@kernel.org>,
- "Sergey Senozhatsky" <senozhatsky@chromium.org>,
- "Steven Rostedt" <rostedt@goodmis.org>,
- "Masami Hiramatsu" <mhiramat@kernel.org>,
- "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
- linux-kernel@vger.kernel.org, v9fs@lists.linux.dev,
- linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
- gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org,
- linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev,
- linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
- linux-trace-kernel@vger.kernel.org, "Jeff Layton" <jlayton@kernel.org>
-Subject: Re: [PATCH 13/20] filelock: convert __locks_insert_block, conflict
- and deadlock checks to use file_lock_core
-In-reply-to: <20240116-flsplit-v1-13-c9d0f4370a5d@kernel.org>
-References: <20240116-flsplit-v1-0-c9d0f4370a5d@kernel.org>,
- <20240116-flsplit-v1-13-c9d0f4370a5d@kernel.org>
-Date: Wed, 17 Jan 2024 09:32:54 +1100
-Message-id: <170544437475.23031.9738852723187400936@noble.neil.brown.name>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=AWywaz28;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=XiSUPO+1
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.37 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 R_RATELIMIT(0.00)[to_ip_from(RLouahofup1mwqksbidco3ksry)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[46];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_CC(0.00)[kernel.org,zeniv.linux.org.uk,ionkov.net,codewreck.org,crudebyte.com,redhat.com,auristor.com,gmail.com,szeredi.hu,hammerspace.com,oracle.com,netapp.com,talpey.com,suse.cz,fasheh.com,evilplan.org,linux.alibaba.com,samba.org,manguebit.com,microsoft.com,chromium.org,goodmis.org,efficios.com,vger.kernel.org,lists.linux.dev,lists.infradead.org,lists.samba.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.86)[99.40%]
-X-Spam-Score: -4.37
-X-Rspamd-Queue-Id: 0CA3821FD4
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] gpiolib: remove extra_checks
+Content-Language: en-US
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20231219201102.41639-1-brgl@bgdev.pl>
+ <19dca2a9-36e1-4a6b-9b65-db4c0a163d56@roeck-us.net>
+ <CAMRc=McueRLdFJ_p-QPKPwFJatVXOG8hyeZKniAPGDBrNo2xFg@mail.gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <CAMRc=McueRLdFJ_p-QPKPwFJatVXOG8hyeZKniAPGDBrNo2xFg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, 17 Jan 2024, Jeff Layton wrote:
-> Have both __locks_insert_block and the deadlock and conflict checking
-> functions take a struct file_lock_core pointer instead of a struct
-> file_lock one. Also, change posix_locks_deadlock to return bool.
->=20
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  fs/locks.c | 132 ++++++++++++++++++++++++++++++++-------------------------=
-----
->  1 file changed, 70 insertions(+), 62 deletions(-)
->=20
+On 1/16/24 13:41, Bartosz Golaszewski wrote:
+> On Tue, Jan 16, 2024 at 7:23 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>>
+>> Hi,
+>>
+>> On Tue, Dec 19, 2023 at 09:11:02PM +0100, Bartosz Golaszewski wrote:
+>>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>>>
+>>> extra_checks is only used in a few places. It also depends on
+>>> a non-standard DEBUG define one needs to add to the source file. The
+>>> overhead of removing it should be minimal (we already use pure
+>>> might_sleep() in the code anyway) so drop it.
+>>>
+>>> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>>
+>> This patch triggers (exposes) the following backtrace.
+>>
+>> BUG: sleeping function called from invalid context at drivers/gpio/gpiolib.c:3738
+>> in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 7, name: kworker/0:0
+>> preempt_count: 1, expected: 0
+>> RCU nest depth: 0, expected: 0
+>> 3 locks held by kworker/0:0/7:
+>>   #0: c181b3a4 ((wq_completion)events_freezable){+.+.}-{0:0}, at: process_scheduled_works+0x23c/0x644
+>>   #1: c883df28 ((work_completion)(&(&host->detect)->work)){+.+.}-{0:0}, at: process_scheduled_works+0x23c/0x644
+>>   #2: c24e1720 (&host->lock){-...}-{2:2}, at: sdhci_check_ro+0x14/0xd4
+>> irq event stamp: 2916
+>> hardirqs last  enabled at (2915): [<c0b18838>] _raw_spin_unlock_irqrestore+0x70/0x84
+>> hardirqs last disabled at (2916): [<c0b1853c>] _raw_spin_lock_irqsave+0x74/0x78
+>> softirqs last  enabled at (2360): [<c00098a4>] __do_softirq+0x28c/0x4b0
+>> softirqs last disabled at (2347): [<c0022774>] __irq_exit_rcu+0x15c/0x1a4
+>> CPU: 0 PID: 7 Comm: kworker/0:0 Tainted: G                 N 6.7.0-09928-g052d534373b7 #1
+>> Hardware name: Freescale i.MX25 (Device Tree Support)
+>> Workqueue: events_freezable mmc_rescan
+>>   unwind_backtrace from show_stack+0x10/0x18
+>>   show_stack from dump_stack_lvl+0x34/0x54
+>>   dump_stack_lvl from __might_resched+0x188/0x274
+>>   __might_resched from gpiod_get_value_cansleep+0x14/0x60
+>>   gpiod_get_value_cansleep from mmc_gpio_get_ro+0x20/0x30
+> 
+> When getting GPIO value with a spinlock taken the driver *must* use
+> the non-sleeping variant of this function: gpiod_get_value(). If the
+> underlying driver can sleep then the developer seriously borked. The
+> API contract has always been this way so I wouldn't treat it as a
+> regression.
+> 
 
+I said
 
-> =20
->  /* Must be called with the blocked_lock_lock held! */
-> -static int posix_locks_deadlock(struct file_lock *caller_fl,
-> -				struct file_lock *block_fl)
-> +static bool posix_locks_deadlock(struct file_lock *caller_fl,
-> +				 struct file_lock *block_fl)
->  {
-> +	struct file_lock_core *caller =3D &caller_fl->fl_core;
-> +	struct file_lock_core *blocker =3D &block_fl->fl_core;
->  	int i =3D 0;
-> -	struct file_lock_core *flc =3D &caller_fl->fl_core;
-> =20
->  	lockdep_assert_held(&blocked_lock_lock);
-> =20
-> @@ -1034,16 +1040,16 @@ static int posix_locks_deadlock(struct file_lock *c=
-aller_fl,
->  	 * This deadlock detector can't reasonably detect deadlocks with
->  	 * FL_OFDLCK locks, since they aren't owned by a process, per-se.
->  	 */
-> -	if (IS_OFDLCK(flc))
-> +	if (IS_OFDLCK(caller))
->  		return 0;
+"This patch triggers (exposes) the following backtrace"
 
-      return false;
+and
 
-Thanks,
-NeilBrown
+"It isn't really surprising since sdhci_check_ro() calls the gpio code under
+  spin_lock_irqsave().
+"
+
+I didn't (intend to) claim that this would be a regression. It was
+supposed to be a report. My apologies if it came along the wrong way.
+
+Guenter
+
 
