@@ -1,87 +1,161 @@
-Return-Path: <linux-kernel+bounces-27151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B72C882EB45
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:06:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39A6482EB46
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:07:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69F891F2422F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:06:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8C1928679D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:07:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0DFC125CD;
-	Tue, 16 Jan 2024 09:06:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="MU4sRVCR"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E058F125CE;
+	Tue, 16 Jan 2024 09:07:30 +0000 (UTC)
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF85F125B4;
-	Tue, 16 Jan 2024 09:06:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705396002;
-	bh=Zj/SXZG46k5uZDglokWIJfeqxlGt/89S7y+UnE+6VC8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=MU4sRVCRFGtDob+mb1F2AivlOQO6ine81fDluyAGOB1fudFZZejybpxvosauvcX9t
-	 Cubtyk/43nL/XcS9q1v3oV5iU/kC7exHyT+bK4qSyZhtUx/MjjIsEwzcDepdGfUeko
-	 QJCNKWTCp00wjuiiV/vfHUnACHRLJ9exTFckQG47/i7XgcvtasT7h8d2HnwsC5k14f
-	 moTSAQXBOdYK2FAYz3GFDeIbcGMMzIrTG8fkThp8KKj5fTj2a09/gktOuqzChguF2h
-	 60KXqdARDvoDKqOOjRZkP6guNo3M0Rzv0JxtywMUQw77TgsDIP5weCNqy6cm82d9uZ
-	 PcbiRC60bdoWw==
-Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 52266378200E;
-	Tue, 16 Jan 2024 09:06:40 +0000 (UTC)
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	kernel@collabora.com,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests/mm: run_vmtests.sh: add missing tests
-Date: Tue, 16 Jan 2024 14:06:40 +0500
-Message-ID: <20240116090641.3411660-1-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.42.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4E37125BA
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 09:07:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E533B20013;
+	Tue, 16 Jan 2024 09:07:16 +0000 (UTC)
+Message-ID: <b7c1d204-22b0-4a04-a4bb-1aaf4e643c22@ghiti.fr>
+Date: Tue, 16 Jan 2024 10:07:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] riscv: mm: still create swiotlb buffer for kmalloc()
+ bouncing if required
+Content-Language: en-US
+To: Jisheng Zhang <jszhang@kernel.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231202134224.4029-1-jszhang@kernel.org>
+ <aea8222e-ec0a-4844-abd0-7fe102bc2bec@ghiti.fr> <ZaZCqAir6BdiN80K@xhacker>
+From: Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <ZaZCqAir6BdiN80K@xhacker>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: alex@ghiti.fr
 
-Add missing tests to run_vmtests.sh. The mm kselftests are run through
-run_vmtests.sh. If a test isn't present in this script, it'll not run
-with run_tests or `make -C tools/testing/selftests/mm run_tests`.
+On 16/01/2024 09:47, Jisheng Zhang wrote:
+> On Tue, Jan 16, 2024 at 09:23:47AM +0100, Alexandre Ghiti wrote:
+>> Hi Jisheng,
+>>
+>> On 02/12/2023 14:42, Jisheng Zhang wrote:
+>>> After commit f51f7a0fc2f4 ("riscv: enable DMA_BOUNCE_UNALIGNED_KMALLOC
+>>> for !dma_coherent"), for non-coherent platforms with less than 4GB
+>>> memory, we rely on users to pass "swiotlb=mmnn,force" kernel parameters
+>>> to enable DMA bouncing for unaligned kmalloc() buffers. Now let's go
+>>> further: If no bouncing needed for ZONE_DMA, let kernel automatically
+>>> allocate 1MB swiotlb buffer per 1GB of RAM for kmalloc() bouncing on
+>>> non-coherent platforms, so that no need to pass "swiotlb=mmnn,force"
+>>> any more.
+>> IIUC, DMA_BOUNCE_UNALIGNED_KMALLOC is enabled for all non-coherent
+>> platforms, even those with less than 4GB of memory. But the DMA bouncing
+>> (which is necessary to enable kmalloc-8/16/32/96...) was not enabled unless
+>> the user specified "swiotlb=mmnn,force" on the kernel command line. But does
+>> that mean that if the user did not specify "swiotlb=mmnn,force", the
+>> kmalloc-8/16/32/96 were enabled anyway and the behaviour was wrong (by lack
+>> of DMA bouncing)?
+> Hi Alex,
+>
+> For coherent platforms, kmalloc-8/16/32/96 was enabled.
+>
+> For non-coherent platforms, if memory is more than 4GB, kmalloc-8/16/32/96 was enabled.
+>
+> For non-coherent platforms, if memory is less than 4GB, kmalloc-8/16/32/96 was not
+> enabled. If users want kmalloc-8/16/32/96, we rely on users to pass "swiotlb=mmnn,force"
 
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
- tools/testing/selftests/mm/run_vmtests.sh | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
-index 246d53a5d7f2..a5e6ba8d3579 100755
---- a/tools/testing/selftests/mm/run_vmtests.sh
-+++ b/tools/testing/selftests/mm/run_vmtests.sh
-@@ -248,6 +248,9 @@ CATEGORY="hugetlb" run_test ./map_hugetlb
- CATEGORY="hugetlb" run_test ./hugepage-mremap
- CATEGORY="hugetlb" run_test ./hugepage-vmemmap
- CATEGORY="hugetlb" run_test ./hugetlb-madvise
-+CATEGORY="hugetlb" run_test ./charge_reserved_hugetlb.sh
-+CATEGORY="hugetlb" run_test ./hugetlb_reparenting_test.sh
-+CATEGORY="hugetlb" run_test ./hugetlb-read-hwpoison
- 
- nr_hugepages_tmp=$(cat /proc/sys/vm/nr_hugepages)
- # For this test, we need one and just one huge page
--- 
-2.42.0
+That's what I was unsure of :)
 
+
+>
+> This patch tries to remove the "swiotlb=mmnn,force" requirement for the
+> last case. After this patch, kernel automatically uses "1MB swiotlb buffer per
+> 1GB of RAM for kmalloc() bouncing" by default.
+>
+> So this is an enhancement.
+
+
+Great, so you can add:
+
+Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+
+Thanks,
+
+Alex
+
+
+>
+> Thanks
+>> I'm trying to understand if that's a fix or an enhancement.
+>>
+>> Thanks,
+>>
+>> Alex
+>>
+>>
+>>> The math of "1MB swiotlb buffer per 1GB of RAM for kmalloc() bouncing"
+>>> is taken from arm64. Users can still force smaller swiotlb buffer by
+>>> passing "swiotlb=mmnn".
+>>>
+>>> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+>>> ---
+>>>
+>>> since v2:
+>>>    - fix build error if CONFIG_RISCV_DMA_NONCOHERENT=n
+>>>
+>>>    arch/riscv/include/asm/cache.h |  2 +-
+>>>    arch/riscv/mm/init.c           | 16 +++++++++++++++-
+>>>    2 files changed, 16 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/arch/riscv/include/asm/cache.h b/arch/riscv/include/asm/cache.h
+>>> index 2174fe7bac9a..570e9d8acad1 100644
+>>> --- a/arch/riscv/include/asm/cache.h
+>>> +++ b/arch/riscv/include/asm/cache.h
+>>> @@ -26,8 +26,8 @@
+>>>    #ifndef __ASSEMBLY__
+>>> -#ifdef CONFIG_RISCV_DMA_NONCOHERENT
+>>>    extern int dma_cache_alignment;
+>>> +#ifdef CONFIG_RISCV_DMA_NONCOHERENT
+>>>    #define dma_get_cache_alignment dma_get_cache_alignment
+>>>    static inline int dma_get_cache_alignment(void)
+>>>    {
+>>> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+>>> index 2e011cbddf3a..cbcb9918f721 100644
+>>> --- a/arch/riscv/mm/init.c
+>>> +++ b/arch/riscv/mm/init.c
+>>> @@ -162,11 +162,25 @@ static void print_vm_layout(void) { }
+>>>    void __init mem_init(void)
+>>>    {
+>>> +	bool swiotlb = max_pfn > PFN_DOWN(dma32_phys_limit);
+>>>    #ifdef CONFIG_FLATMEM
+>>>    	BUG_ON(!mem_map);
+>>>    #endif /* CONFIG_FLATMEM */
+>>> -	swiotlb_init(max_pfn > PFN_DOWN(dma32_phys_limit), SWIOTLB_VERBOSE);
+>>> +	if (IS_ENABLED(CONFIG_DMA_BOUNCE_UNALIGNED_KMALLOC) && !swiotlb &&
+>>> +	    dma_cache_alignment != 1) {
+>>> +		/*
+>>> +		 * If no bouncing needed for ZONE_DMA, allocate 1MB swiotlb
+>>> +		 * buffer per 1GB of RAM for kmalloc() bouncing on
+>>> +		 * non-coherent platforms.
+>>> +		 */
+>>> +		unsigned long size =
+>>> +			DIV_ROUND_UP(memblock_phys_mem_size(), 1024);
+>>> +		swiotlb_adjust_size(min(swiotlb_size_or_default(), size));
+>>> +		swiotlb = true;
+>>> +	}
+>>> +
+>>> +	swiotlb_init(swiotlb, SWIOTLB_VERBOSE);
+>>>    	memblock_free_all();
+>>>    	print_vm_layout();
 
