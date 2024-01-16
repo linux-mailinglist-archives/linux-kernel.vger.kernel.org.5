@@ -1,182 +1,86 @@
-Return-Path: <linux-kernel+bounces-28373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10F7982FDB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 00:17:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B832682FDB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 00:19:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A7401F29D7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:17:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 528EE2933FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:19:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA3AB67C68;
-	Tue, 16 Jan 2024 23:17:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A827A1D526;
+	Tue, 16 Jan 2024 23:19:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QDp6fpzO"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b="OrkzfHxm"
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 681EB67C5B;
-	Tue, 16 Jan 2024 23:17:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978851BF25
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 23:19:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705447062; cv=none; b=DJF7ZgmqieZBtywkb9js3x9PkBgwFCCI4ypkoE5JRnE/SqQOCYb/Hq8AQEOWoWAMwyaBNZXXjWadnxplSNSS38JNh3aNqagKxYDn5NgagwX6Y+KurgmBeiecfWHFNTRfksGjRa5Emy9pCxZ9rzT4KR+Z/P/OCp1QyeR6kZG/eao=
+	t=1705447162; cv=none; b=fdFvAGm2VxfX2SB9bLnPY7AxWKjFiimIAhl2MBs8Yko331lIIVcoaprEBtYyZ4rW6rIvtla+hZrd8fJBPxMxiWfck8ZSHMEe98MaTUloYn9aC17P2Px0mqTJ+uAb9iqphozFmd8x1XmXUNVUZdEDMOIf/5/wj3/VrAhw7y7USX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705447062; c=relaxed/simple;
-	bh=33l3Pw/ShMdGyM9eq8Q6qJOYs0Ey95awHOBXX/zSi64=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=hfUOeYl6hqnWZvqNttyX0UICSHYkXGxvxg90YSVdPrgPizeLAS5/cR4jfA+b2rGklsquqEuAx8fEYFJDYQH38hbe0F5I65G0dAlG7SydJy3pYrv5o1yNZ5l5zEH2drHHwDpupf5iNELUIUDZBMtGjR/jx/lUJgzfdT7swJsDoeg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QDp6fpzO; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cd880ceaf2so64878881fa.2;
-        Tue, 16 Jan 2024 15:17:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705447058; x=1706051858; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Sgi/x32AtrRpAtlUrAUzikypQdqgt00q+aRRQsUjrKw=;
-        b=QDp6fpzOcWn9HCAbnSB6Kc6j/U3tlRitJGyHy+vRk3bABk4Cb4uhHjff5WfWPcZ73f
-         Yucy0oQeocQuU0WTztIuMLOiDTEqBNFgQMoICmr5SoU+XYt8evctDDKjRLChx8HaaE5r
-         Zh3dMbkH4b06+c2f6wl+PqIYLCozc2P5JE1dbVIfyAd9BhiWcj1MEHuQP6P8p8cweQ6X
-         yHdkyIofEnnb6Iuf/NmnL6YEI8aqA+oPgouTH7tZVBJePSOzYoRtfwA0I+Q216nhOiC1
-         itcRRZQroZhFG0LI39QirAEI6r/ghzJyOUH6cYk2ttuxGa68ih/8qvgGaH7ZNMzYNdJN
-         I2ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705447058; x=1706051858;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Sgi/x32AtrRpAtlUrAUzikypQdqgt00q+aRRQsUjrKw=;
-        b=gDxWG6dffW2Xg96J4Xtnc3MS6xWfeyxxHpaKWmEeEivc5yNcffo8o67KSGBsByNrhT
-         nLVVRbOl/zvUNNdIB2ltyjLRbZ/uao+fN+/s1XBCCgoHDMl1lcpFglHcm3Zm17V2W4hA
-         MdPqqvlra70wYYUhT9gB71bGISOt77ys79pXZOnxqFHO2gGwcGXD9QddOwJUKoPRgPfF
-         YOk3+xHiebSfIz7ID0yKo2nMoSCceVnh9Dy8rJTkzTDtxUBeIUaOQrpRwwln3QACnn3J
-         yXuikZn99Qdwxp8lLBiA9ozXV01UnHiVWPF/mAPDAeJsasiibMKs3A5uhiEoxYiu7wrV
-         uFHQ==
-X-Gm-Message-State: AOJu0YyUl/RsfJERUMh65pniMWvbNE5ywH3usXBnnv44FSkvFOoiTB2W
-	9vUJ3xzenDFyxfW1kztyfugIeuhu29IgPwZ8ciF50XklJttb0Q==
-X-Google-Smtp-Source: AGHT+IEsAm9zDWmYl8th45/sWyIYVODxCtIh83Fdjbug3h68CTsTNrN3iXVGpe173uP/14flCe4eqoOfSE/TuCY8deM=
-X-Received: by 2002:a2e:9b0f:0:b0:2cc:ce6d:5ae5 with SMTP id
- u15-20020a2e9b0f000000b002ccce6d5ae5mr3869179lji.54.1705447057989; Tue, 16
- Jan 2024 15:17:37 -0800 (PST)
+	s=arc-20240116; t=1705447162; c=relaxed/simple;
+	bh=f61yTArnZb+nFtlOTO6rgvVxaYCJzUt/4hApF6yDLFc=;
+	h=DKIM-Signature:Received:Message-ID:Date:MIME-Version:User-Agent:
+	 To:From:Subject:Content-Type:Content-Transfer-Encoding; b=XbGnnlcuMcwbl1csdQqNU/bdZlYjs8oXe1Atj1pZbW+Hvugm6cn+uCpvu5oTrUz7sIiA0EdfOS118PRqLs16u3k81XEB7BSjDBdRgGVJ6CyTUx1kyJrdvydrmpecBs7YNVanrTngXLux9NmI+6QI78XDWzyZv+oPZxMKbAtdM+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org; spf=pass smtp.mailfrom=cu-phil.org; dkim=pass (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b=OrkzfHxm; arc=none smtp.client-ip=194.63.252.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cu-phil.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cu-phil.org
+	; s=ds202401; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
+	MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=40Wsj2ZEQ7JWfWYichK13LSJb23DRyouOF7OUSYPSzM=; b=OrkzfHxmeTcmJ8jUYhr76kbagf
+	33VZ2Z9sI4RoyPPAPrfWyxTJ+wdXqlLqH0e4DmziBqmkir8n+P6c25Gt31yt4kxKAzuJHQHeujoDQ
+	DjPSXJF7R7vHbfvHOa2BsL/nNdAKWKSucdg3B6h8vtclgyatDCpdS8R8J6P0MUL2YYPMFSLq6VGSg
+	QFo/hBVgqwDvNAHQ8oP5cjuOKiRzGZHiC34kLH/tI2hgJ+bb6rvVOg0+uvy8GA4i6KwM9mWby7/y9
+	yY+NzaAj6HsTP8a3k88IeSF6uZQEEtUsMHUY36qtz0j47WeiXAY9xo+7kASddq8W+E+L0KfvIKOni
+	e5wwKBag==;
+Received: from [84.215.119.50] (port=58267 helo=[192.168.0.2])
+	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <Ywe_Caerlyn@cu-phil.org>)
+	id 1rPsiE-002xxO-HV
+	for linux-kernel@vger.kernel.org;
+	Wed, 17 Jan 2024 00:19:18 +0100
+Message-ID: <3b3fa3e2-74a5-426d-a973-a92dea95b94b@cu-phil.org>
+Date: Wed, 17 Jan 2024 00:19:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240116105134.2245640-1-colin.i.king@gmail.com>
-In-Reply-To: <20240116105134.2245640-1-colin.i.king@gmail.com>
-From: Steve French <smfrench@gmail.com>
-Date: Tue, 16 Jan 2024 17:17:26 -0600
-Message-ID: <CAH2r5mvf+ZMyqpnFQUaO=DWC8ixXspsjWKE7BxQ1wW4WuvTVcA@mail.gmail.com>
-Subject: Re: [PATCH][next] cifs: remove redundant variable tcon_exist
-To: Colin Ian King <colin.i.king@gmail.com>
-Cc: Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>, 
-	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>, linux-cifs@vger.kernel.org, 
-	samba-technical@lists.samba.org, kernel-janitors@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+To: linux-kernel@vger.kernel.org
+From: Ywe Caerlyn <Ywe_Caerlyn@cu-phil.org>
+Subject: Lumix, Fair Source O S with Iclamic basis (was low-jitter,
+ philosophy, design concept etc)
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Yes - it looks like Shyam's commit made that variable obsolete.
+Ultimately it seem we find the concept Lumi here. A common problem in 
+the west, and after hippie culture is the association of hashish with 
+Light (Lum). Lumi means follower of The Light, and actually is a very 
+correct concept for this. Lumix means a system based on a follower of 
+The Light.
 
-Shyam/Paulo,
-Let me know if any objections.  Will put into cifs-2.6.git for-next
+Then the other pary takes the responsibility for that association, and 
+all the wrongs associated.
 
-commit 04909192ada3285070f8ced0af7f07735478b364 (tag: 6.7-rc4-smb3-client-f=
-ixes)
-Author: Shyam Prasad N <sprasad@microsoft.com>
-Date:   Wed Dec 6 16:37:38 2023 +0000
+This gives us max fair source angle, and the other a major disadvantage 
+if they continue idolatry and association of hashsh with Lum. (Such as 
+typical "Forbidden Apple" culture.
 
-    cifs: reconnect worker should take reference on server struct
-unconditionally
+This should be completely fair.
 
-    Reconnect worker currently assumes that the server struct
-    is alive and only takes reference on the server if it needs
-    to call smb2_reconnect.
-
-    With the new ability to disable channels based on whether the
-    server has multichannel disabled, this becomes a problem when
-    we need to disable established channels. While disabling the
-    channels and deallocating the server, there could be reconnect
-    work that could not be cancelled (because it started).
-
-    This change forces the reconnect worker to unconditionally
-    take a reference on the server when it runs.
-
-    Also, this change now allows smb2_reconnect to know if it was
-    called by the reconnect worker. Based on this, the cifs_put_tcp_session
-    can decide whether it can cancel the reconnect work synchronously or no=
-t.
-
-    Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
-    Signed-off-by: Steve French <stfrench@microsoft.com>
-
-On Tue, Jan 16, 2024 at 4:51=E2=80=AFAM Colin Ian King <colin.i.king@gmail.=
-com> wrote:
->
-> The variable tcon_exist is being assigned however it is never read, the
-> variable is redundant and can be removed.
->
-> Cleans up clang scan build warning:
-> warning: Although the value stored to 'tcon_exist' is used in
-> the enclosing expression, the value is never actually readfrom
-> 'tcon_exist' [deadcode.DeadStores]
->
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->  fs/smb/client/smb2pdu.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/smb/client/smb2pdu.c b/fs/smb/client/smb2pdu.c
-> index bd25c34dc398..50f6bf16b624 100644
-> --- a/fs/smb/client/smb2pdu.c
-> +++ b/fs/smb/client/smb2pdu.c
-> @@ -3918,7 +3918,7 @@ void smb2_reconnect_server(struct work_struct *work=
-)
->         struct cifs_ses *ses, *ses2;
->         struct cifs_tcon *tcon, *tcon2;
->         struct list_head tmp_list, tmp_ses_list;
-> -       bool tcon_exist =3D false, ses_exist =3D false;
-> +       bool ses_exist =3D false;
->         bool tcon_selected =3D false;
->         int rc;
->         bool resched =3D false;
-> @@ -3964,7 +3964,7 @@ void smb2_reconnect_server(struct work_struct *work=
-)
->                         if (tcon->need_reconnect || tcon->need_reopen_fil=
-es) {
->                                 tcon->tc_count++;
->                                 list_add_tail(&tcon->rlist, &tmp_list);
-> -                               tcon_selected =3D tcon_exist =3D true;
-> +                               tcon_selected =3D true;
->                         }
->                 }
->                 /*
-> @@ -3973,7 +3973,7 @@ void smb2_reconnect_server(struct work_struct *work=
-)
->                  */
->                 if (ses->tcon_ipc && ses->tcon_ipc->need_reconnect) {
->                         list_add_tail(&ses->tcon_ipc->rlist, &tmp_list);
-> -                       tcon_selected =3D tcon_exist =3D true;
-> +                       tcon_selected =3D true;
->                         cifs_smb_ses_inc_refcount(ses);
->                 }
->                 /*
-> --
-> 2.39.2
->
->
-
-
---=20
-Thanks,
-
-Steve
+Ywe,
+Philosophy,
+https://cu-phil.org/
 
