@@ -1,191 +1,99 @@
-Return-Path: <linux-kernel+bounces-27229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E155182EC75
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:01:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6E9882EC9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:11:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 797372844FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:01:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DDB1B22655
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:11:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08BEE18AF0;
-	Tue, 16 Jan 2024 09:59:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LyilO6D7"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31E7E13AC0;
+	Tue, 16 Jan 2024 10:11:23 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ADE21756C;
-	Tue, 16 Jan 2024 09:59:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40e86c86a6fso126465e9.2;
-        Tue, 16 Jan 2024 01:59:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705399193; x=1706003993; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=si59UtDvYnkoR5qP2N5Z67QQnuZarHWZ4VkQAHNmja8=;
-        b=LyilO6D7hdEJX9CmbMYUIDFWsTl+DJerkULotIW89bVjy6Dff/PiRi9jOR8URJ/v0b
-         l28TveGGOPXL5h2ycnZHLaPdMxRC4SwrLR2YM60hJconiiQ0tx0q4Fc1zBPvm0cv9xyY
-         zeygR3BhPatiKt9wk5rUmhMR3Uxb7XH0B0gZ+dahtFBSjzgRR75I/sPyVY5rm5lbTULc
-         hzW5U8ZQ6HpsN6YPMz5YzF7m8h0IypsCB/TYww/VY2zKotXqfuOvQ50Pu1d5wUcdaXRk
-         cRADhk4iWnG+RrUG1pTs3yeDA5A9WxGsKoZgYr1E6nBg1xZO7Acbrw5iJcGXluGs07Em
-         T2PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705399193; x=1706003993;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=si59UtDvYnkoR5qP2N5Z67QQnuZarHWZ4VkQAHNmja8=;
-        b=hwqjqCqgGAFYHXI3vS3ze0rO1G0KKiWGP+qtVHqkNbuWXgzd115eEELVkzYD7YErE6
-         l3hdGumH8W3em7nmOFuwb0pkdA3Z/t2EZwiPjsinAMh8ESqaUhQLMfcNE1Xtw6YCjqgH
-         j+D31og0obzR8bqY5G9swZd8I/WG47ZfaWelmzpVJpJ22AmWPy1/KWw4eZBUlnPBj5cb
-         5tFIXO/ahd1x72jFr+O8bBiJY6ioZXFEv5n3cF0DCKEYT/yg/QbW3d8iPo01VaEFH4lW
-         1zE0RKY0xe9ZvCXR1E9RqUEZawQyAkDL4EvcGOX3LpMLHpSDimktxW0mGH0X+9RQn3Bu
-         peUQ==
-X-Gm-Message-State: AOJu0YwRKdmPPP93b5NrsYneEeelwtfI1OFSoPv6r2QlHLrxEm5Xf0Fs
-	VBDvADVrFR6qONCC8kFyEYA=
-X-Google-Smtp-Source: AGHT+IHQKMMLqyYCyaKlq3XNqqVCpXok+AmTjD32SU1kv3Wfmw3VKFhmTteZAvKyyHYjZcNp9eqglw==
-X-Received: by 2002:a05:600c:4850:b0:40e:3655:db8b with SMTP id j16-20020a05600c485000b0040e3655db8bmr1625550wmo.120.1705399192512;
-        Tue, 16 Jan 2024 01:59:52 -0800 (PST)
-Received: from gmail.com (1F2EF378.nat.pool.telekom.hu. [31.46.243.120])
-        by smtp.gmail.com with ESMTPSA id p10-20020a05600c358a00b0040e559e0ba7sm22405066wmq.26.2024.01.16.01.59.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 01:59:51 -0800 (PST)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Tue, 16 Jan 2024 10:59:49 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-	wkarny@gmail.com, torvalds@linux-foundation.org,
-	qyousef@layalina.io, tglx@linutronix.de, rafael@kernel.org,
-	viresh.kumar@linaro.org, linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org
-Subject: Re: [PATCH] sched/fair: Fix frequency selection for non invariant
- case
-Message-ID: <ZaZTlcFZaQefnf1v@gmail.com>
-References: <20240114183600.135316-1-vincent.guittot@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69188134BE;
+	Tue, 16 Jan 2024 10:11:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: a22905cd170d4ee9805d32e1eec18322-20240116
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:16592e3b-7f91-4805-b226-df76d2b3ec8f,IP:10,
+	URL:0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:30
+X-CID-INFO: VERSION:1.1.35,REQID:16592e3b-7f91-4805-b226-df76d2b3ec8f,IP:10,UR
+	L:0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:30
+X-CID-META: VersionHash:5d391d7,CLOUDID:17af677f-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:240116180031ZL8M7VE6,BulkQuantity:0,Recheck:0,SF:19|38|24|100|101|74
+	|66|17|42|102,TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,
+	BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR
+X-UUID: a22905cd170d4ee9805d32e1eec18322-20240116
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1885945740; Tue, 16 Jan 2024 18:00:29 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 5C6A3E000EB9;
+	Tue, 16 Jan 2024 18:00:29 +0800 (CST)
+X-ns-mid: postfix-65A653BD-152262411
+Received: from kernel.. (unknown [172.20.15.234])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 43C6EE000EB9;
+	Tue, 16 Jan 2024 18:00:27 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: seanjc@google.com,
+	pbonzini@redhat.com,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com
+Cc: kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] KVM: x86/mmu: Use KMEM_CACHE instead of kmem_cache_create()
+Date: Tue, 16 Jan 2024 18:00:25 +0800
+Message-Id: <20240116100025.95702-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240114183600.135316-1-vincent.guittot@linaro.org>
+Content-Transfer-Encoding: quoted-printable
 
+Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+to simplify the creation of SLAB caches.
 
-* Vincent Guittot <vincent.guittot@linaro.org> wrote:
-
-> When frequency invariance is not enabled, get_capacity_ref_freq(policy)
-> returns the current frequency and the performance margin applied by
-> map_util_perf(), enabled the utilization to go above the maximum compute
-> capacity and to select a higher frequency than the current one.
-> 
-> The performance margin is now applied earlier in the path to take into
-> account some utilization clampings and we can't get an utilization higher
-> than the maximum compute capacity.
-> 
-> We must use a frequency above the current frequency to get a chance to
-> select a higher OPP when the current one becomes fully used. Apply
-> the same margin and returns a frequency 25% higher than the current one in
-> order to switch to the next OPP before we fully use the cpu at the current
-> one.
-> 
-> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Closes: https://lore.kernel.org/lkml/CAHk-=wgWcYX2oXKtgvNN2LLDXP7kXkbo-xTfumEjmPbjSer2RQ@mail.gmail.com/
-> Reported-by: Wyes Karny <wkarny@gmail.com>
-> Closes: https://lore.kernel.org/lkml/20240114091240.xzdvqk75ifgfj5yx@wyes-pc/
-> Fixes: 9c0b4bb7f630 ("sched/cpufreq: Rework schedutil governor performance estimation")
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> Tested-by: Wyes Karny <wkarny@gmail.com>
-> ---
->  kernel/sched/cpufreq_schedutil.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> index 95c3c097083e..d12e95d30e2e 100644
-> --- a/kernel/sched/cpufreq_schedutil.c
-> +++ b/kernel/sched/cpufreq_schedutil.c
-> @@ -133,7 +133,11 @@ unsigned long get_capacity_ref_freq(struct cpufreq_policy *policy)
->  	if (arch_scale_freq_invariant())
->  		return policy->cpuinfo.max_freq;
->  
-> -	return policy->cur;
-> +	/*
-> +	 * Apply a 25% margin so that we select a higher frequency than
-> +	 * the current one before the CPU is full busy
-> +	 */
-> +	return policy->cur + (policy->cur >> 2);
->  }
-
-I've updated the changelog to better express what was broken and how we 
-fixed it. Ack?
-
-	Ingo
-
-==========================>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Sun, 14 Jan 2024 19:36:00 +0100
-Subject: [PATCH] sched/fair: Fix frequency selection for non-invariant case
-
-Linus reported a ~50% performance regression on single-threaded
-workloads on his AMD Ryzen system, and bisected it to:
-
-  9c0b4bb7f630 ("sched/cpufreq: Rework schedutil governor performance estimation")
-
-When frequency invariance is not enabled, get_capacity_ref_freq(policy)
-is supposed to return the current frequency and the performance margin
-applied by map_util_perf(), enabling the utilization to go above the
-maximum compute capacity and to select a higher frequency than the current one.
-
-After the changes in 9c0b4bb7f630, the performance margin was applied
-earlier in the path to take into account utilization clampings and
-we couldn't get a utilization higher than the maximum compute capacity,
-and the CPU remained 'stuck' at lower frequencies.
-
-To fix this, we must use a frequency above the current frequency to
-get a chance to select a higher OPP when the current one becomes fully used.
-Apply the same margin and return a frequency 25% higher than the current
-one in order to switch to the next OPP before we fully use the CPU
-at the current one.
-
-[ mingo: Clarified the changelog. ]
-
-Fixes: 9c0b4bb7f630 ("sched/cpufreq: Rework schedutil governor performance estimation")
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Bisected-by: Linus Torvalds <torvalds@linux-foundation.org>
-Reported-by: Wyes Karny <wkarny@gmail.com>
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Tested-by: Wyes Karny <wkarny@gmail.com>
-Link: https://lore.kernel.org/r/20240114183600.135316-1-vincent.guittot@linaro.org
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 ---
- kernel/sched/cpufreq_schedutil.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/x86/kvm/mmu/mmu.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index 95c3c097083e..eece6244f9d2 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -133,7 +133,11 @@ unsigned long get_capacity_ref_freq(struct cpufreq_policy *policy)
- 	if (arch_scale_freq_invariant())
- 		return policy->cpuinfo.max_freq;
- 
--	return policy->cur;
-+	/*
-+	 * Apply a 25% margin so that we select a higher frequency than
-+	 * the current one before the CPU is fully busy:
-+	 */
-+	return policy->cur + (policy->cur >> 2);
- }
- 
- /**
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index d59e3ba5d646..5f0d8148cf6e 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -6997,9 +6997,7 @@ int kvm_mmu_vendor_module_init(void)
+=20
+ 	kvm_mmu_reset_all_pte_masks();
+=20
+-	pte_list_desc_cache =3D kmem_cache_create("pte_list_desc",
+-					    sizeof(struct pte_list_desc),
+-					    0, SLAB_ACCOUNT, NULL);
++	pte_list_desc_cache =3D KMEM_CACHE(pte_list_desc, SLAB_ACCOUNT);
+ 	if (!pte_list_desc_cache)
+ 		goto out;
+=20
+--=20
+2.39.2
+
 
