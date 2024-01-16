@@ -1,106 +1,103 @@
-Return-Path: <linux-kernel+bounces-27724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9001E82F4C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:59:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54C1782F4DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:02:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EFEA28548F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:59:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B9251C23A02
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:02:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 194CE1D52C;
-	Tue, 16 Jan 2024 18:59:47 +0000 (UTC)
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D55B1D525
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:59:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=1wt.eu
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=163.172.96.212
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D6371D545;
+	Tue, 16 Jan 2024 19:02:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BQlmYwfL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 545151CF8F;
+	Tue, 16 Jan 2024 19:02:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705431586; cv=none; b=RRtq+thJylfROXO97yu4+9ioG8vPOc902ezD/TSVgsI4m0maIPVefdMySq76G1FBLIVtmYvqHswnl8Yxwa8NGDcjaA48X85XlWwifT7/MoMy+YQOos0UGkC8VfeY2jPXnDrtf8rQF0j3FO9nJbUHizuqVXJ2P4sLa65jqg5gdqo=
+	t=1705431739; cv=none; b=AJWDikvdxNIWezvaE8AA5e6kgNFFoGBgEbkkbtcDzO84L8FuEidQf4JmkdzV+VIGrxCutJC/gI+ZhKlT5M0aBIxc27qzmI42Tw0Jgw0lZrkLDR9gAgfFh9pi7e4ROxt1z/KvFJcKIn29Km/r+3BAeBDyMktx5msWm/3LQD2PSDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705431586; c=relaxed/simple;
-	bh=jP3sejhrb6IEc/7ajYGJZqFr9VzJ4VBtRR3bsDSSObE=;
-	h=Received:Date:From:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=N12HOmagKrxsFGlGUZ72xm+SE/p9H6KuMH3mev0bLSVP9+W2eMVd5APPWIMDW7SYOG3bxeooU2RKn9HV9jua+uCoKxSBa+AU4Fk5GVLI6Ra0T1AnID0kWPZZJSqxSZEZvph54dv1aKhv7yw2OV6lE5yCfb5z/oRDUKF+fFFQpIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=163.172.96.212
-Received: (from willy@localhost)
-	by mail.home.local (8.17.1/8.17.1/Submit) id 40GIxdwM021066;
-	Tue, 16 Jan 2024 19:59:39 +0100
-Date: Tue, 16 Jan 2024 19:59:39 +0100
-From: Willy Tarreau <w@1wt.eu>
-To: Ammar Faizi <ammarfaizi2@gnuweeb.org>
-Cc: Charles Mirabile <cmirabil@redhat.com>, linux-kernel@vger.kernel.org,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Subject: Re: [PATCH] nolibc/stdlib: Improve `getauxval(3)` implementation
-Message-ID: <ZabSG4R45sC0s23d@1wt.eu>
-References: <20240116181147.2230944-1-cmirabil@redhat.com>
- <ZabQVvpZ4e7hTwcb@biznet-home.integral.gnuweeb.org>
- <ZabRwdcgU/H8i5Ja@1wt.eu>
+	s=arc-20240116; t=1705431739; c=relaxed/simple;
+	bh=oxwRyeIL7M3hBA9vL9BEAgyW9LT9u2t413CGMrrBAAY=;
+	h=Received:DKIM-Signature:Received:Content-Type:MIME-Version:
+	 Content-Transfer-Encoding:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=GxcklUavu9RIEhjDVPuJzPN14tKjhTewAJJGOLJI+Q8aDr+XzojMAEm2bAR+RknHjXUjeP8fP12+A76a4RD5PWyxrzaA+PlW5ROzV0JUt/yM419rEcJdq3g1jrJuF3aHBSku2Z662AZxs7w1X+oe2C1XE05GUXAO6cTi4F1Mryk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BQlmYwfL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DCB27C433F1;
+	Tue, 16 Jan 2024 19:02:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705431738;
+	bh=oxwRyeIL7M3hBA9vL9BEAgyW9LT9u2t413CGMrrBAAY=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=BQlmYwfLboHO4veFxacQLWA1eyijOjOtpvGdOcLB0sJS7z9eyKYF2Kv6ylK8KAJzX
+	 udynA+l1fx/Jxo9NUVI+CNFE1qI3OrGTniJeYVSiJ4reRLREBBQL3xHMvrqwwiw/Gu
+	 IKzO4vBoMYNROkk2z4d2RP8CjLajJTU237dQ/uqq0sx/B6CYDpjTbzThBUiNq0wnpX
+	 X8gNWgdAyEN8wYTXEhaE3JMmp6ZzcwihS2XBvNccMc8QH4mfkSIhbeDlc+owz8aiyj
+	 pGCvOM0Ta4kMlmWsLhLO9yha6U0JHDHRCENEuJlyVpAG6ox/Y412LVgVi4G1swMuoJ
+	 UFwOnulWFyR1w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C2AD0D8C987;
+	Tue, 16 Jan 2024 19:02:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZabRwdcgU/H8i5Ja@1wt.eu>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [f2fs-dev] [PATCH 1/5] virtio_blk: cleanup zoned device probing
+From: patchwork-bot+f2fs@kernel.org
+Message-Id: 
+ <170543173879.30188.5344312872944674652.git-patchwork-notify@kernel.org>
+Date: Tue, 16 Jan 2024 19:02:18 +0000
+References: <20231217165359.604246-2-hch@lst.de>
+In-Reply-To: <20231217165359.604246-2-hch@lst.de>
+To: Christoph Hellwig <hch@lst.de>
+Cc: axboe@kernel.dk, dm-devel@lists.linux.dev, linux-scsi@vger.kernel.org,
+ martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
+ linux-nvme@lists.infradead.org, virtualization@lists.linux.dev,
+ dlemoal@kernel.org, stefanha@redhat.com, pbonzini@redhat.com,
+ linux-f2fs-devel@lists.sourceforge.net, linux-btrfs@vger.kernel.org
 
-On Tue, Jan 16, 2024 at 07:58:09PM +0100, Willy Tarreau wrote:
-> On Wed, Jan 17, 2024 at 01:52:06AM +0700, Ammar Faizi wrote:
-> > On Tue, Jan 16, 2024 at 01:11:47PM -0500, Charles Mirabile wrote:
-> > > At least on x86-64, the ABI only specifies that one more long will be
-> > > present with value 0 (type AT_NULL) after the pairs of auxv entries.
-> > > Whether or not it has a corresponding value is unspecified. This value is
-> > > present on linux, but there is no reason to check it as simply seeing an
-> > > auxv entry whose type value is AT_NULL should be enough.
-> > 
-> > Yeah, I agree with that. I just read the ABI and confirmed that the
-> > 'a_un' member is ignored when the type is `AT_NULL`. Let's stop relying
-> > on an unspecified value.
-> > 
-> > For others who want to check, see page 37 and 38:
-> > https://gitlab.com/x86-psABIs/x86-64-ABI/-/wikis/uploads/221b09355dd540efcbe61b783b6c0ece/x86-64-psABI-2023-09-26.pdf
-> > 
-> > > This is a matter of taste, but I think processing the data in a structured
-> > > way by coercing it into an array of type value pairs, using multiple
-> > > return style, and a for loop with a clear exit condition is more readable
-> > > than the existing infinite loop with multiple exit points and a return
-> > > value variable.
-> > 
-> > Ok. It's more readable using your way. One thing that bothers me a bit
-> > is type of 'a_type'. On page 37, the ABI defines the auxv type-val pair
-> > as:
-> > 
-> >   typedef struct
-> >   {
-> >     int a_type;
-> >     union {
-> >       long a_val;
-> >       void *a_ptr;
-> >       void (*a_fnc)();
-> >     } a_un;
-> >   } auxv_t;
-> > 
-> > Assuming the arch is x86-64 Linux. Note that 'a_type' is an 'int' which
-> > is 4 bytes in size, but we use 'unsigned long' instead of 'int' to
-> > represent it. However, since 'a_un' needs to be 8 bytes aligned, the
-> > compiler will put a 4 bytes padding between 'a_type' and 'a_un', so it
-> > ends up just fine (on x86-64).
-> > 
-> > What do you think about other architectures? Will it potentially be
-> > misinterpreted?
+Hello:
+
+This series was applied to jaegeuk/f2fs.git (dev)
+by Jens Axboe <axboe@kernel.dk>:
+
+On Sun, 17 Dec 2023 17:53:55 +0100 you wrote:
+> Move reading and checking the zoned model from virtblk_probe_zoned_device
+> into the caller, leaving only the code to perform the actual setup for
+> host managed zoned devices in virtblk_probe_zoned_device.
 > 
-> Indeed, it would fail on a 64-bit big endian architecture. Let's
-> just declare the local variable the same way as it is in the spec,
-> it will be much cleaner and more reliable.
+> This allows to share the model reading and sharing between builds with
+> and without CONFIG_BLK_DEV_ZONED, and improve it for the
+> !CONFIG_BLK_DEV_ZONED case.
+> 
+> [...]
 
-With that said, if previous code used to work on such architectures,
-maybe the definition above is only for x86_64 and differs on other
-archs. Maybe it's really defined as two longs ?
+Here is the summary with links:
+  - [f2fs-dev,1/5] virtio_blk: cleanup zoned device probing
+    https://git.kernel.org/jaegeuk/f2fs/c/77360cadaae5
+  - [f2fs-dev,2/5] virtio_blk: remove the broken zone revalidation support
+    https://git.kernel.org/jaegeuk/f2fs/c/a971ed800211
+  - [f2fs-dev,3/5] block: remove support for the host aware zone model
+    https://git.kernel.org/jaegeuk/f2fs/c/7437bb73f087
+  - [f2fs-dev,4/5] block: simplify disk_set_zoned
+    https://git.kernel.org/jaegeuk/f2fs/c/d73e93b4dfab
+  - [f2fs-dev,5/5] sd: only call disk_clear_zoned when needed
+    https://git.kernel.org/jaegeuk/f2fs/c/5cc99b89785c
 
-Willy
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
