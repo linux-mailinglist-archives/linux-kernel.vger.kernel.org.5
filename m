@@ -1,54 +1,48 @@
-Return-Path: <linux-kernel+bounces-26749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 970C182E5D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:55:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BD19E82E5D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:56:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B3F71C224A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:55:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51F611C2042E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:56:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 777B63589B;
-	Tue, 16 Jan 2024 00:25:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE6CA1F93F;
+	Tue, 16 Jan 2024 00:25:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZKdlVOVN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PJFAW9fq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C417735889;
-	Tue, 16 Jan 2024 00:25:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30CAFC433C7;
-	Tue, 16 Jan 2024 00:25:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29FA9358A3;
+	Tue, 16 Jan 2024 00:25:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25EECC43394;
+	Tue, 16 Jan 2024 00:25:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705364736;
-	bh=UdYE0nHNwmXd7sXbpftZ31FZV7QPzlGJj9bgF5WtpBc=;
+	s=k20201202; t=1705364738;
+	bh=MSEH59YR9chEdOpA6eOIdh14BxQmO+6NTx5igEosLdQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZKdlVOVNMlR+k5AR+tuNt9N4gfUEKaTjSApiujONmIz91+S+ngHCjLDAQaT4Pk9j6
-	 3JdZeN4WBRnnBtDlXci5b66dUTZypIQWXA4VHZHJiiTVt4xRl9XY/eG8s1kfqKR1Yo
-	 g3AnLYsD9wssl5hWpTzgaulgIABIPFyK7nCxZfOiVEdgUg+P14oM8qXGPt4OYcmHUW
-	 VUBUBhzqgfL3Dy7OjpAfRx1b70tOGy2QZFn8x7knKrsSON/L6RJ7Wwa6H0T4vdS+Iq
-	 T7hrltozjsszdYiPAjYJM7oTxBjf5mNVXxo/8dNL/v0nx32YXHs4cR+xx+9kretIqO
-	 ObIhNrn605M4A==
+	b=PJFAW9fqAxqIXMHbGSFefLtIcq6M06AY/K/V+JtkSOB4g1YgwW0EuE3+FFTrIk0pZ
+	 KOd7PDvaAmv8oMJRmvCv1hd0cuLoYV0KvNNaCyG0Tc7kV4p75R+3Q7l08zKK5OpWw3
+	 Lgc36HFNWJ6rm2o5SAkokftaoQre/UhlytHB0uKZi2wlgAWiHQIfw6D2IEwEz7+Bez
+	 CyqlebOeemwe3+PdR3l3leY+46r6Z/1+OSppOSye/d14r69JR1FtoZoY7B1qfppMdc
+	 sCEnygueJOVPNqhMnob/Khs5nHLRXqSmumMgK/+wHoBtSfWCUCaHQ5B6VnMZIfI5oX
+	 GNdN+vNkQ+2JQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Bharat Bhushan <bbhushan2@marvell.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
+Cc: Gao Xiang <hsiangkao@linux.alibaba.com>,
+	Chao Yu <chao@kernel.org>,
+	Yue Hu <huyue2@coolpad.com>,
 	Sasha Levin <sashal@kernel.org>,
-	bbrezillon@kernel.org,
-	arno@natisbad.org,
-	schalla@marvell.com,
-	davem@davemloft.net,
-	ndabilpuram@marvell.com,
-	alobakin@pm.me,
-	masahiroy@kernel.org,
-	tj@kernel.org,
-	linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 08/14] crypto: octeontx2 - Fix cptvf driver cleanup
-Date: Mon, 15 Jan 2024 19:24:50 -0500
-Message-ID: <20240116002512.215607-8-sashal@kernel.org>
+	xiang@kernel.org,
+	linux-erofs@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 6.1 09/14] erofs: fix ztailpacking for subpage compressed blocks
+Date: Mon, 15 Jan 2024 19:24:51 -0500
+Message-ID: <20240116002512.215607-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116002512.215607-1-sashal@kernel.org>
 References: <20240116002512.215607-1-sashal@kernel.org>
@@ -63,69 +57,42 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.73
 Content-Transfer-Encoding: 8bit
 
-From: Bharat Bhushan <bbhushan2@marvell.com>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-[ Upstream commit c480a421a4faf693c38e60b0fe6e554c9a3fee02 ]
+[ Upstream commit e5aba911dee5e20fa82efbe13e0af8f38ea459e7 ]
 
-This patch fixes following cleanup issues:
- - Missing instruction queue free on cleanup. This
-   will lead to memory leak.
- - lfs->lfs_num is set to zero before cleanup, which
-   will lead to improper cleanup.
+`pageofs_in` should be the compressed data offset of the page rather
+than of the block.
 
-Signed-off-by: Bharat Bhushan <bbhushan2@marvell.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Acked-by: Chao Yu <chao@kernel.org>
+Reviewed-by: Yue Hu <huyue2@coolpad.com>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+Link: https://lore.kernel.org/r/20231214161337.753049-1-hsiangkao@linux.alibaba.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/marvell/octeontx2/otx2_cptlf.c      | 6 ++++--
- drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c | 3 +++
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ fs/erofs/zdata.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptlf.c b/drivers/crypto/marvell/octeontx2/otx2_cptlf.c
-index 71e5f79431af..6e4a78e1f3ce 100644
---- a/drivers/crypto/marvell/octeontx2/otx2_cptlf.c
-+++ b/drivers/crypto/marvell/octeontx2/otx2_cptlf.c
-@@ -419,8 +419,8 @@ int otx2_cptlf_init(struct otx2_cptlfs_info *lfs, u8 eng_grp_mask, int pri,
- 	return 0;
+diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+index 1b91ac5be961..914897d9aeac 100644
+--- a/fs/erofs/zdata.c
++++ b/fs/erofs/zdata.c
+@@ -652,7 +652,6 @@ static int z_erofs_register_pcluster(struct z_erofs_decompress_frontend *fe)
  
- free_iq:
--	otx2_cpt_free_instruction_queues(lfs);
- 	cptlf_hw_cleanup(lfs);
-+	otx2_cpt_free_instruction_queues(lfs);
- detach_rsrcs:
- 	otx2_cpt_detach_rsrcs_msg(lfs);
- clear_lfs_num:
-@@ -431,11 +431,13 @@ EXPORT_SYMBOL_NS_GPL(otx2_cptlf_init, CRYPTO_DEV_OCTEONTX2_CPT);
- 
- void otx2_cptlf_shutdown(struct otx2_cptlfs_info *lfs)
- {
--	lfs->lfs_num = 0;
- 	/* Cleanup LFs hardware side */
- 	cptlf_hw_cleanup(lfs);
-+	/* Free instruction queues */
-+	otx2_cpt_free_instruction_queues(lfs);
- 	/* Send request to detach LFs */
- 	otx2_cpt_detach_rsrcs_msg(lfs);
-+	lfs->lfs_num = 0;
- }
- EXPORT_SYMBOL_NS_GPL(otx2_cptlf_shutdown, CRYPTO_DEV_OCTEONTX2_CPT);
- 
-diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c b/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
-index 392e9fee05e8..6f3373f9928c 100644
---- a/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
-+++ b/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
-@@ -249,8 +249,11 @@ static void cptvf_lf_shutdown(struct otx2_cptlfs_info *lfs)
- 	otx2_cptlf_unregister_interrupts(lfs);
- 	/* Cleanup LFs software side */
- 	lf_sw_cleanup(lfs);
-+	/* Free instruction queues */
-+	otx2_cpt_free_instruction_queues(lfs);
- 	/* Send request to detach LFs */
- 	otx2_cpt_detach_rsrcs_msg(lfs);
-+	lfs->lfs_num = 0;
- }
- 
- static int cptvf_lf_init(struct otx2_cptvf_dev *cptvf)
+ 	if (ztailpacking) {
+ 		pcl->obj.index = 0;	/* which indicates ztailpacking */
+-		pcl->pageofs_in = erofs_blkoff(map->m_pa);
+ 		pcl->tailpacking_size = map->m_plen;
+ 	} else {
+ 		pcl->obj.index = map->m_pa >> PAGE_SHIFT;
+@@ -852,6 +851,7 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+ 		get_page(fe->map.buf.page);
+ 		WRITE_ONCE(fe->pcl->compressed_bvecs[0].page,
+ 			   fe->map.buf.page);
++		fe->pcl->pageofs_in = map->m_pa & ~PAGE_MASK;
+ 		fe->mode = Z_EROFS_PCLUSTER_FOLLOWED_NOINPLACE;
+ 	} else {
+ 		/* bind cache first when cached decompression is preferred */
 -- 
 2.43.0
 
