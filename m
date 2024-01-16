@@ -1,58 +1,63 @@
-Return-Path: <linux-kernel+bounces-27984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0905D82F8AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:50:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07DAE82F8B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:50:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 765BB284574
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:50:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D1C8B2641B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:50:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3EFB136E1E;
-	Tue, 16 Jan 2024 19:52:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5822E1353F8;
+	Tue, 16 Jan 2024 19:52:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pMlH/f6C"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fV2ex7eT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31011136E10;
-	Tue, 16 Jan 2024 19:52:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 917C21353E8;
+	Tue, 16 Jan 2024 19:52:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434758; cv=none; b=OaGpjeoyCduuCG+VOVk5gkNhMPNrgUArYXiJD3UtWxhv5nJ6C2w54rYNvwBSuKjmwiPz1cU7OqWifeIvuhM1ST7ZmGzWcboGrWp9iPTdJxscq1e2Cu/n0d2JxhflQAepk0Ft5TTelpwaAFT/rgcdjHR9ypoBKd+cCI8k+GoVhbI=
+	t=1705434763; cv=none; b=LgiTCGmIN16WjYJxDnHKsOYJIU7qZrKjNQ6puZy/o3VFELD8LnyaYqbD236qCJ5oVha1GTcwGy7LbS25xxb/4Skwr10+q5Nz3MTTr2YrcmrtdkyFVPiyL8cNmf/0x3MAeeveBfLvvnYnhrM+tQGI89qScrn3eH6X40g3bCrBaoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434758; c=relaxed/simple;
-	bh=zltGWrDUUtDckp58rbsIjC9H/2WP+NdU30FGUapE6HI=;
+	s=arc-20240116; t=1705434763; c=relaxed/simple;
+	bh=ui90FwlGfZao1reJhg4CM3xRrOLD+afhMmeA+c7zqC0=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=LwGTa0IModB2CyWLS7a/gxVmm71Q1RoAJzcET7FlfpdgVNOX941zDL6aHNzqYO/n0KDGnxCFocKMCtqApPGjM9dtNlIrOixxS4bYvU6JLx68I1cmE4Fm8fNdPnPjvoLFmDKAjAWauzmggi4nhvRQ9rw4M23mkbPv2Fu/qcsBRq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pMlH/f6C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D021AC433C7;
-	Tue, 16 Jan 2024 19:52:35 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=nfqbiBx15XZo6ejz+IIDfWlaHWALJIj8QcpLJXqjh5ZFmnjk6Jnyzjat9d9v58gxUfsoXjET3RgCaW6H9B5Zi/AUXXZKUpMCJFGqcHfi/z6azGjSZ6xkov9nHs++9/FxGj6AW3EgwZNVI4Ki+9Nb3iWixTu9WWknkL22uSLlWgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fV2ex7eT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79BF3C433C7;
+	Tue, 16 Jan 2024 19:52:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434758;
-	bh=zltGWrDUUtDckp58rbsIjC9H/2WP+NdU30FGUapE6HI=;
+	s=k20201202; t=1705434763;
+	bh=ui90FwlGfZao1reJhg4CM3xRrOLD+afhMmeA+c7zqC0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pMlH/f6C+1EA61fI6FzjgkSBhLx6XdcIorFQRtTkKCkDtWWMxfGxFl71djFKTdSSl
-	 rOjt0NntJ9p94YNWrSXHQTLnR/abfCmgcOzJbaEkooCx3UNIemErdNLckZ6LyzsfQQ
-	 SllpJv7aojpO3Xbah93WAdHlDOifG/2xBjln84FvAPn0lv0Ib2lQdc8fG2VqRc95eJ
-	 222UnB1jeRyzgck9SaZ5iklodqZONlMx0PTyI8acZZAatfkV0wVq7vRd7n2nazoxVy
-	 dnQLz6Xl4Mjd2SB6ZoCIQ/IIo2vQoNOBq7rG9C0fQIn8BDGzlNREucSCZeQBir7f/Z
-	 6EXR3+8PloBwg==
+	b=fV2ex7eTMHiae1V+vJ5pZNQudP42PbLwXmZlEKTbRmr+hUoG+aftm8NC4ShJN3rtm
+	 axZAJxNs+Tg2fFg7sT/WdJrPjilsUz14BjA3Q6owL4g93Ef01fDtFLtTuRDkPdYQ8T
+	 gxMNbm9yoR4RAlvBp2JKBn2hHpo2MaZXtkUpr0TTu5uuvbN3iIU4HapzGVgBfgvJ6c
+	 FOgdoQWFhZlPFfRFdb7NRqM+A6DEtIWHr7LQwuZLgnQQxeVmh+FYvvCooArVQIaK5C
+	 bu2PEEN7EAiIkpHn7/NgfM10kBfCaLYmtF/h3XcjC0N+lag3LPQttBbnwxw6F46GxM
+	 3utcp7dz9W9PQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yihang Li <liyihang9@huawei.com>,
-	Xiang Chen <chenxiang66@hisilicon.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
+Cc: Ahmed Zaki <ahmed.zaki@intel.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Wojciech Drewek <wojciech.drewek@intel.com>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	jejb@linux.ibm.com,
-	linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 073/104] scsi: hisi_sas: Set .phy_attached before notifing phyup event HISI_PHYE_PHY_UP_PM
-Date: Tue, 16 Jan 2024 14:46:39 -0500
-Message-ID: <20240116194908.253437-73-sashal@kernel.org>
+	anthony.l.nguyen@intel.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 074/104] ice: fix ICE_AQ_VSI_Q_OPT_RSS_* register values
+Date: Tue, 16 Jan 2024 14:46:40 -0500
+Message-ID: <20240116194908.253437-74-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194908.253437-1-sashal@kernel.org>
 References: <20240116194908.253437-1-sashal@kernel.org>
@@ -67,54 +72,99 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.12
 Content-Transfer-Encoding: 8bit
 
-From: Yihang Li <liyihang9@huawei.com>
+From: Ahmed Zaki <ahmed.zaki@intel.com>
 
-[ Upstream commit ce26497c745d0541aec930d5211b431a1c26af97 ]
+[ Upstream commit 20f73b60bb5c276cee9b1a530f100c677bc74af8 ]
 
-Currently in directly attached scenario, the phyup event
-HISI_PHYE_PHY_UP_PM is notified before .phy_attached is set - this may
-cause the phyup work hisi_sas_bytes_dmaed() execution failed and the
-attached device will not be found.
+Fix the values of the ICE_AQ_VSI_Q_OPT_RSS_* registers. Shifting is
+already done when the values are used, no need to double shift. Bug was
+not discovered earlier since only ICE_AQ_VSI_Q_OPT_RSS_TPLZ (Zero) is
+currently used.
 
-To fix it, set .phy_attached before notifing phyup event.
+Also, rename ICE_AQ_VSI_Q_OPT_RSS_XXX to ICE_AQ_VSI_Q_OPT_RSS_HASH_XXX
+for consistency.
 
-Signed-off-by: Yihang Li <liyihang9@huawei.com>
-Signed-off-by: Xiang Chen <chenxiang66@hisilicon.com>
-Link: https://lore.kernel.org/r/1702525516-51258-2-git-send-email-chenxiang66@hisilicon.com
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Co-developed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
+Signed-off-by: Ahmed Zaki <ahmed.zaki@intel.com>
+Link: https://lore.kernel.org/r/20231213003321.605376-5-ahmed.zaki@intel.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/intel/ice/ice_adminq_cmd.h |  8 ++++----
+ drivers/net/ethernet/intel/ice/ice_lib.c        |  4 ++--
+ drivers/net/ethernet/intel/ice/ice_virtchnl.c   | 12 +++++-------
+ 3 files changed, 11 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-index 089186fe1791..58f41d3001e2 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-@@ -1606,6 +1606,11 @@ static irqreturn_t phy_up_v3_hw(int phy_no, struct hisi_hba *hisi_hba)
- 	}
+diff --git a/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h b/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h
+index 29f7a9852aec..fafe083d1446 100644
+--- a/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h
++++ b/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h
+@@ -491,10 +491,10 @@ struct ice_aqc_vsi_props {
+ #define ICE_AQ_VSI_Q_OPT_RSS_GBL_LUT_M		(0xF << ICE_AQ_VSI_Q_OPT_RSS_GBL_LUT_S)
+ #define ICE_AQ_VSI_Q_OPT_RSS_HASH_S		6
+ #define ICE_AQ_VSI_Q_OPT_RSS_HASH_M		(0x3 << ICE_AQ_VSI_Q_OPT_RSS_HASH_S)
+-#define ICE_AQ_VSI_Q_OPT_RSS_TPLZ		(0x0 << ICE_AQ_VSI_Q_OPT_RSS_HASH_S)
+-#define ICE_AQ_VSI_Q_OPT_RSS_SYM_TPLZ		(0x1 << ICE_AQ_VSI_Q_OPT_RSS_HASH_S)
+-#define ICE_AQ_VSI_Q_OPT_RSS_XOR		(0x2 << ICE_AQ_VSI_Q_OPT_RSS_HASH_S)
+-#define ICE_AQ_VSI_Q_OPT_RSS_JHASH		(0x3 << ICE_AQ_VSI_Q_OPT_RSS_HASH_S)
++#define ICE_AQ_VSI_Q_OPT_RSS_HASH_TPLZ		0x0U
++#define ICE_AQ_VSI_Q_OPT_RSS_HASH_SYM_TPLZ	0x1U
++#define ICE_AQ_VSI_Q_OPT_RSS_HASH_XOR		0x2U
++#define ICE_AQ_VSI_Q_OPT_RSS_HASH_JHASH		0x3U
+ 	u8 q_opt_tc;
+ #define ICE_AQ_VSI_Q_OPT_TC_OVR_S		0
+ #define ICE_AQ_VSI_Q_OPT_TC_OVR_M		(0x1F << ICE_AQ_VSI_Q_OPT_TC_OVR_S)
+diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/ethernet/intel/ice/ice_lib.c
+index a66c3b6ccec1..4e7f67f54f1c 100644
+--- a/drivers/net/ethernet/intel/ice/ice_lib.c
++++ b/drivers/net/ethernet/intel/ice/ice_lib.c
+@@ -1186,12 +1186,12 @@ static void ice_set_rss_vsi_ctx(struct ice_vsi_ctx *ctxt, struct ice_vsi *vsi)
+ 	case ICE_VSI_PF:
+ 		/* PF VSI will inherit RSS instance of PF */
+ 		lut_type = ICE_AQ_VSI_Q_OPT_RSS_LUT_PF;
+-		hash_type = ICE_AQ_VSI_Q_OPT_RSS_TPLZ;
++		hash_type = ICE_AQ_VSI_Q_OPT_RSS_HASH_TPLZ;
+ 		break;
+ 	case ICE_VSI_VF:
+ 		/* VF VSI will gets a small RSS table which is a VSI LUT type */
+ 		lut_type = ICE_AQ_VSI_Q_OPT_RSS_LUT_VSI;
+-		hash_type = ICE_AQ_VSI_Q_OPT_RSS_TPLZ;
++		hash_type = ICE_AQ_VSI_Q_OPT_RSS_HASH_TPLZ;
+ 		break;
+ 	default:
+ 		dev_dbg(dev, "Unsupported VSI type %s\n",
+diff --git a/drivers/net/ethernet/intel/ice/ice_virtchnl.c b/drivers/net/ethernet/intel/ice/ice_virtchnl.c
+index 62337e6569b2..e7ab78bb0f86 100644
+--- a/drivers/net/ethernet/intel/ice/ice_virtchnl.c
++++ b/drivers/net/ethernet/intel/ice/ice_virtchnl.c
+@@ -820,8 +820,8 @@ static int ice_vc_handle_rss_cfg(struct ice_vf *vf, u8 *msg, bool add)
+ 		int status;
  
- 	phy->port_id = port_id;
-+	spin_lock(&phy->lock);
-+	/* Delete timer and set phy_attached atomically */
-+	del_timer(&phy->timer);
-+	phy->phy_attached = 1;
-+	spin_unlock(&phy->lock);
+ 		lut_type = ICE_AQ_VSI_Q_OPT_RSS_LUT_VSI;
+-		hash_type = add ? ICE_AQ_VSI_Q_OPT_RSS_XOR :
+-				ICE_AQ_VSI_Q_OPT_RSS_TPLZ;
++		hash_type = add ? ICE_AQ_VSI_Q_OPT_RSS_HASH_XOR :
++				ICE_AQ_VSI_Q_OPT_RSS_HASH_TPLZ;
  
- 	/*
- 	 * Call pm_runtime_get_noresume() which pairs with
-@@ -1619,11 +1624,6 @@ static irqreturn_t phy_up_v3_hw(int phy_no, struct hisi_hba *hisi_hba)
+ 		ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+ 		if (!ctx) {
+@@ -829,11 +829,9 @@ static int ice_vc_handle_rss_cfg(struct ice_vf *vf, u8 *msg, bool add)
+ 			goto error_param;
+ 		}
  
- 	res = IRQ_HANDLED;
+-		ctx->info.q_opt_rss = ((lut_type <<
+-					ICE_AQ_VSI_Q_OPT_RSS_LUT_S) &
+-				       ICE_AQ_VSI_Q_OPT_RSS_LUT_M) |
+-				       (hash_type &
+-					ICE_AQ_VSI_Q_OPT_RSS_HASH_M);
++		ctx->info.q_opt_rss =
++			FIELD_PREP(ICE_AQ_VSI_Q_OPT_RSS_LUT_M, lut_type) |
++			FIELD_PREP(ICE_AQ_VSI_Q_OPT_RSS_HASH_M, hash_type);
  
--	spin_lock(&phy->lock);
--	/* Delete timer and set phy_attached atomically */
--	del_timer(&phy->timer);
--	phy->phy_attached = 1;
--	spin_unlock(&phy->lock);
- end:
- 	if (phy->reset_completion)
- 		complete(phy->reset_completion);
+ 		/* Preserve existing queueing option setting */
+ 		ctx->info.q_opt_rss |= (vsi->info.q_opt_rss &
 -- 
 2.43.0
 
