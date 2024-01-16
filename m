@@ -1,119 +1,108 @@
-Return-Path: <linux-kernel+bounces-28312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 738E482FCD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:30:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99EE182FCDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:31:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63D33280DAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:30:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D38B5B25C7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:31:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9FB75FDC7;
-	Tue, 16 Jan 2024 21:38:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E963A1D9;
+	Tue, 16 Jan 2024 21:39:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hLx02xLs"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gc80Ilmc"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD2AC35F03;
-	Tue, 16 Jan 2024 21:38:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 231742031D
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 21:39:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705441085; cv=none; b=rELVKzj8r4HhwDWm0rWjrHg99OPufdyMI2j0DGDUs/KNc7WxRfo2nE2teax+NNxUpGFccjjiuje7zxl65Ad4T/r4okJJrdNDciU8nH3etoeO4OXdDz363UpylKOKRjeyyxrR62vg9yS+mqdiM9+NUm4SnqI+2xJrDSaEeNW7e0o=
+	t=1705441169; cv=none; b=GNfNTRy+a56EHrzDTe/ChheRDz8ZMdurygL0i58Hvys2n6mfDvebw6t7H18JmX1IPh2BIw1VCByPGVjoEecibrlF3myfDefd20kSU/lMzpToN4X2BSfIni9D8VtvAtKXz8Q/0SkA9a0eCdREmQAB8YXqfAY7n9Rbd2sqRdppM5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705441085; c=relaxed/simple;
-	bh=Y/E4DSPhCGQwod2MxGfu/zAJG00FRP/drC0qA9lcfVU=;
+	s=arc-20240116; t=1705441169; c=relaxed/simple;
+	bh=zZoAMhSNnLaP8BjduYu5bdBbD/Mt3VUCcdoe1rW7jfA=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:References:
-	 Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=MBZgIueAM8pu27F5a1i4hf66VRKCy0MS8Nsw5uxeRdofSZbe6iBZi9dWD834G/+LoU+V7O/6bB3MfJMQBxRDd0p/zkarrpmnro2XGJpdp9qfX3Twk+ONFnogwWFIgd8E6D5/sDBmGzM1kThCc364sD40yMsTn/NmCA1hkzu670k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hLx02xLs; arc=none smtp.client-ip=209.85.210.179
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
+	 From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=GC1MRtcEuMi/0NMuzNQmAr08dH0jHyeQA2b+t7ZihNinsD62FwdIL/Dtt1VgIopQbCohDX3O96vWzzpjbPHHhG1IQ3oJuXcos2FDfuKxkf5Vza4Z+eGoO/OSxhSPjY9iBKPkfky2VCavbbPdYXhzkko4TBl0pUN8TO+HnAtekM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gc80Ilmc; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6d9b050e88cso5792766b3a.0;
-        Tue, 16 Jan 2024 13:38:03 -0800 (PST)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d5f56912daso5042515ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 13:39:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705441083; x=1706045883; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20230601; t=1705441167; x=1706045967; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=sqRPOFeNao0i7ZbF0Cd/T0E9SrjM9ty6IYml6ss+0UE=;
-        b=hLx02xLsn0pw/dEqq5qsFoIivmOuh2HzYqZs87/CNueYMZ142ecK3GIKRz7AakRUpe
-         VnMdqPh/45qwDPCN2N2JHaA3SkCMiRwWbfMmXz6Bwo3z9zCPwhlapCO0GtQGflut6N4H
-         ing/s7AEk50Ap4psJpWvY9LzlzVTLb9CATRtVYJ7nr3RMf/riPVQTVVb3vioiO9SIXYz
-         3ELG6xmWdh0vQod84vSg/l+E6qicn2xWlyQNcHscwsdGckZ4fGjqShjO1i3CiXzWhGAy
-         F2q4e7D2vBNzDPrn58o0+weZRBLmkIsozhBrmAl+5rZZTCYWhNl7Zwj7PEs8N0M8np5F
-         HAnA==
+        bh=h1vNJBlEh8DhYGD6roTSgxFREzSSomsGca9zVOoxkHA=;
+        b=gc80IlmcStaFnSwod0PPETx7oyNvF22aWiH9Ydx01wX3TMKWKB2A9MmMEWAshXF0d2
+         tPL/wlpiXS+eq7T9syl8yC8Sl7gQT8s5Wpj6MtVTtacBeiNC5hg027w8fCEgAROnHFEL
+         Za1hiW2QQ9ukb/31SWMQOk8cMd+xaEbeeULWJs0yJMJK8RyDIXItu8TezR9Qqeou2hSc
+         9C3HNVsKCTFMdOjsOWyS/XsBKURIul6qSjTZyuiFwcKhe98zJRmSEhowcD0ZG7k4FVoS
+         XOdR3MrnZpd0mYs2Wa/pANaJdEb242tsDlx0MSTFK2xJR5McMjt7dKPrfF1D73wWyEVF
+         kyBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705441083; x=1706045883;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1705441167; x=1706045967;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sqRPOFeNao0i7ZbF0Cd/T0E9SrjM9ty6IYml6ss+0UE=;
-        b=sCs6dDnXS8Nu56DTZ9enPQ1jdwJsbPbripaG0xA6QfaO6NwjE7P+O+u7/ECfj5hBdT
-         pmg54PmqcCm+BqDcfrAovNaCQ4vjXMbXaeC31Xp7Q7Nlma06i3D1mrOt8T8ZWtAjZ74z
-         Vn8bd4NUpUf+QDKI7hsNb9DGUVVvXYtf7Jh/Rhlgzq1jkw0lOJ++eMzzc6iJA+7xeAn5
-         1aKlVsHNmdtpTmyYf5qVH160BRr49gweC0BtDkzBEH3bV+qP8pQFupjFc/TpZaiKd+ti
-         1BRCpNps+CMT4V+3arp3kTd8ovOSVpwEgy3EtQSS4Mo/eJBxYYifrJILSz2/n0vM1oCo
-         JXRA==
-X-Gm-Message-State: AOJu0Yxax/22goTDD41RlGZXonpdaumOVYphhso7k3gJsb/lPnSc3nkm
-	LfshR6vY2b1N1GStsMrYly5pCBMem9k=
-X-Google-Smtp-Source: AGHT+IFXf5o+kuqoq4WCaI99Sp9ISYaTPo88bvEfj86wrtLpICa2GS2gzaj62IwTl6iKekIdN7IROw==
-X-Received: by 2002:a05:6a20:94c9:b0:19b:4545:74c with SMTP id ht9-20020a056a2094c900b0019b4545074cmr1143672pzb.93.1705441083232;
-        Tue, 16 Jan 2024 13:38:03 -0800 (PST)
-Received: from [192.168.0.228] (c-24-20-51-242.hsd1.or.comcast.net. [24.20.51.242])
-        by smtp.gmail.com with ESMTPSA id h13-20020aa79f4d000000b006d92f081d9fsm52031pfr.31.2024.01.16.13.38.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jan 2024 13:38:03 -0800 (PST)
-Message-ID: <c9112997-d2fd-4974-985b-7b96e41f4f7c@gmail.com>
-Date: Tue, 16 Jan 2024 13:38:01 -0800
+        bh=h1vNJBlEh8DhYGD6roTSgxFREzSSomsGca9zVOoxkHA=;
+        b=mSo7hDlv6hKj2nQtpObVX5krEnoJBbc6wGdjQ1e5iQ3FH2A1Sq2SBbhlOjSck2rDoY
+         8IHZpj3hdrwtxzgTgucGaNVfG/ojIVrLyVZ8igF6d8lJRCmvabyLggBBPs0vMkxxXh4v
+         YE3n2rLtuBWsB+FIikXfsnXIakz4fpVpzezj/ZpDyeELx5w+DgdXIN/Rz7JdDRieJog+
+         sfqZInr3MtyO8yxJdRR8uoy0Tjr6n62b8qoNakpWktssD1Nyyj46/iFAR9UiLFa+hi/p
+         6mJdb2g0DL+QVMEhYTR5h7cjpo2CUsiA94wsIuftovltf7rjz5aq8Z0hvowIuvu93nF3
+         HT0Q==
+X-Gm-Message-State: AOJu0YyQNthEHD78qvaqe4NbcZ79ES1PJ71XFKXVEH7BL9WgRbHrftyp
+	y5zsmBd7V06T3zzY+iwfx1w=
+X-Google-Smtp-Source: AGHT+IFtB06t8e2Z2ul6N1BmmHOA/WphDQZ/RnQiKeBm58pTznSISZi7C3iWQOJdEw0Ok48Blqm8ug==
+X-Received: by 2002:a17:902:ea10:b0:1d3:f285:ab4 with SMTP id s16-20020a170902ea1000b001d3f2850ab4mr9385379plg.121.1705441167438;
+        Tue, 16 Jan 2024 13:39:27 -0800 (PST)
+Received: from LAPTOP-7VGLEE77 (19.216.252.27.dyn.cust.vf.net.nz. [27.252.216.19])
+        by smtp.gmail.com with ESMTPSA id w9-20020a170902a70900b001d49f61cb64sm9643014plq.262.2024.01.16.13.39.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jan 2024 13:39:27 -0800 (PST)
+Date: Wed, 17 Jan 2024 10:38:13 +1300
+From: Hoorad Farrokh <hourrad.f@gmail.com>
+To: gregkh@linuxfoundation.org, linux-staging@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: prism2mgmt: Fixed a parentheses coding style
+Message-ID: <ooj7nta3skljhnpwtz3wk37uztyayaewfoz2k2b7bnfivnoqtr@ymml6q24k5y2>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 26/42] drivers/scsi/ibmvscsi_tgt: Convert snprintf to
- sysfs_emit
-To: Li Zhijian <lizhijian@fujitsu.com>, linux-kernel@vger.kernel.org
-Cc: Michael Cyr <mikecyr@linux.ibm.com>,
- "James E.J. Bottomley" <jejb@linux.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- linux-scsi@vger.kernel.org, target-devel@vger.kernel.org
-References: <20240116041129.3937800-1-lizhijian@fujitsu.com>
- <20240116045151.3940401-1-lizhijian@fujitsu.com>
- <20240116045151.3940401-24-lizhijian@fujitsu.com>
-Content-Language: en-US
-From: Tyrel Datwyler <turtle.in.the.kernel@gmail.com>
-In-Reply-To: <20240116045151.3940401-24-lizhijian@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 1/15/24 20:51, Li Zhijian wrote:
-> Per filesystems/sysfs.rst, show() should only use sysfs_emit()
-> or sysfs_emit_at() when formatting the value to be returned to user space.
-> 
-> coccinelle complains that there are still a couple of functions that use
-> snprintf(). Convert them to sysfs_emit().
-> 
->> ./drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c:3619:8-16: WARNING: please use sysfs_emit
->> ./drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c:3625:8-16: WARNING: please use sysfs_emit
->> ./drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c:3633:8-16: WARNING: please use sysfs_emit
-> 
-> No functional change intended
-> 
-> CC: Michael Cyr <mikecyr@linux.ibm.com>
-> CC: "James E.J. Bottomley" <jejb@linux.ibm.com>
-> CC: "Martin K. Petersen" <martin.petersen@oracle.com>
-> CC: linux-scsi@vger.kernel.org
-> CC: target-devel@vger.kernel.org
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-> ---
+Fixed a coding style problem.
 
-Acked-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+Signed-off-by: Hoorad Farrokh <hourrad.f@gmail.com>
+---
+ drivers/staging/wlan-ng/prism2mgmt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/staging/wlan-ng/prism2mgmt.c b/drivers/staging/wlan-ng/prism2mgmt.c
+index d5737166564e..a1adf69ba9f9 100644
+--- a/drivers/staging/wlan-ng/prism2mgmt.c
++++ b/drivers/staging/wlan-ng/prism2mgmt.c
+@@ -1288,8 +1288,8 @@ int prism2mgmt_wlansniff(struct wlandevice *wlandev, void *msgp)
+ 
+ 		/* Set the driver state */
+ 		/* Do we want the prism2 header? */
+-		if ((msg->prismheader.status ==
+-		     P80211ENUM_msgitem_status_data_ok) &&
++		if (msg->prismheader.status ==
++		     P80211ENUM_msgitem_status_data_ok &&
+ 		    (msg->prismheader.data == P80211ENUM_truth_true)) {
+ 			hw->sniffhdr = 0;
+ 			wlandev->netdev->type = ARPHRD_IEEE80211_PRISM;
+-- 
+2.42.0
 
 
