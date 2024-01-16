@@ -1,74 +1,54 @@
-Return-Path: <linux-kernel+bounces-27478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27479-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3433782F0CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:47:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92B5E82F0D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:48:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D89BE2844AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:47:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 342B2B2235E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:48:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67FCE1BF36;
-	Tue, 16 Jan 2024 14:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E458B1BF3D;
+	Tue, 16 Jan 2024 14:48:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S3SJ/Fop"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qen+nHYN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59E681BF2A;
-	Tue, 16 Jan 2024 14:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-559c6b833b0so74879a12.1;
-        Tue, 16 Jan 2024 06:47:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705416435; x=1706021235; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UQDU3E1p1osKPCGDqpYMZ1iYLawK5EwnUnBYY4juRVc=;
-        b=S3SJ/FopZ0dnO0SMLSZ9jIaPpPc9sl4BFkkPN7RR0pQ8QSUJDRUKIqV9X1bNw7yCJc
-         7Lst5RJWMpe30rF91zRSdIYIibazQBSFOIz0NUTvW22X/cjC/CsYyLfY7c5cKvmyxIA4
-         cFsD6z3xr8qXttiB0wrmrrIVUN39+YbJ7OlB18jBPP/ho7sABW4AZVblXmmd91a6oab5
-         tZvpdgm2HEt6pBL+gkUtpVVFqrmPMkmRbPuriYxKUoguj71DbLkFN3kWYyf8FVQ+aeOC
-         sgFsMdTZvy0fpzsqdRt0bSZ4k7g0kpTx7vv3M5+tz6uzTdgPP6bzl4p5f0Ih5gpyZ/01
-         ZdkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705416435; x=1706021235;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UQDU3E1p1osKPCGDqpYMZ1iYLawK5EwnUnBYY4juRVc=;
-        b=C3qe35hl7RV+X3v10D/PSpq2yyIxo7UzPnpOEScgdLVCLeuLvBBPBRiVXJFiUrDn8E
-         FFEWu5ubnXMzCS30Y2bNyQ6AwlmqtWiRXHpPJApZN3F5YRxMDMqU6ml1RDfG1ZjzZBgA
-         asZxXxCY2XCe6XcjFxS81wuk0Ml/5vh7hhtrNItmHlx+tB6+YqUtWVmqfcgbY2Mys4KG
-         6OhLsM7evjjv3ly783ftitNpauWIJ5SMW4OLCooib3cmQBpLFg2zV2rnobNEPrbqI+Yi
-         QNcYE8xQtYU1ysb9yjkPX45pFPRRt9tYkw/5XJdG4jknAJUFpU1pfCSOeKIQ1mEj47Si
-         THlg==
-X-Gm-Message-State: AOJu0Yy5+tz1OGO9ml08I5WUR/LcvCOOfuaHIoJQz8YwADNTivGKlj/g
-	FCsKe2iqc8OjRGkmYegiKSCehpsBiT1zMQ==
-X-Google-Smtp-Source: AGHT+IEabsXGUeZRUV9gUXrqMMO5LSPAqVQooevyyIbe9XsJNDr5iRadStep4DBK1o2oqLwvVHV19Q==
-X-Received: by 2002:a17:906:3ac2:b0:a23:6dd6:7eed with SMTP id z2-20020a1709063ac200b00a236dd67eedmr3215379ejd.77.1705416435327;
-        Tue, 16 Jan 2024 06:47:15 -0800 (PST)
-Received: from skbuf ([188.25.255.36])
-        by smtp.gmail.com with ESMTPSA id cx6-20020a170907168600b00a2d5ef80043sm3788703ejd.129.2024.01.16.06.47.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 06:47:15 -0800 (PST)
-Date: Tue, 16 Jan 2024 16:47:12 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: syzbot <syzbot+7ec955e36bb239bd720f@syzkaller.appspotmail.com>
-Cc: andrew@lunn.ch, daniel@iogearbox.net, davem@davemloft.net,
-	edumazet@google.com, f.fainelli@gmail.com, hkallweit1@gmail.com,
-	kuba@kernel.org, linux-kernel@vger.kernel.org,
-	linux@armlinux.org.uk, maxime.chevallier@bootlin.com,
-	netdev@vger.kernel.org, pabeni@redhat.com, sd@queasysnail.net,
-	syzkaller-bugs@googlegroups.com, vladimir.oltean@nxp.com,
-	Edward Adam Davis <eadavis@qq.com>, Hillf Danton <hdanton@sina.com>
-Subject: Re: [syzbot] [net?] KASAN: slab-out-of-bounds Read in
- dsa_user_prechangeupper
-Message-ID: <20240116144712.lxiw4pfjklidnrck@skbuf>
-References: <00000000000002faa2060f02e766@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 313171BDEC;
+	Tue, 16 Jan 2024 14:48:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85FC5C433F1;
+	Tue, 16 Jan 2024 14:48:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705416514;
+	bh=QsOUfpw0sKNyK82N25qTzsWt9o3KXn2BtArWY/psjWo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qen+nHYN1z0V6Sos/d1MsGN9VEwHv/7Tid1I6otH+DimQ6gUgSaS5u4AHnvopHR3u
+	 laYyH0scL8JIYY/NDbvQKDJEvWbpzwuF2DusabswVidysBabjPuYwhGXLKxtZYumdi
+	 iWONeaPMwucp3vFiGHuCMqv4EPkvMcoWJWh0ZYRGpaxRz9Ay+11AIAmS+pDCRd6Eru
+	 pQbYrv8a7+Ss0shfBpg4FVOP8bH7Q4Ru0eMus64iq0bZ/mLvCBr0RVLh9cZFWdLMkL
+	 YLaurjShTGch/Iu0VNY7HFjtlCLH1IsaqYiEuG5z9UaewtZ5Bbaj9Nuz+DESEb1PMb
+	 8DEt7CLB/WUVQ==
+Date: Tue, 16 Jan 2024 08:48:32 -0600
+From: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/6] dt-bindings: PCI: qcom,pcie-sm8450: move SM8450 to
+ dedicated schema
+Message-ID: <20240116144832.GA3862516-robh@kernel.org>
+References: <20240108-dt-bindings-pci-qcom-split-v1-0-d541f05f4de0@linaro.org>
+ <20240108-dt-bindings-pci-qcom-split-v1-2-d541f05f4de0@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,13 +57,155 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <00000000000002faa2060f02e766@google.com>
+In-Reply-To: <20240108-dt-bindings-pci-qcom-split-v1-2-d541f05f4de0@linaro.org>
 
-On Mon, Jan 15, 2024 at 01:43:20PM -0800, syzbot wrote:
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
+On Mon, Jan 08, 2024 at 03:19:15PM +0100, Krzysztof Kozlowski wrote:
+> Move SM8450 PCIe devices from qcom,pcie.yaml binding to a dedicated file
+> to make reviewing easier.
+> 
+> This creates equivalent schema file, except missing required compatible
+> which is actually redundant.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  .../devicetree/bindings/pci/qcom,pcie-sm8450.yaml  | 215 +++++++++++++++++++++
+>  .../devicetree/bindings/pci/qcom,pcie.yaml         |  67 -------
+>  2 files changed, 215 insertions(+), 67 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie-sm8450.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie-sm8450.yaml
+> new file mode 100644
+> index 000000000000..59ba809b6204
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie-sm8450.yaml
+> @@ -0,0 +1,215 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pci/qcom,pcie-sm8450.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm SM8450 PCI Express Root Complex
+> +
+> +maintainers:
+> +  - Bjorn Andersson <andersson@kernel.org>
+> +  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> +
+> +description:
+> +  Qualcomm SM8450 SoC PCIe root complex controller is based on the Synopsys
+> +  DesignWare PCIe IP.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,pcie-sm8450-pcie0
+> +      - qcom,pcie-sm8450-pcie1
+> +
+> +  reg:
+> +    minItems: 5
+> +    maxItems: 6
+> +
+> +  reg-names:
+> +    minItems: 5
+> +    items:
+> +      - const: parf # Qualcomm specific registers
+> +      - const: dbi # DesignWare PCIe registers
+> +      - const: elbi # External local bus interface registers
+> +      - const: atu # ATU address space
+> +      - const: config # PCIe configuration space
+> +      - const: mhi # MHI registers
+> +
+> +  clocks:
+> +    minItems: 11
+> +    maxItems: 12
+> +
+> +  clock-names:
+> +    minItems: 11
+> +    maxItems: 12
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  reset-names:
+> +    items:
+> +      - const: pci
+> +
+> +oneOf:
+> +  - properties:
+> +      interrupts:
+> +        maxItems: 1
+> +      interrupt-names:
+> +        items:
+> +          - const: msi
+> +
+> +  - properties:
+> +      interrupts:
+> +        minItems: 8
+> +      interrupt-names:
+> +        items:
+> +          - const: msi0
+> +          - const: msi1
+> +          - const: msi2
+> +          - const: msi3
+> +          - const: msi4
+> +          - const: msi5
+> +          - const: msi6
+> +          - const: msi7
+> +
+> +allOf:
+> +  - $ref: qcom,pcie-common.yaml#
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,pcie-sm8450-pcie0
+> +    then:
+> +      properties:
+> +        clocks:
+> +          minItems: 12
+> +          maxItems: 12
+> +        clock-names:
+> +          items:
+> +            - const: pipe # PIPE clock
+> +            - const: pipe_mux # PIPE MUX
+> +            - const: phy_pipe # PIPE output clock
+> +            - const: ref # REFERENCE clock
+> +            - const: aux # Auxiliary clock
+> +            - const: cfg # Configuration clock
+> +            - const: bus_master # Master AXI clock
+> +            - const: bus_slave # Slave AXI clock
+> +            - const: slave_q2a # Slave Q2A clock
+> +            - const: ddrss_sf_tbu # PCIe SF TBU clock
+> +            - const: aggre0 # Aggre NoC PCIe0 AXI clock
+> +            - const: aggre1 # Aggre NoC PCIe1 AXI clock
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,pcie-sm8450-pcie1
+> +    then:
+> +      properties:
+> +        clocks:
+> +          minItems: 11
+> +          maxItems: 11
+> +        clock-names:
+> +          items:
+> +            - const: pipe # PIPE clock
+> +            - const: pipe_mux # PIPE MUX
+> +            - const: phy_pipe # PIPE output clock
+> +            - const: ref # REFERENCE clock
+> +            - const: aux # Auxiliary clock
+> +            - const: cfg # Configuration clock
+> +            - const: bus_master # Master AXI clock
+> +            - const: bus_slave # Slave AXI clock
+> +            - const: slave_q2a # Slave Q2A clock
+> +            - const: ddrss_sf_tbu # PCIe SF TBU clock
+> +            - const: aggre1 # Aggre NoC PCIe1 AXI clock
 
-#syz dup: KASAN: slab-out-of-bounds Read in dsa_user_changeupper
+Almost the same list. Combine them and just make the 11th entry "enum: 
+[aggre0, aggre1]".
 
-[1] https://lore.kernel.org/netdev/0000000000001d4255060e87545c@google.com/
+Rob
 
