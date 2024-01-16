@@ -1,100 +1,109 @@
-Return-Path: <linux-kernel+bounces-27128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19F1382EAE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:32:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A28982EAE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:34:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C18E21F23C83
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:32:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D8F61F240BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:34:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F97611CBC;
-	Tue, 16 Jan 2024 08:32:04 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6063A125AD;
+	Tue, 16 Jan 2024 08:34:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="d44X7WCb"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A8D11C84;
-	Tue, 16 Jan 2024 08:32:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from i5e860cd7.versanet.de ([94.134.12.215] helo=diego.localnet)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rPerA-0000Y0-Lt; Tue, 16 Jan 2024 09:31:36 +0100
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To: Tim Lunn <tim@feathertop.org>, KyuHyuk Lee <lee@kyuhyuk.kr>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Chris Morgan <macromorgan@hotmail.com>,
- Tianling Shen <cnsztl@gmail.com>, Jagan Teki <jagan@edgeble.ai>,
- Ondrej Jirman <megi@xff.cz>, Andy Yan <andyshrk@163.com>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject:
- Re: [PATCH] dt-bindings: rockchip: Fix Hardkernel ODROID-M1 board bindings
-Date: Tue, 16 Jan 2024 09:31:35 +0100
-Message-ID: <2421144.zToM8qfIzz@diego>
-In-Reply-To: <3dfe868d-ff8d-44ac-a68e-066ac42a6705@linaro.org>
-References:
- <20240115145142.6292-1-lee@kyuhyuk.kr>
- <8b31ae29-b88b-4ded-95b4-c2d9bbad24e1@feathertop.org>
- <3dfe868d-ff8d-44ac-a68e-066ac42a6705@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AC8711C83;
+	Tue, 16 Jan 2024 08:34:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40G7w0lc000737;
+	Tue, 16 Jan 2024 08:34:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=2QthArlBLZq6aeSqRFl9tCpSTmPf13Utla69eVdn+G4=;
+ b=d44X7WCbEmktfd055Y/6MkcyBX4EzoIm5/dVVtPiPEGJmKk+ivl9esnI9eBtA7KshRak
+ BhhYASBpEd2Bw4m1Hk9fYgecJgLSn7yz3VO29PXxLGdsKc03j0LhKWiUp3xqOM4sMP8e
+ izAJFADFgOdk8xlEAjDuBGYw5pHH/2/FgheAD98MDphGBECLVTHU6LI/8CK7BklOg9B/
+ 4PQckxHIufiLqmiernQXQcP8gzmxXpyCSgA6yDu2UeN7kQwTnwUy16sCGr6EmcUTgBQz
+ Y1n06xTxPUaaoDKj+4wSkfJ0ZUuPO6qqjkXcNDVHRkXlv2LzTV3f25jb/w6mcaK2OpRS Ng== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnnvd0wpb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 08:34:13 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40G7wiDu003371;
+	Tue, 16 Jan 2024 08:34:13 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnnvd0wne-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 08:34:13 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40G75leT008785;
+	Tue, 16 Jan 2024 08:34:12 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vm57ydknv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 08:34:12 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40G8Y6nb18678426
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Jan 2024 08:34:06 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A454620040;
+	Tue, 16 Jan 2024 08:34:06 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C8DE320043;
+	Tue, 16 Jan 2024 08:34:05 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.82.162])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue, 16 Jan 2024 08:34:05 +0000 (GMT)
+Date: Tue, 16 Jan 2024 09:34:04 +0100
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Tony Krowiak <akrowiak@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, jjherne@linux.ibm.com, borntraeger@de.ibm.com,
+        pasic@linux.ibm.com, pbonzini@redhat.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, gor@linux.ibm.com
+Subject: Re: [PATCH v4 3/6] s390/vfio-ap: let 'on_scan_complete' callback
+ filter matrix and update guest's APCB
+Message-ID: <ZaY/fGxUMx2z4OQH@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20240115185441.31526-1-akrowiak@linux.ibm.com>
+ <20240115185441.31526-4-akrowiak@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240115185441.31526-4-akrowiak@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: F-SuVrMPFcULgGLnlAYeUzH-KTeEzO3a
+X-Proofpoint-ORIG-GUID: sPodZ57JKvrcl3Z3PKuYRtq9lqq8UU18
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-16_04,2024-01-15_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=695
+ lowpriorityscore=0 bulkscore=0 malwarescore=0 spamscore=0 mlxscore=0
+ adultscore=0 clxscore=1011 phishscore=0 impostorscore=0 priorityscore=1501
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401160067
 
-Am Dienstag, 16. Januar 2024, 08:24:44 CET schrieb Krzysztof Kozlowski:
-> On 16/01/2024 03:00, Tim Lunn wrote:
-> > 
-> > On 1/16/24 01:58, Krzysztof Kozlowski wrote:
-> >> On 15/01/2024 15:51, KyuHyuk Lee wrote:
-> >>> The vendor in ODROID-M1 is hardkernel, but it was incorrectly written
-> >>> as rockchip. Fixed the vendor prefix correctly.
-> >>>
-> >>> Signed-off-by: KyuHyuk Lee <lee@kyuhyuk.kr>
-> >>> ---
-> >>>   Documentation/devicetree/bindings/arm/rockchip.yaml | 2 +-
-> >>>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >> You need to start testing your patches. Your last M1 fails as well in
-> >> multiple places.
-> >>
-> >> It does not look like you tested the DTS against bindings. Please run
-> >> `make dtbs_check W=1` (see
-> >> Documentation/devicetree/bindings/writing-schema.rst or
-> >> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-> >> for instructions).
-> >>
-> >> The DTS change will break the users, so would be nice to mention this in
-> >> its commit msg.
-> > 
-> > I notice there are a couple of other boards that incorrectly use 
-> > rockchip as the vendor also:
-> > 
-> >            - const: rockchip,rk3399-orangepi
-> >            - const: rockchip,rk3568-bpi-r2pro
-> > 
-> > Perhaps these should also be fixed at the same time?
-> 
-> What is happening with rockchip boards?
+On Mon, Jan 15, 2024 at 01:54:33PM -0500, Tony Krowiak wrote:
+Hi Tony,
 
-Copy-paste stuff ... boards using rockchip,boardname instead of
-vendor,boardname for their compatible.
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
 
-I do remember us noticing this a number of times on some boards
-and requesting fixes, but looks like some slipped through.
+No Fixes tag for this patch?
 
-So I guess Tim is suggesting changing the compatible, but with boards
-being merged a while ago, this would break backwards compatibility.
-So I guess both the Orange and Banana Pies will need to live with that.
-
-
+Thanks!
 
