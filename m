@@ -1,149 +1,134 @@
-Return-Path: <linux-kernel+bounces-27661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FD5482F3D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:13:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFB2E82F3C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:11:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A645287CD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:13:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73A5F1F23959
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B95E1CD3F;
-	Tue, 16 Jan 2024 18:12:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GLXwYIFP"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E861B1CD29;
+	Tue, 16 Jan 2024 18:11:15 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD68C1CD2A
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:12:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75C6A1CD0B;
+	Tue, 16 Jan 2024 18:11:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705428744; cv=none; b=Uv7AYD2meDj73+SHiP3KAcBMaSuHGJs6lKtQDaHenwR9HGk/e6DhlTtzrRl844M93QLZ1wKDjPnr3W3+oNZol9KsbdvCAe/rF0tlIi0fDjz1gTWpMllrcN39WtkW/pX47F39apReFLSFhI3hsbs/wXH/9fn3IAq7HnpvOrZjHeU=
+	t=1705428675; cv=none; b=c6nseegCZ9VSREN7Qic0+PQyKZzcWq/4Qlslov94vBWtJzeqzD5CLzlmTDBYAadoiUjGoVHSm/fr1l9eP7FR9gHzmKYvpRgjDO6+V3BuBMm+3RyErNePdG6yMBixFTfQ2xKOR4ZBxjV9La+8IiagH2MkIfpVYMctpFAGtjyfe4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705428744; c=relaxed/simple;
-	bh=Y6BcPN6C0vM20TSEHpKXRm+HFeCEV83BLrODxyzHY28=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:From:To:Cc:
-	 Subject:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:
-	 X-Scanned-By; b=IfjegZ6c0m2Fu1qVH7bBxseG/n9zkKr358VxzkNR9w5P1eDpL+Kr6UE+XpaFYrHjTjO+4qhPWXfzlZkEfI/+lXe4PJywbFWl5DUCi6utM62r5fLKDs4CT5tItVsQSK6QFNcv4T1EKLpVya/VISGovGWvwagQnwXY7GBNF9nacow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GLXwYIFP; arc=none smtp.client-ip=170.10.133.124
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705428739;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=8c8I13Su6HTMW66B6BpT4d4txlCoy+2n6n8rpUT0geg=;
-	b=GLXwYIFPFRaCDFdoftMbQgv++LsLBPtkr6n2qPUhKW5U+YSFnOvq/zHdeD3Fx5kZkDIEcR
-	L4+5Q2maRZgPDLAXN+qhxZrtqnDvSyTCpUWgs56QQ2TScbI9y3d6vAZk2GM+M/snEAsJvX
-	wktLuKNwn4LV3gLbrVDa1CcTsAtbrTk=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-102-pEZk0p04PqOzbVZIyPPROA-1; Tue,
- 16 Jan 2024 13:12:14 -0500
-X-MC-Unique: pEZk0p04PqOzbVZIyPPROA-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 46A32299E742;
-	Tue, 16 Jan 2024 18:12:14 +0000 (UTC)
-Received: from cmirabil.redhat.com (unknown [10.22.32.104])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 99A84492BC6;
-	Tue, 16 Jan 2024 18:12:13 +0000 (UTC)
-From: Charles Mirabile <cmirabil@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: Charles Mirabile <cmirabil@redhat.com>,
-	Willy Tarreau <w@1wt.eu>,
-	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-	Ammar Faizi <ammarfaizi2@gnuweeb.org>
-Subject: [PATCH] nolibc/stdlib: Improve `getauxval(3)` implementation
-Date: Tue, 16 Jan 2024 13:11:47 -0500
-Message-ID: <20240116181147.2230944-1-cmirabil@redhat.com>
+	s=arc-20240116; t=1705428675; c=relaxed/simple;
+	bh=HF08xReEYJVEYlyq4VqGFGWbxcsg4P7vW27ttWr2NEg=;
+	h=Received:Date:From:To:Cc:Subject:Message-ID:In-Reply-To:
+	 References:X-Mailer:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding; b=Yqv5zaMQ2+XkJZGANimrYL1L84VNuXIg35fqK7SWvzE14Zf4kK/9oiDy7ctNT835UaLrbeyl95vtTXC+aFYxMnURnboeXpLexFyU0NU+ECmxDn+XCMnwjOI/kGsEHXtNskJX05WWlzNy2O9/V43yypikr5FtPXJJhr/+JOW0yVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE5D4C433F1;
+	Tue, 16 Jan 2024 18:11:13 +0000 (UTC)
+Date: Tue, 16 Jan 2024 13:12:28 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+ kernel test robot <oliver.sang@intel.com>, Ajay Kaher <akaher@vmware.com>,
+ Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+ linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] eventfs: Create dentries and inodes at dir open
+Message-ID: <20240116131228.3ed23d37@gandalf.local.home>
+In-Reply-To: <CAHk-=wjna5QYoWE+v3BWDwvs8N=QWjNN=EgxTN4dBbmySc-jcg@mail.gmail.com>
+References: <20240116114711.7e8637be@gandalf.local.home>
+	<CAHk-=wjna5QYoWE+v3BWDwvs8N=QWjNN=EgxTN4dBbmySc-jcg@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Previously the getauxval function checked for a doubly null entry (i.e.
-one whose type and value both were 0) in the auxv array before exiting
-the loop.
+On Tue, 16 Jan 2024 09:55:15 -0800
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-At least on x86-64, the ABI only specifies that one more long will be
-present with value 0 (type AT_NULL) after the pairs of auxv entries.
-Whether or not it has a corresponding value is unspecified. This value is
-present on linux, but there is no reason to check it as simply seeing an
-auxv entry whose type value is AT_NULL should be enough.
+> [ html crud because I still don't have power or real Internet, just trying
+> to keep an eye on things on my phone. Mailing lists removed to avoid
+> bounces, please put them back in replies that don't have my horrible
+> formatting ]
+> 
+> No.
+> 
+> Christ, you're making things worse again
+> 
+> The reason for the bug is that you're still messing with the dentries at
+> readdir() time.
 
-This is a matter of taste, but I think processing the data in a structured
-way by coercing it into an array of type value pairs, using multiple
-return style, and a for loop with a clear exit condition is more readable
-than the existing infinite loop with multiple exit points and a return
-value variable.
+I may have deleted the comment, but the only reason I created the
+inodes/destries is to keep the consistent inode number as it's created at
+the time the inodes and dentries are.
 
-I also added a call to set errno to ENOENT when the entry is not found as
-glibc does which allows programs to disambiguate between the case of an
-auxv that is not present, and one that is, but with value zero.
+Ah I did delete the comment, but it is still applicable :-/
 
-Fixes: c61a078015f3 ("nolibc/stdlib: Implement `getauxval(3)` function")
-Signed-off-by: Charles Mirabile <cmirabil@redhat.com>
----
- tools/include/nolibc/stdlib.h | 34 +++++++++++++---------------------
- 1 file changed, 13 insertions(+), 21 deletions(-)
+       /*
+-        * Need to create the dentries and inodes to have a consistent
+-        * inode number.
++        * Need to make a struct eventfs_dent array, start by
++        * allocating enough for just the files, which is a fixed
++        * array. Then use realloc via add_entry() for the directories
++        * which is stored in a linked list.
+         */
 
-diff --git a/tools/include/nolibc/stdlib.h b/tools/include/nolibc/stdlib.h
-index bacfd35c5156..47be99c5a539 100644
---- a/tools/include/nolibc/stdlib.h
-+++ b/tools/include/nolibc/stdlib.h
-@@ -104,27 +104,19 @@ char *getenv(const char *name)
- static __attribute__((unused))
- unsigned long getauxval(unsigned long type)
- {
--	const unsigned long *auxv = _auxv;
--	unsigned long ret;
--
--	if (!auxv)
--		return 0;
--
--	while (1) {
--		if (!auxv[0] && !auxv[1]) {
--			ret = 0;
--			break;
--		}
--
--		if (auxv[0] == type) {
--			ret = auxv[1];
--			break;
--		}
--
--		auxv += 2;
--	}
--
--	return ret;
-+	const struct {
-+		unsigned long type, val;
-+	} *auxv = (void *)_auxv;
-+
-+	if (!auxv || !type)
-+		goto out;
-+
-+	for (; auxv->type; ++auxv)
-+		if (auxv->type == type)
-+			return auxv->val;
-+out:
-+	SET_ERRNO(ENOENT);
-+	return 0;
- }
- 
- static __attribute__((unused))
--- 
-2.41.0
+So if for some reason, user space did a getdents() and used the inode
+numbers to match what it found, they would likely be the same.
+
+> 
+> Just stop it. Readdir should not be creating dentries. Readdir should not
+> be even *looking* at dentries. You're not a virtual filesystem, the
+> dentries are just caches for filename lookup, and have *nothing* to do with
+> readdir.
+
+Actually, it's not looking at them. I did it as a way to just have the
+inode numbers be consistent.
+
+	dents[cnt].ino = d->d_inode->i_ino;
+
+Yes, that's the only reason I create them. The dentry/inode is not used for
+anything outside of that.
+
+> 
+> So just iterate over your own internal data structures in readdir. DO NOT
+> CREATE DENTRIES OR INODES FOR READDIR.
+> 
+> I've told you before, and I'll tell you again: either you are a real and
+> proper virtual filesystem and you let the vfs layer manage *everything*,
+> and the dentries and inodes are all you have. Or you are a *real*
+> filesystem and you maintain your own data structures and the dentries and
+> inodes are just the in-memory caches.
+> 
+> This "do both" is UNACCEPTABLE.
+> 
+
+The dentries were created for the inode numbers so that I did not need to
+add them to meta data. They are generated at creation time.
+
+I don't know how important inode numbers are. If they can all just have
+random inode numbers and it doesn't break user space, where an inode number
+will be one value at one read and another shortly after, is that going to
+cause a problem?
+
+Maybe I can just use a hash to generate he inode numbers from the name?
+Hopefully there will be no collisions. Then I don't need the dentry
+creation at all.
+
+I do realize that if the dentries get freed due to reclaim and recreated,
+their inode numbers will be different. But for a virtual file system, I
+don't know how important having consistent inode numbers is.
+
+-- Steve
 
 
