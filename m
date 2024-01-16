@@ -1,188 +1,187 @@
-Return-Path: <linux-kernel+bounces-28276-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28277-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FD7882FC70
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:20:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AEC182FC72
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:20:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8BED1F295F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:20:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BD791C24412
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:20:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B54FE5A7AB;
-	Tue, 16 Jan 2024 20:56:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A59975A7BB;
+	Tue, 16 Jan 2024 20:57:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QynPxRht"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dJkwENpE"
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 967B828DCB
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 20:56:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D652028DCB
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 20:57:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705438614; cv=none; b=eY0DCiQ3cSzsq5qmvVx9rWrGYUoZ2JvqQS+e68AI9aDhWvKuaWX0ju6qtNnr9v6c38k6QXIlWfcyFddXXlc36x/M6G9TxHtfebX1Pwaet2/aC/j0pDdlmhPuf1WTeNdidN5CD4wdiJbW393dQMxMGDZ9ApYVA28sF2W4z/WJ22Q=
+	t=1705438676; cv=none; b=nxBBVxRwLqEDejg4XLMteVeaSYwK7VefLlCzhVrgqcH+1Imh0hKZ5N3fpH0GBXik7aWgIJ3ABi5rcdGYFBe892Qmec7L6v/8VYHh/EFAum2j7c0coUuuDF8AeLUGA2A7li4Zzp1GzTghvvmpYL8yvV++7qKctOY+WFV9EIzMfXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705438614; c=relaxed/simple;
-	bh=99MkrrCzFkqckJarNvVYpCquuSKUh+NKcSIugNOwZLw=;
+	s=arc-20240116; t=1705438676; c=relaxed/simple;
+	bh=4frzhpwkExhqQU6jnr/MkqW3RGgnQsX6iNpmppuGu5g=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
 	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=uqHJhdGBvX5tvoRdqn06mw6tNxaT0xNyocoUkRDza3QjtR4UlX3QTpoLqS6Z3AsNhs9BZb2+8ZVYnUHfFER6B7UeIiyONP/9fRQKLXP5BSQhNA5R5yRPQtGN8YoGxOZCyNL+dO8ErBGRP0qRBfA1T9tKy9M4FZBfnTGxV2VOGs4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QynPxRht; arc=none smtp.client-ip=209.85.214.181
+	 Content-Type:Content-Transfer-Encoding; b=QuJvhEKbQ2v7AJvx7dS46A1WN9olHOQ8sAGFBiIwQiHhHz8rPTJ4HO34c1whgTX/k36TA/iFTbvs1Os8U3aeagbI9WPQ7GTDf10L8zxf66dnOxwitmgZuCwghxVZhDgsrepuGMxA9Bbfqy971h+ZdBYy2rzGyQeMFKCottFS7cA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dJkwENpE; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d629b4d91fso4336515ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 12:56:52 -0800 (PST)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-28e7b4546e2so761124a91.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 12:57:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705438612; x=1706043412; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705438673; x=1706043473; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZXa6+TpZrtg87/kEjfGIsGhnnsc5MTVIdja7FTE/y+I=;
-        b=QynPxRhtCMsrY1wWzlCrU+LrtpEqv0vL/ePUv6/BRrGANyM6LccMIcZbT5d2IrOfrh
-         XmLl/NvalCwKsktEL9Mdylh/hhen8Z1lopCEWmbN2bWXvRWQlnqTymsuqvY1Fal0I/D6
-         7KcsqtOgLt+9lYRbDG3jGlD6qKHMNtpjpD9IUtCWf+7GtIWWItluUaFHth6rDsyqUv7o
-         2Kt1x39pSf9mYN2x8CYcx6Z8nUKpHarcC6vpqIKZUjW4kE3dxYriUF7+ZgC/IxJrktJh
-         QaKlYTdNC9Ne9JB88Mhvl0vo5KnGSFc3Kivrtdv5Q8CKMYP0yMMYiVISd+j3j+TKt398
-         YVHA==
+        bh=G/EZzmK6HfHQLA68MEdpLWPQjpi5m5+fEzjurqyk7MQ=;
+        b=dJkwENpEnCQ7PZtnFjTNfSe1qG0N54o6ie91PPWlBZrKTa6wpu+TXqMiCP9GjJY8a6
+         vxcntIMiz9gOrnqJxbVlr0vm7g23u6ZhBm9amBO00JVkO8zCEGtNYQaValua8LnO+lF+
+         yzancQUfu4xKzTbuWe1wvhjNYYApzeR7JgW+r/pDR3OIlwM+jjQP+k5WV3DBhsnMbyna
+         D9vPTZ+v1s0pauXRKfnXb9L4Ax4060/ag6eprHvueBbNYog2DtqRosLs5FXQryWgov4h
+         jjxIBjYzWLNoTKcYcN0SRoCxi+48bnt6ojuP6J/RJKgo/KdUdbLTFxZzXePqiTsfShHc
+         Liag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705438612; x=1706043412;
+        d=1e100.net; s=20230601; t=1705438673; x=1706043473;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZXa6+TpZrtg87/kEjfGIsGhnnsc5MTVIdja7FTE/y+I=;
-        b=nAAkBu/6Nn51qkY97tl9PP+8Wg1XhI/XqNbMo1gwt/OnOduoLsaYH//3im/zPP7hAu
-         p/7R+GR7ODXG2VdIeLs5qzUVLLldpEniy7e2vGbZguMAz4mTSxoVFBCAzrG4+DW9QB++
-         L7xAqniR1gFCzFKroO+Z8KentJqClU1N6+whKCaI425Sacg//TgYAjKHjdPCBkBth/Nr
-         rnDUJJW44UpFssQHsTcWtmKgqKVKapk7B9uNk/jWw1RRQHjakUcqhawLxo2LUrY+IwxL
-         FVXG/ChHn8NIZKSy+y6rp8I/QNLBf+R+gp73IkarHXHM/dj5COL4DGPQVSSAXXLn1vsa
-         lalQ==
-X-Gm-Message-State: AOJu0YxQZ5e4dYdSxJCuIXRD3zfno6ufPgQpLQDMGKwTqZtMZn+6l838
-	zQTVeQonX5+G93v+r3/1xzw6M1/s8ngsslGC1sE=
-X-Google-Smtp-Source: AGHT+IHwi5fr9VKyP4HZdqlhg4wbFo7sU598VraNXGHYnq2J7Ci9/FA875680Ks7HPxj+FDyjtfAlLI+dLnBJ2PaXHU=
-X-Received: by 2002:a17:90b:1086:b0:28e:1b1b:6239 with SMTP id
- gj6-20020a17090b108600b0028e1b1b6239mr2861673pjb.38.1705438611936; Tue, 16
- Jan 2024 12:56:51 -0800 (PST)
+        bh=G/EZzmK6HfHQLA68MEdpLWPQjpi5m5+fEzjurqyk7MQ=;
+        b=PEKZyrQq0l6dSEMq66dWcGKGnsj5L1JOGGgElJo0FytP8aRo33KWKLW6lt7pA/eUhK
+         I4NqiqfYxjksRcSCLHNjQhxMqf7tb2yDy+dQ8XeojMoewhUCRbn0E/zgz5Zph40IAt7R
+         Io13td3IY9/vG0bTG52XdPE1HUHnB1KOt5TdDrS8dBdIwQnbgSwy4bOof92qkLrfKBn8
+         poy4bQz0/muUXsb0IVw9Kyx7FuN5/2Su1q+NB4i8BtSJUA6OXqQkDlZpE0CBIT+eMZUv
+         BkGJKzQa8EUe5RRoQ/H3E5vNHKCr2Y15YO7edRlTrR7NAUqFUXQ4jWKn21YDELMs3IYQ
+         YoPQ==
+X-Gm-Message-State: AOJu0YzfAYujwoSecuNnJidjW7awLxwECTjcg/dnlmMQcXtYzNvaXsZU
+	qQQEo8ujUdpj2u0pWD5aLKYIc/fDYatQgZf0LiU=
+X-Google-Smtp-Source: AGHT+IGciLCO/ufPtmnqCC3a0V4mBdZDL05fQwHfzJlaDGT2mgEqh8UsQIVb9NU946JH1W05lXyphPZYeKh7zUb9O8k=
+X-Received: by 2002:a17:90b:690:b0:28d:f01a:1abd with SMTP id
+ m16-20020a17090b069000b0028df01a1abdmr10062825pjz.14.1705438673199; Tue, 16
+ Jan 2024 12:57:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20220809142457.4751229f@imladris.surriel.com> <d0a136a0-4a31-46bc-adf4-2db109a61672@kernel.org>
- <3193bf5b-4e22-412f-8c5b-68574942d9bc@kernel.org> <CAJuCfpHXLdQy1a2B6xN2d7quTYwg2OoZseYPZTRpU0eHHKD-sQ@mail.gmail.com>
-In-Reply-To: <CAJuCfpHXLdQy1a2B6xN2d7quTYwg2OoZseYPZTRpU0eHHKD-sQ@mail.gmail.com>
+References: <20231221065943.2803551-1-shy828301@gmail.com> <20231221065943.2803551-2-shy828301@gmail.com>
+ <7433e325-9af7-4b8c-888e-07a0debf8e46@intel.com> <CAAa6QmQjE=7qYBWSsMF=J2dir+1q9-zmAEkj7Jqg52cC7hy-xQ@mail.gmail.com>
+In-Reply-To: <CAAa6QmQjE=7qYBWSsMF=J2dir+1q9-zmAEkj7Jqg52cC7hy-xQ@mail.gmail.com>
 From: Yang Shi <shy828301@gmail.com>
-Date: Tue, 16 Jan 2024 12:56:40 -0800
-Message-ID: <CAHbLzkpEWYhRAabAhrr6zuQqh0rO-mh=NZupDxJJ1BidOt_uiA@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: align larger anonymous mappings on THP boundaries
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Jiri Slaby <jirislaby@kernel.org>, Rik van Riel <riel@surriel.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, kernel-team@fb.com, 
-	Matthew Wilcox <willy@infradead.org>, Christoph Lameter <cl@linux.com>
+Date: Tue, 16 Jan 2024 12:57:41 -0800
+Message-ID: <CAHbLzkq12j+KSLegxbepzjAkOz1SE-7w5OuKwxarp_Lh+d0MOQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm: mmap: map MAP_STACK to VM_NOHUGEPAGE
+To: "Zach O'Keefe" <zokeefe@google.com>
+Cc: Yin Fengwei <fengwei.yin@intel.com>, oliver.sang@intel.com, riel@surriel.com, 
+	willy@infradead.org, cl@linux.com, ying.huang@intel.com, 
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 16, 2024 at 11:16=E2=80=AFAM Suren Baghdasaryan <surenb@google.=
-com> wrote:
+On Tue, Jan 16, 2024 at 11:22=E2=80=AFAM Zach O'Keefe <zokeefe@google.com> =
+wrote:
 >
-> On Tue, Jan 16, 2024 at 4:09=E2=80=AFAM Jiri Slaby <jirislaby@kernel.org>=
- wrote:
-> >
-> > On 16. 01. 24, 12:53, Jiri Slaby wrote:
-> > > Hi,
-> > >
-> > > On 09. 08. 22, 20:24, Rik van Riel wrote:
-> > >> Align larger anonymous memory mappings on THP boundaries by
-> > >> going through thp_get_unmapped_area if THPs are enabled for
-> > >> the current process.
-> > >>
-> > >> With this patch, larger anonymous mappings are now THP aligned.
-> > >> When a malloc library allocates a 2MB or larger arena, that
-> > >> arena can now be mapped with THPs right from the start, which
-> > >> can result in better TLB hit rates and execution time.
-> > >
-> > > This appears to break 32bit processes on x86_64 (at least). In
-> > > particular, 32bit kernel or firefox builds in our build system.
-> > >
-> > > Reverting this on top of 6.7 makes it work again.
-> > >
-> > > Downstream report:
-> > >   https://bugzilla.suse.com/show_bug.cgi?id=3D1218841
-> > >
-> > > So running:
-> > > pahole -J --btf_gen_floats -j --lang_exclude=3Drust
-> > > --skip_encoding_btf_inconsistent_proto --btf_gen_optimized .tmp_vmlin=
-ux.btf
-> > >
-> > > crashes or errors out with some random errors:
-> > > [182671] STRUCT idr's field 'idr_next' offset=3D128 bit_size=3D0 type=
-=3D181346
-> > > Error emitting field
-> > >
-> > > strace shows mmap() fails with ENOMEM right before the errors:
-> > > 1223  mmap2(NULL, 5783552, PROT_READ|PROT_WRITE,
-> > > MAP_PRIVATE|MAP_ANONYMOUS, -1, 0 <unfinished ...>
-> > > ...
-> > > 1223  <... mmap2 resumed>)              =3D -1 ENOMEM (Cannot allocat=
-e
-> > > memory)
-> > >
-> > > Note the .tmp_vmlinux.btf above can be arbitrary, but likely large
-> > > enough. For reference, one is available at:
-> > > https://decibel.fi.muni.cz/~xslaby/n/btf
-> > >
-> > > Any ideas?
-> >
-> > This works around the problem, of course (but is a band-aid, not a fix)=
-:
-> >
-> > --- a/mm/mmap.c
-> > +++ b/mm/mmap.c
-> > @@ -1829,7 +1829,7 @@ get_unmapped_area(struct file *file, unsigned lon=
-g
-> > addr, unsigned long len,
-> >                   */
-> >                  pgoff =3D 0;
-> >                  get_area =3D shmem_get_unmapped_area;
-> > -       } else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
-> > +       } else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
-> > !in_32bit_syscall()) {
-> >                  /* Ensures that larger anonymous mappings are THP
-> > aligned. */
-> >                  get_area =3D thp_get_unmapped_area;
-> >          }
-> >
-> >
-> > thp_get_unmapped_area() does not take care of the legacy stuff...
+> Thanks Yang,
 >
-> This change also affects the entropy of allocations. With this patch
-> Android test [1] started failing and it requires only 8 bits of
-> entropy. The feedback from our security team:
->
-> 8 bits of entropy is already embarrassingly low, but was necessary for
-> 32 bit ARM targets with low RAM at the time. It's definitely not
-> acceptable for 64 bit targets.
+> Should this be marked for stable? Given how easily it is for pthreads
+> to allocate hugepages w/o this change, it can easily cause memory
+> bloat on larger systems and/or users with high thread counts. I don't
+> think that will be welcomed, and seems odd that just 6.7 should suffer
+> this.
 
-Thanks for the report. Is it 32 bit only or 64 bit is also impacted?
-If I understand the code correctly, it expects the address allocated
-by malloc() is kind of randomized, right?
+Thanks for the suggestion, fine to me.
 
 >
-> Could this change be either reverted or made optional (opt-in/opt-out)?
 > Thanks,
-> Suren.
+> Zach
 >
-> [1] https://cs.android.com/android/platform/superproject/main/+/main:cts/=
-tests/aslr/src/AslrMallocTest.cpp;l=3D130
->
+> On Tue, Jan 9, 2024 at 5:36=E2=80=AFPM Yin Fengwei <fengwei.yin@intel.com=
+> wrote:
 > >
-> > regards,
-> > --
-> > js
-> > suse labs
 > >
+> >
+> > On 2023/12/21 14:59, Yang Shi wrote:
+> > > From: Yang Shi <yang@os.amperecomputing.com>
+> > >
+> > > The commit efa7df3e3bb5 ("mm: align larger anonymous mappings on THP
+> > > boundaries") incured regression for stress-ng pthread benchmark [1].
+> > > It is because THP get allocated to pthread's stack area much more pos=
+sible
+> > > than before.  Pthread's stack area is allocated by mmap without VM_GR=
+OWSDOWN
+> > > or VM_GROWSUP flag, so kernel can't tell whether it is a stack area o=
+r not.
+> > >
+> > > The MAP_STACK flag is used to mark the stack area, but it is a no-op =
+on
+> > > Linux.  Mapping MAP_STACK to VM_NOHUGEPAGE to prevent from allocating
+> > > THP for such stack area.
+> > >
+> > > With this change the stack area looks like:
+> > >
+> > > fffd18e10000-fffd19610000 rw-p 00000000 00:00 0
+> > > Size:               8192 kB
+> > > KernelPageSize:        4 kB
+> > > MMUPageSize:           4 kB
+> > > Rss:                  12 kB
+> > > Pss:                  12 kB
+> > > Pss_Dirty:            12 kB
+> > > Shared_Clean:          0 kB
+> > > Shared_Dirty:          0 kB
+> > > Private_Clean:         0 kB
+> > > Private_Dirty:        12 kB
+> > > Referenced:           12 kB
+> > > Anonymous:            12 kB
+> > > KSM:                   0 kB
+> > > LazyFree:              0 kB
+> > > AnonHugePages:         0 kB
+> > > ShmemPmdMapped:        0 kB
+> > > FilePmdMapped:         0 kB
+> > > Shared_Hugetlb:        0 kB
+> > > Private_Hugetlb:       0 kB
+> > > Swap:                  0 kB
+> > > SwapPss:               0 kB
+> > > Locked:                0 kB
+> > > THPeligible:           0
+> > > VmFlags: rd wr mr mw me ac nh
+> > >
+> > > The "nh" flag is set.
+> > >
+> > > [1] https://lore.kernel.org/linux-mm/202312192310.56367035-oliver.san=
+g@intel.com/
+> > >
+> > > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > > Tested-by: Oliver Sang <oliver.sang@intel.com>
+> > > Cc: Yin Fengwei <fengwei.yin@intel.com>
+> > > Cc: Rik van Riel <riel@surriel.com>
+> > > Cc: Matthew Wilcox <willy@infradead.org>
+> > > Cc: Christopher Lameter <cl@linux.com>
+> > > Cc: Huang, Ying <ying.huang@intel.com>
+> > > Signed-off-by: Yang Shi <yang@os.amperecomputing.com>
+> >
+> > Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
+> >
+> > > ---
+> > >   include/linux/mman.h | 1 +
+> > >   1 file changed, 1 insertion(+)
+> > >
+> > > diff --git a/include/linux/mman.h b/include/linux/mman.h
+> > > index 40d94411d492..dc7048824be8 100644
+> > > --- a/include/linux/mman.h
+> > > +++ b/include/linux/mman.h
+> > > @@ -156,6 +156,7 @@ calc_vm_flag_bits(unsigned long flags)
+> > >       return _calc_vm_trans(flags, MAP_GROWSDOWN,  VM_GROWSDOWN ) |
+> > >              _calc_vm_trans(flags, MAP_LOCKED,     VM_LOCKED    ) |
+> > >              _calc_vm_trans(flags, MAP_SYNC,       VM_SYNC      ) |
+> > > +            _calc_vm_trans(flags, MAP_STACK,      VM_NOHUGEPAGE) |
+> > >              arch_calc_vm_flag_bits(flags);
+> > >   }
+> > >
 > >
 
