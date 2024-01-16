@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-28360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEE9E82FD44
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:46:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0270782FD46
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:46:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4045C1F2ADF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:46:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94C821F2B98A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:46:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C9041DA49;
-	Tue, 16 Jan 2024 22:41:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CEDB1E880;
+	Tue, 16 Jan 2024 22:41:16 +0000 (UTC)
 Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88C0F1D541;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAAB51D546;
 	Tue, 16 Jan 2024 22:41:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.14.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705444875; cv=none; b=Kyxep0ZlzkAPjdVIY5huU1a7m11CpTFidVNmZVeyL8CTd7roLCqMiVeSKmi2Df4dsxH2Jt3MPjLhUgO4z/2FvG8AysLzYSE/0OyxrPdHeoAlX+gY1YRKZWUmmrOBBLTTbM3pHX7W9COklS4LsXK47jcqTcHzho3DrfJPKVWed7I=
+	t=1705444876; cv=none; b=jzeq8wJvjicJGNbzlra4AljFBhL6w/U1QZkJaIipkN8yMU9MV4RiNAd7N8bBPbEwZvqDMo8HSsRMnPgqrH4KF8UMtQnS/F7KVjEym57bEhgrIvTwQVMa7pWxmxjI3gjhajg3qfRxfxljQpnOrg8gBGkxPeO9Jja0LmirJBwanpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705444875; c=relaxed/simple;
-	bh=Tqe00xuQRDUGt6EMrbVSvDOwN5ShfxIOykh2tsZQz/Q=;
+	s=arc-20240116; t=1705444876; c=relaxed/simple;
+	bh=Us1B128cnUSRTVsPfStgm8OL/356CO5Ra0cSmwYpTsg=;
 	h=Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding; b=KVWxZR16d/QA2OiROkXvNl0kzmUTXI1xPnA3jEvjeftdw0LLMi9TRIec7VSG00QTDV4TfYLmHn4Dy7sWmAR8+SKtvIQSEXHgjlVm9bH1Jmw7ax8JKq8ctzHVpSzjsaTbTYTSteLrpYt9KJDw/3CCGdIDYqu1PL7PmVaD4OwTI6Q=
+	 References:MIME-Version:Content-Transfer-Encoding; b=Qc5AImkPAcvyGjrJo3tKmai4J6oPaB1Gxexsb1BQ1hVhj7wCkzNK4L9ck0yf1kRnoZEdLB302xAfKi2a7nYvd9JKqqSf2tsXv7hDxR3NnAcJsYLDbqRYuLClUnbOFYcssSaKFrleSVT/PWKhWZBotJPFl9uMOxevNEuYOy0IVeE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de; spf=pass smtp.mailfrom=c--e.de; arc=none smtp.client-ip=217.10.14.231
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
 Received: by cae.in-ulm.de (Postfix, from userid 1000)
-	id EDBD3140406; Tue, 16 Jan 2024 23:41:10 +0100 (CET)
+	id E216214042E; Tue, 16 Jan 2024 23:41:11 +0100 (CET)
 From: "Christian A. Ehrhardt" <lk@c--e.de>
 To: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
 	linux-usb@vger.kernel.org
@@ -40,9 +40,9 @@ Cc: "Christian A. Ehrhardt" <lk@c--e.de>,
 	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
 	=?UTF-8?q?Samuel=20=C4=8Cavoj?= <samuel@cavoj.net>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] usb: ucsi_acpi: Fix command completion handling
-Date: Tue, 16 Jan 2024 23:40:40 +0100
-Message-Id: <20240116224041.220740-3-lk@c--e.de>
+Subject: [PATCH 3/3] usb: ucsi_acpi: Quirk to ack a connector change ack cmd
+Date: Tue, 16 Jan 2024 23:40:41 +0100
+Message-Id: <20240116224041.220740-4-lk@c--e.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240116224041.220740-1-lk@c--e.de>
 References: <20240116224041.220740-1-lk@c--e.de>
@@ -54,76 +54,134 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In case of a spurious or otherwise delayed notification it is
-possible that CCI still reports the previous completion. The
-UCSI spec is aware of this and provides two completion bits in
-CCI, one for normal commands and one for acks. As acks and commands
-alternate the notification handler can determine if the completion
-bit is from the current command.
+The PPM on some Dell laptops seems to expect that the ACK_CC_CI
+command to clear the connector change notification is in turn
+followed by another ACK_CC_CI to acknowledge the ACK_CC_CI command
+itself. This is in violation of the UCSI spec that states:
 
-The initial UCSI code correctly handled this but the distinction
-between the two completion bits was lost with the introduction of
-the new API.
+    "The only notification that is not acknowledged by the OPM is
+     the command completion notification for the ACK_CC_CI or the
+     PPM_RESET command."
 
-To fix this revive the ACK_PENDING bit for ucsi_acpi and only complete
-commands if the completion bit matches.
+Add a quirk to send this ack anyway.
+Apply the quirk to all Dell systems.
 
-Fixes: f56de278e8ec ("usb: typec: ucsi: acpi: Move to the new API")
+On the first command that acks a connector change send a dummy
+command to determine if it runs into a timeout. Only activate
+the quirk if it does. This ensure that we do not break Dell
+systems that do not need the quirk.
+
 Signed-off-by: Christian A. Ehrhardt <lk@c--e.de>
 ---
-NOTES:
-- I've seen real issues as a result of this.
-- UCSI implementations other than ACPI might need a similar fix.
-  I can give relevant maintainers a heads up once this is properly
-  reviewed and integrated.
-
- drivers/usb/typec/ucsi/ucsi_acpi.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ drivers/usb/typec/ucsi/ucsi_acpi.c | 69 ++++++++++++++++++++++++++++--
+ 1 file changed, 66 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/usb/typec/ucsi/ucsi_acpi.c b/drivers/usb/typec/ucsi/ucsi_acpi.c
-index 6bbf490ac401..33dac67154d2 100644
+index 33dac67154d2..a0b08b10c4a9 100644
 --- a/drivers/usb/typec/ucsi/ucsi_acpi.c
 +++ b/drivers/usb/typec/ucsi/ucsi_acpi.c
-@@ -73,9 +73,13 @@ static int ucsi_acpi_sync_write(struct ucsi *ucsi, unsigned int offset,
- 				const void *val, size_t val_len)
+@@ -25,6 +25,8 @@ struct ucsi_acpi {
+ 	unsigned long flags;
+ 	guid_t guid;
+ 	u64 cmd;
++	bool dell_quirk_probed;
++	bool dell_quirk_active;
+ };
+ 
+ static int ucsi_acpi_dsm(struct ucsi_acpi *ua, int func)
+@@ -126,12 +128,71 @@ static const struct ucsi_operations ucsi_zenbook_ops = {
+ 	.async_write = ucsi_acpi_async_write
+ };
+ 
+-static const struct dmi_system_id zenbook_dmi_id[] = {
++/**
++ * Some Dell laptops expect that an ACK command with the
++ * UCSI_ACK_CONNECTOR_CHANGE bit set is followed by a (separate)
++ * ACK command that only has the UCSI_ACK_COMMAND_COMPLETE bit set.
++ * If this is not done events are not delivered to OSPM and
++ * subsequent commands will timeout.
++ */
++static int
++ucsi_dell_sync_write(struct ucsi *ucsi, unsigned int offset,
++		     const void *val, size_t val_len)
++{
++	struct ucsi_acpi *ua = ucsi_get_drvdata(ucsi);
++	u64 cmd = *(u64*)val, ack = 0;
++	int ret;
++
++	if (UCSI_COMMAND(cmd) == UCSI_ACK_CC_CI &&
++	    cmd & UCSI_ACK_CONNECTOR_CHANGE)
++		ack = UCSI_ACK_CC_CI | UCSI_ACK_COMMAND_COMPLETE;
++
++	ret = ucsi_acpi_sync_write(ucsi, offset, val, val_len);
++	if (ret != 0)
++		return ret;
++	if (ack == 0)
++		return ret;
++
++	if (!ua->dell_quirk_probed) {
++		ua->dell_quirk_probed = true;
++
++		cmd = UCSI_GET_CAPABILITY;
++		ret = ucsi_acpi_sync_write(ucsi, UCSI_CONTROL, &cmd,
++					   sizeof(cmd));
++		if (ret == 0)
++			return ucsi_acpi_sync_write(ucsi, UCSI_CONTROL,
++						    &ack, sizeof(ack));
++		if (ret != -ETIMEDOUT)
++			return ret;
++
++		ua->dell_quirk_active = true;
++	}
++
++	if (!ua->dell_quirk_active)
++		return ret;
++
++	return ucsi_acpi_sync_write(ucsi, UCSI_CONTROL, &ack, sizeof(ack));
++}
++
++static const struct ucsi_operations ucsi_dell_ops = {
++	.read = ucsi_acpi_read,
++	.sync_write = ucsi_dell_sync_write,
++	.async_write = ucsi_acpi_async_write
++};
++
++static const struct dmi_system_id ucsi_acpi_quirks[] = {
+ 	{
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "ZenBook UX325UA_UM325UA"),
+ 		},
++		.driver_data = (void *)&ucsi_zenbook_ops,
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
++		},
++		.driver_data = (void *)&ucsi_dell_ops,
+ 	},
+ 	{ }
+ };
+@@ -160,6 +221,7 @@ static int ucsi_acpi_probe(struct platform_device *pdev)
  {
- 	struct ucsi_acpi *ua = ucsi_get_drvdata(ucsi);
-+	bool ack = UCSI_COMMAND(*(u64*)val) == UCSI_ACK_CC_CI;
- 	int ret;
+ 	struct acpi_device *adev = ACPI_COMPANION(&pdev->dev);
+ 	const struct ucsi_operations *ops = &ucsi_acpi_ops;
++	const struct dmi_system_id *id;
+ 	struct ucsi_acpi *ua;
+ 	struct resource *res;
+ 	acpi_status status;
+@@ -189,8 +251,9 @@ static int ucsi_acpi_probe(struct platform_device *pdev)
+ 	init_completion(&ua->complete);
+ 	ua->dev = &pdev->dev;
  
--	set_bit(COMMAND_PENDING, &ua->flags);
-+	if (ack)
-+		set_bit(ACK_PENDING, &ua->flags);
-+	else
-+		set_bit(COMMAND_PENDING, &ua->flags);
+-	if (dmi_check_system(zenbook_dmi_id))
+-		ops = &ucsi_zenbook_ops;
++	id = dmi_first_match(ucsi_acpi_quirks);
++	if (id)
++		ops = id->driver_data;
  
- 	ret = ucsi_acpi_async_write(ucsi, offset, val, val_len);
- 	if (ret)
-@@ -85,7 +89,10 @@ static int ucsi_acpi_sync_write(struct ucsi *ucsi, unsigned int offset,
- 		ret = -ETIMEDOUT;
- 
- out_clear_bit:
--	clear_bit(COMMAND_PENDING, &ua->flags);
-+	if (ack)
-+		clear_bit(ACK_PENDING, &ua->flags);
-+	else
-+		clear_bit(COMMAND_PENDING, &ua->flags);
- 
- 	return ret;
- }
-@@ -142,8 +149,10 @@ static void ucsi_acpi_notify(acpi_handle handle, u32 event, void *data)
- 	if (UCSI_CCI_CONNECTOR(cci))
- 		ucsi_connector_change(ua->ucsi, UCSI_CCI_CONNECTOR(cci));
- 
--	if (test_bit(COMMAND_PENDING, &ua->flags) &&
--	    cci & (UCSI_CCI_ACK_COMPLETE | UCSI_CCI_COMMAND_COMPLETE))
-+	if (cci & UCSI_CCI_ACK_COMPLETE && test_bit(ACK_PENDING, &ua->flags))
-+		complete(&ua->complete);
-+	if (cci & UCSI_CCI_COMMAND_COMPLETE &&
-+	    test_bit(COMMAND_PENDING, &ua->flags))
- 		complete(&ua->complete);
- }
- 
+ 	ua->ucsi = ucsi_create(&pdev->dev, ops);
+ 	if (IS_ERR(ua->ucsi))
 -- 
 2.40.1
 
