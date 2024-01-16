@@ -1,95 +1,122 @@
-Return-Path: <linux-kernel+bounces-27626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0989682F32E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:29:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82F0982F332
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:30:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F0451C22DC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:29:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2400CB23A11
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:30:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A080E1CAB8;
-	Tue, 16 Jan 2024 17:28:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F811CAB9;
+	Tue, 16 Jan 2024 17:30:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pn891NJy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n8mMRdRy"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8E0B1CAA9;
-	Tue, 16 Jan 2024 17:28:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1BD61CA87;
+	Tue, 16 Jan 2024 17:30:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705426139; cv=none; b=uZMGsCkpmcWM43oWIUWSsrNzvLs9Joi/L5+yLEuuwcwZDmRNcq8qY4WPwXRkic3QN/ujHQEdCcPTCp4/NB24vJCOSkEKleqXB3EEDc0JZOO1FbhMa/G5N85r5BpfQ5pnIzkUfVVrBBoxSEYmviwekz518R1+l6g/RnMlk4CGPeE=
+	t=1705426226; cv=none; b=VilWETcTcbsE5uCaUwqhh6YBULLUH9gMCBiBgQ/OGqZdACGix6IUsojpq8ZyKma+5YV8NWO65QaLjzwujtpECSHX/dyYQqzzsnRHqVV0KAOhbJnF22AbX4idIlEkis1oG2+KgRtZnAit5Izo7gp3QVCmJkLLz4ndIZRmc6w8a8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705426139; c=relaxed/simple;
-	bh=/hOfx88Mr5TBRirZPgigQeV/BpPCftA+KViWmZUfBk0=;
+	s=arc-20240116; t=1705426226; c=relaxed/simple;
+	bh=MHbGCgDXoLO32ycO/d98J+MN0cEFtEnVDmEKDb8wMKM=;
 	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=gT3/IcBoqdt9pJE61uUd8QG81XRqyfR53WWQAnlmboKNK0LA4EhlZ8TQ3XgPAfnt5y2bTMQv4lmsjZbLiuoycJLd0pRP/jfdJeLkmf8ElDj94m3zLAsi035MXHwzAIBtxsDqKzexhCZrKnMJYjAfh90e9XyoxG7fyd7uiZVz7Q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pn891NJy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 474D2C433C7;
-	Tue, 16 Jan 2024 17:28:55 +0000 (UTC)
+	 In-Reply-To; b=tZJJ/0rUXOdKz2Wm0ZgIznEHSIsG0iRZj0TEwz+gvLgVZ9q4U9aNfLjPSkp5Oa2ZnWfAtDNqOiR9tzjucr+AYGM3E4AkkQIGea1QiW6sFjATIs757y1fb7MQ2slMgDga+k4sLQOlLCjHFCmPjCQhfvifl+dCm5nE0arzCunl4Dg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n8mMRdRy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 429EFC43399;
+	Tue, 16 Jan 2024 17:30:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705426138;
-	bh=/hOfx88Mr5TBRirZPgigQeV/BpPCftA+KViWmZUfBk0=;
+	s=k20201202; t=1705426225;
+	bh=MHbGCgDXoLO32ycO/d98J+MN0cEFtEnVDmEKDb8wMKM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Pn891NJyEc/4JfRFf6f3uY/VbDV663ecz9GSyg/vZfSO867aW+DuBOa44ggqyJ0xC
-	 h9n4VWWmglvVgzobfA9ebqt4iN8YPHAaxz+RCicPlr5wWxuEcfoBzn68zTWD6TTc2O
-	 4zIstqYGjpWrPNPuRDJRjyvpZSSPzYF7OUEMdZmVylPX8tH9Z/J52lMGfXP7Mj1RRn
-	 AOW3S0hZXhAY9RFkRvzpEKn5P9lSnVO3sJDozR49t9w89Zh8XdPZMlkPwLadnQh2vA
-	 p9fM8YwjGWVnv12uBradnGp39p/NsD9mpdrw+/bkpy8NtH0TpQ8OjESFXgKWDsjv16
-	 1CwgdDQTe12UA==
-Date: Tue, 16 Jan 2024 17:28:53 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
+	b=n8mMRdRyuQK3x1YDlCIYh4rOrj4/+pme/Xl+Oz+G404d7dUqv++TTe9baz3z89B1p
+	 m1jNEdf7miWbDQ2Jk1lqN2ebccMcFj+zptjgjwnpBfWz2uGLbhfYv1XmtdDvWHJKjJ
+	 n2g3jyYfqTso8XYrVe9Gu67LtKhfyFncXfB1FgtawtMMOpFMIPYc+sW7WyZN4SrLy2
+	 RwaXDubX4IFBdk/9r/aFqWPlGu0Yxtrm5mWm9j8/oMEJbgf72OpBEvudQAWMTlxiqV
+	 eg5JFZr33fDOodbi9vaRudll9qep9HfEsiw2NeXtf5wZfiK93RlGoi/b0RmhDANJwj
+	 5wWjTppvXIO+A==
+Date: Tue, 16 Jan 2024 11:30:23 -0600
+From: Rob Herring <robh@kernel.org>
+To: Petre Rodan <petre.rodan@subdimension.ro>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Tinghan Shen <tinghan.shen@mediatek.com>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-	linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: remoteproc: do not override firmware-name
- $ref
-Message-ID: <20240116-subtotal-urethane-35e63c7433db@spud>
-References: <20240115182031.1610088-1-krzysztof.kozlowski@linaro.org>
+	Conor Dooley <conor+dt@kernel.org>
+Subject: Re: [PATCH 2/6] dt-bindings: iio: pressure: honeywell,hsc030pa.yaml
+ add sleep-mode
+Message-ID: <20240116173023.GA139792-robh@kernel.org>
+References: <20240110172306.31273-1-petre.rodan@subdimension.ro>
+ <20240110172306.31273-3-petre.rodan@subdimension.ro>
+ <bc37f7d8-c43f-4751-9216-fc95f439b2f6@linaro.org>
+ <ZaDqlmXJD6if1xK7@sunspire>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="1syrabisp+vFZ/Vi"
-Content-Disposition: inline
-In-Reply-To: <20240115182031.1610088-1-krzysztof.kozlowski@linaro.org>
-
-
---1syrabisp+vFZ/Vi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <ZaDqlmXJD6if1xK7@sunspire>
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+On Fri, Jan 12, 2024 at 09:30:30AM +0200, Petre Rodan wrote:
+> 
+> Hello Krzysztof,
+> 
+> On Wed, Jan 10, 2024 at 09:48:34PM +0100, Krzysztof Kozlowski wrote:
+> > On 10/01/2024 18:22, Petre Rodan wrote:
+> > > Add sleep-mode property present in some custom chips.
+> > > 
+> > > This flag activates a special wakeup sequence prior to conversion.
+> > > 
+> > > Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
+> > > ---
+> > >  .../bindings/iio/pressure/honeywell,hsc030pa.yaml      | 10 ++++++++++
+> > >  1 file changed, 10 insertions(+)
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+> > > index 89977b9f01cf..350da1d6991b 100644
+> > > --- a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+> > > +++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+> > > @@ -86,6 +86,15 @@ properties:
+> > >        Maximum pressure value the sensor can measure in pascal.
+> > >        To be specified only if honeywell,pressure-triplet is set to "NA".
+> > > 
+> > > +  honeywell,sleep-mode:
+> > 
+> > "Sleep mode" naming suggests there are choices, like mode foo and mode
+> > bar. Probably you want something like "sleep-between-measurements" or
+> > something matching how does it work.
+> 
+> "sleep mode" is the terminology used by Honeywell and it defines a chip capability.
+> it is present in the HSC/SSC and ABP series of ICs.
+> 
+> other such options (capabilities) include temperature output in the ABP series.
+> 
+> the action the driver needs to perform if this option is present is to provide a
+> wake-up sequence before reading out the conversions.
+> 
+> now regarding a rename of this property, I would vote to leave it as is - for the
+> users to have a 1:1 equivalence of terms between the driver and the datasheet.
+> 
+> I say that because for instance in circuit design when a part symbol and
+> footprint is drawn based on a datasheet it is recommended to keep the same pin
+> notations and the same block diagram as in the datasheet, precisely for this 1:1
+> equivalence, so there is no uncertainty for the end-user.
 
---1syrabisp+vFZ/Vi
-Content-Type: application/pgp-signature; name="signature.asc"
+At least add a '-en' suffix so it is clear this property enables the 
+mode. We have both flavors (enables and disables). 
 
------BEGIN PGP SIGNATURE-----
+Low power modes between samples is pretty common on these devices. We 
+should consider if this should be a common property. Jonathan?
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaa81AAKCRB4tDGHoIJi
-0icdAQCcnGevmqgCCTEYkJuG6/u1PQcTwyvQMCVvh4SuWtK5zQD8CZft2NykhSW1
-4Y6FpR4ygdfT3yOqtYhTrky6s0iWUws=
-=oRqr
------END PGP SIGNATURE-----
-
---1syrabisp+vFZ/Vi--
+Rob
 
