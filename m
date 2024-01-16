@@ -1,283 +1,181 @@
-Return-Path: <linux-kernel+bounces-27075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53A2B82EA07
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 95EFF82EA0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:29:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5C9628351D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:28:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B75C283291
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:29:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D496711181;
-	Tue, 16 Jan 2024 07:28:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67E001118A;
+	Tue, 16 Jan 2024 07:29:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I85/NEr4"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HAdM6/q+"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B2310A24
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 07:28:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705390111; x=1736926111;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=TSolB+oyi3C9hkuFFHhBMz7/4wt57eHKe4pzmzp1U0k=;
-  b=I85/NEr4UHIzjK/2d2WRHMQHNaD9o8jsRdqoxMmtHaSNYSelkYUuakfa
-   CjlG73n8eg6ij8FNeLLdJdBAFB4n+Eo7y2HCrybBfPepiOsYLZvA2BGiv
-   rF+1TkAfVhIoa1Y/FYYeA+BNR0btQDvOt5jHUjCyAi/nrqP0qsk4/tyUO
-   Nof0Taemr8MVVKCuNi+8AHlZmWpGB0C3eRYAhfEwlrN30LhApUO2TrvHj
-   7Z6dlDt3xlQnk5v2s1o0mt9rLHwfZuctBdn3jluxLYxo6ZDEeYd5MEjn2
-   orVIo6YlPnJLFyxW5f8kCxrl6eovsVN/j447MkAOoLt1ChQm2t+c/TILa
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="7145604"
-X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
-   d="scan'208";a="7145604"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 23:28:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="957056194"
-X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
-   d="scan'208";a="957056194"
-Received: from uschumac-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.213.254])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 23:28:25 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-	id A587210A17B; Tue, 16 Jan 2024 10:28:22 +0300 (+03)
-Date: Tue, 16 Jan 2024 10:28:22 +0300
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Nikolay Borisov <nik.borisov@suse.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	Elena Reshetova <elena.reshetova@intel.com>,
-	Jun Nakajima <jun.nakajima@intel.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	"Kalra, Ashish" <ashish.kalra@amd.com>,
-	Sean Christopherson <seanjc@google.com>,
-	"Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
-	kexec@lists.infradead.org, linux-coco@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv5 10/16] x86/tdx: Convert shared memory back to private
- on kexec
-Message-ID: <20240116072822.pvzseyqry56eqa4j@box.shutemov.name>
-References: <20231222235209.32143-1-kirill.shutemov@linux.intel.com>
- <20231222235209.32143-11-kirill.shutemov@linux.intel.com>
- <89e8722b-661b-4319-8018-06705b366c62@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D4C411185
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 07:29:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5534dcfdd61so16804721a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 23:28:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705390138; x=1705994938; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=t4tiXeWppsrDELOJj7EzC5LEw685HVViUAxBRaPVuQg=;
+        b=HAdM6/q+47uEBEkT27IkX4Wj4FMK0xe98H0cIia5Qkme550muAcD+2wDkTiFKQ47as
+         RkMtaNrvwom0DI5UJWgsSVPfOOJysR5389cP0Ij6F1GqigsjDe7JPAkCbm9vDq+NsgjA
+         s0J43etcyVAJmkR69dT9odOFfoRd8R37KftCpkMiKynHBXgPjZ3b5p3r+M5c6+aaTnvZ
+         xOIcWu+uWFugPf+IN60ox76hsupRjLziVlNJTX9MTMHUmjqXEMx5TLuofof0NX6Zq9VG
+         eMytbmugISuRVbHbou+0Y/ozFvMAjt8cBRiRr8ueZ+tqdhQR26stBtIOfEW1SYyI3s4D
+         QbMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705390138; x=1705994938;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=t4tiXeWppsrDELOJj7EzC5LEw685HVViUAxBRaPVuQg=;
+        b=WAgnFPDSa1RC1K6lzOzvokdTvckwjXlj5qh3LCG0nmAbcnGscdzXVq3bbr51DhrRK+
+         uvon13Bb95H2Pp9P5diEa1KO0TuYkUO4NnzUvtbV2nbXcpZ86631dAaNI+FsN/zGYoTE
+         4PGUQRgtw4mZGpipxE+e/5yxHfXTXcnq7fvXI/069IxUmn8Wwy787PwQ63Zaci99n0V1
+         crG3u0i5H2rKFAqD9Z5HPQL1YYZ/Q98F+0hCmoO7p9/zVoDO+IqwM37E4HhHwJYcIQU/
+         9Nm/TVbpDQvicTYDOSmuy3RJO2+Ys8OXJYGSyN+PZ8h2hM+37v8t1kE+icY3Hdu1znnY
+         hVtw==
+X-Gm-Message-State: AOJu0YxsbKO4AbUD3yPoHGDFhY5MZmHogRizdHKsddff1iJ65vi0xrwf
+	Xw8V+l8FYfMV5Jak67VxzzlPcY/tFEe5lw==
+X-Google-Smtp-Source: AGHT+IElil34nT4GyUaLgQ1di5oIOFfl5AVJ0oFfCu3zhKNo9gURyyLNxOsvXtMsZlXlOa61gsoZ8A==
+X-Received: by 2002:a05:6402:22f4:b0:558:b88d:e8b with SMTP id dn20-20020a05640222f400b00558b88d0e8bmr6774268edb.3.1705390138508;
+        Mon, 15 Jan 2024 23:28:58 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id fj23-20020a0564022b9700b00557f54cceb6sm6428657edb.4.2024.01.15.23.28.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Jan 2024 23:28:58 -0800 (PST)
+Message-ID: <28eeece4-6230-4c56-9706-813a9d9cf92e@linaro.org>
+Date: Tue, 16 Jan 2024 08:28:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <89e8722b-661b-4319-8018-06705b366c62@suse.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm: coresight: Remove pattern match
+ of ETE node name
+Content-Language: en-US
+To: Mao Jinlong <quic_jinlmao@quicinc.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach
+ <mike.leach@linaro.org>, James Clark <james.clark@arm.com>,
+ Leo Yan <leo.yan@linaro.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, Tingwei Zhang <quic_tingweiz@quicinc.com>,
+ Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+ Tao Zhang <quic_taozha@quicinc.com>
+References: <20240116064505.487-1-quic_jinlmao@quicinc.com>
+ <20240116064505.487-2-quic_jinlmao@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240116064505.487-2-quic_jinlmao@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 15, 2024 at 12:53:42PM +0200, Nikolay Borisov wrote:
+On 16/01/2024 07:45, Mao Jinlong wrote:
+> Remove pattern match of ETE node name. Use ete with the number as the
+> name for ete nodes.
 > 
+> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
+> ---
+>  .../bindings/arm/arm,embedded-trace-extension.yaml          | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 > 
-> On 23.12.23 г. 1:52 ч., Kirill A. Shutemov wrote:
-> > TDX guests allocate shared buffers to perform I/O. It is done by
-> > allocating pages normally from the buddy allocator and converting them
-> > to shared with set_memory_decrypted().
-> > 
-> > The second kernel has no idea what memory is converted this way. It only
-> > sees E820_TYPE_RAM.
-> > 
-> > Accessing shared memory via private mapping is fatal. It leads to
-> > unrecoverable TD exit.
-> > 
-> > On kexec walk direct mapping and convert all shared memory back to
-> > private. It makes all RAM private again and second kernel may use it
-> > normally.
-> > 
-> > The conversion occurs in two steps: stopping new conversions and
-> > unsharing all memory. In the case of normal kexec, the stopping of
-> > conversions takes place while scheduling is still functioning. This
-> > allows for waiting until any ongoing conversions are finished. The
-> > second step is carried out when all CPUs except one are inactive and
-> > interrupts are disabled. This prevents any conflicts with code that may
-> > access shared memory.
-> > 
-> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > Reviewed-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-> > ---
-> >   arch/x86/coco/tdx/tdx.c         | 119 +++++++++++++++++++++++++++++++-
-> >   arch/x86/include/asm/x86_init.h |   2 +
-> >   arch/x86/kernel/crash.c         |   6 ++
-> >   arch/x86/kernel/reboot.c        |  13 ++++
-> >   4 files changed, 138 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
-> > index 8a49484a2917..5c64db168edd 100644
-> > --- a/arch/x86/coco/tdx/tdx.c
-> > +++ b/arch/x86/coco/tdx/tdx.c
-> > @@ -6,8 +6,10 @@
-> >   #include <linux/cpufeature.h>
-> >   #include <linux/debugfs.h>
-> > +#include <linux/delay.h>
-> >   #include <linux/export.h>
-> >   #include <linux/io.h>
-> > +#include <linux/kexec.h>
-> >   #include <asm/coco.h>
-> >   #include <asm/tdx.h>
-> >   #include <asm/vmx.h>
-> > @@ -15,6 +17,7 @@
-> >   #include <asm/insn.h>
-> >   #include <asm/insn-eval.h>
-> >   #include <asm/pgtable.h>
-> > +#include <asm/set_memory.h>
-> >   /* MMIO direction */
-> >   #define EPT_READ	0
-> > @@ -41,6 +44,9 @@
-> >   static atomic_long_t nr_shared;
-> > +static atomic_t conversions_in_progress;
-> > +static bool conversion_allowed = true;
-> 
-> Given the usage model of this variable, shouldn't it be simply accessed via
-> READ/WRITE_ONCE macros?
+> diff --git a/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml b/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
+> index f725e6940993..ed78cc7ae94a 100644
+> --- a/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
+> +++ b/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
+> @@ -22,8 +22,6 @@ description: |
+>    with any optional connection graph as per the coresight bindings.
+>  
+>  properties:
+> -  $nodename:
+> -    pattern: "^ete([0-9a-f]+)$"
+>    compatible:
+>      items:
+>        - const: arm,embedded-trace-extension
+> @@ -55,13 +53,13 @@ examples:
+>  
+>  # An ETE node without legacy CoreSight connections
+>    - |
+> -    ete0 {
+> +    ete-0 {
 
-What do you see it changing?
+ete {
 
-> > +
-> >   static inline bool pte_decrypted(pte_t pte)
-> >   {
-> >   	return cc_mkdec(pte_val(pte)) == pte_val(pte);
-> > @@ -726,6 +732,14 @@ static bool tdx_tlb_flush_required(bool private)
-> >   static bool tdx_cache_flush_required(void)
-> >   {
-> > +	/*
-> > +	 * Avoid issuing CLFLUSH on set_memory_decrypted() if conversions
-> > +	 * stopped. Otherwise it can race with unshare_all_memory() and trigger
-> > +	 * implicit conversion to shared.
-> > +	 */
-> > +	if (!conversion_allowed)
-> > +		return false;
-> > +
-> >   	/*
-> >   	 * AMD SME/SEV can avoid cache flushing if HW enforces cache coherence.
-> >   	 * TDX doesn't have such capability.
-> > @@ -809,12 +823,25 @@ static bool tdx_enc_status_changed(unsigned long vaddr, int numpages, bool enc)
-> >   static int tdx_enc_status_change_prepare(unsigned long vaddr, int numpages,
-> >   					 bool enc)
-> >   {
-> > +	atomic_inc(&conversions_in_progress);
-> > +
-> > +	/*
-> > +	 * Check after bumping conversions_in_progress to serialize
-> > +	 * against tdx_shutdown().
-> > +	 */
-> > +	if (!conversion_allowed) {
-> > +		atomic_dec(&conversions_in_progress);
-> > +		return -EBUSY;
-> > +	}
-> 
-> nit: Can you make the inc of conversions_in_progress be done here, this
-> eliminated the atomic_dec in case they aren't. Somewhat simplifies the
-> logic.
+>        compatible = "arm,embedded-trace-extension";
+>        cpu = <&cpu_0>;
+>      };
+>  # An ETE node with legacy CoreSight connections
+>    - |
+> -   ete1 {
+> +   ete-1 {
 
-Okay, fair enough. Will change.
+ete {
 
-> > +
-> >   	/*
-> >   	 * Only handle shared->private conversion here.
-> >   	 * See the comment in tdx_early_init().
-> >   	 */
-> > -	if (enc && !tdx_enc_status_changed(vaddr, numpages, enc))
-> > +	if (enc && !tdx_enc_status_changed(vaddr, numpages, enc)) {
-> > +		atomic_dec(&conversions_in_progress);
-> >   		return -EIO;
-> > +	}
-> >   	return 0;
-> >   }
-> > @@ -826,17 +853,102 @@ static int tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
-> >   	 * Only handle private->shared conversion here.
-> >   	 * See the comment in tdx_early_init().
-> >   	 */
-> > -	if (!enc && !tdx_enc_status_changed(vaddr, numpages, enc))
-> > +	if (!enc && !tdx_enc_status_changed(vaddr, numpages, enc)) {
-> > +		atomic_dec(&conversions_in_progress);
-> >   		return -EIO;
-> > +	}
-> >   	if (enc)
-> >   		atomic_long_sub(numpages, &nr_shared);
-> >   	else
-> >   		atomic_long_add(numpages, &nr_shared);
-> > +	atomic_dec(&conversions_in_progress);
-> > +
-> >   	return 0;
-> >   }
-> > +static void tdx_kexec_stop_conversion(bool crash)
-> > +{
-> > +	/* Stop new private<->shared conversions */
-> > +	conversion_allowed = false;
-> 
-> What's the logic behind this compiler barrier?
+Best regards,
+Krzysztof
 
-Disallow compiler to push the assignment past atomic_read() loop below.
-Not sure if anything else prevents such reorder without the barrier.
-
-And I don't think WRITE_ONCE() will do the trick. It only prevents
-multiple writes, but doesn't prevent reorders agains accesses
-non-READ_ONCE()/WRITE_ONCE() accesses.
-
-> > +	barrier();
-> > +
-> > +	/*
-> > +	 * Crash kernel reaches here with interrupts disabled: can't wait for
-> > +	 * conversions to finish.
-> > +	 *
-> > +	 * If race happened, just report and proceed.
-> > +	 */
-> > +	if (!crash) {
-> > +		unsigned long timeout;
-> > +
-> > +		/*
-> > +		 * Wait for in-flight conversions to complete.
-> > +		 *
-> > +		 * Do not wait more than 30 seconds.
-> > +		 */
-> > +		timeout = 30 * USEC_PER_SEC;
-> > +		while (atomic_read(&conversions_in_progress) && timeout--)
-> > +			udelay(1);
-> > +	}
-> > +
-> > +	if (atomic_read(&conversions_in_progress))
-> > +		pr_warn("Failed to finish shared<->private conversions\n");
-> > +}
-> > +
-> 
-> <snip>
-> 
-> > diff --git a/arch/x86/include/asm/x86_init.h b/arch/x86/include/asm/x86_init.h
-> > index c9503fe2d13a..3196ff20a29e 100644
-> > --- a/arch/x86/include/asm/x86_init.h
-> > +++ b/arch/x86/include/asm/x86_init.h
-> > @@ -154,6 +154,8 @@ struct x86_guest {
-> >   	int (*enc_status_change_finish)(unsigned long vaddr, int npages, bool enc);
-> >   	bool (*enc_tlb_flush_required)(bool enc);
-> >   	bool (*enc_cache_flush_required)(void);
-> > +	void (*enc_kexec_stop_conversion)(bool crash);
-> > +	void (*enc_kexec_unshare_mem)(void);
-> 
-> These are only being initialized in the TDX case, but called in all cases
-> when CC_ATTR_GUEST_MEM_ENCRYPT is true, which includes AMD. So it would
-> cause a crash, no ? Shouldn't you also introduce noop handlers initialized
-> in the default x86_platform struct in arch/x86/kernel/x86_init.c ?
-
-kexec on AMD will not work without them, I think. But noops makes sense
-anyway. Will fix.
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
 
