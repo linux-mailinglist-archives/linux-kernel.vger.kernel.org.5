@@ -1,94 +1,91 @@
-Return-Path: <linux-kernel+bounces-27753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 553B382F558
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:28:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C43B982F55F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:31:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EAE92864CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:28:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2041CB23B03
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7483B1D534;
-	Tue, 16 Jan 2024 19:28:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B3331D533;
+	Tue, 16 Jan 2024 19:30:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RChRjd16"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kcSYsMbG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3C821D520;
-	Tue, 16 Jan 2024 19:28:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DFEB1CFBE;
+	Tue, 16 Jan 2024 19:30:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705433282; cv=none; b=PLsHY13PbDKymJnvK3pk8DgCFv6jTfmNwrrCVH2VLfPlYgSuUe2AkYjpNxbIoeEpXmsE0tEk8jxevEzUUmW5CS+dvDv8cVSGcaaks5QGPV97vUgGSD7/M4f/3CuoAkr14VpPhXnvgVBaNhRTwtbRaUj42GzVdFmoEIdUPkcgYxg=
+	t=1705433457; cv=none; b=Xh7IDoyugvx4xQ60cixU4ZHcvGoPfc21n+umm+ZU3RyFbSjkGNGAHYrhNr+HwShaj81ePaT8sT31lUn+l2WArGxbtRbYV36/uhcWebEqaHpOr7QpL3RXNrR5hVt91j/6nH9naMwdshvdvnMUl1M/DD3u7kC20ClxIcVeLRLTnk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705433282; c=relaxed/simple;
-	bh=S+tXDDxWx+J/j4en03nSn/UORlk2dhCbx8Bmvhq5Nxg=;
+	s=arc-20240116; t=1705433457; c=relaxed/simple;
+	bh=nFYmtr+6YzRDg3+bAiJfqwdAdGxuORN0ImfHiq3Hs2s=;
 	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=fhYgLcBHh4TiqV4Vqc3ap/C/nSYkOcyKA2/acISM7l3qEPdf5RnaukBYzP7W1R7s4Pkoam8RajTULUaWfqmP3yA8thu5fuYdt9b9mnli8/DNnCtP9v1et5xIBH2uoFMS5ht86Vx1of8hShNVBPj1fxhhkhAV9X7AmmMoQHWftps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RChRjd16; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E69DC433C7;
-	Tue, 16 Jan 2024 19:28:00 +0000 (UTC)
+	 Content-Transfer-Encoding:In-Reply-To; b=MX/DuhWHnYuv26SUg7Vi1KkA1MJN7kT2YimSf4nS8R7TuucGC9pqJv29wpZJloixRnMBDcDRt25mjXijHJTYs8cAFD/RbeKO6Px8Xbvs+qy40RFXX4zsaeU/SRrFnR865Xy2Y5ig51oWi6b30PtHPpZeZeG8Ic2TZfVhiBj3fiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kcSYsMbG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3266FC433F1;
+	Tue, 16 Jan 2024 19:30:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705433282;
-	bh=S+tXDDxWx+J/j4en03nSn/UORlk2dhCbx8Bmvhq5Nxg=;
+	s=k20201202; t=1705433457;
+	bh=nFYmtr+6YzRDg3+bAiJfqwdAdGxuORN0ImfHiq3Hs2s=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RChRjd16P8cvAruigJLv4MHsh/YilJ2bOb9R1aj+udCSegILBSfBBj3VAhT+YGz1i
-	 jNBolRokG10lt6dEV6OKUPu88QW4F5g6NJo2c2Bd/8n+2sPuaNH1pWSLeY/jjuT41V
-	 Iuh53LrOl4yofiNBMlp41Hs37UO5ZAlH8J2HMgVF4XQrNZ5uMcqBUNvpryTlO/n4YT
-	 ccGmckHtL5PE/PJDYCwJ3A0sx1hCZyIDhV0umGMp+uA2LXzDqzBM/ZJvo2Bi1S3P2I
-	 LU4xawLEi8AucOB32v3uzm2sR+4jJOA8/F4w4UkPp+JVBet1vyyXETAZmugWGy5o8j
-	 zmZABIyLnM1jA==
-Date: Tue, 16 Jan 2024 19:27:57 +0000
-From: Simon Horman <horms@kernel.org>
-To: Yunjian Wang <wangyunjian@huawei.com>
-Cc: willemdebruijn.kernel@gmail.com, jasowang@redhat.com, kuba@kernel.org,
-	davem@davemloft.net, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, xudingke@huawei.com
-Subject: Re: [PATCH net v2] tun: add missing rx stats accounting in
- tun_xdp_act
-Message-ID: <20240116192757.GC588419@kernel.org>
-References: <1705409818-28292-1-git-send-email-wangyunjian@huawei.com>
+	b=kcSYsMbGsXMaV+a88y2F015OKzhzdrpOpnXsWBjGlDu3aIJapJe5S8RiykrqQm4Rv
+	 bo1Sb6zV6VGsLv6WUNNMXA42ph6NT/tF6tuHZCxiyfZ7CoKhNomz97j35bJR+Unoct
+	 u90p6fxoQ8DFt/qva4wk43R80YM4U/jZ9zqNZj7Q/cD2HAMiG4s5bKyu80GtXws2MV
+	 hIV177w1KqwzeH6GUtGG6z0kPajAMl+nF/Bjn03Ah+h7HflMFZnqsj8FI3WxG/RYE3
+	 kl41EiIXp0kME1pouIpOEJ3EsR0JE8+yhsid7jXfCL3UVYJTc2u2Cx4BtlVdlPu3A3
+	 hD9WezZLAvK7w==
+Date: Tue, 16 Jan 2024 13:30:55 -0600
+From: Rob Herring <robh@kernel.org>
+To: =?iso-8859-1?Q?Andr=E9?= Draszik <git@andred.net>
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	devicetree@vger.kernel.org,
+	=?iso-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>,
+	Michal Simek <michal.simek@amd.com>,
+	Masahiro Yamada <masahiroy@kernel.org>, conor+dt@kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: don't anchor DT_SCHEMA_FILES to bindings
+ directory
+Message-ID: <170543338330.282631.14506406638025276437.robh@kernel.org>
+References: <20240116062731.2810067-1-git@andred.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1705409818-28292-1-git-send-email-wangyunjian@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240116062731.2810067-1-git@andred.net>
 
-On Tue, Jan 16, 2024 at 08:56:58PM +0800, Yunjian Wang wrote:
-> There are few places on the receive path where packet receives and packet
-> drops were not accounted for. This patch fixes that issue.
+
+On Tue, 16 Jan 2024 06:27:31 +0000, André Draszik wrote:
+> From: André Draszik <andre.draszik@linaro.org>
 > 
-> Fixes: 8ae1aff0b331 ("tuntap: split out XDP logic")
-> Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
-> ---
-> v2: add Fixes tag
-> ---
->  drivers/net/tun.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
+> Commit 5e3ef4546819 ("dt-bindings: ignore paths outside kernel for
+> DT_SCHEMA_FILES") anchored all searches to the bindings directory
+> (since bindings only exist below that), but it turns out this is not
+> always desired.
 > 
-> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-> index afa5497f7c35..232e5319ac77 100644
-> --- a/drivers/net/tun.c
-> +++ b/drivers/net/tun.c
-> @@ -1626,17 +1626,14 @@ static int tun_xdp_act(struct tun_struct *tun, struct bpf_prog *xdp_prog,
->  		       struct xdp_buff *xdp, u32 act)
->  {
->  	int err;
-> +	unsigned int datasize = xdp->data_end - xdp->data;
+> Just anchor to the base kernel source directory and while at it, break
+> the overly long line for legibility.
+> 
+> Reported-by: Michal Simek <michal.simek@amd.com>
+> Closes: https://lore.kernel.org/all/827695c3-bb33-4a86-8586-2c7323530398@amd.com/
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: André Draszik <andre.draszik@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/Makefile | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
 
-nit: if you post a v3 for some other reason then, as this is Networking
-     code, please consider arranging local variables in reverse xmas tree
-     order - longest line to shortest.
+Added a 'Fixes' tag and applied, thanks!
 
-	unsigned int datasize = xdp->data_end - xdp->data;
-	int err;
-
-..
 
