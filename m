@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-27566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEDBB82F24C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:20:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BD1082F24D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:20:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 741DB1F24124
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:20:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 865591C2334B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:20:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39D0F1CAA5;
-	Tue, 16 Jan 2024 16:20:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E9A51CABF;
+	Tue, 16 Jan 2024 16:20:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YBgXbVQI"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jBFXv5r8"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C4F91CA8C
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 16:19:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F41C1CABA
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 16:20:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705421998;
+	s=mimecast20190719; t=1705422003;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QGenYj0c7lCcQP9RiIc1lnECi134uIaPUzH+TIc7bto=;
-	b=YBgXbVQIHGN40zrb4fS+EZkFMqQHSigSSK2l1P3eP9/mWvXucyKT4QeoE4HPzYPJVNWAI+
-	uaLuO7oDftVToqOK20FeHbAec7T+NA4Ut+RrnsorNBjT2knTMKAlsHF+r6vbsfnRxmSIwg
-	D1bHtztkTB49/c9JfhDsJhdeZuAB8h4=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=s4fKpZjH++WRt1yV+Gjohw4fqgWgBKev/a1YdUdJYkI=;
+	b=jBFXv5r8MedtjrQPeaqHWEe9Vb/TkhenEG7x+7BodPLIPXvZQ/2MoPljCAn9rRueCrnaaM
+	NNVcFc/qDJ6haExEC2tH8sJZNoQ7dzCKnrQYirMpFU/5OSTKi+gzXAcv/vLDLW3UXcYGzH
+	gvCQps7e6RFTyBaBu/ukzuHEHiBfNxk=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-588-k752fPfFOJ2HbSqLvYfSng-1; Tue, 16 Jan 2024 11:19:56 -0500
-X-MC-Unique: k752fPfFOJ2HbSqLvYfSng-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-429d02a63baso67020381cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 08:19:56 -0800 (PST)
+ us-mta-553-LmG8ySuHOSyhu9_A6-SC9Q-1; Tue, 16 Jan 2024 11:19:58 -0500
+X-MC-Unique: LmG8ySuHOSyhu9_A6-SC9Q-1
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-7831bc14ae3so1385270485a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 08:19:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705421996; x=1706026796;
+        d=1e100.net; s=20230601; t=1705421998; x=1706026798;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QGenYj0c7lCcQP9RiIc1lnECi134uIaPUzH+TIc7bto=;
-        b=SX/7tlWK+y8cZncZSwXDQMfN17KzY8d1viCEAhaTv2PnN+Qp98E0xqy1cwnSaBx1vA
-         BIJPa5LeUcSu//9EzTnyrsYKn1e0PALZOhJ8pb6xGJXXQvvdZbYvW29MZd49JD0MmEDy
-         Ya53FL+9wTv6n/3scFJHeUJQp5QvxlSl/BMV+MKt3Bzpf8WQ4WAeWkhUxHUokxpqK1wh
-         fCPum+CFHMa2K7y2X6CSEceFRIaeG0H4zQqj3u+ILA4e9fb7/oKnGIU4j6++tgoJXZOQ
-         YGzQAv8nv7vRh6+9FwEH1LhsWe/LeIYi5q/qls1nM71dFeKyxE26kZVtL7kY5oMnI9lo
-         zSaw==
-X-Gm-Message-State: AOJu0YyyQ5MMjTc6rXmgMa9+xqdkglYcqL7r47Xvr/OaMWXAe6USs17n
-	tyDNATO1s7Czqgd5FOjxG5Z+U7WCYynU6LPRoN6TK43trbWLRPhEO3jlLcHey8n6bxJ22ncxGYl
-	9BfWos1KqdqgvMWUHfyqPWuAi0GrlYPWv
-X-Received: by 2002:ac8:5f4d:0:b0:429:c7ce:46a1 with SMTP id y13-20020ac85f4d000000b00429c7ce46a1mr10150572qta.119.1705421996379;
-        Tue, 16 Jan 2024 08:19:56 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFZpmEMBkevA76baoXYyTIPcDO+YN3y2uqC0AiAi4Ab7dR3JvcV2B+BgkzjR1VlXBtGw9M9sw==
-X-Received: by 2002:ac8:5f4d:0:b0:429:c7ce:46a1 with SMTP id y13-20020ac85f4d000000b00429c7ce46a1mr10150561qta.119.1705421996127;
-        Tue, 16 Jan 2024 08:19:56 -0800 (PST)
+        bh=s4fKpZjH++WRt1yV+Gjohw4fqgWgBKev/a1YdUdJYkI=;
+        b=Ntlcsmxq6fK2ImFMM9kNTlb9YicO0gG9746E0qftEaVDdsKUjYs3pAvSdAThtvJ0Lw
+         OsXgSb9//0mpIgsfVumtHFT3Z6ZpwjtfNXhTBtJEx6jCktBJxuuDgu7Sf9SAP5OM1SLD
+         peKeI5FJIOF8rtA2BoCG9yh18SGh6izz0kxZbgth2CrhjuVDTvERjVwO2aHgEzpCTKOi
+         t2mx6fo7l6hTYdT0Gg4HzWSqpjSZ25GIbneISEwD9gS5mPKhfh0+n2BmyT9QP9JaVoOZ
+         Oo28uHFtldJucmBkePc4a/3JYXuMX+1DToxdNM4c98AN52JUQpBhLLSPuARWi7GblSb7
+         zvBw==
+X-Gm-Message-State: AOJu0YzoZlLoVaUFaQlYXa/iTYiJhmDTFzu4yStDxQbQ0yUy16LuVhpR
+	YDvKGX8HsZuMgmBQENivOU4Hz7a7otOc4CbAUnSHp1Eh66LuouKuCJ00UGhNbillYCYMC499Zz9
+	FtJP+bCoZ6vzBj2dHnTnMLH5GXcifPns2
+X-Received: by 2002:a05:620a:4799:b0:783:6831:70e3 with SMTP id dt25-20020a05620a479900b00783683170e3mr1526837qkb.142.1705421998034;
+        Tue, 16 Jan 2024 08:19:58 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGfvBnkVAtZ2Jphu3jrtv5vN7HiReIm0sHIuWvD2e6l2twauc9cYUcfmc4OQlMLPLEBZ9Z/aw==
+X-Received: by 2002:a05:620a:4799:b0:783:6831:70e3 with SMTP id dt25-20020a05620a479900b00783683170e3mr1526825qkb.142.1705421997769;
+        Tue, 16 Jan 2024 08:19:57 -0800 (PST)
 Received: from localhost.localdomain ([151.29.130.8])
-        by smtp.gmail.com with ESMTPSA id fd10-20020a05622a4d0a00b00429d3257dd6sm3809166qtb.45.2024.01.16.08.19.54
+        by smtp.gmail.com with ESMTPSA id fd10-20020a05622a4d0a00b00429d3257dd6sm3809166qtb.45.2024.01.16.08.19.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 08:19:55 -0800 (PST)
+        Tue, 16 Jan 2024 08:19:57 -0800 (PST)
 From: Juri Lelli <juri.lelli@redhat.com>
 To: Tejun Heo <tj@kernel.org>
 Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
@@ -70,9 +70,9 @@ Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
 	Waiman Long <longman@redhat.com>,
 	Juri Lelli <juri.lelli@redhat.com>,
 	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 2/4] kernel/workqueue: Bind rescuer to unbound cpumask for WQ_UNBOUND
-Date: Tue, 16 Jan 2024 17:19:27 +0100
-Message-ID: <20240116161929.232885-3-juri.lelli@redhat.com>
+Subject: [RFC PATCH 3/4] kernel/workqueue: Distinguish between general unbound and WQ_SYSFS cpumask changes
+Date: Tue, 16 Jan 2024 17:19:28 +0100
+Message-ID: <20240116161929.232885-4-juri.lelli@redhat.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116161929.232885-1-juri.lelli@redhat.com>
 References: <20240116161929.232885-1-juri.lelli@redhat.com>
@@ -84,34 +84,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-At the time they are created unbound workqueues rescuers currently use
-cpu_possible_mask as their affinity, but this can be too wide in case a
-workqueue unbound mask has been set as a subset of cpu_possible_mask.
+Both general unbound cpumask and per-wq (WQ_SYSFS) cpumask changes end
+up calling apply_wqattrs_prepare for preparing for the change, but this
+doesn't work well for general unbound cpumask changes as current
+implementation won't be looking at the new unbound_cpumask.
 
-Make new rescuers use their associated workqueue unbound cpumask from
-the start.
+Fix the prepare phase for general unbound cpumask changes by checking
+which type of attributes (general vs. WQ_SYSFS) are actually changing.
 
 Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
 ---
- kernel/workqueue.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ kernel/workqueue.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
 diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 76e60faed8923..3a1d5a67bd66a 100644
+index 3a1d5a67bd66a..2ef6573909070 100644
 --- a/kernel/workqueue.c
 +++ b/kernel/workqueue.c
-@@ -4652,7 +4652,10 @@ static int init_rescuer(struct workqueue_struct *wq)
+@@ -4359,7 +4359,17 @@ apply_wqattrs_prepare(struct workqueue_struct *wq,
+ 	 * it even if we don't use it immediately.
+ 	 */
+ 	copy_workqueue_attrs(new_attrs, attrs);
+-	wqattrs_actualize_cpumask(new_attrs, unbound_cpumask);
++
++	/*
++	 * Is the user changing the general unbound_cpumask or is this a
++	 * WQ_SYSFS cpumask change?
++	 */
++	if (attrs == wq->unbound_attrs)
++		cpumask_copy(new_attrs->cpumask, unbound_cpumask);
++	else
++		wqattrs_actualize_cpumask(new_attrs, unbound_cpumask);
++
++	cpumask_and(new_attrs->cpumask, new_attrs->cpumask, cpu_possible_mask);
+ 	cpumask_copy(new_attrs->__pod_cpumask, new_attrs->cpumask);
+ 	ctx->dfl_pwq = alloc_unbound_pwq(wq, new_attrs);
+ 	if (!ctx->dfl_pwq)
+@@ -4377,12 +4387,7 @@ apply_wqattrs_prepare(struct workqueue_struct *wq,
+ 		}
  	}
  
- 	wq->rescuer = rescuer;
--	kthread_bind_mask(rescuer->task, cpu_possible_mask);
-+	if (wq->flags & WQ_UNBOUND)
-+		kthread_bind_mask(rescuer->task, wq->unbound_attrs->cpumask);
-+	else
-+		kthread_bind_mask(rescuer->task, cpu_possible_mask);
- 	wake_up_process(rescuer->task);
+-	/* save the user configured attrs and sanitize it. */
+-	copy_workqueue_attrs(new_attrs, attrs);
+-	cpumask_and(new_attrs->cpumask, new_attrs->cpumask, cpu_possible_mask);
+-	cpumask_copy(new_attrs->__pod_cpumask, new_attrs->cpumask);
+ 	ctx->attrs = new_attrs;
+-
+ 	ctx->wq = wq;
+ 	return ctx;
  
- 	return 0;
 -- 
 2.43.0
 
