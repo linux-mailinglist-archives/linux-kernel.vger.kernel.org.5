@@ -1,51 +1,54 @@
-Return-Path: <linux-kernel+bounces-26888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE3B182E765
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:45:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 546AF82E76A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:46:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 518891C22AFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:45:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B6A41F23402
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:46:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7552035F16;
-	Tue, 16 Jan 2024 01:08:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F046C3D56F;
+	Tue, 16 Jan 2024 01:08:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f2Zhybog"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UC43XnTd"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5C4B35EFB;
-	Tue, 16 Jan 2024 01:08:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 130D6C433A6;
-	Tue, 16 Jan 2024 01:08:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 343C53D3A6;
+	Tue, 16 Jan 2024 01:08:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 247C4C433F1;
+	Tue, 16 Jan 2024 01:08:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705367306;
-	bh=oeMf3VUx8WQUb7JBKD9kWyOk/wGmCpSrwycd/tDKREQ=;
+	s=k20201202; t=1705367309;
+	bh=1JnoFOGH/NXCEXkT8KbuxlrGfiowIX/4UfEWsuL/1Ww=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=f2ZhybogP44jtWF7W0eBznPRl07aWoEta/c6RB44nCFqUoEWIYUfrwiSmos8q/Zj4
-	 yu5qP5allSJdyadyHas+iOpXTk78HSIuX+8a/UlyO0tu5bcOz6WcU30yYZrO3JkljP
-	 bJ/EFeEUjX4aqn/RRLVguj6a7IfqaBANOzrJmoGDFjfWfGle5jHcOsLvJ1cSQKytT6
-	 ylwoeDvPqoNCfJnZg2ZdDoKwGiZ90fMocHBNCYdslNTtp07/SQMvJVeBK74+Cf0UW6
-	 uqVNJ65RCq7hp6JMNjKu7O+4eVHBo14d0/Pexh7K+e1vrG6LFi+al4tp4nAykayOMf
-	 EixEk5Vz4MxsA==
+	b=UC43XnTdJQn0trXvyBwMhPqeAMwxcWPTiYjAlxBXVHZVFWvgpgbxOOAr7sZMDzLHG
+	 5WMTFgEFf5trTIiORsAxrs82pYN8LMzoBzS4XUpeFqm5ZTth7VMAIXhVVA8KL+6L7/
+	 a4tXRZhV1WRlykPNuSbQaTXMdGZ0BeMEXe4fgizeQUCc3aUc5LfTXmfUlIfVDCgpgv
+	 4d2nYkjuUlAE6ZKQo5VqK0qxAWTP2OGgfN643d5rfob1hEJrsvC5J5d8X0EASG5+gG
+	 xlRLdXCho7PFMIkuFpIzDHKn6KDnJr3j81FMhy+LttT225ly1HiPm1IEXbcQWDON96
+	 GZHiNq6i2ChIQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Heiko Carstens <hca@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Claudio Imbrenda <imbrenda@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
+Cc: Anna Schumaker <Anna.Schumaker@Netapp.com>,
+	Jeff Layton <jlayton@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	frankja@linux.ibm.com,
-	gor@linux.ibm.com,
-	kvm@vger.kernel.org,
-	linux-s390@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 3/9] KVM: s390: fix setting of fpc register
-Date: Mon, 15 Jan 2024 20:08:09 -0500
-Message-ID: <20240116010819.219701-3-sashal@kernel.org>
+	chuck.lever@oracle.com,
+	trond.myklebust@hammerspace.com,
+	anna@kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	linux-nfs@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 4/9] SUNRPC: Fix a suspicious RCU usage warning
+Date: Mon, 15 Jan 2024 20:08:10 -0500
+Message-ID: <20240116010819.219701-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116010819.219701-1-sashal@kernel.org>
 References: <20240116010819.219701-1-sashal@kernel.org>
@@ -60,68 +63,119 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.4.267
 Content-Transfer-Encoding: 8bit
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: Anna Schumaker <Anna.Schumaker@Netapp.com>
 
-[ Upstream commit b988b1bb0053c0dcd26187d29ef07566a565cf55 ]
+[ Upstream commit 31b62908693c90d4d07db597e685d9f25a120073 ]
 
-kvm_arch_vcpu_ioctl_set_fpu() allows to set the floating point control
-(fpc) register of a guest cpu. The new value is tested for validity by
-temporarily loading it into the fpc register.
+I received the following warning while running cthon against an ontap
+server running pNFS:
 
-This may lead to corruption of the fpc register of the host process:
-if an interrupt happens while the value is temporarily loaded into the fpc
-register, and within interrupt context floating point or vector registers
-are used, the current fp/vx registers are saved with save_fpu_regs()
-assuming they belong to user space and will be loaded into fp/vx registers
-when returning to user space.
+[   57.202521] =============================
+[   57.202522] WARNING: suspicious RCU usage
+[   57.202523] 6.7.0-rc3-g2cc14f52aeb7 #41492 Not tainted
+[   57.202525] -----------------------------
+[   57.202525] net/sunrpc/xprtmultipath.c:349 RCU-list traversed in non-reader section!!
+[   57.202527]
+               other info that might help us debug this:
 
-test_fp_ctl() restores the original user space / host process fpc register
-value, however it will be discarded, when returning to user space.
+[   57.202528]
+               rcu_scheduler_active = 2, debug_locks = 1
+[   57.202529] no locks held by test5/3567.
+[   57.202530]
+               stack backtrace:
+[   57.202532] CPU: 0 PID: 3567 Comm: test5 Not tainted 6.7.0-rc3-g2cc14f52aeb7 #41492 5b09971b4965c0aceba19f3eea324a4a806e227e
+[   57.202534] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS unknown 2/2/2022
+[   57.202536] Call Trace:
+[   57.202537]  <TASK>
+[   57.202540]  dump_stack_lvl+0x77/0xb0
+[   57.202551]  lockdep_rcu_suspicious+0x154/0x1a0
+[   57.202556]  rpc_xprt_switch_has_addr+0x17c/0x190 [sunrpc ebe02571b9a8ceebf7d98e71675af20c19bdb1f6]
+[   57.202596]  rpc_clnt_setup_test_and_add_xprt+0x50/0x180 [sunrpc ebe02571b9a8ceebf7d98e71675af20c19bdb1f6]
+[   57.202621]  ? rpc_clnt_add_xprt+0x254/0x300 [sunrpc ebe02571b9a8ceebf7d98e71675af20c19bdb1f6]
+[   57.202646]  rpc_clnt_add_xprt+0x27a/0x300 [sunrpc ebe02571b9a8ceebf7d98e71675af20c19bdb1f6]
+[   57.202671]  ? __pfx_rpc_clnt_setup_test_and_add_xprt+0x10/0x10 [sunrpc ebe02571b9a8ceebf7d98e71675af20c19bdb1f6]
+[   57.202696]  nfs4_pnfs_ds_connect+0x345/0x760 [nfsv4 c716d88496ded0ea6d289bbea684fa996f9b57a9]
+[   57.202728]  ? __pfx_nfs4_test_session_trunk+0x10/0x10 [nfsv4 c716d88496ded0ea6d289bbea684fa996f9b57a9]
+[   57.202754]  nfs4_fl_prepare_ds+0x75/0xc0 [nfs_layout_nfsv41_files e3a4187f18ae8a27b630f9feae6831b584a9360a]
+[   57.202760]  filelayout_write_pagelist+0x4a/0x200 [nfs_layout_nfsv41_files e3a4187f18ae8a27b630f9feae6831b584a9360a]
+[   57.202765]  pnfs_generic_pg_writepages+0xbe/0x230 [nfsv4 c716d88496ded0ea6d289bbea684fa996f9b57a9]
+[   57.202788]  __nfs_pageio_add_request+0x3fd/0x520 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
+[   57.202813]  nfs_pageio_add_request+0x18b/0x390 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
+[   57.202831]  nfs_do_writepage+0x116/0x1e0 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
+[   57.202849]  nfs_writepages_callback+0x13/0x30 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
+[   57.202866]  write_cache_pages+0x265/0x450
+[   57.202870]  ? __pfx_nfs_writepages_callback+0x10/0x10 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
+[   57.202891]  nfs_writepages+0x141/0x230 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
+[   57.202913]  do_writepages+0xd2/0x230
+[   57.202917]  ? filemap_fdatawrite_wbc+0x5c/0x80
+[   57.202921]  filemap_fdatawrite_wbc+0x67/0x80
+[   57.202924]  filemap_write_and_wait_range+0xd9/0x170
+[   57.202930]  nfs_wb_all+0x49/0x180 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
+[   57.202947]  nfs4_file_flush+0x72/0xb0 [nfsv4 c716d88496ded0ea6d289bbea684fa996f9b57a9]
+[   57.202969]  __se_sys_close+0x46/0xd0
+[   57.202972]  do_syscall_64+0x68/0x100
+[   57.202975]  ? do_syscall_64+0x77/0x100
+[   57.202976]  ? do_syscall_64+0x77/0x100
+[   57.202979]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+[   57.202982] RIP: 0033:0x7fe2b12e4a94
+[   57.202985] Code: 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 80 3d d5 18 0e 00 00 74 13 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 44 c3 0f 1f 00 48 83 ec 18 89 7c 24 0c e8 c3
+[   57.202987] RSP: 002b:00007ffe857ddb38 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
+[   57.202989] RAX: ffffffffffffffda RBX: 00007ffe857dfd68 RCX: 00007fe2b12e4a94
+[   57.202991] RDX: 0000000000002000 RSI: 00007ffe857ddc40 RDI: 0000000000000003
+[   57.202992] RBP: 00007ffe857dfc50 R08: 7fffffffffffffff R09: 0000000065650f49
+[   57.202993] R10: 00007fe2b11f8300 R11: 0000000000000202 R12: 0000000000000000
+[   57.202994] R13: 00007ffe857dfd80 R14: 00007fe2b1445000 R15: 0000000000000000
+[   57.202999]  </TASK>
 
-In result the host process will incorrectly continue to run with the value
-that was supposed to be used for a guest cpu.
+The problem seems to be that two out of three callers aren't taking the
+rcu_read_lock() before calling the list_for_each_entry_rcu() function in
+rpc_xprt_switch_has_addr(). I fix this by having
+rpc_xprt_switch_has_addr() unconditionaly take the rcu_read_lock(),
+which is okay to do recursively in the case that the lock has already
+been taken by a caller.
 
-Fix this by simply removing the test. There is another test right before
-the SIE context is entered which will handles invalid values.
-
-This results in a change of behaviour: invalid values will now be accepted
-instead of that the ioctl fails with -EINVAL. This seems to be acceptable,
-given that this interface is most likely not used anymore, and this is in
-addition the same behaviour implemented with the memory mapped interface
-(replace invalid values with zero) - see sync_regs() in kvm-s390.c.
-
-Reviewed-by: Christian Borntraeger <borntraeger@linux.ibm.com>
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kvm/kvm-s390.c | 5 -----
- 1 file changed, 5 deletions(-)
+ net/sunrpc/xprtmultipath.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index b11eb11e2f49..6a1b46e85dac 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -3348,10 +3348,6 @@ int kvm_arch_vcpu_ioctl_set_fpu(struct kvm_vcpu *vcpu, struct kvm_fpu *fpu)
- 
- 	vcpu_load(vcpu);
- 
--	if (test_fp_ctl(fpu->fpc)) {
--		ret = -EINVAL;
--		goto out;
--	}
- 	vcpu->run->s.regs.fpc = fpu->fpc;
- 	if (MACHINE_HAS_VX)
- 		convert_fp_to_vx((__vector128 *) vcpu->run->s.regs.vrs,
-@@ -3359,7 +3355,6 @@ int kvm_arch_vcpu_ioctl_set_fpu(struct kvm_vcpu *vcpu, struct kvm_fpu *fpu)
- 	else
- 		memcpy(vcpu->run->s.regs.fprs, &fpu->fprs, sizeof(fpu->fprs));
- 
--out:
- 	vcpu_put(vcpu);
- 	return ret;
+diff --git a/net/sunrpc/xprtmultipath.c b/net/sunrpc/xprtmultipath.c
+index 78c075a68c04..a11e80d17830 100644
+--- a/net/sunrpc/xprtmultipath.c
++++ b/net/sunrpc/xprtmultipath.c
+@@ -253,8 +253,9 @@ struct rpc_xprt *xprt_iter_current_entry(struct rpc_xprt_iter *xpi)
+ 	return xprt_switch_find_current_entry(head, xpi->xpi_cursor);
  }
+ 
+-bool rpc_xprt_switch_has_addr(struct rpc_xprt_switch *xps,
+-			      const struct sockaddr *sap)
++static
++bool __rpc_xprt_switch_has_addr(struct rpc_xprt_switch *xps,
++				const struct sockaddr *sap)
+ {
+ 	struct list_head *head;
+ 	struct rpc_xprt *pos;
+@@ -273,6 +274,18 @@ bool rpc_xprt_switch_has_addr(struct rpc_xprt_switch *xps,
+ 	return false;
+ }
+ 
++bool rpc_xprt_switch_has_addr(struct rpc_xprt_switch *xps,
++			      const struct sockaddr *sap)
++{
++	bool res;
++
++	rcu_read_lock();
++	res = __rpc_xprt_switch_has_addr(xps, sap);
++	rcu_read_unlock();
++
++	return res;
++}
++
+ static
+ struct rpc_xprt *xprt_switch_find_next_entry(struct list_head *head,
+ 		const struct rpc_xprt *cur)
 -- 
 2.43.0
 
