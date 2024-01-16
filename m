@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-27857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6073C82F6D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:09:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B954482F6DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:09:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 858901C24226
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:09:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F8C2282766
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:09:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39C285EE63;
-	Tue, 16 Jan 2024 19:46:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7166A5FF10;
+	Tue, 16 Jan 2024 19:46:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E9wd2Z16"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J5qvUsDm"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 748FE5D904;
-	Tue, 16 Jan 2024 19:46:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56F135FEF6;
+	Tue, 16 Jan 2024 19:46:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434381; cv=none; b=O9UYKkPgpBJG9Uj9KWR0FtJo6fgeq1a67fMksjqGRzMhqw8zC8dW18t9DKuIJXS6bcTh4Ce1wPsmnv+NuZIoPxxX6nMXfuaZI/SnzN6eFkuLsUFhxAyp4S6Kqmk9qGyRcHRlXyDI5WX/7a5+8hUaa1GqJ9zYZOsHKtkEcUALWVE=
+	t=1705434384; cv=none; b=DVJGGVkGulfxGZ10u7tiavMp3sZx+ndWyYPQQikdReevtFvyI/set/fcTX5bIZQAEQsFYpf97n+KEIP3/pXLxV7zMnhdipZfErReoYWSEddSzlrlFi9gfr1mr6YfNN+OgygmmWVq6m/Kt578U5Qkt87c8Ei2dLy3SNEyPPLjsyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434381; c=relaxed/simple;
-	bh=zDVi1CvKp+/Q+SWCYJsjBMCyPrJPLJjCx6j24bee8Ew=;
+	s=arc-20240116; t=1705434384; c=relaxed/simple;
+	bh=dUToqKRZwM7w510wzCnyrPA0F2UXZA62+0hG52flM3Y=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=Susu81+iCqE1PAF/zY9MbelzCDwkUJSfEGW2P1nQ/YF/c1x16cbTUsaK2+rBR1nWstJ3SAosljixo/JtZO83VJueGmnCzVkzZW7gYshbUwLWkoAQLADVdsJkBGuT3KTMkdB5HaUVPrNpPkL9vhns/POn5kPJHn3yuJCfQBH0hwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E9wd2Z16; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E2B6C43609;
-	Tue, 16 Jan 2024 19:46:19 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=depcn5WvNjkz5kJ+olI/Ww8R/l2VBrHmNLCY8FL8TsP/oo5HOePol7LcraqEFW8vorOEXe2yF8dm3pmcYWmhRuVACW/L8ctsVUHRSyk+Ira3hOskGKXLhlH+o/L0tuiU4PURLZUVBpUB7ZWFgyYL6btJ8Sgw04Z71n0L8owQps4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J5qvUsDm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5084C43394;
+	Tue, 16 Jan 2024 19:46:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434381;
-	bh=zDVi1CvKp+/Q+SWCYJsjBMCyPrJPLJjCx6j24bee8Ew=;
+	s=k20201202; t=1705434384;
+	bh=dUToqKRZwM7w510wzCnyrPA0F2UXZA62+0hG52flM3Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=E9wd2Z16CXjoa0YcB/6o9DnNbpipuErFzPKN2XXJqzDUyEFOo7Z11nINPxlR5x+5X
-	 mmXXlWlHTp5RuK8pZbhbcJIsRPwrABN53o7AFeiPHyjvaghU5eIIXJIYFlpZYnLMlL
-	 T8Sqi4hWCwylKcZmOaHgdUnNNWR0XuY38c1qSQQZl8uopVh7APvIDQNN8aPv/M+E3x
-	 b2D+S35bFFJHH7e31Nnub5riNYrx3WKjiWCOSOeY0PpKsEQSNfew2WiRfCQqVx1CsE
-	 xgbRgnRCyY8hQzv3szRhVz8kEmGByJs6Vu56UU2KXovMnkYmt2mekoSTKnevw2mtG+
-	 yJpJw+ywOav9A==
+	b=J5qvUsDmDDKyTm4uRfbGM41tqFyQW6FEk2iuwTphJ8Uskt3i3wNj0dDosYarKQQa3
+	 UT1s2dv23Zpec+qCrcbfco1Gv0GQPsV47XOuozIoMOT5Wb+IggQMhYg2AEOLphnKqL
+	 NkU0l7o2WHQJ6nto+UA+1lYjyVCry8Cpdo5Py092ABkPnFsnwCqkpn+y7cWH8HpU0o
+	 VuBr77uPB3Mfh9TNsFqbp2KvdkY0pjvfmCpgCjDFJhgqSRGqvrKVQV20NM3dz4MNpv
+	 YOxir0DDrnlKwyu/QvIEkjOC2eqMDuHxjqgMsALdtme7mzVEWwEQHKe3Qj+ajGi5rx
+	 GqfNdkyDP2CKw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mao Jinlong <quic_jinlmao@quicinc.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
+Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Marcin Szycik <marcin.szycik@linux.intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	konrad.dybcio@linaro.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 086/108] arm64: dts: qcom: Fix coresight warnings in in-ports and out-ports
-Date: Tue, 16 Jan 2024 14:39:52 -0500
-Message-ID: <20240116194225.250921-86-sashal@kernel.org>
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 087/108] intel: add bit macro includes where needed
+Date: Tue, 16 Jan 2024 14:39:53 -0500
+Message-ID: <20240116194225.250921-87-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194225.250921-1-sashal@kernel.org>
 References: <20240116194225.250921-1-sashal@kernel.org>
@@ -71,124 +71,303 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7
 Content-Transfer-Encoding: 8bit
 
-From: Mao Jinlong <quic_jinlmao@quicinc.com>
+From: Jesse Brandeburg <jesse.brandeburg@intel.com>
 
-[ Upstream commit bdb6339fd46b8702ea7411b0b414587b86a40562 ]
+[ Upstream commit 3314f2097dee43defc20554f961a8b17f4787e2d ]
 
-When a node is only one in port or one out port, address-cells and
-size-cells are not required in in-ports and out-ports. And the number
-and reg of the port need to be removed.
+This series is introducing the use of FIELD_GET and FIELD_PREP which
+requires bitfield.h to be included. Fix all the includes in this one
+change, and rearrange includes into alphabetical order to ease
+readability and future maintenance.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
-Link: https://lore.kernel.org/r/20231210072633.4243-5-quic_jinlmao@quicinc.com
-Signed-off-by: Bjorn Andersson <andersson@kernel.org>
+virtchnl.h and it's usage was modified to have it's own includes as it
+should. This required including bits.h for virtchnl.h.
+
+Reviewed-by: Marcin Szycik <marcin.szycik@linux.intel.com>
+Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sdm845.dtsi |  5 +----
- arch/arm64/boot/dts/qcom/sm8150.dtsi |  5 +----
- arch/arm64/boot/dts/qcom/sm8250.dtsi | 24 ++++--------------------
- 3 files changed, 6 insertions(+), 28 deletions(-)
+ drivers/net/ethernet/intel/e1000/e1000_hw.c   |  1 +
+ drivers/net/ethernet/intel/fm10k/fm10k_pf.c   |  1 +
+ drivers/net/ethernet/intel/fm10k/fm10k_vf.c   |  1 +
+ drivers/net/ethernet/intel/i40e/i40e_common.c |  1 +
+ drivers/net/ethernet/intel/i40e/i40e_dcb.c    |  2 ++
+ drivers/net/ethernet/intel/i40e/i40e_nvm.c    |  1 +
+ drivers/net/ethernet/intel/iavf/iavf_common.c |  3 +-
+ .../net/ethernet/intel/iavf/iavf_ethtool.c    |  5 ++--
+ drivers/net/ethernet/intel/iavf/iavf_fdir.c   |  1 +
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c   |  1 +
+ drivers/net/ethernet/intel/igb/e1000_i210.c   |  4 +--
+ drivers/net/ethernet/intel/igb/e1000_nvm.c    |  4 +--
+ drivers/net/ethernet/intel/igb/e1000_phy.c    |  4 +--
+ drivers/net/ethernet/intel/igbvf/netdev.c     | 28 +++++++++----------
+ drivers/net/ethernet/intel/igc/igc_i225.c     |  1 +
+ drivers/net/ethernet/intel/igc/igc_phy.c      |  1 +
+ include/linux/avf/virtchnl.h                  |  1 +
+ 17 files changed, 37 insertions(+), 23 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index bf5e6eb9d313..c4dbca4c15f2 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -3545,11 +3545,8 @@ etf_out: endpoint {
- 			};
+diff --git a/drivers/net/ethernet/intel/e1000/e1000_hw.c b/drivers/net/ethernet/intel/e1000/e1000_hw.c
+index 4542e2bc28e8..4576511c99f5 100644
+--- a/drivers/net/ethernet/intel/e1000/e1000_hw.c
++++ b/drivers/net/ethernet/intel/e1000/e1000_hw.c
+@@ -5,6 +5,7 @@
+  * Shared functions for accessing and configuring the MAC
+  */
  
- 			in-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
++#include <linux/bitfield.h>
+ #include "e1000.h"
  
--				port@1 {
--					reg = <1>;
-+				port {
- 					etf_in: endpoint {
- 						remote-endpoint =
- 						  <&merge_funnel_out>;
-diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-index 97623af13464..7bae3bc6af06 100644
---- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-@@ -2957,11 +2957,8 @@ replicator1_out: endpoint {
- 			};
+ static s32 e1000_check_downshift(struct e1000_hw *hw);
+diff --git a/drivers/net/ethernet/intel/fm10k/fm10k_pf.c b/drivers/net/ethernet/intel/fm10k/fm10k_pf.c
+index af1b0cde3670..ae700a1807c6 100644
+--- a/drivers/net/ethernet/intel/fm10k/fm10k_pf.c
++++ b/drivers/net/ethernet/intel/fm10k/fm10k_pf.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright(c) 2013 - 2019 Intel Corporation. */
  
- 			in-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
++#include <linux/bitfield.h>
+ #include "fm10k_pf.h"
+ #include "fm10k_vf.h"
  
--				port@1 {
--					reg = <1>;
-+				port {
- 					replicator1_in: endpoint {
- 						remote-endpoint = <&replicator_out1>;
- 					};
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index be970472f6c4..fa4e8887d53b 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -3095,11 +3095,8 @@ tpda@6004000 {
- 			clock-names = "apb_pclk";
+diff --git a/drivers/net/ethernet/intel/fm10k/fm10k_vf.c b/drivers/net/ethernet/intel/fm10k/fm10k_vf.c
+index dc8ccd378ec9..c50928ec14ff 100644
+--- a/drivers/net/ethernet/intel/fm10k/fm10k_vf.c
++++ b/drivers/net/ethernet/intel/fm10k/fm10k_vf.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright(c) 2013 - 2019 Intel Corporation. */
  
- 			out-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
++#include <linux/bitfield.h>
+ #include "fm10k_vf.h"
  
--				port@0 {
--					reg = <0>;
-+				port {
- 					tpda_out_funnel_qatb: endpoint {
- 						remote-endpoint = <&funnel_qatb_in_tpda>;
- 					};
-@@ -3142,11 +3139,7 @@ funnel_qatb_out_funnel_in0: endpoint {
- 			};
+ /**
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_common.c b/drivers/net/ethernet/intel/i40e/i40e_common.c
+index d7e24d661724..3eb6564c1cbc 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_common.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_common.c
+@@ -2,6 +2,7 @@
+ /* Copyright(c) 2013 - 2021 Intel Corporation. */
  
- 			in-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
+ #include <linux/avf/virtchnl.h>
++#include <linux/bitfield.h>
+ #include <linux/delay.h>
+ #include <linux/etherdevice.h>
+ #include <linux/pci.h>
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_dcb.c b/drivers/net/ethernet/intel/i40e/i40e_dcb.c
+index 68602fc375f6..d57dd30b024f 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_dcb.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_dcb.c
+@@ -1,6 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright(c) 2013 - 2021 Intel Corporation. */
+ 
++#include <linux/bitfield.h>
++#include "i40e_adminq.h"
+ #include "i40e_alloc.h"
+ #include "i40e_dcb.h"
+ #include "i40e_prototype.h"
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_nvm.c b/drivers/net/ethernet/intel/i40e/i40e_nvm.c
+index 77cdbfc19d47..e5aec09d58e2 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_nvm.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_nvm.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright(c) 2013 - 2018 Intel Corporation. */
+ 
++#include <linux/bitfield.h>
+ #include <linux/delay.h>
+ #include "i40e_alloc.h"
+ #include "i40e_prototype.h"
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_common.c b/drivers/net/ethernet/intel/iavf/iavf_common.c
+index 8091e6feca01..6a10c0ecf2b5 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_common.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_common.c
+@@ -1,10 +1,11 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright(c) 2013 - 2018 Intel Corporation. */
+ 
++#include <linux/avf/virtchnl.h>
++#include <linux/bitfield.h>
+ #include "iavf_type.h"
+ #include "iavf_adminq.h"
+ #include "iavf_prototype.h"
+-#include <linux/avf/virtchnl.h>
+ 
+ /**
+  * iavf_aq_str - convert AQ err code to a string
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
+index dc499fe7734e..25ba5653ac6b 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
+@@ -1,11 +1,12 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright(c) 2013 - 2018 Intel Corporation. */
+ 
++#include <linux/bitfield.h>
++#include <linux/uaccess.h>
++
+ /* ethtool support for iavf */
+ #include "iavf.h"
+ 
+-#include <linux/uaccess.h>
 -
--				port@0 {
--					reg = <0>;
-+				port {
- 					funnel_qatb_in_tpda: endpoint {
- 						remote-endpoint = <&tpda_out_funnel_qatb>;
- 					};
-@@ -3355,11 +3348,8 @@ etf_out: endpoint {
- 			};
+ /* ethtool statistics helpers */
  
- 			in-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
+ /**
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_fdir.c b/drivers/net/ethernet/intel/iavf/iavf_fdir.c
+index 03e774bd2a5b..65ddcd81c993 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_fdir.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_fdir.c
+@@ -3,6 +3,7 @@
  
--				port@0 {
--					reg = <0>;
-+				port {
- 					etf_in_funnel_swao_out: endpoint {
- 						remote-endpoint = <&funnel_swao_out_etf>;
- 					};
-@@ -3443,8 +3433,6 @@ funnel@6c2d000 {
- 			clock-names = "apb_pclk";
+ /* flow director ethtool support for iavf */
  
- 			out-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
- 				port {
- 					tpdm_mm_out_tpda9: endpoint {
- 						remote-endpoint = <&tpda_9_in_tpdm_mm>;
-@@ -3710,11 +3698,7 @@ funnel_apss_merg_out_funnel_in1: endpoint {
- 			};
++#include <linux/bitfield.h>
+ #include "iavf.h"
  
- 			in-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
+ #define GTPU_PORT	2152
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_txrx.c b/drivers/net/ethernet/intel/iavf/iavf_txrx.c
+index d64c4997136b..fb7edba9c2f8 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_txrx.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_txrx.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright(c) 2013 - 2018 Intel Corporation. */
+ 
++#include <linux/bitfield.h>
+ #include <linux/prefetch.h>
+ 
+ #include "iavf.h"
+diff --git a/drivers/net/ethernet/intel/igb/e1000_i210.c b/drivers/net/ethernet/intel/igb/e1000_i210.c
+index b9b9d35494d2..53b396fd194a 100644
+--- a/drivers/net/ethernet/intel/igb/e1000_i210.c
++++ b/drivers/net/ethernet/intel/igb/e1000_i210.c
+@@ -5,9 +5,9 @@
+  * e1000_i211
+  */
+ 
+-#include <linux/types.h>
++#include <linux/bitfield.h>
+ #include <linux/if_ether.h>
 -
--				port@0 {
--					reg = <0>;
-+				port {
- 					funnel_apss_merg_in_funnel_apss: endpoint {
- 					remote-endpoint = <&funnel_apss_out_funnel_apss_merg>;
- 					};
++#include <linux/types.h>
+ #include "e1000_hw.h"
+ #include "e1000_i210.h"
+ 
+diff --git a/drivers/net/ethernet/intel/igb/e1000_nvm.c b/drivers/net/ethernet/intel/igb/e1000_nvm.c
+index fa136e6e9328..0da57e89593a 100644
+--- a/drivers/net/ethernet/intel/igb/e1000_nvm.c
++++ b/drivers/net/ethernet/intel/igb/e1000_nvm.c
+@@ -1,9 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright(c) 2007 - 2018 Intel Corporation. */
+ 
+-#include <linux/if_ether.h>
++#include <linux/bitfield.h>
+ #include <linux/delay.h>
+-
++#include <linux/if_ether.h>
+ #include "e1000_mac.h"
+ #include "e1000_nvm.h"
+ 
+diff --git a/drivers/net/ethernet/intel/igb/e1000_phy.c b/drivers/net/ethernet/intel/igb/e1000_phy.c
+index a018000f7db9..3c1b562a3271 100644
+--- a/drivers/net/ethernet/intel/igb/e1000_phy.c
++++ b/drivers/net/ethernet/intel/igb/e1000_phy.c
+@@ -1,9 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright(c) 2007 - 2018 Intel Corporation. */
+ 
+-#include <linux/if_ether.h>
++#include <linux/bitfield.h>
+ #include <linux/delay.h>
+-
++#include <linux/if_ether.h>
+ #include "e1000_mac.h"
+ #include "e1000_phy.h"
+ 
+diff --git a/drivers/net/ethernet/intel/igbvf/netdev.c b/drivers/net/ethernet/intel/igbvf/netdev.c
+index fd712585af27..e6c1fbee049e 100644
+--- a/drivers/net/ethernet/intel/igbvf/netdev.c
++++ b/drivers/net/ethernet/intel/igbvf/netdev.c
+@@ -3,25 +3,25 @@
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
+-#include <linux/module.h>
+-#include <linux/types.h>
+-#include <linux/init.h>
+-#include <linux/pci.h>
+-#include <linux/vmalloc.h>
+-#include <linux/pagemap.h>
++#include <linux/bitfield.h>
+ #include <linux/delay.h>
+-#include <linux/netdevice.h>
+-#include <linux/tcp.h>
+-#include <linux/ipv6.h>
+-#include <linux/slab.h>
+-#include <net/checksum.h>
+-#include <net/ip6_checksum.h>
+-#include <linux/mii.h>
+ #include <linux/ethtool.h>
+ #include <linux/if_vlan.h>
++#include <linux/init.h>
++#include <linux/ipv6.h>
++#include <linux/mii.h>
++#include <linux/module.h>
++#include <linux/netdevice.h>
++#include <linux/pagemap.h>
++#include <linux/pci.h>
+ #include <linux/prefetch.h>
+ #include <linux/sctp.h>
+-
++#include <linux/slab.h>
++#include <linux/tcp.h>
++#include <linux/types.h>
++#include <linux/vmalloc.h>
++#include <net/checksum.h>
++#include <net/ip6_checksum.h>
+ #include "igbvf.h"
+ 
+ char igbvf_driver_name[] = "igbvf";
+diff --git a/drivers/net/ethernet/intel/igc/igc_i225.c b/drivers/net/ethernet/intel/igc/igc_i225.c
+index 17546a035ab1..d2562c8e8015 100644
+--- a/drivers/net/ethernet/intel/igc/igc_i225.c
++++ b/drivers/net/ethernet/intel/igc/igc_i225.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c)  2018 Intel Corporation */
+ 
++#include <linux/bitfield.h>
+ #include <linux/delay.h>
+ 
+ #include "igc_hw.h"
+diff --git a/drivers/net/ethernet/intel/igc/igc_phy.c b/drivers/net/ethernet/intel/igc/igc_phy.c
+index 53b77c969c85..d0d9e7170154 100644
+--- a/drivers/net/ethernet/intel/igc/igc_phy.c
++++ b/drivers/net/ethernet/intel/igc/igc_phy.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c)  2018 Intel Corporation */
+ 
++#include <linux/bitfield.h>
+ #include "igc_phy.h"
+ 
+ /**
+diff --git a/include/linux/avf/virtchnl.h b/include/linux/avf/virtchnl.h
+index 6b3acf15be5c..99ae7960a8d1 100644
+--- a/include/linux/avf/virtchnl.h
++++ b/include/linux/avf/virtchnl.h
+@@ -5,6 +5,7 @@
+ #define _VIRTCHNL_H_
+ 
+ #include <linux/bitops.h>
++#include <linux/bits.h>
+ #include <linux/overflow.h>
+ #include <uapi/linux/if_ether.h>
+ 
 -- 
 2.43.0
 
