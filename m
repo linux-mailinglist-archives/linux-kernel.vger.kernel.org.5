@@ -1,191 +1,108 @@
-Return-Path: <linux-kernel+bounces-28362-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67D7982FD4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:47:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DDFC82FD4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:56:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E718C1F2BE4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:47:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C1741C24A11
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:56:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 553C41F95A;
-	Tue, 16 Jan 2024 22:44:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8687767C55;
+	Tue, 16 Jan 2024 22:56:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="f6Kejs3y";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="HjfwTsYn";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="f6Kejs3y";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="HjfwTsYn"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="NnL9SKcT"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D2B91D6A8;
-	Tue, 16 Jan 2024 22:44:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8391F67C4D;
+	Tue, 16 Jan 2024 22:56:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705445072; cv=none; b=J/j0nT2kqmRDP1KqtTQbciSLQ2OX2cYla/SyXga4mjSS99EIc6MSSSXNOHg0VuqcZhmbOh4eCHbc+mYrwTujc/nSIPSX8f6G/ChuGjS2FkRlHR6Ggyqn/t3btH1Z03DEcBPDIJO4UZBjbesCkEZYeCb43chcGhbwQdBhnarJKkQ=
+	t=1705445778; cv=none; b=uXTL6z/QikC6x8rKNIC3V19jWACzebNwJafaRt8ATu5rrwZoyBP04RB6xRWr27IUITlC6tbwEHlU9SSLMBk66rEnuOSJAsImq4LPN2jqGZU3GwoCZpYWw/AvjZ8IUnCK3suzMSfzwhxibGL9iBgM9Pu7tBhIZaDHCn6vdbyXeA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705445072; c=relaxed/simple;
-	bh=AKPYrNOerbRHsirgEfZ0p1S5QHwiWw7x8ovHOI5lE1o=;
-	h=Received:DKIM-Signature:DKIM-Signature:DKIM-Signature:
-	 DKIM-Signature:Received:Received:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version:From:To:Cc:Subject:
-	 In-reply-to:References:Date:Message-id:X-Spam-Level:X-Spam-Score:
-	 X-Spamd-Result:X-Spam-Flag; b=M39EnUL400qnev8vMtKtrSlTaRf0Olee+4TYLnWnh/irCGY0qRKsRWPx8RU6z4BjeZqp/R813liO1wdQ1Uu7aopyop39IitwlZBIhUYZ4I2FrHo6ZNpeDSaAEl7xAC/eM648B+DboBLqfKXPCZBEoEjIfpQCfKVafnTrPiDStqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=f6Kejs3y; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=HjfwTsYn; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=f6Kejs3y; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=HjfwTsYn; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0DE9E21FD7;
-	Tue, 16 Jan 2024 22:44:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1705445069; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Rh+oq1spB9mXnL92/e4GJ7ibfkaNrbj9dH8Tk64Djcw=;
-	b=f6Kejs3ynwExykrJLsf6I7d5bcEDabcWJXxJV92F4iHVc7UOqw1z6bgFyUdjZB1nZZzUCy
-	uYn6ovQ2wTV5Uxps5LTHqoIi8FbN9c3jpKoKlo+yzVUeHRhsOYMjfowfic3prCOTRXHmJI
-	i8ViuIPt524UHL9J9oGTH1HL5w0L8M4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1705445069;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Rh+oq1spB9mXnL92/e4GJ7ibfkaNrbj9dH8Tk64Djcw=;
-	b=HjfwTsYnAa/QGGZbmcPUUDcpirEYaDZy2aVFXUHAzwLEEj1ZabVT5GkD0w3g233fYFYFkp
-	/MP1zNcr5sIVRlCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1705445069; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Rh+oq1spB9mXnL92/e4GJ7ibfkaNrbj9dH8Tk64Djcw=;
-	b=f6Kejs3ynwExykrJLsf6I7d5bcEDabcWJXxJV92F4iHVc7UOqw1z6bgFyUdjZB1nZZzUCy
-	uYn6ovQ2wTV5Uxps5LTHqoIi8FbN9c3jpKoKlo+yzVUeHRhsOYMjfowfic3prCOTRXHmJI
-	i8ViuIPt524UHL9J9oGTH1HL5w0L8M4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1705445069;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Rh+oq1spB9mXnL92/e4GJ7ibfkaNrbj9dH8Tk64Djcw=;
-	b=HjfwTsYnAa/QGGZbmcPUUDcpirEYaDZy2aVFXUHAzwLEEj1ZabVT5GkD0w3g233fYFYFkp
-	/MP1zNcr5sIVRlCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BCF6513751;
-	Tue, 16 Jan 2024 22:44:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id nzD3HL8Gp2UWAgAAD6G6ig
-	(envelope-from <neilb@suse.de>); Tue, 16 Jan 2024 22:44:15 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1705445778; c=relaxed/simple;
+	bh=IRwRUQdwBTS2kA8qjwAaxRwBLfowiexvmeyjaSk3fac=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=da1ciGzw0t4IZhtUI4BDtWVOtC70yBFGU7i9Sc6peViB3eHPoZNsUw/WQ3ERXC1Y7YMGh69mVwxxnlqxWtQpW5YDURf4rnAcGrfBwkXzY7XNQW3yD0bH3jmZOG0DlbRDZqWVtGa2dFD3XtPv8iVQqtb0rfhN9BwA83g0Ac6fe5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=NnL9SKcT; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5940BB2A;
+	Tue, 16 Jan 2024 23:55:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1705445705;
+	bh=IRwRUQdwBTS2kA8qjwAaxRwBLfowiexvmeyjaSk3fac=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NnL9SKcTkKobGkyR4WrheJwAIF15Z4nZEsqjsFLRxFWVxBUKsxefLH5JFUzkPGQgt
+	 4HvyShIWtSuWBFIDB5IWl2PiUl9+LS3H6H19sop54T90O9ZvHdfi/0HaxT7vVpYgNj
+	 nu6PPj81LJq5XhAMDtsqoCSPbB5dESMZa2f3qK2M=
+Date: Wed, 17 Jan 2024 00:56:18 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc: Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+	Vinay Varma <varmavinaym@gmail.com>,
+	Dave Stevenson <dave.stevenson@raspberrypi.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	"open list:SONY IMX219 SENSOR DRIVER" <linux-media@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] media: i2c: imx219: implement the v4l2 selection api
+Message-ID: <20240116225618.GA4860@pendragon.ideasonboard.com>
+References: <kv6yfyahbud474e75y4jaczg64pcowvlz7i52kikknuh6wje5o@4k2hikwcueoy>
+ <ZZu2C_lu6TAh-LOf@kekkonen.localdomain>
+ <3q6andka2su7i43xz2ok44ejvtb3hdjdn6xretyde7sdcvtd7l@lz2syngckivi>
+ <ZabUh0ozhQq-GtEC@kekkonen.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "NeilBrown" <neilb@suse.de>
-To: "Jeff Layton" <jlayton@kernel.org>
-Cc: "Christian Brauner" <brauner@kernel.org>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Eric Van Hensbergen" <ericvh@kernel.org>,
- "Latchesar Ionkov" <lucho@ionkov.net>,
- "Dominique Martinet" <asmadeus@codewreck.org>,
- "Christian Schoenebeck" <linux_oss@crudebyte.com>,
- "David Howells" <dhowells@redhat.com>,
- "Marc Dionne" <marc.dionne@auristor.com>, "Xiubo Li" <xiubli@redhat.com>,
- "Ilya Dryomov" <idryomov@gmail.com>, "Alexander Aring" <aahringo@redhat.com>,
- "David Teigland" <teigland@redhat.com>, "Miklos Szeredi" <miklos@szeredi.hu>,
- "Andreas Gruenbacher" <agruenba@redhat.com>,
- "Trond Myklebust" <trond.myklebust@hammerspace.com>,
- "Anna Schumaker" <anna@kernel.org>, "Chuck Lever" <chuck.lever@oracle.com>,
- "Olga Kornievskaia" <kolga@netapp.com>, "Dai Ngo" <Dai.Ngo@oracle.com>,
- "Tom Talpey" <tom@talpey.com>, "Jan Kara" <jack@suse.cz>,
- "Mark Fasheh" <mark@fasheh.com>, "Joel Becker" <jlbec@evilplan.org>,
- "Joseph Qi" <joseph.qi@linux.alibaba.com>, "Steve French" <sfrench@samba.org>,
- "Paulo Alcantara" <pc@manguebit.com>, "Ronnie Sahlberg" <lsahlber@redhat.com>,
- "Shyam Prasad N" <sprasad@microsoft.com>,
- "Namjae Jeon" <linkinjeon@kernel.org>,
- "Sergey Senozhatsky" <senozhatsky@chromium.org>,
- "Steven Rostedt" <rostedt@goodmis.org>,
- "Masami Hiramatsu" <mhiramat@kernel.org>,
- "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
- linux-kernel@vger.kernel.org, v9fs@lists.linux.dev,
- linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
- gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org,
- linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev,
- linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
- linux-trace-kernel@vger.kernel.org, "Jeff Layton" <jlayton@kernel.org>
-Subject: Re: [PATCH 20/20] filelock: split leases out of struct file_lock
-In-reply-to: <20240116-flsplit-v1-20-c9d0f4370a5d@kernel.org>
-References: <20240116-flsplit-v1-0-c9d0f4370a5d@kernel.org>,
- <20240116-flsplit-v1-20-c9d0f4370a5d@kernel.org>
-Date: Wed, 17 Jan 2024 09:44:12 +1100
-Message-id: <170544505284.23031.2594557379971928071@noble.neil.brown.name>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -5.32
-X-Spamd-Result: default: False [-5.32 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLY(-4.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 R_RATELIMIT(0.00)[to_ip_from(RLx183r465j9c4mdtrpq4cws5u)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[46];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[kernel.org,zeniv.linux.org.uk,ionkov.net,codewreck.org,crudebyte.com,redhat.com,auristor.com,gmail.com,szeredi.hu,hammerspace.com,oracle.com,netapp.com,talpey.com,suse.cz,fasheh.com,evilplan.org,linux.alibaba.com,samba.org,manguebit.com,microsoft.com,chromium.org,goodmis.org,efficios.com,vger.kernel.org,lists.linux.dev,lists.infradead.org,lists.samba.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.02)[54.77%]
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZabUh0ozhQq-GtEC@kekkonen.localdomain>
 
-On Wed, 17 Jan 2024, Jeff Layton wrote:
-> Add a new struct file_lease and move the lease-specific fields from
-> struct file_lock to it. Convert the appropriate API calls to take
-> struct file_lease instead, and convert the callers to use them.
+Hello,
 
-I think that splitting of struct lease_manager_operations out from
-lock_manager_operations should be mentioned here too.
+On Tue, Jan 16, 2024 at 07:09:59PM +0000, Sakari Ailus wrote:
+> On Mon, Jan 08, 2024 at 10:19:35AM +0100, Jacopo Mondi wrote:
+> > Hi Sakari, Vinay,
+> > 
+> >    a more foundamental question is how this usage of the crop/compose
+> > API plays with the fact we enumerate only a limited set of frame
+> > sizes, and now you can get an arbitrary output size. We could get away
+> > by modifying enum_frame_sizes to return a size range (or ranges) but I
+> > wonder if it wouldn't be better to introduce an internal pad to
+> > represent the pixel array where to apply TGT_CROP in combination with
+> > a source pad where we could apply TGT_COMPOSE and an output format.
 
+I'm working on patches that implement an internal image pad, as part of
+the work to add embedded data support. I hope to post this in the near
+future.
 
-> =20
-> +struct file_lease {
-> +	struct file_lock_core fl_core;
-> +	struct fasync_struct *	fl_fasync; /* for lease break notifications */
-> +	/* for lease breaks: */
-> +	unsigned long fl_break_time;
-> +	unsigned long fl_downgrade_time;
-> +	const struct lease_manager_operations *fl_lmops;	/* Callbacks for lockman=
-agers */
+> My earlier review wasn't focussed on the interface at all...
+> 
+> To depart from the current restrictions on single-subdev sensor drivers,
+> this is one option.
+> 
+> Sensors implement various steps in different orders and different drivers
+> have different capabilities, too. Mainly there are two classes: freely
+> configurable drivers such cas CCS and then register list based drivers
+> where virtually any dependencies between configurations are possible.
+> 
+> We probably can't support both classes with the same API semantics and due
+> to hardware differencies. The sensor UAPI will be less than uniform it has
+> been in the past but I don't think this should be an issue.
+> 
+> I wonder how much common understanding we have at this point on how this
+> API would look like. Probably not much?
 
-comment should be "Callbacks for leasemanagers".  Or maybe=20
-"lease managers".=20
+-- 
+Regards,
 
-It is unfortunate that "lock" and "lease" both start with 'l' as we now
-have two quite different fields in different structures with the same
-name - fl_lmops.
-
-NeilBrown
+Laurent Pinchart
 
