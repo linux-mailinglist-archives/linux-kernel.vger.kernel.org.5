@@ -1,119 +1,82 @@
-Return-Path: <linux-kernel+bounces-27569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBBF182F24F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:20:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 984C982F275
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:36:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A057E1F246FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:20:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A07D41C23006
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:36:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D8F31CD2B;
-	Tue, 16 Jan 2024 16:20:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D254748D;
+	Tue, 16 Jan 2024 16:36:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AOYT6YOv"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="SBgXSU1i"
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1A51CA84
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 16:20:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705422005;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MbtUeDj38iJv40DVhrJMpGto1LA7FQWBcqkGB+BZKUs=;
-	b=AOYT6YOviBP7jy2mIIfB8ea/NYN4hKFi3nm14vrSBPgEROGbnJ0diDl17TLo7XsKbWxtaC
-	3pt1wNq83asZsNgjEOIsM0pYysgWeUrCXWe+tG097ECmKlVVHMw3HlJTDrJi/1qdo6e09Z
-	51OKKtkZmmat0VWgrr6bBPWLqR9+7Ys=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-662-5PMRCyo6M4SSjR1tL74EVg-1; Tue, 16 Jan 2024 11:20:03 -0500
-X-MC-Unique: 5PMRCyo6M4SSjR1tL74EVg-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-429a7149210so81107851cf.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 08:20:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705422002; x=1706026802;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MbtUeDj38iJv40DVhrJMpGto1LA7FQWBcqkGB+BZKUs=;
-        b=FinF9XLiZDykhiViPj6zHY9xdJdUmYZd8TNOM6O04I1JiaYmyg+IVQjWXC1ptryDS5
-         2+ipEnHTxPQutfx7/IF3R7iHXa+S73nXIyubKSLvDPJc0ugctVN7TtXI2rde2E+iv+Ix
-         OXB8g/mF82SZxuPczpjhFoZ2I6VLIA+ihpMnWU3bsWxI6nOHdnVQQba2/s0C47LWZ4gL
-         uH3i0A9s4qJSwnPpDtvua3EgtVrsaTd77naywYkEJtkuZKYP0bzfs8Sk2WuOWqPiNQt2
-         djbm0TLRcf2iOba8pEY49lBaP+XZzcvGxXzwUJGarM/urRxK1RednGQA03DdFOKjXh6K
-         6T9g==
-X-Gm-Message-State: AOJu0YzWFj3JoFdXEbu8S1hCzsq+q60Rkcg1H8pi+USOAnpNJbMew3ta
-	BO5fMnFOIjyjxyDvTuvXl1WNw3IO2NPSRAl0C3onG5PL8lC0eYnvN66AB76T8Ld2L8cL18wivWN
-	LnJ0JaKK0zHnNMUzur094ysoSitCGWit8
-X-Received: by 2002:a05:622a:120e:b0:429:ca1c:7fd3 with SMTP id y14-20020a05622a120e00b00429ca1c7fd3mr9264966qtx.68.1705422001906;
-        Tue, 16 Jan 2024 08:20:01 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH9R1aebixv/ciTPAg3ClvPL1gJzS0rEYYqB1UFPQV8ctoXJFXmhPVpDFtnkiOQTk9BxOtLqQ==
-X-Received: by 2002:a05:622a:120e:b0:429:ca1c:7fd3 with SMTP id y14-20020a05622a120e00b00429ca1c7fd3mr9264959qtx.68.1705422001616;
-        Tue, 16 Jan 2024 08:20:01 -0800 (PST)
-Received: from localhost.localdomain ([151.29.130.8])
-        by smtp.gmail.com with ESMTPSA id fd10-20020a05622a4d0a00b00429d3257dd6sm3809166qtb.45.2024.01.16.08.19.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 08:19:59 -0800 (PST)
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
-	Aaron Tomlin <atomlin@atomlin.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Waiman Long <longman@redhat.com>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 4/4] kernel/workqueue: Let rescuers follow unbound wq cpumask changes
-Date: Tue, 16 Jan 2024 17:19:29 +0100
-Message-ID: <20240116161929.232885-5-juri.lelli@redhat.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240116161929.232885-1-juri.lelli@redhat.com>
-References: <20240116161929.232885-1-juri.lelli@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEAF41C698;
+	Tue, 16 Jan 2024 16:36:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=koP0W+CZNZR7MUqDikSTc30SoJIawy0LoQzZcq5Zun8=; b=SBgXSU1iweN0BNqiISJnZZvXVk
+	8vLKuTACx1Cy+AEk985t1Hmscy+SDMEXIo6M2GeNnU4X57bnnn1wT+FHPoJ+MkSVwUPy6AafbH5c4
+	uDFAAjYLZmIuQagqrTvDYfwNoqhiDATRgeRjbTnqv7l7ZcfZ/zzq6uuC057APGjfACXkrivLE28je
+	6ugEOcmGvzGjtPqERCYZtNUM0Jvi0YNzVRWnbjvDEJCZvjNhCorziRnGg/UICdUQtcqwg/nQJ8tN7
+	KPFYSIvKLOxvCmt/8VrL7uHS9iZxI0uannOJRx+Mk30yG5/VQRCL8Wms7z21YDC+2wrIDu8rZMAOJ
+	G+oG7FBA==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rPmAX-0002xU-Ev; Tue, 16 Jan 2024 17:20:05 +0100
+Received: from [178.197.248.14] (helo=linux.home)
+	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rPmAW-000PvQ-Tf; Tue, 16 Jan 2024 17:20:04 +0100
+Subject: Re: [PATCH v4 2/2] selftests/bpf: Add test for alu on
+ PTR_TO_FLOW_KEYS
+To: Hao Sun <sunhao.th@gmail.com>, bpf@vger.kernel.org
+Cc: willemb@google.com, ast@kernel.org, andrii@kernel.org, eddyz87@gmail.com,
+ yonghong.song@linux.dev, linux-kernel@vger.kernel.org
+References: <20240115082028.9992-1-sunhao.th@gmail.com>
+ <20240115082028.9992-2-sunhao.th@gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <3c69823d-1e46-60f4-5a41-d6a2983af532@iogearbox.net>
+Date: Tue, 16 Jan 2024 17:20:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240115082028.9992-2-sunhao.th@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27156/Tue Jan 16 10:38:07 2024)
 
-When workqueue cpumask changes are committed the associated rescuer (if
-one exists) affinity is not touched and this might be a problem down the
-line for isolated setups.
+On 1/15/24 9:20 AM, Hao Sun wrote:
+> Add a test case for PTR_TO_FLOW_KEYS alu. Testing if alu with
+> variable offset on flow_keys is rejected.
+> 
+> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
 
-Make sure rescuers affinity is updated every time a workqueue cpumask
-changes, so that rescuers can't break isolation.
+Thanks applied, I've also added a note that we already have coverage
+on the success case. Do you plan to follow up with checking the
+remaining pointer types as Eduard suggested earlier?
 
-Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
----
- kernel/workqueue.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 2ef6573909070..df7f2f2bfd0c8 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -4416,6 +4416,12 @@ static void apply_wqattrs_commit(struct apply_wqattrs_ctx *ctx)
- 	link_pwq(ctx->dfl_pwq);
- 	swap(ctx->wq->dfl_pwq, ctx->dfl_pwq);
- 
-+	/* rescuer needs to respect wq cpumask changes */
-+	if (ctx->wq->rescuer) {
-+		set_cpus_allowed_ptr(ctx->wq->rescuer->task, ctx->attrs->cpumask);
-+		wake_up_process(ctx->wq->rescuer->task);
-+	}
-+
- 	mutex_unlock(&ctx->wq->mutex);
- }
- 
--- 
-2.43.0
-
+Thanks,
+Daniel
 
