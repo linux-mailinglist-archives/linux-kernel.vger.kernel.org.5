@@ -1,129 +1,144 @@
-Return-Path: <linux-kernel+bounces-26922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61A5282E7DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 03:14:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B004682E7D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 03:00:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1E5AB2109D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:14:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35055B22065
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:00:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F5A5468D;
-	Tue, 16 Jan 2024 02:14:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7AF029AD;
+	Tue, 16 Jan 2024 02:00:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="hFQ5vDCS"
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.215])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C03938C;
-	Tue, 16 Jan 2024 02:14:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=bDHIH
-	1quueGsNnOP4D3RZ6pHrBtyn71jVIoHgB5hwh4=; b=hFQ5vDCSlq+XZf096lLjr
-	YTetwEZgnl4Kikbcm6PmPAkELiuhk4sOTB2JpF7P8iuLjH22OplNXpVBa0576zDa
-	VZdrB73Lfus5YOLAPxhVPGqC7s8w/r3E/8xXO171Je4fNi5XSjxlmcIZ1G1gV5gM
-	uBCrSEtXIQFz619/+BfCrI=
-Received: from localhost.localdomain (unknown [111.202.47.2])
-	by zwqz-smtp-mta-g3-4 (Coremail) with SMTP id _____wC3v+Ky4qVleFbHBA--.54402S2;
-	Tue, 16 Jan 2024 09:58:10 +0800 (CST)
-From: wangkeqi <wangkeqi_chris@163.com>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	wangkeqi <wangkeqiwang@didiglobal.com>,
-	kernel test robot <oliver.sang@intel.com>,
-	fengwei.yin@intel.com
-Subject: [PATCH net v2] connector: Change the judgment conditions for clearing proc_event_num_listeners
-Date: Tue, 16 Jan 2024 09:57:53 +0800
-Message-Id: <20240116015753.209781-1-wangkeqi_chris@163.com>
-X-Mailer: git-send-email 2.27.0
+	dkim=pass (2048-bit key) header.d=feathertop.org header.i=@feathertop.org header.b="nQp7+hD1";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Uf9q2wMC"
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76260388;
+	Tue, 16 Jan 2024 02:00:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=feathertop.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=feathertop.org
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id 5FB0A5C0178;
+	Mon, 15 Jan 2024 21:00:25 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 15 Jan 2024 21:00:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=feathertop.org;
+	 h=cc:cc:content-transfer-encoding:content-type:content-type
+	:date:date:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=fm2;
+	 t=1705370425; x=1705456825; bh=2Z1qmxEMsTLQKMDBfJ+3O0kjmLD/ZIDW
+	rrbu4Nd1JY8=; b=nQp7+hD1mEDFNO9npIAC09Ca9w/EUlHo5mORB4C09PhCzBaN
+	vPaMLM3XpxZ0mdePdFX9F+cVNHRM0YuecJV9brXIQHCtMh+71H8sVoBCkzLvTi1E
+	HIGouJJSU94nSPb8PgY4lSppEnL4x4Z5WmKAKB+KTejQ/zFJIyfF0h97Oc67J590
+	pKC3Mo88Iao1rb6t1tDJQ/71TtBRBRaHRrWpO+LjLKuQiwdQ0t0oWs+saA3r0F6d
+	BbOqtf1QSIlQiijNOhr57KA1PZpp2jyl50pSO+BIM3+yGk/jJkRmRgZ2mfep/NtA
+	lpLAqIrKmXN3Lr15z64O1RVVMxUwxZ7HWgfuww==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1705370425; x=
+	1705456825; bh=2Z1qmxEMsTLQKMDBfJ+3O0kjmLD/ZIDWrrbu4Nd1JY8=; b=U
+	f9q2wMCYiBq/sv/XZ0oWHcrEPi5NNNjVQNkEkxP4pvGO8hOGUyCunIDIY3S75nCs
+	TiDPxJXJVckT4/Lmwb8o3bKFhs1k93/585YD/GN9LX5JV4po2kqLNAzh1JatpmpS
+	ahxvTOayTo6mv7aVBL56W7dHsJ1HZon//HO1LgRgaKXgLfE4MLj4FY848T1Kul5+
+	nI8YI/wrNr5/r4HWZa4CjwT3K9Z0WNe8pFb+9f1w1EFFTHA0I3UhZHVQKrd14YSX
+	0uigaULCZeMy0ilwADhDb3YVIdcMmRib1ktFD2RC25B9T869M8TL5sORW+eTnRbx
+	AGjRzdLOusHM1liQpc1bA==
+X-ME-Sender: <xms:OOOlZfmX7XpJvnjcIa9Kq1JcYz2nDGCrHILkaK0r93BG80MKu4kAAg>
+    <xme:OOOlZS2HNR2SJlC5C0scqG2XwwqLfVf8jIJKLItxWifU6nkS-AAOHdsVmprJHDHJ0
+    m74amzj1w>
+X-ME-Received: <xmr:OOOlZVpUGSIBay8uQZZCejcjUleP1uczMxKswtuDkjbnkqnYe6l14zz-CiyMXppb_My4wmOQ4AgkwnjT1N6qpzOBgTtfgGD2lwF4Hg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdejvddggedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpefvihhm
+    ucfnuhhnnhcuoehtihhmsehfvggrthhhvghrthhophdrohhrgheqnecuggftrfgrthhtvg
+    hrnhepjeekhfeikeffgfeuvdefgfehudevffeiudeiudfgveevudeukeetveeiueehtedv
+    necuffhomhgrihhnpehlihhnrghrohdrohhrghdpihhnfhhrrgguvggrugdrohhrghenuc
+    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehtihhmsehf
+    vggrthhhvghrthhophdrohhrgh
+X-ME-Proxy: <xmx:OOOlZXkybVrzi8xkVydYhUDZetMJ5H9fWi2TATa3iDPS_elPcyfW2g>
+    <xmx:OOOlZd33pk1pFHCqC1v0oPRHV-Iuhw8aquvYHI4Ng45Wt0CngGujVA>
+    <xmx:OOOlZWuzarl8bGVNlAV5XEobCJXPhTeUbmQnEQ8ZTwEl_5Qf88gKrA>
+    <xmx:OeOlZc3UFnagpq3i1sFx5jLSm0Ps7dZvTsFgMsCgGQgm8ltRqTCecQ>
+Feedback-ID: i1f8241ce:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 15 Jan 2024 21:00:18 -0500 (EST)
+Message-ID: <8b31ae29-b88b-4ded-95b4-c2d9bbad24e1@feathertop.org>
+Date: Tue, 16 Jan 2024 13:00:15 +1100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: rockchip: Fix Hardkernel ODROID-M1 board
+ bindings
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ KyuHyuk Lee <lee@kyuhyuk.kr>, Rob Herring <robh+dt@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+ Chris Morgan <macromorgan@hotmail.com>, Tianling Shen <cnsztl@gmail.com>,
+ Jagan Teki <jagan@edgeble.ai>, Ondrej Jirman <megi@xff.cz>,
+ Andy Yan <andyshrk@163.com>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240115145142.6292-1-lee@kyuhyuk.kr>
+ <b4f97202-43ec-4f04-af95-b1ccd3b5d203@linaro.org>
+From: Tim Lunn <tim@feathertop.org>
+In-Reply-To: <b4f97202-43ec-4f04-af95-b1ccd3b5d203@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wC3v+Ky4qVleFbHBA--.54402S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxZw43JFWxtw1kuFyfur1rJFb_yoW5XFyxpa
-	yqvFsxZF48KF1fWw1DA3W29F13Za4kXF1UCrWIk34kurZxWrWkAF48tFsavF9xA34vkr12
-	qw12gFW3uF4DC3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jbvtAUUUUU=
-X-CM-SenderInfo: 5zdqwy5htlsupkul2qqrwthudrp/1tbiVBhn3GVOBDmFSQAAst
 
-From: wangkeqi <wangkeqiwang@didiglobal.com>
 
-It is inaccurate to judge whether proc_event_num_listeners is
-cleared by cn_netlink_send_mult returning -ESRCH.
-In the case of stress-ng netlink-proc, -ESRCH will always be returned,
-because netlink_broadcast_filtered will return -ESRCH,
-which may cause stress-ng netlink-proc performance degradation.
-Therefore, the judgment condition is modified to whether
-there is a listener.
+On 1/16/24 01:58, Krzysztof Kozlowski wrote:
+> On 15/01/2024 15:51, KyuHyuk Lee wrote:
+>> The vendor in ODROID-M1 is hardkernel, but it was incorrectly written
+>> as rockchip. Fixed the vendor prefix correctly.
+>>
+>> Signed-off-by: KyuHyuk Lee <lee@kyuhyuk.kr>
+>> ---
+>>   Documentation/devicetree/bindings/arm/rockchip.yaml | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+> You need to start testing your patches. Your last M1 fails as well in
+> multiple places.
+>
+> It does not look like you tested the DTS against bindings. Please run
+> `make dtbs_check W=1` (see
+> Documentation/devicetree/bindings/writing-schema.rst or
+> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+> for instructions).
+>
+> The DTS change will break the users, so would be nice to mention this in
+> its commit msg.
 
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202401112259.b23a1567-oliver.sang@intel.com
-Fixes: c46bfba133 ("connector: Fix proc_event_num_listeners count not cleared")
-Signed-off-by: wangkeqi <wangkeqiwang@didiglobal.com>
-Cc: fengwei.yin@intel.com
----
- drivers/connector/cn_proc.c   | 6 ++++--
- drivers/connector/connector.c | 6 ++++++
- include/linux/connector.h     | 1 +
- 3 files changed, 11 insertions(+), 2 deletions(-)
+I notice there are a couple of other boards that incorrectly use 
+rockchip as the vendor also:
 
-diff --git a/drivers/connector/cn_proc.c b/drivers/connector/cn_proc.c
-index 3d5e6d705..b09f74ed3 100644
---- a/drivers/connector/cn_proc.c
-+++ b/drivers/connector/cn_proc.c
-@@ -108,8 +108,10 @@ static inline void send_msg(struct cn_msg *msg)
- 		filter_data[1] = 0;
- 	}
- 
--	if (cn_netlink_send_mult(msg, msg->len, 0, CN_IDX_PROC, GFP_NOWAIT,
--			     cn_filter, (void *)filter_data) == -ESRCH)
-+	if (netlink_has_listeners(get_cdev_nls(), CN_IDX_PROC))
-+		cn_netlink_send_mult(msg, msg->len, 0, CN_IDX_PROC, GFP_NOWAIT,
-+			     cn_filter, (void *)filter_data);
-+	else
- 		atomic_set(&proc_event_num_listeners, 0);
- 
- 	local_unlock(&local_event.lock);
-diff --git a/drivers/connector/connector.c b/drivers/connector/connector.c
-index 7f7b94f61..1b2cd410e 100644
---- a/drivers/connector/connector.c
-+++ b/drivers/connector/connector.c
-@@ -129,6 +129,12 @@ int cn_netlink_send(struct cn_msg *msg, u32 portid, u32 __group,
- }
- EXPORT_SYMBOL_GPL(cn_netlink_send);
- 
-+struct sock *get_cdev_nls(void)
-+{
-+	return cdev.nls;
-+}
-+EXPORT_SYMBOL_GPL(get_cdev_nls);
-+
- /*
-  * Callback helper - queues work and setup destructor for given data.
-  */
-diff --git a/include/linux/connector.h b/include/linux/connector.h
-index cec2d99ae..255466aea 100644
---- a/include/linux/connector.h
-+++ b/include/linux/connector.h
-@@ -127,6 +127,7 @@ int cn_netlink_send_mult(struct cn_msg *msg, u16 len, u32 portid,
-  */
- int cn_netlink_send(struct cn_msg *msg, u32 portid, u32 group, gfp_t gfp_mask);
- 
-+struct sock *get_cdev_nls(void);
- int cn_queue_add_callback(struct cn_queue_dev *dev, const char *name,
- 			  const struct cb_id *id,
- 			  void (*callback)(struct cn_msg *, struct netlink_skb_parms *));
--- 
-2.27.0
+           - const: rockchip,rk3399-orangepi
+           - const: rockchip,rk3568-bpi-r2pro
 
+Perhaps these should also be fixed at the same time?
+
+Regards
+   Tim
+
+>
+> Best regards,
+> Krzysztof
+>
+>
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
 
