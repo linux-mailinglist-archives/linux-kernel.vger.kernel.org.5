@@ -1,112 +1,82 @@
-Return-Path: <linux-kernel+bounces-27545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE37682F1EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:54:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D47A282F1EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:54:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10ADB1C23613
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:54:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3458B28593B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:54:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C36C1CA82;
-	Tue, 16 Jan 2024 15:54:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ihMJO76X"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB341C69E;
+	Tue, 16 Jan 2024 15:54:04 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0D3C1C6BA;
-	Tue, 16 Jan 2024 15:54:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40GFb9bl000351;
-	Tue, 16 Jan 2024 15:54:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=97MHNMQvroPsQ7l3OcwOf2G2VgJ3sRCWBpF6Bp8pnCo=;
- b=ihMJO76X9sC7gXQ75gCE7ALl+v0NiMS7MG1VFOooSMQ0b1xynvW4PSoD2gjr+jLpUjW/
- RYOH41b55L6ngLbPb9sFTIVIEUqD+k2xSDs4QETqxgK3h3C60kEZgvIZ2Aj7w4qlYw47
- 3Wc4V1PcL/dZi0ed5DSaFiRHxv137/Vpc3RBniwz7FjDQ7FtRpHjV4XbcXCQrA0HAJGs
- ZHkFUvD+bJwFwcLSoU/8mWrKizSBzAFqX7/RTmbkzkLTooUUJ/C3zkbxZRSLoLhIxJkA
- jkYLtCSqalTBj++VVWW0+sSFVjQ23c+fAFumCTPnDu2TVuT1VybZ1J1fxtI4+7EKJK1R bQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnvkn8j7v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 15:54:04 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40GFblO9004401;
-	Tue, 16 Jan 2024 15:54:04 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnvkn8j79-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 15:54:04 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40GDTMK6023421;
-	Tue, 16 Jan 2024 15:54:03 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vm6bkfbu0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 15:54:03 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40GFrw7I42467798
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 16 Jan 2024 15:53:58 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0DE2F2004B;
-	Tue, 16 Jan 2024 15:53:58 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0E80F20040;
-	Tue, 16 Jan 2024 15:53:57 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.49.101])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue, 16 Jan 2024 15:53:56 +0000 (GMT)
-Date: Tue, 16 Jan 2024 16:53:55 +0100
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: Tony Krowiak <akrowiak@linux.ibm.com>
-Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, jjherne@linux.ibm.com, borntraeger@de.ibm.com,
-        pasic@linux.ibm.com, pbonzini@redhat.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com, alex.williamson@redhat.com,
-        kwankhede@nvidia.com, gor@linux.ibm.com
-Subject: Re: [PATCH v4 3/6] s390/vfio-ap: let 'on_scan_complete' callback
- filter matrix and update guest's APCB
-Message-ID: <ZaamkyuOET+1rOSm@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <20240115185441.31526-1-akrowiak@linux.ibm.com>
- <20240115185441.31526-4-akrowiak@linux.ibm.com>
- <ZaY/fGxUMx2z4OQH@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
- <4eb35fab-eb85-487d-90cd-c4b10b8410ec@linux.ibm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56C7F1C68D
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 15:54:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-35fc70bd879so82628825ab.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 07:54:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705420442; x=1706025242;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WjLKJeIUZFZaxihu0DFtFUlDAFoZeUeFTWq4/cmqec4=;
+        b=WVmSCYC6H+qCwd14+m/bEu7N/7ZnxppUQUjXOAWICJPfBq4cyEgC6OJJgVlCw2nx8d
+         CFD//K7yb1ukNJpArQfDRW0YPUDW2Ze5wCjd7ZOinh2bIVT3atlfP1qNQJT3t0Ed14TK
+         A3ceIonMTBIsUEliZwdVVoXlusKf50KtQT/8nLKyMElf8cbiFDKE7cwDff5yJTyTKnFQ
+         DlPWb6FnfWNZ01VYdSxzpIBZ7jZDiVJPGjET+N5q4rGwIymQQAvVVmHyWOc0PYcwnVKH
+         /No+XndOobJgDL/VDCYxhouzgvUKyNOxOEsk2hmFZy5C2UK6UgL/B6nBTyPgymTF5G37
+         +mGQ==
+X-Gm-Message-State: AOJu0Ywg+n7cPY1b76x/FZkXQF1MApwluDy4ohblrZfBYZohqXLTQywn
+	eQ/oC0zz7MZdeFQRDkBZpWwW5boVgGfpHpEj8GjGZKtBgUdw
+X-Google-Smtp-Source: AGHT+IFlxGeh6AVV3dy7wQP5TLN9X3pB0gPsRG+Ydvt6+VGd2M1Ue/mlIulGQpjXlNXkskBWVWAg5PmI8zIRlMA1Gap7ra3eI7D3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4eb35fab-eb85-487d-90cd-c4b10b8410ec@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Qe49cQtLJH46-BX-ssslh2WAuKu3_Qae
-X-Proofpoint-ORIG-GUID: L92aSjxdJRR6io0SwljeFoGIcqZgHe8d
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-16_08,2024-01-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- malwarescore=0 impostorscore=0 bulkscore=0 adultscore=0 priorityscore=1501
- suspectscore=0 clxscore=1015 mlxlogscore=542 phishscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2401160125
+X-Received: by 2002:a05:6e02:1a03:b0:35f:affb:bd7b with SMTP id
+ s3-20020a056e021a0300b0035faffbbd7bmr1234893ild.2.1705420442573; Tue, 16 Jan
+ 2024 07:54:02 -0800 (PST)
+Date: Tue, 16 Jan 2024 07:54:02 -0800
+In-Reply-To: <0000000000008d00ec05f06bcb35@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ac2378060f12234c@google.com>
+Subject: Re: [syzbot] [gfs2?] BUG: unable to handle kernel NULL pointer
+ dereference in gfs2_rindex_update
+From: syzbot <syzbot+2b32df23ff6b5b307565@syzkaller.appspotmail.com>
+To: agruenba@redhat.com, axboe@kernel.dk, brauner@kernel.org, 
+	cluster-devel@redhat.com, gfs2@lists.linux.dev, jack@suse.cz, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	rpeterso@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Jan 16, 2024 at 09:57:25AM -0500, Tony Krowiak wrote:
-> This patch is more of an enhancement as opposed to a bug, so no Fixes.
+syzbot suspects this issue was fixed by commit:
 
-The preceding and rest of this series CCs stable@vger.kernel.org and
-would not apply without this patch. So I guess backporting the whole
-series would be difficult.
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-Whether propagating the prevous patches' Fixes/stable makes any sense?
+    fs: Block writes to mounted block devices
 
-Thanks!
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12452f7be80000
+start commit:   0a924817d2ed Merge tag '6.2-rc-smb3-client-fixes-part2' of..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4e2d7bfa2d6d5a76
+dashboard link: https://syzkaller.appspot.com/bug?extid=2b32df23ff6b5b307565
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14860f08480000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=174d24b0480000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
