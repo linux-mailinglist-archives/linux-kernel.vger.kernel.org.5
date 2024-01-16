@@ -1,149 +1,202 @@
-Return-Path: <linux-kernel+bounces-27051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4990A82E9C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:02:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC47782E9C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:03:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD4A8B2305C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:02:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48B5F2850F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:03:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F1A910A24;
-	Tue, 16 Jan 2024 07:02:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF17F1118B;
+	Tue, 16 Jan 2024 07:02:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gJAzYh9q"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CY3v5oPX"
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E551D11181;
-	Tue, 16 Jan 2024 07:02:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705388535; x=1736924535;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=l77E4YgBgyvd0pSOaDBIh2Qs/NWQYKT4yc/7wy9bI7c=;
-  b=gJAzYh9qSERmpPg+fytFsTtkjqktopH3nsNSSNUwtFQ4q6/4J8ag7G9e
-   HH/cVFnTw3muLotOCfpuVj9/XK0Ttl2XxNaSuznF3DUsZ36/azQQlf9gH
-   yHgWIyOVVqhNFKzX5Bi7ypDC2cF99KjQ1E1Tp9vPpcXTzRr959q6Y7kcU
-   5DuOdjE2Z2IhfUainwNn6T/PuHX5MD/R2edfTZpUcubD50in3VrP6iTkI
-   Sh/ia5ZJujcXOCM1wyE7JxtVJmrE1KWYg3l/J80rRv87hngRMetbYK7VX
-   I3+FeFfOyI2ARUobUEL52EsCMmzZazlJE2uM1Ue/acr+g9ncFj2WXOqTL
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="18370739"
-X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
-   d="scan'208";a="18370739"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 23:02:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="818067712"
-X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
-   d="scan'208";a="818067712"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.38.159])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 23:01:35 -0800
-Message-ID: <c9a3f5b7-4f81-4d24-835b-c365d7d61995@intel.com>
-Date: Tue, 16 Jan 2024 09:01:29 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39E6A11185
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 07:02:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2ae5ec3f-4a96-4819-af65-5f04df0c2ebd@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705388567;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=txIZXYF3ib8b3sMorV8i+HMWWhDk4zrdCMBjUrUSGcU=;
+	b=CY3v5oPX0xoBC0az5ZLVLoe+HAbLsHFWvZK6etFK3WuzZWACmH4rJeBjk1R0x3Gmn6cbpw
+	P9ctl84hv78h26yCYSMbAFvYHcIFLanU3X6e0fLa+liJoGBXoxSXRKMp1+sNDpAM2pk14R
+	RQP+Iku3P5k+7HgWpokP3qotXilO5Kc=
+Date: Tue, 16 Jan 2024 15:02:39 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/42] arch/x86/events/core: Convert snprintf to
- sysfs_emit
-To: Li Zhijian <lizhijian@fujitsu.com>, linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
- Ian Rogers <irogers@google.com>, Thomas Gleixner <tglx@linutronix.de>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- linux-perf-users@vger.kernel.org
-References: <20240116041129.3937800-1-lizhijian@fujitsu.com>
- <20240116045151.3940401-1-lizhijian@fujitsu.com>
- <20240116045151.3940401-2-lizhijian@fujitsu.com>
-Content-Language: en-US
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20240116045151.3940401-2-lizhijian@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v3 2/7] hugetlb: split hugetlb_hstate_alloc_pages
+To: ligang.bdlg@bytedance.com, Gang Li <gang.li@linux.dev>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ David Hildenbrand <david@redhat.com>, David Rientjes <rientjes@google.com>,
+ Mike Kravetz <mike.kravetz@oracle.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Tim Chen <tim.c.chen@linux.intel.com>
+References: <20240102131249.76622-1-gang.li@linux.dev>
+ <20240102131249.76622-3-gang.li@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20240102131249.76622-3-gang.li@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 16/01/24 06:51, Li Zhijian wrote:
-> Per filesystems/sysfs.rst, show() should only use sysfs_emit()
-> or sysfs_emit_at() when formatting the value to be returned to user space.
-> 
-> coccinelle complains that there are still a couple of functions that use
-> snprintf(). Convert them to sysfs_emit().
-> 
->> ./arch/x86/events/core.c:1895:11-19: WARNING: please use sysfs_emit
->> ./arch/x86/events/core.c:2542:8-16: WARNING: please use sysfs_emit
->> ./arch/x86/events/core.c:2600:8-16: WARNING: please use sysfs_emit
-> 
-> No functional change intended
-> 
-> CC: Peter Zijlstra <peterz@infradead.org>
-> CC: Ingo Molnar <mingo@redhat.com>
-> CC: Arnaldo Carvalho de Melo <acme@kernel.org>
-> CC: Mark Rutland <mark.rutland@arm.com>
-> CC: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> CC: Jiri Olsa <jolsa@kernel.org>
-> CC: Namhyung Kim <namhyung@kernel.org>
-> CC: Ian Rogers <irogers@google.com>
-> CC: Adrian Hunter <adrian.hunter@intel.com>
-> CC: Thomas Gleixner <tglx@linutronix.de>
-> CC: Borislav Petkov <bp@alien8.de>
-> CC: Dave Hansen <dave.hansen@linux.intel.com>
-> CC: x86@kernel.org
-> CC: "H. Peter Anvin" <hpa@zytor.com>
-> CC: linux-perf-users@vger.kernel.org
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+
+
+On 2024/1/2 21:12, Gang Li wrote:
+> 1G and 2M huge pages have different allocation and initialization logic,
+> which leads to subtle differences in parallelization. Therefore, it is
+> appropriate to split hugetlb_hstate_alloc_pages into gigantic and
+> non-gigantic.
+>
+> This patch has no functional changes.
+>
+> Signed-off-by: Gang Li <gang.li@linux.dev>
 > ---
->  arch/x86/events/core.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-> index 40ad1425ffa2..52e5707be03b 100644
-> --- a/arch/x86/events/core.c
-> +++ b/arch/x86/events/core.c
-> @@ -1892,7 +1892,7 @@ ssize_t events_hybrid_sysfs_show(struct device *dev,
->  		if (x86_pmu.hybrid_pmu[i].pmu_type & pmu->pmu_type) {
->  			next_str = strchr(str, ';');
->  			if (next_str)
-> -				return snprintf(page, next_str - str + 1, "%s", str);
-> +				return sysfs_emit(page, "%s", str);
+>   mm/hugetlb.c | 86 +++++++++++++++++++++++++++-------------------------
+>   1 file changed, 45 insertions(+), 41 deletions(-)
+>
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 2606135ec55e6..92448e747991d 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -3509,6 +3509,47 @@ static void __init hugetlb_hstate_alloc_pages_report(unsigned long allocated, st
+>   	}
+>   }
+>   
+> +static unsigned long __init hugetlb_hstate_alloc_pages_gigantic(struct hstate *h)
 
-The intention seems to be to print only up to, and not including, the next ';',
-but sysfs_emit() is not going to do that.
+The name is so long, how about hugetlb_gigantic_pages_alloc_boot?
 
->  			else
->  				return sprintf(page, "%s", str);
->  		}
-> @@ -2539,7 +2539,7 @@ static ssize_t get_attr_rdpmc(struct device *cdev,
->  			      struct device_attribute *attr,
->  			      char *buf)
->  {
-> -	return snprintf(buf, 40, "%d\n", x86_pmu.attr_rdpmc);
-> +	return sysfs_emit(buf, "%d\n", x86_pmu.attr_rdpmc);
->  }
->  
->  static ssize_t set_attr_rdpmc(struct device *cdev,
-> @@ -2597,7 +2597,7 @@ static ssize_t max_precise_show(struct device *cdev,
->  				  struct device_attribute *attr,
->  				  char *buf)
->  {
-> -	return snprintf(buf, PAGE_SIZE, "%d\n", x86_pmu_max_precise());
-> +	return sysfs_emit(buf, "%d\n", x86_pmu_max_precise());
->  }
->  
->  static DEVICE_ATTR_RO(max_precise);
+> +{
+> +	unsigned long i;
+> +
+> +	for (i = 0; i < h->max_huge_pages; ++i) {
+> +		/*
+> +		 * gigantic pages not added to list as they are not
+> +		 * added to pools now.
+> +		 */
+> +		if (!alloc_bootmem_huge_page(h, NUMA_NO_NODE))
+> +			break;
+> +		cond_resched();
+> +	}
+> +
+> +	return i;
+> +}
+> +
+> +static unsigned long __init hugetlb_hstate_alloc_pages_non_gigantic(struct hstate *h)
+
+hugetlb_pages_alloc_boot?
+
+> +{
+> +	unsigned long i;
+> +	struct folio *folio;
+> +	LIST_HEAD(folio_list);
+> +	nodemask_t node_alloc_noretry;
+> +
+> +	/* Bit mask controlling how hard we retry per-node allocations.*/
+> +	nodes_clear(node_alloc_noretry);
+> +
+> +	for (i = 0; i < h->max_huge_pages; ++i) {
+> +		folio = alloc_pool_huge_folio(h, &node_states[N_MEMORY],
+> +						&node_alloc_noretry);
+> +		if (!folio)
+> +			break;
+> +		list_add(&folio->lru, &folio_list);
+> +		cond_resched();
+> +	}
+> +
+> +	prep_and_add_allocated_folios(h, &folio_list);
+> +
+> +	return i;
+> +}
+> +
+>   /*
+>    * NOTE: this routine is called in different contexts for gigantic and
+>    * non-gigantic pages.
+> @@ -3522,10 +3563,7 @@ static void __init hugetlb_hstate_alloc_pages_report(unsigned long allocated, st
+>    */
+>   static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+>   {
+> -	unsigned long i;
+> -	struct folio *folio;
+> -	LIST_HEAD(folio_list);
+> -	nodemask_t *node_alloc_noretry;
+> +	unsigned long allocated;
+>   
+>   	/* skip gigantic hugepages allocation if hugetlb_cma enabled */
+>   	if (hstate_is_gigantic(h) && hugetlb_cma_size) {
+> @@ -3539,46 +3577,12 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+>   
+>   	/* below will do all node balanced alloc */
+>   	if (!hstate_is_gigantic(h)) {
+
+It it unnecessary to reverse the condition. A little sime like following:
+
+if (hstate_is_gigantic(h))
+     /* gigantic pages */
+else
+     /* normal pages */
+
+> -		/*
+> -		 * Bit mask controlling how hard we retry per-node allocations.
+> -		 * Ignore errors as lower level routines can deal with
+> -		 * node_alloc_noretry == NULL.  If this kmalloc fails at boot
+> -		 * time, we are likely in bigger trouble.
+> -		 */
+> -		node_alloc_noretry = kmalloc(sizeof(*node_alloc_noretry),
+> -						GFP_KERNEL);
+> +		allocated = hugetlb_hstate_alloc_pages_non_gigantic(h);
+>   	} else {
+> -		/* allocations done at boot time */
+> -		node_alloc_noretry = NULL;
+> -	}
+> -
+> -	/* bit mask controlling how hard we retry per-node allocations */
+> -	if (node_alloc_noretry)
+> -		nodes_clear(*node_alloc_noretry);
+> -
+> -	for (i = 0; i < h->max_huge_pages; ++i) {
+> -		if (hstate_is_gigantic(h)) {
+> -			/*
+> -			 * gigantic pages not added to list as they are not
+> -			 * added to pools now.
+> -			 */
+> -			if (!alloc_bootmem_huge_page(h, NUMA_NO_NODE))
+> -				break;
+> -		} else {
+> -			folio = alloc_pool_huge_folio(h, &node_states[N_MEMORY],
+> -							node_alloc_noretry);
+> -			if (!folio)
+> -				break;
+> -			list_add(&folio->lru, &folio_list);
+> -		}
+> -		cond_resched();
+> +		allocated = hugetlb_hstate_alloc_pages_gigantic(h);
+>   	}
+>   
+> -	/* list will be empty if hstate_is_gigantic */
+> -	prep_and_add_allocated_folios(h, &folio_list);
+> -
+> -	hugetlb_hstate_alloc_pages_report(i, h);
+> -	kfree(node_alloc_noretry);
+> +	hugetlb_hstate_alloc_pages_report(allocated, h);
+>   }
+>   
+>   static void __init hugetlb_init_hstates(void)
 
 
