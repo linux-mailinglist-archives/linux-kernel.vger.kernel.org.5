@@ -1,216 +1,139 @@
-Return-Path: <linux-kernel+bounces-27670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EF8F82F3E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:15:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 797BC82F3E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:15:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C34E285B30
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:15:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07AEAB23C95
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:15:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F4541CF80;
-	Tue, 16 Jan 2024 18:15:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D94341CFAD;
+	Tue, 16 Jan 2024 18:14:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SlD2B4fN"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ntfNTKq8"
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 354C31CF89
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:15:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A211CD30
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:14:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705428909; cv=none; b=i77fKBENPQtjqVWDhxwJ7b7w8ADQ1GtfJa28Uz24Up6yh1yN858WSFOdvtkzUPecX81p9aI5zL/dVcpnDzZgCZ9wc23ueQx1xpFaAiVS2eE8OcdoK/6OaEQvuczrfKBi0yMaosgb9jGrwzH7oDCv9T+/cqsXLFdwfD1M6Q2H/WA=
+	t=1705428882; cv=none; b=bs6bndoz8CL+A6akgEYPhTGjhtPhZzkVY+QL6Q0w6Es71IOUG5nCzPs4VuruE16+iEu83rKpl//nSo2t+ks+Wn67cTS4YQJzafsHRhb/6/lxUF1Sc+Ck9IqUcVzylGsr8bClikn2XvkrGEbBemyYplh8QezoXmFTiBYsFVpOF2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705428909; c=relaxed/simple;
-	bh=3zlBGl5VpWKn0Q0H4wPH6FO7Ud1zlBJ5F2g6/4S4edA=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:
-	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
-	 X-Google-Smtp-Source:X-Received:MIME-Version:References:
-	 In-Reply-To:From:Date:Message-ID:Subject:To:Cc:Content-Type:
-	 Content-Transfer-Encoding; b=B+OMwRSsZ3dWafniaBYUwyiPLnaTytnOHYelaybxhUe+0IbHcDAKtqFeIikV558HF7W1/SAFHyoAKIvcdw6LzpG3XgyIOQr+UqYv+E3X7unk5KKZu1P8R1pIlHMdtowDmfVCttmhp8wP+YK/6isYUeaxjNqGhvVfqC/VVzUJwsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SlD2B4fN; arc=none smtp.client-ip=170.10.133.124
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705428907;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0WbXw4cXFD9BqB4vMNoNua9qjVvWa2/XOALDuoMj2c0=;
-	b=SlD2B4fNz3FaZymp1Om6MNEpmfSM84eqBZFjZcV09h3iYc9b/UY3dMxnbL3yVoBQXpdB8Z
-	XL/d7MxjiryQHOjpzmbMsZlVnR9WOqsEdor1whV/hMxtqyyEDmL4a0QfY8W1ueWK8fPLq1
-	hxZtiFXhs3HT1ndw/t/lKAncv9GhEWI=
-Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
- [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-516-8cASJv7uNfeiA2GSGzAESg-1; Tue, 16 Jan 2024 13:15:05 -0500
-X-MC-Unique: 8cASJv7uNfeiA2GSGzAESg-1
-Received: by mail-yw1-f200.google.com with SMTP id 00721157ae682-5e9a02c6d49so194531617b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:15:05 -0800 (PST)
+	s=arc-20240116; t=1705428882; c=relaxed/simple;
+	bh=cv59bDCTOqRhiDC3HpONyDpPUeopXrDeTyWmM+8EkOI=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=Hgp2bKkdi+woeo/MGG0lj4ZqLjtUZwVLdS502ASidJX6pzmThh/HflM72eQJN3lVqGg2WNRi7X8KOWARzyuuYDV1thEHK6zZOYk+WKS3DJAAU2Gvuh4t9CR51aSWjDbg3ngvG+4CD9FkAz2He+4FCYNheEHbtz4Pz7L0+yF+P0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ntfNTKq8; arc=none smtp.client-ip=209.85.166.53
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7ba903342c2so539628039f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:14:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705428879; x=1706033679; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xRhLuuiIVVo+A52y6bxPnSkQ+JrLAw3wqr2sWjodaZc=;
+        b=ntfNTKq8C4HxrhN7HqHgbmqQXfktwh8hmtgTA5ncDWjXGizdF3GP0fGzClzVcPySY5
+         Fr/LPYZkV9MKuT7X9Ho1WvaMWPpxFEqRhWT90Sy7hmG1jl9bMpHMyWnWjyEYvOSSdOWL
+         7RsivC3zzWi4FqeKBp1Fbus4EvmmfmE3Ira6cAvx5n03Mi7ocy62RMTCJHCjxRribQ2T
+         RcvSJ0PxWvBqmO8FcwuvIr3ttU+VFagMYmrqyEP++o14SO2/yzy3wEuWj1wWkEpVm1EU
+         paXan10Buan5kMdpRnQbVihNjLYYRVwsx6+Ihh3oMBg7fP1FX6pVxm41RiGQqlToSr72
+         7SNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705428904; x=1706033704;
+        d=1e100.net; s=20230601; t=1705428879; x=1706033679;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0WbXw4cXFD9BqB4vMNoNua9qjVvWa2/XOALDuoMj2c0=;
-        b=mfbQJ7vsGkWjDTOU6kEaFmOyTmw6YkJQDC2cWzGiW6+osMUPYj4OTj9Y8LHZydfrfk
-         8FITDkVzErGGx7IQe9aV993NjoRSnZB1IiRxg6Vsl/s2XJIs+/UW+bVi0c9daWiN0p0B
-         EQn1cVLsGH8ud1As7ox0//lxNlJ0yRJ24hC75GvsbNRc0nQUOipaghkLzPSrSXW6HobL
-         29zwFuv11GD0/QYmFKn8UZMuY4YL6g2efpSXILHpi/eHo8Vdbx87Q+q93PsxNNfe1hTw
-         4wgP4Dhq5WFDEuKSRyKMkxZ1YV9ScLbH91bO0Y7lsMj88O+P0jLrIRxPajoRxz4YCZqg
-         Uf2A==
-X-Gm-Message-State: AOJu0YyHjNrEHW5cBxDnoePWym5OxSDUTdyl++lC3TIhJjG2y3U+9M2l
-	pOEIpmv00gr4j6GU+Ev7+7fExRJLdbDOoJhMYGWWhgucumHCgQiHVe8efQoOz7pSfaSPTJ60K1l
-	bdmCidrPtbYQdPCwQcBedptF3YBGvLPc0ltSia70Iu/xB4mSU
-X-Received: by 2002:a25:8a01:0:b0:dbd:d617:7f14 with SMTP id g1-20020a258a01000000b00dbdd6177f14mr3940604ybl.10.1705428903855;
-        Tue, 16 Jan 2024 10:15:03 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFjjSfieogeLmsO2hkJG2Ph0p7ONMonI8rw73F9+m+gs8kSmgBZf3/0NFA73MJK+nfFRY6rQ9rqfgEIhZUhCjc=
-X-Received: by 2002:a25:8a01:0:b0:dbd:d617:7f14 with SMTP id
- g1-20020a258a01000000b00dbdd6177f14mr3940587ybl.10.1705428903474; Tue, 16 Jan
- 2024 10:15:03 -0800 (PST)
+        bh=xRhLuuiIVVo+A52y6bxPnSkQ+JrLAw3wqr2sWjodaZc=;
+        b=JFJzHuYF55D/jJTma+WWdrcjdwp+8+uhvIMRoFQHoHrdzxg4giTUXgAYpjC1K62dCh
+         gahPfMbdduMZyrD5+89ifuqRGRNT4wiVElWGihfgkx2hmjiGUKaO53NmOLsFzXhRmslv
+         j4WkJvaXydTYicy5EmTka7GTJgIFYj7b9rsvfXQfiARVmwrThStkI/f7+CuLd3mErJt0
+         Mo4W+vuMsYeAxhYxtLrfwzybb1558ZgNFuK7nS52aoUXhLzBufjeSoIGcAN4IJSUGZa4
+         VEXlcmVqynfWR/Ctu+fIq6sNk5bWo+5kW+Z2d3n7waRDTujJ3FctxNTyEbdxqm8mvR6M
+         +SxA==
+X-Gm-Message-State: AOJu0Yy5FLqGtwMZqjjslFEL+NJ0R6YqhG8NO6fOezLAQ9GpRAiUXTF3
+	7hphDqLd1+6nQsw2XJ07lULre5W63G0AKHsoNAs9RAPCDBaDXQ==
+X-Google-Smtp-Source: AGHT+IEfZdEKTVV73IlpY3EGlS1kPKh3DImT91Va7UPo6ctMhZS1jwa3ClSyV/+ZVIEwxJrtZw8TuE8UvHu/GnDXkQ4=
+X-Received: by 2002:a05:6602:3054:b0:7be:d30c:d170 with SMTP id
+ p20-20020a056602305400b007bed30cd170mr8728680ioy.34.1705428879752; Tue, 16
+ Jan 2024 10:14:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1704919215-91319-1-git-send-email-steven.sistare@oracle.com> <1704919215-91319-6-git-send-email-steven.sistare@oracle.com>
-In-Reply-To: <1704919215-91319-6-git-send-email-steven.sistare@oracle.com>
-From: Eugenio Perez Martin <eperezma@redhat.com>
-Date: Tue, 16 Jan 2024 19:14:27 +0100
-Message-ID: <CAJaqyWc+nSMPv7248x2QWOgAPOjwZ2BJ52LrOhKUu51t+3QViw@mail.gmail.com>
-Subject: Re: [RFC V1 05/13] vhost-vdpa: VHOST_IOTLB_REMAP
-To: Steve Sistare <steven.sistare@oracle.com>
-Cc: virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org, 
-	"Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, Si-Wei Liu <si-wei.liu@oracle.com>, 
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Dragos Tatulea <dtatulea@nvidia.com>, 
-	Eli Cohen <elic@nvidia.com>, Xie Yongji <xieyongji@bytedance.com>
+References: <20240110102102.61587-1-tudor.ambarus@linaro.org> <20240110102102.61587-4-tudor.ambarus@linaro.org>
+In-Reply-To: <20240110102102.61587-4-tudor.ambarus@linaro.org>
+From: Sam Protsenko <semen.protsenko@linaro.org>
+Date: Tue, 16 Jan 2024 12:14:28 -0600
+Message-ID: <CAPLW+4mY4VUm+cryBDFLp9TFkxG2oqJrmbZVuRuT5bFOzYXrnQ@mail.gmail.com>
+Subject: Re: [PATCH 03/18] tty: serial: samsung: add gs101 earlycon support
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com, 
+	gregkh@linuxfoundation.org, jirislaby@kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
+	andre.draszik@linaro.org, peter.griffin@linaro.org, kernel-team@android.com, 
+	willmcvicker@google.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 10, 2024 at 9:40=E2=80=AFPM Steve Sistare <steven.sistare@oracl=
-e.com> wrote:
+On Wed, Jan 10, 2024 at 4:21=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro=
+org> wrote:
 >
-> When device ownership is passed to a new process via VHOST_NEW_OWNER,
-> some devices need to know the new userland addresses of the dma mappings.
-> Define the new iotlb message type VHOST_IOTLB_REMAP to update the uaddr
-> of a mapping.  The new uaddr must address the same memory object as
-> originally mapped.
+> The entire bus (PERIC) on which the GS101 serial resides only allows
+> 32-bit register accesses. The reg-io-width dt property is disallowed
+> for the "google,gs101-uart" compatible and instead the iotype is
+> inferred from the compatible. Always set UPIO_MEM32 iotype for the
+> gs101 earlycon.
 >
-
-I think this new ioctl is very interesting, and can be used to
-optimize some parts of live migration with shadow virtqueue if it
-allows to actually replace the uaddr. Would you be interested in that
-capability?
-
-> The user must suspend the device before the old address is invalidated,
-> and cannot resume it until after VHOST_IOTLB_REMAP is called, but this
-> requirement is not enforced by the API.
->
-> Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
+> Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 > ---
->  drivers/vhost/vdpa.c             | 34 ++++++++++++++++++++++++++++++++
->  include/uapi/linux/vhost_types.h | 11 ++++++++++-
->  2 files changed, 44 insertions(+), 1 deletion(-)
+
+Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+
+>  drivers/tty/serial/samsung_tty.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 >
-> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> index faed6471934a..ec5ca20bd47d 100644
-> --- a/drivers/vhost/vdpa.c
-> +++ b/drivers/vhost/vdpa.c
-> @@ -1219,6 +1219,37 @@ static int vhost_vdpa_pa_map(struct vhost_vdpa *v,
+> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsun=
+g_tty.c
+> index 20ec6ef1a52f..74bc5151dad4 100644
+> --- a/drivers/tty/serial/samsung_tty.c
+> +++ b/drivers/tty/serial/samsung_tty.c
+> @@ -2810,6 +2810,17 @@ OF_EARLYCON_DECLARE(exynos4210, "samsung,exynos421=
+0-uart",
+>  OF_EARLYCON_DECLARE(artpec8, "axis,artpec8-uart",
+>                         s5pv210_early_console_setup);
 >
->  }
->
-> +static int vhost_vdpa_process_iotlb_remap(struct vhost_vdpa *v,
-> +                                         struct vhost_iotlb *iotlb,
-> +                                         struct vhost_iotlb_msg *msg)
+> +static int __init gs101_early_console_setup(struct earlycon_device *devi=
+ce,
+> +                                           const char *opt)
 > +{
-> +       struct vdpa_device *vdpa =3D v->vdpa;
-> +       const struct vdpa_config_ops *ops =3D vdpa->config;
-> +       u32 asid =3D iotlb_to_asid(iotlb);
-> +       u64 start =3D msg->iova;
-> +       u64 last =3D start + msg->size - 1;
-> +       struct vhost_iotlb_map *map;
-> +       int r =3D 0;
+> +       /* gs101 always expects MMIO32 register accesses. */
+> +       device->port.iotype =3D UPIO_MEM32;
 > +
-> +       if (msg->perm || !msg->size)
-> +               return -EINVAL;
-> +
-> +       map =3D vhost_iotlb_itree_first(iotlb, start, last);
-> +       if (!map)
-> +               return -ENOENT;
-> +
-> +       if (map->start !=3D start || map->last !=3D last)
-> +               return -EINVAL;
-> +
-> +       /* batch will finish with remap.  non-batch must do it now. */
-> +       if (!v->in_batch)
-> +               r =3D ops->set_map(vdpa, asid, iotlb);
-
-I'm missing how these cases are handled:
-* The device does not expose set_map but dma_map / dma_unmap (you can
-check this case with the simulator)
-* The device uses platform iommu (!set_map && !dma_unmap vdpa_ops).
-
-> +       if (!r)
-> +               map->addr =3D msg->uaddr;
-> +
-> +       return r;
+> +       return s5pv210_early_console_setup(device, opt);
 > +}
 > +
->  static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->                                            struct vhost_iotlb *iotlb,
->                                            struct vhost_iotlb_msg *msg)
-> @@ -1298,6 +1329,9 @@ static int vhost_vdpa_process_iotlb_msg(struct vhos=
-t_dev *dev, u32 asid,
->                         ops->set_map(vdpa, asid, iotlb);
->                 v->in_batch =3D false;
->                 break;
-> +       case VHOST_IOTLB_REMAP:
-> +               r =3D vhost_vdpa_process_iotlb_remap(v, iotlb, msg);
-> +               break;
->         default:
->                 r =3D -EINVAL;
->                 break;
-> diff --git a/include/uapi/linux/vhost_types.h b/include/uapi/linux/vhost_=
-types.h
-> index 9177843951e9..35908315ff55 100644
-> --- a/include/uapi/linux/vhost_types.h
-> +++ b/include/uapi/linux/vhost_types.h
-> @@ -79,7 +79,7 @@ struct vhost_iotlb_msg {
->  /*
->   * VHOST_IOTLB_BATCH_BEGIN and VHOST_IOTLB_BATCH_END allow modifying
->   * multiple mappings in one go: beginning with
-> - * VHOST_IOTLB_BATCH_BEGIN, followed by any number of
-> + * VHOST_IOTLB_BATCH_BEGIN, followed by any number of VHOST_IOTLB_REMAP =
-or
->   * VHOST_IOTLB_UPDATE messages, and ending with VHOST_IOTLB_BATCH_END.
->   * When one of these two values is used as the message type, the rest
->   * of the fields in the message are ignored. There's no guarantee that
-> @@ -87,6 +87,15 @@ struct vhost_iotlb_msg {
->   */
->  #define VHOST_IOTLB_BATCH_BEGIN    5
->  #define VHOST_IOTLB_BATCH_END      6
+> +OF_EARLYCON_DECLARE(gs101, "google,gs101-uart", gs101_early_console_setu=
+p);
 > +
-> +/*
-> + * VHOST_IOTLB_REMAP registers a new uaddr for the existing mapping at i=
-ova.
-> + * The new uaddr must address the same memory object as originally mappe=
-d.
-> + * Failure to do so will result in user memory corruption and/or device
-> + * misbehavior.  iova and size must match the arguments used to create t=
-he
-> + * an existing mapping.  Protection is not changed, and perm must be 0.
-> + */
-> +#define VHOST_IOTLB_REMAP          7
->         __u8 type;
->  };
->
+>  /* Apple S5L */
+>  static int __init apple_s5l_early_console_setup(struct earlycon_device *=
+device,
+>                                                 const char *opt)
 > --
-> 2.39.3
+> 2.43.0.472.g3155946c3a-goog
 >
-
+>
 
