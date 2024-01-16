@@ -1,83 +1,92 @@
-Return-Path: <linux-kernel+bounces-27613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4455282F2E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:10:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF26982F2E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:10:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AEAE1C237A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:10:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1A221C2372F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:10:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09AF61CAA3;
-	Tue, 16 Jan 2024 17:10:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A10A1CAA2;
+	Tue, 16 Jan 2024 17:10:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AC2tgQRJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EuG93urs"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53DEC1CA87;
-	Tue, 16 Jan 2024 17:10:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9121EC433F1;
-	Tue, 16 Jan 2024 17:10:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705425007;
-	bh=WCi6VGkBIXSBMccsoDB/WZ6vKhOsmu9kfVAUQ8dIkdM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AC2tgQRJMJBy3BvQIGWENmv0xrO3i6eH56mpqRHbnn0HwwXlvLFF9J1+4w/Yv2rRi
-	 uPgBAE4sECuMuo/D0docvQG7bY3GmiQI246QkRexqOZHwU6hd3NwFGQcvoqJmZJxkJ
-	 I8C/D3RrRdsEnSvjOMxLOF21vAoO7b+C8Sc2fZBLNSh4Xx/wy4abrutJSPJ04oAQRd
-	 so49wXxbsS+KdkYQClNx888QpyoHTnBm33/pAqye6SdwowMDFhnHmeU0qsx9JV2KUK
-	 x5Q8CYFCuFgHPUqs3CMml/6ai+q/7/t3pZZj6s2s6r3aCokpFpOtZWfxLecO15UWO7
-	 YV5f6MOUMX9Ng==
-Date: Tue, 16 Jan 2024 11:10:05 -0600
-From: Rob Herring <robh@kernel.org>
-To: Zhenhua Huang <quic_zhenhuah@quicinc.com>
-Cc: krzysztof.kozlowski+dt@linaro.org, quic_tingweiz@quicinc.com,
-	richard@nod.at, vigneshr@ti.com, conor+dt@kernel.org,
-	linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com,
-	linux-mtd@lists.infradead.org, quic_bjorande@quicinc.com,
-	devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: Re: [PATCH v2] dt-bindings: mtd: avoid automatically select from
- mtd.yaml
-Message-ID: <170542500495.126061.10553621105906619365.robh@kernel.org>
-References: <1704885705-7486-1-git-send-email-quic_zhenhuah@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71FCF1CA87;
+	Tue, 16 Jan 2024 17:10:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705425018; cv=none; b=Qvw1vx+rBbpzJbjpxEBgHzCJGqS+fnLbYGfP2swYafJr2iWORkUnhJIqgtbn1ucDPFRncJCVXmxFM/dqtky2FZrlXneeqlemw4usZZMeQJiJI8cWOL8KPknXYhzArM57gttX7b6y770PD57d8VnugvLVmNHcACj6LraODdFZckc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705425018; c=relaxed/simple;
+	bh=+F0EM0MyQ7NcCg3Ixxu9z5Tybad96Gl5Tf0YqH4Dt+U=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:Received:Message-ID:Subject:From:To:Date:In-Reply-To:
+	 References:Content-Type:Content-Transfer-Encoding:User-Agent:
+	 MIME-Version; b=EiyoZ+MH9fAwwv7Nh/BWdMxYCu9WpoH4zIRgQSmHhdsj5sHlowZfHQ9PmkUImkNOfTN0MN/x7gNI14m6EBGI717kh0KwbXY0JSu0P2Co209rf2RWw7ZyNALr3S2Dho9PXyCsvsMon/mKGJA9wSNLKL7L9KB40oy0pEGB/+01S6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EuG93urs
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705425017; x=1736961017;
+  h=message-id:subject:from:to:date:in-reply-to:references:
+   content-transfer-encoding:mime-version;
+  bh=+F0EM0MyQ7NcCg3Ixxu9z5Tybad96Gl5Tf0YqH4Dt+U=;
+  b=EuG93urs22+Rzqck03NUvlaV+3W1lMFn6/4m/KzkHiLIJ/ORTbux9dXx
+   u3DTMBzTzzOXnd5O2y9hYDYn2Kgg4uGdwPi3LZkuCO0GYS33Vm9fc4D3y
+   2spT9THB8/kyVJ+IjYSzvBuAwvHLqL12L7OlqbgSYw8g+ijldO+DXeuVW
+   UaPVH6RRtDTReTDLbvE7j3uiW33ea42OUzu7qaR12Kl7z9VPbm+ouIkd+
+   JeMogJslbJ77quzMwzt3M0x1bf9JbvI0dbeJCYS/cl/L860cYJ2anaGrd
+   YXS5Bl9bjvAN/uT/gWJVtK7eSEDVf1FNg+nhZpz6yi3QGEvLP5z3y7xTE
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="7295108"
+X-IronPort-AV: E=Sophos;i="6.05,199,1701158400"; 
+   d="scan'208";a="7295108"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 09:10:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,199,1701158400"; 
+   d="scan'208";a="32529976"
+Received: from ticela-or-353.amr.corp.intel.com ([10.209.70.241])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 09:10:09 -0800
+Message-ID: <76352c8a2a91135b0fcc9041b6f6e06ff0e0a971.camel@linux.intel.com>
+Subject: Re: [PATCH v4 0/3] x86/hyperv: Mark CoCo VM pages not present when
+ changing encrypted state
+From: Rick Edgecombe <rick.p.edgecombe@linux.intel.com>
+To: mhklinux@outlook.com, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de,  dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+ kirill.shutemov@linux.intel.com, haiyangz@microsoft.com,
+ wei.liu@kernel.org,  decui@microsoft.com, luto@kernel.org,
+ peterz@infradead.org,  akpm@linux-foundation.org, urezki@gmail.com,
+ hch@infradead.org, lstoakes@gmail.com,  thomas.lendacky@amd.com,
+ ardb@kernel.org, jroedel@suse.de, seanjc@google.com, 
+ sathyanarayanan.kuppuswamy@linux.intel.com, linux-kernel@vger.kernel.org, 
+ linux-coco@lists.linux.dev, linux-hyperv@vger.kernel.org, linux-mm@kvack.org
+Date: Tue, 16 Jan 2024 09:10:08 -0800
+In-Reply-To: <20240116022008.1023398-1-mhklinux@outlook.com>
+References: <20240116022008.1023398-1-mhklinux@outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1704885705-7486-1-git-send-email-quic_zhenhuah@quicinc.com>
 
+On Mon, 2024-01-15 at 18:20 -0800, mhkelley58@gmail.com wrote:
+> =C2=A0 x86/hyperv: Use slow_virt_to_phys() in page transition hypervisor
+> =C2=A0=C2=A0=C2=A0 callback
+> =C2=A0 x86/mm: Regularize set_memory_p() parameters and make non-static
+> =C2=A0 x86/hyperv: Make encrypted/decrypted changes safe for
+> =C2=A0=C2=A0=C2=A0 load_unaligned_zeropad()
 
-On Wed, 10 Jan 2024 19:21:45 +0800, Zhenhua Huang wrote:
-> The mtd binding is always $ref'ed by other bindings, default selector
-> should be from other binding files which ref'ed it. Now, "$nodename" in
-> mtd.yaml turns into a "select" automatically such that a few binding check
-> issues reported because it conflicts with sram devices(eg, qcom,imem.yaml,
-> rules in folder sram/*)
-> 
-> To avoid the automatically created "select" in mtd.yaml, adding:
-> 
-> select: false
-> 
-> Suggested-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> Fixes: 7bdc671822e9 ("dt-bindings: mtd: physmap: Reuse the generic definitions")
-> Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
-> ---
-> Hi Bjorn,
-> 
-> As the idea is from your comment, I added "Suggested-by" you.
-> Please tell me if that's not suitable. Thanks.
-> 
->  Documentation/devicetree/bindings/mtd/mtd.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-
-Acked-by: Rob Herring <robh@kernel.org>
-
+I'm not clear on the HyperV specifics, but everything else looked good
+to me. Thanks.
 
