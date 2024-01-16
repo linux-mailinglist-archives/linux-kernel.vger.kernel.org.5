@@ -1,158 +1,172 @@
-Return-Path: <linux-kernel+bounces-27573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 129E082F25F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:28:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B16DF82F264
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:29:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA3ABB22EF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:28:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C28401C23681
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:29:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05C4C1C6B3;
-	Tue, 16 Jan 2024 16:28:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19ADD1C6B8;
+	Tue, 16 Jan 2024 16:29:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AFshD34x"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GpukmRnR"
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA5D51C290
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 16:28:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705422515;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=OF/f9SqDfQjcSElQnS0yY6s/dBYlZKzDcj9s0+Wh2f8=;
-	b=AFshD34x282Vr2XmVuuol3SNpEAG6rMqPLhY8aAXX/LlXI8gfsXuMOHjA3525reUltdZzN
-	HypDg1CmjjPSN/eso24bvkIXSex0LpHfCQNjpL/SqBEHlYhPeUAn74QGRZw9OKZX0kdo9e
-	scVvruX6mK1zQAkbBJVDABMYsWtEhYM=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-445-fDb5-zGBPdGjjZGF7G52Sg-1; Tue, 16 Jan 2024 11:28:33 -0500
-X-MC-Unique: fDb5-zGBPdGjjZGF7G52Sg-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40d1ffbc3b8so78305215e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 08:28:33 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EA4B1C6A0;
+	Tue, 16 Jan 2024 16:29:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-21086556f32so211786fac.3;
+        Tue, 16 Jan 2024 08:29:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705422580; x=1706027380; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e2EGnddz4HVPEzCJyDOKwQL+fRJZRBk2jtXoB7hv7LM=;
+        b=GpukmRnRlfDL3rFVYNUsCDvhMKNI/5C0Os/NCg6p7CavfcRcNh+mv35N8gFbvqsxHu
+         EYGSLoIMiOtpOAKqiM9pBw/lp+0F6wZnduxVvN7ObhRGGah1R7CwKImtwBQLfjct3pOP
+         xEwm4VViy32BUzhIB1zkOcmkTgWteqDRlj+SgkjRHTnnLDrDvVKpdTQrgVL+YjYK9WXa
+         jETKW/vIuYisq5d3CnkEHju5CqsxAh2084DNO79CPXEdxZzhhDReBZQ/s8E2mVolVx5Z
+         meSKK9++gdEruk5saczDHwbmbWjhEZZMLbK1jXpvZEBTlVdSNCEA0IDM6LHntN15zBjF
+         lyHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705422512; x=1706027312;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OF/f9SqDfQjcSElQnS0yY6s/dBYlZKzDcj9s0+Wh2f8=;
-        b=nl8Kbg5YUDfRH0eC7IeYFsakzt1CQMfNtYaotQHj8yYBc+2pWiWygqRVU9Jpklvovw
-         ANjD3cemsovZXA3mOo23P6Sv0QsIscrOghrYU2i1o1Ti4AmfsyRms65cffqn62fk46S4
-         kZ7qYrxcoqOTBuzT/jkTk6MEk3vVAPGJcfbImo/erme5zVipJg50mpzGJp9I4oi5dhv4
-         9H/dHuo8k94GVT5qdCjCeYEOFcYzqXdcqWqRR8YqEet0/Ca6qxMWKWQryeTVZcDZODV2
-         8sgWd1baKK7ZqTI7KeCqqULWFHa6hsDXUlSVOEd/xhZOka0ORelADot8443FtMuMYo4B
-         lq1w==
-X-Gm-Message-State: AOJu0Yz2XwrRDWXgjaUn69A+DM/4NOK9L0Es/PrPvp7WDKnc1NXyv+89
-	yUM1FezzbvHhqiZ2migzzB/0E9LB6eR2YQX2G0SeMKb/iQjO4cseIwyTG6RvARMiguWD7ZcE5LT
-	earTeRHyq8nQjAKCiYKupr9bryIWZnTeB
-X-Received: by 2002:a05:600c:257:b0:40e:7e40:10c6 with SMTP id 23-20020a05600c025700b0040e7e4010c6mr739607wmj.182.1705422512709;
-        Tue, 16 Jan 2024 08:28:32 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG4EwY4rnvc1dXkvUnzrtlQb0sW9f8GFlzYKtabODe5zsH9sA7U7cGUZRKyhXjVGQXqLCiWCQ==
-X-Received: by 2002:a05:600c:257:b0:40e:7e40:10c6 with SMTP id 23-20020a05600c025700b0040e7e4010c6mr739594wmj.182.1705422512444;
-        Tue, 16 Jan 2024 08:28:32 -0800 (PST)
-Received: from redhat.com ([2.52.29.192])
-        by smtp.gmail.com with ESMTPSA id bg42-20020a05600c3caa00b0040e3733a32bsm23560519wmb.41.2024.01.16.08.28.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 08:28:31 -0800 (PST)
-Date: Tue, 16 Jan 2024 11:28:28 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	changyuanl@google.com, christophe.jaillet@wanadoo.fr,
-	dtatulea@nvidia.com, eperezma@redhat.com, jasowang@redhat.com,
-	michael.christie@oracle.com, mst@redhat.com,
-	pasha.tatashin@soleen.com, rientjes@google.com,
-	stevensd@chromium.org, tytso@mit.edu, xuanzhuo@linux.alibaba.com
-Subject: [GIT PULL] virtio: features, fixes
-Message-ID: <20240116112828-mutt-send-email-mst@kernel.org>
+        d=1e100.net; s=20230601; t=1705422580; x=1706027380;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e2EGnddz4HVPEzCJyDOKwQL+fRJZRBk2jtXoB7hv7LM=;
+        b=BKhGsjP8a5JvJZMQAAhNQRofVyJLmWoW68e/5rqJEJJsk16nKiBNw3xUtRswxA223H
+         jdsR9ncj278vala0SDrYGQgtA9xUNEjZvD208feiZZKjIaAu6QBGWj8PFmlJ/AHSq/kD
+         MrT2erdsYd34lpA9j0jJ5Mc6Swq6gArNReGbjfmr3lKeEmfx+aRLE2UVIijgWqaXG7Vr
+         hX4PiE/igtRWx0Ld8YVXfirxIm3w+le9KEkdeQIYluLZ39brfKQnUz4CLE83Y3BEY73Y
+         BKShn8eknqfFWrGx6nKx0dGsPvEpoFDYZ2/8DX1e9l5VxoS1p99vDvn6qVMsHyoF5TKw
+         4Hhg==
+X-Gm-Message-State: AOJu0YwZttRnJ1jWrcfZXb2ViRuehfhKiuCZ97n2xKFNxrK+Tb3ecesh
+	UQvT3NzhzrTJJ0q7CUKExqt74ZuhpjasyZ4G5EM=
+X-Google-Smtp-Source: AGHT+IHCQhTy467LiJCm+Ces7xo8Nf4D2WYTeF8aTO9nIK+JFa2hlgRzM/t9mbpUinDQzzdaKdcYgGUSWsNvY2jNX/g=
+X-Received: by 2002:a05:6871:413:b0:203:743e:ba22 with SMTP id
+ d19-20020a056871041300b00203743eba22mr10223706oag.89.1705422579663; Tue, 16
+ Jan 2024 08:29:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mutt-Fcc: =sent
+References: <20240115160600.5444-1-qiujingbao.dlmu@gmail.com>
+ <20240115160600.5444-4-qiujingbao.dlmu@gmail.com> <f2b3dff2-ce0d-4ddb-ad61-74abf2c3022d@linaro.org>
+ <CAJRtX8QFLoWnJBkepZrbneHX8qZdde=aw+zbdErVC91B=u==MA@mail.gmail.com>
+ <007e8c14-13eb-4917-b9da-8d47d6c965c7@linaro.org> <CAJRtX8ROH4R_s1=ML5ka340PAE0SWJKK24yVWHw5gCd+7d9pkA@mail.gmail.com>
+ <dfcf74a9-db76-43fe-9261-20bf7a993bc3@linaro.org>
+In-Reply-To: <dfcf74a9-db76-43fe-9261-20bf7a993bc3@linaro.org>
+From: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+Date: Wed, 17 Jan 2024 00:29:28 +0800
+Message-ID: <CAJRtX8Tkie+ykLv8L2EgBQcy9tVP5Yz-_J_eHE-9N9hjt+6gkg@mail.gmail.com>
+Subject: Re: [PATCH v6 3/3] riscv: dts: sophgo: add rtc dt node for CV1800
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: alexandre.belloni@bootlin.com, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, chao.wei@sophgo.com, 
+	unicorn_wang@outlook.com, paul.walmsley@sifive.com, palmer@dabbelt.com, 
+	aou@eecs.berkeley.edu, linux-rtc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	dlan@gentoo.org, inochiama@outlook.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The following changes since commit b8e0792449928943c15d1af9f63816911d139267:
+On Wed, Jan 17, 2024 at 12:03=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 16/01/2024 16:51, Jingbao Qiu wrote:
+> >>> CV1800 is a RISCV based SOC that includes an RTC module. The RTC
+> >>> module has an OSC oscillator
+> >>
+> >>
+> >> I am not going to read pages of description. Please write concise repl=
+ies.
+> >
+> > Thanks, What I mean is that this hardware includes two functions, RTC
+> > and POR. How should I describe their relationship?
+>
+> Your POR does not need to take any resources, so no need to describe any
+> relationship.
+>
+> ...
+>
+> >>> Your suggestion is, firstly, the por submodule does not have any
+> >>> resources, so it should be deleted.
+> >>
+> >> So where did you delete it? I still see it in this patch.
+> >
+> > Should I completely delete him? How can a por driver obtain device info=
+rmation?
+>
+> Delete completely.
+>
+> Device information? What is this? We already agreed you don't have any
+> resources for POR.
+>
+> ....
+>
+> >> Device is only one thing, not two.
+> >>
+> >>>                     reg =3D <0x5025000 0x2000>;
+> >>>                     interrupts =3D <17 IRQ_TYPE_LEVEL_HIGH>;
+> >>>                     clocks =3D <&osc>;
+> >>> };
+> >>> However, in reality, the POR submodule does not use IRQ and CLK.
+> >>> Please do not hesitate to teach. Thanks.
+> >>
+> >> I expect one device node. How many drivers you have does not matter: y=
+ou
+> >> can instantiate 100 Linux devices in 100 Linux device drivers.
+> >
+> > I understand what you mean. A device node corresponds to multiple drive=
+rs.
+> > Should I completely delete the POR device tree node and add it when
+> > submitting the POR driver?
+>
+> ? I wrote it in previous messages and twice in this thread. Completely
+> delete. You do not add it back! Because if you ever intended to add it
+> back, it should be added since beginning. I don't understand what
+> submitting later would solve.
+>
+> > If that's the case, how can I explain that the rtc device tree node
+> > uses the syscon tag?
+> > How can I describe a POR device in DTS? POR is a submodule of RTC, and
+> > it also has corresponding drivers.
+>
+> I said, there is no need for POR in DTS, because you have nothing there.
+> Why do you insist on putting it on DTS?
+>
+> > It's just that his resources are only shared with RTC's Reg.
+>
+> What resources? Reg? That's not a separate resource.
 
-  virtio_blk: fix snprintf truncation compiler warning (2023-12-04 09:43:53 -0500)
+I'm very sorry about this.
+But I found a binding file that only contains Reg and Compatible.
 
-are available in the Git repository at:
+rtc@80920000 {
+compatible =3D "cirrus,ep9301-rtc";
+reg =3D <0x80920000 0x100>;
+};
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+Link: Documentation/devicetree/bindings/rtc/cirrus,ep9301-rtc.yaml
 
-for you to fetch changes up to f16d65124380ac6de8055c4a8e5373a1043bb09b:
+>
+> To summarize: Drop POR from DTS and never bring it back, unless you come
+> with some different arguments, which you did not say already.
+>
 
-  vdpa/mlx5: Add mkey leak detection (2024-01-10 13:01:38 -0500)
+You are right, if there is no por device tree node, how can the por
+driver obtain the Reg?
+Thank you again.
 
-----------------------------------------------------------------
-virtio: features, fixes
-
-vdpa/mlx5: support for resumable vqs
-virtio_scsi: mq_poll support
-3virtio_pmem: support SHMEM_REGION
-virtio_balloon: stay awake while adjusting balloon
-virtio: support for no-reset virtio PCI PM
-
-Fixes, cleanups.
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-
-----------------------------------------------------------------
-Changyuan Lyu (1):
-      virtio_pmem: support feature SHMEM_REGION
-
-Christophe JAILLET (2):
-      vdpa: Fix an error handling path in eni_vdpa_probe()
-      vdpa: Remove usage of the deprecated ida_simple_xx() API
-
-David Stevens (2):
-      virtio: Add support for no-reset virtio PCI PM
-      virtio_balloon: stay awake while adjusting balloon
-
-Dragos Tatulea (10):
-      vdpa: Track device suspended state
-      vdpa: Block vq property changes in DRIVER_OK
-      vdpa/mlx5: Expose resumable vq capability
-      vdpa/mlx5: Allow modifying multiple vq fields in one modify command
-      vdpa/mlx5: Introduce per vq and device resume
-      vdpa/mlx5: Mark vq addrs for modification in hw vq
-      vdpa/mlx5: Mark vq state for modification in hw vq
-      vdpa/mlx5: Use vq suspend/resume during .set_map
-      vdpa/mlx5: Introduce reference counting to mrs
-      vdpa/mlx5: Add mkey leak detection
-
-Mike Christie (1):
-      scsi: virtio_scsi: Add mq_poll support
-
-Pasha Tatashin (1):
-      vhost-vdpa: account iommu allocations
-
-Xuan Zhuo (1):
-      virtio_net: fix missing dma unmap for resize
-
- drivers/net/virtio_net.c           |  60 +++++------
- drivers/nvdimm/virtio_pmem.c       |  36 ++++++-
- drivers/scsi/virtio_scsi.c         |  78 +++++++++++++-
- drivers/vdpa/alibaba/eni_vdpa.c    |   6 +-
- drivers/vdpa/mlx5/core/mlx5_vdpa.h |  10 +-
- drivers/vdpa/mlx5/core/mr.c        |  73 ++++++++++---
- drivers/vdpa/mlx5/net/mlx5_vnet.c  | 209 +++++++++++++++++++++++++++++++++----
- drivers/vdpa/vdpa.c                |   4 +-
- drivers/vhost/vdpa.c               |  26 ++++-
- drivers/virtio/virtio_balloon.c    |  57 ++++++++--
- drivers/virtio/virtio_pci_common.c |  34 +++++-
- include/linux/mlx5/mlx5_ifc.h      |   3 +-
- include/linux/mlx5/mlx5_ifc_vdpa.h |   4 +
- include/uapi/linux/virtio_pmem.h   |   7 ++
- 14 files changed, 510 insertions(+), 97 deletions(-)
-
+Best regards,
+Jingbao Qiu
 
