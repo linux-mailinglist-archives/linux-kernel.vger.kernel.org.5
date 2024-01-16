@@ -1,121 +1,142 @@
-Return-Path: <linux-kernel+bounces-27616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6F2782F309
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:15:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ABFD82F30E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:16:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFC171C236EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:15:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEC921F233A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:16:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E6A51CAA4;
-	Tue, 16 Jan 2024 17:15:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cE7HF9zb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 866631CAB6;
+	Tue, 16 Jan 2024 17:16:20 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB2B91CA87;
-	Tue, 16 Jan 2024 17:15:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23BFAC433F1;
-	Tue, 16 Jan 2024 17:14:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705425300;
-	bh=AM/mT4cfVjyQmj8eYYeWn3zIDa2zuDQADbRVMWcGQdU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cE7HF9zb3MEIMMqRSRNybfeEURjS9oo8qSa2eouXnVBcJp8jCdDLXmwyQHHwaxOTp
-	 3L7ifg/Ezqf9+cJrXxyFVMLSyGFMcnOIE6FDpTl00HC2NzJPbAinpaP26ggF6Eq4uV
-	 DFW+lyp9Y6z6Z9hV+Puo25xhruj4VwB6cxnyHrRdljDUHl2c7jCI6z8yX8c/bCCmLS
-	 v/Ke9t6b48smIY5ohyuRz4FGtvhuiQyX/gczFKu4lZnng/KbBDXxaF07peT6AMbL3X
-	 eOsv7zPA7r45u1QeYjJF2F6GQkh7f6dTk22up8doKBv1L74rMzyGt5F6QCKwD+DbZz
-	 MMaCrur52lMTQ==
-Date: Tue, 16 Jan 2024 17:14:53 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Frieder Schrempf <frieder@fris.de>
-Cc: Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	linux-kernel@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
-	Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Frieder Schrempf <frieder.schrempf@kontron.de>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Christoph Niedermaier <cniedermaier@dh-electronics.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Gregor Herburger <gregor.herburger@ew.tq-group.com>,
-	Josua Mayer <josua@solid-run.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-	Marco Felsch <m.felsch@pengutronix.de>, Marek Vasut <marex@denx.de>,
-	Markus Niebel <Markus.Niebel@ew.tq-group.com>,
-	Stefan Wahren <stefan.wahren@chargebyte.com>,
-	Tim Harvey <tharvey@gateworks.com>, Yannic Moog <y.moog@phytec.de>
-Subject: Re: [PATCH 2/3] dt-bindings: arm: fsl: Add Sielaff i.MX6 Solo board
-Message-ID: <20240116-donated-squealing-ff35a3bfe18d@spud>
-References: <20240116105317.267525-1-frieder@fris.de>
- <20240116105317.267525-3-frieder@fris.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7826D1CA87
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 17:16:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705425380; cv=none; b=EoSsQYYExaVJkbjV67KulUNzmWyy7LLZov71ADKQysoXBHjVxrrQs48vLN0CDz59c3RoxoYuRA+aUv41ETCo7dcTnkCr2ASu6kLNM/VPUtbvuqBupz3IGJHp2W1IDJzG9HW4paQQ9zl6PNxNc9SrZ4ldCxxTweIQH/RlefZ2Auo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705425380; c=relaxed/simple;
+	bh=j2Z4bIVnqoPG9LFw0AGpHv56gD99sl2dYSmB7eDu+WY=;
+	h=Received:X-MC-Unique:Received:Received:From:To:CC:Subject:
+	 Thread-Topic:Thread-Index:Date:Message-ID:References:In-Reply-To:
+	 Accept-Language:X-MS-Has-Attach:X-MS-TNEF-Correlator:
+	 x-ms-exchange-transport-fromentityheader:x-originating-ip:
+	 MIME-Version:X-Mimecast-Spam-Score:X-Mimecast-Originator:
+	 Content-Language:Content-Type:Content-Transfer-Encoding; b=G2bSzrJb2Z8CCRYCYf95GPjBE3AGiQsDbrjTXbut3gBEIEzTT1AXu54x4hO63hF+BCZboLZ5C++UG4DtZpMvcz/k+26F23/n8rmGeYkLgPYkkR771Rm0ktu0JpSK53Ywh1CnQwCcuj8aPlzyZqj0PepflHDxAfeQBffDRLI4UC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-70-O4suwSxkO-eGETgMSyPNLQ-1; Tue, 16 Jan 2024 17:16:15 +0000
+X-MC-Unique: O4suwSxkO-eGETgMSyPNLQ-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 16 Jan
+ 2024 17:15:56 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Tue, 16 Jan 2024 17:15:56 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Andrew Jones' <ajones@ventanamicro.com>, Xiao Wang
+	<xiao.w.wang@intel.com>
+CC: "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+	"palmer@dabbelt.com" <palmer@dabbelt.com>, "aou@eecs.berkeley.edu"
+	<aou@eecs.berkeley.edu>, "conor.dooley@microchip.com"
+	<conor.dooley@microchip.com>, "heiko@sntech.de" <heiko@sntech.de>,
+	"haicheng.li@intel.com" <haicheng.li@intel.com>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] riscv: Optimize crc32 with Zbc extension
+Thread-Topic: [PATCH] riscv: Optimize crc32 with Zbc extension
+Thread-Index: AQHaSI1C2Wp5kEQM1k+UoNSZlBGjlrDcqukw
+Date: Tue, 16 Jan 2024 17:15:56 +0000
+Message-ID: <1153d2dd82cf43adb6062627d8d89b27@AcuMS.aculab.com>
+References: <20240105080830.3738117-1-xiao.w.wang@intel.com>
+ <20240116-9f09b002afc2337ab5e41e3f@orel>
+In-Reply-To: <20240116-9f09b002afc2337ab5e41e3f@orel>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="DfmlNYOfuJd0KgGS"
-Content-Disposition: inline
-In-Reply-To: <20240116105317.267525-3-frieder@fris.de>
-
-
---DfmlNYOfuJd0KgGS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 16, 2024 at 11:51:56AM +0100, Frieder Schrempf wrote:
-> From: Frieder Schrempf <frieder.schrempf@kontron.de>
+..
+> > +static inline u32 __pure crc32_le_generic(u32 crc, unsigned char const=
+ *p,
+> > +#if (BITS_PER_LONG =3D=3D 64)
+> > +=09=09=09=09=09  size_t len, u32 poly, u64 poly_qt,
+> > +#else
+> > +=09=09=09=09=09  size_t len, u32 poly, u32 poly_qt,
+> > +#endif
 >=20
-> Add compatible for the Sielaff i.MX6 Solo board.
+> How about creating a new type for poly_qt, defined as u64 for xlen=3D64
+> and u32 for xlen=3D32 to avoid the #ifdef?
+
+unsigned long ?
+
+..
+> > +=09for (int i =3D 0; i < len; i++) {
+> > +#if (BITS_PER_LONG =3D=3D 64)
+> > +=09=09s =3D (unsigned long)crc << 32;
+> > +=09=09s ^=3D __cpu_to_be64(*p_ul++);
+> > +#else
+> > +=09=09s =3D crc ^ __cpu_to_be32(*p_ul++);
+> > +#endif
 >=20
-> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+> Could write the above without #ifdef with
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Haven't I seen a bpf patch that rather implies that byteswap
+is likely to be truly horrid?
 
-Cheers,
-Conor.
+I've not tried to parse the crc code (although I do understand
+how it should work). But I'm surprised you need a byteswap.
 
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentati=
-on/devicetree/bindings/arm/fsl.yaml
-> index 32b195852a75c..f6cdf4a8e51a2 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -469,6 +469,7 @@ properties:
->                - prt,prtvt7                # Protonic VT7 board
->                - rex,imx6dl-rex-basic      # Rex Basic i.MX6 Dual Lite Bo=
-ard
->                - riot,imx6s-riotboard      # RIoTboard i.MX6S
-> +              - sielaff,imx6dl-board      # Sielaff i.MX6 Solo Board
->                - skov,imx6dl-skov-revc-lt2 # SKOV IMX6 CPU SoloCore lt2
->                - skov,imx6dl-skov-revc-lt6 # SKOV IMX6 CPU SoloCore lt6
->                - solidrun,cubox-i/dl            # SolidRun Cubox-i Solo/D=
-ualLite
-> --=20
-> 2.43.0
->=20
+After all, the crc is basically a long division of the buffer
+by the crc constant.
 
---DfmlNYOfuJd0KgGS
-Content-Type: application/pgp-signature; name="signature.asc"
+The CRC I've done recently is the hdlc crc-16.
+My nios version (also mips-like) has:
 
------BEGIN PGP SIGNATURE-----
+static __inline__ uint32_t
+crc_step(uint32_t crc, uint32_t byte_val)
+{
+#if defined(crc_step_ci)
+    return crc_step_ci(byte_val, crc);
+#else
+    uint32_t t =3D crc ^ (byte_val & 0xff);
+    t =3D (t ^ t << 4) & 0xff;
+    return crc >> 8 ^ t << 8 ^ t << 3 ^ t >> 4;
+#endif
+}
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaa5jQAKCRB4tDGHoIJi
-0hO4AP9CXUUylAtaQzw7HfQVBSy6p8Z4JW5/NMb0Uqt2v/xgAQEA1fMAeW5GZFTS
-000iUenQZ/HZOWMfld459agOkgEzJgk=
-=wYVv
------END PGP SIGNATURE-----
+I normally use a custom instruction for the logic - one clock.
+But the C code is only a couple of clocks slower that the best
+table lookup version.
+On anything pipelined and multi-issue the C code is likely to
+be faster than a lookup table!
+I don't know if any of the 32bit crc can be reduced the same way.
 
---DfmlNYOfuJd0KgGS--
+=09David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
+
 
