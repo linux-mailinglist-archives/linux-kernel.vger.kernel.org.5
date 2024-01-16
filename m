@@ -1,156 +1,90 @@
-Return-Path: <linux-kernel+bounces-27456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DF8D82F055
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:12:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DD7B82F072
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:19:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DA5C1C234AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:12:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4B701C234FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:19:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E9DB1BF24;
-	Tue, 16 Jan 2024 14:12:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F54D1BF22;
+	Tue, 16 Jan 2024 14:19:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="O0314XBI"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="J+OWdh6A"
+Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B80C1BF21;
-	Tue, 16 Jan 2024 14:12:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6D4541C0004;
-	Tue, 16 Jan 2024 14:12:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1705414328;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SOCRlvdGfX4al4ZItqxCkVlf8liyb3/Akd8IILM1iBU=;
-	b=O0314XBIHPKlYZCptjyxPtClQlYhlBjMrlKqvbvkLIqSXfBWlc/M/SUmSsuLJnS0wf781u
-	uQT9P3sltuloK12tsj9AuKraoap9M2QzgnSVLLvLX/39QZ/4H49tClOd0XW4/xIMk9K1b2
-	sGf2CQvGfYRIfncJmMmBhpOYJl5wsbOH8qQggABfKwVu8y7IN5/oo8+BTATQLc9BzOcpDd
-	mP3xEnUXqbV+WCv5xZT+Dpk9O8gEz/43oYNxRx0zNhmNTTVe7kQaJmFQ9oYH5Xl8g/ut1z
-	oJpzPclUUTR3wbuIV9cNJiN1txMz8sy3RXxznix2s2naB7NIFH81ipunwd0rSQ==
-Date: Tue, 16 Jan 2024 15:12:05 +0100
-From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Luis Chamberlain
- <mcgrof@kernel.org>, Russ Weight <russ.weight@linux.dev>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Oleksij Rempel <o.rempel@pengutronix.de>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- devicetree@vger.kernel.org, Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v2 8/8] net: pse-pd: Add PD692x0 PSE controller
- driver
-Message-ID: <20240116151205.0bf44181@kmaincent-XPS-13-7390>
-In-Reply-To: <64f30166-58cc-409d-ba5b-9ea3fb8ead88@lunn.ch>
-References: <20231201-feature_poe-v2-0-56d8cac607fa@bootlin.com>
-	<20231201-feature_poe-v2-8-56d8cac607fa@bootlin.com>
-	<639c5222-043f-4e27-9efa-ce2a1d73eaba@lunn.ch>
-	<20240116104949.12708cd5@kmaincent-XPS-13-7390>
-	<64f30166-58cc-409d-ba5b-9ea3fb8ead88@lunn.ch>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C20791BDFC
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 14:19:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1705414759; bh=hVZ/HiO5uU1gBjNNiO+94yCP41EBlFJE2bjhqvDtdTM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=J+OWdh6ALpv4xKOgMt6i4rHoufsXoJVMHKAIvEcpPoinvgCfCTmD2n+KnpS8yC0X6
+	 tCzjCFJSuaYD+GLiGsyOUGV4tjQIg+Mb9tf9hjSPGFT7qQ8G6hj4OggBGxuDh7q8Ar
+	 DEyfMPC0cCoxVtzdsdmSrf4crEOPxoFcAYjoz+lA=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
+	id 350128D8; Tue, 16 Jan 2024 22:13:16 +0800
+X-QQ-mid: xmsmtpt1705414396tj04rh3xf
+Message-ID: <tencent_CBECC6CDB07A5A6C182C156DAC9490EB160A@qq.com>
+X-QQ-XMAILINFO: NQR8mRxMnur9RG4S4i57iS1wgbWQUvqmhnnm/R3d6e/JeU7u3F4LCVpTlsFzJ0
+	 +Zjj1ZXCsoQ4YHeloGST7SZAggtPT7SE6oaZ+6LaHrH5ikZmvGhddf6fxqVgEn8SN8unjXf2OYBo
+	 /KnUOnt0COGwJD/WGcnAUzWBh61TN078P+E5rb+GhbuqwEy5t1DTX8VoC6JnaBEDRgjjmc7pIAJR
+	 CCLsvCAvg+Ms+3jpc8wSjBqbjKeKjfmyBYgt4alobetp5pSL6dp1nOKAVNE5IfXgDUqn4Tz1XD3t
+	 CmJbk9ZhpitX3tHpox5MoR1BKR5tpDNZOMnL6bF9mjfkrVOdUCl5bwAnoG25u1NGco77uHkBqs53
+	 0nBgWefLDUs5yGyXxZqojFz4wx81Xc4DPjkS5pp2a4DKw3ygsb31f1Zko+Kl7xW6vpsSL0/UBKhE
+	 VLUd5hGibwXrtmnPv+9YOjPyWLR4YGUPbBM8xhEP7UpAdtQhdZRS9xGUi+dRsB/TxXu5YWn27/Ex
+	 Vm9cypB6r8g8GtwGfE2XjQkfj+yfaAPOVss7xv0+Wy25FO96P7CO648ooGa8Oan6P6LlatYQHwfR
+	 W1cGaskGeM6dUZIcdH3TuE9Oj5rpg/4R7RY4imkbgARpIToOwVrEChfEhlApCfMXYiGFB3zh0qVw
+	 wUmn8VfpGBjLSK0EiqLe6QW4v1KoD5ozgs/mFR8LATYYBTLPfTt/cWWVj0AD+yM4NncQFTU1C5B1
+	 wkdlYXrVvIZ1Fh2o/cUASlMROsTOpPCj8hfqQq6VVrLaPkVgn+lTX+ndp5DnKgjfk70q3B+gRtUy
+	 rUiRvIaTdjKd7Jlz0k1hTTxzMbt3PREggJMFdvy7hVt/8yTMDLv0/FasShioDXk3LgUWNqtrpkfL
+	 VTXyMsM3Cn4AdqMeagmiIeSJSRwYQojZJVpd0+mG4YBsjgp28Kz2nwqGawHTaVsXq6NDWpsBfTvE
+	 R3ef0nVsHYSgGj/gkXhA==
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+7ec955e36bb239bd720f@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] KASAN: slab-out-of-bounds Read in dsa_user_prechangeupper
+Date: Tue, 16 Jan 2024 22:13:16 +0800
+X-OQ-MSGID: <20240116141315.955157-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <00000000000002faa2060f02e766@google.com>
+References: <00000000000002faa2060f02e766@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Transfer-Encoding: 8bit
 
-On Tue, 16 Jan 2024 14:18:04 +0100
-Andrew Lunn <andrew@lunn.ch> wrote:
+please test slab-out-of-bounds Read in dsa_user_prechangeupper
 
-> >  =20
-> > > > +static int pd692x0_fw_get_next_line(const u8 *data,
-> > > > +				    char *line, size_t size)
-> > > > +{
-> > > > +	size_t line_size;
-> > > > +	int i;
-> > > > +
-> > > > +	line_size =3D min_t(size_t, size,
-> > > > (size_t)PD692X0_FW_LINE_MAX_SZ); +
-> > > > +	memset(line, 0, PD692X0_FW_LINE_MAX_SZ);
-> > > > +	for (i =3D 0; i < line_size - 1; i++) {
-> > > > +		if (*data =3D=3D '\r' && *(data + 1) =3D=3D '\n') {
-> > > > +			line[i] =3D '\r';
-> > > > +			line[i + 1] =3D '\n';
-> > > > +			return i + 2;
-> > > > +		}   =20
-> > >=20
-> > > Does the Vendor Documentation indicate Windoze line endings will
-> > > always be used? Motorola SREC allow both Windows or rest of the world
-> > > line endings to be used.  =20
-> >=20
-> > All the firmware lines end with "\r\n" but indeed it is not specifically
-> > written that the firmware content would follow this. IMHO it is implicit
-> > that it would be the case as all i2c messages use this line termination.
-> > Do you prefer that I add support to the world line endings possibility?=
-  =20
->=20
-> No need, just hack an SREC file, and test the parser does not explode
-> with an opps, and you get an sensible error message about the firmware
-> being corrupt. I would not be too surprised if there are some mail
-> systems still out there which might convert the line ending.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 3e7aeb78ab01
 
-Ok I will do so.
+diff --git a/net/dsa/user.h b/net/dsa/user.h
+index 996069130bea..9a40918ee7fc 100644
+--- a/net/dsa/user.h
++++ b/net/dsa/user.h
+@@ -53,7 +53,11 @@ int dsa_user_manage_vlan_filtering(struct net_device *dev,
+ 
+ static inline struct dsa_port *dsa_user_to_port(const struct net_device *dev)
+ {
+-	struct dsa_user_priv *p = netdev_priv(dev);
++	const struct rtnl_link_ops *ops = dev->rtnl_link_ops;
++	struct dsa_user_priv *p = ops->priv_size >= sizeof(*p) ? 
++		netdev_priv(dev) : NULL;
++	if (!p)
++		return NULL;
+ 
+ 	return p->dp;
+ }
 
->=20
-> > > > +static enum fw_upload_err pd692x0_fw_poll_complete(struct fw_upload
-> > > > *fwl) +{
-> > > > +	struct pd692x0_priv *priv =3D fwl->dd_handle;
-> > > > +	const struct i2c_client *client =3D priv->client;
-> > > > +	struct pd692x0_msg_ver ver;
-> > > > +	int ret;
-> > > > +
-> > > > +	priv->fw_state =3D PD692X0_FW_COMPLETE;
-> > > > +
-> > > > +	ret =3D pd692x0_fw_reset(client);
-> > > > +	if (ret)
-> > > > +		return ret;
-> > > > +
-> > > > +	ver =3D pd692x0_get_sw_version(priv);
-> > > > +	if (ver.maj_sw_ver !=3D PD692X0_FW_MAJ_VER) {   =20
-> > >=20
-> > > That is probably too strong a condition. You need to allow firmware
-> > > upgrades, etc. Does it need to be an exact match, or would < be
-> > > enough? =20
-> >=20
-> > The major version is not compatible with the last one, the i2c messages
-> > content changed. I supposed a change in major version would imply a cha=
-nge
-> > in the i2c messages content and would need a driver update that's why I
-> > used this strong condition. =20
->=20
-> Do you know the next major version will change the message contents?
-
-No.
-
-> Is this documented somewhere? If so add a comment. Otherwise, i would
-> allow higher major versions. When the vendor breaks backwards
-> compatibility, its going to need code changes anyway, and at that
-> point the test can be made more strict.
->=20
-> We try to make vendors not make firmware ABI breaking changes, and we
-> have pushed back against a number of vendors who do. So i think its
-> best we assume they won't break the ABI.
-
-Alright, thanks!
-
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
 
