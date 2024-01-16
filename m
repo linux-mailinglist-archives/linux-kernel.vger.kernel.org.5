@@ -1,49 +1,47 @@
-Return-Path: <linux-kernel+bounces-26640-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 221AB82E46E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:18:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5C5C82E471
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:18:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B703AB20BDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:18:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 602311C224AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:18:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A545125B0;
-	Tue, 16 Jan 2024 00:13:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52EFE12B70;
+	Tue, 16 Jan 2024 00:13:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZWH7LeOv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m84HZjTj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9252911721;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F8BE125B8;
+	Tue, 16 Jan 2024 00:13:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD3B5C43390;
 	Tue, 16 Jan 2024 00:13:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32767C433F1;
-	Tue, 16 Jan 2024 00:13:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705364001;
-	bh=idWrMm56YQvcqy9IlfN7yiMKVfXexXgcB4t+O7sdNwY=;
+	s=k20201202; t=1705364002;
+	bh=zAzHGs6rh8OtWgDa/7Fv/Z+9nf3Kb5UTl91kyrbdsHQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZWH7LeOvo8PfGj9s+ZKxG2pGKZ26RjoJEts/YyY1za7YBCu5jyHsMSFeq0zrY3sDR
-	 14jYFV2MfnpX1DiFysJMfDU0SqRoASijhRvF8aWtPY1SHhzIYt9bYPtAZ4JDzx5Naj
-	 TfW5ol+3nX7FQe9FjV1VjnbvOT4DP5pVJOvdHE4A9oFmYUQGXBKbMYYUGs2aN7ifr4
-	 wGNlM6rCXLT0Rwf8pQqBbb4YDlt8aLtNRPSS16fyWr6VaS+YVFIlHTyd+UcVD7H9Vo
-	 eQa84DeCvBDkbxNIlarkZKvM/dX/qXmsZTRN9e5wfTFabfe3ZhMoco+a/u4L1+uDbk
-	 JBEVCfCiYkscw==
+	b=m84HZjTjtxnY072gU2XNXAHAiRpIBrT5A1Xgo2lcBDgCZaHKWeBkhGEnpCFwSMUo5
+	 v0J5cejwuXGIGDuGrWdDCBqCVab2wKC/ISrAS3QNYsZlWMGDgTz74sv/E2fJRlYwiY
+	 xMRaSO599jllPqoHCWeLigNp6ReL97614B31e4bFdkrZMPs5qQmALJb691z6frFDMJ
+	 T8xnqfWtsWSCUvhw7A9lZmPAOFa2bFTR1CPntzA2jpF56wFQvuiLnbtbvuoSSeCIRq
+	 XJvqaW9Fr0xqRXU8/9owL3Kmf03acsEIZ1Z7ndqbbJEhKwI59b3B1Ka9UhXgyzURIl
+	 2+fq+G9IpWlJw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dmitry Antipov <dmantipov@yandex.ru>,
-	Kees Cook <keescook@chromium.org>,
+Cc: Prarit Bhargava <prarit@redhat.com>,
 	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
 	rafael@kernel.org,
-	linux-acpi@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 07/18] PNP: ACPI: fix fortify warning
-Date: Mon, 15 Jan 2024 19:12:49 -0500
-Message-ID: <20240116001308.212917-7-sashal@kernel.org>
+	linux-acpi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 08/18] ACPI: extlog: fix NULL pointer dereference check
+Date: Mon, 15 Jan 2024 19:12:50 -0500
+Message-ID: <20240116001308.212917-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116001308.212917-1-sashal@kernel.org>
 References: <20240116001308.212917-1-sashal@kernel.org>
@@ -53,86 +51,60 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7
 Content-Transfer-Encoding: 8bit
 
-From: Dmitry Antipov <dmantipov@yandex.ru>
+From: Prarit Bhargava <prarit@redhat.com>
 
-[ Upstream commit ba3f5058db437d919f8468db50483dd9028ff688 ]
+[ Upstream commit 72d9b9747e78979510e9aafdd32eb99c7aa30dd1 ]
 
-When compiling with gcc version 14.0.0 20231126 (experimental)
-and CONFIG_FORTIFY_SOURCE=y, I've noticed the following:
+The gcc plugin -fanalyzer [1] tries to detect various
+patterns of incorrect behaviour.  The tool reports:
 
-In file included from ./include/linux/string.h:295,
-                 from ./include/linux/bitmap.h:12,
-                 from ./include/linux/cpumask.h:12,
-                 from ./arch/x86/include/asm/paravirt.h:17,
-                 from ./arch/x86/include/asm/cpuid.h:62,
-                 from ./arch/x86/include/asm/processor.h:19,
-                 from ./arch/x86/include/asm/cpufeature.h:5,
-                 from ./arch/x86/include/asm/thread_info.h:53,
-                 from ./include/linux/thread_info.h:60,
-                 from ./arch/x86/include/asm/preempt.h:9,
-                 from ./include/linux/preempt.h:79,
-                 from ./include/linux/spinlock.h:56,
-                 from ./include/linux/mmzone.h:8,
-                 from ./include/linux/gfp.h:7,
-                 from ./include/linux/slab.h:16,
-                 from ./include/linux/resource_ext.h:11,
-                 from ./include/linux/acpi.h:13,
-                 from drivers/pnp/pnpacpi/rsparser.c:11:
-In function 'fortify_memcpy_chk',
-    inlined from 'pnpacpi_parse_allocated_vendor' at drivers/pnp/pnpacpi/rsparser.c:158:3,
-    inlined from 'pnpacpi_allocated_resource' at drivers/pnp/pnpacpi/rsparser.c:249:3:
-/include/linux/fortify-string.h:588:25: warning: call to '__read_overflow2_field'
-declared with attribute warning: detected read beyond size of field (2nd parameter);
-maybe use struct_group()? [-Wattribute-warning]
-  588 |                         __read_overflow2_field(q_size_field, size);
-      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/acpi/acpi_extlog.c: In function ‘extlog_exit’:
+drivers/acpi/acpi_extlog.c:307:12: warning: check of ‘extlog_l1_addr’ for NULL after already dereferencing it [-Wanalyzer-deref-before-check]
+    |
+    |  306 |         ((struct extlog_l1_head *)extlog_l1_addr)->flags &= ~FLAG_OS_OPTIN;
+    |      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+    |      |                                                  |
+    |      |                                                  (1) pointer ‘extlog_l1_addr’ is dereferenced here
+    |  307 |         if (extlog_l1_addr)
+    |      |            ~
+    |      |            |
+    |      |            (2) pointer ‘extlog_l1_addr’ is checked for NULL here but it was already dereferenced at (1)
+    |
 
-According to the comments in include/linux/fortify-string.h, 'memcpy()',
-'memmove()' and 'memset()' must not be used beyond individual struct
-members to ensure that the compiler can enforce protection against
-buffer overflows, and, IIUC, this also applies to partial copies from
-the particular member ('vendor->byte_data' in this case). So it should
-be better (and safer) to do both copies at once (and 'byte_data' of
-'struct acpi_resource_vendor_typed' seems to be a good candidate for
-'__counted_by(byte_length)' as well).
+Fix the NULL pointer dereference check in extlog_exit().
 
-Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Link: https://gcc.gnu.org/onlinedocs/gcc-10.1.0/gcc/Static-Analyzer-Options.html # [1]
+
+Signed-off-by: Prarit Bhargava <prarit@redhat.com>
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pnp/pnpacpi/rsparser.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/acpi/acpi_extlog.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pnp/pnpacpi/rsparser.c b/drivers/pnp/pnpacpi/rsparser.c
-index 4f05f610391b..c02ce0834c2c 100644
---- a/drivers/pnp/pnpacpi/rsparser.c
-+++ b/drivers/pnp/pnpacpi/rsparser.c
-@@ -151,13 +151,13 @@ static int vendor_resource_matches(struct pnp_dev *dev,
- static void pnpacpi_parse_allocated_vendor(struct pnp_dev *dev,
- 				    struct acpi_resource_vendor_typed *vendor)
+diff --git a/drivers/acpi/acpi_extlog.c b/drivers/acpi/acpi_extlog.c
+index e120a96e1eae..193147769146 100644
+--- a/drivers/acpi/acpi_extlog.c
++++ b/drivers/acpi/acpi_extlog.c
+@@ -303,9 +303,10 @@ static int __init extlog_init(void)
+ static void __exit extlog_exit(void)
  {
--	if (vendor_resource_matches(dev, vendor, &hp_ccsr_uuid, 16)) {
--		u64 start, length;
-+	struct { u64 start, length; } range;
- 
--		memcpy(&start, vendor->byte_data, sizeof(start));
--		memcpy(&length, vendor->byte_data + 8, sizeof(length));
--
--		pnp_add_mem_resource(dev, start, start + length - 1, 0);
-+	if (vendor_resource_matches(dev, vendor, &hp_ccsr_uuid,
-+				    sizeof(range))) {
-+		memcpy(&range, vendor->byte_data, sizeof(range));
-+		pnp_add_mem_resource(dev, range.start, range.start +
-+				     range.length - 1, 0);
- 	}
- }
- 
+ 	mce_unregister_decode_chain(&extlog_mce_dec);
+-	((struct extlog_l1_head *)extlog_l1_addr)->flags &= ~FLAG_OS_OPTIN;
+-	if (extlog_l1_addr)
++	if (extlog_l1_addr) {
++		((struct extlog_l1_head *)extlog_l1_addr)->flags &= ~FLAG_OS_OPTIN;
+ 		acpi_os_unmap_iomem(extlog_l1_addr, l1_size);
++	}
+ 	if (elog_addr)
+ 		acpi_os_unmap_iomem(elog_addr, elog_size);
+ 	release_mem_region(elog_base, elog_size);
 -- 
 2.43.0
 
