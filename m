@@ -1,202 +1,275 @@
-Return-Path: <linux-kernel+bounces-27066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20E0F82E9EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:22:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EADD182E9F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:22:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3E7B284672
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:22:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0EC2B22A5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:22:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B48A111A2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94CC9111B2;
 	Tue, 16 Jan 2024 07:22:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e+wFDVJ4"
-Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fDMbOinz"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A68010A3F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19DA110A3E;
 	Tue, 16 Jan 2024 07:22:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-21080bacc6fso53843fac.0;
-        Mon, 15 Jan 2024 23:22:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705389747; x=1705994547; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DSNu/F0YjWWvZJ8YEGZOLrkQaebTdrL0bEYeNxkjWKw=;
-        b=e+wFDVJ4qt7wJHsUt49BsyFF5oT/gSL5eyElCI5m4b2rilfySUi1uTmBix8UKOyvq/
-         ajK1S55BKtfKujVTnqnpKLGZ9bOo/vygUEixJEtmIew454CgLsTO0MWit+W55dJnUgh4
-         zAs1XC/fMW1xFcImYKR/QXJZCuUulDPsmT5tV5U+RBs64lY7wW1voO/I1uPBWX3L3aB1
-         vGAZNSssuAbamq9leUmW14S+w4d1Jr3OPagQ4tn0m14QgPOdSseouBJ/NWJM0UwBBjCh
-         vrwO/UHVSne4C6hJMLcRwSxD99OuRA1BU19eoqhbZm77iZSYEWZPWxXuVU9yVfAbikQZ
-         Ni2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705389747; x=1705994547;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DSNu/F0YjWWvZJ8YEGZOLrkQaebTdrL0bEYeNxkjWKw=;
-        b=CX+wQRaZK/5TAx0waJ6SmDmhfi8Q9WlqOJi5qdZiuYSDoWTUNhFvmCTG1RKAV7OPhO
-         pU428/EaHLB+AQ1HFLJPSC3SRbv5LWSFkJwKsZacARLWPeOCH1MUPawppQIff2liJhbo
-         EDml7e6zV6MY7sj9Q+IwaWWDWYdf7SUzm+ZycdAbpVxlniZy0oxfmDBEMC0H1Duqbhu+
-         cfoQs+BaSpH4fJB6fRzul8+fQeU/HbPHqOIG8M+eZJ2E5YWgB31qYmG6ijVK2lvNnLS6
-         wY7NNc6pxYMduh7cZz8rU2wfJ8IMuTgZmsg13haFmz+91EDR9Ioy3OgW5JsBpMrSmcKn
-         cmmw==
-X-Gm-Message-State: AOJu0YxHprTbDtmwCRkZCrDigln1P1u+/PJWUKuncVytrCnDKyPomBWd
-	W5e1I+TkOlOIndBJ9PLNcmE=
-X-Google-Smtp-Source: AGHT+IH69Ohci1IK5bZui+I6s85n29iczQYaPx877llDqKJLtWt+hCvbGqWnV03YlB5FQwI24tl4OQ==
-X-Received: by 2002:a05:6870:3128:b0:210:7b00:e811 with SMTP id v40-20020a056870312800b002107b00e811mr389496oaa.71.1705389747085;
-        Mon, 15 Jan 2024 23:22:27 -0800 (PST)
-Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id t20-20020a05687044d400b002060e99b486sm2905903oai.22.2024.01.15.23.22.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 23:22:26 -0800 (PST)
-From: Chen Wang <unicornxw@gmail.com>
-To: aou@eecs.berkeley.edu,
-	chao.wei@sophgo.com,
-	conor@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	mturquette@baylibre.com,
-	palmer@dabbelt.com,
-	paul.walmsley@sifive.com,
-	richardcochran@gmail.com,
-	robh+dt@kernel.org,
-	sboyd@kernel.org,
-	devicetree@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	haijiao.liu@sophgo.com,
-	xiaoguang.xing@sophgo.com,
-	guoren@kernel.org,
-	jszhang@kernel.org,
-	inochiama@outlook.com,
-	samuel.holland@sifive.com
-Cc: Chen Wang <unicorn_wang@outlook.com>
-Subject: [PATCH v8 5/5] riscv: dts: add clock generator for Sophgo SG2042 SoC
-Date: Tue, 16 Jan 2024 15:22:20 +0800
-Message-Id: <f2edd136c97cea465a81e8949a36471c26db9b09.1705388518.git.unicorn_wang@outlook.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1705388518.git.unicorn_wang@outlook.com>
-References: <cover.1705388518.git.unicorn_wang@outlook.com>
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705389749; x=1736925749;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=FvGk1HmdhKajQzv0fF9VWQN31pqLokcU8AiwCx1bmjs=;
+  b=fDMbOinzKkz75+xTtHrdfGPIeIb8fjUoYT4UWKxqhPh+2sO4/HiUd+8B
+   d5BNaJ0VHhGQ/V7vFcDycHQ+63mAN8+99zWFnGkzBIadPs2bypOXeaDua
+   Kjo9kSRtqPn83RB+ky96A/m8hAkZfzkI//dkdTPKnZuq2jbmQmTkT+thM
+   VBLY86ao0Hl/n0WtJ9NtpcFyzWTeCeUJVN077Cp6DWfqnZIBTQrRM5mm1
+   lcM5KAZbrbCTtuiFcdaUDg4zd+94Hr6P85NLG3vB8Y+nYkE7ROmrp544O
+   OklSE4ylG6sKwAODQBaC4VV0KUbVKjb3WgQb3CHCoq6XEzsXtgjWAvIPU
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="7144664"
+X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
+   d="scan'208";a="7144664"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 23:22:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="957055072"
+X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
+   d="scan'208";a="957055072"
+Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
+  by orsmga005.jf.intel.com with ESMTP; 15 Jan 2024 23:22:24 -0800
+Date: Tue, 16 Jan 2024 15:22:23 +0800
+From: Yuan Yao <yuan.yao@linux.intel.com>
+To: Yang Weijiang <weijiang.yang@intel.com>
+Cc: seanjc@google.com, pbonzini@redhat.com, dave.hansen@intel.com,
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	peterz@infradead.org, chao.gao@intel.com,
+	rick.p.edgecombe@intel.com, mlevitsk@redhat.com, john.allen@amd.com
+Subject: Re: [PATCH v8 26/26] KVM: nVMX: Enable CET support for nested guest
+Message-ID: <20240116072223.zzniln3rcxybxxqi@yy-desk-7060>
+References: <20231221140239.4349-1-weijiang.yang@intel.com>
+ <20231221140239.4349-27-weijiang.yang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231221140239.4349-27-weijiang.yang@intel.com>
+User-Agent: NeoMutt/20171215
 
-From: Chen Wang <unicorn_wang@outlook.com>
+On Thu, Dec 21, 2023 at 09:02:39AM -0500, Yang Weijiang wrote:
+> Set up CET MSRs, related VM_ENTRY/EXIT control bits and fixed CR4 setting
+> to enable CET for nested VM.
+>
+> vmcs12 and vmcs02 needs to be synced when L2 exits to L1 or when L1 wants
+> to resume L2, that way correct CET states can be observed by one another.
+>
+> Suggested-by: Chao Gao <chao.gao@intel.com>
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> ---
+>  arch/x86/kvm/vmx/nested.c | 57 +++++++++++++++++++++++++++++++++++++--
+>  arch/x86/kvm/vmx/vmcs12.c |  6 +++++
+>  arch/x86/kvm/vmx/vmcs12.h | 14 +++++++++-
+>  arch/x86/kvm/vmx/vmx.c    |  2 ++
+>  4 files changed, 76 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 468a7cf75035..dee718c65255 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -691,6 +691,28 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
+>  	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+>  					 MSR_IA32_FLUSH_CMD, MSR_TYPE_W);
+>
+> +	/* Pass CET MSRs to nested VM if L0 and L1 are set to pass-through. */
+> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+> +					 MSR_IA32_U_CET, MSR_TYPE_RW);
+> +
+> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+> +					 MSR_IA32_S_CET, MSR_TYPE_RW);
+> +
+> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+> +					 MSR_IA32_PL0_SSP, MSR_TYPE_RW);
+> +
+> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+> +					 MSR_IA32_PL1_SSP, MSR_TYPE_RW);
+> +
+> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+> +					 MSR_IA32_PL2_SSP, MSR_TYPE_RW);
+> +
+> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+> +					 MSR_IA32_PL3_SSP, MSR_TYPE_RW);
+> +
+> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+> +					 MSR_IA32_INT_SSP_TAB, MSR_TYPE_RW);
+> +
+>  	kvm_vcpu_unmap(vcpu, &vmx->nested.msr_bitmap_map, false);
+>
+>  	vmx->nested.force_msr_bitmap_recalc = false;
+> @@ -2506,6 +2528,17 @@ static void prepare_vmcs02_rare(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
+>  		if (kvm_mpx_supported() && vmx->nested.nested_run_pending &&
+>  		    (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS))
+>  			vmcs_write64(GUEST_BNDCFGS, vmcs12->guest_bndcfgs);
+> +
+> +		if (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE) {
+> +			if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK)) {
+> +				vmcs_writel(GUEST_SSP, vmcs12->guest_ssp);
+> +				vmcs_writel(GUEST_INTR_SSP_TABLE,
+> +					    vmcs12->guest_ssp_tbl);
+> +			}
+> +			if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK) ||
+> +			    guest_can_use(&vmx->vcpu, X86_FEATURE_IBT))
+> +				vmcs_writel(GUEST_S_CET, vmcs12->guest_s_cet);
+> +		}
+>  	}
+>
+>  	if (nested_cpu_has_xsaves(vmcs12))
+> @@ -4344,6 +4377,15 @@ static void sync_vmcs02_to_vmcs12_rare(struct kvm_vcpu *vcpu,
+>  	vmcs12->guest_pending_dbg_exceptions =
+>  		vmcs_readl(GUEST_PENDING_DBG_EXCEPTIONS);
+>
+> +	if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK)) {
+> +		vmcs12->guest_ssp = vmcs_readl(GUEST_SSP);
+> +		vmcs12->guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
+> +	}
+> +	if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK) ||
+> +	    guest_can_use(&vmx->vcpu, X86_FEATURE_IBT)) {
+> +		vmcs12->guest_s_cet = vmcs_readl(GUEST_S_CET);
+> +	}
+> +
+>  	vmx->nested.need_sync_vmcs02_to_vmcs12_rare = false;
+>  }
+>
+> @@ -4569,6 +4611,16 @@ static void load_vmcs12_host_state(struct kvm_vcpu *vcpu,
+>  	if (vmcs12->vm_exit_controls & VM_EXIT_CLEAR_BNDCFGS)
+>  		vmcs_write64(GUEST_BNDCFGS, 0);
+>
+> +	if (vmcs12->vm_exit_controls & VM_EXIT_LOAD_CET_STATE) {
+> +		if (guest_can_use(vcpu, X86_FEATURE_SHSTK)) {
+> +			vmcs_writel(HOST_SSP, vmcs12->host_ssp);
 
-Add clock generator node to device tree for SG2042, and enable clock for
-uart.
+Shuold be GUEST_xxx here.
 
-Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
----
- .../boot/dts/sophgo/sg2042-milkv-pioneer.dts  | 12 ++++++
- arch/riscv/boot/dts/sophgo/sg2042.dtsi        | 39 +++++++++++++++++++
- 2 files changed, 51 insertions(+)
+Now KVM does "vmexit" from L2 to L1, thus should sync
+vmcs01's guest state with vmcs12's host state, so KVM
+can emulate "vmexit" from L2 -> L1 directly by vmlaunch
+with vmcs01.
 
-diff --git a/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts b/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
-index 49b4b9c2c101..80cb017974d8 100644
---- a/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
-+++ b/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
-@@ -14,6 +14,18 @@ chosen {
- 	};
- };
- 
-+&cgi_main {
-+	clock-frequency = <25000000>;
-+};
-+
-+&cgi_dpll0 {
-+	clock-frequency = <25000000>;
-+};
-+
-+&cgi_dpll1 {
-+	clock-frequency = <25000000>;
-+};
-+
- &uart0 {
- 	status = "okay";
- };
-diff --git a/arch/riscv/boot/dts/sophgo/sg2042.dtsi b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-index 93256540d078..6dd8d89d4833 100644
---- a/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-+++ b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-@@ -5,6 +5,7 @@
- 
- /dts-v1/;
- #include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/clock/sophgo,sg2042-clkgen.h>
- 
- #include "sg2042-cpus.dtsi"
- 
-@@ -18,6 +19,24 @@ aliases {
- 		serial0 = &uart0;
- 	};
- 
-+	cgi_main: oscillator0 {
-+		compatible = "fixed-clock";
-+		clock-output-names = "cgi_main";
-+		#clock-cells = <0>;
-+	};
-+
-+	cgi_dpll0: oscillator1 {
-+		compatible = "fixed-clock";
-+		clock-output-names = "cgi_dpll0";
-+		#clock-cells = <0>;
-+	};
-+
-+	cgi_dpll1: oscillator2 {
-+		compatible = "fixed-clock";
-+		clock-output-names = "cgi_dpll1";
-+		#clock-cells = <0>;
-+	};
-+
- 	soc: soc {
- 		compatible = "simple-bus";
- 		#address-cells = <2>;
-@@ -311,12 +330,32 @@ intc: interrupt-controller@7090000000 {
- 			riscv,ndev = <224>;
- 		};
- 
-+		system-control@7030010000 {
-+			compatible = "sophgo,sg2042-sysctrl";
-+			reg = <0x70 0x30010000 0x0 0x1000>;
-+
-+			sysclk: clock-controller {
-+				compatible = "sophgo,sg2042-sysclk";
-+				clocks = <&cgi_main>, <&cgi_dpll0>, <&cgi_dpll1>;
-+				#clock-cells = <1>;
-+			};
-+		};
-+
-+		clkgen: clock-controller@7030012000 {
-+			compatible = "sophgo,sg2042-clkgen";
-+			reg = <0x70 0x30012000 0x0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
- 		uart0: serial@7040000000 {
- 			compatible = "snps,dw-apb-uart";
- 			reg = <0x00000070 0x40000000 0x00000000 0x00001000>;
- 			interrupt-parent = <&intc>;
- 			interrupts = <112 IRQ_TYPE_LEVEL_HIGH>;
- 			clock-frequency = <500000000>;
-+			clocks = <&clkgen GATE_CLK_UART_500M>,
-+				 <&clkgen GATE_CLK_APB_UART>;
-+			clock-names = "baudclk", "apb_pclk";
- 			reg-shift = <2>;
- 			reg-io-width = <4>;
- 			status = "disabled";
--- 
-2.25.1
+> +			vmcs_writel(HOST_INTR_SSP_TABLE, vmcs12->host_ssp_tbl);
 
+Ditto.
+
+> +		}
+> +		if (guest_can_use(vcpu, X86_FEATURE_SHSTK) ||
+> +		    guest_can_use(vcpu, X86_FEATURE_IBT))
+> +			vmcs_writel(HOST_S_CET, vmcs12->host_s_cet);
+
+Ditto.
+
+> +	}
+> +
+>  	if (vmcs12->vm_exit_controls & VM_EXIT_LOAD_IA32_PAT) {
+>  		vmcs_write64(GUEST_IA32_PAT, vmcs12->host_ia32_pat);
+>  		vcpu->arch.pat = vmcs12->host_ia32_pat;
+> @@ -6840,7 +6892,7 @@ static void nested_vmx_setup_exit_ctls(struct vmcs_config *vmcs_conf,
+>  		VM_EXIT_HOST_ADDR_SPACE_SIZE |
+>  #endif
+>  		VM_EXIT_LOAD_IA32_PAT | VM_EXIT_SAVE_IA32_PAT |
+> -		VM_EXIT_CLEAR_BNDCFGS;
+> +		VM_EXIT_CLEAR_BNDCFGS | VM_EXIT_LOAD_CET_STATE;
+>  	msrs->exit_ctls_high |=
+>  		VM_EXIT_ALWAYSON_WITHOUT_TRUE_MSR |
+>  		VM_EXIT_LOAD_IA32_EFER | VM_EXIT_SAVE_IA32_EFER |
+> @@ -6862,7 +6914,8 @@ static void nested_vmx_setup_entry_ctls(struct vmcs_config *vmcs_conf,
+>  #ifdef CONFIG_X86_64
+>  		VM_ENTRY_IA32E_MODE |
+>  #endif
+> -		VM_ENTRY_LOAD_IA32_PAT | VM_ENTRY_LOAD_BNDCFGS;
+> +		VM_ENTRY_LOAD_IA32_PAT | VM_ENTRY_LOAD_BNDCFGS |
+> +		VM_ENTRY_LOAD_CET_STATE;
+>  	msrs->entry_ctls_high |=
+>  		(VM_ENTRY_ALWAYSON_WITHOUT_TRUE_MSR | VM_ENTRY_LOAD_IA32_EFER |
+>  		 VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL);
+> diff --git a/arch/x86/kvm/vmx/vmcs12.c b/arch/x86/kvm/vmx/vmcs12.c
+> index 106a72c923ca..4233b5ca9461 100644
+> --- a/arch/x86/kvm/vmx/vmcs12.c
+> +++ b/arch/x86/kvm/vmx/vmcs12.c
+> @@ -139,6 +139,9 @@ const unsigned short vmcs12_field_offsets[] = {
+>  	FIELD(GUEST_PENDING_DBG_EXCEPTIONS, guest_pending_dbg_exceptions),
+>  	FIELD(GUEST_SYSENTER_ESP, guest_sysenter_esp),
+>  	FIELD(GUEST_SYSENTER_EIP, guest_sysenter_eip),
+> +	FIELD(GUEST_S_CET, guest_s_cet),
+> +	FIELD(GUEST_SSP, guest_ssp),
+> +	FIELD(GUEST_INTR_SSP_TABLE, guest_ssp_tbl),
+>  	FIELD(HOST_CR0, host_cr0),
+>  	FIELD(HOST_CR3, host_cr3),
+>  	FIELD(HOST_CR4, host_cr4),
+> @@ -151,5 +154,8 @@ const unsigned short vmcs12_field_offsets[] = {
+>  	FIELD(HOST_IA32_SYSENTER_EIP, host_ia32_sysenter_eip),
+>  	FIELD(HOST_RSP, host_rsp),
+>  	FIELD(HOST_RIP, host_rip),
+> +	FIELD(HOST_S_CET, host_s_cet),
+> +	FIELD(HOST_SSP, host_ssp),
+> +	FIELD(HOST_INTR_SSP_TABLE, host_ssp_tbl),
+>  };
+>  const unsigned int nr_vmcs12_fields = ARRAY_SIZE(vmcs12_field_offsets);
+> diff --git a/arch/x86/kvm/vmx/vmcs12.h b/arch/x86/kvm/vmx/vmcs12.h
+> index 01936013428b..3884489e7f7e 100644
+> --- a/arch/x86/kvm/vmx/vmcs12.h
+> +++ b/arch/x86/kvm/vmx/vmcs12.h
+> @@ -117,7 +117,13 @@ struct __packed vmcs12 {
+>  	natural_width host_ia32_sysenter_eip;
+>  	natural_width host_rsp;
+>  	natural_width host_rip;
+> -	natural_width paddingl[8]; /* room for future expansion */
+> +	natural_width host_s_cet;
+> +	natural_width host_ssp;
+> +	natural_width host_ssp_tbl;
+> +	natural_width guest_s_cet;
+> +	natural_width guest_ssp;
+> +	natural_width guest_ssp_tbl;
+> +	natural_width paddingl[2]; /* room for future expansion */
+>  	u32 pin_based_vm_exec_control;
+>  	u32 cpu_based_vm_exec_control;
+>  	u32 exception_bitmap;
+> @@ -292,6 +298,12 @@ static inline void vmx_check_vmcs12_offsets(void)
+>  	CHECK_OFFSET(host_ia32_sysenter_eip, 656);
+>  	CHECK_OFFSET(host_rsp, 664);
+>  	CHECK_OFFSET(host_rip, 672);
+> +	CHECK_OFFSET(host_s_cet, 680);
+> +	CHECK_OFFSET(host_ssp, 688);
+> +	CHECK_OFFSET(host_ssp_tbl, 696);
+> +	CHECK_OFFSET(guest_s_cet, 704);
+> +	CHECK_OFFSET(guest_ssp, 712);
+> +	CHECK_OFFSET(guest_ssp_tbl, 720);
+>  	CHECK_OFFSET(pin_based_vm_exec_control, 744);
+>  	CHECK_OFFSET(cpu_based_vm_exec_control, 748);
+>  	CHECK_OFFSET(exception_bitmap, 752);
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index c802e790c0d5..7ddd3f6fe8ab 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7732,6 +7732,8 @@ static void nested_vmx_cr_fixed1_bits_update(struct kvm_vcpu *vcpu)
+>  	cr4_fixed1_update(X86_CR4_PKE,        ecx, feature_bit(PKU));
+>  	cr4_fixed1_update(X86_CR4_UMIP,       ecx, feature_bit(UMIP));
+>  	cr4_fixed1_update(X86_CR4_LA57,       ecx, feature_bit(LA57));
+> +	cr4_fixed1_update(X86_CR4_CET,	      ecx, feature_bit(SHSTK));
+> +	cr4_fixed1_update(X86_CR4_CET,	      edx, feature_bit(IBT));
+>
+>  	entry = kvm_find_cpuid_entry_index(vcpu, 0x7, 1);
+>  	cr4_fixed1_update(X86_CR4_LAM_SUP,    eax, feature_bit(LAM));
+> --
+> 2.39.3
+>
+>
 
