@@ -1,50 +1,52 @@
-Return-Path: <linux-kernel+bounces-26654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 907FC82E495
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:22:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4513782E499
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:23:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EA901C22525
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:22:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C762282D43
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:23:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 207481CD28;
-	Tue, 16 Jan 2024 00:13:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB2531CF8D;
+	Tue, 16 Jan 2024 00:13:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cReZlMhP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o52xrlSh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A9481CD19;
-	Tue, 16 Jan 2024 00:13:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1AA1C433F1;
-	Tue, 16 Jan 2024 00:13:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0752913FF2;
+	Tue, 16 Jan 2024 00:13:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8576BC433C7;
+	Tue, 16 Jan 2024 00:13:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705364032;
-	bh=IdLQpGRsgus/uzb8ZIAVFMwnfGC8MOAkA+1X7UHqYvg=;
+	s=k20201202; t=1705364035;
+	bh=B/pzjSFZjA/xOdsawpBkIOGtEnV9muLApf9oW5IKgnU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cReZlMhPNmJwsaJblmFbiqx64m1DqhE7IRfBefMG1trF6KpmAzE0oVUcEHnovAbto
-	 MhqftAYXp9/PlwezcMiGnDcBDgybgLIUl8rJUvGKzyqAEeCJYZTuN9V7KVU6przweL
-	 JHiCtauXcu5wu/KuXAg9i8pB/SwkXyDJ8Q6T96ObhEUj2jdzvGfhc1ToTXllCc/kdZ
-	 mzafw/ukDvFMpwp4pZoo4ml1kEfaiTkG537J4psay9MJ7mixfMAp4VRoi5iUkcS5uG
-	 EcKfluSviIuvW98m//aaqBWSF0uhyJi9DXEnXihZKH7Z8ZMCj9tSQzQFIc211t4A96
-	 YZ2Fj5Vb/7YfA==
+	b=o52xrlShy8CRrfuKvd3U70ZQnqTvH9oaaUSdXoT3WUcCqIgwUgGM3o5BXnJEaDScD
+	 1QARX0lULs5YXvOkuT1wNUTn9kHI+bDEXaEFe5D4WqxKEW9LVneJ4q6OKlNUlNWTXB
+	 sdVW4xUCBN+KNyBW5oDRE1Bmc2tJtejvca2jtAg6GZyF8TTs127zYXjoLRtCJul39/
+	 IqPa1PorPr0PSRVMOcrwE4Swst+rv1mbwL9vPUvQKcegCKist3kYXAkrOmA/1mDfIR
+	 dJPp5+F4ytn7HwioGF4t/++B8hrXZPPNZtokNUV3ut/DzB+e7VRPdtCry40b1C0Q6C
+	 QbXFK6YU7IDyQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Avadhut Naik <Avadhut.Naik@amd.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Tony Luck <tony.luck@intel.com>,
+Cc: Srikar Srimath Tirumala <srikars@nvidia.com>,
+	Sumit Gupta <sumitg@nvidia.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Hanjun Guo <guohanjun@huawei.com>,
 	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	bleung@chromium.org,
-	tzungbi@kernel.org,
-	chrome-platform@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.6 03/14] platform/chrome: cros_ec_debugfs: Fix permissions for panicinfo
-Date: Mon, 15 Jan 2024 19:13:29 -0500
-Message-ID: <20240116001347.213328-3-sashal@kernel.org>
+	lpieralisi@kernel.org,
+	rafael@kernel.org,
+	linux-acpi@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.6 04/14] ACPI: processor: reduce CPUFREQ thermal reduction pctg for Tegra241
+Date: Mon, 15 Jan 2024 19:13:30 -0500
+Message-ID: <20240116001347.213328-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116001347.213328-1-sashal@kernel.org>
 References: <20240116001347.213328-1-sashal@kernel.org>
@@ -59,47 +61,204 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.12
 Content-Transfer-Encoding: 8bit
 
-From: Avadhut Naik <Avadhut.Naik@amd.com>
+From: Srikar Srimath Tirumala <srikars@nvidia.com>
 
-[ Upstream commit 0706526ec7704dcd046239078ac175d11a88a95e ]
+[ Upstream commit 310293a2b94197f3d75e65ab22672287a7938a00 ]
 
-The debugfs_create_blob() function has been used to create read-only binary
-blobs in debugfs. The function filters out permissions, other than S_IRUSR,
-S_IRGRP and S_IROTH, provided while creating the blobs.
+Current implementation of processor_thermal performs software throttling
+in fixed steps of "20%" which can be too coarse for some platforms.
+We observed some performance gain after reducing the throttle percentage.
+Change the CPUFREQ thermal reduction percentage and maximum thermal steps
+to be configurable. Also, update the default values of both for Nvidia
+Tegra241 (Grace) SoC. The thermal reduction percentage is reduced to "5%"
+and accordingly the maximum number of thermal steps are increased as they
+are derived from the reduction percentage.
 
-The very behavior though is being changed through previous patch in the
-series (fs: debugfs: Add write functionality to debugfs blobs) which makes
-the binary blobs writable by owners. Thus, all permissions provided while
-creating the blobs, except S_IRUSR,S_IWUSR, S_IRGRP, S_IROTH, will be
-filtered by debugfs_create_blob().
-
-As such, rectify the permissions of panicinfo file since the S_IFREG flag
-was anyways being filtered out by debugfs_create_blob(). Moreover, the
-very flag will always be set be set for the panicinfo file through
-__debugfs_create_file().
-
-Signed-off-by: Avadhut Naik <Avadhut.Naik@amd.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Srikar Srimath Tirumala <srikars@nvidia.com>
+Co-developed-by: Sumit Gupta <sumitg@nvidia.com>
+Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+Acked-by: Sudeep Holla <sudeep.holla@arm.com>
+Acked-by: Hanjun Guo <guohanjun@huawei.com>
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/chrome/cros_ec_debugfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/acpi/arm64/Makefile          |  1 +
+ drivers/acpi/arm64/thermal_cpufreq.c | 20 ++++++++++++
+ drivers/acpi/internal.h              |  9 +++++
+ drivers/acpi/processor_thermal.c     | 49 +++++++++++++++++++++++-----
+ 4 files changed, 70 insertions(+), 9 deletions(-)
+ create mode 100644 drivers/acpi/arm64/thermal_cpufreq.c
 
-diff --git a/drivers/platform/chrome/cros_ec_debugfs.c b/drivers/platform/chrome/cros_ec_debugfs.c
-index c876120e0ebc..4428dcbd2a68 100644
---- a/drivers/platform/chrome/cros_ec_debugfs.c
-+++ b/drivers/platform/chrome/cros_ec_debugfs.c
-@@ -454,7 +454,7 @@ static int cros_ec_create_panicinfo(struct cros_ec_debugfs *debug_info)
- 	debug_info->panicinfo_blob.data = data;
- 	debug_info->panicinfo_blob.size = ret;
+diff --git a/drivers/acpi/arm64/Makefile b/drivers/acpi/arm64/Makefile
+index 143debc1ba4a..726944648c9b 100644
+--- a/drivers/acpi/arm64/Makefile
++++ b/drivers/acpi/arm64/Makefile
+@@ -5,3 +5,4 @@ obj-$(CONFIG_ACPI_GTDT) 	+= gtdt.o
+ obj-$(CONFIG_ACPI_APMT) 	+= apmt.o
+ obj-$(CONFIG_ARM_AMBA)		+= amba.o
+ obj-y				+= dma.o init.o
++obj-y				+= thermal_cpufreq.o
+diff --git a/drivers/acpi/arm64/thermal_cpufreq.c b/drivers/acpi/arm64/thermal_cpufreq.c
+new file mode 100644
+index 000000000000..d524f2cd6044
+--- /dev/null
++++ b/drivers/acpi/arm64/thermal_cpufreq.c
+@@ -0,0 +1,20 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include <linux/acpi.h>
++
++#include "../internal.h"
++
++#define SMCCC_SOC_ID_T241      0x036b0241
++
++int acpi_arch_thermal_cpufreq_pctg(void)
++{
++	s32 soc_id = arm_smccc_get_soc_id_version();
++
++	/*
++	 * Check JEP106 code for NVIDIA Tegra241 chip (036b:0241) and
++	 * reduce the CPUFREQ Thermal reduction percentage to 5%.
++	 */
++	if (soc_id == SMCCC_SOC_ID_T241)
++		return 5;
++
++	return 0;
++}
+diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
+index 866c7c4ed233..af1198e2b526 100644
+--- a/drivers/acpi/internal.h
++++ b/drivers/acpi/internal.h
+@@ -85,6 +85,15 @@ bool acpi_scan_is_offline(struct acpi_device *adev, bool uevent);
+ acpi_status acpi_sysfs_table_handler(u32 event, void *table, void *context);
+ void acpi_scan_table_notify(void);
  
--	debugfs_create_blob("panicinfo", S_IFREG | 0444, debug_info->dir,
-+	debugfs_create_blob("panicinfo", 0444, debug_info->dir,
- 			    &debug_info->panicinfo_blob);
++#ifdef CONFIG_ARM64
++int acpi_arch_thermal_cpufreq_pctg(void);
++#else
++static inline int acpi_arch_thermal_cpufreq_pctg(void)
++{
++	return 0;
++}
++#endif
++
+ /* --------------------------------------------------------------------------
+                      Device Node Initialization / Removal
+    -------------------------------------------------------------------------- */
+diff --git a/drivers/acpi/processor_thermal.c b/drivers/acpi/processor_thermal.c
+index b7c6287eccca..1219adb11ab9 100644
+--- a/drivers/acpi/processor_thermal.c
++++ b/drivers/acpi/processor_thermal.c
+@@ -17,6 +17,8 @@
+ #include <acpi/processor.h>
+ #include <linux/uaccess.h>
  
++#include "internal.h"
++
+ #ifdef CONFIG_CPU_FREQ
+ 
+ /* If a passive cooling situation is detected, primarily CPUfreq is used, as it
+@@ -26,12 +28,21 @@
+  */
+ 
+ #define CPUFREQ_THERMAL_MIN_STEP 0
+-#define CPUFREQ_THERMAL_MAX_STEP 3
+ 
+-static DEFINE_PER_CPU(unsigned int, cpufreq_thermal_reduction_pctg);
++static int cpufreq_thermal_max_step __read_mostly = 3;
++
++/*
++ * Minimum throttle percentage for processor_thermal cooling device.
++ * The processor_thermal driver uses it to calculate the percentage amount by
++ * which cpu frequency must be reduced for each cooling state. This is also used
++ * to calculate the maximum number of throttling steps or cooling states.
++ */
++static int cpufreq_thermal_reduction_pctg __read_mostly = 20;
+ 
+-#define reduction_pctg(cpu) \
+-	per_cpu(cpufreq_thermal_reduction_pctg, phys_package_first_cpu(cpu))
++static DEFINE_PER_CPU(unsigned int, cpufreq_thermal_reduction_step);
++
++#define reduction_step(cpu) \
++	per_cpu(cpufreq_thermal_reduction_step, phys_package_first_cpu(cpu))
+ 
+ /*
+  * Emulate "per package data" using per cpu data (which should really be
+@@ -71,7 +82,7 @@ static int cpufreq_get_max_state(unsigned int cpu)
+ 	if (!cpu_has_cpufreq(cpu))
+ 		return 0;
+ 
+-	return CPUFREQ_THERMAL_MAX_STEP;
++	return cpufreq_thermal_max_step;
+ }
+ 
+ static int cpufreq_get_cur_state(unsigned int cpu)
+@@ -79,7 +90,7 @@ static int cpufreq_get_cur_state(unsigned int cpu)
+ 	if (!cpu_has_cpufreq(cpu))
+ 		return 0;
+ 
+-	return reduction_pctg(cpu);
++	return reduction_step(cpu);
+ }
+ 
+ static int cpufreq_set_cur_state(unsigned int cpu, int state)
+@@ -92,7 +103,7 @@ static int cpufreq_set_cur_state(unsigned int cpu, int state)
+ 	if (!cpu_has_cpufreq(cpu))
+ 		return 0;
+ 
+-	reduction_pctg(cpu) = state;
++	reduction_step(cpu) = state;
+ 
+ 	/*
+ 	 * Update all the CPUs in the same package because they all
+@@ -113,7 +124,8 @@ static int cpufreq_set_cur_state(unsigned int cpu, int state)
+ 		if (!policy)
+ 			return -EINVAL;
+ 
+-		max_freq = (policy->cpuinfo.max_freq * (100 - reduction_pctg(i) * 20)) / 100;
++		max_freq = (policy->cpuinfo.max_freq *
++			    (100 - reduction_step(i) * cpufreq_thermal_reduction_pctg)) / 100;
+ 
+ 		cpufreq_cpu_put(policy);
+ 
+@@ -126,10 +138,29 @@ static int cpufreq_set_cur_state(unsigned int cpu, int state)
  	return 0;
+ }
+ 
++static void acpi_thermal_cpufreq_config(void)
++{
++	int cpufreq_pctg = acpi_arch_thermal_cpufreq_pctg();
++
++	if (!cpufreq_pctg)
++		return;
++
++	cpufreq_thermal_reduction_pctg = cpufreq_pctg;
++
++	/*
++	 * Derive the MAX_STEP from minimum throttle percentage so that the reduction
++	 * percentage doesn't end up becoming negative. Also, cap the MAX_STEP so that
++	 * the CPU performance doesn't become 0.
++	 */
++	cpufreq_thermal_max_step = (100 / cpufreq_pctg) - 2;
++}
++
+ void acpi_thermal_cpufreq_init(struct cpufreq_policy *policy)
+ {
+ 	unsigned int cpu;
+ 
++	acpi_thermal_cpufreq_config();
++
+ 	for_each_cpu(cpu, policy->related_cpus) {
+ 		struct acpi_processor *pr = per_cpu(processors, cpu);
+ 		int ret;
+@@ -190,7 +221,7 @@ static int acpi_processor_max_state(struct acpi_processor *pr)
+ 
+ 	/*
+ 	 * There exists four states according to
+-	 * cpufreq_thermal_reduction_pctg. 0, 1, 2, 3
++	 * cpufreq_thermal_reduction_step. 0, 1, 2, 3
+ 	 */
+ 	max_state += cpufreq_get_max_state(pr->id);
+ 	if (pr->flags.throttling)
 -- 
 2.43.0
 
