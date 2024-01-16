@@ -1,63 +1,57 @@
-Return-Path: <linux-kernel+bounces-28020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26C2582F92D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:01:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0456A82F930
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:02:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C942728971E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:01:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 179A31C2518F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:02:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84FF92C6BA;
-	Tue, 16 Jan 2024 19:55:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41FAE2C85D;
+	Tue, 16 Jan 2024 19:55:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cFSJEZ5Z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eUdq9p29"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC74B2C6AB;
-	Tue, 16 Jan 2024 19:55:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8494D2C844;
+	Tue, 16 Jan 2024 19:55:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434921; cv=none; b=c4ZbicC7GSdEQy+Jos01CPjuOoc9IGLIBm5VtIenSltSjXNAt64OQSQfEnN39YjInPu8u3SjB1PG2U5M6dAXdzbCy9ZXxgHtLC99QWSbAJWQnNJOcUaNSViM6HSnPVRf9CY4iGXEws9SU+eEKeUOVwKsdSL4mkAcAFRerKwDQj0=
+	t=1705434923; cv=none; b=Gw3JTlDAaI0Mszu22Os9xzTpeTUQwcH4WjSFKw5LvD+DkGRxUSixNpl8gDZ+kylbtizZJ2Cf6xQOhpCzGn5UNdycvF2JMR6Vx67qkne0vJckdoGPj1bRmRPnz2hvDvQng/e+bd2P0UO0G0DJ0nAaLevfAWdWSuzLSpc5djTTzHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434921; c=relaxed/simple;
-	bh=hORw/LjtmLslIhMW3hB1p5s4EeH7XhY/u0cxo++nrUU=;
+	s=arc-20240116; t=1705434923; c=relaxed/simple;
+	bh=Nu67YcmV68YpVzKmLQNFlbjgbFW/NcbGalpeDYXAi2c=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=bLUf5WoI8FlpbBUCnvud1xJ3ZmR8qWg03xNjXEHNZn9JW8PgUPTb3jLg/5Czvd0H9jc8Dhq5hFS6h1pc7fmCOvLncbtHeGTvP2YRFXiHF71RtPY2f9O4+swjO73sUyfgaVm4jCphbAm0VTbJTBXicuckeinyQm86L/DBXlZMiQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cFSJEZ5Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2215C433C7;
-	Tue, 16 Jan 2024 19:55:19 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=eX0zxJy3dltlmmayVpukV+5R2bnYIjWjxSl08mQDS0PU4UOFMjtekFLvwqVJR6USioevJEnu4R9pmF2R71kK7iDBmSpgs4FJ1XwUvSsKzHMggPkNE8xVAPCMvNpRPzb0dRRFG/wR7yYV6FbyhdJPkg5vAM6yZPIaSIxyXOiURD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eUdq9p29; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAF9BC43390;
+	Tue, 16 Jan 2024 19:55:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434921;
-	bh=hORw/LjtmLslIhMW3hB1p5s4EeH7XhY/u0cxo++nrUU=;
+	s=k20201202; t=1705434922;
+	bh=Nu67YcmV68YpVzKmLQNFlbjgbFW/NcbGalpeDYXAi2c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cFSJEZ5ZzAM3uofM2y9LGVD6DvaesW2VOIsXRg96c8SIr81Hi7zKfHTmzEhpsgGCn
-	 7uYc2i/4nQhUyhzHlZ2zYApQjEk5Ao67BU/0k0nLul4gM2X2VXIVpygOcMtX4kTl3b
-	 HJXcf3+M70GE6g3z+yo21p7wF/A2lTQaRbbAJBVGTG+iM7n5FxcpaA/H4ZBXlUbuGf
-	 LL5kV0cPvXm160a1GA35ltOdBD7bfGcaE90/DULo3ROMnyKNCBOwLk3oR3ws8PZABe
-	 jiEKNYg6QE++UoHeEtZiOAuuBPr1PZ24CvcTpRv4UGsuM6GAIwyXeBV2ILeHpHwamM
-	 bh5dkG/JWzEBQ==
+	b=eUdq9p291h5oLDCevv+MipIwu1CmDCXW/PUUxhYCRalvm9eBgoNjfQkgAnPigvLvs
+	 UjqxyY7RlZZzycp+rcKKO9GuVjBN3bK8sv4h7k75SgoU+EHC1ry0ih435ZaZq9ZpQQ
+	 FPsg4PUw0k2csOWzc8eRy/4mZjnBue1fzxYsQAEexltxzeaubIVfx8xF6Spoi+RRtE
+	 P4/iO23FmJOZwt7ijAtXWb8/5cQOKqxYSnb5zijAEMWu0zg6w9fgqM2Q9BpjJATuPW
+	 YUc/PApnR6X2AowqzH2ek2qC5Noe5uP4AYoD8CxQRMEw2F9k3lfiEHAhVgO8pp/GQR
+	 fZgiI2SHUtRUQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yonghong Song <yonghong.song@linux.dev>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
+Cc: Shiji Yang <yangshiji66@outlook.com>,
+	Stanislaw Gruszka <stf_xl@wp.pl>,
+	Kalle Valo <kvalo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	shuah@kernel.org,
-	nathan@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.1 03/68] selftests/bpf: Fix pyperf180 compilation failure with clang18
-Date: Tue, 16 Jan 2024 14:53:02 -0500
-Message-ID: <20240116195511.255854-3-sashal@kernel.org>
+	linux-wireless@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 04/68] wifi: rt2x00: correct wrong BBP register in RxDCOC calibration
+Date: Tue, 16 Jan 2024 14:53:03 -0500
+Message-ID: <20240116195511.255854-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116195511.255854-1-sashal@kernel.org>
 References: <20240116195511.255854-1-sashal@kernel.org>
@@ -72,81 +66,37 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.73
 Content-Transfer-Encoding: 8bit
 
-From: Yonghong Song <yonghong.song@linux.dev>
+From: Shiji Yang <yangshiji66@outlook.com>
 
-[ Upstream commit 100888fb6d8a185866b1520031ee7e3182b173de ]
+[ Upstream commit 50da74e1e8b682853d1e07fc8bbe3a0774ae5e09 ]
 
-With latest clang18 (main branch of llvm-project repo), when building bpf selftests,
-    [~/work/bpf-next (master)]$ make -C tools/testing/selftests/bpf LLVM=1 -j
+Refer to Mediatek vendor driver RxDCOC_Calibration() function, when
+performing gainfreeze calibration, we should write register 140
+instead of 141. This fix can reduce the total calibration time from
+6 seconds to 1 second.
 
-The following compilation error happens:
-    fatal error: error in backend: Branch target out of insn range
-    ...
-    Stack dump:
-    0.      Program arguments: clang -g -Wall -Werror -D__TARGET_ARCH_x86 -mlittle-endian
-      -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/include
-      -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf -I/home/yhs/work/bpf-next/tools/include/uapi
-      -I/home/yhs/work/bpf-next/tools/testing/selftests/usr/include -idirafter
-      /home/yhs/work/llvm-project/llvm/build.18/install/lib/clang/18/include -idirafter /usr/local/include
-      -idirafter /usr/include -Wno-compare-distinct-pointer-types -DENABLE_ATOMICS_TESTS -O2 --target=bpf
-      -c progs/pyperf180.c -mcpu=v3 -o /home/yhs/work/bpf-next/tools/testing/selftests/bpf/pyperf180.bpf.o
-    1.      <eof> parser at end of file
-    2.      Code generation
-    ...
-
-The compilation failure only happens to cpu=v2 and cpu=v3. cpu=v4 is okay
-since cpu=v4 supports 32-bit branch target offset.
-
-The above failure is due to upstream llvm patch [1] where some inlining behavior
-are changed in clang18.
-
-To workaround the issue, previously all 180 loop iterations are fully unrolled.
-The bpf macro __BPF_CPU_VERSION__ (implemented in clang18 recently) is used to avoid
-unrolling changes if cpu=v4. If __BPF_CPU_VERSION__ is not available and the
-compiler is clang18, the unrollng amount is unconditionally reduced.
-
-  [1] https://github.com/llvm/llvm-project/commit/1a2e77cf9e11dbf56b5720c607313a566eebb16e
-
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Tested-by: Alan Maguire <alan.maguire@oracle.com>
-Link: https://lore.kernel.org/bpf/20231110193644.3130906-1-yonghong.song@linux.dev
+Signed-off-by: Shiji Yang <yangshiji66@outlook.com>
+Acked-by: Stanislaw Gruszka <stf_xl@wp.pl>
+Signed-off-by: Kalle Valo <kvalo@kernel.org>
+Link: https://lore.kernel.org/r/TYAP286MB0315B13B89DF57B6B27BB854BCAFA@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/progs/pyperf180.c | 22 +++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ drivers/net/wireless/ralink/rt2x00/rt2800lib.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/pyperf180.c b/tools/testing/selftests/bpf/progs/pyperf180.c
-index c39f559d3100..42c4a8b62e36 100644
---- a/tools/testing/selftests/bpf/progs/pyperf180.c
-+++ b/tools/testing/selftests/bpf/progs/pyperf180.c
-@@ -1,4 +1,26 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2019 Facebook
- #define STACK_MAX_LEN 180
-+
-+/* llvm upstream commit at clang18
-+ *   https://github.com/llvm/llvm-project/commit/1a2e77cf9e11dbf56b5720c607313a566eebb16e
-+ * changed inlining behavior and caused compilation failure as some branch
-+ * target distance exceeded 16bit representation which is the maximum for
-+ * cpu v1/v2/v3. Macro __BPF_CPU_VERSION__ is later implemented in clang18
-+ * to specify which cpu version is used for compilation. So a smaller
-+ * unroll_count can be set if __BPF_CPU_VERSION__ is less than 4, which
-+ * reduced some branch target distances and resolved the compilation failure.
-+ *
-+ * To capture the case where a developer/ci uses clang18 but the corresponding
-+ * repo checkpoint does not have __BPF_CPU_VERSION__, a smaller unroll_count
-+ * will be set as well to prevent potential compilation failures.
-+ */
-+#ifdef __BPF_CPU_VERSION__
-+#if __BPF_CPU_VERSION__ < 4
-+#define UNROLL_COUNT 90
-+#endif
-+#elif __clang_major__ == 18
-+#define UNROLL_COUNT 90
-+#endif
-+
- #include "pyperf.h"
+diff --git a/drivers/net/wireless/ralink/rt2x00/rt2800lib.c b/drivers/net/wireless/ralink/rt2x00/rt2800lib.c
+index 12b700c7b9c3..517d9023aae3 100644
+--- a/drivers/net/wireless/ralink/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/ralink/rt2x00/rt2800lib.c
+@@ -8672,7 +8672,7 @@ static void rt2800_rxdcoc_calibration(struct rt2x00_dev *rt2x00dev)
+ 	rt2800_rfcsr_write_bank(rt2x00dev, 5, 4, saverfb5r4);
+ 	rt2800_rfcsr_write_bank(rt2x00dev, 7, 4, saverfb7r4);
+ 
+-	rt2800_bbp_write(rt2x00dev, 158, 141);
++	rt2800_bbp_write(rt2x00dev, 158, 140);
+ 	bbpreg = rt2800_bbp_read(rt2x00dev, 159);
+ 	bbpreg = bbpreg & (~0x40);
+ 	rt2800_bbp_write(rt2x00dev, 159, bbpreg);
 -- 
 2.43.0
 
