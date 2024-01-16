@@ -1,145 +1,94 @@
-Return-Path: <linux-kernel+bounces-27298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C69482ED79
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:13:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BE0182ED7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:15:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A2DB284B36
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:13:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9417B23068
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:15:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 363A91B7F7;
-	Tue, 16 Jan 2024 11:13:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9DA21B7F9;
+	Tue, 16 Jan 2024 11:15:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iDmOVxuY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NNWWAf/T"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 822D21B7ED;
-	Tue, 16 Jan 2024 11:13:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0E8EC433F1;
-	Tue, 16 Jan 2024 11:13:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705403598;
-	bh=S+0SZtA/75E2v3VkKaIyy4uPLM3LshStUgu21aLTubc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=iDmOVxuYwMchFyoYdVADTNZz9TMlhzIa/aKxHixxz0KQ41cIc3Y+CMlgbWUx83ddD
-	 QoXselPmeixw44LsSSnOmrPS3qexnnY1/yFH8E7RR1Aw4kayf7uE1aNLP2piWMUWYT
-	 QInccIBD99HZ3hTVX4RUuPjzGMOwgU9aB8Ct5rd9amKF/e1m4+LMkatl1xxoB0gzF0
-	 WDDceGzuBCmWj4bM8tTkSaebP0wjHUVI5QJY0Lc8/6ed7KRKmRpfoGlJ7NVVABvCBn
-	 7nga2kTsKzerF2P51PCnof/yJec1QCwRTbQSRZbQ4FoLBl0oTI6baBXqBHard97zcH
-	 uNQslch4RLRlQ==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rPhNc-00C5Q7-AA;
-	Tue, 16 Jan 2024 11:13:16 +0000
-Date: Tue, 16 Jan 2024 11:13:15 +0000
-Message-ID: <86v87t8ras.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: "sundongxu (A)" <sundongxu3@huawei.com>
-Cc: <oliver.upton@linux.dev>,
-	<yuzenghui@huawei.com>,
-	<james.morse@arm.com>,
-	<suzuki.poulose@arm.com>,
-	<will@kernel.org>,
-	<catalin.marinas@arm.com>,
-	<wanghaibin.wang@huawei.com>,
-	<kvmarm@lists.linux.dev>,
-	<linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>
-Subject: Re: [bug report] GICv4.1: VM performance degradation due to not trapping vCPU WFI
-In-Reply-To: <a481ef04-ddd2-dfc1-41b1-d2ec45c6a3b5@huawei.com>
-References: <a481ef04-ddd2-dfc1-41b1-d2ec45c6a3b5@huawei.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD0991B7ED;
+	Tue, 16 Jan 2024 11:15:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705403716; x=1736939716;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=KGj83XYIkXNIHgAxpE7C2tWJ2jS/Hwvrh3NCtwWmTmE=;
+  b=NNWWAf/TaCm1MF71uSKFnneZgyBVD3sLebhrmg99BpYLeefTOIKp31jD
+   cVJ7NtnOMHu+PRk7XfDnEWKrHqkQrk8DYhFlEAEggQK3Co2zURM3NkhCJ
+   R8+Tbojx92/Io7yIvHAW0KZva5+9p2o9IwS5k4FH2AjRuV3gOdBFXxNcz
+   tjMQpMS1rsI4Jy7BDmZe2gIQF7jkOJUgkHpdKEmEgRnv+g+EBdgByniz0
+   gndPMmH7XRCH7jeyfTL/WjFP6eLfc+sOGuhc9NScVPXlnV39L9qvKZjT2
+   PPoLjwfs60UFfKEHSe8VeJ7jFpgA9Gpc/u9lxgP7l7ERcfrvJQoydP5gV
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="7214109"
+X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
+   d="scan'208";a="7214109"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 03:15:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
+   d="scan'208";a="32419003"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.54.38.190])
+  by orviesa001.jf.intel.com with ESMTP; 16 Jan 2024 03:15:15 -0800
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+	id C1371301BD1; Tue, 16 Jan 2024 03:15:14 -0800 (PST)
+From: Andi Kleen <ak@linux.intel.com>
+To: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>,  Ingo Molnar <mingo@redhat.com>,
+  Mark Rutland <mark.rutland@arm.com>,  Alexander Shishkin
+ <alexander.shishkin@linux.intel.com>,  Heiko Carstens <hca@linux.ibm.com>,
+  Thomas Richter <tmricht@linux.ibm.com>,  Hendrik Brueckner
+ <brueckner@linux.ibm.com>,  Suzuki K Poulose <suzuki.poulose@arm.com>,
+  Mike Leach <mike.leach@linaro.org>,  James Clark <james.clark@arm.com>,
+  coresight@lists.linaro.org,  linux-arm-kernel@lists.infradead.org,
+  Yicong Yang <yangyicong@hisilicon.com>,  Jonathan Cameron
+ <jonathan.cameron@huawei.com>,  Will Deacon <will@kernel.org>,  Arnaldo
+ Carvalho de Melo <acme@kernel.org>,  Jiri Olsa <jolsa@kernel.org>,
+  Namhyung Kim <namhyung@kernel.org>,  Ian Rogers <irogers@google.com>,
+  linux-kernel@vger.kernel.org,  linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH V4 10/11] perf intel-pt: Add documentation for pause /
+ resume
+In-Reply-To: <20240111081914.3123-11-adrian.hunter@intel.com> (Adrian Hunter's
+	message of "Thu, 11 Jan 2024 10:19:13 +0200")
+References: <20240111081914.3123-1-adrian.hunter@intel.com>
+	<20240111081914.3123-11-adrian.hunter@intel.com>
+Date: Tue, 16 Jan 2024 03:15:14 -0800
+Message-ID: <87ply1lebh.fsf@linux.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: sundongxu3@huawei.com, oliver.upton@linux.dev, yuzenghui@huawei.com, james.morse@arm.com, suzuki.poulose@arm.com, will@kernel.org, catalin.marinas@arm.com, wanghaibin.wang@huawei.com, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain
 
-On Tue, 16 Jan 2024 03:26:08 +0000,
-"sundongxu (A)" <sundongxu3@huawei.com> wrote:
-> 
-> Hi Guys,
-> 
-> We found a problem about GICv4/4.1, for example:
-> We use QEMU to start a VM (4 vCPUs and 8G memory), VM disk was
-> configured with virtio, and the network is configured with vhost-net,
-> the CPU affinity of the vCPU and emulator is as follows, in VM xml:
-> 
->   <cputune>
->     <vcpupin vcpu='0' cpuset='4'/>
->     <vcpupin vcpu='1' cpuset='5'/>
->     <vcpupin vcpu='2' cpuset='6'/>
->     <vcpupin vcpu='3' cpuset='7'/>
->     <emulatorpin cpuset='4,5,6,7'/>
->   </cputune>
-> 
-> Running Mysql in the VM, and sysbench (Mysql benchmark) on the host,
-> the performance index is tps, the higher the better.
-> If the host only enabled GICv3, the tps will be around 1400.
-> If the host enabled GICv4.1, other configurations remain unchanged, the
-> tps will be around 40.
-> 
-> We found that when the host enabled GICv4.1, because vSGI is directly
-> injected to VM, and most time vCPU exclusively occupy the pCPU, vCPU
-> will not trap when executing the WFI instruction. Then from the host
-> view, the CPU usage of vCPU0~vCPU3 is almost 100%. When running mysql
-> service in VM, the vhost-net and qemu processes also need to obtain
-> enough CPU time, but unfortunately these processes cannot get that much
-> time (for example, only GICv3 enabled, the cpu usage of vhost-net is
-> about 43%, but with GICv4.1 enabled, it becomes 0~2%). During the test,
-> it was found that vhost-net sleeps and wakes up very frequently. When
-> vhost-net wakes up, it often cannot obtain CPU in time (because of
-> wake-up preemption check). After waking up, vhost-net will usually run
-> for a short period of time before going to sleep again.
+Adrian Hunter <adrian.hunter@intel.com> writes:
+> +
+> +For example, to trace only the uname system call (sys_newuname) when running the
+> +command line utility uname:
+> +
+> + $ perf record --kcore -e
+> intel_pt/aux-action=start-paused/k,syscalls:sys_enter_newuname/aux-action=resume/,syscalls:sys_exit_newuname/aux-action=pause/
+> uname
 
-Can you elaborate on this preemption check issue?
+It's unclear if the syntax works for hardware break points, kprobes, uprobes too?
+That would be most useful. If it works would be good to add examples for it.
 
-> 
-> If the host enabled GICv4.1, and force vCPU to trap when executing WFI,
-> the tps will be around 1400.
-> 
-> On the other hand, when vCPU executes WFI instruction without trapping,
-> the vcpu wake-up delay will be significantly improved. For example, the
-> result of running cyclictest in VM:
-> WFI trap           6us
-> WFI no trap        2us
-> 
-> Currently, I add a KVM module parameter to control whether the vCPU
-> traps (by set or clear HCR_TWI) when executing the WFI instruction with
-> host enabled GICv4/4.1, and by default, vCPU traps are set.
-> 
-> Or, it there a better way?
+-Andi
 
-As you foudn out, KVM has an adaptive way of dealing with HCR_TWI,
-turning it off when the vcpu is alone in the run queue. Which means it
-doesn't compete with any other thread. How comes the other threads
-don't register as being runnable?
-
-Effectively, we apply the same principle to vSGIs as to vLPIs, and it
-was found that this heuristic was pretty beneficial to vLPIs. I'm a
-bit surprised that vSGIs are so different in their usage pattern.
-
-Does it help if you move your "emulatorpin" to some other physical
-CPUs?
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
 
