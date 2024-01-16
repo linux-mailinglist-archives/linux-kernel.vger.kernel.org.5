@@ -1,334 +1,98 @@
-Return-Path: <linux-kernel+bounces-27448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 786C082F03E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:06:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DE55682F03C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:05:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9134F1C208BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:06:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0B641C20E23
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:05:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF2C21BDE9;
-	Tue, 16 Jan 2024 14:05:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3111BDF0;
+	Tue, 16 Jan 2024 14:05:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="XXQUJzwq"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oqdtqpaj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F6311BDDB;
-	Tue, 16 Jan 2024 14:05:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40GDcFPC021038;
-	Tue, 16 Jan 2024 14:05:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=3LfciJxaDqi1Y/XeM1vLxnB1bE5XKiIgTliyQXBwU0A=;
- b=XXQUJzwqXYFHoO3SXVqLTs6Xh6CwuJc5gkOje2dB+Pmb3B7ED/K9ZfNAbBZUz0QHZEKW
- ITAiivYorCWeFVMZTFwZQiassW8XkBfhTHLwej9DF1UwXQynXErKLDZqfC8yE7+dkPgE
- neu/y2OuWQ/vVAxq9MXEQe97cSYw9e4ufoxelYMrDaHyWA4tiirxl8UhD2tIF4iP2B2G
- IpNkbCj9BIqqPfq955KyWiuQZeYmUvR8hRkDD1HIyP7F/gcsr4q/eCuoXRPVnV5g988A
- lycs9rar0NH1Lkvg3g9MSIEjW9aBY4WXIeMqmiAxWcU4We77hmC9kT6KEEElWWASUCY9 dw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vntuth1yd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 14:05:33 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40GDcJ8W021235;
-	Tue, 16 Jan 2024 14:05:33 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vntuth1w5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 14:05:32 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40GDTLfW023367;
-	Tue, 16 Jan 2024 14:05:30 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vm6bketrb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 14:05:30 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40GE5S3W14287450
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 16 Jan 2024 14:05:28 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C79C820043;
-	Tue, 16 Jan 2024 14:05:28 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CE16B2004D;
-	Tue, 16 Jan 2024 14:05:23 +0000 (GMT)
-Received: from [9.171.45.131] (unknown [9.171.45.131])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 16 Jan 2024 14:05:23 +0000 (GMT)
-Message-ID: <cd7dc93f-ade9-6403-a732-2daca8e6cff9@linux.ibm.com>
-Date: Tue, 16 Jan 2024 19:35:22 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH V3 0/7] Clean up perf mem
-Content-Language: en-US
-To: "Liang, Kan" <kan.liang@linux.intel.com>, acme@kernel.org,
-        irogers@google.com, peterz@infradead.org, mingo@redhat.com,
-        namhyung@kernel.org, jolsa@kernel.org, adrian.hunter@intel.com,
-        john.g.garry@oracle.com, will@kernel.org, james.clark@arm.com,
-        mike.leach@linaro.org, leo.yan@linaro.org,
-        yuhaixin.yhx@linux.alibaba.com, renyu.zj@linux.alibaba.com,
-        tmricht@linux.ibm.com, ravi.bangoria@amd.com,
-        atrajeev@linux.vnet.ibm.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20231213195154.1085945-1-kan.liang@linux.intel.com>
- <a0abfee5-4dcd-3eb5-82fe-1a0dcdade038@linux.ibm.com>
- <befb6acd-86be-4255-af96-38865affc56c@linux.intel.com>
- <8bfadc86-e137-4a9f-a9ce-0bc62464c195@linux.intel.com>
- <057a1c19-3117-1aec-41d6-4950c599b862@linux.ibm.com>
- <692e16f9-062c-4b3c-bd66-a16bac68216c@linux.intel.com>
-From: kajoljain <kjain@linux.ibm.com>
-In-Reply-To: <692e16f9-062c-4b3c-bd66-a16bac68216c@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: jd1VtljHiyaZFggciqqSQImWHNyyjLzF
-X-Proofpoint-ORIG-GUID: oFftXAdlXOIEAJQtYOBjU5h5SpAKzqJj
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88FEE1BDE2;
+	Tue, 16 Jan 2024 14:05:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D92B3C43394;
+	Tue, 16 Jan 2024 14:05:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705413926;
+	bh=wdApqMu8yNYkMKGqd22mtZ0Ag75N+acHPwxyLZRbFs4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oqdtqpaj8keG80MKofmm+/4W4Imz2FHtS+o4CtqoQFnORrJaBPQXFHSqAw6kv3hDM
+	 ViUfbpY+8ck27mkQ4RLJwiBuocuBWeziLRRo2jNaNgrw2USxSPXw1MpWOtljGkSs1X
+	 WMizARNn/x7T2EfytvIxcaqLiTfWkOMzh9QkKFOUdklooT9mZUGGw5BSe+zvISlS9Y
+	 m5RsO6yw8QSNeQ9zuzNqgS055j2xowU/qKoFaGAcUj09VbVagiUqIWrYGGV3WI+tIZ
+	 cu3xzO7jg2xfwnEDgiD8rp2iBnIyfX0UGlnKZd17B/M3ZpJtlUwISM9Hswdmp0CPFh
+	 /cLrpGPjrmw9g==
+Date: Tue, 16 Jan 2024 08:05:23 -0600
+From: Rob Herring <robh@kernel.org>
+To: Devarsh Thakkar <devarsht@ti.com>
+Cc: Conor Dooley <conor@kernel.org>, jyri.sarha@iki.fi,
+	tomi.valkeinen@ideasonboard.com, airlied@gmail.com, daniel@ffwll.ch,
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+	tzimmermann@suse.de, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, dri-devel@lists.freedesktop.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	praneeth@ti.com, nm@ti.com, vigneshr@ti.com, a-bhatia1@ti.com,
+	j-luthra@ti.com, kristo@kernel.org
+Subject: Re: [DO NOT MERGE PATCH 2/2] arm64: dts: ti: Add common1 register
+ space for AM62x and AM65x SoCs
+Message-ID: <20240116140523.GA3809602-robh@kernel.org>
+References: <20240115125716.560363-1-devarsht@ti.com>
+ <20240115125716.560363-3-devarsht@ti.com>
+ <20240115-penpal-pluck-d156ccf21b2f@spud>
+ <4c5cb4ed-96a3-7bd8-f660-2a3bb041ca09@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-16_08,2024-01-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- lowpriorityscore=0 bulkscore=0 malwarescore=0 clxscore=1015
- priorityscore=1501 mlxscore=0 suspectscore=0 adultscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401160111
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4c5cb4ed-96a3-7bd8-f660-2a3bb041ca09@ti.com>
 
-
-
-On 1/5/24 20:08, Liang, Kan wrote:
+On Tue, Jan 16, 2024 at 02:48:53PM +0530, Devarsh Thakkar wrote:
+> Hi Conor,
 > 
+> Thanks for the review.
 > 
-> On 2024-01-05 1:38 a.m., kajoljain wrote:
->>
->>
->> On 1/3/24 01:38, Liang, Kan wrote:
->>> Hi Kajol Jain
->>>
->>> On 2023-12-19 9:15 a.m., Liang, Kan wrote:
->>>>
->>>>
->>>> On 2023-12-19 4:26 a.m., kajoljain wrote:
->>>>> Hi,
->>>>>   I was trying to test this patchset on powerpc.
->>>>>
->>>>> After applying it on top of acme's perf-tools-next branch, I am getting
->>>>> below error:
->>>>>
->>>>>   INSTALL libsubcmd_headers
->>>>>   INSTALL libperf_headers
->>>>>   INSTALL libsymbol_headers
->>>>>   INSTALL libapi_headers
->>>>>   INSTALL libbpf_headers
->>>>>   CC      arch/powerpc/util/mem-events.o
->>>>> In file included from arch/powerpc/util/mem-events.c:3:
->>>>> arch/powerpc/util/mem-events.h:5:52: error: ‘PERF_MEM_EVENTS__MAX’
->>>>> undeclared here (not in a function)
->>>>>     5 | extern struct perf_mem_event
->>>>> perf_mem_events_power[PERF_MEM_EVENTS__MAX];
->>>>>       |
->>>>> ^~~~~~~~~~~~~~~~~~~~
->>>>> make[6]: *** [/home/kajol/linux/tools/build/Makefile.build:105:
->>>>> arch/powerpc/util/mem-events.o] Error 1
->>>>> make[5]: *** [/home/kajol/linux/tools/build/Makefile.build:158: util]
->>>>> Error 2
->>>>> make[4]: *** [/home/kajol/linux/tools/build/Makefile.build:158: powerpc]
->>>>> Error 2
->>>>> make[3]: *** [/home/kajol/linux/tools/build/Makefile.build:158: arch]
->>>>> Error 2
->>>>> make[3]: *** Waiting for unfinished jobs....
->>>>> make[2]: *** [Makefile.perf:693: perf-in.o] Error 2
->>>>> make[1]: *** [Makefile.perf:251: sub-make] Error 2
->>>>> make: *** [Makefile:70: all] Error 2
->>>>>
->>>>> It seems some headerfiles are missing from arch/powerpc/util/mem-
->>>>> events.c
->>>>>
->>>>
->>>> Leo updated the headerfiles for ARM. https://termbin.com/0dkn
->>>>
->>>> I guess powerpc has to do the same thing. Could you please try the below
->>>> patch?
->>>
->>>
->>> Does the patch work on powerpc?
->>
->> Hi Kan,
->>    Sorry I went for vacation so couldn't update. Yes this fix works. 
+> On 15/01/24 21:44, Conor Dooley wrote:
+> > On Mon, Jan 15, 2024 at 06:27:16PM +0530, Devarsh Thakkar wrote:
+> >> This adds common1 register space for AM62x and AM65x SoC's which are using
+> >> TI's Keystone display hardware and supporting it as described in
+> >> Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml.
+> >>
+> >> This region is documented in respective Technical Reference Manuals [1].
+> >>
+> >> [1]:
+> >> AM62x TRM:
+> >> https://www.ti.com/lit/pdf/spruiv7 (Section 14.8.9.1 DSS Registers)
+> >>
+> >> AM65x TRM:
+> >> https://www.ti.com/lit/pdf/spruid7 (Section 12.6.5 DSS Registers)
+> >>
+> >> Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+> >> ---
+> > 
+> > "[DO NOT MERGE PATCH 2/2]" but no rationale here as to why this cannot
+> > be merged? What's the problem with it?
+> > 
 > 
-> Thanks for the update.
-> 
->> But
->> we have another issue, actually this patch set changes uses ldlat
->> attribute. But ldlat is not supported in powerpc because of which perf
->> mem is failing in powerpc.
-> 
-> For powerpc, the patch 3 introduced a perf_mem_events_power, which
-> doesn't have ldlat. But it only be assigned to the pmu->is_core. I'm not
-> sure if it's the problem.
+> No problem as such from my point of view, but this is the process I follow
+> since maintainer trees for device-tree file and bindings are different. I
+> generally mark a [DO NOT MERGE] tag for device-tree file patches until binding
+> patch gets merged so that the device-tree patches don't get applied by mistake
+> if binding patch has some pending comments.
 
-Hi Kan,
- Correct there were some small issues with patch 3, I added fix for that.
+RFC is the tag for "don't merge". Don't make-up your own tags.
 
-> Also, S390 still uses the default perf_mem_events, which includes ldlat.
-> I'm not sure if S390 supports the ldlat.
-
-I checked it, I didn't find ldlat parameter defined in arch/s390
-directory. I think its better to make default ldlat value as false
-in tools/perf/util/mem-events.c file.
-
-Thanks,
-Kajol Jain
-
-> 
-> Thanks,
-> Kan
->>
->> I am looking into a work around to fix this issue. I will update the fix.
->>
->> Thanks,
->> Kajol Jain
->>
->>
->>>
->>>
->>> Thanks,
->>> Kan
->>>>
->>>> diff --git a/tools/perf/arch/powerpc/util/mem-events.c
->>>> b/tools/perf/arch/powerpc/util/mem-events.c
->>>> index 72a6ac2b52f5..765d4a054b0a 100644
->>>> --- a/tools/perf/arch/powerpc/util/mem-events.c
->>>> +++ b/tools/perf/arch/powerpc/util/mem-events.c
->>>> @@ -1,5 +1,6 @@
->>>>  // SPDX-License-Identifier: GPL-2.0
->>>> -#include "map_symbol.h"
->>>> +#include "util/map_symbol.h"
->>>> +#include "util/mem-events.h"
->>>>  #include "mem-events.h"
->>>>
->>>>  #define E(t, n, s, l, a) { .tag = t, .name = n, .event_name = s, .ldlat
->>>> = l, .aux_event = a }
->>>>
->>>> Thanks,
->>>> Kan
->>>>
->>>>> Thanks,
->>>>> Kajol Jain
->>>>>
->>>>> On 12/14/23 01:21, kan.liang@linux.intel.com wrote:
->>>>>> From: Kan Liang <kan.liang@linux.intel.com>
->>>>>>
->>>>>> Changes since V2:
->>>>>> - Fix the Arm64 building error (Leo)
->>>>>> - Add two new patches to clean up perf_mem_events__record_args()
->>>>>>   and perf_pmus__num_mem_pmus() (Leo)
->>>>>>
->>>>>> Changes since V1:
->>>>>> - Fix strcmp of PMU name checking (Ravi)
->>>>>> - Fix "/," typo (Ian)
->>>>>> - Rename several functions with perf_pmu__mem_events prefix. (Ian)
->>>>>> - Fold the header removal patch into the patch where the cleanups made.
->>>>>>   (Arnaldo)
->>>>>> - Add reviewed-by and tested-by from Ian and Ravi
->>>>>>
->>>>>> As discussed in the below thread, the patch set is to clean up perf mem.
->>>>>> https://lore.kernel.org/lkml/afefab15-cffc-4345-9cf4-c6a4128d4d9c@linux.intel.com/
->>>>>>
->>>>>> Introduce generic functions perf_mem_events__ptr(),
->>>>>> perf_mem_events__name() ,and is_mem_loads_aux_event() to replace the
->>>>>> ARCH specific ones.
->>>>>> Simplify the perf_mem_event__supported().
->>>>>>
->>>>>> Only keeps the ARCH-specific perf_mem_events array in the corresponding
->>>>>> mem-events.c for each ARCH.
->>>>>>
->>>>>> There is no functional change.
->>>>>>
->>>>>> The patch set touches almost all the ARCHs, Intel, AMD, ARM, Power and
->>>>>> etc. But I can only test it on two Intel platforms.
->>>>>> Please give it try, if you have machines with other ARCHs.
->>>>>>
->>>>>> Here are the test results:
->>>>>> Intel hybrid machine:
->>>>>>
->>>>>> $perf mem record -e list
->>>>>> ldlat-loads  : available
->>>>>> ldlat-stores : available
->>>>>>
->>>>>> $perf mem record -e ldlat-loads -v --ldlat 50
->>>>>> calling: record -e cpu_atom/mem-loads,ldlat=50/P -e cpu_core/mem-loads,ldlat=50/P
->>>>>>
->>>>>> $perf mem record -v
->>>>>> calling: record -e cpu_atom/mem-loads,ldlat=30/P -e cpu_atom/mem-stores/P -e cpu_core/mem-loads,ldlat=30/P -e cpu_core/mem-stores/P
->>>>>>
->>>>>> $perf mem record -t store -v
->>>>>> calling: record -e cpu_atom/mem-stores/P -e cpu_core/mem-stores/P
->>>>>>
->>>>>>
->>>>>> Intel SPR:
->>>>>> $perf mem record -e list
->>>>>> ldlat-loads  : available
->>>>>> ldlat-stores : available
->>>>>>
->>>>>> $perf mem record -e ldlat-loads -v --ldlat 50
->>>>>> calling: record -e {cpu/mem-loads-aux/,cpu/mem-loads,ldlat=50/}:P
->>>>>>
->>>>>> $perf mem record -v
->>>>>> calling: record -e {cpu/mem-loads-aux/,cpu/mem-loads,ldlat=30/}:P -e cpu/mem-stores/P
->>>>>>
->>>>>> $perf mem record -t store -v
->>>>>> calling: record -e cpu/mem-stores/P
->>>>>>
->>>>>> Kan Liang (7):
->>>>>>   perf mem: Add mem_events into the supported perf_pmu
->>>>>>   perf mem: Clean up perf_mem_events__ptr()
->>>>>>   perf mem: Clean up perf_mem_events__name()
->>>>>>   perf mem: Clean up perf_mem_event__supported()
->>>>>>   perf mem: Clean up is_mem_loads_aux_event()
->>>>>>   perf mem: Clean up perf_mem_events__record_args()
->>>>>>   perf mem: Clean up perf_pmus__num_mem_pmus()
->>>>>>
->>>>>>  tools/perf/arch/arm/util/pmu.c            |   3 +
->>>>>>  tools/perf/arch/arm64/util/mem-events.c   |  39 +---
->>>>>>  tools/perf/arch/arm64/util/mem-events.h   |   7 +
->>>>>>  tools/perf/arch/powerpc/util/mem-events.c |  13 +-
->>>>>>  tools/perf/arch/powerpc/util/mem-events.h |   7 +
->>>>>>  tools/perf/arch/powerpc/util/pmu.c        |  11 ++
->>>>>>  tools/perf/arch/s390/util/pmu.c           |   3 +
->>>>>>  tools/perf/arch/x86/util/mem-events.c     |  99 ++--------
->>>>>>  tools/perf/arch/x86/util/mem-events.h     |  10 +
->>>>>>  tools/perf/arch/x86/util/pmu.c            |  19 +-
->>>>>>  tools/perf/builtin-c2c.c                  |  45 ++---
->>>>>>  tools/perf/builtin-mem.c                  |  48 ++---
->>>>>>  tools/perf/util/mem-events.c              | 217 +++++++++++++---------
->>>>>>  tools/perf/util/mem-events.h              |  19 +-
->>>>>>  tools/perf/util/pmu.c                     |   4 +-
->>>>>>  tools/perf/util/pmu.h                     |   7 +
->>>>>>  tools/perf/util/pmus.c                    |   6 -
->>>>>>  tools/perf/util/pmus.h                    |   1 -
->>>>>>  18 files changed, 278 insertions(+), 280 deletions(-)
->>>>>>  create mode 100644 tools/perf/arch/arm64/util/mem-events.h
->>>>>>  create mode 100644 tools/perf/arch/powerpc/util/mem-events.h
->>>>>>  create mode 100644 tools/perf/arch/powerpc/util/pmu.c
->>>>>>  create mode 100644 tools/perf/arch/x86/util/mem-events.h
->>>>>>
->>>>>
->>>>
->>
-> 
+Rob
 
