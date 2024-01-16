@@ -1,49 +1,51 @@
-Return-Path: <linux-kernel+bounces-26854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD2E982E6F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:32:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BCAC82E6FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:32:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EAFA1F23510
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:32:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94D5F281E10
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:32:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 262AD23759;
-	Tue, 16 Jan 2024 01:06:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70FF6241E3;
+	Tue, 16 Jan 2024 01:06:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FOKVHHQm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ruCdxsOm"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70A5C2374A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA44923766;
+	Tue, 16 Jan 2024 01:06:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DF16C433C7;
 	Tue, 16 Jan 2024 01:06:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15400C433F1;
-	Tue, 16 Jan 2024 01:06:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705367213;
-	bh=D7ACoRKf/a7txFuaQtiQt2KHGcw+gZqZLMIp/WJnGxA=;
+	s=k20201202; t=1705367214;
+	bh=1X36pu2JGU5z8vu7uIKJfvyzEz2m8BR2szbRkIw2RwU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FOKVHHQm9PcLioSt9wZ134V7bGzPnWZ57AByC9LfONsVAA/XoJcrFUhq282aJw0eX
-	 KmMdUekzpvVjinbkDtfoKIAMlm3PVE5gjRgbu7vdYq0wpQGgxOJaN6f8leIat4F9an
-	 BJd+L3tMB9IrEQusb1Q2AByxn0L6R3AoQfPBs0UjhntP2+tiWAtepoecf+XOPUa5+M
-	 kJKqXKX9QhSpZsEQSOJh0pb3dn2TOC2TDvnEa1UjUjQDF7zTFYxUHpXRHVx3rF/MCU
-	 aZBMDdkF4Hc2+/Rp7s3zQoehexdu0mz3Hig4bbClzYDn0Xx3npZE4cdFpcUYLJ1fwK
-	 +0K84+EtlejTA==
+	b=ruCdxsOm+fyIAGfYyC5vJ+bZofuobPim+Q3gIvM/3I0T2W0s33cLSxqjJ0hG2nZri
+	 +6yfLVZ0IzBfcM4HgwLkQuTEEdZenhmMO4gh4SmUT0+kuEn+iNuSUCmsCHFAIrxhjO
+	 fkecYdipZa057CZ5QSOmS/gwSICuc6HmA4tpUCnu0hjaFfrIOLSZLlVjSA/Ql6f10f
+	 JJ+l7IE7CXY/Vedfmlu8jyJwTqCPo7CwT0Saiet9o3VtJEHAl0TWil+ttLpNDMc7Ds
+	 2Lbhttr9PXz+30JIC1z/7PsW2uMGrzbPjBe5RWSxz24sHz6ynGG3JUsQlocH/wAgGK
+	 gTI9UgLaGbykA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Heiko Carstens <hca@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
 	Claudio Imbrenda <imbrenda@linux.ibm.com>,
 	Alexander Gordeev <agordeev@linux.ibm.com>,
 	Sasha Levin <sashal@kernel.org>,
-	oleg@redhat.com,
+	frankja@linux.ibm.com,
 	gor@linux.ibm.com,
+	kvm@vger.kernel.org,
 	linux-s390@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 04/14] s390/ptrace: handle setting of fpc register correctly
-Date: Mon, 15 Jan 2024 20:06:06 -0500
-Message-ID: <20240116010642.218876-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 05/14] KVM: s390: fix setting of fpc register
+Date: Mon, 15 Jan 2024 20:06:07 -0500
+Message-ID: <20240116010642.218876-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116010642.218876-1-sashal@kernel.org>
 References: <20240116010642.218876-1-sashal@kernel.org>
@@ -60,67 +62,66 @@ Content-Transfer-Encoding: 8bit
 
 From: Heiko Carstens <hca@linux.ibm.com>
 
-[ Upstream commit 8b13601d19c541158a6e18b278c00ba69ae37829 ]
+[ Upstream commit b988b1bb0053c0dcd26187d29ef07566a565cf55 ]
 
-If the content of the floating point control (fpc) register of a traced
-process is modified with the ptrace interface the new value is tested for
-validity by temporarily loading it into the fpc register.
+kvm_arch_vcpu_ioctl_set_fpu() allows to set the floating point control
+(fpc) register of a guest cpu. The new value is tested for validity by
+temporarily loading it into the fpc register.
 
-This may lead to corruption of the fpc register of the tracing process:
-if an interrupt happens while the value is temporarily loaded into the
-fpc register, and within interrupt context floating point or vector
-registers are used, the current fp/vx registers are saved with
-save_fpu_regs() assuming they belong to user space and will be loaded into
-fp/vx registers when returning to user space.
+This may lead to corruption of the fpc register of the host process:
+if an interrupt happens while the value is temporarily loaded into the fpc
+register, and within interrupt context floating point or vector registers
+are used, the current fp/vx registers are saved with save_fpu_regs()
+assuming they belong to user space and will be loaded into fp/vx registers
+when returning to user space.
 
-test_fp_ctl() restores the original user space fpc register value, however
-it will be discarded, when returning to user space.
+test_fp_ctl() restores the original user space / host process fpc register
+value, however it will be discarded, when returning to user space.
 
-In result the tracer will incorrectly continue to run with the value that
-was supposed to be used for the traced process.
+In result the host process will incorrectly continue to run with the value
+that was supposed to be used for a guest cpu.
 
-Fix this by saving fpu register contents with save_fpu_regs() before using
-test_fp_ctl().
+Fix this by simply removing the test. There is another test right before
+the SIE context is entered which will handles invalid values.
 
+This results in a change of behaviour: invalid values will now be accepted
+instead of that the ioctl fails with -EINVAL. This seems to be acceptable,
+given that this interface is most likely not used anymore, and this is in
+addition the same behaviour implemented with the memory mapped interface
+(replace invalid values with zero) - see sync_regs() in kvm-s390.c.
+
+Reviewed-by: Christian Borntraeger <borntraeger@linux.ibm.com>
 Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
 Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/ptrace.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/s390/kvm/kvm-s390.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/arch/s390/kernel/ptrace.c b/arch/s390/kernel/ptrace.c
-index 092b16b4dd4f..6b442edb3857 100644
---- a/arch/s390/kernel/ptrace.c
-+++ b/arch/s390/kernel/ptrace.c
-@@ -385,6 +385,7 @@ static int __poke_user(struct task_struct *child, addr_t addr, addr_t data)
- 		/*
- 		 * floating point control reg. is in the thread structure
- 		 */
-+		save_fpu_regs();
- 		if ((unsigned int) data != 0 ||
- 		    test_fp_ctl(data >> (BITS_PER_LONG - 32)))
- 			return -EINVAL;
-@@ -741,6 +742,7 @@ static int __poke_user_compat(struct task_struct *child,
- 		/*
- 		 * floating point control reg. is in the thread structure
- 		 */
-+		save_fpu_regs();
- 		if (test_fp_ctl(tmp))
- 			return -EINVAL;
- 		child->thread.fpu.fpc = data;
-@@ -904,9 +906,7 @@ static int s390_fpregs_set(struct task_struct *target,
- 	int rc = 0;
- 	freg_t fprs[__NUM_FPRS];
+diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+index 3775363471f0..f604946ab2c8 100644
+--- a/arch/s390/kvm/kvm-s390.c
++++ b/arch/s390/kvm/kvm-s390.c
+@@ -4138,10 +4138,6 @@ int kvm_arch_vcpu_ioctl_set_fpu(struct kvm_vcpu *vcpu, struct kvm_fpu *fpu)
  
--	if (target == current)
--		save_fpu_regs();
--
-+	save_fpu_regs();
+ 	vcpu_load(vcpu);
+ 
+-	if (test_fp_ctl(fpu->fpc)) {
+-		ret = -EINVAL;
+-		goto out;
+-	}
+ 	vcpu->run->s.regs.fpc = fpu->fpc;
  	if (MACHINE_HAS_VX)
- 		convert_vx_to_fp(fprs, target->thread.fpu.vxrs);
+ 		convert_fp_to_vx((__vector128 *) vcpu->run->s.regs.vrs,
+@@ -4149,7 +4145,6 @@ int kvm_arch_vcpu_ioctl_set_fpu(struct kvm_vcpu *vcpu, struct kvm_fpu *fpu)
  	else
+ 		memcpy(vcpu->run->s.regs.fprs, &fpu->fprs, sizeof(fpu->fprs));
+ 
+-out:
+ 	vcpu_put(vcpu);
+ 	return ret;
+ }
 -- 
 2.43.0
 
