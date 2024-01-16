@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-27117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA9C182EAC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:17:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93F6C82EAC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:17:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32683B22568
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:17:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 192BC1F23EAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:17:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4524211720;
-	Tue, 16 Jan 2024 08:17:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F72711717;
+	Tue, 16 Jan 2024 08:17:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cno+Ors5"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NVwVz72Y"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F15DD11705
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 08:16:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3C3211713
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 08:17:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-555144cd330so11686336a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 00:16:58 -0800 (PST)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a271a28aeb4so1037394366b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 00:17:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705393017; x=1705997817; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1705393035; x=1705997835; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=VCy+0DM59zTgHBUYuuvVOujtDEofJeeu7fJBTUB/2YY=;
-        b=cno+Ors5HK/awRpE/ubj0qwVlULdgtOVatyYDM6PxLHge+iZGvqdEGGWKuljylCavu
-         fldlhKlI2PyR4wAR5+YiQsb15eTszm08OnDJi7htKKs01g5LZtAIYfXglvq78WqB+W6n
-         O670XCDfZ1n1obWV6v6/3PrT2NKWsjDxY+46EeGYLSlmCCGWwfwMrLmpFHIL8C+9viRS
-         Z4WHT4AdrVpHZS6OAHlABPesOYOzCEVaHY2OSHarOIksk4Xt7bs1c+2CrocN3IeRgWsP
-         XDKx3gJ7FiFd+kk6jxrPVLl5Fm6PUWunu08IliWce4UDLjiMvuwvozUu3UlGtu3InjiJ
-         DcXA==
+        bh=rrhK0c+0Rq6kEjHQTS6pPqJPShO2zOU/mFt3UGYecps=;
+        b=NVwVz72YKTovCx2ePWWA0SLHrfvPvFSZVPofjtLCGyhnpmnJQIw0yZO7KShYrVJpkP
+         UnRgsZ3f/nbgACrMWUiEsPhABq/pxfr2AoFI4QT8+D8sRq48TcCKtY0GQ62MmzzBXLxV
+         x//bzzG3CQXHVc1P0+m9F/MrZ8GB8hrm7oXsWRUOYhR/3NKFt7SnkKQFiQDIY90RmqGl
+         msbU/+CoVq8MZBo0CXfgrwU68P9zqSapVYL8Rd6bOOIb+JY0N1uPkgrgVF0y9NkRxE1H
+         U8cEkHjmaXKxyovmnjyRzAPn0nF8nQL2XJO24VI9lP0fqiP2nUX1KedZnE+aSUixebNr
+         ZieA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705393017; x=1705997817;
+        d=1e100.net; s=20230601; t=1705393035; x=1705997835;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VCy+0DM59zTgHBUYuuvVOujtDEofJeeu7fJBTUB/2YY=;
-        b=hyZ2l/ZfRT25gq/Ev+LigZiy9k1eHA+dN4H3OL0VIGv3EGtY/ToegJPkOsa3W68POC
-         +v3vHaAGFQ56GDVc0SJvcuaXshpuFZttEHcip6/ZhO7l+uL5PB1U5T38AR/c4Dx50Sgu
-         1kIMJ7GtXDy2+9NhUy1284rhnxumC9myeKOyHwSE3bqQLiRa1x8Fg+X1KvWNVS/sMxYg
-         Vf1ESNc/M+tx0KQeUBiKtbwCavUTsTKNVClWLO8id7D/UCR8KOWRHNIfcnT/5oPW32w/
-         mDpevuNuA0nzHLuh0i67wdwfeT3pERfflN/kV7a2I9fvq5k1ltlY7j6V+FOWAfgYI3WV
-         PqqQ==
-X-Gm-Message-State: AOJu0Yx8BM4Q7g4NVExWI8HfUMG6OAKpesAS4KL/OocENVaYQTt4qHmi
-	VhHCz+eOgCBbGYjZouV9B8hpXgYdkG8giQ==
-X-Google-Smtp-Source: AGHT+IFyV96uQzFbCV9ayjPZXQuesJzQraL9VFoWYo8L+C6+5JhuxEA40ShF48vJt+gKVVsXvIoHkg==
-X-Received: by 2002:a17:906:a44:b0:a26:db3d:4888 with SMTP id x4-20020a1709060a4400b00a26db3d4888mr2801216ejf.153.1705393017272;
-        Tue, 16 Jan 2024 00:16:57 -0800 (PST)
+        bh=rrhK0c+0Rq6kEjHQTS6pPqJPShO2zOU/mFt3UGYecps=;
+        b=KtDz9GTQEi6SbzemffY25Ofi/Cz1UrtuSfurotBH41nQXWZmIVjARNNfccKMHuNzxN
+         7otpwgmTqIUckFtWmA4KsnXalXuAIif61WIuSR/410XI0ULQEXbsQBI0xMlGU19AU4FI
+         hYPxKtrhMYl8TpjwUe2boAoU9lNFrUnRaqHD5Mecx6R25pTo/A3OTF8HaZXtz5RNFaOP
+         FSL/w5XM3SO18Ska1dv2RglonUlLDoKiyX0gSqdkLyOfP4OjiwgcMi73zhH+hTMirtVi
+         DsdV5r1u2UZOdkVWuS2J9gJKgON6yaziZDDgE7XyIgAAq4BAAVw12rvv0mL6zHe1dEme
+         dnjg==
+X-Gm-Message-State: AOJu0YyDjsm9dZTGjqqypOoSXLGiaywVN6uONt2NF7NRsHC+XmocKu41
+	LgnCJpwopiRVHuNlvhrSVPd6B4u1P7frAw==
+X-Google-Smtp-Source: AGHT+IFsuGoqfmd8ueOlfSy1KWHZl2ryVHic1JDuWPOXrlPGLSQboOdc1bK88UM3BI6/h7is3PV9Hw==
+X-Received: by 2002:a17:906:ff53:b0:a26:c83d:e086 with SMTP id zo19-20020a170906ff5300b00a26c83de086mr3025889ejb.103.1705393035378;
+        Tue, 16 Jan 2024 00:17:15 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id t19-20020a1709067c1300b00a2ca9d38654sm5267734ejo.85.2024.01.16.00.16.55
+        by smtp.gmail.com with ESMTPSA id t19-20020a1709067c1300b00a2ca9d38654sm5267734ejo.85.2024.01.16.00.17.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jan 2024 00:16:56 -0800 (PST)
-Message-ID: <6a1d612a-200e-4868-8577-49de933cf2bb@linaro.org>
-Date: Tue, 16 Jan 2024 09:16:54 +0100
+        Tue, 16 Jan 2024 00:17:14 -0800 (PST)
+Message-ID: <1125e1c3-4bbe-49c2-9c20-f109b782f15f@linaro.org>
+Date: Tue, 16 Jan 2024 09:17:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,8 +65,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/15] arm64: dts: mediatek: radxa-nio-12l: Add external
- MT6360 PMIC on I2C6
+Subject: Re: [PATCH 07/15] arm64: dts: mediatek: radxa-nio-12l: Add MT6360
+ battery charger
 Content-Language: en-US
 To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
  linux-mediatek@lists.infradead.org
@@ -77,7 +77,7 @@ Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  kernel@collabora.com
 References: <20240112094632.66310-1-angelogioacchino.delregno@collabora.com>
- <20240112094632.66310-5-angelogioacchino.delregno@collabora.com>
+ <20240112094632.66310-8-angelogioacchino.delregno@collabora.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -123,20 +123,20 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240112094632.66310-5-angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240112094632.66310-8-angelogioacchino.delregno@collabora.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 12/01/2024 10:46, AngeloGioacchino Del Regno wrote:
-> In preparation for adding the power tree for this board, add a node for
-> the MT6360 PMIC, connected to I2C6.
+> Enable the MT6360 PMIC's battery charger which also provides a regulator
+> the USB VBUS.
 > 
 > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> ---
+>  arch/arm64/boot/dts/mediatek/mt8395-radxa-nio-12l.dts | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 
-Why do you add new device in pieces? Logical change is "new device", not
-"half of device". If the patch is too big, sure, split it into two
-chunks, but not 15!
-
+Don't add new nodes one by one. This obfuscates entire picture.
 
 Best regards,
 Krzysztof
