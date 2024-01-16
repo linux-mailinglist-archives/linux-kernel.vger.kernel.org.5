@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-28199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 639B482FB7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:56:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A17F82FB80
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:56:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB193286D66
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:56:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D39A7B23E85
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:56:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E98E566B57;
-	Tue, 16 Jan 2024 20:03:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DDC7166CE3;
+	Tue, 16 Jan 2024 20:03:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GnEBzVR8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rNHslym0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22E5466B4B;
-	Tue, 16 Jan 2024 20:03:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8B9566B5F;
+	Tue, 16 Jan 2024 20:03:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435432; cv=none; b=KLjxKy9jCtagnANlpoB4P+DYB+Acv2VC5mLgNbuROuP+ECIyIvKHNgBgb07aOP4xolP7y+8kdW/wWHRI7bZmHL7sfc9M1fN/qPI6R50oJ49kGj1oUCn24BZqM3dfDvD6CMDFjjGzIVHfNfyo/cHHVqIp3FTsQOPQfq8t83hdI3A=
+	t=1705435433; cv=none; b=TR8QaD17J5GCQmaIzx7lnQz4+sDV5nkr06LBt6+gR7SMSiX9f4WRGFaaYOk2PGYiaNhYfm9gtBrRHxciaaNb7o8qCvBbmPb2uWx8nFRy1sTCkvlXycjlndfxl1mLXtqy/YZMJWHNlET8OJU8JD9tw8sm7jRW5HAKvnAbzvmjlBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435432; c=relaxed/simple;
-	bh=sxNtIrNqRvUuGfi/dR4v14i2NXgp4jb5g/cMkCzz/Po=;
+	s=arc-20240116; t=1705435433; c=relaxed/simple;
+	bh=+0dGaX1WomVTx+JiBsBfua71kEuDLYrscLBuSIfB700=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=q9dbOGs5FXc02zw7gRbdLWAxkzY6Q+Im8gxguvXRWdHr6fB6r7ZKH2q5MSeiUOEeFJ2otpLAiGiHjn8/q4Ew48mLrom4xJPrLknwP6ErhIR4Z7nXyWVoxutuFjiBNgOccZYWDMlQZqjwah9CuYqcJYzXg4Dn0y1TFyoCd+zw8QQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GnEBzVR8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 886E8C43399;
-	Tue, 16 Jan 2024 20:03:50 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=IlW9trAYBUK0vGlxSOcwULY1cfU0Gm7Iitz1Jgu1+kLDamYvbBckaO99UmxKXsE1LDQ3+jLEll94F2QsmTYLPWmCGNRzz69uSH+qRWONY7T0Cf4Xjfrzos4pWMj7MsiLY9KuENXWziNDz3NpAh+l88uaiL1RjaNJzIbhpTM5W1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rNHslym0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 405AFC43394;
+	Tue, 16 Jan 2024 20:03:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435431;
-	bh=sxNtIrNqRvUuGfi/dR4v14i2NXgp4jb5g/cMkCzz/Po=;
+	s=k20201202; t=1705435433;
+	bh=+0dGaX1WomVTx+JiBsBfua71kEuDLYrscLBuSIfB700=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GnEBzVR8efQLPAPTs2UI69KuoZ5y9dXafy8+RHZiMNV16WeBbUUSrmhjAlxo28kkd
-	 cMRc2fJEtNgmevbOjp9BDC0oxgJJtUZ5sYHYN0NzjyACP8pZYGbyQPuIigaRIR0qdm
-	 wP8rzDWnpDoYBPuRgurTDmYnCcqlfMmzi0qJ4Gch7ZYS8uDl68k4I5yE2zZU2Dtcnm
-	 C512zkk5bttaCgM9hjMKK6hjl2c4FzUUFxx1KO8DO/RY96qQ7Tfsmj8Qck52wsSN6o
-	 jfEr1nx44HRa7JP9GBd49p07BgHefkfs6JglCgQ1hPFpGjIrOk84Wh9pkl6StWkwL+
-	 jrzi5M8J0pwDg==
+	b=rNHslym022SpyHfETgxfSdjXhSoV2kIur9/n3fmUWLKC/b+yx3qve2KFy8YtXxKIg
+	 7a8uf5ot8VJbF0uO5ogdh6algx97Mk0zmWXiO/ET+OCDc4smDtE4LOxp45qPiCk48l
+	 9/VmeGFa+KZOo9qi+6kGEEFGr9Pif8qBStifWnNLs2KQW1SQ4nWgO5FWQ9mrm5sjgX
+	 Vn4J5xWTc13t0DdcTLPe2O16q5NYQxezkD8H+oBGV0yfdOA8QN20ytjFgwwaDCOKxN
+	 4JVt8pF752xuhJlNymMZpF2zs09Rwn7aLBMr2LAYlQA7WxZxrEcdsGeGzfAofkbEjX
+	 TDxbN4NoGt85w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -52,9 +52,9 @@ Cc: Fabio Estevam <festevam@denx.de>,
 	conor+dt@kernel.org,
 	devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 19/31] ARM: dts: imx25/27: Pass timing0
-Date: Tue, 16 Jan 2024 15:02:28 -0500
-Message-ID: <20240116200310.259340-19-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 20/31] ARM: dts: imx27-apf27dev: Fix LED name
+Date: Tue, 16 Jan 2024 15:02:29 -0500
+Message-ID: <20240116200310.259340-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116200310.259340-1-sashal@kernel.org>
 References: <20240116200310.259340-1-sashal@kernel.org>
@@ -71,134 +71,35 @@ Content-Transfer-Encoding: 8bit
 
 From: Fabio Estevam <festevam@denx.de>
 
-[ Upstream commit 11ab7ad6f795ae23c398a4a5c56505d3dab27c4c ]
+[ Upstream commit dc35e253d032b959d92e12f081db5b00db26ae64 ]
 
-Per display-timings.yaml, the 'timing' pattern should be used to
-describe the display timings.
+Per leds-gpio.yaml, the led names should start with 'led'.
 
-Change it accordingly to fix the following dt-schema warning:
+Change it to fix the following dt-schema warning:
 
-imx27-apf27dev.dtb: display-timings: '800x480' does not match any of the regexes: '^timing', 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/display/panel/display-timings.yaml#
+imx27-apf27dev.dtb: leds: 'user' does not match any of the regexes: '(^led-[0-9a-f]$|led)', 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/leds/leds-gpio.yaml#
 
 Signed-off-by: Fabio Estevam <festevam@denx.de>
 Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard-cmo-qvga.dts | 2 +-
- arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard-dvi-svga.dts | 2 +-
- arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard-dvi-vga.dts  | 2 +-
- arch/arm/boot/dts/imx25-pdk.dts                                 | 2 +-
- arch/arm/boot/dts/imx27-apf27dev.dts                            | 2 +-
- arch/arm/boot/dts/imx27-eukrea-mbimxsd27-baseboard.dts          | 2 +-
- arch/arm/boot/dts/imx27-phytec-phycard-s-rdk.dts                | 2 +-
- arch/arm/boot/dts/imx27-phytec-phycore-rdk.dts                  | 2 +-
- 8 files changed, 8 insertions(+), 8 deletions(-)
+ arch/arm/boot/dts/imx27-apf27dev.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard-cmo-qvga.dts b/arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard-cmo-qvga.dts
-index 7d4301b22b90..1ed3fb7b9ce6 100644
---- a/arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard-cmo-qvga.dts
-+++ b/arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard-cmo-qvga.dts
-@@ -16,7 +16,7 @@ cmo_qvga: display {
- 		bus-width = <18>;
- 		display-timings {
- 			native-mode = <&qvga_timings>;
--			qvga_timings: 320x240 {
-+			qvga_timings: timing0 {
- 				clock-frequency = <6500000>;
- 				hactive = <320>;
- 				vactive = <240>;
-diff --git a/arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard-dvi-svga.dts b/arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard-dvi-svga.dts
-index 80a7f96de4c6..64b2ffac463b 100644
---- a/arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard-dvi-svga.dts
-+++ b/arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard-dvi-svga.dts
-@@ -16,7 +16,7 @@ dvi_svga: display {
- 		bus-width = <18>;
- 		display-timings {
- 			native-mode = <&dvi_svga_timings>;
--			dvi_svga_timings: 800x600 {
-+			dvi_svga_timings: timing0 {
- 				clock-frequency = <40000000>;
- 				hactive = <800>;
- 				vactive = <600>;
-diff --git a/arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard-dvi-vga.dts b/arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard-dvi-vga.dts
-index 24027a1fb46d..fb074bfdaa8d 100644
---- a/arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard-dvi-vga.dts
-+++ b/arch/arm/boot/dts/imx25-eukrea-mbimxsd25-baseboard-dvi-vga.dts
-@@ -16,7 +16,7 @@ dvi_vga: display {
- 		bus-width = <18>;
- 		display-timings {
- 			native-mode = <&dvi_vga_timings>;
--			dvi_vga_timings: 640x480 {
-+			dvi_vga_timings: timing0 {
- 				clock-frequency = <31250000>;
- 				hactive = <640>;
- 				vactive = <480>;
-diff --git a/arch/arm/boot/dts/imx25-pdk.dts b/arch/arm/boot/dts/imx25-pdk.dts
-index 05cccd12624c..876b101ce3e6 100644
---- a/arch/arm/boot/dts/imx25-pdk.dts
-+++ b/arch/arm/boot/dts/imx25-pdk.dts
-@@ -78,7 +78,7 @@ wvga: display {
- 		bus-width = <18>;
- 		display-timings {
- 			native-mode = <&wvga_timings>;
--			wvga_timings: 640x480 {
-+			wvga_timings: timing0 {
- 				hactive = <640>;
- 				vactive = <480>;
- 				hback-porch = <45>;
 diff --git a/arch/arm/boot/dts/imx27-apf27dev.dts b/arch/arm/boot/dts/imx27-apf27dev.dts
-index 6f1e8ce9e76e..68fcb5ce9a9e 100644
+index 68fcb5ce9a9e..3d9bb7fc3be2 100644
 --- a/arch/arm/boot/dts/imx27-apf27dev.dts
 +++ b/arch/arm/boot/dts/imx27-apf27dev.dts
-@@ -16,7 +16,7 @@ display: display {
- 		fsl,pcr = <0xfae80083>;	/* non-standard but required */
- 		display-timings {
- 			native-mode = <&timing0>;
--			timing0: 800x480 {
-+			timing0: timing0 {
- 				clock-frequency = <33000033>;
- 				hactive = <800>;
- 				vactive = <480>;
-diff --git a/arch/arm/boot/dts/imx27-eukrea-mbimxsd27-baseboard.dts b/arch/arm/boot/dts/imx27-eukrea-mbimxsd27-baseboard.dts
-index 9c3ec82ec7e5..50fa0bd4c8a1 100644
---- a/arch/arm/boot/dts/imx27-eukrea-mbimxsd27-baseboard.dts
-+++ b/arch/arm/boot/dts/imx27-eukrea-mbimxsd27-baseboard.dts
-@@ -16,7 +16,7 @@ display0: CMO-QVGA {
+@@ -47,7 +47,7 @@ leds {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pinctrl_gpio_leds>;
  
- 		display-timings {
- 			native-mode = <&timing0>;
--			timing0: 320x240 {
-+			timing0: timing0 {
- 				clock-frequency = <6500000>;
- 				hactive = <320>;
- 				vactive = <240>;
-diff --git a/arch/arm/boot/dts/imx27-phytec-phycard-s-rdk.dts b/arch/arm/boot/dts/imx27-phytec-phycard-s-rdk.dts
-index 188639738dc3..7f36af150a25 100644
---- a/arch/arm/boot/dts/imx27-phytec-phycard-s-rdk.dts
-+++ b/arch/arm/boot/dts/imx27-phytec-phycard-s-rdk.dts
-@@ -19,7 +19,7 @@ display: display {
- 		fsl,pcr = <0xf0c88080>;	/* non-standard but required */
- 		display-timings {
- 			native-mode = <&timing0>;
--			timing0: 640x480 {
-+			timing0: timing0 {
- 				hactive = <640>;
- 				vactive = <480>;
- 				hback-porch = <112>;
-diff --git a/arch/arm/boot/dts/imx27-phytec-phycore-rdk.dts b/arch/arm/boot/dts/imx27-phytec-phycore-rdk.dts
-index bf883e45576a..39e0fcb12d23 100644
---- a/arch/arm/boot/dts/imx27-phytec-phycore-rdk.dts
-+++ b/arch/arm/boot/dts/imx27-phytec-phycore-rdk.dts
-@@ -19,7 +19,7 @@ display0: LQ035Q7 {
- 
- 		display-timings {
- 			native-mode = <&timing0>;
--			timing0: 240x320 {
-+			timing0: timing0 {
- 				clock-frequency = <5500000>;
- 				hactive = <240>;
- 				vactive = <320>;
+-		user {
++		led-user {
+ 			label = "Heartbeat";
+ 			gpios = <&gpio6 14 GPIO_ACTIVE_HIGH>;
+ 			linux,default-trigger = "heartbeat";
 -- 
 2.43.0
 
