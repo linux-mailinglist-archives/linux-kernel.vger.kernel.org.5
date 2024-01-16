@@ -1,108 +1,92 @@
-Return-Path: <linux-kernel+bounces-28363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DDFC82FD4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:56:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9088882FD54
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:57:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C1741C24A11
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:56:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A22081C25B88
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:57:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8687767C55;
-	Tue, 16 Jan 2024 22:56:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B98001BF5E;
+	Tue, 16 Jan 2024 22:56:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="NnL9SKcT"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="cfY2OqOC"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8391F67C4D;
-	Tue, 16 Jan 2024 22:56:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A71F01D68B;
+	Tue, 16 Jan 2024 22:56:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705445778; cv=none; b=uXTL6z/QikC6x8rKNIC3V19jWACzebNwJafaRt8ATu5rrwZoyBP04RB6xRWr27IUITlC6tbwEHlU9SSLMBk66rEnuOSJAsImq4LPN2jqGZU3GwoCZpYWw/AvjZ8IUnCK3suzMSfzwhxibGL9iBgM9Pu7tBhIZaDHCn6vdbyXeA0=
+	t=1705445819; cv=none; b=FM/6J73LQZYruPzSHvGmfe5rsqt2vWeKx+0l1LNxzO29WO7adoc0KBmRB8ozhn5mfVHRK0uWhmZ23o3/uvj88HW1N7v4u4ZhkEmhOtYS9m0BcdfeHn5cKmaGAGKU+mszln5qQ/RLaCDSfH1RWA7bhNB7yTCTjzjwgMUeQml8CX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705445778; c=relaxed/simple;
-	bh=IRwRUQdwBTS2kA8qjwAaxRwBLfowiexvmeyjaSk3fac=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	s=arc-20240116; t=1705445819; c=relaxed/simple;
+	bh=plU7Fyl05aYaKwdG/SP/6ie/ejtRdcYCuh2yJUj64x8=;
+	h=DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=da1ciGzw0t4IZhtUI4BDtWVOtC70yBFGU7i9Sc6peViB3eHPoZNsUw/WQ3ERXC1Y7YMGh69mVwxxnlqxWtQpW5YDURf4rnAcGrfBwkXzY7XNQW3yD0bH3jmZOG0DlbRDZqWVtGa2dFD3XtPv8iVQqtb0rfhN9BwA83g0Ac6fe5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=NnL9SKcT; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5940BB2A;
-	Tue, 16 Jan 2024 23:55:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1705445705;
-	bh=IRwRUQdwBTS2kA8qjwAaxRwBLfowiexvmeyjaSk3fac=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NnL9SKcTkKobGkyR4WrheJwAIF15Z4nZEsqjsFLRxFWVxBUKsxefLH5JFUzkPGQgt
-	 4HvyShIWtSuWBFIDB5IWl2PiUl9+LS3H6H19sop54T90O9ZvHdfi/0HaxT7vVpYgNj
-	 nu6PPj81LJq5XhAMDtsqoCSPbB5dESMZa2f3qK2M=
-Date: Wed, 17 Jan 2024 00:56:18 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc: Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
-	Vinay Varma <varmavinaym@gmail.com>,
-	Dave Stevenson <dave.stevenson@raspberrypi.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	"open list:SONY IMX219 SENSOR DRIVER" <linux-media@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] media: i2c: imx219: implement the v4l2 selection api
-Message-ID: <20240116225618.GA4860@pendragon.ideasonboard.com>
-References: <kv6yfyahbud474e75y4jaczg64pcowvlz7i52kikknuh6wje5o@4k2hikwcueoy>
- <ZZu2C_lu6TAh-LOf@kekkonen.localdomain>
- <3q6andka2su7i43xz2ok44ejvtb3hdjdn6xretyde7sdcvtd7l@lz2syngckivi>
- <ZabUh0ozhQq-GtEC@kekkonen.localdomain>
+	 In-Reply-To; b=ZNSWklHRnyQP3UhtoIBbJwR4DP9gnuiccG3eqUreDDJYucjlQdFfGSoBWu+eGJMpc2Ws5lqcAaKPnrpieYfqfqUglmYZzqdg9psEmuVVz9YDZcrQAc51QPd07g4Ohoa/KQ0SWM9qz+pksaNmk51b8s27GhqHaD9d3TFVjm3cwgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=cfY2OqOC; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=8mVrgl5xMNMm3WZOrIWhZNDZHloqaD1XFaFbuzdsviM=; b=cfY2OqOCFRcI1e3AOkEb5pDgSI
+	iYgrk6FIHj2duCg0p3VQP/3DuAf5Ocz273VHzNCGbmWA585dW9wPwlj4i8fBGqzcClfUnP2C1Zdid
+	LFfgC8uRLttGJjLtHzwCab7cyze7pd+Kw/7RoHf6HpN1iKia0rjV+CVnwdR0auZstPoo=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rPsMW-005MUt-Sm; Tue, 16 Jan 2024 23:56:52 +0100
+Date: Tue, 16 Jan 2024 23:56:52 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Jie Luo <quic_luoj@quicinc.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	quic_kkumarcs@quicinc.com, quic_suruchia@quicinc.com,
+	quic_soni@quicinc.com, quic_pavir@quicinc.com,
+	quic_souravp@quicinc.com, quic_linchen@quicinc.com,
+	quic_leiwei@quicinc.com
+Subject: Re: [PATCH 3/6] arm64: dts: qcom: ipq5332: Add MDIO device tree
+Message-ID: <6975e79a-67eb-46d7-8445-92610b8b5198@lunn.ch>
+References: <20240110112059.2498-1-quic_luoj@quicinc.com>
+ <20240110112059.2498-4-quic_luoj@quicinc.com>
+ <4bc0aff5-8a1c-44a6-89d8-460961a61310@lunn.ch>
+ <e893c298-fbfa-4ae4-9b76-72a5030a5530@quicinc.com>
+ <61973012-3f74-4b58-9575-3bc5199f61d9@lunn.ch>
+ <5c88945b-4a80-4346-a77c-82a68ae02047@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZabUh0ozhQq-GtEC@kekkonen.localdomain>
+In-Reply-To: <5c88945b-4a80-4346-a77c-82a68ae02047@quicinc.com>
 
-Hello,
-
-On Tue, Jan 16, 2024 at 07:09:59PM +0000, Sakari Ailus wrote:
-> On Mon, Jan 08, 2024 at 10:19:35AM +0100, Jacopo Mondi wrote:
-> > Hi Sakari, Vinay,
-> > 
-> >    a more foundamental question is how this usage of the crop/compose
-> > API plays with the fact we enumerate only a limited set of frame
-> > sizes, and now you can get an arbitrary output size. We could get away
-> > by modifying enum_frame_sizes to return a size range (or ranges) but I
-> > wonder if it wouldn't be better to introduce an internal pad to
-> > represent the pixel array where to apply TGT_CROP in combination with
-> > a source pad where we could apply TGT_COMPOSE and an output format.
-
-I'm working on patches that implement an internal image pad, as part of
-the work to add embedded data support. I hope to post this in the near
-future.
-
-> My earlier review wasn't focussed on the interface at all...
+> Another one is the MDIO slave(gpio25, 26), which is dedicated
+> for receiving the back pressure signal from the connected Ethernet switch
+> device QCA8386.
 > 
-> To depart from the current restrictions on single-subdev sensor drivers,
-> this is one option.
+> There is a MDIO master block integrated in QCA8386 switch device, this
+> integrated MDIO master is dedicated for generating the back
+> pressure signal to IPQ5332 SoC.
 > 
-> Sensors implement various steps in different orders and different drivers
-> have different capabilities, too. Mainly there are two classes: freely
-> configurable drivers such cas CCS and then register list based drivers
-> where virtually any dependencies between configurations are possible.
-> 
-> We probably can't support both classes with the same API semantics and due
-> to hardware differencies. The sensor UAPI will be less than uniform it has
-> been in the past but I don't think this should be an issue.
-> 
-> I wonder how much common understanding we have at this point on how this
-> API would look like. Probably not much?
+> This MDIO slave block of IPQ5322 just needs to configure these PIN
+> mux for MDC and MDIO PINs. No additional driver is needed for this MDIO
+> slave block of IPQ5332.
 
--- 
-Regards,
+So there is a proprietary protocol running over the MDIO bus? And its
+completely implemented in hardware in the slave block? Is this even
+MDIO? Does it use c22 or c45 bus transactions? How is the slave
+address configured, or is that also hard coded?
 
-Laurent Pinchart
+	Andrew
 
