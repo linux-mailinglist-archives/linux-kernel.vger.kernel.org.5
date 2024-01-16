@@ -1,150 +1,235 @@
-Return-Path: <linux-kernel+bounces-27646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F0B782F3A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:02:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4991E82F3A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:03:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B33681C23820
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:02:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8ACE284C4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:03:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A49C01CD11;
-	Tue, 16 Jan 2024 18:02:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76A331CD1B;
+	Tue, 16 Jan 2024 18:03:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pWWP9Xee"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BaRaCezC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DCD31CD04
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:02:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A38B91CD04;
+	Tue, 16 Jan 2024 18:03:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705428166; cv=none; b=gzIrwaRfRaTo8Yj/JXjqfb+RN1dDSTOLpa12hE3t81R7l6PQgGpELUHfmn2+HE4x6NZRpk67DyI/Qpg/WnkBNFZo5JsrCw5iE+g0tqsTsblTl7ghPEWH6XvrnNDbbQ07IAu5jSrhzImTTJ/tmvyNRtkf2Qawf0BxvBA1cjoWY08=
+	t=1705428206; cv=none; b=KBGfSqOz00hn3qlWpjSThsbkwgBIYheuR7Q8kwGrZwCT+TeBFdCCRKhLggWfbkadgRXXvKMZbDznIENa9H9fiLEOPDhJ+Lqfr1SSaDxapwMyPeIJZJWylemmHEstXs8bVtNIKTCgfnTMfX0w/X1Ihog8iefRIlDmLa+DosreY1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705428166; c=relaxed/simple;
-	bh=v+fgnWQTOChA4pi9VwdH5nPWSuAGriGecQHcqyESx6M=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
-	 To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding; b=HpJ2GJUHfTpSM2xPm2MjZX4arbK1x0l98HpVTRPP9S3mKmV9XmX9F6LPgQNDjK/VwvTGdrhsy0UIeoz6Mzce/Zfp75RQjYiaV8KajospMgdy2wdyPDoB0yYvNAkXvQWQoMuo9yPI1HbKNihg5XVEtjUK/Dm9vhP8YitXTvKl5R0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pWWP9Xee; arc=none smtp.client-ip=209.85.128.44
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40e69b31365so35624995e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:02:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705428163; x=1706032963; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=QJYjL6BFiZx8wOeqp8wC0/HJ38flo4v2H9cCLijIwEw=;
-        b=pWWP9Xeesl1xc+MhhAozJvZcoZWCCzlNIGuLZhNVKXO+iRqfKXEWOhkAYn3+980RBQ
-         HVAHVQ2y5wvFszH6JIjNllpp1c3cf4zizMqlFgwYR6JzxD9Nw9KBzB6ST6fnl8SQ5YRr
-         X+dT+ZlXxTjRQS39vdJp30EsAjHfRvBIGQcT5dt6kZaHfs2nXm1g7Xvbck3shB00kSYZ
-         sGcmqb+R4NQ3I4bdgxtePmkuHva/Zx/7XF1kCA7Lt1yX+zfs6ciba01HpK57U+HwYskv
-         6ufYDe7WUPHHkGniZP6H7F78Y8SaG8k70ZDc6o6oXNX7ryyzJMpPqgEaZk/nz1572viM
-         JRiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705428163; x=1706032963;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QJYjL6BFiZx8wOeqp8wC0/HJ38flo4v2H9cCLijIwEw=;
-        b=Nq7pxW3X4cJcfJ5nGaeSo9/yfNjwYOaO4Gyp8tCPGUdxbwKaDios0iTuhTYGEEp79z
-         kUFjOqj1K/pql8KzbBGtdXwAxlh4GGe7ot3A57Kh0X1Bv5fAW8K5j9Cpy1NfRdR87mXq
-         NYnRsYkQXv3ReePQHwv4WcDRdQ/MurQNlXF7tjWC22vZVlRHHqr1eYOiiJIEkC562sf7
-         d6EycAk7IU4PNE5IepqjEz7KN7gCZqD/KCSl3rO/hH9hh3y09eNaCqTlOKL/bH7Z/dDI
-         EJ0dev3N682ii0lh5MlDWY2gMdONYy0dD1InSZsmvg4/Guzn7ov/eA8YV3LEIrt0jzZt
-         UyLQ==
-X-Gm-Message-State: AOJu0Yy32mTyrvBieq45t5/J+lYRVJt6MaF7G+vKbi48NRqlpdS6nniD
-	E4a+mcpl7FPwLYT+35sGDn8zROCZTGaW3g==
-X-Google-Smtp-Source: AGHT+IHIlGi/iw4WjzgSXbEbY139w3f9hyEmdWEV6KFwVMUQEZ3/UJUJ5nsYqadi4KLgH0D4PlKTNw==
-X-Received: by 2002:a7b:ca59:0:b0:40e:76f6:9618 with SMTP id m25-20020a7bca59000000b0040e76f69618mr1823538wml.92.1705428163455;
-        Tue, 16 Jan 2024 10:02:43 -0800 (PST)
-Received: from vingu-book.. ([2a01:e0a:f:6020:b8e8:6736:130:2118])
-        by smtp.gmail.com with ESMTPSA id m15-20020a7bce0f000000b0040d23cea7bcsm9012645wmc.1.2024.01.16.10.02.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 10:02:42 -0800 (PST)
-From: Vincent Guittot <vincent.guittot@linaro.org>
-To: mingo@redhat.com,
-	peterz@infradead.org,
-	juri.lelli@redhat.com,
-	dietmar.eggemann@arm.com,
-	rostedt@goodmis.org,
-	bsegall@google.com,
-	mgorman@suse.de,
-	bristot@redhat.com,
-	vschneid@redhat.com,
-	sudeep.holla@arm.co,
-	gregkh@linuxfoundation.org,
-	rafael@kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: lukasz.luba@arm.com,
-	ionela.voinescu@arm.com,
-	Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH] topology: Set capacity_freq_ref in all cases
-Date: Tue, 16 Jan 2024 19:02:39 +0100
-Message-Id: <20240116180239.408145-1-vincent.guittot@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1705428206; c=relaxed/simple;
+	bh=CRg9h5ljaE20inyWideyi9skHzli+4ErlCRBYmz6veQ=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=CTJPmzB8xhylbyQnNe9o+BHA6FHTJkSfwSYhtemFmhIrfqzEkpLnlHL5gQg1gUyMHe0zN7N6joulWCMEgzmYlC9ARGLCv4UPWFxdK1N1WI+xRkt1sS4fn81Jy7vg1wdo6Mliq9+Cca9Ls+0tz0jJ/fj9/uF9/nlvUjZaO3Mqh34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BaRaCezC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A272AC433C7;
+	Tue, 16 Jan 2024 18:03:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705428206;
+	bh=CRg9h5ljaE20inyWideyi9skHzli+4ErlCRBYmz6veQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BaRaCezCYCB/6jAYn1+DDxNo1cVtLacjtp3GBM1osdwaHvaQqurkeAir7UuN1lg5H
+	 POv7TK/LsOheAe83JFTPv7pgHLFD+l3db41OLAbWZiB0kIhhiXGrmYNuNUJNJx+sQ5
+	 FQ7sTPqXd7SxpAyKnlnF06gZ5WzQWSW8iC8eWFZ3xf3NlrmCGwAQB3NRwEC5xQa3DA
+	 oxOtY2l+mpHKIQa6k8u2vR7GVUbDAHPS5SNxjYsZRhFybzC5ezJdtpNU11Gi8ajmXP
+	 t3+iZx9WdanZUXM+zO9KFvdykp71rC7RVjTYoipDj+ldnotA96ScnFBVTxRDtnlsAr
+	 bqEEvihRx7HUQ==
+Date: Tue, 16 Jan 2024 18:03:19 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Dharma Balasubiramani <dharma.b@microchip.com>
+Cc: conor.dooley@microchip.com, sam@ravnborg.org, bbrezillon@kernel.org,
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+	tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, nicolas.ferre@microchip.com,
+	alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	lee@kernel.org, thierry.reding@gmail.com,
+	u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+	linux4microchip@microchip.com
+Subject: Re: [PATCH v2 2/3] dt-bindings: atmel,hlcdc: convert pwm bindings to
+ json-schema
+Message-ID: <20240116-rising-gap-df4124f191a0@spud>
+References: <20240116113800.82529-1-dharma.b@microchip.com>
+ <20240116113800.82529-3-dharma.b@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="QLbmZbOLjpJ/vPR8"
+Content-Disposition: inline
+In-Reply-To: <20240116113800.82529-3-dharma.b@microchip.com>
 
-If "capacity-dmips-mhz" is not set, raw_capacity is null and we skip the
-normalization step which includes setting per_cpu capacity_freq_ref.
-Always register the notifier but skip the capacity normalization if
-raw_capacity is null.
 
-Fixes: 9942cb22ea45 ("sched/topology: Add a new arch_scale_freq_ref() method")
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
----
- drivers/base/arch_topology.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+--QLbmZbOLjpJ/vPR8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-index 5aaa0865625d..2aa0c6425290 100644
---- a/drivers/base/arch_topology.c
-+++ b/drivers/base/arch_topology.c
-@@ -417,9 +417,6 @@ init_cpu_capacity_callback(struct notifier_block *nb,
- 	struct cpufreq_policy *policy = data;
- 	int cpu;
- 
--	if (!raw_capacity)
--		return 0;
--
- 	if (val != CPUFREQ_CREATE_POLICY)
- 		return 0;
- 
-@@ -436,9 +433,11 @@ init_cpu_capacity_callback(struct notifier_block *nb,
- 	}
- 
- 	if (cpumask_empty(cpus_to_visit)) {
--		topology_normalize_cpu_scale();
--		schedule_work(&update_topology_flags_work);
--		free_raw_capacity();
-+		if (raw_capacity) {
-+			topology_normalize_cpu_scale();
-+			schedule_work(&update_topology_flags_work);
-+			free_raw_capacity();
-+		}
- 		pr_debug("cpu_capacity: parsing done\n");
- 		schedule_work(&parsing_done_work);
- 	}
-@@ -458,7 +457,7 @@ static int __init register_cpufreq_notifier(void)
- 	 * On ACPI-based systems skip registering cpufreq notifier as cpufreq
- 	 * information is not needed for cpu capacity initialization.
- 	 */
--	if (!acpi_disabled || !raw_capacity)
-+	if (!acpi_disabled)
- 		return -EINVAL;
- 
- 	if (!alloc_cpumask_var(&cpus_to_visit, GFP_KERNEL))
--- 
-2.34.1
+On Tue, Jan 16, 2024 at 05:07:59PM +0530, Dharma Balasubiramani wrote:
+> Convert device tree bindings for Atmel's HLCDC PWM controller to YAML
+> format.
+>=20
+> Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
+> ---
+> changelog
+> v1 -> v2
+> - Remove the explicit copyrights.
+> - Modify title (not include words like binding/driver).
+> - Modify description actually describing the hardware and not the driver.
+> - Remove pinctrl properties which aren't required.
+> - Drop parent node and it's other sub-device node which are not related h=
+ere.
+> ---
+>  .../bindings/pwm/atmel,hlcdc-pwm.yaml         | 47 +++++++++++++++++++
+>  .../bindings/pwm/atmel-hlcdc-pwm.txt          | 29 ------------
+>  2 files changed, 47 insertions(+), 29 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/pwm/atmel,hlcdc-pwm=
+=2Eyaml
+>  delete mode 100644 Documentation/devicetree/bindings/pwm/atmel-hlcdc-pwm=
+=2Etxt
+>=20
+> diff --git a/Documentation/devicetree/bindings/pwm/atmel,hlcdc-pwm.yaml b=
+/Documentation/devicetree/bindings/pwm/atmel,hlcdc-pwm.yaml
+> new file mode 100644
+> index 000000000000..751122309fa9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pwm/atmel,hlcdc-pwm.yaml
+> @@ -0,0 +1,47 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 
+The original file has no license, but was originally written by a
+free-electrons employee, so the relicensing here is fine.
+
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pwm/atmel,hlcdc-pwm.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Atmel's HLCDC's PWM controller
+> +
+> +maintainers:
+> +  - Nicolas Ferre <nicolas.ferre@microchip.com>
+> +  - Alexandre Belloni <alexandre.belloni@bootlin.com>
+> +  - Claudiu Beznea <claudiu.beznea@tuxon.dev>
+> +
+> +description: |
+
+Again, the | is not needed here.
+
+> +  The LCDC integrates a Pulse Width Modulation (PWM) Controller. This bl=
+ock
+> +  generates the LCD contrast control signal (LCD_PWM) that controls the
+> +  display's contrast by software. LCDC_PWM is an 8-bit PWM signal that c=
+an be
+> +  converted to an analog voltage with a simple passive filter. LCD displ=
+ay
+> +  panels have different backlight specifications in terms of minimum/max=
+imum
+> +  values for PWM frequency. If the LCDC PWM frequency range does not mat=
+ch the
+> +  LCD display panel, it is possible to use the standalone PWM Controller=
+ to
+> +  drive the backlight.
+> +
+> +properties:
+> +  compatible:
+> +    const: atmel,hlcdc-pwm
+> +
+> +  "#pwm-cells":
+> +    const: 3
+> +    description: |
+> +      This PWM chip uses the default 3 cells bindings defined in pwm.yam=
+l in
+> +      this directory.
+
+I would delete this description tbh.
+
+> +
+> +required:
+> +  - compatible
+> +  - "#pwm-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    pwm: pwm {
+> +      compatible =3D "atmel,hlcdc-pwm";
+> +      pinctrl-names =3D "default";
+> +      pinctrl-0 =3D <&pinctrl_lcd_pwm>;
+> +      #pwm-cells =3D <3>;
+> +    };
+
+The label here is not used and can be dropped. Otherwise,
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+
+Cheers,
+Conor.
+
+> diff --git a/Documentation/devicetree/bindings/pwm/atmel-hlcdc-pwm.txt b/=
+Documentation/devicetree/bindings/pwm/atmel-hlcdc-pwm.txt
+> deleted file mode 100644
+> index afa501bf7f94..000000000000
+> --- a/Documentation/devicetree/bindings/pwm/atmel-hlcdc-pwm.txt
+> +++ /dev/null
+> @@ -1,29 +0,0 @@
+> -Device-Tree bindings for Atmel's HLCDC (High-end LCD Controller) PWM dri=
+ver
+> -
+> -The Atmel HLCDC PWM is subdevice of the HLCDC MFD device.
+> -See ../mfd/atmel-hlcdc.txt for more details.
+> -
+> -Required properties:
+> - - compatible: value should be one of the following:
+> -   "atmel,hlcdc-pwm"
+> - - pinctr-names: the pin control state names. Should contain "default".
+> - - pinctrl-0: should contain the pinctrl states described by pinctrl
+> -   default.
+> - - #pwm-cells: should be set to 3. This PWM chip use the default 3 cells
+> -   bindings defined in pwm.yaml in this directory.
+> -
+> -Example:
+> -
+> -	hlcdc: hlcdc@f0030000 {
+> -		compatible =3D "atmel,sama5d3-hlcdc";
+> -		reg =3D <0xf0030000 0x2000>;
+> -		clocks =3D <&lcdc_clk>, <&lcdck>, <&clk32k>;
+> -		clock-names =3D "periph_clk","sys_clk", "slow_clk";
+> -
+> -		hlcdc_pwm: hlcdc-pwm {
+> -			compatible =3D "atmel,hlcdc-pwm";
+> -			pinctrl-names =3D "default";
+> -			pinctrl-0 =3D <&pinctrl_lcd_pwm>;
+> -			#pwm-cells =3D <3>;
+> -		};
+> -	};
+> --=20
+> 2.25.1
+>=20
+
+--QLbmZbOLjpJ/vPR8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZabE5wAKCRB4tDGHoIJi
+0hwFAP9jhcXP9wzaYy0Zz+9WvhngHO1gBGv8fpvpusu/vOgDugEA9tZzT38ZV7GR
+lEyPDaLupBQig1Y0zS0MvcAUj/eMsQQ=
+=LcB+
+-----END PGP SIGNATURE-----
+
+--QLbmZbOLjpJ/vPR8--
 
