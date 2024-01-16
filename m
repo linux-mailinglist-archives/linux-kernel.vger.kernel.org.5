@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-27272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45A1E82ED0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:51:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5604082ED1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:52:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE25C1F2431B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:51:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C0301C231A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:52:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 104B818ED8;
-	Tue, 16 Jan 2024 10:50:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B793319454;
+	Tue, 16 Jan 2024 10:51:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BsxJpqkm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N1ma1vf+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A781134D6;
-	Tue, 16 Jan 2024 10:50:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32F44C433C7;
-	Tue, 16 Jan 2024 10:50:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 101F918ED8;
+	Tue, 16 Jan 2024 10:51:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBDADC433B2;
+	Tue, 16 Jan 2024 10:51:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705402254;
-	bh=fg+u4GK6DKFx16CsnCP6JZlz9e2/T4cItts13457GWA=;
+	s=k20201202; t=1705402314;
+	bh=P8tqp8EC1bLMwSOm33OFhQamnUjYm2hce6stofe2tD8=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=BsxJpqkm2Jm1chIN21JxxYKKzI4VoGRAdHWfuacXisteLEN6RF9KLBF9yOidKbkiZ
-	 nT+LFz3kbvO108MuvU8NQOh8hJN58b1xtcMy4DgkCr8K3PLxHqZ0UQ0j5MkIqhSQ4W
-	 +qJK3scjugND5L4ujNCnvilC2LjJsPuHkL2As+D5pwxT57wqu5zIp+89n09wsljGg+
-	 Mh5BNAjzJN6gyd4TRq7o7SNkzOuBxt61N+9/30H5wL4JngKp9N/bdIJOaxhUTXyGvS
-	 d6KPs4vXKaXKBobup2mfOo1FZ44MJoJMKM55+7TbwFB3l28oz2Iygp11hqRaCoskxb
-	 jfT8z4a+fKbeQ==
-Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-6dddf12f280so5370493a34.0;
-        Tue, 16 Jan 2024 02:50:54 -0800 (PST)
-X-Gm-Message-State: AOJu0Yyi5ZDjYAQ4ip+9FwehbSra1QEdgPkTQwXmtVnVZyn3Wl6woan6
-	jEGV9C66p7IxJ3PWbq9/91jwLWrjrnypCGsnuRQ=
-X-Google-Smtp-Source: AGHT+IH8NadaWc4/zirP3PWnCkUjkpGPSorQduwoY/EsVpWj+T2/XzHxRklsoREU0xX3+boxBb3/Mh7qawVIr21Mhto=
-X-Received: by 2002:a05:6870:525:b0:206:74c9:c0e3 with SMTP id
- j37-20020a056870052500b0020674c9c0e3mr9062285oao.6.1705402253568; Tue, 16 Jan
- 2024 02:50:53 -0800 (PST)
+	b=N1ma1vf+EDPxUMn8fN2JBsbhj0wxc+Sh4YHtqwguZnYvvHi6bGAyKX1wEBvVTdut4
+	 gjkyffF7+2TM3nGN75eBQTw3gEqfUe4LlcXgYpGhHTCFERmNj79j85DZooJG6+jYw1
+	 wdY6VbQIiRPKzTIt/VkvRlAmDff8gPxDl+ihaoDaupk5/Lnebow3UYxSjjHl2HcN9w
+	 BK513gQf0TThSxNfT6TfVJoimghdbOuS+voSkmDX7QcmBSweV6dLuJu0OQenTSF2fA
+	 CvVJR6deqwmQ5+3w+0Z61t60yd7TtTiw9QDYXxDN9lTrh3C79AfgnQxXWbjCMkW52H
+	 lN1tnKG6cVtnA==
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3bd813ff6ebso646985b6e.1;
+        Tue, 16 Jan 2024 02:51:54 -0800 (PST)
+X-Gm-Message-State: AOJu0YzqNjE76sEagJPU9OOdVhvbcjm3Oh5TurfLAdLmelaW40Z/ShFY
+	WyDVSI5TgUfMh/gf/0VlajdRx0PgNJvMyGuLyuw=
+X-Google-Smtp-Source: AGHT+IETFqwkJQIj4Ddyfoj46BZVi7zTxJO0Cq/ktw9PbRRnWq5ZRJp+1ptYev3sDy6DdHrpvhYT4cCXCdH0R1NlYw8=
+X-Received: by 2002:a05:6870:6e10:b0:203:4b98:a239 with SMTP id
+ qt16-20020a0568706e1000b002034b98a239mr4547545oab.89.1705402314238; Tue, 16
+ Jan 2024 02:51:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240116001514.214199-1-sashal@kernel.org> <20240116001514.214199-7-sashal@kernel.org>
-In-Reply-To: <20240116001514.214199-7-sashal@kernel.org>
+References: <20240116001526.214354-1-sashal@kernel.org> <20240116001526.214354-5-sashal@kernel.org>
+In-Reply-To: <20240116001526.214354-5-sashal@kernel.org>
 From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Tue, 16 Jan 2024 19:50:17 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQHRwqjLcjLoOm8SEn5wje6A7aKhbjBdyFpxU1jorhPcw@mail.gmail.com>
-Message-ID: <CAK7LNAQHRwqjLcjLoOm8SEn5wje6A7aKhbjBdyFpxU1jorhPcw@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 5.4 7/7] selftests/nolibc: use EFI -bios for
+Date: Tue, 16 Jan 2024 19:51:18 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARFMD3HwQUDAcd4L12Je=XNKWUxiF=Ps_Mp28Vdv=TyKw@mail.gmail.com>
+Message-ID: <CAK7LNARFMD3HwQUDAcd4L12Je=XNKWUxiF=Ps_Mp28Vdv=TyKw@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 4.19 5/5] selftests/nolibc: use EFI -bios for
  LoongArch qemu
 To: Sasha Levin <sashal@kernel.org>
 Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
@@ -66,6 +66,12 @@ te:
 > From: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
 >
 > [ Upstream commit bdeeeaba83682225a7bf5f100fe8652a59590d33 ]
+
+
+
+
+
+
 >
 > qemu for LoongArch does not work properly with direct kernel boot.
 > The kernel will panic during initialization and hang without any output.
@@ -85,42 +91,22 @@ te:
 > Signed-off-by: Sasha Levin <sashal@kernel.org>
 > ---
 >  Makefile | 9 ++++++++-
+
+
+Same for the AUTOSEL 5.4.
+
+
+
+
+
+
 >  1 file changed, 8 insertions(+), 1 deletion(-)
-
-
-
-
-This backport makes me upset.
-
-The original commit, bdeeeaba83682225a7bf5f100fe8652a59590d33,
-changed tools/testing/selftests/nolibc/Makefile.
-
-
-However, this backport changes the top Makefile.
-
-
-What is happening in the back-port logic?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+>
 > diff --git a/Makefile b/Makefile
-> index 500edb9d9f15..33d118fbb432 100644
+> index fc7bc81130dc..40c860f1c0a3 100644
 > --- a/Makefile
 > +++ b/Makefile
-> @@ -584,6 +584,13 @@ ifdef config-build
+> @@ -548,6 +548,13 @@ ifeq ($(config-targets),1)
 >  # *config targets only - make sure prerequisites are updated, and descen=
 d
 >  # in scripts/kconfig to make the *config target
@@ -135,10 +121,10 @@ d
 >  # Read arch specific Makefile to set KBUILD_DEFCONFIG as needed.
 >  # KBUILD_DEFCONFIG may point out an alternative default configuration
 >  # used for 'make defconfig'
-> @@ -1375,7 +1382,7 @@ _modinst_:
->         @sed 's:^:kernel/:' modules.order > $(MODLIB)/modules.order
->         @sed 's:^:kernel/:' modules.builtin > $(MODLIB)/modules.builtin
->         @cp -f $(objtree)/modules.builtin.modinfo $(MODLIB)/
+> @@ -1303,7 +1310,7 @@ _modinst_:
+>         fi
+>         @cp -f $(objtree)/modules.order $(MODLIB)/
+>         @cp -f $(objtree)/modules.builtin $(MODLIB)/
 > -       $(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modinst
 > +       $(Q)$(MAKE) $(QEMU_ARGS_BIOS) -f $(srctree)/scripts/Makefile.modi=
 nst
@@ -150,7 +136,8 @@ nst
 >
 
 
---=20
+--
 Best Regards
+
 Masahiro Yamada
 
