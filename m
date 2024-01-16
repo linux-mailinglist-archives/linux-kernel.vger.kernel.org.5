@@ -1,54 +1,48 @@
-Return-Path: <linux-kernel+bounces-26860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26861-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDF5882E70C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:34:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A920282E70E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:35:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 661BFB2108B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:34:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 207571C22A23
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:35:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7692E250F4;
-	Tue, 16 Jan 2024 01:07:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA3792511F;
+	Tue, 16 Jan 2024 01:07:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I71KF8eC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LQ/Y00GI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C10C424B34;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127C4250F9;
+	Tue, 16 Jan 2024 01:07:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8797C433C7;
 	Tue, 16 Jan 2024 01:07:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4812C433F1;
-	Tue, 16 Jan 2024 01:07:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705367225;
-	bh=/WAHI9k0/jbUSpT8uafSK1Q7FDl154jdzd0/RW07pfM=;
+	s=k20201202; t=1705367226;
+	bh=a44JYPk+6IgMZUAlJw5KTLQlbTSYSZ+3f+AmIJggMWc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=I71KF8eC8YX1yRb1SxtEw/ubaA84bOwmhiGzTaTb2QaCMGmTlx7h84clX0pXmzemN
-	 UFfY5LCtnXg+7Oe41xBQkLSaMLzUfEJBzooHzgGF0RJhfK7Y30YksC4D2gnuuHn464
-	 n1ZhZklw/TpL70mPQNf+n3XdXQib4PlIgmD4H8FZwxyUryNUO4ffN/pRfzxv7ffrl+
-	 631/BE+etY+Ov5AYYKCZpyxLnPKRFRyqFMzb+zEOlFcGCeFQVwtFQjK5eMnwr+17aZ
-	 5O5tGIhyYKVcMX9xKlZoy8G7JeAmNAoBix/bmDaPnKl15MqBsDitnWpSojlOW+fGRw
-	 0K4SrP3L7K23g==
+	b=LQ/Y00GIrmIkPEGEN8z4r9TBxs0+oP9P+r+EkpAoDvszzz0eFN46A4iPyJ2uBGW6i
+	 caGkSA7/e4cQIlwyd8RXYXuaT0JaRBcImLgrEwFn3RNakliH4z2a/ul8fMYbng2wJz
+	 +lU9/mR9GATj2diW2k7/DuGlBwPNPTWkE452XuqO9SQru8kr9PFRnR9rkqq1oFj4/g
+	 JrSOdJ298fwuSFl/6CYM6wIU1wwPXrPD2Kw/Igf6sCzyaQjuO8M6zbaEP3rK5cJn5A
+	 PeLArxRokpr58uiuVeF81FQ6TCZ7KkwOEsYdXZtsUoIvsVYpxNw1QFlL6rZXLGVPU3
+	 8dA81+iioz+Ig==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Gabriel Krisman Bertazi <krisman@suse.de>,
-	Eric Biggers <ebiggers@google.com>,
+Cc: Ye Bin <yebin10@huawei.com>,
+	Jan Kara <jack@suse.cz>,
+	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
-	code@tyhicks.com,
-	brauner@kernel.org,
-	dchinner@redhat.com,
-	jack@suse.cz,
-	jlayton@kernel.org,
-	walmeida@microsoft.com,
-	stefanb@linux.ibm.com,
-	viro@zeniv.linux.org.uk,
-	ecryptfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 10/14] ecryptfs: Reject casefold directory inodes
-Date: Mon, 15 Jan 2024 20:06:12 -0500
-Message-ID: <20240116010642.218876-10-sashal@kernel.org>
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 11/14] ext4: fix inconsistent between segment fstrim and full fstrim
+Date: Mon, 15 Jan 2024 20:06:13 -0500
+Message-ID: <20240116010642.218876-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116010642.218876-1-sashal@kernel.org>
 References: <20240116010642.218876-1-sashal@kernel.org>
@@ -63,44 +57,64 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.73
 Content-Transfer-Encoding: 8bit
 
-From: Gabriel Krisman Bertazi <krisman@suse.de>
+From: Ye Bin <yebin10@huawei.com>
 
-[ Upstream commit cd72c7ef5fed44272272a105b1da22810c91be69 ]
+[ Upstream commit 68da4c44b994aea797eb9821acb3a4a36015293e ]
 
-Even though it seems to be able to resolve some names of
-case-insensitive directories, the lack of d_hash and d_compare means we
-end up with a broken state in the d_cache.  Considering it was never a
-goal to support these two together, and we are preparing to use
-d_revalidate in case-insensitive filesystems, which would make the
-combination even more broken, reject any attempt to get a casefolded
-inode from ecryptfs.
+Suppose we issue two FITRIM ioctls for ranges [0,15] and [16,31] with
+mininum length of trimmed range set to 8 blocks. If we have say a range of
+blocks 10-22 free, this range will not be trimmed because it straddles the
+boundary of the two FITRIM ranges and neither part is big enough. This is a
+bit surprising to some users that call FITRIM on smaller ranges of blocks
+to limit impact on the system. Also XFS trims all free space extents that
+overlap with the specified range so we are inconsistent among filesystems.
+Let's change ext4_try_to_trim_range() to consider for trimming the whole
+free space extent that straddles the end of specified range, not just the
+part of it within the range.
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@suse.de>
-Reviewed-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20231216010919.1995851-1-yebin10@huawei.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ecryptfs/inode.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ fs/ext4/mballoc.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/fs/ecryptfs/inode.c b/fs/ecryptfs/inode.c
-index c214fe0981bd..55340ac61456 100644
---- a/fs/ecryptfs/inode.c
-+++ b/fs/ecryptfs/inode.c
-@@ -76,6 +76,14 @@ static struct inode *__ecryptfs_get_inode(struct inode *lower_inode,
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index a6e41746890d..35d4fb368dcd 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -6439,13 +6439,15 @@ static int ext4_try_to_trim_range(struct super_block *sb,
+ __acquires(ext4_group_lock_ptr(sb, e4b->bd_group))
+ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
+ {
+-	ext4_grpblk_t next, count, free_count;
++	ext4_grpblk_t next, count, free_count, last, origin_start;
+ 	bool set_trimmed = false;
+ 	void *bitmap;
  
- 	if (lower_inode->i_sb != ecryptfs_superblock_to_lower(sb))
- 		return ERR_PTR(-EXDEV);
++	last = ext4_last_grp_cluster(sb, e4b->bd_group);
+ 	bitmap = e4b->bd_bitmap;
+-	if (start == 0 && max >= ext4_last_grp_cluster(sb, e4b->bd_group))
++	if (start == 0 && max >= last)
+ 		set_trimmed = true;
++	origin_start = start;
+ 	start = max(e4b->bd_info->bb_first_free, start);
+ 	count = 0;
+ 	free_count = 0;
+@@ -6454,7 +6456,10 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
+ 		start = mb_find_next_zero_bit(bitmap, max + 1, start);
+ 		if (start > max)
+ 			break;
+-		next = mb_find_next_bit(bitmap, max + 1, start);
 +
-+	/* Reject dealing with casefold directories. */
-+	if (IS_CASEFOLDED(lower_inode)) {
-+		pr_err_ratelimited("%s: Can't handle casefolded directory.\n",
-+				   __func__);
-+		return ERR_PTR(-EREMOTE);
-+	}
-+
- 	if (!igrab(lower_inode))
- 		return ERR_PTR(-ESTALE);
- 	inode = iget5_locked(sb, (unsigned long)lower_inode,
++		next = mb_find_next_bit(bitmap, last + 1, start);
++		if (origin_start == 0 && next >= last)
++			set_trimmed = true;
+ 
+ 		if ((next - start) >= minblocks) {
+ 			int ret = ext4_trim_extent(sb, start, next - start, e4b);
 -- 
 2.43.0
 
