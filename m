@@ -1,68 +1,86 @@
-Return-Path: <linux-kernel+bounces-28279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB40382FC7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:21:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0846282FC7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:21:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68E9FB2117D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:21:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA2BF28E3F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:21:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4695528E34;
-	Tue, 16 Jan 2024 21:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 032F728E38;
+	Tue, 16 Jan 2024 21:04:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ZD1zCV09"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UVdXIDPt"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C79A128E2E
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 21:04:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D885E1F939
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 21:04:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705439047; cv=none; b=n2l4f6FDEnutWS2bMvlEeWffRHoR15+A3B7FfP3/L30+cegvXWeMcGIxEUZxVJB6/g2PLosxBElLkGXvrsbTC8aHkB5EVcf/pJkDNddr1HKdHln6jG8+kYAx86kIs0/tO8FG1+KvKjldV3yhz5W4jreZJ++TTKz+D++Jt/fcDyg=
+	t=1705439097; cv=none; b=ZsOkCeugQ1/iP6jC9Tauz3OedVlOUdEbW4WPGtJFhsapdCmZuyIX7XO5SeQ8g2sw6LRG8r53+hVZqbpkxZJCTKIw8tCDYW09kuenDK/89576lL65VVixC1LjiwXFSmc+CVJ7wJEbX0ZU1ptUcYlqbOX7ujQ4MApNy8L1OS7eRm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705439047; c=relaxed/simple;
-	bh=c4eqrVWav+vUO8xRH/UrscPT4NRVYA62fawyfomcagQ=;
-	h=DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=JvPB04slIQLtUYUT/Fx3zi8gMd5414urJljDt1AlV+C6SnKyXCS5CHKKlmfd2t1qS4qpWfhjY8HCg9QgOIU5qPxttPT8yd3t1CXzFHsKVt69QhQJa4K6xk22KCU0+WjgmZj53KMT2XXHxi5lVliPKGyEF5h+rJA0Ibtn7V6zStM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ZD1zCV09; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=aa38REvmK5S3+j3Zy/vUzY/XryNOBNttaU4QwgDik0U=; b=ZD1zCV09Oq+I4rJmtS5wN0PRm0
-	fJdNb3aM9r36OOMvAs/5QRE/5R5VZWc8WcrWXNXB+1rD/feUafNjoeT60278cBB2T/W/Kr2EiUt11
-	D2iXWz/8ZfP0lmqUMo8xOGNjvC+GalOYOn3N3hA1c9r1pSAfVpnAHYjFFw9z2v7dNaPK4Z06kJRye
-	2oPeRc2z/bU6dwFsUnziV3hqKQCrc5mpRYF1pPl6XkNuTB8LHKimYLg6oUADJ3zSuPtreFTGjCz0q
-	QHpK+JajFA/UTuV8pjoX/vmdNJ1UgZvhs4E7UBuRlMC7hmmUNZW1CXkFHwtY84I/sp3S8xQ46V2n4
-	L/KIfjZg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rPqb4-00EFWM-Lp; Tue, 16 Jan 2024 21:03:46 +0000
-Date: Tue, 16 Jan 2024 21:03:46 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Zhongkun He <hezhongkun.hzk@bytedance.com>
-Cc: Nhat Pham <nphamcs@gmail.com>, Yosry Ahmed <yosryahmed@google.com>,
-	akpm@linux-foundation.org, hannes@cmpxchg.org, sjenning@redhat.com,
-	ddstreet@ieee.org, vitaly.wool@konsulko.com, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, Chris Li <chrisl@kernel.org>
-Subject: Re: [External] Re: [PATCH] mm: zswap: fix the lack of page lru flag
- in zswap_writeback_entry
-Message-ID: <ZabvMpeoKzTMUS2U@casper.infradead.org>
-References: <CAKEwX=NuXR9Ot1eRFsp9n-3Tq9yhjD9up+jyvXeOzQ4xK9kEPA@mail.gmail.com>
- <CAKEwX=Oj2dR6a4-DeccvcVdJ-J7b=83uCWQAf5u7U0sySudnkw@mail.gmail.com>
- <CAJD7tkb2oda=4f0s8w8xn+t_TM1b2Q_otbb86VPQ9R1m2uqDTA@mail.gmail.com>
- <CACSyD1ODCikYLDzO4LkQeDzB4sqDWCULwCdehw9inP-qyw3_Jg@mail.gmail.com>
- <CAJD7tkY=zmGiPoWNjVaVeU+NPxV2t48J5-CxEP9=nBK8nAh0XA@mail.gmail.com>
- <CAKEwX=Na3dg+KZwvtQi-Nj79Am-1tttDw50_qStkobmYGUC6NA@mail.gmail.com>
- <CACSyD1Pp8gkxwTXZuinm6wiZs0e5U2B5oND4rj29dzmRApFjhQ@mail.gmail.com>
- <CAKEwX=OsTQCJd12S3NajRMRy_s3q3yGFpS7S=_3-yOYK6+ezzA@mail.gmail.com>
- <CACSyD1NgqoFKuHSgdw_bzgK_StsLrNQ+7wHVBqsnHcB-2rD2ow@mail.gmail.com>
- <CACSyD1Np1JbKB9punaigGbJ7y2ZWou1Sr7bczanHv4-1UQZ==A@mail.gmail.com>
+	s=arc-20240116; t=1705439097; c=relaxed/simple;
+	bh=bN0R2ktw3y3yOUxOO+GkQNyVTZGVa6wVUz74DbWPQwI=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Sender:
+	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RAldKU/laqW2R8zEberQyLzEBjNTiQd+DBImcfYxcnT+d5d10f6rvvUpPiR6MGoZPmG8vol10X0XX0wNlIJaOSrwbxKRebYH1/dUPGFjoyTw7s5y2GUrj1oAhLd59Dp8luvBOeJge2u2PaKQ242actzP4fGvhKvCia5C9T3SeZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UVdXIDPt; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d5f56912daso4832275ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 13:04:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705439095; x=1706043895; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+8/1MkLrY46twcleZVXWMzSMWv+lZYgmR+jwLYasltk=;
+        b=UVdXIDPt178d09NLHJzKu4xn8Xb3ssdqwj8Sq5JDVf2wtJpiu4gMmZpjDgsIE36iI+
+         dH69xSnW9VJ2NepF5z5hwh26+Z3N34a1ZrTX+HfGRzrD+DBH4/K/TIZvR4V2zjkChxEY
+         kIeuEKPHWLFEK9Z+TJ0GE10ET897bC3IJoER9dP3tE/tBspxMzI+pAiy4WOxAKXPgQUV
+         hmtAT2BWOYey4OqLnToRYNqC/bNhujfAlV3UEkazyt6UpBgwxVUTjfulRNdgcFE8EOoE
+         Yu5Pt2oU4PmPauQl7jizgfKLrJeaoA6/p3D9bCvIdfKIUsOGOWUOeQZy3hiVbTEQbFEe
+         roUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705439095; x=1706043895;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+8/1MkLrY46twcleZVXWMzSMWv+lZYgmR+jwLYasltk=;
+        b=c9SlrrcLDISV/tE1SlaDLVT5+vou3ilL007VlyDLCoJy9tySKnJOZAntsvGoSI3rAL
+         sCSw30mAcjDKXXXsBcRMGQD6l9GgIBxKC2VenSNIZD5aja/ZEMRyehwjGpmO46zPH6BX
+         zTPSwM1U+mHSBWd51szLsqTdzqZQLkO3NsXbusy6CnsLFT2738OvT66ZLDhSwslFhJEY
+         MMPdRaSp93tKiVnExLBG+L+2WOWxojnem/1Vd+/k3zhx9CNQfz8Oo7S5/b66FUzjP9xV
+         9mZ6dm7tGqNFJjAg/kw/lQNfe4glorFF5mEntg4VX/hH9kDKCNrX7rxdQdfXpUEgmGin
+         e/Yg==
+X-Gm-Message-State: AOJu0Yws9yTheQZJMcVgXugVlnivCuq4Bkne5RQoykjdYsfyH+z0qSUP
+	nQX6Vk7WTvnKm/bCiY5MNg8IcnPI8Mg=
+X-Google-Smtp-Source: AGHT+IEB6/wErKxlYlRfD9klAwsgXLTl+oVm9qxUTurveCO9A++FmoEhDdP74z6TrNUFpGkTw7MG1w==
+X-Received: by 2002:a17:903:1450:b0:1d0:6ffe:a1a with SMTP id lq16-20020a170903145000b001d06ffe0a1amr9959703plb.120.1705439095044;
+        Tue, 16 Jan 2024 13:04:55 -0800 (PST)
+Received: from localhost (dhcp-72-235-13-140.hawaiiantel.net. [72.235.13.140])
+        by smtp.gmail.com with ESMTPSA id ja20-20020a170902efd400b001d5e7348692sm1676062plb.277.2024.01.16.13.04.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jan 2024 13:04:54 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 16 Jan 2024 11:04:53 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Naohiro Aota <Naohiro.Aota@wdc.com>
+Cc: "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"kernel-team@meta.com" <kernel-team@meta.com>
+Subject: Re: Re: [PATCHSET wq/for-6.8] workqueue: Implement system-wide
+ max_active for unbound workqueues
+Message-ID: <ZabvdYTNhj6fiHgl@slm.duckdns.org>
+References: <20231220072529.1036099-1-tj@kernel.org>
+ <e3r47rru6go5fqxl5issvduzzmsxrtkefigrkfcnqiuouxm467@72hfzpblzr36>
+ <ZaCMkV_pjPfhZmrn@mtj.duckdns.org>
+ <znrr4upkwnaehoifwcfuhk25ddv4kriyhrymqawcvnxseampml@drwl73kklgmq>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,21 +89,61 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACSyD1Np1JbKB9punaigGbJ7y2ZWou1Sr7bczanHv4-1UQZ==A@mail.gmail.com>
+In-Reply-To: <znrr4upkwnaehoifwcfuhk25ddv4kriyhrymqawcvnxseampml@drwl73kklgmq>
 
-On Tue, Jan 16, 2024 at 09:40:05PM +0800, Zhongkun He wrote:
-> 2)  __read_swap_cache_async has six parameters, so there is no space to
-> add a new one, add_to_lru_head.
+Hello,
 
-That's easy enough.  Define a new set of flags, make one of them the
-equivalent of skip_if_exists.  Something like:
+On Mon, Jan 15, 2024 at 05:46:07AM +0000, Naohiro Aota wrote:
+> CPU: Intel(R) Xeon(R) Platinum 8260 CPU, 96 cores
+> NUMA nodes: 2
+> RAM: 1024 GB
+> 
+> However, for another benchmark experiment I'm doing, I booted the machine
+> with "numa=off mem=16G" kernel command-line. I admit this is an unusual
+> setup...
 
-typedef unsigned int __bitwise read_swap_t;
+So, does that end up using only memory from one node while making the kernel
+unaware of NUMA topology?
 
-#define READ_SWAP_SKIP_EXISTING	((__force read_swap_t)0x00000001)
-#define READ_SWAP_ADD_TAIL	((__force read_swap_t)0x00000002)
+> On that machine, I create a fresh btrfs with "mkfs.btrfs -d raid0 -m raid0
+> <devices>" with 6 SSD devices. And, I run the following command on the FS.
+> 
+> fio --group_reporting --eta=always --eta-interval=30s --eta-newline=30s \
+>     --rw=write --fallocate=none \
+>     --direct=1 --ioengine=libaio --iodepth=32 \
+>     --filesize=100G \
+>     --blocksize=64k \
+>     --time_based --runtime=300s \
+>     --end_fsync=1 \
+>     --directory=${MNT} \
+>     --name=writer --numjobs=32
+> 
+> tools/workqueue/wq_dump.py output is pasted at the
+> bottom. "btrfs-endio-write" is the workqueue, which had many workers on the
+> unpatched kernel.
 
-There's only six callers of __read_swap_cache_async() to convert, so not
-really a big deal.
+If so, I'm not sure how meaningful the result is. e.g. The perf would depend
+heavily on random factors like which threads end up on which node and so on.
+Sure, if we're slow because we're creating huge number of concurrent
+workers, that's still a problem but comparing relatively small perf delta
+might not be all that meaningful. How much is the result variance in that
+setup?
 
+> FYI, without the kernel command-line (i.e, numa=on and all RAM available as
+> usual), as shown below, your patch series (v1) improved the performance
+> significantly. It is even better than the reverted case.
+> 
+> - misc-next, numa=on
+>   WRITE: bw=1121MiB/s (1175MB/s), 1121MiB/s-1121MiB/s (1175MB/s-1175MB/s), io=332GiB (356GB), run=303030-303030msec
+> - misc-next+wq patches, numa=on
+>   WRITE: bw=2185MiB/s (2291MB/s), 2185MiB/s-2185MiB/s (2291MB/s-2291MB/s), io=667GiB (717GB), run=312806-312806msec
+> - misc-next+wq reverted, numa=on
+>   WRITE: bw=1557MiB/s (1633MB/s), 1557MiB/s-1557MiB/s (1633MB/s-1633MB/s), io=659GiB (708GB), run=433426-433426msec
+
+That looks pretty good, right?
+
+Thanks.
+
+-- 
+tejun
 
