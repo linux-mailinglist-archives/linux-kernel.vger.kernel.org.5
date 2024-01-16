@@ -1,57 +1,63 @@
-Return-Path: <linux-kernel+bounces-28232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDF9182FBED
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:07:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B92C82FBF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:07:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D1D128D44F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:07:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 995DD1C271FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:07:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9113616D888;
-	Tue, 16 Jan 2024 20:05:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C1E67C42;
+	Tue, 16 Jan 2024 20:05:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kNmjVkGN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ubcZxb/V"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D022216D877;
-	Tue, 16 Jan 2024 20:05:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA54916D897;
+	Tue, 16 Jan 2024 20:05:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435514; cv=none; b=Bbnt2c7A6/2aduRMdVuIgUsE+rKyAzJSveXYmROCCxPXyy4Tt4xpAl0dkh/+kM+uoAv590Zclon75SCsio15iEE29ihDmndxB1Qtjdy/DvLEf2NHfcoWVq7BvhcIuyfagIVaIUCrmI6uuyWYJZJljzMueicPLoC274Sgitg2Elo=
+	t=1705435516; cv=none; b=MA7rR8O0fek3JZWOYNycnwxC9PuzGeMNtq3893LJv+MjbZuDtaksba1XoAKj1aH/17ZKaMxdI/Eq7P3jh4AxLFOxj6sblC1JIbsusGUVTraC1pWzz94c9Ale6+rsqGEHVhwk7niS/peCzgxVFFAm0r2BEF/fE9Lz/dlpOJjZPDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435514; c=relaxed/simple;
-	bh=JrK3Ry7krXyfnAcY6MiWGhjxc1iD1Y8fvxFyNuwC99o=;
+	s=arc-20240116; t=1705435516; c=relaxed/simple;
+	bh=JNUs/LQJo+qUNmb0T0rSBK5V7IO4R3L3oqT2O4dn6pE=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=izsILv7zRdrWtVRAks7+DIFrWMEJT2jJahGToAYFtAFZy/teFjMjdTLKxbrIGRK1d3OzKLVBVJ7lhvcRlPCQTHXvKu52sBA2vuUkhxASlLC0sGTfMpimEzemPjm+c3VLgNvYY64H2zNVGc7fH0e2LlXOOWBj/1XSeE+Qh04ZARk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kNmjVkGN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7C45C433F1;
-	Tue, 16 Jan 2024 20:05:13 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=C3ZYe7z8J8cXLzbBfM8RTGkBSr2MiSY7w/6bn+joSxizq2CWWCvNdFUsuM29i9usXXkFB9+e0AWxw3DBTp2HT/yOIzrgfRXLc29kSR4YDnNOKI7dTerD8/YfPnwNvAm8ZgCiyNSsfXFBzbhlnzxKzLhjDMvnxq2PBWqHupE1AB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ubcZxb/V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DEDEC43394;
+	Tue, 16 Jan 2024 20:05:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435514;
-	bh=JrK3Ry7krXyfnAcY6MiWGhjxc1iD1Y8fvxFyNuwC99o=;
+	s=k20201202; t=1705435516;
+	bh=JNUs/LQJo+qUNmb0T0rSBK5V7IO4R3L3oqT2O4dn6pE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kNmjVkGNofZ2oZdN/dX4XHVf/zxNAnKizRV0wzgtFoVb34WOEKmity6hjRf2jVWK5
-	 fsY+oqoWsgZxCaNcSAwejsx7hSJvU0qbh+DLrwrNz80u0pU4OeAeH9XC4utTmAcTLe
-	 xloUaL90VETV8D5iUBbUQZGp78ATS6Jsxl9mwo3jVDsE8zM/2WN+bQLC444xIGu5ii
-	 sfcjq/9UKqlniDDrw6KHuRhbpcKhJhaDPYxlgKl6X9nsR0j2u9ab6DMx+hy1gXJbwj
-	 1qZTAqKpxHUfwMuGUF+Pfs//DpeHvPRjn2MSIagy9eS2V6pGFFqONZNvPjxkWfnq/6
-	 VX1fSImmw4zCw==
+	b=ubcZxb/V3QrqR6eqheT+2G7PJfZ3rguO42pUMj4w0mpsbRm9PdAmnnc02REFLQHBC
+	 AFr/5QoCUVkAba2wnktOnXsekRaxzEl1Lq/c/6eDqIVaB1A+KJegjSGkS4gK7RjPJ9
+	 HwFk6hix4OjDVBw0yPhGY7bN4sMSZz67Wg8JKQBvUHxeBSoaPXx4bVMMln3wLl9Cq7
+	 4mAXCtcXikR9Uzgk12QZDNM4D4W6R4GGL2bu5IOpEK/BZhuAWGnDD30Vn3SFIpUhEs
+	 1y03gJbKmx3/tlEHQryyYRAEPDWqUunyA6S8Fw14R/h8CFgBXcQTdTrcWPeNq2qqRA
+	 uM2Zlgx3in4AA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Su Hui <suhui@nfschina.com>,
-	Kalle Valo <kvalo@kernel.org>,
+Cc: Benjamin Berg <benjamin.berg@intel.com>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	pkshih@realtek.com,
-	linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 21/22] wifi: rtlwifi: rtl8723{be,ae}: using calculate_bit_shift()
-Date: Tue, 16 Jan 2024 15:04:15 -0500
-Message-ID: <20240116200432.260016-21-sashal@kernel.org>
+	johannes@sipsolutions.net,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	linux-wireless@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 22/22] wifi: cfg80211: free beacon_ies when overridden from hidden BSS
+Date: Tue, 16 Jan 2024 15:04:16 -0500
+Message-ID: <20240116200432.260016-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116200432.260016-1-sashal@kernel.org>
 References: <20240116200432.260016-1-sashal@kernel.org>
@@ -66,75 +72,42 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.305
 Content-Transfer-Encoding: 8bit
 
-From: Su Hui <suhui@nfschina.com>
+From: Benjamin Berg <benjamin.berg@intel.com>
 
-[ Upstream commit 5c16618bc06a41ad68fd8499a21d35ef57ca06c2 ]
+[ Upstream commit 32af9a9e1069e55bc02741fb00ac9d0ca1a2eaef ]
 
-Using calculate_bit_shift() to replace rtl8723_phy_calculate_bit_shift().
-And fix an undefined bitwise shift behavior problem.
+This is a more of a cosmetic fix. The branch will only be taken if
+proberesp_ies is set, which implies that beacon_ies is not set unless we
+are connected to an AP that just did a channel switch. And, in that case
+we should have found the BSS in the internal storage to begin with.
 
-Signed-off-by: Su Hui <suhui@nfschina.com>
-Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://msgid.link/20231219065739.1895666-12-suhui@nfschina.com
+Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
+Reviewed-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
+Link: https://msgid.link/20231220133549.b898e22dadff.Id8c4c10aedd176ef2e18a4cad747b299f150f9df@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/realtek/rtlwifi/rtl8723ae/phy.c | 6 +++---
- drivers/net/wireless/realtek/rtlwifi/rtl8723be/phy.c | 4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ net/wireless/scan.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8723ae/phy.c b/drivers/net/wireless/realtek/rtlwifi/rtl8723ae/phy.c
-index 5cf29f5a4b54..e6ac496e898e 100644
---- a/drivers/net/wireless/realtek/rtlwifi/rtl8723ae/phy.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/rtl8723ae/phy.c
-@@ -72,7 +72,7 @@ u32 rtl8723e_phy_query_rf_reg(struct ieee80211_hw *hw,
- 							    rfpath, regaddr);
- 	}
- 
--	bitshift = rtl8723_phy_calculate_bit_shift(bitmask);
-+	bitshift = calculate_bit_shift(bitmask);
- 	readback_value = (original_value & bitmask) >> bitshift;
- 
- 	spin_unlock_irqrestore(&rtlpriv->locks.rf_lock, flags);
-@@ -104,7 +104,7 @@ void rtl8723e_phy_set_rf_reg(struct ieee80211_hw *hw,
- 			original_value = rtl8723_phy_rf_serial_read(hw,
- 								    rfpath,
- 								    regaddr);
--			bitshift = rtl8723_phy_calculate_bit_shift(bitmask);
-+			bitshift = calculate_bit_shift(bitmask);
- 			data =
- 			    ((original_value & (~bitmask)) |
- 			     (data << bitshift));
-@@ -113,7 +113,7 @@ void rtl8723e_phy_set_rf_reg(struct ieee80211_hw *hw,
- 		rtl8723_phy_rf_serial_write(hw, rfpath, regaddr, data);
- 	} else {
- 		if (bitmask != RFREG_OFFSET_MASK) {
--			bitshift = rtl8723_phy_calculate_bit_shift(bitmask);
-+			bitshift = calculate_bit_shift(bitmask);
- 			data =
- 			    ((original_value & (~bitmask)) |
- 			     (data << bitshift));
-diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8723be/phy.c b/drivers/net/wireless/realtek/rtlwifi/rtl8723be/phy.c
-index 1263b12db5dc..bbbbf61d7bcf 100644
---- a/drivers/net/wireless/realtek/rtlwifi/rtl8723be/phy.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/rtl8723be/phy.c
-@@ -64,7 +64,7 @@ u32 rtl8723be_phy_query_rf_reg(struct ieee80211_hw *hw, enum radio_path rfpath,
- 	spin_lock_irqsave(&rtlpriv->locks.rf_lock, flags);
- 
- 	original_value = rtl8723_phy_rf_serial_read(hw, rfpath, regaddr);
--	bitshift = rtl8723_phy_calculate_bit_shift(bitmask);
-+	bitshift = calculate_bit_shift(bitmask);
- 	readback_value = (original_value & bitmask) >> bitshift;
- 
- 	spin_unlock_irqrestore(&rtlpriv->locks.rf_lock, flags);
-@@ -92,7 +92,7 @@ void rtl8723be_phy_set_rf_reg(struct ieee80211_hw *hw, enum radio_path path,
- 	if (bitmask != RFREG_OFFSET_MASK) {
- 			original_value = rtl8723_phy_rf_serial_read(hw, path,
- 								    regaddr);
--			bitshift = rtl8723_phy_calculate_bit_shift(bitmask);
-+			bitshift = calculate_bit_shift(bitmask);
- 			data = ((original_value & (~bitmask)) |
- 				(data << bitshift));
- 		}
+diff --git a/net/wireless/scan.c b/net/wireless/scan.c
+index d871349036a5..7f1a4ba975dd 100644
+--- a/net/wireless/scan.c
++++ b/net/wireless/scan.c
+@@ -1018,8 +1018,12 @@ cfg80211_bss_update(struct cfg80211_registered_device *rdev,
+ 				list_add(&new->hidden_list,
+ 					 &hidden->hidden_list);
+ 				hidden->refcount++;
++
++				ies = (void *)rcu_dereference(new->pub.beacon_ies);
+ 				rcu_assign_pointer(new->pub.beacon_ies,
+ 						   hidden->pub.beacon_ies);
++				if (ies)
++					kfree_rcu(ies, rcu_head);
+ 			}
+ 		} else {
+ 			/*
 -- 
 2.43.0
 
