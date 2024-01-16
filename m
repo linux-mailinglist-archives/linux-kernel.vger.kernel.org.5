@@ -1,56 +1,62 @@
-Return-Path: <linux-kernel+bounces-28123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B469182FA7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:34:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 855AD82FA7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:34:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBC3C1C2629A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:34:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 357541F27710
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:34:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB6B41552FC;
-	Tue, 16 Jan 2024 19:59:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0577B156987;
+	Tue, 16 Jan 2024 19:59:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gJESy1uR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cx/uATMH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09B3A15622A;
-	Tue, 16 Jan 2024 19:59:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E07E156971;
+	Tue, 16 Jan 2024 19:59:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435188; cv=none; b=AH8PeGYjm5Zz/vllyR/xCcCgH1nYA4cLH1pJIfyeRTp1VFLIHK2gV+1RzT7zivBugMNmMI2/LgWIEklUG7eVHSPt7Xr29JKbjHvja1LfiZLMA6wEBolU7UOb+ZVbMeSgTgh8hr+GZs57nJp91+eGkloBQGKJtIW+/A4LaEc6XRc=
+	t=1705435190; cv=none; b=V6ChfOY1ljr2swlZ5xju48lxsxDaHt7ilTgJT/fQi+qD2nJMhW7mMvuLe31g8pT6UFMZP7gVjElaFKcsMGFkq/aTcBwqgkujHg+Ab4mYK7rhvYSMlLEz39qfN0h16mvh/0qvacLiHjy1MwMxl+rwfNXums3yDeoFI2P3inEnP7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435188; c=relaxed/simple;
-	bh=17OV4TdWpNOtkjRfg3KiC0mIr7KGeghlFbe5rICHqN8=;
+	s=arc-20240116; t=1705435190; c=relaxed/simple;
+	bh=8Mu08XlxOMz5cmdJXOmnM9uzX3GDPwM8lI/R9syugXQ=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=JEKUZKEz0aeBoiA1yhPE/DJUiCqvAMioZ/eK4NwumcF+v5Hrmat1wvn88+Pqm/pwnOvDtllq9z/UfDxmURUdmLNUblsc4hGtzZZ0C4k2+xfua/VfIAXftCP/6MoOImm2+WszXUh1UN0iJYQXshVAKLCgBYsJ0hUtsbw04A7Tklk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gJESy1uR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD18AC43399;
-	Tue, 16 Jan 2024 19:59:46 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=l24WoRpqkjTclf/fmnw7KsVUZazOGvFOtdWtQeM0P98OR5dLS8XD1qB5t8MoBFMNP3qJGC5TegHvO5Og4484qCMHYtOSXkOAORiIaOVLSU+qebg/DXZarnxUfFaiyyOLMkjTo1CFUaNE6qIS0ReVB/bnWvuSLGnQecZojq7bMIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cx/uATMH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 675D2C43330;
+	Tue, 16 Jan 2024 19:59:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435187;
-	bh=17OV4TdWpNOtkjRfg3KiC0mIr7KGeghlFbe5rICHqN8=;
+	s=k20201202; t=1705435190;
+	bh=8Mu08XlxOMz5cmdJXOmnM9uzX3GDPwM8lI/R9syugXQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gJESy1uRBbZBpDve5uMd9ZQ2OudMj8GkKrhfgxqRapyRGrbZ5VYkha+z2A9SkeUFp
-	 kCCrhWMT5bl77PLx+jpmEj/VNaLKAUt8OAggbpAPpN5Ib8M1Apgw3hgg8Gm1w9FLX6
-	 ToLKg0315z7EmedbBNAjTOMXOwdDwa/Wtjxq0DGAmBV0Dw9uhRx0984/k0EXHsuaNW
-	 OQ5xsEaSWxz5iEU9w1CvNSxYl/x1AlbLUgY5TAhay8Iu5cmu2EfYEnhTzFkHAZj2/4
-	 wg84+lPABzEDKHyepV0Tu5fgkJdqTA57UljShVGBy3lAOJOdvQYsVANZL/pXrFevYG
-	 icL3Hir2CPjdA==
+	b=cx/uATMHGihxoCqFp8m0vgELzZhqGZtc6/1wY11g/TKDVajkzJnsQs+cjbJs3woSi
+	 cr/35tjnPMaoVbYmwU9fOYFsxme+Zq3rZPVdWgTJYd6VCqIdB4K2aKMZwTHnewpzEg
+	 /Fxjyipd99OhlKbvvFLOc0CXEHyKObSQ5xeX/BP4pY8VzqVcGPmVq++WVsXi0OXuOW
+	 bzgyVGhKhtq4wwKA/zvHHVP4CkCpLr+YkIZvDU6vJ/H3FdmnBFmBND+sM/Kjn83Tir
+	 D34fwUfjccvRmycmQq0gKHWlMOLKpRIuS4X3jBZm1Y6yvlpAR4tfNIsJS/F5aU1XV5
+	 g90DjFHKTHoIg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alex Lyakas <alex.lyakas@zadara.com>,
-	Song Liu <song@kernel.org>,
+Cc: Mao Jinlong <quic_jinlmao@quicinc.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-raid@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 35/47] md: Whenassemble the array, consult the superblock of the freshest device
-Date: Tue, 16 Jan 2024 14:57:38 -0500
-Message-ID: <20240116195834.257313-35-sashal@kernel.org>
+	konrad.dybcio@linaro.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 36/47] arm64: dts: qcom: msm8996: Fix 'in-ports' is a required property
+Date: Tue, 16 Jan 2024 14:57:39 -0500
+Message-ID: <20240116195834.257313-36-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116195834.257313-1-sashal@kernel.org>
 References: <20240116195834.257313-1-sashal@kernel.org>
@@ -65,152 +71,61 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.147
 Content-Transfer-Encoding: 8bit
 
-From: Alex Lyakas <alex.lyakas@zadara.com>
+From: Mao Jinlong <quic_jinlmao@quicinc.com>
 
-[ Upstream commit dc1cc22ed58f11d58d8553c5ec5f11cbfc3e3039 ]
+[ Upstream commit 9a6fc510a6a3ec150cb7450aec1e5f257e6fc77b ]
 
-Upon assembling the array, both kernel and mdadm allow the devices to have event
-counter difference of 1, and still consider them as up-to-date.
-However, a device whose event count is behind by 1, may in fact not be up-to-date,
-and array resync with such a device may cause data corruption.
-To avoid this, consult the superblock of the freshest device about the status
-of a device, whose event counter is behind by 1.
+Add the inport of funnel@3023000 to fix 'in-ports' is a required property
+warning.
 
-Signed-off-by: Alex Lyakas <alex.lyakas@zadara.com>
-Signed-off-by: Song Liu <song@kernel.org>
-Link: https://lore.kernel.org/r/1702470271-16073-1-git-send-email-alex.lyakas@zadara.com
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
+Link: https://lore.kernel.org/r/20231210072633.4243-3-quic_jinlmao@quicinc.com
+Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/md.c | 54 ++++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 44 insertions(+), 10 deletions(-)
+ arch/arm64/boot/dts/qcom/msm8996.dtsi | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index aae9ec78c0e8..ff65e5eddfa1 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -1162,6 +1162,7 @@ struct super_type  {
- 					  struct md_rdev *refdev,
- 					  int minor_version);
- 	int		    (*validate_super)(struct mddev *mddev,
-+					      struct md_rdev *freshest,
- 					      struct md_rdev *rdev);
- 	void		    (*sync_super)(struct mddev *mddev,
- 					  struct md_rdev *rdev);
-@@ -1300,8 +1301,9 @@ static int super_90_load(struct md_rdev *rdev, struct md_rdev *refdev, int minor
+diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+index 8a7c65178507..fd9ffe8448b0 100644
+--- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+@@ -394,6 +394,19 @@ memory@80000000 {
+ 		reg = <0x0 0x80000000 0x0 0x0>;
+ 	};
  
- /*
-  * validate_super for 0.90.0
-+ * note: we are not using "freshest" for 0.9 superblock
-  */
--static int super_90_validate(struct mddev *mddev, struct md_rdev *rdev)
-+static int super_90_validate(struct mddev *mddev, struct md_rdev *freshest, struct md_rdev *rdev)
- {
- 	mdp_disk_t *desc;
- 	mdp_super_t *sb = page_address(rdev->sb_page);
-@@ -1816,7 +1818,7 @@ static int super_1_load(struct md_rdev *rdev, struct md_rdev *refdev, int minor_
- 	return ret;
- }
- 
--static int super_1_validate(struct mddev *mddev, struct md_rdev *rdev)
-+static int super_1_validate(struct mddev *mddev, struct md_rdev *freshest, struct md_rdev *rdev)
- {
- 	struct mdp_superblock_1 *sb = page_address(rdev->sb_page);
- 	__u64 ev1 = le64_to_cpu(sb->events);
-@@ -1912,13 +1914,15 @@ static int super_1_validate(struct mddev *mddev, struct md_rdev *rdev)
- 		}
- 	} else if (mddev->pers == NULL) {
- 		/* Insist of good event counter while assembling, except for
--		 * spares (which don't need an event count) */
--		++ev1;
-+		 * spares (which don't need an event count).
-+		 * Similar to mdadm, we allow event counter difference of 1
-+		 * from the freshest device.
-+		 */
- 		if (rdev->desc_nr >= 0 &&
- 		    rdev->desc_nr < le32_to_cpu(sb->max_dev) &&
- 		    (le16_to_cpu(sb->dev_roles[rdev->desc_nr]) < MD_DISK_ROLE_MAX ||
- 		     le16_to_cpu(sb->dev_roles[rdev->desc_nr]) == MD_DISK_ROLE_JOURNAL))
--			if (ev1 < mddev->events)
-+			if (ev1 + 1 < mddev->events)
- 				return -EINVAL;
- 	} else if (mddev->bitmap) {
- 		/* If adding to array with a bitmap, then we can accept an
-@@ -1939,8 +1943,38 @@ static int super_1_validate(struct mddev *mddev, struct md_rdev *rdev)
- 		    rdev->desc_nr >= le32_to_cpu(sb->max_dev)) {
- 			role = MD_DISK_ROLE_SPARE;
- 			rdev->desc_nr = -1;
--		} else
-+		} else if (mddev->pers == NULL && freshest && ev1 < mddev->events) {
-+			/*
-+			 * If we are assembling, and our event counter is smaller than the
-+			 * highest event counter, we cannot trust our superblock about the role.
-+			 * It could happen that our rdev was marked as Faulty, and all other
-+			 * superblocks were updated with +1 event counter.
-+			 * Then, before the next superblock update, which typically happens when
-+			 * remove_and_add_spares() removes the device from the array, there was
-+			 * a crash or reboot.
-+			 * If we allow current rdev without consulting the freshest superblock,
-+			 * we could cause data corruption.
-+			 * Note that in this case our event counter is smaller by 1 than the
-+			 * highest, otherwise, this rdev would not be allowed into array;
-+			 * both kernel and mdadm allow event counter difference of 1.
-+			 */
-+			struct mdp_superblock_1 *freshest_sb = page_address(freshest->sb_page);
-+			u32 freshest_max_dev = le32_to_cpu(freshest_sb->max_dev);
++	etm {
++		compatible = "qcom,coresight-remote-etm";
 +
-+			if (rdev->desc_nr >= freshest_max_dev) {
-+				/* this is unexpected, better not proceed */
-+				pr_warn("md: %s: rdev[%pg]: desc_nr(%d) >= freshest(%pg)->sb->max_dev(%u)\n",
-+						mdname(mddev), rdev->bdev, rdev->desc_nr,
-+						freshest->bdev, freshest_max_dev);
-+				return -EUCLEAN;
-+			}
++		out-ports {
++			port {
++				modem_etm_out_funnel_in2: endpoint {
++					remote-endpoint =
++					  <&funnel_in2_in_modem_etm>;
++				};
++			};
++		};
++	};
 +
-+			role = le16_to_cpu(freshest_sb->dev_roles[rdev->desc_nr]);
-+			pr_debug("md: %s: rdev[%pg]: role=%d(0x%x) according to freshest %pg\n",
-+				     mdname(mddev), rdev->bdev, role, role, freshest->bdev);
-+		} else {
- 			role = le16_to_cpu(sb->dev_roles[rdev->desc_nr]);
-+		}
- 		switch(role) {
- 		case MD_DISK_ROLE_SPARE: /* spare */
- 			break;
-@@ -2890,7 +2924,7 @@ static int add_bound_rdev(struct md_rdev *rdev)
- 		 * and should be added immediately.
- 		 */
- 		super_types[mddev->major_version].
--			validate_super(mddev, rdev);
-+			validate_super(mddev, NULL/*freshest*/, rdev);
- 		if (add_journal)
- 			mddev_suspend(mddev);
- 		err = mddev->pers->hot_add_disk(mddev, rdev);
-@@ -3809,7 +3843,7 @@ static int analyze_sbs(struct mddev *mddev)
- 	}
+ 	psci {
+ 		compatible = "arm,psci-1.0";
+ 		method = "smc";
+@@ -2203,6 +2216,14 @@ funnel@3023000 {
+ 			clocks = <&rpmcc RPM_QDSS_CLK>, <&rpmcc RPM_QDSS_A_CLK>;
+ 			clock-names = "apb_pclk", "atclk";
  
- 	super_types[mddev->major_version].
--		validate_super(mddev, freshest);
-+		validate_super(mddev, NULL/*freshest*/, freshest);
++			in-ports {
++				port {
++					funnel_in2_in_modem_etm: endpoint {
++						remote-endpoint =
++						  <&modem_etm_out_funnel_in2>;
++					};
++				};
++			};
  
- 	i = 0;
- 	rdev_for_each_safe(rdev, tmp, mddev) {
-@@ -3824,7 +3858,7 @@ static int analyze_sbs(struct mddev *mddev)
- 		}
- 		if (rdev != freshest) {
- 			if (super_types[mddev->major_version].
--			    validate_super(mddev, rdev)) {
-+			    validate_super(mddev, freshest, rdev)) {
- 				pr_warn("md: kicking non-fresh %s from array!\n",
- 					bdevname(rdev->bdev,b));
- 				md_kick_rdev_from_array(rdev);
-@@ -6795,7 +6829,7 @@ int md_add_new_disk(struct mddev *mddev, struct mdu_disk_info_s *info)
- 			rdev->saved_raid_disk = rdev->raid_disk;
- 		} else
- 			super_types[mddev->major_version].
--				validate_super(mddev, rdev);
-+				validate_super(mddev, NULL/*freshest*/, rdev);
- 		if ((info->state & (1<<MD_DISK_SYNC)) &&
- 		     rdev->raid_disk != info->raid_disk) {
- 			/* This was a hot-add request, but events doesn't
+ 			out-ports {
+ 				port {
 -- 
 2.43.0
 
