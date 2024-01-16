@@ -1,165 +1,238 @@
-Return-Path: <linux-kernel+bounces-27461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4A6982F076
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:20:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 343A082F089
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:27:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CD0E28250D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:20:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7255FB21BCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:27:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 405101BF26;
-	Tue, 16 Jan 2024 14:20:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3B9F1BF2C;
+	Tue, 16 Jan 2024 14:27:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PEEgMqJR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="BtjL7S50"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9083A1BDFD;
-	Tue, 16 Jan 2024 14:20:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B176AC433C7;
-	Tue, 16 Jan 2024 14:20:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705414828;
-	bh=s3MaVUzUaiBM2JgZKhqzcpejtJtUYM+TF+W2d4L3Rzw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PEEgMqJRMyQjKgUcwL32FCJcgiCOXPZ8SQfzGWsLZld49moLHRcb/LsTpXJcCL2/I
-	 1QvkEeA4R9hfPbXs8K2Nwq8x+7BsDzzFnl2heeprJ7GoA4E8Q7irb4ErU8NJeGD7em
-	 fD+GIWPyGk2I2K7KqS4TWQ6oIIhnSXaPULRyUeieniB+YGBjZ922aHc4Zh3BiXZ7VA
-	 XZSTUC61uSd7LfT5WTVWQkrVIkH3FlUDvRieN+0XHSsnEwnkauakmLHYzRWZE5QDpd
-	 8p4v/1LChr7SqOl/TS5cljpAhXh3vYKN5SidIQxKFlokN0cVWiX4WoEHLN9DCAtuTn
-	 iU5p07liJRwXQ==
-Date: Tue, 16 Jan 2024 15:20:23 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Lennert Buytenhek <kernel@wantstofly.org>
-Cc: Damien Le Moal <dlemoal@kernel.org>, linux-ide@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: ASMedia ASM1062 (AHCI) hang after "ahci 0000:28:00.0: Using
- 64-bit DMA addresses"
-Message-ID: <ZaaQpiW3OOZTSyXw@x1-carbon>
-References: <ZaZ2PIpEId-rl6jv@wantstofly.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D8861BF22;
+	Tue, 16 Jan 2024 14:27:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40GDcBnL020915;
+	Tue, 16 Jan 2024 14:26:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=563hyhN6PruHR//yyU44tkKDZlemsjBJokIOuA8XpMA=;
+ b=BtjL7S50WEvXsNpcdzEbQUc1ivUL2sQFXg4WkrZQSI7WSFdhJa8JFvzVPq5ETXNKO7R2
+ dYvYk6AZjLfuJffgjzqyofmGovNATSgPKCJzhrUNo8sOXUgsWe6Uejxw3L+NPyig9ZJT
+ /7Zi0EM6s6q593SXRtNlQy2kmQCsWGFj0uz3DQkcE1Q/D4SlXbSvxXPTUi9nizn9fJ4B
+ olbsGXHj8W/ch6ArpjHUpjW2GJR6/2xagGA7Dod8/fLwgP/EO/lB/BD+H2+9GI910nZV
+ 3mm6cSMj8Zg/Jb7rgeJ1HFoZ/QG/Sy2HQxY51EphaF/xEqyQFVIhac0htg+ftkjZPU4+ 8Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vntutht8d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 14:26:57 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40GDcEPP021008;
+	Tue, 16 Jan 2024 14:26:56 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vntutht79-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 14:26:56 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40GDUd2P011053;
+	Tue, 16 Jan 2024 14:26:55 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vm57yf7cf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 14:26:55 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40GEQrIK8520338
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Jan 2024 14:26:53 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E744220040;
+	Tue, 16 Jan 2024 14:26:52 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B08BA20049;
+	Tue, 16 Jan 2024 14:26:52 +0000 (GMT)
+Received: from [9.152.212.51] (unknown [9.152.212.51])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 16 Jan 2024 14:26:52 +0000 (GMT)
+Message-ID: <f81cf759-d5a4-4b46-bd2c-2e11355447a8@linux.ibm.com>
+Date: Tue, 16 Jan 2024 15:26:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZaZ2PIpEId-rl6jv@wantstofly.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] perf: script: use capstone disasm engine to show
+ assembly instructions
+Content-Language: en-US
+To: Changbin Du <changbin.du@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+References: <20240116113437.1507537-1-changbin.du@huawei.com>
+ <20240116113437.1507537-3-changbin.du@huawei.com>
+From: Thomas Richter <tmricht@linux.ibm.com>
+Organization: IBM
+In-Reply-To: <20240116113437.1507537-3-changbin.du@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Dmeu7BjrOZpCuXbYqStmWBaO4GpsXjVx
+X-Proofpoint-ORIG-GUID: XeZRs5Dnq8rPoViFwKzkFA_oD2NSIE7d
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-16_08,2024-01-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ lowpriorityscore=0 bulkscore=0 malwarescore=0 clxscore=1011
+ priorityscore=1501 mlxscore=0 suspectscore=0 adultscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401160113
 
-Hello Lennert,
-
-On Tue, Jan 16, 2024 at 02:27:40PM +0200, Lennert Buytenhek wrote:
-> Hi,
+On 1/16/24 12:34, Changbin Du wrote:
+> Currently, the instructions of samples are shown as raw hex strings
+> which are hard to read. x86 has a special option '--xed' to disassemble
+> the hex string via intel XED tool.
 > 
-> On kernel 6.6.x, with an ASMedia ASM1062 (AHCI) controller, on an
-> ASUSTeK Pro WS WRX80E-SAGE SE WIFI mainboard, PCI ID 1b21:0612 and
-> subsystem ID 1043:858d, I got a total apparent controller hang,
-> rendering the two attached SATA devices unavailable, that was
-> immediately preceded by the following kernel messages:
+> Here we use capstone as our disassembler engine to give more friendly
+> instructions. We select libcapstone because capstone can provide more
+> insn details. Perf will fallback to raw instructions if libcapstone is
+> not available.
 > 
-> [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: Using 64-bit DMA addresses
-> [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00000 flags=0x0000]
-> [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00300 flags=0x0000]
-> [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00380 flags=0x0000]
-> [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00400 flags=0x0000]
-> [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00680 flags=0x0000]
-> [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00700 flags=0x0000]
+> The advantages compared to XED tool:
+>  * Support arm, arm64, x86-32, x86_64 (more could be supported),
+>    xed only for x86_64.
+>  * Immediate address operands are shown as symbol+offs.
 > 
-> It seems as if the controller has problems with 64-bit DMA addresses,
-> and the comments around the source of the message in
-> drivers/iommu/dma-iommu.c seem to point into that same direction:
+> Before:
+> $ sudo perf record --event intel_pt//u -- ls
+> $ sudo perf script --insn-trace
+>             perf 17423 [000] 423271.557970005:      7f2d95f16217 __GI___ioctl+0x7 (/lib/x86_64-linux-gnu/libc-2.27.so) insn: 48 3d 01 f0 ff ff
+>             perf 17423 [000] 423271.557970005:      7f2d95f1621d __GI___ioctl+0xd (/lib/x86_64-linux-gnu/libc-2.27.so) insn: 73 01
+>             perf 17423 [000] 423271.557970338:      7f2d95f1621f __GI___ioctl+0xf (/lib/x86_64-linux-gnu/libc-2.27.so) insn: c3
+>             perf 17423 [000] 423271.557970338:      5593ad3346d7 perf_evsel__enable_cpu+0x97 (/work/linux/tools/perf/perf) insn: 85 c0
+>             perf 17423 [000] 423271.557970338:      5593ad3346d9 perf_evsel__enable_cpu+0x99 (/work/linux/tools/perf/perf) insn: 75 12
+>             perf 17423 [000] 423271.557970338:      5593ad3346db perf_evsel__enable_cpu+0x9b (/work/linux/tools/perf/perf) insn: 49 8b 84 24 a8 00 00 00
+>             perf 17423 [000] 423271.557970338:      5593ad3346e3 perf_evsel__enable_cpu+0xa3 (/work/linux/tools/perf/perf) insn: 48 8b 50 20
 > 
->         /*
->          * Try to use all the 32-bit PCI addresses first. The original SAC vs.
->          * DAC reasoning loses relevance with PCIe, but enough hardware and
->          * firmware bugs are still lurking out there that it's safest not to
->          * venture into the 64-bit space until necessary.
->          *
->          * If your device goes wrong after seeing the notice then likely either
->          * its driver is not setting DMA masks accurately, the hardware has
->          * some inherent bug in handling >32-bit addresses, or not all the
->          * expected address bits are wired up between the device and the IOMMU.
->          */
->         if (dma_limit > DMA_BIT_MASK(32) && dev->iommu->pci_32bit_workaround) {
->                 iova = alloc_iova_fast(iovad, iova_len,
->                                        DMA_BIT_MASK(32) >> shift, false);
->                 if (iova)
->                         goto done;
+> After:
+> $ sudo perf script --insn-trace
+>             perf 17423 [000] 423271.557970005:      7f2d95f16217 __GI___ioctl+0x7 (/lib/x86_64-linux-gnu/libc-2.27.so) insn: cmpq $-0xfff, %rax
+>             perf 17423 [000] 423271.557970005:      7f2d95f1621d __GI___ioctl+0xd (/lib/x86_64-linux-gnu/libc-2.27.so) insn: jae __GI___ioctl+0x10
+>             perf 17423 [000] 423271.557970338:      7f2d95f1621f __GI___ioctl+0xf (/lib/x86_64-linux-gnu/libc-2.27.so) insn: retq
+>             perf 17423 [000] 423271.557970338:      5593ad3346d7 perf_evsel__enable_cpu+0x97 (/work/linux/tools/perf/perf) insn: testl %eax, %eax
+>             perf 17423 [000] 423271.557970338:      5593ad3346d9 perf_evsel__enable_cpu+0x99 (/work/linux/tools/perf/perf) insn: jne perf_evsel__enable_cpu+0xad
+>             perf 17423 [000] 423271.557970338:      5593ad3346db perf_evsel__enable_cpu+0x9b (/work/linux/tools/perf/perf) insn: movq 0xa8(%r12), %rax
+>             perf 17423 [000] 423271.557970338:      5593ad3346e3 perf_evsel__enable_cpu+0xa3 (/work/linux/tools/perf/perf) insn: movq 0x20(%rax), %rdx
+>             perf 17423 [000] 423271.557970338:      5593ad3346e7 perf_evsel__enable_cpu+0xa7 (/work/linux/tools/perf/perf) insn: cmpl %edx, %ebx
+>             perf 17423 [000] 423271.557970338:      5593ad3346e9 perf_evsel__enable_cpu+0xa9 (/work/linux/tools/perf/perf) insn: jl perf_evsel__enable_cpu+0x60
+>             perf 17423 [000] 423271.557970338:      5593ad3346eb perf_evsel__enable_cpu+0xab (/work/linux/tools/perf/perf) insn: xorl %eax, %eax
 > 
->                 dev->iommu->pci_32bit_workaround = false;
->                 dev_notice(dev, "Using %d-bit DMA addresses\n", bits_per(dma_limit));
->         }
+> Signed-off-by: Changbin Du <changbin.du@huawei.com>
+> ---
 
-The DMA mask is set here:
-https://github.com/torvalds/linux/blob/v6.7/drivers/ata/ahci.c#L967
+...
 
-And should be called using:
-hpriv->cap & HOST_CAP_64
-https://github.com/torvalds/linux/blob/v6.7/drivers/ata/ahci.c#L1929
+> diff --git a/tools/perf/util/print_insn.c b/tools/perf/util/print_insn.c
+> new file mode 100644
+> index 000000000000..c8d9741748cd
+> --- /dev/null
+> +++ b/tools/perf/util/print_insn.c
+> @@ -0,0 +1,118 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Instruction binary disassembler based on capstone.
+> + *
+> + * Author(s): Changbin Du <changbin.du@huawei.com>
+> + */
+> +#include "print_insn.h"
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include <stdbool.h>
+> +#include "util/debug.h"
+> +#include "util/symbol.h"
+> +#include "machine.h"
+> +
+> +size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp)
+> +{
+> +	int printed = 0;
+> +
+> +	for (int i = 0; i < sample->insn_len; i++)
+> +		printed += fprintf(fp, "%02x ", (unsigned char)sample->insn[i]);
+> +	return printed;
+> +}
+> +
+> +#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> +#include <capstone/capstone.h>
+> +
+> +static int capstone_init(struct machine *machine, csh *cs_handle)
+> +{
+> +	cs_arch arch;
+> +	cs_mode mode;
+> +
+> +	if (machine__is(machine, "x86_64")) {
+> +		arch = CS_ARCH_X86;
+> +		mode = CS_MODE_64;
+> +	} else if (machine__normalized_is(machine, "x86")) {
+> +		arch = CS_ARCH_X86;
+> +		mode = CS_MODE_32;
+> +	} else if (machine__normalized_is(machine, "arm64")) {
+> +		arch = CS_ARCH_ARM64;
+> +		mode = CS_MODE_ARM;
+> +	} else if (machine__normalized_is(machine, "arm")) {
+> +		arch = CS_ARCH_ARM;
+> +		mode = CS_MODE_ARM + CS_MODE_V8;
+> +	} else {
+> +		return -1;
+> +	}
+> ...
 
-Where hpriv->cap is capabilities reported by the AHCI controller itself.
-So it definitely seems like your controller supports 64-bit addressing.
+Did you forgot to support s390? Or was it omitted on intention?
+Something along the lines will support s390:
 
-I guess it could be some problem with your BIOS.
-Have you tried updating your BIOS?
-
-
-If that does not work, perhaps you could try this (completely untested) patch:
-(You might need to modify the strings to match the exact strings reported by
-your BIOS.)
-
-If it works, we need to add a specific BIOS version too, see e.g.
-https://github.com/torvalds/linux/blob/v6.7/drivers/ata/ahci.c#L1310
-
-
-diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
-index 3a5f3255f51b..35dead43142c 100644
---- a/drivers/ata/ahci.c
-+++ b/drivers/ata/ahci.c
-@@ -1034,6 +1034,30 @@ static void ahci_p5wdh_workaround(struct ata_host *host)
+ # git diff util/print_insn.c
+diff --git a/tools/perf/util/print_insn.c b/tools/perf/util/print_insn.c
+index c8d9741748cd..c5127910c75b 100644
+--- a/tools/perf/util/print_insn.c
++++ b/tools/perf/util/print_insn.c
+@@ -41,6 +41,9 @@ static int capstone_init(struct machine *machine, csh *cs_handle)
+        } else if (machine__normalized_is(machine, "arm")) {
+                arch = CS_ARCH_ARM;
+                mode = CS_MODE_ARM + CS_MODE_V8;
++       } else if (machine__normalized_is(machine, "s390x")) {
++               arch = CS_ARCH_SYSZ;
++               mode = CS_MODE_BIG_ENDIAN;
+        } else {
+                return -1;
         }
- }
- 
-+static bool ahci_broken_64_bit(struct pci_dev *pdev)
-+{
-+       static const struct dmi_system_id sysids[] = {
-+               {
-+                       .ident = "ASUS Pro WS WRX80E-SAGE",
-+                       .matches = {
-+                               DMI_MATCH(DMI_BOARD_VENDOR,
-+                                         "ASUSTeK Computer INC."),
-+                               DMI_MATCH(DMI_BOARD_NAME, "Pro WS WRX80E-SAGE"),
-+                       },
-+               },
-+               { }
-+       };
-+       const struct dmi_system_id *dmi = dmi_first_match(sysids);
-+
-+       if (!dmi)
-+               return false;
-+
-+       dev_warn(&pdev->dev, "%s: forcing 32bit DMA, update BIOS\n",
-+                dmi->ident);
-+
-+       return true;
-+}
-+
- /*
-  * Macbook7,1 firmware forcibly disables MCP89 AHCI and changes PCI ID when
-  * booting in BIOS compatibility mode.  We restore the registers but not ID.
-@@ -1799,6 +1823,10 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
-        if (ahci_broken_devslp(pdev))
-                hpriv->flags |= AHCI_HFLAG_NO_DEVSLP;
- 
-+       /* must set flag prior to save config in order to take effect */
-+       if (ahci_broken_64_bit(pdev))
-+               hpriv->flags |= AHCI_HFLAG_32BIT_ONLY;
-+
- #ifdef CONFIG_ARM64
-        if (pdev->vendor == PCI_VENDOR_ID_HUAWEI &&
-            pdev->device == 0xa235 &&
+  #
+
+Thanks a lot for including these line in your next version.
+
+-- 
+Thomas Richter, Dept 3303, IBM s390 Linux Development, Boeblingen, Germany
+--
+IBM Deutschland Research & Development GmbH
+
+Vorsitzender des Aufsichtsrats: Wolfgang Wendt
+
+Geschäftsführung: David Faller
+
+Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
+
 
