@@ -1,52 +1,48 @@
-Return-Path: <linux-kernel+bounces-26655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26656-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4513782E499
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:23:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 039E982E49C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:23:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C762282D43
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:23:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11F4F1C2255A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:23:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB2531CF8D;
-	Tue, 16 Jan 2024 00:13:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1249A1CFAC;
+	Tue, 16 Jan 2024 00:13:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o52xrlSh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MAy2b5vE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0752913FF2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A9B01CF94;
+	Tue, 16 Jan 2024 00:13:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A5F4C43394;
 	Tue, 16 Jan 2024 00:13:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8576BC433C7;
-	Tue, 16 Jan 2024 00:13:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705364035;
-	bh=B/pzjSFZjA/xOdsawpBkIOGtEnV9muLApf9oW5IKgnU=;
+	s=k20201202; t=1705364037;
+	bh=tpBD3PGBTzrRQcuPY20t10Gr37U+ZH750YYb69xQ0dA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=o52xrlShy8CRrfuKvd3U70ZQnqTvH9oaaUSdXoT3WUcCqIgwUgGM3o5BXnJEaDScD
-	 1QARX0lULs5YXvOkuT1wNUTn9kHI+bDEXaEFe5D4WqxKEW9LVneJ4q6OKlNUlNWTXB
-	 sdVW4xUCBN+KNyBW5oDRE1Bmc2tJtejvca2jtAg6GZyF8TTs127zYXjoLRtCJul39/
-	 IqPa1PorPr0PSRVMOcrwE4Swst+rv1mbwL9vPUvQKcegCKist3kYXAkrOmA/1mDfIR
-	 dJPp5+F4ytn7HwioGF4t/++B8hrXZPPNZtokNUV3ut/DzB+e7VRPdtCry40b1C0Q6C
-	 QbXFK6YU7IDyQ==
+	b=MAy2b5vEJJpK85bId1wO1twyKlcz3DszUHm8H+y6D4tiNqGJvNHZs3incvWpjiRaI
+	 uO1yrBLbEf7oxQHiVUGWd7cOk52TAYXhj9mCKBufDvJlU1Tr3ADWAnpxQ0qzimjj8a
+	 DsDQaf07jkWbRVkZNOhaNgBcoYWv4IUtEqKNnd96KnsamcZLj4PeZx1nz1fluno2uK
+	 bCo2nkuta7fhMUtdQYXvfcV1XYyy78dGIR79pMxFbdiHDuCAW3nEKbYzs/C8T3C7R5
+	 axI1IeaLzBLK9BAJnHVGXGHSgGWkTgeq7oMBZHy9XHX4TK8KQpRjIaisFpAvu4aCVG
+	 Id/DYlcmytlzQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Srikar Srimath Tirumala <srikars@nvidia.com>,
-	Sumit Gupta <sumitg@nvidia.com>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Hanjun Guo <guohanjun@huawei.com>,
+Cc: Yuluo Qiu <qyl27@outlook.com>,
+	Celeste Liu <CoelacanthusHex@gmail.com>,
 	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	lpieralisi@kernel.org,
 	rafael@kernel.org,
-	linux-acpi@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 04/14] ACPI: processor: reduce CPUFREQ thermal reduction pctg for Tegra241
-Date: Mon, 15 Jan 2024 19:13:30 -0500
-Message-ID: <20240116001347.213328-4-sashal@kernel.org>
+	linux-acpi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 05/14] ACPI: video: Add quirk for the Colorful X15 AT 23 Laptop
+Date: Mon, 15 Jan 2024 19:13:31 -0500
+Message-ID: <20240116001347.213328-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116001347.213328-1-sashal@kernel.org>
 References: <20240116001347.213328-1-sashal@kernel.org>
@@ -61,204 +57,49 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.12
 Content-Transfer-Encoding: 8bit
 
-From: Srikar Srimath Tirumala <srikars@nvidia.com>
+From: Yuluo Qiu <qyl27@outlook.com>
 
-[ Upstream commit 310293a2b94197f3d75e65ab22672287a7938a00 ]
+[ Upstream commit 143176a46bdd3bfbe9ba2462bf94458e80d65ebf ]
 
-Current implementation of processor_thermal performs software throttling
-in fixed steps of "20%" which can be too coarse for some platforms.
-We observed some performance gain after reducing the throttle percentage.
-Change the CPUFREQ thermal reduction percentage and maximum thermal steps
-to be configurable. Also, update the default values of both for Nvidia
-Tegra241 (Grace) SoC. The thermal reduction percentage is reduced to "5%"
-and accordingly the maximum number of thermal steps are increased as they
-are derived from the reduction percentage.
+The Colorful X15 AT 23 ACPI video-bus device report spurious
+ACPI_VIDEO_NOTIFY_CYCLE events resulting in spurious KEY_SWITCHVIDEOMODE
+events being reported to userspace (and causing trouble there) when
+an external screen plugged in.
 
-Signed-off-by: Srikar Srimath Tirumala <srikars@nvidia.com>
-Co-developed-by: Sumit Gupta <sumitg@nvidia.com>
-Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
-Acked-by: Sudeep Holla <sudeep.holla@arm.com>
-Acked-by: Hanjun Guo <guohanjun@huawei.com>
+Add a quirk setting the report_key_events mask to
+REPORT_BRIGHTNESS_KEY_EVENTS so that the ACPI_VIDEO_NOTIFY_CYCLE
+events will be ignored, while still reporting brightness up/down
+hotkey-presses to userspace normally.
+
+Signed-off-by: Yuluo Qiu <qyl27@outlook.com>
+Co-developed-by: Celeste Liu <CoelacanthusHex@gmail.com>
+Signed-off-by: Celeste Liu <CoelacanthusHex@gmail.com>
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/arm64/Makefile          |  1 +
- drivers/acpi/arm64/thermal_cpufreq.c | 20 ++++++++++++
- drivers/acpi/internal.h              |  9 +++++
- drivers/acpi/processor_thermal.c     | 49 +++++++++++++++++++++++-----
- 4 files changed, 70 insertions(+), 9 deletions(-)
- create mode 100644 drivers/acpi/arm64/thermal_cpufreq.c
+ drivers/acpi/acpi_video.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/acpi/arm64/Makefile b/drivers/acpi/arm64/Makefile
-index 143debc1ba4a..726944648c9b 100644
---- a/drivers/acpi/arm64/Makefile
-+++ b/drivers/acpi/arm64/Makefile
-@@ -5,3 +5,4 @@ obj-$(CONFIG_ACPI_GTDT) 	+= gtdt.o
- obj-$(CONFIG_ACPI_APMT) 	+= apmt.o
- obj-$(CONFIG_ARM_AMBA)		+= amba.o
- obj-y				+= dma.o init.o
-+obj-y				+= thermal_cpufreq.o
-diff --git a/drivers/acpi/arm64/thermal_cpufreq.c b/drivers/acpi/arm64/thermal_cpufreq.c
-new file mode 100644
-index 000000000000..d524f2cd6044
---- /dev/null
-+++ b/drivers/acpi/arm64/thermal_cpufreq.c
-@@ -0,0 +1,20 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include <linux/acpi.h>
-+
-+#include "../internal.h"
-+
-+#define SMCCC_SOC_ID_T241      0x036b0241
-+
-+int acpi_arch_thermal_cpufreq_pctg(void)
-+{
-+	s32 soc_id = arm_smccc_get_soc_id_version();
-+
-+	/*
-+	 * Check JEP106 code for NVIDIA Tegra241 chip (036b:0241) and
-+	 * reduce the CPUFREQ Thermal reduction percentage to 5%.
-+	 */
-+	if (soc_id == SMCCC_SOC_ID_T241)
-+		return 5;
-+
-+	return 0;
-+}
-diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
-index 866c7c4ed233..af1198e2b526 100644
---- a/drivers/acpi/internal.h
-+++ b/drivers/acpi/internal.h
-@@ -85,6 +85,15 @@ bool acpi_scan_is_offline(struct acpi_device *adev, bool uevent);
- acpi_status acpi_sysfs_table_handler(u32 event, void *table, void *context);
- void acpi_scan_table_notify(void);
- 
-+#ifdef CONFIG_ARM64
-+int acpi_arch_thermal_cpufreq_pctg(void);
-+#else
-+static inline int acpi_arch_thermal_cpufreq_pctg(void)
-+{
-+	return 0;
-+}
-+#endif
-+
- /* --------------------------------------------------------------------------
-                      Device Node Initialization / Removal
-    -------------------------------------------------------------------------- */
-diff --git a/drivers/acpi/processor_thermal.c b/drivers/acpi/processor_thermal.c
-index b7c6287eccca..1219adb11ab9 100644
---- a/drivers/acpi/processor_thermal.c
-+++ b/drivers/acpi/processor_thermal.c
-@@ -17,6 +17,8 @@
- #include <acpi/processor.h>
- #include <linux/uaccess.h>
- 
-+#include "internal.h"
-+
- #ifdef CONFIG_CPU_FREQ
- 
- /* If a passive cooling situation is detected, primarily CPUfreq is used, as it
-@@ -26,12 +28,21 @@
-  */
- 
- #define CPUFREQ_THERMAL_MIN_STEP 0
--#define CPUFREQ_THERMAL_MAX_STEP 3
- 
--static DEFINE_PER_CPU(unsigned int, cpufreq_thermal_reduction_pctg);
-+static int cpufreq_thermal_max_step __read_mostly = 3;
-+
-+/*
-+ * Minimum throttle percentage for processor_thermal cooling device.
-+ * The processor_thermal driver uses it to calculate the percentage amount by
-+ * which cpu frequency must be reduced for each cooling state. This is also used
-+ * to calculate the maximum number of throttling steps or cooling states.
-+ */
-+static int cpufreq_thermal_reduction_pctg __read_mostly = 20;
- 
--#define reduction_pctg(cpu) \
--	per_cpu(cpufreq_thermal_reduction_pctg, phys_package_first_cpu(cpu))
-+static DEFINE_PER_CPU(unsigned int, cpufreq_thermal_reduction_step);
-+
-+#define reduction_step(cpu) \
-+	per_cpu(cpufreq_thermal_reduction_step, phys_package_first_cpu(cpu))
- 
- /*
-  * Emulate "per package data" using per cpu data (which should really be
-@@ -71,7 +82,7 @@ static int cpufreq_get_max_state(unsigned int cpu)
- 	if (!cpu_has_cpufreq(cpu))
- 		return 0;
- 
--	return CPUFREQ_THERMAL_MAX_STEP;
-+	return cpufreq_thermal_max_step;
- }
- 
- static int cpufreq_get_cur_state(unsigned int cpu)
-@@ -79,7 +90,7 @@ static int cpufreq_get_cur_state(unsigned int cpu)
- 	if (!cpu_has_cpufreq(cpu))
- 		return 0;
- 
--	return reduction_pctg(cpu);
-+	return reduction_step(cpu);
- }
- 
- static int cpufreq_set_cur_state(unsigned int cpu, int state)
-@@ -92,7 +103,7 @@ static int cpufreq_set_cur_state(unsigned int cpu, int state)
- 	if (!cpu_has_cpufreq(cpu))
- 		return 0;
- 
--	reduction_pctg(cpu) = state;
-+	reduction_step(cpu) = state;
- 
+diff --git a/drivers/acpi/acpi_video.c b/drivers/acpi/acpi_video.c
+index 35f071ad9532..34f3880f61a5 100644
+--- a/drivers/acpi/acpi_video.c
++++ b/drivers/acpi/acpi_video.c
+@@ -500,6 +500,15 @@ static const struct dmi_system_id video_dmi_table[] = {
+ 		DMI_MATCH(DMI_PRODUCT_NAME, "Vostro 3350"),
+ 		},
+ 	},
++	{
++	 .callback = video_set_report_key_events,
++	 .driver_data = (void *)((uintptr_t)REPORT_BRIGHTNESS_KEY_EVENTS),
++	 .ident = "COLORFUL X15 AT 23",
++	 .matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "COLORFUL"),
++		DMI_MATCH(DMI_PRODUCT_NAME, "X15 AT 23"),
++		},
++	},
  	/*
- 	 * Update all the CPUs in the same package because they all
-@@ -113,7 +124,8 @@ static int cpufreq_set_cur_state(unsigned int cpu, int state)
- 		if (!policy)
- 			return -EINVAL;
- 
--		max_freq = (policy->cpuinfo.max_freq * (100 - reduction_pctg(i) * 20)) / 100;
-+		max_freq = (policy->cpuinfo.max_freq *
-+			    (100 - reduction_step(i) * cpufreq_thermal_reduction_pctg)) / 100;
- 
- 		cpufreq_cpu_put(policy);
- 
-@@ -126,10 +138,29 @@ static int cpufreq_set_cur_state(unsigned int cpu, int state)
- 	return 0;
- }
- 
-+static void acpi_thermal_cpufreq_config(void)
-+{
-+	int cpufreq_pctg = acpi_arch_thermal_cpufreq_pctg();
-+
-+	if (!cpufreq_pctg)
-+		return;
-+
-+	cpufreq_thermal_reduction_pctg = cpufreq_pctg;
-+
-+	/*
-+	 * Derive the MAX_STEP from minimum throttle percentage so that the reduction
-+	 * percentage doesn't end up becoming negative. Also, cap the MAX_STEP so that
-+	 * the CPU performance doesn't become 0.
-+	 */
-+	cpufreq_thermal_max_step = (100 / cpufreq_pctg) - 2;
-+}
-+
- void acpi_thermal_cpufreq_init(struct cpufreq_policy *policy)
- {
- 	unsigned int cpu;
- 
-+	acpi_thermal_cpufreq_config();
-+
- 	for_each_cpu(cpu, policy->related_cpus) {
- 		struct acpi_processor *pr = per_cpu(processors, cpu);
- 		int ret;
-@@ -190,7 +221,7 @@ static int acpi_processor_max_state(struct acpi_processor *pr)
- 
- 	/*
- 	 * There exists four states according to
--	 * cpufreq_thermal_reduction_pctg. 0, 1, 2, 3
-+	 * cpufreq_thermal_reduction_step. 0, 1, 2, 3
- 	 */
- 	max_state += cpufreq_get_max_state(pr->id);
- 	if (pr->flags.throttling)
+ 	 * Some machines change the brightness themselves when a brightness
+ 	 * hotkey gets pressed, despite us telling them not to. In this case
 -- 
 2.43.0
 
