@@ -1,49 +1,43 @@
-Return-Path: <linux-kernel+bounces-27350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFE5082EE7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:53:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE12B82EE82
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:54:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5745EB223D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:53:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61A6A1F23E6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:54:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D92C1B95A;
-	Tue, 16 Jan 2024 11:53:13 +0000 (UTC)
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5011B961;
+	Tue, 16 Jan 2024 11:54:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="LYE4vvZb"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 207361B94D
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 11:53:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40e86c02054so1159095e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 03:53:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705405989; x=1706010789;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DfZGs9layKIX9fwbjXHkjF4XGGcTxC9dx97HshOMXdc=;
-        b=vjn2ScmJ4ShYGHrhu5LWybhDZzyNJrjl5HTNRlCkT4XWrZ+VKU7sarNTd189PEgufH
-         +0HD5GQO4Q4SCBRpfqGDycIGubJcMbvLpkZSFSLXEzX3XTtlQ4cg5KZ7VuY0evljcIH6
-         AX0M4VsJX3lOoeDi77rQpKAYCjXSVM4emVtlTkISJab+VU3UI3jSMOFuJOtF8aPtxWDM
-         3p8ohCNOMOMsegCaIMVo7fk8mkbnF5+i4MkfzbrG8UZpusM+VS6OVhVleq3izrPjl6xQ
-         SjWp55zPt2fZUdFr/ge/Z38EhBP64vonFCwSIcR4kbb6AAym4WMVWPtsL+b4hwq8rWwP
-         Ja+A==
-X-Gm-Message-State: AOJu0YwBXri0UMIn/xoZXeZyzWMq+xqOpVEiZHo4wUbyzRSYS/bbdRMG
-	LS6LCZkaTNnHDxGsrBqujygAzYbHxeRGx4He
-X-Google-Smtp-Source: AGHT+IGNcZVKJEAFWeJad2acy/pdnNubIlKA4fuuNk/qjLyZYa+6smDv3tPnJx9gi3LnkHkUE4eo1Q==
-X-Received: by 2002:a05:600c:4ecc:b0:40e:500c:23d8 with SMTP id g12-20020a05600c4ecc00b0040e500c23d8mr3608197wmq.151.1705405989091;
-        Tue, 16 Jan 2024 03:53:09 -0800 (PST)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id p31-20020a05600c1d9f00b0040e6ea6d2d0sm3260112wms.24.2024.01.16.03.53.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jan 2024 03:53:08 -0800 (PST)
-Message-ID: <d0a136a0-4a31-46bc-adf4-2db109a61672@kernel.org>
-Date: Tue, 16 Jan 2024 12:53:06 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E24751B944;
+	Tue, 16 Jan 2024 11:54:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1705406028; x=1706010828; i=w_armin@gmx.de;
+	bh=wR22/Ilw+R8LR7NGyIT5Bx2OZcDaOEs1DUoo/pPXg2o=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=LYE4vvZbgjXQGVohrFUeok0bMLrgAauXBaMygMdHaiO2NFFGg1cOyXH+2P4guofv
+	 FWzDKeSx+1q2kE3zRjeTdV7eYeCSeKpotQbDWNl32DemHq1KFhURef+Kl6EbbY2MN
+	 dclbJ4xTSHsFgk/YuqrhrHFkNOYgjwTEiodx6ue4Eh3675fITI2vxiDu4pw7cMM8D
+	 e+6qOTyhvfH5ukhKWEZXT3ePsCf2IiisecVgcq3YIDPeY6nn88mnZ7+v1WF94Z/Re
+	 CYN0ZPGZfNQF5bKp/PfIvvafQOIFTOrXHk2KDI9J06DpElJM7iXBPo2f53Zphl1pW
+	 hqURCN+HtS8xJTrViA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.2.35] ([91.137.126.34]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MWigq-1rf0su0rAu-00X5RO; Tue, 16
+ Jan 2024 12:53:48 +0100
+Message-ID: <0d179914-5912-46ee-9c10-50b9bbcac718@gmx.de>
+Date: Tue, 16 Jan 2024 12:53:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,125 +45,101 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mm: align larger anonymous mappings on THP boundaries
+Subject: Re: [PATCH AUTOSEL 6.7 15/18] platform/x86: wmi: Remove ACPI handlers
+ after WMI devices
+To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Cc: Hans de Goede <hdegoede@redhat.com>, ilpo.jarvinen@linux.intel.com,
+ platform-driver-x86@vger.kernel.org
+References: <20240116001308.212917-1-sashal@kernel.org>
+ <20240116001308.212917-15-sashal@kernel.org>
 Content-Language: en-US
-To: Rik van Riel <riel@surriel.com>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel-team@fb.com,
- Matthew Wilcox <willy@infradead.org>, Yang Shi <shy828301@gmail.com>,
- Christoph Lameter <cl@linux.com>
-References: <20220809142457.4751229f@imladris.surriel.com>
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <20220809142457.4751229f@imladris.surriel.com>
+From: Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <20240116001308.212917-15-sashal@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:njHnQiqoIe9NloKAY8hOxxY/caHZu23EngDXzDadwZL8+bEw7xq
+ wg6YU4XIQGOHs+SHteWiJmtj4ENuEeXX4VKapNmhjeMf0O+T8xpe05FELHlH5tDJSdLhyJs
+ PRUtEpgG8K8Nof8dzzfC3XagyZzqJLW5Re3rg2b6jV3YR/lNBfBh2aRUov1b8RMdq2WuEbF
+ w3s+/klXG140LVS0oUjgg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:uQSr3TEF+QQ=;FZrE8TJQfjooCxvSCEYhJXpIZDu
+ qqUNqIZ4HIqmXamrxla1EsTOz5gHrpRU8ufF43sQsVzPM61WHIn3MsSXTR3Wne8kV6s3y+wz0
+ Bz813arN68BqGub/SBVwTsrECusZjVx8U6pwXEDpXS+I79A30ejKFLyIrD/L2KqQcq97dZ+n9
+ WIqPYRBWDKcMqLuFg6KlZdiCRLGRuYrf5DZ+DVl085eZgiyM4nNZAytoCwvyErw/hBMnNNRcp
+ Xs26NkzdZiTVp87Z/4wiRfMsnKzxVsSITvm0KxfCfaMEjd0D0EOzBZcoEUcVv50PkYaXRVJTq
+ nHgK4ZMl+1TndD5Ch85wXMsxIhUCtnhU+K4Pjw+3dNiY4pmXGEcB7YMMiiTVE7hxKXrmzYyYp
+ A8fGATEHcKpI9Jlv31gps6YYcIpxyHT1Zd5Ri0zkvPMzpw55cf34cnVT1+yIXGNWtTZTmgnzA
+ vSXBlVFy55WFeryEtN24PhBVE9jymh1KwW0GT/6ji/QuRt2RynLY3+I1aMha1lsQTsS+2SSHO
+ p3aIDAs4LFzyHt24+489irN3RmFB1cmsLNIrSOHGDOIh1kZplwkPFMc9gcCAyW54uIs8KDxV3
+ q3MKrXFS9Xp5cDGUQmkF2eeVpDwWrs1PQDevmiCw9jMZ/JXTBuZtNW1KZHfZ/+vxKrV3NRnxo
+ gBYdDa/9UqJoz3hI6gA1ekxcROd43QJ6T3+VqsTzlb+THYEJNpDAIz2DFvj9fvpL0TgFT/fCD
+ TU2ks+dV0KjBdrqO/YskqcZEzwFhvx5pVcBhK4ir65vApS+cDSSp44nsLSVeYUIwbieOyR1Fe
+ w7akIGo3B9oY7k3jA0JcdDFaIPpEXmw75F96gtyjtwdUUExIBqNnwRa8DP7+t3fOY4iY6psXr
+ 4R16u8FIqSUERmNJbij1v6u0+TiVNfiIu+4hbASdkE/4MjnWGbt396Y0e4XowHci/WKpOZ+YA
+ 4qsriHg68kV8/PjOJxszBqEvHCg=
 
-Hi,
+Am 16.01.24 um 01:12 schrieb Sasha Levin:
 
-On 09. 08. 22, 20:24, Rik van Riel wrote:
-> Align larger anonymous memory mappings on THP boundaries by
-> going through thp_get_unmapped_area if THPs are enabled for
-> the current process.
-> 
-> With this patch, larger anonymous mappings are now THP aligned.
-> When a malloc library allocates a 2MB or larger arena, that
-> arena can now be mapped with THPs right from the start, which
-> can result in better TLB hit rates and execution time.
+> From: Armin Wolf <W_Armin@gmx.de>
+>
+> [ Upstream commit 22574e17626391ad969af9a13aaa58a1b37ad384 ]
+>
+> When removing the ACPI notify/address space handlers, the WMI devices
+> are still active and might still depend on ACPI EC access or
+> WMI events.
+> Fix this by removing the ACPI handlers after all WMI devices
+> associated with an ACPI device have been removed.
 
-This appears to break 32bit processes on x86_64 (at least). In 
-particular, 32bit kernel or firefox builds in our build system.
+Hello,
 
-Reverting this on top of 6.7 makes it work again.
+i would advise against including this patch in the next stable kernels.
 
-Downstream report:
-  https://bugzilla.suse.com/show_bug.cgi?id=1218841
+The WMI ACPI notify handler is still using list_for_each_entry() which is
+not safe when the WMI devices are removed before the ACPI notify handler.
 
-So running:
-pahole -J --btf_gen_floats -j --lang_exclude=rust 
---skip_encoding_btf_inconsistent_proto --btf_gen_optimized .tmp_vmlinux.btf
+This issue existed inside the WMI code for a long time, but this patch mig=
+ht
+trigger it. Since no users reported any issues regarding ACPI errors durin=
+g
+WMI removal, i would drop this patch.
 
-crashes or errors out with some random errors:
-[182671] STRUCT idr's field 'idr_next' offset=128 bit_size=0 type=181346 
-Error emitting field
+Thanks,
+Armin Wolf
 
-strace shows mmap() fails with ENOMEM right before the errors:
-1223  mmap2(NULL, 5783552, PROT_READ|PROT_WRITE, 
-MAP_PRIVATE|MAP_ANONYMOUS, -1, 0 <unfinished ...>
-..
-1223  <... mmap2 resumed>)              = -1 ENOMEM (Cannot allocate memory)
-
-Note the .tmp_vmlinux.btf above can be arbitrary, but likely large 
-enough. For reference, one is available at:
-https://decibel.fi.muni.cz/~xslaby/n/btf
-
-Any ideas?
-
-> Signed-off-by: Rik van Riel <riel@surriel.com>
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+> Link: https://lore.kernel.org/r/20231218192420.305411-3-W_Armin@gmx.de
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 > ---
-> v2: avoid the chicken & egg issue with MMF_VM_HUGEPAGE (Yang Shi)
-> 
->   mm/mmap.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index c035020d0c89..1d859893436d 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -2229,6 +2229,9 @@ get_unmapped_area(struct file *file, unsigned long addr, unsigned long len,
->   		 */
->   		pgoff = 0;
->   		get_area = shmem_get_unmapped_area;
-> +	} else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
-> +		/* Ensures that larger anonymous mappings are THP aligned. */
-> +		get_area = thp_get_unmapped_area;
->   	}
->   
->   	addr = get_area(file, addr, len, pgoff, flags);
-
-thanks,
--- 
-js
-suse labs
-
+>   drivers/platform/x86/wmi.c | 9 ++++-----
+>   1 file changed, 4 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+> index 5dd22258cb3b..d400e61d6801 100644
+> --- a/drivers/platform/x86/wmi.c
+> +++ b/drivers/platform/x86/wmi.c
+> @@ -1494,13 +1494,12 @@ static void acpi_wmi_remove(struct platform_devi=
+ce *device)
+>   	struct acpi_device *acpi_device =3D ACPI_COMPANION(&device->dev);
+>   	struct device *wmi_bus_device =3D dev_get_drvdata(&device->dev);
+>
+> -	acpi_remove_notify_handler(acpi_device->handle, ACPI_ALL_NOTIFY,
+> -				   acpi_wmi_notify_handler);
+> -	acpi_remove_address_space_handler(acpi_device->handle,
+> -				ACPI_ADR_SPACE_EC, &acpi_wmi_ec_space_handler);
+> -
+>   	device_for_each_child_reverse(wmi_bus_device, NULL, wmi_remove_device=
+);
+>   	device_unregister(wmi_bus_device);
+> +
+> +	acpi_remove_notify_handler(acpi_device->handle, ACPI_ALL_NOTIFY, acpi_=
+wmi_notify_handler);
+> +	acpi_remove_address_space_handler(acpi_device->handle, ACPI_ADR_SPACE_=
+EC,
+> +					  &acpi_wmi_ec_space_handler);
+>   }
+>
+>   static int acpi_wmi_probe(struct platform_device *device)
 
