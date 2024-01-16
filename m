@@ -1,169 +1,129 @@
-Return-Path: <linux-kernel+bounces-27354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24D3C82EE96
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:59:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 752F582EEB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:09:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A3671C23263
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:59:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 160CAB23238
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:08:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7AA41B96D;
-	Tue, 16 Jan 2024 11:59:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62F651BC3D;
+	Tue, 16 Jan 2024 12:08:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DMbwMIhW"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b="b/0aKTBh"
+Received: from mail.avm.de (mail.avm.de [212.42.244.119])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978751B944
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 11:59:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40e779f0273so18124215e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 03:59:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705406380; x=1706011180; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4mY+tIwBKHmUxob9qZlCJ14coqBFslOG9Pxb8dXi/Ag=;
-        b=DMbwMIhWc9YAULkQpaZV2B2+1jhwM3RsttaozkThlzJfMQUrNLED/13rYnU+6gzOsa
-         aHTAIbI0ZQavKHIeT81zLRKVaN7OOu2zThFDLQNCas/qKLuzLKx0v880ihTpesWwMNWo
-         EasgmGRrScjGOCPRHQm/lNoane+Q3OUeqxmCTnhUR+eeea6w9uWK2SPfWkR1fmZbrycW
-         9SR1EAhbXpvk6ytjhP1Sy+J7Ek4mnOP9SGf9d/D8sDV4K/9ZylZx1U7Jb0vGIpkt40dc
-         JEsn84fOn88nIMjmPq3n6WABJRe6PoYJI4TBG1uav3Fy00dDotlnk03P0EtT09nfi2ef
-         WsSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705406380; x=1706011180;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4mY+tIwBKHmUxob9qZlCJ14coqBFslOG9Pxb8dXi/Ag=;
-        b=o757a2Lza9CnEhcNhXLoprwO2buzz8wSE4wZ0UtaweKk3Uoa5r1I/xlzxNyZfSIoOa
-         5QdVOR8xdJUYUrSMVzOH3ESypHfoPBBxMkzlFLLbRSLVDSQiVNWffukArqUOPSkIqyXP
-         dm+3rokZLMu1OOJS9sriERDvwPwQBkhhBmTvRD9//b0JpFO/wVjttDFRabWql3q+XedQ
-         Vnk6B65dn6Smy64feqaqrx30RvFGsCGcRVENXNMMm9m4cLxwHrzjoKcZy4+UVzy0O9II
-         qY0+UHsiAY2uztW6s1qF6GPDMYfnmG62Xv0FTs8jhhnPlTuZN5dNMnk11WxCyHcEGCTN
-         Yz4w==
-X-Gm-Message-State: AOJu0YyFzJ7fHVLF5wPByWRRtq7YItelve7dzNTKxdI2X5BfdiJGWqmd
-	p40hwqLfCvqFIq4ErqGn8G1lS3IKMNfToA==
-X-Google-Smtp-Source: AGHT+IGYJaZEn2g6guZI4dv6kZznoWhyov0C2/HFwMpWczK/1npe7aC2mGDSbL9GE9DZBkZ84UN4ug==
-X-Received: by 2002:a05:600c:211a:b0:40e:6ba4:e056 with SMTP id u26-20020a05600c211a00b0040e6ba4e056mr2674818wml.18.1705406379859;
-        Tue, 16 Jan 2024 03:59:39 -0800 (PST)
-Received: from mai.box.freepro.com ([2a05:6e02:1041:c10:fab3:687:ead6:5b40])
-        by smtp.gmail.com with ESMTPSA id p31-20020a05600c1d9f00b0040e6ea6d2d0sm3279722wms.24.2024.01.16.03.59.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 03:59:39 -0800 (PST)
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-To: andersson@kernel.org
-Cc: Amit Pundir <amit.pundir@linaro.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT),
-	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] arm64: dts: qcom: sdm845: Fix wild reboot during Antutu test
-Date: Tue, 16 Jan 2024 12:59:20 +0100
-Message-Id: <20240116115921.804185-1-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 547331BC37;
+	Tue, 16 Jan 2024 12:08:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=avm.de
+Received: from mail-auth.avm.de (unknown [IPv6:2001:bf0:244:244::71])
+	by mail.avm.de (Postfix) with ESMTPS;
+	Tue, 16 Jan 2024 13:01:04 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
+	t=1705406464; bh=LTvkD50jnbDyC8Lwck8C4IOhXUM+7Ro962nBVa5evZk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=b/0aKTBheQflYtrNmb+bkO8c6Unq4RO+G+asjb4jdzprQvi3LMBjwCJFZFt6N73GD
+	 GgZ0kGZI6ED/G+Bt7XQfrSEIlTAT/tGZid0ZPcVilfK80xlTdf6geykExZp+v9cI9O
+	 LzyH/A/AOeI6X6of0RHOix6IpTmcuQ1Ys2sw4MTs=
+Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
+	by mail-auth.avm.de (Postfix) with ESMTPA id 6F19380397;
+	Tue, 16 Jan 2024 13:01:04 +0100 (CET)
+Received: from reykjavik.ads.avm.de (unknown [172.17.89.91])
+	by buildd.core.avm.de (Postfix) with ESMTPS id 54D51180C48;
+	Tue, 16 Jan 2024 13:01:04 +0100 (CET)
+Date: Tue, 16 Jan 2024 13:01:01 +0100
+From: Nicolas Schier <n.schier@avm.de>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Tomasz Figa <tfiga@chromium.org>, linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Jesse Taube <Mr.Bossman075@gmail.com>
+Subject: Re: [PATCH] kconfig: menuconfig: Make hidden options show as dim
+Message-ID: <ZaZv_TNR5_1zOCji@reykjavik.ads.avm.de>
+References: <20231228054630.3595093-1-tfiga@chromium.org>
+ <CAK7LNATBipJtprjvvRVYg8JcYOFXQdpLEyEc+4+8j1PtBQ+PUg@mail.gmail.com>
+ <CAAFQd5C3vAUJhKiQ1LPkZv3dJxNvK4QinRezV9Q8rz_Ov6FSUQ@mail.gmail.com>
+ <CAK7LNAQcaDneE4rnjvV+GTSBBMozm5deu_q9+STTn60ervZJbA@mail.gmail.com>
+ <CAAFQd5DcxL80cb8w9OZs0mpD=Y3K=LmM7exG7U_DaSsMkfni7Q@mail.gmail.com>
+ <CAK7LNASyiYasGa2_Ppp54nEq2m08q_Z_keViZDCavmNN0rBAzQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK7LNASyiYasGa2_Ppp54nEq2m08q_Z_keViZDCavmNN0rBAzQ@mail.gmail.com>
+X-purgate-ID: 149429::1705406464-FCD755FF-BEEFE864/0/0
+X-purgate-type: clean
+X-purgate-size: 2232
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
+X-purgate: clean
+X-purgate: error
 
-Running an Antutu benchmark makes the board to do a hard reboot.
+On Tue, Jan 16, 2024 at 07:58:05PM +0900, Masahiro Yamada wrote:
+> On Mon, Jan 15, 2024 at 2:04 PM Tomasz Figa <tfiga@chromium.org> wrote:
+> >
+> > On Sat, Jan 13, 2024 at 8:23 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > >
+> > > On Wed, Jan 10, 2024 at 10:05 PM Tomasz Figa <tfiga@chromium.org> wrote:
+> > > >
+> > > > On Fri, Dec 29, 2023 at 1:10 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > > > >
+> > > > > On Thu, Dec 28, 2023 at 2:46 PM Tomasz Figa <tfiga@chromium.org> wrote:
+> > > > > >
+> > > > > > When hidden options are toggled on (using 'z'), the number of options
+> > > > > > on the screen can be overwhelming and may make it hard to distinguish
+> > > > > > between available and hidden ones. Make them easier to distinguish by
+> > > > > > displaying the hidden one as dim (using the A_DIM curses attribute).
+> > > > > >
+> > > > > > Signed-off-by: Tomasz Figa <tfiga@chromium.org>
+> > > > >
+> > > > >
+> > > > >
+> > > > > Do you think this is useful?
+> > > > >
+> > > > > This changes the color only when you select a hidden item.
+> > > > >
+> > > > >
+> > > > > For unselected items, you cannot distinguish hidden ones,
+> > > > > as A_DIM has no effect to black text.
+> > > > >
+> > > > >
+> > > >
+> > > > Hmm, are you sure about that? For me it seems to dim the text. it
+> > > > seems to be also used in the existing code for dlg.button_inactive.atr
+> > > > of the mono theme:
+> > > >
+> > > > https://elixir.bootlin.com/linux/latest/source/scripts/kconfig/lxdialog/util.c#L26
+> > >
+> > >
+> > >
+> > > Then, your code works only on the mono theme.
+> > > (when your terminal does not support color, or
+> > > "MENUCONFIG_COLOR=mono make menuconfig")
+> > >
+> >
+> > No, that's not what I meant. It works for me for all themes, see the
+> > screenshot at https://postimg.cc/sBsM0twT . The terminal is tmux
+> > inside hterm (which in turn is supposed to be compatible with xterm).
+> > I guess I can test a couple of different terminals.
+> >
+> > In which terminal is it not working for you?
+> 
+> 
+> I use gnome-terminal.
+> The disto is Ubuntu 23.10
 
-Cause: it appears the gpu-bottom and gpu-top temperature sensors are showing
-too high temperatures, above 115°C.
+I see the same behaviour as Masahiro described with foot 1.13.1 on
+Debian 12.
 
-Out of tree configuratons show the gpu thermal zone is configured to
-be mitigated at 85°C with devfreq.
-
-Add the DT snippet to enable the thermal mitigation on the sdm845
-based board.
-
-Fixes: c79800103eb18 ("arm64: dts: sdm845: Add gpu and gmu device nodes")
-Cc: Amit Pundir <amit.pundir@linaro.org>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- arch/arm64/boot/dts/qcom/sdm845.dtsi | 32 ++++++++++++++++++++++++++--
- 1 file changed, 30 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index c2244824355a..20fefd6af0f8 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -4764,6 +4764,8 @@ gpu: gpu@5000000 {
- 			interconnects = <&mem_noc MASTER_GFX3D 0 &mem_noc SLAVE_EBI1 0>;
- 			interconnect-names = "gfx-mem";
- 
-+			#cooling-cells = <2>;
-+
- 			status = "disabled";
- 
- 			gpu_opp_table: opp-table {
-@@ -5603,12 +5605,25 @@ gpu-top-thermal {
- 			thermal-sensors = <&tsens0 11>;
- 
- 			trips {
--				gpu1_alert0: trip-point0 {
-+                                gpu1_alert0: trip-point0 {
-+                                        temperature = <85000>;
-+                                        hysteresis = <2000>;
-+                                        type = "passive";
-+                                };
-+
-+				gpu1_alert1: trip-point1 {
- 					temperature = <90000>;
- 					hysteresis = <2000>;
- 					type = "hot";
- 				};
- 			};
-+
-+			cooling-maps {
-+				map0 {
-+					trip = <&gpu1_alert0>;
-+					cooling-device = <&gpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+				};
-+			};
- 		};
- 
- 		gpu-bottom-thermal {
-@@ -5618,12 +5633,25 @@ gpu-bottom-thermal {
- 			thermal-sensors = <&tsens0 12>;
- 
- 			trips {
--				gpu2_alert0: trip-point0 {
-+                                gpu2_alert0: trip-point0 {
-+                                        temperature = <85000>;
-+                                        hysteresis = <2000>;
-+                                        type = "passive";
-+                                };
-+
-+				gpu2_alert1: trip-point1 {
- 					temperature = <90000>;
- 					hysteresis = <2000>;
- 					type = "hot";
- 				};
- 			};
-+
-+			cooling-maps {
-+ 				map0 {
-+ 					trip = <&gpu2_alert0>;
-+					cooling-device = <&gpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+                                };
-+                        };
- 		};
- 
- 		aoss1-thermal {
--- 
-2.34.1
-
+Kind regards,
+Nicolas
 
