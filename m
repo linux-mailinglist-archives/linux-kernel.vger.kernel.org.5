@@ -1,60 +1,57 @@
-Return-Path: <linux-kernel+bounces-28001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E5FF82F8E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:55:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CCC482F8EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:55:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 812991C24F3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:55:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AE45286BE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:55:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54B9913B79E;
-	Tue, 16 Jan 2024 19:53:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8F6913B7BE;
+	Tue, 16 Jan 2024 19:53:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M3S9b5o+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RPAUXRky"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9157C13B785;
-	Tue, 16 Jan 2024 19:53:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 137EE13B7AD;
+	Tue, 16 Jan 2024 19:53:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434812; cv=none; b=hajMgtvMuLgWRc4GWqcWQM7HMNu00lcrtKqS9uFU1UOQNEjpikC0OntmwE24wkbtopLaScUuX5Kawkv6nOrlUEpETdHs/uPXnj5hbYeCRsYN08Y1wNsMr9J07gVprjeBblPiMGyjyk50Ce+QhM2vhpkMbb8KE9A1c/DgwZUB5PI=
+	t=1705434814; cv=none; b=tihytGY0Nutnfwdc9hBJ2TlYbPLs+yz0oLdeNvHFjz3ItfinvDjTK4n/o4a79QtT8LjbznhfRe0BgNZV6MxFgQdAEqCy06MXd/RYsSq7jIOtW5dp20BdwBrW9bkWP2Z1jwb3jHdMU3NZxkIrBJ05+Wxuvu+glXhD0GPfIr+hqRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434812; c=relaxed/simple;
-	bh=sQ0wS/58+NtRgomC/D/pCetGutfZh6iT0unc47ZnxnU=;
+	s=arc-20240116; t=1705434814; c=relaxed/simple;
+	bh=/YfA1eWiAVAtY24JCbeKDlQFxtbsyL+ny+6AY65nBDk=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=fcj/ZGPPrMfuYu7JJBKP+PCzTJHQHxt0wTrJd+yRL0ohFrGuDuoOhDsKrrz8M4E6jvPovEFJd9+tWbLyH9trL1ytXXz0YFkXQ/CI20H4yg/N2T/xbqOPrHbzdcIabt0wXmuTqNyWJLkgGrmGb419kv9kxu29xFENpVRHZdZEGR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M3S9b5o+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B1B1C43390;
-	Tue, 16 Jan 2024 19:53:31 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=TCLdx0ckbGQeGuWZprEjoASlB8HhBwnW6pwUgFsbdnyrqRkJWa2G+b4BGh3q6SbBVD8Mu3DWdQOcVZgGCwev6qkxkqZHQQ/s5O7EbUIRUMfvUko11kzdb9uhRlhnEEL3WkOV+zj6sa8XCGJjt+L8ioNIqA0lmM3YwoE35KV5s8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RPAUXRky; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3A60C433F1;
+	Tue, 16 Jan 2024 19:53:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434812;
-	bh=sQ0wS/58+NtRgomC/D/pCetGutfZh6iT0unc47ZnxnU=;
+	s=k20201202; t=1705434813;
+	bh=/YfA1eWiAVAtY24JCbeKDlQFxtbsyL+ny+6AY65nBDk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=M3S9b5o+9Vy5k3YPaF+e+Ft709urC1rM0Om5JEIkZSJWcIwioEGeeBb0nwkTO77KQ
-	 NGV2y2HHz8vu48HLMby20zOVEEhLeVgQCprMQFqvODgb80Thl/bpJoxhJAqoI0l7Kk
-	 hbcTYFfZ2vwB6asSfxRJoMUgy8+/P5C2wXX4eVL3YmQdjyIKUIgON20HnmcLsJcsSE
-	 T3++krKHr6RlUPTFeqhSovRk1Xx+Yfc5DKU4tzzrHK44bwnz3/jpMxRT3JDoaXCCe7
-	 w9e++YBY2J7nQpoJS0jeQXqOsYwElFqmknwgXTi6Fu08405fhozo82MFtPJpFAQi/n
-	 GVVRWYQMFkDaw==
+	b=RPAUXRkyB0MeCTlARxzqfUAgE0iBOK0SGl4Kzao3h0iMVmAFxI21Q3OZ2qeWojSTx
+	 p9Oe905nInVp6+WyW3BHJZ4aS6k0e6m2zxaQfjAKSP6xwhABlxD+6v2qXQ/FLnF1qe
+	 uUvVpxM9WpsfBEYMwUk30Q0YwOsHMTyouWIW866J6SM2jx8vV09+6n1WW2XZn10dAg
+	 j08oFP8yLq8plHwI7+zjBK7JMxuRTsX84ohHZlQaSUWL6PPOYRAQqDhXklxxxpmw4b
+	 zVxSLxO7d+BfZBjCi5Kge9owkKlave4cm0VD0CvBbyDw20BUYoS6F/5v2jo+cZ9CSz
+	 E451tkBhGpWkA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mingyi Zhang <zhangmingyi5@huawei.com>,
-	Xin Liu <liuxin350@huawei.com>,
-	Changye Wu <wuchangye@huawei.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
+Cc: Su Hui <suhui@nfschina.com>,
+	Ping-Ke Shih <pkshih@realtek.com>,
+	Kalle Valo <kvalo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	ast@kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 089/104] libbpf: Fix NULL pointer dereference in bpf_object__collect_prog_relos
-Date: Tue, 16 Jan 2024 14:46:55 -0500
-Message-ID: <20240116194908.253437-89-sashal@kernel.org>
+	linux-wireless@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 090/104] wifi: rtlwifi: add calculate_bit_shift()
+Date: Tue, 16 Jan 2024 14:46:56 -0500
+Message-ID: <20240116194908.253437-90-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194908.253437-1-sashal@kernel.org>
 References: <20240116194908.253437-1-sashal@kernel.org>
@@ -69,70 +66,40 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.12
 Content-Transfer-Encoding: 8bit
 
-From: Mingyi Zhang <zhangmingyi5@huawei.com>
+From: Su Hui <suhui@nfschina.com>
 
-[ Upstream commit fc3a5534e2a8855427403113cbeb54af5837bbe0 ]
+[ Upstream commit 52221dfddbbfb5b4e029bb2efe9bb7da33ec1e46 ]
 
-An issue occurred while reading an ELF file in libbpf.c during fuzzing:
+There are many same functions like _rtl88e_phy_calculate_bit_shift(),
+_rtl92c_phy_calculate_bit_shift() and so on. And these functions can
+cause undefined bitwise shift behavior. Add calculate_bit_shift() to
+replace them and fix undefined behavior in subsequent patches.
 
-	Program received signal SIGSEGV, Segmentation fault.
-	0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
-	4206 in libbpf.c
-	(gdb) bt
-	#0 0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
-	#1 0x000000000094f9d6 in bpf_object.collect_relos () at libbpf.c:6706
-	#2 0x000000000092bef3 in bpf_object_open () at libbpf.c:7437
-	#3 0x000000000092c046 in bpf_object.open_mem () at libbpf.c:7497
-	#4 0x0000000000924afa in LLVMFuzzerTestOneInput () at fuzz/bpf-object-fuzzer.c:16
-	#5 0x000000000060be11 in testblitz_engine::fuzzer::Fuzzer::run_one ()
-	#6 0x000000000087ad92 in tracing::span::Span::in_scope ()
-	#7 0x00000000006078aa in testblitz_engine::fuzzer::util::walkdir ()
-	#8 0x00000000005f3217 in testblitz_engine::entrypoint::main::{{closure}} ()
-	#9 0x00000000005f2601 in main ()
-	(gdb)
-
-scn_data was null at this code(tools/lib/bpf/src/libbpf.c):
-
-	if (rel->r_offset % BPF_INSN_SZ || rel->r_offset >= scn_data->d_size) {
-
-The scn_data is derived from the code above:
-
-	scn = elf_sec_by_idx(obj, sec_idx);
-	scn_data = elf_sec_data(obj, scn);
-
-	relo_sec_name = elf_sec_str(obj, shdr->sh_name);
-	sec_name = elf_sec_name(obj, scn);
-	if (!relo_sec_name || !sec_name)// don't check whether scn_data is NULL
-		return -EINVAL;
-
-In certain special scenarios, such as reading a malformed ELF file,
-it is possible that scn_data may be a null pointer
-
-Signed-off-by: Mingyi Zhang <zhangmingyi5@huawei.com>
-Signed-off-by: Xin Liu <liuxin350@huawei.com>
-Signed-off-by: Changye Wu <wuchangye@huawei.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20231221033947.154564-1-liuxin350@huawei.com
+Signed-off-by: Su Hui <suhui@nfschina.com>
+Acked-by: Ping-Ke Shih <pkshih@realtek.com>
+Signed-off-by: Kalle Valo <kvalo@kernel.org>
+Link: https://msgid.link/20231219065739.1895666-2-suhui@nfschina.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/wireless/realtek/rtlwifi/wifi.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 96ff1aa4bf6a..de08b920a149 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4251,6 +4251,8 @@ bpf_object__collect_prog_relos(struct bpf_object *obj, Elf64_Shdr *shdr, Elf_Dat
+diff --git a/drivers/net/wireless/realtek/rtlwifi/wifi.h b/drivers/net/wireless/realtek/rtlwifi/wifi.h
+index 2e7e04f91279..8cbf3fb38853 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/wifi.h
++++ b/drivers/net/wireless/realtek/rtlwifi/wifi.h
+@@ -3080,4 +3080,11 @@ static inline struct ieee80211_sta *rtl_find_sta(struct ieee80211_hw *hw,
+ 	return ieee80211_find_sta(mac->vif, mac_addr);
+ }
  
- 	scn = elf_sec_by_idx(obj, sec_idx);
- 	scn_data = elf_sec_data(obj, scn);
-+	if (!scn_data)
-+		return -LIBBPF_ERRNO__FORMAT;
- 
- 	relo_sec_name = elf_sec_str(obj, shdr->sh_name);
- 	sec_name = elf_sec_name(obj, scn);
++static inline u32 calculate_bit_shift(u32 bitmask)
++{
++	if (WARN_ON_ONCE(!bitmask))
++		return 0;
++
++	return __ffs(bitmask);
++}
+ #endif
 -- 
 2.43.0
 
