@@ -1,352 +1,209 @@
-Return-Path: <linux-kernel+bounces-27640-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B38982F389
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:56:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A543E82F38C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:58:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE28C285169
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:55:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1895C1F24665
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:57:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B42B1CD10;
-	Tue, 16 Jan 2024 17:55:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F9141CD0B;
+	Tue, 16 Jan 2024 17:57:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fIFPiJwh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="f/JUfKl5"
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 592361CD01;
-	Tue, 16 Jan 2024 17:55:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14E121CABC
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 17:57:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705427751; cv=none; b=RyDc89O+IM0gitLXKp3bZGNGH9b0Y3eQvMlE0awOAb8Y6sQQJkMsa1kFK9bne2wdADuZ/Kx7jJPVV0r/dJvGKYRCIC4s4JAbzhJIGZR9bEJtLK3coLD/b2AogIpUG29OfR2xuISdcIhF+aF6jWshssH/VslwohVszGXJ4/u3Q2E=
+	t=1705427869; cv=none; b=c5nnGzv5Go34jV3hu5nPcCUjPqN0SOUX56HhVnOKnfSnpEamF+MHJlB23WG+/8RpMlCoJWWA9AB5RuiDfz5umgc5Apt155A55UkEU1qnKzuNzrkJt1N2mTzhvhCxZ055ozycn+qRovDYZZiteAoN+VemEy7XC+GHT20kWXoL4Ls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705427751; c=relaxed/simple;
-	bh=A7WpPOEyCtH2adKAYF4nilFbx0bdiAYZdsfDGpAubDg=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=uCWYezOPA7aOAsk+pe3Bc42tH+IIYBqRZJpbqBe1LjYaN4VQ+s13L6T79iofeCdyJab5S4sknJkAI60LR1jGiXWW/g/xKHQGxI3I9vR7UnuKHDAUJFuaKujACSv9fYXQYi2kA8JQDnZfttufikuNSCvjRo+amarg1wC0Q9ZIfJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fIFPiJwh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CA3BC433C7;
-	Tue, 16 Jan 2024 17:55:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705427750;
-	bh=A7WpPOEyCtH2adKAYF4nilFbx0bdiAYZdsfDGpAubDg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fIFPiJwhUgdRy26zRTMTIuX5fW2jwJKHQQTkKOxwN2HvpVn/od3MRM9C4W/I7qUgi
-	 K1QyRJ8Ie6+XBd2ke2Loy8Ex0b2GvEwK0AsAYQc0CqPHl5rgo0W6FVo4NHhfHkB6aS
-	 RFDcsruqxnHWSnJul+f5Fyp8CHEG8QmGuLCPHN7sr/RpR2Fe1fynQm0iUojU9wXs+B
-	 /JDad+LE7e7FVd9WbnnU+RfcdtqcAi9Jqq0uGM2WtYTvg1LyVWpPs+a6EZ+PaWzIrw
-	 psQRNYsdftFcEmk7IYLU+Q0UNsQZTSttxRajtNYuDZ9a0HG3vVMHPZBKCOvRx4w0vp
-	 6IJlabfVJ4fzw==
-Date: Tue, 16 Jan 2024 17:55:43 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Dharma Balasubiramani <dharma.b@microchip.com>
-Cc: conor.dooley@microchip.com, sam@ravnborg.org, bbrezillon@kernel.org,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, nicolas.ferre@microchip.com,
-	alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	lee@kernel.org, thierry.reding@gmail.com,
-	u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
-	linux4microchip@microchip.com
-Subject: Re: [PATCH v2 1/3] dt-bindings: display: convert Atmel's HLCDC to DT
- schema
-Message-ID: <20240116-coastal-amply-e495b07726df@spud>
-References: <20240116113800.82529-1-dharma.b@microchip.com>
- <20240116113800.82529-2-dharma.b@microchip.com>
+	s=arc-20240116; t=1705427869; c=relaxed/simple;
+	bh=yUAHuj8vVj8IUFVbFycTjbLEQJVq0uuFYF6xO/bIKQk=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=hSGCHr6weU0XMrJH8esCE2czmCNijSqEZa2fjTxQDseBTskWlgqpyOTMOxRTbih4RhXU3QIbYRsZkI3sucKgYysgXh8wTe86tJ+cv6+recfyThe5Bwxxsdo0c/6qGC8tZAOE4lEmKp1lCD0CU99pmDeRuZ/8NyOnf+bXrkKczaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=f/JUfKl5; arc=none smtp.client-ip=209.85.128.174
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5ff45dc44d1so14167487b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 09:57:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705427867; x=1706032667; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9z9i/7IxW+vD8oAmdqNGi8gKSOYfLZrN80TxMX3ACrg=;
+        b=f/JUfKl5Q1BxzhHkzXbL3WJzt9ong+kA44jQ8KmrFUrYr9Q64j5GLTjn0Kss9yGljz
+         S6ygarJQQ/1DfIrA69jhT2ULQXWni2pp/dOEZO0dPx6o5O9Jrmwt8ZqZmzEeE5Rdhavp
+         bwv7uPUALw+56Tid6hsMYGrewmR1pPsdQ2V08qaG33QdA2vNaySAa/it374iIwuFZoPe
+         YV5dq3qZXE0rIoUsA1A4tJnGlRguql+StFakIrTfLDExs/d7CvxoCMpzdHXyQXGrG78Y
+         v0Fnl93zQ5Bbqs+Lkqpdtro1eSVsM/TqCtd2z9squzkYG/W/GedcsvhiaCOC8NlkvTcT
+         W+RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705427867; x=1706032667;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9z9i/7IxW+vD8oAmdqNGi8gKSOYfLZrN80TxMX3ACrg=;
+        b=C38dJUmZdxI9DITfReEMFhU49XidtwGC5XnnHq9r5krynjjpyNHUHUOLFoCVVm7R0y
+         THkNh5mPr/uy5iiE2VMpo2+H1ZBSDW0uVfC0P3i8m93CuP288cf3AEnuMoYILjlliZPZ
+         yb+ehywULRGe9g+QAUOcHLPLgbgCdjUEfsZd7sO+sTNvVoZnCrpCs97uiCrztZ7g+n03
+         u+kCpnMpccfsPWakHB4DSHY8SzKWIoLaYW/bnJfniLBgu9PIj91d2J6RWYCyEfq+pT8L
+         q9PiCWpZPrCEdyAN6opi5+No5llzavT9+8sXkbVQAU0Ix9/G/1HYqvWAUhGChf+mcQ/R
+         uO/Q==
+X-Gm-Message-State: AOJu0YxEawWNZeA7xFCvuBI7gZKuKotjCV8gzFIl3PjA24QcixY4os+u
+	t0Y/LQh0zdyozl0hZHsWsJ7l5dcn+hwg9Rf7tp/brdgWE08E
+X-Google-Smtp-Source: AGHT+IFyVFz3b29oTWOr9F5UxV+4etmI5OtR+C0TA+Mosl5koGhrgqlF3uiF6vK/YTAobFtxglozaPMX3P532Tcex2E=
+X-Received: by 2002:a81:ad5b:0:b0:5ff:6117:3df9 with SMTP id
+ l27-20020a81ad5b000000b005ff61173df9mr263299ywk.71.1705427866742; Tue, 16 Jan
+ 2024 09:57:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="M3diZ8Ne17+OylG0"
-Content-Disposition: inline
-In-Reply-To: <20240116113800.82529-2-dharma.b@microchip.com>
-
-
---M3diZ8Ne17+OylG0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240115183837.205694-1-surenb@google.com> <1bc8a5df-b413-4869-8931-98f5b9e82fe5@suse.cz>
+ <74005ee1-b6d8-4ab5-ba97-92bec302cc4b@suse.cz>
+In-Reply-To: <74005ee1-b6d8-4ab5-ba97-92bec302cc4b@suse.cz>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Tue, 16 Jan 2024 09:57:31 -0800
+Message-ID: <CAJuCfpGTVEy=ZURbL3c7k+CduDR8wSfqsujN+OecPwuns7LiGQ@mail.gmail.com>
+Subject: Re: [RFC 0/3] reading proc/pid/maps under RCU
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: akpm@linux-foundation.org, viro@zeniv.linux.org.uk, brauner@kernel.org, 
+	jack@suse.cz, dchinner@redhat.com, casey@schaufler-ca.com, 
+	ben.wolsieffer@hefring.com, paulmck@kernel.org, david@redhat.com, 
+	avagin@google.com, usama.anjum@collabora.com, peterx@redhat.com, 
+	hughd@google.com, ryan.roberts@arm.com, wangkefeng.wang@huawei.com, 
+	Liam.Howlett@oracle.com, yuzhao@google.com, axelrasmussen@google.com, 
+	lstoakes@gmail.com, talumbau@google.com, willy@infradead.org, 
+	mgorman@techsingularity.net, jhubbard@nvidia.com, vishal.moola@gmail.com, 
+	mathieu.desnoyers@efficios.com, dhowells@redhat.com, jgg@ziepe.ca, 
+	sidhartha.kumar@oracle.com, andriy.shevchenko@linux.intel.com, 
+	yangxingui@huawei.com, keescook@chromium.org, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Yo,
+On Tue, Jan 16, 2024 at 6:46=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> On 1/16/24 15:42, Vlastimil Babka wrote:
+> > On 1/15/24 19:38, Suren Baghdasaryan wrote:
+> >
+> > Hi,
+> >
+> >> The issue this patchset is trying to address is mmap_lock contention w=
+hen
+> >> a low priority task (monitoring, data collecting, etc.) blocks a highe=
+r
+> >> priority task from making updated to the address space. The contention=
+ is
+> >> due to the mmap_lock being held for read when reading proc/pid/maps.
+> >> With maple_tree introduction, VMA tree traversals are RCU-safe and per=
+-vma
+> >> locks make VMA access RCU-safe. this provides an opportunity for lock-=
+less
+> >> reading of proc/pid/maps. We still need to overcome a couple obstacles=
+:
+> >> 1. Make all VMA pointer fields used for proc/pid/maps content generati=
+on
+> >> RCU-safe;
+> >> 2. Ensure that proc/pid/maps data tearing, which is currently possible=
+ at
+> >> page boundaries only, does not get worse.
+> >
+> > Hm I thought we were to only choose this more complicated in case addit=
+ional
+> > tearing becomes a problem, and at first assume that if software can dea=
+l
+> > with page boundary tearing, it can deal with sub-page tearing too?
 
-On Tue, Jan 16, 2024 at 05:07:58PM +0530, Dharma Balasubiramani wrote:
-> Convert the existing DT binding to DT schema of the Atmel's HLCDC display
-> controller.
->=20
-> Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
-> ---
-> changelog
-> v1 -> v2
-> - Remove the explicit copyrights.
-> - Modify filename like compatible.
-> - Modify title (drop words like binding/driver).
-> - Modify description actually describing the hardware and not the driver.
-> - Remove pinctrl properties which aren't required.
-> - Ref endpoint and not endpoint-base.
-> - Drop redundant info about bus-width description and add ref to video-in=
-terfaces.
-> - Move 'additionalProperties' after 'Required'.
-> - Drop parent node and it's other sub-device node which are not related h=
-ere.
-> - Add compatible to example 2 and add comments that bus-width is the diff=
- between two examples.
-> ---
->  .../atmel/atmel,hlcdc-display-controller.yaml | 110 ++++++++++++++++++
->  .../bindings/display/atmel/hlcdc-dc.txt       |  75 ------------
->  2 files changed, 110 insertions(+), 75 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/display/atmel/atmel=
-,hlcdc-display-controller.yaml
->  delete mode 100644 Documentation/devicetree/bindings/display/atmel/hlcdc=
--dc.txt
->=20
-> diff --git a/Documentation/devicetree/bindings/display/atmel/atmel,hlcdc-=
-display-controller.yaml b/Documentation/devicetree/bindings/display/atmel/a=
-tmel,hlcdc-display-controller.yaml
-> new file mode 100644
-> index 000000000000..f022c294cfbc
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/atmel/atmel,hlcdc-display=
--controller.yaml
-> @@ -0,0 +1,110 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/atmel/atmel,hlcdc-display-con=
-troller.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Atmel's High LCD Controller (HLCDC)
-> +
-> +maintainers:
-> +  - Nicolas Ferre <nicolas.ferre@microchip.com>
-> +  - Alexandre Belloni <alexandre.belloni@bootlin.com>
-> +  - Claudiu Beznea <claudiu.beznea@tuxon.dev>
-> +
-> +description: |
+Hi Vlastimil,
+Thanks for the feedback!
+Yes, originally I thought we wouldn't be able to avoid additional
+tearing without a big change but then realized it's not that hard, so
+I tried to keep the change in behavior transparent to the userspace.
 
-This | is not needed as you have no formatting to preserve.
+> >
+> >> The patchset deals with these issues but there is a downside which I w=
+ould
+> >> like to get input on:
+> >> This change introduces unfairness towards the reader of proc/pid/maps,
+> >> which can be blocked by an overly active/malicious address space modif=
+yer.
+> >
+> > So this is a consequence of the validate() operation, right? We could a=
+void
+> > this if we allowed sub-page tearing.
 
-> +  The LCD Controller (LCDC) consists of logic for transferring LCD image
-> +  data from an external display buffer to a TFT LCD panel. The LCDC has =
-one
-> +  display input buffer per layer that fetches pixels through the single =
-bus
-> +  host interface and a look-up table to allow palletized display
-> +  configurations.
-> +
-> +properties:
-> +  compatible:
-> +    const: atmel,hlcdc-display-controller
-> +
-> +  '#address-cells':
-> +    const: 1
-> +
-> +  '#size-cells':
-> +    const: 0
-> +
-> +  port@0:
-> +    $ref: /schemas/graph.yaml#/$defs/port-base
-> +    unevaluatedProperties: false
-> +    description:
-> +      Output endpoint of the controller, connecting the LCD panel signal=
-s.
-> +
-> +    properties:
-> +      '#address-cells':
-> +        const: 1
-> +
-> +      '#size-cells':
-> +        const: 0
-> +
-> +      reg:
-> +        maxItems: 1
-> +
-> +      endpoint:
-> +        $ref: /schemas/graph.yaml#/$defs/endpoint
+Yes, if we don't care about sub-page tearing then we could get rid of
+validate step and this issue with updaters blocking the reader would
+go away. If we choose that direction there will be one more issue to
+fix, namely the maple_tree temporary inconsistent state when a VMA is
+replaced with another one and we might observe NULL there. We might be
+able to use Matthew's rwsem_wait() to deal with that issue.
 
-$ref: /schemas/media/video-interfaces.yaml#
+> >
+> >> A couple of ways I though we can address this issue are:
+> >> 1. After several lock-less retries (or some time limit) to fall back t=
+o
+> >> taking mmap_lock.
+> >> 2. Employ lock-less reading only if the reader has low priority,
+> >> indicating that blocking it is not critical.
+> >> 3. Introducing a separate procfs file which publishes the same data in
+> >> lock-less manner.
+>
+> Oh and if this option 3 becomes necessary, then such new file shouldn't
+> validate() either, and whoever wants to avoid the reader contention and
+> converts their monitoring to the new file will have to account for this
+> possible extra tearing from the start. So I would suggest trying to chang=
+e
+> the existing file with no validate() first, and if existing userspace get=
+s
+> broken, employ option 3. This would mean no validate() in either case?
 
-to match approximately all other endpoints?
+Yes but I was trying to avoid introducing additional file which
+publishes the same content in a slightly different way. We will have
+to explain when userspace should use one vs the other and that would
+require going into low level implementation details, I think. Don't
+know if that's acceptable/preferable.
+Thanks,
+Suren.
 
-> +        unevaluatedProperties: false
-> +        description:
-> +          Endpoint connecting the LCD panel signals.
-> +
-> +        properties:
-> +          bus-width:
-> +            description: Endpoint bus width.
-> +            $ref: /schemas/media/video-interfaces.yaml#
-
-and then bus-width's type is already defined for you, no?
-
-> +            enum: [ 12, 16, 18, 24 ]
-> +
-> +required:
-> +  - '#address-cells'
-> +  - '#size-cells'
-> +  - compatible
-> +  - port@0
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    //Example 1
-> +
-> +    display-controller {
-> +      compatible =3D "atmel,hlcdc-display-controller";
-> +      pinctrl-names =3D "default";
-> +      pinctrl-0 =3D <&pinctrl_lcd_base &pinctrl_lcd_rgb888>;
-> +      #address-cells =3D <1>;
-> +      #size-cells =3D <0>;
-> +
-> +      port@0 {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +        reg =3D <0>;
-> +
-> +        hlcdc_panel_output: endpoint@0 {
-> +          reg =3D <0>;
-> +          remote-endpoint =3D <&panel_input>;
-> +        };
-> +      };
-> +    };
-> +
-> +  - |
-> +    //Example 2 With a video interface override to force rgb565, bus-wid=
-th=3D16
-> +
-> +    display-controller {
-> +      compatible =3D "atmel,hlcdc-display-controller";
-> +      pinctrl-names =3D "default";
-> +      pinctrl-0 =3D <&pinctrl_lcd_base &pinctrl_lcd_rgb565>;
-> +      #address-cells =3D <1>;
-> +      #size-cells =3D <0>;
-> +
-> +      port@0 {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +        reg =3D <0>;
-
-Should be a newline here before the child node.
-
-Cheers,
-Conor.
-
-> +        hlcdc_panel_output2: endpoint@0 {
-> +          reg =3D <0>;
-> +          remote-endpoint =3D <&panel_input>;
-> +          bus-width =3D <16>;
-> +        };
-> +      };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/display/atmel/hlcdc-dc.txt=
- b/Documentation/devicetree/bindings/display/atmel/hlcdc-dc.txt
-> deleted file mode 100644
-> index 923aea25344c..000000000000
-> --- a/Documentation/devicetree/bindings/display/atmel/hlcdc-dc.txt
-> +++ /dev/null
-> @@ -1,75 +0,0 @@
-> -Device-Tree bindings for Atmel's HLCDC (High LCD Controller) DRM driver
-> -
-> -The Atmel HLCDC Display Controller is subdevice of the HLCDC MFD device.
-> -See ../../mfd/atmel-hlcdc.txt for more details.
-> -
-> -Required properties:
-> - - compatible: value should be "atmel,hlcdc-display-controller"
-> - - pinctrl-names: the pin control state names. Should contain "default".
-> - - pinctrl-0: should contain the default pinctrl states.
-> - - #address-cells: should be set to 1.
-> - - #size-cells: should be set to 0.
-> -
-> -Required children nodes:
-> - Children nodes are encoding available output ports and their connections
-> - to external devices using the OF graph representation (see ../graph.txt=
-).
-> - At least one port node is required.
-> -
-> -Optional properties in grandchild nodes:
-> - Any endpoint grandchild node may specify a desired video interface
-> - according to ../../media/video-interfaces.txt, specifically
-> - - bus-width: recognized values are <12>, <16>, <18> and <24>, and
-> -   override any output mode selection heuristic, forcing "rgb444",
-> -   "rgb565", "rgb666" and "rgb888" respectively.
-> -
-> -Example:
-> -
-> -	hlcdc: hlcdc@f0030000 {
-> -		compatible =3D "atmel,sama5d3-hlcdc";
-> -		reg =3D <0xf0030000 0x2000>;
-> -		interrupts =3D <36 IRQ_TYPE_LEVEL_HIGH 0>;
-> -		clocks =3D <&lcdc_clk>, <&lcdck>, <&clk32k>;
-> -		clock-names =3D "periph_clk","sys_clk", "slow_clk";
-> -
-> -		hlcdc-display-controller {
-> -			compatible =3D "atmel,hlcdc-display-controller";
-> -			pinctrl-names =3D "default";
-> -			pinctrl-0 =3D <&pinctrl_lcd_base &pinctrl_lcd_rgb888>;
-> -			#address-cells =3D <1>;
-> -			#size-cells =3D <0>;
-> -
-> -			port@0 {
-> -				#address-cells =3D <1>;
-> -				#size-cells =3D <0>;
-> -				reg =3D <0>;
-> -
-> -				hlcdc_panel_output: endpoint@0 {
-> -					reg =3D <0>;
-> -					remote-endpoint =3D <&panel_input>;
-> -				};
-> -			};
-> -		};
-> -
-> -		hlcdc_pwm: hlcdc-pwm {
-> -			compatible =3D "atmel,hlcdc-pwm";
-> -			pinctrl-names =3D "default";
-> -			pinctrl-0 =3D <&pinctrl_lcd_pwm>;
-> -			#pwm-cells =3D <3>;
-> -		};
-> -	};
-> -
-> -Example 2: With a video interface override to force rgb565; as above
-> -but with these changes/additions:
-> -
-> -	&hlcdc {
-> -		hlcdc-display-controller {
-> -			pinctrl-names =3D "default";
-> -			pinctrl-0 =3D <&pinctrl_lcd_base &pinctrl_lcd_rgb565>;
-> -
-> -			port@0 {
-> -				hlcdc_panel_output: endpoint@0 {
-> -					bus-width =3D <16>;
-> -				};
-> -			};
-> -		};
-> -	};
-> --=20
-> 2.25.1
->=20
-
---M3diZ8Ne17+OylG0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZabDHwAKCRB4tDGHoIJi
-0rzVAQDXJ1TQ1k0nCXBFIKNZ39yzTXWYH98QUx/HdCzWsNYangD8ChAiKtj801cY
-BMVPytUV5tnGQJvaA2g/fcfgvl5suQM=
-=84qM
------END PGP SIGNATURE-----
-
---M3diZ8Ne17+OylG0--
+>
+> >> I imagine a combination of these approaches can also be employed.
+> >> I would like to get feedback on this from the Linux community.
+> >>
+> >> Note: mmap_read_lock/mmap_read_unlock sequence inside validate_map()
+> >> can be replaced with more efficiend rwsem_wait() proposed by Matthew
+> >> in [1].
+> >>
+> >> [1] https://lore.kernel.org/all/ZZ1+ZicgN8dZ3zj3@casper.infradead.org/
+> >>
+> >> Suren Baghdasaryan (3):
+> >>   mm: make vm_area_struct anon_name field RCU-safe
+> >>   seq_file: add validate() operation to seq_operations
+> >>   mm/maps: read proc/pid/maps under RCU
+> >>
+> >>  fs/proc/internal.h        |   3 +
+> >>  fs/proc/task_mmu.c        | 130 ++++++++++++++++++++++++++++++++++---=
+-
+> >>  fs/seq_file.c             |  24 ++++++-
+> >>  include/linux/mm_inline.h |  10 ++-
+> >>  include/linux/mm_types.h  |   3 +-
+> >>  include/linux/seq_file.h  |   1 +
+> >>  mm/madvise.c              |  30 +++++++--
+> >>  7 files changed, 181 insertions(+), 20 deletions(-)
+> >>
+> >
+>
 
