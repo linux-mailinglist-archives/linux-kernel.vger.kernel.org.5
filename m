@@ -1,61 +1,58 @@
-Return-Path: <linux-kernel+bounces-27927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFFC882F7E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:33:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2393382F7E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:33:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40D791F260F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:33:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8472AB223CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:33:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2DBF129A8B;
-	Tue, 16 Jan 2024 19:49:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F06C12A14A;
+	Tue, 16 Jan 2024 19:50:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GVBt25rX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uGzcp8hN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E7FE129A74;
-	Tue, 16 Jan 2024 19:49:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F7C1129A8F;
+	Tue, 16 Jan 2024 19:49:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434598; cv=none; b=aaZONZOxWNbeN7OpjvhQCbGcQgrlDTCv9oOj58u0uzs6gS/0i4LhYOXUGga0h5VupX55ZCpfTAgYTnPjbkLJ13C2A/inDnNUSFIzasYTRPier9/RepD+ZkMsn1qMBhIoIo/3Qv1iOwPR7yYyemWLw2HJufnDVGhSNdBy3ba8N2Y=
+	t=1705434599; cv=none; b=MEvZyarjEuJMjlLOrQRQsSQIv8FYnT+weuqzUkgQJDJu007s+kAvu7doIo+RpFhTEZJepK32k5OOHqshlgtlih4bK1lIVqA7Fj/qWf3UCAeVyPQmMg4Y4u65GRFeeG9dD1GLA99hF2Xq+4ifN/0EA1CsSRfecHI3QOtkJLdwZn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434598; c=relaxed/simple;
-	bh=as60FRMoLYY3Y/+Ss6mPpIgP9rIDXYK52rIcTRa6+Ro=;
+	s=arc-20240116; t=1705434599; c=relaxed/simple;
+	bh=Wkmj4B3uejP3WGH0oYV3/MqVkPdtTU7Bqr3eiSburUE=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=ZveOB8gswdX/xRdMPdu+0KI0XVZIg2k7SqXSCD/XOyjH572DqUgHtN4HOPGDthDbtcFNa+SD1u1W6acd7GBAz3eqbYAfRiA9rHnzdXFKn+8Sxr1Ig71WLZbNu6YpRyLDWzaw5zh4cYXDMb2GAyPu3q6618lAnqWuHSWFvNJkFOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GVBt25rX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 931A5C43399;
-	Tue, 16 Jan 2024 19:49:56 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=sCpqQSxL9bvNfIk2O2UnrgTND8bgwLj32DzzWy8nsfFAYC5qxjQz0VBwSd+NFtWzdRF91743tO4EoHJ+k4rwJJR3yWm0elLn3fQ5g5Jq825dHaAnJUyugPKzo/c/3VMu+TOM9FrUE53SPMWWKVEkd6q++TPsvBK4IJbjUmRvBxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uGzcp8hN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 494AEC43390;
+	Tue, 16 Jan 2024 19:49:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434597;
-	bh=as60FRMoLYY3Y/+Ss6mPpIgP9rIDXYK52rIcTRa6+Ro=;
+	s=k20201202; t=1705434599;
+	bh=Wkmj4B3uejP3WGH0oYV3/MqVkPdtTU7Bqr3eiSburUE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GVBt25rXG9QG/iioFkQGGOuDcr9aDBI3AdlaEC7y8z/0EC8Wk65/G4OxJeNmgn/h0
-	 LyUtoH7Qr4Cpiewk/pj6AzyKueYlqM4XL5JO1CUJLQ9khP+n3gjooSAro0ZHlXXdX2
-	 JU1gUTVI0pcHu+csbAbj72z1Xr8wxRN0N65usxwCfr4C5gO7km2tl6k2KBcxbUwtIo
-	 0hEfjm895yNliPHjwXHQHB7qVpvCbB763oiqIJ2ulAwoA6eH7qaJx0EKPbgdbxBle0
-	 i7+9il0WhYcbsJeHXOSBmSwHeYtZlzrtwMF64dOCHH2zJanf6QLN6wfxQIs2/PGW41
-	 JywZdQr8HcuEg==
+	b=uGzcp8hNzv1gn6zksCUYGN6R1ZxmHIRKJZY6kyIym7QPbLwuivZUC8LdWVIjKfoIb
+	 jLTOtyJ4hkgesOhCRPPNtNXf5I5kODZU7rU4muQSeTy82kfLJUg2C9R7YO+b/0fLhg
+	 oIcnpv9Zm2tVW7NHFACRgSKsq1zia48Nt3TU52d3llQ8Fk8cS+Qht8ynC2Sv1NK+58
+	 tbG52pwtZDJK2iRqfN3I6Wv2WFI8Qv85NfPeuuDv+8JaZsag351uc6h5lcXXb3y6Gn
+	 BvYDX6XKWzYpFPI89O/Q6Fdx1aOkAEQ9Y2ZeXZCAU8X2XL4xK4q7Qoatkb27nONFbA
+	 vqE+RaRVp3M1Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kory Maincent <kory.maincent@bootlin.com>,
+Cc: Ido Schimmel <idosch@nvidia.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Petr Machata <petrm@nvidia.com>,
 	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	andrew@lunn.ch,
-	hkallweit1@gmail.com,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 019/104] net: phy: micrel: fix ts_info value in case of no phc
-Date: Tue, 16 Jan 2024 14:45:45 -0500
-Message-ID: <20240116194908.253437-19-sashal@kernel.org>
+	linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 020/104] PCI: Add no PM reset quirk for NVIDIA Spectrum devices
+Date: Tue, 16 Jan 2024 14:45:46 -0500
+Message-ID: <20240116194908.253437-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194908.253437-1-sashal@kernel.org>
 References: <20240116194908.253437-1-sashal@kernel.org>
@@ -70,39 +67,60 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.12
 Content-Transfer-Encoding: 8bit
 
-From: Kory Maincent <kory.maincent@bootlin.com>
+From: Ido Schimmel <idosch@nvidia.com>
 
-[ Upstream commit 915d25a9d69be969c1cc6c1dd0c3861f6da7b55e ]
+[ Upstream commit 3ed48c80b28d8dcd584d6ddaf00c75b7673e1a05 ]
 
-In case of no phc we should not return SOFTWARE TIMESTAMPING flags as we do
-not know whether the netdev supports of timestamping.
-Remove it from the lan8841_ts_info and simply return 0.
+Spectrum-{1,2,3,4} devices report that a D3hot->D0 transition causes a
+reset (i.e., they advertise NoSoftRst-). However, this transition does
+not have any effect on the device: It continues to be operational and
+network ports remain up. Advertising this support makes it seem as if a
+PM reset is viable for these devices. Mark it as unavailable to skip it
+when testing reset methods.
 
-Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+Before:
+
+ # cat /sys/bus/pci/devices/0000\:03\:00.0/reset_method
+ pm bus
+
+After:
+
+ # cat /sys/bus/pci/devices/0000\:03\:00.0/reset_method
+ bus
+
+Signed-off-by: Ido Schimmel <idosch@nvidia.com>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Petr Machata <petrm@nvidia.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/micrel.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/pci/quirks.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-index 927d3d54658e..09c26ad35df9 100644
---- a/drivers/net/phy/micrel.c
-+++ b/drivers/net/phy/micrel.c
-@@ -3609,12 +3609,8 @@ static int lan8841_ts_info(struct mii_timestamper *mii_ts,
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index ae95d0950772..d46faf186f55 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3786,6 +3786,19 @@ static void quirk_no_pm_reset(struct pci_dev *dev)
+ DECLARE_PCI_FIXUP_CLASS_HEADER(PCI_VENDOR_ID_ATI, PCI_ANY_ID,
+ 			       PCI_CLASS_DISPLAY_VGA, 8, quirk_no_pm_reset);
  
- 	info->phc_index = ptp_priv->ptp_clock ?
- 				ptp_clock_index(ptp_priv->ptp_clock) : -1;
--	if (info->phc_index == -1) {
--		info->so_timestamping |= SOF_TIMESTAMPING_TX_SOFTWARE |
--					 SOF_TIMESTAMPING_RX_SOFTWARE |
--					 SOF_TIMESTAMPING_SOFTWARE;
-+	if (info->phc_index == -1)
- 		return 0;
--	}
- 
- 	info->so_timestamping = SOF_TIMESTAMPING_TX_HARDWARE |
- 				SOF_TIMESTAMPING_RX_HARDWARE |
++/*
++ * Spectrum-{1,2,3,4} devices report that a D3hot->D0 transition causes a reset
++ * (i.e., they advertise NoSoftRst-). However, this transition does not have
++ * any effect on the device: It continues to be operational and network ports
++ * remain up. Advertising this support makes it seem as if a PM reset is viable
++ * for these devices. Mark it as unavailable to skip it when testing reset
++ * methods.
++ */
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MELLANOX, 0xcb84, quirk_no_pm_reset);
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MELLANOX, 0xcf6c, quirk_no_pm_reset);
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MELLANOX, 0xcf70, quirk_no_pm_reset);
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MELLANOX, 0xcf80, quirk_no_pm_reset);
++
+ /*
+  * Thunderbolt controllers with broken MSI hotplug signaling:
+  * Entire 1st generation (Light Ridge, Eagle Ridge, Light Peak) and part
 -- 
 2.43.0
 
