@@ -1,117 +1,116 @@
-Return-Path: <linux-kernel+bounces-27035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DF5A82E972
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:19:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A551E82E979
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:22:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 220921F238C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 06:19:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 579331F239C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 06:22:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C082E10A17;
-	Tue, 16 Jan 2024 06:19:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A1711097B;
+	Tue, 16 Jan 2024 06:22:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="amf2rWhL"
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Aol/xPA1"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDD7910A01;
-	Tue, 16 Jan 2024 06:19:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-28e718874e1so228763a91.0;
-        Mon, 15 Jan 2024 22:19:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705385986; x=1705990786; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=BtPgpHD29V6EL14MEPmiAO57qgLbXU9vw9VJiILh/Cg=;
-        b=amf2rWhLTgL/XKyDzii4NU4e4sKIrejPY61gWsw9PMf+GbKCf8gJSSomUQq9wLAEiQ
-         R9+L7v/0E2uaHTZJICAgW4vJp/CY0tJBolpeqdS6fipCs4s8pVzhGo3bAOZsELL+7SBh
-         T4LsBT9lgvy2eDmvht6H9qOte3btkrpWWw/yv2R/bcRtIXJbZZTpeHYBZDXnQS9RdVsQ
-         3IL7/zSNlapsITxUmi2MZab+Y11wSOVBGNA8tuRSbmdYF1TlJeOUtFEYPr4L5pp2vl4X
-         qO0i6zMLn9miw21BCOEQya11FB3LB4cfQfZL62FZUCvehMSoMcq4+2EKeYyyRISOEBjK
-         TVfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705385986; x=1705990786;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BtPgpHD29V6EL14MEPmiAO57qgLbXU9vw9VJiILh/Cg=;
-        b=eTX8SUFaixQb9SbL0zk6fe23/eqxHXkw1zwdlJjGvQ1QnC5DiLF1EIaz/v4dyAI2AC
-         gevFqTgwIGWyrsFk+0AJwbECoGXSoZ/q0u5/XSHquaw+XilDFFBEOmZxpnWkjoFwUEhr
-         6MpYd1NdAgDtH3ZmBUAGz9nSzVgMj63AaGtX0WBex/5YiEbrRp9IS84TMr0xGCL6EQgN
-         HqOOJ87/vQhJkdo8DYhUi9SAcnZGVTpw/bYQjWj1rjwvgyt6s1DOixqxvnDCzTjv1NEX
-         4mELJTglA552/cHGSfyhD4QbusDQIdX3GGzCtCTmiFIXsywdCHarAiQ7NukXkvIVT9C7
-         uSeA==
-X-Gm-Message-State: AOJu0YwyN0iAiYpCoGq3n++RnPYTiPUPN5Amo//RVaGBeMfNlq3jmLPD
-	9HeJL7vUW0A4iCGKYGs9mI7WlFlWYO+AUl+SiIM=
-X-Google-Smtp-Source: AGHT+IHmkrNvhKDKFHox3ulCebL+np3+W4JM6eg+SHAB+VouWyI94c7i/NMcdnCogXRsl+VEQRyUj1tISPHk6lzCyDk=
-X-Received: by 2002:a17:90a:c797:b0:28b:e57d:9710 with SMTP id
- gn23-20020a17090ac79700b0028be57d9710mr3306050pjb.6.1705385986020; Mon, 15
- Jan 2024 22:19:46 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 752C579F6;
+	Tue, 16 Jan 2024 06:22:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705386165; x=1736922165;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=T2HUSRrSF0gl6JOqX4YdcfSMQQjj74IfOdQ2rVoRLys=;
+  b=Aol/xPA1AHpo4qJqsOS5jYQ4Qw7dtDx3Kosc/m3l+q8HIHSj+6Va41bM
+   f9RVpF2xtJ93O4yPIt2QkU/SvWP3KJEMMd4JSpY6H0dADWSqkte4eBnk+
+   /YG93H6780qPLejXugVsqzPntbjQCyyMsLxyeMWPZMSsrYr6oM4GHC6RR
+   NnfEuJL0/LNOJAEX+n7OuJldm0m/6VAxxLACyCHuRgndSH1WXQdtfZTij
+   03XgqS9mL6R7LxMh2qf1ChOpFzGILTY5iJHgC2HrJzEV4GFwoxstUwQIn
+   l7Jvw7IshguVM3k6kEG0PsJ+d4gQFSTHNwdgMBiIZ5h9Ae2ZOHqVAricy
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="390217876"
+X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
+   d="scan'208";a="390217876"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 22:22:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="733504139"
+X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
+   d="scan'208";a="733504139"
+Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 15 Jan 2024 22:22:40 -0800
+Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rPcqM-00006u-2E;
+	Tue, 16 Jan 2024 06:22:38 +0000
+Date: Tue, 16 Jan 2024 14:22:29 +0800
+From: kernel test robot <lkp@intel.com>
+To: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	Jens Wiklander <jens.wiklander@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: Paul Gazzillo <paul@pgazz.com>,
+	Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+	oe-kbuild-all@lists.linux.dev,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	op-tee@lists.trustedfirmware.org, devicetree@vger.kernel.org,
+	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Subject: Re: [PATCH 4/4] remoteproc: stm32: Add support of an OP-TEE TA to
+ load the firmware
+Message-ID: <202401161447.0AQqNEiO-lkp@intel.com>
+References: <20240115135249.296822-5-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104162510.72773-1-urezki@gmail.com> <20240104162510.72773-5-urezki@gmail.com>
- <CALm+0cUM=5bg0eKQ4D-mm7ZaAnQbf+2NjetUYnqHOLq5uR0w5g@mail.gmail.com>
- <ZaUNCJyYREsw7O3h@pc636> <ZaUPo97uzZlGkNdY@pc636>
-In-Reply-To: <ZaUPo97uzZlGkNdY@pc636>
-From: Z qiang <qiang.zhang1211@gmail.com>
-Date: Tue, 16 Jan 2024 14:19:34 +0800
-Message-ID: <CALm+0cWVJPis4c6VhGviXaHF90+njEVXvOjVZ-COL43dJFgNbw@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] rcu: Support direct wake-up of synchronize_rcu() users
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: "Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>, 
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	Hillf Danton <hdanton@sina.com>, Joel Fernandes <joel@joelfernandes.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>, Frederic Weisbecker <frederic@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240115135249.296822-5-arnaud.pouliquen@foss.st.com>
 
->
-> > Hello, Zqiang.
-> >
-> > > >
-> > > >         // concurrent sr_normal_gp_cleanup work might observe this update.
-> > > >         smp_store_release(&rcu_state.srs_done_tail, wait_tail);
-> > > >         ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
-> > > >
-> > > > -       if (wait_tail)
-> > > > +       if (wait_tail->next)
-> > > >                 queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
-> > > >
-> > >
-> > > I'm testing these patches :) , one question is as follows:
-> > > Can we use (WQ_MEM_RECLAIM | WQ_HIGHPR)type of workqueue to perform
-> > > wake-up actions? avoid kworker creation failure under memory pressure, causing
-> > > the wake-up action to be delayed.
-> > >
-> > I do not have any objections in not doing that, so we can add.
-> >
-> > Thank for testing this!
-> >
-> I forgot to ask, is your testing simulates a low memory condition so
-> you see the failure you refer to? Or it is just a possible scenario?
->
+Hi Arnaud,
 
-I'm not currently testing this feature in low memory scenarios,  I thought
-of this possible scenario.  I will test it in a low memory scenario later and
-let you know if it happens :) .
+kernel test robot noticed the following build warnings:
 
-Thanks
-Zqiang
+[auto build test WARNING on remoteproc/rproc-next]
+[also build test WARNING on robh/for-next linus/master v6.7 next-20240112]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
->
-> Thanks!
+url:    https://github.com/intel-lab-lkp/linux/commits/Arnaud-Pouliquen/remoteproc-Add-TEE-support/20240115-215613
+base:   git://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git rproc-next
+patch link:    https://lore.kernel.org/r/20240115135249.296822-5-arnaud.pouliquen%40foss.st.com
+patch subject: [PATCH 4/4] remoteproc: stm32: Add support of an OP-TEE TA to load the firmware
+config: alpha-kismet-CONFIG_TEE_REMOTEPROC-CONFIG_STM32_RPROC-0-0 (https://download.01.org/0day-ci/archive/20240116/202401161447.0AQqNEiO-lkp@intel.com/config)
+reproduce: (https://download.01.org/0day-ci/archive/20240116/202401161447.0AQqNEiO-lkp@intel.com/reproduce)
 
->
-> --
-> Uladzislau Rezki
->
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401161447.0AQqNEiO-lkp@intel.com/
+
+kismet warnings: (new ones prefixed by >>)
+>> kismet: WARNING: unmet direct dependencies detected for TEE_REMOTEPROC when selected by STM32_RPROC
+   
+   WARNING: unmet direct dependencies detected for TEE_REMOTEPROC
+     Depends on [n]: REMOTEPROC [=y] && OPTEE [=n]
+     Selected by [y]:
+     - STM32_RPROC [=y] && (ARCH_STM32 || COMPILE_TEST [=y]) && REMOTEPROC [=y]
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
