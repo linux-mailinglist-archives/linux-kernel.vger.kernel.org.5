@@ -1,50 +1,54 @@
-Return-Path: <linux-kernel+bounces-26760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E9F782E5EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AF3082E5EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:59:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 401761F27900
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:59:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6A5A1F278FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:59:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82F361B7FC;
-	Tue, 16 Jan 2024 00:26:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D4C541C98;
+	Tue, 16 Jan 2024 00:26:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dg7gpeOZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NCm3aRXs"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D6241AAB;
-	Tue, 16 Jan 2024 00:26:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC265C433F1;
-	Tue, 16 Jan 2024 00:26:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAC2B41C92;
+	Tue, 16 Jan 2024 00:26:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CD83C433C7;
+	Tue, 16 Jan 2024 00:26:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705364777;
-	bh=oMvl1NuqU/n3L8dT/FcVFvm6PLo9rE5CZ7rnIe1yzbk=;
+	s=k20201202; t=1705364780;
+	bh=VJdzakrW+kXBQk7/3tiYc2BgFP8I61qRKCB690jnnrw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Dg7gpeOZJzpoNqDxJp1rhaA2OQtZcEBUCLpNMno1zXUdi+ctnR5LOoRLENZ8AcPa/
-	 5/6LhZu/xD1qnFUJE7EfvazSB2vtJzuLYbu0J9Sd+IRUVrcyS+5Z/IRWAKuHUvHVvC
-	 rz1kEBwJk4qvlpGbQMUhV+gvYkWbqcwAzrFFcnv7RIDCNUWIiLAgH4Qu+M2GyNvOd+
-	 30Fjcc4XKAl7vQqENEG4Y0jaj6f883UDEjKI5PqZXtIKCpQPBG4DJwbrjl5JoH3oMa
-	 52mDAquJu9sCgNd/C9muTfpCzXsZHYFn+3k8h/ZVKNlBO/pH2qbz4GRUX2drRCe+Qb
-	 ot6fbX3B3KG2A==
+	b=NCm3aRXsa1KIVhikJPbOmNhwVJl/Ol+jqoGdIeVnKBTB9s/xNs8c/Rz+AokvRXASw
+	 0BTfnT/WIS+c3Y2SUCfRg30zVP6FjnO+1R78l1Nd5RN2n5/vElWcBOnc4FF4Vhil69
+	 mH4aeYY+J8HfQOqzDFEs3Cjwfq/jsGBL/o8JEhhznmRad5yuyStBT+yTnCVgSojsWx
+	 rfjTQFbUQm3gBd/gr9+HQ79O6I3AQwODPpSz9WHldbweZiLtMO3wNfIl9FPajQ++CY
+	 Lddiy8zCgHRm1kKn9PLcYxGpxmqVgllGGekrLXmHJKI9JOH6xI5l99bo++/FDZpDEa
+	 4ZnimLUEGAmhA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Edward Adam Davis <eadavis@qq.com>,
-	syzbot+01cf2dbcbe2022454388@syzkaller.appspotmail.com,
+Cc: Manas Ghandat <ghandatmanas@gmail.com>,
+	syzbot+411debe54d318eaed386@syzkaller.appspotmail.com,
 	Dave Kleikamp <dave.kleikamp@oracle.com>,
 	Sasha Levin <sashal@kernel.org>,
 	shaggy@kernel.org,
-	brauner@kernel.org,
-	jack@suse.cz,
+	juntong.deng@outlook.com,
+	wonguk.lee1023@gmail.com,
+	code@siddh.me,
+	yogi.kernel@gmail.com,
+	andrew.kanner@gmail.com,
+	osmtendev@gmail.com,
 	jfs-discussion@lists.sourceforge.net
-Subject: [PATCH AUTOSEL 5.15 05/13] jfs: fix uaf in jfs_evict_inode
-Date: Mon, 15 Jan 2024 19:25:41 -0500
-Message-ID: <20240116002603.215942-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 06/13] jfs: fix shift-out-of-bounds in dbJoin
+Date: Mon, 15 Jan 2024 19:25:42 -0500
+Message-ID: <20240116002603.215942-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116002603.215942-1-sashal@kernel.org>
 References: <20240116002603.215942-1-sashal@kernel.org>
@@ -59,48 +63,49 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.147
 Content-Transfer-Encoding: 8bit
 
-From: Edward Adam Davis <eadavis@qq.com>
+From: Manas Ghandat <ghandatmanas@gmail.com>
 
-[ Upstream commit e0e1958f4c365e380b17ccb35617345b31ef7bf3 ]
+[ Upstream commit cca974daeb6c43ea971f8ceff5a7080d7d49ee30 ]
 
-When the execution of diMount(ipimap) fails, the object ipimap that has been
-released may be accessed in diFreeSpecial(). Asynchronous ipimap release occurs
-when rcu_core() calls jfs_free_node().
+Currently while joining the leaf in a buddy system there is shift out
+of bound error in calculation of BUDSIZE. Added the required check
+to the BUDSIZE and fixed the documentation as well.
 
-Therefore, when diMount(ipimap) fails, sbi->ipimap should not be initialized as
-ipimap.
-
-Reported-and-tested-by: syzbot+01cf2dbcbe2022454388@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+Reported-by: syzbot+411debe54d318eaed386@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=411debe54d318eaed386
+Signed-off-by: Manas Ghandat <ghandatmanas@gmail.com>
 Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jfs/jfs_mount.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/jfs/jfs_dmap.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/fs/jfs/jfs_mount.c b/fs/jfs/jfs_mount.c
-index aa4ff7bcaff2..55702b31ab3c 100644
---- a/fs/jfs/jfs_mount.c
-+++ b/fs/jfs/jfs_mount.c
-@@ -172,15 +172,15 @@ int jfs_mount(struct super_block *sb)
- 	}
- 	jfs_info("jfs_mount: ipimap:0x%p", ipimap);
- 
--	/* map further access of per fileset inodes by the fileset inode */
--	sbi->ipimap = ipimap;
--
- 	/* initialize fileset inode allocation map */
- 	if ((rc = diMount(ipimap))) {
- 		jfs_err("jfs_mount: diMount failed w/rc = %d", rc);
- 		goto err_ipimap;
- 	}
- 
-+	/* map further access of per fileset inodes by the fileset inode */
-+	sbi->ipimap = ipimap;
+diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
+index 3f5c14315719..c1290e7a8d24 100644
+--- a/fs/jfs/jfs_dmap.c
++++ b/fs/jfs/jfs_dmap.c
+@@ -2831,7 +2831,9 @@ static int dbBackSplit(dmtree_t *tp, int leafno, bool is_ctl)
+  *	leafno	- the number of the leaf to be updated.
+  *	newval	- the new value for the leaf.
+  *
+- * RETURN VALUES: none
++ * RETURN VALUES:
++ *  0		- success
++ *	-EIO	- i/o error
+  */
+ static int dbJoin(dmtree_t *tp, int leafno, int newval, bool is_ctl)
+ {
+@@ -2858,6 +2860,10 @@ static int dbJoin(dmtree_t *tp, int leafno, int newval, bool is_ctl)
+ 		 * get the buddy size (number of words covered) of
+ 		 * the new value.
+ 		 */
 +
- 	return rc;
++		if ((newval - tp->dmt_budmin) > BUDMIN)
++			return -EIO;
++
+ 		budsz = BUDSIZE(newval, tp->dmt_budmin);
  
- 	/*
+ 		/* try to join.
 -- 
 2.43.0
 
