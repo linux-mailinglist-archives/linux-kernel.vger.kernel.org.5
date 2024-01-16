@@ -1,116 +1,113 @@
-Return-Path: <linux-kernel+bounces-27346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93CA182EE63
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:50:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3503882EE76
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:51:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 447121F23B9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:50:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C82931F23408
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:51:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 318051B95D;
-	Tue, 16 Jan 2024 11:50:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3FD91B955;
+	Tue, 16 Jan 2024 11:51:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T35WWzSU"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="s0aFfV17"
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E2B71B940;
-	Tue, 16 Jan 2024 11:50:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40e760e5b49so21377245e9.1;
-        Tue, 16 Jan 2024 03:50:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705405803; x=1706010603; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4z6djVw+xP/VmS26amoFgiFK0lAVInxd9fafDSCJQBE=;
-        b=T35WWzSU60wavteiCeLTMI6jixFkH/lL5jg64M29B2UIaKUq428bpNoPSHZU6nWxEX
-         z6cNhBnZnJVrFsqMVS4pHsvB+aESNomgiaR27aEbGyYDPfU1j44alVhg8NUNa0mDZfoN
-         k7O4X0R+o/1VfGvACOrDq+aHEOwhQoeI2bFa/3QElCbOPfOBN/B9UvN4NnM+tRTNqL1P
-         53RfirbdwYIfjPZRuk3c4vwqj+2RdxHq64S8xlPXz+sXuz7xb39Z39Yaw1iuVZTBh9p0
-         EMEdaZJoYWSiwhtc7yJmUegGv68w+ntyt8IQKIS+HghGYpsU0l9A1Gfc6aNOWf7dqxZn
-         FLRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705405803; x=1706010603;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4z6djVw+xP/VmS26amoFgiFK0lAVInxd9fafDSCJQBE=;
-        b=GKMaSLINNUVMHcHvpaCI8H39T2RJapYwAJ67RuE6+TPb0xeZeva5OeTaVsozTny/n9
-         fRc/iJb+VODQ9IWzQVuaLUDXpMQfoeb0XS8s4V7J9fapJfM6PqwMFucWQO5vbfuSf2By
-         FAu0LfKlJuG/9jpInw3YcSsQILelBg31MrywgzpVHPO2e/uZqJncbIWBoYbrU1ri7UDF
-         ftI3V4Ib37OBnqaFGAUDl2AnNmScdkOaKu7svJhT5DfpzXiCzS7fNV83WgT3y/nQAdp6
-         KrcgDe7zAXhuDmsRn9OCbsI7yoOr/xaqPQIF8+vufSdaIO+8qg91Y6YyLuiH5HxaDPy5
-         J/tA==
-X-Gm-Message-State: AOJu0YymeigpJjtN9o6f2fZ0EBNMihL7pYVPCy1/ysh7oFYVVpR8LioC
-	xoBUj15uyBzfxuuKVWloQznifnoyZxfFcQ==
-X-Google-Smtp-Source: AGHT+IGoeyj5EJkOxRzaCrYjh/CocCEnSAHMnbd9omVCbeNrRont0wm1c2x3yQ+L8993tvqVcc6bjw==
-X-Received: by 2002:a05:600c:470f:b0:40e:6803:bcbe with SMTP id v15-20020a05600c470f00b0040e6803bcbemr2081700wmo.266.1705405803163;
-        Tue, 16 Jan 2024 03:50:03 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id w4-20020a05600c474400b0040d5ae2906esm23056822wmo.30.2024.01.16.03.50.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 03:50:02 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	linux-media@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] media: dvb: remove redundant assignment to variable ret
-Date: Tue, 16 Jan 2024 11:50:02 +0000
-Message-Id: <20240116115002.2265367-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 126421B7F7
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 11:51:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=6RK8HhUL7/mSLlRQcfu0FfBwVC2fqWvwSpORs6uHkzQ=; b=s0aFfV17JvR2ozhnpfGP5R2701
+	MqtQfq04Kn9eNo5CmFEYE6JLRGcextvHOveZ9/7kcn1NfSIlcBcK8KtaQKUf1Q5VKcrLc8O3ZRDt2
+	kmiLcGSE1XDVlMIaKLwhIgehEicZSZ7MZPQtWhtlvmfTpewH8d2mTIETlqME6nx8kZugNzZGm7269
+	rQMOTShleb/Xk2d7KRvMW3dDdHSWmt+bRRa7fV1rMnLp1hUG4Ihd7fbPobVEcJfxwuH3Dhx3EhqNC
+	3CP+0GBy4N8CliUiTmCabDjXGe1fhNvON1YjNlId8WBdMRQ9UqalvsBgEdwhd4yb68DDry1bpq8kj
+	ChwaY3VQ==;
+Received: from [177.45.63.147] (helo=[192.168.1.111])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1rPhyF-006woJ-M6; Tue, 16 Jan 2024 12:51:07 +0100
+Message-ID: <a6099681-1ae9-48ef-99bc-d3c919007413@igalia.com>
+Date: Tue, 16 Jan 2024 08:50:59 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] drm/atomic: Allow drivers to write their own plane
+ check for async
+To: Pekka Paalanen <ppaalanen@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, kernel-dev@igalia.com,
+ alexander.deucher@amd.com, christian.koenig@amd.com,
+ Simon Ser <contact@emersion.fr>, daniel@ffwll.ch,
+ Daniel Stone <daniel@fooishbar.org>, =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?=
+ <maraeo@gmail.com>, Dave Airlie <airlied@gmail.com>,
+ ville.syrjala@linux.intel.com, Xaver Hugl <xaver.hugl@gmail.com>
+References: <20240116045159.1015510-1-andrealmeid@igalia.com>
+ <20240116114522.5b83d8b6@eldfell>
+Content-Language: en-US
+From: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+In-Reply-To: <20240116114522.5b83d8b6@eldfell>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-The variable ret is being assigned a value but it isn't being
-read afterwards. The assignment is redundant and so ret can be
-removed. Also add spaces after , to clean up checkpatch warnings.
+Hi Pekka,
 
-Cleans up clang scan build warning:
-warning: Although the value stored to 'ret' is used in the
-enclosing expression, the value is never actually read from
-'ret' [deadcode.DeadStores]
+Em 16/01/2024 06:45, Pekka Paalanen escreveu:
+> On Tue, 16 Jan 2024 01:51:57 -0300
+> André Almeida <andrealmeid@igalia.com> wrote:
+> 
+>> Hi,
+>>
+>> AMD hardware can do more on the async flip path than just the primary plane, so
+>> to lift up the current restrictions, this patchset allows drivers to write their
+>> own check for planes for async flips.
+> 
+> Hi,
+> 
+> what's the userspace story for this, how could userspace know it could do more?
+> What kind of userspace would take advantage of this and in what situations?
+> 
+> Or is this not meant for generic userspace?
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/media/dvb-frontends/bcm3510.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Sorry, I forgot to document this. So the idea is that userspace will 
+query what they can do here with DRM_MODE_ATOMIC_TEST_ONLY calls, 
+instead of having capabilities for each prop.
 
-diff --git a/drivers/media/dvb-frontends/bcm3510.c b/drivers/media/dvb-frontends/bcm3510.c
-index b3f5c49accaf..da201871a93c 100644
---- a/drivers/media/dvb-frontends/bcm3510.c
-+++ b/drivers/media/dvb-frontends/bcm3510.c
-@@ -797,7 +797,6 @@ struct dvb_frontend* bcm3510_attach(const struct bcm3510_config *config,
- 				   struct i2c_adapter *i2c)
- {
- 	struct bcm3510_state* state = NULL;
--	int ret;
- 	bcm3510_register_value v;
- 
- 	/* allocate memory for the internal state */
-@@ -816,7 +815,7 @@ struct dvb_frontend* bcm3510_attach(const struct bcm3510_config *config,
- 
- 	mutex_init(&state->hab_mutex);
- 
--	if ((ret = bcm3510_readB(state,0xe0,&v)) < 0)
-+	if (bcm3510_readB(state, 0xe0, &v) < 0)
- 		goto error;
- 
- 	deb_info("Revision: 0x%1x, Layer: 0x%1x.\n",v.REVID_e0.REV,v.REVID_e0.LAYER);
--- 
-2.39.2
-
+> 
+> 
+> Thanks,
+> pq
+> 
+>> I'm not sure if adding something new to drm_plane_funcs is the right way to do,
+>> because if we want to expand the other object types (crtc, connector) we would
+>> need to add their own drm_XXX_funcs, so feedbacks are welcome!
+>>
+>> 	André
+>>
+>> André Almeida (2):
+>>    drm/atomic: Allow drivers to write their own plane check for async
+>>      flips
+>>    drm/amdgpu: Implement check_async_props for planes
+>>
+>>   .../amd/display/amdgpu_dm/amdgpu_dm_plane.c   | 30 +++++++++
+>>   drivers/gpu/drm/drm_atomic_uapi.c             | 62 ++++++++++++++-----
+>>   include/drm/drm_atomic_uapi.h                 | 12 ++++
+>>   include/drm/drm_plane.h                       |  5 ++
+>>   4 files changed, 92 insertions(+), 17 deletions(-)
+>>
+> 
 
