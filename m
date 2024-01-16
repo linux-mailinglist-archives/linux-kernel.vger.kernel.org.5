@@ -1,53 +1,48 @@
-Return-Path: <linux-kernel+bounces-26881-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 157CA82E74F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:43:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A87C582E752
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:43:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B611284ABF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:43:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A208E284B01
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:43:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD6332E83A;
-	Tue, 16 Jan 2024 01:08:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 358DE31722;
+	Tue, 16 Jan 2024 01:08:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U+qiIVph"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jqoZpMME"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 138842E82B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 826632E849;
+	Tue, 16 Jan 2024 01:08:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A941C433F1;
 	Tue, 16 Jan 2024 01:08:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9517BC43390;
-	Tue, 16 Jan 2024 01:08:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705367288;
-	bh=TJqRddFjDl5iBcUmWcW6ywZ7vqFu0BSvQf50wqCCMU8=;
+	s=k20201202; t=1705367290;
+	bh=vT3YFIoaaRzG8KF5DY+p2dz2xbYQffCRoq2DG2ccvnc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=U+qiIVphhs9rf8/KPJFLCBLWFj/xNb+z9HOoyV2tIbMZpzQKXK/1OIGD7nA0kGVMk
-	 X0HpHT4oTP37//5mMYt2Pe511Yyv41Vm/MUJwhqWGygTLn2vMWtA1kKOS++jPRw248
-	 MBNAw8d5yDJ2wzK7ENAEmMXYR/vFZ95+uYBegUxChg1RlA3g1eMsE3j5U444qdecE2
-	 HygZl3vBPh0YI6pt8rSe9giPpoQ5ecvUsvg8rSmJ/WIfQ+T94eBKNCyTGGY+3s/rbB
-	 ab5pK/yDfMuyVdZxAQIuci2KyKxxQaZpFg+9y6BsbQEub8cCwpaXQ4O5BOlS0SrkBV
-	 XNxdrYS4MnfxQ==
+	b=jqoZpMME3FVnpECjh0LlotRXyQmjxzszeh8ltj2LW5Lay+lr6NaFNbzES42bscLqj
+	 D0gUafkEiq7HeHovMAF8lEPiEAZm5MgeD3ZZxrryIBvWEqv4QBbFvgOlQMnkJjoDdM
+	 6xf0vLKMkxJ89M2xo/rM64ExtJHri0r8v+mE+jULW/40GVzSzQ0GgASGrUWwlBm2DA
+	 xtv7IQEMrFsMvd07rfWTsViKlehSIgcExEXrJZ14vN1sKRuQFF+bRzkXF5m7KYlFav
+	 Jn9XbkxZA/Kcz0WRaFWKazA5aZYfLBhrzEa5SlJANPiD+pFobP6wSYFMxVq751D69k
+	 KuWwn5WnaPraQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Gabriel Krisman Bertazi <krisman@suse.de>,
-	Eric Biggers <ebiggers@google.com>,
+Cc: Ye Bin <yebin10@huawei.com>,
+	Jan Kara <jack@suse.cz>,
+	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
-	code@tyhicks.com,
-	brauner@kernel.org,
-	dchinner@redhat.com,
-	jack@suse.cz,
-	jlayton@kernel.org,
-	stefanb@linux.ibm.com,
-	walmeida@microsoft.com,
-	ecryptfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 5/9] ecryptfs: Reject casefold directory inodes
-Date: Mon, 15 Jan 2024 20:07:49 -0500
-Message-ID: <20240116010757.219495-5-sashal@kernel.org>
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 6/9] ext4: fix inconsistent between segment fstrim and full fstrim
+Date: Mon, 15 Jan 2024 20:07:50 -0500
+Message-ID: <20240116010757.219495-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116010757.219495-1-sashal@kernel.org>
 References: <20240116010757.219495-1-sashal@kernel.org>
@@ -62,44 +57,64 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.208
 Content-Transfer-Encoding: 8bit
 
-From: Gabriel Krisman Bertazi <krisman@suse.de>
+From: Ye Bin <yebin10@huawei.com>
 
-[ Upstream commit cd72c7ef5fed44272272a105b1da22810c91be69 ]
+[ Upstream commit 68da4c44b994aea797eb9821acb3a4a36015293e ]
 
-Even though it seems to be able to resolve some names of
-case-insensitive directories, the lack of d_hash and d_compare means we
-end up with a broken state in the d_cache.  Considering it was never a
-goal to support these two together, and we are preparing to use
-d_revalidate in case-insensitive filesystems, which would make the
-combination even more broken, reject any attempt to get a casefolded
-inode from ecryptfs.
+Suppose we issue two FITRIM ioctls for ranges [0,15] and [16,31] with
+mininum length of trimmed range set to 8 blocks. If we have say a range of
+blocks 10-22 free, this range will not be trimmed because it straddles the
+boundary of the two FITRIM ranges and neither part is big enough. This is a
+bit surprising to some users that call FITRIM on smaller ranges of blocks
+to limit impact on the system. Also XFS trims all free space extents that
+overlap with the specified range so we are inconsistent among filesystems.
+Let's change ext4_try_to_trim_range() to consider for trimming the whole
+free space extent that straddles the end of specified range, not just the
+part of it within the range.
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@suse.de>
-Reviewed-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20231216010919.1995851-1-yebin10@huawei.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ecryptfs/inode.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ fs/ext4/mballoc.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/fs/ecryptfs/inode.c b/fs/ecryptfs/inode.c
-index e23752d9a79f..c867a0d62f36 100644
---- a/fs/ecryptfs/inode.c
-+++ b/fs/ecryptfs/inode.c
-@@ -76,6 +76,14 @@ static struct inode *__ecryptfs_get_inode(struct inode *lower_inode,
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 3babc07ae613..b9252fb2253e 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -5911,13 +5911,15 @@ static int ext4_try_to_trim_range(struct super_block *sb,
+ 		struct ext4_buddy *e4b, ext4_grpblk_t start,
+ 		ext4_grpblk_t max, ext4_grpblk_t minblocks)
+ {
+-	ext4_grpblk_t next, count, free_count;
++	ext4_grpblk_t next, count, free_count, last, origin_start;
+ 	bool set_trimmed = false;
+ 	void *bitmap;
  
- 	if (lower_inode->i_sb != ecryptfs_superblock_to_lower(sb))
- 		return ERR_PTR(-EXDEV);
++	last = ext4_last_grp_cluster(sb, e4b->bd_group);
+ 	bitmap = e4b->bd_bitmap;
+-	if (start == 0 && max >= ext4_last_grp_cluster(sb, e4b->bd_group))
++	if (start == 0 && max >= last)
+ 		set_trimmed = true;
++	origin_start = start;
+ 	start = max(e4b->bd_info->bb_first_free, start);
+ 	count = 0;
+ 	free_count = 0;
+@@ -5926,7 +5928,10 @@ static int ext4_try_to_trim_range(struct super_block *sb,
+ 		start = mb_find_next_zero_bit(bitmap, max + 1, start);
+ 		if (start > max)
+ 			break;
+-		next = mb_find_next_bit(bitmap, max + 1, start);
 +
-+	/* Reject dealing with casefold directories. */
-+	if (IS_CASEFOLDED(lower_inode)) {
-+		pr_err_ratelimited("%s: Can't handle casefolded directory.\n",
-+				   __func__);
-+		return ERR_PTR(-EREMOTE);
-+	}
-+
- 	if (!igrab(lower_inode))
- 		return ERR_PTR(-ESTALE);
- 	inode = iget5_locked(sb, (unsigned long)lower_inode,
++		next = mb_find_next_bit(bitmap, last + 1, start);
++		if (origin_start == 0 && next >= last)
++			set_trimmed = true;
+ 
+ 		if ((next - start) >= minblocks) {
+ 			int ret = ext4_trim_extent(sb, start, next - start, e4b);
 -- 
 2.43.0
 
