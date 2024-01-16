@@ -1,78 +1,53 @@
-Return-Path: <linux-kernel+bounces-28296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1700982FCA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:26:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D3BD82FCAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:26:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D9C91F275B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:26:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BFA0B24F00
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:26:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9E2C31A6F;
-	Tue, 16 Jan 2024 21:27:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I+IRHN1S"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4F3C328B1;
+	Tue, 16 Jan 2024 21:29:07 +0000 (UTC)
+Received: from fgw20-7.mail.saunalahti.fi (fgw20-7.mail.saunalahti.fi [62.142.5.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD502EAEA;
-	Tue, 16 Jan 2024 21:27:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6667B321BC
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 21:29:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705440457; cv=none; b=aF55CiQqrSPfIfGlWiX9pjHu8dbRRom7QhDfva+pbBCOxFml4+B0Baoj3YVF2LTPuFaPYDbZPkNv5VVGSVoFjTRh1VNWCL4643TcvR09mZcuI7XTWkPFHCHvgD1dUg8cgm6nxzNJ1E4NgRYdLdOadMqe5Q69FKuxxNrDpLnQr1Y=
+	t=1705440547; cv=none; b=nEYIUeS9VxzDN0EPmhgYLun8qHnBASyZN7/NH6u8xv4KYw8M9I3vEPz5TcD/lufqJ2J44Bhv4Yex+BY3FBNWbkySa0YIXwQ1aeEVpU3ZRxYMpn4O4V7kjPWrfHb+vHOFva0Mocp3Q5aa9iZ/0GhXEu3oMLs2Wz6T+40StUJto+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705440457; c=relaxed/simple;
-	bh=SLPMdKVtmRbSltsx06ZScUJ6qCa6a3f0g1WFofzyiDI=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:X-IronPort-AV:Received:Received:Date:From:To:Cc:
-	 Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=gIMD6lJ7oPWKqcasBjvVoCiB7BgvaTMi+CX/SR7mfu/NM8T2sNbOsD6pe8RYdHdO/9c3yHz+GY/T3QuDg6yAD/pXo5q60tkqCh575rJJJzcc+OqV0wzq6ZqNFDxdHto8+bQK/4iQl6TNQ3YqmygKw1er5jbZuZsewF2jQdReErk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I+IRHN1S; arc=none smtp.client-ip=192.55.52.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705440455; x=1736976455;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SLPMdKVtmRbSltsx06ZScUJ6qCa6a3f0g1WFofzyiDI=;
-  b=I+IRHN1SbNHNeeZYg+ZA9avzmBMse9xsTHHOtRDja20uQnff9WzRmON1
-   NTWWrkScnHMLi++LF3SIaIwPGJlSKk0qyeGKnCBdQSQVjG1cj41q9mraC
-   ESW0su8Nu42vvLc5pztFq9VGImtGenqEL1DBMzKdIb7U8yA3ASkRg2fZR
-   xRfga8IsTRbUTAySVy0zw2abd9Ht3kbsEIV1MyPBOEGfDliM4j4lRBcAd
-   FyAOFBhknlxaCkorVjibnkiB5tTIlLFeLhZ80U67IIk6pkgL3hch4IvSp
-   CO1VC7+cYtlPH7pCAoIS0Zsx5LzUM+zHCNLxlTa1HzmSP07xDGn4UhsWY
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="486149264"
-X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
-   d="scan'208";a="486149264"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 13:27:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="787585732"
-X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
-   d="scan'208";a="787585732"
-Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 16 Jan 2024 13:27:31 -0800
-Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rPqy1-0001G8-07;
-	Tue, 16 Jan 2024 21:27:29 +0000
-Date: Wed, 17 Jan 2024 05:26:59 +0800
-From: kernel test robot <lkp@intel.com>
-To: Subramanya Swamy <subramanya.swamy.linux@gmail.com>, corbet@lwn.net,
-	axboe@kernel.dk, asml.silence@gmail.com, ribalda@chromium.org,
-	rostedt@goodmis.org, bhe@redhat.com, akpm@linux-foundation.org,
-	matteorizzo@google.com, ardb@kernel.org, alexghiti@rivosinc.com,
+	s=arc-20240116; t=1705440547; c=relaxed/simple;
+	bh=l6q7v4ki1LypEs5VeKwmzU0U7uRPY25t3e94VPjfUQM=;
+	h=Received:From:Date:To:Cc:Subject:Message-ID:References:
+	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=FYohlsBsvNv4fbbY80u2QHPUMM8hBE4oWyu59wzcHnMIJ1ghlmX1JDEtQsVC5UhZFRAs5cO6BzZSTjjJHf0UBWHVogkcaQUNT4/ivkwAO7EEo1oZYIUyWkAEn9iAa3J7Y6RGjiWgoNUkRG0emwu/Agx/gHIygAF61T+A//EEs0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+Received: from localhost (88-113-24-108.elisa-laajakaista.fi [88.113.24.108])
+	by fgw20.mail.saunalahti.fi (Halon) with ESMTP
+	id 1bdb063f-b4b6-11ee-b3cf-005056bd6ce9;
+	Tue, 16 Jan 2024 23:27:54 +0200 (EET)
+From: andy.shevchenko@gmail.com
+Date: Tue, 16 Jan 2024 23:27:53 +0200
+To: Philipp Stanner <pstanner@redhat.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, Hans de Goede <hdegoede@redhat.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Sam Ravnborg <sam@ravnborg.org>, dakr@redhat.com,
 	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	io-uring@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH] iouring:added boundary value check for io_uring_group
- systl
-Message-ID: <202401170507.IOhrswHN-lkp@intel.com>
-References: <20240115124925.1735-1-subramanya.swamy.linux@gmail.com>
+	dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 02/10] pci: deprecate iomap-table functions
+Message-ID: <Zab02RyfvP-IZTl4@surfacebook.localdomain>
+References: <20240115144655.32046-2-pstanner@redhat.com>
+ <20240115144655.32046-4-pstanner@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,51 +56,224 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240115124925.1735-1-subramanya.swamy.linux@gmail.com>
+In-Reply-To: <20240115144655.32046-4-pstanner@redhat.com>
 
-Hi Subramanya,
+Mon, Jan 15, 2024 at 03:46:13PM +0100, Philipp Stanner kirjoitti:
+> The old plural devres functions tie PCI's devres implementation to the
+> iomap-table mechanism which unfortunately is not extensible.
+> 
+> As the purlal functions are almost never used with more than one bit set
+> in their bit-mask, deprecating them and encouraging users to use the new
+> singular functions instead is reasonable.
+> 
+> Furthermore, to make the implementation more consistent and extensible,
+> the plural functions should use the singular functions.
+> 
+> Add new wrapper to request / release all BARs.
+> Make the plural functions call into the singular functions.
+> Mark the plural functions as deprecated.
+> Remove as much of the iomap-table-mechanism as possible.
+> Add comments describing the path towards a cleaned-up API.
 
-kernel test robot noticed the following build warnings:
+..
 
-[auto build test WARNING on akpm-mm/mm-everything]
-[also build test WARNING on linus/master v6.7 next-20240112]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>  static void pcim_iomap_release(struct device *gendev, void *res)
+>  {
+> -	struct pci_dev *dev = to_pci_dev(gendev);
+> -	struct pcim_iomap_devres *this = res;
+> -	int i;
+> -
+> -	for (i = 0; i < PCIM_IOMAP_MAX; i++)
+> -		if (this->table[i])
+> -			pci_iounmap(dev, this->table[i]);
+> +	/*
+> +	 * Do nothing. This is legacy code.
+> +	 *
+> +	 * Cleanup of the mappings is now done directly through the callbacks
+> +	 * registered when creating them.
+> +	 */
+>  }
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Subramanya-Swamy/iouring-added-boundary-value-check-for-io_uring_group-systl/20240115-205112
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20240115124925.1735-1-subramanya.swamy.linux%40gmail.com
-patch subject: [PATCH] iouring:added boundary value check for io_uring_group systl
-config: sparc-randconfig-r122-20240116 (https://download.01.org/0day-ci/archive/20240117/202401170507.IOhrswHN-lkp@intel.com/config)
-compiler: sparc-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20240117/202401170507.IOhrswHN-lkp@intel.com/reproduce)
+How many users we have? Can't we simply kill it for good?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401170507.IOhrswHN-lkp@intel.com/
+..
 
-All warnings (new ones prefixed by >>):
+> + * This function is DEPRECATED. Do not use it in new code.
 
->> io_uring/io_uring.c:158:21: warning: 'max_gid' defined but not used [-Wunused-variable]
-     158 | static unsigned int max_gid  = 4294967294;  /*4294967294 is the max guid*/
-         |                     ^~~~~~~
->> io_uring/io_uring.c:157:21: warning: 'min_gid' defined but not used [-Wunused-variable]
-     157 | static unsigned int min_gid;
-         |                     ^~~~~~~
+We have __deprecated IIRC, can it be used?
+
+..
+
+> +	if (pcim_add_mapping_to_legacy_table(pdev, mapping, bar) != 0)
+
+Redundant ' != 0' part.
+
+> +		goto err_table;
+
+..
+
+> +static inline bool mask_contains_bar(int mask, int bar)
+> +{
+> +	return mask & (1 << bar);
+
+BIT() ?
+
+> +}
+
+But I believe this function is not needed (see below).
+
+..
+
+>  /**
+> - * pcim_iomap_regions - Request and iomap PCI BARs
+> + * pcim_iomap_regions - Request and iomap PCI BARs (DEPRECATED)
+>   * @pdev: PCI device to map IO resources for
+>   * @mask: Mask of BARs to request and iomap
+>   * @name: Name associated with the requests
+>   *
+> + * Returns 0 on success, negative error code on failure.
+
+Validate the kernel-doc.
+
+>   * Request and iomap regions specified by @mask.
+> + *
+> + * This function is DEPRECATED. Don't use it in new code.
+> + * Use pcim_iomap_region() instead.
+>   */
+
+..
+
+> +	for (bar = 0; bar < DEVICE_COUNT_RESOURCE; bar++) {
+> +		if (!mask_contains_bar(mask, bar))
+> +			continue;
+
+NIH for_each_set_bit().
+
+..
+
+> +		ret = pcim_add_mapping_to_legacy_table(pdev, mapping, bar);
+> +		if (ret != 0)
+
+		if (ret)
+
+> +			goto err;
+> +	}
+
+..
+
+> + err:
+
+Better to name it like
+
+err_unmap_and_remove:
+
+> +	while (--bar >= 0) {
+
+	while (bar--)
+
+is easier to read.
+
+> +		pcim_iounmap_region(pdev, bar);
+> +		pcim_remove_bar_from_legacy_table(pdev, bar);
+> +	}
+
+..
+
+> +/**
+> + * pcim_request_all_regions - Request all regions
+> + * @pdev: PCI device to map IO resources for
+> + * @name: name associated with the request
+> + *
+> + * Requested regions will automatically be released at driver detach. If desired,
+> + * release individual regions with pcim_release_region() or all of them at once
+> + * with pcim_release_all_regions().
+> + */
+
+Validate kernel-doc.
+
+..
+
+> +		ret = pcim_request_region(pdev, bar, name);
+> +		if (ret != 0)
+
+		if (ret)
+
+> +			goto err;
 
 
-vim +/max_gid +158 io_uring/io_uring.c
+..
 
-   154	
-   155	static int __read_mostly sysctl_io_uring_disabled;
-   156	static unsigned int __read_mostly sysctl_io_uring_group;
- > 157	static unsigned int min_gid;
- > 158	static unsigned int max_gid  = 4294967294;  /*4294967294 is the max guid*/
-   159	
+> +	short bar;
+
+Why signed?
+
+> +	int ret = -1;
+
+Oy vei!
+
+..
+
+> +	ret = pcim_request_all_regions(pdev, name);
+> +	if (ret != 0)
+
+Here and in plenty other places
+
+	if (ret)
+
+> +		return ret;
+
+> +	for (bar = 0; bar < PCI_STD_NUM_BARS; bar++) {
+> +		if (!mask_contains_bar(mask, bar))
+> +			continue;
+
+NIH for_each_set_bit()
+
+> +		if (!pcim_iomap(pdev, bar, 0))
+> +			goto err;
+> +	}
+
+..
+
+> +	if (!legacy_iomap_table)
+
+What's wrong with positive check?
+
+> +		ret = -ENOMEM;
+> +	else
+> +		ret = -EINVAL;
+
+Can be even one liner
+
+
+What's wrong with positive check?
+
+		ret = legacy_iomap_table ? -EINVAL : -ENOMEM;
+
+..
+
+> +	while (--bar >= 0)
+
+	while (bar--)
+
+> +		pcim_iounmap(pdev, legacy_iomap_table[bar]);
+
+..
+
+> +	for (bar = 0; bar < PCI_STD_NUM_BARS; bar++) {
+> +		if (!mask_contains_bar(mask, bar))
+>  			continue;
+
+NIH for_each_set_bit()
+
+> -		pcim_iounmap(pdev, iomap[i]);
+> -		pci_release_region(pdev, i);
+> +		pcim_iounmap_region(pdev, bar);
+> +		pcim_remove_bar_from_legacy_table(pdev, bar);
+>  	}
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+With Best Regards,
+Andy Shevchenko
+
+
 
