@@ -1,153 +1,84 @@
-Return-Path: <linux-kernel+bounces-27582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A6FA82F27A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:37:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D05082F27F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:38:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2707F285A65
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:37:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEB691F2466A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:38:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE4201CAA2;
-	Tue, 16 Jan 2024 16:37:19 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E30081CA85;
+	Tue, 16 Jan 2024 16:38:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bWFoK4ab"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 280541CA92;
-	Tue, 16 Jan 2024 16:37:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TDvkK568dz6K5nX;
-	Wed, 17 Jan 2024 00:35:05 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id F24F01408FF;
-	Wed, 17 Jan 2024 00:37:14 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 16 Jan
- 2024 16:37:14 +0000
-Date: Tue, 16 Jan 2024 16:37:13 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC: Petar Stoykov <pd.pstoykov@gmail.com>, <linux-iio@vger.kernel.org>,
-	Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
-	Rob Herring <robh+dt@kernel.org>, Andy Shevchenko
-	<andriy.shevchenko@linux.intel.com>, Angel Iglesias
-	<ang.iglesiasg@gmail.com>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 1/3] dt-bindings: iio: pressure: Add Sensirion SDP500
-Message-ID: <20240116163713.00006bf3@Huawei.com>
-In-Reply-To: <4eab426b-f654-4e10-9ffa-5b34016565fb@linaro.org>
-References: <CADFWO8EomrhEgtC+i9ikkcDU1c05kx-8kjrS4usAv-TRKxif+w@mail.gmail.com>
-	<4eab426b-f654-4e10-9ffa-5b34016565fb@linaro.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AE081C69E;
+	Tue, 16 Jan 2024 16:38:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 929ABC433F1;
+	Tue, 16 Jan 2024 16:38:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705423094;
+	bh=gnfuR+CoEms4g+OOIQmvnFNkl/7dcAwNRub/zxCI31w=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=bWFoK4ab+26RTuIGWUBQ6bFiN0bJ+DlKnyDP4+3lit9AadUNQB12cVI5NkgchXhb6
+	 MJ8PixSlI8V0LVVOaHpz6YPumcGjXdx2xwbsJSZFgkQF1C9lmehm+zP+UgBFlB/WdI
+	 Ap8SheGglv7MuYJm4FibU3bF8hGgbwlumP68fvCurEaqA18+b3K+afLo1Edl7qvMYR
+	 iLGjkYDoFQUCgpqo0+uMcTmrmZ53KRI1pe+RgaDPR1dxeVBttU3A3gYK7z4mdt6XJ2
+	 HZpdfv1JaAusRhH0Yps+eK65ojg1CVZKLYqDtVeIROes3KjPfB3F3S2ZUFO60lpHag
+	 b+NZLuCvTlW7A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 6EFACCE04A3; Tue, 16 Jan 2024 08:38:12 -0800 (PST)
+Date: Tue, 16 Jan 2024 08:38:12 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 0/2] rcu/nocb cleanups
+Message-ID: <938ff17b-f09e-4952-ae54-021a5db9423b@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240109222401.28961-1-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240109222401.28961-1-frederic@kernel.org>
 
-On Tue, 16 Jan 2024 16:31:55 +0100
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+On Tue, Jan 09, 2024 at 11:23:59PM +0100, Frederic Weisbecker wrote:
+> Hi,
+> 
+> This is an excerpt from the "[PATCH 0/8 v2] rcu: Fix expedited GP
+> deadlock (and cleanup some nocb stuff)" patchset with only nocb bits
+> that were off-topic.
+> 
+> No change since their previous posting.
 
-> On 16/01/2024 16:24, Petar Stoykov wrote:
-> > Sensirion SDP500 is a digital differential pressure sensor. It provides
-> > a digital I2C output. Add devicetree bindings requiring the compatible
-> > string and I2C slave address (reg).
-> > 
-> > Signed-off-by: Petar Stoykov <pd.pstoykov@gmail.com>
-> > ---
-> >  .../bindings/iio/pressure/sdp500.yaml         | 38 +++++++++++++++++++
-> >  1 file changed, 38 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/iio/pressure/sdp500.yaml  
-> 
-> Filename like compatible.
-> 
-> > 
-> > diff --git a/Documentation/devicetree/bindings/iio/pressure/sdp500.yaml
-> > b/Documentation/devicetree/bindings/iio/pressure/sdp500.yaml
-> > new file mode 100644
-> > index 000000000000..af01ec7e3802
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/iio/pressure/sdp500.yaml
-> > @@ -0,0 +1,38 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/iio/pressure/sdp500.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: sdp500/sdp510 pressure sensor with I2C bus interface
-> > +
-> > +maintainers:
-> > +  - Petar Stoykov <pd.pstoykov@gmail.com>
-> > +
-> > +description: |  
-> 
-> Do not need '|' unless you need to preserve formatting.
-> 
-> > +  Pressure sensor from Sensirion with I2C bus interface.
-> > +  There is no software difference between sdp500 and sdp510.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: sensirion,sdp500
-> > +  
-> 
-> No resources? No interrupts? No power supply or any pins? No even
-> iio-cells? This looks incomplete.
+Hearing no objections, I have queued this for further review and
+testing.
 
-For a pressure sensors, io-channel-cells (which I guess you me you
-mean) would be a new thing. We've never yet had a consumer of this
-data type...  Not necessarily a bad thing to have as one can
-conceive of one, but none of the current pressure sensor bindings
-have that.
+							Thanx, Paul
 
-vdd-supply though definitely wants to be in here and required
-given device is unlikely to work without power!
-
-Jonathan
-
-
+> Frederic Weisbecker (2):
+>   rcu/nocb: Make IRQs disablement symmetric
+>   rcu/nocb: Re-arrange call_rcu() NOCB specific code
 > 
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    i2c3 {  
+>  kernel/rcu/tree.c      | 47 +++++++++++++++++++++---------------------
+>  kernel/rcu/tree.h      |  9 ++++----
+>  kernel/rcu/tree_nocb.h | 38 +++++++++++++++++++++-------------
+>  3 files changed, 51 insertions(+), 43 deletions(-)
 > 
-> i2c {
+> -- 
+> 2.43.0
 > 
-> > +      #address-cells = <1>;
-> > +      #size-cells = <0>;
-> > +      sdp500@40 {  
-> 
-> Node names should be generic. See also an explanation and list of
-> examples (not exhaustive) in DT specification:
-> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-> 
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
-> 
-
 
