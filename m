@@ -1,83 +1,78 @@
-Return-Path: <linux-kernel+bounces-27520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED33282F181
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:30:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2A7782F187
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:30:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 845CC1F21D50
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:30:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 721141F246A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:30:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C846D1C29E;
-	Tue, 16 Jan 2024 15:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5273D1C68D;
+	Tue, 16 Jan 2024 15:30:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ffDwVzuU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o3OAUYqX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21F5C2563;
-	Tue, 16 Jan 2024 15:30:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8C923C43390;
-	Tue, 16 Jan 2024 15:30:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96C2F1C686;
+	Tue, 16 Jan 2024 15:30:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 407B1C433C7;
+	Tue, 16 Jan 2024 15:30:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705419025;
-	bh=au7Vv0YVe9jBCpigQHBl3gX/TdZHJ4nEa6OGC0H16A8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ffDwVzuU3G5g0DY9ukdU7eTpVDJZDVF+F5h4OQn4N65mHzPlA/sD70114j3inCHhD
-	 5loAc8G8ODAtjRr/9Ih++ApIiyAzgMj6MSgLmfqDmnpQs8ytwYOp2h63PeuGfLjFsY
-	 TwaSRkFcrTuU9R0oPROnrl50K6EzVRx7xpIEchto6UXHkBfeHgxQrbvRBK2R/4TgdJ
-	 048ZhcqpXfEVC+CBgMgj0MiGOSbYxp1+UBNt3FXq+0AUBldjBUvqHEzjcQuXORawSh
-	 xkkCSaBsv5S2NcPiUTg9erHQ17w2pCogjNeMDSEFkb1ev9dgaBIOKbHqBAntGn8BZw
-	 xkIx33M0Sa2sg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6BA03D8C984;
-	Tue, 16 Jan 2024 15:30:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1705419037;
+	bh=NtlQnQd8d2EZvcWS7NP/GFOR2COZ5yvK9sOWTwGlo8g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=o3OAUYqXjuRS4lQMnLsoD3HyTLFtuoQ6fTk6K+7vDqpRIRyO9IqU9/uml7yDwnyW4
+	 W6vn8YR/yZeikXx3ez8i1DVmjJxMvf6ndRzOC9mcH/nnjkYC0rpssRtaWsodUViDyQ
+	 oyiA1okSydwtu+/bMtPygyNlVOSqtqZ1F1wrp0z8H8CYaawAqxrFHF2mBREb37ysOI
+	 98gC2cH1FL/q8rKBvyTGSsx5qztALn5f4RdzOTQ4bvFIE94JvhmInvgvPI/iUiT4N3
+	 ZlmnnGysa+Edo8jY1pwe5m6fI1mP+BYoRM5blUr3Ak8NSzZq2KxLOW9zbli+/mKzWV
+	 Ex6n3Ko85vBiA==
+Date: Tue, 16 Jan 2024 09:30:30 -0600
+From: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>, linux-pci@vger.kernel.org,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>
+Subject: Re: [PATCH 3/6] dt-bindings: PCI: qcom,pcie-sm8250: move SM8250 to
+ dedicated schema
+Message-ID: <170541902117.4080388.15222330047897033696.robh@kernel.org>
+References: <20240108-dt-bindings-pci-qcom-split-v1-0-d541f05f4de0@linaro.org>
+ <20240108-dt-bindings-pci-qcom-split-v1-3-d541f05f4de0@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v1] bpftool: Silence build warning about calloc()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170541902543.7600.3198212618804627500.git-patchwork-notify@kernel.org>
-Date: Tue, 16 Jan 2024 15:30:25 +0000
-References: <20240116061920.31172-1-yangtiezhu@loongson.cn>
-In-Reply-To: <20240116061920.31172-1-yangtiezhu@loongson.cn>
-To: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- quentin@isovalent.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240108-dt-bindings-pci-qcom-split-v1-3-d541f05f4de0@linaro.org>
 
-Hello:
 
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Tue, 16 Jan 2024 14:19:20 +0800 you wrote:
-> There exists the following warning when building bpftool:
+On Mon, 08 Jan 2024 15:19:16 +0100, Krzysztof Kozlowski wrote:
+> Move SM8250 PCIe devices from qcom,pcie.yaml binding to a dedicated file
+> to make reviewing easier.
 > 
->   CC      prog.o
-> prog.c: In function ‘profile_open_perf_events’:
-> prog.c:2301:24: warning: ‘calloc’ sizes specified with ‘sizeof’ in the earlier argument and not in the later argument [-Wcalloc-transposed-args]
->  2301 |                 sizeof(int), obj->rodata->num_cpu * obj->rodata->num_metric);
->       |                        ^~~
-> prog.c:2301:24: note: earlier argument should specify number of elements, later size of each element
+> This creates equivalent schema file, except missing required compatible
+> which is actually redundant.
 > 
-> [...]
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  .../devicetree/bindings/pci/qcom,pcie-sm8250.yaml  | 180 +++++++++++++++++++++
+>  .../devicetree/bindings/pci/qcom,pcie.yaml         |  48 ------
+>  2 files changed, 180 insertions(+), 48 deletions(-)
+> 
 
-Here is the summary with links:
-  - [bpf-next,v1] bpftool: Silence build warning about calloc()
-    https://git.kernel.org/bpf/bpf-next/c/d2729bb2c7e1
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 
