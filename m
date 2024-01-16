@@ -1,55 +1,47 @@
-Return-Path: <linux-kernel+bounces-26736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76D7582E5B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:51:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADAB682E5B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:51:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A87092842E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:51:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47278284265
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:51:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58BD61DA39;
-	Tue, 16 Jan 2024 00:24:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92A1F2D7B6;
+	Tue, 16 Jan 2024 00:24:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kj82J9x7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OtiGZRfV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A08E52D78B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFDF21DA38;
+	Tue, 16 Jan 2024 00:24:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8A16C433F1;
 	Tue, 16 Jan 2024 00:24:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9824CC433C7;
-	Tue, 16 Jan 2024 00:24:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705364688;
-	bh=cgcRAiYk9vNMeMeB7RPaExiqCoReMDxjFFMz4hwr2P0=;
+	s=k20201202; t=1705364689;
+	bh=JFQbJFMvGhf8e9rSpxhY9AEA9zlgddvr471jGSTbkx8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kj82J9x751w7k9cZ+w2kOlVwSL4+Ren9330jSGDsIJgiumJnTjV96L+OnEYjM2sy9
-	 KiZHYdBQHRHkKCQotm0Key470sY1LR4mg3ot4WPdWfLi7+r+4Sd+x9WTVNu/vVpgEv
-	 o/EWS54GEx4TweqDHHmafRiNVkGzNyJLl1VFBpdiEmb8whUm7A9yWRvtmvIN2SgFMx
-	 UqNv76/HtiNYLmhSfxA6SRAxZUqSv+li+u0f54plCWxv08mEFDQHQxix3if0FY8ZEz
-	 SoeTvvUgpnoJPxhOCv+uwZJJ7vYRHNOPDEehxp09+7N6P6gs5RdnLMeTiqyh9y2wJL
-	 tmR509PozfY/Q==
+	b=OtiGZRfVt+ZgtWXIbVqL7t0U6Nkonr1HoRpoFGQDC3kCO5o50FRFpTlSITSsJ+iv0
+	 xWwOLv71SLxHsbpxXvQW/aKsXG2/J5p3GRSyd3oagO8L15dfHizr9Q8DYUTs5KlfC9
+	 h64hLe9sqZ3jd5XZiBolFmB0VTXYU5nAVsqCp5OFnEt3bl21MZMhshYwshlKsA77SF
+	 tIDGVmm2M+a18UQzF7NHmU9s1GznobxK6FlOm0MprF3/80hZ8UVkHFMWZK6QbWDc/D
+	 vGN3qilhja5BTDIM1WTZSGs4lIQuyV9jRNByxOlePU4BVfF9pOmmWt+U06UKjFfGI3
+	 +FToP2W2wcHjQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Thomas Bourgoin <thomas.bourgoin@foss.st.com>,
-	kernel test robot <lkp@intel.com>,
-	Dan Carpenter <error27@gmail.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Sasha Levin <sashal@kernel.org>,
-	davem@davemloft.net,
-	mcoquelin.stm32@gmail.com,
-	alexandre.torgue@foss.st.com,
-	ebiggers@google.com,
-	u.kleine-koenig@pengutronix.de,
-	linux-crypto@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 14/19] crypto: stm32/crc32 - fix parsing list of devices
-Date: Mon, 15 Jan 2024 19:23:49 -0500
-Message-ID: <20240116002413.215163-14-sashal@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	linux-afs@lists.infradead.org,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 15/19] afs: fix the usage of read_seqbegin_or_lock() in afs_lookup_volume_rcu()
+Date: Mon, 15 Jan 2024 19:23:50 -0500
+Message-ID: <20240116002413.215163-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116002413.215163-1-sashal@kernel.org>
 References: <20240116002413.215163-1-sashal@kernel.org>
@@ -64,44 +56,51 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.12
 Content-Transfer-Encoding: 8bit
 
-From: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+From: Oleg Nesterov <oleg@redhat.com>
 
-[ Upstream commit 0eaef675b94c746900dcea7f6c41b9a103ed5d53 ]
+[ Upstream commit 4121b4337146b64560d1e46ebec77196d9287802 ]
 
-smatch warnings:
-drivers/crypto/stm32/stm32-crc32.c:108 stm32_crc_get_next_crc() warn:
-can 'crc' even be NULL?
+David Howells says:
 
-Use list_first_entry_or_null instead of list_first_entry to retrieve
-the first device registered.
-The function list_first_entry always return a non NULL pointer even if
-the list is empty. Hence checking if the pointer returned is NULL does
-not tell if the list is empty or not.
+ (2) afs_lookup_volume_rcu().
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/r/202311281111.ou2oUL2i-lkp@intel.com/
-Reported-by: Dan Carpenter <error27@gmail.com>
-Closes: https://lore.kernel.org/r/202311281111.ou2oUL2i-lkp@intel.com/
-Signed-off-by: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+     There can be a lot of volumes known by a system.  A thousand would
+     require a 10-step walk and this is drivable by remote operation, so I
+     think this should probably take a lock on the second pass too.
+
+Make the "seq" counter odd on the 2nd pass, otherwise read_seqbegin_or_lock()
+never takes the lock.
+
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Marc Dionne <marc.dionne@auristor.com>
+cc: linux-afs@lists.infradead.org
+Link: https://lore.kernel.org/r/20231130115606.GA21571@redhat.com/
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/stm32/stm32-crc32.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/afs/callback.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/stm32/stm32-crc32.c b/drivers/crypto/stm32/stm32-crc32.c
-index 90a920e7f664..c439be1650c8 100644
---- a/drivers/crypto/stm32/stm32-crc32.c
-+++ b/drivers/crypto/stm32/stm32-crc32.c
-@@ -104,7 +104,7 @@ static struct stm32_crc *stm32_crc_get_next_crc(void)
- 	struct stm32_crc *crc;
+diff --git a/fs/afs/callback.c b/fs/afs/callback.c
+index a484fa642808..90f9b2a46ff4 100644
+--- a/fs/afs/callback.c
++++ b/fs/afs/callback.c
+@@ -110,13 +110,14 @@ static struct afs_volume *afs_lookup_volume_rcu(struct afs_cell *cell,
+ {
+ 	struct afs_volume *volume = NULL;
+ 	struct rb_node *p;
+-	int seq = 0;
++	int seq = 1;
  
- 	spin_lock_bh(&crc_list.lock);
--	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
-+	crc = list_first_entry_or_null(&crc_list.dev_list, struct stm32_crc, list);
- 	if (crc)
- 		list_move_tail(&crc->list, &crc_list.dev_list);
- 	spin_unlock_bh(&crc_list.lock);
+ 	do {
+ 		/* Unfortunately, rbtree walking doesn't give reliable results
+ 		 * under just the RCU read lock, so we have to check for
+ 		 * changes.
+ 		 */
++		seq++; /* 2 on the 1st/lockless path, otherwise odd */
+ 		read_seqbegin_or_lock(&cell->volume_lock, &seq);
+ 
+ 		p = rcu_dereference_raw(cell->volumes.rb_node);
 -- 
 2.43.0
 
