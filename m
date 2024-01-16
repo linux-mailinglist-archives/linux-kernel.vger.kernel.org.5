@@ -1,131 +1,106 @@
-Return-Path: <linux-kernel+bounces-28321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C144482FCEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:33:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35FD282FCED
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:33:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEB5F1C28385
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:33:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA5281F26D4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:33:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB4D7208BC;
-	Tue, 16 Jan 2024 21:54:03 +0000 (UTC)
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B94393DBB1;
+	Tue, 16 Jan 2024 21:54:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BI8PtIE3"
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25ABA1D6BD;
-	Tue, 16 Jan 2024 21:54:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A19791D6BD;
+	Tue, 16 Jan 2024 21:54:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705442043; cv=none; b=s5OWPmiug9h4/vNIJtm/X+vRGzJMHf/OZnE4bzDIh76uBpPYupGHdgDHdw3j/JVB4/zseQgZEJ2bjyS/FIkzJ3LZMtH2hRZ0THHt1O9m1g/H6xWB5oGUhmcePIn3e+GUtnMK6/agVIz/SgUyBnGzGplS7dVspsPHbaqFOXC9VgA=
+	t=1705442096; cv=none; b=TZf05ZHkYfo9NT00SSY3TL4b5bAeH/VuGUs3QoldTYtDojyTlgQlIR30LhO439yXaURFbtaqBor5Ike06Mkql+zbnFK5i03YJ6/PU95M27omrBvsMIdwVA7bZ89K3qDJBjXwhknPWLRVcmZf2cjoQP2DupopRPCv5jWhx4mj6Hs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705442043; c=relaxed/simple;
-	bh=etsIip4ervQ72CbIa+MN2P8hU3lpHAA1QXD3Z7KizAY=;
-	h=Received:X-Google-DKIM-Signature:X-Gm-Message-State:
-	 X-Google-Smtp-Source:X-Received:MIME-Version:References:
-	 In-Reply-To:From:Date:Message-ID:Subject:To:Cc:Content-Type:
-	 Content-Transfer-Encoding; b=aClxlfNpxeZ5d8BVVvMxGtECevkFuGAkbirb8EWRAKufumkVFLbFierq2g8KpqzNFbfr/UcoWyjc1qdqQASovdBf2bUxk3lFP3Rria4PiQdWv9Q4l6Epx4KPB4Ffvz4T7xQwWo9FHSYR2YegDHNasYOGAgFkTNlVs6lEvx7DQBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1705442096; c=relaxed/simple;
+	bh=npI+Ih9mt2xbQi3BROxMXKfAn6rfg1s15HAmsZCxBbM=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
+	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To; b=gJlCx/uFSNJHzDkIcCaEHlhxyCw3bNOzpA2Xd/cRwjoKqpGrH0rkCG8QSTwRiQkZCNcLodMXXE3l2WahcjiPVjlFQkYkpGpOPneoF6+/rGJQ6cfHw5PLXQdSRnXkbkAbdJ1V1DTI+u/d1RD4uXA6vICU51hci/iy0dh0QwZfv+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BI8PtIE3; arc=none smtp.client-ip=209.85.167.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5cddfe0cb64so4552897a12.0;
-        Tue, 16 Jan 2024 13:54:00 -0800 (PST)
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3bb53e20a43so7020101b6e.1;
+        Tue, 16 Jan 2024 13:54:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705442093; x=1706046893; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jvvtxY1CbOhwKiiqsLbdlUrB9w8j8X3W8Q9P4s0eRV8=;
+        b=BI8PtIE3xGbI/DXHA+mNvt8WE0kJmz+g7Dyrl1EQ/Bi04isT7lF6HoCe7DWkIRu0Ig
+         aurhuJkoBt5BWKxD1/ZuCH7yDtoTKPfd77+ibMuCjjKITyCIaU2SupXwq8e35HQuqpWV
+         m1OOh4V7QF91cl8ROd4Z4IXLgYSRGplUW1p3qQxMdtuevbJKrPXe9KzN8QXuxAkUkFyB
+         VKaHLjig0U8PKeuvYZdAVTjxqDuRMb7QRbyZx7fjP3yx0FES7p2E8xQHnkmmjihBz4mg
+         JNdgFyHh/DhUx3CeXOSISxbDKOy2pw5s33baxx4//u9tpqwWnzzMZe3E16i4dlnC5aI+
+         V2qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705442040; x=1706046840;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=P00sqh0pFFh48+YMUrZPqOjo0LVvWK+WBACLbeRVv8E=;
-        b=p10/bRIwETHbY+NFeTu5/inmdAaf7s6koXAQ/v0Y2YYV4SG8VG6PZ6LppWB6w5ddKY
-         WX6+YfbzcJmwnyBNtYGpLSjVo44ke4ghrVQKDZZ9lB4RrAfPw2lI7ynpynVXbcAD3ZjM
-         zQSeg4dMBPccHbqwHI/6OEzMcevwll82AWcVpl4QTtmjvULXqMIy3SV3ei5fKZL2ivW+
-         YoxqDMz6EMpMHHr7quFsNwetNW5lyQFB4ZVrabN7ogIzC6I0oe6n+pnj9oVoI4CpL0eC
-         uC47PlhH69racAWGFj8ogs+HEUM/7jTsfjHolFQaklaqSeVfYEdWvvAdTMOt3w/K+mux
-         K1RQ==
-X-Gm-Message-State: AOJu0Yxf1lkuoAZZ8IfW9/bfuBmiAbzVqJXziFBNQI4/aC6g8j8nq68P
-	onprHJQpmv7J6vgxnG8DYRMUxN8gUZqkMG0taog=
-X-Google-Smtp-Source: AGHT+IH2AaH6n80iEZ+QwdWC6xihpoOiv4ps2Jm+yyQE5NzmhytsqLldrZ2tFMJWbBrOiC0C4oywe8eL61aFBGhTl0k=
-X-Received: by 2002:a05:6a20:8418:b0:199:aeaf:cd3b with SMTP id
- c24-20020a056a20841800b00199aeafcd3bmr4230377pzd.42.1705442040272; Tue, 16
- Jan 2024 13:54:00 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705442093; x=1706046893;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jvvtxY1CbOhwKiiqsLbdlUrB9w8j8X3W8Q9P4s0eRV8=;
+        b=EAycuzu377l4x2MpKRfQLc7Qg5+u2u7d9yL8QwtemOEqj3bbYMjKHWhhbAxUk+x/od
+         +z7jEAFW+DWcZeRzqs9bwHbdaaL2h9K0OH8AGOgy8dTAz5ZtFHf7AuDmBBKrrpYrY3PF
+         D1xayPY/ozK4QI3roydotFxAfa4nvU0oK89RL2DFBCZuEXobhWdxgAskJ4SJuaU4PaOK
+         Ljpzgy+8uR6tOIph9M9LjzfBG46c3Zg2Z8HjEIdEy6DAFoIazEb4osqcT9AGsr9mkZwS
+         Bp+/YScfGnn4+FAOkttoYTUtdr3mqtKKWa2Gz/pUmog+HBz6v3fvi7sogLlV4Om+qsOB
+         3bqA==
+X-Gm-Message-State: AOJu0Yzwf9zB0nkn2pbvLz8gnxed9deP4OJayC8rTeuuBsbm4rKhIYwj
+	KWRTxoIAmUarHeBDbKTV++g=
+X-Google-Smtp-Source: AGHT+IFdXgsLRz4CScn/7nc2HlTEx/jXFC16f4AGjokIAP1lG1KXO71YlSeSSYSHrOFXxuQSJqYbqw==
+X-Received: by 2002:a05:6358:5490:b0:175:9bfc:1b32 with SMTP id v16-20020a056358549000b001759bfc1b32mr8713718rwe.29.1705442093495;
+        Tue, 16 Jan 2024 13:54:53 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:5c15:9a6:f612:d37a])
+        by smtp.gmail.com with ESMTPSA id b25-20020aa78719000000b006d998c11eddsm64665pfo.62.2024.01.16.13.54.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jan 2024 13:54:53 -0800 (PST)
+Date: Tue, 16 Jan 2024 13:54:50 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Cc: Russell King <linux@armlinux.org.uk>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-input@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] input/navpoint: remove driver
+Message-ID: <Zab7KuDPKHlbahsn@google.com>
+References: <20240116-navpoint-removal-v2-0-e566806f1009@skole.hr>
+ <20240116-navpoint-removal-v2-2-e566806f1009@skole.hr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240111232923.8138-1-ilkka@os.amperecomputing.com> <2c9f5893-450c-012b-b748-a8fe8ddfae86@arm.com>
-In-Reply-To: <2c9f5893-450c-012b-b748-a8fe8ddfae86@arm.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 16 Jan 2024 13:53:49 -0800
-Message-ID: <CAM9d7ch5b9XHzQ-Hb=kPu-6jLyESWqgizz6MRNWb0d-NnK9aqg@mail.gmail.com>
-Subject: Re: [PATCH] perf data convert: Fix segfault when converting to json
- on arm64
-To: Ilkka Koskinen <ilkka@os.amperecomputing.com>
-Cc: James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240116-navpoint-removal-v2-2-e566806f1009@skole.hr>
 
-Hello,
+On Tue, Jan 16, 2024 at 08:48:07PM +0100, Duje Mihanović wrote:
+> This driver does not use the SPI core as it should, instead tampering
+> with the SSP registers manually. Refactoring the driver is almost
+> certainly not worth it as the hardware seems to have been designed for
+> and used only in the HP iPAQ hx4700 removed more than a year ago in
+> d6df7df7ae5a ("ARM: pxa: remove unused board files"), so let's remove
+> it.
+> 
+> Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
 
-On Fri, Jan 12, 2024 at 3:35=E2=80=AFAM James Clark <james.clark@arm.com> w=
-rote:
->
->
->
-> On 11/01/2024 23:29, Ilkka Koskinen wrote:
-> > Arm64 doesn't have Model in /proc/cpuinfo and, thus, cpu_desc doesn't g=
-et
-> > assigned.
-> >
-> > Running
-> >       $ perf data convert --to-json perf.data.json
-> >
-> > ends up calling output_json_string() with NULL pointer, which causes a
-> > segmentation fault.
-> >
-> > Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
-> > ---
-> >  tools/perf/util/data-convert-json.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/tools/perf/util/data-convert-json.c b/tools/perf/util/data=
--convert-json.c
-> > index 5bb3c2ba95ca..5d6de1cef546 100644
-> > --- a/tools/perf/util/data-convert-json.c
-> > +++ b/tools/perf/util/data-convert-json.c
-> > @@ -97,6 +97,11 @@ static void output_json_format(FILE *out, bool comma=
-, int depth, const char *for
-> >  static void output_json_key_string(FILE *out, bool comma, int depth,
-> >               const char *key, const char *value)
-> >  {
-> > +     if (!value) {
-> > +             pr_info("No value set for key %s\n", key);
-> > +             return;
-> > +     }
-> > +
-> >       output_json_delimiters(out, comma, depth);
-> >       output_json_string(out, key);
-> >       fputs(": ", out);
->
->
-> It looks like this would hide new errors on any of the other fields that
-> output_json_key_string() is called on. Maybe it would be better to only
-> wrap the call to output cpu_desc with the if? If that's the only one
-> that we think is optional, and even better only do it for arm64.
->
-> I mention this because the test for 'perf data convert' only checks for
-> valid json syntax, but not any fields. So we might want to avoid others
-> going missing.
+Applied, thank you.
 
-Makes sense.  Ilkka, can you send v2 with this?
-
-Thanks,
-Namhyung
+-- 
+Dmitry
 
