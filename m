@@ -1,209 +1,222 @@
-Return-Path: <linux-kernel+bounces-27950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F3A582F839
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:41:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7FA682F768
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:22:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C350D288A41
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:41:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A8D62830F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:22:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D5031DA51;
-	Tue, 16 Jan 2024 19:50:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF15937719;
+	Tue, 16 Jan 2024 19:47:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cBFk4/Mk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QEhrTykK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B1DD12F596;
-	Tue, 16 Jan 2024 19:50:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92F597CF16;
+	Tue, 16 Jan 2024 19:47:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434645; cv=none; b=SX7khBNGs7KnivOANnsCafUPnH7C2E4ILJzd7KCaqgCqIJxNPF/P0vhn2Y4nWcSbhsD7myiht9rRFxD8xlp9ZlXZN2qFM/nI1YRRI2kebmmpRwCXFWknJkFbKVM6KdNjyyINH7o41WuWd9YiuFfM1g1+RnvQwFbxkbzTQTnCBt0=
+	t=1705434454; cv=none; b=JJQzhtZMS04IkrGJFFzFPp7YWBhWiDl94AiEajsdZzwV3Nzfpnh3uQ2z9gQOi7XG/j8/ZKNTE6UdQHssjTtF9/Mo0xPPCR4Sw/IpmBMP7bLgcu5H6l3l5q7KfNbEQ7moWaH7a0l2NGrkxO1/2/xnuMueD55f35FebCXYgshxKsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434645; c=relaxed/simple;
-	bh=dNGLvOuWVcwowEavgF3jNgTCnZXjhZCAOaWKo3UrFbo=;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
-	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=W7K2lOL5fpwqV2TI7j8ealxKxUcBHldpeZwHbQeaCQd2UFf0TqjD2fgfQ9tZ8EaLrZWMa+Tr5j4a22Z4icclz9Jgqug4gdI6e+5v5TZseFDG9Su+Miog8VenpRNkyyMCo71GWis8JJY0dqrexKoNxACEPFI09+xFj9vDXj/Ws08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cBFk4/Mk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7880CC433F1;
-	Tue, 16 Jan 2024 19:50:43 +0000 (UTC)
+	s=arc-20240116; t=1705434454; c=relaxed/simple;
+	bh=AkiTCb6wI/I7afKxVR9W5K0pvQ6+tRl16zAHjb4fgIA=;
+	h=Received:DKIM-Signature:From:Date:Subject:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
+	 In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key;
+	b=hG+Xxl/3rNFVnEqnNWX/Yoom4AAlsreif+FAVQhGu0km1mppxd5MRbA23nepLPwfJwo81zocCZawyw/dZGQc6z1K3OycmSxiZsJozjCzX6IdqecID+s0lk3npTFxBcxCK1J+qIrEpVZdow2IJtPNtZ1OIBJRT1+YSQyVT+PewPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QEhrTykK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64D62C433F1;
+	Tue, 16 Jan 2024 19:47:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434645;
-	bh=dNGLvOuWVcwowEavgF3jNgTCnZXjhZCAOaWKo3UrFbo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cBFk4/MkW/kuFwY024OfF7QM3X+sq2mexex/VFTEOTbm2aYVpPmHWDAx2mSqksHwq
-	 aRayOhyoUywpHKkT6LyA6HON98IMlMVnjvU3C0L77QWpOzAHMnhX7CaABUJQiLx4HS
-	 N4VMMgeEEzPPTMKY4OXff75jxCImiFpI9ORnh3erzQdTicTnNlkUeiUZGwf2D51WdA
-	 gNA1N0rdWM3GIXfbuEQ/R9xM4sh6hAI6bnpzWOmsQFskKZ6F7J1+q1B0k7KK95rPyZ
-	 Fudfec3eKroynBKVjNcA4ifGXhFXyr+Cm8TCVdZZjLSSNm6Z9IVLee2BbEbkE9A82G
-	 EvAGDPEZTAa1A==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Tobias Waldekranz <tobias@waldekranz.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	u.kleine-koenig@pengutronix.de,
-	robh@kernel.org,
-	krzysztof.kozlowski@linaro.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 042/104] net: mvmdio: Avoid excessive sleeps in polled mode
+	s=k20201202; t=1705434454;
+	bh=AkiTCb6wI/I7afKxVR9W5K0pvQ6+tRl16zAHjb4fgIA=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=QEhrTykKlwOGz5IuTVNR5SOUJoPTi1MlovOZyLg/e5ggi+VPJokYrXvWLP0FM0CmF
+	 UciNRXb8LAHsbDcH7RnDxPNl456DEp5vNTqNKqS3Zll1Bm/UKxtmm0C6WW5hZKpIxt
+	 quhzwRalKlVZNzA+Y83mkDs74ua4fL/hk5TRUc+QIlB+DzneVrkaBYzn3rR9mdBrR1
+	 gXy4IF/J+EaHEkLb0tJ/Fgrx9suZljHU9xEdLnl9umNAXRMIjVNqmVxLTVpTsox4EL
+	 5YD/uGpJhclwCMziD6w93ypv+5XjDqsVUPSwKUacl+oHEX5LAI7YjFHM0Fam/2eh33
+	 ltxJXjI9mbukA==
+From: Jeff Layton <jlayton@kernel.org>
 Date: Tue, 16 Jan 2024 14:46:08 -0500
-Message-ID: <20240116194908.253437-42-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240116194908.253437-1-sashal@kernel.org>
-References: <20240116194908.253437-1-sashal@kernel.org>
+Subject: [PATCH 12/20] filelock: make __locks_delete_block and
+ __locks_wake_up_blocks take file_lock_core
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.12
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240116-flsplit-v1-12-c9d0f4370a5d@kernel.org>
+References: <20240116-flsplit-v1-0-c9d0f4370a5d@kernel.org>
+In-Reply-To: <20240116-flsplit-v1-0-c9d0f4370a5d@kernel.org>
+To: Christian Brauner <brauner@kernel.org>, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, 
+ Eric Van Hensbergen <ericvh@kernel.org>, 
+ Latchesar Ionkov <lucho@ionkov.net>, 
+ Dominique Martinet <asmadeus@codewreck.org>, 
+ Christian Schoenebeck <linux_oss@crudebyte.com>, 
+ David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
+ Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, 
+ Alexander Aring <aahringo@redhat.com>, David Teigland <teigland@redhat.com>, 
+ Miklos Szeredi <miklos@szeredi.hu>, 
+ Andreas Gruenbacher <agruenba@redhat.com>, 
+ Trond Myklebust <trond.myklebust@hammerspace.com>, 
+ Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
+ Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, 
+ Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
+ Jan Kara <jack@suse.cz>, Mark Fasheh <mark@fasheh.com>, 
+ Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
+ Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>, 
+ Ronnie Sahlberg <lsahlber@redhat.com>, 
+ Shyam Prasad N <sprasad@microsoft.com>, Namjae Jeon <linkinjeon@kernel.org>, 
+ Sergey Senozhatsky <senozhatsky@chromium.org>, 
+ Steven Rostedt <rostedt@goodmis.org>, 
+ Masami Hiramatsu <mhiramat@kernel.org>, 
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: linux-kernel@vger.kernel.org, v9fs@lists.linux.dev, 
+ linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org, 
+ gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
+ linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev, 
+ linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
+ linux-trace-kernel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4069; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=AkiTCb6wI/I7afKxVR9W5K0pvQ6+tRl16zAHjb4fgIA=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBlpt0h5QYo2Mzczjq3QvKNi1KSMPpywliqQ0U92
+ SG1Z2SOvF2JAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZabdIQAKCRAADmhBGVaC
+ FaY2D/4rwgL7811zt1zhBumpeY4uAeYPfPfqjMV7b5bI8BhMtPvnC7XrU4EUKDt+cJYJbGa6TJI
+ gc4apK+Bt2ih3DLCgFlWrcK5iM8fIcbgwMK8r01AZK0jzHVF+1b0CS2Nu/LhrRqM4XIWnztPXt1
+ 7tipdDp4tBL6O+Fhv9GaHJZBGBVS52ThJmjemF1a+LZRw5qqOipyu1R5evakULxCX6PhsllNMTT
+ XrB5H3McvLNHE2mYC7Fon0ilA96p2kKzW8jLe+KR8mp5MDBx7G+ttZ1gPb8FMT7kIcNeCrvE9S5
+ m7CeaQ+o4zmtpXvtsWdLPUS7nQIul9Rcwtdgr7BvI0aIMnQ1Szmp8sicKVblSxBSVOqx7hmizRs
+ mnbQ1sgavpwWDJ1I9hofCOd7EYPNm1aFE7mngQX45DCOd9A3Opkw2oI3a8autiEd17ofuzb4pTB
+ kOO/7K3/Dugnq5UW589/4O2WbawsSkzXUdVe+XSrJHJ/Uq05RrjaxLYElWRSFb/Fj/8YDxntP1V
+ wJcZnSdtK1XZjTKlY0Z9bRJhxjs1UoAm7427TQug4LUjGx1fOajuOLQoHQzGNqFlEhCN3CGLlmo
+ 56gyESKLCL619gAE80X899aNbVw5SrNibMs3zCs+MhAlnR2H+ul6CizW0dRDnKE/MWgNEaDoGcE
+ 1fTJDFYiDK6yu9g==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 
-From: Tobias Waldekranz <tobias@waldekranz.com>
+Convert __locks_delete_block and __locks_wake_up_blocks to take a struct
+file_lock_core pointer. Note that to accomodate this, we need to add a
+new file_lock() wrapper to go from file_lock_core to file_lock.
 
-[ Upstream commit 7dd12fe34686d89c332b1a05104d18d728591f0a ]
-
-Before this change, when operating in polled mode, i.e. no IRQ is
-available, every individual C45 access would be hit with a 150us sleep
-after the bus access.
-
-For example, on a board with a CN9130 SoC connected to an MV88X3310
-PHY, a single C45 read would take around 165us:
-
-    root@infix:~$ mdio f212a600.mdio-mii mmd 4:1 bench 0xc003
-    Performed 1000 reads in 165ms
-
-By replacing the long sleep with a tighter poll loop, we observe a 10x
-increase in bus throughput:
-
-    root@infix:~$ mdio f212a600.mdio-mii mmd 4:1 bench 0xc003
-    Performed 1000 reads in 15ms
-
-Signed-off-by: Tobias Waldekranz <tobias@waldekranz.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Tested-by: Andrew Lunn <andrew@lunn.ch>
-Link: https://lore.kernel.org/r/20231204100811.2708884-3-tobias@waldekranz.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- drivers/net/ethernet/marvell/mvmdio.c | 53 ++++++++-------------------
- 1 file changed, 16 insertions(+), 37 deletions(-)
+ fs/locks.c | 43 ++++++++++++++++++++++++++-----------------
+ 1 file changed, 26 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/mvmdio.c b/drivers/net/ethernet/marvell/mvmdio.c
-index 674913184ebf..2ef613a237d8 100644
---- a/drivers/net/ethernet/marvell/mvmdio.c
-+++ b/drivers/net/ethernet/marvell/mvmdio.c
-@@ -23,6 +23,7 @@
- #include <linux/delay.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-+#include <linux/iopoll.h>
- #include <linux/kernel.h>
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
-@@ -58,11 +59,6 @@
-  * - Armada 370       (Globalscale Mirabox):   41us to 43us (Polled)
-  */
- #define MVMDIO_SMI_TIMEOUT		1000 /* 1000us = 1ms */
--#define MVMDIO_SMI_POLL_INTERVAL_MIN	45
--#define MVMDIO_SMI_POLL_INTERVAL_MAX	55
--
--#define MVMDIO_XSMI_POLL_INTERVAL_MIN	150
--#define MVMDIO_XSMI_POLL_INTERVAL_MAX	160
+diff --git a/fs/locks.c b/fs/locks.c
+index eddf4d767d5d..6b8e8820dec9 100644
+--- a/fs/locks.c
++++ b/fs/locks.c
+@@ -92,6 +92,11 @@ static inline bool IS_LEASE(struct file_lock_core *flc)
  
- struct orion_mdio_dev {
- 	void __iomem *regs;
-@@ -84,8 +80,6 @@ enum orion_mdio_bus_type {
+ #define IS_REMOTELCK(fl)	(fl->fl_core.fl_pid <= 0)
  
- struct orion_mdio_ops {
- 	int (*is_done)(struct orion_mdio_dev *);
--	unsigned int poll_interval_min;
--	unsigned int poll_interval_max;
- };
- 
- /* Wait for the SMI unit to be ready for another operation
-@@ -94,34 +88,23 @@ static int orion_mdio_wait_ready(const struct orion_mdio_ops *ops,
- 				 struct mii_bus *bus)
- {
- 	struct orion_mdio_dev *dev = bus->priv;
--	unsigned long timeout = usecs_to_jiffies(MVMDIO_SMI_TIMEOUT);
--	unsigned long end = jiffies + timeout;
--	int timedout = 0;
-+	unsigned long timeout;
-+	int done;
- 
--	while (1) {
--	        if (ops->is_done(dev))
-+	if (dev->err_interrupt <= 0) {
-+		if (!read_poll_timeout_atomic(ops->is_done, done, done, 2,
-+					      MVMDIO_SMI_TIMEOUT, false, dev))
-+			return 0;
-+	} else {
-+		/* wait_event_timeout does not guarantee a delay of at
-+		 * least one whole jiffie, so timeout must be no less
-+		 * than two.
-+		 */
-+		timeout = max(usecs_to_jiffies(MVMDIO_SMI_TIMEOUT), 2);
++struct file_lock *file_lock(struct file_lock_core *flc)
++{
++	return container_of(flc, struct file_lock, fl_core);
++}
 +
-+		if (wait_event_timeout(dev->smi_busy_wait,
-+				       ops->is_done(dev), timeout))
- 			return 0;
--	        else if (timedout)
--			break;
--
--	        if (dev->err_interrupt <= 0) {
--			usleep_range(ops->poll_interval_min,
--				     ops->poll_interval_max);
--
--			if (time_is_before_jiffies(end))
--				++timedout;
--	        } else {
--			/* wait_event_timeout does not guarantee a delay of at
--			 * least one whole jiffie, so timeout must be no less
--			 * than two.
--			 */
--			if (timeout < 2)
--				timeout = 2;
--			wait_event_timeout(dev->smi_busy_wait,
--				           ops->is_done(dev), timeout);
--
--			++timedout;
--	        }
+ static bool lease_breaking(struct file_lock *fl)
+ {
+ 	return fl->fl_core.fl_flags & (FL_UNLOCK_PENDING | FL_DOWNGRADE_PENDING);
+@@ -677,31 +682,35 @@ static void locks_delete_global_blocked(struct file_lock_core *waiter)
+  *
+  * Must be called with blocked_lock_lock held.
+  */
+-static void __locks_delete_block(struct file_lock *waiter)
++static void __locks_delete_block(struct file_lock_core *waiter)
+ {
+-	locks_delete_global_blocked(&waiter->fl_core);
+-	list_del_init(&waiter->fl_core.fl_blocked_member);
++	locks_delete_global_blocked(waiter);
++	list_del_init(&waiter->fl_blocked_member);
+ }
+ 
+-static void __locks_wake_up_blocks(struct file_lock *blocker)
++static void __locks_wake_up_blocks(struct file_lock_core *blocker)
+ {
+-	while (!list_empty(&blocker->fl_core.fl_blocked_requests)) {
+-		struct file_lock *waiter;
++	while (!list_empty(&blocker->fl_blocked_requests)) {
++		struct file_lock_core *waiter;
++		struct file_lock *fl;
++
++		waiter = list_first_entry(&blocker->fl_blocked_requests,
++					  struct file_lock_core, fl_blocked_member);
+ 
+-		waiter = list_first_entry(&blocker->fl_core.fl_blocked_requests,
+-					  struct file_lock, fl_core.fl_blocked_member);
++		fl = file_lock(waiter);
+ 		__locks_delete_block(waiter);
+-		if (waiter->fl_lmops && waiter->fl_lmops->lm_notify)
+-			waiter->fl_lmops->lm_notify(waiter);
++		if ((IS_POSIX(waiter) || IS_FLOCK(waiter)) &&
++		    fl->fl_lmops && fl->fl_lmops->lm_notify)
++			fl->fl_lmops->lm_notify(fl);
+ 		else
+-			wake_up(&waiter->fl_core.fl_wait);
++			wake_up(&waiter->fl_wait);
+ 
+ 		/*
+ 		 * The setting of fl_blocker to NULL marks the "done"
+ 		 * point in deleting a block. Paired with acquire at the top
+ 		 * of locks_delete_block().
+ 		 */
+-		smp_store_release(&waiter->fl_core.fl_blocker, NULL);
++		smp_store_release(&waiter->fl_blocker, NULL);
  	}
+ }
  
- 	dev_err(bus->parent, "Timeout: SMI busy for too long\n");
-@@ -135,8 +118,6 @@ static int orion_mdio_smi_is_done(struct orion_mdio_dev *dev)
+@@ -743,8 +752,8 @@ int locks_delete_block(struct file_lock *waiter)
+ 	spin_lock(&blocked_lock_lock);
+ 	if (waiter->fl_core.fl_blocker)
+ 		status = 0;
+-	__locks_wake_up_blocks(waiter);
+-	__locks_delete_block(waiter);
++	__locks_wake_up_blocks(&waiter->fl_core);
++	__locks_delete_block(&waiter->fl_core);
  
- static const struct orion_mdio_ops orion_mdio_smi_ops = {
- 	.is_done = orion_mdio_smi_is_done,
--	.poll_interval_min = MVMDIO_SMI_POLL_INTERVAL_MIN,
--	.poll_interval_max = MVMDIO_SMI_POLL_INTERVAL_MAX,
- };
+ 	/*
+ 	 * The setting of fl_blocker to NULL marks the "done" point in deleting
+@@ -799,7 +808,7 @@ static void __locks_insert_block(struct file_lock *blocker,
+ 	 * waiter, but might not conflict with blocker, or the requests
+ 	 * and lock which block it.  So they all need to be woken.
+ 	 */
+-	__locks_wake_up_blocks(waiter);
++	__locks_wake_up_blocks(&waiter->fl_core);
+ }
  
- static int orion_mdio_smi_read(struct mii_bus *bus, int mii_id,
-@@ -194,8 +175,6 @@ static int orion_mdio_xsmi_is_done(struct orion_mdio_dev *dev)
+ /* Must be called with flc_lock held. */
+@@ -831,7 +840,7 @@ static void locks_wake_up_blocks(struct file_lock *blocker)
+ 		return;
  
- static const struct orion_mdio_ops orion_mdio_xsmi_ops = {
- 	.is_done = orion_mdio_xsmi_is_done,
--	.poll_interval_min = MVMDIO_XSMI_POLL_INTERVAL_MIN,
--	.poll_interval_max = MVMDIO_XSMI_POLL_INTERVAL_MAX,
- };
+ 	spin_lock(&blocked_lock_lock);
+-	__locks_wake_up_blocks(blocker);
++	__locks_wake_up_blocks(&blocker->fl_core);
+ 	spin_unlock(&blocked_lock_lock);
+ }
  
- static int orion_mdio_xsmi_read_c45(struct mii_bus *bus, int mii_id,
+@@ -1186,7 +1195,7 @@ static int posix_lock_inode(struct inode *inode, struct file_lock *request,
+ 			 * Ensure that we don't find any locks blocked on this
+ 			 * request during deadlock detection.
+ 			 */
+-			__locks_wake_up_blocks(request);
++			__locks_wake_up_blocks(&request->fl_core);
+ 			if (likely(!posix_locks_deadlock(request, fl))) {
+ 				error = FILE_LOCK_DEFERRED;
+ 				__locks_insert_block(fl, request,
+
 -- 
 2.43.0
 
