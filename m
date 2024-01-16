@@ -1,196 +1,166 @@
-Return-Path: <linux-kernel+bounces-27199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 112A782EC14
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:47:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2363482EC17
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:48:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4569928574F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:47:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 831BBB22910
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:48:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41FF71AAAD;
-	Tue, 16 Jan 2024 09:45:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E738C134B6;
+	Tue, 16 Jan 2024 09:47:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="LWAdoX2B"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2075.outbound.protection.outlook.com [40.107.244.75])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="W/O8DJIX"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3A5B12E49
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 09:45:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YsYUBg/e/BhsiQsQ8tutD8fYzoL5Kg4BFx53oX1lHk2Y2hiXRlA9VWgms6DRG/z1ipJKSDBuxDNxa3XoRC5BlvUayqVptb+MEH19E9CgFrZiSMbPVpf8dJ6kxcZKMEBD4hhv0J75PmesOXAV+xio43OJeCPKd2ndd8TDKXd3CUzbx7kTadG4qSDg0S13p1ipjr3RkRjAczYBlzS7SnXz3T8TioTOsc3UqeQhg6BuGg6C1dQGLM5abFAyFoGs3n+1zsr1RN6WIgT6rpflbO4JKzzqx4WBAz2JTryC/OIi4mum1JURZMyz1ztMjJFn6/W5EwECXvSprhuUp73fZtCDTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sx38MaBtLlwNz+Y6BGtS9Y9cErc3OytQB03/FpvBb8o=;
- b=IKWYHybsTGHpGU6nKD7ami4UfszRAUGy5mvDwJmT7FeXUVJxeUBRtfdftvkeU+3VPglE4aybvqm0EQXs6p804Z5vyvvx0IxY0NWke5prdr4RMzKVa6gzYFVOUj8qm7JPKpoTOaK9PoeJSjiVAUOKZNAm7Lz9PC9bUEYeFt476wZ09kWUJwB3npzxlxUrwsFQxLNn5sZKAXaqBxmAsSJJMSuYEKwYEDJJtrutmj6jEya/mpPL0FTyw3FOXb+R25cxmQusMTTap1+0kd0Zlr5r8NMw+CSX89ih98khVxL5BrlVWawZiGHd8uP2ij8eZwSzWYT5CIbeWpprqNWKmo95ZQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sx38MaBtLlwNz+Y6BGtS9Y9cErc3OytQB03/FpvBb8o=;
- b=LWAdoX2Bryw8yjtsHOvgj3FSRzsZfbOAN72N+v0X4xoTRZjAqOiSXTmsG/4G+7MlTfJpfCDM86IoXhl8V0hyBIHxth3H7he7skrd+WGlFStPTHm9ZB0mp9f02ikJg5OINZ01TatdcwL+hSiTSVnX3FGn19vorBI0RaJ1DArPNpw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by DM4PR12MB6181.namprd12.prod.outlook.com (2603:10b6:8:a9::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.19; Tue, 16 Jan
- 2024 09:45:53 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653%4]) with mapi id 15.20.7159.020; Tue, 16 Jan 2024
- 09:45:53 +0000
-Message-ID: <2b715134-9d63-4de1-94e5-37e180aeefd2@amd.com>
-Date: Tue, 16 Jan 2024 10:45:46 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/ttm: only use DMA32 if needed for dummy_read_page
-Content-Language: en-US
-To: Yangyu Chen <cyy@cyyself.name>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-Cc: Huang Rui <ray.huang@amd.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Jiuyang Liu <liu@jiuyang.me>, Yichuan Gao <i@gycis.me>
-References: <tencent_0B319B215E8D487CC082C0DA5E8E46B86B08@qq.com>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <tencent_0B319B215E8D487CC082C0DA5E8E46B86B08@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0426.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:d1::9) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95FDA134A1
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 09:47:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-559b8c1930fso203748a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 01:47:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705398440; x=1706003240; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yD4vpBkbRBMO9QGAEAJHw9dn2BZMsbgBrgpZ8rNI5cY=;
+        b=W/O8DJIX7R8CWV1DCv+DVWFfsD1DjwcqhTu+3MSsnQwOhlEDoD1NaIE93LWU4gsLr8
+         JqAd1Yg/X+CHhASrcnfTWtq30OG950TA/KE69kwdmKbqrl+BHD7wlttaGHwP+HhAi9GD
+         nvSiIqSg1BDJ0LSVAAg8yb5x7Ss4PYOU5HLjufZGMXqKz41MqRmOQHgXk33oJodmgdRj
+         jbGhBDRfZi7eLJe3TWczkqQVK4s4jQjSMIDdYeFDPkTPNONp06GyAgud5uw8afCxVuUK
+         4747gkDH/s6VtzIHwVz+PBUuWMRyxgP57AC5+N9vWF7bibT2zyhC6Lr6Dx0P1kCqylXI
+         +0KQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705398440; x=1706003240;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yD4vpBkbRBMO9QGAEAJHw9dn2BZMsbgBrgpZ8rNI5cY=;
+        b=tHsfNksxO5TZKwpoK+DNQhLs5q3e16BzIhQB2bp7I6XG4SE9VAPY5YsjB8krRwuBek
+         P1rNtu8+a5SQsMtKo6AfYStIEZpNncNqmGcd64HqFre4h6JmmA0p1ii9wR5KBMLJonP/
+         frZ4Ajo+CAuzJoCc3WCRq9tpDOaSobwZcB+YIL3Ura3I4v2GymjxiCmT9KDLdspW+xqD
+         Hpaqbc6F21CtVTfx7XntJkGm+GG0hDn9DUAGpgv7N9rFrsT5q14WGn4VWp7W/wWyaPH9
+         cFIgh7ferbatTCB8TrYussRF3cBzQWt8KXtDIw8+mdA8wXDlrhVHahDiddcIr+ZwpQqh
+         zVmw==
+X-Gm-Message-State: AOJu0YxcGMWrL884xwaOPJod+LTz8/MoGBx6UV22/EKwbshbe8/uZUNu
+	vofIYvDGQr9zUhSzwtBqBVrQgRUraOT1KA==
+X-Google-Smtp-Source: AGHT+IFjvPOBynz+YR0y065oyYGLiC5+MNqe7+ONsHxQG+/V3n4GPlfrFCA4E+HdaInrOPxr6eVnZw==
+X-Received: by 2002:a17:906:7253:b0:a2c:7df9:9e3e with SMTP id n19-20020a170906725300b00a2c7df99e3emr3354302ejk.127.1705398439990;
+        Tue, 16 Jan 2024 01:47:19 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id mc12-20020a170906eb4c00b00a2b85ef0ca3sm6219090ejb.202.2024.01.16.01.47.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jan 2024 01:47:19 -0800 (PST)
+Message-ID: <a9f369bf-48ab-4b6d-bd9e-b51e47bbe535@linaro.org>
+Date: Tue, 16 Jan 2024 10:47:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|DM4PR12MB6181:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6a29006f-f3f3-4076-fa0c-08dc1677ee5f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	xMQRMYlNlsQKPgNsGzWsS0yfT99SLBpipMeKwj8kA1bdz76aDzgGqnHmZDKtKgE1789wSc+CPMcj0KzrQr060oAyd8G+EwWY0GHMueul+KEbQ0qQuIlbIA6wzG16frf69HJh0Nttp9bZ/jYjdHZsK7CCkJnrUgCZDE+GmT2mms1B4QHz2VMKnFO0gtx3QEZWWV7APllCIH1sZxGAjHDTvSxHpfHebvM7qq5a9sdKElSTgYKRbGaw9bhOCcpBNjqGfp7niu0MTdDdBMuxL090w2cWO5TW68TzxxN+sCanyDTxpCUZ/+hWu4zcLThvHrnn7BY+wl6IvKQ+/SKrT66l2o/rDwcB7/6JfFFhEIJ5KkHIu4UjW39tX4ZSt9FdtnufpdCHNC6NVIglhCY8W1W+2VTDLN9ZCmjW+PEtyKvF7RVVwBm9Uw0yPJSF99RyQXeTV3zU6TRiXzHimgATTobwI7n8+cTjQVg+9GSYEsBMDzAPxmhJIm0mMIkfZk0LLxHcS3jdXZIyVpQLm7T+j3Hj+rdNP7Aj7CnkyQ2qu+s+2M7gaocwmT8Y6Lww/PFGJdRoT1zcssI5Vi1AoebGAr//gPsrQ29J4lAe27SXXbhmBwKHITSz0PD73yjOpibwNj9gCUxxsLe+r5Nz1YvuKZ0sNQ==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(376002)(366004)(396003)(136003)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(5660300002)(8936002)(8676002)(66946007)(4326008)(54906003)(7416002)(2906002)(316002)(66476007)(31686004)(66556008)(6666004)(6512007)(6506007)(6486002)(478600001)(83380400001)(36756003)(2616005)(41300700001)(31696002)(86362001)(38100700002)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?S0dtWEdtc2FsOWRUUVlpQW1LNU15b3NhUW52c1lMVy9GOGhZT3hXRGFSQ2E2?=
- =?utf-8?B?RkFZRDd1NVhvWlBoQmZqRWYvRHpBVnVNUXBlV2oyWmRvNkw4NllvY21pbmVE?=
- =?utf-8?B?NVozOUtmQnUxZnJJcGFja0xEeEdjYzFXWjh4ME5NU1ZLeExTNFZYcmJnMkY5?=
- =?utf-8?B?Vm5jT2tRamZaWXBtUVhwU3NrWjRzRUhXMVk0eXl5NktYNTZLcG1LeTZYeTZC?=
- =?utf-8?B?SzlFRFFJaGU2aUY1NzVaSkdoTE1OV3g2eU9oMktkY1kvQXBUU1VxUlplV2Ja?=
- =?utf-8?B?SUVPVlRGWG14OFA3NWpORE9INnZlaytVc1hqU01YMGIxZG1xL0xnTGJicGNW?=
- =?utf-8?B?V0o5Lzk2VVg2R2RscG9tN0dNM3dNYnc1dFAwR0c5OXhyb1E3TCtiTk45blgw?=
- =?utf-8?B?ZTJnSnZqb0dzWW0vZG9qanl0bWY1WGpqelkreDU1ay9RSHhPMGFwMUdZSnNZ?=
- =?utf-8?B?Wkp4MUtTQXExZ1BVVFlBMjhud2UvNFYybzl4eDhhUEpWbEtxdHFMM0h3RlVr?=
- =?utf-8?B?MU04QkNjcVI3c1c4M3ZEdXFCdldscVNQQlJQalFjcEdRbE1Wby9ESUhZVDJL?=
- =?utf-8?B?WFNyS1pwaHBxMzI0SThYWDlONnd0bnRFbWFMSllhK1lVZGh1VkhaV2ZiUFZH?=
- =?utf-8?B?SlFid2tnYk5CYmRyYmNvL2h5UmlGY0RmaFU0cmRFLy9HblQwNTNOeUJFQTJk?=
- =?utf-8?B?NlZTM0JNL29tTWFqTStoNjc0OGFaSkNKV1FJUjR2c2RSb1JsRlpqK0RkZVdZ?=
- =?utf-8?B?K2VEVjJVclJXdHB0UGlzUkRXaWFLcFRZSWt0WVRERFhkNmIrUE1YTUNZM0Zi?=
- =?utf-8?B?allVU1paVlFQQW1JSEFVeks1RmVjbnpMaDBSdFp0R0dGRjBPbEtHYUNPNmRo?=
- =?utf-8?B?SlZIYWRCUmpCbTl4NlFYTVZTMWNadGNwNlZFdkxTNC8rc2dLSi9NL3hlTk5z?=
- =?utf-8?B?c2hXM0JqNXExbmc0SHRNKzZEamJZZkFyOTNudDJJQWEwazZEeUlYTXIyK04w?=
- =?utf-8?B?bStDSmhQdThFSDlENzZRSC9lTDkxbTBFeW5hckE1VnFrNFFDYllhWTNPT3JZ?=
- =?utf-8?B?K3RQZWs5b2hyTklBU2VsR2wvRFdyb1ducHlIbWJPcEg2NGVhbkhlN1k1MStj?=
- =?utf-8?B?TEdZR2YzSzYxbUl1ZStXVUNXNy9OL2NnUmplS2YwMXhtajZNbld2VzhadW10?=
- =?utf-8?B?aWMrZHBaZk9vdm1qUXh4S0hWT2R1c1NVLzVCeXZKQ2VHQmVmMy9OZlZqcngx?=
- =?utf-8?B?c1EwbTl5RUlSb1Qvak5UcWtqUUlJazExNGYrdTlQY0NhQ0puOFp6TWpmTFR3?=
- =?utf-8?B?WTh0LzF5RkRyYnU2SnoxckllaGd0cnExYlNNekpoYmM2VzBuemtjNmVTL1RG?=
- =?utf-8?B?WVRtWWZtMFRqektzbWdub1l2SmJ2Wm1TWHVRNmM2a3ZBYitQSTB3UnhBUkVW?=
- =?utf-8?B?MzBMZEo0aWIzSHVXV1hJZkNSL2dMbEdFcDVSankzbW9IWUlQTlBsNzByTkZt?=
- =?utf-8?B?SGdIYThGWmk2MzFSZmRjcFVrNmlSb1Y3eks4a1htSWR3TytIbWQ0UmgzVTFG?=
- =?utf-8?B?dGNkWE42dSszamt4aDJvRFNLM1hPS2hZMUZRK3pncFVESzU4UVhiazh6L3Zm?=
- =?utf-8?B?eW9oQ2pCb2lubXZvVWRoTlNnR3djZ2lpQ0JmaXpiNEt3MlpDNGtNR2FCdDMv?=
- =?utf-8?B?ZG9TUldrSlRPNTNuc3orckdIY21RNHZRN2FmY1dIbXUyQ1RoV2hwRjhCN3N2?=
- =?utf-8?B?TWRJV1BFSVRmZGdxc0hybzdXLzEyS2lFdUZpN1hQZ3BuM3NGSEFYTE9hWnFH?=
- =?utf-8?B?c0hJUklydjlPbXhoTVArWDgyY2ZsN3pUT0l4WWZONzZGSFE0ZnVhZzAwTXhr?=
- =?utf-8?B?VVkvVDFWT01IRmpPRkZiZi9VSWFmalovMnpLVDFFNU1SR1ZabnFzSy93amY3?=
- =?utf-8?B?ZDRJczZ4OHZobnJ5ckUvT0Z4VWhiSDNrSmpYL1llQXdOWmdVQ3NBTnZWUGRq?=
- =?utf-8?B?ZU1DM2JlVzVuTDZwczZXMnJ3aC9IcTkxUi9XZ2o2VTE2akdJcjNKZ0NXNmV5?=
- =?utf-8?B?S3hNbTdkalppNE5haExCUEVpNnJIMWp3Vy9nbzVaUEJxVm5pU0RQdG1UODVy?=
- =?utf-8?Q?skAYzO6oZZVoe09hx6U7hikH2?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6a29006f-f3f3-4076-fa0c-08dc1677ee5f
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2024 09:45:53.6875
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GMYgsOa2FXtmK5F/m6mOuf1R27qr9tH0DSonyj19EHPyWTh7BK5tTSZ4XB5WFWs9
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6181
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 0/5] riscv: sophgo: add clock support for sg2042
+Content-Language: en-US
+To: Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
+ chao.wei@sophgo.com, conor@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ mturquette@baylibre.com, palmer@dabbelt.com, paul.walmsley@sifive.com,
+ richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
+ devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+ haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com, guoren@kernel.org,
+ jszhang@kernel.org, inochiama@outlook.com, samuel.holland@sifive.com
+Cc: Chen Wang <unicorn_wang@outlook.com>
+References: <cover.1705388518.git.unicorn_wang@outlook.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <cover.1705388518.git.unicorn_wang@outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Am 16.01.24 um 08:24 schrieb Yangyu Chen:
-> Some platforms may not have any memory in ZONE_DMA32 and use IOMMU to allow
-> 32-bit-DMA-only device to work. Forcing GFP_DMA32 on dummy_read_page will
-> fail in such platforms. Only use DMA32 when it must to get the bug
-> resolved.
-
-Well that makes no sense.
-
-If a platform doesn't have a ZONE_DMA32 then GFP_DMA32 is just ignored 
-as far as I know.
-
-This patch here won't work since the use_dma32 flag is a per device flag 
-which can't be used for the global initialization.
-
-Otherwise this can randomly fail depending on if a DMA32 device 
-initializes first or after some device with larger addressing 
-capabilities. This configuration is quite common on older motherboards 
-with both integrated and dedicated graphics.
-
-Regards,
-Christian.
-
->
-> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
+On 16/01/2024 08:20, Chen Wang wrote:
+> From: Chen Wang <unicorn_wang@outlook.com>
+> 
+> This series adds clock controller support for sophgo sg2042.
+> 
+> Thanks,
+> Chen
+> 
 > ---
->   drivers/gpu/drm/ttm/ttm_device.c | 7 ++++---
->   1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/ttm/ttm_device.c b/drivers/gpu/drm/ttm/ttm_device.c
-> index d48b39132b32..62f16fb72428 100644
-> --- a/drivers/gpu/drm/ttm/ttm_device.c
-> +++ b/drivers/gpu/drm/ttm/ttm_device.c
-> @@ -63,7 +63,7 @@ static void ttm_global_release(void)
->   	mutex_unlock(&ttm_global_mutex);
->   }
+> 
+> Changes in v8:
+>   The patch series is based on v6.7. You can simply review or test the
+>   patches at the link [9].
 >   
-> -static int ttm_global_init(void)
-> +static int ttm_global_init(bool use_dma32)
->   {
->   	struct ttm_global *glob = &ttm_glob;
->   	unsigned long num_pages, num_dma32;
-> @@ -95,7 +95,8 @@ static int ttm_global_init(void)
->   	ttm_pool_mgr_init(num_pages);
->   	ttm_tt_mgr_init(num_pages, num_dma32);
->   
-> -	glob->dummy_read_page = alloc_page(__GFP_ZERO | GFP_DMA32);
-> +	glob->dummy_read_page = use_dma32 ? alloc_page(__GFP_ZERO | GFP_DMA32) :
-> +					    alloc_page(__GFP_ZERO);
->   
->   	if (unlikely(glob->dummy_read_page == NULL)) {
->   		ret = -ENOMEM;
-> @@ -200,7 +201,7 @@ int ttm_device_init(struct ttm_device *bdev, const struct ttm_device_funcs *func
->   	if (WARN_ON(vma_manager == NULL))
->   		return -EINVAL;
->   
-> -	ret = ttm_global_init();
-> +	ret = ttm_global_init(use_dma32);
->   	if (ret)
->   		return ret;
->   
+
+..
+
+> Changes in v1:
+>   The patch series is based on v6.7-rc1. You can simply review or test the
+>   patches at the link [1].
+> 
+> Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v1 [1]
+> Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v2 [2]
+> Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v3 [3]
+> Link: https://lore.kernel.org/linux-riscv/MA0P287MB03329AE180378E1A2E034374FE82A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM/ [4]
+> Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v4 [5]
+> Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v5 [6]
+> Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v6 [7]
+> Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v7 [8]
+> Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v8 [9]
+
+lore links are useful to previous discussions. This shows what was at
+v7, but I cannot see my comments and compare whether you applied them.
+
+Best regards,
+Krzysztof
 
 
