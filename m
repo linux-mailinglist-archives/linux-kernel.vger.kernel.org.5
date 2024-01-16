@@ -1,76 +1,110 @@
-Return-Path: <linux-kernel+bounces-27165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E44B82EB67
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:22:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48D8782EB6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:25:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B021E284846
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:22:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AAF8284972
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:25:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6BD312B7F;
-	Tue, 16 Jan 2024 09:21:57 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4C812B88;
+	Tue, 16 Jan 2024 09:25:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1UCSgVcN"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E287125B2;
-	Tue, 16 Jan 2024 09:21:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F049C433C7;
-	Tue, 16 Jan 2024 09:21:55 +0000 (UTC)
-Message-ID: <c832da45-c818-420d-aaf8-05c15c1e5426@xs4all.nl>
-Date: Tue, 16 Jan 2024 10:21:53 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D04EC125DD
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 09:25:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d3ea8d0f9dso299315ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 01:25:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705397100; x=1706001900; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uKa6o7frE7cAq4cWeMN0RRhba2ve9NcMTWMZZZ/7rLg=;
+        b=1UCSgVcN3J5ZBZyv0E6V74mSHAYrBp6qhfr/3qW+E6PC7WCnO5PFeRkzWD+oxULWrH
+         1i31SnfhhleHzQ98BEHpHxcn1IUTGGrmHgp3tWTzW/veRxUezN8WFRwTbpAQw+fzS4UT
+         gEfvc9tPpWzz//8nIjU37vFoiigkt3ffF38RWWRtGC7YcSNz4xqrBcvWgjR+xmzicN5I
+         cp/CRVwqlGqqtLTfaO5VWsN8m9a9tcptp4GaFWXS39winiv/ga20xO8K5PsKnkHaBcQH
+         ZuaRZo0TG55nfRb0Jpi53ZuNmijz8m72xy9XZE5pvMHuAkFDK2CuNw3i7BTNVzaJliD4
+         /jvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705397100; x=1706001900;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uKa6o7frE7cAq4cWeMN0RRhba2ve9NcMTWMZZZ/7rLg=;
+        b=D5W9o+VPbaEJXK9lVfqIJqkHwwx6LyO4J5roLxPzH0LBaxrUaYFcsya54yOp30sGkH
+         4xOabO3DgYcgg6sLy3625WDSmMRCgttgElkxo3yfPXvi8ygMIsCIAejbK3PpVrOyeuaM
+         ue3TXxkBHd+T4TWE21stUT+dLMIXiA7oOCabpqCgd8CTS8vR/uTrFjL6eumBTUnMsuAg
+         NK67/UXxaj+4/+gW7kDqtx4vhgdu6VOmSHEc5Tz51TLNI9Kayp5NAJm4iao1xmgOHpqb
+         dwc/mf5aVVgvI/MDUYBkyvx42nacBwTz1blLttgOGPEmdm4UzjpTwBY6wuYVr6KMuHoA
+         6q0Q==
+X-Gm-Message-State: AOJu0Yynduv4avu8+lKd+WJYoAH3HllX/GhEuZEO4NKbru3bnP+3k3j7
+	7BASvK0vZpwU/Xpo17rCn7j0zapwldh/XN+Lzu2jQ2lznXLf
+X-Google-Smtp-Source: AGHT+IH2N+LXlQ1VOCyauXZQF1qVOnbGiJyJ6dzx3F/X3/F1giNPKttpEmDP+89ak1lCUrtIkPCBp85ezYuDsYasAK4=
+X-Received: by 2002:a17:902:fc46:b0:1d5:ad0f:7354 with SMTP id
+ me6-20020a170902fc4600b001d5ad0f7354mr508581plb.21.1705397099900; Tue, 16 Jan
+ 2024 01:24:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] media: media videobuf2: Stop direct calls to queue
- num_buffers field
-Content-Language: en-US, nl
-To: Benjamin Gaignard <benjamin.gaignard@collabora.com>, tfiga@chromium.org,
- m.szyprowski@samsung.com, mchehab@kernel.org
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com
-References: <20240115170826.214519-1-benjamin.gaignard@collabora.com>
- <20240115170826.214519-2-benjamin.gaignard@collabora.com>
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20240115170826.214519-2-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <000000000000653bb6060afad327@google.com> <0000000000004d67e4060f0bcc7b@google.com>
+In-Reply-To: <0000000000004d67e4060f0bcc7b@google.com>
+From: Aleksandr Nogikh <nogikh@google.com>
+Date: Tue, 16 Jan 2024 10:24:48 +0100
+Message-ID: <CANp29Y4Aq4SteF7HqnexK4azquKrUbV9-dcfBqsxFf3snMJrew@mail.gmail.com>
+Subject: Re: [syzbot] [bfs?] general protection fault in bfs_get_block (2)
+To: syzbot <syzbot+dc6ed11a88fb40d6e184@syzkaller.appspotmail.com>
+Cc: aivazian.tigran@gmail.com, axboe@kernel.dk, brauner@kernel.org, 
+	jack@suse.cz, linux-fsdevel@vger.kernel.org, 
+	linux-kernel-mentees@lists.linuxfoundation.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, yuran.pereira@hotmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 15/01/2024 18:08, Benjamin Gaignard wrote:
-> Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
-> This allows us to change how the number of buffers is computed in the
-> future.
-> 
-> Fixes: c838530d230b ("media: media videobuf2: Be more flexible on the number of queue stored buffers")
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
->  drivers/media/common/videobuf2/videobuf2-core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-> index 41a832dd1426..b6bf8f232f48 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-core.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-> @@ -989,7 +989,7 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->  	bool no_previous_buffers = !q_num_bufs;
->  	int ret = 0;
->  
-> -	if (q->num_buffers == q->max_num_buffers) {
-> +	if (q_num_bufs == q->max_num_buffers) {
->  		dprintk(q, 1, "maximum number of buffers already allocated\n");
->  		return -ENOBUFS;
->  	}
+#syz fix: fs: Block writes to mounted block devices
 
-There is another case in vb2_ioctl_create_bufs() where num_buffers is accessed directly.
-Can you fix that one as well?
-
-Regards,
-
-	Hans
+On Tue, Jan 16, 2024 at 9:20=E2=80=AFAM syzbot
+<syzbot+dc6ed11a88fb40d6e184@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit 6f861765464f43a71462d52026fbddfc858239a5
+> Author: Jan Kara <jack@suse.cz>
+> Date:   Wed Nov 1 17:43:10 2023 +0000
+>
+>     fs: Block writes to mounted block devices
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D16c3c513e8=
+0000
+> start commit:   98b1cc82c4af Linux 6.7-rc2
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Daec35c1281ec0=
+aaf
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3Ddc6ed11a88fb40d=
+6e184
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D16783b84e80=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D165172a0e8000=
+0
+>
+> If the result looks correct, please mark the issue as fixed by replying w=
+ith:
+>
+> #syz fix: fs: Block writes to mounted block devices
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion
+>
 
