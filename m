@@ -1,67 +1,60 @@
-Return-Path: <linux-kernel+bounces-28113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C96DB82FA57
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:31:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAEE282FA62
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:32:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78D921F26B5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:31:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0A0FB2A203
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:31:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85BBC35283;
-	Tue, 16 Jan 2024 19:59:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D160D15442C;
+	Tue, 16 Jan 2024 19:59:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WvRyTDky"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G52QtEOp"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C3663414;
-	Tue, 16 Jan 2024 19:59:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E4CE35297;
+	Tue, 16 Jan 2024 19:59:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435172; cv=none; b=NTVhX9/PCSzsC4NzEI/ufvKQYe6IKcIXMeg9ldvFHpVPpl54EC1TetKveVkjg/hsllPNlPB2XcUAgjbMtDDyICMP0LNvUaG9sBhXmgGOB/pHucKs4FDWwYwuBH7t34qRB8VFKcpsQttC2RiZghgy1kvelnIgIYPaYkmAD1uE7Sw=
+	t=1705435174; cv=none; b=UML5swH86y0FFM2zdW5ecriqSauNInRZZDkXFfs9jaMOikiHodCE6WkoXxgtrb7rL2JC8e5mrW210+GFAu1Z2ubn/Xi+iwXQjQ53sf6r0EG2uz61xP+FR19S348PBEhc98RfdBbBolBYA+J0Ly48BjpsGdaBcI9G2YU+i0qA740=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435172; c=relaxed/simple;
-	bh=xqS0SsVkNmE+5vAFxNQEbvH3Za02WzIV3UdstbhBM3A=;
+	s=arc-20240116; t=1705435174; c=relaxed/simple;
+	bh=a+KrDWCnpTc9Oe+bt3uIiX6ilR1oCzG95M1fdhNxqIk=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=O00VHj0WLpZYFvJnrx9TR+kBsfbhnhn9bp1nOvRbVtH+9h/QhheAKD1extXcCusUYeMBMrTTWGLooFrDteCbm/xSFx+ZjMLHxM+DEyKr30hy+xDFPHgl8Lsg9VMhrXtgdBoIbhvbJkXRsnf0gFuW2kQ3FDm1GgpFnvqQ8soruEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WvRyTDky; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DE35C43394;
-	Tue, 16 Jan 2024 19:59:30 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=tL5fzWxrk1PGsWuJMSsuN9NWXm9w6QgJrlb15ZcGIXHo4R65BsuablAIDtWNUEvU2Hxhj0IWvQRvSt3FPlF/Iiioaau+1EffAokzkJnDeEtB5ZkUQvJ0UsOhw4HtyxZaxit1JPbaHm4rQDNaoA8ar74J3VWHA7ebK/BngUcUYtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G52QtEOp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCCFBC43399;
+	Tue, 16 Jan 2024 19:59:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435172;
-	bh=xqS0SsVkNmE+5vAFxNQEbvH3Za02WzIV3UdstbhBM3A=;
+	s=k20201202; t=1705435174;
+	bh=a+KrDWCnpTc9Oe+bt3uIiX6ilR1oCzG95M1fdhNxqIk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WvRyTDkyNiyYFUrP/xr9jcLVHBZVxUPPA+H6MW91lDsuXveFg3JkPe6nlJcGpl27H
-	 33GC1qAbmkTqk/k9KR4rw+OVioaZSwrv6jC9Fql2lYdIiNceoqSH28rG/jfLBXPYup
-	 fDEjyfKTvOwA+VXQWzw7GS/cF1E2A76RHv//TXAS0wUJ1wTNN48RYO3/oXDoofz1Ef
-	 XnSpD21BYTZEV5MaJDVqYJBA23H6AlEHhwSR9Oz/jxoWcw8V6RSrpuGiKktAelKFoe
-	 6Axt0BJL6CX89HprJnLAJr+vWgCqRUEbWsl8LwUtd/FDfySwK/fv3Nf+F3VnHkAru5
-	 lLrjvS2Z01fLw==
+	b=G52QtEOpBNCRBFyoec/Z8lC9wazfL4YmAnUZq0eRUtTXqGSomH+ops0jfUrvko97o
+	 2d56epKApuZaQadF5BtPAhTTOzM9WloX6tkLgW9wLPX44WgJy5jX1o4XibdyaP8ZZ/
+	 4211PgdF13GURrq4odLJyJF5Uw66YaT7QrPIXy8iyuWB1a33AzUhms83oxgLHXLKVV
+	 aVaHNvnmSBal6r0xB8GWyBgN/5+fEX4w4eIf/H5fRMOqc9RnHucPjeb1Z+t41LDnI5
+	 8BaSHCeY3ujNUVhwXsbEtsB/P4HK+rwMWFUt3lxlhvpkHf6uvGLRv1qKPI43f61+FO
+	 znWycG89zbvJw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Shannon Nelson <shannon.nelson@amd.com>,
-	Brett Creeley <brett.creeley@amd.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Sasha Levin <sashal@kernel.org>,
-	drivers@pensando.io,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	florian.fainelli@broadcom.com,
-	allen.hubbe@amd.com,
-	yuehaibing@huawei.com,
-	drc@linux.vnet.ibm.com,
-	keescook@chromium.org,
-	justinstitt@google.com,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 26/47] ionic: pass opcode to devcmd_wait
-Date: Tue, 16 Jan 2024 14:57:29 -0500
-Message-ID: <20240116195834.257313-26-sashal@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	kernel test robot <lkp@intel.com>,
+	"Md . Haris Iqbal" <haris.iqbal@ionos.com>,
+	Jack Wang <jinpu.wang@ionos.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	linux-block@vger.kernel.org,
+	Guoqing Jiang <guoqing.jiang@linux.dev>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 27/47] block/rnbd-srv: Check for unlikely string overflow
+Date: Tue, 16 Jan 2024 14:57:30 -0500
+Message-ID: <20240116195834.257313-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116195834.257313-1-sashal@kernel.org>
 References: <20240116195834.257313-1-sashal@kernel.org>
@@ -76,61 +69,86 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.147
 Content-Transfer-Encoding: 8bit
 
-From: Shannon Nelson <shannon.nelson@amd.com>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 24f110240c03c6b5368f1203bac72883d511e606 ]
+[ Upstream commit 9e4bf6a08d1e127bcc4bd72557f2dfafc6bc7f41 ]
 
-Don't rely on the PCI memory for the devcmd opcode because we
-read a 0xff value if the PCI bus is broken, which can cause us
-to report a bogus dev_cmd opcode later.
+Since "dev_search_path" can technically be as large as PATH_MAX,
+there was a risk of truncation when copying it and a second string
+into "full_path" since it was also PATH_MAX sized. The W=1 builds were
+reporting this warning:
 
-Signed-off-by: Shannon Nelson <shannon.nelson@amd.com>
-Reviewed-by: Brett Creeley <brett.creeley@amd.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+drivers/block/rnbd/rnbd-srv.c: In function 'process_msg_open.isra':
+drivers/block/rnbd/rnbd-srv.c:616:51: warning: '%s' directive output may be truncated writing up to 254 bytes into a region of size between 0 and 4095 [-Wformat-truncation=]
+  616 |                 snprintf(full_path, PATH_MAX, "%s/%s",
+      |                                                   ^~
+In function 'rnbd_srv_get_full_path',
+    inlined from 'process_msg_open.isra' at drivers/block/rnbd/rnbd-srv.c:721:14: drivers/block/rnbd/rnbd-srv.c:616:17: note: 'snprintf' output between 2 and 4351 bytes into a destination of size 4096
+  616 |                 snprintf(full_path, PATH_MAX, "%s/%s",
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  617 |                          dev_search_path, dev_name);
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To fix this, unconditionally check for truncation (as was already done
+for the case where "%SESSNAME%" was present).
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202312100355.lHoJPgKy-lkp@intel.com/
+Cc: Md. Haris Iqbal <haris.iqbal@ionos.com>
+Cc: Jack Wang <jinpu.wang@ionos.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc:  <linux-block@vger.kernel.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Acked-by: Guoqing Jiang <guoqing.jiang@linux.dev>
+Acked-by: Jack Wang <jinpu.wang@ionos.com>
+Link: https://lore.kernel.org/r/20231212214738.work.169-kees@kernel.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/pensando/ionic/ionic_dev.c  | 1 +
- drivers/net/ethernet/pensando/ionic/ionic_dev.h  | 1 +
- drivers/net/ethernet/pensando/ionic/ionic_main.c | 2 +-
- 3 files changed, 3 insertions(+), 1 deletion(-)
+ drivers/block/rnbd/rnbd-srv.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/ethernet/pensando/ionic/ionic_dev.c b/drivers/net/ethernet/pensando/ionic/ionic_dev.c
-index b778d8264bca..f81b00c7e106 100644
---- a/drivers/net/ethernet/pensando/ionic/ionic_dev.c
-+++ b/drivers/net/ethernet/pensando/ionic/ionic_dev.c
-@@ -268,6 +268,7 @@ void ionic_dev_cmd_comp(struct ionic_dev *idev, union ionic_dev_cmd_comp *comp)
- 
- void ionic_dev_cmd_go(struct ionic_dev *idev, union ionic_dev_cmd *cmd)
+diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
+index 1896cde8135e..86a6242d9c20 100644
+--- a/drivers/block/rnbd/rnbd-srv.c
++++ b/drivers/block/rnbd/rnbd-srv.c
+@@ -606,6 +606,7 @@ static char *rnbd_srv_get_full_path(struct rnbd_srv_session *srv_sess,
  {
-+	idev->opcode = cmd->cmd.opcode;
- 	memcpy_toio(&idev->dev_cmd_regs->cmd, cmd, sizeof(*cmd));
- 	iowrite32(0, &idev->dev_cmd_regs->done);
- 	iowrite32(1, &idev->dev_cmd_regs->doorbell);
-diff --git a/drivers/net/ethernet/pensando/ionic/ionic_dev.h b/drivers/net/ethernet/pensando/ionic/ionic_dev.h
-index 38f38fe8f21d..1ab86eee8b5a 100644
---- a/drivers/net/ethernet/pensando/ionic/ionic_dev.h
-+++ b/drivers/net/ethernet/pensando/ionic/ionic_dev.h
-@@ -144,6 +144,7 @@ struct ionic_dev {
- 	bool fw_hb_ready;
- 	bool fw_status_ready;
- 	u8 fw_generation;
-+	u8 opcode;
+ 	char *full_path;
+ 	char *a, *b;
++	int len;
  
- 	u64 __iomem *db_pages;
- 	dma_addr_t phy_db_pages;
-diff --git a/drivers/net/ethernet/pensando/ionic/ionic_main.c b/drivers/net/ethernet/pensando/ionic/ionic_main.c
-index 538c024afed5..7942a7f0f7b3 100644
---- a/drivers/net/ethernet/pensando/ionic/ionic_main.c
-+++ b/drivers/net/ethernet/pensando/ionic/ionic_main.c
-@@ -350,7 +350,7 @@ int ionic_dev_cmd_wait(struct ionic *ionic, unsigned long max_seconds)
+ 	full_path = kmalloc(PATH_MAX, GFP_KERNEL);
+ 	if (!full_path)
+@@ -617,19 +618,19 @@ static char *rnbd_srv_get_full_path(struct rnbd_srv_session *srv_sess,
  	 */
- 	max_wait = jiffies + (max_seconds * HZ);
- try_again:
--	opcode = readb(&idev->dev_cmd_regs->cmd.cmd.opcode);
-+	opcode = idev->opcode;
- 	start_time = jiffies;
- 	do {
- 		done = ionic_dev_cmd_done(idev);
+ 	a = strnstr(dev_search_path, "%SESSNAME%", sizeof(dev_search_path));
+ 	if (a) {
+-		int len = a - dev_search_path;
++		len = a - dev_search_path;
+ 
+ 		len = snprintf(full_path, PATH_MAX, "%.*s/%s/%s", len,
+ 			       dev_search_path, srv_sess->sessname, dev_name);
+-		if (len >= PATH_MAX) {
+-			pr_err("Too long path: %s, %s, %s\n",
+-			       dev_search_path, srv_sess->sessname, dev_name);
+-			kfree(full_path);
+-			return ERR_PTR(-EINVAL);
+-		}
+ 	} else {
+-		snprintf(full_path, PATH_MAX, "%s/%s",
+-			 dev_search_path, dev_name);
++		len = snprintf(full_path, PATH_MAX, "%s/%s",
++			       dev_search_path, dev_name);
++	}
++	if (len >= PATH_MAX) {
++		pr_err("Too long path: %s, %s, %s\n",
++		       dev_search_path, srv_sess->sessname, dev_name);
++		kfree(full_path);
++		return ERR_PTR(-EINVAL);
+ 	}
+ 
+ 	/* eliminitate duplicated slashes */
 -- 
 2.43.0
 
