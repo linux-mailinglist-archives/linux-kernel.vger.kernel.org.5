@@ -1,68 +1,78 @@
-Return-Path: <linux-kernel+bounces-27275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 302AC82ED24
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:52:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D36582ED27
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:53:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D14CB2845FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:52:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A8211F238A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:53:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E427719471;
-	Tue, 16 Jan 2024 10:52:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89484199A3;
+	Tue, 16 Jan 2024 10:53:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q/siWHr/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KbEWUu1G"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F5D918ED4;
-	Tue, 16 Jan 2024 10:52:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01973C433C7;
-	Tue, 16 Jan 2024 10:52:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705402335;
-	bh=BpbxDcIY7558bHQDUuyuGyNMq+oP8ZHFVNuaKBYpl5M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=q/siWHr/EtfTYBSZGrMUixPO2QBiptnFHYjLQBr5LUvxrxyXz3BlOhinXJ4TE8w0N
-	 1Y327yig1QkwHLajIcsJePKdi752w8xm1aZrrC4Ge5ijT2a9BgTrv8hh0JgzmSeF/+
-	 58GadoI3bn7VV6u5xfgV4qUTtVOQxjrza4YtsS+/Dei5SnoGt6wciahu96xVjDioch
-	 fzSY4/Za0lY023dsWvm9kOFtzUeTqR4gAMUNc2s/aIm4nn523DK9Lr+CcO7j7BSdfa
-	 XqseLTVloahJwwqWXjNr06aZSHCkKJfXWrgyDJUq1Veh2SRH5cV+Ov7U5B2LRhORpq
-	 zAeOIKsleeZLg==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan@kernel.org>)
-	id 1rPh3I-0005Z7-38;
-	Tue, 16 Jan 2024 11:52:17 +0100
-Date: Tue, 16 Jan 2024 11:52:16 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-	Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Brian Masney <bmasney@redhat.com>,
-	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
-	vireshk@kernel.org, quic_vbadigan@quicinc.com,
-	quic_skananth@quicinc.com, quic_nitegupt@quicinc.com,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v6 3/6] PCI: qcom: Add missing icc bandwidth vote for cpu
- to PCIe path
-Message-ID: <ZaZf4EyX5oADXG9N@hovoldconsulting.com>
-References: <20240112-opp_support-v6-0-77bbf7d0cc37@quicinc.com>
- <20240112-opp_support-v6-3-77bbf7d0cc37@quicinc.com>
- <fecfd2d9-7302-4eb6-92d0-c2efbe824bf4@linaro.org>
- <f9a177e0-3698-4865-9463-220c65c653fb@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C68319445
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:53:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705402413; x=1736938413;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kwLew776p5vzcGbpOZt4QJk08QQAHvX8ubIV3cyIJIw=;
+  b=KbEWUu1Ge8ZpC9QZ67NOETkzeOOGaG3IBJPCpG05thxetqI5xUEf8L2n
+   1aWfXn7RsfgPVKYc8hEiNSIVIdyKXgFogJgYtWB7SkCX7xMQlgIKMSxqs
+   7Udf97MCChaqGtZzTb9LPQIMkgun23HoZZGZdt4Q94EbStc3TAgQZlV0V
+   XxR+efB8VF3x3SjDsl/2yEJd0Rlk8Ogpv4M280/MYN3aex54cd75SFeDv
+   3k1BlUYy1URBelVtrputZRf83xEnKzH9i5ubGvvhvvfdeeIZYeFmEPUzQ
+   NGr17oMO4nRUfl/ipD5whBZTI/fhAfm1wDJJHbar8BXLgbvHFleD8bqUU
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="396983666"
+X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
+   d="scan'208";a="396983666"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 02:53:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="818134005"
+X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
+   d="scan'208";a="818134005"
+Received: from uschumac-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.213.254])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 02:53:27 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+	id BBABD10A17B; Tue, 16 Jan 2024 13:53:24 +0300 (+03)
+Date: Tue, 16 Jan 2024 13:53:24 +0300
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Nikolay Borisov <nik.borisov@suse.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	Jun Nakajima <jun.nakajima@intel.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	"Kalra, Ashish" <ashish.kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
+	kexec@lists.infradead.org, linux-coco@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv5 10/16] x86/tdx: Convert shared memory back to private
+ on kexec
+Message-ID: <20240116105324.5kz6b2b6cbv6g4xn@box.shutemov.name>
+References: <20231222235209.32143-1-kirill.shutemov@linux.intel.com>
+ <20231222235209.32143-11-kirill.shutemov@linux.intel.com>
+ <89e8722b-661b-4319-8018-06705b366c62@suse.com>
+ <20240116072822.pvzseyqry56eqa4j@box.shutemov.name>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,38 +81,51 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f9a177e0-3698-4865-9463-220c65c653fb@linaro.org>
+In-Reply-To: <20240116072822.pvzseyqry56eqa4j@box.shutemov.name>
 
-On Fri, Jan 12, 2024 at 11:33:15PM +0100, Konrad Dybcio wrote:
-> On 12.01.2024 16:17, Bryan O'Donoghue wrote:
-> > On 12/01/2024 14:22, Krishna chaitanya chundru wrote:
-> >> CPU-PCIe path consits for registers PCIe BAR space, config space.
-> >> As there is less access on this path compared to pcie to mem path
-> >> add minimum vote i.e GEN1x1 bandwidth always.
-> >>
-> >> In suspend remove the cpu vote after register space access is done.
-> >>
-> >> Fixes: c4860af88d0c ("PCI: qcom: Add basic interconnect support")
+On Tue, Jan 16, 2024 at 10:28:22AM +0300, Kirill A. Shutemov wrote:
+> > > @@ -809,12 +823,25 @@ static bool tdx_enc_status_changed(unsigned long vaddr, int numpages, bool enc)
+> > >   static int tdx_enc_status_change_prepare(unsigned long vaddr, int numpages,
+> > >   					 bool enc)
+> > >   {
+> > > +	atomic_inc(&conversions_in_progress);
+> > > +
+> > > +	/*
+> > > +	 * Check after bumping conversions_in_progress to serialize
+> > > +	 * against tdx_shutdown().
+
+s/tdx_shutdown/tdx_kexec_stop_conversion/
+
+> > > +	 */
+> > > +	if (!conversion_allowed) {
+> > > +		atomic_dec(&conversions_in_progress);
+> > > +		return -EBUSY;
+> > > +	}
 > > 
-> > If this patch is a Fixes then don't you need the accompanying dts change as a parallel Fixes too ?
-> > 
-> > i.e. without the dts update - you won't have the nodes in the dts to consume => applying this code to the stable kernel absent the dts will result in no functional change and therefore no bugfix.
+> > nit: Can you make the inc of conversions_in_progress be done here, this
+> > eliminated the atomic_dec in case they aren't. Somewhat simplifies the
+> > logic.
 > 
-> The Fixes tag denotes a bug fix, its use for backport autosel is just
-> a nice "coincidence".
->
-> Fixing a lack of a required icc path and having to rely on BL leftovers
-> / keepalive bus settings is definitely worth this tag in my eyes.
+> Okay, fair enough. Will change.
 
-An incomplete implementation can sometimes be considered a bug, but not
-always. If this is needed to enable a new use case, then it's hard to
-argue that the original omission was a bug.
+Actually, no, it will breaks serialization.
 
-And as I just mentioned to Krishna, the above Fixes tag is not correct
-as that commit did not *introduce* any issue. It solved the bit that was
-strictly needed for sc8280xp, but now it seems you may need something
-more for an even newer platform (even if no details and motivation was
-included in the commit message as it should have been).
+Consider following scenario (includes change you proposed):
 
-Johan
+	    CPU0			      CPU1
+
+tdx_enc_status_change_prepare()
+  if (!conversion_allowed) // false
+					tdx_kexec_stop_conversion()
+					  conversion_allowed = false;
+					  <...>
+					  <return as no conversion in flight>
+  <continue with conversion>
+
+Incrementing conversion_in_progress before checking conversion_allowed
+will make tdx_kexec_stop_conversion() to spin until CPU0 is done with
+conversion.
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
