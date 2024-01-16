@@ -1,75 +1,69 @@
-Return-Path: <linux-kernel+bounces-26908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1135582E7BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:55:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BFAE82E7BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:55:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45E391C22CF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:55:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32E03284F1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:55:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A50D10A1F;
-	Tue, 16 Jan 2024 01:45:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FBFF1118A;
+	Tue, 16 Jan 2024 01:46:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="Tq6wSFYI"
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZlXKQLsh"
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FD2510A1D
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 01:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 3DE332C025A;
-	Tue, 16 Jan 2024 14:38:08 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1705369088;
-	bh=7GHoTeKYfcgBq8P3j8Vvbrp1wPpvsnpu+kMyaTJguIc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Tq6wSFYIopua0N3Gp1vu596Uv3TSL4yIC5Z0P39tEoiYmhZaCBn/3vk4wJZTjm0nC
-	 1TwHNIaRSWBI/o2hn12zIr4r9vm9rxZumhgrLm2A0/vfvsM1ZVxcUzj55fPFEbXeba
-	 ylLta7TYaPrN56MRUyg+0U4A8xvavP4eb9Gof7b7m7fPd6oPwrEvU7JygKy6jJYtcd
-	 JNMeC5QyOsk7DJ9P2L9UYoNcn2PKF1qH3W+Ztw9kt+eBuveWohvYNVr2vpcNhnyEhh
-	 OzqSraYxkfrAjL0uT9TVd2WRjfzBXWhfJh4gkFAoEHv9bxC+Aike/4DjXUgjJ2AL1n
-	 TLdo247mBsemg==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B65a5de000000>; Tue, 16 Jan 2024 14:38:08 +1300
-Received: from aryans-dl.ws.atlnz.lc (aryans-dl.ws.atlnz.lc [10.33.22.26])
-	by pat.atlnz.lc (Postfix) with ESMTP id 19EDE13ED7B;
-	Tue, 16 Jan 2024 14:38:08 +1300 (NZDT)
-Received: by aryans-dl.ws.atlnz.lc (Postfix, from userid 1844)
-	id 13FBF200482; Tue, 16 Jan 2024 14:38:08 +1300 (NZDT)
-From: Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
-To: aryan.srivastava@alliedtelesis.co.nz
-Cc: andi.shyti@kernel.org,
-	linux-i2c@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: octeon: Add block-mode r/w
-Date: Tue, 16 Jan 2024 14:38:08 +1300
-Message-ID: <20240116013808.440485-1-aryan.srivastava@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230912011633.2401616-1-aryan.srivastava@alliedtelesis.co.nz>
-References: <20230912011633.2401616-1-aryan.srivastava@alliedtelesis.co.nz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD5CD10A37
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 01:46:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 15 Jan 2024 20:46:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705369571;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=r6/n0XiF/8/YjROtnAGW4lI9P3RjbqlOQAnxgBHRLTc=;
+	b=ZlXKQLshjOj9RqbUmtlp+8VOGvS/N6fDqya5t0KpJazJL/CAWeAMKFzfCgm4qkFYTv7AJy
+	GvrLXVCMEIDoPVlreB7aQWQbwS9Zd4T21z4jTCWupHHpx/CEX1zgARn2xL60ltIhEzMofC
+	gItiwSCdpW/iKZoj2Vqh3/Il504zjic=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
+	Suren Baghdasaryan <surenb@google.com>, catalin.marinas@arm.com, will@kernel.org, keescook@chromium.org, 
+	arnd@arndb.de, mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH AUTOSEL 5.15 05/11] arm64: Fix circular header dependency
+Message-ID: <hevfrjvifsaglbjta3ut6og54wcy6bu2ymjab5wly3a7kawrn7@6ctlgbhpfhso>
+References: <20240116010729.219219-1-sashal@kernel.org>
+ <20240116010729.219219-5-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=LZFCFQXi c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=dEuoMetlWLkA:10 a=XRUlxUASmzIDtQXyq5EA:9
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240116010729.219219-5-sashal@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-Hi Andi,
+On Mon, Jan 15, 2024 at 08:07:05PM -0500, Sasha Levin wrote:
+> From: Kent Overstreet <kent.overstreet@linux.dev>
+> 
+> [ Upstream commit 04bc786d663543512d08f1b86c7bcefb5144afe3 ]
+> 
+> Replace linux/percpu.h include with asm/percpu.h to avoid circular
+> dependency.
+> 
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-Did you have any more comments on my patch?
-
-Thank you,
-Aryan.
+This patch doesn't need to be backported, it's fixing an issue that
+occurs with the memory allocation profiling patchset
 
