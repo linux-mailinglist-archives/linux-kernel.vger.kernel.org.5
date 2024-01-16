@@ -1,85 +1,157 @@
-Return-Path: <linux-kernel+bounces-27507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B541582F13F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:18:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BEA182F144
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:19:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B06241C23632
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:18:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0696B22A8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:19:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00F6E1C29F;
-	Tue, 16 Jan 2024 15:18:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zh1sofLJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B20361BF56;
+	Tue, 16 Jan 2024 15:19:10 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53CA01C280
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 15:18:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50A8EC433F1;
-	Tue, 16 Jan 2024 15:18:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705418285;
-	bh=rabLjfAy7bC7UlGHaMRzQZqur8kUO/H60wZSGrSwfEs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Zh1sofLJXBSctIa3CMNtRF2FZiP3Rm0uvEAkDOOgwzO4yeh4dYk3NyjRsbhfZ27k7
-	 iKnex7NFcxSvAVBzlmcO/SOOLfRERzdKY2NPH6lQ9uGzjEtEnlMfrbTnuluZTk6pqD
-	 5+o1hEb12/LYt/fkvNtt91sG1jRrKV28tXnDBDtNuI2b33m4Pau8YpWfCIWz2wHdcg
-	 iH2k5KBolk06Pqi1gqJzPDH/E4lXC9111APJkBMuXJQ3hbaVLrQ99zAguwYKn5gseJ
-	 DcCkXPioAleMxJ7wSMA7V2rScHRZuBjrLd6kuksX7QxBNoTdwH6yJIe1hIA4l8rM9b
-	 D+3tuoe4TsKhw==
-Date: Tue, 16 Jan 2024 15:18:01 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Matti Vaittinen <mazziesaccount@gmail.com>
-Cc: Naresh Solanki <naresh.solanki@9elements.com>,
-	Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] regulator: event: Add netlink command for event mask
-Message-ID: <2e9de7ba-0020-42b6-8fc6-71ebae4b9fa5@sirena.org.uk>
-References: <20240116103131.413205-1-naresh.solanki@9elements.com>
- <e3e16af2-7f8d-4776-9726-f6282128a766@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 019C91BF43
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 15:19:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rPlD3-0000to-Uy; Tue, 16 Jan 2024 16:18:37 +0100
+Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rPlD0-000Gxq-M0; Tue, 16 Jan 2024 16:18:34 +0100
+Received: from pza by lupine with local (Exim 4.96)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rPlD0-000D8R-1w;
+	Tue, 16 Jan 2024 16:18:34 +0100
+Message-ID: <800d202864c1730622a19998728c5a8b576d1931.camel@pengutronix.de>
+Subject: Re: [PATCH v3 5/5] i2c: muxes: pca954x: Allow sharing reset GPIO
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Bjorn Andersson
+ <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Srinivas
+ Kandagatla <srinivas.kandagatla@linaro.org>, Banajit Goswami
+ <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
+ <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
+ Peter Rosin <peda@axentia.se>, Jaroslav Kysela <perex@perex.cz>,  Takashi
+ Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org,
+ alsa-devel@alsa-project.org,  linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ linux-i2c@vger.kernel.org
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>, Bartosz Golaszewski
+	 <brgl@bgdev.pl>, Sean Anderson <sean.anderson@seco.com>
+Date: Tue, 16 Jan 2024 16:18:34 +0100
+In-Reply-To: <20240112163608.528453-6-krzysztof.kozlowski@linaro.org>
+References: <20240112163608.528453-1-krzysztof.kozlowski@linaro.org>
+	 <20240112163608.528453-6-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Z2aIztPMx+sJYNwX"
-Content-Disposition: inline
-In-Reply-To: <e3e16af2-7f8d-4776-9726-f6282128a766@gmail.com>
-X-Cookie: Programmers do it bit by bit.
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
+On Fr, 2024-01-12 at 17:36 +0100, Krzysztof Kozlowski wrote:
+> From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+>=20
+> Some hardware designs with multiple PCA954x devices use a reset GPIO
+> connected to all the muxes. Support this configuration by making use of
+> the reset controller framework which can deal with the shared reset
+> GPIOs. Fall back to the old GPIO descriptor method if the reset
+> controller framework is not enabled.
+>=20
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> Acked-by: Peter Rosin <peda@axentia.se>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Link: https://lore.kernel.org/r/20240108041913.7078-1-chris.packham@allie=
+dtelesis.co.nz
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>=20
+> ---
+>=20
+> If previous patches are fine, then this commit is independent and could
+> be taken via I2C.
+>=20
+> Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> Cc: Bartosz Golaszewski <brgl@bgdev.pl>
+> Cc: Sean Anderson <sean.anderson@seco.com>
+> ---
+>  drivers/i2c/muxes/i2c-mux-pca954x.c | 46 ++++++++++++++++++++++++-----
+>  1 file changed, 38 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/drivers/i2c/muxes/i2c-mux-pca954x.c b/drivers/i2c/muxes/i2c-=
+mux-pca954x.c
+> index 2219062104fb..1702e8d49b91 100644
+> --- a/drivers/i2c/muxes/i2c-mux-pca954x.c
+> +++ b/drivers/i2c/muxes/i2c-mux-pca954x.c
+> @@ -49,6 +49,7 @@
+>  #include <linux/pm.h>
+>  #include <linux/property.h>
+>  #include <linux/regulator/consumer.h>
+> +#include <linux/reset.h>
+>  #include <linux/slab.h>
+>  #include <linux/spinlock.h>
+>  #include <dt-bindings/mux/mux.h>
+> @@ -102,6 +103,9 @@ struct pca954x {
+>  	unsigned int irq_mask;
+>  	raw_spinlock_t lock;
+>  	struct regulator *supply;
+> +
+> +	struct gpio_desc *reset_gpio;
+> +	struct reset_control *reset_cont;
+>  };
+> =20
+>  /* Provide specs for the MAX735x, PCA954x and PCA984x types we know abou=
+t */
+> @@ -477,6 +481,35 @@ static int pca954x_init(struct i2c_client *client, s=
+truct pca954x *data)
+>  	return ret;
+>  }
+> =20
+> +static int pca954x_get_reset(struct device *dev, struct pca954x *data)
+> +{
+> +	data->reset_cont =3D devm_reset_control_get_optional_shared(dev, NULL);
+> +	if (IS_ERR(data->reset_cont))
+> +		return dev_err_probe(dev, PTR_ERR(data->reset_cont),
+> +				     "Failed to get reset\n");
+> +	else if (data->reset_cont)
+> +		return 0;
+> +
+> +	/*
+> +	 * fallback to legacy reset-gpios
+> +	 */
 
---Z2aIztPMx+sJYNwX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+devm_reset_control_get_optional_shared() won't return NULL if the
+"reset-gpios" property is found in the device tree, so the GPIO
+fallback is dead code.
 
-On Tue, Jan 16, 2024 at 02:46:41PM +0200, Matti Vaittinen wrote:
+> +	data->reset_gpio =3D devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HI=
+GH);
+> +	if (IS_ERR(data->reset_gpio)) {
+> +		return dev_err_probe(dev, PTR_ERR(data->reset_gpio),
+> +				     "Failed to get reset gpio");
+> +	}
+> +
+> +	return 0;
+> +}
+> +
 
-> Do you think allowing setting the 'filtering' this way per socket would work
-> or be beneficial?
-
-I haven't thought about it enough to say anything about the working bit
-but it does seem like it could be useful (eg, a UI might be interested
-in more events than something just looking for critical errors).
-
---Z2aIztPMx+sJYNwX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWmnigACgkQJNaLcl1U
-h9CkAgf/Y+46lUJYdVIwwhubucfNH2JoaK11zm6Ux+fCQqK9Ht+2rC+jp9bjsz/H
-pBdHgeZUT1wuo6JQFDCMxu+XAP1xxWgbvtlhFH06RiljAO9FBbIXRYDgs3An5o21
-AAeJScw33Zx8f8kDbW+bYjOpyGNdHa1yvfAQAtxxn9sAM9Y3siMeW5UsW0R3yRzB
-VOfuHfZnqH/FkV/9i5oEXwIQFTOh9t6X9QIxOCvdZ9LT+qDb8pJwYqTBJOXzY/oh
-d9JQByPIBs/6kwTehCRgNUxG6IU4q/mEkn7Evi9a14azpOMhsJjDHxjLFKvP5NmS
-vXLEOWTDbNb87ndwSqgV0Fbl6Dd+JA==
-=zSBq
------END PGP SIGNATURE-----
-
---Z2aIztPMx+sJYNwX--
+regards
+Philipp
 
