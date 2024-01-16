@@ -1,79 +1,98 @@
-Return-Path: <linux-kernel+bounces-27531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E19782F1AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:37:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0331B82F1AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:37:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09462285A86
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:37:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27CFC1C23612
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:37:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F9C91C687;
-	Tue, 16 Jan 2024 15:37:06 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4CDD1C2B3;
+	Tue, 16 Jan 2024 15:37:30 +0000 (UTC)
+Received: from proxmox-new.maurer-it.com (proxmox-new.maurer-it.com [94.136.29.106])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE97D1C298
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 15:37:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7bf4c4559daso142393739f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 07:37:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705419424; x=1706024224;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/IxXmg2QTH1uWatAty5Se5XI+hxlkbNQTXE25GkvfTM=;
-        b=GKJQyBq5rM6lwmC1WFDxCdkIOY+rgnIFjKw/Mq9jmqhHCtdMj467KYm+fmvNm074lp
-         QCCZTjMsycA5hkAU8TAa/n6ipXMJiwjEGysG2sBImz12JcTszeHSw4iReb9llv6hLUd5
-         FYUJmMuFMtOS4TNzEGXstqnBvEm9SocAS7V/sZN8QK1m9gKfrFKlFvCjNHYDIiwyM0JA
-         Mst2qfSgshPi2yfwguvTeWnzC/NP1ba+Uu/wx2WPS10tm0N7dQwtDPFzBMs1csJJL99d
-         +DKkSpuv8LpUmwNdtCxtmF4mTd1/2c/1FXXdBgN6OMBAV2k1ZMW3mp2CpdoAb74J+v1g
-         sr/Q==
-X-Gm-Message-State: AOJu0YxehZDddPDNqTIkpM4pIJJS1ZJZUQSCRuha359O2vFcnnwB7LAm
-	edFEawBHb4Fk6QNzJ33xt7KonP2jZnERf1pFP1NrDx4hel5/
-X-Google-Smtp-Source: AGHT+IFkr77m41MddNLivOqVYoFsRpCfpZaVtjAZlEHbGZMEqdO2VMYndx5OOcv+/QAr/YvNJs/1Bvf/czPIeXGWVZJjNamsryFO
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B6E31C284;
+	Tue, 16 Jan 2024 15:37:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=proxmox.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proxmox.com
+Received: from proxmox-new.maurer-it.com (localhost.localdomain [127.0.0.1])
+	by proxmox-new.maurer-it.com (Proxmox) with ESMTP id 495D549183;
+	Tue, 16 Jan 2024 16:37:20 +0100 (CET)
+Message-ID: <ef81ff36-64bb-4cfe-ae9b-e3acf47bff24@proxmox.com>
+Date: Tue, 16 Jan 2024 16:37:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2b12:b0:46e:3890:4cc9 with SMTP id
- fm18-20020a0566382b1200b0046e38904cc9mr531817jab.4.1705419423891; Tue, 16 Jan
- 2024 07:37:03 -0800 (PST)
-Date: Tue, 16 Jan 2024 07:37:03 -0800
-In-Reply-To: <000000000000743ce2060060e5ce@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f447a1060f11e6ed@google.com>
-Subject: Re: [syzbot] [ext4?] INFO: task hung in find_inode_fast (2)
-From: syzbot <syzbot+adfd362e7719c02b3015@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org, 
-	jack@suse.cz, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: Temporary KVM guest hangs connected to KSM and NUMA balancer
+Content-Language: en-US
+To: Sean Christopherson <seanjc@google.com>
+Cc: kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org
+References: <832697b9-3652-422d-a019-8c0574a188ac@proxmox.com>
+ <ZaAQhc13IbWk5j5D@google.com>
+From: Friedrich Weber <f.weber@proxmox.com>
+In-Reply-To: <ZaAQhc13IbWk5j5D@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-syzbot suspects this issue was fixed by commit:
+Hi Sean,
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+On 11/01/2024 17:00, Sean Christopherson wrote:
+> This is a known issue.  It's mostly a KVM bug[...] (fix posted[...]), but I suspect
+> that a bug in the dynamic preemption model logic[...] is also contributing to the
+> behavior by causing KVM to yield on preempt models where it really shouldn't.
 
-    fs: Block writes to mounted block devices
+I tried the following variants now, each applied on top of 6.7 (0dd3ee31):
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17852f7be80000
-start commit:   2a5a4326e583 Merge tag 'scsi-misc' of git://git.kernel.org..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d5e7bcb9a41fc9b3
-dashboard link: https://syzkaller.appspot.com/bug?extid=adfd362e7719c02b3015
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11d27994680000
+* [1], the initial patch series mentioned in the bugreport ("[PATCH 0/2]
+KVM: Pre-check mmu_notifier retry on x86")
+* [2], its v2 that you linked above ("[PATCH v2] KVM: x86/mmu: Retry
+fault before acquiring mmu_lock if mapping is changing")
+* [3], the scheduler patch you linked above ("[PATCH] sched/core: Drop
+spinlocks on contention iff kernel is preemptible")
+* both [2] & [3]
 
-If the result looks correct, please mark the issue as fixed by replying with:
+My kernel is PREEMPT_DYNAMIC and, according to
+/sys/kernel/debug/sched/preempt, defaults to preempt=voluntary. For case
+[3], I additionally tried manually switching to preempt=full.
 
-#syz fix: fs: Block writes to mounted block devices
+Provided I did not mess up, I get the following results for the
+reproducer I posted:
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+* [1] (the initial patch series): no hangs
+* [2] (its v2): hangs
+* [3] (the scheduler patch) with preempt=voluntary: no hangs
+* [3] (the scheduler patch) with preempt=full: hangs
+* [2] & [3]: no hangs
+
+So it seems like:
+
+* [1] (the initial patch series) fixes the hangs, which is consistent
+with the feedback in the bugreport [4].
+* But weirdly, its v2 [2] does not fix the hangs.
+* As long as I stay with preempt=voluntary, [3] (the scheduler patch)
+alone is already enough to fix the hangs in my case -- this I did not
+expect :)
+
+Does this make sense to you? Happy to double-check or run more tests if
+anything seems off.
+
+Best wishes,
+
+Friedrich
+
+[1] https://lore.kernel.org/all/20230825020733.2849862-1-seanjc@google.com/
+[2] https://lore.kernel.org/all/20240110012045.505046-1-seanjc@google.com/
+[3] https://lore.kernel.org/all/20240110214723.695930-1-seanjc@google.com/
+[4] https://bugzilla.kernel.org/show_bug.cgi?id=218259#c6
+
 
