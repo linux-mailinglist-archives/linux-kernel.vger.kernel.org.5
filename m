@@ -1,34 +1,34 @@
-Return-Path: <linux-kernel+bounces-27322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27325-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1A8C82EDCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:35:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2BF682EDD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:36:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26B0A1F246AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:35:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37D5B1F24082
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:36:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F7521B95C;
-	Tue, 16 Jan 2024 11:35:09 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE6CC1BDC6;
+	Tue, 16 Jan 2024 11:35:14 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D526C1B94D;
-	Tue, 16 Jan 2024 11:35:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C64CC1BC3E;
+	Tue, 16 Jan 2024 11:35:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TDn2V4TgszvV1n;
-	Tue, 16 Jan 2024 19:33:38 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TDn3m4dBZz1wn3N;
+	Tue, 16 Jan 2024 19:34:44 +0800 (CST)
 Received: from kwepemd100002.china.huawei.com (unknown [7.221.188.184])
-	by mail.maildlp.com (Postfix) with ESMTPS id 4177418006E;
-	Tue, 16 Jan 2024 19:35:02 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 4810F1A016B;
+	Tue, 16 Jan 2024 19:35:03 +0800 (CST)
 Received: from M910t.huawei.com (10.110.54.157) by
  kwepemd100002.china.huawei.com (7.221.188.184) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.28; Tue, 16 Jan 2024 19:35:01 +0800
+ 15.2.1258.28; Tue, 16 Jan 2024 19:35:02 +0800
 From: Changbin Du <changbin.du@huawei.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	Arnaldo Carvalho de Melo <acme@kernel.org>
@@ -37,9 +37,9 @@ CC: Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin
  Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter
 	<adrian.hunter@intel.com>, <linux-kernel@vger.kernel.org>,
 	<linux-perf-users@vger.kernel.org>, Changbin Du <changbin.du@huawei.com>
-Subject: [PATCH 2/3] perf: script: use capstone disasm engine to show assembly instructions
-Date: Tue, 16 Jan 2024 19:34:36 +0800
-Message-ID: <20240116113437.1507537-3-changbin.du@huawei.com>
+Subject: [PATCH 3/3] perf: script: deprecate the '--xed' option
+Date: Tue, 16 Jan 2024 19:34:37 +0800
+Message-ID: <20240116113437.1507537-4-changbin.du@huawei.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240116113437.1507537-1-changbin.du@huawei.com>
 References: <20240116113437.1507537-1-changbin.du@huawei.com>
@@ -54,236 +54,198 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemd100002.china.huawei.com (7.221.188.184)
 
-Currently, the instructions of samples are shown as raw hex strings
-which are hard to read. x86 has a special option '--xed' to disassemble
-the hex string via intel XED tool.
-
-Here we use capstone as our disassembler engine to give more friendly
-instructions. We select libcapstone because capstone can provide more
-insn details. Perf will fallback to raw instructions if libcapstone is
-not available.
-
-The advantages compared to XED tool:
- * Support arm, arm64, x86-32, x86_64 (more could be supported),
-   xed only for x86_64.
- * Immediate address operands are shown as symbol+offs.
-
-Before:
-$ sudo perf record --event intel_pt//u -- ls
-$ sudo perf script --insn-trace
-            perf 17423 [000] 423271.557970005:      7f2d95f16217 __GI___ioctl+0x7 (/lib/x86_64-linux-gnu/libc-2.27.so) insn: 48 3d 01 f0 ff ff
-            perf 17423 [000] 423271.557970005:      7f2d95f1621d __GI___ioctl+0xd (/lib/x86_64-linux-gnu/libc-2.27.so) insn: 73 01
-            perf 17423 [000] 423271.557970338:      7f2d95f1621f __GI___ioctl+0xf (/lib/x86_64-linux-gnu/libc-2.27.so) insn: c3
-            perf 17423 [000] 423271.557970338:      5593ad3346d7 perf_evsel__enable_cpu+0x97 (/work/linux/tools/perf/perf) insn: 85 c0
-            perf 17423 [000] 423271.557970338:      5593ad3346d9 perf_evsel__enable_cpu+0x99 (/work/linux/tools/perf/perf) insn: 75 12
-            perf 17423 [000] 423271.557970338:      5593ad3346db perf_evsel__enable_cpu+0x9b (/work/linux/tools/perf/perf) insn: 49 8b 84 24 a8 00 00 00
-            perf 17423 [000] 423271.557970338:      5593ad3346e3 perf_evsel__enable_cpu+0xa3 (/work/linux/tools/perf/perf) insn: 48 8b 50 20
-
-After:
-$ sudo perf script --insn-trace
-            perf 17423 [000] 423271.557970005:      7f2d95f16217 __GI___ioctl+0x7 (/lib/x86_64-linux-gnu/libc-2.27.so) insn: cmpq $-0xfff, %rax
-            perf 17423 [000] 423271.557970005:      7f2d95f1621d __GI___ioctl+0xd (/lib/x86_64-linux-gnu/libc-2.27.so) insn: jae __GI___ioctl+0x10
-            perf 17423 [000] 423271.557970338:      7f2d95f1621f __GI___ioctl+0xf (/lib/x86_64-linux-gnu/libc-2.27.so) insn: retq
-            perf 17423 [000] 423271.557970338:      5593ad3346d7 perf_evsel__enable_cpu+0x97 (/work/linux/tools/perf/perf) insn: testl %eax, %eax
-            perf 17423 [000] 423271.557970338:      5593ad3346d9 perf_evsel__enable_cpu+0x99 (/work/linux/tools/perf/perf) insn: jne perf_evsel__enable_cpu+0xad
-            perf 17423 [000] 423271.557970338:      5593ad3346db perf_evsel__enable_cpu+0x9b (/work/linux/tools/perf/perf) insn: movq 0xa8(%r12), %rax
-            perf 17423 [000] 423271.557970338:      5593ad3346e3 perf_evsel__enable_cpu+0xa3 (/work/linux/tools/perf/perf) insn: movq 0x20(%rax), %rdx
-            perf 17423 [000] 423271.557970338:      5593ad3346e7 perf_evsel__enable_cpu+0xa7 (/work/linux/tools/perf/perf) insn: cmpl %edx, %ebx
-            perf 17423 [000] 423271.557970338:      5593ad3346e9 perf_evsel__enable_cpu+0xa9 (/work/linux/tools/perf/perf) insn: jl perf_evsel__enable_cpu+0x60
-            perf 17423 [000] 423271.557970338:      5593ad3346eb perf_evsel__enable_cpu+0xab (/work/linux/tools/perf/perf) insn: xorl %eax, %eax
+Now perf can show assembly instructions with libcapstone for both x86 and
+Arm. So the old '--xed' option should not be used.
 
 Signed-off-by: Changbin Du <changbin.du@huawei.com>
 ---
- tools/perf/builtin-script.c  |   8 +--
- tools/perf/util/Build        |   1 +
- tools/perf/util/print_insn.c | 118 +++++++++++++++++++++++++++++++++++
- tools/perf/util/print_insn.h |  14 +++++
- 4 files changed, 136 insertions(+), 5 deletions(-)
- create mode 100644 tools/perf/util/print_insn.c
- create mode 100644 tools/perf/util/print_insn.h
+ tools/perf/Documentation/build-xed.txt     | 19 -------------------
+ tools/perf/Documentation/perf-intel-pt.txt | 17 +++++------------
+ tools/perf/Documentation/perf-script.txt   |  5 ++---
+ tools/perf/Documentation/tips.txt          |  2 +-
+ tools/perf/builtin-script.c                |  7 ++-----
+ tools/perf/ui/browsers/res_sample.c        |  2 +-
+ tools/perf/ui/browsers/scripts.c           |  4 ++--
+ 7 files changed, 13 insertions(+), 43 deletions(-)
+ delete mode 100644 tools/perf/Documentation/build-xed.txt
 
+diff --git a/tools/perf/Documentation/build-xed.txt b/tools/perf/Documentation/build-xed.txt
+deleted file mode 100644
+index 6222c1e7231f..000000000000
+--- a/tools/perf/Documentation/build-xed.txt
++++ /dev/null
+@@ -1,19 +0,0 @@
+-
+-For --xed the xed tool is needed. Here is how to install it:
+-
+-  $ git clone https://github.com/intelxed/mbuild.git mbuild
+-  $ git clone https://github.com/intelxed/xed
+-  $ cd xed
+-  $ ./mfile.py --share
+-  $ ./mfile.py examples
+-  $ sudo ./mfile.py --prefix=/usr/local install
+-  $ sudo ldconfig
+-  $ sudo cp obj/examples/xed /usr/local/bin
+-
+-Basic xed testing:
+-
+-  $ xed | head -3
+-  ERROR: required argument(s) were missing
+-  Copyright (C) 2017, Intel Corporation. All rights reserved.
+-  XED version: [v10.0-328-g7d62c8c49b7b]
+-  $
+diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
+index 2109690b0d5f..15ae7be599e4 100644
+--- a/tools/perf/Documentation/perf-intel-pt.txt
++++ b/tools/perf/Documentation/perf-intel-pt.txt
+@@ -115,9 +115,8 @@ toggle respectively.
+ 
+ perf script also supports higher level ways to dump instruction traces:
+ 
+-	perf script --insn-trace --xed
++	perf script --insn-trace
+ 
+-Dump all instructions. This requires installing the xed tool (see XED below)
+ Dumping all instructions in a long trace can be fairly slow. It is usually better
+ to start with higher level decoding, like
+ 
+@@ -130,12 +129,12 @@ or
+ and then select a time range of interest. The time range can then be examined
+ in detail with
+ 
+-	perf script --time starttime,stoptime --insn-trace --xed
++	perf script --time starttime,stoptime --insn-trace
+ 
+ While examining the trace it's also useful to filter on specific CPUs using
+ the -C option
+ 
+-	perf script --time starttime,stoptime --insn-trace --xed -C 1
++	perf script --time starttime,stoptime --insn-trace -C 1
+ 
+ Dump all instructions in time range on CPU 1.
+ 
+@@ -1243,12 +1242,6 @@ To display PEBS events from the Intel PT trace, use the itrace 'o' option e.g.
+ 
+ 	perf script --itrace=oe
+ 
+-XED
+----
+-
+-include::build-xed.txt[]
+-
+-
+ Tracing Virtual Machines (kernel only)
+ --------------------------------------
+ 
+@@ -1306,7 +1299,7 @@ Without timestamps, --per-thread must be specified to distinguish threads.
+ 
+ perf script can be used to provide an instruction trace
+ 
+- $ perf script --guestkallsyms $KALLSYMS --insn-trace --xed -F+ipc | grep -C10 vmresume | head -21
++ $ perf script --guestkallsyms $KALLSYMS --insn-trace -F+ipc | grep -C10 vmresume | head -21
+        CPU 0/KVM  1440  ffffffff82133cdd __vmx_vcpu_run+0x3d ([kernel.kallsyms])                movq  0x48(%rax), %r9
+        CPU 0/KVM  1440  ffffffff82133ce1 __vmx_vcpu_run+0x41 ([kernel.kallsyms])                movq  0x50(%rax), %r10
+        CPU 0/KVM  1440  ffffffff82133ce5 __vmx_vcpu_run+0x45 ([kernel.kallsyms])                movq  0x58(%rax), %r11
+@@ -1407,7 +1400,7 @@ There were none.
+ 
+ 'perf script' can be used to provide an instruction trace showing timestamps
+ 
+- $ perf script -i perf.data.kvm --guestkallsyms $KALLSYMS --insn-trace --xed -F+ipc | grep -C10 vmresume | head -21
++ $ perf script -i perf.data.kvm --guestkallsyms $KALLSYMS --insn-trace -F+ipc | grep -C10 vmresume | head -21
+        CPU 1/KVM 17006 [001] 11500.262865593:  ffffffff82133cdd __vmx_vcpu_run+0x3d ([kernel.kallsyms])                 movq  0x48(%rax), %r9
+        CPU 1/KVM 17006 [001] 11500.262865593:  ffffffff82133ce1 __vmx_vcpu_run+0x41 ([kernel.kallsyms])                 movq  0x50(%rax), %r10
+        CPU 1/KVM 17006 [001] 11500.262865593:  ffffffff82133ce5 __vmx_vcpu_run+0x45 ([kernel.kallsyms])                 movq  0x58(%rax), %r11
+diff --git a/tools/perf/Documentation/perf-script.txt b/tools/perf/Documentation/perf-script.txt
+index ff9a52e44688..74a0bc2e117f 100644
+--- a/tools/perf/Documentation/perf-script.txt
++++ b/tools/perf/Documentation/perf-script.txt
+@@ -442,11 +442,10 @@ include::itrace.txt[]
+ 	default, disable with --no-inline.
+ 
+ --insn-trace::
+-	Show instruction stream for intel_pt traces. Combine with --xed to
+-	show disassembly.
++	Show instruction stream for intel_pt traces.
+ 
+ --xed::
+-	Run xed disassembler on output. Requires installing the xed disassembler.
++	Run xed disassembler on output. (deprecated)
+ 
+ -S::
+ --symbols=symbol[,symbol...]::
+diff --git a/tools/perf/Documentation/tips.txt b/tools/perf/Documentation/tips.txt
+index 825745a645c1..5e1182514730 100644
+--- a/tools/perf/Documentation/tips.txt
++++ b/tools/perf/Documentation/tips.txt
+@@ -15,7 +15,7 @@ To see callchains in a more compact form: perf report -g folded
+ Show individual samples with: perf script
+ Limit to show entries above 5% only: perf report --percent-limit 5
+ Profiling branch (mis)predictions with: perf record -b / perf report
+-To show assembler sample contexts use perf record -b / perf script -F +brstackinsn --xed
++To show assembler sample contexts use perf record -b / perf script -F +brstackinsn
+ Treat branches as callchains: perf report --branch-history
+ To count events in every 1000 msec: perf stat -I 1000
+ Print event counts in CSV format with: perf stat -x,
 diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-index b1f57401ff23..c32a326e660f 100644
+index c32a326e660f..9768d00323e6 100644
 --- a/tools/perf/builtin-script.c
 +++ b/tools/perf/builtin-script.c
-@@ -34,6 +34,7 @@
- #include "util/event.h"
- #include "ui/ui.h"
- #include "print_binary.h"
-+#include "print_insn.h"
- #include "archinsn.h"
- #include <linux/bitmap.h>
- #include <linux/kernel.h>
-@@ -1511,11 +1512,8 @@ static int perf_sample__fprintf_insn(struct perf_sample *sample,
- 	if (PRINT_FIELD(INSNLEN))
- 		printed += fprintf(fp, " ilen: %d", sample->insn_len);
- 	if (PRINT_FIELD(INSN) && sample->insn_len) {
--		int i;
--
--		printed += fprintf(fp, " insn:");
--		for (i = 0; i < sample->insn_len; i++)
--			printed += fprintf(fp, " %02x", (unsigned char)sample->insn[i]);
-+		printed += fprintf(fp, " insn: ");
-+		printed += sample__fprintf_insn(sample, thread, machine, fp);
- 	}
- 	if (PRINT_FIELD(BRSTACKINSN) || PRINT_FIELD(BRSTACKINSNLEN))
- 		printed += perf_sample__fprintf_brstackinsn(sample, thread, attr, machine, fp);
-diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-index 988473bf907a..c33aab53d8dd 100644
---- a/tools/perf/util/Build
-+++ b/tools/perf/util/Build
-@@ -32,6 +32,7 @@ perf-y += perf_regs.o
- perf-y += perf-regs-arch/
- perf-y += path.o
- perf-y += print_binary.o
-+perf-y += print_insn.o
- perf-y += rlimit.o
- perf-y += argv_split.o
- perf-y += rbtree.o
-diff --git a/tools/perf/util/print_insn.c b/tools/perf/util/print_insn.c
-new file mode 100644
-index 000000000000..c8d9741748cd
---- /dev/null
-+++ b/tools/perf/util/print_insn.c
-@@ -0,0 +1,118 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Instruction binary disassembler based on capstone.
-+ *
-+ * Author(s): Changbin Du <changbin.du@huawei.com>
-+ */
-+#include "print_insn.h"
-+#include <stdlib.h>
-+#include <string.h>
-+#include <stdbool.h>
-+#include "util/debug.h"
-+#include "util/symbol.h"
-+#include "machine.h"
-+
-+size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp)
-+{
-+	int printed = 0;
-+
-+	for (int i = 0; i < sample->insn_len; i++)
-+		printed += fprintf(fp, "%02x ", (unsigned char)sample->insn[i]);
-+	return printed;
-+}
-+
-+#ifdef HAVE_LIBCAPSTONE_SUPPORT
-+#include <capstone/capstone.h>
-+
-+static int capstone_init(struct machine *machine, csh *cs_handle)
-+{
-+	cs_arch arch;
-+	cs_mode mode;
-+
-+	if (machine__is(machine, "x86_64")) {
-+		arch = CS_ARCH_X86;
-+		mode = CS_MODE_64;
-+	} else if (machine__normalized_is(machine, "x86")) {
-+		arch = CS_ARCH_X86;
-+		mode = CS_MODE_32;
-+	} else if (machine__normalized_is(machine, "arm64")) {
-+		arch = CS_ARCH_ARM64;
-+		mode = CS_MODE_ARM;
-+	} else if (machine__normalized_is(machine, "arm")) {
-+		arch = CS_ARCH_ARM;
-+		mode = CS_MODE_ARM + CS_MODE_V8;
-+	} else {
-+		return -1;
-+	}
-+
-+	if (cs_open(arch, mode, cs_handle) != CS_ERR_OK) {
-+		pr_warning_once("cs_open failed\n");
-+		return -1;
-+	}
-+
-+	cs_option(*cs_handle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
-+	if (machine__normalized_is(machine, "x86"))
-+		cs_option(*cs_handle, CS_OPT_DETAIL, CS_OPT_ON);
-+
-+	return 0;
-+}
-+
-+static size_t print_insn_x86(struct perf_sample *sample, struct thread *thread,
-+			     cs_insn *insn, FILE *fp)
-+{
-+	struct addr_location al;
-+	size_t printed = 0;
-+
-+	if (insn->detail && insn->detail->x86.op_count == 1) {
-+		cs_x86_op *op = &insn->detail->x86.operands[0];
-+
-+		addr_location__init(&al);
-+		if (op->type == X86_OP_IMM &&
-+		    thread__find_symbol(thread, sample->cpumode, op->imm, &al)) {
-+			printed += fprintf(fp, "%s ", insn[0].mnemonic);
-+			printed += symbol__fprintf_symname_offs(al.sym, &al, fp);
-+			return printed;
-+		}
-+	}
-+
-+	printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
-+	return printed;
-+}
-+
-+size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread,
-+			    struct machine *machine, FILE *fp)
-+{
-+	static csh cs_handle;
-+	cs_insn *insn;
-+	size_t count;
-+	size_t printed = 0;
-+	int ret;
-+
-+	ret = capstone_init(machine, &cs_handle);
-+	if (ret < 0) {
-+		/* fallback */
-+		return sample__fprintf_insn_raw(sample, fp);
-+	}
-+
-+	count = cs_disasm(cs_handle, (uint8_t *)sample->insn, sample->insn_len,
-+			  sample->ip, 1, &insn);
-+	if (count > 0) {
-+		if (machine__normalized_is(machine, "x86"))
-+			printed += print_insn_x86(sample, thread, &insn[0], fp);
-+		else
-+			printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
-+		cs_free(insn, count);
-+	} else {
-+		printed += fprintf(fp, "illegal instruction");
-+	}
-+
-+	cs_close(&cs_handle);
-+	return printed;
-+}
-+#else
-+size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread __maybe_unused,
-+			    struct machine *machine __maybe_unused, FILE *fp)
-+{
-+	return sample__fprintf_insn_raw(sample, fp);
-+}
-+#endif
-diff --git a/tools/perf/util/print_insn.h b/tools/perf/util/print_insn.h
-new file mode 100644
-index 000000000000..af8fa5d01fb7
---- /dev/null
-+++ b/tools/perf/util/print_insn.h
-@@ -0,0 +1,14 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef PERF_PRINT_ISNS_H
-+#define PERF_PRINT_ISNS_H
-+
-+#include <stddef.h>
-+#include <stdio.h>
-+#include "event.h"
-+#include "util/thread.h"
-+
-+size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread,
-+			    struct machine *machine, FILE *fp);
-+size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp);
-+
-+#endif /* PERF_PRINT_ISNS_H */
+@@ -3776,10 +3776,7 @@ static int parse_xed(const struct option *opt __maybe_unused,
+ 		     const char *str __maybe_unused,
+ 		     int unset __maybe_unused)
+ {
+-	if (isatty(1))
+-		force_pager("xed -F insn: -A -64 | less");
+-	else
+-		force_pager("xed -F insn: -A -64");
++	pr_warning("xed option is deprecated\n");
+ 	return 0;
+ }
+ 
+@@ -3915,7 +3912,7 @@ int cmd_script(int argc, const char **argv)
+ 	OPT_CALLBACK_OPTARG(0, "insn-trace", &itrace_synth_opts, NULL, NULL,
+ 			"Decode instructions from itrace", parse_insn_trace),
+ 	OPT_CALLBACK_OPTARG(0, "xed", NULL, NULL, NULL,
+-			"Run xed disassembler on output", parse_xed),
++			"Run xed disassembler on output (deprecated)", parse_xed),
+ 	OPT_CALLBACK_OPTARG(0, "call-trace", &itrace_synth_opts, NULL, NULL,
+ 			"Decode calls from itrace", parse_call_trace),
+ 	OPT_CALLBACK_OPTARG(0, "call-ret-trace", &itrace_synth_opts, NULL, NULL,
+diff --git a/tools/perf/ui/browsers/res_sample.c b/tools/perf/ui/browsers/res_sample.c
+index 7cb2d6678039..382f1fb07a73 100644
+--- a/tools/perf/ui/browsers/res_sample.c
++++ b/tools/perf/ui/browsers/res_sample.c
+@@ -83,7 +83,7 @@ int res_sample_browse(struct res_sample *res_samples, int num_res,
+ 		     r->tid ? "--tid " : "",
+ 		     r->tid ? (sprintf(tidbuf, "%d", r->tid), tidbuf) : "",
+ 		     extra_format,
+-		     rstype == A_ASM ? "-F +insn --xed" :
++		     rstype == A_ASM ? "-F +insn" :
+ 		     rstype == A_SOURCE ? "-F +srcline,+srccode" : "",
+ 		     symbol_conf.inline_name ? "--inline" : "",
+ 		     "--show-lost-events ",
+diff --git a/tools/perf/ui/browsers/scripts.c b/tools/perf/ui/browsers/scripts.c
+index 47d2c7a8cbe1..056c51a95712 100644
+--- a/tools/perf/ui/browsers/scripts.c
++++ b/tools/perf/ui/browsers/scripts.c
+@@ -37,7 +37,7 @@ void attr_to_script(char *extra_format, struct perf_event_attr *attr)
+ 	if (attr->read_format & PERF_FORMAT_GROUP)
+ 		strcat(extra_format, " -F +metric");
+ 	if (attr->sample_type & PERF_SAMPLE_BRANCH_STACK)
+-		strcat(extra_format, " -F +brstackinsn --xed");
++		strcat(extra_format, " -F +brstackinsn");
+ 	if (attr->sample_type & PERF_SAMPLE_REGS_INTR)
+ 		strcat(extra_format, " -F +iregs");
+ 	if (attr->sample_type & PERF_SAMPLE_REGS_USER)
+@@ -107,7 +107,7 @@ static int list_scripts(char *script_name, bool *custom,
+ 	if (evsel)
+ 		attr_to_script(scriptc.extra_format, &evsel->core.attr);
+ 	add_script_option("Show individual samples", "", &scriptc);
+-	add_script_option("Show individual samples with assembler", "-F +insn --xed",
++	add_script_option("Show individual samples with assembler", "-F +insn",
+ 			  &scriptc);
+ 	add_script_option("Show individual samples with source", "-F +srcline,+srccode",
+ 			  &scriptc);
 -- 
 2.25.1
 
