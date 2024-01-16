@@ -1,117 +1,158 @@
-Return-Path: <linux-kernel+bounces-27699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB54482F44E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:33:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0158F82F459
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:35:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AA9B1F249D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:33:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 913AD1F24B24
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:35:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6494E13FE5;
-	Tue, 16 Jan 2024 18:33:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB0C1CD37;
+	Tue, 16 Jan 2024 18:35:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RkiPhIMT"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iKtlOPFq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 549B81CD07
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:33:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EE9513FE5;
+	Tue, 16 Jan 2024 18:35:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705429994; cv=none; b=RSckkhINGxnIiUiMrXKZUd/SNmNrSvwNZOKZn/RFkoCnraxqYTaEI4XOEzsJmPClNzZzGi1lfk0GWbvzkVgmEe5wGGU1Of1r7DNgLshUpy2ryOXEWVSv/rSUKHrl0P6/shYgKouTYr142hZM7TX6ziqb3g/Uou0G3GyB3NsghEA=
+	t=1705430118; cv=none; b=lfMypQDfvaxK/CXiPd0Tscc1oBtIAZXTWFNieoyckyT8tplwI9J3Qva6m8chSK1hEtsVj/voiQvkRSDi1ybdfERZe+cTVq2Lt59phoCxhvRvP+XA6wLRbUElY4OKTJnAZAqYp5E7drL3ViuuOKKzCNlCfcrqLdXwMII05RfYBU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705429994; c=relaxed/simple;
-	bh=JwNvuHi5CpdeD9Q7CbYVbQzkcZ5+AVv/Usz1r2vNrkw=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:
-	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
-	 X-Google-Smtp-Source:X-Received:Received:Date:From:To:Cc:Subject:
-	 Message-ID:In-Reply-To:References:X-Mailer:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding; b=kBlljvsxw8zqGtB2Q38kWl0LudjSSz7vZAwZkabUggDRaeU6lNlAax4MZH0b+0Mhee5P4YwH/ifHKEQoDD89cjmtnkKSKqV15laRiNPkrOB4l8CF62pnFcfTYFXwoaE5/X5o6Gdz6pj3YoSbYWN++9JqGaSo3iO9H1a2B+9PZ7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RkiPhIMT; arc=none smtp.client-ip=170.10.133.124
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705429992;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FISaMlvGT4jM9D2WMtxVsmws03Og0Eq0GceC6awRLlY=;
-	b=RkiPhIMTk1WM7rn6arWhT1CDiVjvFgwoQgKByn3NAAslIJwMw3VcEgCq+8y+1bG4ZZo/E2
-	8RGAv4J5wCf/qVhyGEPHrL8vnOLjyLvFAupmFkrMXTKeFoWlkMJ6iHPaA7ghI1EiCVCINs
-	m8TKWbdMEOOINCkaYUVEu5WuxRGkQvk=
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
- [209.85.166.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-436-od7ggAK3NeCfwkGRrBosiA-1; Tue, 16 Jan 2024 13:33:10 -0500
-X-MC-Unique: od7ggAK3NeCfwkGRrBosiA-1
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7bb454e1d63so1103390639f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:33:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705429990; x=1706034790;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FISaMlvGT4jM9D2WMtxVsmws03Og0Eq0GceC6awRLlY=;
-        b=dJMun9QVKVaHELXUySqA2n/omodqWQ9ypgckexwNYxoc5hwy4FjZnEHWIj922K13kV
-         Kwjh4NdvEsaYhwiV3InXjMbkzxFyNvs6F/clLk0FYaeVEXLdPV6OASTTU6Hh5B3ZU48J
-         3HWpT3zjSnxrLWECIhIT17Nwjfmw+L46y4Qrz1DNXLzO0kBYIAhqdkWXJv6bfVNjZSxm
-         OLfn4trokGHOg42TaMEcY1KEnDHyyJnHhUnB2Z0fO7FUwa1UNAIxMdq3+oan+FJ3JL5v
-         W0sD4Z5GkF8EjnSYMarN3eYeURhNEp3tufqPuWiRD/6YnqKkkNNtWW2bMAD7H7k9wnCE
-         mpSQ==
-X-Gm-Message-State: AOJu0YwCEyeBRPUmHXofcwGeBbBF8epfCbXnbCGUnW5ImabEfhFQBNmV
-	3/jahBa08BJQtkb3RNNn7kQaIkYf/tusJYiGmVApRGLvzCYa9I0MF3Z8yIdQJ4dTY4abPatRb+3
-	wl1SQQyQQx75vrsQY6zbgluJ2eU8FPk1u
-X-Received: by 2002:a5d:8c9a:0:b0:7bf:4694:6c36 with SMTP id g26-20020a5d8c9a000000b007bf46946c36mr4546968ion.9.1705429990000;
-        Tue, 16 Jan 2024 10:33:10 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IErDazX7NWGFXtbf/P4jQZuCg4zJCLsr6AAXK6x7UHmTrzfxIKGZgBT8q7U2HRZ1DI6P7MRHA==
-X-Received: by 2002:a5d:8c9a:0:b0:7bf:4694:6c36 with SMTP id g26-20020a5d8c9a000000b007bf46946c36mr4546960ion.9.1705429989777;
-        Tue, 16 Jan 2024 10:33:09 -0800 (PST)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id bm7-20020a05663842c700b0046e41dace9csm3020396jab.30.2024.01.16.10.33.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 10:33:09 -0800 (PST)
-Date: Tue, 16 Jan 2024 11:33:08 -0700
-From: Alex Williamson <alex.williamson@redhat.com>
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: Eric Auger <eric.auger@redhat.com>, kvm@vger.kernel.org,
- kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: vfio/platform: Use common error handling code in
- vfio_set_trigger()
-Message-ID: <20240116113308.78935e11.alex.williamson@redhat.com>
-In-Reply-To: <ab6bcd8b-f53c-47d1-8c55-c374a36d6ee4@web.de>
-References: <f1977c1c-1c55-4194-9f72-f77120b2e4e5@web.de>
-	<20240115133756.674ae019.alex.williamson@redhat.com>
-	<ab6bcd8b-f53c-47d1-8c55-c374a36d6ee4@web.de>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1705430118; c=relaxed/simple;
+	bh=MnY2gVubEGri9ggkfjnpG/sTnNx4BdvXPjR2PSZ83GE=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=ZEFieGH8UrS6A4ocYAORHs6VGGa78yKFqQCJ66q/03mfreZKRw23ai/G2bOJA6aX0TljSK2ggB2Q7u/86B4n3FcYLXL8KBRREbCwUsF4vDPEqgVvC10cC4rL/nDvVSHg6kYLDUYv6R+zsusS9j0JyrqBLoe+LR5woi266lQA2DY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iKtlOPFq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4A09C433C7;
+	Tue, 16 Jan 2024 18:35:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705430118;
+	bh=MnY2gVubEGri9ggkfjnpG/sTnNx4BdvXPjR2PSZ83GE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=iKtlOPFqFaAmH1K/7wOYsOyKeMSUCGDMwgk42s0cLKwHQqKxXxyXfCYNB29supvRu
+	 lxMM/8gNABx8D8EG1w2Kw6Cn64lBlbWD4PBfKqihB3SXSNxOOazlhcv58mZDz1SrPc
+	 whI157N2nOgTtOzEIgp332p44e+vjwsXduG5IANcIivFsg79jF77pVzcvclKrhhbNN
+	 jUQDLi1u+uwWAFjw4ddjRpN2/7hIzFpFmrzbU0Yl5PNucgdthNjRiBUp1xQ5aa/daj
+	 jUU13N7bJwOO8S4VBFEHMTKci0a4DM4GNNmvw0tRFb6cU/AZyMPuW4JnSy/As8ofsP
+	 LV9qr1N44b3ZQ==
+Date: Tue, 16 Jan 2024 12:35:16 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Philipp Stanner <pstanner@redhat.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, Hans de Goede <hdegoede@redhat.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Sam Ravnborg <sam@ravnborg.org>, dakr@redhat.com,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH 07/10] pci: devres: give mwi its own callback
+Message-ID: <20240116183516.GA101535@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240115144655.32046-9-pstanner@redhat.com>
 
-On Tue, 16 Jan 2024 12:32:23 +0100
-Markus Elfring <Markus.Elfring@web.de> wrote:
+On Mon, Jan 15, 2024 at 03:46:18PM +0100, Philipp Stanner wrote:
+> managing mwi with devres can easily be done with its own callback,
+> without the necessity to store any state about it in a device-related
+> struct.
 
-> > TBH, this doesn't seem like a worthwhile exit point consolidation.  A
-> > change like this might be justified if there were some common unlock
-> > code that could be shared, but for a simple free and return errno by
-> > jumping to a different exception block, rather than even a common exit
-> > block, I don't see the value.  
+s/managing/Managing/
+
+s/mwi/MWI/ since this is an initialism.  Also in subject (but would be
+even better if it could mention an actual function name).
+
+> Remove the mwi state from the devres-struct.
+> Make the devres-mwi functions set a separate devres-callback.
+
+Wrap to fill 75 columns (or add blank lines if you intend multiple
+paragraphs).
+
+s/devres-struct/struct pci_devres/ to make this greppable.
+
+s/the devres-mwi functions/pcim_set_mwi()/ similarly.
+
+> Signed-off-by: Philipp Stanner <pstanner@redhat.com>
+> ---
+>  drivers/pci/devres.c | 23 +++++++++++------------
+>  drivers/pci/pci.h    |  1 -
+>  2 files changed, 11 insertions(+), 13 deletions(-)
 > 
-> Can it be helpful to store the shown kfree() call only once
-> in this function implementation?
-
-I don't believe it's worthwhile, it's a simple function with simple
-exit paths and consolidating those exit paths for a trivial kfree() is
-unnecessarily complex.  Thanks,
-
-Alex
-
+> diff --git a/drivers/pci/devres.c b/drivers/pci/devres.c
+> index de8cf6f87dd7..911c2037d9fd 100644
+> --- a/drivers/pci/devres.c
+> +++ b/drivers/pci/devres.c
+> @@ -378,24 +378,26 @@ void __iomem *devm_pci_remap_cfg_resource(struct device *dev,
+>  }
+>  EXPORT_SYMBOL(devm_pci_remap_cfg_resource);
+>  
+> +static void __pcim_clear_mwi(void *pdev_raw)
+> +{
+> +	struct pci_dev *pdev = pdev_raw;
+> +
+> +	pci_clear_mwi(pdev);
+> +}
+> +
+>  /**
+>   * pcim_set_mwi - a device-managed pci_set_mwi()
+> - * @dev: the PCI device for which MWI is enabled
+> + * @pdev: the PCI device for which MWI is enabled
+>   *
+>   * Managed pci_set_mwi().
+>   *
+>   * RETURNS: An appropriate -ERRNO error value on error, or zero for success.
+>   */
+> -int pcim_set_mwi(struct pci_dev *dev)
+> +int pcim_set_mwi(struct pci_dev *pdev)
+>  {
+> -	struct pci_devres *dr;
+> -
+> -	dr = find_pci_dr(dev);
+> -	if (!dr)
+> -		return -ENOMEM;
+> +	devm_add_action(&pdev->dev, __pcim_clear_mwi, pdev);
+>  
+> -	dr->mwi = 1;
+> -	return pci_set_mwi(dev);
+> +	return pci_set_mwi(pdev);
+>  }
+>  EXPORT_SYMBOL(pcim_set_mwi);
+>  
+> @@ -405,9 +407,6 @@ static void pcim_release(struct device *gendev, void *res)
+>  	struct pci_dev *dev = to_pci_dev(gendev);
+>  	struct pci_devres *this = res;
+>  
+> -	if (this->mwi)
+> -		pci_clear_mwi(dev);
+> -
+>  	if (this->restore_intx)
+>  		pci_intx(dev, this->orig_intx);
+>  
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 3d9908a69ebf..667bfdd61d5e 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -811,7 +811,6 @@ static inline pci_power_t mid_pci_get_power_state(struct pci_dev *pdev)
+>  struct pci_devres {
+>  	unsigned int orig_intx:1;
+>  	unsigned int restore_intx:1;
+> -	unsigned int mwi:1;
+>  };
+>  
+>  struct pci_devres *find_pci_dr(struct pci_dev *pdev);
+> -- 
+> 2.43.0
+> 
 
