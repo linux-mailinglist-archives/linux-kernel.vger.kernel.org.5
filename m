@@ -1,234 +1,153 @@
-Return-Path: <linux-kernel+bounces-27263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B2C082ECE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:45:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD1F482ECE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:44:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34DBC285497
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:45:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91D0B1F2407D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:44:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEC3117598;
-	Tue, 16 Jan 2024 10:45:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C06C1755D;
+	Tue, 16 Jan 2024 10:44:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="m1CJZ8GS"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="D0JNJz9t"
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A1013FEC;
-	Tue, 16 Jan 2024 10:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1705401907; x=1736937907;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jHGGpGh4/MgHAVgMxsA0r7UyDWvPUjd2U3iqvzqI5I4=;
-  b=m1CJZ8GSAXQo7fG2xzwArFMUXbL5StM7m4ry7iEW9gL/uJAMt5e1n+5F
-   HFxNqhCfFUg/9WgpxTlflPjSqxHaTqW9m8GBFla/lxh3ax0l/VW+/4lSo
-   teueSZAPKgpswuoZrtackdjzeosdZfvGE91/65gkYAn1jhJBJK/K+o78l
-   yl4SiSC+5SPTvvtOoOc+inIyyxD4SXEnLWr9+6IM6hDev7KRvaiKVg80U
-   UwSoS/l/nfupEk/bYgqm3AOKhZM4pgUFYLbSpvADdGJ1Lx/8mnvdoRMpf
-   M3efYNRYC/3loEMkeuEJp8SRjCOOw5SyEnVR9M0UPMuohLTqJgP9qw1tZ
-   Q==;
-X-CSE-ConnectionGUID: OYl/i3GiRI22Pg4Ra+XJtQ==
-X-CSE-MsgGUID: zKuPVUJwS3+E6LjSAt2uZA==
-X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
-   d="asc'?scan'208";a="14823470"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Jan 2024 03:45:03 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 16 Jan 2024 03:44:49 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Tue, 16 Jan 2024 03:44:46 -0700
-Date: Tue, 16 Jan 2024 10:44:10 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-CC: Nylon Chen <nylon.chen@sifive.com>, <paul.walmsley@sifive.com>,
-	<palmer@dabbelt.com>, <conor+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <robh+dt@kernel.org>,
-	<u.kleine-koenig@pengutronix.de>, <thierry.reding@gmail.com>,
-	<aou@eecs.berkeley.edu>, <zong.li@sifve.com>, <vincent.chen@sifive.com>,
-	<linux-pwm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<nylon7717@gmail.com>
-Subject: Re: [v6 1/3] riscv: dts: sifive: unleashed/unmatched: Remove PWM
- controlled LED's active-low properties
-Message-ID: <20240116-custard-drew-9a02e83d538a@wendy>
-References: <20240116041054.11641-1-nylon.chen@sifive.com>
- <20240116041054.11641-2-nylon.chen@sifive.com>
- <CAJM55Z9ZbmbPKaJ8LJ5KyoCW9fAEJaT3Q4PbcadwLNCq1NXbxA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7528B13FE3
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5f2d4aaa2fdso97728157b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 02:44:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705401872; x=1706006672; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=xfr8ekJ3/kF67ykOkBtf3gUlwOGhZeagdlr6ytlyxGQ=;
+        b=D0JNJz9tdBfYflFvVMZbxy7m3PsTtAvotZqMmh+CQekZcUhU5uqYJ2G0mIcX0Yt/Qv
+         fKz5AeloQlgv8b9wI9C6HHXPN13rO67iE6BFqBi5gEKpN9yQ9SCvUEKgW0sFjJbtJNb0
+         Aqlt3l7mLunknMKe3Bkrwzr7uT4GIrIIwVz6Lb+oY3fRg42Gu5es+1pKk4gDL3qd7yEk
+         W30bSb7OFpySSH7emgq/X1gSJZY9eLzWJa3681NdupU5WMvWHSluPxRUbm2PMzxpk+Ge
+         SJTachma4TMKMwHOgPccdpwlT19Ihe/0Tf4QrTXanc4ODKSoTArGeeJ4Nl0Ham1EloSw
+         5N7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705401872; x=1706006672;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xfr8ekJ3/kF67ykOkBtf3gUlwOGhZeagdlr6ytlyxGQ=;
+        b=HkoQhQfKTUYqrPoiK0Ubo3kfK5ahtoskO6xev/MaiWcIKEEt7eATNAghdhlwNHeRYC
+         dapae46DnZQxdHtf/O8lufMu30HdcDun0n08ots0TmOl9EOE2ujS63viBxe6FSUtXeRj
+         mXZCkiqZGYIZkiRbH71Rn5JDKTpll2etYZVPt/2wyFRdpMtX2FP6nqYi9ELj+Q/v0GV0
+         gtdq/3Y2IecOvWB9gaen0eI1TEvklD9OXlIoHbH7+BXqlN5BBOD/yec1qm/mGvG/uttW
+         uQOe9APC5Wfz8j6LmoPT7KoxHd3Rby6pwCDZiWj0Y1MWmvajn6gS7a8kPbApiGKaXHgc
+         GcZw==
+X-Gm-Message-State: AOJu0YxqlNfV4AA4M1/IqrCy7tCOAmDsbjL180Oc+OMcvCxcwfrXGUak
+	4wi7il6LJe90TjHuhLd1kKYbXqq1SDKhxiE4gRpptbIHCIuGHw==
+X-Google-Smtp-Source: AGHT+IG+pjXF8PAggTuUX8KKrF6NwOBF5GFi3hYjC/JuFDOGwfzK7X5hEG8iavIiEV1pP/58gypnnpC/LjrAO+dgnws=
+X-Received: by 2002:a81:de4d:0:b0:5d7:1940:f3e0 with SMTP id
+ o13-20020a81de4d000000b005d71940f3e0mr5302858ywl.72.1705401871966; Tue, 16
+ Jan 2024 02:44:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="IllJYSRTwnK6qQf5"
-Content-Disposition: inline
-In-Reply-To: <CAJM55Z9ZbmbPKaJ8LJ5KyoCW9fAEJaT3Q4PbcadwLNCq1NXbxA@mail.gmail.com>
+References: <20240116094935.9988-1-quic_riteshk@quicinc.com>
+ <20240116094935.9988-2-quic_riteshk@quicinc.com> <CAA8EJpo3YS4EzfsLtovYKbLSGYX=RwUn9dpmCW=j257LnvPrgw@mail.gmail.com>
+ <1d68485fd1574ff88047cef0d2d5e6f1@quicinc.com>
+In-Reply-To: <1d68485fd1574ff88047cef0d2d5e6f1@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 16 Jan 2024 12:44:21 +0200
+Message-ID: <CAA8EJpqV_jTm1gNy5RsgRWZBC3j0nTPsUPRkv6KivvRbw8TucA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] arm64: defconfig: enable Novatek NT36672E DSI Panel driver
+To: "Ritesh Kumar (QUIC)" <quic_riteshk@quicinc.com>
+Cc: "andersson@kernel.org" <andersson@kernel.org>, 
+	"konrad.dybcio@linaro.org" <konrad.dybcio@linaro.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, 
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>, 
+	"conor+dt@kernel.org" <conor+dt@kernel.org>, "catalin.marinas@arm.com" <catalin.marinas@arm.com>, 
+	"will@kernel.org" <will@kernel.org>, "Bjorn Andersson (QUIC)" <quic_bjorande@quicinc.com>, 
+	"geert+renesas@glider.be" <geert+renesas@glider.be>, "arnd@arndb.de" <arnd@arndb.de>, 
+	"neil.armstrong@linaro.org" <neil.armstrong@linaro.org>, 
+	"nfraprado@collabora.com" <nfraprado@collabora.com>, 
+	"m.szyprowski@samsung.com" <m.szyprowski@samsung.com>, 
+	"linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>, 
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
+	"Abhinav Kumar (QUIC)" <quic_abhinavk@quicinc.com>, 
+	"Rajeev Nandan (QUIC)" <quic_rajeevny@quicinc.com>, 
+	"Vishnuvardhan Prodduturi (QUIC)" <quic_vproddut@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 
---IllJYSRTwnK6qQf5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, 16 Jan 2024 at 12:25, Ritesh Kumar (QUIC)
+<quic_riteshk@quicinc.com> wrote:
+>
+>
+> >-----Original Message-----
+> >From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> >Sent: Tuesday, January 16, 2024 3:30 PM
+> >To: Ritesh Kumar (QUIC) <quic_riteshk@quicinc.com>
+> >Cc: andersson@kernel.org; konrad.dybcio@linaro.org; robh+dt@kernel.org;
+> >krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
+> >catalin.marinas@arm.com; will@kernel.org; Bjorn Andersson (QUIC)
+> ><quic_bjorande@quicinc.com>; geert+renesas@glider.be; arnd@arndb.de;
+> >neil.armstrong@linaro.org; nfraprado@collabora.com;
+> >m.szyprowski@samsung.com; linux-arm-msm@vger.kernel.org;
+> >devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; linux-arm-
+> >kernel@lists.infradead.org; Abhinav Kumar (QUIC)
+> ><quic_abhinavk@quicinc.com>; Rajeev Nandan (QUIC)
+> ><quic_rajeevny@quicinc.com>; Vishnuvardhan Prodduturi (QUIC)
+> ><quic_vproddut@quicinc.com>
+> >Subject: Re: [PATCH 1/2] arm64: defconfig: enable Novatek NT36672E DSI
+> >Panel driver
 
-On Tue, Jan 16, 2024 at 02:20:57AM -0800, Emil Renner Berthing wrote:
-> Nylon Chen wrote:
-> > This removes the active-low properties of the PWM-controlled LEDs in
-> > the HiFive Unmatched device tree.
-> >
-> > The reference is hifive-unleashed-a00.pdf[0] and hifive-unmatched-schem=
-atics-v3.pdf[1].
-> >
-> > Link: https://sifive.cdn.prismic.io/sifive/c52a8e32-05ce-4aaf-95c8-7bf8=
-453f8698_hifive-unleashed-a00-schematics-1.pdf [0]
-> > Link: https://sifive.cdn.prismic.io/sifive/6a06d6c0-6e66-49b5-8e9e-e68c=
-e76f4192_hifive-unmatched-schematics-v3.pdf [1]
-> >
-> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> > Co-developed-by: Zong Li <zong.li@sifve.com>
-> > Signed-off-by: Zong Li <zong.li@sifve.com>
-> > Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
-> > Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
-> > Signed-off-by: Nylon Chen <nylon.chen@sifive.com>
-> > ---
-> >  arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts |  8 ++++----
-> >  arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 12 ++++--------
-> >  2 files changed, 8 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts b/arch=
-/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
-> > index 900a50526d77..11e7ac1c54bb 100644
-> > --- a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
-> > +++ b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
-> > @@ -49,7 +49,7 @@ led-controller {
-> >  		compatible =3D "pwm-leds";
-> >
-> >  		led-d1 {
-> > -			pwms =3D <&pwm0 0 7812500 PWM_POLARITY_INVERTED>;
-> > +			pwms =3D <&pwm0 0 7812500 0>;
-> >  			active-low;
-> >  			color =3D <LED_COLOR_ID_GREEN>;
-> >  			max-brightness =3D <255>;
-> > @@ -57,7 +57,7 @@ led-d1 {
-> >  		};
-> >
-> >  		led-d2 {
-> > -			pwms =3D <&pwm0 1 7812500 PWM_POLARITY_INVERTED>;
-> > +			pwms =3D <&pwm0 1 7812500 0>;
-> >  			active-low;
-> >  			color =3D <LED_COLOR_ID_GREEN>;
-> >  			max-brightness =3D <255>;
-> > @@ -65,7 +65,7 @@ led-d2 {
-> >  		};
-> >
-> >  		led-d3 {
-> > -			pwms =3D <&pwm0 2 7812500 PWM_POLARITY_INVERTED>;
-> > +			pwms =3D <&pwm0 2 7812500 0>;
-> >  			active-low;
-> >  			color =3D <LED_COLOR_ID_GREEN>;
-> >  			max-brightness =3D <255>;
-> > @@ -73,7 +73,7 @@ led-d3 {
-> >  		};
-> >
-> >  		led-d4 {
-> > -			pwms =3D <&pwm0 3 7812500 PWM_POLARITY_INVERTED>;
-> > +			pwms =3D <&pwm0 3 7812500 0>;
-> >  			active-low;
-> >  			color =3D <LED_COLOR_ID_GREEN>;
-> >  			max-brightness =3D <255>;
-> > diff --git a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts b/arch=
-/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-> > index 07387f9c135c..b328ee80693f 100644
-> > --- a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-> > +++ b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-> > @@ -51,8 +51,7 @@ led-controller-1 {
-> >  		compatible =3D "pwm-leds";
-> >
-> >  		led-d12 {
-> > -			pwms =3D <&pwm0 0 7812500 PWM_POLARITY_INVERTED>;
-> > -			active-low;
-> > +			pwms =3D <&pwm0 0 7812500 0>;
->=20
-> Here you remove the active-low property, but you don't above. I'm not sure
-> what's the right thing to do, but I would have expected the same change i=
-n both
-> places.
+This is ugly. Please fix your email setup.
 
-Just to note, the original version of this that I acked/reviewed removed
-the property from all led nodes. I then apparently didn't look closely
-enough at v5 and left acked/reviewed tags on it too. It did not remove
-the active-low properties but this change was not mentioned in the
-changelog for the series.
-
-D4 on the unleashed and D12 on the unmatched have the same circuitry
-(modulo the placement of the series resistor) so I don't get why the
-property is being removed from only D12.
-
-I rescind my ack/review until that is clarified and/or fixed.
-
-Thanks,
-Conor.
+> >
+> >On Tue, 16 Jan 2024 at 11:49, Ritesh Kumar <quic_riteshk@quicinc.com>
+> >wrote:
+> >>
+> >> Build the Novatek NT36672E DSI Panel driver as module.
+> >
+> >... because it is used on ....
+> >
+>
+> Thanks, will update in next version.
+>
+> >>
+> >> Signed-off-by: Ritesh Kumar <quic_riteshk@quicinc.com>
+> >> ---
+> >>  arch/arm64/configs/defconfig | 1 +
+> >>  1 file changed, 1 insertion(+)
+> >>
+> >> diff --git a/arch/arm64/configs/defconfig
+> >> b/arch/arm64/configs/defconfig index 361c31b5d064..028d80be95f6
+> >100644
+> >> --- a/arch/arm64/configs/defconfig
+> >> +++ b/arch/arm64/configs/defconfig
+> >> @@ -859,6 +859,7 @@ CONFIG_DRM_PANEL_LVDS=m
+> >CONFIG_DRM_PANEL_SIMPLE=m
+> >> CONFIG_DRM_PANEL_EDP=m  CONFIG_DRM_PANEL_ILITEK_ILI9882T=m
+> >> +CONFIG_DRM_PANEL_NOVATEK_NT36672E=m
+> >>  CONFIG_DRM_PANEL_MANTIX_MLAF057WE51=m
+> >>  CONFIG_DRM_PANEL_RAYDIUM_RM67191=m
+> >>  CONFIG_DRM_PANEL_SITRONIX_ST7703=m
+> >> --
+> >> 2.17.1
+> >>
+>
+> Thanks,
+> Ritesh
 
 
-> >  			color =3D <LED_COLOR_ID_GREEN>;
-> >  			max-brightness =3D <255>;
-> >  			label =3D "d12";
-> > @@ -68,20 +67,17 @@ multi-led {
-> >  			label =3D "d2";
-> >
-> >  			led-red {
-> > -				pwms =3D <&pwm0 2 7812500 PWM_POLARITY_INVERTED>;
-> > -				active-low;
-> > +				pwms =3D <&pwm0 2 7812500 0>;
-> >  				color =3D <LED_COLOR_ID_RED>;
-> >  			};
-> >
-> >  			led-green {
-> > -				pwms =3D <&pwm0 1 7812500 PWM_POLARITY_INVERTED>;
-> > -				active-low;
-> > +				pwms =3D <&pwm0 1 7812500 0>;
-> >  				color =3D <LED_COLOR_ID_GREEN>;
-> >  			};
-> >
-> >  			led-blue {
-> > -				pwms =3D <&pwm0 3 7812500 PWM_POLARITY_INVERTED>;
-> > -				active-low;
-> > +				pwms =3D <&pwm0 3 7812500 0>;
-> >  				color =3D <LED_COLOR_ID_BLUE>;
-> >  			};
-> >  		};
-> > --
-> > 2.42.0
-> >
-> >
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
 
---IllJYSRTwnK6qQf5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaZd+QAKCRB4tDGHoIJi
-0ojCAP9YNgYC4jBsQgF0fIM37HjeKwwrAxp5ishwLKUKa9BKYAD9HCzhM/N+Tc7h
-NaSisFJ74M5IGYP0aZCDYgCf1EHv5gE=
-=Qjx9
------END PGP SIGNATURE-----
-
---IllJYSRTwnK6qQf5--
+-- 
+With best wishes
+Dmitry
 
