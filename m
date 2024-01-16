@@ -1,234 +1,164 @@
-Return-Path: <linux-kernel+bounces-27570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8F7182F252
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:21:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2733482F24A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:19:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38AC3B20ED9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:21:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1C3A28611E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:19:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD0741C6B3;
-	Tue, 16 Jan 2024 16:20:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="P0xh3nEA"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2064.outbound.protection.outlook.com [40.107.244.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 245891C6B7;
+	Tue, 16 Jan 2024 16:19:21 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22F821CF9A;
-	Tue, 16 Jan 2024 16:20:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EqoBRvfnmo++zCfy9f6B6JPuHOm2ia0bkihAX0uZfYAmkLOqsoz+vCkJJK4NGZujhDOnq8KsE/+yhwuIhsfsTuqWFHAHIwjwboj4Iko0PkSswtHGhz124WNFzxJTJN9tipFdMFEYe+nsonBeK0SDLknn9PAGb+0APs7yd9bsRxOpP0EHdELA9tj61JJYAVKTjKx+P9xhXm+WFMVkWmr/KBbTbpC1OXt+yequ+GpyDncoTUxcOeeOpWMw5FkTKF1BV4cM7j5+eHyaU/VT0fuU5R46S0h4oBK2TTLkYX6PyJS1ymdEBcGxo2A35C2+7tLgDStX/wVL27WYHLi0LXZFNQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=c+FEpPrfQ137Ofm3UpL8wJV4o5t9ys2yNFdyp5HgxPQ=;
- b=JRwO4aPDi+gjiLSP4Fd6RAb4MBMx3iQ4q99X7P1PkzU927A8PALqJ3sEBwTZL8vcCx4v5ryKfC2NnBFM72ZmTcRvxM40paHfhvz+ydYd7VgeIFWPatPPg7ms/IXpzKpWLIDbEfw0Cwy3Aw9jkFVJ5sMeX2xPCDUCcdG/BmXfZtL7rIqLqg9TSo3MJZYwBznS2wKvVBIZ255luKdXfTvRsd8ISlPGw3XR1MapFHHZD0mCHcKA51c6qEDZlcl5qCbT+QUCASi78ujx/hgnAiq/ESjZeIPqATAQbPrUCZfLlhnchY2xcNsDXhI4rlxrCUHsn6I5dNfrMid4O6PPLaS6lA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c+FEpPrfQ137Ofm3UpL8wJV4o5t9ys2yNFdyp5HgxPQ=;
- b=P0xh3nEAZJu56wvEEyOCFegPDd8tYVuQSuVCCq/nKgXyVDma1/95utYrDjZ1FTtGMowCNe6k+bjk8V8VRxynS0ZSSMfTLUN7tAi+TeP11/y9msv4TNl8HeKeN6CqF9+uLjgjREWocp7D8ha9Wf9qzWiIgc/qfV9F4ae4PlegwxQ=
-Received: from CH0PR13CA0036.namprd13.prod.outlook.com (2603:10b6:610:b2::11)
- by PH8PR12MB6889.namprd12.prod.outlook.com (2603:10b6:510:1c9::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.23; Tue, 16 Jan
- 2024 16:20:09 +0000
-Received: from DS3PEPF000099D7.namprd04.prod.outlook.com
- (2603:10b6:610:b2:cafe::7f) by CH0PR13CA0036.outlook.office365.com
- (2603:10b6:610:b2::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.22 via Frontend
- Transport; Tue, 16 Jan 2024 16:20:09 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS3PEPF000099D7.mail.protection.outlook.com (10.167.17.8) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7202.16 via Frontend Transport; Tue, 16 Jan 2024 16:20:09 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 16 Jan
- 2024 10:20:08 -0600
-Date: Tue, 16 Jan 2024 10:19:09 -0600
-From: Michael Roth <michael.roth@amd.com>
-To: Dave Hansen <dave.hansen@intel.com>
-CC: Tom Lendacky <thomas.lendacky@amd.com>, Borislav Petkov <bp@alien8.de>,
-	<x86@kernel.org>, <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>,
-	<linux-mm@kvack.org>, <linux-crypto@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
-	<jroedel@suse.de>, <hpa@zytor.com>, <ardb@kernel.org>, <pbonzini@redhat.com>,
-	<seanjc@google.com>, <vkuznets@redhat.com>, <jmattson@google.com>,
-	<luto@kernel.org>, <dave.hansen@linux.intel.com>, <slp@redhat.com>,
-	<pgonda@google.com>, <peterz@infradead.org>,
-	<srinivas.pandruvada@linux.intel.com>, <rientjes@google.com>,
-	<tobin@ibm.com>, <vbabka@suse.cz>, <kirill@shutemov.name>,
-	<ak@linux.intel.com>, <tony.luck@intel.com>,
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
-	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
-	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>, <zhi.a.wang@intel.com>,
-	Brijesh Singh <brijesh.singh@amd.com>, <rppt@kernel.org>
-Subject: Re: [PATCH v1 11/26] x86/sev: Invalidate pages from the direct map
- when adding them to the RMP table
-Message-ID: <20240116161909.msbdwiyux7wsxw2i@amd.com>
-References: <20231230161954.569267-1-michael.roth@amd.com>
- <20231230161954.569267-12-michael.roth@amd.com>
- <cb604c37-aeb5-45bd-b6db-246ae724e4ca@intel.com>
- <20240112200751.GHZaGcF0-OZVJiIB7y@fat_crate.local>
- <63297d29-bb24-ac5e-0b47-35e22bb1a2f8@amd.com>
- <336b55f9-c7e6-4ec9-806b-cb3659dbfdc3@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 419631C6A1
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 16:19:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3606d19097dso91108855ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 08:19:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705421958; x=1706026758;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Xx2NiXfEC2f9ShTuPE2ICSF2WxhDPgmMA0aZZzN7CeY=;
+        b=ipp6J8ShTYqXmoch8pg8Zib/sMepdpqTvQLnuQKX5I8oM0JAez+uD0IN7m08AmajUg
+         pQbbfKKqxXEVg8F+HB0ZInCvV4zOTziaFpZSHd+c6j8rbzSem7E6k9QtNHeC8Lfsl1HQ
+         vC9nXunGcISn5oC+1clu9CWYIucLHceOInPFb/W2FhZ8KGiqUd/fE9+oGYF/E6dKag8n
+         +mDtl1MOSmacG5mVoP9ah4GedvP5OPtHaseR6W/SE63v4KK/d7qxe9vofZLVCFMeG38w
+         BMYZyWLcTNjzjHEspKjj8aOYaj9r83UwKRPeQxPShqd5XYSIxWLFQng8csPG4sC0bn09
+         OKfw==
+X-Gm-Message-State: AOJu0YxZI3cWWD/JHFl5c2ixAPYLqkGRwKP0eMKhKfR+IMCgsEt4TdR8
+	kp04TmukwG/SdGj+wnCybfkK8ocYn2sdcRuRVT1Ks3UcGpco
+X-Google-Smtp-Source: AGHT+IGPXIwfcx+ZEzWEl/c87WEvLS1rOC2xBs8/tlG/IpXlFdlUU8PqTyvIuo3HXMRs9HjU3v5toRNTOexomQETgrSp6qHTErtk
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <336b55f9-c7e6-4ec9-806b-cb3659dbfdc3@intel.com>
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099D7:EE_|PH8PR12MB6889:EE_
-X-MS-Office365-Filtering-Correlation-Id: ab32f600-8604-4c81-b338-08dc16af0224
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	H2IdnTPb5C9k7R57RtzTiOeCYTtbwuWTavalT4Q/Wd9H02ovU50FAMn/efZi6KkJZIclIB6mXACRdzb5TLRyFcbml9ESqhu+GJcFOS/X4cjtTrjtbdUeXnrUlrOuFtJe6raz0IaXKVf1BC22Fhlxr8veZy6e3wrE91FnrkgUlDAwM5o7XpSGaVs1OB5+Y66Pxz1FKnDlXDm/cb/wHJupBBu6SGtKxACsIy5DETLsMIeMfAwyaq3im5eCWMWAtmbydN0Fb9tMxXjKF6AD7B2jb3k9lyv+chyN9S7iOdtBr8PUyT38ZNkMPL56LK6kQqMHvqGwk+DKc5p+QZf4f0FHtZ/kmm+G+zPXu3AGcZKp25B1XPRsemtb3M2WWTmupH4Fef1rJwTWUWJWGfnqIGmBpnCb2JveZja9nwrZ5+ewcp8Jsqu5F8ldh7dH6rDu84fNdlXEE+zYfMl8HJIi9MbHJyKEMCOtb/m9HNuERVB72mUCZcZx9ZemcfHTY6gsLla8pdrmgmJtq4lGoBeRu6UhJqmWPakVzd56YCHEW5frahyzA9N7WQe3mhd7fak6NdUGKodDnsnYJ4ydczAXuN9kARs+LgUgUZUixVpGJ3LsMvOeD2SM0EK0v8F4ky5s9nDn6/3pH80PFllYfReR7XsNqVlZsnLohSr7Fcl+pTzlsgG4VxB+njbyCLWd6Th65ASwTC2iQxqjpp9nhQBblenjtjLqjNN4Su6LFm0FCXz+0wZxfkBTizLwNG/hThOFO92G5xz+nsHuvPsU7/K2mheRD+t/AO2T/haoY8GPFvblkcA=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(346002)(39860400002)(396003)(230922051799003)(1800799012)(82310400011)(64100799003)(186009)(451199024)(40470700004)(46966006)(36840700001)(86362001)(83380400001)(47076005)(1076003)(26005)(426003)(53546011)(2616005)(36860700001)(16526019)(70586007)(8676002)(4326008)(5660300002)(8936002)(44832011)(41300700001)(2906002)(6916009)(336012)(478600001)(7406005)(966005)(7416002)(316002)(54906003)(70206006)(81166007)(36756003)(82740400003)(356005)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2024 16:20:09.0034
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ab32f600-8604-4c81-b338-08dc16af0224
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF000099D7.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6889
+X-Received: by 2002:a05:6e02:12ea:b0:361:9322:6ae0 with SMTP id
+ l10-20020a056e0212ea00b0036193226ae0mr27848iln.6.1705421958506; Tue, 16 Jan
+ 2024 08:19:18 -0800 (PST)
+Date: Tue, 16 Jan 2024 08:19:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000007728e060f127eaf@google.com>
+Subject: [syzbot] [exfat?] kernel BUG in iov_iter_revert
+From: syzbot <syzbot+fd404f6b03a58e8bc403@syzkaller.appspotmail.com>
+To: linkinjeon@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, sj1557.seo@samsung.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Jan 12, 2024 at 12:37:31PM -0800, Dave Hansen wrote:
-> On 1/12/24 12:28, Tom Lendacky wrote:
-> > I thought there was also a desire to remove the direct map for any pages
-> > assigned to a guest as private, not just the case that the comment says.
-> > So updating the comment would probably the best action.
-> 
-> I'm not sure who desires that.
-> 
-> It's sloooooooow to remove things from the direct map.  There's almost
-> certainly a frequency cutoff where running the whole direct mapping as
-> 4k is better than the cost of mapping/unmapping.
+Hello,
 
-One area we'd been looking to optimize[1] is lots of vCPUs/guests
-faulting in private memory on-demand via kernels with lazy acceptance
-support. The lazy acceptance / #NPF path for each 4K/2M guest page
-involves updating the corresponding RMP table entry to set it to
-Guest-owned state, and as part of that we remove the PFNs from the
-directmap. There is indeed potential for scalability issues due to how
-directmap updates are currently handled, since they involve holding a
-global cpa_lock for every update.
+syzbot found the following issue on:
 
-At the time, there were investigations on how to remove the cpa_lock,
-and there's an RFC patch[2] that implements this change, but I don't
-know where this stands today.
+HEAD commit:    052d534373b7 Merge tag 'exfat-for-6.8-rc1' of git://git.ke..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=108ca8b3e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7c8840a4a09eab8
+dashboard link: https://syzkaller.appspot.com/bug?extid=fd404f6b03a58e8bc403
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1558210be80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14d39debe80000
 
-There was also some work[3] on being able to restore 2MB entries in the
-directmap (currently entries are only re-added as 4K) the Mike Rapoport
-pointed out to me a while back. With that, since the bulk of private
-guest pages 2MB, we'd be able to avoid splitting the directmap to 4K over
-time.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/b1b0ffd73481/disk-052d5343.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c25614b900ba/vmlinux-052d5343.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7dd1842e2ad4/bzImage-052d5343.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/291ad1624ec1/mount_3.gz
 
-There was also some indication[4] that UPM/guest_memfd would eventually
-manage directmap invalidations internally, so it made sense to have
-SNP continue to handle this up until the point that mangement was
-moved to gmem.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fd404f6b03a58e8bc403@syzkaller.appspotmail.com
 
-Those 3 things, paired with a platform-independent way of catching
-unexpected kernel accesses to private guest memory, are what I think
-nudged us all toward the current implementation.
+------------[ cut here ]------------
+kernel BUG at lib/iov_iter.c:582!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 5043 Comm: syz-executor166 Not tainted 6.7.0-syzkaller-09928-g052d534373b7 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+RIP: 0010:iov_iter_revert lib/iov_iter.c:582 [inline]
+RIP: 0010:iov_iter_revert+0x328/0x360 lib/iov_iter.c:567
+Code: 8e 94 78 fd e9 8f fd ff ff e8 e4 94 78 fd e9 de fe ff ff e8 ba 94 78 fd eb a2 e8 d3 94 78 fd e9 12 fe ff ff e8 b9 8c 21 fd 90 <0f> 0b e8 c1 94 78 fd e9 23 fe ff ff e8 b7 94 78 fd e9 64 fe ff ff
+RSP: 0018:ffffc9000337f9e0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 00000000001bca00 RCX: ffffffff84656a77
+RDX: ffff888019313b80 RSI: ffffffff84656c97 RDI: 0000000000000001
+RBP: ffffc9000337fb30 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: fffffffffffffdef R14: 0000000000000000 R15: ffff888047da8740
+FS:  0000555555c9a380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000056518e8170a8 CR3: 0000000048309000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ exfat_direct_IO+0x320/0x510 fs/exfat/inode.c:538
+ generic_file_read_iter+0x1dd/0x450 mm/filemap.c:2759
+ call_read_iter include/linux/fs.h:2079 [inline]
+ aio_read+0x318/0x4d0 fs/aio.c:1597
+ __io_submit_one fs/aio.c:1998 [inline]
+ io_submit_one+0x1480/0x1de0 fs/aio.c:2047
+ __do_sys_io_submit fs/aio.c:2106 [inline]
+ __se_sys_io_submit fs/aio.c:2076 [inline]
+ __x64_sys_io_submit+0x1c3/0x350 fs/aio.c:2076
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f6eb9491c79
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffdb9c8bf78 EFLAGS: 00000246 ORIG_RAX: 00000000000000d1
+RAX: ffffffffffffffda RBX: 00007ffdb9c8bf80 RCX: 00007f6eb9491c79
+RDX: 0000000020000540 RSI: 0000000000003f0a RDI: 00007f6eb944a000
+RBP: 00007f6eb9506610 R08: 65732f636f72702f R09: 65732f636f72702f
+R10: 65732f636f72702f R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffdb9c8c1b8 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:iov_iter_revert lib/iov_iter.c:582 [inline]
+RIP: 0010:iov_iter_revert+0x328/0x360 lib/iov_iter.c:567
+Code: 8e 94 78 fd e9 8f fd ff ff e8 e4 94 78 fd e9 de fe ff ff e8 ba 94 78 fd eb a2 e8 d3 94 78 fd e9 12 fe ff ff e8 b9 8c 21 fd 90 <0f> 0b e8 c1 94 78 fd e9 23 fe ff ff e8 b7 94 78 fd e9 64 fe ff ff
+RSP: 0018:ffffc9000337f9e0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 00000000001bca00 RCX: ffffffff84656a77
+RDX: ffff888019313b80 RSI: ffffffff84656c97 RDI: 0000000000000001
+RBP: ffffc9000337fb30 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: fffffffffffffdef R14: 0000000000000000 R15: ffff888047da8740
+FS:  0000555555c9a380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6eb944a000 CR3: 0000000048309000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-But AFAIK none of these 3 things are being actively upstreamed today,
-so it makes sense to re-consider how we handle the directmap in the
-interim.
 
-I did some performance tests which do seem to indicate that
-pre-splitting the directmap to 4K can be substantially improve certain
-SNP guest workloads. This test involves running a single 1TB SNP guest
-with 128 vCPUs running "stress --vm 128 --vm-bytes 5G --vm-keep" to
-rapidly fault in all of its memory via lazy acceptance, and then
-measuring the rate that gmem pages are being allocated on the host by
-monitoring "FileHugePages" from /proc/meminfo to get some rough gauge
-of how quickly a guest can fault in it's initial working set prior to
-reaching steady state. The data is a bit noisy but seems to indicate
-significant improvement by taking the directmap updates out of the
-lazy acceptance path, and I would only expect that to become more
-significant as you scale up the number of guests / vCPUs.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-  # Average fault-in rate across 3 runs, measured in GB/s
-                    unpinned | pinned to NUMA node 0
-  DirectMap4K           12.9 | 12.1
-             stddev      2.2 |  1.3
-  DirectMap2M+split      8.0 |  8.9
-             stddev      1.3 |  0.8
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-The downside of course is potential impact for non-SNP workloads
-resulting from splitting the directmap. Mike Rapoport's numbers make
-me feel a little better about it, but I don't think they apply directly
-to the notion of splitting the entire directmap. It's Even he LWN article
-summarizes:
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-  "The conclusion from all of this, Rapoport continued, was that
-  direct-map fragmentation just does not matter — for data access, at
-  least. Using huge-page mappings does still appear to make a difference
-  for memory containing the kernel code, so allocator changes should
-  focus on code allocations — improving the layout of allocations for
-  loadable modules, for example, or allowing vmalloc() to allocate huge
-  pages for code. But, for kernel-data allocations, direct-map
-  fragmentation simply appears to not be worth worrying about."
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-So at the very least, if we went down this path, we would be worth
-investigating the following areas in addition to general perf testing:
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-  1) Only splitting directmap regions corresponding to kernel-allocatable
-     *data* (hopefully that's even feasible...)
-  2) Potentially deferring the split until an SNP guest is actually
-     run, so there isn't any impact just from having SNP enabled (though
-     you still take a hit from RMP checks in that case so maybe it's not
-     worthwhile, but that itself has been noted as a concern for users
-     so it would be nice to not make things even worse).
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-[1] https://lore.kernel.org/linux-mm/20231103000105.m3z4eijcxlxciyzd@amd.com/
-[2] https://lore.kernel.org/lkml/Y7f9ZuPcIMk37KnN@gmail.com/T/#m15b74841f5319c0d1177f118470e9714d4ea96c8
-[3] https://lore.kernel.org/linux-kernel/20200416213229.19174-1-kirill.shutemov@linux.intel.com/
-[4] https://lore.kernel.org/all/YyGLXXkFCmxBfu5U@google.com/
-
-> 
-> Actually, where _is_ the TLB flushing here?
-
-Boris pointed that out in v6, and we implemented it in v7, but it
-completely cratered performance:
-
-   https://lore.kernel.org/linux-mm/20221219150026.bltiyk72pmdc2ic3@amd.com/
-
-After further discussion I think we'd concluded it wasn't necessary. Maybe
-that's worth revisiting though. If it is necessary, then that would be
-another reason to just pre-split the directmap because the above-mentioned
-lazy acceptance workload/bottleneck would likely get substantially worse.
-
--Mike
+If you want to undo deduplication, reply with:
+#syz undup
 
