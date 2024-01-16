@@ -1,94 +1,107 @@
-Return-Path: <linux-kernel+bounces-27299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BE0182ED7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:15:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53E3282ED7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:15:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9417B23068
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:15:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 793711C231F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:15:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9DA21B7F9;
-	Tue, 16 Jan 2024 11:15:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NNWWAf/T"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAC121B800;
+	Tue, 16 Jan 2024 11:15:41 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD0991B7ED;
-	Tue, 16 Jan 2024 11:15:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705403716; x=1736939716;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=KGj83XYIkXNIHgAxpE7C2tWJ2jS/Hwvrh3NCtwWmTmE=;
-  b=NNWWAf/TaCm1MF71uSKFnneZgyBVD3sLebhrmg99BpYLeefTOIKp31jD
-   cVJ7NtnOMHu+PRk7XfDnEWKrHqkQrk8DYhFlEAEggQK3Co2zURM3NkhCJ
-   R8+Tbojx92/Io7yIvHAW0KZva5+9p2o9IwS5k4FH2AjRuV3gOdBFXxNcz
-   tjMQpMS1rsI4Jy7BDmZe2gIQF7jkOJUgkHpdKEmEgRnv+g+EBdgByniz0
-   gndPMmH7XRCH7jeyfTL/WjFP6eLfc+sOGuhc9NScVPXlnV39L9qvKZjT2
-   PPoLjwfs60UFfKEHSe8VeJ7jFpgA9Gpc/u9lxgP7l7ERcfrvJQoydP5gV
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="7214109"
-X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
-   d="scan'208";a="7214109"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 03:15:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
-   d="scan'208";a="32419003"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.54.38.190])
-  by orviesa001.jf.intel.com with ESMTP; 16 Jan 2024 03:15:15 -0800
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-	id C1371301BD1; Tue, 16 Jan 2024 03:15:14 -0800 (PST)
-From: Andi Kleen <ak@linux.intel.com>
-To: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>,  Ingo Molnar <mingo@redhat.com>,
-  Mark Rutland <mark.rutland@arm.com>,  Alexander Shishkin
- <alexander.shishkin@linux.intel.com>,  Heiko Carstens <hca@linux.ibm.com>,
-  Thomas Richter <tmricht@linux.ibm.com>,  Hendrik Brueckner
- <brueckner@linux.ibm.com>,  Suzuki K Poulose <suzuki.poulose@arm.com>,
-  Mike Leach <mike.leach@linaro.org>,  James Clark <james.clark@arm.com>,
-  coresight@lists.linaro.org,  linux-arm-kernel@lists.infradead.org,
-  Yicong Yang <yangyicong@hisilicon.com>,  Jonathan Cameron
- <jonathan.cameron@huawei.com>,  Will Deacon <will@kernel.org>,  Arnaldo
- Carvalho de Melo <acme@kernel.org>,  Jiri Olsa <jolsa@kernel.org>,
-  Namhyung Kim <namhyung@kernel.org>,  Ian Rogers <irogers@google.com>,
-  linux-kernel@vger.kernel.org,  linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH V4 10/11] perf intel-pt: Add documentation for pause /
- resume
-In-Reply-To: <20240111081914.3123-11-adrian.hunter@intel.com> (Adrian Hunter's
-	message of "Thu, 11 Jan 2024 10:19:13 +0200")
-References: <20240111081914.3123-1-adrian.hunter@intel.com>
-	<20240111081914.3123-11-adrian.hunter@intel.com>
-Date: Tue, 16 Jan 2024 03:15:14 -0800
-Message-ID: <87ply1lebh.fsf@linux.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B4391B7ED;
+	Tue, 16 Jan 2024 11:15:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TDmdX1LrSz4f3m73;
+	Tue, 16 Jan 2024 19:15:28 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 44E531A016E;
+	Tue, 16 Jan 2024 19:15:34 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP2 (Coremail) with SMTP id Syh0CgC32QxSZaZlQkMQBA--.63503S2;
+	Tue, 16 Jan 2024 19:15:34 +0800 (CST)
+Subject: Re: [PATCH bpf-next v4 2/2] selftests/bpf: Skip callback tests if jit
+ is disabled in test_verifier
+To: Tiezhu Yang <yangtiezhu@loongson.cn>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>
+Cc: Eduard Zingerman <eddyz87@gmail.com>,
+ John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240116045030.23739-1-yangtiezhu@loongson.cn>
+ <20240116045030.23739-3-yangtiezhu@loongson.cn>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <398c3793-1530-fdcb-3a0c-2b82c52256cb@huaweicloud.com>
+Date: Tue, 16 Jan 2024 19:15:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20240116045030.23739-3-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID:Syh0CgC32QxSZaZlQkMQBA--.63503S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7CFWUGr45KFWkAFy7ZF4xWFg_yoW8Gryfpa
+	1UCrWqyF1qqw109r9rXrn3XFyjv3y0qw4fG34rG3y8AF4kuw43Jrn3Cr1UZasxGr4F9a4S
+	93yUurW8Ww1UXa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
+	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
+	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+	k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+	1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Adrian Hunter <adrian.hunter@intel.com> writes:
-> +
-> +For example, to trace only the uname system call (sys_newuname) when running the
-> +command line utility uname:
-> +
-> + $ perf record --kcore -e
-> intel_pt/aux-action=start-paused/k,syscalls:sys_enter_newuname/aux-action=resume/,syscalls:sys_exit_newuname/aux-action=pause/
-> uname
 
-It's unclear if the syntax works for hardware break points, kprobes, uprobes too?
-That would be most useful. If it works would be good to add examples for it.
 
--Andi
+On 1/16/2024 12:50 PM, Tiezhu Yang wrote:
+> If CONFIG_BPF_JIT_ALWAYS_ON is not set and bpf_jit_enable is 0, there
+> exist 6 failed tests.
+>
+>   [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
+>   [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
+>   [root@linux bpf]# ./test_verifier | grep FAIL
+>   #106/p inline simple bpf_loop call FAIL
+>   #107/p don't inline bpf_loop call, flags non-zero FAIL
+>   #108/p don't inline bpf_loop call, callback non-constant FAIL
+>   #109/p bpf_loop_inline and a dead func FAIL
+>   #110/p bpf_loop_inline stack locations for loop vars FAIL
+>   #111/p inline bpf_loop call in a big program FAIL
+>   Summary: 768 PASSED, 15 SKIPPED, 6 FAILED
+>
+> The test log shows that callbacks are not allowed in non-JITed programs,
+> interpreter doesn't support them yet, thus these tests should be skipped
+> if jit is disabled, copy some check functions from the other places under
+> tools directory, and then handle this case in do_test_single().
+>
+> With this patch:
+>
+>   [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
+>   [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
+>   [root@linux bpf]# ./test_verifier | grep FAIL
+>   Summary: 768 PASSED, 21 SKIPPED, 0 FAILED
+>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+
+Acked-by: Hou Tao <houtao1@huawei.com>
 
 
