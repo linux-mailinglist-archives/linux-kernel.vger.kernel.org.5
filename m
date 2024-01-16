@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-26768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12F3F82E600
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:02:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1923F82E602
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:02:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8ECC01F25405
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:02:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5A502843E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:02:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D1C24CE12;
-	Tue, 16 Jan 2024 00:26:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1FFB20330;
+	Tue, 16 Jan 2024 00:26:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vLVMkaen"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FJzIKKez"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C3E14D128;
-	Tue, 16 Jan 2024 00:26:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24B68C433F1;
-	Tue, 16 Jan 2024 00:26:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C59A4F1F5;
+	Tue, 16 Jan 2024 00:26:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 853A2C433C7;
+	Tue, 16 Jan 2024 00:26:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705364797;
-	bh=sPFbOn/m/VJEQ1BqXyd0sBC8HQ7NAgUGPsK5KsgI9H0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=vLVMkaenls7F3myVBEsLIv3Ec3kj/dcYktwIn2+btX4Q8wYJZP4Zhj5Fu9VCjscmD
-	 ifz7aLAAsKh/13tecYmgM4SVMWicso4SUQC0MHYQLEdud3yn1J7avUm22jM514gAGB
-	 DdStpKcQdIpzU/1/DPalxE03B2OH8TeP/KWDh8tRrhHjKhi7/nHypFnLGz2J1Vps+D
-	 PTRdIFihgISWWA8NkxunWlFMLHDNrGFFgXsplD/mOy76jG7wKbI9NFyC1Ycj3JOcDd
-	 QXH+Cqux6yfJjQTSYRcNt4utKSkznnzWu2LhVXz0OqY8IlReXnN/QJCSKr6y7V9X2D
-	 UdVe/pUoWpVFw==
+	s=k20201202; t=1705364813;
+	bh=SoixcK9V/FIxkFV7jO31TVWonuK2Ri5TI6NpucPPDEY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=FJzIKKezdJ84tG4LC9uXI0oUpOPiVKnKCagSL4iGbOUWp5ZQsALxCkNbM5bx1jLPp
+	 GiP+onyQSv13O7f08QsbwIEVb330EU3mlWFx7GeQy9n4RKJ1Ljx7WtoAaS9Vr3dbPE
+	 pAAwKT9Q58oMPkMWxgk1vf5UyjTGBxqJDJ6YiI599p2bsHZlqhLWCp04MxVx7vjYUV
+	 zXIcwkxNhJuUF57mLYgpdRqo/GgyJPyx5Pv357aEuAJdYdE0jq5XVBiNUE5ORzAm6V
+	 bLaE23xQO5S+dFX6ObS2gJKLFz90jYbP/cK55oWXbiDFb6VQY0GKG5g5PGg1f82uAp
+	 sVgoL2Y6siLUA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Edward Adam Davis <eadavis@qq.com>,
-	syzbot+553d90297e6d2f50dbc7@syzkaller.appspotmail.com,
+Cc: Osama Muhammad <osmtendev@gmail.com>,
+	syzbot+39ba34a099ac2e9bd3cb@syzkaller.appspotmail.com,
 	Dave Kleikamp <dave.kleikamp@oracle.com>,
 	Sasha Levin <sashal@kernel.org>,
 	shaggy@kernel.org,
-	jlayton@kernel.org,
-	brauner@kernel.org,
-	liushixin2@huawei.com,
-	jfs-discussion@lists.sourceforge.net,
-	ghandatmanas@gmail.com
-Subject: [PATCH AUTOSEL 5.15 13/13] jfs: fix array-index-out-of-bounds in diNewExt
-Date: Mon, 15 Jan 2024 19:25:49 -0500
-Message-ID: <20240116002603.215942-13-sashal@kernel.org>
+	ghandatmanas@gmail.com,
+	juntong.deng@outlook.com,
+	andrew.kanner@gmail.com,
+	wonguk.lee1023@gmail.com,
+	code@siddh.me,
+	yogi.kernel@gmail.com,
+	jfs-discussion@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 5.10 01/12] FS:JFS:UBSAN:array-index-out-of-bounds in dbAdjTree
+Date: Mon, 15 Jan 2024 19:26:26 -0500
+Message-ID: <20240116002649.216260-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240116002603.215942-1-sashal@kernel.org>
-References: <20240116002603.215942-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,79 +58,100 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.147
+X-stable-base: Linux 5.10.208
 Content-Transfer-Encoding: 8bit
 
-From: Edward Adam Davis <eadavis@qq.com>
+From: Osama Muhammad <osmtendev@gmail.com>
 
-[ Upstream commit 49f9637aafa6e63ba686c13cb8549bf5e6920402 ]
+[ Upstream commit 9862ec7ac1cbc6eb5ee4a045b5d5b8edbb2f7e68 ]
 
-[Syz report]
-UBSAN: array-index-out-of-bounds in fs/jfs/jfs_imap.c:2360:2
-index -878706688 is out of range for type 'struct iagctl[128]'
-CPU: 1 PID: 5065 Comm: syz-executor282 Not tainted 6.7.0-rc4-syzkaller-00009-gbee0e7762ad2 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+Syzkaller reported the following issue:
+
+UBSAN: array-index-out-of-bounds in fs/jfs/jfs_dmap.c:2867:6
+index 196694 is out of range for type 's8[1365]' (aka 'signed char[1365]')
+CPU: 1 PID: 109 Comm: jfsCommit Not tainted 6.6.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
 Call Trace:
  <TASK>
  __dump_stack lib/dump_stack.c:88 [inline]
  dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
  ubsan_epilogue lib/ubsan.c:217 [inline]
  __ubsan_handle_out_of_bounds+0x11c/0x150 lib/ubsan.c:348
- diNewExt+0x3cf3/0x4000 fs/jfs/jfs_imap.c:2360
- diAllocExt fs/jfs/jfs_imap.c:1949 [inline]
- diAllocAG+0xbe8/0x1e50 fs/jfs/jfs_imap.c:1666
- diAlloc+0x1d3/0x1760 fs/jfs/jfs_imap.c:1587
- ialloc+0x8f/0x900 fs/jfs/jfs_inode.c:56
- jfs_mkdir+0x1c5/0xb90 fs/jfs/namei.c:225
- vfs_mkdir+0x2f1/0x4b0 fs/namei.c:4106
- do_mkdirat+0x264/0x3a0 fs/namei.c:4129
- __do_sys_mkdir fs/namei.c:4149 [inline]
- __se_sys_mkdir fs/namei.c:4147 [inline]
- __x64_sys_mkdir+0x6e/0x80 fs/namei.c:4147
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x45/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7fcb7e6a0b57
-Code: ff ff 77 07 31 c0 c3 0f 1f 40 00 48 c7 c2 b8 ff ff ff f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 b8 53 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd83023038 EFLAGS: 00000286 ORIG_RAX: 0000000000000053
-RAX: ffffffffffffffda RBX: 00000000ffffffff RCX: 00007fcb7e6a0b57
-RDX: 00000000000a1020 RSI: 00000000000001ff RDI: 0000000020000140
-RBP: 0000000020000140 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000286 R12: 00007ffd830230d0
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ dbAdjTree+0x474/0x4f0 fs/jfs/jfs_dmap.c:2867
+ dbJoin+0x210/0x2d0 fs/jfs/jfs_dmap.c:2834
+ dbFreeBits+0x4eb/0xda0 fs/jfs/jfs_dmap.c:2331
+ dbFreeDmap fs/jfs/jfs_dmap.c:2080 [inline]
+ dbFree+0x343/0x650 fs/jfs/jfs_dmap.c:402
+ txFreeMap+0x798/0xd50 fs/jfs/jfs_txnmgr.c:2534
+ txUpdateMap+0x342/0x9e0
+ txLazyCommit fs/jfs/jfs_txnmgr.c:2664 [inline]
+ jfs_lazycommit+0x47a/0xb70 fs/jfs/jfs_txnmgr.c:2732
+ kthread+0x2d3/0x370 kernel/kthread.c:388
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+================================================================================
+Kernel panic - not syncing: UBSAN: panic_on_warn set ...
+CPU: 1 PID: 109 Comm: jfsCommit Not tainted 6.6.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ panic+0x30f/0x770 kernel/panic.c:340
+ check_panic_on_warn+0x82/0xa0 kernel/panic.c:236
+ ubsan_epilogue lib/ubsan.c:223 [inline]
+ __ubsan_handle_out_of_bounds+0x13c/0x150 lib/ubsan.c:348
+ dbAdjTree+0x474/0x4f0 fs/jfs/jfs_dmap.c:2867
+ dbJoin+0x210/0x2d0 fs/jfs/jfs_dmap.c:2834
+ dbFreeBits+0x4eb/0xda0 fs/jfs/jfs_dmap.c:2331
+ dbFreeDmap fs/jfs/jfs_dmap.c:2080 [inline]
+ dbFree+0x343/0x650 fs/jfs/jfs_dmap.c:402
+ txFreeMap+0x798/0xd50 fs/jfs/jfs_txnmgr.c:2534
+ txUpdateMap+0x342/0x9e0
+ txLazyCommit fs/jfs/jfs_txnmgr.c:2664 [inline]
+ jfs_lazycommit+0x47a/0xb70 fs/jfs/jfs_txnmgr.c:2732
+ kthread+0x2d3/0x370 kernel/kthread.c:388
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
-[Analysis]
-When the agstart is too large, it can cause agno overflow.
+The issue is caused when the value of lp becomes greater than
+CTLTREESIZE which is the max size of stree. Adding a simple check
+solves this issue.
 
-[Fix]
-After obtaining agno, if the value is invalid, exit the subsequent process.
+Dave:
+As the function returns a void, good error handling
+would require a more intrusive code reorganization, so I modified
+Osama's patch at use WARN_ON_ONCE for lack of a cleaner option.
 
-Reported-and-tested-by: syzbot+553d90297e6d2f50dbc7@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+The patch is tested via syzbot.
 
-Modified the test from agno > MAXAG to agno >= MAXAG based on linux-next
-report by kernel test robot (Dan Carpenter).
-
+Reported-by: syzbot+39ba34a099ac2e9bd3cb@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?extid=39ba34a099ac2e9bd3cb
+Signed-off-by: Osama Muhammad <osmtendev@gmail.com>
 Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jfs/jfs_imap.c | 3 +++
+ fs/jfs/jfs_dmap.c | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/fs/jfs/jfs_imap.c b/fs/jfs/jfs_imap.c
-index 6ed2e1d4c894..ac42f8ee553f 100644
---- a/fs/jfs/jfs_imap.c
-+++ b/fs/jfs/jfs_imap.c
-@@ -2179,6 +2179,9 @@ static int diNewExt(struct inomap * imap, struct iag * iagp, int extno)
- 	/* get the ag and iag numbers for this iag.
+diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
+index 72eb5ed54c2a..985beb1c654d 100644
+--- a/fs/jfs/jfs_dmap.c
++++ b/fs/jfs/jfs_dmap.c
+@@ -2935,6 +2935,9 @@ static void dbAdjTree(dmtree_t * tp, int leafno, int newval)
+ 	/* is the current value the same as the old value ?  if so,
+ 	 * there is nothing to do.
  	 */
- 	agno = BLKTOAG(le64_to_cpu(iagp->agstart), sbi);
-+	if (agno >= MAXAG || agno < 0)
-+		return -EIO;
++	if (WARN_ON_ONCE(lp >= CTLTREESIZE))
++		return;
 +
- 	iagno = le32_to_cpu(iagp->iagnum);
+ 	if (tp->dmt_stree[lp] == newval)
+ 		return;
  
- 	/* check if this is the last free extent within the
 -- 
 2.43.0
 
