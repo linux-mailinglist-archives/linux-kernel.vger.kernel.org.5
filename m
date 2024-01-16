@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-28217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A43082FBBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:02:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7369F82FBC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:03:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 141A61F283F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:02:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 424E7B28EF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:02:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0563816A2CB;
-	Tue, 16 Jan 2024 20:04:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E82C67740;
+	Tue, 16 Jan 2024 20:04:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h5N6suqK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fGM2yjgO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44CF016A2DC;
-	Tue, 16 Jan 2024 20:04:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978DD67729;
+	Tue, 16 Jan 2024 20:04:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435485; cv=none; b=JAzjGmPm0KRjMIpbb6zS80yXsWZnbWcdWZtbM8+/RCwkbk9nGqj2J+nYx1LLaIXN3eO7iZIaqBQGXer7gyKvbxoZ3CcxnIx5QFhPhBYngPxbvenzUv09L8VOVKQFxpxnswV0Mw7f4puHyukarHG8DIegvutLfuukz0KShSghq7E=
+	t=1705435487; cv=none; b=XiQuUFKtquq+sELmfvEEKHvx4bAoj4LOp0iDPBV8DbeUzJ0Ugovcl3aMdHQws7PWqNpc29alTrdPiz7zz5qemhgY8yDCMQ4sJzVFXtwp2Ua197+sbyFmWu74zSbiinc7IE9cSQpn3/Rvi0LcBjime717E7UikngzKEchLXG2VsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435485; c=relaxed/simple;
-	bh=z4QBZhjBtqjgBksKnNBwAUZtJdmx9ikdy7MudY7IxIA=;
+	s=arc-20240116; t=1705435487; c=relaxed/simple;
+	bh=bnE2wWvjkbJ9xzsnbTTH261tLlfBZGLqvhUGY8+P9mc=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
-	 X-Mailer:In-Reply-To:References:MIME-Version:Content-Type:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=ou6igZjwHhBkwvcHAzfQZY5nhsfzipLLx6ngmfrk4xMuvBybMjelyC0tSDknAfnJtgh27ES+2BtEARBqY1gBmetgZMWLgFBZE5c4wUO6kwAHKMmfTtRkDxtzeWUtwyz8bQhP18gCJDpyiHOIsnnxIO9Tut0MN9gXo88HQosXPFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h5N6suqK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3D2FC43601;
-	Tue, 16 Jan 2024 20:04:43 +0000 (UTC)
+	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=fg+uby55QHNWd77tU4GwbxaAilgzskhYgAENVihbGaVUC9iyr01WMaZfBQGGgqKKaQ+x5oZLgS1A6hhNdALM2HBOTwl6lzoOTUStUFCYcn/Zu7mzY9olW14pIpxeT9kGFm+fdqwxyCFSwIIQNpucJXf7VrCRGlm4uMyl7RCK3xY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fGM2yjgO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32F2EC43394;
+	Tue, 16 Jan 2024 20:04:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435484;
-	bh=z4QBZhjBtqjgBksKnNBwAUZtJdmx9ikdy7MudY7IxIA=;
+	s=k20201202; t=1705435487;
+	bh=bnE2wWvjkbJ9xzsnbTTH261tLlfBZGLqvhUGY8+P9mc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=h5N6suqKk1GnW/noFFVkFYdZJlZOvOgXO7TNxFoej+/nSiQMXZOr95gX5OVOdFfgD
-	 tjQoqqvhGN9zcTTnyYRW3gysq+6QTSKCtJ2+LdrZoIhiYSxzfeV1Au0yJz7NbTloI2
-	 rl660umYZUvQ4EXYvk+IOdeWj1neeyhc6GGyqOCwS1xVmyPwUUdjDWQjF1htydOH13
-	 ec85ZgZUv7TS/Oyre/sl1HEDFF385EqjoYbk9SZfo185yGlzbeDg+pX1bhcb7c97IR
-	 YlBgD7Z1SFZtkJKPQE77OqTg3Rke+aBzHhGYPp7NZ6NupG1jUmaP53AOgjC02BaI5r
-	 7rfDXBOY8mVfA==
+	b=fGM2yjgOS7s0Rgy4YGLujMNYqN9CYkEOfXS1c7vFO9AFIcSxYP4wZhgB1lbDJH7Gp
+	 275i0pchy1hKzkm6u4GLDSOstGNe18PZ/DwmL5KuML3Ff9rtiqsrA4DXH4JIxhFPa+
+	 qwngeM/FAaFleWPA0i2SLDWBbCHAKzydDxg70odq6pGd1FELiUfbEJu3u+VVKjWwDO
+	 An9pf+TqumXSJQeSquveYH7ZtxVb+Ndsq57I+eyA8k9FH36AqKHq2fLpr5lCMMRYLo
+	 7fcoU33/O0H4yDzYPe4D+Owsiw+7WSbjLzqFXNmLUZgN1MF9W2AvmK8DUitAoQeFSz
+	 zNVDXty49imJw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Minsuk Kang <linuxlovemin@yonsei.ac.kr>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
-	Kalle Valo <quic_kvalo@quicinc.com>,
+Cc: Hou Tao <houtao1@huawei.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	kvalo@kernel.org,
-	linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 06/22] wifi: ath9k: Fix potential array-index-out-of-bounds read in ath9k_htc_txstatus()
-Date: Tue, 16 Jan 2024 15:04:00 -0500
-Message-ID: <20240116200432.260016-6-sashal@kernel.org>
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 07/22] bpf: Add map and need_defer parameters to .map_fd_put_ptr()
+Date: Tue, 16 Jan 2024 15:04:01 -0500
+Message-ID: <20240116200432.260016-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116200432.260016-1-sashal@kernel.org>
 References: <20240116200432.260016-1-sashal@kernel.org>
@@ -62,61 +62,176 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.305
 Content-Transfer-Encoding: 8bit
 
-From: Minsuk Kang <linuxlovemin@yonsei.ac.kr>
+From: Hou Tao <houtao1@huawei.com>
 
-[ Upstream commit 2adc886244dff60f948497b59affb6c6ebb3c348 ]
+[ Upstream commit 20c20bd11a0702ce4dc9300c3da58acf551d9725 ]
 
-Fix an array-index-out-of-bounds read in ath9k_htc_txstatus(). The bug
-occurs when txs->cnt, data from a URB provided by a USB device, is
-bigger than the size of the array txs->txstatus, which is
-HTC_MAX_TX_STATUS. WARN_ON() already checks it, but there is no bug
-handling code after the check. Make the function return if that is the
-case.
+map is the pointer of outer map, and need_defer needs some explanation.
+need_defer tells the implementation to defer the reference release of
+the passed element and ensure that the element is still alive before
+the bpf program, which may manipulate it, exits.
 
-Found by a modified version of syzkaller.
+The following three cases will invoke map_fd_put_ptr() and different
+need_defer values will be passed to these callers:
 
-UBSAN: array-index-out-of-bounds in htc_drv_txrx.c
-index 13 is out of range for type '__wmi_event_txstatus [12]'
-Call Trace:
- ath9k_htc_txstatus
- ath9k_wmi_event_tasklet
- tasklet_action_common
- __do_softirq
- irq_exit_rxu
- sysvec_apic_timer_interrupt
+1) release the reference of the old element in the map during map update
+   or map deletion. The release must be deferred, otherwise the bpf
+   program may incur use-after-free problem, so need_defer needs to be
+   true.
+2) release the reference of the to-be-added element in the error path of
+   map update. The to-be-added element is not visible to any bpf
+   program, so it is OK to pass false for need_defer parameter.
+3) release the references of all elements in the map during map release.
+   Any bpf program which has access to the map must have been exited and
+   released, so need_defer=false will be OK.
 
-Signed-off-by: Minsuk Kang <linuxlovemin@yonsei.ac.kr>
-Acked-by: Toke Høiland-Jørgensen <toke@toke.dk>
-Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://lore.kernel.org/r/20231113065756.1491991-1-linuxlovemin@yonsei.ac.kr
+These two parameters will be used by the following patches to fix the
+potential use-after-free problem for map-in-map.
+
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+Link: https://lore.kernel.org/r/20231204140425.1480317-3-houtao@huaweicloud.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath9k/htc_drv_txrx.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ include/linux/bpf.h     |  6 +++++-
+ kernel/bpf/arraymap.c   | 12 +++++++-----
+ kernel/bpf/hashtab.c    |  6 +++---
+ kernel/bpf/map_in_map.c |  2 +-
+ kernel/bpf/map_in_map.h |  2 +-
+ 5 files changed, 17 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c b/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c
-index 979ac31a77a0..527bca8f7deb 100644
---- a/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c
-+++ b/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c
-@@ -647,9 +647,10 @@ void ath9k_htc_txstatus(struct ath9k_htc_priv *priv, void *wmi_event)
- 	struct ath9k_htc_tx_event *tx_pend;
- 	int i;
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 766ea96bf5b8..269754890879 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -44,7 +44,11 @@ struct bpf_map_ops {
+ 	/* funcs called by prog_array and perf_event_array map */
+ 	void *(*map_fd_get_ptr)(struct bpf_map *map, struct file *map_file,
+ 				int fd);
+-	void (*map_fd_put_ptr)(void *ptr);
++	/* If need_defer is true, the implementation should guarantee that
++	 * the to-be-put element is still alive before the bpf program, which
++	 * may manipulate it, exists.
++	 */
++	void (*map_fd_put_ptr)(struct bpf_map *map, void *ptr, bool need_defer);
+ 	u32 (*map_gen_lookup)(struct bpf_map *map, struct bpf_insn *insn_buf);
+ 	u32 (*map_fd_sys_lookup_elem)(void *ptr);
+ 	void (*map_seq_show_elem)(struct bpf_map *map, void *key,
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index 0c17aab3ce5f..44f53c06629e 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -469,7 +469,7 @@ int bpf_fd_array_map_update_elem(struct bpf_map *map, struct file *map_file,
  
--	for (i = 0; i < txs->cnt; i++) {
--		WARN_ON(txs->cnt > HTC_MAX_TX_STATUS);
-+	if (WARN_ON_ONCE(txs->cnt > HTC_MAX_TX_STATUS))
-+		return;
+ 	old_ptr = xchg(array->ptrs + index, new_ptr);
+ 	if (old_ptr)
+-		map->ops->map_fd_put_ptr(old_ptr);
++		map->ops->map_fd_put_ptr(map, old_ptr, true);
  
-+	for (i = 0; i < txs->cnt; i++) {
- 		__txs = &txs->txstatus[i];
+ 	return 0;
+ }
+@@ -485,7 +485,7 @@ static int fd_array_map_delete_elem(struct bpf_map *map, void *key)
  
- 		skb = ath9k_htc_tx_get_packet(priv, __txs);
+ 	old_ptr = xchg(array->ptrs + index, NULL);
+ 	if (old_ptr) {
+-		map->ops->map_fd_put_ptr(old_ptr);
++		map->ops->map_fd_put_ptr(map, old_ptr, true);
+ 		return 0;
+ 	} else {
+ 		return -ENOENT;
+@@ -509,8 +509,9 @@ static void *prog_fd_array_get_ptr(struct bpf_map *map,
+ 	return prog;
+ }
+ 
+-static void prog_fd_array_put_ptr(void *ptr)
++static void prog_fd_array_put_ptr(struct bpf_map *map, void *ptr, bool need_defer)
+ {
++	/* bpf_prog is freed after one RCU or tasks trace grace period */
+ 	bpf_prog_put(ptr);
+ }
+ 
+@@ -598,8 +599,9 @@ static void *perf_event_fd_array_get_ptr(struct bpf_map *map,
+ 	return ee;
+ }
+ 
+-static void perf_event_fd_array_put_ptr(void *ptr)
++static void perf_event_fd_array_put_ptr(struct bpf_map *map, void *ptr, bool need_defer)
+ {
++	/* bpf_perf_event is freed after one RCU grace period */
+ 	bpf_event_entry_free_rcu(ptr);
+ }
+ 
+@@ -640,7 +642,7 @@ static void *cgroup_fd_array_get_ptr(struct bpf_map *map,
+ 	return cgroup_get_from_fd(fd);
+ }
+ 
+-static void cgroup_fd_array_put_ptr(void *ptr)
++static void cgroup_fd_array_put_ptr(struct bpf_map *map, void *ptr, bool need_defer)
+ {
+ 	/* cgroup_put free cgrp after a rcu grace period */
+ 	cgroup_put(ptr);
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 3f3ed33bd2fd..8e379b667a0f 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -677,7 +677,7 @@ static void htab_put_fd_value(struct bpf_htab *htab, struct htab_elem *l)
+ 
+ 	if (map->ops->map_fd_put_ptr) {
+ 		ptr = fd_htab_map_get_ptr(map, l);
+-		map->ops->map_fd_put_ptr(ptr);
++		map->ops->map_fd_put_ptr(map, ptr, true);
+ 	}
+ }
+ 
+@@ -1337,7 +1337,7 @@ static void fd_htab_map_free(struct bpf_map *map)
+ 		hlist_nulls_for_each_entry_safe(l, n, head, hash_node) {
+ 			void *ptr = fd_htab_map_get_ptr(map, l);
+ 
+-			map->ops->map_fd_put_ptr(ptr);
++			map->ops->map_fd_put_ptr(map, ptr, false);
+ 		}
+ 	}
+ 
+@@ -1378,7 +1378,7 @@ int bpf_fd_htab_map_update_elem(struct bpf_map *map, struct file *map_file,
+ 
+ 	ret = htab_map_update_elem(map, key, &ptr, map_flags);
+ 	if (ret)
+-		map->ops->map_fd_put_ptr(ptr);
++		map->ops->map_fd_put_ptr(map, ptr, false);
+ 
+ 	return ret;
+ }
+diff --git a/kernel/bpf/map_in_map.c b/kernel/bpf/map_in_map.c
+index 9670ee5ee74e..051c5e40792c 100644
+--- a/kernel/bpf/map_in_map.c
++++ b/kernel/bpf/map_in_map.c
+@@ -102,7 +102,7 @@ void *bpf_map_fd_get_ptr(struct bpf_map *map,
+ 	return inner_map;
+ }
+ 
+-void bpf_map_fd_put_ptr(void *ptr)
++void bpf_map_fd_put_ptr(struct bpf_map *map, void *ptr, bool need_defer)
+ {
+ 	/* ptr->ops->map_free() has to go through one
+ 	 * rcu grace period by itself.
+diff --git a/kernel/bpf/map_in_map.h b/kernel/bpf/map_in_map.h
+index 6183db9ec08c..1e652a7bf60e 100644
+--- a/kernel/bpf/map_in_map.h
++++ b/kernel/bpf/map_in_map.h
+@@ -18,7 +18,7 @@ bool bpf_map_meta_equal(const struct bpf_map *meta0,
+ 			const struct bpf_map *meta1);
+ void *bpf_map_fd_get_ptr(struct bpf_map *map, struct file *map_file,
+ 			 int ufd);
+-void bpf_map_fd_put_ptr(void *ptr);
++void bpf_map_fd_put_ptr(struct bpf_map *map, void *ptr, bool need_defer);
+ u32 bpf_map_fd_sys_lookup_elem(void *ptr);
+ 
+ #endif
 -- 
 2.43.0
 
