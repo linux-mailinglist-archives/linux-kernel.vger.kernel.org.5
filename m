@@ -1,214 +1,332 @@
-Return-Path: <linux-kernel+bounces-27241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27211-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24B2E82EC9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:11:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8520D82EC49
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:55:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F68CB2233E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:11:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 306A7282DB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:55:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D709F134DB;
-	Tue, 16 Jan 2024 10:11:06 +0000 (UTC)
-Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2064.outbound.protection.partner.outlook.cn [139.219.146.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6016134DE;
+	Tue, 16 Jan 2024 09:55:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LLpDaHQP"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D512134C1;
-	Tue, 16 Jan 2024 10:11:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jY6RD9aOqk/YwANLlfVndBKAax9Sl/VYenflit5zDkZmQTFuSkS1EJNVRoxPIO2OQfiI793mDNmvvPq9gpyIFyR0jJEg6U7W5zauBBk+eQn97I7z2UBdnY5QVJzZ0CXBtZHZH3/F+nZkcT2o+sKIA25FQWlYkn3V8iXF9PRL8UllknUMoS+luyMwNtV+xvAqm173ZBWwz3z4OWW2Xm9vHU2y0/YzCn/TGPP08Q4Y/O/QOGz9lGUuQPhG2eGCbbWrNh6qmDiMec/qTM9TxZLRR4lg52a5/eUhkCh2uisBKPkyXhjFTLQcZW3pG43WZquumLkLfPlsoy5KiutD6K8n9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hUc5ti/djX+QeYo/GvzhAKgiE3z6K9ylwQCJSaQRPmU=;
- b=XwzSJEGytjFeZRSxxCj33xgaSSCRsYg+IzTQ17vL2fZ2vgsQFq0a5P9VnEx7QDE5NTOEZ7PxB4rOazFxZDQ20vvbPY5qrkYNd+O+pNa5xHcIzdOea/k2adaf/8OmvfSZ2pasmK2L3f+pZGueIIp4i7E1WSsctftyouyTVKpmu7auMkufnHPHZa8otaJx+uWD7i1uniawlgar8LgupkTJEplwBsMWKTa3B3QBddwSY8c2QbgaWYttZ6d3ptyBoy+U72p89Q7EkC3dl0rir6RuduUDbnlFCOkttiaot7B5051H3Wunv4UDGRod16fJ54MxAsA+fZOTHlgGwMSbLhuUaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Received: from ZQ0PR01MB1062.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:d::7) by ZQ0PR01MB0998.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:1::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.26; Tue, 16 Jan
- 2024 09:54:58 +0000
-Received: from ZQ0PR01MB1062.CHNPR01.prod.partner.outlook.cn
- ([fe80::ac0a:d124:81b3:33fb]) by
- ZQ0PR01MB1062.CHNPR01.prod.partner.outlook.cn ([fe80::ac0a:d124:81b3:33fb%6])
- with mapi id 15.20.7181.026; Tue, 16 Jan 2024 09:54:58 +0000
-From: Shengyang Chen <shengyang.chen@starfivetech.com>
-To: Dave Stevenson <dave.stevenson@raspberrypi.com>,
-	"neil.armstrong@linaro.org" <neil.armstrong@linaro.org>
-CC: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"quic_jesszhan@quicinc.com" <quic_jesszhan@quicinc.com>, "sam@ravnborg.org"
-	<sam@ravnborg.org>, "airlied@gmail.com" <airlied@gmail.com>,
-	"daniel@ffwll.ch" <daniel@ffwll.ch>, "maarten.lankhorst@linux.intel.com"
-	<maarten.lankhorst@linux.intel.com>, "mripard@kernel.org"
-	<mripard@kernel.org>, "tzimmermann@suse.de" <tzimmermann@suse.de>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>, "wahrenst@gmx.net"
-	<wahrenst@gmx.net>, "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-	Changhuang Liang <changhuang.liang@starfivetech.com>, Keith Zhao
-	<keith.zhao@starfivetech.com>, Jack Zhu <jack.zhu@starfivetech.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 0/2] Add waveshare 7inch touchscreen panel support
-Thread-Topic: [PATCH v2 0/2] Add waveshare 7inch touchscreen panel support
-Thread-Index: AQHaQsrahW9RVOc2vE6qAfS6BeiBCbDRVbeAgABnSgCACn3kMA==
-Date: Tue, 16 Jan 2024 09:54:58 +0000
-Message-ID:
- <ZQ0PR01MB1062C80C521A41CC9C7A3298EF73A@ZQ0PR01MB1062.CHNPR01.prod.partner.outlook.cn>
-References: <20240109070949.23957-1-shengyang.chen@starfivetech.com>
- <99d7bb85-17b0-4b5e-a6cf-f5957ad92298@linaro.org>
- <CAPY8ntBcXEyg5tXHGwAdbVody7ihHo3gb1C4vE+6PY2biDhN4g@mail.gmail.com>
-In-Reply-To:
- <CAPY8ntBcXEyg5tXHGwAdbVody7ihHo3gb1C4vE+6PY2biDhN4g@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: ZQ0PR01MB1062:EE_|ZQ0PR01MB0998:EE_
-x-ms-office365-filtering-correlation-id: 45444650-8ab0-49f1-aee9-08dc16793319
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- IyVdqaRm4y7rHm8kkLDOcTDyLyHvnYyAR4e+ZplGmjLVMV30GFe49Ne10FhERK25yHGD4E/tFtrYeHVBCShd7dFb9c78mFL5yxyYUBvIeZufCK9qP/4brwoH+KMYb8X+kwX8ywie9PTVhUG5RH4xxYpUMpPSfkM4FfKwNmcvA0IZhu8tZvAWqP/5UN4WT9ZIannqhbUsw1df83Ut9/dvyLUcA36n53MwKlIbOMUFI8HED0CGoeqduXHm30kldxy2jPHTFRfFO5ixEUn+Pxz17RmeEvO6Xw/p6dHXXnRCmWraYnafo1md4lzgu0rfHFHH5Bp+HeS47EuCbp2RrHpN84fBISsyfYV1WTwM/NYirgx0Zylzo1BcLrzm885JR+OIit9r3QI7ADc7UJGgRgdhqLDxJRn+yD1hF0A4yaj6J5wdL5z0CsSuLaaxScZvnmH7nT0UOt5MaxBh3VbQho/E565xvP7BWrASICxMHObaE8USj75VSRLaAAsB1hHc10ukdkHITOfiBoM5CDNlt8PbnuHzqxFOqajzxvfN2x/5ObbCKhoWevcn31z2gusUMPA+
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ZQ0PR01MB1062.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(39830400003)(346002)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(26005)(9686003)(122000001)(40160700002)(7696005)(53546011)(38100700002)(83380400001)(55016003)(71200400001)(66476007)(66556008)(66946007)(76116006)(966005)(66446008)(508600001)(86362001)(54906003)(64756008)(8936002)(4326008)(8676002)(38070700009)(44832011)(40180700001)(41300700001)(33656002)(110136005)(41320700001)(5660300002)(7416002)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?V1JuQ0FuN3gwOVFjb1dRMlNCd08vbks3dnJxSXUxWlNkK0MyOEkvRGVLRlUy?=
- =?utf-8?B?T1lBeVJHc1U4L3RwTkFhTFBJUnZZdnVQWWtxY0xLang2N3dycGRDaTBOdW02?=
- =?utf-8?B?UUh5VjA1cjllY0ROcTZyVzBHbXFtTFNrSmpXN2hoR1lvQlBCSEttSUd3VzJa?=
- =?utf-8?B?QUljNi9OT3BNbTFES2RLbVIwQ3g0YUlCaUJ2NE9UMkFxbXVRalQwRFlLTjZt?=
- =?utf-8?B?MkdzVEVCWDFFZzFuMjRlcTBZNE1jUitWaXQvd1FxS1RsN2dQcFpEWXlLcGxa?=
- =?utf-8?B?dVpYdFMyMzJDTkJiQlBXZWkydWl3bW9HWWR4L1BHQTE3QU9rTHVXSkFyRHVQ?=
- =?utf-8?B?cHlWclY5UXlCalVkdWdGTXd2UExMVnpUMWV0cldKVm80RmpwQzdYdHNYdWtv?=
- =?utf-8?B?blczMHdrVnBFUWdPTlVwVDFrc2FqYjVmcjlvWXdtVmYwamNDdDl4MllWd3pY?=
- =?utf-8?B?V0ZtY2JaTGtncjBmcHZkVWhCcEtmVklGeXgwZDBXdWxjR2tDSDRoM1p5bVlK?=
- =?utf-8?B?VmFQWWZnZGFOZytueE0rY0VGZ05wZmpSRWhjekhkUXlLanI0Tk9nZWFkckhY?=
- =?utf-8?B?YU4zcWxwQW9PRzBsWU83elM4cThOR3F5b0txbCtUdmNFc2d0VXpSSlk5QWVs?=
- =?utf-8?B?QUNoM2Z6WGk0NnRVcG55LytDL0RueU51dGx4TTRrV1R0aUJlUHR5bGUxTlJv?=
- =?utf-8?B?UXJmQkdjdDNiZndld3lwa3ozVDdibzVmazZQM2lNRERtN2dnTEF0bTJFM1E5?=
- =?utf-8?B?T3VXVmJ5QnNWdHFGdnIxbDFCY1ZqNjAycXI0YlhHaXVybkNvdy8wd3hHU1Rz?=
- =?utf-8?B?ZWFjQnpsSlNUYk9nSDQ4dUQ0UWdCOTZlbVpqZ2o0ZWdPK3RBYjBNaDFqSkU1?=
- =?utf-8?B?cXVUSy9UbE0zK3JOSGFIN1FZaGFHb3pDNnVZNmFYa01qK2RQcHNWNDRQM0FM?=
- =?utf-8?B?Q3FwSDV5bHgyRW5BTHpVL0N1TGM4bjhOeFoybEsrejJsWW9EdSsxU1NXVDlJ?=
- =?utf-8?B?YTNqYi9CQ0xTa2ZMdk5ldUpHSjMzR0hiSXdNMWVSNGtTK25aNzBObWhidStC?=
- =?utf-8?B?ZXlBM1F2UzF2TmxqbTZFUXJVcXI3R1B3cTUwaWVlaERhaWluMmZ3TUd6VDJF?=
- =?utf-8?B?RzdIYnlrcStaQndkT210ak1MRERSaHZsaWlLMTJNSmtpVnNpTDFVOWwvNWFv?=
- =?utf-8?B?RmFnNFNKTE4ySkV0Ly8yVFZzSTBrTXRnWEwxOVlzZEFhOEE4bkZpb291eE1z?=
- =?utf-8?B?T1djNzhXZUdxUUlGdWFPQnlXbUNncjFRNVllQ3oxazZWMXpDNXFSRmw1OWpw?=
- =?utf-8?B?QXRyQzZpbzN2cDlPRUFDU3o5KzBEb0dHWUIzcVJzWTJpZjVTc3FuUjNsYldW?=
- =?utf-8?B?UElnQ2RoTmd1K3A0clozajkvR2d5TDBkaThQNkNHU0w3aHkrYWNES2grZmxU?=
- =?utf-8?B?OFJ3dGdkLzE1aitsWkpCUW1ZZ2RsQ1RES1pWZWp0djVwRms3RVhWZ2VFTjYv?=
- =?utf-8?B?dURTSWdUTkZabmlrZy9wWm9kT1Y1SmZqbnB1S1cvU2JxSTQybFZOTCtwVjlT?=
- =?utf-8?B?a0pFeUZRbm8vSWNtemhoVlZKVkdLdC91OHBGek51MVl3Ty9TTVJsVTlTRHpt?=
- =?utf-8?B?Mlh1Um45OTUyMmRjWEVJSEFVb005ZHczcVZ5K1JvQ0FZdkhSeEJaYzd2VmE1?=
- =?utf-8?B?b2cyeWErbGNKYnFWRXpUdEZDM2IrL2ttcWxKYW9yc1hoOVZqUURaVmdyNlpr?=
- =?utf-8?B?Tlh3TXdBeENvOFcwWVh0ZDBwcVBjMzZ2RDVyN3lMV1F6eWZHaDBKMzFsWDcw?=
- =?utf-8?B?dzFlVGU5OCtlUXM1WWVVSkREU3BYSjh6Q1Q2aDBpUWQyeEx2bG5EMFhtQVli?=
- =?utf-8?B?MEE0VWV5RXlWWTdMUjQvcFYvQmdLdGlPM3d6aWppaWVJdXRYT1cxelpheWVn?=
- =?utf-8?B?T3psa0JrV2ZTdFNaNnFDV2ppYlJ4RW1OaTdPelpOS04yYys2TXNmZjlyS1la?=
- =?utf-8?B?NFIrUnhnYUhzYlIxWDNqWlR3bmkwaElRM1lWeEcwdUtBbzJKNnloL1NxVHUy?=
- =?utf-8?B?M1BmbEpLYk9UWDVsRUMzV2YxWXd3aW9aMnhiYXlKdElxd2lzdFk0OVExZ213?=
- =?utf-8?B?OTgvbGdUVkpoM0xVZlhYcUtheFdGMXFERFF2amdWcVhoajdBbkswTU9Db3c1?=
- =?utf-8?B?eUE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13353134AE
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 09:55:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dae7cc31151so7303961276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 01:55:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705398929; x=1706003729; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HHceE+8ZgnCKJFtFOX9khVW52ZhVdYcLB1ywYIuNgN4=;
+        b=LLpDaHQPkUpVm1BCMe17XST2VisW6pmwYSNyLNyhMzx2cRLEQIRamkkaN94KF1IT/5
+         F2jIqJ2CLk7VPL7167n7SnN95Et5xpw+kQLr1CpUr5ijUS2ZcuwerlwhVrqEXfOHpVYP
+         ddoS8UrVOV2/rcz3xpgV7IYvy+tOdn6/jB+vOhUcVuwiHSISupMQ8gwUPPcJjyzXtABV
+         ksv5o99KGOt/mxdiVF7nUlKt6EfWa8L5ncmOTV2+qaA+mu/eVf4NBhTlrv6/6PnbIIRp
+         eH2V1ERGvu+LtxC3u5XR6NaudEkJBRO4Vr1HISpVAiWKLv7pZgku51V3Wk1bkY+lzkNQ
+         wyiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705398929; x=1706003729;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HHceE+8ZgnCKJFtFOX9khVW52ZhVdYcLB1ywYIuNgN4=;
+        b=o3ko+o90SdQNwD/ZxldQRxWcIADtl81722XsgKfuprMKQopvvN2ZbrepEl1lF7rXTt
+         bdMLb5pk5w+3W3bx7JlYm8drnZ3qEwejbHlp/u/BAJstWFiWz9MxiklBV5ZrAegIysdc
+         vNRp/tGABG/kUG6+4WUjmwZe330hvKLmBlAoCV5PsFubqljy2MPfPQGs1RlSN2oSjq/P
+         p8HrzELMl792HN54itVPHY9yQr6DPHZMWfIL2N9bRsQ4ZXxxGsZ28UeZ07PDNjzkCKaz
+         IhfRTCo3c2e+x3ekAOyKPpmgJrYMwq3Og/Hq7eR795e6w5TF9cBvq4zZJeHGZitemrF7
+         4t4g==
+X-Gm-Message-State: AOJu0YwkZDPnaSsKSJH4QBi0cV4Gt9chooagf44FuF0WpQD6W02LPtfL
+	qDaGj+q8ZVH3mgnG0oQDhXeyod8lPmyTXvcEJUqqdKQIXMS8gw==
+X-Google-Smtp-Source: AGHT+IFtCf/hMaCskLdNHnMO1jUJkrx/GDEVrX+l3/JGOfSdT388wHkJ38igSfBgECB27FyVDQSBSTQOTz5l6xRZP5g=
+X-Received: by 2002:a25:c548:0:b0:dbd:f9c5:5d6b with SMTP id
+ v69-20020a25c548000000b00dbdf9c55d6bmr4380192ybe.79.1705398928959; Tue, 16
+ Jan 2024 01:55:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: ZQ0PR01MB1062.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-Network-Message-Id: 45444650-8ab0-49f1-aee9-08dc16793319
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jan 2024 09:54:58.3720
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: emHPCY2s21crKd92cbnbO0MdUY/CG391oWX45HZYEralUvrlcOVDmeCCt4IuUECs8wgh12Kz3HDFu4BN5VPQfqNv0zc2EZbpcI4O/QQ/bvc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: ZQ0PR01MB0998
+References: <20240112-opp_support-v6-0-77bbf7d0cc37@quicinc.com>
+ <20240112-opp_support-v6-6-77bbf7d0cc37@quicinc.com> <CAA8EJpqwOfeS-QpLVvYGf0jmTVxiT02POwK+9tkN03Cr4DgL+g@mail.gmail.com>
+ <da1945ce-7e34-6ad5-7b9b-478fcbd4a2c6@quicinc.com>
+In-Reply-To: <da1945ce-7e34-6ad5-7b9b-478fcbd4a2c6@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 16 Jan 2024 11:55:17 +0200
+Message-ID: <CAA8EJpoZakDcBXYE57bRPMFvGEXh1o82r7Znv8mwCK6mRf5xog@mail.gmail.com>
+Subject: Re: [PATCH v6 6/6] PCI: qcom: Add OPP support to scale performance
+ state of power domain
+To: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Manivannan Sadhasivam <mani@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+	Johan Hovold <johan+linaro@kernel.org>, Brian Masney <bmasney@redhat.com>, 
+	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org, vireshk@kernel.org, 
+	quic_vbadigan@quicinc.com, quic_skananth@quicinc.com, 
+	quic_nitegupt@quicinc.com, linux-pci@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-SGksIERhdmUNCg0KVGhhbmtzIGZvciB5b3VyIGNvbW1lbnQNCg0KPiAtLS0tLU9yaWdpbmFsIE1l
-c3NhZ2UtLS0tLQ0KPiBGcm9tOiBEYXZlIFN0ZXZlbnNvbiA8ZGF2ZS5zdGV2ZW5zb25AcmFzcGJl
-cnJ5cGkuY29tPg0KPiBTZW50OiAyMDI05bm0MeaciDEw5pelIDE6MjkNCj4gVG86IG5laWwuYXJt
-c3Ryb25nQGxpbmFyby5vcmcNCj4gQ2M6IFNoZW5neWFuZyBDaGVuIDxzaGVuZ3lhbmcuY2hlbkBz
-dGFyZml2ZXRlY2guY29tPjsNCj4gZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc7IGRyaS1kZXZl
-bEBsaXN0cy5mcmVlZGVza3RvcC5vcmc7DQo+IHF1aWNfamVzc3poYW5AcXVpY2luYy5jb207IHNh
-bUByYXZuYm9yZy5vcmc7IGFpcmxpZWRAZ21haWwuY29tOw0KPiBkYW5pZWxAZmZ3bGwuY2g7IG1h
-YXJ0ZW4ubGFua2hvcnN0QGxpbnV4LmludGVsLmNvbTsgbXJpcGFyZEBrZXJuZWwub3JnOw0KPiB0
-emltbWVybWFubkBzdXNlLmRlOyByb2JoK2R0QGtlcm5lbC5vcmc7DQo+IGtyenlzenRvZi5rb3ps
-b3dza2krZHRAbGluYXJvLm9yZzsgY29ub3IrZHRAa2VybmVsLm9yZzsgd2FocmVuc3RAZ214Lm5l
-dDsNCj4gdGhpZXJyeS5yZWRpbmdAZ21haWwuY29tOyBDaGFuZ2h1YW5nIExpYW5nDQo+IDxjaGFu
-Z2h1YW5nLmxpYW5nQHN0YXJmaXZldGVjaC5jb20+OyBLZWl0aCBaaGFvDQo+IDxrZWl0aC56aGFv
-QHN0YXJmaXZldGVjaC5jb20+OyBKYWNrIFpodSA8amFjay56aHVAc3RhcmZpdmV0ZWNoLmNvbT47
-DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2
-MiAwLzJdIEFkZCB3YXZlc2hhcmUgN2luY2ggdG91Y2hzY3JlZW4gcGFuZWwgc3VwcG9ydA0KPiAN
-Cj4gSGkNCj4gDQo+IE9uIFR1ZSwgOSBKYW4gMjAyNCBhdCAxMToxOSwgPG5laWwuYXJtc3Ryb25n
-QGxpbmFyby5vcmc+IHdyb3RlOg0KPiA+DQo+ID4gSGksDQo+ID4NCj4gPiBPbiAwOS8wMS8yMDI0
-IDA4OjA5LCBTaGVuZ3lhbmcgQ2hlbiB3cm90ZToNCj4gPiA+IFRoaXMgcGF0Y2hzZXQgYWRkcyB3
-YXZlc2hhcmUgN2luY2ggdG91Y2hzY3JlZW4gcGFuZWwgc3VwcG9ydCBmb3IgdGhlDQo+ID4gPiBT
-dGFyRml2ZSBKSDcxMTAgU29DLg0KPiA+DQo+ID4gQ291bGQgeW91IHByZWNpc2Ugd2hpY2ggU0tV
-IHlvdSdyZSByZWZlcnJpbmcgdG8gPyBpcyBpdCAxOTg4NSA9Pg0KPiBodHRwczovL3d3dy53YXZl
-c2hhcmUuY29tLzdpbmNoLWRzaS1sY2QuaHRtID8NCj4gPg0KPiA+IEFyZSB5b3Ugc3VyZSBpdCBy
-ZXF1aXJlcyBkaWZmZXJlbnQgdGltaW5ncyBmcm9tIHRoZSBSUGkgb25lID8gSW4gdGhlDQo+ID4g
-V2F2ZXNoYXJlIHdpa2kgaXQgZXhwbGljaXRseSB1c2VzIHRoZSBycGkgc2V0dXAgKHZjNC1rbXMt
-ZHNpLTdpbmNoKSB0bw0KPiA+IGRyaXZlIGl0OiBodHRwczovL3d3dy53YXZlc2hhcmUuY29tL3dp
-a2kvN2luY2hfRFNJX0xDRA0KPiANCj4gSSByYWlzZSB0aGUgc2FtZSBxdWVzdGlvbi4NCj4gDQo+
-IEtlaXRoIFpoYW8gZWFybGllciBzdWJtaXR0ZWQgZWZmZWN0aXZlbHkgdGhlIHNhbWUgc2V0IG9m
-IHBhdGNoZXMgWzFdIGFuZCB0aGUNCj4gcmVzcG9uc2UgZm9yIHRoZSB1cGRhdGVkIHRpbWluZyB3
-YXM6DQo+IDxxdW90ZT4NCj4gTXkgcGxhdGZvcm0gZHBoeSB0eCBoYXJkd2FyZSBoYXMgY2VydGFp
-biBsaW1pdGF0aW9ucy4NCj4gT25seSBzdXBwb3J0cyBpbnRlZ2VyIG11bHRpcGxlcyBvZiAxME0g
-Yml0cmF0ZToNCj4gc3VjaCBhcyAxNjBNICwxNzBNLCAxODBNLDE5ME0sLi4uMUcobWF4KQ0KPiAN
-Cj4gYXMgY29tbW9uIGRwaHkgYml0cmF0ZSA9IHBpeGNsb2NrKmJwcC9sYW5lcy4NCj4gVGhpcyB2
-YWx1ZSBjYW5ub3QgbWF0Y2ggc3VjY2Vzc2Z1bGx5IGluIG1vc3QgY2FzZXMuDQo+IA0KPiBzbyBp
-biBvcmRlciB0byBtYXRjaCBiaXRyYXRlICwgSSBjaG9vc2UgYSBiaXRyYXRlIHZhbHVlIGFyb3Vu
-ZCBwaXhjbG9jaypicHAvbGFuZXMsDQo+IFByZXZlbnQgb3ZlcmZsb3cgYW5kIHVuZGVyZmxvdyBi
-eSBmaW5lLXR1bmluZyB0aGUgdGltaW5nIHBhcmFtZXRlcnM6LSggdGhhdA0KPiB3aWxsIG1ha2Ug
-dGhlIG5ldyB0aW1taW5nIHZhbHVlLg0KPiA8L3F1b3RlPg0KPiANCj4gSSB0aGVuIHN1Z2dlc3Rl
-ZCBtb2RlX2ZpeHVwIHNob3VsZCBiZSB1c2VkIGluIHRoZSBEU0kgaG9zdCBkcml2ZXIsIGFuZCBL
-ZWl0aA0KPiBhY2tub3dsZWRnZWQgdGhhdC4NCj4gDQo+IElzIHRoaXMgbmV3IHRpbWluZyBzdGls
-bCBiZWNhdXNlIG9mIHRoZSBEU0kgaG9zdCByZXF1aXJlbWVudD8NCj4gDQoNCkFjdHVhbGx5LCB0
-aGUgbW9kZSBmaXh1cCBtZXRob2QgaXMgcmVmZXJyZWQgYW5kIHVzZWQgaW4gRFNJJ3MgbmV3IHBh
-dGNoDQpodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3Byb2plY3QvZHJpLWRldmVsL3BhdGNo
-LzIwMjQwMTA5MDcyNTE2LjI0MzI4LTMtc2hlbmd5YW5nLmNoZW5Ac3RhcmZpdmV0ZWNoLmNvbS8N
-CnlvdSBjYW4gY2hlY2sgaXQgaW4gY2Ruc19kc2lfamg3MTEwX3VwZGF0ZSgpDQpUaGlzIGNvZGUg
-aXMgYmVpbmcgcmV2aWV3ZWQgYW5kIG1heSBuZWVkIHRvIGJlIG9wdGltaXplZCBsYXRlci4NCg0K
-QW5kIHRoZSB0aW1pbmcgaW4gdGhpcyBwYW5lbCBwYXRjaCBpcyB0ZXN0ZWQgYW5kIHZlcmlmaWVk
-IGJ1dCB3ZSBkaWQgbm90IHRyeSBvdGhlciB0aW1pbmcuIFNvcnJ5IGFib3V0IHRoYXQuDQpBcyBT
-dGVmYW4gc3VnZ2VzdGVkLCB3ZSBzaG91bGQgdHJ5IG90aGVyIHRpbWluZyBmcm9tIHBhbmVsLXNp
-bXBsZSBmb3IgZXhhbXBsZSAicG93ZXJ0aXAscGg4MDA0ODB0MDEzLWlkZjAyIi4NCg0KSWYgdGhl
-IG90aGVyIHRpbWluZyBmcm9tIHBhbmVsLXNpbXBsZSBjYW4gYmUgdXNlZCwgbWF5YmUgaXQgaXMg
-bm90IG5lY2Vzc2FyeSBmb3IgdXMgdG8gc3VibWl0IHBhbmVsIHRpbWluZyBwYXRjaC4NCg0KPiAg
-IERhdmUNCj4gDQo+IFsxXQ0KPiBodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9hcmNoaXZl
-cy9kcmktZGV2ZWwvMjAyMy1EZWNlbWJlci80MzQxNTAuaHRtbA0KPiANCj4gPiBOZWlsDQo+ID4N
-Cj4gPiA+DQo+ID4gPg0KPiA+ID4gY2hhbmdlcyBzaW5jZSB2MToNCj4gPiA+IC0gUmViYXNlZCBv
-biB0YWcgdjYuNy4NCj4gPiA+DQo+ID4gPiBwYXRjaCAxOg0KPiA+ID4gLSBHYXZlIHVwIG9yaWdp
-bmFsIGNoYW5naW5nLg0KPiA+ID4gLSBDaGFuZ2VkIHRoZSBjb21taXQgbWVzc2FnZS4NCj4gPiA+
-IC0gQWRkIGNvbXBhdGlibGUgaW4gcGFuZWwtc2ltcGxlLnlhbWwNCj4gPiA+DQo+ID4gPiBwYXRj
-aCAyOg0KPiA+ID4gLSBHYXZlIHVwIG9yaWdpbmFsIGNoYW5naW5nLg0KPiA+ID4gLSBDaGFuZ2Vk
-IHRoZSBjb21taXQgbWVzc2FnZS4NCj4gPiA+IC0gQWRkIG5ldyBtb2RlIGZvciB0aGUgcGFuZWwg
-aW4gcGFuZWwtc2ltcGxlLmMNCj4gPiA+DQo+ID4gPiB2MToNCj4gPiA+IGh0dHBzOi8vcGF0Y2h3
-b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9kcmktZGV2ZWwvY292ZXIvMjAyMzExMjQxMDQ0NTEuDQo+
-ID4gPiA0NDI3MS0xLXNoZW5neWFuZy5jaGVuQHN0YXJmaXZldGVjaC5jb20vDQo+ID4gPg0KPiA+
-ID4gU2hlbmd5YW5nIENoZW4gKDIpOg0KPiA+ID4gICAgZHQtYmluZGluZ3M6IGRpc3BsYXk6IHBh
-bmVsOiBwYW5lbC1zaW1wbGU6IEFkZCBjb21wYXRpYmxlIHByb3BlcnR5IGZvcg0KPiA+ID4gICAg
-ICB3YXZlc2hhcmUgN2luY2ggdG91Y2hzY3JlZW4gcGFuZWwNCj4gPiA+ICAgIGdwdTogZHJtOiBw
-YW5lbDogcGFuZWwtc2ltcGxlOiBhZGQgbmV3IGRpc3BsYXkgbW9kZSBmb3Igd2F2ZXNoYXJlDQo+
-ID4gPiAgICAgIDdpbmNoIHRvdWNoc2NyZWVuIHBhbmVsDQo+ID4gPg0KPiA+ID4gICAuLi4vYmlu
-ZGluZ3MvZGlzcGxheS9wYW5lbC9wYW5lbC1zaW1wbGUueWFtbCAgfCAgMiArKw0KPiA+ID4gICBk
-cml2ZXJzL2dwdS9kcm0vcGFuZWwvcGFuZWwtc2ltcGxlLmMgICAgICAgICAgfCAyOA0KPiArKysr
-KysrKysrKysrKysrKysrDQo+ID4gPiAgIDIgZmlsZXMgY2hhbmdlZCwgMzAgaW5zZXJ0aW9ucygr
-KQ0KPiA+ID4NCj4gPg0KDQpCZXN0IFJlZ2FyZHMsDQpTaGVuZ3lhbmcNCg==
+On Tue, 16 Jan 2024 at 07:17, Krishna Chaitanya Chundru
+<quic_krichai@quicinc.com> wrote:
+>
+>
+>
+> On 1/12/2024 9:03 PM, Dmitry Baryshkov wrote:
+> > On Fri, 12 Jan 2024 at 16:25, Krishna chaitanya chundru
+> > <quic_krichai@quicinc.com> wrote:
+> >>
+> >> QCOM Resource Power Manager-hardened (RPMh) is a hardware block which
+> >> maintains hardware state of a regulator by performing max aggregation of
+> >> the requests made by all of the processors.
+> >>
+> >> PCIe controller can operate on different RPMh performance state of power
+> >> domain based up on the speed of the link. And this performance state varies
+> >> from target to target.
+> >>
+> >> It is manadate to scale the performance state based up on the PCIe speed
+> >> link operates so that SoC can run under optimum power conditions.
+> >>
+> >> Add Operating Performance Points(OPP) support to vote for RPMh state based
+> >> upon GEN speed link is operating.
+> >>
+> >> OPP can handle ICC bw voting also, so move icc bw voting through opp
+> >> framework if opp entries are present.
+> >>
+> >> In PCIe certain gen speeds like GEN1x2 & GEN2X1 or GEN3x2 & GEN4x1 use
+> >> same icc bw and has frequency, so use frequency based search to reduce
+> >> number of entries in the opp table.
+> >>
+> >> Don't initialize icc if opp is supported.
+> >>
+> >> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> >> ---
+> >>   drivers/pci/controller/dwc/pcie-qcom.c | 83 ++++++++++++++++++++++++++++------
+> >>   1 file changed, 70 insertions(+), 13 deletions(-)
+> >>
+> >> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> >> index 035953f0b6d8..31512dc9d6ff 100644
+> >> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> >> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> >> @@ -22,6 +22,7 @@
+> >>   #include <linux/of.h>
+> >>   #include <linux/of_gpio.h>
+> >>   #include <linux/pci.h>
+> >> +#include <linux/pm_opp.h>
+> >>   #include <linux/pm_runtime.h>
+> >>   #include <linux/platform_device.h>
+> >>   #include <linux/phy/pcie.h>
+> >> @@ -244,6 +245,7 @@ struct qcom_pcie {
+> >>          const struct qcom_pcie_cfg *cfg;
+> >>          struct dentry *debugfs;
+> >>          bool suspended;
+> >> +       bool opp_supported;
+> >>   };
+> >>
+> >>   #define to_qcom_pcie(x)                dev_get_drvdata((x)->dev)
+> >> @@ -1404,16 +1406,14 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
+> >>          return 0;
+> >>   }
+> >>
+> >> -static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
+> >> +static void qcom_pcie_icc_opp_update(struct qcom_pcie *pcie)
+> >>   {
+> >>          struct dw_pcie *pci = pcie->pci;
+> >> -       u32 offset, status;
+> >> +       u32 offset, status, freq;
+> >> +       struct dev_pm_opp *opp;
+> >>          int speed, width;
+> >>          int ret;
+> >>
+> >> -       if (!pcie->icc_mem)
+> >> -               return;
+> >> -
+> >>          offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
+> >>          status = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
+> >>
+> >> @@ -1424,11 +1424,42 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
+> >>          speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
+> >>          width = FIELD_GET(PCI_EXP_LNKSTA_NLW, status);
+> >>
+> >> -       ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
+> >> -       if (ret) {
+> >> -               dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
+> >> -                       ret);
+> >> +       if (pcie->opp_supported) {
+> >> +               switch (speed) {
+> >> +               case 1:
+> >> +                       freq = 2500000;
+> >> +                       break;
+> >> +               case 2:
+> >> +                       freq = 5000000;
+> >> +                       break;
+> >> +               case 3:
+> >> +                       freq = 8000000;
+> >> +                       break;
+> >> +               default:
+> >> +                       WARN_ON_ONCE(1);
+> >> +                       fallthrough;
+> >> +               case 4:
+> >> +                       freq = 16000000;
+> >
+> > I expected that this kind of detail goes to the OPP table itself. Can
+> > we index the table using the generation instead of frequency?
+> >
+> In the previous patch also we tried to use index only, but problem using
+> index is we can define only GEN speed. As we are voting for the ICC BW
+> voting also we need to consider for lane width while configuring this
+> path. It is difficult to use index now as we need to consider both gen
+> speed and lane width.
+> For that reason we moved to frequencies to reduce number of entries in
+> OPP table.
+> for example if my controller supports GEN1 & GEN2 and MAX lane width is
+> 2.
+>
+> for GEN1x1
+> opp-2500000 {
+> };
+>
+> for GEN2x1 & GEN1x2 as both use same frequiences and bandwidth.
+> opp-5000000 {
+> };
+>
+> for GEN2x2
+> opp-10000000 {
+>
+> };
+
+Ack. It would be nice to add this as a comment. Something as simple as
+'gen1x2 and gen2x1 share the bandwidth value and thus the opp entry'
+
+>
+> - Krishna chaitanya.
+> >> +                       break;
+> >> +               }
+> >> +
+> >> +               opp = dev_pm_opp_find_freq_exact(pci->dev, freq * width, true);
+> >> +               if (!IS_ERR(opp)) {
+> >> +                       ret = dev_pm_opp_set_opp(pci->dev, opp);
+> >> +                       if (ret)
+> >> +                               dev_err(pci->dev, "Failed to set opp: freq %ld ret %d\n",
+> >> +                                       dev_pm_opp_get_freq(opp), ret);
+> >> +                       dev_pm_opp_put(opp);
+> >> +               }
+> >> +       } else {
+> >> +               ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
+> >> +               if (ret) {
+> >> +                       dev_err(pci->dev, "failed to set interconnect bandwidth for pcie-mem: %d\n",
+> >> +                               ret);
+> >> +               }
+> >>          }
+> >> +
+> >> +       return;
+> >>   }
+> >>
+> >>   static int qcom_pcie_link_transition_count(struct seq_file *s, void *data)
+> >> @@ -1471,8 +1502,10 @@ static void qcom_pcie_init_debugfs(struct qcom_pcie *pcie)
+> >>   static int qcom_pcie_probe(struct platform_device *pdev)
+> >>   {
+> >>          const struct qcom_pcie_cfg *pcie_cfg;
+> >> +       unsigned long max_freq = INT_MAX;
+> >>          struct device *dev = &pdev->dev;
+> >>          struct qcom_pcie *pcie;
+> >> +       struct dev_pm_opp *opp;
+> >>          struct dw_pcie_rp *pp;
+> >>          struct resource *res;
+> >>          struct dw_pcie *pci;
+> >> @@ -1539,9 +1572,33 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+> >>                  goto err_pm_runtime_put;
+> >>          }
+> >>
+> >> -       ret = qcom_pcie_icc_init(pcie);
+> >> -       if (ret)
+> >> +        /* OPP table is optional */
+> >> +       ret = devm_pm_opp_of_add_table(dev);
+> >> +       if (ret && ret != -ENODEV) {
+> >> +               dev_err_probe(dev, ret, "Failed to add OPP table\n");
+> >>                  goto err_pm_runtime_put;
+> >> +       }
+> >
+> > Can we initialise the table from the driver if it is not found? This
+> > will help us by having the common code later on.
+> >
+> we already icc voting if there is no opp table present in the dts.
+
+Yes. So later we have two different code paths: one for the OPP table
+being present and another one for the absent OPP table. My suggestion
+is to initialise minimal OPP table by hand and then have a common code
+path in qcom_pcie_icc_update().
+
+> So I think this might not be needed.
+> Please let me know if you want to use for some other use case.
+>
+> - Krishna Chaitanya.
+> >> +
+> >> +       /* vote for max freq in the opp table if opp table is present */
+> >> +       if (ret != -ENODEV) {
+> >> +               opp = dev_pm_opp_find_freq_floor(dev, &max_freq);
+> >> +               if (!IS_ERR(opp)) {
+> >> +                       ret = dev_pm_opp_set_opp(dev, opp);
+> >> +                       if (ret)
+> >> +                               dev_err_probe(pci->dev, ret,
+> >> +                                             "Failed to set opp: freq %ld\n",
+> >> +                                             dev_pm_opp_get_freq(opp));
+> >> +                       dev_pm_opp_put(opp);
+> >> +               }
+> >> +               pcie->opp_supported = true;
+> >> +       }
+> >> +
+> >> +       /* Skip icc init if opp is supported as icc bw vote is handled by opp framework */
+> >> +       if (!pcie->opp_supported) {
+> >> +               ret = qcom_pcie_icc_init(pcie);
+> >> +               if (ret)
+> >> +                       goto err_pm_runtime_put;
+> >> +       }
+> >>
+> >>          ret = pcie->cfg->ops->get_resources(pcie);
+> >>          if (ret)
+> >> @@ -1561,7 +1618,7 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+> >>                  goto err_phy_exit;
+> >>          }
+> >>
+> >> -       qcom_pcie_icc_update(pcie);
+> >> +       qcom_pcie_icc_opp_update(pcie);
+> >>
+> >>          if (pcie->mhi)
+> >>                  qcom_pcie_init_debugfs(pcie);
+> >> @@ -1640,7 +1697,7 @@ static int qcom_pcie_resume_noirq(struct device *dev)
+> >>                  pcie->suspended = false;
+> >>          }
+> >>
+> >> -       qcom_pcie_icc_update(pcie);
+> >> +       qcom_pcie_icc_opp_update(pcie);
+> >>
+> >>          return 0;
+> >>   }
+> >>
+> >> --
+> >> 2.42.0
+> >>
+> >>
+> >
+> >
+
+
+
+-- 
+With best wishes
+Dmitry
 
