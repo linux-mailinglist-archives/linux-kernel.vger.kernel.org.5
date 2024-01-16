@@ -1,58 +1,60 @@
-Return-Path: <linux-kernel+bounces-28207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E12682FB98
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 025E782FB9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:59:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEE221F27E97
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:58:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92E0E1F27E04
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:59:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A4151682D4;
-	Tue, 16 Jan 2024 20:04:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACEFB168971;
+	Tue, 16 Jan 2024 20:04:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r4Za7ebG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mBJObCS6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B94BC46541;
-	Tue, 16 Jan 2024 20:04:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDC1D46B98;
+	Tue, 16 Jan 2024 20:04:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435444; cv=none; b=MRwK4QZRxASDee5ZFSKfPRwA5m20XgSEKGV/1rdoQt2pTEN9sy0VEuqRsJKVx/LKM4YqA6pgkgLb/OBIgV0b8CzCur05zLDd8DM0NXbpaOoNNI8lbsi3urCE0IeAx4hAxRxk6+h1eN3r6KJC/NC0yD+p1myzGk5D+08IpEcsbiU=
+	t=1705435446; cv=none; b=KXoUK1EdbD41q2z//HWHAjVERgNz69Kznr9beQGCDX9wpKPWjSaS4tZL15bS52Ksuj5btSPQfklFlRJ/Yrh+DtOC1ftLCESoAO348YKufGaOi2jKJmiL7jLGDljHw+hkbLePaS9WqsuTfuZxGgNnqpuaj9d2e8N4eFAQL0gj7Ws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435444; c=relaxed/simple;
-	bh=9L7kz1ym4HvU6rvEECkMaSnS+hAVa85pm3U99Q5Gj2A=;
+	s=arc-20240116; t=1705435446; c=relaxed/simple;
+	bh=JMRz65fGptVMGJ2aFRVtM7mpJsRGQkrO7LhbIeQbURc=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=TiUNhwftvId5uY4HfSk9M6EoeAGIzpDT7Bras/2tMAEkaGCJYqO8l9ACFU1mL2oFwij+caGfyE3u3jaRcrcxK6bd88HQjVb9p0i51JIap1uaIEeINkkr1sCX9ky+sRF+pbSq6J6xZtFx4fC1lWJytBjVpdQ/xLV2G3ebBBjX+JQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r4Za7ebG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 557E8C433C7;
-	Tue, 16 Jan 2024 20:04:03 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=gPZiHP1SeDEzmj9E2gVWzTw43U+zqHfGi77pMkl8V5qteJMbOthja5f+z9v+1iGWZ2Ygwg1Yj6lNGGrFmme6eJ6qsDqHyPNDJVFYPkT3eWGMyk3NL9fq/KXjttRUvRgchvEBkmU/EbYLgfsEaz21DuPcfCNt3RdJHxZC/7diyrs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mBJObCS6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAD6CC43399;
+	Tue, 16 Jan 2024 20:04:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435444;
-	bh=9L7kz1ym4HvU6rvEECkMaSnS+hAVa85pm3U99Q5Gj2A=;
+	s=k20201202; t=1705435445;
+	bh=JMRz65fGptVMGJ2aFRVtM7mpJsRGQkrO7LhbIeQbURc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=r4Za7ebG69PJXZA8ezok6kUUe3kWImzhdWn0J46U38tgmZa9mazOfnyvjLJrl2GW8
-	 6B6hFpKYVE0Mt57rFBJCu7ILvYOan5OVXDbiLYo160ubxS06h8P9DAx4YHC+6lGJz4
-	 2arFsp0YrAyxp4ID4mVdFqBER13ps+veLf31LOw2nhFoS0CZjLVUVsPb3NA5bCTvHg
-	 eW9yo9GZyUcXPWJULX11nrr9uR27CI938VeagrSp806JXkb8k7X55ArCIdwBukF4bD
-	 wBQGbjSDx6zXpRNqsErEv39e6fXYNE31FfcsC5V7Pl/TZHxX+1jQqaMoZ5xpg8kTOn
-	 tonZb9wpeBzFw==
+	b=mBJObCS6poG0eSkAO9hb09oaRqbRlRw1hPnipaSIVyQGZebeqxSQorY0nh0OiVUC6
+	 f+2B10+2FCdH4+RJhx/eHkO8vANLRt+prgMx/47l9f2EFaXvusaedJOjzeU//SSOPq
+	 I5mm1m3Dmud2xAS78dCBuAh5q6TH0gY3QJbuhrB0c+jzZWDLdBlWb9crWoSwlZJgxC
+	 Lb3GZxYlQCV7q+foWvAD7C+xiivx6c6zrevPAlTVZRQmsZXkylTuG1E1rmY24trbN1
+	 NhkQI/ysN21/sPJOJoWUqa7Iu2fRfLz3Zc66zNCKMz/BnyBNSAmNinFLDOTK6Zm5yv
+	 4Aon+5MBoChgA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Zenm Chen <zenmchen@gmail.com>,
-	Ping-Ke Shih <pkshih@realtek.com>,
-	Kalle Valo <kvalo@kernel.org>,
+Cc: Mingyi Zhang <zhangmingyi5@huawei.com>,
+	Xin Liu <liuxin350@huawei.com>,
+	Changye Wu <wuchangye@huawei.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
 	Sasha Levin <sashal@kernel.org>,
-	Jes.Sorensen@gmail.com,
-	linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 27/31] wifi: rtl8xxxu: Add additional USB IDs for RTL8192EU devices
-Date: Tue, 16 Jan 2024 15:02:36 -0500
-Message-ID: <20240116200310.259340-27-sashal@kernel.org>
+	ast@kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 28/31] libbpf: Fix NULL pointer dereference in bpf_object__collect_prog_relos
+Date: Tue, 16 Jan 2024 15:02:37 -0500
+Message-ID: <20240116200310.259340-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116200310.259340-1-sashal@kernel.org>
 References: <20240116200310.259340-1-sashal@kernel.org>
@@ -67,46 +69,70 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.4.267
 Content-Transfer-Encoding: 8bit
 
-From: Zenm Chen <zenmchen@gmail.com>
+From: Mingyi Zhang <zhangmingyi5@huawei.com>
 
-[ Upstream commit 4e87ca403e2008b9e182239e1abbf6876a55eb33 ]
+[ Upstream commit fc3a5534e2a8855427403113cbeb54af5837bbe0 ]
 
-Add additional USB IDs found in the vendor driver from
-https://github.com/Mange/rtl8192eu-linux-driver to support more
-RTL8192EU devices.
+An issue occurred while reading an ELF file in libbpf.c during fuzzing:
 
-Signed-off-by: Zenm Chen <zenmchen@gmail.com>
-Reviewed-by: Ping-Ke Shih <pkshih@realtek.com>
-Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://msgid.link/20231217123017.1982-1-zenmchen@gmail.com
+	Program received signal SIGSEGV, Segmentation fault.
+	0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
+	4206 in libbpf.c
+	(gdb) bt
+	#0 0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
+	#1 0x000000000094f9d6 in bpf_object.collect_relos () at libbpf.c:6706
+	#2 0x000000000092bef3 in bpf_object_open () at libbpf.c:7437
+	#3 0x000000000092c046 in bpf_object.open_mem () at libbpf.c:7497
+	#4 0x0000000000924afa in LLVMFuzzerTestOneInput () at fuzz/bpf-object-fuzzer.c:16
+	#5 0x000000000060be11 in testblitz_engine::fuzzer::Fuzzer::run_one ()
+	#6 0x000000000087ad92 in tracing::span::Span::in_scope ()
+	#7 0x00000000006078aa in testblitz_engine::fuzzer::util::walkdir ()
+	#8 0x00000000005f3217 in testblitz_engine::entrypoint::main::{{closure}} ()
+	#9 0x00000000005f2601 in main ()
+	(gdb)
+
+scn_data was null at this code(tools/lib/bpf/src/libbpf.c):
+
+	if (rel->r_offset % BPF_INSN_SZ || rel->r_offset >= scn_data->d_size) {
+
+The scn_data is derived from the code above:
+
+	scn = elf_sec_by_idx(obj, sec_idx);
+	scn_data = elf_sec_data(obj, scn);
+
+	relo_sec_name = elf_sec_str(obj, shdr->sh_name);
+	sec_name = elf_sec_name(obj, scn);
+	if (!relo_sec_name || !sec_name)// don't check whether scn_data is NULL
+		return -EINVAL;
+
+In certain special scenarios, such as reading a malformed ELF file,
+it is possible that scn_data may be a null pointer
+
+Signed-off-by: Mingyi Zhang <zhangmingyi5@huawei.com>
+Signed-off-by: Xin Liu <liuxin350@huawei.com>
+Signed-off-by: Changye Wu <wuchangye@huawei.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20231221033947.154564-1-liuxin350@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c    | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ tools/lib/bpf/libbpf.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-index 2648b30aab76..0d9e31746fd2 100644
---- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-+++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-@@ -6362,6 +6362,18 @@ static const struct usb_device_id dev_table[] = {
- 	.driver_info = (unsigned long)&rtl8192eu_fops},
- {USB_DEVICE_AND_INTERFACE_INFO(USB_VENDOR_ID_REALTEK, 0x818c, 0xff, 0xff, 0xff),
- 	.driver_info = (unsigned long)&rtl8192eu_fops},
-+/* D-Link DWA-131 rev C1 */
-+{USB_DEVICE_AND_INTERFACE_INFO(0x2001, 0x3312, 0xff, 0xff, 0xff),
-+	.driver_info = (unsigned long)&rtl8192eu_fops},
-+/* TP-Link TL-WN8200ND V2 */
-+{USB_DEVICE_AND_INTERFACE_INFO(0x2357, 0x0126, 0xff, 0xff, 0xff),
-+	.driver_info = (unsigned long)&rtl8192eu_fops},
-+/* Mercusys MW300UM */
-+{USB_DEVICE_AND_INTERFACE_INFO(0x2c4e, 0x0100, 0xff, 0xff, 0xff),
-+	.driver_info = (unsigned long)&rtl8192eu_fops},
-+/* Mercusys MW300UH */
-+{USB_DEVICE_AND_INTERFACE_INFO(0x2c4e, 0x0104, 0xff, 0xff, 0xff),
-+	.driver_info = (unsigned long)&rtl8192eu_fops},
- #endif
- { }
- };
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index b8849812449c..4a62a4f051df 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -1497,6 +1497,8 @@ static int bpf_object__sanitize_and_load_btf(struct bpf_object *obj)
+ 
+ 	bpf_object__sanitize_btf(obj);
+ 	bpf_object__sanitize_btf_ext(obj);
++	if (!scn_data)
++		return -LIBBPF_ERRNO__FORMAT;
+ 
+ 	err = btf__load(obj->btf);
+ 	if (err) {
 -- 
 2.43.0
 
