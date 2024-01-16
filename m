@@ -1,121 +1,89 @@
-Return-Path: <linux-kernel+bounces-27378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED89082EEE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:26:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5018782EF18
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:36:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F87BB230F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:26:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F3991C232C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:36:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C55861BC26;
-	Tue, 16 Jan 2024 12:26:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fsWoV3Xa"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72F0C1BC30;
+	Tue, 16 Jan 2024 12:36:42 +0000 (UTC)
+Received: from mail.wantstofly.org (hmm.wantstofly.org [213.239.204.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0D941B976
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 12:26:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705407997;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=OARinRv8ZpM6G4J/Z9xB9OYJrYpe6kWstyNE/wplyAg=;
-	b=fsWoV3Xaa49J4e2GzMR/zlF7yMZ2yCQB4aWKHY6hZjErbcrcaru5qSYYqvtPcK7Migwu0z
-	EsGk4W2pju0sAWxcHAcT8X6mSbGpPO1+hZNZiV0CY1LiOo8husx4nPA22+UamslMVUm49T
-	VwLGsBWWoFT0FU07XS8s2LlMVE8dB5Q=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-263-X-7Wo23NPOuuL5Pmd1geiw-1; Tue, 16 Jan 2024 07:26:36 -0500
-X-MC-Unique: X-7Wo23NPOuuL5Pmd1geiw-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40e703adab9so3622535e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 04:26:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705407995; x=1706012795;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OARinRv8ZpM6G4J/Z9xB9OYJrYpe6kWstyNE/wplyAg=;
-        b=pRf76dQu5G67iZH6XJKNPGa+Y+IYg58W35Jf6weBI4srteXQoe9HaS+XCLug94zM4w
-         c/kVJxNhxtciKAOlRBOpKsu8oeyiA9Y3AUCADxn1cmexOQeAqZxnsOpsQV5U4t6EuBUf
-         sVkcprRhj0mU/ue0HAw/R5IinbfLZ3PveQaBvkTaUfrb4XrAY4CFmy+WnXOmzGm/uu1S
-         5TPx/SXQYW4BMmAFTDeoDRrzRgsIt0KVKHS1CZ8bqdjnFnPvD76NiGP9Az/8zAviUB0H
-         QWMSc+6JFCZQsLEKmVRqambM+Kukf2YDPEs6z/Tkv3P9qNWLhbBhPwDwOPbkjZUmaqJW
-         frHg==
-X-Gm-Message-State: AOJu0YynEddltegL96BgJBb+Ys0GKBwIvebrRNT8nnPbdP2VwnZt0CyE
-	L9RKt5N219SNhE3cBKNsZs+0BJNG0gV+X7P5+9UneQ5dtBbeFh9pd8AWP/Ej+kQdpA7aLSIfBoO
-	5y7kAEbhXZ2KEcwV7dMFEN/U9NPSxVVQDg+RNY9TX
-X-Received: by 2002:a05:600c:3b0e:b0:40e:4912:1df3 with SMTP id m14-20020a05600c3b0e00b0040e49121df3mr8660443wms.3.1705407995067;
-        Tue, 16 Jan 2024 04:26:35 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF+Hw9DHn1/zo1SI4UlKH8mB0IQB7tG/sBeun5sUfQLQ4szXyMTL/YwQIegW7YLC8zSk2sucA==
-X-Received: by 2002:a05:600c:3b0e:b0:40e:4912:1df3 with SMTP id m14-20020a05600c3b0e00b0040e49121df3mr8660432wms.3.1705407994739;
-        Tue, 16 Jan 2024 04:26:34 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-241-126.dyn.eolo.it. [146.241.241.126])
-        by smtp.gmail.com with ESMTPSA id g7-20020a7bc4c7000000b0040d5c58c41dsm18670059wmk.24.2024.01.16.04.26.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 04:26:34 -0800 (PST)
-Message-ID: <4cefad9649becf08ecdf4639ceb3244a1860ee12.camel@redhat.com>
-Subject: Re: [PATCH net-next v8 1/2] ptp: introduce PTP_CLOCK_EXTOFF event
- for the measured external offset
-From: Paolo Abeni <pabeni@redhat.com>
-To: Min Li <lnimi@hotmail.com>, richardcochran@gmail.com, lee@kernel.org
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, Min Li
-	 <min.li.xe@renesas.com>
-Date: Tue, 16 Jan 2024 13:26:33 +0100
-In-Reply-To: <PH7PR03MB706459AD0927264AA9590626A06C2@PH7PR03MB7064.namprd03.prod.outlook.com>
-References: 
-	<PH7PR03MB706459AD0927264AA9590626A06C2@PH7PR03MB7064.namprd03.prod.outlook.com>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0725A1BC26;
+	Tue, 16 Jan 2024 12:36:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wantstofly.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wantstofly.org
+Received: by mail.wantstofly.org (Postfix, from userid 1000)
+	id AB7DD7F5C3; Tue, 16 Jan 2024 14:27:40 +0200 (EET)
+Date: Tue, 16 Jan 2024 14:27:40 +0200
+From: Lennert Buytenhek <kernel@wantstofly.org>
+To: Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>,
+	linux-ide@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Subject: ASMedia ASM1062 (AHCI) hang after "ahci 0000:28:00.0: Using 64-bit
+ DMA addresses"
+Message-ID: <ZaZ2PIpEId-rl6jv@wantstofly.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Mon, 2024-01-15 at 15:21 -0500, Min Li wrote:
-> From: Min Li <min.li.xe@renesas.com>
->=20
-> This change is for the PHC devices that can measure the phase offset
-> between PHC signal and the external signal, such as the 1PPS signal of
-> GNSS. Reporting PTP_CLOCK_EXTOFF to user space will be piggy-backed to
-> the existing ptp_extts_event so that application such as ts2phc can
-> poll the external offset the same way as extts. Hence, ts2phc can use
-> the offset to achieve the alignment between PHC and the external signal
-> by the help of either SW or HW filters.
->=20
-> Signed-off-by: Min Li <min.li.xe@renesas.com>
-> Acked-by: Richard Cochran <richardcochran@gmail.com>
+Hi,
 
-## Form letter - net-next-closed
+On kernel 6.6.x, with an ASMedia ASM1062 (AHCI) controller, on an
+ASUSTeK Pro WS WRX80E-SAGE SE WIFI mainboard, PCI ID 1b21:0612 and
+subsystem ID 1043:858d, I got a total apparent controller hang,
+rendering the two attached SATA devices unavailable, that was
+immediately preceded by the following kernel messages:
 
-The merge window for v6.8 has begun and we have already posted our pull
-request. Therefore net-next is closed for new drivers, features, code
-refactoring and optimizations. We are currently accepting bug fixes
-only.
+[Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: Using 64-bit DMA addresses
+[Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00000 flags=0x0000]
+[Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00300 flags=0x0000]
+[Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00380 flags=0x0000]
+[Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00400 flags=0x0000]
+[Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00680 flags=0x0000]
+[Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00700 flags=0x0000]
 
-Please repost when net-next reopens after January 22nd.
+It seems as if the controller has problems with 64-bit DMA addresses,
+and the comments around the source of the message in
+drivers/iommu/dma-iommu.c seem to point into that same direction:
 
-RFC patches sent for review only are obviously welcome at any time.
+        /*
+         * Try to use all the 32-bit PCI addresses first. The original SAC vs.
+         * DAC reasoning loses relevance with PCIe, but enough hardware and
+         * firmware bugs are still lurking out there that it's safest not to
+         * venture into the 64-bit space until necessary.
+         *
+         * If your device goes wrong after seeing the notice then likely either
+         * its driver is not setting DMA masks accurately, the hardware has
+         * some inherent bug in handling >32-bit addresses, or not all the
+         * expected address bits are wired up between the device and the IOMMU.
+         */
+        if (dma_limit > DMA_BIT_MASK(32) && dev->iommu->pci_32bit_workaround) {
+                iova = alloc_iova_fast(iovad, iova_len,
+                                       DMA_BIT_MASK(32) >> shift, false);
+                if (iova)
+                        goto done;
 
-See:
-https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#develop=
-ment-cycle
---
-pw-bot: defer
+                dev->iommu->pci_32bit_workaround = false;
+                dev_notice(dev, "Using %d-bit DMA addresses\n", bits_per(dma_limit));
+        }
 
+Are there any tests you can think of that I can run to further narrow
+down this issue?  By itself, the issue reproduces only rarely.
+
+Thank you in advance.
+
+Kind regards,
+Lennert
 
