@@ -1,123 +1,220 @@
-Return-Path: <linux-kernel+bounces-27060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27061-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A68A982E9D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:19:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BA2282E9DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:20:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57E441F22080
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:19:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C2E31F23903
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:20:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41E9710A26;
-	Tue, 16 Jan 2024 07:18:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 407D610A30;
+	Tue, 16 Jan 2024 07:20:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="cwLfs2F7"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T70BlK1S"
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ABF910A1E
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 07:18:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40G5Nsi3002596;
-	Tue, 16 Jan 2024 07:18:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=DX0iy88vX98i
-	AdSdT71f27IKRMC90HatYQ5HwImfRkg=; b=cwLfs2F7F4ylLd6Pnze4qC8nGPlx
-	7bI7W+Q6L2XEz/hQu265xrvBVV4PH7fMZ6CbbPh7lFMw+4OfRAPD6qtfjEDImMnC
-	sV4cVWaOs0mPpuLaltmSuAwYe0W0SmjkLYWNxkEYAvp1FE0CrLCvRzRXP3FclJgC
-	gNU++0Gw0fRX1H50ouCR24rJjFJVPs3es/UWwGkaR7+BtPlo8szchZAENFqoNgKt
-	0heTo1rcJWlwQZjdN1l5KYhY/SZZDkARa29m2muJ8LRclDD3UOnYq+JuWM7cLApr
-	da+Rln4HcgJpdi358Vi+gpRvdCiTB8jFjVrZZc8T0YwOMRG0PiXKahWB+A==
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vnht90ck5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 07:18:24 +0000 (GMT)
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 40G7EQqQ019314;
-	Tue, 16 Jan 2024 07:18:20 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3vkkkkm222-1;
-	Tue, 16 Jan 2024 07:18:20 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40G7IKnO024252;
-	Tue, 16 Jan 2024 07:18:20 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-riteshk-hyd.qualcomm.com [10.147.241.247])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 40G7IKgI024251;
-	Tue, 16 Jan 2024 07:18:20 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2314801)
-	id 776E0601955; Tue, 16 Jan 2024 12:48:19 +0530 (+0530)
-From: Ritesh Kumar <quic_riteshk@quicinc.com>
-To: neil.armstrong@linaro.org, quic_jesszhan@quicinc.com, sam@ravnborg.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        quic_abhinavk@quicinc.com, quic_rajeevny@quicinc.com,
-        quic_vproddut@quicinc.com
-Cc: Ritesh Kumar <quic_riteshk@quicinc.com>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/panel: novatek-nt36672e: Include <linux/of.h>
-Date: Tue, 16 Jan 2024 12:48:03 +0530
-Message-Id: <20240116071803.5264-1-quic_riteshk@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 9LspsGzdeywBkRaxqILt1OLL_DDjq1qm
-X-Proofpoint-GUID: 9LspsGzdeywBkRaxqILt1OLL_DDjq1qm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- suspectscore=0 spamscore=0 mlxlogscore=999 priorityscore=1501
- lowpriorityscore=0 bulkscore=0 mlxscore=0 phishscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401160055
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03CD711181;
+	Tue, 16 Jan 2024 07:20:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-598b8dd877dso2125881eaf.3;
+        Mon, 15 Jan 2024 23:20:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705389648; x=1705994448; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jJqSlAU7q9YYEOU/puykZteEqit8IcDYwZiXQDq5f5Q=;
+        b=T70BlK1SJa7Ib/Nw7YJPm/vol8agyz61Ngwq/ZOU14mIIe87BVAeU6DFXcCR6fndzO
+         KHRSaNFtFpK7/n6uOIyBX+embgFeMwicnqkCOAo4xIFZtWJsjFutYwL03L/ppc1Vy08m
+         3eWrTQcnZwY4sK9b4eyUqKk7HpcD9f+1Ir5c9XT2WQCKASZw5zTjjn5K5cuyiwArOM8c
+         2WxpL2XvdJhqNnq2PSyKEVLi+Vg5RKanpSFaa63Mz+tCjU87BAEsPBA3aNzEVMRewVBu
+         Wb7oRlyfwg0B4y/zujt/jf7WQ8fbzqbN9vnXejrKECM8SIdiIf/P28QRXfFwJREvOnAW
+         mvog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705389648; x=1705994448;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jJqSlAU7q9YYEOU/puykZteEqit8IcDYwZiXQDq5f5Q=;
+        b=ov2vqc0qulX0OD8BgvW2DTMqNwU+r8dfkjDnx/F58cciGUC3gE0gCKEoGXD3KwXXfN
+         icFxkybpump9wtjaBbfzGGhYWFO+LAhYM4km0soMMsjlFwsXd+9knDuiIwACS4DEYyqx
+         zVdCATDYa67qVADUqKazrrssdQCeaq5SsS1GXUlYB0Fqsgs1cZsa/e/kzReqIumqpix5
+         Ocgzm6I8f+bjEx/pO2XN+uW/H1PTveP6LDCPZFRRgNPgjIwBm66wv3WH2uH7OXyhIukz
+         JUeujWNafR7QChGSpVBSJMm6/GV3AvaegU9/H4nNn13PkTcFgfFCJqYpTCiMt91OxY1E
+         zeEw==
+X-Gm-Message-State: AOJu0Yx+U/ai8f6pCBNTMdpbiQD0pXBCNxa0iXTReMrQww8XuHIOFYFQ
+	wuM30m0r/oyFzjUSJ+eAmeY=
+X-Google-Smtp-Source: AGHT+IEUP96NmVar7W4hsw8EHmyGci8/JfqqXe3D9G9HzR5hlIK2NsHXM0P3vBPPjoIdRNIUEPsD4g==
+X-Received: by 2002:a4a:8c66:0:b0:598:bffb:f1c3 with SMTP id v35-20020a4a8c66000000b00598bffbf1c3mr3028339ooj.13.1705389645949;
+        Mon, 15 Jan 2024 23:20:45 -0800 (PST)
+Received: from localhost.localdomain ([122.8.183.87])
+        by smtp.gmail.com with ESMTPSA id b5-20020a4aac85000000b005984163c66fsm1949246oon.7.2024.01.15.23.20.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 23:20:45 -0800 (PST)
+From: Chen Wang <unicornxw@gmail.com>
+To: aou@eecs.berkeley.edu,
+	chao.wei@sophgo.com,
+	conor@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	mturquette@baylibre.com,
+	palmer@dabbelt.com,
+	paul.walmsley@sifive.com,
+	richardcochran@gmail.com,
+	robh+dt@kernel.org,
+	sboyd@kernel.org,
+	devicetree@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	haijiao.liu@sophgo.com,
+	xiaoguang.xing@sophgo.com,
+	guoren@kernel.org,
+	jszhang@kernel.org,
+	inochiama@outlook.com,
+	samuel.holland@sifive.com
+Cc: Chen Wang <unicorn_wang@outlook.com>
+Subject: [PATCH v8 0/5] riscv: sophgo: add clock support for sg2042
+Date: Tue, 16 Jan 2024 15:20:37 +0800
+Message-Id: <cover.1705388518.git.unicorn_wang@outlook.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Include <linux/of.h> instead of <linux/of_device.h> to fix
-below compilation errors:
+From: Chen Wang <unicorn_wang@outlook.com>
 
-drivers/gpu/drm/panel/panel-novatek-nt36672e.c:564:14: error: implicit declaration of function 'of_device_get_match_data'
-  ctx->desc = of_device_get_match_data(dev);
-              ^
-drivers/gpu/drm/panel/panel-novatek-nt36672e.c:622:34: error: array type has incomplete element type 'struct of_device_id'
- static const struct of_device_id nt36672e_of_match[] = {
-                                  ^
+This series adds clock controller support for sophgo sg2042.
 
-Signed-off-by: Ritesh Kumar <quic_riteshk@quicinc.com>
+Thanks,
+Chen
 
 ---
-In the patch https://lore.kernel.org/all/20231129164316.2663565-1-robh@kernel.org/,
-include of <linux/of.h> from of_device.h was removed. This change was not present
-in my local build resulting in successful compilation while posting
-https://lore.kernel.org/all/20240108095902.22725-3-quic_riteshk@quicinc.com/.
----
- drivers/gpu/drm/panel/panel-novatek-nt36672e.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-novatek-nt36672e.c b/drivers/gpu/drm/panel/panel-novatek-nt36672e.c
-index d4e85c2fc899..cb7406d74466 100644
---- a/drivers/gpu/drm/panel/panel-novatek-nt36672e.c
-+++ b/drivers/gpu/drm/panel/panel-novatek-nt36672e.c
-@@ -4,7 +4,7 @@
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/regulator/consumer.h>
- 
- #include <drm/drm_mipi_dsi.h>
+Changes in v8:
+  The patch series is based on v6.7. You can simply review or test the
+  patches at the link [9].
+  
+  In this version, the main change is to split one clock provider into two.
+  Strictly follow the hardware instructions, in the memoymap, the control
+  registers of some clocks are defined in the SYS_CTRL segment, and the
+  control registers of other clocks are defined in the CLOCK segment.
+  Therefore, the new design defines two clock controllers, one as a child
+  node of the system control and the other as an independent clock controller
+  node.
+
+  This modification involves a major modification to the binding files, so
+  the reviewed-by tags has been deleted.
+
+Changes in v7:
+  The patch series is based on v6.7. You can simply review or test the
+  patches at the link [8].
+  - fixed initval issue.
+  - fixed pll clk crash issue.
+  - fixed warning reported by <lkp@intel.com>
+  - code optimization as per review comments.
+  - code cleanup and style improvements as per review comments and checkpatch
+    with "--strict"
+
+Changes in v6:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [7].
+  - fixed some warnings/errors reported by kernel test robot <lkp@intel.com>.
+
+Changes in v5:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [6].
+  - dt-bindings: improved yaml, such as:
+    - add vendor prefix for system-ctrl property for clock generator.
+    - Add explanation for system-ctrl property.
+  - move sophgo,sg2042-clkgen.yaml to directly under clock folder.
+  - fixed bugs for driver Makefile/Kconfig
+  - continue cleaning-up debug print for driver code.
+
+Changes in v4:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [5].
+  - dt-bindings: fixed a dt_binding_check error.
+
+Changes in v3:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [3].
+  - DTS: don't use syscon but define sg2042 specific system control node. More
+    background info can read [4].
+  - Updating minor issues in dt-bindings as per input from reviews.
+
+Changes in v2:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [2].
+  - Squashed the patch adding clock definitions with the patch adding the
+    binding for the clock controller.
+  - Updating dt-binding for syscon, remove oneOf for property compatible;
+    define clock controller as child of syscon.
+  - DTS changes: merge sg2042-clock.dtsi into sg2042.dtsi; move clock-frequency
+    property of osc to board devicethree due to the oscillator is outside the
+    SoC.
+  - Fixed some bugs in driver code during testing, including removing warnings
+    for rv32_defconfig.
+  - Updated MAINTAINERS info.
+
+Changes in v1:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [1].
+
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v1 [1]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v2 [2]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v3 [3]
+Link: https://lore.kernel.org/linux-riscv/MA0P287MB03329AE180378E1A2E034374FE82A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM/ [4]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v4 [5]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v5 [6]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v6 [7]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v7 [8]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v8 [9]
+
+---
+
+Chen Wang (5):
+  dt-bindings: clock: sophgo: add sysclk for SG2042
+  dt-bindings: soc: sophgo: Add Sophgo system control module
+  dt-bindings: clock: sophgo: add clkgen for SG2042
+  clk: sophgo: Add SG2042 clock generator driver
+  riscv: dts: add clock generator for Sophgo SG2042 SoC
+
+ .../bindings/clock/sophgo,sg2042-clkgen.yaml  |   40 +
+ .../bindings/clock/sophgo,sg2042-sysclk.yaml  |   44 +
+ .../soc/sophgo/sophgo,sg2042-sysctrl.yaml     |   46 +
+ MAINTAINERS                                   |    7 +
+ .../boot/dts/sophgo/sg2042-milkv-pioneer.dts  |   12 +
+ arch/riscv/boot/dts/sophgo/sg2042.dtsi        |   39 +
+ drivers/clk/Kconfig                           |    1 +
+ drivers/clk/Makefile                          |    1 +
+ drivers/clk/sophgo/Kconfig                    |    8 +
+ drivers/clk/sophgo/Makefile                   |    2 +
+ drivers/clk/sophgo/clk-sophgo-sg2042.c        | 1387 +++++++++++++++++
+ drivers/clk/sophgo/clk-sophgo-sg2042.h        |  233 +++
+ .../dt-bindings/clock/sophgo,sg2042-clkgen.h  |  111 ++
+ .../dt-bindings/clock/sophgo,sg2042-sysclk.h  |   63 +
+ 14 files changed, 1994 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/sophgo,sg2042-clkgen.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/sophgo,sg2042-sysclk.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml
+ create mode 100644 drivers/clk/sophgo/Kconfig
+ create mode 100644 drivers/clk/sophgo/Makefile
+ create mode 100644 drivers/clk/sophgo/clk-sophgo-sg2042.c
+ create mode 100644 drivers/clk/sophgo/clk-sophgo-sg2042.h
+ create mode 100644 include/dt-bindings/clock/sophgo,sg2042-clkgen.h
+ create mode 100644 include/dt-bindings/clock/sophgo,sg2042-sysclk.h
+
+
+base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
 -- 
-2.17.1
+2.25.1
 
 
