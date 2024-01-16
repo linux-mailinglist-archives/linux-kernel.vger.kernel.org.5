@@ -1,149 +1,179 @@
-Return-Path: <linux-kernel+bounces-28242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28244-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AA3582FC12
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:11:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D00582FC15
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:11:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F31F428DDE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:11:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A65BF1C23FF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:11:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AC3321A09;
-	Tue, 16 Jan 2024 20:22:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E742A36118;
+	Tue, 16 Jan 2024 20:22:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e4Ih7FRr"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XYRFbjST"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C0CC21A0C
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 20:22:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 868DF2231F;
+	Tue, 16 Jan 2024 20:22:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705436542; cv=none; b=D+tnjr18YcQtDx0QCtLTr8hBOeSDUkvqLNQfdsCKQ+UTotAz3BclJ/Zj+J9cwsT7MF8BEE73Or22dvcKqpv+K9cToZ18zPw5WeIkzyYhF9ZRz8H5mT3zLLs3maJN4lgv+AQLicxfE2SXAJaFfiAXU+P7hgdxScrq9TA7pU68enY=
+	t=1705436579; cv=none; b=SCXAiX/1Q3iLSb+nU0JqtTr1asi4b5ejL5G1Nf7rzdR0/7EpKMyUteSV+Cvbl3SFi/jvqbASH5BnBCXSWzfk9uPSUznleBi0d1x3MdeOqXX3rPww/70sQv6FyswAqtVKV4aql9sCGsYVgF2Lt8YVuHTF/D6OZp+I7Hrrlytn9yc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705436542; c=relaxed/simple;
-	bh=PDlCMkySKSqlMrUAKkLEPXEa+/c9FL0n20oIgi/0208=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Sender:
-	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hwnOYr5+3vqOKk/CutMo7uZV8/gT4eGZTxIhXzJA4wHjUG5MHGZqkSnxk8sdCzsoCJJ/d6EGT++WKbbqGa1zTPRHdF0D0aPxHns/OvLcYul6MGqoLEqJraqALxZkl/MxtF4N5/NwfR9BSs7Hs7AcO7MwUTfpqNzv2y48mx0OJFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e4Ih7FRr; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d3aa0321b5so83555055ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 12:22:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705436540; x=1706041340; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VDts5Pg1XuReiTUxMdh2QMyR26X8UbRMvyurONetzxM=;
-        b=e4Ih7FRr07PC4pUf/z0shWwPHsTrlADm7Qbu7KMko4cvHhcvgWNPrnE6K6mJgjMzN2
-         7utGyLd7DK5/Mq+l8E5CarV2bXB5eUW+oRACy/hsbSOrG5f1J7LVLTjTzJnLvMt1svMu
-         8BHjf1F5q1C27ObO8Dgjqu5lBskW8pvxZHEOaWHVOn7ByKIupd0jRwV4bngvOo8wW3pj
-         60mwrJw5tT4i9RzcgT0VuAQ5DDsF0r4wfUVwvrI9bZMbWpFK5JB3A8ePqxMfZSdsDCir
-         FR8fQBnvlQNouN6bKKS6DDXd5MSimQudk46F6Y+BHfDzXdB0uCT14DO10aFV6aMMAIRK
-         kbMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705436540; x=1706041340;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VDts5Pg1XuReiTUxMdh2QMyR26X8UbRMvyurONetzxM=;
-        b=Hs3t8jtLaYlHSylgCu4mCMR0uyQs0KD9Unkq2mJz3/cT8ldEGtkfF51i5PN2kegBTG
-         cFac/8zDyFFHkuTKhwkbpMx+QnL295Hgzrv/eQAgJ+VTDKvE/9F2AjF8RaBYQNdRAqHk
-         NhuBWux6Ni5YuCkhNp9CQnC5y7w/vjuhcjs6GdHDgettBiFLBumtOqMXeIGsPcCM+dd6
-         X/6p8RCYaF4U88vxl01vzul4d10TDuCoe3cATNwWVnFDJCKOKMLdoCSraHhFC44lrSaX
-         5BxBnJIK0XEIdqrEYGSA9PBUPb7+zHr7XTx465OZfrkNGimBc3grKSDSO4KneSA1K9PC
-         /VuA==
-X-Gm-Message-State: AOJu0YzG6k+5YHM2Gh/DMT20DvTlH5mamxT67EG9/O9jHtAKGEyvS8lP
-	kUiK/mAKJ3a99ZgTz0bkQ6M=
-X-Google-Smtp-Source: AGHT+IGzNXoAAKOQfId8nt+KdKiU+yd4cXQIR6hCVmNbJQO1RlGaDkjoJQmAyHPL+77DdSaQbMu5iw==
-X-Received: by 2002:a17:903:24d:b0:1d5:4e03:4732 with SMTP id j13-20020a170903024d00b001d54e034732mr8864176plh.4.1705436540553;
-        Tue, 16 Jan 2024 12:22:20 -0800 (PST)
-Received: from localhost (dhcp-72-235-13-140.hawaiiantel.net. [72.235.13.140])
-        by smtp.gmail.com with ESMTPSA id bb7-20020a170902bc8700b001d4e765f5efsm9589301plb.110.2024.01.16.12.22.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 12:22:20 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 16 Jan 2024 10:22:18 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Xuewen Yan <xuewen.yan@unisoc.com>
-Cc: longman@redhat.com, jiangshanlai@gmail.com, ke.wang@unisoc.com,
-	xuewen.yan94@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] workqueue: Add rcu lock check after work execute end
-Message-ID: <ZablegoZ25QAHRTU@slm.duckdns.org>
-References: <9bed61e4-7c08-4c61-a7e4-bdd39335cec1@redhat.com>
- <20240110032724.3339-1-xuewen.yan@unisoc.com>
+	s=arc-20240116; t=1705436579; c=relaxed/simple;
+	bh=ItdUtcnm9gsvKn9MK8/TzDTtO7PdJPtshfQ8tmBw9ks=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:Received:Message-ID:Date:MIME-Version:User-Agent:
+	 Subject:Content-Language:To:Cc:References:From:Autocrypt:
+	 In-Reply-To:Content-Type:Content-Transfer-Encoding; b=g/X2mfqaLNvOd7oTCc4OOmOLmBsJonDkAEG/Oad4n+wH9IiH3LrYp6+jzt+vaJ2zfWmAK0x6yqfDNzCttfu2st/dhWf25c6XKn7uf1Y/if23/YfHVDQjasDbIvEg4V+JJPtqXnhZueqIFsL8GWaktE5MeoaZZ5bNBESeIRgimgo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XYRFbjST; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705436578; x=1736972578;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ItdUtcnm9gsvKn9MK8/TzDTtO7PdJPtshfQ8tmBw9ks=;
+  b=XYRFbjSTnGHkD21AHmRkHiRXj+zN1uzkITS85bVfvAfLq1HTtfblDkwD
+   QmLMi+2uMJEaLK4OozHMPIc2mfqGssLGMzeFc8ZS8Q1tMiZ4Ma8Qb/D6B
+   y9CHU7GXQ1f5j5ybPEgYS2ELi9A3i1yxlvL9E0IRQ2Rz+pgrsvc5djoql
+   if8pUsHXbDJN4aWT8y+GVB81BXfRtHTkz4enwoZBEZUySFkKUPsbdWQkg
+   1IdT7j+eiQqOPinMmiIKAkPNDuexG5i9D9ZniwgJ+tznJfUczIbYxVRms
+   KHXwviSfno778lUy6DWRTwpDQbs1ehXpJXG/0NHR0MzI6e2KU0vdo6LfK
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="7354429"
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="7354429"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 12:22:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="18587250"
+Received: from aegarcia-mobl1.amr.corp.intel.com (HELO [10.212.31.16]) ([10.212.31.16])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 12:22:40 -0800
+Message-ID: <011fed12-7fcd-4df8-b264-b55db2f3e95f@intel.com>
+Date: Tue, 16 Jan 2024 12:22:39 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240110032724.3339-1-xuewen.yan@unisoc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 11/26] x86/sev: Invalidate pages from the direct map
+ when adding them to the RMP table
+Content-Language: en-US
+To: Michael Roth <michael.roth@amd.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>, Borislav Petkov <bp@alien8.de>,
+ x86@kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+ linux-mm@kvack.org, linux-crypto@vger.kernel.org,
+ linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+ jroedel@suse.de, hpa@zytor.com, ardb@kernel.org, pbonzini@redhat.com,
+ seanjc@google.com, vkuznets@redhat.com, jmattson@google.com,
+ luto@kernel.org, dave.hansen@linux.intel.com, slp@redhat.com,
+ pgonda@google.com, peterz@infradead.org,
+ srinivas.pandruvada@linux.intel.com, rientjes@google.com, tobin@ibm.com,
+ vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+ tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+ alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
+ nikunj.dadhania@amd.com, pankaj.gupta@amd.com, liam.merwick@oracle.com,
+ zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>, rppt@kernel.org
+References: <20231230161954.569267-1-michael.roth@amd.com>
+ <20231230161954.569267-12-michael.roth@amd.com>
+ <cb604c37-aeb5-45bd-b6db-246ae724e4ca@intel.com>
+ <20240112200751.GHZaGcF0-OZVJiIB7y@fat_crate.local>
+ <63297d29-bb24-ac5e-0b47-35e22bb1a2f8@amd.com>
+ <336b55f9-c7e6-4ec9-806b-cb3659dbfdc3@intel.com>
+ <20240116161909.msbdwiyux7wsxw2i@amd.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzUVEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gKEludGVsIFdvcmsgQWRkcmVzcykgPGRhdmUuaGFuc2VuQGludGVs
+ LmNvbT7CwXgEEwECACIFAlQ+9J0CGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEGg1
+ lTBwyZKwLZUP/0dnbhDc229u2u6WtK1s1cSd9WsflGXGagkR6liJ4um3XCfYWDHvIdkHYC1t
+ MNcVHFBwmQkawxsYvgO8kXT3SaFZe4ISfB4K4CL2qp4JO+nJdlFUbZI7cz/Td9z8nHjMcWYF
+ IQuTsWOLs/LBMTs+ANumibtw6UkiGVD3dfHJAOPNApjVr+M0P/lVmTeP8w0uVcd2syiaU5jB
+ aht9CYATn+ytFGWZnBEEQFnqcibIaOrmoBLu2b3fKJEd8Jp7NHDSIdrvrMjYynmc6sZKUqH2
+ I1qOevaa8jUg7wlLJAWGfIqnu85kkqrVOkbNbk4TPub7VOqA6qG5GCNEIv6ZY7HLYd/vAkVY
+ E8Plzq/NwLAuOWxvGrOl7OPuwVeR4hBDfcrNb990MFPpjGgACzAZyjdmYoMu8j3/MAEW4P0z
+ F5+EYJAOZ+z212y1pchNNauehORXgjrNKsZwxwKpPY9qb84E3O9KYpwfATsqOoQ6tTgr+1BR
+ CCwP712H+E9U5HJ0iibN/CDZFVPL1bRerHziuwuQuvE0qWg0+0SChFe9oq0KAwEkVs6ZDMB2
+ P16MieEEQ6StQRlvy2YBv80L1TMl3T90Bo1UUn6ARXEpcbFE0/aORH/jEXcRteb+vuik5UGY
+ 5TsyLYdPur3TXm7XDBdmmyQVJjnJKYK9AQxj95KlXLVO38lczsFNBFRjzmoBEACyAxbvUEhd
+ GDGNg0JhDdezyTdN8C9BFsdxyTLnSH31NRiyp1QtuxvcqGZjb2trDVuCbIzRrgMZLVgo3upr
+ MIOx1CXEgmn23Zhh0EpdVHM8IKx9Z7V0r+rrpRWFE8/wQZngKYVi49PGoZj50ZEifEJ5qn/H
+ Nsp2+Y+bTUjDdgWMATg9DiFMyv8fvoqgNsNyrrZTnSgoLzdxr89FGHZCoSoAK8gfgFHuO54B
+ lI8QOfPDG9WDPJ66HCodjTlBEr/Cwq6GruxS5i2Y33YVqxvFvDa1tUtl+iJ2SWKS9kCai2DR
+ 3BwVONJEYSDQaven/EHMlY1q8Vln3lGPsS11vSUK3QcNJjmrgYxH5KsVsf6PNRj9mp8Z1kIG
+ qjRx08+nnyStWC0gZH6NrYyS9rpqH3j+hA2WcI7De51L4Rv9pFwzp161mvtc6eC/GxaiUGuH
+ BNAVP0PY0fqvIC68p3rLIAW3f97uv4ce2RSQ7LbsPsimOeCo/5vgS6YQsj83E+AipPr09Caj
+ 0hloj+hFoqiticNpmsxdWKoOsV0PftcQvBCCYuhKbZV9s5hjt9qn8CE86A5g5KqDf83Fxqm/
+ vXKgHNFHE5zgXGZnrmaf6resQzbvJHO0Fb0CcIohzrpPaL3YepcLDoCCgElGMGQjdCcSQ+Ci
+ FCRl0Bvyj1YZUql+ZkptgGjikQARAQABwsFfBBgBAgAJBQJUY85qAhsMAAoJEGg1lTBwyZKw
+ l4IQAIKHs/9po4spZDFyfDjunimEhVHqlUt7ggR1Hsl/tkvTSze8pI1P6dGp2XW6AnH1iayn
+ yRcoyT0ZJ+Zmm4xAH1zqKjWplzqdb/dO28qk0bPso8+1oPO8oDhLm1+tY+cOvufXkBTm+whm
+ +AyNTjaCRt6aSMnA/QHVGSJ8grrTJCoACVNhnXg/R0g90g8iV8Q+IBZyDkG0tBThaDdw1B2l
+ asInUTeb9EiVfL/Zjdg5VWiF9LL7iS+9hTeVdR09vThQ/DhVbCNxVk+DtyBHsjOKifrVsYep
+ WpRGBIAu3bK8eXtyvrw1igWTNs2wazJ71+0z2jMzbclKAyRHKU9JdN6Hkkgr2nPb561yjcB8
+ sIq1pFXKyO+nKy6SZYxOvHxCcjk2fkw6UmPU6/j/nQlj2lfOAgNVKuDLothIxzi8pndB8Jju
+ KktE5HJqUUMXePkAYIxEQ0mMc8Po7tuXdejgPMwgP7x65xtfEqI0RuzbUioFltsp1jUaRwQZ
+ MTsCeQDdjpgHsj+P2ZDeEKCbma4m6Ez/YWs4+zDm1X8uZDkZcfQlD9NldbKDJEXLIjYWo1PH
+ hYepSffIWPyvBMBTW2W5FRjJ4vLRrJSUoEfJuPQ3vW9Y73foyo/qFoURHO48AinGPZ7PC7TF
+ vUaNOTjKedrqHkaOcqB185ahG2had0xnFsDPlx5y
+In-Reply-To: <20240116161909.msbdwiyux7wsxw2i@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On 1/16/24 08:19, Michael Roth wrote:
+> 
+> So at the very least, if we went down this path, we would be worth
+> investigating the following areas in addition to general perf testing:
+> 
+>   1) Only splitting directmap regions corresponding to kernel-allocatable
+>      *data* (hopefully that's even feasible...)
 
-I massaged the description for clarity and applied to wq/for-6.9.
+Take a look at the 64-bit memory map in here:
 
-Thanks.
+	https://www.kernel.org/doc/Documentation/x86/x86_64/mm.rst
 
-From 1a65a6d17cbc58e1aeffb2be962acce49efbef9c Mon Sep 17 00:00:00 2001
-From: Xuewen Yan <xuewen.yan@unisoc.com>
-Date: Wed, 10 Jan 2024 11:27:24 +0800
-Subject: [PATCH] workqueue: Add rcu lock check at the end of work item
- execution
+We already have separate mappings for kernel data and (normal) kernel text.
 
-Currently the workqueue just checks the atomic and locking states after work
-execution ends. However, sometimes, a work item may not unlock rcu after
-acquiring rcu_read_lock(). And as a result, it would cause rcu stall, but
-the rcu stall warning can not dump the work func, because the work has
-finished.
+>   2) Potentially deferring the split until an SNP guest is actually
+>      run, so there isn't any impact just from having SNP enabled (though
+>      you still take a hit from RMP checks in that case so maybe it's not
+>      worthwhile, but that itself has been noted as a concern for users
+>      so it would be nice to not make things even worse).
 
-In order to quickly discover those works that do not call rcu_read_unlock()
-after rcu_read_lock(), add the rcu lock check.
+Yes, this would be nice too.
 
-Use rcu_preempt_depth() to check the work's rcu status. Normally, this value
-is 0. If this value is bigger than 0, it means the work are still holding
-rcu lock. If so, print err info and the work func.
+>> Actually, where _is_ the TLB flushing here?
+> Boris pointed that out in v6, and we implemented it in v7, but it
+> completely cratered performance:
 
-tj: Reworded the description for clarity. Minor formatting tweak.
+That *desperately* needs to be documented.
 
-Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
-Reviewed-by: Waiman Long <longman@redhat.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
----
- kernel/workqueue.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+How can it be safe to skip the TLB flush?  It this akin to a page
+permission promotion where you go from RO->RW but can skip the TLB
+flush?  In that case, the CPU will see the RO TLB entry violation, drop
+it, and re-walk the page tables, discovering the RW entry.
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index ed442cefea7c..aec3efbaaf93 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -2640,11 +2640,12 @@ __acquires(&pool->lock)
- 	lock_map_release(&lockdep_map);
- 	lock_map_release(&pwq->wq->lockdep_map);
- 
--	if (unlikely(in_atomic() || lockdep_depth(current) > 0)) {
--		pr_err("BUG: workqueue leaked lock or atomic: %s/0x%08x/%d\n"
-+	if (unlikely(in_atomic() || lockdep_depth(current) > 0 ||
-+		     rcu_preempt_depth() > 0)) {
-+		pr_err("BUG: workqueue leaked lock or atomic: %s/0x%08x/%d/%d\n"
- 		       "     last function: %ps\n",
--		       current->comm, preempt_count(), task_pid_nr(current),
--		       worker->current_func);
-+		       current->comm, preempt_count(), rcu_preempt_depth(),
-+		       task_pid_nr(current), worker->current_func);
- 		debug_show_held_locks(current);
- 		dump_stack();
- 	}
--- 
-2.43.0
+Does something similar happen here where the CPU sees the 2M/4k conflict
+in the TLB, drops the 2M entry, does a re-walk then picks up the
+newly-split 2M->4k entries?
 
+I can see how something like that would work, but it's _awfully_ subtle
+to go unmentioned.
 
