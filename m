@@ -1,61 +1,51 @@
-Return-Path: <linux-kernel+bounces-26613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E95E82E42D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:08:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8694582E42F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:09:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B9201C21DD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:08:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 190DF1C21EE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:09:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A69D7637;
-	Tue, 16 Jan 2024 00:08:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00DAA4411;
+	Tue, 16 Jan 2024 00:08:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mxw/HXk8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NIBsWTU7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC71A193;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40FF5ECC;
+	Tue, 16 Jan 2024 00:08:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEF8FC43390;
 	Tue, 16 Jan 2024 00:08:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25A42C433C7;
-	Tue, 16 Jan 2024 00:08:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705363722;
-	bh=XkhCEJwfPjfgpAonk61uf59FuoJ2/3YBNAe7yKZHVUM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Mxw/HXk8ODZ4c2rcTcxsb9nACueYeski2Ar+FhJO9mIF32uhcXiW5RDj8hcQWzToe
-	 d869/VofoX8h0zW9up86t2yi9dHXH2aSfuV5FogpJ3STWyCtDfwiNAbrzGB4vNnZBf
-	 zatTTRN16JSppAwKKDbm+GEDbOHVxvhbNuJJEQSbZa5ZhCkFv7b2Tsw9lSy9iLQHGq
-	 yVLD3iQJrnyLnRgdRgZlXBjMrlUv88+ZlfSPw22TIMS7RH/qk1swR4UnmNWxvyL2OV
-	 DdeAX2tNpOtyKhSP2JJ8HtRgpX5bzTOMi3SoE9d3B5is/wmD5Nsgd2P5iifernHiD4
-	 QU9xd//QlaeAg==
+	s=k20201202; t=1705363723;
+	bh=UzqNZzKDiMz4yxzbf7o8SC9EzFwr39ZDVyYD6Skr6w8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=NIBsWTU7T3n3Iar16gSkd7b2XS1UFsKVnodi4/93hygYBO2Jm0KgQS2dbR99PjNYK
+	 W+6+N72i5+/G6GKPOCWQ/UqaLk3OUWYZj2EMuAQZQYNn13dV7JIOvo6xjZnsB8jOo0
+	 Qzjk74fEYVjHbrUgOEgbiI/pRwqy1oCuWtkMdSpzQEDHfIz8weov3jeLPJyhLJCzVP
+	 qFaeqrwuJnyZ+SftcOv6kO0heuNTfiwUMEyygtiPfXWyehU3kq2gR/9UP1uORC3EHc
+	 ePm2zHNXFHp7HF+9mRhSS+rILkMa2tVbXsP4D05ZgZqKH4lUj4wm7iNeDLnIDqzIB3
+	 xfj9rjnZNEd4w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Raghavendra K T <raghavendra.kt@amd.com>,
+Cc: Greg KH <gregkh@linuxfoundation.org>,
 	Peter Zijlstra <peterz@infradead.org>,
-	Mel Gorman <mgorman@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
 	mingo@redhat.com,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	akpm@linux-foundation.org,
-	willy@infradead.org,
-	surenb@google.com,
-	mgorman@techsingularity.net,
-	jhubbard@nvidia.com,
-	Liam.Howlett@oracle.com,
-	jgg@ziepe.ca,
-	mathieu.desnoyers@efficios.com,
-	vishal.moola@gmail.com,
-	dhowells@redhat.com,
-	sidhartha.kumar@oracle.com
-Subject: [PATCH AUTOSEL 6.7 1/8] sched/numa: Fix mm numa_scan_seq based unconditional scan
-Date: Mon, 15 Jan 2024 19:08:13 -0500
-Message-ID: <20240116000838.212299-1-sashal@kernel.org>
+	acme@kernel.org,
+	linux-perf-users@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 2/8] perf/core: Fix narrow startup race when creating the perf nr_addr_filters sysfs file
+Date: Mon, 15 Jan 2024 19:08:14 -0500
+Message-ID: <20240116000838.212299-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240116000838.212299-1-sashal@kernel.org>
+References: <20240116000838.212299-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,118 +57,79 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7
 Content-Transfer-Encoding: 8bit
 
-From: Raghavendra K T <raghavendra.kt@amd.com>
+From: Greg KH <gregkh@linuxfoundation.org>
 
-[ Upstream commit 84db47ca7146d7bd00eb5cf2b93989a971c84650 ]
+[ Upstream commit 652ffc2104ec1f69dd4a46313888c33527145ccf ]
 
-Since commit fc137c0ddab2 ("sched/numa: enhance vma scanning logic")
-
-NUMA Balancing allows updating PTEs to trap NUMA hinting faults if the
-task had previously accessed VMA. However unconditional scan of VMAs are
-allowed during initial phase of VMA creation until process's
-mm numa_scan_seq reaches 2 even though current task had not accessed VMA.
-
-Rationale:
- - Without initial scan subsequent PTE update may never happen.
- - Give fair opportunity to all the VMAs to be scanned and subsequently
-understand the access pattern of all the VMAs.
-
-But it has a corner case where, if a VMA is created after some time,
-process's mm numa_scan_seq could be already greater than 2.
-
-For e.g., values of mm numa_scan_seq when VMAs are created by running
-mmtest autonuma benchmark briefly looks like:
-start_seq=0 : 459
-start_seq=2 : 138
-start_seq=3 : 144
-start_seq=4 : 8
-start_seq=8 : 1
-start_seq=9 : 1
-This results in no unconditional PTE updates for those VMAs created after
-some time.
-
-Fix:
- - Note down the initial value of mm numa_scan_seq in per VMA start_seq.
- - Allow unconditional scan till start_seq + 2.
-
-Result:
-SUT: AMD EPYC Milan with 2 NUMA nodes 256 cpus.
-base kernel: upstream 6.6-rc6 with Mels patches [1] applied.
-
-kernbench
-==========		base                  patched %gain
-Amean    elsp-128      165.09 ( 0.00%)      164.78 *   0.19%*
-
-Duration User       41404.28    41375.08
-Duration System      9862.22     9768.48
-Duration Elapsed      519.87      518.72
-
-Ops NUMA PTE updates           1041416.00      831536.00
-Ops NUMA hint faults            263296.00      220966.00
-Ops NUMA pages migrated         258021.00      212769.00
-Ops AutoNUMA cost                 1328.67        1114.69
-
-autonumabench
-
-NUMA01_THREADLOCAL
-==================
-Amean  elsp-NUMA01_THREADLOCAL   81.79 (0.00%)  67.74 *  17.18%*
-
-Duration User       54832.73    47379.67
-Duration System        75.00      185.75
-Duration Elapsed      576.72      476.09
-
-Ops NUMA PTE updates                  394429.00    11121044.00
-Ops NUMA hint faults                    1001.00     8906404.00
-Ops NUMA pages migrated                  288.00     2998694.00
-Ops AutoNUMA cost                          7.77       44666.84
-
-Signed-off-by: Raghavendra K T <raghavendra.kt@amd.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Mel Gorman <mgorman@suse.de>
-Link: https://lore.kernel.org/r/2ea7cbce80ac7c62e90cbfb9653a7972f902439f.1697816692.git.raghavendra.kt@amd.com
+Link: https://lkml.kernel.org/r/2023061204-decal-flyable-6090@gregkh
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/mm_types.h | 3 +++
- kernel/sched/fair.c      | 4 +++-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ kernel/events/core.c | 40 ++++++++++++++++++++++++++++------------
+ 1 file changed, 28 insertions(+), 12 deletions(-)
 
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 957ce38768b2..950df415d7de 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -600,6 +600,9 @@ struct vma_numab_state {
- 	 */
- 	unsigned long pids_active[2];
- 
-+	/* MM scan sequence ID when scan first started after VMA creation */
-+	int start_scan_seq;
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 9efd0d7775e7..fbecba5b00b1 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -11425,9 +11425,32 @@ static DEVICE_ATTR_RW(perf_event_mux_interval_ms);
+ static struct attribute *pmu_dev_attrs[] = {
+ 	&dev_attr_type.attr,
+ 	&dev_attr_perf_event_mux_interval_ms.attr,
++	&dev_attr_nr_addr_filters.attr,
++	NULL,
++};
 +
- 	/*
- 	 * MM scan sequence ID when the VMA was last completely scanned.
- 	 * A VMA is not eligible for scanning if prev_scan_seq == numa_scan_seq
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index d7a3c63a2171..44b5262b6657 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3164,7 +3164,7 @@ static bool vma_is_accessed(struct mm_struct *mm, struct vm_area_struct *vma)
- 	 * This is also done to avoid any side effect of task scanning
- 	 * amplifying the unfairness of disjoint set of VMAs' access.
- 	 */
--	if (READ_ONCE(current->mm->numa_scan_seq) < 2)
-+	if ((READ_ONCE(current->mm->numa_scan_seq) - vma->numab_state->start_scan_seq) < 2)
- 		return true;
- 
- 	pids = vma->numab_state->pids_active[0] | vma->numab_state->pids_active[1];
-@@ -3307,6 +3307,8 @@ static void task_numa_work(struct callback_head *work)
- 			if (!vma->numab_state)
- 				continue;
- 
-+			vma->numab_state->start_scan_seq = mm->numa_scan_seq;
++static umode_t pmu_dev_is_visible(struct kobject *kobj, struct attribute *a, int n)
++{
++	struct device *dev = kobj_to_dev(kobj);
++	struct pmu *pmu = dev_get_drvdata(dev);
 +
- 			vma->numab_state->next_scan = now +
- 				msecs_to_jiffies(sysctl_numa_balancing_scan_delay);
++	if (!pmu->nr_addr_filters)
++		return 0;
++
++	return a->mode;
++
++	return 0;
++}
++
++static struct attribute_group pmu_dev_attr_group = {
++	.is_visible = pmu_dev_is_visible,
++	.attrs = pmu_dev_attrs,
++};
++
++static const struct attribute_group *pmu_dev_groups[] = {
++	&pmu_dev_attr_group,
+ 	NULL,
+ };
+-ATTRIBUTE_GROUPS(pmu_dev);
  
+ static int pmu_bus_running;
+ static struct bus_type pmu_bus = {
+@@ -11464,18 +11487,11 @@ static int pmu_dev_alloc(struct pmu *pmu)
+ 	if (ret)
+ 		goto free_dev;
+ 
+-	/* For PMUs with address filters, throw in an extra attribute: */
+-	if (pmu->nr_addr_filters)
+-		ret = device_create_file(pmu->dev, &dev_attr_nr_addr_filters);
+-
+-	if (ret)
+-		goto del_dev;
+-
+-	if (pmu->attr_update)
++	if (pmu->attr_update) {
+ 		ret = sysfs_update_groups(&pmu->dev->kobj, pmu->attr_update);
+-
+-	if (ret)
+-		goto del_dev;
++		if (ret)
++			goto del_dev;
++	}
+ 
+ out:
+ 	return ret;
 -- 
 2.43.0
 
