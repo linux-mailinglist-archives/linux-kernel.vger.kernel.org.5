@@ -1,143 +1,127 @@
-Return-Path: <linux-kernel+bounces-27274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5604082ED1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:52:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7775082ED17
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:51:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C0301C231A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:52:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16A641F2185B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:51:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B793319454;
-	Tue, 16 Jan 2024 10:51:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C36A1944E;
+	Tue, 16 Jan 2024 10:51:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N1ma1vf+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e8kYel86"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 101F918ED8;
-	Tue, 16 Jan 2024 10:51:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBDADC433B2;
-	Tue, 16 Jan 2024 10:51:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705402314;
-	bh=P8tqp8EC1bLMwSOm33OFhQamnUjYm2hce6stofe2tD8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=N1ma1vf+EDPxUMn8fN2JBsbhj0wxc+Sh4YHtqwguZnYvvHi6bGAyKX1wEBvVTdut4
-	 gjkyffF7+2TM3nGN75eBQTw3gEqfUe4LlcXgYpGhHTCFERmNj79j85DZooJG6+jYw1
-	 wdY6VbQIiRPKzTIt/VkvRlAmDff8gPxDl+ihaoDaupk5/Lnebow3UYxSjjHl2HcN9w
-	 BK513gQf0TThSxNfT6TfVJoimghdbOuS+voSkmDX7QcmBSweV6dLuJu0OQenTSF2fA
-	 CvVJR6deqwmQ5+3w+0Z61t60yd7TtTiw9QDYXxDN9lTrh3C79AfgnQxXWbjCMkW52H
-	 lN1tnKG6cVtnA==
-Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3bd813ff6ebso646985b6e.1;
-        Tue, 16 Jan 2024 02:51:54 -0800 (PST)
-X-Gm-Message-State: AOJu0YzqNjE76sEagJPU9OOdVhvbcjm3Oh5TurfLAdLmelaW40Z/ShFY
-	WyDVSI5TgUfMh/gf/0VlajdRx0PgNJvMyGuLyuw=
-X-Google-Smtp-Source: AGHT+IETFqwkJQIj4Ddyfoj46BZVi7zTxJO0Cq/ktw9PbRRnWq5ZRJp+1ptYev3sDy6DdHrpvhYT4cCXCdH0R1NlYw8=
-X-Received: by 2002:a05:6870:6e10:b0:203:4b98:a239 with SMTP id
- qt16-20020a0568706e1000b002034b98a239mr4547545oab.89.1705402314238; Tue, 16
- Jan 2024 02:51:54 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0064718ED9;
+	Tue, 16 Jan 2024 10:51:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40e76109cdeso21142085e9.0;
+        Tue, 16 Jan 2024 02:51:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705402295; x=1706007095; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QmW3E1M++L+e6C8eJiaAiTpNXnV9f8Z6oWcF270MPX8=;
+        b=e8kYel86+UXggl7qe9PXaB+qHYnCSKK/K0eIwjs1il8+HYc6+dRo0xevRzCbSAM9pq
+         Lz2EF1+xr3gkS6UBVHpzmuVbM+k4OlDbC19TTpxAKf/MTgMICqP7981etJqxPz9nnuaP
+         YnHREKbuC/nxHqeZepGTSr37UaLXzo/vjx1RooFgXvtn736XlShVv02dznYM3vMVptAB
+         AG1MzFVinomd4MLr3XPbLa9RMID4kCa1A+Y0o0zMKkexnqTK7hYysc+NUJLnotyxXKGA
+         pYRMM3NZW7Rk/SoHoMgLPWShpnEGEqhTgmTwiRKcuWW22aLYtr9ZlshVAvtDcimt/eYG
+         eRFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705402295; x=1706007095;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QmW3E1M++L+e6C8eJiaAiTpNXnV9f8Z6oWcF270MPX8=;
+        b=liUDg6fWqiRtn/77f+uR5hrDzDkeA8J3Vb3doaXlJE9aZ2d5motFCN6hrwXqdBNy8J
+         yUOX8+Z6rSme7DiaO6GBegznfvAbSRKSZIGZUIP0ACTMAa1IXj6kfdNKdii34KaEk03H
+         k1TxO8VYAyUMEIQc+CKrBR8MVdm3ZhvUk2BaOoNlN/Kk1jrznXTaUcWekj+z0mi61W6U
+         QD5mVtHkHhhOiPTmVgFvMBAnyAX1RlxF6QpUAZMaiU2Wc6JOH6gOfpJd4pplKLCKs/SQ
+         FLpx4uYab71Jati3oAx9ZLkxlU+yd9mM6xtXibboYDOLV56HIkd7AZEkgyfrRjI1lgWH
+         WX5A==
+X-Gm-Message-State: AOJu0YyDJTZhGLWm++t8S5nEBnH+/eMkuvzr7C0KMki3fOZSRiVZavE2
+	VuRhKdFBruvU2UvFmUYG8H4=
+X-Google-Smtp-Source: AGHT+IGsRM2SQvZwTko+3YSCVvtjJBo13ZTflclOl7C3d7usUv8K2vrGo9hRAFWuejKivQmhjFmcnw==
+X-Received: by 2002:a05:600c:1310:b0:40e:4a58:3c1c with SMTP id j16-20020a05600c131000b0040e4a583c1cmr3706765wmf.154.1705402295001;
+        Tue, 16 Jan 2024 02:51:35 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id g7-20020a7bc4c7000000b0040d5c58c41dsm18400875wmk.24.2024.01.16.02.51.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jan 2024 02:51:34 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Steve French <sfrench@samba.org>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Shyam Prasad N <sprasad@microsoft.com>,
+	Tom Talpey <tom@talpey.com>,
+	linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] cifs: remove redundant variable tcon_exist
+Date: Tue, 16 Jan 2024 10:51:34 +0000
+Message-Id: <20240116105134.2245640-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240116001526.214354-1-sashal@kernel.org> <20240116001526.214354-5-sashal@kernel.org>
-In-Reply-To: <20240116001526.214354-5-sashal@kernel.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Tue, 16 Jan 2024 19:51:18 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARFMD3HwQUDAcd4L12Je=XNKWUxiF=Ps_Mp28Vdv=TyKw@mail.gmail.com>
-Message-ID: <CAK7LNARFMD3HwQUDAcd4L12Je=XNKWUxiF=Ps_Mp28Vdv=TyKw@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 4.19 5/5] selftests/nolibc: use EFI -bios for
- LoongArch qemu
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
-	Willy Tarreau <w@1wt.eu>, linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 16, 2024 at 9:15=E2=80=AFAM Sasha Levin <sashal@kernel.org> wro=
-te:
->
-> From: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
->
-> [ Upstream commit bdeeeaba83682225a7bf5f100fe8652a59590d33 ]
+The variable tcon_exist is being assigned however it is never read, the
+variable is redundant and can be removed.
 
+Cleans up clang scan build warning:
+warning: Although the value stored to 'tcon_exist' is used in
+the enclosing expression, the value is never actually readfrom
+'tcon_exist' [deadcode.DeadStores]
 
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ fs/smb/client/smb2pdu.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/fs/smb/client/smb2pdu.c b/fs/smb/client/smb2pdu.c
+index bd25c34dc398..50f6bf16b624 100644
+--- a/fs/smb/client/smb2pdu.c
++++ b/fs/smb/client/smb2pdu.c
+@@ -3918,7 +3918,7 @@ void smb2_reconnect_server(struct work_struct *work)
+ 	struct cifs_ses *ses, *ses2;
+ 	struct cifs_tcon *tcon, *tcon2;
+ 	struct list_head tmp_list, tmp_ses_list;
+-	bool tcon_exist = false, ses_exist = false;
++	bool ses_exist = false;
+ 	bool tcon_selected = false;
+ 	int rc;
+ 	bool resched = false;
+@@ -3964,7 +3964,7 @@ void smb2_reconnect_server(struct work_struct *work)
+ 			if (tcon->need_reconnect || tcon->need_reopen_files) {
+ 				tcon->tc_count++;
+ 				list_add_tail(&tcon->rlist, &tmp_list);
+-				tcon_selected = tcon_exist = true;
++				tcon_selected = true;
+ 			}
+ 		}
+ 		/*
+@@ -3973,7 +3973,7 @@ void smb2_reconnect_server(struct work_struct *work)
+ 		 */
+ 		if (ses->tcon_ipc && ses->tcon_ipc->need_reconnect) {
+ 			list_add_tail(&ses->tcon_ipc->rlist, &tmp_list);
+-			tcon_selected = tcon_exist = true;
++			tcon_selected = true;
+ 			cifs_smb_ses_inc_refcount(ses);
+ 		}
+ 		/*
+-- 
+2.39.2
 
-
-
->
-> qemu for LoongArch does not work properly with direct kernel boot.
-> The kernel will panic during initialization and hang without any output.
->
-> When booting in EFI mode everything work correctly.
->
-> While users most likely don't have the LoongArch EFI binary installed at
-> least an explicit error about 'file not found' is better than a hanging
-> test without output that can never succeed.
->
-> Link: https://lore.kernel.org/loongarch/1738d60a-df3a-4102-b1da-d16a29b6e=
-06a@t-8ch.de/
-> Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
-> Acked-by: Willy Tarreau <w@1wt.eu>
-> Link: https://lore.kernel.org/r/20231031-nolibc-out-of-tree-v1-1-47c92f73=
-590a@weissschuh.net
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  Makefile | 9 ++++++++-
-
-
-Same for the AUTOSEL 5.4.
-
-
-
-
-
-
->  1 file changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/Makefile b/Makefile
-> index fc7bc81130dc..40c860f1c0a3 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -548,6 +548,13 @@ ifeq ($(config-targets),1)
->  # *config targets only - make sure prerequisites are updated, and descen=
-d
->  # in scripts/kconfig to make the *config target
->
-> +QEMU_BIOS_DIR =3D /usr/share/edk2/
-> +QEMU_BIOS_loongarch =3D $(QEMU_BIOS_DIR)/loongarch64/OVMF_CODE.fd
-> +
-> +ifneq ($(QEMU_BIOS_$(XARCH)),)
-> +QEMU_ARGS_BIOS =3D -bios $(QEMU_BIOS_$(XARCH))
-> +endif
-> +
->  # Read arch specific Makefile to set KBUILD_DEFCONFIG as needed.
->  # KBUILD_DEFCONFIG may point out an alternative default configuration
->  # used for 'make defconfig'
-> @@ -1303,7 +1310,7 @@ _modinst_:
->         fi
->         @cp -f $(objtree)/modules.order $(MODLIB)/
->         @cp -f $(objtree)/modules.builtin $(MODLIB)/
-> -       $(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modinst
-> +       $(Q)$(MAKE) $(QEMU_ARGS_BIOS) -f $(srctree)/scripts/Makefile.modi=
-nst
->
->  # This depmod is only for convenience to give the initial
->  # boot a modules.dep even before / is mounted read-write.  However the
-> --
-> 2.43.0
->
-
-
---
-Best Regards
-
-Masahiro Yamada
 
