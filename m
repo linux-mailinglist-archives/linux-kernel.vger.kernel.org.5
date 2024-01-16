@@ -1,122 +1,124 @@
-Return-Path: <linux-kernel+bounces-28254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B509382FC27
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:14:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26C6682FC2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:14:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51A921F2918F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:14:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27AAF1C27B86
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:14:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDF8023775;
-	Tue, 16 Jan 2024 20:33:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61CBF241F0;
+	Tue, 16 Jan 2024 20:35:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=brixit-nl.20230601.gappssmtp.com header.i=@brixit-nl.20230601.gappssmtp.com header.b="HaJi9bkU"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IPzrISPu"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8124523764
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 20:33:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B5921E522;
+	Tue, 16 Jan 2024 20:35:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705437225; cv=none; b=bbumxXvzi8L8cx1QeW0xmkzR4aT0dWjETa1SOjCiY/hYOQNlVNZK7Gqs12rWO+eNwg96xDEfepAFn9v6QCQFJJ4txmLYdTN+PC+4HUja6YScpW0GTlry3r7PmofbtJY4ZGleJpBHBh3rSXkduY1qM/oV3DmYeimMvJVoIXwtdXw=
+	t=1705437337; cv=none; b=YN29aFEGf5IUFcwDLA21VoML/tREwLlfdeSWR/02/Bp9O+U2c1Qe9TIBuVymPQrd935DB/gupkd1ljOk7vjDbIsxKgR6jAmrUz5woiJsrZn4qYW1z5bOUWIKrb509OiUbUQjohVKTsBKv21PI8beeBC86cAKMiNL53aUatxyvHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705437225; c=relaxed/simple;
-	bh=bLvtU9GmP+z3YD1A3ZSf6pfME0rmcdFX3MOu+3u5WlA=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:References:
-	 Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=cMr8mojWIOVzrVtWgZayX+Um+7Zy+9jcSyX0mfFM3qsgrdf5CPQk42orXh7tZmD7jU5ZexRhsvPpi/qbizCfL3NSiTFukyQE25ANeUk1Nr0ph2p+8KxMtoTilP/Uuiab9p8hM5LIYIVXkt2u2f7tMcmMVihGObqSeCKtRW4ApYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brixit.nl; spf=none smtp.mailfrom=brixit.nl; dkim=pass (2048-bit key) header.d=brixit-nl.20230601.gappssmtp.com header.i=@brixit-nl.20230601.gappssmtp.com header.b=HaJi9bkU; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brixit.nl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brixit.nl
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a2e0be86878so368203766b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 12:33:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brixit-nl.20230601.gappssmtp.com; s=20230601; t=1705437222; x=1706042022; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SQYnK8r0WDlOVQgRQTtnzryqB0Bw85aD3A/rnJ3JfSQ=;
-        b=HaJi9bkU89BQWav8nHAuTEv04F3xVmf6sNxp/Gcyhdhx86CeFSciPbMzcp5pz6kU0O
-         M0Qkhy5TAJBznAzSFoOlNdZFlHqyNtrAp93uzeHsGZ/i2NtRXzRS8wfe5RKrTbwN3jj2
-         lbLgwhVp+2ghu9qVLDNV3Zx3XYgIIP5NScYktEo0hdQBwfxgfVkZ0bWF+vzihoipTsvA
-         jc4TPZwWkOw4kB9bFoFlLPKbBGPs4U/600AX3cKibnV9Mwo6bKxq9fFegFXPVxw6aEi1
-         8VwFj/R3hNWOHzTT+jeoee1ap82qL06DhuT+QWGqStvrF9wdFVfnicQ02frQeBETasmH
-         xxWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705437222; x=1706042022;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SQYnK8r0WDlOVQgRQTtnzryqB0Bw85aD3A/rnJ3JfSQ=;
-        b=qQ4xHE7szihv0ecY4lqwRIuAdTq8UI5esRbDi0U1P55tYsyjr8b+/1RD+04JEZuQ64
-         FgWMeqSSRW6p+7j3ja+R7FeiW+Juvy8Gz1wVjN7QWt6V5TvvmgagpxWXRyFviLb1hHXX
-         Z+T2SBrse/RWpK1KWWG1AnaRE2hL32R6KMrz1z7cxP2yd0HhK+KMOh7Mlx5WOumR7VVe
-         qvD9urBwAiNKTtN4kC7pjLPIXIeHqx4FK5qlR5bRDU9Lp2H+pLK6aonFpG2h8K5c3WgT
-         TURX658ZNBSnn36+2vNvKgX2NOPX3FTpc4uzIWNp8Lek6Y2GvN0VP7Ii4eqG6Ziu92Kj
-         97lA==
-X-Gm-Message-State: AOJu0YwxCoO3kDaHW58tNi4xn7dzJgxH/UUW/RJUxmrR4VqiRe2nou3p
-	nePRz872e5i2vcoj9gcSKdiBjk59jrxiEA==
-X-Google-Smtp-Source: AGHT+IE12HSEaKeyl74HOOYo0/OE9qhE2gVtfoIGnqU6mjdQlJwdOiIyXwH/t6fV/FSI+oC+jzCwbQ==
-X-Received: by 2002:a17:907:a704:b0:a2e:7f37:8301 with SMTP id vw4-20020a170907a70400b00a2e7f378301mr1567285ejc.27.1705437221625;
-        Tue, 16 Jan 2024 12:33:41 -0800 (PST)
-Received: from ?IPV6:2a00:bba0:120c:9f00:7a8e:8795:650f:7c4e? (2a00-bba0-120c-9f00-7a8e-8795-650f-7c4e.static6.cust.trined.nl. [2a00:bba0:120c:9f00:7a8e:8795:650f:7c4e])
-        by smtp.gmail.com with ESMTPSA id gu18-20020a170906f29200b00a28aba1f56fsm6917997ejb.210.2024.01.16.12.33.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jan 2024 12:33:41 -0800 (PST)
-Message-ID: <2c720f2e-3c73-4a77-92e0-5da8fce86b3f@brixit.nl>
-Date: Tue, 16 Jan 2024 21:33:40 +0100
+	s=arc-20240116; t=1705437337; c=relaxed/simple;
+	bh=9PpIhVPT+ja3jI9uPpGTzGflBYIHLpQFQiw2CXoF3f8=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:Received:Received:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=jQMQPdFsFOpspp+/z2GVsUpzN6Co98L7C0mTkeNaCAqBDcf6R6mLXb+mW5Ss+1qZFC+uVNGxsXobLdoCREVyEjlIprM8T5M5h75lh0vaTOoGo0hiOu9HjS/Db22DDLgmL+Acbm5uhE1Si/3Z4nrbUnTe28F0rRkhFukxYW0nzwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IPzrISPu; arc=none smtp.client-ip=192.55.52.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705437336; x=1736973336;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9PpIhVPT+ja3jI9uPpGTzGflBYIHLpQFQiw2CXoF3f8=;
+  b=IPzrISPuLC2ZgXdiSwTT2tKnbeMLEZPKLXvoc06eR502MdOXkZ0dxUpT
+   nnn4ZIFqE/BqGjsXsD+/Qn55tWD4WHco9iw30iNJeyeD+hZBqIEBBbIRf
+   PSYiKzayRtmtcxdWxb5LBTAoqHFnZGEKWt2nN71L11avl6thwroT+hE6m
+   lBfGB0PSeTtMG+7TxrgBWaBaQCCfyeDRsLB3/mULLLRyvGLGRSJgNT+T+
+   GdhhuGPdQ5zF2XH0UdgeYkBHZwBrAOcZlnbnE/AubDHLO9Fqwq0LIMq+V
+   9dMqmdRncEmJ38y8D6docf/9Lf/rwE4jgqohFV1WLgFF7negIwXRQ3P2l
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="397137949"
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="397137949"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 12:35:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="25935828"
+Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 16 Jan 2024 12:35:30 -0800
+Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rPq9f-0001Ck-1k;
+	Tue, 16 Jan 2024 20:35:27 +0000
+Date: Wed, 17 Jan 2024 04:34:35 +0800
+From: kernel test robot <lkp@intel.com>
+To: Mao Jinlong <quic_jinlmao@quicinc.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Mike Leach <mike.leach@linaro.org>,
+	James Clark <james.clark@arm.com>, Leo Yan <leo.yan@linaro.org>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: oe-kbuild-all@lists.linux.dev, Mao Jinlong <quic_jinlmao@quicinc.com>,
+	coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] dt-bindings: arm: Add device-name in the
+ coresight components
+Message-ID: <202401170445.7STzlFcl-lkp@intel.com>
+References: <20240115164252.26510-3-quic_jinlmao@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Front camera on pinephone
-To: Pavel Machek <pavel@ucw.cz>, fiona.klute@gmx.de,
- phone-devel@vger.kernel.org, icenowy@aosc.xyz, megous@megous.com,
- kernel list <linux-kernel@vger.kernel.org>
-Cc: alain.volmat@foss.st.com, sakari.ailus@linux.intel.com,
- linux-media@vger.kernel.org
-References: <ZaY44AHISMIh8fHM@duo.ucw.cz>
-Content-Language: en-US
-From: Martijn Braam <martijn@brixit.nl>
-In-Reply-To: <ZaY44AHISMIh8fHM@duo.ucw.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240115164252.26510-3-quic_jinlmao@quicinc.com>
 
-Hello Pavel,
+Hi Mao,
 
-Isn't this simply the case of picking the gc2145 bits from Megis tree?
+kernel test robot noticed the following build warnings:
 
-https://megous.com/git/linux/tree/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi?h=orange-pi-5.10#n410
+[auto build test WARNING on robh/for-next]
+[also build test WARNING on linus/master v6.7 next-20240112]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-[For the pinephone kernel development there's the option of building the 
-kernel using envkernel.sh in postmarketOS with 
-https://wiki.postmarketos.org/wiki/Compiling_kernels_with_envkernel.sh 
-which has some automation for building a kernel and pushing it to a 
-connected device. Ethernet and keyboard are replaced by ssh and 
-usb-networking in this case]
+url:    https://github.com/intel-lab-lkp/linux/commits/Mao-Jinlong/coresight-core-Add-device-name-support/20240116-004557
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/20240115164252.26510-3-quic_jinlmao%40quicinc.com
+patch subject: [PATCH v2 2/2] dt-bindings: arm: Add device-name in the coresight components
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20240117/202401170445.7STzlFcl-lkp@intel.com/reproduce)
 
-Greetings,
-Martijn
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401170445.7STzlFcl-lkp@intel.com/
 
-On 1/16/24 09:05, Pavel Machek wrote:
-> Hi!
->
-> In 6.8-rc0, driver for gc2145 (front camera on pinephone) was merged,
-> but we don't have corresponding dts entries. Does anyone have setup
-> where they can fix it easily?
->
-> [If you have hints how to set-up pinephone for kernel development,
-> that would be welcome. Currently I have mobian with rather old 6.1
-> kernel on it, and lack of keyboard/ethernet makes things tricky.]
->
-> Best regards,
-> 								Pavel
+dtcheck warnings: (new ones prefixed by >>)
+>> Documentation/devicetree/bindings/arm/arm,coresight-cpu-debug.yaml: device-name: missing type definition
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
