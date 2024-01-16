@@ -1,62 +1,64 @@
-Return-Path: <linux-kernel+bounces-27996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C398E82F8D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:54:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54E2182F8DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:54:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E3D4B27809
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:54:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D7E11C2531D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:54:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B560C28DAD;
-	Tue, 16 Jan 2024 19:53:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70F8C28DB9;
+	Tue, 16 Jan 2024 19:53:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AXXliYSy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PpH3XnAt"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F04FB13A25C;
-	Tue, 16 Jan 2024 19:53:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97F6525777;
+	Tue, 16 Jan 2024 19:53:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434804; cv=none; b=hF1odCmrt6P4dpfOmt2qkTIf7lea0BAjJXVW0lSz4F/mAQIwyNex5SlCurNTy2bQh4RBb7nt80+1TEp7r2H/rIzfAMCNX7pjQ2n8393X2vKMHAFxmLvtyQzeVCw4pxuocH3G51oaWZ2+5sY36bJlAQjiGsJH5/3VVnvV0ueA6U8=
+	t=1705434806; cv=none; b=LQ6NoC+5Y4ojQy4TsnRFXIyWRxbEjfs8pa1WGheaaJjZxghaNiVCSuG1srzzigycW8oXDPm8SllB/aZkLO3vk8LzLIa6fNQSVIDRuZPl5PF2pdTkftIGcAJFm8fiArYe2DQKOEyWkv5fzU4IDa+5haXNpJa6gIeYi+/Y5ix6gqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434804; c=relaxed/simple;
-	bh=Tyk/aprcfqpI37EGshT92tn98SfJrI2142dd2Nb/S7I=;
+	s=arc-20240116; t=1705434806; c=relaxed/simple;
+	bh=dw6+olMcrpYXhYYoeojsPKrKA93qm6x0ifw52mkphv8=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=CN02dNDfvE+am0TXP495cR1srJo6WHwcVVvluzUWyR/QhMFQve+9Ht29KyxiFmDzRRnUAaZQ1jHNemPtNwJaclG3T/Zp3mmTvUcEV6nvrCuSelZz7vgWjn2OWQ2kn8P4wtMqrbSkzdvjpKfMUVp3fjsvvjJVw21eDlbSG3QwDIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AXXliYSy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A5ECC433F1;
-	Tue, 16 Jan 2024 19:53:22 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=Hg/GpzdVeGHx4DDAtJZZrIxtZb5eVIfMlnCc3Pj1CttY1jqOOVsa5KRMbHEoCEf9i+Ghoxy6Zfl9XXpWHBQa/eJyfJl82juwsZ3wlfSHeeQul1wqqmAkl7O12ZOYtCjLDh95NllVdCe5xezGb11PY3ieoDLmnYnV+ejdoAFRGNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PpH3XnAt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D52FC43399;
+	Tue, 16 Jan 2024 19:53:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434803;
-	bh=Tyk/aprcfqpI37EGshT92tn98SfJrI2142dd2Nb/S7I=;
+	s=k20201202; t=1705434806;
+	bh=dw6+olMcrpYXhYYoeojsPKrKA93qm6x0ifw52mkphv8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AXXliYSyffVlOSH/UvG/0l/OljsltdkJ8MzGvIXAzEPbSj6Yvwx8tlV+2AUlWf9GX
-	 J8fSOTMK8it530ofNFoyR4yyGug1khemruLB+crBoBcJl0qpgnyCc579r7FPbXmweo
-	 RNwjrYarVByVtM8Um1YCucQvlG+dm6PvRP17SUA7bivU6EAZBNYsqX2AzKxAoWhyb8
-	 43/otXltNWr23lGTg3Hw3BE+7wa6AwXdVXwUNIN1vlKIbTl1K3QaduxPXreCU8S8ta
-	 IBjjTTlofac0mXsDpmJN8OXr6U5NsSCgofWsxGNfZoux5I8pAKJD+96neP5/+epylY
-	 wsAvXfpqlFlDw==
+	b=PpH3XnAtXH6kT+xnqNV7WlSWkr7ZwOwljVo+XL5fbgckFW7/IUgMxW6MQ8JnHKPA8
+	 CTaEsKzcMBzb8jrGKB1YCECMEuTPrakDXTwDp0NrtKrlcKDy8ATtkRQMmn3zGJJZVX
+	 Y4AAL1cuA1CNwlzrp2b201i3Nu9wMLwjeh6kHaTPRhIKXsQfLvQFW0xkjlztwZ2fqr
+	 aNWdh70wNOHPUUQrhQpVyrGeELnMIFfoaT5XOOt5lfi16LcDxSQLqcJE1OamV3VjQU
+	 tV8s4+JbskWk9B28t3MsaknOvA7ZXI6Jk7kgT05z9vJL+DxOFPwJrMncfreZRWVCzq
+	 K05MEl38D5I2A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mao Jinlong <quic_jinlmao@quicinc.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
+Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Marcin Szycik <marcin.szycik@linux.intel.com>,
+	Simon Horman <horms@kernel.org>,
+	Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	konrad.dybcio@linaro.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 084/104] arm64: dts: qcom: Fix coresight warnings in in-ports and out-ports
-Date: Tue, 16 Jan 2024 14:46:50 -0500
-Message-ID: <20240116194908.253437-84-sashal@kernel.org>
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 085/104] ice: fix pre-shifted bit usage
+Date: Tue, 16 Jan 2024 14:46:51 -0500
+Message-ID: <20240116194908.253437-85-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194908.253437-1-sashal@kernel.org>
 References: <20240116194908.253437-1-sashal@kernel.org>
@@ -71,124 +73,119 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.12
 Content-Transfer-Encoding: 8bit
 
-From: Mao Jinlong <quic_jinlmao@quicinc.com>
+From: Jesse Brandeburg <jesse.brandeburg@intel.com>
 
-[ Upstream commit bdb6339fd46b8702ea7411b0b414587b86a40562 ]
+[ Upstream commit 7173be21ae29ef50ada42fd4464056a9d3f55bb3 ]
 
-When a node is only one in port or one out port, address-cells and
-size-cells are not required in in-ports and out-ports. And the number
-and reg of the port need to be removed.
+While converting to FIELD_PREP() and FIELD_GET(), it was noticed that
+some of the RSS defines had *included* the shift in their definitions.
+This is completely outside of normal, such that a developer could easily
+make a mistake and shift at the usage site (like when using
+FIELD_PREP()).
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
-Link: https://lore.kernel.org/r/20231210072633.4243-5-quic_jinlmao@quicinc.com
-Signed-off-by: Bjorn Andersson <andersson@kernel.org>
+Rename the defines and set them to the "pre-shifted values" so they
+match the template the driver normally uses for masks and the member
+bits of the mask, which also allows the driver to use FIELD_PREP
+correctly with these values. Use GENMASK() for this changed MASK value.
+
+Do the same for the VLAN EMODE defines as well.
+
+Reviewed-by: Marcin Szycik <marcin.szycik@linux.intel.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
+Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Tested-by: Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com> (A Contingent worker at Intel)
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sdm845.dtsi |  5 +----
- arch/arm64/boot/dts/qcom/sm8150.dtsi |  5 +----
- arch/arm64/boot/dts/qcom/sm8250.dtsi | 24 ++++--------------------
- 3 files changed, 6 insertions(+), 28 deletions(-)
+ drivers/net/ethernet/intel/ice/ice_adminq_cmd.h  | 10 +++++-----
+ drivers/net/ethernet/intel/ice/ice_lib.c         |  3 ++-
+ .../net/ethernet/intel/ice/ice_vsi_vlan_lib.c    | 16 +++++++++++-----
+ 3 files changed, 18 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index 055ca80c0075..5af7f52d8a8d 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -3555,11 +3555,8 @@ etf_out: endpoint {
- 			};
+diff --git a/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h b/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h
+index fafe083d1446..45f3e351653d 100644
+--- a/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h
++++ b/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h
+@@ -421,10 +421,10 @@ struct ice_aqc_vsi_props {
+ #define ICE_AQ_VSI_INNER_VLAN_INSERT_PVID	BIT(2)
+ #define ICE_AQ_VSI_INNER_VLAN_EMODE_S		3
+ #define ICE_AQ_VSI_INNER_VLAN_EMODE_M		(0x3 << ICE_AQ_VSI_INNER_VLAN_EMODE_S)
+-#define ICE_AQ_VSI_INNER_VLAN_EMODE_STR_BOTH	(0x0 << ICE_AQ_VSI_INNER_VLAN_EMODE_S)
+-#define ICE_AQ_VSI_INNER_VLAN_EMODE_STR_UP	(0x1 << ICE_AQ_VSI_INNER_VLAN_EMODE_S)
+-#define ICE_AQ_VSI_INNER_VLAN_EMODE_STR		(0x2 << ICE_AQ_VSI_INNER_VLAN_EMODE_S)
+-#define ICE_AQ_VSI_INNER_VLAN_EMODE_NOTHING	(0x3 << ICE_AQ_VSI_INNER_VLAN_EMODE_S)
++#define ICE_AQ_VSI_INNER_VLAN_EMODE_STR_BOTH	0x0U
++#define ICE_AQ_VSI_INNER_VLAN_EMODE_STR_UP	0x1U
++#define ICE_AQ_VSI_INNER_VLAN_EMODE_STR		0x2U
++#define ICE_AQ_VSI_INNER_VLAN_EMODE_NOTHING	0x3U
+ 	u8 inner_vlan_reserved2[3];
+ 	/* ingress egress up sections */
+ 	__le32 ingress_table; /* bitmap, 3 bits per up */
+@@ -490,7 +490,7 @@ struct ice_aqc_vsi_props {
+ #define ICE_AQ_VSI_Q_OPT_RSS_GBL_LUT_S		2
+ #define ICE_AQ_VSI_Q_OPT_RSS_GBL_LUT_M		(0xF << ICE_AQ_VSI_Q_OPT_RSS_GBL_LUT_S)
+ #define ICE_AQ_VSI_Q_OPT_RSS_HASH_S		6
+-#define ICE_AQ_VSI_Q_OPT_RSS_HASH_M		(0x3 << ICE_AQ_VSI_Q_OPT_RSS_HASH_S)
++#define ICE_AQ_VSI_Q_OPT_RSS_HASH_M		GENMASK(7, 6)
+ #define ICE_AQ_VSI_Q_OPT_RSS_HASH_TPLZ		0x0U
+ #define ICE_AQ_VSI_Q_OPT_RSS_HASH_SYM_TPLZ	0x1U
+ #define ICE_AQ_VSI_Q_OPT_RSS_HASH_XOR		0x2U
+diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/ethernet/intel/ice/ice_lib.c
+index 4e7f67f54f1c..7f4bc110ead4 100644
+--- a/drivers/net/ethernet/intel/ice/ice_lib.c
++++ b/drivers/net/ethernet/intel/ice/ice_lib.c
+@@ -979,7 +979,8 @@ static void ice_set_dflt_vsi_ctx(struct ice_hw *hw, struct ice_vsi_ctx *ctxt)
+ 	 */
+ 	if (ice_is_dvm_ena(hw)) {
+ 		ctxt->info.inner_vlan_flags |=
+-			ICE_AQ_VSI_INNER_VLAN_EMODE_NOTHING;
++			FIELD_PREP(ICE_AQ_VSI_INNER_VLAN_EMODE_M,
++				   ICE_AQ_VSI_INNER_VLAN_EMODE_NOTHING);
+ 		ctxt->info.outer_vlan_flags =
+ 			(ICE_AQ_VSI_OUTER_VLAN_TX_MODE_ALL <<
+ 			 ICE_AQ_VSI_OUTER_VLAN_TX_MODE_S) &
+diff --git a/drivers/net/ethernet/intel/ice/ice_vsi_vlan_lib.c b/drivers/net/ethernet/intel/ice/ice_vsi_vlan_lib.c
+index 76266e709a39..8307902115ff 100644
+--- a/drivers/net/ethernet/intel/ice/ice_vsi_vlan_lib.c
++++ b/drivers/net/ethernet/intel/ice/ice_vsi_vlan_lib.c
+@@ -131,6 +131,7 @@ static int ice_vsi_manage_vlan_stripping(struct ice_vsi *vsi, bool ena)
+ {
+ 	struct ice_hw *hw = &vsi->back->hw;
+ 	struct ice_vsi_ctx *ctxt;
++	u8 *ivf;
+ 	int err;
  
- 			in-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
+ 	/* do not allow modifying VLAN stripping when a port VLAN is configured
+@@ -143,19 +144,24 @@ static int ice_vsi_manage_vlan_stripping(struct ice_vsi *vsi, bool ena)
+ 	if (!ctxt)
+ 		return -ENOMEM;
  
--				port@1 {
--					reg = <1>;
-+				port {
- 					etf_in: endpoint {
- 						remote-endpoint =
- 						  <&merge_funnel_out>;
-diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-index 19c6003dca15..513dcebd6ed4 100644
---- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-@@ -2973,11 +2973,8 @@ replicator1_out: endpoint {
- 			};
++	ivf = &ctxt->info.inner_vlan_flags;
++
+ 	/* Here we are configuring what the VSI should do with the VLAN tag in
+ 	 * the Rx packet. We can either leave the tag in the packet or put it in
+ 	 * the Rx descriptor.
+ 	 */
+-	if (ena)
++	if (ena) {
+ 		/* Strip VLAN tag from Rx packet and put it in the desc */
+-		ctxt->info.inner_vlan_flags = ICE_AQ_VSI_INNER_VLAN_EMODE_STR_BOTH;
+-	else
++		*ivf = FIELD_PREP(ICE_AQ_VSI_INNER_VLAN_EMODE_M,
++				  ICE_AQ_VSI_INNER_VLAN_EMODE_STR_BOTH);
++	} else {
+ 		/* Disable stripping. Leave tag in packet */
+-		ctxt->info.inner_vlan_flags = ICE_AQ_VSI_INNER_VLAN_EMODE_NOTHING;
++		*ivf = FIELD_PREP(ICE_AQ_VSI_INNER_VLAN_EMODE_M,
++				  ICE_AQ_VSI_INNER_VLAN_EMODE_NOTHING);
++	}
  
- 			in-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
+ 	/* Allow all packets untagged/tagged */
+-	ctxt->info.inner_vlan_flags |= ICE_AQ_VSI_INNER_VLAN_TX_MODE_ALL;
++	*ivf |= ICE_AQ_VSI_INNER_VLAN_TX_MODE_ALL;
  
--				port@1 {
--					reg = <1>;
-+				port {
- 					replicator1_in: endpoint {
- 						remote-endpoint = <&replicator_out1>;
- 					};
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index a4e58ad731c3..35998bf23b60 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -2830,11 +2830,8 @@ tpda@6004000 {
- 			clock-names = "apb_pclk";
+ 	ctxt->info.valid_sections = cpu_to_le16(ICE_AQ_VSI_PROP_VLAN_VALID);
  
- 			out-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
- 
--				port@0 {
--					reg = <0>;
-+				port {
- 					tpda_out_funnel_qatb: endpoint {
- 						remote-endpoint = <&funnel_qatb_in_tpda>;
- 					};
-@@ -2877,11 +2874,7 @@ funnel_qatb_out_funnel_in0: endpoint {
- 			};
- 
- 			in-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
--
--				port@0 {
--					reg = <0>;
-+				port {
- 					funnel_qatb_in_tpda: endpoint {
- 						remote-endpoint = <&tpda_out_funnel_qatb>;
- 					};
-@@ -3090,11 +3083,8 @@ etf_out: endpoint {
- 			};
- 
- 			in-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
- 
--				port@0 {
--					reg = <0>;
-+				port {
- 					etf_in_funnel_swao_out: endpoint {
- 						remote-endpoint = <&funnel_swao_out_etf>;
- 					};
-@@ -3178,8 +3168,6 @@ funnel@6c2d000 {
- 			clock-names = "apb_pclk";
- 
- 			out-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
- 				port {
- 					tpdm_mm_out_tpda9: endpoint {
- 						remote-endpoint = <&tpda_9_in_tpdm_mm>;
-@@ -3445,11 +3433,7 @@ funnel_apss_merg_out_funnel_in1: endpoint {
- 			};
- 
- 			in-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
--
--				port@0 {
--					reg = <0>;
-+				port {
- 					funnel_apss_merg_in_funnel_apss: endpoint {
- 					remote-endpoint = <&funnel_apss_out_funnel_apss_merg>;
- 					};
 -- 
 2.43.0
 
