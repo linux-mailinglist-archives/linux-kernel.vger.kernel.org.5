@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-27552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF77882F20F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:00:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C9AF82F20E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:00:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F18521C2369F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:00:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD5931C236A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:00:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8334F1C6BA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 747FE1C6B7;
 	Tue, 16 Jan 2024 16:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aJTgUX3e"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="caKS5xvO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEC131C686;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEDA91C2AF;
 	Tue, 16 Jan 2024 16:00:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6C670C433B1;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5A19FC433A6;
 	Tue, 16 Jan 2024 16:00:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1705420829;
-	bh=VR0zelLUhCaJCX6Q+iJZSRg5efDI4Ll3fVjKY9C1snQ=;
+	bh=Q/U5cHI34D7iQHCMpS7ulp8B3+pXweDFeLpHjBFz4ZA=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=aJTgUX3e6/A0yIlhhnIzOStguN5+R3jHPTRwWftJgervl+iM1z2yHGabqqGT1j2Mv
-	 2P6SmQjA051ZSnNdrioIU3vevkkKIgEqy/iCojZ9L5Rkp/Yhbt5PvPK1Do2f1IbNNS
-	 flX5Iu78NYp86thTPRzU55uTeEq6IG6mwgxGGV7WrSSavmlyXsrJGJsJgwbRBQdRBz
-	 PcZ9A36paB2fGPTblj4Dz0KZdVL+jID2szHxSPqqweV1ipt6CURIHcTbn4KKDFUX+O
-	 76XDwNwpk6qIW0b1aKfvKWiD8Tyj5MoEG6v923rtEb3My7HNZmYGPk66BSYhoBI7w0
-	 Q2ZaYsB0+3COg==
+	b=caKS5xvOt27ddopWasFjL+XlQ2cACq+fqQRXv0tG6HB7lXTDwK2aNFlqWK3ufzJBw
+	 hErAhJnKtv/BTGLDM5ykNmSAfMli6tC7aitwagNKYdIZ1Wi6jYRztQXJpwCEtX2ALr
+	 ota72LHOt8NjwvN3Mb3dp8aFUjhnUy7/23YwSSs6qy7XCPsQmtMf+KHIO5qbrvdl+X
+	 bzgV1jV0DOj6Phnu6JvL4QA9jMzHNa/XmdJM+WF96w56hHslFHiTfj3oHu2UXoNYzp
+	 DToIg9l+UpBCs3Z47cA3fmKqRe24AV4kcj7WNhC/EJ014VYBQmq6w89IiIMAnEOhiO
+	 lg2nqbdI7ICzA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 53407D8C987;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 40CF8D8C985;
 	Tue, 16 Jan 2024 16:00:29 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -42,38 +42,37 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] Bluetooth: btusb: Add new VID/PID 13d3/3602 for MT7925
+Subject: Re: [PATCH] Bluetooth: Remove usage of the deprecated ida_simple_xx() API
 From: patchwork-bot+bluetooth@kernel.org
 Message-Id: 
- <170542082933.25552.3927828232982053152.git-patchwork-notify@kernel.org>
+ <170542082925.25552.2942845437512167526.git-patchwork-notify@kernel.org>
 Date: Tue, 16 Jan 2024 16:00:29 +0000
-References: <800469f157c862bcdef7213793004d2de977791f.1705129502.git.deren.wu@mediatek.com>
-In-Reply-To: <800469f157c862bcdef7213793004d2de977791f.1705129502.git.deren.wu@mediatek.com>
-To: =?utf-8?b?RGVyZW4gV3UgKOatpuW+t+S7gSkgPERlcmVuLld1QG1lZGlhdGVrLmNvbT4=?=@codeaurora.org
+References: <3b3523b475d0f5cadf81b3131bb1a38b7476b020.1705349526.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <3b3523b475d0f5cadf81b3131bb1a38b7476b020.1705349526.git.christophe.jaillet@wanadoo.fr>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Cc: marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
- sean.wang@mediatek.com, chris.lu@mediatek.com, aaron.hou@mediatek.com,
- steve.lee@mediatek.com, linux-bluetooth@vger.kernel.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- ulrik@strid.tech, deren.wu@mediatek.com
+ linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ linux-bluetooth@vger.kernel.org
 
 Hello:
 
 This patch was applied to bluetooth/bluetooth-next.git (master)
 by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
 
-On Sat, 13 Jan 2024 15:27:38 +0800 you wrote:
-> From: Ulrik Strid <ulrik@strid.tech>
+On Mon, 15 Jan 2024 21:12:19 +0100 you wrote:
+> ida_alloc() and ida_free() should be preferred to the deprecated
+> ida_simple_get() and ida_simple_remove().
 > 
-> Add VID 13d3 & PID 3602 for MediaTek MT7925 USB Bluetooth chip.
+> Note that the upper limit of ida_simple_get() is exclusive, but the one of
+> ida_alloc_max() is inclusive. So a -1 has been added when needed.
 > 
-> The information in /sys/kernel/debug/usb/devices about the Bluetooth
-> device is listed as the below.
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > 
 > [...]
 
 Here is the summary with links:
-  - Bluetooth: btusb: Add new VID/PID 13d3/3602 for MT7925
-    https://git.kernel.org/bluetooth/bluetooth-next/c/eaab5c300eab
+  - Bluetooth: Remove usage of the deprecated ida_simple_xx() API
+    https://git.kernel.org/bluetooth/bluetooth-next/c/6061d66bd0e5
 
 You are awesome, thank you!
 -- 
