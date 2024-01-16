@@ -1,150 +1,135 @@
-Return-Path: <linux-kernel+bounces-27702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27707-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15EAE82F466
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:38:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10C1F82F47D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:42:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A31112844D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:38:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60EECB21730
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:42:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 396991CD38;
-	Tue, 16 Jan 2024 18:38:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F3B61CF87;
+	Tue, 16 Jan 2024 18:42:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oGxH89Dd"
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FZuToFFF"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B5121CD27
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:38:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 484541C6AD;
+	Tue, 16 Jan 2024 18:42:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705430295; cv=none; b=VX4b9h/5D+a7nq2om7qY5y7EXngIK8o/iJeBKVYy4oXhHahjyu5MGKs7RfKV1JrOegSOJwqVreMvdGIWP0rnSdudBUn7HY1U5ff1NJrNREige34+U4LkFjk9qYtoyIA9q7YsDfNWEIBK+V7FMnLaaHgMggKjMFVPbP5qNli+cuk=
+	t=1705430556; cv=none; b=TjyCuSUHBX2tDBYO7d3WYqEnBXpsFWAaIIwY8sALzofcwilNDSlHEoSnSbYTyG5j+U7DlRDW0ecVbEjYNEeReKJamba/bvz+Ne/wt8ZrLvtUY7bh/9TsCWg5lP006iffqRH2DHT9NNeN89bb03KajKRBHQgKFS8v599KK5nH2i8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705430295; c=relaxed/simple;
-	bh=TB6bL0w3hLWUcnDcaIay8oWyOu6RzNDf0O17kPM6VXw=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=OwbOto3W0MGaWYuvMFm9yNEAWcfKWONvuYCl5hADYB/gJw+s4MS09JjDyfXu6FnEDALIgyodeo6ZYFQgUDtF55BRHaJisfTKTMzZZGvXXR3Y3SxJE6Q1jrj30+FWzUGkZk2YhBIS6NAlKvF0aQTPQGu0hGD/wT4O+HCWOf78buA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oGxH89Dd; arc=none smtp.client-ip=209.85.215.174
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5cdbc4334edso4524498a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:38:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705430293; x=1706035093; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0jDglbZBWktYfWTPUcusyZr2j2GiYOxnIQXGiD8Doo4=;
-        b=oGxH89DdczRxZnF4aohIqsU78Z+Srdlzge3Ji/jgAa6Fb6Spd1BEJNiI8rE4hG1goZ
-         rlKPoeg/ln2gFfGQPZB38Qs5lb9u8CxAn4Pi/gwVDwaucUSYrgOYh58f3dE7YbUIvlXm
-         MdGi78pL3TYyVpYjiogoopMxxTZBPDgBp6V4OnE6AI0vIx67m6zyPegIvLot2gsbej3p
-         NBH3Ne1vIxD5CVXV4SoJd3wRu59Lnu5euQWMLxYtQVKNhR2fnBneTI7/nlysuybv2OtG
-         qgGTDdu1PGCb6za71j3MyI9uvJIEO2OLdqN7txZgHNVo4W86zdiMEqWse5auX4MTpjeP
-         pJ8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705430293; x=1706035093;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0jDglbZBWktYfWTPUcusyZr2j2GiYOxnIQXGiD8Doo4=;
-        b=Z1A/hs9nq4EJsQxtkt8GkSnAF4iyxUxCraKsceyt2WBqSCS0LQwL5KCRmg5jAUJalb
-         4VhUq4WBEhOMGhFh2TorlT9XfGkaYWLFUK3BN5O8+wj9BC33aeyVkZuMTT7x3phkPsIS
-         ZyDS4sMNWWuVK7UsSMw4j/fQHIQxQ4AF3by+39piGLmvGIFYFlqgub0OFI/G5zUhZRqt
-         NrXJmFr2+JaF4rkJ9WKek6mtahxjmxEXVvj49paXS7+VW2ZboImr9ZRJvGf4SdrfwupW
-         SoEUDh1zllSwlBiefpdk8lA/Ck1i/yU4zVquhs/yXcuOwX5On35ByIzpx1LB9juzQ++J
-         aR0g==
-X-Gm-Message-State: AOJu0YwpB2bmNAmdmH9fwBHGrLMa0xYuh0Y2jYb9aeakOG0/IAfvd68o
-	DZRBj3cHfZmF2IpEiC5YLPtaN3u+vl8sfQpVT96zqgsj7lBz2g==
-X-Google-Smtp-Source: AGHT+IF1E60nyMxp0rq+piEAJAls/q3iuzPDrclS7edvISLFAbWxO/l+vo81dtOlaSnpPsalLHC1RtyIGgPAaFAsaDo=
-X-Received: by 2002:a17:90a:d913:b0:28e:1d1e:f2eb with SMTP id
- c19-20020a17090ad91300b0028e1d1ef2ebmr2701244pjv.90.1705430293457; Tue, 16
- Jan 2024 10:38:13 -0800 (PST)
+	s=arc-20240116; t=1705430556; c=relaxed/simple;
+	bh=S5KMdyv9vEL0CeRHyQGtOqQf9LU2qa2NACMCFu2WPsM=;
+	h=DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=NZdlMhD1BibVcppRpEx23U7GCiO2Lt2PNv6S9Nw/D8IBWQZclzdOFIcl0AkQc24wsYJ02YPregOBQYJCROGOkaLOEgsK89kG7xBV0UvpQZgZR1oXEZ4bAW7FhTjBaIFa9Z8c2JzkWsk5JlIYIq8aiaU+znkF4vewxhPQs/7O+TE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=FZuToFFF; arc=none smtp.client-ip=90.155.50.34
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=e9TcTM+d6L0MWKH8TdLtoZT8t+lgwD6ToTcpjBl3L8w=; b=FZuToFFFkxYwpfM4dHeFp9mm8W
+	XAsUf9QlvmZxNQVzNbXYH0tIZ//pnEml6gCU6pORkGwajr84aYttfQaORLNiWHQE3LmisVPtBCv8U
+	v/IjDI/D2A+qFedtBSRpusUNBsMjsXRWDHp7CtTZ5f010nrYjPVuV0ERg/PnUCyYp5p//S4Rrd4Xh
+	aBIQgYnrjC6bPBgBYrMEJUyDUFtdRzCpSQ6QAeReS1TOruKUhIvuiI08yi0aw4WfmzstAKZAlKEsN
+	9IO0OyWKk2ytQvve1SNTSTBqT5Aki8r0eNFMHjgENTILYHh+goNYvLROmaZqLhJzN1f89/8d6MKEe
+	lzFeIwJQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rPoON-00Dt8T-KH; Tue, 16 Jan 2024 18:42:31 +0000
+Date: Tue, 16 Jan 2024 18:42:31 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: syzbot <syzbot+004c1e0fced2b4bc3dcc@syzkaller.appspotmail.com>,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [block?] BUG: unable to handle kernel NULL pointer
+ dereference in __bio_release_pages
+Message-ID: <ZabOF3/P/jQmjudb@casper.infradead.org>
+References: <000000000000dbe2f2060f0d2781@google.com>
+ <4bd438c0-75b8-4e28-939c-954716df7563@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240110102102.61587-1-tudor.ambarus@linaro.org> <20240110102102.61587-12-tudor.ambarus@linaro.org>
-In-Reply-To: <20240110102102.61587-12-tudor.ambarus@linaro.org>
-From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Tue, 16 Jan 2024 12:38:02 -0600
-Message-ID: <CAPLW+4mKBwsc9VLrGTd2k6d0n-K9TZAjH6M8trcK3Av8TQ2Ngg@mail.gmail.com>
-Subject: Re: [PATCH 11/18] tty: serial: samsung: don't compare with zero an if
- (bitwise expression)
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com, 
-	gregkh@linuxfoundation.org, jirislaby@kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
-	andre.draszik@linaro.org, peter.griffin@linaro.org, kernel-team@android.com, 
-	willmcvicker@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4bd438c0-75b8-4e28-939c-954716df7563@kernel.dk>
 
-On Wed, Jan 10, 2024 at 4:24=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro=
-org> wrote:
->
-> Since an if tests the numeric value of an expression, certain coding
-> shortcuts can be used. The most obvious one is writing
->     if (expression)
-> instead of
->     if (expression !=3D 0)
->
-> Since our case is a bitwise expression, it's more natural and clear to
-> use the ``if (expression)`` shortcut.
+On Tue, Jan 16, 2024 at 11:00:52AM -0700, Jens Axboe wrote:
+> On 1/16/24 2:57 AM, syzbot wrote:
+> > pstate: 10000005 (nzcV daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> > pc : _compound_head include/linux/page-flags.h:247 [inline]
+> > pc : bio_first_folio include/linux/bio.h:289 [inline]
+> > pc : __bio_release_pages+0x100/0x73c block/bio.c:1153
+> > lr : bio_release_pages include/linux/bio.h:508 [inline]
+> > lr : blkdev_bio_end_io+0x2a0/0x3f0 block/fops.c:157
+> > sp : ffff800089a375e0
+> > x29: ffff800089a375e0 x28: 1fffe0000162e879 x27: ffff00000b1743c0
+> > x26: ffff00000b1743c8 x25: 000000000000000a x24: 1fffe000015a9e12
+> > x23: ffff00000ad4f094 x22: ffff00000f496600 x21: 1fffe0000162e87a
+> > x20: 0000000000000004 x19: 0000000000000000 x18: ffff00000b174432
+> > x17: ffff00000b174438 x16: ffff00000f948008 x15: 1fffe0000162e886
+> > x14: ffff00000b1743d4 x13: 00000000f1f1f1f1 x12: ffff6000015a9e13
+> > x11: 1fffe000015a9e12 x10: ffff6000015a9e12 x9 : dfff800000000000
+> > x8 : ffff00000b1743d4 x7 : 0000000041b58ab3 x6 : 1ffff00011346ed0
+> > x5 : ffff700011346ed0 x4 : 00000000f1f1f1f1 x3 : 000000000000f1f1
+> > x2 : 0000000000000001 x1 : dfff800000000000 x0 : 0000000000000008
+> > Call trace:
+> >  _compound_head include/linux/page-flags.h:247 [inline]
+> >  bio_first_folio include/linux/bio.h:289 [inline]
+> >  __bio_release_pages+0x100/0x73c block/bio.c:1153
+> >  bio_release_pages include/linux/bio.h:508 [inline]
+> >  blkdev_bio_end_io+0x2a0/0x3f0 block/fops.c:157
+> >  bio_endio+0x4a4/0x618 block/bio.c:1608
+> 
+> This looks to be caused by:
+> 
+> commit 1b151e2435fc3a9b10c8946c6aebe9f3e1938c55
+> Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Date:   Mon Aug 14 15:41:00 2023 +0100
+> 
+>     block: Remove special-casing of compound pages
 
-Maybe the author of this code:
+This looks familiar ... looks like it came up right before Xmas and
+I probably dropped the patch on the floor?
 
-    (ufstat & info->tx_fifomask) !=3D 0
+https://lore.kernel.org/all/ZX07SsSqIQ2TYwEi@casper.infradead.org/
 
-just wanted to outline (logically) that the result of this bitwise
-operation produces FIFO length, which he checks to have non-zero
-length? Mechanically of course it doesn't matter much, and I guess
-everyone can understand what's going on there even without '!=3D 0'
-part. But it looks quite intentional to me, because in the same 'if'
-block the author uses this as well:
-
-    (ufstat & info->tx_fifofull)
-
-without any comparison operators.
-
->
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> ---
->  drivers/tty/serial/samsung_tty.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsun=
-g_tty.c
-> index dbbe6b8e3ceb..f2413da14b1d 100644
-> --- a/drivers/tty/serial/samsung_tty.c
-> +++ b/drivers/tty/serial/samsung_tty.c
-> @@ -988,8 +988,7 @@ static unsigned int s3c24xx_serial_tx_empty(struct ua=
-rt_port *port)
->         u32 ufcon =3D rd_regl(port, S3C2410_UFCON);
->
->         if (ufcon & S3C2410_UFCON_FIFOMODE) {
-> -               if ((ufstat & info->tx_fifomask) !=3D 0 ||
-> -                   (ufstat & info->tx_fifofull))
-> +               if ((ufstat & info->tx_fifomask) || (ufstat & info->tx_fi=
-fofull))
-
-Does this line fit into 80 characters? If no, please rework it so it
-does. I guess it's also possible to get rid of superfluous braces
-there, but then the code might look confusing, and I'm not sure if
-checkpatch would be ok with that.
-
->                         return 0;
->
->                 return 1;
-> --
-> 2.43.0.472.g3155946c3a-goog
->
->
+diff --git a/include/linux/bio.h b/include/linux/bio.h
+index ec4db73e5f4e..1518f1201ddd 100644
+--- a/include/linux/bio.h
++++ b/include/linux/bio.h
+@@ -286,6 +286,11 @@ static inline void bio_first_folio(struct folio_iter *fi, struct bio *bio,
+ {
+ 	struct bio_vec *bvec = bio_first_bvec_all(bio) + i;
+ 
++	if (i >= bio->bi_vcnt) {
++		fi->folio = NULL;
++		return;
++	}
++
+ 	fi->folio = page_folio(bvec->bv_page);
+ 	fi->offset = bvec->bv_offset +
+ 			PAGE_SIZE * (bvec->bv_page - &fi->folio->page);
+@@ -303,10 +308,8 @@ static inline void bio_next_folio(struct folio_iter *fi, struct bio *bio)
+ 		fi->offset = 0;
+ 		fi->length = min(folio_size(fi->folio), fi->_seg_count);
+ 		fi->_next = folio_next(fi->folio);
+-	} else if (fi->_i + 1 < bio->bi_vcnt) {
+-		bio_first_folio(fi, bio, fi->_i + 1);
+ 	} else {
+-		fi->folio = NULL;
++		bio_first_folio(fi, bio, fi->_i + 1);
+ 	}
+ }
+ 
 
