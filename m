@@ -1,235 +1,156 @@
-Return-Path: <linux-kernel+bounces-27636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A575082F371
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:46:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B4F082F36E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:46:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30C481F24371
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:46:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFA851F24415
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:46:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EAEC1CD0A;
-	Tue, 16 Jan 2024 17:46:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D9991CD09;
+	Tue, 16 Jan 2024 17:46:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CVWOdHbr"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BB1H3Vce"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE29D1CAB8
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 17:46:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=134.134.136.20
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705427200; cv=fail; b=T5HnKroVgKzFMNRS7NDL8yL7Prg/68SjvOLlbjQV/LgaPWyhfQmHffKoowWSEI8DP/WON6EsSj+zL3+kI+5MAJ35HDcd3x//k25b5j3YFrObF6Dza0KaifV+eGx2dU1KAjQDrrTb9HG3VKJW3ks2hALwq4tNX6hIiew2LsWjspQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705427200; c=relaxed/simple;
-	bh=SpKLAP+9YP0g4x+2jmoMG/PyzXoNpOPMbh+sAPKTgxg=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:X-IronPort-AV:Received:Received:Received:Received:
-	 Received:ARC-Message-Signature:ARC-Authentication-Results:Received:
-	 Received:From:To:CC:Subject:Date:Message-ID:X-Mailer:Content-Type:
-	 Content-Transfer-Encoding:X-ClientProxiedBy:MIME-Version:
-	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
-	 X-MS-Office365-Filtering-Correlation-Id:
-	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:
-	 X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-	 X-MS-Exchange-CrossTenant-UserPrincipalName:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-	b=Ql2/Kvu7AdvRRhW7dxif37LdPhzfSqFxi85FkQJwYt+vCYwCBoPpTYI1vjDzlX8eMoHf0MSllRw5YNJP2YFVOV3otwIfgeXd5c51XjBqhy0ayhu+piIJudk+FSnGkzy59vAYL2VRnmd21laNc2GDWCM9bqE8/J8LQmYCXD4tVxU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CVWOdHbr; arc=fail smtp.client-ip=134.134.136.20
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705427198; x=1736963198;
-  h=from:to:cc:subject:date:message-id:
-   content-transfer-encoding:mime-version;
-  bh=SpKLAP+9YP0g4x+2jmoMG/PyzXoNpOPMbh+sAPKTgxg=;
-  b=CVWOdHbrFYUGCLBHbSytBhwzKdvPcYBjtDhgW6SWmOoTXI8BBn7S/hhz
-   kJFMxW76yLC38kQ5rG1zddiE5F6vLgNOWbqSuWan3O0hEn5vGckrFRMia
-   W7P4HqNKTjXUYzwN1+2gAfGck+jvuBvsPfejdD8e8ovKSwz+VazyCFje8
-   va6YdeoeJDx0QKBXe0NR4DmzAETlSQOKecftDwuCRjXheReBZqty4JgD/
-   Wng54YkA6/TFyNmhsQFF4XIs2I67kJlQvLYYGw5qSlbtmns8b+DmuHX5S
-   l/O10jHHw3t57t2dC6Tck2Be4n+LKr2jxWbdQAa1Au/ihTHGZSix5T8aM
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="390388872"
-X-IronPort-AV: E=Sophos;i="6.05,199,1701158400"; 
-   d="scan'208";a="390388872"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 09:46:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="784207599"
-X-IronPort-AV: E=Sophos;i="6.05,199,1701158400"; 
-   d="scan'208";a="784207599"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Jan 2024 09:46:37 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 16 Jan 2024 09:46:37 -0800
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 16 Jan 2024 09:46:37 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 16 Jan 2024 09:46:37 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 16 Jan 2024 09:46:36 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C+v24+cEEb0fClJgPV2akJ67FJrY4UF7iY++AEbtvq/pg5EYz/5ZVTu07hLHShendhIIm3Qe1pVqdW8C6qKLhzqKmOlhuDPf3HdMTcau/k9dlgYX5TQt6qOR+VLD5j9LLw6gcc/liC7isQ5JGUP4Hz0WupxjHXN48+2X7t4yNqB+uATAnzGBspF6cQ5hvAxFg3lKJ+/jYGa9HzoT28NWr50/RjTURVnlUqv9W5qrAQO3CuhhaQt/eCrTaTFPDRuUc8xDZwxkKxigQ9p68wn6uuCtJWfEw/POjt1VKQn84JEnyfgAHE/eR3H3KmUCwqmoOxdgJOEoCrt08m+GrSkjdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=J5Xj8lGAzcl2eG/6TZBA/2kO37ybvrr4jdnUZji/lY8=;
- b=BCiOTAoYcH10/dc6vWn4RurPyE9KFpdsTfq7FF46gRlg+sH2egFaoGGHfv9cd8RL7NlecRlyvm1L5h3uLMDRA8Xjh3cxOuSyfITblEpnTgY8TzwEz5Q9I3UZjcYrmscrFMA4n/4UWuzaMOZDPhNBZ3tEth3pzwFZeWiNQKVY7l0ETDqt6e74JaBfbIbwuMg1ZvmV2ZbmeqxSqOnaXyx8UZ2F/PdAbHRb6X00Vf8Zw6K354Lq0U7sGfHmIBZMia47ZJELW/4AmNva5aQ0QbxdvC4GbWJglrKtW0NwfoYJXbWYWBFcRRycN8dkQgKcl1f/AiDT1HKh9RxxLdaIdjG3IQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB5373.namprd11.prod.outlook.com (2603:10b6:5:394::7) by
- DS0PR11MB8665.namprd11.prod.outlook.com (2603:10b6:8:1b8::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7159.23; Tue, 16 Jan 2024 17:46:29 +0000
-Received: from DM4PR11MB5373.namprd11.prod.outlook.com
- ([fe80::f105:47dd:6794:6821]) by DM4PR11MB5373.namprd11.prod.outlook.com
- ([fe80::f105:47dd:6794:6821%4]) with mapi id 15.20.7202.020; Tue, 16 Jan 2024
- 17:46:29 +0000
-From: =?UTF-8?q?Micha=C5=82=20Winiarski?= <michal.winiarski@intel.com>
-To: <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
-	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
-	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, "Javier Martinez
- Canillas" <javierm@redhat.com>, =?UTF-8?q?Ma=C3=ADra=20Canal?=
-	<mcanal@igalia.com>, Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>,
-	=?UTF-8?q?Micha=C5=82=20Winiarski?= <michal.winiarski@intel.com>
-Subject: [PATCH] drm/tests: mm: Call drm_mm_print in drm_test_mm_debug
-Date: Tue, 16 Jan 2024 18:46:02 +0100
-Message-ID: <20240116174602.1019512-1-michal.winiarski@intel.com>
-X-Mailer: git-send-email 2.43.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR3P281CA0080.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:1f::15) To DM4PR11MB5373.namprd11.prod.outlook.com
- (2603:10b6:5:394::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08FE91CAAE
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 17:46:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705427183; cv=none; b=ey/taDOUM3wTFghAc8SOtfo0YCXILzJN8WfeX2BkyN6LnhnxvB4eucKKrVh5ncZ88eb7E4r/DiZYnKWpuU9bhGrwXIuuiUU0cOUbtqhWt6yyypkMnIijfGixe2cdLdFxDn9pGr+I7qGrgxC5KgVn9fUE1HW7s3zBumv7yX/JD3M=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705427183; c=relaxed/simple;
+	bh=LodwqaOsEDUEHn0GKKC1oEvO5NRvdIMf0U6PDs0WXF0=;
+	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:From:To:Cc:
+	 Subject:References:X-PGP-KeyID:X-PGP-CertKey:Date:Message-ID:
+	 User-Agent:MIME-Version:Content-Type:X-Scanned-By; b=Xg+Sr4CmXOgvgCEtql44LN0mIYFJn5aMXUC/YQQDBMdSlqQOwOYPvc4whi9FjrbMkCbnDMqytfp9IZZXTUSWr//gyTaeyeDEY7LkGoWwu9knsptA23ux73dgrzDJcAbv2tj29s6pHXDDuPXKz0PXMwX5ckfhJIyGw3W1gE3Y/7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BB1H3Vce; arc=none smtp.client-ip=170.10.129.124
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705427181;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 references:references; bh=Ial15Kpu3oyTf3h0mGFWe+pDzqBiZ9qg/SywZ2peWIk=;
+	b=BB1H3Vce7zQbHWW5OrgFa30la9Y3s240BmhUm9rIPwD/zTNgmzxVcvywSmP+ZadP3i/Cwq
+	jUspOYqnES+SQ2053WPwqFOzU/T8qKj8Iwb5cYTbCTykMuZ8OGF08ZxJhSzjjETfbc0Ciz
+	4X2Xrq4IYRKVaZTFMyeEKvQ4puwftHg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-455-ueyID-MnNlmR_njneFCvvA-1; Tue, 16 Jan 2024 12:46:15 -0500
+X-MC-Unique: ueyID-MnNlmR_njneFCvvA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C952383B8E8;
+	Tue, 16 Jan 2024 17:46:14 +0000 (UTC)
+Received: from segfault.usersys.redhat.com (unknown [10.22.17.253])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id E3EFA2026D6F;
+	Tue, 16 Jan 2024 17:46:13 +0000 (UTC)
+From: Jeff Moyer <jmoyer@redhat.com>
+To: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
+Cc: corbet@lwn.net,  axboe@kernel.dk,  asml.silence@gmail.com,
+  ribalda@chromium.org,  rostedt@goodmis.org,  bhe@redhat.com,
+  akpm@linux-foundation.org,  matteorizzo@google.com,  ardb@kernel.org,
+  alexghiti@rivosinc.com,  linux-doc@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  io-uring@vger.kernel.org
+Subject: Re: [PATCH] iouring:added boundary value check for io_uring_group
+ systl
+References: <20240115124925.1735-1-subramanya.swamy.linux@gmail.com>
+X-PGP-KeyID: 1F78E1B4
+X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
+Date: Tue, 16 Jan 2024 12:46:13 -0500
+Message-ID: <x49edeh5fyy.fsf@segfault.usersys.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB5373:EE_|DS0PR11MB8665:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4b68c35d-75bd-4005-90e1-08dc16bb11fa
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gIe55Q0wbrHidFugKwvxCXU8eKAbRdACO1H5ZIsXCjrBYbX1QvlMoEHeOe1dWY2PrX+Q2rjMkzUqvXqRgUAozESyHQUqq4iDLyzAgmR0pYyy1nFk07k21QxbudCHUMTL0czzts78FaDycA5NJtcn5Ei+GUN456gJXyVdRCihDnorUDdLzsLp5lI8ouOtbtVklSJT8hohT7OMicm9Hgcapqg8TyUBrSUREktj/LOJ4W1g68jwarCCa3CCWs3Ptg1eSVLzzgL3XvCFiQahlu4XrkAvUZTZjzgQg1Yh+Ux2nxutSQqDItIrvHTZxdsUuePcCtxnCt1E/aGs8VNlWOBouV8w1zLK75kWW4/cIAd8FE6v9Jq8jfBTUlq+ncHB9kWpDcf/xODtRMBZp/tFiWL3WQw3jng2xZV+Q9+KwfipEgbZ086ZGJJhm9noyI6k5TJ7v6QSFgq4r3YHr3Cjy3xVg8z0TU6y6tzJY9jGtxSuffJ5FYhBLq4oMX7d+hFhK5k2OWEBEBwH3KVmhiC0MGjq1qqBL2d5jfGT27vrp05hMwI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5373.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(136003)(376002)(39860400002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(82960400001)(38100700002)(36756003)(86362001)(26005)(1076003)(83380400001)(41300700001)(478600001)(6512007)(66556008)(66946007)(316002)(66476007)(6666004)(2616005)(54906003)(6486002)(6506007)(2906002)(7416002)(5660300002)(4326008)(8936002)(8676002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RS9lUm9hdEx6RVovTGp4a20yNldOY0ZhTklNWHk4VXcyQ3h5S1Q2SlFoVytq?=
- =?utf-8?B?QjdrY1VKZWUrOUgxb1VWTThzQ0xXN2tRRFhraU8reWtHR2o1eDJDeU5ZemxQ?=
- =?utf-8?B?elNnMmFpKzhSMzNZYnQzK3lRRHdkY3U2NFdFNEdFTUFZRzA0UWI1N2M2SWN0?=
- =?utf-8?B?L3JYeDZvYUYzZngraENMRlRvOEMwMDNqL2hJL2g4QmswRVFpeGV3YWw4UTRn?=
- =?utf-8?B?MWlaL2JDb0puR1BPd3FmQ25PYmxFRDZEbU1QTDgrR1hGdXFiZUN2Y0xmdk5s?=
- =?utf-8?B?UFl3YWpxcURXRHdYS1JES1pKMG9CM0pPa3hFWUFRSFNiQ3JDUlNaTWx5Qk8r?=
- =?utf-8?B?N0lzZTN6UWdPaDNCR2dIaWhrTUdlVitnd0J3R2dvbUk1ZU5aT3F0SCtvZnZj?=
- =?utf-8?B?azJlMDNpYnNES0t2S1BVakVzL3hLT1B4aUREUVJzSVNqdmd0Mm5DNWlLVE5a?=
- =?utf-8?B?ZEpCM21TR2k4QnZOY3g5eU5CbGxDY1oyTjRxZEZmOWpKK2QyaDFyVFF3VnlR?=
- =?utf-8?B?czZyMDFBY3Y4MEhHa1MyMXh1QzdkR1Z3bk5MZDcwMGJrL1AwMmlIVjEvTFpN?=
- =?utf-8?B?VlBMTXdQcDNhdDdBQjdoZXhFL1R3bW5tY04xaGQ0MXVIU1hqejNyc0daamc4?=
- =?utf-8?B?S29yRkVQK1d5TDltcExvK3lxTko5SVByVW1qMzUxNkFGaVhWS28yMVRTRGtz?=
- =?utf-8?B?bGNiY1BGNGcwcWVDQngrS0E3cU5Vb29vVGo2eWFSVy9HMGpwVnk1RCtJekxp?=
- =?utf-8?B?YXNBMlgrZE5xMlo4cWxOQVdyalNPV0xQbTFPM1hhaVVBbExCNG1sQ24xcjZr?=
- =?utf-8?B?eXJQZFNYeGVmdzdGNy9VQkpyS09kQzdtU2d0UjBYTGV2RCtzZHNaNnRMUVIz?=
- =?utf-8?B?VC9LNmEvRTA3dFUxTlpKRUdvZ2VOS2VKVnRFYklRV3l2VmZ6TkpSKzluMkNm?=
- =?utf-8?B?NHhLLzAxSUkyYXA3RTg2cFMwRXJYOEJuTXJvVzBuMkZTamtCeVJ3c3JhWTZ6?=
- =?utf-8?B?a2NNNmdDTVBkUUVDL3AzQkQ4alJBTU0rcVlNV3JEaDdyZ0k1TlFnTVpjK3VR?=
- =?utf-8?B?SVZPMmpsMWlSSzVhL3JoeFZFRFl1TDJCeDlOckNrQm9iaUNVeEhEb2M4ZS84?=
- =?utf-8?B?S1RDN3dReDJpTlp2VUZJLzV3M0N0OHJOZmVjaU5Hc2ZjZEJTY1phT1RnK0N3?=
- =?utf-8?B?K0xBeElHQ2VtRnh3a2k4bWhXOVJhRXdQWnQ1UzFkckNOcVdwVEgwbjRBaktV?=
- =?utf-8?B?SzZPaFNwdmw1NmRnVG1lUml1QWN6Rmh1Zk1BSVVGMG9tYWExVmduT2hySW4z?=
- =?utf-8?B?U0xPdlVIaHJwUS94VkwwMU83dXQyWkthSktDNmNKY1VkZTRmcGRURVBNVDl1?=
- =?utf-8?B?bnBlVXRiSU5CZ1ErSWM4d2ZXOWNCZjM0cGtJY21ycjVVMEFtNWpKam1rZFlj?=
- =?utf-8?B?bFdFVTdGUngzM2sxYlFJbU94ZjRTWWR2VUw5K056cjZha2l5bnRHSGdjYVcw?=
- =?utf-8?B?UWRIQ0JRZ0hYRy9PRWZtaDF1UmNRczNiZks1cElQSDJ6aGdrZDJZd0poQkRt?=
- =?utf-8?B?bVF5NFY1ejgzYlZldjMrdkkwckgwQlRrTnVQQnNyT3F3L3FQODdwQkx1Tmd0?=
- =?utf-8?B?aW54bUNIVTBsNi9YS25CSWwrMmlJZ2JiNW5GUTY4VnZCeU5GOEdKM0RCZkk1?=
- =?utf-8?B?NkZ5TDkySGF5MjlvTHB0YVczcnF1bHc1Q2h3RXVXcTl5QVR5QU9zcDhObFYv?=
- =?utf-8?B?V010Um11N0h3Z25OMkdBcWVCSXN3bzVVL2QreUpWay80SjZTUm9wT0NudzU0?=
- =?utf-8?B?SGtqd0x5V3piaU5IL3dER2JiUzlLWkk5MXBtTTl6ZDI4dFdhaVlReFYzVE5o?=
- =?utf-8?B?R1hkZXVNWFNYT2s4dUtrZCtQYXBSeURRL1lTOUJmNTVkNWNIZEFobmxZSGxn?=
- =?utf-8?B?MTZ0VWdWYys3M3F6QWRlSGIvUGlVdW0wTXFmcnFqTlQ5aDhIcUgzaWhGeGln?=
- =?utf-8?B?cDdFa05yeGRXakpSOUN3R3JqM2lERFBpb2FoeG5uWFJtL3ZLREdRWWFTWXNC?=
- =?utf-8?B?VHpIS2s0L1BJZVhRMWFWVE56ZkprVGhYOC9UcUkzR3hHa1p0VmhCUDB5VVhX?=
- =?utf-8?B?VHFYTDNLR1FQYW9jd001Zzlwd1EwSnlibFBIeERwV3hMVjRmQko4OGVVS1Nw?=
- =?utf-8?B?VXc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b68c35d-75bd-4005-90e1-08dc16bb11fa
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5373.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2024 17:46:29.8629
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6t/UB8eJtH0iwV7TawGcz/z1UKSq5dOYmnZhal/Ge6UuJeJl55CR1sxPr+HqjqsdsHyY9dL6CmdXA8hgVzrmnQCp14nnQv50bOnc1piPDZc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB8665
-X-OriginatorOrg: intel.com
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-The original intent behind the test was to sanity check whether calling
-the debug iterator (drm_mm_print) doesn't cause any problems.
-Unfortunately - this call got accidentally removed during KUnit
-transition. Restore it.
+Subramanya Swamy <subramanya.swamy.linux@gmail.com> writes:
 
-Signed-off-by: Michał Winiarski <michal.winiarski@intel.com>
----
- drivers/gpu/drm/tests/drm_mm_test.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+> /proc/sys/kernel/io_uring_group takes gid as input
+> added boundary value check to accept gid in range of
+> 0<=gid<=4294967294 & Documentation is updated for same
 
-diff --git a/drivers/gpu/drm/tests/drm_mm_test.c b/drivers/gpu/drm/tests/drm_mm_test.c
-index 4e9247cf9977f..1eb0c304f9607 100644
---- a/drivers/gpu/drm/tests/drm_mm_test.c
-+++ b/drivers/gpu/drm/tests/drm_mm_test.c
-@@ -188,13 +188,13 @@ static void drm_test_mm_init(struct kunit *test)
- 
- static void drm_test_mm_debug(struct kunit *test)
- {
-+	struct drm_printer p = drm_debug_printer(test->name);
- 	struct drm_mm mm;
- 	struct drm_mm_node nodes[2];
- 
- 	/* Create a small drm_mm with a couple of nodes and a few holes, and
- 	 * check that the debug iterator doesn't explode over a trivial drm_mm.
- 	 */
--
- 	drm_mm_init(&mm, 0, 4096);
- 
- 	memset(nodes, 0, sizeof(nodes));
-@@ -209,6 +209,9 @@ static void drm_test_mm_debug(struct kunit *test)
- 	KUNIT_ASSERT_FALSE_MSG(test, drm_mm_reserve_node(&mm, &nodes[1]),
- 			       "failed to reserve node[0] {start=%lld, size=%lld)\n",
- 			       nodes[0].start, nodes[0].size);
-+
-+	drm_mm_print(&mm, &p);
-+	KUNIT_SUCCEED(test);
- }
- 
- static bool expect_insert(struct kunit *test, struct drm_mm *mm,
--- 
-2.43.0
+Thanks for the patch.  You're right, the current code artificially
+limits the maximum group id.
+
+> Signed-off-by: Subramanya Swamy <subramanya.swamy.linux@gmail.com>
+> ---
+>  Documentation/admin-guide/sysctl/kernel.rst | 9 ++++-----
+>  io_uring/io_uring.c                         | 8 ++++++--
+>  2 files changed, 10 insertions(+), 7 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+> index 6584a1f9bfe3..3f96007aa971 100644
+> --- a/Documentation/admin-guide/sysctl/kernel.rst
+> +++ b/Documentation/admin-guide/sysctl/kernel.rst
+> @@ -469,11 +469,10 @@ shrinks the kernel's attack surface.
+>  io_uring_group
+>  ==============
+>  
+> -When io_uring_disabled is set to 1, a process must either be
+> -privileged (CAP_SYS_ADMIN) or be in the io_uring_group group in order
+> -to create an io_uring instance.  If io_uring_group is set to -1 (the
+> -default), only processes with the CAP_SYS_ADMIN capability may create
+> -io_uring instances.
+> +When io_uring_disabled is set to 1, only processes with the
+> +CAP_SYS_ADMIN may create io_uring instances or process must be in the
+> +io_uring_group group in order to create an io_uring_instance.
+> +io_uring_group is set to 0.This is the default setting.
+
+You are changing the default from an invalid group to the root group.  I
+guess that's ok, but I'd rather keep it the way it is.  The text is a
+bit repetitive.  Why not just this?
+
+"When io_uring_disabled is set to 1, a process must either be
+ privileged (CAP_SYS_ADMIN) or be in the io_uring_group group in order
+ to create an io_uring instance."
+
+> diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
+> index 09b6d860deba..0ed91b69643d 100644
+> --- a/io_uring/io_uring.c
+> +++ b/io_uring/io_uring.c
+> @@ -146,7 +146,9 @@ static void io_queue_sqe(struct io_kiocb *req);
+>  struct kmem_cache *req_cachep;
+>  
+>  static int __read_mostly sysctl_io_uring_disabled;
+> -static int __read_mostly sysctl_io_uring_group = -1;
+> +static unsigned int __read_mostly sysctl_io_uring_group;
+> +static unsigned int min_gid;
+> +static unsigned int max_gid  = 4294967294;  /*4294967294 is the max guid*/
+
+Right, INVALID_GID is -1.
+
+>  #ifdef CONFIG_SYSCTL
+>  static struct ctl_table kernel_io_uring_disabled_table[] = {
+> @@ -164,7 +166,9 @@ static struct ctl_table kernel_io_uring_disabled_table[] = {
+>  		.data		= &sysctl_io_uring_group,
+>  		.maxlen		= sizeof(gid_t),
+>  		.mode		= 0644,
+> -		.proc_handler	= proc_dointvec,
+> +		.proc_handler	= proc_douintvec_minmax,
+> +		.extra1         = &min_gid,
+
+This should be SYSCTL_ZERO.
+
+> +		.extra2         = &max_gid,
+>  	},
+>  	{},
+>  };
+
+Thanks!
+Jeff
 
 
