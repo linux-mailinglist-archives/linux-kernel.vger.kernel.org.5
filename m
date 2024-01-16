@@ -1,160 +1,148 @@
-Return-Path: <linux-kernel+bounces-27209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C880C82EC3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:54:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FAA082EC1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:49:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48BC72813BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:54:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44A741C22FE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:49:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B75C0134DA;
-	Tue, 16 Jan 2024 09:54:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2B54134B6;
+	Tue, 16 Jan 2024 09:49:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=narfation.org header.i=@narfation.org header.b="E0X/tHWC"
-Received: from dvalin.narfation.org (dvalin.narfation.org [213.160.73.56])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="gdhuVufm"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EC2A134A1;
-	Tue, 16 Jan 2024 09:54:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=narfation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=narfation.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
-	s=20121; t=1705398486;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/VCLSujzzlDwuQlHwmx12Nj9mX+R3Jv83uQp+uToPts=;
-	b=E0X/tHWCKP+I7eyjg29dLJkauXq79JyGU0MK8In7XKzm4VDEmrdqTc7dxx6so8eYcL53gf
-	Nwhgz0OCj2RZ4EMqm4cBJVv+cwNETy7TDwSefwODFUXjgDw6u+HYRWMZ5BDqzU9veqE+FB
-	MnYtekoPtvzsXOZZa7VducunC5Fbg8s=
-From: Sven Eckelmann <sven@narfation.org>
-To: linus.luessing@c0d3.blue
-Cc: b.a.t.m.a.n@lists.open-mesh.org, clm@fb.com, davem@davemloft.net,
- dsterba@suse.com, edumazet@google.com, josef@toxicpanda.com, kuba@kernel.org,
- linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com,
- syzkaller-bugs@googlegroups.com,
- syzbot <syzbot+ebe64cc5950868e77358@syzkaller.appspotmail.com>
-Subject: Re: [syzbot] [btrfs?] memory leak in corrupted
-Date: Tue, 16 Jan 2024 10:48:03 +0100
-Message-ID: <23660052.EfDdHjke4D@ripper>
-In-Reply-To: <000000000000beadc4060f0cbc23@google.com>
-References: <000000000000beadc4060f0cbc23@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FD14134A3;
+	Tue, 16 Jan 2024 09:49:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1705398556; x=1736934556;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=d/LmQtM6md3wSSgxarWeNXc3nWd8MVX7G2TVJesXeRI=;
+  b=gdhuVufmQweEZdMW3E7ZUIv6G1cfEN1gkw0ENXJTLp8XcOhoKIkrlRI5
+   6AOcp1hgcS672eIXnEeCM2HVETVikdFy9Klp/qixXCVOvnhHT7VngWyTm
+   /n5ugSPEJqnE5BZuvkah2ovUeqXp6t+YpXbO9P/t/zDywOu0QJVSZh9D7
+   QAxRU8BgbZ/g7ybjkSF2QL629HExTWzWhyIJyd2QwyPXKrLMjHAE1rXF+
+   IgiqMiypMziiz2ouEX2LWK9VuzCZEB8/LD6Js8FK7trQU6/bStK3MObZP
+   oAiylVyC5kSlKiKbwhx3ggGX6PbUyxiT+LyrLSAbCQ4fzYkMdBDVNYL9u
+   g==;
+X-CSE-ConnectionGUID: lhV4ifIESgq7KLyVEfkQ/Q==
+X-CSE-MsgGUID: H9BXj9zQRVij7q1BDAfNUw==
+X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
+   d="asc'?scan'208";a="245529089"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Jan 2024 02:49:15 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 16 Jan 2024 02:48:47 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Tue, 16 Jan 2024 02:48:44 -0700
+Date: Tue, 16 Jan 2024 09:48:08 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC: Frank Li <Frank.li@nxp.com>, <robh@kernel.org>,
+	<alexandre.belloni@bootlin.com>, <conor.culhane@silvaco.com>,
+	<gregkh@linuxfoundation.org>, <imx@lists.linux.dev>, <jirislaby@kernel.org>,
+	<joe@perches.com>, <linux-i3c@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>,
+	<miquel.raynal@bootlin.com>, <zbigniew.lukwinski@linux.intel.com>,
+	<devicetree@vger.kernel.org>, <krzysztof.kozlowski+dt@linaro.org>
+Subject: Re: [PATCH v2 2/7] dt-bindings: i3c: svc: add compatible string i3c:
+ silvaco,i3c-target-v1
+Message-ID: <20240116-achiness-thievish-10a12b3c08cd@wendy>
+References: <3c0be658-e7a6-4231-b206-86ffb47e0cb2@linaro.org>
+ <ZaFbbeQrC7o2dchO@lizhi-Precision-Tower-5810>
+ <e3b9aa63-25a5-41cc-9eb7-6e7d1eacb136@linaro.org>
+ <ZaFjaWCA6k+tiCSJ@lizhi-Precision-Tower-5810>
+ <ZaWLCrWJEMtFx8cR@lizhi-Precision-Tower-5810>
+ <1b628901-7f71-4c97-9a16-723912988417@linaro.org>
+ <ZaXqCoCHPWER94Hh@lizhi-Precision-Tower-5810>
+ <d45e31c4-914e-4cea-a145-9775b6f516ab@linaro.org>
+ <20240116-bleach-herbicide-48d636967134@wendy>
+ <3199c245-3d2d-49e8-951e-2b059de4d683@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart9125406.EvYhyI6sBW";
- micalg="pgp-sha512"; protocol="application/pgp-signature"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="lyAJBZzxW05Or8+L"
+Content-Disposition: inline
+In-Reply-To: <3199c245-3d2d-49e8-951e-2b059de4d683@linaro.org>
 
---nextPart9125406.EvYhyI6sBW
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
-From: Sven Eckelmann <sven@narfation.org>
-To: linus.luessing@c0d3.blue
-Subject: Re: [syzbot] [btrfs?] memory leak in corrupted
-Date: Tue, 16 Jan 2024 10:48:03 +0100
-Message-ID: <23660052.EfDdHjke4D@ripper>
-In-Reply-To: <000000000000beadc4060f0cbc23@google.com>
-References: <000000000000beadc4060f0cbc23@google.com>
-MIME-Version: 1.0
+--lyAJBZzxW05Or8+L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-@Linus, this looks like something for you.
+On Tue, Jan 16, 2024 at 10:33:48AM +0100, Krzysztof Kozlowski wrote:
+> On 16/01/2024 10:30, Conor Dooley wrote:
+> > On Tue, Jan 16, 2024 at 08:24:20AM +0100, Krzysztof Kozlowski wrote:
+> >> On 16/01/2024 03:29, Frank Li wrote:
+> >>>>> 	Patches were accepted after discussion, what you ponit to. So I
+> >>>>> think everyone agree on the name 'silvaco,i3c-master-v1'.
+> >>>>> 	I plan send next version to fix auto build error. Any additional
+> >>>>> comments about this?
+> >>>>
+> >>>> I still do not see how did you address Rob's comment and his point is
+> >>>> valid. You just did not reply to it.
+> >>>
+> >>> See https://lore.kernel.org/imx/ZXCiaKfMYYShoiXK@lizhi-Precision-Towe=
+r-5810/
+> >>
+> >> First of all, that's not the answer to Rob's email, but some other
+> >> thread which is 99% ignored by Rob (unless he has filters for
+> >> "@Rob"...). Therefore no, it does not count as valid answer.
+> >>
+> >> Second, explanation does not make sense. There is no argument granting
+> >> you exception from SoC specific compatibles.
+> >=20
+> > The patch could have been applied two months ago had Frank done as
+> > was requested (multiple times). I don't understand the resistance
+> > towards doing so given the process has taken way way longer as a result.
+>=20
+> I think that Rob's comment was just skipped and original master binding
+> was merged without addressing it. I don't want to repeat the same
+> process for the "target". Indeed I could point this earlier... if I only
+> knew that Rob pointed out that issue.
 
-On Tuesday, 16 January 2024 10:27:20 CET syzbot wrote:
-> syzbot found the following issue on:
-> 
-> HEAD commit:    052d534373b7 Merge tag 'exfat-for-6.8-rc1' of git://git.ke..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14620debe80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=a7031f9e71583b4a
-> dashboard link: https://syzkaller.appspot.com/bug?extid=ebe64cc5950868e77358
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16a344c1e80000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/82a7201eef4c/disk-052d5343.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/ca12b4c31826/vmlinux-052d5343.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/3f07360ba5a8/bzImage-052d5343.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+ebe64cc5950868e77358@syzkaller.appspotmail.com
+Oh I think I got confused here. The context for this mail led me to
+think that this was still trying to push the i3c-master-v1 stuff through
+and I was commenting on my frustration with the resistance to applying
+the feedback received. I didn't realise that this was for another
+patch adding a target.
 
-The relevant line is the batadv_mcast_forw_tracker_tvlv_handler registration 
-in batadv_mcast_init() which was introduced in
-commit 07afe1ba288c ("batman-adv: mcast: implement multicast packet reception and forwarding")
+I think you already said it, but NAK to adding any more compatibles here
+until the soc-specific compatible that was asked for for the imx93 is
+added.
 
-And I can't find the batadv_tvlv_handler_unregister for 
-BATADV_TVLV_MCAST_TRACKER in batadv_mcast_free()
+Thanks,
+Conor.
 
-Kind regards,
-	Sven
-
-> 
-> BUG: memory leak
-> unreferenced object 0xffff88811c71a980 (size 64):
->   comm "syz-executor.7", pid 5063, jiffies 4294953937
->   hex dump (first 32 bytes):
->     00 00 00 00 00 00 00 00 20 8e 7e 1c 81 88 ff ff  ........ .~.....
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace (crc 9f8721dd):
->     [<ffffffff815f7d53>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
->     [<ffffffff815f7d53>] slab_post_alloc_hook mm/slub.c:3817 [inline]
->     [<ffffffff815f7d53>] slab_alloc_node mm/slub.c:3860 [inline]
->     [<ffffffff815f7d53>] kmalloc_trace+0x283/0x330 mm/slub.c:4007
->     [<ffffffff84aae617>] kmalloc include/linux/slab.h:590 [inline]
->     [<ffffffff84aae617>] kzalloc include/linux/slab.h:711 [inline]
->     [<ffffffff84aae617>] batadv_tvlv_handler_register+0xf7/0x2a0 net/batman-adv/tvlv.c:560
->     [<ffffffff84a8d09f>] batadv_mcast_init+0x4f/0xc0 net/batman-adv/multicast.c:1926
->     [<ffffffff84a895b9>] batadv_mesh_init+0x209/0x2f0 net/batman-adv/main.c:231
->     [<ffffffff84a9fa88>] batadv_softif_init_late+0x1f8/0x280 net/batman-adv/soft-interface.c:812
->     [<ffffffff83f48559>] register_netdevice+0x189/0xca0 net/core/dev.c:10188
->     [<ffffffff84a9f255>] batadv_softif_newlink+0x55/0x70 net/batman-adv/soft-interface.c:1088
->     [<ffffffff83f61dc0>] rtnl_newlink_create net/core/rtnetlink.c:3515 [inline]
->     [<ffffffff83f61dc0>] __rtnl_newlink+0xb10/0xec0 net/core/rtnetlink.c:3735
->     [<ffffffff83f621bc>] rtnl_newlink+0x4c/0x70 net/core/rtnetlink.c:3748
->     [<ffffffff83f5cd1f>] rtnetlink_rcv_msg+0x22f/0x5b0 net/core/rtnetlink.c:6615
->     [<ffffffff84093291>] netlink_rcv_skb+0x91/0x1d0 net/netlink/af_netlink.c:2543
->     [<ffffffff84092242>] netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
->     [<ffffffff84092242>] netlink_unicast+0x2c2/0x440 net/netlink/af_netlink.c:1367
->     [<ffffffff84092701>] netlink_sendmsg+0x341/0x690 net/netlink/af_netlink.c:1908
->     [<ffffffff83ef2912>] sock_sendmsg_nosec net/socket.c:730 [inline]
->     [<ffffffff83ef2912>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
->     [<ffffffff83ef5af4>] __sys_sendto+0x164/0x1e0 net/socket.c:2191
->     [<ffffffff83ef5b98>] __do_sys_sendto net/socket.c:2203 [inline]
->     [<ffffffff83ef5b98>] __se_sys_sendto net/socket.c:2199 [inline]
->     [<ffffffff83ef5b98>] __x64_sys_sendto+0x28/0x30 net/socket.c:2199
-
-
---nextPart9125406.EvYhyI6sBW
+--lyAJBZzxW05Or8+L
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAmWmUNMACgkQXYcKB8Em
-e0ak3w//d9HRSZJiTWYrWkiOMLEoDd7oWa9shGcdm9qS+bmJ4RWkqyLQKWiLl6yz
-CcGxtbDBUXvVgMUHX9BuctKnigZ7VA+7wMY1ZLVE0KUPOlqkvlW9GvkOutwa2f1d
-hwFa2uPCSXqWbIaU6JjxNvHM0sEJou392MebhV5n9M9zJlS8/v5t7lwgKa3tnLL2
-vhyqSKKs7BESIvUhI399nPr2AfOhw+qqndV35B5gAJVeHC+iSWBycKolP/LstaJq
-Z7JE1eusP50i3vrSVIglwiefF7kUq1Y088F1nq2ommuVXFfPAxss5bwUupG7Jmtf
-gIYIslX/eLNpahJvVIKNTMPBjfcaeEbT8e87xIzhT1H4quv2oApKfWTM5u0XryDK
-29ICqroEH4DCv+gEYF4Miip40m982YtZlB1wnShFK3icFZaEGipgqxJ67/XJNkfP
-GXdNnzWlEl6PXsS388TYLkQlxWdFNsSM08IPZjolOEgIDhZaM3AUCDUe22BWiN5Z
-BdbeU3sWmiy3BaZ2fUh6M0Cawd1Oz4QneJl3rPce1jeDI4ee9CtTdgWd1/ziG8yH
-0QhMTljzGz5WEaPBT9L7PsKf33/s/IY1GwXzB/maObFi10G6nn+743btOlCodOb3
-i4lTc8Z3Vl+4CCl78CUfQemr/nd8irtzCJk/OJuUlOSmepgs+J4=
-=A35g
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaZQ2AAKCRB4tDGHoIJi
+0pPQAPwOtqo+AaPupCQJlV+rWAmSvitBpzmIYrOAkGb6DlqLfAEAkGGgrQwVHqSi
+f4RUVEYgW3INJX+Bf9bl1aY22t/R4gw=
+=o8PF
 -----END PGP SIGNATURE-----
 
---nextPart9125406.EvYhyI6sBW--
-
-
-
+--lyAJBZzxW05Or8+L--
 
