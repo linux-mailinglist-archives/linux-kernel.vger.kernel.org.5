@@ -1,115 +1,194 @@
-Return-Path: <linux-kernel+bounces-28351-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3036682FD29
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:44:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E247782FD2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:44:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C31031F29D7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:44:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6380128E3CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:44:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8D3224A1B;
-	Tue, 16 Jan 2024 22:27:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF62024B3A;
+	Tue, 16 Jan 2024 22:28:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="eb/gCtr6"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FOthQzrJ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6404A24A0C;
-	Tue, 16 Jan 2024 22:27:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 944BB2030E
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 22:28:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705444078; cv=none; b=MHTZzVnuwWPXnW7yPXTmh3p1mqzZmkBlJTPYZfAL8WGUs5ROb1h+GViHUKLr9oIRXRrRKuWLNRWPye44tegBI4Ra0GHY2a97D9Pvs0nnM1GrniMJzs599pEfeP+PKCUNBzvcLMtytz/oQAD8G84AUMJ3KPDrp4fh0PesKTAPBwQ=
+	t=1705444124; cv=none; b=uh/JBzgSjEd1UUo0rPGm2/2oPQKYUQJxNrvNVLRSQqZTO/uIkExBKSRjnkXZQ566OvRD9ZrNh4Qud5wPAdUu0j8edW2zCuISCwegQryScQ3ALQ3uCSM4mK+Q1hJXPopxZH/Y3zK9Ryxa0rQj8yDz35iPvrqCyySblPVNyMTjhSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705444078; c=relaxed/simple;
-	bh=EBVwvwUv/VwgNMWmJPq1SrptRX4FtcU9FHl/QzqZTns=;
-	h=DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=Rb/oaP5VWn2tw8Swf86dkeqZK6SG+fK2NM5jTOT9+LbgbO58UaOOQdbf0r9J4By1b4Ci8L13HXhEbHTKBFOaPZh6x0wpkWDZNAPngkGI5KZBu7DRk81uQRMLteSLzSzuAX89vRjm4wgniVmHtbJT5mQl9YQXDPb774CxRIiBtto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=eb/gCtr6; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=WPnBskU8T0/6q6mbWR8WDhb87Ftyu+YnEGXBTVNd/No=; b=eb/gCtr6kJXTzgbcIjj2Zw0tBf
-	rVmsycKsJYFU+AQ8f+J4zQ2ENVN6swpyB/CZ02FoOi3WrujIkidQPUNa8IjJeTeOcI+Wpq/KR+okV
-	Ad2zQh+6QMilKkaPqhs+ojrRFLs+UjdkUV9xLk8e37NdvQ0MImqXIjSeUPq5R3NgVQG4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rPruF-005MQ2-7v; Tue, 16 Jan 2024 23:27:39 +0100
-Date: Tue, 16 Jan 2024 23:27:39 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Qiang Ma <maqianga@uniontech.com>
-Cc: alexandre.torgue@foss.st.com, joabreu@synopsys.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: stmmac: ethtool: Fixed calltrace caused by
- unbalanced disable_irq_wake calls
-Message-ID: <97106e8a-df9a-429a-a4ff-c47277de70d9@lunn.ch>
-References: <20240112021249.24598-1-maqianga@uniontech.com>
+	s=arc-20240116; t=1705444124; c=relaxed/simple;
+	bh=9Ezf4ND7hXOBpmbgOSwM5A6lJTvji0aEFSttJmVgKdA=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:Received:Message-ID:Date:MIME-Version:User-Agent:
+	 Subject:Content-Language:To:Cc:References:From:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding; b=uEXv6rQs79hotK/YmzOPTpa5ah+kQHQT0ZOkR50IQeFIUq4gzqiygbotZrJFQ+e53wkRfr44AOvabCwpGplScwHOjfd/VlbKulw8OiwRdBTmM2b/zYfZvKI012pc1AQhzKqQWzbEuWkUwCHFK3gUBO9cL8SFoe13MiuC1HQHBe4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FOthQzrJ; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705444122; x=1736980122;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=9Ezf4ND7hXOBpmbgOSwM5A6lJTvji0aEFSttJmVgKdA=;
+  b=FOthQzrJi00RRLlMOafsZy5TrbVi3XRhIanSNUNTFOkHuG3QN/wjiV5Z
+   kQOHxMtFFxciHZal8xzB0pAofybvbKC3aqV0my1cl90+LmRwhUunwhv+S
+   v4a3+d3EGvT5EaU957BRUfW4nu70ORryA/65f9PN5/5DVCscL67n+FQu6
+   +x3dSc0AJTmYZQbIwDOsHtOaOftctoAZaw8vy16XsLKhdhISFltOmY87B
+   mpFakZGCg3K2xnzjAAfiKEd8xuPszFnL6nbOw21vGarOHoyHAPLndhuvy
+   6RDsrbCEOdbOgpf0XzsHXjOREknvMpG6lNWpMuUoWndhcau8Kgo4m0ZHf
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="13360020"
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="13360020"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 14:28:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="18612293"
+Received: from rjcolson-mobl2.amr.corp.intel.com (HELO [10.209.69.176]) ([10.209.69.176])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 14:28:41 -0800
+Message-ID: <1bbf8d3e-aa94-48c7-a1e4-76f9eefc4af7@linux.intel.com>
+Date: Tue, 16 Jan 2024 14:28:29 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240112021249.24598-1-maqianga@uniontech.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1 3/4] tsm: Allow for mapping RTMRs to TCG TPM PCRs
+Content-Language: en-US
+To: Samuel Ortiz <sameo@rivosinc.com>, Dan Williams <dan.j.williams@intel.com>
+Cc: linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240114223532.290550-1-sameo@rivosinc.com>
+ <20240114223532.290550-4-sameo@rivosinc.com>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240114223532.290550-4-sameo@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jan 12, 2024 at 10:12:49AM +0800, Qiang Ma wrote:
-> We found the following dmesg calltrace when testing the GMAC NIC notebook:
-> 
-> [9.448656] ------------[ cut here ]------------
-> [9.448658] Unbalanced IRQ 43 wake disable
-> [9.448673] WARNING: CPU: 3 PID: 1083 at kernel/irq/manage.c:688 irq_set_irq_wake+0xe0/0x128
-> [9.448717] CPU: 3 PID: 1083 Comm: ethtool Tainted: G           O      4.19 #1
-> [9.448773]         ...
-> [9.448774] Call Trace:
-> [9.448781] [<9000000000209b5c>] show_stack+0x34/0x140
-> [9.448788] [<9000000000d52700>] dump_stack+0x98/0xd0
-> [9.448794] [<9000000000228610>] __warn+0xa8/0x120
-> [9.448797] [<9000000000d2fb60>] report_bug+0x98/0x130
-> [9.448800] [<900000000020a418>] do_bp+0x248/0x2f0
-> [9.448805] [<90000000002035f4>] handle_bp_int+0x4c/0x78
-> [9.448808] [<900000000029ea40>] irq_set_irq_wake+0xe0/0x128
-> [9.448813] [<9000000000a96a7c>] stmmac_set_wol+0x134/0x150
-> [9.448819] [<9000000000be6ed0>] dev_ethtool+0x1368/0x2440
-> [9.448824] [<9000000000c08350>] dev_ioctl+0x1f8/0x3e0
-> [9.448827] [<9000000000bb2a34>] sock_ioctl+0x2a4/0x450
-> [9.448832] [<900000000046f044>] do_vfs_ioctl+0xa4/0x738
-> [9.448834] [<900000000046f778>] ksys_ioctl+0xa0/0xe8
-> [9.448837] [<900000000046f7d8>] sys_ioctl+0x18/0x28
-> [9.448840] [<9000000000211ab4>] syscall_common+0x20/0x34
-> [9.448842] ---[ end trace 40c18d9aec863c3e ]---
-> 
-> Multiple disable_irq_wake() calls will keep decreasing the IRQ
-> wake_depth, When wake_depth is 0, calling disable_irq_wake() again,
-> will report the above calltrace.
-> 
-> Due to the need to appear in pairs, we cannot call disable_irq_wake()
-> without calling enable_irq_wake(). Fix this by making sure there are
-> no unbalanced disable_irq_wake() calls.
 
-Just for my understanding. You trigger this by doing lots of
+On 1/14/24 2:35 PM, Samuel Ortiz wrote:
+> Many user space and internal kernel subsystems (e.g. the Linux IMA)
+> expect a Root of Trust for Storage (RTS) that allows for extending
+> and reading measurement registers that are compatible with the TCG TPM
+> PCRs layout, e.g. a TPM. In order to allow those components to
+> alternatively use a platform TSM as their RTS, a TVM could map the
+> available RTMRs to one or more TCG TPM PCRs. Once configured, those PCR
+> to RTMR mappings give the kernel TSM layer all the necessary information
+> to be a RTS for e.g. the Linux IMA or any other components that expects
+> a TCG compliant TPM PCRs layout.
+>
+> TPM PCR mappings are configured through configfs:
+>
+> // Create and configure 2 RTMRs
+> mkdir /sys/kernel/config/tsm/rtmrs/rtmr0
+> mkdir /sys/kernel/config/tsm/rtmrs/rtmr1
+> echo 0 > /sys/kernel/config/tsm/rtmrs/rtmr0/index
+> echo 1 > /sys/kernel/config/tsm/rtmrs/rtmr1/index
+>
+> // Map RTMR 0 to PCRs 4, 5, 6, 7 and 8
+> echo 4-8 > /sys/kernel/config/tsm/rtmrs/rtmr0/tcg_map
+>
+> // Map RTMR 1 to PCRs 16, 17 and 18
+> echo 16-18 > /sys/kernel/config/tsm/rtmrs/rtmr1/tcg_map
 
-ethtool -s eth42 wol g
+Any information on how this mapping will be used by TPM or IMA ?
 
-or similar without doing a matching
+RTMR to PCR mapping is fixed by design, right? If yes, why allow
+user to configure it. We can let vendor drivers to configure it, right?
 
-ethtool -s eth42 wol d
 
-to disable wol?
+>
+> Signed-off-by: Samuel Ortiz <sameo@rivosinc.com>
+> ---
+>  drivers/virt/coco/tsm.c | 60 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 60 insertions(+)
+>
+> diff --git a/drivers/virt/coco/tsm.c b/drivers/virt/coco/tsm.c
+> index 15b67d99fd54..f35f91cb7bd3 100644
+> --- a/drivers/virt/coco/tsm.c
+> +++ b/drivers/virt/coco/tsm.c
+> @@ -472,8 +472,68 @@ static ssize_t tsm_rtmr_index_show(struct config_item *cfg,
+>  }
+>  CONFIGFS_ATTR(tsm_rtmr_, index);
+>  
+> +static ssize_t tsm_rtmr_tcg_map_store(struct config_item *cfg,
+> +				      const char *buf, size_t len)
+> +{
+> +	struct tsm_rtmr_state *rtmr_state = to_tsm_rtmr_state(cfg);
+> +	int i, pcrs[TPM2_PLATFORM_PCR + 1];
+> +
+> +	get_options(buf, ARRAY_SIZE(pcrs), pcrs);
+> +
+> +	if (pcrs[0] > TPM2_PLATFORM_PCR - 1)
+> +		return -EINVAL;
+> +
+> +	guard(rwsem_write)(&tsm_rwsem);
+> +	/* Check that the PCR list is valid  */
+> +	for (i = 0; i < pcrs[0]; i++) {
+> +		/* It must be a valid TPM2 PCR number */
+> +		if (pcrs[i] > TPM2_PLATFORM_PCR - 1)
+> +			return -EINVAL;
+> +
+> +		/* If another RTMR maps to this PCR, the list is discarded */
+> +		if (tsm_rtmrs->tcg_map[pcrs[i + 1]] &&
+> +		    tsm_rtmrs->tcg_map[pcrs[i + 1]] != rtmr_state)
+> +			return -EBUSY;
+> +	}
+> +
+> +	for (i = 0; i < pcrs[0]; i++)
+> +		tsm_rtmrs->tcg_map[pcrs[i + 1]] = rtmr_state;
+> +
+> +	return len;
+> +}
+> +
+> +static ssize_t tsm_rtmr_tcg_map_show(struct config_item *cfg,
+> +				     char *buf)
+> +{
+> +	struct tsm_rtmr_state *rtmr_state = to_tsm_rtmr_state(cfg);
+> +	unsigned int nr_pcrs = ARRAY_SIZE(tsm_rtmrs->tcg_map), i;
+> +	unsigned long *pcr_mask;
+> +	ssize_t len;
+> +
+> +	/* Build a bitmap mask of all PCRs that this RTMR covers */
+> +	pcr_mask = bitmap_zalloc(nr_pcrs, GFP_KERNEL);
+> +	if (!pcr_mask)
+> +		return -ENOMEM;
+> +
+> +	guard(rwsem_read)(&tsm_rwsem);
+> +	for (i = 0; i < nr_pcrs; i++) {
+> +		if (tsm_rtmrs->tcg_map[i] != rtmr_state)
+> +			continue;
+> +
+> +		__set_bit(i, pcr_mask);
+> +	}
+> +
+> +	len = bitmap_print_list_to_buf(buf, pcr_mask, nr_pcrs, 0,
+> +				       nr_pcrs * 3 /* 2 ASCII digits and one comma */);
+> +	bitmap_free(pcr_mask);
+> +
+> +	return len;
+> +}
+> +CONFIGFS_ATTR(tsm_rtmr_, tcg_map);
+> +
+>  static struct configfs_attribute *tsm_rtmr_attrs[] = {
+>  	&tsm_rtmr_attr_index,
+> +	&tsm_rtmr_attr_tcg_map,
+>  	NULL,
+>  };
+>  
 
-Its a bit late now, but its good to give instructions how to reproduce
-the issue in the commit message.
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
-    Andrew
 
