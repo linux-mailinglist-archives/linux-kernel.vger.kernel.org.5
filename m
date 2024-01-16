@@ -1,181 +1,152 @@
-Return-Path: <linux-kernel+bounces-28319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 823A082FCE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:32:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A4F982FCDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:31:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E60B71F2A40C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:32:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 702D028DC69
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:31:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D0063D55D;
-	Tue, 16 Jan 2024 21:41:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91A983609B;
+	Tue, 16 Jan 2024 21:39:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="QRqih3UW"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="pBCDyTAq"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AB1235F03;
-	Tue, 16 Jan 2024 21:41:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B78D52031D;
+	Tue, 16 Jan 2024 21:39:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705441263; cv=none; b=aRy9C7qBozfjrUF3O2Qb7+UB3SZXaLfofm2Q/0TG+BhnWeTLxKP6FsyeQJrR6+K4UAcnqdOCQs663T25m1H2Z6/nps+l0gNzpda1DBw1ooNXbwNPSuYFHmh03Z9J1I2gW9yHY+fWNLdO+avr7x7QJ4TjdywDHKrRpTOINufpoNk=
+	t=1705441152; cv=none; b=aRN58YqO0b4adomtP9e2akTLNEw8NlKSY9gQGZIM0jOKpNuu86nAAvlEImJ3UEv0aW9b7jn4/Jt+oHmo/qv+dftMSoHA6vobpe/8PwvEtepXjGKz36cjB85jBHXi2k8GKGLbrQRym5aFhwlzfPdvSyavmCB34OMIzSY9/h7HYrY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705441263; c=relaxed/simple;
-	bh=5s8DRDqJVBVIIn+xD56hZynbIPJpLvIaUigTrdQ0amc=;
-	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:Message-Id:X-B4-Tracking:To:
-	 Cc:X-Mailer; b=UsLRyOhPc8GX/9nlwxgfK+JoQxNpsaYP8YA14Vsf1Bgl/ZNgtvojU+/2PVzJFE7FGsIlEGK+VSWi7yCu4im4LYFz6dC4BUTFeUgoQLU+RhPbAMTozbJc2iQphFiEJIgXrJP/C+NCLNxfc2OQW3Wz5x4+jE6Hdc2d5r6E6e56S+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=QRqih3UW; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705441259;
-	bh=5s8DRDqJVBVIIn+xD56hZynbIPJpLvIaUigTrdQ0amc=;
-	h=From:Date:Subject:To:Cc:From;
-	b=QRqih3UWL6XALeYEJ3G3ySQNdQ6DRqtlu4INp/1PR3Ti+VUZiaBL29MQSdn1xwhnu
-	 Sb+vCARcXJmIow58sB022+q38ZNuEpUtBdNSXnZiVNz6WZK8ZdiC0xzyVNxkQEut6V
-	 uwx2bjhctlJnP7EVCTARg+Dgi51FfMoMsRvtDbSAchYw0XvMPXZhC+etI31NED4cHS
-	 KCZr8yYQ+G+Vwlh4c4Yntz68gesABsIA69nFsE/lEjYE6Pc7glZeNc0CZCjb8lbfpY
-	 rGl6Ur8VmZktvKcp0xT6LY1DkCdBQvRT0ECKaEVC8vyZ+5UGRI3XuSgYKGduvgnf+1
-	 ogLV6l3RcwKGg==
-Received: from [192.168.0.47] (zone.collabora.co.uk [167.235.23.81])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 0E6A1378000A;
-	Tue, 16 Jan 2024 21:40:54 +0000 (UTC)
-From: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-Date: Tue, 16 Jan 2024 18:38:34 -0300
-Subject: [PATCH v3] arm64: dts: mt8183: Move CrosEC base detection node to
- kukui-based DTs
+	s=arc-20240116; t=1705441152; c=relaxed/simple;
+	bh=9cVaDEGyE++XlGIZR4zuk6VP7XM32B9Tm1rS1HSDeWQ=;
+	h=Received:DKIM-Signature:Received:Received:Received:Received:
+	 Received:Received:Received:Received:Received:Message-ID:Date:
+	 MIME-Version:User-Agent:Subject:Content-Language:To:Cc:References:
+	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-TM-AS-GCONF:X-Proofpoint-GUID:X-Proofpoint-ORIG-GUID:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details; b=qQr1HpIU9iSel7QLx3XO0MSfxy3K1/kAhI/W6I6CjKypWJHHUfuM3C998TymkCJLdePTZfa4c9zKUWuId8G3+UkhHyALTBgRhLf27QUHB5GyQ2jT/oxF7R7qfvdddByqIMhP8QlurC5qK6bBcgtHxd8YPnGhJ+Z1Tl9AD0ichcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=pBCDyTAq; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40GLbCeX011034;
+	Tue, 16 Jan 2024 21:38:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=C34bD3H/UW2o8lGJiE4Kl6JTQHvAgZThBzA+i3EkQj4=;
+ b=pBCDyTAqmIHQUh+WookDoNH+IaXDelj8E17v4vrqhzDtkWmm7/W79f09VlO9RLAGsyDQ
+ 5XpT7BzXBzTjat8kOoLEtQhpr9KxbD+064D4h/Kv3zpIGju3wjpHoQsaR04CV45RsRLy
+ mwDHnngbbdsjZJ4GoMXL9UeYcBYBpvvlqNYzpes9ouanXZZFKZJLU+y4Zn4mjexMEeC+
+ J+JXb79X5lSv/4+BxOa9PQ1axgPBcfkRayp9wEdkfHZwtntkgxQ7MPF8hm3dI4B22KDu
+ v1d0B+0w3llpJDEop1ib9yzyU1dw11yK3m8mXS4fZ3V3FytdkvKZTAW6yspngS4k46S2 ug== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vp1vcg1jp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 21:38:51 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40GLcDTF016360;
+	Tue, 16 Jan 2024 21:38:51 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vp1vcg1hs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 21:38:51 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40GJ6ONT023421;
+	Tue, 16 Jan 2024 21:38:49 GMT
+Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vm6bkh59q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 21:38:49 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40GLcmas66912726
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Jan 2024 21:38:49 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A30145804B;
+	Tue, 16 Jan 2024 21:38:48 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8250858055;
+	Tue, 16 Jan 2024 21:38:47 +0000 (GMT)
+Received: from [9.61.126.152] (unknown [9.61.126.152])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 16 Jan 2024 21:38:47 +0000 (GMT)
+Message-ID: <92007644-72e3-4312-b9e9-e93e5142e090@linux.ibm.com>
+Date: Tue, 16 Jan 2024 13:38:46 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240116-mt8183-kukui-cbas-remove-v3-1-055e21406e86@collabora.com>
-X-B4-Tracking: v=1; b=H4sIAFn3pmUC/03MTQ6CMBBA4auQrh3SHyzoynsYF0MZpIFSMgViQ
- ri7jSuX3+K9QyRiT0nci0Mw7T75OGeYSyHcgPObwHfZQktdSaUshLVRjYFxGzcPrsUETCHuBPZ
- at1YjOeqsyPnC1PvPb/18ZfccA6wDE/4Ptaq0NLq8yVttLCiYe8aFsYsPF6cJ28hYuhjEeX4B8
- 1CA46wAAAA=
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Enric Balletbo i Serra <eballetbo@kernel.org>, 
- Ikjoon Jang <ikjn@chromium.org>, Stephen Boyd <swboyd@chromium.org>, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
- kernel@collabora.com
-X-Mailer: b4 0.12.4
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 25/42] drivers/scsi/ibmvscsi: Convert snprintf to
+ sysfs_emit
+Content-Language: en-US
+To: Li Zhijian <lizhijian@fujitsu.com>, linux-kernel@vger.kernel.org
+Cc: Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin
+ <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <20240116041129.3937800-1-lizhijian@fujitsu.com>
+ <20240116045151.3940401-1-lizhijian@fujitsu.com>
+ <20240116045151.3940401-23-lizhijian@fujitsu.com>
+From: Tyrel Datwyler <tyreld@linux.ibm.com>
+In-Reply-To: <20240116045151.3940401-23-lizhijian@fujitsu.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: T9F9F6QalnDwMMGJCSEfB4HU9ZM759gq
+X-Proofpoint-ORIG-GUID: s4AnZKTFZA-kPfDCUxWgqMxp7_K2Rqb-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-16_12,2024-01-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ mlxlogscore=888 clxscore=1011 priorityscore=1501 lowpriorityscore=0
+ bulkscore=0 impostorscore=0 spamscore=0 adultscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401160170
 
-The cbas node is used to describe base detection functionality in the
-ChromeOS EC, which is used for units that have a detachable keyboard and
-thus rely on this functionality to switch between tablet and laptop
-mode.
+On 1/15/24 20:51, Li Zhijian wrote:
+> Per filesystems/sysfs.rst, show() should only use sysfs_emit()
+> or sysfs_emit_at() when formatting the value to be returned to user space.
+> 
+> coccinelle complains that there are still a couple of functions that use
+> snprintf(). Convert them to sysfs_emit().
+> 
+>> ./drivers/scsi/ibmvscsi/ibmvfc.c:3483:8-16: WARNING: please use sysfs_emit
+>> ./drivers/scsi/ibmvscsi/ibmvfc.c:3493:8-16: WARNING: please use sysfs_emit
+>> ./drivers/scsi/ibmvscsi/ibmvfc.c:3503:8-16: WARNING: please use sysfs_emit
+>> ./drivers/scsi/ibmvscsi/ibmvfc.c:3513:8-16: WARNING: please use sysfs_emit
+>> ./drivers/scsi/ibmvscsi/ibmvfc.c:3522:8-16: WARNING: please use sysfs_emit
+>> ./drivers/scsi/ibmvscsi/ibmvfc.c:3530:8-16: WARNING: please use sysfs_emit
+> 
+> No functional change intended
+> 
+> CC: Tyrel Datwyler <tyreld@linux.ibm.com>
+> CC: Michael Ellerman <mpe@ellerman.id.au>
+> CC: Nicholas Piggin <npiggin@gmail.com>
+> CC: Christophe Leroy <christophe.leroy@csgroup.eu>
+> CC: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
+> CC: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+> CC: "James E.J. Bottomley" <jejb@linux.ibm.com>
+> CC: "Martin K. Petersen" <martin.petersen@oracle.com>
+> CC: linux-scsi@vger.kernel.org
+> CC: linuxppc-dev@lists.ozlabs.org
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> ---
 
-Despite the original commit having added the cbas node to the
-mt8183-kukui.dtsi, not all machines that include it are detachables. In
-fact all machines that include from mt8183-kukui-jacuzzi.dtsi are either
-clamshells (ie normal laptops) or convertibles, meaning the keyboard can
-be flipped but not detached. The detection for the keyboard getting
-flipped is handled by the driver bound to the keyboard-controller node
-in the EC.
-
-Move the base detection node from the base kukui dtsi to the dtsis where
-all machines are detachables, and thus actually make use of the node.
-
-Fixes: 4fa8492d1e5b ("arm64: dts: mt8183: add cbas node under cros_ec")
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
----
-Changes in v3:
-- Instead of deleting the node in jacuzzi, moved the node from kukui to
-  the dtsis including kukui that are detachables
-
-Changes in v2:
-- Moved cbas node removal to jacuzzi dtsi
----
- arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi | 4 ++++
- arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi | 4 ++++
- arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi  | 4 ++++
- arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi        | 4 ----
- 4 files changed, 12 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
-index b6a9830af269..bfb9e42c8aca 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
-@@ -360,6 +360,10 @@ pen_eject {
- };
- 
- &cros_ec {
-+	cbas {
-+		compatible = "google,cros-cbas";
-+	};
-+
- 	keyboard-controller {
- 		compatible = "google,cros-ec-keyb-switches";
- 	};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
-index 306c95166f3f..5c1bf6a1e475 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
-@@ -339,6 +339,10 @@ touch_pin_reset: pin_reset {
- };
- 
- &cros_ec {
-+	cbas {
-+		compatible = "google,cros-cbas";
-+	};
-+
- 	keyboard-controller {
- 		compatible = "google,cros-ec-keyb-switches";
- 	};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
-index 382e4c6d7191..0f5fa893a774 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
-@@ -343,6 +343,10 @@ rst_pin {
- };
- 
- &cros_ec {
-+	cbas {
-+		compatible = "google,cros-cbas";
-+	};
-+
- 	keyboard-controller {
- 		compatible = "google,cros-ec-keyb-switches";
- 	};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-index 5506de83f61d..66eb099e15f0 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-@@ -937,10 +937,6 @@ usbc_extcon: extcon0 {
- 			google,usb-port-id = <0>;
- 		};
- 
--		cbas {
--			compatible = "google,cros-cbas";
--		};
--
- 		typec {
- 			compatible = "google,cros-ec-typec";
- 			#address-cells = <1>;
-
----
-base-commit: 0f067394dd3b2af3263339cf7183bdb6ee0ac1f8
-change-id: 20240116-mt8183-kukui-cbas-remove-657b62aeced6
-
-Best regards,
--- 
-Nícolas F. R. A. Prado <nfraprado@collabora.com>
+Acked-by: Tyrel Datwyler <tyreld@linux.ibm.com>
 
 
