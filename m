@@ -1,211 +1,117 @@
-Return-Path: <linux-kernel+bounces-27654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7A7182F3BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:11:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2128F82F3D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:13:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE8941C23356
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:11:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 472711C238FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:13:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80B6A1CD10;
-	Tue, 16 Jan 2024 18:10:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F4FA1CD34;
+	Tue, 16 Jan 2024 18:12:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZlSze6c6"
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XThYApht"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 353651CD23
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:10:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F4821CD31
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:12:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705428654; cv=none; b=edSFaZmunmiWg8wKHLFaFe8eBj28jihytyrnGRcm4fxrhJkEo6bTy1MZiGRtqkjDftqIohYRSD+8yCv66MY6kLEhAqhtqrYB0Wz+5glVX1tOqq+bKbHItVanaidCv+i7IiaxvCqvZAxy+sPKdXJQYWfKcDJEjUgo4xoeStw3gYA=
+	t=1705428745; cv=none; b=NcjCNhQaGhhk8ia0xd9L9JkDmpdls3B+5643B/5RparYwaKV/kctxOqlrBhDFgHrkfqxzYasIM1GJOG4aLv3X+dUIBz2pKQMGPKhzjeQ1vlwjWni49XTEShzVGYhkxbZUyZmtXkzAfOMky1I4sQ4hQ7z66mP7P0mROS9KLgYGms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705428654; c=relaxed/simple;
-	bh=RweaeoVi9vb5w/OKvidzWBDb8rUFM94JEo/ugp/chiQ=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=NOB7kTMNrW6I/NUgWpLBkKIj07nbknjon3SuGvFQVFj12yLALBalcszMr6Am906iqwUXlrnLgEyLfi7799VkRGbey8rQqQ+tmLiiwqbDYZuIuAHqitdnPbQVHCGyPY/2P+qziIV0l07fgIedwaDccnx55ZUy1A5TbInC8Rdiwu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZlSze6c6; arc=none smtp.client-ip=209.85.166.176
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-3606e211e5cso58733345ab.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:10:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705428652; x=1706033452; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WeHzMFOUSvfJb4dVqRpTD3wrNewNvV4aIi+VIi1fBLM=;
-        b=ZlSze6c6h/aQzBv+8+NEEFm/W0SPmA5x6ThNXmbaaBfAtv7l+/vJFFdB9qPDhKX/VJ
-         +QbNw2zq5fZUIxFbXY5CHm3q+ZDxE29QfMw664lFN2c02pFjnbYycB8UAbY2ciYkj22N
-         6cqNAZB5j8p8HyrbfoPHK/bej/xMNWL/9nFA6YlIM/uyWVBNsfMGYsbZNP74lY8EvW1+
-         pIGsqMBAZ+gQw1bZsPwhqCEF/MHoq5HUydds89O4AJ7PyESfTUYFFro6wYa5rWSktIJS
-         IZ/W66NH60eg/ugnlg9LPIEUOcgyZ0OQfaQH0AbDWG08t9I4AJkh6XEcibPcloKgHdvC
-         a2MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705428652; x=1706033452;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WeHzMFOUSvfJb4dVqRpTD3wrNewNvV4aIi+VIi1fBLM=;
-        b=p5wCzN7ZuTtb8b82/2acIxh1H4bxwyJgneuDJ/eO0M05MBe1fGkw2Ms1KPUYu5ycPy
-         WwF94UVsbm0L/2XMs7O5rqyInsITh5f75aoAQ22pAr7e3yQ866Ejl4RSgDt2CFXGzwX9
-         1edUlFeSz39pD3Np4JMYKphEq/T7XHpK0EKsvqso3KZ/v2xxM8gkm4Gve2q8znpQt6ov
-         mCDJz+HvRNSQgTTwcIoeGL0MXdCyttZk1sVfqmOqjbe3DFGNqBosTen290RMP64biwhf
-         QJYLrrJSli5/taMoouT0iaHIO/P8tckqUE8bXZI+ikhZsPtQ8UxOoG9/x4lPxuLnuZBx
-         kiSg==
-X-Gm-Message-State: AOJu0YxCW7PFnPjpgDlmtH8kdFBXidjUfGq03WQMLks8MC8NLoAj93VB
-	8cOQDIz4GNS01CvAEk7w7wBL2KRgolXiI0+HfUFIHt70LQscaA==
-X-Google-Smtp-Source: AGHT+IF3T+HEuJ74amKUtc0+nZKPgelNphlTJZGAxgmPIeS7O6UgD2MbdqmRcHjgpUdSl6sAXtXDNAEaFWZmC5pnHvk=
-X-Received: by 2002:a6b:7d07:0:b0:7bf:1ddd:b900 with SMTP id
- c7-20020a6b7d07000000b007bf1dddb900mr6463930ioq.8.1705428652264; Tue, 16 Jan
- 2024 10:10:52 -0800 (PST)
+	s=arc-20240116; t=1705428745; c=relaxed/simple;
+	bh=MzloDO27ZW8iHVaQfONrrD83ZThr7ywLNoiZklqYLQg=;
+	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:Received:
+	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To:User-Agent:
+	 X-Scanned-By; b=W3wcwV/+4Z5mTtGT08b9RVnKp4zKvUKIOXHhBeXa752wzsWtaezg2cIYqFw4WowWzBRJMWbaQzr6XaV4lPUzDIpuza4LUYFO46ydUatN3EZfybzVN2gXtHdcxA5vjrrXppZRAUJTcx9m2pZwLdKRTKwe7VL+60jpyp/uI4pmtkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XThYApht; arc=none smtp.client-ip=170.10.133.124
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705428743;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MzloDO27ZW8iHVaQfONrrD83ZThr7ywLNoiZklqYLQg=;
+	b=XThYAphtO5oC09pqbVpprFoMhGx3c1EwR8767fSji683MpUfwWcHRyDfvu1SJS0ytupayG
+	SFI+I/fQQuYw6QSLfG0qsmrp8LFppZ/H7f7rvTh7P78jGxnGRi2ag6TePGUsUaoJC7HAsM
+	9kPP4O+k+VuHvNKeQY8ZvS3PmWdzAzM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-326-7HYs3mdCN72aoZUinQmBcQ-1; Tue, 16 Jan 2024 13:12:17 -0500
+X-MC-Unique: 7HYs3mdCN72aoZUinQmBcQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4E26F8493E6;
+	Tue, 16 Jan 2024 18:12:16 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.96])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 647A41BDB0;
+	Tue, 16 Jan 2024 18:12:12 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Tue, 16 Jan 2024 19:11:03 +0100 (CET)
+Date: Tue, 16 Jan 2024 19:10:59 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Onkarnarth <onkarnath.1@samsung.com>, frederic@kernel.org,
+	quic_neeraju@quicinc.com, joel@joelfernandes.org,
+	josh@joshtriplett.org, boqun.feng@gmail.com, rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+	qiang.zhang1211@gmail.com, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, r.thapliyal@samsung.com,
+	maninder1.s@samsung.com, tj@kernel.org, peterz@infradead.org
+Subject: Re: [PATCH 1/1] rcu/sync: remove un-used rcu_sync_enter_start
+ function
+Message-ID: <20240116181058.GB12342@redhat.com>
+References: <CGME20240111092805epcas5p2ebb993010ae31d039e8f9de1e7818f7c@epcas5p2.samsung.com>
+ <20240111092722.322454-1-onkarnath.1@samsung.com>
+ <de792eee-1f44-48e2-a122-c3ded1645155@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240109125814.3691033-1-tudor.ambarus@linaro.org> <20240109125814.3691033-6-tudor.ambarus@linaro.org>
-In-Reply-To: <20240109125814.3691033-6-tudor.ambarus@linaro.org>
-From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Tue, 16 Jan 2024 12:10:40 -0600
-Message-ID: <CAPLW+4nWy_7w2Q703JE5hUQtFy3ABmvcfRhhB7pkrYKgLisGWQ@mail.gmail.com>
-Subject: Re: [PATCH v3 05/12] tty: serial: samsung: set UPIO_MEM32 iotype for gs101
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: peter.griffin@linaro.org, krzysztof.kozlowski+dt@linaro.org, 
-	gregkh@linuxfoundation.org, mturquette@baylibre.com, sboyd@kernel.org, 
-	robh+dt@kernel.org, conor+dt@kernel.org, andi.shyti@kernel.org, 
-	alim.akhtar@samsung.com, jirislaby@kernel.org, s.nawrocki@samsung.com, 
-	tomasz.figa@gmail.com, cw00.choi@samsung.com, 
-	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-serial@vger.kernel.org, andre.draszik@linaro.org, 
-	kernel-team@android.com, willmcvicker@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <de792eee-1f44-48e2-a122-c3ded1645155@paulmck-laptop>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-On Tue, Jan 9, 2024 at 7:00=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro.=
-org> wrote:
+On 01/16, Paul E. McKenney wrote:
 >
-> GS101's Connectivity Peripheral blocks (peric0/1 blocks) which
-> include the I3C and USI (I2C, SPI, UART) only allow 32-bit
-> register accesses.
->
-> Instead of specifying the reg-io-width =3D 4 everywhere, for each node,
-> the requirement should be deduced from the compatible.
->
-> Infer UPIO_MEM32 iotype from the "google,gs101-uart" compatible.
-> Update the uart info name to be GS101 specific in order to
-> differentiate from the other exynos platforms. All the other settings
-> are not changed.
->
-> exynos_fifoszdt_serial_drv_data was replaced by gs101_serial_drv_data
-> because the iotype restriction is gs101 specific and there was no other
-> user of exynos_fifoszdt_serial_drv_data.
->
-> Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> ---
+> On Thu, Jan 11, 2024 at 02:57:22PM +0530, Onkarnarth wrote:
+> > From: Onkarnath <onkarnath.1@samsung.com>
+> >
+> > With commit '6a010a49b63a ("cgroup: Make !percpu threadgroup_rwsem
+> > operations optional")' usage of rcu_sync_enter_start is removed.
+> >
+> > So this function can also be removed.
+> >
+> > Signed-off-by: Onkarnath <onkarnath.1@samsung.com>
+> > Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
 
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+Acked-by: Oleg Nesterov <oleg@redhat.com>
 
-> v3: collect Peter's R-b tag
-> v2: new patch
->
->  drivers/tty/serial/samsung_tty.c | 38 +++++++++++++++++++++++---------
->  1 file changed, 28 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsun=
-g_tty.c
-> index ff646cddd3f8..a81b61953a28 100644
-> --- a/drivers/tty/serial/samsung_tty.c
-> +++ b/drivers/tty/serial/samsung_tty.c
-> @@ -2497,25 +2497,43 @@ static const struct s3c24xx_serial_drv_data exyno=
-s850_serial_drv_data =3D {
->         .fifosize =3D { 256, 64, 64, 64 },
->  };
->
-> -/*
-> - * Common drv_data struct for platforms that specify samsung,uart-fifosi=
-ze in
-> - * device tree.
-> - */
-> -static const struct s3c24xx_serial_drv_data exynos_fifoszdt_serial_drv_d=
-ata =3D {
-> -       EXYNOS_COMMON_SERIAL_DRV_DATA(),
-> +static const struct s3c24xx_serial_drv_data gs101_serial_drv_data =3D {
-> +       .info =3D {
-> +               .name           =3D "Google GS101 UART",
-> +               .type           =3D TYPE_S3C6400,
-> +               .port_type      =3D PORT_S3C6400,
-> +               .iotype         =3D UPIO_MEM32,
-> +               .has_divslot    =3D 1,
-> +               .rx_fifomask    =3D S5PV210_UFSTAT_RXMASK,
-> +               .rx_fifoshift   =3D S5PV210_UFSTAT_RXSHIFT,
-> +               .rx_fifofull    =3D S5PV210_UFSTAT_RXFULL,
-> +               .tx_fifofull    =3D S5PV210_UFSTAT_TXFULL,
-> +               .tx_fifomask    =3D S5PV210_UFSTAT_TXMASK,
-> +               .tx_fifoshift   =3D S5PV210_UFSTAT_TXSHIFT,
-> +               .def_clk_sel    =3D S3C2410_UCON_CLKSEL0,
-> +               .num_clks       =3D 1,
-> +               .clksel_mask    =3D 0,
-> +               .clksel_shift   =3D 0,
-> +       },
-> +       .def_cfg =3D {
-> +               .ucon           =3D S5PV210_UCON_DEFAULT,
-> +               .ufcon          =3D S5PV210_UFCON_DEFAULT,
-> +               .has_fracval    =3D 1,
-> +       },
-> +       /* samsung,uart-fifosize must be specified in the device tree. */
->         .fifosize =3D { 0 },
->  };
->
->  #define EXYNOS4210_SERIAL_DRV_DATA (&exynos4210_serial_drv_data)
->  #define EXYNOS5433_SERIAL_DRV_DATA (&exynos5433_serial_drv_data)
->  #define EXYNOS850_SERIAL_DRV_DATA (&exynos850_serial_drv_data)
-> -#define EXYNOS_FIFOSZDT_DRV_DATA (&exynos_fifoszdt_serial_drv_data)
-> +#define GS101_SERIAL_DRV_DATA (&gs101_serial_drv_data)
->
->  #else
->  #define EXYNOS4210_SERIAL_DRV_DATA NULL
->  #define EXYNOS5433_SERIAL_DRV_DATA NULL
->  #define EXYNOS850_SERIAL_DRV_DATA NULL
-> -#define EXYNOS_FIFOSZDT_DRV_DATA NULL
-> +#define GS101_SERIAL_DRV_DATA NULL
->  #endif
->
->  #ifdef CONFIG_ARCH_APPLE
-> @@ -2603,7 +2621,7 @@ static const struct platform_device_id s3c24xx_seri=
-al_driver_ids[] =3D {
->                 .driver_data    =3D (kernel_ulong_t)ARTPEC8_SERIAL_DRV_DA=
-TA,
->         }, {
->                 .name           =3D "gs101-uart",
-> -               .driver_data    =3D (kernel_ulong_t)EXYNOS_FIFOSZDT_DRV_D=
-ATA,
-> +               .driver_data    =3D (kernel_ulong_t)GS101_SERIAL_DRV_DATA=
-,
->         },
->         { },
->  };
-> @@ -2626,7 +2644,7 @@ static const struct of_device_id s3c24xx_uart_dt_ma=
-tch[] =3D {
->         { .compatible =3D "axis,artpec8-uart",
->                 .data =3D ARTPEC8_SERIAL_DRV_DATA },
->         { .compatible =3D "google,gs101-uart",
-> -               .data =3D EXYNOS_FIFOSZDT_DRV_DATA },
-> +               .data =3D GS101_SERIAL_DRV_DATA },
->         {},
->  };
->  MODULE_DEVICE_TABLE(of, s3c24xx_uart_dt_match);
-> --
-> 2.43.0.472.g3155946c3a-goog
->
->
+
+
+For the record, this was already discussed, see
+https://lore.kernel.org/all/20220725121208.GB28662@redhat.com/
+
+Note also the patch in this message, __rcu_sync_enter(wait => false)
+is a better alternative if someone needs rcu_sync_enter_start() again.
+
+This patch probably makes sense anyway. Not only cgroup_favor_dynmods()
+can use __rcu_sync_enter(), freeze_super() can use it too to avoid
+3 synchronize_rcu()'s in a row.
+
+Oleg.
+
 
