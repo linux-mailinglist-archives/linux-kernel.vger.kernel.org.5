@@ -1,105 +1,103 @@
-Return-Path: <linux-kernel+bounces-27145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0234282EB31
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:00:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FD7382EB34
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:00:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D4092854B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:00:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2914B1F2422B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:00:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7258C125C8;
-	Tue, 16 Jan 2024 09:00:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 695F3125B4;
+	Tue, 16 Jan 2024 09:00:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yeRE25ab"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="teJThpGp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 346AF125BA
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 08:59:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-336746c7b6dso8182013f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 00:59:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705395596; x=1706000396; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yR57Dsv6KO4M/E5diixGfumQSaUt17CRwRBIvEe196w=;
-        b=yeRE25ab6zll3M/F3D7b1/WPjnxXZYp19xOOuwqvK+/gGAVdMK3cM1x6ACVqu6uBGc
-         zq11QftGWGrku8l/RMBTarkW5eF+KS55bwUV82Tbx6ppNEIgtIu0e9BRfkix8ihjqFTA
-         NBHEJsez4ZkPwJl1MGM5BsPEc51mavQ8NPHiDkQvl91eZae0RYYtRej3kRQjSWgLpYTQ
-         0oV9tdl91cuZ/cbrp6ZsS4oawqV+/5+2CHUx5ccJBzBMRiy9G+fFhkSJmWKY9b9FqrBf
-         sjwf0ekXEkzb9FCXHYeNUsdkXDzrnRoxw6zGprAwXdCe6j6U60/DxYr2p1akAy8Coxhn
-         XVWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705395596; x=1706000396;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yR57Dsv6KO4M/E5diixGfumQSaUt17CRwRBIvEe196w=;
-        b=kJm2XNaqrGb5fV6OY5sFGZWlQSoNDNEFCRrU2DVBO5gV8JGXdL6DsQ8HNP94wu/2gi
-         ObijK7cgNFhZc/8wFptF5gCV2++NW9izyJE2x12ma+mB3x6Wi8nfUSqbDsMNKwiSvsYu
-         MkjvQK5epA7+IazaI0WFH86dU+wcVfWjV2XPzERFyFAxffdckJM9OxeQ+zyHSBpP4ihv
-         Kqb6Q5MiyRf36MFQmBBkvQAe1+mXdGQVSj9jHhskNHtd8LlfTIbrhGQxwAHMxcGPv42N
-         Ga+1JVY+tUP+nJ1vthGk7bQhPqreJbEK/SBmzyQZCTXlLDaTMj7xA79/Ig7j79qgzY6U
-         x0Ig==
-X-Gm-Message-State: AOJu0Yw2BNuloZwNIY4p+wtU4+8NDXleon6KJXt2XusneM0jeB/Un0c5
-	Ks8o+XD1XGw5z6XNSgMsNAra1ntY+Bc8ng==
-X-Google-Smtp-Source: AGHT+IFuae2aMp3x3YiybSHmGPStiStnzK99Ia28OBoswGBvqpJyRAs32GRTCmNYCzp3Exl6pyMajA==
-X-Received: by 2002:a05:600c:5491:b0:40d:7347:f5e8 with SMTP id iv17-20020a05600c549100b0040d7347f5e8mr3771459wmb.25.1705395596394;
-        Tue, 16 Jan 2024 00:59:56 -0800 (PST)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id n19-20020a05600c501300b0040e813f1f31sm2895704wmr.25.2024.01.16.00.59.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 00:59:55 -0800 (PST)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-To: Andrzej Hajda <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>, 
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Boris Brezillon <bbrezillon@kernel.org>, Peter Rosin <peda@axentia.se>, 
- Linus Walleij <linus.walleij@linaro.org>, 
- Fabrizio Castro <fabrizio.castro@bp.renesas.com>, 
- Jyri Sarha <jsarha@ti.com>, 
- Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
- Nishanth Menon <nm@ti.com>, Aradhya Bhatia <a-bhatia1@ti.com>
-In-Reply-To: <20240103-si902x-fixes-v1-0-b9fd3e448411@ideasonboard.com>
-References: <20240103-si902x-fixes-v1-0-b9fd3e448411@ideasonboard.com>
-Subject: Re: [PATCH 0/2] drm/bridge: sii902x: Crash fixes
-Message-Id: <170539559536.1557628.14676800886096987878.b4-ty@linaro.org>
-Date: Tue, 16 Jan 2024 09:59:55 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B561E125B7;
+	Tue, 16 Jan 2024 09:00:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1D0E3C433F1;
+	Tue, 16 Jan 2024 09:00:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705395624;
+	bh=53zGYMNuY6A9Eru6GhkOhn5Cr1dIJ1faHUaqKCzyNPc=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=teJThpGpwKmSmAZ3a7jv/FnjTVitb/G9qIZimHkXPdMZs3eNwSZHsuzBDMd5mHtdO
+	 4PEOUieCh074GQOOW5LNKoVlULhCnfZdpIoUYqmfhnQk2zJMdrSOGuBnuUZ4rla5o7
+	 SnoJeTTupXq+0p3sm2EyqsQLzDpLUXioY+msu7ixQPdm6JxQVhA8G1Q9GhIxCm/lNw
+	 iAJaRyJxIvZFYrxOeYenbUA4cSjiiW7uvzxWTv4avVmNYQjQKwtOnXL77bT+SNj8L1
+	 3+1PwYNpgJK4lsuNsSgbYXM9ON/yUgMX7/Ss7rVZuzoeQwejfK1l4NCpI10GYXLQPl
+	 Ro/8IU8HgKdnA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 00593D8C96D;
+	Tue, 16 Jan 2024 09:00:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: stmmac: ethtool: Fixed calltrace caused by unbalanced
+ disable_irq_wake calls
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170539562399.29237.17991521216280406145.git-patchwork-notify@kernel.org>
+Date: Tue, 16 Jan 2024 09:00:23 +0000
+References: <20240112021249.24598-1-maqianga@uniontech.com>
+In-Reply-To: <20240112021249.24598-1-maqianga@uniontech.com>
+To: Qiang Ma <maqianga@uniontech.com>
+Cc: alexandre.torgue@foss.st.com, joabreu@synopsys.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 
-Hi,
+Hello:
 
-On Wed, 03 Jan 2024 15:31:06 +0200, Tomi Valkeinen wrote:
-> Two small fixes to sii902x for crashes.
+This patch was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
+
+On Fri, 12 Jan 2024 10:12:49 +0800 you wrote:
+> We found the following dmesg calltrace when testing the GMAC NIC notebook:
 > 
+> [9.448656] ------------[ cut here ]------------
+> [9.448658] Unbalanced IRQ 43 wake disable
+> [9.448673] WARNING: CPU: 3 PID: 1083 at kernel/irq/manage.c:688 irq_set_irq_wake+0xe0/0x128
+> [9.448717] CPU: 3 PID: 1083 Comm: ethtool Tainted: G           O      4.19 #1
+> [9.448773]         ...
+> [9.448774] Call Trace:
+> [9.448781] [<9000000000209b5c>] show_stack+0x34/0x140
+> [9.448788] [<9000000000d52700>] dump_stack+0x98/0xd0
+> [9.448794] [<9000000000228610>] __warn+0xa8/0x120
+> [9.448797] [<9000000000d2fb60>] report_bug+0x98/0x130
+> [9.448800] [<900000000020a418>] do_bp+0x248/0x2f0
+> [9.448805] [<90000000002035f4>] handle_bp_int+0x4c/0x78
+> [9.448808] [<900000000029ea40>] irq_set_irq_wake+0xe0/0x128
+> [9.448813] [<9000000000a96a7c>] stmmac_set_wol+0x134/0x150
+> [9.448819] [<9000000000be6ed0>] dev_ethtool+0x1368/0x2440
+> [9.448824] [<9000000000c08350>] dev_ioctl+0x1f8/0x3e0
+> [9.448827] [<9000000000bb2a34>] sock_ioctl+0x2a4/0x450
+> [9.448832] [<900000000046f044>] do_vfs_ioctl+0xa4/0x738
+> [9.448834] [<900000000046f778>] ksys_ioctl+0xa0/0xe8
+> [9.448837] [<900000000046f7d8>] sys_ioctl+0x18/0x28
+> [9.448840] [<9000000000211ab4>] syscall_common+0x20/0x34
+> [9.448842] ---[ end trace 40c18d9aec863c3e ]---
 > 
+> [...]
 
-Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-fixes)
+Here is the summary with links:
+  - net: stmmac: ethtool: Fixed calltrace caused by unbalanced disable_irq_wake calls
+    https://git.kernel.org/netdev/net/c/a23aa0404218
 
-[1/2] drm/bridge: sii902x: Fix probing race issue
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=08ac6f132dd77e40f786d8af51140c96c6d739c9
-[2/2] drm/bridge: sii902x: Fix audio codec unregistration
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=3fc6c76a8d208d3955c9e64b382d0ff370bc61fc
-
+You are awesome, thank you!
 -- 
-Neil
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
