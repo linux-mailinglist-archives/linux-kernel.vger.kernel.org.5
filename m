@@ -1,188 +1,206 @@
-Return-Path: <linux-kernel+bounces-28246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B89382FC1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:12:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C398E82FC1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:12:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C37DC28E22B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:12:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B53B28E6F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:12:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69A781DA3E;
-	Tue, 16 Jan 2024 20:29:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366F31E86E;
+	Tue, 16 Jan 2024 20:30:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mk61hpZs"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OJYZc4vS"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 031B01D526
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 20:29:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B223C1CD0F
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 20:30:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705436967; cv=none; b=n5y7KG+GWfCwz908ksbEp0rLl/5iLAm5B297xzxEZB50855ZtSXJHT3AMXdC7JoQf152e2/9ldbdXVd+DXEOZiIGhgC9WKyGjdEusuIMfjkdPHf6POH1k2F0AXIs78xF4Av9JmPiohauhqQxC5HWTlaOUg/prCqtsZT7oAAWslY=
+	t=1705437030; cv=none; b=guK9YsVgyi4sh1rvltOv2k0+UAo+2riwCBdzfs4jpOJgfX9rdBMsm586afRt6BXZBPjPNspN1bZ6kocvwG2Rbr5pAX5Ihx81l43OOtaZ5NIA/h08Jq7fAtkSgu6aMkMKNJkqY3jMvYOsGruJG/YN/LoQn3UmWniXFTceHFD1WcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705436967; c=relaxed/simple;
-	bh=cwAOQUr30q2ktqa9/7YMYPZE3GrhQvorb3OmRFp57kY=;
+	s=arc-20240116; t=1705437030; c=relaxed/simple;
+	bh=2NRTYrgjnR5bKwdsLSCYxUfDL1Cs7AM/YYHwnsSsa2w=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=Ytoiyr2yEEefj0vSCnTi3y2Y3xZoz3pfWwZUz0u0bj8j0lg6BPfihAvopR9C5lNMXjsn4/5jcjKiNB2MHWI9P6dkIenCvdt7HZIjUcePXib9sU4dYdiI665Ln1gnCRVDAs/8Tj4HoEGZsbbXXMuGvw1OwpR5HVyqlOD6kdzqEwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mk61hpZs; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a2c67be31edso646636966b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 12:29:25 -0800 (PST)
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
+	 To:Cc:References:From:Autocrypt:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=cbTb6dpvLKEXsi3djAXpLG/5wB8eb32FLI/SDYRfYxZpO8fx7zBVC//CLJ0x6GyOFMTR4nHVxDRPJr4Xa00ujuOce8rPlIWl8GEI5lGpObHK+RrfTGfEdasH/kRJP7I7tdA9d0ElDRuc6C76psGkVOfKsLDGbtF0AM+aPTcHGSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OJYZc4vS; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5571e662b93so8518593a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 12:30:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705436964; x=1706041764; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xlVylpwq7EHMoUhpeUYxVoKLMBZq2evpSqBt9P2b8io=;
-        b=mk61hpZsn6xlDrmf0kXNj8OHyLxi+uOYO4jC0Me78JDBO+T2J0+GuLMIkw4LhfDA9D
-         TxGehj19PcoOJBrY72I4ZETQ4Tja11tSkXDKglHqtjzdXr/Z+feJ8YeE/KG9SUdPP7K3
-         DVydXLzJjTj5kKz3ynGeBfmxj37ZaibZufOTjQOBgrSw43TX3WXj6iEqpHhZlNRMHKnr
-         cuBuEs4FynzSuXwLLfex1UwEdka0qtHiHX9UskgA7nFobdX5dCVfMKM5HzW6tWoKNh0X
-         HniSEIQ+TVDHD/LqP/eAsLrHFfv5m62ou0o6hin5HsqnRpGNHYf7WEheM//rBOh4tVfC
-         +yUA==
+        d=linaro.org; s=google; t=1705437027; x=1706041827; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uTXhmBHw2EA0caAaydvwAT6rwYI/NJUX8jAJJV8Sy00=;
+        b=OJYZc4vSsguB0zBpM18DzqJJoz8N6I6uMSZ/mv3kEM7OhAqeOP9+OlY4HbkJNxFOVy
+         KWvQODmuz2DUhuBscm8QumjAYgolvGf29UxlOJhdGPipBuHW7SmTF1babY71HxPqjlSy
+         dVQN8ZChjbqEmLPUdQRcQRQ2GEzvKvhu/KmtEctKXA0XCfKtbzIf3xbFJugAlVtWCDzb
+         iHaOt8MnUS8EH7mhPb1JcpVb8aKJy9gdu///XaFByAAploMzvCcgjOa/zclvIMjTDxKs
+         49cxoIB220etpqcgBBrk5lLPFZ4MxYL7sXXpxl0vECqOfBbdHPMRJESypb2dTS4T6GHz
+         9+7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705436964; x=1706041764;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xlVylpwq7EHMoUhpeUYxVoKLMBZq2evpSqBt9P2b8io=;
-        b=Vj7OXT6au1V4fsRSjf6DMM8i5Lc2xvLiVjbkvaDL4rBNZfQzqP9/j4vpwBejlo+K4i
-         iBT12cb+16+JfaBGCVGRz0m+lI1rcm+njD1ndxdnf0G7FdGtmal/hFhO9pHp/IZV1vzI
-         mqWVrWn9aNRisC3tLNaWWqUic1Apq90lU7D9Qyncumzpedip0g8JwMXTn3CvrFl/G4uB
-         bG4S5nVYiMKvuOtcoKEdpcYI5TD1BfzI1Tm0bWHQe37zfyQCJG8p3Nk1nVFJ1/4WwnvM
-         SRczbcDcOxbfJ1hQf6CRlTTofhDQbibd5sh5DN/YfWFRcsghyMyONwlxcTjmDnKrRlxc
-         drwA==
-X-Gm-Message-State: AOJu0YwG+qEzs0xQq9n8Np4f4rIOdBltqTm2+PVMArPUNMuVDRlS+mBl
-	hgtLO38OZyfkTnzsZ3OvQgw2gnR1EYHLJtLcpXBpAxpipBWq
-X-Google-Smtp-Source: AGHT+IGmdi+XOz4E+uUCLfi66st3ymRH99QBHes/4q8aLhSjqZmqqv1KZ8kwORV6KDYGoH3VENm5TAw+h2FB4HE/+fs=
-X-Received: by 2002:a17:906:79c5:b0:a28:f771:aeb2 with SMTP id
- m5-20020a17090679c500b00a28f771aeb2mr2063045ejo.180.1705436964172; Tue, 16
- Jan 2024 12:29:24 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705437027; x=1706041827;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uTXhmBHw2EA0caAaydvwAT6rwYI/NJUX8jAJJV8Sy00=;
+        b=tRRHswZwZL2mZz6jGbVdX0n1gPsnfSyUf3aBeOqY9ZBn5ErzMCRhY6fBskrTEzvw3Z
+         WG8qK2xrAhc697HwEfONiILtBjcWXfmZRbhi7TS9QtdJt3C71VLNUyVzMXdDZR3Qh9C2
+         G+258MdIfHKWp5ReqDGZiHABrnDQ115XRTEcjtXB3N1uCNRV0r9dwaDY+DLntz/TNobv
+         phhTikiEs7KMJnd1czLbOQ6wyYCxd2drZOxcNEiX0UQmy55iOdG07N33zv5AoCdZCzLf
+         EZgJVel7TpIeaS4cBX9Nz970xki0zT9bS3m+ozOldTtfJJ+WUWeowNmwml6MOjiQU6HD
+         N5qg==
+X-Gm-Message-State: AOJu0YxVLnGfWO9fmRd8rnNgM6k01MdVSJV5pGAxrOrp7BMiodFdrmTH
+	m70BBY7Cr+ujJrzIxtbPpG443uW3GrznSg==
+X-Google-Smtp-Source: AGHT+IHFuFzFMM2bM2UjSx6fFyIc5tvQ1xs4HEI2FsjCRLD6pEYz+/oaXtUkDCaPFFhcoVD1Rw+sOw==
+X-Received: by 2002:a17:907:c24b:b0:a2d:d3a0:c9e6 with SMTP id tj11-20020a170907c24b00b00a2dd3a0c9e6mr2489729ejc.46.1705437026927;
+        Tue, 16 Jan 2024 12:30:26 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id wb1-20020a170907d50100b00a2cd86caa73sm5541237ejc.121.2024.01.16.12.30.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jan 2024 12:30:26 -0800 (PST)
+Message-ID: <4a9ed1ca-cd13-4b61-af06-a3d7935aeeee@linaro.org>
+Date: Tue, 16 Jan 2024 21:30:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231024142706.195517-1-hezhongkun.hzk@bytedance.com>
- <CAKEwX=OiNB+pPhb-3Tf7O=F7psKE3EOpwmbPSeLSOyuHpj3i+Q@mail.gmail.com>
- <CACSyD1P6HmH9tSvONnNxYv8P+am_hH2dK3UJQd9_+o6EWkPsXA@mail.gmail.com>
- <CAKEwX=PC3C-PrWAH3XiYGyR4ujqBJQBBX6uRa2jXKCy9VMyRCQ@mail.gmail.com>
- <CACSyD1O7t0+BXUujJ81RAdEys3MUnmpu0sRADLazoyvayx5DLA@mail.gmail.com>
- <CAKEwX=P5AC+ubnunnZr5vMiC6fFU+E_E7jg_FZztWwZRYSxTWQ@mail.gmail.com>
- <CACSyD1Nnc_w3epbt6+EMt7a-4pAzgW1hbE=G5Fy5Tc5R5+uxKw@mail.gmail.com>
- <CAKEwX=NuXR9Ot1eRFsp9n-3Tq9yhjD9up+jyvXeOzQ4xK9kEPA@mail.gmail.com>
- <CAKEwX=Oj2dR6a4-DeccvcVdJ-J7b=83uCWQAf5u7U0sySudnkw@mail.gmail.com>
- <CAJD7tkb2oda=4f0s8w8xn+t_TM1b2Q_otbb86VPQ9R1m2uqDTA@mail.gmail.com>
- <CACSyD1ODCikYLDzO4LkQeDzB4sqDWCULwCdehw9inP-qyw3_Jg@mail.gmail.com>
- <CAJD7tkY=zmGiPoWNjVaVeU+NPxV2t48J5-CxEP9=nBK8nAh0XA@mail.gmail.com>
- <CAKEwX=Na3dg+KZwvtQi-Nj79Am-1tttDw50_qStkobmYGUC6NA@mail.gmail.com>
- <CACSyD1Pp8gkxwTXZuinm6wiZs0e5U2B5oND4rj29dzmRApFjhQ@mail.gmail.com>
- <CAKEwX=OsTQCJd12S3NajRMRy_s3q3yGFpS7S=_3-yOYK6+ezzA@mail.gmail.com>
- <CACSyD1NgqoFKuHSgdw_bzgK_StsLrNQ+7wHVBqsnHcB-2rD2ow@mail.gmail.com> <CACSyD1Np1JbKB9punaigGbJ7y2ZWou1Sr7bczanHv4-1UQZ==A@mail.gmail.com>
-In-Reply-To: <CACSyD1Np1JbKB9punaigGbJ7y2ZWou1Sr7bczanHv4-1UQZ==A@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Tue, 16 Jan 2024 12:28:46 -0800
-Message-ID: <CAJD7tkbfe5duVhN7kJhkQZLCbK48giVZ8LBx=RQDmp80oa2FDA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: zswap: fix the lack of page lru flag
- in zswap_writeback_entry
-To: Zhongkun He <hezhongkun.hzk@bytedance.com>
-Cc: Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org, hannes@cmpxchg.org, 
-	sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Chris Li <chrisl@kernel.org>, Michal Hocko <mhocko@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/7] dt-bindings: i3c: svc: add compatible string i3c:
+ silvaco,i3c-target-v1
+Content-Language: en-US
+To: Frank Li <Frank.li@nxp.com>, Conor Dooley <conor@kernel.org>
+Cc: Conor Dooley <conor.dooley@microchip.com>, robh@kernel.org,
+ alexandre.belloni@bootlin.com, conor.culhane@silvaco.com,
+ gregkh@linuxfoundation.org, imx@lists.linux.dev, jirislaby@kernel.org,
+ joe@perches.com, linux-i3c@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+ miquel.raynal@bootlin.com, zbigniew.lukwinski@linux.intel.com,
+ devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org
+References: <ZaFjaWCA6k+tiCSJ@lizhi-Precision-Tower-5810>
+ <ZaWLCrWJEMtFx8cR@lizhi-Precision-Tower-5810>
+ <1b628901-7f71-4c97-9a16-723912988417@linaro.org>
+ <ZaXqCoCHPWER94Hh@lizhi-Precision-Tower-5810>
+ <d45e31c4-914e-4cea-a145-9775b6f516ab@linaro.org>
+ <20240116-bleach-herbicide-48d636967134@wendy>
+ <3199c245-3d2d-49e8-951e-2b059de4d683@linaro.org>
+ <20240116-achiness-thievish-10a12b3c08cd@wendy>
+ <Zaa+cLGVVDSB5MYr@lizhi-Precision-Tower-5810>
+ <20240116-retract-conclude-c47a7fc8cb21@spud>
+ <ZabVSYgq1Mz3LPpC@lizhi-Precision-Tower-5810>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <ZabVSYgq1Mz3LPpC@lizhi-Precision-Tower-5810>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 16, 2024 at 5:40=E2=80=AFAM Zhongkun He
-<hezhongkun.hzk@bytedance.com> wrote:
->
-> > > > >
-> > > > > Unless some page flag/readahead expert can confirm that the first
-> > > > > option is safe, my vote is on this option. I mean, it's fairly mi=
-nimal
-> > > > > codewise, no? Just a bunch of plumbing. We can also keep the othe=
-r
-> > > > > call sites intact if we just rename the old versions - something =
-along
-> > > > > the line of:
-> > > > >
-> > > > > __read_swap_cache_async_head(..., bool add_to_lru_head)
-> > > > > {
-> > > > > ...
-> > > > > if (add_to_lru_head)
-> > > > >   folio_add_lru(folio)
-> > > > > else
-> > > > >   folio_add_lru_tail(folio);
-> > > > > }
-> > > > >
-> > > > > __read_swap_cache_async(...)
-> > > > > {
-> > > > >    return __read_swap_cache_async_tail(..., true);
-> > > > > }
-> > > > >
-> > > > > A bit boilerplate? Sure. But this seems safer, and I doubt it's *=
-that*
-> > > > > much more work.
-> > > > >
-> > > >
-> > > > Yes=EF=BC=8C agree. I will try it again.
-> > >
-> > > Look forward to seeing it! Thanks for your patience and for working o=
-n this.
->
-> Please forgive me for adding additional information about this patch.
->
-> I have finished the opt for introducing a folio_add_lru_tail(), but
-> there are many
-> questions:
-> 1) A new page can be move to LRU only by lru_add_fn, so
->     folio_add_lru_tail could not add pages to LRU for the following code
->     in folio_batch_move_lru(),which is added by Alex Shi for
->     serializing memcg changes in pagevec_lru_move_fn[1].
->
-> /* block memcg migration while the folio moves between lru */
->         if (move_fn !=3D lru_add_fn && !folio_test_clear_lru(folio))
->             continue;
-> To achieve the goal, we need to add a new function like  lru_add_fn
-> which does not have the lru flag and folio_add_lru_tail()
-> +               if (move_fn !=3D lru_add_fn && move_fn !=3D lru_move_tail=
-_fn_new &&
-> +                       !folio_test_clear_lru(folio))
->
-> 2)  __read_swap_cache_async has six parameters, so there is no space to
-> add a new one, add_to_lru_head.
->
-> So it seems a bit hacky just for a special case for the reasons above.
+On 16/01/2024 20:13, Frank Li wrote:
+> On Tue, Jan 16, 2024 at 06:23:09PM +0000, Conor Dooley wrote:
+>> On Tue, Jan 16, 2024 at 12:35:44PM -0500, Frank Li wrote:
+>>> On Tue, Jan 16, 2024 at 09:48:08AM +0000, Conor Dooley wrote:
+>>>> On Tue, Jan 16, 2024 at 10:33:48AM +0100, Krzysztof Kozlowski wrote:
+>>>>> On 16/01/2024 10:30, Conor Dooley wrote:
+>>>>>> On Tue, Jan 16, 2024 at 08:24:20AM +0100, Krzysztof Kozlowski wrote:
+>>>>>>> On 16/01/2024 03:29, Frank Li wrote:
+>>>>>>>>>> 	Patches were accepted after discussion, what you ponit to. So I
+>>>>>>>>>> think everyone agree on the name 'silvaco,i3c-master-v1'.
+>>>>>>>>>> 	I plan send next version to fix auto build error. Any additional
+>>>>>>>>>> comments about this?
+>>>>>>>>>
+>>>>>>>>> I still do not see how did you address Rob's comment and his point is
+>>>>>>>>> valid. You just did not reply to it.
+>>>>>>>>
+>>>>>>>> See https://lore.kernel.org/imx/ZXCiaKfMYYShoiXK@lizhi-Precision-Tower-5810/
+>>>>>>>
+>>>>>>> First of all, that's not the answer to Rob's email, but some other
+>>>>>>> thread which is 99% ignored by Rob (unless he has filters for
+>>>>>>> "@Rob"...). Therefore no, it does not count as valid answer.
+>>>>>>>
+>>>>>>> Second, explanation does not make sense. There is no argument granting
+>>>>>>> you exception from SoC specific compatibles.
+>>>>>>
+>>>>>> The patch could have been applied two months ago had Frank done as
+>>>>>> was requested (multiple times). I don't understand the resistance
+>>>>>> towards doing so given the process has taken way way longer as a result.
+>>>>>
+>>>>> I think that Rob's comment was just skipped and original master binding
+>>>>> was merged without addressing it. I don't want to repeat the same
+>>>>> process for the "target". Indeed I could point this earlier... if I only
+>>>>> knew that Rob pointed out that issue.
+>>>>
+>>>> Oh I think I got confused here. The context for this mail led me to
+>>>> think that this was still trying to push the i3c-master-v1 stuff through
+>>>> and I was commenting on my frustration with the resistance to applying
+>>>> the feedback received. I didn't realise that this was for another
+>>>> patch adding a target.
+>>>>
+>>>> I think you already said it, but NAK to adding any more compatibles here
+>>>> until the soc-specific compatible that was asked for for the imx93 is
+>>>> added.
+>>>
+>>> Is it okay for 'silvaco,i3c-target-imx93'?
 
-It's a lot of plumbing for sure. Adding a flag to current task_struct
-is a less-noisy yet-still-hacky solution. I am not saying we should do
-it, but it's an option. I am not sure how much task flags we have to
-spare.
+No, because imx93 is product of NXP, not Silvaco.
 
->
-> Back to the beginning,  lru_add_drain() is the simplest option=EF=BC=8Cwh=
-ich is common
-> below the __read_swap_cache_async(). Please see the function
-> swap_cluster_readahead()
-> and swap_vma_readahead(), of course it has been batched.
->
-> Or we should  leave this problem alone=EF=BC=8Cbefore we can write back z=
-swap
-> in batches.
+You need regular SoC-block compatibles, just like we have for all other
+snps, dwc and cdns.
 
-Calling lru_add_drain() for every written back page is an overkill
-imo. If we have writeback batching at some point, it may make more
-sense then.
 
-Adding Michal Hocko was recently complaining [1] about lru_add_drain()
-being called unnecessarily elsewhere.
+Best regards,
+Krzysztof
 
-[1]https://lore.kernel.org/linux-mm/ZaD9BNtXZfY2UtVI@tiehlicka/
 
