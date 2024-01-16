@@ -1,209 +1,344 @@
-Return-Path: <linux-kernel+bounces-27328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D8CF82EDDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:37:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62BD482EDDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:38:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC60C28313B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:37:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEB82282DE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:38:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 502E21B815;
-	Tue, 16 Jan 2024 11:37:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D45AB1B81B;
+	Tue, 16 Jan 2024 11:37:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="N1xEAh+t"
-Received: from IND01-BMX-obe.outbound.protection.outlook.com (mail-bmxind01olkn2089.outbound.protection.outlook.com [40.92.103.89])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="KVIA6Ays"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C4781B940;
-	Tue, 16 Jan 2024 11:37:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Hjn5upMuYRX+g7sEHDZyl2uRNAWvCSpem4YOSVhzbXh5gf2spF2qzglKKfG4UtbB4rFvq0OqIAMRQPHj9C//DiP9IF5dPae0sxWEJ+y7edXLN0s0sfuOMXJN+KVxlwMtEZkjgRj2TV7T262VO5TmGekygZuqPkWBiMnjZLbdQ820tA69bvZsnnxLiqYS9N0I/bTS+HpiSLxhIEujiAMlGiDGNURAebQqJfcRL6ZSUWTrmmlXI99mZTAAvOnJyebwbm6x9Su5+y1Abizgxrt6/gqVr4WfEujiWdaCL8LHg8vLkltx+2vMyQzY1Bl7eBYw8X+NJoSzREYG3L05q2X+ZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cIdNgyuuBvjR5UX/UXVruTVaatPQSHNgeUC/msUMZV4=;
- b=ZkdhfjhgkZ/0Dtfycwdn/fUGx3PcV8tt7syXrK44jswaBtUaU86ESaCY4mzH6T/9c2NefODSwK4PHYeDBt+6MQMV6tXiJLkRzve9bhUrz2cXGIFaM4aXM70ew+kodmRy4G0tOqaS6sl3g3mbh8eTsjGs4Sp3rUGHCP7LovD1h3MTrjA7cbyp4cTNb8r3jS9YMBCm2gJCqLAH+Cvz2I1ShsFSQDR6VzxSc13m5XCQjT3ZOalqa4xD6LnPAEHX+hp0QGRfwIPbDbkwy0ZnunLsSk8GoY6Gun1Jth7hE6rYkQuufu0W7/7aBGuQWb0j+kTWpGLrlN0Ij/4jBavtkl+lug==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cIdNgyuuBvjR5UX/UXVruTVaatPQSHNgeUC/msUMZV4=;
- b=N1xEAh+twTpj1QOVMv845VWMgSN9vViiTGGqUJ0VnDkULWJmFcXAQl3g3DEDEIn86Mvss9yzThEMBxL3dXhEG6lAzAiYGpewZAtCXwbMeOwoJJ5S3zqrPkOajBu0Zv+CwEVheh8aGcPl6EMmxqjEJmtl2waeJQvxBQVEtYhGlsHckV0HPxc0b64f5PdxrPAQXj/VDDoUrx414AS17Nc63MYKcgon/QaGDP1e5gThkHB1+EYFEqrC9Qqelwp/ENzrtnVhI7zxO2Hbp4nVIvr6WZjEkAKPU3VMdqxJMaSMeUMHVpix9KLzdW5ob5oWl45oqJre681JxXJJcX9+RImxbQ==
-Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:138::5)
- by PN3P287MB1847.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:19d::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.29; Tue, 16 Jan
- 2024 11:37:29 +0000
-Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- ([fe80::6e80:69e1:f2e7:d70d]) by MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- ([fe80::6e80:69e1:f2e7:d70d%3]) with mapi id 15.20.7181.027; Tue, 16 Jan 2024
- 11:37:29 +0000
-Message-ID:
- <MA0P287MB282232DC6DF6290F5520BA89FE732@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
-Date: Tue, 16 Jan 2024 19:37:22 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 2/5] dt-bindings: soc: sophgo: Add Sophgo system
- control module
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu, chao.wei@sophgo.com,
- conor@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- mturquette@baylibre.com, palmer@dabbelt.com, paul.walmsley@sifive.com,
- richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
- devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
- haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com, guoren@kernel.org,
- jszhang@kernel.org, inochiama@outlook.com, samuel.holland@sifive.com
-References: <cover.1705388518.git.unicorn_wang@outlook.com>
- <598b1026fdf9989bc48e5e10d1034b37947d3b80.1705388518.git.unicorn_wang@outlook.com>
- <f4a46311-2e12-458b-98a8-d3caa2c95517@linaro.org>
-From: Chen Wang <unicorn_wang@outlook.com>
-In-Reply-To: <f4a46311-2e12-458b-98a8-d3caa2c95517@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TMN: [tX1rqsDlj7PmSqjGin9SmCxk76bAGxUn]
-X-ClientProxiedBy: SG2PR02CA0099.apcprd02.prod.outlook.com
- (2603:1096:4:92::15) To MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a01:138::5)
-X-Microsoft-Original-Message-ID:
- <6a4d5b98-dced-4cad-b346-b285ea303707@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2BA91B806;
+	Tue, 16 Jan 2024 11:37:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705405074;
+	bh=AkU4Aw/QIPH1+DOQOidwUUoly+zc1/9o7J/OaOKeexM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=KVIA6AysDN9PmLrYr9vTHqgnWAvkCStZiwEO7CAyly954rcvHF3+XaMjBPi/YFAbG
+	 Gi89UEgbetyc0+bi26d/5Xc6HbWFmMJhZzieaLbYC/dhQsS2wliwozPRiEaPjx+xrS
+	 sleiu0Zthh0nsJbw6VyAGtDinNZrpwvh+3QCd6gi4DJ7w/l3J9x0WDRPRpzlo3INlE
+	 uT+mwwYaaGxKZUCTqyXCDqgnE5QxBkGElM1VK8P3Zj4kpJfOFvjzx3j7V790U6JcL6
+	 GqJlUJH8vyHruYVDNPm33BM6dRDToWDYjMErscoB/i7QYWdf+aHCt+0crxCUZBpxJ1
+	 oylbEcKZIxCng==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 548A937802F2;
+	Tue, 16 Jan 2024 11:37:54 +0000 (UTC)
+Message-ID: <9cbf96cb-2a2d-40be-a712-cc2eeaa805b6@collabora.com>
+Date: Tue, 16 Jan 2024 12:37:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MA0P287MB2822:EE_|PN3P287MB1847:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1d51ef08-5cec-4424-f6f8-08dc16878448
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	IGsZifcfUoQCzyJa2Y8otupbeDQ4wbh9LZHVNjJe+IjqZF5hOcL9jNUk0WiXceXex968zMdqQCsu45bXouyBvAxVOUL/73I3CsyFuWl3eFgMvLhjsWhc2QQoM5c1kTufU/UpGF00wUaEwxKyXS8+MpP/eUG6/DLxcRCaSnsjdj5QzIzddkH/e+mn/zBchz8pvPQywdm9WmbMZPmlA3Nl4pywYle3LuIdsNhNuFuXY59G7idlSPKm75J3Kfs0ZrmSF80+KVye4SBzjnJsZhZP7CAKWF26SFTrnD7Wh5frbm9n/GdsbKk6pzk21c+N7BJDlpAH2YKowvEP/5cgNYlUpi/D69cMJQzpNsVBK2mg1uFwkCHMe4mEGflev6wVhLTk49+f8I8jJuumsRT1K5WI92D8YoOrBQAvA0We9b+AaqT2TuDoJBVF1wslv4d3QXLUtaqNvqPWdGX/m8N3gsnjWhBCgxxQ4lLUg2zCv/Btypz1ipwRFMf/2edra1GEfhtaNIa2YBU9U2KW5A0ymU0mOuemASR9DvPq6SHSIJXwc5zyjLOm1mIdZe6mt8s8RBCa5KntmxygDuXDGpFKIU9oWNBebd89L+p6603v/MTkjPDYzFy3aqA+T4G2df1AWi1/ykny85v+xxZL5yaxrXZ+Kw==
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bmFnSlRRR0FaL3N5WWVFNmNMcUptVXM5YzdmOEVneUVFZ0FwbUZhQmFxb1pa?=
- =?utf-8?B?djRwK0daTGxVY1FaZUtHNElJbnhqcGxsQXJwTzlSNjdRNnhRSHF1YW9OSjM5?=
- =?utf-8?B?enBPbDlwd0dPWnZMNTNONlpYNXBHN3ZNOGZxbEM4ampxaWhMeE42aUtsQjdp?=
- =?utf-8?B?RW9velBYUXpYK21PYUtjQVNLNUVFVGVDcU84SnF3bHVLb2ovVXVlNWMvL3RW?=
- =?utf-8?B?NU5xbTVKZm9PRmdhYnVSMG14Nks5T05pbVpxWTlIU0RHb3dzWld5WWJuL09E?=
- =?utf-8?B?OFRTc2RLY1d0S3BNeldjRldqdjNkdDVOS2RyM1ZPaFFsanhZZlJqUUNoYWt3?=
- =?utf-8?B?M0VrRHE2VDNub3RLSndGcGZ3eitUTldFeGVoM2lNT1JPVVlQNnNjS3FTektI?=
- =?utf-8?B?U2w4SnBqMTJMTllEYWxPY01BOG53ZklOQSs3TUZXbjU4RkU2ZC9zTmtnK2NP?=
- =?utf-8?B?Y0VEamNyZ0JJRjRtVG9nekhYeHYyajhBZmhHZW41VDJGcEp3SXVBa3ZBNlFI?=
- =?utf-8?B?MkFGNFYycXpwaVNpQW53TVF4bWJsNTZicjMxcHh6ekROT2s1UGpqNHJsSVlv?=
- =?utf-8?B?VklxODgxK09KdFp5WEV2WUhBdHN4am8xbEVxTHc4RWo5VGxyT3pIN1E1UWpx?=
- =?utf-8?B?MVA4Sng4djYyM1ViTk5VVVJsRnhmVytLdVdJNXl4VWRTbFduTVk1MExOWmxU?=
- =?utf-8?B?WjEzY2NxQ1AwWThHVlNqTGJSVUF6cWRCZ0NDMjVob1BIakJDcy94a2poZFl1?=
- =?utf-8?B?anlvaER1d1RjTEJibU9HdmI4OW9RR0Mvek5qdlJLZitlcEppWDdZbitudC81?=
- =?utf-8?B?VDZDTVJNQ1FVbXNyMVowYit5ajltd1Z6LzRzWW14VVIycUllZU1QYms4SjFn?=
- =?utf-8?B?czNJY3RGeU5mQkNHV2NEVjlvcVQ2TzRacVFwYUw5My9ndkY3bFJwQ2JNQWRm?=
- =?utf-8?B?RFRPK2NwS1hIL0RSTjduSVE4NXN5ejVJU3dwQmUxWUt5aUVYayt3dFFFQmRU?=
- =?utf-8?B?ak5YTTdCbWVZaDhDc0lGSHg4Z05DWjl0eklMdHkwaUhwSVlGYy9kQ01mdEYr?=
- =?utf-8?B?SFV0anFJdXVTK1MxbnJkSmswZXMvYjEvS2JDRFdNYnVpVjZYU3ZFV2JseTF2?=
- =?utf-8?B?WWI3MnlhT0J0R1VVNWh0VzlXQWIrWmU1RkF2QW83SDBta0cwcUlHWk5sQ3Fo?=
- =?utf-8?B?UEpyVlpGZFVRNVNsNnF5WFFramc2c1dqWTVUKzN5Q29kN3ZMRnVDRmRnMnpt?=
- =?utf-8?B?T0dCNW9WTlJETmpPQTZicG9LN3FZTWNlQVdWOVl6VXpOZmViN00vcXg2cE1j?=
- =?utf-8?B?MGVnTGJaTmxObXJkTDZIR2wzamZETEVFRmZrSWR4eStJRUlmbHNvY09rNGZ1?=
- =?utf-8?B?Ym9FSjdMQjh4dEhUeTBxUjk0NDJXU3VCVXFkbUpJYXltRmZyVGtDR0Y1K3A3?=
- =?utf-8?B?ZjNFR1RNSzU1bnZlRTlIY0t4cGY0bDkrRC8vSkd1QUFLakVtZXlJMUsrQklz?=
- =?utf-8?B?aDZYOGIvd3FhZnY0T2JoSkEwdHRzYklvMXlMUmpXWXVUa1F0a1ZJdU9PN0FR?=
- =?utf-8?B?MFBRbXRpVzBDb05iNFdXVUJIN3pxa0RuUkFNUjNRbE0zN2E4WjVUYnk1VDJr?=
- =?utf-8?Q?TPEUPKPmBZhvQmxI+XO6x9PloOVf4TI3yTshoSTOy8qY=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1d51ef08-5cec-4424-f6f8-08dc16878448
-X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2024 11:37:29.5676
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN3P287MB1847
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 26/26] thermal: Introduce thermal zones names
+Content-Language: en-US
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: rafael@kernel.org, rui.zhang@intel.com, lukasz.luba@arm.com,
+ linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <20231221124825.149141-1-angelogioacchino.delregno@collabora.com>
+ <20231221124825.149141-27-angelogioacchino.delregno@collabora.com>
+ <d824d351-b1b1-46e3-86ac-f4a6b42c89fc@linaro.org>
+ <3805d11d-bbc3-4509-bb2c-ce752a65618f@collabora.com>
+ <3ca36f2f-1dc9-4f7e-9e83-3d3872530976@linaro.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <3ca36f2f-1dc9-4f7e-9e83-3d3872530976@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-
-On 2024/1/16 18:06, Krzysztof Kozlowski wrote:
-> On 16/01/2024 08:21, Chen Wang wrote:
->> From: Chen Wang <unicorn_wang@outlook.com>
+Il 16/01/24 12:30, Daniel Lezcano ha scritto:
+> On 16/01/2024 10:45, AngeloGioacchino Del Regno wrote:
+>> Il 16/01/24 10:14, Daniel Lezcano ha scritto:
+>>> On 21/12/2023 13:48, AngeloGioacchino Del Regno wrote:
+>>>> Currently thermal zones have a "type" but this is often used, and
+>>>> referenced, as a name instead in multiple kernel drivers that are
+>>>> either registering a zone or grabbing a thermal zone handle and
+>>>> unfortunately this is a kind of abuse/misuse of the thermal zone
+>>>> concept of "type".
+>>>>
+>>>> In order to disambiguate name<->type and to actually provide an
+>>>> accepted way of giving a specific name to a thermal zone for both
+>>>> platform drivers and devicetree-defined zones, add a new "name"
+>>>> member in the main thermal_zone_device structure, and also to the
+>>>> thermal_zone_device_params structure which is used to register a
+>>>> thermal zone device.
+>>>>
+>>>> This will enforce the following constraints:
+>>>>   - Multiple thermal zones may be of the same "type" (no change);
+>>>>   - A thermal zone may have a *unique* name: trying to register
+>>>>     a new zone with the same name as an already present one will
+>>>>     produce a failure;
+>>>> ---
+>>>>   drivers/thermal/thermal_core.c  | 34 ++++++++++++++++++++++++++++++---
+>>>>   drivers/thermal/thermal_of.c    |  1 +
+>>>>   drivers/thermal/thermal_sysfs.c |  9 +++++++++
+>>>>   drivers/thermal/thermal_trace.h | 17 +++++++++++------
+>>>>   include/linux/thermal.h         |  4 ++++
+>>>>   5 files changed, 56 insertions(+), 9 deletions(-)
+>>>>
+>>>> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+>>>> index 9eb0200a85ff..adf2ac8113e1 100644
+>>>> --- a/drivers/thermal/thermal_core.c
+>>>> +++ b/drivers/thermal/thermal_core.c
+>>>> @@ -1238,8 +1238,8 @@ EXPORT_SYMBOL_GPL(thermal_zone_get_crit_temp);
+>>>>   struct thermal_zone_device *thermal_zone_device_register(struct 
+>>>> thermal_zone_device_params *tzdp)
+>>>>   {
+>>>>       struct thermal_zone_device *tz;
+>>>> -    int id;
+>>>> -    int result;
+>>>> +    int id, tz_name_len;
+>>>> +    int result = 0;
+>>>>       struct thermal_governor *governor;
+>>>>       if (!tzdp->type || strlen(tzdp->type) == 0) {
+>>>> @@ -1248,11 +1248,36 @@ struct thermal_zone_device 
+>>>> *thermal_zone_device_register(struct thermal_zone_dev
+>>>>       }
+>>>>       if (strlen(tzdp->type) >= THERMAL_NAME_LENGTH) {
+>>>> -        pr_err("Thermal zone name (%s) too long, should be under %d chars\n",
+>>>> +        pr_err("Thermal zone type (%s) too long, should be under %d chars\n",
+>>>>                  tzdp->type, THERMAL_NAME_LENGTH);
+>>>>           return ERR_PTR(-EINVAL);
+>>>
+>>> I would keep that as is and do second round of changes to clarify the usage of 
+>>> ->type
+>>>
 >>
->> Add documentation to describe Sophgo System Control for SG2042.
+>> Problem is, if we keep this one as-is, then we'll have ambiguous error messages in
+>> this series... unless we stop limiting the tz type string to THERMAL_NAME_LENGTH
+>> as well as not limit the tz name to that...
+> 
+> I'm missing the point, how can it be more ambiguous if the message is unchanged ?
+> 
+
+Because:
+
+        if (strlen(tzdp->type) >= THERMAL_NAME_LENGTH) {
+         pr_err("Thermal zone name (%s) too long, should be under %d chars\n",
+
+......
+
+  +        if (tz_name_len >= THERMAL_NAME_LENGTH) {
+  +            pr_err("Thermal zone name (%s) too long, should be under %d chars\n",
+  +                   tzdp->name, THERMAL_NAME_LENGTH);
+  +            return ERR_PTR(-EINVAL);
+  +        }
+
+..but anyway, since we're removing the THERMAL_NAME_LENGTH limit, those messages
+are going away with it - this means that this is not a problem anymore.
+
+Nevermind :-)
+
+>>>>       }
+>>>> +    tz_name_len = tzdp->name ? strlen(tzdp->name) : 0;
+>>>
+>>> I suggest to change to a const char * and no longer limit to THERMAL_NAME_LENGTH.
 >>
->> Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
->> ---
->>   .../soc/sophgo/sophgo,sg2042-sysctrl.yaml     | 46 +++++++++++++++++++
->>   1 file changed, 46 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml
+>> ...and to be completely honest, I actually like the THERMAL_NAME_LENGTH limitation,
+>> because this both limits the length of the related sysfs file and avoids prolonging
+>> error messages with very-very-very long type-strings and name-strings.
 >>
->> diff --git a/Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml b/Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml
->> new file mode 100644
->> index 000000000000..7b50bb56b4cf
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml
->> @@ -0,0 +1,46 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/soc/sophgo/sophgo,sg2042-sysctrl.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Sophgo SG2042 SoC system control
->> +
->> +maintainers:
->> +  - Chen Wang <unicorn_wang@outlook.com>
->> +
->> +description:
->> +  The Sophgo system control is a registers block (SYS_CTRL), providing multiple
->> +  low level platform functions like chip configuration, clock control, etc.
->> +
->> +properties:
->> +  compatible:
->> +    const: sophgo,sg2042-sysctrl
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  clock-controller:
->> +    # Child node
-> Drop the comment, it is obvious. It cannot be anything else.
->
->> +    $ref: /schemas/clock/sophgo,sg2042-sysclk.yaml#
->> +    type: object
-> Why isn't this merged here? You do not need the child node really...
-> unless the clock inputs are specific to that clock controller and you
-> will have here more devices? But where are they in such case?
-I don't see more devices will be included later. It should be ok to 
-merge them into one.
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - clock-controller
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    system-control@30010000 {
-> Why did you change the name? Please provide detailed changelog with
-> explanation of such changes.
+>> What I have in my head is:
+>>
+>> imagine having a thermal zone named "cpu-little-bottom-right-core0" and a driver
+>> named "qualcomm-power-controller" (which doesn't exist, but there are drivers with
+>> pretty long names in the kernel anyway).
+>>
+>> Kernel logging *may* have very long strings, decreasing readability:
+>> [ 0.0000100 ] qualcomm-power-controller: cpu-little-bottom-right-core0: Failed to 
+>> read thermal zone temperature -22
+>>
+>> And sysfs would have something like
+>> cpu-little-top-right-core0 cpu-little-top-left-core0 cpu-little-bottom-right-core0
+>>
+>> While sysfs could be ok, are we sure that allowing such long names is a good idea?
+>>
+>> It's a genuine question - I don't really have more than just cosmetic reasons and
+>> those are just only personal perspectives....
+> 
+> IMO, it is up to the programmer to choose a convenient name.
+> 
+> If the traces are giving unreadable output, then someone will send a patch to 
+> change the name to something more readable.
+> 
+> In addition, having array in structure to be passed as parameter is not good 
+> because of the limited stack size in the kernel.
+> 
+> 
 
-I changed the name due to I find the 
-TRM(https://github.com/sophgo/sophgo-doc/blob/main/SG2042/TRM/source/system-control.rst) 
-call it "system control",  so I changed it in v8.
+Okay, will do then.
 
-Which one do you prefer? I'm not sure if there are any requirements for 
-this?
+>>>> +    if (tz_name_len) {
+>>>> +        struct thermal_zone_device *pos;
+>>>> +
+>>>> +        if (tz_name_len >= THERMAL_NAME_LENGTH) {
+>>>> +            pr_err("Thermal zone name (%s) too long, should be under %d chars\n",
+>>>> +                   tzdp->name, THERMAL_NAME_LENGTH);
+>>>> +            return ERR_PTR(-EINVAL);
+>>>> +        }
+>>>> +
+>>>> +        mutex_lock(&thermal_list_lock);
+>>>> +        list_for_each_entry(pos, &thermal_tz_list, node)
+>>>> +            if (!strncasecmp(tzdp->name, pos->name, THERMAL_NAME_LENGTH)) {
+>>>> +                result = -EEXIST;
+>>>> +                break;
+>>>> +            }
+>>>> +        mutex_unlock(&thermal_list_lock);
+>>>> +
+>>>> +        if (result) {
+>>>> +            pr_err("Thermal zone name (%s) already exists and must be unique\n",
+>>>> +                   tzdp->name);
+>>>> +            return ERR_PTR(result);
+>>>> +        }
+>>>
+>>> Perhaps a lookup function would be more adequate. What about reusing 
+>>> thermal_zone_get_by_name() and search with tz->name if it is !NULL, tz->type 
+>>> otherwise ?
+>>>
+>>
+>> Okay yes that makes a lot of sense, and also breaks some of my brain loops around
+>> making the migration a bit less painful.
+>>
+>> Nice one! Will do :-D
+>>
+>>>> +    }
+>>>> +
+>>>>       /*
+>>>>        * Max trip count can't exceed 31 as the "mask >> num_trips" condition.
+>>>>        * For example, shifting by 32 will result in compiler warning:
+>>>> @@ -1307,6 +1332,9 @@ struct thermal_zone_device 
+>>>> *thermal_zone_device_register(struct thermal_zone_dev
+>>>>       tz->id = id;
+>>>>       strscpy(tz->type, tzdp->type, sizeof(tz->type));
+>>>> +    if (tz_name_len)
+>>>> +        strscpy(tz->name, tzdp->name, sizeof(tzdp->name));
+>>>> +
+>>>>       if (!tzdp->ops->critical)
+>>>>           tzdp->ops->critical = thermal_zone_device_critical;
+>>>> diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
+>>>> index 62a903ad649f..eaacc140abeb 100644
+>>>> --- a/drivers/thermal/thermal_of.c
+>>>> +++ b/drivers/thermal/thermal_of.c
+>>>> @@ -486,6 +486,7 @@ static struct thermal_zone_device 
+>>>> *thermal_of_zone_register(struct device_node *
+>>>>           ret = PTR_ERR(np);
+>>>>           goto out_kfree_of_ops;
+>>>>       }
+>>>> +    tzdp.name = np->name;
+>>>>       tzdp.type = np->name;
+>>>>       tzdp.trips = thermal_of_trips_init(np, &tzdp.num_trips);
+>>>> diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
+>>>> index f52af8a3b4b5..f4002fa6caa2 100644
+>>>> --- a/drivers/thermal/thermal_sysfs.c
+>>>> +++ b/drivers/thermal/thermal_sysfs.c
+>>>> @@ -23,6 +23,14 @@
+>>>>   /* sys I/F for thermal zone */
+>>>> +static ssize_t
+>>>> +name_show(struct device *dev, struct device_attribute *attr, char *buf)
+>>>> +{
+>>>> +    struct thermal_zone_device *tz = to_thermal_zone(dev);
+>>>> +
+>>>> +    return sprintf(buf, "%s\n", tz->name);
+>>>> +}
+>>>> +
+>>>>   static ssize_t
+>>>>   type_show(struct device *dev, struct device_attribute *attr, char *buf)
+>>>>   {
+>>>> @@ -341,6 +349,7 @@ create_s32_tzp_attr(offset);
+>>>>    * All the attributes created for tzp (create_s32_tzp_attr) also are always
+>>>>    * present on the sysfs interface.
+>>>>    */
+>>>> +static DEVICE_ATTR_RO(name);
+>>>>   static DEVICE_ATTR_RO(type);
+>>>>   static DEVICE_ATTR_RO(temp);
+>>>>   static DEVICE_ATTR_RW(policy);
+>>>> diff --git a/drivers/thermal/thermal_trace.h b/drivers/thermal/thermal_trace.h
+>>>> index 459c8ce6cf3b..c9dbae1e3b9e 100644
+>>>> --- a/drivers/thermal/thermal_trace.h
+>>>> +++ b/drivers/thermal/thermal_trace.h
+>>>> @@ -28,6 +28,7 @@ TRACE_EVENT(thermal_temperature,
+>>>>       TP_ARGS(tz),
+>>>>       TP_STRUCT__entry(
+>>>> +        __string(thermal_zone_name, tz->name)
+>>>>           __string(thermal_zone, tz->type)
+>>>>           __field(int, id)
+>>>>           __field(int, temp_prev)
+>>>> @@ -35,15 +36,16 @@ TRACE_EVENT(thermal_temperature,
+>>>>       ),
+>>>>       TP_fast_assign(
+>>>> +        __assign_str(thermal_zone_name, tz->name);
+>>>>           __assign_str(thermal_zone, tz->type);
+>>>>           __entry->id = tz->id;
+>>>>           __entry->temp_prev = tz->last_temperature;
+>>>>           __entry->temp = tz->temperature;
+>>>>       ),
+>>>> -    TP_printk("thermal_zone=%s id=%d temp_prev=%d temp=%d",
+>>>> -        __get_str(thermal_zone), __entry->id, __entry->temp_prev,
+>>>> -        __entry->temp)
+>>>> +    TP_printk("thermal_zone=%s name=%s id=%d temp_prev=%d temp=%d",
+>>>> +          __get_str(thermal_zone), __get_str(thermal_zone_name),
+>>>> +          __entry->id, __entry->temp_prev, __entry->temp)
+>>>>   );
+>>>>   TRACE_EVENT(cdev_update,
+>>>> @@ -73,6 +75,7 @@ TRACE_EVENT(thermal_zone_trip,
+>>>>       TP_ARGS(tz, trip, trip_type),
+>>>>       TP_STRUCT__entry(
+>>>> +        __string(thermal_zone_name, tz->name)
+>>>>           __string(thermal_zone, tz->type)
+>>>>           __field(int, id)
+>>>>           __field(int, trip)
+>>>> @@ -80,15 +83,17 @@ TRACE_EVENT(thermal_zone_trip,
+>>>>       ),
+>>>>       TP_fast_assign(
+>>>> +        __assign_str(thermal_zone_name, tz->name);
+>>>>           __assign_str(thermal_zone, tz->type);
+>>>>           __entry->id = tz->id;
+>>>>           __entry->trip = trip;
+>>>>           __entry->trip_type = trip_type;
+>>>>       ),
+>>>> -    TP_printk("thermal_zone=%s id=%d trip=%d trip_type=%s",
+>>>> -        __get_str(thermal_zone), __entry->id, __entry->trip,
+>>>> -        show_tzt_type(__entry->trip_type))
+>>>> +    TP_printk("thermal_zone=%s name=%s id=%d trip=%d trip_type=%s",
+>>>> +          __get_str(thermal_zone), __get_str(thermal_zone_name),
+>>>> +          __entry->id, __entry->trip,
+>>>> +          show_tzt_type(__entry->trip_type))
+>>>>   );
+>>>
+>>> For now, I think we can keep the traces as they are and keep passing the 
+>>> tz->type. Then we can replace tz->type by tz->name without changing the trace 
+>>> format.
+>>>
+>>
+>> We can but, as a personal consideration, this looks "more complete" - as in - we
+>> are not dropping the thermal zone *type* concept anyway (even though we're doing
+>> "something else" with it), so including both type and name in tracing is useful
+>> to whoever is trying to debug something.
+>>
+>> If you have strong opinions against, though, it literally takes 30 seconds for me
+>> to just remove that part and there's no problem in doing so!
+> 
+> Yes, just drop it for now. We will sort it out after.
+> 
 
->> +        compatible = "sophgo,sg2042-sysctrl";
->> +        reg = <0x30010000 0x1000>;
->> +
-> Best regards,
-> Krzysztof
->
+Ok I'll drop this part!
+
+
+
 
