@@ -1,52 +1,81 @@
-Return-Path: <linux-kernel+bounces-26952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26948-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2E7382E873
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 05:12:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6683882E868
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 05:11:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C3D01F23736
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 04:12:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2F752849E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 04:11:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A0A379E2;
-	Tue, 16 Jan 2024 04:12:05 +0000 (UTC)
-Received: from esa9.hc1455-7.c3s2.iphmx.com (esa9.hc1455-7.c3s2.iphmx.com [139.138.36.223])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D024079D9;
+	Tue, 16 Jan 2024 04:11:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="S3/uqofw"
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77B5D79C0
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 04:12:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fujitsu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="134626161"
-X-IronPort-AV: E=Sophos;i="6.04,198,1695654000"; 
-   d="scan'208";a="134626161"
-Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
-  by esa9.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 13:11:53 +0900
-Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com [192.168.83.66])
-	by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 6671CD618D
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 13:11:51 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com [192.51.206.21])
-	by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 9CAA9C5CC2
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 13:11:50 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
-	by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 2B9A8200983D8
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 13:11:50 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.226.45])
-	by edo.cn.fujitsu.com (Postfix) with ESMTP id B8DF51A0160;
-	Tue, 16 Jan 2024 12:11:49 +0800 (CST)
-From: Li Zhijian <lizhijian@fujitsu.com>
-To: linux-kernel@vger.kernel.org
-Cc: Li Zhijian <lizhijian@fujitsu.com>,
-	Russell King <linux@armlinux.org.uk>,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 02/42] arch/arm/mm: Convert snprintf to sysfs_emit
-Date: Tue, 16 Jan 2024 12:10:49 +0800
-Message-Id: <20240116041129.3937800-3-lizhijian@fujitsu.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20240116041129.3937800-1-lizhijian@fujitsu.com>
-References: <20240116041129.3937800-1-lizhijian@fujitsu.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A48A8748F
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 04:11:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6dde173384aso4798585a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 20:11:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1705378262; x=1705983062; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CWChxn/etZA7mSQDyr9oFtgmtnkj4VOXoiVZv/wz84A=;
+        b=S3/uqofwLHBKs07l+vV+CovnspE1KLCytBwYGJRoDZGiLzVND6UAp923pAYYK1gfo+
+         ac+4TWZx2MA5z51oFvkxm1CNA7GbafUMobgYJmBa7c387qlp7kIlOxRMHoXe80mP/AuZ
+         PkPu5WA+K+R6sao72nRNbMie6JumBSqbGpX8sH8k6DyGekHKbt6nK10up4ssW6viUZQi
+         qiva6S5JWLIsFxuhwhP0K+L57GnLTKgZHBIeyBHpvEDj3IyOMqFnitkCUMP5u/DBxswj
+         HqrznQgIKwfEVFWwhy+hFoU7BDDo/hhRWnuVfjFBxeBJAXyiAt2LG5uHaMecuzT7XHwI
+         QUSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705378262; x=1705983062;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CWChxn/etZA7mSQDyr9oFtgmtnkj4VOXoiVZv/wz84A=;
+        b=OI+6flxnD74SvDdEn4tISYwZC0HaqMHbE0iyOMrIJFG5Zj8yiuPEoutBsfKiysXzhU
+         +R+LPIAemBueUGqDcl+BuJP9MTfydAXe52E9MhR/eThLrawV5j7Sn5ZO/rHE6Au6NrXB
+         G6HOigCrVs5eF0Rby/P+BmpypF29ZqIZyPHzDY+nDQa0GdGJZ9u6KrI+Uw1ReeGNeweQ
+         /i8uP71kp0MZCXcQ+bYIgYGy+pcshOsCDy04r/qq5A5noctLbEsIziY9ufU6L7hbta+V
+         58FnBs2hOu048uNchyBKYZexATvY8ribVGGKgwBscAlCxHXY0kf6c8QRv3w4vXK3gV97
+         G2kg==
+X-Gm-Message-State: AOJu0Yzk1JpF5cvFD/JeMb/zX6HHQerPs4B2nwYfD3j3tMl5GUC0EsQ3
+	VMMq9otZPiKPu/gNuqEGca99w5SJ+0QvUg==
+X-Google-Smtp-Source: AGHT+IEfWmKba6ELkIwXAP6st2nVX8PTgS7saJtspXT16S/FqI+k9e3xGVVjwrIlscveCrb7r7KkdQ==
+X-Received: by 2002:a05:6808:21a7:b0:3bc:29c2:2b97 with SMTP id be39-20020a05680821a700b003bc29c22b97mr9492923oib.88.1705378262660;
+        Mon, 15 Jan 2024 20:11:02 -0800 (PST)
+Received: from hsinchu15.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
+        by smtp.gmail.com with ESMTPSA id e3-20020a056a0000c300b006da14f68ac1sm8348585pfj.198.2024.01.15.20.10.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 20:11:02 -0800 (PST)
+From: Nylon Chen <nylon.chen@sifive.com>
+To: paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	conor+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	robh+dt@kernel.org,
+	u.kleine-koenig@pengutronix.de,
+	thierry.reding@gmail.com,
+	aou@eecs.berkeley.edu
+Cc: zong.li@sifve.com,
+	vincent.chen@sifive.com,
+	linux-pwm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	nylon7717@gmail.com,
+	Nylon Chen <nylon.chen@sifive.com>
+Subject: [v6 0/3] Change PWM-controlled LED pin active mode and algorithm
+Date: Tue, 16 Jan 2024 12:10:51 +0800
+Message-ID: <20240116041054.11641-1-nylon.chen@sifive.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,48 +83,70 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28122.004
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28122.004
-X-TMASE-Result: 10--8.585000-10.000000
-X-TMASE-MatchedRID: 6SYb29c3rTQ4ibokZ3+Q0CoiRKlBVkYIBXngI6jFvpfvd49YGReckIP+
-	YDa/Dhu9O3wTUW8jWH5M0AWQBBcXdpRSkbxKeJc4rMZ+BqQt2NoUifIaLms/AsC5DTEMxpeQfiq
-	1gj2xET/gr0WZ6u+ypaeNx/Zz/USXzYigC8AbwLLfSQNpZkETVH0tCKdnhB58I/9UW5M5dRM+8F
-	JNGdxYq46HM5rqDwqtJxiHvT5zQ4vlRDUzkOYMqBVC0mL9ZRV4EWtJOIHOjS/zvPuoTJCGYg==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
-Per filesystems/sysfs.rst, show() should only use sysfs_emit()
-or sysfs_emit_at() when formatting the value to be returned to user space.
+According to the circuit diagram of User LEDs - RGB described in the
+manual hifive-unleashed-a00.pdf[0] and hifive-unmatched-schematics-v3.pdf[1].
 
-coccinelle complains that there are still a couple of functions that use
-snprintf(). Convert them to sysfs_emit().
+The behavior of PWM is acitve-high.
 
-> ./arch/arm/mm/cache-l2x0-pmu.c:346:8-16: WARNING: please use sysfs_emit
+According to the descriptionof PWM for pwmcmp in SiFive FU740-C000 Manual[2].
 
-No functional change intended
+The pwm algorithm is (PW) pulse active time  = (D) duty * (T) period.
+The `frac` variable is pulse "inactive" time so we need to invert it.
 
-CC: Russell King <linux@armlinux.org.uk>
-CC: linux-arm-kernel@lists.infradead.org
-Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
----
- arch/arm/mm/cache-l2x0-pmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+So this patchset removes active-low in DTS and adds reverse logic to the driver.
 
-diff --git a/arch/arm/mm/cache-l2x0-pmu.c b/arch/arm/mm/cache-l2x0-pmu.c
-index 993fefdc167a..a9bd05b82003 100644
---- a/arch/arm/mm/cache-l2x0-pmu.c
-+++ b/arch/arm/mm/cache-l2x0-pmu.c
-@@ -343,7 +343,7 @@ static ssize_t l2x0_pmu_event_show(struct device *dev,
- 	struct l2x0_event_attribute *lattr;
- 
- 	lattr = container_of(attr, typeof(*lattr), attr);
--	return snprintf(buf, PAGE_SIZE, "config=0x%x\n", lattr->config);
-+	return sysfs_emit(buf, "config=0x%x\n", lattr->config);
- }
- 
- static umode_t l2x0_pmu_event_attr_is_visible(struct kobject *kobj,
+Updated patches: 1
+New patches: 1
+Unchanged patches: 1
+
+Links:
+- [0]: https://sifive.cdn.prismic.io/sifive/c52a8e32-05ce-4aaf-95c8-7bf8453f8698_hifive-unleashed-a00-schematics-1.pdf
+- [1]: https://sifive.cdn.prismic.io/sifive/6a06d6c0-6e66-49b5-8e9e-e68ce76f4192_hifive-unmatched-schematics-v3.pdf
+- [2]: https://sifive.cdn.prismic.io/sifive/1a82e600-1f93-4f41-b2d8-86ed8b16acba_fu740-c000-manual-v1p6.pdf
+
+Changed in v6:
+ - Separate the idempotent test bug fixes into a new patch.
+ - Move the reversing the duty before the line checking
+   state->enabled.
+ - Fix the algorithm and change it to take the minimum value first and
+   then reverse it.
+
+Changed in v5:
+ - Add the updates to the PWM algorithm based on version 2 back in.
+ - Replace div64_ul with DIV_ROUND_UP_ULL to correct the error in the
+   period value of the idempotent test in pwm_apply_state_debug.
+
+Changed in v4:
+ - Remove previous updates to the PWM algorithm.
+
+Changed in v3:
+ - Convert the reference link to standard link.
+ - Move the inverted function before taking the minimum value.
+ - Change polarity check condition(high and low).
+ - Pick the biggest period length possible that is not bigger than the
+   requested period.
+
+Changed in v2:
+ - Convert the reference link to standard link.
+ - Fix typo: s/sifive unmatched:/sifive: unmatched:/.
+ - Remove active-low from hifive-unleashed-a00.dts.
+ - Include this reference link in the dts and pwm commit messages.
+
+
+Nylon Chen (3):
+  riscv: dts: sifive: unleashed/unmatched: Remove PWM controlled LED's
+    active-low properties
+  pwm: sifive: change the PWM controlled LED algorithm
+  pwm: sifive: Fix the error in the idempotent test within the
+    pwm_apply_state_debug function
+
+ arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts |  8 ++++----
+ arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 12 ++++--------
+ drivers/pwm/pwm-sifive.c                            |  9 +++++----
+ 3 files changed, 13 insertions(+), 16 deletions(-)
+
 -- 
-2.29.2
+2.42.0
 
 
