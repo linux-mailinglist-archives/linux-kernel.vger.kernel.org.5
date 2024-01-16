@@ -1,62 +1,60 @@
-Return-Path: <linux-kernel+bounces-28186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 237D482FB50
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:53:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4980782FB53
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:53:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C839628CB07
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:53:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2AD1B24052
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:53:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 484A1163A83;
-	Tue, 16 Jan 2024 20:03:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55881163AA8;
+	Tue, 16 Jan 2024 20:03:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UzgBC6R7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c1e8Q/z8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87179664D1;
-	Tue, 16 Jan 2024 20:03:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 962A1664AB;
+	Tue, 16 Jan 2024 20:03:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435405; cv=none; b=A8OJwo05tYSuXLkk8WUr1shNIusf7gOCmZxQ6ic/HDEp9J4ALWHUQRPXFYhOnF16dRVbRVvJxkZASsQFtDT+aWa13Cpa69wH9Xw5uaO18ds6ZcLqXeyxRAtb4uv7VAX7wOCvYXdV7XzFarS2UnPNlJwT2g+Ymwd4N68izkNYPfc=
+	t=1705435407; cv=none; b=EwSLhJB+bGFk0ymZEn3UAjoLNCRIK8eMqw6iQPoG87Hf9FvKIjGgTPDvfJFML7SaPF9UoyMqsXtC9vmoNifcPFoMmHBj0spg7j/XTFUoxIaiFq32jxrNMe8GuSX3dz6cC3ERkwQZrWIqbv1FfOhr4YbwDLLAoxSLAtlsq0NkMoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435405; c=relaxed/simple;
-	bh=//aelGAg/QeIYKJGkfnYoGgJ5tLzJm/CkJm3mCuyLYU=;
+	s=arc-20240116; t=1705435407; c=relaxed/simple;
+	bh=nzsN26+vLu+X6BikyvoklfvggpDqx0n5Eto+x0OdDTk=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=e5XHNGV5LQ/kasCxCGjwjBob6Z+zEeZeDy9qU0KrXLYzTTUH8WBRUpjtArzbUSvnvGCG4NCHmy16jr2+/m6+UAahpIXQ7SyV1dZjKv1X2laB/pfrcTQ4TGsmc/qvJHosT/uX5lU1tg3WeBtYW9sLqrBDE8MxsLR+BQRPf0ubY4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UzgBC6R7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 205A5C43394;
-	Tue, 16 Jan 2024 20:03:24 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=kafZxKQPfM80oZpI8PwrUW0Ataaw03y6nsom2huR39W/EQYKUZvKOlOk6XIBDNNcrjVylPSEC8ro4XZmUCoJJp4dTxl9jhSei4ZVA4y/hvS1KRTUt32Sb7Zi1uaR5XiDwFnB0HGotOFjGV5ci4KYZ2gxWEAuYqes91/vmwm97ZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c1e8Q/z8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62A7CC43394;
+	Tue, 16 Jan 2024 20:03:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435405;
-	bh=//aelGAg/QeIYKJGkfnYoGgJ5tLzJm/CkJm3mCuyLYU=;
+	s=k20201202; t=1705435407;
+	bh=nzsN26+vLu+X6BikyvoklfvggpDqx0n5Eto+x0OdDTk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UzgBC6R7syfdts3ySayhrdei04A8+PDmvgOd0ZHl/F5dKuqpiFPWcxwgfwHabrxWU
-	 8QgEIw8/yE+LtYMCo80FgrRtsdZcjjSi7iAKOhCyrj9dSc72nQg+ps5+95SbF17PJc
-	 /LXHrlzRd+0BdUce4UBxiS3lRZ++iTMFoTB5J1FXj274fKf3/R2s9KDcwLQk8I9vtI
-	 Vwofy75nR2UtJCVFakJ1PrNwF3Vac2Ib2WRDa+qPnWZm72KnUXMX/xRUJ/QCHYyp0K
-	 Bv5Hiq2Ew05f5iHKeqIF4KPlQErGZPiZZYCcUnxTKCoW0LL30AiZrdKvZm0gQV8tlM
-	 e5GHJMt1WC/pQ==
+	b=c1e8Q/z8Bi4PcJ5qmS0KdZlkLKsj/8fqoE4HwLdkCzAZy6H0LukhaUcW4xX99+e1/
+	 IuOE2aHgnjUmQA6JWK2k8NTFxC9zsP9cisvq+pdmQdVhKue3aPR8hY27s5oSYUzD2m
+	 734+7uR60acQiFGAR7BQ5yE1PjJmXyEiy2hscitWjIjndvio4QkniAp0zvOu7uVF4b
+	 lYu9WKfKyto6DJ3QZxrE+0qVaG2g3OcKWHGqftHdjEDWQ+bZ4Zc8i24kHSyvBgzQZE
+	 GtCGSFA8T8p5gGXIRje/ufWJSsFFja/V25/9FaVkLV+8eoAjRJ180pvSp4OEX3jOUZ
+	 cxqq7TrPWzMuw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Zhengchao Shao <shaozhengchao@huawei.com>,
-	Jay Vosburgh <jay.vosburgh@canonical.com>,
-	Paolo Abeni <pabeni@redhat.com>,
+Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
+	Shawn Guo <shawnguo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	j.vosburgh@gmail.com,
-	andy@greyhouse.net,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 06/31] bonding: return -ENOMEM instead of BUG in alb_upper_dev_walk
-Date: Tue, 16 Jan 2024 15:02:15 -0500
-Message-ID: <20240116200310.259340-6-sashal@kernel.org>
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 07/31] ARM: dts: imx7d: Fix coresight funnel ports
+Date: Tue, 16 Jan 2024 15:02:16 -0500
+Message-ID: <20240116200310.259340-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116200310.259340-1-sashal@kernel.org>
 References: <20240116200310.259340-1-sashal@kernel.org>
@@ -71,67 +69,58 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.4.267
 Content-Transfer-Encoding: 8bit
 
-From: Zhengchao Shao <shaozhengchao@huawei.com>
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
 
-[ Upstream commit d6b83f1e3707c4d60acfa58afd3515e17e5d5384 ]
+[ Upstream commit 0d4ac04fa7c3f6dc263dba6f575a2ec7a2d4eca8 ]
 
-If failed to allocate "tags" or could not find the final upper device from
-start_dev's upper list in bond_verify_device_path(), only the loopback
-detection of the current upper device should be affected, and the system is
-no need to be panic.
-So return -ENOMEM in alb_upper_dev_walk to stop walking, print some warn
-information when failed to allocate memory for vlan tags in
-bond_verify_device_path.
+imx7d uses two ports for 'in-ports', so the syntax port@<num> has to
+be used. imx7d has both port and port@1 nodes present, raising these
+error:
+funnel@30041000: in-ports: More than one condition true in oneOf schema
+funnel@30041000: Unevaluated properties are not allowed
+('in-ports' was unexpected)
 
-I also think that the following function calls
-netdev_walk_all_upper_dev_rcu
----->>>alb_upper_dev_walk
----------->>>bond_verify_device_path
-From this way, "end device" can eventually be obtained from "start device"
-in bond_verify_device_path, IS_ERR(tags) could be instead of
-IS_ERR_OR_NULL(tags) in alb_upper_dev_walk.
+Fix this by also using port@0 for imx7s as well.
 
-Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
-Acked-by: Jay Vosburgh <jay.vosburgh@canonical.com>
-Link: https://lore.kernel.org/r/20231118081653.1481260-1-shaozhengchao@huawei.com
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/bonding/bond_alb.c  | 3 ++-
- drivers/net/bonding/bond_main.c | 5 ++++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/imx7d.dtsi | 3 ---
+ arch/arm/boot/dts/imx7s.dtsi | 6 +++++-
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/bonding/bond_alb.c b/drivers/net/bonding/bond_alb.c
-index 6df78a36bafd..342e23e56192 100644
---- a/drivers/net/bonding/bond_alb.c
-+++ b/drivers/net/bonding/bond_alb.c
-@@ -970,7 +970,8 @@ static int alb_upper_dev_walk(struct net_device *upper, void *_data)
- 	if (netif_is_macvlan(upper) && !strict_match) {
- 		tags = bond_verify_device_path(bond->dev, upper, 0);
- 		if (IS_ERR_OR_NULL(tags))
--			BUG();
-+			return -ENOMEM;
-+
- 		alb_send_lp_vid(slave, upper->dev_addr,
- 				tags[0].vlan_proto, tags[0].vlan_id);
- 		kfree(tags);
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index bb1c6743222e..352afabf8571 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -2482,8 +2482,11 @@ struct bond_vlan_tag *bond_verify_device_path(struct net_device *start_dev,
+diff --git a/arch/arm/boot/dts/imx7d.dtsi b/arch/arm/boot/dts/imx7d.dtsi
+index 8b65ca8b5f30..2b9d0b1bd982 100644
+--- a/arch/arm/boot/dts/imx7d.dtsi
++++ b/arch/arm/boot/dts/imx7d.dtsi
+@@ -204,9 +204,6 @@ pcie: pcie@33800000 {
+ };
  
- 	if (start_dev == end_dev) {
- 		tags = kcalloc(level + 1, sizeof(*tags), GFP_ATOMIC);
--		if (!tags)
-+		if (!tags) {
-+			net_err_ratelimited("%s: %s: Failed to allocate tags\n",
-+					    __func__, start_dev->name);
- 			return ERR_PTR(-ENOMEM);
-+		}
- 		tags[level].vlan_proto = VLAN_N_VID;
- 		return tags;
- 	}
+ &ca_funnel_in_ports {
+-	#address-cells = <1>;
+-	#size-cells = <0>;
+-
+ 	port@1 {
+ 		reg = <1>;
+ 		ca_funnel_in_port1: endpoint {
+diff --git a/arch/arm/boot/dts/imx7s.dtsi b/arch/arm/boot/dts/imx7s.dtsi
+index 7ce541fcac76..33e9c210fd2f 100644
+--- a/arch/arm/boot/dts/imx7s.dtsi
++++ b/arch/arm/boot/dts/imx7s.dtsi
+@@ -183,7 +183,11 @@ funnel@30041000 {
+ 			clock-names = "apb_pclk";
+ 
+ 			ca_funnel_in_ports: in-ports {
+-				port {
++				#address-cells = <1>;
++				#size-cells = <0>;
++
++				port@0 {
++					reg = <0>;
+ 					ca_funnel_in_port0: endpoint {
+ 						remote-endpoint = <&etm0_out_port>;
+ 					};
 -- 
 2.43.0
 
