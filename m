@@ -1,85 +1,141 @@
-Return-Path: <linux-kernel+bounces-27986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5159382F8B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:51:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42D3082F923
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:00:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E352D1F24A8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:51:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8379B2709F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:00:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14BB5136E10;
-	Tue, 16 Jan 2024 19:52:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 987E25CE44;
+	Tue, 16 Jan 2024 19:55:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MPrQ4RJ5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y/eHuHYX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 543EA13540D;
-	Tue, 16 Jan 2024 19:52:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D403D1D6A2;
+	Tue, 16 Jan 2024 19:55:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434769; cv=none; b=Rvm3jGini79EU7Ky9HsK9DkD0pubz05+HTxgm8xzIK64rvaWqMD/g1lURGtq/rc7yGcgSfS3r4kIm2ztZapURXe4B5K+KmB5r2egGDbEXKjluwQQmfSYxq1D/ZfTEWyKHGmQhRwrT9Wl4GDguda+rwJDCZphc8MwTTaiuCzt4Ms=
+	t=1705434914; cv=none; b=SiFMaGY0xT1WtE85wDkpJhxupk96ctS5Lflesgbm3keDgTzzOh8qCYIzb+Pvlv3C0po/vLxTQqEi+Sppcp8zQDB/AYGP0K6l4Dfw934JzsG2Mm8EU5YEREZLIyuNFvI3hlGRZTCWofIOTgoDnPa2YIQcdMAb7QiFCOtx1Wm+aYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434769; c=relaxed/simple;
-	bh=igwQ8TV2mQvIAUVH8VnNjV0M7RH3HutkarYq2gKU5qo=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=sHdIO0UYJSsxzhbGXWANwaMMlBCeM4uHLFgGpqEw8z73ih5ICaMPYZOl7/CEFrL+WXcSo4RxJ0SYvj6zO5obu6lqYZ8MNYN1SC2KBmYPn8eJq/TlYcbQtCeXJoKFRVnPzUF+prlXw+xvOWXE8ZrkRXosEDYvUoGg+qho+q0/rNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MPrQ4RJ5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B710BC433F1;
-	Tue, 16 Jan 2024 19:52:48 +0000 (UTC)
+	s=arc-20240116; t=1705434914; c=relaxed/simple;
+	bh=RBuW1qtIP+8yR6BzG/iV6Mdofn4HV5LNk6kOhd0NS4Y=;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
+	 X-Mailer:MIME-Version:X-stable:X-Patchwork-Hint:X-stable-base:
+	 Content-Transfer-Encoding; b=VEV1O9SMR9IbR2/AjJvEgIHiI0RPtV4dSI8ftF1vHxkp51woRCcV0MHRaB+EInUaX6kirrr7QAmaiypmFTz4P+IM+qPKVaY2bbAOp+NLQloYIUNY8GtjLXZB3nskl1R924xi7uFHxvhyHAlFtvC+vXX2hrjPvzcxMAc+sEDqMgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y/eHuHYX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5199C433F1;
+	Tue, 16 Jan 2024 19:55:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434768;
-	bh=igwQ8TV2mQvIAUVH8VnNjV0M7RH3HutkarYq2gKU5qo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MPrQ4RJ5J3UtRJ48Jr1q16AF0yP925Y0IOjaQDX7IC1z6m7nXyVK+1Bncqfb6PKgY
-	 RVvuGVlSqX5qGdSEebmpT9GSaVLmLxJuigP6LKThPGulhMtrtQ9oYGgvUZ4kz/IhiH
-	 PETQ8FViaMkNgAr3SzPSICSgX+EPqNJPgoQ7ilMDn+wQxJZ9hdBhJE4YY5Den9R+y7
-	 D/EJFq9NyxzcoI7GVRVk9McUaBBgxuo3aDK9yVufb8TigJuzwWtm4TS8gHeWvoXE/h
-	 /6o/WlCV6nE7pzb4wFMRANxe2qApDud+AX0DYFj7HJ7iRtEeDS8TRKRGJ9XpMwsH8Y
-	 rzduDhxOwNJIg==
-Date: Tue, 16 Jan 2024 13:52:46 -0600
-From: Rob Herring <robh@kernel.org>
-To: Tim Lunn <tim@feathertop.org>
-Cc: linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Chris Zhong <zyw@rock-chips.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Lee Jones <lee@kernel.org>, Zhang Qing <zhangqing@rock-chips.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] dt-bindings: rockchip: Add support for rk809
- audio codec
-Message-ID: <20240116195246.GA306579-robh@kernel.org>
-References: <20240116132102.3272682-1-tim@feathertop.org>
+	s=k20201202; t=1705434914;
+	bh=RBuW1qtIP+8yR6BzG/iV6Mdofn4HV5LNk6kOhd0NS4Y=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Y/eHuHYXZ9tYlpbVt0R7pTM6SSufxVQbp4alT4VCt8uFVvZ7h+azk1WorKQeh6ov5
+	 /7c12VkHfKl8xjgZ8KnQNQiAXCbZ2fhKhoAyFDnr7m7XqXNKhD/4tOjovnzAXEh+4k
+	 kjXKQUuol//eTOdyTN/yfeqog+8F/LpxlSPsvBRKipbJWSMD9v5KJ5yXzZ31w8l7Xy
+	 2TbapjgDNtxd1/hue89johUTe1e5cCOb0Aod6TO6gRCkxxnIFkPRxZ5ufOsvMAA5N7
+	 yJvU2x1YwItZiOJlM2UuRyF2T026C6/VFGHMwdExw6ohok+R3vCtES6pMRBsx1C4MZ
+	 LxxLYRqrLy2Gg==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Shiji Yang <yangshiji66@outlook.com>,
+	Stanislaw Gruszka <stf_xl@wp.pl>,
+	Kalle Valo <kvalo@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	linux-wireless@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 01/68] wifi: rt2x00: restart beacon queue when hardware reset
+Date: Tue, 16 Jan 2024 14:53:00 -0500
+Message-ID: <20240116195511.255854-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240116132102.3272682-1-tim@feathertop.org>
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.1.73
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 17, 2024 at 12:20:59AM +1100, Tim Lunn wrote:
-> Rockchip RK809 shares the same audio codec as the rk817 mfd, it is also
-> using the same rk817_codec driver. However it is missing from the
-> bindings.
-> 
-> This series documents the audio codec properties in rockchip,rk809.yaml
-> bindings and updates example.
-> 
-> Changes in v2:
-> - Fix vcc-supply warning detected by dt_binding bot
-> - Fix missing include and pinctrl for codec example
+From: Shiji Yang <yangshiji66@outlook.com>
 
-I just reviewed v1. Please apply those comments. And wait a bit between 
-sending new versions.
+[ Upstream commit a11d965a218f0cd95b13fe44d0bcd8a20ce134a8 ]
 
-Rob
+When a hardware reset is triggered, all registers are reset, so all
+queues are forced to stop in hardware interface. However, mac80211
+will not automatically stop the queue. If we don't manually stop the
+beacon queue, the queue will be deadlocked and unable to start again.
+This patch fixes the issue where Apple devices cannot connect to the
+AP after calling ieee80211_restart_hw().
+
+Signed-off-by: Shiji Yang <yangshiji66@outlook.com>
+Acked-by: Stanislaw Gruszka <stf_xl@wp.pl>
+Signed-off-by: Kalle Valo <kvalo@kernel.org>
+Link: https://lore.kernel.org/r/TYAP286MB031530EB6D98DCE4DF20766CBCA4A@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/wireless/ralink/rt2x00/rt2x00dev.c |  3 +++
+ drivers/net/wireless/ralink/rt2x00/rt2x00mac.c | 11 +++++++++++
+ 2 files changed, 14 insertions(+)
+
+diff --git a/drivers/net/wireless/ralink/rt2x00/rt2x00dev.c b/drivers/net/wireless/ralink/rt2x00/rt2x00dev.c
+index 9a9cfd0ce402..00b945053e19 100644
+--- a/drivers/net/wireless/ralink/rt2x00/rt2x00dev.c
++++ b/drivers/net/wireless/ralink/rt2x00/rt2x00dev.c
+@@ -101,6 +101,7 @@ void rt2x00lib_disable_radio(struct rt2x00_dev *rt2x00dev)
+ 	rt2x00link_stop_tuner(rt2x00dev);
+ 	rt2x00queue_stop_queues(rt2x00dev);
+ 	rt2x00queue_flush_queues(rt2x00dev, true);
++	rt2x00queue_stop_queue(rt2x00dev->bcn);
+ 
+ 	/*
+ 	 * Disable radio.
+@@ -1286,6 +1287,7 @@ int rt2x00lib_start(struct rt2x00_dev *rt2x00dev)
+ 	rt2x00dev->intf_ap_count = 0;
+ 	rt2x00dev->intf_sta_count = 0;
+ 	rt2x00dev->intf_associated = 0;
++	rt2x00dev->intf_beaconing = 0;
+ 
+ 	/* Enable the radio */
+ 	retval = rt2x00lib_enable_radio(rt2x00dev);
+@@ -1312,6 +1314,7 @@ void rt2x00lib_stop(struct rt2x00_dev *rt2x00dev)
+ 	rt2x00dev->intf_ap_count = 0;
+ 	rt2x00dev->intf_sta_count = 0;
+ 	rt2x00dev->intf_associated = 0;
++	rt2x00dev->intf_beaconing = 0;
+ }
+ 
+ static inline void rt2x00lib_set_if_combinations(struct rt2x00_dev *rt2x00dev)
+diff --git a/drivers/net/wireless/ralink/rt2x00/rt2x00mac.c b/drivers/net/wireless/ralink/rt2x00/rt2x00mac.c
+index 4202c6517783..75fda72c14ca 100644
+--- a/drivers/net/wireless/ralink/rt2x00/rt2x00mac.c
++++ b/drivers/net/wireless/ralink/rt2x00/rt2x00mac.c
+@@ -598,6 +598,17 @@ void rt2x00mac_bss_info_changed(struct ieee80211_hw *hw,
+ 	 */
+ 	if (changes & BSS_CHANGED_BEACON_ENABLED) {
+ 		mutex_lock(&intf->beacon_skb_mutex);
++
++		/*
++		 * Clear the 'enable_beacon' flag and clear beacon because
++		 * the beacon queue has been stopped after hardware reset.
++		 */
++		if (test_bit(DEVICE_STATE_RESET, &rt2x00dev->flags) &&
++		    intf->enable_beacon) {
++			intf->enable_beacon = false;
++			rt2x00queue_clear_beacon(rt2x00dev, vif);
++		}
++
+ 		if (!bss_conf->enable_beacon && intf->enable_beacon) {
+ 			rt2x00dev->intf_beaconing--;
+ 			intf->enable_beacon = false;
+-- 
+2.43.0
+
 
