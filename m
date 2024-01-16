@@ -1,59 +1,58 @@
-Return-Path: <linux-kernel+bounces-27947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27948-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EB2782F830
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:40:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E34C82F833
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:40:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB3F3B25F2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:39:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D89FB2613D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:40:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98EDD574AF;
-	Tue, 16 Jan 2024 19:50:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9907A12EE4F;
+	Tue, 16 Jan 2024 19:50:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UdUZBdD6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="trt3OhCo"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D305557499;
-	Tue, 16 Jan 2024 19:50:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D81B5574B9;
+	Tue, 16 Jan 2024 19:50:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434638; cv=none; b=hp5dHZeukafFZsfHhhZEpIf2gOPxhNZv5xrehj9HitPKmvIxU9/Jn0fs8Ajq81SWiutJikUCwW+oM4L5HcyNGw5hsy8/xPLw4HzHFuccHCvhj6xRCHeCU6iOrkpZOsQRVuciVlQK7Ri4k3ZQMEeuL/Ik5lTp6OQY3I/Eldn84qE=
+	t=1705434639; cv=none; b=HTn751/hD5ooHp7xy+i+0N8oYuTKCYX1R6MtHfe/rt8XytUabdCXK/peBhuHqfWWvaf5YNhm0DO9adBTif32QmqnVRAKzpviiu8xnhWto5i4irlwO79BYyWZtwI7ZxAs+QRBZijgEe8nYGUymr47X3YyC5j/akXzaVqj4VRTeLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434638; c=relaxed/simple;
-	bh=4L2Yg17nT3lf/kfB50S/iKIEs1fFgB85bWpYDUqTJls=;
+	s=arc-20240116; t=1705434639; c=relaxed/simple;
+	bh=0d1xuC+FaJReAAN4MpEAixpItb3vPQAcvsPcZYbl8jc=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=Mr03HSNfaBZfzrL2o2k4kdqSF6ToN7bz6yLtTku9cCM6CdcMXptIGBkQ2maBG85pHDwTMRLV6/AioKMfEVikMtBM9h7bWmmI/kGPFz6zA1HIa1phl+evcfoRZhFzFMIIsMjxxsurffXs7tkv65by3zX0F6+yohxhjaVUjCxGfiY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UdUZBdD6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C5CBC433C7;
-	Tue, 16 Jan 2024 19:50:37 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=B/msm3wF3qt+q1atN3tOLBZNmNh03/3lr5zGgLKqTNqzj8xyrydpxmE12x37NnVF3aCdpDKBB1cgv2xiNnnzAIhEnaReg/fW/a8ByjRL3vZHzQ1AhJFHcNn6399YVuadLYYoFYs9TvUn3FbiuXojL44V9vsqQOfv94yLyQFcmxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=trt3OhCo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5B20C433B1;
+	Tue, 16 Jan 2024 19:50:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434638;
-	bh=4L2Yg17nT3lf/kfB50S/iKIEs1fFgB85bWpYDUqTJls=;
+	s=k20201202; t=1705434639;
+	bh=0d1xuC+FaJReAAN4MpEAixpItb3vPQAcvsPcZYbl8jc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UdUZBdD67hr3jwwdgUB/5vscJB/LHWVAFlEgsnfdDkxt59CHvXF9x+eSaQ3XHAnnm
-	 fo1Awug+pVsh7liOWB7eHbT+XtaSy4kEju7Up6KQudwRiHuZcp9KwqFYqGHTgpUgYY
-	 GzP5VGARVRFli57H2JMdPuVtyqx9JlQ/z7VKEYQrKBoyhAarqdx7LzRRMh+gLT0eHi
-	 6GsG2B/gusa1OQLnE2i9LvDK46Wlg1pTIVlfsqtxQhwOPwfMRGQhd4HZ0zNhH823X+
-	 iFb5ce3qkV6WIZrYTpXaC4RkwRik41JUAg8iqK7AB8aEyk9p3ficEb2ALW7eQYTEzJ
-	 u0cq5wOmsMztA==
+	b=trt3OhCoG4pHlEiUYvRYurVSUUCDezhfHToVaN45X34w62PpF94plGC7BKBLSNRV2
+	 I4xC4RfmsIM2k5Dbm3Wg58VFvGfsEOZ7X35kGYlJ0p/3r+1y8fzWWZaq1DCZfXn/5+
+	 fOkDmMdqVjENG1xWh8ZSYQCYeDEXLJU2yPgtRPfcHPsZ4w5xbkIE4HQ3MUCP6HRZ+I
+	 sJBW/GjyLprDEyBNKY39u8Ow2QshAEg814sGzY9Vwtrrj+F0rXL/DtLUcRU6AuArms
+	 BpKbYczntKYlDi8rIn8MR5RQz8lp0tRTsdqnwop1qmviqnk34bw7KhMezdGozdrvfF
+	 iz6XXOvlImSqw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kang Yang <quic_kangyang@quicinc.com>,
-	Jeff Johnson <quic_jjohnson@quicinc.com>,
-	Kalle Valo <quic_kvalo@quicinc.com>,
+Cc: Hannes Reinecke <hare@suse.de>,
+	Christoph Hellwig <hch@lst.de>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
 	Sasha Levin <sashal@kernel.org>,
-	kvalo@kernel.org,
-	ath12k@lists.infradead.org,
-	linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 039/104] wifi: ath12k: fix and enable AP mode for WCN7850
-Date: Tue, 16 Jan 2024 14:46:05 -0500
-Message-ID: <20240116194908.253437-39-sashal@kernel.org>
+	jejb@linux.ibm.com,
+	linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 040/104] scsi: libfc: Don't schedule abort twice
+Date: Tue, 16 Jan 2024 14:46:06 -0500
+Message-ID: <20240116194908.253437-40-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194908.253437-1-sashal@kernel.org>
 References: <20240116194908.253437-1-sashal@kernel.org>
@@ -68,72 +67,66 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.12
 Content-Transfer-Encoding: 8bit
 
-From: Kang Yang <quic_kangyang@quicinc.com>
+From: Hannes Reinecke <hare@suse.de>
 
-[ Upstream commit ed7e818a7b501012038d6bc6fedadaf7375a380a ]
+[ Upstream commit b57c4db5d23b9df0118a25e2441c9288edd73710 ]
 
-For AP mode, the peer is created earlier in ath12k_mac_op_add_interface() but
-ath12k_mac_op_assign_vif_chanctx() will try to create peer again.  Then an
-error will return which makes AP mode startup fail.
+The current FC error recovery is sending up to three REC (recovery) frames
+in 10 second intervals, and as a final step sending an ABTS after 30
+seconds for the command itself.  Unfortunately sending an ABTS is also the
+action for the SCSI abort handler, and the default timeout for SCSI
+commands is also 30 seconds. This causes two ABTS to be scheduled, with the
+libfc one slightly earlier. The ABTS scheduled by SCSI EH then sees the
+command to be already aborted, and will always return with a 'GOOD' status
+irrespective on the actual result from the first ABTS.  This causes the
+SCSI EH abort handler to always succeed, and SCSI EH never to be engaged.
+Fix this by not issuing an ABTS when a SCSI command is present for the
+exchange, but rather wait for the abort scheduled from SCSI EH.  And warn
+if an abort is already scheduled to avoid similar errors in the future.
 
-Kernel log:
-
-[ 5017.665006] ath12k_pci 0000:04:00.0: failed to create peer after vdev start delay: -22
-
-wpa_supplicant log:
-
-Failed to set beacon parameters
-Interface initialization failed
-wls1: interface state UNINITIALIZED->DISABLED
-wls1: AP-DISABLED
-wls1: Unable to setup interface.
-Failed to initialize AP interface
-wls1: interface state DISABLED->DISABLED
-wls1: AP-DISABLED
-
-So fix this check and enable AP mode for WCN7850, as now AP mode works normally.
-
-Tested-on: WCN7850 hw2.0 PCI WLAN.HMT.1.0-03427-QCAHMTSWPL_V1.0_V2.0_SILICONZ-1.15378.4
-
-Signed-off-by: Kang Yang <quic_kangyang@quicinc.com>
-Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://lore.kernel.org/r/20231121022459.17209-1-quic_kangyang@quicinc.com
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Link: https://lore.kernel.org/r/20231129165832.224100-2-hare@kernel.org
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath12k/hw.c  | 3 ++-
- drivers/net/wireless/ath/ath12k/mac.c | 4 ++--
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ drivers/scsi/libfc/fc_fcp.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath12k/hw.c b/drivers/net/wireless/ath/ath12k/hw.c
-index 5991cc91cd00..c1dcdd849f9d 100644
---- a/drivers/net/wireless/ath/ath12k/hw.c
-+++ b/drivers/net/wireless/ath/ath12k/hw.c
-@@ -942,7 +942,8 @@ static const struct ath12k_hw_params ath12k_hw_params[] = {
- 		.rx_mac_buf_ring = true,
- 		.vdev_start_delay = true,
+diff --git a/drivers/scsi/libfc/fc_fcp.c b/drivers/scsi/libfc/fc_fcp.c
+index 945adca5e72f..3f189cedf6db 100644
+--- a/drivers/scsi/libfc/fc_fcp.c
++++ b/drivers/scsi/libfc/fc_fcp.c
+@@ -265,6 +265,11 @@ static int fc_fcp_send_abort(struct fc_fcp_pkt *fsp)
+ 	if (!fsp->seq_ptr)
+ 		return -EINVAL;
  
--		.interface_modes = BIT(NL80211_IFTYPE_STATION),
-+		.interface_modes = BIT(NL80211_IFTYPE_STATION) |
-+				   BIT(NL80211_IFTYPE_AP),
- 		.supports_monitor = false,
++	if (fsp->state & FC_SRB_ABORT_PENDING) {
++		FC_FCP_DBG(fsp, "abort already pending\n");
++		return -EBUSY;
++	}
++
+ 	this_cpu_inc(fsp->lp->stats->FcpPktAborts);
  
- 		.idle_ps = true,
-diff --git a/drivers/net/wireless/ath/ath12k/mac.c b/drivers/net/wireless/ath/ath12k/mac.c
-index 88346e66bb75..5434883eaf96 100644
---- a/drivers/net/wireless/ath/ath12k/mac.c
-+++ b/drivers/net/wireless/ath/ath12k/mac.c
-@@ -6196,8 +6196,8 @@ ath12k_mac_op_assign_vif_chanctx(struct ieee80211_hw *hw,
- 	}
+ 	fsp->state |= FC_SRB_ABORT_PENDING;
+@@ -1690,11 +1695,12 @@ static void fc_fcp_recovery(struct fc_fcp_pkt *fsp, u8 code)
+ 	fsp->status_code = code;
+ 	fsp->cdb_status = 0;
+ 	fsp->io_status = 0;
+-	/*
+-	 * if this fails then we let the scsi command timer fire and
+-	 * scsi-ml escalate.
+-	 */
+-	fc_fcp_send_abort(fsp);
++	if (!fsp->cmd)
++		/*
++		 * Only abort non-scsi commands; otherwise let the
++		 * scsi command timer fire and scsi-ml escalate.
++		 */
++		fc_fcp_send_abort(fsp);
+ }
  
- 	if (ab->hw_params->vdev_start_delay &&
--	    (arvif->vdev_type == WMI_VDEV_TYPE_AP ||
--	    arvif->vdev_type == WMI_VDEV_TYPE_MONITOR)) {
-+	    arvif->vdev_type != WMI_VDEV_TYPE_AP &&
-+	    arvif->vdev_type != WMI_VDEV_TYPE_MONITOR) {
- 		param.vdev_id = arvif->vdev_id;
- 		param.peer_type = WMI_PEER_TYPE_DEFAULT;
- 		param.peer_addr = ar->mac_addr;
+ /**
 -- 
 2.43.0
 
