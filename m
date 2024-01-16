@@ -1,67 +1,65 @@
-Return-Path: <linux-kernel+bounces-28013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCD5E82F90F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:59:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1E5182F917
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:59:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 547561F26458
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:59:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D39D28A22C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:59:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1DB65C5F2;
-	Tue, 16 Jan 2024 19:53:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 277ED28E1C;
+	Tue, 16 Jan 2024 19:53:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sW/P09Y3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p8kolEji"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E544628E1F;
-	Tue, 16 Jan 2024 19:53:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 690695C604;
+	Tue, 16 Jan 2024 19:53:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434836; cv=none; b=WPmkMZcopHKO5LyzEPJYpVsGJNncGuDr3t7v8lGYRcLOhRMX9vAtu6kAlftqJ9HvzRt+TCq5xDeZTiNca9P+NWrB3SCnc7IwUXfoxv1vdimy0Rx1vY6U5aYfCfbKPoGlY2YVG9DFVBL3cXNIP+bOfgYVltmJ5JAE28U3dLMRcd4=
+	t=1705434838; cv=none; b=Ff2+zFn4Qi+HDyZ4uaC7X92IIQzNPhUjLNCnXKtMcDIZTjd982fCNgS1kVrN+lLvgHWvaMtEbk7HoaL5mB9dtXWYETOpXFPVlZ1Yv7zGG0LabQ3OgoGf0Ktwt0OLP+lpSseqXJ9C9ZGD/GDC6hQnkxU8YU8K2fdJjTggdslF+0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434836; c=relaxed/simple;
-	bh=0EhPbzugpHhhjXKz7HNRPo85aLkvcRSu83dyfdZVnwY=;
+	s=arc-20240116; t=1705434838; c=relaxed/simple;
+	bh=jUHpHxhjYTN/68x+epj3CFaEsOY4Qf0DcyLchOF4UPs=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=q3EUT2uxBex204kDImjT0b+2QpdbRf//PHM/sVkO2aAAvfcfO7IiE6ECsvNd1aiPT//gMXVa12jwMkmuDDAIdVnKHeqcJuOMP5+OrMfEXry2JwLNHmSc8PAEsdZ5o27/KKcUVENYDKFeYbXkI/xxkEbg3tm/Eb2HBUgDlAfSkTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sW/P09Y3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0457C433C7;
-	Tue, 16 Jan 2024 19:53:53 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=bA3RiE1Tox1N0UH00DuqOpX6Gm1OocjWOJuz9jIQKW36WSzRZcahGLC5PBhMPZtc6arXBo2WnB+ZwEGWvt+id9uo3tiBMxyL5PWIIM5yXeaHxas3ayR9Vu1v+EswYvX3+uovN4rCad32aYMkpKU6LDDf5m6pUlu4bz9dkpA7GKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p8kolEji; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46C8EC433C7;
+	Tue, 16 Jan 2024 19:53:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434835;
-	bh=0EhPbzugpHhhjXKz7HNRPo85aLkvcRSu83dyfdZVnwY=;
+	s=k20201202; t=1705434837;
+	bh=jUHpHxhjYTN/68x+epj3CFaEsOY4Qf0DcyLchOF4UPs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sW/P09Y3J6QDBXpJqvYT0Pw2zyOoLC6FQx7zQzenA4MriAHplOzvNXn7eXk9Z9Lgc
-	 xbtES1ggo2kt4igLKs9gLZxHNBo9VTsxRBC7XkLe6N6SiQQbMe8NJwCBKujlhbLHtd
-	 OLAELp9/W/PE+LKsQqH3ZNQFriqGyubxy7lmJ+Vg8kdPCNeetnpsOvp5cyc/tFAavX
-	 SvvJIShFq8KjTy5+7ICrErs3UG5qz3AvcRTHeQKLQvMFCY1I7KSSzxzEA5c+7ApLKD
-	 0gVyX9jtwsUHw8MXxj+p9mV7sWVMBuWNLRdaKnU09Izopik8/JKLI6UN+0wMxdHg9K
-	 +3HbuAb2cauXA==
+	b=p8kolEjig76+RI975s02VQTl3spJewF6S6D34Awt+3MxTWWZ4YIYCDQMxhwaBaR0z
+	 8DaDAiMm5ejXaTBH8JuE3BwzUB1GQAxZ4ZwvoVDbbBXL1xc72GeV1Zthf1+tlyvRKJ
+	 RTusMDNuv5m2MqyToAqX4F992/gJ4l2U8smbtINFwlQMqhVWOOGGp9KhN+t5Tq4sYM
+	 lfg381H4FfZqO97Kp5LvrQG1J2Czsc8rKMlx9Cr8U/w+HBjPpx5tVqIyKyxRSd2OaG
+	 YI6BH+ejPQgR+iOEfycyjEzskIw45G5MqoloUbni9eJnfSAWPfW05I/aycMSlgktMX
+	 MPxVEuFIFNQWw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andrii Staikov <andrii.staikov@intel.com>,
-	Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-	Jan Sokolowski <jan.sokolowski@intel.com>,
-	Wojciech Drewek <wojciech.drewek@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Rafal Romanowski <rafal.romanowski@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
+Cc: Suman Ghosh <sumang@marvell.com>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	jesse.brandeburg@intel.com,
+	sgoutham@marvell.com,
+	lcherian@marvell.com,
+	gakula@marvell.com,
+	jerinj@marvell.com,
+	hkelam@marvell.com,
+	sbhatta@marvell.com,
 	davem@davemloft.net,
 	edumazet@google.com,
-	kuba@kernel.org,
 	pabeni@redhat.com,
-	intel-wired-lan@lists.osuosl.org,
 	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 101/104] i40e: Fix VF disable behavior to block all traffic
-Date: Tue, 16 Jan 2024 14:47:07 -0500
-Message-ID: <20240116194908.253437-101-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 102/104] octeontx2-af: Fix max NPC MCAM entry check while validating ref_entry
+Date: Tue, 16 Jan 2024 14:47:08 -0500
+Message-ID: <20240116194908.253437-102-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194908.253437-1-sashal@kernel.org>
 References: <20240116194908.253437-1-sashal@kernel.org>
@@ -76,118 +74,52 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.12
 Content-Transfer-Encoding: 8bit
 
-From: Andrii Staikov <andrii.staikov@intel.com>
+From: Suman Ghosh <sumang@marvell.com>
 
-[ Upstream commit 31deb12e85c35ddd2c037f0107d05d8674cab2c0 ]
+[ Upstream commit 4ebb1f95e0c3c3e0eec5bb21aa43097580c4b6e4 ]
 
-Currently, if a VF is disabled using the
-'ip link set dev $ETHX vf $VF_NUM state disable' command, the VF is still
-able to receive traffic.
+As of today, the last MCAM entry was not getting allocated because of
+a <= check with the max_bmap count. This patch modifies that and if the
+requested entry is greater than the available entries then set it to the
+max value.
 
-Fix the behavior of the 'ip link set dev $ETHX vf $VF_NUM state disable'
-to completely shutdown the VF's queues making it entirely disabled and
-not able to receive or send any traffic.
-
-Modify the behavior of the 'ip link set $ETHX vf $VF_NUM state enable'
-command to make a VF do reinitialization bringing the queues back up.
-
-Co-developed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Signed-off-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Reviewed-by: Jan Sokolowski <jan.sokolowski@intel.com>
-Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
-Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Signed-off-by: Andrii Staikov <andrii.staikov@intel.com>
-Tested-by: Rafal Romanowski <rafal.romanowski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Suman Ghosh <sumang@marvell.com>
+Link: https://lore.kernel.org/r/20240101145042.419697-1-sumang@marvell.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../ethernet/intel/i40e/i40e_virtchnl_pf.c    | 32 +++++++++++++++++++
- .../ethernet/intel/i40e/i40e_virtchnl_pf.h    |  1 +
- 2 files changed, 33 insertions(+)
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-index 4441b00297f4..0f8ee90b27e7 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-@@ -2579,6 +2579,14 @@ static int i40e_vc_enable_queues_msg(struct i40e_vf *vf, u8 *msg)
- 	int aq_ret = 0;
- 	int i;
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
+index 0bcf3e559280..3784347b6fd8 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
+@@ -2678,18 +2678,17 @@ int rvu_mbox_handler_npc_mcam_alloc_entry(struct rvu *rvu,
+ 	rsp->entry = NPC_MCAM_ENTRY_INVALID;
+ 	rsp->free_count = 0;
  
-+	if (vf->is_disabled_from_host) {
-+		aq_ret = -EPERM;
-+		dev_info(&pf->pdev->dev,
-+			 "Admin has disabled VF %d, will not enable queues\n",
-+			 vf->vf_id);
-+		goto error_param;
-+	}
-+
- 	if (!test_bit(I40E_VF_STATE_ACTIVE, &vf->vf_states)) {
- 		aq_ret = -EINVAL;
- 		goto error_param;
-@@ -4706,9 +4714,12 @@ int i40e_ndo_set_vf_link_state(struct net_device *netdev, int vf_id, int link)
- 	struct i40e_link_status *ls = &pf->hw.phy.link_info;
- 	struct virtchnl_pf_event pfe;
- 	struct i40e_hw *hw = &pf->hw;
-+	struct i40e_vsi *vsi;
-+	unsigned long q_map;
- 	struct i40e_vf *vf;
- 	int abs_vf_id;
- 	int ret = 0;
-+	int tmp;
+-	/* Check if ref_entry is within range */
+-	if (req->priority && req->ref_entry >= mcam->bmap_entries) {
+-		dev_err(rvu->dev, "%s: reference entry %d is out of range\n",
+-			__func__, req->ref_entry);
+-		return NPC_MCAM_INVALID_REQ;
+-	}
++	/* Check if ref_entry is greater that the range
++	 * then set it to max value.
++	 */
++	if (req->ref_entry > mcam->bmap_entries)
++		req->ref_entry = mcam->bmap_entries;
  
- 	if (test_and_set_bit(__I40E_VIRTCHNL_OP_PENDING, pf->state)) {
- 		dev_warn(&pf->pdev->dev, "Unable to configure VFs, other operation is pending.\n");
-@@ -4731,17 +4742,38 @@ int i40e_ndo_set_vf_link_state(struct net_device *netdev, int vf_id, int link)
- 	switch (link) {
- 	case IFLA_VF_LINK_STATE_AUTO:
- 		vf->link_forced = false;
-+		vf->is_disabled_from_host = false;
-+		/* reset needed to reinit VF resources */
-+		i40e_vc_reset_vf(vf, true);
- 		i40e_set_vf_link_state(vf, &pfe, ls);
- 		break;
- 	case IFLA_VF_LINK_STATE_ENABLE:
- 		vf->link_forced = true;
- 		vf->link_up = true;
-+		vf->is_disabled_from_host = false;
-+		/* reset needed to reinit VF resources */
-+		i40e_vc_reset_vf(vf, true);
- 		i40e_set_vf_link_state(vf, &pfe, ls);
- 		break;
- 	case IFLA_VF_LINK_STATE_DISABLE:
- 		vf->link_forced = true;
- 		vf->link_up = false;
- 		i40e_set_vf_link_state(vf, &pfe, ls);
-+
-+		vsi = pf->vsi[vf->lan_vsi_idx];
-+		q_map = BIT(vsi->num_queue_pairs) - 1;
-+
-+		vf->is_disabled_from_host = true;
-+
-+		/* Try to stop both Tx&Rx rings even if one of the calls fails
-+		 * to ensure we stop the rings even in case of errors.
-+		 * If any of them returns with an error then the first
-+		 * error that occurred will be returned.
-+		 */
-+		tmp = i40e_ctrl_vf_tx_rings(vsi, q_map, false);
-+		ret = i40e_ctrl_vf_rx_rings(vsi, q_map, false);
-+
-+		ret = tmp ? tmp : ret;
- 		break;
- 	default:
- 		ret = -EINVAL;
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.h b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.h
-index 895b8feb2567..9fc1a143a494 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.h
-@@ -98,6 +98,7 @@ struct i40e_vf {
- 	bool link_forced;
- 	bool link_up;		/* only valid if VF link is forced */
- 	bool spoofchk;
-+	bool is_disabled_from_host; /* PF ctrl of VF enable/disable */
- 	u16 num_vlan;
+ 	/* ref_entry can't be '0' if requested priority is high.
+ 	 * Can't be last entry if requested priority is low.
+ 	 */
+ 	if ((!req->ref_entry && req->priority == NPC_MCAM_HIGHER_PRIO) ||
+-	    ((req->ref_entry == (mcam->bmap_entries - 1)) &&
++	    ((req->ref_entry == mcam->bmap_entries) &&
+ 	     req->priority == NPC_MCAM_LOWER_PRIO))
+ 		return NPC_MCAM_INVALID_REQ;
  
- 	/* ADq related variables */
 -- 
 2.43.0
 
