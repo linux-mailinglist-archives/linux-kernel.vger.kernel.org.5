@@ -1,459 +1,278 @@
-Return-Path: <linux-kernel+bounces-27489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E015082F0F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:04:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A584C82F101
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:06:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4451D1F24216
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:04:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A17D1F220F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:06:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C98A21BF3B;
-	Tue, 16 Jan 2024 15:04:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A921C2AD;
+	Tue, 16 Jan 2024 15:05:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="TkZYGHlA"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="gF098g0i"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1F371BC5D
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 15:04:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2cd880ceaf2so59076511fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 07:04:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1705417450; x=1706022250; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KZObLbH50jWGDNCNNEMPuR9WvYua1JEOsUGWqN7w/1c=;
-        b=TkZYGHlAI9FR/bKw3/asNRcsXrhMxk0RWmjUIxCTIOy1HigH0lW1QDITatR+jtiv1Y
-         ITpDoqsGDmeRgyf6Z166hUqIH3Nz/zcs8pGLhK33pXeeLVHUQ05MydNsFnwBeZ/jjVy7
-         x81LK/Ppnies/9tcJBF8YJ8XHt0V7KrpVTspfybL5R/lhAPeMZY9ZVQ0P/B8pS0KHrYf
-         gPVy8G8MC+pfg8VdDkqH63MS8MX1NC21LZDgReVeH/nSIAqYWtXu/Ca/7tGFFW+gbPDj
-         Eudn47y6ehg8p9Scw7tiyC4pqsLhfIuMV1ETQ2Yx2dcZEF5Lb2ov1SdpmJW/ApPhhPF7
-         iFxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705417450; x=1706022250;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KZObLbH50jWGDNCNNEMPuR9WvYua1JEOsUGWqN7w/1c=;
-        b=bwDRPWhVF8koChPMsdVuXP1ZyGr+YYtBOKibvUHg7oMMXyVo3TLlDMpBUVJaiXjHOt
-         u/xJ3FMbfAiiyyWZw4MRs1qO4UdeW7mbUPqj1tZO5KuZmUUpJb3B2uOz7hx5JBHFs1Yc
-         bZeoXuGjUClEDrNPmRyuMWWQ4ZVA/twOJ9AFhdqZIdHdwvzNCOdDzmO/AGA39xw6E5qf
-         IWevMHs3UDCoBPuL4AOD+PkDDBWDnxL48B1e4d8QhSLq/aR1Is3SgJ7Fab3vNCUayGkP
-         b/JJOuJihhEc+lNA8uPJyWpaaErBVty/Km9OuaUzTt2sKU4o3wo8ubRwwtccdqm2QpLm
-         yi+g==
-X-Gm-Message-State: AOJu0YyY8EwtD3HxWTgkO6N0WXIOMkaKiKKuNT+zYWmcMBZ3v6v7SoPB
-	yQTDIy6QSZ7C9Ly8+EzlRhKN91mkDfGT6w==
-X-Google-Smtp-Source: AGHT+IFze1yvXUIStG9IAEYe4ZfyGuJQ3Hn+kkqjQ4DOfInluQBD4+vrj7DhqXAwXsSlpR4SCc6kyw==
-X-Received: by 2002:a2e:b454:0:b0:2cd:52a5:88ec with SMTP id o20-20020a2eb454000000b002cd52a588ecmr3463178ljm.9.1705417450385;
-        Tue, 16 Jan 2024 07:04:10 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id ew3-20020a056402538300b00558a1937dddsm6688768edb.63.2024.01.16.07.04.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 07:04:09 -0800 (PST)
-Date: Tue, 16 Jan 2024 16:04:09 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Xiao Wang <xiao.w.wang@intel.com>
-Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
-	conor.dooley@microchip.com, heiko@sntech.de, haicheng.li@intel.com, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: Optimize crc32 with Zbc extension
-Message-ID: <20240116-9f09b002afc2337ab5e41e3f@orel>
-References: <20240105080830.3738117-1-xiao.w.wang@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 475031C68A;
+	Tue, 16 Jan 2024 15:05:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40GDNH6J015597;
+	Tue, 16 Jan 2024 15:04:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-type; s=qcppdkim1; bh=Idd4C2lTrmRgOqGkotz+
+	0WO1nonKLwMMUARtWfFMtGI=; b=gF098g0iCEtM8mpzdYYVVYb8VOu9XItLeLyV
+	mJRn7JLNy0RmUK90dZHCAa0JyLEwKCNxCi8PLa4lyZilZBWBLuEaBM/3fNwDxFFG
+	Rgj/K8KiSlAVG0uQ5gyf6nzd2+myLH8x8jGMCfCLCKxqDp5Uk5ztx3nh9QzeZZfi
+	jVGIQyFEflD4illT0p77eFzeSGf4nk9QJZ9NmV/JV41Qe93fN4eSKoTPWbUEfO6R
+	MF5nIkHY1HFaU1KIEI9F50iDMdlzFaFTsaH94Wi2u+YLCwIh0g7YvlLZTOrsADTr
+	479VXvszWHxIRUqGJpoQeFNlKiecuKP83NkjVXJOSjMYrM66MA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vnq4t0sh6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 15:04:53 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40GF4qoP008971
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 15:04:52 GMT
+Received: from hu-bibekkum-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 16 Jan 2024 07:04:46 -0800
+From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+To: <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <dmitry.baryshkov@linaro.org>, <konrad.dybcio@linaro.org>,
+        <jsnitsel@redhat.com>, <quic_bjorande@quicinc.com>, <mani@kernel.org>,
+        <quic_eberman@quicinc.com>, <robdclark@chromium.org>,
+        <u.kleine-koenig@pengutronix.de>, <robh@kernel.org>,
+        <vladimir.oltean@nxp.com>, <quic_pkondeti@quicinc.com>,
+        <quic_molvera@quicinc.com>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        Bibek Kumar Patro
+	<quic_bibekkum@quicinc.com>
+Subject: [PATCH v8 3/5] iommu/arm-smmu: introduction of ACTLR for custom prefetcher settings
+Date: Tue, 16 Jan 2024 20:34:09 +0530
+Message-ID: <20240116150411.23876-4-quic_bibekkum@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20240116150411.23876-1-quic_bibekkum@quicinc.com>
+References: <20240116150411.23876-1-quic_bibekkum@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240105080830.3738117-1-xiao.w.wang@intel.com>
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: hMbCMs7ocEz9O9uUhrB_o8E7NpcSkl_P
+X-Proofpoint-ORIG-GUID: hMbCMs7ocEz9O9uUhrB_o8E7NpcSkl_P
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ clxscore=1015 malwarescore=0 suspectscore=0 spamscore=0 lowpriorityscore=0
+ bulkscore=0 mlxlogscore=999 priorityscore=1501 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401160118
 
-On Fri, Jan 05, 2024 at 04:08:30PM +0800, Xiao Wang wrote:
-> As suggested by the B-ext spec, the Zbc (carry-less multiplication)
-> instructions can be used to accelerate CRC calculations. Currently, the
-> crc32 is the most widely used crc function inside kernel, so this patch
-> focuses on the optimization of just the crc32 APIs.
-> 
-> Compared with the current table-lookup based optimization, Zbc based
-> optimization can also achieve large stride during CRC calculation loop,
-> meantime, it avoids the memory access latency of the table-lookup based
-> implementation and it reduces memory footprint.
-> 
-> If Zbc feature is not supported in a runtime environment, then the
-> table-lookup based implementation would serve as fallback via alternative
-> mechanism. To avoid the performance concern of unalignment access, we also
-> use the fallback implementation to handle the head and tail bytes if any,
-> the main body is accelerated by Zbc extension.
-> 
-> This patch is tested on QEMU VM with the kernel CRC32 selftest.
+Currently in Qualcomm  SoCs the default prefetch is set to 1 which allows
+the TLB to fetch just the next page table. MMU-500 features ACTLR
+register which is implementation defined and is used for Qualcomm SoCs
+to have a custom prefetch setting enabling TLB to prefetch the next set
+of page tables accordingly allowing for faster translations.
 
-Ideally we'd also have the results of some benchmarks, or at least a
-dynamic instruction count or something, but I don't suspect that the
-table-lookup would "win" over Zbc. The bigger question is whether we
-want three implementations, because I assume we want Zvbc, particularly
-since [1] says
+ACTLR value is unique for each SMR (Stream matching register) and stored
+in a pre-populated table. This value is set to the register during
+context bank initialisation.
 
-"""
-Zvbc is listed as a development option for use in other algorithms,
-and will become mandatory. Scalar Zbc is now listed as an expansion
-option, i.e., it will probably not become mandatory.
-"""
+Suggested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+---
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 67 ++++++++++++++++++++++
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h | 12 +++-
+ drivers/iommu/arm/arm-smmu/arm-smmu.c      |  5 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu.h      |  5 ++
+ 4 files changed, 86 insertions(+), 3 deletions(-)
 
-[1] https://github.com/riscv/riscv-profiles/blob/main/rva23-profile.adoc
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+index 333daeb18c1c..e6fad02aae92 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+@@ -24,6 +24,12 @@
+ #define CPRE			(1 << 1)
+ #define CMTLB			(1 << 0)
 
-
-A few nits below.
-
-> 
-> Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
-> ---
->  arch/riscv/Kconfig      |  23 +++++
->  arch/riscv/lib/Makefile |   1 +
->  arch/riscv/lib/crc32.c  | 216 ++++++++++++++++++++++++++++++++++++++++
->  include/linux/crc32.h   |   3 +
->  4 files changed, 243 insertions(+)
->  create mode 100644 arch/riscv/lib/crc32.c
-> 
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 95a2a06acc6a..d8b4fb697df2 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -549,6 +549,29 @@ config RISCV_ISA_ZBB
->  
->  	   If you don't know what to do here, say Y.
->  
-> +config TOOLCHAIN_HAS_ZBC
-> +	bool
-> +	default y
-> +	depends on !64BIT || $(cc-option,-mabi=lp64 -march=rv64ima_zbc)
-> +	depends on !32BIT || $(cc-option,-mabi=ilp32 -march=rv32ima_zbc)
-> +	depends on LLD_VERSION >= 150000 || LD_VERSION >= 23900
-> +	depends on AS_HAS_OPTION_ARCH
-> +
-> +config RISCV_ISA_ZBC
-> +	bool "Zbc extension support for carry-less multiplication instructions"
-> +	depends on TOOLCHAIN_HAS_ZBC
-> +	depends on MMU
-> +	depends on RISCV_ALTERNATIVE
-> +	default y
-> +	help
-> +	   Adds support to dynamically detect the presence of the Zbc
-> +	   extension (carry-less multiplication) and enable its usage.
-> +
-> +	   The Zbc extension could accelerate CRC (cyclic redundancy check)
-> +	   calculations.
-> +
-> +	   If you don't know what to do here, say Y.
-> +
->  config RISCV_ISA_ZICBOM
->  	bool "Zicbom extension support for non-coherent DMA operation"
->  	depends on MMU
-> diff --git a/arch/riscv/lib/Makefile b/arch/riscv/lib/Makefile
-> index 26cb2502ecf8..183bf2097d57 100644
-> --- a/arch/riscv/lib/Makefile
-> +++ b/arch/riscv/lib/Makefile
-> @@ -9,5 +9,6 @@ lib-y			+= strncmp.o
->  lib-$(CONFIG_MMU)	+= uaccess.o
->  lib-$(CONFIG_64BIT)	+= tishift.o
->  lib-$(CONFIG_RISCV_ISA_ZICBOZ)	+= clear_page.o
-> +lib-$(CONFIG_RISCV_ISA_ZBC)	+= crc32.o
->  
->  obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
-> diff --git a/arch/riscv/lib/crc32.c b/arch/riscv/lib/crc32.c
-> new file mode 100644
-> index 000000000000..1a24994df826
-> --- /dev/null
-> +++ b/arch/riscv/lib/crc32.c
-> @@ -0,0 +1,216 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Accelerated CRC32 implementation with Zbc extension.
-> + *
-> + * Copyright (C) 2024 Intel Corporation
-> + *
-> + * Authors:
-> + *     Xiao Wang <xiao.w.wang@intel.com>
-> + */
-> +
-> +#include <asm/hwcap.h>
-> +#include <asm/alternative-macros.h>
-> +#include <asm/byteorder.h>
-> +
-> +#include <linux/types.h>
-> +#include <linux/crc32poly.h>
-> +#include <linux/crc32.h>
-> +#include <linux/byteorder/generic.h>
-> +
-> +#define MIN(a, b) ((a) < (b) ? (a) : (b))
-
-min() from linux/minmax.h?
-
-> +
-> +#if (BITS_PER_LONG == 64)
-
-I think riscv prefers
-
- #if __riscv_xlen == 64
-
-In any case, the () are unnecessary.
-
-> +/* Slide by XLEN bits per iteration */
-> +# define STEP_ORDER 3
-> +
-> +/* Each below polynomial quotient has an implicit bit for 2^XLEN */
-> +
-> +/* Polynomial quotient of (2^(XLEN+32))/CRC32_POLY, in LE format */
-> +# define CRC32_POLY_QT_LE	0x5a72d812fb808b20
-> +
-> +/* Polynomial quotient of (2^(XLEN+32))/CRC32C_POLY, in LE format */
-> +# define CRC32C_POLY_QT_LE	0xa434f61c6f5389f8
-> +
-> +/* Polynomial quotient of (2^(XLEN+32))/CRC32_POLY, in BE format, it should be
-> + * the same as the bit-reversed version of CRC32_POLY_QT_LE
-> + */
-> +# define CRC32_POLY_QT_BE	0x04d101df481b4e5a
-> +#elif (BITS_PER_LONG == 32)
-> +# define STEP_ORDER 2
-> +/* Each quotient should match the upper half of its analog in RV64 */
-> +# define CRC32_POLY_QT_LE	0xfb808b20
-> +# define CRC32C_POLY_QT_LE	0x6f5389f8
-> +# define CRC32_POLY_QT_BE	0x04d101df
-> +#else
-> +# error "Unexpected BITS_PER_LONG"
-> +#endif
-> +
-> +#define STEP (1 << STEP_ORDER)
-> +#define OFFSET_MASK (STEP - 1)
-
-Should tab out the values of these defines so they line up.
-
-> +
-> +/*
-> + * Refer to https://www.corsix.org/content/barrett-reduction-polynomials for
-> + * better understanding of how this math works.
-
-Thanks for this pointer. I read it, but I didn't digest it enough to
-understand it, which means my review isn't confirming the math is
-correct.
-
-> + *
-> + * let "+" denotes polynomial add (XOR)
-> + * let "-" denotes polynomial sub (XOR)
-> + * let "*" denotes polynomial multiplication
-> + * let "/" denotes polynomial floor division
-> + * let "S" denotes source data, XLEN bit wide
-> + * let "P" denotes CRC32 polynomial
-> + * let "T" denotes 2^(XLEN+32)
-> + * let "QT" denotes quotient of T/P, with the bit for 2^XLEN being implicit
-> + *
-> + * crc32(S, P)
-> + * => S * (2^32) - S * (2^32) / P * P
-> + * => lowest 32 bits of: S * (2^32) / P * P
-> + * => lowest 32 bits of: S * (2^32) * (T / P) / T * P
-> + * => lowest 32 bits of: S * (2^32) * quotient / T * P
-> + * => lowest 32 bits of: S * quotient / 2^XLEN * P
-> + * => lowest 32 bits of: (clmul_high_part(S, QT) + S) * P
-> + * => clmul_low_part(clmul_high_part(S, QT) + S, P)
-> + *
-> + * In terms of below implementations, the BE case is more intuitive, since the
-> + * higher order bit sits at more significant position.
-> + */
-> +
-> +typedef u32 (*fallback)(u32 crc, unsigned char const *p, size_t len);
-> +
-> +static inline u32 __pure crc32_le_generic(u32 crc, unsigned char const *p,
-> +#if (BITS_PER_LONG == 64)
-> +					  size_t len, u32 poly, u64 poly_qt,
-> +#else
-> +					  size_t len, u32 poly, u32 poly_qt,
-> +#endif
-
-How about creating a new type for poly_qt, defined as u64 for xlen=64
-and u32 for xlen=32 to avoid the #ifdef?
-
-> +					  fallback crc_fb)
-> +{
-> +	size_t offset, head_len, tail_len;
-> +	const unsigned long *p_ul;
-> +	unsigned long s;
-> +
-> +	asm_volatile_goto(ALTERNATIVE("j %l[legacy]", "nop", 0,
-> +				      RISCV_ISA_EXT_ZBC, 1)
-> +			  : : : : legacy);
-> +
-> +	/* Handle the unalignment head. */
-> +	offset = (unsigned long)p & OFFSET_MASK;
-> +	if (offset) {
-> +		head_len = MIN(STEP - offset, len);
-> +		crc = crc_fb(crc, p, head_len);
-> +		len -= head_len;
-> +		p += head_len;
-> +	}
-> +
-> +	tail_len = len & OFFSET_MASK;
-> +	len = len >> STEP_ORDER;
-> +	p_ul = (unsigned long *)p;
-> +
-> +	for (int i = 0; i < len; i++) {
-> +#if (BITS_PER_LONG == 64)
-> +		s = (unsigned long)crc ^ __cpu_to_le64(*p_ul++);
-> +		/* We don't have a "clmulrh" insn, so use clmul + slli instead.
-> +		 */
-
-need opening /* comment wing
-
-> +		asm volatile (".option push\n"
-> +			      ".option arch,+zbc\n"
-> +			      "clmul	%0, %1, %2\n"
-> +			      "slli	%0, %0, 1\n"
-> +			      "xor	%0, %0, %1\n"
-> +			      "clmulr	%0, %0, %3\n"
-> +			      "srli	%0, %0, 32\n"
-> +			      ".option pop\n"
-> +			      : "=&r" (crc)
-> +			      : "r" (s),
-> +				"r" (poly_qt),
-> +				"r" ((u64)poly << 32)
-> +			      :);
-> +#else
-> +		s = crc ^ __cpu_to_le32(*p_ul++);
-> +		/* We don't have a "clmulrh" insn, so use clmul + slli instead.
-
-also here
-
-> +		 */
-> +		asm volatile (".option push\n"
-> +			      ".option arch,+zbc\n"
-> +			      "clmul	%0, %1, %2\n"
-> +			      "slli	%0, %0, 1\n"
-> +			      "xor	%0, %0, %1\n"
-> +			      "clmulr	%0, %0, %3\n"
-> +			      ".option pop\n"
-> +			      : "=&r" (crc)
-> +			      : "r" (s),
-> +				"r" (poly_qt),
-> +				"r" (poly)
-> +			      :);
-> +#endif
-
-Instead of the #ifdef here, we could provide function wrappers for the asm
-which would be defined above in the first #ifdef ladder.
-
-> +	}
-> +
-> +	/* Handle the tail bytes. */
-> +	if (tail_len)
-> +		crc = crc_fb(crc, (unsigned char const *)p_ul, tail_len);
-> +	return crc;
-> +
-> +legacy:
-> +	return crc_fb(crc, p, len);
-> +}
-> +
-> +u32 __pure crc32_le(u32 crc, unsigned char const *p, size_t len)
-> +{
-> +	return crc32_le_generic(crc, p, len, CRC32_POLY_LE, CRC32_POLY_QT_LE,
-> +				crc32_le_base);
-> +}
-> +
-> +u32 __pure __crc32c_le(u32 crc, unsigned char const *p, size_t len)
-> +{
-> +	return crc32_le_generic(crc, p, len, CRC32C_POLY_LE,
-> +				CRC32C_POLY_QT_LE, __crc32c_le_base);
-> +}
-> +
-> +u32 __pure crc32_be(u32 crc, unsigned char const *p, size_t len)
-> +{
-> +	size_t offset, head_len, tail_len;
-> +	const unsigned long *p_ul;
-> +	unsigned long s;
-> +
-> +	asm_volatile_goto(ALTERNATIVE("j %l[legacy]", "nop", 0,
-> +				      RISCV_ISA_EXT_ZBC, 1)
-> +			  : : : : legacy);
-> +
-> +	/* Handle the unalignment head. */
-> +	offset = (unsigned long)p & OFFSET_MASK;
-> +	if (offset) {
-> +		head_len = MIN(STEP - offset, len);
-> +		crc = crc32_be_base(crc, p, head_len);
-> +		len -= head_len;
-> +		p += head_len;
-> +	}
-> +
-> +	tail_len = len & OFFSET_MASK;
-> +	len = len >> STEP_ORDER;
-> +	p_ul = (unsigned long *)p;
-> +
-> +	for (int i = 0; i < len; i++) {
-> +#if (BITS_PER_LONG == 64)
-> +		s = (unsigned long)crc << 32;
-> +		s ^= __cpu_to_be64(*p_ul++);
-> +#else
-> +		s = crc ^ __cpu_to_be32(*p_ul++);
-> +#endif
-
-Could write the above without #ifdef with
-
- if (IS_ENABLED(CONFIG_64BIT)) {
-    ...
- } else {
-    ...
++struct actlr_config {
++	u16 sid;
++	u16 mask;
++	u32 actlr;
++};
++
+ static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
+ {
+ 	return container_of(smmu, struct qcom_smmu, smmu);
+@@ -215,10 +221,42 @@ static bool qcom_adreno_can_do_ttbr1(struct arm_smmu_device *smmu)
+ 	return true;
  }
 
-> +		asm volatile (".option push\n"
-> +			      ".option arch,+zbc\n"
-> +			      "clmulh	%0, %1, %2\n"
-> +			      "xor	%0, %0, %1\n"
-> +			      "clmul	%0, %0, %3\n"
-> +			      ".option pop\n"
-> +			      : "=&r" (crc)
-> +			      : "r" (s),
-> +				"r" (CRC32_POLY_QT_BE),
-> +				"r" (CRC32_POLY_BE)
-> +			      :);
-> +	}
-> +
-> +	/* Handle the tail bytes. */
-> +	if (tail_len)
-> +		crc = crc32_be_base(crc, (unsigned char const *)p_ul, tail_len);
-> +	return crc;
-> +
-> +legacy:
-> +	return crc32_be_base(crc, p, len);
-> +}
-> diff --git a/include/linux/crc32.h b/include/linux/crc32.h
-> index 9e8a032c1788..87f788c0d607 100644
-> --- a/include/linux/crc32.h
-> +++ b/include/linux/crc32.h
-> @@ -9,7 +9,9 @@
->  #include <linux/bitrev.h>
->  
->  u32 __pure crc32_le(u32 crc, unsigned char const *p, size_t len);
-> +u32 __pure crc32_le_base(u32 crc, unsigned char const *p, size_t len);
->  u32 __pure crc32_be(u32 crc, unsigned char const *p, size_t len);
-> +u32 __pure crc32_be_base(u32 crc, unsigned char const *p, size_t len);
->  
->  /**
->   * crc32_le_combine - Combine two crc32 check values into one. For two
-> @@ -37,6 +39,7 @@ static inline u32 crc32_le_combine(u32 crc1, u32 crc2, size_t len2)
->  }
->  
->  u32 __pure __crc32c_le(u32 crc, unsigned char const *p, size_t len);
-> +u32 __pure __crc32c_le_base(u32 crc, unsigned char const *p, size_t len);
->  
->  /**
->   * __crc32c_le_combine - Combine two crc32c check values into one. For two
-> -- 
-> 2.25.1
->
++static void qcom_smmu_set_actlr(struct device *dev, struct arm_smmu_device *smmu, int cbndx,
++		const struct actlr_config *actlrcfg, const size_t num_actlrcfg)
++{
++	struct arm_smmu_master_cfg *cfg = dev_iommu_priv_get(dev);
++	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
++	struct arm_smmu_smr *smr;
++	u16 mask;
++	int idx;
++	u16 id;
++	int i;
++	int j;
++
++	for (i = 0; i < num_actlrcfg; i++) {
++		id = actlrcfg[i].sid;
++		mask = actlrcfg[i].mask;
++
++		for_each_cfg_sme(cfg, fwspec, j, idx) {
++			smr = &smmu->smrs[idx];
++			if (smr_is_subset(smr, id, mask)) {
++				arm_smmu_cb_write(smmu, cbndx, ARM_SMMU_CB_ACTLR,
++						actlrcfg[i].actlr);
++				break;
++			}
++		}
++	}
++}
++
+ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+ 		struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+ {
++	struct arm_smmu_device *smmu = smmu_domain->smmu;
++	struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
++	const struct actlr_variant *actlrvar;
++	int cbndx = smmu_domain->cfg.cbndx;
+ 	struct adreno_smmu_priv *priv;
++	int i;
 
-Thanks,
-drew
+ 	smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
+
+@@ -248,6 +286,18 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+ 	priv->set_stall = qcom_adreno_smmu_set_stall;
+ 	priv->resume_translation = qcom_adreno_smmu_resume_translation;
+
++	actlrvar = qsmmu->data->actlrvar;
++	if (!actlrvar)
++		return 0;
++
++	for (i = 0; i < qsmmu->data->num_smmu ; i++) {
++		if (actlrvar[i].io_start == smmu->ioaddr) {
++			qcom_smmu_set_actlr(dev, smmu, cbndx, actlrvar[i].actlrcfg,
++				       actlrvar[i].num_actlrcfg);
++			break;
++		}
++	}
++
+ 	return 0;
+ }
+
+@@ -274,7 +324,24 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
+ static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+ 		struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+ {
++	struct arm_smmu_device *smmu = smmu_domain->smmu;
++	struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
++	const struct actlr_variant *actlrvar;
++	int cbndx = smmu_domain->cfg.cbndx;
++	int i;
++
+ 	smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
++	actlrvar = qsmmu->data->actlrvar;
++	if (!actlrvar)
++		return 0;
++
++	for (i = 0; i < qsmmu->data->num_smmu ; i++) {
++		if (actlrvar[i].io_start == smmu->ioaddr) {
++			qcom_smmu_set_actlr(dev, smmu, cbndx, actlrvar[i].actlrcfg,
++				       actlrvar[i].num_actlrcfg);
++			break;
++		}
++	}
+
+ 	return 0;
+ }
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+index f3b91963e234..f7865f19774c 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+- * Copyright (c) 2022, Qualcomm Innovation Center, Inc. All rights reserved.
++ * Copyright (c) 2022-2023, Qualcomm Innovation Center, Inc. All rights reserved.
+  */
+
+ #ifndef _ARM_SMMU_QCOM_H
+@@ -24,8 +24,18 @@ struct qcom_smmu_config {
+ 	const u32 *reg_offset;
+ };
+
++struct actlr_config;
++
++struct actlr_variant {
++	const resource_size_t io_start;
++	const struct actlr_config * const actlrcfg;
++	const size_t num_actlrcfg;
++};
++
+ struct qcom_smmu_match_data {
++	const struct actlr_variant * const actlrvar;
+ 	const struct qcom_smmu_config *cfg;
++	const size_t num_smmu;
+ 	const struct arm_smmu_impl *impl;
+ 	const struct arm_smmu_impl *adreno_impl;
+ };
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+index d6d1a2a55cc0..0c7f700b27dd 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+@@ -990,9 +990,10 @@ static int arm_smmu_find_sme(struct arm_smmu_device *smmu, u16 id, u16 mask)
+ 		 * expect simply identical entries for this case, but there's
+ 		 * no harm in accommodating the generalisation.
+ 		 */
+-		if ((mask & smrs[i].mask) == mask &&
+-		    !((id ^ smrs[i].id) & ~smrs[i].mask))
++
++		if (smr_is_subset(&smrs[i], id, mask))
+ 			return i;
++
+ 		/*
+ 		 * If the new entry has any other overlap with an existing one,
+ 		 * though, then there always exists at least one stream ID
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+index 703fd5817ec1..2e4f65412c6b 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+@@ -501,6 +501,11 @@ static inline void arm_smmu_writeq(struct arm_smmu_device *smmu, int page,
+ 		writeq_relaxed(val, arm_smmu_page(smmu, page) + offset);
+ }
+
++static inline bool smr_is_subset(struct arm_smmu_smr *smrs, u16 id, u16 mask)
++{
++	return (mask & smrs->mask) == mask && !((id ^ smrs->id) & ~smrs->mask);
++}
++
+ #define ARM_SMMU_GR0		0
+ #define ARM_SMMU_GR1		1
+ #define ARM_SMMU_CB(s, n)	((s)->numpage + (n))
+--
+2.17.1
+
 
