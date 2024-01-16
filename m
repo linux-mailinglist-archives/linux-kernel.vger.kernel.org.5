@@ -1,116 +1,92 @@
-Return-Path: <linux-kernel+bounces-26937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2A7782E81D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 04:17:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C935E82E822
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 04:17:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 130011C22A79
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 03:16:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFE79284DA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 03:17:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE2327482;
-	Tue, 16 Jan 2024 03:16:48 +0000 (UTC)
-Received: from h3cspam02-ex.h3c.com (smtp.h3c.com [60.191.123.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 763DB6FB2;
-	Tue, 16 Jan 2024 03:16:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h3c.com
-Received: from mail.maildlp.com ([172.25.15.154])
-	by h3cspam02-ex.h3c.com with ESMTP id 40G3FFeF057282;
-	Tue, 16 Jan 2024 11:15:15 +0800 (GMT-8)
-	(envelope-from hu.yadi@h3c.com)
-Received: from DAG6EX10-BJD.srv.huawei-3com.com (unknown [10.153.34.12])
-	by mail.maildlp.com (Postfix) with ESMTP id 021222004BB6;
-	Tue, 16 Jan 2024 11:19:43 +0800 (CST)
-Received: from DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11) by
- DAG6EX10-BJD.srv.huawei-3com.com (10.153.34.12) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.27; Tue, 16 Jan 2024 11:15:16 +0800
-Received: from DAG6EX02-IMDC.srv.huawei-3com.com ([fe80::4c21:7c89:4f9d:e4c4])
- by DAG6EX02-IMDC.srv.huawei-3com.com ([fe80::4c21:7c89:4f9d:e4c4%16]) with
- mapi id 15.02.1258.027; Tue, 16 Jan 2024 11:15:16 +0800
-From: Huyadi <hu.yadi@h3c.com>
-To: =?utf-8?B?J0fDvG50aGVyIE5vYWNrJw==?= <gnoack@google.com>
-CC: "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com"
-	<serge@hallyn.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        "mic@digikod.net" <mic@digikod.net>,
-        "amir73il@gmail.com"
-	<amir73il@gmail.com>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "avagin@google.com" <avagin@google.com>,
-        "linux-api@vger.kernel.org"
-	<linux-api@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org"
-	<linux-security-module@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org"
-	<linux-kselftest@vger.kernel.org>,
-        "514118380@qq.com" <514118380@qq.com>
-Subject: =?utf-8?B?5Zue5aSNOiBbUEFUQ0hdIHNlbGZ0ZXN0cy9maWxlc3lzdGVtczpmaXggYnVp?=
- =?utf-8?Q?ld_error_in_overlayfs?=
-Thread-Topic: [PATCH] selftests/filesystems:fix build error in overlayfs
-Thread-Index: AQHaRSsZ3C6Kdahh1UyDYHPgqAANTbDabSyAgAFbR1A=
-Date: Tue, 16 Jan 2024 03:15:15 +0000
-Message-ID: <f25be6663bcc4608adf630509f045a76@h3c.com>
-References: <20240112074059.29673-1-hu.yadi@h3c.com>
- <ZaVAjQmio26WloSk@google.com>
-In-Reply-To: <ZaVAjQmio26WloSk@google.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-sender-location: DAG2
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FEF979C1;
+	Tue, 16 Jan 2024 03:17:44 +0000 (UTC)
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id 68E1279C3
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 03:17:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
+Received: (qmail 732488 invoked by uid 1000); 15 Jan 2024 22:17:34 -0500
+Date: Mon, 15 Jan 2024 22:17:34 -0500
+From: Alan Stern <stern@rowland.harvard.edu>
+To: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Cc: Eric Van Hensbergen <ericvh@kernel.org>,
+  Latchesar Ionkov <lucho@ionkov.net>,
+  Dominique Martinet <asmadeus@codewreck.org>,
+  Christian Schoenebeck <linux_oss@crudebyte.com>,
+  Jonathan Corbet <corbet@lwn.net>,
+  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, v9fs@lists.linux.dev,
+  linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+  linux-usb@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH 1/3] usb: gadget: function: 9pfs
+Message-ID: <4856923e-3ce8-4372-9451-f9c8aa157111@rowland.harvard.edu>
+References: <20240116-ml-topic-u9p-v1-0-ad8c306f9a4e@pengutronix.de>
+ <20240116-ml-topic-u9p-v1-1-ad8c306f9a4e@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL:h3cspam02-ex.h3c.com 40G3FFeF057282
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240116-ml-topic-u9p-v1-1-ad8c306f9a4e@pengutronix.de>
 
-DQoNCg0KPk9uIEZyaSwgSmFuIDEyLCAyMDI0IGF0IDAzOjQwOjU5UE0gKzA4MDAsIEh1IFlhZGkg
-d3JvdGU6DQo+PiBPbmUgYnVpbGQgaXNzdWUgY29tZXMgdXAgZHVlIHRvIGJvdGggbW91bnQuaCBp
-bmNsdWRlZCBkZXZfaW5fbWFwcy5jDQo+PiANCj4+IEluIGZpbGUgaW5jbHVkZWQgZnJvbSBkZXZf
-aW5fbWFwcy5jOjEwOg0KPj4gL3Vzci9pbmNsdWRlL3N5cy9tb3VudC5oOjM1OjM6IGVycm9yOiBl
-eHBlY3RlZCBpZGVudGlmaWVyIGJlZm9yZSBudW1lcmljIGNvbnN0YW50DQo+PiAgICAzNSB8ICAg
-TVNfUkRPTkxZID0gMSwgIC8qIE1vdW50IHJlYWQtb25seS4gICovDQo+PiAgICAgICB8ICAgXn5+
-fn5+fn5+DQo+PiBJbiBmaWxlIGluY2x1ZGVkIGZyb20gZGV2X2luX21hcHMuYzoxMzoNCj4+IA0K
-Pj4gUmVtb3ZlIG9uZSBvZiB0aGVtIHRvIHNvbHZlIGNvbmZsaWN0LCBhbm90aGVyIGVycm9yIGNv
-bWVzIHVwOg0KPj4gDQo+PiBkZXZfaW5fbWFwcy5jOjE3MDo2OiBlcnJvcjogaW1wbGljaXQgZGVj
-bGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYbW91bnTigJkgWy1XZXJyb3I9aW1wbGljaXQtZnVuY3Rp
-b24tZGVjbGFyYXRpb25dDQo+PiAgIDE3MCB8ICBpZiAobW91bnQoTlVMTCwgIi8iLCBOVUxMLCBN
-U19TTEFWRSB8IE1TX1JFQywgTlVMTCkgPT0gLTEpIHsNCj4+ICAgICAgIHwgICAgICBefn5+fg0K
-Pj4gY2MxOiBhbGwgd2FybmluZ3MgYmVpbmcgdHJlYXRlZCBhcyBlcnJvcnMNCj4+IA0KPj4gYW5k
-IHRoZW4gLCBhZGQgc3lzX21vdW50IGRlZmluaXRpb24gdG8gc29sdmUgaXQgQWZ0ZXIgYm90aCBh
-Ym92ZSwgDQo+PiBkZXZfaW5fbWFwcy5jIGNhbiBiZSBidWlsdCBjb3JyZWN0bHkgb24gbXkgbWFj
-aGUoZ2NjIA0KPj4gMTAuMixnbGliYy0yLjMyLGtlcm5lbC01LjEwKQ0KPg0KPlRoaXMgaXMgYXBw
-YXJlbnRseSB0aGUgc2FtZSBlcnJvciBhcyBpbg0KPmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2Fs
-bC8xMWNkYWMxZS1lOTZjLTQwNWYtNjNlOC0zNWIwZTI5MjYzMzdAYXJtLmNvbS8NCj4NCj5JJ20g
-Z2V0dGluZyB0aGUgaW1wcmVzc2lvbiB0aGF0IHdlIGFyZSBmaXhpbmcgdGhlIGlzc3VlIGF0IHRo
-ZSB3cm9uZyBsYXllciBoZXJlPw0KPkFmdGVyIGFsbCwgdGhlIG1vdW50KCkgc3lzY2FsbCBpcyBz
-dXBwb3NlZCB0byBiZSB1c2VkIHdpdGggPHN5cy9tb3VudC5oPiBhY2NvcmRpbmcgdG8gdGhlIG1v
-dW50KDIpIG1hbiBwYWdlPyAgSXQgZmVlbHMgYSBiaXQgbGlrZSBjaGVhdGluZyB0byByZXNvcnQg
-dG8NCj5zeXNfbW91bnQoKSBpbnN0ZWFkLi4uPw0KDQpIZWFkZXJzIGNvbmZsaWN0IGlzIGtub3du
-IGlzc3VlIGR1ZSB0byBodHRwczovL3NvdXJjZXdhcmUub3JnL2dsaWJjL3dpa2kvU3luY2hyb25p
-emluZ19IZWFkZXJzDQo8bGludXgvbW91bnQuaD4gYW5kIDxzeXMvbW91bnQuaD4gKE5vdGU6IG5v
-IHdvcmthcm91bmQpDQpTbywgaXQgaXMgaW5jb3JyZWN0IHRvIHVzZSBib3RoIHRoZW0uDQoNCj4N
-Cj5EbyB5b3UgaGF2ZSBhbnkgZGVlcGVyIHRob3VnaHRzIG9uIHdoYXQgY291bGQgYmUgdGhlIHVu
-ZGVybHlpbmcgaXNzdWUgaGVyZT8NCj5XaXRoIG15IG5ld2VyIEdDQyB0b29sY2hhaW5zLCBJIGhh
-dmUgYmVlbiB1bmFibGUgdG8gcmVwcm9kdWNlIHRoaXMuDQo+DQpnY2MgdmVyc2lvbiAxMC4yLjEg
-MjAyMDA4MjUgKEFsaWJhYmEgMTAuMi4xLTMuNSAyLjMyKSAoR0NDKQ0KbGRkIChHTlUgbGliYykg
-Mi4zMg0Ka2VybmVsIDUuMTAuMTM0LTE2LjEuYWw4Lng4Nl82NA0KIkFsaWJhYmEgQ2xvdWQgTGlu
-dXggMyh0aGUgbW9zdCBiaWdnZXN0IHB1YmxpYyBjbG91ZCBwcm92aWRlcidzIE9TKQ0KDQoNCj5U
-aGFua3MsDQoNCg==
+On Tue, Jan 16, 2024 at 02:49:41AM +0100, Michael Grzeschik wrote:
+> Add the new gadget function for 9pfs transport. This function is
+> defining an simple 9pfs transport interface that consists of one in and
+> one out endpoint. The endpoints transmit and receive the 9pfs protocol
+> payload when mounting a 9p filesystem over usb.
+> 
+> Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+> ---
+>  Documentation/filesystems/9p.rst     |  12 +
+>  drivers/usb/gadget/Kconfig           |  11 +
+>  drivers/usb/gadget/function/Makefile |   2 +
+>  drivers/usb/gadget/function/f_9pfs.c | 849 +++++++++++++++++++++++++++++++++++
+>  4 files changed, 874 insertions(+)
+> 
+
+> diff --git a/drivers/usb/gadget/Kconfig b/drivers/usb/gadget/Kconfig
+> index b3592bcb0f966..72cdecaef6aa9 100644
+> --- a/drivers/usb/gadget/Kconfig
+> +++ b/drivers/usb/gadget/Kconfig
+> @@ -153,6 +153,10 @@ config USB_F_ACM
+>  config USB_F_SS_LB
+>  	tristate
+>  
+> +config USB_F_9PFS
+> +	tristate
+> +	select NET_9P
+> +
+>  config USB_U_SERIAL
+>  	tristate
+>  
+> @@ -363,6 +367,13 @@ config USB_CONFIGFS_F_LB_SS
+>  	  test software, like the "usbtest" driver, to put your hardware
+>  	  and its driver through a basic set of functional tests.
+>  
+> +config USB_CONFIGFS_F_9PFS
+> +	bool "9pfs over usb gadget"
+> +	depends on USB_CONFIGFS
+> +	select USB_F_9PFS
+> +	help
+> +	  9pfs support for usb gadget
+
+This may be a dumb question, but what is the purpose of this CONFIG
+symbol?  It doesn't get used by any of the patches in this series, as
+far as I can see.
+
+Alan Stern
 
