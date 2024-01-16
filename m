@@ -1,202 +1,105 @@
-Return-Path: <linux-kernel+bounces-27052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC47782E9C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:03:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F80F82E9C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:03:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48B5F2850F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:03:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 906EC1C22FF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:03:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF17F1118B;
-	Tue, 16 Jan 2024 07:02:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF3E41118A;
+	Tue, 16 Jan 2024 07:03:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CY3v5oPX"
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rmmwY1bA"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39E6A11185
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 07:02:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2ae5ec3f-4a96-4819-af65-5f04df0c2ebd@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705388567;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=txIZXYF3ib8b3sMorV8i+HMWWhDk4zrdCMBjUrUSGcU=;
-	b=CY3v5oPX0xoBC0az5ZLVLoe+HAbLsHFWvZK6etFK3WuzZWACmH4rJeBjk1R0x3Gmn6cbpw
-	P9ctl84hv78h26yCYSMbAFvYHcIFLanU3X6e0fLa+liJoGBXoxSXRKMp1+sNDpAM2pk14R
-	RQP+Iku3P5k+7HgWpokP3qotXilO5Kc=
-Date: Tue, 16 Jan 2024 15:02:39 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B3FE11181
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 07:03:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40e857ce803so1497925e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 23:03:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705388604; x=1705993404; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7ubEpkO6/Y13Ky3MlzkPlkr59ZgnN/6fY2ZD40DKlH8=;
+        b=rmmwY1bAIfjyw/w39xCNgvAIWqQSztJDG/Z8twJml4Cj5WAQ9lkdN0dpr70tvSQ3S+
+         XcnQvLiCQro5YpjN3dVPcX69fETYClKFgGJiUYKy0K+JGQej373k68/mQh3e/hh9M386
+         aTOnunSu0y762h2WItYKTNKzcq+Vb/pa+JF8P5dCxkJWZUBjaEa8phRf2NLludtvVOo1
+         gRmRiZciQ61axTdwz7SzovaasHhQiw/kqE/tfx+No8gXXI9G49eqWVIBWH2nNJSr8Y8w
+         7Hc/9opvvg3U/pNZU90i1TihN8zrv/Pv+2+anB2vzhbwPiBImLSoUzz9awR5wPcNaIhk
+         UTlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705388604; x=1705993404;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7ubEpkO6/Y13Ky3MlzkPlkr59ZgnN/6fY2ZD40DKlH8=;
+        b=P1RsF1MUyxGfrxyC8GTz8I5bypO7sydaKksH051aMm+EIJloG4eI15coX8ekUxTRu7
+         4p8su2JS3AHc0RNT6zQovZXd0cbR+1v4gnksotO5unj7SkOr1PWDHoY1QAc8nPHy72SD
+         wgEkLrGgNuTVqKFj/bJfDD2k2tVGmdV2e+irC0wnQ4ElBiJZd6P5NS7OaTQ0KJyutXIL
+         enFSm1NVw+yKkcYPWDVST51Wnzo3wJP0icV042v+e0STL9yDMAyVFKOJL/1K/t1GzgTd
+         +0g/AvPUCgL/0AkS/3tI759CGT/VHtS1jtErUci1bTL0L6vlHRkrzuM1D1kXUMvr42xr
+         UxWg==
+X-Gm-Message-State: AOJu0Yx2fwU756MS4eSd+P2O75uhAFyLdy4IX8a+sKchGk16aznGSFhK
+	X96G0oL+lvWWnlYJetSip6Q2aqVaKK5erg==
+X-Google-Smtp-Source: AGHT+IFuPymM0Is/pp9GG5BAAkrpd+are7WyNdnD46YLBfk1DLQZLbFjRh2GAT2wfLMHO8TCSTOueA==
+X-Received: by 2002:a05:600c:3c89:b0:40e:4f7a:bc29 with SMTP id bg9-20020a05600c3c8900b0040e4f7abc29mr3274254wmb.159.1705388604648;
+        Mon, 15 Jan 2024 23:03:24 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id k9-20020a05600c1c8900b0040d772030c2sm18087654wms.44.2024.01.15.23.03.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 23:03:24 -0800 (PST)
+Date: Tue, 16 Jan 2024 10:03:20 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Jacob Keller <jacob.e.keller@intel.com>
+Cc: Julia Lawall <Julia.Lawall@lip6.fr>, Kees Cook <keescook@chromium.org>,
+	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
+	cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org,
+	Harshit Mogalapalli <harshit.m.mogalapalli@gmail.com>
+Subject: Re: [PATCH] coccinelle: semantic patch to check for potential
+ struct_size calls
+Message-ID: <6ee33330-134c-4bdd-a5eb-e8ff0db6cc8b@moroto.mountain>
+References: <20230227202428.3657443-1-jacob.e.keller@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 2/7] hugetlb: split hugetlb_hstate_alloc_pages
-To: ligang.bdlg@bytedance.com, Gang Li <gang.li@linux.dev>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- David Hildenbrand <david@redhat.com>, David Rientjes <rientjes@google.com>,
- Mike Kravetz <mike.kravetz@oracle.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Tim Chen <tim.c.chen@linux.intel.com>
-References: <20240102131249.76622-1-gang.li@linux.dev>
- <20240102131249.76622-3-gang.li@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20240102131249.76622-3-gang.li@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230227202428.3657443-1-jacob.e.keller@intel.com>
 
+What happened to this patch?  These sorts of patches go through Kees?
 
+Also it would be nice if it could handle char arrays.  It doesn't warn
+for the kmalloc in dg_dispatch_as_host():
 
-On 2024/1/2 21:12, Gang Li wrote:
-> 1G and 2M huge pages have different allocation and initialization logic,
-> which leads to subtle differences in parallelization. Therefore, it is
-> appropriate to split hugetlb_hstate_alloc_pages into gigantic and
-> non-gigantic.
->
-> This patch has no functional changes.
->
-> Signed-off-by: Gang Li <gang.li@linux.dev>
-> ---
->   mm/hugetlb.c | 86 +++++++++++++++++++++++++++-------------------------
->   1 file changed, 45 insertions(+), 41 deletions(-)
->
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 2606135ec55e6..92448e747991d 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -3509,6 +3509,47 @@ static void __init hugetlb_hstate_alloc_pages_report(unsigned long allocated, st
->   	}
->   }
->   
-> +static unsigned long __init hugetlb_hstate_alloc_pages_gigantic(struct hstate *h)
+drivers/misc/vmw_vmci/vmci_datagram.c
+   227                          dg_info = kmalloc(sizeof(*dg_info) +
+   228                                      (size_t) dg->payload_size, GFP_ATOMIC);
 
-The name is so long, how about hugetlb_gigantic_pages_alloc_boot?
+The Cocci check is looking specifically for:
 
-> +{
-> +	unsigned long i;
-> +
-> +	for (i = 0; i < h->max_huge_pages; ++i) {
-> +		/*
-> +		 * gigantic pages not added to list as they are not
-> +		 * added to pools now.
-> +		 */
-> +		if (!alloc_bootmem_huge_page(h, NUMA_NO_NODE))
-> +			break;
-> +		cond_resched();
-> +	}
-> +
-> +	return i;
-> +}
-> +
-> +static unsigned long __init hugetlb_hstate_alloc_pages_non_gigantic(struct hstate *h)
+	sizeof(*dg_info) + (sizeof(*dg_info->msg_payload) * dg->payload_size)
 
-hugetlb_pages_alloc_boot?
+But since this flex array is u8 there is no multiply.  I don't know how
+are it is to add support for char arrays...
 
-> +{
-> +	unsigned long i;
-> +	struct folio *folio;
-> +	LIST_HEAD(folio_list);
-> +	nodemask_t node_alloc_noretry;
-> +
-> +	/* Bit mask controlling how hard we retry per-node allocations.*/
-> +	nodes_clear(node_alloc_noretry);
-> +
-> +	for (i = 0; i < h->max_huge_pages; ++i) {
-> +		folio = alloc_pool_huge_folio(h, &node_states[N_MEMORY],
-> +						&node_alloc_noretry);
-> +		if (!folio)
-> +			break;
-> +		list_add(&folio->lru, &folio_list);
-> +		cond_resched();
-> +	}
-> +
-> +	prep_and_add_allocated_folios(h, &folio_list);
-> +
-> +	return i;
-> +}
-> +
->   /*
->    * NOTE: this routine is called in different contexts for gigantic and
->    * non-gigantic pages.
-> @@ -3522,10 +3563,7 @@ static void __init hugetlb_hstate_alloc_pages_report(unsigned long allocated, st
->    */
->   static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
->   {
-> -	unsigned long i;
-> -	struct folio *folio;
-> -	LIST_HEAD(folio_list);
-> -	nodemask_t *node_alloc_noretry;
-> +	unsigned long allocated;
->   
->   	/* skip gigantic hugepages allocation if hugetlb_cma enabled */
->   	if (hstate_is_gigantic(h) && hugetlb_cma_size) {
-> @@ -3539,46 +3577,12 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
->   
->   	/* below will do all node balanced alloc */
->   	if (!hstate_is_gigantic(h)) {
+Also another common way to write the multiply is:
 
-It it unnecessary to reverse the condition. A little sime like following:
+	sizeof(*dg_info) + (sizeof(dg_info->msg_payload[0]) * dg->payload_size)
 
-if (hstate_is_gigantic(h))
-     /* gigantic pages */
-else
-     /* normal pages */
+That should be pretty straight forward to add.
 
-> -		/*
-> -		 * Bit mask controlling how hard we retry per-node allocations.
-> -		 * Ignore errors as lower level routines can deal with
-> -		 * node_alloc_noretry == NULL.  If this kmalloc fails at boot
-> -		 * time, we are likely in bigger trouble.
-> -		 */
-> -		node_alloc_noretry = kmalloc(sizeof(*node_alloc_noretry),
-> -						GFP_KERNEL);
-> +		allocated = hugetlb_hstate_alloc_pages_non_gigantic(h);
->   	} else {
-> -		/* allocations done at boot time */
-> -		node_alloc_noretry = NULL;
-> -	}
-> -
-> -	/* bit mask controlling how hard we retry per-node allocations */
-> -	if (node_alloc_noretry)
-> -		nodes_clear(*node_alloc_noretry);
-> -
-> -	for (i = 0; i < h->max_huge_pages; ++i) {
-> -		if (hstate_is_gigantic(h)) {
-> -			/*
-> -			 * gigantic pages not added to list as they are not
-> -			 * added to pools now.
-> -			 */
-> -			if (!alloc_bootmem_huge_page(h, NUMA_NO_NODE))
-> -				break;
-> -		} else {
-> -			folio = alloc_pool_huge_folio(h, &node_states[N_MEMORY],
-> -							node_alloc_noretry);
-> -			if (!folio)
-> -				break;
-> -			list_add(&folio->lru, &folio_list);
-> -		}
-> -		cond_resched();
-> +		allocated = hugetlb_hstate_alloc_pages_gigantic(h);
->   	}
->   
-> -	/* list will be empty if hstate_is_gigantic */
-> -	prep_and_add_allocated_folios(h, &folio_list);
-> -
-> -	hugetlb_hstate_alloc_pages_report(i, h);
-> -	kfree(node_alloc_noretry);
-> +	hugetlb_hstate_alloc_pages_report(allocated, h);
->   }
->   
->   static void __init hugetlb_init_hstates(void)
+regards,
+dan carpenter
+
 
 
