@@ -1,62 +1,63 @@
-Return-Path: <linux-kernel+bounces-27792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A60E382F5FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:49:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B333082F600
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:49:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBFE71C24156
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:49:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA0FC1C24117
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:49:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 765DA22EF2;
-	Tue, 16 Jan 2024 19:43:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DB8623750;
+	Tue, 16 Jan 2024 19:43:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="upzAbFEN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OrcmEIFp"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6F3B22EE2;
-	Tue, 16 Jan 2024 19:43:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65E9923742;
+	Tue, 16 Jan 2024 19:43:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434206; cv=none; b=H807LXFVGjaDy3IklVO6mJ/KZdbx1Xh2T8rfb/CBsiN3QL52sumoYq752WXIXxiGpvoaJ1k7lz+7cGwC/ZCtvdHehc+LYSfq9MbV/SJZv9NcsaVkN2Fj5XBbdG3i9UcVHJ174aMbqTb4wNHR2V5mJ5If4IZn5TFlXXu/DZs6e1c=
+	t=1705434210; cv=none; b=jcdmm0bZI9Jsb+xzHHyxAB1Le6iFYVOgE74qv2FudnXOSO4k1MbIp3OnIjkoWQjVkDPsPTKNL+wMWRNIrQaqAK7dTKAzaBvEOhLvgmIPNQ9Au1jSK9ctptGYdvnarQjdDtkhS6ke5mdJrD74ZOvJg9Orxoin6iKfPNF12xxYXLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434206; c=relaxed/simple;
-	bh=ChkW/m9ukbCox7xWcOwHlLqbHiYr7W6P0zsx2aBFoio=;
+	s=arc-20240116; t=1705434210; c=relaxed/simple;
+	bh=ACQuwnrHOOPZAyDz3qTaDrzWugOxk+sx/8S41lB1OVI=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=mh9v+be/IKyg7ikkoJSYuZoTNBullD3JfIQAeYnQigEyUc3oxAK5HWUEFhs+ws/Hs5a5Bi5akDklARBYxWS9WzrF7kSHNDgVH1SGkngvRh+8eX2lZRAV1xu3XMmd6Cvn4hHMPWOH7qNqZVr8YY6rS+lH+tp8aBnoNLc9MLu8m0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=upzAbFEN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37CE0C433F1;
-	Tue, 16 Jan 2024 19:43:25 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=HAzKxziwfIdPTbK2Ge25plxUPHZn5L1I1LlLgXuPO4ScbqGHgXqmwrL0ni7iI3w4LWz5PRKSPrbO+JnnxSNTHC+5HU6xqr5RjO3igrNxplhSk1FHcrxPq/Px+IUoZD1mynkE7fXnB6lczwR5TfiVh29NUV1lHab+9ELvs02XfIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OrcmEIFp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4A70C43399;
+	Tue, 16 Jan 2024 19:43:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434206;
-	bh=ChkW/m9ukbCox7xWcOwHlLqbHiYr7W6P0zsx2aBFoio=;
+	s=k20201202; t=1705434210;
+	bh=ACQuwnrHOOPZAyDz3qTaDrzWugOxk+sx/8S41lB1OVI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=upzAbFENYxOdpWZO+Aum0m0yZIQ55zBdBSlz7B2nXXd4zofxOpzgrlXjpa8K/TiQS
-	 Ygbe21F/tF73SXEFZ7J6fAm8mMvwZGunP2IwpsVbeYcqwDBhN6xg8WkjW11YUcnNLL
-	 b1U/c+pi630xqU2NFlYbYfWHRAlQUgpKla8zqmLkHlRu5ywi9EmlJHEtghwPkVOhMF
-	 FyvIsTkY5ukuvJChJ+pZgX/bRPt5DXWBy30r2aw4ici94PIn9emUCU3slvHnNc97Ux
-	 sulFST3d45EM+hAcWAYuq2gfqWLi0AI8qv4R+0xxCkUP91irkQI4AYV5qHCfRC7ElG
-	 dBuMLGWAoxBMw==
+	b=OrcmEIFpaWKjGjypDVvSWD5bNsQ+9dba1cq/Qby0b/28rNGA00T9jX02FYtgPR++M
+	 vnHzcVG1kZyDmUaNNgYYdTxGZNpQuyPJxqHdPuwUN48KzEsc0eIKxrV7zH04S0jrg6
+	 j0yENBr/Iag6lLjbS9GTW6LAKL5phxLxdVbzzqy6pkU6YmdXkU8sotO7gSyFIzRNzo
+	 Jko0Ih83RHFx3ZoN8jbvOxFklAAFS60+xtNrNK8tYLYYnPg8+lnGwgYTiKTKKGCExy
+	 QTb/9UVFZmyno+Lg8WtCRJ8MijxJYXI+CBy5xXJFTMiKaJK2bDI08GUb2Si2gy5rY0
+	 2+aFg89El7NtA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Zhengchao Shao <shaozhengchao@huawei.com>,
-	Jay Vosburgh <jay.vosburgh@canonical.com>,
-	Paolo Abeni <pabeni@redhat.com>,
+Cc: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>,
+	Herb Wei <weihao.bj@ieisystem.com>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	j.vosburgh@gmail.com,
-	andy@greyhouse.net,
 	davem@davemloft.net,
 	edumazet@google.com,
-	kuba@kernel.org,
+	pabeni@redhat.com,
+	gregkh@linuxfoundation.org,
+	stern@rowland.harvard.edu,
+	linux-usb@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 022/108] bonding: return -ENOMEM instead of BUG in alb_upper_dev_walk
-Date: Tue, 16 Jan 2024 14:38:48 -0500
-Message-ID: <20240116194225.250921-22-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.7 023/108] net: usb: ax88179_178a: avoid two consecutive device resets
+Date: Tue, 16 Jan 2024 14:38:49 -0500
+Message-ID: <20240116194225.250921-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194225.250921-1-sashal@kernel.org>
 References: <20240116194225.250921-1-sashal@kernel.org>
@@ -71,67 +72,41 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7
 Content-Transfer-Encoding: 8bit
 
-From: Zhengchao Shao <shaozhengchao@huawei.com>
+From: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
 
-[ Upstream commit d6b83f1e3707c4d60acfa58afd3515e17e5d5384 ]
+[ Upstream commit d2689b6a86b9d23574bd4b654bf770b6034e2c7e ]
 
-If failed to allocate "tags" or could not find the final upper device from
-start_dev's upper list in bond_verify_device_path(), only the loopback
-detection of the current upper device should be affected, and the system is
-no need to be panic.
-So return -ENOMEM in alb_upper_dev_walk to stop walking, print some warn
-information when failed to allocate memory for vlan tags in
-bond_verify_device_path.
+The device is always reset two consecutive times (ax88179_reset is called
+twice), one from usbnet_probe during the device binding and the other from
+usbnet_open.
 
-I also think that the following function calls
-netdev_walk_all_upper_dev_rcu
----->>>alb_upper_dev_walk
----------->>>bond_verify_device_path
-From this way, "end device" can eventually be obtained from "start device"
-in bond_verify_device_path, IS_ERR(tags) could be instead of
-IS_ERR_OR_NULL(tags) in alb_upper_dev_walk.
+Remove the non-necessary reset during the device binding and let the reset
+operation from open to keep the normal behavior (tested with generic ASIX
+Electronics Corp. AX88179 Gigabit Ethernet device).
 
-Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
-Acked-by: Jay Vosburgh <jay.vosburgh@canonical.com>
-Link: https://lore.kernel.org/r/20231118081653.1481260-1-shaozhengchao@huawei.com
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Reported-by: Herb Wei <weihao.bj@ieisystem.com>
+Tested-by: Herb Wei <weihao.bj@ieisystem.com>
+Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+Link: https://lore.kernel.org/r/20231120121239.54504-1-jtornosm@redhat.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/bonding/bond_alb.c  | 3 ++-
- drivers/net/bonding/bond_main.c | 5 ++++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ drivers/net/usb/ax88179_178a.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/net/bonding/bond_alb.c b/drivers/net/bonding/bond_alb.c
-index dc2c7b979656..7edf0fd58c34 100644
---- a/drivers/net/bonding/bond_alb.c
-+++ b/drivers/net/bonding/bond_alb.c
-@@ -985,7 +985,8 @@ static int alb_upper_dev_walk(struct net_device *upper,
- 	if (netif_is_macvlan(upper) && !strict_match) {
- 		tags = bond_verify_device_path(bond->dev, upper, 0);
- 		if (IS_ERR_OR_NULL(tags))
--			BUG();
-+			return -ENOMEM;
-+
- 		alb_send_lp_vid(slave, upper->dev_addr,
- 				tags[0].vlan_proto, tags[0].vlan_id);
- 		kfree(tags);
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 8e6cc0e133b7..9c1652886f4e 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -2973,8 +2973,11 @@ struct bond_vlan_tag *bond_verify_device_path(struct net_device *start_dev,
+diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
+index 5a1bf42ce156..d837c1887416 100644
+--- a/drivers/net/usb/ax88179_178a.c
++++ b/drivers/net/usb/ax88179_178a.c
+@@ -1315,8 +1315,6 @@ static int ax88179_bind(struct usbnet *dev, struct usb_interface *intf)
  
- 	if (start_dev == end_dev) {
- 		tags = kcalloc(level + 1, sizeof(*tags), GFP_ATOMIC);
--		if (!tags)
-+		if (!tags) {
-+			net_err_ratelimited("%s: %s: Failed to allocate tags\n",
-+					    __func__, start_dev->name);
- 			return ERR_PTR(-ENOMEM);
-+		}
- 		tags[level].vlan_proto = BOND_VLAN_PROTO_NONE;
- 		return tags;
- 	}
+ 	netif_set_tso_max_size(dev->net, 16384);
+ 
+-	ax88179_reset(dev);
+-
+ 	return 0;
+ }
+ 
 -- 
 2.43.0
 
