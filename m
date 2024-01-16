@@ -1,143 +1,141 @@
-Return-Path: <linux-kernel+bounces-28136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BFF282FAAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC78E82FB3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:51:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E39371F27B63
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:38:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 815D41F2863B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:51:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CA82159569;
-	Tue, 16 Jan 2024 20:00:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90440208B0;
+	Tue, 16 Jan 2024 20:03:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="IimP4Pc1"
-Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H68tAaI7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48DD3159578
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 20:00:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9CF9162E33;
+	Tue, 16 Jan 2024 20:03:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435234; cv=none; b=OIHvBLZ4jyhscoYEtaI+jg6Xr6VNNkV1qxNpDkOHE+0rBkEMlmNPWHxlN0VZYE3RNFr1lEm8u+fkOotryT4u1iy161ElrvU35XsWYEHqItLNB2lRQCjDJVu9ieniN8vYA5aSLGnUvpjcmgdA6mm5geWGfPSWiCTULK0OUTbBTAU=
+	t=1705435393; cv=none; b=KUJVEmCzmjaTj0XWEylyuuBCLAt1bNDw+Ap70DoBdanyC609wc4b42+o8TjbdSiptpbH2ZRV0TMypv22fQjaS+0S1ZBsrPe4mZHBTID4FZ4KMxwtKHxbIkkymJ8E8umSUAYwY29YHRO237kTLEij5uk92KdXkAyCmdtKggsTQbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435234; c=relaxed/simple;
-	bh=0LpxdPDwIhXx9whWgjBylXCRhboUwUu+jIA/F2NRoWc=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 To:Cc:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=fu/Drv9sQlAzwNTeG2w6lsF6i1RBD3dI1mH8lxIuinuUznMAJQqtEeCwp4pwlMxYC2PxkoQh0ymCXehEj0hQy8RtdUidpo6C7avLdYiuHECUb+UDr6aNgynXs/SGv2m+WkhvluiRwxbkwwYXNn8QQ/++Ge0I7dtlrwYfJmzMp/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=IimP4Pc1; arc=none smtp.client-ip=209.85.166.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-361319083daso1459145ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 12:00:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1705435230; x=1706040030; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8Bzi0VNEZLd3xkt69kN62PfQd5yOGDUdslJTECLXFRg=;
-        b=IimP4Pc1UlT1Dxvn4rthZMYDf19IAeO/EBFr2fLbWHMWHQjjlbujtucKNyTHweQTI8
-         n7sWGwfxGb3TB7t1++rN5fAN5rRwxq07taKD/AwzUSiJPkbjrTVwg60yhn0ZhuRuaa8B
-         b3KbQHJxndhscKKaJmye9Kve//SiKKfNlfFJxpWCbifNWgQfVnmO00ZBmFFL19bDXmkz
-         7VMeRnrPGgsNj3AhzWQzWSdQcq0ww4/76/fZcrUGwupAmfQQ1ykoCjwfcGgZSnhlJB9y
-         +ItHxEb74pD+c9EBNnpijdHENmIYJdCqY/D3sZIe/qWH+r56qXn5KAKiW65hFQovuL39
-         KARA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705435230; x=1706040030;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8Bzi0VNEZLd3xkt69kN62PfQd5yOGDUdslJTECLXFRg=;
-        b=rlS7T1KR6z0Aft5n3QaIucbIPefiZPOEt8fI2uu+c2a3jc4uA8RHb30ODP0DJvjA62
-         FqTILWYevfYrE9mCeHzt0Eu4uUZJ760u/+1xDKMuefwvUEWdy+11BsYLsczU1yakMCpb
-         uiVf6xXMHhjOglH7P4eQlvyArVsZ0ShjenIHNVdBbq2ZA9gxo8RN0YUho2LaB+GcaC7e
-         a+FzyH2DySz0aU/wBxawTLFkAe+Q8DEPmMizzKw6zWnQMZZJnZt1bcLfAYejNB50hy0o
-         cYaPfHqWTucJEfp/Qk/Xo59urCgyqFA35s/bGSdJ5WZfJgVZyrVJc3HXmzxUC2FVFjUh
-         Qq+w==
-X-Gm-Message-State: AOJu0YzWJWrQP3jgNVnRzsSn+HP2WwiBrqBDjVuSFV937T0qCsHwtczt
-	QX7T+uZ35vx9ZvgLFjVFSToksU4WkTBjCw==
-X-Google-Smtp-Source: AGHT+IGD/c0B/2oUpgwDPKxeGeaTpllkQKnSoDSKBOTPLNpwFPFn9e3DteSXI03hU/LqVgKuvSnt4Q==
-X-Received: by 2002:a6b:c845:0:b0:7bc:2603:575f with SMTP id y66-20020a6bc845000000b007bc2603575fmr14558885iof.0.1705435230304;
-        Tue, 16 Jan 2024 12:00:30 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id b8-20020a029a08000000b0046e1efd2e1dsm3079962jal.74.2024.01.16.12.00.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jan 2024 12:00:29 -0800 (PST)
-Message-ID: <e2e2bfad-c1be-42fc-be83-b0cb894887ca@kernel.dk>
-Date: Tue, 16 Jan 2024 13:00:29 -0700
+	s=arc-20240116; t=1705435393; c=relaxed/simple;
+	bh=bL2TTO0opeE6hdG1ijW9igPA7Kj3xrx8gfgfSS3fAPM=;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
+	 X-Mailer:MIME-Version:X-stable:X-Patchwork-Hint:X-stable-base:
+	 Content-Transfer-Encoding; b=myIrUo43qw0d37arPPaM6yEq/7qq8pfAlxzlGz1nUqOXIxZbocP4caLYxYlaj2xX7aIQspr3wjKyZ15az5qJWNId1FhrgjDorlmxPUkwkAyPh0zhPzZBJMOj/x/YrKJkoGfrb8/hrbAJsASZSuxtEfiy9Q+EjS537FOrwkdS5Dk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H68tAaI7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91370C433C7;
+	Tue, 16 Jan 2024 20:03:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705435393;
+	bh=bL2TTO0opeE6hdG1ijW9igPA7Kj3xrx8gfgfSS3fAPM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=H68tAaI7ry/wdhlzirqIx6zwbJwg2fcVmz48mc7oEcTz5WFs73QiGhabezM9bWjZV
+	 BkmmQmwTnE+bZDbHlUoFdi6OfN0si9nRZrcmI5kTq/4dhBUDnWnGyhrPad9k4+bqk0
+	 aqVwhifKpc0nz0OY4TBz1rOXq4OzNQPaFMqMehxTsm6do4FP1VVjrrYr7M/I4wUQbJ
+	 ZNT0CYBflHY87fF5TV2bHygDg5IIquJT7VVLWDxlhv081VgqNE/WSCjSvaL7ckY2ET
+	 5itEWeSWrL1hRmzLuKJYB+OtTKhs9+XTZUoAGDFAvkrikj/CRWcvSdY4Yp9XygMS5n
+	 oNhg7ZJ2txoHQ==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Shiji Yang <yangshiji66@outlook.com>,
+	Stanislaw Gruszka <stf_xl@wp.pl>,
+	Kalle Valo <kvalo@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	linux-wireless@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 01/31] wifi: rt2x00: restart beacon queue when hardware reset
+Date: Tue, 16 Jan 2024 15:02:10 -0500
+Message-ID: <20240116200310.259340-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [block?] BUG: unable to handle kernel NULL pointer
- dereference in __bio_release_pages
-Content-Language: en-US
-To: Matthew Wilcox <willy@infradead.org>
-Cc: syzbot <syzbot+004c1e0fced2b4bc3dcc@syzkaller.appspotmail.com>,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzkaller-bugs@googlegroups.com
-References: <000000000000dbe2f2060f0d2781@google.com>
- <4bd438c0-75b8-4e28-939c-954716df7563@kernel.dk>
- <ZabOF3/P/jQmjudb@casper.infradead.org>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <ZabOF3/P/jQmjudb@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 5.4.267
+Content-Transfer-Encoding: 8bit
 
-On 1/16/24 11:42 AM, Matthew Wilcox wrote:
-> On Tue, Jan 16, 2024 at 11:00:52AM -0700, Jens Axboe wrote:
->> On 1/16/24 2:57 AM, syzbot wrote:
->>> pstate: 10000005 (nzcV daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
->>> pc : _compound_head include/linux/page-flags.h:247 [inline]
->>> pc : bio_first_folio include/linux/bio.h:289 [inline]
->>> pc : __bio_release_pages+0x100/0x73c block/bio.c:1153
->>> lr : bio_release_pages include/linux/bio.h:508 [inline]
->>> lr : blkdev_bio_end_io+0x2a0/0x3f0 block/fops.c:157
->>> sp : ffff800089a375e0
->>> x29: ffff800089a375e0 x28: 1fffe0000162e879 x27: ffff00000b1743c0
->>> x26: ffff00000b1743c8 x25: 000000000000000a x24: 1fffe000015a9e12
->>> x23: ffff00000ad4f094 x22: ffff00000f496600 x21: 1fffe0000162e87a
->>> x20: 0000000000000004 x19: 0000000000000000 x18: ffff00000b174432
->>> x17: ffff00000b174438 x16: ffff00000f948008 x15: 1fffe0000162e886
->>> x14: ffff00000b1743d4 x13: 00000000f1f1f1f1 x12: ffff6000015a9e13
->>> x11: 1fffe000015a9e12 x10: ffff6000015a9e12 x9 : dfff800000000000
->>> x8 : ffff00000b1743d4 x7 : 0000000041b58ab3 x6 : 1ffff00011346ed0
->>> x5 : ffff700011346ed0 x4 : 00000000f1f1f1f1 x3 : 000000000000f1f1
->>> x2 : 0000000000000001 x1 : dfff800000000000 x0 : 0000000000000008
->>> Call trace:
->>>  _compound_head include/linux/page-flags.h:247 [inline]
->>>  bio_first_folio include/linux/bio.h:289 [inline]
->>>  __bio_release_pages+0x100/0x73c block/bio.c:1153
->>>  bio_release_pages include/linux/bio.h:508 [inline]
->>>  blkdev_bio_end_io+0x2a0/0x3f0 block/fops.c:157
->>>  bio_endio+0x4a4/0x618 block/bio.c:1608
->>
->> This looks to be caused by:
->>
->> commit 1b151e2435fc3a9b10c8946c6aebe9f3e1938c55
->> Author: Matthew Wilcox (Oracle) <willy@infradead.org>
->> Date:   Mon Aug 14 15:41:00 2023 +0100
->>
->>     block: Remove special-casing of compound pages
-> 
-> This looks familiar ... looks like it came up right before Xmas and
-> I probably dropped the patch on the floor?
-> 
-> https://lore.kernel.org/all/ZX07SsSqIQ2TYwEi@casper.infradead.org/
+From: Shiji Yang <yangshiji66@outlook.com>
 
-Can you send out a proper patch please?
+[ Upstream commit a11d965a218f0cd95b13fe44d0bcd8a20ce134a8 ]
 
+When a hardware reset is triggered, all registers are reset, so all
+queues are forced to stop in hardware interface. However, mac80211
+will not automatically stop the queue. If we don't manually stop the
+beacon queue, the queue will be deadlocked and unable to start again.
+This patch fixes the issue where Apple devices cannot connect to the
+AP after calling ieee80211_restart_hw().
 
+Signed-off-by: Shiji Yang <yangshiji66@outlook.com>
+Acked-by: Stanislaw Gruszka <stf_xl@wp.pl>
+Signed-off-by: Kalle Valo <kvalo@kernel.org>
+Link: https://lore.kernel.org/r/TYAP286MB031530EB6D98DCE4DF20766CBCA4A@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/wireless/ralink/rt2x00/rt2x00dev.c |  3 +++
+ drivers/net/wireless/ralink/rt2x00/rt2x00mac.c | 11 +++++++++++
+ 2 files changed, 14 insertions(+)
+
+diff --git a/drivers/net/wireless/ralink/rt2x00/rt2x00dev.c b/drivers/net/wireless/ralink/rt2x00/rt2x00dev.c
+index c3eab767bc21..f504f3529407 100644
+--- a/drivers/net/wireless/ralink/rt2x00/rt2x00dev.c
++++ b/drivers/net/wireless/ralink/rt2x00/rt2x00dev.c
+@@ -101,6 +101,7 @@ void rt2x00lib_disable_radio(struct rt2x00_dev *rt2x00dev)
+ 	rt2x00link_stop_tuner(rt2x00dev);
+ 	rt2x00queue_stop_queues(rt2x00dev);
+ 	rt2x00queue_flush_queues(rt2x00dev, true);
++	rt2x00queue_stop_queue(rt2x00dev->bcn);
+ 
+ 	/*
+ 	 * Disable radio.
+@@ -1283,6 +1284,7 @@ int rt2x00lib_start(struct rt2x00_dev *rt2x00dev)
+ 	rt2x00dev->intf_ap_count = 0;
+ 	rt2x00dev->intf_sta_count = 0;
+ 	rt2x00dev->intf_associated = 0;
++	rt2x00dev->intf_beaconing = 0;
+ 
+ 	/* Enable the radio */
+ 	retval = rt2x00lib_enable_radio(rt2x00dev);
+@@ -1310,6 +1312,7 @@ void rt2x00lib_stop(struct rt2x00_dev *rt2x00dev)
+ 	rt2x00dev->intf_ap_count = 0;
+ 	rt2x00dev->intf_sta_count = 0;
+ 	rt2x00dev->intf_associated = 0;
++	rt2x00dev->intf_beaconing = 0;
+ }
+ 
+ static inline void rt2x00lib_set_if_combinations(struct rt2x00_dev *rt2x00dev)
+diff --git a/drivers/net/wireless/ralink/rt2x00/rt2x00mac.c b/drivers/net/wireless/ralink/rt2x00/rt2x00mac.c
+index beb20c5faf5f..a0fb167b58fe 100644
+--- a/drivers/net/wireless/ralink/rt2x00/rt2x00mac.c
++++ b/drivers/net/wireless/ralink/rt2x00/rt2x00mac.c
+@@ -578,6 +578,17 @@ void rt2x00mac_bss_info_changed(struct ieee80211_hw *hw,
+ 	 */
+ 	if (changes & BSS_CHANGED_BEACON_ENABLED) {
+ 		mutex_lock(&intf->beacon_skb_mutex);
++
++		/*
++		 * Clear the 'enable_beacon' flag and clear beacon because
++		 * the beacon queue has been stopped after hardware reset.
++		 */
++		if (test_bit(DEVICE_STATE_RESET, &rt2x00dev->flags) &&
++		    intf->enable_beacon) {
++			intf->enable_beacon = false;
++			rt2x00queue_clear_beacon(rt2x00dev, vif);
++		}
++
+ 		if (!bss_conf->enable_beacon && intf->enable_beacon) {
+ 			rt2x00dev->intf_beaconing--;
+ 			intf->enable_beacon = false;
 -- 
-Jens Axboe
-
+2.43.0
 
 
