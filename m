@@ -1,84 +1,81 @@
-Return-Path: <linux-kernel+bounces-27284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B2DE82ED46
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:00:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BADB882ED4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:02:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 795141C2315A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:00:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C1882856B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:02:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7A01A5A4;
-	Tue, 16 Jan 2024 11:00:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B4781A711;
+	Tue, 16 Jan 2024 11:01:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k9RGWdNQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VTL3dYTN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D01918EB1;
-	Tue, 16 Jan 2024 11:00:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84A89C43390;
-	Tue, 16 Jan 2024 11:00:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97CC61A703;
+	Tue, 16 Jan 2024 11:01:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C04A2C433C7;
+	Tue, 16 Jan 2024 11:01:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705402828;
-	bh=244YkxZhJi5dUXH5mXoHQmSnozi6cbnZ7eQbDKl9ods=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=k9RGWdNQgacb/mIk0KHAJYrvzxEQZp56hom5g/aJcB401/lbWnl7VbP6t7gVc4Y55
-	 0m+EeRMEiteUyO6kz0lOqLTnCbIVY3djGQ72y/CiEVS4I3KmoHlystvtjHuvmoO1Qq
-	 eAkws13heL2yeXD9qAFT5mSrV13iS7gwFCPXYhWHFNS6pwfZ6JEU2e8AATJ97luSSC
-	 yiQ1B2SQ0BsaexERUGMBfZmfeWQb1ApITTo4RT0hzg/etZa+d1hk8jg9ZpIuWeKQaz
-	 gVVzRTwDE20YP+XHd9cveUs358k2bjVjy8SR27pposRFmzBHGXvumrr3eJYeI9Rg7N
-	 8a2zg4f/KYw4A==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan@kernel.org>)
-	id 1rPhBH-0005aT-0o;
-	Tue, 16 Jan 2024 12:00:31 +0100
-Date: Tue, 16 Jan 2024 12:00:31 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Brian Masney <bmasney@redhat.com>,
-	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
-	vireshk@kernel.org, quic_vbadigan@quicinc.com,
-	quic_skananth@quicinc.com, quic_nitegupt@quicinc.com,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 6/6] PCI: qcom: Add OPP support to scale performance
- state of power domain
-Message-ID: <ZaZhz4oqNbz4evLX@hovoldconsulting.com>
-References: <20240112-opp_support-v6-0-77bbf7d0cc37@quicinc.com>
- <20240112-opp_support-v6-6-77bbf7d0cc37@quicinc.com>
- <CAA8EJpqwOfeS-QpLVvYGf0jmTVxiT02POwK+9tkN03Cr4DgL+g@mail.gmail.com>
- <da1945ce-7e34-6ad5-7b9b-478fcbd4a2c6@quicinc.com>
- <CAA8EJpoZakDcBXYE57bRPMFvGEXh1o82r7Znv8mwCK6mRf5xog@mail.gmail.com>
+	s=k20201202; t=1705402913;
+	bh=OW5ui9acYmX08mBAK1TBiABz9IsXMyumPQeQ6CC9feM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=VTL3dYTN4K/EeXBQN4eNysJas+JcTixt/se5xs0TmmiAP+g0ZV3rCzNWCpChAs4Ps
+	 p6NL0Q/kkF5bnOyGpU2fUrUtFEGTfVbBrbdy+tTPkxFIjx6GUcE1dyQOFEfC5Qp71q
+	 q50Qtb9UFSVSDv52trrOgMrxyQ0po30pLd8J+KpegNMQQKbaWMEzDTZV2qd+hc7HoW
+	 GIWbcBILbWLIM+3XUeq4gaG0aRDZm9jeebKvHqrux0JhqL9ndXqmYftmR1yrlzAl0o
+	 i9GIZUx2oudNgt459ka/9fytezLaY68/IoI4jLS+mJDDRmeNiKBcSKFEWgpEQ0L8pY
+	 hlSrLChogHAMA==
+From: Christian Brauner <brauner@kernel.org>
+To: Kunwu Chan <chentao@kylinos.cn>
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	viro@zeniv.linux.org.uk,
+	jack@suse.cz
+Subject: Re: [PATCH] buffer: Use KMEM_CACHE instead of kmem_cache_create()
+Date: Tue, 16 Jan 2024 12:01:28 +0100
+Message-ID: <20240116-aufsehen-stimulieren-e0216b01a6a6@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240116091137.92375-1-chentao@kylinos.cn>
+References: <20240116091137.92375-1-chentao@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA8EJpoZakDcBXYE57bRPMFvGEXh1o82r7Znv8mwCK6mRf5xog@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=942; i=brauner@kernel.org; h=from:subject:message-id; bh=OW5ui9acYmX08mBAK1TBiABz9IsXMyumPQeQ6CC9feM=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQuSxLwct8QJKGsURcweUvf6VNaBxae8dy9yPzX5nvvJ s0z5FCU6ShlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZjIdj1Ghl1eVrtZquuubXvb deHvVfvZ773f/9t499wRlc932gtl/kYwMmzduvLhMm7+V42qbEHzlT+uWuXSNcNWXi5fOfCGbE/ iAxYA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-Please, people, remember to trim unnecessary context from your replies
-before hitting send!
+On Tue, 16 Jan 2024 17:11:37 +0800, Kunwu Chan wrote:
+> Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+> to simplify the creation of SLAB caches.
+> 
+> 
 
-This thread is barely readable currently, and leaving all context in
-place also makes revisiting threads using the lore web interface a pain.
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
 
-Johan
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
+
+[1/1] buffer: Use KMEM_CACHE instead of kmem_cache_create()
+      https://git.kernel.org/vfs/vfs/c/c838cefc0d95
 
