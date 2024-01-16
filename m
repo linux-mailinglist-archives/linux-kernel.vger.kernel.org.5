@@ -1,82 +1,94 @@
-Return-Path: <linux-kernel+bounces-27649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3CFB82F3AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:06:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 103B082F3AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:09:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E57501C2387C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:06:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0C59286535
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:09:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA7C71CD28;
-	Tue, 16 Jan 2024 18:06:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EBF31CD29;
+	Tue, 16 Jan 2024 18:08:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jXZnaAwB"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Ve8Faakb"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7380D1CD06;
-	Tue, 16 Jan 2024 18:06:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA32F6ABA;
+	Tue, 16 Jan 2024 18:08:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705428390; cv=none; b=QddI5T6vg/bja+kMceuDqRgKM63HP2Sid+hj1dTsizl/2YbGM6vdU+houYK/edQSIPJ7Yii1hsWwnSLPG+ZfusKG2F6wFCCuMhGtmD0YB8g+oF62SWYBDY3qMh3lwayQyAMVKyRi61OH4KvYvmvuI2OFo6XHMT4OuBZUjLriZ64=
+	t=1705428527; cv=none; b=SmNLEq0GY7bzhp92E+sIMQwHflG5zVfHKa65A65rtmYdjymCf5f0XV0mH36Q4j3wPxeDTpb1rtnX3fBcZDfY6i0urVC7biTSi0wk0yaMhZ2mWTcdZ8kQyctN/NxJ/qAhWPY7/Eg4jzLdUZvXpiQfXuUsGcQNz65n7yK9F4CtA3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705428390; c=relaxed/simple;
-	bh=UX3kq6YtyE1PdEHxyUdmIdodg5pGEfTgztIGkSGO21A=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:Received:Received:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=pDX7CIWMXDZ9IGEeMEj05VS4tl2bJbKUP1694WY/sI7UOH07VZA3E9mJfaVNVzbKyOUiVjGsQfSKuaXHjPQAw2zKTl1GWY7y7MFedw11sVLnFzM1Zwk/J1fF9wKhlP8QqIdMAxv+Y0M6/A9y5WYxPIKUzhyHdnjR1sQv/gfMjO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jXZnaAwB; arc=none smtp.client-ip=198.175.65.11
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705428388; x=1736964388;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UX3kq6YtyE1PdEHxyUdmIdodg5pGEfTgztIGkSGO21A=;
-  b=jXZnaAwBHadPGV65xNBZ/H8bwkiXw1xXcvHPPUpxVoID3vaaApwv3Eq2
-   pc9eyluZ/hTR4JqZ2y5Pe7MTDWu/VeOqj0X++ZnGInMzeF/y20OwJmd+N
-   ob3N9H7sjhgSU6qbvy8e/lqgR/dKKepqM2ZLbBmgWSprKykP2ZbJMyV38
-   9raZsIp1mM+jKLqzpqO1JZen647YE7fgbJ0MImtix6c8OLUZg+YRAZcaa
-   yvmwymF0s8UnHzyGrFOQCZQYx08qZRUnOzVyhMqPaTB55RyHm/LCbioCc
-   HqLdOc1b4YvC22FYyLb+pFNMqzdHhcqTs4Pszn4scvPfawDfF1RtmdzwT
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="6650931"
-X-IronPort-AV: E=Sophos;i="6.05,199,1701158400"; 
-   d="scan'208";a="6650931"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 10:06:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,199,1701158400"; 
-   d="scan'208";a="18552426"
-Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
-  by fmviesa002.fm.intel.com with ESMTP; 16 Jan 2024 10:06:23 -0800
-Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rPnpM-00012m-2R;
-	Tue, 16 Jan 2024 18:06:20 +0000
-Date: Wed, 17 Jan 2024 02:05:40 +0800
-From: kernel test robot <lkp@intel.com>
-To: Michael Grzeschik <m.grzeschik@pengutronix.de>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Paul Gazzillo <paul@pgazz.com>,
-	Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-	oe-kbuild-all@lists.linux.dev, v9fs@lists.linux.dev,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-usb@vger.kernel.org, kernel@pengutronix.de,
-	Michael Grzeschik <m.grzeschik@pengutronix.de>
-Subject: Re: [PATCH 2/3] usb: gadget: legacy: add 9pfs multi gadget
-Message-ID: <202401170130.QaAJQe4j-lkp@intel.com>
-References: <20240116-ml-topic-u9p-v1-2-ad8c306f9a4e@pengutronix.de>
+	s=arc-20240116; t=1705428527; c=relaxed/simple;
+	bh=CGsnDROhCodxiCvYY3JgqSrViuyF9ZSQMhYlWQDj+aA=;
+	h=Received:DKIM-Signature:Received:Received:Received:Received:
+	 Received:Received:Received:Received:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:X-TM-AS-GCONF:
+	 X-Proofpoint-ORIG-GUID:X-Proofpoint-GUID:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details; b=u59nnEeHSGdssjaGoRXpvNs9Q/gUMe49AjVhlgyao06LayAa/WzZB95yC2gIL9Y9VoWS7jroIwhIUqLpYpQUNv8mf1nu7JWWXGJX11h5oBkvuB0eR1OenmqrQe0j6SZdH2Y2w0FCbVd6hKIeioV8k67x2s3ks9rTNNQsjZNttIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Ve8Faakb; arc=none smtp.client-ip=148.163.156.1
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40GI79xW013088;
+	Tue, 16 Jan 2024 18:08:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=VMRRoZGEbNDKMzcsIuD608LUrCeDX/CHVCbe+ZNWqug=;
+ b=Ve8FaakbyzKYUs1fwZqy6sK8N2oaMzasCMvWb3IoNbY+vWWjmvXIPF+L/MaRnVL47vCY
+ 27Jige9DiFs99GqKmHrc2WSZF3pxvwJyrlWfesNHPN9ajoF6Hm4jv/LoNBp5Jl+trsZk
+ yglL1b8wpGLYG7FwQi4xVXhlRnzKxHzexdu5pVW/scLhdnrUMo3g/NcV64ZTXXs6P6qj
+ 48yKPQZ2qxM3ZC2JNISKkiI3dglznLQSdZc7UaRHTuLBNguXCV8Cq/IsDF59mklX/vW1
+ 04x89KAzXbILEC4bkLKOG1wmBB9weeqfOroflNMUOznrPt8Gycx3ErT10TKcqan5Mcnf 9Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnxswr58v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 18:08:41 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40GI7NTO014282;
+	Tue, 16 Jan 2024 18:08:27 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnxswr431-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 18:08:26 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40GGSV6H019884;
+	Tue, 16 Jan 2024 18:08:11 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vm72jyw89-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 18:08:11 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40GI86sD18875094
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Jan 2024 18:08:06 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6BF1220043;
+	Tue, 16 Jan 2024 18:08:06 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 53E5720040;
+	Tue, 16 Jan 2024 18:08:05 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.88.12])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue, 16 Jan 2024 18:08:05 +0000 (GMT)
+Date: Tue, 16 Jan 2024 19:08:03 +0100
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Tony Krowiak <akrowiak@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, jjherne@linux.ibm.com, borntraeger@de.ibm.com,
+        pasic@linux.ibm.com, pbonzini@redhat.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, gor@linux.ibm.com, stable@vger.kernel.org
+Subject: Re: [PATCH v4 4/6] s390/vfio-ap: reset queues filtered from the
+ guest's AP config
+Message-ID: <ZabGAx5BpIiYW+b3@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20240115185441.31526-1-akrowiak@linux.ibm.com>
+ <20240115185441.31526-5-akrowiak@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,36 +97,41 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240116-ml-topic-u9p-v1-2-ad8c306f9a4e@pengutronix.de>
+In-Reply-To: <20240115185441.31526-5-akrowiak@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: qr-HNzAfCi4ZJhU7UfWPkVpaO4WRdxRE
+X-Proofpoint-GUID: KpFaRAXl_1zNmYew_c9e92rP3dK_QZU6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-16_10,2024-01-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ mlxscore=0 suspectscore=0 clxscore=1011 spamscore=0 phishscore=0
+ priorityscore=1501 impostorscore=0 malwarescore=0 mlxlogscore=875
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401160143
 
-Hi Michael,
+On Mon, Jan 15, 2024 at 01:54:34PM -0500, Tony Krowiak wrote:
+> From: Tony Krowiak <akrowiak@linux.ibm.com>
+..
+> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
+> index 88aff8b81f2f..20eac8b0f0b9 100644
+> --- a/drivers/s390/crypto/vfio_ap_private.h
+> +++ b/drivers/s390/crypto/vfio_ap_private.h
+> @@ -83,10 +83,10 @@ struct ap_matrix {
+>  };
+>  
+>  /**
+> - * struct ap_queue_table - a table of queue objects.
+> - *
+> - * @queues: a hashtable of queues (struct vfio_ap_queue).
+> - */
+> +  * struct ap_queue_table - a table of queue objects.
+> +  *
+> +  * @queues: a hashtable of queues (struct vfio_ap_queue).
+> +  */
+>  struct ap_queue_table {
+>  	DECLARE_HASHTABLE(queues, 8);
+>  };
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on 052d534373b7ed33712a63d5e17b2b6cdbce84fd]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Michael-Grzeschik/usb-gadget-function-9pfs/20240116-095914
-base:   052d534373b7ed33712a63d5e17b2b6cdbce84fd
-patch link:    https://lore.kernel.org/r/20240116-ml-topic-u9p-v1-2-ad8c306f9a4e%40pengutronix.de
-patch subject: [PATCH 2/3] usb: gadget: legacy: add 9pfs multi gadget
-config: alpha-kismet-CONFIG_NET_9P-CONFIG_USB_9PFS-0-0 (https://download.01.org/0day-ci/archive/20240117/202401170130.QaAJQe4j-lkp@intel.com/config)
-reproduce: (https://download.01.org/0day-ci/archive/20240117/202401170130.QaAJQe4j-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401170130.QaAJQe4j-lkp@intel.com/
-
-kismet warnings: (new ones prefixed by >>)
->> kismet: WARNING: unmet direct dependencies detected for NET_9P when selected by USB_9PFS
-   
-   WARNING: unmet direct dependencies detected for NET_9P
-     Depends on [n]: NET [=n]
-     Selected by [y]:
-     - USB_F_9PFS [=y] && USB_SUPPORT [=y] && USB_GADGET [=y]
-     - USB_9PFS [=y] && USB_SUPPORT [=y] && USB_GADGET [=y]
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+If this change is intended?
 
