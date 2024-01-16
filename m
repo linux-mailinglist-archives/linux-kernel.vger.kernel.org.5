@@ -1,88 +1,113 @@
-Return-Path: <linux-kernel+bounces-27103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DEAB82EA67
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:56:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84B7282EA77
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:57:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2345283C94
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:56:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17F22283DFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:57:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A342F111BF;
-	Tue, 16 Jan 2024 07:56:19 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F851111B7;
+	Tue, 16 Jan 2024 07:57:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b="oGVCcZ8P"
+Received: from smtp2-kfki.kfki.hu (smtp2-kfki.kfki.hu [148.6.0.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11F0011198
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 07:56:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-35ff7c81f4aso90628265ab.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 23:56:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705391777; x=1705996577;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=J7GshgTWBC/O7D9m77niat5ipmKRovvawMUZYhZfFyw=;
-        b=dyQaHP0+vXRLKuUdOq/CFcNew9eVbBc7BKHJlsUS1NE6ScL8KH2e/5OioQA1UhbpMp
-         /+Jf+r6BhwFr+AHf1IIJJUWf3FPZISHIYN1PcP+991b7bMy9BYVvUJ+q4mRaqbvEceUb
-         uBTQd43nuxSZXuJZMZoXX4j5yNlbZ/aw19XtTChkc0W98vwaePYTA6KN4qNv9OTlfP7n
-         bbu9RlAZ7qATOvpgr4fa4bLHWgFvlIHtiLGPAXVSXoK6OPUej9aNJ6GZ0UQPJ7DkbhaF
-         AvrRGJu20oO8bt51KnD8YK/TnfCo5uvR7Inwn5yk1vJpsXEFCXOmD+JFyRBzfmCZjAf8
-         I/0A==
-X-Gm-Message-State: AOJu0YwrOC/28A8soXVG5rCY/AgNHHpgvsoFrEtBtp1a1IOMz4kMosPt
-	eEIqaLLHRZTnvirsw7tRObpbUnTvhKh/ngkFxwny/s7RsRTz
-X-Google-Smtp-Source: AGHT+IHTuwpsmrMCoqdqeAExs5Xq/9SU9ozk1yVMr5fWlgv/Xm/93W8TmhZPwd6QskksFQY41oDV/eHlSYYvte6yky9pgfmorjjN
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B4EA111A4;
+	Tue, 16 Jan 2024 07:57:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=blackhole.kfki.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=blackhole.kfki.hu
+Received: from localhost (localhost [127.0.0.1])
+	by smtp2.kfki.hu (Postfix) with ESMTP id 5D311CC02B2;
+	Tue, 16 Jan 2024 08:57:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	blackhole.kfki.hu; h=mime-version:references:message-id
+	:in-reply-to:from:from:date:date:received:received:received
+	:received; s=20151130; t=1705391844; x=1707206245; bh=YtGdwP222a
+	OPjyafDG2zZ0g5Qa+ykMxMO+cELsQoiwA=; b=oGVCcZ8PUYixBSITD0HI0GHWRR
+	CxCRg2zK50+rWh7iXztMx1/oVX7PCBvC+ff8wUuVAxa14/yAVs3Rl6G+05WlKkV/
+	Aksnyia2ZoG9yD0eA+FTMBaViBHN4nz3PDPyFlQSQqJHQYU09pFr0xJfaeya8y7j
+	Zv86iV1jZaEHRIue8=
+X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
+Received: from smtp2.kfki.hu ([127.0.0.1])
+	by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP; Tue, 16 Jan 2024 08:57:24 +0100 (CET)
+Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
+	by smtp2.kfki.hu (Postfix) with ESMTP id 4C3ECCC0110;
+	Tue, 16 Jan 2024 08:57:23 +0100 (CET)
+Received: by blackhole.kfki.hu (Postfix, from userid 1000)
+	id 168A2343167; Tue, 16 Jan 2024 08:57:23 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by blackhole.kfki.hu (Postfix) with ESMTP id 14973343166;
+	Tue, 16 Jan 2024 08:57:23 +0100 (CET)
+Date: Tue, 16 Jan 2024 08:57:23 +0100 (CET)
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+To: Ale Crismani <ale.crismani@automattic.com>
+cc: Wang David <00107082@163.com>, linux-kernel@vger.kernel.org, 
+    netfilter-devel@vger.kernel.org, Ayuso Pablo Neira <pablo@netfilter.org>, 
+    xiaolinkui@kylinos.cn
+Subject: Re: Performance regression in ip_set_swap on 6.7.0
+In-Reply-To: <7214C087-ED54-4D3B-A17C-DA811951BF67@automattic.com>
+Message-ID: <b2dfbbb9-7e4f-aed3-8935-769d4254ef25@blackhole.kfki.hu>
+References: <b333bc85-83ea-8869-ccf7-374c9456d93c@blackhole.kfki.hu> <20240111145330.18474-1-00107082@163.com> <d5c24887-b2d4-bcc-f5a4-bd3d2670d16@blackhole.kfki.hu> <41662e12.d59.18d0673507e.Coremail.00107082@163.com> <D2070167-F299-455C-AE4B-5D047ABD5B28@automattic.com>
+ <7214C087-ED54-4D3B-A17C-DA811951BF67@automattic.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:20c8:b0:35f:eb20:3599 with SMTP id
- 8-20020a056e0220c800b0035feb203599mr969906ilq.2.1705391777202; Mon, 15 Jan
- 2024 23:56:17 -0800 (PST)
-Date: Mon, 15 Jan 2024 23:56:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000154990060f0b773a@google.com>
-Subject: [syzbot] Monthly dccp report (Jan 2024)
-From: syzbot <syzbot+list276a372ea6a0fdcb466b@syzkaller.appspotmail.com>
-To: dccp@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 
-Hello dccp maintainers/developers,
+On Mon, 15 Jan 2024, Ale Crismani wrote:
 
-This is a 31-day syzbot report for the dccp subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/dccp
+> > Il giorno 14 gen 2024, alle ore 21:38, Ale Crismani <ale.crismani@automattic.com> ha scritto:
+> > 
+> >> Il giorno 14 gen 2024, alle ore 06:30, David Wang <00107082@163.com> ha scritto:
+> >> 
+> >> 
+> >> At 2024-01-14 02:24:07, "Jozsef Kadlecsik" <kadlec@blackhole.kfki.hu> wrote:
+> >>> On Thu, 11 Jan 2024, David Wang wrote:
+> >>> 
+> >>>> I tested the patch with code stressing swap->destroy->create->add 10000 
+> >>>> times, the performance regression still happens, and now it is 
+> >>>> ip_set_destroy. (I pasted the test code at the end of this mail)
+> >> 
+> >>>> 
+> >>>> They all call wait_for_completion, which may sleep on something on 
+> >>>> purpose, I guess...
+> >>> 
+> >>> That's OK because ip_set_destroy() calls rcu_barrier() which is needed to 
+> >>> handle flush in list type of sets.
+> >>> 
+> >>> However, rcu_barrier() with call_rcu() together makes multiple destroys 
+> >>> one after another slow. But rcu_barrier() is needed for list type of sets 
+> >>> only and that can be handled separately. So could you test the patch 
+> >>> below? According to my tests it is even a little bit faster than the 
+> >>> original code before synchronize_rcu() was added to swap.
+> >> 
+> >> Confirmed~! This patch does fix the performance regression in my case.
+> >> 
+> >> Hope it can fix ale.crismani@automattic.com's original issue.
+> > 
+> > Thanks for all the help on this, I'll try the patch tomorrow hopefully 
+> > and will report back!
+> 
+> I applied the patch on 6.1.y on top of 875ee3a and I can confirm it 
+> fixes the performance issues in our case too.
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 4 issues are still open and 7 have been fixed so far.
+Thanks for the testing, to both of you. I'm going to release the patch 
+for kernel inclusion.
 
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 102     Yes   KASAN: use-after-free Read in ccid2_hc_tx_packet_recv
-                  https://syzkaller.appspot.com/bug?extid=554ccde221001ab5479a
-<2> 51      Yes   BUG: "hc->tx_t_ipi == NUM" holds (exception!) at net/dccp/ccids/ccid3.c:LINE/ccid3_update_send_interval()
-                  https://syzkaller.appspot.com/bug?extid=94641ba6c1d768b1e35e
-<3> 17      Yes   BUG: stored value of X_recv is zero at net/dccp/ccids/ccid3.c:LINE/ccid3_first_li() (3)
-                  https://syzkaller.appspot.com/bug?extid=2ad8ef335371014d4dc7
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Best regards,
+Jozsef
+-- 
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
+PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
