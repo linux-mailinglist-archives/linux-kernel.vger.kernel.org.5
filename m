@@ -1,111 +1,182 @@
-Return-Path: <linux-kernel+bounces-27505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27506-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B78182F134
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:16:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 186A582F13E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:18:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 361A71C235D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:16:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD244B2343B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:18:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 056AD1BF53;
-	Tue, 16 Jan 2024 15:16:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D56C11BF5C;
+	Tue, 16 Jan 2024 15:17:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EHO5N9XK"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RmDOzdnV"
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0836C1BC4C;
-	Tue, 16 Jan 2024 15:16:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2E4E1BC4C;
+	Tue, 16 Jan 2024 15:17:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5edfcba97e3so105148617b3.2;
-        Tue, 16 Jan 2024 07:16:06 -0800 (PST)
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6816d974e11so3405726d6.3;
+        Tue, 16 Jan 2024 07:17:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705418166; x=1706022966; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1705418268; x=1706023068; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DSN/1a15f7oyeGM9Lrw3hF9g8ErJxL7cfBh+TgaPZGs=;
-        b=EHO5N9XKOM+G3S3nVSSim1x18LMuaLobkrDvonb5uELgH9BYiLh9GIrfIa3pnq4I3y
-         +xdOPUvhCm756VbSuL3B1p39zzdev3JqnJmvSoq29nlAnO1r3x7i21oCOIJMDBKdwyPA
-         NYmZAF5RAL4wX35mQ6E8J42nVgkOlK92GLIKa5sxlI8oCLv77G6l/kGXLScla9P0n9nL
-         Quzpv9YQjHFIkSRq4FHlHb54/fCJZcx27Nj6nrZiMQ2pkpZqt6y/w4hLW2Z85yw14DCH
-         /1NpSxVv25sJKdycPq0p15szR50MQqsoO8FercnCkAB/HLROGNyktvmNLsznsrR4Ia7G
-         80VA==
+        bh=ddq4m87un9OqUXFfz8sZzFeQcDnSpkfQD6eBRyJxaSs=;
+        b=RmDOzdnVDK2OfuIVAqWEam+OR+CxPx0Sr1ehcKbF5C88lb22WLxRAFx6Vk0cMnmLfm
+         f75zcHwL3PbfuYUmVjWclf0L9XbatNumAc2VYRDsgs4X4zIET6+hoIsovEkJ5QJuuwl3
+         c8AL66opYHsWF68ZPlxyEdPloYRA/Fr/IpHto7hAFUJgYmtP0kiUMo98su+zBXYgo5Qp
+         0MldqJi452jnYCiIBHgmLzKCSRf9V0SUPfg4mGer+3tH4Vc25jZCkX889wzabNv1jxc8
+         cvzJwmI92gyY6Ty4mPtX+AEndTNb3VsGxUTlvf3/yTG213HkNuNwAG8z0bvauiLKtzP5
+         SHnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705418166; x=1706022966;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DSN/1a15f7oyeGM9Lrw3hF9g8ErJxL7cfBh+TgaPZGs=;
-        b=KBk5JDbXjT9H9+3rFl465aUTJkLf8kJJOat+UP0Q7cp2HqB+Xax4NaWOaK5nTrevzW
-         cSupixeYxauPMhvZ6glqm/kw4ckKD3SzbPxfoZd8evwLcVIcuMwUjXXQFCnRj9756XOI
-         dIiGV/E8igudBGR9maXbsdZA6o7uQWTeUHiMqmI/f38dasAaHbLKTq/hmRJA7Kro38bV
-         DPmSwpejnOvO0a33Ez3uwGVRmwiQryKGrpA7M/B2uv1msy6/T3flL9P5NdEcPKZ7Kvv5
-         PrP5J86Ukz2VWlNMpo0fc/fGsmtc/j69WpLI7PY0voKUfiaJmxX+F32wXiVcsQU9b5yS
-         eKMA==
-X-Gm-Message-State: AOJu0YxUyUQ4QRko1QgGeDGyaF4RLHbjGw+CLcuG6V0Bt69JFsNVmsxn
-	S0HKL4bAQaB4ISE+hy0d9ywTb9vipl8+C5bz8jM=
-X-Google-Smtp-Source: AGHT+IGe9k13knvJv7mVIsQ9hgvppAFWfLivsE0iE7Akp5hdY4KqCSIXZVDX/dYBWRUzIqzqlKYkQegSb/NhYu+r1uQ=
-X-Received: by 2002:a81:830c:0:b0:5ff:5beb:d570 with SMTP id
- t12-20020a81830c000000b005ff5bebd570mr486554ywf.43.1705418165912; Tue, 16 Jan
- 2024 07:16:05 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705418268; x=1706023068;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ddq4m87un9OqUXFfz8sZzFeQcDnSpkfQD6eBRyJxaSs=;
+        b=KjvJ8F7BUMZq+JB5UssWxX1Tv64dQkrGc4ejE1eLYU9qVQOztPMVw3jThrtOz6JXKr
+         Esime7X7G7qbIOkgu6CDqM3sSADJUsl3hyMVKYmzMyKL6p+2nQ24M/gYATr16/4S5ctn
+         +4RPvhAQNnVHpkpKwA9IvLAULMPor5EKI4oZ5XUlGgvLVlm/TPmELuULNn97nYCqbhgD
+         EBc6WRBc53ZyvCZARisgcPpCRqZAyuYRQOHJyvDLzG0PtnRnP70NVhQHPapgDsIdBrZ9
+         w5i8M1FDjOf9c+3mZ8j2W67q2vQ8GE2QZK5m9qrUcYOrCd/trBftaUbzeSm/KUwU+ifF
+         WmeQ==
+X-Gm-Message-State: AOJu0YwohIQ1zWePWjqy15ANRz3yZ+8boGBL1fbZF2B1uj77PbmM4NDJ
+	DIRvgABKlkUdmpA7k+M1p1w=
+X-Google-Smtp-Source: AGHT+IGx54hrwqMThsUsriq0tTUi+uM9larqqu8+gqjzyPFi+Gir6HuW8/XHp+ig70F5+Nw0jli8Dg==
+X-Received: by 2002:a05:6214:224b:b0:681:55:ab with SMTP id c11-20020a056214224b00b00681005500abmr9373417qvc.81.1705418268525;
+        Tue, 16 Jan 2024 07:17:48 -0800 (PST)
+Received: from localhost (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
+        by smtp.gmail.com with ESMTPSA id mn4-20020a0562145ec400b006815d010435sm1906885qvb.5.2024.01.16.07.17.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jan 2024 07:17:48 -0800 (PST)
+Date: Tue, 16 Jan 2024 10:17:47 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: =?UTF-8?B?SsO2cm4tVGhvcmJlbiBIaW56?= <j-t.hinz@alumni.tu-berlin.de>, 
+ bpf@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org
+Cc: =?UTF-8?B?SsO2cm4tVGhvcmJlbiBIaW56?= <j-t.hinz@alumni.tu-berlin.de>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ Shuah Khan <shuah@kernel.org>, 
+ Arnd Bergmann <arnd@arndb.de>, 
+ Deepa Dinamani <deepa.kernel@gmail.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Message-ID: <65a69e1be51ef_380df0294d9@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20240115134110.11624-1-j-t.hinz@alumni.tu-berlin.de>
+References: <20240115134110.11624-1-j-t.hinz@alumni.tu-berlin.de>
+Subject: Re: [PATCH bpf-next] bpf: Allow setting SO_TIMESTAMPING* with
+ bpf_setsockopt()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240108032117.215171-1-wangrui@loongson.cn> <ZZ2fn0scbDKBXWe5@boqun-archlinux>
- <CAHirt9iox8FGV2wrMyxwFRjab2avfOcyLKvBc9K=AqiHxqHXKg@mail.gmail.com>
- <ZZ38XMQw18mw2sTA@Boquns-Mac-mini.home> <CAHirt9jQSVvBF=1wc=sT9FxngeSP30P4FDpu8m0JH_0fOPSO-w@mail.gmail.com>
- <CANiq72=X3cggAn0HLMi7jVFAfypBhog=ZkPB57yfaX4ZUzT-HA@mail.gmail.com>
- <CAHirt9hdtGSsEofxDb0FCtcFeAw9n9LKJALz23Qdqh4n2=Ua5A@mail.gmail.com>
- <CANiq72n7K8LcKrs+beF2sbt1XLdr4zEhEw4xcy3yh4wgTrvYeg@mail.gmail.com>
- <CAAhV-H72Hbfy7n6+AFSFFOzizo0GtpzA074sgo48-W-Dt0VR+w@mail.gmail.com>
- <CANiq72mEPnB7yEZvtUXAM5w0GgYmzdrM9OhioLGb_LzbAJKNOA@mail.gmail.com> <CAAhV-H6BFkgN-KzEexXk9zdnOGNCdBesCEEaczEvEp8x2K2YHw@mail.gmail.com>
-In-Reply-To: <CAAhV-H6BFkgN-KzEexXk9zdnOGNCdBesCEEaczEvEp8x2K2YHw@mail.gmail.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Tue, 16 Jan 2024 16:15:54 +0100
-Message-ID: <CANiq72nv3Uw8GLNqbdGBC3b+viF+o8BeppS9KWhpzBFvjqZLUg@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] Rust enablement for LoongArch
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: WANG Rui <wangrui@loongson.cn>, Boqun Feng <boqun.feng@gmail.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, WANG Xuerui <kernel@xen0n.name>, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-doc@vger.kernel.org, loongson-kernel@lists.loongnix.cn
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 16, 2024 at 10:31=E2=80=AFAM Huacai Chen <chenhuacai@kernel.org=
-> wrote:
->
-> OK, since Linus said the merge window is paused now, I rebase and
-> retag my tree and the Rust commit is like this, I think this is
-> perfect now?
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson=
-git/commit/?h=3Dloongarch-next&id=3D706f9e1ab7c7a58d80ef2c87d8720131253a22=
-56
+J=C3=B6rn-Thorben Hinz wrote:
+> A BPF application, e.g., a TCP congestion control, might benefit from o=
+r
+> even require precise (=3Dhardware) packet timestamps. These timestamps =
+are
+> already available through __sk_buff.hwtstamp and
+> bpf_sock_ops.skb_hwtstamp, but could not be requested: BPF programs wer=
+e
+> not allowed to set SO_TIMESTAMPING* on sockets.
+> =
 
-Thanks a lot! That works, yeah.
+> Enable BPF programs to actively request the generation of timestamps
+> from a stream socket. The also required ioctl(SIOCSHWTSTAMP) on the
+> network device must still be done separately, in user space.
+> =
 
-I also took the chance to build LLVM and QEMU and I tested the tag --
-it seems to work: I see the samples (built-in) printing in the kernel
-log :)
+> This patch had previously been submitted in a two-part series (first
+> link below). The second patch has been independently applied in commit
+> 7f6ca95d16b9 ("net: Implement missing getsockopt(SO_TIMESTAMPING_NEW)")=
 
-So in case you end up rebasing for another reason and want to add it,
-even if it is a simple check I did:
+> (second link below).
+> =
 
-Tested-by: Miguel Ojeda <ojeda@kernel.org>
+> On the earlier submission, there was the open question whether to only
+> allow, thus enforce, SO_TIMESTAMPING_NEW in this patch:
+> =
 
-Cheers,
-Miguel
+> For a BPF program, this won't make a difference: A timestamp, when
+> accessed through the fields mentioned above, is directly read from
+> skb_shared_info.hwtstamps, independent of the places where NEW/OLD is
+> relevant. See bpf_convert_ctx_access() besides others.
+> =
+
+> I am unsure, though, when it comes to the interconnection of user space=
+
+> and BPF "space", when both are interested in the timestamps. I think it=
+
+> would cause an unsolvable conflict when user space is bound to use
+> SO_TIMESTAMPING_OLD with a BPF program only allowed to set
+> SO_TIMESTAMPING_NEW *on the same socket*? Please correct me if I'm
+> mistaken.
+
+The difference between OLD and NEW only affects the system calls. It
+is not reflected in how the data is stored in the skb, or how BPF can
+read the data. A process setting SO_TIMESTAMPING_OLD will still allow
+BPF to read data using SO_TIMESTAMPING_NEW.
+
+But, he one place where I see a conflict is in setting sock_flag
+SOCK_TSTAMP_NEW. That affects what getsockopt returns and which cmsg
+is written:
+
+                if (sock_flag(sk, SOCK_TSTAMP_NEW))
+                        put_cmsg_scm_timestamping64(msg, tss);
+                else
+                        put_cmsg_scm_timestamping(msg, tss);
+
+So a process could issue setsockopt SO_TIMESTAMPING_OLD followed by
+a BPF program that issues setsockopt SO_TIMESTAMPING_NEW and this
+would flip SOCK_TSTAMP_NEW.
+
+Just allowing BPF to set SO_TIMESTAMPING_OLD does not fix it, as it
+just adds the inverse case.
+
+A related problem is how does the BPF program know which of the two
+variants to set. The BPF program is usually compiled and loaded
+independently of the running process.
+
+Perhaps one option is to fail the setsockop if it would flip
+sock_flag SOCK_TSTAMP_NEW. But only if called from BPF, as else it
+changes existing ABI.
+
+Then a BPF program can attempt to set SO_TIMESTAMPING NEW, be
+prepared to handle a particular errno, and retry with
+SO_TIMESTAMPING_OLD.
+
+
+
+ =
+
+> Link: https://lore.kernel.org/lkml/20230703175048.151683-1-jthinz@mailb=
+ox.tu-berlin.de/
+> Link: https://lore.kernel.org/all/20231221231901.67003-1-jthinz@mailbox=
+tu-berlin.de/
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Deepa Dinamani <deepa.kernel@gmail.com>
+> Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+> Signed-off-by: J=C3=B6rn-Thorben Hinz <j-t.hinz@alumni.tu-berlin.de>
+
 
