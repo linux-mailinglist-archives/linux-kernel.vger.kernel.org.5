@@ -1,169 +1,187 @@
-Return-Path: <linux-kernel+bounces-27464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 255AC82F08E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:33:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E76982F090
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:34:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8955A1F23F1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:33:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 446221C23372
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:34:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 726B91BC2E;
-	Tue, 16 Jan 2024 14:33:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 243751BF2D;
+	Tue, 16 Jan 2024 14:34:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="aGj7n1r6"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2040.outbound.protection.outlook.com [40.107.93.40])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dla/Q3AF"
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E12A2563;
-	Tue, 16 Jan 2024 14:33:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aw//XRofcSo0Vwht2vHleoTSIlHH1RKg4dbCUlQTt5n412JtxOrmpXonVIoSQ8gYT2Pr/SpFSDhsAS5MSjHo9+UO3YoQ2pvGS0T0D2VQL2Xlf48i3HLa32wwnWcxudDpLsZnIUUfqi2mObIV5DIRH11+7PH/PGRSPFSCBEF4KuB4XUY1XzwExBYYBbc+ZW30RBLq0aOEObl5HSWrRLQHvKmJ03Mo5V5851Ov7OON6zGzlvQS3DRpFZxKsucvKOfwLr953uUJoHCo3F04L06J28kNgUKOYwHwjZwDn9l+3ltAeWS++NrRE2So0z5sjp/cvRh3jyz63xGXoumcYFHM8w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vyM5Rg/rDIjkGQERyt74b7460YcodZePpOgnWPw7Gu4=;
- b=fWOJAYxf2roDnB8fxmBCVGevXLqE7HCkrReJumeaoh64zUmu4OcW5ac7sNzkPrpMuhQloTZVNbAX5TiwhEsuXSeZMOfK4tIHjbk2G9B7GzinEqLS3+/9WsktDIyMMHPS/sAnFXh2lS7AEvRFrdWTOwymnJ63bwK0IMetjRje+fDyzHE37AA/AUdPJFDDGr7QkObRtiP0MeTFWFeaIKf7jh104KzC04A9ZEZaUoUK/a6MlJFWOtlPF4Fi3MGP1Nqb6cS1kAet5K/d/ZgzdpvfJ7efzGQkHiNRO74Gq3BPKcs9MUDyl/hK04cDQRJGesT+EkoUiWbanqiGOyorvczk7w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vyM5Rg/rDIjkGQERyt74b7460YcodZePpOgnWPw7Gu4=;
- b=aGj7n1r6ca8tabEWe4Ah6+dWQ0msg1+wdCkq/xkjNGPeOg7OAVU4qBk4FY0f+JvNU1qDEvyuy1O9ytVguhTAF6vYcdXdrCs28CNWClxYg4IRsfAN3bALP1nNgV/MKU8EdT33OJtjMO1qeNdbstdfCeel7rOKN6tzX66pD3STewgRzFOA3XjR/FlnJAf1+9cTGEwkHXrnsISxhl1BAASqnOxrYQ4JwZwUwqXqQfpgFDF65pYP5RX6RaNTtx3QX3d3i4gMiHFwCkMG02/uxb7MB4ujVRz31iNtbopleCmJxATI9y1aDJABW0oxsflbjJgNhjF9QZxjWv1TtKawsH+93Q==
-Received: from SJ0PR05CA0006.namprd05.prod.outlook.com (2603:10b6:a03:33b::11)
- by IA0PR12MB8982.namprd12.prod.outlook.com (2603:10b6:208:481::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.18; Tue, 16 Jan
- 2024 14:33:12 +0000
-Received: from SJ1PEPF00001CDF.namprd05.prod.outlook.com
- (2603:10b6:a03:33b:cafe::c6) by SJ0PR05CA0006.outlook.office365.com
- (2603:10b6:a03:33b::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.23 via Frontend
- Transport; Tue, 16 Jan 2024 14:33:12 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- SJ1PEPF00001CDF.mail.protection.outlook.com (10.167.242.7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7202.16 via Frontend Transport; Tue, 16 Jan 2024 14:33:12 +0000
-Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 16 Jan
- 2024 06:33:03 -0800
-Received: from drhqmail203.nvidia.com (10.126.190.182) by
- drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Tue, 16 Jan 2024 06:33:03 -0800
-Received: from vidyas-desktop.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.126.190.182) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Tue, 16 Jan 2024 06:33:00 -0800
-From: Vidya Sagar <vidyas@nvidia.com>
-To: <bhelgaas@google.com>
-CC: <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<treding@nvidia.com>, <jonathanh@nvidia.com>, <kthota@nvidia.com>,
-	<mmaddireddy@nvidia.com>, <vidyas@nvidia.com>, <sagar.tv@gmail.com>
-Subject: [PATCH V2] PCI: Clear errors logged in Secondary Status Register
-Date: Tue, 16 Jan 2024 20:02:58 +0530
-Message-ID: <20240116143258.483235-1-vidyas@nvidia.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240104013229.693041-1-vidyas@nvidia.com>
-References: <20240104013229.693041-1-vidyas@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E3781BF26
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 14:34:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5cec32dedf3so4471343a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 06:34:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705415679; x=1706020479; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wVLeCLs+UC4LCws3JCkyo7iN6KY4LoEJi4nfZy2Uvf0=;
+        b=dla/Q3AFbrjHtLCE6mravsOD8rJxf9R975TBaD4tzH8ducKywK0BMeWgWf8Zp2PdyK
+         fcS2TwHBUKjN8GsVeJqd7VWtpHzYx2eVDesDw5XArgm+4U7AGzOvdx6m9n/sbG/kmgXa
+         h3ZR/70OiHORJ65cSh4yWymHM7fHfN0UVGaNeE90NCz28fY/acg/ZBH5pLubbNuWz3BI
+         +CrMsFiLKy13S1F8gDybymCVEZEfM7gBGKW+Heye+kYINTUojreztLYzc1xRVrJcd4Sx
+         ehis4WsfnmYUJLnMP7awxZad7kcZ3LlogLhKDmowsJTBNDi4WmBtyI9N6lex4+6Xf4VX
+         6wtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705415679; x=1706020479;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wVLeCLs+UC4LCws3JCkyo7iN6KY4LoEJi4nfZy2Uvf0=;
+        b=OzTO4FG1dTm3fT2omFkLjoQ/1dXKtrL+TV0hnzmGaxQkS9DSiQ8mWNPZDvVziVnfKF
+         DlGKsL+eawL8/QSEZXa/Xaped18f5BlOss7wUd3b0L34dsxEQKuNgUUFKVKZXKX4beWG
+         dg7dGGgtX8zcw9Ye5Jq/7EKswU+1DW9dBtTd7ddLfM7bNPW7qNkxBwNY7K+9myz5YPn9
+         UmWEktHBxJRgG6bfv4yaGqvDGP1uHdtxdca47KhzGZpqE9V1DPJB98Tm3ok/2V1uA+Wv
+         FpPJv0OamXv6QQMW1oJ0MPXooaP53GvSmck77yu4uccA5MuiEN66swNuzKa+VciU4u3U
+         SpBg==
+X-Gm-Message-State: AOJu0Yw8+Z+VKG+3CoQMwDeKDj/3K32bHkuk2nmRpvGZN53A7ji9p85S
+	ZzqJNDYH+ZO7hH4vIjb9PWU=
+X-Google-Smtp-Source: AGHT+IGHaN9YxTeIzJrPa8gr5TI0NPSj8v/Q4JIkg6Iko/WVK14HfcXfvs1OU5hQ9bSc8XXrKZKWHg==
+X-Received: by 2002:a17:902:c409:b0:1d4:f77c:a8e4 with SMTP id k9-20020a170902c40900b001d4f77ca8e4mr4207509plk.79.1705415679435;
+        Tue, 16 Jan 2024 06:34:39 -0800 (PST)
+Received: from localhost.localdomain ([2001:250:4000:8246:8dd2:f82d:e185:367f])
+        by smtp.gmail.com with ESMTPSA id g13-20020a170902f74d00b001d3c23a6862sm9402603plw.25.2024.01.16.06.34.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jan 2024 06:34:39 -0800 (PST)
+From: Wenjie Qi <qwjhust@gmail.com>
+To: jaegeuk@kernel.org,
+	chao@kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org
+Cc: hustqwj@hust.edu.cn,
+	Wenjie Qi <qwjhust@gmail.com>
+Subject: [PATCH v1] f2fs: fix max open zone constraints
+Date: Tue, 16 Jan 2024 22:34:22 +0800
+Message-ID: <20240116143422.1268-1-qwjhust@gmail.com>
+X-Mailer: git-send-email 2.43.0.windows.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-NVConfidentiality: public
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CDF:EE_|IA0PR12MB8982:EE_
-X-MS-Office365-Filtering-Correlation-Id: ee05d27c-f132-417e-e689-08dc16a0115b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	8k9MPPa/z7PWEugWSeuKValHgkOblPHq4Y7LPkNgDltOq5hXhCdHAdU8oWno1E4p7UiZ4hnwcFWfA/G7qZJb7wOZCBTB/lo6JTYs3ppDjLHM3o0uAxkSpmFjjrZ8mYTH5RyKBrmFCHXEq3WZiuDXxO30Pi7htWKQE/A3wsNjVojF3G3jsMItnx0wIT7KZ/sxdWc6E5RcnmEqoWlVPuYWTojQWhgPZ1oD79VVm8t0MWAFnOzuLlO6M41UlyEgbydIOg9u26nNOz8q1v2bUqMi//9ocaBQFhj7sJhVzh8WaAg/ohBg1QqZwPz5YJZcUi6xVarTiCE+87OpLwDp83QoGsE35dCRuXnJp1EbV+lIA0ah7lSVFDo2ltus8wQGFMF4wPObZxjGxx6k36GamND4j6LxQmFgzc1eVrZJzrhZpHjnwlHBK7VzpJbZn2UMnGPlD1e99e9qEa58WJC585a7PDMHPdFXtnj6IeUHZQ48Jds3BYw04q8BgEBDF2GK4Nz71YTDnhSXNn/4QmD8Ucz2svuDDfWoEKtQQIIKSZ1dzkSVDwBpUO+9zNWG0KXLFN1A9FeZOyeW8BidNMwe1eQykqY5TMjc1BJZ50r9Mx/GgncY//h2c7MSHtbEUB6kQBoDeWL7tOZsEbKRoqf1m7dSM0hW3sCfdz3EYbha5n5+HGLWr0cdVZiLdO+AmWG715mxNc+nDj9PyX//Yk1x+07xnYBgOiClZ7tgQmHfrL9hmfdHUk27W3pCXZZ8HK2eUO8c
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(39860400002)(376002)(396003)(230922051799003)(64100799003)(82310400011)(451199024)(1800799012)(186009)(40470700004)(36840700001)(46966006)(5660300002)(86362001)(41300700001)(82740400003)(7636003)(356005)(2906002)(6916009)(316002)(70206006)(54906003)(70586007)(2616005)(7696005)(478600001)(4326008)(36860700001)(47076005)(8936002)(8676002)(336012)(426003)(26005)(83380400001)(40460700003)(36756003)(40480700001)(1076003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2024 14:33:12.1269
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ee05d27c-f132-417e-e689-08dc16a0115b
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SJ1PEPF00001CDF.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8982
 
-The enumeration process leaves the 'Received Master Abort' bit set in
-the Secondary Status Register of the downstream port in the following
-scenarios.
+We can get the number of remaining available zone
+resources by subtracting the number of active logs from
+the number of max active zones of zoned devices. We can
+use these available zone resources to reduce the number
+of pending bio when switching zones.
+If max active zones is 0, there is no limit.
 
-(1) The device connected to the downstream port has ARI capability
-    and that makes the kernel set the 'ARI Forwarding Enable' bit in
-    the Device Control 2 Register of the downstream port. This
-    effectively makes the downstream port forward the configuration
-    requests targeting the devices downstream of it, even though they
-    don't exist in reality. It causes the downstream devices return
-    completions with UR set in the status in turn causing 'Received
-    Master Abort' bit set.
-
-    In contrast, if the downstream device doesn't have ARI capability,
-    the 'ARI Forwarding Enable' bit in the downstream port is not set
-    and any configuration requests targeting the downstream devices
-    that don't exist are terminated (section 6.13 of PCI Express Base
-    6.0 spec) in the downstream port itself resulting in no change of
-    the 'Received Master Abort' bit.
-
-(2) A PCIe switch is connected to the downstream port and when the
-    enumeration flow tries to explore the presence of devices that
-    don't really exist downstream of the switch, the downstream
-    port receives the completions with UR set causing the 'Received
-    Master Abort' bit set.
-
-Clear 'Received Master Abort' bit to keep the bridge device in a clean
-state post enumeration.
-
-Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
 ---
-V2:
-* Changed commit message based on Bjorn's feedback
+ fs/f2fs/data.c  | 32 +++++++++++++++++++++++++-------
+ fs/f2fs/f2fs.h  |  2 ++
+ fs/f2fs/super.c | 11 +++++++++++
+ 3 files changed, 38 insertions(+), 7 deletions(-)
 
- drivers/pci/probe.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index 795534589b98..640d2871b061 100644
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -1470,6 +1470,9 @@ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
- 	}
- 
- out:
-+	/* Clear errors in the Secondary Status Register */
-+	pci_write_config_word(dev, PCI_SEC_STATUS, 0xffff);
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index dce8defdf4c7..0b62ca296074 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -392,6 +392,19 @@ static void f2fs_zone_write_end_io(struct bio *bio)
+ 	complete(&io->zone_wait);
+ 	f2fs_write_end_io(bio);
+ }
 +
- 	pci_write_config_word(dev, PCI_BRIDGE_CONTROL, bctl);
++static void f2fs_zone_write_end_io_nowait(struct bio *bio)
++{
++#ifdef CONFIG_F2FS_IOSTAT
++	struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
++	struct f2fs_sb_info *sbi = iostat_ctx->sbi;
++#else
++	struct f2fs_sb_info *sbi = (struct f2fs_sb_info *)bio->bi_private;
++#endif
++
++	atomic_inc(&sbi->available_active_zones);
++	f2fs_write_end_io(bio);
++}
+ #endif
  
- 	pm_runtime_put(&dev->dev);
+ struct block_device *f2fs_target_device(struct f2fs_sb_info *sbi,
+@@ -1085,14 +1098,19 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+ 		goto next;
+ out:
+ #ifdef CONFIG_BLK_DEV_ZONED
+-	if (f2fs_sb_has_blkzoned(sbi) && btype < META &&
++	if (f2fs_sb_has_blkzoned(sbi) && sbi->max_active_zones && btype < META &&
+ 			is_end_zone_blkaddr(sbi, fio->new_blkaddr)) {
+-		bio_get(io->bio);
+-		reinit_completion(&io->zone_wait);
+-		io->bi_private = io->bio->bi_private;
+-		io->bio->bi_private = io;
+-		io->bio->bi_end_io = f2fs_zone_write_end_io;
+-		io->zone_pending_bio = io->bio;
++		if (!atomic_add_negative(-1, &sbi->available_active_zones)) {
++			io->bio->bi_end_io = f2fs_zone_write_end_io_nowait;
++		} else {
++			atomic_inc(&sbi->available_active_zones);
++			bio_get(io->bio);
++			reinit_completion(&io->zone_wait);
++			io->bi_private = io->bio->bi_private;
++			io->bio->bi_private = io;
++			io->bio->bi_end_io = f2fs_zone_write_end_io;
++			io->zone_pending_bio = io->bio;
++		}
+ 		__submit_merged_bio(io);
+ 	}
+ #endif
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 65294e3b0bef..2aade367ac66 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -1551,6 +1551,8 @@ struct f2fs_sb_info {
+ 
+ #ifdef CONFIG_BLK_DEV_ZONED
+ 	unsigned int blocks_per_blkz;		/* F2FS blocks per zone */
++	unsigned int max_active_zones;		/* max zone resources of the zoned device */
++	atomic_t available_active_zones;	/* remaining zone resources for zone switch */
+ #endif
+ 
+ 	/* for node-related operations */
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 206d03c82d96..6711283ff187 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -2385,6 +2385,12 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 	if (err)
+ 		goto restore_opts;
+ 
++#ifdef CONFIG_BLK_DEV_ZONED
++	if (sbi->max_active_zones)
++		atomic_set(&sbi->available_active_zones,
++				sbi->max_active_zones - F2FS_OPTION(sbi).active_logs);
++#endif
++
+ 	/* flush outstanding errors before changing fs state */
+ 	flush_work(&sbi->s_error_work);
+ 
+@@ -3932,6 +3938,11 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
+ 	if (!f2fs_sb_has_blkzoned(sbi))
+ 		return 0;
+ 
++	sbi->max_active_zones = bdev_max_active_zones(bdev);
++	if (sbi->max_active_zones)
++		atomic_set(&sbi->available_active_zones,
++				sbi->max_active_zones - F2FS_OPTION(sbi).active_logs);
++
+ 	zone_sectors = bdev_zone_sectors(bdev);
+ 	if (!is_power_of_2(zone_sectors)) {
+ 		f2fs_err(sbi, "F2FS does not support non power of 2 zone sizes\n");
 -- 
-2.25.1
+2.34.1
 
 
