@@ -1,135 +1,130 @@
-Return-Path: <linux-kernel+bounces-27598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 026C182F2B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:58:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1210F82F2C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:59:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB3191F2557E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:58:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F619286C58
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:59:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F77F1CA97;
-	Tue, 16 Jan 2024 16:58:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 449351CD22;
+	Tue, 16 Jan 2024 16:58:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iJ4pRd6x"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="iZXCTlrI"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCA381C6A1;
-	Tue, 16 Jan 2024 16:58:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3366ddd1eddso8211063f8f.0;
-        Tue, 16 Jan 2024 08:58:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705424283; x=1706029083; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hWIMOxwPuwlyypi9mGRlB1wNl0jlfrKw1ScuZdtPpAE=;
-        b=iJ4pRd6xT/iZA0xUDuiNyKnNuxPjyrb+y0dg1DUodjolwttlJibv05ZLkLL6+3gKD3
-         0zpkPkM+3JvxcVNrqIvpY5V5eOYK/2nrKPxQf83UIBkxMRebE89lvbcKsSn6TwyCzhXh
-         NiuPFXkVTIZ9APRuDOrJOVWWQnwdrC5z/1yFImsAxNpYCcbtt16zBxjIhsLCFx5XMF0W
-         lKP4f7WHj50jjsr4r92UHwYgOsOYCrqdJDY1paSfS6p3YCrx8HDA3nFkxrMS6aLqv/p7
-         PVQ7tR6g5VQZXfoIOazul/LAqAFhDl+tNk2QOgvyJSXrxLsD/ctQpEmOF0mTFCmSnHkN
-         2YTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705424283; x=1706029083;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hWIMOxwPuwlyypi9mGRlB1wNl0jlfrKw1ScuZdtPpAE=;
-        b=Pn0GM/BnPhjvmGoo7LTZFwfqkPNI2QZ7NJylHmOEYw5BE8kDvwDPbDtJ265lkrIY63
-         rDcnM+CzNFLRqhSwEyLCcn4OwBLCzgVjoVnaMoUCaxH3VwFNRwqrlkGu7y362xKKxaiK
-         /RJzC/SYu8qb79nKqR7l4Q5b77xYsXmhT9Yaih6CDdumIvWqkLw1zR4b8WhFJXJG+52a
-         fyZk/WhexuWFdhettmt6OZo7rl503/vwd35zXcWzzcjREvr+sndkM7a4mRWsjzrGcEd5
-         W8eHzKhyF6xKXTVDbXqe7EJq04h0WULoRI2v/8LoEd4BF3U2nT6PV06TpxAlqULBgK4F
-         oNoA==
-X-Gm-Message-State: AOJu0Yy/oNVHxiswgEBPJIrqc2WWX+xWzsGvBg9BTyG4x/d6Kf9QLGSn
-	LJVAz7S0MH1AYNI6dxFMH6U=
-X-Google-Smtp-Source: AGHT+IEzI3h4gWrHRgRIUCmkOWf7L17Yh04pMYuuDkCdMR3c+TIBaC98FCnb6ejWkKylpXq7lzn3Qw==
-X-Received: by 2002:a5d:5943:0:b0:336:608f:91eb with SMTP id e3-20020a5d5943000000b00336608f91ebmr2017052wri.95.1705424282738;
-        Tue, 16 Jan 2024 08:58:02 -0800 (PST)
-Received: from krava ([83.240.60.213])
-        by smtp.gmail.com with ESMTPSA id co8-20020a0560000a0800b00336755f15b0sm15100243wrb.68.2024.01.16.08.58.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 08:58:02 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 16 Jan 2024 17:58:01 +0100
-To: Artem Savkov <asavkov@redhat.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: fix potential premature
- unload in bpf_testmod
-Message-ID: <ZaajJVrGLakTmtH1@krava>
-References: <82f55c0e-0ec8-4fe1-8d8c-b1de07558ad9@linux.dev>
- <20240110085737.8895-1-asavkov@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B5E71CD0A;
+	Tue, 16 Jan 2024 16:58:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705424297; cv=none; b=bLsEF6fCrv9do+K8T8bV3wLO1EemtXmERz0MgydlIrdYFbTpxi3HQngsU5j02FjcoV2SR89/Lr+EvK0/za2D9vEQJj/FWxMm7ReHRc+10nTtUCJWZ9de76Hzeq+SWqjNnfBNp0Cg+wC4HdtG7bEVyizEnCDcCUdUtXDq7dn3c2k=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705424297; c=relaxed/simple;
+	bh=EG56JEJr5SSFJa1ProkXXetHXw6Bmln8ueAcpqQwFV4=;
+	h=Received:DKIM-Signature:Received:Received:Received:Message-ID:
+	 Date:MIME-Version:User-Agent:Subject:Content-Language:To:CC:
+	 References:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-Originating-IP:X-ClientProxiedBy:X-QCInternal:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-GUID:
+	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Virus-Version:
+	 X-Proofpoint-Spam-Details; b=uAQloF64iHPTMCvZy4yAAS75WyIPXc3lel+txursAimIGINgS9BYi4YB/RMINgaOHBedtapwqw76tPxn3VJ8P2bPTzPCfkqbKfi7sKBNOuyUeEDCLQWwxBMNP5P0RJIDu+J1ki48yJUdOGHcdQJInamN0vQIYA1yrsZ1LOOIeXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=iZXCTlrI
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40GE0SRq017782;
+	Tue, 16 Jan 2024 16:58:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=GGCf2oVrPExymJ+LoSpyhflVsJy1oqjW5/tJ73eB70E=; b=iZ
+	XCTlrIAErVdZlGVSb/i0Hn44IG2n7ptRNNEWTfgWeaRMxPgVw0V0TRLwmy+15mH5
+	L/UtoABG2B4NixijR3ewBDVmHgykD+H2Tot3Fu6yTW2UBDsTs0prmJTdnRtU+OI0
+	lxo6Us7c8jAddwoqqjOM1+E6vCekAvtEKo8MXHeOvB+sYYlnaluhxVmEVtUsXAqS
+	a5uUTWyz8DjNTrrxVEUZIGpxk40mRzC1V4qpgQKz12cHOPIJQVARyc4dy0snPa6n
+	WAoo6QpBnRHwukKm+AuZoF/6fg22a3N+IFimqZzthfc3E2+1Iagyfo7e1wnKthc2
+	ElhK4/w/trbrxkAnaprA==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vnq4t13k8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 16:58:06 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40GGw56q005399
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 16:58:05 GMT
+Received: from [10.227.110.203] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 16 Jan
+ 2024 08:58:04 -0800
+Message-ID: <b4f29511-e001-4964-b88d-208dabf88121@quicinc.com>
+Date: Tue, 16 Jan 2024 08:58:04 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240110085737.8895-1-asavkov@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] wifi: ath11k: document HAL_RX_BUF_RBM_SW4_BM
+Content-Language: en-US
+To: Kalle Valo <kvalo@kernel.org>
+CC: <ath11k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240111-document-hal_rx_buf_rbm_sw4_bm-v1-1-ad277e8ab3cc@quicinc.com>
+ <874jfg7xm4.fsf@kernel.org>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <874jfg7xm4.fsf@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: yQp3OW0jwCxWbxg37ISj41BS-p-b-ZMg
+X-Proofpoint-ORIG-GUID: yQp3OW0jwCxWbxg37ISj41BS-p-b-ZMg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ clxscore=1015 malwarescore=0 suspectscore=0 spamscore=0 lowpriorityscore=0
+ bulkscore=0 mlxlogscore=371 priorityscore=1501 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401160134
 
-On Wed, Jan 10, 2024 at 09:57:37AM +0100, Artem Savkov wrote:
-> It is possible for bpf_kfunc_call_test_release() to be called from
-> bpf_map_free_deferred() when bpf_testmod is already unloaded and
-> perf_test_stuct.cnt which it tries to decrease is no longer in memory.
-> This patch tries to fix the issue by waiting for all references to be
-> dropped in bpf_testmod_exit().
+On 1/14/2024 7:17 AM, Kalle Valo wrote:
+> Jeff Johnson <quic_jjohnson@quicinc.com> writes:
 > 
-> The issue can be triggered by running 'test_progs -t map_kptr' in 6.5,
-> but is obscured in 6.6 by d119357d07435 ("rcu-tasks: Treat only
-> synchronous grace periods urgently").
+>> Commit 7636c9a6e7d7 ("wifi: ath11k: Add multi TX ring support for WCN6750")
+>> added HAL_RX_BUF_RBM_SW4_BM to enum hal_rx_buf_return_buf_manager. However,
+>> as flagged by the kernel-doc script, the documentation was not updated:
+>>
+>> drivers/net/wireless/ath/ath11k/hal.h:689: warning: Enum value 'HAL_RX_BUF_RBM_SW4_BM' not described in enum 'hal_rx_buf_return_buf_manager'
+>>
+>> So update the documentation. No functional changes, compile tested only.
+>>
+>> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 > 
-> Fixes: 65eb006d85a2a ("bpf: Move kernel test kfuncs to bpf_testmod")
-> Signed-off-by: Artem Savkov <asavkov@redhat.com>
-> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+> I'm not really a fan of kernel-doc in wireless drivers, it feels more
+> unnecessary work. Should we remove the kernel-doc markings from ath11k
+> altogether?
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+Are you not a fan of kernel-doc format specifically, or not a fan of
+documentation at all?
 
-jirka
+I'm personally a fan of documentation since good documentation makes the
+code more maintainable. Yes, there is a cost in creating and maintaining
+the documentation, but this is hopefully offset by cost saving when new
+developers are trying to understand and modify the code.
 
-> ---
->  tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> index 91907b321f913..e7c9e1c7fde04 100644
-> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> @@ -2,6 +2,7 @@
->  /* Copyright (c) 2020 Facebook */
->  #include <linux/btf.h>
->  #include <linux/btf_ids.h>
-> +#include <linux/delay.h>
->  #include <linux/error-injection.h>
->  #include <linux/init.h>
->  #include <linux/module.h>
-> @@ -544,6 +545,14 @@ static int bpf_testmod_init(void)
->  
->  static void bpf_testmod_exit(void)
->  {
-> +        /* Need to wait for all references to be dropped because
-> +         * bpf_kfunc_call_test_release() which currently resides in kernel can
-> +         * be called after bpf_testmod is unloaded. Once release function is
-> +         * moved into the module this wait can be removed.
-> +         */
-> +	while (refcount_read(&prog_test_struct.cnt) > 1)
-> +		msleep(20);
-> +
->  	return sysfs_remove_bin_file(kernel_kobj, &bin_attr_bpf_testmod_file);
->  }
->  
-> -- 
-> 2.43.0
-> 
+I'm also a fan of consistency. And since kernel-doc is the standard
+format defined for the kernel, it is my personal preference to use that
+format.
+
+I'm curious what others think of the ath10/11/12k level and style of
+documentation.
+
+/jeff
 
