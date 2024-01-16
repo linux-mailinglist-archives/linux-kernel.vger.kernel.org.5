@@ -1,157 +1,247 @@
-Return-Path: <linux-kernel+bounces-28340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D34F482FD13
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:40:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A39AA82FD1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:42:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71B031F2F8A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:40:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9E801C28912
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:42:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 090D61F933;
-	Tue, 16 Jan 2024 22:22:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="lxkQ+G6s"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 589762374F;
+	Tue, 16 Jan 2024 22:23:28 +0000 (UTC)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B13D1DA50;
-	Tue, 16 Jan 2024 22:22:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9466C23744;
+	Tue, 16 Jan 2024 22:23:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705443738; cv=none; b=FbDCA6fK6KP+x+DH2rThVwfRWGYy7YvL6V2xyE58i5dU5f47xptXAVk/Kf7bVZBxm20LXQVOHWg4wekpDtUAu1s9Taoh9ulcMsaQKHErVl2TVpY1dArwR0q0jtsHf+lSCbGnBMQAzQz22A3Zgq49lvZ03RJghP8GMc8knBTaR0Q=
+	t=1705443807; cv=none; b=qz/cTAAI4r/nUFJDyTVOSkfR14ztOuwd8QNL1nUFJs96BVGSrPE5d536ygmsIc3TNrltvjFSpxdCY2dE0JHBXPojYzUzZkWHEfACSWf/BM9pGFdFygCUHZQCIgfsXB7mgzq2LbJ3Nt0Lq9seML2RsHcfXtLuavVyk/JQQ2MUCbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705443738; c=relaxed/simple;
-	bh=P3ol08Fw41CIfzFFQooVhb0iE3Fv1ZRgddqxkDDBgGg=;
-	h=DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
-	 MIME-Version:Content-Type; b=G3XXjjFM2QFpmnWtvhIHvMcHCURrPOJczb2KkgnLFizvWK7B+bF0gy+7HQjZSCOEthFsI07+CFdTRh88yKIiYQwq2ycIC7HrQAK7XsaHXqYSc4uRlf7Fq4hJS/FwfAPkuXM9/KLFgXxiVFtjPqznCNzEk8QAHZYYCno6K7+K194=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=lxkQ+G6s; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1705443731;
-	bh=AxIQOMJi6FIcABc8p8DFjfS3N7iZ0CR4Tu2qx3sFLAs=;
-	h=Date:From:To:Cc:Subject:From;
-	b=lxkQ+G6sqWoHvr9pwuzJeAVNYHtUK9BYGqsXPYEeYIrdHAJ5/11VUhkvS5EiPScaT
-	 JVCm8S8CuKXrtjkT6a+2bUwxYfIS/Mv1jMXEv8GawzP9YwJMX8q7XJxybrsICrVPtk
-	 vkktWDAOWOkafvMqnJz/6cmgQ/oaRCdbHSKDXmMZQ/rivDMCkGyRxyYzr25gMrUfV1
-	 XExGCfilTnw+uWQyb4QVMo41rmwu3aLKDW6vHKPFip/mu8rCnIH3vWzk7dtOiIB2Bi
-	 QWIkerNtRfbNel09XWVDixut9KeqiH1GIGxQZ9s0xg1arcmdzNTl25T7goOyqAmqtl
-	 1mUfX9NDSJKaw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	s=arc-20240116; t=1705443807; c=relaxed/simple;
+	bh=+9So/8C/UHwU34J+AJWGCIa/pW2jaEdlYaVwPROAc40=;
+	h=Received:Received:Received:Content-Type:Content-Transfer-Encoding:
+	 MIME-Version:From:To:Cc:Subject:In-reply-to:References:Date:
+	 Message-id:X-Spamd-Result:X-Rspamd-Server:X-Rspamd-Queue-Id:
+	 X-Spam-Level:X-Spam-Score:X-Spam-Flag; b=dlnlsl2pvH+zXrNgsBcGn3Gbl4Ddn2OEdJgB0WuEoCpUM+UAhGstUmpxmDJaSapYqbF6NXGh4tlcJTHhcSZHpqwFEDEurfgOSesQSNR4rwwbicBFZ2qMYn7sVnx+g916viP0qdSWlinhd0TFOwS/O9qScx/lpZ8onq16roTO6Ek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TF3Qq0kyGz4xP9;
-	Wed, 17 Jan 2024 09:22:11 +1100 (AEDT)
-Date: Wed, 17 Jan 2024 09:22:09 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Yury Norov <yury.norov@gmail.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the mm-nonmm-unstable
- branch of the mm tree
-Message-ID: <20240117092209.7157a9c2@canb.auug.org.au>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CAC4A221E8;
+	Tue, 16 Jan 2024 22:23:23 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2693A13751;
+	Tue, 16 Jan 2024 22:23:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id SEsoM80Bp2UZfAAAD6G6ig
+	(envelope-from <neilb@suse.de>); Tue, 16 Jan 2024 22:23:09 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ieYZL_P0CFftq=Ot5lzFi/N";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+From: "NeilBrown" <neilb@suse.de>
+To: "Jeff Layton" <jlayton@kernel.org>
+Cc: "Christian Brauner" <brauner@kernel.org>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Eric Van Hensbergen" <ericvh@kernel.org>,
+ "Latchesar Ionkov" <lucho@ionkov.net>,
+ "Dominique Martinet" <asmadeus@codewreck.org>,
+ "Christian Schoenebeck" <linux_oss@crudebyte.com>,
+ "David Howells" <dhowells@redhat.com>,
+ "Marc Dionne" <marc.dionne@auristor.com>, "Xiubo Li" <xiubli@redhat.com>,
+ "Ilya Dryomov" <idryomov@gmail.com>, "Alexander Aring" <aahringo@redhat.com>,
+ "David Teigland" <teigland@redhat.com>, "Miklos Szeredi" <miklos@szeredi.hu>,
+ "Andreas Gruenbacher" <agruenba@redhat.com>,
+ "Trond Myklebust" <trond.myklebust@hammerspace.com>,
+ "Anna Schumaker" <anna@kernel.org>, "Chuck Lever" <chuck.lever@oracle.com>,
+ "Olga Kornievskaia" <kolga@netapp.com>, "Dai Ngo" <Dai.Ngo@oracle.com>,
+ "Tom Talpey" <tom@talpey.com>, "Jan Kara" <jack@suse.cz>,
+ "Mark Fasheh" <mark@fasheh.com>, "Joel Becker" <jlbec@evilplan.org>,
+ "Joseph Qi" <joseph.qi@linux.alibaba.com>, "Steve French" <sfrench@samba.org>,
+ "Paulo Alcantara" <pc@manguebit.com>, "Ronnie Sahlberg" <lsahlber@redhat.com>,
+ "Shyam Prasad N" <sprasad@microsoft.com>,
+ "Namjae Jeon" <linkinjeon@kernel.org>,
+ "Sergey Senozhatsky" <senozhatsky@chromium.org>,
+ "Steven Rostedt" <rostedt@goodmis.org>,
+ "Masami Hiramatsu" <mhiramat@kernel.org>,
+ "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
+ linux-kernel@vger.kernel.org, v9fs@lists.linux.dev,
+ linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+ gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+ linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+ linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+ linux-trace-kernel@vger.kernel.org, "Jeff Layton" <jlayton@kernel.org>
+Subject: Re: [PATCH 12/20] filelock: make __locks_delete_block and
+ __locks_wake_up_blocks take file_lock_core
+In-reply-to: <20240116-flsplit-v1-12-c9d0f4370a5d@kernel.org>
+References: <20240116-flsplit-v1-0-c9d0f4370a5d@kernel.org>,
+ <20240116-flsplit-v1-12-c9d0f4370a5d@kernel.org>
+Date: Wed, 17 Jan 2024 09:23:07 +1100
+Message-id: <170544378717.23031.5597414508293858294@noble.neil.brown.name>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	 REPLY(-4.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: CAC4A221E8
+X-Spam-Level: 
+X-Spam-Score: -4.00
+X-Spam-Flag: NO
 
---Sig_/ieYZL_P0CFftq=Ot5lzFi/N
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 17 Jan 2024, Jeff Layton wrote:
+> Convert __locks_delete_block and __locks_wake_up_blocks to take a struct
+> file_lock_core pointer. Note that to accomodate this, we need to add a
+> new file_lock() wrapper to go from file_lock_core to file_lock.
 
-Hi all,
+Actually we don't need it.... see below.
 
-After merging the mm tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+>=20
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/locks.c | 43 ++++++++++++++++++++++++++-----------------
+>  1 file changed, 26 insertions(+), 17 deletions(-)
+>=20
+> diff --git a/fs/locks.c b/fs/locks.c
+> index eddf4d767d5d..6b8e8820dec9 100644
+> --- a/fs/locks.c
+> +++ b/fs/locks.c
+> @@ -92,6 +92,11 @@ static inline bool IS_LEASE(struct file_lock_core *flc)
+> =20
+>  #define IS_REMOTELCK(fl)	(fl->fl_core.fl_pid <=3D 0)
+> =20
+> +struct file_lock *file_lock(struct file_lock_core *flc)
+> +{
+> +	return container_of(flc, struct file_lock, fl_core);
+> +}
+> +
+>  static bool lease_breaking(struct file_lock *fl)
+>  {
+>  	return fl->fl_core.fl_flags & (FL_UNLOCK_PENDING | FL_DOWNGRADE_PENDING);
+> @@ -677,31 +682,35 @@ static void locks_delete_global_blocked(struct file_l=
+ock_core *waiter)
+>   *
+>   * Must be called with blocked_lock_lock held.
+>   */
+> -static void __locks_delete_block(struct file_lock *waiter)
+> +static void __locks_delete_block(struct file_lock_core *waiter)
+>  {
+> -	locks_delete_global_blocked(&waiter->fl_core);
+> -	list_del_init(&waiter->fl_core.fl_blocked_member);
+> +	locks_delete_global_blocked(waiter);
+> +	list_del_init(&waiter->fl_blocked_member);
+>  }
+> =20
+> -static void __locks_wake_up_blocks(struct file_lock *blocker)
+> +static void __locks_wake_up_blocks(struct file_lock_core *blocker)
+>  {
+> -	while (!list_empty(&blocker->fl_core.fl_blocked_requests)) {
+> -		struct file_lock *waiter;
+> +	while (!list_empty(&blocker->fl_blocked_requests)) {
+> +		struct file_lock_core *waiter;
+> +		struct file_lock *fl;
+> +
+> +		waiter =3D list_first_entry(&blocker->fl_blocked_requests,
+> +					  struct file_lock_core, fl_blocked_member);
+> =20
+> -		waiter =3D list_first_entry(&blocker->fl_core.fl_blocked_requests,
+> -					  struct file_lock, fl_core.fl_blocked_member);
 
-In file included from include/uapi/linux/posix_types.h:5,
-                 from include/uapi/linux/types.h:14,
-                 from include/linux/types.h:6,
-                 from include/linux/kasan-checks.h:5,
-                 from include/asm-generic/rwonce.h:26,
-                 from ./arch/powerpc/include/generated/asm/rwonce.h:1,
-                 from include/linux/compiler.h:251,
-                 from include/linux/array_size.h:5,
-                 from include/linux/kernel.h:16,
-                 from lib/group_cpus.c:6:
-lib/group_cpus.c: In function 'group_cpus_evenly':
-include/linux/stddef.h:8:14: error: invalid initializer
-    8 | #define NULL ((void *)0)
-      |              ^
-lib/group_cpus.c:356:59: note: in expansion of macro 'NULL'
-  356 |         cpumask_var_t npresmsk __free(free_cpumask_var) =3D NULL;
-      |                                                           ^~~~
+> +		fl =3D file_lock(waiter);
 
-Caused by commit
+		fl =3D list_first_entry(&blocker->fl_core.fl_blocked_requests,
+				      struct file_lock, fl_core.fl_blocked_member);
 
-  f004021b058f ("lib/group_cpus: fix initialization section in group_cpus_e=
-venly()")
+                waiter =3D &fl->fl_core;
 
-CONFIG_CPUMASK_OFFSTACK is not set for this build (so cpumask_var_t is
-an single element array, not a pointer).
+achieves the same result without needing file_lock().
 
-I applied this hack for today:
+If you really want to add file_lock() then do so, but you need a better
+justification :-)
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Wed, 17 Jan 2024 09:15:07 +1100
-Subject: [PATCH] fix up for "lib/group_cpus: fix initialization section in =
-group_cpus_evenly()"
+NeilBrown
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- lib/group_cpus.c | 4 ++++
- 1 file changed, 4 insertions(+)
 
-diff --git a/lib/group_cpus.c b/lib/group_cpus.c
-index c9c95b21e6c6..2c54b49d4c59 100644
---- a/lib/group_cpus.c
-+++ b/lib/group_cpus.c
-@@ -353,7 +353,11 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
- {
- 	cpumask_var_t *node_to_cpumask __free(free_node_to_cpumask) =3D alloc_nod=
-e_to_cpumask();
- 	struct cpumask *masks __free(kfree) =3D kcalloc(numgrps, sizeof(*masks), =
-GFP_KERNEL);
-+#ifdef CONFIG_CPUMASK_OFFSTACK
- 	cpumask_var_t npresmsk __free(free_cpumask_var) =3D NULL;
-+#else
-+	cpumask_var_t npresmsk __free(free_cpumask_var);
-+#endif
- 	int curgrp, nr_present, nr_others;
-=20
- 	if (!masks || !node_to_cpumask || !alloc_cpumask_var(&npresmsk, GFP_KERNE=
-L))
---=20
-2.43.0
 
---=20
-Cheers,
-Stephen Rothwell
+>  		__locks_delete_block(waiter);
+> -		if (waiter->fl_lmops && waiter->fl_lmops->lm_notify)
+> -			waiter->fl_lmops->lm_notify(waiter);
+> +		if ((IS_POSIX(waiter) || IS_FLOCK(waiter)) &&
+> +		    fl->fl_lmops && fl->fl_lmops->lm_notify)
+> +			fl->fl_lmops->lm_notify(fl);
+>  		else
+> -			wake_up(&waiter->fl_core.fl_wait);
+> +			wake_up(&waiter->fl_wait);
+> =20
+>  		/*
+>  		 * The setting of fl_blocker to NULL marks the "done"
+>  		 * point in deleting a block. Paired with acquire at the top
+>  		 * of locks_delete_block().
+>  		 */
+> -		smp_store_release(&waiter->fl_core.fl_blocker, NULL);
+> +		smp_store_release(&waiter->fl_blocker, NULL);
+>  	}
+>  }
+> =20
+> @@ -743,8 +752,8 @@ int locks_delete_block(struct file_lock *waiter)
+>  	spin_lock(&blocked_lock_lock);
+>  	if (waiter->fl_core.fl_blocker)
+>  		status =3D 0;
+> -	__locks_wake_up_blocks(waiter);
+> -	__locks_delete_block(waiter);
+> +	__locks_wake_up_blocks(&waiter->fl_core);
+> +	__locks_delete_block(&waiter->fl_core);
+> =20
+>  	/*
+>  	 * The setting of fl_blocker to NULL marks the "done" point in deleting
+> @@ -799,7 +808,7 @@ static void __locks_insert_block(struct file_lock *bloc=
+ker,
+>  	 * waiter, but might not conflict with blocker, or the requests
+>  	 * and lock which block it.  So they all need to be woken.
+>  	 */
+> -	__locks_wake_up_blocks(waiter);
+> +	__locks_wake_up_blocks(&waiter->fl_core);
+>  }
+> =20
+>  /* Must be called with flc_lock held. */
+> @@ -831,7 +840,7 @@ static void locks_wake_up_blocks(struct file_lock *bloc=
+ker)
+>  		return;
+> =20
+>  	spin_lock(&blocked_lock_lock);
+> -	__locks_wake_up_blocks(blocker);
+> +	__locks_wake_up_blocks(&blocker->fl_core);
+>  	spin_unlock(&blocked_lock_lock);
+>  }
+> =20
+> @@ -1186,7 +1195,7 @@ static int posix_lock_inode(struct inode *inode, stru=
+ct file_lock *request,
+>  			 * Ensure that we don't find any locks blocked on this
+>  			 * request during deadlock detection.
+>  			 */
+> -			__locks_wake_up_blocks(request);
+> +			__locks_wake_up_blocks(&request->fl_core);
+>  			if (likely(!posix_locks_deadlock(request, fl))) {
+>  				error =3D FILE_LOCK_DEFERRED;
+>  				__locks_insert_block(fl, request,
+>=20
+> --=20
+> 2.43.0
+>=20
+>=20
 
---Sig_/ieYZL_P0CFftq=Ot5lzFi/N
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWnAZEACgkQAVBC80lX
-0GzXmwf+JI6+3rRdCG2/ZbxzjpcItSDfA73tvA0ndNYsQrlKjzOTdmKl95Au5BaL
-ZYhjfIlgXrcmS+5Kkm+cyH8bVaW6dJc6dDa2LDCpoFTUp2tY5YMc+TJMuJnBthwe
-bqgEVaslkVU2qZ/7daLN9rZ0zPDlS0CQcDqQESh1jARcI7OdH64f3fLO6ZuqODHx
-n12YedFA0ZYRg4LgkWTkhPI+sW9WuM2ZbSU0OOeSNuKECNnNEvISbRzEcKG7nPlQ
-WyR9kVAYXoL+aAh6fQ8yhOePwnhbZlZxCAbifK3FQk16WA2Vvq8GvJ85DjDYA4Ow
-BXFiokhnnDaikcXhGk3s2D8Dsobg0A==
-=slum
------END PGP SIGNATURE-----
-
---Sig_/ieYZL_P0CFftq=Ot5lzFi/N--
 
