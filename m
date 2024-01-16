@@ -1,104 +1,170 @@
-Return-Path: <linux-kernel+bounces-27250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27252-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98E7682ECC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:31:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93F8682ECC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:31:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDC3B1C22E05
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:31:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7075B1C23037
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:31:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00F6E134DE;
-	Tue, 16 Jan 2024 10:31:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05D731759A;
+	Tue, 16 Jan 2024 10:31:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="E3gS2bMN"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="dzAq6shk"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00B982F2F;
-	Tue, 16 Jan 2024 10:30:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 6913040E0196;
-	Tue, 16 Jan 2024 10:30:49 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id mj4K5dcD8jS1; Tue, 16 Jan 2024 10:30:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1705401047; bh=E4Ez32ndQTP3Vu6Vg2u9DClM5PdtbuOB5NaSMYbc0Ac=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=E3gS2bMNSZzTXwC/sKZG2cRVK3AnhfVFfGeF6hoScXEQJoz2ExcFUY+C+KzgsVthd
-	 b+WgEeAz/qoZCl/jSb4Tyvjr9B//Ynx12f5Wkn9q6jslbRzSx8OB3Hqhm43nelQbn3
-	 H+Jdmu6cGK/DEsRqW4PnMIMDD1lPRi7M3TWsxeQfMytZSkNvYgevREUh/dmYEmItkx
-	 Y8oXdH4vV/Es6KklLmAoSlav7zjH6jEpiPVBcuPRtAnIaUyEt1svSeI7rrqBpupx1e
-	 Twq9TWl7Qopz8lm5HRWdoG0PnHsLs9q0udBfa4rhlgJmSvRzWISr01oSLoLxS6SW+g
-	 QIbWQwUyYslGsV3UAc+wStNkpRN0pjizs1HqVJCkOo3pEyaLq6kwv3SIsztTiALzhZ
-	 87AJ4sXPz4ko+RavjRApqNDJS7bQVovEkeZYY4VsW27W/fEt7kiamGmQF9vGPfn5ip
-	 ODB/KJyL+kxpN5R7i1n71P6NVbcqEqQuEwk+Ha9EFjjxbWBvUztMQqimiLwfo4Evyt
-	 U+Irb5yxIJcNQtdudi3CyUWFDP9Rz0uv/kX8wng3w8h2/CY2iX7SWQMQ9G/QdrvR/2
-	 hISCa9Vl5T/xNJH8TfhAxbjmTGhOVBLiRE0Z3XUMLeAHYOozKICejWc7VV+Xdo8Iq1
-	 5jJpNmtyGFySzwSiYgAYRs6c=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CB89D40E01A9;
-	Tue, 16 Jan 2024 10:30:30 +0000 (UTC)
-Date: Tue, 16 Jan 2024 11:30:24 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc: Tong Tiangen <tongtiangen@huawei.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Naoya Horiguchi <naoya.horiguchi@nec.com>,
-	linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-	linux-mm@kvack.org, Guohanjun <guohanjun@huawei.com>
-Subject: Re: [PATCH -next v4 0/3] minor improvements for x86 mce processing
-Message-ID: <20240116103024.GAZaZawAABcEBAWFus@fat_crate.local>
-References: <20240111135548.3207437-1-tongtiangen@huawei.com>
- <e453b190-d387-4b74-bb2c-fbbd2a5c488d@huawei.com>
- <20240115133354.GFZaU0Qk2lYmMSkwM9@fat_crate.local>
- <f431fa49-ebdd-4116-95d6-001b1c714109@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B1717594
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:31:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-337b71a0240so334443f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 02:31:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1705401096; x=1706005896; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3IIJ9L+Hm/MEkaJDfX4lbcUfmEYPL2ke1pt+l5k7Zhc=;
+        b=dzAq6shkTghxQnr+enP51oZCrRkLqiVlHOT7SHgojuVtbe1UYaMQ96ZFd7N45O4CEH
+         /nSI4LzHiHQ7VzfZtFmWsHm+97Kx/xYeobZnWWg/naxz6P5nEEKeusTTP7QmaighE8Hn
+         Ri2GjF8TqRd09mrssfOuJYwbFY4DRoa7mCNOQtXgEc6WZ1OQZ0R+x2C5n2Obl0qUmy1b
+         EnKEf/Rj/3yUIxxRp/ST24huuMUfKvppG/pdrA5damH+ViG/OnOm/5kiNjGal2iSvA2M
+         JgzP4PBrpRBnhRNCqHe4zr3dHb49B+s/z1Arr8nPvCFDDvvMS4MGub7zVTVUceXCFsym
+         k3og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705401096; x=1706005896;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3IIJ9L+Hm/MEkaJDfX4lbcUfmEYPL2ke1pt+l5k7Zhc=;
+        b=g20C5I8XkzglGabGsF06cYQOJbge7+76bZllFnuLH4RaO5dx5XWTM0PshiMRO8B26N
+         /uzC3AjeXy+5GqmJAKOAHiL7/N087+P6j9pD59T3ssk9ZlMF3qa3pNa6jwTSGaVGVIgP
+         DYgShEdrh9nINzHQRBSYijiZLtMAUOHQ1w9EATOBfWbybPnhiMn4BO8o6DZQcuNxNEBn
+         IpfPxmTJbUi4EDkQ2BLgF6Kxne4pYlYGHDOeAeAarKrWroOU+RVNIwdzVvK6/ya3kdOM
+         hoL6ArCD0XQStPxh0Gk+3cPi6AUVia/nwkr7k5ov4ZjIioxrixGxf3Hdww4J9ItArAPG
+         9o/A==
+X-Gm-Message-State: AOJu0Yz+uJnXl4DEOUH497hkO+RWxYmHtTTGxImYc0M0xYZhjT8hD2w/
+	ZftmIThbJ4VZeOZhRmvmur3BK0Ov97ZfhA==
+X-Google-Smtp-Source: AGHT+IHFEsPQ1u4to3ntDUPCfo0/Wf2vCqQ4yafN4IDUDwh1HUSyh/eeZMtucbscxTgnMK6tpnFnMw==
+X-Received: by 2002:adf:e647:0:b0:336:7f03:4af with SMTP id b7-20020adfe647000000b003367f0304afmr4203110wrn.123.1705401096420;
+        Tue, 16 Jan 2024 02:31:36 -0800 (PST)
+Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
+        by smtp.gmail.com with ESMTPSA id e16-20020a5d65d0000000b003365951cef9sm14161527wrw.55.2024.01.16.02.31.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jan 2024 02:31:35 -0800 (PST)
+From: Naresh Solanki <naresh.solanki@9elements.com>
+To: broonie@kernel.org,
+	Liam Girdwood <lgirdwood@gmail.com>
+Cc: mazziesaccount@gmail.com,
+	Naresh Solanki <naresh.solanki@9elements.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] regulator: event: Add netlink command for event mask
+Date: Tue, 16 Jan 2024 16:01:30 +0530
+Message-ID: <20240116103131.413205-1-naresh.solanki@9elements.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f431fa49-ebdd-4116-95d6-001b1c714109@huawei.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 16, 2024 at 09:14:56AM +0800, Kefeng Wang wrote:
-> Oh, sure, we could resend after -rc1, thanks.
+Add netlink command to enable perticular event(s) broadcasting instead
+of all regulator events.
 
-No, no need to resend after -rc1.
+Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
 
-What you should do, instead, is take the time to read the text I pasted
-more carefully and get acquainted with the development process:
+..
+Changes in v2:
+- Update attribute to REG_GENL_ATTR_SET_EVENT_MASK
+---
+ drivers/regulator/event.c          | 28 ++++++++++++++++++++++++++++
+ include/uapi/regulator/regulator.h |  1 +
+ 2 files changed, 29 insertions(+)
 
-https://kernel.org/doc/html/latest/process/development-process.html
+diff --git a/drivers/regulator/event.c b/drivers/regulator/event.c
+index ea3bd49544e8..181d16f54a21 100644
+--- a/drivers/regulator/event.c
++++ b/drivers/regulator/event.c
+@@ -14,17 +14,41 @@
+ 
+ static atomic_t reg_event_seqnum = ATOMIC_INIT(0);
+ 
++static u64 event_mask;
++
+ static const struct genl_multicast_group reg_event_mcgrps[] = {
+ 	{ .name = REG_GENL_MCAST_GROUP_NAME, },
+ };
+ 
++static int reg_genl_cmd_doit(struct sk_buff *skb, struct genl_info *info)
++{
++	if (info->attrs[REG_GENL_ATTR_SET_EVENT_MASK]) {
++		event_mask = nla_get_u64(info->attrs[REG_GENL_ATTR_SET_EVENT_MASK]);
++		pr_info("event_mask -> %llx", event_mask);
++		return 0;
++	}
++	pr_warn("Unknown attribute.");
++	return -EOPNOTSUPP;
++}
++
++static const struct genl_small_ops reg_genl_ops[] = {
++	{
++		.cmd = REG_GENL_CMD_EVENT,
++		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
++		.doit = reg_genl_cmd_doit,
++	}
++};
++
+ static struct genl_family reg_event_genl_family __ro_after_init = {
+ 	.module = THIS_MODULE,
+ 	.name = REG_GENL_FAMILY_NAME,
+ 	.version = REG_GENL_VERSION,
+ 	.maxattr = REG_GENL_ATTR_MAX,
++	.small_ops	= reg_genl_ops,
++	.n_small_ops	= ARRAY_SIZE(reg_genl_ops),
+ 	.mcgrps = reg_event_mcgrps,
+ 	.n_mcgrps = ARRAY_SIZE(reg_event_mcgrps),
++	.resv_start_op = __REG_GENL_CMD_MAX,
+ };
+ 
+ int reg_generate_netlink_event(const char *reg_name, u64 event)
+@@ -35,6 +59,9 @@ int reg_generate_netlink_event(const char *reg_name, u64 event)
+ 	void *msg_header;
+ 	int size;
+ 
++	if (!(event_mask & event))
++		return 0;
++
+ 	/* allocate memory */
+ 	size = nla_total_size(sizeof(struct reg_genl_event)) +
+ 	    nla_total_size(0);
+@@ -73,6 +100,7 @@ int reg_generate_netlink_event(const char *reg_name, u64 event)
+ 
+ static int __init reg_event_genetlink_init(void)
+ {
++	event_mask = 0;
+ 	return genl_register_family(&reg_event_genl_family);
+ }
+ 
+diff --git a/include/uapi/regulator/regulator.h b/include/uapi/regulator/regulator.h
+index 71bf71a22e7f..2a0af512b61c 100644
+--- a/include/uapi/regulator/regulator.h
++++ b/include/uapi/regulator/regulator.h
+@@ -69,6 +69,7 @@ struct reg_genl_event {
+ enum {
+ 	REG_GENL_ATTR_UNSPEC,
+ 	REG_GENL_ATTR_EVENT,	/* reg event info needed by user space */
++	REG_GENL_ATTR_SET_EVENT_MASK,	/* reg event mask */
+ 	__REG_GENL_ATTR_MAX,
+ };
+ 
 
-and especially this:
-
-https://kernel.org/doc/html/latest/process/submitting-patches.html#don-t-get-discouraged-or-impatient
-
-In those pages is a wealth of useful information.
-
+base-commit: 94cc3087aac4103c33c6da84c092301afd783200
 -- 
-Regards/Gruss,
-    Boris.
+2.41.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
