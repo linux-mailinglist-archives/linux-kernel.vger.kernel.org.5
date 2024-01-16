@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-28212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3079582FBAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:00:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76F4182FBAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:00:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B6ED2856ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:00:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C9D41C26E0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:00:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5091E67069;
-	Tue, 16 Jan 2024 20:04:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC63F4BA8C;
+	Tue, 16 Jan 2024 20:04:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fBjKuVO7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ba9zuh/v"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90CB16706C;
-	Tue, 16 Jan 2024 20:04:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF9B7482C5;
+	Tue, 16 Jan 2024 20:04:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435476; cv=none; b=ARZfzN6U3Na1J9PyNivObx5lnrkxlU8urW2wkDDyqqy0EX5lQpNeExJKJq47YkzXBs1NOdomAsy7egzDP9Dw7PTUDInyZrNZZPe9eyVnFKDCCLu3muUzo9hYUqufI/QNOZMWgFJ/lWT1DhJig5y64/6owhbR1R7R3od16dZIAJw=
+	t=1705435478; cv=none; b=V1CHm84qFSJw+QvyyShUv69fzX665tzOEwWzyBFwDgxIGs6kvke6O4L1iPbBhiGtyZT8LZuhTI29rPs/zNEbB/jFGcDepXAMVwjnW7b6HrJP1DSHA+6sOC0/a5fDEqyc/NlDH/0udvyjmzhf/vQdcoNHF9irwDO7ZiigJaLMsic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435476; c=relaxed/simple;
-	bh=8URfo+JULmWklSLjvW/SRpqud05CMUom6m5j7LEfoZ8=;
+	s=arc-20240116; t=1705435478; c=relaxed/simple;
+	bh=/XUfUpi9n3LrTFV0Z/ODZdOg843j9KGrHYVK8NlAFLg=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
-	 X-Mailer:MIME-Version:X-stable:X-Patchwork-Hint:X-stable-base:
-	 Content-Transfer-Encoding; b=nwARuLcDmhNZErHH/UtjhHpmMFjeEvm932FB/cVxD7ZVScq5N3JSuhcIMSIMB/3BDsfp0N7vX7d+FTqOaFq9BQlYpSujonaEEy/x314mef+AuXylYdE2DWdA0J4EACJifkyP5YQaLro1lzsx+ncMasAyPCNQujFYVRIr7nGyfPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fBjKuVO7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 184B4C433C7;
-	Tue, 16 Jan 2024 20:04:34 +0000 (UTC)
+	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=Li7tSe3tRP4IKx6ZU37P5H21jlPo+aqYDK0Va7AA2IW/UJ9ld0lyYgtdaLo9FD/rWJycnNHlJuHrAyI7WbizvpQcgmsaH3BD5NhPrTF7/rerbAS7FL2A5tJWX5nF2NWXdBJYelXk4kV2XxF/0uYQ+tWU08V+R6PgE2YVdBkNSEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ba9zuh/v; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBC9AC43394;
+	Tue, 16 Jan 2024 20:04:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435476;
-	bh=8URfo+JULmWklSLjvW/SRpqud05CMUom6m5j7LEfoZ8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=fBjKuVO7jVPIUklTnhZ0CMaWUvEyyU1ssAxfbH+CX3k6r8d/RtiNnKTtjlC9UdL0Z
-	 Uw+KjzKke5v2pUTgs/1WWlyiM851BAhaeCHf9uMstzCcucFeU9I62nCn0twSdnv5Vr
-	 aPKE2WMTFsgizRQnUs/nRbmahVvWhwA1bwkrK/sw01p6J3AsQqZ0D3vxde3KgsPAfa
-	 NXY2JtBdpiO7W4XzK9X8nKIceyVdCeYKpWCUPUEAcOE36BZmm/Ehy4NfNLj/nV2JMd
-	 +IqKKisvClny/eH0V6Zb4WiMa3l0HNg+8V6gQJQNjzW5xxl0DHpVE0TynCRId+S/0e
-	 mxalMXDVGGO0Q==
+	s=k20201202; t=1705435477;
+	bh=/XUfUpi9n3LrTFV0Z/ODZdOg843j9KGrHYVK8NlAFLg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ba9zuh/vvLu+o+GZttyt9K5MuBn90uc7W8sMqm4WXDUa+5q3o1QrJARpeYObYdC7k
+	 UwhJ8yADsgNPZ3NdQQZl9Yvuh2twc69PJsXwdk41h1zWy4kO2duGEHx9gjQ3aPgF8B
+	 Kc+tAxQOYcy6YRp5QWxeh8EYm0hi3Q6Knd8Uo3Z3/Cr39vqErOqcRlpI/Gw1eDj1VU
+	 64e8fruG9DhtwSl+YlY5RNIzoxjZNqsXAOpUk8XvNfQJ8BWzZCjVw5tcnd4cG+yBEU
+	 5YdCaQ4gKyK5rHVRH2Y+LYDdwhg+Qj++gsapTbG153KQ6kXohKYBl45L5QMVfchL9C
+	 q0T0VQRuektwA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Justin Tee <justin.tee@broadcom.com>,
-	Himanshu Madhani <himanshu.madhani@oracle.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
+Cc: Ido Schimmel <idosch@nvidia.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Petr Machata <petrm@nvidia.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	james.smart@broadcom.com,
-	dick.kennedy@broadcom.com,
-	jejb@linux.ibm.com,
-	linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 01/22] scsi: lpfc: Fix possible file string name overflow when updating firmware
-Date: Tue, 16 Jan 2024 15:03:55 -0500
-Message-ID: <20240116200432.260016-1-sashal@kernel.org>
+	linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 02/22] PCI: Add no PM reset quirk for NVIDIA Spectrum devices
+Date: Tue, 16 Jan 2024 15:03:56 -0500
+Message-ID: <20240116200432.260016-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240116200432.260016-1-sashal@kernel.org>
+References: <20240116200432.260016-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,61 +67,60 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.305
 Content-Transfer-Encoding: 8bit
 
-From: Justin Tee <justin.tee@broadcom.com>
+From: Ido Schimmel <idosch@nvidia.com>
 
-[ Upstream commit f5779b529240b715f0e358489ad0ed933bf77c97 ]
+[ Upstream commit 3ed48c80b28d8dcd584d6ddaf00c75b7673e1a05 ]
 
-Because file_name and phba->ModelName are both declared a size 80 bytes,
-the extra ".grp" file extension could cause an overflow into file_name.
+Spectrum-{1,2,3,4} devices report that a D3hot->D0 transition causes a
+reset (i.e., they advertise NoSoftRst-). However, this transition does
+not have any effect on the device: It continues to be operational and
+network ports remain up. Advertising this support makes it seem as if a
+PM reset is viable for these devices. Mark it as unavailable to skip it
+when testing reset methods.
 
-Define a ELX_FW_NAME_SIZE macro with value 84.  84 incorporates the 4 extra
-characters from ".grp".  file_name is changed to be declared as a char and
-initialized to zeros i.e. null chars.
+Before:
 
-Signed-off-by: Justin Tee <justin.tee@broadcom.com>
-Link: https://lore.kernel.org/r/20231031191224.150862-3-justintee8345@gmail.com
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+ # cat /sys/bus/pci/devices/0000\:03\:00.0/reset_method
+ pm bus
+
+After:
+
+ # cat /sys/bus/pci/devices/0000\:03\:00.0/reset_method
+ bus
+
+Signed-off-by: Ido Schimmel <idosch@nvidia.com>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Petr Machata <petrm@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc.h      | 1 +
- drivers/scsi/lpfc/lpfc_init.c | 4 ++--
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/pci/quirks.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/scsi/lpfc/lpfc.h b/drivers/scsi/lpfc/lpfc.h
-index 706aca3f7c25..53b661793268 100644
---- a/drivers/scsi/lpfc/lpfc.h
-+++ b/drivers/scsi/lpfc/lpfc.h
-@@ -32,6 +32,7 @@
- struct lpfc_sli2_slim;
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 3a165710fbb8..af56cb396626 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3532,6 +3532,19 @@ static void quirk_no_pm_reset(struct pci_dev *dev)
+ DECLARE_PCI_FIXUP_CLASS_HEADER(PCI_VENDOR_ID_ATI, PCI_ANY_ID,
+ 			       PCI_CLASS_DISPLAY_VGA, 8, quirk_no_pm_reset);
  
- #define ELX_MODEL_NAME_SIZE	80
-+#define ELX_FW_NAME_SIZE	84
- 
- #define LPFC_PCI_DEV_LP		0x1
- #define LPFC_PCI_DEV_OC		0x2
-diff --git a/drivers/scsi/lpfc/lpfc_init.c b/drivers/scsi/lpfc/lpfc_init.c
-index c6caacaa3e7a..7db4e893e10e 100644
---- a/drivers/scsi/lpfc/lpfc_init.c
-+++ b/drivers/scsi/lpfc/lpfc_init.c
-@@ -11428,7 +11428,7 @@ lpfc_write_firmware(const struct firmware *fw, void *context)
- int
- lpfc_sli4_request_firmware_update(struct lpfc_hba *phba, uint8_t fw_upgrade)
- {
--	uint8_t file_name[ELX_MODEL_NAME_SIZE];
-+	char file_name[ELX_FW_NAME_SIZE] = {0};
- 	int ret;
- 	const struct firmware *fw;
- 
-@@ -11437,7 +11437,7 @@ lpfc_sli4_request_firmware_update(struct lpfc_hba *phba, uint8_t fw_upgrade)
- 	    LPFC_SLI_INTF_IF_TYPE_2)
- 		return -EPERM;
- 
--	snprintf(file_name, ELX_MODEL_NAME_SIZE, "%s.grp", phba->ModelName);
-+	scnprintf(file_name, sizeof(file_name), "%s.grp", phba->ModelName);
- 
- 	if (fw_upgrade == INT_FW_UPGRADE) {
- 		ret = request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
++/*
++ * Spectrum-{1,2,3,4} devices report that a D3hot->D0 transition causes a reset
++ * (i.e., they advertise NoSoftRst-). However, this transition does not have
++ * any effect on the device: It continues to be operational and network ports
++ * remain up. Advertising this support makes it seem as if a PM reset is viable
++ * for these devices. Mark it as unavailable to skip it when testing reset
++ * methods.
++ */
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MELLANOX, 0xcb84, quirk_no_pm_reset);
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MELLANOX, 0xcf6c, quirk_no_pm_reset);
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MELLANOX, 0xcf70, quirk_no_pm_reset);
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MELLANOX, 0xcf80, quirk_no_pm_reset);
++
+ /*
+  * Thunderbolt controllers with broken MSI hotplug signaling:
+  * Entire 1st generation (Light Ridge, Eagle Ridge, Light Peak) and part
 -- 
 2.43.0
 
