@@ -1,256 +1,226 @@
-Return-Path: <linux-kernel+bounces-27223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DDD882EC67
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:59:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B42B82EC6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:59:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AF501C210FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:59:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 062E6B22C34
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:59:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C90EC13AC0;
-	Tue, 16 Jan 2024 09:58:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9C1418E0B;
+	Tue, 16 Jan 2024 09:58:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="dCtsWKx4"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="t0fLXc0+"
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 725BA1AACB;
-	Tue, 16 Jan 2024 09:58:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705399085;
-	bh=NTQzAsoYckQeor7si/feJW9YeW0tBsUAx+yKkXj5s1Q=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=dCtsWKx4bz5RhZh7k4NcXSeSujXK7lTHGgb8W4QS6LjNYDRTNOWz3h9tL46IWthpJ
-	 Uaewsw2/cZJvNNUSviS7KkfjnTibTvB8kc2E7eSeAvtnApfknb3fxZfyVYmqWYRdUb
-	 i5Nq85J/FTWNd+VZ5c3f7T24oIBl+/kUBiCkeRVbFDMYbOfTrYRGlHdbDfaRrYNanX
-	 H8lN5yZxo21B1Ot6o5dkR4SFY6i52jbPqERld74ADzMhk3ADa5XXyTFjqINB3iZThM
-	 tZSFvtuypxh0c59N6ogJ2g9oUWPMz3u/1VFqKmD02HNHIvGSKhHr8r83uzd/cQChsB
-	 Ra8Ous2eZYhgw==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4146E3782066;
-	Tue, 16 Jan 2024 09:58:05 +0000 (UTC)
-Message-ID: <33c7d36d-c2f5-477f-946a-6ad926a277d7@collabora.com>
-Date: Tue, 16 Jan 2024 10:58:04 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8400E18EA8
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 09:58:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5f75aee31d2so85472007b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 01:58:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705399108; x=1706003908; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=R1xEZasaNALs0H/c20rzDJz1USl3lr2o7KFCpBSV5WU=;
+        b=t0fLXc0+GvjQOBzJi2qbSTSKCP2bmzWlkjcLI8Kw5DSdg0cvqnBpZty4kum2pIWzMB
+         7BkW7ihSSjZP44xErm8hTvUSJEQWzx1jinQ8/XILK0MMeNLz6wucPZ91DQOW9zu4lABD
+         8g/PRPTp/4R3FA2/56rHoEMvbG0zEvYT8R+Go6N9Zq2J+29XR7dA09kB7BK80y0cvfy4
+         GeUG1lp9W0nV1bUFEO+mUCzgaPl1N7mYzzXbX/hV38M0t0Ce+th9MmV1QqbDnXj+XHQ8
+         k+QajJV/sC9Q2os2IB6LaKh3dAnKtmG0kAUTyeR0ZCgTJQNXSkiVS9vNRCpM9Xtblm0m
+         0svQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705399108; x=1706003908;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R1xEZasaNALs0H/c20rzDJz1USl3lr2o7KFCpBSV5WU=;
+        b=qNS2AqALpwIMQFEMhKDx/i+l+UQ2GrxmJDUhmAgsfNxEkwKY0x/Gvicj3KfCRTCo8A
+         a1MajM2VKu+qLsS8xe612UAGetIlB/a8EuqLe6l7NtazRtq5fg7uHS0umFtBeLig9IXG
+         HJqwHxVNp7h46Xgvl3Y+GvQikrYSoUxYMeZTqz1uuLWpFxsvkn23qjQoE8CMdNJjakOC
+         p228gFEDJ0xDLJPB5tfEHJSffK0CimwCQBRTIHTG6/3kOL59V6HUNsjGS4JW28OxCpOP
+         Fiil1+ffdTrDw+gkPIllNZbaH+vRPJSorsgmBwXhQ4y5lJUNUttmMaK/C4ENRjjYdxjB
+         NdSw==
+X-Gm-Message-State: AOJu0YwU7rHHlJNNX2qOEPTSt35dfWCHa8nD65NYOolsQzL2Wd9VWN3g
+	vb7EhFxbG308BooPaUKT7YDKD7jjNW4ro3QOhhbfgkry1FcBlA==
+X-Google-Smtp-Source: AGHT+IEXftEaoSyn1koz1ntE2MMdhAkNAHrntukTqgwGP7zuusTChJSDEo3EuSuE+f2Sr8KZRlvgAnfoYF0dttlFtxE=
+X-Received: by 2002:a81:4e82:0:b0:5ff:5bac:a28a with SMTP id
+ c124-20020a814e82000000b005ff5baca28amr148911ywb.76.1705399108510; Tue, 16
+ Jan 2024 01:58:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 01/26] thermal: Introduce
- thermal_zone_device_register() and params structure
-Content-Language: en-US
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: rafael@kernel.org, rui.zhang@intel.com, lukasz.luba@arm.com,
- linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
-References: <20231221124825.149141-1-angelogioacchino.delregno@collabora.com>
- <20231221124825.149141-2-angelogioacchino.delregno@collabora.com>
- <7417c498-2439-485d-9f78-fbb22f9ce393@linaro.org>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <7417c498-2439-485d-9f78-fbb22f9ce393@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240116094935.9988-1-quic_riteshk@quicinc.com> <20240116094935.9988-3-quic_riteshk@quicinc.com>
+In-Reply-To: <20240116094935.9988-3-quic_riteshk@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 16 Jan 2024 11:58:17 +0200
+Message-ID: <CAA8EJpp3WJ8132aB-tyzJPXsdczvQC+TvKemm9NvUNYNrEntow@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: qcm6490-idp: add display and panel
+To: Ritesh Kumar <quic_riteshk@quicinc.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	catalin.marinas@arm.com, will@kernel.org, quic_bjorande@quicinc.com, 
+	geert+renesas@glider.be, arnd@arndb.de, neil.armstrong@linaro.org, 
+	nfraprado@collabora.com, m.szyprowski@samsung.com, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	quic_abhinavk@quicinc.com, quic_rajeevny@quicinc.com, 
+	quic_vproddut@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 
-Il 15/01/24 13:39, Daniel Lezcano ha scritto:
-> On 21/12/2023 13:48, AngeloGioacchino Del Regno wrote:
->> In preparation for extending the thermal zone devices to actually have
->> a name and disambiguation of thermal zone types/names, introduce a new
->> thermal_zone_device_params structure which holds all of the parameters
->> that are necessary to register a thermal zone device, then add a new
->> function thermal_zone_device_register().
->>
->> The latter takes as parameter the newly introduced structure and is
->> made to eventually replace all usages of the now deprecated function
->> thermal_zone_device_register_with_trips() and of
->> thermal_tripless_zone_device_register().
->>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->> ---
->>   drivers/thermal/thermal_core.c | 27 +++++++++++++++++++++++++++
->>   include/linux/thermal.h        | 33 +++++++++++++++++++++++++++++++++
->>   2 files changed, 60 insertions(+)
->>
->> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
->> index e5434cdbf23b..6be508eb2d72 100644
->> --- a/drivers/thermal/thermal_core.c
->> +++ b/drivers/thermal/thermal_core.c
->> @@ -1235,6 +1235,8 @@ EXPORT_SYMBOL_GPL(thermal_zone_get_crit_temp);
->>    *           whether trip points have been crossed (0 for interrupt
->>    *           driven systems)
->>    *
->> + * This function is deprecated. See thermal_zone_device_register().
->> + *
->>    * This interface function adds a new thermal zone device (sensor) to
->>    * /sys/class/thermal folder as thermal_zone[0-*]. It tries to bind all the
->>    * thermal cooling devices registered at the same time.
->> @@ -1409,6 +1411,7 @@ thermal_zone_device_register_with_trips(const char *type, 
->> struct thermal_trip *t
->>   }
->>   EXPORT_SYMBOL_GPL(thermal_zone_device_register_with_trips);
->> +/* This function is deprecated. See thermal_zone_device_register(). */
->>   struct thermal_zone_device *thermal_tripless_zone_device_register(
->>                       const char *type,
->>                       void *devdata,
->> @@ -1420,6 +1423,30 @@ struct thermal_zone_device 
->> *thermal_tripless_zone_device_register(
->>   }
->>   EXPORT_SYMBOL_GPL(thermal_tripless_zone_device_register);
->> +/**
->> + * thermal_zone_device_register() - register a new thermal zone device
->> + * @tzdp:    Parameters of the new thermal zone device
->> + *        See struct thermal_zone_device_register.
->> + *
->> + * This interface function adds a new thermal zone device (sensor) to
->> + * /sys/class/thermal folder as thermal_zone[0-*]. It tries to bind all the
->> + * thermal cooling devices registered at the same time.
->> + * thermal_zone_device_unregister() must be called when the device is no
->> + * longer needed. The passive cooling depends on the .get_trend() return value.
->> + *
->> + * Return: a pointer to the created struct thermal_zone_device or an
->> + * in case of error, an ERR_PTR. Caller must check return value with
->> + * IS_ERR*() helpers.
->> + */
->> +struct thermal_zone_device *thermal_zone_device_register(struct 
->> thermal_zone_device_params *tzdp)
->> +{
->> +    return thermal_zone_device_register_with_trips(tzdp->type, tzdp->trips, 
->> tzdp->num_trips,
->> +                               tzdp->mask, tzdp->devdata, tzdp->ops,
->> +                               &tzdp->tzp, tzdp->passive_delay,
->> +                               tzdp->polling_delay);
->> +}
->> +EXPORT_SYMBOL_GPL(thermal_zone_device_register);
->> +
->>   void *thermal_zone_device_priv(struct thermal_zone_device *tzd)
->>   {
->>       return tzd->devdata;
->> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
->> index 98957bae08ff..c6ed33a7e468 100644
->> --- a/include/linux/thermal.h
->> +++ b/include/linux/thermal.h
->> @@ -258,6 +258,33 @@ struct thermal_zone_params {
->>       int offset;
->>   };
->> +/**
->> + * struct thermal_zone_device_params - parameters for a thermal zone device
->> + * @type:        the thermal zone device type
->> + * @tzp:        thermal zone platform parameters
->> + * @ops:        standard thermal zone device callbacks
->> + * @devdata:        private device data
->> + * @trips:        a pointer to an array of thermal trips, if any
->> + * @num_trips:        the number of trip points the thermal zone support
->> + * @mask:        a bit string indicating the writeablility of trip points
->> + * @passive_delay:    number of milliseconds to wait between polls when
->> + *            performing passive cooling
->> + * @polling_delay:    number of milliseconds to wait between polls when checking
->> + *            whether trip points have been crossed (0 for interrupt
->> + *            driven systems)
->> + */
->> +struct thermal_zone_device_params {
->> +    const char *type;
->> +    struct thermal_zone_params tzp;
->> +    struct thermal_zone_device_ops *ops;
->> +    void *devdata;
->> +    struct thermal_trip *trips;
->> +    int num_trips;
->> +    int mask;
->> +    int passive_delay;
->> +    int polling_delay;
->> +};
-> 
->  From my POV, this "struct thermal_zone_params" has been always a inadequate and 
-> catch-all structure. It will confuse with thermal_zone_device_params
-> 
-> I suggest to cleanup a bit that by sorting the parameters in the right structures 
-> where the result could be something like:
-> 
-> eg.
-> 
-> struct thermal_zone_params {
-> 
->      const char *type;
->      struct thermal_zone_device_ops *ops;
->      struct thermal_trip *trips;
->      int num_trips;
-> 
->      int passive_delay;
->      int polling_delay;
-> 
->      void *devdata;
->          bool no_hwmon;
-> };
-> 
-> struct thermal_governor_ipa_params {
->          u32 sustainable_power;
->          s32 k_po;
->          s32 k_pu;
->          s32 k_i;
->          s32 k_d;
->          s32 integral_cutoff;
->          int slope;
->          int offset;
-> };
-> 
-> struct thermal_governor_params {
->      char governor_name[THERMAL_NAME_LENGTH];
->      union {
->          struct thermal_governor_ipa_params ipa_params;
->      };
-> };
-> 
-> struct thermal_zone_device_params {
->      struct thermal_zone_params *tzp;
->      struct thermal_governor_params *tgp;
-> }
-> 
-> No functional changes just code reorg, being a series to be submitted before the 
-> rest on these RFC changes (2->26)
-> 
+On Tue, 16 Jan 2024 at 11:49, Ritesh Kumar <quic_riteshk@quicinc.com> wrote:
+>
+> Enable Display Subsystem with Novatek NT36672E Panel
+> on qcm6490 idp platform.
 
-Could work. It's true that thermal_zone_params is a catch-all structure, and it's
-not really the best... but I also haven't checked how complex and/or how much time
-would your proposed change take.
+Is this panel always present on the IDP board or is it an optional
+addon, like the panels for all the RBn boards?
 
-Shouldn't take much as far as I can foresee, but I really have to check a bit.
-If I'm right as in it's not something huge, the next series will directly have
-this stuff sorted - if not, I'll reach to you.
+>
+> Signed-off-by: Ritesh Kumar <quic_riteshk@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 100 +++++++++++++++++++++++
+>  1 file changed, 100 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+> index 2a6e4907c5ee..efa5252130a1 100644
+> --- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+> @@ -9,6 +9,7 @@
+>  #define PM7250B_SID 8
+>  #define PM7250B_SID1 9
+>
+> +#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+>  #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+>  #include "sc7280.dtsi"
+>  #include "pm7250b.dtsi"
+> @@ -38,6 +39,25 @@
+>                 stdout-path = "serial0:115200n8";
+>         };
+>
+> +       lcd_disp_bias: lcd-disp-bias-regulator {
+> +               compatible = "regulator-fixed";
+> +               regulator-name = "lcd_disp_bias";
+> +               regulator-min-microvolt = <5500000>;
+> +               regulator-max-microvolt = <5500000>;
+> +               gpio = <&pm7250b_gpios 2 GPIO_ACTIVE_HIGH>;
+> +               enable-active-high;
+> +               pinctrl-names = "default";
+> +               pinctrl-0 = <&lcd_disp_bias_en>;
+> +       };
+> +
+> +       pm8350c_pwm_backlight: backlight {
+> +               compatible = "pwm-backlight";
+> +               pwms = <&pm8350c_pwm 3 65535>;
+> +               enable-gpios = <&pm8350c_gpios 7 GPIO_ACTIVE_HIGH>;
+> +               pinctrl-names = "default";
+> +               pinctrl-0 = <&pmic_lcd_bl_en>;
+> +       };
+> +
+>         reserved-memory {
+>                 xbl_mem: xbl@80700000 {
+>                         reg = <0x0 0x80700000 0x0 0x100000>;
+> @@ -420,6 +440,86 @@
+>         };
+>  };
+>
+> +&gpu {
+> +       status = "disabled";
+> +};
+> +
+> +&mdss {
+> +       status = "okay";
+> +};
+> +
+> +&mdss_dsi {
+> +       vdda-supply = <&vreg_l6b_1p2>;
+> +       status = "okay";
+> +
+> +       panel@0 {
+> +               compatible = "novatek,nt36672e";
+> +               reg = <0>;
+> +
+> +               reset-gpios = <&tlmm 44 GPIO_ACTIVE_HIGH>;
+> +
+> +               vddi-supply = <&vreg_l8c_1p62>;
+> +               avdd-supply = <&lcd_disp_bias>;
+> +               avee-supply = <&lcd_disp_bias>;
+> +
+> +               backlight = <&pm8350c_pwm_backlight>;
+> +
+> +               port {
+> +                       panel0_in: endpoint {
+> +                               remote-endpoint = <&mdss_dsi0_out>;
+> +                       };
+> +               };
+> +       };
+> +};
+> +
+> +&mdss_dsi0_out {
+> +       remote-endpoint = <&panel0_in>;
+> +       data-lanes = <0 1 2 3>;
+> +};
+> +
+> +&mdss_dsi_phy {
+> +       vdds-supply = <&vreg_l10c_0p88>;
+> +       status = "okay";
+> +};
+> +
+> +&pm7250b_gpios {
+> +       lcd_disp_bias_en: lcd-disp-bias-en-state {
+> +               pins = "gpio2";
+> +               function = "func1";
+> +               bias-disable;
+> +               qcom,drive-strength = <PMIC_GPIO_STRENGTH_LOW>;
+> +               input-disable;
+> +               output-enable;
+> +               power-source = <0>;
+> +       };
+> +};
+> +
+> +&pm8350c_gpios {
+> +       pmic_lcd_bl_en: pmic-lcd-bl-en-state {
+> +               pins = "gpio7";
+> +               function = "normal";
+> +               bias-disable;
+> +               qcom,drive-strength = <PMIC_GPIO_STRENGTH_LOW>;
+> +               output-low;
+> +               power-source = <0>;
+> +       };
+> +
+> +       pmic_lcd_bl_pwm: pmic-lcd-bl-pwm-state {
+> +               pins = "gpio8";
+> +               function = "func1";
+> +               bias-disable;
+> +               qcom,drive-strength = <PMIC_GPIO_STRENGTH_LOW>;
+> +               output-low;
+> +               power-source = <0>;
+> +       };
+> +};
+> +
+> +&pm8350c_pwm {
+> +       pinctrl-names = "default";
+> +       pinctrl-0 = <&pmic_lcd_bl_pwm>;
+> +       status = "okay";
+> +};
+> +
+>  &qupv3_id_0 {
+>         status = "okay";
+>  };
+> --
+> 2.17.1
+>
 
-Cheers,
-Angelo
 
->>   /* Function declarations */
->>   #ifdef CONFIG_THERMAL_OF
->>   struct thermal_zone_device *devm_thermal_of_zone_register(struct device *dev, 
->> int id, void *data,
->> @@ -310,6 +337,8 @@ struct thermal_zone_device 
->> *thermal_tripless_zone_device_register(
->>                       struct thermal_zone_device_ops *ops,
->>                       const struct thermal_zone_params *tzp);
->> +struct thermal_zone_device *thermal_zone_device_register(struct 
->> thermal_zone_device_params *tzdp);
->> +
->>   void thermal_zone_device_unregister(struct thermal_zone_device *tz);
->>   void *thermal_zone_device_priv(struct thermal_zone_device *tzd);
->> @@ -372,6 +401,10 @@ static inline struct thermal_zone_device 
->> *thermal_tripless_zone_device_register(
->>                       const struct thermal_zone_params *tzp)
->>   { return ERR_PTR(-ENODEV); }
->> +static inline struct thermal_zone_device *thermal_zone_device_register(
->> +                    struct thermal_zone_device_params *tzdp)
->> +{ return ERR_PTR(-ENODEV); }
->> +
->>   static inline void thermal_zone_device_unregister(struct thermal_zone_device *tz)
->>   { }
-> 
-
+-- 
+With best wishes
+Dmitry
 
