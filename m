@@ -1,130 +1,137 @@
-Return-Path: <linux-kernel+bounces-27732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D62582F4FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:05:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F3C3E82F511
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:12:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 110061F26321
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:05:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EBD41F21B4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:12:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3F231CFB7;
-	Tue, 16 Jan 2024 19:04:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D6E71CFBE;
+	Tue, 16 Jan 2024 19:11:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="URFrkTNa"
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ItfqZO4L"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A75781EB5E;
-	Tue, 16 Jan 2024 19:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE301D520;
+	Tue, 16 Jan 2024 19:11:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705431850; cv=none; b=N/TlZ35GDpXBB6jPaZnS82JLgVVW5M1tUK8lJ79QgAuuIdhQzOyic1TE9NO64IwY+Nw7nPqkRrkT0W5QUCIZAzQu2LqDxQKtW5tVvPQh8vuCXFOBH9pFDcki81RZDLuMUJhulfp+YsbHgcEEF6ohZn3L78mDzj/V2E8JVcoQnjQ=
+	t=1705432314; cv=none; b=uwJu7fwEVYdpVn3G4zeMHYyX8gt50Ro+MxeVOLP/nvmmSCApYrKW0E+tUZrnTLgs0J4kASp2U5e/ezr1LauCPrXx4/euyQ/ALe25iaqT3Umv9lkTJNZ+3y88Ibenmr9o9Lqm4lDpmECGrtGsft9eX9PUONM/sQZq2ZZujeo6naQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705431850; c=relaxed/simple;
-	bh=dm1liQhJtUkVgWIxniNMTu3WXC8cfV96Gig0jkhd8J0=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type; b=SfyfZeHayXxfyPDUTtkTAFGOVBpciOxeE7HQIw0fSQt+K7Efni6o1APVOwv8IjAI2Poc7NX0JyJjypZSBWxJmcZwIcHyXVUGQ09QvpKOVyfcyCH3ymYmNhH1TJ2KSLvLJXNcIjMdFyMGB/jUGlRwd114u+9Y7EL//cklIieRljk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=URFrkTNa; arc=none smtp.client-ip=209.85.128.175
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5f15a1052b3so93254817b3.1;
-        Tue, 16 Jan 2024 11:04:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705431848; x=1706036648; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=p0O8J1tKk/vVn8InKgNLS/4PstZ3a8iy9tIk4iRsjlc=;
-        b=URFrkTNaW838UPlyD67zfArGEBczk/55JuBVXRI6R47tsxHJpj5okDs4BjGczSs77p
-         trwUzyQvjNUMh1Hm9aeoifl5LFGSc/zQt3dyguAtu26WWZcicdw2APU5CZnJexMNb9fp
-         pSiNimow9f9BfwUFHGyjOCzkhidVUdNUzOX91VoVLumt12sD0yIUUr5BQHSyBBYAVapA
-         6nh1Shyy8O+BPV76nx+9+NfDCIbAPofb7Bv2IuEGOwLBmbScHzQ4KAcEb8A1+p8BZqrp
-         ISnunq9tgxV2fQIQZfTA+JXcBlapM//cQPD7OhUQSHV1qzS9syD+JTYomj8dJf/e4K/k
-         phDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705431848; x=1706036648;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=p0O8J1tKk/vVn8InKgNLS/4PstZ3a8iy9tIk4iRsjlc=;
-        b=PPRIRY6aXwJJT9/lOdvwQhnorpj+f/oo1+dt1ehiGDH3BD2/UHVTQzDzcJa9JZ0B5x
-         UXT4iegz1bgd4TP+ezGBvWfAn8YoCQXx1VRWMYr2xAVRfgvlH7H6t3MTx4K3xDRgymSD
-         FeQUTZFxc6BJj82r6haAk2weyCdkCYj/muybCubV4g4zpyolhus+/vSnKFT2qqerAvQd
-         YOvS22j8zJZAmEqwhbLjM0Sq/dVt3oi7KT8tbZQcoiBl49PaTb8FUseA7uUh7yYWmNSe
-         B/nFAKNdGoayUwMQjJMFsi5H7KgZwwbQz9/dk2PmC6iyf8zJyMqlFyHRwKkV3CjCo+Tx
-         w48w==
-X-Gm-Message-State: AOJu0YyNl9s8hYbkUpukhPlLoP1BsPLqlyyk1LFxdXvU/MdD9kDPJWhO
-	7fuK1jPApooBQDAssAcJczOil4BhAO6rvGmrBWc=
-X-Google-Smtp-Source: AGHT+IEXRnUGPJD1ri/U8Wt1UsnIWkVnxKEeRpoqtaXWVOvyxun/wO91g+xEArSw8LKoeOWz3vF8MWxtTZ4kYuvg0w4=
-X-Received: by 2002:a0d:df8d:0:b0:5ff:5f3a:4405 with SMTP id
- i135-20020a0ddf8d000000b005ff5f3a4405mr651310ywe.30.1705431848648; Tue, 16
- Jan 2024 11:04:08 -0800 (PST)
+	s=arc-20240116; t=1705432314; c=relaxed/simple;
+	bh=u1IUBFcalqyRnOi6bz+nbv3wrQMj04Gv0FNZmNzobLk=;
+	h=Received:DKIM-Signature:Received:Received:Received:Received:
+	 Received:Received:Received:Received:Received:Message-ID:Date:
+	 MIME-Version:User-Agent:Subject:To:Cc:References:Content-Language:
+	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-TM-AS-GCONF:X-Proofpoint-GUID:X-Proofpoint-ORIG-GUID:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details; b=SJXHWn5K2gx7QfM0LRVWxicZ/Y6u9Eg5SN8aGxM7z0IhKKDDOYmksa8qduwG1El9NT0xcsZenop0cJVDg6MvT22iMMcJ1qoeAigv66LW3tx3bCPfcH9CdLv2vfTD+057Q3bs+2p6fhrBYngwwUKiTtyteWPEwZvs7jJfySory9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ItfqZO4L; arc=none smtp.client-ip=148.163.158.5
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40GJBmLc001621;
+	Tue, 16 Jan 2024 19:11:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=CufhlA43xSEHBT1+yTf9o3PrWgMnByKAx9Qe06+Wuzk=;
+ b=ItfqZO4L/yk9kH7CT3YmATr+bs/vvy166JS8QiBOeAMvEc2Nt475+O2CslHH424Ue8Qs
+ YVRaR4kyggLT/z0WjFt9uGFfFE6dmFx9x5aDnCq9IuOieI52FlrPhk1igbQ18/gdbODc
+ VwyP3Nt0EYyfWON5QdpnrmuMEpHHQR7jBghEXWum7CNC6ezIimTKs/FQNnfObO+y1qLK
+ Dxc/k2occ3SyQvsWPY1Nf169HhVuQXI5iXxHV0HNYBV9j+BJGYTMqW3IMILlGhutdW+0
+ gCf1T+mpy9BLy3yOFrd3A2z719iF/hnTV//9yqn82ovNGey2kHpxbMurTmPcWbraOpfY aw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnyd4rhuq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 19:11:49 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40GJBmSw001666;
+	Tue, 16 Jan 2024 19:11:48 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnyd4rhhs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 19:11:48 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40GJ73Nk003722;
+	Tue, 16 Jan 2024 19:07:47 GMT
+Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vm4usrsed-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 19:07:47 +0000
+Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
+	by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40GJ7kUm47907284
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Jan 2024 19:07:46 GMT
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9E67758056;
+	Tue, 16 Jan 2024 19:07:46 +0000 (GMT)
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 97A0958063;
+	Tue, 16 Jan 2024 19:07:40 +0000 (GMT)
+Received: from [9.61.48.5] (unknown [9.61.48.5])
+	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 16 Jan 2024 19:07:40 +0000 (GMT)
+Message-ID: <fbe8e10a-355b-4a04-86b4-0dfe959f18a7@linux.ibm.com>
+Date: Tue, 16 Jan 2024 14:07:37 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108135421.684263-1-tmaimon77@gmail.com> <20240108135421.684263-6-tmaimon77@gmail.com>
- <4e9cc473-dbab-4e7c-ac7f-871a4025ef5b@linaro.org>
-In-Reply-To: <4e9cc473-dbab-4e7c-ac7f-871a4025ef5b@linaro.org>
-From: Tomer Maimon <tmaimon77@gmail.com>
-Date: Tue, 16 Jan 2024 21:03:57 +0200
-Message-ID: <CAP6Zq1ii49BFPAg_erhiu6qMj7zC7iLg=C-N1c3UKy7iEe9CXQ@mail.gmail.com>
-Subject: Re: [PATCH v22 5/8] arm64: dts: nuvoton: npcm8xx: add clock reset
- syscon node
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, tali.perry1@gmail.com, joel@jms.id.au, 
-	venture@google.com, yuenn@google.com, benjaminfair@google.com, 
-	openbmc@lists.ozlabs.org, linux-clk@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/6] s390/vfio-ap: let 'on_scan_complete' callback
+ filter matrix and update guest's APCB
+To: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, jjherne@linux.ibm.com, borntraeger@de.ibm.com,
+        pasic@linux.ibm.com, pbonzini@redhat.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, gor@linux.ibm.com
+References: <20240115185441.31526-1-akrowiak@linux.ibm.com>
+ <20240115185441.31526-4-akrowiak@linux.ibm.com>
+ <ZaY/fGxUMx2z4OQH@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+ <4eb35fab-eb85-487d-90cd-c4b10b8410ec@linux.ibm.com>
+ <ZaamkyuOET+1rOSm@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+Content-Language: en-US
+From: Anthony Krowiak <akrowiak@linux.ibm.com>
+In-Reply-To: <ZaamkyuOET+1rOSm@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: wRuFnXYXC7qAa3dH0BPNzhB46OXj9BER
+X-Proofpoint-ORIG-GUID: cV9CcM1z1tBiELyLaed6OLH7U24yz32J
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-16_11,2024-01-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 mlxscore=0 suspectscore=0 clxscore=1015 malwarescore=0
+ bulkscore=0 phishscore=0 impostorscore=0 adultscore=0 spamscore=0
+ mlxlogscore=631 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401160152
 
-Hi Krzysztof,
 
-Thanks for your comments.
+On 1/16/24 10:53 AM, Alexander Gordeev wrote:
+> On Tue, Jan 16, 2024 at 09:57:25AM -0500, Tony Krowiak wrote:
+>> This patch is more of an enhancement as opposed to a bug, so no Fixes.
+> The preceding and rest of this series CCs stable@vger.kernel.org and
+> would not apply without this patch. So I guess backporting the whole
+> series would be difficult.
+>
+> Whether propagating the prevous patches' Fixes/stable makes any sense?
 
-On Wed, 10 Jan 2024 at 23:01, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 08/01/2024 14:54, Tomer Maimon wrote:
-> > Add clock reset syscon node to handle reset and clock registers
-> > controllers.
-> >
-> > Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
-> > ---
-> >  arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi b/arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi
-> > index 9c4df91031e7..7d5956e2c9f3 100644
-> > --- a/arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi
-> > +++ b/arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi
-> > @@ -22,6 +22,11 @@ gcr: system-controller@f0800000 {
-> >                       reg = <0x0 0xf0800000 0x0 0x1000>;
-> >               };
-> >
-> > +             clk_rst: syscon@f0801000 {
-> > +                     compatible = "nuvoton,npcm845-clk-rst", "syscon", "simple-mfd";
->
-> This is not a simple-mfd. No children,
->
-> > +                     reg = <0x0 0xf0801000 0x0 0xC4>;
->
-> Use lowercase hex. Please store this feedback in your checklist and do
-> not repeat the same mistakes in further submissions.
->
-> Best regards,
-> Krzysztof
->
-will be fixed in the next version.
 
-Best regards,
+Let's put it this way; it doesn't not make sense to make this patch 
+Fixes/stable. To make life easier to apply the whole series, go ahead 
+and add the Fixes/stable tags.
 
-Tomer
+
+>
+> Thanks!
 
