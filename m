@@ -1,60 +1,61 @@
-Return-Path: <linux-kernel+bounces-27788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14C2A82F5EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:47:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D65AF82F5F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:48:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA54A287622
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:47:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5B7B1C2412B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:48:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 592B42232D;
-	Tue, 16 Jan 2024 19:43:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD300224DD;
+	Tue, 16 Jan 2024 19:43:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EypzR3vg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EL2c6aFC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DC9D2231B;
-	Tue, 16 Jan 2024 19:43:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 276092233B;
+	Tue, 16 Jan 2024 19:43:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434199; cv=none; b=k8nZ9i+8xInrtRxVKoUyDUYj5CwS7lbvqlV+CZJVf7BenZEHLXgQaTtsuKi/TdxeNWTC/vkXR/NZfIsslreparwOqh2XnMJzhcXScCgRaVPK3fjTH3wQlv39DOtmVvEoNvMsi0Nz82rC0oG3K0QZbvBvSsG3diIEWQcrn+lOthM=
+	t=1705434201; cv=none; b=rtvJz3GS8e+cG9IkSI5O1GGL2M49vLteYfscm4wcwrvP9F62MGvhhfQSSxbhG5CA5zNTlUJcoXjcz0d0YGXy0l3XhMbJgeOTUqC1PLZg5ddRnr8JiNEsOldzojUptqRLovFFKsxsdH/plVNWAmfv4bD1NCXMQ4a+jkE4JpZo0ws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434199; c=relaxed/simple;
-	bh=sHhNFhqpZh+BbakbgsxrMWK/0jDfFM02+cTHaEb4zO8=;
+	s=arc-20240116; t=1705434201; c=relaxed/simple;
+	bh=Zd2ANWWo3hDDPElFO8XG/z24mnZjQMYfjdtqmeTwkhk=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=oPZn4E6MPxeBWDuknw0p4gRXgIOiKHC7EcMZlLIK/cUAdEl5TpjvwNj3we/r1NziUSf6bLTUuThmStsEYisO9fT2aDBjiX8NVkKeL1ym0Apo4rsCAgJkdz+MNfUP6KJ8e5dSSNiCBJ1sKXh1/kfgSwvpOxhG+ltiegIIP9Zsg/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EypzR3vg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 082A8C433C7;
-	Tue, 16 Jan 2024 19:43:17 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=HNur651003Yke19hZShYxSK2AXJrVSoBhuQv0kYH0kuAoxwF00feihqV4xsnHZees0QdSSItfHuTVxMwrnKeTdKujFWX1puBO3cL7vwlXj4mSsl8PiUIVPCVGNjtJO67MEHYwHACcB+eEVBaGoqqeBl8FLBeWJxAlu5p8akxCX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EL2c6aFC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEBD5C433A6;
+	Tue, 16 Jan 2024 19:43:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434199;
-	bh=sHhNFhqpZh+BbakbgsxrMWK/0jDfFM02+cTHaEb4zO8=;
+	s=k20201202; t=1705434201;
+	bh=Zd2ANWWo3hDDPElFO8XG/z24mnZjQMYfjdtqmeTwkhk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EypzR3vgNNBNXhFz9JGEuV4/DcdJ014gfG1FkKrKH1461MTtT8aliW0ziHiSHeQ8G
-	 ONzGP0LmEAvqP0uwXcK8kN2AHI7E2qhi3bn1XDTkQxkEBPqt/2MrnjH8kKSd2qZq56
-	 fszgxdSyhnu585fxUK2ZT6XGW7aVx+U/D4DWhQxj70pI3KvyBswp/WeZHdCor/RyFS
-	 /Um/v6xGb8mj4dLAe5JK4BUeujmcqRXa4q0rLRPrwN8yGf/BWEld4X2YTseF/A3y2s
-	 jv5yukC4NsTwRimCzHBWzXImx0/Z/Jgg43CH+dpRXtcR02J4Z/KNdKTIZEzfmQspzV
-	 T730Bn47q1Ocw==
+	b=EL2c6aFCAuDvRZrw6p6uKwhjbN4EF4ApLZ5p8ZR27kPc8nfr2fF4vz8K3vrqcv5U1
+	 KB3GBfIXoHQIf3huZEN0qUVU59j6t4T3H+9V9CWDG80fImM6hFh73x6ZXcnAMOPa1M
+	 35yIdU4geNXke9fBw5fpbKNjuK7jZnjNo9y4l3+Iz2Gik863kHHQsgTOFcrQIrdDdM
+	 Il38KNlyItO/PjGmnkDNBo+R/Mb0Rrr7ZzXxKBCYqGXONp0rbiVRIDVCJkLHDO2iEn
+	 NYZcb9P2PRdSD7EyIa7473jCmlEZOAA62VgBaOumloIz1vekPBsrUuqfzJrHbK7V+n
+	 dQmXdAUb4TFzw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+Cc: Kory Maincent <kory.maincent@bootlin.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 018/108] ARM: dts: samsung: s5pv210: fix camera unit addresses/ranges
-Date: Tue, 16 Jan 2024 14:38:44 -0500
-Message-ID: <20240116194225.250921-18-sashal@kernel.org>
+	andrew@lunn.ch,
+	hkallweit1@gmail.com,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 019/108] net: phy: micrel: fix ts_info value in case of no phc
+Date: Tue, 16 Jan 2024 14:38:45 -0500
+Message-ID: <20240116194225.250921-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194225.250921-1-sashal@kernel.org>
 References: <20240116194225.250921-1-sashal@kernel.org>
@@ -69,87 +70,39 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7
 Content-Transfer-Encoding: 8bit
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+From: Kory Maincent <kory.maincent@bootlin.com>
 
-[ Upstream commit 07e6a553c2f1d385edfc9185081dee442a9dd38d ]
+[ Upstream commit 915d25a9d69be969c1cc6c1dd0c3861f6da7b55e ]
 
-The camera node has both unit address and children within the same bus
-mapping, thus needs proper ranges property to fix dtc W=1 warnings:
+In case of no phc we should not return SOFTWARE TIMESTAMPING flags as we do
+not know whether the netdev supports of timestamping.
+Remove it from the lan8841_ts_info and simply return 0.
 
-  Warning (unit_address_vs_reg): /soc/camera@fa600000: node has a unit name, but no reg or ranges property
-  Warning (simple_bus_reg): /soc/camera@fa600000: missing or empty reg/ranges property
-
-Subtract 0xfa600000 from all its children nodes.  No functional impact
-expected.
-
-Link: https://lore.kernel.org/r/20230722121719.150094-3-krzysztof.kozlowski@linaro.org
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/samsung/s5pv210.dtsi | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/net/phy/micrel.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/arch/arm/boot/dts/samsung/s5pv210.dtsi b/arch/arm/boot/dts/samsung/s5pv210.dtsi
-index f7de5b5f2f38..ed560c9a3aa1 100644
---- a/arch/arm/boot/dts/samsung/s5pv210.dtsi
-+++ b/arch/arm/boot/dts/samsung/s5pv210.dtsi
-@@ -549,17 +549,17 @@ i2c1: i2c@fab00000 {
+diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+index 08e3915001c3..7c87378e473e 100644
+--- a/drivers/net/phy/micrel.c
++++ b/drivers/net/phy/micrel.c
+@@ -3631,12 +3631,8 @@ static int lan8841_ts_info(struct mii_timestamper *mii_ts,
  
- 		camera: camera@fa600000 {
- 			compatible = "samsung,fimc";
-+			ranges = <0x0 0xfa600000 0xe01000>;
- 			clocks = <&clocks SCLK_CAM0>, <&clocks SCLK_CAM1>;
- 			clock-names = "sclk_cam0", "sclk_cam1";
- 			#address-cells = <1>;
- 			#size-cells = <1>;
- 			#clock-cells = <1>;
- 			clock-output-names = "cam_a_clkout", "cam_b_clkout";
--			ranges;
+ 	info->phc_index = ptp_priv->ptp_clock ?
+ 				ptp_clock_index(ptp_priv->ptp_clock) : -1;
+-	if (info->phc_index == -1) {
+-		info->so_timestamping |= SOF_TIMESTAMPING_TX_SOFTWARE |
+-					 SOF_TIMESTAMPING_RX_SOFTWARE |
+-					 SOF_TIMESTAMPING_SOFTWARE;
++	if (info->phc_index == -1)
+ 		return 0;
+-	}
  
--			csis0: csis@fa600000 {
-+			csis0: csis@0 {
- 				compatible = "samsung,s5pv210-csis";
--				reg = <0xfa600000 0x4000>;
-+				reg = <0x00000000 0x4000>;
- 				interrupt-parent = <&vic2>;
- 				interrupts = <29>;
- 				clocks = <&clocks CLK_CSIS>,
-@@ -572,9 +572,9 @@ csis0: csis@fa600000 {
- 				#size-cells = <0>;
- 			};
- 
--			fimc0: fimc@fb200000 {
-+			fimc0: fimc@c00000 {
- 				compatible = "samsung,s5pv210-fimc";
--				reg = <0xfb200000 0x1000>;
-+				reg = <0x00c00000 0x1000>;
- 				interrupts = <5>;
- 				interrupt-parent = <&vic2>;
- 				clocks = <&clocks CLK_FIMC0>,
-@@ -586,9 +586,9 @@ fimc0: fimc@fb200000 {
- 				samsung,cam-if;
- 			};
- 
--			fimc1: fimc@fb300000 {
-+			fimc1: fimc@d00000 {
- 				compatible = "samsung,s5pv210-fimc";
--				reg = <0xfb300000 0x1000>;
-+				reg = <0x00d00000 0x1000>;
- 				interrupt-parent = <&vic2>;
- 				interrupts = <6>;
- 				clocks = <&clocks CLK_FIMC1>,
-@@ -602,9 +602,9 @@ fimc1: fimc@fb300000 {
- 				samsung,lcd-wb;
- 			};
- 
--			fimc2: fimc@fb400000 {
-+			fimc2: fimc@e00000 {
- 				compatible = "samsung,s5pv210-fimc";
--				reg = <0xfb400000 0x1000>;
-+				reg = <0x00e00000 0x1000>;
- 				interrupt-parent = <&vic2>;
- 				interrupts = <7>;
- 				clocks = <&clocks CLK_FIMC2>,
+ 	info->so_timestamping = SOF_TIMESTAMPING_TX_HARDWARE |
+ 				SOF_TIMESTAMPING_RX_HARDWARE |
 -- 
 2.43.0
 
