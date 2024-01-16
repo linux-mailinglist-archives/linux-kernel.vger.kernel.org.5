@@ -1,85 +1,111 @@
-Return-Path: <linux-kernel+bounces-28327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1799082FCF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:35:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A15A182FCF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:35:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5A191F29712
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:35:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 288C7B27AC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:35:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D3F241C71;
-	Tue, 16 Jan 2024 22:00:42 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28CC241C94;
+	Tue, 16 Jan 2024 22:03:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="QdQDZgKz"
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCF151DA2C;
-	Tue, 16 Jan 2024 22:00:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F11320B02
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 22:03:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705442441; cv=none; b=eE9gYjU6Q9zYxnSZe4vgK9FCaFl4uUSQVq1p7pzC4qS0b58bjGNd9kWvB/eIlptFWjDjfU9lvO2qnYkIcfu6443SpYeuBIT/qrN1KbI0NGG4PkbseFH8zYx/DaFed6RZb1CN3xRcVVOAkXYJxaDFHt0jR752c/uqFeIEYD0FtJg=
+	t=1705442630; cv=none; b=LPNCgxRtKLUlBTuQ9RmepT/N2oxiSFLrlFof45pxa4m6GGmHprjV0EM6gG8454ZdxTiYgRjR2atve8j10qAOG6SegSB95T1HG5q9xBtHRZcv1rs9K8Vkr38J/Qer899fpgby5ts4hkJn5ReM6l5GPQiryEhEm8Z/SDrK8aMQR3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705442441; c=relaxed/simple;
-	bh=rBdhBSdBHxB0phUx9UosP1F8D0qiFA4eia10mackJ5s=;
-	h=Received:Date:From:To:Cc:Subject:Message-ID:In-Reply-To:
-	 References:X-Mailer:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding; b=i0hSf/z3n0Upn7KH2g1RylzL4Fd/NPorGlwiVb5rVG2f3HL52t6j00n0tSBJYK3ZQlfgYSG3LufG1x8CCtKluTzZ5svXu0MWYcRZ6j6cMdBc1Z62wsqORcSoAqr/6KQNTtV/fe5iusO4KRhMozYtH5R1XEg4E14l9XnuNJYuDp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28402C433F1;
-	Tue, 16 Jan 2024 22:00:40 +0000 (UTC)
-Date: Tue, 16 Jan 2024 17:01:54 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Trace
- Kernel <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner
- <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, Ajay Kaher
- <ajay.kaher@broadcom.com>, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH v2 2/2] eventfs: Create list of files and directories at
- dir open
-Message-ID: <20240116170154.5bf0a250@gandalf.local.home>
-In-Reply-To: <CAHk-=wgjSuapZoWfQZMyFi80wJE6a=vjOdgpy_k+YaWwbX9Pig@mail.gmail.com>
-References: <20240116211217.968123837@goodmis.org>
-	<20240116211353.573784051@goodmis.org>
-	<CAHk-=wgjSuapZoWfQZMyFi80wJE6a=vjOdgpy_k+YaWwbX9Pig@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1705442630; c=relaxed/simple;
+	bh=D7xRpJrIqjZP5jeWAvqMV/IYv+apGd28JjwDTM2diXs=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
+	 To:Cc:In-Reply-To:References:Subject:Message-Id:Date:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:X-Mailer; b=SPLdPyJOTsVsdp0VZIKG5LFXTkyBpl5/7TBZyJ0xoQQhmNQAsx1oOf0/AVTuUY7CF2RJc5On8ZDc59q20x+ATGGemavgokcWkIa4yIRjL12G3SjRVzAYY0E5+0yLpSpJleurKNaHNJptYA3A3iuCogpk4tCx3MzGGypdJIrFggU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=QdQDZgKz; arc=none smtp.client-ip=209.85.166.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7bb5be6742fso100224939f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 14:03:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1705442627; x=1706047427; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VIyU1BRIYxs21GRQFw4kCtrNUaHNQwollWRLcZszYHA=;
+        b=QdQDZgKzmk0ADC5AWridK+DepYtS6VQc7YzHXcMvZ84IwZqjHceQrKLJtcmjvKB4VD
+         2Almx5GkfUd+joveVXgAivBVxPpTl1z3nDN3Eu7iR2VkuIIeUeIdsmmfdW2S2owV9mwG
+         7r0sWBAQDAmUx4ZiRZLoTejTagPqSfR5hkX30nbjsWHDesxyA/vTMaCl4wtt6D0asu7A
+         5ll+b37D5twOG/a4WFJfwJuN7irrRrMPZsFJZSPlKMr7E1cQVNlljl+e0rnWJDjA73Mb
+         7WAKMMafQd2JQ9UdGiLURYCQXa5y4Ym52OlkOlJHDQ2dVaJJ3IxUHkV3tD+jsiFiBoP9
+         x7cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705442627; x=1706047427;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VIyU1BRIYxs21GRQFw4kCtrNUaHNQwollWRLcZszYHA=;
+        b=l1BxQGJUoluUn3esVkS1CH2WqeEIDH5lOaL0cRhJgVNPszZaUHhKWSV2pbkbBwVmdF
+         FltMiIs+LhmWvz0Wch84fATv7/my0j+IVrmf1Xee2E/IfNgdVu+bR3BCm7ICxqk6C19w
+         ORL5egUreqtmAlMbF17SHmon2X06bsK6k/F7S8tJ8l93eS1V6H0Hv9/LLRG2ri5H+Iii
+         oD7qQx1krldH/6I/8vKz9rIRKJ+x7QJR5HFklkeb4Yj8/QQRrgsp1Svet2m1wG5O9By+
+         XKcOfZJB/wm7/l21NUiCxq/6f1ft3lfM6wwSZH67avC2Yp0TmADHyvqVxW4oCRqZGYhF
+         LGLg==
+X-Gm-Message-State: AOJu0Ywi25y76X9UDV/7IYeU2vmnCTZgM4jvK4/qJSLR20VIw4FhwfpA
+	scJWczqyuI1OdQ9N/zIJA0rP+i2LjEmudQ==
+X-Google-Smtp-Source: AGHT+IEBhVEzbxUPC/dV36xmsUmmiGJEMiU22plQpZdebatedQSaUvgxWn8PYaTSAsQLbvD5Z+85NA==
+X-Received: by 2002:a05:6602:2c95:b0:7be:e080:6869 with SMTP id i21-20020a0566022c9500b007bee0806869mr14083792iow.1.1705442627249;
+        Tue, 16 Jan 2024 14:03:47 -0800 (PST)
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id l14-20020a056602276e00b007beea806d89sm2964862ioe.41.2024.01.16.14.03.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jan 2024 14:03:46 -0800 (PST)
+From: Jens Axboe <axboe@kernel.dk>
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ syzbot+8b23309d5788a79d3eea@syzkaller.appspotmail.com, 
+ syzbot+004c1e0fced2b4bc3dcc@syzkaller.appspotmail.com, 
+ stable@vger.kernel.org
+In-Reply-To: <20240116212959.3413014-1-willy@infradead.org>
+References: <20240116212959.3413014-1-willy@infradead.org>
+Subject: Re: [PATCH] block: Fix iterating over an empty bio with
+ bio_for_each_folio_all
+Message-Id: <170544262659.494117.14502342650352587808.b4-ty@kernel.dk>
+Date: Tue, 16 Jan 2024 15:03:46 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.5-dev-2aabd
 
-On Tue, 16 Jan 2024 13:39:38 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-> I don't understand why your still insist on this pointless open wrapper.
-
-I just liked the consistency of it.
-
+On Tue, 16 Jan 2024 21:29:59 +0000, Matthew Wilcox (Oracle) wrote:
+> If the bio contains no data, bio_first_folio() calls page_folio() on a
+> NULL pointer and oopses.  Move the test that we've reached the end of
+> the bio from bio_next_folio() to bio_first_folio().
 > 
-> Just do this all at iterate time. No open wrappers. No nothing. Just
-> iterate over the days structures your have.
 > 
-> IOW, instead of iterating in open to create the array, just iterate in -
-> look, it's in the *name* for chrissake - iterate_shared.
-> 
-> No array. No random allocation for said array.
-> 
-> If you can iterate at open time, you can iterate at iterate_shared time.
-> Stop creating a list that your already have.
-> 
-> And nobody cares if you do a readdir at the same time as modifying the
-> directory. This isn't a real filesystem with strict POSIX semantics.
 
-OK, I can do that.
+Applied, thanks!
 
--- Steve
+[1/1] block: Fix iterating over an empty bio with bio_for_each_folio_all
+      commit: 7bed6f3d08b7af27b7015da8dc3acf2b9c1f21d7
+
+Best regards,
+-- 
+Jens Axboe
+
+
 
 
