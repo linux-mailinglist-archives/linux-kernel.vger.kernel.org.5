@@ -1,214 +1,120 @@
-Return-Path: <linux-kernel+bounces-27734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13FA382F50C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:10:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CE6882F50A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:10:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB5D51C22DC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:10:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83B00285E68
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:10:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C31791D54A;
-	Tue, 16 Jan 2024 19:10:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F0D21D520;
+	Tue, 16 Jan 2024 19:10:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oVQsqe17"
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DCyFyKX0"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 827971D533
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 19:10:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B64241CF9A;
+	Tue, 16 Jan 2024 19:10:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705432209; cv=none; b=VbeUaK7OrJsSun7/K9XLgDzhcr92zIE78+p6/JOhxXJLtN7mUwjlqXCH9Oq6SVxQoy6pO6NPYIP5PKQC3I37AVwCPaf+EI0s9R3XGLxqlTgbBbfp8YlhLkQrOGEZ7jpQEVWIFZn9LUfXPNneQwnrAxssI0byQyD74WwLk9czZCc=
+	t=1705432206; cv=none; b=oL7ymza18n/3I1uXuQOZ/p9Qkv2M8j4OSVAfkLqIRSS2bnO6xVUZuujZodNyqorRM0l33OP3E2ojG19jj0Fq8jkcquuTOwKgIbQQcEIv8WmZ9CkVV3sQpBlbVSmWvTzvD9/FM3pFk4Mzw2VJc21H1GrrnobIN2bBprz6nFCtVwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705432209; c=relaxed/simple;
-	bh=rALMQ6XXG9dziiepCqWCR21j+a94URXQ8uh5FX0SSLg=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=CRdS8qhPviV9SJE55oefM9k1P8jlKMsIPIuBAYFPlH5N+ApcvKOmdzJ1b8Xhz6cuwFbYHZF/iiOj6PbpYUesg9s0mvdZIg1tNdxCQH8pgZlC0Kxf5O2Cj3EBq6lSpqqqgw2e7Cd3tJZTVghroDGfZ/9Gs2XLsLov4R6VS1JLN2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oVQsqe17; arc=none smtp.client-ip=209.85.215.173
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso8032706a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 11:10:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705432208; x=1706037008; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9VKjWaZrVRn8CuoQYZouG8IgnSq7lMknhIStXH4ydpI=;
-        b=oVQsqe17SkkxV5N3uy9/c32dY16pCphpLKHxAClrYC3pjjYhBqTyJbYwnlupc1Sa2S
-         g3xMHuX3nj6bNZYLyhxXT6LdWNcBi1V9HRMBW+6ojJVNNpPMJNQKwgpQaQy7hxIfIbrZ
-         cSN6Bx6042YJeXaUn9GOiPzH1cPcznpFTV7Vot3fwwgZ4A6bo1xL2odX3RD0J/fcD9br
-         Y1howSkiXoGYKAGQ2jJ+n4NTEte861XhLCzyb1TJxBLHUcAphwgbzKZ9oZHsgbfpfYbB
-         YeK/Ryu1xqor+2ZDqinWr92+U5hzXxVec37eAZBczMKQQOfQ3iPIGwxy6PsT2mvEHzqQ
-         /HFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705432208; x=1706037008;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9VKjWaZrVRn8CuoQYZouG8IgnSq7lMknhIStXH4ydpI=;
-        b=AtzoRKJ9/2HknRYhMuKe26s6jeR7mDaz/8iJyPGajzH2V+e2TY3ybcDlFccEVN7WTn
-         b8hIP0JYkYn+hEWIs/1daJTTs4T2ChShTTQs840ORKFP6AmVbJoPse4YPaVqmlM1WbGs
-         2JiFN6r8YqH7Ltx/rfheOMkF4n+NCg0uMTZIzNRUrNEm6B4o6rn0ILwWiyZg4J3uQHjH
-         9UB8ts4aV1k65moaMsEOhuNR9RtQ6wVmbuOLY0faFTvCoxtWNslJ1CKzWdvACwWmgAuT
-         jzM0SgxCqx48MkPyOCfMpHPKz0jOAEdv8y1ajAiyRTxGYEcCxtRpz8Nmqnl7+HLImdSL
-         xhfw==
-X-Gm-Message-State: AOJu0YyQczwXwR51XNy19UtUx3XMlzK3t3Lag751ir3wMrar02duzkcJ
-	F80agsCbTnyyL+1GzzlNL8jb4WHrvUm624DRE0CiWQ/W+xvbpg==
-X-Google-Smtp-Source: AGHT+IHrIsM7g2wUFvRv13G9yYY8kYsRAIXMkE/xYYkt6tYTPdI5u+rE+aU63z1jH/mOoUM1mfu4KkzcNwSSOJSi4nc=
-X-Received: by 2002:a17:90a:1c90:b0:28e:2784:9827 with SMTP id
- t16-20020a17090a1c9000b0028e27849827mr3223147pjt.17.1705432207870; Tue, 16
- Jan 2024 11:10:07 -0800 (PST)
+	s=arc-20240116; t=1705432206; c=relaxed/simple;
+	bh=sZ+MCwU6oGGcQWQZQIrYoyGgx0lzP8uZ1STGNge7O7o=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:X-IronPort-AV:Received:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=TW3s7B6aI+8x/jDv7AZyRWowtvOoUQbNT9ik+YGfIq2MDoM0J1jaJfGuexTIlVumWsq1G7p/PMnvRZ/GDH1TjS86elGG0C2srVgWNTRJribKUQxdvB94I6Oxs4yrRlauBiEXZSgkjtuXSiGakmmB9fZVeoXg916/32udP23L+NY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DCyFyKX0; arc=none smtp.client-ip=198.175.65.10
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705432205; x=1736968205;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=sZ+MCwU6oGGcQWQZQIrYoyGgx0lzP8uZ1STGNge7O7o=;
+  b=DCyFyKX0lUmYZfZvrtWnfiIui47LRb/gAmD269Lq8Vfo+daixFwc0cOB
+   oq7qOlw2pJvnD98UGIK9imoEe47zkzDMxVUCCMk8Q0gMAS5p960M9KU13
+   2G/WRmMU6KVJ7/lOF8n73PhCyTrjIKdfXj/SLdvbcsS6vol/ArSuES1Y8
+   Xvp2xGyh/IQhPl0b9eAcfFSPJWw8Krn5UA/15PDSh77gla0vZ1buGH4j7
+   7bX9vQYh4cC9kzB6zWPGK4WegeQRR1FIiO2SJo9kr8iz06fQ8VgtrrI2v
+   L4TcVtJ0721I0A1sOvOwf/KhupV7iQduGExgwOuYljqNbjm0HNObm3wAi
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="13313317"
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="13313317"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 11:10:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="1115399966"
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="1115399966"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 11:10:02 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+	by kekkonen.fi.intel.com (Postfix) with SMTP id 13DE611F86A;
+	Tue, 16 Jan 2024 21:09:59 +0200 (EET)
+Date: Tue, 16 Jan 2024 19:09:59 +0000
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Vinay Varma <varmavinaym@gmail.com>,
+	Dave Stevenson <dave.stevenson@raspberrypi.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	"open list:SONY IMX219 SENSOR DRIVER" <linux-media@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] media: i2c: imx219: implement the v4l2 selection api
+Message-ID: <ZabUh0ozhQq-GtEC@kekkonen.localdomain>
+References: <kv6yfyahbud474e75y4jaczg64pcowvlz7i52kikknuh6wje5o@4k2hikwcueoy>
+ <ZZu2C_lu6TAh-LOf@kekkonen.localdomain>
+ <3q6andka2su7i43xz2ok44ejvtb3hdjdn6xretyde7sdcvtd7l@lz2syngckivi>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240110102102.61587-1-tudor.ambarus@linaro.org> <20240110102102.61587-17-tudor.ambarus@linaro.org>
-In-Reply-To: <20240110102102.61587-17-tudor.ambarus@linaro.org>
-From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Tue, 16 Jan 2024 13:09:56 -0600
-Message-ID: <CAPLW+4kndXo9Ab2PL3fts9pJNhhitX3Sr=V2b8mS4cArov4Tog@mail.gmail.com>
-Subject: Re: [PATCH 16/18] tty: serial: samsung: shrink the clock selection to
- 8 clocks
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com, 
-	gregkh@linuxfoundation.org, jirislaby@kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
-	andre.draszik@linaro.org, peter.griffin@linaro.org, kernel-team@android.com, 
-	willmcvicker@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3q6andka2su7i43xz2ok44ejvtb3hdjdn6xretyde7sdcvtd7l@lz2syngckivi>
 
-On Wed, Jan 10, 2024 at 4:25=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro=
-org> wrote:
->
-> <linux/serial_s3c.h> provides a clock selection pool of maximum 4 clocks.
+Hi Jacopo,
 
-Then maybe it makes sense to turn those two field into 4-bit bit
-fields? More importantly, what particular problem does this patch
-solve, is this optimization really needed, and why? I'm not saying
-it's not needed, just that commit message might've been more verbose
-about this.
+On Mon, Jan 08, 2024 at 10:19:35AM +0100, Jacopo Mondi wrote:
+> Hi Sakari, Vinay,
+> 
+>    a more foundamental question is how this usage of the crop/compose
+> API plays with the fact we enumerate only a limited set of frame
+> sizes, and now you can get an arbitrary output size. We could get away
+> by modifying enum_frame_sizes to return a size range (or ranges) but I
+> wonder if it wouldn't be better to introduce an internal pad to
+> represent the pixel array where to apply TGT_CROP in combination with
+> a source pad where we could apply TGT_COMPOSE and an output format.
 
-> Update the driver to consider a pool selection of maximum 8 clocks. The
-> final scope is to reduce the memory footprint of
-> ``struct s3c24xx_uart_info``.
->
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> ---
->  drivers/tty/serial/samsung_tty.c | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsun=
-g_tty.c
-> index 436739cf9225..5df2bcebf9fb 100644
-> --- a/drivers/tty/serial/samsung_tty.c
-> +++ b/drivers/tty/serial/samsung_tty.c
-> @@ -81,11 +81,11 @@ struct s3c24xx_uart_info {
->         unsigned long           tx_fifomask;
->         unsigned long           tx_fifoshift;
->         unsigned long           tx_fifofull;
-> -       unsigned int            def_clk_sel;
-> -       unsigned long           num_clks;
->         unsigned long           clksel_mask;
->         unsigned long           clksel_shift;
->         unsigned long           ucon_mask;
-> +       u8                      def_clk_sel;
-> +       u8                      num_clks;
->         u8                      iotype;
->
->         /* uart port features */
-> @@ -1339,7 +1339,7 @@ static void s3c24xx_serial_pm(struct uart_port *por=
-t, unsigned int level,
->
->  #define MAX_CLK_NAME_LENGTH 15
->
-> -static inline int s3c24xx_serial_getsource(struct uart_port *port)
-> +static inline u8 s3c24xx_serial_getsource(struct uart_port *port)
->  {
->         const struct s3c24xx_uart_info *info =3D s3c24xx_port_to_info(por=
-t);
->         u32 ucon;
-> @@ -1352,8 +1352,7 @@ static inline int s3c24xx_serial_getsource(struct u=
-art_port *port)
->         return ucon >> info->clksel_shift;
->  }
->
-> -static void s3c24xx_serial_setsource(struct uart_port *port,
-> -                       unsigned int clk_sel)
-> +static void s3c24xx_serial_setsource(struct uart_port *port, u8 clk_sel)
->  {
->         const struct s3c24xx_uart_info *info =3D s3c24xx_port_to_info(por=
-t);
->         u32 ucon;
-> @@ -1372,14 +1371,15 @@ static void s3c24xx_serial_setsource(struct uart_=
-port *port,
->
->  static unsigned int s3c24xx_serial_getclk(struct s3c24xx_uart_port *ourp=
-ort,
->                         unsigned int req_baud, struct clk **best_clk,
-> -                       unsigned int *clk_num)
-> +                       u8 *clk_num)
->  {
->         const struct s3c24xx_uart_info *info =3D ourport->info;
->         struct clk *clk;
->         unsigned long rate;
-> -       unsigned int cnt, baud, quot, best_quot =3D 0;
-> +       unsigned int baud, quot, best_quot =3D 0;
->         char clkname[MAX_CLK_NAME_LENGTH];
->         int calc_deviation, deviation =3D (1 << 30) - 1;
-> +       u8 cnt;
->
->         for (cnt =3D 0; cnt < info->num_clks; cnt++) {
->                 /* Keep selected clock if provided */
-> @@ -1472,9 +1472,10 @@ static void s3c24xx_serial_set_termios(struct uart=
-_port *port,
->         struct s3c24xx_uart_port *ourport =3D to_ourport(port);
->         struct clk *clk =3D ERR_PTR(-EINVAL);
->         unsigned long flags;
-> -       unsigned int baud, quot, clk_sel =3D 0;
-> +       unsigned int baud, quot;
->         unsigned int udivslot =3D 0;
->         u32 ulcon, umcon;
-> +       u8 clk_sel =3D 0;
->
->         /*
->          * We don't support modem control lines.
-> @@ -1775,10 +1776,9 @@ static int s3c24xx_serial_enable_baudclk(struct s3=
-c24xx_uart_port *ourport)
->         struct device *dev =3D ourport->port.dev;
->         const struct s3c24xx_uart_info *info =3D ourport->info;
->         char clk_name[MAX_CLK_NAME_LENGTH];
-> -       unsigned int clk_sel;
->         struct clk *clk;
-> -       int clk_num;
->         int ret;
-> +       u8 clk_sel, clk_num;
->
->         clk_sel =3D ourport->cfg->clk_sel ? : info->def_clk_sel;
->         for (clk_num =3D 0; clk_num < info->num_clks; clk_num++) {
-> @@ -2286,9 +2286,9 @@ s3c24xx_serial_get_options(struct uart_port *port, =
-int *baud,
->  {
->         struct clk *clk;
->         unsigned long rate;
-> -       unsigned int clk_sel;
->         u32 ulcon, ucon, ubrdiv;
->         char clk_name[MAX_CLK_NAME_LENGTH];
-> +       u8 clk_sel;
->
->         ulcon  =3D rd_regl(port, S3C2410_ULCON);
->         ucon   =3D rd_regl(port, S3C2410_UCON);
-> --
-> 2.43.0.472.g3155946c3a-goog
->
->
+My earlier review wasn't focussed on the interface at all...
+
+To depart from the current restrictions on single-subdev sensor drivers,
+this is one option.
+
+Sensors implement various steps in different orders and different drivers
+have different capabilities, too. Mainly there are two classes: freely
+configurable drivers such cas CCS and then register list based drivers
+where virtually any dependencies between configurations are possible.
+
+We probably can't support both classes with the same API semantics and due
+to hardware differencies. The sensor UAPI will be less than uniform it has
+been in the past but I don't think this should be an issue.
+
+I wonder how much common understanding we have at this point on how this
+API would look like. Probably not much?
+
+-- 
+Regards,
+
+Sakari Ailus
 
