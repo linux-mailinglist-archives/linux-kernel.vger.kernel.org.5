@@ -1,109 +1,145 @@
-Return-Path: <linux-kernel+bounces-27129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A28982EAE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:34:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 800F682EAEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:37:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D8F61F240BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:34:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C8F3285444
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:37:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6063A125AD;
-	Tue, 16 Jan 2024 08:34:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA79611CBD;
+	Tue, 16 Jan 2024 08:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="d44X7WCb"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TbDqMFLn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AC8711C83;
-	Tue, 16 Jan 2024 08:34:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40G7w0lc000737;
-	Tue, 16 Jan 2024 08:34:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=2QthArlBLZq6aeSqRFl9tCpSTmPf13Utla69eVdn+G4=;
- b=d44X7WCbEmktfd055Y/6MkcyBX4EzoIm5/dVVtPiPEGJmKk+ivl9esnI9eBtA7KshRak
- BhhYASBpEd2Bw4m1Hk9fYgecJgLSn7yz3VO29PXxLGdsKc03j0LhKWiUp3xqOM4sMP8e
- izAJFADFgOdk8xlEAjDuBGYw5pHH/2/FgheAD98MDphGBECLVTHU6LI/8CK7BklOg9B/
- 4PQckxHIufiLqmiernQXQcP8gzmxXpyCSgA6yDu2UeN7kQwTnwUy16sCGr6EmcUTgBQz
- Y1n06xTxPUaaoDKj+4wSkfJ0ZUuPO6qqjkXcNDVHRkXlv2LzTV3f25jb/w6mcaK2OpRS Ng== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnnvd0wpb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 08:34:13 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40G7wiDu003371;
-	Tue, 16 Jan 2024 08:34:13 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnnvd0wne-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 08:34:13 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40G75leT008785;
-	Tue, 16 Jan 2024 08:34:12 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vm57ydknv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 08:34:12 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40G8Y6nb18678426
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 16 Jan 2024 08:34:06 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A454620040;
-	Tue, 16 Jan 2024 08:34:06 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C8DE320043;
-	Tue, 16 Jan 2024 08:34:05 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.82.162])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue, 16 Jan 2024 08:34:05 +0000 (GMT)
-Date: Tue, 16 Jan 2024 09:34:04 +0100
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: Tony Krowiak <akrowiak@linux.ibm.com>
-Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, jjherne@linux.ibm.com, borntraeger@de.ibm.com,
-        pasic@linux.ibm.com, pbonzini@redhat.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com, alex.williamson@redhat.com,
-        kwankhede@nvidia.com, gor@linux.ibm.com
-Subject: Re: [PATCH v4 3/6] s390/vfio-ap: let 'on_scan_complete' callback
- filter matrix and update guest's APCB
-Message-ID: <ZaY/fGxUMx2z4OQH@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <20240115185441.31526-1-akrowiak@linux.ibm.com>
- <20240115185441.31526-4-akrowiak@linux.ibm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0476411C83;
+	Tue, 16 Jan 2024 08:36:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFF18C43394;
+	Tue, 16 Jan 2024 08:36:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705394218;
+	bh=+lJ5i0y7ZMZZ0xychi+D6Q1kWJaf02pcZFvyU9rjOuw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=TbDqMFLnW6iJ8tdSJLfPklsFJGmtZ++wejycHlp7kEjfeSJhNc3Qt86nfQ22M8Nc1
+	 coJHKsE3aWYiPc1k5vbqH0vO1qTQbcUJ5dM3f5yLcWTNc1S5eSFBumbFgzIvk4O4tO
+	 xf2rzTL+ZiYoAZOilX5VKwmQbW9dYRrfhG25oheGNE4js2utyaw0jUxDmhNHlEb0T2
+	 IHdCLRWbwO11Gg8SnznND9t2Qo6X7f3kJx2DKbKqa4nzcJTD47KbDRDqRXohrhJQlG
+	 0wdS3cCvsJGXV69DIt+4vpmruv71mOT1yqVNulwgGgILQBIB92O3+yPe11IQDlLaAt
+	 erToQmQmgQ4Gw==
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50eab4bf47aso8014952e87.0;
+        Tue, 16 Jan 2024 00:36:58 -0800 (PST)
+X-Gm-Message-State: AOJu0Yxd8sPXKiVwSNry21e++m4AUJymGR65OJto28Ptrp38KqGqjFy9
+	pkkdcLsZlvb7Gbd0/mp7mPuTVl51XqR50JA/rzk=
+X-Google-Smtp-Source: AGHT+IFy8ijwBpYdckQpTRtf3hlyKF2neSs6h/mnRTFij5+mK7hdtYwYpj3q3skd/Nwf9ejRJPknZxy7Bi1r4FgJUeg=
+X-Received: by 2002:ac2:5f81:0:b0:50e:d5e0:716b with SMTP id
+ r1-20020ac25f81000000b0050ed5e0716bmr4404662lfe.14.1705394216921; Tue, 16 Jan
+ 2024 00:36:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240115185441.31526-4-akrowiak@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: F-SuVrMPFcULgGLnlAYeUzH-KTeEzO3a
-X-Proofpoint-ORIG-GUID: sPodZ57JKvrcl3Z3PKuYRtq9lqq8UU18
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-16_04,2024-01-15_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=695
- lowpriorityscore=0 bulkscore=0 malwarescore=0 spamscore=0 mlxscore=0
- adultscore=0 clxscore=1011 phishscore=0 impostorscore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401160067
+References: <mhng-8a4a5f85-faf9-405c-95a0-78cd04ec6509@palmer-ri-x1c9>
+ <56b52d4e-9dc0-400c-a141-7e70f5c72afa@siemens.com> <CAMj1kXGR1aQdvej+0drfim-ZP27ZhO9UR_i_PT6F+hsV0UvbJw@mail.gmail.com>
+ <578aae7c-4069-4071-ba4b-cc86d3b516c1@siemens.com>
+In-Reply-To: <578aae7c-4069-4071-ba4b-cc86d3b516c1@siemens.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Tue, 16 Jan 2024 09:36:45 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXEC4=j5zcSyo91jnUkYMoqBG5M2raMXm4DNdD5ZbS3U7g@mail.gmail.com>
+Message-ID: <CAMj1kXEC4=j5zcSyo91jnUkYMoqBG5M2raMXm4DNdD5ZbS3U7g@mail.gmail.com>
+Subject: Re: [PATCH] riscv/efistub: Ensure GP-relative addressing is not used
+To: Jan Kiszka <jan.kiszka@siemens.com>
+Cc: Palmer Dabbelt <palmer@rivosinc.com>, linux-efi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Jan 15, 2024 at 01:54:33PM -0500, Tony Krowiak wrote:
-Hi Tony,
+On Tue, 16 Jan 2024 at 06:21, Jan Kiszka <jan.kiszka@siemens.com> wrote:
+>
+> On 15.01.24 18:34, Ard Biesheuvel wrote:
+> > On Sat, 13 Jan 2024 at 11:35, Jan Kiszka <jan.kiszka@siemens.com> wrote:
+> >>
+> >> On 12.01.24 19:56, Palmer Dabbelt wrote:
+> >>> On Fri, 12 Jan 2024 10:51:16 PST (-0800), Ard Biesheuvel wrote:
+> >>>> Hi Jan,
+> >>>>
+> >>>> On Fri, 12 Jan 2024 at 19:37, Jan Kiszka <jan.kiszka@siemens.com> wrote:
+> >>>>>
+> >>>>> From: Jan Kiszka <jan.kiszka@siemens.com>
+> >>>>>
+> >>>>> The cflags for the RISC-V efistub were missing -mno-relax, thus were
+> >>>>> under the risk that the compiler could use GP-relative addressing. That
+> >>>>> happened for _edata with binutils-2.41 and kernel 6.1, causing the
+> >>>>> relocation to fail due to an invalid kernel_size in handle_kernel_image.
+> >>>>> It was not yet observed with newer versions, but that may just be luck.
+> >>>>>
+> >>>>> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+> >>>>> ---
+> >>>>>
+> >>>>> Something like this should go to stable as well, but we will need
+> >>>>> rebased patches.
+> >>>>>
+> >>>>>  drivers/firmware/efi/libstub/Makefile | 2 +-
+> >>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>>>
+> >>>>> diff --git a/drivers/firmware/efi/libstub/Makefile
+> >>>>> b/drivers/firmware/efi/libstub/Makefile
+> >>>>> index 06964a3c130f..d561d7de46a9 100644
+> >>>>> --- a/drivers/firmware/efi/libstub/Makefile
+> >>>>> +++ b/drivers/firmware/efi/libstub/Makefile
+> >>>>> @@ -28,7 +28,7 @@ cflags-$(CONFIG_ARM)          += -DEFI_HAVE_STRLEN
+> >>>>> -DEFI_HAVE_STRNLEN \
+> >>>>>                                    -DEFI_HAVE_MEMCHR
+> >>>>> -DEFI_HAVE_STRRCHR \
+> >>>>>                                    -DEFI_HAVE_STRCMP -fno-builtin
+> >>>>> -fpic \
+> >>>>>                                    $(call
+> >>>>> cc-option,-mno-single-pic-base)
+> >>>>> -cflags-$(CONFIG_RISCV)         += -fpic -DNO_ALTERNATIVE
+> >>>>> +cflags-$(CONFIG_RISCV)         += -fpic -DNO_ALTERNATIVE -mno-relax
+> >>>>
+> >>>> Can we detect the presence of these references (via the relocation
+> >>>> type)? We already do something similar for ordinary absolute
+> >>>> references too.
+> >>>
+> >>> If there's no `__global_pointer$` symbol then the linker won't make
+> >>> GP-relative relaxations (because it doesn't know where GP is).  We
+> >>> usually define that symbol in the linker script, but I'm not entierly
+> >>> sure how libstub gets its linker script...
+> >>>
+> >>
+> >> The stub seems to be linked together with the rest of the kernel, thus
+> >> the regular arch/riscv/kernel/vmlinux.lds.S is used.
+> >>
+> >
+> > Indeed - the EFI stub is part of the same executable as vmlinux, we
+> > just mangle the symbol names to ensure that only code that can be
+> > safely called from the EFI stub can be linked to it.
+> >
+> > If the effect of -mno-relax is to stop emitting R_RISCV_RELAX
+> > relocations, we should perhaps add those to the STUBCOPY_RELOC-y
+> > Makefile variable? (in the same file). BTW R_RISCV_HI20 doesn't seem
+> > like the right value there to begin with: the idea of that is to
+> > disallow ELF relocations that evaluate to expressions that can only be
+> > known at runtime (like absolute addresses for global pointer
+> > variables)
+>
+> How to do that best? Simply replace R_RISCV_HI20 with R_RISCV_RELAX?
+>
 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
+We'll need to keep the HI20, in fact - I got confused between HI20 and
+PCREL_HI20, and the former is actually used for 32-bit absolute
+addresses in 32-bit code.
 
-No Fixes tag for this patch?
+This seems to do the trick: it disallows relaxation relocations and
+native word sizes absolute references. AFAICT, those are the only ones
+we should care about.
 
-Thanks!
+STUBCOPY_RELOC-$(CONFIG_RISCV) := -E
+R_RISCV_HI20\|R_RISCV_$(BITS)\|R_RISCV_RELAX
 
