@@ -1,68 +1,62 @@
-Return-Path: <linux-kernel+bounces-27815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFAA382F649
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:56:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E328F82F64D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:56:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC2531C23D84
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:56:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F27AE1C20ADF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:56:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AC042D635;
-	Tue, 16 Jan 2024 19:44:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 643732D7AB;
+	Tue, 16 Jan 2024 19:44:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NmAMsNb7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t8RhtSsY"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AB5A2D627;
-	Tue, 16 Jan 2024 19:44:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1FF42D78B;
+	Tue, 16 Jan 2024 19:44:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434268; cv=none; b=XkGLsFE6ScNreEn/lfM0ZvJCyzW1UFjtmCWlwaqZ72U/1CNSa0L6ZtGslDt6WmG31yp6S8Kn8SEy8Cx6/upsX5F3y2/appryTPdqquV33r5UkKIk0Z0dZCSZOBp8yAsLJktWPK/lnmVs4u/cVrChMDE3JxM9MWEPQqRz2H6yjcs=
+	t=1705434270; cv=none; b=MR0Vo8Nf1UI5+L8n383OPScYiP+4mLCN8WxuSZoe3TmkWOEXO/lPyYSfVtYBVDp1YJG0DJ4WsMQ2zghwNcYOueNWlyBTyPH4ccuzRDrA+bzhTNX6kdQOdZex7SjffIwgZQjoAtVRrpQ2RyFfwSJOhxgirZsitWtnBVP5fWVLe/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434268; c=relaxed/simple;
-	bh=rBoYvdVS2YzR0spwdUAt2VoFNa3jDoAge0YXkInyX40=;
+	s=arc-20240116; t=1705434270; c=relaxed/simple;
+	bh=Rux4A75HfQFutwp+vRjQ/gjHxkjnT0mdFXRPi5y+ycI=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=VzmStTB4VdtdzAybuq4GcEYmnLR8SU4ciYw81R8U/384gew23p2KBEjLPUCRDxAszQCJI9G1ICls2CnAWZjsOP3kOKjW9wck/Us+XxW/8bcKxzXHSehfVOj8HT5JoKPUsKsCAn3oOgVtXQVzKMkhDi7M8OWGuqXT4tgSJE2yoBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NmAMsNb7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43AAFC433C7;
-	Tue, 16 Jan 2024 19:44:26 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=qAa4fUCLhS6MM/Wz3C+LNJpDL7tbbBRZHsYtQy4w5Jbou6EkYW2MsqfniUskIpOfuUZsE13PsNfnmN5EVE6vdcQF3H5rd3uyyQh+WwjJt2VNtO87Su6eOjHrQ133jox0Dc7Wefi1juEPuM6439PTdlEcFOUkeXZTde3IJL4u4lI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t8RhtSsY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8934C43394;
+	Tue, 16 Jan 2024 19:44:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434268;
-	bh=rBoYvdVS2YzR0spwdUAt2VoFNa3jDoAge0YXkInyX40=;
+	s=k20201202; t=1705434270;
+	bh=Rux4A75HfQFutwp+vRjQ/gjHxkjnT0mdFXRPi5y+ycI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NmAMsNb7tVWHBTJL3kbnAb3a0WaT01oiSwMFOpJOhOk3B24fq4Ep3DovPPRxAYRRp
-	 TzXLJn2yb5J+1qTmARvpqvOxuaBs9XQinHYHgEPDlknrtJhaYfqJt8t0w9AWNB7trI
-	 vWQKmmJ2OOWUb7/d90nBTQTa5kUpS0M61gu/C1OMm2nXHavJbeUn2MieIBQQcvVbsV
-	 /SgKpdRTjP467CSnMvSan2f4aa+j1hI7MymZXWo4kVXZTftoDVp2AQ1UEM1LUkcJV5
-	 mCgn2yrp3rXZUNod8+Irvb7x4vAEt6xPayKEujOLqImKQDs8JIICGFgLaZtOcKPQjF
-	 UTRXc3oNLYMSw==
+	b=t8RhtSsYNG+JP4BzaO9+9x0aJeMyNirT6xHCIWW90T4FFJBCtrD/qH+yipAyFGIdT
+	 +jMGNxEMSSqpbg0QjgVRfdBmzIP5XBuHqtjW+ZLGcadWBS+HflDVLWRKyxd00QFbqA
+	 GhkJygZhSacPTsxyBwBkdWtraOx0k60dpHD2odszq6Bn7NGoMYSr6QK+/GBFOgWogl
+	 foynh33ET0IkVuhiavxn7J7m4Dg5OE1IWxQOa1r39VjaRVSKocgktbzlKrzjG6jABI
+	 POkuF2k7JqgeiyHNpQUlFfbDfAKzN0vlPEgycduCRyx4QQoXUmXusK6df7CNlHYNoh
+	 BuKEZwrtZ/dcw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
+Cc: Neil Armstrong <neil.armstrong@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	gregkh@linuxfoundation.org,
-	hdegoede@redhat.com,
-	fabrice.gasnier@foss.st.com,
-	quic_jackp@quicinc.com,
-	saranya.gopal@intel.com,
-	quic_linyyuan@quicinc.com,
-	andriy.shevchenko@linux.intel.com,
-	minhuadotchen@gmail.com,
-	johan+linaro@kernel.org,
-	robh@kernel.org,
-	linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 044/108] usb: typec: ucsi: fix UCSI on buggy Qualcomm devices
-Date: Tue, 16 Jan 2024 14:39:10 -0500
-Message-ID: <20240116194225.250921-44-sashal@kernel.org>
+	konrad.dybcio@linaro.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 045/108] arm64: dts: qcom: sm8550: fix soundwire controllers node name
+Date: Tue, 16 Jan 2024 14:39:11 -0500
+Message-ID: <20240116194225.250921-45-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194225.250921-1-sashal@kernel.org>
 References: <20240116194225.250921-1-sashal@kernel.org>
@@ -77,99 +71,63 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7
 Content-Transfer-Encoding: 8bit
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From: Neil Armstrong <neil.armstrong@linaro.org>
 
-[ Upstream commit 1d103d6af241dbfc7e11eb9a46dff65db257a37f ]
+[ Upstream commit 07c88da81caf0e72c3690b689d30f0d325cfeff4 ]
 
-On sevral Qualcomm platforms (SC8180X, SM8350, SC8280XP) a call to
-UCSI_GET_PDOS for non-PD partners will cause a firmware crash with no
-easy way to recover from it. Since we have no easy way to determine
-whether the partner really has PD support, shortcut UCSI_GET_PDOS on
-such platforms. This allows us to enable UCSI support on such devices.
+Fix the following dt bindings check:
+arch/arm64/boot/dts/qcom/sm8550-mtp.dtb: soundwire-controller@6ab0000: $nodename:0: 'soundwire-controller@6ab0000' does not match '^soundwire(@.*)?$'
+from schema $id: http://devicetree.org/schemas/soundwire/qcom,soundwire.yaml#
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
-Link: https://lore.kernel.org/r/20231025115620.905538-2-dmitry.baryshkov@linaro.org
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Link: https://lore.kernel.org/r/20231106-topic-sm8550-upstream-soundwire-bindings-fix-v1-1-4ded91c805a1@linaro.org
 Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/typec/ucsi/ucsi.c       |  3 +++
- drivers/usb/typec/ucsi/ucsi.h       |  3 +++
- drivers/usb/typec/ucsi/ucsi_glink.c | 13 +++++++++++++
- 3 files changed, 19 insertions(+)
+ arch/arm64/boot/dts/qcom/sm8550.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-index 61b64558f96c..5392ec698959 100644
---- a/drivers/usb/typec/ucsi/ucsi.c
-+++ b/drivers/usb/typec/ucsi/ucsi.c
-@@ -578,6 +578,9 @@ static int ucsi_read_pdos(struct ucsi_connector *con,
- 	u64 command;
- 	int ret;
+diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+index 7b9ddde0b2c9..85dc7b5494ab 100644
+--- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+@@ -2050,7 +2050,7 @@ lpass_wsa2macro: codec@6aa0000 {
+ 			#sound-dai-cells = <1>;
+ 		};
  
-+	if (ucsi->quirks & UCSI_NO_PARTNER_PDOS)
-+		return 0;
-+
- 	command = UCSI_COMMAND(UCSI_GET_PDOS) | UCSI_CONNECTOR_NUMBER(con->num);
- 	command |= UCSI_GET_PDOS_PARTNER_PDO(is_partner);
- 	command |= UCSI_GET_PDOS_PDO_OFFSET(offset);
-diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
-index 474315a72c77..6478016d5cb8 100644
---- a/drivers/usb/typec/ucsi/ucsi.h
-+++ b/drivers/usb/typec/ucsi/ucsi.h
-@@ -317,6 +317,9 @@ struct ucsi {
- #define EVENT_PENDING	0
- #define COMMAND_PENDING	1
- #define ACK_PENDING	2
-+
-+	unsigned long quirks;
-+#define UCSI_NO_PARTNER_PDOS	BIT(0)	/* Don't read partner's PDOs */
- };
+-		swr3: soundwire-controller@6ab0000 {
++		swr3: soundwire@6ab0000 {
+ 			compatible = "qcom,soundwire-v2.0.0";
+ 			reg = <0 0x06ab0000 0 0x10000>;
+ 			interrupts = <GIC_SPI 171 IRQ_TYPE_LEVEL_HIGH>;
+@@ -2096,7 +2096,7 @@ lpass_rxmacro: codec@6ac0000 {
+ 			#sound-dai-cells = <1>;
+ 		};
  
- #define UCSI_MAX_SVID		5
-diff --git a/drivers/usb/typec/ucsi/ucsi_glink.c b/drivers/usb/typec/ucsi/ucsi_glink.c
-index 4853141cd10c..53a7ede8556d 100644
---- a/drivers/usb/typec/ucsi/ucsi_glink.c
-+++ b/drivers/usb/typec/ucsi/ucsi_glink.c
-@@ -6,6 +6,7 @@
- #include <linux/auxiliary_bus.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
-+#include <linux/of_device.h>
- #include <linux/property.h>
- #include <linux/soc/qcom/pdr.h>
- #include <linux/usb/typec_mux.h>
-@@ -296,11 +297,19 @@ static void pmic_glink_ucsi_destroy(void *data)
- 	mutex_unlock(&ucsi->lock);
- }
+-		swr1: soundwire-controller@6ad0000 {
++		swr1: soundwire@6ad0000 {
+ 			compatible = "qcom,soundwire-v2.0.0";
+ 			reg = <0 0x06ad0000 0 0x10000>;
+ 			interrupts = <GIC_SPI 155 IRQ_TYPE_LEVEL_HIGH>;
+@@ -2161,7 +2161,7 @@ lpass_wsamacro: codec@6b00000 {
+ 			#sound-dai-cells = <1>;
+ 		};
  
-+static const struct of_device_id pmic_glink_ucsi_of_quirks[] = {
-+	{ .compatible = "qcom,sc8180x-pmic-glink", .data = (void *)UCSI_NO_PARTNER_PDOS, },
-+	{ .compatible = "qcom,sc8280xp-pmic-glink", .data = (void *)UCSI_NO_PARTNER_PDOS, },
-+	{ .compatible = "qcom,sm8350-pmic-glink", .data = (void *)UCSI_NO_PARTNER_PDOS, },
-+	{}
-+};
-+
- static int pmic_glink_ucsi_probe(struct auxiliary_device *adev,
- 				 const struct auxiliary_device_id *id)
- {
- 	struct pmic_glink_ucsi *ucsi;
- 	struct device *dev = &adev->dev;
-+	const struct of_device_id *match;
- 	struct fwnode_handle *fwnode;
- 	int ret;
+-		swr0: soundwire-controller@6b10000 {
++		swr0: soundwire@6b10000 {
+ 			compatible = "qcom,soundwire-v2.0.0";
+ 			reg = <0 0x06b10000 0 0x10000>;
+ 			interrupts = <GIC_SPI 170 IRQ_TYPE_LEVEL_HIGH>;
+@@ -2188,7 +2188,7 @@ swr0: soundwire-controller@6b10000 {
+ 			status = "disabled";
+ 		};
  
-@@ -327,6 +336,10 @@ static int pmic_glink_ucsi_probe(struct auxiliary_device *adev,
- 	if (ret)
- 		return ret;
- 
-+	match = of_match_device(pmic_glink_ucsi_of_quirks, dev->parent);
-+	if (match)
-+		ucsi->ucsi->quirks = (unsigned long)match->data;
-+
- 	ucsi_set_drvdata(ucsi->ucsi, ucsi);
- 
- 	device_for_each_child_node(dev, fwnode) {
+-		swr2: soundwire-controller@6d30000 {
++		swr2: soundwire@6d30000 {
+ 			compatible = "qcom,soundwire-v2.0.0";
+ 			reg = <0 0x06d30000 0 0x10000>;
+ 			interrupts = <GIC_SPI 496 IRQ_TYPE_LEVEL_HIGH>,
 -- 
 2.43.0
 
