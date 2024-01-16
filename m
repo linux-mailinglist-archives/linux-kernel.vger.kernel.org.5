@@ -1,63 +1,60 @@
-Return-Path: <linux-kernel+bounces-28139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48AE382FAB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:39:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7440582FAB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:39:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 474471C2649F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:39:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91DF31C26350
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:39:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F84D64DE3;
-	Tue, 16 Jan 2024 20:00:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22ACB64DFE;
+	Tue, 16 Jan 2024 20:00:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ETxu2V85"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WblUlr85"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 958523C062;
-	Tue, 16 Jan 2024 20:00:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 610F9364C5;
+	Tue, 16 Jan 2024 20:00:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435254; cv=none; b=pOR1agqolHqBX2sH0M+8GzbnfjtvvHDgFE3jZQFCNKPWXK3x85TE45MDSQErb9kgxao5rrT+mFl7v8z4i1RzLoaTBXXwM4U6EbxdbZOkTaG/efsSYzyz7xDN5s3YFMtWW+/XfwJ4btVyhkgZcMAL1KvkjxKE7NNcVQhKb0O+fP8=
+	t=1705435256; cv=none; b=Bf6UjLnjTAF9PQM/F3JeNrIUr4B3ps9f0aP7KNONap6APjtk/UOfaeBvZQonRLAdZA7ATPnYyDi45zoL7EHf1SuKY59btXi8LJ96pO9fwF9bSUUntxyESFdLmji6tof4W7Ci1Bqvkg3UG0xQQqz1U+o+GrvncSciDMTgDq0Ec/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435254; c=relaxed/simple;
-	bh=hORw/LjtmLslIhMW3hB1p5s4EeH7XhY/u0cxo++nrUU=;
+	s=arc-20240116; t=1705435256; c=relaxed/simple;
+	bh=ZnpY8MesuXMPzUC7kw77KTU0WsQBmgX23zrmyyVhIaM=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=nDkc1YovhypdiJ1dXMKUStJNYTMG2m52sqMIo1s/Vm6MV3SHs6F4IXuphY85MI+wqLGPyXmIJOB429RqV4lEcvrGQhvRgyeHpuTl53NcHRa9VViaJzVkaWnsUPgviMkfsRhRhx3mBUYBB664qoHNDL5FMAAxBJC2YmKH6ukxJAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ETxu2V85; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0881DC433C7;
-	Tue, 16 Jan 2024 20:00:52 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=kkcy66kY9Lhk37Eg3qMLQM7rDboay8qOxGdlOvUNX5rzlwKxEbjmsla9JmgCL5Qfi04syMRjxAhQwI/snwVcg54ial6AFIO9KxBcDuw4stZ3dYfP6gLIXD7/Uw/8ivSfXmSCLrzZa8WFKJ8D8zdlxQ0ZDPAy5dkDylxIdrOTZjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WblUlr85; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EFBFC433C7;
+	Tue, 16 Jan 2024 20:00:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435254;
-	bh=hORw/LjtmLslIhMW3hB1p5s4EeH7XhY/u0cxo++nrUU=;
+	s=k20201202; t=1705435256;
+	bh=ZnpY8MesuXMPzUC7kw77KTU0WsQBmgX23zrmyyVhIaM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ETxu2V85gxq2FHHfbakou9AHaRU/Ogkbgxc7Ouaj8jbAHGCGC9JOnh/NM7uQBuAQU
-	 3qh1i0N7vrKENUx0Zdx+DFApUdazUMIf+FjAo7LAKz1LgS5TSIwvxjvreOU1Gkpgyd
-	 4qTWHj8QITawOHIocV0MK91lzlcGfbhxNPofsh75bmSjfRvunId+uLyUJMIx1SDNlz
-	 CXPs2kHgx8oS7kFDiG3T4Fnp91Ryfnmpgg5xuq7tT/nRvYhTKCdKjBsJq/B6iVJG2y
-	 US9W20gEo4qVWfM2huWqHOEkEWlPuU3Ywfqe6bs+34bJ2QDuRN85w/834bsK5vlKk0
-	 yNk6P6oyiSVUA==
+	b=WblUlr851+I6Rmz2Zd4OkmTIuqhVZphft6RdTcL6KAeP3EVZg43JJx+6iSj7j9yQJ
+	 kXPMyQiFwrJd+3HVXip8j8tQHKR1DVs7p3soozoqW86Lme21ymEm2yQuzqX9GpfvU9
+	 oCStSkQkGtDbb+PInmACBA+texX3TUkJi6OsCSJ2V8fZ/KR9PALohgqWLr5aND0J4m
+	 lLWko4okuP92CxA+x5I6Zd70CAmpmp8dRXAyo8abaNx5Mhhb2zrk+Skx1dSPqdTsE+
+	 9ow2ZS9Jb8e+Ag0QR4HIDVD6FuXXceaNsGLbCXEM3zclbDoAjTEDat18LyByOvq4dE
+	 +8JLzSsLcEiPA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yonghong Song <yonghong.song@linux.dev>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
+Cc: Justin Tee <justin.tee@broadcom.com>,
+	Himanshu Madhani <himanshu.madhani@oracle.com>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
 	Sasha Levin <sashal@kernel.org>,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	shuah@kernel.org,
-	nathan@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.10 03/44] selftests/bpf: Fix pyperf180 compilation failure with clang18
-Date: Tue, 16 Jan 2024 14:59:32 -0500
-Message-ID: <20240116200044.258335-3-sashal@kernel.org>
+	james.smart@broadcom.com,
+	dick.kennedy@broadcom.com,
+	jejb@linux.ibm.com,
+	linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 04/44] scsi: lpfc: Fix possible file string name overflow when updating firmware
+Date: Tue, 16 Jan 2024 14:59:33 -0500
+Message-ID: <20240116200044.258335-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116200044.258335-1-sashal@kernel.org>
 References: <20240116200044.258335-1-sashal@kernel.org>
@@ -72,81 +69,61 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.208
 Content-Transfer-Encoding: 8bit
 
-From: Yonghong Song <yonghong.song@linux.dev>
+From: Justin Tee <justin.tee@broadcom.com>
 
-[ Upstream commit 100888fb6d8a185866b1520031ee7e3182b173de ]
+[ Upstream commit f5779b529240b715f0e358489ad0ed933bf77c97 ]
 
-With latest clang18 (main branch of llvm-project repo), when building bpf selftests,
-    [~/work/bpf-next (master)]$ make -C tools/testing/selftests/bpf LLVM=1 -j
+Because file_name and phba->ModelName are both declared a size 80 bytes,
+the extra ".grp" file extension could cause an overflow into file_name.
 
-The following compilation error happens:
-    fatal error: error in backend: Branch target out of insn range
-    ...
-    Stack dump:
-    0.      Program arguments: clang -g -Wall -Werror -D__TARGET_ARCH_x86 -mlittle-endian
-      -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/include
-      -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf -I/home/yhs/work/bpf-next/tools/include/uapi
-      -I/home/yhs/work/bpf-next/tools/testing/selftests/usr/include -idirafter
-      /home/yhs/work/llvm-project/llvm/build.18/install/lib/clang/18/include -idirafter /usr/local/include
-      -idirafter /usr/include -Wno-compare-distinct-pointer-types -DENABLE_ATOMICS_TESTS -O2 --target=bpf
-      -c progs/pyperf180.c -mcpu=v3 -o /home/yhs/work/bpf-next/tools/testing/selftests/bpf/pyperf180.bpf.o
-    1.      <eof> parser at end of file
-    2.      Code generation
-    ...
+Define a ELX_FW_NAME_SIZE macro with value 84.  84 incorporates the 4 extra
+characters from ".grp".  file_name is changed to be declared as a char and
+initialized to zeros i.e. null chars.
 
-The compilation failure only happens to cpu=v2 and cpu=v3. cpu=v4 is okay
-since cpu=v4 supports 32-bit branch target offset.
-
-The above failure is due to upstream llvm patch [1] where some inlining behavior
-are changed in clang18.
-
-To workaround the issue, previously all 180 loop iterations are fully unrolled.
-The bpf macro __BPF_CPU_VERSION__ (implemented in clang18 recently) is used to avoid
-unrolling changes if cpu=v4. If __BPF_CPU_VERSION__ is not available and the
-compiler is clang18, the unrollng amount is unconditionally reduced.
-
-  [1] https://github.com/llvm/llvm-project/commit/1a2e77cf9e11dbf56b5720c607313a566eebb16e
-
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Tested-by: Alan Maguire <alan.maguire@oracle.com>
-Link: https://lore.kernel.org/bpf/20231110193644.3130906-1-yonghong.song@linux.dev
+Signed-off-by: Justin Tee <justin.tee@broadcom.com>
+Link: https://lore.kernel.org/r/20231031191224.150862-3-justintee8345@gmail.com
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/progs/pyperf180.c | 22 +++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ drivers/scsi/lpfc/lpfc.h      | 1 +
+ drivers/scsi/lpfc/lpfc_init.c | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/pyperf180.c b/tools/testing/selftests/bpf/progs/pyperf180.c
-index c39f559d3100..42c4a8b62e36 100644
---- a/tools/testing/selftests/bpf/progs/pyperf180.c
-+++ b/tools/testing/selftests/bpf/progs/pyperf180.c
-@@ -1,4 +1,26 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2019 Facebook
- #define STACK_MAX_LEN 180
-+
-+/* llvm upstream commit at clang18
-+ *   https://github.com/llvm/llvm-project/commit/1a2e77cf9e11dbf56b5720c607313a566eebb16e
-+ * changed inlining behavior and caused compilation failure as some branch
-+ * target distance exceeded 16bit representation which is the maximum for
-+ * cpu v1/v2/v3. Macro __BPF_CPU_VERSION__ is later implemented in clang18
-+ * to specify which cpu version is used for compilation. So a smaller
-+ * unroll_count can be set if __BPF_CPU_VERSION__ is less than 4, which
-+ * reduced some branch target distances and resolved the compilation failure.
-+ *
-+ * To capture the case where a developer/ci uses clang18 but the corresponding
-+ * repo checkpoint does not have __BPF_CPU_VERSION__, a smaller unroll_count
-+ * will be set as well to prevent potential compilation failures.
-+ */
-+#ifdef __BPF_CPU_VERSION__
-+#if __BPF_CPU_VERSION__ < 4
-+#define UNROLL_COUNT 90
-+#endif
-+#elif __clang_major__ == 18
-+#define UNROLL_COUNT 90
-+#endif
-+
- #include "pyperf.h"
+diff --git a/drivers/scsi/lpfc/lpfc.h b/drivers/scsi/lpfc/lpfc.h
+index 03bc472f302a..cf69f831a725 100644
+--- a/drivers/scsi/lpfc/lpfc.h
++++ b/drivers/scsi/lpfc/lpfc.h
+@@ -32,6 +32,7 @@
+ struct lpfc_sli2_slim;
+ 
+ #define ELX_MODEL_NAME_SIZE	80
++#define ELX_FW_NAME_SIZE	84
+ 
+ #define LPFC_PCI_DEV_LP		0x1
+ #define LPFC_PCI_DEV_OC		0x2
+diff --git a/drivers/scsi/lpfc/lpfc_init.c b/drivers/scsi/lpfc/lpfc_init.c
+index 1bb3c96a04bd..5f2009327a59 100644
+--- a/drivers/scsi/lpfc/lpfc_init.c
++++ b/drivers/scsi/lpfc/lpfc_init.c
+@@ -13026,7 +13026,7 @@ lpfc_write_firmware(const struct firmware *fw, void *context)
+ int
+ lpfc_sli4_request_firmware_update(struct lpfc_hba *phba, uint8_t fw_upgrade)
+ {
+-	uint8_t file_name[ELX_MODEL_NAME_SIZE];
++	char file_name[ELX_FW_NAME_SIZE] = {0};
+ 	int ret;
+ 	const struct firmware *fw;
+ 
+@@ -13035,7 +13035,7 @@ lpfc_sli4_request_firmware_update(struct lpfc_hba *phba, uint8_t fw_upgrade)
+ 	    LPFC_SLI_INTF_IF_TYPE_2)
+ 		return -EPERM;
+ 
+-	snprintf(file_name, ELX_MODEL_NAME_SIZE, "%s.grp", phba->ModelName);
++	scnprintf(file_name, sizeof(file_name), "%s.grp", phba->ModelName);
+ 
+ 	if (fw_upgrade == INT_FW_UPGRADE) {
+ 		ret = request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
 -- 
 2.43.0
 
