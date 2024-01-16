@@ -1,48 +1,55 @@
-Return-Path: <linux-kernel+bounces-26825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EA1E82E69D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:21:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E56E82E6A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:21:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2489528151A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:21:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1E501C20E7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:21:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C32081BF2F;
-	Tue, 16 Jan 2024 01:05:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED451BF5F;
+	Tue, 16 Jan 2024 01:05:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iQz/KNZF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NxmxaLHe"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17A9B1BDF7;
-	Tue, 16 Jan 2024 01:05:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D634C43399;
-	Tue, 16 Jan 2024 01:05:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 134441BF56;
+	Tue, 16 Jan 2024 01:05:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F4F5C433C7;
+	Tue, 16 Jan 2024 01:05:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705367104;
-	bh=QPWavivlkwk0fveZfshUlcZyO+JSrsdu5mSEUt0p7kk=;
+	s=k20201202; t=1705367107;
+	bh=VOq8UOOgu6Dr7AdyviAmIt2hK5XJWeQqOmk5u3vsAPo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iQz/KNZFDv7ReTF6Pv/Uw9mbdnQaxXP96PW+CBWIDdxZdPpiQMsuqXHyN2ocd5b6M
-	 TAXNdkkADZD09UUFXOXPadnqFEWfF2Ic8Mni7JW6yTS7i5MT1kuApGt+T14Hg7QQah
-	 SwzEUgG6fQ608WfPmFbMlEmEUVu9Jfr0p7Kc9dLged2tL8qJ9n4s2OAX1bibaYOMKK
-	 /795czc6UckqGSvxrbwBNk/snA21DwRa1xv4iWCSUV9m/n8z+tptNXCgyG1LI9E5rD
-	 1brXFxc1oVyXbIVei++v/YDWv2jF0xbD7WqIlQb0OhgBcYfkmbhRel9t2L8m+OplcU
-	 roMpnCg5PEi+g==
+	b=NxmxaLHeYyqhtJt2jE2ao2zMqRxt7D05o/XLFKPoSSe92ONYSKpx46ZgrD/jNA3yb
+	 kBKgWgSvSB/Gcja7PzpHh3YEHCO5nEJwUOWQL/igrx7BeOkjdmHFkmf9wBE/XML4gR
+	 HQomkict+d1bbVq7exenREChYFIdeq52/URgotJ/1m9vpofPmFGVxrPRFBrca2wW9J
+	 xesMjk9RPdKmaaWauc9yrJ7j67xlWyi5PO6o+d53KC70c/P9+QBBFVaF03CYPiGaie
+	 hJ+JfQsQtQURk6vOHeCCFxAh+kVpTOc9m2M7O65dUZ7jbq/9YwmbTaA4kmUyZX2gSj
+	 IZx7GxP/1P7eg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Shyam Prasad N <sprasad@microsoft.com>,
-	Steve French <stfrench@microsoft.com>,
+Cc: Gabriel Krisman Bertazi <krisman@suse.de>,
+	Eric Biggers <ebiggers@google.com>,
 	Sasha Levin <sashal@kernel.org>,
-	sfrench@samba.org,
-	linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org
-Subject: [PATCH AUTOSEL 6.7 16/21] cifs: fix in logging in cifs_chan_update_iface
-Date: Mon, 15 Jan 2024 20:03:53 -0500
-Message-ID: <20240116010422.217925-16-sashal@kernel.org>
+	code@tyhicks.com,
+	brauner@kernel.org,
+	dchinner@redhat.com,
+	jack@suse.cz,
+	jlayton@kernel.org,
+	xiubli@redhat.com,
+	viro@zeniv.linux.org.uk,
+	stefanb@linux.ibm.com,
+	walmeida@microsoft.com,
+	ecryptfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 17/21] ecryptfs: Reject casefold directory inodes
+Date: Mon, 15 Jan 2024 20:03:54 -0500
+Message-ID: <20240116010422.217925-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116010422.217925-1-sashal@kernel.org>
 References: <20240116010422.217925-1-sashal@kernel.org>
@@ -57,57 +64,44 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7
 Content-Transfer-Encoding: 8bit
 
-From: Shyam Prasad N <sprasad@microsoft.com>
+From: Gabriel Krisman Bertazi <krisman@suse.de>
 
-[ Upstream commit 516eea97f92f1e7271f20835cfe9e73774b0f8cc ]
+[ Upstream commit cd72c7ef5fed44272272a105b1da22810c91be69 ]
 
-Recently, cifs_chan_update_iface was modified to not
-remove an iface if a suitable replacement was not found.
-With that, there were two conditionals that were exactly
-the same. This change removes that extra condition check.
+Even though it seems to be able to resolve some names of
+case-insensitive directories, the lack of d_hash and d_compare means we
+end up with a broken state in the d_cache.  Considering it was never a
+goal to support these two together, and we are preparing to use
+d_revalidate in case-insensitive filesystems, which would make the
+combination even more broken, reject any attempt to get a casefolded
+inode from ecryptfs.
 
-Also, fixed a logging in the same function to indicate
-the correct message.
-
-Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Gabriel Krisman Bertazi <krisman@suse.de>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/smb/client/sess.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ fs/ecryptfs/inode.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/fs/smb/client/sess.c b/fs/smb/client/sess.c
-index 2d3b332a79a1..a16e175731eb 100644
---- a/fs/smb/client/sess.c
-+++ b/fs/smb/client/sess.c
-@@ -440,8 +440,14 @@ cifs_chan_update_iface(struct cifs_ses *ses, struct TCP_Server_Info *server)
- 	}
+diff --git a/fs/ecryptfs/inode.c b/fs/ecryptfs/inode.c
+index b0e8774c435a..d7193687b9b4 100644
+--- a/fs/ecryptfs/inode.c
++++ b/fs/ecryptfs/inode.c
+@@ -78,6 +78,14 @@ static struct inode *__ecryptfs_get_inode(struct inode *lower_inode,
  
- 	if (!iface) {
--		cifs_dbg(FYI, "unable to get the interface matching: %pIS\n",
--			 &ss);
-+		if (!chan_index)
-+			cifs_dbg(FYI, "unable to get the interface matching: %pIS\n",
-+				 &ss);
-+		else {
-+			cifs_dbg(FYI, "unable to find another interface to replace: %pIS\n",
-+				 &old_iface->sockaddr);
-+		}
+ 	if (lower_inode->i_sb != ecryptfs_superblock_to_lower(sb))
+ 		return ERR_PTR(-EXDEV);
 +
- 		spin_unlock(&ses->iface_lock);
- 		return 0;
- 	}
-@@ -459,10 +465,6 @@ cifs_chan_update_iface(struct cifs_ses *ses, struct TCP_Server_Info *server)
- 		iface->weight_fulfilled++;
- 
- 		kref_put(&old_iface->refcount, release_iface);
--	} else if (old_iface) {
--		/* if a new candidate is not found, keep things as is */
--		cifs_dbg(FYI, "could not replace iface: %pIS\n",
--			 &old_iface->sockaddr);
- 	} else if (!chan_index) {
- 		/* special case: update interface for primary channel */
- 		if (iface) {
++	/* Reject dealing with casefold directories. */
++	if (IS_CASEFOLDED(lower_inode)) {
++		pr_err_ratelimited("%s: Can't handle casefolded directory.\n",
++				   __func__);
++		return ERR_PTR(-EREMOTE);
++	}
++
+ 	if (!igrab(lower_inode))
+ 		return ERR_PTR(-ESTALE);
+ 	inode = iget5_locked(sb, (unsigned long)lower_inode,
 -- 
 2.43.0
 
