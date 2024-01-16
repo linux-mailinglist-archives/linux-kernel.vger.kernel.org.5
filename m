@@ -1,223 +1,602 @@
-Return-Path: <linux-kernel+bounces-26947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A333A82E864
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 05:05:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE3CF82E87D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 05:13:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1FCD284942
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 04:05:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49B561C22A6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 04:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E973E79EC;
-	Tue, 16 Jan 2024 04:05:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TlIC598w"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B09A2DDB1;
+	Tue, 16 Jan 2024 04:13:20 +0000 (UTC)
+Received: from esa4.hc1455-7.c3s2.iphmx.com (esa4.hc1455-7.c3s2.iphmx.com [68.232.139.117])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 805F279C1;
-	Tue, 16 Jan 2024 04:05:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705377915; x=1736913915;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=PmF7R1D/OpCff71q0v3OfMS8MEdcHDacMxC+ENKx5jE=;
-  b=TlIC598wQ2zF+ogUt7ZqWqjQ33MlSaqB7qNXbfQlf4wFXGgk93SNhiuB
-   yNVIiZvEzBPA8E7ZKsGMQGQ87v6QYdm8viQDVpUfw0GkSfJjZHsQee7pG
-   pqmvzXnUQ+BCtSkXVj1vJ5/HJcA0iBPIjjKMaRhCZswRn3cHl7snXaBLI
-   zjRUNJn3xwXgT1f1Q6ttXQ72rLhfALA7nMuK3+GZdg70sQAyktcUvsF22
-   9iVm7SqhnouqGWXlfYOSOp7+BzCwH7ufc0ocQsVw/Jxb0J5xfo+vP1iZJ
-   cwyqNDcjnjWfadkxhTwCytSNAo5wDghOJhq/pJ+QhVTA8PE99pX9LujTH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="6844853"
-X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
-   d="scan'208";a="6844853"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 20:05:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="818030380"
-X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
-   d="scan'208";a="818030380"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Jan 2024 20:05:13 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 15 Jan 2024 20:05:13 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 15 Jan 2024 20:05:13 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 15 Jan 2024 20:05:13 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 15 Jan 2024 20:05:12 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MC8665R4kp1MmPuFEdYVfQf75DXPv22aooH0qcHlbeCRrS+ZIHs2wuO93aHqptFlxpSjIYDf2C0eVtNN+f1Qzci22GRDCv8Avh7ppDxQ5sBjhWf8a8uK/YvMw9hOQ9qF8bHuWQlkPw6zCm+Wa5C8KL1k7AbGZ7kOR59vO0SP9u2Gw9wtDolSZ61WgUmn1nkwg6LGIZmt7EuJ9chrculUlza2riCEVHkkt7TqfWzx1zmngV6lvRPcubxgAOoitCYwlVk3OW9yP1gRl82BeoYXrb6v24JYjlqK5jY+i8P7fvdijwOADoSBJ0yWXfwqMWv7i8laLLn8VS4o2DN+MT2gXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PmF7R1D/OpCff71q0v3OfMS8MEdcHDacMxC+ENKx5jE=;
- b=htQ9EB91kRfcJcpkJicZXp4vU/pRoqwpqb0VVVPMTJiZIi5gnfeZbGr5+jTv9em3seRQVm6hWh+bzZRp/VQGx/VCpYaFGK8XXO0T/TwTJJIbaY4ESOtbRpzhjcc0/6HtzjCM+77EWh6/CNpvVcvMLVs63bJXtAszZiJBipxsqPgsoy3ydyZC34tFkLByizrnpHYFJr4fkDtsB4vApqQnTvd/DRhWqDrv2xwCKXmB9IHW1Nq+HqDKVtMUdtO4cA5r7dSKAZm6HmLlkM61vJ7dmpHngcNIskE89y7tmdRqthPgmU09/D/4/16mZSkD4BHeb6pXW6Garo7GI/Xb8/36WA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by IA0PR11MB7813.namprd11.prod.outlook.com (2603:10b6:208:402::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Tue, 16 Jan
- 2024 04:05:08 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::a8e9:c80f:9484:f7cb]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::a8e9:c80f:9484:f7cb%3]) with mapi id 15.20.7181.022; Tue, 16 Jan 2024
- 04:05:08 +0000
-From: "Tian, Kevin" <kevin.tian@intel.com>
-To: Jason Gunthorpe <jgg@nvidia.com>, "Zhao, Yan Y" <yan.y.zhao@intel.com>
-CC: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>, "seanjc@google.com"
-	<seanjc@google.com>, "olvaffe@gmail.com" <olvaffe@gmail.com>, "Lv, Zhiyuan"
-	<zhiyuan.lv@intel.com>, "Wang, Zhenyu Z" <zhenyu.z.wang@intel.com>, "Ma,
- Yongwei" <yongwei.ma@intel.com>, "vkuznets@redhat.com" <vkuznets@redhat.com>,
-	"wanpengli@tencent.com" <wanpengli@tencent.com>, "jmattson@google.com"
-	<jmattson@google.com>, "joro@8bytes.org" <joro@8bytes.org>,
-	"gurchetansingh@chromium.org" <gurchetansingh@chromium.org>,
-	"kraxel@redhat.com" <kraxel@redhat.com>, "zzyiwei@google.com"
-	<zzyiwei@google.com>, "ankita@nvidia.com" <ankita@nvidia.com>,
-	"alex.williamson@redhat.com" <alex.williamson@redhat.com>, "maz@kernel.org"
-	<maz@kernel.org>, "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-	"james.morse@arm.com" <james.morse@arm.com>, "suzuki.poulose@arm.com"
-	<suzuki.poulose@arm.com>, "yuzenghui@huawei.com" <yuzenghui@huawei.com>
-Subject: RE: [PATCH 0/4] KVM: Honor guest memory types for virtio GPU devices
-Thread-Topic: [PATCH 0/4] KVM: Honor guest memory types for virtio GPU devices
-Thread-Index: AQHaP7tymmMn9RzSAkmqnV+LZ1Ybo7DLoueAgAPOSYCAAIYUAIAAoD4AgAAM2ACAAB54gIAKXh0AgACHppCAADe5sA==
-Date: Tue, 16 Jan 2024 04:05:08 +0000
-Message-ID: <BN9PR11MB5276B5603D9D777F01D64EDA8C732@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20240105091237.24577-1-yan.y.zhao@intel.com>
- <20240105195551.GE50406@nvidia.com>
- <ZZuQEQAVX28v7p9Z@yzhao56-desk.sh.intel.com>
- <20240108140250.GJ50406@nvidia.com>
- <ZZyG9n0qZEr6dLlZ@yzhao56-desk.sh.intel.com>
- <20240109002220.GA439767@nvidia.com>
- <ZZyrS4RiHvktDZXb@yzhao56-desk.sh.intel.com>
- <20240115163050.GI734935@nvidia.com> 
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|IA0PR11MB7813:EE_
-x-ms-office365-filtering-correlation-id: 78d05ba9-2ca9-45ee-1e7e-08dc164853e9
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8jDJSrrGjdp2kWU1pfTSAD84ey9EWELdtYT7oICcc1QxdcQccGwBe3rZ+PJaSUFKhiNx/hPghsyMykvxgpUp2uNLvTVLOWAWg1WWbALinfiHRcAQIiCdPPnS1FrbnCxm1ljBtsyRd2dWsCbzNS6U/iaSFkCtMIhHKfCWslL3x0XfvTl3GsHZZ5McbbvvKM8Jnu7lRnbMQD144cBzMImA6pEoieXUl+xXCN/HwTk2GTdFxJ6jSHg4naKHElD+Y9nEWJ+l+QLIjjiGyFiw7wQCaGZwKLPsbRGErfZ67XzCWvGnLLMB5CT4E5C76I9P4VuS9/ue25ooceFL9Gc1A62fQmM82pRm1PnCnbeX32/0j36CXY5xZo8iPE8URtekSEuOjSaSdPlkYW5ItPGfB3ikqvQBgFlm3pBEE8MlGA26mnlg7QmsXgxfJaD8ZzxliH1wr5Z8r9Nwq0Ars1AV4id5juFMYN19SYcML/CgC9t9OCQinxevv5QqFKPQDmwmu+H95/f7+aVSb4l0tj+ermRaBXDcohZXper2vk2HivbeuC5bzRAqAIqzq4lpDHQSqWrRSrqup4/eR5cKxOZyJw+xegUMug5XyvJ/uZ5aEgt/LXdQ2qyn7lj/4I6DaqV70FB1
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(346002)(396003)(366004)(376002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(38100700002)(71200400001)(83380400001)(26005)(122000001)(66446008)(66556008)(64756008)(8676002)(66946007)(66476007)(8936002)(52536014)(4326008)(76116006)(110136005)(6636002)(316002)(54906003)(6506007)(55016003)(33656002)(82960400001)(9686003)(478600001)(7696005)(86362001)(2906002)(7416002)(38070700009)(5660300002)(41300700001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?nWBN9rNHMm/JMd56MFiD5/X02nuuSfiRbKPchMYHJtp4YGrnsQ7FQsrQlc/k?=
- =?us-ascii?Q?8Dhq6P6alJTVaA6TQSnOKcR9xn/k4jHYeh4nkK2kZur2SnBXryzrDIRZqCO6?=
- =?us-ascii?Q?9PE9Jv2GEP8HpYyva2lMyPvdQMpg6N3QcfMMitEsDLGeNBMImhxKZInYg4A5?=
- =?us-ascii?Q?XY332RZOX9Tksno8rWRvJd7BC5Ml3r/zttJjku1wNsENLyS4ZI7Cy+7dPCYv?=
- =?us-ascii?Q?3fblsjXzWmtR2ozNU8wIcY8ddKJedAMhOrNoI34XxTcZlRfbORJtJ4YqomGr?=
- =?us-ascii?Q?kRAeJOIFMB+cXlklu7MIfsvO9SWnuaPI7bS8cbEHSKgmmgQCTp8ozoh2CTFV?=
- =?us-ascii?Q?iJsaKTWFrpcJhCOk4Z/PjYZJz8x8P6f6XT+iZD49Vy7XsO8gpdoDcW2ysOXX?=
- =?us-ascii?Q?4IqD+wcJZIpJ976llC2Z95jVcT2wDcEvgKayYZ3x1qUwzkkKUbYrTSSZ26zB?=
- =?us-ascii?Q?NTqdZUhoX6e0iMOHV6Sn7CUrShSAiDZ0QxX1yhGnWoMvTX29jeF/osb5mXlh?=
- =?us-ascii?Q?lnzm43HOYDixtolqiSKO3o3rtEQEb/T2NPKEUWQF61Aetd+AF1JVhV8oSDjL?=
- =?us-ascii?Q?w+OyNDbo1ebIZe4BwQDg2fPtJgQFAzrGbkh6RsYNVqOg9KwomQNWkpAHX49i?=
- =?us-ascii?Q?Cjtiz7oP4xMjvqjMK0z1nIc34qjj8+Z7GK4SKTefJVDBSckoGE9fdaAxOiC3?=
- =?us-ascii?Q?1+R7Lt0EIc5NZ5X93OOFmZ3QR5Ofzk7VrU8B4Uylk+QLFur6KQPFDGDcIt92?=
- =?us-ascii?Q?0sZPKr4Rm8ewYAybBuou8MZ+JeVK5qzw8C31mUe52zX3XSO2s2l4o8+oOTWU?=
- =?us-ascii?Q?2VMP4ftYbveipUA6lai8SzBOvV6DMWnL0SEKRl2I/w24+zm2CJLBiw1ZF6zP?=
- =?us-ascii?Q?PiGBi4FRTszHfP6rIYv7tV8ao92ZNfpJ6nEz9/btb9Tor5+jtmmdvwIuhUr1?=
- =?us-ascii?Q?6mjB0x7cdOtOk/AVWa1uAXIocym4xfaHKz+9IBaaLXK5u9UOSTZMRoXbUGQ9?=
- =?us-ascii?Q?aFwPxr8o1QLgTmqr+M12cFVdO4sPS3qx6m3qCGuPiu6436xu23FAnnbzCeIC?=
- =?us-ascii?Q?6bkiZfdX2IdFsee662GwBvRhn2rRehdfzyW5j1cNtH9i5jSxFnBzs2q5tr9s?=
- =?us-ascii?Q?wjGVewnj2f8KNCKWA4gvtcavm7LQIiIOtoDD5xF/D63+Q64HAC5AnBGGAQ2p?=
- =?us-ascii?Q?pPW0edlSO7SbJ/tCL8sL+lYe87Ugg1x20de67tIrYG4Kbr8t51XWRZ3j4dDB?=
- =?us-ascii?Q?XSOIIP3c5szGWFyHkTYuqO8rmU0iVkJNKjcxU7WN8LbiuP4Fgpzr67qIh0LV?=
- =?us-ascii?Q?vxYgZyZ93la+fBqkPj5S1i8c5MFY06HPu37iMvHvncAens/oanO0AZVQWyP4?=
- =?us-ascii?Q?WYRIeuHSDoWxb5l1sHOMjhRVIIcsI6lReiF7bIAVJuuYP3xWkbi8OZYq7ruD?=
- =?us-ascii?Q?I9sqSbNpgTVtlJeewXSIUL7+utRGE/Fn5vL2DZrTFDOCqOvrnRdFystZXo5z?=
- =?us-ascii?Q?67OA2xN1w0TAXYfR21iXKWGnlV1JdESyVVQVCiowCjZTM+e+6wC+QFsg7ki4?=
- =?us-ascii?Q?Q7Uy2eka93bbvw7XEVi+bqQL1WhCLfulZWWhax3K?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7830E79C1;
+	Tue, 16 Jan 2024 04:13:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="146505738"
+X-IronPort-AV: E=Sophos;i="6.04,198,1695654000"; 
+   d="scan'208";a="146505738"
+Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
+  by esa4.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 13:11:56 +0900
+Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com [192.168.87.59])
+	by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id C8695D9D9D;
+	Tue, 16 Jan 2024 13:11:51 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com [192.51.206.21])
+	by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 9F1A7BF3E1;
+	Tue, 16 Jan 2024 13:11:50 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+	by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 0420D200982E5;
+	Tue, 16 Jan 2024 13:11:50 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.226.45])
+	by edo.cn.fujitsu.com (Postfix) with ESMTP id D30711A0070;
+	Tue, 16 Jan 2024 12:11:43 +0800 (CST)
+From: Li Zhijian <lizhijian@fujitsu.com>
+To: linux-kernel@vger.kernel.org
+Cc: Li Zhijian <lizhijian@fujitsu.com>,
+	Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Alistar Popple <alistair@popple.id.au>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	=?UTF-8?q?Bruno=20Pr=C3=A9mont?= <bonbons@linux-vserver.org>,
+	Chandrakanth patil <chandrakanth.patil@broadcom.com>,
+	Christian Gromm <christian.gromm@microchip.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	cocci@inria.fr,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Don Brace <don.brace@microchip.com>,
+	dri-devel@lists.freedesktop.org,
+	Eddie James <eajames@linux.ibm.com>,
+	GR-QLogic-Storage-Upstream@marvell.com,
+	Hannes Reinecke <hare@kernel.org>,
+	Hannes Reinecke <hare@suse.de>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Helge Deller <deller@gmx.de>,
+	HighPoint Linux Team <linux@highpoint-tech.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Ian Rogers <irogers@google.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Jack Wang <jinpu.wang@cloud.ionos.com>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	James Morse <james.morse@arm.com>,
+	Jeremy Kerr <jk@ozlabs.org>,
+	Jiri Kosina <jikos@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Joel Stanley <joel@jms.id.au>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Julia Lawall <Julia.Lawall@inria.fr>,
+	Karan Tilak Kumar <kartilak@cisco.com>,
+	Kashyap Desai <kashyap.desai@broadcom.com>,
+	Ketan Mukadam <ketan.mukadam@broadcom.com>,
+	Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-edac@vger.kernel.org,
+	linux-fbdev@vger.kernel.org,
+	linux-fsi@lists.ozlabs.org,
+	linux-iio@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-scsi@vger.kernel.org,
+	Manish Rangankar <mrangankar@marvell.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	megaraidlinux.pdl@broadcom.com,
+	Michael Cyr <mikecyr@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Januszewski <spock@gentoo.org>,
+	MPT-FusionLinux.pdl@broadcom.com,
+	Namhyung Kim <namhyung@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	netdev@vger.kernel.org,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Nicolas Palix <nicolas.palix@imag.fr>,
+	Nilesh Javali <njavali@marvell.com>,
+	Parthiban Veerasooran <parthiban.veerasooran@microchip.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	platform-driver-x86@vger.kernel.org,
+	Richard Cochran <richardcochran@gmail.com>,
+	Robert Richter <rric@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Sathya Prakash <sathya.prakash@broadcom.com>,
+	Satish Kharat <satishkh@cisco.com>,
+	Sesidhar Baddela <sebaddel@cisco.com>,
+	Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+	Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	Stefan Achatz <erazor_de@users.sourceforge.net>,
+	storagedev@microchip.com,
+	Stuart Yoder <stuyoder@gmail.com>,
+	Suganath Prabu Subramani <suganath-prabu.subramani@broadcom.com>,
+	Sumit Saxena <sumit.saxena@broadcom.com>,
+	target-devel@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Tony Luck <tony.luck@intel.com>,
+	Tyrel Datwyler <tyreld@linux.ibm.com>,
+	Vadim Pasternak <vadimp@nvidia.com>,
+	x86@kernel.org
+Subject: [PATCH 00/42] Fix coccicheck warnings
+Date: Tue, 16 Jan 2024 12:10:47 +0800
+Message-Id: <20240116041129.3937800-1-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 78d05ba9-2ca9-45ee-1e7e-08dc164853e9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jan 2024 04:05:08.0886
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yHCXk+8JyUcK2wZrzBvZk3nhP7VMhG0cvw9FgbqyLxQv/ZVsZg0V3w3JM9YY7eejUpwfdYkCnHE2sa16H4wmFA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB7813
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28122.004
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28122.004
+X-TMASE-Result: 10--5.338000-10.000000
+X-TMASE-MatchedRID: APZBv0eB5fJy4CNxYSkcLoL5ja7E+OhyuoYFb0nRiqO/XSsQNWtCeIAj
+	6kt+TewHC3vXNyJNBUS/2a/w1wS2snh1rPkUeh+7A9lly13c/gEMZvHcAgmELNM4cBkOddRug4T
+	d/DBNkVPBV4b4vif9P70QU2u8uQPlKz8U6m7mv8Csxn4GpC3Y2mDbldQedDmvdr2Udl3Og/5evz
+	2JvPJmxmu4/NMq7ELJiJZIlifpj2n9iEfE2OtmsHZwubmkurW/Urr7Qc5WhKixViPWo8HTYkdes
+	bjoBZ/kx3iFO+XIjdvtpuHnoJaRs49oUcx9VMLggxsfzkNRlfLdB/CxWTRRu25FeHtsUoHuFXh8
+	AHLXJNBIMK2NL4dx8OCrxKVMkOf0hhdqTS9iikoJK2MK45H+GA==
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
-> From: Tian, Kevin
-> Sent: Tuesday, January 16, 2024 8:46 AM
->=20
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Tuesday, January 16, 2024 12:31 AM
-> >
-> > On Tue, Jan 09, 2024 at 10:11:23AM +0800, Yan Zhao wrote:
-> >
-> > > > Well, for instance, when you install pages into the KVM the hypervi=
-sor
-> > > > will have taken kernel memory, then zero'd it with cachable writes,
-> > > > however the VM can read it incoherently with DMA and access the
-> > > > pre-zero'd data since the zero'd writes potentially hasn't left the
-> > > > cache. That is an information leakage exploit.
-> > >
-> > > This makes sense.
-> > > How about KVM doing cache flush before installing/revoking the
-> > > page if guest memory type is honored?
-> >
-> > I think if you are going to allow the guest to bypass the cache in any
-> > way then KVM should fully flush the cache before allowing the guest to
-> > access memory and it should fully flush the cache after removing
-> > memory from the guest.
->=20
-> For GPU passthrough can we rely on the fact that the entire guest memory
-> is pinned so the only occurrence of removing memory is when killing the
-> guest then the pages will be zero-ed by mm before next use? then we
-> just need to flush the cache before the 1st guest run to avoid informatio=
-n
-> leak.
+make coccicheck COCCI=$PWD/scripts/coccinelle/api/device_attr_show.cocci`
+complians some warnnings as following[1]:
 
-Just checked your past comments. If there is no guarantee that the removed
-pages will be zero-ed before next use then yes cache has to be flushed
-after the page is removed from the guest. :/
+Not sure if someone had tried these fixes, feel free to ignore this
+patch set if we have come to a *NOT-FIX* conclusion before :)
 
->=20
-> yes it's a more complex issue if allowing guest to bypass cache in a
-> configuration mixing host mm activities on guest pages at run-time.
->=20
-> >
-> > Noting that fully removing the memory now includes VFIO too, which is
-> > going to be very hard to co-ordinate between KVM and VFIO.
->=20
+This patch set also fix a few snprintf() beside coccicheck reported.
+For example, some thing like
+xxx_show() {
+	rc = snprintf();
+..
+	return rc;
+}
 
-Probably we could just handle cache flush in IOMMUFD or VFIO type1
-map/unmap which is the gate of allowing/denying non-coherent DMAs
-to specific pages.
+TODOs:
+1. Fix other abused cases that coccicheck has not detected. For
+example,  ./drivers/scsi/scsi_transport_fc.c has other places using
+snprint inside the macro.
+2. Improve device_attr_show.cocci to detect sprintf() and fix them
+
+[1]
+$ make coccicheck COCCI=$PWD/scripts/coccinelle/api/device_attr_show.cocci
+..
+/arch/arm/mm/cache-l2x0-pmu.c:346:8-16: WARNING: use scnprintf or sprintf
+/arch/x86/events/amd/core.c:1282:8-16: WARNING: use scnprintf or sprintf
+/arch/x86/events/core.c:1895:11-19: WARNING: use scnprintf or sprintf
+/arch/x86/events/core.c:2542:8-16: WARNING: use scnprintf or sprintf
+/arch/x86/events/core.c:2600:8-16: WARNING: use scnprintf or sprintf
+/arch/x86/events/intel/core.c:5496:8-16: WARNING: use scnprintf or sprintf
+/arch/x86/events/intel/core.c:5530:8-16: WARNING: use scnprintf or sprintf
+/arch/x86/events/intel/core.c:5546:8-16: WARNING: use scnprintf or sprintf
+/arch/x86/events/intel/pt.c:99:8-16: WARNING: use scnprintf or sprintf
+/drivers/bus/fsl-mc/fsl-mc-bus.c:205:8-16: WARNING: use scnprintf or sprintf
+/drivers/edac/edac_mc_sysfs.c:210:8-16: WARNING: use scnprintf or sprintf
+/drivers/edac/edac_mc_sysfs.c:518:8-16: WARNING: use scnprintf or sprintf
+/drivers/fsi/fsi-master-ast-cf.c:1086:8-16: WARNING: use scnprintf or sprintf
+/drivers/fsi/fsi-master-gpio.c:721:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-lenovo.c:558:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-lenovo.c:602:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-lenovo.c:792:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-lenovo.c:822:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-lenovo.c:852:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-lenovo.c:882:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-lenovo.c:912:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-lenovo.c:941:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-picolcd_core.c:259:9-17: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-picolcd_core.c:304:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-roccat-isku.c:64:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-roccat-kone.c:403:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-roccat-kone.c:412:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-roccat-kone.c:435:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-roccat-kone.c:444:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-roccat-kone.c:454:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-roccat-kone.c:556:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-roccat-koneplus.c:245:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-roccat-koneplus.c:312:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-roccat-kovaplus.c:275:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-roccat-kovaplus.c:328:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-roccat-kovaplus.c:337:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-roccat-kovaplus.c:347:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-roccat-kovaplus.c:368:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-roccat-pyra.c:286:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-roccat-pyra.c:303:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-roccat-pyra.c:324:8-16: WARNING: use scnprintf or sprintf
+/drivers/hid/hid-sensor-custom.c:375:10-18: WARNING: use scnprintf or sprintf
+/drivers/message/fusion/mptscsih.c:3100:8-16: WARNING: use scnprintf or sprintf
+/drivers/message/fusion/mptscsih.c:3116:8-16: WARNING: use scnprintf or sprintf
+/drivers/message/fusion/mptscsih.c:3132:8-16: WARNING: use scnprintf or sprintf
+/drivers/message/fusion/mptscsih.c:3145:8-16: WARNING: use scnprintf or sprintf
+/drivers/message/fusion/mptscsih.c:3159:8-16: WARNING: use scnprintf or sprintf
+/drivers/message/fusion/mptscsih.c:3173:8-16: WARNING: use scnprintf or sprintf
+/drivers/message/fusion/mptscsih.c:3186:8-16: WARNING: use scnprintf or sprintf
+/drivers/message/fusion/mptscsih.c:3198:8-16: WARNING: use scnprintf or sprintf
+/drivers/message/fusion/mptscsih.c:3211:8-16: WARNING: use scnprintf or sprintf
+/drivers/message/fusion/mptscsih.c:3224:8-16: WARNING: use scnprintf or sprintf
+/drivers/message/fusion/mptscsih.c:3237:8-16: WARNING: use scnprintf or sprintf
+/drivers/message/fusion/mptscsih.c:3250:8-16: WARNING: use scnprintf or sprintf
+/drivers/most/core.c:211:8-16: WARNING: use scnprintf or sprintf
+/drivers/most/core.c:222:8-16: WARNING: use scnprintf or sprintf
+/drivers/most/core.c:233:8-16: WARNING: use scnprintf or sprintf
+/drivers/most/core.c:244:8-16: WARNING: use scnprintf or sprintf
+/drivers/most/core.c:254:8-16: WARNING: use scnprintf or sprintf
+/drivers/most/core.c:263:8-16: WARNING: use scnprintf or sprintf
+/drivers/most/core.c:272:8-16: WARNING: use scnprintf or sprintf
+/drivers/most/core.c:282:9-17: WARNING: use scnprintf or sprintf
+/drivers/most/core.c:297:10-18: WARNING: use scnprintf or sprintf
+/drivers/most/core.c:309:8-16: WARNING: use scnprintf or sprintf
+/drivers/most/core.c:318:8-16: WARNING: use scnprintf or sprintf
+/drivers/most/core.c:326:8-16: WARNING: use scnprintf or sprintf
+/drivers/most/core.c:398:8-16: WARNING: use scnprintf or sprintf
+/drivers/most/core.c:409:9-17: WARNING: use scnprintf or sprintf
+/drivers/platform/mellanox/mlxbf-bootctl.c:466:8-16: WARNING: use scnprintf or sprintf
+/drivers/platform/mellanox/mlxbf-bootctl.c:584:8-16: WARNING: use scnprintf or sprintf
+/drivers/platform/mellanox/mlxbf-bootctl.c:635:8-16: WARNING: use scnprintf or sprintf
+/drivers/platform/mellanox/mlxbf-bootctl.c:686:8-16: WARNING: use scnprintf or sprintf
+/drivers/platform/mellanox/mlxbf-bootctl.c:737:8-16: WARNING: use scnprintf or sprintf
+/drivers/platform/mellanox/mlxbf-bootctl.c:788:8-16: WARNING: use scnprintf or sprintf
+/drivers/platform/mellanox/mlxbf-bootctl.c:839:8-16: WARNING: use scnprintf or sprintf
+/drivers/ptp/ptp_sysfs.c:27:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/53c700.c:2074:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/aacraid/linit.c:1299:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/aacraid/linit.c:1325:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/aacraid/linit.c:1332:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/aacraid/linit.c:561:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/aacraid/linit.c:588:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/aic94xx/aic94xx_init.c:267:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/aic94xx/aic94xx_init.c:276:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/aic94xx/aic94xx_init.c:284:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/aic94xx/aic94xx_init.c:455:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/arcmsr/arcmsr_attr.c:261:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/arcmsr/arcmsr_attr.c:273:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/arcmsr/arcmsr_attr.c:285:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/arcmsr/arcmsr_attr.c:297:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/arcmsr/arcmsr_attr.c:309:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/arcmsr/arcmsr_attr.c:322:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/arcmsr/arcmsr_attr.c:335:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/arcmsr/arcmsr_attr.c:348:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/arcmsr/arcmsr_attr.c:361:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/arcmsr/arcmsr_attr.c:374:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/be2iscsi/be_mgmt.c:1145:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/be2iscsi/be_mgmt.c:1164:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/be2iscsi/be_mgmt.c:1251:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/be2iscsi/be_mgmt.c:1280:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/fcoe/fcoe_sysfs.c:253:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/fcoe/fcoe_sysfs.c:268:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/fcoe/fcoe_sysfs.c:376:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/fnic/fnic_attrs.c:17:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/fnic/fnic_attrs.c:23:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/fnic/fnic_attrs.c:31:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/hpsa.c:528:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/hpsa.c:538:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/hpsa.c:549:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/hpsa.c:561:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/hpsa.c:645:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/hpsa.c:724:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/hpsa.c:746:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/hpsa.c:775:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/hpsa.c:799:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/hpsa.c:898:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/hpsa.c:908:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/hptiop.c:1114:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/hptiop.c:1123:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/ibmvscsi/ibmvfc.c:3483:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/ibmvscsi/ibmvfc.c:3493:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/ibmvscsi/ibmvfc.c:3503:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/ibmvscsi/ibmvfc.c:3513:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/ibmvscsi/ibmvfc.c:3522:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/ibmvscsi/ibmvfc.c:3530:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c:3619:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c:3625:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c:3633:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/isci/init.c:140:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/megaraid/megaraid_sas_base.c:3336:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/megaraid/megaraid_sas_base.c:3382:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/megaraid/megaraid_sas_base.c:3389:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/megaraid/megaraid_sas_base.c:3399:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/megaraid/megaraid_sas_base.c:3409:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/megaraid/megaraid_sas_base.c:3419:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/megaraid/megaraid_sas_base.c:3473:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:2825:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:2850:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:2873:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:2893:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:2912:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:2932:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:2952:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:2971:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:2990:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:3012:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:3034:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:3055:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:3077:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:3097:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:3133:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:3170:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:3198:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:3320:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:3407:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:3828:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:3848:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:3996:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:4018:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/mpt3sas/mpt3sas_ctl.c:4056:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/myrb.c:1770:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/myrb.c:1889:10-18: WARNING: use scnprintf or sprintf
+/drivers/scsi/myrb.c:1906:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/myrb.c:2143:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/myrb.c:2153:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/myrb.c:2163:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/myrs.c:1061:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/myrs.c:1089:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/myrs.c:1193:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/myrs.c:1306:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/myrs.c:1316:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/myrs.c:1391:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/myrs.c:1401:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/myrs.c:1411:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/myrs.c:1421:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/myrs.c:1491:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/myrs.c:942:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/ncr53c8xx.c:8034:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/pcmcia/sym53c500_cs.c:627:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/pm8001/pm8001_ctl.c:883:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/pmcraid.c:3541:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/pmcraid.c:3602:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/pmcraid.c:3635:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/qla4xxx/ql4_attr.c:159:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/qla4xxx/ql4_attr.c:173:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/qla4xxx/ql4_attr.c:181:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/qla4xxx/ql4_attr.c:190:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/qla4xxx/ql4_attr.c:200:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/qla4xxx/ql4_attr.c:210:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/qla4xxx/ql4_attr.c:223:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/qla4xxx/ql4_attr.c:235:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/qla4xxx/ql4_attr.c:247:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/qla4xxx/ql4_attr.c:256:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/qla4xxx/ql4_attr.c:264:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/qla4xxx/ql4_attr.c:273:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/qla4xxx/ql4_attr.c:281:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/qla4xxx/ql4_attr.c:303:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/qla4xxx/ql4_attr.c:312:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_sysfs.c:1112:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_sysfs.c:1202:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_sysfs.c:231:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_sysfs.c:277:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_sysfs.c:327:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_sysfs.c:385:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_sysfs.c:402:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_sysfs.c:680:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_sysfs.c:689:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_sysfs.c:701:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_sysfs.c:722:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_sysfs.c:858:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_sysfs.c:873:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_sysfs.c:953:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_sysfs.c:979:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_transport_fc.c:1123:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_transport_fc.c:1218:10-18: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_transport_fc.c:1286:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_transport_fc.c:1304:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_transport_fc.c:1665:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_transport_fc.c:1891:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_transport_fc.c:1915:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_transport_fc.c:1967:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_transport_fc.c:2000:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_transport_sas.c:1180:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_transport_sas.c:525:9-17: WARNING: use scnprintf or sprintf
+/drivers/scsi/scsi_transport_sas.c:572:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/snic/snic_attrs.c:16:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/snic/snic_attrs.c:26:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/snic/snic_attrs.c:35:8-16: WARNING: use scnprintf or sprintf
+/drivers/scsi/snic/snic_attrs.c:48:8-16: WARNING: use scnprintf or sprintf
+/drivers/video/fbdev/uvesafb.c:1549:8-16: WARNING: use scnprintf or sprintf
+/kernel/cpu.c:3013:8-16: WARNING: use scnprintf or sprintf
+/kernel/cpu.c:3026:8-16: WARNING: use scnprintf or sprintf
+
+CC: Adaptec OEM Raid Solutions <aacraid@microsemi.com> 
+CC: Adrian Hunter <adrian.hunter@intel.com> 
+CC: Alexander Shishkin <alexander.shishkin@linux.intel.com> 
+CC: Alistar Popple <alistair@popple.id.au> 
+CC: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org> 
+CC: Arnaldo Carvalho de Melo <acme@kernel.org> 
+CC: Artur Paszkiewicz <artur.paszkiewicz@intel.com> 
+CC: Benjamin Tissoires <benjamin.tissoires@redhat.com> 
+CC: Borislav Petkov <bp@alien8.de> 
+CC: "Bruno Prémont" <bonbons@linux-vserver.org> 
+CC: Chandrakanth patil <chandrakanth.patil@broadcom.com> 
+CC: Christian Gromm <christian.gromm@microchip.com> 
+CC: Christophe Leroy <christophe.leroy@csgroup.eu> 
+CC: cocci@inria.fr 
+CC: Dave Hansen <dave.hansen@linux.intel.com> 
+CC: Don Brace <don.brace@microchip.com> 
+CC: dri-devel@lists.freedesktop.org 
+CC: Eddie James <eajames@linux.ibm.com> 
+CC: GR-QLogic-Storage-Upstream@marvell.com 
+CC: Hannes Reinecke <hare@kernel.org> 
+CC: Hannes Reinecke <hare@suse.de> 
+CC: Hans de Goede <hdegoede@redhat.com> 
+CC: Helge Deller <deller@gmx.de> 
+CC: HighPoint Linux Team <linux@highpoint-tech.com> 
+CC: "H. Peter Anvin" <hpa@zytor.com> 
+CC: Ian Rogers <irogers@google.com> 
+CC: "Ilpo Järvinen" <ilpo.jarvinen@linux.intel.com> 
+CC: Ingo Molnar <mingo@redhat.com> 
+CC: Jack Wang <jinpu.wang@cloud.ionos.com> 
+CC: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com> 
+CC: "James E.J. Bottomley" <jejb@linux.ibm.com> 
+CC: James Morse <james.morse@arm.com> 
+CC: Jeremy Kerr <jk@ozlabs.org> 
+CC: Jiri Kosina <jikos@kernel.org> 
+CC: Jiri Olsa <jolsa@kernel.org> 
+CC: Joel Stanley <joel@jms.id.au> 
+CC: Jonathan Cameron <jic23@kernel.org> 
+CC: Julia Lawall <Julia.Lawall@inria.fr> 
+CC: Karan Tilak Kumar <kartilak@cisco.com> 
+CC: Kashyap Desai <kashyap.desai@broadcom.com> 
+CC: Ketan Mukadam <ketan.mukadam@broadcom.com> 
+CC: Laurentiu Tudor <laurentiu.tudor@nxp.com> 
+CC: linux-arm-kernel@lists.infradead.org 
+CC: linux-edac@vger.kernel.org 
+CC: linux-fbdev@vger.kernel.org 
+CC: linux-fsi@lists.ozlabs.org 
+CC: linux-iio@vger.kernel.org 
+CC: linux-input@vger.kernel.org 
+CC: linux-kernel@vger.kernel.org 
+CC: linux-perf-users@vger.kernel.org 
+CC: linuxppc-dev@lists.ozlabs.org 
+CC: linux-scsi@vger.kernel.org 
+CC: Manish Rangankar <mrangankar@marvell.com> 
+CC: Mark Rutland <mark.rutland@arm.com> 
+CC: "Martin K. Petersen" <martin.petersen@oracle.com> 
+CC: Mauro Carvalho Chehab <mchehab@kernel.org> 
+CC: megaraidlinux.pdl@broadcom.com 
+CC: Michael Cyr <mikecyr@linux.ibm.com> 
+CC: Michael Ellerman <mpe@ellerman.id.au> 
+CC: Michal Januszewski <spock@gentoo.org> 
+CC: MPT-FusionLinux.pdl@broadcom.com 
+CC: Namhyung Kim <namhyung@kernel.org> 
+CC: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com> 
+CC: netdev@vger.kernel.org 
+CC: Nicholas Piggin <npiggin@gmail.com> 
+CC: Nicolas Palix <nicolas.palix@imag.fr> 
+CC: Nilesh Javali <njavali@marvell.com> 
+CC: Parthiban Veerasooran <parthiban.veerasooran@microchip.com> 
+CC: Peter Zijlstra <peterz@infradead.org> 
+CC: platform-driver-x86@vger.kernel.org 
+CC: Richard Cochran <richardcochran@gmail.com> 
+CC: Robert Richter <rric@kernel.org> 
+CC: Russell King <linux@armlinux.org.uk> 
+CC: Sathya Prakash <sathya.prakash@broadcom.com> 
+CC: Satish Kharat <satishkh@cisco.com> 
+CC: Sesidhar Baddela <sebaddel@cisco.com> 
+CC: Shivasharan S <shivasharan.srikanteshwara@broadcom.com> 
+CC: Sreekanth Reddy <sreekanth.reddy@broadcom.com> 
+CC: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> 
+CC: Stefan Achatz <erazor_de@users.sourceforge.net> 
+CC: storagedev@microchip.com 
+CC: Stuart Yoder <stuyoder@gmail.com> 
+CC: Suganath Prabu Subramani <suganath-prabu.subramani@broadcom.com> 
+CC: Sumit Saxena <sumit.saxena@broadcom.com> 
+CC: target-devel@vger.kernel.org 
+CC: Thomas Gleixner <tglx@linutronix.de> 
+CC: Tony Luck <tony.luck@intel.com> 
+CC: Tyrel Datwyler <tyreld@linux.ibm.com> 
+CC: Vadim Pasternak <vadimp@nvidia.com> 
+CC: x86@kernel.org 
+
+Li Zhijian (42):
+  coccinelle: device_attr_show.cocci: update description and warning
+    message
+  arch/arm/mm: Convert snprintf to sysfs_emit
+  arch/x86/events/amd: Convert snprintf to sysfs_emit
+  arch/x86/events/core: Convert snprintf to sysfs_emit
+  arch/x86/events/intel: Convert snprintf to sysfs_emit
+  drivers/bus/fsl-mc: Convert snprintf to sysfs_emit
+  drivers/edac: Convert snprintf to sysfs_emit
+  drivers/fsi: Convert snprintf to sysfs_emit
+  drivers/hid/hid-lenovo: Convert snprintf to sysfs_emit
+  drivers/hid/hid-roccat-*: Convert snprintf to sysfs_emit
+  drivers/hid: Convert snprintf to sysfs_emit
+  drivers/message/fusion: Convert snprintf to sysfs_emit
+  drivers/most: Convert snprintf to sysfs_emit
+  drivers/platform/mellanox: Convert snprintf to sysfs_emit
+  drivers/ptp: Convert snprintf to sysfs_emit
+  drivers/scsi/53c700: Convert snprintf to sysfs_emit
+  drivers/scsi/aacraid: Convert snprintf to sysfs_emit
+  drivers/scsi/aic94xx: Convert snprintf to sysfs_emit
+  drivers/scsi/arcmsr: Convert snprintf to sysfs_emit
+  drivers/scsi/be2iscsi: Convert snprintf to sysfs_emit
+  drivers/scsi/fcoe: Convert snprintf to sysfs_emit
+  drivers/scsi/fnic: Convert snprintf to sysfs_emit
+  drivers/scsi/hpsa: Convert snprintf to sysfs_emit
+  drivers/scsi/hptiop: Convert snprintf to sysfs_emit
+  drivers/scsi/ibmvscsi: Convert snprintf to sysfs_emit
+  drivers/scsi/ibmvscsi_tgt: Convert snprintf to sysfs_emit
+  drivers/scsi/isci: Convert snprintf to sysfs_emit
+  drivers/scsi/megaraid: Convert snprintf to sysfs_emit
+  drivers/scsi/mpt3sas: Convert snprintf to sysfs_emit
+  drivers/scsi/myrb: Convert snprintf to sysfs_emit
+  drivers/scsi/myrs: Convert snprintf to sysfs_emit
+  drivers/scsi/ncr53c8xx: Convert snprintf to sysfs_emit
+  drivers/scsi/pcmcia/sym53c500_cs: Convert snprintf to sysfs_emit
+  drivers/scsi/pm8001: Convert snprintf to sysfs_emit
+  drivers/scsi/pmcraid: Convert snprintf to sysfs_emit
+  drivers/scsi/qla4xxx/ql4_attr: Convert snprintf to sysfs_emit
+  drivers/scsi/scsi_sysfs: Convert snprintf to sysfs_emit
+  drivers/scsi/scsi_transport_fc: Convert snprintf to sysfs_emit
+  drivers/scsi/scsi_transport_sas: Convert snprintf to sysfs_emit
+  drivers/scsi/snic/snic_attrs: Convert snprintf to sysfs_emit
+  drivers/video/fbdev/uvesafb: Convert snprintf to sysfs_emit
+  kernel/cpu: Convert snprintf to sysfs_emit
+
+ arch/arm/mm/cache-l2x0-pmu.c                  |  2 +-
+ arch/x86/events/amd/core.c                    |  2 +-
+ arch/x86/events/core.c                        |  6 +-
+ arch/x86/events/intel/core.c                  |  6 +-
+ arch/x86/events/intel/pt.c                    |  2 +-
+ drivers/bus/fsl-mc/fsl-mc-bus.c               |  2 +-
+ drivers/edac/edac_mc_sysfs.c                  |  5 +-
+ drivers/fsi/fsi-master-ast-cf.c               |  3 +-
+ drivers/fsi/fsi-master-gpio.c                 |  3 +-
+ drivers/hid/hid-lenovo.c                      | 19 +++---
+ drivers/hid/hid-picolcd_core.c                |  6 +-
+ drivers/hid/hid-roccat-isku.c                 |  2 +-
+ drivers/hid/hid-roccat-kone.c                 | 12 ++--
+ drivers/hid/hid-roccat-koneplus.c             |  4 +-
+ drivers/hid/hid-roccat-kovaplus.c             | 10 +--
+ drivers/hid/hid-roccat-pyra.c                 |  6 +-
+ drivers/hid/hid-sensor-custom.c               |  3 +-
+ drivers/message/fusion/mptscsih.c             | 25 ++++----
+ drivers/most/core.c                           | 61 +++++++++----------
+ drivers/platform/mellanox/mlxbf-bootctl.c     | 14 ++---
+ drivers/ptp/ptp_sysfs.c                       |  3 +-
+ drivers/scsi/53c700.c                         |  2 +-
+ drivers/scsi/aacraid/linit.c                  | 17 +++---
+ drivers/scsi/aic94xx/aic94xx_init.c           | 15 +++--
+ drivers/scsi/arcmsr/arcmsr_attr.c             | 40 +++---------
+ drivers/scsi/be2iscsi/be_mgmt.c               | 20 +++---
+ drivers/scsi/fcoe/fcoe_sysfs.c                |  8 +--
+ drivers/scsi/fnic/fnic_attrs.c                |  7 +--
+ drivers/scsi/hpsa.c                           | 36 +++++------
+ drivers/scsi/hptiop.c                         |  4 +-
+ drivers/scsi/ibmvscsi/ibmvfc.c                | 22 +++----
+ drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c      |  6 +-
+ drivers/scsi/isci/init.c                      |  2 +-
+ drivers/scsi/megaraid/megaraid_sas_base.c     | 15 +++--
+ drivers/scsi/mpt3sas/mpt3sas_ctl.c            | 60 +++++++++---------
+ drivers/scsi/myrb.c                           | 38 ++++++------
+ drivers/scsi/myrs.c                           | 56 ++++++++---------
+ drivers/scsi/ncr53c8xx.c                      |  2 +-
+ drivers/scsi/pcmcia/sym53c500_cs.c            |  2 +-
+ drivers/scsi/pm8001/pm8001_ctl.c              |  6 +-
+ drivers/scsi/pmcraid.c                        | 11 ++--
+ drivers/scsi/qla4xxx/ql4_attr.c               | 48 +++++++--------
+ drivers/scsi/scsi_sysfs.c                     | 34 +++++------
+ drivers/scsi/scsi_transport_fc.c              | 34 +++++------
+ drivers/scsi/scsi_transport_sas.c             | 22 +++----
+ drivers/scsi/snic/snic_attrs.c                | 10 +--
+ drivers/video/fbdev/uvesafb.c                 |  2 +-
+ kernel/cpu.c                                  |  4 +-
+ scripts/coccinelle/api/device_attr_show.cocci | 10 ++-
+ 49 files changed, 343 insertions(+), 386 deletions(-)
+
+-- 
+2.29.2
+
 
