@@ -1,55 +1,47 @@
-Return-Path: <linux-kernel+bounces-26651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26652-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5ED882E48F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:22:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8A2182E491
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:22:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C8E71C22509
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:22:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 708D81F2226E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:22:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 073781CA96;
-	Tue, 16 Jan 2024 00:13:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B92A413AFA;
+	Tue, 16 Jan 2024 00:13:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lf7ZY1IJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pUTaOa1h"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C3621CA85;
-	Tue, 16 Jan 2024 00:13:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C72D1C433C7;
-	Tue, 16 Jan 2024 00:13:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 139C98829;
+	Tue, 16 Jan 2024 00:13:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21E7EC433C7;
+	Tue, 16 Jan 2024 00:13:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705364020;
-	bh=qu8PZWL5sa4HADRmhp8O/xnDAnb+X3Fz4jVED4/Lwsc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Lf7ZY1IJiiVtM6xVuHvS5TN9wz1+kxMtqs9WUhosdOD2UQIcDuXSAvotLTMZAregC
-	 PzxwQfHsHdkHhaQ8+iYvusOI97wj26Qteu/d1e8pMDJJ6ucnEB227TAdlEN5B0orZD
-	 pOttQNna5gH4oO+xHSeauFfQnyYD5H1J34ipt6IavLefIBR9QQs7jq6JGo2S9uMq5j
-	 LCX/VnBLpcFIo5r67K8vqqSgtfv/dvRPQZChRGGkxiNBg5/rcBUzhB3fT9n/WXR4kQ
-	 WeiM3Pnqx4CR+r2nTHnER6RwZF59JR+SaTYcptT6KP2KlGuS00WIVk2MmgRfC+Hdbn
-	 FmMGTUWOGG3Kw==
+	s=k20201202; t=1705364029;
+	bh=yPDWr3Hkhmxp7C5vzRAgcgMbekH7J6wQvaWtspLEYoE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=pUTaOa1hjJXVAEmXNn3bqg4AdwuG3myxuIofOG66GtaeVZ/DuiU9KmUVaB49ZmNj4
+	 J2fsyNgqmEWYO5VEQnMsuwQjwRZc4+NDHnA4DdWzfUFDcURaoVPoWT9x3JVamsq+/+
+	 wJhA56wdyhMI0inRq3LNuCeQPaSL912CZlorbu0gJNlJB9HugZY4Ke3KKIunLDvg0l
+	 DStPmUB8jrVuATSf80rovyjnajf/yK+iVXz/pRcb3k5Q39qyFMFp4xITmaOlRxGAHj
+	 c61JM1M2F9SIIo/qBs76+fgs3Q4JVFKrlFVAW5neUw4zWoMiRURJPfUQX8BuFAvwo8
+	 eI4HltEOcmvcg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Bo Ye <bo.ye@mediatek.com>,
+Cc: Rui Zhang <zr.zhang@vivo.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	rafael@kernel.org,
-	daniel.lezcano@linaro.org,
-	matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	linux-pm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.7 18/18] thermal: core: Fix thermal zone suspend-resume synchronization
-Date: Mon, 15 Jan 2024 19:13:00 -0500
-Message-ID: <20240116001308.212917-18-sashal@kernel.org>
+	lgirdwood@gmail.com
+Subject: [PATCH AUTOSEL 6.6 01/14] regulator: core: Only increment use_count when enable_count changes
+Date: Mon, 15 Jan 2024 19:13:27 -0500
+Message-ID: <20240116001347.213328-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240116001308.212917-1-sashal@kernel.org>
-References: <20240116001308.212917-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,133 +50,114 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.7
+X-stable-base: Linux 6.6.12
 Content-Transfer-Encoding: 8bit
 
-From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+From: Rui Zhang <zr.zhang@vivo.com>
 
-[ Upstream commit 4e814173a8c4f432fd068b1c796f0416328c9d99 ]
+[ Upstream commit 7993d3a9c34f609c02171e115fd12c10e2105ff4 ]
 
-There are 3 synchronization issues with thermal zone suspend-resume
-during system-wide transitions:
+The use_count of a regulator should only be incremented when the
+enable_count changes from 0 to 1. Similarly, the use_count should
+only be decremented when the enable_count changes from 1 to 0.
 
- 1. The resume code runs in a PM notifier which is invoked after user
-    space has been thawed, so it can run concurrently with user space
-    which can trigger a thermal zone device removal.  If that happens,
-    the thermal zone resume code may use a stale pointer to the next
-    list element and crash, because it does not hold thermal_list_lock
-    while walking thermal_tz_list.
+In the previous implementation, use_count was sometimes decremented
+to 0 when some consumer called unbalanced disable,
+leading to unexpected disable even the regulator is enabled by
+other consumers. With this change, the use_count accurately reflects
+the number of users which the regulator is enabled.
 
- 2. The thermal zone resume code calls thermal_zone_device_init()
-    outside the zone lock, so user space or an update triggered by
-    the platform firmware may see an inconsistent state of a
-    thermal zone leading to unexpected behavior.
+This should make things more robust in the case where a consumer does
+leak references.
 
- 3. Clearing the in_suspend global variable in thermal_pm_notify()
-    allows __thermal_zone_device_update() to continue for all thermal
-    zones and it may as well run before the thermal_tz_list walk (or
-    at any point during the list walk for that matter) and attempt to
-    operate on a thermal zone that has not been resumed yet.  It may
-    also race destructively with thermal_zone_device_init().
-
-To address these issues, add thermal_list_lock locking to
-thermal_pm_notify(), especially arount the thermal_tz_list,
-make it call thermal_zone_device_init() back-to-back with
-__thermal_zone_device_update() under the zone lock and replace
-in_suspend with per-zone bool "suspend" indicators set and unset
-under the given zone's lock.
-
-Link: https://lore.kernel.org/linux-pm/20231218162348.69101-1-bo.ye@mediatek.com/
-Reported-by: Bo Ye <bo.ye@mediatek.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Rui Zhang <zr.zhang@vivo.com>
+Link: https://lore.kernel.org/r/20231103074231.8031-1-zr.zhang@vivo.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/thermal/thermal_core.c | 30 +++++++++++++++++++++++-------
- include/linux/thermal.h        |  2 ++
- 2 files changed, 25 insertions(+), 7 deletions(-)
+ drivers/regulator/core.c | 56 +++++++++++++++++++++-------------------
+ 1 file changed, 30 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index 9c17d35ccbbd..fe3bcfba4d67 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -37,8 +37,6 @@ static LIST_HEAD(thermal_governor_list);
- static DEFINE_MUTEX(thermal_list_lock);
- static DEFINE_MUTEX(thermal_governor_lock);
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index 3137e40fcd3e..a7b3e548ea5a 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -2918,7 +2918,8 @@ static int _regulator_enable(struct regulator *regulator)
+ 		/* Fallthrough on positive return values - already enabled */
+ 	}
  
--static atomic_t in_suspend;
+-	rdev->use_count++;
++	if (regulator->enable_count == 1)
++		rdev->use_count++;
+ 
+ 	return 0;
+ 
+@@ -2993,37 +2994,40 @@ static int _regulator_disable(struct regulator *regulator)
+ 
+ 	lockdep_assert_held_once(&rdev->mutex.base);
+ 
+-	if (WARN(rdev->use_count <= 0,
++	if (WARN(regulator->enable_count == 0,
+ 		 "unbalanced disables for %s\n", rdev_get_name(rdev)))
+ 		return -EIO;
+ 
+-	/* are we the last user and permitted to disable ? */
+-	if (rdev->use_count == 1 &&
+-	    (rdev->constraints && !rdev->constraints->always_on)) {
 -
- static struct thermal_governor *def_governor;
- 
- /*
-@@ -405,7 +403,7 @@ void __thermal_zone_device_update(struct thermal_zone_device *tz,
- {
- 	const struct thermal_trip *trip;
- 
--	if (atomic_read(&in_suspend))
-+	if (tz->suspended)
- 		return;
- 
- 	if (WARN_ONCE(!tz->ops->get_temp,
-@@ -1515,17 +1513,35 @@ static int thermal_pm_notify(struct notifier_block *nb,
- 	case PM_HIBERNATION_PREPARE:
- 	case PM_RESTORE_PREPARE:
- 	case PM_SUSPEND_PREPARE:
--		atomic_set(&in_suspend, 1);
-+		mutex_lock(&thermal_list_lock);
+-		/* we are last user */
+-		if (regulator_ops_is_valid(rdev, REGULATOR_CHANGE_STATUS)) {
+-			ret = _notifier_call_chain(rdev,
+-						   REGULATOR_EVENT_PRE_DISABLE,
+-						   NULL);
+-			if (ret & NOTIFY_STOP_MASK)
+-				return -EINVAL;
+-
+-			ret = _regulator_do_disable(rdev);
+-			if (ret < 0) {
+-				rdev_err(rdev, "failed to disable: %pe\n", ERR_PTR(ret));
+-				_notifier_call_chain(rdev,
+-						REGULATOR_EVENT_ABORT_DISABLE,
++	if (regulator->enable_count == 1) {
++	/* disabling last enable_count from this regulator */
++		/* are we the last user and permitted to disable ? */
++		if (rdev->use_count == 1 &&
++		    (rdev->constraints && !rdev->constraints->always_on)) {
 +
-+		list_for_each_entry(tz, &thermal_tz_list, node) {
-+			mutex_lock(&tz->lock);
++			/* we are last user */
++			if (regulator_ops_is_valid(rdev, REGULATOR_CHANGE_STATUS)) {
++				ret = _notifier_call_chain(rdev,
++							   REGULATOR_EVENT_PRE_DISABLE,
++							   NULL);
++				if (ret & NOTIFY_STOP_MASK)
++					return -EINVAL;
 +
-+			tz->suspended = true;
-+
-+			mutex_unlock(&tz->lock);
++				ret = _regulator_do_disable(rdev);
++				if (ret < 0) {
++					rdev_err(rdev, "failed to disable: %pe\n", ERR_PTR(ret));
++					_notifier_call_chain(rdev,
++							REGULATOR_EVENT_ABORT_DISABLE,
++							NULL);
++					return ret;
++				}
++				_notifier_call_chain(rdev, REGULATOR_EVENT_DISABLE,
+ 						NULL);
+-				return ret;
+ 			}
+-			_notifier_call_chain(rdev, REGULATOR_EVENT_DISABLE,
+-					NULL);
+-		}
+ 
+-		rdev->use_count = 0;
+-	} else if (rdev->use_count > 1) {
+-		rdev->use_count--;
++			rdev->use_count = 0;
++		} else if (rdev->use_count > 1) {
++			rdev->use_count--;
 +		}
-+
-+		mutex_unlock(&thermal_list_lock);
- 		break;
- 	case PM_POST_HIBERNATION:
- 	case PM_POST_RESTORE:
- 	case PM_POST_SUSPEND:
--		atomic_set(&in_suspend, 0);
-+		mutex_lock(&thermal_list_lock);
-+
- 		list_for_each_entry(tz, &thermal_tz_list, node) {
-+			mutex_lock(&tz->lock);
-+
-+			tz->suspended = false;
-+
- 			thermal_zone_device_init(tz);
--			thermal_zone_device_update(tz,
--						   THERMAL_EVENT_UNSPECIFIED);
-+			__thermal_zone_device_update(tz, THERMAL_EVENT_UNSPECIFIED);
-+
-+			mutex_unlock(&tz->lock);
- 		}
-+
-+		mutex_unlock(&thermal_list_lock);
- 		break;
- 	default:
- 		break;
-diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-index cee814d5d1ac..1da1739d75d9 100644
---- a/include/linux/thermal.h
-+++ b/include/linux/thermal.h
-@@ -149,6 +149,7 @@ struct thermal_cooling_device {
-  * @node:	node in thermal_tz_list (in thermal_core.c)
-  * @poll_queue:	delayed work for polling
-  * @notify_event: Last notification event
-+ * @suspended: thermal zone suspend indicator
-  */
- struct thermal_zone_device {
- 	int id;
-@@ -181,6 +182,7 @@ struct thermal_zone_device {
- 	struct list_head node;
- 	struct delayed_work poll_queue;
- 	enum thermal_notify_event notify_event;
-+	bool suspended;
- };
+ 	}
  
- /**
+ 	if (ret == 0)
 -- 
 2.43.0
 
