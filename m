@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-28006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2044B82F8F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:57:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9C4082F8FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:57:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF117288D83
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:57:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79DF628A457
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:57:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 176165C210;
-	Tue, 16 Jan 2024 19:53:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 926C928E07;
+	Tue, 16 Jan 2024 19:53:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PI2MZe++"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oaspo8Dw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EDF613C4FB;
-	Tue, 16 Jan 2024 19:53:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE45D5C21D;
+	Tue, 16 Jan 2024 19:53:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434823; cv=none; b=C6iw0zWj2jLZd7gyA5ExDx2xafPdQdE/imeiXwOZtQJxsECHmIpGMpitNBGHmbYrm5UXUXXYSQ0AO0VyDuI6SEJvYFrNalbqxMbym5Z7KRjcF/MXcbFnztEWBUzsiTyRfvxkHZE24I6gPlcKdfZobAry5N7gNRxnwzKxULFX7r4=
+	t=1705434824; cv=none; b=PlKWp8T3Ckw7nK7hpyUZwkmaJGIEnErw1PCWdZp3QY++6nkRdag3rmNZZRlrEX9TM8td29UlHgxf6MiYEeDYhLWNaiUc+Z1dFSt+7Iz04OqUT0tx6yhgLoTloVE+vfjkw/7YbfhnPpIQy+epgjQL2ugI5yD67krBRf9x6RXJyTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434823; c=relaxed/simple;
-	bh=HZWbSuLvYBtkPlXx/m8SCHZ8mGDY4zsIs5hUx6mN2C8=;
+	s=arc-20240116; t=1705434824; c=relaxed/simple;
+	bh=vOorb5RvrAicwYx6o5qfjkNj5zblLTyNxDLwkLDqWec=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=piGnEDThWH8X4TPFcJfPKGDdSZIwczQF1NHxMK73cXx8EhNFjPZvRMnsEzhds8TM8rOHZieu3eM7KVNhZizaJq6gv7WiaoF+/4DZDYn9WXCGkUW0UpQAb0HrJZ5MHMb6bnojkjASGFbXfQe37oasYbceyxQFiWZeRXc6rRED3EM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PI2MZe++; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 362A2C43390;
-	Tue, 16 Jan 2024 19:53:42 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=P+9MpqtFIsIM7UkDltFwJuXdv0+nMcHTAbUMb+TwafGwNZZkwbK8lobk0JiASN03w2Sp3+6TS2S7oyvhed11DRN2ztmBe0lPu+ha6RMXHndDLq5ZfU06bQFs+17lbSNETB2ieBbUpkyfWQkE23xtfvVKWbSZAlwB6vo1iC5Dui4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oaspo8Dw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4F13C433F1;
+	Tue, 16 Jan 2024 19:53:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434823;
-	bh=HZWbSuLvYBtkPlXx/m8SCHZ8mGDY4zsIs5hUx6mN2C8=;
+	s=k20201202; t=1705434824;
+	bh=vOorb5RvrAicwYx6o5qfjkNj5zblLTyNxDLwkLDqWec=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PI2MZe++3Cb5l5VLRA/8nvRWWf07SFxz3/vz3kawHeoLbIq4roijcPls9eOlIZoIe
-	 lK0gSJ24LAxRGI4xhEa0uKwjy6BEHCFXRw05+5SV4WtL8eyK1b1MTe7WqjBqTLG4k6
-	 jVCrM/4xDZlGYtPDmXn3L1ie9wifbaer/2g//ZJ1v5J3Z9CubT0gRq8MSMJjabmbW/
-	 gCa2JFwMHdJ6L/C69A28d05nat8BAmw6Js4psYYOl8BC1Q7uwM/buH+Agb56lc+PjH
-	 ihfbDUI5TY1swCSUu8wVAP4jOjG/c14lRSHvndyILVWPlOq80IbHUbl6wN0XKRmDfR
-	 NzYvyxH+ctNow==
+	b=oaspo8DwIeAJN//ZzXbdME6KVeX5egoNOPMSVQ21SroCw0K0h8HFvVaAodHQwUHMu
+	 lAvtSZXuDkdWrw4VirMfHwoszL9/pwRCaQ9CqCwWes1CpfC+pYJmbAdCVnqDAsMtyN
+	 bXRgpgc1vefo6FPYZiSi2H4mCuQo8D4A0vmx9gL8LwEP395v2DUsKYQ2USDao0BK8i
+	 9iXxFp3E/w5+scUSfYPpyjwSKxnnSE2Lm8vGFLrvByWeyD7G3STDbDTgmT4J9j7Hdv
+	 NB4Ae3z5z3AOKk565xZ4YLPhab+2i8heKsRaLlTz9dmcjS+KstvoTVPbslGUdVcxmz
+	 z1DZEsFGdrs+g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Iulia Tanasescu <iulia.tanasescu@nxp.com>,
+Cc: clancy shang <clancy.shang@quectel.com>,
 	Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
 	marcel@holtmann.org,
 	johan.hedberg@gmail.com,
 	luiz.dentz@gmail.com,
 	linux-bluetooth@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 094/104] Bluetooth: ISO: Avoid creating child socket if PA sync is terminating
-Date: Tue, 16 Jan 2024 14:47:00 -0500
-Message-ID: <20240116194908.253437-94-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 095/104] Bluetooth: hci_sync: fix BR/EDR wakeup bug
+Date: Tue, 16 Jan 2024 14:47:01 -0500
+Message-ID: <20240116194908.253437-95-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194908.253437-1-sashal@kernel.org>
 References: <20240116194908.253437-1-sashal@kernel.org>
@@ -68,136 +68,45 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.12
 Content-Transfer-Encoding: 8bit
 
-From: Iulia Tanasescu <iulia.tanasescu@nxp.com>
+From: clancy shang <clancy.shang@quectel.com>
 
-[ Upstream commit 9f150019f176078144b02c4b9b9dbe7fd5a2fcc3 ]
+[ Upstream commit d4b70ba1eab450eff9c5ef536f07c01d424b7eda ]
 
-When a PA sync socket is closed, the associated hcon is also unlinked
-and cleaned up. If there are no other hcons marked with the
-HCI_CONN_PA_SYNC flag, HCI_OP_LE_PA_TERM_SYNC is sent to controller.
+when Bluetooth set the event mask and enter suspend, the controller
+has hci mode change event coming, it cause controller can not enter
+sleep mode. so it should to set the hci mode change event mask before
+enter suspend.
 
-Between the time of the command and the moment PA sync is terminated
-in controller, residual BIGInfo reports might continue to come.
-This causes a new PA sync hcon to be added, and a new socket to be
-notified to user space.
-
-This commit fixs this by adding a flag on a Broadcast listening
-socket to mark when the PA sync child has been closed.
-
-This flag is checked when BIGInfo reports are indicated in
-iso_connect_ind, to avoid recreating a hcon and socket if
-residual reports arrive before PA sync is terminated.
-
-Signed-off-by: Iulia Tanasescu <iulia.tanasescu@nxp.com>
+Signed-off-by: clancy shang <clancy.shang@quectel.com>
 Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/iso.c | 51 ++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 48 insertions(+), 3 deletions(-)
+ net/bluetooth/hci_sync.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/net/bluetooth/iso.c b/net/bluetooth/iso.c
-index 2132a16be93c..0eeec6480139 100644
---- a/net/bluetooth/iso.c
-+++ b/net/bluetooth/iso.c
-@@ -52,6 +52,7 @@ static void iso_sock_kill(struct sock *sk);
- enum {
- 	BT_SK_BIG_SYNC,
- 	BT_SK_PA_SYNC,
-+	BT_SK_PA_SYNC_TERM,
- };
+diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
+index 9e71362c04b4..5c4efa624625 100644
+--- a/net/bluetooth/hci_sync.c
++++ b/net/bluetooth/hci_sync.c
+@@ -3800,12 +3800,14 @@ static int hci_set_event_mask_sync(struct hci_dev *hdev)
+ 	if (lmp_bredr_capable(hdev)) {
+ 		events[4] |= 0x01; /* Flow Specification Complete */
  
- struct iso_pinfo {
-@@ -80,6 +81,11 @@ static bool iso_match_sid(struct sock *sk, void *data);
- static bool iso_match_sync_handle(struct sock *sk, void *data);
- static void iso_sock_disconn(struct sock *sk);
- 
-+typedef bool (*iso_sock_match_t)(struct sock *sk, void *data);
-+
-+static struct sock *iso_get_sock_listen(bdaddr_t *src, bdaddr_t *dst,
-+					iso_sock_match_t match, void *data);
-+
- /* ---- ISO timers ---- */
- #define ISO_CONN_TIMEOUT	(HZ * 40)
- #define ISO_DISCONN_TIMEOUT	(HZ * 2)
-@@ -188,10 +194,21 @@ static void iso_chan_del(struct sock *sk, int err)
- 	sock_set_flag(sk, SOCK_ZAPPED);
- }
- 
-+static bool iso_match_conn_sync_handle(struct sock *sk, void *data)
-+{
-+	struct hci_conn *hcon = data;
-+
-+	if (test_bit(BT_SK_PA_SYNC, &iso_pi(sk)->flags))
-+		return false;
-+
-+	return hcon->sync_handle == iso_pi(sk)->sync_handle;
-+}
-+
- static void iso_conn_del(struct hci_conn *hcon, int err)
- {
- 	struct iso_conn *conn = hcon->iso_data;
- 	struct sock *sk;
-+	struct sock *parent;
- 
- 	if (!conn)
- 		return;
-@@ -207,6 +224,25 @@ static void iso_conn_del(struct hci_conn *hcon, int err)
- 
- 	if (sk) {
- 		lock_sock(sk);
-+
-+		/* While a PA sync hcon is in the process of closing,
-+		 * mark parent socket with a flag, so that any residual
-+		 * BIGInfo adv reports that arrive before PA sync is
-+		 * terminated are not processed anymore.
-+		 */
-+		if (test_bit(BT_SK_PA_SYNC, &iso_pi(sk)->flags)) {
-+			parent = iso_get_sock_listen(&hcon->src,
-+						     &hcon->dst,
-+						     iso_match_conn_sync_handle,
-+						     hcon);
-+
-+			if (parent) {
-+				set_bit(BT_SK_PA_SYNC_TERM,
-+					&iso_pi(parent)->flags);
-+				sock_put(parent);
-+			}
+-		/* Don't set Disconnect Complete when suspended as that
+-		 * would wakeup the host when disconnecting due to
+-		 * suspend.
++		/* Don't set Disconnect Complete and mode change when
++		 * suspended as that would wakeup the host when disconnecting
++		 * due to suspend.
+ 		 */
+-		if (hdev->suspended)
++		if (hdev->suspended) {
+ 			events[0] &= 0xef;
++			events[2] &= 0xf7;
 +		}
-+
- 		iso_sock_clear_timer(sk);
- 		iso_chan_del(sk, err);
- 		release_sock(sk);
-@@ -543,8 +579,6 @@ static struct sock *__iso_get_sock_listen_by_sid(bdaddr_t *ba, bdaddr_t *bc,
- 	return NULL;
- }
- 
--typedef bool (*iso_sock_match_t)(struct sock *sk, void *data);
--
- /* Find socket listening:
-  * source bdaddr (Unicast)
-  * destination bdaddr (Broadcast only)
-@@ -1756,9 +1790,20 @@ int iso_connect_ind(struct hci_dev *hdev, bdaddr_t *bdaddr, __u8 *flags)
- 		/* Try to get PA sync listening socket, if it exists */
- 		sk = iso_get_sock_listen(&hdev->bdaddr, bdaddr,
- 						iso_match_pa_sync_flag, NULL);
--		if (!sk)
-+
-+		if (!sk) {
- 			sk = iso_get_sock_listen(&hdev->bdaddr, bdaddr,
- 						 iso_match_sync_handle, ev2);
-+
-+			/* If PA Sync is in process of terminating,
-+			 * do not handle any more BIGInfo adv reports.
-+			 */
-+
-+			if (sk && test_bit(BT_SK_PA_SYNC_TERM,
-+					   &iso_pi(sk)->flags))
-+				return lm;
-+		}
-+
- 		if (sk) {
- 			int err;
- 
+ 	} else {
+ 		/* Use a different default for LE-only devices */
+ 		memset(events, 0, sizeof(events));
 -- 
 2.43.0
 
