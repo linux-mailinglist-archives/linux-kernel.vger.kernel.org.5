@@ -1,64 +1,59 @@
-Return-Path: <linux-kernel+bounces-28105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75A3182FA60
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:32:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5925482FA44
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:29:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29843B27964
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:28:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ECA7A1F27165
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:29:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAF496313D;
-	Tue, 16 Jan 2024 19:59:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 403E9152DF1;
+	Tue, 16 Jan 2024 19:59:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S0GmMxBl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EzSwdt12"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E25746312D;
-	Tue, 16 Jan 2024 19:59:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 819F4347D1;
+	Tue, 16 Jan 2024 19:59:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435154; cv=none; b=aGDntkyji+sHGARACnlfPQYDxIDg0aBSPu8l6jZyh8MdT/oUb1UU+H6/u8wG5jx2JiwxG5tstM/Af+TKTJwYyYDT+IhdN+TZbAdiBNTZaf5E+xvp+blSgWEFTCheq4Az+QpGotzQ9UbQrgx+IxnIYAWUwi7WVyKui6bw25+8hZg=
+	t=1705435155; cv=none; b=IHVGx2NwkpunFrbHVWCEqN2k4cmJkG+BDMJsTYVgXgok0MTIDNpy9HlzAiUHPY5Hw2UglgfLSnZf0ccUFj7eBJsZN1SrTE+dUatfA+++QqhNA7sjamSpaf2M2s0ccCefkeOvUxKMqquyBFH2ONhVds/QNNZEZRUHjqW72B9RzqA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435154; c=relaxed/simple;
-	bh=jg6VgF/EuOdf/AZ8IrPRAm/o2oDTU1Re8n9z1HgWtrI=;
+	s=arc-20240116; t=1705435155; c=relaxed/simple;
+	bh=u2VmGAePaz/WNgpUsJXgYCBqrmAiYJ9Lncsh4L7nlgg=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=uzeT5aVkRNXk/PThxrv0ZVUH19W3nYucTutI/Z+a8vC7Q1k3068xw0LXDEkKFXXAsc5L47VyqF3Cn2PSFD0p8Royzg2c74WDS7g906gqTg4wxymg7mislZft+3LxkZHlrgzLbtads8L4g7CrOzsER4Vl60S7igAn1jcPbdgMpx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S0GmMxBl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30C5CC433F1;
-	Tue, 16 Jan 2024 19:59:12 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=o+CcmB4klNOSfVsQsthw0QHEwEGGLNxA+QGoHeZGuPVVS6k4kjtPUktOf0iRxucG/V5MrUfyvf8hbfGIcfrgFKqilx2lRMp23qYhtNQ3FxdOgFaJLM7Lwc/OqmK+fcEolURJ+KeNmlxRS8v2I7SVKwbnhcTb7wkAWPHQo90u5Aw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EzSwdt12; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E3C3C43390;
+	Tue, 16 Jan 2024 19:59:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435153;
-	bh=jg6VgF/EuOdf/AZ8IrPRAm/o2oDTU1Re8n9z1HgWtrI=;
+	s=k20201202; t=1705435155;
+	bh=u2VmGAePaz/WNgpUsJXgYCBqrmAiYJ9Lncsh4L7nlgg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=S0GmMxBlXaZDxofH/xMRi+Or5OXPBYepDsKinfRrOR3HGMHbgrWWxEe6ygpfmsoXH
-	 IWZowOd9RboJkRrDNqZRtJ9D62hSPyd7dH9TDafUwRddMJ0/lgSasM5yha9NScMfaq
-	 jo/s4i3pCCr5mJtj7rPLypsH5ubavfznC+WdrULxeYm+yMtZXAckoTCaoEix+Grgca
-	 VtP8H5P5ec6LABw2EuOdX7SpITBHzkNajau71CRLPXdsG2b+bmN1I1gCc3nLbi9pX8
-	 BoQR96Sm73D5KTCKVK26HzkY8Ohm05bQJmpZybT4SpXugZrMiuidaDGAQBfLZBoOax
-	 DX3TTAdcXZ7pw==
+	b=EzSwdt12K1QMEFXt3nbHmVV1feJcqX5N50aVWrE0hPDthkivhmE/2eq8M3Jy3PsfE
+	 70Y+ONyY1L2xccE/gcAqz1fbSVowZ4nTm/Y/rc1/d4cvA7eJEx/hzwn3pLi7YHw6WT
+	 b6o6Ky+0j+dyk6YN2smFJh78Hn6ONGQlitL+IdfYbhOqaP6dPrMAhw1NAum+avWdyO
+	 BjRfCl+QobVh6YGh3+DwLqlnfLYuvj+0ioDDLdcHeJopiS8+BYX/xWUP5TxeYCGKXF
+	 9cmiku/LUVTyaI0l1tGDzEeWhkL+xG7Cf9dIStbRikYBR6tfnixUBTJsF9ABuNjhcj
+	 ZusFcljIgpL6g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Tobias Waldekranz <tobias@waldekranz.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: Andrei Matei <andreimatei1@gmail.com>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	krzysztof.kozlowski@linaro.org,
-	u.kleine-koenig@pengutronix.de,
-	robh@kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 18/47] net: mvmdio: Avoid excessive sleeps in polled mode
-Date: Tue, 16 Jan 2024 14:57:21 -0500
-Message-ID: <20240116195834.257313-18-sashal@kernel.org>
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 19/47] bpf: Guard stack limits against 32bit overflow
+Date: Tue, 16 Jan 2024 14:57:22 -0500
+Message-ID: <20240116195834.257313-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116195834.257313-1-sashal@kernel.org>
 References: <20240116195834.257313-1-sashal@kernel.org>
@@ -73,137 +68,66 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.147
 Content-Transfer-Encoding: 8bit
 
-From: Tobias Waldekranz <tobias@waldekranz.com>
+From: Andrei Matei <andreimatei1@gmail.com>
 
-[ Upstream commit 7dd12fe34686d89c332b1a05104d18d728591f0a ]
+[ Upstream commit 1d38a9ee81570c4bd61f557832dead4d6f816760 ]
 
-Before this change, when operating in polled mode, i.e. no IRQ is
-available, every individual C45 access would be hit with a 150us sleep
-after the bus access.
+This patch promotes the arithmetic around checking stack bounds to be
+done in the 64-bit domain, instead of the current 32bit. The arithmetic
+implies adding together a 64-bit register with a int offset. The
+register was checked to be below 1<<29 when it was variable, but not
+when it was fixed. The offset either comes from an instruction (in which
+case it is 16 bit), from another register (in which case the caller
+checked it to be below 1<<29 [1]), or from the size of an argument to a
+kfunc (in which case it can be a u32 [2]). Between the register being
+inconsistently checked to be below 1<<29, and the offset being up to an
+u32, it appears that we were open to overflowing the `int`s which were
+currently used for arithmetic.
 
-For example, on a board with a CN9130 SoC connected to an MV88X3310
-PHY, a single C45 read would take around 165us:
+[1] https://github.com/torvalds/linux/blob/815fb87b753055df2d9e50f6cd80eb10235fe3e9/kernel/bpf/verifier.c#L7494-L7498
+[2] https://github.com/torvalds/linux/blob/815fb87b753055df2d9e50f6cd80eb10235fe3e9/kernel/bpf/verifier.c#L11904
 
-    root@infix:~$ mdio f212a600.mdio-mii mmd 4:1 bench 0xc003
-    Performed 1000 reads in 165ms
-
-By replacing the long sleep with a tighter poll loop, we observe a 10x
-increase in bus throughput:
-
-    root@infix:~$ mdio f212a600.mdio-mii mmd 4:1 bench 0xc003
-    Performed 1000 reads in 15ms
-
-Signed-off-by: Tobias Waldekranz <tobias@waldekranz.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Tested-by: Andrew Lunn <andrew@lunn.ch>
-Link: https://lore.kernel.org/r/20231204100811.2708884-3-tobias@waldekranz.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reported-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20231207041150.229139-4-andreimatei1@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/mvmdio.c | 53 ++++++++-------------------
- 1 file changed, 16 insertions(+), 37 deletions(-)
+ kernel/bpf/verifier.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/mvmdio.c b/drivers/net/ethernet/marvell/mvmdio.c
-index ef878973b859..b4c576e79a95 100644
---- a/drivers/net/ethernet/marvell/mvmdio.c
-+++ b/drivers/net/ethernet/marvell/mvmdio.c
-@@ -23,6 +23,7 @@
- #include <linux/delay.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-+#include <linux/iopoll.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/of_device.h>
-@@ -58,11 +59,6 @@
-  * - Armada 370       (Globalscale Mirabox):   41us to 43us (Polled)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 5d8f352faebd..4089bf1aa28e 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -4262,7 +4262,7 @@ static int check_ptr_to_map_access(struct bpf_verifier_env *env,
+  * The minimum valid offset is -MAX_BPF_STACK for writes, and
+  * -state->allocated_stack for reads.
   */
- #define MVMDIO_SMI_TIMEOUT		1000 /* 1000us = 1ms */
--#define MVMDIO_SMI_POLL_INTERVAL_MIN	45
--#define MVMDIO_SMI_POLL_INTERVAL_MAX	55
--
--#define MVMDIO_XSMI_POLL_INTERVAL_MIN	150
--#define MVMDIO_XSMI_POLL_INTERVAL_MAX	160
- 
- struct orion_mdio_dev {
- 	void __iomem *regs;
-@@ -84,8 +80,6 @@ enum orion_mdio_bus_type {
- 
- struct orion_mdio_ops {
- 	int (*is_done)(struct orion_mdio_dev *);
--	unsigned int poll_interval_min;
--	unsigned int poll_interval_max;
- };
- 
- /* Wait for the SMI unit to be ready for another operation
-@@ -94,34 +88,23 @@ static int orion_mdio_wait_ready(const struct orion_mdio_ops *ops,
- 				 struct mii_bus *bus)
+-static int check_stack_slot_within_bounds(int off,
++static int check_stack_slot_within_bounds(s64 off,
+ 					  struct bpf_func_state *state,
+ 					  enum bpf_access_type t)
  {
- 	struct orion_mdio_dev *dev = bus->priv;
--	unsigned long timeout = usecs_to_jiffies(MVMDIO_SMI_TIMEOUT);
--	unsigned long end = jiffies + timeout;
--	int timedout = 0;
-+	unsigned long timeout;
-+	int done;
+@@ -4291,7 +4291,7 @@ static int check_stack_access_within_bounds(
+ 	struct bpf_reg_state *regs = cur_regs(env);
+ 	struct bpf_reg_state *reg = regs + regno;
+ 	struct bpf_func_state *state = func(env, reg);
+-	int min_off, max_off;
++	s64 min_off, max_off;
+ 	int err;
+ 	char *err_extra;
  
--	while (1) {
--	        if (ops->is_done(dev))
-+	if (dev->err_interrupt <= 0) {
-+		if (!read_poll_timeout_atomic(ops->is_done, done, done, 2,
-+					      MVMDIO_SMI_TIMEOUT, false, dev))
-+			return 0;
-+	} else {
-+		/* wait_event_timeout does not guarantee a delay of at
-+		 * least one whole jiffie, so timeout must be no less
-+		 * than two.
-+		 */
-+		timeout = max(usecs_to_jiffies(MVMDIO_SMI_TIMEOUT), 2);
-+
-+		if (wait_event_timeout(dev->smi_busy_wait,
-+				       ops->is_done(dev), timeout))
- 			return 0;
--	        else if (timedout)
--			break;
--
--	        if (dev->err_interrupt <= 0) {
--			usleep_range(ops->poll_interval_min,
--				     ops->poll_interval_max);
--
--			if (time_is_before_jiffies(end))
--				++timedout;
--	        } else {
--			/* wait_event_timeout does not guarantee a delay of at
--			 * least one whole jiffie, so timeout must be no less
--			 * than two.
--			 */
--			if (timeout < 2)
--				timeout = 2;
--			wait_event_timeout(dev->smi_busy_wait,
--				           ops->is_done(dev), timeout);
--
--			++timedout;
--	        }
- 	}
+@@ -4304,7 +4304,7 @@ static int check_stack_access_within_bounds(
+ 		err_extra = " write to";
  
- 	dev_err(bus->parent, "Timeout: SMI busy for too long\n");
-@@ -135,8 +118,6 @@ static int orion_mdio_smi_is_done(struct orion_mdio_dev *dev)
- 
- static const struct orion_mdio_ops orion_mdio_smi_ops = {
- 	.is_done = orion_mdio_smi_is_done,
--	.poll_interval_min = MVMDIO_SMI_POLL_INTERVAL_MIN,
--	.poll_interval_max = MVMDIO_SMI_POLL_INTERVAL_MAX,
- };
- 
- static int orion_mdio_smi_read(struct mii_bus *bus, int mii_id,
-@@ -200,8 +181,6 @@ static int orion_mdio_xsmi_is_done(struct orion_mdio_dev *dev)
- 
- static const struct orion_mdio_ops orion_mdio_xsmi_ops = {
- 	.is_done = orion_mdio_xsmi_is_done,
--	.poll_interval_min = MVMDIO_XSMI_POLL_INTERVAL_MIN,
--	.poll_interval_max = MVMDIO_XSMI_POLL_INTERVAL_MAX,
- };
- 
- static int orion_mdio_xsmi_read(struct mii_bus *bus, int mii_id,
+ 	if (tnum_is_const(reg->var_off)) {
+-		min_off = reg->var_off.value + off;
++		min_off = (s64)reg->var_off.value + off;
+ 		if (access_size > 0)
+ 			max_off = min_off + access_size - 1;
+ 		else
 -- 
 2.43.0
 
