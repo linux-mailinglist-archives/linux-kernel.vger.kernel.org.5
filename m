@@ -1,81 +1,81 @@
-Return-Path: <linux-kernel+bounces-27663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 823C682F3D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:13:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09CD782F3D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:14:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E14E287D9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:13:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 795B0B23D0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:14:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F0C1D540;
-	Tue, 16 Jan 2024 18:12:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 601E31CD24;
+	Tue, 16 Jan 2024 18:12:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IEXjQx4f"
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tMPBpuw6"
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B68961D53D
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:12:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AAEB1D68D
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:12:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705428763; cv=none; b=EkXYXJqXGT9MtDDlwPvZgOJQTc8tBZ3uOpsgDByR6A0Elpn39KD8mspI+ynD/gmS7x4QfiZi0fc8bMCs9xrv89Kjy4pqww1vrBhRAAY8h4KDNte82VCnTa9xpUy0YuIAULmAzTcQp44Mpp8NUn9LzAIMWjc3GwLqtNKQ3fVdXQg=
+	t=1705428777; cv=none; b=pb6p1fNn1D89bTZ+rhU2LcIJ33hq8d0vJwUXOE23Aq3C+gF21ww2x/X0YrA2ZXzr296lpuEDTkl7JZvz1mAILhu2TO0Ws/FyaCilH6vmtwC9WB8UZs6Md1wQYNFG9D6GQ/7CZQUr4wXPVNZm8NvKhBQHo2u8VAxqg2az9QKbApY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705428763; c=relaxed/simple;
-	bh=ZbOM1bu5cjFjk4zYWaRFdyLilrDy9vA0J/xM/tBuRRQ=;
+	s=arc-20240116; t=1705428777; c=relaxed/simple;
+	bh=SG8DiOf3cYorQyJYENvv92rI8GgMIqPPsIjXOT8ucX8=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
 	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=MVpt6V2/S6bI4iy0TmQ+y/AOTqw97CZi6nu9iRnIc+SheNsXMuP5yn/b+iymqWElZUn2Y7GJuHw2mkKXaYBINggN5BEEuqlr2LzIRUsxV9HUmW4Opp9viIclJnXhvupCzPpk34pG4ddDd431Lj8WMAnrlORGhu3YpRQQ6t3/nyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IEXjQx4f; arc=none smtp.client-ip=209.85.166.45
-Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7bf617dcedaso5603639f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:12:41 -0800 (PST)
+	 Content-Type:Content-Transfer-Encoding; b=ns1RsMV0ETuuO4CaxPDlC8x0l8p7fyVIF48xTwUHAsqubQTHYXmw24D6djdOCQ64zIIsWn248F+c+VMbuqcdzIY7rI1VnqATLemx/lzoRiSvpsJc9g6TLouycens13Xtb+xosm3Vfbdh8c0r/yIWsQpUdrX1Go1PyYTQCN3NBdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tMPBpuw6; arc=none smtp.client-ip=209.85.166.52
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7bf2c826a5aso180382639f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:12:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705428761; x=1706033561; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1705428775; x=1706033575; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gsw0Y1ya1uuqQW7F3Kv8ai7chNdrtK1tF8GNiYzbLyY=;
-        b=IEXjQx4fFr9GWrfwtHpDJIXIOqTSsrYEaMQZQalgteHcsIwrDTfL4bDNIskfS0JmnX
-         aeKeg+uVybK/hZjzmpwBIxoGNQOV+pmBJ0kc0tB03DopO9M+pCEkMBAec1wQFap1ocEc
-         2oihUDkFfAPIRmzj3tOoMDyvMTe8JQrFMChpnjgTEyfQPlSj9yBuUW5lETE4FAW5Oatb
-         s4Fb41YToIQXEDH5pNaGQQSSMHsHOdi3tFD8uD2UbbNuMAgRlpgKjAk6K0hZawnbgBQd
-         iY8RXofmM8Sg5Q1xFVYPRVNPJ7RP3jAmwpNMt/d0RyMdoGe8CAR4Hmezyxpe9KjLhldu
-         xtsQ==
+        bh=C1zy9rBSl9mQ2yLGmosPPGFWim7xQyqanbh7O2L48e4=;
+        b=tMPBpuw6J25AWJqaH3VYuSqgqWaluOAmwpDo6iVDur0RhyIZ5fply6x84Rh1PqaKHX
+         J80mitc1EZVsYLXh5j0CzBviaezOsdAzjqA6l1kiCMjI5l9Z8WcvKC6da+k2wJNN1/ns
+         0zNCJp931nPdneMdBORTMjyeURenININ/ZKoEQ7+LBmtnY9blP6+Z1dh74wPfAuvp/X5
+         VCKz0gV7WslOvEQRMMYy6M8vUid4zs7Ltk7+NiN+8AWZBkkqJgbfGOc+jc+zRBUgS9Zv
+         hZjPvNGySk/yIyUr1s4WkzWXrRhSN8lZv1D3xxgafkd9IIz2q9BvEIU2kn7jo2pv+/6A
+         M4lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705428761; x=1706033561;
+        d=1e100.net; s=20230601; t=1705428775; x=1706033575;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gsw0Y1ya1uuqQW7F3Kv8ai7chNdrtK1tF8GNiYzbLyY=;
-        b=P3acdubxrXh0iPUOTsNvSYN3vecmS1W+sC6OfWMCGqOWRu6ppabL2j01ofBucn8Z2p
-         88H+LeB+39FPlkev7+vJF2yyTYuVFWKTa5XNIWUhdtVe2gDu/VWxnOSy8dcEMphmpfOZ
-         wE4NmALm8aDYcodhPrT1perj+TR6MC3gixXXANkCPiAtjDXqfwDQK5QCkTAtDhv5F6Co
-         zN15fG0zjMkB2ILUyASZ+2GxKaP1sihSwEClzk/x4p6evdxOZ3IIbmwiFPO+fFyyVJCI
-         ZPbGgsgZEaIlWPbhHxOZD1VC88zMq/s7/CDKywG3hx23uVxrcrA46gjeKC52cY7m9m4f
-         uPvA==
-X-Gm-Message-State: AOJu0Yzc8wZn1MY3qi2uP0uhLCY4k/NP9GL1iFy6jgRD3ie9ko1p3GSp
-	FpU5GOdKx+Qn55XatoJIUIY8OYUS/k9UMsCO68QE0HSarfoOvg==
-X-Google-Smtp-Source: AGHT+IHsTZN8Hh2PBiqRYmvVF1oqi281eXU5A/Ytv6gA5Rfcjg510T4d0Xlr9PLKT5w/4djQJrnCcPZkqN7Sx16pNBE=
-X-Received: by 2002:a05:6602:42d6:b0:7be:fac5:76a5 with SMTP id
- ce22-20020a05660242d600b007befac576a5mr9115659iob.43.1705428760966; Tue, 16
- Jan 2024 10:12:40 -0800 (PST)
+        bh=C1zy9rBSl9mQ2yLGmosPPGFWim7xQyqanbh7O2L48e4=;
+        b=N2lL0sSALgUDtRoHYPDIh9dFvjkkm4yh/09QjDzMuA4j0+XjRV2unRsEV7GrjeVtkR
+         loaLj6nmUnZNsjNzcnHy2QVHmT4ePxwGraVEempwK+xFutgBxwG1rIJ9mo8xeExTxh0S
+         mJz/Ziv+1ztT/OeMKkZDJnN0C267sJ1wY0wRcjWJo624Kn2cHN+SUfpY+iLxdL6ZzVpS
+         O8o4MrKbbyLdsi5iYVWsHVjw0DvEOe6hw+cRVHPD+b+vLfGL8OAEEKZBYSBP+3CfebOs
+         gRCsg6m/t4wddQ+L0XQ2GEKkQrTmKXWLA03+WfNr8WO1yrxSgpus2b0w9nVG7ESU4SRJ
+         u2Pg==
+X-Gm-Message-State: AOJu0YzsgMxIyKN4WKFMEGU5OKQw+n1iTYH+WqKObBLEqtxw4quXra0b
+	eRyUDBN+psRfw1luBc5uSL1W6Ta168/Qnn8hQMtK/d17AoI/qw==
+X-Google-Smtp-Source: AGHT+IGQzMbiCpfyKCirJEubGfS3LEcjdBd2HSiutokrb/hXgwLKsqATMushPZrWZOqX0cVlmY8vB9FfbIMTpQdlzfU=
+X-Received: by 2002:a6b:6c07:0:b0:7be:e783:850e with SMTP id
+ a7-20020a6b6c07000000b007bee783850emr8915152ioh.39.1705428775466; Tue, 16 Jan
+ 2024 10:12:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240110102102.61587-1-tudor.ambarus@linaro.org> <20240110102102.61587-2-tudor.ambarus@linaro.org>
-In-Reply-To: <20240110102102.61587-2-tudor.ambarus@linaro.org>
+References: <20240110102102.61587-1-tudor.ambarus@linaro.org> <20240110102102.61587-3-tudor.ambarus@linaro.org>
+In-Reply-To: <20240110102102.61587-3-tudor.ambarus@linaro.org>
 From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Tue, 16 Jan 2024 12:12:29 -0600
-Message-ID: <CAPLW+4ndoSq-u7=m40BXrDHa20eyUrNq1-RMwtJJDdXGLBWUWg@mail.gmail.com>
-Subject: Re: [PATCH 01/18] tty: serial: samsung: prepare for different IO types
+Date: Tue, 16 Jan 2024 12:12:44 -0600
+Message-ID: <CAPLW+4kgfvp93O9ehZrnA5qTd7YO0Ln+S06OCiGVk=kNNf8rHA@mail.gmail.com>
+Subject: Re: [PATCH 02/18] tty: serial: samsung: set UPIO_MEM32 iotype for gs101
 To: Tudor Ambarus <tudor.ambarus@linaro.org>
 Cc: krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com, 
 	gregkh@linuxfoundation.org, jirislaby@kernel.org, 
@@ -91,106 +91,113 @@ org> wrote:
 >
 > GS101's Connectivity Peripheral blocks (peric0/1 blocks) which
 > include the I3C and USI (I2C, SPI, UART) only allow 32-bit
-> register accesses. If using 8-bit register accesses, a SError
-> Interrupt is raised causing the system unusable.
+> register accesses.
 >
 > Instead of specifying the reg-io-width =3D 4 everywhere, for each node,
 > the requirement should be deduced from the compatible.
 >
-> Prepare the samsung tty driver to allow IO types different than
-> UPIO_MEM. ``struct uart_port::iotype`` is an unsigned char where all
-> its 8 bits are exposed to uapi. We can't make NULL checks on it to
-> verify if it's set, thus always set it from the driver's data.
-> Use u8 for the ``iotype`` member of ``struct s3c24xx_uart_info`` to
-> emphasize that the iotype is an 8 bit mask.
+> Infer UPIO_MEM32 iotype from the "google,gs101-uart" compatible.
+> Update the uart info name to be GS101 specific in order to
+> differentiate from the other exynos platforms. All the other settings
+> are not changed.
 >
+> exynos_fifoszdt_serial_drv_data was replaced by gs101_serial_drv_data
+> because the iotype restriction is gs101 specific and there was no other
+> user of exynos_fifoszdt_serial_drv_data.
+>
+> Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
 > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 > ---
 
 Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
 
->  drivers/tty/serial/samsung_tty.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
+>  drivers/tty/serial/samsung_tty.c | 38 +++++++++++++++++++++++---------
+>  1 file changed, 28 insertions(+), 10 deletions(-)
 >
 > diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsun=
 g_tty.c
-> index 71d17d804fda..b8fe9df20202 100644
+> index b8fe9df20202..20ec6ef1a52f 100644
 > --- a/drivers/tty/serial/samsung_tty.c
 > +++ b/drivers/tty/serial/samsung_tty.c
-> @@ -84,6 +84,7 @@ struct s3c24xx_uart_info {
->         unsigned long           clksel_mask;
->         unsigned long           clksel_shift;
->         unsigned long           ucon_mask;
-> +       u8                      iotype;
+> @@ -2495,25 +2495,43 @@ static const struct s3c24xx_serial_drv_data exyno=
+s850_serial_drv_data =3D {
+>         .fifosize =3D { 256, 64, 64, 64 },
+>  };
 >
->         /* uart port features */
+> -/*
+> - * Common drv_data struct for platforms that specify samsung,uart-fifosi=
+ze in
+> - * device tree.
+> - */
+> -static const struct s3c24xx_serial_drv_data exynos_fifoszdt_serial_drv_d=
+ata =3D {
+> -       EXYNOS_COMMON_SERIAL_DRV_DATA(),
+> +static const struct s3c24xx_serial_drv_data gs101_serial_drv_data =3D {
+> +       .info =3D {
+> +               .name           =3D "Google GS101 UART",
+> +               .type           =3D TYPE_S3C6400,
+> +               .port_type      =3D PORT_S3C6400,
+> +               .iotype         =3D UPIO_MEM32,
+> +               .has_divslot    =3D 1,
+> +               .rx_fifomask    =3D S5PV210_UFSTAT_RXMASK,
+> +               .rx_fifoshift   =3D S5PV210_UFSTAT_RXSHIFT,
+> +               .rx_fifofull    =3D S5PV210_UFSTAT_RXFULL,
+> +               .tx_fifofull    =3D S5PV210_UFSTAT_TXFULL,
+> +               .tx_fifomask    =3D S5PV210_UFSTAT_TXMASK,
+> +               .tx_fifoshift   =3D S5PV210_UFSTAT_TXSHIFT,
+> +               .def_clk_sel    =3D S3C2410_UCON_CLKSEL0,
+> +               .num_clks       =3D 1,
+> +               .clksel_mask    =3D 0,
+> +               .clksel_shift   =3D 0,
+> +       },
+> +       .def_cfg =3D {
+> +               .ucon           =3D S5PV210_UCON_DEFAULT,
+> +               .ufcon          =3D S5PV210_UFCON_DEFAULT,
+> +               .has_fracval    =3D 1,
+> +       },
+> +       /* samsung,uart-fifosize must be specified in the device tree. */
+>         .fifosize =3D { 0 },
+>  };
 >
-> @@ -1742,7 +1743,6 @@ static void s3c24xx_serial_init_port_default(int in=
-dex) {
+>  #define EXYNOS4210_SERIAL_DRV_DATA (&exynos4210_serial_drv_data)
+>  #define EXYNOS5433_SERIAL_DRV_DATA (&exynos5433_serial_drv_data)
+>  #define EXYNOS850_SERIAL_DRV_DATA (&exynos850_serial_drv_data)
+> -#define EXYNOS_FIFOSZDT_DRV_DATA (&exynos_fifoszdt_serial_drv_data)
+> +#define GS101_SERIAL_DRV_DATA (&gs101_serial_drv_data)
 >
->         spin_lock_init(&port->lock);
+>  #else
+>  #define EXYNOS4210_SERIAL_DRV_DATA NULL
+>  #define EXYNOS5433_SERIAL_DRV_DATA NULL
+>  #define EXYNOS850_SERIAL_DRV_DATA NULL
+> -#define EXYNOS_FIFOSZDT_DRV_DATA NULL
+> +#define GS101_SERIAL_DRV_DATA NULL
+>  #endif
 >
-> -       port->iotype =3D UPIO_MEM;
->         port->uartclk =3D 0;
->         port->fifosize =3D 16;
->         port->flags =3D UPF_BOOT_AUTOCONF;
-> @@ -1989,6 +1989,8 @@ static int s3c24xx_serial_probe(struct platform_dev=
-ice *pdev)
->                 break;
->         }
->
-> +       ourport->port.iotype =3D ourport->info->iotype;
-> +
->         if (np) {
->                 of_property_read_u32(np,
->                         "samsung,uart-fifosize", &ourport->port.fifosize)=
-;
-> @@ -2399,6 +2401,7 @@ static const struct s3c24xx_serial_drv_data s3c6400=
-_serial_drv_data =3D {
->                 .name           =3D "Samsung S3C6400 UART",
->                 .type           =3D TYPE_S3C6400,
->                 .port_type      =3D PORT_S3C6400,
-> +               .iotype         =3D UPIO_MEM,
->                 .fifosize       =3D 64,
->                 .has_divslot    =3D 1,
->                 .rx_fifomask    =3D S3C2440_UFSTAT_RXMASK,
-> @@ -2428,6 +2431,7 @@ static const struct s3c24xx_serial_drv_data s5pv210=
-_serial_drv_data =3D {
->                 .name           =3D "Samsung S5PV210 UART",
->                 .type           =3D TYPE_S3C6400,
->                 .port_type      =3D PORT_S3C6400,
-> +               .iotype         =3D UPIO_MEM,
->                 .has_divslot    =3D 1,
->                 .rx_fifomask    =3D S5PV210_UFSTAT_RXMASK,
->                 .rx_fifoshift   =3D S5PV210_UFSTAT_RXSHIFT,
-> @@ -2457,6 +2461,7 @@ static const struct s3c24xx_serial_drv_data s5pv210=
-_serial_drv_data =3D {
->                 .name           =3D "Samsung Exynos UART",        \
->                 .type           =3D TYPE_S3C6400,                 \
->                 .port_type      =3D PORT_S3C6400,                 \
-> +               .iotype         =3D UPIO_MEM,                     \
->                 .has_divslot    =3D 1,                            \
->                 .rx_fifomask    =3D S5PV210_UFSTAT_RXMASK,        \
->                 .rx_fifoshift   =3D S5PV210_UFSTAT_RXSHIFT,       \
-> @@ -2517,6 +2522,7 @@ static const struct s3c24xx_serial_drv_data s5l_ser=
-ial_drv_data =3D {
->                 .name           =3D "Apple S5L UART",
->                 .type           =3D TYPE_APPLE_S5L,
->                 .port_type      =3D PORT_8250,
-> +               .iotype         =3D UPIO_MEM,
->                 .fifosize       =3D 16,
->                 .rx_fifomask    =3D S3C2410_UFSTAT_RXMASK,
->                 .rx_fifoshift   =3D S3C2410_UFSTAT_RXSHIFT,
-> @@ -2546,6 +2552,7 @@ static const struct s3c24xx_serial_drv_data artpec8=
-_serial_drv_data =3D {
->                 .name           =3D "Axis ARTPEC-8 UART",
->                 .type           =3D TYPE_S3C6400,
->                 .port_type      =3D PORT_S3C6400,
-> +               .iotype         =3D UPIO_MEM,
->                 .fifosize       =3D 64,
->                 .has_divslot    =3D 1,
->                 .rx_fifomask    =3D S5PV210_UFSTAT_RXMASK,
+>  #ifdef CONFIG_ARCH_APPLE
+> @@ -2601,7 +2619,7 @@ static const struct platform_device_id s3c24xx_seri=
+al_driver_ids[] =3D {
+>                 .driver_data    =3D (kernel_ulong_t)ARTPEC8_SERIAL_DRV_DA=
+TA,
+>         }, {
+>                 .name           =3D "gs101-uart",
+> -               .driver_data    =3D (kernel_ulong_t)EXYNOS_FIFOSZDT_DRV_D=
+ATA,
+> +               .driver_data    =3D (kernel_ulong_t)GS101_SERIAL_DRV_DATA=
+,
+>         },
+>         { },
+>  };
+> @@ -2624,7 +2642,7 @@ static const struct of_device_id s3c24xx_uart_dt_ma=
+tch[] =3D {
+>         { .compatible =3D "axis,artpec8-uart",
+>                 .data =3D ARTPEC8_SERIAL_DRV_DATA },
+>         { .compatible =3D "google,gs101-uart",
+> -               .data =3D EXYNOS_FIFOSZDT_DRV_DATA },
+> +               .data =3D GS101_SERIAL_DRV_DATA },
+>         {},
+>  };
+>  MODULE_DEVICE_TABLE(of, s3c24xx_uart_dt_match);
 > --
 > 2.43.0.472.g3155946c3a-goog
 >
