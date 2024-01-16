@@ -1,114 +1,139 @@
-Return-Path: <linux-kernel+bounces-27884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D900282F736
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:17:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E5FF82F8E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:55:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87D2F282FC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:17:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 812991C24F3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:55:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35CA677F25;
-	Tue, 16 Jan 2024 19:47:05 +0000 (UTC)
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D7ED76902
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 19:47:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=163.172.96.212
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54B9913B79E;
+	Tue, 16 Jan 2024 19:53:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M3S9b5o+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9157C13B785;
+	Tue, 16 Jan 2024 19:53:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434424; cv=none; b=t4TzipNhi8HHMyIg4xaclA6k2dHWPaOoTUsx0zAiA4GZoVyLbPFMDh1SoSTSt5oEf6cRmkp3KfUzAraPTC0cXZ34Sh3f5/ZWLJquZe0T3ppcBHWGlQvfNk/L847e26p69V0Fv7nxcg5u1lIC0Fl+rdwUSaOAEgdMn5/LaS4lYZE=
+	t=1705434812; cv=none; b=hajMgtvMuLgWRc4GWqcWQM7HMNu00lcrtKqS9uFU1UOQNEjpikC0OntmwE24wkbtopLaScUuX5Kawkv6nOrlUEpETdHs/uPXnj5hbYeCRsYN08Y1wNsMr9J07gVprjeBblPiMGyjyk50Ce+QhM2vhpkMbb8KE9A1c/DgwZUB5PI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434424; c=relaxed/simple;
-	bh=EfwE9uaTGSc2UjtKTV2wy76THTUsBDCa58I0a7iq2Wo=;
-	h=Received:Date:From:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To:
-	 User-Agent; b=CL4lxq6FwRgke/r4VYBOHcLrQzFBhlQ3fBn7PbrbtA94rcLzbSuKcKUwt6iLBM9afMmcjko4Te4UmX2l+VvW5QhI0ttMP+VPFEY/y0MIDPYHrj0kw8D3nxvrEfLHyvkE2MLAJq6VxjFACRV/9g/Qy9DdYjv+ALHzXWq4bFhSLAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu; spf=pass smtp.mailfrom=1wt.eu; arc=none smtp.client-ip=163.172.96.212
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=1wt.eu
-Received: (from willy@localhost)
-	by pcw.home.local (8.15.2/8.15.2/Submit) id 40GJkt1u005515;
-	Tue, 16 Jan 2024 20:46:55 +0100
-Date: Tue, 16 Jan 2024 20:46:55 +0100
-From: Willy Tarreau <w@1wt.eu>
-To: Ammar Faizi <ammarfaizi2@gnuweeb.org>
-Cc: Charles Mirabile <cmirabil@redhat.com>, linux-kernel@vger.kernel.org,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Subject: Re: [PATCH] nolibc/stdlib: Improve `getauxval(3)` implementation
-Message-ID: <20240116194655.GA5511@1wt.eu>
-References: <20240116181147.2230944-1-cmirabil@redhat.com>
- <ZabQVvpZ4e7hTwcb@biznet-home.integral.gnuweeb.org>
- <ZabRwdcgU/H8i5Ja@1wt.eu>
- <ZabSG4R45sC0s23d@1wt.eu>
- <ZabUyZG3C3LUax6f@biznet-home.integral.gnuweeb.org>
- <ZabXyRMECEnMUizk@biznet-home.integral.gnuweeb.org>
+	s=arc-20240116; t=1705434812; c=relaxed/simple;
+	bh=sQ0wS/58+NtRgomC/D/pCetGutfZh6iT0unc47ZnxnU=;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
+	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=fcj/ZGPPrMfuYu7JJBKP+PCzTJHQHxt0wTrJd+yRL0ohFrGuDuoOhDsKrrz8M4E6jvPovEFJd9+tWbLyH9trL1ytXXz0YFkXQ/CI20H4yg/N2T/xbqOPrHbzdcIabt0wXmuTqNyWJLkgGrmGb419kv9kxu29xFENpVRHZdZEGR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M3S9b5o+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B1B1C43390;
+	Tue, 16 Jan 2024 19:53:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705434812;
+	bh=sQ0wS/58+NtRgomC/D/pCetGutfZh6iT0unc47ZnxnU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=M3S9b5o+9Vy5k3YPaF+e+Ft709urC1rM0Om5JEIkZSJWcIwioEGeeBb0nwkTO77KQ
+	 NGV2y2HHz8vu48HLMby20zOVEEhLeVgQCprMQFqvODgb80Thl/bpJoxhJAqoI0l7Kk
+	 hbcTYFfZ2vwB6asSfxRJoMUgy8+/P5C2wXX4eVL3YmQdjyIKUIgON20HnmcLsJcsSE
+	 T3++krKHr6RlUPTFeqhSovRk1Xx+Yfc5DKU4tzzrHK44bwnz3/jpMxRT3JDoaXCCe7
+	 w9e++YBY2J7nQpoJS0jeQXqOsYwElFqmknwgXTi6Fu08405fhozo82MFtPJpFAQi/n
+	 GVVRWYQMFkDaw==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Mingyi Zhang <zhangmingyi5@huawei.com>,
+	Xin Liu <liuxin350@huawei.com>,
+	Changye Wu <wuchangye@huawei.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Sasha Levin <sashal@kernel.org>,
+	ast@kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 089/104] libbpf: Fix NULL pointer dereference in bpf_object__collect_prog_relos
+Date: Tue, 16 Jan 2024 14:46:55 -0500
+Message-ID: <20240116194908.253437-89-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240116194908.253437-1-sashal@kernel.org>
+References: <20240116194908.253437-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZabXyRMECEnMUizk@biznet-home.integral.gnuweeb.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.6.12
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 17, 2024 at 02:23:53AM +0700, Ammar Faizi wrote:
-> On Wed, Jan 17, 2024 at 02:11:12AM +0700, Ammar Faizi wrote:
-> > On Tue, Jan 16, 2024 at 07:59:39PM +0100, Willy Tarreau wrote:
-> > > On Tue, Jan 16, 2024 at 07:58:09PM +0100, Willy Tarreau wrote:
-> > > > On Wed, Jan 17, 2024 at 01:52:06AM +0700, Ammar Faizi wrote:
-> > > > > What do you think about other architectures? Will it potentially be
-> > > > > misinterpreted?
-> > > > 
-> > > > Indeed, it would fail on a 64-bit big endian architecture. Let's
-> > > > just declare the local variable the same way as it is in the spec,
-> > > > it will be much cleaner and more reliable.
-> > > 
-> > > With that said, if previous code used to work on such architectures,
-> > > maybe the definition above is only for x86_64 and differs on other
-> > > archs. Maybe it's really defined as two longs ?
-> > 
-> > I just took a look at the kernel source code:
-> > https://github.com/torvalds/linux/blob/v6.7/fs/binfmt_elf.c#L226-L261
-> > 
-> > The auxv is stored in `elf_info` variable, the type is `elf_addr_t`. Not
-> > sure what kind of typedef is that. I'll check.
-> > 
-> > Each auxv entry is added using this macro:
-> > 
-> >  #define NEW_AUX_ENT(id, val) \
-> >          do { \
-> >                  *elf_info++ = id; \
-> >                  *elf_info++ = val; \
-> >          } while (0)
-> > 
-> > where `id` is the type. That clearly implies `type` and `val` have the
-> > same size on the Linux kernel.
-> 
-> So here is the result:
-> 
-> 1. 'elf_addr_t' defintion ( https://github.com/torvalds/linux/blob/v6.7/include/linux/elf.h#L38-L62 ):
-> 
->   (simplified)
->   #if ELF_CLASS == ELFCLASS32
->   #define elf_addr_t	Elf32_Off
->   #else
->   #define elf_addr_t	Elf64_Off
->   #endif
-> 
-> 2. 'Elf32_Off' and 'Elf64_Off' typedefs ( https://github.com/torvalds/linux/blob/v6.7/include/uapi/linux/elf.h#L8-L23 )
-> 
->   typedef __u32  Elf32_Off;
->   typedef __u64  Elf64_Off;
-> 
-> Assuming 'ELFCLASS32' is for 32-bit architectures, then it's two __u64
-> on 64-bit arch, and two __u32 on 32-bit arch. That is identical to
-> 'unsigned long' for both cases (on Linux). So it's fine to have
-> 'unsigned long' for both 'type' and 'value'.
+From: Mingyi Zhang <zhangmingyi5@huawei.com>
 
-Yeah I agree, thanks for checking.
+[ Upstream commit fc3a5534e2a8855427403113cbeb54af5837bbe0 ]
 
-Willy
+An issue occurred while reading an ELF file in libbpf.c during fuzzing:
+
+	Program received signal SIGSEGV, Segmentation fault.
+	0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
+	4206 in libbpf.c
+	(gdb) bt
+	#0 0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
+	#1 0x000000000094f9d6 in bpf_object.collect_relos () at libbpf.c:6706
+	#2 0x000000000092bef3 in bpf_object_open () at libbpf.c:7437
+	#3 0x000000000092c046 in bpf_object.open_mem () at libbpf.c:7497
+	#4 0x0000000000924afa in LLVMFuzzerTestOneInput () at fuzz/bpf-object-fuzzer.c:16
+	#5 0x000000000060be11 in testblitz_engine::fuzzer::Fuzzer::run_one ()
+	#6 0x000000000087ad92 in tracing::span::Span::in_scope ()
+	#7 0x00000000006078aa in testblitz_engine::fuzzer::util::walkdir ()
+	#8 0x00000000005f3217 in testblitz_engine::entrypoint::main::{{closure}} ()
+	#9 0x00000000005f2601 in main ()
+	(gdb)
+
+scn_data was null at this code(tools/lib/bpf/src/libbpf.c):
+
+	if (rel->r_offset % BPF_INSN_SZ || rel->r_offset >= scn_data->d_size) {
+
+The scn_data is derived from the code above:
+
+	scn = elf_sec_by_idx(obj, sec_idx);
+	scn_data = elf_sec_data(obj, scn);
+
+	relo_sec_name = elf_sec_str(obj, shdr->sh_name);
+	sec_name = elf_sec_name(obj, scn);
+	if (!relo_sec_name || !sec_name)// don't check whether scn_data is NULL
+		return -EINVAL;
+
+In certain special scenarios, such as reading a malformed ELF file,
+it is possible that scn_data may be a null pointer
+
+Signed-off-by: Mingyi Zhang <zhangmingyi5@huawei.com>
+Signed-off-by: Xin Liu <liuxin350@huawei.com>
+Signed-off-by: Changye Wu <wuchangye@huawei.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20231221033947.154564-1-liuxin350@huawei.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ tools/lib/bpf/libbpf.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 96ff1aa4bf6a..de08b920a149 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4251,6 +4251,8 @@ bpf_object__collect_prog_relos(struct bpf_object *obj, Elf64_Shdr *shdr, Elf_Dat
+ 
+ 	scn = elf_sec_by_idx(obj, sec_idx);
+ 	scn_data = elf_sec_data(obj, scn);
++	if (!scn_data)
++		return -LIBBPF_ERRNO__FORMAT;
+ 
+ 	relo_sec_name = elf_sec_str(obj, shdr->sh_name);
+ 	sec_name = elf_sec_name(obj, scn);
+-- 
+2.43.0
+
 
