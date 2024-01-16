@@ -1,160 +1,259 @@
-Return-Path: <linux-kernel+bounces-28383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D54782FDD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 00:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8925982FDD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 00:46:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA6811F27CAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:44:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F29991F271EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:46:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F40B967C64;
-	Tue, 16 Jan 2024 23:44:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A225867C65;
+	Tue, 16 Jan 2024 23:46:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AJAYltvX"
-Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com [209.85.222.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gHlGjOc9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AECE61D68E
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 23:44:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1B5567C5E;
+	Tue, 16 Jan 2024 23:46:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705448663; cv=none; b=S3X3BN4aK4RIK/RwWAKtOWgErSCfeDs7c2VbzivXPd/iqjytA6jeVPHXgkMa2bGeYEbLfDhjW99DQ+it9ayLLiY/wE2H9l/BRA2FvgSK74vQMcpM+lDkjxYyS3nFfAwhXQgsZihSKKC2wV72TAhpTypW+GreeoAoVLJZuFTdd+4=
+	t=1705448796; cv=none; b=DJNkqaLub+tIv4MAIBP56HDY7TP0Tj2ApbCf0SXCuzt47xW0KJdmrwpu0Y+5YBCPRqdmmZOah4I7h0DIPXDhP55/PIWSkqgL52OXQ4h91nZ6dPnGdvdKlbUbEq78A8TKpckvrU2/s5IGsgeHy0cItspw1+6OGOKswTFFsjKWoNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705448663; c=relaxed/simple;
-	bh=9DmDWifX5Z6JOjtDY3idRRSQYZv+kZmuFZPwB+mkrwo=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=qc5Kca5kVRAkazTRZviCWuboFh5ojCItl9rHaR8c6CGtqNCAHGlfhnTQN7WpWC0FrgJ46RVTA5wAn5wA9rrmd3pZx3vjrNAR9tucDMCmVL+6N/R5PuXNmgOTPixGEacRyXifWOF8utz5YR4p0CzxMR/NPkauF1QqW0aDpqXcwmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AJAYltvX; arc=none smtp.client-ip=209.85.222.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f53.google.com with SMTP id a1e0cc1a2514c-7ce9defc4c2so1640824241.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 15:44:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705448660; x=1706053460; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PdQ6eiAEP5p2d80q3UGVJcNCex+HtcKgUxVE8iUlFVM=;
-        b=AJAYltvXPxB0Mw62kj+WY02TMbs+O+Fln+QtkndPtC495RWMkB79nor4WPmarn4nDy
-         y7FcRdUyca+meEbbCw00jG2zMywQeB+algt4gCW6PYyw8xTzglsU6CWouvh0jH6MJsAD
-         hAp/vi8r97pZhQccxJSUopeUeKSYaXQFLaNFnZXtgAjlXLz2mNj289/ZBnCICyikB7YD
-         LhNBcFSgRvtpRW/k+s5ZwOmhG0NeZCsxjBWDosTHlqgAzRdy5t+qy1GpTKtmkTLUxVlO
-         8B78wBeUus0hFdlVoLMFWAulSEPI0AklIlAJtPNTqIDFAbjS2BwYNK2VdoJ3wwi/GlYQ
-         4tTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705448660; x=1706053460;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PdQ6eiAEP5p2d80q3UGVJcNCex+HtcKgUxVE8iUlFVM=;
-        b=YXr8UafedQsMc/ceGVkIn38bxUtR/vT47au8YhM0BHvxTSqhKkrFMkWJGckWqExw1A
-         2X3mbkcCEQ1i3uEASnBYqnMD2AMf7PEgLfmqkIw7ayyEFG9YXfncDNgAhgeMfZmhIwHL
-         ZUwC4kmeFPAuFhILznlvdrQcCB2Y+w7+DNhhT8Kh6WO+weHWEt1+00VpDf1YnGxmzr9+
-         W105QqYzpLlfai/1LMJtf702Cjh/2stUllsgUZhRIRbKLxd8Ez63fb+eHMVMJnktr4Gu
-         W/qBE+Ti2hcV6MuCZ2uoIsqNWrnB+7BezIqiq+ASngOBDYcT2rOiqTq7GXjRjbTQUJq7
-         30SQ==
-X-Gm-Message-State: AOJu0Ywpst6RHQPIwp6Xx6y4rUXA1ir47om3mBy1hwIZJnlHT0won416
-	rnXlXjE0k7Z2LiLsdkXP+N/2p/QJY0YjQOhGFcq8HkmG1F91
-X-Google-Smtp-Source: AGHT+IHyTwjhU9khtcKJv8NUtOGmEIX06trwG04+ik2FnF1wYm8lVJ6tIZBYJhmYaBLWiR0vQf/XBsl+DQARU6XGzSI=
-X-Received: by 2002:a05:6122:3691:b0:4b2:dd80:4db0 with SMTP id
- ec17-20020a056122369100b004b2dd804db0mr3234536vkb.32.1705448660484; Tue, 16
- Jan 2024 15:44:20 -0800 (PST)
+	s=arc-20240116; t=1705448796; c=relaxed/simple;
+	bh=/V0jWuMqMaJCEhmN2SQuPUJxonZx+hc3zr88NbwgJXM=;
+	h=Received:DKIM-Signature:Received:X-Gm-Message-State:
+	 X-Google-Smtp-Source:X-Received:MIME-Version:From:Date:
+	 X-Gmail-Original-Message-ID:Message-ID:Subject:To:Cc:Content-Type:
+	 Content-Transfer-Encoding; b=sl4Wr2/TeO1RkQKAYjGKDnpYXGjvMJ23iKmuIbZVtL0qCd3kcKE6x+HW8TRD0gPFtKK5FDjM4b+ouK68cuAJzzS7G63cNEAxIRt4zl80DATKGv0Ag+LY3T6GJbhdnl0RakP6Rq1i41LprQY9wnoOw/3LUNMm04vhi3PMtokdrf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gHlGjOc9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19D48C433F1;
+	Tue, 16 Jan 2024 23:46:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705448796;
+	bh=/V0jWuMqMaJCEhmN2SQuPUJxonZx+hc3zr88NbwgJXM=;
+	h=From:Date:Subject:To:Cc:From;
+	b=gHlGjOc99xrUZ3Ysgaj72pe53+ybwq0pFf9qzo3Nl/UZT4V2Y5UGCoQK1uruEMvg8
+	 5ol/LyNUA9qQixPydGIxG/TalColXhuLmg1tww2uJKpUI3wcCv3PGx/QyX2BNk4FBm
+	 sipuynHgPYyuJ7kol5o8x/zji9mVJlk1Mh5MjVK4aMi/+Z5vKoUQStiPTKV6OKqO7b
+	 Jh8tAbuLuGShUCPe17mveW/u58k+Po05Hte94cdeJyEBNA8Ui9cc5LyMIXpz+t/92o
+	 0G4A7j5pgwL3q7rQrybuXg0afYH8A7QZL7Fn4UXPh6yPTOVxkkimnIS1uUpGsF70q4
+	 NWcb0Pi5RJCWg==
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-2046b2cd2d3so7613468fac.0;
+        Tue, 16 Jan 2024 15:46:36 -0800 (PST)
+X-Gm-Message-State: AOJu0Yw8CWEfJ1AJIXpkL3CHaX8yH/zHr9xoMm7SyYk9yy2cwwo2hmok
+	hnJ9OCBjclfPjtNlzh4/emHiXKg5un7Ky3uz2JE=
+X-Google-Smtp-Source: AGHT+IGPim5jCNuXS6hiBuH5EiyielqrpLdF5gnMR2Xu4v9FUQnJhX1zzaEiYyL68SEcljcRzq120qrc+uA9QQF3RTE=
+X-Received: by 2002:a05:6870:2cc:b0:1fb:75c:3fdf with SMTP id
+ r12-20020a05687002cc00b001fb075c3fdfmr12995755oaf.63.1705448795453; Tue, 16
+ Jan 2024 15:46:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZZ7YuEexYSaZYmLK@tassilo> <20240111223650.3502633-1-kevinloughlin@google.com>
- <7144c0d5-8fb4-8d83-a854-ed597296c68f@amd.com>
-In-Reply-To: <7144c0d5-8fb4-8d83-a854-ed597296c68f@amd.com>
-From: Kevin Loughlin <kevinloughlin@google.com>
-Date: Tue, 16 Jan 2024 15:44:09 -0800
-Message-ID: <CAGdbjmJih4G=JG_6rLJnSAF8j3bhtLeREqDzuzFp-C7XWOqCCg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] x86/sev: enforce RIP-relative accesses in early
- SEV/SME code
-To: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Michael Kelley <mikelley@microsoft.com>, Pankaj Gupta <pankaj.gupta@amd.com>, 
-	Stephen Rothwell <sfr@canb.auug.org.au>, Arnd Bergmann <arnd@arndb.de>, 
-	Steve Rutherford <srutherford@google.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Hou Wenlong <houwenlong.hwl@antgroup.com>, Vegard Nossum <vegard.nossum@oracle.com>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Yuntao Wang <ytcoode@gmail.com>, 
-	Wang Jinchao <wangjinchao@xfusion.com>, David Woodhouse <dwmw@amazon.co.uk>, 
-	Brian Gerst <brgerst@gmail.com>, Hugh Dickins <hughd@google.com>, Ard Biesheuvel <ardb@kernel.org>, 
-	Joerg Roedel <jroedel@suse.de>, Randy Dunlap <rdunlap@infradead.org>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Dionna Glaze <dionnaglaze@google.com>, 
-	Brijesh Singh <brijesh.singh@amd.com>, Michael Roth <michael.roth@amd.com>, 
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, linux-kernel@vger.kernel.org, 
-	llvm@lists.linux.dev, linux-coco@lists.linux.dev, 
-	Ashish Kalra <ashish.kalra@amd.com>, Andi Kleen <ak@linux.intel.com>, 
-	Adam Dunlap <acdunlap@google.com>, Peter Gonda <pgonda@google.com>, Jacob Xu <jacobhxu@google.com>, 
-	Sidharth Telang <sidtelang@google.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Wed, 17 Jan 2024 08:45:59 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARUOCnNNH3s4XigT7-nDMHv0gWUQnk9H7ZVov0GrvAfRQ@mail.gmail.com>
+Message-ID: <CAK7LNARUOCnNNH3s4XigT7-nDMHv0gWUQnk9H7ZVov0GrvAfRQ@mail.gmail.com>
+Subject: [GIT PULL] Kbuild updates for v6.8-rc1
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 15, 2024 at 7:53=E2=80=AFAM Tom Lendacky <thomas.lendacky@amd.c=
-om> wrote:
->
-> On 1/11/24 16:36, Kevin Loughlin wrote:
-> >
-> > @@ -61,33 +66,34 @@ static __maybe_unused __always_inline bool amd_cc_p=
-latform_vtom(enum cc_attr att
-> >   static bool noinstr amd_cc_platform_has(enum cc_attr attr)
-> >   {
-> >   #ifdef CONFIG_AMD_MEM_ENCRYPT
-> > +     const u64 sev_status_fixed_up =3D sev_get_status_fixup();
->
-> Why not also have a variable for sme_me_mask?
+Hello Linus,
 
-`sme_get_me_mask_fixup()` is only used on certain conditional paths in
-the calculation of the return value (therefore, a max of 1 times per
-invocation of `amd_cc_platform_has()`). As such, calling
-`sme_get_me_mask()` unconditionally at the beginning of the function
-would be unnecessary for some invocations of `amd_cc_platform_has()`.
-In contrast, the sev_status is needed on every invocation of
-`amd_cc_platform_has()`. Additionally, the `sev_get_status_fixup()`
-result is potentially used multiple times in the same invocation of
-`amd_cc_platform_has()`, motivating the use of a local variable.
 
-> > @@ -130,6 +130,7 @@ static unsigned long __head sme_postprocess_startup=
-(struct boot_params *bp, pmdv
-> >   {
-> >       unsigned long vaddr, vaddr_end;
-> >       int i;
-> > +     const u64 sme_me_mask_fixed_up =3D sme_get_me_mask_fixup();
->
-> Should be the first variable listed given the length of the line.
+Please pull Kbuild updates for v6.8.
+Thanks.
 
-I will incorporate this and all other stylistic changes that you
-mentioned in v3.
 
-> > @@ -110,8 +115,9 @@ static void __noreturn sev_es_terminate(unsigned in=
-t set, unsigned int reason)
-> >   static u64 get_hv_features(void)
-> >   {
-> >       u64 val;
-> > +     const u16 *ghcb_version_ptr =3D (const u16 *) GET_RIP_RELATIVE_PT=
-R(ghcb_version);
->
-> Is this one really needed? The ghcb_version variable isn't referenced
-> before fixup, right? It's referenced in both decompression and early boot=
-,
-> but I didn't think a fixup is needed.
 
-You're right; it looks like we do *not* need the fixup for
-ghcb_version in both instances that you identified. I will remove
-these particular fixups in v3.
 
-Thanks!
+The following changes since commit 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab=
+:
+
+  Linux 6.7-rc3 (2023-11-26 19:59:33 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
+tags/kbuild-v6.8
+
+for you to fetch changes up to 6185d32170b683abadddf1e68be998e24f3cc5de:
+
+  kbuild: deb-pkg: use debian/<package> for tmpdir (2024-01-10 20:39:47 +09=
+00)
+
+----------------------------------------------------------------
+Kbuild updates for v6.8
+
+ - Make Kconfig parse the input .config more precisely
+
+ - Support W=3Dc and W=3De options for Kconfig
+
+ - Set Kconfig int/hex symbols to zero if the 'default' property is
+   missing
+
+ - Add .editorconfig
+
+ - Add scripts/git.orderFile
+
+ - Add a script to detect backward-incompatible changes in UAPI headers
+
+ - Resolve the symlink passed to O=3D option properly
+
+ - Use the user-supplied mtime for all files in the builtin initramfs,
+   which provides better reproducible builds
+
+ - Fix the direct execution of debian/rules for Debian package builds
+
+ - Use build ID instead of the .gnu_debuglink section for the Debian dbg
+   package
+
+----------------------------------------------------------------
+Dmitrii Bundin (1):
+      kbuild: deb-pkg: apply short -R and -j options
+
+Dmitry Safonov (1):
+      gen_init_cpio: Apply mtime supplied by user to all file types
+
+John Moon (2):
+      check-uapi: Introduce check-uapi.sh
+      docs: dev-tools: Add UAPI checker documentation
+
+Leonardo Bras (1):
+      scripts: Introduce a default git.orderFile
+
+Markus Schneider-Pargmann (1):
+      kconfig: Use KCONFIG_CONFIG instead of .config
+
+Masahiro Yamada (43):
+      genksyms: remove the remnant of the -s option
+      genksyms: use getopt_long() unconditionally
+      kconfig: do not clear SYMBOL_DEF_USER when the value is out of range
+      kconfig: remove error check for xrealloc()
+      kconfig: require a space after '#' for valid input
+      kconfig: remove unused code for S_DEF_AUTO in conf_read_simple()
+      kconfig: deduplicate code in conf_read_simple()
+      kconfig: introduce getline_stripped() helper
+      kconfig: require an exact match for "is not set" to disable CONFIG op=
+tion
+      kconfig: massage the loop in conf_read_simple()
+      kbuild: remove the last use of old cmd_src_tar rule in packaging
+      kbuild: support W=3Dc and W=3De shorthands for Kconfig
+      scripts: clean up IA-64 code
+      kconfig: remove unneeded symbol_empty variable
+      kconfig: default to zero if int/hex symbol lacks default property
+      init: move THIS_MODULE from <linux/export.h> to <linux/init.h>
+      kbuild: deb-pkg: remove the fakeroot builds support
+      kbuild: determine base DTB by suffix
+      modpost: move __attribute__((format(printf, 2, 3))) to modpost.h
+      modpost: inform compilers that fatal() never returns
+      modpost: remove unneeded initializer in section_rel()
+      modpost: remove unreachable code after fatal()
+      sparc: vdso: clean up build artifacts in arch/sparc/vdso/
+      sparc: vdso: simplify obj-y addition
+      sparc: vdso: use $(addprefix ) instead of $(foreach )
+      kconfig: factor out common code shared by mconf and nconf
+      kconfig: squash menu_has_help() and menu_get_help()
+      kconfig: add include guard to lkc_proto.h
+      kconfig: remove unreachable printf()
+      kconfig: remove redundant NULL pointer check before free()
+      kbuild: resolve symlinks for O=3D properly
+      kbuild: deb-pkg: split debian/copyright from the mkdebian script
+      kbuild: deb-pkg: hard-code Build-Depends
+      kbuild: deb-pkg: factor out common Make options in debian/rules
+      kbuild: deb-pkg: squash scripts/package/deb-build-option to debian/ru=
+les
+      kbuild: deb-pkg: set DEB_* variables if debian/rules is directly exec=
+uted
+      kbuild: deb-pkg: allow to run debian/rules from output directory
+      kbuild: deb-pkg: remove unneeded '-f $srctree/Makefile' in debian/rul=
+es
+      kbuild: deb-pkg: use more debhelper commands in builddeb
+      kbuild: deb-pkg: use build ID instead of debug link for dbg package
+      kbuild: deb-pkg: do not search for 'scripts' directory under arch/
+      kbuild: deb-pkg: move 'make headers' to build-arch
+      kbuild: deb-pkg: use debian/<package> for tmpdir
+
+Petr Vorel (2):
+      kbuild: buildtar: Remove unused $dirs
+      kbuild: buildtar: always make modules_install
+
+Sergey Senozhatsky (1):
+      kconfig: WERROR unmet symbol dependency
+
+=C3=8D=C3=B1igo Huguet (1):
+      Add .editorconfig file for basic formatting
+
+ .editorconfig                          |  32 +++
+ .gitignore                             |   1 +
+ Documentation/dev-tools/checkuapi.rst  | 477
++++++++++++++++++++++++++++++++++++++++
+ Documentation/dev-tools/index.rst      |   1 +
+ Documentation/process/4.Coding.rst     |   4 +
+ Documentation/process/coding-style.rst |   4 +
+ Makefile                               |  23 +-
+ arch/sparc/vdso/Makefile               |  18 +-
+ include/linux/export.h                 |  18 --
+ include/linux/init.h                   |   7 +
+ scripts/Makefile.extrawarn             |   9 -
+ scripts/Makefile.lib                   |   4 +-
+ scripts/Makefile.package               |  28 +--
+ scripts/check-uapi.sh                  | 573
++++++++++++++++++++++++++++++++++++++++++++++++
+ scripts/checkstack.pl                  |   3 -
+ scripts/gdb/linux/tasks.py             |  15 +-
+ scripts/genksyms/genksyms.c            |  22 +-
+ scripts/git.orderFile                  |  42 ++++
+ scripts/head-object-list.txt           |   1 -
+ scripts/kconfig/Makefile               |  14 +-
+ scripts/kconfig/conf.c                 |   6 +
+ scripts/kconfig/confdata.c             | 169 +++++++-------
+ scripts/kconfig/expr.c                 |   1 -
+ scripts/kconfig/lkc.h                  |   2 -
+ scripts/kconfig/lkc_proto.h            |   7 +
+ scripts/kconfig/mconf.c                |  56 +----
+ scripts/kconfig/menu.c                 |  17 +-
+ scripts/kconfig/mnconf-common.c        |  53 +++++
+ scripts/kconfig/mnconf-common.h        |  18 ++
+ scripts/kconfig/nconf.c                |  55 +----
+ scripts/kconfig/symbol.c               |  37 +--
+ scripts/kconfig/util.c                 |   3 +-
+ scripts/mod/modpost.c                  |  17 +-
+ scripts/mod/modpost.h                  |   8 +-
+ scripts/package/builddeb               | 104 +++------
+ scripts/package/buildtar               |   8 +-
+ scripts/package/deb-build-option       |  14 --
+ scripts/package/debian/copyright       |  16 ++
+ scripts/package/debian/rules           |  35 ++-
+ scripts/package/install-extmod-build   |   2 +-
+ scripts/package/kernel.spec            |   6 -
+ scripts/package/mkdebian               |  28 +--
+ scripts/package/snapcraft.template     |   2 +-
+ scripts/recordmcount.c                 |   1 -
+ scripts/recordmcount.pl                |   7 -
+ scripts/xz_wrap.sh                     |   1 -
+ usr/gen_init_cpio.c                    |  33 ++-
+ 47 files changed, 1490 insertions(+), 512 deletions(-)
+ create mode 100644 .editorconfig
+ create mode 100644 Documentation/dev-tools/checkuapi.rst
+ create mode 100755 scripts/check-uapi.sh
+ create mode 100644 scripts/git.orderFile
+ create mode 100644 scripts/kconfig/mnconf-common.c
+ create mode 100644 scripts/kconfig/mnconf-common.h
+ delete mode 100755 scripts/package/deb-build-option
+ create mode 100644 scripts/package/debian/copyright
+
+
+
+Best Regards
+Masahiro Yamada
 
