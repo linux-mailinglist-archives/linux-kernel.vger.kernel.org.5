@@ -1,164 +1,133 @@
-Return-Path: <linux-kernel+bounces-27564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2733482F24A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:19:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC04482F24B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:20:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1C3A28611E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:19:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47ACC1F244FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:20:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 245891C6B7;
-	Tue, 16 Jan 2024 16:19:21 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A146F1CA86;
+	Tue, 16 Jan 2024 16:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LejxPcOi"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 419631C6A1
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 16:19:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3606d19097dso91108855ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 08:19:19 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B9A31CA82
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 16:19:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705421995;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=VtfdvXRNB17p3c2PDVPPiJ8T0g2/8Q3uhYEDheCyPqA=;
+	b=LejxPcOiFzzZ1/2JvUn98cN0TZGZQ8C9tUMe9DaKcs6WRcEbSct8jDdS3a5myH+AfQuC8x
+	09/BbZhN52mGGz0Pl3Ch2yxv6GOFT5iKUyx+w0YsVRCM17EkVyYuqdwaIWUKZNMVhe5H1v
+	k8upHfMdq2ltRtJualXenYc2o6BUW3o=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-316-Sjh_dcLCPwCIjArwiTO_Xg-1; Tue, 16 Jan 2024 11:19:53 -0500
+X-MC-Unique: Sjh_dcLCPwCIjArwiTO_Xg-1
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-68158f3b169so54436036d6.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 08:19:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705421958; x=1706026758;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Xx2NiXfEC2f9ShTuPE2ICSF2WxhDPgmMA0aZZzN7CeY=;
-        b=ipp6J8ShTYqXmoch8pg8Zib/sMepdpqTvQLnuQKX5I8oM0JAez+uD0IN7m08AmajUg
-         pQbbfKKqxXEVg8F+HB0ZInCvV4zOTziaFpZSHd+c6j8rbzSem7E6k9QtNHeC8Lfsl1HQ
-         vC9nXunGcISn5oC+1clu9CWYIucLHceOInPFb/W2FhZ8KGiqUd/fE9+oGYF/E6dKag8n
-         +mDtl1MOSmacG5mVoP9ah4GedvP5OPtHaseR6W/SE63v4KK/d7qxe9vofZLVCFMeG38w
-         BMYZyWLcTNjzjHEspKjj8aOYaj9r83UwKRPeQxPShqd5XYSIxWLFQng8csPG4sC0bn09
-         OKfw==
-X-Gm-Message-State: AOJu0YxZI3cWWD/JHFl5c2ixAPYLqkGRwKP0eMKhKfR+IMCgsEt4TdR8
-	kp04TmukwG/SdGj+wnCybfkK8ocYn2sdcRuRVT1Ks3UcGpco
-X-Google-Smtp-Source: AGHT+IGPXIwfcx+ZEzWEl/c87WEvLS1rOC2xBs8/tlG/IpXlFdlUU8PqTyvIuo3HXMRs9HjU3v5toRNTOexomQETgrSp6qHTErtk
+        d=1e100.net; s=20230601; t=1705421993; x=1706026793;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VtfdvXRNB17p3c2PDVPPiJ8T0g2/8Q3uhYEDheCyPqA=;
+        b=vta8eqQs0hNd7s+OvBPgdMiAAFeadS5eOvtXOQyNo1NnL/5JLXQFs/4RyiM7aDRbhR
+         tq2fPzLWm5XmzKfTaSQ4ML42DE45xSW+QGvLHf0vGlDga9M8SnSLOW6kAhb7/3rCYkr2
+         0xc1vZ2XTpTk9YKLaLlwNpGkmKllzpPhwih7ztLOKz8gz0zof4Ch4RKzotBbtPb9QgoV
+         x37dT7No0kZqxQ+0N5GHpgMxosgcUZO0IIptD73LBzF9V8Q5j6GnLyqEHMXcKUTepyRx
+         rlqEj7eGulgobWBV/EYs0QAbI+nM/EcGQSXzTQVtssPfpat93RUrD/snVSZ4a1fx4Y0c
+         63bQ==
+X-Gm-Message-State: AOJu0YzVVMj6HtAa9UbAMDYRZ2duLbZqjoBR+iKfu61WJt0zewG5QSOk
+	YCCHdOY5CM5aPzSNoYMC6DJVYAUz9qmoMzyeYVu7MSZN33wYDUIjnb8SepMQGBa2tUm9nhMrrYt
+	UjqPYBjJph5uHkh4R7vRTDMSegJmJVAzj
+X-Received: by 2002:a05:622a:5ce:b0:429:f4f7:33ee with SMTP id d14-20020a05622a05ce00b00429f4f733eemr3696647qtb.54.1705421993069;
+        Tue, 16 Jan 2024 08:19:53 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IENadD0GDBCnyUuQH24uStLAQbwqSZeGZVdRC9IrdFUPT+/XFipqeut+E7wdQxg//leX/Zd8w==
+X-Received: by 2002:a05:622a:5ce:b0:429:f4f7:33ee with SMTP id d14-20020a05622a05ce00b00429f4f733eemr3696633qtb.54.1705421992776;
+        Tue, 16 Jan 2024 08:19:52 -0800 (PST)
+Received: from localhost.localdomain ([151.29.130.8])
+        by smtp.gmail.com with ESMTPSA id fd10-20020a05622a4d0a00b00429d3257dd6sm3809166qtb.45.2024.01.16.08.19.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jan 2024 08:19:52 -0800 (PST)
+From: Juri Lelli <juri.lelli@redhat.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
+	Aaron Tomlin <atomlin@atomlin.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Waiman Long <longman@redhat.com>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 0/4] Fix handling of rescuers affinity
+Date: Tue, 16 Jan 2024 17:19:25 +0100
+Message-ID: <20240116161929.232885-1-juri.lelli@redhat.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:12ea:b0:361:9322:6ae0 with SMTP id
- l10-20020a056e0212ea00b0036193226ae0mr27848iln.6.1705421958506; Tue, 16 Jan
- 2024 08:19:18 -0800 (PST)
-Date: Tue, 16 Jan 2024 08:19:18 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000007728e060f127eaf@google.com>
-Subject: [syzbot] [exfat?] kernel BUG in iov_iter_revert
-From: syzbot <syzbot+fd404f6b03a58e8bc403@syzkaller.appspotmail.com>
-To: linkinjeon@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, sj1557.seo@samsung.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
 Hello,
 
-syzbot found the following issue on:
+Recently I've been pointed at the fact that workqueue rescuers seem not
+to follow unbound workqueues cpumask changes. This small series is a
+first stab at possibly fixing what I considered to be different from
+what I expected (it might very well be the case that my expectations are
+wrong :). Long story short, it seems to me that we currently have
+several cases where a change of the general unbound cpumask or a change
+of the per-workqueue cpumask (for WQ_SYSFS workqueues) is not reflected
+into the corresponding rescuer affinity (if a rescuer is present).
 
-HEAD commit:    052d534373b7 Merge tag 'exfat-for-6.8-rc1' of git://git.ke..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=108ca8b3e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7c8840a4a09eab8
-dashboard link: https://syzkaller.appspot.com/bug?extid=fd404f6b03a58e8bc403
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1558210be80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14d39debe80000
+In the following:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/b1b0ffd73481/disk-052d5343.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c25614b900ba/vmlinux-052d5343.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/7dd1842e2ad4/bzImage-052d5343.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/291ad1624ec1/mount_3.gz
+ Patch 01/04 - Adds debug information to wq_dump.py script so that we
+               can more easily check workqueues and rescuers cpumasks
+       02/04 - Fixes cpumask discrepancies when rescuers are created
+       03/04 - Streamlines behavior of general unbound vs. WQ_SYSFS
+               cpumask changes
+       04/04 - Makes sure existing rescuers affinity follows their
+               workqueue cpumask changes
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fd404f6b03a58e8bc403@syzkaller.appspotmail.com
+Please take a look, I'm all for feedback and better understanding of the
+details I'm certainly missing.
 
-------------[ cut here ]------------
-kernel BUG at lib/iov_iter.c:582!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 5043 Comm: syz-executor166 Not tainted 6.7.0-syzkaller-09928-g052d534373b7 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-RIP: 0010:iov_iter_revert lib/iov_iter.c:582 [inline]
-RIP: 0010:iov_iter_revert+0x328/0x360 lib/iov_iter.c:567
-Code: 8e 94 78 fd e9 8f fd ff ff e8 e4 94 78 fd e9 de fe ff ff e8 ba 94 78 fd eb a2 e8 d3 94 78 fd e9 12 fe ff ff e8 b9 8c 21 fd 90 <0f> 0b e8 c1 94 78 fd e9 23 fe ff ff e8 b7 94 78 fd e9 64 fe ff ff
-RSP: 0018:ffffc9000337f9e0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 00000000001bca00 RCX: ffffffff84656a77
-RDX: ffff888019313b80 RSI: ffffffff84656c97 RDI: 0000000000000001
-RBP: ffffc9000337fb30 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: fffffffffffffdef R14: 0000000000000000 R15: ffff888047da8740
-FS:  0000555555c9a380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000056518e8170a8 CR3: 0000000048309000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- exfat_direct_IO+0x320/0x510 fs/exfat/inode.c:538
- generic_file_read_iter+0x1dd/0x450 mm/filemap.c:2759
- call_read_iter include/linux/fs.h:2079 [inline]
- aio_read+0x318/0x4d0 fs/aio.c:1597
- __io_submit_one fs/aio.c:1998 [inline]
- io_submit_one+0x1480/0x1de0 fs/aio.c:2047
- __do_sys_io_submit fs/aio.c:2106 [inline]
- __se_sys_io_submit fs/aio.c:2076 [inline]
- __x64_sys_io_submit+0x1c3/0x350 fs/aio.c:2076
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f6eb9491c79
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffdb9c8bf78 EFLAGS: 00000246 ORIG_RAX: 00000000000000d1
-RAX: ffffffffffffffda RBX: 00007ffdb9c8bf80 RCX: 00007f6eb9491c79
-RDX: 0000000020000540 RSI: 0000000000003f0a RDI: 00007f6eb944a000
-RBP: 00007f6eb9506610 R08: 65732f636f72702f R09: 65732f636f72702f
-R10: 65732f636f72702f R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffdb9c8c1b8 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:iov_iter_revert lib/iov_iter.c:582 [inline]
-RIP: 0010:iov_iter_revert+0x328/0x360 lib/iov_iter.c:567
-Code: 8e 94 78 fd e9 8f fd ff ff e8 e4 94 78 fd e9 de fe ff ff e8 ba 94 78 fd eb a2 e8 d3 94 78 fd e9 12 fe ff ff e8 b9 8c 21 fd 90 <0f> 0b e8 c1 94 78 fd e9 23 fe ff ff e8 b7 94 78 fd e9 64 fe ff ff
-RSP: 0018:ffffc9000337f9e0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 00000000001bca00 RCX: ffffffff84656a77
-RDX: ffff888019313b80 RSI: ffffffff84656c97 RDI: 0000000000000001
-RBP: ffffc9000337fb30 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: fffffffffffffdef R14: 0000000000000000 R15: ffff888047da8740
-FS:  0000555555c9a380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f6eb944a000 CR3: 0000000048309000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+For additional context, a related discussion can be found at
 
+https://lore.kernel.org/lkml/um77hym4t6zyypfbhwbaeqxpfdzc657oa7vgowdfah7cuctjak@pexots3mfb24/
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Branch for testing available at
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+git@github.com:jlelli/linux.git workqueue/rescuers-cpumask
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Best,
+Juri
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Juri Lelli (4):
+  workqueue: Add rescuers printing to wq_dump.py
+  kernel/workqueue: Bind rescuer to unbound cpumask for WQ_UNBOUND
+  kernel/workqueue: Distinguish between general unbound and WQ_SYSFS
+    cpumask changes
+  kernel/workqueue: Let rescuers follow unbound wq cpumask changes
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+ kernel/workqueue.c         | 28 +++++++++++++++++++++-------
+ tools/workqueue/wq_dump.py | 29 +++++++++++++++++++++++++++++
+ 2 files changed, 50 insertions(+), 7 deletions(-)
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+-- 
+2.43.0
 
-If you want to undo deduplication, reply with:
-#syz undup
 
