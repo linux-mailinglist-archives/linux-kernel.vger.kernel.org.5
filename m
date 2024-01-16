@@ -1,61 +1,64 @@
-Return-Path: <linux-kernel+bounces-27818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 980C682F656
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:57:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3617182F659
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:57:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 322B0282C19
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:57:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C13CD1F23546
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:57:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1120200C3;
-	Tue, 16 Jan 2024 19:44:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED3DD2E645;
+	Tue, 16 Jan 2024 19:44:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eeiduyn4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IpdHV8Bh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B5B02E3F5;
-	Tue, 16 Jan 2024 19:44:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34EA22E62F;
+	Tue, 16 Jan 2024 19:44:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434274; cv=none; b=KFEX9aCzAlULFwEFu2B/i+8cTFyMDYbXmgBZggGER2v5ARAHYfF92opiW29KOUe7ey+aY5c8+Sk5kV3pWIFWDHqr8LSCE22VtyweMwRfKjMsGkV6MsomnByhtupRBNeBQW7V/oeOrS8leJ6GVCb6+UimWHk6yLMVCSduSI87XqY=
+	t=1705434276; cv=none; b=kSjjJo4QJNxzzObYMwz3xyuf6ZMkwi/b0wgAoNXGrxALMeSspDXIUWMYh5QQeJU5Adw7jJhTnvYT5Oe2F7NtmZWF4fNmbTfYZ5xJjsBN4tn8vXm/PaZd6zWKy6bYdyGPWEMT4FD3a8aBMUuUlRIcWa7kShnXlxr0NC5fI3+Xm6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434274; c=relaxed/simple;
-	bh=HInhuxAfFhc5lXJaCJf0TusmapJy+bd2OP1bhgf/c4s=;
+	s=arc-20240116; t=1705434276; c=relaxed/simple;
+	bh=2wSd7Pw557To/U/qMdiCZPjLJb0oe6gIifgwpckOdBM=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=elWM0H3AzAL1kpFj7VvJoYXbwQIg7GWi6HI45+Txf8PZ60jNyefllShWTk8AwvI8FF0YomyM8G9/dMOHjLsVumF2bPKNrLuPokck0ojzaTXgOWtBr7+MUdnqzxBc3GTzBn7D/pw0hyxJuT3KtaRJATClcVwmsMqAWbo/hITaZ8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eeiduyn4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7DFDC433B1;
-	Tue, 16 Jan 2024 19:44:32 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=mbpL+9cJVtaaLDkYrU22ph3X8avaB9S7LwAE4A2rbEqIL+9c6y2XGy27L8WAvj5bUQL7Fg3mKlDqqXUIYPT2aY3Qfqv9x2NydnDTNDZgfDAfaQDq6q7/MCFzP+3DNVntmmk9Wo64w9KctQaLixeEP8jl7h7n8mbq/GziolZCMcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IpdHV8Bh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FEF8C43394;
+	Tue, 16 Jan 2024 19:44:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434274;
-	bh=HInhuxAfFhc5lXJaCJf0TusmapJy+bd2OP1bhgf/c4s=;
+	s=k20201202; t=1705434276;
+	bh=2wSd7Pw557To/U/qMdiCZPjLJb0oe6gIifgwpckOdBM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eeiduyn45+/AqB/6YXazaNKv6Om0aaIDNjoJ1W/FQDMHt4jbZ6rtOeG5DvWPGkkby
-	 FXzcC8rWPMcRkqtOXEUWDobgH03MGqHUZ85XFdAvcBzdjIFWutXoykfz6rBAADuTnF
-	 TZUvC+QTCv40t4q9fgIiOwtVu8LcfzRFK9s3NSy/C+pBv/dgG8Tv1mjQ1QpjlV5FBw
-	 +b55zf0wAIOTQMS6ysgp53dkI7NzILClHHySYBCJ72sQ1jd+ZIW2qxmzpVc+12YAui
-	 a6vmePXoof37aHUUPKbX11V9wSjkL6v3wr/L3d8HURPOFqr88QM4x2vnMqUWlbHaWB
-	 wMSzDw0hlhkjQ==
+	b=IpdHV8BhVrFFt/+Wb55pBI5LD+FDj2oc2cDsAp1YT2gitXzRl8jeRdHPkA3UF/CaA
+	 zGUwHD1rXBrkv5SCPkMO2zrUqztqTnJWNZc/+f6nQ5Nm3zbD7wQV8ytLIQ8HGCiN6C
+	 6Q6vrNd0921uFL4r7/vbfmnDiOz4yG43GDlpZJzz+c3EHU8K0TV8Fq4VMoEl5dAcFg
+	 +zor2JTxZfWp0Jc8AFqXztT4paJ2XRlybK4z5rcBM22kGaTErRy/969K9tFFlkNURj
+	 YbGeXJ/UK3n/6ZKLOljoWbQ+aorwkyQ1Ueyt3UDcfHTq+NnVlGE73wJ8vC7UqiBtDb
+	 /HLDXXjUq8JdA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Nia Espera <nespera@igalia.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
+Cc: MeiChia Chiu <meichia.chiu@mediatek.com>,
+	Shayne Chen <shayne.chen@mediatek.com>,
+	Felix Fietkau <nbd@nbd.name>,
 	Sasha Levin <sashal@kernel.org>,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 047/108] arm64: dts: qcom: sm8350: Fix remoteproc interrupt type
-Date: Tue, 16 Jan 2024 14:39:13 -0500
-Message-ID: <20240116194225.250921-47-sashal@kernel.org>
+	lorenzo@kernel.org,
+	ryder.lee@mediatek.com,
+	kvalo@kernel.org,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	linux-wireless@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.7 048/108] wifi: mt76: connac: fix EHT phy mode check
+Date: Tue, 16 Jan 2024 14:39:14 -0500
+Message-ID: <20240116194225.250921-48-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194225.250921-1-sashal@kernel.org>
 References: <20240116194225.250921-1-sashal@kernel.org>
@@ -70,64 +73,35 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7
 Content-Transfer-Encoding: 8bit
 
-From: Nia Espera <nespera@igalia.com>
+From: MeiChia Chiu <meichia.chiu@mediatek.com>
 
-[ Upstream commit 54ee322f845c7f25fbf6e43e11147b6cae8eff56 ]
+[ Upstream commit 2c2f50bf6407e1fd43a1a257916aeaa5ffdacd6c ]
 
-In a similar vein to
-https://lore.kernel.org/lkml/20220530080842.37024-3-manivannan.sadhasivam@linaro.org/,
-the remote processors on sm8350 fail to initialize with the 'correct'
-(i.e., specified in downstream) IRQ type. Change this to EDGE_RISING.
+Add a BSS eht_support check before returning EHT phy mode. Without this
+patch, there might be an inconsistency where the softmac layer thinks
+the BSS is in HE mode, while the FW thinks it is in EHT mode.
 
-Signed-off-by: Nia Espera <nespera@igalia.com>
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Link: https://lore.kernel.org/r/20231111-nia-sm8350-for-upstream-v4-4-3a638b02eea5@igalia.com
-Signed-off-by: Bjorn Andersson <andersson@kernel.org>
+Signed-off-by: MeiChia Chiu <meichia.chiu@mediatek.com>
+Signed-off-by: Shayne Chen <shayne.chen@mediatek.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sm8350.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-index b46236235b7f..23ee2fb5abcc 100644
---- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-@@ -2021,7 +2021,7 @@ mpss: remoteproc@4080000 {
- 			compatible = "qcom,sm8350-mpss-pas";
- 			reg = <0x0 0x04080000 0x0 0x4040>;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
+index ae6bf3c968df..b475555097ff 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
++++ b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
+@@ -1359,7 +1359,7 @@ u8 mt76_connac_get_phy_mode_ext(struct mt76_phy *phy, struct ieee80211_vif *vif,
+ 	sband = phy->hw->wiphy->bands[band];
+ 	eht_cap = ieee80211_get_eht_iftype_cap(sband, vif->type);
  
--			interrupts-extended = <&intc GIC_SPI 264 IRQ_TYPE_LEVEL_HIGH>,
-+			interrupts-extended = <&intc GIC_SPI 264 IRQ_TYPE_EDGE_RISING>,
- 					      <&smp2p_modem_in 0 IRQ_TYPE_EDGE_RISING>,
- 					      <&smp2p_modem_in 1 IRQ_TYPE_EDGE_RISING>,
- 					      <&smp2p_modem_in 2 IRQ_TYPE_EDGE_RISING>,
-@@ -2063,7 +2063,7 @@ slpi: remoteproc@5c00000 {
- 			compatible = "qcom,sm8350-slpi-pas";
- 			reg = <0 0x05c00000 0 0x4000>;
+-	if (!eht_cap || !eht_cap->has_eht)
++	if (!eht_cap || !eht_cap->has_eht || !vif->bss_conf.eht_support)
+ 		return mode;
  
--			interrupts-extended = <&pdc 9 IRQ_TYPE_LEVEL_HIGH>,
-+			interrupts-extended = <&pdc 9 IRQ_TYPE_EDGE_RISING>,
- 					      <&smp2p_slpi_in 0 IRQ_TYPE_EDGE_RISING>,
- 					      <&smp2p_slpi_in 1 IRQ_TYPE_EDGE_RISING>,
- 					      <&smp2p_slpi_in 2 IRQ_TYPE_EDGE_RISING>,
-@@ -3207,7 +3207,7 @@ adsp: remoteproc@17300000 {
- 			compatible = "qcom,sm8350-adsp-pas";
- 			reg = <0 0x17300000 0 0x100>;
- 
--			interrupts-extended = <&pdc 6 IRQ_TYPE_LEVEL_HIGH>,
-+			interrupts-extended = <&pdc 6 IRQ_TYPE_EDGE_RISING>,
- 					      <&smp2p_adsp_in 0 IRQ_TYPE_EDGE_RISING>,
- 					      <&smp2p_adsp_in 1 IRQ_TYPE_EDGE_RISING>,
- 					      <&smp2p_adsp_in 2 IRQ_TYPE_EDGE_RISING>,
-@@ -3512,7 +3512,7 @@ cdsp: remoteproc@98900000 {
- 			compatible = "qcom,sm8350-cdsp-pas";
- 			reg = <0 0x98900000 0 0x1400000>;
- 
--			interrupts-extended = <&intc GIC_SPI 578 IRQ_TYPE_LEVEL_HIGH>,
-+			interrupts-extended = <&intc GIC_SPI 578 IRQ_TYPE_EDGE_RISING>,
- 					      <&smp2p_cdsp_in 0 IRQ_TYPE_EDGE_RISING>,
- 					      <&smp2p_cdsp_in 1 IRQ_TYPE_EDGE_RISING>,
- 					      <&smp2p_cdsp_in 2 IRQ_TYPE_EDGE_RISING>,
+ 	switch (band) {
 -- 
 2.43.0
 
