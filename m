@@ -1,161 +1,350 @@
-Return-Path: <linux-kernel+bounces-28287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12EB382FC91
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:23:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 161E982FC96
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:24:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4B091F2AD24
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:23:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EEB61F2B4CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:23:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 376B92D791;
-	Tue, 16 Jan 2024 21:15:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=fiona.klute@gmx.de header.b="agA+JFZ1"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 427862E40F;
+	Tue, 16 Jan 2024 21:16:52 +0000 (UTC)
+Received: from fgw22-7.mail.saunalahti.fi (fgw22-7.mail.saunalahti.fi [62.142.5.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E58B91BDFF;
-	Tue, 16 Jan 2024 21:15:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94D822D7A5
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 21:16:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.83
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705439714; cv=none; b=dyqOUuykEJktBsW9CScyARKZvuvSO9I+U6Ni8Y7Fp9FKw4Li9n5zw9l2Q8l2oFkHgAKnHxMSxgmOAuG5mnkniu4T3/Lrrc57vUEvDMN7N9HfsuEBAU4+jI/AElHVJb2dkwmyLmkQ1xfK1PThNuZ2qptzwmZ/4aSzBGIwzUoxdDs=
+	t=1705439811; cv=none; b=u2pQ56xDftGC7BipV5r7XZ6+4s5OwxK+v0cTIKmnisYDni/dGEzKVEOzFPpVvbkuuKClI6WM3t6x47JOHi2Za9zHOEBQKufdyfY80u3/Yf0iQoc5yIKO8GuUNSGBupHK+xuE6L8K+7hhFILF7gjpE/kB8MhJN7OK8KvzmXlv5CI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705439714; c=relaxed/simple;
-	bh=C2+za83C8Vy97mXGWtsv2kboAABymcwoRKxexre2OqI=;
-	h=DKIM-Signature:X-UI-Sender-Class:Received:Message-ID:Date:
-	 MIME-Version:User-Agent:Subject:To:Cc:References:Content-Language:
-	 From:Autocrypt:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 X-Provags-ID:X-Spam-Flag:UI-OutboundReport; b=s1iB4MqJFQg7Am7dJ9Zi7uY5vuBttSC5P+Lm04BJRTfMKPVwh7rJDSlqCgEtv+SflZf3AB/at5pVZzJZFoyNj0aBH2oZ4ZqJ1Sh2tjgDaAaDd9aOZGdh5uLxoGUWrDlLHvoH2m4/VwBqU4U+xOvqIMqEVcmehESVOxUs57gbb50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=fiona.klute@gmx.de header.b=agA+JFZ1; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1705439695; x=1706044495; i=fiona.klute@gmx.de;
-	bh=C2+za83C8Vy97mXGWtsv2kboAABymcwoRKxexre2OqI=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=agA+JFZ1l4mFGWAbX8XqZt9NXpUM1Wf+M2O6SEqFRWV9rPLNYfZxcZ8Phm+6Qn7D
-	 C1avn3N7rvx0uPQcWqjW7zeqZWhIhFYZVSsH6e+OmaZ5bG8LntZgaDtZCnvlS1OM1
-	 5vIaoeG/sTWLHV8wie5S8+Q+imJsG2VvZzozAKI250m4kBTlzgzfNrNkbadbHtrEB
-	 dOD5uIga07zRl7qWDuXefxOLpQjjKEjQS9Oej9RvZVwQNR9158FdsvIYy5oFI45Jp
-	 skKmbd/qq1v7RGndI30hymXAyRYu3gfP6gLhn+WA5s4GSdWFifS6Vw1RMozsrRsrD
-	 FZ6wehhPlnZycucMNw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.7.2] ([85.22.132.29]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MLR1f-1rh6dg2M8B-00ITEs; Tue, 16
- Jan 2024 22:14:55 +0100
-Message-ID: <3f60d01d-b047-4e5d-a8d8-1debe3466629@gmx.de>
-Date: Tue, 16 Jan 2024 22:14:53 +0100
+	s=arc-20240116; t=1705439811; c=relaxed/simple;
+	bh=xBHW4qYf3NcxxENUHmwdw0yhtGOW1i9//29Q4Cdd+0M=;
+	h=Received:From:Date:To:Cc:Subject:Message-ID:References:
+	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=qwYg8h17+sVV+jzBIu38R44oQWxZpu86I/BOCkiXg7oEQ1cqKsyZCUna7yGvSjgeVCDLLLMkbqaXuD/2GC22W8avgTCn0eIQ8mhE66vV/e+uj/Dvbgwp3Q5mY/t99bPvWknrTOfbCul8O2474ZTiMqW/YRVse5DpFnVHOVq3fJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+Received: from localhost (88-113-24-108.elisa-laajakaista.fi [88.113.24.108])
+	by fgw22.mail.saunalahti.fi (Halon) with ESMTP
+	id 655d8f3c-b4b4-11ee-a9de-005056bdf889;
+	Tue, 16 Jan 2024 23:15:39 +0200 (EET)
+From: andy.shevchenko@gmail.com
+Date: Tue, 16 Jan 2024 23:15:38 +0200
+To: Philipp Stanner <pstanner@redhat.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, Hans de Goede <hdegoede@redhat.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Sam Ravnborg <sam@ravnborg.org>, dakr@redhat.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 01/10] pci: add new set of devres functions
+Message-ID: <Zabx-u-R-VsYIeIz@surfacebook.localdomain>
+References: <20240115144655.32046-2-pstanner@redhat.com>
+ <20240115144655.32046-3-pstanner@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Front camera on pinephone
-To: Pavel Machek <pavel@ucw.cz>, phone-devel@vger.kernel.org,
- icenowy@aosc.xyz, martijn@brixit.nl, megous@megous.com,
- kernel list <linux-kernel@vger.kernel.org>
-Cc: alain.volmat@foss.st.com, sakari.ailus@linux.intel.com,
- linux-media@vger.kernel.org
-References: <ZaY44AHISMIh8fHM@duo.ucw.cz>
-Content-Language: de-DE, en-US
-From: Fiona Klute <fiona.klute@gmx.de>
-Autocrypt: addr=fiona.klute@gmx.de; keydata=
- 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
-In-Reply-To: <ZaY44AHISMIh8fHM@duo.ucw.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:8Hln6Gm6THNL1D2MgZysJP3j89HFAms0xQStxEXyqDnEutr4Qsm
- Pa48/UyI/Ml/DKSxCy4UU1o7j0AuEHYfxWd0Zjz0TCfcCbEXTbnZ0auwSg4VV/0plTRPdhL
- pyVYTPcm4T5P8Y9Qz7IAezWMvXxguqNy/vu/SykYwo1B9WXbu+EI8rn3j8JntZpjY6JF0gx
- xswXbVDJy8riCnkW7d21A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:LeUNXm4kJDA=;k5vk5utJUQ+IpGgAIiyPl+UCtvw
- LKm4S1hlnlDrw1bCt4k8VUpVIuLaBqOhQ9CaG1TF7H6MKIZxvRR5Gt9bSfIeaRO8RGRf+PW5b
- plcvSL1vS8rWLB/w1jY081moWwM3SJMrdUCT463t9P9LWUWFo6SZxjIZJ/+mEjeiYGGvSYDK0
- +TJMs+JHMBPfAflb7HMaG9Zf+FFdbrFDUB7gdgOti/KMluT8vcy5f4gSeymEvhS6nCLso/KHo
- 77xrqq1lthL8TzmDYxc53HMW0Pf3SUdfjVzt1i0hhbFSKwyR+3A3Xgyc8wKLUK8lSA9HC0//o
- rNJQKfuyt4KedIMEyCajPVgc/XYnaAzIrJBLj8Oi2hMrv6skcNtKQ/v18QxYU0+t0f51UlbGn
- qUXknfnNWIWgDIjpMzTP6KFTLAPjDbno70vNBsw8dhQbLAb+NkfjQW85HVyRpFFL46YO7oBrs
- 4kR3mZo0HEQuvVbGnUHIoOFzJS+WgC05yga4Yuo6FWEjjPRNeNG6ActD81Mj5JPW+nVa+PVfq
- Kjuw9QYQywe2LPQHXX15g0sCrQgmYOcZnWNpJKb5DzS/Bu3ZW1eNNrbikaaM8CCRZBAUquun/
- xKBm2JdEQPmAhA+hmDD/UtFkI1Vuer9dFFtLRX97g8bid6zQ89c44hFP5xTMCKaiBiLi/S0J5
- J9pi/GdSnnhjCJvPSRue89cUOoK+0mbiC4OQJndlH4NGEDm7vwO3vBZ/Qo+4GaAMNIo2Y0um8
- okaQzq/4Fhgl25ASgFKLNyr0oYwN4UKPmKdT/ZzT8YEXj5mdifZje+TjoJ6JcgA6FYNreQONQ
- 50E6j1jU4olVBJT9HzQ9+XTavcWhQUeXZd/7wftiMY3GzapBmUZuZi8PiFtM6zIlCon+Ilvoc
- UpRLeIBzDb4bMxDdfD/1xZQDx9MyqaCh/QhEJHQap8AkfoBTnI2vDIiG1CzGg7INEIC3wDYTk
- ug9gLA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240115144655.32046-3-pstanner@redhat.com>
 
-Am 16.01.24 um 09:05 schrieb Pavel Machek:
-> [If you have hints how to set-up pinephone for kernel development,
-> that would be welcome. Currently I have mobian with rather old 6.1
-> kernel on it, and lack of keyboard/ethernet makes things tricky.]
+Mon, Jan 15, 2024 at 03:46:12PM +0100, Philipp Stanner kirjoitti:
+> PCI's devres API is not extensible to ranged mappings and has
+> bug-provoking features. Improve that by providing better alternatives.
+> 
+> When the original devres API for PCI was implemented, priority was given
+> to the creation of a set of "pural functions" such as
+> pcim_request_regions(). These functions have bit masks as parameters to
+> specify which BARs shall get mapped. Most users, however, only use those
+> to mapp 1-3 BARs.
+> A complete set of "singular functions" does not exist.
+> 
+> As functions mapping / requesting multiple BARs at once have (almost) no
+> mechanism in C to return the resources to the caller of the plural
+> function, the devres API utilizes the iomap-table administrated by the
+> function pcim_iomap_table().
+> 
+> The entire PCI devres implementation was strongly tied to that table
+> which only allows for mapping whole, complete BARs, as the BAR's index
+> is used as table index. Consequently, it's not possible to, e.g., have a
+> pcim_iomap_range() function with that mechanism.
+> 
+> An additional problem is that pci-devres has been ipmlemented in a sort
+> of "hybrid-mode": Some unmanaged functions have managed counterparts
+> (e.g.: pci_iomap() <-> pcim_iomap()), making their managed nature
+> obvious to the programmer. However, the region-request functions in
+> pci.c, prefixed with pci_, behave either managed or unmanaged, depending
+> on whether pci_enable_device() or pcim_enable_device() has been called
+> in advance.
+> 
+> This hybrid API is confusing and should be more cleanly separated by
+> providing always-managed functions prefixed with pcim_.
+> 
+> Thus, the existing devres API is not desirable because:
+> 	a) The vast majority of the users of the plural functions only
+> 	   ever sets a single bit in the bit mask, consequently making
+> 	   them singular functions anyways.
+> 	b) There is no mechanism to request / iomap only part of a BAR.
+> 	c) The iomap-table mechanism is over-engineered, complicated and
+> 	   can by definition not perform bounds checks, thus, provoking
+> 	   memory faults: pcim_iomap_table(pdev)[42]
+> 	d) region-request functions being sometimes managed and
+> 	   sometimes not is bug-provoking.
+> 
+> Implement a set of singular pcim_ functions that use devres directly
+> and bypass the legacy iomap table mechanism.
+> Add devres.c to driver-api documentation.
 
-So far I'm mostly using "pmbootstrap build --src" [1], which essentially
-builds the pmOS kernel package but replaces the source with the tree I
-point at. I keep thinking I should try envkernel.sh [2], which is
-supposed to set up cross-compiling with the usual make flow. Maybe
-that'd work with bindeb-pkg?
+..
 
-I don't know how well an unpatched mainline kernel would run, I'm
-currently using megi's 6.7 tree [3] plus the pmOS patches as the basis
-for my rtw88_8723cs development [4] (if you look at the history, it's
-v6.7 -> orangepi-6.7 -> pmos-6.7 -> rtw88_8723cs). I know megi's kernel
-has some DTS patches but haven't looked too deeply into the changes,
-maybe some could be upstreamed together with the camera part.
+> +struct pcim_addr_devres {
+> +	enum pcim_addr_devres_type type;
+> +	void __iomem *baseaddr;
+> +	unsigned long offset;
+> +	unsigned long len;
+> +	short bar;
+> +};
+> +
+> +static inline void pcim_addr_devres_clear(struct pcim_addr_devres *res)
+> +{
+> +	res->type = PCIM_ADDR_DEVRES_TYPE_INVALID;
+> +	res->bar = -1;
+> +	res->baseaddr = NULL;
+> +	res->offset = 0;
+> +	res->len = 0;
 
-Regards,
-Fiona
+More robust (in case the data type gets extended) is memset() + individual
+(non-0) sets.
 
-[1] https://wiki.postmarketos.org/wiki/Pmbootstrap#Building_packages
-[2] https://wiki.postmarketos.org/wiki/Compiling_kernels_with_envkernel.sh
-[3] https://xff.cz/git/linux/log/?h=3Dorange-pi-6.7
-[4] https://github.com/airtower-luna/linux/commits/rtw88_8723cs/
+> +}
+
+..
+
+> +static int __pcim_request_region_range(struct pci_dev *pdev, int bar,
+> +		unsigned long offset, unsigned long maxlen,
+> +		const char *name, int exclusive)
+> +{
+> +	resource_size_t start = pci_resource_start(pdev, bar);
+> +	resource_size_t len = pci_resource_len(pdev, bar);
+> +	unsigned long flags = pci_resource_flags(pdev, bar);
+> +
+> +	if (start == 0 || len == 0) /* that's an unused BAR. */
+> +		return 0;
+> +	if (len <= offset)
+> +		return  -EINVAL;
+> +
+> +	start += offset;
+> +	len -= offset;
+
+> +	if (len > maxlen && maxlen != 0)
+> +		len = maxlen;
+
+	if (maxlen && ...)
+
+?
+
+> +	if (flags & IORESOURCE_IO) {
+> +		if (!request_region(start, len, name))
+> +			return -EBUSY;
+> +	} else if (flags & IORESOURCE_MEM) {
+> +		if (!__request_mem_region(start, len, name, exclusive))
+> +			return -EBUSY;
+> +	} else {
+> +		/* That's not a device we can request anything on. */
+> +		return -ENODEV;
+> +	}
+
+Hmm... Not sure, but the switch-case against type might be considered:
+
+	switch (resource_type(...)) {
+		...
+	}
+
+> +	return 0;
+> +}
+
+> +static void __pcim_release_region_range(struct pci_dev *pdev, int bar,
+> +		unsigned long offset, unsigned long maxlen)
+> +{
+> +	resource_size_t start = pci_resource_start(pdev, bar);
+> +	resource_size_t len = pci_resource_len(pdev, bar);
+> +	unsigned long flags = pci_resource_flags(pdev, bar);
+> +
+> +	if (len <= offset || start == 0)
+> +		return;
+> +
+> +	if (len == 0 || maxlen == 0) /* This an unused BAR. Do nothing. */
+> +		return;
+> +
+> +	start += offset;
+> +	len -= offset;
+> +
+> +	if (len > maxlen)
+> +		len = maxlen;
+
+This part is quite a duplication of the above function, no?
+
+> +	if (flags & IORESOURCE_IO)
+> +		release_region(start, len);
+> +	else if (flags & IORESOURCE_MEM)
+> +		release_mem_region(start, len);
+> +}
+
+..
+
+> +static int __pcim_request_region(struct pci_dev *pdev, int bar,
+> +		const char *name, int exclusive)
+> +{
+> +	const unsigned long offset = 0;
+> +	const unsigned long len = pci_resource_len(pdev, bar);
+
+How const anyhow useful here?
+Ditto for other places like this.
+
+> +	return __pcim_request_region_range(pdev, bar, offset, len, name, exclusive);
+> +}
+
+..
+
+> +static int pcim_addr_resources_match(struct device *dev, void *a_raw, void *b_raw)
+> +{
+> +	struct pcim_addr_devres *a, *b;
+> +
+> +	a = a_raw;
+> +	b = b_raw;
+
+> +	(void)dev; /* unused. */
+
+Why do we need this?
+
+> +	if (a->type != b->type)
+> +		return 0;
+> +
+> +	switch (a->type) {
+> +	case PCIM_ADDR_DEVRES_TYPE_REGION:
+> +	case PCIM_ADDR_DEVRES_TYPE_REGION_MAPPING:
+> +		return a->bar == b->bar;
+> +	case PCIM_ADDR_DEVRES_TYPE_MAPPING:
+> +		return a->baseaddr == b->baseaddr;
+> +	case PCIM_ADDR_DEVRES_TYPE_REGION_RANGE_MAPPING:
+> +		return a->bar == b->bar &&
+> +			a->offset == b->offset && a->len == b->len;
+
+Indentation or made it a single line.
+
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return 0;
+
+return directly from default case.
+
+> +}
+
+..
+
+> +/**
+> + * pcim_iomap_region - Request and iomap a PCI BAR
+> + * @pdev: PCI device to map IO resources for
+> + * @bar: Index of a BAR to map
+> + * @name: Name associated with the request
+> + *
+> + * Returns __iomem pointer on success, an IOMEM_ERR_PTR on failure.
+
+Please, make sure the kernel-doc won't complain
+
+	scripts/kernel-doc -v -none -Wall ...
+
+> + * Mapping and region will get automatically released on driver detach. If
+> + * desired, release manually only with pcim_iounmap_region().
+> + */
+> +void __iomem *pcim_iomap_region(struct pci_dev *pdev, int bar, const char *name)
+> +{
+> +	int ret = 0;
+
+Redundant assignment.
+
+> +	struct pcim_addr_devres *res;
+
+Perhaps reversed xmas tree order?
+
+> +	res = pcim_addr_devres_alloc(pdev);
+> +	if (!res)
+> +		return IOMEM_ERR_PTR(-ENOMEM);
+> +
+> +	res->type = PCIM_ADDR_DEVRES_TYPE_REGION_MAPPING;
+> +	res->bar = bar;
+> +
+> +	ret = __pcim_request_region(pdev, bar, name, 0);
+> +	if (ret != 0)
+> +		goto err_region;
+> +
+> +	res->baseaddr = pci_iomap(pdev, bar, 0);
+> +	if (!res->baseaddr) {
+> +		ret = -EINVAL;
+> +		goto err_iomap;
+> +	}
+> +
+> +	devres_add(&pdev->dev, res);
+> +	return res->baseaddr;
+> +
+> +err_iomap:
+> +	__pcim_release_region(pdev, bar);
+> +err_region:
+> +	pcim_addr_devres_free(res);
+> +
+> +	return IOMEM_ERR_PTR(ret);
+> +}
+
+..
+
+> +static int _pcim_request_region(struct pci_dev *pdev, int bar, const char *name,
+> +		int request_flags)
+
+Indentation?
+
+> +{
+> +	int ret = 0;
+
+Unneded assignment. Also fix this in other places.
+
+> +	struct pcim_addr_devres *res;
+> +
+> +	res = pcim_addr_devres_alloc(pdev);
+> +	if (!res)
+> +		return -ENOMEM;
+> +	res->type = PCIM_ADDR_DEVRES_TYPE_REGION;
+> +	res->bar = bar;
+> +
+> +	ret = __pcim_request_region(pdev, bar, name, request_flags);
+> +	if (ret != 0) {
+
+	if (ret)
+
+Also fix this in other places.
+
+> +		pcim_addr_devres_free(res);
+> +		return ret;
+> +	}
+> +
+> +	devres_add(&pdev->dev, res);
+> +	return 0;
+> +}
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
 
