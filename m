@@ -1,148 +1,113 @@
-Return-Path: <linux-kernel+bounces-27201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FAA082EC1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:49:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43C3982EC2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:51:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44A741C22FE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:49:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D65241F241C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:51:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2B54134B6;
-	Tue, 16 Jan 2024 09:49:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C137918AF0;
+	Tue, 16 Jan 2024 09:50:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="gdhuVufm"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="dw6Hht2u"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FD14134A3;
-	Tue, 16 Jan 2024 09:49:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1705398556; x=1736934556;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=d/LmQtM6md3wSSgxarWeNXc3nWd8MVX7G2TVJesXeRI=;
-  b=gdhuVufmQweEZdMW3E7ZUIv6G1cfEN1gkw0ENXJTLp8XcOhoKIkrlRI5
-   6AOcp1hgcS672eIXnEeCM2HVETVikdFy9Klp/qixXCVOvnhHT7VngWyTm
-   /n5ugSPEJqnE5BZuvkah2ovUeqXp6t+YpXbO9P/t/zDywOu0QJVSZh9D7
-   QAxRU8BgbZ/g7ybjkSF2QL629HExTWzWhyIJyd2QwyPXKrLMjHAE1rXF+
-   IgiqMiypMziiz2ouEX2LWK9VuzCZEB8/LD6Js8FK7trQU6/bStK3MObZP
-   oAiylVyC5kSlKiKbwhx3ggGX6PbUyxiT+LyrLSAbCQ4fzYkMdBDVNYL9u
-   g==;
-X-CSE-ConnectionGUID: lhV4ifIESgq7KLyVEfkQ/Q==
-X-CSE-MsgGUID: H9BXj9zQRVij7q1BDAfNUw==
-X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
-   d="asc'?scan'208";a="245529089"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Jan 2024 02:49:15 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 16 Jan 2024 02:48:47 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Tue, 16 Jan 2024 02:48:44 -0700
-Date: Tue, 16 Jan 2024 09:48:08 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC: Frank Li <Frank.li@nxp.com>, <robh@kernel.org>,
-	<alexandre.belloni@bootlin.com>, <conor.culhane@silvaco.com>,
-	<gregkh@linuxfoundation.org>, <imx@lists.linux.dev>, <jirislaby@kernel.org>,
-	<joe@perches.com>, <linux-i3c@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>,
-	<miquel.raynal@bootlin.com>, <zbigniew.lukwinski@linux.intel.com>,
-	<devicetree@vger.kernel.org>, <krzysztof.kozlowski+dt@linaro.org>
-Subject: Re: [PATCH v2 2/7] dt-bindings: i3c: svc: add compatible string i3c:
- silvaco,i3c-target-v1
-Message-ID: <20240116-achiness-thievish-10a12b3c08cd@wendy>
-References: <3c0be658-e7a6-4231-b206-86ffb47e0cb2@linaro.org>
- <ZaFbbeQrC7o2dchO@lizhi-Precision-Tower-5810>
- <e3b9aa63-25a5-41cc-9eb7-6e7d1eacb136@linaro.org>
- <ZaFjaWCA6k+tiCSJ@lizhi-Precision-Tower-5810>
- <ZaWLCrWJEMtFx8cR@lizhi-Precision-Tower-5810>
- <1b628901-7f71-4c97-9a16-723912988417@linaro.org>
- <ZaXqCoCHPWER94Hh@lizhi-Precision-Tower-5810>
- <d45e31c4-914e-4cea-a145-9775b6f516ab@linaro.org>
- <20240116-bleach-herbicide-48d636967134@wendy>
- <3199c245-3d2d-49e8-951e-2b059de4d683@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDCF017599;
+	Tue, 16 Jan 2024 09:50:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40G7wGle005409;
+	Tue, 16 Jan 2024 09:49:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=Rq4fNMe7g9Bt
+	EEZjkFMy3VQE+20Z3tr4nJBVwjyKBpw=; b=dw6Hht2ubOPdi4wJ8RDSO6GXX0P2
+	eQvn0YYp0esJN2TOny2Ss8w+V/zzD4pLP4ZilDnJ9GZVlJxJvE/SNg9gFE0bBL4o
+	1QemqgeM+wv+FP+eIyeA1RAkkdoKomwBchdjYQInozqGCQWwts/RqruaVmylv5TN
+	MX9+V2mRAO18rXoM9O2JyaPKYo2bL58ZvDSvkd8YhBIlgevw16/DTRDSyeG2qQJ8
+	rRTwLcphYaxlo2VCIdWaOLk5mjqT85N+08Lwiy0ST0hnLGCeCCO7FbnHVnBEr/9T
+	fI2kMsNppCWyjVtwK1443vCcqU4j6a6V7ifcE2mUF2EQIZqMsUUio/sd4w==
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vnnvbg6wd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 09:49:45 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 40G9nfsQ006268;
+	Tue, 16 Jan 2024 09:49:41 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3vkkkkmget-1;
+	Tue, 16 Jan 2024 09:49:41 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40G9nf67006248;
+	Tue, 16 Jan 2024 09:49:41 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-riteshk-hyd.qualcomm.com [10.147.241.247])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 40G9neZN006245;
+	Tue, 16 Jan 2024 09:49:41 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2314801)
+	id A07605001D5; Tue, 16 Jan 2024 15:19:39 +0530 (+0530)
+From: Ritesh Kumar <quic_riteshk@quicinc.com>
+To: andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, quic_bjorande@quicinc.com,
+        geert+renesas@glider.be, arnd@arndb.de, neil.armstrong@linaro.org,
+        dmitry.baryshkov@linaro.org, nfraprado@collabora.com,
+        m.szyprowski@samsung.com
+Cc: Ritesh Kumar <quic_riteshk@quicinc.com>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, quic_abhinavk@quicinc.com,
+        quic_rajeevny@quicinc.com, quic_vproddut@quicinc.com
+Subject: [PATCH 0/2] add display and panel on qcm6490 idp
+Date: Tue, 16 Jan 2024 15:19:33 +0530
+Message-Id: <20240116094935.9988-1-quic_riteshk@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: HRrq2nv_P1V7tI2I_KG7GbIdw3N1wUt0
+X-Proofpoint-ORIG-GUID: HRrq2nv_P1V7tI2I_KG7GbIdw3N1wUt0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 mlxlogscore=350 lowpriorityscore=0 mlxscore=0
+ adultscore=0 impostorscore=0 suspectscore=0 clxscore=1011 spamscore=0
+ malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401160077
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="lyAJBZzxW05Or8+L"
-Content-Disposition: inline
-In-Reply-To: <3199c245-3d2d-49e8-951e-2b059de4d683@linaro.org>
 
---lyAJBZzxW05Or8+L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Build the Novatek NT36672E DSI Panel driver as module and enable
+display subsystem on Qualcomm qcm6490 idp board.
 
-On Tue, Jan 16, 2024 at 10:33:48AM +0100, Krzysztof Kozlowski wrote:
-> On 16/01/2024 10:30, Conor Dooley wrote:
-> > On Tue, Jan 16, 2024 at 08:24:20AM +0100, Krzysztof Kozlowski wrote:
-> >> On 16/01/2024 03:29, Frank Li wrote:
-> >>>>> 	Patches were accepted after discussion, what you ponit to. So I
-> >>>>> think everyone agree on the name 'silvaco,i3c-master-v1'.
-> >>>>> 	I plan send next version to fix auto build error. Any additional
-> >>>>> comments about this?
-> >>>>
-> >>>> I still do not see how did you address Rob's comment and his point is
-> >>>> valid. You just did not reply to it.
-> >>>
-> >>> See https://lore.kernel.org/imx/ZXCiaKfMYYShoiXK@lizhi-Precision-Towe=
-r-5810/
-> >>
-> >> First of all, that's not the answer to Rob's email, but some other
-> >> thread which is 99% ignored by Rob (unless he has filters for
-> >> "@Rob"...). Therefore no, it does not count as valid answer.
-> >>
-> >> Second, explanation does not make sense. There is no argument granting
-> >> you exception from SoC specific compatibles.
-> >=20
-> > The patch could have been applied two months ago had Frank done as
-> > was requested (multiple times). I don't understand the resistance
-> > towards doing so given the process has taken way way longer as a result.
->=20
-> I think that Rob's comment was just skipped and original master binding
-> was merged without addressing it. I don't want to repeat the same
-> process for the "target". Indeed I could point this earlier... if I only
-> knew that Rob pointed out that issue.
+---
 
-Oh I think I got confused here. The context for this mail led me to
-think that this was still trying to push the i3c-master-v1 stuff through
-and I was commenting on my frustration with the resistance to applying
-the feedback received. I didn't realise that this was for another
-patch adding a target.
+This series depends on following series:
+1. https://lore.kernel.org/all/20231222073135.2512313-1-quic_uchheda@quicinc.com/
+   (arm64: dts: qcom: qcm6490-idp: Add support for PM7250B PMIC)
+2. https://lore.kernel.org/all/20240108095902.22725-1-quic_riteshk@quicinc.com/
+   (Add support for Novatek NT36672E LCD DSI panel)
+3. https://lore.kernel.org/all/20240116071803.5264-1-quic_riteshk@quicinc.com/t/#u
+   (drm/panel: novatek-nt36672e: Include <linux/of.h>)
+---
 
-I think you already said it, but NAK to adding any more compatibles here
-until the soc-specific compatible that was asked for for the imx93 is
-added.
+Ritesh Kumar (2):
+  arm64: defconfig: enable Novatek NT36672E DSI Panel driver
+  arm64: dts: qcom: qcm6490-idp: add display and panel
 
-Thanks,
-Conor.
+ arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 100 +++++++++++++++++++++++
+ arch/arm64/configs/defconfig             |   1 +
+ 2 files changed, 101 insertions(+)
 
---lyAJBZzxW05Or8+L
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.17.1
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaZQ2AAKCRB4tDGHoIJi
-0pPQAPwOtqo+AaPupCQJlV+rWAmSvitBpzmIYrOAkGb6DlqLfAEAkGGgrQwVHqSi
-f4RUVEYgW3INJX+Bf9bl1aY22t/R4gw=
-=o8PF
------END PGP SIGNATURE-----
-
---lyAJBZzxW05Or8+L--
 
