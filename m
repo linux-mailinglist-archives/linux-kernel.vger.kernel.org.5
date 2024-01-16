@@ -1,203 +1,139 @@
-Return-Path: <linux-kernel+bounces-27397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44F1282EF46
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:58:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDFFA82EF47
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:59:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D273C285CD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:58:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB6CE1C2340B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:59:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441721BC47;
-	Tue, 16 Jan 2024 12:58:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2C801BC4A;
+	Tue, 16 Jan 2024 12:59:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="aR9pf9wt"
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2063.outbound.protection.outlook.com [40.107.102.63])
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b="KZ6SaCGb"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F18A71B812;
-	Tue, 16 Jan 2024 12:58:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N4vD7fM+szRx2HBEA3gOsiQObdwEREWz3UBf3iHOmSxYUl5DPSt3KH7Nd4EdZdb7YW19dKBjEz2bSt6t4YGUs0HeJAjbyRC/Mewyyn9PkhxD0w26pFVdHv6/jrpCpTd3SVd8XAQ50mDxokwO9UEVFmBR3kdWjADyamdG4QIvUUGILILGJukKx9Bc/GlpzRZkO7015fnYx8c3HPA//sdepSeVbIBVPLWAb+T7wUx3IBnOlIUZYkihWnVJU8Ip61j+2eXGKyH7g+Bjv6Zw0wV2Z3OwmDubMn7mo4maVzxN/h0UEhoojY9j7TT52YqllQrKrfYyBkESJaV3eIV8ROsJZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oJryo901OVUYVE1iLubqTySfQ0/uh8NQafygJGsNZm8=;
- b=S5Ws1xFEkYPEegD39kyXLnTzPnOn5VKCZg2LyFA3lH7GrndvB8YOW01fZlCTnohTdLkPL41YVyWnkv2Y9carjdDNUtdeLG3qkL9B35x2Bu7zJKz4pcgUXbu4sVWyFQs713R7AhR3O+U1cN39VZRbflBlznqwleMLiIjHLV7UtyXHu+o5yBaRq/U3zVf8HiuT04IYQ1w7CgEYPnM9NBLpqxPpC/3of2qRPB6Z4IywEybUYClBDghHa8Kks+aOCTx+NFkpqc73ZJHu0DPjPf9wFnYAMw4tgLCuzcMh6YnzZTbRilqZMa0zrw3EqMOP0Sn9pHqcDeJYk1ABkfn4PIpj9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oJryo901OVUYVE1iLubqTySfQ0/uh8NQafygJGsNZm8=;
- b=aR9pf9wty+d5lXwclYs13Fl2SAfc6mlbk6kzoOBVpd0HoNvTKc9OtFXMxqwOb6+rWN1tJgRo8iT16Ct4xRmCsFiuxwY/gYD1jFs+vYmMJAlXrYKbSL4EJQ1lNAPtL/NblJlb/gR5U+isa+XdkV4vPPAgzRsPkCdpcKx2+GCA+57sWKFJ41ksHvRhf/nUpsV0QWFkTR9L7rQZ5W00rxvlygdyCO2t1rE8/H+G6NjivOtZjXDhNf4R3vDAE8yYyo0AySlMSrXeTVxwwVViFqm/2GvUT2NVU4lMuwRe9iKHOteWULfkTxK++bKk9hKaSZWuml3EZNgTEAaH78lhdK2P7w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by CH2PR12MB5018.namprd12.prod.outlook.com (2603:10b6:610:6e::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.23; Tue, 16 Jan
- 2024 12:57:58 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::96dd:1160:6472:9873]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::96dd:1160:6472:9873%6]) with mapi id 15.20.7181.020; Tue, 16 Jan 2024
- 12:57:57 +0000
-Date: Tue, 16 Jan 2024 08:57:56 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: "Tian, Kevin" <kevin.tian@intel.com>
-Cc: "Liu, Yi L" <yi.l.liu@intel.com>, "joro@8bytes.org" <joro@8bytes.org>,
-	"alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-	"robin.murphy@arm.com" <robin.murphy@arm.com>,
-	"baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-	"cohuck@redhat.com" <cohuck@redhat.com>,
-	"eric.auger@redhat.com" <eric.auger@redhat.com>,
-	"nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-	"chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-	"yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-	"peterx@redhat.com" <peterx@redhat.com>,
-	"jasowang@redhat.com" <jasowang@redhat.com>,
-	"shameerali.kolothum.thodi@huawei.com" <shameerali.kolothum.thodi@huawei.com>,
-	"lulu@redhat.com" <lulu@redhat.com>,
-	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	"Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-	"joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
-	"Zeng, Xin" <xin.zeng@intel.com>,
-	"Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: Re: [PATCH 3/8] iommufd: Support attach/replace hwpt per pasid
-Message-ID: <20240116125756.GB734935@nvidia.com>
-References: <20231127063428.127436-1-yi.l.liu@intel.com>
- <20231127063428.127436-4-yi.l.liu@intel.com>
- <20240115172430.GN734935@nvidia.com>
- <BN9PR11MB52761349DFB5DAD2797C3EBF8C732@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB52761349DFB5DAD2797C3EBF8C732@BN9PR11MB5276.namprd11.prod.outlook.com>
-X-ClientProxiedBy: BLAPR03CA0032.namprd03.prod.outlook.com
- (2603:10b6:208:32d::7) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12E791BC21;
+	Tue, 16 Jan 2024 12:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1705409915; x=1706014715; i=erick.archer@gmx.com;
+	bh=WqURBa1tPHtba6Jq6GlirP9uW1GLBR8Naqt998xfh+o=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=KZ6SaCGbCecZ5uSlIPF9/YPTHk3YfLpocH2ZGLAyRJj7xYMMHPr6WklOR+5m1b4W
+	 7HrraJHKFrAPNKAaRH7O08z9KbM09bDezYLbkg6RtlEZ1yEKl76DpWv1FC620OxmN
+	 ggWiYQQmyoZjfoHrT5WQK7WD3KL+TLqTXgCgacS1iTvOzZxt7UfeZP7A4VQNvQKA4
+	 1GDeC3tT6asxikb3u0YYEPAwAgQ8YevbQxt26vGptttmeQr6Q/axIjW4Em/l11l8o
+	 RiKRl2ITlg+SVB3bksXtJH7tHhteXmzKCLmo5kYrLSzb/Zr20Hcr87Dlid6PFlC16
+	 Lv8HFjlRmHP+AkBwjA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from localhost.localdomain ([79.157.194.183]) by mail.gmx.net
+ (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1MFbW0-1rLoSi2eZq-00H5tr; Tue, 16 Jan 2024 13:58:34 +0100
+From: Erick Archer <erick.archer@gmx.com>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	x86@kernel.org
+Cc: Erick Archer <erick.archer@gmx.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] perf/x86/amd/uncore: Use kcalloc*() instead of kzalloc*()
+Date: Tue, 16 Jan 2024 13:58:13 +0100
+Message-Id: <20240116125813.3754-1-erick.archer@gmx.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CH2PR12MB5018:EE_
-X-MS-Office365-Filtering-Correlation-Id: 735883be-f44a-40c7-eccb-08dc1692c351
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	3gaaSPlPBEOwJf3b3Drg7xHZiwXDqb4+6lSRWdi9a4/adzyjIe1ACc69BOXw06n17aHt3bqI5VmwNITxgoN72gs+Cs30Y7VkCG4QEZiN1+cHWeKLBSkzadVPVAr5pxaOQMYUMbkRIz1g6FLmrCZwPVBOHEac3iyja/N/L0gIRgOY22m5PCb3VD4V2C57q52pLYe/ukBYOTiHVSY1wl9KE1SEKaUqxU1MsJwQ3sIsF4qOiNvCSENe6jj9PVd/qA0ci957f3Mo1KEWUdarREdO4VoVYF5hhhNRGLZGz3VpXICmA64tUdJhCV5Tdo1q8QvYwTAc9orLo17eDQtZ6ZoFtCR1XPlPUSA2P0esBYaTV15wu7XbwmY3FQG2B1n1GdCzpa94YihiIfzh0ZFNGV8JEyh4K/TLXTCDfjPSkIzjGto9fj6GOHLCrm4az1IhVfksJEx9U6iPvZmv6XVaBwXz0GZfKrih9KvMnGcFZ+WxN02N1Lb3qUBijPscTaE5tKFAlVwcuBYe5IytQMZGpooj69AHHq1S5p40c1zEfXMSSBcihdxqmFxiScfU/eoCa5GMPVw/F7mhdGZDLqcMWqI9CqvcuZfYs32drgmUDla+o3o=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(366004)(346002)(136003)(376002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(2906002)(33656002)(36756003)(41300700001)(86362001)(38100700002)(8936002)(54906003)(66946007)(6512007)(6916009)(8676002)(6506007)(316002)(6486002)(66476007)(66556008)(7416002)(83380400001)(5660300002)(4326008)(1076003)(2616005)(26005)(478600001)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?e3RfVj6HVioK6FxITrwVwVcwBi7kVZ5VP7w/s6APblmIXXPCUBsB8RNxdjgP?=
- =?us-ascii?Q?QFURSCFgDl6MOhNAkwjo1Tjo7Pce58ZWgA6mCG6/00z+06p/OfJ4vVR1ie3/?=
- =?us-ascii?Q?nmTRni5EgIZv/xQafFtTsp8QwPNweh1+utnbb1++74h09gEjs69Qzjp/A7qF?=
- =?us-ascii?Q?r8zGygKMJoYNF3dCjlBzp/P0y2o9+zkkPatRfXVi3i7g22WFOX90Cqrr8Zdi?=
- =?us-ascii?Q?GtZFlI4tWP9Ie4WOUlI9FpaQGEVofJgHQPjbwn+S6u7ZJ0ofe4e6wwZGEIvg?=
- =?us-ascii?Q?wl4XOX0Mxf3Q498c3IWuvaEews+qQHJB55jlqpi5kCQ2JQY2fzRDhzNGOQKr?=
- =?us-ascii?Q?XJiztz3rVYAJLyOyYD4eVYKIsQfA1UnbL9kKie2cn4yOZSfHa4VRURFBPAb2?=
- =?us-ascii?Q?gR/0tCs9+9ND0N4TKgHN869SIgjhwHU3c9Sn4qFoOUNpSv5h9uflsTlCdffo?=
- =?us-ascii?Q?9c+7FS4+xcSjxAAj/J1NH4bbo57i3znKYU+xf1yo6nzIagLWfV/aDO2MOAfX?=
- =?us-ascii?Q?1UIjsm+I1Kufh/eoceKKmvsbGe7sSsx78YUZyN2TLOHIREJEUNNPpbe0bvwT?=
- =?us-ascii?Q?a2aqzNrurxxlEWCX3x5/N9ZQX3E87G0pcfdnJ28XEzPVjbTign4j09EcSLOl?=
- =?us-ascii?Q?2LmwHApE1h9eqrrGQpu1cq84Gm61fe/sz9ogzoNjy0iFBpJwWSnkKYdzoY9D?=
- =?us-ascii?Q?KJmdhb4zkUaL8fgaeAT2gDt/x+sua2zZ1eSFUn4K5k6uu2rQTnz82nte1VI6?=
- =?us-ascii?Q?H2/a88dgyPEqOsoG+17OfpUGPVprfarBQJZ2iLWA57o3cPaQ43uIHkXN3u4/?=
- =?us-ascii?Q?bjpx7XZMTa2dFwy4BTWAmReT2DBJZxUMn1C5mutSvLRVctEvnoFcJZNYv1z7?=
- =?us-ascii?Q?hJ0QdDZkQ+low7mutC5g++Vb8q2HhjCSBPDKhgubMPwn1etU/luVtx6+J7Vo?=
- =?us-ascii?Q?QImhnGhvUHV2jg+LO/wsMi8H0qsoskXEbbBE/CmJtNPwFU2k7hntH2SVIfJW?=
- =?us-ascii?Q?A5hxEEL1JEWJJMOxTJfGUFcSVkBehRhyJxJ78+aosNlCwDBmsSlaG7C1EJMF?=
- =?us-ascii?Q?o0609ND+hdYu8BKW0ImYBzATIx6m+PHs7ssFZDQ8VbbttfVXAdxOn77DNnsR?=
- =?us-ascii?Q?nGlzpJqzIpUyQ8VO4xLxZuWD8w6Au4fXYq744YYPJr/g0F3iYnK8Li3idnF3?=
- =?us-ascii?Q?s8c1FvAiWZf4EWWm1jIq6RYbVzlCFimZE0bK+3pygA83yzPlnK0uXs9cRkRE?=
- =?us-ascii?Q?37xIrKwCfKtU9+Re+kleTzp2m4KJpt6YaAsZ8m/Qw5EMdduGHjx/tunlPr1v?=
- =?us-ascii?Q?uA1ylgDcdwBNZay0ERuPTyXRZbAXl52UUPKEi0/UrAB9XI229tyCtZOBF8/S?=
- =?us-ascii?Q?045LdncVA42kYSLhhliYIoFLYX1YdnfXh+H0I1zqGYPAGrugVQPSxo7+zTqF?=
- =?us-ascii?Q?aq5ka6dBYUFjun9Tk63Bc0l8g8NA50X6EhsGBiR7B6BQsapBv3Iek094Kyr3?=
- =?us-ascii?Q?NxcA2sDc8V1b4tgV/HpM/zBZOTyn/sSCW2hoXSNtY6za+lmXxCIcjj8AcTLu?=
- =?us-ascii?Q?45/FeXWv6jd1GrlmIKXcZ0mC9mYElcdEL9l6Uvvf?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 735883be-f44a-40c7-eccb-08dc1692c351
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2024 12:57:57.9065
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nTmoybUVVfN2aQOnQMJXuKDbxgQwWILi4HvodTF1VpLHhZ8sCaRbw3aZiZovvFIL
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB5018
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:TVEwA2glfLpDSznvFi1nOPLs8BGM4B0IRF4s7tsTlwGjHIW6e4d
+ girJ19eXCtnEnKLoMCOiYnHnmgUmwJs865H5HLOr6ChGXDSSOX92bbpvT9JPotMl4Vk0n7P
+ 4J/7aebYWPmGzn8Jg3l80oRLsiaUXXGbgYIC3NOsCZiuewm9Mb/F0ZUXvI+cjaHZ2e/AjPI
+ sBMHryAfCqlxtkZvK/Lug==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:vhga32RZi1g=;yz7ktIwQ63rJtHBJB0vyghWpQyt
+ /ejawrygnkrG0gM7Fs3hT08viZFnKYKqAglIygP4TDrVsk6fPk5vqnakrdrTVmOd4DU1KCM8U
+ HnyeuxtyM5nNX7Poqn3w81O9X+Ihf/CkQokyS9k3R7BV9WgS0//35I8gbxpd9HoMjohrYx5RG
+ 7ro96nixmU93+A2fMsqOtm4y8wbIXKaypSwIulUz9nw6TzaTQjebmM7oSrzIPbhRZU4CBvhFI
+ MioszZBetHerm0UsqFCbZ0fizqP7cY7RhhAlTiZl5ZSJEo0XrMQA9MBnzfNexBwPoxAyUGH2n
+ l8K3JGdgOe6QgY7zRAXrx+zQ0kLgPkIDZXp5DQzV3NuPt9KC/Kmz+nVsOAw/GJ6sXaHoz+xRI
+ 2rJuBzfn1Zfb9EA2aWxpvvxXnMX58/5LKONGH7mnVUWtQ/tGWbouyW3zkCx98xfMLOGeERgbl
+ PGpNynvBwV+AF8sJNFNmyvv2Elx7vDih0OXWK6x4up4rFsN/aYeYDHCNpriygeZb1W2iY7qBI
+ aVpsY4HfT4kietZw/TKRb7xVm4gp6yfKNawAT35OAtZqB5jxzKFRY4jMWu46CGe1clcPEJXUV
+ Yii8i3jrdoUq2X/r3uRQVkwo1Q6EEixqcwcACt8yLDCKWe9H3nOvoQhDcZLiPSa6GmoZCybcC
+ yLZaNnV+F33NPMLztMOXKuw40fMTlEhkAmtplNsOaX1yj4untxbTtGoTSEduTrtvUZvlqSBqr
+ 1eT4ADORX4lt7j+RSYEZd1/5SxO/SeGM7wI/yNPhlvg9Tamp06F1ig80CWzsf6SGM29f/0SMz
+ Zzb4fsNtoSSvlTurs3B4+VEepk90Q15CQ/d3gtE/EYrAQTmPTPJVe9ygOdhyfK8XKsXTs2Kcl
+ 9yz06o306nDe2gNTfh5V32zSFw83o9r3HLdnp5tepZHA8SjquvDosoi5+l73aOyIzlY+iHEG1
+ iUw6Hk8P6ZwgA3GfGQMWCCthyfY=
 
-On Tue, Jan 16, 2024 at 01:18:12AM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Tuesday, January 16, 2024 1:25 AM
-> > 
-> > On Sun, Nov 26, 2023 at 10:34:23PM -0800, Yi Liu wrote:
-> > > +/**
-> > > + * iommufd_device_pasid_detach - Disconnect a {device, pasid} to an
-> > iommu_domain
-> > > + * @idev: device to detach
-> > > + * @pasid: pasid to detach
-> > > + *
-> > > + * Undo iommufd_device_pasid_attach(). This disconnects the idev/pasid
-> > from
-> > > + * the previously attached pt_id.
-> > > + */
-> > > +void iommufd_device_pasid_detach(struct iommufd_device *idev, u32
-> > pasid)
-> > > +{
-> > > +	struct iommufd_hw_pagetable *hwpt;
-> > > +
-> > > +	hwpt = xa_load(&idev->pasid_hwpts, pasid);
-> > > +	if (!hwpt)
-> > > +		return;
-> > > +	xa_erase(&idev->pasid_hwpts, pasid);
-> > > +	iommu_detach_device_pasid(hwpt->domain, idev->dev, pasid);
-> > > +	iommufd_hw_pagetable_put(idev->ictx, hwpt);
-> > > +}
-> > 
-> > None of this xarray stuff looks locked properly
-> > 
-> 
-> I had an impression from past discussions that the caller should not
-> race attach/detach/replace on same device or pasid, otherwise it is
-> already a problem in a higher level.
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
-I thought that was just at the iommu layer? We want VFIO to do the
-same? Then why do we need the dual xarrays?
+So, use the purpose specific kcalloc*() function instead of the argument
+size * count in the kzalloc*() function.
 
-Still, it looks really wrong to have code like this, we don't need to
-- it can be locked properly, it isn't a performance path..
+[1] https://www.kernel.org/doc/html/next/process/deprecated.html#open-code=
+d-arithmetic-in-allocator-arguments
 
-> and the original intention of the group lock was to ensure all devices
-> in the group have a same view. Not exactly to guard concurrent
-> attach/detach.
+Link: https://github.com/KSPP/linux/issues/162
+Signed-off-by: Erick Archer <erick.archer@gmx.com>
+=2D--
+ arch/x86/events/amd/uncore.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-We don't have a group lock here, this is in iommufd.
+diff --git a/arch/x86/events/amd/uncore.c b/arch/x86/events/amd/uncore.c
+index 5bf03c575812..9073eb0613cf 100644
+=2D-- a/arch/x86/events/amd/uncore.c
++++ b/arch/x86/events/amd/uncore.c
+@@ -479,8 +479,8 @@ static int amd_uncore_ctx_init(struct amd_uncore *unco=
+re, unsigned int cpu)
+ 				goto fail;
 
-Use the xarray lock..
+ 			curr->cpu =3D cpu;
+-			curr->events =3D kzalloc_node(sizeof(*curr->events) *
+-						    pmu->num_counters,
++			curr->events =3D kcalloc_node(pmu->num_counters,
++						    sizeof(*curr->events),
+ 						    GFP_KERNEL, node);
+ 			if (!curr->events) {
+ 				kfree(curr);
+@@ -928,7 +928,7 @@ int amd_uncore_umc_ctx_init(struct amd_uncore *uncore,=
+ unsigned int cpu)
+ 		uncore->num_pmus +=3D group_num_pmus[gid];
+ 	}
 
-eg 
+-	uncore->pmus =3D kzalloc(sizeof(*uncore->pmus) * uncore->num_pmus,
++	uncore->pmus =3D kcalloc(uncore->num_pmus, sizeof(*uncore->pmus),
+ 			       GFP_KERNEL);
+ 	if (!uncore->pmus) {
+ 		uncore->num_pmus =3D 0;
+=2D-
+2.25.1
 
-hwpt = xa_erase(&idev->pasid_hwpts, pasid);
-if (WARN_ON(!hwpt))
-   return
-
-xa_erase is atomic.
-
-Jason
 
