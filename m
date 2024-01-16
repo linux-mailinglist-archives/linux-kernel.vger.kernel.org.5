@@ -1,153 +1,118 @@
-Return-Path: <linux-kernel+bounces-27262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD1F482ECE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:44:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F15282ECE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:45:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91D0B1F2407D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:44:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25B77284E73
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:45:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C06C1755D;
-	Tue, 16 Jan 2024 10:44:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE65A175A0;
+	Tue, 16 Jan 2024 10:45:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="D0JNJz9t"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WRnd5mkz"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7528B13FE3
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:44:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5f2d4aaa2fdso97728157b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 02:44:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705401872; x=1706006672; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xfr8ekJ3/kF67ykOkBtf3gUlwOGhZeagdlr6ytlyxGQ=;
-        b=D0JNJz9tdBfYflFvVMZbxy7m3PsTtAvotZqMmh+CQekZcUhU5uqYJ2G0mIcX0Yt/Qv
-         fKz5AeloQlgv8b9wI9C6HHXPN13rO67iE6BFqBi5gEKpN9yQ9SCvUEKgW0sFjJbtJNb0
-         Aqlt3l7mLunknMKe3Bkrwzr7uT4GIrIIwVz6Lb+oY3fRg42Gu5es+1pKk4gDL3qd7yEk
-         W30bSb7OFpySSH7emgq/X1gSJZY9eLzWJa3681NdupU5WMvWHSluPxRUbm2PMzxpk+Ge
-         SJTachma4TMKMwHOgPccdpwlT19Ihe/0Tf4QrTXanc4ODKSoTArGeeJ4Nl0Ham1EloSw
-         5N7g==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04E14154BA
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:45:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705401950;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bjqxTDHvgQy8aJf03PgKJjSLuMp8HhWY4sERlhF8row=;
+	b=WRnd5mkzUgOq9u2HC3T0QcsfVN/Ia88+c6/LIUDElmQA95RvxbEZXawoUzOtzjG+XJxf4s
+	2VnHJfqaCIZAd72bWGTJbpGeASIwalXGyFrzj/A5+O1Cp3KLXWnqxj0hjHEKTTwOfpzjO/
+	oBy23Powqofg4DHsf18CHLumk57hODw=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-503-5soBPydpMZy4HsQV-PNJAw-1; Tue, 16 Jan 2024 05:45:48 -0500
+X-MC-Unique: 5soBPydpMZy4HsQV-PNJAw-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a2cb0d70d6cso192888166b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 02:45:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705401872; x=1706006672;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xfr8ekJ3/kF67ykOkBtf3gUlwOGhZeagdlr6ytlyxGQ=;
-        b=HkoQhQfKTUYqrPoiK0Ubo3kfK5ahtoskO6xev/MaiWcIKEEt7eATNAghdhlwNHeRYC
-         dapae46DnZQxdHtf/O8lufMu30HdcDun0n08ots0TmOl9EOE2ujS63viBxe6FSUtXeRj
-         mXZCkiqZGYIZkiRbH71Rn5JDKTpll2etYZVPt/2wyFRdpMtX2FP6nqYi9ELj+Q/v0GV0
-         gtdq/3Y2IecOvWB9gaen0eI1TEvklD9OXlIoHbH7+BXqlN5BBOD/yec1qm/mGvG/uttW
-         uQOe9APC5Wfz8j6LmoPT7KoxHd3Rby6pwCDZiWj0Y1MWmvajn6gS7a8kPbApiGKaXHgc
-         GcZw==
-X-Gm-Message-State: AOJu0YxqlNfV4AA4M1/IqrCy7tCOAmDsbjL180Oc+OMcvCxcwfrXGUak
-	4wi7il6LJe90TjHuhLd1kKYbXqq1SDKhxiE4gRpptbIHCIuGHw==
-X-Google-Smtp-Source: AGHT+IG+pjXF8PAggTuUX8KKrF6NwOBF5GFi3hYjC/JuFDOGwfzK7X5hEG8iavIiEV1pP/58gypnnpC/LjrAO+dgnws=
-X-Received: by 2002:a81:de4d:0:b0:5d7:1940:f3e0 with SMTP id
- o13-20020a81de4d000000b005d71940f3e0mr5302858ywl.72.1705401871966; Tue, 16
- Jan 2024 02:44:31 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705401948; x=1706006748;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bjqxTDHvgQy8aJf03PgKJjSLuMp8HhWY4sERlhF8row=;
+        b=VZizRpAqmyl3NPzgJzYGlQCYMGHgDJfAkK0HAQlR/k5tErciW/GHMrq6pYofCrc4QO
+         7cr49k2qnOcrYna7yp066rh3f+nx6rK+8r6RMb8YaYRyHJwoJpVWtIhm1EuvRnkVb8EM
+         Y4oz/tTrKqGBy7j0Bt6FGtJD6thn2NCmqmVO0xsZW63mra182ZTjHD1Ju6oKyansKLy4
+         3ypihbAoDGKIOoDnfVx2eKUjTw0GNkOxmadnHrggAXMU7TLKDGiO4U+I2uNqgLhnjIJR
+         azYrd0fLnrcBjQkInv9N/kTSkdC7zuVgsy4DCoo57AobneJw0wuAM9m78p5/k+/LxVQs
+         saqQ==
+X-Gm-Message-State: AOJu0YweUUwfigeHSR3kgnmAYOHM/hp/mrhfPYlI6ZurYxs+4cZM7iBA
+	2+3Z4/+GHHYodzQNYYbf75ZV0Kbtv1Nb5XAu/BgRCVbQDWDUbOUpwEB6UqN1LTX5VD1dxvQIoHa
+	+SCp/SO554bGtRM0kL2Pb1JN9UnE9VTAk
+X-Received: by 2002:a17:906:1c56:b0:a2b:299:2e3 with SMTP id l22-20020a1709061c5600b00a2b029902e3mr2882756ejg.146.1705401947885;
+        Tue, 16 Jan 2024 02:45:47 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH6FVV4MuXv1lla/czKKt1oAO2fwOEap+YW0g8LZflc9afhjEtSmkDaFYruOii/YXsyNY5spw==
+X-Received: by 2002:a17:906:1c56:b0:a2b:299:2e3 with SMTP id l22-20020a1709061c5600b00a2b029902e3mr2882745ejg.146.1705401947612;
+        Tue, 16 Jan 2024 02:45:47 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id l10-20020a1709061c4a00b00a2b9bbd6d73sm6320836ejg.214.2024.01.16.02.45.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jan 2024 02:45:47 -0800 (PST)
+Message-ID: <da062d7e-c06c-40f8-b2ad-9dd5e82ff596@redhat.com>
+Date: Tue, 16 Jan 2024 11:45:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240116094935.9988-1-quic_riteshk@quicinc.com>
- <20240116094935.9988-2-quic_riteshk@quicinc.com> <CAA8EJpo3YS4EzfsLtovYKbLSGYX=RwUn9dpmCW=j257LnvPrgw@mail.gmail.com>
- <1d68485fd1574ff88047cef0d2d5e6f1@quicinc.com>
-In-Reply-To: <1d68485fd1574ff88047cef0d2d5e6f1@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 16 Jan 2024 12:44:21 +0200
-Message-ID: <CAA8EJpqV_jTm1gNy5RsgRWZBC3j0nTPsUPRkv6KivvRbw8TucA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] arm64: defconfig: enable Novatek NT36672E DSI Panel driver
-To: "Ritesh Kumar (QUIC)" <quic_riteshk@quicinc.com>
-Cc: "andersson@kernel.org" <andersson@kernel.org>, 
-	"konrad.dybcio@linaro.org" <konrad.dybcio@linaro.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, 
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>, 
-	"conor+dt@kernel.org" <conor+dt@kernel.org>, "catalin.marinas@arm.com" <catalin.marinas@arm.com>, 
-	"will@kernel.org" <will@kernel.org>, "Bjorn Andersson (QUIC)" <quic_bjorande@quicinc.com>, 
-	"geert+renesas@glider.be" <geert+renesas@glider.be>, "arnd@arndb.de" <arnd@arndb.de>, 
-	"neil.armstrong@linaro.org" <neil.armstrong@linaro.org>, 
-	"nfraprado@collabora.com" <nfraprado@collabora.com>, 
-	"m.szyprowski@samsung.com" <m.szyprowski@samsung.com>, 
-	"linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>, 
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
-	"Abhinav Kumar (QUIC)" <quic_abhinavk@quicinc.com>, 
-	"Rajeev Nandan (QUIC)" <quic_rajeevny@quicinc.com>, 
-	"Vishnuvardhan Prodduturi (QUIC)" <quic_vproddut@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] MAINTAINERS: add Luke Jones as maintainer for asus
+ notebooks
+Content-Language: en-US, nl
+To: "Luke D. Jones" <luke@ljones.dev>, linux-kernel@vger.kernel.org
+References: <20240115211829.48251-1-luke@ljones.dev>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240115211829.48251-1-luke@ljones.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, 16 Jan 2024 at 12:25, Ritesh Kumar (QUIC)
-<quic_riteshk@quicinc.com> wrote:
->
->
-> >-----Original Message-----
-> >From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> >Sent: Tuesday, January 16, 2024 3:30 PM
-> >To: Ritesh Kumar (QUIC) <quic_riteshk@quicinc.com>
-> >Cc: andersson@kernel.org; konrad.dybcio@linaro.org; robh+dt@kernel.org;
-> >krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
-> >catalin.marinas@arm.com; will@kernel.org; Bjorn Andersson (QUIC)
-> ><quic_bjorande@quicinc.com>; geert+renesas@glider.be; arnd@arndb.de;
-> >neil.armstrong@linaro.org; nfraprado@collabora.com;
-> >m.szyprowski@samsung.com; linux-arm-msm@vger.kernel.org;
-> >devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; linux-arm-
-> >kernel@lists.infradead.org; Abhinav Kumar (QUIC)
-> ><quic_abhinavk@quicinc.com>; Rajeev Nandan (QUIC)
-> ><quic_rajeevny@quicinc.com>; Vishnuvardhan Prodduturi (QUIC)
-> ><quic_vproddut@quicinc.com>
-> >Subject: Re: [PATCH 1/2] arm64: defconfig: enable Novatek NT36672E DSI
-> >Panel driver
+Hi,
 
-This is ugly. Please fix your email setup.
+On 1/15/24 22:18, Luke D. Jones wrote:
+> Add myself as maintainer for "ASUS NOTEBOOKS AND EEEPC ACPI/WMI EXTRAS
+> DRIVERS" as suggested by Hans de Goede based on my history of
+> contributions.
+> 
+> Signed-off-by: Luke D. Jones <luke@ljones.dev>
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index f5c2450fa4ec..e7843beaa589 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3147,6 +3147,7 @@ F:	drivers/hwmon/asus-ec-sensors.c
+>  
+>  ASUS NOTEBOOKS AND EEEPC ACPI/WMI EXTRAS DRIVERS
+>  M:	Corentin Chary <corentin.chary@gmail.com>
+> +M:	Luke D. Jones <luke@lones.dev>
 
-> >
-> >On Tue, 16 Jan 2024 at 11:49, Ritesh Kumar <quic_riteshk@quicinc.com>
-> >wrote:
-> >>
-> >> Build the Novatek NT36672E DSI Panel driver as module.
-> >
-> >... because it is used on ....
-> >
->
-> Thanks, will update in next version.
->
-> >>
-> >> Signed-off-by: Ritesh Kumar <quic_riteshk@quicinc.com>
-> >> ---
-> >>  arch/arm64/configs/defconfig | 1 +
-> >>  1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/arch/arm64/configs/defconfig
-> >> b/arch/arm64/configs/defconfig index 361c31b5d064..028d80be95f6
-> >100644
-> >> --- a/arch/arm64/configs/defconfig
-> >> +++ b/arch/arm64/configs/defconfig
-> >> @@ -859,6 +859,7 @@ CONFIG_DRM_PANEL_LVDS=m
-> >CONFIG_DRM_PANEL_SIMPLE=m
-> >> CONFIG_DRM_PANEL_EDP=m  CONFIG_DRM_PANEL_ILITEK_ILI9882T=m
-> >> +CONFIG_DRM_PANEL_NOVATEK_NT36672E=m
-> >>  CONFIG_DRM_PANEL_MANTIX_MLAF057WE51=m
-> >>  CONFIG_DRM_PANEL_RAYDIUM_RM67191=m
-> >>  CONFIG_DRM_PANEL_SITRONIX_ST7703=m
-> >> --
-> >> 2.17.1
-> >>
->
-> Thanks,
-> Ritesh
+heh there is a typo there that should be @ljones.dev ,
+I have fixed this up now in my review-hans branch.
+
+Regards,
+
+Hans
 
 
+>  L:	acpi4asus-user@lists.sourceforge.net
+>  L:	platform-driver-x86@vger.kernel.org
+>  S:	Maintained
 
--- 
-With best wishes
-Dmitry
 
