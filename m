@@ -1,165 +1,85 @@
-Return-Path: <linux-kernel+bounces-28326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CC1182FCF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:34:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1799082FCF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:35:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A12B61F2A434
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:34:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5A191F29712
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:35:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 834FF40BF8;
-	Tue, 16 Jan 2024 21:58:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DfwV6uuc"
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D3F241C71;
+	Tue, 16 Jan 2024 22:00:42 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6973D208D3
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 21:58:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCF151DA2C;
+	Tue, 16 Jan 2024 22:00:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705442313; cv=none; b=BluzdE4OO6/5WlzosgMG3Jjp9EuqHoxGzCSBbsxHRaeGZ//YH5ddVZK286cfaMTgJN4AGpMu5Wnog4n0CGBo4c/rm0fvMfSUnlzNQxJDJ/9t3cAAi8BNae5hsVX3lwyfoLRQ2BH/EoZg6vLF02Yv5R568naSrWRWXGkZcuKZrS0=
+	t=1705442441; cv=none; b=eE9gYjU6Q9zYxnSZe4vgK9FCaFl4uUSQVq1p7pzC4qS0b58bjGNd9kWvB/eIlptFWjDjfU9lvO2qnYkIcfu6443SpYeuBIT/qrN1KbI0NGG4PkbseFH8zYx/DaFed6RZb1CN3xRcVVOAkXYJxaDFHt0jR752c/uqFeIEYD0FtJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705442313; c=relaxed/simple;
-	bh=tYV2v2ZK76kq4jutmjqloA75EDuiOR6iltoW7jUGdDo=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=ld7/veOtbWKkoxmSS5hsoYzMxz/qYPw2BixZKHK9wUp4KxseRIS53sqi/J2Q+Nsh/g/sazvLeJORJ7R1683E3YUgv6IMSGKBH8vKAPProacmDXQWW/WcTkEQkkSKcQcW9jSfUPN/9Zh5IjAKK0ZpxILpmyz3c31Fhh9fj6b4YKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DfwV6uuc; arc=none smtp.client-ip=209.85.221.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-4b978e5e240so818335e0c.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 13:58:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705442310; x=1706047110; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UM17XEtXwoJG5qURPoDZ6ip2BPJ/BbKfK3ArAY10wg4=;
-        b=DfwV6uucs2xc76XBFPz9tvvv7DUMG0f3atP5RNcUIpTM42IB5yU9HHpcKhMzEJzTSK
-         Eg0PFJWVx6kzmx0Qb0nmmS4jf+2tAi9r8jZiwQEmPF3/11cUMfJ+FBaTTJKys2ugVgsn
-         NDm7UvXH4gMtqlnGbVpWLuSEKVvEzAzrObZMHFx7+rGRZRDt2POf9Hgp27ij/j6hLhUb
-         QICHtrw0wELNakBC7ulwOnQOdB/CiRkyUwbVeRTQtBOgpXfYFKmUee9m+qpxqj1sf+8Q
-         DLUt7YMSpSm2EYokrQVLAjC9uc7MAof5VTWcbUdardZGI6q/jdYZp3DT+HFHVpxr07H6
-         sadA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705442310; x=1706047110;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UM17XEtXwoJG5qURPoDZ6ip2BPJ/BbKfK3ArAY10wg4=;
-        b=YOPVbISCAdTUpcZNchTwCzAoUgVgp8MJag1JA+hJzFv6sfZ0OsUz7jHUFK5AHPGjW8
-         K9w3btbF521mFZTL4RUhVwuH1M9NXnBZNqdAlXsUXnolriU/eVvG86ptfmqKEt5tnIP2
-         NLb0bkx5ma8UEuRBdnEem8SLyXZGN90OwbkCPRyrJQbJgPDWybrEiTMUtC6vNeCsl6bM
-         i+SWAvqPKyX35xK+fzfKKdThFp403XhdZedsVXgUnTZ+iMuvMek4guXOvXLK7+UmPi5q
-         q6Zg2j99Am2YO6oM7ZyTjf8AfF0t4sCZopmpalBebyjsjNpOuZXv1RB+JzepfJ6Pbqpc
-         wz3w==
-X-Gm-Message-State: AOJu0YyKqIUEYSUyyIBgt/7efdAziqh3Te7nbbmzYIBTToXJNZzGOV4b
-	gBcx4ppmOamgZ6d66901/y2nUeH8WPAqHjgfvSk=
-X-Google-Smtp-Source: AGHT+IHNq7SRiGzII1ZMvV3Nor4XcBcLaLAvx0JhsT11NjNzBhH7AqPeJOWPQwNrJEaYg/ib3lul2W01EuURQx9+MP0=
-X-Received: by 2002:ac5:c5d7:0:b0:4b7:45b7:63fc with SMTP id
- g23-20020ac5c5d7000000b004b745b763fcmr3079766vkl.33.1705442310109; Tue, 16
- Jan 2024 13:58:30 -0800 (PST)
+	s=arc-20240116; t=1705442441; c=relaxed/simple;
+	bh=rBdhBSdBHxB0phUx9UosP1F8D0qiFA4eia10mackJ5s=;
+	h=Received:Date:From:To:Cc:Subject:Message-ID:In-Reply-To:
+	 References:X-Mailer:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding; b=i0hSf/z3n0Upn7KH2g1RylzL4Fd/NPorGlwiVb5rVG2f3HL52t6j00n0tSBJYK3ZQlfgYSG3LufG1x8CCtKluTzZ5svXu0MWYcRZ6j6cMdBc1Z62wsqORcSoAqr/6KQNTtV/fe5iusO4KRhMozYtH5R1XEg4E14l9XnuNJYuDp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28402C433F1;
+	Tue, 16 Jan 2024 22:00:40 +0000 (UTC)
+Date: Tue, 16 Jan 2024 17:01:54 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Trace
+ Kernel <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner
+ <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, Ajay Kaher
+ <ajay.kaher@broadcom.com>, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH v2 2/2] eventfs: Create list of files and directories at
+ dir open
+Message-ID: <20240116170154.5bf0a250@gandalf.local.home>
+In-Reply-To: <CAHk-=wgjSuapZoWfQZMyFi80wJE6a=vjOdgpy_k+YaWwbX9Pig@mail.gmail.com>
+References: <20240116211217.968123837@goodmis.org>
+	<20240116211353.573784051@goodmis.org>
+	<CAHk-=wgjSuapZoWfQZMyFi80wJE6a=vjOdgpy_k+YaWwbX9Pig@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240116141138.1245-1-qwjhust@gmail.com>
-In-Reply-To: <20240116141138.1245-1-qwjhust@gmail.com>
-From: Daeho Jeong <daeho43@gmail.com>
-Date: Tue, 16 Jan 2024 13:58:18 -0800
-Message-ID: <CACOAw_yL7fLmjLkK29yEb3hgTqoDO2hntOX5LMHmWjZWWix1ig@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH v1] f2fs: fix NULL pointer dereference in f2fs_submit_page_write()
-To: Wenjie Qi <qwjhust@gmail.com>
-Cc: jaegeuk@kernel.org, chao@kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
-	hustqwj@hust.edu.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 16, 2024 at 6:13=E2=80=AFAM Wenjie Qi <qwjhust@gmail.com> wrote=
-:
->
-> BUG: kernel NULL pointer dereference, address: 0000000000000014
-> RIP: 0010:f2fs_submit_page_write+0x6cf/0x780 [f2fs]
-> Call Trace:
-> <TASK>
-> ? show_regs+0x6e/0x80
-> ? __die+0x29/0x70
-> ? page_fault_oops+0x154/0x4a0
-> ? prb_read_valid+0x20/0x30
-> ? __irq_work_queue_local+0x39/0xd0
-> ? irq_work_queue+0x36/0x70
-> ? do_user_addr_fault+0x314/0x6c0
-> ? exc_page_fault+0x7d/0x190
-> ? asm_exc_page_fault+0x2b/0x30
-> ? f2fs_submit_page_write+0x6cf/0x780 [f2fs]
-> ? f2fs_submit_page_write+0x736/0x780 [f2fs]
-> do_write_page+0x50/0x170 [f2fs]
-> f2fs_outplace_write_data+0x61/0xb0 [f2fs]
-> f2fs_do_write_data_page+0x3f8/0x660 [f2fs]
-> f2fs_write_single_data_page+0x5bb/0x7a0 [f2fs]
-> f2fs_write_cache_pages+0x3da/0xbe0 [f2fs]
-> ...
-> It is possible that other threads have added this fio to io->bio
-> and submitted the io->bio before entering f2fs_submit_page_write().
-> At this point io->bio =3D NULL.
-> If is_end_zone_blkaddr(sbi, fio->new_blkaddr) of this fio is true,
-> then an NULL pointer dereference error occurs at bio_get(io->bio).
-> The original code for determining zone end was after "out:",
-> which would have missed some fio who is zone end. I've moved
->  this code before "skip:" to make sure it's done for each fio.
->
-> Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
-> ---
->  fs/f2fs/data.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index dce8defdf4c7..4f445906db8b 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -1080,10 +1080,6 @@ void f2fs_submit_page_write(struct f2fs_io_info *f=
-io)
->         io->last_block_in_bio =3D fio->new_blkaddr;
->
->         trace_f2fs_submit_page_write(fio->page, fio);
-> -skip:
-> -       if (fio->in_list)
-> -               goto next;
-> -out:
->  #ifdef CONFIG_BLK_DEV_ZONED
->         if (f2fs_sb_has_blkzoned(sbi) && btype < META &&
->                         is_end_zone_blkaddr(sbi, fio->new_blkaddr)) {
-> @@ -1096,6 +1092,10 @@ void f2fs_submit_page_write(struct f2fs_io_info *f=
-io)
->                 __submit_merged_bio(io);
->         }
->  #endif
-> +skip:
-> +       if (fio->in_list)
-> +               goto next;
-> +out:
+On Tue, 16 Jan 2024 13:39:38 -0800
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-How about moving only the "out" label instead of the whole block from
-"skip" to "out"?
+> I don't understand why your still insist on this pointless open wrapper.
 
->         if (is_sbi_flag_set(sbi, SBI_IS_SHUTDOWN) ||
->                                 !f2fs_is_checkpoint_ready(sbi))
->                 __submit_merged_bio(io);
-> --
-> 2.34.1
->
->
->
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+I just liked the consistency of it.
+
+> 
+> Just do this all at iterate time. No open wrappers. No nothing. Just
+> iterate over the days structures your have.
+> 
+> IOW, instead of iterating in open to create the array, just iterate in -
+> look, it's in the *name* for chrissake - iterate_shared.
+> 
+> No array. No random allocation for said array.
+> 
+> If you can iterate at open time, you can iterate at iterate_shared time.
+> Stop creating a list that your already have.
+> 
+> And nobody cares if you do a readdir at the same time as modifying the
+> directory. This isn't a real filesystem with strict POSIX semantics.
+
+OK, I can do that.
+
+-- Steve
+
 
