@@ -1,165 +1,220 @@
-Return-Path: <linux-kernel+bounces-27259-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27260-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4350A82ECDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:42:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EC4D82ECDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:43:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 472F71C230F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:42:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E998B22AE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:43:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E48713AFC;
-	Tue, 16 Jan 2024 10:42:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A188E13AEB;
+	Tue, 16 Jan 2024 10:43:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Vaz0DSAQ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="R0koWecI"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4306C13AC4;
-	Tue, 16 Jan 2024 10:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705401727; x=1736937727;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2Ww94hOka7bc310crAy9GxymCCMXbFrTe/1MjrnzhhE=;
-  b=Vaz0DSAQrzkmY9Dx2MQejJVCIiHHSuQcJCzlTWLsXFYCUax4Oq7sPVum
-   0wksH1A7RTPAWCcLt2cRTSBn83DRz5c/U8aK0usVgCLCUfz6kDjAj7nZE
-   35cHcyt/aMijq8UHxgTXy06wmYyhqkg2yqYMt7GOgT/vXXBazk+k6Ig5m
-   kxzY6rNrYfUpJhMvzHwQDxrfsMt88pP8W9VK3G+b+KGSKoHra32gz7GiU
-   B2RsI4S7p42Gn6spogGoSjQDJLMKKwxxCV4dacHEn89UE1FtkTGDEXU8n
-   CrDKfVTdaRFe9JjD8MsdT3Wh2BN0nAu41PQhT4W+GxWS0/w/+fVosaAi3
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="396980935"
-X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
-   d="scan'208";a="396980935"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 02:42:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
-   d="scan'208";a="32413533"
-Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
-  by orviesa001.jf.intel.com with ESMTP; 16 Jan 2024 02:42:02 -0800
-Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rPgtK-0000ZY-2i;
-	Tue, 16 Jan 2024 10:41:58 +0000
-Date: Tue, 16 Jan 2024 18:41:56 +0800
-From: kernel test robot <lkp@intel.com>
-To: Mao Jinlong <quic_jinlmao@quicinc.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mike Leach <mike.leach@linaro.org>,
-	James Clark <james.clark@arm.com>, Leo Yan <leo.yan@linaro.org>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: oe-kbuild-all@lists.linux.dev, Mao Jinlong <quic_jinlmao@quicinc.com>,
-	coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] coresight: core: Add device name support
-Message-ID: <202401161834.N4E6YW3K-lkp@intel.com>
-References: <20240115164252.26510-2-quic_jinlmao@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DADB134DA;
+	Tue, 16 Jan 2024 10:42:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705401777;
+	bh=QheYevpPKWLtwlqs9yJuw0+el/TYi4lzg9WtACT2oa8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=R0koWecIS+76AQMz2BNKVgqJsSFj7UiiAkg4hGSMbxc3bxLcahgGOP/b61Fwim6/H
+	 8+UHCB1pGbqQ6gBO2hNn4LrDiMKyo09Tea1LjI3A8By+SmZgfEs076BEUXGAUVJy4m
+	 vOpEebvFnrkzqVQ0VDjPq1SLR6M5gm0HIp696729ajm7ZdztZOEPSsWj+vJm1uhNHl
+	 ZhxhiglvdpDJJ4ehGfwX+mEyRt1jH4qobhBClIWNKjGV1IOga8NpTIdRReNXqAOJGi
+	 uLi5LNf2tBBD76jvnE9MI7HVbEK9VfE1Y0AxAj3lK2LDR3ChxSVJBSuePHiuAtDOBx
+	 4oAW2naBxPK6A==
+Received: from [100.93.89.217] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: benjamin.gaignard)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4CF9437811F1;
+	Tue, 16 Jan 2024 10:42:57 +0000 (UTC)
+Message-ID: <60c942d8-e0bd-4609-8fc4-1e80102ac051@collabora.com>
+Date: Tue, 16 Jan 2024 11:42:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240115164252.26510-2-quic_jinlmao@quicinc.com>
-
-Hi Mao,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on robh/for-next]
-[also build test WARNING on linus/master v6.7 next-20240112]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Mao-Jinlong/coresight-core-Add-device-name-support/20240116-004557
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/20240115164252.26510-2-quic_jinlmao%40quicinc.com
-patch subject: [PATCH v2 1/2] coresight: core: Add device name support
-config: arm64-defconfig (https://download.01.org/0day-ci/archive/20240116/202401161834.N4E6YW3K-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240116/202401161834.N4E6YW3K-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401161834.N4E6YW3K-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/hwtracing/coresight/coresight-core.c: In function 'coresight_alloc_device_name':
->> drivers/hwtracing/coresight/coresight-core.c:1775:14: warning: assignment discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-    1775 |         name = coresight_get_device_name(dev);
-         |              ^
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v16 7/8] media: v4l2: Add mem2mem helpers for DELETE_BUFS
+ ioctl
+Content-Language: en-US
+To: Hans Verkuil <hverkuil@xs4all.nl>, mchehab@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ kernel@collabora.com
+References: <20231215090813.15610-1-benjamin.gaignard@collabora.com>
+ <20231215090813.15610-8-benjamin.gaignard@collabora.com>
+ <6b0e4c6b-493c-4916-ab3c-deeeb725fdec@xs4all.nl>
+From: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+In-Reply-To: <6b0e4c6b-493c-4916-ab3c-deeeb725fdec@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-vim +/const +1775 drivers/hwtracing/coresight/coresight-core.c
+Le 15/01/2024 à 17:50, Hans Verkuil a écrit :
+> On 15/12/2023 10:08, Benjamin Gaignard wrote:
+>> Create v4l2-mem2mem helpers for VIDIOC_DELETE_BUFS ioctl.
+>>
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>> ---
+>>   .../media/platform/verisilicon/hantro_drv.c   |  1 +
+>>   .../media/platform/verisilicon/hantro_v4l2.c  |  1 +
+>>   drivers/media/test-drivers/vim2m.c            |  2 ++
+> The driver changes should be done in a separate patch.
+>
+>>   drivers/media/v4l2-core/v4l2-mem2mem.c        | 20 +++++++++++++++++++
+>>   include/media/v4l2-mem2mem.h                  | 12 +++++++++++
+>>   5 files changed, 36 insertions(+)
+>>
+>> diff --git a/drivers/media/platform/verisilicon/hantro_drv.c b/drivers/media/platform/verisilicon/hantro_drv.c
+>> index db3df6cc4513..f6b0a676a740 100644
+>> --- a/drivers/media/platform/verisilicon/hantro_drv.c
+>> +++ b/drivers/media/platform/verisilicon/hantro_drv.c
+>> @@ -248,6 +248,7 @@ queue_init(void *priv, struct vb2_queue *src_vq, struct vb2_queue *dst_vq)
+>>   	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+>>   	dst_vq->lock = &ctx->dev->vpu_mutex;
+>>   	dst_vq->dev = ctx->dev->v4l2_dev.dev;
+>> +	src_vq->supports_delete_bufs = true;
+> Isn't this something that can be supported for both queues?
 
-  1758	
-  1759	/*
-  1760	 * coresight_alloc_device_name - Get an index for a given device in the
-  1761	 * device index list specific to a driver. An index is allocated for a
-  1762	 * device and is tracked with the fwnode_handle to prevent allocating
-  1763	 * duplicate indices for the same device (e.g, if we defer probing of
-  1764	 * a device due to dependencies), in case the index is requested again.
-  1765	 */
-  1766	char *coresight_alloc_device_name(struct coresight_dev_list *dict,
-  1767					  struct device *dev)
-  1768	{
-  1769		int idx;
-  1770		char *name = NULL;
-  1771		struct fwnode_handle **list;
-  1772	
-  1773		mutex_lock(&coresight_mutex);
-  1774	
-> 1775		name = coresight_get_device_name(dev);
-  1776		if (!name) {
-  1777			idx = coresight_search_device_idx(dict, dev_fwnode(dev));
-  1778			if (idx < 0) {
-  1779				/* Make space for the new entry */
-  1780				idx = dict->nr_idx;
-  1781				list = krealloc_array(dict->fwnode_list,
-  1782						      idx + 1, sizeof(*dict->fwnode_list),
-  1783						      GFP_KERNEL);
-  1784				if (ZERO_OR_NULL_PTR(list)) {
-  1785					idx = -ENOMEM;
-  1786					goto done;
-  1787				}
-  1788	
-  1789				list[idx] = dev_fwnode(dev);
-  1790				dict->fwnode_list = list;
-  1791				dict->nr_idx = idx + 1;
-  1792			}
-  1793	
-  1794			name = devm_kasprintf(dev, GFP_KERNEL, "%s%d", dict->pfx, idx);
-  1795		}
-  1796	done:
-  1797		mutex_unlock(&coresight_mutex);
-  1798		return name;
-  1799	}
-  1800	EXPORT_SYMBOL_GPL(coresight_alloc_device_name);
-  1801	
+For me it isn't useful to support it on the both queues because
+only capture queue will store unused buffers after a dynamic
+resolution change. Output queue buffers are smaller and always
+recycled even after a dynamic resolution change.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+>>   
+>>   	return vb2_queue_init(dst_vq);
+>>   }
+>> diff --git a/drivers/media/platform/verisilicon/hantro_v4l2.c b/drivers/media/platform/verisilicon/hantro_v4l2.c
+>> index 941fa23c211a..34eab90e8a42 100644
+>> --- a/drivers/media/platform/verisilicon/hantro_v4l2.c
+>> +++ b/drivers/media/platform/verisilicon/hantro_v4l2.c
+>> @@ -756,6 +756,7 @@ const struct v4l2_ioctl_ops hantro_ioctl_ops = {
+>>   	.vidioc_dqbuf = v4l2_m2m_ioctl_dqbuf,
+>>   	.vidioc_prepare_buf = v4l2_m2m_ioctl_prepare_buf,
+>>   	.vidioc_create_bufs = v4l2_m2m_ioctl_create_bufs,
+>> +	.vidioc_delete_bufs = v4l2_m2m_ioctl_delete_bufs,
+>>   	.vidioc_expbuf = v4l2_m2m_ioctl_expbuf,
+>>   
+>>   	.vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
+>> diff --git a/drivers/media/test-drivers/vim2m.c b/drivers/media/test-drivers/vim2m.c
+>> index 3e3b424b4860..17213ce42059 100644
+>> --- a/drivers/media/test-drivers/vim2m.c
+>> +++ b/drivers/media/test-drivers/vim2m.c
+>> @@ -960,6 +960,7 @@ static const struct v4l2_ioctl_ops vim2m_ioctl_ops = {
+>>   	.vidioc_dqbuf		= v4l2_m2m_ioctl_dqbuf,
+>>   	.vidioc_prepare_buf	= v4l2_m2m_ioctl_prepare_buf,
+>>   	.vidioc_create_bufs	= v4l2_m2m_ioctl_create_bufs,
+>> +	.vidioc_delete_bufs	= v4l2_m2m_ioctl_delete_bufs,
+>>   	.vidioc_expbuf		= v4l2_m2m_ioctl_expbuf,
+>>   
+>>   	.vidioc_streamon	= v4l2_m2m_ioctl_streamon,
+>> @@ -1133,6 +1134,7 @@ static int queue_init(void *priv, struct vb2_queue *src_vq,
+>>   	dst_vq->mem_ops = &vb2_vmalloc_memops;
+>>   	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+>>   	dst_vq->lock = &ctx->vb_mutex;
+>> +	dst_vq->supports_delete_bufs = true;
+> Same question.
+
+I want to test something similar to what the real use case does.
+
+>
+>>   
+>>   	return vb2_queue_init(dst_vq);
+>>   }
+>> diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
+>> index 9e983176542b..dbc4711fc556 100644
+>> --- a/drivers/media/v4l2-core/v4l2-mem2mem.c
+>> +++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
+>> @@ -834,6 +834,17 @@ int v4l2_m2m_prepare_buf(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
+>>   }
+>>   EXPORT_SYMBOL_GPL(v4l2_m2m_prepare_buf);
+>>   
+>> +int v4l2_m2m_delete_bufs(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
+>> +			 struct v4l2_delete_buffers *d)
+>> +{
+>> +	struct vb2_queue *vq;
+>> +
+>> +	vq = v4l2_m2m_get_vq(m2m_ctx, d->type);
+> These 3 lines can be combined into one.
+>
+>> +
+>> +	return vb2_delete_bufs(vq, d);
+>> +}
+>> +EXPORT_SYMBOL_GPL(v4l2_m2m_delete_bufs);
+> I'm not sure we need to export this. Drivers should really just use the
+> v4l2_m2m_ioctl_ variant below.
+
+ok
+
+regards,
+Benjamin
+
+>
+>> +
+>>   int v4l2_m2m_create_bufs(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
+>>   			 struct v4l2_create_buffers *create)
+>>   {
+>> @@ -1380,6 +1391,15 @@ int v4l2_m2m_ioctl_create_bufs(struct file *file, void *priv,
+>>   }
+>>   EXPORT_SYMBOL_GPL(v4l2_m2m_ioctl_create_bufs);
+>>   
+>> +int v4l2_m2m_ioctl_delete_bufs(struct file *file, void *priv,
+>> +			       struct v4l2_delete_buffers *d)
+>> +{
+>> +	struct v4l2_fh *fh = file->private_data;
+>> +
+>> +	return v4l2_m2m_delete_bufs(file, fh->m2m_ctx, d);
+>> +}
+>> +EXPORT_SYMBOL_GPL(v4l2_m2m_ioctl_delete_bufs);
+>> +
+>>   int v4l2_m2m_ioctl_querybuf(struct file *file, void *priv,
+>>   				struct v4l2_buffer *buf)
+>>   {
+>> diff --git a/include/media/v4l2-mem2mem.h b/include/media/v4l2-mem2mem.h
+>> index 7f1af1f7f912..5314952ad3d5 100644
+>> --- a/include/media/v4l2-mem2mem.h
+>> +++ b/include/media/v4l2-mem2mem.h
+>> @@ -388,6 +388,16 @@ int v4l2_m2m_dqbuf(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
+>>   int v4l2_m2m_prepare_buf(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
+>>   			 struct v4l2_buffer *buf);
+>>   
+>> +/**
+>> + * v4l2_m2m_delete_bufs() - delete buffers from the queue
+>> + *
+>> + * @file: pointer to struct &file
+>> + * @m2m_ctx: m2m context assigned to the instance given by struct &v4l2_m2m_ctx
+>> + * @d: pointer to struct &v4l2_delete_buffers
+>> + */
+>> +int v4l2_m2m_delete_bufs(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
+>> +			 struct v4l2_delete_buffers *d);
+>> +
+>>   /**
+>>    * v4l2_m2m_create_bufs() - create a source or destination buffer, depending
+>>    * on the type
+>> @@ -867,6 +877,8 @@ int v4l2_m2m_ioctl_reqbufs(struct file *file, void *priv,
+>>   				struct v4l2_requestbuffers *rb);
+>>   int v4l2_m2m_ioctl_create_bufs(struct file *file, void *fh,
+>>   				struct v4l2_create_buffers *create);
+>> +int v4l2_m2m_ioctl_delete_bufs(struct file *file, void *priv,
+>> +			       struct v4l2_delete_buffers *d);
+>>   int v4l2_m2m_ioctl_querybuf(struct file *file, void *fh,
+>>   				struct v4l2_buffer *buf);
+>>   int v4l2_m2m_ioctl_expbuf(struct file *file, void *fh,
+> Regards,
+>
+> 	Hans
+>
 
