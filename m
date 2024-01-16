@@ -1,214 +1,181 @@
-Return-Path: <linux-kernel+bounces-27368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B7D982EEC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:15:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBCF182EECB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:16:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D497DB230BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:15:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3B7E1C2320F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:16:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57DEB1B96B;
-	Tue, 16 Jan 2024 12:15:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C1051BC25;
+	Tue, 16 Jan 2024 12:16:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WtgTVIhA"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Th8sIBBv"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2058.outbound.protection.outlook.com [40.107.237.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB0121B81B
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 12:15:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55790581457so11210248a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 04:15:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705407329; x=1706012129; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=/kk/O+CBQq1j1li3fi1pfcRqWXCdCx2SuioSuSfFP1w=;
-        b=WtgTVIhACCEs5mx+Ws04Fc03pyV4aqMKnkNBNz6973jwJAwW6xjZ5KG+OWteNJkftW
-         RCUE689CkQ8C6nQ78q+tzRvO9xMp5XOnZEwLyLeMqdlQDKhX6hfVu+fWS+zsAvwjcmsx
-         p82JWtATHO51ecFOnhykc9qHsGiOb5XDyaZAhmdZJng2dW4w6+c4AmRZAY6EbwAhklPf
-         9ceqm9Hox1VN5BmRCQRj+Mdo/EdW2DAxyj3OeY9zTZfKehhlBoMCbuaycCY67EtAb4VI
-         oRF3k1zNTEV0y1aW2hyBMnmQFLnI2fr3EmdYiLa1/1/CRAq78opoPDXo23aInKBw3sMh
-         OfXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705407329; x=1706012129;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/kk/O+CBQq1j1li3fi1pfcRqWXCdCx2SuioSuSfFP1w=;
-        b=v/8B6fxLvPd7yAoYptjW+B8DsJY5vx7BEnT9tLVyA+knt0j1EDvKgftHfJU04FlCMu
-         da8FqR3US3A2agONoDzi10d3VWaohfugluvR2cRqQt1ec5rV0e1BErR156GZga5Z+7vx
-         LxhPqusE+iI0vFE+aBH7m5DCQzdEZrEaKcimdr9V2lvYBNnvqsBSrmIE5UnCSBkLvFeA
-         9AqE4pvjcqhXwTw8Du/JI2w7AvkL5o0Q1J/bG4auSIIMFIfE3XDB++EPjfAOGE/dgrU0
-         FmKxaEcBgWvFNFClLoKlrVA8oJYKud2dSuKaLRvcxgPymuw72Z8HthHvZIsI+1vlRoGs
-         Wc2A==
-X-Gm-Message-State: AOJu0YxVvikfVQPeOtvDXuRxk5YoyaLLEH12gHqbXgFbPeCSx0FXfk7w
-	MtUAFCSmI1iq9fUsPVDwi/VpOK2lbb3kzA==
-X-Google-Smtp-Source: AGHT+IEwxFWU0HVj73235n9DWQNSKJOTuUjeFLvXg7/pyeoQbu4ZnHrHCnBnuulNQwp8FgsBy2SMgg==
-X-Received: by 2002:aa7:d4cb:0:b0:54c:e28c:2086 with SMTP id t11-20020aa7d4cb000000b0054ce28c2086mr3923869edr.38.1705407329028;
-        Tue, 16 Jan 2024 04:15:29 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id s24-20020aa7cb18000000b00558e38d4c6asm5046806edt.93.2024.01.16.04.15.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jan 2024 04:15:28 -0800 (PST)
-Message-ID: <52c0b805-bcbb-47e5-bbac-e527e9dc57a6@linaro.org>
-Date: Tue, 16 Jan 2024 13:15:26 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 503081B944;
+	Tue, 16 Jan 2024 12:16:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=USXYMK5iWpQPOjR7H61oyqU4mlKuiFCRUjKczijWV2Xv9gUR4WSS7UaoVUzFnez/HDlQvobWuTz8u/3t0qY2SqL6ujAmYtTcM06CdJtE4B8tAF6mkmuypz+LXmni146IScecTlz7d0wAUbCTWBvT+xUL7Sj2iCuqWVK7etILk8zSJ5N9WTPbZgu798wSznn9ZlmMxs5yaBTAT2M91CGL4atbgiD/yiRGYu4OXpfQNUjhk/lxyj8xuFbarKreCvDgnDXmlWB0YwkBKh72qPutgXlbrIKpcTGvrrMfXzwyZrgQkXIIxYjEZY/q3iRHkt6v11zmrCeVzdEhH/Fkqp28pA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GAf+5D1fu/XTFqXZW1ylZ/gCZcvqn5DY65aBXODH4Y0=;
+ b=OFTrzyFtV0OBuYpdPlcFkrPOeHRlr/sdet1aY+w6uIMcpD5uRu7LO0NGuKrSuTmmSocObmgSxiqUwGkvfD7Z4TiZ2kLqdAnTL8JlVOrO6HqBsXdslNK7jOfKIEtW3S8vC/4KFF+PUTzSYptDe0DbWIf9yJP3rtOnObj+lAzLDmAX+rFRlVQDCM6+/Zthu5t1H3FduG5XHBMSb3S+84TRMASQObysowVXD0s+O2ZikdXYakpddEEyDXAr9WwIC+4qJLaT3BFU9AsOB3wCl0RFC+Okd/L38JphkXn5yL1qNQ6naSAepkaM5VMdW1isNrnKIVD2bqOJMu9i7yCtmEABIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GAf+5D1fu/XTFqXZW1ylZ/gCZcvqn5DY65aBXODH4Y0=;
+ b=Th8sIBBvfGJu1zEEgzRTkwXpKbXTYrKyBSv2eqi9U+NwQwwhrCQEFaqqTVowhgsIj2iyiv5c7+CK0+WF+j0inua/ld5O+4m1tiMU9lQgHY/A0cVZ1+wkjMX/GAevWzq5spNHtYxtGmDMrWE/Qb45V/ZArPXpqwr85IsPY2rCV0T+Qm+y9GxK07rw7c+qoc40BwOjQV6OF2s5as3ks2pFkB/vH5ODWUJwAo6JyBqxD7uxidJvXGDbopJAHysm7VQ5/rM4CMAcCtyk/O51LN1W6gYTxAfYF4hRwKOSO6eyuC7SuXZ2F3LZtr7SgFoBulUiZrOON0Pu4BiQwnxCfGJwkw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by CY5PR12MB6526.namprd12.prod.outlook.com (2603:10b6:930:31::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.18; Tue, 16 Jan
+ 2024 12:16:12 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::96dd:1160:6472:9873]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::96dd:1160:6472:9873%6]) with mapi id 15.20.7181.020; Tue, 16 Jan 2024
+ 12:16:12 +0000
+Date: Tue, 16 Jan 2024 08:16:11 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: Mina Almasry <almasrymina@google.com>, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+	Shakeel Butt <shakeelb@google.com>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Subject: Re: [RFC PATCH net-next v5 2/2] net: add netmem to skb_frag_t
+Message-ID: <20240116121611.GY734935@nvidia.com>
+References: <20240109011455.1061529-1-almasrymina@google.com>
+ <20240109011455.1061529-3-almasrymina@google.com>
+ <5219f2cd-6854-0134-560d-8ae3f363b53f@huawei.com>
+ <CAHS8izOtr+jfqQ6xCB3CoN-K_V1-4hPsB4-k5+1z-M3Qy2BbwA@mail.gmail.com>
+ <0711845b-c435-251f-0bbc-20b243721c06@huawei.com>
+ <CAHS8izOxvMVGXKpLBvVgyyS5_94WGG8Aca=O_zGMX+db-3gBXg@mail.gmail.com>
+ <66bc7b8f-51b6-0d9e-db5b-47e7ee5e9029@huawei.com>
+ <CAHS8izOnhtQGeQ-EFmYjZyZ0eW2LqO0Rrm73eAB2su=UA34yTw@mail.gmail.com>
+ <20240116000129.GX734935@nvidia.com>
+ <9c1a6725-c4c3-2bb1-344f-5e71f8ce7e63@huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9c1a6725-c4c3-2bb1-344f-5e71f8ce7e63@huawei.com>
+X-ClientProxiedBy: BLAPR03CA0123.namprd03.prod.outlook.com
+ (2603:10b6:208:32e::8) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 2/5] dt-bindings: soc: sophgo: Add Sophgo system
- control module
-To: Chen Wang <unicorn_wang@outlook.com>, Chen Wang <unicornxw@gmail.com>,
- aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
- palmer@dabbelt.com, paul.walmsley@sifive.com, richardcochran@gmail.com,
- robh+dt@kernel.org, sboyd@kernel.org, devicetree@vger.kernel.org,
- linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-riscv@lists.infradead.org, haijiao.liu@sophgo.com,
- xiaoguang.xing@sophgo.com, guoren@kernel.org, jszhang@kernel.org,
- inochiama@outlook.com, samuel.holland@sifive.com
-References: <cover.1705388518.git.unicorn_wang@outlook.com>
- <598b1026fdf9989bc48e5e10d1034b37947d3b80.1705388518.git.unicorn_wang@outlook.com>
- <f4a46311-2e12-458b-98a8-d3caa2c95517@linaro.org>
- <MA0P287MB282232DC6DF6290F5520BA89FE732@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <MA0P287MB282232DC6DF6290F5520BA89FE732@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CY5PR12MB6526:EE_
+X-MS-Office365-Filtering-Correlation-Id: ce765626-33cd-4943-dd57-08dc168cedeb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	h7IcwKden+yL1d6GEb6PXSNCkY2vAjNTXYZOUri0QLsIrDumpWZMxKOs0g4aiYLdvG1XwusMP0E4+Ksx26pu/dJaZfVli2UzT7pYq3bigBK74xwCJXdeZ/Gwqey4ng/6XsmnTISNmi2C+RItgX4E0439UY8qDXCf9NuWSPO79O74c+SGtQ/e0kZJeinzDz8LInSApDZ3pK2G3seObk68hsGFDvTDJXHPDyxnzP+632orBM38dmJ+0Aj5nfn31GfuF9cHvkZfdJnXENtuLUF9pvdz5jJsEn/SIHKWW8NY9TweFjYCtwH/5DyeUccXDopEj6VJClTAB6v1wq9w9uhPQaA3j1rXMaX0AQVhe50DySMq1b5z33RDxvAFQwHa1jKZzqm0ukKQbYkxRcUJoThk2HHjhmqlUnK1A1odiKb40iJnXUxo9N9p1/mAA+xMJ/2J87Ksy12jHTeZVX0Z2B8d2qXg0i+Cj8lz4QL1YMaCkmcg8FIo8gOD5uHTjxNgclaaUbWAvzVQqZeujB4oDhpDy9SpAeN4ozdmACsUagEJ4xq/BOidNNKYNid61Auz/sjIpjtfCz0vL69cmYCSPYVkKrYiFVjl8SH/oKM4LgyFThpsO+ocWtuHV/h51G2tTvt+
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(376002)(136003)(346002)(366004)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(6506007)(33656002)(53546011)(26005)(2616005)(478600001)(1076003)(6512007)(5660300002)(38100700002)(86362001)(36756003)(41300700001)(66946007)(83380400001)(7416002)(2906002)(4326008)(8936002)(66556008)(6916009)(6486002)(316002)(66476007)(54906003)(8676002)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?8ybCN4ESvJEolQQM1MBMWaVR5ASfu1Ume5ANDojGflElDbx1qfvs79QhjHKX?=
+ =?us-ascii?Q?8cp1aXqhZWj74Gyi7utjiJ5onF2zsPzqsplPsPwaJm9H8SEFpgFh/3BiKfp1?=
+ =?us-ascii?Q?K7uvTpY9Y9/Atd8CvWxRTOppUotdMsHJBmdfdGu7m3mGFbzv5NnXiKKrRjLX?=
+ =?us-ascii?Q?yEpQeDeoe0LfcqD8LkIajfW0vmG4nwk890mCErXmUsAJ4OS5kKKw0E0s2CVf?=
+ =?us-ascii?Q?bvIkqlSKcupq69x71nIIRB8LP+4r+A10muSwPH0PUvxlSF4e1sgVsRo37oFp?=
+ =?us-ascii?Q?bizJuef2j8awT2IZN76ApshdQauMOGA9FWpUHu7YAG2dfvcwjaZuMKWz+7Kb?=
+ =?us-ascii?Q?LUUkCruqqmyKjW4A8frY08SxNSFH7znIvNEPy6y1N4yydKHhaRaVn3Cr+8JX?=
+ =?us-ascii?Q?9c63VvMfXFeNePzKuj+8MBvtesKffEbkcd6agVC0UVp9s2dj9uGPVDJLihnz?=
+ =?us-ascii?Q?zFWinxMuZtm1dE0SNNL9oeP7R7XbKLk589TiJDM8wXVSCUmzPB8ybr1Q1iJ3?=
+ =?us-ascii?Q?I3qFg5VjHYJdIOq3igscSPj9bZxJyDSBF9bnr35pfowcZrBp0SgbQSBcGWBY?=
+ =?us-ascii?Q?PGFWg/0/YcevayMJrs9+S8wG36OBVc2lZp+QHClzgPJWIgmLlJ767gJ2bgpH?=
+ =?us-ascii?Q?UvnuelfdGAFCbYHCUQIJsVj95LdAbgyQRJZEBPDUUQzwsfKCBa+ZVkXup9nE?=
+ =?us-ascii?Q?r9pCoBImWK+gHKnwppcKU+ztqYuYKikFvk6ZEU+TgwSBGBeXveUYHAJ5eWlB?=
+ =?us-ascii?Q?/72XOK0h6PTWWcV+xOv/lcyXCxgQDV+j0Mj67yIF+9I5krsIssB2mZuboopI?=
+ =?us-ascii?Q?5z2JTcxlTr4wn6Fbzc7zT1TUXHPsq5xXdzR3iqjEHAfuRcRbd8Fqzz+aycFR?=
+ =?us-ascii?Q?HKr7qKJG8QcGOmqRBxf6ndEgHYEMJc/19Mzbi1a3d5UJfn8VW0Eqi/U8AHZr?=
+ =?us-ascii?Q?/xEOR7/pseStOH16Xlroqf04tKkeFaNkVFIh3fOabtaSoMb+drxqrPRi/x0s?=
+ =?us-ascii?Q?UcbobGWeCgVSY+Dy3gbQiJ7mgpynquxEyoEH4GB5kKDXErVcSrjVNV58Ck2v?=
+ =?us-ascii?Q?jDoBYdT/sI7zdwfuG9RdEX3cLDe44RSVks9U/LViSrr2ELRfF/HPUQqBoEmp?=
+ =?us-ascii?Q?5KU7lTiMOmE82Z8NLSm3aCqvBpsj7Gbs6DWO4zvRhcYAaeplvU/xrS5lbXq+?=
+ =?us-ascii?Q?KSY8PvzmFj9jeHhy3tLAny7MMGBD/CXtBdO1l2rwehwSOioNu0H7oM6XOHRn?=
+ =?us-ascii?Q?xSQrka8Rc5mxgjOM5DPCCBDfaRP4W5PfBx2MYD9uzCadpVbzfXdB+QjZstiW?=
+ =?us-ascii?Q?PuxcFAFLe2IFlWrOArRrEG/1sO08F8XKDjoJ/RcC3quveJfi9QT82Mmmq3FM?=
+ =?us-ascii?Q?W7DG9qUDijbpZcOuAx6KLp57qjFxjhcIDM4rxvQkrir7W5HXSY0cuCPqqoMJ?=
+ =?us-ascii?Q?hoOVVj++pEzbTjD9zjkq390pTlD76a2tx3rZJnApuvXAHdg2nSy88ef167P9?=
+ =?us-ascii?Q?6t7/3bYtkvOFNHQQ7K4gHlVMlxdAOqK8x/UFPr7qb2cqoGVeElrTY/RCZcVs?=
+ =?us-ascii?Q?GZDIZv3+OG8AGdbhbMIwXBVMfAx4xTXQPpWKi2L3?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce765626-33cd-4943-dd57-08dc168cedeb
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2024 12:16:12.3779
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ysi1jYzSFjReI6xHC3WF9P0WOadl2nzklmfE4uO06bOSGUahImeK3/Kk6lhGGZlL
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6526
 
-On 16/01/2024 12:37, Chen Wang wrote:
+On Tue, Jan 16, 2024 at 07:04:13PM +0800, Yunsheng Lin wrote:
+> On 2024/1/16 8:01, Jason Gunthorpe wrote:
+> > On Mon, Jan 15, 2024 at 03:23:33PM -0800, Mina Almasry wrote:
+> >>>> You did not answer my question that I asked here, and ignoring this
+> >>>> question is preventing us from making any forward progress on this
+> >>>> discussion. What do you expect or want skb_frag_page() to do when
+> >>>> there is no page in the frag?
+> >>>
+> >>> I would expect it to do nothing.
+> >>
+> >> I don't understand. skb_frag_page() with an empty implementation just
+> >> results in a compiler error as the function needs to return a page
+> >> pointer. Do you actually expect skb_frag_page() to unconditionally
+> >> cast frag->netmem to a page pointer? That was explained as
+> >> unacceptable over and over again by Jason and Christian as it risks
+> >> casting devmem to page; completely unacceptable and will get nacked.
+> >> Do you have a suggestion of what skb_frag_page() should do that will
+> >> not get nacked by mm?
+> > 
+> > WARN_ON and return NULL seems reasonable?
 > 
-> On 2024/1/16 18:06, Krzysztof Kozlowski wrote:
->> On 16/01/2024 08:21, Chen Wang wrote:
->>> From: Chen Wang <unicorn_wang@outlook.com>
->>>
->>> Add documentation to describe Sophgo System Control for SG2042.
->>>
->>> Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
->>> ---
->>>   .../soc/sophgo/sophgo,sg2042-sysctrl.yaml     | 46 +++++++++++++++++++
->>>   1 file changed, 46 insertions(+)
->>>   create mode 100644 Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml
->>>
->>> diff --git a/Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml b/Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml
->>> new file mode 100644
->>> index 000000000000..7b50bb56b4cf
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml
->>> @@ -0,0 +1,46 @@
->>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->>> +%YAML 1.2
->>> +---
->>> +$id: http://devicetree.org/schemas/soc/sophgo/sophgo,sg2042-sysctrl.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: Sophgo SG2042 SoC system control
->>> +
->>> +maintainers:
->>> +  - Chen Wang <unicorn_wang@outlook.com>
->>> +
->>> +description:
->>> +  The Sophgo system control is a registers block (SYS_CTRL), providing multiple
->>> +  low level platform functions like chip configuration, clock control, etc.
->>> +
->>> +properties:
->>> +  compatible:
->>> +    const: sophgo,sg2042-sysctrl
->>> +
->>> +  reg:
->>> +    maxItems: 1
->>> +
->>> +  clock-controller:
->>> +    # Child node
->> Drop the comment, it is obvious. It cannot be anything else.
->>
->>> +    $ref: /schemas/clock/sophgo,sg2042-sysclk.yaml#
->>> +    type: object
->> Why isn't this merged here? You do not need the child node really...
->> unless the clock inputs are specific to that clock controller and you
->> will have here more devices? But where are they in such case?
-> I don't see more devices will be included later. It should be ok to 
-> merge them into one.
->>> +
->>> +required:
->>> +  - compatible
->>> +  - reg
->>> +  - clock-controller
->>> +
->>> +additionalProperties: false
->>> +
->>> +examples:
->>> +  - |
->>> +    system-control@30010000 {
->> Why did you change the name? Please provide detailed changelog with
->> explanation of such changes.
-> 
-> I changed the name due to I find the 
-> TRM(https://github.com/sophgo/sophgo-doc/blob/main/SG2042/TRM/source/system-control.rst) 
-> call it "system control",  so I changed it in v8.
-> 
-> Which one do you prefer? I'm not sure if there are any requirements for 
-> this?
+> While I am agreed that it may be a nightmare to debug the case of passing
+> a false page into the mm system, but I am not sure what's the point of
+> returning NULL to caller if the caller is not expecting or handling
+> the
 
-Node names should be generic and follow common guidelines, not match
-your TRM. Please use the same name all other devices use for the same class.
+You have to return something and NULL will largely reliably crash the
+thread. The WARN_ON explains in detail why your thread just crashed.
 
-Best regards,
-Krzysztof
+> NULL returning[for example, most of mm API called by the networking does not
+> seems to handling NULL as input page], isn't the NULL returning will make
+> the kernel panic anyway? Doesn't it make more sense to just add a BUG_ON()
+> depending on some configuration like CONFIG_DEBUG_NET or CONFIG_DEVMEM?
+> As returning NULL seems to be causing a confusion for the caller of
+> skb_frag_page() as whether to or how to handle the NULL returning case.
 
+Possibly, though Linus doesn't like BUG_ON on principle..
+
+I think the bigger challenge is convincing people that this devmem
+stuff doesn't just open a bunch of holes in the kernel where userspace
+can crash it.
+
+The fact you all are debating what to do with skb_frag_page() suggests
+to me there isn't confidence...
+
+Jason
 
