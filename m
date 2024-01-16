@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-28215-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D174682FBB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:01:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C213A82FBB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:01:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EFEF1F283EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:01:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D50FB1C26EF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:01:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C9E9169B99;
-	Tue, 16 Jan 2024 20:04:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89FAF16A2D0;
+	Tue, 16 Jan 2024 20:04:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CFyx9LWj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BXNA8F67"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE0DA169B87;
-	Tue, 16 Jan 2024 20:04:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C772D4F1FE;
+	Tue, 16 Jan 2024 20:04:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435481; cv=none; b=FcARg7kARpjNMnh6Ru17saUqMHpqQYhgGZHr1OVFZKhURFmmakcnAsE2/2y9+fu6ve/oK3LVufJegbNDjYBdz6o7/eIfdw8MCmzG3sizaW0qb1YQlHuVOAqNK0vZzgkEsi22SaatwrtdKNi/mKRyz0/6C9tChl6LAUvfNaIRwPA=
+	t=1705435483; cv=none; b=cOXvJaeF2yrBxMbU8ERpmAjQ+//TpiKRqFXGbYBwW4P90xWvPCHIwuZzSBUgwBHo8q+vflsjg7TKHd/4V4o1V+U0XqXcVUr5S/2Qseh35IDF1A41kLE2CSPaKVSmpxYllUTrM0ovhnUUN5NqkQ3W8ITsndhBANzvZTdXMMk9YgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435481; c=relaxed/simple;
-	bh=6zi+yWREyYzv3jiX/W5aIJMdN2SWzBlhr9DgfmpwPKQ=;
+	s=arc-20240116; t=1705435483; c=relaxed/simple;
+	bh=BoyZwHexvERldwxIRCsmteyIZajdYFVcQDx9WiF+kfo=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=PoL1AceWJY6ewqPw7CcScGZvO3ugebIvwTrr7e7lpcddjF1Y2iPpIrfWXuGtisxnmG/0AvI/bHDXPFtINA+ICSGj+C6LUXN52GcWcTmJQu+2vZ0r/mbTFtdCYKkKcRJ/bNH1WFw9XwX5KQuLO6EBjAgzvliPluTIlzm+6pOMgAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CFyx9LWj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87796C433F1;
-	Tue, 16 Jan 2024 20:04:40 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=bKdgcM5CoYeCUFuhLYkrOUE80VTYSuN0OQ+g07GhfReDZAy8DKQKQ6EKb2Na0+TYF+m5cT27gpIWQUX3iMmX7wrP2HHsV++6SbT/ynB0YZQzDBstVFqKz+gJoOlYg7hm7onm86QHhb3h0+zL9CBjce/jPzP4FTydPJcG40w8wO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BXNA8F67; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44D63C43390;
+	Tue, 16 Jan 2024 20:04:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435481;
-	bh=6zi+yWREyYzv3jiX/W5aIJMdN2SWzBlhr9DgfmpwPKQ=;
+	s=k20201202; t=1705435483;
+	bh=BoyZwHexvERldwxIRCsmteyIZajdYFVcQDx9WiF+kfo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CFyx9LWjw3IY4Pabko4uSRqLdVxe+SwzfkllVu5+PaGmW2Lcc86hu2zKbNNolqVXS
-	 kIAsC2Sz3v4yvAQePjpDPEp/QzFeRivPZYAi5gf6eT/BKYhFtEVvNAobPsbk4tmcsS
-	 m5RWzrlfl9Akqj3YugxiZP+rYT9ktYwzthMA05hFOJVCjUAbuXbIvOyZJu7CFcrGT2
-	 A9hG6siPd4LSFXShXlT/dnrymiOLj9MiH1s1jF6bGG0IHsP1IQLRWVt6nlYoNMtQVh
-	 2KLanRFRtqnuNRzwUOGADOGfJ92DaQxBk6f4AyxE5KxJZX3zDH/2hNQPN+L5Oq6osk
-	 PAq7GlRLgbzSQ==
+	b=BXNA8F67/IXc5DV5hcVyWrV9zn9YSzraTGvo0AjWhtTJmQqH0mvjzIEOK+iyLAuJa
+	 /LwQz4kFh6AO0Tb6TJQKfOpc6Qzk+xXf4XgCeoosFLN8+A5t2MFdslxSCOOt2WKPwl
+	 Mibta3mCX/8Wg1LsAykCW8IHqiewSdRwO574W34mfFpUSZY8OL3zjLBOeTg7vfZgXg
+	 gxihy6poaBWH1N6GvwaUazE5NamOv0Ku4Lyz7r5NqWzCd+beqLqYED9lm0DK66rjV/
+	 7SaO9FjxjCpr026MSJVZmE3NeEKNcqa89Jb5m3PIVTKMpknOIct5Eanq+beyZ8oQeD
+	 Z0HF68cCOiLWA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -52,9 +52,9 @@ Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
 	conor+dt@kernel.org,
 	devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.19 04/22] ARM: dts: imx7s: Fix lcdif compatible
-Date: Tue, 16 Jan 2024 15:03:58 -0500
-Message-ID: <20240116200432.260016-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 05/22] ARM: dts: imx7s: Fix nand-controller #size-cells
+Date: Tue, 16 Jan 2024 15:03:59 -0500
+Message-ID: <20240116200432.260016-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116200432.260016-1-sashal@kernel.org>
 References: <20240116200432.260016-1-sashal@kernel.org>
@@ -71,14 +71,13 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexander Stein <alexander.stein@ew.tq-group.com>
 
-[ Upstream commit 5f55da4cc37051cda600ea870ce8cf29f1297715 ]
+[ Upstream commit 4aadb841ed49bada1415c48c44d21f5b69e01299 ]
 
-imx7d-lcdif is compatible to imx6sx-lcdif. MXSFB_V6 supports overlay
-by using LCDC_AS_CTRL register. This registers used by overlay plane:
-* LCDC_AS_CTRL
-* LCDC_AS_BUF
-* LCDC_AS_NEXT_BUF
-are listed in i.MX7D RM as well.
+nand-controller.yaml bindings says #size-cells shall be set to 0.
+Fixes the dtbs_check warning:
+arch/arm/boot/dts/nxp/imx/imx7s-mba7.dtb: nand-controller@33002000:
+ #size-cells:0:0: 0 was expected
+  from schema $id: http://devicetree.org/schemas/mtd/gpmi-nand.yaml#
 
 Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
 Signed-off-by: Shawn Guo <shawnguo@kernel.org>
@@ -88,18 +87,18 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm/boot/dts/imx7s.dtsi b/arch/arm/boot/dts/imx7s.dtsi
-index 36c00fe29f4f..ebe954f94e09 100644
+index ebe954f94e09..c62cf9fea481 100644
 --- a/arch/arm/boot/dts/imx7s.dtsi
 +++ b/arch/arm/boot/dts/imx7s.dtsi
-@@ -701,7 +701,7 @@ pwm4: pwm@30690000 {
- 			};
- 
- 			lcdif: lcdif@30730000 {
--				compatible = "fsl,imx7d-lcdif", "fsl,imx28-lcdif";
-+				compatible = "fsl,imx7d-lcdif", "fsl,imx6sx-lcdif";
- 				reg = <0x30730000 0x10000>;
- 				interrupts = <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&clks IMX7D_LCDIF_PIXEL_ROOT_CLK>,
+@@ -1094,7 +1094,7 @@ dma_apbh: dma-apbh@33000000 {
+ 		gpmi: gpmi-nand@33002000{
+ 			compatible = "fsl,imx7d-gpmi-nand";
+ 			#address-cells = <1>;
+-			#size-cells = <1>;
++			#size-cells = <0>;
+ 			reg = <0x33002000 0x2000>, <0x33004000 0x4000>;
+ 			reg-names = "gpmi-nand", "bch";
+ 			interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
 -- 
 2.43.0
 
