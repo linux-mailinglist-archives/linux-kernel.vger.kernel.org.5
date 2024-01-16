@@ -1,63 +1,58 @@
-Return-Path: <linux-kernel+bounces-28028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 720E782F94D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:04:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B29282F950
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:04:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2157228538A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:04:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D70D8285EF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:04:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF9192D058;
-	Tue, 16 Jan 2024 19:55:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A0AF14139F;
+	Tue, 16 Jan 2024 19:55:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dTgVyr8f"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pCdZpuIz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15A505F564;
-	Tue, 16 Jan 2024 19:55:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775DF14138B;
+	Tue, 16 Jan 2024 19:55:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434938; cv=none; b=Bpwg4TySq2pZI+97nSmdKK/4hlBYZ/3M/zAwt4oq+J3S7A4JwYbjw1vnCA00BA0d4PEftGHppnYFOAn5yE71wl8CVhAro1FOT9U+fdFeUyNM5gk0lWIs3MDURi4XkXIRq96hpc3EBs4HoQRgb+orJdUsQUyAjnRMjtdI7Mpr3JQ=
+	t=1705434939; cv=none; b=awHfFTVFbGzGUen7DLPXx9T0IYUzSwA/nGu6YE27kIiooiel5bWqkowQj2degjne8boA+L6VSwU63ACM9fJEGwg/EZNWpag0RM70yEqmaDi6j34oiQNjH2tD/0LfzGT8goS24axYm8hCyzkvExxL5K+zAoZlI0wpPrPBTt7UIJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434938; c=relaxed/simple;
-	bh=ACQuwnrHOOPZAyDz3qTaDrzWugOxk+sx/8S41lB1OVI=;
+	s=arc-20240116; t=1705434939; c=relaxed/simple;
+	bh=0y769TGzBrbl5VChnyn093dkqOvatr23ZojUupl05OQ=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=O94iolilqGQEj8yT+1diMS2NxCCYL+tTui2IdnhtvpFPRsFkllXVnRWucWYhXzVqy8v/YnKc1Oh91ia1if3RAzmWzeqrknY+rU2Azr3Dl5afEIlmKwszme8nc1zk+gxL+3pNTkJYVGIOx0KiwzjajwQcFB1smCuUsEgTxe5Y1oY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dTgVyr8f; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43D1EC433C7;
-	Tue, 16 Jan 2024 19:55:36 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=rYHuoYXCqP9eJ+//1Ts0lxLgeGA6gZ58LrSs47CAGeGCVEQbRbWUbW31SEQnYShDoh8WRO1hjAzqYDN8yhnHqYLTpANhUXAvjDCqgxn5T7gbUxhdKlKygNlLIkfA/Dnvn/ehRvbqiqpwFAh+we2ynJlNXddWOl6Lui7ePVF0iZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pCdZpuIz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C62AC433F1;
+	Tue, 16 Jan 2024 19:55:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434937;
-	bh=ACQuwnrHOOPZAyDz3qTaDrzWugOxk+sx/8S41lB1OVI=;
+	s=k20201202; t=1705434938;
+	bh=0y769TGzBrbl5VChnyn093dkqOvatr23ZojUupl05OQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dTgVyr8fhhGlG0DE2Pw2XC6ZQg05T6BdVx8mk7MrSlOA8IOnYJ57G8jGqDS1sdnTr
-	 SNTwF8iqIyejHIYsZIyKcr+acZUO0wbKawoYbN654I89rI4iD2B40UtfF9voNZskQq
-	 QvZiVPv8xQxORhIEvb/JOMc/QHZM30QUYq7W0ZiIkU/zK9L3CtsVIL5rvfcZobFISa
-	 aUKiAbkbvWr47cJHoRZS7Hhl58NXmRgUhNsQgEhxhRoicTqNhcLSMa9AXXDFsTrcC1
-	 piopBCvbTHFoJbGQm1uknp/4V4rkFxoV0sVR380h6W9V8+ZmHiiwOJocGVuVE+1z7H
-	 EwvsqhtNglVjw==
+	b=pCdZpuIzeo7xxyssvPiV4gPXyua3OcvnmNU7oCgYINPYZXPtaSfCoBaHlDJ0wS44d
+	 P5cy8Nq4VAlrebOMEGtPen86KUwtd8mjDajb7Pv35WCqcm/UoLHhM/VESa7Ii0JWzj
+	 Ur45rUNZCwXAmxPxFmPr/O0rH+BwDw/pHBNjOl4Bx0WNeLnT8Ht/oTIt9heMsOyMcD
+	 a0eU8V9unWK6Y6OSLf4H2Cy70Jqiu3NZDFxUcQYxw2vu3JlW7DtEFPOQhxEQ6tmMt1
+	 HYHaCJDqcCvt2c4S2ih+hfK2zzu9z7dUxIoJMquJeRrBKbMU3272HZ+MDvtIsCPBfA
+	 MN0UORuu5odLg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>,
-	Herb Wei <weihao.bj@ieisystem.com>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: Liam Kearney <liam.kearney@morsemicro.com>,
+	Jeff Johnson <quic_jjohnson@quicinc.com>,
+	Johannes Berg <johannes.berg@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	gregkh@linuxfoundation.org,
-	stern@rowland.harvard.edu,
-	linux-usb@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 11/68] net: usb: ax88179_178a: avoid two consecutive device resets
-Date: Tue, 16 Jan 2024 14:53:10 -0500
-Message-ID: <20240116195511.255854-11-sashal@kernel.org>
+	johannes@sipsolutions.net,
+	linux-wireless@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 12/68] wifi: ieee80211: fix PV1 frame control field name
+Date: Tue, 16 Jan 2024 14:53:11 -0500
+Message-ID: <20240116195511.255854-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116195511.255854-1-sashal@kernel.org>
 References: <20240116195511.255854-1-sashal@kernel.org>
@@ -72,41 +67,39 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.73
 Content-Transfer-Encoding: 8bit
 
-From: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+From: Liam Kearney <liam.kearney@morsemicro.com>
 
-[ Upstream commit d2689b6a86b9d23574bd4b654bf770b6034e2c7e ]
+[ Upstream commit d3ca4ab4f16eb81dc3e7721251adcba49b229d54 ]
 
-The device is always reset two consecutive times (ax88179_reset is called
-twice), one from usbnet_probe during the device binding and the other from
-usbnet_open.
+Update PV1 frame control field TODS to FROMDS to match 802.11 standard
 
-Remove the non-necessary reset during the device binding and let the reset
-operation from open to keep the normal behavior (tested with generic ASIX
-Electronics Corp. AX88179 Gigabit Ethernet device).
-
-Reported-by: Herb Wei <weihao.bj@ieisystem.com>
-Tested-by: Herb Wei <weihao.bj@ieisystem.com>
-Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-Link: https://lore.kernel.org/r/20231120121239.54504-1-jtornosm@redhat.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Liam Kearney <liam.kearney@morsemicro.com>
+Reviewed-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+Link: https://lore.kernel.org/r/20231025002755.1752983-1-liam.kearney@morsemicro.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/ax88179_178a.c | 2 --
- 1 file changed, 2 deletions(-)
+ include/linux/ieee80211.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
-index 5a1bf42ce156..d837c1887416 100644
---- a/drivers/net/usb/ax88179_178a.c
-+++ b/drivers/net/usb/ax88179_178a.c
-@@ -1315,8 +1315,6 @@ static int ax88179_bind(struct usbnet *dev, struct usb_interface *intf)
+diff --git a/include/linux/ieee80211.h b/include/linux/ieee80211.h
+index 870ae4cd8202..1525d13e3b1f 100644
+--- a/include/linux/ieee80211.h
++++ b/include/linux/ieee80211.h
+@@ -172,11 +172,11 @@
+ #define IEEE80211_SN_MODULO		(IEEE80211_MAX_SN + 1)
  
- 	netif_set_tso_max_size(dev->net, 16384);
  
--	ax88179_reset(dev);
--
- 	return 0;
- }
- 
+-/* PV1 Layout 11ah 9.8.3.1 */
++/* PV1 Layout IEEE 802.11-2020 9.8.3.1 */
+ #define IEEE80211_PV1_FCTL_VERS		0x0003
+ #define IEEE80211_PV1_FCTL_FTYPE	0x001c
+ #define IEEE80211_PV1_FCTL_STYPE	0x00e0
+-#define IEEE80211_PV1_FCTL_TODS		0x0100
++#define IEEE80211_PV1_FCTL_FROMDS		0x0100
+ #define IEEE80211_PV1_FCTL_MOREFRAGS	0x0200
+ #define IEEE80211_PV1_FCTL_PM		0x0400
+ #define IEEE80211_PV1_FCTL_MOREDATA	0x0800
 -- 
 2.43.0
 
