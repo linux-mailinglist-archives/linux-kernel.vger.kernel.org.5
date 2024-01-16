@@ -1,126 +1,136 @@
-Return-Path: <linux-kernel+bounces-27422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27423-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAF3F82EFC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:32:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6496C82EFCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:35:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A0FD1F23C83
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:32:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B911E283F67
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:35:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E8681BDC2;
-	Tue, 16 Jan 2024 13:32:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21F5C1BDC2;
+	Tue, 16 Jan 2024 13:35:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iq8OELEY"
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="FEV9NTpy"
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46C541BC55
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 13:32:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6db786df38dso1881562b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 05:32:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705411929; x=1706016729; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=toKzuFniRcNlr/ckldQaNDhULExFRcUqJOSIbFFbNgg=;
-        b=iq8OELEYdiOz8NYoumXVB+GvTE9hiLxZI/4y2bL7GdbPReCC5etCuHw2/0UG2jYA1P
-         LoUxupjOPEs7ySGUR+YhUurU8bOmixlSkh7WSFfxd9HMhuvSMoak7ILAEsL1pR1XWAFu
-         XbqX57NsMxe2IW/E2/YPX8sEganyBP2SylyMcvGBiMYn2USqbMvD0/6U5rGkEget4aDJ
-         GHv5FIrx/HCKR0x3tOg5ZUb2HGokcP28yIowpa4s/zM7GUDk2Uc+BkJu+wTy8QtJ/TpI
-         SLM8fxLFZ7SmKKapTVdaGXGO1WQfF0z8nMNjE0L6Dxh7+um+EqP4OyoNOEwU/2zcq18W
-         3ShA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705411929; x=1706016729;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=toKzuFniRcNlr/ckldQaNDhULExFRcUqJOSIbFFbNgg=;
-        b=lqt8EsISLxJ97vjXiRlZ/EtwSQ2vQjLa7x55FbmOvVUuvqg+dmfjr9lzTN104S/THH
-         1i/JBVF06MOAtLyZJTTIiIpJUVglrNApDtQrbGWbHcQMP0icGx5erZ0S1K5Pu5UdJ/F4
-         r4SpRXkJ/cX9ddDZIXHjB4Ug+ik0d2RPasDsBB9L9PwYiZxZ+r96fFGGRIS10R+eRL7/
-         Y4p/517F+XIAeIqnmeVdUicV58D+suqITQHYk7kah14hjywSM/VGwuxwgvEmPlgjzaIc
-         a7lIz+RwnH9PePPbNVFDMwaBF7xVHw92/8Xq+iwW28YWHQdt3gRtiyyImPT5hwr5A6kt
-         7iGg==
-X-Gm-Message-State: AOJu0Yxjtjk9ytveG8CwtbuN8Inba5QWA92FAInsWHpXdRIt7DVa9duu
-	xAmQ/a6oXTW6BOcZcqzfmkY=
-X-Google-Smtp-Source: AGHT+IE936n+Xe38cFygc8eo7sinvQaf/CW5svZJqPkKmqnFtxc6+RfgXV040dD6uSB+3F7ZyySrww==
-X-Received: by 2002:a05:6a00:2da2:b0:6da:1833:cb6b with SMTP id fb34-20020a056a002da200b006da1833cb6bmr8654996pfb.59.1705411929442;
-        Tue, 16 Jan 2024 05:32:09 -0800 (PST)
-Received: from eagle-5590.. ([192.166.246.176])
-        by smtp.gmail.com with ESMTPSA id d13-20020a056a0010cd00b006da04ab75a8sm9259336pfu.1.2024.01.16.05.32.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 05:32:09 -0800 (PST)
-From: Ronald Monthero <debug.penguin32@gmail.com>
-To: nphamcs@gmail.com
-Cc: sjenning@redhat.com,
-	ddstreet@ieee.org,
-	vitaly.wool@konsulko.com,
-	akpm@linux-foundation.org,
-	chrisl@kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Ronald Monthero <debug.penguin32@gmail.com>
-Subject: [PATCH] mm/zswap: Improve with alloc_workqueue() call
-Date: Tue, 16 Jan 2024 23:31:45 +1000
-Message-Id: <20240116133145.12454-1-debug.penguin32@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <CAKEwX=NLe-N6dLvOVErPSL3Vfw6wqHgcUBQoNRLeWkN6chdvLQ@mail.gmail.com>
-References: <CAKEwX=NLe-N6dLvOVErPSL3Vfw6wqHgcUBQoNRLeWkN6chdvLQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B5E91BC4E
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 13:35:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=wKDZrSr5UEaNlLwHGrAasvRdAMXTo1e2KPdcbvBvbx8=; b=FEV9NTpyCttcNbLmRy8Eh0mFAr
+	vz4pkgZeWzj8JtOdMoM3GW4FzbKXDWXGlJE81hUZRcuiDRhiKX7AuIbb7jwRo4xJCuO/3mgrVPTDM
+	G5wpYioIVBcmg0BRpHDI2Hep/Dm1a/BEE4ukJ3Vwg8pd7iaT9C5YLqcrgrqGWVrEi/ghHaK12aehl
+	WKPiwIodYTJ2sONx/5AbjfW/1mzlhNP9MSpEUmKPDRadcHk56LS75tufAbLMdrVu1U1DwdPxKQDR3
+	pIXdzWqOL/V1bhyndQs4mfQmXsXUNvnLgbHCcH5/1ZftSzBS4ArBbvPwOd4zTcjqOvaNlthgpoqnk
+	PikmFWTQ==;
+Received: from [177.45.63.147] (helo=[192.168.1.111])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1rPjbE-006yYK-5Y; Tue, 16 Jan 2024 14:35:28 +0100
+Message-ID: <47c6866a-34d6-48b1-a977-d21c48d991dc@igalia.com>
+Date: Tue, 16 Jan 2024 10:35:16 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] drm/atomic: Allow drivers to write their own plane
+ check for async
+Content-Language: en-US
+To: Pekka Paalanen <ppaalanen@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, kernel-dev@igalia.com,
+ alexander.deucher@amd.com, christian.koenig@amd.com,
+ Simon Ser <contact@emersion.fr>, daniel@ffwll.ch,
+ Daniel Stone <daniel@fooishbar.org>, =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?=
+ <maraeo@gmail.com>, Dave Airlie <airlied@gmail.com>,
+ ville.syrjala@linux.intel.com, Xaver Hugl <xaver.hugl@gmail.com>,
+ Joshua Ashton <joshua@froggi.es>
+References: <20240116045159.1015510-1-andrealmeid@igalia.com>
+ <20240116114522.5b83d8b6@eldfell>
+ <a6099681-1ae9-48ef-99bc-d3c919007413@igalia.com>
+ <20240116151414.10b831e6@eldfell>
+From: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+In-Reply-To: <20240116151414.10b831e6@eldfell>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-The core-api create_workqueue is deprecated, this patch replaces
-the create_workqueue with alloc_workqueue. The previous
-implementation workqueue of zswap was a bounded workqueue, this
-patch uses alloc_workqueue() to create an unbounded workqueue.
-The WQ_UNBOUND attribute is desirable making the workqueue
-not localized to a specific cpu so that the scheduler is free
-to exercise improvisations in any demanding scenarios for
-offloading cpu time slices for workqueues.
-For example if any other workqueues of the same primary cpu
-had to be served which are WQ_HIGHPRI and WQ_CPU_INTENSIVE.
-Also Unbound workqueue happens to be more efficient
-in a system during memory pressure scenarios in comparison
- to a bounded workqueue.
++ Joshua
 
-shrink_wq = alloc_workqueue("zswap-shrink",
-                     WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
+Em 16/01/2024 10:14, Pekka Paalanen escreveu:
+> On Tue, 16 Jan 2024 08:50:59 -0300
+> André Almeida <andrealmeid@igalia.com> wrote:
+> 
+>> Hi Pekka,
+>>
+>> Em 16/01/2024 06:45, Pekka Paalanen escreveu:
+>>> On Tue, 16 Jan 2024 01:51:57 -0300
+>>> André Almeida <andrealmeid@igalia.com> wrote:
+>>>    
+>>>> Hi,
+>>>>
+>>>> AMD hardware can do more on the async flip path than just the primary plane, so
+>>>> to lift up the current restrictions, this patchset allows drivers to write their
+>>>> own check for planes for async flips.
+>>>
+>>> Hi,
+>>>
+>>> what's the userspace story for this, how could userspace know it could do more?
+>>> What kind of userspace would take advantage of this and in what situations?
+>>>
+>>> Or is this not meant for generic userspace?
+>>
+>> Sorry, I forgot to document this. So the idea is that userspace will
+>> query what they can do here with DRM_MODE_ATOMIC_TEST_ONLY calls,
+>> instead of having capabilities for each prop.
+> 
+> That's the theory, but do you have a practical example?
+> 
+> What other planes and props would one want change in some specific use
+> case?
+> 
+> Is it just "all or nothing", or would there be room to choose and pick
+> which props you change and which you don't based on what the driver
+> supports? If the latter, then relying on TEST_ONLY might be yet another
+> combinatorial explosion to iterate through.
+> 
 
-Overall the change suggested in this patch should be
-seamless and does not alter the existing behavior,
-other than the improvisation to be an unbounded workqueue.
+That's a good question, maybe Simon, Xaver or Joshua can share how they 
+were planning to use this on Gamescope or Kwin.
 
-Signed-off-by: Ronald Monthero <debug.penguin32@gmail.com>
----
- mm/zswap.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 74411dfdad92..64dbe3e944a2 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -1620,7 +1620,8 @@ static int zswap_setup(void)
- 		zswap_enabled = false;
- 	}
- 
--	shrink_wq = create_workqueue("zswap-shrink");
-+	shrink_wq = alloc_workqueue("zswap-shrink",
-+			WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
- 	if (!shrink_wq)
- 		goto fallback_fail;
- 
--- 
-2.34.1
-
+> 
+> Thanks,
+> pq
+> 
+>>>> I'm not sure if adding something new to drm_plane_funcs is the right way to do,
+>>>> because if we want to expand the other object types (crtc, connector) we would
+>>>> need to add their own drm_XXX_funcs, so feedbacks are welcome!
+>>>>
+>>>> 	André
+>>>>
+>>>> André Almeida (2):
+>>>>     drm/atomic: Allow drivers to write their own plane check for async
+>>>>       flips
+>>>>     drm/amdgpu: Implement check_async_props for planes
+>>>>
+>>>>    .../amd/display/amdgpu_dm/amdgpu_dm_plane.c   | 30 +++++++++
+>>>>    drivers/gpu/drm/drm_atomic_uapi.c             | 62 ++++++++++++++-----
+>>>>    include/drm/drm_atomic_uapi.h                 | 12 ++++
+>>>>    include/drm/drm_plane.h                       |  5 ++
+>>>>    4 files changed, 92 insertions(+), 17 deletions(-)
+>>>>   
+>>>    
+> 
 
