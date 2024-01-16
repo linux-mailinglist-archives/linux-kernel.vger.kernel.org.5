@@ -1,247 +1,157 @@
-Return-Path: <linux-kernel+bounces-28346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A39AA82FD1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:42:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B2B582FD1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:43:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9E801C28912
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:42:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B221B22EA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:43:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 589762374F;
-	Tue, 16 Jan 2024 22:23:28 +0000 (UTC)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4BCB23779;
+	Tue, 16 Jan 2024 22:25:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="GNcNqQGI"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9466C23744;
-	Tue, 16 Jan 2024 22:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DF61200C1
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 22:25:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705443807; cv=none; b=qz/cTAAI4r/nUFJDyTVOSkfR14ztOuwd8QNL1nUFJs96BVGSrPE5d536ygmsIc3TNrltvjFSpxdCY2dE0JHBXPojYzUzZkWHEfACSWf/BM9pGFdFygCUHZQCIgfsXB7mgzq2LbJ3Nt0Lq9seML2RsHcfXtLuavVyk/JQQ2MUCbI=
+	t=1705443912; cv=none; b=Wm4Koxopx4+RxsXWUHZZ6xCfPcRZJtgwovBFfAbFT4hHME4OvuRVZR3rXuHi2EGDJZW5JkM5I/g+kpyxhqyt4TP+tKdLL0MtgBXXofGYV8HHGlldeqSqIiFa++xIlaZzNa3QOLrf089mVyzbcSmBERcbvL5D1Ly8JOz752N05yA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705443807; c=relaxed/simple;
-	bh=+9So/8C/UHwU34J+AJWGCIa/pW2jaEdlYaVwPROAc40=;
-	h=Received:Received:Received:Content-Type:Content-Transfer-Encoding:
-	 MIME-Version:From:To:Cc:Subject:In-reply-to:References:Date:
-	 Message-id:X-Spamd-Result:X-Rspamd-Server:X-Rspamd-Queue-Id:
-	 X-Spam-Level:X-Spam-Score:X-Spam-Flag; b=dlnlsl2pvH+zXrNgsBcGn3Gbl4Ddn2OEdJgB0WuEoCpUM+UAhGstUmpxmDJaSapYqbF6NXGh4tlcJTHhcSZHpqwFEDEurfgOSesQSNR4rwwbicBFZ2qMYn7sVnx+g916viP0qdSWlinhd0TFOwS/O9qScx/lpZ8onq16roTO6Ek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CAC4A221E8;
-	Tue, 16 Jan 2024 22:23:23 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2693A13751;
-	Tue, 16 Jan 2024 22:23:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id SEsoM80Bp2UZfAAAD6G6ig
-	(envelope-from <neilb@suse.de>); Tue, 16 Jan 2024 22:23:09 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1705443912; c=relaxed/simple;
+	bh=iJ39MH4mqeyNt9Nv3baKzqxKkS+WUtb/vJwlljcnfSY=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=bjZv54vWp7XUfPqiLTWT60sUz+RNhhCQGcUoMZMzewa1JgeXHCsBMcG8At7oGeKGUPVINC8D1a6aTM+TnIxRbHpazErhpiYE9kfzO0urCloa7tJ88AUEJQU1QDOm3tDMVoCCOQ4Xr3FEzVyBJQoZcFVGs3lkqiAPMH1MsXUNCs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=GNcNqQGI; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50e79299da9so2030609e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 14:25:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1705443908; x=1706048708; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nv0E2bFJC3bwFCY7TgFvWMFZeHrdBHqDiGwtffKOX+s=;
+        b=GNcNqQGIyJ2j7ULNXl8Ld8x+umUNp9eDtDOZ65BvoCOrZfiLgtycKCrkuyRLPUSFfc
+         HMckU8xaStYYv/C2n+kpQSU7+El6EzlKmXDDlDbqGCSsxPUJgzsDg7z9CwHa7AFuGXzO
+         EnE7rS2x2cWth7nQrLE4Dp94tPUfkr/SLViws+aZ75s5lEuKIhYW0irKdEaUi6Ijo6xG
+         veElBOQPMH1KDCaR7uB+vOEZDctlQ2WFqxGw2+49ThhV6uXV4Hg3NWMo7SoFeYE2NJ4V
+         Yd2sCKA7xaJRz+lV5rP7Nd8G27lGUr2SWKEcvCqgta9YbDhIQGYWRlKYqTkZuHS9oJRs
+         2GcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705443908; x=1706048708;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nv0E2bFJC3bwFCY7TgFvWMFZeHrdBHqDiGwtffKOX+s=;
+        b=rx8NTJ7r9+FL5RelBC2MpEp69BAoIP0VmvVgd6I3s4ynBXNwmNQu5LKaz0Uh8u68RH
+         9xw1d3dcdHr7fpcoAl8DTbMHT1MZkEHMT1qmadccHeVp0L2cRD7wnXB5mOfpEBdBmjy7
+         9+yb7AjPY/ifavZaNI+LMvCjHDgYqA0ZAIM2sP45Jhw8xEFXVZH8LjcvSum9QSViUxFc
+         rzaPKpbmCM3dDydlIzIPDXxZaNd34vZLd0Yl9SWVYkwnGz1G+RAqp2vKF9vxfqRNdFiz
+         QoyUXOKSj1mIdCqhF4OBx+uqXaTUhiYGypKGvxUSXNJdgVa19dZeJ5SM1NS1WtwVwZzZ
+         UtdQ==
+X-Gm-Message-State: AOJu0Yzu2tcbzVBGExrWLRHJQm42Hf3+9DKE2O/m2NkOm2D6GsI31Gd7
+	Y0RDLRA6gXV1JtMHm44QcjDNHKcWiXJHClI46e4A2qIfVQDlcQ==
+X-Google-Smtp-Source: AGHT+IHPxnArc1i1NEtO+g7RKhOk+DOBD0hl7PQzbEjRxh5BnDk5Ic97VuxcaFO1JrX6VJqebbfiMiPHOjvd42/cTx8=
+X-Received: by 2002:a2e:2f06:0:b0:2cc:f5b9:bbf7 with SMTP id
+ v6-20020a2e2f06000000b002ccf5b9bbf7mr7638928ljv.3.1705443908133; Tue, 16 Jan
+ 2024 14:25:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "NeilBrown" <neilb@suse.de>
-To: "Jeff Layton" <jlayton@kernel.org>
-Cc: "Christian Brauner" <brauner@kernel.org>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Eric Van Hensbergen" <ericvh@kernel.org>,
- "Latchesar Ionkov" <lucho@ionkov.net>,
- "Dominique Martinet" <asmadeus@codewreck.org>,
- "Christian Schoenebeck" <linux_oss@crudebyte.com>,
- "David Howells" <dhowells@redhat.com>,
- "Marc Dionne" <marc.dionne@auristor.com>, "Xiubo Li" <xiubli@redhat.com>,
- "Ilya Dryomov" <idryomov@gmail.com>, "Alexander Aring" <aahringo@redhat.com>,
- "David Teigland" <teigland@redhat.com>, "Miklos Szeredi" <miklos@szeredi.hu>,
- "Andreas Gruenbacher" <agruenba@redhat.com>,
- "Trond Myklebust" <trond.myklebust@hammerspace.com>,
- "Anna Schumaker" <anna@kernel.org>, "Chuck Lever" <chuck.lever@oracle.com>,
- "Olga Kornievskaia" <kolga@netapp.com>, "Dai Ngo" <Dai.Ngo@oracle.com>,
- "Tom Talpey" <tom@talpey.com>, "Jan Kara" <jack@suse.cz>,
- "Mark Fasheh" <mark@fasheh.com>, "Joel Becker" <jlbec@evilplan.org>,
- "Joseph Qi" <joseph.qi@linux.alibaba.com>, "Steve French" <sfrench@samba.org>,
- "Paulo Alcantara" <pc@manguebit.com>, "Ronnie Sahlberg" <lsahlber@redhat.com>,
- "Shyam Prasad N" <sprasad@microsoft.com>,
- "Namjae Jeon" <linkinjeon@kernel.org>,
- "Sergey Senozhatsky" <senozhatsky@chromium.org>,
- "Steven Rostedt" <rostedt@goodmis.org>,
- "Masami Hiramatsu" <mhiramat@kernel.org>,
- "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
- linux-kernel@vger.kernel.org, v9fs@lists.linux.dev,
- linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
- gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org,
- linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev,
- linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
- linux-trace-kernel@vger.kernel.org, "Jeff Layton" <jlayton@kernel.org>
-Subject: Re: [PATCH 12/20] filelock: make __locks_delete_block and
- __locks_wake_up_blocks take file_lock_core
-In-reply-to: <20240116-flsplit-v1-12-c9d0f4370a5d@kernel.org>
-References: <20240116-flsplit-v1-0-c9d0f4370a5d@kernel.org>,
- <20240116-flsplit-v1-12-c9d0f4370a5d@kernel.org>
-Date: Wed, 17 Jan 2024 09:23:07 +1100
-Message-id: <170544378717.23031.5597414508293858294@noble.neil.brown.name>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: CAC4A221E8
-X-Spam-Level: 
-X-Spam-Score: -4.00
-X-Spam-Flag: NO
+References: <20240116193542.711482-1-tmenninger@purestorage.com> <04d22048-737a-4281-a43f-b125ebe0c896@lunn.ch>
+In-Reply-To: <04d22048-737a-4281-a43f-b125ebe0c896@lunn.ch>
+From: Tim Menninger <tmenninger@purestorage.com>
+Date: Tue, 16 Jan 2024 14:24:55 -0800
+Message-ID: <CAO-L_44YVi0HDk4gC9QijMZrYNGoKtfH7qsXOwtDwM4VrFRDHw@mail.gmail.com>
+Subject: Re: [PATCH] net: dsa: mv88e6xxx: Make *_c45 callbacks agree with
+ phy_*_c45 callbacks
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net, 
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 17 Jan 2024, Jeff Layton wrote:
-> Convert __locks_delete_block and __locks_wake_up_blocks to take a struct
-> file_lock_core pointer. Note that to accomodate this, we need to add a
-> new file_lock() wrapper to go from file_lock_core to file_lock.
+On Tue, Jan 16, 2024 at 11:59=E2=80=AFAM Andrew Lunn <andrew@lunn.ch> wrote=
+:
+>
+> On Tue, Jan 16, 2024 at 07:35:42PM +0000, Tim Menninger wrote:
+> > Set the read_c45 callback in the mii_bus struct in mv88e6xxx only if th=
+ere
+> > is a non-NULL phy_read_c45 callback on the chip mv88e6xxx_ops. Similarl=
+y
+> > for write_c45 and phy_write_c45.
+> >
+> > In commit 743a19e38d02 ("net: dsa: mv88e6xxx: Separate C22 and C45 tran=
+sactions")
+> > the MDIO bus driver split its API to separate C22 and C45 transfers.
+> >
+> > In commit 1a136ca2e089 ("net: mdio: scan bus based on bus capabilities =
+for C22 and C45")
+> > we do a C45 mdio bus scan based on existence of the read_c45 callback
+> > rather than checking MDIO bus capabilities then in
+> > commit da099a7fb13d ("net: phy: Remove probe_capabilities") we remove t=
+he
+> > probe_capabilities from the mii_bus struct.
+> >
+> > The combination of the above results in a scenario (e.g. mv88e6185)
+> > where we take a non-NULL read_c45 callback on the mii_bus struct to mea=
+n
+> > we can perform a C45 read and proceed with a C45 MDIO bus scan. The sca=
+n
+> > encounters a NULL phy_read_c45 callback in the mv88e6xxx_ops which impl=
+ies
+> > we can NOT perform a C45 read and fails with EOPNOTSUPP. The read_c45
+> > callback should be NULL if phy_read_c45 is NULL, and similarly for
+> > write_c45 and phy_write_c45.
+>
+> Hi Tim
+>
+> What does phylib do with the return of -EOPNOTSUPP? I've not tested
+> it, but i would expect it just keeps going with the scan? It treats it
+> as if there is no device there? And since it never accesses the
+> hardware, this should be fast?
+>
+> Or is my assumption wrong? Do you see the EPOPNOTSUPP getting reported
+> back to user space, and the probe failing?
+>
+>      Andrew
+>
 
-Actually we don't need it.... see below.
+Hi Andrew,
 
->=20
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  fs/locks.c | 43 ++++++++++++++++++++++++++-----------------
->  1 file changed, 26 insertions(+), 17 deletions(-)
->=20
-> diff --git a/fs/locks.c b/fs/locks.c
-> index eddf4d767d5d..6b8e8820dec9 100644
-> --- a/fs/locks.c
-> +++ b/fs/locks.c
-> @@ -92,6 +92,11 @@ static inline bool IS_LEASE(struct file_lock_core *flc)
-> =20
->  #define IS_REMOTELCK(fl)	(fl->fl_core.fl_pid <=3D 0)
-> =20
-> +struct file_lock *file_lock(struct file_lock_core *flc)
-> +{
-> +	return container_of(flc, struct file_lock, fl_core);
-> +}
-> +
->  static bool lease_breaking(struct file_lock *fl)
->  {
->  	return fl->fl_core.fl_flags & (FL_UNLOCK_PENDING | FL_DOWNGRADE_PENDING);
-> @@ -677,31 +682,35 @@ static void locks_delete_global_blocked(struct file_l=
-ock_core *waiter)
->   *
->   * Must be called with blocked_lock_lock held.
->   */
-> -static void __locks_delete_block(struct file_lock *waiter)
-> +static void __locks_delete_block(struct file_lock_core *waiter)
->  {
-> -	locks_delete_global_blocked(&waiter->fl_core);
-> -	list_del_init(&waiter->fl_core.fl_blocked_member);
-> +	locks_delete_global_blocked(waiter);
-> +	list_del_init(&waiter->fl_blocked_member);
->  }
-> =20
-> -static void __locks_wake_up_blocks(struct file_lock *blocker)
-> +static void __locks_wake_up_blocks(struct file_lock_core *blocker)
->  {
-> -	while (!list_empty(&blocker->fl_core.fl_blocked_requests)) {
-> -		struct file_lock *waiter;
-> +	while (!list_empty(&blocker->fl_blocked_requests)) {
-> +		struct file_lock_core *waiter;
-> +		struct file_lock *fl;
-> +
-> +		waiter =3D list_first_entry(&blocker->fl_blocked_requests,
-> +					  struct file_lock_core, fl_blocked_member);
-> =20
-> -		waiter =3D list_first_entry(&blocker->fl_core.fl_blocked_requests,
-> -					  struct file_lock, fl_core.fl_blocked_member);
+It bubbles up as EIO (the translation happens in get_phy_c45_ids when
+get_phy_c45_devs_in_pkg fails) and ultimately causes the probe to fail.
 
-> +		fl =3D file_lock(waiter);
+The EIO causes the scan to stop and fail immediately - the way I read
+mdiobus_scan_bus_c45, only ENODEV is permissible.
 
-		fl =3D list_first_entry(&blocker->fl_core.fl_blocked_requests,
-				      struct file_lock, fl_core.fl_blocked_member);
+From logs:
+$ dmesg | grep mv88e6
+[   12.951149] mv88e6085 ixgbe-mdio-0000:05:00.0:00: switch 0x1a70
+detected: Marvell 88E6185, revision 2
+[   13.272812] mv88e6085 ixgbe-mdio-0000:05:00.0:00: Cannot register
+MDIO bus (-5)
+[   13.401140] mv88e6085: probe of ixgbe-mdio-0000:05:00.0:00 failed
+with error -5
+[   13.413105] mv88e6085 ixgbe-mdio-0000:05:00.1:00: switch 0x1a70
+detected: Marvell 88E6185, revision 2
+[   13.730227] mv88e6085 ixgbe-mdio-0000:05:00.1:00: Cannot register
+MDIO bus (-5)
+[   13.858336] mv88e6085: probe of ixgbe-mdio-0000:05:00.1:00 failed
+with error -5
 
-                waiter =3D &fl->fl_core;
-
-achieves the same result without needing file_lock().
-
-If you really want to add file_lock() then do so, but you need a better
-justification :-)
-
-NeilBrown
-
-
-
->  		__locks_delete_block(waiter);
-> -		if (waiter->fl_lmops && waiter->fl_lmops->lm_notify)
-> -			waiter->fl_lmops->lm_notify(waiter);
-> +		if ((IS_POSIX(waiter) || IS_FLOCK(waiter)) &&
-> +		    fl->fl_lmops && fl->fl_lmops->lm_notify)
-> +			fl->fl_lmops->lm_notify(fl);
->  		else
-> -			wake_up(&waiter->fl_core.fl_wait);
-> +			wake_up(&waiter->fl_wait);
-> =20
->  		/*
->  		 * The setting of fl_blocker to NULL marks the "done"
->  		 * point in deleting a block. Paired with acquire at the top
->  		 * of locks_delete_block().
->  		 */
-> -		smp_store_release(&waiter->fl_core.fl_blocker, NULL);
-> +		smp_store_release(&waiter->fl_blocker, NULL);
->  	}
->  }
-> =20
-> @@ -743,8 +752,8 @@ int locks_delete_block(struct file_lock *waiter)
->  	spin_lock(&blocked_lock_lock);
->  	if (waiter->fl_core.fl_blocker)
->  		status =3D 0;
-> -	__locks_wake_up_blocks(waiter);
-> -	__locks_delete_block(waiter);
-> +	__locks_wake_up_blocks(&waiter->fl_core);
-> +	__locks_delete_block(&waiter->fl_core);
-> =20
->  	/*
->  	 * The setting of fl_blocker to NULL marks the "done" point in deleting
-> @@ -799,7 +808,7 @@ static void __locks_insert_block(struct file_lock *bloc=
-ker,
->  	 * waiter, but might not conflict with blocker, or the requests
->  	 * and lock which block it.  So they all need to be woken.
->  	 */
-> -	__locks_wake_up_blocks(waiter);
-> +	__locks_wake_up_blocks(&waiter->fl_core);
->  }
-> =20
->  /* Must be called with flc_lock held. */
-> @@ -831,7 +840,7 @@ static void locks_wake_up_blocks(struct file_lock *bloc=
-ker)
->  		return;
-> =20
->  	spin_lock(&blocked_lock_lock);
-> -	__locks_wake_up_blocks(blocker);
-> +	__locks_wake_up_blocks(&blocker->fl_core);
->  	spin_unlock(&blocked_lock_lock);
->  }
-> =20
-> @@ -1186,7 +1195,7 @@ static int posix_lock_inode(struct inode *inode, stru=
-ct file_lock *request,
->  			 * Ensure that we don't find any locks blocked on this
->  			 * request during deadlock detection.
->  			 */
-> -			__locks_wake_up_blocks(request);
-> +			__locks_wake_up_blocks(&request->fl_core);
->  			if (likely(!posix_locks_deadlock(request, fl))) {
->  				error =3D FILE_LOCK_DEFERRED;
->  				__locks_insert_block(fl, request,
->=20
-> --=20
-> 2.43.0
->=20
->=20
-
+Tim
 
