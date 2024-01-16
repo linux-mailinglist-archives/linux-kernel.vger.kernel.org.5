@@ -1,63 +1,59 @@
-Return-Path: <linux-kernel+bounces-28130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BB8482FA95
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:36:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8951182FA9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:36:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BB4328BACE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:36:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A10A28C026
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:36:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A35157E9D;
-	Tue, 16 Jan 2024 20:00:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 303D863D1E;
+	Tue, 16 Jan 2024 20:00:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ATq2f5Hk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sq6DJF3R"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06EEC35EEE;
-	Tue, 16 Jan 2024 20:00:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D64463D04;
+	Tue, 16 Jan 2024 20:00:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435203; cv=none; b=hRrDUUpzwoRFI1WyvD64yIkgXAiYzhlrZfFxf4qJkFaSoJ/i9Dn4cFJ+yiFXc0gPcQDqA3+LALsZzxP+5LoPBU8OSpqBHTjNqsEi7p7TTFgDobLUHvF6SnNy6S9o342IHngxErAwSb3iJmz9nSUiFAiKyp8uYPCOIkpXODxP8c8=
+	t=1705435204; cv=none; b=MHxLPnDznEIyfigC6ciJBrWGjQOd1RdxSJBdcyu0cdvd4le0YJKGIDgStI3bjgmdpbm4QinIQzraoPAMrsQc40obvaunGyNDs05J+rZSbnzlTKGJSCgPTs++/C0IqWfr8u9UQYRa2QRTz8P79nMT2h6VlfIAkNJLOlaV0ClpV2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435203; c=relaxed/simple;
-	bh=uHz31U3fFdNiHejwfXDBIef5JK1/K7iLDMNkJp7Q7RQ=;
+	s=arc-20240116; t=1705435204; c=relaxed/simple;
+	bh=MpznTvwDkyPP+7Tbv8iUk2G+t1bodrh/Bm0p+mFWhkw=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=K8W211xMBZ80fY8MbHVwNaMYM4EGkzLMxpM8VygPvin7xgaKEbSFxbCakMOayZro8iHmn0WW/O8DTvDgWSNwzCE2/6rVaJTAdK9IWBf+DYx02NvYoCx64V7fCGpo4QvtUY6jnyRz0z3pq1nFc2C71NGCso0u9ESkAMCFpbgZ/d8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ATq2f5Hk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6993DC433A6;
-	Tue, 16 Jan 2024 20:00:01 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=QfQsQBwtFJ5s9fR6ag4rBviIHpRNpa40rIO8ixau6Js2jk6QHS7l//5iy2Ai4pkf7ipjiSGROSLUSNsUWLJLtkC2SoYwvQ4kyDkEbUp9+wdsa7046oTQtYc7+2W2arQUZ7z/BOiLCQf5kJUs9Con/Bup6qD8ftxiWvAdztmMhVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Sq6DJF3R; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B6A1C433F1;
+	Tue, 16 Jan 2024 20:00:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435202;
-	bh=uHz31U3fFdNiHejwfXDBIef5JK1/K7iLDMNkJp7Q7RQ=;
+	s=k20201202; t=1705435204;
+	bh=MpznTvwDkyPP+7Tbv8iUk2G+t1bodrh/Bm0p+mFWhkw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ATq2f5HkT3X0vVvsAhJnDJo29Z+tEMlfDqNh2vYfFz3+ozYmiUK+qAokR95J6tXL2
-	 D434FBMh2JODbRe/qPr4fhecwZZcvf3X1oJJcIOg6PNZxZL/gz96cu/ah6uRJmZbYL
-	 5hSruGl63M7w3MZOAgfRYyJibEY3zI2VLAbwKXlHhjLR0Jqd4Cl0U3x7sh3TagDJbv
-	 4+ESbyIKiNql3adeGmNF4f08ye+0S/QFj413a0g8Fdy6TgS1GPLVVmlryZqNgHFg5t
-	 JAwuU8yqi69FqvRRz/edmnETR9g4Xf98kxeUtQJUZfU6x27ejbkQHVY7Wz+A4R5u2R
-	 OK1txCJxOZnWQ==
+	b=Sq6DJF3RF9KCS/qu4fQOvupuZD2Q/BY7lK/w3RKUxUoeCUUwyy12WVvTU0nKwCEDt
+	 nwcigMtsv3DALjIzuLD768JwIMuvn+qVeeRwxiNHp1lrdU5KfhW/H+GiJLhUR+pzm7
+	 DH0+OCpMDLY7P3diXaVZPAobO1qGgc9jZyulp34b7fQviWX+yXpYnqFrSOQr4V+2Zp
+	 qoXQyhFRAMNyL81gVUB8vHAUZSwqGH2L0vMV/U3NKKrXgX+jodfp4FZJqYaEnqp4eg
+	 fZm2+3yp2aL49HgKKEbGrlQZxtUiccfFRJXVH1hk+OO1SpUJTFbmrzbM5NDJ4Fe2Yq
+	 t0eX8EzNrrQAQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Benjamin Berg <benjamin.berg@intel.com>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
+Cc: Zijun Hu <quic_zijuhu@quicinc.com>,
+	Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	johannes@sipsolutions.net,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 42/47] wifi: cfg80211: free beacon_ies when overridden from hidden BSS
-Date: Tue, 16 Jan 2024 14:57:45 -0500
-Message-ID: <20240116195834.257313-42-sashal@kernel.org>
+	marcel@holtmann.org,
+	johan.hedberg@gmail.com,
+	luiz.dentz@gmail.com,
+	linux-bluetooth@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 43/47] Bluetooth: qca: Set both WIDEBAND_SPEECH and LE_STATES quirks for QCA2066
+Date: Tue, 16 Jan 2024 14:57:46 -0500
+Message-ID: <20240116195834.257313-43-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116195834.257313-1-sashal@kernel.org>
 References: <20240116195834.257313-1-sashal@kernel.org>
@@ -72,42 +68,32 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.147
 Content-Transfer-Encoding: 8bit
 
-From: Benjamin Berg <benjamin.berg@intel.com>
+From: Zijun Hu <quic_zijuhu@quicinc.com>
 
-[ Upstream commit 32af9a9e1069e55bc02741fb00ac9d0ca1a2eaef ]
+[ Upstream commit 5d192b697c7417254cdd9edc3d5e9e0364eb9045 ]
 
-This is a more of a cosmetic fix. The branch will only be taken if
-proberesp_ies is set, which implies that beacon_ies is not set unless we
-are connected to an AP that just did a channel switch. And, in that case
-we should have found the BSS in the internal storage to begin with.
+Set both WIDEBAND_SPEECH_SUPPORTED and VALID_LE_STATES quirks
+for QCA2066.
 
-Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
-Reviewed-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
-Link: https://msgid.link/20231220133549.b898e22dadff.Id8c4c10aedd176ef2e18a4cad747b299f150f9df@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/wireless/scan.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/bluetooth/hci_qca.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/wireless/scan.c b/net/wireless/scan.c
-index 4decdc2c601f..68c48970ebf7 100644
---- a/net/wireless/scan.c
-+++ b/net/wireless/scan.c
-@@ -1808,8 +1808,12 @@ cfg80211_bss_update(struct cfg80211_registered_device *rdev,
- 				list_add(&new->hidden_list,
- 					 &hidden->hidden_list);
- 				hidden->refcount++;
-+
-+				ies = (void *)rcu_dereference(new->pub.beacon_ies);
- 				rcu_assign_pointer(new->pub.beacon_ies,
- 						   hidden->pub.beacon_ies);
-+				if (ies)
-+					kfree_rcu(ies, rcu_head);
- 			}
- 		} else {
- 			/*
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index 56b4b7248483..d10f1fe0f5fa 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -1860,6 +1860,7 @@ static const struct qca_device_data qca_soc_data_wcn3998 = {
+ static const struct qca_device_data qca_soc_data_qca6390 = {
+ 	.soc_type = QCA_QCA6390,
+ 	.num_vregs = 0,
++	.capabilities = QCA_CAP_WIDEBAND_SPEECH | QCA_CAP_VALID_LE_STATES,
+ };
+ 
+ static const struct qca_device_data qca_soc_data_wcn6750 = {
 -- 
 2.43.0
 
