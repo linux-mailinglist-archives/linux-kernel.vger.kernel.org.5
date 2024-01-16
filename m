@@ -1,154 +1,145 @@
-Return-Path: <linux-kernel+bounces-27305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DA0782ED91
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C69482ED79
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:13:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBBF6285981
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:19:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A2DB284B36
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:13:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45FE31B80C;
-	Tue, 16 Jan 2024 11:19:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 363A91B7F7;
+	Tue, 16 Jan 2024 11:13:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="wnFGUlym"
-Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iDmOVxuY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D74C1B7F2;
-	Tue, 16 Jan 2024 11:19:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
-Received: from mg.bb.i.ssi.bg (localhost [127.0.0.1])
-	by mg.bb.i.ssi.bg (Proxmox) with ESMTP id B7F1424587;
-	Tue, 16 Jan 2024 13:12:04 +0200 (EET)
-Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
-	by mg.bb.i.ssi.bg (Proxmox) with ESMTPS id 9D4CE24583;
-	Tue, 16 Jan 2024 13:12:04 +0200 (EET)
-Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by ink.ssi.bg (Postfix) with ESMTPSA id 413883C043D;
-	Tue, 16 Jan 2024 13:11:59 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ssi.bg; s=ink;
-	t=1705403520; bh=UxqN8goLJo6H6a7nMjf8r0aorH2j0H/0oPA9ij7vGs8=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References;
-	b=wnFGUlymIz1ag50Nx7oh8FaocUejgNj/GfPnORiHfTvVAwGn2G8y+kBE1JnNnpmtT
-	 iY5ALZ8AHHmg63lIQOHsfp/f6Rf5e7bUeXsixbVP917ZXCUnTEoObTYuxl0ntcUNnK
-	 UJIsB5lHZJhvSC2feK1i5LAxAwtfTNSW1G7tgMrE=
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.17.1/8.17.1) with ESMTP id 40GBBn3L041664;
-	Tue, 16 Jan 2024 13:11:50 +0200
-Date: Tue, 16 Jan 2024 13:11:49 +0200 (EET)
-From: Julian Anastasov <ja@ssi.bg>
-To: Fedor Pchelkin <pchelkin@ispras.ru>
-cc: Simon Horman <horms@verge.net.au>, Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Dwip Banerjee <dwip@linux.vnet.ibm.com>, netdev@vger.kernel.org,
-        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-kernel@vger.kernel.org,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        lvc-project@linuxtesting.org
-Subject: Re: [PATCH net] net: ipvs: avoid stat macros calls from preemptible
- context
-In-Reply-To: <20240115143923.31243-1-pchelkin@ispras.ru>
-Message-ID: <3964ec81-c8d2-c4c6-8ca8-2e2b50dc4240@ssi.bg>
-References: <20240115143923.31243-1-pchelkin@ispras.ru>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 822D21B7ED;
+	Tue, 16 Jan 2024 11:13:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0E8EC433F1;
+	Tue, 16 Jan 2024 11:13:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705403598;
+	bh=S+0SZtA/75E2v3VkKaIyy4uPLM3LshStUgu21aLTubc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=iDmOVxuYwMchFyoYdVADTNZz9TMlhzIa/aKxHixxz0KQ41cIc3Y+CMlgbWUx83ddD
+	 QoXselPmeixw44LsSSnOmrPS3qexnnY1/yFH8E7RR1Aw4kayf7uE1aNLP2piWMUWYT
+	 QInccIBD99HZ3hTVX4RUuPjzGMOwgU9aB8Ct5rd9amKF/e1m4+LMkatl1xxoB0gzF0
+	 WDDceGzuBCmWj4bM8tTkSaebP0wjHUVI5QJY0Lc8/6ed7KRKmRpfoGlJ7NVVABvCBn
+	 7nga2kTsKzerF2P51PCnof/yJec1QCwRTbQSRZbQ4FoLBl0oTI6baBXqBHard97zcH
+	 uNQslch4RLRlQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rPhNc-00C5Q7-AA;
+	Tue, 16 Jan 2024 11:13:16 +0000
+Date: Tue, 16 Jan 2024 11:13:15 +0000
+Message-ID: <86v87t8ras.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: "sundongxu (A)" <sundongxu3@huawei.com>
+Cc: <oliver.upton@linux.dev>,
+	<yuzenghui@huawei.com>,
+	<james.morse@arm.com>,
+	<suzuki.poulose@arm.com>,
+	<will@kernel.org>,
+	<catalin.marinas@arm.com>,
+	<wanghaibin.wang@huawei.com>,
+	<kvmarm@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>
+Subject: Re: [bug report] GICv4.1: VM performance degradation due to not trapping vCPU WFI
+In-Reply-To: <a481ef04-ddd2-dfc1-41b1-d2ec45c6a3b5@huawei.com>
+References: <a481ef04-ddd2-dfc1-41b1-d2ec45c6a3b5@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: sundongxu3@huawei.com, oliver.upton@linux.dev, yuzenghui@huawei.com, james.morse@arm.com, suzuki.poulose@arm.com, will@kernel.org, catalin.marinas@arm.com, wanghaibin.wang@huawei.com, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-
-	Hello,
-
-On Mon, 15 Jan 2024, Fedor Pchelkin wrote:
-
-> Inside decrement_ttl() upon discovering that the packet ttl has exceeded,
-> __IP_INC_STATS and __IP6_INC_STATS macros can be called from preemptible
-> context having the following backtrace:
+On Tue, 16 Jan 2024 03:26:08 +0000,
+"sundongxu (A)" <sundongxu3@huawei.com> wrote:
 > 
-> check_preemption_disabled: 48 callbacks suppressed
-> BUG: using __this_cpu_add() in preemptible [00000000] code: curl/1177
-> caller is decrement_ttl+0x217/0x830
-> CPU: 5 PID: 1177 Comm: curl Not tainted 6.7.0+ #34
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 04/01/2014
-> Call Trace:
->  <TASK>
->  dump_stack_lvl+0xbd/0xe0
->  check_preemption_disabled+0xd1/0xe0
->  decrement_ttl+0x217/0x830
->  __ip_vs_get_out_rt+0x4e0/0x1ef0
->  ip_vs_nat_xmit+0x205/0xcd0
->  ip_vs_in_hook+0x9b1/0x26a0
->  nf_hook_slow+0xc2/0x210
->  nf_hook+0x1fb/0x770
->  __ip_local_out+0x33b/0x640
->  ip_local_out+0x2a/0x490
->  __ip_queue_xmit+0x990/0x1d10
->  __tcp_transmit_skb+0x288b/0x3d10
->  tcp_connect+0x3466/0x5180
->  tcp_v4_connect+0x1535/0x1bb0
->  __inet_stream_connect+0x40d/0x1040
->  inet_stream_connect+0x57/0xa0
->  __sys_connect_file+0x162/0x1a0
->  __sys_connect+0x137/0x160
->  __x64_sys_connect+0x72/0xb0
->  do_syscall_64+0x6f/0x140
->  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> RIP: 0033:0x7fe6dbbc34e0
+> Hi Guys,
 > 
-> Use the corresponding preemption-aware variants: IP_INC_STATS and
-> IP6_INC_STATS.
+> We found a problem about GICv4/4.1, for example:
+> We use QEMU to start a VM (4 vCPUs and 8G memory), VM disk was
+> configured with virtio, and the network is configured with vhost-net,
+> the CPU affinity of the vCPU and emulator is as follows, in VM xml:
 > 
-> Found by Linux Verification Center (linuxtesting.org).
+>   <cputune>
+>     <vcpupin vcpu='0' cpuset='4'/>
+>     <vcpupin vcpu='1' cpuset='5'/>
+>     <vcpupin vcpu='2' cpuset='6'/>
+>     <vcpupin vcpu='3' cpuset='7'/>
+>     <emulatorpin cpuset='4,5,6,7'/>
+>   </cputune>
 > 
-> Fixes: 8d8e20e2d7bb ("ipvs: Decrement ttl")
-> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
-
-	Looks good to me, thanks!
-
-Acked-by: Julian Anastasov <ja@ssi.bg>
-
-> ---
->  net/netfilter/ipvs/ip_vs_xmit.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Running Mysql in the VM, and sysbench (Mysql benchmark) on the host,
+> the performance index is tps, the higher the better.
+> If the host only enabled GICv3, the tps will be around 1400.
+> If the host enabled GICv4.1, other configurations remain unchanged, the
+> tps will be around 40.
 > 
-> diff --git a/net/netfilter/ipvs/ip_vs_xmit.c b/net/netfilter/ipvs/ip_vs_xmit.c
-> index 9193e109e6b3..65e0259178da 100644
-> --- a/net/netfilter/ipvs/ip_vs_xmit.c
-> +++ b/net/netfilter/ipvs/ip_vs_xmit.c
-> @@ -271,7 +271,7 @@ static inline bool decrement_ttl(struct netns_ipvs *ipvs,
->  			skb->dev = dst->dev;
->  			icmpv6_send(skb, ICMPV6_TIME_EXCEED,
->  				    ICMPV6_EXC_HOPLIMIT, 0);
-> -			__IP6_INC_STATS(net, idev, IPSTATS_MIB_INHDRERRORS);
-> +			IP6_INC_STATS(net, idev, IPSTATS_MIB_INHDRERRORS);
->  
->  			return false;
->  		}
-> @@ -286,7 +286,7 @@ static inline bool decrement_ttl(struct netns_ipvs *ipvs,
->  	{
->  		if (ip_hdr(skb)->ttl <= 1) {
->  			/* Tell the sender its packet died... */
-> -			__IP_INC_STATS(net, IPSTATS_MIB_INHDRERRORS);
-> +			IP_INC_STATS(net, IPSTATS_MIB_INHDRERRORS);
->  			icmp_send(skb, ICMP_TIME_EXCEEDED, ICMP_EXC_TTL, 0);
->  			return false;
->  		}
-> -- 
-> 2.43.0
+> We found that when the host enabled GICv4.1, because vSGI is directly
+> injected to VM, and most time vCPU exclusively occupy the pCPU, vCPU
+> will not trap when executing the WFI instruction. Then from the host
+> view, the CPU usage of vCPU0~vCPU3 is almost 100%. When running mysql
+> service in VM, the vhost-net and qemu processes also need to obtain
+> enough CPU time, but unfortunately these processes cannot get that much
+> time (for example, only GICv3 enabled, the cpu usage of vhost-net is
+> about 43%, but with GICv4.1 enabled, it becomes 0~2%). During the test,
+> it was found that vhost-net sleeps and wakes up very frequently. When
+> vhost-net wakes up, it often cannot obtain CPU in time (because of
+> wake-up preemption check). After waking up, vhost-net will usually run
+> for a short period of time before going to sleep again.
 
-Regards
+Can you elaborate on this preemption check issue?
 
---
-Julian Anastasov <ja@ssi.bg>
+> 
+> If the host enabled GICv4.1, and force vCPU to trap when executing WFI,
+> the tps will be around 1400.
+> 
+> On the other hand, when vCPU executes WFI instruction without trapping,
+> the vcpu wake-up delay will be significantly improved. For example, the
+> result of running cyclictest in VM:
+> WFI trap           6us
+> WFI no trap        2us
+> 
+> Currently, I add a KVM module parameter to control whether the vCPU
+> traps (by set or clear HCR_TWI) when executing the WFI instruction with
+> host enabled GICv4/4.1, and by default, vCPU traps are set.
+> 
+> Or, it there a better way?
 
+As you foudn out, KVM has an adaptive way of dealing with HCR_TWI,
+turning it off when the vcpu is alone in the run queue. Which means it
+doesn't compete with any other thread. How comes the other threads
+don't register as being runnable?
+
+Effectively, we apply the same principle to vSGIs as to vLPIs, and it
+was found that this heuristic was pretty beneficial to vLPIs. I'm a
+bit surprised that vSGIs are so different in their usage pattern.
+
+Does it help if you move your "emulatorpin" to some other physical
+CPUs?
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
