@@ -1,51 +1,54 @@
-Return-Path: <linux-kernel+bounces-26748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90A9F82E5CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:55:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 970C182E5D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:55:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B5ECB20838
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:55:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B3F71C224A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:55:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED73733CCD;
-	Tue, 16 Jan 2024 00:25:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 777B63589B;
+	Tue, 16 Jan 2024 00:25:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="otqw73qm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZKdlVOVN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44B6232C94;
-	Tue, 16 Jan 2024 00:25:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFD1EC43399;
-	Tue, 16 Jan 2024 00:25:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C417735889;
+	Tue, 16 Jan 2024 00:25:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30CAFC433C7;
+	Tue, 16 Jan 2024 00:25:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705364732;
-	bh=NxpqsO3yj33VWaO2m8CzkxJFAAtKW59jzjIbaK632fk=;
+	s=k20201202; t=1705364736;
+	bh=UdYE0nHNwmXd7sXbpftZ31FZV7QPzlGJj9bgF5WtpBc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=otqw73qmwZjq0ZdIym7HSK3y2LTeiUpBikBfH4wVeTdjzQAyIlz/FtCSau7Qe6FwF
-	 a3aWkS0RTMp0gQSlaJmGhFcuLA5JhIumcNxo1OQheiGCP7HN/vBPG3zGxNazDpfLTD
-	 vdmH61Zu+J/QU8QAFHkdKdSXvYMAip1m4DgB1vGxjbVqsDGV4kcP7gxv9N+LpxIDkx
-	 YG1EyP/PqQuVNgbFD+EzGBDRWXJzgmahjxR1qwWqbnnkl2kv76jnESWocC7FUHeu+Z
-	 LVj0v9WF4m3OOLSbtIo7QSfOd9Hh35YNDu4asIDzfR58M16AMT6Fb/Gem/9ZN5wC0C
-	 8hewXmiSNHVtA==
+	b=ZKdlVOVNMlR+k5AR+tuNt9N4gfUEKaTjSApiujONmIz91+S+ngHCjLDAQaT4Pk9j6
+	 3JdZeN4WBRnnBtDlXci5b66dUTZypIQWXA4VHZHJiiTVt4xRl9XY/eG8s1kfqKR1Yo
+	 g3AnLYsD9wssl5hWpTzgaulgIABIPFyK7nCxZfOiVEdgUg+P14oM8qXGPt4OYcmHUW
+	 VUBUBhzqgfL3Dy7OjpAfRx1b70tOGy2QZFn8x7knKrsSON/L6RJ7Wwa6H0T4vdS+Iq
+	 T7hrltozjsszdYiPAjYJM7oTxBjf5mNVXxo/8dNL/v0nx32YXHs4cR+xx+9kretIqO
+	 ObIhNrn605M4A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Weichen Chen <weichen.chen@mediatek.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	Kees Cook <keescook@chromium.org>,
+Cc: Bharat Bhushan <bbhushan2@marvell.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
 	Sasha Levin <sashal@kernel.org>,
-	angelogioacchino.delregno@collabora.com,
-	linux-hardening@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.1 07/14] pstore/ram: Fix crash when setting number of cpus to an odd number
-Date: Mon, 15 Jan 2024 19:24:49 -0500
-Message-ID: <20240116002512.215607-7-sashal@kernel.org>
+	bbrezillon@kernel.org,
+	arno@natisbad.org,
+	schalla@marvell.com,
+	davem@davemloft.net,
+	ndabilpuram@marvell.com,
+	alobakin@pm.me,
+	masahiroy@kernel.org,
+	tj@kernel.org,
+	linux-crypto@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 08/14] crypto: octeontx2 - Fix cptvf driver cleanup
+Date: Mon, 15 Jan 2024 19:24:50 -0500
+Message-ID: <20240116002512.215607-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116002512.215607-1-sashal@kernel.org>
 References: <20240116002512.215607-1-sashal@kernel.org>
@@ -60,45 +63,69 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.73
 Content-Transfer-Encoding: 8bit
 
-From: Weichen Chen <weichen.chen@mediatek.com>
+From: Bharat Bhushan <bbhushan2@marvell.com>
 
-[ Upstream commit d49270a04623ce3c0afddbf3e984cb245aa48e9c ]
+[ Upstream commit c480a421a4faf693c38e60b0fe6e554c9a3fee02 ]
 
-When the number of cpu cores is adjusted to 7 or other odd numbers,
-the zone size will become an odd number.
-The address of the zone will become:
-    addr of zone0 = BASE
-    addr of zone1 = BASE + zone_size
-    addr of zone2 = BASE + zone_size*2
-    ...
-The address of zone1/3/5/7 will be mapped to non-alignment va.
-Eventually crashes will occur when accessing these va.
+This patch fixes following cleanup issues:
+ - Missing instruction queue free on cleanup. This
+   will lead to memory leak.
+ - lfs->lfs_num is set to zero before cleanup, which
+   will lead to improper cleanup.
 
-So, use ALIGN_DOWN() to make sure the zone size is even
-to avoid this bug.
-
-Signed-off-by: Weichen Chen <weichen.chen@mediatek.com>
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-Tested-by: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Link: https://lore.kernel.org/r/20230224023632.6840-1-weichen.chen@mediatek.com
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Bharat Bhushan <bbhushan2@marvell.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/pstore/ram.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/crypto/marvell/octeontx2/otx2_cptlf.c      | 6 ++++--
+ drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c | 3 +++
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
-index f3fa3625d772..e15b4631364a 100644
---- a/fs/pstore/ram.c
-+++ b/fs/pstore/ram.c
-@@ -519,6 +519,7 @@ static int ramoops_init_przs(const char *name,
- 	}
+diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptlf.c b/drivers/crypto/marvell/octeontx2/otx2_cptlf.c
+index 71e5f79431af..6e4a78e1f3ce 100644
+--- a/drivers/crypto/marvell/octeontx2/otx2_cptlf.c
++++ b/drivers/crypto/marvell/octeontx2/otx2_cptlf.c
+@@ -419,8 +419,8 @@ int otx2_cptlf_init(struct otx2_cptlfs_info *lfs, u8 eng_grp_mask, int pri,
+ 	return 0;
  
- 	zone_sz = mem_sz / *cnt;
-+	zone_sz = ALIGN_DOWN(zone_sz, 2);
- 	if (!zone_sz) {
- 		dev_err(dev, "%s zone size == 0\n", name);
- 		goto fail;
+ free_iq:
+-	otx2_cpt_free_instruction_queues(lfs);
+ 	cptlf_hw_cleanup(lfs);
++	otx2_cpt_free_instruction_queues(lfs);
+ detach_rsrcs:
+ 	otx2_cpt_detach_rsrcs_msg(lfs);
+ clear_lfs_num:
+@@ -431,11 +431,13 @@ EXPORT_SYMBOL_NS_GPL(otx2_cptlf_init, CRYPTO_DEV_OCTEONTX2_CPT);
+ 
+ void otx2_cptlf_shutdown(struct otx2_cptlfs_info *lfs)
+ {
+-	lfs->lfs_num = 0;
+ 	/* Cleanup LFs hardware side */
+ 	cptlf_hw_cleanup(lfs);
++	/* Free instruction queues */
++	otx2_cpt_free_instruction_queues(lfs);
+ 	/* Send request to detach LFs */
+ 	otx2_cpt_detach_rsrcs_msg(lfs);
++	lfs->lfs_num = 0;
+ }
+ EXPORT_SYMBOL_NS_GPL(otx2_cptlf_shutdown, CRYPTO_DEV_OCTEONTX2_CPT);
+ 
+diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c b/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
+index 392e9fee05e8..6f3373f9928c 100644
+--- a/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
++++ b/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
+@@ -249,8 +249,11 @@ static void cptvf_lf_shutdown(struct otx2_cptlfs_info *lfs)
+ 	otx2_cptlf_unregister_interrupts(lfs);
+ 	/* Cleanup LFs software side */
+ 	lf_sw_cleanup(lfs);
++	/* Free instruction queues */
++	otx2_cpt_free_instruction_queues(lfs);
+ 	/* Send request to detach LFs */
+ 	otx2_cpt_detach_rsrcs_msg(lfs);
++	lfs->lfs_num = 0;
+ }
+ 
+ static int cptvf_lf_init(struct otx2_cptvf_dev *cptvf)
 -- 
 2.43.0
 
