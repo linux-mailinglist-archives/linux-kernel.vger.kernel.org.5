@@ -1,136 +1,159 @@
-Return-Path: <linux-kernel+bounces-27423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6496C82EFCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:35:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D142082EFD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:40:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B911E283F67
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:35:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81D10285380
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:40:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21F5C1BDC2;
-	Tue, 16 Jan 2024 13:35:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 122B41BDCA;
+	Tue, 16 Jan 2024 13:40:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="FEV9NTpy"
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="TC/OfzrQ"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B5E91BC4E
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 13:35:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=wKDZrSr5UEaNlLwHGrAasvRdAMXTo1e2KPdcbvBvbx8=; b=FEV9NTpyCttcNbLmRy8Eh0mFAr
-	vz4pkgZeWzj8JtOdMoM3GW4FzbKXDWXGlJE81hUZRcuiDRhiKX7AuIbb7jwRo4xJCuO/3mgrVPTDM
-	G5wpYioIVBcmg0BRpHDI2Hep/Dm1a/BEE4ukJ3Vwg8pd7iaT9C5YLqcrgrqGWVrEi/ghHaK12aehl
-	WKPiwIodYTJ2sONx/5AbjfW/1mzlhNP9MSpEUmKPDRadcHk56LS75tufAbLMdrVu1U1DwdPxKQDR3
-	pIXdzWqOL/V1bhyndQs4mfQmXsXUNvnLgbHCcH5/1ZftSzBS4ArBbvPwOd4zTcjqOvaNlthgpoqnk
-	PikmFWTQ==;
-Received: from [177.45.63.147] (helo=[192.168.1.111])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1rPjbE-006yYK-5Y; Tue, 16 Jan 2024 14:35:28 +0100
-Message-ID: <47c6866a-34d6-48b1-a977-d21c48d991dc@igalia.com>
-Date: Tue, 16 Jan 2024 10:35:16 -0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 261CE1BC5C
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 13:40:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50eac018059so12468465e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 05:40:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1705412417; x=1706017217; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WVJU5jiTzPEUoyMMg2QyayUMBhCdBnwfYp2MyeRq/z0=;
+        b=TC/OfzrQGpqyBds6YEW4Q2fwGt+K64YQTxnNf3nHVxbyBgFU9X6NAvUTE+hqs9cVH2
+         1KiaEZssEWzWjrGXM3xI2C05N2Gi4A436LYmzHYUJBlbLzhzMINPKXnWrI/CGz0Zu5nG
+         iEDd8Jc1q/YWBYr+CNsuMdY4U+ZqeUheZjVqlHA4OMI/UgVF5yN4nCPHBt2mQ9upkdgb
+         KQwY1M7VBSSuKJ6YQ7V1byvGpAlLDOF5L/GGlWKxiU0lOZb3g7CI6MeE+ZxPRciTJwx5
+         bRO1jXZkw+UX5EtOuZh3+DsK6NBPGaXbsF3ZBIY0KzhM0ltvn38Q34gf/ep0kHWGg7Ze
+         kZMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705412417; x=1706017217;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WVJU5jiTzPEUoyMMg2QyayUMBhCdBnwfYp2MyeRq/z0=;
+        b=sh4mu+StqfJKFtkStNY7NhO6dRPJPi3RFYIMIU2X22gXPBQwDOdn0pWjisr8i1kdgY
+         eut95QPLgK6V1v7XKclcVxmCj2bfpG5Q6QfYe/poZA7tzBmIQ3eAGrtSGbdq8AoP3kBJ
+         aVIriwSE2TnI1n31Sd/54mrpui4a+NYBWN5Zg0jhNRWEIrZw/YyMODa6bNyhuui4/I9f
+         QAtPHj6oBRMPZlXtIp9+mihbYwfDz4WrndtPO9N/5VCa1cAhhu6kL3CA1Ek1o/xGIWA4
+         jvPe4OfqKfGdlEgr/ESKEKg7dcCjebU5cVUNe9/XptqxgzfqeSK7Bmvzg+0JR0BHl+qd
+         RS9w==
+X-Gm-Message-State: AOJu0YzSpapPeDlSFcQnE0ugqjBzAOxRDVCFpgEP+j/aMRGRBoDYBEZb
+	YFxs0B/1dnXYiIpIUzS3LecH1FHgbEHU71pKML59fzHihNn02Q==
+X-Google-Smtp-Source: AGHT+IFnnDAhbGcdZty5D9K7fUTZ8B2Sp+Dbtz7dhqILgr6F04ua8VzWoNqKAww00qzCchYrXjpXF5EnABZT6zCkVe8=
+X-Received: by 2002:a19:5e18:0:b0:50e:6d4f:6915 with SMTP id
+ s24-20020a195e18000000b0050e6d4f6915mr3325240lfb.47.1705412417104; Tue, 16
+ Jan 2024 05:40:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] drm/atomic: Allow drivers to write their own plane
- check for async
-Content-Language: en-US
-To: Pekka Paalanen <ppaalanen@gmail.com>
-Cc: dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, kernel-dev@igalia.com,
- alexander.deucher@amd.com, christian.koenig@amd.com,
- Simon Ser <contact@emersion.fr>, daniel@ffwll.ch,
- Daniel Stone <daniel@fooishbar.org>, =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?=
- <maraeo@gmail.com>, Dave Airlie <airlied@gmail.com>,
- ville.syrjala@linux.intel.com, Xaver Hugl <xaver.hugl@gmail.com>,
- Joshua Ashton <joshua@froggi.es>
-References: <20240116045159.1015510-1-andrealmeid@igalia.com>
- <20240116114522.5b83d8b6@eldfell>
- <a6099681-1ae9-48ef-99bc-d3c919007413@igalia.com>
- <20240116151414.10b831e6@eldfell>
-From: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
-In-Reply-To: <20240116151414.10b831e6@eldfell>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20231024142706.195517-1-hezhongkun.hzk@bytedance.com>
+ <CAKEwX=OiNB+pPhb-3Tf7O=F7psKE3EOpwmbPSeLSOyuHpj3i+Q@mail.gmail.com>
+ <CACSyD1P6HmH9tSvONnNxYv8P+am_hH2dK3UJQd9_+o6EWkPsXA@mail.gmail.com>
+ <CAKEwX=PC3C-PrWAH3XiYGyR4ujqBJQBBX6uRa2jXKCy9VMyRCQ@mail.gmail.com>
+ <CACSyD1O7t0+BXUujJ81RAdEys3MUnmpu0sRADLazoyvayx5DLA@mail.gmail.com>
+ <CAKEwX=P5AC+ubnunnZr5vMiC6fFU+E_E7jg_FZztWwZRYSxTWQ@mail.gmail.com>
+ <CACSyD1Nnc_w3epbt6+EMt7a-4pAzgW1hbE=G5Fy5Tc5R5+uxKw@mail.gmail.com>
+ <CAKEwX=NuXR9Ot1eRFsp9n-3Tq9yhjD9up+jyvXeOzQ4xK9kEPA@mail.gmail.com>
+ <CAKEwX=Oj2dR6a4-DeccvcVdJ-J7b=83uCWQAf5u7U0sySudnkw@mail.gmail.com>
+ <CAJD7tkb2oda=4f0s8w8xn+t_TM1b2Q_otbb86VPQ9R1m2uqDTA@mail.gmail.com>
+ <CACSyD1ODCikYLDzO4LkQeDzB4sqDWCULwCdehw9inP-qyw3_Jg@mail.gmail.com>
+ <CAJD7tkY=zmGiPoWNjVaVeU+NPxV2t48J5-CxEP9=nBK8nAh0XA@mail.gmail.com>
+ <CAKEwX=Na3dg+KZwvtQi-Nj79Am-1tttDw50_qStkobmYGUC6NA@mail.gmail.com>
+ <CACSyD1Pp8gkxwTXZuinm6wiZs0e5U2B5oND4rj29dzmRApFjhQ@mail.gmail.com>
+ <CAKEwX=OsTQCJd12S3NajRMRy_s3q3yGFpS7S=_3-yOYK6+ezzA@mail.gmail.com> <CACSyD1NgqoFKuHSgdw_bzgK_StsLrNQ+7wHVBqsnHcB-2rD2ow@mail.gmail.com>
+In-Reply-To: <CACSyD1NgqoFKuHSgdw_bzgK_StsLrNQ+7wHVBqsnHcB-2rD2ow@mail.gmail.com>
+From: Zhongkun He <hezhongkun.hzk@bytedance.com>
+Date: Tue, 16 Jan 2024 21:40:05 +0800
+Message-ID: <CACSyD1Np1JbKB9punaigGbJ7y2ZWou1Sr7bczanHv4-1UQZ==A@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm: zswap: fix the lack of page lru flag
+ in zswap_writeback_entry
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: Yosry Ahmed <yosryahmed@google.com>, akpm@linux-foundation.org, hannes@cmpxchg.org, 
+	sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Chris Li <chrisl@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-+ Joshua
+> > > >
+> > > > Unless some page flag/readahead expert can confirm that the first
+> > > > option is safe, my vote is on this option. I mean, it's fairly mini=
+mal
+> > > > codewise, no? Just a bunch of plumbing. We can also keep the other
+> > > > call sites intact if we just rename the old versions - something al=
+ong
+> > > > the line of:
+> > > >
+> > > > __read_swap_cache_async_head(..., bool add_to_lru_head)
+> > > > {
+> > > > ...
+> > > > if (add_to_lru_head)
+> > > >   folio_add_lru(folio)
+> > > > else
+> > > >   folio_add_lru_tail(folio);
+> > > > }
+> > > >
+> > > > __read_swap_cache_async(...)
+> > > > {
+> > > >    return __read_swap_cache_async_tail(..., true);
+> > > > }
+> > > >
+> > > > A bit boilerplate? Sure. But this seems safer, and I doubt it's *th=
+at*
+> > > > much more work.
+> > > >
+> > >
+> > > Yes=EF=BC=8C agree. I will try it again.
+> >
+> > Look forward to seeing it! Thanks for your patience and for working on =
+this.
 
-Em 16/01/2024 10:14, Pekka Paalanen escreveu:
-> On Tue, 16 Jan 2024 08:50:59 -0300
-> André Almeida <andrealmeid@igalia.com> wrote:
-> 
->> Hi Pekka,
->>
->> Em 16/01/2024 06:45, Pekka Paalanen escreveu:
->>> On Tue, 16 Jan 2024 01:51:57 -0300
->>> André Almeida <andrealmeid@igalia.com> wrote:
->>>    
->>>> Hi,
->>>>
->>>> AMD hardware can do more on the async flip path than just the primary plane, so
->>>> to lift up the current restrictions, this patchset allows drivers to write their
->>>> own check for planes for async flips.
->>>
->>> Hi,
->>>
->>> what's the userspace story for this, how could userspace know it could do more?
->>> What kind of userspace would take advantage of this and in what situations?
->>>
->>> Or is this not meant for generic userspace?
->>
->> Sorry, I forgot to document this. So the idea is that userspace will
->> query what they can do here with DRM_MODE_ATOMIC_TEST_ONLY calls,
->> instead of having capabilities for each prop.
-> 
-> That's the theory, but do you have a practical example?
-> 
-> What other planes and props would one want change in some specific use
-> case?
-> 
-> Is it just "all or nothing", or would there be room to choose and pick
-> which props you change and which you don't based on what the driver
-> supports? If the latter, then relying on TEST_ONLY might be yet another
-> combinatorial explosion to iterate through.
-> 
+Please forgive me for adding additional information about this patch.
 
-That's a good question, maybe Simon, Xaver or Joshua can share how they 
-were planning to use this on Gamescope or Kwin.
+I have finished the opt for introducing a folio_add_lru_tail(), but
+there are many
+questions:
+1) A new page can be move to LRU only by lru_add_fn, so
+    folio_add_lru_tail could not add pages to LRU for the following code
+    in folio_batch_move_lru(),which is added by Alex Shi for
+    serializing memcg changes in pagevec_lru_move_fn[1].
 
-> 
-> Thanks,
-> pq
-> 
->>>> I'm not sure if adding something new to drm_plane_funcs is the right way to do,
->>>> because if we want to expand the other object types (crtc, connector) we would
->>>> need to add their own drm_XXX_funcs, so feedbacks are welcome!
->>>>
->>>> 	André
->>>>
->>>> André Almeida (2):
->>>>     drm/atomic: Allow drivers to write their own plane check for async
->>>>       flips
->>>>     drm/amdgpu: Implement check_async_props for planes
->>>>
->>>>    .../amd/display/amdgpu_dm/amdgpu_dm_plane.c   | 30 +++++++++
->>>>    drivers/gpu/drm/drm_atomic_uapi.c             | 62 ++++++++++++++-----
->>>>    include/drm/drm_atomic_uapi.h                 | 12 ++++
->>>>    include/drm/drm_plane.h                       |  5 ++
->>>>    4 files changed, 92 insertions(+), 17 deletions(-)
->>>>   
->>>    
-> 
+/* block memcg migration while the folio moves between lru */
+        if (move_fn !=3D lru_add_fn && !folio_test_clear_lru(folio))
+            continue;
+To achieve the goal, we need to add a new function like  lru_add_fn
+which does not have the lru flag and folio_add_lru_tail()
++               if (move_fn !=3D lru_add_fn && move_fn !=3D lru_move_tail_f=
+n_new &&
++                       !folio_test_clear_lru(folio))
+
+2)  __read_swap_cache_async has six parameters, so there is no space to
+add a new one, add_to_lru_head.
+
+So it seems a bit hacky just for a special case for the reasons above.
+
+Back to the beginning,  lru_add_drain() is the simplest option=EF=BC=8Cwhic=
+h is common
+below the __read_swap_cache_async(). Please see the function
+swap_cluster_readahead()
+and swap_vma_readahead(), of course it has been batched.
+
+Or we should  leave this problem alone=EF=BC=8Cbefore we can write back zsw=
+ap
+in batches.
+
+Thanks again.
 
