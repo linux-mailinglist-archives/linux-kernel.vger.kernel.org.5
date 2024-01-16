@@ -1,139 +1,119 @@
-Return-Path: <linux-kernel+bounces-27280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99CD482ED3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:58:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D03582ED3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:59:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3794A1F24467
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:58:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E046C28568E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:59:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D0B81A58E;
-	Tue, 16 Jan 2024 10:58:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4F9C1A592;
+	Tue, 16 Jan 2024 10:58:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S2siVRl+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hf3wWH2s"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACA031A581;
-	Tue, 16 Jan 2024 10:58:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85CAFC433C7;
-	Tue, 16 Jan 2024 10:58:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705402722;
-	bh=iAKRNPzzMkaTQkY4UUCIX+B/X35A2Lg6XCS5p0fAERQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=S2siVRl+vctesGO1xykrsDMvemjtVazOi5ory9HO/1W6mJzOwS5lNhB8WsMs16lTH
-	 pEPaOtOc0OKgbzSyVHmizIg4oyake2jBh6eovJUtkngOphDznn6DyrWVf5WTWy90HO
-	 5KpsFPvEbg1rWum4UA11KCnoXjVjZNefFwsQMvQDPR6sRkHn/ik15BrJGBd/CP8Z1G
-	 LD3m52XX9PZKGyzblYSXSsiA3cJG/AVEKDL+4sOsors0xc3WrAABTij4dg+BDNDrXY
-	 YeT1lJAolmV6wiX/J2m1RP+hK5HwCGPpVEoY2dXbWg1oYd4jNq28qAXL7AHADwe4DQ
-	 pdG3xhN9hPYfA==
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-206b77b9f4bso3669228fac.1;
-        Tue, 16 Jan 2024 02:58:42 -0800 (PST)
-X-Gm-Message-State: AOJu0YzvlwAyh9bfUY2EdVob6lu+kt+2HScp/s+PUMLefSemsweOu/Ca
-	IXnmpXb7+LAspEBVe3U4hgdEG3eTYvtnJOhaodg=
-X-Google-Smtp-Source: AGHT+IHTV26VyjPT49vnSPWQYOiPUOJ4EtfCM+b7PBtuh3G/W0jPqrCIXX71sWXVDwCFpx9Zkk0vQcJFpGk0C6EV2lA=
-X-Received: by 2002:a05:6870:521:b0:206:be6d:8287 with SMTP id
- j33-20020a056870052100b00206be6d8287mr10990288oao.25.1705402721967; Tue, 16
- Jan 2024 02:58:41 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC8D018EB3
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:58:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705402731; x=1736938731;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fVFzolAaNMqJShGWKu8kQmZjsqjN+EpSt9vDF82e8oo=;
+  b=hf3wWH2sdtxbiZ4puwlEzC4I8O/OrB/YpIkEcS6/Q/AZ19GSYiLRP7Gw
+   R19SwvCfjBzM2+Hmnqsi62GdhsCqQz/INZF/a3174HdkXTNZfYyIrLMVg
+   O2m9eK3RuSAYQxe1v9Yh3I+v/OlWqZkFefak39MEFsku5714IiX0d7V97
+   V9snWISWFl/5osiNnISBE0Zov3V3M3jDIKYxSiOQO+gvKYHUS8yQ3xg3k
+   1PVKjVfGyxLyOU4xiQOyWts/LwJu+WhjqbQ0TeW1padzsxCHt4hHncOvy
+   aXN0KOnEzlkdskQPIvRiJM2jbveQ1p44NON2JkI+hldN+0AfNY20BVyus
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="399496629"
+X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
+   d="scan'208";a="399496629"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 02:58:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="1115252763"
+X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
+   d="scan'208";a="1115252763"
+Received: from uschumac-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.213.254])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 02:58:47 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+	id 8EDF310A17B; Tue, 16 Jan 2024 13:58:44 +0300 (+03)
+Date: Tue, 16 Jan 2024 13:58:44 +0300
+From: "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
+To: "Huang, Kai" <kai.huang@intel.com>
+Cc: "tglx@linutronix.de" <tglx@linutronix.de>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"bp@alien8.de" <bp@alien8.de>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"hpa@zytor.com" <hpa@zytor.com>,
+	"thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+	"jpiotrowski@linux.microsoft.com" <jpiotrowski@linux.microsoft.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Cui, Dexuan" <decui@microsoft.com>,
+	"x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCHv2] x86/mm: Fix memory encryption features advertisement
+Message-ID: <20240116105844.cjnwpzuywukfv5rs@box.shutemov.name>
+References: <20240111111224.25289-1-kirill.shutemov@linux.intel.com>
+ <2b171c78e3dbc33f6fcf015c14c9e84825776798.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231228054630.3595093-1-tfiga@chromium.org> <CAK7LNATBipJtprjvvRVYg8JcYOFXQdpLEyEc+4+8j1PtBQ+PUg@mail.gmail.com>
- <CAAFQd5C3vAUJhKiQ1LPkZv3dJxNvK4QinRezV9Q8rz_Ov6FSUQ@mail.gmail.com>
- <CAK7LNAQcaDneE4rnjvV+GTSBBMozm5deu_q9+STTn60ervZJbA@mail.gmail.com> <CAAFQd5DcxL80cb8w9OZs0mpD=Y3K=LmM7exG7U_DaSsMkfni7Q@mail.gmail.com>
-In-Reply-To: <CAAFQd5DcxL80cb8w9OZs0mpD=Y3K=LmM7exG7U_DaSsMkfni7Q@mail.gmail.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Tue, 16 Jan 2024 19:58:05 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASyiYasGa2_Ppp54nEq2m08q_Z_keViZDCavmNN0rBAzQ@mail.gmail.com>
-Message-ID: <CAK7LNASyiYasGa2_Ppp54nEq2m08q_Z_keViZDCavmNN0rBAzQ@mail.gmail.com>
-Subject: Re: [PATCH] kconfig: menuconfig: Make hidden options show as dim
-To: Tomasz Figa <tfiga@chromium.org>
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Jesse Taube <Mr.Bossman075@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2b171c78e3dbc33f6fcf015c14c9e84825776798.camel@intel.com>
 
-On Mon, Jan 15, 2024 at 2:04=E2=80=AFPM Tomasz Figa <tfiga@chromium.org> wr=
-ote:
->
-> On Sat, Jan 13, 2024 at 8:23=E2=80=AFPM Masahiro Yamada <masahiroy@kernel=
-org> wrote:
-> >
-> > On Wed, Jan 10, 2024 at 10:05=E2=80=AFPM Tomasz Figa <tfiga@chromium.or=
-g> wrote:
-> > >
-> > > On Fri, Dec 29, 2023 at 1:10=E2=80=AFAM Masahiro Yamada <masahiroy@ke=
-rnel.org> wrote:
-> > > >
-> > > > On Thu, Dec 28, 2023 at 2:46=E2=80=AFPM Tomasz Figa <tfiga@chromium=
-org> wrote:
-> > > > >
-> > > > > When hidden options are toggled on (using 'z'), the number of opt=
-ions
-> > > > > on the screen can be overwhelming and may make it hard to disting=
-uish
-> > > > > between available and hidden ones. Make them easier to distinguis=
-h by
-> > > > > displaying the hidden one as dim (using the A_DIM curses attribut=
-e).
-> > > > >
-> > > > > Signed-off-by: Tomasz Figa <tfiga@chromium.org>
-> > > >
-> > > >
-> > > >
-> > > > Do you think this is useful?
-> > > >
-> > > > This changes the color only when you select a hidden item.
-> > > >
-> > > >
-> > > > For unselected items, you cannot distinguish hidden ones,
-> > > > as A_DIM has no effect to black text.
-> > > >
-> > > >
-> > >
-> > > Hmm, are you sure about that? For me it seems to dim the text. it
-> > > seems to be also used in the existing code for dlg.button_inactive.at=
-r
-> > > of the mono theme:
-> > >
-> > > https://elixir.bootlin.com/linux/latest/source/scripts/kconfig/lxdial=
-og/util.c#L26
-> >
-> >
-> >
-> > Then, your code works only on the mono theme.
-> > (when your terminal does not support color, or
-> > "MENUCONFIG_COLOR=3Dmono make menuconfig")
-> >
->
-> No, that's not what I meant. It works for me for all themes, see the
-> screenshot at https://postimg.cc/sBsM0twT . The terminal is tmux
-> inside hterm (which in turn is supposed to be compatible with xterm).
-> I guess I can test a couple of different terminals.
->
-> In which terminal is it not working for you?
+On Tue, Jan 16, 2024 at 10:36:10AM +0000, Huang, Kai wrote:
+> On Thu, 2024-01-11 at 14:12 +0300, Kirill A. Shutemov wrote:
+> > When memory encryption is enabled, the kernel prints the encryption
+> > flavor that the system supports.
+> > 
+> > The check assumes that everything is AMD SME/SEV if it doesn't have
+> > the TDX CPU feature set.
+> > 
+> > Hyper-V vTOM sets cc_vendor to CC_VENDOR_INTEL when it runs as L2 guest
+> > on top of TDX, but not X86_FEATURE_TDX_GUEST. Hyper-V only needs memory
+> > encryption enabled for I/O without the rest of CoCo enabling.
+> > 
+> > To avoid confusion, check the cc_vendor directly.
+> > 
+> > Possible alternative is to completely removing the print statement.
+> > For a regular TDX guest, the kernel already prints a message indicating
+> > that it is booting on TDX. Similarly, AMD and Hyper-V can also display
+> > a message during their enumeration process.
+> > 
+> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > Cc: Dexuan Cui <decui@microsoft.com>
+> > Cc: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+> 
+> Seems this fix is for userspace running in hyperv environment being able to use
+> some easy grep to get which coco vendor it is running on?
 
+Making decision in userspace by	grepping dmesg is bad idea and nobody
+should do this. It can easily give false result: dmesg is not ABI, format
+can change and ring buffer has finite size, the message can be overridden.
 
-I use gnome-terminal.
-The disto is Ubuntu 23.10
+If we need a way for userspace to discover which CoCo environment it runs
+on, we need proper ABI for that. Maybe sysfs file or something.
 
+> If so I think it would be nice to mention it too.
+> 
+> Acked-by: Kai Huang <kai.huang@intel.com>
 
+Thanks.
 
-
-
-
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
