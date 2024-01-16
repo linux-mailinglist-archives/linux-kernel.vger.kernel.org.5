@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-28195-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28196-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5A9982FB6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:55:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1224F82FB74
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:55:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56B781F26A0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:55:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3CBD28BB0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:55:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACE8A1657F3;
-	Tue, 16 Jan 2024 20:03:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 389E5165F73;
+	Tue, 16 Jan 2024 20:03:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bcwJSV88"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hNRwPMUZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED9051657DF;
-	Tue, 16 Jan 2024 20:03:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73FAD208CF;
+	Tue, 16 Jan 2024 20:03:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435423; cv=none; b=fAjozXlj103Kxc+QxLe0bp0ypdKkPMGqBBXd+VIbEB2PHV1XKcK32x4jbKbYC6TDTRH/MkyCPQ2mvKbfq4hmSDPeinMrYyXlff+34HLkKM0K8AViqkQJwGzgz1gHlseJO4nL0uzMX0DjBlhvykufQFqHJX2OL80XbHSDkZZjmBA=
+	t=1705435425; cv=none; b=GLENI+Z3wYe4/iWsCXBPCZEvxYYrBR6mMtIpF/qNWKfJcMbZUdQJcLlaw7oL8Wz5WGe9o+bYLfiUf2W4xhZKN77zb5mZO6JEUFgji0xUhd4gwmRbXsD2cqxtS8N1cvMzvnMVicZ6e0ELWInkQx+wnGUkBa95z3B5jXQpOlnUUfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435423; c=relaxed/simple;
-	bh=3tSf8vVGuiOTFnLIyyqFLqfP4vJAjg3AUHMphHvh3aM=;
+	s=arc-20240116; t=1705435425; c=relaxed/simple;
+	bh=pmbsWHltc8Lpwyyk7GvVNqLLAJvlYw8tPyULoxBWpHc=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=o4qO6fNCH4XL8/GaSp1YOt99idUmJYP5YiVzWu5jKAAvWdAVbuyqr/FVxi7Svuy5O+18Pn7bbIl9JbW7LxT2MTupXriveOr4bU8dgYgiQ4TxY1xb4jw+Sjypwim70vIhKOXgFYxtUUNmFgS2+VmTt61BBmK0SMw8TenU6+q9Afo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bcwJSV88; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DE77C43394;
-	Tue, 16 Jan 2024 20:03:41 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=jiAduneCHEDz7QpWFWnbKB98SYm3VxFSrRByHW2Kdnl8oHN2crw+hNXEkNpcfAqnmJKa2c/neZBqpQBPDWj3FiPnR6v6OWYfifLMvNth+Bul2i8s66DHzLSrmJQpImEZ6hYYGEMOrmu5BE+YOueIlRerlyXIjA+klqotLh5AwwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hNRwPMUZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEC65C43390;
+	Tue, 16 Jan 2024 20:03:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435422;
-	bh=3tSf8vVGuiOTFnLIyyqFLqfP4vJAjg3AUHMphHvh3aM=;
+	s=k20201202; t=1705435424;
+	bh=pmbsWHltc8Lpwyyk7GvVNqLLAJvlYw8tPyULoxBWpHc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bcwJSV88WFmtgUCYYILqztz7huWVo8CX/xUW8WLpMV+qLZHjrWKMxzjVPc5BcvyuF
-	 Pt2vWJTQfJD/syyZxwMPRATOg7Bts3uygP4gp7bFl4BqUy/5Yby3RLr0AfOxQoM1b2
-	 Zet5lp/NX7TZdGLQCpWo0G+QlvIUfjvnFM7h+zYGwFs+LrCeOOEw2mLBQ60oXHQcCl
-	 QhDlZ0oVfS/+QtuuTFotwnpxdhGCvBh92VfDzqz8yXK/458TFDtAh8cmBbUvtxuiqA
-	 Wdb9lp1DWyknC+1li4y5ftf8WUHVGUwn8cxgfxcL8TB6eD8wq9bejBfiYevFmMvklU
-	 HLXot90+7xu/Q==
+	b=hNRwPMUZymVdsPaq50OVICqp7oOgIBmL4UmyulrdQuE72/cEx617mFiNEccXwPAeN
+	 IN2yq0xQNLxUPtaAP0AtMRoFtKZnDzipqehfevmtJDA3hzFWUPjAmJZ+VjfS5jrjZm
+	 duqitj9mMrC6GhiexdZ7yyTyhnXALKl33zaOY8n8oF322/9yrE/GZcmziuy4t9kZCS
+	 9ICCe9YydRkGSUN8h+ujBlzWiS6HjU9EMSNFTlafqn7JTz0D5+zLRNETq7yMW+ndWd
+	 1lobCuMaD3IvtiCXp4ExYSBG3bQK45JYty7I8RmCHHZ2CFQ4VjgjYO7RAglDQ+1AWO
+	 B1QTvNxGcWjbA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -52,9 +52,9 @@ Cc: Fabio Estevam <festevam@denx.de>,
 	conor+dt@kernel.org,
 	devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 15/31] ARM: dts: imx25/27-eukrea: Fix RTC node name
-Date: Tue, 16 Jan 2024 15:02:24 -0500
-Message-ID: <20240116200310.259340-15-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 16/31] ARM: dts: imx: Use flash@0,0 pattern
+Date: Tue, 16 Jan 2024 15:02:25 -0500
+Message-ID: <20240116200310.259340-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116200310.259340-1-sashal@kernel.org>
 References: <20240116200310.259340-1-sashal@kernel.org>
@@ -71,48 +71,77 @@ Content-Transfer-Encoding: 8bit
 
 From: Fabio Estevam <festevam@denx.de>
 
-[ Upstream commit 68c711b882c262e36895547cddea2c2d56ce611d ]
+[ Upstream commit 1e1d7cc478fb16816de09740e3c323c0c188d58f ]
 
-Node names should be generic. Use 'rtc' as node name to fix
-the following dt-schema warning:
+Per mtd-physmap.yaml, 'nor@0,0' is not a valid node pattern.
 
-imx25-eukrea-mbimxsd25-baseboard.dtb: pcf8563@51: $nodename:0: 'pcf8563@51' does not match '^rtc(@.*|-([0-9]|[1-9][0-9]+))?$'
-	from schema $id: http://devicetree.org/schemas/rtc/nxp,pcf8563.yaml#
+Change it to 'flash@0,0' to fix the following dt-schema warning:
+
+imx1-ads.dtb: nor@0,0: $nodename:0: 'nor@0,0' does not match '^(flash|.*sram|nand)(@.*)?$'
+	from schema $id: http://devicetree.org/schemas/mtd/mtd-physmap.yaml#
 
 Signed-off-by: Fabio Estevam <festevam@denx.de>
 Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx25-eukrea-cpuimx25.dtsi | 2 +-
- arch/arm/boot/dts/imx27-eukrea-cpuimx27.dtsi | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/imx1-ads.dts                  | 2 +-
+ arch/arm/boot/dts/imx1-apf9328.dts              | 2 +-
+ arch/arm/boot/dts/imx27-eukrea-cpuimx27.dtsi    | 2 +-
+ arch/arm/boot/dts/imx27-phytec-phycore-som.dtsi | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx25-eukrea-cpuimx25.dtsi b/arch/arm/boot/dts/imx25-eukrea-cpuimx25.dtsi
-index 0703f62d10d1..93a6e4e680b4 100644
---- a/arch/arm/boot/dts/imx25-eukrea-cpuimx25.dtsi
-+++ b/arch/arm/boot/dts/imx25-eukrea-cpuimx25.dtsi
-@@ -27,7 +27,7 @@ &i2c1 {
- 	pinctrl-0 = <&pinctrl_i2c1>;
+diff --git a/arch/arm/boot/dts/imx1-ads.dts b/arch/arm/boot/dts/imx1-ads.dts
+index 5833fb6f15d8..2c817c4a4c68 100644
+--- a/arch/arm/boot/dts/imx1-ads.dts
++++ b/arch/arm/boot/dts/imx1-ads.dts
+@@ -65,7 +65,7 @@ &weim {
+ 	pinctrl-0 = <&pinctrl_weim>;
  	status = "okay";
  
--	pcf8563@51 {
-+	rtc@51 {
- 		compatible = "nxp,pcf8563";
- 		reg = <0x51>;
- 	};
+-	nor: nor@0,0 {
++	nor: flash@0,0 {
+ 		compatible = "cfi-flash";
+ 		reg = <0 0x00000000 0x02000000>;
+ 		bank-width = <4>;
+diff --git a/arch/arm/boot/dts/imx1-apf9328.dts b/arch/arm/boot/dts/imx1-apf9328.dts
+index 77b21aa7a146..27e72b07b517 100644
+--- a/arch/arm/boot/dts/imx1-apf9328.dts
++++ b/arch/arm/boot/dts/imx1-apf9328.dts
+@@ -45,7 +45,7 @@ &weim {
+ 	pinctrl-0 = <&pinctrl_weim>;
+ 	status = "okay";
+ 
+-	nor: nor@0,0 {
++	nor: flash@0,0 {
+ 		compatible = "cfi-flash";
+ 		reg = <0 0x00000000 0x02000000>;
+ 		bank-width = <2>;
 diff --git a/arch/arm/boot/dts/imx27-eukrea-cpuimx27.dtsi b/arch/arm/boot/dts/imx27-eukrea-cpuimx27.dtsi
-index 74110bbcd9d4..4b83e2918b55 100644
+index 4b83e2918b55..c7e923584878 100644
 --- a/arch/arm/boot/dts/imx27-eukrea-cpuimx27.dtsi
 +++ b/arch/arm/boot/dts/imx27-eukrea-cpuimx27.dtsi
-@@ -33,7 +33,7 @@ &i2c1 {
- 	pinctrl-0 = <&pinctrl_i2c1>;
+@@ -90,7 +90,7 @@ &usbotg {
+ &weim {
  	status = "okay";
  
--	pcf8563@51 {
-+	rtc@51 {
- 		compatible = "nxp,pcf8563";
- 		reg = <0x51>;
- 	};
+-	nor: nor@0,0 {
++	nor: flash@0,0 {
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+ 		compatible = "cfi-flash";
+diff --git a/arch/arm/boot/dts/imx27-phytec-phycore-som.dtsi b/arch/arm/boot/dts/imx27-phytec-phycore-som.dtsi
+index 3d10273177e9..a5fdc2fd4ce5 100644
+--- a/arch/arm/boot/dts/imx27-phytec-phycore-som.dtsi
++++ b/arch/arm/boot/dts/imx27-phytec-phycore-som.dtsi
+@@ -322,7 +322,7 @@ &usbotg {
+ &weim {
+ 	status = "okay";
+ 
+-	nor: nor@0,0 {
++	nor: flash@0,0 {
+ 		compatible = "cfi-flash";
+ 		reg = <0 0x00000000 0x02000000>;
+ 		bank-width = <2>;
 -- 
 2.43.0
 
