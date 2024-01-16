@@ -1,54 +1,51 @@
-Return-Path: <linux-kernel+bounces-26761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AF3082E5EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:59:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CECD82E5F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:00:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6A5A1F278FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:59:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 860501F27906
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:00:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D4C541C98;
-	Tue, 16 Jan 2024 00:26:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7644E1F614;
+	Tue, 16 Jan 2024 00:26:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NCm3aRXs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dMo/Etuo"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAC2B41C92;
-	Tue, 16 Jan 2024 00:26:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CD83C433C7;
-	Tue, 16 Jan 2024 00:26:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A5343AAB;
+	Tue, 16 Jan 2024 00:26:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3013AC43394;
+	Tue, 16 Jan 2024 00:26:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705364780;
-	bh=VJdzakrW+kXBQk7/3tiYc2BgFP8I61qRKCB690jnnrw=;
+	s=k20201202; t=1705364782;
+	bh=NxpqsO3yj33VWaO2m8CzkxJFAAtKW59jzjIbaK632fk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NCm3aRXsa1KIVhikJPbOmNhwVJl/Ol+jqoGdIeVnKBTB9s/xNs8c/Rz+AokvRXASw
-	 0BTfnT/WIS+c3Y2SUCfRg30zVP6FjnO+1R78l1Nd5RN2n5/vElWcBOnc4FF4Vhil69
-	 mH4aeYY+J8HfQOqzDFEs3Cjwfq/jsGBL/o8JEhhznmRad5yuyStBT+yTnCVgSojsWx
-	 rfjTQFbUQm3gBd/gr9+HQ79O6I3AQwODPpSz9WHldbweZiLtMO3wNfIl9FPajQ++CY
-	 Lddiy8zCgHRm1kKn9PLcYxGpxmqVgllGGekrLXmHJKI9JOH6xI5l99bo++/FDZpDEa
-	 4ZnimLUEGAmhA==
+	b=dMo/EtuoEeQAgMC8SYBR/juN48Qdtu5mUtfWml9HCSP9oaJAIzBCkJVKYANCrs+Z/
+	 c/l8dq0geqA2lioH3Mz8js9659u/uHmd2Z9pell218qRf5/phiAK8gVEUUvBidSsSD
+	 NM8wJcjx25t17utdiDKy4nMF3zMZJILY48XFdp2AwZrA13CJgu5Wc79U1V+PSgBL3d
+	 fVgzOdZKOXiS2eCI50s8XW7fSIsxi7cmtwt+BJIhUvy3ICBiGdGifOWWMbJ2hii2XQ
+	 rA05jutzMU7E71h2k9bkcfS5NFHeaNE93ZuSYZFv2n+Gc7+/SBpD5XSrovVSGhnIn7
+	 o90O4ccM3VBJg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Manas Ghandat <ghandatmanas@gmail.com>,
-	syzbot+411debe54d318eaed386@syzkaller.appspotmail.com,
-	Dave Kleikamp <dave.kleikamp@oracle.com>,
+Cc: Weichen Chen <weichen.chen@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+	Kees Cook <keescook@chromium.org>,
 	Sasha Levin <sashal@kernel.org>,
-	shaggy@kernel.org,
-	juntong.deng@outlook.com,
-	wonguk.lee1023@gmail.com,
-	code@siddh.me,
-	yogi.kernel@gmail.com,
-	andrew.kanner@gmail.com,
-	osmtendev@gmail.com,
-	jfs-discussion@lists.sourceforge.net
-Subject: [PATCH AUTOSEL 5.15 06/13] jfs: fix shift-out-of-bounds in dbJoin
-Date: Mon, 15 Jan 2024 19:25:42 -0500
-Message-ID: <20240116002603.215942-6-sashal@kernel.org>
+	angelogioacchino.delregno@collabora.com,
+	linux-hardening@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.15 07/13] pstore/ram: Fix crash when setting number of cpus to an odd number
+Date: Mon, 15 Jan 2024 19:25:43 -0500
+Message-ID: <20240116002603.215942-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116002603.215942-1-sashal@kernel.org>
 References: <20240116002603.215942-1-sashal@kernel.org>
@@ -63,49 +60,45 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.147
 Content-Transfer-Encoding: 8bit
 
-From: Manas Ghandat <ghandatmanas@gmail.com>
+From: Weichen Chen <weichen.chen@mediatek.com>
 
-[ Upstream commit cca974daeb6c43ea971f8ceff5a7080d7d49ee30 ]
+[ Upstream commit d49270a04623ce3c0afddbf3e984cb245aa48e9c ]
 
-Currently while joining the leaf in a buddy system there is shift out
-of bound error in calculation of BUDSIZE. Added the required check
-to the BUDSIZE and fixed the documentation as well.
+When the number of cpu cores is adjusted to 7 or other odd numbers,
+the zone size will become an odd number.
+The address of the zone will become:
+    addr of zone0 = BASE
+    addr of zone1 = BASE + zone_size
+    addr of zone2 = BASE + zone_size*2
+    ...
+The address of zone1/3/5/7 will be mapped to non-alignment va.
+Eventually crashes will occur when accessing these va.
 
-Reported-by: syzbot+411debe54d318eaed386@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=411debe54d318eaed386
-Signed-off-by: Manas Ghandat <ghandatmanas@gmail.com>
-Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+So, use ALIGN_DOWN() to make sure the zone size is even
+to avoid this bug.
+
+Signed-off-by: Weichen Chen <weichen.chen@mediatek.com>
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+Tested-by: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Link: https://lore.kernel.org/r/20230224023632.6840-1-weichen.chen@mediatek.com
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jfs/jfs_dmap.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ fs/pstore/ram.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
-index 3f5c14315719..c1290e7a8d24 100644
---- a/fs/jfs/jfs_dmap.c
-+++ b/fs/jfs/jfs_dmap.c
-@@ -2831,7 +2831,9 @@ static int dbBackSplit(dmtree_t *tp, int leafno, bool is_ctl)
-  *	leafno	- the number of the leaf to be updated.
-  *	newval	- the new value for the leaf.
-  *
-- * RETURN VALUES: none
-+ * RETURN VALUES:
-+ *  0		- success
-+ *	-EIO	- i/o error
-  */
- static int dbJoin(dmtree_t *tp, int leafno, int newval, bool is_ctl)
- {
-@@ -2858,6 +2860,10 @@ static int dbJoin(dmtree_t *tp, int leafno, int newval, bool is_ctl)
- 		 * get the buddy size (number of words covered) of
- 		 * the new value.
- 		 */
-+
-+		if ((newval - tp->dmt_budmin) > BUDMIN)
-+			return -EIO;
-+
- 		budsz = BUDSIZE(newval, tp->dmt_budmin);
+diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
+index f3fa3625d772..e15b4631364a 100644
+--- a/fs/pstore/ram.c
++++ b/fs/pstore/ram.c
+@@ -519,6 +519,7 @@ static int ramoops_init_przs(const char *name,
+ 	}
  
- 		/* try to join.
+ 	zone_sz = mem_sz / *cnt;
++	zone_sz = ALIGN_DOWN(zone_sz, 2);
+ 	if (!zone_sz) {
+ 		dev_err(dev, "%s zone size == 0\n", name);
+ 		goto fail;
 -- 
 2.43.0
 
