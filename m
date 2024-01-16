@@ -1,146 +1,125 @@
-Return-Path: <linux-kernel+bounces-28323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28324-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AAC482FCEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:34:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EB4982FCF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:34:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36D3C1F2974A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:34:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BCBE1C28440
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:34:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5469C3FB1F;
-	Tue, 16 Jan 2024 21:55:09 +0000 (UTC)
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D40BF3FE54;
+	Tue, 16 Jan 2024 21:55:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Duh6G9At"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 937201D6BD;
-	Tue, 16 Jan 2024 21:55:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 226DB3FE31;
+	Tue, 16 Jan 2024 21:55:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705442108; cv=none; b=H3LL6eV99xZdc3p6xaoS4WzOXrZj5bkWJuP3qmSafP5zWDlPwxYWsuvPCP5C9EPpIA2x8TrNiew2cpey2tGLyl16lKA/43e782MjEEsqva5w94kZkh7NhbDa39lGLaOzOYRbUUgJG9gK7NThwVV1cvL+uv4yv0/wQ2C76L6N5r0=
+	t=1705442122; cv=none; b=OF+0yADKVWLf/lX7/sSqJIaguUIdeTQJiIpS0z2uQnne/d0+8knSEH+V4ni+NLQ3RP3Gpj8PctUegEW1D7/9/6hboVIKC7PaCjHXy8wMAxFO0ydgIcQhyAgJEZsdtTiHA4O5iFdanB669vSly2pJBfSytE/Vq8ax5mQ8Uy2OLWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705442108; c=relaxed/simple;
-	bh=1OQ9ocuUq7f0RxHOajJIIjyI25WuDNYx8YfwH07MV3c=;
-	h=Received:X-Google-DKIM-Signature:X-Gm-Message-State:
-	 X-Google-Smtp-Source:X-Received:MIME-Version:References:
-	 In-Reply-To:From:Date:Message-ID:Subject:To:Cc:Content-Type:
-	 Content-Transfer-Encoding; b=kkNeDqo932DtB7HpLjaTcD26gbHUzHtNEfOc9kgH1rTXp1OgCyYWQ1uzlRAl0eotkgbPGUWPbPkpgigrkZ8+mMTOeqF9BvtsP1XKbmoBhfZSEknc+9qpgM1b4v4pTWh3Ou1lqIxF8Ro2Oxt5hfzCgHM3ZvGz88DmLwV7TooYNa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-28ff6445faaso74920a91.1;
-        Tue, 16 Jan 2024 13:55:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705442107; x=1706046907;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oIZzUXfeyB0JSREarHHCmZzOdwaXVpbV3/qdV2TmR9M=;
-        b=fuF47ZrkTV9lSdkXByWd4ze23W1bJwWLQlJw1BdfQNX0bCqGP0c+P/F4a3AhZl9q+5
-         eUHfT5e++XcOo5CFtkd0ZCsww9//QF3DBW2RZdv2tg/sD4wG3A1TM9ja8nSYylWqauCM
-         RDE7gfyqEQ81EowNtPNGtsUvud/qNkaijUjQzWC8mLi3sLay1nq95P2YaTnuAdQayRgW
-         RX8L9r1OOOb6SP7IR2Zc2IoVe3H7CMgPKUl0dhxvoqOsI79jwT1zuJ2ZWTJVywmwfX75
-         w5tpovumDi+gzYcCbD2a0RKNlZYIxYWPar55lcg3oPkjLYAcdnAwxNrIP8D/s+aZjzb9
-         76Pw==
-X-Gm-Message-State: AOJu0YzkzBO1inFZl3S9AjXZWtzZ/JPXE5c0TfVv5wb6MSRMw2ljlZN8
-	xDWo7blnacA4MVraPpfbp2mKuWA2tRdhaecj6L0=
-X-Google-Smtp-Source: AGHT+IHWox2bKBt1g7JKNDQQ4hF1U1tIzFNGVfikE8a/hzNtDSUeCSVd7E40obU/1Wz4LLybEUA64Ah5vxpb3zLCGg8=
-X-Received: by 2002:a17:90b:314a:b0:28c:91a5:1e33 with SMTP id
- ip10-20020a17090b314a00b0028c91a51e33mr5272652pjb.12.1705442106929; Tue, 16
- Jan 2024 13:55:06 -0800 (PST)
+	s=arc-20240116; t=1705442122; c=relaxed/simple;
+	bh=2kMngdY8XxaVbjjDWUSvjo23NQ0hWKVAhB8Afjw9Z2Y=;
+	h=Received:DKIM-Signature:Received:Received:Received:Received:
+	 Received:Received:Received:From:To:Cc:Subject:Date:Message-ID:
+	 X-Mailer:MIME-Version:Content-Transfer-Encoding:X-TM-AS-GCONF:
+	 X-Proofpoint-ORIG-GUID:X-Proofpoint-GUID:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details; b=Xw5Luq9ilb+c/J1o2eMbm2Qu9OK2oUP35U072S5BR8zgoGdIqBKV434FtnqvsLCf6WpFLbD+b/I4R3ACXJXIu/lGkDyMpZPCheU+cpg4dVlUA47BMHP+ZxDO605CgETUcm/naF7W2f8mRwCo2S2p/oku0W8g4QSudwkCKDavBSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Duh6G9At; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40GLqGaM014432;
+	Tue, 16 Jan 2024 21:55:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=yvYg34V1aSxXXxCa9jhpXGi7MKL9Geldai0x1AhQ2Pc=;
+ b=Duh6G9Atwwj8hlDB0t5/XhQirIxKuRowJc5tc6zpjRlla7w/pInI2tPr0vezvtAr3KUQ
+ 5phhypEzWwCY+WEFTUH7CDNWPTAzbECFqouXQjbfckfU6PLLcjCXqWjVhT7Qhc/oJXeS
+ ePkGHEfVeM8M1UPyQUDqpNZEsgu9zZzy0EQmhR5cVIxjlnY1a3ZEVpOYEnNUZqGhHt/W
+ v8D7Hj5klK9iXd9ZAW6q2IK2gof1HWLI8+UEWUrGBlm6Hl0ryrM6ruOrzme4MLXChG8x
+ 4yCO5YRg9OOXVQR5YXBD0u7k5NK22H9CAPWAacqCl3bYl0mfccc+hJt6DQntgE9J/+vp LA== 
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vp0uk2f4m-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 21:55:16 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40GJ6uTr008536;
+	Tue, 16 Jan 2024 21:55:14 GMT
+Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vm5unhbnu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 21:55:14 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40GLtEjX20120134
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Jan 2024 21:55:14 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id EC9C95804B;
+	Tue, 16 Jan 2024 21:55:13 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DB38258055;
+	Tue, 16 Jan 2024 21:55:12 +0000 (GMT)
+Received: from li-894d004c-2c43-11b2-a85c-d8bfeb5f0009.ibm.com.com (unknown [9.61.126.152])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 16 Jan 2024 21:55:12 +0000 (GMT)
+From: Tyrel Datwyler <tyreld@linux.ibm.com>
+To: linux-kernel@vger.kernel.org
+Cc: brking@linux.ibm.com, linux-scsi@vger.kernel.org,
+        james.bottomley@hansenpartnership.com, martin.petersen@oracle.com,
+        mikecyr@linux.ibm.com, target-devel@vger.kernel.org,
+        Tyrel Datwyler <tyreld@linux.ibm.com>
+Subject: [PATCH] MAINTAINERS: update ibmvscsi_tgt maintainer
+Date: Tue, 16 Jan 2024 13:55:09 -0800
+Message-ID: <20240116215509.1155787-1-tyreld@linux.ibm.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240112120737.1995575-1-james.clark@arm.com>
-In-Reply-To: <20240112120737.1995575-1-james.clark@arm.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 16 Jan 2024 13:54:55 -0800
-Message-ID: <CAM9d7ciUkjeU1+vzb7ydKCcU=Pybu-qVWFG2Tr+QUPDjJbGNVw@mail.gmail.com>
-Subject: Re: [PATCH] perf test: Fixed masked error condition in perf data
- convert test
-To: James Clark <james.clark@arm.com>
-Cc: linux-perf-users@vger.kernel.org, ilkka@os.amperecomputing.com, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Anup Sharma <anupnewsmail@gmail.com>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: vUXZxRlK2EjNgxk-lNMKbHmU3_INNj88
+X-Proofpoint-GUID: vUXZxRlK2EjNgxk-lNMKbHmU3_INNj88
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-16_13,2024-01-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ spamscore=0 lowpriorityscore=0 phishscore=0 suspectscore=0
+ priorityscore=1501 malwarescore=0 mlxscore=0 mlxlogscore=797 adultscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401160172
 
-On Fri, Jan 12, 2024 at 4:07=E2=80=AFAM James Clark <james.clark@arm.com> w=
-rote:
->
-> The test does set -e, so any errors go straight to the exit handler,
-> where it returns err=3D0 (success). Fix it by leaving err=3D1 from the
-> beginning and only set the success code if it ran all the way to the end
-> without errors.
->
-> Also remove the exit code argument from the last exit because it doesn't
-> do anything, it's always replaced by err in the exit handler.
->
-> Fixes: 68d124182610 ("perf test: Add test validating JSON generated by 'p=
-erf data convert --to-json'")
-> Signed-off-by: James Clark <james.clark@arm.com>
+Michael has not been responsible for this code as an IBMer for quite
+sometime. Seeing as the rest of the IBM Virtual SCSI related drivers
+already fall under my purview replace Michael with myself as maintainer.
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Namhyung
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 391bbb855cbe..1ed1aa7b21eb 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10226,7 +10226,7 @@ F:	drivers/scsi/ibmvscsi/ibmvscsi*
+ F:	include/scsi/viosrp.h
+ 
+ IBM Power Virtual SCSI Device Target Driver
+-M:	Michael Cyr <mikecyr@linux.ibm.com>
++M:	Tyrel Datwyler <tyreld@linux.ibm.com>
+ L:	linux-scsi@vger.kernel.org
+ L:	target-devel@vger.kernel.org
+ S:	Supported
+-- 
+2.43.0
 
-
-> ---
->  tools/perf/tests/shell/test_perf_data_converter_json.sh | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/perf/tests/shell/test_perf_data_converter_json.sh b/to=
-ols/perf/tests/shell/test_perf_data_converter_json.sh
-> index c4f1b59d116f..1781b7215c11 100755
-> --- a/tools/perf/tests/shell/test_perf_data_converter_json.sh
-> +++ b/tools/perf/tests/shell/test_perf_data_converter_json.sh
-> @@ -4,7 +4,7 @@
->
->  set -e
->
-> -err=3D0
-> +err=3D1
->
->  shelldir=3D$(dirname "$0")
->  # shellcheck source=3Dlib/setup_python.sh
-> @@ -36,7 +36,6 @@ test_json_converter_command()
->                 echo "Perf Data Converter Command to JSON [SUCCESS]"
->         else
->                 echo "Perf Data Converter Command to JSON [FAILED]"
-> -               err=3D1
->                 exit
->         fi
->  }
-> @@ -49,7 +48,6 @@ validate_json_format()
->                         echo "The file contains valid JSON format [SUCCES=
-S]"
->                 else
->                         echo "The file does not contain valid JSON format=
- [FAILED]"
-> -                       err=3D1
->                         exit
->                 fi
->         else
-> @@ -62,4 +60,7 @@ validate_json_format()
->  test_json_converter_command
->  validate_json_format
->
-> -exit ${err}
-> +# Set -e is on, so it was only successful if it ran up to this point.
-> +# Therefore only set err=3D0 here.
-> +err=3D0
-> +exit
-> --
-> 2.34.1
->
 
