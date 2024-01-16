@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-27628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61A2382F341
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:34:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 844FE82F346
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:34:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02D85B23A85
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:34:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BF8F287401
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:34:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725DC1CD0A;
-	Tue, 16 Jan 2024 17:33:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92AEA1CD03;
+	Tue, 16 Jan 2024 17:34:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="oB2T4v4o"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b1ORvfzr"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C96E1CA8C;
-	Tue, 16 Jan 2024 17:33:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11AF91CAB8
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 17:34:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705426433; cv=none; b=W1JhDbTc1vQsP1u2fjT4UhzvZrIF75cH5VdhClK2ZmOXKY3Rvi2chVP0mUJp1E0KKncPqtLooogiPhyGmpnjMp+Nm0xB/j+/9QwGpCP/ywuSzwzICy0b5KL87pfFNkLCdCpB3iFtpkBUd01QsvU1jbyLXSWFH+DmnWO+ARz/p6E=
+	t=1705426465; cv=none; b=TWjZCM2ZdAM/r2pdtT/EodAohXSO0Yv2MnB69jQTpE7SJ8O5elhKXYr0KlDwy9ei4AOqhadEl7wqo0exI+g/uJlRxiVsuOwYPORIBP+kabDZirESxd7dJI4/bwROpaABOotwjaEBnLPvlJqmun6rqOJugQ6Vqewx0y/K02jjZxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705426433; c=relaxed/simple;
-	bh=eO4OQip7Vt8iBukXP9TAx2AYps5FjXjzaKh58KGbU+U=;
-	h=DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To:Sender; b=mgt7i0rhcF4NmKvI9Toxh/tR73zBv6sowCCL5cINF4EjskIlMfBvqUfHQUviYLuWFgDcmfseGZiZFbH9fPtRJLLgGyC4TLuD3RXeS+oj9F3j5tJh9CEXol6ZJfoji3rUG4idkpwQJdBc09ecuKeeceQybAXve9D/LddMnlSviGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=oB2T4v4o; arc=none smtp.client-ip=62.89.141.173
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=S+5my9jXWKBreUOHlR6pw/2iHlpnFX5ZhPEFeXmOIzU=; b=oB2T4v4oLxkQEl5he5aGeli2CM
-	22r5wlr+d67aycYttFH91VKhE4z4GFMtZCLZ/t5N5Dy8EnFkFyO35Kx+42NeZjon4az/S7jao3zQt
-	oOc30bwbkfVK/bIYToXwaAZijTrmhqgvTSExU0PZXKz9Y32gME5PiJX6f/o/VOYV8YFOoTBQd5cZR
-	N/U6CgHtJ9kHws5CwSe0OijCh0Y08yklS2uRQzVYk4NnUCpXG4Kgq1QDaW/CY7H1uoe0ZCn6BPK1l
-	dDTU5uHuJNYSfiOyxHFVJdpvoTrZBff9+VvcrIVStbRrfPIka65NVBC0E6aS32uosVxIU6OnOllvV
-	x718UZbw==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rPnJN-004gXh-1E;
-	Tue, 16 Jan 2024 17:33:17 +0000
-Date: Tue, 16 Jan 2024 17:33:17 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Casey Schaufler <casey@schaufler-ca.com>
-Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>, brauner@kernel.org,
-	chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-	kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-	zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-	eric.snowberg@oracle.com, dhowells@redhat.com, jarkko@kernel.org,
-	stephen.smalley.work@gmail.com, eparis@parisplace.org,
-	shuah@kernel.org, mic@digikod.net, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-	selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Roberto Sassu <roberto.sassu@huawei.com>
-Subject: Re: [PATCH v9 13/25] security: Introduce file_release hook
-Message-ID: <20240116173317.GL1674809@ZenIV>
-References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
- <20240115181809.885385-14-roberto.sassu@huaweicloud.com>
- <20240115191508.GG1674809@ZenIV>
- <3b440f064a1ae04d69f7e85f4077f8406c0eac67.camel@huaweicloud.com>
- <00b7ff22-f213-471a-a604-658a9af80d59@schaufler-ca.com>
+	s=arc-20240116; t=1705426465; c=relaxed/simple;
+	bh=x6VAJg0a13qKRvnZ0gGQoDu7MF9L0aaNGyqIOjw5sT8=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:X-IronPort-AV:Received:Received:Date:From:To:Cc:
+	 Subject:Message-ID:MIME-Version:Content-Type:Content-Disposition;
+	b=mP3McSX4srogQfJKrtMZKtFwMz2X13OyjWiMttfn50j3hlH9sYGf0UP1FrbT7BFZvAL/IYjaZWBuRVQy/OvP+lTF5kscxnzmitFPyB80fmmQ7pX8cWiAIEUQiIA9yh0FFpW6H8oNEkXdd7Zn2libGIHw+3G6r03QWDXb0lR3IB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b1ORvfzr; arc=none smtp.client-ip=198.175.65.10
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705426464; x=1736962464;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=x6VAJg0a13qKRvnZ0gGQoDu7MF9L0aaNGyqIOjw5sT8=;
+  b=b1ORvfzrLgMUgG1CQKo+yoMJX2foCOaWVh23K4OPkUc9R7xOP+4mRD9R
+   mngJIthSTzbkk0/XlT69nBVIpFaBMJ/Felf69yCN7HSMjpJVIuHGui4sz
+   5Qs7pFWRox3Nyou7C8oGuCmLN+IOd0w8JHdRuvVo3bsG9NWBWSwafTm7P
+   Zsgzv6UQKNbrUvyc73aLsXrO/5u1oytNcgmXtzz/YHqz0A55nxWxi7IA1
+   cChS2S/1zh3tMI073gVLvmwwq9/4VMfE+GpOL6hczRiwfL3PuAd9zyBV6
+   FQSliGaEVLMyHXX6WLosBy1b7PLc3xaqX0dV2yDBrQuLWHaGFYYoW+P53
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="13286353"
+X-IronPort-AV: E=Sophos;i="6.05,199,1701158400"; 
+   d="scan'208";a="13286353"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 09:34:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="787520644"
+X-IronPort-AV: E=Sophos;i="6.05,199,1701158400"; 
+   d="scan'208";a="787520644"
+Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 16 Jan 2024 09:34:21 -0800
+Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rPnKN-00010y-2A;
+	Tue, 16 Jan 2024 17:34:19 +0000
+Date: Wed, 17 Jan 2024 01:33:25 +0800
+From: kernel test robot <lkp@intel.com>
+To: Okan Sahin <okan.sahin@analog.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Mark Brown <broonie@kernel.org>
+Subject: drivers/regulator/max77857-regulator.c:428:28: sparse: sparse:
+ symbol 'max77857_id' was not declared. Should it be static?
+Message-ID: <202401170155.jdqDmOVC-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,32 +75,42 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <00b7ff22-f213-471a-a604-658a9af80d59@schaufler-ca.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Tue, Jan 16, 2024 at 08:51:11AM -0800, Casey Schaufler wrote:
-> On 1/16/2024 12:47 AM, Roberto Sassu wrote:
-> > On Mon, 2024-01-15 at 19:15 +0000, Al Viro wrote:
-> >> On Mon, Jan 15, 2024 at 07:17:57PM +0100, Roberto Sassu wrote:
-> >>> From: Roberto Sassu <roberto.sassu@huawei.com>
-> >>>
-> >>> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
-> >>> the file_release hook.
-> >>>
-> >>> IMA calculates at file close the new digest of the file content and writes
-> >>> it to security.ima, so that appraisal at next file access succeeds.
-> >>>
-> >>> An LSM could implement an exclusive access scheme for files, only allowing
-> >>> access to files that have no references.
-> >> Elaborate that last part, please.
-> > Apologies, I didn't understand that either. Casey?
-> 
-> Just a hypothetical notion that if an LSM wanted to implement an
-> exclusive access scheme it might find the proposed hook helpful.
-> I don't have any plan to create such a scheme, nor do I think that
-> a file_release hook would be the only thing you'd need.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   052d534373b7ed33712a63d5e17b2b6cdbce84fd
+commit: af71cccadecedad3484c2208e2c4fc8eff927d4a regulator: max77857: Add ADI MAX77857/59/MAX77831 Regulator Support
+date:   6 months ago
+config: x86_64-randconfig-123-20240106 (https://download.01.org/0day-ci/archive/20240117/202401170155.jdqDmOVC-lkp@intel.com/config)
+compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240117/202401170155.jdqDmOVC-lkp@intel.com/reproduce)
 
-Exclusive access to what?  "No more than one opened file with this
-inode at a time"?  It won't serialize IO operations, obviously...
-Details, please.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401170155.jdqDmOVC-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+   drivers/regulator/max77857-regulator.c:70:22: sparse: sparse: symbol 'max77857_regmap_config' was not declared. Should it be static?
+   drivers/regulator/max77857-regulator.c:209:5: sparse: sparse: symbol 'max77859_get_voltage_sel' was not declared. Should it be static?
+   drivers/regulator/max77857-regulator.c:221:5: sparse: sparse: symbol 'max77859_set_current_limit' was not declared. Should it be static?
+   drivers/regulator/max77857-regulator.c:235:5: sparse: sparse: symbol 'max77859_get_current_limit' was not declared. Should it be static?
+>> drivers/regulator/max77857-regulator.c:428:28: sparse: sparse: symbol 'max77857_id' was not declared. Should it be static?
+   drivers/regulator/max77857-regulator.c:446:19: sparse: sparse: symbol 'max77857_driver' was not declared. Should it be static?
+
+vim +/max77857_id +428 drivers/regulator/max77857-regulator.c
+
+   427	
+ > 428	const struct i2c_device_id max77857_id[] = {
+   429		{ "max77831", ID_MAX77831 },
+   430		{ "max77857", ID_MAX77857 },
+   431		{ "max77859", ID_MAX77859 },
+   432		{ "max77859a", ID_MAX77859A },
+   433		{ }
+   434	};
+   435	MODULE_DEVICE_TABLE(i2c, max77857_id);
+   436	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
