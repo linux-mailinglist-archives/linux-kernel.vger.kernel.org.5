@@ -1,185 +1,115 @@
-Return-Path: <linux-kernel+bounces-26830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72A8882E6AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:23:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52A0A82E6B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:23:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FB7F283032
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:23:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C77FC1C229CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:23:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76F201CAAD;
-	Tue, 16 Jan 2024 01:05:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FD4E1CD18;
+	Tue, 16 Jan 2024 01:05:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WznZUAov"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kOOs7nMJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB3811CA92;
-	Tue, 16 Jan 2024 01:05:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A0BDC433C7;
-	Tue, 16 Jan 2024 01:05:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A32A61CD07;
+	Tue, 16 Jan 2024 01:05:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9439BC433F1;
+	Tue, 16 Jan 2024 01:05:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705367113;
-	bh=DqdkWkIcPE3aOFCahzfD8/SmXMRL77M1gUKv/jubbWs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WznZUAovP7tJhPA2+44EeFEFGC4Cz97/GLQNxVNh9zCaSxHqdQpJazKdXzRlOwaDr
-	 MBk1WvWTIsemSuGpBifzKoCo6Q+6d1OYH60xLIuQNcPNGQXUDqwcBaK0K1vp3DGxEa
-	 4ANDUmZFUUz6rvzlvGAItLeRbMizRd+UMmqdg6K3dMtx86sKFlgsHeO465v460MZMV
-	 GGiJA5VnpJBomixLNT4xwfbsB8togjQNR4Y8DHG+bpoQDwcdvoRjIoL7pdvLGFl3e/
-	 QMU3NRvCYMS/XuAKsaAFnoA0Gwvw9AHw7W0yicI6fEdcJ0eJEl9//w9qr+lXVPizsg
-	 M+6/8a5Df+t5A==
+	s=k20201202; t=1705367135;
+	bh=MaeK466JEYwMZ5I2oAw1p0sY1TckDV79zfSF+Ws9SuI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=kOOs7nMJpzgyUw5oBD9n0dxIDAatGt6kTrGYdaRHZo5XsIGASj71TfJUtNJ/IgTc2
+	 81iy77wf54SFQfdNiWupHT6gqy3vWTzRiFN6OjYTm0PUkJv6GiPA4JZmZ0P1r2W2Ou
+	 OFG7Min6Y3U8eL2IVlclI/qJXH9EB+v7MRpamEr9y8mRI+1aw2cLBJxyPUcehEz4Or
+	 Wahqpk9IR7wBCX4OcMKLkqpQLSlOschJQDfCdKu2PuZ0KlTwbpeuv1/8eJbEXY61Ra
+	 4xsW0O83oq2Gv1a3upkxa5bHhwuQmXYSbvykDmaBS8egNetpmFmTfYyDRxZwVSxyH3
+	 t0zBljbuf7IQA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Baokun Li <libaokun1@huawei.com>,
-	Jan Kara <jack@suse.cz>,
-	Theodore Ts'o <tytso@mit.edu>,
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
 	Sasha Levin <sashal@kernel.org>,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 21/21] ext4: avoid online resizing failures due to oversized flex bg
-Date: Mon, 15 Jan 2024 20:03:58 -0500
-Message-ID: <20240116010422.217925-21-sashal@kernel.org>
+	gor@linux.ibm.com,
+	imbrenda@linux.ibm.com,
+	linux-s390@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 01/19] s390/boot: always align vmalloc area on segment boundary
+Date: Mon, 15 Jan 2024 20:04:56 -0500
+Message-ID: <20240116010532.218428-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240116010422.217925-1-sashal@kernel.org>
-References: <20240116010422.217925-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.7
+X-stable-base: Linux 6.6.12
 Content-Transfer-Encoding: 8bit
 
-From: Baokun Li <libaokun1@huawei.com>
+From: Alexander Gordeev <agordeev@linux.ibm.com>
 
-[ Upstream commit 5d1935ac02ca5aee364a449a35e2977ea84509b0 ]
+[ Upstream commit 65f8780e2d70257200547b5a7654974aa7c37ce1 ]
 
-When we online resize an ext4 filesystem with a oversized flexbg_size,
+The size of vmalloc area depends from various factors
+on boot and could be set to:
 
-     mkfs.ext4 -F -G 67108864 $dev -b 4096 100M
-     mount $dev $dir
-     resize2fs $dev 16G
+1. Default size as determined by VMALLOC_DEFAULT_SIZE macro;
+2. One half of the virtual address space not occupied by
+   modules and fixed mappings;
+3. The size provided by user with vmalloc= kernel command
+   line parameter;
 
-the following WARN_ON is triggered:
-==================================================================
-WARNING: CPU: 0 PID: 427 at mm/page_alloc.c:4402 __alloc_pages+0x411/0x550
-Modules linked in: sg(E)
-CPU: 0 PID: 427 Comm: resize2fs Tainted: G  E  6.6.0-rc5+ #314
-RIP: 0010:__alloc_pages+0x411/0x550
-Call Trace:
- <TASK>
- __kmalloc_large_node+0xa2/0x200
- __kmalloc+0x16e/0x290
- ext4_resize_fs+0x481/0xd80
- __ext4_ioctl+0x1616/0x1d90
- ext4_ioctl+0x12/0x20
- __x64_sys_ioctl+0xf0/0x150
- do_syscall_64+0x3b/0x90
-==================================================================
+In cases [1] and [2] the vmalloc area base address is aligned
+on Region3 table type boundary, while in case [3] in might get
+aligned on page boundary.
 
-This is because flexbg_size is too large and the size of the new_group_data
-array to be allocated exceeds MAX_ORDER. Currently, the minimum value of
-MAX_ORDER is 8, the minimum value of PAGE_SIZE is 4096, the corresponding
-maximum number of groups that can be allocated is:
+Limit the waste of page tables and always align vmalloc area
+size and base address on segment boundary.
 
- (PAGE_SIZE << MAX_ORDER) / sizeof(struct ext4_new_group_data) ≈ 21845
-
-And the value that is down-aligned to the power of 2 is 16384. Therefore,
-this value is defined as MAX_RESIZE_BG, and the number of groups added
-each time does not exceed this value during resizing, and is added multiple
-times to complete the online resizing. The difference is that the metadata
-in a flex_bg may be more dispersed.
-
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20231023013057.2117948-4-libaokun1@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/resize.c | 25 +++++++++++++++++--------
- 1 file changed, 17 insertions(+), 8 deletions(-)
+ arch/s390/boot/ipl_parm.c | 2 +-
+ arch/s390/boot/startup.c  | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-index 0a57b199883c..e168a9f59600 100644
---- a/fs/ext4/resize.c
-+++ b/fs/ext4/resize.c
-@@ -218,10 +218,17 @@ struct ext4_new_flex_group_data {
- 						   in the flex group */
- 	__u16 *bg_flags;			/* block group flags of groups
- 						   in @groups */
-+	ext4_group_t resize_bg;			/* number of allocated
-+						   new_group_data */
- 	ext4_group_t count;			/* number of groups in @groups
- 						 */
- };
+diff --git a/arch/s390/boot/ipl_parm.c b/arch/s390/boot/ipl_parm.c
+index 7b7521762633..4230144645bc 100644
+--- a/arch/s390/boot/ipl_parm.c
++++ b/arch/s390/boot/ipl_parm.c
+@@ -272,7 +272,7 @@ void parse_boot_command_line(void)
+ 			memory_limit = round_down(memparse(val, NULL), PAGE_SIZE);
  
-+/*
-+ * Avoiding memory allocation failures due to too many groups added each time.
-+ */
-+#define MAX_RESIZE_BG				16384
-+
- /*
-  * alloc_flex_gd() allocates a ext4_new_flex_group_data with size of
-  * @flexbg_size.
-@@ -236,14 +243,18 @@ static struct ext4_new_flex_group_data *alloc_flex_gd(unsigned int flexbg_size)
- 	if (flex_gd == NULL)
- 		goto out3;
+ 		if (!strcmp(param, "vmalloc") && val) {
+-			vmalloc_size = round_up(memparse(val, NULL), PAGE_SIZE);
++			vmalloc_size = round_up(memparse(val, NULL), _SEGMENT_SIZE);
+ 			vmalloc_size_set = 1;
+ 		}
  
--	flex_gd->count = flexbg_size;
--	flex_gd->groups = kmalloc_array(flexbg_size,
-+	if (unlikely(flexbg_size > MAX_RESIZE_BG))
-+		flex_gd->resize_bg = MAX_RESIZE_BG;
-+	else
-+		flex_gd->resize_bg = flexbg_size;
-+
-+	flex_gd->groups = kmalloc_array(flex_gd->resize_bg,
- 					sizeof(struct ext4_new_group_data),
- 					GFP_NOFS);
- 	if (flex_gd->groups == NULL)
- 		goto out2;
+diff --git a/arch/s390/boot/startup.c b/arch/s390/boot/startup.c
+index d3e48bd9c394..d08db5df6091 100644
+--- a/arch/s390/boot/startup.c
++++ b/arch/s390/boot/startup.c
+@@ -212,7 +212,8 @@ static unsigned long setup_kernel_memory_layout(void)
+ 	VMALLOC_END = MODULES_VADDR;
  
--	flex_gd->bg_flags = kmalloc_array(flexbg_size, sizeof(__u16),
-+	flex_gd->bg_flags = kmalloc_array(flex_gd->resize_bg, sizeof(__u16),
- 					  GFP_NOFS);
- 	if (flex_gd->bg_flags == NULL)
- 		goto out1;
-@@ -1602,8 +1613,7 @@ static int ext4_flex_group_add(struct super_block *sb,
+ 	/* allow vmalloc area to occupy up to about 1/2 of the rest virtual space left */
+-	vmalloc_size = min(vmalloc_size, round_down(VMALLOC_END / 2, _REGION3_SIZE));
++	vsize = round_down(VMALLOC_END / 2, _SEGMENT_SIZE);
++	vmalloc_size = min(vmalloc_size, vsize);
+ 	VMALLOC_START = VMALLOC_END - vmalloc_size;
  
- static int ext4_setup_next_flex_gd(struct super_block *sb,
- 				    struct ext4_new_flex_group_data *flex_gd,
--				    ext4_fsblk_t n_blocks_count,
--				    unsigned int flexbg_size)
-+				    ext4_fsblk_t n_blocks_count)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct ext4_super_block *es = sbi->s_es;
-@@ -1627,7 +1637,7 @@ static int ext4_setup_next_flex_gd(struct super_block *sb,
- 	BUG_ON(last);
- 	ext4_get_group_no_and_offset(sb, n_blocks_count - 1, &n_group, &last);
- 
--	last_group = group | (flexbg_size - 1);
-+	last_group = group | (flex_gd->resize_bg - 1);
- 	if (last_group > n_group)
- 		last_group = n_group;
- 
-@@ -2130,8 +2140,7 @@ int ext4_resize_fs(struct super_block *sb, ext4_fsblk_t n_blocks_count)
- 	/* Add flex groups. Note that a regular group is a
- 	 * flex group with 1 group.
- 	 */
--	while (ext4_setup_next_flex_gd(sb, flex_gd, n_blocks_count,
--					      flexbg_size)) {
-+	while (ext4_setup_next_flex_gd(sb, flex_gd, n_blocks_count)) {
- 		if (time_is_before_jiffies(last_update_time + HZ * 10)) {
- 			if (last_update_time)
- 				ext4_msg(sb, KERN_INFO,
+ 	/* split remaining virtual space between 1:1 mapping & vmemmap array */
 -- 
 2.43.0
 
