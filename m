@@ -1,54 +1,48 @@
-Return-Path: <linux-kernel+bounces-26898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E503F82E795
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 31E5A82E798
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:50:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A9151C20326
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:50:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EED961C22C54
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:50:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CE9F4777D;
-	Tue, 16 Jan 2024 01:08:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8A134B5A7;
+	Tue, 16 Jan 2024 01:08:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j5imd6bY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XSyVSDQO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D29AA46441;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E329481A3;
+	Tue, 16 Jan 2024 01:08:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF612C43390;
 	Tue, 16 Jan 2024 01:08:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2629C43399;
-	Tue, 16 Jan 2024 01:08:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705367331;
-	bh=4TwabkMyucRFmV2erCn8+UJ2O+bvly4EN7cr8VihB8I=;
+	s=k20201202; t=1705367332;
+	bh=rhUW2IVbDq5u7VIt4a+1/OYdttBf1woFDNk1OU8dUZA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=j5imd6bYukykT2cnTBXLBmC3AA7YRDJJ8Lxror8xlWDjl02hsRCOBZo8mwqNxdixh
-	 zhMgZ3bffz9XWrICwhpDVo0uJ/6Dl9/G/x1tSQM1AiQxtYFGGrDbnYM4csCbhophDs
-	 QGp9oeDZkEcYzFXIC0JcQyJCykD6dbv7LF72s7l2wekbA8kfLsBkG59xmsPadNYjyA
-	 JoLWDg3u4vNCT3tSa7XekUihACAaBvje8GmIYLDvrVsuHC4QqcEYRU/Stn6lUGG2/t
-	 thC3XLXFYNkLz9PBrwliyEAQAXZpGWN6+tSexDLfeXYS7+egcUWe8NuSWnV9FwLOMM
-	 kAjdfReTQHJJA==
+	b=XSyVSDQOZxapZPyHKAizpoBl6wyDbD8rTC8AkmVQ/D/EKuHIfAKrzv8gP5mFrAvMC
+	 qHO21sz+frupMR0f1XhOwTEcHYxIowBXyJwZg8YDEwwP8F56dgHLqYEhrifX1VYcio
+	 n0LEdKoyrNJXM1/P/DrOCVvRjmGVF2nTrh53RofEKG1TCxliDO2cuQnCa9tsi6MJVM
+	 BNZbR5KZlQLBF6gwN/O3QxHHB76fcdOv52CNJ0LZAPNYTm5ffDvvVfg4waozdQmPtK
+	 9yZLlweJD3CWo/GniHOM5usnLxH7bom2hFsMeahkQkcECyZ676MvxM5QhraZ6DwQtb
+	 pGBnkepHkeFwg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Anna Schumaker <Anna.Schumaker@Netapp.com>,
-	Jeff Layton <jlayton@kernel.org>,
+Cc: Ye Bin <yebin10@huawei.com>,
+	Jan Kara <jack@suse.cz>,
+	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
-	trond.myklebust@hammerspace.com,
-	anna@kernel.org,
-	chuck.lever@oracle.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	linux-nfs@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 4/8] SUNRPC: Fix a suspicious RCU usage warning
-Date: Mon, 15 Jan 2024 20:08:34 -0500
-Message-ID: <20240116010842.219925-4-sashal@kernel.org>
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 5/8] ext4: fix inconsistent between segment fstrim and full fstrim
+Date: Mon, 15 Jan 2024 20:08:35 -0500
+Message-ID: <20240116010842.219925-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116010842.219925-1-sashal@kernel.org>
 References: <20240116010842.219925-1-sashal@kernel.org>
@@ -63,119 +57,64 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.305
 Content-Transfer-Encoding: 8bit
 
-From: Anna Schumaker <Anna.Schumaker@Netapp.com>
+From: Ye Bin <yebin10@huawei.com>
 
-[ Upstream commit 31b62908693c90d4d07db597e685d9f25a120073 ]
+[ Upstream commit 68da4c44b994aea797eb9821acb3a4a36015293e ]
 
-I received the following warning while running cthon against an ontap
-server running pNFS:
+Suppose we issue two FITRIM ioctls for ranges [0,15] and [16,31] with
+mininum length of trimmed range set to 8 blocks. If we have say a range of
+blocks 10-22 free, this range will not be trimmed because it straddles the
+boundary of the two FITRIM ranges and neither part is big enough. This is a
+bit surprising to some users that call FITRIM on smaller ranges of blocks
+to limit impact on the system. Also XFS trims all free space extents that
+overlap with the specified range so we are inconsistent among filesystems.
+Let's change ext4_try_to_trim_range() to consider for trimming the whole
+free space extent that straddles the end of specified range, not just the
+part of it within the range.
 
-[   57.202521] =============================
-[   57.202522] WARNING: suspicious RCU usage
-[   57.202523] 6.7.0-rc3-g2cc14f52aeb7 #41492 Not tainted
-[   57.202525] -----------------------------
-[   57.202525] net/sunrpc/xprtmultipath.c:349 RCU-list traversed in non-reader section!!
-[   57.202527]
-               other info that might help us debug this:
-
-[   57.202528]
-               rcu_scheduler_active = 2, debug_locks = 1
-[   57.202529] no locks held by test5/3567.
-[   57.202530]
-               stack backtrace:
-[   57.202532] CPU: 0 PID: 3567 Comm: test5 Not tainted 6.7.0-rc3-g2cc14f52aeb7 #41492 5b09971b4965c0aceba19f3eea324a4a806e227e
-[   57.202534] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS unknown 2/2/2022
-[   57.202536] Call Trace:
-[   57.202537]  <TASK>
-[   57.202540]  dump_stack_lvl+0x77/0xb0
-[   57.202551]  lockdep_rcu_suspicious+0x154/0x1a0
-[   57.202556]  rpc_xprt_switch_has_addr+0x17c/0x190 [sunrpc ebe02571b9a8ceebf7d98e71675af20c19bdb1f6]
-[   57.202596]  rpc_clnt_setup_test_and_add_xprt+0x50/0x180 [sunrpc ebe02571b9a8ceebf7d98e71675af20c19bdb1f6]
-[   57.202621]  ? rpc_clnt_add_xprt+0x254/0x300 [sunrpc ebe02571b9a8ceebf7d98e71675af20c19bdb1f6]
-[   57.202646]  rpc_clnt_add_xprt+0x27a/0x300 [sunrpc ebe02571b9a8ceebf7d98e71675af20c19bdb1f6]
-[   57.202671]  ? __pfx_rpc_clnt_setup_test_and_add_xprt+0x10/0x10 [sunrpc ebe02571b9a8ceebf7d98e71675af20c19bdb1f6]
-[   57.202696]  nfs4_pnfs_ds_connect+0x345/0x760 [nfsv4 c716d88496ded0ea6d289bbea684fa996f9b57a9]
-[   57.202728]  ? __pfx_nfs4_test_session_trunk+0x10/0x10 [nfsv4 c716d88496ded0ea6d289bbea684fa996f9b57a9]
-[   57.202754]  nfs4_fl_prepare_ds+0x75/0xc0 [nfs_layout_nfsv41_files e3a4187f18ae8a27b630f9feae6831b584a9360a]
-[   57.202760]  filelayout_write_pagelist+0x4a/0x200 [nfs_layout_nfsv41_files e3a4187f18ae8a27b630f9feae6831b584a9360a]
-[   57.202765]  pnfs_generic_pg_writepages+0xbe/0x230 [nfsv4 c716d88496ded0ea6d289bbea684fa996f9b57a9]
-[   57.202788]  __nfs_pageio_add_request+0x3fd/0x520 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
-[   57.202813]  nfs_pageio_add_request+0x18b/0x390 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
-[   57.202831]  nfs_do_writepage+0x116/0x1e0 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
-[   57.202849]  nfs_writepages_callback+0x13/0x30 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
-[   57.202866]  write_cache_pages+0x265/0x450
-[   57.202870]  ? __pfx_nfs_writepages_callback+0x10/0x10 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
-[   57.202891]  nfs_writepages+0x141/0x230 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
-[   57.202913]  do_writepages+0xd2/0x230
-[   57.202917]  ? filemap_fdatawrite_wbc+0x5c/0x80
-[   57.202921]  filemap_fdatawrite_wbc+0x67/0x80
-[   57.202924]  filemap_write_and_wait_range+0xd9/0x170
-[   57.202930]  nfs_wb_all+0x49/0x180 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
-[   57.202947]  nfs4_file_flush+0x72/0xb0 [nfsv4 c716d88496ded0ea6d289bbea684fa996f9b57a9]
-[   57.202969]  __se_sys_close+0x46/0xd0
-[   57.202972]  do_syscall_64+0x68/0x100
-[   57.202975]  ? do_syscall_64+0x77/0x100
-[   57.202976]  ? do_syscall_64+0x77/0x100
-[   57.202979]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-[   57.202982] RIP: 0033:0x7fe2b12e4a94
-[   57.202985] Code: 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 80 3d d5 18 0e 00 00 74 13 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 44 c3 0f 1f 00 48 83 ec 18 89 7c 24 0c e8 c3
-[   57.202987] RSP: 002b:00007ffe857ddb38 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
-[   57.202989] RAX: ffffffffffffffda RBX: 00007ffe857dfd68 RCX: 00007fe2b12e4a94
-[   57.202991] RDX: 0000000000002000 RSI: 00007ffe857ddc40 RDI: 0000000000000003
-[   57.202992] RBP: 00007ffe857dfc50 R08: 7fffffffffffffff R09: 0000000065650f49
-[   57.202993] R10: 00007fe2b11f8300 R11: 0000000000000202 R12: 0000000000000000
-[   57.202994] R13: 00007ffe857dfd80 R14: 00007fe2b1445000 R15: 0000000000000000
-[   57.202999]  </TASK>
-
-The problem seems to be that two out of three callers aren't taking the
-rcu_read_lock() before calling the list_for_each_entry_rcu() function in
-rpc_xprt_switch_has_addr(). I fix this by having
-rpc_xprt_switch_has_addr() unconditionaly take the rcu_read_lock(),
-which is okay to do recursively in the case that the lock has already
-been taken by a caller.
-
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20231216010919.1995851-1-yebin10@huawei.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/xprtmultipath.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ fs/ext4/mballoc.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/net/sunrpc/xprtmultipath.c b/net/sunrpc/xprtmultipath.c
-index e2d64c7138c3..699d5ba128fa 100644
---- a/net/sunrpc/xprtmultipath.c
-+++ b/net/sunrpc/xprtmultipath.c
-@@ -235,8 +235,9 @@ struct rpc_xprt *xprt_iter_current_entry(struct rpc_xprt_iter *xpi)
- 	return xprt_switch_find_current_entry(head, xpi->xpi_cursor);
- }
- 
--bool rpc_xprt_switch_has_addr(struct rpc_xprt_switch *xps,
--			      const struct sockaddr *sap)
-+static
-+bool __rpc_xprt_switch_has_addr(struct rpc_xprt_switch *xps,
-+				const struct sockaddr *sap)
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 8875fac9f958..6025b484345f 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -5208,13 +5208,15 @@ static int ext4_try_to_trim_range(struct super_block *sb,
+ 		struct ext4_buddy *e4b, ext4_grpblk_t start,
+ 		ext4_grpblk_t max, ext4_grpblk_t minblocks)
  {
- 	struct list_head *head;
- 	struct rpc_xprt *pos;
-@@ -255,6 +256,18 @@ bool rpc_xprt_switch_has_addr(struct rpc_xprt_switch *xps,
- 	return false;
- }
+-	ext4_grpblk_t next, count, free_count;
++	ext4_grpblk_t next, count, free_count, last, origin_start;
+ 	bool set_trimmed = false;
+ 	void *bitmap;
  
-+bool rpc_xprt_switch_has_addr(struct rpc_xprt_switch *xps,
-+			      const struct sockaddr *sap)
-+{
-+	bool res;
++	last = ext4_last_grp_cluster(sb, e4b->bd_group);
+ 	bitmap = e4b->bd_bitmap;
+-	if (start == 0 && max >= ext4_last_grp_cluster(sb, e4b->bd_group))
++	if (start == 0 && max >= last)
+ 		set_trimmed = true;
++	origin_start = start;
+ 	start = max(e4b->bd_info->bb_first_free, start);
+ 	count = 0;
+ 	free_count = 0;
+@@ -5223,7 +5225,10 @@ static int ext4_try_to_trim_range(struct super_block *sb,
+ 		start = mb_find_next_zero_bit(bitmap, max + 1, start);
+ 		if (start > max)
+ 			break;
+-		next = mb_find_next_bit(bitmap, max + 1, start);
 +
-+	rcu_read_lock();
-+	res = __rpc_xprt_switch_has_addr(xps, sap);
-+	rcu_read_unlock();
-+
-+	return res;
-+}
-+
- static
- struct rpc_xprt *xprt_switch_find_next_entry(struct list_head *head,
- 		const struct rpc_xprt *cur)
++		next = mb_find_next_bit(bitmap, last + 1, start);
++		if (origin_start == 0 && next >= last)
++			set_trimmed = true;
+ 
+ 		if ((next - start) >= minblocks) {
+ 			int ret = ext4_trim_extent(sb, start, next - start, e4b);
 -- 
 2.43.0
 
