@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-27795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F9EC82F606
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:50:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83D5A82F609
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:50:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 234FD1C24056
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:50:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 105121F24D9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:50:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94A3E241FA;
-	Tue, 16 Jan 2024 19:43:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 713892421B;
+	Tue, 16 Jan 2024 19:43:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VMiBuYbX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IMFMkoVV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4AEF241EC;
-	Tue, 16 Jan 2024 19:43:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B11242420B;
+	Tue, 16 Jan 2024 19:43:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434213; cv=none; b=HBwfoC/DR6kpjMoOROB+2MLutGSpTdzYCbYvmUScTxtKdRSa3vLRcm8jSzS1MiYFyrfnt24vbW2XYaU9h5nX6iD5FCn2XGtAu50M14qBp9665K1ESWp4GvYwl8k3G/4eRToqUHVG0oPq4OsYKeWyHyIZEpNMgFHCsDLArb6kU7k=
+	t=1705434215; cv=none; b=PX+xCFSzZqOjDghIW9kqDTDyEJK0AzX2V6hnBaWYnP4qLJn6m/jjUyFVDxwkZWIXv7gJOPKBNaXdgSdodImd5+AZOhXeXXoK9XQDMxv+eZCGD8JslJI6ExKatRmun2DdItE5VUT4OJLSZ9P6GnvlVHmUj0RO2R31XYJE6xdyTuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434213; c=relaxed/simple;
-	bh=qJn6YXD92hdjIH1J1vQ9Ek4z3czSnXQxpQoMk7hPPF0=;
+	s=arc-20240116; t=1705434215; c=relaxed/simple;
+	bh=blXIGgS3TI6vcbmkgBePWK4rHG/nauAYtWa3aqolbQE=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=T0IWVEZ29fAxVw7XmVERFteID+fKzwtaHTilWLfHiP19IaGQJdB3HUp7REiEn9M/UbFTJ81E2kkIWGabpwjRIktWxHW1sOHSgcyk8dKATCzCXmdMNSvxgk/8rtU0FVRABe0V29Rd3ly8FQH8xorauebIrR7sMzVSDBOrxApyGxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VMiBuYbX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FF4BC433C7;
-	Tue, 16 Jan 2024 19:43:32 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=hZg9qx/RXddtWZGzm/WUsLg4bcFFtgmm/KJX2c4km2ScTf2330+P6bLYIKrVbfsJUk2KYXpZWgERnssJ2RekeJ7ltcp6GTU2k04xo6y5O32uo2DCXOfDQualWGuAY8HB753C/gaHBsrNhqMxJYY4uHVsbU8dZ5FUAdnNr3/j8W8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IMFMkoVV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E66AC433B1;
+	Tue, 16 Jan 2024 19:43:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434213;
-	bh=qJn6YXD92hdjIH1J1vQ9Ek4z3czSnXQxpQoMk7hPPF0=;
+	s=k20201202; t=1705434215;
+	bh=blXIGgS3TI6vcbmkgBePWK4rHG/nauAYtWa3aqolbQE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VMiBuYbXlvvxRQ3rSP6D7ZG1Fv5XCWY8DWM+pbhh5z5CWCvBmUeBZZ6Eq6Sgeb2L7
-	 A+sPW99Z9tmHP+Pl4eoOkBikQlAk/BXn8Zbjz79Vd9LklRbMYVHwKFro+n5MYn0WPD
-	 3dwcot58aWq0Dy/Y4USwuXtOyYnUUiQpfbYCCbcQ72Ws2+FHY8rvxnE3uvUe5QCX4w
-	 u8wzYDExEcFhgfNl8kx/TDk8hxhR9I0bM4zwed76bK9O4Y6T0W+iuw4Ht+i5IhWS4J
-	 y7Z9zmIVHMv54KZHYWv6ufU2HNatSGOaaDnxRS+eSc53yE64RbL908SSzJMmQGDS9p
-	 DMHKHIU7PvCVw==
+	b=IMFMkoVVV+p5/Wh2Z2mKs8OCPLFhENq+i8oV/4dFqD9x7+yyrBJ6hDeztqB8MhTAX
+	 u8HPrGwLVCLitwReZnxME+ZsDly8p5hapoZSTecGKpp8gZknO9Pl1OGDabXnu0B+QR
+	 xt2edeOmDr9lUpQcuF6IppA+xLHBreo70vXqKFaEpt1PRgzWJpM4gp55Lqy/crVULy
+	 4MfTvQUu3H8dSxj+7lpcK6L1jzalRVggQ9I4kitoh865T5Cr/JDDcIrsOByoLv9Ph4
+	 asYt9sCModlttGp2oIRZHkMW2MXTFphRS7ptTzk9rGKfXxRKikRMCc6cydAjKMBKBU
+	 S0fjns8iGPm5Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -53,9 +53,9 @@ Cc: Sumit Saxena <sumit.saxena@broadcom.com>,
 	jejb@linux.ibm.com,
 	mpi3mr-linuxdrv.pdl@broadcom.com,
 	linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 025/108] scsi: mpi3mr: Add support for SAS5116 PCI IDs
-Date: Tue, 16 Jan 2024 14:38:51 -0500
-Message-ID: <20240116194225.250921-25-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.7 026/108] scsi: mpi3mr: Add PCI checks where SAS5116 diverges from SAS4116
+Date: Tue, 16 Jan 2024 14:38:52 -0500
+Message-ID: <20240116194225.250921-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194225.250921-1-sashal@kernel.org>
 References: <20240116194225.250921-1-sashal@kernel.org>
@@ -72,37 +72,50 @@ Content-Transfer-Encoding: 8bit
 
 From: Sumit Saxena <sumit.saxena@broadcom.com>
 
-[ Upstream commit 6fa21eab82be57a3ad2470fac27b982793805336 ]
+[ Upstream commit c9260ff28ee561fca5f96425c9328a9698e8427b ]
 
-Add support for Broadcom's SAS5116 IO/RAID controllers PCI IDs.
+Add PCI IDs checks for the cases where SAS5116 diverges from SAS4116 in
+behavior.
 
 Signed-off-by: Sumit Saxena <sumit.saxena@broadcom.com>
-Link: https://lore.kernel.org/r/20231123160132.4155-2-sumit.saxena@broadcom.com
+Link: https://lore.kernel.org/r/20231123160132.4155-3-sumit.saxena@broadcom.com
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/mpi3mr/mpi3mr_os.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/scsi/mpi3mr/mpi3mr_fw.c | 3 ++-
+ drivers/scsi/mpi3mr/mpi3mr_os.c | 5 ++++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/scsi/mpi3mr/mpi3mr_fw.c b/drivers/scsi/mpi3mr/mpi3mr_fw.c
+index f039f1d98647..0d148c39ebcc 100644
+--- a/drivers/scsi/mpi3mr/mpi3mr_fw.c
++++ b/drivers/scsi/mpi3mr/mpi3mr_fw.c
+@@ -1892,7 +1892,8 @@ static int mpi3mr_create_op_reply_q(struct mpi3mr_ioc *mrioc, u16 qidx)
+ 
+ 	reply_qid = qidx + 1;
+ 	op_reply_q->num_replies = MPI3MR_OP_REP_Q_QD;
+-	if (!mrioc->pdev->revision)
++	if ((mrioc->pdev->device == MPI3_MFGPAGE_DEVID_SAS4116) &&
++		!mrioc->pdev->revision)
+ 		op_reply_q->num_replies = MPI3MR_OP_REP_Q_QD4K;
+ 	op_reply_q->ci = 0;
+ 	op_reply_q->ephase = 1;
 diff --git a/drivers/scsi/mpi3mr/mpi3mr_os.c b/drivers/scsi/mpi3mr/mpi3mr_os.c
-index 040031eb0c12..a8d7dbf0159a 100644
+index a8d7dbf0159a..91a22e6e5c3f 100644
 --- a/drivers/scsi/mpi3mr/mpi3mr_os.c
 +++ b/drivers/scsi/mpi3mr/mpi3mr_os.c
-@@ -5430,6 +5430,14 @@ static const struct pci_device_id mpi3mr_pci_id_table[] = {
- 		PCI_DEVICE_SUB(MPI3_MFGPAGE_VENDORID_BROADCOM,
- 		    MPI3_MFGPAGE_DEVID_SAS4116, PCI_ANY_ID, PCI_ANY_ID)
- 	},
-+	{
-+		PCI_DEVICE_SUB(MPI3_MFGPAGE_VENDORID_BROADCOM,
-+		    MPI3_MFGPAGE_DEVID_SAS5116_MPI, PCI_ANY_ID, PCI_ANY_ID)
-+	},
-+	{
-+		PCI_DEVICE_SUB(MPI3_MFGPAGE_VENDORID_BROADCOM,
-+		    MPI3_MFGPAGE_DEVID_SAS5116_MPI_MGMT, PCI_ANY_ID, PCI_ANY_ID)
-+	},
- 	{ 0 }
- };
- MODULE_DEVICE_TABLE(pci, mpi3mr_pci_id_table);
+@@ -5101,7 +5101,10 @@ mpi3mr_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		mpi3mr_init_drv_cmd(&mrioc->evtack_cmds[i],
+ 				    MPI3MR_HOSTTAG_EVTACKCMD_MIN + i);
+ 
+-	if (pdev->revision)
++	if ((pdev->device == MPI3_MFGPAGE_DEVID_SAS4116) &&
++		!pdev->revision)
++		mrioc->enable_segqueue = false;
++	else
+ 		mrioc->enable_segqueue = true;
+ 
+ 	init_waitqueue_head(&mrioc->reset_waitq);
 -- 
 2.43.0
 
