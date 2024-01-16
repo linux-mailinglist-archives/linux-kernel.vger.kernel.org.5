@@ -1,120 +1,117 @@
-Return-Path: <linux-kernel+bounces-27758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAEBB82F56E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:34:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A529682F572
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:35:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56EE41F248C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:34:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF281B22578
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:35:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E340A1D524;
-	Tue, 16 Jan 2024 19:34:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF531D532;
+	Tue, 16 Jan 2024 19:35:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nQ2He1Hg"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2WcUKQ6a"
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC8C51D521;
-	Tue, 16 Jan 2024 19:34:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDB7C1D526
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 19:35:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705433659; cv=none; b=DnoDJ9qOs3aYv0gp+cFCwP2AUrp2X/0DWGxC8nz6PpzKgtBBq8dJBMAvbqM/pnfFWPgYwsMAStnx6VpEQJ5XeZU55SsEyT2S3Em5CcF/TpdPhzAFwqsktRIwJPj9dk1Xqy/LkWufy1VqUZ7z1u/Zoo4gM6vrA7QO66aC0FuWpMs=
+	t=1705433734; cv=none; b=CBrEdhf5kyxZE6K9G8vQ/Gn3K0GTDqab965cqRZ8X9Uq2FMFnc3+ZHZH5iaS8Tqjj427Z9ecIjtX2RuScTYPzuF/Bim4OS5Dr1ZE2wP3TBq4JNkPS0t++4dNouG0jJckiModMZjaEubXEwJt6i8c0v08bXI7mxwdTYuaAfVpvzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705433659; c=relaxed/simple;
-	bh=Mcd1b64Vm+CHXiONNdtt+LcCzFybfKPnMfbrChadFrU=;
-	h=Received:DKIM-Signature:Received:Received:Received:Received:
-	 Received:Received:Received:Received:Received:Date:From:To:Cc:
-	 Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:X-TM-AS-GCONF:X-Proofpoint-GUID:
-	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Virus-Version:
-	 X-Proofpoint-Spam-Details; b=UD8uk/J/d0TB2DRG8fjmXe/oY4Z6mNOmB39YC3uJhF+6ZYMmscM2gufU7F8gDjMPdKV8Flwbk+0/+A/+hqODFWkJXU6/PHohGf9e5jQlaZjzC7cpe0zOjKzjfZBDzIA6rz+JvwcKfww6L0fr1hAsaYflqZoB6av+F4GVBXk8rvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nQ2He1Hg; arc=none smtp.client-ip=148.163.156.1
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40GJS1au017967;
-	Tue, 16 Jan 2024 19:34:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=Mcd1b64Vm+CHXiONNdtt+LcCzFybfKPnMfbrChadFrU=;
- b=nQ2He1Hge2Lmt1cSCZiK+88s/vslBaKgm9xjvKEUOkRKDK6M/aBFl0Ny+oHxurdqW5ET
- AphaptcgjC5Y+37zzs5YoHu2l4Az99qr9RKloqbAu87gW44EBp/EzVkUdl3+/GugpNsB
- +FiNLR2/BrGiGqRjUTvca+ccev0M3ZwPQ100Tj+7eww+hpG9jsIh/d75tNt0kzih0fX6
- ST54HSVnVNwWG/mr5Ula3WxvHyHeuzvyFQquvpA68N8qqZhD9vvuerdOl7i6oCt5DtuO
- F899gKEO1qtv9B9YFtkZANiQgs3IILdC7e37fEQMJYEWi11vd0YuNIhu0EM+dMEd+v9k wA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnykn8x95-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 19:34:13 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40GJ3CBo019046;
-	Tue, 16 Jan 2024 19:34:13 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnykn8x86-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 19:34:13 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40GJ1fRt010969;
-	Tue, 16 Jan 2024 19:34:11 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vm57ygu86-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 19:34:11 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40GJY61423134924
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 16 Jan 2024 19:34:06 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 84BF82005A;
-	Tue, 16 Jan 2024 19:34:06 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 357CC2004B;
-	Tue, 16 Jan 2024 19:34:05 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.88.12])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue, 16 Jan 2024 19:34:05 +0000 (GMT)
-Date: Tue, 16 Jan 2024 20:34:03 +0100
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: Anthony Krowiak <akrowiak@linux.ibm.com>
-Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, jjherne@linux.ibm.com, borntraeger@de.ibm.com,
-        pasic@linux.ibm.com, pbonzini@redhat.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com, alex.williamson@redhat.com,
-        kwankhede@nvidia.com, gor@linux.ibm.com, stable@vger.kernel.org
-Subject: Re: [PATCH v4 4/6] s390/vfio-ap: reset queues filtered from the
- guest's AP config
-Message-ID: <ZabaK3DxABHiGh8V@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <20240115185441.31526-1-akrowiak@linux.ibm.com>
- <20240115185441.31526-5-akrowiak@linux.ibm.com>
- <ZabGAx5BpIiYW+b3@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
- <a54e223c-8965-480c-9361-b483b47502d0@linux.ibm.com>
+	s=arc-20240116; t=1705433734; c=relaxed/simple;
+	bh=evrxQ+WlZe/uz/I2gq8N6P2wlxnDtK9mA/7hhyJoZAM=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=MXcSDfHSp/tzRwt/LrUpPpHNxKiTK5OsfvNYwonvdpiDx1I7SgKv7gp5ppUighiteeDyXo3XX6kF/pqA1QWTvNiyo3gAxiHf+4XjEbqCxzytuAD8XOP4lMp6AX1beb3VGXIIAS6C5cd0jpYnUUoduiZYrnduV3g0PPJ2cl/LrwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2WcUKQ6a; arc=none smtp.client-ip=209.85.160.176
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-429bdb17616so42401cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 11:35:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705433732; x=1706038532; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PxJ9VvvDNT0D5B8Ol+QCsSG9ibygcO2/FPAnh3xxvBs=;
+        b=2WcUKQ6a3Hemm/Mmhvyi8n6LStvrHnCK9qrvonAtiCR2iiSpZcXy7O/ctAMi+XYyK/
+         wIoIirACPRAroiwVz3FIcCZaPJibWeD52nYxO8UsxCxl9vj3a0OWkwF9Isz3oPhtiaFN
+         bAaZCRTMWjEf9cUFlcLcpvQWNrogRwwmlgUJIJdR6NP25apGeeON2cM84jd3qFw7It14
+         94Sihm0CQ48iDSqFcOhLRT8rbazygyrioG5txeUJ3HIxOQf3gSUKhK9R60G7T621/y6R
+         va7g+Od0vuUCN8KE0Skw5mpUsocNRy87rLvUvaYatHhbhaFmGpXYQo5EedghM8EzUwKo
+         umVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705433732; x=1706038532;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PxJ9VvvDNT0D5B8Ol+QCsSG9ibygcO2/FPAnh3xxvBs=;
+        b=fKTzXgQX9aXk1yBA2yy2iRLq5URJidrgybyqVmftrgt+rsdYg5GoSfOW3Kx9it5774
+         LuFJrhTM4kr1RKhjB7euKYkKDYFeOvOkrQPMowhzg1y5vMqOM++1S8jO9CGGlIaKmy59
+         LEsYfjOJJAL+G0ezQ/qC+NiGCaUdJMSbRmUMu0ZZ5wrEb3+GRkPGjoDkGltEIZw6dNI3
+         IKoqESKKKOqThyq5yw1JCyQzL6lb3I27/AlglFNWI5m/5205kn8B7mrYjJkYSNLUIYW6
+         4iCzFp50dulovVzDyams0BNwduSyVrHimenAM7uouh46155L+N+wgklz7/R1jQrlTXqa
+         iNvA==
+X-Gm-Message-State: AOJu0YzM/0YYYkeiOj7170CYaIWEgMAe0coWyz6GCYSfNljDJ9QwDwAo
+	O7Bhmn9Z+tzn6oyh+M85uOUERh21wcjGqb9FYJawxL1gY1dU
+X-Google-Smtp-Source: AGHT+IFuS1zhB9xcg19M4+HxcGo4M5RxCkGNH3OXYKC8ynWkrz+mknzKdyv/4JNGFL8c87QpTvtG6AK4R1NjfBJUBTc=
+X-Received: by 2002:a05:622a:1cc4:b0:429:c6bc:330c with SMTP id
+ bc4-20020a05622a1cc400b00429c6bc330cmr71651qtb.14.1705433731736; Tue, 16 Jan
+ 2024 11:35:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a54e223c-8965-480c-9361-b483b47502d0@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: t7leTYHrFA54YdoXPwKrZjRvj_CSCmXn
-X-Proofpoint-ORIG-GUID: -It2vX2kJvngxepizgDOPQRFRmwQwVXm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-16_12,2024-01-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
- phishscore=0 priorityscore=1501 mlxscore=0 clxscore=1015 bulkscore=0
- spamscore=0 lowpriorityscore=0 mlxlogscore=550 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401160154
+References: <20240111234948.3103511-1-davidgow@google.com>
+In-Reply-To: <20240111234948.3103511-1-davidgow@google.com>
+From: Rae Moar <rmoar@google.com>
+Date: Tue, 16 Jan 2024 14:35:20 -0500
+Message-ID: <CA+GJov5HdYAaQYfM1=m=DZPvBM76c0hNhWuUKnWB833-=raOqw@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: kunit: Add Rae Moar as a reviewer
+To: David Gow <davidgow@google.com>
+Cc: Brendan Higgins <brendan.higgins@linux.dev>, Shuah Khan <skhan@linuxfoundation.org>, 
+	kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 16, 2024 at 02:21:23PM -0500, Anthony Krowiak wrote:
-> > If this change is intended?
-> Shall I fix this and submit a v5?
+On Thu, Jan 11, 2024 at 6:50=E2=80=AFPM David Gow <davidgow@google.com> wro=
+te:
+>
+> Rae has been shouldering a lot of the KUnit review burden for the last
+> year, and will continue to do so in the future. Thanks!
 
-No, I will handle it.
+Thanks David! Happy to review this one!
+
+Reviewed-by: Rae Moar <rmoar@google.com>
+
+>
+> Signed-off-by: David Gow <davidgow@google.com>
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index f8efcb72ad4b..2316d89806dd 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -11599,6 +11599,7 @@ F:      fs/smb/server/
+>  KERNEL UNIT TESTING FRAMEWORK (KUnit)
+>  M:     Brendan Higgins <brendanhiggins@google.com>
+>  M:     David Gow <davidgow@google.com>
+> +R:     Rae Moar <rmoar@google.com>
+>  L:     linux-kselftest@vger.kernel.org
+>  L:     kunit-dev@googlegroups.com
+>  S:     Maintained
+> --
+> 2.43.0.275.g3460e3d667-goog
+>
 
