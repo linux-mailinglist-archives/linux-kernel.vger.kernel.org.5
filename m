@@ -1,127 +1,82 @@
-Return-Path: <linux-kernel+bounces-26929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D7A082E7EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 03:36:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9FC882E7F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 03:39:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39E332849D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:36:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DA6AB229DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:39:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 014605254;
-	Tue, 16 Jan 2024 02:36:17 +0000 (UTC)
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 756D763DA;
+	Tue, 16 Jan 2024 02:39:05 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 710A47E;
-	Tue, 16 Jan 2024 02:36:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TDY4S31fxz1V47r;
-	Tue, 16 Jan 2024 10:34:32 +0800 (CST)
-Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
-	by mail.maildlp.com (Postfix) with ESMTPS id B17FE14011F;
-	Tue, 16 Jan 2024 10:36:09 +0800 (CST)
-Received: from [10.173.135.154] (10.173.135.154) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 16 Jan 2024 10:36:09 +0800
-Subject: Re: [PATCH v2] fs/hugetlbfs/inode.c: mm/memory-failure.c: fix
- hugetlbfs hwpoison handling
-To: Sidhartha Kumar <sidhartha.kumar@oracle.com>,
-	<linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-CC: <akpm@linux-foundation.org>, <usama.anjum@collabora.com>,
-	<muchun.song@linux.dev>, <jiaqiyan@google.com>, <willy@infradead.org>,
-	<naoya.horiguchi@nec.com>, <shy828301@gmail.com>, <jthoughton@google.com>,
-	<jane.chu@oracle.com>, <stable@vger.kernel.org>
-References: <20240112180840.367006-1-sidhartha.kumar@oracle.com>
-From: Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <1e59e3c8-63d5-bba1-9c00-218c3cc8f5ff@huawei.com>
-Date: Tue, 16 Jan 2024 10:36:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B056B7E
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 02:39:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3606d85e5ecso83265625ab.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 18:39:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705372743; x=1705977543;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=R8ngSSPwzCB0UkYkbu61dUKPhREiPfQ00rNKuZC6dDk=;
+        b=G/OLk7O3E5hoOrBL+hTujEJVGCfByaVMLXBSXKYDuDieduBQzpyqc3A+AguJ9nvGa5
+         SvE3iXmr2yU0f4HQQoiug3VgtqSJmiX7fTpK12ScIZDfCikQ4NY+JH3g7xnmztCRGuB5
+         3yxI8AXXzTs1gb88Q/897v5f5dTUkkwtw42cKWsb8ZzdmNmWbuRhE6djSZWLS8ZW7OWE
+         0pHrMMuHOHKFjR230l6Ncy8xkBCERHfvTO+CcEXLQeeEJOrHxZ3M4r8ZcVo+NvvwNv26
+         wX1PK85I1pLqjhR/UbonBusF5vSv6gz7mNqt18bcUhCtMpgFwIRPdKI4kmYkRHhHfuM1
+         s02w==
+X-Gm-Message-State: AOJu0YxmdZzfh6nFfdEGsIFxhcUzv9BB8dnYXUXZoE6URuCTY3Bu9R/g
+	YkWBTPI0AdGjcf7eU9b1Hqi8S2KodGdDH6D0EUGqGkjwXb3M
+X-Google-Smtp-Source: AGHT+IF0htZV9KhM8gbYJ54QSqHGhvAd6WcMRYrYtG0u5BuXmXVySNJVn+qVgx/cckGoEkmnUvxczpFtCgCkPNpbY6dP9XYh0v6N
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240112180840.367006-1-sidhartha.kumar@oracle.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500002.china.huawei.com (7.192.104.244)
+X-Received: by 2002:a05:6e02:20c6:b0:360:97cb:110e with SMTP id
+ 6-20020a056e0220c600b0036097cb110emr665657ilq.6.1705372742987; Mon, 15 Jan
+ 2024 18:39:02 -0800 (PST)
+Date: Mon, 15 Jan 2024 18:39:02 -0800
+In-Reply-To: <000000000000b26907060cb9f1f5@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008e38b0060f0708bb@google.com>
+Subject: Re: [syzbot] [reiserfs?] possible deadlock in __run_timers
+From: syzbot <syzbot+a3981d3c93cde53224be@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, bp@alien8.de, brauner@kernel.org, 
+	dave.hansen@linux.intel.com, hpa@zytor.com, jack@suse.cz, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	lizhi.xu@windriver.com, mingo@redhat.com, reiserfs-devel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 2024/1/13 2:08, Sidhartha Kumar wrote:
-> has_extra_refcount() makes the assumption that the page cache adds a ref
-> count of 1 and subtracts this in the extra_pins case. Commit a08c7193e4f1
-> (mm/filemap: remove hugetlb special casing in filemap.c) modifies
-> __filemap_add_folio() by calling folio_ref_add(folio, nr); for all cases
-> (including hugtetlb) where nr is the number of pages in the folio. We
-> should adjust the number of references coming from the page cache by
-> subtracing the number of pages rather than 1.
-> 
-> In hugetlbfs_read_iter(), folio_test_has_hwpoisoned() is testing the wrong
-> flag as, in the hugetlb case, memory-failure code calls
-> folio_test_set_hwpoison() to indicate poison. folio_test_hwpoison() is the
-> correct function to test for that flag.
-> 
-> After these fixes, the hugetlb hwpoison read selftest passes all cases.
-> 
-> Fixes: a08c7193e4f1 ("mm/filemap: remove hugetlb special casing in filemap.c")
-> Closes: https://lore.kernel.org/linux-mm/20230713001833.3778937-1-jiaqiyan@google.com/T/#m8e1469119e5b831bbd05d495f96b842e4a1c5519
-> Cc: <stable@vger.kernel.org> # 6.7+
-> Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-> Reported-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> ---
-> 
-> v1 -> v2:
->     move ref_count adjustment to if(extra_pins) block as that represents
->     ref counts from the page cache per Miaohe Lin.
+syzbot suspects this issue was fixed by commit:
 
-Thanks for your update of patch.
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-> 
->  fs/hugetlbfs/inode.c | 2 +-
->  mm/memory-failure.c  | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-> index 36132c9125f9..3a248e4f7e93 100644
-> --- a/fs/hugetlbfs/inode.c
-> +++ b/fs/hugetlbfs/inode.c
-> @@ -340,7 +340,7 @@ static ssize_t hugetlbfs_read_iter(struct kiocb *iocb, struct iov_iter *to)
->  		} else {
->  			folio_unlock(folio);
->  
-> -			if (!folio_test_has_hwpoisoned(folio))
-> +			if (!folio_test_hwpoison(folio))
->  				want = nr;
->  			else {
->  				/*
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index d8c853b35dbb..ef7ae73b65bd 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -976,7 +976,7 @@ static bool has_extra_refcount(struct page_state *ps, struct page *p,
->  	int count = page_count(p) - 1;
->  
->  	if (extra_pins)
-> -		count -= 1;
-> +		count -= folio_nr_pages(page_folio(p));
+    fs: Block writes to mounted block devices
 
-I think this should be the right solution. @extra_pins indicates the extra page refcnt from page cache.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=152ab62be80000
+start commit:   88035e5694a8 Merge tag 'hid-for-linus-2023121201' of git:/..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=be2bd0a72b52d4da
+dashboard link: https://syzkaller.appspot.com/bug?extid=a3981d3c93cde53224be
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15befbfee80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17b20006e80000
 
-Acked-by: Miaohe Lin <linmiaohe@huawei.com>
-Thanks.
+If the result looks correct, please mark the issue as fixed by replying with:
 
->  
->  	if (count > 0) {
->  		pr_err("%#lx: %s still referenced by %d users\n",
-> 
+#syz fix: fs: Block writes to mounted block devices
 
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
