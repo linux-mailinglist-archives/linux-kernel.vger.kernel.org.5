@@ -1,48 +1,54 @@
-Return-Path: <linux-kernel+bounces-26845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 512D482E6DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:28:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A69982E6DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:29:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAE2E1F236B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:28:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C1D4284E1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:29:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D6D221A1D;
-	Tue, 16 Jan 2024 01:06:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06BFB22319;
+	Tue, 16 Jan 2024 01:06:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CN+71m+W"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mkhrNxl1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0C0021A04;
-	Tue, 16 Jan 2024 01:06:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50416C433F1;
-	Tue, 16 Jan 2024 01:06:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53198208BC;
+	Tue, 16 Jan 2024 01:06:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA5E9C433F1;
+	Tue, 16 Jan 2024 01:06:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705367168;
-	bh=BljH6Sj0TIpE7yabhd/4f9P5byKuK/pwqBBd0EbSy54=;
+	s=k20201202; t=1705367171;
+	bh=RqhjB69RblzpblVNXf0+MpdYnaiOYIRtCEhaG505RBo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CN+71m+WEhek4QRIbaR2cojCrtv0n3756txcxFoCzedY2V2HbUrmokFPHOHB00k8V
-	 L8DmJLgsNKmEs0Nn5DHxFCmo6bF1Mj2r0GSoxc6MkvHsLCNPnQXIcIz0glHeDOJ9eS
-	 fpDGIR/bm6VIC9KHUlmMp9nXY+lRvkTLuOrCUHAn0FJmUxelQcsfFg0JgVTzQsbaRU
-	 vDs0SUtoX8rsfGkveUsVtx1Im76o43ge+z0mXtjvEaR0MJqCKPFlyA2SXKl774OpmJ
-	 B0CCNAOiKtwo7DI/TRaylnhoDtknfYBM/SPiboNscwKBen3x3m9w8pCKu+Xzh+z4Tp
-	 AM5eHWFfnIfVQ==
+	b=mkhrNxl1xemrVzwWXhnXVZNHBoKpawCFBjtQxhG/XOqNzHlVAArTiLGFI4Ajl6a7S
+	 EFsh6v6MgKwQ093EyIt9ciNJEfEAPUyczj2O8UyJ777LOlSSoub4y0ZaL8baqgbWCB
+	 ZUkKvHmS5gFsEmWjQlbL4YfglvjZhe5qA/vG9d7nA8O0BLeVK0RmEzeocGxuewxaYw
+	 eKheSFXIv+Z7mNC2bFYezx2KvioGNwBn/m0+9WUirwv5P893F2jue7mUupukU8w3f2
+	 KphRR1h1tQ7VVM1nRwsjGTIvpAGeOWfNmD1nyr07gdKAATzK9OjeZqarMVrsJhchpD
+	 22I2KMWY4h9sg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Paulo Alcantara <pc@manguebit.com>,
-	Steve French <stfrench@microsoft.com>,
+Cc: Gabriel Krisman Bertazi <krisman@suse.de>,
+	Eric Biggers <ebiggers@google.com>,
 	Sasha Levin <sashal@kernel.org>,
-	sfrench@samba.org,
-	linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org
-Subject: [PATCH AUTOSEL 6.6 14/19] smb: client: fix hardlinking of reparse points
-Date: Mon, 15 Jan 2024 20:05:09 -0500
-Message-ID: <20240116010532.218428-14-sashal@kernel.org>
+	code@tyhicks.com,
+	brauner@kernel.org,
+	dchinner@redhat.com,
+	jack@suse.cz,
+	jlayton@kernel.org,
+	xiubli@redhat.com,
+	stefanb@linux.ibm.com,
+	viro@zeniv.linux.org.uk,
+	ecryptfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 15/19] ecryptfs: Reject casefold directory inodes
+Date: Mon, 15 Jan 2024 20:05:10 -0500
+Message-ID: <20240116010532.218428-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116010532.218428-1-sashal@kernel.org>
 References: <20240116010532.218428-1-sashal@kernel.org>
@@ -57,182 +63,44 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.12
 Content-Transfer-Encoding: 8bit
 
-From: Paulo Alcantara <pc@manguebit.com>
+From: Gabriel Krisman Bertazi <krisman@suse.de>
 
-[ Upstream commit 5408990aa662bcfd6ba894734023a023a16e8729 ]
+[ Upstream commit cd72c7ef5fed44272272a105b1da22810c91be69 ]
 
-The client was sending an SMB2_CREATE request without setting
-OPEN_REPARSE_POINT flag thus failing the entire hardlink operation.
+Even though it seems to be able to resolve some names of
+case-insensitive directories, the lack of d_hash and d_compare means we
+end up with a broken state in the d_cache.  Considering it was never a
+goal to support these two together, and we are preparing to use
+d_revalidate in case-insensitive filesystems, which would make the
+combination even more broken, reject any attempt to get a casefolded
+inode from ecryptfs.
 
-Fix this by setting OPEN_REPARSE_POINT in create options for
-SMB2_CREATE request when the source inode is a repase point.
-
-Signed-off-by: Paulo Alcantara (SUSE) <pc@manguebit.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Gabriel Krisman Bertazi <krisman@suse.de>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/smb/client/cifsglob.h  |  8 +++++---
- fs/smb/client/cifsproto.h |  8 +++++---
- fs/smb/client/cifssmb.c   |  9 +++++----
- fs/smb/client/link.c      |  4 ++--
- fs/smb/client/smb2inode.c | 33 +++++++++++++++++++++------------
- fs/smb/client/smb2proto.h |  8 +++++---
- 6 files changed, 43 insertions(+), 27 deletions(-)
+ fs/ecryptfs/inode.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/fs/smb/client/cifsglob.h b/fs/smb/client/cifsglob.h
-index 3650094590b3..50bed92f01a4 100644
---- a/fs/smb/client/cifsglob.h
-+++ b/fs/smb/client/cifsglob.h
-@@ -405,9 +405,11 @@ struct smb_version_operations {
- 		      const char *from_name, const char *to_name,
- 		      struct cifs_sb_info *cifs_sb);
- 	/* send create hardlink request */
--	int (*create_hardlink)(const unsigned int, struct cifs_tcon *,
--			       const char *, const char *,
--			       struct cifs_sb_info *);
-+	int (*create_hardlink)(const unsigned int xid,
-+			       struct cifs_tcon *tcon,
-+			       struct dentry *source_dentry,
-+			       const char *from_name, const char *to_name,
-+			       struct cifs_sb_info *cifs_sb);
- 	/* query symlink target */
- 	int (*query_symlink)(const unsigned int xid,
- 			     struct cifs_tcon *tcon,
-diff --git a/fs/smb/client/cifsproto.h b/fs/smb/client/cifsproto.h
-index 35b58c2d81dd..a5ebcc310874 100644
---- a/fs/smb/client/cifsproto.h
-+++ b/fs/smb/client/cifsproto.h
-@@ -442,9 +442,11 @@ extern int CIFSSMBRenameOpenFile(const unsigned int xid, struct cifs_tcon *tcon,
- 				 int netfid, const char *target_name,
- 				 const struct nls_table *nls_codepage,
- 				 int remap_special_chars);
--extern int CIFSCreateHardLink(const unsigned int xid, struct cifs_tcon *tcon,
--			      const char *from_name, const char *to_name,
--			      struct cifs_sb_info *cifs_sb);
-+int CIFSCreateHardLink(const unsigned int xid,
-+		       struct cifs_tcon *tcon,
-+		       struct dentry *source_dentry,
-+		       const char *from_name, const char *to_name,
-+		       struct cifs_sb_info *cifs_sb);
- extern int CIFSUnixCreateHardLink(const unsigned int xid,
- 			struct cifs_tcon *tcon,
- 			const char *fromName, const char *toName,
-diff --git a/fs/smb/client/cifssmb.c b/fs/smb/client/cifssmb.c
-index 43a90e646a7a..5331fda8b013 100644
---- a/fs/smb/client/cifssmb.c
-+++ b/fs/smb/client/cifssmb.c
-@@ -2528,10 +2528,11 @@ CIFSUnixCreateHardLink(const unsigned int xid, struct cifs_tcon *tcon,
- 	return rc;
- }
+diff --git a/fs/ecryptfs/inode.c b/fs/ecryptfs/inode.c
+index 5ab4b87888a7..795e9fe2f721 100644
+--- a/fs/ecryptfs/inode.c
++++ b/fs/ecryptfs/inode.c
+@@ -78,6 +78,14 @@ static struct inode *__ecryptfs_get_inode(struct inode *lower_inode,
  
--int
--CIFSCreateHardLink(const unsigned int xid, struct cifs_tcon *tcon,
--		   const char *from_name, const char *to_name,
--		   struct cifs_sb_info *cifs_sb)
-+int CIFSCreateHardLink(const unsigned int xid,
-+		       struct cifs_tcon *tcon,
-+		       struct dentry *source_dentry,
-+		       const char *from_name, const char *to_name,
-+		       struct cifs_sb_info *cifs_sb)
- {
- 	int rc = 0;
- 	NT_RENAME_REQ *pSMB = NULL;
-diff --git a/fs/smb/client/link.c b/fs/smb/client/link.c
-index c66be4904e1f..6c4ae52ddc04 100644
---- a/fs/smb/client/link.c
-+++ b/fs/smb/client/link.c
-@@ -522,8 +522,8 @@ cifs_hardlink(struct dentry *old_file, struct inode *inode,
- 			rc = -ENOSYS;
- 			goto cifs_hl_exit;
- 		}
--		rc = server->ops->create_hardlink(xid, tcon, from_name, to_name,
--						  cifs_sb);
-+		rc = server->ops->create_hardlink(xid, tcon, old_file,
-+						  from_name, to_name, cifs_sb);
- 		if ((rc == -EIO) || (rc == -EINVAL))
- 			rc = -EOPNOTSUPP;
- 	}
-diff --git a/fs/smb/client/smb2inode.c b/fs/smb/client/smb2inode.c
-index c3e28673e0cd..6cac0b107a2d 100644
---- a/fs/smb/client/smb2inode.c
-+++ b/fs/smb/client/smb2inode.c
-@@ -35,6 +35,18 @@ free_set_inf_compound(struct smb_rqst *rqst)
- 		SMB2_close_free(&rqst[2]);
- }
- 
-+static inline __u32 file_create_options(struct dentry *dentry)
-+{
-+	struct cifsInodeInfo *ci;
+ 	if (lower_inode->i_sb != ecryptfs_superblock_to_lower(sb))
+ 		return ERR_PTR(-EXDEV);
 +
-+	if (dentry) {
-+		ci = CIFS_I(d_inode(dentry));
-+		if (ci->cifsAttrs & ATTR_REPARSE)
-+			return OPEN_REPARSE_POINT;
++	/* Reject dealing with casefold directories. */
++	if (IS_CASEFOLDED(lower_inode)) {
++		pr_err_ratelimited("%s: Can't handle casefolded directory.\n",
++				   __func__);
++		return ERR_PTR(-EREMOTE);
 +	}
-+	return 0;
-+}
 +
- /*
-  * note: If cfile is passed, the reference to it is dropped here.
-  * So make sure that you do not reuse cfile after return from this func.
-@@ -809,15 +821,9 @@ int smb2_rename_path(const unsigned int xid,
- 		     const char *from_name, const char *to_name,
- 		     struct cifs_sb_info *cifs_sb)
- {
--	struct cifsInodeInfo *ci;
- 	struct cifsFileInfo *cfile;
--	__u32 co = 0;
-+	__u32 co = file_create_options(source_dentry);
- 
--	if (source_dentry) {
--		ci = CIFS_I(d_inode(source_dentry));
--		if (ci->cifsAttrs & ATTR_REPARSE)
--			co |= OPEN_REPARSE_POINT;
--	}
- 	drop_cached_dir_by_name(xid, tcon, from_name, cifs_sb);
- 	cifs_get_writable_path(tcon, from_name, FIND_WR_WITH_DELETE, &cfile);
- 
-@@ -825,13 +831,16 @@ int smb2_rename_path(const unsigned int xid,
- 				  co, DELETE, SMB2_OP_RENAME, cfile);
- }
- 
--int
--smb2_create_hardlink(const unsigned int xid, struct cifs_tcon *tcon,
--		     const char *from_name, const char *to_name,
--		     struct cifs_sb_info *cifs_sb)
-+int smb2_create_hardlink(const unsigned int xid,
-+			 struct cifs_tcon *tcon,
-+			 struct dentry *source_dentry,
-+			 const char *from_name, const char *to_name,
-+			 struct cifs_sb_info *cifs_sb)
- {
-+	__u32 co = file_create_options(source_dentry);
-+
- 	return smb2_set_path_attr(xid, tcon, from_name, to_name,
--				  cifs_sb, 0, FILE_READ_ATTRIBUTES,
-+				  cifs_sb, co, FILE_READ_ATTRIBUTES,
- 				  SMB2_OP_HARDLINK, NULL);
- }
- 
-diff --git a/fs/smb/client/smb2proto.h b/fs/smb/client/smb2proto.h
-index 7cbf1a76b42d..a8084ce7fcbd 100644
---- a/fs/smb/client/smb2proto.h
-+++ b/fs/smb/client/smb2proto.h
-@@ -85,9 +85,11 @@ int smb2_rename_path(const unsigned int xid,
- 		     struct dentry *source_dentry,
- 		     const char *from_name, const char *to_name,
- 		     struct cifs_sb_info *cifs_sb);
--extern int smb2_create_hardlink(const unsigned int xid, struct cifs_tcon *tcon,
--				const char *from_name, const char *to_name,
--				struct cifs_sb_info *cifs_sb);
-+int smb2_create_hardlink(const unsigned int xid,
-+			 struct cifs_tcon *tcon,
-+			 struct dentry *source_dentry,
-+			 const char *from_name, const char *to_name,
-+			 struct cifs_sb_info *cifs_sb);
- extern int smb3_create_mf_symlink(unsigned int xid, struct cifs_tcon *tcon,
- 			struct cifs_sb_info *cifs_sb, const unsigned char *path,
- 			char *pbuf, unsigned int *pbytes_written);
+ 	if (!igrab(lower_inode))
+ 		return ERR_PTR(-ESTALE);
+ 	inode = iget5_locked(sb, (unsigned long)lower_inode,
 -- 
 2.43.0
 
