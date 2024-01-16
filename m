@@ -1,92 +1,116 @@
-Return-Path: <linux-kernel+bounces-27614-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27615-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF26982F2E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:10:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A365782F2F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:13:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1A221C2372F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:10:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52BD8288CB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:13:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A10A1CAA2;
-	Tue, 16 Jan 2024 17:10:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B80E41CAA4;
+	Tue, 16 Jan 2024 17:13:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EuG93urs"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RqREW0F8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71FCF1CA87;
-	Tue, 16 Jan 2024 17:10:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705425018; cv=none; b=Qvw1vx+rBbpzJbjpxEBgHzCJGqS+fnLbYGfP2swYafJr2iWORkUnhJIqgtbn1ucDPFRncJCVXmxFM/dqtky2FZrlXneeqlemw4usZZMeQJiJI8cWOL8KPknXYhzArM57gttX7b6y770PD57d8VnugvLVmNHcACj6LraODdFZckc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705425018; c=relaxed/simple;
-	bh=+F0EM0MyQ7NcCg3Ixxu9z5Tybad96Gl5Tf0YqH4Dt+U=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:Received:Message-ID:Subject:From:To:Date:In-Reply-To:
-	 References:Content-Type:Content-Transfer-Encoding:User-Agent:
-	 MIME-Version; b=EiyoZ+MH9fAwwv7Nh/BWdMxYCu9WpoH4zIRgQSmHhdsj5sHlowZfHQ9PmkUImkNOfTN0MN/x7gNI14m6EBGI717kh0KwbXY0JSu0P2Co209rf2RWw7ZyNALr3S2Dho9PXyCsvsMon/mKGJA9wSNLKL7L9KB40oy0pEGB/+01S6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EuG93urs
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705425017; x=1736961017;
-  h=message-id:subject:from:to:date:in-reply-to:references:
-   content-transfer-encoding:mime-version;
-  bh=+F0EM0MyQ7NcCg3Ixxu9z5Tybad96Gl5Tf0YqH4Dt+U=;
-  b=EuG93urs22+Rzqck03NUvlaV+3W1lMFn6/4m/KzkHiLIJ/ORTbux9dXx
-   u3DTMBzTzzOXnd5O2y9hYDYn2Kgg4uGdwPi3LZkuCO0GYS33Vm9fc4D3y
-   2spT9THB8/kyVJ+IjYSzvBuAwvHLqL12L7OlqbgSYw8g+ijldO+DXeuVW
-   UaPVH6RRtDTReTDLbvE7j3uiW33ea42OUzu7qaR12Kl7z9VPbm+ouIkd+
-   JeMogJslbJ77quzMwzt3M0x1bf9JbvI0dbeJCYS/cl/L860cYJ2anaGrd
-   YXS5Bl9bjvAN/uT/gWJVtK7eSEDVf1FNg+nhZpz6yi3QGEvLP5z3y7xTE
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="7295108"
-X-IronPort-AV: E=Sophos;i="6.05,199,1701158400"; 
-   d="scan'208";a="7295108"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 09:10:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,199,1701158400"; 
-   d="scan'208";a="32529976"
-Received: from ticela-or-353.amr.corp.intel.com ([10.209.70.241])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 09:10:09 -0800
-Message-ID: <76352c8a2a91135b0fcc9041b6f6e06ff0e0a971.camel@linux.intel.com>
-Subject: Re: [PATCH v4 0/3] x86/hyperv: Mark CoCo VM pages not present when
- changing encrypted state
-From: Rick Edgecombe <rick.p.edgecombe@linux.intel.com>
-To: mhklinux@outlook.com, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de,  dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
- kirill.shutemov@linux.intel.com, haiyangz@microsoft.com,
- wei.liu@kernel.org,  decui@microsoft.com, luto@kernel.org,
- peterz@infradead.org,  akpm@linux-foundation.org, urezki@gmail.com,
- hch@infradead.org, lstoakes@gmail.com,  thomas.lendacky@amd.com,
- ardb@kernel.org, jroedel@suse.de, seanjc@google.com, 
- sathyanarayanan.kuppuswamy@linux.intel.com, linux-kernel@vger.kernel.org, 
- linux-coco@lists.linux.dev, linux-hyperv@vger.kernel.org, linux-mm@kvack.org
-Date: Tue, 16 Jan 2024 09:10:08 -0800
-In-Reply-To: <20240116022008.1023398-1-mhklinux@outlook.com>
-References: <20240116022008.1023398-1-mhklinux@outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1148E1CA87;
+	Tue, 16 Jan 2024 17:13:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CF34C433C7;
+	Tue, 16 Jan 2024 17:13:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705425215;
+	bh=SuJRku70FFjuPFDYTnqO6MNWPjTMigxU8tBt5tIlgok=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RqREW0F8UbaqeNQLcbT67iMdyDxfPX6v6paL1UjmuTw5X6bxVdwe0ccgoi4SXUvNy
+	 hRFqqe1taQB+32HhAqfMGbFE0EZNAUFKcN0D6V42Yn/6MZyDaVtaNr9IDpbDyY0i9w
+	 ZdGZN8TeGBtiQHR28Gp1HBkcx5LmlRF4Kw3gfpNT4ateIaBPuLvR7hw97P6O1My4DZ
+	 VfHe/eXNSBl1D8edDW1EtKTl2WeE80yO6tdbLN21LTQZCipzS8f1hJHESZlIrt8yV+
+	 oDeA+iHaZiUqHzJ/5m2yf/M+73jUW8PFzoGXCBTmuONQEmxDKeAP1VuTuzb72ybL/A
+	 p1GGJOC1DYLyA==
+Date: Tue, 16 Jan 2024 17:13:30 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Frieder Schrempf <frieder@fris.de>
+Cc: Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+	Frieder Schrempf <frieder.schrempf@kontron.de>,
+	Chris Morgan <macromorgan@hotmail.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Rob Herring <robh@kernel.org>, Sebastian Reichel <sre@kernel.org>,
+	Yang Xiwen <forbidden405@foxmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: vendor-prefixes: Add Sielaff
+Message-ID: <20240116-treat-amperage-d292d9e573f9@spud>
+References: <20240116105317.267525-1-frieder@fris.de>
+ <20240116105317.267525-2-frieder@fris.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="/pDMlpA8KyAT6rUA"
+Content-Disposition: inline
+In-Reply-To: <20240116105317.267525-2-frieder@fris.de>
 
-On Mon, 2024-01-15 at 18:20 -0800, mhkelley58@gmail.com wrote:
-> =C2=A0 x86/hyperv: Use slow_virt_to_phys() in page transition hypervisor
-> =C2=A0=C2=A0=C2=A0 callback
-> =C2=A0 x86/mm: Regularize set_memory_p() parameters and make non-static
-> =C2=A0 x86/hyperv: Make encrypted/decrypted changes safe for
-> =C2=A0=C2=A0=C2=A0 load_unaligned_zeropad()
 
-I'm not clear on the HyperV specifics, but everything else looked good
-to me. Thanks.
+--/pDMlpA8KyAT6rUA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Jan 16, 2024 at 11:51:55AM +0100, Frieder Schrempf wrote:
+> From: Frieder Schrempf <frieder.schrempf@kontron.de>
+>=20
+> Add "Sielaff GmbH & Co. KG Automatenbau Herrieden" (https://sielaff.de).
+>=20
+> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Doc=
+umentation/devicetree/bindings/vendor-prefixes.yaml
+> index 309b94c328c84..8825a9f60ac5a 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -1233,6 +1233,8 @@ patternProperties:
+>      description: Si-En Technology Ltd.
+>    "^si-linux,.*":
+>      description: Silicon Linux Corporation
+> +  "^sielaff,.*":
+> +    description: Sielaff GmbH & Co. KG Automatenbau Herrieden
+>    "^siemens,.*":
+>      description: Siemens AG
+>    "^sifive,.*":
+> --=20
+> 2.43.0
+>=20
+
+--/pDMlpA8KyAT6rUA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaa5OgAKCRB4tDGHoIJi
+0gwrAP9wUzzoaxZr4KgANTEw68LtS7mefqLYGzUyrunbFe23hgEAnSMGPE+wNf51
+pGSOd8FTva8IPvnJ2eN4SEff5PqMCA8=
+=eHId
+-----END PGP SIGNATURE-----
+
+--/pDMlpA8KyAT6rUA--
 
