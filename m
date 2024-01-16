@@ -1,206 +1,199 @@
-Return-Path: <linux-kernel+bounces-28247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28248-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C398E82FC1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:12:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EA7F82FC20
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:12:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B53B28E6F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:12:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F12A428E7DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:12:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366F31E86E;
-	Tue, 16 Jan 2024 20:30:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D94B224D6;
+	Tue, 16 Jan 2024 20:32:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OJYZc4vS"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M6FD3C8s"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B223C1CD0F
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 20:30:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99991224CE;
+	Tue, 16 Jan 2024 20:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705437030; cv=none; b=guK9YsVgyi4sh1rvltOv2k0+UAo+2riwCBdzfs4jpOJgfX9rdBMsm586afRt6BXZBPjPNspN1bZ6kocvwG2Rbr5pAX5Ihx81l43OOtaZ5NIA/h08Jq7fAtkSgu6aMkMKNJkqY3jMvYOsGruJG/YN/LoQn3UmWniXFTceHFD1WcM=
+	t=1705437127; cv=none; b=WCNmDczi0hmAQIu8agCkEbi5t6dnMQ3bj+NxkUShV8QfTvh8dpBqiR2LsADbvfix0diF5GCxeEM56HwLOaPCKKsqujWBvE41mxOzd/PoFK5UQmHQyTBk9ioloZjn6mK8aoiR3f7D5t5b0vAI1JaeZzxcBqUtWMLmCgc63pYEbTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705437030; c=relaxed/simple;
-	bh=2NRTYrgjnR5bKwdsLSCYxUfDL1Cs7AM/YYHwnsSsa2w=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 To:Cc:References:From:Autocrypt:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=cbTb6dpvLKEXsi3djAXpLG/5wB8eb32FLI/SDYRfYxZpO8fx7zBVC//CLJ0x6GyOFMTR4nHVxDRPJr4Xa00ujuOce8rPlIWl8GEI5lGpObHK+RrfTGfEdasH/kRJP7I7tdA9d0ElDRuc6C76psGkVOfKsLDGbtF0AM+aPTcHGSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OJYZc4vS; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5571e662b93so8518593a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 12:30:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705437027; x=1706041827; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uTXhmBHw2EA0caAaydvwAT6rwYI/NJUX8jAJJV8Sy00=;
-        b=OJYZc4vSsguB0zBpM18DzqJJoz8N6I6uMSZ/mv3kEM7OhAqeOP9+OlY4HbkJNxFOVy
-         KWvQODmuz2DUhuBscm8QumjAYgolvGf29UxlOJhdGPipBuHW7SmTF1babY71HxPqjlSy
-         dVQN8ZChjbqEmLPUdQRcQRQ2GEzvKvhu/KmtEctKXA0XCfKtbzIf3xbFJugAlVtWCDzb
-         iHaOt8MnUS8EH7mhPb1JcpVb8aKJy9gdu///XaFByAAploMzvCcgjOa/zclvIMjTDxKs
-         49cxoIB220etpqcgBBrk5lLPFZ4MxYL7sXXpxl0vECqOfBbdHPMRJESypb2dTS4T6GHz
-         9+7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705437027; x=1706041827;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uTXhmBHw2EA0caAaydvwAT6rwYI/NJUX8jAJJV8Sy00=;
-        b=tRRHswZwZL2mZz6jGbVdX0n1gPsnfSyUf3aBeOqY9ZBn5ErzMCRhY6fBskrTEzvw3Z
-         WG8qK2xrAhc697HwEfONiILtBjcWXfmZRbhi7TS9QtdJt3C71VLNUyVzMXdDZR3Qh9C2
-         G+258MdIfHKWp5ReqDGZiHABrnDQ115XRTEcjtXB3N1uCNRV0r9dwaDY+DLntz/TNobv
-         phhTikiEs7KMJnd1czLbOQ6wyYCxd2drZOxcNEiX0UQmy55iOdG07N33zv5AoCdZCzLf
-         EZgJVel7TpIeaS4cBX9Nz970xki0zT9bS3m+ozOldTtfJJ+WUWeowNmwml6MOjiQU6HD
-         N5qg==
-X-Gm-Message-State: AOJu0YxVLnGfWO9fmRd8rnNgM6k01MdVSJV5pGAxrOrp7BMiodFdrmTH
-	m70BBY7Cr+ujJrzIxtbPpG443uW3GrznSg==
-X-Google-Smtp-Source: AGHT+IHFuFzFMM2bM2UjSx6fFyIc5tvQ1xs4HEI2FsjCRLD6pEYz+/oaXtUkDCaPFFhcoVD1Rw+sOw==
-X-Received: by 2002:a17:907:c24b:b0:a2d:d3a0:c9e6 with SMTP id tj11-20020a170907c24b00b00a2dd3a0c9e6mr2489729ejc.46.1705437026927;
-        Tue, 16 Jan 2024 12:30:26 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id wb1-20020a170907d50100b00a2cd86caa73sm5541237ejc.121.2024.01.16.12.30.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jan 2024 12:30:26 -0800 (PST)
-Message-ID: <4a9ed1ca-cd13-4b61-af06-a3d7935aeeee@linaro.org>
-Date: Tue, 16 Jan 2024 21:30:24 +0100
+	s=arc-20240116; t=1705437127; c=relaxed/simple;
+	bh=GgXb6VOl3A1OZ619VICvZg0xoOte/ekEVjnC8ojuBzg=;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-Id:
+	 X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding; b=m4M3v/IfAKWqcepE4B9SU8sNRERJG77BjAfOwvrp3ghDE8YrMBkdTA4TG3eI5eCz4S4JPwkk+Sh5XVZ/XTMk9Y50k/dur3+g4A+MxgBad9DSx0F0WarEonWaaZVD7tPKeIo4tANZhGKOnhWN39VPWYRn0w+28TmzUP5A64P5WLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M6FD3C8s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B51C9C433F1;
+	Tue, 16 Jan 2024 20:32:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705437127;
+	bh=GgXb6VOl3A1OZ619VICvZg0xoOte/ekEVjnC8ojuBzg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=M6FD3C8scdF1SWyt88y2bWdzz77TSrQMdj7sauK12ToXjy+bPpeCW5rMBRMg6gKSL
+	 7RS0fR08RQv35xJeutOyUUhwvK4/eGTbDwGAeOZJfnlEaq9fiRt5Gr54s5/7c8vw46
+	 E2+L7qR+7ry+IuyXpGgULXmDiZuegFwLRkMat0+dH+40O4cWW0NplCEVP0nopDTR42
+	 cmgvJZwuNJZeKudQFt4JW0FQvH1oER9GDO/Rn00waYBc8Us3QbYXTqANp/zhWSkcKX
+	 6oeHkQXfMkHI1zf5kiimGZGQYvwm7jqVBm0YdwoDIcJjSDFVRpLbyLcSQFbW+ZKJKn
+	 0Z2M8zSd11roA==
+From: SeongJae Park <sj@kernel.org>
+To: Honggyu Kim <honggyu.kim@sk.com>
+Cc: sj@kernel.org,
+	damon@lists.linux.dev,
+	linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel_team@skhynix.com,
+	akpm@linux-foundation.org,
+	apopple@nvidia.com,
+	baolin.wang@linux.alibaba.com,
+	dave.jiang@intel.com,
+	linmiaohe@huawei.com,
+	lizhijian@cn.fujitsu.com,
+	mathieu.desnoyers@efficios.com,
+	mhiramat@kernel.org,
+	rostedt@goodmis.org,
+	surenb@google.com,
+	yangx.jy@fujitsu.com,
+	ying.huang@intel.com,
+	ziy@nvidia.com,
+	Hyeongtak Ji <hyeongtak.ji@sk.com>,
+	Rakie Kim <rakie.kim@sk.com>
+Subject: Re: [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory
+Date: Tue, 16 Jan 2024 12:31:59 -0800
+Message-Id: <20240116203159.52826-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240115045253.1775-1-honggyu.kim@sk.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/7] dt-bindings: i3c: svc: add compatible string i3c:
- silvaco,i3c-target-v1
-Content-Language: en-US
-To: Frank Li <Frank.li@nxp.com>, Conor Dooley <conor@kernel.org>
-Cc: Conor Dooley <conor.dooley@microchip.com>, robh@kernel.org,
- alexandre.belloni@bootlin.com, conor.culhane@silvaco.com,
- gregkh@linuxfoundation.org, imx@lists.linux.dev, jirislaby@kernel.org,
- joe@perches.com, linux-i3c@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
- miquel.raynal@bootlin.com, zbigniew.lukwinski@linux.intel.com,
- devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org
-References: <ZaFjaWCA6k+tiCSJ@lizhi-Precision-Tower-5810>
- <ZaWLCrWJEMtFx8cR@lizhi-Precision-Tower-5810>
- <1b628901-7f71-4c97-9a16-723912988417@linaro.org>
- <ZaXqCoCHPWER94Hh@lizhi-Precision-Tower-5810>
- <d45e31c4-914e-4cea-a145-9775b6f516ab@linaro.org>
- <20240116-bleach-herbicide-48d636967134@wendy>
- <3199c245-3d2d-49e8-951e-2b059de4d683@linaro.org>
- <20240116-achiness-thievish-10a12b3c08cd@wendy>
- <Zaa+cLGVVDSB5MYr@lizhi-Precision-Tower-5810>
- <20240116-retract-conclude-c47a7fc8cb21@spud>
- <ZabVSYgq1Mz3LPpC@lizhi-Precision-Tower-5810>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ZabVSYgq1Mz3LPpC@lizhi-Precision-Tower-5810>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 16/01/2024 20:13, Frank Li wrote:
-> On Tue, Jan 16, 2024 at 06:23:09PM +0000, Conor Dooley wrote:
->> On Tue, Jan 16, 2024 at 12:35:44PM -0500, Frank Li wrote:
->>> On Tue, Jan 16, 2024 at 09:48:08AM +0000, Conor Dooley wrote:
->>>> On Tue, Jan 16, 2024 at 10:33:48AM +0100, Krzysztof Kozlowski wrote:
->>>>> On 16/01/2024 10:30, Conor Dooley wrote:
->>>>>> On Tue, Jan 16, 2024 at 08:24:20AM +0100, Krzysztof Kozlowski wrote:
->>>>>>> On 16/01/2024 03:29, Frank Li wrote:
->>>>>>>>>> 	Patches were accepted after discussion, what you ponit to. So I
->>>>>>>>>> think everyone agree on the name 'silvaco,i3c-master-v1'.
->>>>>>>>>> 	I plan send next version to fix auto build error. Any additional
->>>>>>>>>> comments about this?
->>>>>>>>>
->>>>>>>>> I still do not see how did you address Rob's comment and his point is
->>>>>>>>> valid. You just did not reply to it.
->>>>>>>>
->>>>>>>> See https://lore.kernel.org/imx/ZXCiaKfMYYShoiXK@lizhi-Precision-Tower-5810/
->>>>>>>
->>>>>>> First of all, that's not the answer to Rob's email, but some other
->>>>>>> thread which is 99% ignored by Rob (unless he has filters for
->>>>>>> "@Rob"...). Therefore no, it does not count as valid answer.
->>>>>>>
->>>>>>> Second, explanation does not make sense. There is no argument granting
->>>>>>> you exception from SoC specific compatibles.
->>>>>>
->>>>>> The patch could have been applied two months ago had Frank done as
->>>>>> was requested (multiple times). I don't understand the resistance
->>>>>> towards doing so given the process has taken way way longer as a result.
->>>>>
->>>>> I think that Rob's comment was just skipped and original master binding
->>>>> was merged without addressing it. I don't want to repeat the same
->>>>> process for the "target". Indeed I could point this earlier... if I only
->>>>> knew that Rob pointed out that issue.
->>>>
->>>> Oh I think I got confused here. The context for this mail led me to
->>>> think that this was still trying to push the i3c-master-v1 stuff through
->>>> and I was commenting on my frustration with the resistance to applying
->>>> the feedback received. I didn't realise that this was for another
->>>> patch adding a target.
->>>>
->>>> I think you already said it, but NAK to adding any more compatibles here
->>>> until the soc-specific compatible that was asked for for the imx93 is
->>>> added.
->>>
->>> Is it okay for 'silvaco,i3c-target-imx93'?
+Hello,
 
-No, because imx93 is product of NXP, not Silvaco.
+On Mon, 15 Jan 2024 13:52:48 +0900 Honggyu Kim <honggyu.kim@sk.com> wrote:
 
-You need regular SoC-block compatibles, just like we have for all other
-snps, dwc and cdns.
+> There was an RFC IDEA "DAMOS-based Tiered-Memory Management" previously
+> posted at [1].
+> 
+> It says there is no implementation of the demote/promote DAMOS action
+> are made.  This RFC is about its implementation for physical address
+> space.
+> 
+[...]
+> Evaluation Results
+> ==================
+> 
+[...]
+> In summary of both results, our evaluation shows that "DAMON 2-tier"
+> memory management reduces the performance slowdown compared to the
+> "default" memory policy from 15~17% to 4~5% when the system runs with
+> high memory pressure on its fast tier DRAM nodes.
+> 
+> The similar evaluation was done in another machine that has 256GB of
+> local DRAM and 96GB of CXL memory.  The performance slowdown is reduced
+> from 20~24% for "default" to 5~7% for "DAMON 2-tier".
+> 
+> Having these DAMOS_DEMOTE and DAMOS_PROMOTE actions can make 2-tier
+> memory systems run more efficiently under high memory pressures.
 
 
-Best regards,
-Krzysztof
+Thank you so much for this great patches and the above nice test results.  I
+believe the test setup and results make sense, and merging a revised version of
+this patchset would provide real benefits to the users.
 
+In a high level, I think it might better to separate DAMON internal changes
+from DAMON external changes.
+
+For DAMON part changes, I have no big concern other than trivial coding style
+level comments.
+
+For DAMON-external changes that implementing demote_pages() and
+promote_pages(), I'm unsure if the implementation is reusing appropriate
+functions, and if those are placee in right source file.  Especially, I'm
+unsure if vmscan.c is the right place for promotion code.  Also I don't know if
+there is a good agreement on the promotion/demotion target node decision.  That
+should be because I'm not that familiar with the areas and the files, but I
+feel this might because our discussions on the promotion and the demotion
+operations are having rooms for being more matured.  Because I'm not very
+faimiliar with the part, I'd like to hear others' comments, too.
+
+To this end, I feel the problem might be able to be simpler, because this
+patchset is trying to provide two sophisticated operations, while I think a
+simpler approach might be possible.  My humble simpler idea is adding a DAMOS
+operation for moving pages to a given node (like sys_move_phy_pages RFC[1]),
+instead of the promote/demote.  Because the general pages migration can handle
+multiple cases including the promote/demote in my humble assumption.  In more
+detail, users could decide which is the appropriate node for promotion or
+demotion and use the new DAMOS action to do promotion and demotion.  Users
+would requested to decide which node is the proper promotion/demotion target
+nodes, but that decision wouldn't be that hard in my opinion.
+
+For this, 'struct damos' would need to be updated for such argument-dependent
+actions, like 'struct damos_filter' is haing a union.
+
+In future, we could extend the operation to the promotion and the demotion
+after the dicussion around the promotion and demotion is matured, if required.
+And assuming DAMON be extended for originating CPU-aware access monitoring, the
+new DAMOS action would also cover more use cases such as general NUMA nodes
+balancing (extending DAMON for CPU-aware monitoring would required), and some
+complex configurations where having both CPU affinity and tiered memory.  I
+also think that may well fit with my RFC idea[2] for tiered memory management.
+
+Looking forward to opinions from you and others.  I admig I miss many things,
+and more than happy to be enlightened.
+
+[1] https://lwn.net/Articles/944007/
+[2] https://lore.kernel.org/damon/20231112195602.61525-1-sj@kernel.org/
+
+
+Thanks,
+SJ
+
+> 
+> Signed-off-by: Honggyu Kim <honggyu.kim@sk.com>
+> Signed-off-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
+> Signed-off-by: Rakie Kim <rakie.kim@sk.com>
+> 
+> [1] https://lore.kernel.org/damon/20231112195602.61525-1-sj@kernel.org
+> [2] https://github.com/skhynix/hmsdk
+> [3] https://github.com/redis/redis/tree/7.0.0
+> [4] https://github.com/brianfrankcooper/YCSB/tree/0.17.0
+> [5] https://dl.acm.org/doi/10.1145/3503222.3507731
+> [6] https://dl.acm.org/doi/10.1145/3582016.3582063
+> 
+> Honggyu Kim (2):
+>   mm/vmscan: refactor reclaim_pages with reclaim_or_migrate_folios
+>   mm/damon: introduce DAMOS_DEMOTE action for demotion
+> 
+> Hyeongtak Ji (2):
+>   mm/memory-tiers: add next_promotion_node to find promotion target
+>   mm/damon: introduce DAMOS_PROMOTE action for promotion
+> 
+>  include/linux/damon.h          |   4 +
+>  include/linux/memory-tiers.h   |  11 ++
+>  include/linux/migrate_mode.h   |   1 +
+>  include/linux/vm_event_item.h  |   1 +
+>  include/trace/events/migrate.h |   3 +-
+>  mm/damon/paddr.c               |  46 ++++++-
+>  mm/damon/sysfs-schemes.c       |   2 +
+>  mm/internal.h                  |   2 +
+>  mm/memory-tiers.c              |  43 ++++++
+>  mm/vmscan.c                    | 231 +++++++++++++++++++++++++++++++--
+>  mm/vmstat.c                    |   1 +
+>  11 files changed, 330 insertions(+), 15 deletions(-)
+> 
+> 
+> base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+> -- 
+> 2.34.1
 
