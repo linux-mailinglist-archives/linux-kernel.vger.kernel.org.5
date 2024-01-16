@@ -1,130 +1,147 @@
-Return-Path: <linux-kernel+bounces-27086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27088-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 323C382EA2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:38:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98B4182EA2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:38:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD8B8B2187D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:37:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21E131F2375E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:38:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 247AD11CA9;
-	Tue, 16 Jan 2024 07:37:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7227411701;
+	Tue, 16 Jan 2024 07:37:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OB49gEbT"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gGyolOc4"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 220E1111BA
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 07:37:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61ECF111AD
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 07:37:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705390635;
+	s=mimecast20190719; t=1705390674;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Ev/EHro7bSIb21ohSGiRASekMY9/Fc0MaRbZNwxLwJc=;
-	b=OB49gEbTkLQEFPrYhHvND7pp2kEZR9JwlKaDSudTMKRW2pFkNrTfrrbLSACGNrWM4UFt1P
-	PQvW0WATT0Q9a3NwVKIBH7NSJK+amfXP+qkiJZbl3Gik04NsDY3TM9mKlXyr6USHoaMUiJ
-	pbZAY5KwsXHT1aG9Y3qTGbU/+IaWZPQ=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=CPJb7cadTIjcWryPVz+kharVhiS/ZoG1eeWlNYM9Uak=;
+	b=gGyolOc4kY2tavH0/vQihn9pQcu/zp7INJaopgUMH3XslI4bY0hwMnUgX0cNRa3bzNEWlY
+	rAj+Z6r+MkVlHkhop6Az3UYFDVpVDYOpDfnxHUTuxC2SMVDwxJcb1wz6lSu5/UPudGhK4O
+	jat9YQfWDI2Kw7ralJnbp9dGwe87CcI=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-86-ldK5bRqMOJOfZEXcqyINLA-1; Tue, 16 Jan 2024 02:37:13 -0500
-X-MC-Unique: ldK5bRqMOJOfZEXcqyINLA-1
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-681684ca881so10823276d6.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 23:37:13 -0800 (PST)
+ us-mta-160-iiOZ5s8ZNniHQ21THwcW_Q-1; Tue, 16 Jan 2024 02:37:52 -0500
+X-MC-Unique: iiOZ5s8ZNniHQ21THwcW_Q-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-67ef8bbfe89so207095536d6.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 23:37:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705390632; x=1705995432;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ev/EHro7bSIb21ohSGiRASekMY9/Fc0MaRbZNwxLwJc=;
-        b=MqnEW4YeOk2AZ+a/zKfrPrLO+6rA29GGg4Ae72ksm2Gltn4q6kUOhz5O9WeTncawKr
-         jdi8rmYDrmlz5GMNiqJo0cpgpSZegIfAbOPo4vG3lLXah4kO6JAjUmEG/wFSwEvSTOVu
-         EW64ClFNBZFT3c0nCHUG2lStsTL4idcqlNZAr92DvSCAnHI2ltbh7MHHW+kBMFi17Sy3
-         ct05kWCZ1pKa4eCmVAyyNrZAx2Vdx5LQ9OV2Xxn0Xdux4WtcHJ3Yncjp4EYCMOQgzgtA
-         4vA9+TNIG7NSyFr4jKj0LFUcH4a+xlbkxRNrSlEXMU3OMb4vH+Zar10R0AYdNOb7pzO5
-         yO4g==
-X-Gm-Message-State: AOJu0YzQPufBQYigIYaZJ7Lk4/lU12r78NDhqbIy8BwjxPUyFi9kueSr
-	07oOL39PlWf1cz0JokFhRN7neZ/J7PZJOrwFXATfF1OF74fi2KiNK4xJH1db6A+YssXOwn2IX49
-	wOmHZx/dv7MuezVPXCp92zauUSlt4vHeH
-X-Received: by 2002:ad4:5b8f:0:b0:681:5c24:723 with SMTP id 15-20020ad45b8f000000b006815c240723mr4640540qvp.46.1705390632761;
-        Mon, 15 Jan 2024 23:37:12 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGrNcqol/OiEQ5ZrUIjTn7g2kuQvDjo2VGcjjAoLMRJtf3rUoTzhAFjIwMmgvbUMKAlwvpo2Q==
-X-Received: by 2002:ad4:5b8f:0:b0:681:5c24:723 with SMTP id 15-20020ad45b8f000000b006815c240723mr4640532qvp.46.1705390632538;
-        Mon, 15 Jan 2024 23:37:12 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705390672; x=1705995472;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CPJb7cadTIjcWryPVz+kharVhiS/ZoG1eeWlNYM9Uak=;
+        b=uf44cT7gLlcVyLzS7fhFCpHTbHn3m0ppajc3mvqVddXMN2y2WpcG5Dj+0fHrBsSI7u
+         VMLCdzQkRwWAur1PEJkf7GG8CanKIKAKW53p35tXAoVdUlYbQfhdJV6Kbzu050pcS2UO
+         64WcMS8WLTtjyWPdPSnTz4d1okwdOKQhQCSpQjwobqtqp6WnnUvUhNGoNR3RaLUb9fv0
+         Ag/ih6sKnD8kvs+VO+HpXlD3/urYOVfxvSsKzBFlFChnvnLiqcbV6UuL01U6v48xxRhF
+         yPXHg6WLVkPxLZ6MwKf5sG0kH4YMi3A5juuOTiKATiqhjo0ykGi0soi0uryo6/DGVmRY
+         2aMQ==
+X-Gm-Message-State: AOJu0YxPA1DFCjYT7four+AFLBcReptM+L1pnqymlAcpDDbPeTXeUyjf
+	xeMX/2tNCG2MogtQ1Nin/Zqq4JE3hB+EHNOaKlCpIXaOptFbah2+t58f9QgLmIKbowKmpj8Lvnv
+	iAGxlPDjCWdV0CFQlANjm4QGjGaRnbKnD
+X-Received: by 2002:ad4:5f8a:0:b0:681:23ef:9b2 with SMTP id jp10-20020ad45f8a000000b0068123ef09b2mr9108952qvb.54.1705390672382;
+        Mon, 15 Jan 2024 23:37:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGzNVPOVK5WUwki2xRcl/qqtOEgixBSzvyPbGkgE8FwdFmWowCPeLaA6V4n48GMgyR44mAHFw==
+X-Received: by 2002:ad4:5f8a:0:b0:681:23ef:9b2 with SMTP id jp10-20020ad45f8a000000b0068123ef09b2mr9108944qvb.54.1705390672165;
+        Mon, 15 Jan 2024 23:37:52 -0800 (PST)
 Received: from LeoBras.redhat.com ([2804:1b3:a803:64aa:6db9:6544:60c:9e16])
-        by smtp.gmail.com with ESMTPSA id jc4-20020a05622a714400b00429acfe5bb4sm4650206qtb.40.2024.01.15.23.37.10
+        by smtp.gmail.com with ESMTPSA id mx13-20020a0562142e0d00b00681756b66e2sm28438qvb.35.2024.01.15.23.37.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 23:37:12 -0800 (PST)
+        Mon, 15 Jan 2024 23:37:51 -0800 (PST)
 From: Leonardo Bras <leobras@redhat.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	John Ogness <john.ogness@linutronix.de>,
-	Tony Lindgren <tony@atomide.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>
-Cc: Leonardo Bras <leobras@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Subject: [RESEND RFC PATCH v1 2/2] serial/8250: Avoid getting lock in RT atomic context
-Date: Tue, 16 Jan 2024 04:37:00 -0300
-Message-ID: <20240116073701.2356171-3-leobras@redhat.com>
+To: Leonardo Bras <leobras@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] spinlock: Fix failing build for PREEMPT_RT
+Date: Tue, 16 Jan 2024 04:37:48 -0300
+Message-ID: <ZaYyTKgmwsUP454I@LeoBras>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240116073701.2356171-1-leobras@redhat.com>
-References: <20240116073701.2356171-1-leobras@redhat.com>
+In-Reply-To: <20240116073234.2355850-3-leobras@redhat.com>
+References: <20240116073234.2355850-2-leobras@redhat.com> <20240116073234.2355850-3-leobras@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 
-With PREEMPT_RT enabled, a spin_lock_irqsave() becomes a possibly sleeping
-spin_lock(), without preempt_disable() or irq_disable().
+On Tue, Jan 16, 2024 at 04:32:32AM -0300, Leonardo Bras wrote:
+> Since 1d71b30e1f85 ("sched.h: Move (spin|rwlock)_needbreak() to
+> spinlock.h") build fails for PREEMPT_RT, since there is no definition
+> available of either spin_needbreak() and rwlock_needbreak().
+> 
+> Since it was moved on the mentioned commit, it was placed inside a
+> !PREEMPT_RT part of the code, making it out of reach for an RT kernel.
+> 
+> Fix this by moving code it a few lines down so it can be reached by an
+> RT build, where it can also make use of the *_is_contended() definition
+> added by the spinlock_rt.h.
+> 
+> Fixes: d1d71b30e1f85 ("sched.h: Move (spin|rwlock)_needbreak() to
+> spinlock.h")
+> Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> ---
+>  include/linux/spinlock.h | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/spinlock.h b/include/linux/spinlock.h
+> index eaac8b0da25b8..3fcd20de6ca88 100644
+> --- a/include/linux/spinlock.h
+> +++ b/include/linux/spinlock.h
+> @@ -449,6 +449,12 @@ static __always_inline int spin_is_contended(spinlock_t *lock)
+>  	return raw_spin_is_contended(&lock->rlock);
+>  }
+>  
+> +#define assert_spin_locked(lock)	assert_raw_spin_locked(&(lock)->rlock)
+> +
+> +#else  /* !CONFIG_PREEMPT_RT */
+> +# include <linux/spinlock_rt.h>
+> +#endif /* CONFIG_PREEMPT_RT */
+> +
+>  /*
+>   * Does a critical section need to be broken due to another
+>   * task waiting?: (technically does not depend on CONFIG_PREEMPTION,
+> @@ -480,12 +486,6 @@ static inline int rwlock_needbreak(rwlock_t *lock)
+>  #endif
+>  }
+>  
+> -#define assert_spin_locked(lock)	assert_raw_spin_locked(&(lock)->rlock)
+> -
+> -#else  /* !CONFIG_PREEMPT_RT */
+> -# include <linux/spinlock_rt.h>
+> -#endif /* CONFIG_PREEMPT_RT */
+> -
+>  /*
+>   * Pull the atomic_t declaration:
+>   * (asm-mips/atomic.h needs above definitions)
+> -- 
+> 2.43.0
+> 
 
-This allows a task T1 to get preempted or interrupted while holding the
-port->lock. If the preempting task T2 need the lock, spin_lock() code
-will schedule T1 back until it finishes using the lock, and then go back to
-T2.
 
-There is an issue if a T1 holding port->lock is interrupted by an
-IRQ, and this IRQ handler needs to get port->lock for writting (printk):
-spin_lock() code will try to reschedule the interrupt handler, which is in
-atomic context, causing a BUG() for trying to reschedule/sleep in atomic
-context.
-
-So for the case (PREEMPT_RT && in_atomic()) try to get the lock, and if it
-fails proceed anyway, just like it's done in oops_in_progress case.
-
-Signed-off-by: Leonardo Bras <leobras@redhat.com>
----
- drivers/tty/serial/8250/8250_port.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-index 8ca061d3bbb92..8480832846319 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -3397,7 +3397,7 @@ void serial8250_console_write(struct uart_8250_port *up, const char *s,
- 
- 	touch_nmi_watchdog();
- 
--	if (oops_in_progress)
-+	if (oops_in_progress || (IS_ENABLED(CONFIG_PREEMPT_RT) && in_atomic())
- 		locked = uart_port_trylock_irqsave(port, &flags);
- 	else
- 		uart_port_lock_irqsave(port, &flags);
--- 
-2.43.0
+Nevermind, sent this one by mistake.
 
 
