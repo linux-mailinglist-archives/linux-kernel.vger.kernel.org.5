@@ -1,63 +1,62 @@
-Return-Path: <linux-kernel+bounces-28069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9042082F9CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:17:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0509A82F9CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:17:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 975B31C25C4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:17:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81B3728A0ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:17:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FCAB14A4DC;
-	Tue, 16 Jan 2024 19:57:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 958B514A4FF;
+	Tue, 16 Jan 2024 19:57:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QxmR2Tzm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MLrUzx4l"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DD2514A4D8;
-	Tue, 16 Jan 2024 19:57:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D44EF14A4EA;
+	Tue, 16 Jan 2024 19:57:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435033; cv=none; b=Oc/j26g6Ts5P8IJslfSQtrkwazLKuRh3jtxxjRylFSzeskfXhB3pw0zng3ASNMWThbdh2xf5hrNfQrW3hW3LUIK6VzjhsKQZQoEZvLJhajywdAnennSbeebQYxSYT4C2mu7mvmck36qk+YnHG7DplIDwyfrAB9udmIrHpzjgvlY=
+	t=1705435034; cv=none; b=ebG+X/MqB4oZZYIbpEeI2X8XgSYyLh2Hx5Rm4tIM59nv1KG+YuYTulgawcXCgc01noUnHEuF37R9ZDc5B8o48aDw1vXVxejaheJQ9UueodZDzuU2anCyVUKIdEfxG5XyO1sBkLVNUuKeUeR+AaSxrf1wugSJh0nF+ZbQPYcC12Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435033; c=relaxed/simple;
-	bh=7CEGRNOMwtdh3DIm4oTvfxawZHmpjrSc1E2kHZCYxZ4=;
+	s=arc-20240116; t=1705435034; c=relaxed/simple;
+	bh=+chJaTaEeJ7ADT1okLW5FlwbJPRKpKDMOmwMmhKkqBE=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=uFix20gTyO+74OUtCfoYF+d/DVncpZg2DRqug4Q9gOz648Kikpoomrsmd+INAFvXxMzWiTDC+krhPN4k3rdXKnzAyT+uoeYcTJhctZW4F8GpYihSWtHGHr3ZndyBH4ixXHA0dbFwKox5o/fUlDfY8SVGsGwWiiftmNZfMjEe+KA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QxmR2Tzm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93247C43390;
-	Tue, 16 Jan 2024 19:57:11 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=C8CmoL1eLBddk4Bnxs5ZNyOvRvITT0xhpUaO/fyoE6eOKT0bAe5J3B0jxmm2hgOgCTf7bfdB24wGuLBQ0IjF5BEY2UjUGaqtOR3/JIa6vmOy6pJdsxQvEdotl7Xncx+DhUISjdZeWsSSqWDZmivwTN8vxDohw28NjNUPS/pWEXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MLrUzx4l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 783F6C43609;
+	Tue, 16 Jan 2024 19:57:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435032;
-	bh=7CEGRNOMwtdh3DIm4oTvfxawZHmpjrSc1E2kHZCYxZ4=;
+	s=k20201202; t=1705435034;
+	bh=+chJaTaEeJ7ADT1okLW5FlwbJPRKpKDMOmwMmhKkqBE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QxmR2Tzmuut+9TOwM/6B+1nQ5m+2WfDkVvP9or8iwWXYf9pL1dZ5ek05Xhw+ookfd
-	 vRJM1tDSHuNHGXqpDyULQyCiYfnPVJf9IdCi2P98QN1iYdNU9iN+UHulR8yoRwIzqP
-	 wSBfg6fE35gmUFXKyGI2A35UI12U9D3Q2mTLUWdaOf0GBIEHJpLpBE3mqWxwpZNZvX
-	 AITVFZSi9EjXkGkabJuDxJwBFWJIizCwEtigLVrCX2SxNz0KlDqcxbNEFGMkRrNCbx
-	 xsVbM0WwME35ONbfpQfCfwK55G9hxxRXw3rrIj+wyE/frozAuwHDxpGW+0IU+UMbhY
-	 tJO0BCoiIQurw==
+	b=MLrUzx4lSCVLtxu7PHF3cBBAMTFcF9Zi5x+Rtm1d5p8u6zZ53y9Okx7xlrZuySXrF
+	 KR6n65RA511lxELAIQp8ZJDpbBq5W7cozehTWO/jhFdksyD0K1KKKZH6CgFgTLueeu
+	 HvfGyniUPkV0Gw9rYe7GtPLEIFG5h6eyZwNlBDUGw7/dg8XhX7HLjrd5ERoNlcevWN
+	 pDvssyMaMRumeHlQQF9D8g+bBlf6BSScKc+cQnMRfzd6FyFgb/nCkpAXAeHaJVkySX
+	 OBDGPQlLzUmLiGGNFJPjVdw8CsfMMbvpRujrgUgD2AY9QmrOQlkgjSEDy9TRslj62w
+	 ktmwYDTk86HgA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Mao Jinlong <quic_jinlmao@quicinc.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	samitolvanen@google.com,
-	keescook@chromium.org,
-	llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.1 51/68] cfi: Add CFI_NOSEAL()
-Date: Tue, 16 Jan 2024 14:53:50 -0500
-Message-ID: <20240116195511.255854-51-sashal@kernel.org>
+	konrad.dybcio@linaro.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 52/68] arm64: dts: qcom: msm8996: Fix 'in-ports' is a required property
+Date: Tue, 16 Jan 2024 14:53:51 -0500
+Message-ID: <20240116195511.255854-52-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116195511.255854-1-sashal@kernel.org>
 References: <20240116195511.255854-1-sashal@kernel.org>
@@ -72,56 +71,61 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.73
 Content-Transfer-Encoding: 8bit
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Mao Jinlong <quic_jinlmao@quicinc.com>
 
-[ Upstream commit e9d13b9d2f99ccf7afeab490d97eaa5ac9846598 ]
+[ Upstream commit 9a6fc510a6a3ec150cb7450aec1e5f257e6fc77b ]
 
-Add a CFI_NOSEAL() helper to mark functions that need to retain their
-CFI information, despite not otherwise leaking their address.
+Add the inport of funnel@3023000 to fix 'in-ports' is a required property
+warning.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20231215092707.669401084@infradead.org
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
+Link: https://lore.kernel.org/r/20231210072633.4243-3-quic_jinlmao@quicinc.com
+Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/cfi.h | 5 +++++
- include/linux/cfi.h        | 4 ++++
- 2 files changed, 9 insertions(+)
+ arch/arm64/boot/dts/qcom/msm8996.dtsi | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/arch/x86/include/asm/cfi.h b/arch/x86/include/asm/cfi.h
-index 58dacd90daef..67b010c224e4 100644
---- a/arch/x86/include/asm/cfi.h
-+++ b/arch/x86/include/asm/cfi.h
-@@ -9,6 +9,7 @@
-  */
+diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+index 9de2248a385a..789121171a11 100644
+--- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+@@ -390,6 +390,19 @@ memory@80000000 {
+ 		reg = <0x0 0x80000000 0x0 0x0>;
+ 	};
  
- #include <linux/cfi.h>
-+#include <asm/ibt.h>
- 
- #ifdef CONFIG_CFI_CLANG
- enum bug_trap_type handle_cfi_failure(struct pt_regs *regs);
-@@ -19,4 +20,8 @@ static inline enum bug_trap_type handle_cfi_failure(struct pt_regs *regs)
- }
- #endif /* CONFIG_CFI_CLANG */
- 
-+#if HAS_KERNEL_IBT == 1
-+#define CFI_NOSEAL(x)	asm(IBT_NOSEAL(__stringify(x)))
-+#endif
++	etm {
++		compatible = "qcom,coresight-remote-etm";
 +
- #endif /* _ASM_X86_CFI_H */
-diff --git a/include/linux/cfi.h b/include/linux/cfi.h
-index 5e134f4ce8b7..f2f722c5aedd 100644
---- a/include/linux/cfi.h
-+++ b/include/linux/cfi.h
-@@ -36,4 +36,8 @@ static inline void module_cfi_finalize(const Elf_Ehdr *hdr,
- #endif /* CONFIG_ARCH_USES_CFI_TRAPS */
- #endif /* CONFIG_MODULES */
- 
-+#ifndef CFI_NOSEAL
-+#define CFI_NOSEAL(x)
-+#endif
++		out-ports {
++			port {
++				modem_etm_out_funnel_in2: endpoint {
++					remote-endpoint =
++					  <&funnel_in2_in_modem_etm>;
++				};
++			};
++		};
++	};
 +
- #endif /* _LINUX_CFI_H */
+ 	psci {
+ 		compatible = "arm,psci-1.0";
+ 		method = "smc";
+@@ -2565,6 +2578,14 @@ funnel@3023000 {
+ 			clocks = <&rpmcc RPM_QDSS_CLK>, <&rpmcc RPM_QDSS_A_CLK>;
+ 			clock-names = "apb_pclk", "atclk";
+ 
++			in-ports {
++				port {
++					funnel_in2_in_modem_etm: endpoint {
++						remote-endpoint =
++						  <&modem_etm_out_funnel_in2>;
++					};
++				};
++			};
+ 
+ 			out-ports {
+ 				port {
 -- 
 2.43.0
 
