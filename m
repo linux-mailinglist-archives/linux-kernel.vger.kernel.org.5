@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-26868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C31F82E724
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:37:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5602C82E727
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:38:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 859CF1C22A2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:37:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4E2EB209D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:38:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDF7628E0B;
-	Tue, 16 Jan 2024 01:07:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E4942A1D7;
+	Tue, 16 Jan 2024 01:07:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KVoyjYKl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DGKVq+BS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1134D28DCF;
-	Tue, 16 Jan 2024 01:07:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3EA4C43390;
-	Tue, 16 Jan 2024 01:07:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE71928E38;
+	Tue, 16 Jan 2024 01:07:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F8A2C433C7;
+	Tue, 16 Jan 2024 01:07:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705367259;
-	bh=ChOl0FJZgyf3XJaJ3pFsNJbkom59E3eYntAJb2B8Hhc=;
+	s=k20201202; t=1705367262;
+	bh=gbvGgTDEjv3h6cJ8jC0L0xUeG38FiPqcSYJiJolFY4U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KVoyjYKlvSaeEH9Wu8iSCqbIfa+msFawFZZGxZxkOwoNWKf2D3i5nwXLmGXjwPBw2
-	 uW5HpCHNIIBh9NStbT++fGT13LiJ32JCBTaKREM5hE9Vnn/Qo0bkGg5svNtbkAAS3Q
-	 iQQTrAf5QGf5HMpuNnvk70h9XOj8MFJFPALB0RbeZrEyMoLlM+MBvjb7bljdWEc+xG
-	 TotjbS+/6xAw6IAgAdliUZzzh6ITMD11lnSSGnzfqtRTseNdG3RdArVrwwoZeaJ7Hk
-	 3z19dDuYAjFS2koRSs9mPwF+LVYaQe+kIJJqQTM7v57I6vmB7f39S5QAz9pn4sqaDb
-	 sYFzI/45KqjXg==
+	b=DGKVq+BSDlgNvj0wmsm9KTpYgPlE4YeL1oOmz74RIklxyMzwjsubXyOv6V1Zsg+lF
+	 jLfiYGBBwJleF2Xnne7y/9u1eR0aa6EnUyNW/G1kFzoC4TVY97MI9WDMToPrJdk1gr
+	 euvCtMvh49QpcLjsmi8WxKv0rJQ4SP4+siMLLbLAT0BuXbZ5EL0EirtHAskUppnHE3
+	 sL+Sw0PqR3QuFM+w6METfhvYJLe5ZsmgVQP+HJ8RwzAxVEsifAiaIv9gvCTq9tRGSA
+	 26cCDybFS/x/IOG3VKGHcX2iou6cD2+UEm89rdhrXjEPdOEZhIx2+i1jdhGmvxJju5
+	 DAoHmv0B9T84w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Heiko Carstens <hca@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Claudio Imbrenda <imbrenda@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Suren Baghdasaryan <surenb@google.com>,
 	Sasha Levin <sashal@kernel.org>,
-	frankja@linux.ibm.com,
-	gor@linux.ibm.com,
-	kvm@vger.kernel.org,
-	linux-s390@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 04/11] KVM: s390: fix setting of fpc register
-Date: Mon, 15 Jan 2024 20:07:04 -0500
-Message-ID: <20240116010729.219219-4-sashal@kernel.org>
+	catalin.marinas@arm.com,
+	will@kernel.org,
+	keescook@chromium.org,
+	arnd@arndb.de,
+	mark.rutland@arm.com,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.15 05/11] arm64: Fix circular header dependency
+Date: Mon, 15 Jan 2024 20:07:05 -0500
+Message-ID: <20240116010729.219219-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116010729.219219-1-sashal@kernel.org>
 References: <20240116010729.219219-1-sashal@kernel.org>
@@ -60,68 +60,35 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.147
 Content-Transfer-Encoding: 8bit
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: Kent Overstreet <kent.overstreet@linux.dev>
 
-[ Upstream commit b988b1bb0053c0dcd26187d29ef07566a565cf55 ]
+[ Upstream commit 04bc786d663543512d08f1b86c7bcefb5144afe3 ]
 
-kvm_arch_vcpu_ioctl_set_fpu() allows to set the floating point control
-(fpc) register of a guest cpu. The new value is tested for validity by
-temporarily loading it into the fpc register.
+Replace linux/percpu.h include with asm/percpu.h to avoid circular
+dependency.
 
-This may lead to corruption of the fpc register of the host process:
-if an interrupt happens while the value is temporarily loaded into the fpc
-register, and within interrupt context floating point or vector registers
-are used, the current fp/vx registers are saved with save_fpu_regs()
-assuming they belong to user space and will be loaded into fp/vx registers
-when returning to user space.
-
-test_fp_ctl() restores the original user space / host process fpc register
-value, however it will be discarded, when returning to user space.
-
-In result the host process will incorrectly continue to run with the value
-that was supposed to be used for a guest cpu.
-
-Fix this by simply removing the test. There is another test right before
-the SIE context is entered which will handles invalid values.
-
-This results in a change of behaviour: invalid values will now be accepted
-instead of that the ioctl fails with -EINVAL. This seems to be acceptable,
-given that this interface is most likely not used anymore, and this is in
-addition the same behaviour implemented with the memory mapped interface
-(replace invalid values with zero) - see sync_regs() in kvm-s390.c.
-
-Reviewed-by: Christian Borntraeger <borntraeger@linux.ibm.com>
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kvm/kvm-s390.c | 5 -----
- 1 file changed, 5 deletions(-)
+ arch/arm64/include/asm/spectre.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index eb97db59b236..5526f782249c 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -3700,10 +3700,6 @@ int kvm_arch_vcpu_ioctl_set_fpu(struct kvm_vcpu *vcpu, struct kvm_fpu *fpu)
+diff --git a/arch/arm64/include/asm/spectre.h b/arch/arm64/include/asm/spectre.h
+index db7b371b367c..31823d9715ab 100644
+--- a/arch/arm64/include/asm/spectre.h
++++ b/arch/arm64/include/asm/spectre.h
+@@ -13,8 +13,8 @@
+ #define __BP_HARDEN_HYP_VECS_SZ	((BP_HARDEN_EL2_SLOTS - 1) * SZ_2K)
  
- 	vcpu_load(vcpu);
+ #ifndef __ASSEMBLY__
+-
+-#include <linux/percpu.h>
++#include <linux/smp.h>
++#include <asm/percpu.h>
  
--	if (test_fp_ctl(fpu->fpc)) {
--		ret = -EINVAL;
--		goto out;
--	}
- 	vcpu->run->s.regs.fpc = fpu->fpc;
- 	if (MACHINE_HAS_VX)
- 		convert_fp_to_vx((__vector128 *) vcpu->run->s.regs.vrs,
-@@ -3711,7 +3707,6 @@ int kvm_arch_vcpu_ioctl_set_fpu(struct kvm_vcpu *vcpu, struct kvm_fpu *fpu)
- 	else
- 		memcpy(vcpu->run->s.regs.fprs, &fpu->fprs, sizeof(fpu->fprs));
- 
--out:
- 	vcpu_put(vcpu);
- 	return ret;
- }
+ #include <asm/cpufeature.h>
+ #include <asm/virt.h>
 -- 
 2.43.0
 
