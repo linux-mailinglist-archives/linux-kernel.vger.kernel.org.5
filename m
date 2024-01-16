@@ -1,65 +1,59 @@
-Return-Path: <linux-kernel+bounces-27821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBA1382F661
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:58:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E61082F664
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:58:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 034B0283D3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:58:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C54BBB2532C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:58:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2BCC31732;
-	Tue, 16 Jan 2024 19:44:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51BB531A93;
+	Tue, 16 Jan 2024 19:44:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jMfMvhYU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dKKf+SbQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1755200DB;
-	Tue, 16 Jan 2024 19:44:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91C7C31759;
+	Tue, 16 Jan 2024 19:44:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434286; cv=none; b=LgHwA0Sny8n54Oy5uUI46voi1Y/4N3cKWZDiS9RYCXFhGPirJdi1L8hZvsbxJehJ5l75sir62z6+pN6ztBMR3UphQXJcFV4wjptCjPRg3harMMaXEHnHx4agxD5l/knQ56wDDaHuHyaHwH9Pknvr/f7Qv4zkhoiQYxdqA7j8FNU=
+	t=1705434287; cv=none; b=NsQn8n+znTVfU6Lcyc9a+xZ1yyolqeubgIbEJBCFFUspND9dvEff4trLex82kNWnY+0VWtbIXL3CGkFMoypj0WvWw9olV4blnkpKsgnPVYDXq3kWdhybc8euwFIVUU3SIvyjYthOAnxshtWpt+u8DOnZKBaKwbERJPcmppWrnK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434286; c=relaxed/simple;
-	bh=B6vfzVnC/GrAGTLt3GQNzuN97eOxeLSK0sZPBZpGPhE=;
+	s=arc-20240116; t=1705434287; c=relaxed/simple;
+	bh=jEaGfXRPQAFhrnHEmaoRvwEZ/hzyFnaA7pUDoCHjSRk=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=TjNetgvWQux61MqKppJXw5CNSR/qiN/V4BgpZFlTybWOrp0IAcJzKoPuxVlgxbqj8SqjuoBCxbvL6Os1NiK2288rF6lcGciDHJOeHUN1YFiWfVNc3iEy+Lm+nel/oPybUMIoABqdWj5uEZEWG4kP1f6zTIaRufTBS9bf3O8gGnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jMfMvhYU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EA43C433C7;
-	Tue, 16 Jan 2024 19:44:44 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=BY7rzCtVefnuLuxl7RWsApoAN2h4QZDSLQ8DJfYQhdQ1YJNMusVwzyhfBbO6kr5W60cMdPH8LNf9DyBD9KpYnOaH+MhlNOspQzNkOErWbJThm5Oz1+6kcyfZbGKLcZ+IsEdk5t4mwNuYooQxu3Xg3TLfOCwbZg18xx7Kz2H/DSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dKKf+SbQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FB96C433F1;
+	Tue, 16 Jan 2024 19:44:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434285;
-	bh=B6vfzVnC/GrAGTLt3GQNzuN97eOxeLSK0sZPBZpGPhE=;
+	s=k20201202; t=1705434287;
+	bh=jEaGfXRPQAFhrnHEmaoRvwEZ/hzyFnaA7pUDoCHjSRk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jMfMvhYUQuDF09qA5lCQwLh/geRyqLrcuTN4uiZ8ZxzVQUfmfiP1gIetkDCo9UpL5
-	 x+sDbz3ZqcBLwxd/6wexOhe8zLD9wUIB8koaWQbuaU7xW73laLFn4yNyQBuhYPPl5Q
-	 0rIkUQicAIV1uQ7rqQM+rzW0d69OEwLeVdDcBHlsifeYMXzmHyV+uv5tTxgN/0M/by
-	 AbUzoDU3FzRPNyZRrNDMzMkBwHFinpO/fQ1LMdC74YL7tuHmSMy0pjMW4iQk5gbkyR
-	 ukdi9n+DCDKEbLlfhzzgm6jy0SpcilmqIxkzvP3o0gZ2E6T39BaJm4EIVd40SH4zkJ
-	 8E4fy4131lgYQ==
+	b=dKKf+SbQqAJXiqo8Q33Lo0eGoaheJzuSCCPxDPhhglXCWrEyNqUYa6WILMYExbQBq
+	 XJ9C5ak+RI/k8GRBgNGBmUkof8t9T3QMkLuuwkeTrzAujSc8M2XAchU8l9yjbm5wxi
+	 2Hni7sToFO+6AJ6H8WdX8wth6vFeMTg2kX9Jc30ITdi4LB4jRBdEeq13UNA0xQuj9U
+	 ke9GUh/aX05wHIWHKDrNy+vMy3Di43tlBNkK3lFxj5cDXxNBRzai4o8bnErCG9dKlT
+	 7cXjm5Mk0e626s153nDt3iZFH1izqkTdOfJCGsK+gYkxS0HHcDaFZ6Yh8RYQ9Fq7A+
+	 Ku3YhYhAMRe2g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: duanqiangwen <duanqiangwen@net-swift.com>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: Andrei Matei <andreimatei1@gmail.com>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	jiawenwu@trustnetic.com,
-	mengyuanlou@net-swift.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	andrew@lunn.ch,
-	bhelgaas@google.com,
-	maciej.fijalkowski@intel.com,
-	horms@kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 050/108] net: wangxun: fix changing mac failed when running
-Date: Tue, 16 Jan 2024 14:39:16 -0500
-Message-ID: <20240116194225.250921-50-sashal@kernel.org>
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 051/108] bpf: Guard stack limits against 32bit overflow
+Date: Tue, 16 Jan 2024 14:39:17 -0500
+Message-ID: <20240116194225.250921-51-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194225.250921-1-sashal@kernel.org>
 References: <20240116194225.250921-1-sashal@kernel.org>
@@ -74,47 +68,66 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7
 Content-Transfer-Encoding: 8bit
 
-From: duanqiangwen <duanqiangwen@net-swift.com>
+From: Andrei Matei <andreimatei1@gmail.com>
 
-[ Upstream commit 87e839c82cc36346a2cd183ca941316902110716 ]
+[ Upstream commit 1d38a9ee81570c4bd61f557832dead4d6f816760 ]
 
-in some bonding mode, service need to change mac when
-netif is running. Wangxun netdev add IFF_LIVE_ADDR_CHANGE
-priv_flag to support it.
+This patch promotes the arithmetic around checking stack bounds to be
+done in the 64-bit domain, instead of the current 32bit. The arithmetic
+implies adding together a 64-bit register with a int offset. The
+register was checked to be below 1<<29 when it was variable, but not
+when it was fixed. The offset either comes from an instruction (in which
+case it is 16 bit), from another register (in which case the caller
+checked it to be below 1<<29 [1]), or from the size of an argument to a
+kfunc (in which case it can be a u32 [2]). Between the register being
+inconsistently checked to be below 1<<29, and the offset being up to an
+u32, it appears that we were open to overflowing the `int`s which were
+currently used for arithmetic.
 
-Signed-off-by: duanqiangwen <duanqiangwen@net-swift.com>
-Link: https://lore.kernel.org/r/20231206095044.17844-1-duanqiangwen@net-swift.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+[1] https://github.com/torvalds/linux/blob/815fb87b753055df2d9e50f6cd80eb10235fe3e9/kernel/bpf/verifier.c#L7494-L7498
+[2] https://github.com/torvalds/linux/blob/815fb87b753055df2d9e50f6cd80eb10235fe3e9/kernel/bpf/verifier.c#L11904
+
+Reported-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20231207041150.229139-4-andreimatei1@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/wangxun/ngbe/ngbe_main.c   | 1 +
- drivers/net/ethernet/wangxun/txgbe/txgbe_main.c | 1 +
- 2 files changed, 2 insertions(+)
+ kernel/bpf/verifier.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/wangxun/ngbe/ngbe_main.c b/drivers/net/ethernet/wangxun/ngbe/ngbe_main.c
-index 8db804543e66..a5c623fd023e 100644
---- a/drivers/net/ethernet/wangxun/ngbe/ngbe_main.c
-+++ b/drivers/net/ethernet/wangxun/ngbe/ngbe_main.c
-@@ -582,6 +582,7 @@ static int ngbe_probe(struct pci_dev *pdev,
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index af2819d5c8ee..6219ab8dca5f 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -6761,7 +6761,7 @@ static int check_ptr_to_map_access(struct bpf_verifier_env *env,
+  * The minimum valid offset is -MAX_BPF_STACK for writes, and
+  * -state->allocated_stack for reads.
+  */
+-static int check_stack_slot_within_bounds(int off,
++static int check_stack_slot_within_bounds(s64 off,
+ 					  struct bpf_func_state *state,
+ 					  enum bpf_access_type t)
+ {
+@@ -6790,7 +6790,7 @@ static int check_stack_access_within_bounds(
+ 	struct bpf_reg_state *regs = cur_regs(env);
+ 	struct bpf_reg_state *reg = regs + regno;
+ 	struct bpf_func_state *state = func(env, reg);
+-	int min_off, max_off;
++	s64 min_off, max_off;
+ 	int err;
+ 	char *err_extra;
  
- 	netdev->priv_flags |= IFF_UNICAST_FLT;
- 	netdev->priv_flags |= IFF_SUPP_NOFCS;
-+	netdev->priv_flags |= IFF_LIVE_ADDR_CHANGE;
+@@ -6803,7 +6803,7 @@ static int check_stack_access_within_bounds(
+ 		err_extra = " write to";
  
- 	netdev->min_mtu = ETH_MIN_MTU;
- 	netdev->max_mtu = WX_MAX_JUMBO_FRAME_SIZE -
-diff --git a/drivers/net/ethernet/wangxun/txgbe/txgbe_main.c b/drivers/net/ethernet/wangxun/txgbe/txgbe_main.c
-index 526250102db2..a78da2309db5 100644
---- a/drivers/net/ethernet/wangxun/txgbe/txgbe_main.c
-+++ b/drivers/net/ethernet/wangxun/txgbe/txgbe_main.c
-@@ -638,6 +638,7 @@ static int txgbe_probe(struct pci_dev *pdev,
- 
- 	netdev->priv_flags |= IFF_UNICAST_FLT;
- 	netdev->priv_flags |= IFF_SUPP_NOFCS;
-+	netdev->priv_flags |= IFF_LIVE_ADDR_CHANGE;
- 
- 	netdev->min_mtu = ETH_MIN_MTU;
- 	netdev->max_mtu = WX_MAX_JUMBO_FRAME_SIZE -
+ 	if (tnum_is_const(reg->var_off)) {
+-		min_off = reg->var_off.value + off;
++		min_off = (s64)reg->var_off.value + off;
+ 		if (access_size > 0)
+ 			max_off = min_off + access_size - 1;
+ 		else
 -- 
 2.43.0
 
