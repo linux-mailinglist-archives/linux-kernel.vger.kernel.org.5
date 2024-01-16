@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-26822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DA6A82E694
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:20:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BFC982E697
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:20:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 127C31F234C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:20:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAB2A1F234F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:20:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B36A91BC40;
-	Tue, 16 Jan 2024 01:05:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACE421BDCB;
+	Tue, 16 Jan 2024 01:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d0dSnRo8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="goQTPkik"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B0691BC29;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D39751BC58;
+	Tue, 16 Jan 2024 01:05:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B770CC43390;
 	Tue, 16 Jan 2024 01:05:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0F62C433C7;
-	Tue, 16 Jan 2024 01:04:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705367099;
-	bh=mnNGCL49U9PXgn0SStjeqX8RjdPhDYnaukSWjUia3xY=;
+	s=k20201202; t=1705367101;
+	bh=adyuEabC6B6jGKtu9kkqHCxdPPehOHZ294iIGhkA2wY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=d0dSnRo8LmgspOwN+ZGzLWomJ5Q+RzWMbeXao3JXmFr3tm2Tb1B3mjmG7/XSzS+DI
-	 f+O8moLgnF6SQ3xoBRerBefm7cbREuFscm5uwfdRl4rkTvRzsYxpgZVDpKLRGBNptY
-	 UK8cBS0c8BJXRDn0tD/1RPC20iFcOhAytIdagrHL4mPSOXiAhYgcUOhKInbYimA7Kn
-	 7mWz2nKLr/PpbsBYltzRJ8tCWoo4YVhXOAr0UEC1q9pTfY5mDb1P8d009vWgrhcRos
-	 FQpSSmaML5YBurmNaPNImnPAwH94ILwC6nCB61WvLVWAVsvZscfNJ87nYkGifqo2Du
-	 tsiljqRW9GEkg==
+	b=goQTPkik8NEBsGf/6CPuOd8HyksaE5vJTcgLHdkAzK0oyh5QQcVQ5EPL4ogh40psC
+	 N63uj4uy5LOy/fUGWydkAn6Q9q2FLOgLbENF4Ag+lKo2UsstpQ5wTLcY7Inkd50qMV
+	 o2KtjyAfcf1nimSaeRZZIl+rnqpPthh99ZWX4+2qZx3e2xaeodGU3W+W5m6RVlQGPS
+	 5llwcwG5touV9th6XTm7+wdlWU6Z4GTjMK7p/G7kn/9JB1zv8/+WvIXRzxsW6YPvP/
+	 BbUyVe/0R1noEIDqsOJTKgFeyL5NAlkQtCp+NyjL0dpoW8eTaTgULg42Ar78XuUxCm
+	 4NfAPvIxTdS9Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Pierre Mariani <pierre.mariani@gmail.com>,
+Cc: Paulo Alcantara <pc@manguebit.com>,
 	Steve French <stfrench@microsoft.com>,
 	Sasha Levin <sashal@kernel.org>,
 	sfrench@samba.org,
 	linux-cifs@vger.kernel.org,
 	samba-technical@lists.samba.org
-Subject: [PATCH AUTOSEL 6.7 13/21] smb: client: Fix minor whitespace errors and warnings
-Date: Mon, 15 Jan 2024 20:03:50 -0500
-Message-ID: <20240116010422.217925-13-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.7 14/21] smb: client: fix renaming of reparse points
+Date: Mon, 15 Jan 2024 20:03:51 -0500
+Message-ID: <20240116010422.217925-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116010422.217925-1-sashal@kernel.org>
 References: <20240116010422.217925-1-sashal@kernel.org>
@@ -57,141 +57,213 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7
 Content-Transfer-Encoding: 8bit
 
-From: Pierre Mariani <pierre.mariani@gmail.com>
+From: Paulo Alcantara <pc@manguebit.com>
 
-[ Upstream commit 0108ce08aed195d200ffbad74c1948bbaefe6625 ]
+[ Upstream commit 7435d51b7ea2ab7801279c43ecd72063e9d5c92f ]
 
-Fixes no-op checkpatch errors and warnings.
+The client was sending an SMB2_CREATE request without setting
+OPEN_REPARSE_POINT flag thus failing the entire rename operation.
 
-Signed-off-by: Pierre Mariani <pierre.mariani@gmail.com>
+Fix this by setting OPEN_REPARSE_POINT in create options for
+SMB2_CREATE request when the source inode is a repase point.
+
+Signed-off-by: Paulo Alcantara (SUSE) <pc@manguebit.com>
 Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/smb/client/connect.c | 25 +++++++++++++++++--------
- 1 file changed, 17 insertions(+), 8 deletions(-)
+ fs/smb/client/cifsglob.h  | 22 +++++++++++++++++-----
+ fs/smb/client/cifsproto.h |  7 ++++---
+ fs/smb/client/cifssmb.c   |  8 ++++----
+ fs/smb/client/inode.c     |  3 ++-
+ fs/smb/client/smb2inode.c | 38 +++++++++++++++++++++++---------------
+ fs/smb/client/smb2proto.h |  8 +++++---
+ 6 files changed, 55 insertions(+), 31 deletions(-)
 
-diff --git a/fs/smb/client/connect.c b/fs/smb/client/connect.c
-index dc9b95ca71e6..3052a208c6ca 100644
---- a/fs/smb/client/connect.c
-+++ b/fs/smb/client/connect.c
-@@ -483,6 +483,7 @@ static int reconnect_target_unlocked(struct TCP_Server_Info *server, struct dfs_
- static int reconnect_dfs_server(struct TCP_Server_Info *server)
- {
- 	struct dfs_cache_tgt_iterator *target_hint = NULL;
-+
- 	DFS_CACHE_TGT_LIST(tl);
- 	int num_targets = 0;
- 	int rc = 0;
-@@ -745,6 +746,7 @@ cifs_read_from_socket(struct TCP_Server_Info *server, char *buf,
- {
- 	struct msghdr smb_msg = {};
- 	struct kvec iov = {.iov_base = buf, .iov_len = to_read};
-+
- 	iov_iter_kvec(&smb_msg.msg_iter, ITER_DEST, &iov, 1, to_read);
+diff --git a/fs/smb/client/cifsglob.h b/fs/smb/client/cifsglob.h
+index 5e32c79f03a7..4d07b96038d8 100644
+--- a/fs/smb/client/cifsglob.h
++++ b/fs/smb/client/cifsglob.h
+@@ -205,9 +205,18 @@ struct cifs_open_info_data {
+ 	};
+ };
  
- 	return cifs_readv_from_socket(server, &smb_msg);
-@@ -1400,11 +1402,13 @@ cifs_match_ipaddr(struct sockaddr *srcaddr, struct sockaddr *rhs)
- 	case AF_INET: {
- 		struct sockaddr_in *saddr4 = (struct sockaddr_in *)srcaddr;
- 		struct sockaddr_in *vaddr4 = (struct sockaddr_in *)rhs;
+-#define cifs_open_data_reparse(d) \
+-	((d)->reparse_point || \
+-	 (le32_to_cpu((d)->fi.Attributes) & ATTR_REPARSE))
++static inline bool cifs_open_data_reparse(struct cifs_open_info_data *data)
++{
++	struct smb2_file_all_info *fi = &data->fi;
++	u32 attrs = le32_to_cpu(fi->Attributes);
++	bool ret;
 +
- 		return (saddr4->sin_addr.s_addr == vaddr4->sin_addr.s_addr);
- 	}
- 	case AF_INET6: {
- 		struct sockaddr_in6 *saddr6 = (struct sockaddr_in6 *)srcaddr;
- 		struct sockaddr_in6 *vaddr6 = (struct sockaddr_in6 *)rhs;
-+
- 		return (ipv6_addr_equal(&saddr6->sin6_addr, &vaddr6->sin6_addr)
- 			&& saddr6->sin6_scope_id == vaddr6->sin6_scope_id);
- 	}
-@@ -2599,8 +2603,8 @@ cifs_get_tcon(struct cifs_ses *ses, struct smb3_fs_context *ctx)
- 			rc = -EOPNOTSUPP;
- 			goto out_fail;
- 		} else {
--			cifs_dbg(VFS, "Check vers= mount option. SMB3.11 "
--				"disabled but required for POSIX extensions\n");
-+			cifs_dbg(VFS,
-+				"Check vers= mount option. SMB3.11 disabled but required for POSIX extensions\n");
- 			rc = -EOPNOTSUPP;
- 			goto out_fail;
- 		}
-@@ -2743,7 +2747,6 @@ cifs_put_tlink(struct tcon_link *tlink)
- 	if (!IS_ERR(tlink_tcon(tlink)))
- 		cifs_put_tcon(tlink_tcon(tlink));
- 	kfree(tlink);
--	return;
++	ret = data->reparse_point || (attrs & ATTR_REPARSE);
++	if (ret)
++		attrs |= ATTR_REPARSE;
++	fi->Attributes = cpu_to_le32(attrs);
++	return ret;
++}
+ 
+ static inline void cifs_free_open_info(struct cifs_open_info_data *data)
+ {
+@@ -390,8 +399,11 @@ struct smb_version_operations {
+ 	int (*rename_pending_delete)(const char *, struct dentry *,
+ 				     const unsigned int);
+ 	/* send rename request */
+-	int (*rename)(const unsigned int, struct cifs_tcon *, const char *,
+-		      const char *, struct cifs_sb_info *);
++	int (*rename)(const unsigned int xid,
++		      struct cifs_tcon *tcon,
++		      struct dentry *source_dentry,
++		      const char *from_name, const char *to_name,
++		      struct cifs_sb_info *cifs_sb);
+ 	/* send create hardlink request */
+ 	int (*create_hardlink)(const unsigned int, struct cifs_tcon *,
+ 			       const char *, const char *,
+diff --git a/fs/smb/client/cifsproto.h b/fs/smb/client/cifsproto.h
+index 46feaa0880bd..5af921b400d7 100644
+--- a/fs/smb/client/cifsproto.h
++++ b/fs/smb/client/cifsproto.h
+@@ -435,9 +435,10 @@ extern int CIFSPOSIXDelFile(const unsigned int xid, struct cifs_tcon *tcon,
+ 			int remap_special_chars);
+ extern int CIFSSMBDelFile(const unsigned int xid, struct cifs_tcon *tcon,
+ 			  const char *name, struct cifs_sb_info *cifs_sb);
+-extern int CIFSSMBRename(const unsigned int xid, struct cifs_tcon *tcon,
+-			 const char *from_name, const char *to_name,
+-			 struct cifs_sb_info *cifs_sb);
++int CIFSSMBRename(const unsigned int xid, struct cifs_tcon *tcon,
++		  struct dentry *source_dentry,
++		  const char *from_name, const char *to_name,
++		  struct cifs_sb_info *cifs_sb);
+ extern int CIFSSMBRenameOpenFile(const unsigned int xid, struct cifs_tcon *tcon,
+ 				 int netfid, const char *target_name,
+ 				 const struct nls_table *nls_codepage,
+diff --git a/fs/smb/client/cifssmb.c b/fs/smb/client/cifssmb.c
+index 9ee348e6d106..5bdea01919e8 100644
+--- a/fs/smb/client/cifssmb.c
++++ b/fs/smb/client/cifssmb.c
+@@ -2149,10 +2149,10 @@ CIFSSMBFlush(const unsigned int xid, struct cifs_tcon *tcon, int smb_file_id)
+ 	return rc;
  }
  
- static int
-@@ -2884,6 +2887,7 @@ static inline void
- cifs_reclassify_socket4(struct socket *sock)
- {
- 	struct sock *sk = sock->sk;
-+
- 	BUG_ON(!sock_allow_reclassification(sk));
- 	sock_lock_init_class_and_name(sk, "slock-AF_INET-CIFS",
- 		&cifs_slock_key[0], "sk_lock-AF_INET-CIFS", &cifs_key[0]);
-@@ -2893,6 +2897,7 @@ static inline void
- cifs_reclassify_socket6(struct socket *sock)
- {
- 	struct sock *sk = sock->sk;
-+
- 	BUG_ON(!sock_allow_reclassification(sk));
- 	sock_lock_init_class_and_name(sk, "slock-AF_INET6-CIFS",
- 		&cifs_slock_key[1], "sk_lock-AF_INET6-CIFS", &cifs_key[1]);
-@@ -2927,15 +2932,18 @@ static int
- bind_socket(struct TCP_Server_Info *server)
+-int
+-CIFSSMBRename(const unsigned int xid, struct cifs_tcon *tcon,
+-	      const char *from_name, const char *to_name,
+-	      struct cifs_sb_info *cifs_sb)
++int CIFSSMBRename(const unsigned int xid, struct cifs_tcon *tcon,
++		  struct dentry *source_dentry,
++		  const char *from_name, const char *to_name,
++		  struct cifs_sb_info *cifs_sb)
  {
  	int rc = 0;
-+
- 	if (server->srcaddr.ss_family != AF_UNSPEC) {
- 		/* Bind to the specified local IP address */
- 		struct socket *socket = server->ssocket;
-+
- 		rc = kernel_bind(socket,
- 				 (struct sockaddr *) &server->srcaddr,
- 				 sizeof(server->srcaddr));
- 		if (rc < 0) {
- 			struct sockaddr_in *saddr4;
- 			struct sockaddr_in6 *saddr6;
-+
- 			saddr4 = (struct sockaddr_in *)&server->srcaddr;
- 			saddr6 = (struct sockaddr_in6 *)&server->srcaddr;
- 			if (saddr6->sin6_family == AF_INET6)
-@@ -3165,6 +3173,7 @@ void reset_cifs_unix_caps(unsigned int xid, struct cifs_tcon *tcon,
+ 	RENAME_REQ *pSMB = NULL;
+diff --git a/fs/smb/client/inode.c b/fs/smb/client/inode.c
+index 09c5c0f5c96e..eb54e4893777 100644
+--- a/fs/smb/client/inode.c
++++ b/fs/smb/client/inode.c
+@@ -2219,7 +2219,8 @@ cifs_do_rename(const unsigned int xid, struct dentry *from_dentry,
+ 		return -ENOSYS;
  
- 	if (!CIFSSMBQFSUnixInfo(xid, tcon)) {
- 		__u64 cap = le64_to_cpu(tcon->fsUnixInfo.Capability);
-+
- 		cifs_dbg(FYI, "unix caps which server supports %lld\n", cap);
- 		/*
- 		 * check for reconnect case in which we do not
-@@ -3668,7 +3677,7 @@ CIFSTCon(const unsigned int xid, struct cifs_ses *ses,
- 	smb_buffer_response = smb_buffer;
+ 	/* try path-based rename first */
+-	rc = server->ops->rename(xid, tcon, from_path, to_path, cifs_sb);
++	rc = server->ops->rename(xid, tcon, from_dentry,
++				 from_path, to_path, cifs_sb);
  
- 	header_assemble(smb_buffer, SMB_COM_TREE_CONNECT_ANDX,
--			NULL /*no tid */ , 4 /*wct */ );
-+			NULL /*no tid */, 4 /*wct */);
+ 	/*
+ 	 * Don't bother with rename by filehandle unless file is busy and
+diff --git a/fs/smb/client/smb2inode.c b/fs/smb/client/smb2inode.c
+index c94940af5d4b..c3e28673e0cd 100644
+--- a/fs/smb/client/smb2inode.c
++++ b/fs/smb/client/smb2inode.c
+@@ -781,11 +781,11 @@ smb2_unlink(const unsigned int xid, struct cifs_tcon *tcon, const char *name,
+ 				ACL_NO_MODE, NULL, SMB2_OP_DELETE, NULL, NULL, NULL, NULL, NULL);
+ }
  
- 	smb_buffer->Mid = get_next_mid(ses->server);
- 	smb_buffer->Uid = ses->Suid;
-@@ -3687,12 +3696,12 @@ CIFSTCon(const unsigned int xid, struct cifs_ses *ses,
- 	if (ses->server->sign)
- 		smb_buffer->Flags2 |= SMBFLG2_SECURITY_SIGNATURE;
+-static int
+-smb2_set_path_attr(const unsigned int xid, struct cifs_tcon *tcon,
+-		   const char *from_name, const char *to_name,
+-		   struct cifs_sb_info *cifs_sb, __u32 access, int command,
+-		   struct cifsFileInfo *cfile)
++static int smb2_set_path_attr(const unsigned int xid, struct cifs_tcon *tcon,
++			      const char *from_name, const char *to_name,
++			      struct cifs_sb_info *cifs_sb,
++			      __u32 create_options, __u32 access,
++			      int command, struct cifsFileInfo *cfile)
+ {
+ 	__le16 *smb2_to_name = NULL;
+ 	int rc;
+@@ -796,25 +796,33 @@ smb2_set_path_attr(const unsigned int xid, struct cifs_tcon *tcon,
+ 		goto smb2_rename_path;
+ 	}
+ 	rc = smb2_compound_op(xid, tcon, cifs_sb, from_name, access,
+-			      FILE_OPEN, 0, ACL_NO_MODE, smb2_to_name,
++			      FILE_OPEN, create_options, ACL_NO_MODE, smb2_to_name,
+ 			      command, cfile, NULL, NULL, NULL, NULL);
+ smb2_rename_path:
+ 	kfree(smb2_to_name);
+ 	return rc;
+ }
  
--	if (ses->capabilities & CAP_STATUS32) {
-+	if (ses->capabilities & CAP_STATUS32)
- 		smb_buffer->Flags2 |= SMBFLG2_ERR_STATUS;
--	}
--	if (ses->capabilities & CAP_DFS) {
-+
-+	if (ses->capabilities & CAP_DFS)
- 		smb_buffer->Flags2 |= SMBFLG2_DFS;
--	}
-+
- 	if (ses->capabilities & CAP_UNICODE) {
- 		smb_buffer->Flags2 |= SMBFLG2_UNICODE;
- 		length =
+-int
+-smb2_rename_path(const unsigned int xid, struct cifs_tcon *tcon,
+-		 const char *from_name, const char *to_name,
+-		 struct cifs_sb_info *cifs_sb)
++int smb2_rename_path(const unsigned int xid,
++		     struct cifs_tcon *tcon,
++		     struct dentry *source_dentry,
++		     const char *from_name, const char *to_name,
++		     struct cifs_sb_info *cifs_sb)
+ {
++	struct cifsInodeInfo *ci;
+ 	struct cifsFileInfo *cfile;
++	__u32 co = 0;
+ 
++	if (source_dentry) {
++		ci = CIFS_I(d_inode(source_dentry));
++		if (ci->cifsAttrs & ATTR_REPARSE)
++			co |= OPEN_REPARSE_POINT;
++	}
+ 	drop_cached_dir_by_name(xid, tcon, from_name, cifs_sb);
+ 	cifs_get_writable_path(tcon, from_name, FIND_WR_WITH_DELETE, &cfile);
+ 
+-	return smb2_set_path_attr(xid, tcon, from_name, to_name,
+-				  cifs_sb, DELETE, SMB2_OP_RENAME, cfile);
++	return smb2_set_path_attr(xid, tcon, from_name, to_name, cifs_sb,
++				  co, DELETE, SMB2_OP_RENAME, cfile);
+ }
+ 
+ int
+@@ -822,9 +830,9 @@ smb2_create_hardlink(const unsigned int xid, struct cifs_tcon *tcon,
+ 		     const char *from_name, const char *to_name,
+ 		     struct cifs_sb_info *cifs_sb)
+ {
+-	return smb2_set_path_attr(xid, tcon, from_name, to_name, cifs_sb,
+-				  FILE_READ_ATTRIBUTES, SMB2_OP_HARDLINK,
+-				  NULL);
++	return smb2_set_path_attr(xid, tcon, from_name, to_name,
++				  cifs_sb, 0, FILE_READ_ATTRIBUTES,
++				  SMB2_OP_HARDLINK, NULL);
+ }
+ 
+ int
+diff --git a/fs/smb/client/smb2proto.h b/fs/smb/client/smb2proto.h
+index 0e371f7e2854..7cbf1a76b42d 100644
+--- a/fs/smb/client/smb2proto.h
++++ b/fs/smb/client/smb2proto.h
+@@ -80,9 +80,11 @@ extern int smb2_rmdir(const unsigned int xid, struct cifs_tcon *tcon,
+ 		      const char *name, struct cifs_sb_info *cifs_sb);
+ extern int smb2_unlink(const unsigned int xid, struct cifs_tcon *tcon,
+ 		       const char *name, struct cifs_sb_info *cifs_sb);
+-extern int smb2_rename_path(const unsigned int xid, struct cifs_tcon *tcon,
+-			    const char *from_name, const char *to_name,
+-			    struct cifs_sb_info *cifs_sb);
++int smb2_rename_path(const unsigned int xid,
++		     struct cifs_tcon *tcon,
++		     struct dentry *source_dentry,
++		     const char *from_name, const char *to_name,
++		     struct cifs_sb_info *cifs_sb);
+ extern int smb2_create_hardlink(const unsigned int xid, struct cifs_tcon *tcon,
+ 				const char *from_name, const char *to_name,
+ 				struct cifs_sb_info *cifs_sb);
 -- 
 2.43.0
 
