@@ -1,165 +1,107 @@
-Return-Path: <linux-kernel+bounces-27900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3EAB82F785
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:24:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07F1682F84C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:42:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73F53284B43
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:24:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D4901C24E39
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:42:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B16BF823AD;
-	Tue, 16 Jan 2024 19:47:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1D2324B43;
+	Tue, 16 Jan 2024 19:51:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eq6bvn6m"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hHxiU8fZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B5922327;
-	Tue, 16 Jan 2024 19:47:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F21524B41;
+	Tue, 16 Jan 2024 19:51:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434474; cv=none; b=fbmUVWtOxNBXLNYZ47M2KQ1JiIXAAvH/gaq1HKA3zYQZm54Ccv7rWD0KDmusDjmGJwljKvJ2YQnqTJ2a00lh8d50aKHwujUBaWN/hkRwi5AZtvhXi/kKo28Il+VzmlolCeLx4SQua4MyAzlTem0oxo2Pg0MRVC1+Pt4kJqUzsek=
+	t=1705434678; cv=none; b=G981qUMPMowo1hZlsjeG0XjP0q7pfQgzz7im/TmwdIhTbD/nJ6h8URgYxclwpTn06v3TKR7WJiKC/VIOu1AmVArolTV/GrdQCtWAQ+YgXIdJ8FJVIBlcuMNbWdhLsRgC3ZI2KAQc4ODAb5SqZ7ZwxCO6NeD7lvyJO7usCcN9GTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434474; c=relaxed/simple;
-	bh=FTw89+pku1zuIfZRGLXcRaoU9hVI0ZuADA0Yl4doYjQ=;
-	h=Received:DKIM-Signature:From:Date:Subject:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
-	 In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key;
-	b=umRtQDb6wtdIcjNH79vOS05cXKuVxWMZKwa9y1r0nhXqP3QZD9hnCKyrXxPpozZgPhArFHoDtnjtq+nFcPeDjgo/itSVNukx2w3KyZ/G+UvhLFQIHNgQP6DKgEkSn4w7pneQq5y0P+D3LDOjH3EOeyS35FwjPmWyWJOlHiwKn/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eq6bvn6m; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED925C43601;
-	Tue, 16 Jan 2024 19:47:49 +0000 (UTC)
+	s=arc-20240116; t=1705434678; c=relaxed/simple;
+	bh=QbtDIgq36wGYPjbNL99cbfZ0a3/J5QTkywmWt95A8NI=;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
+	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=M1y905Ia3O0dylv4XMd8w0c6Kv/jvH5+QbHCE2GJV1QpgjsWt1bLPaAORzm+U9G27kr8KXrBYZoEP/+qTzb20OAba/P7tTz6Pv/XbAa37UJcwJAuTHcOL/uk+Zcnmthd21lVBnaZKgdaBRt1C16JJZwpAkjdmddAE7Xr1Mt7k8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hHxiU8fZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9398DC433C7;
+	Tue, 16 Jan 2024 19:51:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434473;
-	bh=FTw89+pku1zuIfZRGLXcRaoU9hVI0ZuADA0Yl4doYjQ=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=eq6bvn6m5y/X2fER86pfthua2+nw74YlF5AZhYRF2tMunagWU3E77/71gxUymWI51
-	 X7B9Ns2y7ytG7+ojucRsjxXSZXA2Jhl2BZ0CfApls+1648rEVgIU8z3cjapkaGS2/w
-	 Bb8cHtkCb6MfJUcHICyTqw1eEyvchT7tPUvHViuJIqpqAerR50dl8EYLJetQS7g0jS
-	 WRsoOBeIdYho8AFvY36xqzI3fm5AhJpwDrwnN0ZuwpykgxhxqZgoDxfHInB0jafJ9c
-	 4XpKg2b6xAu1ZlkhVlTcL/5tyGIGw53RAdxcWbwhkiNAcLb23fjlnTrgqsSXty0y2G
-	 6badSofqc4tNQ==
-From: Jeff Layton <jlayton@kernel.org>
+	s=k20201202; t=1705434678;
+	bh=QbtDIgq36wGYPjbNL99cbfZ0a3/J5QTkywmWt95A8NI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=hHxiU8fZlJRbMqKsx9gvXIEg1eeN2TsNf7muaX31P0ZzbU3ulPAKx1C/ZFwZEheiv
+	 OVXgJXyiWTYC/1Fs10V0B7gYz6lcHCr0KhQZKPgzndyH9RIS4aGVi+N48C3yGPpFM3
+	 4kY+KQcIMjhpPwlkHoMbeqz1TbXW6tVltjrPbRpyJNC87ZxZZ+BohBmBqmV3KOXRNG
+	 KhUz/ZvEGOWsO5an46f5/LYp0fFtLjuv6d5ZCD+clNoMAjLO5g7rLg99EkWIw5Uq4n
+	 ZCoPpa9l29Y5nbcdzlHFLV0A24dFCrLR8OiQ+Cgkts2V8Qw5s3rsEpSSXGB0opOfJH
+	 fOVL5Lcbz7w2g==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: MeiChia Chiu <meichia.chiu@mediatek.com>,
+	Shayne Chen <shayne.chen@mediatek.com>,
+	Felix Fietkau <nbd@nbd.name>,
+	Sasha Levin <sashal@kernel.org>,
+	lorenzo@kernel.org,
+	ryder.lee@mediatek.com,
+	kvalo@kernel.org,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	linux-wireless@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.6 047/104] wifi: mt76: connac: fix EHT phy mode check
 Date: Tue, 16 Jan 2024 14:46:13 -0500
-Subject: [PATCH 17/20] filelock: make assign_type helper take a
- file_lock_core pointer
+Message-ID: <20240116194908.253437-47-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240116194908.253437-1-sashal@kernel.org>
+References: <20240116194908.253437-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240116-flsplit-v1-17-c9d0f4370a5d@kernel.org>
-References: <20240116-flsplit-v1-0-c9d0f4370a5d@kernel.org>
-In-Reply-To: <20240116-flsplit-v1-0-c9d0f4370a5d@kernel.org>
-To: Christian Brauner <brauner@kernel.org>, 
- Alexander Viro <viro@zeniv.linux.org.uk>, 
- Eric Van Hensbergen <ericvh@kernel.org>, 
- Latchesar Ionkov <lucho@ionkov.net>, 
- Dominique Martinet <asmadeus@codewreck.org>, 
- Christian Schoenebeck <linux_oss@crudebyte.com>, 
- David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
- Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, 
- Alexander Aring <aahringo@redhat.com>, David Teigland <teigland@redhat.com>, 
- Miklos Szeredi <miklos@szeredi.hu>, 
- Andreas Gruenbacher <agruenba@redhat.com>, 
- Trond Myklebust <trond.myklebust@hammerspace.com>, 
- Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
- Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, 
- Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
- Jan Kara <jack@suse.cz>, Mark Fasheh <mark@fasheh.com>, 
- Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
- Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>, 
- Ronnie Sahlberg <lsahlber@redhat.com>, 
- Shyam Prasad N <sprasad@microsoft.com>, Namjae Jeon <linkinjeon@kernel.org>, 
- Sergey Senozhatsky <senozhatsky@chromium.org>, 
- Steven Rostedt <rostedt@goodmis.org>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: linux-kernel@vger.kernel.org, v9fs@lists.linux.dev, 
- linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org, 
- gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
- linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev, 
- linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
- linux-trace-kernel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1737; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=FTw89+pku1zuIfZRGLXcRaoU9hVI0ZuADA0Yl4doYjQ=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBlpt0iremkDlRrQ+xc3ImeXplfQacBchpkS/H5Z
- 4ClsvaxqfaJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZabdIgAKCRAADmhBGVaC
- FaqmD/9QMZUfmO+u/OFjkK9hUUWeg+zNsc0ZvrcUwhsTa3jV24S1CoQZ/YG7zth6GJgqBW5XQ10
- MxwoKw1yrTOohD3h9mWVUiJ0QQbhr73HUsn226zjTv/DNU2LV2bp6PvF0ku5Tr3F37ZCwHs0K2X
- 81TwcvWX4kM7u7NMBeiPOjozUbWMY43jzZM55PTlAy9zgbScT83+3nZr9ROobKALKMWdvptjSDK
- X/QwUb87/llqyFUscBQmmJ4AdNsTu0CqurHCQOZ8JGxMofjyhmmrZ481Mq0lt+sNaV6GSz29MbB
- b7chk4kg5LO5pYbapu8sxb3R8VmJUiXBUH8UbGV4bm2qUV2X3agl+EB80DjXipZhoDT4PDqqFOa
- /UNM9RMvAD3oZMEgqugs+kPQ2qV29HcgCCV7sfo/PNlPClA6MiY80mqn0yZ+I2sBC3bAve8nx7J
- Sqbzm20Hq32Zi5VR23d0MxH9ZekvkgngM9U9Q/y3W9bmbpXDgkj2zl9N1LmRxRzVIptiqR7dfUK
- kUhSo3BABF26WycsO9+KBKx9IiG4tGfT4GUZEl20fFVsSfcfgyuUXyj2Yvt6TwqmsN/TDdS5KS6
- a1TCeigv8R4L2KIeUFVQrnkP0Kn+ZzkZ07DY0mMruOu9pMl3kZfHDCGpbs6++ZFdzOHe/zbdyEW
- Wt4ZXifyIhxu3uQ==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.6.12
+Content-Transfer-Encoding: 8bit
 
-Have assign_type take struct file_lock_core instead of file_lock.
+From: MeiChia Chiu <meichia.chiu@mediatek.com>
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
+[ Upstream commit 2c2f50bf6407e1fd43a1a257916aeaa5ffdacd6c ]
+
+Add a BSS eht_support check before returning EHT phy mode. Without this
+patch, there might be an inconsistency where the softmac layer thinks
+the BSS is in HE mode, while the FW thinks it is in EHT mode.
+
+Signed-off-by: MeiChia Chiu <meichia.chiu@mediatek.com>
+Signed-off-by: Shayne Chen <shayne.chen@mediatek.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/locks.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/locks.c b/fs/locks.c
-index 27160dc65d63..4a1e9457c430 100644
---- a/fs/locks.c
-+++ b/fs/locks.c
-@@ -462,13 +462,13 @@ static void flock_make_lock(struct file *filp, struct file_lock *fl, int type)
- 	fl->fl_end = OFFSET_MAX;
- }
+diff --git a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
+index 8274a57e1f0f..dc4fbab1e1b7 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
++++ b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
+@@ -1347,7 +1347,7 @@ u8 mt76_connac_get_phy_mode_ext(struct mt76_phy *phy, struct ieee80211_vif *vif,
+ 	sband = phy->hw->wiphy->bands[band];
+ 	eht_cap = ieee80211_get_eht_iftype_cap(sband, vif->type);
  
--static int assign_type(struct file_lock *fl, int type)
-+static int assign_type(struct file_lock_core *flc, int type)
- {
- 	switch (type) {
- 	case F_RDLCK:
- 	case F_WRLCK:
- 	case F_UNLCK:
--		fl->fl_core.fl_type = type;
-+		flc->fl_type = type;
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -520,7 +520,7 @@ static int flock64_to_posix_lock(struct file *filp, struct file_lock *fl,
- 	fl->fl_ops = NULL;
- 	fl->fl_lmops = NULL;
+-	if (!eht_cap || !eht_cap->has_eht)
++	if (!eht_cap || !eht_cap->has_eht || !vif->bss_conf.eht_support)
+ 		return mode;
  
--	return assign_type(fl, l->l_type);
-+	return assign_type(&fl->fl_core, l->l_type);
- }
- 
- /* Verify a "struct flock" and copy it to a "struct file_lock" as a POSIX
-@@ -575,7 +575,7 @@ static const struct lock_manager_operations lease_manager_ops = {
-  */
- static int lease_init(struct file *filp, int type, struct file_lock *fl)
- {
--	if (assign_type(fl, type) != 0)
-+	if (assign_type(&fl->fl_core, type) != 0)
- 		return -EINVAL;
- 
- 	fl->fl_core.fl_owner = filp;
-@@ -1432,7 +1432,7 @@ static void lease_clear_pending(struct file_lock *fl, int arg)
- /* We already had a lease on this file; just change its type */
- int lease_modify(struct file_lock *fl, int arg, struct list_head *dispose)
- {
--	int error = assign_type(fl, arg);
-+	int error = assign_type(&fl->fl_core, arg);
- 
- 	if (error)
- 		return error;
-
+ 	switch (band) {
 -- 
 2.43.0
 
