@@ -1,101 +1,117 @@
-Return-Path: <linux-kernel+bounces-27034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7EBB82E971
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:19:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DF5A82E972
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:19:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 943C81F23999
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 06:19:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 220921F238C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 06:19:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AC801079D;
-	Tue, 16 Jan 2024 06:19:29 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A33C10971;
-	Tue, 16 Jan 2024 06:19:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8BxnuvqH6ZlZJcAAA--.2712S3;
-	Tue, 16 Jan 2024 14:19:22 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8BxLs_oH6ZlFG8DAA--.18029S2;
-	Tue, 16 Jan 2024 14:19:21 +0800 (CST)
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Quentin Monnet <quentin@isovalent.com>
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v1] bpftool: Silence build warning about calloc()
-Date: Tue, 16 Jan 2024 14:19:20 +0800
-Message-ID: <20240116061920.31172-1-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.42.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C082E10A17;
+	Tue, 16 Jan 2024 06:19:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="amf2rWhL"
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDD7910A01;
+	Tue, 16 Jan 2024 06:19:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-28e718874e1so228763a91.0;
+        Mon, 15 Jan 2024 22:19:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705385986; x=1705990786; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BtPgpHD29V6EL14MEPmiAO57qgLbXU9vw9VJiILh/Cg=;
+        b=amf2rWhLTgL/XKyDzii4NU4e4sKIrejPY61gWsw9PMf+GbKCf8gJSSomUQq9wLAEiQ
+         R9+L7v/0E2uaHTZJICAgW4vJp/CY0tJBolpeqdS6fipCs4s8pVzhGo3bAOZsELL+7SBh
+         T4LsBT9lgvy2eDmvht6H9qOte3btkrpWWw/yv2R/bcRtIXJbZZTpeHYBZDXnQS9RdVsQ
+         3IL7/zSNlapsITxUmi2MZab+Y11wSOVBGNA8tuRSbmdYF1TlJeOUtFEYPr4L5pp2vl4X
+         qO0i6zMLn9miw21BCOEQya11FB3LB4cfQfZL62FZUCvehMSoMcq4+2EKeYyyRISOEBjK
+         TVfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705385986; x=1705990786;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BtPgpHD29V6EL14MEPmiAO57qgLbXU9vw9VJiILh/Cg=;
+        b=eTX8SUFaixQb9SbL0zk6fe23/eqxHXkw1zwdlJjGvQ1QnC5DiLF1EIaz/v4dyAI2AC
+         gevFqTgwIGWyrsFk+0AJwbECoGXSoZ/q0u5/XSHquaw+XilDFFBEOmZxpnWkjoFwUEhr
+         6MpYd1NdAgDtH3ZmBUAGz9nSzVgMj63AaGtX0WBex/5YiEbrRp9IS84TMr0xGCL6EQgN
+         HqOOJ87/vQhJkdo8DYhUi9SAcnZGVTpw/bYQjWj1rjwvgyt6s1DOixqxvnDCzTjv1NEX
+         4mELJTglA552/cHGSfyhD4QbusDQIdX3GGzCtCTmiFIXsywdCHarAiQ7NukXkvIVT9C7
+         uSeA==
+X-Gm-Message-State: AOJu0YwyN0iAiYpCoGq3n++RnPYTiPUPN5Amo//RVaGBeMfNlq3jmLPD
+	9HeJL7vUW0A4iCGKYGs9mI7WlFlWYO+AUl+SiIM=
+X-Google-Smtp-Source: AGHT+IHmkrNvhKDKFHox3ulCebL+np3+W4JM6eg+SHAB+VouWyI94c7i/NMcdnCogXRsl+VEQRyUj1tISPHk6lzCyDk=
+X-Received: by 2002:a17:90a:c797:b0:28b:e57d:9710 with SMTP id
+ gn23-20020a17090ac79700b0028be57d9710mr3306050pjb.6.1705385986020; Mon, 15
+ Jan 2024 22:19:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8BxLs_oH6ZlFG8DAA--.18029S2
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7Cry3Xw13Xr15urWxXF4DZFc_yoW8WF1kpa
-	yfJryUtw18XFn8Z3W8GF43GrW3G3s3Ja92vaykt345XrWrWF95JF4UGFWFqFyY9r4DJa4f
-	ZasFy3yUXrZ5XabCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
-	67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
-	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
-	vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
-	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6x
-	kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcVc_UUUUU
+References: <20240104162510.72773-1-urezki@gmail.com> <20240104162510.72773-5-urezki@gmail.com>
+ <CALm+0cUM=5bg0eKQ4D-mm7ZaAnQbf+2NjetUYnqHOLq5uR0w5g@mail.gmail.com>
+ <ZaUNCJyYREsw7O3h@pc636> <ZaUPo97uzZlGkNdY@pc636>
+In-Reply-To: <ZaUPo97uzZlGkNdY@pc636>
+From: Z qiang <qiang.zhang1211@gmail.com>
+Date: Tue, 16 Jan 2024 14:19:34 +0800
+Message-ID: <CALm+0cWVJPis4c6VhGviXaHF90+njEVXvOjVZ-COL43dJFgNbw@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] rcu: Support direct wake-up of synchronize_rcu() users
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>, 
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>, Boqun Feng <boqun.feng@gmail.com>, 
+	Hillf Danton <hdanton@sina.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>, Frederic Weisbecker <frederic@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-There exists the following warning when building bpftool:
+>
+> > Hello, Zqiang.
+> >
+> > > >
+> > > >         // concurrent sr_normal_gp_cleanup work might observe this update.
+> > > >         smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+> > > >         ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
+> > > >
+> > > > -       if (wait_tail)
+> > > > +       if (wait_tail->next)
+> > > >                 queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
+> > > >
+> > >
+> > > I'm testing these patches :) , one question is as follows:
+> > > Can we use (WQ_MEM_RECLAIM | WQ_HIGHPR)type of workqueue to perform
+> > > wake-up actions? avoid kworker creation failure under memory pressure, causing
+> > > the wake-up action to be delayed.
+> > >
+> > I do not have any objections in not doing that, so we can add.
+> >
+> > Thank for testing this!
+> >
+> I forgot to ask, is your testing simulates a low memory condition so
+> you see the failure you refer to? Or it is just a possible scenario?
+>
 
-  CC      prog.o
-prog.c: In function ‘profile_open_perf_events’:
-prog.c:2301:24: warning: ‘calloc’ sizes specified with ‘sizeof’ in the earlier argument and not in the later argument [-Wcalloc-transposed-args]
- 2301 |                 sizeof(int), obj->rodata->num_cpu * obj->rodata->num_metric);
-      |                        ^~~
-prog.c:2301:24: note: earlier argument should specify number of elements, later size of each element
+I'm not currently testing this feature in low memory scenarios,  I thought
+of this possible scenario.  I will test it in a low memory scenario later and
+let you know if it happens :) .
 
-Tested with the latest upstream GCC which contains a new warning option
--Wcalloc-transposed-args. The first argument to calloc is documented to
-be number of elements in array, while the second argument is size of each
-element, just switch the first and second arguments of calloc() to silence
-the build warning, compile tested only.
+Thanks
+Zqiang
 
-Fixes: 47c09d6a9f67 ("bpftool: Introduce "prog profile" command")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- tools/bpf/bpftool/prog.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> Thanks!
 
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index feb8e305804f..9cb42a3366c0 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -2298,7 +2298,7 @@ static int profile_open_perf_events(struct profiler_bpf *obj)
- 	int map_fd;
- 
- 	profile_perf_events = calloc(
--		sizeof(int), obj->rodata->num_cpu * obj->rodata->num_metric);
-+		obj->rodata->num_cpu * obj->rodata->num_metric, sizeof(int));
- 	if (!profile_perf_events) {
- 		p_err("failed to allocate memory for perf_event array: %s",
- 		      strerror(errno));
--- 
-2.42.0
-
+>
+> --
+> Uladzislau Rezki
+>
 
