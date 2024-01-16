@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-26895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DADD82E78A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:49:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C927982E78D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:49:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3704B2100A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:49:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF590284CA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:49:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BFE143AD4;
-	Tue, 16 Jan 2024 01:08:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C03044390;
+	Tue, 16 Jan 2024 01:08:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RfQawvA7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DCPGofpl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 651DA41C8F;
-	Tue, 16 Jan 2024 01:08:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 374C2C43609;
-	Tue, 16 Jan 2024 01:08:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B68CD43ADD;
+	Tue, 16 Jan 2024 01:08:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31E47C43399;
+	Tue, 16 Jan 2024 01:08:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705367325;
-	bh=Rk1uqynb+AnJ48RW0IpXMM1fACNtVtSc83i3nlFTGpg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=RfQawvA71eTRH/EYJ0hoqL6qr5XSW09V/7aKcgmYhElH/Gn95uWkXkm6FQZdgSV1p
-	 DipYGLRxiI5jNiVLqU8gc/MFYTMsHtjqqzWIwPuN6SjUd34h1s7atERtDv2few9e0b
-	 vKMMCJUm6Uy0plYfg37bcPyEcTs1xzGsGzKkuUB9adb8xbvg7jHCtoN7b5zdporlEc
-	 eD6bnyrAMYGbOFKDZ/VLbERNtbXdSCeBwCIgqeKONQwUT8bnXuAtPb4KAD+ozYp26O
-	 rGMmFkCTS1Zla6EsLBc998DQrr89Up1ybF0c/YPoBxhJkGAXA+XA2ewR4XZsVXqWXZ
-	 T4NxVegZ9QwyQ==
+	s=k20201202; t=1705367327;
+	bh=0Zf21mySrAGCfs/PuljM2L2f63gWIBwOS1O1tYF89zA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=DCPGofpln0tfoSdpeL13IcZeyh2jradvE5T8QoVuJ8I4B9Oi8tyQex3rF5QaoFhm8
+	 Ceqiw7J/iPs1Eti7MDUJkRClyzaq7Oud/1BY9WHm7uD5yf0NL/m968M04myqMIbG6+
+	 k+acxO3Kq1cPcAWSVh0gYcD7Gu+zYlowZjyGVUwrnOCVg9O5ilYk/elvgjg0ecJZLp
+	 /IcNS+FGWayYI/P9vlNqHONBueh3eM3VgTf2FEQ41R+Sj44MJ6B0BdalphE/5bkeiL
+	 hnK78iC55b2GZz2fKPJcQIU/D1Vpx7QYQkHXcUyJ1HeObPgmRbXWoUQri5oZH/Swdd
+	 Iayr+7qG01+5g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Brian Cain <bcain@quicinc.com>,
-	Arnd Bergmann <arnd@arndb.de>,
+Cc: Heiko Carstens <hca@linux.ibm.com>,
+	Claudio Imbrenda <imbrenda@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
 	Sasha Levin <sashal@kernel.org>,
-	chenhuacai@kernel.org,
-	mpe@ellerman.id.au,
-	shorne@gmail.com,
-	rppt@kernel.org,
-	linux-hexagon@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 1/8] Hexagon: Make pfn accessors statics inlines
-Date: Mon, 15 Jan 2024 20:08:31 -0500
-Message-ID: <20240116010842.219925-1-sashal@kernel.org>
+	oleg@redhat.com,
+	gor@linux.ibm.com,
+	linux-s390@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 2/8] s390/ptrace: handle setting of fpc register correctly
+Date: Mon, 15 Jan 2024 20:08:32 -0500
+Message-ID: <20240116010842.219925-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240116010842.219925-1-sashal@kernel.org>
+References: <20240116010842.219925-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,66 +58,69 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.305
 Content-Transfer-Encoding: 8bit
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-[ Upstream commit d6e81532b10d8deb2bc30f7b44f09534876893e3 ]
+[ Upstream commit 8b13601d19c541158a6e18b278c00ba69ae37829 ]
 
-Making virt_to_pfn() a static inline taking a strongly typed
-(const void *) makes the contract of a passing a pointer of that
-type to the function explicit and exposes any misuse of the
-macro virt_to_pfn() acting polymorphic and accepting many types
-such as (void *), (unitptr_t) or (unsigned long) as arguments
-without warnings.
+If the content of the floating point control (fpc) register of a traced
+process is modified with the ptrace interface the new value is tested for
+validity by temporarily loading it into the fpc register.
 
-For symmetry do the same with pfn_to_virt().
+This may lead to corruption of the fpc register of the tracing process:
+if an interrupt happens while the value is temporarily loaded into the
+fpc register, and within interrupt context floating point or vector
+registers are used, the current fp/vx registers are saved with
+save_fpu_regs() assuming they belong to user space and will be loaded into
+fp/vx registers when returning to user space.
 
-For compiletime resolution of __pa() we need PAGE_OFFSET which
-was not available to __pa() and resolved by the preprocessor
-wherever __pa() was used. Fix this by explicitly including
-<asm/mem-layout.h> where required, following the pattern of the
-architectures page.h file.
+test_fp_ctl() restores the original user space fpc register value, however
+it will be discarded, when returning to user space.
 
-Acked-by: Brian Cain <bcain@quicinc.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+In result the tracer will incorrectly continue to run with the value that
+was supposed to be used for the traced process.
+
+Fix this by saving fpu register contents with save_fpu_regs() before using
+test_fp_ctl().
+
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/hexagon/include/asm/page.h | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ arch/s390/kernel/ptrace.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/hexagon/include/asm/page.h b/arch/hexagon/include/asm/page.h
-index 93f5669b4aa1..a12ba19e6460 100644
---- a/arch/hexagon/include/asm/page.h
-+++ b/arch/hexagon/include/asm/page.h
-@@ -91,6 +91,9 @@ typedef struct page *pgtable_t;
- #define __pgd(x)       ((pgd_t) { (x) })
- #define __pgprot(x)    ((pgprot_t) { (x) })
+diff --git a/arch/s390/kernel/ptrace.c b/arch/s390/kernel/ptrace.c
+index c36289a3ad50..0495a1906a38 100644
+--- a/arch/s390/kernel/ptrace.c
++++ b/arch/s390/kernel/ptrace.c
+@@ -414,6 +414,7 @@ static int __poke_user(struct task_struct *child, addr_t addr, addr_t data)
+ 		/*
+ 		 * floating point control reg. is in the thread structure
+ 		 */
++		save_fpu_regs();
+ 		if ((unsigned int) data != 0 ||
+ 		    test_fp_ctl(data >> (BITS_PER_LONG - 32)))
+ 			return -EINVAL;
+@@ -774,6 +775,7 @@ static int __poke_user_compat(struct task_struct *child,
+ 		/*
+ 		 * floating point control reg. is in the thread structure
+ 		 */
++		save_fpu_regs();
+ 		if (test_fp_ctl(tmp))
+ 			return -EINVAL;
+ 		child->thread.fpu.fpc = data;
+@@ -1002,9 +1004,7 @@ static int s390_fpregs_set(struct task_struct *target,
+ 	int rc = 0;
+ 	freg_t fprs[__NUM_FPRS];
  
-+/* Needed for PAGE_OFFSET used in the macro right below */
-+#include <asm/mem-layout.h>
-+
- /*
-  * We need a __pa and a __va routine for kernel space.
-  * MIPS says they're only used during mem_init.
-@@ -140,8 +143,16 @@ static inline void clear_page(void *page)
-  */
- #define page_to_phys(page)      (page_to_pfn(page) << PAGE_SHIFT)
- 
--#define virt_to_pfn(kaddr)      (__pa(kaddr) >> PAGE_SHIFT)
--#define pfn_to_virt(pfn)        __va((pfn) << PAGE_SHIFT)
-+static inline unsigned long virt_to_pfn(const void *kaddr)
-+{
-+	return __pa(kaddr) >> PAGE_SHIFT;
-+}
-+
-+static inline void *pfn_to_virt(unsigned long pfn)
-+{
-+	return (void *)((unsigned long)__va(pfn) << PAGE_SHIFT);
-+}
-+
- 
- #define page_to_virt(page)	__va(page_to_phys(page))
- 
+-	if (target == current)
+-		save_fpu_regs();
+-
++	save_fpu_regs();
+ 	if (MACHINE_HAS_VX)
+ 		convert_vx_to_fp(fprs, target->thread.fpu.vxrs);
+ 	else
 -- 
 2.43.0
 
