@@ -1,49 +1,47 @@
-Return-Path: <linux-kernel+bounces-26647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D23282E483
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:20:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7551D82E486
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:20:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37B121C20929
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:20:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54E041C222D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:20:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2384E1BF52;
-	Tue, 16 Jan 2024 00:13:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A5E31C28C;
+	Tue, 16 Jan 2024 00:13:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d0ZsgI/G"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DArZbYsd"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5552A1BF44;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 957541BF5B;
+	Tue, 16 Jan 2024 00:13:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA5C0C433C7;
 	Tue, 16 Jan 2024 00:13:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26597C43399;
-	Tue, 16 Jan 2024 00:13:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705364012;
-	bh=PyXUCaNMi39TdmijqLEcvoPxhW+y42tSP0uLWFCz7aE=;
+	s=k20201202; t=1705364013;
+	bh=tLd/qPIbdz6vLgxnpMnZFGIeYXMjiMrRkG7LUOxJCUU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=d0ZsgI/GsSgbNWR0hROdLEVoOAheceKS3xf6UbN3AaUD5g2rTThdBzDkPUhE/fMHO
-	 hPvvROzr9IYGuOIzYju6/49nqVFypFgJKUJl5w/4thtp8T7fDSzwQwxxNdo6pRBsXL
-	 Euw/8d+2qljfdv5qEpZH5jvuFvGouBo+19ThcrA0HH1d2a/aSrrdCUdZrK2p9VsTEp
-	 R5FClqCa4EC5JQb540AQGhv4xtogONAF3oh04OeN7wsIUTxGb7Byq01zysBQa1cySR
-	 TD7i9y5yzdKUZFm7Yyi69hOpHu1uJnhsMURHuZ/tj0rfqOgjvCEEYsxSmz7KQVOnPp
-	 Hj7jXjL4QoYew==
+	b=DArZbYsdxGuaeF+qxvywUAJ+WPB0goUSyeBEU4xm/AIiO2rITTPfvVWOE/wmlULag
+	 rVKkst0WitfN9QcRqC2yuPIS0l6Hy45dPLyyJaeXL4dvtup//duliuDk0ntLKlK8LC
+	 XbEzPw/vK0hqu8/9WteDfmq3GeCQlppEfpnFJ/B5NvwC9z6K8eTRk/2E+WyKJ09QRk
+	 +afRFKuaC0l+0qDaTeHSplXAbF2Xjmb2e8nrSzLHaVVjFzMUZK/NrgniiuxVlN797Q
+	 N4mgCS7ZL0i9uMG8B4XuoF9Hs7RTqwUoWdV49rQGAFKsRwynO52xSfLLKCcMCXprX4
+	 M91VS/IklQobQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mukesh Ojha <quic_mojha@quicinc.com>,
-	Joyyoung Huang <huangzaiyang@oppo.com>,
-	MyungJoo Ham <myungjoo.ham@samsung.com>,
-	Chanwoo Choi <cw00.choi@samsung.com>,
+Cc: Armin Wolf <W_Armin@gmx.de>,
+	Hans de Goede <hdegoede@redhat.com>,
 	Sasha Levin <sashal@kernel.org>,
-	kyungmin.park@samsung.com,
-	linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 14/18] PM / devfreq: Synchronize devfreq_monitor_[start/stop]
-Date: Mon, 15 Jan 2024 19:12:56 -0500
-Message-ID: <20240116001308.212917-14-sashal@kernel.org>
+	ilpo.jarvinen@linux.intel.com,
+	platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 15/18] platform/x86: wmi: Remove ACPI handlers after WMI devices
+Date: Mon, 15 Jan 2024 19:12:57 -0500
+Message-ID: <20240116001308.212917-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116001308.212917-1-sashal@kernel.org>
 References: <20240116001308.212917-1-sashal@kernel.org>
@@ -58,165 +56,47 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7
 Content-Transfer-Encoding: 8bit
 
-From: Mukesh Ojha <quic_mojha@quicinc.com>
+From: Armin Wolf <W_Armin@gmx.de>
 
-[ Upstream commit aed5ed595960c6d301dcd4ed31aeaa7a8054c0c6 ]
+[ Upstream commit 22574e17626391ad969af9a13aaa58a1b37ad384 ]
 
-There is a chance if a frequent switch of the governor
-done in a loop result in timer list corruption where
-timer cancel being done from two place one from
-cancel_delayed_work_sync() and followed by expire_timers()
-can be seen from the traces[1].
+When removing the ACPI notify/address space handlers, the WMI devices
+are still active and might still depend on ACPI EC access or
+WMI events.
+Fix this by removing the ACPI handlers after all WMI devices
+associated with an ACPI device have been removed.
 
-while true
-do
-        echo "simple_ondemand" > /sys/class/devfreq/1d84000.ufshc/governor
-        echo "performance" > /sys/class/devfreq/1d84000.ufshc/governor
-done
-
-It looks to be issue with devfreq driver where
-device_monitor_[start/stop] need to synchronized so that
-delayed work should get corrupted while it is either
-being queued or running or being cancelled.
-
-Let's use polling flag and devfreq lock to synchronize the
-queueing the timer instance twice and work data being
-corrupted.
-
-[1]
-..
-.
-<idle>-0    [003]   9436.209662:  timer_cancel   timer=0xffffff80444f0428
-<idle>-0    [003]   9436.209664:  timer_expire_entry   timer=0xffffff80444f0428  now=0x10022da1c  function=__typeid__ZTSFvP10timer_listE_global_addr  baseclk=0x10022da1c
-<idle>-0    [003]   9436.209718:  timer_expire_exit   timer=0xffffff80444f0428
-kworker/u16:6-14217    [003]   9436.209863:  timer_start   timer=0xffffff80444f0428  function=__typeid__ZTSFvP10timer_listE_global_addr  expires=0x10022da2b  now=0x10022da1c  flags=182452227
-vendor.xxxyyy.ha-1593    [004]   9436.209888:  timer_cancel   timer=0xffffff80444f0428
-vendor.xxxyyy.ha-1593    [004]   9436.216390:  timer_init   timer=0xffffff80444f0428
-vendor.xxxyyy.ha-1593    [004]   9436.216392:  timer_start   timer=0xffffff80444f0428  function=__typeid__ZTSFvP10timer_listE_global_addr  expires=0x10022da2c  now=0x10022da1d  flags=186646532
-vendor.xxxyyy.ha-1593    [005]   9436.220992:  timer_cancel   timer=0xffffff80444f0428
-xxxyyyTraceManag-7795    [004]   9436.261641:  timer_cancel   timer=0xffffff80444f0428
-
-[2]
-
- 9436.261653][    C4] Unable to handle kernel paging request at virtual address dead00000000012a
-[ 9436.261664][    C4] Mem abort info:
-[ 9436.261666][    C4]   ESR = 0x96000044
-[ 9436.261669][    C4]   EC = 0x25: DABT (current EL), IL = 32 bits
-[ 9436.261671][    C4]   SET = 0, FnV = 0
-[ 9436.261673][    C4]   EA = 0, S1PTW = 0
-[ 9436.261675][    C4] Data abort info:
-[ 9436.261677][    C4]   ISV = 0, ISS = 0x00000044
-[ 9436.261680][    C4]   CM = 0, WnR = 1
-[ 9436.261682][    C4] [dead00000000012a] address between user and kernel address ranges
-[ 9436.261685][    C4] Internal error: Oops: 96000044 [#1] PREEMPT SMP
-[ 9436.261701][    C4] Skip md ftrace buffer dump for: 0x3a982d0
-..
-
-[ 9436.262138][    C4] CPU: 4 PID: 7795 Comm: TraceManag Tainted: G S      W  O      5.10.149-android12-9-o-g17f915d29d0c #1
-[ 9436.262141][    C4] Hardware name: Qualcomm Technologies, Inc.  (DT)
-[ 9436.262144][    C4] pstate: 22400085 (nzCv daIf +PAN -UAO +TCO BTYPE=--)
-[ 9436.262161][    C4] pc : expire_timers+0x9c/0x438
-[ 9436.262164][    C4] lr : expire_timers+0x2a4/0x438
-[ 9436.262168][    C4] sp : ffffffc010023dd0
-[ 9436.262171][    C4] x29: ffffffc010023df0 x28: ffffffd0636fdc18
-[ 9436.262178][    C4] x27: ffffffd063569dd0 x26: ffffffd063536008
-[ 9436.262182][    C4] x25: 0000000000000001 x24: ffffff88f7c69280
-[ 9436.262185][    C4] x23: 00000000000000e0 x22: dead000000000122
-[ 9436.262188][    C4] x21: 000000010022da29 x20: ffffff8af72b4e80
-[ 9436.262191][    C4] x19: ffffffc010023e50 x18: ffffffc010025038
-[ 9436.262195][    C4] x17: 0000000000000240 x16: 0000000000000201
-[ 9436.262199][    C4] x15: ffffffffffffffff x14: ffffff889f3c3100
-[ 9436.262203][    C4] x13: ffffff889f3c3100 x12: 00000000049f56b8
-[ 9436.262207][    C4] x11: 00000000049f56b8 x10: 00000000ffffffff
-[ 9436.262212][    C4] x9 : ffffffc010023e50 x8 : dead000000000122
-[ 9436.262216][    C4] x7 : ffffffffffffffff x6 : ffffffc0100239d8
-[ 9436.262220][    C4] x5 : 0000000000000000 x4 : 0000000000000101
-[ 9436.262223][    C4] x3 : 0000000000000080 x2 : ffffff889edc155c
-[ 9436.262227][    C4] x1 : ffffff8001005200 x0 : ffffff80444f0428
-[ 9436.262232][    C4] Call trace:
-[ 9436.262236][    C4]  expire_timers+0x9c/0x438
-[ 9436.262240][    C4]  __run_timers+0x1f0/0x330
-[ 9436.262245][    C4]  run_timer_softirq+0x28/0x58
-[ 9436.262255][    C4]  efi_header_end+0x168/0x5ec
-[ 9436.262265][    C4]  __irq_exit_rcu+0x108/0x124
-[ 9436.262274][    C4]  __handle_domain_irq+0x118/0x1e4
-[ 9436.262282][    C4]  gic_handle_irq.30369+0x6c/0x2bc
-[ 9436.262286][    C4]  el0_irq_naked+0x60/0x6c
-
-Link: https://lore.kernel.org/all/1700860318-4025-1-git-send-email-quic_mojha@quicinc.com/
-Reported-by: Joyyoung Huang <huangzaiyang@oppo.com>
-Acked-by: MyungJoo Ham <myungjoo.ham@samsung.com>
-Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+Link: https://lore.kernel.org/r/20231218192420.305411-3-W_Armin@gmx.de
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/devfreq/devfreq.c | 24 ++++++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
+ drivers/platform/x86/wmi.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-index b3a68d5833bd..cb1c24721a37 100644
---- a/drivers/devfreq/devfreq.c
-+++ b/drivers/devfreq/devfreq.c
-@@ -461,10 +461,14 @@ static void devfreq_monitor(struct work_struct *work)
- 	if (err)
- 		dev_err(&devfreq->dev, "dvfs failed with (%d) error\n", err);
+diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+index 5dd22258cb3b..d400e61d6801 100644
+--- a/drivers/platform/x86/wmi.c
++++ b/drivers/platform/x86/wmi.c
+@@ -1494,13 +1494,12 @@ static void acpi_wmi_remove(struct platform_device *device)
+ 	struct acpi_device *acpi_device = ACPI_COMPANION(&device->dev);
+ 	struct device *wmi_bus_device = dev_get_drvdata(&device->dev);
  
-+	if (devfreq->stop_polling)
-+		goto out;
+-	acpi_remove_notify_handler(acpi_device->handle, ACPI_ALL_NOTIFY,
+-				   acpi_wmi_notify_handler);
+-	acpi_remove_address_space_handler(acpi_device->handle,
+-				ACPI_ADR_SPACE_EC, &acpi_wmi_ec_space_handler);
+-
+ 	device_for_each_child_reverse(wmi_bus_device, NULL, wmi_remove_device);
+ 	device_unregister(wmi_bus_device);
 +
- 	queue_delayed_work(devfreq_wq, &devfreq->work,
- 				msecs_to_jiffies(devfreq->profile->polling_ms));
--	mutex_unlock(&devfreq->lock);
- 
-+out:
-+	mutex_unlock(&devfreq->lock);
- 	trace_devfreq_monitor(devfreq);
++	acpi_remove_notify_handler(acpi_device->handle, ACPI_ALL_NOTIFY, acpi_wmi_notify_handler);
++	acpi_remove_address_space_handler(acpi_device->handle, ACPI_ADR_SPACE_EC,
++					  &acpi_wmi_ec_space_handler);
  }
  
-@@ -483,6 +487,10 @@ void devfreq_monitor_start(struct devfreq *devfreq)
- 	if (IS_SUPPORTED_FLAG(devfreq->governor->flags, IRQ_DRIVEN))
- 		return;
- 
-+	mutex_lock(&devfreq->lock);
-+	if (delayed_work_pending(&devfreq->work))
-+		goto out;
-+
- 	switch (devfreq->profile->timer) {
- 	case DEVFREQ_TIMER_DEFERRABLE:
- 		INIT_DEFERRABLE_WORK(&devfreq->work, devfreq_monitor);
-@@ -491,12 +499,16 @@ void devfreq_monitor_start(struct devfreq *devfreq)
- 		INIT_DELAYED_WORK(&devfreq->work, devfreq_monitor);
- 		break;
- 	default:
--		return;
-+		goto out;
- 	}
- 
- 	if (devfreq->profile->polling_ms)
- 		queue_delayed_work(devfreq_wq, &devfreq->work,
- 			msecs_to_jiffies(devfreq->profile->polling_ms));
-+
-+out:
-+	devfreq->stop_polling = false;
-+	mutex_unlock(&devfreq->lock);
- }
- EXPORT_SYMBOL(devfreq_monitor_start);
- 
-@@ -513,6 +525,14 @@ void devfreq_monitor_stop(struct devfreq *devfreq)
- 	if (IS_SUPPORTED_FLAG(devfreq->governor->flags, IRQ_DRIVEN))
- 		return;
- 
-+	mutex_lock(&devfreq->lock);
-+	if (devfreq->stop_polling) {
-+		mutex_unlock(&devfreq->lock);
-+		return;
-+	}
-+
-+	devfreq->stop_polling = true;
-+	mutex_unlock(&devfreq->lock);
- 	cancel_delayed_work_sync(&devfreq->work);
- }
- EXPORT_SYMBOL(devfreq_monitor_stop);
+ static int acpi_wmi_probe(struct platform_device *device)
 -- 
 2.43.0
 
