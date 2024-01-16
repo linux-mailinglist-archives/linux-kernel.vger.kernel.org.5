@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-27980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C787382F8A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:49:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6A6E82F8A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:49:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6151D28DE60
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:49:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5E311C250AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:49:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DAF32510D;
-	Tue, 16 Jan 2024 19:52:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FCEA13665A;
+	Tue, 16 Jan 2024 19:52:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Biow0Uu2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="piezsCMv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F1915A7AB;
-	Tue, 16 Jan 2024 19:52:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD999136648;
+	Tue, 16 Jan 2024 19:52:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434744; cv=none; b=coqrz+w/ya8Xo5iOCqUeyjqLuj7UExlLgOhmEl5UO51GuMfLSDGGqImMGqp7TFUXjGJBD0mokEehs7+34SmAaS35MNj2SKL7w6WPboTOAS5tROJXN142PanApfyCpnGEubaQLwbJJWaD5J21b0VfxgibIDvw+OshxQgK4Belza4=
+	t=1705434746; cv=none; b=XcJ3BGZc2CyVHdoU9m2gTDEUtsZC8oGJaRozELelbN2HAur+bwL41wzXLlKiCtXVUM1jwPBaHA486cjUXqzP+JuAwmKrvc2czfN2rqjKpdIuODN97QSI1GdYT7lPE8zIOM8k0TP8iCMdy+9kspJ4IRRS9PJCVqTzCH/UPFFPUx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434744; c=relaxed/simple;
-	bh=q5vP/0Qb6qBjYXsKqokqy1x41hQ1MKaIT7XBq712DHk=;
+	s=arc-20240116; t=1705434746; c=relaxed/simple;
+	bh=ZjjT0IN5Xa8NXlVhiDz35d697CMkZaYKS4VppmcKL6A=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=J51uIODwF9CypqCkJomYIRVMigbClCO838wUXJvUs8XNf9eYTuBGgYaUFSMyq42PfasKfNOwVtPotu/5DBIdBXdAYBELVkwV5QD4DlRtZoy42V8dALCCpXGfUQ6ZH3Lln6/fYdk6nUFzcDBOPeu2U2ivE7p/4iD0bF8tJHDXFPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Biow0Uu2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF24EC433C7;
-	Tue, 16 Jan 2024 19:52:22 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=ihTlxIqWZG0xIgo4H1Pfitm1QMJ4nTHbwb6CQaDfjZdXFd4KNcAtXIPw5aHQqcbSuDnfr/LKe6cxGyGdq6Mb81PCHztZwUHTTqeMqb+MGGjw2pQaWyWmftViudDQUYBeFGrrpZKcYo0zKb6/Yocuix1A95MiqRgCcBQEOg7rCms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=piezsCMv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC262C433F1;
+	Tue, 16 Jan 2024 19:52:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434744;
-	bh=q5vP/0Qb6qBjYXsKqokqy1x41hQ1MKaIT7XBq712DHk=;
+	s=k20201202; t=1705434745;
+	bh=ZjjT0IN5Xa8NXlVhiDz35d697CMkZaYKS4VppmcKL6A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Biow0Uu2pq2CYpQCMJyFEmeXLMIe+FGugyU/CdOJrTOYolEXivq8uCtHrxBkd9l2L
-	 d3yhsYtyr8ZRSeh+J+mEie7N+bjq1iIGrCqKQuIm1mJyHAb3mu2C186g7CASxNHzxS
-	 RDz9mVq4cDFtE+tBJ0IQslTqfrf6Cevj1pBDbBP9sd3SbuNDDpYT8AABG69M3X/2+E
-	 i4o5ZmAIIu+p0vDwP+pDfe3KT8XMkoaYFcobnuBXFQjZ9Jo3RFif8U5ECPKElMr8KE
-	 jn1Ne3b7EpKvGldqRI/iq7EHgiM6lqBw4grZSg/jlOWnPfoQUxNs9XNJai6tC+ftgC
-	 2Vq4sgQ+AMAHQ==
+	b=piezsCMvUF1sgKYXxwCYx/v3A/JqJbViBDmmW9J99iFeipAwNqz1GPC+TrABYcEOU
+	 sCGknEX+g7n2SDHvfURGjnwp1oeg4cozEb/zHOG134F/psnukQ63eSv+KX5/89PkiW
+	 WYxh1Hw8ftF5i697gOUSy2VNSUjDmN6w5FyUXx+NpPzdKxyrL168c4F/6IAnad2QJ6
+	 9ZgEtC4i6LYzYMtmnrWU86NxTY3PhLJKNxKW3MrY4EJpJwiJK2xSSgXgo9NrqzSEAK
+	 6Reff0lI9Vg51Nr7058en4u7AlxvDY7vI4XahmQd9xVkeZy5iWs21Y44FO9mQFb+ai
+	 advxRcGaW0apg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -52,9 +52,9 @@ Cc: Fabio Estevam <festevam@denx.de>,
 	conor+dt@kernel.org,
 	devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 069/104] ARM: dts: imx23-sansa: Use preferred i2c-gpios properties
-Date: Tue, 16 Jan 2024 14:46:35 -0500
-Message-ID: <20240116194908.253437-69-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 070/104] ARM: dts: imx23/28: Fix the DMA controller node name
+Date: Tue, 16 Jan 2024 14:46:36 -0500
+Message-ID: <20240116194908.253437-70-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194908.253437-1-sashal@kernel.org>
 References: <20240116194908.253437-1-sashal@kernel.org>
@@ -71,57 +71,49 @@ Content-Transfer-Encoding: 8bit
 
 From: Fabio Estevam <festevam@denx.de>
 
-[ Upstream commit e3aa1a82fb20ee97597022f6528823a8ab82bde6 ]
+[ Upstream commit 858d83ca4b50bbc8693d95cc94310e6d791fb2e6 ]
 
-The 'gpios' property to describe the SDA and SCL GPIOs is considered
-deprecated according to i2c-gpio.yaml.
+Per fsl,mxs-dma.yaml, the node name should be 'dma-controller'.
 
-Switch to the preferred 'sda-gpios' and 'scl-gpios' properties.
+Change it to fix the following dt-schema warning.
 
-This fixes the following schema warnings:
-
-imx23-sansa.dtb: i2c-0: 'sda-gpios' is a required property
-	from schema $id: http://devicetree.org/schemas/i2c/i2c-gpio.yaml#
-imx23-sansa.dtb: i2c-0: 'scl-gpios' is a required property
-	from schema $id: http://devicetree.org/schemas/i2c/i2c-gpio.yaml#
+imx28-apf28.dtb: dma-apbx@80024000: $nodename:0: 'dma-apbx@80024000' does not match '^dma-controller(@.*)?$'
+	from schema $id: http://devicetree.org/schemas/dma/fsl,mxs-dma.yaml#
 
 Signed-off-by: Fabio Estevam <festevam@denx.de>
 Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/nxp/mxs/imx23-sansa.dts | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ arch/arm/boot/dts/nxp/mxs/imx23.dtsi | 2 +-
+ arch/arm/boot/dts/nxp/mxs/imx28.dtsi | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/nxp/mxs/imx23-sansa.dts b/arch/arm/boot/dts/nxp/mxs/imx23-sansa.dts
-index 46057d9bf555..c2efcc20ae80 100644
---- a/arch/arm/boot/dts/nxp/mxs/imx23-sansa.dts
-+++ b/arch/arm/boot/dts/nxp/mxs/imx23-sansa.dts
-@@ -175,10 +175,8 @@ i2c-0 {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 		compatible = "i2c-gpio";
--		gpios = <
--			&gpio1 24 0		/* SDA */
--			&gpio1 22 0		/* SCL */
--		>;
-+		sda-gpios = <&gpio1 24 0>;
-+		scl-gpios = <&gpio1 22 0>;
- 		i2c-gpio,delay-us = <2>;	/* ~100 kHz */
- 	};
+diff --git a/arch/arm/boot/dts/nxp/mxs/imx23.dtsi b/arch/arm/boot/dts/nxp/mxs/imx23.dtsi
+index 5eca942a52fd..14c07b585f82 100644
+--- a/arch/arm/boot/dts/nxp/mxs/imx23.dtsi
++++ b/arch/arm/boot/dts/nxp/mxs/imx23.dtsi
+@@ -412,7 +412,7 @@ emi@80020000 {
+ 				status = "disabled";
+ 			};
  
-@@ -186,10 +184,8 @@ i2c-1 {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 		compatible = "i2c-gpio";
--		gpios = <
--			&gpio0 31 0		/* SDA */
--			&gpio0 30 0		/* SCL */
--		>;
-+		sda-gpios = <&gpio0 31 0>;
-+		scl-gpios = <&gpio0 30 0>;
- 		i2c-gpio,delay-us = <2>;	/* ~100 kHz */
+-			dma_apbx: dma-apbx@80024000 {
++			dma_apbx: dma-controller@80024000 {
+ 				compatible = "fsl,imx23-dma-apbx";
+ 				reg = <0x80024000 0x2000>;
+ 				interrupts = <7>, <5>, <9>, <26>,
+diff --git a/arch/arm/boot/dts/nxp/mxs/imx28.dtsi b/arch/arm/boot/dts/nxp/mxs/imx28.dtsi
+index 763adeb995ee..9b73130887ea 100644
+--- a/arch/arm/boot/dts/nxp/mxs/imx28.dtsi
++++ b/arch/arm/boot/dts/nxp/mxs/imx28.dtsi
+@@ -990,7 +990,7 @@ etm: etm@80022000 {
+ 				status = "disabled";
+ 			};
  
- 		touch: touch@20 {
+-			dma_apbx: dma-apbx@80024000 {
++			dma_apbx: dma-controller@80024000 {
+ 				compatible = "fsl,imx28-dma-apbx";
+ 				reg = <0x80024000 0x2000>;
+ 				interrupts = <78>, <79>, <66>, <0>,
 -- 
 2.43.0
 
