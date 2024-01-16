@@ -1,93 +1,249 @@
-Return-Path: <linux-kernel+bounces-27319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B65082EDC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:32:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 375F282EDCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:35:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 304461F2438A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:32:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B03E1284023
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28D231B818;
-	Tue, 16 Jan 2024 11:32:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F01AC1B97C;
+	Tue, 16 Jan 2024 11:35:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="JyKeXbNH"
-Received: from mout.web.de (mout.web.de [212.227.15.14])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TWw0KRFu"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2AE1B7F3;
-	Tue, 16 Jan 2024 11:32:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1705404751; x=1706009551; i=markus.elfring@web.de;
-	bh=iAhuJ/qQVCBNcDA7a+DCqneotDxV2KRsYE5G4LmVFbU=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=JyKeXbNHh1YPE38KNNl4pFzENqsj94iAtCjxFl4cpg3AVhjVweCJdJorozew0HUk
-	 PLmzumEy8feCAr8TbT+MBZ1mhVmeoj83jVdPwWDPACQlDR4uzRAW5gL6bzLHgBmuU
-	 x5/uE4q7oGW3a97U56to2eqE9Rw/PM5uxjz8FbxMOdY7OBW0auQ/qqYofYNkRsy8H
-	 2UUH2QOl1IPcazulENk6DKTVDNO88RnTMezLXmiQNQlce0tkmcPlIKh+wh0UVUpFj
-	 UjoPCZFqwx/oaimbV+71yIdSWLYw4DiorsaP7SH5htwq0WUIeQ+5KgScr8jhDVIWe
-	 G+umHwAdFkWxr8yYgw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.91.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MWQud-1rejZM22Z9-00Xum7; Tue, 16
- Jan 2024 12:32:31 +0100
-Message-ID: <ab6bcd8b-f53c-47d1-8c55-c374a36d6ee4@web.de>
-Date: Tue, 16 Jan 2024 12:32:23 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796081B942;
+	Tue, 16 Jan 2024 11:35:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705404907; x=1736940907;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZY/fiyQnA9sc5ZnYUaIZivwe3nv7/wn4Lxg4uGWvHfU=;
+  b=TWw0KRFu+WMvWRgl/VkUPxaBuM3n+T9T43i1ZXXNT091UpEVBykw8/TF
+   EHrW8i/DzwquSAuVnagoERFfSdkhT5S9T46vOXwb5XzzMHkLCHdivXTUL
+   oVZcfYUK/qzqH6LyaHn8HoUaadzsEu2JfcuUCl1ZYEHb1zW5M5CpAfUNw
+   Ms77InTq5lllmK6mxAnk4prIeh4VHB1FI2b/GIiyb3efwtAocdQ+sy/wk
+   9Vsna37twwAGYy3hpWUTcMjoirH6nRGjlbHSWLHhYGuwRxZLikmKb1/8W
+   WT15GhkJ1KzvYCL/kpFO7ejRBF9/ABhRgPIaUdiwSN4AAcbWaAyOUqXBb
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="7204364"
+X-IronPort-AV: E=Sophos;i="6.05,199,1701158400"; 
+   d="scan'208";a="7204364"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 03:35:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="1115259479"
+X-IronPort-AV: E=Sophos;i="6.05,199,1701158400"; 
+   d="scan'208";a="1115259479"
+Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Jan 2024 03:35:02 -0800
+Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rPhif-0000dC-0X;
+	Tue, 16 Jan 2024 11:35:01 +0000
+Date: Tue, 16 Jan 2024 19:34:06 +0800
+From: kernel test robot <lkp@intel.com>
+To: Michael Grzeschik <m.grzeschik@pengutronix.de>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	v9fs@lists.linux.dev, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+	kernel@pengutronix.de,
+	Michael Grzeschik <m.grzeschik@pengutronix.de>
+Subject: Re: [PATCH 1/3] usb: gadget: function: 9pfs
+Message-ID: <202401161937.9wbYLZdb-lkp@intel.com>
+References: <20240116-ml-topic-u9p-v1-1-ad8c306f9a4e@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: vfio/platform: Use common error handling code in
- vfio_set_trigger()
-To: Alex Williamson <alex.williamson@redhat.com>,
- Eric Auger <eric.auger@redhat.com>, kvm@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <f1977c1c-1c55-4194-9f72-f77120b2e4e5@web.de>
- <20240115133756.674ae019.alex.williamson@redhat.com>
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240115133756.674ae019.alex.williamson@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:ePm0QBO8e1avTdTL7DQnx+zr63juMwHQUHf/MqZ58wen1wf5U7Q
- nC3rH0Y822QXoWWjh+pQEpbDg3/sfZlNbp5rzTmaueSlfOeDQMvjChS5PA1EA+f5QeXrAYB
- e+xUQZKDGO2NVaZScLr+gzBv1iRwO/Jvy96wltiWVBW9SPMZVrlzjcneICYitwJKhjV7c45
- nX3vUK8bTg9BmiqmeREfA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:l+D0pf4ENc4=;xhq2bwmffmLpT/ZH3Np3y9ADRoj
- N1+L5kyZkxluuNKM0B3HLryXKaZM4Bmw9IF71gmD/NvN1UXcaSimmSYleskDk34BmvCxiS9TR
- 66TpSQspB5GxBzlTRs08LqIlhr3ZtazmIFo+aDOj/4vsyvwoEU3LZDFtS09e2cp8FH/5/dCaD
- 2ofTW7FjWNm454s1g0YOwAOxtrh3VrvOhrCjAu4QAKd7q1XqNxnnRBJ3kPDKxpK0Ptj4DRpBH
- NuWUa4yasDkv+xadIkSmOpPv4Bffz7Xcr0naGYcd8lYVk13G/gTZbo36lmcsvsTybRAfYxBbY
- JXmiFDSXY7/VQFiVSS0EBgAWupLRkaZED1PgWePy6XbWCRmzYQAPNcQ6AZwpXk0BLXDhtzfMy
- tf/ELA4ixuI1t8LMyFCguwNiZm4vCEtLK2FVqXsGU5t0e+ZYSI+zHawXuT3Yb1qUDgrVw6SCL
- PLcMrk+MPln7inGNSpdqudNOuWGhX9xaFldslB4PJcmSfRlwUCBIJGb/m3hmz7HkcqFSo9apM
- rUK0eMourke44zu1lJWNTOPny8F1R5ewmQUzMuljl8vouB2W4fbYLSWyfS/UT8OEIFfq9kNA0
- qPcavZL6ErQm40yTY1xiNtzM1907n0Qwek8mnNT69k5EPJAm0zqd5IODeTFGviFfkwmNUL9fs
- MYbWxxYBxQiFT6UaSnfuwnjI6LgwsSYIm7eLB9DvNZdKTeTufFl6Jhu0vOwdKZgw6sOwCjgu3
- dShjq/T6s53g9+2ViAJY3i1bPI9L1aQkWO7izKuJ1acESISH3Xq4HvXvC67yAOdizA8Cwnzle
- TfM+g6Nf8G1KeCmXEUBlaIBN6su1NBFrqBdhbX28EyfGIuMKrfsFb7AEg17N/uNoIheUYfUs8
- dt/nEzFPSKmjlX7OOX9qrj4E3ttIaVZ0/fq+0cO30pBho+W+psAoBmc9174Lup6LaW7+dsY7g
- 2IS9ig==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240116-ml-topic-u9p-v1-1-ad8c306f9a4e@pengutronix.de>
 
-> TBH, this doesn't seem like a worthwhile exit point consolidation.  A
-> change like this might be justified if there were some common unlock
-> code that could be shared, but for a simple free and return errno by
-> jumping to a different exception block, rather than even a common exit
-> block, I don't see the value.
+Hi Michael,
 
-Can it be helpful to store the shown kfree() call only once
-in this function implementation?
+kernel test robot noticed the following build warnings:
 
-Regards,
-Markus
+[auto build test WARNING on 052d534373b7ed33712a63d5e17b2b6cdbce84fd]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Michael-Grzeschik/usb-gadget-function-9pfs/20240116-095914
+base:   052d534373b7ed33712a63d5e17b2b6cdbce84fd
+patch link:    https://lore.kernel.org/r/20240116-ml-topic-u9p-v1-1-ad8c306f9a4e%40pengutronix.de
+patch subject: [PATCH 1/3] usb: gadget: function: 9pfs
+config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20240116/202401161937.9wbYLZdb-lkp@intel.com/config)
+compiler: clang version 18.0.0git (https://github.com/llvm/llvm-project 9bde5becb44ea071f5e1fa1f5d4071dc8788b18c)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240116/202401161937.9wbYLZdb-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401161937.9wbYLZdb-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/usb/gadget/function/f_9pfs.c:197:4: warning: format specifies type 'unsigned int' but the argument has type 'size_t' (aka 'unsigned long') [-Wformat]
+     196 |         p9_debug(P9_DEBUG_TRANS, "mux %p got %u bytes\n", usb9pfs,
+         |                                              ~~
+         |                                              %zu
+     197 |                  rc.capacity - rc.offset);
+         |                  ^~~~~~~~~~~~~~~~~~~~~~~
+   include/net/9p/9p.h:55:36: note: expanded from macro 'p9_debug'
+      55 |         _p9_debug(level, __func__, fmt, ##__VA_ARGS__)
+         |                                    ~~~    ^~~~~~~~~~~
+>> drivers/usb/gadget/function/f_9pfs.c:286:6: warning: no previous prototype for function 'disable_endpoints' [-Wmissing-prototypes]
+     286 | void disable_endpoints(struct usb_composite_dev *cdev,
+         |      ^
+   drivers/usb/gadget/function/f_9pfs.c:286:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     286 | void disable_endpoints(struct usb_composite_dev *cdev,
+         | ^
+         | static 
+>> drivers/usb/gadget/function/f_9pfs.c:825:12: warning: no previous prototype for function 'usb9pfs_modinit' [-Wmissing-prototypes]
+     825 | int __init usb9pfs_modinit(void)
+         |            ^
+   drivers/usb/gadget/function/f_9pfs.c:825:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     825 | int __init usb9pfs_modinit(void)
+         | ^
+         | static 
+>> drivers/usb/gadget/function/f_9pfs.c:838:13: warning: no previous prototype for function 'usb9pfs_modexit' [-Wmissing-prototypes]
+     838 | void __exit usb9pfs_modexit(void)
+         |             ^
+   drivers/usb/gadget/function/f_9pfs.c:838:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     838 | void __exit usb9pfs_modexit(void)
+         | ^
+         | static 
+   4 warnings generated.
+
+
+vim +197 drivers/usb/gadget/function/f_9pfs.c
+
+   184	
+   185	static struct p9_req_t *usb9pfs_rx_header(struct f_usb9pfs *usb9pfs, struct usb_request *req)
+   186	{
+   187		struct p9_req_t *p9_rx_req;
+   188		struct p9_fcall	rc;
+   189		int ret;
+   190	
+   191		/* start by reading header */
+   192		rc.sdata = req->buf;
+   193		rc.offset = 0;
+   194		rc.capacity = rc.size = P9_HDRSZ;
+   195	
+   196		p9_debug(P9_DEBUG_TRANS, "mux %p got %u bytes\n", usb9pfs,
+ > 197			 rc.capacity - rc.offset);
+   198	
+   199		ret = p9_parse_header(&rc, &rc.size, NULL, NULL, 0);
+   200		if (ret) {
+   201			p9_debug(P9_DEBUG_ERROR,
+   202				 "error parsing header: %d\n", ret);
+   203			return NULL;
+   204		}
+   205	
+   206		p9_debug(P9_DEBUG_TRANS,
+   207			 "mux %p pkt: size: %d bytes tag: %d\n",
+   208			 usb9pfs, rc.size, rc.tag);
+   209	
+   210		p9_rx_req = p9_tag_lookup(usb9pfs->client, rc.tag);
+   211		if (!p9_rx_req || (p9_rx_req->status != REQ_STATUS_SENT)) {
+   212			p9_debug(P9_DEBUG_ERROR, "Unexpected packet tag %d\n", rc.tag);
+   213			return NULL;
+   214		}
+   215	
+   216		if (rc.size > p9_rx_req->rc.capacity) {
+   217			p9_debug(P9_DEBUG_ERROR,
+   218				 "requested packet size too big: %d for tag %d with capacity %zd\n",
+   219				 rc.size, rc.tag, p9_rx_req->rc.capacity);
+   220			return NULL;
+   221		}
+   222	
+   223		if (!p9_rx_req->rc.sdata) {
+   224			p9_debug(P9_DEBUG_ERROR,
+   225				 "No recv fcall for tag %d (req %p), disconnecting!\n",
+   226				 rc.tag, p9_rx_req);
+   227			p9_req_put(usb9pfs->client, p9_rx_req);
+   228			return NULL;
+   229		}
+   230	
+   231		return p9_rx_req;
+   232	}
+   233	
+   234	static void usb9pfs_rx_complete(struct usb_ep *ep, struct usb_request *req)
+   235	{
+   236		struct f_usb9pfs *usb9pfs = ep->driver_data;
+   237		struct usb_composite_dev *cdev = usb9pfs->function.config->cdev;
+   238		struct p9_req_t *p9_rx_req;
+   239		unsigned long flags;
+   240	
+   241		switch (req->status) {
+   242		case 0:				/* normal completion? */
+   243			spin_lock_irqsave(&usb9pfs->req_lock, flags);
+   244			p9_rx_req = usb9pfs_rx_header(usb9pfs, req);
+   245			if (!p9_rx_req) {
+   246				spin_unlock_irqrestore(&usb9pfs->req_lock, flags);
+   247				goto free_req;
+   248			}
+   249	
+   250			memcpy(p9_rx_req->rc.sdata, req->buf, req->actual);
+   251			p9_rx_req->rc.size = req->actual;
+   252	
+   253			p9_client_cb(usb9pfs->client, p9_rx_req, REQ_STATUS_RCVD);
+   254			p9_req_put(usb9pfs->client, p9_rx_req);
+   255	
+   256			usb9pfs->p9_tx_req = NULL;
+   257	
+   258			usb9pfs_transmit(usb9pfs);
+   259	
+   260			spin_unlock_irqrestore(&usb9pfs->req_lock, flags);
+   261	
+   262			return;
+   263	free_req:
+   264		default:
+   265			dev_err(&cdev->gadget->dev, "%s usb9pfs complete --> %d, %d/%d\n",
+   266				ep->name, req->status, req->actual, req->length);
+   267			usb_ep_free_request(ep == usb9pfs->in_ep ?
+   268					    usb9pfs->out_ep : usb9pfs->in_ep,
+   269					    req->context);
+   270			free_ep_req(ep, req);
+   271			return;
+   272		}
+   273	
+   274		p9_client_cb(usb9pfs->client, p9_rx_req, REQ_STATUS_ERROR);
+   275	}
+   276	
+   277	static void disable_ep(struct usb_composite_dev *cdev, struct usb_ep *ep)
+   278	{
+   279		int value;
+   280	
+   281		value = usb_ep_disable(ep);
+   282		if (value < 0)
+   283			dev_info(&cdev->gadget->dev, "disable %s --> %d\n", ep->name, value);
+   284	}
+   285	
+ > 286	void disable_endpoints(struct usb_composite_dev *cdev,
+   287			struct usb_ep *in, struct usb_ep *out,
+   288			struct usb_ep *iso_in, struct usb_ep *iso_out)
+   289	{
+   290		disable_ep(cdev, in);
+   291		disable_ep(cdev, out);
+   292	}
+   293	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
