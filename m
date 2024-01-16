@@ -1,162 +1,133 @@
-Return-Path: <linux-kernel+bounces-27898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3412682F779
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:23:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C865382F849
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:42:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8F1DB24AE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:23:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D7671F2601F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:42:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEFE0811FB;
-	Tue, 16 Jan 2024 19:47:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4263C24B3E;
+	Tue, 16 Jan 2024 19:51:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Euy8jp42"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J2Bl55ul"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F05D622327;
-	Tue, 16 Jan 2024 19:47:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B91F12FF81;
+	Tue, 16 Jan 2024 19:51:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434466; cv=none; b=PFYJFyAtn3D3rwT9PY8Hx5oimjeVTimj67gRI28PGTiKY3BfcyakUUoJ0xm7Ed5q9uUef+GNaE40PuR6gOoOiDllAM7oFOgKCa+n6+A2CGQ7yOU6Wy1yxkrexxSXvael7fYYy6ndzPxV09sOHpb8bjVIz+YQPwezgRXm7Pxqp78=
+	t=1705434676; cv=none; b=Cd0vxoFFs2bWhIh7LSjYhJE6aGf0pjj0WlGu2LpZOxpSCrDKeHmft0wpAkh//Gj1ngowfuiv8MurooRoQRBs9bZMhxFwS90D6pjQnLeO8SvIx/Hx2bCWzQY7yZ2pypjfS8aM6babcBV88Z6OvkLqFmOvBG8ShcjiRuXu2GhQOVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434466; c=relaxed/simple;
-	bh=k31YYXg5FDv3rraEGkSgE9ZS/UMoQf+Bn2AlHkK2D+Y=;
-	h=Received:DKIM-Signature:From:Date:Subject:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
-	 In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key;
-	b=p/olZxMfataSKoL8Sh0IPAhSoBCDj8x3kyU/DeXt8aznzxecTxFD+1jQ9YM04l7BHR552qzt8c4D4k0qsMcmK5AIlNXAozoqBBJzjEsbVguXtO9OY39RAmDvTCm/FUhkz1hE7+ylNCHVMZGGbmCkdbpEodTlisclrZfWnWyVYgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Euy8jp42; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2588BC43142;
-	Tue, 16 Jan 2024 19:47:42 +0000 (UTC)
+	s=arc-20240116; t=1705434676; c=relaxed/simple;
+	bh=c1e6Gx0IkscjhAQfjpFplv9Xu/ONIEerrHwivTGEn9I=;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
+	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=l1a/zl893FjOpdbuVpWUtOvr4O0MduNwF0dZ3v1QI0xcmlV7tTAzw2e+/Y4kDW9wS3WwHO9a6OlUjHEobffqetTkcpLx2HsNsqQHKj2vkhZl9tbYT18NKcfRSfQw7+jyyct4cqwPtRC+XUn3eSIOmsU+IhNo6sOIPKf8QY6B7ZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J2Bl55ul; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA937C43394;
+	Tue, 16 Jan 2024 19:51:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434465;
-	bh=k31YYXg5FDv3rraEGkSgE9ZS/UMoQf+Bn2AlHkK2D+Y=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=Euy8jp42XA5XpHnPXHrVkcKDXDfmeE85YbvjbgSQgcf4LbN9g/kxZDRvpau1jA1He
-	 f3KDRyqlNMHDpklXXBduM0sjx+2jzV2R2Lz5IP3ItkgKlGdq1NE2sHQBgDMZP+9aZZ
-	 E+BFXJxcg2sDonqdLfOG7sNjRhZ/sLdEUH8RBHt+PJ3Jusba6yLMFUloE4Er+9xKN6
-	 39ri7F5c3CWMxFP8m4XuT5e8FY/4FYS5gywMgABTg1dzODxsYG9TK/Bl69axIxzfca
-	 xsDL6egBAH5pHVleqfMBauOtlV9UE3o/bV3ryjSGiHpJkDmVJ0lximdd46YaCprENE
-	 zdu5t3B3TsOTQ==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Tue, 16 Jan 2024 14:46:11 -0500
-Subject: [PATCH 15/20] filelock: clean up locks_delete_block internals
+	s=k20201202; t=1705434676;
+	bh=c1e6Gx0IkscjhAQfjpFplv9Xu/ONIEerrHwivTGEn9I=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=J2Bl55ulGHbA7sRfP3IYncqOFRXoIwYaSqoXK9MDeXenFcZVAy4EZ7qmbXjhlW7V5
+	 92WsdNsLsY7t7kgyx1V9ix1ml9mXPlBNzf60E1z8pc9CznvqcduZ7YVIl4e6dWu59b
+	 Qq1nn4RDjjOWnWaOLLd6NMaad3CzFYzITpLY8cnMDGNqZc6p4+3fNBZUHP8wzn2PKT
+	 Osgc5+Eeogisk+yzH/xDq0vY3o/SBH3BmnQNXjJf9/2Uj+SWqBNfLWd6ynyDDGA4Bf
+	 hr0ylW9kGytt41msttSTrMPLu3n4/XjmYPx7xXDLSMe+Ots/A0if0FOyI4ltFu0O7U
+	 /tFcAI7jjr02Q==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Nia Espera <nespera@igalia.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 046/104] arm64: dts: qcom: sm8350: Fix remoteproc interrupt type
+Date: Tue, 16 Jan 2024 14:46:12 -0500
+Message-ID: <20240116194908.253437-46-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240116194908.253437-1-sashal@kernel.org>
+References: <20240116194908.253437-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240116-flsplit-v1-15-c9d0f4370a5d@kernel.org>
-References: <20240116-flsplit-v1-0-c9d0f4370a5d@kernel.org>
-In-Reply-To: <20240116-flsplit-v1-0-c9d0f4370a5d@kernel.org>
-To: Christian Brauner <brauner@kernel.org>, 
- Alexander Viro <viro@zeniv.linux.org.uk>, 
- Eric Van Hensbergen <ericvh@kernel.org>, 
- Latchesar Ionkov <lucho@ionkov.net>, 
- Dominique Martinet <asmadeus@codewreck.org>, 
- Christian Schoenebeck <linux_oss@crudebyte.com>, 
- David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
- Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, 
- Alexander Aring <aahringo@redhat.com>, David Teigland <teigland@redhat.com>, 
- Miklos Szeredi <miklos@szeredi.hu>, 
- Andreas Gruenbacher <agruenba@redhat.com>, 
- Trond Myklebust <trond.myklebust@hammerspace.com>, 
- Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
- Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, 
- Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
- Jan Kara <jack@suse.cz>, Mark Fasheh <mark@fasheh.com>, 
- Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
- Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>, 
- Ronnie Sahlberg <lsahlber@redhat.com>, 
- Shyam Prasad N <sprasad@microsoft.com>, Namjae Jeon <linkinjeon@kernel.org>, 
- Sergey Senozhatsky <senozhatsky@chromium.org>, 
- Steven Rostedt <rostedt@goodmis.org>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: linux-kernel@vger.kernel.org, v9fs@lists.linux.dev, 
- linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org, 
- gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
- linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev, 
- linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
- linux-trace-kernel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1881; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=k31YYXg5FDv3rraEGkSgE9ZS/UMoQf+Bn2AlHkK2D+Y=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBlpt0iOaoejNGmyUHU5TWqFozQu5KOWFSGI/C7u
- k7MmzGMzSGJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZabdIgAKCRAADmhBGVaC
- FUKPEAC5Vb2188d7pEqtHBFUx21aU2oHLqH8KgcTxbFjDoYS6uTISygh9vaZ/BxicnDFRUFlAf4
- UUzvWZwqlF2JreutIWvZ8/3vkumPFfPIBuKP2ghif6h4eOswePI+WKe9wIpM3M06SEBaVb+aWay
- IUcrFcG0XzDKBUpwr55kP5CDYXNsjQHTLgrUVtoCK6A6OuzRbh4WE0ILtek4g5c4MwO00WiL5vi
- kVXb7e6AMqLJoZwkbIeN5bV/DZTIvrI71HfnenLai2sHVtDUfC1bO3gR4Z8He20hXE3wgTJe7xY
- IrYp0A9FCcjxv1iMHNuQaT+lQQw1XkilxuYAXZ6qdnsx2GXMk3MHUvuBpxiZYzt5djBv+Oo1+K5
- 2wINec6lLFIj/rYyTeBWdMuOCWXSANwXVyEl9XckkRmJUVG3rTx7oIEhtDa5S9bK3nd1Pq6e+DH
- Nrx2Gzbt9CwR4KJEy90sLDTtKEduiUgpln57bMJgTBgrguYzODQZqajizQh5vmjWo83RSvQQJOU
- W74f/b92sAJwGAsz2vxdrnZZsKYGVIUWz226rRSQ/pZS+gmJ+h5EHX5efWmrbpLP6M/HV/0a78E
- 7AZyluCCd7LDYNaHNZ4ucfc+sD4aGJGnR3nw6QABf3XRuVPFG7Kw8lQCECLdVH9yufmN/H1nHJL
- TvrKQKYa7K1yGIQ==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.6.12
+Content-Transfer-Encoding: 8bit
 
-Rework the internals of locks_delete_block to use struct file_lock_core
-(mostly just for clarity's sake). The prototype is not changed.
+From: Nia Espera <nespera@igalia.com>
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
+[ Upstream commit 54ee322f845c7f25fbf6e43e11147b6cae8eff56 ]
+
+In a similar vein to
+https://lore.kernel.org/lkml/20220530080842.37024-3-manivannan.sadhasivam@linaro.org/,
+the remote processors on sm8350 fail to initialize with the 'correct'
+(i.e., specified in downstream) IRQ type. Change this to EDGE_RISING.
+
+Signed-off-by: Nia Espera <nespera@igalia.com>
+Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Link: https://lore.kernel.org/r/20231111-nia-sm8350-for-upstream-v4-4-3a638b02eea5@igalia.com
+Signed-off-by: Bjorn Andersson <andersson@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/locks.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ arch/arm64/boot/dts/qcom/sm8350.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/locks.c b/fs/locks.c
-index 1bc69a96b96d..3a028a8aafeb 100644
---- a/fs/locks.c
-+++ b/fs/locks.c
-@@ -720,9 +720,10 @@ static void __locks_wake_up_blocks(struct file_lock_core *blocker)
-  *
-  *	lockd/nfsd need to disconnect the lock while working on it.
-  */
--int locks_delete_block(struct file_lock *waiter)
-+int locks_delete_block(struct file_lock *waiter_fl)
- {
- 	int status = -ENOENT;
-+	struct file_lock_core *waiter = &waiter_fl->fl_core;
+diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+index a94e069da83d..3b70c485b4fd 100644
+--- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+@@ -2020,7 +2020,7 @@ mpss: remoteproc@4080000 {
+ 			compatible = "qcom,sm8350-mpss-pas";
+ 			reg = <0x0 0x04080000 0x0 0x4040>;
  
- 	/*
- 	 * If fl_blocker is NULL, it won't be set again as this thread "owns"
-@@ -745,21 +746,21 @@ int locks_delete_block(struct file_lock *waiter)
- 	 * no new locks can be inserted into its fl_blocked_requests list, and
- 	 * can avoid doing anything further if the list is empty.
- 	 */
--	if (!smp_load_acquire(&waiter->fl_core.fl_blocker) &&
--	    list_empty(&waiter->fl_core.fl_blocked_requests))
-+	if (!smp_load_acquire(&waiter->fl_blocker) &&
-+	    list_empty(&waiter->fl_blocked_requests))
- 		return status;
+-			interrupts-extended = <&intc GIC_SPI 264 IRQ_TYPE_LEVEL_HIGH>,
++			interrupts-extended = <&intc GIC_SPI 264 IRQ_TYPE_EDGE_RISING>,
+ 					      <&smp2p_modem_in 0 IRQ_TYPE_EDGE_RISING>,
+ 					      <&smp2p_modem_in 1 IRQ_TYPE_EDGE_RISING>,
+ 					      <&smp2p_modem_in 2 IRQ_TYPE_EDGE_RISING>,
+@@ -2062,7 +2062,7 @@ slpi: remoteproc@5c00000 {
+ 			compatible = "qcom,sm8350-slpi-pas";
+ 			reg = <0 0x05c00000 0 0x4000>;
  
- 	spin_lock(&blocked_lock_lock);
--	if (waiter->fl_core.fl_blocker)
-+	if (waiter->fl_blocker)
- 		status = 0;
--	__locks_wake_up_blocks(&waiter->fl_core);
--	__locks_delete_block(&waiter->fl_core);
-+	__locks_wake_up_blocks(waiter);
-+	__locks_delete_block(waiter);
+-			interrupts-extended = <&pdc 9 IRQ_TYPE_LEVEL_HIGH>,
++			interrupts-extended = <&pdc 9 IRQ_TYPE_EDGE_RISING>,
+ 					      <&smp2p_slpi_in 0 IRQ_TYPE_EDGE_RISING>,
+ 					      <&smp2p_slpi_in 1 IRQ_TYPE_EDGE_RISING>,
+ 					      <&smp2p_slpi_in 2 IRQ_TYPE_EDGE_RISING>,
+@@ -3206,7 +3206,7 @@ adsp: remoteproc@17300000 {
+ 			compatible = "qcom,sm8350-adsp-pas";
+ 			reg = <0 0x17300000 0 0x100>;
  
- 	/*
- 	 * The setting of fl_blocker to NULL marks the "done" point in deleting
- 	 * a block. Paired with acquire at the top of this function.
- 	 */
--	smp_store_release(&waiter->fl_core.fl_blocker, NULL);
-+	smp_store_release(waiter->fl_blocker, NULL);
- 	spin_unlock(&blocked_lock_lock);
- 	return status;
- }
-
+-			interrupts-extended = <&pdc 6 IRQ_TYPE_LEVEL_HIGH>,
++			interrupts-extended = <&pdc 6 IRQ_TYPE_EDGE_RISING>,
+ 					      <&smp2p_adsp_in 0 IRQ_TYPE_EDGE_RISING>,
+ 					      <&smp2p_adsp_in 1 IRQ_TYPE_EDGE_RISING>,
+ 					      <&smp2p_adsp_in 2 IRQ_TYPE_EDGE_RISING>,
+@@ -3511,7 +3511,7 @@ cdsp: remoteproc@98900000 {
+ 			compatible = "qcom,sm8350-cdsp-pas";
+ 			reg = <0 0x98900000 0 0x1400000>;
+ 
+-			interrupts-extended = <&intc GIC_SPI 578 IRQ_TYPE_LEVEL_HIGH>,
++			interrupts-extended = <&intc GIC_SPI 578 IRQ_TYPE_EDGE_RISING>,
+ 					      <&smp2p_cdsp_in 0 IRQ_TYPE_EDGE_RISING>,
+ 					      <&smp2p_cdsp_in 1 IRQ_TYPE_EDGE_RISING>,
+ 					      <&smp2p_cdsp_in 2 IRQ_TYPE_EDGE_RISING>,
 -- 
 2.43.0
 
