@@ -1,66 +1,60 @@
-Return-Path: <linux-kernel+bounces-26811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3D2A82E66F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:16:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5179482E674
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:17:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 903F41F21C4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:16:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1053B2304C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:17:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B09A10A37;
-	Tue, 16 Jan 2024 01:04:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27496111AB;
+	Tue, 16 Jan 2024 01:04:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aD+cWlto"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l4KmpzWi"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE831F51F;
-	Tue, 16 Jan 2024 01:04:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9AEAC433F1;
-	Tue, 16 Jan 2024 01:04:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E1C311193;
+	Tue, 16 Jan 2024 01:04:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEF5EC433C7;
+	Tue, 16 Jan 2024 01:04:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705367076;
-	bh=4Rgd6pj6ZzHj+h/R371GlQqWUydY+bynAeaxfKNSS8w=;
+	s=k20201202; t=1705367081;
+	bh=Fu3FMlvztkrmM0NdvB9hkbzV9Z7UjEP32kS9KxzzOSw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aD+cWltoW9RendeciKgnR7IKr3X3L02qsi6pyVVQuxoQzFV4ZmZ+bqN+BnMAkqSBA
-	 UailrtA6ofEYPXJHJwY88tdnSkp5ju5H0bFbOJN69wg18WzuaKs2qq0eF/gupdm6pf
-	 GsKvu2fj6eXTHAV4PzqWK8dAWMXq0YGOaz78JJFg6vex9jQVBozBSY2qd/pw//M+Mi
-	 X1QJouIAvzyxqhXcpuowRU6WRN3VXAeUQVtXCOa1Q+jO0V6SD/e2rWaiyeMIaj7JwC
-	 pPRHnQdJOmQecFodCvj/aMqCKps+YRkVnPWRi0UiDFuMTMmhCOIh+zqVz+SArjBwEM
-	 nH1eA9r+soSIQ==
+	b=l4KmpzWiSlYffQQx3K09LzrB7/IlPrKWKNLUzmBovAWSYS0VF1fBYVSKRjfoKTvai
+	 yvyksOppy7N6RvbRXe+nsDTHrFJpBZdGT8G+tuM4Gn+MTJMLbGkBd9VLCJwYoCbaOa
+	 0tveQc0bvFB+FQNXt5na8HGHs+boF0S13MY63NtgjqoyITHdU7Hk/8JtWhTA7OGS64
+	 sBNieV/bCT6UnSC7m+qTQhUunxe8YILzhOq9Nt6rnSf2E2vQECs0pTmKGZMx0wiIsQ
+	 wPPfoSF+eTU2wSmp+vb1IuT5yd2OZYpz5ymD0tDY/h1N06JJIVLKQhSYTYhD42jBIE
+	 sb1ZCEqaQ+edw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Arnd Bergmann <arnd@arndb.de>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Palmer Dabbelt <palmer@rivosinc.com>,
-	Guo Ren <guoren@kernel.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
 	Sasha Levin <sashal@kernel.org>,
-	linux@armlinux.org.uk,
-	will@kernel.org,
-	mpe@ellerman.id.au,
-	paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	aou@eecs.berkeley.edu,
-	hca@linux.ibm.com,
-	gor@linux.ibm.com,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 02/21] arch: consolidate arch_irq_work_raise prototypes
-Date: Mon, 15 Jan 2024 20:03:39 -0500
-Message-ID: <20240116010422.217925-2-sashal@kernel.org>
+	richard.henderson@linaro.org,
+	ink@jurassic.park.msu.ru,
+	mattst88@gmail.com,
+	chenhuacai@kernel.org,
+	davem@davemloft.net,
+	viro@zeniv.linux.org.uk,
+	pengdonglin@sangfor.com.cn,
+	rostedt@goodmis.org,
+	maobibo@loongson.cn,
+	zhaotianrui@loongson.cn,
+	huqi@loongson.cn,
+	linux-alpha@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	sparclinux@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 03/21] arch: fix asm-offsets.c building with -Wmissing-prototypes
+Date: Mon, 15 Jan 2024 20:03:40 -0500
+Message-ID: <20240116010422.217925-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116010422.217925-1-sashal@kernel.org>
 References: <20240116010422.217925-1-sashal@kernel.org>
@@ -77,126 +71,194 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 64bac5ea17d527872121adddfee869c7a0618f8f ]
+[ Upstream commit 4d86896793dd6eeacdf32b85af1ef130349db4be ]
 
-The prototype was hidden in an #ifdef on x86, which causes a warning:
+When -Wmissing-prototypes is enabled, the some asm-offsets.c files fail
+to build, even when this warning is disabled in the Makefile for normal
+files:
 
-kernel/irq_work.c:72:13: error: no previous prototype for 'arch_irq_work_raise' [-Werror=missing-prototypes]
+arch/sparc/kernel/asm-offsets.c:22:5: error: no previous prototype for 'sparc32_foo' [-Werror=missing-prototypes]
+arch/sparc/kernel/asm-offsets.c:48:5: error: no previous prototype for 'foo' [-Werror=missing-prototypes]
 
-Some architectures have a working prototype, while others don't.
-Fix this by providing it in only one place that is always visible.
+Address this by making use of the same trick as x86, marking these
+functions as 'static __used' to avoid the need for a prototype
+by not drop them in dead-code elimination.
 
-Reviewed-by: Alexander Gordeev <agordeev@linux.ibm.com>
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
-Acked-by: Guo Ren <guoren@kernel.org>
+Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://lore.kernel.org/lkml/CAK7LNARfEmFk0Du4Hed19eX_G6tUC5wG0zP+L1AyvdpOF4ybXQ@mail.gmail.com/
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/include/asm/irq_work.h     | 2 --
- arch/arm64/include/asm/irq_work.h   | 2 --
- arch/csky/include/asm/irq_work.h    | 2 +-
- arch/powerpc/include/asm/irq_work.h | 1 -
- arch/riscv/include/asm/irq_work.h   | 2 +-
- arch/s390/include/asm/irq_work.h    | 2 --
- arch/x86/include/asm/irq_work.h     | 1 -
- include/linux/irq_work.h            | 3 +++
- 8 files changed, 5 insertions(+), 10 deletions(-)
+ arch/alpha/kernel/asm-offsets.c     |  2 +-
+ arch/loongarch/kernel/asm-offsets.c | 26 +++++++++++++-------------
+ arch/sparc/kernel/asm-offsets.c     |  6 +++---
+ 3 files changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/arch/arm/include/asm/irq_work.h b/arch/arm/include/asm/irq_work.h
-index 3149e4dc1b54..8895999834cc 100644
---- a/arch/arm/include/asm/irq_work.h
-+++ b/arch/arm/include/asm/irq_work.h
-@@ -9,6 +9,4 @@ static inline bool arch_irq_work_has_interrupt(void)
- 	return is_smp();
+diff --git a/arch/alpha/kernel/asm-offsets.c b/arch/alpha/kernel/asm-offsets.c
+index b121294bee26..bf1eedd27cf7 100644
+--- a/arch/alpha/kernel/asm-offsets.c
++++ b/arch/alpha/kernel/asm-offsets.c
+@@ -12,7 +12,7 @@
+ #include <linux/kbuild.h>
+ #include <asm/io.h>
+ 
+-void foo(void)
++static void __used foo(void)
+ {
+ 	DEFINE(TI_TASK, offsetof(struct thread_info, task));
+ 	DEFINE(TI_FLAGS, offsetof(struct thread_info, flags));
+diff --git a/arch/loongarch/kernel/asm-offsets.c b/arch/loongarch/kernel/asm-offsets.c
+index 173fe514fc9e..bee9f7a3108f 100644
+--- a/arch/loongarch/kernel/asm-offsets.c
++++ b/arch/loongarch/kernel/asm-offsets.c
+@@ -15,7 +15,7 @@
+ #include <asm/processor.h>
+ #include <asm/ftrace.h>
+ 
+-void output_ptreg_defines(void)
++static void __used output_ptreg_defines(void)
+ {
+ 	COMMENT("LoongArch pt_regs offsets.");
+ 	OFFSET(PT_R0, pt_regs, regs[0]);
+@@ -62,7 +62,7 @@ void output_ptreg_defines(void)
+ 	BLANK();
  }
  
--extern void arch_irq_work_raise(void);
--
- #endif /* _ASM_ARM_IRQ_WORK_H */
-diff --git a/arch/arm64/include/asm/irq_work.h b/arch/arm64/include/asm/irq_work.h
-index 81bbfa3a035b..a1020285ea75 100644
---- a/arch/arm64/include/asm/irq_work.h
-+++ b/arch/arm64/include/asm/irq_work.h
-@@ -2,8 +2,6 @@
- #ifndef __ASM_IRQ_WORK_H
- #define __ASM_IRQ_WORK_H
- 
--extern void arch_irq_work_raise(void);
--
- static inline bool arch_irq_work_has_interrupt(void)
+-void output_task_defines(void)
++static void __used output_task_defines(void)
  {
- 	return true;
-diff --git a/arch/csky/include/asm/irq_work.h b/arch/csky/include/asm/irq_work.h
-index 33aaf39d6f94..d39fcc1f5395 100644
---- a/arch/csky/include/asm/irq_work.h
-+++ b/arch/csky/include/asm/irq_work.h
-@@ -7,5 +7,5 @@ static inline bool arch_irq_work_has_interrupt(void)
- {
- 	return true;
- }
--extern void arch_irq_work_raise(void);
-+
- #endif /* __ASM_CSKY_IRQ_WORK_H */
-diff --git a/arch/powerpc/include/asm/irq_work.h b/arch/powerpc/include/asm/irq_work.h
-index b8b0be8f1a07..c6d3078bd8c3 100644
---- a/arch/powerpc/include/asm/irq_work.h
-+++ b/arch/powerpc/include/asm/irq_work.h
-@@ -6,6 +6,5 @@ static inline bool arch_irq_work_has_interrupt(void)
- {
- 	return true;
- }
--extern void arch_irq_work_raise(void);
- 
- #endif /* _ASM_POWERPC_IRQ_WORK_H */
-diff --git a/arch/riscv/include/asm/irq_work.h b/arch/riscv/include/asm/irq_work.h
-index b53891964ae0..b27a4d64fc6a 100644
---- a/arch/riscv/include/asm/irq_work.h
-+++ b/arch/riscv/include/asm/irq_work.h
-@@ -6,5 +6,5 @@ static inline bool arch_irq_work_has_interrupt(void)
- {
- 	return IS_ENABLED(CONFIG_SMP);
- }
--extern void arch_irq_work_raise(void);
-+
- #endif /* _ASM_RISCV_IRQ_WORK_H */
-diff --git a/arch/s390/include/asm/irq_work.h b/arch/s390/include/asm/irq_work.h
-index 603783766d0a..f00c9f610d5a 100644
---- a/arch/s390/include/asm/irq_work.h
-+++ b/arch/s390/include/asm/irq_work.h
-@@ -7,6 +7,4 @@ static inline bool arch_irq_work_has_interrupt(void)
- 	return true;
+ 	COMMENT("LoongArch task_struct offsets.");
+ 	OFFSET(TASK_STATE, task_struct, __state);
+@@ -77,7 +77,7 @@ void output_task_defines(void)
+ 	BLANK();
  }
  
--void arch_irq_work_raise(void);
--
- #endif /* _ASM_S390_IRQ_WORK_H */
-diff --git a/arch/x86/include/asm/irq_work.h b/arch/x86/include/asm/irq_work.h
-index 800ffce0db29..6b4d36c95165 100644
---- a/arch/x86/include/asm/irq_work.h
-+++ b/arch/x86/include/asm/irq_work.h
-@@ -9,7 +9,6 @@ static inline bool arch_irq_work_has_interrupt(void)
+-void output_thread_info_defines(void)
++static void __used output_thread_info_defines(void)
  {
- 	return boot_cpu_has(X86_FEATURE_APIC);
+ 	COMMENT("LoongArch thread_info offsets.");
+ 	OFFSET(TI_TASK, thread_info, task);
+@@ -93,7 +93,7 @@ void output_thread_info_defines(void)
+ 	BLANK();
  }
--extern void arch_irq_work_raise(void);
+ 
+-void output_thread_defines(void)
++static void __used output_thread_defines(void)
+ {
+ 	COMMENT("LoongArch specific thread_struct offsets.");
+ 	OFFSET(THREAD_REG01, task_struct, thread.reg01);
+@@ -129,7 +129,7 @@ void output_thread_defines(void)
+ 	BLANK();
+ }
+ 
+-void output_thread_fpu_defines(void)
++static void __used output_thread_fpu_defines(void)
+ {
+ 	OFFSET(THREAD_FPR0, loongarch_fpu, fpr[0]);
+ 	OFFSET(THREAD_FPR1, loongarch_fpu, fpr[1]);
+@@ -170,7 +170,7 @@ void output_thread_fpu_defines(void)
+ 	BLANK();
+ }
+ 
+-void output_thread_lbt_defines(void)
++static void __used output_thread_lbt_defines(void)
+ {
+ 	OFFSET(THREAD_SCR0,  loongarch_lbt, scr0);
+ 	OFFSET(THREAD_SCR1,  loongarch_lbt, scr1);
+@@ -180,7 +180,7 @@ void output_thread_lbt_defines(void)
+ 	BLANK();
+ }
+ 
+-void output_mm_defines(void)
++static void __used output_mm_defines(void)
+ {
+ 	COMMENT("Size of struct page");
+ 	DEFINE(STRUCT_PAGE_SIZE, sizeof(struct page));
+@@ -212,7 +212,7 @@ void output_mm_defines(void)
+ 	BLANK();
+ }
+ 
+-void output_sc_defines(void)
++static void __used output_sc_defines(void)
+ {
+ 	COMMENT("Linux sigcontext offsets.");
+ 	OFFSET(SC_REGS, sigcontext, sc_regs);
+@@ -220,7 +220,7 @@ void output_sc_defines(void)
+ 	BLANK();
+ }
+ 
+-void output_signal_defines(void)
++static void __used output_signal_defines(void)
+ {
+ 	COMMENT("Linux signal numbers.");
+ 	DEFINE(_SIGHUP, SIGHUP);
+@@ -258,7 +258,7 @@ void output_signal_defines(void)
+ }
+ 
+ #ifdef CONFIG_SMP
+-void output_smpboot_defines(void)
++static void __used output_smpboot_defines(void)
+ {
+ 	COMMENT("Linux smp cpu boot offsets.");
+ 	OFFSET(CPU_BOOT_STACK, secondary_data, stack);
+@@ -268,7 +268,7 @@ void output_smpboot_defines(void)
+ #endif
+ 
+ #ifdef CONFIG_HIBERNATION
+-void output_pbe_defines(void)
++static void __used output_pbe_defines(void)
+ {
+ 	COMMENT("Linux struct pbe offsets.");
+ 	OFFSET(PBE_ADDRESS, pbe, address);
+@@ -280,7 +280,7 @@ void output_pbe_defines(void)
+ #endif
+ 
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+-void output_fgraph_ret_regs_defines(void)
++static void __used output_fgraph_ret_regs_defines(void)
+ {
+ 	COMMENT("LoongArch fgraph_ret_regs offsets.");
+ 	OFFSET(FGRET_REGS_A0, fgraph_ret_regs, regs[0]);
+@@ -291,7 +291,7 @@ void output_fgraph_ret_regs_defines(void)
+ }
+ #endif
+ 
+-void output_kvm_defines(void)
++static void __used output_kvm_defines(void)
+ {
+ 	COMMENT("KVM/LoongArch Specific offsets.");
+ 
+diff --git a/arch/sparc/kernel/asm-offsets.c b/arch/sparc/kernel/asm-offsets.c
+index 5784f2df489a..3d9b9855dce9 100644
+--- a/arch/sparc/kernel/asm-offsets.c
++++ b/arch/sparc/kernel/asm-offsets.c
+@@ -19,14 +19,14 @@
+ #include <asm/hibernate.h>
+ 
+ #ifdef CONFIG_SPARC32
+-int sparc32_foo(void)
++static int __used sparc32_foo(void)
+ {
+ 	DEFINE(AOFF_thread_fork_kpsr,
+ 			offsetof(struct thread_struct, fork_kpsr));
+ 	return 0;
+ }
  #else
- static inline bool arch_irq_work_has_interrupt(void)
+-int sparc64_foo(void)
++static int __used sparc64_foo(void)
  {
-diff --git a/include/linux/irq_work.h b/include/linux/irq_work.h
-index 8cd11a223260..136f2980cba3 100644
---- a/include/linux/irq_work.h
-+++ b/include/linux/irq_work.h
-@@ -66,6 +66,9 @@ void irq_work_sync(struct irq_work *work);
- void irq_work_run(void);
- bool irq_work_needs_cpu(void);
- void irq_work_single(void *arg);
-+
-+void arch_irq_work_raise(void);
-+
- #else
- static inline bool irq_work_needs_cpu(void) { return false; }
- static inline void irq_work_run(void) { }
+ #ifdef CONFIG_HIBERNATION
+ 	BLANK();
+@@ -45,7 +45,7 @@ int sparc64_foo(void)
+ }
+ #endif
+ 
+-int foo(void)
++static int __used foo(void)
+ {
+ 	BLANK();
+ 	DEFINE(AOFF_task_thread, offsetof(struct task_struct, thread));
 -- 
 2.43.0
 
