@@ -1,51 +1,53 @@
-Return-Path: <linux-kernel+bounces-26799-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A58B82E650
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:12:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 027A982E653
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:12:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80A37B2248B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:11:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90D0F1F22EF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:12:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44F6C21109;
-	Tue, 16 Jan 2024 00:28:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A57BA21118;
+	Tue, 16 Jan 2024 00:28:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rko9d37o"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TX40ABdR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E039627EA;
-	Tue, 16 Jan 2024 00:28:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D5E4C433C7;
-	Tue, 16 Jan 2024 00:28:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F03CD627EA;
+	Tue, 16 Jan 2024 00:28:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 162A5C433F1;
+	Tue, 16 Jan 2024 00:28:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705364915;
-	bh=RnMQyGNEs1792mGPHUYonzM+o5Wm7UVGf9CdagZXuJI=;
+	s=k20201202; t=1705364918;
+	bh=BGf1PfJAL6tSG+g84pxl6A13Gif8hEgP9PDgNfluJfA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rko9d37ojkXdqmlqjg0gOmgG/jVosyL6tL0956G1GfvJaYTbIzEec4ASYHUmd/VyX
-	 SE4z3XspYFlgdYWPocn0U12u9v3kvnXsvlwd0B4I7GiDuB8oX+u5NH8khUQwBerXeY
-	 vhQqsYuFyLGIrIAN/eztF371iNBBb8R7pgDWuQ4aYwfWgN25N7+Pp0iLjzwryCXn0r
-	 62msjf8JQXpJ63UhkSnEDvPdDOnwA9wEwfKOvGfzCdpPz4KURS2FpmVyEDHFLloG7J
-	 b/vdf2aeshcY2eAnaCjZWyVO0vaAK4LRT5i9JFNTy5bZeHibfl3XPLUkgrr8oeY7Hj
-	 jn/xEcAO7Ud6A==
+	b=TX40ABdRxDNhp5n1zxzd/+3FjaM999vLzsfVifWaNOvOyJhGXC5JvXCDn1PrGf3ZP
+	 oepd3AyuXRtJtsE33pjYyVNujRcT/EAtz0FP+xZiF8MuuLfGBNiCgfiVCaGlDeVTS9
+	 N9MH4njCQY7w6Qt9hsgMvMZOEMyximEUNXudnCnvZAFn6XbpUjw1zxGwaysJb9BeZ1
+	 otPiZKvbsxb35+AgHcCVMRBqUiEeP8nYM5/a4dW8zPip8h+yeeHXi7VGj6ETHCx7VQ
+	 5nhrQG41b3aM0MiiNeYyBBejlJ69l9bvuXXL/KzZE6T2PPJbhBt5eZb/gFZ0MP93EH
+	 y+0OmHXAgvrzg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Weichen Chen <weichen.chen@mediatek.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	Kees Cook <keescook@chromium.org>,
+Cc: Thomas Bourgoin <thomas.bourgoin@foss.st.com>,
+	kernel test robot <lkp@intel.com>,
+	Dan Carpenter <error27@gmail.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
 	Sasha Levin <sashal@kernel.org>,
-	angelogioacchino.delregno@collabora.com,
-	linux-hardening@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.19 07/12] pstore/ram: Fix crash when setting number of cpus to an odd number
-Date: Mon, 15 Jan 2024 19:28:00 -0500
-Message-ID: <20240116002817.216837-7-sashal@kernel.org>
+	davem@davemloft.net,
+	mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com,
+	linux-crypto@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.19 08/12] crypto: stm32/crc32 - fix parsing list of devices
+Date: Mon, 15 Jan 2024 19:28:01 -0500
+Message-ID: <20240116002817.216837-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116002817.216837-1-sashal@kernel.org>
 References: <20240116002817.216837-1-sashal@kernel.org>
@@ -60,45 +62,44 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.305
 Content-Transfer-Encoding: 8bit
 
-From: Weichen Chen <weichen.chen@mediatek.com>
+From: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
 
-[ Upstream commit d49270a04623ce3c0afddbf3e984cb245aa48e9c ]
+[ Upstream commit 0eaef675b94c746900dcea7f6c41b9a103ed5d53 ]
 
-When the number of cpu cores is adjusted to 7 or other odd numbers,
-the zone size will become an odd number.
-The address of the zone will become:
-    addr of zone0 = BASE
-    addr of zone1 = BASE + zone_size
-    addr of zone2 = BASE + zone_size*2
-    ...
-The address of zone1/3/5/7 will be mapped to non-alignment va.
-Eventually crashes will occur when accessing these va.
+smatch warnings:
+drivers/crypto/stm32/stm32-crc32.c:108 stm32_crc_get_next_crc() warn:
+can 'crc' even be NULL?
 
-So, use ALIGN_DOWN() to make sure the zone size is even
-to avoid this bug.
+Use list_first_entry_or_null instead of list_first_entry to retrieve
+the first device registered.
+The function list_first_entry always return a non NULL pointer even if
+the list is empty. Hence checking if the pointer returned is NULL does
+not tell if the list is empty or not.
 
-Signed-off-by: Weichen Chen <weichen.chen@mediatek.com>
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-Tested-by: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Link: https://lore.kernel.org/r/20230224023632.6840-1-weichen.chen@mediatek.com
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/r/202311281111.ou2oUL2i-lkp@intel.com/
+Reported-by: Dan Carpenter <error27@gmail.com>
+Closes: https://lore.kernel.org/r/202311281111.ou2oUL2i-lkp@intel.com/
+Signed-off-by: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/pstore/ram.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/crypto/stm32/stm32_crc32.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
-index 33294dee7d7f..0050aa56b0fa 100644
---- a/fs/pstore/ram.c
-+++ b/fs/pstore/ram.c
-@@ -590,6 +590,7 @@ static int ramoops_init_przs(const char *name,
- 	}
+diff --git a/drivers/crypto/stm32/stm32_crc32.c b/drivers/crypto/stm32/stm32_crc32.c
+index de645bf84980..04adc84d677c 100644
+--- a/drivers/crypto/stm32/stm32_crc32.c
++++ b/drivers/crypto/stm32/stm32_crc32.c
+@@ -98,7 +98,7 @@ static struct stm32_crc *stm32_crc_get_next_crc(void)
+ 	struct stm32_crc *crc;
  
- 	zone_sz = mem_sz / *cnt;
-+	zone_sz = ALIGN_DOWN(zone_sz, 2);
- 	if (!zone_sz) {
- 		dev_err(dev, "%s zone size == 0\n", name);
- 		goto fail;
+ 	spin_lock_bh(&crc_list.lock);
+-	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
++	crc = list_first_entry_or_null(&crc_list.dev_list, struct stm32_crc, list);
+ 	if (crc)
+ 		list_move_tail(&crc->list, &crc_list.dev_list);
+ 	spin_unlock_bh(&crc_list.lock);
 -- 
 2.43.0
 
