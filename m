@@ -1,154 +1,154 @@
-Return-Path: <linux-kernel+bounces-27496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27490-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65C0982F106
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:06:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0851D82F0F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:04:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 043B91F2461F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:06:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFE331F245EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:04:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BA841CA91;
-	Tue, 16 Jan 2024 15:05:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 854471BF46;
+	Tue, 16 Jan 2024 15:04:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="HYL2NKlT"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I2XMEwo4"
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E1771CA88;
-	Tue, 16 Jan 2024 15:05:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40GE094g027663;
-	Tue, 16 Jan 2024 15:05:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=Zgkx62l4rcyEtBTq+CoX
-	3k8529VHNxyha1vXQuEWPjg=; b=HYL2NKlTOCoKy8WpNo6UOtkfyLjUErKazk8u
-	Gy4e9vfgX2S6Qtcme5GI8P0j1mVVkRI8fYBE7NoeRWEScIqztl1C6C8qcdpfCHrx
-	hfoGAUaZFck0QJHmfFboKp2T49TVYDjYrUc+wSsgKDLCGCC+PhiXquL9UNC98ix7
-	KTVeQmAse/iXUq1LqS5071uvOpIR8B3Jc1daQ/aTv8si0tnZTd7ucXie2re//QRc
-	yq8k/gCdkfzzNlzkOOOc5OjDxme0k+TFOO+i+JmQ8bkwPHNwIksW54JMBr79zqN5
-	PwXfnHlap1KC5yuGSB/qgwXSuRqEb5opumEHiGl6BTnG43ACTA==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vnrnd8jjv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 15:05:05 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40GF54FE015128
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 15:05:04 GMT
-Received: from hu-bibekkum-hyd.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 16 Jan 2024 07:04:58 -0800
-From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-To: <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <dmitry.baryshkov@linaro.org>, <konrad.dybcio@linaro.org>,
-        <jsnitsel@redhat.com>, <quic_bjorande@quicinc.com>, <mani@kernel.org>,
-        <quic_eberman@quicinc.com>, <robdclark@chromium.org>,
-        <u.kleine-koenig@pengutronix.de>, <robh@kernel.org>,
-        <vladimir.oltean@nxp.com>, <quic_pkondeti@quicinc.com>,
-        <quic_molvera@quicinc.com>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        Bibek Kumar Patro
-	<quic_bibekkum@quicinc.com>
-Subject: [PATCH v8 5/5] iommu/arm-smmu: add ACTLR data and support for SC7280
-Date: Tue, 16 Jan 2024 20:34:11 +0530
-Message-ID: <20240116150411.23876-6-quic_bibekkum@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240116150411.23876-1-quic_bibekkum@quicinc.com>
-References: <20240116150411.23876-1-quic_bibekkum@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 841DC1BF35;
+	Tue, 16 Jan 2024 15:04:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-7835aea8012so122991485a.0;
+        Tue, 16 Jan 2024 07:04:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705417476; x=1706022276; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xcMOLqRkySsMBYup4NqAp95fYeAAkHFh6AZ6tAZhnBA=;
+        b=I2XMEwo4UqlKTAnYXMjcHYybgzQ6V0tV8ZhfxdkQtbNccMf9Io1/1vRETxpT0+Lgxr
+         nqa+MM4IE/iOnlqS6Ms59VDhVavwF/IZUMuYdXMOyLK2wDIrfuj2wiq4eMHR9Cd5gWwn
+         irHkXpFkUwDGGJHp7YzFodOGGkQSDE2Yd84YL12prVoWIhBCNZfgnnb/NvDXH8gtUQCc
+         vR09tievOvMXc1S49zVIsv/iPwCLMEZhI4zA1PYNgWLxCLWOvK4ZmsMF8jmdDGaE9aLX
+         Gj1ZDxpgI13lB1Cco35TOazsEI/L4olNlF6K+s6hV+iczlcb32cOOuoWVGyiixdV/7QB
+         Vw8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705417476; x=1706022276;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=xcMOLqRkySsMBYup4NqAp95fYeAAkHFh6AZ6tAZhnBA=;
+        b=SK5tU5M7uiyFZYgBZ3w60aBck+sDHyeXsoTvq6hqDaTJ2/bhOLX+kjnbxwejwZCtZE
+         VfYMoU9NvK9xHFXj4eHrPJrN9K+4YJobIa/J/oSN+M8VrZomsuea+KhY6JfmfnzZWQe2
+         deavmHmZA3Sse9x8jWmv8Vxmjw0qcdM09eNoqhU7OdX6kKE1hDah/0pU54TEerLL6UGq
+         VlGSAjcsN4Vv7R8A2L5TXC/CzXMpqb7M+IJQyQHE/Ntvkz+w3/tgly71ZSHrFwv9pd1a
+         Eo6pQH0T6fr6ADDZ7A/3VhTBG9RszGl7mBR7CwLSlFjn35tC0R44UA6/inPzv21AC2Pa
+         VGbA==
+X-Gm-Message-State: AOJu0YxSm7ZPhWOIR5kruNJYRaRf1kl6fLxkTGcqYYiWLQohOGAAiRx0
+	bR4mm4bc+6N+y2k9HltXdtw=
+X-Google-Smtp-Source: AGHT+IGm3NoD3ClR5vYFJMDqiBLlGhiwdNUFWBBFW5pgq2EIodkKnlH4UXcctJ4vjyDU5OH3w/xhCg==
+X-Received: by 2002:a05:620a:430c:b0:783:3646:ea43 with SMTP id u12-20020a05620a430c00b007833646ea43mr9874545qko.13.1705417476253;
+        Tue, 16 Jan 2024 07:04:36 -0800 (PST)
+Received: from localhost (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
+        by smtp.gmail.com with ESMTPSA id z18-20020a05620a08d200b007834386eeaesm3712051qkz.33.2024.01.16.07.04.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jan 2024 07:04:35 -0800 (PST)
+Date: Tue, 16 Jan 2024 10:04:35 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Yunjian Wang <wangyunjian@huawei.com>, 
+ willemdebruijn.kernel@gmail.com, 
+ jasowang@redhat.com, 
+ kuba@kernel.org, 
+ davem@davemloft.net
+Cc: netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ xudingke@huawei.com, 
+ Yunjian Wang <wangyunjian@huawei.com>
+Message-ID: <65a69b03875e6_380df029448@willemb.c.googlers.com.notmuch>
+In-Reply-To: <1705409818-28292-1-git-send-email-wangyunjian@huawei.com>
+References: <1705409818-28292-1-git-send-email-wangyunjian@huawei.com>
+Subject: Re: [PATCH net v2] tun: add missing rx stats accounting in
+ tun_xdp_act
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: e5NiOR4LKf5dTI5jVxNGOc6hni5EtNfZ
-X-Proofpoint-ORIG-GUID: e5NiOR4LKf5dTI5jVxNGOc6hni5EtNfZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999 clxscore=1015
- adultscore=0 impostorscore=0 malwarescore=0 bulkscore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401160118
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Add ACTLR data table for SC7280 along with support for
-same including SC7280 specific implementation operations.
+Yunjian Wang wrote:
+> There are few places on the receive path where packet receives and packet
+> drops were not accounted for. This patch fixes that issue.
+> 
+> Fixes: 8ae1aff0b331 ("tuntap: split out XDP logic")
 
-Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
----
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 30 +++++++++++++++++++++-
- 1 file changed, 29 insertions(+), 1 deletion(-)
+Before this commit this_cpu_inc(tun->pcpu_stats->rx_dropped) would
+get called, so that is indeed a regression in that patch. Please add
+that to the commit message.
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-index 26acfbdafd0f..8e52176b4108 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-@@ -36,6 +36,27 @@ struct actlr_config {
- 	u32 actlr;
- };
+This commit also adds new accounting of successfully received bytes
+with dev_sw_netstats_rx_add. I don't know off the top of my head if
+other devices account XDP_TX and XDP_REDIRECT in that counter. Either
+way, good to be explicit about such subtle details. Oddly, before
+8ae1aff0b331 those, too, would be attributed to rx_dropped, because
+after the out: label.
 
-+static const struct actlr_config sc7280_apps_actlr_cfg[] = {
-+	{ 0x0800, 0x24e1, PREFETCH_DEFAULT | CMTLB },
-+	{ 0x2000, 0x0163, PREFETCH_DEFAULT | CMTLB },
-+	{ 0x2080, 0x0461, PREFETCH_DEFAULT | CMTLB },
-+	{ 0x2100, 0x0161, PREFETCH_DEFAULT | CMTLB },
-+	{ 0x0900, 0x0407, PREFETCH_SHALLOW | CPRE | CMTLB },
-+	{ 0x2180, 0x0027, PREFETCH_SHALLOW | CPRE | CMTLB },
-+	{ 0x1000, 0x07ff, PREFETCH_DEEP | CPRE | CMTLB },
-+};
-+
-+static const struct actlr_config sc7280_gfx_actlr_cfg[] = {
-+	{ 0x0000, 0x07ff, PREFETCH_SWITCH_GFX | PREFETCH_DEEP | CPRE | CMTLB },
-+};
-+
-+static const struct actlr_variant sc7280_actlr[] = {
-+	{ .io_start = 0x15000000, .actlrcfg = sc7280_apps_actlr_cfg,
-+			.num_actlrcfg = ARRAY_SIZE(sc7280_apps_actlr_cfg) },
-+	{ .io_start = 0x03da0000, .actlrcfg = sc7280_gfx_actlr_cfg,
-+			.num_actlrcfg = ARRAY_SIZE(sc7280_gfx_actlr_cfg) },
-+};
-+
- static const struct actlr_config sm8550_apps_actlr_cfg[] = {
- 	{ 0x18a0, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
- 	{ 0x18e0, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
-@@ -676,6 +697,13 @@ static const struct qcom_smmu_match_data sdm845_smmu_500_data = {
- 	/* Also no debug configuration. */
- };
+> Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
+> ---
+> v2: add Fixes tag
+> ---
+>  drivers/net/tun.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> index afa5497f7c35..232e5319ac77 100644
+> --- a/drivers/net/tun.c
+> +++ b/drivers/net/tun.c
+> @@ -1626,17 +1626,14 @@ static int tun_xdp_act(struct tun_struct *tun, struct bpf_prog *xdp_prog,
+>  		       struct xdp_buff *xdp, u32 act)
+>  {
+>  	int err;
+> +	unsigned int datasize = xdp->data_end - xdp->data;
+>  
+>  	switch (act) {
+>  	case XDP_REDIRECT:
+>  		err = xdp_do_redirect(tun->dev, xdp, xdp_prog);
+> -		if (err)
+> -			return err;
+>  		break;
+>  	case XDP_TX:
+>  		err = tun_xdp_tx(tun->dev, xdp);
+> -		if (err < 0)
+> -			return err;
+>  		break;
+>  	case XDP_PASS:
+>  		break;
 
-+static const struct qcom_smmu_match_data sc7280_smmu_500_impl0_data = {
-+	.impl = &qcom_smmu_500_impl,
-+	.adreno_impl = &qcom_adreno_smmu_500_impl,
-+	.cfg = &qcom_smmu_impl0_cfg,
-+	.actlrvar = sc7280_actlr,
-+	.num_smmu = ARRAY_SIZE(sc7280_actlr),
-+};
+err is uninitialized in this case?
 
- static const struct qcom_smmu_match_data sm8550_smmu_500_impl0_data = {
- 	.impl = &qcom_smmu_500_impl,
-@@ -702,7 +730,7 @@ static const struct of_device_id __maybe_unused qcom_smmu_impl_of_match[] = {
- 	{ .compatible = "qcom,qdu1000-smmu-500", .data = &qcom_smmu_500_impl0_data  },
- 	{ .compatible = "qcom,sc7180-smmu-500", .data = &qcom_smmu_500_impl0_data },
- 	{ .compatible = "qcom,sc7180-smmu-v2", .data = &qcom_smmu_v2_data },
--	{ .compatible = "qcom,sc7280-smmu-500", .data = &qcom_smmu_500_impl0_data },
-+	{ .compatible = "qcom,sc7280-smmu-500", .data = &sc7280_smmu_500_impl0_data },
- 	{ .compatible = "qcom,sc8180x-smmu-500", .data = &qcom_smmu_500_impl0_data },
- 	{ .compatible = "qcom,sc8280xp-smmu-500", .data = &qcom_smmu_500_impl0_data },
- 	{ .compatible = "qcom,sdm630-smmu-v2", .data = &qcom_smmu_v2_data },
---
-2.17.1
+> @@ -1651,6 +1648,13 @@ static int tun_xdp_act(struct tun_struct *tun, struct bpf_prog *xdp_prog,
+>  		break;
+>  	}
+>  
+> +	if (err < 0) {
+> +		act = err;
+> +		dev_core_stats_rx_dropped_inc(tun->dev);
+> +	} else if (act == XDP_REDIRECT || act == XDP_TX) {
+> +		dev_sw_netstats_rx_add(tun->dev, datasize);
+> +	}
+> +
+>  	return act;
+>  }
+>  
+> -- 
+> 2.41.0
+> 
+
 
 
