@@ -1,175 +1,256 @@
-Return-Path: <linux-kernel+bounces-27222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C761782EC63
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:59:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DDD882EC67
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:59:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 373111F222DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:59:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AF501C210FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:59:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9999017598;
-	Tue, 16 Jan 2024 09:57:20 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C90EC13AC0;
+	Tue, 16 Jan 2024 09:58:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="dCtsWKx4"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE00615AF7
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 09:57:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-35ff7c81f4aso91472765ab.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 01:57:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705399038; x=1706003838;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MIQ1H8XFIGhOeVs72txcLATNzxwG63gY9YTuviyIhV4=;
-        b=WVhdg3hGC/KLlwZEzjd9HyRU+WCfrFhS+QFbdzGh+bxmrhiZAOvn5zXQxDZPBy4P3h
-         bTvkNAMngKZ88wwuEGzai0Vi0IdTpRf+1w000dU0YNGpYzJ36jNm8Va+iz3jqpHRBlmQ
-         x23gUmV5MK3xtQQwfVATTzkfE/q1cvZdDBi/bnXJCYuKUPGCIge4aYG+3buxuBBTXZq2
-         l35POibUTT8KgzTyvHqcxgAid7nP6C0eFC4nCqUZin52dv9sREKUj41hK30tTjgRIiWk
-         1F071VorFQNnKi6qvHvz1X77kfM25z6PADadTV/+YbAq5cH4dk4XImpa0GTCYFAFfyT4
-         rGtA==
-X-Gm-Message-State: AOJu0Yz3EBGhTW/Fxhw+xjEqjuNUgglFKRLhsVk82bMkpJhj3pbo6dTI
-	TVm2GtkXD2fJn1tSPKvrrRN0JQWGOVW6UyYwf26lHhBH4N1J
-X-Google-Smtp-Source: AGHT+IEB17ZpVF92Ai/oAD23Ju2qgLEQRDNt62m896t/qyX8HEG1WVlBHvhogwAOIEeIS2Kx/BGzacte4/btCE9qHQKpdQDbNfIX
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 725BA1AACB;
+	Tue, 16 Jan 2024 09:58:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705399085;
+	bh=NTQzAsoYckQeor7si/feJW9YeW0tBsUAx+yKkXj5s1Q=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=dCtsWKx4bz5RhZh7k4NcXSeSujXK7lTHGgb8W4QS6LjNYDRTNOWz3h9tL46IWthpJ
+	 Uaewsw2/cZJvNNUSviS7KkfjnTibTvB8kc2E7eSeAvtnApfknb3fxZfyVYmqWYRdUb
+	 i5Nq85J/FTWNd+VZ5c3f7T24oIBl+/kUBiCkeRVbFDMYbOfTrYRGlHdbDfaRrYNanX
+	 H8lN5yZxo21B1Ot6o5dkR4SFY6i52jbPqERld74ADzMhk3ADa5XXyTFjqINB3iZThM
+	 tZSFvtuypxh0c59N6ogJ2g9oUWPMz3u/1VFqKmD02HNHIvGSKhHr8r83uzd/cQChsB
+	 Ra8Ous2eZYhgw==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4146E3782066;
+	Tue, 16 Jan 2024 09:58:05 +0000 (UTC)
+Message-ID: <33c7d36d-c2f5-477f-946a-6ad926a277d7@collabora.com>
+Date: Tue, 16 Jan 2024 10:58:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1e0c:b0:360:5cc5:8ded with SMTP id
- g12-20020a056e021e0c00b003605cc58dedmr1017180ila.3.1705399037975; Tue, 16 Jan
- 2024 01:57:17 -0800 (PST)
-Date: Tue, 16 Jan 2024 01:57:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dbe2f2060f0d2781@google.com>
-Subject: [syzbot] [block?] BUG: unable to handle kernel NULL pointer
- dereference in __bio_release_pages
-From: syzbot <syzbot+004c1e0fced2b4bc3dcc@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 01/26] thermal: Introduce
+ thermal_zone_device_register() and params structure
+Content-Language: en-US
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: rafael@kernel.org, rui.zhang@intel.com, lukasz.luba@arm.com,
+ linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <20231221124825.149141-1-angelogioacchino.delregno@collabora.com>
+ <20231221124825.149141-2-angelogioacchino.delregno@collabora.com>
+ <7417c498-2439-485d-9f78-fbb22f9ce393@linaro.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <7417c498-2439-485d-9f78-fbb22f9ce393@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Il 15/01/24 13:39, Daniel Lezcano ha scritto:
+> On 21/12/2023 13:48, AngeloGioacchino Del Regno wrote:
+>> In preparation for extending the thermal zone devices to actually have
+>> a name and disambiguation of thermal zone types/names, introduce a new
+>> thermal_zone_device_params structure which holds all of the parameters
+>> that are necessary to register a thermal zone device, then add a new
+>> function thermal_zone_device_register().
+>>
+>> The latter takes as parameter the newly introduced structure and is
+>> made to eventually replace all usages of the now deprecated function
+>> thermal_zone_device_register_with_trips() and of
+>> thermal_tripless_zone_device_register().
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>> ---
+>>   drivers/thermal/thermal_core.c | 27 +++++++++++++++++++++++++++
+>>   include/linux/thermal.h        | 33 +++++++++++++++++++++++++++++++++
+>>   2 files changed, 60 insertions(+)
+>>
+>> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+>> index e5434cdbf23b..6be508eb2d72 100644
+>> --- a/drivers/thermal/thermal_core.c
+>> +++ b/drivers/thermal/thermal_core.c
+>> @@ -1235,6 +1235,8 @@ EXPORT_SYMBOL_GPL(thermal_zone_get_crit_temp);
+>>    *           whether trip points have been crossed (0 for interrupt
+>>    *           driven systems)
+>>    *
+>> + * This function is deprecated. See thermal_zone_device_register().
+>> + *
+>>    * This interface function adds a new thermal zone device (sensor) to
+>>    * /sys/class/thermal folder as thermal_zone[0-*]. It tries to bind all the
+>>    * thermal cooling devices registered at the same time.
+>> @@ -1409,6 +1411,7 @@ thermal_zone_device_register_with_trips(const char *type, 
+>> struct thermal_trip *t
+>>   }
+>>   EXPORT_SYMBOL_GPL(thermal_zone_device_register_with_trips);
+>> +/* This function is deprecated. See thermal_zone_device_register(). */
+>>   struct thermal_zone_device *thermal_tripless_zone_device_register(
+>>                       const char *type,
+>>                       void *devdata,
+>> @@ -1420,6 +1423,30 @@ struct thermal_zone_device 
+>> *thermal_tripless_zone_device_register(
+>>   }
+>>   EXPORT_SYMBOL_GPL(thermal_tripless_zone_device_register);
+>> +/**
+>> + * thermal_zone_device_register() - register a new thermal zone device
+>> + * @tzdp:    Parameters of the new thermal zone device
+>> + *        See struct thermal_zone_device_register.
+>> + *
+>> + * This interface function adds a new thermal zone device (sensor) to
+>> + * /sys/class/thermal folder as thermal_zone[0-*]. It tries to bind all the
+>> + * thermal cooling devices registered at the same time.
+>> + * thermal_zone_device_unregister() must be called when the device is no
+>> + * longer needed. The passive cooling depends on the .get_trend() return value.
+>> + *
+>> + * Return: a pointer to the created struct thermal_zone_device or an
+>> + * in case of error, an ERR_PTR. Caller must check return value with
+>> + * IS_ERR*() helpers.
+>> + */
+>> +struct thermal_zone_device *thermal_zone_device_register(struct 
+>> thermal_zone_device_params *tzdp)
+>> +{
+>> +    return thermal_zone_device_register_with_trips(tzdp->type, tzdp->trips, 
+>> tzdp->num_trips,
+>> +                               tzdp->mask, tzdp->devdata, tzdp->ops,
+>> +                               &tzdp->tzp, tzdp->passive_delay,
+>> +                               tzdp->polling_delay);
+>> +}
+>> +EXPORT_SYMBOL_GPL(thermal_zone_device_register);
+>> +
+>>   void *thermal_zone_device_priv(struct thermal_zone_device *tzd)
+>>   {
+>>       return tzd->devdata;
+>> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+>> index 98957bae08ff..c6ed33a7e468 100644
+>> --- a/include/linux/thermal.h
+>> +++ b/include/linux/thermal.h
+>> @@ -258,6 +258,33 @@ struct thermal_zone_params {
+>>       int offset;
+>>   };
+>> +/**
+>> + * struct thermal_zone_device_params - parameters for a thermal zone device
+>> + * @type:        the thermal zone device type
+>> + * @tzp:        thermal zone platform parameters
+>> + * @ops:        standard thermal zone device callbacks
+>> + * @devdata:        private device data
+>> + * @trips:        a pointer to an array of thermal trips, if any
+>> + * @num_trips:        the number of trip points the thermal zone support
+>> + * @mask:        a bit string indicating the writeablility of trip points
+>> + * @passive_delay:    number of milliseconds to wait between polls when
+>> + *            performing passive cooling
+>> + * @polling_delay:    number of milliseconds to wait between polls when checking
+>> + *            whether trip points have been crossed (0 for interrupt
+>> + *            driven systems)
+>> + */
+>> +struct thermal_zone_device_params {
+>> +    const char *type;
+>> +    struct thermal_zone_params tzp;
+>> +    struct thermal_zone_device_ops *ops;
+>> +    void *devdata;
+>> +    struct thermal_trip *trips;
+>> +    int num_trips;
+>> +    int mask;
+>> +    int passive_delay;
+>> +    int polling_delay;
+>> +};
+> 
+>  From my POV, this "struct thermal_zone_params" has been always a inadequate and 
+> catch-all structure. It will confuse with thermal_zone_device_params
+> 
+> I suggest to cleanup a bit that by sorting the parameters in the right structures 
+> where the result could be something like:
+> 
+> eg.
+> 
+> struct thermal_zone_params {
+> 
+>      const char *type;
+>      struct thermal_zone_device_ops *ops;
+>      struct thermal_trip *trips;
+>      int num_trips;
+> 
+>      int passive_delay;
+>      int polling_delay;
+> 
+>      void *devdata;
+>          bool no_hwmon;
+> };
+> 
+> struct thermal_governor_ipa_params {
+>          u32 sustainable_power;
+>          s32 k_po;
+>          s32 k_pu;
+>          s32 k_i;
+>          s32 k_d;
+>          s32 integral_cutoff;
+>          int slope;
+>          int offset;
+> };
+> 
+> struct thermal_governor_params {
+>      char governor_name[THERMAL_NAME_LENGTH];
+>      union {
+>          struct thermal_governor_ipa_params ipa_params;
+>      };
+> };
+> 
+> struct thermal_zone_device_params {
+>      struct thermal_zone_params *tzp;
+>      struct thermal_governor_params *tgp;
+> }
+> 
+> No functional changes just code reorg, being a series to be submitted before the 
+> rest on these RFC changes (2->26)
+> 
 
-syzbot found the following issue on:
+Could work. It's true that thermal_zone_params is a catch-all structure, and it's
+not really the best... but I also haven't checked how complex and/or how much time
+would your proposed change take.
 
-HEAD commit:    052d534373b7 Merge tag 'exfat-for-6.8-rc1' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17957913e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9603f9823d535d97
-dashboard link: https://syzkaller.appspot.com/bug?extid=004c1e0fced2b4bc3dcc
-compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13529733e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=166850dde80000
+Shouldn't take much as far as I can foresee, but I really have to check a bit.
+If I'm right as in it's not something huge, the next series will directly have
+this stuff sorted - if not, I'll reach to you.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/384ffdcca292/non_bootable_disk-052d5343.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/74cc52d4cc15/vmlinux-052d5343.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a2da7e6a234c/Image-052d5343.gz.xz
+Cheers,
+Angelo
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+004c1e0fced2b4bc3dcc@syzkaller.appspotmail.com
+>>   /* Function declarations */
+>>   #ifdef CONFIG_THERMAL_OF
+>>   struct thermal_zone_device *devm_thermal_of_zone_register(struct device *dev, 
+>> int id, void *data,
+>> @@ -310,6 +337,8 @@ struct thermal_zone_device 
+>> *thermal_tripless_zone_device_register(
+>>                       struct thermal_zone_device_ops *ops,
+>>                       const struct thermal_zone_params *tzp);
+>> +struct thermal_zone_device *thermal_zone_device_register(struct 
+>> thermal_zone_device_params *tzdp);
+>> +
+>>   void thermal_zone_device_unregister(struct thermal_zone_device *tz);
+>>   void *thermal_zone_device_priv(struct thermal_zone_device *tzd);
+>> @@ -372,6 +401,10 @@ static inline struct thermal_zone_device 
+>> *thermal_tripless_zone_device_register(
+>>                       const struct thermal_zone_params *tzp)
+>>   { return ERR_PTR(-ENODEV); }
+>> +static inline struct thermal_zone_device *thermal_zone_device_register(
+>> +                    struct thermal_zone_device_params *tzdp)
+>> +{ return ERR_PTR(-ENODEV); }
+>> +
+>>   static inline void thermal_zone_device_unregister(struct thermal_zone_device *tz)
+>>   { }
+> 
 
-Unable to handle kernel paging request at virtual address dfff800000000001
-KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-Mem abort info:
-  ESR = 0x0000000096000005
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x05: level 1 translation fault
-Data abort info:
-  ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
-  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[dfff800000000001] address between user and kernel address ranges
-Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 1 PID: 3139 Comm: syz-executor303 Not tainted 6.7.0-syzkaller-09928-g052d534373b7 #0
-Hardware name: linux,dummy-virt (DT)
-pstate: 10000005 (nzcV daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : _compound_head include/linux/page-flags.h:247 [inline]
-pc : bio_first_folio include/linux/bio.h:289 [inline]
-pc : __bio_release_pages+0x100/0x73c block/bio.c:1153
-lr : bio_release_pages include/linux/bio.h:508 [inline]
-lr : blkdev_bio_end_io+0x2a0/0x3f0 block/fops.c:157
-sp : ffff800089a375e0
-x29: ffff800089a375e0 x28: 1fffe0000162e879 x27: ffff00000b1743c0
-x26: ffff00000b1743c8 x25: 000000000000000a x24: 1fffe000015a9e12
-x23: ffff00000ad4f094 x22: ffff00000f496600 x21: 1fffe0000162e87a
-x20: 0000000000000004 x19: 0000000000000000 x18: ffff00000b174432
-x17: ffff00000b174438 x16: ffff00000f948008 x15: 1fffe0000162e886
-x14: ffff00000b1743d4 x13: 00000000f1f1f1f1 x12: ffff6000015a9e13
-x11: 1fffe000015a9e12 x10: ffff6000015a9e12 x9 : dfff800000000000
-x8 : ffff00000b1743d4 x7 : 0000000041b58ab3 x6 : 1ffff00011346ed0
-x5 : ffff700011346ed0 x4 : 00000000f1f1f1f1 x3 : 000000000000f1f1
-x2 : 0000000000000001 x1 : dfff800000000000 x0 : 0000000000000008
-Call trace:
- _compound_head include/linux/page-flags.h:247 [inline]
- bio_first_folio include/linux/bio.h:289 [inline]
- __bio_release_pages+0x100/0x73c block/bio.c:1153
- bio_release_pages include/linux/bio.h:508 [inline]
- blkdev_bio_end_io+0x2a0/0x3f0 block/fops.c:157
- bio_endio+0x4a4/0x618 block/bio.c:1608
- __blkdev_direct_IO block/fops.c:213 [inline]
- blkdev_direct_IO.part.0+0xf08/0x13c0 block/fops.c:379
- blkdev_direct_IO block/fops.c:370 [inline]
- blkdev_direct_write block/fops.c:648 [inline]
- blkdev_write_iter+0x430/0x91c block/fops.c:706
- call_write_iter include/linux/fs.h:2085 [inline]
- do_iter_readv_writev+0x194/0x298 fs/read_write.c:741
- vfs_writev+0x244/0x684 fs/read_write.c:971
- do_pwritev+0x15c/0x1e0 fs/read_write.c:1072
- __do_sys_pwritev2 fs/read_write.c:1131 [inline]
- __se_sys_pwritev2 fs/read_write.c:1122 [inline]
- __arm64_sys_pwritev2+0xac/0x120 fs/read_write.c:1122
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x6c/0x258 arch/arm64/kernel/syscall.c:51
- el0_svc_common.constprop.0+0xac/0x230 arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x40/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x58/0x140 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x100/0x12c arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-Code: d2d00001 f2fbffe1 91002260 d343fc02 (38e16841) 
----[ end trace 0000000000000000 ]---
-----------------
-Code disassembly (best guess):
-   0:	d2d00001 	mov	x1, #0x800000000000        	// #140737488355328
-   4:	f2fbffe1 	movk	x1, #0xdfff, lsl #48
-   8:	91002260 	add	x0, x19, #0x8
-   c:	d343fc02 	lsr	x2, x0, #3
-* 10:	38e16841 	ldrsb	w1, [x2, x1] <-- trapping instruction
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
