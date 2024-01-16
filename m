@@ -1,91 +1,86 @@
-Return-Path: <linux-kernel+bounces-27538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B651D82F1D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CB1B382F1D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:50:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 663192860A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:50:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63DB1285939
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:50:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E0361C6A0;
-	Tue, 16 Jan 2024 15:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12F721C69A;
+	Tue, 16 Jan 2024 15:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D7hkVFcF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O24WnAlG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA8E81BF53;
-	Tue, 16 Jan 2024 15:50:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FCBBC433C7;
-	Tue, 16 Jan 2024 15:50:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A2E1C2B3;
+	Tue, 16 Jan 2024 15:50:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3007DC433F1;
+	Tue, 16 Jan 2024 15:50:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705420204;
-	bh=i3khedQ+kiQ0f7qWV61kvzfkthuUNxWpEynNOJvz5Ak=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=D7hkVFcFHNtDHPtRPUO+psut8uD4XDQ6J6Z1j1aS25VcpxgYMF04nRcp021DwdSuU
-	 blLjX3+dH65ZlAXHYHJP1NrqwAxhuMgbD1rG5IRXwiXmUA8epSC/TYjopWZggSd7Z0
-	 LvTJ6v8QKqnmqA1f/yD2zFgtNpOcRxehzcVV1Q/zyInUErQNUo/aMEr2lVAg9bPyJs
-	 uqnU1XsKgJUNFx9JcDsP6Mt5VSCwTGpBJG4Yshf0Swzg2I8uFVndetcfiGcwpch+Dd
-	 SBQgciWT8/tKGvHdFkMLWjCHNOxapWZw4qPWi3e2JtPeJM2DsR973TyY3f4pqj2qS/
-	 kWeSsW7GjwAJw==
-Date: Tue, 16 Jan 2024 09:50:02 -0600
-From: Rob Herring <robh@kernel.org>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: cw00.choi@samsung.com, willmcvicker@google.com, andi.shyti@kernel.org,
-	gregkh@linuxfoundation.org, linux-samsung-soc@vger.kernel.org,
-	tomasz.figa@gmail.com, Sam Protsenko <semen.protsenko@linaro.org>,
-	peter.griffin@linaro.org, s.nawrocki@samsung.com,
-	andre.draszik@linaro.org, linux-serial@vger.kernel.org,
-	linux-clk@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	jirislaby@kernel.org, linux-i2c@vger.kernel.org,
-	alim.akhtar@samsung.com, linux-arm-kernel@lists.infradead.org,
-	robh+dt@kernel.org, sboyd@kernel.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, kernel-team@android.com,
-	mturquette@baylibre.com, conor+dt@kernel.org
-Subject: Re: [PATCH v3 01/12] dt-bindings: clock: google,gs101-clock: add
- PERIC0 clock management unit
-Message-ID: <170542020157.4185440.8965772370823681119.robh@kernel.org>
-References: <20240109125814.3691033-1-tudor.ambarus@linaro.org>
- <20240109125814.3691033-2-tudor.ambarus@linaro.org>
+	s=k20201202; t=1705420230;
+	bh=ga1BG+TMkJmfQLcIeSqBXVBSKeScehq6FZ56bqEch5g=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=O24WnAlG/yeYkgPVlYk81haJ3Y0TvJwGLpZqXVWkS+8/orlE+b7asI8JLxN+1fWnX
+	 HsWgQM72Gk3sdAqJqgi2EKl1zdX18rjKBueoaGfC3Mq1Da72+Q1DkFfM4XuPk+gsF/
+	 5ieJE47iYmmBbEu5uSpLvanKOTtCFTYdCUinYSlxa4a1fCkTw2nt4IshBSoWEs6xnh
+	 slk2OKY5UEpoRXAhblVllP0Ynl1EYSiXevjsVC0zKPykdzgeTr2eQKqzsuoJmwMNbe
+	 ALM8IjcQwQcUKxH72mhifeROtDJYAeddX7aP8EPMrJSGF1jjEKK7yKh80XXWy1IsHS
+	 /9+HzLeCOkHJw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1A83AD8C96D;
+	Tue, 16 Jan 2024 15:50:30 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240109125814.3691033-2-tudor.ambarus@linaro.org>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: fix potential premature unload in
+ bpf_testmod
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170542023010.19641.12554162884652194073.git-patchwork-notify@kernel.org>
+Date: Tue, 16 Jan 2024 15:50:30 +0000
+References: <20240110085737.8895-1-asavkov@redhat.com>
+In-Reply-To: <20240110085737.8895-1-asavkov@redhat.com>
+To: Artem Savkov <asavkov@redhat.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ bpf@vger.kernel.org, netdev@vger.kernel.org, jolsa@kernel.org,
+ linux-kernel@vger.kernel.org, yonghong.song@linux.dev
 
+Hello:
 
-On Tue, 09 Jan 2024 12:58:03 +0000, Tudor Ambarus wrote:
-> Add dt-schema documentation for the Connectivity Peripheral 0 (PERIC0)
-> clock management unit.
-> 
-> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-> Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> ---
-> v3:
-> - rename the clock names to just "bus" and "ip" as per Rob's suggestion
-> - collect Peter's R-b tag
-> 
-> v2:
-> - fix comments as per Sam's suggestion and collect his R-b tag
-> - Rob's suggestion of renaming the clock-names to just "bus" and "ip"
->   was not implemented as I felt it affects readability in the driver
->   and consistency with other exynos clock drivers. I will happily update
->   the names in the -rc phase if someone else has a stronger opinion than
->   mine.
-> 
->  .../bindings/clock/google,gs101-clock.yaml    | 25 +++++-
->  include/dt-bindings/clock/google,gs101.h      | 81 +++++++++++++++++++
->  2 files changed, 104 insertions(+), 2 deletions(-)
-> 
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On Wed, 10 Jan 2024 09:57:37 +0100 you wrote:
+> It is possible for bpf_kfunc_call_test_release() to be called from
+> bpf_map_free_deferred() when bpf_testmod is already unloaded and
+> perf_test_stuct.cnt which it tries to decrease is no longer in memory.
+> This patch tries to fix the issue by waiting for all references to be
+> dropped in bpf_testmod_exit().
+> 
+> The issue can be triggered by running 'test_progs -t map_kptr' in 6.5,
+> but is obscured in 6.6 by d119357d07435 ("rcu-tasks: Treat only
+> synchronous grace periods urgently").
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v2] selftests/bpf: fix potential premature unload in bpf_testmod
+    https://git.kernel.org/bpf/bpf-next/c/6ad61815babf
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
