@@ -1,60 +1,63 @@
-Return-Path: <linux-kernel+bounces-27973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A12CC82F88A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:47:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A53882F88D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:47:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4441CB26D6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:47:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 958B828C348
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:47:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04DE925101;
-	Tue, 16 Jan 2024 19:52:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 058BA25562;
+	Tue, 16 Jan 2024 19:52:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mjSGPtXL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hPIjnQIM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4420113472D;
-	Tue, 16 Jan 2024 19:52:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE591F5F3;
+	Tue, 16 Jan 2024 19:52:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434725; cv=none; b=S1LzepZxnDyCZbSpEJIM5ijBwT+3bjp8wNhdbQOWTWusbUg1j2wTy3QIDgkaE3x3NpduUUAA1Vn8AOCMQU/x2nBNcS50V4UcR7jPplHba2QLQzHRqxOA5uTX5hW/F9X6531s/pZZAdrSSh2hxAwsb7LYv++eK05KrlTzAJ8GbB4=
+	t=1705434730; cv=none; b=Z/Zj2vyyitw8pg95pDn3V6e8cc4MRQJUw9pt2ObaeGnw6oyqH7bQgb/6RPEri4SVdgzoJRvG29e38UPyAAa34uyrUTAet9Kllh7K4RQt7AtCgTT9VBCLpsy8kYRmB1Zj6FUlUBtfIqK5TVTIdwHL1ANU0Bj9pGFL9HvvKSsuVEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434725; c=relaxed/simple;
-	bh=4iMrzRjdMSeIlYcdzK4TKN+kxIoClU5wXIq5/sx6G0Y=;
+	s=arc-20240116; t=1705434730; c=relaxed/simple;
+	bh=HlzBsDp6k6DRdPQsKDOA1wu2AKK9wqQg1A7h1nmaL/A=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=FfcZlAscJrmQbVn1ceoMh8nzNTMOHNpsSaEmJOA2oyDPlgv6LiY7Mt8YUo2uGtSP4PRftoZymoo31NYKSjWh4FWVUSAPDuosF6qEMym/iRhlS5+kd0s2EQNfpRsBH2fPuiHItlmJ3dBnZKuaD6Jo/5Bzu53LcZFIX7uCJpjBImI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mjSGPtXL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB8FCC43394;
-	Tue, 16 Jan 2024 19:52:03 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=KnGIIM/dAidzc24i2AligTSZxHCJMxwqA2uqOtlrM6oHHW0JpTdnLfbKfUlVH20taJcKKPjjqisACmDFQ+FZH+8YJeJb2nDYdXdbMIK94FokoHMOq58hvDp1R8ke6rFB4EDqYeqQAKFQJSE97NZdiqjSF5d7e/t7If/oluxUIvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hPIjnQIM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0D23C433F1;
+	Tue, 16 Jan 2024 19:52:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434724;
-	bh=4iMrzRjdMSeIlYcdzK4TKN+kxIoClU5wXIq5/sx6G0Y=;
+	s=k20201202; t=1705434730;
+	bh=HlzBsDp6k6DRdPQsKDOA1wu2AKK9wqQg1A7h1nmaL/A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mjSGPtXLWFgrCeLXEqRcLTAuOR8KX3YwgQR5xQB1XAQOIGzRarzHNxA2+7N/5zDJo
-	 3a3SeDhS8zrLoIORh1Rq7qmsJCu1WREcDWedtPKKC648wcYnAejicRhLZnz7f78xcb
-	 szpcWtwCS8mtD01dm2JLmIVnBlAeaAfrszWGBJr33Kba33PM5m6zY/HPucTTexIy+s
-	 NEcdjuWlGEpjcVIEibybe37Ic76IV0Yg0NWjtj5oKiGHjSlXUdf9Q410U4ZHcKAaQc
-	 W7Sh6IltsUF9Ue5QAuI7GxvCjIwiPZt3z4GmgCBaXX4tE2IwYG/cL2zg4H/VshJiFy
-	 7GajDNZLJiU/Q==
+	b=hPIjnQIMHxkULEcKObHEKQxX0QpaeB5SqwllCu/Pcw8/Pn/sVa7WqCHiJkz2fNp4A
+	 2A4l8Jtp2Pwlg+aDj0m9BWUXzCZ6tXVZa5T0C8AQbSWVT08MmQgqWeAsbd4VQM3tDz
+	 O6qhEfAAx0w1EqHXFdHLP5aTBnJw0ooiibL/JlgclKU3N6BEtFyf3Bj+xsam4uaBcO
+	 0tgMKsNVduVQwqC0mp7pLsd7t0Hdt5gMkHQNkVXE3NsCTDRKEwsABPDSNsLOCLYTSb
+	 I4c1qZ6de9pGJriI441vPw+3v/Z8mXldqyuJ290/VB0+peEsT+hINnyJjQVo7prdN4
+	 Y6Xww9ka46H7A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>,
-	kernel test robot <lkp@intel.com>,
-	"Md . Haris Iqbal" <haris.iqbal@ionos.com>,
-	Jack Wang <jinpu.wang@ionos.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	linux-block@vger.kernel.org,
-	Guoqing Jiang <guoqing.jiang@linux.dev>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.6 062/104] block/rnbd-srv: Check for unlikely string overflow
-Date: Tue, 16 Jan 2024 14:46:28 -0500
-Message-ID: <20240116194908.253437-62-sashal@kernel.org>
+Cc: Michal Simek <michal.simek@amd.com>,
+	Sasha Levin <sashal@kernel.org>,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	harini.katakam@amd.com,
+	manikanta.guntupalli@amd.com,
+	ashok.reddy.soma@xilinx.com,
+	laurent.pinchart@ideasonboard.com,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.6 063/104] arm64: zynqmp: Move fixed clock to / for kv260
+Date: Tue, 16 Jan 2024 14:46:29 -0500
+Message-ID: <20240116194908.253437-63-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194908.253437-1-sashal@kernel.org>
 References: <20240116194908.253437-1-sashal@kernel.org>
@@ -69,86 +72,115 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.12
 Content-Transfer-Encoding: 8bit
 
-From: Kees Cook <keescook@chromium.org>
+From: Michal Simek <michal.simek@amd.com>
 
-[ Upstream commit 9e4bf6a08d1e127bcc4bd72557f2dfafc6bc7f41 ]
+[ Upstream commit 6a10a19a6bd2fd8d27a510678bf87bd9408f51d8 ]
 
-Since "dev_search_path" can technically be as large as PATH_MAX,
-there was a risk of truncation when copying it and a second string
-into "full_path" since it was also PATH_MAX sized. The W=1 builds were
-reporting this warning:
+fixed clock nodes can't be on the bus because they are missing reg
+property. That's why move them to root.
+And because it is root it is good to have it as the first node in a file.
 
-drivers/block/rnbd/rnbd-srv.c: In function 'process_msg_open.isra':
-drivers/block/rnbd/rnbd-srv.c:616:51: warning: '%s' directive output may be truncated writing up to 254 bytes into a region of size between 0 and 4095 [-Wformat-truncation=]
-  616 |                 snprintf(full_path, PATH_MAX, "%s/%s",
-      |                                                   ^~
-In function 'rnbd_srv_get_full_path',
-    inlined from 'process_msg_open.isra' at drivers/block/rnbd/rnbd-srv.c:721:14: drivers/block/rnbd/rnbd-srv.c:616:17: note: 'snprintf' output between 2 and 4351 bytes into a destination of size 4096
-  616 |                 snprintf(full_path, PATH_MAX, "%s/%s",
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  617 |                          dev_search_path, dev_name);
-      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-To fix this, unconditionally check for truncation (as was already done
-for the case where "%SESSNAME%" was present).
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202312100355.lHoJPgKy-lkp@intel.com/
-Cc: Md. Haris Iqbal <haris.iqbal@ionos.com>
-Cc: Jack Wang <jinpu.wang@ionos.com>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc:  <linux-block@vger.kernel.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Acked-by: Guoqing Jiang <guoqing.jiang@linux.dev>
-Acked-by: Jack Wang <jinpu.wang@ionos.com>
-Link: https://lore.kernel.org/r/20231212214738.work.169-kees@kernel.org
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Michal Simek <michal.simek@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/rnbd/rnbd-srv.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ .../boot/dts/xilinx/zynqmp-sck-kv-g-revA.dtso | 28 ++++++++---------
+ .../boot/dts/xilinx/zynqmp-sck-kv-g-revB.dtso | 30 +++++++++----------
+ 2 files changed, 29 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
-index c186df0ec641..b67e39a34010 100644
---- a/drivers/block/rnbd/rnbd-srv.c
-+++ b/drivers/block/rnbd/rnbd-srv.c
-@@ -585,6 +585,7 @@ static char *rnbd_srv_get_full_path(struct rnbd_srv_session *srv_sess,
- {
- 	char *full_path;
- 	char *a, *b;
-+	int len;
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dtso b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dtso
+index ae1b9b2bdbee..dee238739290 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dtso
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dtso
+@@ -21,20 +21,7 @@
+ /dts-v1/;
+ /plugin/;
  
- 	full_path = kmalloc(PATH_MAX, GFP_KERNEL);
- 	if (!full_path)
-@@ -596,19 +597,19 @@ static char *rnbd_srv_get_full_path(struct rnbd_srv_session *srv_sess,
- 	 */
- 	a = strnstr(dev_search_path, "%SESSNAME%", sizeof(dev_search_path));
- 	if (a) {
--		int len = a - dev_search_path;
-+		len = a - dev_search_path;
+-&i2c1 { /* I2C_SCK C23/C24 - MIO from SOM */
+-	#address-cells = <1>;
+-	#size-cells = <0>;
+-	pinctrl-names = "default", "gpio";
+-	pinctrl-0 = <&pinctrl_i2c1_default>;
+-	pinctrl-1 = <&pinctrl_i2c1_gpio>;
+-	scl-gpios = <&gpio 24 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+-	sda-gpios = <&gpio 25 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+-
+-	/* u14 - 0x40 - ina260 */
+-	/* u27 - 0xe0 - STDP4320 DP/HDMI splitter */
+-};
+-
+-&amba {
++&{/} {
+ 	si5332_0: si5332_0 { /* u17 */
+ 		compatible = "fixed-clock";
+ 		#clock-cells = <0>;
+@@ -72,6 +59,19 @@ si5332_5: si5332_5 { /* u17 */
+ 	};
+ };
  
- 		len = snprintf(full_path, PATH_MAX, "%.*s/%s/%s", len,
- 			       dev_search_path, srv_sess->sessname, dev_name);
--		if (len >= PATH_MAX) {
--			pr_err("Too long path: %s, %s, %s\n",
--			       dev_search_path, srv_sess->sessname, dev_name);
--			kfree(full_path);
--			return ERR_PTR(-EINVAL);
--		}
- 	} else {
--		snprintf(full_path, PATH_MAX, "%s/%s",
--			 dev_search_path, dev_name);
-+		len = snprintf(full_path, PATH_MAX, "%s/%s",
-+			       dev_search_path, dev_name);
-+	}
-+	if (len >= PATH_MAX) {
-+		pr_err("Too long path: %s, %s, %s\n",
-+		       dev_search_path, srv_sess->sessname, dev_name);
-+		kfree(full_path);
-+		return ERR_PTR(-EINVAL);
- 	}
++&i2c1 { /* I2C_SCK C23/C24 - MIO from SOM */
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default", "gpio";
++	pinctrl-0 = <&pinctrl_i2c1_default>;
++	pinctrl-1 = <&pinctrl_i2c1_gpio>;
++	scl-gpios = <&gpio 24 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++	sda-gpios = <&gpio 25 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++
++	/* u14 - 0x40 - ina260 */
++	/* u27 - 0xe0 - STDP4320 DP/HDMI splitter */
++};
++
+ /* DP/USB 3.0 and SATA */
+ &psgtr {
+ 	status = "okay";
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dtso b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dtso
+index b59e48be6465..73c5cb156caf 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dtso
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dtso
+@@ -16,21 +16,7 @@
+ /dts-v1/;
+ /plugin/;
  
- 	/* eliminitate duplicated slashes */
+-&i2c1 { /* I2C_SCK C23/C24 - MIO from SOM */
+-	#address-cells = <1>;
+-	#size-cells = <0>;
+-	pinctrl-names = "default", "gpio";
+-	pinctrl-0 = <&pinctrl_i2c1_default>;
+-	pinctrl-1 = <&pinctrl_i2c1_gpio>;
+-	scl-gpios = <&gpio 24 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+-	sda-gpios = <&gpio 25 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+-
+-	/* u14 - 0x40 - ina260 */
+-	/* u43 - 0x2d - usb5744 */
+-	/* u27 - 0xe0 - STDP4320 DP/HDMI splitter */
+-};
+-
+-&amba {
++&{/} {
+ 	si5332_0: si5332_0 { /* u17 */
+ 		compatible = "fixed-clock";
+ 		#clock-cells = <0>;
+@@ -68,6 +54,20 @@ si5332_5: si5332_5 { /* u17 */
+ 	};
+ };
+ 
++&i2c1 { /* I2C_SCK C23/C24 - MIO from SOM */
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default", "gpio";
++	pinctrl-0 = <&pinctrl_i2c1_default>;
++	pinctrl-1 = <&pinctrl_i2c1_gpio>;
++	scl-gpios = <&gpio 24 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++	sda-gpios = <&gpio 25 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++
++	/* u14 - 0x40 - ina260 */
++	/* u43 - 0x2d - usb5744 */
++	/* u27 - 0xe0 - STDP4320 DP/HDMI splitter */
++};
++
+ /* DP/USB 3.0 */
+ &psgtr {
+ 	status = "okay";
 -- 
 2.43.0
 
