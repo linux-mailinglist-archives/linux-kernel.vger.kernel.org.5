@@ -1,139 +1,128 @@
-Return-Path: <linux-kernel+bounces-27172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5383682EB7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:29:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CD2982EB8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:31:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA50728254A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:29:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82C441C22773
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:31:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8328D12B7D;
-	Tue, 16 Jan 2024 09:29:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45D3212B89;
+	Tue, 16 Jan 2024 09:31:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="zyxRF1/e"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="IvdmDo/9"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D9AE12B66
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 09:29:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=wsCbjUQ2hR0h4kZ3MX+VBUPxl0Ia2lfkvP41cApAIiI=; b=zyxRF1/eGlPVxACpktDZP2ZAZW
-	GiVBzc8zSYgDavUz97u6dz/z/ayLLRZHaUNIb7oO87f/HKIGVvDfkF80cWotblbgSRdBsPdhDm1WH
-	VkJfePn/OxLqEGHlbmV5KzotUIKd1IqXfgA4ROymqvlv/J7IYdnTG6GsFNO7Y8lc5+U/0KohWYgIc
-	npwfkiGYaq77szrdBFaGjevD9V/mmCcApryqUqc0PfFPdSEeMkpzmKEL2e0Bc2JRC/NV7o11sL/9b
-	fiYiv97W0eAgwgrtdTSkv1ZzHYGB1BmxVtidThQwYofSfIkNlz2W6xhPxaGWYvIft3PFS5et27HSh
-	TyiBe4kA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44336)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rPfkZ-0003Ff-08;
-	Tue, 16 Jan 2024 09:28:51 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rPfkV-0003ll-0W; Tue, 16 Jan 2024 09:28:47 +0000
-Date: Tue, 16 Jan 2024 09:28:46 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc: "Christoph Lameter (Ampere)" <cl@linux.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, Valentin.Schneider@arm.com,
-	Vanshidhar Konda <vanshikonda@os.amperecomputing.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Dave Kleikamp <dave.kleikamp@oracle.com>,
-	Matteo Carlini <Matteo.Carlini@arm.com>, akpm@linux-foundation.org,
-	yang@os.amperecomputing.com
-Subject: Re: [PATCH] ARM64: Dynamically allocate cpumasks and increase
- supported CPUs to 512
-Message-ID: <ZaZMTn62DI+2ygyb@shell.armlinux.org.uk>
-References: <794a1211-630b-3ee5-55a3-c06f10df1490@linux.com>
- <ZaVRlHpAOoNIiRiY@shell.armlinux.org.uk>
- <f84f3e60-e71a-4ea4-8c9c-86fd915129a9@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 176B212E42;
+	Tue, 16 Jan 2024 09:31:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1705397484; x=1736933484;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+e6Ln558idTWadRn1DXntGL0wDIyCZpJMPP2MxyNkHo=;
+  b=IvdmDo/9x2r0RyR0dBmM+vU1fA4M8UhHYFIF5ZGW9Hr/ngzBKvFWaMkK
+   v5cojJ5uf8zg0+5a4WXHL2Ju1L2CfPgFl8hrxUSc6hLaeCL3WAh/d9dE/
+   i0yKxWvMwp1rYGTzpk8KYBQQ5evfNLpCO41MWzxMs3VQ1BwGRd9zGADHm
+   ACbabhXgYI6Eh3dAFTYSdJcs/6vLV3MANX5uCTdkTGw/I5e+MKvrxbMsV
+   3vbo8PYtQDtS2dQPW5ALj9KNL3EXZMr+OaqLD3G/Xd1WNiUu3hDLCzFNS
+   qoj55trBOXJ2vqaY+kmRfyLP/5q46zJVmF2Dug4Hr2ng2iarUwHpSEHG2
+   w==;
+X-CSE-ConnectionGUID: WayHWkw8Q7O2gJ+Gskrx3A==
+X-CSE-MsgGUID: 0aICPRxpQsWlKp7G71Bc1A==
+X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
+   d="asc'?scan'208";a="15990500"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Jan 2024 02:31:22 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 16 Jan 2024 02:31:04 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Tue, 16 Jan 2024 02:31:01 -0700
+Date: Tue, 16 Jan 2024 09:30:25 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC: Frank Li <Frank.li@nxp.com>, <robh@kernel.org>,
+	<alexandre.belloni@bootlin.com>, <conor.culhane@silvaco.com>,
+	<gregkh@linuxfoundation.org>, <imx@lists.linux.dev>, <jirislaby@kernel.org>,
+	<joe@perches.com>, <linux-i3c@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>,
+	<miquel.raynal@bootlin.com>, <zbigniew.lukwinski@linux.intel.com>,
+	<devicetree@vger.kernel.org>, <krzysztof.kozlowski+dt@linaro.org>
+Subject: Re: [PATCH v2 2/7] dt-bindings: i3c: svc: add compatible string i3c:
+ silvaco,i3c-target-v1
+Message-ID: <20240116-bleach-herbicide-48d636967134@wendy>
+References: <20240110175221.2335480-1-Frank.Li@nxp.com>
+ <20240110175221.2335480-3-Frank.Li@nxp.com>
+ <3c0be658-e7a6-4231-b206-86ffb47e0cb2@linaro.org>
+ <ZaFbbeQrC7o2dchO@lizhi-Precision-Tower-5810>
+ <e3b9aa63-25a5-41cc-9eb7-6e7d1eacb136@linaro.org>
+ <ZaFjaWCA6k+tiCSJ@lizhi-Precision-Tower-5810>
+ <ZaWLCrWJEMtFx8cR@lizhi-Precision-Tower-5810>
+ <1b628901-7f71-4c97-9a16-723912988417@linaro.org>
+ <ZaXqCoCHPWER94Hh@lizhi-Precision-Tower-5810>
+ <d45e31c4-914e-4cea-a145-9775b6f516ab@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="tU9usgt5JDc4MslD"
+Content-Disposition: inline
+In-Reply-To: <d45e31c4-914e-4cea-a145-9775b6f516ab@linaro.org>
+
+--tU9usgt5JDc4MslD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f84f3e60-e71a-4ea4-8c9c-86fd915129a9@huawei.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 16, 2024 at 03:10:26PM +0800, Kefeng Wang wrote:
-> On 2024/1/15 23:39, Russell King (Oracle) wrote:
-> > On Thu, Dec 14, 2023 at 04:05:56PM -0800, Christoph Lameter (Ampere) wrote:
-> > > Index: linux/arch/arm64/Kconfig
-> > > ===================================================================
-> > > --- linux.orig/arch/arm64/Kconfig
-> > > +++ linux/arch/arm64/Kconfig
-> > > @@ -1407,7 +1407,21 @@ config SCHED_SMT
-> > >    config NR_CPUS
-> > >    	int "Maximum number of CPUs (2-4096)"
-> > >    	range 2 4096
-> > 
-> > I think your mailer got to your patch and messed up the white space.
-> > There are two spaces before each of these lines rather than the usual
-> > one.
-> > 
-> > > -	default "256"
-> > > +	default 512
-> > > +
-> > > +#
-> > > +# Determines the placement of cpumasks.
-> > > +#
-> > > +# With CPUMASK_OFFSTACK the cpumasks are dynamically allocated.
-> > > +# Useful for machines with lots of core because it avoids increasing
-> > > +# the size of many of the data structures in the kernel.
-> > > +#
-> > > +# If this is off then the cpumasks have a static sizes and are
-> > > +# embedded within data structures.
-> > > +#
-> > > +config CPUMASK_OFFSTACK
-> > > +	def_bool y
-> > > +	depends on NR_CPUS > 256
-> > 
-> > Should that be ">= 256" ?
-> 
-> Maybe just select CPUMASK_OFFSTACK if NR_CPUS >= 256,
-> 
-> 
-> But could we just make CPUMASK_OFFSTACK configurable and let user/distro
-> to enable it?
-> 
-> diff --git a/lib/Kconfig b/lib/Kconfig
-> index 5ddda7c2ed9b..4254be5aa843 100644
-> --- a/lib/Kconfig
-> +++ b/lib/Kconfig
-> @@ -535,7 +535,9 @@ config CHECK_SIGNATURE
->         bool
-> 
->  config CPUMASK_OFFSTACK
-> -       bool "Force CPU masks off stack" if DEBUG_PER_CPU_MAPS
-> +       bool "Force CPU masks off stack"
-> +       depends on SMP
-> +       default n
+On Tue, Jan 16, 2024 at 08:24:20AM +0100, Krzysztof Kozlowski wrote:
+> On 16/01/2024 03:29, Frank Li wrote:
+> >>> 	Patches were accepted after discussion, what you ponit to. So I
+> >>> think everyone agree on the name 'silvaco,i3c-master-v1'.
+> >>> 	I plan send next version to fix auto build error. Any additional
+> >>> comments about this?
+> >>
+> >> I still do not see how did you address Rob's comment and his point is
+> >> valid. You just did not reply to it.
+> >=20
+> > See https://lore.kernel.org/imx/ZXCiaKfMYYShoiXK@lizhi-Precision-Tower-=
+5810/
+>=20
+> First of all, that's not the answer to Rob's email, but some other
+> thread which is 99% ignored by Rob (unless he has filters for
+> "@Rob"...). Therefore no, it does not count as valid answer.
+>=20
+> Second, explanation does not make sense. There is no argument granting
+> you exception from SoC specific compatibles.
 
-Please. No.
+The patch could have been applied two months ago had Frank done as
+was requested (multiple times). I don't understand the resistance
+towards doing so given the process has taken way way longer as a result.
 
-There is no point in defining a default of n. The default default is n.
-Therefore, specifying a default of n is utterly redundant as the option
-will still default to n and just adds clutter to Kconfig files.
+--tU9usgt5JDc4MslD
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaZMsQAKCRB4tDGHoIJi
+0oXjAQD+n2/ohO6suxsrwD5Ou5eVTuKiCJW4yn6SzYminXj4UQEA5Z7Y5G8MfUrU
+u49KfI9asa8Tjp9X2y7YIiNSAtP1Qg0=
+=nQni
+-----END PGP SIGNATURE-----
+
+--tU9usgt5JDc4MslD--
 
