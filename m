@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-28102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFDE582FA36
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:27:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B3A182FA52
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:30:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4376028ABC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:27:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CE59B27600
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:28:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CD2F151CC2;
-	Tue, 16 Jan 2024 19:59:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C065F34541;
+	Tue, 16 Jan 2024 19:59:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kEaV/rcn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dGwzxgFm"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4189B151470;
-	Tue, 16 Jan 2024 19:59:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A657151CD2;
+	Tue, 16 Jan 2024 19:59:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435147; cv=none; b=bZMKSZ0ri0bbPxDk6O6gj+tWfWPuntkMCL/vADn0LV4/HnNAaKzS8zlReG/7W2MiVeoicrdlIGSoalsIHTPI+MkglWKXqEnQWP4pezDkuj8ZdnpFvmqTrgp3dqvPICsNLsgQuVtYnoIfkUicNXdv8qDd6ZGsciiCzG+l1od/6N4=
+	t=1705435149; cv=none; b=SXGBHnrI55fd0x5/dlfAgf1D56tiJcqiPr0OgcVSnaxPaU0Q6hM4t8rJTRDfI+a709x5cYVhD/1B9T9OsvKt77Ksk+S8QnAAXjkDvixQCmdexZ8haW+2ZjOrYCqmEx74lD4b4b7LKBxTjauvKoTM0mI4Mqb8eCOMCAgq10QR7G4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435147; c=relaxed/simple;
-	bh=t+/Z8geTTCTdYeZaGHC/3idC0OS3/d+FROJO9Uly8mc=;
+	s=arc-20240116; t=1705435149; c=relaxed/simple;
+	bh=NcBlnEnk0thSUfQZeH64DPUe3vyHdF1agCliavCYbrQ=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=Jqyvlhs3GHI9z5bPlEwP+0o1jJi48yG95ZxVQmY3YmK9hR2I46BzJyTjGDyVAfB+Rtzdleja+Efa6TO4DtAWb0tEJAMW86qMsWK+8sb9sBA60a0iu0YSZU9RnPCOvnLts6bUut6sTwy474QpH9mQl5y/NNAn7VtlXtQ2sCbvOmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kEaV/rcn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D8F6C433C7;
-	Tue, 16 Jan 2024 19:59:06 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=PjBmyfSEkH5Fv91H5RGcY3BAGsuD5BkJVlomzJqtQSL7kUYbxq+ZA1s4NlKate3B+nOi+GbcWSDmF5VfyJZ+n8MTAQabo3FbMbeLRjI+hVxFyz6ZcOSG5540MfI2tOzCsnhRKPeEB89g7qq2TGC8c66kmpGPm8uKLMfN6tunBmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dGwzxgFm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B667C433F1;
+	Tue, 16 Jan 2024 19:59:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435147;
-	bh=t+/Z8geTTCTdYeZaGHC/3idC0OS3/d+FROJO9Uly8mc=;
+	s=k20201202; t=1705435148;
+	bh=NcBlnEnk0thSUfQZeH64DPUe3vyHdF1agCliavCYbrQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kEaV/rcnkCz+Wsl7vQp1LvYGkzNgQz0FJZTkfZRxR9ATN6lRRxVYcCGFw4Oy7hD7j
-	 slcdQz2syZEqNTaRFNo9NsAMuMnXbAWO+LauOIKV35tEtvt5N48e4tzZwis2+5WSbm
-	 33WwsS6TW5V3HD3rzAsBcQJ3rrCN4uc+SClzKEJcl9/Ny3OtbkmhWy5Ax1HX6yQIuf
-	 CtcWpAoQ0CN+HcHVnuxxzx94qqVBav8hcvWN0i6ZQNDBG/WqHCXYLN9kMzQr/ZEe2n
-	 UfASly+F48iq3CP97HJp0f5iQ0lcbytvnpyWvtt8c3Wuf2DHKZ1LCisFQcbWNpbDEG
-	 tgFVqf1KMHqmQ==
+	b=dGwzxgFm23onHysAatXr50BgwyQMo3cqdlOTLpIFOIBNy1PLYOAmbqkyN4fX6lyy3
+	 tEm+oxccNg8JfIUER5XU9Y8G82YReXu8za+Z7JRkMX/ihtR0LRndDiOBek9pBfdeXH
+	 oyHA9pqWb+owp9HQPlU8UUvX5wB8tFVvYiAkyNe/XMAI4SyF42wfAW3d1o3lpj6iIB
+	 YG+zvkJeW8WV8mlgmnHpZS8Qo3o1fzAPmKICUwwvKlj1A2mfD2qng393/gKABpX8GP
+	 l+zLplTYa2Cn26omoEvYhqGaKzolK/oIXvvwyBdGmAe9Ot9aTRDVslk3qlsNqfSgHg
+	 ANTKZtvhjpZHA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hou Tao <houtao1@huawei.com>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Hannes Reinecke <hare@suse.de>,
+	Christoph Hellwig <hch@lst.de>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
 	Sasha Levin <sashal@kernel.org>,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 15/47] bpf: Set need_defer as false when clearing fd array during map free
-Date: Tue, 16 Jan 2024 14:57:18 -0500
-Message-ID: <20240116195834.257313-15-sashal@kernel.org>
+	jejb@linux.ibm.com,
+	linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 16/47] scsi: libfc: Don't schedule abort twice
+Date: Tue, 16 Jan 2024 14:57:19 -0500
+Message-ID: <20240116195834.257313-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116195834.257313-1-sashal@kernel.org>
 References: <20240116195834.257313-1-sashal@kernel.org>
@@ -67,125 +67,66 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.147
 Content-Transfer-Encoding: 8bit
 
-From: Hou Tao <houtao1@huawei.com>
+From: Hannes Reinecke <hare@suse.de>
 
-[ Upstream commit 79d93b3c6ffd79abcd8e43345980aa1e904879c4 ]
+[ Upstream commit b57c4db5d23b9df0118a25e2441c9288edd73710 ]
 
-Both map deletion operation, map release and map free operation use
-fd_array_map_delete_elem() to remove the element from fd array and
-need_defer is always true in fd_array_map_delete_elem(). For the map
-deletion operation and map release operation, need_defer=true is
-necessary, because the bpf program, which accesses the element in fd
-array, may still alive. However for map free operation, it is certain
-that the bpf program which owns the fd array has already been exited, so
-setting need_defer as false is appropriate for map free operation.
+The current FC error recovery is sending up to three REC (recovery) frames
+in 10 second intervals, and as a final step sending an ABTS after 30
+seconds for the command itself.  Unfortunately sending an ABTS is also the
+action for the SCSI abort handler, and the default timeout for SCSI
+commands is also 30 seconds. This causes two ABTS to be scheduled, with the
+libfc one slightly earlier. The ABTS scheduled by SCSI EH then sees the
+command to be already aborted, and will always return with a 'GOOD' status
+irrespective on the actual result from the first ABTS.  This causes the
+SCSI EH abort handler to always succeed, and SCSI EH never to be engaged.
+Fix this by not issuing an ABTS when a SCSI command is present for the
+exchange, but rather wait for the abort scheduled from SCSI EH.  And warn
+if an abort is already scheduled to avoid similar errors in the future.
 
-So fix it by adding need_defer parameter to bpf_fd_array_map_clear() and
-adding a new helper __fd_array_map_delete_elem() to handle the map
-deletion, map release and map free operations correspondingly.
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Link: https://lore.kernel.org/r/20231204140425.1480317-4-houtao@huaweicloud.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Link: https://lore.kernel.org/r/20231129165832.224100-2-hare@kernel.org
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/arraymap.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ drivers/scsi/libfc/fc_fcp.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index c76870bfd816..8c4201dc6959 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -815,7 +815,7 @@ int bpf_fd_array_map_update_elem(struct bpf_map *map, struct file *map_file,
- 	return 0;
- }
+diff --git a/drivers/scsi/libfc/fc_fcp.c b/drivers/scsi/libfc/fc_fcp.c
+index 509eacd7893d..a1015a81e86e 100644
+--- a/drivers/scsi/libfc/fc_fcp.c
++++ b/drivers/scsi/libfc/fc_fcp.c
+@@ -270,6 +270,11 @@ static int fc_fcp_send_abort(struct fc_fcp_pkt *fsp)
+ 	if (!fsp->seq_ptr)
+ 		return -EINVAL;
  
--static int fd_array_map_delete_elem(struct bpf_map *map, void *key)
-+static int __fd_array_map_delete_elem(struct bpf_map *map, void *key, bool need_defer)
- {
- 	struct bpf_array *array = container_of(map, struct bpf_array, map);
- 	void *old_ptr;
-@@ -834,13 +834,18 @@ static int fd_array_map_delete_elem(struct bpf_map *map, void *key)
- 	}
- 
- 	if (old_ptr) {
--		map->ops->map_fd_put_ptr(map, old_ptr, true);
-+		map->ops->map_fd_put_ptr(map, old_ptr, need_defer);
- 		return 0;
- 	} else {
- 		return -ENOENT;
- 	}
- }
- 
-+static long fd_array_map_delete_elem(struct bpf_map *map, void *key)
-+{
-+	return __fd_array_map_delete_elem(map, key, true);
-+}
++	if (fsp->state & FC_SRB_ABORT_PENDING) {
++		FC_FCP_DBG(fsp, "abort already pending\n");
++		return -EBUSY;
++	}
 +
- static void *prog_fd_array_get_ptr(struct bpf_map *map,
- 				   struct file *map_file, int fd)
- {
-@@ -870,13 +875,13 @@ static u32 prog_fd_array_sys_lookup_elem(void *ptr)
+ 	per_cpu_ptr(fsp->lp->stats, get_cpu())->FcpPktAborts++;
+ 	put_cpu();
+ 
+@@ -1700,11 +1705,12 @@ static void fc_fcp_recovery(struct fc_fcp_pkt *fsp, u8 code)
+ 	fsp->status_code = code;
+ 	fsp->cdb_status = 0;
+ 	fsp->io_status = 0;
+-	/*
+-	 * if this fails then we let the scsi command timer fire and
+-	 * scsi-ml escalate.
+-	 */
+-	fc_fcp_send_abort(fsp);
++	if (!fsp->cmd)
++		/*
++		 * Only abort non-scsi commands; otherwise let the
++		 * scsi command timer fire and scsi-ml escalate.
++		 */
++		fc_fcp_send_abort(fsp);
  }
  
- /* decrement refcnt of all bpf_progs that are stored in this map */
--static void bpf_fd_array_map_clear(struct bpf_map *map)
-+static void bpf_fd_array_map_clear(struct bpf_map *map, bool need_defer)
- {
- 	struct bpf_array *array = container_of(map, struct bpf_array, map);
- 	int i;
- 
- 	for (i = 0; i < array->map.max_entries; i++)
--		fd_array_map_delete_elem(map, &i);
-+		__fd_array_map_delete_elem(map, &i, need_defer);
- }
- 
- static void prog_array_map_seq_show_elem(struct bpf_map *map, void *key,
-@@ -1017,7 +1022,7 @@ static void prog_array_map_clear_deferred(struct work_struct *work)
- {
- 	struct bpf_map *map = container_of(work, struct bpf_array_aux,
- 					   work)->map;
--	bpf_fd_array_map_clear(map);
-+	bpf_fd_array_map_clear(map, true);
- 	bpf_map_put(map);
- }
- 
-@@ -1169,7 +1174,7 @@ static void perf_event_fd_array_release(struct bpf_map *map,
- 	for (i = 0; i < array->map.max_entries; i++) {
- 		ee = READ_ONCE(array->ptrs[i]);
- 		if (ee && ee->map_file == map_file)
--			fd_array_map_delete_elem(map, &i);
-+			__fd_array_map_delete_elem(map, &i, true);
- 	}
- 	rcu_read_unlock();
- }
-@@ -1177,7 +1182,7 @@ static void perf_event_fd_array_release(struct bpf_map *map,
- static void perf_event_fd_array_map_free(struct bpf_map *map)
- {
- 	if (map->map_flags & BPF_F_PRESERVE_ELEMS)
--		bpf_fd_array_map_clear(map);
-+		bpf_fd_array_map_clear(map, false);
- 	fd_array_map_free(map);
- }
- 
-@@ -1214,7 +1219,7 @@ static void cgroup_fd_array_put_ptr(struct bpf_map *map, void *ptr, bool need_de
- 
- static void cgroup_fd_array_free(struct bpf_map *map)
- {
--	bpf_fd_array_map_clear(map);
-+	bpf_fd_array_map_clear(map, false);
- 	fd_array_map_free(map);
- }
- 
-@@ -1260,7 +1265,7 @@ static void array_of_map_free(struct bpf_map *map)
- 	 * is protected by fdget/fdput.
- 	 */
- 	bpf_map_meta_free(map->inner_map_meta);
--	bpf_fd_array_map_clear(map);
-+	bpf_fd_array_map_clear(map, false);
- 	fd_array_map_free(map);
- }
- 
+ /**
 -- 
 2.43.0
 
