@@ -1,58 +1,57 @@
-Return-Path: <linux-kernel+bounces-27624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C889682F327
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:28:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D539182F329
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:28:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC2F81C231E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:27:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A0FA1F2366D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:28:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C5971CD10;
-	Tue, 16 Jan 2024 17:27:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42BFA1CAB2;
+	Tue, 16 Jan 2024 17:28:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W7xXYZef"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fK03GT/O"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AD951CD07;
-	Tue, 16 Jan 2024 17:27:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 863051CA87;
+	Tue, 16 Jan 2024 17:28:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705426062; cv=none; b=DKaGQkYPBJQVcTxtKzBEdiMlcbtYv3vci0aIYNPVLp1wcvQoSoACY76CDHiOPeUHbCnIqKKCgfMhpwJbRMvsW1vhDgllct/2NMPVaNk9+V3oMOly+ovq8AZq/KzB6fymiE8doiNh9QgmKmdiGHEgpBVX4tq+esfmI6lY7yyP/qI=
+	t=1705426105; cv=none; b=ditpHM5LsHCT2VU6l/HGJ4GyyAcDkuMLsgeg9P7XqCm+WDF06vXgpqYozK1oml5FEbklzfLcpo5e0J3NCeOQdwU3FmZImqEIPlJlnhIW4RE5ukz5WXxG9vLY/AKErDtaoflCZ5o1WXs+Mir2uL0JpvHvZOumdeI1RzkjtUat52A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705426062; c=relaxed/simple;
-	bh=F0m7WszRnbOFEV/7dKFI1v5hbATkstlQoZ5sZXa7SMc=;
+	s=arc-20240116; t=1705426105; c=relaxed/simple;
+	bh=SWL5G0LjV0lpMDKzn8CRRXkd5G6+btg5P5k/L59uDfA=;
 	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=GfwUecewwgY483Ioi2iTyh3L4XMHxlNtAF/71uMasV16gLqCsZjvWEFrcTwPLE3remUetRNG/JoUfeDm50V2+3p+DrFgfMYr7fPc8UOKkz1dgiWaWD50PRHMEq5+fpPLm/oXDsgw/2FAghwpchTIluA5hev5bqvKdo+oqVKxdDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W7xXYZef; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 358DEC433C7;
-	Tue, 16 Jan 2024 17:27:40 +0000 (UTC)
+	 In-Reply-To; b=u5ub+/4Odu1m8gIK0xzEGdXG/K2PcErK8U+KT/mKpbQMUFBKXmALHHBjULGAOKbfL+H/1eVpz1cazCGpGw8BS12P6dVQbK4KquRx2ZPGfLdsAD27h4PlpW5/2tu9KMgo9OtcSPkHMYw64Y5Ll9eL5mheWMuLTiZAHE67xeA4d7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fK03GT/O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CC11C433C7;
+	Tue, 16 Jan 2024 17:28:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705426061;
-	bh=F0m7WszRnbOFEV/7dKFI1v5hbATkstlQoZ5sZXa7SMc=;
+	s=k20201202; t=1705426105;
+	bh=SWL5G0LjV0lpMDKzn8CRRXkd5G6+btg5P5k/L59uDfA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=W7xXYZefE6IgF6jGnqnIdZp1qM5fs7BesIzbnVR17aW7yD6v95+52ch4u+oMeUNtw
-	 i+jSELjufOLBN0KEPgTCxfJIXCA+eLbd/VmHN7vby9cxH8Gq8iJgLn62+KJv8v2QqQ
-	 ozctigwLcoGXaBujyAeeOAemgqAYmIPxGYpPwP8LkAq84D+fLHDu9DAErapa35XBvL
-	 79Tr3pW+Ap2mxkL02lwHv60yI/+zloMv2roPZh/YXpUbKRSSvJyyQ8gOdrPsj+FQRB
-	 OQQnbgrGXIsOL85XlNdryy2Tst3fwjaq85UxoHN66LI316SOkbpjoleaddpP8jQkAH
-	 PuYucQzc1jWlQ==
-Date: Tue, 16 Jan 2024 17:27:37 +0000
+	b=fK03GT/OWFBrC0LOzXAl0GPKkSUteJrIfgk0K26pApAeYiEdvicmRiMoJRcPFgEOm
+	 8PMS9BXyWCPPw8O+xRkuhxr791c3Zfv6COgvZB9kk47L29n29wmU0jby6bujdpIVAD
+	 FYju1PZUDmF+6IkhuUHtuabsGhJFf7LQISubDsA2zxUybB+tuIFyUk1B5GD3QAqVLT
+	 9JF0VeVVQ4/795TS4UDz7o3gXRSw5H9k/VCJO/EWCH0EV4rRFyBhWn7Ko0TQf9HgQs
+	 qhFTcHPS4RgExjtuKp047FvzgaTbAt4XjZbpDCnI61zJ2zQ3VHP49EfjRH4njaPYWx
+	 WQzOv4ley8w9A==
+Date: Tue, 16 Jan 2024 17:28:21 +0000
 From: Conor Dooley <conor@kernel.org>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
+Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-input@vger.kernel.org,
+	Conor Dooley <conor+dt@kernel.org>, Jeff LaBundy <jeff@labundy.com>,
 	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: input: silead,gsl1680: do not override
- firmware-name $ref
-Message-ID: <20240116-culminate-music-1ce4ada58edf@spud>
-References: <20240115182057.1610195-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] dt-bindings: mfd: iqs62x: Do not override firmware-name
+ $ref
+Message-ID: <20240116-porcupine-tibia-86a0b72beb5c@spud>
+References: <20240115182042.1610134-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,37 +59,27 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="jPUmpLPVy6cMKpxP"
+	protocol="application/pgp-signature"; boundary="zK8bEK6C98ZCcMF7"
 Content-Disposition: inline
-In-Reply-To: <20240115182057.1610195-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240115182042.1610134-1-krzysztof.kozlowski@linaro.org>
 
 
---jPUmpLPVy6cMKpxP
+--zK8bEK6C98ZCcMF7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jan 15, 2024 at 07:20:57PM +0100, Krzysztof Kozlowski wrote:
-> dtschema package defines firmware-name as string-array, so individual
-> bindings should not make it a string but instead just narrow the number
-> of expected firmware file names.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-
-
---jPUmpLPVy6cMKpxP
+--zK8bEK6C98ZCcMF7
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaa8iQAKCRB4tDGHoIJi
-0huuAPoCx3g9gsIcadCaO0TIoyycQarpVU6FxILXNR2aXwfQfgEAh75nxTEKsu6O
-ajDVtX4dCdYKECHfSG+6DkTV4ucowwY=
-=wK0V
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaa8tQAKCRB4tDGHoIJi
+0sWEAQCF4cHfGy+VeTORaPLC2SPrznEUpRBL+2WPBHCTad5b0gD/dLG6mNx7TrjD
+M15iQk/FX3T/SUpmWyHENjXbTbGVzwE=
+=p+Bx
 -----END PGP SIGNATURE-----
 
---jPUmpLPVy6cMKpxP--
+--zK8bEK6C98ZCcMF7--
 
