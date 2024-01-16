@@ -1,118 +1,151 @@
-Return-Path: <linux-kernel+bounces-27023-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6600C82E94E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 06:59:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5077B82E950
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 06:59:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12E471F24153
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 05:59:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4E7628560D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 05:59:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BB31111A1;
-	Tue, 16 Jan 2024 05:58:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E82810A09;
+	Tue, 16 Jan 2024 05:58:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KXZzl4p+"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="NMkkKK01"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8723811193;
-	Tue, 16 Jan 2024 05:58:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40G3v8ZG013344;
-	Tue, 16 Jan 2024 05:58:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=Mj8/AyNRT7fNEiR0tzfDTVBb78J1oJHwRqPdxSbo124=; b=KX
-	Zzl4p+uShJLiYESvZEu4fDEctYpsEppQS1O9R09xmiBiwpN2rT/z0ptA/nWB3KRr
-	ksKPVqkd21uMwnq802MdrexhvbEiPn4qyD1ZBBzN/18AZStgvA7PInCFUmpuIdc0
-	083yhGoXjc1zZvqXIBhGyXOcd0ArTlnpYLeFerkq8PkVDFMItY0Z7Dd67mYrPX8x
-	0NstGcHerzBlMFwQ/BIxkwGOvnwqmB/Ba0GULjV7rT36RcQKHr00Y/7ReVcCY8T+
-	3mMl/XtYTE32gG6tpVblbyjT16XsAZPpiB6d7S4CmLr511GqBulV9VCKhpZ3VT4u
-	YZxWSDzs/u7HObrwq85A==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vnht908am-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 05:58:37 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40G5wZ4C027259
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 05:58:36 GMT
-Received: from hu-prashk-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 15 Jan 2024 21:58:33 -0800
-From: Prashanth K <quic_prashk@quicinc.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thinh Nguyen
-	<Thinh.Nguyen@synopsys.com>,
-        Mathias Nyman <mathias.nyman@intel.com>
-CC: Hans de Goede <hdegoede@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, Prashanth K <quic_prashk@quicinc.com>,
-        <stable@vger.kernel.org>
-Subject: [PATCH v3 2/2] usb: host: xhci-plat: Add support for XHCI_SG_TRB_CACHE_SIZE_QUIRK
-Date: Tue, 16 Jan 2024 11:28:16 +0530
-Message-ID: <20240116055816.1169821-3-quic_prashk@quicinc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240116055816.1169821-1-quic_prashk@quicinc.com>
-References: <20240116055816.1169821-1-quic_prashk@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E3F3E553;
+	Tue, 16 Jan 2024 05:58:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CDLKKz9pNITrMIPa+2VyDISpVSnkRjB51uzJTmpdUpDg0c7Ve3ZHpkEwXRpd8i4Q40d85vIV/1aIbdFKxZr21l/fpe1hwKl6kYwTXxB6FqD/JMktbgq3bR//Ii758Zzl/aDCSCZFaXyR3y8jO/2om0wBm+/728ErCVlBKK51aVs/GfXR5U+hu6MmiX8JYbcf9eFZhvamcvxacYnfOMQtwVQgs7LhoqTdAfPz+MeYAS4ZcaolRX5g6DjTTFKNZq9mW62PN9CdU5KFMBRM5jEt7yQDyULFxO3qAsAOPuSGK3Yx7k0pSY6Z5ovdyakf2clDV/3hKbbqLQX5eUwAOK7xzA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pC8/3/nbXXUfFM0vZHae5VQ44SB8Ier6yIW32iWXTLo=;
+ b=QmOXtpHVKLBKm8WUCBnWmkNuh2tV/ndSoGnt00ZiHH533ZgJu/Ke3uIT5LT+zl0LTVyCbKIpSe5gTMCQT5WJURerDkuXe+OcA7Mo2xCUj4SzFPjCjlPBOiZ9l4iposJdzVH0L7FmvvENvxvEXJ5mLBCzx170KNGTD0jQwwWGAMKF+13Z1vLgT9Ay1E/zYFpiNHkSVfRRYyO/9CP2IMgJjIUZyhC1bNGyW5tBa6tRnr81K4qD3pL/Nq0be72xbMq7sEJoLVFlcQYogR6q79hmwQ9kAjVF04PFimz1GOr1lpxQGeWHl2Z0w9HAyVTme9lUy0sPItEheyx2rac8c4PeQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pC8/3/nbXXUfFM0vZHae5VQ44SB8Ier6yIW32iWXTLo=;
+ b=NMkkKK01bvWW5vJSr98V551dsBxqczkf0bZySTVsRaqLETFWisl8d9OZWag3lQesQ6hgMH2t/HQsRrr5+f2LLaYaI+bXMOkQXpzrDogPb84HdoUBHVlUdOI4r/BwL/NWw1VsUbMflU2y0ib12Air1Z95tFtYa9/NI3zqVisWnYXyHMwT+Y+WCw6zBcDAHAAq0dHwnlbCd9kP9VtiKv0tm8EygApgbxjaAKJCv+g0r97tqOtjNTPPTzgfrBx7C7LpsQMazJA8DSX1z4lkiu9CRuBgf3OSw/zAV7l7Y1JlYM5Xo6atqqvIaedJKsNUnymekw6lBDdE/iff5s0REw05tg==
+Received: from SA1PR12MB7199.namprd12.prod.outlook.com (2603:10b6:806:2bc::21)
+ by DS0PR12MB6462.namprd12.prod.outlook.com (2603:10b6:8:c6::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Tue, 16 Jan
+ 2024 05:58:53 +0000
+Received: from SA1PR12MB7199.namprd12.prod.outlook.com
+ ([fe80::e23f:7791:dfd2:2a2d]) by SA1PR12MB7199.namprd12.prod.outlook.com
+ ([fe80::e23f:7791:dfd2:2a2d%7]) with mapi id 15.20.7181.022; Tue, 16 Jan 2024
+ 05:58:53 +0000
+From: Ankit Agrawal <ankita@nvidia.com>
+To: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+CC: Jason Gunthorpe <jgg@nvidia.com>, "alex.williamson@redhat.com"
+	<alex.williamson@redhat.com>, Yishai Hadas <yishaih@nvidia.com>,
+	"shameerali.kolothum.thodi@huawei.com"
+	<shameerali.kolothum.thodi@huawei.com>, "kevin.tian@intel.com"
+	<kevin.tian@intel.com>, "eric.auger@redhat.com" <eric.auger@redhat.com>,
+	"brett.creeley@amd.com" <brett.creeley@amd.com>, "horms@kernel.org"
+	<horms@kernel.org>, Aniket Agashe <aniketa@nvidia.com>, Neo Jia
+	<cjia@nvidia.com>, Kirti Wankhede <kwankhede@nvidia.com>, "Tarun Gupta
+ (SW-GPU)" <targupta@nvidia.com>, Vikram Sethi <vsethi@nvidia.com>, Andy
+ Currid <acurrid@nvidia.com>, Alistair Popple <apopple@nvidia.com>, John
+ Hubbard <jhubbard@nvidia.com>, Dan Williams <danw@nvidia.com>, "Anuj Aggarwal
+ (SW-GPU)" <anuaggarwal@nvidia.com>, Matt Ochs <mochs@nvidia.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v16 2/3] vfio/pci: implement range_intesect_range to
+ determine range overlap
+Thread-Topic: [PATCH v16 2/3] vfio/pci: implement range_intesect_range to
+ determine range overlap
+Thread-Index: AQHaR/f+hq/WnUlfoUWt4169ze8Rb7Db5z2AgAAKxGQ=
+Date: Tue, 16 Jan 2024 05:58:53 +0000
+Message-ID:
+ <SA1PR12MB7199C84CE3DD81F17E8A03E0B0732@SA1PR12MB7199.namprd12.prod.outlook.com>
+References: <20240115211516.635852-1-ankita@nvidia.com>
+ <20240115211516.635852-3-ankita@nvidia.com> <871qahzw8m.fsf@nvidia.com>
+In-Reply-To: <871qahzw8m.fsf@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR12MB7199:EE_|DS0PR12MB6462:EE_
+x-ms-office365-filtering-correlation-id: 5d26d8b7-4294-49ca-1f7b-08dc165837fc
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ KjD6ZjhIx5Bq30fZNuPxPh4ouBGMxIzPoGRrcoEgwOE1exiO6m0FTE4wj1uV9IkdDYi7RH/PKVhAvY3O/NqMK77dV1ujvgpAVqrdPv0MiDWNl5NRgL2t3sCIbnbUF1gS87kwkSK8aywkYquWoHWkyBl2i2awxSRX+0e5w1bETgk74MuJ72ZDX+p9ttdqK6zo4syFnt9yN6hqOCiUbKIJnRuyLUlb6C9jSYYzdz/P931xKZibKIrVVZ34lY4DbT2tDPSd8MbwVuwZpXMK/FHXhrCqzL+59T7DtVHsSIduYN2pU1P41Ceyi1CPh203TBvJRAJy32yzwVh1zovKF/oxn4om+txkotvhHHVIfv9S9PIe6h4BWiVG6urvOb0mQkNAfSTDaiKbysiHiNaYpDQsWkoORT2WkUB4X7V/r2YT5WL2e3+zo5+mC2OkJZiZ5dozhK06f6wM6K5sri4K0U1VaFplZyMGxEW3hyB7K5GuX27Nv9aSucHm9nqbYjQdEVIxkh6vJcP1jbZgEjwcuqig5IEuQ3pzImTRaMzwuMmqWbeAGEWLLXv7kMJ0NkGTFVYwN173SMUAi6pywnYwrB6c/aKbG06O4L6XVg6+5Ol/qeBGaIFHf00y4Ij1zpemQaN/
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR12MB7199.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(376002)(346002)(39860400002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(71200400001)(26005)(7696005)(478600001)(9686003)(6506007)(91956017)(76116006)(4744005)(5660300002)(41300700001)(2906002)(4326008)(66446008)(66556008)(66946007)(52536014)(6862004)(54906003)(64756008)(6636002)(8936002)(316002)(66476007)(8676002)(86362001)(38100700002)(38070700009)(122000001)(33656002)(55016003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?NWnxVsd9a2O7bjAEdTutyis+J5quu5K5pd4baDU9g5SdvSajvLi/iK1TEC?=
+ =?iso-8859-1?Q?kXmKP037PoDezabrPtlo19NXL8mjF/9IUPYOYy/Xc/lFXxX99w7NsL89b9?=
+ =?iso-8859-1?Q?0eIbYfxFeTIEiM7dJW8K0jg5KviuwFRLfgT+b6xIB9F45DIvjuaIPKeez2?=
+ =?iso-8859-1?Q?tSZ+R6JNNPK7zMT8jbBDuW+W5AcbzJHNoefKqW3S1dZ7OCUXjgvMz3ZwUr?=
+ =?iso-8859-1?Q?mQiAO/zKF/Q+mIJVJDqvwCD7tqLketDqsGdqmDlqz0/e5PVNDHRp1mrIda?=
+ =?iso-8859-1?Q?S4M58O++dc3Zbv5WGSxKkJ8tHHCA9SXr1Ud2kAo6LIwrY0P3Qoy4L7VBJA?=
+ =?iso-8859-1?Q?PM6zGei3/yK61PShJLTgZM49+zcyppg3olDXULxzO48eciw+LpZk5vAldE?=
+ =?iso-8859-1?Q?vyinWrCU0XbBJ5CUEdxD1qkzEeWAN2u04J5BGz0WgeP2tmvne+jujW4UeD?=
+ =?iso-8859-1?Q?s5Ewn00narx+LTvojx7gzlDh7IVrrDZ1fVGbcBa2n+kRm+wWUE0ojNVvwx?=
+ =?iso-8859-1?Q?dks8o367oTHRSVpvc8V4NUjY9JNHSi3FvoGm7++aK1QjuC2+hUPtG1T8Ci?=
+ =?iso-8859-1?Q?Rw6th60odaODPAPiCmI8i5nxqi0PWRyQwPvh4vg7OhBDnCB17ObqaxIA75?=
+ =?iso-8859-1?Q?i9O6TYfTV0KkkgEaHxWkfiGBTJAuMcFDGPdmxvSA/knJHtZzWfjVuWhWvm?=
+ =?iso-8859-1?Q?ztF/BhUYl7GFDJ9BzmgR0e3wrQaVM+PoZofjo7jZ/OLw6y8dyCnVwBWeI6?=
+ =?iso-8859-1?Q?v5R6DICTtzYSD2Dmp86n60JnP+6/vgjYnQ0k/7UYcZwNZ0IZ26JX0m+paq?=
+ =?iso-8859-1?Q?bgp0iSyCLkfZazdS3+rBHHWt1W9821eQf6Q0d6MyV8eLynakD7rlWvh/+G?=
+ =?iso-8859-1?Q?kUT3T1512r2ggkSkh7+ZGvAdSagKxb+h4GUJUW7X3EkTLK0ZEK156N1aw5?=
+ =?iso-8859-1?Q?2xatT6ignMKgLRE8C4flrDuKgKItDmkruxOHPMPsYeUOyeT48ezE82kj6r?=
+ =?iso-8859-1?Q?PegBbo/tk/Vs75TLhmQeEP3wtYSIsxwo/Hx//MY/NOF9sDaSs7MuiuJ00d?=
+ =?iso-8859-1?Q?eKD2enk5QnT1Vny20mQGNzY/NKiCOb6E7++CS+NalaOINxVd+idhiAgxqR?=
+ =?iso-8859-1?Q?X1G5dymNR5CAEklJps5n450iGjKu/kXjzjwhJcnyxSv9iTtojXFHEXEWJU?=
+ =?iso-8859-1?Q?O9zn5DYiTRKUquDhgnk6Ou6Tamvc0JEN0Y8jxM835Y9B81qTt82HdDtubE?=
+ =?iso-8859-1?Q?e0Bd7+7AO/aE0U9G8sMfPEOiFzqHcZTzBn0EnHcBOqD61QEsfgU7fh9D+w?=
+ =?iso-8859-1?Q?4mpoLGTMoWxV2ZuCyPc5li/3rYt/TTjvllPM/Kg7XNQMxfhI/lpXcbQB3v?=
+ =?iso-8859-1?Q?+a5dBrZH2AoHGcb9s2cIbjS6e9gi9zJt7wX71SkgB5h3O8D/xBSCPeRGPy?=
+ =?iso-8859-1?Q?QU6c04D3bUcM5e+UQZvIHov61EzeT7GZ5XvynwVI1H05IRCWYKZCXmHO+y?=
+ =?iso-8859-1?Q?p9nQLtLDwGMnvtpS6hpu+uueZK4zsmQ0AtwAevjZ2CeJOB2GZhP7oxZjAG?=
+ =?iso-8859-1?Q?0ifTs7iG4iD7ltg1eE8hqOQdSFR+dNlbOmtEAhYkxEKndeyWpFTPe9gU6X?=
+ =?iso-8859-1?Q?3U9ueEcDeQMkM=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: eZlwjPnm-ELeGCMaUlyqBTvYb9WtkKRQ
-X-Proofpoint-GUID: eZlwjPnm-ELeGCMaUlyqBTvYb9WtkKRQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- suspectscore=0 spamscore=0 mlxlogscore=999 priorityscore=1501
- lowpriorityscore=0 bulkscore=0 mlxscore=0 phishscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401160044
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR12MB7199.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5d26d8b7-4294-49ca-1f7b-08dc165837fc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jan 2024 05:58:53.1788
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pq3wqHUdNr1RtTWCnpoh8QZxAAen8XlrJ+JzoWE2XET6WfUSPmZt/69XxQh00w8caOAzqy0lbX0M77E5++lkCA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6462
 
-Upstream commit bac1ec551434 ("usb: xhci: Set quirk for
-XHCI_SG_TRB_CACHE_SIZE_QUIRK") introduced a new quirk in XHCI
-which fixes XHC timeout, which was seen on synopsys XHCs while
-using SG buffers. Currently this quirk can only be set using
-xhci private data. But there are some drivers like dwc3/host.c
-which adds adds quirks using software node for xhci device.
-Hence set this xhci quirk by iterating over device properties.
-
-Cc: <stable@vger.kernel.org> # 5.11
-Fixes: bac1ec551434 ("usb: xhci: Set quirk for XHCI_SG_TRB_CACHE_SIZE_QUIRK")
-Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
----
- drivers/usb/host/xhci-plat.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-index f04fde19f551..3d071b875308 100644
---- a/drivers/usb/host/xhci-plat.c
-+++ b/drivers/usb/host/xhci-plat.c
-@@ -253,6 +253,9 @@ int xhci_plat_probe(struct platform_device *pdev, struct device *sysdev, const s
- 		if (device_property_read_bool(tmpdev, "quirk-broken-port-ped"))
- 			xhci->quirks |= XHCI_BROKEN_PORT_PED;
- 
-+		if (device_property_read_bool(tmpdev, "xhci-sg-trb-cache-size-quirk"))
-+			xhci->quirks |= XHCI_SG_TRB_CACHE_SIZE_QUIRK;
-+
- 		device_property_read_u32(tmpdev, "imod-interval-ns",
- 					 &xhci->imod_interval);
- 	}
--- 
-2.25.1
-
+>> +}=0A=
+>> +EXPORT_SYMBOL_GPL(range_intersect_range);=0A=
+>=0A=
+> If this function is being exported, shouldn't the function name follow=0A=
+> the pattern of having the vfio_pci_core_* prefix like the rest of the=0A=
+> symbols exported in this file. Something like=0A=
+> vfio_pci_core_range_intersect_range?=0A=
+=0A=
+Yes, that would be apt. Will make the change.=
 
