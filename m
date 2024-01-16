@@ -1,121 +1,107 @@
-Return-Path: <linux-kernel+bounces-28308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3393B82FCCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:29:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 488CB82FCD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:29:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD56F28D58C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:29:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D62881F2D626
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:29:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4A0835297;
-	Tue, 16 Jan 2024 21:32:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="IpImeec6"
-Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18ED9358A9;
+	Tue, 16 Jan 2024 21:34:49 +0000 (UTC)
+Received: from fgw22-7.mail.saunalahti.fi (fgw22-7.mail.saunalahti.fi [62.142.5.83])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C0D9321B9
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 21:32:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36F1035294
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 21:34:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.83
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705440758; cv=none; b=qx/FZ7Yaz44FJXn564S+SmbCDBKH5LP/ZJVWACBARsZ4q03Ey9PPdJNHhFQYIgKj1bWpWGowH446eiHtuwxYA75ydI1BA/3tly9y1+trViZdwfufpUauWBwPTSCOa5w7i/ywvZsqOS5CPaQYh8VbEYfpVwqAEPbFGWLuVR8cVEo=
+	t=1705440888; cv=none; b=cMt02s62NB0cPlnHGYs7IkwNgGsg06P4hq0XG3R08+zWVDTWusiO7GUuIrQV06mpAJa99NOioNJr3SIkOY1S7neXurwe71UPebH9CHGSLYYhBA4nycTan6LsRl1kVtrLKd0hIOyemawVVH3DJfKtejEtg7RQJcNSnUrRZJdhvKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705440758; c=relaxed/simple;
-	bh=3yocsVfSDvxZThq90Dj3nH0nus8tfly+X0MaJvdgtaQ=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 To:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=uPhHve2b/veWrU09iIHjetmHfv6bPrkhVrvMP/Tre5NE1XyZTdyRk34ZoqOPgOk2y/69LeUto5bzYWEw3P28V0GIOluznlPcEsOD4Y7Kb9s3NjEiby0r579nN23C/bpg/nx67aVeUFaEjpl7Pqr5qgmxEkjW5ULC2q3ejzHERSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=IpImeec6; arc=none smtp.client-ip=209.85.166.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7bee9f626caso51543439f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 13:32:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1705440754; x=1706045554; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YuP1ZSfv05ObmtuBguIF3PEonyWKaCpp8Usq9FqYdaQ=;
-        b=IpImeec6Ztag7ymu/BeQsnkdHhwh7+spJR3C1QKE87bd5cRFu1FQ9TsFK9ckMe3XNZ
-         7/3cc81cOhF0R4ZB0YQ6I2axnHm6VVspDFParUnOfwOMcn8QJq8tW6mI/y7jvwu8EjB6
-         gZKOuY4vZMM4iK8G6sdBi/fpsLeSKKS2uoOtAf5fPg8w4+HZh2Vg2ihBDIUKSn44pviH
-         TOhdRnfDNx/UR2Uj+4UGC2H9ackzI+DD0vSms5Bsd73ZMrOLSpSYfLJzpmtHtbelMfkK
-         yq61bS6MHawmBYpfBpnI60xC7s2ShAr5+UYIxivKFrAs4r7Z0TpigMGoBzIRD7wkQPXH
-         Rg9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705440754; x=1706045554;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YuP1ZSfv05ObmtuBguIF3PEonyWKaCpp8Usq9FqYdaQ=;
-        b=ek+vExsvriMH9DTK8AU5KBf6Sv1/PVBVznrjGe/ozdr8ft5QiDEn/eHEShG2i2Zw0w
-         7avfkKo83vXZFC2hltYjSFZrLJj5DUGrrlKnT+MOamshPBibHQ49mFpDhqA+ho79Kspy
-         PzKimcBVghIXTKdkepOQ4sL8saMnVXCtmqXhZBUPlFDzUHQFcWCK4FHdRVlk68Avia85
-         sCBlCCMnl82IGVkVdwgV7o0+HD8mNI0TBUHJ0+FlwBZR5eTDpcVbq1IwrZMWFwYjvhZb
-         yvg5uw3KiWdsIIKgOTgxhvaGFGzThdT+JFHndXtcX/S/Lsd0fosbgbkwyqbaiaHFYhkM
-         R46w==
-X-Gm-Message-State: AOJu0YyJoHdPnyxSXmoeIPJciqgd2XPhg1rfQJAZ9VAAiBaCOcOkV8ch
-	r4MA5qXuPUSbo3+Bcld81TVVDWMSg1nTxQ==
-X-Google-Smtp-Source: AGHT+IHGBWfXZuz+JxnUw5W0S83vUvP3llxnQWtTkehX6ZpkBeJfEhlXbU3TUyeDZuGlC1GwlETGow==
-X-Received: by 2002:a5e:834b:0:b0:7bc:2603:575f with SMTP id y11-20020a5e834b000000b007bc2603575fmr195550iom.0.1705440754189;
-        Tue, 16 Jan 2024 13:32:34 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id n22-20020a056638265600b0046e552de3c0sm23529jat.117.2024.01.16.13.32.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jan 2024 13:32:33 -0800 (PST)
-Message-ID: <71ba9456-45a7-4042-8716-ccd68cc7329f@kernel.dk>
-Date: Tue, 16 Jan 2024 14:32:32 -0700
+	s=arc-20240116; t=1705440888; c=relaxed/simple;
+	bh=8q2kkthKKZfmYT6jrWqhYmpSkNgCxvG1e59sTCJKmBA=;
+	h=Received:From:Date:To:Cc:Subject:Message-ID:References:
+	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=lwlnh2481x1/mRSBo4kihnWowA6k7IE2MiwMyawiIo6/cTaEbDcXk4SluAHPUWzhnq8qLTFrCXR8wu4Uhctb49EL28EbOG8M6gJG/BVZh4HxJIubAstAGyqcVWxx0m1VkFMkPGYB38Ha0uq0Hk5XTq8aG94f6LYo7B6bHNQTFxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+Received: from localhost (88-113-24-108.elisa-laajakaista.fi [88.113.24.108])
+	by fgw22.mail.saunalahti.fi (Halon) with ESMTP
+	id 10895911-b4b7-11ee-a9de-005056bdf889;
+	Tue, 16 Jan 2024 23:34:44 +0200 (EET)
+From: andy.shevchenko@gmail.com
+Date: Tue, 16 Jan 2024 23:34:44 +0200
+To: Philipp Stanner <pstanner@redhat.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, Hans de Goede <hdegoede@redhat.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Sam Ravnborg <sam@ravnborg.org>, dakr@redhat.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 06/10] pci: move pinned status bit to pci_dev struct
+Message-ID: <Zab2dC6HVmk2gEwn@surfacebook.localdomain>
+References: <20240115144655.32046-2-pstanner@redhat.com>
+ <20240115144655.32046-8-pstanner@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] iouring:added boundary value check for io_uring_group
- systl
-Content-Language: en-US
-To: Subramanya Swamy <subramanya.swamy.linux@gmail.com>, corbet@lwn.net,
- asml.silence@gmail.com, ribalda@chromium.org, rostedt@goodmis.org,
- bhe@redhat.com, akpm@linux-foundation.org, matteorizzo@google.com,
- ardb@kernel.org, alexghiti@rivosinc.com, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
-References: <20240115124925.1735-1-subramanya.swamy.linux@gmail.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240115124925.1735-1-subramanya.swamy.linux@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240115144655.32046-8-pstanner@redhat.com>
 
-On 1/15/24 5:49 AM, Subramanya Swamy wrote:
-> diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
-> index 09b6d860deba..0ed91b69643d 100644
-> --- a/io_uring/io_uring.c
-> +++ b/io_uring/io_uring.c
-> @@ -146,7 +146,9 @@ static void io_queue_sqe(struct io_kiocb *req);
->  struct kmem_cache *req_cachep;
->  
->  static int __read_mostly sysctl_io_uring_disabled;
-> -static int __read_mostly sysctl_io_uring_group = -1;
-> +static unsigned int __read_mostly sysctl_io_uring_group;
-> +static unsigned int min_gid;
-> +static unsigned int max_gid  = 4294967294;  /*4294967294 is the max guid*/
+Mon, Jan 15, 2024 at 03:46:17PM +0100, Philipp Stanner kirjoitti:
+> The bit describing whether the PCI device is currently pinned is stored
+> in the PCI devres struct. To clean up and simplify the pci-devres API,
 
-As per the compile bot, these need to be under CONFIG_SYSCTL. I'd
-recommend just moving them a few lines further down to do that.
+"PCI devres", 'pci-devres', ...
+Shouldn't these (and across entire series) be consistent terms?
+E.g., "PCI devres API".
 
-I think this would be cleaner:
+> it's better if this information is stored in the pci_dev struct, because
 
-static unsigned int max_gid = ((gid_t) ~0U) - 1;
+pci_dev struct --> struct pci_dev
 
-however, as it explains why the value is what it is rather than being
-some magic constant.
+> it allows for checking that device's pinned-status directly through the
+> device struct.
+> This will later permit simplifying  pcim_enable_device().
+
+> Move the 'pinned' boolean bit to struct pci_dev.
+
+..
+
+>  	u8		pm_cap;		/* PM capability offset */
+>  	unsigned int	enabled:1;	/* Whether this dev is enabled */
+> +	unsigned int	pinned:1;	/* Whether this dev is pinned */
+>  	unsigned int	imm_ready:1;	/* Supports Immediate Readiness */
+>  	unsigned int	pme_support:5;	/* Bitmask of states from which PME#
+>  					   can be generated */
+
+First of all, I think it's better to group PM stuff, like
+
+	u8		pm_cap;		/* PM capability offset */
+	unsigned int	pme_support:5;	/* Bitmask of states from which PME#
+					   can be generated */
+	unsigned int	imm_ready:1;	/* Supports Immediate Readiness */
+	unsigned int	enabled:1;	/* Whether this dev is enabled */
+	unsigned int	pinned:1;	/* Whether this dev is pinned */
+
+Second, does this layout anyhow related to the HW layout? (For example,
+PME bits and their location in some HW register vs. these bitfields)
+If so, but not sure, it might be good to preserve (to some extent) the
+order.
 
 -- 
-Jens Axboe
+With Best Regards,
+Andy Shevchenko
+
 
 
