@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-28224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91A8F82FBD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:04:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BEBA82FBD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:04:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EC561C27095
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:04:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B4EC1F2882D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:04:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8B2C16BDD8;
-	Tue, 16 Jan 2024 20:04:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA17E16BDFA;
+	Tue, 16 Jan 2024 20:04:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fKB3dBJD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nUysoDLg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1328516BDC4;
-	Tue, 16 Jan 2024 20:04:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0813E16BDE6;
+	Tue, 16 Jan 2024 20:04:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435497; cv=none; b=TrcPYNiDYmyHCqQnkax44WskMS+rDBGfXbq/KE3sj8uKY1DtHH9M3f6TXerR7ik6L9gIJE/hTKFJoCCSwVvfPOFnbE8NGuQW9z+rw4qiclyB705YmMXlmOmeJUYtDWb48n2d7n/A2IRnutoVdyv+bYGRBdOEzEsw5mAmjIzbKJY=
+	t=1705435499; cv=none; b=R5pz4M41H61dl3wQg6+ZTAK3dvZsqAu5cqQnGAqXllztYNlXVwu0NIImowmDyDaPjLacvuA5GjqS9iQ0reoDECVVB6s9pltdULVGzo7yQroASYZT2UFJ4sXtNbcfDJZdO+v8cMtvkNsAuA9rWO0QTlo+Axr3ZzejoIXF0g4f5Sg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435497; c=relaxed/simple;
-	bh=DjyPR4dgAdUITZFwt4FfywHkzuGab7dl6ru28ZYyiKs=;
+	s=arc-20240116; t=1705435499; c=relaxed/simple;
+	bh=8lIii65UvIwVnVl0Dlka4aS7PFjgnFDZ1TEO6Srmzaw=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=cdGiGmv9Qw6hVIG3eI7e6gEA8V3Xur50JLW/OYcQXqeEJJU1sLD0zhr8M8ds7lQzcD5x3ZM8Emo118LV8+TtdofmO++BuoulsttnbT9yY8N7r+jZxSTUp3uGBA2/V4E6ZKCWOY226cfGE/hFeNbeLIC0Tw7QoxYUYjiLnis5f6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fKB3dBJD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C954EC433C7;
-	Tue, 16 Jan 2024 20:04:55 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=WPGI7C/pjudrduSDy84/MNKLVTSLnikwKi9c5inAFbrzyxvw8MkOrOFFOSBMTleG5o13EAUgjbJuyEZ/OHkXwX751E8OQBWks55AdKFkIlrbF+tM6aGXv5pqGtpO6MqFuFadVH4+4EZSdmr/d4GLHfFHgzPEYqXc649EQ6P0Bl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nUysoDLg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E3BDC433F1;
+	Tue, 16 Jan 2024 20:04:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435496;
-	bh=DjyPR4dgAdUITZFwt4FfywHkzuGab7dl6ru28ZYyiKs=;
+	s=k20201202; t=1705435498;
+	bh=8lIii65UvIwVnVl0Dlka4aS7PFjgnFDZ1TEO6Srmzaw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fKB3dBJD8/HgOx28xaSdZITVxPJEsVC6OIf/oG5+HaaM/wJ+BiTfj5zHJRotxTT0b
-	 5Mxc5EUSkbpdlz2LzKKmGanN1C9G31Q3MfAmgr3qdeZ2laS7lGMNBKxy2y4qQL8wTx
-	 5Ty7SoP47XZ/1IxDfZY96p/89QP+Gv5pC4LkidKhb7sripRkfjHhvWvTav/7b3U78u
-	 UP2JbR/hYPBQ6nyyhZzPTfzTgv70vkEPw7h5SEk5IG3XPZFQR0bKi56j0gYUpGMrAT
-	 xKEt2B7nK2DGOwylsaYVfpuS1n02FSes4MnKGZWiLqWOSy+kRLQCZtEMCI+26NX5q9
-	 9+Q8TlJpPhU/g==
+	b=nUysoDLgDB2gan4SmCdlnPOGODw/LJAOY5WO/SqdPONlaxhHVdfJC4qtcuF6hewpZ
+	 f9JV8+7VL1y+IUrvIFm1HAfFYoMLwxor6MygFqQ49RU2iS8HdsAbGP3P+66fN4rtL+
+	 wrJWlrTUseiD6Bq2AawFVBRknLo1pIKyIZAcSPsp25Gm48AiB2Zw0ig0dsah/KYHbm
+	 lkRgXZjPfhxLhs3XMmiHzoBkhIKgdsml/bt8GP2jWhcbboNrkOU1ssC5c+RKc+eIAk
+	 2hq5aSrzMF/YfHStzMw8m/lr/+Amwuv2TzzZYHZj6LfkC/q9lhNKqWHp4jGeTrSU3m
+	 mC4gkt0aVGAHQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -52,9 +52,9 @@ Cc: Fabio Estevam <festevam@denx.de>,
 	conor+dt@kernel.org,
 	devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.19 13/22] ARM: dts: imx27: Fix sram node
-Date: Tue, 16 Jan 2024 15:04:07 -0500
-Message-ID: <20240116200432.260016-13-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 14/22] ARM: dts: imx1: Fix sram node
+Date: Tue, 16 Jan 2024 15:04:08 -0500
+Message-ID: <20240116200432.260016-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116200432.260016-1-sashal@kernel.org>
 References: <20240116200432.260016-1-sashal@kernel.org>
@@ -71,28 +71,44 @@ Content-Transfer-Encoding: 8bit
 
 From: Fabio Estevam <festevam@denx.de>
 
-[ Upstream commit 2fb7b2a2f06bb3f8321cf26c33e4e820c5b238b6 ]
+[ Upstream commit c248e535973088ba7071ff6f26ab7951143450af ]
 
 Per sram.yaml, address-cells, size-cells and ranges are mandatory.
 
-Pass them to fix the following dt-schema warnings:
+The node name should be sram.
+
+Change the node name and pass the required properties to fix the
+following dt-schema warnings:
+
+imx1-apf9328.dtb: esram@300000: $nodename:0: 'esram@300000' does not match '^sram(@.*)?'
+	from schema $id: http://devicetree.org/schemas/sram/sram.yaml#
+imx1-apf9328.dtb: esram@300000: '#address-cells' is a required property
+	from schema $id: http://devicetree.org/schemas/sram/sram.yaml#
+imx1-apf9328.dtb: esram@300000: '#size-cells' is a required property
+	from schema $id: http://devicetree.org/schemas/sram/sram.yaml#
+imx1-apf9328.dtb: esram@300000: 'ranges' is a required property
+	from schema $id: http://devicetree.org/schemas/sram/sram.yaml#
 
 Signed-off-by: Fabio Estevam <festevam@denx.de>
 Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx27.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm/boot/dts/imx1.dtsi | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/imx27.dtsi b/arch/arm/boot/dts/imx27.dtsi
-index 39e75b997bdc..ecfb07c8e185 100644
---- a/arch/arm/boot/dts/imx27.dtsi
-+++ b/arch/arm/boot/dts/imx27.dtsi
-@@ -588,6 +588,9 @@ weim: weim@d8002000 {
- 		iram: iram@ffff4c00 {
+diff --git a/arch/arm/boot/dts/imx1.dtsi b/arch/arm/boot/dts/imx1.dtsi
+index 2b6e77029de4..8c4c7464b133 100644
+--- a/arch/arm/boot/dts/imx1.dtsi
++++ b/arch/arm/boot/dts/imx1.dtsi
+@@ -268,9 +268,12 @@ weim: weim@220000 {
+ 			status = "disabled";
+ 		};
+ 
+-		esram: esram@300000 {
++		esram: sram@300000 {
  			compatible = "mmio-sram";
- 			reg = <0xffff4c00 0xb400>;
-+			ranges = <0 0xffff4c00 0xb400>;
+ 			reg = <0x00300000 0x20000>;
++			ranges = <0 0x00300000 0x20000>;
 +			#address-cells = <1>;
 +			#size-cells = <1>;
  		};
