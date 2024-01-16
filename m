@@ -1,48 +1,49 @@
-Return-Path: <linux-kernel+bounces-26656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 039E982E49C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:23:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 552F282E4A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:23:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11F4F1C2255A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:23:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E4FEA1F236E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:23:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1249A1CFAC;
-	Tue, 16 Jan 2024 00:13:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E976E1D543;
+	Tue, 16 Jan 2024 00:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MAy2b5vE"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LgTe1o0I"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A9B01CF94;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E1D1D525;
+	Tue, 16 Jan 2024 00:13:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B41F0C433F1;
 	Tue, 16 Jan 2024 00:13:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A5F4C43394;
-	Tue, 16 Jan 2024 00:13:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705364037;
-	bh=tpBD3PGBTzrRQcuPY20t10Gr37U+ZH750YYb69xQ0dA=;
+	s=k20201202; t=1705364038;
+	bh=idWrMm56YQvcqy9IlfN7yiMKVfXexXgcB4t+O7sdNwY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MAy2b5vEJJpK85bId1wO1twyKlcz3DszUHm8H+y6D4tiNqGJvNHZs3incvWpjiRaI
-	 uO1yrBLbEf7oxQHiVUGWd7cOk52TAYXhj9mCKBufDvJlU1Tr3ADWAnpxQ0qzimjj8a
-	 DsDQaf07jkWbRVkZNOhaNgBcoYWv4IUtEqKNnd96KnsamcZLj4PeZx1nz1fluno2uK
-	 bCo2nkuta7fhMUtdQYXvfcV1XYyy78dGIR79pMxFbdiHDuCAW3nEKbYzs/C8T3C7R5
-	 axI1IeaLzBLK9BAJnHVGXGHSgGWkTgeq7oMBZHy9XHX4TK8KQpRjIaisFpAvu4aCVG
-	 Id/DYlcmytlzQ==
+	b=LgTe1o0IX4Dd2l4zNxRtDY5ehpqTqsKMAg3nt+t7U84qxCuxShr6Ch7yKSG47fglK
+	 7NVMQ+l/G5VENwwZ9cXFnvmrjVBPG2O+ymnKiPaLN65Vxoo4sSa+oT/szusm8ZKnCv
+	 RiFclDgTyaYv9zDJerE10FRkcu6eDaEeRJpm2817WFblDEN5OIdvZ40LLdvUJhV1Nq
+	 xsQR2buFfQ9HmMUN6yMmYj4SpEmZvhtqg6x+Sxn5o9+Tr5HHV9YUjiWIVUHuFatdLc
+	 IV4NEE504Ij/kfMRZTtKSBKsPm9ryZfpVvg2RhkFEASLQ8W1PK8ZMsxNwOvEhap4mE
+	 NbwY20/H0frlw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yuluo Qiu <qyl27@outlook.com>,
-	Celeste Liu <CoelacanthusHex@gmail.com>,
+Cc: Dmitry Antipov <dmantipov@yandex.ru>,
+	Kees Cook <keescook@chromium.org>,
 	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
 	rafael@kernel.org,
-	linux-acpi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 05/14] ACPI: video: Add quirk for the Colorful X15 AT 23 Laptop
-Date: Mon, 15 Jan 2024 19:13:31 -0500
-Message-ID: <20240116001347.213328-5-sashal@kernel.org>
+	linux-acpi@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 06/14] PNP: ACPI: fix fortify warning
+Date: Mon, 15 Jan 2024 19:13:32 -0500
+Message-ID: <20240116001347.213328-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116001347.213328-1-sashal@kernel.org>
 References: <20240116001347.213328-1-sashal@kernel.org>
@@ -57,49 +58,81 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.12
 Content-Transfer-Encoding: 8bit
 
-From: Yuluo Qiu <qyl27@outlook.com>
+From: Dmitry Antipov <dmantipov@yandex.ru>
 
-[ Upstream commit 143176a46bdd3bfbe9ba2462bf94458e80d65ebf ]
+[ Upstream commit ba3f5058db437d919f8468db50483dd9028ff688 ]
 
-The Colorful X15 AT 23 ACPI video-bus device report spurious
-ACPI_VIDEO_NOTIFY_CYCLE events resulting in spurious KEY_SWITCHVIDEOMODE
-events being reported to userspace (and causing trouble there) when
-an external screen plugged in.
+When compiling with gcc version 14.0.0 20231126 (experimental)
+and CONFIG_FORTIFY_SOURCE=y, I've noticed the following:
 
-Add a quirk setting the report_key_events mask to
-REPORT_BRIGHTNESS_KEY_EVENTS so that the ACPI_VIDEO_NOTIFY_CYCLE
-events will be ignored, while still reporting brightness up/down
-hotkey-presses to userspace normally.
+In file included from ./include/linux/string.h:295,
+                 from ./include/linux/bitmap.h:12,
+                 from ./include/linux/cpumask.h:12,
+                 from ./arch/x86/include/asm/paravirt.h:17,
+                 from ./arch/x86/include/asm/cpuid.h:62,
+                 from ./arch/x86/include/asm/processor.h:19,
+                 from ./arch/x86/include/asm/cpufeature.h:5,
+                 from ./arch/x86/include/asm/thread_info.h:53,
+                 from ./include/linux/thread_info.h:60,
+                 from ./arch/x86/include/asm/preempt.h:9,
+                 from ./include/linux/preempt.h:79,
+                 from ./include/linux/spinlock.h:56,
+                 from ./include/linux/mmzone.h:8,
+                 from ./include/linux/gfp.h:7,
+                 from ./include/linux/slab.h:16,
+                 from ./include/linux/resource_ext.h:11,
+                 from ./include/linux/acpi.h:13,
+                 from drivers/pnp/pnpacpi/rsparser.c:11:
+In function 'fortify_memcpy_chk',
+    inlined from 'pnpacpi_parse_allocated_vendor' at drivers/pnp/pnpacpi/rsparser.c:158:3,
+    inlined from 'pnpacpi_allocated_resource' at drivers/pnp/pnpacpi/rsparser.c:249:3:
+/include/linux/fortify-string.h:588:25: warning: call to '__read_overflow2_field'
+declared with attribute warning: detected read beyond size of field (2nd parameter);
+maybe use struct_group()? [-Wattribute-warning]
+  588 |                         __read_overflow2_field(q_size_field, size);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Signed-off-by: Yuluo Qiu <qyl27@outlook.com>
-Co-developed-by: Celeste Liu <CoelacanthusHex@gmail.com>
-Signed-off-by: Celeste Liu <CoelacanthusHex@gmail.com>
+According to the comments in include/linux/fortify-string.h, 'memcpy()',
+'memmove()' and 'memset()' must not be used beyond individual struct
+members to ensure that the compiler can enforce protection against
+buffer overflows, and, IIUC, this also applies to partial copies from
+the particular member ('vendor->byte_data' in this case). So it should
+be better (and safer) to do both copies at once (and 'byte_data' of
+'struct acpi_resource_vendor_typed' seems to be a good candidate for
+'__counted_by(byte_length)' as well).
+
+Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+Reviewed-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/acpi_video.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/pnp/pnpacpi/rsparser.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/acpi/acpi_video.c b/drivers/acpi/acpi_video.c
-index 35f071ad9532..34f3880f61a5 100644
---- a/drivers/acpi/acpi_video.c
-+++ b/drivers/acpi/acpi_video.c
-@@ -500,6 +500,15 @@ static const struct dmi_system_id video_dmi_table[] = {
- 		DMI_MATCH(DMI_PRODUCT_NAME, "Vostro 3350"),
- 		},
- 	},
-+	{
-+	 .callback = video_set_report_key_events,
-+	 .driver_data = (void *)((uintptr_t)REPORT_BRIGHTNESS_KEY_EVENTS),
-+	 .ident = "COLORFUL X15 AT 23",
-+	 .matches = {
-+		DMI_MATCH(DMI_SYS_VENDOR, "COLORFUL"),
-+		DMI_MATCH(DMI_PRODUCT_NAME, "X15 AT 23"),
-+		},
-+	},
- 	/*
- 	 * Some machines change the brightness themselves when a brightness
- 	 * hotkey gets pressed, despite us telling them not to. In this case
+diff --git a/drivers/pnp/pnpacpi/rsparser.c b/drivers/pnp/pnpacpi/rsparser.c
+index 4f05f610391b..c02ce0834c2c 100644
+--- a/drivers/pnp/pnpacpi/rsparser.c
++++ b/drivers/pnp/pnpacpi/rsparser.c
+@@ -151,13 +151,13 @@ static int vendor_resource_matches(struct pnp_dev *dev,
+ static void pnpacpi_parse_allocated_vendor(struct pnp_dev *dev,
+ 				    struct acpi_resource_vendor_typed *vendor)
+ {
+-	if (vendor_resource_matches(dev, vendor, &hp_ccsr_uuid, 16)) {
+-		u64 start, length;
++	struct { u64 start, length; } range;
+ 
+-		memcpy(&start, vendor->byte_data, sizeof(start));
+-		memcpy(&length, vendor->byte_data + 8, sizeof(length));
+-
+-		pnp_add_mem_resource(dev, start, start + length - 1, 0);
++	if (vendor_resource_matches(dev, vendor, &hp_ccsr_uuid,
++				    sizeof(range))) {
++		memcpy(&range, vendor->byte_data, sizeof(range));
++		pnp_add_mem_resource(dev, range.start, range.start +
++				     range.length - 1, 0);
+ 	}
+ }
+ 
 -- 
 2.43.0
 
