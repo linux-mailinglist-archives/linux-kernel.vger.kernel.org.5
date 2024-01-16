@@ -1,139 +1,326 @@
-Return-Path: <linux-kernel+bounces-27668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 797BC82F3E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:15:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D20382F3DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:14:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07AEAB23C95
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:15:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DDE11C23901
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:14:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D94341CFAD;
-	Tue, 16 Jan 2024 18:14:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86C711CD2C;
+	Tue, 16 Jan 2024 18:14:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ntfNTKq8"
-Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g6N2n1YU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A211CD30
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:14:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 904C71CD0B;
+	Tue, 16 Jan 2024 18:14:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705428882; cv=none; b=bs6bndoz8CL+A6akgEYPhTGjhtPhZzkVY+QL6Q0w6Es71IOUG5nCzPs4VuruE16+iEu83rKpl//nSo2t+ks+Wn67cTS4YQJzafsHRhb/6/lxUF1Sc+Ck9IqUcVzylGsr8bClikn2XvkrGEbBemyYplh8QezoXmFTiBYsFVpOF2U=
+	t=1705428879; cv=none; b=Rm8FFZ7Y+9Ym9W5RSn0uL5FuWniYfhboxIcORRp/cJDRhzGQO9mkdqQh6Pc1hN2TQ46vT2zTRRCM1RxW4XE9Isnfq577lsA3SPxOAbwqgOsDSO1Mkl6HfYEN/Cojhtf3jxuX/uWRb9BNLP//BRi3cn2HfVUvWZUPJ9sr31xmzkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705428882; c=relaxed/simple;
-	bh=cv59bDCTOqRhiDC3HpONyDpPUeopXrDeTyWmM+8EkOI=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=Hgp2bKkdi+woeo/MGG0lj4ZqLjtUZwVLdS502ASidJX6pzmThh/HflM72eQJN3lVqGg2WNRi7X8KOWARzyuuYDV1thEHK6zZOYk+WKS3DJAAU2Gvuh4t9CR51aSWjDbg3ngvG+4CD9FkAz2He+4FCYNheEHbtz4Pz7L0+yF+P0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ntfNTKq8; arc=none smtp.client-ip=209.85.166.53
-Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7ba903342c2so539628039f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:14:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705428879; x=1706033679; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xRhLuuiIVVo+A52y6bxPnSkQ+JrLAw3wqr2sWjodaZc=;
-        b=ntfNTKq8C4HxrhN7HqHgbmqQXfktwh8hmtgTA5ncDWjXGizdF3GP0fGzClzVcPySY5
-         Fr/LPYZkV9MKuT7X9Ho1WvaMWPpxFEqRhWT90Sy7hmG1jl9bMpHMyWnWjyEYvOSSdOWL
-         7RsivC3zzWi4FqeKBp1Fbus4EvmmfmE3Ira6cAvx5n03Mi7ocy62RMTCJHCjxRribQ2T
-         RcvSJ0PxWvBqmO8FcwuvIr3ttU+VFagMYmrqyEP++o14SO2/yzy3wEuWj1wWkEpVm1EU
-         paXan10Buan5kMdpRnQbVihNjLYYRVwsx6+Ihh3oMBg7fP1FX6pVxm41RiGQqlToSr72
-         7SNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705428879; x=1706033679;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xRhLuuiIVVo+A52y6bxPnSkQ+JrLAw3wqr2sWjodaZc=;
-        b=JFJzHuYF55D/jJTma+WWdrcjdwp+8+uhvIMRoFQHoHrdzxg4giTUXgAYpjC1K62dCh
-         gahPfMbdduMZyrD5+89ifuqRGRNT4wiVElWGihfgkx2hmjiGUKaO53NmOLsFzXhRmslv
-         j4WkJvaXydTYicy5EmTka7GTJgIFYj7b9rsvfXQfiARVmwrThStkI/f7+CuLd3mErJt0
-         Mo4W+vuMsYeAxhYxtLrfwzybb1558ZgNFuK7nS52aoUXhLzBufjeSoIGcAN4IJSUGZa4
-         VEXlcmVqynfWR/Ctu+fIq6sNk5bWo+5kW+Z2d3n7waRDTujJ3FctxNTyEbdxqm8mvR6M
-         +SxA==
-X-Gm-Message-State: AOJu0Yy5FLqGtwMZqjjslFEL+NJ0R6YqhG8NO6fOezLAQ9GpRAiUXTF3
-	7hphDqLd1+6nQsw2XJ07lULre5W63G0AKHsoNAs9RAPCDBaDXQ==
-X-Google-Smtp-Source: AGHT+IEfZdEKTVV73IlpY3EGlS1kPKh3DImT91Va7UPo6ctMhZS1jwa3ClSyV/+ZVIEwxJrtZw8TuE8UvHu/GnDXkQ4=
-X-Received: by 2002:a05:6602:3054:b0:7be:d30c:d170 with SMTP id
- p20-20020a056602305400b007bed30cd170mr8728680ioy.34.1705428879752; Tue, 16
- Jan 2024 10:14:39 -0800 (PST)
+	s=arc-20240116; t=1705428879; c=relaxed/simple;
+	bh=XqGWFN9qw3I7S+8oXQ8vgsY2LlPy6DwWiwVeRJX8jtY=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=ASnkLgqO2WT5Iwh1tW2ZomKiQwrqkRQL8Dy9tlpMCS4XBdf3C4mH2VoYChH35qN2BdfIVxFrSxBl0HLAqkPKKf5jkCNQM6SWOdOSMqGMIMLC+yspcNaq/niLBv0TXALILOi4waROX/CvHGKuVEArDYZHtzxg5SO4YWJDAThc65w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g6N2n1YU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86F0DC433F1;
+	Tue, 16 Jan 2024 18:14:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705428879;
+	bh=XqGWFN9qw3I7S+8oXQ8vgsY2LlPy6DwWiwVeRJX8jtY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=g6N2n1YUqR9yoVur4zZBArRAgQpi1c4PbX7YJQiZkk5Tk0FUOQ36hxNBnsT2IWICQ
+	 R9tNDvd1IYAPiW3TvfFK6jgDw3/m9kgPp0JZolwPMRaIq4EdIKze144Q3Xy18C96sZ
+	 PM7Ep81S2x6TUhvw/vewRFgnsBeqfoZP72vQP1vfHcnoXCKi6wXjbYqIOQG4h4dVuc
+	 RijxzIZEfmIdbdilNNUQ/NPXJ8yMTlILAocahmsTk9CbyY06cvafMZ7SjR0w1dInwZ
+	 qBdPcdZ7gVcF+sws/q8ujl6BGSRO8q3zXUz0OWA47XdnRtyA2S/+nhdqudhUESHd/2
+	 lF44R599rR5Ew==
+Date: Tue, 16 Jan 2024 18:14:32 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Dharma Balasubiramani <dharma.b@microchip.com>
+Cc: conor.dooley@microchip.com, sam@ravnborg.org, bbrezillon@kernel.org,
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+	tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, nicolas.ferre@microchip.com,
+	alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	lee@kernel.org, thierry.reding@gmail.com,
+	u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+	linux4microchip@microchip.com
+Subject: Re: [PATCH v2 3/3] dt-bindings: mfd: atmel,hlcdc: Convert to DT
+ schema format
+Message-ID: <20240116-flatten-animate-f30842548e9d@spud>
+References: <20240116113800.82529-1-dharma.b@microchip.com>
+ <20240116113800.82529-4-dharma.b@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240110102102.61587-1-tudor.ambarus@linaro.org> <20240110102102.61587-4-tudor.ambarus@linaro.org>
-In-Reply-To: <20240110102102.61587-4-tudor.ambarus@linaro.org>
-From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Tue, 16 Jan 2024 12:14:28 -0600
-Message-ID: <CAPLW+4mY4VUm+cryBDFLp9TFkxG2oqJrmbZVuRuT5bFOzYXrnQ@mail.gmail.com>
-Subject: Re: [PATCH 03/18] tty: serial: samsung: add gs101 earlycon support
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com, 
-	gregkh@linuxfoundation.org, jirislaby@kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
-	andre.draszik@linaro.org, peter.griffin@linaro.org, kernel-team@android.com, 
-	willmcvicker@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="+ECF9lc6dEAb7wF0"
+Content-Disposition: inline
+In-Reply-To: <20240116113800.82529-4-dharma.b@microchip.com>
+
+
+--+ECF9lc6dEAb7wF0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 10, 2024 at 4:21=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro=
-org> wrote:
->
-> The entire bus (PERIC) on which the GS101 serial resides only allows
-> 32-bit register accesses. The reg-io-width dt property is disallowed
-> for the "google,gs101-uart" compatible and instead the iotype is
-> inferred from the compatible. Always set UPIO_MEM32 iotype for the
-> gs101 earlycon.
->
-> Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+On Tue, Jan 16, 2024 at 05:08:00PM +0530, Dharma Balasubiramani wrote:
+> Convert the atmel,hlcdc binding to DT schema format.
+>=20
+> Adjust the clock-names property to clarify that the LCD controller expects
+> one of these clocks (either sys_clk or lvds_pll_clk to be present but not
+> both) along with the slow_clk and periph_clk. This alignment with the act=
+ual
+> hardware requirements will enable accurate device tree configuration for
+> systems using the HLCDC IP.
+>=20
+> Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
 > ---
+> changelog
+> v1 -> v2
+> - Remove the explicit copyrights.
+> - Modify title (not include words like binding/driver).
+> - Modify description actually describing the hardware and not the driver.
+> - Add details of lvds_pll addition in commit message.
+> - Ref endpoint and not endpoint-base.
+> - Fix coding style.
+>=20
+> Note: Renaming hlcdc-display-controller, hlcdc-pwm to generic names throws
+> errors from the existing DTS files.
 
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+I don't think that is important. If there is no code that depends on the
+node names (and there is not in the mainline kernel, not sure about
+anywhere else) the binding and the devicetree could easily adopt generic
+node names.
 
->  drivers/tty/serial/samsung_tty.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsun=
-g_tty.c
-> index 20ec6ef1a52f..74bc5151dad4 100644
-> --- a/drivers/tty/serial/samsung_tty.c
-> +++ b/drivers/tty/serial/samsung_tty.c
-> @@ -2810,6 +2810,17 @@ OF_EARLYCON_DECLARE(exynos4210, "samsung,exynos421=
-0-uart",
->  OF_EARLYCON_DECLARE(artpec8, "axis,artpec8-uart",
->                         s5pv210_early_console_setup);
->
-> +static int __init gs101_early_console_setup(struct earlycon_device *devi=
-ce,
-> +                                           const char *opt)
-> +{
-> +       /* gs101 always expects MMIO32 register accesses. */
-> +       device->port.iotype =3D UPIO_MEM32;
+> ...
+> /home/dharma/Mainline/linux/arch/arm/boot/dts/microchip/at91sam9n12ek.dtb:
+> hlcdc@f8038000: 'hlcdc-display-controller' does not match any of the
+> regexes: 'pinctrl-[0-9]+'
+> ---
+>  .../devicetree/bindings/mfd/atmel,hlcdc.yaml  | 105 ++++++++++++++++++
+>  .../devicetree/bindings/mfd/atmel-hlcdc.txt   |  56 ----------
+>  2 files changed, 105 insertions(+), 56 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/atmel,hlcdc.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/mfd/atmel-hlcdc.txt
+>=20
+> diff --git a/Documentation/devicetree/bindings/mfd/atmel,hlcdc.yaml b/Doc=
+umentation/devicetree/bindings/mfd/atmel,hlcdc.yaml
+> new file mode 100644
+> index 000000000000..f624b60b76fb
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mfd/atmel,hlcdc.yaml
+> @@ -0,0 +1,105 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mfd/atmel,hlcdc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +       return s5pv210_early_console_setup(device, opt);
-> +}
+> +title: Atmel's HLCD Controller
 > +
-> +OF_EARLYCON_DECLARE(gs101, "google,gs101-uart", gs101_early_console_setu=
-p);
+> +maintainers:
+> +  - Nicolas Ferre <nicolas.ferre@microchip.com>
+> +  - Alexandre Belloni <alexandre.belloni@bootlin.com>
+> +  - Claudiu Beznea <claudiu.beznea@tuxon.dev>
 > +
->  /* Apple S5L */
->  static int __init apple_s5l_early_console_setup(struct earlycon_device *=
-device,
->                                                 const char *opt)
-> --
-> 2.43.0.472.g3155946c3a-goog
->
->
+> +description: |
+> +  The Atmel HLCDC (HLCD Controller) IP available on Atmel SoCs exposes t=
+wo
+> +  subdevices
+> +    # a PWM chip:
+> +    # a Display Controller:
+
+The formatting here is a bit odd. I'd truncate this to
+"subdevices: a PWM chip and a display controller." & drop the |.
+
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - atmel,at91sam9n12-hlcdc
+> +      - atmel,at91sam9x5-hlcdc
+> +      - atmel,sama5d2-hlcdc
+> +      - atmel,sama5d3-hlcdc
+> +      - atmel,sama5d4-hlcdc
+> +      - microchip,sam9x60-hlcdc
+> +      - microchip,sam9x75-xlcdc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 3
+> +
+> +  clock-names:
+> +    anyOf:
+> +      - items:
+> +          - enum:
+> +              - sys_clk
+> +              - lvds_pll_clk
+> +      - contains:
+> +          const: periph_clk
+> +      - contains:
+> +          const: slow_clk
+> +    maxItems: 3
+
+Why not just:
+  clock-names:
+    items:
+      - const: periph_clk
+      - enum: [sys_clk, lvds_pll_clk]
+      - const: slow_clk
+
+Cheers,
+Conor.
+
+> +
+> +  hlcdc-display-controller:
+> +    $ref: /schemas/display/atmel/atmel,hlcdc-display-controller.yaml
+> +
+> +  hlcdc-pwm:
+> +    $ref: /schemas/pwm/atmel,hlcdc-pwm.yaml
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/at91.h>
+> +    #include <dt-bindings/dma/at91.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    lcd_controller: lcd-controller@f0030000 {
+> +      compatible =3D "atmel,sama5d3-hlcdc";
+> +      reg =3D <0xf0030000 0x2000>;
+> +      clocks =3D <&lcdc_clk>, <&lcdck>, <&clk32k>;
+> +      clock-names =3D "periph_clk", "sys_clk", "slow_clk";
+> +      interrupts =3D <36 IRQ_TYPE_LEVEL_HIGH 0>;
+> +
+> +      hlcdc-display-controller {
+> +        compatible =3D "atmel,hlcdc-display-controller";
+> +        pinctrl-names =3D "default";
+> +        pinctrl-0 =3D <&pinctrl_lcd_base &pinctrl_lcd_rgb888>;
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
+> +
+> +        port@0 {
+> +          #address-cells =3D <1>;
+> +          #size-cells =3D <0>;
+> +          reg =3D <0>;
+> +
+> +          hlcdc_panel_output: endpoint@0 {
+> +            reg =3D <0>;
+> +            remote-endpoint =3D <&panel_input>;
+> +          };
+> +        };
+> +      };
+> +
+> +      hlcdc-pwm {
+> +        compatible =3D "atmel,hlcdc-pwm";
+> +        pinctrl-names =3D "default";
+> +        pinctrl-0 =3D <&pinctrl_lcd_pwm>;
+> +        #pwm-cells =3D <3>;
+> +      };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/mfd/atmel-hlcdc.txt b/Docu=
+mentation/devicetree/bindings/mfd/atmel-hlcdc.txt
+> deleted file mode 100644
+> index 7de696eefaed..000000000000
+> --- a/Documentation/devicetree/bindings/mfd/atmel-hlcdc.txt
+> +++ /dev/null
+> @@ -1,56 +0,0 @@
+> -Device-Tree bindings for Atmel's HLCDC (High LCD Controller) MFD driver
+> -
+> -Required properties:
+> - - compatible: value should be one of the following:
+> -   "atmel,at91sam9n12-hlcdc"
+> -   "atmel,at91sam9x5-hlcdc"
+> -   "atmel,sama5d2-hlcdc"
+> -   "atmel,sama5d3-hlcdc"
+> -   "atmel,sama5d4-hlcdc"
+> -   "microchip,sam9x60-hlcdc"
+> -   "microchip,sam9x75-xlcdc"
+> - - reg: base address and size of the HLCDC device registers.
+> - - clock-names: the name of the 3 clocks requested by the HLCDC device.
+> -   Should contain "periph_clk", "sys_clk" and "slow_clk".
+> - - clocks: should contain the 3 clocks requested by the HLCDC device.
+> - - interrupts: should contain the description of the HLCDC interrupt line
+> -
+> -The HLCDC IP exposes two subdevices:
+> - - a PWM chip: see ../pwm/atmel-hlcdc-pwm.txt
+> - - a Display Controller: see ../display/atmel/hlcdc-dc.txt
+> -
+> -Example:
+> -
+> -	hlcdc: hlcdc@f0030000 {
+> -		compatible =3D "atmel,sama5d3-hlcdc";
+> -		reg =3D <0xf0030000 0x2000>;
+> -		clocks =3D <&lcdc_clk>, <&lcdck>, <&clk32k>;
+> -		clock-names =3D "periph_clk","sys_clk", "slow_clk";
+> -		interrupts =3D <36 IRQ_TYPE_LEVEL_HIGH 0>;
+> -
+> -		hlcdc-display-controller {
+> -			compatible =3D "atmel,hlcdc-display-controller";
+> -			pinctrl-names =3D "default";
+> -			pinctrl-0 =3D <&pinctrl_lcd_base &pinctrl_lcd_rgb888>;
+> -			#address-cells =3D <1>;
+> -			#size-cells =3D <0>;
+> -
+> -			port@0 {
+> -				#address-cells =3D <1>;
+> -				#size-cells =3D <0>;
+> -				reg =3D <0>;
+> -
+> -				hlcdc_panel_output: endpoint@0 {
+> -					reg =3D <0>;
+> -					remote-endpoint =3D <&panel_input>;
+> -				};
+> -			};
+> -		};
+> -
+> -		hlcdc_pwm: hlcdc-pwm {
+> -			compatible =3D "atmel,hlcdc-pwm";
+> -			pinctrl-names =3D "default";
+> -			pinctrl-0 =3D <&pinctrl_lcd_pwm>;
+> -			#pwm-cells =3D <3>;
+> -		};
+> -	};
+> --=20
+> 2.25.1
+>=20
+
+--+ECF9lc6dEAb7wF0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZabHiAAKCRB4tDGHoIJi
+0uasAQCiVJvgHAWSIdArOBPKYA0i6KIc1zXakFfntet4tkWOYwD/QHfy3s4v0Omb
+AqUVcZAx5XPwUIZXDytRbbmWLaHJ/QM=
+=yXNW
+-----END PGP SIGNATURE-----
+
+--+ECF9lc6dEAb7wF0--
 
