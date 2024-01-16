@@ -1,123 +1,208 @@
-Return-Path: <linux-kernel+bounces-26923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDA4782E7DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 03:17:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EEB882E7E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 03:20:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D07F0284373
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:17:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A55761C22884
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:20:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 329BA4411;
-	Tue, 16 Jan 2024 02:17:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0727D4697;
+	Tue, 16 Jan 2024 02:20:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l7cgm7UT"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lGx6EA+Q"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21EC810FA
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 02:17:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705371464; x=1736907464;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bnd+0r4fwqlSyS3EZsPS5rfw18q8XJApJd8vw2m7e2Q=;
-  b=l7cgm7UT2Gjla5M6qbsq/s04kmSCmCSPYQs4iKSUgifto/7D+ZXOk2tZ
-   9BgxLyOrygRcjWRQycmrN6Sr7c5J39Z1kfIh9dwtuNhprvZUBftFEmtme
-   yCc6smIY+UnW5sNzCTTiHVN7rQAvBXpyE0dUrS2RCp/UtYhCofJaEhdXw
-   TpMrVhxg4lb3mE5GdMT74v5A8DQqX25li78VgH3KmZ6Hm3k/liLcAUvbi
-   LlD/CBfTLuJbVE43NiSIHvtrV5Ko0yid3aB6HQwC+sWhR7MCB5Anc06g+
-   GqyS/LYBsR9aR4PJfhSedtb2lKanggoepYe+61IADmbQM3yBHuZ5uYyo+
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="399408245"
-X-IronPort-AV: E=Sophos;i="6.04,197,1695711600"; 
-   d="scan'208";a="399408245"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 18:17:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="776874695"
-X-IronPort-AV: E=Sophos;i="6.04,197,1695711600"; 
-   d="scan'208";a="776874695"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 15 Jan 2024 18:17:39 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rPZ1C-000Ctu-2B;
-	Tue, 16 Jan 2024 02:17:36 +0000
-Date: Tue, 16 Jan 2024 10:12:19 +0800
-From: kernel test robot <lkp@intel.com>
-To: Byungchul Park <byungchul@sk.com>, linux-kernel@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB0D710FA;
+	Tue, 16 Jan 2024 02:20:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5cd51c0e8ebso4534947a12.3;
+        Mon, 15 Jan 2024 18:20:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705371629; x=1705976429; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=f7Z1mtPltzcSBEq804G8TTNx6jfdkFZ1S3I87AVOGno=;
+        b=lGx6EA+QvkC4z8t/Wq0IhYU6tOEGZoHK9G0Pnm8E5cZiqEsUUNwvyrd7q86JliSwFS
+         3KSFZv5KhWsVCpcP/O3aMA4WILGmLBEqyBkmspumM5e8A+Mj03pUFH76D6YBYR4uXYKs
+         KoxPmyFOQ1tyJ7sbeHgWC7Q3T0SAJvLOM1bRCOTPqVNHELaFQPtmPrdVfXiLKQV2CAm6
+         TeRy0c9rew8/Wlyo8hdYBYg+GxH9mHSdHsID7iV7K47VsqeDaIi0W0RTcHxELvB1pfI5
+         tbyieN4VoSn4PkUFC8fK/dYzTX/5aSHifOkUHJb/35XjD5EjbKCZA2hYbIaTVH95TtQ2
+         Z2Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705371629; x=1705976429;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f7Z1mtPltzcSBEq804G8TTNx6jfdkFZ1S3I87AVOGno=;
+        b=nTkgKFdAAdwjwFTkJ8oLdEV/OvS0wPhdpNrQ+zm+IOLI7fDL3L4EMhvfwi4IVzXTBc
+         UAabeW9ucShFSq39atiUTiliNplKbVL7tNefEIT0pIhvZScGMh996ZnRv5o/uc90r5H+
+         pIgwlh4TeJl7Gjfq1Wc3t22C7GxITsdctVGeCaXeinzguUHlvfDE7BGk6u26S9k9i6zi
+         h5coi5WONqmUyPiKvCGtK0EIsDJ9f2THOyxRefxme1cUs5OtNIw6ixIZlLNgnKdT0HkZ
+         t4caFCA8zPJDHV+55MHMPsamcR8RF6Bskf6SJ9LhJU8tNcTlICWJimvbrQqpGm9nbfoM
+         0lcg==
+X-Gm-Message-State: AOJu0YxwWIkG1aRDImOids/Mkun1O5pwEj7MCOfhTq4rRM0QinVhPqYA
+	pzLkJBgSFbAM60IMfCLrsuE=
+X-Google-Smtp-Source: AGHT+IFpEHkY0yoYeAhv8uuFIshSZ9ztV2gY9fMSrDRyVFa67Pg8mi4Mlid+vf3l1tJRX6tt5cPILg==
+X-Received: by 2002:a05:6a21:9181:b0:19a:d952:e21e with SMTP id tp1-20020a056a21918100b0019ad952e21emr1489772pzb.50.1705371629082;
+        Mon, 15 Jan 2024 18:20:29 -0800 (PST)
+Received: from localhost.localdomain (c-73-254-87-52.hsd1.wa.comcast.net. [73.254.87.52])
+        by smtp.gmail.com with ESMTPSA id kn14-20020a170903078e00b001d1d1ef8be5sm8193379plb.173.2024.01.15.18.20.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jan 2024 18:20:28 -0800 (PST)
+From: mhkelley58@gmail.com
+X-Google-Original-From: mhklinux@outlook.com
+To: tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	kirill.shutemov@linux.intel.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	luto@kernel.org,
+	peterz@infradead.org,
+	akpm@linux-foundation.org,
+	urezki@gmail.com,
+	hch@infradead.org,
+	lstoakes@gmail.com,
+	thomas.lendacky@amd.com,
+	ardb@kernel.org,
+	jroedel@suse.de,
+	seanjc@google.com,
+	rick.p.edgecombe@intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com,
+	linux-kernel@vger.kernel.org,
+	linux-coco@lists.linux.dev,
+	linux-hyperv@vger.kernel.org,
 	linux-mm@kvack.org
-Cc: oe-kbuild-all@lists.linux.dev, kernel_team@skhynix.com,
-	akpm@linux-foundation.org, ying.huang@intel.com, namit@vmware.com,
-	vernhao@tencent.com, mgorman@techsingularity.net, hughd@google.com,
-	willy@infradead.org, david@redhat.com, peterz@infradead.org,
-	luto@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, rjgolo@gmail.com
-Subject: Re: [PATCH v6 6/7] mm: Defer TLB flush by keeping both src and dst
- folios at migration
-Message-ID: <202401160941.4iwBnNkq-lkp@intel.com>
-References: <20240115081953.2521-7-byungchul@sk.com>
+Subject: [PATCH v4 0/3] x86/hyperv: Mark CoCo VM pages not present when changing encrypted state
+Date: Mon, 15 Jan 2024 18:20:05 -0800
+Message-Id: <20240116022008.1023398-1-mhklinux@outlook.com>
+X-Mailer: git-send-email 2.25.1
+Reply-To: mhklinux@outlook.com
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240115081953.2521-7-byungchul@sk.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Byungchul,
+From: Michael Kelley <mhklinux@outlook.com>
 
-kernel test robot noticed the following build errors:
+In a CoCo VM, when transitioning memory from encrypted to decrypted, or
+vice versa, the caller of set_memory_encrypted() or set_memory_decrypted()
+is responsible for ensuring the memory isn't in use and isn't referenced
+while the transition is in progress.  The transition has multiple steps,
+and the memory is in an inconsistent state until all steps are complete.
+A reference while the state is inconsistent could result in an exception
+that can't be cleanly fixed up.
 
-[auto build test ERROR on 0dd3ee31125508cd67f7e7172247f05b7fd1753a]
+However, the kernel load_unaligned_zeropad() mechanism could cause a stray
+reference that can't be prevented by the caller of set_memory_encrypted()
+or set_memory_decrypted(), so there's specific code to handle this case.
+But a CoCo VM running on Hyper-V may be configured to run with a paravisor,
+with the #VC or #VE exception routed to the paravisor. There's no
+architectural way to forward the exceptions back to the guest kernel, and
+in such a case, the load_unaligned_zeropad() specific code doesn't work.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Byungchul-Park/x86-tlb-Add-APIs-manipulating-tlb-batch-s-arch-data/20240115-162220
-base:   0dd3ee31125508cd67f7e7172247f05b7fd1753a
-patch link:    https://lore.kernel.org/r/20240115081953.2521-7-byungchul%40sk.com
-patch subject: [PATCH v6 6/7] mm: Defer TLB flush by keeping both src and dst folios at migration
-config: loongarch-allmodconfig (https://download.01.org/0day-ci/archive/20240116/202401160941.4iwBnNkq-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240116/202401160941.4iwBnNkq-lkp@intel.com/reproduce)
+To avoid this problem, mark pages as "not present" while a transition
+is in progress. If load_unaligned_zeropad() causes a stray reference, a
+normal page fault is generated instead of #VC or #VE, and the
+page-fault-based fixup handlers for load_unaligned_zeropad() resolve the
+reference. When the encrypted/decrypted transition is complete, mark the
+pages as "present" again.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401160941.4iwBnNkq-lkp@intel.com/
+This version of the patch series marks transitioning pages "not present"
+only when running as a Hyper-V guest with a paravisor. Previous
+versions[1] marked transitioning pages "not present" regardless of the
+hypervisor and regardless of whether a paravisor is in use.  That more
+general use had the benefit of decoupling the load_unaligned_zeropad()
+fixup from CoCo VM #VE and #VC exception handling.  But the implementation
+was problematic for SEV-SNP because the SEV-SNP hypervisor callbacks
+require a valid virtual address, not a physical address like with TDX and
+the Hyper-V paravisor.  Marking the transitioning pages "not present"
+causes the virtual address to not be valid, and the PVALIDATE
+instruction in the SEV-SNP callback fails. Constructing a temporary
+virtual address for this purpose is slower and adds complexity that
+negates the benefits of the more general use. So this version narrows
+the applicability of the approach to just where it is required
+because of the #VC and #VE exceptions being routed to a paravisor.
 
-All errors (new ones prefixed by >>):
+The previous version minimized the TLB flushing done during page
+transitions between encrypted and decrypted. Because this version
+marks the pages "not present" in hypervisor specific callbacks and
+not in __set_memory_enc_pgtable(), doing such optimization is more
+difficult to coordinate. But the page transitions are not a hot path,
+so this version eschews optimization of TLB flushing in favor of
+simplicity.
 
-   In file included from arch/loongarch/include/asm/vdso.h:10,
-                    from arch/loongarch/include/asm/elf.h:13,
-                    from include/linux/elf.h:6,
-                    from include/linux/module.h:19,
-                    from lib/test_bitops.c:9:
->> include/linux/mm.h:2046:43: error: 'struct arch_tlbflush_unmap_batch' declared inside parameter list will not be visible outside of this definition or declaration [-Werror]
-    2046 | static inline void migrc_flush_end(struct arch_tlbflush_unmap_batch *arch) {}
-         |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: all warnings being treated as errors
+Since this version no longer touches __set_memory_enc_pgtable(),
+I've also removed patches that add comments about error handling
+in that function.  Rick Edgecombe has proposed patches to improve
+that error handling, and I'll leave those comments to Rick's
+patches.
 
+Patch 1 handles implications of the hypervisor callbacks needing
+to do virt-to-phys translations on pages that are temporarily
+marked not present.
 
-vim +2046 include/linux/mm.h
+Patch 2 makes the existing set_memory_p() function available for
+use in the hypervisor callbacks.
 
-  2040	
-  2041	#if defined(CONFIG_MIGRATION) && defined(CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH)
-  2042	extern void migrc_flush_start(void);
-  2043	extern void migrc_flush_end(struct arch_tlbflush_unmap_batch *arch);
-  2044	#else
-  2045	static inline void migrc_flush_start(void) {}
-> 2046	static inline void migrc_flush_end(struct arch_tlbflush_unmap_batch *arch) {}
-  2047	#endif
-  2048	
+Patch 3 is the core change that marks the transitioning pages
+as not present.
+
+This patch set is based on the linux-next20240103 code tree.
+
+Changes in v4:
+* Patch 1: Updated comment in slow_virt_to_phys() to reduce the
+  likelihood of the comment becoming stale.  The new comment
+  describes the requirement to work with leaf PTE not present,
+  but doesn't directly reference the CoCo hypervisor callbacks.
+  [Rick Edgecombe]
+* Patch 1: Decomposed a complex line-wrapped statement into
+  multiple statements for ease of understanding. No functional
+  change compared with v3. [Kirill Shutemov]
+* Patch 3: Fixed handling of memory allocation errors. [Rick
+  Edgecombe]
+
+Changes in v3:
+* Major rework and simplification per discussion above.
+
+Changes in v2:
+* Added Patches 3 and 4 to deal with the failure on SEV-SNP
+  [Tom Lendacky]
+* Split the main change into two separate patches (Patch 5 and
+  Patch 6) to improve reviewability and to offer the option of
+  retaining both hypervisor callbacks.
+* Patch 5 moves set_memory_p() out of an #ifdef CONFIG_X86_64
+  so that the code builds correctly for 32-bit, even though it
+  is never executed for 32-bit [reported by kernel test robot]
+
+[1] https://lore.kernel.org/lkml/20231121212016.1154303-1-mhklinux@outlook.com/
+
+Michael Kelley (3):
+  x86/hyperv: Use slow_virt_to_phys() in page transition hypervisor
+    callback
+  x86/mm: Regularize set_memory_p() parameters and make non-static
+  x86/hyperv: Make encrypted/decrypted changes safe for
+    load_unaligned_zeropad()
+
+ arch/x86/hyperv/ivm.c             | 65 ++++++++++++++++++++++++++++---
+ arch/x86/include/asm/set_memory.h |  1 +
+ arch/x86/mm/pat/set_memory.c      | 24 +++++++-----
+ 3 files changed, 75 insertions(+), 15 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.25.1
+
 
