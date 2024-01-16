@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-27094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8B3982EA40
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:44:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD66C82EA4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:46:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A01BB20DEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:44:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 293F3285066
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:46:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A0F81119E;
-	Tue, 16 Jan 2024 07:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB524111A0;
+	Tue, 16 Jan 2024 07:46:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yE4FewSJ"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZymAZFJH"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1EE011187
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 07:44:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A69F01118B
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 07:46:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a2bdc3a3c84so596248966b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 23:44:15 -0800 (PST)
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-557c188f313so14884043a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 23:46:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705391054; x=1705995854; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1705391175; x=1705995975; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=jKzzfD7Q+iw9ywLSyQUPmN6HRknPizPzZEN0JpohIlg=;
-        b=yE4FewSJqLLtjyjvp9WzxtH8x0Ol6o2pv6APn7yBgqtjJWxWBndaXiNSmwitSiwPU7
-         d3Tj+wdqwZB8kx6PaKTBL9udbrCOaG9yGbH9AgJWGM8HXgSnQAYxys4PFhFwazP5wg+D
-         ARB4/KbQ/dQZ9om44+2LOH+YkOlvS9woBtBzIh8Y3dCY27jOHBer1IC8FOZdI7jsOXif
-         ArrFXe2deCelgbVmMs2G8UXNGQ8n/y6zrJt5uYArWZTyJ9HIBvySkvj96r+VCB5PzKBA
-         92E9EjppVI/fdWv8Ie1m3boSsKEhRAXY9g3pbOVqZDEIJasmdVf+CJlW4kUX4+dR0sna
-         imyw==
+        bh=D14SLbjX1GLnHuhrFGkm5qKGMOubngFldvMxw9TZU/8=;
+        b=ZymAZFJHfvtZr9QEvHplDakWNb0tQIQpPc4m1/Ebw5AzJTdPopEFVKLlH+dVxSiD3v
+         BXzPpG7fLcBYi1y8/ecIFMTknyAdNTF/DwzDAb3lbDvawJQgE2WEKEytgV3WEmGYK6WD
+         qBHmpeFtDWVPk6FjVbPiTQvUedvFjbQ373xmZCntaajwzZVfDYMy52VxlcMphptRd0Pl
+         RxhWB1ba8yve1fSAHV1z5k3KhmIFdO5Uy/ZvSiFUximYdd5IVbOP8/w9aHeIrxCT77ZE
+         fgvfG6oVHEx6BPVl67vnOA5yirHkLW574IbsAiuUtcCB0zqMNB63T/LSgAfEO4vSbJLi
+         wVSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705391054; x=1705995854;
+        d=1e100.net; s=20230601; t=1705391175; x=1705995975;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jKzzfD7Q+iw9ywLSyQUPmN6HRknPizPzZEN0JpohIlg=;
-        b=gUJ3puwnR6ROm6+NnlBlJqc2AqPtaBocM7A3mD4yyXM3PSi3RvuRKHiQc0YbXP8qmD
-         VVi2+hrIPIX/vl8CdCYXqSgLpQd2YsHGo8LKaBP6m2XDuxeKuGPjLjoWKNNP6D05PxVl
-         38btNEGN9wkQBOFwGU/IoXjPkBHjXK8qt3/q+wqmmgd9jHMvuUeZ7LJYEMOfDZmqT2FI
-         gXi0M5fm76WMTlBgGDSd4pZGr6gGa4VWpmt0BpxZ5WV6GX/Xz9PmbpTpgOikxe93SLEB
-         KP1buV4uVaQPhMpYXVCinRjXbSP27BCXq4pMqz81T2+UHuC/5vMTLOAmjGuyHk54sgAR
-         /6qA==
-X-Gm-Message-State: AOJu0YyHEHyVln8LDjtbinzz4KMSntYIny0ONkhdapqI7kZ7juih42iD
-	Hv/yDgSmEAC1nRjTQVa8cGsjEZ7xbjGHRg==
-X-Google-Smtp-Source: AGHT+IGvf+bI9vg7WKoNfxfnn/VW8C+z3uM1veDKGuSQAPwDPsRWjwh7iS3QWnAxCuyTVkWR5Chu3w==
-X-Received: by 2002:a17:906:5811:b0:a2e:92dd:80a3 with SMTP id m17-20020a170906581100b00a2e92dd80a3mr20827ejq.123.1705391054245;
-        Mon, 15 Jan 2024 23:44:14 -0800 (PST)
+        bh=D14SLbjX1GLnHuhrFGkm5qKGMOubngFldvMxw9TZU/8=;
+        b=sw2l22lvSr6fq/N7AjbnP9wEKeDLSJlgIGwb44gZYg1yfVwwPWcQksD4m+1C39FhM0
+         dvS02bF48+edwKsq/MesGzaGamZLhOreTJbWZR/8SUhqZZpeEispuaMwDXPGZg/RVZpX
+         FDMLeBfybB9aCNzTTbP3knsdz0LzwjgqIXyjdo+eUrj3QwVG7ujN4lQaoEI6XHGJcfxm
+         HoVixjNaaWQeqFgYnk1OWB4aH8LsXxejiqRApKIqa5BgDfrCZiTIKxyhnLHbHTPDIp+b
+         mg/BMw20uejAHu4JIxYy1iVKjAenj+Z6JOtNb9/CTp2O63lOBU6FVan0Ch/nEg+ZvsqW
+         HDEw==
+X-Gm-Message-State: AOJu0Yxpb4t0PXGhIgSApDm7vmH3W1Xnv6BT+MJnG2mkuRx9K6OkxRg9
+	wqxvBFvZXyk8rW7gcJCTJqMX1mH+Ogv4GQ==
+X-Google-Smtp-Source: AGHT+IGtwjltligbfM9m1nCKR0fW9XHrubE+D9XLK0jeUszKhMCwmkXedDYerKE6e9uiM0EAUNvozw==
+X-Received: by 2002:aa7:d5c7:0:b0:557:2be5:6620 with SMTP id d7-20020aa7d5c7000000b005572be56620mr7141794eds.23.1705391174991;
+        Mon, 15 Jan 2024 23:46:14 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id x25-20020a1709064bd900b00a28f54aacf1sm6185810ejv.185.2024.01.15.23.44.12
+        by smtp.gmail.com with ESMTPSA id n13-20020a05640204cd00b0055971af7a23sm1159774edw.95.2024.01.15.23.46.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jan 2024 23:44:13 -0800 (PST)
-Message-ID: <f2b3dff2-ce0d-4ddb-ad61-74abf2c3022d@linaro.org>
-Date: Tue, 16 Jan 2024 08:44:12 +0100
+        Mon, 15 Jan 2024 23:46:14 -0800 (PST)
+Message-ID: <9a1c77f8-bcf9-4cbf-ab51-694353dd0ef3@linaro.org>
+Date: Tue, 16 Jan 2024 08:46:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,7 +65,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 3/3] riscv: dts: sophgo: add rtc dt node for CV1800
+Subject: Re: [PATCH v6 2/3] rtc: sophgo: add rtc support for Sophgo CV1800 SoC
 Content-Language: en-US
 To: Jingbao Qiu <qiujingbao.dlmu@gmail.com>, alexandre.belloni@bootlin.com,
  robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -75,7 +75,7 @@ Cc: linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
  dlan@gentoo.org, inochiama@outlook.com
 References: <20240115160600.5444-1-qiujingbao.dlmu@gmail.com>
- <20240115160600.5444-4-qiujingbao.dlmu@gmail.com>
+ <20240115160600.5444-3-qiujingbao.dlmu@gmail.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -121,42 +121,37 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240115160600.5444-4-qiujingbao.dlmu@gmail.com>
+In-Reply-To: <20240115160600.5444-3-qiujingbao.dlmu@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 15/01/2024 17:06, Jingbao Qiu wrote:
-> Add the rtc device tree node to cv1800 SoC.
+On 15/01/2024 17:05, Jingbao Qiu wrote:
+> Implement the RTC driver for CV1800, which able to provide time alarm
+> and calibrate functionality.
 > 
 > Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
 > ---
->  arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> index df40e87ee063..66bb4a752b91 100644
-> --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> @@ -119,5 +119,17 @@ clint: timer@74000000 {
->  			reg = <0x74000000 0x10000>;
->  			interrupts-extended = <&cpu0_intc 3>, <&cpu0_intc 7>;
->  		};
-> +
-> +		rtc: rtc@5025000 {
-> +			compatible = "sophgo,cv1800-rtc", "syscon";
-> +			reg = <0x5025000 0x2000>;
-> +			interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&osc>;
-> +		};
-> +
-> +		por {
-> +			compatible = "sophgo,cv1800-por";
 
-What is this? Why is it here, how did it even appear? It misses unit
-address and reg or is clearly placed in wrong place. It seems you
-entirely ignored out previous discussion.
+> +
+> +static int cv1800_rtc_probe(struct platform_device *pdev)
+> +{
+> +	struct cv1800_rtc_priv *rtc;
+> +	uint32_t ctrl_val;
+> +	int ret;
+> +
+> +	rtc = devm_kzalloc(&pdev->dev, sizeof(struct cv1800_rtc_priv),
+> +			   GFP_KERNEL);
+> +	if (!rtc)
+> +		return -ENOMEM;
+> +
+> +	rtc->dev = &pdev->dev;
+> +
+> +	rtc->rtc_map = syscon_node_to_regmap(rtc->dev->of_node->parent);
+> +	if (IS_ERR(rtc->rtc_map))
+> +		return PTR_ERR(rtc->rtc_map);
 
-NAK
+Why do you take the parent? Your bindings say this device is the syscon,
+not parent. Your DTS shows there is no parent syscon! This wasn't tested.
 
 Best regards,
 Krzysztof
