@@ -1,153 +1,101 @@
-Return-Path: <linux-kernel+bounces-27722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD00682F4C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:59:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91DC382F4BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:58:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DD3528538D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:59:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EACD1F24EAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:58:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 499571D548;
-	Tue, 16 Jan 2024 18:58:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Hnh5b9lJ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010B91D545
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:58:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F0501CF9B;
+	Tue, 16 Jan 2024 18:58:26 +0000 (UTC)
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C16051CF98
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:58:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=1wt.eu
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=163.172.96.212
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705431519; cv=none; b=fPLP4yV5fbQQS+KZ1FM5ZXzJaiW8/FWXNK8CpCslrIdrSVXzNImiVHSpiy84nN0MYIaeJ+wX1eMasFRM+h/rwbruT8kF607jIQARdX+NGhPevTJ7lAnCVlDqB8a/HsGOReN8oqkR1hO4dBdMVd+S4gg2jG9AiNm3Zn/feYBjMuw=
+	t=1705431505; cv=none; b=X5TFq0IO893hJTpl1yCzSW5NWxf4T5CHQJx1/ne1aztRqEwitj4M2USa85dUS6vWKj7wAWLOSBhOIIfpRZn4WPE0Tv1Ne4a9L3eNu4F1caQIfSOGMNCw1+1u3dd4pdw3OIAFNdpJxHI5DZA46UKZokyz7u8k/Gs86+tZ9F1HyLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705431519; c=relaxed/simple;
-	bh=Sh+VUyorUwfwt3DtfokrDMEMXGc/bg5xuZ8tbxNpivs=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:
-	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
-	 X-Google-Smtp-Source:X-Received:MIME-Version:References:
-	 In-Reply-To:From:Date:Message-ID:Subject:To:Cc:Content-Type:
-	 Content-Transfer-Encoding; b=IClnlg6O96n9B8TRuowGr4gLEfrHvqWa0QwSa5jyTbNugU5vS7b9hklWPfsPdKh1NF43NSU/25Xfb5BA54RmD6yvFQpw5I83WhS6FbsaMM6wFr2a8jQElXkAELLGRiPLAN80VWP91MMwzN3YMcmFFGDQqqNB7Mod0LjrmV+r/LQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Hnh5b9lJ; arc=none smtp.client-ip=170.10.133.124
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705431516;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GGtxsaBcIsbwgFk8xTkmWG+OKYIfaAELOe769Qye7L0=;
-	b=Hnh5b9lJ4yJevc8/Hgt8DRorItP0gegf29xgGgh/8UJo2dR1ILH4ovroAUirOXmV4wprRw
-	QPR4uwpYLXU8yrLeO4zAo9C3vxQ8AGtdxwmzaSehnh+kv3WgYmLkx1lUAPyEHEcHSrI2Mk
-	nE6Htz37Se1DceJ/TuXXr+aoONTKQcI=
-Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
- [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-662-c_qwqBxlPbGj40TnpBCD4A-1; Tue, 16 Jan 2024 13:58:32 -0500
-X-MC-Unique: c_qwqBxlPbGj40TnpBCD4A-1
-Received: by mail-yw1-f200.google.com with SMTP id 00721157ae682-5e617562a65so183024737b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:58:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705431512; x=1706036312;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GGtxsaBcIsbwgFk8xTkmWG+OKYIfaAELOe769Qye7L0=;
-        b=W4vNzKAMXkq2HDOzUiEmA20f9MkO98Kw9VoaV1Yoq9h5EojbtvKHlqOiGBzJ0pw3bw
-         iBvR4nDzWyoBx5LcZtcr/EVwFqMxYy8ZzypsuEfbwVq4jUrpP+QFrD7UAuKQr5bCCEGw
-         qpnyw+65FmRWZ2D840EHLaZLq0zOpNcP5Wf8m1MxM56Ci9QXtYqe56+H6L86MQNJqrpI
-         7o1VI4PlVbqVlmFZiYSYG3/aq8M5S6CmrCakJUrLjihUis4DuiRgouzRHNPWiB5y8Lc0
-         cncM/30xQTrRx3S8dBGGTwb/8uYnKnfBBeiWGnF1IBruTnxbEWbM8u+Q3g6W+3Xa9CI8
-         Fxcg==
-X-Gm-Message-State: AOJu0YyTS22Xgzrl3Rq5HVMzheJ/lzHO76lhWqO/mIx62SGZHgrB/ejz
-	/TALzV+R3MFWZz14aEHMQXly5248TSA4OSaBHuaTUyNFpUwK2W6ET9F6/24rfIZT88afbgQxT+k
-	7WWetUfHmv8T3y/yKx5QN6HWNW5CK5k57VJ2kZG+Akc+y/vwm
-X-Received: by 2002:a81:e60c:0:b0:5f8:1f59:fd02 with SMTP id u12-20020a81e60c000000b005f81f59fd02mr5347973ywl.13.1705431512154;
-        Tue, 16 Jan 2024 10:58:32 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH2FPqlLgrZtRGp97ysG2vhyXsVT8O2mzxPiCpvhJ9h+PAjf/LwrYSrPudl/CHkL3IjaTeEoBHWECQld7EHMaw=
-X-Received: by 2002:a81:e60c:0:b0:5f8:1f59:fd02 with SMTP id
- u12-20020a81e60c000000b005f81f59fd02mr5347964ywl.13.1705431511935; Tue, 16
- Jan 2024 10:58:31 -0800 (PST)
+	s=arc-20240116; t=1705431505; c=relaxed/simple;
+	bh=GP9zCdJgB+0cVy92N/SgrGbcC/S8rUkIXk9cPs6+VFI=;
+	h=Received:Date:From:To:Cc:Subject:Message-ID:References:
+	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=kxkBIfT57O/aiip7EsxF5MNr0pLbOQdwhjJE6fSrvQ1pLwSDJYqQUVJfnTQ95jiPjYO/NoBwkp5GvU2fxtP3eynMOQXYa4H86kmciYqVzd7iTmvcmuFhXoqLBB0fbSTDPKKvzN3w8SYEOTbKqzq3XkbmZPiwvSmq0FBtBO/S20I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=163.172.96.212
+Received: (from willy@localhost)
+	by mail.home.local (8.17.1/8.17.1/Submit) id 40GIw9Xu020056;
+	Tue, 16 Jan 2024 19:58:09 +0100
+Date: Tue, 16 Jan 2024 19:58:09 +0100
+From: Willy Tarreau <w@1wt.eu>
+To: Ammar Faizi <ammarfaizi2@gnuweeb.org>
+Cc: Charles Mirabile <cmirabil@redhat.com>, linux-kernel@vger.kernel.org,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Subject: Re: [PATCH] nolibc/stdlib: Improve `getauxval(3)` implementation
+Message-ID: <ZabRwdcgU/H8i5Ja@1wt.eu>
+References: <20240116181147.2230944-1-cmirabil@redhat.com>
+ <ZabQVvpZ4e7hTwcb@biznet-home.integral.gnuweeb.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1704919215-91319-1-git-send-email-steven.sistare@oracle.com> <1704919215-91319-11-git-send-email-steven.sistare@oracle.com>
-In-Reply-To: <1704919215-91319-11-git-send-email-steven.sistare@oracle.com>
-From: Eugenio Perez Martin <eperezma@redhat.com>
-Date: Tue, 16 Jan 2024 19:57:56 +0100
-Message-ID: <CAJaqyWdTBexyY-ra=UkUfUU75YS2Zncm5-9iHv-0Rqa3_mD=9A@mail.gmail.com>
-Subject: Re: [RFC V1 10/13] vdpa_sim: flush workers on suspend
-To: Steve Sistare <steven.sistare@oracle.com>
-Cc: virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org, 
-	"Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, Si-Wei Liu <si-wei.liu@oracle.com>, 
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Dragos Tatulea <dtatulea@nvidia.com>, 
-	Eli Cohen <elic@nvidia.com>, Xie Yongji <xieyongji@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZabQVvpZ4e7hTwcb@biznet-home.integral.gnuweeb.org>
 
-On Wed, Jan 10, 2024 at 9:40=E2=80=AFPM Steve Sistare <steven.sistare@oracl=
-e.com> wrote:
->
-> To pass ownership of a live vdpa device to a new process, the user
-> suspends the device, calls VHOST_NEW_OWNER to change the mm, and calls
-> VHOST_IOTLB_REMAP to change the user virtual addresses to match the new
-> mm.  Flush workers in suspend to guarantee that no worker sees the new
-> mm and old VA in between.
->
+On Wed, Jan 17, 2024 at 01:52:06AM +0700, Ammar Faizi wrote:
+> On Tue, Jan 16, 2024 at 01:11:47PM -0500, Charles Mirabile wrote:
+> > At least on x86-64, the ABI only specifies that one more long will be
+> > present with value 0 (type AT_NULL) after the pairs of auxv entries.
+> > Whether or not it has a corresponding value is unspecified. This value is
+> > present on linux, but there is no reason to check it as simply seeing an
+> > auxv entry whose type value is AT_NULL should be enough.
+> 
+> Yeah, I agree with that. I just read the ABI and confirmed that the
+> 'a_un' member is ignored when the type is `AT_NULL`. Let's stop relying
+> on an unspecified value.
+> 
+> For others who want to check, see page 37 and 38:
+> https://gitlab.com/x86-psABIs/x86-64-ABI/-/wikis/uploads/221b09355dd540efcbe61b783b6c0ece/x86-64-psABI-2023-09-26.pdf
+> 
+> > This is a matter of taste, but I think processing the data in a structured
+> > way by coercing it into an array of type value pairs, using multiple
+> > return style, and a for loop with a clear exit condition is more readable
+> > than the existing infinite loop with multiple exit points and a return
+> > value variable.
+> 
+> Ok. It's more readable using your way. One thing that bothers me a bit
+> is type of 'a_type'. On page 37, the ABI defines the auxv type-val pair
+> as:
+> 
+>   typedef struct
+>   {
+>     int a_type;
+>     union {
+>       long a_val;
+>       void *a_ptr;
+>       void (*a_fnc)();
+>     } a_un;
+>   } auxv_t;
+> 
+> Assuming the arch is x86-64 Linux. Note that 'a_type' is an 'int' which
+> is 4 bytes in size, but we use 'unsigned long' instead of 'int' to
+> represent it. However, since 'a_un' needs to be 8 bytes aligned, the
+> compiler will put a 4 bytes padding between 'a_type' and 'a_un', so it
+> ends up just fine (on x86-64).
+> 
+> What do you think about other architectures? Will it potentially be
+> misinterpreted?
 
-The worker should already be stopped by the end of the suspend ioctl,
-so maybe we can consider this a fix?
+Indeed, it would fail on a 64-bit big endian architecture. Let's
+just declare the local variable the same way as it is in the spec,
+it will be much cleaner and more reliable.
 
-> Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
-> ---
->  drivers/vdpa/vdpa_sim/vdpa_sim.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdp=
-a_sim.c
-> index 6304cb0b4770..8734834983cb 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> @@ -74,6 +74,17 @@ static void vdpasim_worker_change_mm_sync(struct vdpas=
-im *vdpasim,
->         kthread_flush_work(work);
->  }
->
-> +static void flush_work_fn(struct kthread_work *work) {}
-> +
-> +static void vdpasim_flush_work(struct vdpasim *vdpasim)
-> +{
-> +       struct kthread_work work;
-> +
-> +       kthread_init_work(&work, flush_work_fn);
-> +       kthread_queue_work(vdpasim->worker, &work);
-> +       kthread_flush_work(&work);
-
-Wouldn't it be better to cancel the work with kthread_cancel_work_sync here=
-?
-
-> +}
-> +
->  static struct vdpasim *vdpa_to_sim(struct vdpa_device *vdpa)
->  {
->         return container_of(vdpa, struct vdpasim, vdpa);
-> @@ -512,6 +523,8 @@ static int vdpasim_suspend(struct vdpa_device *vdpa)
->         vdpasim->running =3D false;
->         mutex_unlock(&vdpasim->mutex);
->
-> +       vdpasim_flush_work(vdpasim);
-> +
->         return 0;
->  }
->
-> --
-> 2.39.3
->
-
+Thanks,
+Willy
 
