@@ -1,115 +1,175 @@
-Return-Path: <linux-kernel+bounces-27386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D3A782EF20
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:38:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4430D82EF23
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:42:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F6531F2452B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:38:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2A271F244E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:42:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9E791BC37;
-	Tue, 16 Jan 2024 12:38:06 +0000 (UTC)
-Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B19781BC3E;
+	Tue, 16 Jan 2024 12:42:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bNYZs5c8"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 920C81BC30;
-	Tue, 16 Jan 2024 12:38:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=astralinux.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=astralinux.ru
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.astralinux.ru (Postfix) with ESMTP id BA4281864EA3;
-	Tue, 16 Jan 2024 15:37:52 +0300 (MSK)
-Received: from mail.astralinux.ru ([127.0.0.1])
-	by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id 87kUh4nzQxwi; Tue, 16 Jan 2024 15:37:52 +0300 (MSK)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.astralinux.ru (Postfix) with ESMTP id 6B2F11864BCC;
-	Tue, 16 Jan 2024 15:37:52 +0300 (MSK)
-X-Virus-Scanned: amavisd-new at astralinux.ru
-Received: from mail.astralinux.ru ([127.0.0.1])
-	by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 3uTgjf0xa7w9; Tue, 16 Jan 2024 15:37:52 +0300 (MSK)
-Received: from new-mail.astralinux.ru (unknown [10.177.185.102])
-	by mail.astralinux.ru (Postfix) with ESMTPS id 2178F1864EA3;
-	Tue, 16 Jan 2024 15:37:52 +0300 (MSK)
-Received: from [192.168.32.67] (unknown [192.168.32.67])
-	by new-mail.astralinux.ru (Postfix) with ESMTPA id 4TDpSb5CxMzfYlP;
-	Tue, 16 Jan 2024 15:37:51 +0300 (MSK)
-Message-ID: <5eb30083-1d8f-02cf-c4bf-2560ad46243d@astralinux.ru>
-Date: Tue, 16 Jan 2024 15:37:45 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 751D41BC25
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 12:42:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50ea9daac4cso10059226e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 04:42:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705408940; x=1706013740; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+EKrm2JO+zcDUrpvnESCba76qUcUIJTz/jyzkgv6D5k=;
+        b=bNYZs5c85GVuDZlN/D67ZdQvXxNkpQqgl1diz8rdzKa7aTm6lELLTY7vTB6IVHEdnN
+         lgC0GPnU7jfSE6mUXjS3HHp6+pVyNORvcaSSkXY16iIw1GUChTyeRZuhqWENCb9LCH2/
+         z/gygFduGiohc6cHh1KIPikVLwtuzjTVHCzCb10Fa+mtQ6qDmFG1Ovt7mIyqATTzturS
+         RjdzRFzPD5KafdZLJOVfZi2G4Myg5TC7oHVR0/3AQWwVFJuuOOvK4fLpvtAMiTvVY1Az
+         AngX9Ho1CqFjvGWHRkTgxNFvZ+JbVlUq7w7PiKL3+ar9LWEVSv3Od6H6H+xL/1VKq84E
+         cW3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705408940; x=1706013740;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+EKrm2JO+zcDUrpvnESCba76qUcUIJTz/jyzkgv6D5k=;
+        b=E1iAdEGai28qNwo66A1wlqmxJEqH6ZEMhow7y3pBebNfah/hZQHgizh8zWAHbKATKe
+         9tdt0EESXHoEZzEyM6ffNnDywqrfvKpNV5UEnHuW4JsXgCixamOcavWaKzvrxb0+cagN
+         X3Mb6khkyaLQp+zLUWg9ZPqiVR8YNmhCfNiWTbmSQchXV99KRX1A4u6E6lPZwqMTunZC
+         GmNWXO2udZS0fCR13L09FXkc3roGGDcGuPPg4SPia7F7eGovhdsoX06Md96ucBpbk04q
+         ngpUUQqkM06pFVEtZqxw5/9S1bLVLzuRdViIOvdpvO915ORuxgQSZJSBYYWPfeXfEGQc
+         m5BQ==
+X-Gm-Message-State: AOJu0YzDFyeNMNEaY51y/Dv2MjgUuMXUu72+lS/EuNJHmvJ1AF4Es51z
+	0qb4zXiPsSDaPh/+GpRg0u2UCo1cnLEX2Peyew+ZGEtGrBc=
+X-Google-Smtp-Source: AGHT+IFlNMNId0iaZItO0V8VSaiL7I1mJzSPu7gjYOhbLEcWbsUx5dyGejHJionR3QYOqAif9med+Q==
+X-Received: by 2002:a05:6512:3987:b0:50e:e1e6:e1c8 with SMTP id j7-20020a056512398700b0050ee1e6e1c8mr3978085lfu.35.1705408940482;
+        Tue, 16 Jan 2024 04:42:20 -0800 (PST)
+Received: from [172.30.204.234] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id h12-20020a0565123c8c00b0050e87c5b837sm1742064lfv.263.2024.01.16.04.42.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jan 2024 04:42:20 -0800 (PST)
+Message-ID: <efadbf5d-bec9-4127-8928-ea0def4326fc@linaro.org>
+Date: Tue, 16 Jan 2024 13:42:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: RuPost Desktop
-Content-Language: ru
-To: linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
- linux-mm@kvack.org
-Cc: stephen.smalley.work@gmail.com, aaw@google.com
-From: Dmitry Mastykin <dmastykin@astralinux.ru>
-Subject: preventing executable stack with file_mprotect hook
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/5] media: qcom: camss: Add sc8280xp resources
+Content-Language: en-US
+To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+ Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Robert Foss <rfoss@kernel.org>, Todor Tomov <todor.too@gmail.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240111-linux-next-24-01-09-sc8280xp-camss-changes-v1-0-b92a650121ba@linaro.org>
+ <20240111-linux-next-24-01-09-sc8280xp-camss-changes-v1-3-b92a650121ba@linaro.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240111-linux-next-24-01-09-sc8280xp-camss-changes-v1-3-b92a650121ba@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hello all,
 
-I use the file_mprotect hook to prevent executable stack. It's called 
-from mprotect syscall and prevents linkage with execstack-flagged 
-libraries. But I don't see it called when I execute a simple 
-execstack-flagged binary: int main() { char shell[100] = "\xb0\x01" // 
-mov al, 1 "\x31\xdb" // xor ebx, ebx "\xcd\x80" ; // int 0x80 
-((void(*)())shell)(); return 0; } I'm thinking about a patch like one in 
-the end of this message. I would be glad to have a feedback, if someone 
-find this reasonable. Thank you! Kind regards Dmitry Mastykin
 
-diff --git a/fs/exec.c b/fs/exec.c
-index cebfe15bbad8..0288f14f11b2 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -50,6 +50,7 @@
-  #include <linux/module.h>
-  #include <linux/namei.h>
-  #include <linux/mount.h>
-+#include <linux/mman.h>
-  #include <linux/security.h>
-  #include <linux/syscalls.h>
-  #include <linux/tsacct_kern.h>
-@@ -759,6 +760,7 @@ int setup_arg_pages(struct linux_binprm *bprm,
-  	struct vm_area_struct *vma = bprm->vma;
-  	struct vm_area_struct *prev = NULL;
-  	unsigned long vm_flags;
-+	unsigned long prot = 0;
-  	unsigned long stack_base;
-  	unsigned long stack_size;
-  	unsigned long stack_expand;
-@@ -811,16 +813,19 @@ int setup_arg_pages(struct linux_binprm *bprm,
-  	 * EXSTACK_ENABLE_X, disable for EXSTACK_DISABLE_X and leave alone
-  	 * (arch default) otherwise.
-  	 */
--	if (unlikely(executable_stack == EXSTACK_ENABLE_X))
-+	if (unlikely(executable_stack == EXSTACK_ENABLE_X)) {
-+		prot |= PROT_EXEC;
-  		vm_flags |= VM_EXEC;
--	else if (executable_stack == EXSTACK_DISABLE_X)
-+	} else if (executable_stack == EXSTACK_DISABLE_X)
-  		vm_flags &= ~VM_EXEC;
-  	vm_flags |= mm->def_flags;
-  	vm_flags |= VM_STACK_INCOMPLETE_SETUP;
-  
-  	tlb_gather_mmu(&tlb, mm);
--	ret = mprotect_fixup(&tlb, vma, &prev, vma->vm_start, vma->vm_end,
--			vm_flags);
-+	ret = security_file_mprotect(vma, prot, prot);
-+	if (!ret)
-+		ret = mprotect_fixup(&tlb, vma, &prev,
-+				     vma->vm_start, vma->vm_end, vm_flags);
-  	tlb_finish_mmu(&tlb);
-  
-  	if (ret)
+On 1/11/24 20:57, Bryan O'Donoghue wrote:
+> This commit describes the hardware layout for the sc8280xp for the
+> following hardware blocks:
+> 
+> - 4 x VFE, 4 RDI per VFE
+> - 4 x VFE Lite, 4 RDI per VFE
+> - 4 x CSID
+> - 4 x CSID Lite
+> - 4 x CSI PHY
+> 
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> 
+> ---
 
+[...]
+
+> +static const struct camss_subdev_resources csiphy_res_sc8280xp[] = {
+> +	/* CSIPHY0 */
+
+Are there any cases where a platform has PHYs with different
+capabilities? Might be another nice thing to clean up in the
+future..
+
+[...]
+
+> +
+> +static const struct camss_subdev_resources vfe_res_sc8280xp[] = {
+> +	/* IFE0 */
+> +	{
+> +		.regulators = {},
+> +		.clock = { "gcc_axi_hf", "gcc_axi_sf", "cpas_ahb", "camnoc_axi", "vfe0", "vfe0_axi" },
+
+VFE->IFE?
+
+> +		.clock_rate = { { 0 },
+> +				{ 0 },
+> +				{ 19200000, 80000000},
+
+Missing space
+
+Also, the source of this clock has shared_ops, which means it's
+parked to XO on disable.. Is the first frequency here useful?
+
+> +				{ 19200000, 150000000, 266666667, 320000000, 400000000, 480000000 },
+
+Similar story here
+
+> +				{ 400000000, 558000000, 637000000, 760000000 },
+
+And you (perhaps correctly) omitted 19.2MHz here
+
+Same story for all other IFE/_LITEs in this patch
+
+> +
+> +static const struct resources_icc icc_res_sc8280xp[] = {
+> +	{
+> +		.name = "cam_ahb",
+> +		.icc_bw_tbl.avg = 150000,
+> +		.icc_bw_tbl.peak = 300000,
+> +	},
+> +	{
+> +		.name = "cam_hf_mnoc",
+> +		.icc_bw_tbl.avg = 2097152,
+> +		.icc_bw_tbl.peak = 2097152,
+> +	},
+> +	{
+> +		.name = "cam_sf_mnoc",
+> +		.icc_bw_tbl.avg = 2097152,
+> +		.icc_bw_tbl.peak = 2097152,
+> +	},
+> +	{
+> +		.name = "cam_sf_icp_mnoc",
+> +		.icc_bw_tbl.avg = 2097152,
+> +		.icc_bw_tbl.peak = 2097152,
+
+Mbps_to_icc()?
+
+
+>   static const struct of_device_id camss_dt_match[] = {
+>   	{ .compatible = "qcom,msm8916-camss", .data = &msm8916_resources },
+>   	{ .compatible = "qcom,msm8996-camss", .data = &msm8996_resources },
+>   	{ .compatible = "qcom,sdm660-camss", .data = &sdm660_resources },
+>   	{ .compatible = "qcom,sdm845-camss", .data = &sdm845_resources },
+>   	{ .compatible = "qcom,sm8250-camss", .data = &sm8250_resources },
+> +	{ .compatible = "qcom,sc8280xp-camss", .data = &sc8280xp_resources },
+"sc" < "sd"
+
+Konrad
 
