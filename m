@@ -1,123 +1,148 @@
-Return-Path: <linux-kernel+bounces-27739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 279F982F515
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:12:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D74382F525
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:14:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBEB8284557
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:12:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D68EE1F24C51
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:14:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57A701D69D;
-	Tue, 16 Jan 2024 19:12:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7811D551;
+	Tue, 16 Jan 2024 19:14:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B3yC47mT"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="NDiQZGVC"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3853F1D690;
-	Tue, 16 Jan 2024 19:12:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 696661D520;
+	Tue, 16 Jan 2024 19:14:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705432323; cv=none; b=bYcjeEGNVyG8Jz7exNpm1CtGX+enirdId/t+a/h9i0/0pgZE00QG/Dzm5Q5kzz985WfK+95nJYDlO44jtsjPSjw2/L41jznN4kFfmRyVdn8o+1zvjNIqw3uVHVO/eLMbAsV3EDJacMC566kX3qa/6Lm2qDZIr50PW4LjIYEgz3o=
+	t=1705432463; cv=none; b=JSLjBAURffo5xc3MV+oh2K2wKiLPeG8tuzl3gj0oN9mg48Wxl9kBvgYYcGY4vZKK8HFcVIfh47MQWPzbnCq7CPECY6VDlxpW//eV+4Q1PxgAezXO6+7cLFwLPnKdmqobnelbT6mLt5zElWEqSvGl9HL0Qkgq6t/+802tOZYyIik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705432323; c=relaxed/simple;
-	bh=At0y0LAg63pryN4SDbw6Y9AQ4QA1Gvq+RIc+Zhyvjjc=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=mOHoJVLJIQ/wvuXl+c9EmFijkgimzNH6Dewx6ZLRphDhW+qfJTQ8LQEFQ1L7Pg7X9TZQr4EIGjgbon0K2Mfptnvu066rs6hUk/3SkcMpuX8CNo4krNxVzYOKjNwH07+lhDP4eu132BtG4W06kJ8wxaQXNtkm8QvnUuT8nGqHYvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B3yC47mT; arc=none smtp.client-ip=209.85.215.182
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5cedfc32250so4789593a12.0;
-        Tue, 16 Jan 2024 11:12:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705432321; x=1706037121; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8wrpQHEifzn5isE2BzzQKB98qg2UFhAKp9CxBXCvJHc=;
-        b=B3yC47mThZHz1n1rEraIl8BdZz6L2Fg38Py+sMsuwBB1Q2sS+NhETRLan1gaaDiuS8
-         lhevQPZDmHpKmkIj8O/+Yi0ZszvFtJP4PS2UWZWkg1dexSnx62PlTocfPeDOgsQsFqg4
-         rUsTr88mCc8h52zW4KEpOouroD3IwBkASaayOsAMlxX9/VMKRzqVOth2z+vopDBcmTBZ
-         99yaDqzj6p5P6LXQk1dCyB5ql1E2edE1/r5szxZ0H7TJgqS1+32ZRx+oSPSlC6mq6xGo
-         8XE++OjRzEpnmKisgsDgx6EcYDEE1QBojWz6Kh71fvOGUqiBuHh+5uUw2lVIq6b8z8XG
-         BHoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705432321; x=1706037121;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8wrpQHEifzn5isE2BzzQKB98qg2UFhAKp9CxBXCvJHc=;
-        b=qjSGMML0Inabe0raMZaongheQeluNc1B4gB+36AIwibUsTMGNVYxt1x1tdQNE+F9MR
-         +NNCwBCpZ2nQgj8A7nMy2zFmw9uoegMbe9yWbZIcIZGZ6AcbncloHXR+LaiyWJjllc+S
-         aj44Xdikx2ft9KOuEE+xyl/OMlNtM4MIIH1PFicHwYr2dABF1UVlTBWK/n6rxOE0o16L
-         Zs9MUTbJvxNpfQxHk2N9fLaHl7Dab5h8KEVbWExgX5sdSeB5rpEIbMzbNz1H8ZdSq0Fd
-         TKKHcUmJ0PAql1uc4j1TuiLElxMKsUlwHKFuvEYI9uuEWQgxbDtF4LbqeApbSuo8YMaX
-         X22g==
-X-Gm-Message-State: AOJu0YzL22jonKy71Mm6eCurrZ6YPmWV02sZG1K4CVH3uRI/ERiqatUb
-	JjiMtV2yOpgdxfV6TyPwGCdQhVVkoAk=
-X-Google-Smtp-Source: AGHT+IELUMf2IeBpxdiRocm2duo6eMGUfPK03qWFxT/xZMoS+7BRCBaEKqo72o+u91mqoqzJlN/7OQ==
-X-Received: by 2002:a05:6a20:6723:b0:199:e08c:f444 with SMTP id q35-20020a056a20672300b00199e08cf444mr3237956pzh.64.1705432321341;
-        Tue, 16 Jan 2024 11:12:01 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:5c15:9a6:f612:d37a])
-        by smtp.gmail.com with ESMTPSA id m6-20020a62f206000000b006dae568baedsm9627081pfh.24.2024.01.16.11.12.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 11:12:01 -0800 (PST)
-Date: Tue, 16 Jan 2024 11:11:58 -0800
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Kunwu Chan <chentao@kylinos.cn>
-Cc: aduggan@synaptics.com, cheiny@synaptics.com,
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: synaptics-rmi4: Fix NULL pointer dereference in
- rmi_driver_probe
-Message-ID: <ZabU_lsGCuki1dSY@google.com>
-References: <20240116083847.89934-1-chentao@kylinos.cn>
+	s=arc-20240116; t=1705432463; c=relaxed/simple;
+	bh=Gk5fOr4dIPtf5iRYPCjl8L1MH8Ozxm5N9FBGAXYdF6s=;
+	h=Received:DKIM-Signature:Received:Received:Received:Received:
+	 Received:Received:Received:Received:Received:Message-ID:Date:
+	 MIME-Version:User-Agent:Subject:Content-Language:To:Cc:References:
+	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-TM-AS-GCONF:X-Proofpoint-GUID:X-Proofpoint-ORIG-GUID:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details; b=gvhxkYz62Fh14dR+YTyruurcRvdl6qS8vWa+YnvuIIKOT8TJOSZ8kxCHOogXV1MQBREOju/c/Fan0vWE25DbetXpJowz3pG9fDips1FcvdkBC0hF+OmxcwfQDGX8EFz4TXZbHRMKLTPCjSOhpl5Oh7GrQ6tHgd4lyflw4nX7ML0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=NDiQZGVC; arc=none smtp.client-ip=148.163.158.5
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40GJE8YM003004;
+	Tue, 16 Jan 2024 19:14:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=IdifBVBt/VVz8Kl9dCjHxdLKBd4kg9p5JkNDFDBHN7U=;
+ b=NDiQZGVCxy/FdSFclfq2tXWYLnan55UL5HYMf4zd2ucF5WVvELUU/1S/qkk1En2yASTx
+ r6Vxlev4GZmK2f5IKEHPrnYME1CIbArmIWJUBGxYRZdjpn54+hhvnlG0CpnB2CVuN7eM
+ xUEChDwt9Ks+9tq5xiVLaiZ8bURGQdEHLJFNnkJH3BHZdQk/gYPeN0P57xJ5JgVQYE76
+ VCHdTcdxnHVMGHzoiVDlzpUxWNE9BSbvNU3imLSQKDLcds1ytYx7BqonE56I8WWUBHP1
+ ezUvBkn8G1auiujLvMJCu62BXmlEzzW8u/IftIX9k+0vggDb4/HlPxfsqv0kbcf9/gi1 ow== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnwm645ya-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 19:14:18 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40GJ7esF003788;
+	Tue, 16 Jan 2024 19:14:17 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnwm645h3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 19:14:16 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40GJ1fuC003699;
+	Tue, 16 Jan 2024 19:12:18 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vm4usrt8v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 19:12:18 +0000
+Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
+	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40GJCG9N30016166
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Jan 2024 19:12:16 GMT
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7B2DB58052;
+	Tue, 16 Jan 2024 19:12:16 +0000 (GMT)
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 78BC358056;
+	Tue, 16 Jan 2024 19:12:09 +0000 (GMT)
+Received: from [9.61.48.5] (unknown [9.61.48.5])
+	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 16 Jan 2024 19:12:08 +0000 (GMT)
+Message-ID: <a5ccb86a-cc56-4e25-9b7c-e55a54101daf@linux.ibm.com>
+Date: Tue, 16 Jan 2024 14:12:06 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240116083847.89934-1-chentao@kylinos.cn>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 4/6] s390/vfio-ap: reset queues filtered from the
+ guest's AP config
+Content-Language: en-US
+To: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, jjherne@linux.ibm.com, borntraeger@de.ibm.com,
+        pasic@linux.ibm.com, pbonzini@redhat.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, gor@linux.ibm.com, stable@vger.kernel.org
+References: <20240115185441.31526-1-akrowiak@linux.ibm.com>
+ <20240115185441.31526-5-akrowiak@linux.ibm.com>
+ <ZabGAx5BpIiYW+b3@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+From: Anthony Krowiak <akrowiak@linux.ibm.com>
+In-Reply-To: <ZabGAx5BpIiYW+b3@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: yy8cEHpJ0eLe2CpHFepbk5_Y6KFN-aFH
+X-Proofpoint-ORIG-GUID: Kxz-GnwL5U2IS-Dv3b9ZmLIrWM6zpQZP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-16_11,2024-01-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ priorityscore=1501 suspectscore=0 adultscore=0 mlxlogscore=957
+ impostorscore=0 bulkscore=0 phishscore=0 malwarescore=0 spamscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401160152
 
-On Tue, Jan 16, 2024 at 04:38:47PM +0800, Kunwu Chan wrote:
-> devm_kasprintf() returns a pointer to dynamically allocated memory
-> which can be NULL upon failure. Ensure the allocation was successful
-> by checking the pointer validity.
 
-It is perfectly valid to not set "input->phys" and leave it at NULL. So
-while I agree that having error handling is good I do not believe
-there's chance for NULL pointer dereference, so please adjust your patch
-title.
+On 1/16/24 1:08 PM, Alexander Gordeev wrote:
+> On Mon, Jan 15, 2024 at 01:54:34PM -0500, Tony Krowiak wrote:
+>> From: Tony Krowiak <akrowiak@linux.ibm.com>
+> ...
+>> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
+>> index 88aff8b81f2f..20eac8b0f0b9 100644
+>> --- a/drivers/s390/crypto/vfio_ap_private.h
+>> +++ b/drivers/s390/crypto/vfio_ap_private.h
+>> @@ -83,10 +83,10 @@ struct ap_matrix {
+>>   };
+>>   
+>>   /**
+>> - * struct ap_queue_table - a table of queue objects.
+>> - *
+>> - * @queues: a hashtable of queues (struct vfio_ap_queue).
+>> - */
+>> +  * struct ap_queue_table - a table of queue objects.
+>> +  *
+>> +  * @queues: a hashtable of queues (struct vfio_ap_queue).
+>> +  */
+>>   struct ap_queue_table {
+>>   	DECLARE_HASHTABLE(queues, 8);
+>>   };
+> If this change is intended?
 
-> 
-> Fixes: 2b6a321da9a2 ("Input: synaptics-rmi4 - add support for Synaptics RMI4 devices")
-> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-> ---
->  drivers/input/rmi4/rmi_driver.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/input/rmi4/rmi_driver.c b/drivers/input/rmi4/rmi_driver.c
-> index 258d5fe3d395..d3a601ff51e6 100644
-> --- a/drivers/input/rmi4/rmi_driver.c
-> +++ b/drivers/input/rmi4/rmi_driver.c
-> @@ -1197,6 +1197,12 @@ static int rmi_driver_probe(struct device *dev)
->  		rmi_driver_set_input_params(rmi_dev, data->input);
->  		data->input->phys = devm_kasprintf(dev, GFP_KERNEL,
->  						"%s/input0", dev_name(dev));
-> +		if (!data->input->phys) {
-> +			dev_err(dev, "%s: Failed to allocate memory.\n",
 
-No need to log the error here, memory allocation will already log the
-failure.
+It makes not sense, not sure why/how it happened. Probably an artifact 
+of the many rebases done to get to this version.
 
-Thanks.
 
--- 
-Dmitry
 
