@@ -1,170 +1,87 @@
-Return-Path: <linux-kernel+bounces-27156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA12982EB51
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:14:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B745682EB6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:22:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57B772853E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:14:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF4431C22E44
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:22:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77CAB12B66;
-	Tue, 16 Jan 2024 09:14:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A22512B72;
+	Tue, 16 Jan 2024 09:22:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Xq75KyWa"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="GDvzY5ew"
+Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C83125C8;
-	Tue, 16 Jan 2024 09:14:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40G9DWUO127272;
-	Tue, 16 Jan 2024 03:13:32 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1705396412;
-	bh=nJQizBl1NxeJeism2TSUWEXRTwS6P64j/cHB1gifO1s=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=Xq75KyWa5nqqS0y0Tbne7SalAk1kzexDlCgEm99U4JwqDy+D49qdRKtrOIKpjAyKN
-	 iReiPttyJP80YUw+rz0n6bZsbLsrs2Sc44z28MzqobE1t8lLPzeWpcf9gzzXe4EM0y
-	 Qn7piYX2N+G/obPzaAwudYV+2GHf7sOTNV9gaiJo=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40G9DWPS043190
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 16 Jan 2024 03:13:32 -0600
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 16
- Jan 2024 03:13:31 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 16 Jan 2024 03:13:31 -0600
-Received: from [172.24.227.193] (devarsht.dhcp.ti.com [172.24.227.193])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40G9DPt4108827;
-	Tue, 16 Jan 2024 03:13:26 -0600
-Message-ID: <060358d6-ade1-b84e-4550-e2ae34a6d53c@ti.com>
-Date: Tue, 16 Jan 2024 14:43:25 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19897125B2
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 09:22:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1705396619; bh=lIy9wHh+g96JsNjrDnYthtgcgqnhJ+ghbboFhC4b3To=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=GDvzY5ewoL1j17KitP4H3tK8g2EywKVAr2IQkjbgVQGZUE6X9nZesquh2vLubtaXd
+	 lHAx33DgORPvanZ0fW57m41RyIy/Lh8jFU96z90dj6SrqrGbkK3dQeKYRqXcRPAfDc
+	 oLffTSYwNrkC/tthZ7+HTm6fM14Dd54AVwxZBmGg=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
+	id 35E86CCF; Tue, 16 Jan 2024 17:13:30 +0800
+X-QQ-mid: xmsmtpt1705396410tsyui8bbs
+Message-ID: <tencent_674ACC74C977BF672C3C2F37AC97E236F409@qq.com>
+X-QQ-XMAILINFO: NvH2zBBgt3uTqLDJ+oJttz4uiJ218HS117yUUOijsOcEdfAtEXrfmON6pnQFf2
+	 hgqXiout9Fq0RRqgkq1zRMqtDmwEChyznopyzyMhizf0sxWr4WIyNeS6fABqIjZh3wqHODFlqkKn
+	 dlbv3gZyffNSEI75IJlYEiu3zJ2eNeX990/YlNEMcf+EF+eImZTKCHeox/anL7KI9pSZ0WYuoRoX
+	 zO+IkvIBkH+/NmtHsmMrHitu+gzWslPMWpSYLwXwpHpQjlGTWoIF1gjZS6k0uhFdsaXojL5cyhM0
+	 nbE+/nH9fMN5isOZskjPoyoa8cpgQ76vu/pkm0+Io1BqK5PSRr4Yqj/OF6Yaf64ZFcMrZB4zCcUR
+	 hY1Igpq1vF4d9YnhLhfZyAoxQSEyEbxOPSkbo/fDZmYV52aodqyk8D0c6JAqdyH0FxWFw8pppccI
+	 6x5U3ToOU4YxO33jrT2MJZh4eqcsllKI5OPkqgarXPSqvLnif8qvURkJUaB1TAEk1sMZFlCdYe/C
+	 QSYAeechqvDZsFHD04nkLf0BbhZdoyCmRdFdlFg4U/ZAmddtU8B8xw0er3DaLm0p2XWbFL9BA73z
+	 9jxRXgKMFbtJdBodbBxSiJBl7DjKris0gMNNTfz3ps9sf4V8S0uY5jTdVuFDexapgRf9G6svdiSJ
+	 WkryBXrtMIPxhNH0ipq3yXLKUFcTuRc1joY0f+5gu94LzCd87f5FPo/A9mMy6epAr9JyucMRAsTy
+	 MtAlBq6ZJb1hYkkewqaEtjp4Ru96+xf8WRLcYM/ysr8f73lGql8lrYCD7OibWNdIS9FzoaveTK1q
+	 ZESCWPl5pBHy6iv5LwEoewNkQMrXP2OkHhWSkfblx9HXrzRf3mgSP9usfIGipjs+S9ccUzj9UdM/
+	 PhtADsig80062YgrKSn1s1g7TQiGHVDE3UtKdZX0yiXctFIT86rkReIoCuoTGZXiDSFo0OsffFip
+	 crc3PiLPU=
+X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+7ec955e36bb239bd720f@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] KASAN: slab-out-of-bounds Read in dsa_user_prechangeupper
+Date: Tue, 16 Jan 2024 17:13:31 +0800
+X-OQ-MSGID: <20240116091330.572860-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <00000000000002faa2060f02e766@google.com>
+References: <00000000000002faa2060f02e766@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 1/2] dt-bindings: display: ti,am65x-dss: Add support for
- common1 region
-To: Conor Dooley <conor@kernel.org>
-CC: <jyri.sarha@iki.fi>, <tomi.valkeinen@ideasonboard.com>,
-        <airlied@gmail.com>, <daniel@ffwll.ch>,
-        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-        <tzimmermann@suse.de>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <praneeth@ti.com>, <nm@ti.com>,
-        <vigneshr@ti.com>, <a-bhatia1@ti.com>, <j-luthra@ti.com>,
-        <kristo@kernel.org>
-References: <20240115125716.560363-1-devarsht@ti.com>
- <20240115125716.560363-2-devarsht@ti.com>
- <20240115-craftsman-capricorn-d2930678c222@spud>
-Content-Language: en-US
-From: Devarsh Thakkar <devarsht@ti.com>
-In-Reply-To: <20240115-craftsman-capricorn-d2930678c222@spud>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 
-Hi Conor,
+please test slab-out-of-bounds Read in dsa_user_prechangeupper
 
-Thanks for the review.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 3e7aeb78ab01
 
-On 15/01/24 21:47, Conor Dooley wrote:
-> On Mon, Jan 15, 2024 at 06:27:15PM +0530, Devarsh Thakkar wrote:
->> TI keystone display subsystem present in AM65 and other SoCs such as AM62
-> 
-> Do all 3 SoCs supported by this binding (am625 am62a7 am65x) have this
-> common1 register? If not, you should limit it the platforms that do have
-> it.
-> 
+diff --git a/net/dsa/user.c b/net/dsa/user.c
+index b738a466e2dc..e6bb2c527067 100644
+--- a/net/dsa/user.c
++++ b/net/dsa/user.c
+@@ -2865,7 +2865,8 @@ static int dsa_user_changeupper(struct net_device *dev,
+ static int dsa_user_prechangeupper(struct net_device *dev,
+ 				   struct netdev_notifier_changeupper_info *info)
+ {
+-	struct dsa_port *dp = dsa_user_to_port(dev);
++	const struct rtnl_link_ops *ops = dev->rtnl_link_ops;
++	struct dsa_port *dp = ops->priv_size ? dsa_user_to_port(dev) : NULL;
+ 
+ 	if (!dsa_user_dev_check(dev))
+ 		return NOTIFY_DONE;
 
-Yes all 3 SoCs supported by binding have common1 register space supported.
-
-AM62x TRM:
-https://www.ti.com/lit/pdf/spruiv7 (Section 14.8.9.1 DSS Registers)
-
-AM65x TRM:
-https://www.ti.com/lit/pdf/spruid7 (Section 12.6.5 DSS Registers)
-
-AM62A TRM:
-https://www.ti.com/lit/pdf/spruj16 (Section 14.9.9.1 DSS Registers)
-
-Regards
-Devarsh
-
-> Thanks,
-> Conor.
-> 
->> support two separate register spaces namely "common" and "common1" which
->> can be used by two separate hosts to program the display controller as
->> described in respective Technical Reference Manuals [1].
->>
->> The common1 register space has similar set of configuration registers as
->> supported in common register space except the global configuration
->> registers which are exclusive to common region.
->>
->> This adds binding for "common1" register region too as supported by the
->> hardware.
->>
->> [1]:
->> AM62x TRM:
->> https://www.ti.com/lit/pdf/spruiv7 (Section 14.8.9.1 DSS Registers)
->>
->> AM65x TRM:
->> https://www.ti.com/lit/pdf/spruid7 (Section 12.6.5 DSS Registers)
->>
->> Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
->> ---
->>  .../devicetree/bindings/display/ti/ti,am65x-dss.yaml       | 7 +++++--
->>  1 file changed, 5 insertions(+), 2 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml b/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
->> index b6767ef0d24d..55e3e490d0e6 100644
->> --- a/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
->> +++ b/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
->> @@ -37,6 +37,7 @@ properties:
->>        - description: OVR2 overlay manager for vp2
->>        - description: VP1 video port 1
->>        - description: VP2 video port 2
->> +      - description: common1 DSS register area
->>  
->>    reg-names:
->>      items:
->> @@ -47,6 +48,7 @@ properties:
->>        - const: ovr2
->>        - const: vp1
->>        - const: vp2
->> +      - const: common1
->>  
->>    clocks:
->>      items:
->> @@ -147,9 +149,10 @@ examples:
->>                      <0x04a07000 0x1000>, /* ovr1 */
->>                      <0x04a08000 0x1000>, /* ovr2 */
->>                      <0x04a0a000 0x1000>, /* vp1 */
->> -                    <0x04a0b000 0x1000>; /* vp2 */
->> +                    <0x04a0b000 0x1000>, /* vp2 */
->> +                    <0x04a01000 0x1000>; /* common1 */
->>              reg-names = "common", "vidl1", "vid",
->> -                    "ovr1", "ovr2", "vp1", "vp2";
->> +                    "ovr1", "ovr2", "vp1", "vp2", "common1";
->>              ti,am65x-oldi-io-ctrl = <&dss_oldi_io_ctrl>;
->>              power-domains = <&k3_pds 67 TI_SCI_PD_EXCLUSIVE>;
->>              clocks =        <&k3_clks 67 1>,
->> -- 
->> 2.34.1
->>
 
