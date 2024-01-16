@@ -1,92 +1,98 @@
-Return-Path: <linux-kernel+bounces-27306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EED1F82ED92
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:20:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6141C82ED96
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:21:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DC631F2403C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:20:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73A021C20DF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:21:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 771B41B800;
-	Tue, 16 Jan 2024 11:19:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0143D1B80B;
+	Tue, 16 Jan 2024 11:21:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fooishbar-org.20230601.gappssmtp.com header.i=@fooishbar-org.20230601.gappssmtp.com header.b="gjsim0FY"
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SAAAm80K"
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C865D1B7F2
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 11:19:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fooishbar.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=fooishbar.org
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-68163449a36so7458946d6.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 03:19:56 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 332C61B7F2;
+	Tue, 16 Jan 2024 11:21:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5c6910e93e3so1311060a12.1;
+        Tue, 16 Jan 2024 03:21:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fooishbar-org.20230601.gappssmtp.com; s=20230601; t=1705403995; x=1706008795; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AS3BBwgYanBUfBnpxKNvwfAfy1OJUBRnEQmNzkGmJ1s=;
-        b=gjsim0FYVMmsd8h+YQnmuNSxBe/ctN/yFIrmCCcGbbHx/pE1NBXWrCn8NOgMwGhvf0
-         1uDfbfreAJgJFbWf7QmIMsgmgp9cZ0cCF60GeUNTK0ZyjSfbqdKpy+S8HSVcnVMn4DnL
-         fu5IzAnUaWndoh0R39lOYmvgd4x1RqJEZZa6Va8Ew5FL1W0D2eQf41sBITLaI1JjJ94N
-         3COar4ZwSLn8NOTb8EgnFs30JcjuEQBJYHH8lcylij5Awov+N9j4aVI2RGzV4cyyW56W
-         E0C9L+kl2+TXQJtvkLF+t3Rf5Jn4XHdobIYY2UArJOuHw4Z5AqClG7lB2D6B5Esi/hdg
-         w/0w==
+        d=gmail.com; s=20230601; t=1705404087; x=1706008887; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2frdD80csrQQUHGsaueDexralzHnoTFsGiRETYFj+P8=;
+        b=SAAAm80Ktvql/9N2c0PBTPSM1dK6+Z7WG4GSJ+R56Z4d0z7lPmkxG4iZ8u24k3i0SS
+         kQHHqQweCBTfjEP18ZmbLqLaoLIpHhc5JJ00gU5nGOZ9nmB7ItQJFZAOlkxjPDrE6ytZ
+         gXWWeAw4a7nB+WjY/EAEc1SONMwEGXxwZXNQlAfWO63/Ss/91bkzHIFIk6RD+eo5/ewg
+         HHoTvdKR6bD0CkxejOtvatnczOg41wHKBqBEzw/O7fVoSwalli2wrMifJoE6QSfc1tov
+         ZOdrhlza4g9rMtmQWAZlS+LI7lLvnVL9AiUXTvbS0lET5yOqWR+s+rHucg+Uwc/hm66Z
+         E4XQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705403995; x=1706008795;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AS3BBwgYanBUfBnpxKNvwfAfy1OJUBRnEQmNzkGmJ1s=;
-        b=dK+7CoZ7XPfrJyTAhUqICj96syggep1pIcss/hnWmX19alsmL+uLhGMjqNlOk8aERT
-         0m6RgQUpOh9eFu6wYvGAmVwEsjg+j5UeeHuiMtpFLfJ/YxKqstgu8T7sbth8Bp/xzFjy
-         FkwnSyNK8hf/MvCHJk+x+lw/A86TSfC47j4dbMAl9eaOtgYUsmfWhNGq6YQyguwPTtwu
-         CLd+bWbAN1jH2/qhBDbjjEn00HJHv+XDzdHrwzygeXOwe8n9rgEMwygWiR7dJpv18Rc0
-         kjQbbBsoUBNWYr0umKHn/RQfjVdEbxdf+ObgWAXokltQraChRsaUZ/garFnQ1mWJcFFF
-         l1Aw==
-X-Gm-Message-State: AOJu0YySQJwiGvRvZaWnF1Q0BAS8FDw5YYAc8CdVhK8dzeZ+XVZ/Rf5V
-	MiOSDVUVivss3f8tZaO20H4MDRkzt2c/2FdL+e886b/6I9JHrg==
-X-Google-Smtp-Source: AGHT+IFrGX+QlGcwiMcvFXBVyO7eiX4wVISfsMNIemyKgmDmI8h7UYeLiWdxotNRUa1oCcK60IlwlDmzM+TIfP+BjPM=
-X-Received: by 2002:a05:6214:31a1:b0:681:562a:16e1 with SMTP id
- lb33-20020a05621431a100b00681562a16e1mr4955020qvb.102.1705403995478; Tue, 16
- Jan 2024 03:19:55 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705404087; x=1706008887;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2frdD80csrQQUHGsaueDexralzHnoTFsGiRETYFj+P8=;
+        b=Eo6ojdNm3UUWDg6EdZDKxgtaAQS1xe/9vj358K4dE5+GzqdDhZBiqYmG+TfOg6qY2J
+         jobu/bJxVENpWyjvhL+NQun5MQ+UJy5reaCxykswJPjvt2x0N/7AIPN+4UmC9GmKSy4f
+         dcvms3M790AdIPD4JG1yK3XClsAtFqtHTdoWLR3ugSMKt1Qi0mIPXYBATAItZXk/6XX7
+         gcGqYco9mT05oReEx+H5Helqvqn/kiYvM1RYaZmLSp1iA98BEcZ1LQUeJca+sye3ZFcN
+         QlOMwjBE7JPMEUpyS6X9zSetEC6K40Q1vRC9fD8OuJ2Dn/PcTE3tfGXxdv/YlbNPIyPR
+         UQ4Q==
+X-Gm-Message-State: AOJu0Yymn9RTppmqVihyA71yT8hdv+/suk0qtNIYeFJyG3ClkMEg8snB
+	Pf8UVMFkovYeMx6Qh+853TeodZqXxhWYNslXCPM=
+X-Google-Smtp-Source: AGHT+IE9fyCX5XxM744+q1T3mzQxH5LsqLALOlIAytz20SCY3uCcOSDSx1KLO7eSCKJWzlsheKRM3B1TBv+GewOLKtw=
+X-Received: by 2002:a05:6a21:9218:b0:19b:20e9:90da with SMTP id
+ tl24-20020a056a21921800b0019b20e990damr3250632pzb.5.1705404087498; Tue, 16
+ Jan 2024 03:21:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240116095439.107324-1-vignesh.raman@collabora.com> <20240116095439.107324-3-vignesh.raman@collabora.com>
-In-Reply-To: <20240116095439.107324-3-vignesh.raman@collabora.com>
-From: Daniel Stone <daniel@fooishbar.org>
-Date: Tue, 16 Jan 2024 11:19:44 +0000
-Message-ID: <CAPj87rNKLPETVGzpXaZtQwVGauH2V-fCuFGN4zrOE0nH2R+F+Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/7] drm/ci: mediatek: Rename exisitng job
-To: dri-devel <dri-devel@lists.freedesktop.org>, 
-	Helen Koike <helen.koike@collabora.com>, Dave Airlie <airlied@gmail.com>, 
-	Sima Vetter <daniel@ffwll.ch>, David Heidelberg <david.heidelberg@collabora.com>, 
-	guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com, 
-	linux-mediatek@lists.infradead.org, 
-	linux-rockchip <linux-rockchip@lists.infradead.org>, linux-amlogic@lists.infradead.org, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20240116105317.267525-1-frieder@fris.de> <20240116105317.267525-4-frieder@fris.de>
+In-Reply-To: <20240116105317.267525-4-frieder@fris.de>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Tue, 16 Jan 2024 08:21:16 -0300
+Message-ID: <CAOMZO5DONvb8GpH0PrBaa_EW+br6jWeMC=Jx_y_Etz1EUg11mw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] ARM: dts: imx6dl: Add support for Sielaff i.MX6 Solo board
+To: Frieder Schrempf <frieder@fris.de>
+Cc: Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	Richard Cochran <richardcochran@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>, 
+	Frieder Schrempf <frieder.schrempf@kontron.de>, Andre Przywara <andre.przywara@arm.com>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Gregory CLEMENT <gregory.clement@bootlin.com>, 
+	James Hilliard <james.hilliard1@gmail.com>, 
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>, NXP Linux Team <linux-imx@nxp.com>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Rob Herring <robh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Vignesh,
+On Tue, Jan 16, 2024 at 7:54=E2=80=AFAM Frieder Schrempf <frieder@fris.de> =
+wrote:
 
-On Tue, 16 Jan 2024 at 09:55, Vignesh Raman <vignesh.raman@collabora.com> wrote:
-> Rename the name of xfail files for mediatek (mt8173 and mt8183),
-> to include information about the tested driver and update xfails
-> accordingly. Since the correct driver name is passed from the job to
-> test gpu and display driver, remove the check to set IGT_FORCE_DRIVER
-> based on driver name.
+> +&i2c3 {
+> +       pinctrl-names =3D "default";
+> +       pinctrl-0 =3D <&pinctrl_i2c3>;
+> +       clock-frequency =3D <100000>;
+> +       status =3D "okay";
+> +
+> +       st1633@55 {
 
-I think something is still wrong here, because I can see that later
-xfails updates are setting expectations on kms tests when we're
-supposed to be using the panfrost driver. I can't tell which branch
-was used to run this, but you definitely want to look closely at the
-job logs and results to find out what's going on here.
+Please use a generic node name.
 
-Cheers,
-Daniel
+> +       gt911@5d {
+
+Ditto.
 
