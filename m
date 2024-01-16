@@ -1,98 +1,175 @@
-Return-Path: <linux-kernel+bounces-27517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B50A482F179
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:26:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8454282F17B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:26:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A9F2280E27
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:26:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D9721F22D9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:26:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C89201C295;
-	Tue, 16 Jan 2024 15:25:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03FEE1C6A3;
+	Tue, 16 Jan 2024 15:25:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FqNcLPQF"
-Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com [209.85.221.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="rOJJp+wY"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10olkn2043.outbound.protection.outlook.com [40.92.42.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B38711C692;
-	Tue, 16 Jan 2024 15:25:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f66.google.com with SMTP id ffacd0b85a97d-337b976773fso694479f8f.0;
-        Tue, 16 Jan 2024 07:25:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705418745; x=1706023545; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=zZuo2d2M/Q3k3wMquD1aUIkNWWB/iRajsNBkYvbeXdk=;
-        b=FqNcLPQFhK2gHIK19I44oH+YeI0jkkYbJtM7OJFY8yhNqRR/4ckuOiz/5mDuY82XOu
-         9ikkU0XX5zc7+OsHMXBbEpEJb8NXW0N/MhwmtCVzqJ0t9LR3AkMODSdWLq81aVmOTQMo
-         h3RALaiSD79EFLNJCb5eKlJclFbqSi7RbeinO2CbtBZ3SzXFJJjwVT7IdHvRitc+JeaN
-         s/tAw6/gE8jkVT6JUnGx4obuzusLIrKZkBCkv/viYgSwQFRbcdBqupvz11e78sh0kShD
-         pA1119EsX6pS+Fz+ivAW+44hh+aPyJ6GcBu2EKQqIiZgEuwKSf7TLUqOBi2BEFF9ypbM
-         cN7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705418745; x=1706023545;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zZuo2d2M/Q3k3wMquD1aUIkNWWB/iRajsNBkYvbeXdk=;
-        b=poRTmA3Qxr5Mp6KMZul0B9PRvo25wpoGkCuWMJW1fpmoFCs/JIAxIsfjxYJ0sPebjV
-         62XLSOXII1ec1KKWdKj3yUrwRP4HR+C0+771r/tFmU4ZO3jRg8DRqItqWO3D3lq2C0rE
-         Rp9tK6AU226A1y7bHKti3NFpxCVGAXdFxW3LInxsJIS5u1LTouWXZeiGvC0X6lxcqiHb
-         VAChzy8NX7lt2vaza/B8aC5iUQDzmtBkdyD6dBkUhjzBTPoHKzTrwi+nmNdd2VRR/h+b
-         bSY3CqlRQN1GGLeR5GGtXZ/c/3KfBpPmmseYmVMK6WsgeAyF0zmK/5d9D9lWRVlwmgp0
-         k5Qw==
-X-Gm-Message-State: AOJu0YwRhmn8IFZd/9qmaj8vOkDS5+kjSzMFg5zy0k7ZXIb1wmRyfGJd
-	XbyvG7Tx4uhzt5i3dgkF6+cBy62EVZ6rzwUT+aWj10jJ84YCGQ==
-X-Google-Smtp-Source: AGHT+IFqsLujXCGmkVjTWmvELVAmznVKBkn692ZvXuqoD94Ym+aIoa9jl6vcfVDtn8E0zbZkTHbxKdaMS705q300VrM=
-X-Received: by 2002:a7b:cd95:0:b0:40e:5f22:34ed with SMTP id
- y21-20020a7bcd95000000b0040e5f2234edmr3944070wmj.211.1705418744853; Tue, 16
- Jan 2024 07:25:44 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A19361C69E;
+	Tue, 16 Jan 2024 15:25:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MUDFUTQrn4bih4K0ge7Hf2VaGuAsHFCK9KLBfjGN5d+NxHmV34M+BSdUe3BtCd4X7Ook6YwwiAOzQu5rWHqun38LUb+/Kca5n8pmhmJTne+1vEVAHZJ2vaV3CvBVPEjEo0o7HcMw68JW4gvFkRbDeQLsm4LwTT7GozfCXvAVchtQ55l0zx56hLsuUlDxLWR4HUmthh3LKln6tgPvOzVjg34+LbimjFBrl0UJAUm5c8J6qreli8Z34z7T4Y13JegmSudMNYdCZJrDWka2Z+7t44zpGho3BUoqbX6lfOGH9syYTDZAZyp+JEEIh75DvvK4APeXHRICP0TNAol6jAAbsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cMcYAHQnV7aMT5t2KvEhsmslqIhXqzVMNT+/UUPWlOU=;
+ b=XIBAB6PWERqxOirihOh0jaCN+72OcMBk202oUReEsSz4i8LevsECBrey5HPBrdKpffR7ypDYwBoRLjTMn7CkaKfdHx+ulCD/XbsZ4ErKmPNuo4RuHx07tF6AR91mqawjLkvMjrvibtMkcdNY1K0lfCJ2Uv1lwcXQUVL2/pMwIMrduBR2D1+FGQuxfRA8qajBTV4uCtv47DcTuYrlOdUan6FCIZfU3JFOQIUUXsu0DOd01VfeW2FdiRONYpyyjgw07rnfAcq+gAYdA5N8A+9E83KUpvbpv4ZmNuiSVrLQQcwIbC11MGBhPMzsh7MwrXyJTooVt5jWURQvuMVdJlQxNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cMcYAHQnV7aMT5t2KvEhsmslqIhXqzVMNT+/UUPWlOU=;
+ b=rOJJp+wYrj6RbTC4x7d+Wn/AkOWDM0WAys9NK9ZgZcHn7+U4h2IRVvAJALnMMgrHuHZBz6RmXMjTG0FMmqUbsS2FXZyHd09FT4H34WsqD5fw9NLVdJ4asXSQFozm7100072nHFfR6VpfsmrZuTVTP5Wqc2cKJwUF3O4QK2kZOPkx5kd4cVxmNwTPTae+Tfa/VD955RWC0Th54BAiibALk8tRreTwbSs+kWOCAROCm2pHH1EG6k6LetlIHUw8/10e8uhXOqYRaJZ4hS4mdcdKLKrof3eSb9nBc6i7a9T7FAli30nch1QnWBAeaxyMWjcCYcL720L8ZDQKsmdmVwxCQw==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by IA0PR02MB9680.namprd02.prod.outlook.com (2603:10b6:208:486::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Tue, 16 Jan
+ 2024 15:25:48 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::3524:e4b3:632d:d8b2]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::3524:e4b3:632d:d8b2%4]) with mapi id 15.20.7181.026; Tue, 16 Jan 2024
+ 15:25:48 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: Saurabh Sengar <ssengar@linux.microsoft.com>, "kys@microsoft.com"
+	<kys@microsoft.com>, "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+	"wei.liu@kernel.org" <wei.liu@kernel.org>, "decui@microsoft.com"
+	<decui@microsoft.com>, "tglx@linutronix.de" <tglx@linutronix.de>,
+	"mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "x86@kernel.org"
+	<x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC: "ssengar@microsoft.com" <ssengar@microsoft.com>
+Subject: RE: [PATCH v2] x86/hyperv: Allow 15-bit APIC IDs for VTL platforms
+Thread-Topic: [PATCH v2] x86/hyperv: Allow 15-bit APIC IDs for VTL platforms
+Thread-Index: AQHaR9x4xt+MPOiOn0agJrT81o7awLDckJpQ
+Date: Tue, 16 Jan 2024 15:25:47 +0000
+Message-ID:
+ <SN6PR02MB4157732B9E1A0D4F209DD5B6D4732@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <1705341460-18394-1-git-send-email-ssengar@linux.microsoft.com>
+In-Reply-To: <1705341460-18394-1-git-send-email-ssengar@linux.microsoft.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [amXqdJ4gTV7niHa6ixT1PCX9aeJm2EVG]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|IA0PR02MB9680:EE_
+x-ms-office365-filtering-correlation-id: 4c4907c3-d7ab-4c52-d3b7-08dc16a76a4b
+x-ms-exchange-slblob-mailprops:
+ AZnQBsB9XmoPyh9MsvtGyMu5EJBVKrwxRTk+q2WU6B9D4Xu6WqUvUO92Kr2u8jNoDVgd6k4c5cvUyEMWb/9WsyAnbZAiVD8IYaSzlt18czLnyZP0U7RTeIqNFDA9xLSvQ+YfAxfQVhV8TMg/bggvyt5LJL+FVHsiK1R7yDoP9C8o4zqig/BLXqtj1vmXE01VdSNfMGssWHOpwSZfunHtbC8Bk5i8lTx7YDhJ4qsD6EjJ0CCH5BEYa7cCQi5Uu9pUkA3OoWWMpxeie/yUt+zxq/1LEevoh381tw10OWbUxo/XlNcjYBuEJKWdwbCZuinl/eFBVRUvmSuApCVXHxaf36LDn/UeTAN/5NhQ4c5GsQoZF2d4T8NVYEuJLWr0yPklrFGvxs/jvEcAdSVPd/8p1y9ziWSrIuZ/vfCzMXvE72iYa8tQ9DKsyxWtaLWFUIIhJCQpTZ/M626DiLlnqgksr+MAp0GzponPSxZHsgzd0+aGI1cRjzmpXwgWTfMsGofIRcoIXS4y7D7JlwG8EhqN87KOTFCcA4Fo31abvW3Id/JOxDmKU488eiO6qRiqxiYgxgOIF3VDFNQ+BQEFLd+ZBHOvBtjAj2+V23KjkqicJ2VsRBNnYQWzBm4TijkJIkWy3JDW+8XF/tSJ2YnsltKmQQWyntNJM0BCWwbDYZ6ZqUS4O46A061qte7bfYDyjrkchvm2urLF8ln0YZEEOsR0kGKmt33he4pdOFzMVUbbyeoVFgiDlgi+Tm0dj5zfr5465bwGxMa2KlE=
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ CgKMKXZbNLmazZfvb/1EOZ2beSXRTzCJPhUnFcPZsoDFkhqiLrYfwZPliQOthGawHd47P7QvjSgiPeSbQU2xkSGidjzp43HGuvM61IFB3Tm9HLRgkQMfoGJnfxoHijmWVPt5CqaIGjyncVcHN/79XqUGd+6UfTxJYaClEcvngmSNGVCrgSaRqzH7UmcwOpfeWC4baSQS63BvPNWh7CA66d0LfPo++XhysLz9DJIBKFh0sKBqZhXzstnJG0rIdxT9iNoR1EVoVVSnOoDjJvf6cCChAQbNA/A0U6cZ7nqHwxmKz6KxeqUga0ztqkD9FYzTufEEdc4ih06NKy8D2s8PggoxnZ356YlUoaA8mEpKg9XxL6+lFg1sC+4W2FFH6IwjHf3/Ym0NcPYuTQQ9zSwM8Ftb2AJXMzaqAQC7won+lOmUzc1SaO6jlPZ8Nb1Oe3t25VatKfo6i5dhuIlH7Th3EC/0G7fxEnOrGMwTUvYgyehbSD+MA0nlf/WnPhUvXbGHGpbh0+Ecr+i0IGN4IGJBnH8i33gMONfDFvbyirZsKnMXkHhUaE5W+X6TgupFjlv1
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?YzLPz9XbsnrGkX+drsCqLODu1IC0FEJaFgrlYimb/KTGWBhPLn8oUtO374V4?=
+ =?us-ascii?Q?hujTwnk6Ly6FWYSVZ1HMuf/m8g02gYiOq9hYWHQhPe+4tOaacvsm9ak94Ppa?=
+ =?us-ascii?Q?m33rJE6Wh5xpq2S5xyaVtFisZ7u1TMWaQK8ir0TiFoWrhww5xVLFUumeZpTh?=
+ =?us-ascii?Q?dA1a9DH3yy9A7hZ6SmGWI6UUUWAm0T8oAPsVNLKMp9/XZsyJx9NG+lsroWqp?=
+ =?us-ascii?Q?4bhwk1EtZTYXkQBkELaavI+l/nChsFA0XfY1NcSy/F/iTB0RDTEUYXYh4CmT?=
+ =?us-ascii?Q?BfY7jCGwdS5HSeRa+xXEM8AtBEHrxRu+Rh2E8Z3HP0FBAw2LUbYK3o9QIxYG?=
+ =?us-ascii?Q?3aXhhpVe1JPOaH5dYcdNEg1kLgIMWZNJWv9GijBwzP+ocfbKD9uAZz2ah++I?=
+ =?us-ascii?Q?bxrVO+VDM/nu7SJumpiaurN0l8KMCTMo1OvFBIsri9SolmAjqJzURSVI3Pql?=
+ =?us-ascii?Q?C4qrKVer7NEoTxbwvUWKblZIneS9b4yuif5XKM1/xZDsHy3tTxKMJ2cgqyUw?=
+ =?us-ascii?Q?eSCQxnf+ZqQmjNjPzZo2qa8ryoAxXv3meNLZPsWiP36TPjBjqJSjsTe9908/?=
+ =?us-ascii?Q?18yFrjOUVY8vnBOcxhbHWIkBolwMDvr2ywXUtT/P2Wkz3ixiof61AGcc3YZK?=
+ =?us-ascii?Q?f5GZDlQwY58efwXhIIqlQirv75kW0L4WO2p6mCXsu9tc59mWr3I7sTMWvtRm?=
+ =?us-ascii?Q?MqCGg1SVXQqNZb1vUERw09eMMfMldd036NsmWxghJtZJ4XlcjNsvBSrjxKA7?=
+ =?us-ascii?Q?25PdG9PDNx7dk1NdOW7E5Wj57Cv5LobHdREpdiiCINg+m5OVnLpz7TqHs98G?=
+ =?us-ascii?Q?JsVuYbeE915/0Y9OMaJzuaF89Sw9Gzgc+OznlyBM+5leNd2aZ+9FCghGzJAp?=
+ =?us-ascii?Q?yY3Ln4Z8iWAUjNzixCbxX4tiYTJw+1E/v64E71i+Gt7Ld63/U9DDnQj4Ml9B?=
+ =?us-ascii?Q?o2Txq9md4Duzev4SlUXWKqqM9HSU/QSYmqgolvDdhAKQjp5nwuMK4MlRO5Ea?=
+ =?us-ascii?Q?Qx7/AJZjbh4ux0SEM3t7cT+w2KMB9zHs9y06/H6vYm6i4yKDzeHHf/d68OSY?=
+ =?us-ascii?Q?/Vmkuf44yICBnr7e6WuFapJrkVFy66YHP+cdBYXwnRNV3tBscssLpwqZQ3/a?=
+ =?us-ascii?Q?G/Hb/Qp+y4Z16keHmem8UiGmwp3neUup8sHKE7yBR7Rs8j/nfC9cuQkzSmmV?=
+ =?us-ascii?Q?NwOQq9GehODmsGxM/wr/M0/J86iCbClLUPH/9g=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Petar Stoykov <pd.pstoykov@gmail.com>
-Date: Tue, 16 Jan 2024 16:25:34 +0100
-Message-ID: <CADFWO8FBDNvu-sZS6Lo_kbEuonPJ5MOUChSZpNR0B0htuu-Mqg@mail.gmail.com>
-Subject: [PATCH 3/3] MAINTAINERS: Add Sensirion SDP500
-To: linux-iio@vger.kernel.org
-Cc: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Angel Iglesias <ang.iglesiasg@gmail.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4c4907c3-d7ab-4c52-d3b7-08dc16a76a4b
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jan 2024 15:25:47.8357
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR02MB9680
 
-Add myself as a maintainer for Sensirion SDP500 pressure sensor driver
+From: Saurabh Sengar <ssengar@linux.microsoft.com> Sent: Monday, January 15=
+, 2024 9:58 AM
+>=20
+> The current method for signaling the compatibility of a Hyper-V host
+> with MSIs featuring 15-bit APIC IDs relies on a synthetic cpuid leaf.
+> However, for higher VTLs, this leaf is not reported, due to the absence
+> of an IO-APIC.
+>=20
+> As an alternative, assume that when running at a high VTL, the host
+> supports 15-bit APIC IDs. This assumption is safe, as Hyper-V does not
+> employ any architectural MSIs at higher VTLs
+>=20
+> This unblocks startup of VTL2 environments with more than 256 CPUs.
+>=20
+> Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+> ---
+> [V2]
+>  - Modify commit message
+>=20
+>  arch/x86/hyperv/hv_vtl.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>=20
+> diff --git a/arch/x86/hyperv/hv_vtl.c b/arch/x86/hyperv/hv_vtl.c
+> index 96e6c51..cf1b78c 100644
+> --- a/arch/x86/hyperv/hv_vtl.c
+> +++ b/arch/x86/hyperv/hv_vtl.c
+> @@ -16,6 +16,11 @@
+>  extern struct boot_params boot_params;
+>  static struct real_mode_header hv_vtl_real_mode_header;
+>=20
+> +static bool __init hv_vtl_msi_ext_dest_id(void)
+> +{
+> +	return true;
+> +}
+> +
+>  void __init hv_vtl_init_platform(void)
+>  {
+>  	pr_info("Linux runs in Hyper-V Virtual Trust Level\n");
+> @@ -38,6 +43,8 @@ void __init hv_vtl_init_platform(void)
+>  	x86_platform.legacy.warm_reset =3D 0;
+>  	x86_platform.legacy.reserve_bios_regions =3D 0;
+>  	x86_platform.legacy.devices.pnpbios =3D 0;
+> +
+> +	x86_init.hyper.msi_ext_dest_id =3D hv_vtl_msi_ext_dest_id;
+>  }
+>=20
+>  static inline u64 hv_vtl_system_desc_base(struct ldttss_desc *desc)
+> --
+> 1.8.3.1
+>=20
 
-Signed-off-by: Petar Stoykov <pd.pstoykov@gmail.com>
----
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
+Reviewed-by: Michael Kelley <mhklinux@outlook.com>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 40c754b4c39c..11e8f353dc9e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19533,6 +19533,12 @@ S:    Maintained
- F:    Documentation/devicetree/bindings/iio/chemical/sensirion,scd4x.yaml
- F:    drivers/iio/chemical/scd4x.c
-
-+SENSIRION SDP500 DIFFERENTIAL PRESSURE SENSOR DRIVER
-+M:    Petar Stoykov <pd.pstoykov@gmail.com>
-+S:    Maintained
-+F:    Documentation/devicetree/bindings/iio/pressure/sdp500.yaml
-+F:    drivers/iio/pressure/sdp500.c
-+
- SENSIRION SGP40 GAS SENSOR DRIVER
- M:    Andreas Klinger <ak@it-klinger.de>
- S:    Maintained
--- 
-2.30.2
 
