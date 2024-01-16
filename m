@@ -1,163 +1,277 @@
-Return-Path: <linux-kernel+bounces-28336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CB1D82FD08
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:39:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4782082FD0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:40:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 724781C28593
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:39:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B201A1F2F32C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:40:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28FA41E52B;
-	Tue, 16 Jan 2024 22:13:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="djKTlcZl"
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3C78219F5;
+	Tue, 16 Jan 2024 22:17:21 +0000 (UTC)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF8071D548
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 22:13:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FD1F1EB53;
+	Tue, 16 Jan 2024 22:17:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705443218; cv=none; b=ojiIoEYEa+somY1X73ggzRn4uuNCIQ9+mLFIUmFqghymOwd9QbqY/q8+NqZiUcdyfPZxfT5FhMB8EkTU15v29bbKWJaDpuxFPTib/xiiNwWLi7S5hZfm2LfrsdU9/QgxwWLo17cU6l1QNZfgajsD8fJhNaKjCsNX1N41i1dnJ+A=
+	t=1705443441; cv=none; b=E7UVpWekq3f8aXurlkm/A671T+7ViRBkTCrpQLi3Wjsbeqa1G6OQSTmbZ5KM6AsFl8Ihd3tR3vrt1KK+TyVCKmMozOYukUWgZLSKnlBBvvI/dWDV/e1MMy5aOor3MNZnqB2oFX5cLcYxvOAkRWttRZXGX+GdwiHf7PZ+9nbJzJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705443218; c=relaxed/simple;
-	bh=uXUySLhnCG85bx+rOKM7Gu9Ss1FziVWmsqNmRvNkWVg=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=AvHTRwuxhQvQPLFYkDZITAac/qG5g+dTJC7VEYT7l5dFSYzAY7ksiOfQybWuE2o0muBJCjvnMXDMDrbd6z+LCfY124iCtbQNS63eu/Yipx2GPRU/6iru/NBsbGfl3RCUFxOdG6ujaprqUtjQ7w9Vi0FtVcF9bw3+LNAvcunCMbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=djKTlcZl; arc=none smtp.client-ip=209.85.222.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7cc92a83200so2364800241.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 14:13:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705443215; x=1706048015; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uXUySLhnCG85bx+rOKM7Gu9Ss1FziVWmsqNmRvNkWVg=;
-        b=djKTlcZldrYR3Hh/I0aB/6PG6VEejMgPy4idR7UDW5pJBNIzdV54mhDThSKhwovAFx
-         qmWaOaiyB548PVe9tmuahtCx14MOxd0481mWNUxf9Nz/T0abmFShX/70Agbs98TgX4Fg
-         Pvzl4v0kRdGmbKOzD9gM9iCd61BBnvLx50dlZ4rs9ciVyWT+7wwML4TeE6s0OeMaV+Mo
-         mJgI0ZVV00G5Rx/wcA8GGAl6CF8lkJaHKOPrh1TPsoSDeNMvc4g9HtPyvI3tN++IdXzV
-         sTfBVWXbaMDO7gG34b7StBKr9a5+U18MGlHq4bDcLF+4GjXbAU+pXkQpAQS5m05B6ko7
-         +/Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705443215; x=1706048015;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uXUySLhnCG85bx+rOKM7Gu9Ss1FziVWmsqNmRvNkWVg=;
-        b=MZXF3J+o8jxaYJo+apar+V6W405dVBFsgltrIz2UB264pg4tSVZZQMJ42Qa627Sx4Q
-         FtuBFZYWiHobZqiK3YEIGT/kPurH1NAPju2QbpTgacKtgEthbI6v7iivVRo95N222VuK
-         TJfTniZlOBm+5E1KF7V8Tjw4hJXn/bRBHsXkN879VMYr7k/qcZYs9HvyBMTlQf8AceTt
-         r1FlAREuX8WaVj2crO1KNPyUvpBnNEOl75MVlSkzh6Cp20Wj4rrkSgYwIVMy+w8MwcWt
-         4lW5NkTaHgnsDb7gMNuGhR2iE8R58irB0qk87uuklvDUnzcQaWVuF+NySv+clQA4GxS8
-         0E5g==
-X-Gm-Message-State: AOJu0YzZYtFb27LpYGijmYnnmWID5juGp7yhX+zJQ35TuQ6i2y+PZKVk
-	qKDhc/MqcyAKnkesl1EQIJQYLfjEkdU1u16BSeR0EBEktKx2
-X-Google-Smtp-Source: AGHT+IEGScU0ZTL2QhTP1nMK173wqMj1xkpPYqcsbNcqk4CrqzbSWm31Y8eJbmw7bHyYix3JGRToRDf4tDjpfl1vLj8=
-X-Received: by 2002:a05:6102:1811:b0:467:f7eb:8074 with SMTP id
- jg17-20020a056102181100b00467f7eb8074mr3965650vsb.29.1705443215629; Tue, 16
- Jan 2024 14:13:35 -0800 (PST)
+	s=arc-20240116; t=1705443441; c=relaxed/simple;
+	bh=c9fNxQOO0OpCqCDvyOc4cQBH2+/Y/B7I7wB7BdxBEPg=;
+	h=Received:Received:Received:Content-Type:Content-Transfer-Encoding:
+	 MIME-Version:From:To:Cc:Subject:In-reply-to:References:Date:
+	 Message-id:X-Spam-Level:X-Rspamd-Server:X-Spamd-Result:
+	 X-Spam-Score:X-Rspamd-Queue-Id:X-Spam-Flag; b=X8ZUwfICVWMg9BB0Z7YrkygIq7QWPW7+nTskNWT9JqEeaNHkult29MaoMT2n+SDDMINWLTElLlMkMWMFQUJfwtFwv0uGa85QLga0TXTizINUW6JqFDxmMmjigbFX+BXAd8oxY+8xezaLO/ozb/9+xznoaGfSDconcTn7Y3kIbEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5484A221D7;
+	Tue, 16 Jan 2024 22:17:17 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C4DE713751;
+	Tue, 16 Jan 2024 22:17:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 3eSDHl8Ap2XCegAAD6G6ig
+	(envelope-from <neilb@suse.de>); Tue, 16 Jan 2024 22:17:03 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZZ7YuEexYSaZYmLK@tassilo> <20240111223650.3502633-1-kevinloughlin@google.com>
- <20240112121725.3amxlumpifhagamb@box> <CAGdbjmLeyPhYfjVHPRa8LgNYjt9-rOPiyCodHoQOkEh9iQhjBg@mail.gmail.com>
- <20240115101239.nab725vuazvutgw6@box.shutemov.name>
-In-Reply-To: <20240115101239.nab725vuazvutgw6@box.shutemov.name>
-From: Kevin Loughlin <kevinloughlin@google.com>
-Date: Tue, 16 Jan 2024 14:13:24 -0800
-Message-ID: <CAGdbjmLrH_fZMS6pCX5pNKCJ2jLm1xAcJkHv5R4Z7MycvhbR5A@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] x86/sev: enforce RIP-relative accesses in early
- SEV/SME code
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Tom Lendacky <thomas.lendacky@amd.com>, Michael Kelley <mikelley@microsoft.com>, 
-	Pankaj Gupta <pankaj.gupta@amd.com>, Stephen Rothwell <sfr@canb.auug.org.au>, 
-	Arnd Bergmann <arnd@arndb.de>, Steve Rutherford <srutherford@google.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Hou Wenlong <houwenlong.hwl@antgroup.com>, Vegard Nossum <vegard.nossum@oracle.com>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Yuntao Wang <ytcoode@gmail.com>, 
-	Wang Jinchao <wangjinchao@xfusion.com>, David Woodhouse <dwmw@amazon.co.uk>, 
-	Brian Gerst <brgerst@gmail.com>, Hugh Dickins <hughd@google.com>, Ard Biesheuvel <ardb@kernel.org>, 
-	Joerg Roedel <jroedel@suse.de>, Randy Dunlap <rdunlap@infradead.org>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Dionna Glaze <dionnaglaze@google.com>, 
-	Brijesh Singh <brijesh.singh@amd.com>, Michael Roth <michael.roth@amd.com>, 
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
-	linux-coco@lists.linux.dev, Ashish Kalra <ashish.kalra@amd.com>, 
-	Andi Kleen <ak@linux.intel.com>, Adam Dunlap <acdunlap@google.com>, 
-	Peter Gonda <pgonda@google.com>, Jacob Xu <jacobhxu@google.com>, 
-	Sidharth Telang <sidtelang@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+From: "NeilBrown" <neilb@suse.de>
+To: "Jeff Layton" <jlayton@kernel.org>
+Cc: "Christian Brauner" <brauner@kernel.org>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Eric Van Hensbergen" <ericvh@kernel.org>,
+ "Latchesar Ionkov" <lucho@ionkov.net>,
+ "Dominique Martinet" <asmadeus@codewreck.org>,
+ "Christian Schoenebeck" <linux_oss@crudebyte.com>,
+ "David Howells" <dhowells@redhat.com>,
+ "Marc Dionne" <marc.dionne@auristor.com>, "Xiubo Li" <xiubli@redhat.com>,
+ "Ilya Dryomov" <idryomov@gmail.com>, "Alexander Aring" <aahringo@redhat.com>,
+ "David Teigland" <teigland@redhat.com>, "Miklos Szeredi" <miklos@szeredi.hu>,
+ "Andreas Gruenbacher" <agruenba@redhat.com>,
+ "Trond Myklebust" <trond.myklebust@hammerspace.com>,
+ "Anna Schumaker" <anna@kernel.org>, "Chuck Lever" <chuck.lever@oracle.com>,
+ "Olga Kornievskaia" <kolga@netapp.com>, "Dai Ngo" <Dai.Ngo@oracle.com>,
+ "Tom Talpey" <tom@talpey.com>, "Jan Kara" <jack@suse.cz>,
+ "Mark Fasheh" <mark@fasheh.com>, "Joel Becker" <jlbec@evilplan.org>,
+ "Joseph Qi" <joseph.qi@linux.alibaba.com>, "Steve French" <sfrench@samba.org>,
+ "Paulo Alcantara" <pc@manguebit.com>, "Ronnie Sahlberg" <lsahlber@redhat.com>,
+ "Shyam Prasad N" <sprasad@microsoft.com>,
+ "Namjae Jeon" <linkinjeon@kernel.org>,
+ "Sergey Senozhatsky" <senozhatsky@chromium.org>,
+ "Steven Rostedt" <rostedt@goodmis.org>,
+ "Masami Hiramatsu" <mhiramat@kernel.org>,
+ "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
+ linux-kernel@vger.kernel.org, v9fs@lists.linux.dev,
+ linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+ gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+ linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+ linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+ linux-trace-kernel@vger.kernel.org, "Jeff Layton" <jlayton@kernel.org>
+Subject:
+ Re: [PATCH 11/20] filelock: convert the IS_* macros to take file_lock_core
+In-reply-to: <20240116-flsplit-v1-11-c9d0f4370a5d@kernel.org>
+References: <20240116-flsplit-v1-0-c9d0f4370a5d@kernel.org>,
+ <20240116-flsplit-v1-11-c9d0f4370a5d@kernel.org>
+Date: Wed, 17 Jan 2024 09:16:56 +1100
+Message-id: <170544341684.23031.11038222640477022046@noble.neil.brown.name>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	 REPLY(-4.00)[]
+X-Spam-Score: -4.00
+X-Rspamd-Queue-Id: 5484A221D7
+X-Spam-Flag: NO
 
-On Mon, Jan 15, 2024 at 2:12=E2=80=AFAM Kirill A. Shutemov
-<kirill.shutemov@linux.intel.com> wrote:
->
-> On Fri, Jan 12, 2024 at 10:29:36AM -0800, Kevin Loughlin wrote:
-> >
-> > Per my tests, yes we can; I replaced the fixup_*() functions with
-> > GET_RIP_RELATIVE_PTR()/PTR_TO_RIP_RELATIVE_PTR(), and guests with and
-> > without SEV, SEV-ES, and SEV-SNP all successfully booted under both
-> > clang and gcc builds.
->
-> BTW, do we need both macros? Caller can do &var, right?
+On Wed, 17 Jan 2024, Jeff Layton wrote:
+> I couldn't get them to work properly as macros, so convert them
+> to static inlines instead (which is probably better for the type safety
+> anyway).
+>=20
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/locks.c | 46 +++++++++++++++++++++++++++++++++-------------
+>  1 file changed, 33 insertions(+), 13 deletions(-)
+>=20
+> diff --git a/fs/locks.c b/fs/locks.c
+> index 770aaa5809ba..eddf4d767d5d 100644
+> --- a/fs/locks.c
+> +++ b/fs/locks.c
+> @@ -70,10 +70,26 @@
+> =20
+>  #include <linux/uaccess.h>
+> =20
+> -#define IS_POSIX(fl)	(fl->fl_core.fl_flags & FL_POSIX)
+Used 3 times... once as
+	if (IS_POSIX(blocker) && !IS_OFDLCK(blocker))
+Can an IS_POSIX lock also be IS_OFDLCK ??
 
-While I don't think the caller doing "&var" would work without passing
-it as a separate argument like `GET_RIP_RELATIVE_PTR(var, &var)` (as
-we would still need the original var's string name in the macro for
-the inline assembly `#var(%%rip)`), we should nonetheless be able to
-merge both into a single macro with one "var" argument. Specifically,
-the only current difference between the macros is the input operand
-constraint, and GET_RIP_RELATIVE_PTR()'s constraint will work for
-both. I will make this change in v3.
 
-> If we are okay with single macro, maybe rename it to RIP_RELATIVE_PTR().
+> -#define IS_FLOCK(fl)	(fl->fl_core.fl_flags & FL_FLOCK)
+Used once.
 
-With the merge into a single macro (and upon thinking about the
-macro's behavior), I have a slight preference for
-`RIP_RELATIVE_ADDR()` in v3 because it makes it clearer that the macro
-behaves like the address-of operator "&" (just guaranteeing the use of
-RIP-relative addressing to obtain the address). However, I'm happy to
-go with RIP_RELATIVE_PTR() if you feel that's better.
+> -#define IS_LEASE(fl)	(fl->fl_core.fl_flags & (FL_LEASE|FL_DELEG|FL_LAYOUT))
+Used twice.  Either "IS_LEASE" approves things that aren't leases, or
+FL_LEASE is not set on all leases.... Names could be improved.
 
-> One other thing: I see you sprinkle casts to for every use of the macros.
-> But why? void* can cast to any other pointer without explicit casting.
+> -#define IS_OFDLCK(fl)	(fl->fl_core.fl_flags & FL_OFDLCK)
 
-You're right; the casting is unnecessary. I'll eliminate it in v3. Thanks.
+used 4 times - a clear winner :-)
 
-> > On Fri, Jan 12, 2024 at 4:17=E2=80=AFAM Kirill A. Shutemov
-> > <kirill.shutemov@linux.intel.com> wrote:
-> > >
-> > > Also, is there any reason why GET_RIP_RELATIVE_PTR() and
-> > > PTR_TO_RIP_RELATIVE_PTR() have to be macros? Inline functions would b=
-e
-> > > cleaner.
-> >
-> > I used macros because we need to use both the global variable itself
-> > and the global variable's string name (obtained via #var in the macro)
-> > in the inline assembly. As a secondary reason, the macro also avoids
-> > the need to provide separate functions for each type of variable for
-> > which we'd like to get RIP-relative pointers (ex: u64, unsigned int,
-> > unsigned long, etc.).
->
-> If we do it only on pointers, wouldn't void * -> void * be enough?
+If it would me, I would simply discard these macros and open-code the
+tests.  I don't think IS_FLOCK() is easier to read for someone who knows
+the code, and I think IS_LEASE() is actually harder to read for someone
+who doesn't know the code, as that it does it not really obvious.
 
-Only using pointers would indeed eliminate the secondary factor as a
-reason to use macros. However, the primary motivation for a macro
-would remain: we still need the string name of the variable for the
-inline assembly.
+But this is just a suggestion, I won't push it.
+
+Thanks,
+NeilBrown
+
+
+> +static inline bool IS_POSIX(struct file_lock_core *flc)
+> +{
+> +	return flc->fl_flags & FL_POSIX;
+> +}
+> +
+> +static inline bool IS_FLOCK(struct file_lock_core *flc)
+> +{
+> +	return flc->fl_flags & FL_FLOCK;
+> +}
+> +
+> +static inline bool IS_OFDLCK(struct file_lock_core *flc)
+> +{
+> +	return flc->fl_flags & FL_OFDLCK;
+> +}
+> +
+> +static inline bool IS_LEASE(struct file_lock_core *flc)
+> +{
+> +	return flc->fl_flags & (FL_LEASE|FL_DELEG|FL_LAYOUT);
+> +}
+> +
+>  #define IS_REMOTELCK(fl)	(fl->fl_core.fl_pid <=3D 0)
+> =20
+>  static bool lease_breaking(struct file_lock *fl)
+> @@ -761,6 +777,7 @@ static void __locks_insert_block(struct file_lock *bloc=
+ker,
+>  					       struct file_lock *))
+>  {
+>  	struct file_lock *fl;
+> +	struct file_lock_core *bflc;
+>  	BUG_ON(!list_empty(&waiter->fl_core.fl_blocked_member));
+> =20
+>  new_blocker:
+> @@ -773,7 +790,9 @@ static void __locks_insert_block(struct file_lock *bloc=
+ker,
+>  	waiter->fl_core.fl_blocker =3D blocker;
+>  	list_add_tail(&waiter->fl_core.fl_blocked_member,
+>  		      &blocker->fl_core.fl_blocked_requests);
+> -	if (IS_POSIX(blocker) && !IS_OFDLCK(blocker))
+> +
+> +	bflc =3D &blocker->fl_core;
+> +	if (IS_POSIX(bflc) && !IS_OFDLCK(bflc))
+>  		locks_insert_global_blocked(&waiter->fl_core);
+> =20
+>  	/* The requests in waiter->fl_blocked are known to conflict with
+> @@ -998,6 +1017,7 @@ static int posix_locks_deadlock(struct file_lock *call=
+er_fl,
+>  				struct file_lock *block_fl)
+>  {
+>  	int i =3D 0;
+> +	struct file_lock_core *flc =3D &caller_fl->fl_core;
+> =20
+>  	lockdep_assert_held(&blocked_lock_lock);
+> =20
+> @@ -1005,7 +1025,7 @@ static int posix_locks_deadlock(struct file_lock *cal=
+ler_fl,
+>  	 * This deadlock detector can't reasonably detect deadlocks with
+>  	 * FL_OFDLCK locks, since they aren't owned by a process, per-se.
+>  	 */
+> -	if (IS_OFDLCK(caller_fl))
+> +	if (IS_OFDLCK(flc))
+>  		return 0;
+> =20
+>  	while ((block_fl =3D what_owner_is_waiting_for(block_fl))) {
+> @@ -2157,7 +2177,7 @@ static pid_t locks_translate_pid(struct file_lock *fl=
+, struct pid_namespace *ns)
+>  	pid_t vnr;
+>  	struct pid *pid;
+> =20
+> -	if (IS_OFDLCK(fl))
+> +	if (IS_OFDLCK(&fl->fl_core))
+>  		return -1;
+>  	if (IS_REMOTELCK(fl))
+>  		return fl->fl_core.fl_pid;
+> @@ -2721,19 +2741,19 @@ static void lock_get_status(struct seq_file *f, str=
+uct file_lock *fl,
+>  	if (repeat)
+>  		seq_printf(f, "%*s", repeat - 1 + (int)strlen(pfx), pfx);
+> =20
+> -	if (IS_POSIX(fl)) {
+> +	if (IS_POSIX(&fl->fl_core)) {
+>  		if (fl->fl_core.fl_flags & FL_ACCESS)
+>  			seq_puts(f, "ACCESS");
+> -		else if (IS_OFDLCK(fl))
+> +		else if (IS_OFDLCK(&fl->fl_core))
+>  			seq_puts(f, "OFDLCK");
+>  		else
+>  			seq_puts(f, "POSIX ");
+> =20
+>  		seq_printf(f, " %s ",
+>  			     (inode =3D=3D NULL) ? "*NOINODE*" : "ADVISORY ");
+> -	} else if (IS_FLOCK(fl)) {
+> +	} else if (IS_FLOCK(&fl->fl_core)) {
+>  		seq_puts(f, "FLOCK  ADVISORY  ");
+> -	} else if (IS_LEASE(fl)) {
+> +	} else if (IS_LEASE(&fl->fl_core)) {
+>  		if (fl->fl_core.fl_flags & FL_DELEG)
+>  			seq_puts(f, "DELEG  ");
+>  		else
+> @@ -2748,7 +2768,7 @@ static void lock_get_status(struct seq_file *f, struc=
+t file_lock *fl,
+>  	} else {
+>  		seq_puts(f, "UNKNOWN UNKNOWN  ");
+>  	}
+> -	type =3D IS_LEASE(fl) ? target_leasetype(fl) : fl->fl_core.fl_type;
+> +	type =3D IS_LEASE(&fl->fl_core) ? target_leasetype(fl) : fl->fl_core.fl_t=
+ype;
+> =20
+>  	seq_printf(f, "%s ", (type =3D=3D F_WRLCK) ? "WRITE" :
+>  			     (type =3D=3D F_RDLCK) ? "READ" : "UNLCK");
+> @@ -2760,7 +2780,7 @@ static void lock_get_status(struct seq_file *f, struc=
+t file_lock *fl,
+>  	} else {
+>  		seq_printf(f, "%d <none>:0 ", fl_pid);
+>  	}
+> -	if (IS_POSIX(fl)) {
+> +	if (IS_POSIX(&fl->fl_core)) {
+>  		if (fl->fl_end =3D=3D OFFSET_MAX)
+>  			seq_printf(f, "%Ld EOF\n", fl->fl_start);
+>  		else
+>=20
+> --=20
+> 2.43.0
+>=20
+>=20
+
 
