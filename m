@@ -1,47 +1,50 @@
-Return-Path: <linux-kernel+bounces-26675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D94B82E514
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:30:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 961D282E516
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:30:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E8F11F24F53
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:30:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A8131C20359
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:30:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91B601B944;
-	Tue, 16 Jan 2024 00:14:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 587BF224C0;
+	Tue, 16 Jan 2024 00:14:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N2jT/98a"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jEvcnyHW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E12E11B7F9;
-	Tue, 16 Jan 2024 00:14:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 192BCC433F1;
-	Tue, 16 Jan 2024 00:14:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F8572232F;
+	Tue, 16 Jan 2024 00:14:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48F85C43390;
+	Tue, 16 Jan 2024 00:14:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705364081;
-	bh=Qbxv/6ld0bxO63l9ZOQodukt56tIj0Hn8jTXyQMcny0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=N2jT/98aXIA/32fCg5KKjcncCj879WkSHgEKvUX97BnhAsxfeeBggsvBh7CNwWxE9
-	 z0OfZt18ashJrczxF6KX1D5iZIW/Eatt3CXPLqtkN+IzzD+WDJ0FihB4NTFjgVBG8M
-	 aBsuyl8V9PVFtt27eeCMRe9anVLmc/vv9hHLArp1M9lAPnClM/II1Ywy6oMzaYW22S
-	 wqnJlLGEzNNjV9+RB1HEV8/YLDHw1o0tv9YQmL9xuGlVYwrIy/Z7SEjQHNEgOwgv1G
-	 cHoyjgxgQJZiggo51puSxPPrqHiaw+7qwMe/pvy/Ax2e06bbMX4mzrM43aH2ZWcsbw
-	 D9R9/qOMekn9A==
+	s=k20201202; t=1705364083;
+	bh=XU8GS1ZsDIkRERAdlY+FQGzJZ+rg+O384zwExr1qy9Y=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=jEvcnyHWTApm6rRSJ2Di2/ukBGCuTWeE95zNXDAveoYhxxfEUQ1tA5ul7YRfuWlGb
+	 2ckhDghyRadXAm5689e26W1grJQPvU4MpPju8eVWubiKUmmMvWOrf3320Xi8RK3Hxe
+	 YyH3H+BquLtgAnX3jlBfIjnhtea7jYgQsNAjmeSpp541xP6jWirq80bjTYNgBVfTt5
+	 N80+ET2TjdDPE3/IiO06kaVJI4kPOcrD29PUZxAIxGsM767oCUc0BbqT9EMXkXRYlX
+	 RVPoChcRRZRAxW7m2BpQGCwB0ydngNvbWjwv5a2SuE8F5EsFPX9/eEOjKrXnklJB8t
+	 UwDvVBUyquJzg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Rui Zhang <zr.zhang@vivo.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Chris Riches <chris.riches@nutanix.com>,
+	Paul Moore <paul@paul-moore.com>,
 	Sasha Levin <sashal@kernel.org>,
-	lgirdwood@gmail.com
-Subject: [PATCH AUTOSEL 5.15 1/8] regulator: core: Only increment use_count when enable_count changes
-Date: Mon, 15 Jan 2024 19:14:29 -0500
-Message-ID: <20240116001439.213839-1-sashal@kernel.org>
+	eparis@redhat.com,
+	audit@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 2/8] audit: Send netlink ACK before setting connection in auditd_set
+Date: Mon, 15 Jan 2024 19:14:30 -0500
+Message-ID: <20240116001439.213839-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240116001439.213839-1-sashal@kernel.org>
+References: <20240116001439.213839-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,111 +56,115 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.147
 Content-Transfer-Encoding: 8bit
 
-From: Rui Zhang <zr.zhang@vivo.com>
+From: Chris Riches <chris.riches@nutanix.com>
 
-[ Upstream commit 7993d3a9c34f609c02171e115fd12c10e2105ff4 ]
+[ Upstream commit 022732e3d846e197539712e51ecada90ded0572a ]
 
-The use_count of a regulator should only be incremented when the
-enable_count changes from 0 to 1. Similarly, the use_count should
-only be decremented when the enable_count changes from 1 to 0.
+When auditd_set sets the auditd_conn pointer, audit messages can
+immediately be put on the socket by other kernel threads. If the backlog
+is large or the rate is high, this can immediately fill the socket
+buffer. If the audit daemon requested an ACK for this operation, a full
+socket buffer causes the ACK to get dropped, also setting ENOBUFS on the
+socket.
 
-In the previous implementation, use_count was sometimes decremented
-to 0 when some consumer called unbalanced disable,
-leading to unexpected disable even the regulator is enabled by
-other consumers. With this change, the use_count accurately reflects
-the number of users which the regulator is enabled.
+To avoid this race and ensure ACKs get through, fast-track the ACK in
+this specific case to ensure it is sent before auditd_conn is set.
 
-This should make things more robust in the case where a consumer does
-leak references.
-
-Signed-off-by: Rui Zhang <zr.zhang@vivo.com>
-Link: https://lore.kernel.org/r/20231103074231.8031-1-zr.zhang@vivo.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Chris Riches <chris.riches@nutanix.com>
+[PM: fix some tab vs space damage]
+Signed-off-by: Paul Moore <paul@paul-moore.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/core.c | 56 +++++++++++++++++++++-------------------
- 1 file changed, 30 insertions(+), 26 deletions(-)
+ kernel/audit.c | 31 ++++++++++++++++++++++++-------
+ 1 file changed, 24 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 8ad50dc8fb35..9b1f27f87c95 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -2881,7 +2881,8 @@ static int _regulator_enable(struct regulator *regulator)
- 		/* Fallthrough on positive return values - already enabled */
- 	}
+diff --git a/kernel/audit.c b/kernel/audit.c
+index 94ded5de9131..82b6fea46e20 100644
+--- a/kernel/audit.c
++++ b/kernel/audit.c
+@@ -490,15 +490,19 @@ static void auditd_conn_free(struct rcu_head *rcu)
+  * @pid: auditd PID
+  * @portid: auditd netlink portid
+  * @net: auditd network namespace pointer
++ * @skb: the netlink command from the audit daemon
++ * @ack: netlink ack flag, cleared if ack'd here
+  *
+  * Description:
+  * This function will obtain and drop network namespace references as
+  * necessary.  Returns zero on success, negative values on failure.
+  */
+-static int auditd_set(struct pid *pid, u32 portid, struct net *net)
++static int auditd_set(struct pid *pid, u32 portid, struct net *net,
++		      struct sk_buff *skb, bool *ack)
+ {
+ 	unsigned long flags;
+ 	struct auditd_connection *ac_old, *ac_new;
++	struct nlmsghdr *nlh;
  
--	rdev->use_count++;
-+	if (regulator->enable_count == 1)
-+		rdev->use_count++;
+ 	if (!pid || !net)
+ 		return -EINVAL;
+@@ -510,6 +514,13 @@ static int auditd_set(struct pid *pid, u32 portid, struct net *net)
+ 	ac_new->portid = portid;
+ 	ac_new->net = get_net(net);
  
- 	return 0;
- 
-@@ -2956,37 +2957,40 @@ static int _regulator_disable(struct regulator *regulator)
- 
- 	lockdep_assert_held_once(&rdev->mutex.base);
- 
--	if (WARN(rdev->use_count <= 0,
-+	if (WARN(regulator->enable_count == 0,
- 		 "unbalanced disables for %s\n", rdev_get_name(rdev)))
- 		return -EIO;
- 
--	/* are we the last user and permitted to disable ? */
--	if (rdev->use_count == 1 &&
--	    (rdev->constraints && !rdev->constraints->always_on)) {
--
--		/* we are last user */
--		if (regulator_ops_is_valid(rdev, REGULATOR_CHANGE_STATUS)) {
--			ret = _notifier_call_chain(rdev,
--						   REGULATOR_EVENT_PRE_DISABLE,
--						   NULL);
--			if (ret & NOTIFY_STOP_MASK)
--				return -EINVAL;
--
--			ret = _regulator_do_disable(rdev);
--			if (ret < 0) {
--				rdev_err(rdev, "failed to disable: %pe\n", ERR_PTR(ret));
--				_notifier_call_chain(rdev,
--						REGULATOR_EVENT_ABORT_DISABLE,
-+	if (regulator->enable_count == 1) {
-+	/* disabling last enable_count from this regulator */
-+		/* are we the last user and permitted to disable ? */
-+		if (rdev->use_count == 1 &&
-+		    (rdev->constraints && !rdev->constraints->always_on)) {
++	/* send the ack now to avoid a race with the queue backlog */
++	if (*ack) {
++		nlh = nlmsg_hdr(skb);
++		netlink_ack(skb, nlh, 0, NULL);
++		*ack = false;
++	}
 +
-+			/* we are last user */
-+			if (regulator_ops_is_valid(rdev, REGULATOR_CHANGE_STATUS)) {
-+				ret = _notifier_call_chain(rdev,
-+							   REGULATOR_EVENT_PRE_DISABLE,
-+							   NULL);
-+				if (ret & NOTIFY_STOP_MASK)
-+					return -EINVAL;
+ 	spin_lock_irqsave(&auditd_conn_lock, flags);
+ 	ac_old = rcu_dereference_protected(auditd_conn,
+ 					   lockdep_is_held(&auditd_conn_lock));
+@@ -1203,7 +1214,8 @@ static int audit_replace(struct pid *pid)
+ 	return auditd_send_unicast_skb(skb);
+ }
+ 
+-static int audit_receive_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
++static int audit_receive_msg(struct sk_buff *skb, struct nlmsghdr *nlh,
++			     bool *ack)
+ {
+ 	u32			seq;
+ 	void			*data;
+@@ -1296,7 +1308,8 @@ static int audit_receive_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
+ 				/* register a new auditd connection */
+ 				err = auditd_set(req_pid,
+ 						 NETLINK_CB(skb).portid,
+-						 sock_net(NETLINK_CB(skb).sk));
++						 sock_net(NETLINK_CB(skb).sk),
++						 skb, ack);
+ 				if (audit_enabled != AUDIT_OFF)
+ 					audit_log_config_change("audit_pid",
+ 								new_pid,
+@@ -1541,9 +1554,10 @@ static int audit_receive_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
+  * Parse the provided skb and deal with any messages that may be present,
+  * malformed skbs are discarded.
+  */
+-static void audit_receive(struct sk_buff  *skb)
++static void audit_receive(struct sk_buff *skb)
+ {
+ 	struct nlmsghdr *nlh;
++	bool ack;
+ 	/*
+ 	 * len MUST be signed for nlmsg_next to be able to dec it below 0
+ 	 * if the nlmsg_len was not aligned
+@@ -1556,9 +1570,12 @@ static void audit_receive(struct sk_buff  *skb)
+ 
+ 	audit_ctl_lock();
+ 	while (nlmsg_ok(nlh, len)) {
+-		err = audit_receive_msg(skb, nlh);
+-		/* if err or if this message says it wants a response */
+-		if (err || (nlh->nlmsg_flags & NLM_F_ACK))
++		ack = nlh->nlmsg_flags & NLM_F_ACK;
++		err = audit_receive_msg(skb, nlh, &ack);
 +
-+				ret = _regulator_do_disable(rdev);
-+				if (ret < 0) {
-+					rdev_err(rdev, "failed to disable: %pe\n", ERR_PTR(ret));
-+					_notifier_call_chain(rdev,
-+							REGULATOR_EVENT_ABORT_DISABLE,
-+							NULL);
-+					return ret;
-+				}
-+				_notifier_call_chain(rdev, REGULATOR_EVENT_DISABLE,
- 						NULL);
--				return ret;
- 			}
--			_notifier_call_chain(rdev, REGULATOR_EVENT_DISABLE,
--					NULL);
--		}
++		/* send an ack if the user asked for one and audit_receive_msg
++		 * didn't already do it, or if there was an error. */
++		if (ack || err)
+ 			netlink_ack(skb, nlh, err, NULL);
  
--		rdev->use_count = 0;
--	} else if (rdev->use_count > 1) {
--		rdev->use_count--;
-+			rdev->use_count = 0;
-+		} else if (rdev->use_count > 1) {
-+			rdev->use_count--;
-+		}
- 	}
- 
- 	if (ret == 0)
+ 		nlh = nlmsg_next(nlh, &len);
 -- 
 2.43.0
 
