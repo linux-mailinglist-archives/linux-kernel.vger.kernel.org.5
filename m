@@ -1,193 +1,162 @@
-Return-Path: <linux-kernel+bounces-27202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A26BF82EC1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:50:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB16382EC29
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:51:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 530B61F244B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:50:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A45D1F23347
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:51:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9991134C5;
-	Tue, 16 Jan 2024 09:49:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 479BB134BE;
+	Tue, 16 Jan 2024 09:50:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="jj8uWuf3"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="toruq78z"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E57A134A1;
-	Tue, 16 Jan 2024 09:49:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8298960008;
-	Tue, 16 Jan 2024 09:49:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1705398592;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DNLdp9OGT7c+u1pDg4x54qzMqUrUFue68oAXfluzQf8=;
-	b=jj8uWuf3K5Xess1XfSDF0tFuHfWoDK9MVLNU8+7NpsL4xMJCjG5w0z9GRxsz65rEnvnJCL
-	iebfqOgabeh0/fxq5jjO831LiWI+XaXAtxZNd/iLDUsC3MuDUlOZC5/hTcfNRUZyhXi8h6
-	C3ERJoUPzPHXKbvTWGhNA7MterclVbej9jrhqFI12rfbWoYqOJQL9q6Va0v4yiuvrpikY+
-	RhkkiWZp71gkItHSgd7OfIMUKBTPKrc6G770jOHDSVyHIZxtlwC+KnBi76bPIFafJvRjBT
-	sGkpn92LHh/3Q/MMGlsRDhh51PnCgKWciErinnXMYldLJLVJCRTdmkp3FY84Cg==
-Date: Tue, 16 Jan 2024 10:49:49 +0100
-From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Luis Chamberlain
- <mcgrof@kernel.org>, Russ Weight <russ.weight@linux.dev>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Oleksij Rempel <o.rempel@pengutronix.de>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- devicetree@vger.kernel.org, Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v2 8/8] net: pse-pd: Add PD692x0 PSE controller
- driver
-Message-ID: <20240116104949.12708cd5@kmaincent-XPS-13-7390>
-In-Reply-To: <639c5222-043f-4e27-9efa-ce2a1d73eaba@lunn.ch>
-References: <20231201-feature_poe-v2-0-56d8cac607fa@bootlin.com>
-	<20231201-feature_poe-v2-8-56d8cac607fa@bootlin.com>
-	<639c5222-043f-4e27-9efa-ce2a1d73eaba@lunn.ch>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2009D1759B;
+	Tue, 16 Jan 2024 09:50:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705398631;
+	bh=UhAc640PaJinIZCgzAtBALA3kzwWcWZJV4KxCNouBhI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=toruq78zOjfa52lWdFcpKqifq7gMh27B2Yu1NqAIk+nd8FwGejgfp4OjHDqCQCL8s
+	 dmWZdUZtc49lF1mPSDbqTNlWLMTzjeW5AaLTIPZW8XSmcio+zcn3fJkFJuXDDaY5DV
+	 AY11YMmYo2ncG1U5sSU+uSrgAsaAfKsRWG54TSDmUW+mxF3MxSW+W5m/xhWCS7s0Yg
+	 TNSFyH/31W6nmJQGtTx9X0Fgompf+n3uMLGFiTdQTOcNJ2VMoQ6LPtGhLb7NhJcG1S
+	 /9NKMw1carOKq3rHn719e1YB+/5mN4PMhDzjfDs/zw+Gk1bxSdkD8rHpDQkNFeFoQ2
+	 KfdYYwt33MvDw==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id CA3393782066;
+	Tue, 16 Jan 2024 09:50:30 +0000 (UTC)
+Message-ID: <3b3fdb3b-a22e-499d-89a6-ee06e5f91ee1@collabora.com>
+Date: Tue, 16 Jan 2024 10:50:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 02/26] thermal/of: Migrate to
+ thermal_zone_device_register()
+Content-Language: en-US
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: rafael@kernel.org, rui.zhang@intel.com, lukasz.luba@arm.com,
+ linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <20231221124825.149141-1-angelogioacchino.delregno@collabora.com>
+ <20231221124825.149141-3-angelogioacchino.delregno@collabora.com>
+ <415ca710-1b28-47e5-bffa-3f9f76c59041@linaro.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <415ca710-1b28-47e5-bffa-3f9f76c59041@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hell Andrew,
+Il 15/01/24 18:17, Daniel Lezcano ha scritto:
+> On 21/12/2023 13:48, AngeloGioacchino Del Regno wrote:
+>> The thermal API has a new thermal_zone_device_register() function which
+>> is deprecating the older thermal_zone_device_register_with_trips() and
+>> thermal_tripless_zone_device_register().
+>>
+>> Migrate to the new thermal zone device registration function.
+> 
+> Sounds good to me.
+> 
+> May be add "No functional change intended" ?
+> 
 
-Thanks for your reviews and sorry for replying so late, I was working on the
-core to fit the new bindings and requirements lifted by Oleksij.
+Yeah, makes sense - will add "This patch brings no functional changes".
 
-On Sun, 3 Dec 2023 20:34:54 +0100
-Andrew Lunn <andrew@lunn.ch> wrote:
+Cheers!
 
-> > +static int pd692x0_try_recv_msg(const struct i2c_client *client,
-> > +				struct pd692x0_msg *msg,
-> > +				struct pd692x0_msg *buf)
-> > +{
-> > +	msleep(30);
-> > +
-> > +	memset(buf, 0, sizeof(*buf));
-> > +	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
-> > +	if (buf->key)
-> > +		return 1;
-> > +
-> > +	msleep(100);
-> > +
-> > +	memset(buf, 0, sizeof(*buf));
-> > +	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
-> > +	if (buf->key)
-> > +		return 1;
-> > +
-> > +	return 0; =20
->=20
-> Maybe make this function return a bool? Or 0 on success, -EIO on
-> error?
+>> Signed-off-by: AngeloGioacchino Del Regno 
+>> <angelogioacchino.delregno@collabora.com > ---
+>>   drivers/thermal/thermal_of.c | 37 ++++++++++++++++--------------------
+>>   1 file changed, 16 insertions(+), 21 deletions(-)
+>>
+>> diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
+>> index 1e0655b63259..62a903ad649f 100644
+>> --- a/drivers/thermal/thermal_of.c
+>> +++ b/drivers/thermal/thermal_of.c
+>> @@ -471,16 +471,12 @@ static struct thermal_zone_device 
+>> *thermal_of_zone_register(struct device_node *
+>>                                   const struct thermal_zone_device_ops *ops)
+>>   {
+>>       struct thermal_zone_device *tz;
+>> -    struct thermal_trip *trips;
+>> -    struct thermal_zone_params tzp = {};
+>> -    struct thermal_zone_device_ops *of_ops;
+>> +    struct thermal_zone_device_params tzdp;
+>>       struct device_node *np;
+>> -    int delay, pdelay;
+>> -    int ntrips, mask;
+>>       int ret;
+>> -    of_ops = kmemdup(ops, sizeof(*ops), GFP_KERNEL);
+>> -    if (!of_ops)
+>> +    tzdp.ops = kmemdup(ops, sizeof(*ops), GFP_KERNEL);
+>> +    if (!tzdp.ops)
+>>           return ERR_PTR(-ENOMEM);
+>>       np = of_thermal_zone_find(sensor, id);
+>> @@ -490,30 +486,29 @@ static struct thermal_zone_device 
+>> *thermal_of_zone_register(struct device_node *
+>>           ret = PTR_ERR(np);
+>>           goto out_kfree_of_ops;
+>>       }
+>> +    tzdp.type = np->name;
+>> -    trips = thermal_of_trips_init(np, &ntrips);
+>> -    if (IS_ERR(trips)) {
+>> +    tzdp.trips = thermal_of_trips_init(np, &tzdp.num_trips);
+>> +    if (IS_ERR(tzdp.trips)) {
+>>           pr_err("Failed to find trip points for %pOFn id=%d\n", sensor, id);
+>> -        ret = PTR_ERR(trips);
+>> +        ret = PTR_ERR(tzdp.trips);
+>>           goto out_kfree_of_ops;
+>>       }
+>> -    ret = thermal_of_monitor_init(np, &delay, &pdelay);
+>> +    ret = thermal_of_monitor_init(np, &tzdp.polling_delay, &tzdp.passive_delay);
+>>       if (ret) {
+>>           pr_err("Failed to initialize monitoring delays from %pOFn\n", np);
+>>           goto out_kfree_trips;
+>>       }
+>> -    thermal_of_parameters_init(np, &tzp);
+>> +    thermal_of_parameters_init(np, &tzdp.tzp);
+>> -    of_ops->bind = thermal_of_bind;
+>> -    of_ops->unbind = thermal_of_unbind;
+>> +    tzdp.ops->bind = thermal_of_bind;
+>> +    tzdp.ops->unbind = thermal_of_unbind;
+>> +    tzdp.mask = GENMASK_ULL((tzdp.num_trips) - 1, 0);
+>> +    tzdp.devdata = data;
+>> -    mask = GENMASK_ULL((ntrips) - 1, 0);
+>> -
+>> -    tz = thermal_zone_device_register_with_trips(np->name, trips, ntrips,
+>> -                             mask, data, of_ops, &tzp,
+>> -                             pdelay, delay);
+>> +    tz = thermal_zone_device_register(&tzdp);
+>>       if (IS_ERR(tz)) {
+>>           ret = PTR_ERR(tz);
+>>           pr_err("Failed to register thermal zone %pOFn: %d\n", np, ret);
+>> @@ -531,9 +526,9 @@ static struct thermal_zone_device 
+>> *thermal_of_zone_register(struct device_node *
+>>       return tz;
+>>   out_kfree_trips:
+>> -    kfree(trips);
+>> +    kfree(tzdp.trips);
+>>   out_kfree_of_ops:
+>> -    kfree(of_ops);
+>> +    kfree(tzdp.ops);
+>>       return ERR_PTR(ret);
+>>   }
+> 
 
-Indeed, I will move on to bool.
 
-> > +static int pd692x0_update_matrix(struct pd692x0_priv *priv)
-> > +{
-> > +	struct matrix port_matrix[PD692X0_MAX_LOGICAL_PORTS];
-> > +	struct device *dev =3D &priv->client->dev;
-> > +	int ret;
-> > +
-> > +	ret =3D pd692x0_get_of_matrix(dev, port_matrix);
-> > +	if (ret < 0) {
-> > +		dev_warn(dev,
-> > +			 "Unable to parse port-matrix, saved matrix will
-> > be used\n");
-> > +		return 0;
-> > +	}
-> > +
-> > +	ret =3D pd692x0_set_ports_matrix(priv, port_matrix);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +#define PD692X0_FW_LINE_MAX_SZ 0xff =20
->=20
-> That probably works. Most linkers producing SREC output do limit
-> themselves to lines of 80 charactors max. But the SREC format actually
-> allows longer lines.
 
-I set it to SREC limit but indeed the firmware lines does not exceed 80
-characters except the comments. 0xff line size limit won't break anything
-though.
-
-> > +static int pd692x0_fw_get_next_line(const u8 *data,
-> > +				    char *line, size_t size)
-> > +{
-> > +	size_t line_size;
-> > +	int i;
-> > +
-> > +	line_size =3D min_t(size_t, size, (size_t)PD692X0_FW_LINE_MAX_SZ);
-> > +
-> > +	memset(line, 0, PD692X0_FW_LINE_MAX_SZ);
-> > +	for (i =3D 0; i < line_size - 1; i++) {
-> > +		if (*data =3D=3D '\r' && *(data + 1) =3D=3D '\n') {
-> > +			line[i] =3D '\r';
-> > +			line[i + 1] =3D '\n';
-> > +			return i + 2;
-> > +		} =20
->=20
-> Does the Vendor Documentation indicate Windoze line endings will
-> always be used? Motorola SREC allow both Windows or rest of the world
-> line endings to be used.=20
-
-All the firmware lines end with "\r\n" but indeed it is not specifically
-written that the firmware content would follow this. IMHO it is implicit th=
-at
-it would be the case as all i2c messages use this line termination.
-Do you prefer that I add support to the world line endings possibility?=20
-
-> > +static enum fw_upload_err pd692x0_fw_poll_complete(struct fw_upload *f=
-wl)
-> > +{
-> > +	struct pd692x0_priv *priv =3D fwl->dd_handle;
-> > +	const struct i2c_client *client =3D priv->client;
-> > +	struct pd692x0_msg_ver ver;
-> > +	int ret;
-> > +
-> > +	priv->fw_state =3D PD692X0_FW_COMPLETE;
-> > +
-> > +	ret =3D pd692x0_fw_reset(client);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	ver =3D pd692x0_get_sw_version(priv);
-> > +	if (ver.maj_sw_ver !=3D PD692X0_FW_MAJ_VER) { =20
->=20
-> That is probably too strong a condition. You need to allow firmware
-> upgrades, etc. Does it need to be an exact match, or would < be
-> enough?
-
-The major version is not compatible with the last one, the i2c messages
-content changed. I supposed a change in major version would imply a change =
-in
-the i2c messages content and would need a driver update that's why I used t=
-his
-strong condition.
-
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
 
