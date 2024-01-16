@@ -1,137 +1,121 @@
-Return-Path: <linux-kernel+bounces-26962-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26998-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4082F82E8A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 05:52:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07E4C82E8F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 06:04:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4ACF5B229C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 04:52:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B4221C22C46
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 05:04:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 914E41171A;
-	Tue, 16 Jan 2024 04:52:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="UxXeey57"
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C38A0125AE;
+	Tue, 16 Jan 2024 04:53:34 +0000 (UTC)
+Received: from esa10.hc1455-7.c3s2.iphmx.com (esa10.hc1455-7.c3s2.iphmx.com [139.138.36.225])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CADDF1118F
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 04:52:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:
-	In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=ooJddeRrdl0qjdwXSjPWH3RBZn8KCPwqLLnuVC6SkFA=; b=UxXeey57TMOjPuDhqLARRy+/N6
-	J6OGiSuQoA3z16aBc+38Bfl69hZvAHKpfArJWNgNgFq7x+RRerbdqeF3LLdII8ik+nDjw4Uytt2gM
-	BYJyrdTm4zYzPid+8uurnqtBStgSjCwgb3bXN+iP8XgupMobo7iYUymrYBV+BJKGAhst7UoPHpF0G
-	xXEnag4WJoB0DGpAyfICkNO8ZaucIU/6vyoJm7/avfILXEhV4QNQAw7VDmNMDiuLi2FqRMOVgsgwS
-	PaH3bUImusNrGArxxYxvDJkddCzskcStKYIk5D4xgylXvcsg8lFJTwSjaSMm/DN9cvoe7Ju6zQbLU
-	S7ff9d/A==;
-Received: from [177.45.63.147] (helo=steammachine.lan)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1rPbQv-006r0R-Ox; Tue, 16 Jan 2024 05:52:18 +0100
-From: =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
-To: dri-devel@lists.freedesktop.org,
-	amd-gfx@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Cc: kernel-dev@igalia.com,
-	alexander.deucher@amd.com,
-	christian.koenig@amd.com,
-	Simon Ser <contact@emersion.fr>,
-	Pekka Paalanen <ppaalanen@gmail.com>,
-	daniel@ffwll.ch,
-	Daniel Stone <daniel@fooishbar.org>,
-	=?UTF-8?q?=27Marek=20Ol=C5=A1=C3=A1k=27?= <maraeo@gmail.com>,
-	Dave Airlie <airlied@gmail.com>,
-	ville.syrjala@linux.intel.com,
-	Xaver Hugl <xaver.hugl@gmail.com>,
-	=?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
-Subject: [PATCH 2/2] drm/amdgpu: Implement check_async_props for planes
-Date: Tue, 16 Jan 2024 01:51:59 -0300
-Message-ID: <20240116045159.1015510-3-andrealmeid@igalia.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240116045159.1015510-1-andrealmeid@igalia.com>
-References: <20240116045159.1015510-1-andrealmeid@igalia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4432D11720;
+	Tue, 16 Jan 2024 04:53:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="133883811"
+X-IronPort-AV: E=Sophos;i="6.04,198,1695654000"; 
+   d="scan'208";a="133883811"
+Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
+  by esa10.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 13:52:19 +0900
+Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com [192.168.87.59])
+	by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id BD51DC14A5;
+	Tue, 16 Jan 2024 13:52:16 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com [192.51.206.21])
+	by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 00802BF3E1;
+	Tue, 16 Jan 2024 13:52:16 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+	by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 9C27A200A7685;
+	Tue, 16 Jan 2024 13:52:15 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.226.45])
+	by edo.cn.fujitsu.com (Postfix) with ESMTP id 215F01A0160;
+	Tue, 16 Jan 2024 12:52:15 +0800 (CST)
+From: Li Zhijian <lizhijian@fujitsu.com>
+To: linux-kernel@vger.kernel.org
+Cc: Li Zhijian <lizhijian@fujitsu.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Tony Luck <tony.luck@intel.com>,
+	James Morse <james.morse@arm.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Robert Richter <rric@kernel.org>,
+	linux-edac@vger.kernel.org
+Subject: [PATCH 07/42] drivers/edac: Convert snprintf to sysfs_emit
+Date: Tue, 16 Jan 2024 12:51:16 +0800
+Message-Id: <20240116045151.3940401-5-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20240116045151.3940401-1-lizhijian@fujitsu.com>
+References: <20240116041129.3937800-1-lizhijian@fujitsu.com>
+ <20240116045151.3940401-1-lizhijian@fujitsu.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28122.004
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28122.004
+X-TMASE-Result: 10--8.447500-10.000000
+X-TMASE-MatchedRID: CncXHiplHCc4ibokZ3+Q0CoiRKlBVkYIBXngI6jFvpfvd49YGReckE1N
+	J2MN+nPkgxCMf8A0YpR5sRK06wHV4RhtSayvMWoxbUakYaHXHZz0swHSFcVJ6MC5DTEMxpeQfiq
+	1gj2xET8vYRhsicUjm84WYLmQfXYmSSOWVJeuO1AURSScn+QSXt0H8LFZNFG7bkV4e2xSge5Xcs
+	c0MSekXi8N5a2VIb4Zbp46s/2fryZpi6pPdppleOulxyHOcPoH
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
-AMD GPUs can do async flips with overlay planes and other props rather
-than just FB ID, so implement a custom check_async_props for AMD planes.
+Per filesystems/sysfs.rst, show() should only use sysfs_emit()
+or sysfs_emit_at() when formatting the value to be returned to user space.
 
-Signed-off-by: André Almeida <andrealmeid@igalia.com>
+coccinelle complains that there are still a couple of functions that use
+snprintf(). Convert them to sysfs_emit().
+
+> ./drivers/edac/edac_mc_sysfs.c:210:8-16: WARNING: please use sysfs_emit
+> ./drivers/edac/edac_mc_sysfs.c:518:8-16: WARNING: please use sysfs_emit
+
+No functional change intended
+
+CC: Borislav Petkov <bp@alien8.de>
+CC: Tony Luck <tony.luck@intel.com>
+CC: James Morse <james.morse@arm.com>
+CC: Mauro Carvalho Chehab <mchehab@kernel.org>
+CC: Robert Richter <rric@kernel.org>
+CC: linux-edac@vger.kernel.org
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
 ---
- .../amd/display/amdgpu_dm/amdgpu_dm_plane.c   | 30 +++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ drivers/edac/edac_mc_sysfs.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
-index 116121e647ca..127cae1f9fb4 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
-@@ -25,6 +25,7 @@
-  */
+diff --git a/drivers/edac/edac_mc_sysfs.c b/drivers/edac/edac_mc_sysfs.c
+index 5116873c3330..6ee5030c7207 100644
+--- a/drivers/edac/edac_mc_sysfs.c
++++ b/drivers/edac/edac_mc_sysfs.c
+@@ -207,8 +207,7 @@ static ssize_t channel_dimm_label_show(struct device *dev,
+ 	if (!rank->dimm->label[0])
+ 		return 0;
  
- #include <drm/drm_atomic_helper.h>
-+#include <drm/drm_atomic_uapi.h>
- #include <drm/drm_blend.h>
- #include <drm/drm_gem_atomic_helper.h>
- #include <drm/drm_plane_helper.h>
-@@ -1430,6 +1431,34 @@ static void amdgpu_dm_plane_drm_plane_destroy_state(struct drm_plane *plane,
- 	drm_atomic_helper_plane_destroy_state(plane, state);
+-	return snprintf(data, sizeof(rank->dimm->label) + 1, "%s\n",
+-			rank->dimm->label);
++	return sysfs_emit(data, "%s\n", rank->dimm->label);
  }
  
-+static int amdgpu_dm_plane_check_async_props(struct drm_property *prop,
-+					  struct drm_plane *plane,
-+					  struct drm_plane_state *plane_state,
-+					  struct drm_mode_object *obj,
-+					  u64 prop_value, u64 old_val)
-+{
-+	struct drm_mode_config *config = &plane->dev->mode_config;
-+	int ret;
-+
-+	if (prop != config->prop_fb_id &&
-+	    prop != config->prop_in_fence_fd &&
-+	    prop != config->prop_fb_damage_clips) {
-+		ret = drm_atomic_plane_get_property(plane, plane_state,
-+						    prop, &old_val);
-+		return drm_atomic_check_prop_changes(ret, old_val, prop_value, prop);
-+	}
-+
-+	if (plane_state->plane->type != DRM_PLANE_TYPE_PRIMARY
-+	    && plane_state->plane->type != DRM_PLANE_TYPE_OVERLAY) {
-+		drm_dbg_atomic(prop->dev,
-+			       "[OBJECT:%d] Only primary or overlay planes can be changed during async flip\n",
-+			       obj->id);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct drm_plane_funcs dm_plane_funcs = {
- 	.update_plane	= drm_atomic_helper_update_plane,
- 	.disable_plane	= drm_atomic_helper_disable_plane,
-@@ -1438,6 +1467,7 @@ static const struct drm_plane_funcs dm_plane_funcs = {
- 	.atomic_duplicate_state = amdgpu_dm_plane_drm_plane_duplicate_state,
- 	.atomic_destroy_state = amdgpu_dm_plane_drm_plane_destroy_state,
- 	.format_mod_supported = amdgpu_dm_plane_format_mod_supported,
-+	.check_async_props = amdgpu_dm_plane_check_async_props,
- };
+ static ssize_t channel_dimm_label_store(struct device *dev,
+@@ -515,7 +514,7 @@ static ssize_t dimmdev_label_show(struct device *dev,
+ 	if (!dimm->label[0])
+ 		return 0;
  
- int amdgpu_dm_plane_init(struct amdgpu_display_manager *dm,
+-	return snprintf(data, sizeof(dimm->label) + 1, "%s\n", dimm->label);
++	return sysfs_emit(data, "%s\n", dimm->label);
+ }
+ 
+ static ssize_t dimmdev_label_store(struct device *dev,
 -- 
-2.43.0
+2.29.2
 
 
