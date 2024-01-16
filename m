@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-28253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FB6B82FC25
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:13:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B509382FC27
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:14:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CE9F1C2785D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:13:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51A921F2918F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:14:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CD0623744;
-	Tue, 16 Jan 2024 20:33:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDF8023775;
+	Tue, 16 Jan 2024 20:33:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WBhgCnPJ"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	dkim=pass (2048-bit key) header.d=brixit-nl.20230601.gappssmtp.com header.i=@brixit-nl.20230601.gappssmtp.com header.b="HaJi9bkU"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87B5D22F1E
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 20:33:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8124523764
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 20:33:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705437188; cv=none; b=jEd+SSapuD0IH6zI1UniJCbKVFpQFEeV2yW4lzpaXEWSdhmrI5Y8WnF4ioZQnYcQWOqFAWoaDUv5ao3wgzrVF9UFX00Lll3j62wEt+kgF6cR/zicWh/RlNZGo/Of6Yb5OI67WEMxj/i7lmib2ocT8K5tnSMG5lBU9pwBxTS1nnM=
+	t=1705437225; cv=none; b=bbumxXvzi8L8cx1QeW0xmkzR4aT0dWjETa1SOjCiY/hYOQNlVNZK7Gqs12rWO+eNwg96xDEfepAFn9v6QCQFJJ4txmLYdTN+PC+4HUja6YScpW0GTlry3r7PmofbtJY4ZGleJpBHBh3rSXkduY1qM/oV3DmYeimMvJVoIXwtdXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705437188; c=relaxed/simple;
-	bh=UZhOUcuw6c3yvY8HwUWiMiTNnqgekRGrbmejXm0Luak=;
+	s=arc-20240116; t=1705437225; c=relaxed/simple;
+	bh=bLvtU9GmP+z3YD1A3ZSf6pfME0rmcdFX3MOu+3u5WlA=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 To:Cc:References:From:Autocrypt:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=N8pxhellDEMnLZJqGbZNArgn6Pfvw7NPuz8pOV3QXjRPjqxokKduys516Uw8OK5EXFivn5k5Y3w6idRI2W9NWW2jaMQw4MS4tnqNsd868o95+CSdN+pbIYfnMVvDJuQXyZTFyQZ5ivPO+ENFEqMac/dHj2dfN0M41qLUkaxROd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WBhgCnPJ; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2cd8b64a52dso60257591fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 12:33:06 -0800 (PST)
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:References:
+	 Content-Language:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=cMr8mojWIOVzrVtWgZayX+Um+7Zy+9jcSyX0mfFM3qsgrdf5CPQk42orXh7tZmD7jU5ZexRhsvPpi/qbizCfL3NSiTFukyQE25ANeUk1Nr0ph2p+8KxMtoTilP/Uuiab9p8hM5LIYIVXkt2u2f7tMcmMVihGObqSeCKtRW4ApYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brixit.nl; spf=none smtp.mailfrom=brixit.nl; dkim=pass (2048-bit key) header.d=brixit-nl.20230601.gappssmtp.com header.i=@brixit-nl.20230601.gappssmtp.com header.b=HaJi9bkU; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brixit.nl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brixit.nl
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a2e0be86878so368203766b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 12:33:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705437184; x=1706041984; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=brixit-nl.20230601.gappssmtp.com; s=20230601; t=1705437222; x=1706042022; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZmkUyeDtILM4j0A8ZkydaXWgJFrv0AfuF4OsKct4FSs=;
-        b=WBhgCnPJxome+VxxYB1BXZW3+/f8DyekeyrBYo3SHwkYEcHLMNnFPz6StNq9ZDmS6s
-         rRcmNGERGsAWNjvBdxJxZ6JW7UsT4TDknAQYfy5ZNe3pPHOn4kTe7WrlQzn40e4fMl5i
-         X69AMW4JZb4YGmLJ0k+/g22L3PFVxGPhsRBCY/NNPgQ3018cvgWgdA5p+WMTUANASUJm
-         WIctiBotC3WXi7dyU+iYzkE1kwazGlIZ3DJdtAanMheNP46F5wr/wOmy/bCKdniMyfnu
-         DFmFqZDyK8h+pdidaxA8o43mgOFqWNLGCzO/GC1AHvBjFZeGCfKi8fs4m3FWtlezUxTy
-         /cfg==
+        bh=SQYnK8r0WDlOVQgRQTtnzryqB0Bw85aD3A/rnJ3JfSQ=;
+        b=HaJi9bkU89BQWav8nHAuTEv04F3xVmf6sNxp/Gcyhdhx86CeFSciPbMzcp5pz6kU0O
+         M0Qkhy5TAJBznAzSFoOlNdZFlHqyNtrAp93uzeHsGZ/i2NtRXzRS8wfe5RKrTbwN3jj2
+         lbLgwhVp+2ghu9qVLDNV3Zx3XYgIIP5NScYktEo0hdQBwfxgfVkZ0bWF+vzihoipTsvA
+         jc4TPZwWkOw4kB9bFoFlLPKbBGPs4U/600AX3cKibnV9Mwo6bKxq9fFegFXPVxw6aEi1
+         8VwFj/R3hNWOHzTT+jeoee1ap82qL06DhuT+QWGqStvrF9wdFVfnicQ02frQeBETasmH
+         xxWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705437184; x=1706041984;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1705437222; x=1706042022;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZmkUyeDtILM4j0A8ZkydaXWgJFrv0AfuF4OsKct4FSs=;
-        b=sNsPk7H60ehCMWKunLmjPSdSYr6XviU4wbELtVubDr4ob9367ADYEPaddDiVRv8VKJ
-         k9wXM1ClGYOpjSpgdDE4J53GOVYcP1iDPmzusUy97DPkZWXzW60tpF4CHbYCOH2wRM1n
-         Y8Lpot7PHxVeFnzMtxaJNVkXdyW+SRchYw6indIKwyprktUHzcF9aROogfiSYLg4Pdp3
-         BIauxhvHNGB4hifcJVLTm4rsKQADAjYfBtSAzkrDOmpGBKKXzWVWK8WMIH754HhhCAxO
-         3tdggz4aquq3k9l5czqOiDAbMOALaFeoYuPSuw2cEwyka4pOfrY+7mJxgXrzAI9AJ38u
-         ubRQ==
-X-Gm-Message-State: AOJu0YyS6HKwBaNFyNMdbd7GEczrMHLBYAgtGHaYnyO9Wln+/Ky39owN
-	j+qgultnwDKtB/tIFszvLWV86YuwxvpLSA==
-X-Google-Smtp-Source: AGHT+IHty6zoQlN4MzUQdFwDQqOaZ5jVeEehJLQl61Fuew+N/AVC7g0NQu7WEcIq2Nlaz4zp5JQNBw==
-X-Received: by 2002:a2e:3208:0:b0:2cc:d4d9:905 with SMTP id y8-20020a2e3208000000b002ccd4d90905mr3424013ljy.11.1705437184624;
-        Tue, 16 Jan 2024 12:33:04 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id ig12-20020a056402458c00b00559c3cbba3bsm469440edb.37.2024.01.16.12.33.02
+        bh=SQYnK8r0WDlOVQgRQTtnzryqB0Bw85aD3A/rnJ3JfSQ=;
+        b=qQ4xHE7szihv0ecY4lqwRIuAdTq8UI5esRbDi0U1P55tYsyjr8b+/1RD+04JEZuQ64
+         FgWMeqSSRW6p+7j3ja+R7FeiW+Juvy8Gz1wVjN7QWt6V5TvvmgagpxWXRyFviLb1hHXX
+         Z+T2SBrse/RWpK1KWWG1AnaRE2hL32R6KMrz1z7cxP2yd0HhK+KMOh7Mlx5WOumR7VVe
+         qvD9urBwAiNKTtN4kC7pjLPIXIeHqx4FK5qlR5bRDU9Lp2H+pLK6aonFpG2h8K5c3WgT
+         TURX658ZNBSnn36+2vNvKgX2NOPX3FTpc4uzIWNp8Lek6Y2GvN0VP7Ii4eqG6Ziu92Kj
+         97lA==
+X-Gm-Message-State: AOJu0YwxCoO3kDaHW58tNi4xn7dzJgxH/UUW/RJUxmrR4VqiRe2nou3p
+	nePRz872e5i2vcoj9gcSKdiBjk59jrxiEA==
+X-Google-Smtp-Source: AGHT+IE12HSEaKeyl74HOOYo0/OE9qhE2gVtfoIGnqU6mjdQlJwdOiIyXwH/t6fV/FSI+oC+jzCwbQ==
+X-Received: by 2002:a17:907:a704:b0:a2e:7f37:8301 with SMTP id vw4-20020a170907a70400b00a2e7f378301mr1567285ejc.27.1705437221625;
+        Tue, 16 Jan 2024 12:33:41 -0800 (PST)
+Received: from ?IPV6:2a00:bba0:120c:9f00:7a8e:8795:650f:7c4e? (2a00-bba0-120c-9f00-7a8e-8795-650f-7c4e.static6.cust.trined.nl. [2a00:bba0:120c:9f00:7a8e:8795:650f:7c4e])
+        by smtp.gmail.com with ESMTPSA id gu18-20020a170906f29200b00a28aba1f56fsm6917997ejb.210.2024.01.16.12.33.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jan 2024 12:33:04 -0800 (PST)
-Message-ID: <52697bd3-01a6-4522-a0fc-e9e6f027cff2@linaro.org>
-Date: Tue, 16 Jan 2024 21:33:02 +0100
+        Tue, 16 Jan 2024 12:33:41 -0800 (PST)
+Message-ID: <2c720f2e-3c73-4a77-92e0-5da8fce86b3f@brixit.nl>
+Date: Tue, 16 Jan 2024 21:33:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,111 +77,46 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v22 3/8] arm: dts: nuvoton: npcm7xx: modify rst syscon
- node
+Subject: Re: Front camera on pinephone
+To: Pavel Machek <pavel@ucw.cz>, fiona.klute@gmx.de,
+ phone-devel@vger.kernel.org, icenowy@aosc.xyz, megous@megous.com,
+ kernel list <linux-kernel@vger.kernel.org>
+Cc: alain.volmat@foss.st.com, sakari.ailus@linux.intel.com,
+ linux-media@vger.kernel.org
+References: <ZaY44AHISMIh8fHM@duo.ucw.cz>
 Content-Language: en-US
-To: Tomer Maimon <tmaimon77@gmail.com>
-Cc: mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, tali.perry1@gmail.com, joel@jms.id.au,
- venture@google.com, yuenn@google.com, benjaminfair@google.com,
- openbmc@lists.ozlabs.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20240108135421.684263-1-tmaimon77@gmail.com>
- <20240108135421.684263-4-tmaimon77@gmail.com>
- <99eca166-7d78-4ada-ac0a-ad67f3d8eb33@linaro.org>
- <CAP6Zq1g7NoLVbAUyeQ8jm3qZvjLV6HSVZB+r-X7dxvVNtvddPg@mail.gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAP6Zq1g7NoLVbAUyeQ8jm3qZvjLV6HSVZB+r-X7dxvVNtvddPg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+From: Martijn Braam <martijn@brixit.nl>
+In-Reply-To: <ZaY44AHISMIh8fHM@duo.ucw.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 16/01/2024 20:51, Tomer Maimon wrote:
-> Hi Krzysztof,
-> 
-> Thanks for your comment.
-> 
-> On Wed, 10 Jan 2024 at 23:01, Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
->>
->> On 08/01/2024 14:54, Tomer Maimon wrote:
->>> rst node name and compatible property modified since clock and reset are
->>> handled in the same memory region.
->>>
->>> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
->>> ---
->>>  arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi | 4 ++--
->>>  1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi b/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi
->>> index 868454ae6bde..f72c5a03d04c 100644
->>> --- a/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi
->>> +++ b/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi
->>> @@ -93,8 +93,8 @@ gcr: gcr@800000 {
->>>                       reg = <0x800000 0x1000>;
->>>               };
->>>
->>> -             rst: rst@801000 {
->>> -                     compatible = "nuvoton,npcm750-rst", "syscon", "simple-mfd";
->>> +             clk_rst: syscon@801000 {
->>> +                     compatible = "nuvoton,npcm750-clk-rst", "syscon", "simple-mfd";
->>
->> NAK. This breakes the users, is not justified, is not explained.
-> Sorry, I didn't understand, which user it is breaking? there isn't a
-> device tree node that uses the rst node.
+Hello Pavel,
 
-Any user of this DTS.
+Isn't this simply the case of picking the gc2145 bits from Megis tree?
 
-> Should I explain it better in the commit message?
+https://megous.com/git/linux/tree/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi?h=orange-pi-5.10#n410
 
-I doubt that you can find proper reason, because "I want different name"
-is not valid. It's just compatible, it cannot be changed just because
-you add new property.
+[For the pinephone kernel development there's the option of building the 
+kernel using envkernel.sh in postmarketOS with 
+https://wiki.postmarketos.org/wiki/Compiling_kernels_with_envkernel.sh 
+which has some automation for building a kernel and pushing it to a 
+connected device. Ethernet and keyboard are replaced by ssh and 
+usb-networking in this case]
 
-Best regards,
-Krzysztof
+Greetings,
+Martijn
 
+On 1/16/24 09:05, Pavel Machek wrote:
+> Hi!
+>
+> In 6.8-rc0, driver for gc2145 (front camera on pinephone) was merged,
+> but we don't have corresponding dts entries. Does anyone have setup
+> where they can fix it easily?
+>
+> [If you have hints how to set-up pinephone for kernel development,
+> that would be welcome. Currently I have mobian with rather old 6.1
+> kernel on it, and lack of keyboard/ethernet makes things tricky.]
+>
+> Best regards,
+> 								Pavel
 
