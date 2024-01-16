@@ -1,218 +1,153 @@
-Return-Path: <linux-kernel+bounces-27694-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5834082F43F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:29:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D91A82F440
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:29:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA520B21690
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:29:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30403B23A99
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:29:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B51B1CD39;
-	Tue, 16 Jan 2024 18:29:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79AAC1CFB5;
+	Tue, 16 Jan 2024 18:29:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="rDt6lp7T"
-Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qB6XfClO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 756021CD21
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:29:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEF961CFA7
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:29:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705429761; cv=none; b=SUkqZ3I92sig0Yarn1C/CCIVem9dAis1HH3b9rSdKvYWCj2ib5zCEL+oj8ShRIt+jlzTtX+834kLQoP/fHyFB6BMs7Tx/YFpHm13BP7g4u4gAxQ0SBDaiWpWxRvnJWUrr9tKnSyPQ+w9YGNPrx6UbE6plf01R2G/VyPG7FcFTu0=
+	t=1705429765; cv=none; b=YbmFY2NDVxz+ra0/0o0cGA+XfY/DTpG2RuhnNpsyrIk/ESfaX4FpRf1/kyQjiGYkr08rTDEI7+SuwShz1CfZPpAUljZxi6eqLlL5DdK9FY48pC7/wyODWLkZWoNrIdIAjOy4kQyPrKKbdzfF6DvkCKbop0ifT89EQik5n/uxFWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705429761; c=relaxed/simple;
-	bh=wEOXEHxlPFfQySz0/lYwk3N4GjHtmvnUZtcMTz27B4E=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 From:To:References:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=rG/a6AnLlTvFdS/Gi1JCVxyt2Wyyd1VmnBJtknqrO2M0FCxnBVB9yC9zMt3LkpQU1rgtSUuLq6+4AfCS7yb9zdaOX1SslhbaXl/i3XBwDdxwdfuXhDGaU1Od9qc4Y81zxTfaRTvStTOk1Ufbvlzbj+XNpT/Xe4iz7MmLfRXlXks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=rDt6lp7T; arc=none smtp.client-ip=209.85.166.180
-Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-35d374bebe3so7501465ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:29:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1705429758; x=1706034558; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=veNPUkKF1HjNVPxzlUqZ4yFozAAQyN3eYiE18FDsQpA=;
-        b=rDt6lp7Tkph6DUhPuK733ouH0Jz1buz/8AilHqOOCSxf6Q6KSgw4yGS4fU9lf6kFRy
-         sJiUTBzltnFGsZ/RGs7tF/1nSdKbLYPtwWEpJRQmp3oCqnROeENJZmMrP1+h0lklmUfg
-         QcUej0FKFhvW3D4l9BWBZdyIT7j+D6sL+IODA5jgunaNqUS5Fh4AKhO8/v8LVtNw/9pr
-         1ucAjvThPKHYg2Diciz4s2DnmrrJG+biR9J0FEo+HQzAo8Gbhg00pCAFdsP2BvRhFHn0
-         X0pqUr+uKc305lXx3keFHjGlZkNAeU1qFwwfsv9WbBF9dWgrta29PZO0VrpOvpjQh+4t
-         yOVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705429758; x=1706034558;
-        h=content-transfer-encoding:in-reply-to:references:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=veNPUkKF1HjNVPxzlUqZ4yFozAAQyN3eYiE18FDsQpA=;
-        b=QqXQQL/YRfqgN3QbvvsFsX7/p+4PVR4Nr2HboDDiip0IUI8+PCdrfv9cdsa80pPu+h
-         5a4nKLwhofv+Z3jS1s9qFRFyD0gUg8Pd3vRDMu+Z867I3pUSWbbnigx8P4h8YsjwNAJO
-         aeUxseqS52bDuxiU4ggxh74a86jJvGws6Xi8SZABA5ZXjLOlekX3TtAaydrrWl+csq14
-         VDCLUL3scP/hi/ZPPe+fKQOC7za0xKRvUufbgl0Lzl8jqrqdxmF0Sj9R9McpXY864cAg
-         3YWWcwDLmpZfIZWUOQ1oYMFeVaGgLoEuMycWPsn84bMTB/QQWNHJ35Pu6tVAxlGKMXpY
-         QXOQ==
-X-Gm-Message-State: AOJu0Yzqo6aAB4cV7wAlbjagWq3G2JzC5Riq5r1HwISr0JV2Z8ZW9pHc
-	udjQExnzWnpBPbCC+xXcqAzPc5Uf+PMJmw==
-X-Google-Smtp-Source: AGHT+IFgk0Ydn2bjVl6ukcjpg15ulvFXA48ksc2GozqT3iJl1bCchjFJH8EJX+yxDaLBD2lgANLT/Q==
-X-Received: by 2002:a92:c561:0:b0:35f:fa79:644 with SMTP id b1-20020a92c561000000b0035ffa790644mr14016283ilj.3.1705429758607;
-        Tue, 16 Jan 2024 10:29:18 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id ck12-20020a056e02370c00b003608a649906sm3670625ilb.43.2024.01.16.10.29.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jan 2024 10:29:17 -0800 (PST)
-Message-ID: <487a298c-710d-4c04-8901-da584e1b3038@kernel.dk>
-Date: Tue, 16 Jan 2024 11:29:17 -0700
+	s=arc-20240116; t=1705429765; c=relaxed/simple;
+	bh=k0lm4Z5pZVIlvdj47Fd18SEn4w3dqXV3sFaKUhK4hEM=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=obrAVNnxQ/uwWINyrBveguCnGXwMAgKq3Gd+ud72WaqYIpmSXZswsvz6E8r2khCBgaFm3MCLDDus/N6MclRrMNMa24skcWDxFR4dlg/Eqq+MGlMl/aiAuCtygmjFC46AkpCbT/HPXUmb8kTvSmJoCsUKtrohuWtjgDdHyMolAww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qB6XfClO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BA09C433C7;
+	Tue, 16 Jan 2024 18:29:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705429765;
+	bh=k0lm4Z5pZVIlvdj47Fd18SEn4w3dqXV3sFaKUhK4hEM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qB6XfClOzBAfEBHRluVhODZXPZDeUZgArWeFPXFNr02Zdq1FLIGhIlKeH8VSrcb+Z
+	 s2CL8dfZW7zawGzP50trc+Nmo6XhMEc3ObvL8cH4OU6aROKEvrxyMyyqMykh7z4fe7
+	 E/bgUXnEzautBuJ0TiaOCIz0DC7KdsFwm+2iCzt7mfuoKPtrODERpDjWqWnlLE286C
+	 4y7fnad67uxrR47FOJsAHoVr85/4JS3U4o5alWlILPbEM/CfQm0QLMSHOnZHLG0dOu
+	 p0bf293g9y6vXpMOgp7e4zpjF8UerC3kEIKw9V81tuC0qkxDVwOZXtWQlJRWhdrQL8
+	 eGlR0EiNS4dzg==
+Date: Tue, 16 Jan 2024 10:29:23 -0800
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+To: Chao Yu <chao@kernel.org>
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] f2fs: compress: fix to cover
+ f2fs_disable_compressed_file() w/ i_sem
+Message-ID: <ZabLA4EWNzNFGb5Q@google.com>
+References: <20240111064406.2970205-1-chao@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [block?] BUG: unable to handle kernel NULL pointer
- dereference in __bio_release_pages
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-To: syzbot <syzbot+004c1e0fced2b4bc3dcc@syzkaller.appspotmail.com>,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzkaller-bugs@googlegroups.com, Matthew Wilcox <willy@infradead.org>
-References: <000000000000dbe2f2060f0d2781@google.com>
- <4bd438c0-75b8-4e28-939c-954716df7563@kernel.dk>
-In-Reply-To: <4bd438c0-75b8-4e28-939c-954716df7563@kernel.dk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240111064406.2970205-1-chao@kernel.org>
 
-On 1/16/24 11:00 AM, Jens Axboe wrote:
-> On 1/16/24 2:57 AM, syzbot wrote:
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    052d534373b7 Merge tag 'exfat-for-6.8-rc1' of git://git.ke..
->> git tree:       upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=17957913e80000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=9603f9823d535d97
->> dashboard link: https://syzkaller.appspot.com/bug?extid=004c1e0fced2b4bc3dcc
->> compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
->> userspace arch: arm64
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13529733e80000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=166850dde80000
->>
->> Downloadable assets:
->> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/384ffdcca292/non_bootable_disk-052d5343.raw.xz
->> vmlinux: https://storage.googleapis.com/syzbot-assets/74cc52d4cc15/vmlinux-052d5343.xz
->> kernel image: https://storage.googleapis.com/syzbot-assets/a2da7e6a234c/Image-052d5343.gz.xz
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+004c1e0fced2b4bc3dcc@syzkaller.appspotmail.com
->>
->> Unable to handle kernel paging request at virtual address dfff800000000001
->> KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
->> Mem abort info:
->>   ESR = 0x0000000096000005
->>   EC = 0x25: DABT (current EL), IL = 32 bits
->>   SET = 0, FnV = 0
->>   EA = 0, S1PTW = 0
->>   FSC = 0x05: level 1 translation fault
->> Data abort info:
->>   ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
->>   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
->>   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
->> [dfff800000000001] address between user and kernel address ranges
->> Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
->> Modules linked in:
->> CPU: 1 PID: 3139 Comm: syz-executor303 Not tainted 6.7.0-syzkaller-09928-g052d534373b7 #0
->> Hardware name: linux,dummy-virt (DT)
->> pstate: 10000005 (nzcV daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
->> pc : _compound_head include/linux/page-flags.h:247 [inline]
->> pc : bio_first_folio include/linux/bio.h:289 [inline]
->> pc : __bio_release_pages+0x100/0x73c block/bio.c:1153
->> lr : bio_release_pages include/linux/bio.h:508 [inline]
->> lr : blkdev_bio_end_io+0x2a0/0x3f0 block/fops.c:157
->> sp : ffff800089a375e0
->> x29: ffff800089a375e0 x28: 1fffe0000162e879 x27: ffff00000b1743c0
->> x26: ffff00000b1743c8 x25: 000000000000000a x24: 1fffe000015a9e12
->> x23: ffff00000ad4f094 x22: ffff00000f496600 x21: 1fffe0000162e87a
->> x20: 0000000000000004 x19: 0000000000000000 x18: ffff00000b174432
->> x17: ffff00000b174438 x16: ffff00000f948008 x15: 1fffe0000162e886
->> x14: ffff00000b1743d4 x13: 00000000f1f1f1f1 x12: ffff6000015a9e13
->> x11: 1fffe000015a9e12 x10: ffff6000015a9e12 x9 : dfff800000000000
->> x8 : ffff00000b1743d4 x7 : 0000000041b58ab3 x6 : 1ffff00011346ed0
->> x5 : ffff700011346ed0 x4 : 00000000f1f1f1f1 x3 : 000000000000f1f1
->> x2 : 0000000000000001 x1 : dfff800000000000 x0 : 0000000000000008
->> Call trace:
->>  _compound_head include/linux/page-flags.h:247 [inline]
->>  bio_first_folio include/linux/bio.h:289 [inline]
->>  __bio_release_pages+0x100/0x73c block/bio.c:1153
->>  bio_release_pages include/linux/bio.h:508 [inline]
->>  blkdev_bio_end_io+0x2a0/0x3f0 block/fops.c:157
->>  bio_endio+0x4a4/0x618 block/bio.c:1608
->>  __blkdev_direct_IO block/fops.c:213 [inline]
->>  blkdev_direct_IO.part.0+0xf08/0x13c0 block/fops.c:379
->>  blkdev_direct_IO block/fops.c:370 [inline]
->>  blkdev_direct_write block/fops.c:648 [inline]
->>  blkdev_write_iter+0x430/0x91c block/fops.c:706
->>  call_write_iter include/linux/fs.h:2085 [inline]
->>  do_iter_readv_writev+0x194/0x298 fs/read_write.c:741
->>  vfs_writev+0x244/0x684 fs/read_write.c:971
->>  do_pwritev+0x15c/0x1e0 fs/read_write.c:1072
->>  __do_sys_pwritev2 fs/read_write.c:1131 [inline]
->>  __se_sys_pwritev2 fs/read_write.c:1122 [inline]
->>  __arm64_sys_pwritev2+0xac/0x120 fs/read_write.c:1122
->>  __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
->>  invoke_syscall+0x6c/0x258 arch/arm64/kernel/syscall.c:51
->>  el0_svc_common.constprop.0+0xac/0x230 arch/arm64/kernel/syscall.c:136
->>  do_el0_svc+0x40/0x58 arch/arm64/kernel/syscall.c:155
->>  el0_svc+0x58/0x140 arch/arm64/kernel/entry-common.c:678
->>  el0t_64_sync_handler+0x100/0x12c arch/arm64/kernel/entry-common.c:696
->>  el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
->> Code: d2d00001 f2fbffe1 91002260 d343fc02 (38e16841) 
->> ---[ end trace 0000000000000000 ]---
->> ----------------
->> Code disassembly (best guess):
->>    0:	d2d00001 	mov	x1, #0x800000000000        	// #140737488355328
->>    4:	f2fbffe1 	movk	x1, #0xdfff, lsl #48
->>    8:	91002260 	add	x0, x19, #0x8
->>    c:	d343fc02 	lsr	x2, x0, #3
->> * 10:	38e16841 	ldrsb	w1, [x2, x1] <-- trapping instruction
+On 01/11, Chao Yu wrote:
+> - f2fs_disable_compressed_file
+>   - check inode_has_data
+> 					- f2fs_file_mmap
+> 					- mkwrite
+> 					 - f2fs_get_block_locked
+> 					 : update metadata in compressed
+> 					   inode's disk layout
+>   - fi->i_flags &= ~F2FS_COMPR_FL
+>   - clear_inode_flag(inode, FI_COMPRESSED_FILE);
 > 
-> This looks to be caused by:
+> we should use i_sem lock to prevent above race case.
 > 
-> commit 1b151e2435fc3a9b10c8946c6aebe9f3e1938c55
-> Author: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Date:   Mon Aug 14 15:41:00 2023 +0100
+> Meanwhile, this patch adds i_size check to restrict compress inode
+> conversion condition.
+
+Sorry, what was the reason to check i_size?
+
 > 
->     block: Remove special-casing of compound pages
-
-I suspect this should fix it.
-
-diff --git a/block/bio.c b/block/bio.c
-index b9642a41f286..d271f093abb9 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -1150,6 +1150,12 @@ void __bio_release_pages(struct bio *bio, bool mark_dirty)
- {
- 	struct folio_iter fi;
- 
-+	/*
-+	 * No pages, nothing to do
-+	 */
-+	if (!bio->bi_vcnt)
-+		return;
-+
- 	bio_for_each_folio_all(fi, bio) {
- 		struct page *page;
- 		size_t done = 0;
-
--- 
-Jens Axboe
-
+> Fixes: 4c8ff7095bef ("f2fs: support data compression")
+> Signed-off-by: Chao Yu <chao@kernel.org>
+> ---
+>  fs/f2fs/f2fs.h | 18 ++++++++++++++++--
+>  fs/f2fs/file.c |  5 ++---
+>  2 files changed, 18 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 74729db0b381..e2e0ca45f881 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -4406,19 +4406,33 @@ static inline int set_compress_context(struct inode *inode)
+>  #endif
+>  }
+>  
+> +static inline bool inode_has_data(struct inode *inode)
+> +{
+> +	return (S_ISREG(inode->i_mode) &&
+> +		(F2FS_HAS_BLOCKS(inode) || i_size_read(inode)));
+> +}
+> +
+>  static inline bool f2fs_disable_compressed_file(struct inode *inode)
+>  {
+>  	struct f2fs_inode_info *fi = F2FS_I(inode);
+>  
+> -	if (!f2fs_compressed_file(inode))
+> +	f2fs_down_write(&F2FS_I(inode)->i_sem);
+> +
+> +	if (!f2fs_compressed_file(inode)) {
+> +		f2fs_up_write(&F2FS_I(inode)->i_sem);
+>  		return true;
+> -	if (S_ISREG(inode->i_mode) && F2FS_HAS_BLOCKS(inode))
+> +	}
+> +	if (f2fs_is_mmap_file(inode) || inode_has_data(inode)) {
+> +		f2fs_up_write(&F2FS_I(inode)->i_sem);
+>  		return false;
+> +	}
+>  
+>  	fi->i_flags &= ~F2FS_COMPR_FL;
+>  	stat_dec_compr_inode(inode);
+>  	clear_inode_flag(inode, FI_COMPRESSED_FILE);
+>  	f2fs_mark_inode_dirty_sync(inode, true);
+> +
+> +	f2fs_up_write(&F2FS_I(inode)->i_sem);
+>  	return true;
+>  }
+>  
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index 0e4c871d6aed..5e5df234eb92 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -1926,8 +1926,7 @@ static int f2fs_setflags_common(struct inode *inode, u32 iflags, u32 mask)
+>  
+>  			f2fs_down_write(&F2FS_I(inode)->i_sem);
+>  			if (!f2fs_may_compress(inode) ||
+> -					(S_ISREG(inode->i_mode) &&
+> -					F2FS_HAS_BLOCKS(inode))) {
+> +					inode_has_data(inode)) {
+>  				f2fs_up_write(&F2FS_I(inode)->i_sem);
+>  				return -EINVAL;
+>  			}
+> @@ -4011,7 +4010,7 @@ static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
+>  		goto out;
+>  	}
+>  
+> -	if (F2FS_HAS_BLOCKS(inode)) {
+> +	if (inode_has_data(inode)) {
+>  		ret = -EFBIG;
+>  		goto out;
+>  	}
+> -- 
+> 2.40.1
 
