@@ -1,47 +1,50 @@
-Return-Path: <linux-kernel+bounces-26676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 961D282E516
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:30:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8563D82E518
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:30:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A8131C20359
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:30:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3AA01C22536
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:30:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 587BF224C0;
-	Tue, 16 Jan 2024 00:14:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F1C2224D8;
+	Tue, 16 Jan 2024 00:14:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jEvcnyHW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PFRftZ46"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F8572232F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF36D224CB;
+	Tue, 16 Jan 2024 00:14:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F454C433F1;
 	Tue, 16 Jan 2024 00:14:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48F85C43390;
-	Tue, 16 Jan 2024 00:14:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705364083;
-	bh=XU8GS1ZsDIkRERAdlY+FQGzJZ+rg+O384zwExr1qy9Y=;
+	s=k20201202; t=1705364084;
+	bh=8JjAOqsT+rradnKT/vKpkIsIY1TBqyXCE/NDj2WQiBE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jEvcnyHWTApm6rRSJ2Di2/ukBGCuTWeE95zNXDAveoYhxxfEUQ1tA5ul7YRfuWlGb
-	 2ckhDghyRadXAm5689e26W1grJQPvU4MpPju8eVWubiKUmmMvWOrf3320Xi8RK3Hxe
-	 YyH3H+BquLtgAnX3jlBfIjnhtea7jYgQsNAjmeSpp541xP6jWirq80bjTYNgBVfTt5
-	 N80+ET2TjdDPE3/IiO06kaVJI4kPOcrD29PUZxAIxGsM767oCUc0BbqT9EMXkXRYlX
-	 RVPoChcRRZRAxW7m2BpQGCwB0ydngNvbWjwv5a2SuE8F5EsFPX9/eEOjKrXnklJB8t
-	 UwDvVBUyquJzg==
+	b=PFRftZ46OKfWF8ZGyulYJjD/5A0jgS7u8ANsw9nmU0h/OvH7rrr6ypdBTTVjGG3UV
+	 uzad+IRlaA9JpuuSx2TVXg0j0JkewdzdE4IyUaa4itr6Zvv99xJpCW3D68ZZpd+5dR
+	 HXNjiArByVjeMXEHn/SWAMLl3KxIY9Ia1IU8nvrTI8LTSQY9CWM3XHnrbCR1kpXq5g
+	 ddKpkGbmUgkiLPN49Z/vRGvAe99thxrmKB5OG4Mi8Sjj0WUvrc8NpUieH5EMvTP2Pu
+	 M7PXHDxIaDxqD1ZXMvqok79zgGaaZXqu3IJaY0zO1UZQSFsaWU+l6UArqp30lo57Q1
+	 KtQGXXgoNdqFQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Chris Riches <chris.riches@nutanix.com>,
-	Paul Moore <paul@paul-moore.com>,
+Cc: Avadhut Naik <Avadhut.Naik@amd.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Tony Luck <tony.luck@intel.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	eparis@redhat.com,
-	audit@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 2/8] audit: Send netlink ACK before setting connection in auditd_set
-Date: Mon, 15 Jan 2024 19:14:30 -0500
-Message-ID: <20240116001439.213839-2-sashal@kernel.org>
+	bleung@chromium.org,
+	tzungbi@kernel.org,
+	chrome-platform@lists.linux.dev
+Subject: [PATCH AUTOSEL 5.15 3/8] platform/chrome: cros_ec_debugfs: Fix permissions for panicinfo
+Date: Mon, 15 Jan 2024 19:14:31 -0500
+Message-ID: <20240116001439.213839-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116001439.213839-1-sashal@kernel.org>
 References: <20240116001439.213839-1-sashal@kernel.org>
@@ -56,115 +59,47 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.147
 Content-Transfer-Encoding: 8bit
 
-From: Chris Riches <chris.riches@nutanix.com>
+From: Avadhut Naik <Avadhut.Naik@amd.com>
 
-[ Upstream commit 022732e3d846e197539712e51ecada90ded0572a ]
+[ Upstream commit 0706526ec7704dcd046239078ac175d11a88a95e ]
 
-When auditd_set sets the auditd_conn pointer, audit messages can
-immediately be put on the socket by other kernel threads. If the backlog
-is large or the rate is high, this can immediately fill the socket
-buffer. If the audit daemon requested an ACK for this operation, a full
-socket buffer causes the ACK to get dropped, also setting ENOBUFS on the
-socket.
+The debugfs_create_blob() function has been used to create read-only binary
+blobs in debugfs. The function filters out permissions, other than S_IRUSR,
+S_IRGRP and S_IROTH, provided while creating the blobs.
 
-To avoid this race and ensure ACKs get through, fast-track the ACK in
-this specific case to ensure it is sent before auditd_conn is set.
+The very behavior though is being changed through previous patch in the
+series (fs: debugfs: Add write functionality to debugfs blobs) which makes
+the binary blobs writable by owners. Thus, all permissions provided while
+creating the blobs, except S_IRUSR,S_IWUSR, S_IRGRP, S_IROTH, will be
+filtered by debugfs_create_blob().
 
-Signed-off-by: Chris Riches <chris.riches@nutanix.com>
-[PM: fix some tab vs space damage]
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+As such, rectify the permissions of panicinfo file since the S_IFREG flag
+was anyways being filtered out by debugfs_create_blob(). Moreover, the
+very flag will always be set be set for the panicinfo file through
+__debugfs_create_file().
+
+Signed-off-by: Avadhut Naik <Avadhut.Naik@amd.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/audit.c | 31 ++++++++++++++++++++++++-------
- 1 file changed, 24 insertions(+), 7 deletions(-)
+ drivers/platform/chrome/cros_ec_debugfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/audit.c b/kernel/audit.c
-index 94ded5de9131..82b6fea46e20 100644
---- a/kernel/audit.c
-+++ b/kernel/audit.c
-@@ -490,15 +490,19 @@ static void auditd_conn_free(struct rcu_head *rcu)
-  * @pid: auditd PID
-  * @portid: auditd netlink portid
-  * @net: auditd network namespace pointer
-+ * @skb: the netlink command from the audit daemon
-+ * @ack: netlink ack flag, cleared if ack'd here
-  *
-  * Description:
-  * This function will obtain and drop network namespace references as
-  * necessary.  Returns zero on success, negative values on failure.
-  */
--static int auditd_set(struct pid *pid, u32 portid, struct net *net)
-+static int auditd_set(struct pid *pid, u32 portid, struct net *net,
-+		      struct sk_buff *skb, bool *ack)
- {
- 	unsigned long flags;
- 	struct auditd_connection *ac_old, *ac_new;
-+	struct nlmsghdr *nlh;
+diff --git a/drivers/platform/chrome/cros_ec_debugfs.c b/drivers/platform/chrome/cros_ec_debugfs.c
+index 0dbceee87a4b..e2940d3b69c3 100644
+--- a/drivers/platform/chrome/cros_ec_debugfs.c
++++ b/drivers/platform/chrome/cros_ec_debugfs.c
+@@ -427,7 +427,7 @@ static int cros_ec_create_panicinfo(struct cros_ec_debugfs *debug_info)
+ 	debug_info->panicinfo_blob.data = msg->data;
+ 	debug_info->panicinfo_blob.size = ret;
  
- 	if (!pid || !net)
- 		return -EINVAL;
-@@ -510,6 +514,13 @@ static int auditd_set(struct pid *pid, u32 portid, struct net *net)
- 	ac_new->portid = portid;
- 	ac_new->net = get_net(net);
+-	debugfs_create_blob("panicinfo", S_IFREG | 0444, debug_info->dir,
++	debugfs_create_blob("panicinfo", 0444, debug_info->dir,
+ 			    &debug_info->panicinfo_blob);
  
-+	/* send the ack now to avoid a race with the queue backlog */
-+	if (*ack) {
-+		nlh = nlmsg_hdr(skb);
-+		netlink_ack(skb, nlh, 0, NULL);
-+		*ack = false;
-+	}
-+
- 	spin_lock_irqsave(&auditd_conn_lock, flags);
- 	ac_old = rcu_dereference_protected(auditd_conn,
- 					   lockdep_is_held(&auditd_conn_lock));
-@@ -1203,7 +1214,8 @@ static int audit_replace(struct pid *pid)
- 	return auditd_send_unicast_skb(skb);
- }
- 
--static int audit_receive_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
-+static int audit_receive_msg(struct sk_buff *skb, struct nlmsghdr *nlh,
-+			     bool *ack)
- {
- 	u32			seq;
- 	void			*data;
-@@ -1296,7 +1308,8 @@ static int audit_receive_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
- 				/* register a new auditd connection */
- 				err = auditd_set(req_pid,
- 						 NETLINK_CB(skb).portid,
--						 sock_net(NETLINK_CB(skb).sk));
-+						 sock_net(NETLINK_CB(skb).sk),
-+						 skb, ack);
- 				if (audit_enabled != AUDIT_OFF)
- 					audit_log_config_change("audit_pid",
- 								new_pid,
-@@ -1541,9 +1554,10 @@ static int audit_receive_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
-  * Parse the provided skb and deal with any messages that may be present,
-  * malformed skbs are discarded.
-  */
--static void audit_receive(struct sk_buff  *skb)
-+static void audit_receive(struct sk_buff *skb)
- {
- 	struct nlmsghdr *nlh;
-+	bool ack;
- 	/*
- 	 * len MUST be signed for nlmsg_next to be able to dec it below 0
- 	 * if the nlmsg_len was not aligned
-@@ -1556,9 +1570,12 @@ static void audit_receive(struct sk_buff  *skb)
- 
- 	audit_ctl_lock();
- 	while (nlmsg_ok(nlh, len)) {
--		err = audit_receive_msg(skb, nlh);
--		/* if err or if this message says it wants a response */
--		if (err || (nlh->nlmsg_flags & NLM_F_ACK))
-+		ack = nlh->nlmsg_flags & NLM_F_ACK;
-+		err = audit_receive_msg(skb, nlh, &ack);
-+
-+		/* send an ack if the user asked for one and audit_receive_msg
-+		 * didn't already do it, or if there was an error. */
-+		if (ack || err)
- 			netlink_ack(skb, nlh, err, NULL);
- 
- 		nlh = nlmsg_next(nlh, &len);
+ 	return 0;
 -- 
 2.43.0
 
