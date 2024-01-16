@@ -1,61 +1,66 @@
-Return-Path: <linux-kernel+bounces-27831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD60E82F680
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:01:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3FA382F683
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:01:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81B2C1F25A58
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:01:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BA82B24567
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:01:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A35643D564;
-	Tue, 16 Jan 2024 19:45:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 190401D6BE;
+	Tue, 16 Jan 2024 19:45:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LGycoGdh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XI56+u7j"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFE8D3D393;
-	Tue, 16 Jan 2024 19:45:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 561AF1D6B6;
+	Tue, 16 Jan 2024 19:45:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434303; cv=none; b=kkNoRWFfx5r0D72QNeXh43/vjeX2EM7qyo2VJrCoewS55Mtns+FU/E043Bz8B7bBU9Ciogt9V5digNKsv8W6gPcXrfNGoSgq02rNqPT5fSRir53ELU70y3jPTS51ih8SodIln0B0VfUUzw0nF/cdKGwIDJCO934jBLF8TMiOVTA=
+	t=1705434311; cv=none; b=P3QLJL1D+zQqm+nuWNCGU++ON0QCxxqJNKPeGIBBkT7FOU1E6NjnqD74g7n8k6Po1DLhU6fYu7MLFTr3DMoL3GgfI/3KMub8U0HEh/15QA/du/+OBD8xbM5F6ssqtaHezLjKqBGbflt34AP6jQV/OIGgC8VbgLQmCbnSBQ9WmbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434303; c=relaxed/simple;
-	bh=Z+Z8WhzbRfBIX4GvAy/TPFGGNpBKFgKWsD0zKv/YjBU=;
+	s=arc-20240116; t=1705434311; c=relaxed/simple;
+	bh=ql2tB1bfXiLvuvVl402J8WGwe62YD8CeU5u3fhLTl0w=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=fJnf4ac8nSLKA//QIGMahgghnBYePt/SW4WNZ/s+WInVXUdq0v2GnzqVjbe/gbFRS53KT2fjwXrpbwH32ueUEIVA3Zuz9cnhyeyrOxY+MHiBkkYWWsRLgNAzpzm22bQiFg11K6OCFpMp5iOaDMw+hgpZN0APOFstKAaPTeUM088=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LGycoGdh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41F7AC43399;
-	Tue, 16 Jan 2024 19:45:01 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=mRK1IQDPpobjBbJKxQ+Mo8ntc+gyDCZhbQvn7HriDjK35uS+m+38gg9P6KhDSNqwaCpBvpFES11X/P7Ez2+NRmSLjt80eNmUGf6x+QASyV+Vb4npGnoWKVEBnNoHJauoLcd5QA3BZcdXOSploNvH7WMqmAcf4xkqGrRl1Tlacg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XI56+u7j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D926C433C7;
+	Tue, 16 Jan 2024 19:45:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434302;
-	bh=Z+Z8WhzbRfBIX4GvAy/TPFGGNpBKFgKWsD0zKv/YjBU=;
+	s=k20201202; t=1705434311;
+	bh=ql2tB1bfXiLvuvVl402J8WGwe62YD8CeU5u3fhLTl0w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LGycoGdhr7vzSxyoAwSmcaZdn1wGlGNjczspl7OML/gehPMGVQAbEsBvYfTS7wAGV
-	 Rvn6v2wHpLyAsUf460H80/RNePeicyBauZSqU/y4OOxd6D65x98xDWdccISbY2FBeH
-	 2CrTmzaKev0X7SvGrVVqY3ZxTxS9KWBcoDM2gb091XxCqrW2f2m7MQI2wkvD6UQDgs
-	 ubOFEzATeQhcK7wtA5htKVfpk5vcJpGbDw0RqklsctckjMgX2aPvSn6bP4dvMLqp8H
-	 N7TyfP6F638plaVLzM7U3dJJL6aDW8+eC2otUJ4UgBYfs6DsIaK8pOCBGLC9BOUaf/
-	 uyBPUXWEV0HsA==
+	b=XI56+u7jOF7azVjnab6BNk12vyQIsaS7dHImFx9pwiaJBDOJieMwHTsSh2wFVICkN
+	 +pyCZdVcQy3HHtDr/JCbP6pzgfqYvuEtygIY3GkHuirUQVeIAIkDd8lv7mKPQCAc/Y
+	 IpUpejJftaoK99VWr5P5ZPlw7dpvrUzTzoZsm3KEvdB2j+27ywEY+Y1R9jjRCunSGy
+	 /E+I3e6niVUBRyeqbETAN3lJKQjIoUuGCy7VtKWPBlLHOCVHOOo/YV/mfCu9wWRyxM
+	 AcxUZfBTn/o+uG2oRY4zoHu7vUG219qhpFnVueb6PVZm+n2iGVUd/fxArkVRsw57Bh
+	 LJeY2f2hrSciw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Christian Marangi <ansuelsmth@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>,
+Cc: Shannon Nelson <shannon.nelson@amd.com>,
+	Brett Creeley <brett.creeley@amd.com>,
 	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	hkallweit1@gmail.com,
+	drivers@pensando.io,
 	edumazet@google.com,
 	kuba@kernel.org,
 	pabeni@redhat.com,
+	allen.hubbe@amd.com,
+	florian.fainelli@broadcom.com,
+	yuehaibing@huawei.com,
+	drc@linux.vnet.ibm.com,
+	justinstitt@google.com,
 	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 060/108] net: phy: at803x: fix passing the wrong reference for config_intr
-Date: Tue, 16 Jan 2024 14:39:26 -0500
-Message-ID: <20240116194225.250921-60-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.7 061/108] ionic: pass opcode to devcmd_wait
+Date: Tue, 16 Jan 2024 14:39:27 -0500
+Message-ID: <20240116194225.250921-61-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194225.250921-1-sashal@kernel.org>
 References: <20240116194225.250921-1-sashal@kernel.org>
@@ -70,52 +75,61 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7
 Content-Transfer-Encoding: 8bit
 
-From: Christian Marangi <ansuelsmth@gmail.com>
+From: Shannon Nelson <shannon.nelson@amd.com>
 
-[ Upstream commit f8fdbf3389f44c7026f16e36cb1f2ff017f7f5b2 ]
+[ Upstream commit 24f110240c03c6b5368f1203bac72883d511e606 ]
 
-Fix passing the wrong reference for config_initr on passing the function
-pointer, drop the wrong & from at803x_config_intr in the PHY struct.
+Don't rely on the PCI memory for the devcmd opcode because we
+read a 0xff value if the PCI bus is broken, which can cause us
+to report a bogus dev_cmd opcode later.
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Shannon Nelson <shannon.nelson@amd.com>
+Reviewed-by: Brett Creeley <brett.creeley@amd.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/at803x.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/pensando/ionic/ionic_dev.c  | 1 +
+ drivers/net/ethernet/pensando/ionic/ionic_dev.h  | 1 +
+ drivers/net/ethernet/pensando/ionic/ionic_main.c | 2 +-
+ 3 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-index 37fb033e1c29..ef203b0807e5 100644
---- a/drivers/net/phy/at803x.c
-+++ b/drivers/net/phy/at803x.c
-@@ -2104,7 +2104,7 @@ static struct phy_driver at803x_driver[] = {
- 	.write_page		= at803x_write_page,
- 	.get_features		= at803x_get_features,
- 	.read_status		= at803x_read_status,
--	.config_intr		= &at803x_config_intr,
-+	.config_intr		= at803x_config_intr,
- 	.handle_interrupt	= at803x_handle_interrupt,
- 	.get_tunable		= at803x_get_tunable,
- 	.set_tunable		= at803x_set_tunable,
-@@ -2134,7 +2134,7 @@ static struct phy_driver at803x_driver[] = {
- 	.resume			= at803x_resume,
- 	.flags			= PHY_POLL_CABLE_TEST,
- 	/* PHY_BASIC_FEATURES */
--	.config_intr		= &at803x_config_intr,
-+	.config_intr		= at803x_config_intr,
- 	.handle_interrupt	= at803x_handle_interrupt,
- 	.cable_test_start	= at803x_cable_test_start,
- 	.cable_test_get_status	= at803x_cable_test_get_status,
-@@ -2150,7 +2150,7 @@ static struct phy_driver at803x_driver[] = {
- 	.resume			= at803x_resume,
- 	.flags			= PHY_POLL_CABLE_TEST,
- 	/* PHY_BASIC_FEATURES */
--	.config_intr		= &at803x_config_intr,
-+	.config_intr		= at803x_config_intr,
- 	.handle_interrupt	= at803x_handle_interrupt,
- 	.cable_test_start	= at803x_cable_test_start,
- 	.cable_test_get_status	= at803x_cable_test_get_status,
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_dev.c b/drivers/net/ethernet/pensando/ionic/ionic_dev.c
+index c06576f43916..22ab0a44fa8c 100644
+--- a/drivers/net/ethernet/pensando/ionic/ionic_dev.c
++++ b/drivers/net/ethernet/pensando/ionic/ionic_dev.c
+@@ -321,6 +321,7 @@ void ionic_dev_cmd_comp(struct ionic_dev *idev, union ionic_dev_cmd_comp *comp)
+ 
+ void ionic_dev_cmd_go(struct ionic_dev *idev, union ionic_dev_cmd *cmd)
+ {
++	idev->opcode = cmd->cmd.opcode;
+ 	memcpy_toio(&idev->dev_cmd_regs->cmd, cmd, sizeof(*cmd));
+ 	iowrite32(0, &idev->dev_cmd_regs->done);
+ 	iowrite32(1, &idev->dev_cmd_regs->doorbell);
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_dev.h b/drivers/net/ethernet/pensando/ionic/ionic_dev.h
+index 9b5463040075..fd112bee4dcf 100644
+--- a/drivers/net/ethernet/pensando/ionic/ionic_dev.h
++++ b/drivers/net/ethernet/pensando/ionic/ionic_dev.h
+@@ -153,6 +153,7 @@ struct ionic_dev {
+ 	bool fw_hb_ready;
+ 	bool fw_status_ready;
+ 	u8 fw_generation;
++	u8 opcode;
+ 
+ 	u64 __iomem *db_pages;
+ 	dma_addr_t phy_db_pages;
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_main.c b/drivers/net/ethernet/pensando/ionic/ionic_main.c
+index 835577392178..1b547acfd8e9 100644
+--- a/drivers/net/ethernet/pensando/ionic/ionic_main.c
++++ b/drivers/net/ethernet/pensando/ionic/ionic_main.c
+@@ -465,7 +465,7 @@ static int __ionic_dev_cmd_wait(struct ionic *ionic, unsigned long max_seconds,
+ 	 */
+ 	max_wait = jiffies + (max_seconds * HZ);
+ try_again:
+-	opcode = readb(&idev->dev_cmd_regs->cmd.cmd.opcode);
++	opcode = idev->opcode;
+ 	start_time = jiffies;
+ 	for (fw_up = ionic_is_fw_running(idev);
+ 	     !done && fw_up && time_before(jiffies, max_wait);
 -- 
 2.43.0
 
