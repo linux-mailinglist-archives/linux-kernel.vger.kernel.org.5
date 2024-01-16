@@ -1,118 +1,129 @@
-Return-Path: <linux-kernel+bounces-27264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F15282ECE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:45:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63F3782ECEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:46:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25B77284E73
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:45:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17F481F21D3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:46:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE65A175A0;
-	Tue, 16 Jan 2024 10:45:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D095618C18;
+	Tue, 16 Jan 2024 10:45:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WRnd5mkz"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i67mAgAz"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04E14154BA
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:45:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705401950;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bjqxTDHvgQy8aJf03PgKJjSLuMp8HhWY4sERlhF8row=;
-	b=WRnd5mkzUgOq9u2HC3T0QcsfVN/Ia88+c6/LIUDElmQA95RvxbEZXawoUzOtzjG+XJxf4s
-	2VnHJfqaCIZAd72bWGTJbpGeASIwalXGyFrzj/A5+O1Cp3KLXWnqxj0hjHEKTTwOfpzjO/
-	oBy23Powqofg4DHsf18CHLumk57hODw=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-503-5soBPydpMZy4HsQV-PNJAw-1; Tue, 16 Jan 2024 05:45:48 -0500
-X-MC-Unique: 5soBPydpMZy4HsQV-PNJAw-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a2cb0d70d6cso192888166b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 02:45:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705401948; x=1706006748;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bjqxTDHvgQy8aJf03PgKJjSLuMp8HhWY4sERlhF8row=;
-        b=VZizRpAqmyl3NPzgJzYGlQCYMGHgDJfAkK0HAQlR/k5tErciW/GHMrq6pYofCrc4QO
-         7cr49k2qnOcrYna7yp066rh3f+nx6rK+8r6RMb8YaYRyHJwoJpVWtIhm1EuvRnkVb8EM
-         Y4oz/tTrKqGBy7j0Bt6FGtJD6thn2NCmqmVO0xsZW63mra182ZTjHD1Ju6oKyansKLy4
-         3ypihbAoDGKIOoDnfVx2eKUjTw0GNkOxmadnHrggAXMU7TLKDGiO4U+I2uNqgLhnjIJR
-         azYrd0fLnrcBjQkInv9N/kTSkdC7zuVgsy4DCoo57AobneJw0wuAM9m78p5/k+/LxVQs
-         saqQ==
-X-Gm-Message-State: AOJu0YweUUwfigeHSR3kgnmAYOHM/hp/mrhfPYlI6ZurYxs+4cZM7iBA
-	2+3Z4/+GHHYodzQNYYbf75ZV0Kbtv1Nb5XAu/BgRCVbQDWDUbOUpwEB6UqN1LTX5VD1dxvQIoHa
-	+SCp/SO554bGtRM0kL2Pb1JN9UnE9VTAk
-X-Received: by 2002:a17:906:1c56:b0:a2b:299:2e3 with SMTP id l22-20020a1709061c5600b00a2b029902e3mr2882756ejg.146.1705401947885;
-        Tue, 16 Jan 2024 02:45:47 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH6FVV4MuXv1lla/czKKt1oAO2fwOEap+YW0g8LZflc9afhjEtSmkDaFYruOii/YXsyNY5spw==
-X-Received: by 2002:a17:906:1c56:b0:a2b:299:2e3 with SMTP id l22-20020a1709061c5600b00a2b029902e3mr2882745ejg.146.1705401947612;
-        Tue, 16 Jan 2024 02:45:47 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id l10-20020a1709061c4a00b00a2b9bbd6d73sm6320836ejg.214.2024.01.16.02.45.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jan 2024 02:45:47 -0800 (PST)
-Message-ID: <da062d7e-c06c-40f8-b2ad-9dd5e82ff596@redhat.com>
-Date: Tue, 16 Jan 2024 11:45:46 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE8DD18C16
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:45:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705401956; x=1736937956;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=U149l/P2gQncQeTKVFG2mholC+8inxIjrWVzckSmZk0=;
+  b=i67mAgAznK8e2Gn+v9ebF/vQyY85UzOE+4us0/5X52CYHqur8Qf0VgSX
+   iPqUqYdzQGPdBnJQtss99GhVvwL6DVnVauRWhp4ZQLPqW4honnzJx2Zmy
+   pdPn7YUiZa/Po4pySteSJYJFMjqwZbRa5sPweaeDgNqEqW+v0Hxdx5jnv
+   A1/ECTuzBxLgI6SjPyx2vfEFwfceZqNXeF7S2b2rUZHu+ZoZQwHRhrVx/
+   MzpfnVyhHhukG/fIifV+OLeA6eXZNnj196DfX7xAgyHzXiQDn4EZjgFou
+   OFOArZCvUO7JAgeRumAFYUPeswnsltLlpCBiRDehK7V6suOD2umlLwe1L
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="399493504"
+X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
+   d="scan'208";a="399493504"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 02:45:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="787403940"
+X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
+   d="scan'208";a="787403940"
+Received: from uschumac-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.213.254])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 02:45:51 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+	id 7226210A17B; Tue, 16 Jan 2024 13:45:48 +0300 (+03)
+Date: Tue, 16 Jan 2024 13:45:48 +0300
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Nikolay Borisov <nik.borisov@suse.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	Jun Nakajima <jun.nakajima@intel.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	"Kalra, Ashish" <ashish.kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
+	kexec@lists.infradead.org, linux-coco@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv5 10/16] x86/tdx: Convert shared memory back to private
+ on kexec
+Message-ID: <20240116104548.4jmku5pq34p4lqn6@box.shutemov.name>
+References: <20231222235209.32143-1-kirill.shutemov@linux.intel.com>
+ <20231222235209.32143-11-kirill.shutemov@linux.intel.com>
+ <89e8722b-661b-4319-8018-06705b366c62@suse.com>
+ <20240116072822.pvzseyqry56eqa4j@box.shutemov.name>
+ <bad09d97-d99b-4231-a481-c14ed0f8d59d@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] MAINTAINERS: add Luke Jones as maintainer for asus
- notebooks
-Content-Language: en-US, nl
-To: "Luke D. Jones" <luke@ljones.dev>, linux-kernel@vger.kernel.org
-References: <20240115211829.48251-1-luke@ljones.dev>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240115211829.48251-1-luke@ljones.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bad09d97-d99b-4231-a481-c14ed0f8d59d@suse.com>
 
-Hi,
-
-On 1/15/24 22:18, Luke D. Jones wrote:
-> Add myself as maintainer for "ASUS NOTEBOOKS AND EEEPC ACPI/WMI EXTRAS
-> DRIVERS" as suggested by Hans de Goede based on my history of
-> contributions.
+On Tue, Jan 16, 2024 at 10:01:47AM +0200, Nikolay Borisov wrote:
 > 
-> Signed-off-by: Luke D. Jones <luke@ljones.dev>
-> ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index f5c2450fa4ec..e7843beaa589 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3147,6 +3147,7 @@ F:	drivers/hwmon/asus-ec-sensors.c
->  
->  ASUS NOTEBOOKS AND EEEPC ACPI/WMI EXTRAS DRIVERS
->  M:	Corentin Chary <corentin.chary@gmail.com>
-> +M:	Luke D. Jones <luke@lones.dev>
+> On 16.01.24 г. 9:28 ч., Kirill A. Shutemov wrote:
+> 
+> <snip>
+> 
+> > > > @@ -41,6 +44,9 @@
+> > > >    static atomic_long_t nr_shared;
+> > > > +static atomic_t conversions_in_progress;
+> > > > +static bool conversion_allowed = true;
+> > > 
+> > > Given the usage model of this variable, shouldn't it be simply accessed via
+> > > READ/WRITE_ONCE macros?
+> > 
+> > What do you see it changing?
+> 
+> 
+> Serving as documentation that you are accessing a shared variable without an
+> explicit lock (unless I'm missing something). conversion_allowed can be read
+> by multiple threads, no ? And it's written by a single thread?
 
-heh there is a typo there that should be @ljones.dev ,
-I have fixed this up now in my review-hans branch.
+I don't think READ_ONCE()/WRITE_ONCE() have documentation sense you imply.
 
-Regards,
+I would argue adding them will add more confusion as they serve no purpose
+in this context: issuing multiple loads/stores for the variable have no
+impact on outcome.
 
-Hans
+> > kexec on AMD will not work without them, I think. But noops makes sense
+> > anyway. Will fix.
+> 
+> I'm not disputing whether those are needed for AMD or not, that way I see it
+> you make those callbacks mandatory in the case of CC_ATTR_GUEST_MEM_ENCRYPT
+> being present, yet only implement them for TDX. So in the case of AMD they
+> will be NULL and so AMD with kexec enabled (albeit erroneously) will crash,
+> no ?
 
+As I said, I will fix it.
 
->  L:	acpi4asus-user@lists.sourceforge.net
->  L:	platform-driver-x86@vger.kernel.org
->  S:	Maintained
-
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
