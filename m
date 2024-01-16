@@ -1,199 +1,75 @@
-Return-Path: <linux-kernel+bounces-27393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B22682EF35
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:54:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9FBB82EF3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:56:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 716181C233CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:54:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73ED7B20C0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:56:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781DE1BC2B;
-	Tue, 16 Jan 2024 12:54:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="HKYk5we9"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2052.outbound.protection.outlook.com [40.107.94.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F5721BC37;
+	Tue, 16 Jan 2024 12:56:07 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F312A1BC23;
-	Tue, 16 Jan 2024 12:54:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fMMJf+ETGovCZmsMUbj7I3PV2EG3HwzA6WPFWTiR+W4U1d000+N3lo/HbHRjseqAKEfSNpgQQdgZK3rDx57b5rZj9LVyRHro+YhoN/VXI8e0H6OOP4IUboeY7hdnf31ShTljqoYXoZnc/x8W7r0m7ZglXYJS/YqCqgSP3BJVPzj1T0Y4IoRjcam1EEhae29VEFDvdgEWEQtaklLTPc3u997Noy1qCiX1bV+gh5WRUN9upu9XU8Ovg3LFP1i78uVVSkD8Oe5/JFW2/jC9N3HNRdHRwggXapLw9iHYU3niFvseaArGAg/8hqw4N2+m9mTLK2RGjlXYsYKzZ8f4siPfWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sE6FCYBsuhvzQ6aiW0wQrrNkOTprx1vO8DLg6rmxPeA=;
- b=JfDOfRKwArOiaD+oNFiJunaOICxyetsBd7nc2ntnuqd+VPyTXvgg2FRSdwQRxlsgDOkeh9xpl2Tg5hw/9xK3Z7S9EcfzYUh5HYd2eD48ifcHlYPjt9zoCOPYcq+/6FUxdg0YqXfa+v4043iYa71l/gmbr0Ms8q1ZOoUJNddqllI2ThCC7HT8IvVD3dcx5vvG9fAscUgS8aeAgtUCIqjOKQ3aOurkuZ57JzeKULOSVgqxuIhpUe1YHQERDw1H8Cqf8xEfMaCpXWNWItzWpXmY/ja0Vaqu8YEoeX/yFLzQIgrmXkaupc8g25WTGiFUsBm77W5WWwuiA7JDcJHz6cJBsg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sE6FCYBsuhvzQ6aiW0wQrrNkOTprx1vO8DLg6rmxPeA=;
- b=HKYk5we9gre4KAi/rhczu6HB37jjEvkRh8hFAq9Mdn6nL3hWjl+4QlkvjCLq99E/YZABnQaYz4+Yi/5VY89hDpcIQ74EVK7lBqDuvwMGgKj/8MP7ia3hd5YOVq5suZ3c1hYV6Xl8C9ZYCZOmfwJ0sgTN82KeDCA5KgmgJ9cQYypRUQnuF5V9s2aAqsHp1d/pWgK6r4WVny2ARXHkSjM9yC3XQITVfvepCFQhAOy0rlvJBj5LfFTn7hsqJ6JlNI0+OxmwzkpQm2EMi6d4x8XLmpoJlYWv5RLRA7kYq4viIBOt45fOYZLJHeF15PYZyFuUZAizFQbCFZOJckzRaqDmHw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by SN7PR12MB7153.namprd12.prod.outlook.com (2603:10b6:806:2a4::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.23; Tue, 16 Jan
- 2024 12:54:27 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::96dd:1160:6472:9873]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::96dd:1160:6472:9873%6]) with mapi id 15.20.7181.020; Tue, 16 Jan 2024
- 12:54:27 +0000
-Date: Tue, 16 Jan 2024 08:54:26 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: "Tian, Kevin" <kevin.tian@intel.com>
-Cc: "Zhao, Yan Y" <yan.y.zhao@intel.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>,
-	"seanjc@google.com" <seanjc@google.com>,
-	"olvaffe@gmail.com" <olvaffe@gmail.com>,
-	"Lv, Zhiyuan" <zhiyuan.lv@intel.com>,
-	"Wang, Zhenyu Z" <zhenyu.z.wang@intel.com>,
-	"Ma, Yongwei" <yongwei.ma@intel.com>,
-	"vkuznets@redhat.com" <vkuznets@redhat.com>,
-	"wanpengli@tencent.com" <wanpengli@tencent.com>,
-	"jmattson@google.com" <jmattson@google.com>,
-	"joro@8bytes.org" <joro@8bytes.org>,
-	"gurchetansingh@chromium.org" <gurchetansingh@chromium.org>,
-	"kraxel@redhat.com" <kraxel@redhat.com>,
-	"zzyiwei@google.com" <zzyiwei@google.com>,
-	"ankita@nvidia.com" <ankita@nvidia.com>,
-	"alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-	"maz@kernel.org" <maz@kernel.org>,
-	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-	"james.morse@arm.com" <james.morse@arm.com>,
-	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-	"yuzenghui@huawei.com" <yuzenghui@huawei.com>
-Subject: Re: [PATCH 0/4] KVM: Honor guest memory types for virtio GPU devices
-Message-ID: <20240116125426.GA734935@nvidia.com>
-References: <20240105091237.24577-1-yan.y.zhao@intel.com>
- <20240105195551.GE50406@nvidia.com>
- <ZZuQEQAVX28v7p9Z@yzhao56-desk.sh.intel.com>
- <20240108140250.GJ50406@nvidia.com>
- <ZZyG9n0qZEr6dLlZ@yzhao56-desk.sh.intel.com>
- <20240109002220.GA439767@nvidia.com>
- <ZZyrS4RiHvktDZXb@yzhao56-desk.sh.intel.com>
- <20240115163050.GI734935@nvidia.com>
- <BN9PR11MB5276B5603D9D777F01D64EDA8C732@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB5276B5603D9D777F01D64EDA8C732@BN9PR11MB5276.namprd11.prod.outlook.com>
-X-ClientProxiedBy: BL0PR03CA0006.namprd03.prod.outlook.com
- (2603:10b6:208:2d::19) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B77101BC28
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 12:56:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-35fffb6fe5bso96871155ab.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 04:56:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705409765; x=1706014565;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XlQR34qrguYGJVcu0GvJoEzs72QBX+M6+BUFeXf3BP4=;
+        b=IJYmqNcdNs1alcVo/mkUgH8dDHhtbtpSAR48wlXCIFLAcnRjnxct99UmQ4tBpw8djN
+         uXaQ/89505QWfPpfb0fKer/VbHM1THmZD9dYXcgqa+Bprt5qRe5rMHt/ynhbDX5FvSdi
+         Do6+oAYMMVfZJ16UpCvK0Q7bD2P4IpdWBVP+atBbfb5X/EQzhCcVxAxa2AFfJIB6eqtA
+         RoUhSvq20t8JFZ+Ev3gyMqcmd0KRMXLvUVPRi4Rp43ey0xMcJpDCKldFRm/vE6yyZH2Y
+         FgrdIGdLO7YcP9aNdXKPQjy4+pjA5+wEC2ttubK9OPLqeQOmDQe7VZ7HHlegL8LGgdz7
+         54CQ==
+X-Gm-Message-State: AOJu0YyTrUzeewcfToQLPFfpeuuUqa7nJKT0G+0kiANLoPUY/y0srQGr
+	0BvvUpN4sO1KVwostZwBQJnvSalOnr3o0e1f94klzLbNEdjc
+X-Google-Smtp-Source: AGHT+IEO/u9xD/0gPeWXAdpkf+MbIHaYBqNE03WNYe+YExLvEESshzxHFDt2VHVn22uz9qakhpUp6UkYRSJXhREernQQJ2vOBJc0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SN7PR12MB7153:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3ef99777-6fbc-48df-4520-08dc169245f7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	tJHZNcVm20spUiRWq8jxik/2v4G/joDEyPHyGLRADWKYeWfnNc/1RhC2H4wI3DSTHuIGLG/jm8vt3GyA9IyY7zWRBXqBk+eFYxIQsG+EwshOc7iz53CSypHC7YVyBCRt7OlZr4ZaVU2AoaQYM6xsbaUFrhNc7iXe+6oZDTTr2CADK4xPiiWdcJpPl7WI5/qVqb9MIDisKEYHPXEBoKXifGlizkwwvWQEVDO0inGtQQ23C/aqw4GfUcFp5aN0alF1PXY4/QMyCALw3DbjxUeKiv+rn0fIs07fZ9kiLExlLKxhHejcMOM5zC71eb4GuN5GlBsK9c2BiV45811/rXf+fRKU+nhJxCK+H/7mDcwQS8mEjPmx1Tti5sEIQfZ4YTFLLGN6ecDH5EzglVR5+e9WNXXMQzHOeaEtVk+YvDfYlVRLR+0jgF3cHbheN96hl3oXLekFg17M5sFphqZ4iSlxS3DBpXegDbbnwrCEY1uKfndgdbpcyJs8ED21OoUYDNSqKOJZpXGFAOp2VTGRrFUwAx55zwEp+w3b0oUE7O6RET+gr1d1rQtPb5l/TqDF9nXuo65NAF6wq611ixch3+K6VpFhsDZ1vUpxZ7g/0aQVwRE=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(396003)(346002)(366004)(136003)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(41300700001)(38100700002)(83380400001)(36756003)(33656002)(86362001)(66946007)(316002)(54906003)(66476007)(66556008)(6916009)(8936002)(7416002)(2906002)(4326008)(8676002)(5660300002)(1076003)(2616005)(26005)(6486002)(478600001)(6512007)(6506007)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?2T/llDK5cbu2v2aCrEFdwGImspbEDve0nKNaSUYRGLf96VEF6hCYdaewZu6d?=
- =?us-ascii?Q?tHIW5I6wuTCDH6CJGM6WhwSefBoj2QFK7usFQ7tvgcYtPXJK1gZrIomtczRI?=
- =?us-ascii?Q?vx41IOOnYSeeCA1+FmIKSpRp9aJDlZlN20TDGP+uQaPuAEfs1pgJBqD4iWAo?=
- =?us-ascii?Q?6pGvUK11hH+KSRJW9bNabc8ltZWfjge2suQeCOYH7GwGGy5i8lrBe2SZMo7o?=
- =?us-ascii?Q?xVfChFcs7LfQYPwciZZzkwqNMALpd/pACFryRbF6kHXmsAzXaIOCJ7SSnEsx?=
- =?us-ascii?Q?J3Il6MqpJeOYI7H7lizf0s2ne8U/Ph0qwG5tgozQow0qKy8hIahEZPPt0RsU?=
- =?us-ascii?Q?4edqcQIrh+rs++v54ptLhRvcgcfsX0YqAd6Ba6yXFgxVLk2bVbxNJUR7CvLK?=
- =?us-ascii?Q?hS0OQkiudrc6S4APRL05GuV2G0z+nw/9pQCs+a0zzz8ezL/7XquWL29mma5k?=
- =?us-ascii?Q?dd8ytyPO5q2g6QYIgK+Y//XfV9Dbi9b91rLhgZQkPSAqKbpoyGsgeVpVIwG3?=
- =?us-ascii?Q?ODpbb0hvRRjyjKeWNVWgj3deY+XMC6Yi2Hb+oQkRpwkfD5mH1GV9jb9R5ZLc?=
- =?us-ascii?Q?FfmEY3ZZmPU1c9hSCISHzY6CnpLAziBy/5MJIU1tF0WaP8bOGMiTZTiVdBT0?=
- =?us-ascii?Q?DUOQ5TaBR1S6qugVQjYguQcjxqXZ3bwbBk0d8IIfp8GMYfgdBIpP9H3mXjWH?=
- =?us-ascii?Q?JDPblWeKTXRAST2aNStnq8BQjU6Tcvvc8sD/0nou/KTO7oU7Ln+WMn/34M6f?=
- =?us-ascii?Q?8fhcvrqozDIXoL9tuyNlpjx6AJF4jXZ0FWjXhw4Si1aeYi4uK8RHjf+kGVlW?=
- =?us-ascii?Q?lPMA2EpTBF2+LiJqKX4kDKdWC7KtK6a7s3ZdB/taTcCwUfnZ4rkA+DxhXF/Q?=
- =?us-ascii?Q?kufC6fL79TQTcwIJAAKfKHTIERvPzaWMNmJxjsNzF8O1OWOe0NNiIhHa6y4p?=
- =?us-ascii?Q?d0SO78Cy5FGHsWoi13oiJUCGdyul9dci1Zg79uQfzK/55WRUwF/efAEb+Wwr?=
- =?us-ascii?Q?DvBKZmzOkG02uu/fHRsxUKbu/WVjFGRjwkjU+FOuf3Md/eDA3b4Kxogwm2CP?=
- =?us-ascii?Q?Tn2jZJZzocKvqcHDvej2bWiD1v9c9mnnRwnB6SJfjUc1PbSvkXLqRri+xi8n?=
- =?us-ascii?Q?l3pIP/GeA2cGaQr0vet14ZD0IdHeLGcQg2y1ERKWNElNojG5BZFFtPR0/oI0?=
- =?us-ascii?Q?uW9a++xiYp6ReLUodghGcUzcUkTNIhdr7VtHd9XeaCwWBw66b4vAwu7cjwYP?=
- =?us-ascii?Q?UtnEsKRf/NiQFjmw255kd15lJ6hUS1VJAsPbwhEb1V/rIzlrndhGvbHMN3uX?=
- =?us-ascii?Q?DuXucPw6ivRjZA9ByGg9RAEC+9KCxyTf09dFq++5bPdnHtA4XeUvF5c7USRX?=
- =?us-ascii?Q?S4BWeYplrSLLg07AokJqDL+s7gGmti41Rc1w2pV+olaz4o7iaYJZFfM2Rns8?=
- =?us-ascii?Q?EuyLLn0MgfjI5hnA+p6BQYMYkblUxLXXyP+8aNJKmxiz7qIYcTkOIZsJv3zF?=
- =?us-ascii?Q?eBxOy8rb+en6Prr7iBivbyNjWEX942sOQiFb9KRwn4hJxdJyh6+IZIKoB5kj?=
- =?us-ascii?Q?IS063ptCFOvUMc6icZQkH4zXaE6lcB4oRGWjGU41?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ef99777-6fbc-48df-4520-08dc169245f7
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2024 12:54:27.5880
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OXPuni8jv8zzAXck6BBCSjSTMp2bmqH+0WaucUfzuZivNTb7c8/TkOlDGO3X4El3
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7153
+X-Received: by 2002:a05:6e02:1a67:b0:360:96fd:f542 with SMTP id
+ w7-20020a056e021a6700b0036096fdf542mr1065840ilv.1.1705409764965; Tue, 16 Jan
+ 2024 04:56:04 -0800 (PST)
+Date: Tue, 16 Jan 2024 04:56:04 -0800
+In-Reply-To: <20240116123314.970-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003cc2fa060f0fa766@google.com>
+Subject: Re: [syzbot] [net?] KASAN: slab-out-of-bounds Read in dsa_user_prechangeupper
+From: syzbot <syzbot+7ec955e36bb239bd720f@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Jan 16, 2024 at 04:05:08AM +0000, Tian, Kevin wrote:
-> > From: Tian, Kevin
-> > Sent: Tuesday, January 16, 2024 8:46 AM
-> > 
-> > > From: Jason Gunthorpe <jgg@nvidia.com>
-> > > Sent: Tuesday, January 16, 2024 12:31 AM
-> > >
-> > > On Tue, Jan 09, 2024 at 10:11:23AM +0800, Yan Zhao wrote:
-> > >
-> > > > > Well, for instance, when you install pages into the KVM the hypervisor
-> > > > > will have taken kernel memory, then zero'd it with cachable writes,
-> > > > > however the VM can read it incoherently with DMA and access the
-> > > > > pre-zero'd data since the zero'd writes potentially hasn't left the
-> > > > > cache. That is an information leakage exploit.
-> > > >
-> > > > This makes sense.
-> > > > How about KVM doing cache flush before installing/revoking the
-> > > > page if guest memory type is honored?
-> > >
-> > > I think if you are going to allow the guest to bypass the cache in any
-> > > way then KVM should fully flush the cache before allowing the guest to
-> > > access memory and it should fully flush the cache after removing
-> > > memory from the guest.
-> > 
-> > For GPU passthrough can we rely on the fact that the entire guest memory
-> > is pinned so the only occurrence of removing memory is when killing the
-> > guest then the pages will be zero-ed by mm before next use? then we
-> > just need to flush the cache before the 1st guest run to avoid information
-> > leak.
-> 
-> Just checked your past comments. If there is no guarantee that the removed
-> pages will be zero-ed before next use then yes cache has to be flushed
-> after the page is removed from the guest. :/
+Hello,
 
-Next use may include things like swap to disk or live migrate the VM.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-So it isn't quite so simple in the general case.
+Reported-and-tested-by: syzbot+7ec955e36bb239bd720f@syzkaller.appspotmail.com
 
-> > > Noting that fully removing the memory now includes VFIO too, which is
-> > > going to be very hard to co-ordinate between KVM and VFIO.
-> 
-> Probably we could just handle cache flush in IOMMUFD or VFIO type1
-> map/unmap which is the gate of allowing/denying non-coherent DMAs
-> to specific pages.
+Tested on:
 
-Maybe, and on live migrate dma stop..
+commit:         052d5343 Merge tag 'exfat-for-6.8-rc1' of git://git.ke..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=1599ec2be80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=490fc2f9d4ae426c
+dashboard link: https://syzkaller.appspot.com/bug?extid=7ec955e36bb239bd720f
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=107e9733e80000
 
-Jason
+Note: testing is done by a robot and is best-effort only.
 
