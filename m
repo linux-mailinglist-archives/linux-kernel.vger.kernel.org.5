@@ -1,188 +1,191 @@
-Return-Path: <linux-kernel+bounces-28361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0270782FD46
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:46:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67D7982FD4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:47:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94C821F2B98A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:46:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E718C1F2BE4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:47:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CEDB1E880;
-	Tue, 16 Jan 2024 22:41:16 +0000 (UTC)
-Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAAB51D546;
-	Tue, 16 Jan 2024 22:41:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.14.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 553C41F95A;
+	Tue, 16 Jan 2024 22:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="f6Kejs3y";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="HjfwTsYn";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="f6Kejs3y";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="HjfwTsYn"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D2B91D6A8;
+	Tue, 16 Jan 2024 22:44:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705444876; cv=none; b=jzeq8wJvjicJGNbzlra4AljFBhL6w/U1QZkJaIipkN8yMU9MV4RiNAd7N8bBPbEwZvqDMo8HSsRMnPgqrH4KF8UMtQnS/F7KVjEym57bEhgrIvTwQVMa7pWxmxjI3gjhajg3qfRxfxljQpnOrg8gBGkxPeO9Jja0LmirJBwanpA=
+	t=1705445072; cv=none; b=J/j0nT2kqmRDP1KqtTQbciSLQ2OX2cYla/SyXga4mjSS99EIc6MSSSXNOHg0VuqcZhmbOh4eCHbc+mYrwTujc/nSIPSX8f6G/ChuGjS2FkRlHR6Ggyqn/t3btH1Z03DEcBPDIJO4UZBjbesCkEZYeCb43chcGhbwQdBhnarJKkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705444876; c=relaxed/simple;
-	bh=Us1B128cnUSRTVsPfStgm8OL/356CO5Ra0cSmwYpTsg=;
-	h=Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding; b=Qc5AImkPAcvyGjrJo3tKmai4J6oPaB1Gxexsb1BQ1hVhj7wCkzNK4L9ck0yf1kRnoZEdLB302xAfKi2a7nYvd9JKqqSf2tsXv7hDxR3NnAcJsYLDbqRYuLClUnbOFYcssSaKFrleSVT/PWKhWZBotJPFl9uMOxevNEuYOy0IVeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de; spf=pass smtp.mailfrom=c--e.de; arc=none smtp.client-ip=217.10.14.231
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
-Received: by cae.in-ulm.de (Postfix, from userid 1000)
-	id E216214042E; Tue, 16 Jan 2024 23:41:11 +0100 (CET)
-From: "Christian A. Ehrhardt" <lk@c--e.de>
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	linux-usb@vger.kernel.org
-Cc: "Christian A. Ehrhardt" <lk@c--e.de>,
-	Dell.Client.Kernel@dell.com,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Jack Pham <quic_jackp@quicinc.com>,
-	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-	=?UTF-8?q?Samuel=20=C4=8Cavoj?= <samuel@cavoj.net>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] usb: ucsi_acpi: Quirk to ack a connector change ack cmd
-Date: Tue, 16 Jan 2024 23:40:41 +0100
-Message-Id: <20240116224041.220740-4-lk@c--e.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240116224041.220740-1-lk@c--e.de>
-References: <20240116224041.220740-1-lk@c--e.de>
+	s=arc-20240116; t=1705445072; c=relaxed/simple;
+	bh=AKPYrNOerbRHsirgEfZ0p1S5QHwiWw7x8ovHOI5lE1o=;
+	h=Received:DKIM-Signature:DKIM-Signature:DKIM-Signature:
+	 DKIM-Signature:Received:Received:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version:From:To:Cc:Subject:
+	 In-reply-to:References:Date:Message-id:X-Spam-Level:X-Spam-Score:
+	 X-Spamd-Result:X-Spam-Flag; b=M39EnUL400qnev8vMtKtrSlTaRf0Olee+4TYLnWnh/irCGY0qRKsRWPx8RU6z4BjeZqp/R813liO1wdQ1Uu7aopyop39IitwlZBIhUYZ4I2FrHo6ZNpeDSaAEl7xAC/eM648B+DboBLqfKXPCZBEoEjIfpQCfKVafnTrPiDStqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=f6Kejs3y; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=HjfwTsYn; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=f6Kejs3y; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=HjfwTsYn; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0DE9E21FD7;
+	Tue, 16 Jan 2024 22:44:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705445069; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rh+oq1spB9mXnL92/e4GJ7ibfkaNrbj9dH8Tk64Djcw=;
+	b=f6Kejs3ynwExykrJLsf6I7d5bcEDabcWJXxJV92F4iHVc7UOqw1z6bgFyUdjZB1nZZzUCy
+	uYn6ovQ2wTV5Uxps5LTHqoIi8FbN9c3jpKoKlo+yzVUeHRhsOYMjfowfic3prCOTRXHmJI
+	i8ViuIPt524UHL9J9oGTH1HL5w0L8M4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705445069;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rh+oq1spB9mXnL92/e4GJ7ibfkaNrbj9dH8Tk64Djcw=;
+	b=HjfwTsYnAa/QGGZbmcPUUDcpirEYaDZy2aVFXUHAzwLEEj1ZabVT5GkD0w3g233fYFYFkp
+	/MP1zNcr5sIVRlCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705445069; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rh+oq1spB9mXnL92/e4GJ7ibfkaNrbj9dH8Tk64Djcw=;
+	b=f6Kejs3ynwExykrJLsf6I7d5bcEDabcWJXxJV92F4iHVc7UOqw1z6bgFyUdjZB1nZZzUCy
+	uYn6ovQ2wTV5Uxps5LTHqoIi8FbN9c3jpKoKlo+yzVUeHRhsOYMjfowfic3prCOTRXHmJI
+	i8ViuIPt524UHL9J9oGTH1HL5w0L8M4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705445069;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rh+oq1spB9mXnL92/e4GJ7ibfkaNrbj9dH8Tk64Djcw=;
+	b=HjfwTsYnAa/QGGZbmcPUUDcpirEYaDZy2aVFXUHAzwLEEj1ZabVT5GkD0w3g233fYFYFkp
+	/MP1zNcr5sIVRlCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BCF6513751;
+	Tue, 16 Jan 2024 22:44:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id nzD3HL8Gp2UWAgAAD6G6ig
+	(envelope-from <neilb@suse.de>); Tue, 16 Jan 2024 22:44:15 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: "NeilBrown" <neilb@suse.de>
+To: "Jeff Layton" <jlayton@kernel.org>
+Cc: "Christian Brauner" <brauner@kernel.org>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Eric Van Hensbergen" <ericvh@kernel.org>,
+ "Latchesar Ionkov" <lucho@ionkov.net>,
+ "Dominique Martinet" <asmadeus@codewreck.org>,
+ "Christian Schoenebeck" <linux_oss@crudebyte.com>,
+ "David Howells" <dhowells@redhat.com>,
+ "Marc Dionne" <marc.dionne@auristor.com>, "Xiubo Li" <xiubli@redhat.com>,
+ "Ilya Dryomov" <idryomov@gmail.com>, "Alexander Aring" <aahringo@redhat.com>,
+ "David Teigland" <teigland@redhat.com>, "Miklos Szeredi" <miklos@szeredi.hu>,
+ "Andreas Gruenbacher" <agruenba@redhat.com>,
+ "Trond Myklebust" <trond.myklebust@hammerspace.com>,
+ "Anna Schumaker" <anna@kernel.org>, "Chuck Lever" <chuck.lever@oracle.com>,
+ "Olga Kornievskaia" <kolga@netapp.com>, "Dai Ngo" <Dai.Ngo@oracle.com>,
+ "Tom Talpey" <tom@talpey.com>, "Jan Kara" <jack@suse.cz>,
+ "Mark Fasheh" <mark@fasheh.com>, "Joel Becker" <jlbec@evilplan.org>,
+ "Joseph Qi" <joseph.qi@linux.alibaba.com>, "Steve French" <sfrench@samba.org>,
+ "Paulo Alcantara" <pc@manguebit.com>, "Ronnie Sahlberg" <lsahlber@redhat.com>,
+ "Shyam Prasad N" <sprasad@microsoft.com>,
+ "Namjae Jeon" <linkinjeon@kernel.org>,
+ "Sergey Senozhatsky" <senozhatsky@chromium.org>,
+ "Steven Rostedt" <rostedt@goodmis.org>,
+ "Masami Hiramatsu" <mhiramat@kernel.org>,
+ "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
+ linux-kernel@vger.kernel.org, v9fs@lists.linux.dev,
+ linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+ gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+ linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+ linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+ linux-trace-kernel@vger.kernel.org, "Jeff Layton" <jlayton@kernel.org>
+Subject: Re: [PATCH 20/20] filelock: split leases out of struct file_lock
+In-reply-to: <20240116-flsplit-v1-20-c9d0f4370a5d@kernel.org>
+References: <20240116-flsplit-v1-0-c9d0f4370a5d@kernel.org>,
+ <20240116-flsplit-v1-20-c9d0f4370a5d@kernel.org>
+Date: Wed, 17 Jan 2024 09:44:12 +1100
+Message-id: <170544505284.23031.2594557379971928071@noble.neil.brown.name>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -5.32
+X-Spamd-Result: default: False [-5.32 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLY(-4.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 R_RATELIMIT(0.00)[to_ip_from(RLx183r465j9c4mdtrpq4cws5u)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[46];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[kernel.org,zeniv.linux.org.uk,ionkov.net,codewreck.org,crudebyte.com,redhat.com,auristor.com,gmail.com,szeredi.hu,hammerspace.com,oracle.com,netapp.com,talpey.com,suse.cz,fasheh.com,evilplan.org,linux.alibaba.com,samba.org,manguebit.com,microsoft.com,chromium.org,goodmis.org,efficios.com,vger.kernel.org,lists.linux.dev,lists.infradead.org,lists.samba.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.02)[54.77%]
+X-Spam-Flag: NO
 
-The PPM on some Dell laptops seems to expect that the ACK_CC_CI
-command to clear the connector change notification is in turn
-followed by another ACK_CC_CI to acknowledge the ACK_CC_CI command
-itself. This is in violation of the UCSI spec that states:
+On Wed, 17 Jan 2024, Jeff Layton wrote:
+> Add a new struct file_lease and move the lease-specific fields from
+> struct file_lock to it. Convert the appropriate API calls to take
+> struct file_lease instead, and convert the callers to use them.
 
-    "The only notification that is not acknowledged by the OPM is
-     the command completion notification for the ACK_CC_CI or the
-     PPM_RESET command."
+I think that splitting of struct lease_manager_operations out from
+lock_manager_operations should be mentioned here too.
 
-Add a quirk to send this ack anyway.
-Apply the quirk to all Dell systems.
 
-On the first command that acks a connector change send a dummy
-command to determine if it runs into a timeout. Only activate
-the quirk if it does. This ensure that we do not break Dell
-systems that do not need the quirk.
+> =20
+> +struct file_lease {
+> +	struct file_lock_core fl_core;
+> +	struct fasync_struct *	fl_fasync; /* for lease break notifications */
+> +	/* for lease breaks: */
+> +	unsigned long fl_break_time;
+> +	unsigned long fl_downgrade_time;
+> +	const struct lease_manager_operations *fl_lmops;	/* Callbacks for lockman=
+agers */
 
-Signed-off-by: Christian A. Ehrhardt <lk@c--e.de>
----
- drivers/usb/typec/ucsi/ucsi_acpi.c | 69 ++++++++++++++++++++++++++++--
- 1 file changed, 66 insertions(+), 3 deletions(-)
+comment should be "Callbacks for leasemanagers".  Or maybe=20
+"lease managers".=20
 
-diff --git a/drivers/usb/typec/ucsi/ucsi_acpi.c b/drivers/usb/typec/ucsi/ucsi_acpi.c
-index 33dac67154d2..a0b08b10c4a9 100644
---- a/drivers/usb/typec/ucsi/ucsi_acpi.c
-+++ b/drivers/usb/typec/ucsi/ucsi_acpi.c
-@@ -25,6 +25,8 @@ struct ucsi_acpi {
- 	unsigned long flags;
- 	guid_t guid;
- 	u64 cmd;
-+	bool dell_quirk_probed;
-+	bool dell_quirk_active;
- };
- 
- static int ucsi_acpi_dsm(struct ucsi_acpi *ua, int func)
-@@ -126,12 +128,71 @@ static const struct ucsi_operations ucsi_zenbook_ops = {
- 	.async_write = ucsi_acpi_async_write
- };
- 
--static const struct dmi_system_id zenbook_dmi_id[] = {
-+/**
-+ * Some Dell laptops expect that an ACK command with the
-+ * UCSI_ACK_CONNECTOR_CHANGE bit set is followed by a (separate)
-+ * ACK command that only has the UCSI_ACK_COMMAND_COMPLETE bit set.
-+ * If this is not done events are not delivered to OSPM and
-+ * subsequent commands will timeout.
-+ */
-+static int
-+ucsi_dell_sync_write(struct ucsi *ucsi, unsigned int offset,
-+		     const void *val, size_t val_len)
-+{
-+	struct ucsi_acpi *ua = ucsi_get_drvdata(ucsi);
-+	u64 cmd = *(u64*)val, ack = 0;
-+	int ret;
-+
-+	if (UCSI_COMMAND(cmd) == UCSI_ACK_CC_CI &&
-+	    cmd & UCSI_ACK_CONNECTOR_CHANGE)
-+		ack = UCSI_ACK_CC_CI | UCSI_ACK_COMMAND_COMPLETE;
-+
-+	ret = ucsi_acpi_sync_write(ucsi, offset, val, val_len);
-+	if (ret != 0)
-+		return ret;
-+	if (ack == 0)
-+		return ret;
-+
-+	if (!ua->dell_quirk_probed) {
-+		ua->dell_quirk_probed = true;
-+
-+		cmd = UCSI_GET_CAPABILITY;
-+		ret = ucsi_acpi_sync_write(ucsi, UCSI_CONTROL, &cmd,
-+					   sizeof(cmd));
-+		if (ret == 0)
-+			return ucsi_acpi_sync_write(ucsi, UCSI_CONTROL,
-+						    &ack, sizeof(ack));
-+		if (ret != -ETIMEDOUT)
-+			return ret;
-+
-+		ua->dell_quirk_active = true;
-+	}
-+
-+	if (!ua->dell_quirk_active)
-+		return ret;
-+
-+	return ucsi_acpi_sync_write(ucsi, UCSI_CONTROL, &ack, sizeof(ack));
-+}
-+
-+static const struct ucsi_operations ucsi_dell_ops = {
-+	.read = ucsi_acpi_read,
-+	.sync_write = ucsi_dell_sync_write,
-+	.async_write = ucsi_acpi_async_write
-+};
-+
-+static const struct dmi_system_id ucsi_acpi_quirks[] = {
- 	{
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "ZenBook UX325UA_UM325UA"),
- 		},
-+		.driver_data = (void *)&ucsi_zenbook_ops,
-+	},
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+		},
-+		.driver_data = (void *)&ucsi_dell_ops,
- 	},
- 	{ }
- };
-@@ -160,6 +221,7 @@ static int ucsi_acpi_probe(struct platform_device *pdev)
- {
- 	struct acpi_device *adev = ACPI_COMPANION(&pdev->dev);
- 	const struct ucsi_operations *ops = &ucsi_acpi_ops;
-+	const struct dmi_system_id *id;
- 	struct ucsi_acpi *ua;
- 	struct resource *res;
- 	acpi_status status;
-@@ -189,8 +251,9 @@ static int ucsi_acpi_probe(struct platform_device *pdev)
- 	init_completion(&ua->complete);
- 	ua->dev = &pdev->dev;
- 
--	if (dmi_check_system(zenbook_dmi_id))
--		ops = &ucsi_zenbook_ops;
-+	id = dmi_first_match(ucsi_acpi_quirks);
-+	if (id)
-+		ops = id->driver_data;
- 
- 	ua->ucsi = ucsi_create(&pdev->dev, ops);
- 	if (IS_ERR(ua->ucsi))
--- 
-2.40.1
+It is unfortunate that "lock" and "lease" both start with 'l' as we now
+have two quite different fields in different structures with the same
+name - fl_lmops.
 
+NeilBrown
 
