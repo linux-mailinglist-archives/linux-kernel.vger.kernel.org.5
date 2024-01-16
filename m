@@ -1,58 +1,64 @@
-Return-Path: <linux-kernel+bounces-28042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9F4582F977
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:08:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36F0582F97D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:09:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72D8DB259AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:08:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF78C1F28064
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:09:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A1955FDB7;
-	Tue, 16 Jan 2024 19:56:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EF2614461A;
+	Tue, 16 Jan 2024 19:56:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kpNsY49m"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g9ItLq17"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C86F614377F;
-	Tue, 16 Jan 2024 19:56:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D63F014460C;
+	Tue, 16 Jan 2024 19:56:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434964; cv=none; b=kwGKbc249F7enKk3uF2Sx0USygjWK0JnA0cEFT2eXosklumHa3qhGycXx0idgE7y49NKEd/xYq/+mjBhQswXx2DSgF7FpvJalvsUFEKQNrao5QLtCmfkBxco311mn0yu/cikD7/dSMQLPn2/hL4gmYVnGlflhLsulVzkdABVtO8=
+	t=1705434969; cv=none; b=tw+Ym906i6TuxXWDGty0VQS/5lAnL8OYSxNqzF8+GxFVTvxSUQP+0752VC2rX5+B/lN8zkfuCkN1Obn4OCJirp6zeE0EUMbXMkSs7kUcNs1c+ol/XWLY+w5LmfawPDhHwrSpZzDo1fPRd0R9yCKze82C/TxXqrBJ0mRqU1fB5m4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434964; c=relaxed/simple;
-	bh=ucOR01tQxbSQYvNkQ21i1Zn9JGJ1tZOEd/21cZ/km/A=;
+	s=arc-20240116; t=1705434969; c=relaxed/simple;
+	bh=jg6VgF/EuOdf/AZ8IrPRAm/o2oDTU1Re8n9z1HgWtrI=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=YPYeEVQSb7anVkSKwIbmNSpIPIL4dcgYF0nLlHY1CWAjU/489XxHpZFFp1+LgO8p/xun7eIYeCQi9WisP2vTKBOcljw4lDpmlfMyEpQ1xuZq1w+UhMLSgry+tNqNCIb5VZ/Vb5yYh2JEKsth7JPz4zeeANpWy3jHjif4Y3fcAbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kpNsY49m; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1667C433A6;
-	Tue, 16 Jan 2024 19:56:03 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=HH4RVGy/xjmxHuMgu7BPpm+3tsVT/1KaB4jIMzNXlVextnNBwHB/MW7dCoBXjywZXls31zCaWSchfe02X/z+5IxXKzzlmydpUaOndsrjc78qhCZhwQHaR0oQkd75472u+s/Hjy2WUxhAIx4c9DR9RqwKloCzLKb90BYll9RPyzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g9ItLq17; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9D56C433C7;
+	Tue, 16 Jan 2024 19:56:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434964;
-	bh=ucOR01tQxbSQYvNkQ21i1Zn9JGJ1tZOEd/21cZ/km/A=;
+	s=k20201202; t=1705434969;
+	bh=jg6VgF/EuOdf/AZ8IrPRAm/o2oDTU1Re8n9z1HgWtrI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kpNsY49melFnAAG9d6IuqTPOtIKtG1MWnfhV8w2vxCBJteQdVrUFhYmat71KfAB1M
-	 ElXzxYDRHexkDN3ZI2qku3eVvEtycgJKmvjiN+pvqBIY+N+4A/18xL9np5mrcYBUmY
-	 Zezz2Ypb/HKHHkNLwHWJK2nDXh3F7kkQ8Ed4wa+wHvqxZLgyAn7TXSYSmKbemP24lK
-	 vXZmaFbGB9GOEud2UYx1Dstf3u/OyTiD7cfR3optOjyTTEqQLYfyLnEOrGbvqkmjJs
-	 IA8iM38uU+sblfBcrBFjk9lJCd5JVh5aJOcGCZsUhEQi/RIo0BD+bi7RqBhcDbQETz
-	 szHqCHcRpuvQQ==
+	b=g9ItLq17nfv+2vrPCictRNtxGJ59B1Z2qEHyPBXI0XHpcWnytHdFrD0KsKY8F1w0Q
+	 KA6OJnB74O1dKKhaSn23C4ZbuVItdT3QuAf9sRf/lNr3bmsz5PJe5dRSvBMlGe6mrh
+	 dttxy9UBFfoTT0fXqrBhniiaveyEiLwScGkYhXAw6klVN5UFfYJWYn2Ip2hDVQvQhh
+	 YB6L7GdPzKyPlbK91y2wTOKsE8nxR2yMJQMLH0fvgMs4aKbLQjBSHr0GHQOdG1wbnU
+	 TfApekrIVKFGgFQ7VLuw/ibsiHvL66skuVTwcDfIhZW3Ot5ZkKMMriMwnMYUwaqT+u
+	 p0CqMQdi0v8kg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hannes Reinecke <hare@suse.de>,
-	Christoph Hellwig <hch@lst.de>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
+Cc: Tobias Waldekranz <tobias@waldekranz.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	jejb@linux.ibm.com,
-	linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 25/68] scsi: libfc: Fix up timeout error in fc_fcp_rec_error()
-Date: Tue, 16 Jan 2024 14:53:24 -0500
-Message-ID: <20240116195511.255854-25-sashal@kernel.org>
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	robh@kernel.org,
+	u.kleine-koenig@pengutronix.de,
+	krzysztof.kozlowski@linaro.org,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 26/68] net: mvmdio: Avoid excessive sleeps in polled mode
+Date: Tue, 16 Jan 2024 14:53:25 -0500
+Message-ID: <20240116195511.255854-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116195511.255854-1-sashal@kernel.org>
 References: <20240116195511.255854-1-sashal@kernel.org>
@@ -67,35 +73,137 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.73
 Content-Transfer-Encoding: 8bit
 
-From: Hannes Reinecke <hare@suse.de>
+From: Tobias Waldekranz <tobias@waldekranz.com>
 
-[ Upstream commit 53122a49f49796beb2c4a1bb702303b66347e29f ]
+[ Upstream commit 7dd12fe34686d89c332b1a05104d18d728591f0a ]
 
-We should set the status to FC_TIMED_OUT when a timeout error is passed to
-fc_fcp_rec_error().
+Before this change, when operating in polled mode, i.e. no IRQ is
+available, every individual C45 access would be hit with a 150us sleep
+after the bus access.
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Link: https://lore.kernel.org/r/20231129165832.224100-3-hare@kernel.org
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+For example, on a board with a CN9130 SoC connected to an MV88X3310
+PHY, a single C45 read would take around 165us:
+
+    root@infix:~$ mdio f212a600.mdio-mii mmd 4:1 bench 0xc003
+    Performed 1000 reads in 165ms
+
+By replacing the long sleep with a tighter poll loop, we observe a 10x
+increase in bus throughput:
+
+    root@infix:~$ mdio f212a600.mdio-mii mmd 4:1 bench 0xc003
+    Performed 1000 reads in 15ms
+
+Signed-off-by: Tobias Waldekranz <tobias@waldekranz.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Tested-by: Andrew Lunn <andrew@lunn.ch>
+Link: https://lore.kernel.org/r/20231204100811.2708884-3-tobias@waldekranz.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/libfc/fc_fcp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/marvell/mvmdio.c | 53 ++++++++-------------------
+ 1 file changed, 16 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/scsi/libfc/fc_fcp.c b/drivers/scsi/libfc/fc_fcp.c
-index 3f189cedf6db..05be0810b5e3 100644
---- a/drivers/scsi/libfc/fc_fcp.c
-+++ b/drivers/scsi/libfc/fc_fcp.c
-@@ -1676,7 +1676,7 @@ static void fc_fcp_rec_error(struct fc_fcp_pkt *fsp, struct fc_frame *fp)
- 		if (fsp->recov_retry++ < FC_MAX_RECOV_RETRY)
- 			fc_fcp_rec(fsp);
- 		else
--			fc_fcp_recovery(fsp, FC_ERROR);
-+			fc_fcp_recovery(fsp, FC_TIMED_OUT);
- 		break;
+diff --git a/drivers/net/ethernet/marvell/mvmdio.c b/drivers/net/ethernet/marvell/mvmdio.c
+index ef878973b859..b4c576e79a95 100644
+--- a/drivers/net/ethernet/marvell/mvmdio.c
++++ b/drivers/net/ethernet/marvell/mvmdio.c
+@@ -23,6 +23,7 @@
+ #include <linux/delay.h>
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
++#include <linux/iopoll.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/of_device.h>
+@@ -58,11 +59,6 @@
+  * - Armada 370       (Globalscale Mirabox):   41us to 43us (Polled)
+  */
+ #define MVMDIO_SMI_TIMEOUT		1000 /* 1000us = 1ms */
+-#define MVMDIO_SMI_POLL_INTERVAL_MIN	45
+-#define MVMDIO_SMI_POLL_INTERVAL_MAX	55
+-
+-#define MVMDIO_XSMI_POLL_INTERVAL_MIN	150
+-#define MVMDIO_XSMI_POLL_INTERVAL_MAX	160
+ 
+ struct orion_mdio_dev {
+ 	void __iomem *regs;
+@@ -84,8 +80,6 @@ enum orion_mdio_bus_type {
+ 
+ struct orion_mdio_ops {
+ 	int (*is_done)(struct orion_mdio_dev *);
+-	unsigned int poll_interval_min;
+-	unsigned int poll_interval_max;
+ };
+ 
+ /* Wait for the SMI unit to be ready for another operation
+@@ -94,34 +88,23 @@ static int orion_mdio_wait_ready(const struct orion_mdio_ops *ops,
+ 				 struct mii_bus *bus)
+ {
+ 	struct orion_mdio_dev *dev = bus->priv;
+-	unsigned long timeout = usecs_to_jiffies(MVMDIO_SMI_TIMEOUT);
+-	unsigned long end = jiffies + timeout;
+-	int timedout = 0;
++	unsigned long timeout;
++	int done;
+ 
+-	while (1) {
+-	        if (ops->is_done(dev))
++	if (dev->err_interrupt <= 0) {
++		if (!read_poll_timeout_atomic(ops->is_done, done, done, 2,
++					      MVMDIO_SMI_TIMEOUT, false, dev))
++			return 0;
++	} else {
++		/* wait_event_timeout does not guarantee a delay of at
++		 * least one whole jiffie, so timeout must be no less
++		 * than two.
++		 */
++		timeout = max(usecs_to_jiffies(MVMDIO_SMI_TIMEOUT), 2);
++
++		if (wait_event_timeout(dev->smi_busy_wait,
++				       ops->is_done(dev), timeout))
+ 			return 0;
+-	        else if (timedout)
+-			break;
+-
+-	        if (dev->err_interrupt <= 0) {
+-			usleep_range(ops->poll_interval_min,
+-				     ops->poll_interval_max);
+-
+-			if (time_is_before_jiffies(end))
+-				++timedout;
+-	        } else {
+-			/* wait_event_timeout does not guarantee a delay of at
+-			 * least one whole jiffie, so timeout must be no less
+-			 * than two.
+-			 */
+-			if (timeout < 2)
+-				timeout = 2;
+-			wait_event_timeout(dev->smi_busy_wait,
+-				           ops->is_done(dev), timeout);
+-
+-			++timedout;
+-	        }
  	}
- 	fc_fcp_unlock_pkt(fsp);
+ 
+ 	dev_err(bus->parent, "Timeout: SMI busy for too long\n");
+@@ -135,8 +118,6 @@ static int orion_mdio_smi_is_done(struct orion_mdio_dev *dev)
+ 
+ static const struct orion_mdio_ops orion_mdio_smi_ops = {
+ 	.is_done = orion_mdio_smi_is_done,
+-	.poll_interval_min = MVMDIO_SMI_POLL_INTERVAL_MIN,
+-	.poll_interval_max = MVMDIO_SMI_POLL_INTERVAL_MAX,
+ };
+ 
+ static int orion_mdio_smi_read(struct mii_bus *bus, int mii_id,
+@@ -200,8 +181,6 @@ static int orion_mdio_xsmi_is_done(struct orion_mdio_dev *dev)
+ 
+ static const struct orion_mdio_ops orion_mdio_xsmi_ops = {
+ 	.is_done = orion_mdio_xsmi_is_done,
+-	.poll_interval_min = MVMDIO_XSMI_POLL_INTERVAL_MIN,
+-	.poll_interval_max = MVMDIO_XSMI_POLL_INTERVAL_MAX,
+ };
+ 
+ static int orion_mdio_xsmi_read(struct mii_bus *bus, int mii_id,
 -- 
 2.43.0
 
