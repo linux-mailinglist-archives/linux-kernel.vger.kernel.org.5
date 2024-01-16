@@ -1,127 +1,154 @@
-Return-Path: <linux-kernel+bounces-27253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9758382ECCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C1F582ECCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:33:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4517A2843D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:33:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 072E5284280
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:33:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80F9D11C81;
-	Tue, 16 Jan 2024 10:33:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A8F213FF1;
+	Tue, 16 Jan 2024 10:33:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZolPxPOB"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OUjj34+/";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Rs3CFGf2";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OUjj34+/";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Rs3CFGf2"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B75818AE1
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:33:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705401179;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28BF113AF1;
+	Tue, 16 Jan 2024 10:33:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1AE5F1FB92;
+	Tue, 16 Jan 2024 10:33:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705401181; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=O106YIfnVWdh4mXjGyHTWPZx6xc/H9v5ma5I9J/+uJM=;
-	b=ZolPxPOB6pb9jYj2IXYtfDIgWORSPPLYJHGLUMc10wTg9sKCxR+ovNWWq32MG+vJkEuoQX
-	D9KkzOO4jDxtsP509QMuFDA2i+2y/IJnbDcwjlXy2MRdcHsubVqnoPFP+j/0fa1nGrMEKf
-	tpErQgoRJa1k6Up/to6lsAtCOkCU47M=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-546-XdP2eLFSMGSQF7bSrVhHTQ-1; Tue, 16 Jan 2024 05:32:55 -0500
-X-MC-Unique: XdP2eLFSMGSQF7bSrVhHTQ-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a2b047e8f9fso397577966b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 02:32:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705401175; x=1706005975;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O106YIfnVWdh4mXjGyHTWPZx6xc/H9v5ma5I9J/+uJM=;
-        b=Ht94spSsq4AoxD2yEX8+jX1APjq7AYNUfVnSZtPwXywfvZZl4tdJPTzidZtuWBePku
-         bcGpCjjCOXj1Q52ugJ9MqrhVdJ0WCYPnVCFWqGJk3WO0fGLo4ovbSB/Vd2QCv/EadNPl
-         QcZ8Kt9pvQIXlRoG2rZ7WiYYG7YVXqPkb480JPYpQUauypjDNi9/bNNOylTB3TO3NrlK
-         joNCMtmPjKDUf8rckVLSZYPdYPE7W3veuAA41/UaYuGxUwX6/7CHk+dpaLGNzW2/JrMo
-         K5KCpQUwt4QRyRnEoUxImRFy83xcKIWkZLPrOSCRIMRWhfWgldb4dfRFOMnTebwX+et+
-         VNew==
-X-Gm-Message-State: AOJu0YwduhkMaVeq+sXVtBYl/7OdeWW8j6UGOHnddFuCXBlGRqJMtMNs
-	O+Y5UXhCMUO7wuNN8iaI8zJJBMijrVCb1fwCCOYODjSxN6S9ULvJI5QgYqCqpEDeM26it0JfYhD
-	cQTfBruyef+wps7Juv3PuqM6dGrhwTUlT
-X-Received: by 2002:a17:906:260d:b0:a2c:72e4:efb1 with SMTP id h13-20020a170906260d00b00a2c72e4efb1mr3089067ejc.139.1705401174821;
-        Tue, 16 Jan 2024 02:32:54 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHLMR2PGM/GnJ+fk71EEYuew5GIcCNmIWxwkHlhcYHIOkV8jJ0XKG9Ii13NlH3XjKpYJvZBlg==
-X-Received: by 2002:a17:906:260d:b0:a2c:72e4:efb1 with SMTP id h13-20020a170906260d00b00a2c72e4efb1mr3089062ejc.139.1705401174545;
-        Tue, 16 Jan 2024 02:32:54 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id kq10-20020a170906abca00b00a2e98f4c687sm76083ejb.164.2024.01.16.02.32.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jan 2024 02:32:54 -0800 (PST)
-Message-ID: <0b9b08a2-69c6-4068-a2cf-6aac1cc52387@redhat.com>
-Date: Tue, 16 Jan 2024 11:32:53 +0100
+	bh=+ZgzZ9FXGsbBFgaVLyt5/yEDusbRz3pgCLbcpy3ZbLs=;
+	b=OUjj34+/9ikg1e0fSg6vUsbeqxzJi3ThoKTp3H6C/moaXBnrArx0vUBKntGFVJG5OMEOvF
+	2r4Q6h2c0EFAdg+mwreycO7n3iQVdekPHxlpZHMBEwgwakYzgQto2W6gztIrjUELvZPIJt
+	pZeQ/t9R6zMsL5CUz6qsi33XWMrfU4c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705401181;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+ZgzZ9FXGsbBFgaVLyt5/yEDusbRz3pgCLbcpy3ZbLs=;
+	b=Rs3CFGf2Iecmqxto/0+HDwQV/Oc6jANKlu9ZIERBUJyiI+KuHFDDrTTHqv4kWT8EzRAQd1
+	VD+3NTFSYy+AwBAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705401181; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+ZgzZ9FXGsbBFgaVLyt5/yEDusbRz3pgCLbcpy3ZbLs=;
+	b=OUjj34+/9ikg1e0fSg6vUsbeqxzJi3ThoKTp3H6C/moaXBnrArx0vUBKntGFVJG5OMEOvF
+	2r4Q6h2c0EFAdg+mwreycO7n3iQVdekPHxlpZHMBEwgwakYzgQto2W6gztIrjUELvZPIJt
+	pZeQ/t9R6zMsL5CUz6qsi33XWMrfU4c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705401181;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+ZgzZ9FXGsbBFgaVLyt5/yEDusbRz3pgCLbcpy3ZbLs=;
+	b=Rs3CFGf2Iecmqxto/0+HDwQV/Oc6jANKlu9ZIERBUJyiI+KuHFDDrTTHqv4kWT8EzRAQd1
+	VD+3NTFSYy+AwBAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EE7B813751;
+	Tue, 16 Jan 2024 10:33:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id JBgrOlxbpmWCKAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 16 Jan 2024 10:33:00 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 77EB2A0803; Tue, 16 Jan 2024 11:33:00 +0100 (CET)
+Date: Tue, 16 Jan 2024 11:33:00 +0100
+From: Jan Kara <jack@suse.cz>
+To: syzbot <syzbot+10c6178a65acf04efe47@syzkaller.appspotmail.com>
+Cc: agruenba@redhat.com, axboe@kernel.dk, brauner@kernel.org,
+	cluster-devel@redhat.com, gfs2@lists.linux.dev, jack@suse.cz,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	rpeterso@redhat.com, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [gfs2?] BUG: sleeping function called from invalid
+ context in glock_hash_walk
+Message-ID: <20240116103300.bpv233hnhvfk3uvf@quack3>
+References: <00000000000057049306049e0525@google.com>
+ <000000000000fa7c3b060f07d0ab@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] MAINTAINERS: add Luke Jones as maintainer for asus
- notebooks
-Content-Language: en-US, nl
-To: "Luke D. Jones" <luke@ljones.dev>, linux-kernel@vger.kernel.org,
- "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>
-References: <20240115211829.48251-1-luke@ljones.dev>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240115211829.48251-1-luke@ljones.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000fa7c3b060f07d0ab@google.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [2.87 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.03)[56.67%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=ff0db7a15ba54ead];
+	 TAGGED_RCPT(0.00)[10c6178a65acf04efe47];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 SUBJECT_HAS_QUESTION(0.00)[]
+X-Spam-Level: **
+X-Spam-Score: 2.87
+X-Spam-Flag: NO
 
-Hi,
-
-On 1/15/24 22:18, Luke D. Jones wrote:
-> Add myself as maintainer for "ASUS NOTEBOOKS AND EEEPC ACPI/WMI EXTRAS
-> DRIVERS" as suggested by Hans de Goede based on my history of
-> contributions.
+On Mon 15-01-24 19:35:05, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
 > 
-> Signed-off-by: Luke D. Jones <luke@ljones.dev>
-
-Thank you for your patch/series, I've applied this patch
-(series) to my review-hans branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-
-Note it will show up in the pdx86 review-hans branch once I've
-pushed my local branch there, which might take a while.
-
-I will include this patch in my next fixes pull-req to Linus
-for the current kernel development cycle.
-
-Regards,
-
-Hans
-
-
-
-> ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
+> commit 6f861765464f43a71462d52026fbddfc858239a5
+> Author: Jan Kara <jack@suse.cz>
+> Date:   Wed Nov 1 17:43:10 2023 +0000
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index f5c2450fa4ec..e7843beaa589 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3147,6 +3147,7 @@ F:	drivers/hwmon/asus-ec-sensors.c
->  
->  ASUS NOTEBOOKS AND EEEPC ACPI/WMI EXTRAS DRIVERS
->  M:	Corentin Chary <corentin.chary@gmail.com>
-> +M:	Luke D. Jones <luke@lones.dev>
->  L:	acpi4asus-user@lists.sourceforge.net
->  L:	platform-driver-x86@vger.kernel.org
->  S:	Maintained
+>     fs: Block writes to mounted block devices
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=165bebf5e80000
+> start commit:   3f86ed6ec0b3 Merge tag 'arc-6.6-rc1' of git://git.kernel.o..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=ff0db7a15ba54ead
+> dashboard link: https://syzkaller.appspot.com/bug?extid=10c6178a65acf04efe47
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13e4ea14680000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13f76f10680000
+> 
+> If the result looks correct, please mark the issue as fixed by replying with:
+> 
 
+Makes sense.
+
+#syz fix: fs: Block writes to mounted block devices
+
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
