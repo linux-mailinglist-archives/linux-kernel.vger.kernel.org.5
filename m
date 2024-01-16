@@ -1,237 +1,187 @@
-Return-Path: <linux-kernel+bounces-27945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B44E682F82A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:39:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDA6882F74E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:19:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 580E4288DE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:39:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1B4A1C24994
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:19:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E191249ED;
-	Tue, 16 Jan 2024 19:50:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB2A53613C;
+	Tue, 16 Jan 2024 19:47:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JqxJhv+E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tHlGAQGr"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9212D12DD9C;
-	Tue, 16 Jan 2024 19:50:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A920F36119;
+	Tue, 16 Jan 2024 19:47:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434635; cv=none; b=miaw5ibRPTyfj9EWMq6JEAc0lITjC7P3McT75JZOFXjNxvo2pBSeWFvtfSNcTfwZjwkxK2rR/pqa1yJhLjEQivkIEiozaO01qIJ+ylg9ru1uuZYtRLVX5WkLZXsTI9nILixYWwgWp6s8znyNdSfYlGDyrIlerQ+ro8ttBThyH2g=
+	t=1705434434; cv=none; b=CGJ0GDRbT9WL2UtiPRthq4Xii94OERl7kd1Qb0uBdviERF8brmgcUUbtAwc8fFRrVB9jUIKHXB2dsHCHgfEzKivN4Mb6BQkrmCqWyr04qmQYI0Tpig4W5TKV+gx3Rpga/sM8Qw72yVxH/+3oecgpdeMFAS/busM0mhPH1anQMSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434635; c=relaxed/simple;
-	bh=+3tTSsaLyZPt2+7xRQvPBGaYxMMWah39GQsluElOnHg=;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
-	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=Z4B5Gq6wjplR1it2yzBh80j238toiQGAQ0zaWjMcMK6Tul48FgxYIOiUjvCxDUx+0qedggDDQkC0qyGAzcgso7L4X01QOu/eibUcu5l2yvvB2FfSX0UxbzDkad+GHesw+4eTf1lnY5jb6IaaLQQThC1F6MvM2O/gk33WApgtL0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JqxJhv+E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26D7DC43399;
-	Tue, 16 Jan 2024 19:50:34 +0000 (UTC)
+	s=arc-20240116; t=1705434434; c=relaxed/simple;
+	bh=L8KWqCV+F6kRLVRE9vKyR+AlpShZquRypPwqDG+IUPM=;
+	h=Received:DKIM-Signature:From:Date:Subject:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
+	 In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key;
+	b=BjxrJXXvOfjprA94HjGEnBXFTTlEA4LzWxw+xEP7icwnYjv2u6LvEBTZrsr9iL9OCLINnwf/2ct0Rj+dvEx3BKdzkVsOqL42PFU2NoRlNyks5S7TZU/7I13EEtwCqr4yksBKZRF37EmiHN6UiDq/XENGU6PFhgxQ5bEXBU90chs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tHlGAQGr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCD8CC433F1;
+	Tue, 16 Jan 2024 19:47:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434635;
-	bh=+3tTSsaLyZPt2+7xRQvPBGaYxMMWah39GQsluElOnHg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JqxJhv+Ej0sNH8irhX2UpWKAQdCddnktzo/Nyj6YLD0kXv7gLXvmxf+VWAHcam17+
-	 JpBMb1HAnftQaavFdPyjEInxIojFO9hvzgOXx2f+HSXsYeGdRc3HowIskXHnDVSpbn
-	 Q5NC8uY5JoKHdMw7SFdIl6MEgUtHpojbjk7msXpIY5ERB47/MhlZ+mqKP7Yt0JwZ7Y
-	 FiC8XBO2Fsq+++r0+FhBp9yhUUX6rZ6qfn4jnfAqSFifUr1EgAQlgJknB0GXeYHo9p
-	 1bDPDZsUozjB27Nf6XHUol+vMtJVFjDrx+iOrYx8L4hAUiTosqjg9U1m5AFj2JzPUn
-	 cjQfqQpAQtK2g==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Hou Tao <houtao1@huawei.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 037/104] bpf: Add map and need_defer parameters to .map_fd_put_ptr()
+	s=k20201202; t=1705434434;
+	bh=L8KWqCV+F6kRLVRE9vKyR+AlpShZquRypPwqDG+IUPM=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=tHlGAQGrdtJ1Sj0SUi5L5S89CQlL0SpIdzwZdxA6LL1v4X4qpvY8yfkHTLCDGvZ6B
+	 iQw0f1rVJuJMQVeb+rmA8w7NCI1hRrlzlMDU9AitgqnFebgxldWy+dVvzzDAq/Tm+6
+	 RtIpLlTNl+355Z7Uiyu3jOEv+5gGs0G3n8FOUB92TKxkpDK10G20h2BJwrgO7o5sDn
+	 NhszLst+TbXIn1affBO0arej+72uIINXLf6hlFHxL8KR3HkClwMJQJ39eDjH+LU3Qv
+	 QCpHYUurT888QMUqqK3lyW7KNFaTyWLktOijU87T08uSxo+0pMpuTi0LCNaoksrLxp
+	 H31zCSvGwjWEQ==
+From: Jeff Layton <jlayton@kernel.org>
 Date: Tue, 16 Jan 2024 14:46:03 -0500
-Message-ID: <20240116194908.253437-37-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240116194908.253437-1-sashal@kernel.org>
-References: <20240116194908.253437-1-sashal@kernel.org>
+Subject: [PATCH 07/20] filelock: make posix_same_owner take file_lock_core
+ pointers
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.12
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240116-flsplit-v1-7-c9d0f4370a5d@kernel.org>
+References: <20240116-flsplit-v1-0-c9d0f4370a5d@kernel.org>
+In-Reply-To: <20240116-flsplit-v1-0-c9d0f4370a5d@kernel.org>
+To: Christian Brauner <brauner@kernel.org>, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, 
+ Eric Van Hensbergen <ericvh@kernel.org>, 
+ Latchesar Ionkov <lucho@ionkov.net>, 
+ Dominique Martinet <asmadeus@codewreck.org>, 
+ Christian Schoenebeck <linux_oss@crudebyte.com>, 
+ David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
+ Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, 
+ Alexander Aring <aahringo@redhat.com>, David Teigland <teigland@redhat.com>, 
+ Miklos Szeredi <miklos@szeredi.hu>, 
+ Andreas Gruenbacher <agruenba@redhat.com>, 
+ Trond Myklebust <trond.myklebust@hammerspace.com>, 
+ Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
+ Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, 
+ Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
+ Jan Kara <jack@suse.cz>, Mark Fasheh <mark@fasheh.com>, 
+ Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
+ Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>, 
+ Ronnie Sahlberg <lsahlber@redhat.com>, 
+ Shyam Prasad N <sprasad@microsoft.com>, Namjae Jeon <linkinjeon@kernel.org>, 
+ Sergey Senozhatsky <senozhatsky@chromium.org>, 
+ Steven Rostedt <rostedt@goodmis.org>, 
+ Masami Hiramatsu <mhiramat@kernel.org>, 
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: linux-kernel@vger.kernel.org, v9fs@lists.linux.dev, 
+ linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org, 
+ gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
+ linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev, 
+ linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
+ linux-trace-kernel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2980; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=L8KWqCV+F6kRLVRE9vKyR+AlpShZquRypPwqDG+IUPM=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBlpt0hKHK+H6Wkmd5yy5pmBcEetzKB2FUGxYvp+
+ 5WYVbVWJ0+JAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZabdIQAKCRAADmhBGVaC
+ FfuDEAC1pXoqFjMnpCKnUAWdI7HObvstTJBvHYUMBv0MiYVuPTUFjyy5BpzewkqsX7tDPL/HeZv
+ 4lapZ+H2O5NFTp8NU2u5rNdf0G5TVcdxVMlTVbpi1uk52G26ChpIXgopPFS36u3ySx55EK/OotB
+ ZB7gOiGnE7ymo5ma/cv9NuY92Z8QUb2UqX9Wl8GRewVeZzDcUr9N9c6Btdaqr0AwVYx1yx+D7rT
+ WTG2NZ1jWAt+bKNgJmCOuGX++dbMf0MygG+DKr5kcYV+AhkKR6FF34WF5S84v2mbrPSAT3PBRJx
+ qpauTEIq0+ae7frYtnoZFGeeZuFjSUyHsEq9BYCJUtTDWiVtqYHBKgzbDScB34MnlmBKrmAV/WR
+ i/A2C63TP0hdSEaZAukKlsdIsSQuzhyLIjeikc4xxbVubS0RJkBJdQNm9qSNXGdjNTV+WJtbcxc
+ KVDkGSYC+X01uU18pCKbj1onAe0DjPzJg/Tf4yCuRjcCaG913ZF9mH5VMNnqcVzKc0hJqtFq/Pb
+ qlf2oi4fUYyGbKL4xjVAxz0Ysrj98g/Bpi+1P2jcFUfKXyzdmzTMqonkCP7ZlY1lKKp/oBCPp9U
+ 5ZJA97fX57PuqWUugyvEE04bash6Pjuzo52Ci4GAcOf4wZh2X4j8rlKdmVkpwhkTE2MqiS5yPsh
+ eyktM/o+0wCzteQ==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 
-From: Hou Tao <houtao1@huawei.com>
+Change posix_same_owner to take struct file_lock_core pointers, and
+convert the callers to pass those in.
 
-[ Upstream commit 20c20bd11a0702ce4dc9300c3da58acf551d9725 ]
-
-map is the pointer of outer map, and need_defer needs some explanation.
-need_defer tells the implementation to defer the reference release of
-the passed element and ensure that the element is still alive before
-the bpf program, which may manipulate it, exits.
-
-The following three cases will invoke map_fd_put_ptr() and different
-need_defer values will be passed to these callers:
-
-1) release the reference of the old element in the map during map update
-   or map deletion. The release must be deferred, otherwise the bpf
-   program may incur use-after-free problem, so need_defer needs to be
-   true.
-2) release the reference of the to-be-added element in the error path of
-   map update. The to-be-added element is not visible to any bpf
-   program, so it is OK to pass false for need_defer parameter.
-3) release the references of all elements in the map during map release.
-   Any bpf program which has access to the map must have been exited and
-   released, so need_defer=false will be OK.
-
-These two parameters will be used by the following patches to fix the
-potential use-after-free problem for map-in-map.
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Link: https://lore.kernel.org/r/20231204140425.1480317-3-houtao@huaweicloud.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- include/linux/bpf.h     |  6 +++++-
- kernel/bpf/arraymap.c   | 12 +++++++-----
- kernel/bpf/hashtab.c    |  6 +++---
- kernel/bpf/map_in_map.c |  2 +-
- kernel/bpf/map_in_map.h |  2 +-
- 5 files changed, 17 insertions(+), 11 deletions(-)
+ fs/locks.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 75e039081f92..4bed78e47347 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -106,7 +106,11 @@ struct bpf_map_ops {
- 	/* funcs called by prog_array and perf_event_array map */
- 	void *(*map_fd_get_ptr)(struct bpf_map *map, struct file *map_file,
- 				int fd);
--	void (*map_fd_put_ptr)(void *ptr);
-+	/* If need_defer is true, the implementation should guarantee that
-+	 * the to-be-put element is still alive before the bpf program, which
-+	 * may manipulate it, exists.
-+	 */
-+	void (*map_fd_put_ptr)(struct bpf_map *map, void *ptr, bool need_defer);
- 	int (*map_gen_lookup)(struct bpf_map *map, struct bpf_insn *insn_buf);
- 	u32 (*map_fd_sys_lookup_elem)(void *ptr);
- 	void (*map_seq_show_elem)(struct bpf_map *map, void *key,
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index c85ff9162a5c..9bfad7e96913 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -867,7 +867,7 @@ int bpf_fd_array_map_update_elem(struct bpf_map *map, struct file *map_file,
- 	}
+diff --git a/fs/locks.c b/fs/locks.c
+index e09920cc9da2..0c47497eb1a4 100644
+--- a/fs/locks.c
++++ b/fs/locks.c
+@@ -597,9 +597,9 @@ static inline int locks_overlap(struct file_lock *fl1, struct file_lock *fl2)
+ /*
+  * Check whether two locks have the same owner.
+  */
+-static int posix_same_owner(struct file_lock *fl1, struct file_lock *fl2)
++static int posix_same_owner(struct file_lock_core *fl1, struct file_lock_core *fl2)
+ {
+-	return fl1->fl_core.fl_owner == fl2->fl_core.fl_owner;
++	return fl1->fl_owner == fl2->fl_owner;
+ }
  
- 	if (old_ptr)
--		map->ops->map_fd_put_ptr(old_ptr);
-+		map->ops->map_fd_put_ptr(map, old_ptr, true);
+ /* Must be called with the flc_lock held! */
+@@ -864,7 +864,7 @@ static bool posix_locks_conflict(struct file_lock *caller_fl,
+ 	/* POSIX locks owned by the same process do not conflict with
+ 	 * each other.
+ 	 */
+-	if (posix_same_owner(caller_fl, sys_fl))
++	if (posix_same_owner(&caller_fl->fl_core, &sys_fl->fl_core))
+ 		return false;
+ 
+ 	/* Check whether they overlap */
+@@ -882,7 +882,7 @@ static bool posix_test_locks_conflict(struct file_lock *caller_fl,
+ {
+ 	/* F_UNLCK checks any locks on the same fd. */
+ 	if (caller_fl->fl_core.fl_type == F_UNLCK) {
+-		if (!posix_same_owner(caller_fl, sys_fl))
++		if (!posix_same_owner(&caller_fl->fl_core, &sys_fl->fl_core))
+ 			return false;
+ 		return locks_overlap(caller_fl, sys_fl);
+ 	}
+@@ -985,7 +985,7 @@ static struct file_lock *what_owner_is_waiting_for(struct file_lock *block_fl)
+ 	struct file_lock *fl;
+ 
+ 	hash_for_each_possible(blocked_hash, fl, fl_core.fl_link, posix_owner_key(block_fl)) {
+-		if (posix_same_owner(fl, block_fl)) {
++		if (posix_same_owner(&fl->fl_core, &block_fl->fl_core)) {
+ 			while (fl->fl_core.fl_blocker)
+ 				fl = fl->fl_core.fl_blocker;
+ 			return fl;
+@@ -1012,7 +1012,7 @@ static int posix_locks_deadlock(struct file_lock *caller_fl,
+ 	while ((block_fl = what_owner_is_waiting_for(block_fl))) {
+ 		if (i++ > MAX_DEADLK_ITERATIONS)
+ 			return 0;
+-		if (posix_same_owner(caller_fl, block_fl))
++		if (posix_same_owner(&caller_fl->fl_core, &block_fl->fl_core))
+ 			return 1;
+ 	}
  	return 0;
- }
+@@ -1185,13 +1185,13 @@ static int posix_lock_inode(struct inode *inode, struct file_lock *request,
  
-@@ -890,7 +890,7 @@ static long fd_array_map_delete_elem(struct bpf_map *map, void *key)
+ 	/* Find the first old lock with the same owner as the new lock */
+ 	list_for_each_entry(fl, &ctx->flc_posix, fl_core.fl_list) {
+-		if (posix_same_owner(request, fl))
++		if (posix_same_owner(&request->fl_core, &fl->fl_core))
+ 			break;
  	}
  
- 	if (old_ptr) {
--		map->ops->map_fd_put_ptr(old_ptr);
-+		map->ops->map_fd_put_ptr(map, old_ptr, true);
- 		return 0;
- 	} else {
- 		return -ENOENT;
-@@ -913,8 +913,9 @@ static void *prog_fd_array_get_ptr(struct bpf_map *map,
- 	return prog;
- }
+ 	/* Process locks with this owner. */
+ 	list_for_each_entry_safe_from(fl, tmp, &ctx->flc_posix, fl_core.fl_list) {
+-		if (!posix_same_owner(request, fl))
++		if (!posix_same_owner(&request->fl_core, &fl->fl_core))
+ 			break;
  
--static void prog_fd_array_put_ptr(void *ptr)
-+static void prog_fd_array_put_ptr(struct bpf_map *map, void *ptr, bool need_defer)
- {
-+	/* bpf_prog is freed after one RCU or tasks trace grace period */
- 	bpf_prog_put(ptr);
- }
- 
-@@ -1201,8 +1202,9 @@ static void *perf_event_fd_array_get_ptr(struct bpf_map *map,
- 	return ee;
- }
- 
--static void perf_event_fd_array_put_ptr(void *ptr)
-+static void perf_event_fd_array_put_ptr(struct bpf_map *map, void *ptr, bool need_defer)
- {
-+	/* bpf_perf_event is freed after one RCU grace period */
- 	bpf_event_entry_free_rcu(ptr);
- }
- 
-@@ -1256,7 +1258,7 @@ static void *cgroup_fd_array_get_ptr(struct bpf_map *map,
- 	return cgroup_get_from_fd(fd);
- }
- 
--static void cgroup_fd_array_put_ptr(void *ptr)
-+static void cgroup_fd_array_put_ptr(struct bpf_map *map, void *ptr, bool need_defer)
- {
- 	/* cgroup_put free cgrp after a rcu grace period */
- 	cgroup_put(ptr);
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index fd8d4b0addfc..5b9146fa825f 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -897,7 +897,7 @@ static void htab_put_fd_value(struct bpf_htab *htab, struct htab_elem *l)
- 
- 	if (map->ops->map_fd_put_ptr) {
- 		ptr = fd_htab_map_get_ptr(map, l);
--		map->ops->map_fd_put_ptr(ptr);
-+		map->ops->map_fd_put_ptr(map, ptr, true);
- 	}
- }
- 
-@@ -2484,7 +2484,7 @@ static void fd_htab_map_free(struct bpf_map *map)
- 		hlist_nulls_for_each_entry_safe(l, n, head, hash_node) {
- 			void *ptr = fd_htab_map_get_ptr(map, l);
- 
--			map->ops->map_fd_put_ptr(ptr);
-+			map->ops->map_fd_put_ptr(map, ptr, false);
- 		}
- 	}
- 
-@@ -2525,7 +2525,7 @@ int bpf_fd_htab_map_update_elem(struct bpf_map *map, struct file *map_file,
- 
- 	ret = htab_map_update_elem(map, key, &ptr, map_flags);
- 	if (ret)
--		map->ops->map_fd_put_ptr(ptr);
-+		map->ops->map_fd_put_ptr(map, ptr, false);
- 
- 	return ret;
- }
-diff --git a/kernel/bpf/map_in_map.c b/kernel/bpf/map_in_map.c
-index cd5eafaba97e..2dfeb5835e16 100644
---- a/kernel/bpf/map_in_map.c
-+++ b/kernel/bpf/map_in_map.c
-@@ -127,7 +127,7 @@ void *bpf_map_fd_get_ptr(struct bpf_map *map,
- 	return inner_map;
- }
- 
--void bpf_map_fd_put_ptr(void *ptr)
-+void bpf_map_fd_put_ptr(struct bpf_map *map, void *ptr, bool need_defer)
- {
- 	/* ptr->ops->map_free() has to go through one
- 	 * rcu grace period by itself.
-diff --git a/kernel/bpf/map_in_map.h b/kernel/bpf/map_in_map.h
-index bcb7534afb3c..7d61602354de 100644
---- a/kernel/bpf/map_in_map.h
-+++ b/kernel/bpf/map_in_map.h
-@@ -13,7 +13,7 @@ struct bpf_map *bpf_map_meta_alloc(int inner_map_ufd);
- void bpf_map_meta_free(struct bpf_map *map_meta);
- void *bpf_map_fd_get_ptr(struct bpf_map *map, struct file *map_file,
- 			 int ufd);
--void bpf_map_fd_put_ptr(void *ptr);
-+void bpf_map_fd_put_ptr(struct bpf_map *map, void *ptr, bool need_defer);
- u32 bpf_map_fd_sys_lookup_elem(void *ptr);
- 
- #endif
+ 		/* Detect adjacent or overlapping regions (if same lock type) */
+
 -- 
 2.43.0
 
