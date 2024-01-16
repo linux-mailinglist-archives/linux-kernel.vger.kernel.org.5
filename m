@@ -1,50 +1,49 @@
-Return-Path: <linux-kernel+bounces-26626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AF8982E44B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:13:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D13EF82E44D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:13:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80CED1F23057
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:13:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0F621C21A97
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:13:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBB9113AD9;
-	Tue, 16 Jan 2024 00:09:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE42B13ACD;
+	Tue, 16 Jan 2024 00:09:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WAFcaBw3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u3zy1S7F"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4572813ACD;
-	Tue, 16 Jan 2024 00:09:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5FBDC433C7;
-	Tue, 16 Jan 2024 00:09:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 323A013FE9;
+	Tue, 16 Jan 2024 00:09:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9980C43394;
+	Tue, 16 Jan 2024 00:09:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705363768;
-	bh=/f1Zgeu+hdFveqlt48/Hnif/Fd8kezIBjlnUsIjQvWc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WAFcaBw31YsPeII0nWsheQolNfoqbAx+VoGMxnbCSBk8MIVyXtoro6PoRsZuNQvlg
-	 sLMuwqcXvZoENnUHvPRagUcw0WsXgRJrr58hCdOG7GcA8a4JyCvEd6x9qTnKmkBRzx
-	 +1lkwyZ34ZGn4T37gwxBxyOHVex0WpCHg8CRXTHEITf+mYN3W9sPyg1Ba+kGH7YF5C
-	 8V1by1KPJH6CwddI16d2P78aOq2UltOIugOFHeIlDwoHdaVLJCpM8uyUmCHdDupaGi
-	 EiiFcPWXoiif9H/7hS/pZlSpTYhWjntLUI7SSKBaTcT9c9eWw0Rg9fqxCt1xz5wQnG
-	 2XONIVF/r/jxQ==
+	s=k20201202; t=1705363772;
+	bh=wUwrcFgdZKAw5vQdXsFRFC3WJb01sC1DeaFIPkJrp9Q=;
+	h=From:To:Cc:Subject:Date:From;
+	b=u3zy1S7FHcl+y2J5U19P2vjm1Dadc5BvZJsrsjqCBikaDT5bqAq0TWqtqtIwsErDy
+	 ZSQFUfTfEWp0yBTsDDvY0fCDyjKguolirOWiNOkrm6bi7ZEl5vsIXoECLVQj5JkaP1
+	 eeUJQ3PVpisfSla18Vvm+sPg+ru+LxhFQl6ztwXRy5tFGzzUNf2Vp7Q5LfASAOZeaU
+	 TCRz1qDpZHiD72VTmYYoht9rn3OXVpZ2M+kjRLbOM2W1z0e3V2APnVymOCsZCU+1VP
+	 VNnX8RmebhhQFuwAvq/MQQ0YfStmBJ0apZgmDVAJsfgaJuS7D8OmBgl2+KIkfN7EV8
+	 tkTjfARwKj7zA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Vincent Guittot <vincent.guittot@linaro.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Lukasz Luba <lukasz.luba@arm.com>,
+Cc: Greg KH <gregkh@linuxfoundation.org>,
+	Peter Zijlstra <peterz@infradead.org>,
 	Sasha Levin <sashal@kernel.org>,
-	rafael@kernel.org
-Subject: [PATCH AUTOSEL 6.6 6/6] energy_model: Use a fixed reference frequency
-Date: Mon, 15 Jan 2024 19:09:01 -0500
-Message-ID: <20240116000909.212520-6-sashal@kernel.org>
+	mingo@redhat.com,
+	acme@kernel.org,
+	linux-perf-users@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 1/2] perf/core: Fix narrow startup race when creating the perf nr_addr_filters sysfs file
+Date: Mon, 15 Jan 2024 19:09:28 -0500
+Message-ID: <20240116000929.212677-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240116000909.212520-1-sashal@kernel.org>
-References: <20240116000909.212520-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,64 +52,82 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.12
+X-stable-base: Linux 6.1.73
 Content-Transfer-Encoding: 8bit
 
-From: Vincent Guittot <vincent.guittot@linaro.org>
+From: Greg KH <gregkh@linuxfoundation.org>
 
-[ Upstream commit 15cbbd1d317e07b4e5c6aca5d4c5579539a82784 ]
+[ Upstream commit 652ffc2104ec1f69dd4a46313888c33527145ccf ]
 
-The last item of a performance domain is not always the performance point
-that has been used to compute CPU's capacity. This can lead to different
-target frequency compared with other part of the system like schedutil and
-would result in wrong energy estimation.
-
-A new arch_scale_freq_ref() is available to return a fixed and coherent
-frequency reference that can be used when computing the CPU's frequency
-for an level of utilization. Use this function to get this reference
-frequency.
-
-Energy model is never used without defining arch_scale_freq_ref() but
-can be compiled. Define a default arch_scale_freq_ref() returning 0
-in such case.
-
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Tested-by: Lukasz Luba <lukasz.luba@arm.com>
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-Link: https://lore.kernel.org/r/20231211104855.558096-5-vincent.guittot@linaro.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/2023061204-decal-flyable-6090@gregkh
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/energy_model.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/events/core.c | 40 ++++++++++++++++++++++++++++------------
+ 1 file changed, 28 insertions(+), 12 deletions(-)
 
-diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-index b9caa01dfac4..c19e7effe764 100644
---- a/include/linux/energy_model.h
-+++ b/include/linux/energy_model.h
-@@ -224,7 +224,7 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
- 				unsigned long max_util, unsigned long sum_util,
- 				unsigned long allowed_cpu_cap)
- {
--	unsigned long freq, scale_cpu;
-+	unsigned long freq, ref_freq, scale_cpu;
- 	struct em_perf_state *ps;
- 	int cpu;
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 8c7d2f4f5fba..1e4841ebc22e 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -11223,9 +11223,32 @@ static DEVICE_ATTR_RW(perf_event_mux_interval_ms);
+ static struct attribute *pmu_dev_attrs[] = {
+ 	&dev_attr_type.attr,
+ 	&dev_attr_perf_event_mux_interval_ms.attr,
++	&dev_attr_nr_addr_filters.attr,
++	NULL,
++};
++
++static umode_t pmu_dev_is_visible(struct kobject *kobj, struct attribute *a, int n)
++{
++	struct device *dev = kobj_to_dev(kobj);
++	struct pmu *pmu = dev_get_drvdata(dev);
++
++	if (!pmu->nr_addr_filters)
++		return 0;
++
++	return a->mode;
++
++	return 0;
++}
++
++static struct attribute_group pmu_dev_attr_group = {
++	.is_visible = pmu_dev_is_visible,
++	.attrs = pmu_dev_attrs,
++};
++
++static const struct attribute_group *pmu_dev_groups[] = {
++	&pmu_dev_attr_group,
+ 	NULL,
+ };
+-ATTRIBUTE_GROUPS(pmu_dev);
  
-@@ -241,11 +241,11 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
- 	 */
- 	cpu = cpumask_first(to_cpumask(pd->cpus));
- 	scale_cpu = arch_scale_cpu_capacity(cpu);
--	ps = &pd->table[pd->nr_perf_states - 1];
-+	ref_freq = arch_scale_freq_ref(cpu);
+ static int pmu_bus_running;
+ static struct bus_type pmu_bus = {
+@@ -11261,18 +11284,11 @@ static int pmu_dev_alloc(struct pmu *pmu)
+ 	if (ret)
+ 		goto free_dev;
  
- 	max_util = map_util_perf(max_util);
- 	max_util = min(max_util, allowed_cpu_cap);
--	freq = map_util_freq(max_util, ps->frequency, scale_cpu);
-+	freq = map_util_freq(max_util, ref_freq, scale_cpu);
+-	/* For PMUs with address filters, throw in an extra attribute: */
+-	if (pmu->nr_addr_filters)
+-		ret = device_create_file(pmu->dev, &dev_attr_nr_addr_filters);
+-
+-	if (ret)
+-		goto del_dev;
+-
+-	if (pmu->attr_update)
++	if (pmu->attr_update) {
+ 		ret = sysfs_update_groups(&pmu->dev->kobj, pmu->attr_update);
+-
+-	if (ret)
+-		goto del_dev;
++		if (ret)
++			goto del_dev;
++	}
  
- 	/*
- 	 * Find the lowest performance state of the Energy Model above the
+ out:
+ 	return ret;
 -- 
 2.43.0
 
