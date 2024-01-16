@@ -1,140 +1,118 @@
-Return-Path: <linux-kernel+bounces-27361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ABB882EEB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:06:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 396E182EEB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:08:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3E12B2342F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:06:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E70C1C20FD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:08:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3BDB1B972;
-	Tue, 16 Jan 2024 12:06:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CRHjUUnA"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D1F1B978;
+	Tue, 16 Jan 2024 12:08:32 +0000 (UTC)
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6CB1BC3A
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 12:06:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50e6ee8e911so11566979e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 04:06:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705406791; x=1706011591; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NGcpeohddZRzmLbURIeRjYDTQ//7aY759Xdu5YEODvQ=;
-        b=CRHjUUnAYDy6Ta9DIer6zWpsy4/Duw3/1z++TT9EtlsaCxE61RpASRcnVxei3FP7wU
-         erVpWr+TuJSQagYg+GpttJ+ew0PuiW0fNtS+ZU8AUdo8y9drMdY4KjPnnYbbpgmpgBo6
-         pMbBxdRTRaLRBDvCTsHQR0kVIbK9sGVZbCFrATtKE5/EJDpfn6/0X2/L7gC772TpwQID
-         ihmXv45ZT+MuVwvg+AvRIZfBSR5Lyqr6qQeYm7medJCjTfrThRdNdo3knxDwxiOtWMTh
-         Ys+963z5RarwW3dbY/ZCC9BoZ25wudrRw88lFFb8u7H17UilunQQ+aOzlP/CKnzU8GD5
-         +I1Q==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E445718EB4;
+	Tue, 16 Jan 2024 12:08:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59584f41f1eso841986eaf.1;
+        Tue, 16 Jan 2024 04:08:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705406791; x=1706011591;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NGcpeohddZRzmLbURIeRjYDTQ//7aY759Xdu5YEODvQ=;
-        b=bRAvRaBPbzMCPJ4mFWY1jquUqxN049NRrjUr16ZLHLLLPrj0GHQZMTPUzyA7micVxE
-         1OHNNSIxv4XEGjmT6oq9aVyEoQT6OJdU/Gh83bxNtrtXQeasdCL3hBNOfoOU8dS1Ha3B
-         7Ko7SBw9/g1SfHxC1Hk4OOElButYOdCf7E5vTCUX+jXOIP/yklTF3ba0I1RBtCyRFNUy
-         6mSVqiE1DIU2MccjpvjB8QbA5o04nczd43tJVdOOIUSvPES/XGzrLGDP+mYCelGkOX/d
-         hi7nRFN7tPZNcXC11RlUOQ1DYCMsFdl/ot6idAxhhuvjjIPsUq9koioD0qxwGQdAOXXP
-         D10w==
-X-Gm-Message-State: AOJu0YwUn0pg0IKDg3mmASsStmyxmvz155iv7CPE5SZQyKuN4Ek2xIkq
-	ouWooGFQQ05I9k/eZuiA3Q93J4e+yLdPAg==
-X-Google-Smtp-Source: AGHT+IGkerh401LRgXbq3n5vsV1wjQJWRCpuqXgZnkRfmdSgQpCrtm4NTaKEm0hTZom0CM9kmklmLA==
-X-Received: by 2002:a05:6512:2355:b0:50e:75a3:5804 with SMTP id p21-20020a056512235500b0050e75a35804mr4214271lfu.14.1705406791349;
-        Tue, 16 Jan 2024 04:06:31 -0800 (PST)
-Received: from [172.30.204.234] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id c16-20020a056512105000b0050eb1fd820esm1734329lfb.258.2024.01.16.04.06.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jan 2024 04:06:30 -0800 (PST)
-Message-ID: <20a8efd1-e243-434e-8f75-aa786ac8014f@linaro.org>
-Date: Tue, 16 Jan 2024 13:06:26 +0100
+        d=1e100.net; s=20230601; t=1705406910; x=1706011710;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QruqD5hduNzd94C2ksyeMaDZDm2JrVFVFdIyp5RJ9mA=;
+        b=aadhuc08Phl1P5W463JVPcrmN5d7q6l86Fs2Ieb1+3zHjysfEZY5jB/blALE5ONQe5
+         Ux+LshrUFRhlh19ePDjfLPZhgWGbsvxr/FoNd2EaGkEgt4pOKijdrGLQIkKYrK4w2We+
+         fQFEn8vO0WxBcVMEjn0RrfQMsEKg+K8+I51sYpG/NLWHUSKaBlmSb7gy5ldpzdWK3pO/
+         ew8c3lDO5u1ZF4Hnm/+HR0EmPU+jVgQgcBH0d6gmvY8jNVbO7NG5f8bmMMq6K0j66MET
+         d9sKPLA3sBfdowLuLsEBaKAHRjPG1sw8hdt/VGjsst3FXEcGjdUyjbepB4PUbKFGBtvY
+         QoBA==
+X-Gm-Message-State: AOJu0Yz5ffXF7vPG9aovcHhxsudvacUuwVk5HSKz4uE/n2CcniNxP/1g
+	ZVLn5BHpegExuqkVYuDlLb2o/vWgx1X6u+P1V0X7aJp6ZE8=
+X-Google-Smtp-Source: AGHT+IG7B6OBei7Cxtss92swB49Fb3UqDmPcZzPvNLER8i15WI81CmWn6VjN3hUbvwo0bSprnAYyvOEXDeFCZbufId4=
+X-Received: by 2002:a4a:d68a:0:b0:598:e013:676d with SMTP id
+ i10-20020a4ad68a000000b00598e013676dmr6073596oot.0.1705406909850; Tue, 16 Jan
+ 2024 04:08:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: qcm6490-idp: add display and panel
-Content-Language: en-US
-To: Ritesh Kumar <quic_riteshk@quicinc.com>, andersson@kernel.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- catalin.marinas@arm.com, will@kernel.org, quic_bjorande@quicinc.com,
- geert+renesas@glider.be, arnd@arndb.de, neil.armstrong@linaro.org,
- dmitry.baryshkov@linaro.org, nfraprado@collabora.com,
- m.szyprowski@samsung.com
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- quic_abhinavk@quicinc.com, quic_rajeevny@quicinc.com,
- quic_vproddut@quicinc.com
-References: <20240116094935.9988-1-quic_riteshk@quicinc.com>
- <20240116094935.9988-3-quic_riteshk@quicinc.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240116094935.9988-3-quic_riteshk@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 16 Jan 2024 13:08:18 +0100
+Message-ID: <CAJZ5v0hSZRrS7+aeqCJek5APiObgo3BW04cS0Circreb0JpJTA@mail.gmail.com>
+Subject: [GIT PULL] More power management updates for v6.8-rc1
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Linux PM <linux-pm@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+
+Hi Linus,
+
+Please pull from the tag
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pm-6.8-rc1-2
+
+with top-most commit 9223614ea760a77873c7061875cb91963e6f79b7
+
+ Merge branches 'pm-sleep', 'pm-cpufreq' and 'pm-qos' into pm
+
+on top of commit 7da71072e1d6967c0482abcbb5991ffb5953fdf2
+
+ Merge tag 'pm-6.8-rc1' of
+git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
+
+to receive more power management updates for 6.8-rc1.
+
+These restore the asynchronous device resume optimization removed by the
+previous PM merge, make the intel_pstate driver work better on Meteor
+Lake systems, optimize the PM QoS core code slightly and fix up typos
+in admin-guide.
+
+Specifics:
+
+ - Restore the system-wide asynchronous device resume optimization
+   removed by a recent concurrency fix (Rafael J. Wysocki).
+
+ - Make the intel_pstate cpufreq driver allow Meteor Lake systems to run
+   at somewhat higher frequencies (Srinivas Pandruvada).
+
+ - Make the PM QoS core code use kcalloc() for array allocation (Erick
+   Archer).
+
+ - Fix two PM-related typos in admin-guide (Erwan Velu).
+
+Thanks!
 
 
+---------------
 
-On 1/16/24 10:49, Ritesh Kumar wrote:
-> Enable Display Subsystem with Novatek NT36672E Panel
-> on qcm6490 idp platform.
-> 
-> Signed-off-by: Ritesh Kumar <quic_riteshk@quicinc.com>
-> ---
->   arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 100 +++++++++++++++++++++++
->   1 file changed, 100 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> index 2a6e4907c5ee..efa5252130a1 100644
-> --- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> +++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> @@ -9,6 +9,7 @@
->   #define PM7250B_SID 8
->   #define PM7250B_SID1 9
->   
-> +#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
->   #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
->   #include "sc7280.dtsi"
->   #include "pm7250b.dtsi"
-> @@ -38,6 +39,25 @@
->   		stdout-path = "serial0:115200n8";
->   	};
->   
-> +	lcd_disp_bias: lcd-disp-bias-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "lcd_disp_bias";
-> +		regulator-min-microvolt = <5500000>;
-> +		regulator-max-microvolt = <5500000>;
-> +		gpio = <&pm7250b_gpios 2 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&lcd_disp_bias_en>;
+Erick Archer (1):
+      PM: QoS: Use kcalloc() instead of kzalloc()
 
-property-n
-property-names
+Erwan Velu (1):
+      Documentation: admin-guide: PM: Fix two typos
 
-all throughout the patch
+Rafael J. Wysocki (1):
+      PM: sleep: Restore asynchronous device resume optimization
 
-> +&gpu {
-> +	status = "disabled";
-> +};
+Srinivas Pandruvada (1):
+      cpufreq: intel_pstate: Update hybrid scaling factor for Meteor Lake
 
-Hm.. generally we disable the GPU in the SoC DT, but that doesn't
-seem to have happened here..
+---------------
 
-Thinking about it more, is disabling it here necessary? Does it
-not fail gracefully?
-
-Konrad
+ Documentation/admin-guide/acpi/cppc_sysfs.rst |   2 +-
+ Documentation/admin-guide/pm/amd-pstate.rst   |   2 +-
+ drivers/base/power/main.c                     | 117 ++++++++++++++------------
+ drivers/base/power/qos.c                      |   2 +-
+ drivers/cpufreq/intel_pstate.c                |  21 ++++-
+ include/linux/pm.h                            |   1 +
+ 6 files changed, 86 insertions(+), 59 deletions(-)
 
