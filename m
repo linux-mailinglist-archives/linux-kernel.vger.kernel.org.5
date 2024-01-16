@@ -1,131 +1,132 @@
-Return-Path: <linux-kernel+bounces-27295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D76EA82ED73
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:12:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A6B682ED76
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:12:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 813702856A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:12:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1873E284B5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:12:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CD521B810;
-	Tue, 16 Jan 2024 11:11:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA12A1B95E;
+	Tue, 16 Jan 2024 11:11:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="zx9q7ofI"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FGLyEaeL"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C24F1B7EE;
-	Tue, 16 Jan 2024 11:11:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kZz/E4VEeHZbG9TPn7CJdoAE69Fjm46YdKMQkR88YoEJ9pPoU3owQ9/uXHKVAFwZpgMcE67DJew88x0926d9vJ/yE71n2k+zoja9h1+By5XQlJElf+A4LXNYdCTCE6s/riJ30DKnd1NaKotXoWTLn15bLtNZc7rMSpq91s7vwgnpCzfmj/fU86s4TFj/BT5MhHYUBY5YBz7eSEhq1XWus8royQbNc2kqxgar9ifxntQWsS5e4Jk6TdrJ8gj+AcZeaPwJdwB7KNXpHYoz3ng8bXGKZ4fpBMJkrASr7bJgwiV68Q8jcGREQow9/WLp5P+tpqTDiIU1szm33hxtqUYK/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VEfBxmXsN5GatCFvkL1HJC7vi7MsLypWqGC2uW9DQms=;
- b=PCIDpvdZ20Uk0P3MQoozitMZfuhG+3hUELptPjWx6AdiQNzqewRIHf2raJG4Q7akTCvzNJ2/QAi2tP50DLe7x/bWC577FYhqkhfaVz6HCMDKtAORa7QOh1X9dOjkiKYI2/uCyesA07XiZE0pa2RKreCxxTV3MIUYqfqwIu7IiGSLNkWf3pUGNaOnE9/Gzk4A0FzxDtqag3KJowjOa0cAd2R1MUdvC/eQpi2ZX6wEDhOu+23BmVkPU9hawgWSPdioCe7/zJSQphR+HkbDMj/OLoQqN+uKsS76V6kRbf4z71A89EAsJybu+1X1GHgwuBuc9qcWdX0Eou874D43cm1Itg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=arndb.de smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VEfBxmXsN5GatCFvkL1HJC7vi7MsLypWqGC2uW9DQms=;
- b=zx9q7ofIDtBXeo1lMiiNPuMHL7iOAyGj87g376iR/voYp3o2hPzghKKxc6T3ZR16309PdSkQ/OSKa8ee6UnegOFwDrxEdp+rTX9HwW5P2M2yKehOatW/xTL2F5fr2vNrMDC45utaOqQEyxaaszWoKUKlP2c44HDWeOp6u1cvrfk=
-Received: from BY3PR04CA0025.namprd04.prod.outlook.com (2603:10b6:a03:217::30)
- by DS7PR12MB8418.namprd12.prod.outlook.com (2603:10b6:8:e9::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.21; Tue, 16 Jan
- 2024 11:11:46 +0000
-Received: from SJ5PEPF000001D4.namprd05.prod.outlook.com
- (2603:10b6:a03:217:cafe::3c) by BY3PR04CA0025.outlook.office365.com
- (2603:10b6:a03:217::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.23 via Frontend
- Transport; Tue, 16 Jan 2024 11:11:45 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- SJ5PEPF000001D4.mail.protection.outlook.com (10.167.242.56) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7202.16 via Frontend Transport; Tue, 16 Jan 2024 11:11:45 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 16 Jan
- 2024 05:11:43 -0600
-Received: from xirdraganc40.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Tue, 16 Jan 2024 05:11:42 -0600
-From: Dragan Cvetic <dragan.cvetic@amd.com>
-To: <arnd@arndb.de>, <gregkh@linuxfoundation.org>, <michal.simek@xilinx.com>,
-	<linux-arm-kernel@lists.infradead.org>, <robh+dt@kernel.org>,
-	<mark.rutland@arm.com>, <devicetree@vger.kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <git@amd.com>
-Subject: [PATCH 2/2] MAINTAINERS: Update sd-fec documentation file from txt to yaml
-Date: Tue, 16 Jan 2024 11:11:35 +0000
-Message-ID: <20240116111135.3059-3-dragan.cvetic@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240116111135.3059-1-dragan.cvetic@amd.com>
-References: <20240116111135.3059-1-dragan.cvetic@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C6121B7F2
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 11:11:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40e857ce803so3748015e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 03:11:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705403508; x=1706008308; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=D3/2mxTMu2HoI1Jv/k7hB7V1HLoXtW33tUIuUh5/szw=;
+        b=FGLyEaeLFttqdgGh6OR8zpWpP697XAPgOkl995PZcG6mj4JWvvKZZLSpJbJdQGlI33
+         xh14QvxqsyOSguzWp6Cv5hs05q7nLfdVHdBneyNLAqge3d3QvPRPmtllRiXnNBhN3dyq
+         Rf5sb/uZNFsqSIvjr4nf6pKqIZF/xX6uhUMi26z2m0EU5N+ognkdyTYy6VfN5dhC7/bP
+         qe6ilYAnmThY/TQiY2JuZMj/fhQmvEDYFJWGl9kuGMBSH2FeDBL9r/SjmyY7LbB2TaQO
+         RUIE0mHOb9mokhCN56dEc/hkEFgS4Acr6sLKR6R0x6uJ/EoFclPJRJa6uh+3edkmnDgc
+         Q3nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705403508; x=1706008308;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=D3/2mxTMu2HoI1Jv/k7hB7V1HLoXtW33tUIuUh5/szw=;
+        b=mLFPgu0RrgJCF61Z7IZCL0ueHWi2mmvEp2CYKaNrc9WdWHVMw4svOtAzyMCv7B3+/U
+         7NbUDNmaQqvh4Ud3C+PuXMj/BlDXiLEp8QB84J2PMFT57ukey/sgIMmUdmBh+1M/bOsL
+         B0eXiIzTkuPitfdATK77Tj+p/L2SqVAEo0ucREFw2HXfShY5O1QdV/6jVIHw0EkEuJnW
+         6NcihorA/ghGa457ezR3zfyYv/l75ZFhdIpfMrPIXLjCdGPZ41hsz93YUDvc4tD0BosZ
+         Tc5knLPO1cQEkGte64dEixsNJlcy2sG5PCRyi11sdMfJ8YtX4mJLkACV+Z9zF6p6kLYk
+         HarA==
+X-Gm-Message-State: AOJu0Ywi1FXB6B3TuL6mguC+BrqFthx9WXO+mrhG43SJAHhoRBI2kPzi
+	1eFHcBxCNEigGfkt3d+++XKzgsZBF4FOWQ==
+X-Google-Smtp-Source: AGHT+IEvcX7jOOP20mKvB6k51ceMA1wWTsYpVIS9UashjuFwSv4C1JzPa/zSeg1loQ2qcxWtv1b5Gg==
+X-Received: by 2002:a05:600c:4451:b0:40e:71e3:139d with SMTP id v17-20020a05600c445100b0040e71e3139dmr2071966wmn.154.1705403508583;
+        Tue, 16 Jan 2024 03:11:48 -0800 (PST)
+Received: from [192.168.1.195] ([5.133.47.210])
+        by smtp.googlemail.com with ESMTPSA id iw7-20020a05600c54c700b0040d604dea3bsm18593723wmb.4.2024.01.16.03.11.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jan 2024 03:11:48 -0800 (PST)
+Message-ID: <1cc50979-741b-4341-9e9e-2fdee1dd2e65@linaro.org>
+Date: Tue, 16 Jan 2024 11:11:47 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ5PEPF000001D4:EE_|DS7PR12MB8418:EE_
-X-MS-Office365-Filtering-Correlation-Id: 995a9ce5-f17c-4683-7c53-08dc1683ed5b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	G2672sKydKkgAxjj3S2ZXct/h4GHaYxV0qLdA4cSrJjyI5y2Wo6LWPb3SRyj8ZBSSxsMI8FJuJMrm/RVwhJ9zVpjYY+/cd4UMXHXmgsE7jOMfrqbB6+V6xTZ5AASSiGZY7jLpzuAb5KwbUK3Ixqn4gSXVZexipBirYk0mF9oH8mqXLdIcivyNL4C3Imzx9yegEsToPRjiorctiFkS7tq+ReC2bEZoY+q8bpIRe+wVXt1WFOFlgcvuI9lAWUj3m8sPfLPX3SVX66JEDl7fl9rlnmVX3XjJUEs45RQw1NOsberctJ+yqSuGKB6eULLKjORgCkSv/igTHVZJlA2Wb0ZKr0EZ1tIFnyF75TQXXK6yNW8mW9bvdn0XG9Drc/dqFEq1oZdhmZ0rS+YAJEhkk7PSTtq7trwnzAtWkK9wwqUuhdVBn0KZvfK8Xs75Hfcdx5KNxSSCsRBOL4EBZJI8Bsrol6t6W/PGP075aUA486OfQcnAoTpFezTE0kIOaiaZ1wJb3eg2vfQ+Xhz1C1HnofCRNqIDVuUtz38itrpGDBsZGtR6YNF3S9ZqjxA7xZPqwBphgrJQj96JZFeHRkCORuNiJEm9ZPsKI6AbrGKQrHf0VDfRhReT3lwZdkXCRMyjIkOS1fYNCfAKYKqbr487WyECD+t1+1KxLG1s76sJmU1R2YIwJ5K7R6FOf67PjKNnkg3Sg2VEtYwL3NTb08I1DAWNcYGr2sH5Qmp+W93OqR3r4iqB1gvyzWq4oj7TnPwkSDTw1f4Ewei1ILN47hVM6oXww==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(136003)(346002)(39860400002)(230922051799003)(451199024)(82310400011)(64100799003)(186009)(1800799012)(46966006)(40470700004)(36840700001)(2616005)(426003)(6666004)(36756003)(478600001)(47076005)(36860700001)(41300700001)(26005)(336012)(1076003)(83380400001)(40460700003)(40480700001)(5660300002)(110136005)(70586007)(2906002)(70206006)(44832011)(8936002)(4744005)(15650500001)(356005)(54906003)(4326008)(8676002)(81166007)(316002)(86362001)(82740400003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2024 11:11:45.7240
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 995a9ce5-f17c-4683-7c53-08dc1683ed5b
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SJ5PEPF000001D4.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8418
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/7] ASoC: qcom: sc8280xp: limit speaker volumes
+Content-Language: en-US
+To: Johan Hovold <johan+linaro@kernel.org>, Mark Brown <broonie@kernel.org>
+Cc: Banajit Goswami <bgoswami@quicinc.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+References: <20240116093903.19403-1-johan+linaro@kernel.org>
+ <20240116093903.19403-2-johan+linaro@kernel.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20240116093903.19403-2-johan+linaro@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The documentation for sd-fec bindings is now YAML, so update the
-MAINTAINERS file.
 
-Signed-off-by: Dragan Cvetic <dragan.cvetic@amd.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 35147477e8e4..37754901119d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -23942,7 +23942,7 @@ XILINX SD-FEC IP CORES
- M:	Derek Kiernan <derek.kiernan@amd.com>
- M:	Dragan Cvetic <dragan.cvetic@amd.com>
- S:	Maintained
--F:	Documentation/devicetree/bindings/misc/xlnx,sd-fec.txt
-+F:	Documentation/devicetree/bindings/misc/xlnx,sd-fec.yaml
- F:	Documentation/misc-devices/xilinx_sdfec.rst
- F:	drivers/misc/Kconfig
- F:	drivers/misc/Makefile
--- 
-2.17.1
+On 16/01/2024 09:38, Johan Hovold wrote:
+> The current UCM configuration sets the speaker PA volume to 15 dB when
+> enabling the speakers but this does not prevent the user from increasing
+> the volume further.
+> 
+> Limit the PA volume to 15 dB in the machine driver to reduce the risk of
+> speaker damage until we have active speaker protection in place.
+> 
+> Note that this will probably need to be generalised using
+> machine-specific limits, but a common limit should do for now.
+> 
+> Cc: stable@vger.kernel.org	# 6.5
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 
+LGTM, We can get rid of this limit once we have Speaker protection inplace.
+
+
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
+--srini
+
+> ---
+>   sound/soc/qcom/sc8280xp.c | 8 +++++---
+>   1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/qcom/sc8280xp.c b/sound/soc/qcom/sc8280xp.c
+> index ed4bb551bfbb..aa43903421f5 100644
+> --- a/sound/soc/qcom/sc8280xp.c
+> +++ b/sound/soc/qcom/sc8280xp.c
+> @@ -32,12 +32,14 @@ static int sc8280xp_snd_init(struct snd_soc_pcm_runtime *rtd)
+>   	case WSA_CODEC_DMA_RX_0:
+>   	case WSA_CODEC_DMA_RX_1:
+>   		/*
+> -		 * set limit of 0dB on Digital Volume for Speakers,
+> -		 * this can prevent damage of speakers to some extent without
+> -		 * active speaker protection
+> +		 * Set limit of 0 dB on Digital Volume and 15 dB on PA Volume
+> +		 * to reduce the risk of speaker damage until we have active
+> +		 * speaker protection in place.
+>   		 */
+>   		snd_soc_limit_volume(card, "WSA_RX0 Digital Volume", 84);
+>   		snd_soc_limit_volume(card, "WSA_RX1 Digital Volume", 84);
+> +		snd_soc_limit_volume(card, "SpkrLeft PA Volume", 12);
+> +		snd_soc_limit_volume(card, "SpkrRight PA Volume", 12);
+>   		break;
+>   	default:
+>   		break;
 
