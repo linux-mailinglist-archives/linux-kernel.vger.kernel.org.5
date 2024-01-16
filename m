@@ -1,85 +1,75 @@
-Return-Path: <linux-kernel+bounces-27480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8352682F0D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:49:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16FA382F0D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:51:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3369928600B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:49:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 307C8B22405
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:51:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BD691BF3B;
-	Tue, 16 Jan 2024 14:49:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NqTc2wzK"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EE861BF35;
+	Tue, 16 Jan 2024 14:51:07 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FEEB1BF2C;
-	Tue, 16 Jan 2024 14:49:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a2a17f3217aso1091292166b.2;
-        Tue, 16 Jan 2024 06:49:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705416548; x=1706021348; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y02z/tmpib1XgZeXA6m85lQ1dUIeX8FSLuICjkJTAVU=;
-        b=NqTc2wzK9kx9nHJQ3yLwoyRBJzhDkvJJ8Se5BdGbEdMtmEU+UxiHAYIMAZkoSEHgHr
-         mHF/v2E7e8YgzyIqlkjSq24VfzSKqMhrk6nKkc1SOlpUiBZljbx5FnnQFtDWk5jLLvSD
-         +R7c+ESFSbu+dNcJIuB6akoj2NL2ljrMerdEVNeJpl7QLyXpSRnJxXpu4esfYFIyJCrw
-         JQqrTF9UbdEjf9ins9MYBIEtiR01rIaJkZt1eW45568dn8YaZtMtbMhd3oT2xXzuCBrk
-         IjlfLZZdOB0den01quuqgSxVCYpjWX4/oIWcgRcoCSDbNuleZpvliO5dWXj0alUoI8Nw
-         ojaQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 591861BF30
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 14:51:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7bf2a5cd631so405525539f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 06:51:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705416548; x=1706021348;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y02z/tmpib1XgZeXA6m85lQ1dUIeX8FSLuICjkJTAVU=;
-        b=xPWZlxDiKy2LcNc6bvn2wUss3Rn1AhamkY9eRUDxu1dBp/U8i0t5AAMC0HaZ0XzI3o
-         F4OdZkwvhSAwhmaAi6MP44v8A/BwLbSdSiKyrEu6S/++XfZYcWpGPtgLASUpayzKn4Eo
-         ABRQLPDSrMvis+emZFazat/MBFpQG1g9gn04eGMdA/eP+jOSNQVhmv4HPWMEF8zDGtsv
-         gveaGItww6vevgz3ZcFmhu6v+bwSxocMkMUteYl/xErAXOu4tq9RoI1v4ivuGkAP7M4u
-         DEKvzZwsHPbS89W2/ASWYBRJ32PCrR0TUREyOvlrUWPd86c93p9Ilj6jj1P3xobXSKzI
-         15ZA==
-X-Gm-Message-State: AOJu0YxarN4RbyaGZAXOYjPXWRW7A6H8YzPZfAyC482OPFo0/A4y4JIg
-	wP13f9/PsKEFEnPi7tBINbo=
-X-Google-Smtp-Source: AGHT+IGC8kIEOXqFqmsUSyhC7Aw8MEjmqXQzeERthvTZRJpSk14GnNKa9UPeMaCllcrNpRJlFaH/Hw==
-X-Received: by 2002:a17:907:1b08:b0:a2c:baae:ce1e with SMTP id mp8-20020a1709071b0800b00a2cbaaece1emr4365126ejc.54.1705416548226;
-        Tue, 16 Jan 2024 06:49:08 -0800 (PST)
-Received: from skbuf ([188.25.255.36])
-        by smtp.gmail.com with ESMTPSA id tl7-20020a170907c30700b00a2de58581f6sm2273770ejc.74.2024.01.16.06.49.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 06:49:07 -0800 (PST)
-Date: Tue, 16 Jan 2024 16:49:05 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: syzbot <syzbot+d81bcd883824180500c8@syzkaller.appspotmail.com>
-Cc: andrew@lunn.ch, davem@davemloft.net, dsahern@kernel.org,
-	edumazet@google.com, f.fainelli@gmail.com, kuba@kernel.org,
-	linux-kernel@vger.kernel.org, lixiaoyan@google.com,
-	netdev@vger.kernel.org, pabeni@redhat.com,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [net?] KASAN: slab-out-of-bounds Read in
- dsa_user_changeupper
-Message-ID: <20240116144905.3otl4j3i3xjgzogo@skbuf>
-References: <0000000000001d4255060e87545c@google.com>
+        d=1e100.net; s=20230601; t=1705416664; x=1706021464;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=d3nfj2QnO5thAqpj9k1US67cffhxYSl12LmfTRkOHtE=;
+        b=qFvk9NiS3KHAXoaL/Hmf+EqJY7kP4OOfqiENMBIlmWLat/VYzMn39sMG7QgD9Glw5c
+         8epFEk2w/dJwurEtHArkq2mPjeu9TuV7W7kY5UbPauXS2o8NZBLm9G/+VFf9I6nkxnOg
+         vEsDTiboB6BXYMXHCAr3xnSw78Cdzjc5hVo5ftjH0f9SHCFdH3pmwzcnohmBfPW+zu2A
+         tjZrcV0ElXc8/HXtdoGMhnzxspXJqkTJs5YrEs4ZDV5GKUtLAUiFOCO+6gZQ1Y5uz9HJ
+         evgZgKNK8lQ/916rHAVGM3IGgH4TWFer48KLLDPIi1BCRo7VBjjXjqeUH+lM+mC9MKs1
+         iSSQ==
+X-Gm-Message-State: AOJu0Yys2Z20++I7uEGeM+htczkU8lc1iNr6YqApYvWp7PFQPTYn2odq
+	N74ypxdjjQZ2TLdt9TVSBT0FVIE6e7K3xzrAfXDVxuSQz+Vl
+X-Google-Smtp-Source: AGHT+IHvRAEZVWhekiBIfafZS4y+aPybq3Jd5Q2FI8PE3sxGY+J2T2vUouEz97EmoC40rzmAZqSsztuu7ivQy7WJqsVfVxzCZYFH
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000001d4255060e87545c@google.com>
+X-Received: by 2002:a05:6e02:164c:b0:360:7783:b60 with SMTP id
+ v12-20020a056e02164c00b0036077830b60mr1089212ilu.6.1705416664513; Tue, 16 Jan
+ 2024 06:51:04 -0800 (PST)
+Date: Tue, 16 Jan 2024 06:51:04 -0800
+In-Reply-To: <tencent_CBECC6CDB07A5A6C182C156DAC9490EB160A@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007b82a3060f114263@google.com>
+Subject: Re: [syzbot] [net?] KASAN: slab-out-of-bounds Read in dsa_user_prechangeupper
+From: syzbot <syzbot+7ec955e36bb239bd720f@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Jan 09, 2024 at 10:17:34AM -0800, syzbot wrote:
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
+Hello,
 
-#syz fix: net: dsa: fix netdev_priv() dereference before check on non-DSA netdevice events
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+
+Reported-and-tested-by: syzbot+7ec955e36bb239bd720f@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         3e7aeb78 Merge tag 'net-next-6.8' of git://git.kernel...
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=16bd716de80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8e557b1c0a57d2c0
+dashboard link: https://syzkaller.appspot.com/bug?extid=7ec955e36bb239bd720f
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=16e1ff47e80000
+
+Note: testing is done by a robot and is best-effort only.
 
