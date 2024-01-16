@@ -1,141 +1,216 @@
-Return-Path: <linux-kernel+bounces-27455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5BBA82F050
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:12:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9197B82F056
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:12:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17C78285352
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:11:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08304B21437
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:12:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D6AD1BDF3;
-	Tue, 16 Jan 2024 14:11:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABB111BF46;
+	Tue, 16 Jan 2024 14:12:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Olrpyaog"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	dkim=pass (1024-bit key) header.d=yngvason.is header.i=@yngvason.is header.b="XIIFNFPd"
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59F741BDE7
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 14:11:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d5ece717aeso3316385ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 06:11:54 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7F61BF36
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 14:12:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yngvason.is
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yngvason.is
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-db3a09e96daso7830095276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 06:12:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705414313; x=1706019113; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pwGjvXloGvIfAhj2uR+wy0smwtrFBrVoNPSps/xZwaQ=;
-        b=OlrpyaogntkooKtRS6Q+CDvit4gOLBcuP48zQryIA/etz/j0OshxAYKnmVhl1tlvve
-         SCpkhJx7qIuHpHMI2T6eVWZOTz/yMHomzQjtbulcVnAAUvyoJzc5RqIzpBIm+vTU3g5d
-         AIJK7K+gLLYbFu1gu6uIq6j579q0QEGNtrvtxhVxamNhvQzlSX/e3Vl229PjmzUTTyGo
-         vMZVPbUNMlepi+kil6lTKetitzxQuNxf63/wjUJO2vyD4pEC6bNy82j/e1DLYfztrN6K
-         P2ABnxUK/S2eMgSuoAttrHkwphpiuuemM2HordJYHrEm1KNfTNJyPsAksVvOTEZtaKTM
-         ALTg==
+        d=yngvason.is; s=google; t=1705414340; x=1706019140; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9gCKsoJIp890TMevRWkiJ5yhUQIvz900NU/IXPPBb5k=;
+        b=XIIFNFPd2SSB3BFqh/xSBIA2EFwuQpmUD0kcTskx8DH0iffotd+MEwEi0lmQAFUuDt
+         LL2aLDKXbYyLtlzG+FUOtkaW7F9jADi7KyQKvrq5uNnVF/5YWVgqkmsqDuyLLdp2HxPR
+         lwI3kxqXj1/NrAWfKHqRrlFsV9C2xf6hgwiEg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705414313; x=1706019113;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pwGjvXloGvIfAhj2uR+wy0smwtrFBrVoNPSps/xZwaQ=;
-        b=kxbJu/ugHJXq5FQZimAfLDCAmon1vcN19Ac99MXzcKwEJlZqGCt8xDkkx8LyfmcQoN
-         YJElvXEsaQq2ifqQ+FnbMgb5Jluvu0egIUszzOffv4C6bS6B0DvcZk2Cp2YFkQ2dt9uU
-         gibSMIYaA0OAzBp3XJrhVHXbca2NKCDg1WYkRnfsxVtcOaC7Yzs9oBbagS9blTERaeTt
-         BYCSakwvUKBC0RM38qWtCDbfIAnuFTn0INXKBlwywyYvtuOVauAEhzrSTF2McL8MCLJs
-         AJwBAGQ4ywl9AzNU/X47iOHTBlDW+pZ3JXUoxPEdZF7y/wPokILtaFo1H7Tg+n6oCkMF
-         DA4Q==
-X-Gm-Message-State: AOJu0YysynFwOnOgZorj3QmGqOmBeTc+JB9SqH47FD2RYaiK1+vJTy12
-	eHAeVQ1OGnsHEWfZVeEjIlY=
-X-Google-Smtp-Source: AGHT+IG5klyCfFZF8El2yLuJhphWWf5wZvlzZYGbQLqxzbecF3MpOnUMh2kBGHKEk1ZmThfmwVC5sA==
-X-Received: by 2002:a17:902:eccf:b0:1d5:b797:fdc with SMTP id a15-20020a170902eccf00b001d5b7970fdcmr2922442plh.131.1705414313502;
-        Tue, 16 Jan 2024 06:11:53 -0800 (PST)
-Received: from localhost.localdomain ([2001:250:4000:8246:8dd2:f82d:e185:367f])
-        by smtp.gmail.com with ESMTPSA id p19-20020a170903249300b001d5c38d720bsm4360242plw.2.2024.01.16.06.11.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 06:11:53 -0800 (PST)
-From: Wenjie Qi <qwjhust@gmail.com>
-To: jaegeuk@kernel.org,
-	chao@kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org
-Cc: hustqwj@hust.edu.cn,
-	Wenjie Qi <qwjhust@gmail.com>
-Subject: [PATCH v1] f2fs: fix NULL pointer dereference in f2fs_submit_page_write()
-Date: Tue, 16 Jan 2024 22:11:38 +0800
-Message-ID: <20240116141138.1245-1-qwjhust@gmail.com>
-X-Mailer: git-send-email 2.43.0.windows.1
+        d=1e100.net; s=20230601; t=1705414340; x=1706019140;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9gCKsoJIp890TMevRWkiJ5yhUQIvz900NU/IXPPBb5k=;
+        b=S/gxCzSqutI5N3nvgF973mTT8B9ybcpr7FS028VL/AYzE59sW91qVvksBoSRTEkIfJ
+         zu6feudoV396PH1obsLgySatFx/IPm61gfWyQdxTO/jnRfjSbnnvvBsYLOy6TOBJTi2e
+         JbBb2RIfSUC7No2F20XGt7L6bkM7Xlv7e8o+ia3dlAOLZOJXUBBN3F6nAR9ik3R8b4vI
+         Gwo6NRBvGr5/41sPAssJtYIUC9UqMD5hpenmZuvY0MkCTilGmeLasaubLu5g6Ajitb/Q
+         4XUqLf+cx+3bKYMNgPjB6kj4r8FajFRiAjaesyXSnA+zWc9WeIghIxx73tYUe4JOw0XQ
+         wXog==
+X-Gm-Message-State: AOJu0YzrLjjSD0Y6s7EnxMvoc52DyLjIhf+kPUBjH3inRiIBcNuPcDbn
+	jJOeuVq+LgajW53Xt3gVb+Qgid1TNOC++bx5Zr16EtiPWUXrcg==
+X-Google-Smtp-Source: AGHT+IE41A58zXOP4mN6YBTW2CozoInidfluxDAZAPGf3XWYIJx5iW5A7pw47X0/O2DADgCiiAJSZrcdEWBROikbKfY=
+X-Received: by 2002:a05:6902:511:b0:dbd:231:1d67 with SMTP id
+ x17-20020a056902051100b00dbd02311d67mr3842729ybs.104.1705414339805; Tue, 16
+ Jan 2024 06:12:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240115160554.720247-1-andri@yngvason.is> <20240115160554.720247-3-andri@yngvason.is>
+ <20240116114235.GA311990@toolbox> <CAFNQBQz3TNj_7BSmFw4CFMNuR4B+1d+y3f058s+rzTuzdYogqA@mail.gmail.com>
+ <20240116132918.GB311990@toolbox>
+In-Reply-To: <20240116132918.GB311990@toolbox>
+From: Andri Yngvason <andri@yngvason.is>
+Date: Tue, 16 Jan 2024 14:11:43 +0000
+Message-ID: <CAFNQBQyfWmfu5T7bgZDZFGfyhsxQi7YXmY_wPc9Y+mm5iSspXQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] drm/uAPI: Add "force color format" drm property as
+ setting for userspace
+To: Sebastian Wick <sebastian.wick@redhat.com>
+Cc: Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>, 
+	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>, Alex Deucher <alexander.deucher@amd.com>, 
+	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	"Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Jani Nikula <jani.nikula@linux.intel.com>, 
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
+	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>, amd-gfx@lists.freedesktop.org, 
+	intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	Werner Sembach <wse@tuxedocomputers.com>, dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-BUG: kernel NULL pointer dereference, address: 0000000000000014
-RIP: 0010:f2fs_submit_page_write+0x6cf/0x780 [f2fs]
-Call Trace:
-<TASK>
-? show_regs+0x6e/0x80
-? __die+0x29/0x70
-? page_fault_oops+0x154/0x4a0
-? prb_read_valid+0x20/0x30
-? __irq_work_queue_local+0x39/0xd0
-? irq_work_queue+0x36/0x70
-? do_user_addr_fault+0x314/0x6c0
-? exc_page_fault+0x7d/0x190
-? asm_exc_page_fault+0x2b/0x30
-? f2fs_submit_page_write+0x6cf/0x780 [f2fs]
-? f2fs_submit_page_write+0x736/0x780 [f2fs]
-do_write_page+0x50/0x170 [f2fs]
-f2fs_outplace_write_data+0x61/0xb0 [f2fs]
-f2fs_do_write_data_page+0x3f8/0x660 [f2fs]
-f2fs_write_single_data_page+0x5bb/0x7a0 [f2fs]
-f2fs_write_cache_pages+0x3da/0xbe0 [f2fs]
-..
-It is possible that other threads have added this fio to io->bio
-and submitted the io->bio before entering f2fs_submit_page_write().
-At this point io->bio = NULL.
-If is_end_zone_blkaddr(sbi, fio->new_blkaddr) of this fio is true,
-then an NULL pointer dereference error occurs at bio_get(io->bio).
-The original code for determining zone end was after "out:",
-which would have missed some fio who is zone end. I've moved
- this code before "skip:" to make sure it's done for each fio.
+=C3=BEri., 16. jan. 2024 kl. 13:29 skrifa=C3=B0i Sebastian Wick
+<sebastian.wick@redhat.com>:
+>
+> On Tue, Jan 16, 2024 at 01:13:13PM +0000, Andri Yngvason wrote:
+[...]
+> > =C5=9Fri., 16. jan. 2024 kl. 11:42 skrifa=C4=9Fi Sebastian Wick
+> > <sebastian.wick@redhat.com>:
+> > >
+> > > On Mon, Jan 15, 2024 at 04:05:52PM +0000, Andri Yngvason wrote:
+> > > > From: Werner Sembach <wse@tuxedocomputers.com>
+> > > >
+> > > > Add a new general drm property "force color format" which can be us=
+ed
+> > > > by userspace to tell the graphics driver which color format to use.
+> > >
+> > > I don't like the "force" in the name. This just selects the color
+> > > format, let's just call it "color format" then.
+> > >
+> >
+> > In previous revisions, this was "preferred color format" and "actual
+> > color format", of which the latter has been dropped. I recommend
+> > reading the discussion for previous revisions.
+>
+> Please don't imply that I didn't read the thread I'm answering to.
+>
+> > There are arguments for adding "actual color format" later and if it
+> > is added later, we'd end up with "color format" and "actual color
+> > format", which might be confusing, and it is why I chose to call it
+> > "force color format" because it clearly communicates intent and
+> > disambiguates it from "actual color format".
+>
+> There is no such thing as "actual color format" in upstream though.
+> Basing your naming on discarded ideas is not useful. The thing that sets
+> the color space for example is called "Colorspace", not "force
+> colorspace".
+>
 
-Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
----
- fs/f2fs/data.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Sure, I'm happy with calling it whatever people want. Maybe we can
+have a vote on it?
 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index dce8defdf4c7..4f445906db8b 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -1080,10 +1080,6 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
- 	io->last_block_in_bio = fio->new_blkaddr;
- 
- 	trace_f2fs_submit_page_write(fio->page, fio);
--skip:
--	if (fio->in_list)
--		goto next;
--out:
- #ifdef CONFIG_BLK_DEV_ZONED
- 	if (f2fs_sb_has_blkzoned(sbi) && btype < META &&
- 			is_end_zone_blkaddr(sbi, fio->new_blkaddr)) {
-@@ -1096,6 +1092,10 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
- 		__submit_merged_bio(io);
- 	}
- #endif
-+skip:
-+	if (fio->in_list)
-+		goto next;
-+out:
- 	if (is_sbi_flag_set(sbi, SBI_IS_SHUTDOWN) ||
- 				!f2fs_is_checkpoint_ready(sbi))
- 		__submit_merged_bio(io);
--- 
-2.34.1
+> > [...]
+> > > > @@ -1396,6 +1404,15 @@ static const u32 dp_colorspaces =3D
+> > > >   *   drm_connector_attach_max_bpc_property() to create and attach =
+the
+> > > >   *   property to the connector during initialization.
+> > > >   *
+> > > > + * force color format:
+> > > > + *   This property is used by userspace to change the used color f=
+ormat. When
+> > > > + *   used the driver will use the selected format if valid for the=
+ hardware,
+> > >
+> > > All properties are always "used", they just can have different values=
+.
+> > > You probably want to talk about the auto mode here.
+> >
+> > Maybe we can say something like: If userspace does not set the
+> > property or if it is explicitly set to zero, the driver will select
+> > the appropriate color format based on other constraints.
+>
+> The property can be in any state without involvement from user space.
+> Don't talk about setting it, talk about the state it is in:
+>
+>   When the color format is auto, the driver will select a format.
+>
 
+Ok.
+
+> > >
+> > > > + *   sink, and current resolution and refresh rate combination. Dr=
+ivers to
+> > >
+> > > If valid? So when a value is not actually supported user space can st=
+ill
+> > > set it? What happens then? How should user space figure out if the
+> > > driver and the sink support the format?
+> >
+> > The kernel does not expose this property unless it's implemented in the=
+ driver.
+>
+> If the driver simply doesn't support *one format*, the enum value for
+> that format should not be exposed, period. This isn't about the property
+> on its own.
+
+Right, understood. You mean that enum should only contain values that
+are supported by the driver.
+
+>
+> > This was originally "preferred color format". Perhaps the
+> > documentation should better reflect that it is now a mandatory
+> > constraint which fails the modeset if not satisfied.
+>
+> That would definitely help.
+>
+> > >
+> > > For the Colorspace prop, the kernel just exposes all formats it suppo=
+rts
+> > > (independent of the sink) and then makes it the job of user space to
+> > > figure out if the sink supports it.
+> > >
+> > > The same could be done here. Property value is exposed if the driver
+> > > supports it in general, commits can fail if the driver can't support =
+it
+> > > for a specific commit because e.g. the resolution or refresh rate. Us=
+er
+> > > space must look at the EDID/DisplayID/mode to figure out the supporte=
+d
+> > > format for the sink.
+> >
+> > Yes, we can make it possible for userspace to discover which modes are
+> > supported by the monitor, but there are other constraints that need to
+> > be satisfied. This was discussed in the previous revision.
+>
+> I mean, yes, that's what I said. User space would then only be
+> responsible for checking the sink capabilities and the atomic check
+> would take into account other (non-sink) constraints.
+
+Since we need to probe using TEST_ONLY anyway, we'll end up with two
+mechanisms to do the same thing where one of them depends on the other
+for completeness.
+
+>
+> > In any case, these things can be added later and need not be a part of
+> > this change set.
+>
+> No, this is the contract between the kernel and user space and has to be
+> figured out before we can merge new uAPI.
+>
+> >
+> > [...]
+> >
+
+Thanks,
+Andri
 
