@@ -1,92 +1,108 @@
-Return-Path: <linux-kernel+bounces-28310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B04BB82FCD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5546B82FCD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:30:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 624AF1F2D6B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:30:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02DF01F2D6DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:30:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A47985FDAA;
-	Tue, 16 Jan 2024 21:35:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="R4TMM6cY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA93B35EE8;
+	Tue, 16 Jan 2024 21:37:47 +0000 (UTC)
+Received: from fgw21-7.mail.saunalahti.fi (fgw21-7.mail.saunalahti.fi [62.142.5.82])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7ED35294
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 21:35:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1B0B20315
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 21:37:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.82
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705440909; cv=none; b=nRa0O/G+qxuYfYh7y2bQgWXn6BL4UPsR3aJtr5OLX6TceB4KAwXUGBfQQrLNExEp4HfvDhL/yPVkvAbMHvX3vPG4rmcNlqZsXyCAbn9sN59PD5m9ol4fUsixMThZhFLXtYGFIO3XEalN/cH+3sEj4oYg3kCygoCzbCDPlhHKOkw=
+	t=1705441067; cv=none; b=UVHUHfpbnk2Uq779Qs0sXfT0uvQIHlTFC9d+NAYd/aVjhJslOZkniAVVmHPCBXsbnWUQKl/2F8M7buYPq8hVppxhBU2fAi8YMJ650U0XQWKTPC6OZ7jEvenKLpoQvYsq6OLNs2d+AWpW68Bl0ejxWkHHsT42AuE8lli8eUwpfGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705440909; c=relaxed/simple;
-	bh=bPen2UlJBQHqlE5Ug6ywd00xGmHMjUIJMoNwx2nzRs8=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-Id:
-	 In-Reply-To:References:X-Mailer:Mime-Version:Content-Type:
-	 Content-Transfer-Encoding; b=cr78csN/99jpmmdKKD6EJVhzT7o2iFxkzsGY9BwutNhUIwjlHTC8DLeCRiUfwdc+ydKfJblaFjhk0KH5RbvmIjLTNt4KGtY4wdkHOsfaME3jkjhv+CzM1D3PkT+Ee4uGgYAc9/VRMpP5G+O2LDPLx47JZTMDfHOJgV98f+xtpcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=R4TMM6cY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 078C3C433C7;
-	Tue, 16 Jan 2024 21:35:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1705440908;
-	bh=bPen2UlJBQHqlE5Ug6ywd00xGmHMjUIJMoNwx2nzRs8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=R4TMM6cYbYJ6c+IO6jgzz2hg7i3Wdcfr68C0CGqHuWeTiOtSD/q+pfKhJTU3KvReL
-	 oLztrJzfYcnzY1pK4BhyAtmaEDL4VCYQNE3z9lHMMqbYJhfm2yOj5sgSjQBvMnj+DU
-	 xDATszVOytHlHxzq0miFlHmn8NFyU34NeQOHVvh4=
-Date: Tue, 16 Jan 2024 13:35:03 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Matthew Wilcox <willy@infradead.org>, Johannes Weiner
- <hannes@cmpxchg.org>, Vlastimil Babka <vbabka@suse.cz>, Christoph Hellwig
- <hch@infradead.org>, Nhat Pham <nphamcs@gmail.com>, Domenico Cerasuolo
- <cerasuolodomenico@gmail.com>, konrad.wilk@oracle.com,
- vitaly.wool@konsulko.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: kill frontswap
-Message-Id: <20240116133503.4fb4ea28db43989795a6915d@linux-foundation.org>
-In-Reply-To: <CAJD7tkZRnywCj4ha2hMcjQU7OjfR8DQ-Pi8K89NADxObCXvsMA@mail.gmail.com>
-References: <20230714194610.828210-1-hannes@cmpxchg.org>
-	<ZLIVleBYOm4HIGTZ@casper.infradead.org>
-	<20230717141250.GA866068@cmpxchg.org>
-	<901409ed-504b-9500-54d8-e42f832e07b0@suse.cz>
-	<20230717160227.GA867137@cmpxchg.org>
-	<20240116120944.01f25e65d13f0fc7e2a2df34@linux-foundation.org>
-	<ZabknuNmymSP0XgG@casper.infradead.org>
-	<CAJD7tkZRnywCj4ha2hMcjQU7OjfR8DQ-Pi8K89NADxObCXvsMA@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1705441067; c=relaxed/simple;
+	bh=DrPYOohz5TNLetnSbNFby5mXuPuzhsqpd/t6fTixqvY=;
+	h=Received:From:Date:To:Cc:Subject:Message-ID:References:
+	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=rESAlXc56GjK6MZPD2NWpDnMzfWHe8b9Oay69As2gSibUgQEld569PYEnDtQwcvfNLeKqNbyIlLj168G+gUVWyXAopza18YiWbnZRF3dZysT3iCQPT77wZMsgQn94ZFV7lhM1YvaVHz6mD3bIHEz062oO1A4Lj6kRutwzwgQcxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.82
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+Received: from localhost (88-113-24-108.elisa-laajakaista.fi [88.113.24.108])
+	by fgw21.mail.saunalahti.fi (Halon) with ESMTP
+	id 7afc7402-b4b7-11ee-abf4-005056bdd08f;
+	Tue, 16 Jan 2024 23:37:43 +0200 (EET)
+From: andy.shevchenko@gmail.com
+Date: Tue, 16 Jan 2024 23:37:39 +0200
+To: Philipp Stanner <pstanner@redhat.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, Hans de Goede <hdegoede@redhat.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Sam Ravnborg <sam@ravnborg.org>, dakr@redhat.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 08/10] pci: devres: give pci(m)_intx its own callback
+Message-ID: <Zab3I9o_BXRjYm4j@surfacebook.localdomain>
+References: <20240115144655.32046-2-pstanner@redhat.com>
+ <20240115144655.32046-10-pstanner@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240115144655.32046-10-pstanner@redhat.com>
 
-On Tue, 16 Jan 2024 12:22:03 -0800 Yosry Ahmed <yosryahmed@google.com> wrote:
-
-> On Tue, Jan 16, 2024 at 12:18 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Tue, Jan 16, 2024 at 12:09:44PM -0800, Andrew Morton wrote:
-> > > On Mon, 17 Jul 2023 12:02:27 -0400 Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > >
-> > > > The only user of frontswap is zswap, and has been for a long
-> > > > time. Have swap call into zswap directly and remove the indirection.
-> > >
-> > > This falls afoul of "mm: zswap: multiple zpools support".  Could we
-> > > please have a version against mm-unstable or linux-next?
-> >
-> > Did this email get caught in a timewarp?  Or is it referring to
-> > something that isn't commit 42c06a0e8ebe from six months ago?
+Mon, Jan 15, 2024 at 03:46:19PM +0100, Philipp Stanner kirjoitti:
+> pci_intx() is one of the functions that have "hybrid mode" (i.e.,
+> sometimes managed, sometimes not). Providing a separate pcim_intx()
+> function with its own device resource and cleanup callback allows for
+> removing further large parts of the legacy pci-devres implementation.
 > 
-> +1. Both of these changes have been in Linus's tree for a while now.
-> Perhaps Andrew had this email prepared a while ago and never sent it,
-> and ended up fixing the problem himself.
+> As in the region-request-functions, pci_intx() has to call into its
+> managed counterpart for backwards compatibility.
+> 
+> Implement pcim_intx() with its own device resource.
+> Make pci_intx() call pcim_intx() in the managed case.
+> Remove the legacy devres struct from pci.h.
 
-erp, sorry, Flushing out the drafts folder after a long flight.  On a
-wifi-free airline, wtf.
+..
+
+> +	/*
+> +	 * This is done for backwards compatibility, because the old pci-devres
+> +	 * API had a mode in which this function became managed if the dev had
+> +	 * been enabled with pcim_enable_device() instead of pci_enable_device().
+> +	 */
+> +	if (pci_is_managed(pdev)) {
+> +		if (pcim_intx(pdev, enable) != 0)
+> +			WARN_ON_ONCE(1);
+
+		WARN_ON_ONCE(pcim_intx(pdev, enable));
+
+?
+
+> +		return;
+> +	}
+
+..
+
+> +	if (new != pci_command)
+
+	if (new == pci_command)
+		return;
+
+?
+
+>  		pci_write_config_word(pdev, PCI_COMMAND, new);
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
