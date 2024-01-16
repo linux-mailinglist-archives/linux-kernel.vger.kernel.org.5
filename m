@@ -1,186 +1,120 @@
-Return-Path: <linux-kernel+bounces-27483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27485-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 635EA82F0DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:52:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37FD582F0E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:58:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2AC1285DD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:52:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0E161F241CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:58:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB7FD1BF35;
-	Tue, 16 Jan 2024 14:52:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C881C294;
+	Tue, 16 Jan 2024 14:57:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="jmb/czMJ"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2058.outbound.protection.outlook.com [40.107.237.58])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="HCMu2aZX"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69D391BF2C
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 14:52:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CRa6RHBX6Zk1fJl19ayIeTyUwv/sCPjHdyYd0mVXH9dpiUQBWpUh6C1oAYZlS60GuMSgbffSZQ/i21YyR75iieQfD1JtS0UPfCEt7ej6Tg2sk5Ll8ISbZWW9L9a4SsQTzMWs5KPs2SiFVnXMMEUDqaBZesP+kZ0o0rzzxDY5F8JRyhwVZVif3njytAYxhDwB6F0b3EP5USzw7FkJPz0YqZ6a7n9WaQqgoXFwAj/ovDQMUOKusSGPFEVPL8fKcALzLK6AB1huFgDMJOkH03B1jukz0M24Czaa49Xhal+8XnKW/fKzVZGHywGaEao5kgS5KsFKlyS1oS/2GwYn8slNUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CO/XI+ywoZLqWgX0steGqqztKtLBW9YounEJcbbkPeU=;
- b=ZqWS2G4+YDqoqC0JLicVlXDFjPaVmu8Wt3aBVLW0yk0M9FeawYRIgWc5CpZ1YfHqkDgzYOFCDo3YxiT3fqaOeUj2FQv5vo/fJdYDxUFKqH8781hhyjh9/ikTF8KOpHg69kmac7HNlTxBoX6FdyXZlBhxZiK/9rTWVCc28kUwSH3VMEZvDlpADfSFfGIuA8Z2KNonlGBqSI2tKBOaiUEkHc37mZ37rUldIawCRLo9e8otqTY9/TUwoD6Cpo3PNiHasWyXxH+u7urwmz11lg10cU86uS+BcA73HUTFtVMkZtThtiXqhNNYijPtqmbHM8xPdiM3EUDJE5gx0SnsYW8Msw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CO/XI+ywoZLqWgX0steGqqztKtLBW9YounEJcbbkPeU=;
- b=jmb/czMJdnprux4H7UpHIDH7Z/caHO9+y9aVsDFekfUlOlx0TDeGBQt3V7skWGtxF/834yb6uXbuhj77DpitHo2+bd5j+AR1l/jqxPpsDbl1C1w9RQnL8ORn1rpQMxRG0NJlvOby4FyO7nt1kfhUmJQxzJQmBrF3d0+kvG8mo7A=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by BY5PR12MB4903.namprd12.prod.outlook.com (2603:10b6:a03:1d6::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.23; Tue, 16 Jan
- 2024 14:52:23 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653%4]) with mapi id 15.20.7159.020; Tue, 16 Jan 2024
- 14:52:23 +0000
-Message-ID: <5012eab1-3aaa-4559-b410-0972e0a18b7c@amd.com>
-Date: Tue, 16 Jan 2024 15:52:17 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] drm/ttm: allocate dummy_read_page without DMA32 on
- fail
-Content-Language: en-US
-To: Yangyu Chen <cyy@cyyself.name>, dri-devel@lists.freedesktop.org
-Cc: linux-kernel@vger.kernel.org, Huang Rui <ray.huang@amd.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Jiuyang Liu <liu@jiuyang.me>, Yichuan Gao <i@gycis.me>,
- Icenowy Zheng <uwu@icenowy.me>
-References: <tencent_40DF99E09A3681E339EE570C430878232106@qq.com>
- <tencent_7D66A3085F83608576A8E309EE714C5CC806@qq.com>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <tencent_7D66A3085F83608576A8E309EE714C5CC806@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR0P281CA0174.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:b4::7) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F200F1BF30;
+	Tue, 16 Jan 2024 14:57:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40GE2I3A022697;
+	Tue, 16 Jan 2024 14:57:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=WJKvXg2gsScM+vxfqV0R+Mz7P3AscR3fNfey/AiNOto=;
+ b=HCMu2aZXY6FWzwuPfp3wgEklM8dYN9AJVIsWBEQafqCrnkE25LQpNlOQhhUi6YtKk3aB
+ 8udFLeZlhtITKx5IlBaX1rhFsP8Z5oW3e0O+uf7zQCllAlQ0yErcH8W9mkws2ZixA5+Z
+ ugCDl5gEe5OeXrOdbxKY092kyFzy8OgVIQ+Oetg3jQef12zEsyOTkeN1xBZOoFo9sW6F
+ lq8iza4E5ujwHM0kI0G7IItSrZFtYKQBr9REkPc5e2vq1ycyX+vpat6EQ104MHO36jR5
+ fkZYRgHc5So6VKaq8RTAb0H2CTFXLvvNyeO+Z9+vhFcCkjpbzciqprTlGH78A6Rj91+q Fw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnu74hrpg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 14:57:30 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40GEQjqP022581;
+	Tue, 16 Jan 2024 14:57:29 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnu74hrnu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 14:57:29 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40GDUNuF008844;
+	Tue, 16 Jan 2024 14:57:28 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vm5unf6tg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 14:57:28 +0000
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
+	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40GEvRFh26083942
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Jan 2024 14:57:27 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 364D858054;
+	Tue, 16 Jan 2024 14:57:27 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id BE8795805D;
+	Tue, 16 Jan 2024 14:57:25 +0000 (GMT)
+Received: from [9.61.152.128] (unknown [9.61.152.128])
+	by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 16 Jan 2024 14:57:25 +0000 (GMT)
+Message-ID: <4eb35fab-eb85-487d-90cd-c4b10b8410ec@linux.ibm.com>
+Date: Tue, 16 Jan 2024 09:57:25 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|BY5PR12MB4903:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8148f783-b8bd-4c45-ada2-08dc16a2bf98
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	PWBfcQ8jP6TNGNAfi1tM2LvkF3cPn3rt2ystPJ1rQxTR2EH6eII2suHUufDlMwPvA2/dDp4Wn3fMNDrk95Rk6jQ4lIqp1NH6PpzXTvPRxK16Ynl68wpV2E9vIblqiD7iDh91TgMS3ZHqYZyL0wgHi6oRGTSm3QNWyXGBAGWEenAP5ilBXzJMII3hCK5NJAnCd5BSe7mcSVYP9I7YrwHP80iIIluGJatCEK8ujwo+CK8a+HHmrGK4C7lFARmY9uvJk7/ES55qj0bmCuUdFtY2HZcgHl+HUF+9mECl18IHvzwUDW5KU5IMZBbqhJKvVMYO7fDcU0QIunFLA+uzRZ9U3nNEAVhzJOXDO+7bQp4Rzlo+SPXsKGZVtu8CFTkeLGhwoU4ZdCctIkVha1CD4qUeKDow3IpgvIgrU2ogSERbIpn3zGYdV1NMFp1dCEbmW1AsAYqaZ5vMgbXPW0meGLNU8oUf0ZxJsls3YMtFX7SH9LVzep0ipgRDGio7c5SEDuPxXJN3lG2QbJZ+uf8aiXzuadvf13urpJjXDBedcTulRkJiu556i6GGb60XQ9tLfY/UPQjquOIT472xZeY+sbVji1g0BCskuv6MtIkE2lsv5FH7WaHUbMvzCeOiJJ7dhBM5JxVB+TiwpA3UIqxSKVYMJhlFkBMh59jJbKPpVhDxN5ZY9cQrON80IS/xDCXQ1WgS
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(39860400002)(376002)(366004)(136003)(230922051799003)(230173577357003)(230273577357003)(186009)(64100799003)(1800799012)(451199024)(2906002)(26005)(478600001)(38100700002)(6506007)(2616005)(7416002)(6486002)(5660300002)(41300700001)(6512007)(83380400001)(6666004)(31696002)(86362001)(36756003)(31686004)(8676002)(8936002)(66476007)(66556008)(4326008)(66946007)(54906003)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?V0NlNVJXc29nZlFyNGNvRUwwYnhrVVFHQUNpSDdWQmJ5Um9ab3dZb2FKcnkx?=
- =?utf-8?B?ZDRXaVZxSk5Ub0FERHNWUEt1OVpQMkRkN09NN21nRUlQSlI4UzVhZkY2SEtT?=
- =?utf-8?B?V1BRamxZOEFxUmFnWVFCVTBhYkVJMUpNcGZuak5XTFNlQ3JFazRaMUIrVnJi?=
- =?utf-8?B?QmdSVXNPZm5PQ3pWOXFzbmJPdHB6eXl1NW9Hc0pFc3NhRTFWSFZCZE82TzF2?=
- =?utf-8?B?TnVFNDhZYkJiUys1OHczanZOcTJjS0RjTDBmY3phVVNZRC96VFZYMXdHUGVq?=
- =?utf-8?B?b0pwNyt1bXdGVVNtb21PSnFjbFlkNllKcURXNnNpZ05Ea2p3YklmQmpPN1VY?=
- =?utf-8?B?R2hYazl1ZWJHbTl0d091R1dLNW92alVTcmVjK3pQRzNLRlZHbXFYdEs4VHVp?=
- =?utf-8?B?L2xYOXJBTE1iU0llSzdZVjF3d3I5eSt5VUJxbUJOOTJ6WHkxVFZiTldkWXZt?=
- =?utf-8?B?VEtLNEpFRzRTTVF0ajk1OTA3VDJ0c0hVZ2pjOXJUV2ozNlRmSjFZdmpDbkNo?=
- =?utf-8?B?ZUt6OEhHZjJwRVNDWGNnZFRFSzNNNDZTN2cvYUFibnRWRUlHNXQyT0s4RWdo?=
- =?utf-8?B?OTBTMGlrdUlVSVBxWWVqdWI5cUxGZVlwZ2U5ZGpnTHJwa2RDb0ZkS3JzSUNE?=
- =?utf-8?B?b0F2bGFZYnpOeEtuWTVZZEhFQ1BIclhsazdXNlF5M2NWdW5LQ2d5UXVZRm9t?=
- =?utf-8?B?WUhlQWdnTVEycm5RYkZDRlNraS9QblVJZVBTT3Rra1VjYlV6UTdRemVNMWxK?=
- =?utf-8?B?S25oZ1hrOXl1Mm9qZUNmVGtNd1V6WU52TW5MMUEzQXZFQTN5TWwvd0lzRm11?=
- =?utf-8?B?V016TG5tR05QSUlzSG5sVHB1L1dxOUduSWJBZjhlNlFxY0xVTnh5WHp1eFlN?=
- =?utf-8?B?MkdEWHVTQTM1Z1NlbEZIZTE3VHp3YjZuNDZQRUlyYzh0ekJqMTF6VENubjlj?=
- =?utf-8?B?aUNKSDNjUlNwOG9sbWR4YXhKZ1dMdW9sT3RVZG1ET2xCYlVpcjhxYWpKbzdk?=
- =?utf-8?B?MDZaR0M5bmFFOUJsWWZXNDBQeHhDQVpOUWtFY0JsUTNvcTNic3lXeFpIanh0?=
- =?utf-8?B?RzdZd0JoYWZFZ01xOXNPcEtWeFJRMWN2TE93dERZRTNpeVVpVjZralBMTDI0?=
- =?utf-8?B?UjlJV3RDZWUrY3p5K1daRlNBS0EvWWtqRXRFME9XVVRGQlZoQm9yRjhDUThU?=
- =?utf-8?B?SkxQdXNrZjVBSUxRNmk2cGo4dmo5VEgxRDhOT244UmpBUG9YdDE2RHBsRmZM?=
- =?utf-8?B?TUdHUzNJdGxiN3lpaURQQllNSEZROFNzMmlSVlV5L2IwVEpBb1F4ODBOc1ZV?=
- =?utf-8?B?bGFaZnl1Nld5N1Jpcldobklkdy9pVUlPRTdweFBPSE85emZJQUZHMFkzZmlH?=
- =?utf-8?B?U1BTbW1aZS9Xa1Rkb0IzR1kwVm5sb25UZDBndEkwcjZvMEZQa2dmUXdrcXJv?=
- =?utf-8?B?bk0vNjBSK1ZjNFU0ZlZ2SU9XUVlLS0JUblhvc2R2ZUJ6MlgzL0hxcGZzcURV?=
- =?utf-8?B?NDBZYkorYnQzdWZVQTlqQUNIaFhoMUFXa0gzMFRZSHQzMGVmK2hFczB6bCt6?=
- =?utf-8?B?dGJ6MnVTMHlWaXVaZ2d1MjJsNjFIRDlsRWs5TlRBdnAyRUNoNnlFNUptQnFX?=
- =?utf-8?B?NE1VbnFreGdQbldTSGNFWHRueEJSNWszd052YlBUUWMyQVhhU21xbVNMdjZU?=
- =?utf-8?B?L3ZBMUwvQnc4anRzZVVTcmNGUzhyUUhWb2NLUXZ0WDRvVlpLRXJ1cEJHS0tk?=
- =?utf-8?B?ODMyaGxqR0l2ZDNmS1l4Z1YyWGltOWJDT2xZWm40MmcxWmViNm95aTA5V0VM?=
- =?utf-8?B?UzlYZyt5SEdOcHF3T1oxdForZlhNRFQ3Rm13VTlQdmxYUWFxLzI4NEI3ZFNF?=
- =?utf-8?B?L3BxZkw5cU1vUUFMKzQyS2x3eW42bm9xV2U3L01EclNDeEZCM0ttOXZPNXhP?=
- =?utf-8?B?ZmsvcnNHWWI1YnM4UVdIZEFBYVB3TytSb3JkeWhQTDV5NVZYREh0NThwMnVq?=
- =?utf-8?B?ZHZrdTdJOVNJcysxQkk2UmxoNUtVQ0cwOUNrRzZ2b2hjS1JqRWd5R1hXbEk2?=
- =?utf-8?B?R0NSckl0NzJveDNaZ1VrUW5Kb1hJNnZLUmlac285VTZKajd0cEZ4SzVGYmRU?=
- =?utf-8?Q?AAPJlHYC460E4EXZQDLhAi3K2?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8148f783-b8bd-4c45-ada2-08dc16a2bf98
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2024 14:52:23.6302
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /PiESttYz2O//U9Opvmnf5AEWak0B/xjeAixPj1ACTxdM/eN7QhyW2EyrKwG5P9q
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4903
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/6] s390/vfio-ap: let 'on_scan_complete' callback
+ filter matrix and update guest's APCB
+Content-Language: en-US
+To: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, jjherne@linux.ibm.com, borntraeger@de.ibm.com,
+        pasic@linux.ibm.com, pbonzini@redhat.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, gor@linux.ibm.com
+References: <20240115185441.31526-1-akrowiak@linux.ibm.com>
+ <20240115185441.31526-4-akrowiak@linux.ibm.com>
+ <ZaY/fGxUMx2z4OQH@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+From: Tony Krowiak <akrowiak@linux.ibm.com>
+In-Reply-To: <ZaY/fGxUMx2z4OQH@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 6PToCPfSVZ-aTqeM4cxAEX_OeS0ZJuWD
+X-Proofpoint-GUID: -0rsVH5sPg1Hvajp9OKvlUfeAyVs3dwI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-16_08,2024-01-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
+ lowpriorityscore=0 malwarescore=0 mlxlogscore=878 spamscore=0 adultscore=0
+ bulkscore=0 priorityscore=1501 mlxscore=0 suspectscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401160117
 
-Am 16.01.24 um 14:02 schrieb Yangyu Chen:
-> Some platforms may not have any memory in ZONE_DMA32 and use IOMMU to allow
-> 32-bit-DMA-only device to work. Forcing GFP_DMA32 on dummy_read_page will
-> fail on such platforms. Retry after fail will get this works on such
-> platforms.
+
+On 1/16/24 3:34 AM, Alexander Gordeev wrote:
+> On Mon, Jan 15, 2024 at 01:54:33PM -0500, Tony Krowiak wrote:
+> Hi Tony,
 >
-> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
-> ---
->   drivers/gpu/drm/ttm/ttm_device.c | 9 +++++++--
->   1 file changed, 7 insertions(+), 2 deletions(-)
+>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+>> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
+> No Fixes tag for this patch?
+
+
+This patch is more of an enhancement as opposed to a bug, so no Fixes.
+
+
 >
-> diff --git a/drivers/gpu/drm/ttm/ttm_device.c b/drivers/gpu/drm/ttm/ttm_device.c
-> index d48b39132b32..a07d9ea919b6 100644
-> --- a/drivers/gpu/drm/ttm/ttm_device.c
-> +++ b/drivers/gpu/drm/ttm/ttm_device.c
-> @@ -98,8 +98,13 @@ static int ttm_global_init(void)
->   	glob->dummy_read_page = alloc_page(__GFP_ZERO | GFP_DMA32);
-
-Please add  __GFP_NOWARN here to avoid the backtrace and warning on 
-allocation failure.
-
->   
->   	if (unlikely(glob->dummy_read_page == NULL)) {
-> -		ret = -ENOMEM;
-> -		goto out;
-> +		/* Retry without GFP_DMA32 */
-
-Well that is obvious, you need to describe why you retry without GFP_DMA32.
-
-Something like /* Retry without GFP_DMA32 for platforms without 
-ZONE_DMA32 */, and probably better placed above the "if".
-
-> +		glob->dummy_read_page = alloc_page(__GFP_ZERO);
-> +		if (unlikely(glob->dummy_read_page == NULL)) {
-> +			ret = -ENOMEM;
-> +			goto out;
-> +		}
-> +		pr_warn("Failed to allocate dummy_read_page with GFP_DMA32, some old graphics card only has 32bit DMA may not work properly.\n");
-
-Well maybe make that a bit shorter, something like "Using GFP_DMA32 
-fallback for the dummy page".
-
-Regards,
-Christian.
-
->   	}
->   
->   	INIT_LIST_HEAD(&glob->device_list);
-
+> Thanks!
+>
 
