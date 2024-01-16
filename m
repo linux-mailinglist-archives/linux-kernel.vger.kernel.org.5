@@ -1,149 +1,168 @@
-Return-Path: <linux-kernel+bounces-27353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A56B82EE90
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:59:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 24D3C82EE96
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:59:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F4241C23294
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:59:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A3671C23263
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:59:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A88071B961;
-	Tue, 16 Jan 2024 11:58:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7AA41B96D;
+	Tue, 16 Jan 2024 11:59:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="pMcyZxpF"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2042.outbound.protection.outlook.com [40.107.93.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DMbwMIhW"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5839A1B944;
-	Tue, 16 Jan 2024 11:58:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mLp5lpfTrHF2nGta+YRkjvUIxBC3nmLh67/mCf5Yz56O/uN8xkAekwDOb5spd3O38iFrJPoSYdO4JKFPD2qYaeJqeVdREGkfDbOCO+5tRZZQHsRLOKaw/omTtGOsYniLRAUlcKBYctsVRBXVW8Hti9Vdi+5kxQlFxFjiYKCpuUhP4FqIKG141FmpuaM/y2PFHWh/oZpiJYMixxQzxK5qrx+2qckqpSnTLcqZT7e4LTRiAKG3nuLy+5AdqwesIWBJ7b3SjyYAKVW/6G1guSpQlSvrF/irESA5ykP+HSeqJCtshHNjTAxm2b54NOmYsedEG6LZNSvziWGkVm0r21F0OA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jISansvkBL3gRwNlm5DECa5ZeHMZm7A1EbkoRTSj2NY=;
- b=E4JTgOPyg+/OxXGmlePAUeFMYbDfPA7GyCdCm+RM6qUNPBAcZaSjIEYZ3m9uWRNJqqdOPQpGOGms4BENJZLYXHtRemocRu1AlgWOzwHOVsxMgJCJicZoGUQ57mW0B3mTKMqE8twh7Xd+tCGKjSXDfNZwTyKAt+ahNBtL+5gn7KZ2F8bjWemXJ4Pn+ma97W4IOg/oVwW0TCNAOUxSe14qMSnGEy7//4uaJIVLfVKH5E9iY8SCn9SzkvunKC7/v5HApyoxwMH/WBSG3foR7cLIZnTqKBrJdvNBtdp65tErAOOzz73nmg/wi3NC1M1LdtqJhJz9OjVeGvcQplevH5A6Zw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jISansvkBL3gRwNlm5DECa5ZeHMZm7A1EbkoRTSj2NY=;
- b=pMcyZxpFVAwqzboRHKZye/Al2gzz0CtpIFJhO2VmLexoIOY9eb4pyl1RI1M0/YX23z4bkD+xVueW40lZn6/hbxdLBAux5Jcyw3XqUCkMK4I8BCZjdom+qinRlSVQqkT2ruZfEqZsJOx1/xMjWpjEMj1RY5TqB66i5PZ+Qfbuoho=
-Received: from CYZPR10CA0003.namprd10.prod.outlook.com (2603:10b6:930:8a::15)
- by BN9PR12MB5275.namprd12.prod.outlook.com (2603:10b6:408:100::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.23; Tue, 16 Jan
- 2024 11:58:53 +0000
-Received: from CY4PEPF0000E9D3.namprd03.prod.outlook.com
- (2603:10b6:930:8a:cafe::8c) by CYZPR10CA0003.outlook.office365.com
- (2603:10b6:930:8a::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.28 via Frontend
- Transport; Tue, 16 Jan 2024 11:58:53 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CY4PEPF0000E9D3.mail.protection.outlook.com (10.167.241.146) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7202.16 via Frontend Transport; Tue, 16 Jan 2024 11:58:53 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 16 Jan
- 2024 05:58:52 -0600
-Received: from xhdradheys41.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Tue, 16 Jan 2024 05:58:49 -0600
-From: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>, <michal.simek@amd.com>,
-	<sebastian.reichel@collabora.com>, <shubhrajyoti.datta@amd.com>,
-	<naman.trivedimanojbhai@amd.com>, <jay.buddhabhatti@xilinx.com>,
-	<nava.kishore.manne@amd.com>
-CC: <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <git@amd.com>, Radhey Shyam Pandey
-	<radhey.shyam.pandey@amd.com>
-Subject: [PATCH v2] dt-bindings: firmware: versal: add versal-net compatible string
-Date: Tue, 16 Jan 2024 17:28:46 +0530
-Message-ID: <1705406326-2947516-1-git-send-email-radhey.shyam.pandey@amd.com>
-X-Mailer: git-send-email 2.1.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978751B944
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 11:59:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40e779f0273so18124215e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 03:59:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705406380; x=1706011180; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4mY+tIwBKHmUxob9qZlCJ14coqBFslOG9Pxb8dXi/Ag=;
+        b=DMbwMIhWc9YAULkQpaZV2B2+1jhwM3RsttaozkThlzJfMQUrNLED/13rYnU+6gzOsa
+         aHTAIbI0ZQavKHIeT81zLRKVaN7OOu2zThFDLQNCas/qKLuzLKx0v880ihTpesWwMNWo
+         EasgmGRrScjGOCPRHQm/lNoane+Q3OUeqxmCTnhUR+eeea6w9uWK2SPfWkR1fmZbrycW
+         9SR1EAhbXpvk6ytjhP1Sy+J7Ek4mnOP9SGf9d/D8sDV4K/9ZylZx1U7Jb0vGIpkt40dc
+         JEsn84fOn88nIMjmPq3n6WABJRe6PoYJI4TBG1uav3Fy00dDotlnk03P0EtT09nfi2ef
+         WsSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705406380; x=1706011180;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4mY+tIwBKHmUxob9qZlCJ14coqBFslOG9Pxb8dXi/Ag=;
+        b=o757a2Lza9CnEhcNhXLoprwO2buzz8wSE4wZ0UtaweKk3Uoa5r1I/xlzxNyZfSIoOa
+         5QdVOR8xdJUYUrSMVzOH3ESypHfoPBBxMkzlFLLbRSLVDSQiVNWffukArqUOPSkIqyXP
+         dm+3rokZLMu1OOJS9sriERDvwPwQBkhhBmTvRD9//b0JpFO/wVjttDFRabWql3q+XedQ
+         Vnk6B65dn6Smy64feqaqrx30RvFGsCGcRVENXNMMm9m4cLxwHrzjoKcZy4+UVzy0O9II
+         qY0+UHsiAY2uztW6s1qF6GPDMYfnmG62Xv0FTs8jhhnPlTuZN5dNMnk11WxCyHcEGCTN
+         Yz4w==
+X-Gm-Message-State: AOJu0YyFzJ7fHVLF5wPByWRRtq7YItelve7dzNTKxdI2X5BfdiJGWqmd
+	p40hwqLfCvqFIq4ErqGn8G1lS3IKMNfToA==
+X-Google-Smtp-Source: AGHT+IGYJaZEn2g6guZI4dv6kZznoWhyov0C2/HFwMpWczK/1npe7aC2mGDSbL9GE9DZBkZ84UN4ug==
+X-Received: by 2002:a05:600c:211a:b0:40e:6ba4:e056 with SMTP id u26-20020a05600c211a00b0040e6ba4e056mr2674818wml.18.1705406379859;
+        Tue, 16 Jan 2024 03:59:39 -0800 (PST)
+Received: from mai.box.freepro.com ([2a05:6e02:1041:c10:fab3:687:ead6:5b40])
+        by smtp.gmail.com with ESMTPSA id p31-20020a05600c1d9f00b0040e6ea6d2d0sm3279722wms.24.2024.01.16.03.59.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jan 2024 03:59:39 -0800 (PST)
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+To: andersson@kernel.org
+Cc: Amit Pundir <amit.pundir@linaro.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT),
+	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] arm64: dts: qcom: sdm845: Fix wild reboot during Antutu test
+Date: Tue, 16 Jan 2024 12:59:20 +0100
+Message-Id: <20240116115921.804185-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D3:EE_|BN9PR12MB5275:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2f74144b-b021-40ba-cc0c-08dc168a82c6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	E+1uRtpBQtj2w4UBLKiUNlvIkM4PU8o14qJW3wfnaQ+sj/w8df7AT9HXIjV48SEAfKkU1PH6YXovQL2EBD9Kc4euAnwOhmo+b0CgHd3WExkfyLUDuoZZ8d3biN50jjZG8CxIp/MCDqwgI+MoMzlcvySnU7oLCpofdG+PNaAfdPESJsovK/JFDrVwKEXYwKmJcqQGe/fGWkAQJ4H33/2YtvSlLN/oTyJg0oHNZYtuCdC3M5gEl5PbKcs1eAzF6iJxIxSKM0DpjLjMKwQo14ivUVTpghLpgUPBE+2bzvm4fdu+TAGcSuWQmx67lsst6vmjLKZR2Pwynx1anHr0GsQ1b4Sv6nCuSqN8+IeZcy9a/iRq+LLCO1j554gnwimFCQRw4TS33n3bCgDhJZyYsLUXJwkYOvdKdIuAMknLfzOwuRZDDmEiPDFy9cB1AIYI0vxRUQvfWsRqi9LYOCeTU6AZC1mSoQ2FOgz/vvTTmfZUpYgDR8RFw6KJ8Ufm4Zyk7B4DLyVEZ4VmxlzdENDDYAFE4HCkjHnym8yaMX/D7LA/jahT5WQIRClReOFprDGTqlyriaQiDoxXujNroiHovuNwK1+zySVqa/X4CO0dvfEDkjR3Rezzm3kVErh0uFVlPAM2aQHdS+iY89m6A/iDqfnGJ4NgqluYC+HWXmHJ74LOSKSDZtAHbDILCwDBixuglix3nTX30S97U+xls4RgE5vuMrXJZ+AoUeNfEPzzF4ghxf4pSO4i2LY/ky9IF5jfyan1U11Qrom2cXNiBfm31NCh5xQoX3f+7Dhr1At10+2ONU0=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(346002)(39860400002)(396003)(230922051799003)(186009)(82310400011)(64100799003)(1800799012)(451199024)(36840700001)(40470700004)(46966006)(2616005)(316002)(70206006)(6666004)(70586007)(54906003)(478600001)(6636002)(110136005)(47076005)(36860700001)(83380400001)(426003)(336012)(41300700001)(2906002)(5660300002)(8676002)(8936002)(4326008)(26005)(36756003)(82740400003)(356005)(81166007)(86362001)(40460700003)(40480700001)(36900700001)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2024 11:58:53.4038
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2f74144b-b021-40ba-cc0c-08dc168a82c6
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000E9D3.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5275
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-From: Jay Buddhabhatti <jay.buddhabhatti@xilinx.com>
+Running an Antutu benchmark makes the board to do a hard reboot.
 
-Add dt-binding documentation for Versal NET platforms.
-Versal Net is a new AMD/Xilinx SoC.
+Cause: it appears the gpu-bottom and gpu-top temperature sensors are showing
+too high temperatures, above 115°C.
 
-The SoC and its architecture is based on the Versal ACAP device.
-The Versal Net device includes more security features in the
-platform management controller (PMC) and increases the number of
-CPUs in the application processing unit (APU) and the real-time
-processing unit (RPU).
+Out of tree configuratons show the gpu thermal zone is configured to
+be mitigated at 85°C with devfreq.
 
-Signed-off-by: Jay Buddhabhatti <jay.buddhabhatti@xilinx.com>
-Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Add the DT snippet to enable the thermal mitigation on the sdm845
+based board.
+
+Fixes: c79800103eb18 ("arm64: dts: sdm845: Add gpu and gmu device nodes")
+Cc: Amit Pundir <amit.pundir@linaro.org>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 ---
-Changes for v2:
-- Add Krzysztof acked-by tag.
----
- .../bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml      | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/arm64/boot/dts/qcom/sdm845.dtsi | 32 ++++++++++++++++++++++++++--
+ 1 file changed, 30 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml b/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
-index 8e584857ddd4..cd9fbbb62552 100644
---- a/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
-+++ b/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
-@@ -26,6 +26,12 @@ properties:
-       - description: For implementations complying for Versal.
-         const: xlnx,versal-firmware
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index c2244824355a..20fefd6af0f8 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -4764,6 +4764,8 @@ gpu: gpu@5000000 {
+ 			interconnects = <&mem_noc MASTER_GFX3D 0 &mem_noc SLAVE_EBI1 0>;
+ 			interconnect-names = "gfx-mem";
  
-+      - description: For implementations complying for Versal NET.
-+        items:
-+          - enum:
-+              - xlnx,versal-net-firmware
-+          - const: xlnx,versal-firmware
++			#cooling-cells = <2>;
 +
-   method:
-     description: |
-                  The method of calling the PM-API firmware layer.
+ 			status = "disabled";
+ 
+ 			gpu_opp_table: opp-table {
+@@ -5603,12 +5605,25 @@ gpu-top-thermal {
+ 			thermal-sensors = <&tsens0 11>;
+ 
+ 			trips {
+-				gpu1_alert0: trip-point0 {
++                                gpu1_alert0: trip-point0 {
++                                        temperature = <85000>;
++                                        hysteresis = <2000>;
++                                        type = "passive";
++                                };
++
++				gpu1_alert1: trip-point1 {
+ 					temperature = <90000>;
+ 					hysteresis = <2000>;
+ 					type = "hot";
+ 				};
+ 			};
++
++			cooling-maps {
++				map0 {
++					trip = <&gpu1_alert0>;
++					cooling-device = <&gpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++				};
++			};
+ 		};
+ 
+ 		gpu-bottom-thermal {
+@@ -5618,12 +5633,25 @@ gpu-bottom-thermal {
+ 			thermal-sensors = <&tsens0 12>;
+ 
+ 			trips {
+-				gpu2_alert0: trip-point0 {
++                                gpu2_alert0: trip-point0 {
++                                        temperature = <85000>;
++                                        hysteresis = <2000>;
++                                        type = "passive";
++                                };
++
++				gpu2_alert1: trip-point1 {
+ 					temperature = <90000>;
+ 					hysteresis = <2000>;
+ 					type = "hot";
+ 				};
+ 			};
++
++			cooling-maps {
++ 				map0 {
++ 					trip = <&gpu2_alert0>;
++					cooling-device = <&gpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++                                };
++                        };
+ 		};
+ 
+ 		aoss1-thermal {
 -- 
 2.34.1
 
