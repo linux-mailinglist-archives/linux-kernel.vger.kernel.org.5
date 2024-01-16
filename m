@@ -1,174 +1,120 @@
-Return-Path: <linux-kernel+bounces-27648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B22C82F3A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:04:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3CFB82F3AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:06:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12EEE284C1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:04:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E57501C2387C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:06:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0F581CD23;
-	Tue, 16 Jan 2024 18:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA7C71CD28;
+	Tue, 16 Jan 2024 18:06:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="e6I0w8cq"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jXZnaAwB"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A6961CD0B
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:04:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7380D1CD06;
+	Tue, 16 Jan 2024 18:06:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705428249; cv=none; b=sRFNQZ4X+B+93JGBRjgpK+tmwwL+Suks1zeBGSPvtZK1zPUJf+4oxXzz9dvN1h3hytXINqPv6jmQnwj6XMLxnMAQf1uTMcgSoteBLPeN3CCmmqpxjWBlTReeP3e/c8z1gdhBXeP/rjFbGL60UO9FHr5lMUl0MAwApIJ8kwYyQY0=
+	t=1705428390; cv=none; b=QddI5T6vg/bja+kMceuDqRgKM63HP2Sid+hj1dTsizl/2YbGM6vdU+houYK/edQSIPJ7Yii1hsWwnSLPG+ZfusKG2F6wFCCuMhGtmD0YB8g+oF62SWYBDY3qMh3lwayQyAMVKyRi61OH4KvYvmvuI2OFo6XHMT4OuBZUjLriZ64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705428249; c=relaxed/simple;
-	bh=Os2qv2Q2j2Nayzw/NO5KHMLTyZsH3lpmBso6vy9XZ1s=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=qKpVe/WmMueCrEU/ldt3rM5CueUNozoRFr9oTGyZILKZk7iTPpqn5VSFEROYzJFJOKjX7nXynpywsf3V5n9eei42S0FsMMBVJr/uPWaRbs9P9dqhOI10+XBhMJNQsu0qhLgWdY5kSydCK/R3gj8Fbxqh6+FLttCb8TZxwXOUwVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=e6I0w8cq; arc=none smtp.client-ip=209.85.214.181
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d4a980fdedso89944895ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:04:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705428248; x=1706033048; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pe8/o4TF5FBLUMkdKTODJOX218WpgftaiR3H9M62SnY=;
-        b=e6I0w8cqZQqdWBQhxTzXMaiue062AfpILjSIXUSiP1fR2Pg2Up1ZEbNpWkcXelkRm2
-         c79JWJ/lzun+Q21hPIHpXi2BWvw3TmLh5x/KkviOs9q0FG8yycW1Ndd3Fr0kSVFVHdt9
-         PevSVCuRkjV71wFqdBHpLCrGby8XFCwf6fwz89Si4cGqtjmbZohi3yMAvw9xgaWbOkBn
-         CTxDWgdG39OdIgOGhQYfC1R4IVRnL2vCgzdINS+kbz4ynue8OC6mQnfe+1h7LJdIsEYm
-         MzdcXnp02h8wKG/qbPqYJ6xUqDlGm/MOrI7iAnlCU/Tavqs/votCiX/lu096E6qni85m
-         D5Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705428248; x=1706033048;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pe8/o4TF5FBLUMkdKTODJOX218WpgftaiR3H9M62SnY=;
-        b=xDQqyWRQdGw8n0mnH1UMP0MYYo8e3FnJa7RdPPsOhp3ShC92gAkmGZuYypaEhEItpc
-         SAelYBkZWWqHpG/bcjLTIucvC8zrpGj56iDuhs/PqGOfC9pzOyVlB6/dK9pHNxkOloML
-         Vhjl/ZGpLsWo9uxGLbMBok8X2Yrrm4wNyyXtHNPxEO4qjvAQGM9dXr3ZKxByhKIK8uGi
-         GKhXY15JjSsjaAkFrWHgbmhhvqozB7O+uXY7PESO+OrdAIbAoZUE9DD4X9oa8YOdeO+U
-         RpVdrpt9XyGVDS6tqKv8wtgHxKaSdjb3SDxCtg9eDr3FbmK7WKFiORvjFV5CjpqFaUmi
-         0iMg==
-X-Gm-Message-State: AOJu0Yx+dphKOmkzSkCPqC2zSa/uzNP00WiBdFpAv6HF2QSrrV0yfqc/
-	mioCMJP9hYyCFDK+cnGztvpK6f6LM7kjQpGeA5PzRw71qMr8lQ==
-X-Google-Smtp-Source: AGHT+IHTwCfy8Hjuw6p1Hld3+SjDHNo7RzF6Oh4JalL87WHk2X4DOB9TTzfdw3L1gadUCh3PVsDQDSIpCL3FSsxKtsQ=
-X-Received: by 2002:a17:902:cec2:b0:1d5:4c65:6f67 with SMTP id
- d2-20020a170902cec200b001d54c656f67mr10059965plg.111.1705428247896; Tue, 16
- Jan 2024 10:04:07 -0800 (PST)
+	s=arc-20240116; t=1705428390; c=relaxed/simple;
+	bh=UX3kq6YtyE1PdEHxyUdmIdodg5pGEfTgztIGkSGO21A=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:Received:Received:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=pDX7CIWMXDZ9IGEeMEj05VS4tl2bJbKUP1694WY/sI7UOH07VZA3E9mJfaVNVzbKyOUiVjGsQfSKuaXHjPQAw2zKTl1GWY7y7MFedw11sVLnFzM1Zwk/J1fF9wKhlP8QqIdMAxv+Y0M6/A9y5WYxPIKUzhyHdnjR1sQv/gfMjO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jXZnaAwB; arc=none smtp.client-ip=198.175.65.11
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705428388; x=1736964388;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=UX3kq6YtyE1PdEHxyUdmIdodg5pGEfTgztIGkSGO21A=;
+  b=jXZnaAwBHadPGV65xNBZ/H8bwkiXw1xXcvHPPUpxVoID3vaaApwv3Eq2
+   pc9eyluZ/hTR4JqZ2y5Pe7MTDWu/VeOqj0X++ZnGInMzeF/y20OwJmd+N
+   ob3N9H7sjhgSU6qbvy8e/lqgR/dKKepqM2ZLbBmgWSprKykP2ZbJMyV38
+   9raZsIp1mM+jKLqzpqO1JZen647YE7fgbJ0MImtix6c8OLUZg+YRAZcaa
+   yvmwymF0s8UnHzyGrFOQCZQYx08qZRUnOzVyhMqPaTB55RyHm/LCbioCc
+   HqLdOc1b4YvC22FYyLb+pFNMqzdHhcqTs4Pszn4scvPfawDfF1RtmdzwT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="6650931"
+X-IronPort-AV: E=Sophos;i="6.05,199,1701158400"; 
+   d="scan'208";a="6650931"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 10:06:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,199,1701158400"; 
+   d="scan'208";a="18552426"
+Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 16 Jan 2024 10:06:23 -0800
+Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rPnpM-00012m-2R;
+	Tue, 16 Jan 2024 18:06:20 +0000
+Date: Wed, 17 Jan 2024 02:05:40 +0800
+From: kernel test robot <lkp@intel.com>
+To: Michael Grzeschik <m.grzeschik@pengutronix.de>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Paul Gazzillo <paul@pgazz.com>,
+	Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+	oe-kbuild-all@lists.linux.dev, v9fs@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-usb@vger.kernel.org, kernel@pengutronix.de,
+	Michael Grzeschik <m.grzeschik@pengutronix.de>
+Subject: Re: [PATCH 2/3] usb: gadget: legacy: add 9pfs multi gadget
+Message-ID: <202401170130.QaAJQe4j-lkp@intel.com>
+References: <20240116-ml-topic-u9p-v1-2-ad8c306f9a4e@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240109125814.3691033-1-tudor.ambarus@linaro.org> <20240109125814.3691033-12-tudor.ambarus@linaro.org>
-In-Reply-To: <20240109125814.3691033-12-tudor.ambarus@linaro.org>
-From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Tue, 16 Jan 2024 12:03:56 -0600
-Message-ID: <CAPLW+4=U9DBmwgxyWz3cy=V-Ui7s2Z9um4xbEuyax1o=0zB_NA@mail.gmail.com>
-Subject: Re: [PATCH v3 11/12] arm64: dts: exynos: gs101: define USI8 with I2C configuration
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: peter.griffin@linaro.org, krzysztof.kozlowski+dt@linaro.org, 
-	gregkh@linuxfoundation.org, mturquette@baylibre.com, sboyd@kernel.org, 
-	robh+dt@kernel.org, conor+dt@kernel.org, andi.shyti@kernel.org, 
-	alim.akhtar@samsung.com, jirislaby@kernel.org, s.nawrocki@samsung.com, 
-	tomasz.figa@gmail.com, cw00.choi@samsung.com, 
-	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-serial@vger.kernel.org, andre.draszik@linaro.org, 
-	kernel-team@android.com, willmcvicker@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240116-ml-topic-u9p-v1-2-ad8c306f9a4e@pengutronix.de>
 
-On Tue, Jan 9, 2024 at 7:01=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro.=
-org> wrote:
->
-> USI8 I2C is used to communicate with an eeprom found on the battery
-> connector. Define USI8 in I2C configuration.
->
-> USI8 CONFIG register comes with a 0x0 reset value, meaning that USI8
-> doesn't have a default protocol (I2C, SPI, UART) at reset. Thus the
-> selection of the protocol is intentionally left for the board dts file.
->
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> ---
-> v3: reorder usi8 clock order (thanks Andre'!). Did not make any
-> difference at testing as the usi driver treats the clocks in bulk.
-> v2:
-> - identify and use gate clocks instead of dividers
-> - move cells and pinctrl properties from dts to dtsi
-> - move IRQ type constant on the previous line
->
->  arch/arm64/boot/dts/exynos/google/gs101.dtsi | 29 ++++++++++++++++++++
->  1 file changed, 29 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/bo=
-ot/dts/exynos/google/gs101.dtsi
-> index 6aa25cc4676e..f14a24628d04 100644
-> --- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> +++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> @@ -352,6 +352,35 @@ pinctrl_peric0: pinctrl@10840000 {
->                         interrupts =3D <GIC_SPI 625 IRQ_TYPE_LEVEL_HIGH 0=
->;
->                 };
->
-> +               usi8: usi@109700c0 {
-> +                       compatible =3D "google,gs101-usi",
-> +                                    "samsung,exynos850-usi";
-> +                       reg =3D <0x109700c0 0x20>;
-> +                       ranges;
-> +                       #address-cells =3D <1>;
-> +                       #size-cells =3D <1>;
-> +                       clocks =3D <&cmu_peric0 CLK_GOUT_PERIC0_CLK_PERIC=
-0_USI8_USI_CLK>,
-> +                                <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0=
-_IPCLK_7>;
-> +                       clock-names =3D "pclk", "ipclk";
-> +                       samsung,sysreg =3D <&sysreg_peric0 0x101c>;
+Hi Michael,
 
-I'd also add samsung,mode for the "default" USI mode here, just to
-avoid providing it later in the board's dts. But that's a matter of
-taste I guess.
+kernel test robot noticed the following build warnings:
 
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+[auto build test WARNING on 052d534373b7ed33712a63d5e17b2b6cdbce84fd]
 
-> +                       status =3D "disabled";
-> +
-> +                       hsi2c_8: i2c@10970000 {
-> +                               compatible =3D "google,gs101-hsi2c",
-> +                                            "samsung,exynosautov9-hsi2c"=
-;
-> +                               reg =3D <0x10970000 0xc0>;
-> +                               interrupts =3D <GIC_SPI 642 IRQ_TYPE_LEVE=
-L_HIGH 0>;
-> +                               #address-cells =3D <1>;
-> +                               #size-cells =3D <0>;
-> +                               pinctrl-names =3D "default";
-> +                               pinctrl-0 =3D <&hsi2c8_bus>;
-> +                               clocks =3D <&cmu_peric0 CLK_GOUT_PERIC0_P=
-ERIC0_TOP0_IPCLK_7>,
-> +                                        <&cmu_peric0 CLK_GOUT_PERIC0_CLK=
-_PERIC0_USI8_USI_CLK>;
-> +                               clock-names =3D "hsi2c", "hsi2c_pclk";
-> +                               status =3D "disabled";
-> +                       };
-> +               };
-> +
->                 usi_uart: usi@10a000c0 {
->                         compatible =3D "google,gs101-usi",
->                                      "samsung,exynos850-usi";
-> --
-> 2.43.0.472.g3155946c3a-goog
->
->
+url:    https://github.com/intel-lab-lkp/linux/commits/Michael-Grzeschik/usb-gadget-function-9pfs/20240116-095914
+base:   052d534373b7ed33712a63d5e17b2b6cdbce84fd
+patch link:    https://lore.kernel.org/r/20240116-ml-topic-u9p-v1-2-ad8c306f9a4e%40pengutronix.de
+patch subject: [PATCH 2/3] usb: gadget: legacy: add 9pfs multi gadget
+config: alpha-kismet-CONFIG_NET_9P-CONFIG_USB_9PFS-0-0 (https://download.01.org/0day-ci/archive/20240117/202401170130.QaAJQe4j-lkp@intel.com/config)
+reproduce: (https://download.01.org/0day-ci/archive/20240117/202401170130.QaAJQe4j-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401170130.QaAJQe4j-lkp@intel.com/
+
+kismet warnings: (new ones prefixed by >>)
+>> kismet: WARNING: unmet direct dependencies detected for NET_9P when selected by USB_9PFS
+   
+   WARNING: unmet direct dependencies detected for NET_9P
+     Depends on [n]: NET [=n]
+     Selected by [y]:
+     - USB_F_9PFS [=y] && USB_SUPPORT [=y] && USB_GADGET [=y]
+     - USB_9PFS [=y] && USB_SUPPORT [=y] && USB_GADGET [=y]
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
