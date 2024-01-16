@@ -1,128 +1,109 @@
-Return-Path: <linux-kernel+bounces-27173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CD2982EB8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:31:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B0D382EB8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 10:32:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82C441C22773
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:31:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDE911F24164
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:32:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45D3212B89;
-	Tue, 16 Jan 2024 09:31:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F9C612B96;
+	Tue, 16 Jan 2024 09:31:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="IvdmDo/9"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="unN+9lmG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 176B212E42;
-	Tue, 16 Jan 2024 09:31:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1705397484; x=1736933484;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+e6Ln558idTWadRn1DXntGL0wDIyCZpJMPP2MxyNkHo=;
-  b=IvdmDo/9x2r0RyR0dBmM+vU1fA4M8UhHYFIF5ZGW9Hr/ngzBKvFWaMkK
-   v5cojJ5uf8zg0+5a4WXHL2Ju1L2CfPgFl8hrxUSc6hLaeCL3WAh/d9dE/
-   i0yKxWvMwp1rYGTzpk8KYBQQ5evfNLpCO41MWzxMs3VQ1BwGRd9zGADHm
-   ACbabhXgYI6Eh3dAFTYSdJcs/6vLV3MANX5uCTdkTGw/I5e+MKvrxbMsV
-   3vbo8PYtQDtS2dQPW5ALj9KNL3EXZMr+OaqLD3G/Xd1WNiUu3hDLCzFNS
-   qoj55trBOXJ2vqaY+kmRfyLP/5q46zJVmF2Dug4Hr2ng2iarUwHpSEHG2
-   w==;
-X-CSE-ConnectionGUID: WayHWkw8Q7O2gJ+Gskrx3A==
-X-CSE-MsgGUID: 0aICPRxpQsWlKp7G71Bc1A==
-X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
-   d="asc'?scan'208";a="15990500"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Jan 2024 02:31:22 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 16 Jan 2024 02:31:04 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Tue, 16 Jan 2024 02:31:01 -0700
-Date: Tue, 16 Jan 2024 09:30:25 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC: Frank Li <Frank.li@nxp.com>, <robh@kernel.org>,
-	<alexandre.belloni@bootlin.com>, <conor.culhane@silvaco.com>,
-	<gregkh@linuxfoundation.org>, <imx@lists.linux.dev>, <jirislaby@kernel.org>,
-	<joe@perches.com>, <linux-i3c@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>,
-	<miquel.raynal@bootlin.com>, <zbigniew.lukwinski@linux.intel.com>,
-	<devicetree@vger.kernel.org>, <krzysztof.kozlowski+dt@linaro.org>
-Subject: Re: [PATCH v2 2/7] dt-bindings: i3c: svc: add compatible string i3c:
- silvaco,i3c-target-v1
-Message-ID: <20240116-bleach-herbicide-48d636967134@wendy>
-References: <20240110175221.2335480-1-Frank.Li@nxp.com>
- <20240110175221.2335480-3-Frank.Li@nxp.com>
- <3c0be658-e7a6-4231-b206-86ffb47e0cb2@linaro.org>
- <ZaFbbeQrC7o2dchO@lizhi-Precision-Tower-5810>
- <e3b9aa63-25a5-41cc-9eb7-6e7d1eacb136@linaro.org>
- <ZaFjaWCA6k+tiCSJ@lizhi-Precision-Tower-5810>
- <ZaWLCrWJEMtFx8cR@lizhi-Precision-Tower-5810>
- <1b628901-7f71-4c97-9a16-723912988417@linaro.org>
- <ZaXqCoCHPWER94Hh@lizhi-Precision-Tower-5810>
- <d45e31c4-914e-4cea-a145-9775b6f516ab@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82B5E12B7A;
+	Tue, 16 Jan 2024 09:31:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2899BC43142;
+	Tue, 16 Jan 2024 09:31:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705397510;
+	bh=VLP6UgFM96N7y+o2qdkKbSUFQq0ljlGSoU8LbFEeobY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=unN+9lmG5I30QesWUCKaoL5o3AgVB4FIkuK8XMYneyhX0DMYpe83oEel57kmTBsEa
+	 xK3QGZ4w1ZK/GnZK11fDsFiYZH06ibO4QbvbYzZxKAqoS6g0oO92nYHITmghW4335n
+	 fy5/TRlxNh3MEUCYwzPngBRjMZYAr11P1qaj978i7W2tlO/wYL3tJtRAzXiuD07P1V
+	 +SIYOWetQHxWKthhhmy9O18POg2x8PhrmYJ0H9KaOkoorK4ftAXUty3uVWhJjVCkUq
+	 jTywdSrT+YH0Xy11sL0DE2m5B++HHf/HOGIgNj4NT+BE4IAN/+0jAKCJK9axnT6vo5
+	 xsbSgdKQY8x8w==
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-559afecee33so276202a12.1;
+        Tue, 16 Jan 2024 01:31:50 -0800 (PST)
+X-Gm-Message-State: AOJu0YwUtASq3ft5DM+ezkVG7Ve2CLMjmV4ebqY2ud6LucSEPVimt1qf
+	+EAYLlKiHniXYSt1hsJUIOmNwM3XeR21kjzTVfI=
+X-Google-Smtp-Source: AGHT+IGCUpSuIQgXHJTAuQmb/QACibD64SWuIXhc3fCqJpxMZRy6D1FcLP/Vc55ljvPLouJWBYUz2y+IU1A8msEcz6I=
+X-Received: by 2002:a17:907:d38a:b0:a2c:b31f:f076 with SMTP id
+ vh10-20020a170907d38a00b00a2cb31ff076mr4347078ejc.124.1705397508471; Tue, 16
+ Jan 2024 01:31:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="tU9usgt5JDc4MslD"
-Content-Disposition: inline
-In-Reply-To: <d45e31c4-914e-4cea-a145-9775b6f516ab@linaro.org>
-
---tU9usgt5JDc4MslD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240108032117.215171-1-wangrui@loongson.cn> <ZZ2fn0scbDKBXWe5@boqun-archlinux>
+ <CAHirt9iox8FGV2wrMyxwFRjab2avfOcyLKvBc9K=AqiHxqHXKg@mail.gmail.com>
+ <ZZ38XMQw18mw2sTA@Boquns-Mac-mini.home> <CAHirt9jQSVvBF=1wc=sT9FxngeSP30P4FDpu8m0JH_0fOPSO-w@mail.gmail.com>
+ <CANiq72=X3cggAn0HLMi7jVFAfypBhog=ZkPB57yfaX4ZUzT-HA@mail.gmail.com>
+ <CAHirt9hdtGSsEofxDb0FCtcFeAw9n9LKJALz23Qdqh4n2=Ua5A@mail.gmail.com>
+ <CANiq72n7K8LcKrs+beF2sbt1XLdr4zEhEw4xcy3yh4wgTrvYeg@mail.gmail.com>
+ <CAAhV-H72Hbfy7n6+AFSFFOzizo0GtpzA074sgo48-W-Dt0VR+w@mail.gmail.com> <CANiq72mEPnB7yEZvtUXAM5w0GgYmzdrM9OhioLGb_LzbAJKNOA@mail.gmail.com>
+In-Reply-To: <CANiq72mEPnB7yEZvtUXAM5w0GgYmzdrM9OhioLGb_LzbAJKNOA@mail.gmail.com>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Tue, 16 Jan 2024 17:31:36 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6BFkgN-KzEexXk9zdnOGNCdBesCEEaczEvEp8x2K2YHw@mail.gmail.com>
+Message-ID: <CAAhV-H6BFkgN-KzEexXk9zdnOGNCdBesCEEaczEvEp8x2K2YHw@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] Rust enablement for LoongArch
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: WANG Rui <wangrui@loongson.cn>, Boqun Feng <boqun.feng@gmail.com>, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, WANG Xuerui <kernel@xen0n.name>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-doc@vger.kernel.org, loongson-kernel@lists.loongnix.cn
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 16, 2024 at 08:24:20AM +0100, Krzysztof Kozlowski wrote:
-> On 16/01/2024 03:29, Frank Li wrote:
-> >>> 	Patches were accepted after discussion, what you ponit to. So I
-> >>> think everyone agree on the name 'silvaco,i3c-master-v1'.
-> >>> 	I plan send next version to fix auto build error. Any additional
-> >>> comments about this?
-> >>
-> >> I still do not see how did you address Rob's comment and his point is
-> >> valid. You just did not reply to it.
-> >=20
-> > See https://lore.kernel.org/imx/ZXCiaKfMYYShoiXK@lizhi-Precision-Tower-=
-5810/
->=20
-> First of all, that's not the answer to Rob's email, but some other
-> thread which is 99% ignored by Rob (unless he has filters for
-> "@Rob"...). Therefore no, it does not count as valid answer.
->=20
-> Second, explanation does not make sense. There is no argument granting
-> you exception from SoC specific compatibles.
+Hi, Miguel,
 
-The patch could have been applied two months ago had Frank done as
-was requested (multiple times). I don't understand the resistance
-towards doing so given the process has taken way way longer as a result.
+On Tue, Jan 16, 2024 at 12:08=E2=80=AFAM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> On Mon, Jan 15, 2024 at 4:23=E2=80=AFAM Huacai Chen <chenhuacai@kernel.or=
+g> wrote:
+> >
+> > Thank you for your suggestion, but since this will be replaced by the
+> > built-in target soon, and I don't want to change the tag to make Linus
+> > unhappy. Let's leave it as is.
+>
+> The issue is not a big deal and I appreciate that you made the effort
+> to enable Rust for your architecture. However, please note that we do
+> our best to maintain a clean formatting state for Rust code (i.e.
+> `rustfmt` should be run) and that people may see this in tests/CIs
+> that use the Make target.
+>
+> I don't think Linus would mind too much, and you could point him to
+> this email if you want (or you could put the fix on top); but if you
+> really want to keep the tag as-is, then we should consider it as a fix
+> for this cycle, i.e. we should not wait for e.g. the next cycle for
+> the built-in target. Could you please send it through your tree as
+> soon as possible?
+OK, since Linus said the merge window is paused now, I rebase and
+retag my tree and the Rust commit is like this, I think this is
+perfect now?
 
---tU9usgt5JDc4MslD
-Content-Type: application/pgp-signature; name="signature.asc"
+https://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.g=
+it/commit/?h=3Dloongarch-next&id=3D706f9e1ab7c7a58d80ef2c87d8720131253a2256
 
------BEGIN PGP SIGNATURE-----
+Huacai
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZaZMsQAKCRB4tDGHoIJi
-0oXjAQD+n2/ohO6suxsrwD5Ou5eVTuKiCJW4yn6SzYminXj4UQEA5Z7Y5G8MfUrU
-u49KfI9asa8Tjp9X2y7YIiNSAtP1Qg0=
-=nQni
------END PGP SIGNATURE-----
-
---tU9usgt5JDc4MslD--
+>
+> Cheers,
+> Miguel
 
