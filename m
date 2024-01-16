@@ -1,106 +1,146 @@
-Return-Path: <linux-kernel+bounces-28322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35FD282FCED
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:33:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AAC482FCEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:34:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA5281F26D4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:33:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36D3C1F2974A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:34:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B94393DBB1;
-	Tue, 16 Jan 2024 21:54:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BI8PtIE3"
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5469C3FB1F;
+	Tue, 16 Jan 2024 21:55:09 +0000 (UTC)
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A19791D6BD;
-	Tue, 16 Jan 2024 21:54:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 937201D6BD;
+	Tue, 16 Jan 2024 21:55:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705442096; cv=none; b=TZf05ZHkYfo9NT00SSY3TL4b5bAeH/VuGUs3QoldTYtDojyTlgQlIR30LhO439yXaURFbtaqBor5Ike06Mkql+zbnFK5i03YJ6/PU95M27omrBvsMIdwVA7bZ89K3qDJBjXwhknPWLRVcmZf2cjoQP2DupopRPCv5jWhx4mj6Hs=
+	t=1705442108; cv=none; b=H3LL6eV99xZdc3p6xaoS4WzOXrZj5bkWJuP3qmSafP5zWDlPwxYWsuvPCP5C9EPpIA2x8TrNiew2cpey2tGLyl16lKA/43e782MjEEsqva5w94kZkh7NhbDa39lGLaOzOYRbUUgJG9gK7NThwVV1cvL+uv4yv0/wQ2C76L6N5r0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705442096; c=relaxed/simple;
-	bh=npI+Ih9mt2xbQi3BROxMXKfAn6rfg1s15HAmsZCxBbM=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To; b=gJlCx/uFSNJHzDkIcCaEHlhxyCw3bNOzpA2Xd/cRwjoKqpGrH0rkCG8QSTwRiQkZCNcLodMXXE3l2WahcjiPVjlFQkYkpGpOPneoF6+/rGJQ6cfHw5PLXQdSRnXkbkAbdJ1V1DTI+u/d1RD4uXA6vICU51hci/iy0dh0QwZfv+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BI8PtIE3; arc=none smtp.client-ip=209.85.167.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1705442108; c=relaxed/simple;
+	bh=1OQ9ocuUq7f0RxHOajJIIjyI25WuDNYx8YfwH07MV3c=;
+	h=Received:X-Google-DKIM-Signature:X-Gm-Message-State:
+	 X-Google-Smtp-Source:X-Received:MIME-Version:References:
+	 In-Reply-To:From:Date:Message-ID:Subject:To:Cc:Content-Type:
+	 Content-Transfer-Encoding; b=kkNeDqo932DtB7HpLjaTcD26gbHUzHtNEfOc9kgH1rTXp1OgCyYWQ1uzlRAl0eotkgbPGUWPbPkpgigrkZ8+mMTOeqF9BvtsP1XKbmoBhfZSEknc+9qpgM1b4v4pTWh3Ou1lqIxF8Ro2Oxt5hfzCgHM3ZvGz88DmLwV7TooYNa4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3bb53e20a43so7020101b6e.1;
-        Tue, 16 Jan 2024 13:54:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705442093; x=1706046893; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=jvvtxY1CbOhwKiiqsLbdlUrB9w8j8X3W8Q9P4s0eRV8=;
-        b=BI8PtIE3xGbI/DXHA+mNvt8WE0kJmz+g7Dyrl1EQ/Bi04isT7lF6HoCe7DWkIRu0Ig
-         aurhuJkoBt5BWKxD1/ZuCH7yDtoTKPfd77+ibMuCjjKITyCIaU2SupXwq8e35HQuqpWV
-         m1OOh4V7QF91cl8ROd4Z4IXLgYSRGplUW1p3qQxMdtuevbJKrPXe9KzN8QXuxAkUkFyB
-         VKaHLjig0U8PKeuvYZdAVTjxqDuRMb7QRbyZx7fjP3yx0FES7p2E8xQHnkmmjihBz4mg
-         JNdgFyHh/DhUx3CeXOSISxbDKOy2pw5s33baxx4//u9tpqwWnzzMZe3E16i4dlnC5aI+
-         V2qg==
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-28ff6445faaso74920a91.1;
+        Tue, 16 Jan 2024 13:55:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705442093; x=1706046893;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jvvtxY1CbOhwKiiqsLbdlUrB9w8j8X3W8Q9P4s0eRV8=;
-        b=EAycuzu377l4x2MpKRfQLc7Qg5+u2u7d9yL8QwtemOEqj3bbYMjKHWhhbAxUk+x/od
-         +z7jEAFW+DWcZeRzqs9bwHbdaaL2h9K0OH8AGOgy8dTAz5ZtFHf7AuDmBBKrrpYrY3PF
-         D1xayPY/ozK4QI3roydotFxAfa4nvU0oK89RL2DFBCZuEXobhWdxgAskJ4SJuaU4PaOK
-         Ljpzgy+8uR6tOIph9M9LjzfBG46c3Zg2Z8HjEIdEy6DAFoIazEb4osqcT9AGsr9mkZwS
-         Bp+/YScfGnn4+FAOkttoYTUtdr3mqtKKWa2Gz/pUmog+HBz6v3fvi7sogLlV4Om+qsOB
-         3bqA==
-X-Gm-Message-State: AOJu0Yzwf9zB0nkn2pbvLz8gnxed9deP4OJayC8rTeuuBsbm4rKhIYwj
-	KWRTxoIAmUarHeBDbKTV++g=
-X-Google-Smtp-Source: AGHT+IFdXgsLRz4CScn/7nc2HlTEx/jXFC16f4AGjokIAP1lG1KXO71YlSeSSYSHrOFXxuQSJqYbqw==
-X-Received: by 2002:a05:6358:5490:b0:175:9bfc:1b32 with SMTP id v16-20020a056358549000b001759bfc1b32mr8713718rwe.29.1705442093495;
-        Tue, 16 Jan 2024 13:54:53 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:5c15:9a6:f612:d37a])
-        by smtp.gmail.com with ESMTPSA id b25-20020aa78719000000b006d998c11eddsm64665pfo.62.2024.01.16.13.54.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 13:54:53 -0800 (PST)
-Date: Tue, 16 Jan 2024 13:54:50 -0800
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc: Russell King <linux@armlinux.org.uk>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-input@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] input/navpoint: remove driver
-Message-ID: <Zab7KuDPKHlbahsn@google.com>
-References: <20240116-navpoint-removal-v2-0-e566806f1009@skole.hr>
- <20240116-navpoint-removal-v2-2-e566806f1009@skole.hr>
+        d=1e100.net; s=20230601; t=1705442107; x=1706046907;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oIZzUXfeyB0JSREarHHCmZzOdwaXVpbV3/qdV2TmR9M=;
+        b=fuF47ZrkTV9lSdkXByWd4ze23W1bJwWLQlJw1BdfQNX0bCqGP0c+P/F4a3AhZl9q+5
+         eUHfT5e++XcOo5CFtkd0ZCsww9//QF3DBW2RZdv2tg/sD4wG3A1TM9ja8nSYylWqauCM
+         RDE7gfyqEQ81EowNtPNGtsUvud/qNkaijUjQzWC8mLi3sLay1nq95P2YaTnuAdQayRgW
+         RX8L9r1OOOb6SP7IR2Zc2IoVe3H7CMgPKUl0dhxvoqOsI79jwT1zuJ2ZWTJVywmwfX75
+         w5tpovumDi+gzYcCbD2a0RKNlZYIxYWPar55lcg3oPkjLYAcdnAwxNrIP8D/s+aZjzb9
+         76Pw==
+X-Gm-Message-State: AOJu0YzkzBO1inFZl3S9AjXZWtzZ/JPXE5c0TfVv5wb6MSRMw2ljlZN8
+	xDWo7blnacA4MVraPpfbp2mKuWA2tRdhaecj6L0=
+X-Google-Smtp-Source: AGHT+IHWox2bKBt1g7JKNDQQ4hF1U1tIzFNGVfikE8a/hzNtDSUeCSVd7E40obU/1Wz4LLybEUA64Ah5vxpb3zLCGg8=
+X-Received: by 2002:a17:90b:314a:b0:28c:91a5:1e33 with SMTP id
+ ip10-20020a17090b314a00b0028c91a51e33mr5272652pjb.12.1705442106929; Tue, 16
+ Jan 2024 13:55:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240116-navpoint-removal-v2-2-e566806f1009@skole.hr>
+References: <20240112120737.1995575-1-james.clark@arm.com>
+In-Reply-To: <20240112120737.1995575-1-james.clark@arm.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Tue, 16 Jan 2024 13:54:55 -0800
+Message-ID: <CAM9d7ciUkjeU1+vzb7ydKCcU=Pybu-qVWFG2Tr+QUPDjJbGNVw@mail.gmail.com>
+Subject: Re: [PATCH] perf test: Fixed masked error condition in perf data
+ convert test
+To: James Clark <james.clark@arm.com>
+Cc: linux-perf-users@vger.kernel.org, ilkka@os.amperecomputing.com, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Anup Sharma <anupnewsmail@gmail.com>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 16, 2024 at 08:48:07PM +0100, Duje Mihanović wrote:
-> This driver does not use the SPI core as it should, instead tampering
-> with the SSP registers manually. Refactoring the driver is almost
-> certainly not worth it as the hardware seems to have been designed for
-> and used only in the HP iPAQ hx4700 removed more than a year ago in
-> d6df7df7ae5a ("ARM: pxa: remove unused board files"), so let's remove
-> it.
-> 
-> Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+On Fri, Jan 12, 2024 at 4:07=E2=80=AFAM James Clark <james.clark@arm.com> w=
+rote:
+>
+> The test does set -e, so any errors go straight to the exit handler,
+> where it returns err=3D0 (success). Fix it by leaving err=3D1 from the
+> beginning and only set the success code if it ran all the way to the end
+> without errors.
+>
+> Also remove the exit code argument from the last exit because it doesn't
+> do anything, it's always replaced by err in the exit handler.
+>
+> Fixes: 68d124182610 ("perf test: Add test validating JSON generated by 'p=
+erf data convert --to-json'")
+> Signed-off-by: James Clark <james.clark@arm.com>
 
-Applied, thank you.
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
--- 
-Dmitry
+Thanks,
+Namhyung
+
+
+> ---
+>  tools/perf/tests/shell/test_perf_data_converter_json.sh | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/perf/tests/shell/test_perf_data_converter_json.sh b/to=
+ols/perf/tests/shell/test_perf_data_converter_json.sh
+> index c4f1b59d116f..1781b7215c11 100755
+> --- a/tools/perf/tests/shell/test_perf_data_converter_json.sh
+> +++ b/tools/perf/tests/shell/test_perf_data_converter_json.sh
+> @@ -4,7 +4,7 @@
+>
+>  set -e
+>
+> -err=3D0
+> +err=3D1
+>
+>  shelldir=3D$(dirname "$0")
+>  # shellcheck source=3Dlib/setup_python.sh
+> @@ -36,7 +36,6 @@ test_json_converter_command()
+>                 echo "Perf Data Converter Command to JSON [SUCCESS]"
+>         else
+>                 echo "Perf Data Converter Command to JSON [FAILED]"
+> -               err=3D1
+>                 exit
+>         fi
+>  }
+> @@ -49,7 +48,6 @@ validate_json_format()
+>                         echo "The file contains valid JSON format [SUCCES=
+S]"
+>                 else
+>                         echo "The file does not contain valid JSON format=
+ [FAILED]"
+> -                       err=3D1
+>                         exit
+>                 fi
+>         else
+> @@ -62,4 +60,7 @@ validate_json_format()
+>  test_json_converter_command
+>  validate_json_format
+>
+> -exit ${err}
+> +# Set -e is on, so it was only successful if it ran up to this point.
+> +# Therefore only set err=3D0 here.
+> +err=3D0
+> +exit
+> --
+> 2.34.1
+>
 
