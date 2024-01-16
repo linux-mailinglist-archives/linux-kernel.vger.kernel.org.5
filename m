@@ -1,146 +1,117 @@
-Return-Path: <linux-kernel+bounces-27700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8004D82F453
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:33:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB54482F44E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:33:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FCC41C23822
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:33:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AA9B1F249D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:33:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064D01C6AD;
-	Tue, 16 Jan 2024 18:33:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6494E13FE5;
+	Tue, 16 Jan 2024 18:33:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hBONMbP1"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RkiPhIMT"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04E9429AB
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:33:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 549B81CD07
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:33:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705430026; cv=none; b=Qa2nz8hp2Aorq1/muYBejf4ojY9ZsD4wd34Fq5eNDpDL5BcGero/ABJnL8BJF55ks/lNHBJaHft88h0b74sPziKwygqSWRDBIGJuFk7TP5cVf7vc/Pk7J3N9SY+zLjj+Ng525TZCOSHX2aKmDBT+I1f2ubN62saO62Ng8cx8wqc=
+	t=1705429994; cv=none; b=RSckkhINGxnIiUiMrXKZUd/SNmNrSvwNZOKZn/RFkoCnraxqYTaEI4XOEzsJmPClNzZzGi1lfk0GWbvzkVgmEe5wGGU1Of1r7DNgLshUpy2ryOXEWVSv/rSUKHrl0P6/shYgKouTYr142hZM7TX6ziqb3g/Uou0G3GyB3NsghEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705430026; c=relaxed/simple;
-	bh=P2deU3JZDkvYVtH5GnOFLNknOytS8dMMUCIUQGHAeY4=;
+	s=arc-20240116; t=1705429994; c=relaxed/simple;
+	bh=JwNvuHi5CpdeD9Q7CbYVbQzkcZ5+AVv/Usz1r2vNrkw=;
 	h=DKIM-Signature:Received:X-MC-Unique:Received:
 	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
-	 X-Google-Smtp-Source:X-Received:MIME-Version:References:
-	 In-Reply-To:From:Date:Message-ID:Subject:To:Cc:Content-Type:
-	 Content-Transfer-Encoding; b=KXG3pez2x6jp28pZZJ7glke8seHt6TJVZ+C89bI+hBSYTN/0+tBTgevT2kuFGJF5PQOJyQeTT8aU/gwQkUsgvesQUve4N8YV69STJXWgvYO86hEbDPZdsQ0mNrhRfXl5L/QNo7XvhQxUMoWv0h7rDBUGdkat+PNYEPIiFKK5jEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hBONMbP1; arc=none smtp.client-ip=170.10.129.124
+	 X-Google-Smtp-Source:X-Received:Received:Date:From:To:Cc:Subject:
+	 Message-ID:In-Reply-To:References:X-Mailer:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding; b=kBlljvsxw8zqGtB2Q38kWl0LudjSSz7vZAwZkabUggDRaeU6lNlAax4MZH0b+0Mhee5P4YwH/ifHKEQoDD89cjmtnkKSKqV15laRiNPkrOB4l8CF62pnFcfTYFXwoaE5/X5o6Gdz6pj3YoSbYWN++9JqGaSo3iO9H1a2B+9PZ7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RkiPhIMT; arc=none smtp.client-ip=170.10.133.124
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705430024;
+	s=mimecast20190719; t=1705429992;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=v0IvAnbO55I9U8lmAgynm04Aoyru/cAMqaXR93cb9pg=;
-	b=hBONMbP1e0YcukW0VDYfdrJMauM5P5/taWrSoSPBqnGuM7EkUhoO9CQf4Z6ID/O5swxkfv
-	sqecNokApVmtNT6EHs16PluOQH7VvIC6sukHLSOO3+p6h+9AUWdjO7soXqYW7eOftk6xSP
-	bOVAAAK7khMBUrOEA+CBypmM1aGByLc=
-Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
- [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=FISaMlvGT4jM9D2WMtxVsmws03Og0Eq0GceC6awRLlY=;
+	b=RkiPhIMTk1WM7rn6arWhT1CDiVjvFgwoQgKByn3NAAslIJwMw3VcEgCq+8y+1bG4ZZo/E2
+	8RGAv4J5wCf/qVhyGEPHrL8vnOLjyLvFAupmFkrMXTKeFoWlkMJ6iHPaA7ghI1EiCVCINs
+	m8TKWbdMEOOINCkaYUVEu5WuxRGkQvk=
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
+ [209.85.166.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-227-jZVhwcH7NkKezpuNd7J3xQ-1; Tue, 16 Jan 2024 13:33:42 -0500
-X-MC-Unique: jZVhwcH7NkKezpuNd7J3xQ-1
-Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-5f53b4554b6so158892857b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:33:42 -0800 (PST)
+ us-mta-436-od7ggAK3NeCfwkGRrBosiA-1; Tue, 16 Jan 2024 13:33:10 -0500
+X-MC-Unique: od7ggAK3NeCfwkGRrBosiA-1
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7bb454e1d63so1103390639f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:33:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705430021; x=1706034821;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1705429990; x=1706034790;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=v0IvAnbO55I9U8lmAgynm04Aoyru/cAMqaXR93cb9pg=;
-        b=sqkgoM1l2gHoXKXtoyW+r9htq+n7w02OKgmdKVXtPywk2PRSW0yQLhtZ4pD3j8Qkux
-         3YEHzuJX3hwUu7kwRLkHCwXGrJ49UHJtEbodARApcOSM+DcDMMvZciX0VhpxDr1R1XFC
-         GkmcJpGzUKSfv5Oa8zUfXe18JyslkyhGb8m6FeThFiDmxj1beU41SgQfYyxkCQYe6BO7
-         BE8s5hgHRbuR7SnLYq/yLTb+goYmHgONGEw6Zykm5SzNccJ371c+WymKGuytL+0kLpm/
-         tlgL0tAfkobKD82F95n2pbPydg4qcdROezbtjNSnL06gvTBalR0rEejTsOWOVlUP7Cm6
-         cNzQ==
-X-Gm-Message-State: AOJu0Yy8QOONQEDCIMpIBI+QLXBfaGh2zpgcDZsFvMpkmoGXJuv8uYfc
-	hylXDMe5XuW02dx4dDfq1RIgG1Sp12ydboRBNIHndpyOrkoyaSQ16UL0GbQp1Go6xFhl9AxI1R8
-	V0ZMpc+EH4CvIpm3Wttgica3+rbQOiS9AQsEuS1rbrcr31DZ0nt9VrB+bmaE=
-X-Received: by 2002:a05:690c:38b:b0:5ff:529c:504d with SMTP id bh11-20020a05690c038b00b005ff529c504dmr1236639ywb.79.1705430021693;
-        Tue, 16 Jan 2024 10:33:41 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGc++qjoX9+huuWU6/NpDkmXEUsOis3ggKPAVlpqTbgz16EtjCmi6t0RwzJCBocLX9FFxZVQ5Zt/zYiyEFic64=
-X-Received: by 2002:a05:690c:38b:b0:5ff:529c:504d with SMTP id
- bh11-20020a05690c038b00b005ff529c504dmr1236625ywb.79.1705430021375; Tue, 16
- Jan 2024 10:33:41 -0800 (PST)
+        bh=FISaMlvGT4jM9D2WMtxVsmws03Og0Eq0GceC6awRLlY=;
+        b=dJMun9QVKVaHELXUySqA2n/omodqWQ9ypgckexwNYxoc5hwy4FjZnEHWIj922K13kV
+         Kwjh4NdvEsaYhwiV3InXjMbkzxFyNvs6F/clLk0FYaeVEXLdPV6OASTTU6Hh5B3ZU48J
+         3HWpT3zjSnxrLWECIhIT17Nwjfmw+L46y4Qrz1DNXLzO0kBYIAhqdkWXJv6bfVNjZSxm
+         OLfn4trokGHOg42TaMEcY1KEnDHyyJnHhUnB2Z0fO7FUwa1UNAIxMdq3+oan+FJ3JL5v
+         W0sD4Z5GkF8EjnSYMarN3eYeURhNEp3tufqPuWiRD/6YnqKkkNNtWW2bMAD7H7k9wnCE
+         mpSQ==
+X-Gm-Message-State: AOJu0YwCEyeBRPUmHXofcwGeBbBF8epfCbXnbCGUnW5ImabEfhFQBNmV
+	3/jahBa08BJQtkb3RNNn7kQaIkYf/tusJYiGmVApRGLvzCYa9I0MF3Z8yIdQJ4dTY4abPatRb+3
+	wl1SQQyQQx75vrsQY6zbgluJ2eU8FPk1u
+X-Received: by 2002:a5d:8c9a:0:b0:7bf:4694:6c36 with SMTP id g26-20020a5d8c9a000000b007bf46946c36mr4546968ion.9.1705429990000;
+        Tue, 16 Jan 2024 10:33:10 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IErDazX7NWGFXtbf/P4jQZuCg4zJCLsr6AAXK6x7UHmTrzfxIKGZgBT8q7U2HRZ1DI6P7MRHA==
+X-Received: by 2002:a5d:8c9a:0:b0:7bf:4694:6c36 with SMTP id g26-20020a5d8c9a000000b007bf46946c36mr4546960ion.9.1705429989777;
+        Tue, 16 Jan 2024 10:33:09 -0800 (PST)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id bm7-20020a05663842c700b0046e41dace9csm3020396jab.30.2024.01.16.10.33.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jan 2024 10:33:09 -0800 (PST)
+Date: Tue, 16 Jan 2024 11:33:08 -0700
+From: Alex Williamson <alex.williamson@redhat.com>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: Eric Auger <eric.auger@redhat.com>, kvm@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: vfio/platform: Use common error handling code in
+ vfio_set_trigger()
+Message-ID: <20240116113308.78935e11.alex.williamson@redhat.com>
+In-Reply-To: <ab6bcd8b-f53c-47d1-8c55-c374a36d6ee4@web.de>
+References: <f1977c1c-1c55-4194-9f72-f77120b2e4e5@web.de>
+	<20240115133756.674ae019.alex.williamson@redhat.com>
+	<ab6bcd8b-f53c-47d1-8c55-c374a36d6ee4@web.de>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1704919215-91319-1-git-send-email-steven.sistare@oracle.com> <1704919215-91319-10-git-send-email-steven.sistare@oracle.com>
-In-Reply-To: <1704919215-91319-10-git-send-email-steven.sistare@oracle.com>
-From: Eugenio Perez Martin <eperezma@redhat.com>
-Date: Tue, 16 Jan 2024 19:33:05 +0100
-Message-ID: <CAJaqyWdf5PiDc=WdHXQ485eDA_D00ER3v9rqw9j7XWGggz_Nrg@mail.gmail.com>
-Subject: Re: [RFC V1 09/13] vdpa_sim: reset must not run
-To: Steve Sistare <steven.sistare@oracle.com>
-Cc: virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org, 
-	"Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, Si-Wei Liu <si-wei.liu@oracle.com>, 
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Dragos Tatulea <dtatulea@nvidia.com>, 
-	Eli Cohen <elic@nvidia.com>, Xie Yongji <xieyongji@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 10, 2024 at 9:40=E2=80=AFPM Steve Sistare <steven.sistare@oracl=
-e.com> wrote:
->
-> vdpasim_do_reset sets running to true, which is wrong, as it allows
-> vdpasim_kick_vq to post work requests before the device has been
-> configured.  To fix, do not set running until VIRTIO_CONFIG_S_FEATURES_OK
-> is set.
->
-> Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
+On Tue, 16 Jan 2024 12:32:23 +0100
+Markus Elfring <Markus.Elfring@web.de> wrote:
 
-Good catch, thanks! Please send this separately so it can be merged
-independently.
+> > TBH, this doesn't seem like a worthwhile exit point consolidation.  A
+> > change like this might be justified if there were some common unlock
+> > code that could be shared, but for a simple free and return errno by
+> > jumping to a different exception block, rather than even a common exit
+> > block, I don't see the value.  
+> 
+> Can it be helpful to store the shown kfree() call only once
+> in this function implementation?
 
-Also, the Fixes tag is missing, isn't it?
+I don't believe it's worthwhile, it's a simple function with simple
+exit paths and consolidating those exit paths for a trivial kfree() is
+unnecessarily complex.  Thanks,
 
-Fixes: 0c89e2a3a9d0 ("vdpa_sim: Implement suspend vdpa op")
-
-Reviewed-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
-
-> ---
->  drivers/vdpa/vdpa_sim/vdpa_sim.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdp=
-a_sim.c
-> index be2925d0d283..6304cb0b4770 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> @@ -160,7 +160,7 @@ static void vdpasim_do_reset(struct vdpasim *vdpasim,=
- u32 flags)
->                 }
->         }
->
-> -       vdpasim->running =3D true;
-> +       vdpasim->running =3D false;
->         spin_unlock(&vdpasim->iommu_lock);
->
->         vdpasim->features =3D 0;
-> @@ -483,6 +483,7 @@ static void vdpasim_set_status(struct vdpa_device *vd=
-pa, u8 status)
->
->         mutex_lock(&vdpasim->mutex);
->         vdpasim->status =3D status;
-> +       vdpasim->running =3D (status & VIRTIO_CONFIG_S_FEATURES_OK) !=3D =
-0;
->         mutex_unlock(&vdpasim->mutex);
->  }
->
-> --
-> 2.39.3
->
+Alex
 
 
