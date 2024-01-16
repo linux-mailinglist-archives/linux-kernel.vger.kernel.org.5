@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-26763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59E1F82E5F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:00:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0AC182E5F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:00:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C0831C22431
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:00:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 604AB2811C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:00:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 262D920312;
-	Tue, 16 Jan 2024 00:26:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2205745030;
+	Tue, 16 Jan 2024 00:26:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FdpLtcXy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QpYeTS6y"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7310243ADD;
-	Tue, 16 Jan 2024 00:26:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A341C433C7;
-	Tue, 16 Jan 2024 00:26:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D1064439D;
+	Tue, 16 Jan 2024 00:26:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF572C433B1;
+	Tue, 16 Jan 2024 00:26:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705364787;
-	bh=gEqOR6WtgbGODsSv5BKZ8CiNtcUfreEdGMR8WRY4FeY=;
+	s=k20201202; t=1705364790;
+	bh=cgcRAiYk9vNMeMeB7RPaExiqCoReMDxjFFMz4hwr2P0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FdpLtcXyyA+QJIvUMNqvj6GVwhcs0iYNT1B+KHntDusWtDDENbR/l6ozu0FDTtJM1
-	 NCVYOXuaRKXrC1U9aVFKVmptNjvZPFL4d0jGzNOm9kaQ+aJ8vkht2lWBrJHbacmutB
-	 0s3P6XXJO/X9MLUN9G0x0Np+SwuwUY6QWfU+AjL2DUByP8MXQ/qBgSLAfetWw6IKn0
-	 qqR4DttQNoNs2paU4uVmlUJo+fxG0/x5nn4KvIVkH2fKJr0W+HaCx5l/IoNKx0z8v8
-	 oCsD5O/lFjBx+vWOWaUcaUusJSKj7fM2upLjOu9MuaToPuLAJprvuDMMuvAyL0W5p4
-	 AMsK+Su72+deQ==
+	b=QpYeTS6yTWbq/iC8kAhwFsHsl85bjesOTa0D2Myq5xSk3hxgvyXyVKl85jW1oW64p
+	 HBzJfE7oGQzwSSmPFg8cByOPcHFolGquKhYeqX2UJ6+2r6uN5p2aiVVoc1mE9eGlQ1
+	 AMRH4FhTwXIBfYgYuhWSsjpEWhhGH5TBGNvSwhZ++0BWBzaHwgv85TVZVQR+VPXySf
+	 brb9aBDs4kmqAgJnlWFLrDWa4gQL0m70sZKhzarpj2oFZ1bgZLWi3VDzqE/2227vAW
+	 jJZw/LqEuPDtDQsOrGUmhihi9Xj7PTPaoS6g2ZQdRT8S27L/b9HHXBN5nULex2518Q
+	 Zc/ltcZckXrbA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Bharat Bhushan <bbhushan2@marvell.com>,
+Cc: Thomas Bourgoin <thomas.bourgoin@foss.st.com>,
+	kernel test robot <lkp@intel.com>,
+	Dan Carpenter <error27@gmail.com>,
 	Herbert Xu <herbert@gondor.apana.org.au>,
 	Sasha Levin <sashal@kernel.org>,
-	bbrezillon@kernel.org,
-	arno@natisbad.org,
-	schalla@marvell.com,
 	davem@davemloft.net,
-	ndabilpuram@marvell.com,
-	masahiroy@kernel.org,
-	alobakin@pm.me,
-	tj@kernel.org,
-	linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 08/13] crypto: octeontx2 - Fix cptvf driver cleanup
-Date: Mon, 15 Jan 2024 19:25:44 -0500
-Message-ID: <20240116002603.215942-8-sashal@kernel.org>
+	mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com,
+	u.kleine-koenig@pengutronix.de,
+	ebiggers@google.com,
+	linux-crypto@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.15 09/13] crypto: stm32/crc32 - fix parsing list of devices
+Date: Mon, 15 Jan 2024 19:25:45 -0500
+Message-ID: <20240116002603.215942-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116002603.215942-1-sashal@kernel.org>
 References: <20240116002603.215942-1-sashal@kernel.org>
@@ -63,67 +64,44 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.147
 Content-Transfer-Encoding: 8bit
 
-From: Bharat Bhushan <bbhushan2@marvell.com>
+From: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
 
-[ Upstream commit c480a421a4faf693c38e60b0fe6e554c9a3fee02 ]
+[ Upstream commit 0eaef675b94c746900dcea7f6c41b9a103ed5d53 ]
 
-This patch fixes following cleanup issues:
- - Missing instruction queue free on cleanup. This
-   will lead to memory leak.
- - lfs->lfs_num is set to zero before cleanup, which
-   will lead to improper cleanup.
+smatch warnings:
+drivers/crypto/stm32/stm32-crc32.c:108 stm32_crc_get_next_crc() warn:
+can 'crc' even be NULL?
 
-Signed-off-by: Bharat Bhushan <bbhushan2@marvell.com>
+Use list_first_entry_or_null instead of list_first_entry to retrieve
+the first device registered.
+The function list_first_entry always return a non NULL pointer even if
+the list is empty. Hence checking if the pointer returned is NULL does
+not tell if the list is empty or not.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/r/202311281111.ou2oUL2i-lkp@intel.com/
+Reported-by: Dan Carpenter <error27@gmail.com>
+Closes: https://lore.kernel.org/r/202311281111.ou2oUL2i-lkp@intel.com/
+Signed-off-by: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/marvell/octeontx2/otx2_cptlf.c      | 6 ++++--
- drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c | 3 +++
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ drivers/crypto/stm32/stm32-crc32.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptlf.c b/drivers/crypto/marvell/octeontx2/otx2_cptlf.c
-index c8350fcd60fa..dc0c25f0a11a 100644
---- a/drivers/crypto/marvell/octeontx2/otx2_cptlf.c
-+++ b/drivers/crypto/marvell/octeontx2/otx2_cptlf.c
-@@ -414,8 +414,8 @@ int otx2_cptlf_init(struct otx2_cptlfs_info *lfs, u8 eng_grp_mask, int pri,
- 	return 0;
+diff --git a/drivers/crypto/stm32/stm32-crc32.c b/drivers/crypto/stm32/stm32-crc32.c
+index 90a920e7f664..c439be1650c8 100644
+--- a/drivers/crypto/stm32/stm32-crc32.c
++++ b/drivers/crypto/stm32/stm32-crc32.c
+@@ -104,7 +104,7 @@ static struct stm32_crc *stm32_crc_get_next_crc(void)
+ 	struct stm32_crc *crc;
  
- free_iq:
--	otx2_cpt_free_instruction_queues(lfs);
- 	cptlf_hw_cleanup(lfs);
-+	otx2_cpt_free_instruction_queues(lfs);
- detach_rsrcs:
- 	otx2_cpt_detach_rsrcs_msg(lfs);
- clear_lfs_num:
-@@ -425,9 +425,11 @@ int otx2_cptlf_init(struct otx2_cptlfs_info *lfs, u8 eng_grp_mask, int pri,
- 
- void otx2_cptlf_shutdown(struct otx2_cptlfs_info *lfs)
- {
--	lfs->lfs_num = 0;
- 	/* Cleanup LFs hardware side */
- 	cptlf_hw_cleanup(lfs);
-+	/* Free instruction queues */
-+	otx2_cpt_free_instruction_queues(lfs);
- 	/* Send request to detach LFs */
- 	otx2_cpt_detach_rsrcs_msg(lfs);
-+	lfs->lfs_num = 0;
- }
-diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c b/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
-index 3411e664cf50..73de61ebbbcf 100644
---- a/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
-+++ b/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
-@@ -249,8 +249,11 @@ static void cptvf_lf_shutdown(struct otx2_cptlfs_info *lfs)
- 	otx2_cptlf_unregister_interrupts(lfs);
- 	/* Cleanup LFs software side */
- 	lf_sw_cleanup(lfs);
-+	/* Free instruction queues */
-+	otx2_cpt_free_instruction_queues(lfs);
- 	/* Send request to detach LFs */
- 	otx2_cpt_detach_rsrcs_msg(lfs);
-+	lfs->lfs_num = 0;
- }
- 
- static int cptvf_lf_init(struct otx2_cptvf_dev *cptvf)
+ 	spin_lock_bh(&crc_list.lock);
+-	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
++	crc = list_first_entry_or_null(&crc_list.dev_list, struct stm32_crc, list);
+ 	if (crc)
+ 		list_move_tail(&crc->list, &crc_list.dev_list);
+ 	spin_unlock_bh(&crc_list.lock);
 -- 
 2.43.0
 
