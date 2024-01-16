@@ -1,57 +1,60 @@
-Return-Path: <linux-kernel+bounces-27777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C11882F5C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:44:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E02582F5C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:44:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 702CD1C24057
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:44:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AEC8287378
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:44:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F20C0200A5;
-	Tue, 16 Jan 2024 19:42:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02AAC2030A;
+	Tue, 16 Jan 2024 19:42:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mLj0H+mM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="siofFbCw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A0581F946;
-	Tue, 16 Jan 2024 19:42:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37CAB200CC;
+	Tue, 16 Jan 2024 19:42:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434176; cv=none; b=ZQhdo5Lwp+V0pHnlwwLQhNcNEKmsxu9YU77fB6CTkJmg8NtH1a/QkNlScfoxu3btbj13QaASfSFfok8aS+QHxoBnnX5SamQNr68/IRnW21Mz+YSa3OD2rxqWxSpyY8oRyx8kyhnluijGK5GRGIcsE5mDerKg3fYaqrNaVEcpJlk=
+	t=1705434178; cv=none; b=HJFWahkp2VvMq4egVzKd1MpFY/2USyxNLXFZBEEjiO7Jlh08ESHstQU4WwlMAlefNu4rvBBOGOMlqBpWDXlClT0t4ekuXTaVDYwJNhkx2qBy+7h8JpYmBx4Yz4PZP4JkJs64Lw73IUX79yjnFm+8AFeuSGbwsV7sDDtvSze8L+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434176; c=relaxed/simple;
-	bh=f4SemcyoAKYKb1kdaGvE8bYyWYbKpYGcJlAKWKO3hOM=;
+	s=arc-20240116; t=1705434178; c=relaxed/simple;
+	bh=0Q6AcfIXVXE2n/0v5NOBdkobeg3VSLD8RabJNfDbq1k=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=giJLZe+ckS9bAOj05BCHlPng7eshmzlFD1yckWsUypbVeZk8l1iHQwdderZNpirn2cZLsUwA61y2DNpYuu/LgRzx+Er8/cKRXXckMvKAWd92CENftFqKrCLJ8XesIRoSW/S/mbKrQ89HCW27jETxsD0YhB+amJuZ8yQEcRQLYpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mLj0H+mM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DD7EC433F1;
-	Tue, 16 Jan 2024 19:42:55 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=RoHqlWFQrN7rOowmOFYA+LM+e0F30uH6cMjhRew3Poj7QzMD4dVJnqV5b/qatTQ8nJaQDvswA92U6bi8vbsYyKRL0bwmHgI36CR5Ic+1VZwss/mBvbs8nN7SBK6jkniKPL+jojjVMQFsRZJpt+MP8x6rmHzwtRaXA6cU7cZ72uE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=siofFbCw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1563C433C7;
+	Tue, 16 Jan 2024 19:42:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434176;
-	bh=f4SemcyoAKYKb1kdaGvE8bYyWYbKpYGcJlAKWKO3hOM=;
+	s=k20201202; t=1705434177;
+	bh=0Q6AcfIXVXE2n/0v5NOBdkobeg3VSLD8RabJNfDbq1k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mLj0H+mMSvXpxequanxA5GklMD9GMEifagck+XmYlmXFgCkR3I/vAIDgDZL4f1IiJ
-	 Cz2N8VTa1tXK+ng7iCOpRkn4NQPR3W5s63XYLmZc58RjckUoEZqTxS73IkR2tYp2kA
-	 jhWmIm3iOg+N4e1s/WSuBcwQ6FQ4nR+xI2uo/hw5uNe9bEQJdvInKscHR3cnOyJY1x
-	 2hvvV7iR2BFpphuwFtcfq7ZCMkK+BLB8sFi2e+9tQ1dSD7aF4acyze/txDvqoeumdM
-	 lIZW6n590gOmO2BLEf9Ktljh7/EpU6qJPwmzXI5d5uUyVPdN4sMM1VobrfsP+CZWwH
-	 JXJC1TrqBIITQ==
+	b=siofFbCwa9G29Ljmhdv421oqEbK97uRqhZUCCHTo2TnaeR8N5sWBbLCAj8A4O7iDa
+	 F3benbDqYSjDHLzQY4GKRU52TeHG2EJqzCLZ/qbDeLqNljWJYatd7KjMqOFMzbJnwQ
+	 7Qny34eNIUJ24Yid7B/vJ7S6g/2S/p6SK6y6lwHRB+nC78oFTLxAuJinsFym5zXrfe
+	 c3s+xVgEBJgeGnsZHp862JYPMAjfnRXafxGhiIhXQiLNQRiv4USJarjmo7Mpt7YJqF
+	 OI626k31saR20z4CNEsT3zv/KAoahsVpD9r1SQhtOBezGaTJfZfjZFr38q6bCr3W8O
+	 AObn2/3YYaIMw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Shiji Yang <yangshiji66@outlook.com>,
-	Stanislaw Gruszka <stf_xl@wp.pl>,
-	Kalle Valo <kvalo@kernel.org>,
+Cc: Yafang Shao <laoar.shao@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 007/108] wifi: rt2x00: correct wrong BBP register in RxDCOC calibration
-Date: Tue, 16 Jan 2024 14:38:33 -0500
-Message-ID: <20240116194225.250921-7-sashal@kernel.org>
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	shuah@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 008/108] selftests/bpf: Fix issues in setup_classid_environment()
+Date: Tue, 16 Jan 2024 14:38:34 -0500
+Message-ID: <20240116194225.250921-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194225.250921-1-sashal@kernel.org>
 References: <20240116194225.250921-1-sashal@kernel.org>
@@ -66,37 +69,83 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7
 Content-Transfer-Encoding: 8bit
 
-From: Shiji Yang <yangshiji66@outlook.com>
+From: Yafang Shao <laoar.shao@gmail.com>
 
-[ Upstream commit 50da74e1e8b682853d1e07fc8bbe3a0774ae5e09 ]
+[ Upstream commit 4849775587844e44d215289c425bcd70f315efe7 ]
 
-Refer to Mediatek vendor driver RxDCOC_Calibration() function, when
-performing gainfreeze calibration, we should write register 140
-instead of 141. This fix can reduce the total calibration time from
-6 seconds to 1 second.
+If the net_cls subsystem is already mounted, attempting to mount it again
+in setup_classid_environment() will result in a failure with the error code
+EBUSY. Despite this, tmpfs will have been successfully mounted at
+/sys/fs/cgroup/net_cls. Consequently, the /sys/fs/cgroup/net_cls directory
+will be empty, causing subsequent setup operations to fail.
 
-Signed-off-by: Shiji Yang <yangshiji66@outlook.com>
-Acked-by: Stanislaw Gruszka <stf_xl@wp.pl>
-Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://lore.kernel.org/r/TYAP286MB0315B13B89DF57B6B27BB854BCAFA@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
+Here's an error log excerpt illustrating the issue when net_cls has already
+been mounted at /sys/fs/cgroup/net_cls prior to running
+setup_classid_environment():
+
+- Before that change
+
+  $ tools/testing/selftests/bpf/test_progs --name=cgroup_v1v2
+  test_cgroup_v1v2:PASS:server_fd 0 nsec
+  test_cgroup_v1v2:PASS:client_fd 0 nsec
+  test_cgroup_v1v2:PASS:cgroup_fd 0 nsec
+  test_cgroup_v1v2:PASS:server_fd 0 nsec
+  run_test:PASS:skel_open 0 nsec
+  run_test:PASS:prog_attach 0 nsec
+  test_cgroup_v1v2:PASS:cgroup-v2-only 0 nsec
+  (cgroup_helpers.c:248: errno: No such file or directory) Opening Cgroup Procs: /sys/fs/cgroup/net_cls/cgroup.procs
+  (cgroup_helpers.c:540: errno: No such file or directory) Opening cgroup classid: /sys/fs/cgroup/net_cls/cgroup-test-work-dir/net_cls.classid
+  run_test:PASS:skel_open 0 nsec
+  run_test:PASS:prog_attach 0 nsec
+  (cgroup_helpers.c:248: errno: No such file or directory) Opening Cgroup Procs: /sys/fs/cgroup/net_cls/cgroup-test-work-dir/cgroup.procs
+  run_test:FAIL:join_classid unexpected error: 1 (errno 2)
+  test_cgroup_v1v2:FAIL:cgroup-v1v2 unexpected error: -1 (errno 2)
+  (cgroup_helpers.c:248: errno: No such file or directory) Opening Cgroup Procs: /sys/fs/cgroup/net_cls/cgroup.procs
+  #44      cgroup_v1v2:FAIL
+  Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+
+- After that change
+  $ tools/testing/selftests/bpf/test_progs --name=cgroup_v1v2
+  #44      cgroup_v1v2:OK
+  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Link: https://lore.kernel.org/r/20231111090034.4248-3-laoar.shao@gmail.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ralink/rt2x00/rt2800lib.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/bpf/cgroup_helpers.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ralink/rt2x00/rt2800lib.c b/drivers/net/wireless/ralink/rt2x00/rt2800lib.c
-index ee880f749b3c..1926ffdffb4f 100644
---- a/drivers/net/wireless/ralink/rt2x00/rt2800lib.c
-+++ b/drivers/net/wireless/ralink/rt2x00/rt2800lib.c
-@@ -8659,7 +8659,7 @@ static void rt2800_rxdcoc_calibration(struct rt2x00_dev *rt2x00dev)
- 	rt2800_rfcsr_write_bank(rt2x00dev, 5, 4, saverfb5r4);
- 	rt2800_rfcsr_write_bank(rt2x00dev, 7, 4, saverfb7r4);
+diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
+index 5b1da2a32ea7..10b5f42e65e7 100644
+--- a/tools/testing/selftests/bpf/cgroup_helpers.c
++++ b/tools/testing/selftests/bpf/cgroup_helpers.c
+@@ -523,10 +523,20 @@ int setup_classid_environment(void)
+ 		return 1;
+ 	}
  
--	rt2800_bbp_write(rt2x00dev, 158, 141);
-+	rt2800_bbp_write(rt2x00dev, 158, 140);
- 	bbpreg = rt2800_bbp_read(rt2x00dev, 159);
- 	bbpreg = bbpreg & (~0x40);
- 	rt2800_bbp_write(rt2x00dev, 159, bbpreg);
+-	if (mount("net_cls", NETCLS_MOUNT_PATH, "cgroup", 0, "net_cls") &&
+-	    errno != EBUSY) {
+-		log_err("mount cgroup net_cls");
+-		return 1;
++	if (mount("net_cls", NETCLS_MOUNT_PATH, "cgroup", 0, "net_cls")) {
++		if (errno != EBUSY) {
++			log_err("mount cgroup net_cls");
++			return 1;
++		}
++
++		if (rmdir(NETCLS_MOUNT_PATH)) {
++			log_err("rmdir cgroup net_cls");
++			return 1;
++		}
++		if (umount(CGROUP_MOUNT_DFLT)) {
++			log_err("umount cgroup base");
++			return 1;
++		}
+ 	}
+ 
+ 	cleanup_classid_environment();
 -- 
 2.43.0
 
