@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-28162-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD10982FAFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:45:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93BF582FB02
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:46:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FCC928B0C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:45:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D0B41F27328
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:46:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F056657BC;
-	Tue, 16 Jan 2024 20:01:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62322657DA;
+	Tue, 16 Jan 2024 20:01:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GZp6PRRb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g0XjUw5j"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EADE657A7;
-	Tue, 16 Jan 2024 20:01:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1C78657C9;
+	Tue, 16 Jan 2024 20:01:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435316; cv=none; b=L8l/kqWmygLjBaZp3mi+BOLW5DQKvBMZWbZLmwpFTywrJ2Nx1rbd+uLggvog4UrBkPW3q0U7OfxhSzN7pU1e21ga8eM+2V0DiI0Z5WoFOKMz7i4Mk+Hkq+9xYzIGWpcDtGzEZfskWfWL9LvkJmDJm7i9sFPzbcUNdWV+rabNYBs=
+	t=1705435318; cv=none; b=Fs8dp6p+st+mshTcCEo3v1xikJ90Ndjlo1qNosgTkKY3Zjmo10lGKF1B5gKjne2iWjU2RrZgwd4vvAZPHuD23t3yhGtR5ffc9Ef1VxHxKIrud/GiuyIRUbRWqbxOSMvC6z0tsX1qGsjisl1QeDVhOPSvNgqCCa203dvGZ6UwnsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435316; c=relaxed/simple;
-	bh=gehWr142WgimqB5I8h13XxP1fAqxRxT71+xWHWU5v8s=;
+	s=arc-20240116; t=1705435318; c=relaxed/simple;
+	bh=NG+Su3RKYRTKaczlnbgTDf5XSrB7y//c1cAxksNaT+A=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=phucwtbFOdpUiN78EGHuwQshfXDpKOMJmWHAk5tYZN/XVHhIvYPV1wuJMtZoZk2IFq0nLj3ArhBUCxnqxTNaUzooxf5zxq4fiv9k9qIOX3uRyJg/6PEBMAtbpFV+p2RQLLzOVgcMLYh2e9nLhgglIqo3ASQU7zWUhVKWdonvB3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GZp6PRRb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CE4FC4166C;
-	Tue, 16 Jan 2024 20:01:55 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=StAuhQRZ055Q53ScGq7O651qquhLhO+kVu59DWxBlfRuHEDIYraRsg/Tv/gZ0AJSehP3SRDk1gYhaivk46TkAUmYcDesFT177UAos5KuFs9w6KdOSw9m8bZoR502PnJMV7oeuRmtZ+v3wU1p4i3UgIEoq60WoUiL10/0FsyiV9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g0XjUw5j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21815C433A6;
+	Tue, 16 Jan 2024 20:01:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435316;
-	bh=gehWr142WgimqB5I8h13XxP1fAqxRxT71+xWHWU5v8s=;
+	s=k20201202; t=1705435318;
+	bh=NG+Su3RKYRTKaczlnbgTDf5XSrB7y//c1cAxksNaT+A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GZp6PRRbx0GPaTTFmJc0YcHi/iWheXPt+kmI5VJcimd4HnCAVD4PJdjMCZx0mAoX8
-	 jOzBr5+vMa76lhG0pPZ8B79JJI2JMZIR/dDhpkSrrQG6HbJQWX38cZyVVPgp962wth
-	 YbNpcV6aCuVeq9U/HnV+iyiqfVw5+WyPaibleaJWptTpF/3s3SJgg/d0HhURr1Tw7w
-	 N9J1Lq/c5Nuf+Jqb5WmFyR2zkh3SUxtriZJqh/NX6rlsGNvpQ4HpOOnr1x9/PV08qn
-	 q46JW51C8VOkzDjYxaKdNEYFuxV4HCDhUCm2GWIUk9eYsGMIeX6AhV5NMDuxZdq/mz
-	 TIle95R1icsZA==
+	b=g0XjUw5jGBOkY54EaC++tlEQpVfO4tMauKDSK/nAFf84lI2jyRielASe7U1vb8rFt
+	 0R3PTyRMkA3Tnp1u/BeB7QK63KTr74fzLHi07MXhi61B3im8JoHc6aX5PAV15h38lh
+	 XHT+spS8OahCy0Hsr0AbSBQNd/QLxv1Wj5MOpAW49JsONv5R5ib028YZ0Ql12+ioYn
+	 je0nGQR5x8FTTs5tX3wVn+X5yvfCMVrmAal/iqzfjNzJoDs73vnaAboJCdoJJC2Qnz
+	 NHgheZJ/IL+gLGKB5TwqVoCoqqEEC4lt35UANNeLqDcxwIH5oVQGzQ2bs+wrY0mHqE
+	 Bt4eWnNp7tkmg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>,
-	kernel test robot <lkp@intel.com>,
-	"Md . Haris Iqbal" <haris.iqbal@ionos.com>,
-	Jack Wang <jinpu.wang@ionos.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	linux-block@vger.kernel.org,
-	Guoqing Jiang <guoqing.jiang@linux.dev>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.10 26/44] block/rnbd-srv: Check for unlikely string overflow
-Date: Tue, 16 Jan 2024 14:59:55 -0500
-Message-ID: <20240116200044.258335-26-sashal@kernel.org>
+Cc: Fabio Estevam <festevam@denx.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 27/44] ARM: dts: imx25: Fix the iim compatible string
+Date: Tue, 16 Jan 2024 14:59:56 -0500
+Message-ID: <20240116200044.258335-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116200044.258335-1-sashal@kernel.org>
 References: <20240116200044.258335-1-sashal@kernel.org>
@@ -69,86 +69,38 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.208
 Content-Transfer-Encoding: 8bit
 
-From: Kees Cook <keescook@chromium.org>
+From: Fabio Estevam <festevam@denx.de>
 
-[ Upstream commit 9e4bf6a08d1e127bcc4bd72557f2dfafc6bc7f41 ]
+[ Upstream commit f0b929f58719fc57a4926ab4fc972f185453d6a5 ]
 
-Since "dev_search_path" can technically be as large as PATH_MAX,
-there was a risk of truncation when copying it and a second string
-into "full_path" since it was also PATH_MAX sized. The W=1 builds were
-reporting this warning:
+Per imx-iim.yaml, the compatible string should only contain a single
+entry.
 
-drivers/block/rnbd/rnbd-srv.c: In function 'process_msg_open.isra':
-drivers/block/rnbd/rnbd-srv.c:616:51: warning: '%s' directive output may be truncated writing up to 254 bytes into a region of size between 0 and 4095 [-Wformat-truncation=]
-  616 |                 snprintf(full_path, PATH_MAX, "%s/%s",
-      |                                                   ^~
-In function 'rnbd_srv_get_full_path',
-    inlined from 'process_msg_open.isra' at drivers/block/rnbd/rnbd-srv.c:721:14: drivers/block/rnbd/rnbd-srv.c:616:17: note: 'snprintf' output between 2 and 4351 bytes into a destination of size 4096
-  616 |                 snprintf(full_path, PATH_MAX, "%s/%s",
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  617 |                          dev_search_path, dev_name);
-      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~
+Use it as "fsl,imx25-iim" to fix the following dt-schema warning:
 
-To fix this, unconditionally check for truncation (as was already done
-for the case where "%SESSNAME%" was present).
+imx25-karo-tx25.dtb: efuse@53ff0000: compatible: ['fsl,imx25-iim', 'fsl,imx27-iim'] is too long
+	from schema $id: http://devicetree.org/schemas/nvmem/imx-iim.yaml#
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202312100355.lHoJPgKy-lkp@intel.com/
-Cc: Md. Haris Iqbal <haris.iqbal@ionos.com>
-Cc: Jack Wang <jinpu.wang@ionos.com>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc:  <linux-block@vger.kernel.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Acked-by: Guoqing Jiang <guoqing.jiang@linux.dev>
-Acked-by: Jack Wang <jinpu.wang@ionos.com>
-Link: https://lore.kernel.org/r/20231212214738.work.169-kees@kernel.org
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Fabio Estevam <festevam@denx.de>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/rnbd/rnbd-srv.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ arch/arm/boot/dts/imx25.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
-index e1bc8b4cd592..9c5d52335e17 100644
---- a/drivers/block/rnbd/rnbd-srv.c
-+++ b/drivers/block/rnbd/rnbd-srv.c
-@@ -591,6 +591,7 @@ static char *rnbd_srv_get_full_path(struct rnbd_srv_session *srv_sess,
- {
- 	char *full_path;
- 	char *a, *b;
-+	int len;
+diff --git a/arch/arm/boot/dts/imx25.dtsi b/arch/arm/boot/dts/imx25.dtsi
+index d24b1da18766..99886ba36724 100644
+--- a/arch/arm/boot/dts/imx25.dtsi
++++ b/arch/arm/boot/dts/imx25.dtsi
+@@ -543,7 +543,7 @@ pwm1: pwm@53fe0000 {
+ 			};
  
- 	full_path = kmalloc(PATH_MAX, GFP_KERNEL);
- 	if (!full_path)
-@@ -602,19 +603,19 @@ static char *rnbd_srv_get_full_path(struct rnbd_srv_session *srv_sess,
- 	 */
- 	a = strnstr(dev_search_path, "%SESSNAME%", sizeof(dev_search_path));
- 	if (a) {
--		int len = a - dev_search_path;
-+		len = a - dev_search_path;
- 
- 		len = snprintf(full_path, PATH_MAX, "%.*s/%s/%s", len,
- 			       dev_search_path, srv_sess->sessname, dev_name);
--		if (len >= PATH_MAX) {
--			pr_err("Too long path: %s, %s, %s\n",
--			       dev_search_path, srv_sess->sessname, dev_name);
--			kfree(full_path);
--			return ERR_PTR(-EINVAL);
--		}
- 	} else {
--		snprintf(full_path, PATH_MAX, "%s/%s",
--			 dev_search_path, dev_name);
-+		len = snprintf(full_path, PATH_MAX, "%s/%s",
-+			       dev_search_path, dev_name);
-+	}
-+	if (len >= PATH_MAX) {
-+		pr_err("Too long path: %s, %s, %s\n",
-+		       dev_search_path, srv_sess->sessname, dev_name);
-+		kfree(full_path);
-+		return ERR_PTR(-EINVAL);
- 	}
- 
- 	/* eliminitate duplicated slashes */
+ 			iim: efuse@53ff0000 {
+-				compatible = "fsl,imx25-iim", "fsl,imx27-iim";
++				compatible = "fsl,imx25-iim";
+ 				reg = <0x53ff0000 0x4000>;
+ 				interrupts = <19>;
+ 				clocks = <&clks 99>;
 -- 
 2.43.0
 
