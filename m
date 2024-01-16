@@ -1,48 +1,55 @@
-Return-Path: <linux-kernel+bounces-26750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD19E82E5D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:56:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BB5B82E5D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:56:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51F611C2042E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:56:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CCFD1C226B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:56:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE6CA1F93F;
-	Tue, 16 Jan 2024 00:25:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B5D735F1B;
+	Tue, 16 Jan 2024 00:25:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PJFAW9fq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lwACQQZm"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29FA9358A3;
-	Tue, 16 Jan 2024 00:25:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25EECC43394;
-	Tue, 16 Jan 2024 00:25:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 873E535F1A;
+	Tue, 16 Jan 2024 00:25:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4DCBC433C7;
+	Tue, 16 Jan 2024 00:25:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705364738;
-	bh=MSEH59YR9chEdOpA6eOIdh14BxQmO+6NTx5igEosLdQ=;
+	s=k20201202; t=1705364741;
+	bh=cgcRAiYk9vNMeMeB7RPaExiqCoReMDxjFFMz4hwr2P0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PJFAW9fqAxqIXMHbGSFefLtIcq6M06AY/K/V+JtkSOB4g1YgwW0EuE3+FFTrIk0pZ
-	 KOd7PDvaAmv8oMJRmvCv1hd0cuLoYV0KvNNaCyG0Tc7kV4p75R+3Q7l08zKK5OpWw3
-	 Lgc36HFNWJ6rm2o5SAkokftaoQre/UhlytHB0uKZi2wlgAWiHQIfw6D2IEwEz7+Bez
-	 CyqlebOeemwe3+PdR3l3leY+46r6Z/1+OSppOSye/d14r69JR1FtoZoY7B1qfppMdc
-	 sCEnygueJOVPNqhMnob/Khs5nHLRXqSmumMgK/+wHoBtSfWCUCaHQ5B6VnMZIfI5oX
-	 GNdN+vNkQ+2JQ==
+	b=lwACQQZmBBoKMD8Rui4ANcqMyTbhzGJK4XK6WHXOacaVbkqvPD3o8uV8a6p2RFgyh
+	 bl26BuozpjJsR0UFhfM9RhSPdnm6i4FBk0VRglJXDvoKuz0gR4J8KWyR9lH6PCZg53
+	 UmopZN+BdLiBCnKl7UkdaeWPYLbGhIX1UFY1d5M6pIx3dpIXxmEFpyfcABx+Mi1Oq3
+	 G8YHL22FAIzKiRG0tXza9uuYQuU9RVN98b8TSwcMA1nsanw26SU/zriVm4QhKYL0k4
+	 ZWnnuj/3RkmgbWT5aA/QMVknfoXW2EhxZMBjRoWXw2O1CqNw7wMmrB/NhK+6kQD6/r
+	 yaqBBbje6TJLQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Gao Xiang <hsiangkao@linux.alibaba.com>,
-	Chao Yu <chao@kernel.org>,
-	Yue Hu <huyue2@coolpad.com>,
+Cc: Thomas Bourgoin <thomas.bourgoin@foss.st.com>,
+	kernel test robot <lkp@intel.com>,
+	Dan Carpenter <error27@gmail.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
 	Sasha Levin <sashal@kernel.org>,
-	xiang@kernel.org,
-	linux-erofs@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 6.1 09/14] erofs: fix ztailpacking for subpage compressed blocks
-Date: Mon, 15 Jan 2024 19:24:51 -0500
-Message-ID: <20240116002512.215607-9-sashal@kernel.org>
+	davem@davemloft.net,
+	mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com,
+	u.kleine-koenig@pengutronix.de,
+	ebiggers@google.com,
+	linux-crypto@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.1 10/14] crypto: stm32/crc32 - fix parsing list of devices
+Date: Mon, 15 Jan 2024 19:24:52 -0500
+Message-ID: <20240116002512.215607-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116002512.215607-1-sashal@kernel.org>
 References: <20240116002512.215607-1-sashal@kernel.org>
@@ -57,42 +64,44 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.73
 Content-Transfer-Encoding: 8bit
 
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
+From: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
 
-[ Upstream commit e5aba911dee5e20fa82efbe13e0af8f38ea459e7 ]
+[ Upstream commit 0eaef675b94c746900dcea7f6c41b9a103ed5d53 ]
 
-`pageofs_in` should be the compressed data offset of the page rather
-than of the block.
+smatch warnings:
+drivers/crypto/stm32/stm32-crc32.c:108 stm32_crc_get_next_crc() warn:
+can 'crc' even be NULL?
 
-Acked-by: Chao Yu <chao@kernel.org>
-Reviewed-by: Yue Hu <huyue2@coolpad.com>
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-Link: https://lore.kernel.org/r/20231214161337.753049-1-hsiangkao@linux.alibaba.com
+Use list_first_entry_or_null instead of list_first_entry to retrieve
+the first device registered.
+The function list_first_entry always return a non NULL pointer even if
+the list is empty. Hence checking if the pointer returned is NULL does
+not tell if the list is empty or not.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/r/202311281111.ou2oUL2i-lkp@intel.com/
+Reported-by: Dan Carpenter <error27@gmail.com>
+Closes: https://lore.kernel.org/r/202311281111.ou2oUL2i-lkp@intel.com/
+Signed-off-by: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/erofs/zdata.c | 2 +-
+ drivers/crypto/stm32/stm32-crc32.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-index 1b91ac5be961..914897d9aeac 100644
---- a/fs/erofs/zdata.c
-+++ b/fs/erofs/zdata.c
-@@ -652,7 +652,6 @@ static int z_erofs_register_pcluster(struct z_erofs_decompress_frontend *fe)
+diff --git a/drivers/crypto/stm32/stm32-crc32.c b/drivers/crypto/stm32/stm32-crc32.c
+index 90a920e7f664..c439be1650c8 100644
+--- a/drivers/crypto/stm32/stm32-crc32.c
++++ b/drivers/crypto/stm32/stm32-crc32.c
+@@ -104,7 +104,7 @@ static struct stm32_crc *stm32_crc_get_next_crc(void)
+ 	struct stm32_crc *crc;
  
- 	if (ztailpacking) {
- 		pcl->obj.index = 0;	/* which indicates ztailpacking */
--		pcl->pageofs_in = erofs_blkoff(map->m_pa);
- 		pcl->tailpacking_size = map->m_plen;
- 	} else {
- 		pcl->obj.index = map->m_pa >> PAGE_SHIFT;
-@@ -852,6 +851,7 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
- 		get_page(fe->map.buf.page);
- 		WRITE_ONCE(fe->pcl->compressed_bvecs[0].page,
- 			   fe->map.buf.page);
-+		fe->pcl->pageofs_in = map->m_pa & ~PAGE_MASK;
- 		fe->mode = Z_EROFS_PCLUSTER_FOLLOWED_NOINPLACE;
- 	} else {
- 		/* bind cache first when cached decompression is preferred */
+ 	spin_lock_bh(&crc_list.lock);
+-	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
++	crc = list_first_entry_or_null(&crc_list.dev_list, struct stm32_crc, list);
+ 	if (crc)
+ 		list_move_tail(&crc->list, &crc_list.dev_list);
+ 	spin_unlock_bh(&crc_list.lock);
 -- 
 2.43.0
 
