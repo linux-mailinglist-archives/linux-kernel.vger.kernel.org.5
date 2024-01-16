@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-28329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B252A82FCFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:35:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0538682FCFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:36:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4936B289B73
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:35:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C390B265EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:36:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B595B4645E;
-	Tue, 16 Jan 2024 22:05:35 +0000 (UTC)
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.74])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70D14482CB;
+	Tue, 16 Jan 2024 22:06:03 +0000 (UTC)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE7120B02;
-	Tue, 16 Jan 2024 22:05:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED28520B06;
+	Tue, 16 Jan 2024 22:06:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705442735; cv=none; b=uEttqz2Mv17plhfb5+D+6IkuMQAg4U09vCyfRRxRMApR+rwfv9ZRUd6eTBJX3C8O6jGMLSbfuOJNMKsMvjfC7WdeLzZfH6ABihelpvqDOB61PQZqjAx5MFjNBd9rTD4E4ScTtGMR/+a3ItP9y590NaXxHiFVThksJyoIQoJHrBI=
+	t=1705442763; cv=none; b=k/ilOKYBDnjkICxlvBi2psIWE7JHxjtxOSg9UaIaMQK/2xOsiSZEmbqpYpWlD0w7ydJQQL1qbNDe5PVrQKXcF/Vp5p41TIxi/kA0wDIWlHVEbBZHNE/6OVkyKQ1wGykj22yODixTNwZRzHhqgpehiEaztefbHmV0K/qQo5efLzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705442735; c=relaxed/simple;
-	bh=v3W324I3SJN5eST/f93Ey55QMVR0yTzOUMu2onl9OUo=;
+	s=arc-20240116; t=1705442763; c=relaxed/simple;
+	bh=MvyFTKEIKMUi/DveRQH714RaRZQ4hMyEjMvMk9I2Kc4=;
 	h=Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
 	 References:MIME-Version:Content-Transfer-Encoding:X-Provags-ID:
-	 X-Spam-Flag:UI-OutboundReport; b=QYmLgj2niyxc646i/ZbLp4CdddHgj/Ait9nsV2p7dK75xXvbrmjMNGzvhVAXLiMpmhJ6wn8KD941lDMnJ7dWrBXd6m6mIp6mdbWTDPpimG/4VyPV2JK95OSKjCJLFCkNhS+EbY9v4ivjSDEQ2hJPPcrvcntDyeo4+5A2hpBiROM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de; spf=pass smtp.mailfrom=valentinobst.de; arc=none smtp.client-ip=217.72.192.74
+	 X-Spam-Flag:UI-OutboundReport; b=nGyESQEZgCVCMydIQIu4G0Qy/EUmBbQYr0iu5IH+DdFfrfLv0FGJjIPFReRifPep4ECDxEQfsqLygmw42dk2cmkpzMjVKoRUWMzKKTD6z41vZz748EXmj9U1/2DeNzz1OXCeHpDPi7DPNLNqFu+OYCaY/hdCLsByMu/IHTK43KU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de; spf=pass smtp.mailfrom=valentinobst.de; arc=none smtp.client-ip=212.227.17.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=valentinobst.de
 Received: from localhost.localdomain ([217.245.156.100]) by
  mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MTREY-1rZe9L2Zf2-00TjKy; Tue, 16 Jan 2024 23:05:11 +0100
+ id 1MQ5jC-1rlmA60xtI-00M2Ho; Tue, 16 Jan 2024 23:05:46 +0100
 From: Valentin Obst <kernel@valentinobst.de>
 To: Miguel Ojeda <ojeda@kernel.org>,
 	Alex Gaynor <alex.gaynor@gmail.com>,
@@ -45,9 +45,9 @@ Cc: Boqun Feng <boqun.feng@gmail.com>,
 	rust-for-linux@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Valentin Obst <kernel@valentinobst.de>
-Subject: [PATCH 04/13] rust: kernel: add srctree-relative doclinks
-Date: Tue, 16 Jan 2024 23:04:10 +0100
-Message-ID: <20240116220411.168016-1-kernel@valentinobst.de>
+Subject: [PATCH 05/13] rust: str: use `NUL` instead of 0 in doc comments
+Date: Tue, 16 Jan 2024 23:05:37 +0100
+Message-ID: <20240116220537.168057-1-kernel@valentinobst.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116160141.165951-1-kernel@valentinobst.de>
 References: <20240116160141.165951-1-kernel@valentinobst.de>
@@ -58,61 +58,54 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:0M/3h7s7GfvVM/sxSkwa13j4UXMw4UFVXCpvMlk36g4VyCdY5Av
- OpuLrkYGR2CTa0uchs9tvp44C5cLONl9yZzzNKwRHjmSOVtWZWANmcrllTypzFRDeC9bYy5
- njtvU/C/HW3BH0Qv97g5SubpLt62cTWKHLvOYrsj5G+USM8b5tZ0yZsfH0BPBMmGdTSLApM
- uc2SC1Dq7y+yHtEsN4IGw==
+X-Provags-ID: V03:K1:fQ/n+K82znhGVU06WPCL16qfSsnfY7jriAWKz19BeTo/jchs9x2
+ jj2Cevp5lAEpIIYImIjab/lXFlPzmiQQUHAJZHW1o9INn06euHr+OuxP+pXxtVRpunF3ZVm
+ qHD//ro97BAS9SRU5YNCi7MDgDu9/0ydJehlB4Oahb44L0aHjT9FP330/I/9lu2MXHvtsaB
+ 9K2Y50PZaFM57fB1MjCDw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:karToRGKwJs=;uQ8K1v7C/+Wu1/QtFmFaiddcSo0
- 7aM4nFV9VR1/HqQilEl5s21ew29uEuaIZfn72dP0+1Ql5lZ4O3pzFDwx55RG4hdMMqAMeNJlC
- pHuad1+d5GhhOdD6OCNEELTmfJ2e8BFceTWDV9IIc0K4ZZ0nV8MpUD4FV9lPVEH1XQBDvJWEt
- DE/UM2Gva7O2WiTuUkRE9BqHbC1K2PPgA63kCzOA0HX2JYLZglrGZTrF85lBBgKrKxqgHWpXE
- H7DQymgZoVRNeHTT4L4b5Uu46fFnGF3qRuDLCmCc/sel3RvWXltCilfu/3KziGC+X1mhBS4xZ
- 4SAMUd47/IWQRD/dJrMX5VvHUDMi6e0mubSrpLiBvvhZlyUmHVYZdqQfEsnxsvx76ydQgF+jc
- lZ1Khpr7rkdxyJcX5Ovf4j+52OBmADhGHtBgTcBoofLU9R6YzGnkhxAyXZ87EaSB02bgEPMcw
- /q/eTZv+FFGRqdh6zo517pW5ELsKzsVyLqmO7JqKD9FtpU/4sxDkd/r0hSV25iZYaptT5h/x+
- SgBydIBhJ8fWxELgbDU94LtayPlJL3SkRkiiJ3mO4eZrK6CVCP69lXSZlojirpvrko2BrydUV
- iEMxOLo5kULu3dG5l2umGK0LJQY5bCk0Na+nF/4bYSP4XMTQGotvC1fQEMKNACRH4jLpKCkNw
- +jLPiuzsXC9Huq+bocJTiKQAFwpn9LMd3txpda2EgO1i/N20SbicY19TLE5M+FWHKnKxmTr3v
- PKUephOrwVcWwW8v6gaO+N+oUZy1FoAE1OIDwNWTkAGlOIjV65mb8eC6CF3Cr1CfytNEyL0/P
- Us/BhLxoyldPeH3Uto60ujLd7TBh45sfxLIGiwePrK2a0zkH8Y9QErSBahAEFDM7ZB+5CwKq+
- NAewvcPu8JiJXiQ==
+UI-OutboundReport: notjunk:1;M01:P0:v6zN5nHqZvI=;w2vTl94Fb9dj+FV+Lczts64wvK2
+ 3P/qtnHf66kv75rVrJLkpnsDbDy4+rM+dwtc8S3+q9yn0Znzcd2uKsfT6DvTRU9nfDYRizYXR
+ DhEdqYL/BeCiWDmnUpd+uE4Xmz2zkCw7Ky3lyOW+fBXcQDcz+sLNHJyq5c0LNXdvRyvuYkkmM
+ f+18Tu52QFVD26ITkI/fN0pKlv38JmuPPiDvFZQaa3Si4wWYRcTV1IRJ7Sb4uox7bcQHZOb3J
+ sJ0UqIEOqJDuSMZLDiTVnSIPa4GB7qiCx/Ouf/6dGmcK0gaaYqCCIZod48xx6rL0juJZLpAt9
+ EtxDasdoE8rINUWmjJ8g7wHFCOw8qkEHWQxPeyL+HvGPZpiS/uRMBh4uneyauNb/pGjvntUmk
+ ArIiv6m5ffd6gJaHrbcOmZhKUmlcPnt9MTmmj0IcD2Twk6XTeP8/81bmGnWUDqJk0tKj/8BgY
+ 56gt18Uu02UI662vLN0d3lU5ZT0SEuBlSjmYY78Q75eFVJsTieWPWwGVwGJgTt3aBj0Uar77V
+ m6orRB3WglfXaOVSKovYX/BuslJcU5Qg/LmVVn2IhyKYOocIAIuWi0gyCzKxVc3MYeHWrMJQt
+ 7pmoLWNRddfDOCoNJhfFw5ZW7lZ22yE8NWxrSIUwRR2VA87paKre5wmw8h7Z38/uq9m9U/Hq0
+ OXDdtnRmY2QPz9jz80yRUEzIxqKj/R1Ogo80K3zd8Db35psnxGjKZ/Do9O+qrxjfcrpnXTSx4
+ jR2TZshVhcmNDO12InKP6bv6ac0devVSIFsMQGLbU7SaPkybsn2R/U1PsCZ7Q/5YsmRoe5+/E
+ qwYk7w5Y48I2btBYKCrulCPYTU8FTH1gvEjCVaQ43/0/pUDcHKQtDMYTfZjR3sgLKh+ytsIt5
+ 60FBjwlj+lgjjjQ==
 
-Convert existing references to C header files to make use of
-Commit bc2e7d5c298a ("rust: support `srctree`-relative links").
+Throughout the module, bytes with the value zero are referred to as
+`NUL` bytes. Adapt the only two outliers.
 
 Signed-off-by: Valentin Obst <kernel@valentinobst.de>
 ---
- rust/kernel/lib.rs          | 2 +-
- rust/kernel/sync/condvar.rs | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ rust/kernel/str.rs | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
-index e6aff80b521f..0d365c71cae2 100644
---- a/rust/kernel/lib.rs
-+++ b/rust/kernel/lib.rs
-@@ -75,7 +75,7 @@ pub trait Module: Sized + Sync {
+diff --git a/rust/kernel/str.rs b/rust/kernel/str.rs
+index 0a8569594fc3..843ffeec9b3e 100644
+--- a/rust/kernel/str.rs
++++ b/rust/kernel/str.rs
+@@ -149,13 +149,13 @@ pub const fn as_char_ptr(&self) -> *const core::ffi::c_char {
+         self.0.as_ptr() as _
+     }
  
- /// Equivalent to `THIS_MODULE` in the C API.
- ///
--/// C header: `include/linux/export.h`
-+/// C header: [`include/linux/export.h`](srctree/include/linux/export.h)
- pub struct ThisModule(*mut bindings::module);
+-    /// Convert the string to a byte slice without the trailing 0 byte.
++    /// Convert the string to a byte slice without the trailing `NUL` byte.
+     #[inline]
+     pub fn as_bytes(&self) -> &[u8] {
+         &self.0[..self.len()]
+     }
  
- // SAFETY: `THIS_MODULE` may be used from all threads within a module.
-diff --git a/rust/kernel/sync/condvar.rs b/rust/kernel/sync/condvar.rs
-index f65e19d5a37c..0bb76400efd9 100644
---- a/rust/kernel/sync/condvar.rs
-+++ b/rust/kernel/sync/condvar.rs
-@@ -77,6 +77,8 @@ pub struct CondVar {
- 
-     /// A condvar needs to be pinned because it contains a [`struct list_head`] that is
-     /// self-referential, so it cannot be safely moved once it is initialised.
-+    ///
-+    /// [`struct list_head`]: srctree/include/linux/types.h
-     #[pin]
-     _pin: PhantomPinned,
- }
+-    /// Convert the string to a byte slice containing the trailing 0 byte.
++    /// Convert the string to a byte slice containing the trailing `NUL` byte.
+     #[inline]
+     pub const fn as_bytes_with_nul(&self) -> &[u8] {
+         &self.0
 -- 
 2.43.0
 
