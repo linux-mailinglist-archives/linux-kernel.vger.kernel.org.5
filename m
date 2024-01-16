@@ -1,222 +1,114 @@
-Return-Path: <linux-kernel+bounces-27381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E105882EF07
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:31:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6DAD82EF11
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:33:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 776E12859EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:31:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C772D1C233BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:33:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 161211BC2C;
-	Tue, 16 Jan 2024 12:31:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F4B71BC2C;
+	Tue, 16 Jan 2024 12:33:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="oLsDTSbx"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2064.outbound.protection.outlook.com [40.107.92.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mxo/VPcv"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69B211BC23
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 12:31:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YBDU7Iuo3pkIVqOgqdgFO7n0v/JSP+1lCg/rsCJG9Urpa+Sw29ztX2hjL78EHEhTJypr1WIlOb/mOgg4Wxqphr0oK2IFLHLgkKfk8axfx0ZLetH9EpygkC5P8J1fvyX1gecHM1PVxgi+JNfRYaqLbTdZZIyz+QopXZH6ABw1VHBZquaCuyHKXbFfZIJFQfRzogyHrPwBNlb5L9gae1cOMOKLT9EUSQNxa9CWTZilHgCl6De6VOfMWoe64nYBigawp7mfrlZ5MQGJr3jcTn79I4DywQs7WQJg05yHgAl2geBtQJgh+nqGlT2m/UJSKetzqUEe6MPpw+7mg8zEP8mlrA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ou69qmu5MyFdSzUksBk0UioIF8NrI2EuIjJPhw39MO8=;
- b=FSYsdD9F7Jy3ZSeAQGZQHxURC5IDoWB2nofreQDX4FLkxXQJEz5OKKK/1J8s8H2JtUdWcYiwmECGe87d6s+FIGp40G2kY8YThlw5tnhiqJkPm10pTjIhE5/1ruoZcyOWXoEkBOPSWWNOzHJ8cFmWcah0qT/LjcqISIXcDWDbE9XM91bJZbuvwpvdS8Y86Yd+a3LjGgcom4Xw2kErqipPu7p1QOEar5YT08z565msJ0LLMQGrVUxizOr+sFQlsBl0QG+Q6MEdeE5g22CWDgDLnt2wZdM3qAwqNEEVPCQFJ0rSqfK3aiR/1aQ41pC1IM8hTzPSYv76pyKIjwt3IcMrMA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ou69qmu5MyFdSzUksBk0UioIF8NrI2EuIjJPhw39MO8=;
- b=oLsDTSbx5nU4UkKtJrtSM1ihw4jYLk53xAhWHdqTCptwADWLeN0ztN5IR4vGp948lLEcYwOCjBI25+UPGbVW8W1ZozxgNQ36MqpG0h2wKLgJfcF4wBmclYQZmu4fZwJL0WEiO0qmv6U6K+hCLnrD7htTOb0UGSIVznOI8VxBnF2JhzDYsmXul99yFNhdQp6vhtjX3SN4BUG/P+TA51BWqSeYbqWRER6AgShkEXBfCvVKpTtY03PJoRTpO+sftERkrUZaA+5lBXVNA6AgWqwQFPtymMsiliZQ8Cqh4i2J3UTZu1xp16nJ9rwfQsgN2q1VFqyZV0mAFdzM8km0R1Oeaw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by LV8PR12MB9112.namprd12.prod.outlook.com (2603:10b6:408:184::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Tue, 16 Jan
- 2024 12:31:40 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::96dd:1160:6472:9873]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::96dd:1160:6472:9873%6]) with mapi id 15.20.7181.020; Tue, 16 Jan 2024
- 12:31:39 +0000
-Date: Tue, 16 Jan 2024 08:31:38 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: "peterx@redhat.com" <peterx@redhat.com>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	James Houghton <jthoughton@google.com>,
-	David Hildenbrand <david@redhat.com>,
-	"Kirill A . Shutemov" <kirill@shutemov.name>,
-	Yang Shi <shy828301@gmail.com>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
-	Rik van Riel <riel@surriel.com>,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Mike Rapoport <rppt@kernel.org>, John Hubbard <jhubbard@nvidia.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Andrew Jones <andrew.jones@linux.dev>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	Mike Kravetz <mike.kravetz@oracle.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v2 06/13] mm/gup: Drop folio_fast_pin_allowed() in hugepd
- processing
-Message-ID: <20240116123138.GZ734935@nvidia.com>
-References: <20240103091423.400294-1-peterx@redhat.com>
- <20240103091423.400294-7-peterx@redhat.com>
- <20240115183748.GR734935@nvidia.com>
- <c60c9d88-33aa-4312-a23c-20206e503b6e@csgroup.eu>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c60c9d88-33aa-4312-a23c-20206e503b6e@csgroup.eu>
-X-ClientProxiedBy: MN2PR07CA0029.namprd07.prod.outlook.com
- (2603:10b6:208:1a0::39) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F336719470
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 12:33:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3376ead25e1so7694110f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 04:33:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705408389; x=1706013189; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OhwDIlaEEN6IPWd1oZ/unSnl3T485q1gaJvRsEwi2vU=;
+        b=mxo/VPcv9Ze9RQggQ9I99Ox+u2jh/Jye1O9yGDmvkEWHU9UNuo4QH5EKwX89DKmxLW
+         ZFDuwEGTz1iJiCx3ODv6oeaD4G7unkZkG86hrdHNOCm6FJ/jtJn8qHO2kshWjNcQxueI
+         9QMOuLOKqjptvFSpN1YgHLd54PYmW09W85OVs72ta7pV2SPkExBUKA6UsQ+Q7o9k1d+K
+         hdwB420AuiYlwNpjcgswD9jNX6zFYWX/M+xL60Whx4gNuPNYulWsjHo/kRJN89PTyYEL
+         CrPX3pbuIB6gPWQZ5sbveL3KBqC6XEgV+8JmhrJzykDTM1LpvSfVwhNpGGwZIhDEsmQp
+         DTgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705408389; x=1706013189;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OhwDIlaEEN6IPWd1oZ/unSnl3T485q1gaJvRsEwi2vU=;
+        b=SLq2SZSHAKrXe/supL3QsQBxJ0PikfZZhEJ3TvrMB3nNr1ITMsmjl+yVzN/EiWeXw/
+         KFNcUvTCwYSd4KB+bxy9iYlzkuMpUCzD0doucLKqxfx/XwfR4dNSzpcZrxQO0SL+bNyX
+         I8aV6FWQhz82rx4GwkCm2dAd92lhG28HzBvzPL0jHb3mJB6q3xQ5RqvOwMkCsdyfKFWZ
+         FtZ+/Jb9ZMeibfdwAB9/IGfBLPRnhfyUWG9fV1k/IjgZ8+dhUKTTOfJ7F1x6fRSjsOwa
+         gkqaN3c49w0JlAFAQlS5JEpgX6Z0xKp6t1y++U9DP4m0aSiIz69rNFenVex9F/k5LkAr
+         jpjw==
+X-Gm-Message-State: AOJu0Yxf3olit0jE2XGTatU2djVnjkxrWDab/UOySUmZTfNpdTac4IOh
+	P0Io1CxL04Xikt692yW84oUE30OEIU5WAA==
+X-Google-Smtp-Source: AGHT+IFgwZ7izOeDPTthu6pYyW2p4PI/uPvVFhtOSZUOvCWzjb3MxbacVOYISzw2xSeZlOWjyex6jA==
+X-Received: by 2002:a05:600c:45d0:b0:40e:6ee8:c13e with SMTP id s16-20020a05600c45d000b0040e6ee8c13emr2391947wmo.197.1705408388946;
+        Tue, 16 Jan 2024 04:33:08 -0800 (PST)
+Received: from [192.168.1.195] ([5.133.47.210])
+        by smtp.googlemail.com with ESMTPSA id p12-20020a05600c430c00b0040e596320bfsm6855662wme.0.2024.01.16.04.33.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jan 2024 04:33:08 -0800 (PST)
+Message-ID: <dda000cb-9d3d-40d8-9a6c-170d491f48f1@linaro.org>
+Date: Tue, 16 Jan 2024 12:33:07 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|LV8PR12MB9112:EE_
-X-MS-Office365-Filtering-Correlation-Id: e9cdfa55-9746-4133-6268-08dc168f16c0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	prUm+q64mhOP79HbjbpXdCYY8GwWVnlGcIsMX7rlOr2EpGtnHR9gWxYDRYPamfmrD0x4pWI0uQOW9Mkq1XZFq1XD/kfAMvteKVoCVU98KhrLB3K5Svj+qpgDc3t17uzKIV3TeWA8ZhimPEd3Qm/qTrCZ4B0tmyIB6fL7wbzhg4EXHBZYMccEw90AEN2CuT0ze39ldw0sUhUc/4y1QzVlL4QL3JehVginc65mag97bbbfvaJHOdQp1YzwFUos/3irW2exZ+CDpQS1A2UYQi1H3vlwswy9KWQylDHbYDBT/2knbAyUX858ED1d/2lLcExJIgIBQr5fpjTdnu4q1yf8T7qVifvVFybhz62ho6XQcsTdlVM53yDiooDRbzdUqA33LeG8ICEeGP2xQ7Y/NfiNaf8jm56SIwPm6leNllGgkuX8MNyg/rSy0/QWXySZgedyHe2v64ZlJhBI2mL15E+fDFx61xdMlW9yG9y8zanCr8VvQT+sznzIfCJkk+Qt+gQlMXe7rVvywpXy0YibHUWB/GQIrN3H2iNgNGqKXaJRzaLgWqBFdoBcszBkNG7yuB/LS6cgNQazE9roWO+VyyItC1hEodpQbai17y89mwK3EWhFG2+uwTAMQokfLZpfUXsP
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(346002)(376002)(366004)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(83380400001)(86362001)(26005)(1076003)(33656002)(66946007)(36756003)(478600001)(5660300002)(38100700002)(41300700001)(6512007)(6506007)(2616005)(66556008)(6486002)(2906002)(66476007)(66574015)(316002)(54906003)(6916009)(8936002)(7416002)(8676002)(4326008)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?M0FRSDAyUGpFSHgwN3BFdTZWQ1g5TEI3VUNnaVpBamJNNVhXdm16K2dtTUdY?=
- =?utf-8?B?ME9IZllTS0J2U1ZkOXNtWU5zNXBTRGVDaS9yLzNVSHNZMGhrc1dOZDBsMG9L?=
- =?utf-8?B?QzZieXhkVmlMdWtxMWpsdjZ2Qkc5aGJKYURLemZEUUZWY3RNYS9kQnlHRHZQ?=
- =?utf-8?B?bWNFUExTdGxpb3dVeU9tUldwQ2pUcTA2bXhTRDR1WUl4QmlXdDNFZkI5TVZB?=
- =?utf-8?B?T3NIVnRhYlJCc0pvekZyblpPUEozV0hiTTNNaWFoVVlERmM2Yk1wbVFiWGVP?=
- =?utf-8?B?azdnVTM1ZWNLakxlb1NieU9scWNCS0tZeGkvdGFqWUpKZXhMcEE1ZzFoUEtZ?=
- =?utf-8?B?dkMweFU0b1AzK0t2dklGekdvYU54VURjeW5OV2NjZEVnSFJVMFUzdHp0ZXRM?=
- =?utf-8?B?TXZxNWthcTFpT3FNM0Nqa3dPOVhCTTB2TnBnQ1VWaFNYRVdzNGFtUSs0a1lB?=
- =?utf-8?B?VEZTa0tKWkxHNllQYmx4L1NiMjhMVmpualVIOU94N1JLbXRXSmxScnQzRmJ5?=
- =?utf-8?B?U2tpZS9aekNVcExDd29jbFBmaFhQNXVNNE1aLzkwOG9yQW1ING9Qa2xqaFZX?=
- =?utf-8?B?elRoUG96Q01OZ0prWW1yVG5PQ09MNkRFWU5CbjRrZkwwN2w0SzFvV1VITkx5?=
- =?utf-8?B?aGRZcFdQRzNsdFJ0cmM4U2phZFhObVBPWWlCMmcyL0ZkRmZKTjBFYzEyNlBl?=
- =?utf-8?B?MTM5NE5WTzBxRW5VZGxRejNLNUVzSXhBckg5NUlmUDMwMEg3UUVFT0YzVGFk?=
- =?utf-8?B?SmNFL2xUZXU4M2lLblFveE9vbkhlcHdsL2FhWkQrR1BONmhMb2lRY2tiZkhS?=
- =?utf-8?B?ZTl4b1YvV3I0S2VxZkJlaHRnR29LT1JVYmRyR01JN3pqMThvcjFvYlMvbnVr?=
- =?utf-8?B?WmkvS0ZZc3NIL1RiN1htMUZqVDZsQzM3dUJPWjJBTDd5S3dXbS83K0VOam91?=
- =?utf-8?B?K2xoZVorQ00zMVdieW1XY1ZEaERsQWF0U3VBYWRabitQS2hFVURXaUtuSUVL?=
- =?utf-8?B?aTdNR3V4L2hyUkg2SkhiM3Z6bktKOHN4YkIxcE9XanBxakg1UEpJUVg4VnZC?=
- =?utf-8?B?ckdGczd5TVlwWGRrUTYzQlNPYkoxbGYrZFE0Q2orYU1CbDJKN1FVWndidTZt?=
- =?utf-8?B?bTNhR0pheVZFelMvalhvUkJ2cHJIRjY0QWROZUFsVjJPTWhYTFh0VkJVaTN4?=
- =?utf-8?B?eGVZLzI1Wk1hd1dFM2trV1ErVXZNcmRDaEVYU2Rrcy9pekJ1a2o1UWdFWkVY?=
- =?utf-8?B?SThVdXk3NVN5djdkMW55K2RkQXk1OG5zMGlnRGNOOUZlbWU5OGhab3FXaFNl?=
- =?utf-8?B?WUZvRURDY1J2NnlsTHVyTnExZ0dHWUZFWWJMcDI3eE04bTdXRFhmVmZxMitC?=
- =?utf-8?B?OS9zcElFTWdlUy9PQWtmcDR5ZUFVdWtQWlhlUEZBVGFVb3JIMTdPQ0Qrc3cr?=
- =?utf-8?B?N3JOOHh2aWR6eEwzTUpsWmxBV1JMdFJlL3ZVaEFDQTJkR1U5TXd6ZkQ1M2hp?=
- =?utf-8?B?Q2grY0t6ZUcvanljZFNMZzM2Uk1kUnQ0UVBUTXcrYUV3ZFp0TU9yYnhkbkVW?=
- =?utf-8?B?RHo0NTgxcDlYYmNPUWg4L1hDTW84NkZ2NVZDZzMwQWRsN0VxZzhRVFArSUhG?=
- =?utf-8?B?anA5aFVncmdpbGFUTE9RTlNtM3V1bkl5RFQ3V1hqeDRJNnNuaGlnVW1rOHB2?=
- =?utf-8?B?MU9sMEtZUXkyQnpkWWg2UmFzUDhxNGR6UTJ4ZXZJTEpaeTRhRnpjdW1uK1Jv?=
- =?utf-8?B?TTNxY1l1WjlYMTFuaktoSXBUem8xWWc5Z2hTbHBOTU8rR3BrT01pMGhPQ3hL?=
- =?utf-8?B?cHdqNTJ1T0l2K25kaHpqTURnMk1yNXUyeSt3WmFFUWZGRDdwRWhTeHRieVZv?=
- =?utf-8?B?bWFGaG00d1dSM2NTRlJqVHFGVWRqb0JIcnhmRzd5SkJVaUVrejVVU2VScWxn?=
- =?utf-8?B?eTFIYWR2QTFBaWk5NWFxMVF1OG9vYVQ3TlV5SjhTODBUdjJud2dRc2VOci91?=
- =?utf-8?B?UUdrelYzRDBBRzJDRGh3RXl5dUVBRnVvc2JoWmMwWFR6SlhNdGtXRnR2UnJN?=
- =?utf-8?B?VUduMTh6UTczcG4yMThCTnlQakxqOUsvbWoxVkRaeGduN0o1Sk5jaERlSnJO?=
- =?utf-8?Q?mAEgX+hEIwPRl0IvFLjRT7TGS?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e9cdfa55-9746-4133-6268-08dc168f16c0
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2024 12:31:39.8628
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2Y1TezYZ2rSee5Ffbt+yOeqXsGBaTW5ng+cB6WdAfoQzwMujC44tRIPriUjmccZy
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9112
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 7/7] ASoC: codecs: msm8916-wcd-digital: drop dead gain
+ hacks
+Content-Language: en-US
+To: Johan Hovold <johan+linaro@kernel.org>, Mark Brown <broonie@kernel.org>
+Cc: Banajit Goswami <bgoswami@quicinc.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240116093903.19403-1-johan+linaro@kernel.org>
+ <20240116093903.19403-8-johan+linaro@kernel.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20240116093903.19403-8-johan+linaro@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 16, 2024 at 06:30:39AM +0000, Christophe Leroy wrote:
-> 
-> 
-> Le 15/01/2024 à 19:37, Jason Gunthorpe a écrit :
-> > On Wed, Jan 03, 2024 at 05:14:16PM +0800, peterx@redhat.com wrote:
-> >> From: Peter Xu <peterx@redhat.com>
-> >>
-> >> Hugepd format for GUP is only used in PowerPC with hugetlbfs.  There are
-> >> some kernel usage of hugepd (can refer to hugepd_populate_kernel() for
-> >> PPC_8XX), however those pages are not candidates for GUP.
-> >>
-> >> Commit a6e79df92e4a ("mm/gup: disallow FOLL_LONGTERM GUP-fast writing to
-> >> file-backed mappings") added a check to fail gup-fast if there's potential
-> >> risk of violating GUP over writeback file systems.  That should never apply
-> >> to hugepd.  Considering that hugepd is an old format (and even
-> >> software-only), there's no plan to extend hugepd into other file typed
-> >> memories that is prone to the same issue.
-> > 
-> > I didn't dig into the ppc stuff too deeply, but this looks to me like
-> > it is the same thing as ARM's contig bits?
-> > 
-> > ie a chunk of PMD/etc entries are all managed together as though they
-> > are a virtual larger entry and we use the hugepte_addr_end() stuff to
-> > iterate over each sub entry.
-> 
-> As far as I understand ARM's contig stuff, hugepd on powerpc is 
-> something different.
-> 
-> hugepd is a page directory dedicated to huge pages, where you have huge 
-> pages listed instead of regular pages. For instance, on powerpc 32 with 
-> each PGD entries covering 4Mbytes, a regular page table has 1024 PTEs. A 
-> hugepd for 512k is a page table with 8 entries.
-> 
-> And for 8Mbytes entries, the hugepd is a page table with only one entry. 
-> And 2 consecutive PGS entries will point to the same hugepd to cover the 
-> entire 8Mbytes.
+Hi Johan,
 
-That still sounds alot like the ARM thing - except ARM replicates the
-entry, you also said PPC relicates the entry like ARM to get to the
-8M?
+did you see any issue with this codec?
 
-I guess the difference is in how the table memory is layed out? ARM
-marks the size in the same entry that has the physical address so the
-entries are self describing and then replicated. It kind of sounds
-like PPC is marking the size in prior level and then reconfiguring the
-layout of the lower level? Otherwise it surely must do the same
-replication to make a radix index work..
+These are not really hacks, to make the gains effective it has to be 
+applied in a particular order.
 
-If yes, I guess that is the main problem, the mm APIs don't have way
-today to convey data from the pgd level to understand how to parse the
-pmd level?
 
-> > It seems to me we should see ARM and PPC agree on what the API is for
-> > this and then get rid of hugepd by making both use the same page table
-> > walker API. Is that too hopeful?
-> 
-> Can't see the similarity between ARM contig PTE and PPC huge page 
-> directories.
+On 16/01/2024 09:39, Johan Hovold wrote:
+> -		/* apply the digital gain after the interpolator is enabled */
 
-Well, they are both variable sized entries.
+As you noticed in the comments, the gains have to be reprogrammed after 
+interpolator and its clks are enabled.
 
-So if you imagine a pmd_leaf(), pmd_leaf_size() and a pte_leaf_size()
-that would return enough information for both.
 
-Jason
+> -		usleep_range(10000, 10100);
+> -		snd_soc_component_write(component, rx_gain_reg[w->shift],
+> -			      snd_soc_component_read(component, rx_gain_reg[w->shift]));
+> -		break;
+>   	case SND_SOC_DAPM_POST_PMD:
+>   		snd_soc_component_update_bits(component, LPASS_CDC_CLK_RX_RESET_CTL,
+>   					      1 << w->shift, 1 << w->shift);
+> @@ -630,9 +613,6 @@ static int msm8916_wcd_digital_enable_dec(struct snd_soc_dapm_widget *w,
+>   		snd_soc_component_update_bits(component, tx_mux_ctl_reg,
+>   				    TX_MUX_CTL_HPF_BP_SEL_MASK,
+>   				    TX_MUX_CTL_HPF_BP_SEL_NO_BYPASS);
+> -		/* apply the digital gain after the decimator is enabled */
+same here.
+
+> -		snd_soc_component_write(component, tx_gain_reg[w->shift],
+> -			      snd_soc_component_read(component, tx_gain_reg[w->shift]));
 
