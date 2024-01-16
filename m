@@ -1,57 +1,60 @@
-Return-Path: <linux-kernel+bounces-27805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C59482F62A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:53:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F58682F62D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:53:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3487B24FF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:53:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 314F01F24FD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:53:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 219CE288CF;
-	Tue, 16 Jan 2024 19:43:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C183B28DC8;
+	Tue, 16 Jan 2024 19:43:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S4wKT2z6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GtY2s3yq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E1D286B8;
-	Tue, 16 Jan 2024 19:43:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C7EA28DB4;
+	Tue, 16 Jan 2024 19:43:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434236; cv=none; b=FVbHJ5ykwsySZOP53e63yyr+zaWwYzxzoIlbjCo8ExOQGUFGrroFZu1qtKMeYWoU0pcNmVea8dbUJosrvXgmaEmaHKZHo00TZt4y1I9Dbus0xfd4xuBIDkSiYhLjHJ8Rce3EStXWVYQh6e1v7QJFHINqV7AzR+uCmgZM75JX7qw=
+	t=1705434238; cv=none; b=YocTVv/UeiFntqi196pkWqcPnS7kZZBvqzsCpuu6Qr2MhUvGJQ6IwOLfKoS31iTJjo5AUgK8dZxmQgVR3gFWmIWDoCwyBn2eQjs2Vzjuhtw1XJiFVPpYspnVHckxdXXO3DuDB7KK3DJKrh3AizMHxuHk1atFu3ZB4jqoq3jAYGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434236; c=relaxed/simple;
-	bh=pIf3fIubs6W9TDWjbi9TURP2D1IO+yWJy0fuV7K8DQU=;
+	s=arc-20240116; t=1705434238; c=relaxed/simple;
+	bh=IFFpEYIdX1DqTWpc6Dnp/CFvCpZiKT4CYGbBsshzT4U=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=jiwGUXn2t5A2bo+Hby9KfdDNQJiuP4YhtUn9BVWPu/WITfA8jK3vMd0doEOWSXlzqMfZFwfN92l2HCsFMMfSs6OHrdlF09pxGO53n0RGrLj3NqvA0kT/bR5XSIqdcCNEqF55YB1o9PrhJl2dv+v4DBPudIRF0zuY+YucIz6JPk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S4wKT2z6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24CA5C43390;
-	Tue, 16 Jan 2024 19:43:55 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=GgjRhzQPykWKgjZpMsXkOXacq3d4igIyywHrYF7tcv/ojjSDdd19QeJ7diN7Si9h2zJuQ9PYzV2UiY91svLBDN1DhLSc7i8VDbJm/g6dJAOVUAVexPz3iHSZg/F2WXkhH8jSURN1SGYSPYzL3tNzbpUT9rKqiQ1auUKoiSua2Kg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GtY2s3yq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5CEEC433A6;
+	Tue, 16 Jan 2024 19:43:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434236;
-	bh=pIf3fIubs6W9TDWjbi9TURP2D1IO+yWJy0fuV7K8DQU=;
+	s=k20201202; t=1705434237;
+	bh=IFFpEYIdX1DqTWpc6Dnp/CFvCpZiKT4CYGbBsshzT4U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=S4wKT2z6C9WIxLjRZ7fMXeHIT8d8/dGcB6Pah0FB/2tTVH4sYEVmbU2uAI+7awnNT
-	 axzZXsDID0MNWj0KQ1EihvOAwL4KOibKasy3GvURj7js1PzyMq/ES+/xttB27P7RPI
-	 04gwOBzqY/ZtebWlVMK0TmxshGbxD4y2ozOhiVCi5CQhb50ot66Zc6zDMTV7UZRd0Y
-	 ah002FFGF9k/QLGYHrmlgZF3APdXSBPKQLLQ5pQlGVjGRM1Mb9DaW42vZYSYRcyGyG
-	 qkuTy+/bml6sQGCY2MBEyC1AJqVgo4vX5eQSDoqa49Gz8IzB6ZTvV1n73VJ9Q+mqyq
-	 +dgySo7c9VVNg==
+	b=GtY2s3yqwL4P8f5jPRVtuoe/Ie8l8Nd4DU8F8pEBlT1IchBaPjhVnGv+4kvaXrYde
+	 xbJvv58nwZwmGJgz//Xl87R3+hhrclljxBAaaGRt44vB9Q38Lz+ulxJvf5TBaRc420
+	 q+umyUmBl+7AmGC6dt3HjlsLkrGdC3YSdpESpytOEZ+refod0F9KB50RIu+kj6lsJu
+	 RVzZJGTWKgUvIY/TzctK4lyhKKeSlSPWFY7sziFkEIvEd25eKxtO1/6RfGCAcce1BM
+	 CmP8IsLd60wpHA3M26TdRyApY4GgUoHGicOHTMFKO/oO5t8djloGaITp2p6A23Gf7p
+	 GJKrPFraNFgoA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Chih-Kang Chang <gary.chang@realtek.com>,
-	Ping-Ke Shih <pkshih@realtek.com>,
-	Kalle Valo <kvalo@kernel.org>,
+Cc: Michael Chan <michael.chan@broadcom.com>,
+	Andy Gospodarek <gospo@broadcom.com>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 035/108] wifi: rtw89: fix misbehavior of TX beacon in concurrent mode
-Date: Tue, 16 Jan 2024 14:39:01 -0500
-Message-ID: <20240116194225.250921-35-sashal@kernel.org>
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 036/108] bnxt_en: Add 5760X (P7) PCI IDs
+Date: Tue, 16 Jan 2024 14:39:02 -0500
+Message-ID: <20240116194225.250921-36-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194225.250921-1-sashal@kernel.org>
 References: <20240116194225.250921-1-sashal@kernel.org>
@@ -66,171 +69,64 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7
 Content-Transfer-Encoding: 8bit
 
-From: Chih-Kang Chang <gary.chang@realtek.com>
+From: Michael Chan <michael.chan@broadcom.com>
 
-[ Upstream commit 756b31203d482d2dd1aa6c208978b0410dc7530f ]
+[ Upstream commit 2012a6abc87657c6c8171bb5ff13dd9bafb241bf ]
 
-In concurrent mode, when STA interface is scanning, it causes
-AP interface TX beacon on wrong channel. We modified it to scan
-with the operating channel when one of the interfaces is already
-connected. Additionally, STA interface need to stop scan when AP
-interface is starting to avoid TX beacon on wrong channel. Finally,
-AP interface need to stop TX beacon when STA interface is scanning
-and switching to non-OP channel,This prevent other device to get
-beacons on wrong channel.
+Now with basic support for the new chip family, add the PCI IDs of the
+new devices.
 
-Signed-off-by: Chih-Kang Chang <gary.chang@realtek.com>
-Signed-off-by: Ping-Ke Shih <pkshih@realtek.com>
-Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://lore.kernel.org/r/20231129070046.18443-5-pkshih@realtek.com
+Reviewed-by: Andy Gospodarek <gospo@broadcom.com>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Link: https://lore.kernel.org/r/20231201223924.26955-16-michael.chan@broadcom.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/realtek/rtw89/fw.c       | 17 +++++++++--
- drivers/net/wireless/realtek/rtw89/mac.c      | 29 +++++++++++++++----
- drivers/net/wireless/realtek/rtw89/mac.h      |  1 +
- drivers/net/wireless/realtek/rtw89/mac80211.c |  3 ++
- 4 files changed, 43 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 8 ++++++++
+ drivers/net/ethernet/broadcom/bnxt/bnxt.h | 4 ++++
+ 2 files changed, 12 insertions(+)
 
-diff --git a/drivers/net/wireless/realtek/rtw89/fw.c b/drivers/net/wireless/realtek/rtw89/fw.c
-index a732c22a2d54..313ed4c45464 100644
---- a/drivers/net/wireless/realtek/rtw89/fw.c
-+++ b/drivers/net/wireless/realtek/rtw89/fw.c
-@@ -4043,6 +4043,7 @@ void rtw89_hw_scan_complete(struct rtw89_dev *rtwdev, struct ieee80211_vif *vif,
- 	rtw89_core_scan_complete(rtwdev, vif, true);
- 	ieee80211_scan_completed(rtwdev->hw, &info);
- 	ieee80211_wake_queues(rtwdev->hw);
-+	rtw89_mac_enable_beacon_for_ap_vifs(rtwdev, true);
- 
- 	rtw89_release_pkt_list(rtwdev);
- 	rtwvif = (struct rtw89_vif *)vif->drv_priv;
-@@ -4060,6 +4061,19 @@ void rtw89_hw_scan_abort(struct rtw89_dev *rtwdev, struct ieee80211_vif *vif)
- 	rtw89_hw_scan_complete(rtwdev, vif, true);
- }
- 
-+static bool rtw89_is_any_vif_connected_or_connecting(struct rtw89_dev *rtwdev)
-+{
-+	struct rtw89_vif *rtwvif;
-+
-+	rtw89_for_each_rtwvif(rtwdev, rtwvif) {
-+		/* This variable implies connected or during attempt to connect */
-+		if (!is_zero_ether_addr(rtwvif->bssid))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- int rtw89_hw_scan_offload(struct rtw89_dev *rtwdev, struct ieee80211_vif *vif,
- 			  bool enable)
- {
-@@ -4072,8 +4086,7 @@ int rtw89_hw_scan_offload(struct rtw89_dev *rtwdev, struct ieee80211_vif *vif,
- 	if (!rtwvif)
- 		return -EINVAL;
- 
--	/* This variable implies connected or during attempt to connect */
--	connected = !is_zero_ether_addr(rtwvif->bssid);
-+	connected = rtw89_is_any_vif_connected_or_connecting(rtwdev);
- 	opt.enable = enable;
- 	opt.target_ch_mode = connected;
- 	if (enable) {
-diff --git a/drivers/net/wireless/realtek/rtw89/mac.c b/drivers/net/wireless/realtek/rtw89/mac.c
-index add8a7ff01a5..d0c7de4e80dc 100644
---- a/drivers/net/wireless/realtek/rtw89/mac.c
-+++ b/drivers/net/wireless/realtek/rtw89/mac.c
-@@ -3916,12 +3916,10 @@ static void rtw89_mac_port_cfg_rx_sync(struct rtw89_dev *rtwdev,
- }
- 
- static void rtw89_mac_port_cfg_tx_sw(struct rtw89_dev *rtwdev,
--				     struct rtw89_vif *rtwvif)
-+				     struct rtw89_vif *rtwvif, bool en)
- {
- 	const struct rtw89_mac_gen_def *mac = rtwdev->chip->mac_def;
- 	const struct rtw89_port_reg *p = mac->port_base;
--	bool en = rtwvif->net_type == RTW89_NET_TYPE_AP_MODE ||
--		  rtwvif->net_type == RTW89_NET_TYPE_AD_HOC;
- 
- 	if (en)
- 		rtw89_write32_port_set(rtwdev, rtwvif, p->port_cfg, B_AX_BCNTX_EN);
-@@ -3929,6 +3927,24 @@ static void rtw89_mac_port_cfg_tx_sw(struct rtw89_dev *rtwdev,
- 		rtw89_write32_port_clr(rtwdev, rtwvif, p->port_cfg, B_AX_BCNTX_EN);
- }
- 
-+static void rtw89_mac_port_cfg_tx_sw_by_nettype(struct rtw89_dev *rtwdev,
-+						struct rtw89_vif *rtwvif)
-+{
-+	bool en = rtwvif->net_type == RTW89_NET_TYPE_AP_MODE ||
-+		  rtwvif->net_type == RTW89_NET_TYPE_AD_HOC;
-+
-+	rtw89_mac_port_cfg_tx_sw(rtwdev, rtwvif, en);
-+}
-+
-+void rtw89_mac_enable_beacon_for_ap_vifs(struct rtw89_dev *rtwdev, bool en)
-+{
-+	struct rtw89_vif *rtwvif;
-+
-+	rtw89_for_each_rtwvif(rtwdev, rtwvif)
-+		if (rtwvif->net_type == RTW89_NET_TYPE_AP_MODE)
-+			rtw89_mac_port_cfg_tx_sw(rtwdev, rtwvif, en);
-+}
-+
- static void rtw89_mac_port_cfg_bcn_intv(struct rtw89_dev *rtwdev,
- 					struct rtw89_vif *rtwvif)
- {
-@@ -4235,7 +4251,7 @@ int rtw89_mac_port_update(struct rtw89_dev *rtwdev, struct rtw89_vif *rtwvif)
- 	rtw89_mac_port_cfg_bcn_prct(rtwdev, rtwvif);
- 	rtw89_mac_port_cfg_rx_sw(rtwdev, rtwvif);
- 	rtw89_mac_port_cfg_rx_sync(rtwdev, rtwvif);
--	rtw89_mac_port_cfg_tx_sw(rtwdev, rtwvif);
-+	rtw89_mac_port_cfg_tx_sw_by_nettype(rtwdev, rtwvif);
- 	rtw89_mac_port_cfg_bcn_intv(rtwdev, rtwvif);
- 	rtw89_mac_port_cfg_hiq_win(rtwdev, rtwvif);
- 	rtw89_mac_port_cfg_hiq_dtim(rtwdev, rtwvif);
-@@ -4397,8 +4413,10 @@ rtw89_mac_c2h_scanofld_rsp(struct rtw89_dev *rtwdev, struct sk_buff *c2h,
- 
- 	switch (reason) {
- 	case RTW89_SCAN_LEAVE_CH_NOTIFY:
--		if (rtw89_is_op_chan(rtwdev, band, chan))
-+		if (rtw89_is_op_chan(rtwdev, band, chan)) {
-+			rtw89_mac_enable_beacon_for_ap_vifs(rtwdev, false);
- 			ieee80211_stop_queues(rtwdev->hw);
-+		}
- 		return;
- 	case RTW89_SCAN_END_SCAN_NOTIFY:
- 		if (rtwvif && rtwvif->scan_req &&
-@@ -4416,6 +4434,7 @@ rtw89_mac_c2h_scanofld_rsp(struct rtw89_dev *rtwdev, struct sk_buff *c2h,
- 		if (rtw89_is_op_chan(rtwdev, band, chan)) {
- 			rtw89_assign_entity_chan(rtwdev, rtwvif->sub_entity_idx,
- 						 &rtwdev->scan_info.op_chan);
-+			rtw89_mac_enable_beacon_for_ap_vifs(rtwdev, true);
- 			ieee80211_wake_queues(rtwdev->hw);
- 		} else {
- 			rtw89_chan_create(&new, chan, chan, band,
-diff --git a/drivers/net/wireless/realtek/rtw89/mac.h b/drivers/net/wireless/realtek/rtw89/mac.h
-index c11c904f87fe..f9fef678f314 100644
---- a/drivers/net/wireless/realtek/rtw89/mac.h
-+++ b/drivers/net/wireless/realtek/rtw89/mac.h
-@@ -992,6 +992,7 @@ int rtw89_mac_port_get_tsf(struct rtw89_dev *rtwdev, struct rtw89_vif *rtwvif,
- void rtw89_mac_set_he_obss_narrow_bw_ru(struct rtw89_dev *rtwdev,
- 					struct ieee80211_vif *vif);
- void rtw89_mac_stop_ap(struct rtw89_dev *rtwdev, struct rtw89_vif *rtwvif);
-+void rtw89_mac_enable_beacon_for_ap_vifs(struct rtw89_dev *rtwdev, bool en);
- int rtw89_mac_remove_vif(struct rtw89_dev *rtwdev, struct rtw89_vif *vif);
- int rtw89_mac_enable_bb_rf(struct rtw89_dev *rtwdev);
- int rtw89_mac_disable_bb_rf(struct rtw89_dev *rtwdev);
-diff --git a/drivers/net/wireless/realtek/rtw89/mac80211.c b/drivers/net/wireless/realtek/rtw89/mac80211.c
-index 31d1f7891675..b7ceaf5595eb 100644
---- a/drivers/net/wireless/realtek/rtw89/mac80211.c
-+++ b/drivers/net/wireless/realtek/rtw89/mac80211.c
-@@ -477,6 +477,9 @@ static int rtw89_ops_start_ap(struct ieee80211_hw *hw,
- 		return -EOPNOTSUPP;
- 	}
- 
-+	if (rtwdev->scanning)
-+		rtw89_hw_scan_abort(rtwdev, rtwdev->scan_info.scanning_vif);
-+
- 	ether_addr_copy(rtwvif->bssid, vif->bss_conf.bssid);
- 	rtw89_cam_bssid_changed(rtwdev, rtwvif);
- 	rtw89_mac_port_update(rtwdev, rtwvif);
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index e1f1e646cf48..56da7ba7d68d 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -120,6 +120,10 @@ static const struct {
+ 	[BCM57508] = { "Broadcom BCM57508 NetXtreme-E 10Gb/25Gb/50Gb/100Gb/200Gb Ethernet" },
+ 	[BCM57504] = { "Broadcom BCM57504 NetXtreme-E 10Gb/25Gb/50Gb/100Gb/200Gb Ethernet" },
+ 	[BCM57502] = { "Broadcom BCM57502 NetXtreme-E 10Gb/25Gb/50Gb Ethernet" },
++	[BCM57608] = { "Broadcom BCM57608 NetXtreme-E 10Gb/25Gb/50Gb/100Gb/200Gb/400Gb Ethernet" },
++	[BCM57604] = { "Broadcom BCM57604 NetXtreme-E 10Gb/25Gb/50Gb/100Gb/200Gb Ethernet" },
++	[BCM57602] = { "Broadcom BCM57602 NetXtreme-E 10Gb/25Gb/50Gb/100Gb Ethernet" },
++	[BCM57601] = { "Broadcom BCM57601 NetXtreme-E 10Gb/25Gb/50Gb/100Gb/200Gb/400Gb Ethernet" },
+ 	[BCM57508_NPAR] = { "Broadcom BCM57508 NetXtreme-E Ethernet Partition" },
+ 	[BCM57504_NPAR] = { "Broadcom BCM57504 NetXtreme-E Ethernet Partition" },
+ 	[BCM57502_NPAR] = { "Broadcom BCM57502 NetXtreme-E Ethernet Partition" },
+@@ -174,6 +178,10 @@ static const struct pci_device_id bnxt_pci_tbl[] = {
+ 	{ PCI_VDEVICE(BROADCOM, 0x1750), .driver_data = BCM57508 },
+ 	{ PCI_VDEVICE(BROADCOM, 0x1751), .driver_data = BCM57504 },
+ 	{ PCI_VDEVICE(BROADCOM, 0x1752), .driver_data = BCM57502 },
++	{ PCI_VDEVICE(BROADCOM, 0x1760), .driver_data = BCM57608 },
++	{ PCI_VDEVICE(BROADCOM, 0x1761), .driver_data = BCM57604 },
++	{ PCI_VDEVICE(BROADCOM, 0x1762), .driver_data = BCM57602 },
++	{ PCI_VDEVICE(BROADCOM, 0x1763), .driver_data = BCM57601 },
+ 	{ PCI_VDEVICE(BROADCOM, 0x1800), .driver_data = BCM57502_NPAR },
+ 	{ PCI_VDEVICE(BROADCOM, 0x1801), .driver_data = BCM57504_NPAR },
+ 	{ PCI_VDEVICE(BROADCOM, 0x1802), .driver_data = BCM57508_NPAR },
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.h b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
+index a7d7b09ea162..1471e9ec9107 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.h
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
+@@ -1697,6 +1697,10 @@ enum board_idx {
+ 	BCM57508_NPAR,
+ 	BCM57504_NPAR,
+ 	BCM57502_NPAR,
++	BCM57608,
++	BCM57604,
++	BCM57602,
++	BCM57601,
+ 	BCM58802,
+ 	BCM58804,
+ 	BCM58808,
 -- 
 2.43.0
 
