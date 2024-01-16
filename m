@@ -1,121 +1,144 @@
-Return-Path: <linux-kernel+bounces-27716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B515682F4B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:52:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C53B482F4B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 19:55:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBC4C1C23609
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:52:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BA1F2852E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:55:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B4A81D52C;
-	Tue, 16 Jan 2024 18:52:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 350811CF9A;
+	Tue, 16 Jan 2024 18:54:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gnuweeb.org header.i=@gnuweeb.org header.b="A2JerUBr"
-Received: from gnuweeb.org (gnuweeb.org [51.81.211.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LPW1C0Gj"
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69A0E1D526
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:52:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gnuweeb.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnuweeb.org
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.81.211.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32E8F1CF82
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:54:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705431140; cv=none; b=IXlrq+AdcychhJLTSDTkCM0+6jam6+RE2NePpQO7nCNvUW3+6tpUxzHyOFLjNwHvRufMln+tSLIrbt1Yui/2AjnXIwzfUP/RdgQD+OprBObi3khYG/pxRMC23raTkWBm4HAJcJ2sidYH5EmetPjcbb5YYCzWwXUL764t+8KxXgc=
+	t=1705431298; cv=none; b=JSKuWrI3Em1EJpRkkBSvbOmY0MPlsuTXYJu/kbLhexQztHwpR5GKFLHZ7pv6Soqe28Axuf00XdP+I6EJp38wqk7gYdbPyA4f5nXAAD0W8NtWj+KBZkpD4gPqMv47g5At/frIvxxKRLyihjGnv0/CoSOO0ndD15Gh/lunzXpDHgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705431140; c=relaxed/simple;
-	bh=Dr51axhWhT3nOG6228AY6k9XqDQO8bY2Qt8EbICnJhE=;
-	h=DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To:X-Bpl; b=dRvWQ/1F6yvI6IEK6KMfT855BQq5e0YaJqMNAVAadlwknBy+0CRy1kauVU1VKv42EJ0apLJm2xgUhVTvOgFuktRAyykQ69PogjSsGQPWxkXqV0KXYaCQCTpw2ee/A2RqMIEugPAq6pMOT6Scb0PpauHQbf9fHC+2c75XDbBdq6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=gnuweeb.org header.i=@gnuweeb.org header.b=A2JerUBr; arc=none smtp.client-ip=51.81.211.47
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gnuweeb.org;
-	s=default; t=1705431133;
-	bh=Dr51axhWhT3nOG6228AY6k9XqDQO8bY2Qt8EbICnJhE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=A2JerUBrJFxMgov4tcg5OvoR9vZWkfjhSCjgOhxe7qut7uR8mZe54GT0ZIn1eawqw
-	 nUiXs4aEu/hIY1QzbbFGRaPQKQ8ntIDKNfwJdTkLNmBoc5UBB6NihZhKyGlGhqpQK7
-	 gueJ5cycE2tiFTH1dvYAwGDQV3fnY4dwxwHZug4kgKq/+P9G7fZ+GognuoJZlnan88
-	 sNaI+mH/yWjJzGrBLgWdmI3sONJwsU9PhyJTUDiwX9SLpeL18BtUbbNT65imlfckzu
-	 t4kj5VKNWuZJHBtJh5979ks8+1dafC5XuR1lmOVxyhVTbomV7N0Ai1mbFxytqymAya
-	 JemxhIaO7QM2w==
-Received: from biznet-home.integral.gnuweeb.org (unknown [182.253.126.189])
-	by gnuweeb.org (Postfix) with ESMTPSA id 0C9D124C3A2;
-	Wed, 17 Jan 2024 01:52:10 +0700 (WIB)
-Date: Wed, 17 Jan 2024 01:52:06 +0700
-From: Ammar Faizi <ammarfaizi2@gnuweeb.org>
-To: Charles Mirabile <cmirabil@redhat.com>
-Cc: linux-kernel@vger.kernel.org, Willy Tarreau <w@1wt.eu>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Subject: Re: [PATCH] nolibc/stdlib: Improve `getauxval(3)` implementation
-Message-ID: <ZabQVvpZ4e7hTwcb@biznet-home.integral.gnuweeb.org>
-References: <20240116181147.2230944-1-cmirabil@redhat.com>
+	s=arc-20240116; t=1705431298; c=relaxed/simple;
+	bh=AcaArvIGHBhawjXJC5ECINtq4Y4+SY0odW2qhBtPErc=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=LKMsHIzyKRjNgULkOyKUrmVBZU6F8QrVzuLDp0JlNiOPp+KGoCfhN6Tv0GfUf6K2+1g7RT5reBtNvFfZI0MCDejrW3a7BN8hrNWvBpkfaOaWRqStY7OMfag+1+1/3CsXfXZCdAHWRUSitkAIHniSEaE6WTsrrpUE0U+FWUfqAUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LPW1C0Gj; arc=none smtp.client-ip=209.85.216.44
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-28e7933c317so724182a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 10:54:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705431296; x=1706036096; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SKWI3GBw8XVmkGMp4kp5cBnwP168mn/eNzlkwz0VmsY=;
+        b=LPW1C0GjQTtRBXCTSL8vE54wbRZcUF2FCm90doXtgvTocIfBhx8nuai4B2e+JaoUZL
+         3OpOvfyQD+yHxNDECrJ2fNg0i8uzvC0tkdgyO6AEhyyqitrWIqNcsNi0ChuGhR98poom
+         5CMy4AkPP8fCMU3EJ1lNmKVpObw0D3i5pquVN4/ZznWjccaxss7lCadAA6tRrYOJvxHA
+         CmKf6mqWGhPTuVb+fOLJDZYGIaLWwIHf7jQuxoRDY8NzmRGbS1lzCEfGbMYQj5EHias3
+         C+e4xhI/zZmERz0G2RXhGEkJJszvKQ4iluCoFTWBdQ2dDEAaZjYEwY22dcCpSSOQoFWx
+         /Zng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705431296; x=1706036096;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SKWI3GBw8XVmkGMp4kp5cBnwP168mn/eNzlkwz0VmsY=;
+        b=eZ3DJHjsqhKwGQG9GAtQM+O2e/HRw5DOjrGUzfj37Li2poW7Y51DVmdHfVj9ek/fuP
+         Ckoiumcylf4zrvKriDTpDNTg6QRs9i9ynsUJsN7uRIDe3AHs0XM1hWQ3E9Jb3CBWbiGu
+         aPO9VEselezae+Z+N+ITQjqG8PBJXBs7LaG0TaBsGfIc8v0wnonT/BWUyx1F3t0ZmvXx
+         0jYZmyNsgL5fkxz3w76P1QwbrBIVRmg42+jej6FwymOPIqoMv0VP/A+yD/qbWotYYFan
+         8Bw9q+r4CwUMAGzyVgTX57/9G3mFmKtg15JMoLCAi++aMmq2D3XtyXp850PyPrjldlao
+         yEbQ==
+X-Gm-Message-State: AOJu0YxltkTQpcAJ07taknNX2a3kwYzkp3Rh/IDFRWO8GPNwkEYVT3cm
+	7hEqfqCwXxbPFPZCzDyrn8t3bLf//9G76kIAndwwjZudOendvw==
+X-Google-Smtp-Source: AGHT+IEFtoFGlnGt6DKWSN181qFbFfM7zhz4boriHOhF5W2AqSgVEM830AlQr0zgGUviJ0so7F2IEofXyY64Nwjuneo=
+X-Received: by 2002:a17:90a:3484:b0:28e:79a4:979c with SMTP id
+ p4-20020a17090a348400b0028e79a4979cmr982068pjb.58.1705431296571; Tue, 16 Jan
+ 2024 10:54:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240116181147.2230944-1-cmirabil@redhat.com>
-X-Bpl: hUx9VaHkTWcLO7S8CQCslj6OzqBx2hfLChRz45nPESx5VSB/xuJQVOKOB1zSXE3yc9ntP27bV1M1
+References: <20240110102102.61587-1-tudor.ambarus@linaro.org> <20240110102102.61587-15-tudor.ambarus@linaro.org>
+In-Reply-To: <20240110102102.61587-15-tudor.ambarus@linaro.org>
+From: Sam Protsenko <semen.protsenko@linaro.org>
+Date: Tue, 16 Jan 2024 12:54:45 -0600
+Message-ID: <CAPLW+4=O2OaDsC7KNeLPt4UC-OLjD3_VVL1xL6PnrOBPUmcDrw@mail.gmail.com>
+Subject: Re: [PATCH 14/18] tty: serial: samsung: return bool for s3c24xx_serial_console_txrdy()
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com, 
+	gregkh@linuxfoundation.org, jirislaby@kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
+	andre.draszik@linaro.org, peter.griffin@linaro.org, kernel-team@android.com, 
+	willmcvicker@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 16, 2024 at 01:11:47PM -0500, Charles Mirabile wrote:
-> At least on x86-64, the ABI only specifies that one more long will be
-> present with value 0 (type AT_NULL) after the pairs of auxv entries.
-> Whether or not it has a corresponding value is unspecified. This value is
-> present on linux, but there is no reason to check it as simply seeing an
-> auxv entry whose type value is AT_NULL should be enough.
+On Wed, Jan 10, 2024 at 4:25=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro=
+org> wrote:
+>
+> s3c24xx_serial_console_txrdy() returned just 0 or 1 to indicate whether
+> the TX is empty or not. Change its return type to bool.
+>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
+>  drivers/tty/serial/samsung_tty.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsun=
+g_tty.c
+> index 63e993bed296..37c0ba2a122c 100644
+> --- a/drivers/tty/serial/samsung_tty.c
+> +++ b/drivers/tty/serial/samsung_tty.c
+> @@ -2183,7 +2183,7 @@ static const struct dev_pm_ops s3c24xx_serial_pm_op=
+s =3D {
+>
+>  static struct uart_port *cons_uart;
+>
+> -static int
+> +static bool
+>  s3c24xx_serial_console_txrdy(struct uart_port *port, u32 ufcon)
+>  {
+>         const struct s3c24xx_uart_info *info =3D s3c24xx_port_to_info(por=
+t);
+> @@ -2193,13 +2193,13 @@ s3c24xx_serial_console_txrdy(struct uart_port *po=
+rt, u32 ufcon)
+>                 /* fifo mode - check amount of data in fifo registers... =
+*/
+>
+>                 ufstat =3D rd_regl(port, S3C2410_UFSTAT);
+> -               return (ufstat & info->tx_fifofull) ? 0 : 1;
+> +               return !(ufstat & info->tx_fifofull);
+>         }
+>
+>         /* in non-fifo mode, we go and use the tx buffer empty */
+>
+>         utrstat =3D rd_regl(port, S3C2410_UTRSTAT);
+> -       return (utrstat & S3C2410_UTRSTAT_TXE) ? 1 : 0;
+> +       return !!(utrstat & S3C2410_UTRSTAT_TXE);
 
-Yeah, I agree with that. I just read the ABI and confirmed that the
-'a_un' member is ignored when the type is `AT_NULL`. Let's stop relying
-on an unspecified value.
+Again, personally I think !! is just clutters the code here, as the
+function already returns bool. Other than that:
 
-For others who want to check, see page 37 and 38:
-https://gitlab.com/x86-psABIs/x86-64-ABI/-/wikis/uploads/221b09355dd540efcbe61b783b6c0ece/x86-64-psABI-2023-09-26.pdf
+Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
 
-> This is a matter of taste, but I think processing the data in a structured
-> way by coercing it into an array of type value pairs, using multiple
-> return style, and a for loop with a clear exit condition is more readable
-> than the existing infinite loop with multiple exit points and a return
-> value variable.
-
-Ok. It's more readable using your way. One thing that bothers me a bit
-is type of 'a_type'. On page 37, the ABI defines the auxv type-val pair
-as:
-
-  typedef struct
-  {
-    int a_type;
-    union {
-      long a_val;
-      void *a_ptr;
-      void (*a_fnc)();
-    } a_un;
-  } auxv_t;
-
-Assuming the arch is x86-64 Linux. Note that 'a_type' is an 'int' which
-is 4 bytes in size, but we use 'unsigned long' instead of 'int' to
-represent it. However, since 'a_un' needs to be 8 bytes aligned, the
-compiler will put a 4 bytes padding between 'a_type' and 'a_un', so it
-ends up just fine (on x86-64).
-
-What do you think about other architectures? Will it potentially be
-misinterpreted?
-
-I tried to compare it in my head for i386, but it also ends up just
-fine. I don't know other architectures.
-
-> I also added a call to set errno to ENOENT when the entry is not found as
-> glibc does which allows programs to disambiguate between the case of an
-> auxv that is not present, and one that is, but with value zero.
-
-Good catch!
-
--- 
-Ammar Faizi
-
+>  }
+>
+>  static bool
+> --
+> 2.43.0.472.g3155946c3a-goog
+>
+>
 
