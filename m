@@ -1,66 +1,64 @@
-Return-Path: <linux-kernel+bounces-27847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A58982F6B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:06:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A15682F6B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:06:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 002D21C20AD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:06:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D7F91F20F01
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 20:06:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36E6B58229;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F17BA58AA5;
 	Tue, 16 Jan 2024 19:46:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZE/CH0sW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MqHlmZ7J"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 395C3208C9;
-	Tue, 16 Jan 2024 19:45:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3248C58227;
+	Tue, 16 Jan 2024 19:46:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434360; cv=none; b=BIbFQTGe39MHV6SnH/Meapv138+HG9oz7OUsQoAACsX+IzWYgGN7gaQceIkRs5Tk93EKcZ0Smi9D4zobJlm98w+jHP4alRkzeVyA6WfgWKdhmFok5swFRR3dIVXHT9Bh+rWxsN3wI6D2kRgbTtcxjCZS+kPUP66wjoT7F4bxx7k=
+	t=1705434361; cv=none; b=CcQuPhP/oJIGmsKi/a48iMkkaM5rtPPyz21b9eQoyUD5uX+p/z3GkLcaWYiX5V+Wk5URkqO6SXm/OX4PAC/j0b2wS4a3wkn3DF0iSQ2Qh62apkypXC7ZfOcAhyZ4j5ewQb3lYBv+J2yZsF+5M/cTGTZl514LInfN7Iy24smmJq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434360; c=relaxed/simple;
-	bh=Eq9KS9R2ANyGRZukR1Q7siHbtI5EWQTRdMAJgPNQPhg=;
+	s=arc-20240116; t=1705434361; c=relaxed/simple;
+	bh=GWno6YTcGCRMF9sb2JjBbd94P2+qY1I5giHJTO8LkTY=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=a7VqMA3uZ0d/UfybO7jUAE57xhXVC2GUNyprp9M4kOvX04xp+7RRMUnnpHuQgX03Yb+Af7MxZyiEMETjVxVpyo55wkniXwIOh3OtX+Lb9+JmCH1ZqEE7x0QtdlMkZykMRajIfQf3gZ7o1aEeWbMxI/Oip0CAbJl1IJXUTpSgesU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZE/CH0sW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9D5FC433F1;
-	Tue, 16 Jan 2024 19:45:56 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=IQJ4p9Y6YgzHJTmwS50bMnC+4DLdtfcB32yVMSzdcxoYXANUTdN1GZO0mmPBSh0NTQ2WAd8lh23MzAs6+/3BbMzpUmkgQtmjfIv2SBR0o4wbCCQCPLY51FYqCAzh7E7pE+b5+VqwWAVewKQEauzJdPK+FNPbOw1rSOe7IuYHTY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MqHlmZ7J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80FCDC433B1;
+	Tue, 16 Jan 2024 19:45:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434358;
-	bh=Eq9KS9R2ANyGRZukR1Q7siHbtI5EWQTRdMAJgPNQPhg=;
+	s=k20201202; t=1705434361;
+	bh=GWno6YTcGCRMF9sb2JjBbd94P2+qY1I5giHJTO8LkTY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZE/CH0sWI5zlB7CrUrgn3x4lkscFvLW5c9Tr7Qb8P5O/Nv5S9AgAknXDT7C8zPg40
-	 s2RpNbl1DA9Ex/h4EED6zsIlyl+n5ej2pD0b9sGYnOMvGexP9JXMsS6Sj+P2etAgqU
-	 80oiA+wqrR/ncpqojdC2CERMv7SznQrG5i1CIYoaFPFlBehd/FiEo9AWhdyszbW8UC
-	 uMhR/zc0hZMpARZbl6GSdEpzBEcE/93bOczz4KPg9aVA3Uk5C1mnG24LdOUI7kBXDB
-	 kK4IHyuZmVzP99BxOfpqN7WhvnXKeed9jOeUVvNcOIRDEL0s8/LLpSveCAmb76TINm
-	 EC0FO8DsAyUcw==
+	b=MqHlmZ7JH52VZJlU6JU55AKUhSlb5qoC1J4GNiNFxaXRiWA540qloX0A48ROEertR
+	 FCaAbgKfR7WK/Ogsdq/gEwKph+DYQDubRZXG0lCLWca7S4Pi3qxW+G3e7LYTJhavmu
+	 LsHLFrRd6B4Y+UsyUIE5c40WOBvAU9vLQUDYLzRVkDQRoXnfkZFbPIBFtw8AF9AE6k
+	 D880C9RddqSINXcH3mB5BZEV+HAUlxAhByU0hwjkpb+hILqOmkMF2wYkkjKSFbsWNs
+	 uqrVayetMNmXF+hj2FVwiZ0oH/xMCHPu6Q1zuwGFEJCf0WSU9d8f2sHjVzleA1gJ9h
+	 cR2RAi6uJ0d3w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Igor Russkikh <irusskikh@marvell.com>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: Tobias Waldekranz <tobias@waldekranz.com>,
+	Vladimir Oltean <vladimir.oltean@nxp.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	epomozov@marvell.com,
-	davem@davemloft.net,
+	andrew@lunn.ch,
+	f.fainelli@gmail.com,
+	olteanv@gmail.com,
 	edumazet@google.com,
+	kuba@kernel.org,
 	pabeni@redhat.com,
-	richardcochran@gmail.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 076/108] net: atlantic: eliminate double free in error handling logic
-Date: Tue, 16 Jan 2024 14:39:42 -0500
-Message-ID: <20240116194225.250921-76-sashal@kernel.org>
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 077/108] net: dsa: mv88e6xxx: Fix mv88e6352_serdes_get_stats error path
+Date: Tue, 16 Jan 2024 14:39:43 -0500
+Message-ID: <20240116194225.250921-77-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194225.250921-1-sashal@kernel.org>
 References: <20240116194225.250921-1-sashal@kernel.org>
@@ -75,286 +73,100 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7
 Content-Transfer-Encoding: 8bit
 
-From: Igor Russkikh <irusskikh@marvell.com>
+From: Tobias Waldekranz <tobias@waldekranz.com>
 
-[ Upstream commit b3cb7a830a24527877b0bc900b9bd74a96aea928 ]
+[ Upstream commit fc82a08ae795ee6b73fb6b50785f7be248bec7b5 ]
 
-Driver has a logic leak in ring data allocation/free,
-where aq_ring_free could be called multiple times on same ring,
-if system is under stress and got memory allocation error.
+mv88e6xxx_get_stats, which collects stats from various sources,
+expects all callees to return the number of stats read. If an error
+occurs, 0 should be returned.
 
-Ring pointer was used as an indicator of failure, but this is
-not correct since only ring data is allocated/deallocated.
-Ring itself is an array member.
+Prevent future mishaps of this kind by updating the return type to
+reflect this contract.
 
-Changing ring allocation functions to return error code directly.
-This simplifies error handling and eliminates aq_ring_free
-on higher layer.
-
-Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
-Link: https://lore.kernel.org/r/20231213095044.23146-1-irusskikh@marvell.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Signed-off-by: Tobias Waldekranz <tobias@waldekranz.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/aquantia/atlantic/aq_ptp.c   | 28 +++------
- .../net/ethernet/aquantia/atlantic/aq_ring.c  | 61 +++++--------------
- .../net/ethernet/aquantia/atlantic/aq_ring.h  | 22 +++----
- .../net/ethernet/aquantia/atlantic/aq_vec.c   | 23 +++----
- 4 files changed, 47 insertions(+), 87 deletions(-)
+ drivers/net/dsa/mv88e6xxx/chip.h   |  4 ++--
+ drivers/net/dsa/mv88e6xxx/serdes.c | 10 +++++-----
+ drivers/net/dsa/mv88e6xxx/serdes.h |  8 ++++----
+ 3 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c b/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c
-index 28c9b6f1a54f..abd4832e4ed2 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c
-@@ -953,8 +953,6 @@ int aq_ptp_ring_alloc(struct aq_nic_s *aq_nic)
+diff --git a/drivers/net/dsa/mv88e6xxx/chip.h b/drivers/net/dsa/mv88e6xxx/chip.h
+index 44383a03ef2f..c54d305a1d83 100644
+--- a/drivers/net/dsa/mv88e6xxx/chip.h
++++ b/drivers/net/dsa/mv88e6xxx/chip.h
+@@ -601,8 +601,8 @@ struct mv88e6xxx_ops {
+ 	int (*serdes_get_sset_count)(struct mv88e6xxx_chip *chip, int port);
+ 	int (*serdes_get_strings)(struct mv88e6xxx_chip *chip,  int port,
+ 				  uint8_t *data);
+-	int (*serdes_get_stats)(struct mv88e6xxx_chip *chip,  int port,
+-				uint64_t *data);
++	size_t (*serdes_get_stats)(struct mv88e6xxx_chip *chip, int port,
++				   uint64_t *data);
+ 
+ 	/* SERDES registers for ethtool */
+ 	int (*serdes_get_regs_len)(struct mv88e6xxx_chip *chip,  int port);
+diff --git a/drivers/net/dsa/mv88e6xxx/serdes.c b/drivers/net/dsa/mv88e6xxx/serdes.c
+index 3b4b42651fa3..01ea53940786 100644
+--- a/drivers/net/dsa/mv88e6xxx/serdes.c
++++ b/drivers/net/dsa/mv88e6xxx/serdes.c
+@@ -177,8 +177,8 @@ static uint64_t mv88e6352_serdes_get_stat(struct mv88e6xxx_chip *chip,
+ 	return val;
+ }
+ 
+-int mv88e6352_serdes_get_stats(struct mv88e6xxx_chip *chip, int port,
+-			       uint64_t *data)
++size_t mv88e6352_serdes_get_stats(struct mv88e6xxx_chip *chip, int port,
++				  uint64_t *data)
  {
- 	struct aq_ptp_s *aq_ptp = aq_nic->aq_ptp;
- 	unsigned int tx_ring_idx, rx_ring_idx;
--	struct aq_ring_s *hwts;
--	struct aq_ring_s *ring;
- 	int err;
+ 	struct mv88e6xxx_port *mv88e6xxx_port = &chip->ports[port];
+ 	struct mv88e6352_serdes_hw_stat *stat;
+@@ -187,7 +187,7 @@ int mv88e6352_serdes_get_stats(struct mv88e6xxx_chip *chip, int port,
  
- 	if (!aq_ptp)
-@@ -962,29 +960,23 @@ int aq_ptp_ring_alloc(struct aq_nic_s *aq_nic)
+ 	err = mv88e6352_g2_scratch_port_has_serdes(chip, port);
+ 	if (err <= 0)
+-		return err;
++		return 0;
  
- 	tx_ring_idx = aq_ptp_ring_idx(aq_nic->aq_nic_cfg.tc_mode);
- 
--	ring = aq_ring_tx_alloc(&aq_ptp->ptp_tx, aq_nic,
--				tx_ring_idx, &aq_nic->aq_nic_cfg);
--	if (!ring) {
--		err = -ENOMEM;
-+	err = aq_ring_tx_alloc(&aq_ptp->ptp_tx, aq_nic,
-+			       tx_ring_idx, &aq_nic->aq_nic_cfg);
-+	if (err)
- 		goto err_exit;
--	}
- 
- 	rx_ring_idx = aq_ptp_ring_idx(aq_nic->aq_nic_cfg.tc_mode);
- 
--	ring = aq_ring_rx_alloc(&aq_ptp->ptp_rx, aq_nic,
--				rx_ring_idx, &aq_nic->aq_nic_cfg);
--	if (!ring) {
--		err = -ENOMEM;
-+	err = aq_ring_rx_alloc(&aq_ptp->ptp_rx, aq_nic,
-+			       rx_ring_idx, &aq_nic->aq_nic_cfg);
-+	if (err)
- 		goto err_exit_ptp_tx;
--	}
- 
--	hwts = aq_ring_hwts_rx_alloc(&aq_ptp->hwts_rx, aq_nic, PTP_HWST_RING_IDX,
--				     aq_nic->aq_nic_cfg.rxds,
--				     aq_nic->aq_nic_cfg.aq_hw_caps->rxd_size);
--	if (!hwts) {
--		err = -ENOMEM;
-+	err = aq_ring_hwts_rx_alloc(&aq_ptp->hwts_rx, aq_nic, PTP_HWST_RING_IDX,
-+				    aq_nic->aq_nic_cfg.rxds,
-+				    aq_nic->aq_nic_cfg.aq_hw_caps->rxd_size);
-+	if (err)
- 		goto err_exit_ptp_rx;
--	}
- 
- 	err = aq_ptp_skb_ring_init(&aq_ptp->skb_ring, aq_nic->aq_nic_cfg.rxds);
- 	if (err != 0) {
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-index e1885c1eb100..cda8597b4e14 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-@@ -132,8 +132,8 @@ static int aq_get_rxpages(struct aq_ring_s *self, struct aq_ring_buff_s *rxbuf)
- 	return 0;
+ 	BUILD_BUG_ON(ARRAY_SIZE(mv88e6352_serdes_hw_stats) >
+ 		     ARRAY_SIZE(mv88e6xxx_port->serdes_stats));
+@@ -429,8 +429,8 @@ static uint64_t mv88e6390_serdes_get_stat(struct mv88e6xxx_chip *chip, int lane,
+ 	return reg[0] | ((u64)reg[1] << 16) | ((u64)reg[2] << 32);
  }
  
--static struct aq_ring_s *aq_ring_alloc(struct aq_ring_s *self,
--				       struct aq_nic_s *aq_nic)
-+static int aq_ring_alloc(struct aq_ring_s *self,
-+			 struct aq_nic_s *aq_nic)
+-int mv88e6390_serdes_get_stats(struct mv88e6xxx_chip *chip, int port,
+-			       uint64_t *data)
++size_t mv88e6390_serdes_get_stats(struct mv88e6xxx_chip *chip, int port,
++				  uint64_t *data)
  {
- 	int err = 0;
+ 	struct mv88e6390_serdes_hw_stat *stat;
+ 	int lane;
+diff --git a/drivers/net/dsa/mv88e6xxx/serdes.h b/drivers/net/dsa/mv88e6xxx/serdes.h
+index aac95cab46e3..ff5c3ab31e15 100644
+--- a/drivers/net/dsa/mv88e6xxx/serdes.h
++++ b/drivers/net/dsa/mv88e6xxx/serdes.h
+@@ -127,13 +127,13 @@ unsigned int mv88e6390_serdes_irq_mapping(struct mv88e6xxx_chip *chip,
+ int mv88e6352_serdes_get_sset_count(struct mv88e6xxx_chip *chip, int port);
+ int mv88e6352_serdes_get_strings(struct mv88e6xxx_chip *chip,
+ 				 int port, uint8_t *data);
+-int mv88e6352_serdes_get_stats(struct mv88e6xxx_chip *chip, int port,
+-			       uint64_t *data);
++size_t mv88e6352_serdes_get_stats(struct mv88e6xxx_chip *chip, int port,
++				  uint64_t *data);
+ int mv88e6390_serdes_get_sset_count(struct mv88e6xxx_chip *chip, int port);
+ int mv88e6390_serdes_get_strings(struct mv88e6xxx_chip *chip,
+ 				 int port, uint8_t *data);
+-int mv88e6390_serdes_get_stats(struct mv88e6xxx_chip *chip, int port,
+-			       uint64_t *data);
++size_t mv88e6390_serdes_get_stats(struct mv88e6xxx_chip *chip, int port,
++				  uint64_t *data);
  
-@@ -156,46 +156,29 @@ static struct aq_ring_s *aq_ring_alloc(struct aq_ring_s *self,
- err_exit:
- 	if (err < 0) {
- 		aq_ring_free(self);
--		self = NULL;
- 	}
- 
--	return self;
-+	return err;
- }
- 
--struct aq_ring_s *aq_ring_tx_alloc(struct aq_ring_s *self,
--				   struct aq_nic_s *aq_nic,
--				   unsigned int idx,
--				   struct aq_nic_cfg_s *aq_nic_cfg)
-+int aq_ring_tx_alloc(struct aq_ring_s *self,
-+		     struct aq_nic_s *aq_nic,
-+		     unsigned int idx,
-+		     struct aq_nic_cfg_s *aq_nic_cfg)
- {
--	int err = 0;
--
- 	self->aq_nic = aq_nic;
- 	self->idx = idx;
- 	self->size = aq_nic_cfg->txds;
- 	self->dx_size = aq_nic_cfg->aq_hw_caps->txd_size;
- 
--	self = aq_ring_alloc(self, aq_nic);
--	if (!self) {
--		err = -ENOMEM;
--		goto err_exit;
--	}
--
--err_exit:
--	if (err < 0) {
--		aq_ring_free(self);
--		self = NULL;
--	}
--
--	return self;
-+	return aq_ring_alloc(self, aq_nic);
- }
- 
--struct aq_ring_s *aq_ring_rx_alloc(struct aq_ring_s *self,
--				   struct aq_nic_s *aq_nic,
--				   unsigned int idx,
--				   struct aq_nic_cfg_s *aq_nic_cfg)
-+int aq_ring_rx_alloc(struct aq_ring_s *self,
-+		     struct aq_nic_s *aq_nic,
-+		     unsigned int idx,
-+		     struct aq_nic_cfg_s *aq_nic_cfg)
- {
--	int err = 0;
--
- 	self->aq_nic = aq_nic;
- 	self->idx = idx;
- 	self->size = aq_nic_cfg->rxds;
-@@ -217,22 +200,10 @@ struct aq_ring_s *aq_ring_rx_alloc(struct aq_ring_s *self,
- 		self->tail_size = 0;
- 	}
- 
--	self = aq_ring_alloc(self, aq_nic);
--	if (!self) {
--		err = -ENOMEM;
--		goto err_exit;
--	}
--
--err_exit:
--	if (err < 0) {
--		aq_ring_free(self);
--		self = NULL;
--	}
--
--	return self;
-+	return aq_ring_alloc(self, aq_nic);
- }
- 
--struct aq_ring_s *
-+int
- aq_ring_hwts_rx_alloc(struct aq_ring_s *self, struct aq_nic_s *aq_nic,
- 		      unsigned int idx, unsigned int size, unsigned int dx_size)
- {
-@@ -250,10 +221,10 @@ aq_ring_hwts_rx_alloc(struct aq_ring_s *self, struct aq_nic_s *aq_nic,
- 					   GFP_KERNEL);
- 	if (!self->dx_ring) {
- 		aq_ring_free(self);
--		return NULL;
-+		return -ENOMEM;
- 	}
- 
--	return self;
-+	return 0;
- }
- 
- int aq_ring_init(struct aq_ring_s *self, const enum atl_ring_type ring_type)
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ring.h b/drivers/net/ethernet/aquantia/atlantic/aq_ring.h
-index 0a6c34438c1d..52847310740a 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_ring.h
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_ring.h
-@@ -183,14 +183,14 @@ static inline unsigned int aq_ring_avail_dx(struct aq_ring_s *self)
- 		self->sw_head - self->sw_tail - 1);
- }
- 
--struct aq_ring_s *aq_ring_tx_alloc(struct aq_ring_s *self,
--				   struct aq_nic_s *aq_nic,
--				   unsigned int idx,
--				   struct aq_nic_cfg_s *aq_nic_cfg);
--struct aq_ring_s *aq_ring_rx_alloc(struct aq_ring_s *self,
--				   struct aq_nic_s *aq_nic,
--				   unsigned int idx,
--				   struct aq_nic_cfg_s *aq_nic_cfg);
-+int aq_ring_tx_alloc(struct aq_ring_s *self,
-+		     struct aq_nic_s *aq_nic,
-+		     unsigned int idx,
-+		     struct aq_nic_cfg_s *aq_nic_cfg);
-+int aq_ring_rx_alloc(struct aq_ring_s *self,
-+		     struct aq_nic_s *aq_nic,
-+		     unsigned int idx,
-+		     struct aq_nic_cfg_s *aq_nic_cfg);
- 
- int aq_ring_init(struct aq_ring_s *self, const enum atl_ring_type ring_type);
- void aq_ring_rx_deinit(struct aq_ring_s *self);
-@@ -207,9 +207,9 @@ int aq_ring_rx_clean(struct aq_ring_s *self,
- 		     int budget);
- int aq_ring_rx_fill(struct aq_ring_s *self);
- 
--struct aq_ring_s *aq_ring_hwts_rx_alloc(struct aq_ring_s *self,
--		struct aq_nic_s *aq_nic, unsigned int idx,
--		unsigned int size, unsigned int dx_size);
-+int aq_ring_hwts_rx_alloc(struct aq_ring_s *self,
-+			  struct aq_nic_s *aq_nic, unsigned int idx,
-+			  unsigned int size, unsigned int dx_size);
- void aq_ring_hwts_rx_clean(struct aq_ring_s *self, struct aq_nic_s *aq_nic);
- 
- unsigned int aq_ring_fill_stats_data(struct aq_ring_s *self, u64 *data);
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_vec.c b/drivers/net/ethernet/aquantia/atlantic/aq_vec.c
-index f5db1c44e9b9..9769ab4f9bef 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_vec.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_vec.c
-@@ -136,35 +136,32 @@ int aq_vec_ring_alloc(struct aq_vec_s *self, struct aq_nic_s *aq_nic,
- 		const unsigned int idx_ring = AQ_NIC_CFG_TCVEC2RING(aq_nic_cfg,
- 								    i, idx);
- 
--		ring = aq_ring_tx_alloc(&self->ring[i][AQ_VEC_TX_ID], aq_nic,
--					idx_ring, aq_nic_cfg);
--		if (!ring) {
--			err = -ENOMEM;
-+		ring = &self->ring[i][AQ_VEC_TX_ID];
-+		err = aq_ring_tx_alloc(ring, aq_nic, idx_ring, aq_nic_cfg);
-+		if (err)
- 			goto err_exit;
--		}
- 
- 		++self->tx_rings;
- 
- 		aq_nic_set_tx_ring(aq_nic, idx_ring, ring);
- 
--		if (xdp_rxq_info_reg(&self->ring[i][AQ_VEC_RX_ID].xdp_rxq,
-+		ring = &self->ring[i][AQ_VEC_RX_ID];
-+		if (xdp_rxq_info_reg(&ring->xdp_rxq,
- 				     aq_nic->ndev, idx,
- 				     self->napi.napi_id) < 0) {
- 			err = -ENOMEM;
- 			goto err_exit;
- 		}
--		if (xdp_rxq_info_reg_mem_model(&self->ring[i][AQ_VEC_RX_ID].xdp_rxq,
-+		if (xdp_rxq_info_reg_mem_model(&ring->xdp_rxq,
- 					       MEM_TYPE_PAGE_SHARED, NULL) < 0) {
--			xdp_rxq_info_unreg(&self->ring[i][AQ_VEC_RX_ID].xdp_rxq);
-+			xdp_rxq_info_unreg(&ring->xdp_rxq);
- 			err = -ENOMEM;
- 			goto err_exit;
- 		}
- 
--		ring = aq_ring_rx_alloc(&self->ring[i][AQ_VEC_RX_ID], aq_nic,
--					idx_ring, aq_nic_cfg);
--		if (!ring) {
--			xdp_rxq_info_unreg(&self->ring[i][AQ_VEC_RX_ID].xdp_rxq);
--			err = -ENOMEM;
-+		err = aq_ring_rx_alloc(ring, aq_nic, idx_ring, aq_nic_cfg);
-+		if (err) {
-+			xdp_rxq_info_unreg(&ring->xdp_rxq);
- 			goto err_exit;
- 		}
- 
+ int mv88e6352_serdes_get_regs_len(struct mv88e6xxx_chip *chip, int port);
+ void mv88e6352_serdes_get_regs(struct mv88e6xxx_chip *chip, int port, void *_p);
 -- 
 2.43.0
 
