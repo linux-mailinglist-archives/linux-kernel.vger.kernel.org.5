@@ -1,71 +1,66 @@
-Return-Path: <linux-kernel+bounces-27592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E57882F2A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:52:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3615082F29D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:51:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71B8C1C236B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:51:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C31E12852A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:51:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32A0D1CA87;
-	Tue, 16 Jan 2024 16:51:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6AE41CA8A;
+	Tue, 16 Jan 2024 16:51:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="jynp30L+"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="A7u7ADJq"
+Received: from sonic302-27.consmr.mail.ne1.yahoo.com (sonic302-27.consmr.mail.ne1.yahoo.com [66.163.186.153])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6EE91CA80;
-	Tue, 16 Jan 2024 16:51:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40GGeQ1N017714;
-	Tue, 16 Jan 2024 16:50:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=keGjVo14NW1WXmXT6broB/rKN1sTqt3ubg6oJsYRaD8=;
- b=jynp30L+qxm/m3s6SZ9vtOPYJSmGF14cjnXqW9skoWCBOs66k6n04booPDF5hctRbTb3
- yvhTez3/oKvVUZIFt9KS+e6XeAYBh+cJO3/Vsg/FjJhDgsWh/Kar+oWo3tLUV4xpAYOq
- CjEAY6YyHD1TmxXt356/UF2aolURobbLXU7ejbPhWHCF1AFkox6D9adzZ0opvt1LTTJP
- g6YTAdfeXy9vdOkC9+SYto4GwarpOCv7XmECxKEszoV1qTQIUXNiNj3BEr+fjCGnGL7z
- 9uPlGMdPT3YpClXw1OQYiZ+5c8FwLW3rm5mIN3eBDzExpxSeh0hjmsBS0y9CAj5NsXF9 1w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnwg4gaw1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 16:50:46 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40GGmpaD014280;
-	Tue, 16 Jan 2024 16:50:45 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnwg4gavf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 16:50:45 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40GGQxFr010837;
-	Tue, 16 Jan 2024 16:50:44 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vm57yfxn3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jan 2024 16:50:44 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40GGof1t19595822
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 16 Jan 2024 16:50:41 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5F81F20043;
-	Tue, 16 Jan 2024 16:50:41 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 33E2820040;
-	Tue, 16 Jan 2024 16:50:40 +0000 (GMT)
-Received: from [9.171.95.17] (unknown [9.171.95.17])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 16 Jan 2024 16:50:40 +0000 (GMT)
-Message-ID: <72edaedc-50d7-415e-9c45-f17ffe0c1c23@linux.ibm.com>
-Date: Tue, 16 Jan 2024 17:50:39 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E05841CA81
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 16:51:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1705423879; bh=3SJp5s3Z+exCH+4UfHcT4UCsjWtziANQFAalTNp3V4c=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=A7u7ADJqhucDT/inj+zEnSMaejTIONrsEM1yaVmWrmsNg+aNwf2yDcsjf0DHwehiGogDbZlGAA1PU97UbzGCBUOmEDpzwgLtf5a4QhXNiUvCvbanOiJ1ol3UXeP0ITEmwrQPyUr58NPzGMBh+ySGQWZIGaqM/lJm8g50+tEuznMw3u58zCylW9KD7uHlXfCt98KpVJR4H3DXY7mYfUFE2dBJasazPAsGPfVhh8pNVfSw8RaWpNvu9SxPGg4X9uHMDlZO2DQJsk0RintUKlP7vFyv7IYJXaoq8ZlP7X3dDzFukyGLkbMBY71ByEc8vizGgpVmAUVUD0YKQ4hMNIgSQA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1705423879; bh=6g1/Z5dhwtw34v2/raI1RfnLcnZRJC7llHW1yzDrq7O=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=HHPu3liBO2n+pM1rPTxEPcgtbTjb14gZHzeduQaiNR7QcXvwLrW+t19dNENBguBJWqkIMOEDCoE9WqWAMVYDjb1dEdqVYWZTgB6LHvkbPVwrMxmKuILTs9DNUuu2xEWZxtN/gFLh/PSJU1Iw1RMmfGK08EflKNKlFlpewDbFgZ17NRY1vaPebOtf11My02lwuMj+e+XKX56Pihp9FQuwaR9UfNUCBwpOWW4/4uSlYnEzEWwrDU/CB0VZp1VPhD2jzfR6stYT1bix9ZBwFO8CUBin9Jahhp+0jgZoyxe3rX6hL9OVFM4w+rr3Xye+D63bIGmPVfd6afBBGg+xop8G9g==
+X-YMail-OSG: A5CgyOEVM1k7T20.uer7oRuubZ6Y.egXrwI9sExA1NznFEIXkWCZcUCJBQRI5z0
+ dUVoM9vL8JUmxqY.WM2kmbbrxV.NfunHNLhqt27_Td7Qp8mDDtF8yKJtMEwlwRlQqFtI0uc6UNuy
+ v_t3cIW12YNMGiUmM6FM4nPaT9nu2e6onqnHWVYEP7jb61S0dwwoMh__F8x2QCcICqwKrK6hMHU_
+ pqxG7IcbsGCV0pbHfJO00Y8.sGYefulMmQgbRxUbeZvdZ6BpGK6hqnLVM1wdlTUaMdsYfOGgdIIK
+ IUearccrrWHBGkDy3PmPk8lzrQhbRNQ1LiuIKGfgD6B1ywCC2nTjtE6HrQjoIfTB8acmrUDOowAo
+ BmigJ1K9guUkP55v9SyMzPXid.6ClEW.cVDO8SBwoc1fLktaQhOEt95B.o00s35aPT6juJVzHPbw
+ lY1dHEVUmWNd5YynMOegvFdy1Z2oO1BSMEDt1NrLGPBUY1mbUA4H55YgUYT_5cWSL9UXu7ApG_NQ
+ 74s40GkbeWfg1w2cBEPnfkaysIBp96g.o4Is_0HnhHo6ABa7j0VZUxSVKN7XOQ5DcNwfIRsveNif
+ 5sHuJIOJBI2dnzkuw1HloeLo1jRayxwz3me4iqG_8kSJOBDug9WqGgR_ItxTwaaf7l91eq6a7.JP
+ Oz66mhWnRGJjQpmcZeHcaurCHDLhfiXw8eq2tHNBCod9.2LNVd9wPKMSb1xktR4bqElOr2syyum2
+ 7LeMoURNNR7lPicU5dXVjnvE0lMHs.pbHx10gQNWgkhOL_ooOFif23zY52KjLihVBfohWM3IyiwN
+ N.h3r1huoQ_60cNOv3A8OSSYgeNeKX_Jsa1LEQw4aZKZAQbEuYmJuzTwT6G6FiPcYT7k8ODiPyZ6
+ 5uytBjv3N4S5fFaqaDtF6KZ1wUsPGJuefm62Fde3xRnjK1q0fyAZ3bqi08cm32JsMg.h_fGSIUdB
+ 6aIAjWdqU1W4HFqTQ.lHZC2SSdWvUMfQ.97VPLKZmc1chzt8NmnLud2oh4rdQ7MGE1ynInKRZdTs
+ cPH6m8O7vLOyaPUfZoZOgZi5kmvj0WW7OBGHR5AKh8KtUnTyGCPz8FDRRjexQ_y33Nh4fGagXtfG
+ YLCjiXLVC7rBZiw0.jqkV3Anp7Exz6SsyRvEBuraPG6StqmvWItzASprjkpeERwr431mfouJ2QRo
+ NEHC_oLtPECK9h6ORbFRW7Bn1aDwDQKW_6DzKKC72GtjxqQSQhrPqx1bULiTykszuG2tRsjyDbZI
+ GFIFhYPq9gQLI0HQsToaiZ.aGz8hRFRImH4_UBqEdAk.cbTASyHqPHVdHcRtTKaF0i7RKOrpFFRD
+ DCieCh7SftO0cdeDtn4qS1T_jaOPDAelXyJThAcR1wJV948czh6gM586k1N8IGG4ce2vb5TWgmC9
+ x8J.b4.k9ZakLNmtAM_oC7P5UI9iWQOa2RMfW6YQhldAiMki.6cZw6HcfOsoxUqIB4wahHwyF.Oz
+ H3Gs1wqS.aQXtEdgQYKQTTn63BrWPjIH4VY3a9CfgoCyYmMatopckhvT4SUFtiyHHbnzV5b8Rj1U
+ jxO5FhDkUsZKkp_HQIIK_0iNBx_7iSBTjt4xz6I6IP9gvW8S_VxfRPlJ.pC0UdbabMngDaiCgcTZ
+ FjmkuXQtO3yqbDd4emfoZxh6uO3XQtSRMHe2a0xBQtyzobBh3Be3n0IvlF7HhnfJm7Rb4PpLNmaO
+ yrSEZ7RIqnQOGZSt.lP0DnTI0jpc4vMNEsaWCvK73hMiQjva_ajuJaDhXYATCWd_wQYn3in9en8C
+ LAuiLXdQDl2Q1jjGMcf2nt5vObnJnzirYjod8N2IYulsifjIU0wgapS4JTDLIqDraLMyXG7sP3xq
+ vYCeABKYECZJkxZ1kspcltO0yfr.E0f5zAHLuajake8Hj9k300IvFqAJhL_IqnfyDnXEUAt39QME
+ qbdxglOjBmjP2OC.yivvwfak_unL4S6GUKypZOtfifFzTXH8Rmn63WTf64F39y45aCUdy9QVF4r5
+ 3xq.HH0id_rBFNbce9gsI6P8Sz0IWxV6C.iA_OLzb3p0E2FA5Y6AZFFmdacSnrfStmeVX1NUeuHp
+ meURET0zgC18FcL7e7_b7AoBWmElfXF7Pg7maB9re_.PPQp15DeeDq1HR7q6fcs4VOFkIQbnq2va
+ Rg1VWn9PiQrAiarWNFi0yClhqn_tw8kWJ5QaIMOeovQ8Ut.Itbsg.PbSbKaa0zFJHTjaD3hKaYE_
+ zDfVfk0qF2Ns_9Le9GQ75eJD3ybiOYwPFOwK2.5Ap.5BLgwkZjhJHJLGXSE4a
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: 15ae8b31-4e9c-4be6-9dc6-e6e06b3d0f25
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Tue, 16 Jan 2024 16:51:19 +0000
+Received: by hermes--production-gq1-78d49cd6df-mvdth (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 44515f8eb2e2b5946457ba67dd58da86;
+          Tue, 16 Jan 2024 16:51:14 +0000 (UTC)
+Message-ID: <00b7ff22-f213-471a-a604-658a9af80d59@schaufler-ca.com>
+Date: Tue, 16 Jan 2024 08:51:11 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,98 +68,56 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] KVM: irqchip: synchronize srcu only if needed
-To: Yi Wang <up2wing@gmail.com>, Sean Christopherson <seanjc@google.com>
-Cc: pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wanpengli@tencent.com, Yi Wang <foxywang@tencent.com>,
-        Oliver Upton <oliver.upton@linux.dev>, Marc Zyngier <maz@kernel.org>,
-        Anup Patel <anup@brainfault.org>, Atish Patra <atishp@atishpatra.org>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-References: <20240112091128.3868059-1-foxywang@tencent.com>
- <ZaFor2Lvdm4O2NWa@google.com>
- <CAN35MuSkQf0XmBZ5ZXGhcpUCGD-kKoyTv9G7ya4QVD1xiqOxLg@mail.gmail.com>
+Subject: Re: [PATCH v9 13/25] security: Introduce file_release hook
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>,
+ Al Viro <viro@zeniv.linux.org.uk>
+Cc: brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+ neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+ paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+ zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com,
+ dhowells@redhat.com, jarkko@kernel.org, stephen.smalley.work@gmail.com,
+ eparis@parisplace.org, shuah@kernel.org, mic@digikod.net,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+ linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+ selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Roberto Sassu <roberto.sassu@huawei.com>,
+ Casey Schaufler <casey@schaufler-ca.com>
+References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
+ <20240115181809.885385-14-roberto.sassu@huaweicloud.com>
+ <20240115191508.GG1674809@ZenIV>
+ <3b440f064a1ae04d69f7e85f4077f8406c0eac67.camel@huaweicloud.com>
 Content-Language: en-US
-From: Christian Borntraeger <borntraeger@linux.ibm.com>
-In-Reply-To: <CAN35MuSkQf0XmBZ5ZXGhcpUCGD-kKoyTv9G7ya4QVD1xiqOxLg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: uGSYHvltOt2x6FJnz2wbeZOPSNTDoFZd
-X-Proofpoint-ORIG-GUID: kANRDA64pEjYrGAxpeDGFbJAHLYZ3zc2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-16_10,2024-01-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 clxscore=1011 suspectscore=0 mlxscore=0 phishscore=0
- mlxlogscore=663 spamscore=0 impostorscore=0 adultscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401160133
+From: Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <3b440f064a1ae04d69f7e85f4077f8406c0eac67.camel@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.22010 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
-
-
-Am 15.01.24 um 17:01 schrieb Yi Wang:
-> Many thanks for your such kind and detailed reply, Sean!
-> 
-> On Sat, Jan 13, 2024 at 12:28 AM Sean Christopherson <seanjc@google.com> wrote:
->>
->> +other KVM maintainers
->>
->> On Fri, Jan 12, 2024, Yi Wang wrote:
->>> From: Yi Wang <foxywang@tencent.com>
+On 1/16/2024 12:47 AM, Roberto Sassu wrote:
+> On Mon, 2024-01-15 at 19:15 +0000, Al Viro wrote:
+>> On Mon, Jan 15, 2024 at 07:17:57PM +0100, Roberto Sassu wrote:
+>>> From: Roberto Sassu <roberto.sassu@huawei.com>
 >>>
->>> We found that it may cost more than 20 milliseconds very accidentally
->>> to enable cap of KVM_CAP_SPLIT_IRQCHIP on a host which has many vms
->>> already.
+>>> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
+>>> the file_release hook.
 >>>
->>> The reason is that when vmm(qemu/CloudHypervisor) invokes
->>> KVM_CAP_SPLIT_IRQCHIP kvm will call synchronize_srcu_expedited() and
->>> might_sleep and kworker of srcu may cost some delay during this period.
->>
->> might_sleep() yielding is not justification for changing KVM.  That's more or
->> less saying "my task got preempted and took longer to run".  Well, yeah.
-> 
-> Agree. But I suppose it may be one of the reasons that makes  time of
-> KVM_CAP_SPLIT_IRQCHIP delayed, of course, the kworker has the biggest
-> suspicion :)
-> 
->>
->>> Since this happens during creating vm, it's no need to synchronize srcu
->>> now 'cause everything is not ready(vcpu/irqfd) and none uses irq_srcu now.
-> 
-> ....
-> 
->> And on x86, I'm pretty sure as of commit 654f1f13ea56 ("kvm: Check irqchip mode
->> before assign irqfd"), which added kvm_arch_irqfd_allowed(), it's impossible for
->> kvm_irq_map_gsi() to encounter a NULL irq_routing _on x86_.
->>
->> But I strongly suspect other architectures can reach kvm_irq_map_gsi() with a
->> NULL irq_routing, e.g. RISC-V dynamically configures its interrupt controller,
->> yet doesn't implement kvm_arch_intc_initialized().
->>
->> So instead of special casing x86, what if we instead have KVM setup an empty
->> IRQ routing table during kvm_create_vm(), and then avoid this mess entirely?
->> That way x86 and s390 no longer need to set empty/dummy routing when creating
->> an IRQCHIP, and the worst case scenario of userspace misusing an ioctl() is no
->> longer a NULL pointer deref.
+>>> IMA calculates at file close the new digest of the file content and writes
+>>> it to security.ima, so that appraisal at next file access succeeds.
+>>>
+>>> An LSM could implement an exclusive access scheme for files, only allowing
+>>> access to files that have no references.
+>> Elaborate that last part, please.
+> Apologies, I didn't understand that either. Casey?
 
-Sounds like a good idea. This should also speedup guest creation on s390 since
-it would avoid one syncronize_irq.
-> 
-> To setup an empty IRQ routing table during kvm_create_vm() sounds a good idea,
-> at this time vCPU have not been created and kvm->lock is held so skipping
-> synchronization is safe here.
-> 
-> However, there is one drawback, if vmm wants to emulate irqchip
-> itself, e.g. qemu
-> with command line '-machine kernel-irqchip=off' may not need irqchip
-> in kernel. How
-> do we handle this issue?
+Just a hypothetical notion that if an LSM wanted to implement an
+exclusive access scheme it might find the proposed hook helpful.
+I don't have any plan to create such a scheme, nor do I think that
+a file_release hook would be the only thing you'd need.
 
-I would be fine with wasted memory. The only question is does it have a functional
-impact or can we simply ignore the dummy routing.
-
-
+>
+> Thanks
+>
+> Roberto
+>
 
