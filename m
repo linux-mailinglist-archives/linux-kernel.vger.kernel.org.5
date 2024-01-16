@@ -1,49 +1,50 @@
-Return-Path: <linux-kernel+bounces-26964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BF5C82E8A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 05:53:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C266E82E8D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 06:01:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCE531F23865
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 04:53:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAF091C22C0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 05:01:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7377612B9E;
-	Tue, 16 Jan 2024 04:52:27 +0000 (UTC)
-Received: from esa4.hc1455-7.c3s2.iphmx.com (esa4.hc1455-7.c3s2.iphmx.com [68.232.139.117])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54DB11D556;
+	Tue, 16 Jan 2024 04:52:41 +0000 (UTC)
+Received: from esa12.hc1455-7.c3s2.iphmx.com (esa12.hc1455-7.c3s2.iphmx.com [139.138.37.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09EDA125B6;
-	Tue, 16 Jan 2024 04:52:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E8F21CD01;
+	Tue, 16 Jan 2024 04:52:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fujitsu.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="146510848"
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="125556479"
 X-IronPort-AV: E=Sophos;i="6.04,198,1695654000"; 
-   d="scan'208";a="146510848"
-Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
-  by esa4.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 13:52:22 +0900
+   d="scan'208";a="125556479"
+Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
+  by esa12.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 13:52:22 +0900
 Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com [192.168.83.67])
-	by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 51F1DD9DA5;
+	by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 9A925CD6C5;
 	Tue, 16 Jan 2024 13:52:20 +0900 (JST)
 Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com [192.51.206.22])
-	by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 93B33D3F08;
+	by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id D6779D3F0C;
 	Tue, 16 Jan 2024 13:52:19 +0900 (JST)
 Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
-	by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 2DE116B4C8;
+	by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 73DE56B4C7;
 	Tue, 16 Jan 2024 13:52:19 +0900 (JST)
 Received: from localhost.localdomain (unknown [10.167.226.45])
-	by edo.cn.fujitsu.com (Postfix) with ESMTP id C1C471A0070;
-	Tue, 16 Jan 2024 12:52:18 +0800 (CST)
+	by edo.cn.fujitsu.com (Postfix) with ESMTP id 0D2B51A015F;
+	Tue, 16 Jan 2024 12:52:19 +0800 (CST)
 From: Li Zhijian <lizhijian@fujitsu.com>
 To: linux-kernel@vger.kernel.org
 Cc: Li Zhijian <lizhijian@fujitsu.com>,
 	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
 	linux-scsi@vger.kernel.org
-Subject: [PATCH 18/42] drivers/scsi/aic94xx: Convert snprintf to sysfs_emit
-Date: Tue, 16 Jan 2024 12:51:27 +0800
-Message-Id: <20240116045151.3940401-16-lizhijian@fujitsu.com>
+Subject: [PATCH 19/42] drivers/scsi/arcmsr: Convert snprintf to sysfs_emit
+Date: Tue, 16 Jan 2024 12:51:28 +0800
+Message-Id: <20240116045151.3940401-17-lizhijian@fujitsu.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20240116045151.3940401-1-lizhijian@fujitsu.com>
 References: <20240116041129.3937800-1-lizhijian@fujitsu.com>
@@ -59,12 +60,12 @@ X-TM-AS-GCONF: 00
 X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28122.005
 X-TM-AS-User-Approved-Sender: Yes
 X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28122.005
-X-TMASE-Result: 10--14.280700-10.000000
-X-TMASE-MatchedRID: Jy5kObkVr+g4ibokZ3+Q0CoiRKlBVkYIBXngI6jFvpfvd49YGReckE1N
-	J2MN+nPkgxCMf8A0YpR5sRK06wHV4TBF7stuNMMxTuctSpiuWyUUi4Ehat05499RlPzeVuQQyL5
-	QmWOgMfCndn/LfNMv39UVRVsVILlB/tI0Ln2VOhSAwosDBeuPwRDqmKczPoNZEEYpOvie10n4ft
-	7I4VD5pTqKm/4qdbn8gDLqnrRlXrZ8nn9tnqel2DsAVzN+Ov/sufUwsBq17glF6e34HbuhxCIJj
-	M9P5nz1poVOrOUhhFgu1NHftySvFw==
+X-TMASE-Result: 10--13.423200-10.000000
+X-TMASE-MatchedRID: st9CF01730Y4ibokZ3+Q0CoiRKlBVkYIBXngI6jFvpfvd49YGReckE1N
+	J2MN+nPkgxCMf8A0YpR5sRK06wHV4dL4Vi2vvkbTrMZ+BqQt2NrBOVz0Jwcxl6vCrG0TnfVUg9x
+	e4gtUJtptIv0A3hSOW84WYLmQfXYmpoPHQXywp1ccUAl2qrF9ySUnLzk1+Ixzd3XtjqAaoMKO2Z
+	R/UHJk1ZSE6QsCXaxnIAsIvOHmXuGXBXaJoB9JZxRFJJyf5BJe3QfwsVk0UbtuRXh7bFKB7oIGx
+	JmGmz8hCBt8f7dUWk/wDN9PxHK8r5Rj7je41fFwPpCuffGH9zI=
 X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
 Per filesystems/sysfs.rst, show() should only use sysfs_emit()
@@ -73,74 +74,141 @@ or sysfs_emit_at() when formatting the value to be returned to user space.
 coccinelle complains that there are still a couple of functions that use
 snprintf(). Convert them to sysfs_emit().
 
-> ./drivers/scsi/aic94xx/aic94xx_init.c:267:8-16: WARNING: please use sysfs_emit
-> ./drivers/scsi/aic94xx/aic94xx_init.c:276:8-16: WARNING: please use sysfs_emit
-> ./drivers/scsi/aic94xx/aic94xx_init.c:284:8-16: WARNING: please use sysfs_emit
-> ./drivers/scsi/aic94xx/aic94xx_init.c:455:8-16: WARNING: please use sysfs_emit
+> ./drivers/scsi/arcmsr/arcmsr_attr.c:261:8-16: WARNING: please use sysfs_emit
+> ./drivers/scsi/arcmsr/arcmsr_attr.c:273:8-16: WARNING: please use sysfs_emit
+> ./drivers/scsi/arcmsr/arcmsr_attr.c:285:8-16: WARNING: please use sysfs_emit
+> ./drivers/scsi/arcmsr/arcmsr_attr.c:297:8-16: WARNING: please use sysfs_emit
+> ./drivers/scsi/arcmsr/arcmsr_attr.c:309:8-16: WARNING: please use sysfs_emit
+> ./drivers/scsi/arcmsr/arcmsr_attr.c:322:8-16: WARNING: please use sysfs_emit
+> ./drivers/scsi/arcmsr/arcmsr_attr.c:335:8-16: WARNING: please use sysfs_emit
+> ./drivers/scsi/arcmsr/arcmsr_attr.c:348:8-16: WARNING: please use sysfs_emit
+> ./drivers/scsi/arcmsr/arcmsr_attr.c:361:8-16: WARNING: please use sysfs_emit
+> ./drivers/scsi/arcmsr/arcmsr_attr.c:374:8-16: WARNING: please use sysfs_emit
 
 No functional change intended
 
 CC: "James E.J. Bottomley" <jejb@linux.ibm.com>
+CC: "Martin K. Petersen" <martin.petersen@oracle.com>
 CC: linux-scsi@vger.kernel.org
 Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
 ---
- drivers/scsi/aic94xx/aic94xx_init.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ drivers/scsi/arcmsr/arcmsr_attr.c | 40 ++++++++-----------------------
+ 1 file changed, 10 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/scsi/aic94xx/aic94xx_init.c b/drivers/scsi/aic94xx/aic94xx_init.c
-index 8a3340d8d7ad..b006e852c40c 100644
---- a/drivers/scsi/aic94xx/aic94xx_init.c
-+++ b/drivers/scsi/aic94xx/aic94xx_init.c
-@@ -264,8 +264,7 @@ static ssize_t asd_show_dev_rev(struct device *dev,
+diff --git a/drivers/scsi/arcmsr/arcmsr_attr.c b/drivers/scsi/arcmsr/arcmsr_attr.c
+index baeb5e795690..0eecd354a3d0 100644
+--- a/drivers/scsi/arcmsr/arcmsr_attr.c
++++ b/drivers/scsi/arcmsr/arcmsr_attr.c
+@@ -258,9 +258,7 @@ static ssize_t
+ arcmsr_attr_host_driver_version(struct device *dev,
  				struct device_attribute *attr, char *buf)
  {
- 	struct asd_ha_struct *asd_ha = dev_to_asd_ha(dev);
--	return snprintf(buf, PAGE_SIZE, "%s\n",
--			asd_dev_rev[asd_ha->revision_id]);
-+	return sysfs_emit(buf, "%s\n", asd_dev_rev[asd_ha->revision_id]);
- }
- static DEVICE_ATTR(aic_revision, S_IRUGO, asd_show_dev_rev, NULL);
- 
-@@ -273,7 +272,7 @@ static ssize_t asd_show_dev_bios_build(struct device *dev,
- 				       struct device_attribute *attr,char *buf)
- {
- 	struct asd_ha_struct *asd_ha = dev_to_asd_ha(dev);
--	return snprintf(buf, PAGE_SIZE, "%d\n", asd_ha->hw_prof.bios.bld);
-+	return sysfs_emit(buf, "%d\n", asd_ha->hw_prof.bios.bld);
- }
- static DEVICE_ATTR(bios_build, S_IRUGO, asd_show_dev_bios_build, NULL);
- 
-@@ -281,7 +280,7 @@ static ssize_t asd_show_dev_pcba_sn(struct device *dev,
- 				    struct device_attribute *attr, char *buf)
- {
- 	struct asd_ha_struct *asd_ha = dev_to_asd_ha(dev);
--	return snprintf(buf, PAGE_SIZE, "%s\n", asd_ha->hw_prof.pcba_sn);
-+	return sysfs_emit(buf, "%s\n", asd_ha->hw_prof.pcba_sn);
- }
- static DEVICE_ATTR(pcba_sn, S_IRUGO, asd_show_dev_pcba_sn, NULL);
- 
-@@ -452,9 +451,9 @@ static ssize_t asd_show_update_bios(struct device *dev,
- 	if (asd_ha->bios_status != FLASH_IN_PROGRESS)
- 		asd_ha->bios_status = FLASH_OK;
- 
--	return snprintf(buf, PAGE_SIZE, "status=%x %s\n",
--			flash_error_table[i].err_code,
--			flash_error_table[i].reason);
-+	return sysfs_emit(buf, "status=%x %s\n",
-+			  flash_error_table[i].err_code,
-+			  flash_error_table[i].reason);
+-	return snprintf(buf, PAGE_SIZE,
+-			"%s\n",
+-			ARCMSR_DRIVER_VERSION);
++	return sysfs_emit(buf, "%s\n", ARCMSR_DRIVER_VERSION);
  }
  
- static DEVICE_ATTR(update_bios, S_IRUGO|S_IWUSR,
-@@ -937,7 +936,7 @@ static int asd_scan_finished(struct Scsi_Host *shost, unsigned long time)
- 
- static ssize_t version_show(struct device_driver *driver, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%s\n", ASD_DRIVER_VERSION);
-+	return sysfs_emit(buf, "%s\n", ASD_DRIVER_VERSION);
+ static ssize_t
+@@ -270,9 +268,7 @@ arcmsr_attr_host_driver_posted_cmd(struct device *dev,
+ 	struct Scsi_Host *host = class_to_shost(dev);
+ 	struct AdapterControlBlock *acb =
+ 		(struct AdapterControlBlock *) host->hostdata;
+-	return snprintf(buf, PAGE_SIZE,
+-			"%4d\n",
+-			atomic_read(&acb->ccboutstandingcount));
++	return sysfs_emit(buf, "%4d\n", atomic_read(&acb->ccboutstandingcount));
  }
- static DRIVER_ATTR_RO(version);
  
+ static ssize_t
+@@ -282,9 +278,7 @@ arcmsr_attr_host_driver_reset(struct device *dev,
+ 	struct Scsi_Host *host = class_to_shost(dev);
+ 	struct AdapterControlBlock *acb =
+ 		(struct AdapterControlBlock *) host->hostdata;
+-	return snprintf(buf, PAGE_SIZE,
+-			"%4d\n",
+-			acb->num_resets);
++	return sysfs_emit(buf, "%4d\n", acb->num_resets);
+ }
+ 
+ static ssize_t
+@@ -294,9 +288,7 @@ arcmsr_attr_host_driver_abort(struct device *dev,
+ 	struct Scsi_Host *host = class_to_shost(dev);
+ 	struct AdapterControlBlock *acb =
+ 		(struct AdapterControlBlock *) host->hostdata;
+-	return snprintf(buf, PAGE_SIZE,
+-			"%4d\n",
+-			acb->num_aborts);
++	return sysfs_emit(buf, "%4d\n", acb->num_aborts);
+ }
+ 
+ static ssize_t
+@@ -306,9 +298,7 @@ arcmsr_attr_host_fw_model(struct device *dev, struct device_attribute *attr,
+ 	struct Scsi_Host *host = class_to_shost(dev);
+ 	struct AdapterControlBlock *acb =
+ 		(struct AdapterControlBlock *) host->hostdata;
+-	return snprintf(buf, PAGE_SIZE,
+-			"%s\n",
+-			acb->firm_model);
++	return sysfs_emit(buf, "%s\n", acb->firm_model);
+ }
+ 
+ static ssize_t
+@@ -319,9 +309,7 @@ arcmsr_attr_host_fw_version(struct device *dev,
+ 	struct AdapterControlBlock *acb =
+ 			(struct AdapterControlBlock *) host->hostdata;
+ 
+-	return snprintf(buf, PAGE_SIZE,
+-			"%s\n",
+-			acb->firm_version);
++	return sysfs_emit(buf, "%s\n", acb->firm_version);
+ }
+ 
+ static ssize_t
+@@ -332,9 +320,7 @@ arcmsr_attr_host_fw_request_len(struct device *dev,
+ 	struct AdapterControlBlock *acb =
+ 		(struct AdapterControlBlock *) host->hostdata;
+ 
+-	return snprintf(buf, PAGE_SIZE,
+-			"%4d\n",
+-			acb->firm_request_len);
++	return sysfs_emit(buf, "%4d\n", acb->firm_request_len);
+ }
+ 
+ static ssize_t
+@@ -345,9 +331,7 @@ arcmsr_attr_host_fw_numbers_queue(struct device *dev,
+ 	struct AdapterControlBlock *acb =
+ 		(struct AdapterControlBlock *) host->hostdata;
+ 
+-	return snprintf(buf, PAGE_SIZE,
+-			"%4d\n",
+-			acb->firm_numbers_queue);
++	return sysfs_emit(buf, "%4d\n", acb->firm_numbers_queue);
+ }
+ 
+ static ssize_t
+@@ -358,9 +342,7 @@ arcmsr_attr_host_fw_sdram_size(struct device *dev,
+ 	struct AdapterControlBlock *acb =
+ 		(struct AdapterControlBlock *) host->hostdata;
+ 
+-	return snprintf(buf, PAGE_SIZE,
+-			"%4d\n",
+-			acb->firm_sdram_size);
++	return sysfs_emit(buf, "%4d\n", acb->firm_sdram_size);
+ }
+ 
+ static ssize_t
+@@ -371,9 +353,7 @@ arcmsr_attr_host_fw_hd_channels(struct device *dev,
+ 	struct AdapterControlBlock *acb =
+ 		(struct AdapterControlBlock *) host->hostdata;
+ 
+-	return snprintf(buf, PAGE_SIZE,
+-			"%4d\n",
+-			acb->firm_hd_channels);
++	return sysfs_emit(buf, PAGE_SIZE, "%4d\n", acb->firm_hd_channels);
+ }
+ 
+ static DEVICE_ATTR(host_driver_version, S_IRUGO, arcmsr_attr_host_driver_version, NULL);
 -- 
 2.29.2
 
