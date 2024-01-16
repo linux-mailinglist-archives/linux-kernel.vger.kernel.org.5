@@ -1,115 +1,119 @@
-Return-Path: <linux-kernel+bounces-26944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2837582E85E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 05:02:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9697C82E862
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 05:04:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B49D2B22A73
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 04:02:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E7E1B22AAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 04:04:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34D0379C0;
-	Tue, 16 Jan 2024 04:02:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A348679E2;
+	Tue, 16 Jan 2024 04:04:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SuQnNGW0"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="MTCmSxV5";
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="MTCmSxV5"
+Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B250F6FD5
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 04:02:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705377736;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eN8wKTG2df7ETKZTMCzRD2NROS0XfcHgZd5DcL2huf8=;
-	b=SuQnNGW0nW5MjJIg/Zp94ZkT3eG8+T4L1WsFcsgCG1wqoOVq6AOGjgSjA65pYsKXJWlZTB
-	KUPNJY8xkPgtyW8A2QJiGv6cy0s2F4UB2xGqzcZ0mvWJscwzTL8s/kOE2fDZ51Edbt0dXo
-	/LeoIkPg0FRbhLnGuuOGQIam1S7mA+Q=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-362-bw-2pFa3OBGmihYXVmnHeg-1; Mon, 15 Jan 2024 23:02:13 -0500
-X-MC-Unique: bw-2pFa3OBGmihYXVmnHeg-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-7833761135dso906712485a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 20:02:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705377733; x=1705982533;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eN8wKTG2df7ETKZTMCzRD2NROS0XfcHgZd5DcL2huf8=;
-        b=oBehDQRhMF3cZ62YFaZUrKcA4cPMrgU4TDzwobpvAj2/vC65fJ+PSKVT0tU7OTnPCp
-         IeujMQADRd66NcXmaKwH5vVkc672+KrG0bALfDkbZT8CUvGcYx64UVP7k/Sudksci9Hh
-         yqMsYNRPJbUZjoi+fU+jpISLyuIZsBwl82WSTC2N8uUPy9u9bT0OB3Alu96TMMmzbRm/
-         RBlKw0DH7/UCiBBMN73CrNHOKzHuhGD99W5LyhucmdbdKRQYYN124U+msRZBcTY+RO3P
-         Ls5gL+3hqtprxWhG4qkbR5OUqmkOr32ZKjpavi3qGnvn9fW5ghlfjj17n9IyMgVOvP4C
-         sCoQ==
-X-Gm-Message-State: AOJu0Yzdv2JIOovLTJqSMd9ZI8X7Qj//EnR03SMLEeNv23jaVrWwMRPa
-	GYGvGe9kvLV41Uji/X4XrMjvV4813wqMowWNnhEY45nOBeMu6ROILeWmn0X+oU4iDGBUuxDwj1n
-	Ni9q0/9GtbG3FIOJKrBr6/J/L9tQl6G0F
-X-Received: by 2002:a05:620a:2983:b0:783:5195:408a with SMTP id r3-20020a05620a298300b007835195408amr5876981qkp.79.1705377733415;
-        Mon, 15 Jan 2024 20:02:13 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEN6gIx9IqGFmyh2GEnwwBhoFZGR41zZEGHlDZ1mVdZGWyhXlUZdr2U8IoRwrewEbsHOcJ1Pg==
-X-Received: by 2002:a05:620a:2983:b0:783:5195:408a with SMTP id r3-20020a05620a298300b007835195408amr5876971qkp.79.1705377733112;
-        Mon, 15 Jan 2024 20:02:13 -0800 (PST)
-Received: from LeoBras.redhat.com ([2804:1b3:a803:26a5:3f32:e12b:5335:3c2d])
-        by smtp.gmail.com with ESMTPSA id b6-20020a05620a126600b0078323aef218sm3401340qkl.80.2024.01.15.20.02.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 20:02:12 -0800 (PST)
-From: Leonardo Bras <leobras@redhat.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Leonardo Bras <leobras@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] spinlock: Fix failing build for PREEMPT_RT
-Date: Tue, 16 Jan 2024 01:02:09 -0300
-Message-ID: <ZaX_wZTlhFI6eVoq@LeoBras>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <yzh3yw3fsdptmlo4d27zakov3wkqzo35wenro3zaafyagfovuz@mp42k5gyfgcg>
-References: <20240115201935.2326400-1-leobras@redhat.com> <yzh3yw3fsdptmlo4d27zakov3wkqzo35wenro3zaafyagfovuz@mp42k5gyfgcg>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7A94848A;
+	Tue, 16 Jan 2024 04:04:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
+Received: by nautica.notk.org (Postfix, from userid 108)
+	id ED726C021; Tue, 16 Jan 2024 05:04:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1705377872; bh=/aO4xrkVMg6aSFqO+IRlnuSmorQeMyv8Ss2BauLOeEk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MTCmSxV5vzb2xX7Qa9Mq5Zozqaqtm2X3liNKY65G6TEXJMtLX2WNgg5pvyxmFhamf
+	 PdZ5tDd95sgTThBo5dRm0E9f3UOZf8f31+2EPi31LuQ6i4aExsly2qaORnVrCnLRkV
+	 zxGvb1Q0h2Dn/NZBRs/Y8T9z0OzQCJXK12XDNRSdSqvfwnZU/q844qP9ZUThY5Jj+t
+	 VWdii95JOfvjIvV2A4GvtHhtJJtPIShOWdyBfwwP8xoTZPOZygOXv3wtPD5O2sTfOd
+	 4Ebf+hA38tOwI0zWUuYPuZg3UO2r0L5q84dNZcwm6uGW2jEeyDYP3jrC3639ycB14A
+	 JrgZbsTwDwujw==
+X-Spam-Level: 
+Received: from gaia.codewreck.org (localhost [127.0.0.1])
+	by nautica.notk.org (Postfix) with ESMTPS id AE02EC01A;
+	Tue, 16 Jan 2024 05:04:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1705377872; bh=/aO4xrkVMg6aSFqO+IRlnuSmorQeMyv8Ss2BauLOeEk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MTCmSxV5vzb2xX7Qa9Mq5Zozqaqtm2X3liNKY65G6TEXJMtLX2WNgg5pvyxmFhamf
+	 PdZ5tDd95sgTThBo5dRm0E9f3UOZf8f31+2EPi31LuQ6i4aExsly2qaORnVrCnLRkV
+	 zxGvb1Q0h2Dn/NZBRs/Y8T9z0OzQCJXK12XDNRSdSqvfwnZU/q844qP9ZUThY5Jj+t
+	 VWdii95JOfvjIvV2A4GvtHhtJJtPIShOWdyBfwwP8xoTZPOZygOXv3wtPD5O2sTfOd
+	 4Ebf+hA38tOwI0zWUuYPuZg3UO2r0L5q84dNZcwm6uGW2jEeyDYP3jrC3639ycB14A
+	 JrgZbsTwDwujw==
+Received: from localhost (gaia.codewreck.org [local])
+	by gaia.codewreck.org (OpenSMTPD) with ESMTPA id 6f25fe22;
+	Tue, 16 Jan 2024 04:04:23 +0000 (UTC)
+Date: Tue, 16 Jan 2024 13:04:08 +0900
+From: Dominique Martinet <asmadeus@codewreck.org>
+To: Alan Stern <stern@rowland.harvard.edu>
+Cc: Michael Grzeschik <m.grzeschik@pengutronix.de>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	v9fs@lists.linux.dev, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: Re: [PATCH 1/3] usb: gadget: function: 9pfs
+Message-ID: <ZaYAONB-fUB3gjBl@codewreck.org>
+References: <20240116-ml-topic-u9p-v1-0-ad8c306f9a4e@pengutronix.de>
+ <20240116-ml-topic-u9p-v1-1-ad8c306f9a4e@pengutronix.de>
+ <4856923e-3ce8-4372-9451-f9c8aa157111@rowland.harvard.edu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <4856923e-3ce8-4372-9451-f9c8aa157111@rowland.harvard.edu>
 
-On Mon, Jan 15, 2024 at 04:54:14PM -0500, Kent Overstreet wrote:
-> On Mon, Jan 15, 2024 at 05:19:34PM -0300, Leonardo Bras wrote:
-> > Since 1d71b30e1f85 ("sched.h: Move (spin|rwlock)_needbreak() to
-> > spinlock.h") build fails for PREEMPT_RT, since there is no definition
-> > available of either spin_needbreak() and rwlock_needbreak().
-> > 
-> > Since it was moved on the mentioned commit, it was placed inside a
-> > !PREEMPT_RT part of the code, making it out of reach for an RT kernel.
-> > 
-> > Fix this by moving code it a few lines down so it can be reached by an
-> > RT build, where it can also make use of the *_is_contended() definition
-> > added by the spinlock_rt.h.
-> > 
-> > Fixes: d1d71b30e1f85 ("sched.h: Move (spin|rwlock)_needbreak() to
-> > spinlock.h")
-> > Signed-off-by: Leonardo Bras <leobras@redhat.com>
+Alan Stern wrote on Mon, Jan 15, 2024 at 10:17:34PM -0500:
+> > diff --git a/drivers/usb/gadget/Kconfig b/drivers/usb/gadget/Kconfig
+> > index b3592bcb0f966..72cdecaef6aa9 100644
+> > --- a/drivers/usb/gadget/Kconfig
+> > +++ b/drivers/usb/gadget/Kconfig
+> > @@ -153,6 +153,10 @@ config USB_F_ACM
+> >  config USB_F_SS_LB
+> >  	tristate
+> >  
+> > +config USB_F_9PFS
+> > +	tristate
+> > +	select NET_9P
+> > +
+> >  config USB_U_SERIAL
+> >  	tristate
+> >  
+> > @@ -363,6 +367,13 @@ config USB_CONFIGFS_F_LB_SS
+> >  	  test software, like the "usbtest" driver, to put your hardware
+> >  	  and its driver through a basic set of functional tests.
+> >  
+> > +config USB_CONFIGFS_F_9PFS
+> > +	bool "9pfs over usb gadget"
+> > +	depends on USB_CONFIGFS
+> > +	select USB_F_9PFS
+> > +	help
+> > +	  9pfs support for usb gadget
 > 
-> I've picked this up - thanks!
-> 
+> This may be a dumb question, but what is the purpose of this CONFIG
+> symbol?  It doesn't get used by any of the patches in this series, as
+> far as I can see.
 
-Awesome! Thanks!
+USB_F_9PFS cannot be selected directly in menuconfig so this allows
+configuring the build option -- that appears to be how the other usb
+gadgets are configured so I assume it's done that way for consistency
+more than out of necessity (I don't see a problem in making the build
+system use USB_CONFIGFS_F_9PFS directly, it'd just be different from the
+rest)
 
-Leo
-
+-- 
+Dominique Martinet | Asmadeus
 
