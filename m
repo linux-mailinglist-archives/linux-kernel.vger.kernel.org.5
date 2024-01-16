@@ -1,265 +1,221 @@
-Return-Path: <linux-kernel+bounces-27388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27389-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DE4082EF27
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:43:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3874282EF28
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:46:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48C91B23018
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:43:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8BED4B22E78
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:46:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36D581BC3A;
-	Tue, 16 Jan 2024 12:43:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DF411BC35;
+	Tue, 16 Jan 2024 12:46:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b="l9NCEZeI"
-Received: from mout.web.de (mout.web.de [217.72.192.78])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I4E0x2/z"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F58E1BC23;
-	Tue, 16 Jan 2024 12:43:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1705408985; x=1706013785; i=spasswolf@web.de;
-	bh=xR+AbpSYK5Ush+oOyZXSsKwb6UQMHRLzqbKcH282vXo=;
-	h=X-UI-Sender-Class:Subject:From:To:Cc:Date;
-	b=l9NCEZeI8gB188L3UygaYcWgCQHhtx+uIDdNLxwW2SmZdl9PCsX5nvWSgwpm9Wq6
-	 CxIEfHWIm8s3P3/03FY22TKebnxIS+blwH3RWHipzWftVToa1N/mpFZ341OJ+/lmT
-	 Pt2iLMbGn0/1xyrb+G37ovVDNbBPBhW5tpwZ+ubdh/nzHJm0wJ0b1xvGTnQUAMMm6
-	 RQ0g0XlvOTUgkBdIrfTbUet6dX+shbh131HPWPSp7xMZMPXoU9zXRolZKY+SFncW9
-	 woR+MifFggo2Uxyx8S7fK8wUaQtHOjRssty2uZ4HXlBS/2ZhFkVwxtbk/kax0iSJI
-	 VYTcW2UrBUiXEUf2KA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.0.101] ([84.119.92.193]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MSIJ0-1rabnl0odk-00SpYr; Tue, 16
- Jan 2024 13:43:05 +0100
-Message-ID: <fd8bbe7d391921bf05178a2ff01f1ba8a759aaca.camel@web.de>
-Subject: drivers: irqchip: irq-qcom-mpm: rpm IRQ does not trigger when
- resuming on msm8953 soc
-From: Bert Karwatzki <spasswolf@web.de>
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, Konrad
- Dybcio <konrad.dybcio@linaro.org>, spasswolf@web.de
-Date: Tue, 16 Jan 2024 13:43:04 +0100
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.46.4-2 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D3411BC23
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 12:46:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50eabfac2b7so11466806e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 04:46:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705409203; x=1706014003; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MMMK603BNlIEEZJUYkcunPxxylAFdPV/GfQaa6sDygU=;
+        b=I4E0x2/zXOh8KtgdMO3s1SfN27ptXFxWboyVMMIVHI5Nv1HOLVLOXjhaKWQDyGY573
+         lhb+uuJwEQDPLSWkthHxLWDd0OI6ih0xCaa+/z3XyzJpQ056gh5aCpW2/PiwelJ0C0Of
+         8tYDC4fiU7gCZSOV3nkN0mn3Hy1MKx7qpqNYaYAuQzLlYHYZ3sYviFh4SnL4NGrs/TYX
+         JE/pIKIwkHCSyj4KCi2bzNFnJB0v5uUR+jDmutDSvLz85VBsHsLEVH4BUSxNp6CJlNgT
+         UU7zKpgMzkuuSRF1l0PThdIYgP4PjTygI8f5EhBmXzuaeHpjftQsTRAJpJieWqHE2EN8
+         2bBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705409203; x=1706014003;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MMMK603BNlIEEZJUYkcunPxxylAFdPV/GfQaa6sDygU=;
+        b=GR5roE/FSx/i1vRjnhZG8hUDol3s/w79Y4f+4bv9B3tcp+MgA+cru9Q8Ru/WnSBR2D
+         6yAvLYdRKiV7+122rztMG5geFNYrJfsLxhWLHKOpfwznO0UfcMkCVrCi8YeRIC4zDMmI
+         le15uvzEhmnT7FOIWxqYyXXJQdK2aDwiSMjan2NM0r83Efn6qN11q23IU7+j8eali1Ky
+         3e0NkP+uf94gLNAj5iA4ntdpjNmUDqqn6D4FzXLjbQAd5BpJy+aXslvVcqTVyKuDyV6T
+         XFoW39vtYH5A+A9I/z/Hm0OzrZVLO5QcoG1A1zdwL4DjlSk0yXBAMa4oWa4q473b4t58
+         eeSg==
+X-Gm-Message-State: AOJu0Yy1mOFbNineiX+CDGoCMnd48/ypsAFtvxIvBJA0fjXWPhq7wHZY
+	B+3XywMBiIle1fgnGpEfLP8=
+X-Google-Smtp-Source: AGHT+IEuMbGxlweNrxsaG17em4c0wJiTTuH99nyDWYG+V5oJe8aEAZeHRG1dl7cm5aVXf7DI4jIz+A==
+X-Received: by 2002:a05:6512:3f0a:b0:50e:a6f8:aac0 with SMTP id y10-20020a0565123f0a00b0050ea6f8aac0mr4409869lfa.20.1705409202807;
+        Tue, 16 Jan 2024 04:46:42 -0800 (PST)
+Received: from ?IPV6:2001:14ba:7426:df00::3? (drtxq0yyyyyyyyyyyyybt-3.rev.dnainternet.fi. [2001:14ba:7426:df00::3])
+        by smtp.gmail.com with ESMTPSA id dw13-20020a0565122c8d00b0050e76d9498csm1751661lfb.51.2024.01.16.04.46.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jan 2024 04:46:42 -0800 (PST)
+Message-ID: <e3e16af2-7f8d-4776-9726-f6282128a766@gmail.com>
+Date: Tue, 16 Jan 2024 14:46:41 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:6GvQl2vga+3kojtadg4w3EfE2JqG/iHGk/xZjlZmfIfTUYLvgij
- Q7wWwTqYFJ8R0mVEQQtcfwnCqIFEun3FE/jyOI+7zUlo7dAriSrAK2Wrhbf/qnqn8S01n8A
- pdgkC0Dt+h425aoryJPLgsWrmcUkrhuyXur6ghOidJ8vIHXeC2UpKaxD0+HpfLL/9Q/W9QC
- PVgC/3rbjZxWeXaOmbY6g==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:0PHpyzFrv88=;mqLFc6xUR7/MgWiTLVWkTnEjuqj
- VXiwDIRjMSByHW3m5NzcojF6Y2p/LU8MtnxANm6s3aZ3tZenNhXpADP1R3KSaLskEyNlistIt
- yymqWTeAD+8dUnytnR2jmJ/dxZ/XBqPbTmyBxcV1ngC482/9J//6v8S1cVNnPPhb0uwNswGMJ
- AvQ9XMhzm4qjyGrIbEHqtMnxJ/gpH8CPIfVNDMsdmYSEDsNBwaj/gZHitW6/+5QhFo1MbQvE3
- 7v3riuQBk5o35PlnbeTdiJn1FPOsHrHzU8pqDXraNrjTZ3t+IWXiEkdkgcOdbsh+kZEL71+Zf
- Uh7jtc5U/GZt287ovuvYfQPVcOnMpBuC+lMGG5f6PFZYjGCx+y+XhOg9Af0EL5CHXDd/uSPkE
- DwmLiphpJRW4/WjtM9im/lmChSK91Fh8zaK/mGnz+c9NX4i7vx8TeuKh96E1kKk2kQmYWhnF+
- Riq5Vy+a00+dhPwGvib/NeYEf3E3Jot9gJfVwsDCAHp8j3gQG02+v8cuoX3MkXEkTYAV3/tiU
- xibJW7VbxUE9kFNbcJaX8H5QBWiz5r35YT4dWiTWTFEy1u4BcIRmqPwWCB+odYR9OvHTHDkqH
- 3cEkrib1NkmngkdJuUQNc8DBCMPBC6+gnTld55Rinywh6yw+2m4/GqXx1ePuNQohiuzbBxHhX
- bzCxmnX6hzWbsAyZddAmCDDajkOLcRnzSs4zRc/FCxb/VCweDLHkkMJ7R0nuzvkgGCDY8a+VO
- +AjpXxasbKrX2dCXLt5LS/nbU41hZYcwzUV88Xdq8xCY+zjmtGW05qO97EwnwQm6c+RTCOMw3
- rJCh2SmXUIiz7QjNarOc3eqJ0AAldi1IWvtktNOdgoqJTST6Ixgk0/m9zHbaOCFP1n96A5U0m
- ktIBmtOTbSfNhPwfjX89/4L4u0obFEJzOPd67PlSvinCRL6Kzvvcl1t3yVcliZavlaz9PBVpW
- LWmF5HIOU9npXhE0i+D0Ln0qxZk=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] regulator: event: Add netlink command for event mask
+To: Naresh Solanki <naresh.solanki@9elements.com>, broonie@kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>
+Cc: linux-kernel@vger.kernel.org
+References: <20240116103131.413205-1-naresh.solanki@9elements.com>
+Content-Language: en-US, en-GB
+From: Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <20240116103131.413205-1-naresh.solanki@9elements.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Since recently mpm node were added to the msm8996.dtsi devicetree:
-https://lore.kernel.org/r/20231215-topic-mpm_dt-v1-2-c6636fc75ce3@linaro.o=
-rg
-I tried to add support for the mpm interrupt controller to the msm8953.dts=
-i
-device tree as both SOCs looked similar at first sight. The mpm-pin-map da=
-ta
-here was taken from the fairphone-fp3 downstream kernel (file
-drivers/irqchip/qcom/mpm-8953.c):
-Link: https://code.fairphone.com/projects/fairphone-3/gpl.html
-The following patches were made for the following tree:
-https://github.com/spasswolf/msm8953-linux/tree/v6.6.10_mpm
+Hi Naresh,
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8953.dtsi
-b/arch/arm64/boot/dts/qcom/msm8953.dtsi
-index 566dd2197fd1..f7184b890d24 100644
-=2D-- a/arch/arm64/boot/dts/qcom/msm8953.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8953.dtsi
-@@ -633,6 +633,24 @@ memory {
- 		reg =3D <0 0 0 0>;
- 	};
+Thanks for working on this! :)
 
-+	mpm: interrupt-controller@601d4 {
-+		compatible =3D "qcom,mpm";
-+		qcom,rpm-msg-ram =3D <&apss_mpm>;
-+		interrupts =3D <GIC_SPI 171 IRQ_TYPE_EDGE_RISING>;
-+		mboxes =3D <&apcs 1>;
-+		interrupt-controller;
-+		#interrupt-cells =3D <2>;
-+		#power-domain-cells =3D <0>;
-+		interrupt-parent =3D <&intc>;
-+		qcom,mpm-pin-count =3D <96>;
-+		qcom,mpm-pin-map =3D <2 184>,  /* tsens_upper_lower_int */
-+				   <37 220>, /* qmp_usb3_lfps_rxterm_irq ->
-ss_phy_irq */
-+				   <49 136>, /* qusb2phy_dpse_hv ->
-hs_phy_irq*/
-+				   <53 72>, /* mdss_irq */
-+				   <58 136>, /* qusb2phy_dmse_hv ->
-hs_phy_irq*/
-+				   <88 190>; /* ee0_krait_hlos_spmi_periph_irq
-*/
-+	};
-+
- 	pmu {
- 		compatible =3D "arm,cortex-a53-pmu";
- 		interrupts =3D <GIC_PPI 7 (GIC_CPU_MASK_SIMPLE(8) |
-IRQ_TYPE_LEVEL_HIGH)>;
-@@ -694,11 +712,13 @@ CPU_PD7: power-domain-cpu7 {
- 		CLUSTER0_PD: power-domain-cluster0 {
- 			#power-domain-cells =3D <0>;
- 			domain-idle-states =3D <&CLUSTER_RET>, <&CLUSTER_GDHS>,
-<&CLUSTER_PC>;
-+			power-domains =3D <&mpm>;
- 		};
+On 1/16/24 12:31, Naresh Solanki wrote:
+> Add netlink command to enable perticular event(s) broadcasting instead
+> of all regulator events.
 
- 		CLUSTER1_PD: power-domain-cluster1 {
- 			#power-domain-cells =3D <0>;
- 			domain-idle-states =3D <&CLUSTER_RET>, <&CLUSTER_GDHS>,
-<&CLUSTER_PC>;
-+			power-domains =3D <&mpm>;
- 		};
- 	};
+I think this mechanism for limiting events being forwarded to the 
+listener is worthy. My original idea was to utilize the netlink 
+multicast groups for this so that the regulator core would register 
+multiple multicast groups for this family. User would then listen only 
+the groups he is interested, and multiplexing the messages would be done 
+by netlink/socket code.
 
-@@ -958,6 +978,13 @@ soc: soc@0 {
- 		rpm_msg_ram: sram@60000 {
- 			compatible =3D "qcom,rpm-msg-ram";
- 			reg =3D <0x00060000 0x8000>;
-+			#address-cells =3D <1>;
-+			#size-cells =3D <1>;
-+			ranges =3D <0 0x00060000 0x8000>;
-+
-+			apss_mpm: sram@1d4 {
-+				reg =3D <0x1d4 0x48>;
-+			};
- 		};
+Problem(?) of the approach you propose here is that the event filtering 
+is global for all users. If multicast groups were used, this filtering 
+would be done per listener socket basis. I'm not sure if that would be 
+needed though, but somehow I feel it would be more usable for different 
+user-land appliactions (cost being the increased complexity though).
 
- 		hsusb_phy: phy@79000 {
-@@ -1012,8 +1039,8 @@ tsens0: thermal-sensor@4a9000 {
- 			reg =3D <0x004a9000 0x1000>, /* TM */
- 			      <0x004a8000 0x1000>; /* SROT */
- 			#qcom,sensors =3D <16>;
--			interrupts =3D <GIC_SPI 184 IRQ_TYPE_LEVEL_HIGH>,
--				     <GIC_SPI 314 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupts-extended =3D <&mpm 2 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&intc GIC_SPI 314
-IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-names =3D "uplow", "critical";
- 			#thermal-sensor-cells =3D <1>;
- 		};
-@@ -1052,6 +1079,7 @@ tlmm: pinctrl@1000000 {
- 			interrupts =3D <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
- 			gpio-controller;
- 			gpio-ranges =3D <&tlmm 0 0 142>;
-+			wakeup-parent =3D <&mpm>;
- 			#gpio-cells =3D <2>;
- 			interrupt-controller;
- 			#interrupt-cells =3D <2>;
-@@ -2176,7 +2204,7 @@ spmi_bus: spmi@200f000 {
- 			      <0x0200a000 0x2100>;
- 			reg-names =3D "core", "chnls", "obsrvr", "intr", "cnfg";
- 			interrupt-names =3D "periph_irq";
--			interrupts =3D <GIC_SPI 190 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupts-extended =3D <&mpm 88 IRQ_TYPE_LEVEL_HIGH>;
- 			qcom,ee =3D <0>;
- 			qcom,channel =3D <0>;
- 			interrupt-controller;
-@@ -2247,8 +2275,8 @@ usb3: usb@70f8800 {
- 			#size-cells =3D <1>;
- 			ranges;
+Eg, I am thinking users could enable receiving multicasts for events 
+they like using:
 
--			interrupts =3D <GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>,
--				     <GIC_SPI 220 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupts-extended =3D <&mpm 49 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&mpm 37 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-names =3D "hs_phy_irq", "ss_phy_irq";
+setsockopt(..., SOL_NETLINK, NETLINK_ADD_MEMBERSHIP, ..., ...)
 
- 			clocks =3D <&gcc GCC_USB_PHY_CFG_AHB_CLK>,
+Do you think allowing setting the 'filtering' this way per socket would 
+work or be beneficial?
+
+> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+> 
+> ...
+> Changes in v2:
+> - Update attribute to REG_GENL_ATTR_SET_EVENT_MASK
+> ---
+>   drivers/regulator/event.c          | 28 ++++++++++++++++++++++++++++
+>   include/uapi/regulator/regulator.h |  1 +
+>   2 files changed, 29 insertions(+)
+> 
+> diff --git a/drivers/regulator/event.c b/drivers/regulator/event.c
+> index ea3bd49544e8..181d16f54a21 100644
+> --- a/drivers/regulator/event.c
+> +++ b/drivers/regulator/event.c
+> @@ -14,17 +14,41 @@
+>   
+>   static atomic_t reg_event_seqnum = ATOMIC_INIT(0);
+>   
+> +static u64 event_mask;
+> +
+>   static const struct genl_multicast_group reg_event_mcgrps[] = {
+>   	{ .name = REG_GENL_MCAST_GROUP_NAME, },
+>   };
+>   
+> +static int reg_genl_cmd_doit(struct sk_buff *skb, struct genl_info *info)
+> +{
+> +	if (info->attrs[REG_GENL_ATTR_SET_EVENT_MASK]) {
+> +		event_mask = nla_get_u64(info->attrs[REG_GENL_ATTR_SET_EVENT_MASK]);
+
+If we go with just a global event_mask (not per listener) event 
+filtering, then we might need protection/barrier for this write of a 
+64bit value(?)
 
 
-I also added the msm_gpio_wakeirq_map (data again from downstream kernel)
+> +		pr_info("event_mask -> %llx", event_mask);
 
-diff --git a/drivers/pinctrl/qcom/pinctrl-msm8953.c
-b/drivers/pinctrl/qcom/pinctrl-msm8953.c
-index 998351bdfee1..2ea2c05aca9f 100644
-=2D-- a/drivers/pinctrl/qcom/pinctrl-msm8953.c
-+++ b/drivers/pinctrl/qcom/pinctrl-msm8953.c
-=2D-- a/drivers/pinctrl/qcom/pinctrl-msm8953.c
-+++ b/drivers/pinctrl/qcom/pinctrl-msm8953.c
-@@ -1790,6 +1790,20 @@ static const struct msm_pingroup msm8953_groups[] =
-=3D {
-        SDC_QDSD_PINGROUP(sdc2_data, 0x109000, 9, 0),
- };
+I would drop this print, or by very least, make it dbg.
 
-+static const struct msm_gpio_wakeirq_map msm8953_mpm_map[] =3D {
-+       {38, 3}, {1, 4}, {5, 5}, {9, 6}, {37, 8},
-+       {36, 9}, {13, 10}, {35, 11}, {17, 12}, {21, 13},
-+       {54, 14}, {34, 15}, {31, 16}, {58, 17}, {28, 18},
-+       {42, 19}, {25, 20}, {12, 21}, {43, 22}, {44, 23},
-+       {45, 24}, {46, 25}, {48, 26}, {65, 27}, {93, 28},
-+       {97, 29}, {63, 30}, {70, 31}, {71, 32}, {72, 33},
-+       {81, 34}, {85, 35}, {90, 36}, {67, 50}, {73, 51},
-+       {74, 52}, {62, 53}, {59, 59}, {60, 60}, {61, 61},
-+       {86, 62}, {87, 63}, {91, 64}, {129, 65}, {130, 66},
-+       {131, 67}, {132, 68}, {133, 69}, {137, 70}, {138, 71},
-+       {139, 72}, {140, 73}, {141, 74},
-+};
-+
- static const struct msm_pinctrl_soc_data msm8953_pinctrl =3D {
-        .pins =3D msm8953_pins,
-        .npins =3D ARRAY_SIZE(msm8953_pins),
-@@ -1798,6 +1812,9 @@ static const struct msm_pinctrl_soc_data msm8953_pin=
-ctrl =3D
-{
-        .groups =3D msm8953_groups,
-        .ngroups =3D ARRAY_SIZE(msm8953_groups),
-        .ngpios =3D 142,
-+       .wakeirq_map =3D msm8953_mpm_map,
-+       .nwakeirq_map =3D ARRAY_SIZE(msm8953_mpm_map),
-+       .wakeirq_dual_edge_errata =3D true,
- };
+> +		return 0;
+> +	}
+> +	pr_warn("Unknown attribute.");
 
-The initial commit message of irq-qcom-mpm.c says
->    - When SoC gets awake from sleep mode, the driver will receive an
->      interrupt from RPM, so that it can replay interrupt for particular
->      polarity.
+I would make this dbg as well.
 
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static const struct genl_small_ops reg_genl_ops[] = {
+> +	{
+> +		.cmd = REG_GENL_CMD_EVENT,
+> +		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
+> +		.doit = reg_genl_cmd_doit,
+> +	}
+> +};
+> +
+>   static struct genl_family reg_event_genl_family __ro_after_init = {
+>   	.module = THIS_MODULE,
+>   	.name = REG_GENL_FAMILY_NAME,
+>   	.version = REG_GENL_VERSION,
+>   	.maxattr = REG_GENL_ATTR_MAX,
+> +	.small_ops	= reg_genl_ops,
+> +	.n_small_ops	= ARRAY_SIZE(reg_genl_ops),
+>   	.mcgrps = reg_event_mcgrps,
+>   	.n_mcgrps = ARRAY_SIZE(reg_event_mcgrps),
+> +	.resv_start_op = __REG_GENL_CMD_MAX,
+>   };
+>   
+>   int reg_generate_netlink_event(const char *reg_name, u64 event)
+> @@ -35,6 +59,9 @@ int reg_generate_netlink_event(const char *reg_name, u64 event)
+>   	void *msg_header;
+>   	int size;
+>   
 
-The problem is that the IRQ does not trigger when suspending and resuming =
-by
-pressing the powerkey (tested on fairphone-fp3 running debian stable with =
-the
-linux-msm8953 mainline kernel):
-$ cat /proc/interrupt | grep qcom_mpm
- 15:          0          0          0          0          0          0
-0          0 GIC-0 203 Edge      qcom_mpm
+Barrier/locking here too?
 
-Is this a problem of the mpm driver or the mpm nodes? Or is this a misconf=
-igured
-RPM that does not trigger the interrupt when waking up? Do the mpm patches=
- for
-msm8996 sm6375 and qcm2290 already work on actual hardware? Is there
-Documentation for the qcom RPM which describes how to enable this wakeup
-interrupt?
+> +	if (!(event_mask & event))
+> +		return 0; > +
+>   	/* allocate memory */
+>   	size = nla_total_size(sizeof(struct reg_genl_event)) +
+>   	    nla_total_size(0);
+> @@ -73,6 +100,7 @@ int reg_generate_netlink_event(const char *reg_name, u64 event)
+>   
+>   static int __init reg_event_genetlink_init(void)
+>   {
+> +	event_mask = 0;
+>   	return genl_register_family(&reg_event_genl_family);
+>   }
+>   
+> diff --git a/include/uapi/regulator/regulator.h b/include/uapi/regulator/regulator.h
+> index 71bf71a22e7f..2a0af512b61c 100644
+> --- a/include/uapi/regulator/regulator.h
+> +++ b/include/uapi/regulator/regulator.h
+> @@ -69,6 +69,7 @@ struct reg_genl_event {
+>   enum {
+>   	REG_GENL_ATTR_UNSPEC,
+>   	REG_GENL_ATTR_EVENT,	/* reg event info needed by user space */
+> +	REG_GENL_ATTR_SET_EVENT_MASK,	/* reg event mask */
+>   	__REG_GENL_ATTR_MAX,
+>   };
+>   
+> 
+> base-commit: 94cc3087aac4103c33c6da84c092301afd783200
 
-Thanks in advance
-Bert Karwatzki
+Yours,
+	-- Matti
 
+-- 
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
+
+~~ When things go utterly wrong vim users can always type :help! ~~
 
 
