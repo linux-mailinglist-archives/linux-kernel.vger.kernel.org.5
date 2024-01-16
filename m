@@ -1,50 +1,83 @@
-Return-Path: <linux-kernel+bounces-27543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CDBC82F1E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:52:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DE37682F1EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 16:54:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85C1B1C212A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:52:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10ADB1C23613
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 15:54:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A7D51C69C;
-	Tue, 16 Jan 2024 15:52:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C36C1CA82;
+	Tue, 16 Jan 2024 15:54:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hnzk7Flw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ihMJO76X"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782B21C687;
-	Tue, 16 Jan 2024 15:52:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 896D0C433C7;
-	Tue, 16 Jan 2024 15:52:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705420363;
-	bh=WA+DndfELZlI9Jy+t+vI+2scK3h8QnZ8iilcAX3rtic=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Hnzk7Flw7UjtpN06RU4Q6p2dyS4lVjYLsHvF4Mf0M+XAJCDwx5K0wKu01pets7K+X
-	 eILdnFfdIQhMyk4Sr5qSGJttNqab3rwO1f+9WYI4K63yoQajM8j9HV6G1TAulftBni
-	 PMVFhsAp/JoXEmpAtcw3HihvfAJQXJJkDf2+YnqlnTsHHG4/N5ImsmVWss/0pwZU6H
-	 YfQtNA/eDjWW5D8mcAm/vXi9G/hj9AN98xUusLI0wsvVleBM/oGSAmLN/9BagKmimP
-	 4r6k9TOPAEMddQzwCjCvgBWIC9tXeDTM0O2VmN8ukbhkpovyJ3KfXQ2wzcW1A5c1Ex
-	 /iP8VJ9wBJUaQ==
-Date: Tue, 16 Jan 2024 15:52:37 +0000
-From: Simon Horman <horms@kernel.org>
-To: Qiang Ma <maqianga@uniontech.com>
-Cc: alexandre.torgue@foss.st.com, joabreu@synopsys.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	mcoquelin.stm32@gmail.com, Florian Fainelli <f.fainelli@gmail.com>,
-	netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: stmmac: ethtool: Fixed calltrace caused by
- unbalanced disable_irq_wake calls
-Message-ID: <20240116155237.GA588419@kernel.org>
-References: <20240112021249.24598-1-maqianga@uniontech.com>
- <20240115134238.GA430968@kernel.org>
- <8553142D466DD03F+20240116135734.53fb4c6e@john-PC>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0D3C1C6BA;
+	Tue, 16 Jan 2024 15:54:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40GFb9bl000351;
+	Tue, 16 Jan 2024 15:54:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=97MHNMQvroPsQ7l3OcwOf2G2VgJ3sRCWBpF6Bp8pnCo=;
+ b=ihMJO76X9sC7gXQ75gCE7ALl+v0NiMS7MG1VFOooSMQ0b1xynvW4PSoD2gjr+jLpUjW/
+ RYOH41b55L6ngLbPb9sFTIVIEUqD+k2xSDs4QETqxgK3h3C60kEZgvIZ2Aj7w4qlYw47
+ 3Wc4V1PcL/dZi0ed5DSaFiRHxv137/Vpc3RBniwz7FjDQ7FtRpHjV4XbcXCQrA0HAJGs
+ ZHkFUvD+bJwFwcLSoU/8mWrKizSBzAFqX7/RTmbkzkLTooUUJ/C3zkbxZRSLoLhIxJkA
+ jkYLtCSqalTBj++VVWW0+sSFVjQ23c+fAFumCTPnDu2TVuT1VybZ1J1fxtI4+7EKJK1R bQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnvkn8j7v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 15:54:04 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40GFblO9004401;
+	Tue, 16 Jan 2024 15:54:04 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vnvkn8j79-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 15:54:04 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40GDTMK6023421;
+	Tue, 16 Jan 2024 15:54:03 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vm6bkfbu0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 15:54:03 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40GFrw7I42467798
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Jan 2024 15:53:58 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0DE2F2004B;
+	Tue, 16 Jan 2024 15:53:58 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0E80F20040;
+	Tue, 16 Jan 2024 15:53:57 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.49.101])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue, 16 Jan 2024 15:53:56 +0000 (GMT)
+Date: Tue, 16 Jan 2024 16:53:55 +0100
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Tony Krowiak <akrowiak@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, jjherne@linux.ibm.com, borntraeger@de.ibm.com,
+        pasic@linux.ibm.com, pbonzini@redhat.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, gor@linux.ibm.com
+Subject: Re: [PATCH v4 3/6] s390/vfio-ap: let 'on_scan_complete' callback
+ filter matrix and update guest's APCB
+Message-ID: <ZaamkyuOET+1rOSm@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20240115185441.31526-1-akrowiak@linux.ibm.com>
+ <20240115185441.31526-4-akrowiak@linux.ibm.com>
+ <ZaY/fGxUMx2z4OQH@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+ <4eb35fab-eb85-487d-90cd-c4b10b8410ec@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,153 +86,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8553142D466DD03F+20240116135734.53fb4c6e@john-PC>
+In-Reply-To: <4eb35fab-eb85-487d-90cd-c4b10b8410ec@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Qe49cQtLJH46-BX-ssslh2WAuKu3_Qae
+X-Proofpoint-ORIG-GUID: L92aSjxdJRR6io0SwljeFoGIcqZgHe8d
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-16_08,2024-01-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ malwarescore=0 impostorscore=0 bulkscore=0 adultscore=0 priorityscore=1501
+ suspectscore=0 clxscore=1015 mlxlogscore=542 phishscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401160125
 
-On Tue, Jan 16, 2024 at 01:57:34PM +0800, Qiang Ma wrote:
-> On Mon, 15 Jan 2024 13:42:38 +0000
-> Simon Horman <horms@kernel.org> wrote:
-> 
-> > + Florian Fainelli <f.fainelli@gmail.com>
-> > 
-> > On Fri, Jan 12, 2024 at 10:12:49AM +0800, Qiang Ma wrote:
-> > > We found the following dmesg calltrace when testing the GMAC NIC
-> > > notebook:
-> > > 
-> > > [9.448656] ------------[ cut here ]------------
-> > > [9.448658] Unbalanced IRQ 43 wake disable
-> > > [9.448673] WARNING: CPU: 3 PID: 1083 at kernel/irq/manage.c:688
-> > > irq_set_irq_wake+0xe0/0x128 [9.448717] CPU: 3 PID: 1083 Comm:
-> > > ethtool Tainted: G           O      4.19 #1 [9.448773]         ...
-> > > [9.448774] Call Trace:
-> > > [9.448781] [<9000000000209b5c>] show_stack+0x34/0x140
-> > > [9.448788] [<9000000000d52700>] dump_stack+0x98/0xd0
-> > > [9.448794] [<9000000000228610>] __warn+0xa8/0x120
-> > > [9.448797] [<9000000000d2fb60>] report_bug+0x98/0x130
-> > > [9.448800] [<900000000020a418>] do_bp+0x248/0x2f0
-> > > [9.448805] [<90000000002035f4>] handle_bp_int+0x4c/0x78
-> > > [9.448808] [<900000000029ea40>] irq_set_irq_wake+0xe0/0x128
-> > > [9.448813] [<9000000000a96a7c>] stmmac_set_wol+0x134/0x150
-> > > [9.448819] [<9000000000be6ed0>] dev_ethtool+0x1368/0x2440
-> > > [9.448824] [<9000000000c08350>] dev_ioctl+0x1f8/0x3e0
-> > > [9.448827] [<9000000000bb2a34>] sock_ioctl+0x2a4/0x450
-> > > [9.448832] [<900000000046f044>] do_vfs_ioctl+0xa4/0x738
-> > > [9.448834] [<900000000046f778>] ksys_ioctl+0xa0/0xe8
-> > > [9.448837] [<900000000046f7d8>] sys_ioctl+0x18/0x28
-> > > [9.448840] [<9000000000211ab4>] syscall_common+0x20/0x34
-> > > [9.448842] ---[ end trace 40c18d9aec863c3e ]---
-> > > 
-> > > Multiple disable_irq_wake() calls will keep decreasing the IRQ
-> > > wake_depth, When wake_depth is 0, calling disable_irq_wake() again,
-> > > will report the above calltrace.
-> > > 
-> > > Due to the need to appear in pairs, we cannot call
-> > > disable_irq_wake() without calling enable_irq_wake(). Fix this by
-> > > making sure there are no unbalanced disable_irq_wake() calls.  
-> > 
-> > 
-> > Hi Qiang Ma,
-> > 
-> > This seems to be a fix, so I think it should be targeted at net:
-> > 
-> > 	Subject: [PATCH net] ...
-> > 
-> > And have a fixes tag, perhaps:
-> > 
-> > 	Fixes: 3172d3afa998 ("stmmac: support wake up irq from
-> > external sources (v3)")
-> > 
-> > I don't think there is a need to repost this patch because of the
-> > above, but please keep it in mind for next time.
-> > 
-> > > Signed-off-by: Qiang Ma <maqianga@uniontech.com>  
-> > 
-> > I see that the approach taken here is the same as that taken
-> > by bcm_sysport_set_wol() to what seems to be a similar problem [1].
-> > So the code change itself looks good to me.
-> > 
-> > Reviewed-by: Simon Horman <horms@kernel.org>
-> > 
-> > [1] 61b423a8a0bd ("net: systemport: avoid unbalanced enable_irq_wake
-> > calls") https://git.kernel.org/torvalds/c/61b423a8a0bd
-> > 
-> > > ---
-> > >  drivers/net/ethernet/stmicro/stmmac/stmmac.h         |  1 +
-> > >  drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c | 10
-> > > ++++++++-- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c    |
-> > > 1 + 3 files changed, 10 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> > > b/drivers/net/ethernet/stmicro/stmmac/stmmac.h index
-> > > cd7a9768de5f..b8c93b881a65 100644 ---
-> > > a/drivers/net/ethernet/stmicro/stmmac/stmmac.h +++
-> > > b/drivers/net/ethernet/stmicro/stmmac/stmmac.h @@ -255,6 +255,7 @@
-> > > struct stmmac_priv { u32 msg_enable;
-> > >  	int wolopts;
-> > >  	int wol_irq;
-> > > +	bool wol_irq_disabled;
-> > >  	int clk_csr;
-> > >  	struct timer_list eee_ctrl_timer;
-> > >  	int lpi_irq;
-> > > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-> > > b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c index
-> > > f628411ae4ae..9a4d9492a781 100644 ---
-> > > a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c +++
-> > > b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c @@ -825,10
-> > > +825,16 @@ static int stmmac_set_wol(struct net_device *dev, struct
-> > > ethtool_wolinfo *wol) if (wol->wolopts) { pr_info("stmmac: wakeup
-> > > enable\n"); device_set_wakeup_enable(priv->device, 1);
-> > > -		enable_irq_wake(priv->wol_irq);
-> > > +		/* Avoid unbalanced enable_irq_wake calls */
-> > > +		if (priv->wol_irq_disabled)
-> > > +			enable_irq_wake(priv->wol_irq);
-> > > +		priv->wol_irq_disabled = false;
-> > >  	} else {
-> > >  		device_set_wakeup_enable(priv->device, 0);
-> > > -		disable_irq_wake(priv->wol_irq);
-> > > +		/* Avoid unbalanced disable_irq_wake calls */
-> > > +		if (!priv->wol_irq_disabled)
-> > > +			disable_irq_wake(priv->wol_irq);
-> > > +		priv->wol_irq_disabled = true;
-> > >  	}
-> > >  
-> > >  	mutex_lock(&priv->lock);
-> > > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> > > b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c index
-> > > 37e64283f910..baa396621ed8 100644 ---
-> > > a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c +++
-> > > b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c @@ -3565,6
-> > > +3565,7 @@ static int stmmac_request_irq_multi_msi(struct
-> > > net_device *dev) /* Request the Wake IRQ in case of another line
-> > >  	 * is used for WoL
-> > >  	 */
-> > > +	priv->wol_irq_disabled = true;
-> > >  	if (priv->wol_irq > 0 && priv->wol_irq != dev->irq) {
-> > >  		int_name = priv->int_name_wol;
-> > >  		sprintf(int_name, "%s:%s", dev->name, "wol");
-> > > -- 
-> > > 2.20.1
-> > >   
-> > 
-> 
-> Hi Simon Horman,
-> 
-> The latest code does not seem to see the stmmac driver to avoid
-> irq_wake call related fix committed, this fix is mainly for stmmac,
-> refer to the commit:
-> 
-> commit 61b423a8a0bd9aeaa046f9a24bed42e3a953a936 Author:
-> Florian Fainelli <f.fainelli@gmail.com> Date:   Fri Oct 10 10:51:54
-> 2014 -0700
-> 
->     net: systemport: avoid unbalanced enable_irq_wake calls
-> 
-> commit 083731a8fbe71d83fc908adf137dc98ee352f280
-> Author: Florian Fainelli <f.fainelli@gmail.com>
-> Date:   Fri Oct 10 10:51:53 2014 -0700
-> 
->     net: bcmgenet: avoid unbalanced enable_irq_wake calls
-> 
-> Therefore, I think this submission is necessary at this time.
+On Tue, Jan 16, 2024 at 09:57:25AM -0500, Tony Krowiak wrote:
+> This patch is more of an enhancement as opposed to a bug, so no Fixes.
 
-Yes, I agree.
+The preceding and rest of this series CCs stable@vger.kernel.org and
+would not apply without this patch. So I guess backporting the whole
+series would be difficult.
+
+Whether propagating the prevous patches' Fixes/stable makes any sense?
+
+Thanks!
 
