@@ -1,45 +1,62 @@
-Return-Path: <linux-kernel+bounces-26622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 665F782E441
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:11:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6764282E443
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:12:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF592B20D1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:11:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77A862834D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:12:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 312A7125CD;
-	Tue, 16 Jan 2024 00:09:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BED6125B1;
+	Tue, 16 Jan 2024 00:09:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UU5aKSOO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DBWyiAgf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D7F125B1;
-	Tue, 16 Jan 2024 00:09:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D7A2C43609;
-	Tue, 16 Jan 2024 00:09:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C1A512B80;
+	Tue, 16 Jan 2024 00:09:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE332C433F1;
+	Tue, 16 Jan 2024 00:09:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705363754;
-	bh=LEPe9ZTL2f3MtItYpTHdzyfE3ASp5GXRfSsPMydO6N4=;
+	s=k20201202; t=1705363762;
+	bh=j/HEzTDeXcl90xT4yrx+cMqrQE+aoeBKC/1c72GBlZQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UU5aKSOO5lVEck2UZwUJHnHhsLM4eLkWKMwykoyf8LF3QrBpd1dPMTLW3va8oevTf
-	 VhH1qt8wii2JCcQMDsRStosqwx9krD2wI6K6qaBvnkJuGowlqf0OeM3DoJm83FQhVB
-	 KFgYTDoSlDKqTVTLi0kKzxbq1hZH8+W97PZCKaraZBvpgxQjNMn1vt5A2hYKfte3jB
-	 G/MzXT8R6AGknREBVnKPpQ3TwkLQgx414Y7r6bMsAhT5tpy0uqyli3Ge5nXUmUMhjy
-	 vq68haJxSLGapXVnUFKSslJBbUPsElpeNIS1upouuHrziCuB/hIPEb4XB+DJvbWUJk
-	 OTpryyvlZygjw==
+	b=DBWyiAgfBoDt2YaghyLtY/Wi6YKk9IduvbYhLXWYu3pzWoux5FIEX37L9CNFcBfFl
+	 l4K3LGInk/PULlrCzzh9dO5MHlJW44Bk/F/1uLxNhOaEZPAPzE+GdP7Tx2pvE7q+gX
+	 ieEvfECzFJ/TXcyKFWd5yEcmYvJEEPFJo5iIomz3K0x9i6p1ZpVMLTOqAZksR4f5q/
+	 nX4H+/ISS8drLoI7seS0ElhcViPv4IFYUNLayv9yfgYdFr/nLIKdubXiM2CLziqdeK
+	 Uw7SJAhW89tv+/fnNDWpZMEyqfayy2MAZOmtFVbJAK7WEwKa16lePfoRq5lZaLqhOq
+	 yF+HUtGeaXIZQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andrzej Hajda <andrzej.hajda@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.6 2/6] debugobjects: Stop accessing objects after releasing hash bucket lock
-Date: Mon, 15 Jan 2024 19:08:57 -0500
-Message-ID: <20240116000909.212520-2-sashal@kernel.org>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Sasha Levin <sashal@kernel.org>,
+	linux@armlinux.org.uk,
+	catalin.marinas@arm.com,
+	will@kernel.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	gregkh@linuxfoundation.org,
+	ajones@ventanamicro.com,
+	suagrfillet@gmail.com,
+	peterz@infradead.org,
+	gautham.shenoy@amd.com,
+	song.bao.hua@hisilicon.com,
+	linmiaohe@huawei.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-riscv@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.6 3/6] sched/topology: Add a new arch_scale_freq_ref() method
+Date: Mon, 15 Jan 2024 19:08:58 -0500
+Message-ID: <20240116000909.212520-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116000909.212520-1-sashal@kernel.org>
 References: <20240116000909.212520-1-sashal@kernel.org>
@@ -54,405 +71,213 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.12
 Content-Transfer-Encoding: 8bit
 
-From: Andrzej Hajda <andrzej.hajda@intel.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
 
-[ Upstream commit 9bb6362652f3f4d74a87d572a91ee1b38e673ef6 ]
+[ Upstream commit 9942cb22ea458c34fa17b73d143ea32d4df1caca ]
 
-After release of the hashbucket lock the tracking object can be modified or
-freed by a concurrent thread.  Using it in such a case is error prone, even
-for printing the object state:
+Create a new method to get a unique and fixed max frequency. Currently
+cpuinfo.max_freq or the highest (or last) state of performance domain are
+used as the max frequency when computing the frequency for a level of
+utilization, but:
 
-    1. T1 tries to deactivate destroyed object, debugobjects detects it,
-       hash bucket lock is released.
+  - cpuinfo_max_freq can change at runtime. boost is one example of
+    such change.
 
-    2. T2 preempts T1 and frees the tracking object.
+  - cpuinfo.max_freq and last item of the PD can be different leading to
+    different results between cpufreq and energy model.
 
-    3. The freed tracking object is allocated and initialized for a
-       different to be tracked kernel object.
+We need to save the reference frequency that has been used when computing
+the CPUs capacity and use this fixed and coherent value to convert between
+frequency and CPU's capacity.
 
-    4. T1 resumes and reports error for wrong kernel object.
+In fact, we already save the frequency that has been used when computing
+the capacity of each CPU. We extend the precision to save kHz instead of
+MHz currently and we modify the type to be aligned with other variables
+used when converting frequency to capacity and the other way.
 
-Create a local copy of the tracking object before releasing the hash bucket
-lock and use the local copy for reporting and fixups to prevent this.
+[ mingo: Minor edits. ]
 
-Signed-off-by: Andrzej Hajda <andrzej.hajda@intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20231025-debugobjects_fix-v3-1-2bc3bf7084c2@intel.com
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Tested-by: Lukasz Luba <lukasz.luba@arm.com>
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+Acked-by: Sudeep Holla <sudeep.holla@arm.com>
+Link: https://lore.kernel.org/r/20231211104855.558096-2-vincent.guittot@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/debugobjects.c | 200 ++++++++++++++++++---------------------------
- 1 file changed, 78 insertions(+), 122 deletions(-)
+ arch/arm/include/asm/topology.h   |  1 +
+ arch/arm64/include/asm/topology.h |  1 +
+ arch/riscv/include/asm/topology.h |  1 +
+ drivers/base/arch_topology.c      | 29 ++++++++++++++---------------
+ include/linux/arch_topology.h     |  7 +++++++
+ include/linux/sched/topology.h    |  8 ++++++++
+ 6 files changed, 32 insertions(+), 15 deletions(-)
 
-diff --git a/lib/debugobjects.c b/lib/debugobjects.c
-index a517256a270b..c90834a209b5 100644
---- a/lib/debugobjects.c
-+++ b/lib/debugobjects.c
-@@ -620,9 +620,8 @@ static void debug_objects_fill_pool(void)
- static void
- __debug_object_init(void *addr, const struct debug_obj_descr *descr, int onstack)
+diff --git a/arch/arm/include/asm/topology.h b/arch/arm/include/asm/topology.h
+index c7d2510e5a78..853c4f81ba4a 100644
+--- a/arch/arm/include/asm/topology.h
++++ b/arch/arm/include/asm/topology.h
+@@ -13,6 +13,7 @@
+ #define arch_set_freq_scale topology_set_freq_scale
+ #define arch_scale_freq_capacity topology_get_freq_scale
+ #define arch_scale_freq_invariant topology_scale_freq_invariant
++#define arch_scale_freq_ref topology_get_freq_ref
+ #endif
+ 
+ /* Replace task scheduler's default cpu-invariant accounting */
+diff --git a/arch/arm64/include/asm/topology.h b/arch/arm64/include/asm/topology.h
+index 9fab663dd2de..a323b109b9c4 100644
+--- a/arch/arm64/include/asm/topology.h
++++ b/arch/arm64/include/asm/topology.h
+@@ -23,6 +23,7 @@ void update_freq_counters_refs(void);
+ #define arch_set_freq_scale topology_set_freq_scale
+ #define arch_scale_freq_capacity topology_get_freq_scale
+ #define arch_scale_freq_invariant topology_scale_freq_invariant
++#define arch_scale_freq_ref topology_get_freq_ref
+ 
+ #ifdef CONFIG_ACPI_CPPC_LIB
+ #define arch_init_invariance_cppc topology_init_cpu_capacity_cppc
+diff --git a/arch/riscv/include/asm/topology.h b/arch/riscv/include/asm/topology.h
+index e316ab3b77f3..61183688bdd5 100644
+--- a/arch/riscv/include/asm/topology.h
++++ b/arch/riscv/include/asm/topology.h
+@@ -9,6 +9,7 @@
+ #define arch_set_freq_scale		topology_set_freq_scale
+ #define arch_scale_freq_capacity	topology_get_freq_scale
+ #define arch_scale_freq_invariant	topology_scale_freq_invariant
++#define arch_scale_freq_ref		topology_get_freq_ref
+ 
+ /* Replace task scheduler's default cpu-invariant accounting */
+ #define arch_scale_cpu_capacity	topology_get_cpu_scale
+diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+index b741b5ba82bd..0c9ae5b157b1 100644
+--- a/drivers/base/arch_topology.c
++++ b/drivers/base/arch_topology.c
+@@ -19,6 +19,7 @@
+ #include <linux/init.h>
+ #include <linux/rcupdate.h>
+ #include <linux/sched.h>
++#include <linux/units.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/thermal_pressure.h>
+@@ -26,7 +27,8 @@
+ static DEFINE_PER_CPU(struct scale_freq_data __rcu *, sft_data);
+ static struct cpumask scale_freq_counters_mask;
+ static bool scale_freq_invariant;
+-static DEFINE_PER_CPU(u32, freq_factor) = 1;
++DEFINE_PER_CPU(unsigned long, capacity_freq_ref) = 1;
++EXPORT_PER_CPU_SYMBOL_GPL(capacity_freq_ref);
+ 
+ static bool supports_scale_freq_counters(const struct cpumask *cpus)
  {
--	enum debug_obj_state state;
-+	struct debug_obj *obj, o;
- 	struct debug_bucket *db;
--	struct debug_obj *obj;
- 	unsigned long flags;
- 
- 	debug_objects_fill_pool();
-@@ -643,24 +642,18 @@ __debug_object_init(void *addr, const struct debug_obj_descr *descr, int onstack
- 	case ODEBUG_STATE_INIT:
- 	case ODEBUG_STATE_INACTIVE:
- 		obj->state = ODEBUG_STATE_INIT;
--		break;
--
--	case ODEBUG_STATE_ACTIVE:
--		state = obj->state;
--		raw_spin_unlock_irqrestore(&db->lock, flags);
--		debug_print_object(obj, "init");
--		debug_object_fixup(descr->fixup_init, addr, state);
--		return;
--
--	case ODEBUG_STATE_DESTROYED:
- 		raw_spin_unlock_irqrestore(&db->lock, flags);
--		debug_print_object(obj, "init");
- 		return;
- 	default:
- 		break;
- 	}
- 
-+	o = *obj;
- 	raw_spin_unlock_irqrestore(&db->lock, flags);
-+	debug_print_object(&o, "init");
-+
-+	if (o.state == ODEBUG_STATE_ACTIVE)
-+		debug_object_fixup(descr->fixup_init, addr, o.state);
- }
- 
- /**
-@@ -701,11 +694,9 @@ EXPORT_SYMBOL_GPL(debug_object_init_on_stack);
- int debug_object_activate(void *addr, const struct debug_obj_descr *descr)
- {
- 	struct debug_obj o = { .object = addr, .state = ODEBUG_STATE_NOTAVAILABLE, .descr = descr };
--	enum debug_obj_state state;
- 	struct debug_bucket *db;
- 	struct debug_obj *obj;
- 	unsigned long flags;
--	int ret;
- 
- 	if (!debug_objects_enabled)
- 		return 0;
-@@ -717,49 +708,38 @@ int debug_object_activate(void *addr, const struct debug_obj_descr *descr)
- 	raw_spin_lock_irqsave(&db->lock, flags);
- 
- 	obj = lookup_object_or_alloc(addr, db, descr, false, true);
--	if (likely(!IS_ERR_OR_NULL(obj))) {
--		bool print_object = false;
--
-+	if (unlikely(!obj)) {
-+		raw_spin_unlock_irqrestore(&db->lock, flags);
-+		debug_objects_oom();
-+		return 0;
-+	} else if (likely(!IS_ERR(obj))) {
- 		switch (obj->state) {
--		case ODEBUG_STATE_INIT:
--		case ODEBUG_STATE_INACTIVE:
--			obj->state = ODEBUG_STATE_ACTIVE;
--			ret = 0;
--			break;
--
- 		case ODEBUG_STATE_ACTIVE:
--			state = obj->state;
--			raw_spin_unlock_irqrestore(&db->lock, flags);
--			debug_print_object(obj, "activate");
--			ret = debug_object_fixup(descr->fixup_activate, addr, state);
--			return ret ? 0 : -EINVAL;
--
- 		case ODEBUG_STATE_DESTROYED:
--			print_object = true;
--			ret = -EINVAL;
-+			o = *obj;
- 			break;
-+		case ODEBUG_STATE_INIT:
-+		case ODEBUG_STATE_INACTIVE:
-+			obj->state = ODEBUG_STATE_ACTIVE;
-+			fallthrough;
- 		default:
--			ret = 0;
--			break;
-+			raw_spin_unlock_irqrestore(&db->lock, flags);
-+			return 0;
- 		}
--		raw_spin_unlock_irqrestore(&db->lock, flags);
--		if (print_object)
--			debug_print_object(obj, "activate");
--		return ret;
- 	}
- 
- 	raw_spin_unlock_irqrestore(&db->lock, flags);
-+	debug_print_object(&o, "activate");
- 
--	/* If NULL the allocation has hit OOM */
--	if (!obj) {
--		debug_objects_oom();
--		return 0;
-+	switch (o.state) {
-+	case ODEBUG_STATE_ACTIVE:
-+	case ODEBUG_STATE_NOTAVAILABLE:
-+		if (debug_object_fixup(descr->fixup_activate, addr, o.state))
-+			return 0;
-+		fallthrough;
-+	default:
-+		return -EINVAL;
- 	}
--
--	/* Object is neither static nor tracked. It's not initialized */
--	debug_print_object(&o, "activate");
--	ret = debug_object_fixup(descr->fixup_activate, addr, ODEBUG_STATE_NOTAVAILABLE);
--	return ret ? 0 : -EINVAL;
- }
- EXPORT_SYMBOL_GPL(debug_object_activate);
- 
-@@ -770,10 +750,10 @@ EXPORT_SYMBOL_GPL(debug_object_activate);
+@@ -170,9 +172,9 @@ DEFINE_PER_CPU(unsigned long, thermal_pressure);
+  * operating on stale data when hot-plug is used for some CPUs. The
+  * @capped_freq reflects the currently allowed max CPUs frequency due to
+  * thermal capping. It might be also a boost frequency value, which is bigger
+- * than the internal 'freq_factor' max frequency. In such case the pressure
+- * value should simply be removed, since this is an indication that there is
+- * no thermal throttling. The @capped_freq must be provided in kHz.
++ * than the internal 'capacity_freq_ref' max frequency. In such case the
++ * pressure value should simply be removed, since this is an indication that
++ * there is no thermal throttling. The @capped_freq must be provided in kHz.
   */
- void debug_object_deactivate(void *addr, const struct debug_obj_descr *descr)
- {
-+	struct debug_obj o = { .object = addr, .state = ODEBUG_STATE_NOTAVAILABLE, .descr = descr };
- 	struct debug_bucket *db;
- 	struct debug_obj *obj;
- 	unsigned long flags;
--	bool print_object = false;
+ void topology_update_thermal_pressure(const struct cpumask *cpus,
+ 				      unsigned long capped_freq)
+@@ -183,10 +185,7 @@ void topology_update_thermal_pressure(const struct cpumask *cpus,
  
- 	if (!debug_objects_enabled)
- 		return;
-@@ -785,33 +765,24 @@ void debug_object_deactivate(void *addr, const struct debug_obj_descr *descr)
- 	obj = lookup_object(addr, db);
- 	if (obj) {
- 		switch (obj->state) {
-+		case ODEBUG_STATE_DESTROYED:
-+			break;
- 		case ODEBUG_STATE_INIT:
- 		case ODEBUG_STATE_INACTIVE:
- 		case ODEBUG_STATE_ACTIVE:
--			if (!obj->astate)
--				obj->state = ODEBUG_STATE_INACTIVE;
--			else
--				print_object = true;
--			break;
+ 	cpu = cpumask_first(cpus);
+ 	max_capacity = arch_scale_cpu_capacity(cpu);
+-	max_freq = per_cpu(freq_factor, cpu);
 -
--		case ODEBUG_STATE_DESTROYED:
--			print_object = true;
--			break;
-+			if (obj->astate)
-+				break;
-+			obj->state = ODEBUG_STATE_INACTIVE;
-+			fallthrough;
- 		default:
--			break;
-+			raw_spin_unlock_irqrestore(&db->lock, flags);
-+			return;
+-	/* Convert to MHz scale which is used in 'freq_factor' */
+-	capped_freq /= 1000;
++	max_freq = arch_scale_freq_ref(cpu);
+ 
+ 	/*
+ 	 * Handle properly the boost frequencies, which should simply clean
+@@ -279,13 +278,13 @@ void topology_normalize_cpu_scale(void)
+ 
+ 	capacity_scale = 1;
+ 	for_each_possible_cpu(cpu) {
+-		capacity = raw_capacity[cpu] * per_cpu(freq_factor, cpu);
++		capacity = raw_capacity[cpu] * per_cpu(capacity_freq_ref, cpu);
+ 		capacity_scale = max(capacity, capacity_scale);
+ 	}
+ 
+ 	pr_debug("cpu_capacity: capacity_scale=%llu\n", capacity_scale);
+ 	for_each_possible_cpu(cpu) {
+-		capacity = raw_capacity[cpu] * per_cpu(freq_factor, cpu);
++		capacity = raw_capacity[cpu] * per_cpu(capacity_freq_ref, cpu);
+ 		capacity = div64_u64(capacity << SCHED_CAPACITY_SHIFT,
+ 			capacity_scale);
+ 		topology_set_cpu_scale(cpu, capacity);
+@@ -321,15 +320,15 @@ bool __init topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu)
+ 			cpu_node, raw_capacity[cpu]);
+ 
+ 		/*
+-		 * Update freq_factor for calculating early boot cpu capacities.
++		 * Update capacity_freq_ref for calculating early boot CPU capacities.
+ 		 * For non-clk CPU DVFS mechanism, there's no way to get the
+ 		 * frequency value now, assuming they are running at the same
+-		 * frequency (by keeping the initial freq_factor value).
++		 * frequency (by keeping the initial capacity_freq_ref value).
+ 		 */
+ 		cpu_clk = of_clk_get(cpu_node, 0);
+ 		if (!PTR_ERR_OR_ZERO(cpu_clk)) {
+-			per_cpu(freq_factor, cpu) =
+-				clk_get_rate(cpu_clk) / 1000;
++			per_cpu(capacity_freq_ref, cpu) =
++				clk_get_rate(cpu_clk) / HZ_PER_KHZ;
+ 			clk_put(cpu_clk);
  		}
-+		o = *obj;
- 	}
+ 	} else {
+@@ -411,7 +410,7 @@ init_cpu_capacity_callback(struct notifier_block *nb,
+ 	cpumask_andnot(cpus_to_visit, cpus_to_visit, policy->related_cpus);
  
- 	raw_spin_unlock_irqrestore(&db->lock, flags);
--	if (!obj) {
--		struct debug_obj o = { .object = addr,
--				       .state = ODEBUG_STATE_NOTAVAILABLE,
--				       .descr = descr };
--
--		debug_print_object(&o, "deactivate");
--	} else if (print_object) {
--		debug_print_object(obj, "deactivate");
--	}
-+	debug_print_object(&o, "deactivate");
- }
- EXPORT_SYMBOL_GPL(debug_object_deactivate);
+ 	for_each_cpu(cpu, policy->related_cpus)
+-		per_cpu(freq_factor, cpu) = policy->cpuinfo.max_freq / 1000;
++		per_cpu(capacity_freq_ref, cpu) = policy->cpuinfo.max_freq;
  
-@@ -822,11 +793,9 @@ EXPORT_SYMBOL_GPL(debug_object_deactivate);
-  */
- void debug_object_destroy(void *addr, const struct debug_obj_descr *descr)
- {
--	enum debug_obj_state state;
-+	struct debug_obj *obj, o;
- 	struct debug_bucket *db;
--	struct debug_obj *obj;
- 	unsigned long flags;
--	bool print_object = false;
+ 	if (cpumask_empty(cpus_to_visit)) {
+ 		topology_normalize_cpu_scale();
+diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
+index a07b510e7dc5..32c24ff4f2a8 100644
+--- a/include/linux/arch_topology.h
++++ b/include/linux/arch_topology.h
+@@ -27,6 +27,13 @@ static inline unsigned long topology_get_cpu_scale(int cpu)
  
- 	if (!debug_objects_enabled)
- 		return;
-@@ -836,32 +805,31 @@ void debug_object_destroy(void *addr, const struct debug_obj_descr *descr)
- 	raw_spin_lock_irqsave(&db->lock, flags);
+ void topology_set_cpu_scale(unsigned int cpu, unsigned long capacity);
  
- 	obj = lookup_object(addr, db);
--	if (!obj)
--		goto out_unlock;
-+	if (!obj) {
-+		raw_spin_unlock_irqrestore(&db->lock, flags);
-+		return;
-+	}
- 
- 	switch (obj->state) {
-+	case ODEBUG_STATE_ACTIVE:
-+	case ODEBUG_STATE_DESTROYED:
-+		break;
- 	case ODEBUG_STATE_NONE:
- 	case ODEBUG_STATE_INIT:
- 	case ODEBUG_STATE_INACTIVE:
- 		obj->state = ODEBUG_STATE_DESTROYED;
--		break;
--	case ODEBUG_STATE_ACTIVE:
--		state = obj->state;
-+		fallthrough;
-+	default:
- 		raw_spin_unlock_irqrestore(&db->lock, flags);
--		debug_print_object(obj, "destroy");
--		debug_object_fixup(descr->fixup_destroy, addr, state);
- 		return;
--
--	case ODEBUG_STATE_DESTROYED:
--		print_object = true;
--		break;
--	default:
--		break;
- 	}
--out_unlock:
++DECLARE_PER_CPU(unsigned long, capacity_freq_ref);
 +
-+	o = *obj;
- 	raw_spin_unlock_irqrestore(&db->lock, flags);
--	if (print_object)
--		debug_print_object(obj, "destroy");
-+	debug_print_object(&o, "destroy");
++static inline unsigned long topology_get_freq_ref(int cpu)
++{
++	return per_cpu(capacity_freq_ref, cpu);
++}
 +
-+	if (o.state == ODEBUG_STATE_ACTIVE)
-+		debug_object_fixup(descr->fixup_destroy, addr, o.state);
- }
- EXPORT_SYMBOL_GPL(debug_object_destroy);
+ DECLARE_PER_CPU(unsigned long, arch_freq_scale);
  
-@@ -872,9 +840,8 @@ EXPORT_SYMBOL_GPL(debug_object_destroy);
-  */
- void debug_object_free(void *addr, const struct debug_obj_descr *descr)
- {
--	enum debug_obj_state state;
-+	struct debug_obj *obj, o;
- 	struct debug_bucket *db;
--	struct debug_obj *obj;
- 	unsigned long flags;
+ static inline unsigned long topology_get_freq_scale(int cpu)
+diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+index 67b573d5bf28..9671b7234684 100644
+--- a/include/linux/sched/topology.h
++++ b/include/linux/sched/topology.h
+@@ -275,6 +275,14 @@ void arch_update_thermal_pressure(const struct cpumask *cpus,
+ { }
+ #endif
  
- 	if (!debug_objects_enabled)
-@@ -885,24 +852,26 @@ void debug_object_free(void *addr, const struct debug_obj_descr *descr)
- 	raw_spin_lock_irqsave(&db->lock, flags);
- 
- 	obj = lookup_object(addr, db);
--	if (!obj)
--		goto out_unlock;
-+	if (!obj) {
-+		raw_spin_unlock_irqrestore(&db->lock, flags);
-+		return;
-+	}
- 
- 	switch (obj->state) {
- 	case ODEBUG_STATE_ACTIVE:
--		state = obj->state;
--		raw_spin_unlock_irqrestore(&db->lock, flags);
--		debug_print_object(obj, "free");
--		debug_object_fixup(descr->fixup_free, addr, state);
--		return;
-+		break;
- 	default:
- 		hlist_del(&obj->node);
- 		raw_spin_unlock_irqrestore(&db->lock, flags);
- 		free_object(obj);
- 		return;
- 	}
--out_unlock:
++#ifndef arch_scale_freq_ref
++static __always_inline
++unsigned int arch_scale_freq_ref(int cpu)
++{
++	return 0;
++}
++#endif
 +
-+	o = *obj;
- 	raw_spin_unlock_irqrestore(&db->lock, flags);
-+	debug_print_object(&o, "free");
-+
-+	debug_object_fixup(descr->fixup_free, addr, o.state);
- }
- EXPORT_SYMBOL_GPL(debug_object_free);
- 
-@@ -954,10 +923,10 @@ void
- debug_object_active_state(void *addr, const struct debug_obj_descr *descr,
- 			  unsigned int expect, unsigned int next)
+ static inline int task_node(const struct task_struct *p)
  {
-+	struct debug_obj o = { .object = addr, .state = ODEBUG_STATE_NOTAVAILABLE, .descr = descr };
- 	struct debug_bucket *db;
- 	struct debug_obj *obj;
- 	unsigned long flags;
--	bool print_object = false;
- 
- 	if (!debug_objects_enabled)
- 		return;
-@@ -970,28 +939,19 @@ debug_object_active_state(void *addr, const struct debug_obj_descr *descr,
- 	if (obj) {
- 		switch (obj->state) {
- 		case ODEBUG_STATE_ACTIVE:
--			if (obj->astate == expect)
--				obj->astate = next;
--			else
--				print_object = true;
--			break;
--
-+			if (obj->astate != expect)
-+				break;
-+			obj->astate = next;
-+			raw_spin_unlock_irqrestore(&db->lock, flags);
-+			return;
- 		default:
--			print_object = true;
- 			break;
- 		}
-+		o = *obj;
- 	}
- 
- 	raw_spin_unlock_irqrestore(&db->lock, flags);
--	if (!obj) {
--		struct debug_obj o = { .object = addr,
--				       .state = ODEBUG_STATE_NOTAVAILABLE,
--				       .descr = descr };
--
--		debug_print_object(&o, "active_state");
--	} else if (print_object) {
--		debug_print_object(obj, "active_state");
--	}
-+	debug_print_object(&o, "active_state");
- }
- EXPORT_SYMBOL_GPL(debug_object_active_state);
- 
-@@ -999,12 +959,10 @@ EXPORT_SYMBOL_GPL(debug_object_active_state);
- static void __debug_check_no_obj_freed(const void *address, unsigned long size)
- {
- 	unsigned long flags, oaddr, saddr, eaddr, paddr, chunks;
--	const struct debug_obj_descr *descr;
--	enum debug_obj_state state;
-+	int cnt, objs_checked = 0;
-+	struct debug_obj *obj, o;
- 	struct debug_bucket *db;
- 	struct hlist_node *tmp;
--	struct debug_obj *obj;
--	int cnt, objs_checked = 0;
- 
- 	saddr = (unsigned long) address;
- 	eaddr = saddr + size;
-@@ -1026,12 +984,10 @@ static void __debug_check_no_obj_freed(const void *address, unsigned long size)
- 
- 			switch (obj->state) {
- 			case ODEBUG_STATE_ACTIVE:
--				descr = obj->descr;
--				state = obj->state;
-+				o = *obj;
- 				raw_spin_unlock_irqrestore(&db->lock, flags);
--				debug_print_object(obj, "free");
--				debug_object_fixup(descr->fixup_free,
--						   (void *) oaddr, state);
-+				debug_print_object(&o, "free");
-+				debug_object_fixup(o.descr->fixup_free, (void *)oaddr, o.state);
- 				goto repeat;
- 			default:
- 				hlist_del(&obj->node);
+ 	return cpu_to_node(task_cpu(p));
 -- 
 2.43.0
 
