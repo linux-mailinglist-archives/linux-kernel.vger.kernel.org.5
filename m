@@ -1,177 +1,112 @@
-Return-Path: <linux-kernel+bounces-27365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6346C82EEB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:09:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC20E82EEBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:10:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBF50285468
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:09:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6CCDCB23A22
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:10:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31D6E1BC29;
-	Tue, 16 Jan 2024 12:09:34 +0000 (UTC)
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3766D1B976;
+	Tue, 16 Jan 2024 12:09:44 +0000 (UTC)
+Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A761BC20
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 12:09:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BCD31BC20;
+	Tue, 16 Jan 2024 12:09:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40e86a76c11so1734105e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 04:09:32 -0800 (PST)
+Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-204b216e4easo2140979fac.1;
+        Tue, 16 Jan 2024 04:09:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705406970; x=1706011770;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hGXJewiw59XAMvDFwR6jqOgJqi+EyE44/+IPiDuzAnc=;
-        b=NjSP/EYAdArnugoZk1HnNkG4Aver6ap5/CKa6vTRkDT0163/1NhC85hBDztW9EvZcH
-         AlhXMcjErdMZQQI72ml1ejeqpNowfBb7uKturu+t0lMUQcklxECWpV4ul5a75kkcvBNZ
-         xALp3vJlsQDI3pgWfi/T4WFVQk2ViBQZ1AuGTJiPiz5E45CDXu8hfRSe/yiTDIa+yoVd
-         iUDjYWUGq0clmnbWiuQJGr+E4tKa3+G+B/AKpUHjZOZ6wizN7rHLsD3N+kkLBkY1JGGJ
-         KmNtS+cLd80FeOqXs1nFZz8K5kvIynzCqV8ORZr3HbpDPWsJCdljx2yBsUFp3JE68ry0
-         69ww==
-X-Gm-Message-State: AOJu0Yyx6sEJbJoqCJ5ECjwEwppo74P6dEb2lA4PW6oWZrfTOAY3y1mZ
-	r9R7U+yGs6YP+d3vZY5WxL0=
-X-Google-Smtp-Source: AGHT+IGPn29RAnaLDYO7zw5NJ/+D5zoORI9C1iG1ha3W4PGgkY4a03AvrTZpuIl5+XU67V7a5mXhuw==
-X-Received: by 2002:a7b:cd0f:0:b0:40e:4a3d:83e with SMTP id f15-20020a7bcd0f000000b0040e4a3d083emr2478334wmj.22.1705406970374;
-        Tue, 16 Jan 2024 04:09:30 -0800 (PST)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id o8-20020a05600c510800b0040e624995f1sm17888703wms.8.2024.01.16.04.09.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jan 2024 04:09:30 -0800 (PST)
-Message-ID: <3193bf5b-4e22-412f-8c5b-68574942d9bc@kernel.org>
-Date: Tue, 16 Jan 2024 13:09:29 +0100
+        d=1e100.net; s=20230601; t=1705406981; x=1706011781;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lURx4EVsPbFSOQIiob3lxt3SbzdMQVY25MX0SZLU7b4=;
+        b=BeYHSJaXjETyz0JGhpeaeGxh0thyhLYyX7kcSvoa5QuOR+fHLVIHGyG327K8lIBQlw
+         6HvPDoQWU0tfAFdWH4rRwfzrOdsDgp132YiTzpkKjQtaHrIWuGQ+Pod7gqsAkZp4FZmg
+         He1tRDs7adqG6m0OGZ1tLCoXUr8ICXlVsOHANznohT6wCNZaM+VfHbnLMriHgmf9R6d0
+         iOSBZZxNAAhe7I6Amme7pHjQPotM79PvKjmlE6m7VhOlXLQUc0hbD0EhLpv0IQGBH+yd
+         b7ZP0DLZgEr5DHUVlM/+3rO0RZ/2wtZkHzR/g0Ec/fmvlzGkxflo1J6jzgdJWkkIUOAa
+         aGbg==
+X-Gm-Message-State: AOJu0Yye0LMFCayADjYenD0vcf5R5LKoyd1mEg5SS/ps5O/BISrhN3pk
+	6GLd4tBPWo6P1IEgZmAy1E1EV10YVdABQ5ePR5EFxzcyQRI=
+X-Google-Smtp-Source: AGHT+IGQga0Tb68FRQF8wnULqbw67V+zoqJKfum3lp23NuJMvBjmrrmKN/1qAwULnpz53MU/inKa6e7ONIdn5YGkzLk=
+X-Received: by 2002:a4a:9d19:0:b0:598:94b1:1658 with SMTP id
+ w25-20020a4a9d19000000b0059894b11658mr9646366ooj.1.1705406981570; Tue, 16 Jan
+ 2024 04:09:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mm: align larger anonymous mappings on THP boundaries
-Content-Language: en-US
-From: Jiri Slaby <jirislaby@kernel.org>
-To: Rik van Riel <riel@surriel.com>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel-team@fb.com,
- Matthew Wilcox <willy@infradead.org>, Yang Shi <shy828301@gmail.com>,
- Christoph Lameter <cl@linux.com>
-References: <20220809142457.4751229f@imladris.surriel.com>
- <d0a136a0-4a31-46bc-adf4-2db109a61672@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <d0a136a0-4a31-46bc-adf4-2db109a61672@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 16 Jan 2024 13:09:30 +0100
+Message-ID: <CAJZ5v0iL9F8o5_QXv+Ki5cHmk74ofQ2PwKOtJjJQoOWEGpOGWA@mail.gmail.com>
+Subject: [GIT PULL] More ACPI updates for v6.8-rc1
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: ACPI Devel Maling List <linux-acpi@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On 16. 01. 24, 12:53, Jiri Slaby wrote:
-> Hi,
-> 
-> On 09. 08. 22, 20:24, Rik van Riel wrote:
->> Align larger anonymous memory mappings on THP boundaries by
->> going through thp_get_unmapped_area if THPs are enabled for
->> the current process.
->>
->> With this patch, larger anonymous mappings are now THP aligned.
->> When a malloc library allocates a 2MB or larger arena, that
->> arena can now be mapped with THPs right from the start, which
->> can result in better TLB hit rates and execution time.
-> 
-> This appears to break 32bit processes on x86_64 (at least). In 
-> particular, 32bit kernel or firefox builds in our build system.
-> 
-> Reverting this on top of 6.7 makes it work again.
-> 
-> Downstream report:
->   https://bugzilla.suse.com/show_bug.cgi?id=1218841
-> 
-> So running:
-> pahole -J --btf_gen_floats -j --lang_exclude=rust 
-> --skip_encoding_btf_inconsistent_proto --btf_gen_optimized .tmp_vmlinux.btf
-> 
-> crashes or errors out with some random errors:
-> [182671] STRUCT idr's field 'idr_next' offset=128 bit_size=0 type=181346 
-> Error emitting field
-> 
-> strace shows mmap() fails with ENOMEM right before the errors:
-> 1223  mmap2(NULL, 5783552, PROT_READ|PROT_WRITE, 
-> MAP_PRIVATE|MAP_ANONYMOUS, -1, 0 <unfinished ...>
-> ...
-> 1223  <... mmap2 resumed>)              = -1 ENOMEM (Cannot allocate 
-> memory)
-> 
-> Note the .tmp_vmlinux.btf above can be arbitrary, but likely large 
-> enough. For reference, one is available at:
-> https://decibel.fi.muni.cz/~xslaby/n/btf
-> 
-> Any ideas?
+Hi Linus,
 
-This works around the problem, of course (but is a band-aid, not a fix):
+Please pull from the tag
 
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -1829,7 +1829,7 @@ get_unmapped_area(struct file *file, unsigned long 
-addr, unsigned long len,
-                  */
-                 pgoff = 0;
-                 get_area = shmem_get_unmapped_area;
--       } else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
-+       } else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) && 
-!in_32bit_syscall()) {
-                 /* Ensures that larger anonymous mappings are THP 
-aligned. */
-                 get_area = thp_get_unmapped_area;
-         }
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpi-6.8-rc1-2
+
+with top-most commit 5b5268cd49d233f03a5cfb1108dcd38bcb83f6d1
+
+ Merge branches 'pnp', 'acpi-resource' and 'acpica'
+
+on top of commit 7da71072e1d6967c0482abcbb5991ffb5953fdf2
+
+ Merge tag 'pm-6.8-rc1' of
+git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
+
+to receive more ACPI updates for 6.8-rc1.
+
+These add support for new MADT flags to ACPICA, constify the PNP bus
+type structure and add new ACPI IRQ management quirks.
+
+Specifics:
+
+ - Make pnp_bus_type const (Greg Kroah-Hartman).
+
+ - Add ACPI IRQ management quirks for ASUS ExpertBook B1502CGA and ASUS
+   Vivobook E1504GA and E1504GAB (Ben Mayo, Michael Maltsev).
+
+ - Add new MADT GICC/GICR/ITS non-coherent flags and GICC online capable
+   bit handling to ACPICA (Lorenzo Pieralisi).
+
+Thanks!
 
 
-thp_get_unmapped_area() does not take care of the legacy stuff...
+---------------
 
-regards,
--- 
-js
-suse labs
+Ben Mayo (1):
+      ACPI: resource: Add DMI quirks for ASUS Vivobook E1504GA and E1504GAB
 
+Greg Kroah-Hartman (1):
+      PNP: make pnp_bus_type const
+
+Lorenzo Pieralisi (2):
+      ACPICA: MADT: Add GICC online capable bit handling
+      ACPICA: MADT: Add new MADT GICC/GICR/ITS non-coherent flags handling
+
+Michael Maltsev (1):
+      ACPI: resource: Skip IRQ override on ASUS ExpertBook B1502CGA
+
+---------------
+
+ drivers/acpi/resource.c | 21 +++++++++++++++++++++
+ drivers/pnp/driver.c    |  2 +-
+ include/acpi/actbl2.h   | 12 ++++++++++--
+ include/linux/pnp.h     |  2 +-
+ 4 files changed, 33 insertions(+), 4 deletions(-)
 
