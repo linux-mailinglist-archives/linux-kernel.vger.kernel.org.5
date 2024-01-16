@@ -1,163 +1,95 @@
-Return-Path: <linux-kernel+bounces-27130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6473E82EAEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:34:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3816782EADC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:28:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61B111C22DA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:34:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D77301F240BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:28:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B03E912B82;
-	Tue, 16 Jan 2024 08:34:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65A6911CA9;
+	Tue, 16 Jan 2024 08:28:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=paragon-software.com header.i=@paragon-software.com header.b="Tmh2CNU0";
-	dkim=pass (1024-bit key) header.d=paragon-software.com header.i=@paragon-software.com header.b="Hsp2M8Hd"
-Received: from relayaws-01.paragon-software.com (relayaws-01.paragon-software.com [35.157.23.187])
+	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="KAVU3mtA"
+Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA1A12B66;
-	Tue, 16 Jan 2024 08:34:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=paragon-software.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paragon-software.com
-Received: from relayfre-01.paragon-software.com (unknown [172.30.72.12])
-	by relayaws-01.paragon-software.com (Postfix) with ESMTPS id E94B126;
-	Tue, 16 Jan 2024 08:19:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=paragon-software.com; s=mail; t=1705393200;
-	bh=xtKnc81qgkt1hp+yrgP4nxQ9fcDthRgPBw7xJL7BYSI=;
-	h=Date:To:CC:From:Subject;
-	b=Tmh2CNU0YPPx7m00AJ8Ts3TC0cvRijx7y5OQAghP2q4LAOj1teg55gQ9M/Pqg2XUo
-	 XzC4lBOqxRSQckTX3O8jGHYLwKH6p6cHkFJfn8ECtw93HPN+HsvIK8Z9pBHmjkpNTU
-	 ZE3+MNpGIGy1G9MM/jUiOXTG/WiSq9UeDFWYclGw=
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-	by relayfre-01.paragon-software.com (Postfix) with ESMTPS id E95371DF9;
-	Tue, 16 Jan 2024 08:26:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=paragon-software.com; s=mail; t=1705393603;
-	bh=xtKnc81qgkt1hp+yrgP4nxQ9fcDthRgPBw7xJL7BYSI=;
-	h=Date:To:CC:From:Subject;
-	b=Hsp2M8HdMaGF1tAVu4ui6wCeB6rYF4iWde/iHCQy0hsmyhUH1Ad4GxCxJWwYqqASC
-	 xfmP5DiWsUHmdK1ITnGmLikpv7/3aWh3kTgEsa8C1Ocib3mwjGlsCATy5mXD2Hlehw
-	 NxVIbqgEW+E0IOhhqFilnFxI1YIWsiSs/LopraQ8=
-Received: from [192.168.211.197] (192.168.211.197) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Tue, 16 Jan 2024 11:26:43 +0300
-Message-ID: <667a5bc4-8cb5-47ce-a7f1-749479b25bec@paragon-software.com>
-Date: Tue, 16 Jan 2024 11:26:41 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBDC1125A3;
+	Tue, 16 Jan 2024 08:28:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mess.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+	t=1705393686; bh=atc+5+ojRvm8ThjhjD7yUzq2b3yJt/kmV+ymWWi8EQg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KAVU3mtAAmNdfm2lPlBc3yrxcepLBsM0BAxgkupmPr3o0C/hI4SsBcW6N3deojhSZ
+	 SwLgxJMXS7055SAA9oYxM9fSTUvPnOc+IQj+mRgVanuOTLMOgOPqs1Hs5HIV2DrqvC
+	 aoP1cHxPpN+msTzz9K9jk4LnMp3vGX2Iz736rrM4qTdFhXq6UN5ShVEF2R8nYTuz2d
+	 2TFH6KM4XhNENO1/crKT1TzF5bB3yy2XWjxbas56EArRXrHtXyiXj1RkoiYigdEj7H
+	 nOxyKKG8aqDbAkRJwG3GmPhrKovXYzIBYZyd84ajXRY/7oJXl/E5a+x0Yhzib5ML5U
+	 Ag/yfhu6xOnxA==
+Received: by gofer.mess.org (Postfix, from userid 1000)
+	id D212A1000C2; Tue, 16 Jan 2024 08:28:06 +0000 (GMT)
+Date: Tue, 16 Jan 2024 08:28:06 +0000
+From: Sean Young <sean@mess.org>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Trevor Gamblin <tgamblin@baylibre.com>, linux-pwm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, michael.hennerich@analog.com,
+	nuno.sa@analog.com, devicetree@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Subject: Re: [PATCH 2/2] pwm: Add driver for AXI PWM generator
+Message-ID: <ZaY-FjeRV2qPL0wz@gofer.mess.org>
+References: <20240115201222.1423626-1-tgamblin@baylibre.com>
+ <20240115201222.1423626-3-tgamblin@baylibre.com>
+ <gbessnmierg5gvdguhwauoe2mxr3krwcfk2afhazrqvz45md64@itbchezepncg>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: <ntfs3@lists.linux.dev>
-CC: <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-From: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Subject: [PATCH] fs/ntfs3: Use kvfree to free memory allocated by kvmalloc
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+In-Reply-To: <gbessnmierg5gvdguhwauoe2mxr3krwcfk2afhazrqvz45md64@itbchezepncg>
 
+On Mon, Jan 15, 2024 at 10:18:04PM +0100, Uwe Kleine-K�nig wrote:
+> On Mon, Jan 15, 2024 at 03:12:21PM -0500, Trevor Gamblin wrote:
+> > +static int axi_pwmgen_probe(struct platform_device *pdev)
+> > +{
+> > +	struct axi_pwmgen *pwm;
+> > +	void __iomem *io_base;
+> > +	int ret;
+> > +
+> > +	pwm = devm_kzalloc(&pdev->dev, sizeof(*pwm), GFP_KERNEL);
+> > +	if (!pwm)
+> > +		return -ENOMEM;
+> > +
+> > +	io_base = devm_platform_ioremap_resource(pdev, 0);
+> > +	if (IS_ERR(io_base))
+> > +		return PTR_ERR(io_base);
+> > +
+> > +	pwm->regmap = devm_regmap_init_mmio(&pdev->dev, io_base, &axi_pwm_regmap_config);
+> > +	if (IS_ERR(pwm->regmap))
+> > +		return dev_err_probe(&pdev->dev, PTR_ERR(pwm->regmap),
+> > +				     "failed to init register map\n");
+> > +
+> > +	pwm->clk = devm_clk_get_enabled(&pdev->dev, NULL);
+> > +	if (IS_ERR(pwm->clk))
+> > +		return dev_err_probe(&pdev->dev, PTR_ERR(pwm->clk), "failed to get clock\n");
+> 
+> Please call clk_rate_exclusive_get() on pwm->clk and cache the rate in
+> struct axi_pwmgen.
+> 
+> > +	pwm->chip.dev = &pdev->dev;
+> > +	pwm->chip.ops = &axi_pwmgen_pwm_ops;
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
-  fs/ntfs3/attrlist.c | 4 ++--
-  fs/ntfs3/bitmap.c   | 4 ++--
-  fs/ntfs3/frecord.c  | 4 ++--
-  fs/ntfs3/super.c    | 2 +-
-  4 files changed, 7 insertions(+), 7 deletions(-)
+In that case pwm->chip.atomic = true; can be set too (although this should
+be tested with CONFIG_DEBUG_ATOMIC_SLEEP and CONFIG_PWM_DEBUG).
 
-diff --git a/fs/ntfs3/attrlist.c b/fs/ntfs3/attrlist.c
-index 48e7da47c6b7..9f4bd8d26090 100644
---- a/fs/ntfs3/attrlist.c
-+++ b/fs/ntfs3/attrlist.c
-@@ -29,7 +29,7 @@ static inline bool al_is_valid_le(const struct 
-ntfs_inode *ni,
-  void al_destroy(struct ntfs_inode *ni)
-  {
-      run_close(&ni->attr_list.run);
--    kfree(ni->attr_list.le);
-+    kvfree(ni->attr_list.le);
-      ni->attr_list.le = NULL;
-      ni->attr_list.size = 0;
-      ni->attr_list.dirty = false;
-@@ -318,7 +318,7 @@ int al_add_le(struct ntfs_inode *ni, enum ATTR_TYPE 
-type, const __le16 *name,
-          memcpy(ptr, al->le, off);
-          memcpy(Add2Ptr(ptr, off + sz), le, old_size - off);
-          le = Add2Ptr(ptr, off);
--        kfree(al->le);
-+        kvfree(al->le);
-          al->le = ptr;
-      } else {
-          memmove(Add2Ptr(le, sz), le, old_size - off);
-diff --git a/fs/ntfs3/bitmap.c b/fs/ntfs3/bitmap.c
-index 63f14a0232f6..845f9b22deef 100644
---- a/fs/ntfs3/bitmap.c
-+++ b/fs/ntfs3/bitmap.c
-@@ -124,7 +124,7 @@ void wnd_close(struct wnd_bitmap *wnd)
-  {
-      struct rb_node *node, *next;
+Thanks,
 
--    kfree(wnd->free_bits);
-+    kvfree(wnd->free_bits);
-      wnd->free_bits = NULL;
-      run_close(&wnd->run);
-
-@@ -1360,7 +1360,7 @@ int wnd_extend(struct wnd_bitmap *wnd, size_t 
-new_bits)
-          memcpy(new_free, wnd->free_bits, wnd->nwnd * sizeof(short));
-          memset(new_free + wnd->nwnd, 0,
-                 (new_wnd - wnd->nwnd) * sizeof(short));
--        kfree(wnd->free_bits);
-+        kvfree(wnd->free_bits);
-          wnd->free_bits = new_free;
-      }
-
-diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
-index 6ff4f70ba077..2636ab7640ac 100644
---- a/fs/ntfs3/frecord.c
-+++ b/fs/ntfs3/frecord.c
-@@ -778,7 +778,7 @@ static int ni_try_remove_attr_list(struct ntfs_inode 
-*ni)
-      run_deallocate(sbi, &ni->attr_list.run, true);
-      run_close(&ni->attr_list.run);
-      ni->attr_list.size = 0;
--    kfree(ni->attr_list.le);
-+    kvfree(ni->attr_list.le);
-      ni->attr_list.le = NULL;
-      ni->attr_list.dirty = false;
-
-@@ -927,7 +927,7 @@ int ni_create_attr_list(struct ntfs_inode *ni)
-      return 0;
-
-  out:
--    kfree(ni->attr_list.le);
-+    kvfree(ni->attr_list.le);
-      ni->attr_list.le = NULL;
-      ni->attr_list.size = 0;
-      return err;
-diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index 65ef4b57411f..c55a29793a8d 100644
---- a/fs/ntfs3/super.c
-+++ b/fs/ntfs3/super.c
-@@ -625,7 +625,7 @@ static void ntfs3_free_sbi(struct ntfs_sb_info *sbi)
-  {
-      kfree(sbi->new_rec);
-      kvfree(ntfs_put_shared(sbi->upcase));
--    kfree(sbi->def_table);
-+    kvfree(sbi->def_table);
-      kfree(sbi->compress.lznt);
-  #ifdef CONFIG_NTFS3_LZX_XPRESS
-      xpress_free_decompressor(sbi->compress.xpress);
--- 
-2.34.1
-
+Sean
 
