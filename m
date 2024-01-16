@@ -1,130 +1,117 @@
-Return-Path: <linux-kernel+bounces-27405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 684A382EF7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:09:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2B6D82EF81
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:10:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EACD1C2340C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:09:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31B10B21F31
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D11021BC4D;
-	Tue, 16 Jan 2024 13:09:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09E601BC4E;
+	Tue, 16 Jan 2024 13:10:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="pi/24u2p"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oDhj0ufm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E191BDC0;
-	Tue, 16 Jan 2024 13:09:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C7F1B60005;
-	Tue, 16 Jan 2024 13:09:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1705410567;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3l6hxpsFug+dZMhj61g9EoNgZMZVSBaqnjCk7tOjeaw=;
-	b=pi/24u2pxzRvb+HE2QJTXSQdGLJDl+SNa4sY6ZwbdftUBQlELzwy0ASmfca4TyL//tWK4p
-	FbAsL6ELKRBOIKhMoMq1uwSp6DTTAhWsq9qcBcZu5Cy5n5Dxc59NWsJbFZSjJeWXp4EBys
-	kE8R+wTEPiz3fTWraQqSFIbbDI6jeHeIUXYhziNx46fgHN8bOlKq31jFlMzOHBels00sSM
-	Y0b9bO/z9PqN++BFVvCQxijTjfMXx95rN5oCxMkjsdu0MD7KwzFJHJRyLwIjUExpxp/U0R
-	jYSMJpOrzY8sipOi5hVX5hpN61LG6RW+iWpgqEp38GffH16AG4gJWoiO5VTR9Q==
-Message-ID: <7f59d9e6-1653-4a8d-910d-5922452bb9e8@arinc9.com>
-Date: Tue, 16 Jan 2024 16:09:18 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A7D66FBF;
+	Tue, 16 Jan 2024 13:10:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9C9BC433C7;
+	Tue, 16 Jan 2024 13:10:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705410616;
+	bh=i4dry6M6WDVUsf16531MxNHkF/ieE3KAF4x/oxtezNo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oDhj0ufmBZ5rhO3OPZzmZDuzn9J90cGHPEF3adOa7IMzTRLXaZV8Khdd0rmAMF7uV
+	 xHL3+MkX22jLdE1SRP3SEZdWUmdK/vaubuGSljwLzIZwx851xPFEnxuYQxDMZHmeN4
+	 xQFtajGQnZNKQJ0qHzO1I+PRphGmAcAkMhVha4UnfFp2w9QL9TuWOJGylInnhAnxmH
+	 RTiGLN1xKE/9HhRETXXIV7h8u0Rw3e3e7IdFE6Aex92sBHh1GepwBotSwxhVGrNvCh
+	 Um+7ZN8Ltee3ql6l11b3vrvEY8inpgpGSS/NksYL6I5isd9hQ+MqSqW0149552QpOP
+	 djgnIp4WMSTJA==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+	(envelope-from <johan@kernel.org>)
+	id 1rPjCt-00065Y-1B;
+	Tue, 16 Jan 2024 14:10:20 +0100
+Date: Tue, 16 Jan 2024 14:10:19 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Johan Hovold <johan+linaro@kernel.org>, Mark Brown <broonie@kernel.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 2/7] ASoC: codecs: lpass-wsa-macro: fix compander volume
+ hack
+Message-ID: <ZaaAO8SMczq7YUAE@hovoldconsulting.com>
+References: <20240116093903.19403-1-johan+linaro@kernel.org>
+ <20240116093903.19403-3-johan+linaro@kernel.org>
+ <8bb1cad6-6a85-444a-b881-c03ab0051009@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH net-next 6/8] net: dsa: mt7530: simplify
- mt7530_setup_port6() and change to void
-To: Vladimir Oltean <olteanv@gmail.com>
-Cc: Daniel Golle <daniel@makrotopia.org>,
- Landen Chao <Landen.Chao@mediatek.com>, DENG Qingfang <dqfext@gmail.com>,
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
- Florian Fainelli <f.fainelli@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
- Luiz Angelo Daros de Luca <luizluca@gmail.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <20240113102529.80371-1-arinc.unal@arinc9.com>
- <20240113102529.80371-7-arinc.unal@arinc9.com>
- <20240115213720.vxlumsjwrjdkqxsl@skbuf>
-Content-Language: en-US
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <20240115213720.vxlumsjwrjdkqxsl@skbuf>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8bb1cad6-6a85-444a-b881-c03ab0051009@linaro.org>
 
-On 16.01.2024 00:37, Vladimir Oltean wrote:
-> On Sat, Jan 13, 2024 at 01:25:27PM +0300, Arınç ÜNAL wrote:
->> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
->> index 3ce4e0bb04dd..3a02308763ca 100644
->> --- a/drivers/net/dsa/mt7530.c
->> +++ b/drivers/net/dsa/mt7530.c
->> @@ -414,72 +414,56 @@ mt753x_preferred_default_local_cpu_port(struct dsa_switch *ds)
->>   }
->>   
->>   /* Setup port 6 interface mode and TRGMII TX circuit */
->> -static int
->> +static void
->>   mt7530_setup_port6(struct dsa_switch *ds, phy_interface_t interface)
->>   {
->>   	struct mt7530_priv *priv = ds->priv;
->> -	u32 ncpo1, ssc_delta, trgint, xtal;
->> +	u32 ncpo1, ssc_delta, xtal;
->>   
->>   	mt7530_clear(priv, MT7530_MHWTRAP, MHWTRAP_P6_DIS);
->>   
->> +	if (interface == PHY_INTERFACE_MODE_RGMII)
->> +		return;
+On Tue, Jan 16, 2024 at 11:10:21AM +0000, Srinivas Kandagatla wrote:
+> Thanks Johan for this patch,
 > 
-> It would be good to add a comment here which states that the port comes
-> out of reset with values good for RGMII.
+> On 16/01/2024 09:38, Johan Hovold wrote:
+> > The LPASS WSA macro codec driver is updating the digital gain settings
+> > behind the back of user space on DAPM events if companding has been
+> > enabled.
+> > 
+> > As compander control is exported to user space, this can result in the
+> > digital gain setting being incremented (or decremented) every time the
+> > sound server is started and the codec suspended depending on what the
+> > UCM configuration looks like.
+> > 
+> > Soon enough playback will become distorted (or too quiet).
+> > 
+> > This is specifically a problem on the Lenovo ThinkPad X13s as this
+> > bypasses the limit for the digital gain setting that has been set by the
+> > machine driver.
+> > 
+> > Fix this by simply dropping the compander gain hack. If someone cares
+> > about modelling the impact of the compander setting this can possibly be
+> > done by exporting it as a volume control later.
+> > 
+> This is not a hack, wsa codec requires gain to be programmed after the 
+> clk is enabled for that particular interpolator.
+
+Ok, but then it's also broken as, as I mentioned off-list, these
+registers are cached so unless companding is enabled, the write on
+enable will have no effect.
+
+> However I agree with you on programming the gain that is different to 
+> what user set it.
 > 
-> Also, there's a built-in assumption in this patch, that dynamically
-> switching between RGMII and TRGMII is not possible. This is because
-> phylink mac_config() is not necesarily called only once immediately
-> after reset, but after each major_config().
+> This is because of unimplemented or half baked implementation of half-db 
+> feature of gain control in this codec.
 > 
-> The fact that the driver sets both PHY_INTERFACE_MODE_RGMII and
-> PHY_INTERFACE_MODE_TRGMII at once in config->supported_interfaces does
-> not disprove that dynamic reconfiguration is possible. Normally,
-> interfaces for which it doesn't make sense to dynamically reconfigure
-> (they are wired to fixed pinout) have a single bit set in
-> supported_interfaces. Is this switching something that makes any sense
-> at all, given that port 6 is internal? It's not something that phylink
-> knows to do today, but if this is theoretically possible and remotely
-> useful, someone might end up wanting, in the future, to revert this patch.
+> We can clean that half baked implementation for now and still continue 
+> to program the gain values after the clks are enabled.
+> 
+> lets remove spkr_gain_offset and associated code paths in this codec, 
+> which should fix the issue that you have reported and still do the right 
+> thing of programming gain after clks are enabled.
 
-Do you mean by internal port that the port does not have MII pinout? Port 6
-of the MT7530 switch do. It is possible to have an external PHY wired to
-it. So it would make sense to design mt7530_setup_port6() in the sense that
-dynamic reconfiguration is possible.
+Removing the offset which can alter the gain, will cause both of these
+writes to become no-ops as the registers are cached (e.g. just as for
+the follow-on codec cleanups). So then we might as well just remove
+this too.
 
-I've tested to see that the core operations for TRGMII does not interfere
-so no need to undo them when the interface changes from TRGMII to RGMII.
+How is the half-dB feature supposed to work?
 
-I'll do below on this patch:
+And are you sure that you need to reprogram the gain value after
+enabling the clock? Everything seems to work without doing so.
 
-	if (interface == PHY_INTERFACE_MODE_RGMII) {
-		mt7530_rmw(priv, MT7530_P6ECR, P6_INTF_MODE_MASK,
-			   P6_INTF_MODE(0));
-		return;
-	}
-
-Arınç
+Johan
 
