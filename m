@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-28145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A09CA82FACA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:40:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2764C82FACD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:41:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7FA62B24856
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:40:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76CB31F23AE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 21:41:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41E5B15B2E0;
-	Tue, 16 Jan 2024 20:01:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DC3415B2F9;
+	Tue, 16 Jan 2024 20:01:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sPvSKwmn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dYPsQhj5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 816AB3D549;
-	Tue, 16 Jan 2024 20:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB7D15B2E6;
+	Tue, 16 Jan 2024 20:01:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435271; cv=none; b=CHTgFINjQKp5VVxoFQjNdNiLuRu/iX2jWkixZE/JhUWayI0/QvK4Dw08WMXmJuP4QzQm2LTQbTPSyAXmp471oA3wWxNPHhAXn23Mo0qp1U9WiNJUk1zSod77aJRDdc4Ye+RfEm3JkgywWKu2P/IzGqojKXwTernUTJREazd+cOQ=
+	t=1705435272; cv=none; b=rOiVUnaKKQHZBZDP+Qt88LRc9Ij9R6adTm95YiAztQdMDwo1su5tMkpI+7YnWC6Q+z19+8T9SgFVL2wcg5uxZMU4u5Uz9Q6ApDZFw2LvN7M+fvU+XL60todEs7qWP3vvjPIS3A5nQTAW/jnZ0noNgHNNroxQeRHfoKtPx5DdlSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435271; c=relaxed/simple;
-	bh=blobv814s8oZkTscCnm9M4NhxxzuGHApQAHu63YKAZA=;
+	s=arc-20240116; t=1705435272; c=relaxed/simple;
+	bh=fGprZBy3+nxeed8ydxo3YYBwrhSwqEY2nnUHhL1DVcU=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=kvaC/nZxxK9Cg9Wcx0WkazTRXip5VBAt9QR5TBPA+Drgx0c7uNVYnJIlAeXzE6ikwcb9/AwQjB6lP8hBBnupQaHElPQv30Tp5/dB3u8FZhjpW9aouz1dR2xDyMi2+MHpkFM+pqtATreRWbe15kss7mol87+dX/z2TdCyCFLnI1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sPvSKwmn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81CAAC433C7;
-	Tue, 16 Jan 2024 20:01:09 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=YrduVxRJkvFA3IDW20BSlWWdInSHnkJF8jxW6maE/nQFX3stIf/k1XHgejWR+4hZm6yJVyXa+bMlZDEt+gjh5u5LMNxkgDux4dg32ru7VioRPrpqCNuS4FqEaLOr3rv/4ui2ISPKhSqzBIcytjdYCdnOyOEG4EnAeyAQPsqfhqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dYPsQhj5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68292C433F1;
+	Tue, 16 Jan 2024 20:01:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435270;
-	bh=blobv814s8oZkTscCnm9M4NhxxzuGHApQAHu63YKAZA=;
+	s=k20201202; t=1705435272;
+	bh=fGprZBy3+nxeed8ydxo3YYBwrhSwqEY2nnUHhL1DVcU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sPvSKwmnvznY1j/15rUVsrSsBrP+14LlF2tjFLNjqBlO2w6pCGsHKuRqvOAMsO9zA
-	 DxIS1ylKBKrV69LZ3GYjIXADlhBY+OMTt7qig4C2XbuVDMoX8inX+PS+zbLLuJoESR
-	 IiCrulaWSQkrLj5VEedFHlH2huy+0x6wkd+fPWbzRgTHoKEnrJczd1znbua4aDL+tf
-	 yFMwxSr5z7lKp2vFFSd3sSAHcKyLmKkwaEXLBU5khBPP9NE1g6+IyjAInQaFj1Naqn
-	 CKRpIvMn6kKCdh7jAdpmgOA6W/JIdohCxg4iJT4XHTBu/itI/x+DqI4lT8GyY1Qfd8
-	 LcRr6/nYuDGGw==
+	b=dYPsQhj5OZ4luDzPUHcBNCd/a1aKj4b/d6QtIJtI9EMT23FE7E6Tm5HVCmEPPXwZ8
+	 6T6KXBf1bjpznSvoHiIeySgK7+USnbBL6PXov34MEXn0p/1yeo0O+fPRTYDhdLNr7P
+	 3MQKbV/yHRWKPPX8x44tYEq5QEdLs+hb6+xCFrSpnkfuuMONnpmKbsLtPsiVPxfxOd
+	 6+4bCPB3qmzrbRefeTtiIUTlNW/6+N9KOgwezXwCN2Gb55Bom6tAqhSlRRAMc3NuXJ
+	 Uvq2DWXxZhsiszrSVx3MrYeJdey6merf/tuUf62wbrQkKW+yx84t9kyOJAcnWktAmW
+	 hH42X3PngKS2A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -52,9 +52,9 @@ Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
 	conor+dt@kernel.org,
 	devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 09/44] ARM: dts: imx7d: Fix coresight funnel ports
-Date: Tue, 16 Jan 2024 14:59:38 -0500
-Message-ID: <20240116200044.258335-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 10/44] ARM: dts: imx7s: Fix lcdif compatible
+Date: Tue, 16 Jan 2024 14:59:39 -0500
+Message-ID: <20240116200044.258335-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116200044.258335-1-sashal@kernel.org>
 References: <20240116200044.258335-1-sashal@kernel.org>
@@ -71,56 +71,35 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexander Stein <alexander.stein@ew.tq-group.com>
 
-[ Upstream commit 0d4ac04fa7c3f6dc263dba6f575a2ec7a2d4eca8 ]
+[ Upstream commit 5f55da4cc37051cda600ea870ce8cf29f1297715 ]
 
-imx7d uses two ports for 'in-ports', so the syntax port@<num> has to
-be used. imx7d has both port and port@1 nodes present, raising these
-error:
-funnel@30041000: in-ports: More than one condition true in oneOf schema
-funnel@30041000: Unevaluated properties are not allowed
-('in-ports' was unexpected)
-
-Fix this by also using port@0 for imx7s as well.
+imx7d-lcdif is compatible to imx6sx-lcdif. MXSFB_V6 supports overlay
+by using LCDC_AS_CTRL register. This registers used by overlay plane:
+* LCDC_AS_CTRL
+* LCDC_AS_BUF
+* LCDC_AS_NEXT_BUF
+are listed in i.MX7D RM as well.
 
 Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
 Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx7d.dtsi | 3 ---
- arch/arm/boot/dts/imx7s.dtsi | 6 +++++-
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/imx7s.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/imx7d.dtsi b/arch/arm/boot/dts/imx7d.dtsi
-index b0bcfa9094a3..8ad3e60fd7d1 100644
---- a/arch/arm/boot/dts/imx7d.dtsi
-+++ b/arch/arm/boot/dts/imx7d.dtsi
-@@ -209,9 +209,6 @@ pcie: pcie@33800000 {
- };
- 
- &ca_funnel_in_ports {
--	#address-cells = <1>;
--	#size-cells = <0>;
--
- 	port@1 {
- 		reg = <1>;
- 		ca_funnel_in_port1: endpoint {
 diff --git a/arch/arm/boot/dts/imx7s.dtsi b/arch/arm/boot/dts/imx7s.dtsi
-index 03bde2fb9bb1..622c60bd8b75 100644
+index 622c60bd8b75..31ccf65d159b 100644
 --- a/arch/arm/boot/dts/imx7s.dtsi
 +++ b/arch/arm/boot/dts/imx7s.dtsi
-@@ -173,7 +173,11 @@ funnel@30041000 {
- 			clock-names = "apb_pclk";
+@@ -773,7 +773,7 @@ csi_from_csi_mux: endpoint {
+ 			};
  
- 			ca_funnel_in_ports: in-ports {
--				port {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@0 {
-+					reg = <0>;
- 					ca_funnel_in_port0: endpoint {
- 						remote-endpoint = <&etm0_out_port>;
- 					};
+ 			lcdif: lcdif@30730000 {
+-				compatible = "fsl,imx7d-lcdif", "fsl,imx28-lcdif";
++				compatible = "fsl,imx7d-lcdif", "fsl,imx6sx-lcdif";
+ 				reg = <0x30730000 0x10000>;
+ 				interrupts = <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&clks IMX7D_LCDIF_PIXEL_ROOT_CLK>,
 -- 
 2.43.0
 
