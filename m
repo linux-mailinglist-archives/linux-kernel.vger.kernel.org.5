@@ -1,54 +1,53 @@
-Return-Path: <linux-kernel+bounces-26880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0804B82E74C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:42:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 157CA82E74F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 02:43:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EE02B20A41
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:42:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B611284ABF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:43:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B8522E643;
-	Tue, 16 Jan 2024 01:08:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD6332E83A;
+	Tue, 16 Jan 2024 01:08:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HRGK0Kon"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U+qiIVph"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CE8E2E624;
-	Tue, 16 Jan 2024 01:08:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98898C433B1;
-	Tue, 16 Jan 2024 01:08:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 138842E82B;
+	Tue, 16 Jan 2024 01:08:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9517BC43390;
+	Tue, 16 Jan 2024 01:08:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705367286;
-	bh=1JnoFOGH/NXCEXkT8KbuxlrGfiowIX/4UfEWsuL/1Ww=;
+	s=k20201202; t=1705367288;
+	bh=TJqRddFjDl5iBcUmWcW6ywZ7vqFu0BSvQf50wqCCMU8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HRGK0KonyKJzilbLkorizD0ZcQw9YI2PmnFE9mDJdRmDYq/yapxbBFJ6DahMzbNxs
-	 X8EIS35LfDHCjVJUBBNz7YtmoZqgAk01Z/ssWVfI+wKxYoOg8w27uWwFnLu5A8UHN6
-	 WB5Z4tMaltuUtVamjkSEJH7jxUDpalld5sqOrf8nXXC0pS7IzkC8i6nNS/7pmCQVpI
-	 lkJj5Jj6vKT2B5i9w9J93hLixjhjOK6fjf3VUOVPuyKW9SdJaBt+zO63kb4kmkeHai
-	 GUk953iC+goDUaaD9t63Qz4g6smfnEzm0+/wcsKUNG0bM2FMdishYe/6IDJk3Q2d3X
-	 8ANc9+Z/cJXXA==
+	b=U+qiIVphhs9rf8/KPJFLCBLWFj/xNb+z9HOoyV2tIbMZpzQKXK/1OIGD7nA0kGVMk
+	 X0HpHT4oTP37//5mMYt2Pe511Yyv41Vm/MUJwhqWGygTLn2vMWtA1kKOS++jPRw248
+	 MBNAw8d5yDJ2wzK7ENAEmMXYR/vFZ95+uYBegUxChg1RlA3g1eMsE3j5U444qdecE2
+	 HygZl3vBPh0YI6pt8rSe9giPpoQ5ecvUsvg8rSmJ/WIfQ+T94eBKNCyTGGY+3s/rbB
+	 ab5pK/yDfMuyVdZxAQIuci2KyKxxQaZpFg+9y6BsbQEub8cCwpaXQ4O5BOlS0SrkBV
+	 XNxdrYS4MnfxQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Anna Schumaker <Anna.Schumaker@Netapp.com>,
-	Jeff Layton <jlayton@kernel.org>,
+Cc: Gabriel Krisman Bertazi <krisman@suse.de>,
+	Eric Biggers <ebiggers@google.com>,
 	Sasha Levin <sashal@kernel.org>,
-	chuck.lever@oracle.com,
-	trond.myklebust@hammerspace.com,
-	anna@kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	linux-nfs@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 4/9] SUNRPC: Fix a suspicious RCU usage warning
-Date: Mon, 15 Jan 2024 20:07:48 -0500
-Message-ID: <20240116010757.219495-4-sashal@kernel.org>
+	code@tyhicks.com,
+	brauner@kernel.org,
+	dchinner@redhat.com,
+	jack@suse.cz,
+	jlayton@kernel.org,
+	stefanb@linux.ibm.com,
+	walmeida@microsoft.com,
+	ecryptfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 5/9] ecryptfs: Reject casefold directory inodes
+Date: Mon, 15 Jan 2024 20:07:49 -0500
+Message-ID: <20240116010757.219495-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116010757.219495-1-sashal@kernel.org>
 References: <20240116010757.219495-1-sashal@kernel.org>
@@ -63,119 +62,44 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.208
 Content-Transfer-Encoding: 8bit
 
-From: Anna Schumaker <Anna.Schumaker@Netapp.com>
+From: Gabriel Krisman Bertazi <krisman@suse.de>
 
-[ Upstream commit 31b62908693c90d4d07db597e685d9f25a120073 ]
+[ Upstream commit cd72c7ef5fed44272272a105b1da22810c91be69 ]
 
-I received the following warning while running cthon against an ontap
-server running pNFS:
+Even though it seems to be able to resolve some names of
+case-insensitive directories, the lack of d_hash and d_compare means we
+end up with a broken state in the d_cache.  Considering it was never a
+goal to support these two together, and we are preparing to use
+d_revalidate in case-insensitive filesystems, which would make the
+combination even more broken, reject any attempt to get a casefolded
+inode from ecryptfs.
 
-[   57.202521] =============================
-[   57.202522] WARNING: suspicious RCU usage
-[   57.202523] 6.7.0-rc3-g2cc14f52aeb7 #41492 Not tainted
-[   57.202525] -----------------------------
-[   57.202525] net/sunrpc/xprtmultipath.c:349 RCU-list traversed in non-reader section!!
-[   57.202527]
-               other info that might help us debug this:
-
-[   57.202528]
-               rcu_scheduler_active = 2, debug_locks = 1
-[   57.202529] no locks held by test5/3567.
-[   57.202530]
-               stack backtrace:
-[   57.202532] CPU: 0 PID: 3567 Comm: test5 Not tainted 6.7.0-rc3-g2cc14f52aeb7 #41492 5b09971b4965c0aceba19f3eea324a4a806e227e
-[   57.202534] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS unknown 2/2/2022
-[   57.202536] Call Trace:
-[   57.202537]  <TASK>
-[   57.202540]  dump_stack_lvl+0x77/0xb0
-[   57.202551]  lockdep_rcu_suspicious+0x154/0x1a0
-[   57.202556]  rpc_xprt_switch_has_addr+0x17c/0x190 [sunrpc ebe02571b9a8ceebf7d98e71675af20c19bdb1f6]
-[   57.202596]  rpc_clnt_setup_test_and_add_xprt+0x50/0x180 [sunrpc ebe02571b9a8ceebf7d98e71675af20c19bdb1f6]
-[   57.202621]  ? rpc_clnt_add_xprt+0x254/0x300 [sunrpc ebe02571b9a8ceebf7d98e71675af20c19bdb1f6]
-[   57.202646]  rpc_clnt_add_xprt+0x27a/0x300 [sunrpc ebe02571b9a8ceebf7d98e71675af20c19bdb1f6]
-[   57.202671]  ? __pfx_rpc_clnt_setup_test_and_add_xprt+0x10/0x10 [sunrpc ebe02571b9a8ceebf7d98e71675af20c19bdb1f6]
-[   57.202696]  nfs4_pnfs_ds_connect+0x345/0x760 [nfsv4 c716d88496ded0ea6d289bbea684fa996f9b57a9]
-[   57.202728]  ? __pfx_nfs4_test_session_trunk+0x10/0x10 [nfsv4 c716d88496ded0ea6d289bbea684fa996f9b57a9]
-[   57.202754]  nfs4_fl_prepare_ds+0x75/0xc0 [nfs_layout_nfsv41_files e3a4187f18ae8a27b630f9feae6831b584a9360a]
-[   57.202760]  filelayout_write_pagelist+0x4a/0x200 [nfs_layout_nfsv41_files e3a4187f18ae8a27b630f9feae6831b584a9360a]
-[   57.202765]  pnfs_generic_pg_writepages+0xbe/0x230 [nfsv4 c716d88496ded0ea6d289bbea684fa996f9b57a9]
-[   57.202788]  __nfs_pageio_add_request+0x3fd/0x520 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
-[   57.202813]  nfs_pageio_add_request+0x18b/0x390 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
-[   57.202831]  nfs_do_writepage+0x116/0x1e0 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
-[   57.202849]  nfs_writepages_callback+0x13/0x30 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
-[   57.202866]  write_cache_pages+0x265/0x450
-[   57.202870]  ? __pfx_nfs_writepages_callback+0x10/0x10 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
-[   57.202891]  nfs_writepages+0x141/0x230 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
-[   57.202913]  do_writepages+0xd2/0x230
-[   57.202917]  ? filemap_fdatawrite_wbc+0x5c/0x80
-[   57.202921]  filemap_fdatawrite_wbc+0x67/0x80
-[   57.202924]  filemap_write_and_wait_range+0xd9/0x170
-[   57.202930]  nfs_wb_all+0x49/0x180 [nfs 6c976fa593a7c2976f5a0aeb4965514a828e6902]
-[   57.202947]  nfs4_file_flush+0x72/0xb0 [nfsv4 c716d88496ded0ea6d289bbea684fa996f9b57a9]
-[   57.202969]  __se_sys_close+0x46/0xd0
-[   57.202972]  do_syscall_64+0x68/0x100
-[   57.202975]  ? do_syscall_64+0x77/0x100
-[   57.202976]  ? do_syscall_64+0x77/0x100
-[   57.202979]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-[   57.202982] RIP: 0033:0x7fe2b12e4a94
-[   57.202985] Code: 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 80 3d d5 18 0e 00 00 74 13 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 44 c3 0f 1f 00 48 83 ec 18 89 7c 24 0c e8 c3
-[   57.202987] RSP: 002b:00007ffe857ddb38 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
-[   57.202989] RAX: ffffffffffffffda RBX: 00007ffe857dfd68 RCX: 00007fe2b12e4a94
-[   57.202991] RDX: 0000000000002000 RSI: 00007ffe857ddc40 RDI: 0000000000000003
-[   57.202992] RBP: 00007ffe857dfc50 R08: 7fffffffffffffff R09: 0000000065650f49
-[   57.202993] R10: 00007fe2b11f8300 R11: 0000000000000202 R12: 0000000000000000
-[   57.202994] R13: 00007ffe857dfd80 R14: 00007fe2b1445000 R15: 0000000000000000
-[   57.202999]  </TASK>
-
-The problem seems to be that two out of three callers aren't taking the
-rcu_read_lock() before calling the list_for_each_entry_rcu() function in
-rpc_xprt_switch_has_addr(). I fix this by having
-rpc_xprt_switch_has_addr() unconditionaly take the rcu_read_lock(),
-which is okay to do recursively in the case that the lock has already
-been taken by a caller.
-
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Signed-off-by: Gabriel Krisman Bertazi <krisman@suse.de>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/xprtmultipath.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ fs/ecryptfs/inode.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/net/sunrpc/xprtmultipath.c b/net/sunrpc/xprtmultipath.c
-index 78c075a68c04..a11e80d17830 100644
---- a/net/sunrpc/xprtmultipath.c
-+++ b/net/sunrpc/xprtmultipath.c
-@@ -253,8 +253,9 @@ struct rpc_xprt *xprt_iter_current_entry(struct rpc_xprt_iter *xpi)
- 	return xprt_switch_find_current_entry(head, xpi->xpi_cursor);
- }
+diff --git a/fs/ecryptfs/inode.c b/fs/ecryptfs/inode.c
+index e23752d9a79f..c867a0d62f36 100644
+--- a/fs/ecryptfs/inode.c
++++ b/fs/ecryptfs/inode.c
+@@ -76,6 +76,14 @@ static struct inode *__ecryptfs_get_inode(struct inode *lower_inode,
  
--bool rpc_xprt_switch_has_addr(struct rpc_xprt_switch *xps,
--			      const struct sockaddr *sap)
-+static
-+bool __rpc_xprt_switch_has_addr(struct rpc_xprt_switch *xps,
-+				const struct sockaddr *sap)
- {
- 	struct list_head *head;
- 	struct rpc_xprt *pos;
-@@ -273,6 +274,18 @@ bool rpc_xprt_switch_has_addr(struct rpc_xprt_switch *xps,
- 	return false;
- }
- 
-+bool rpc_xprt_switch_has_addr(struct rpc_xprt_switch *xps,
-+			      const struct sockaddr *sap)
-+{
-+	bool res;
+ 	if (lower_inode->i_sb != ecryptfs_superblock_to_lower(sb))
+ 		return ERR_PTR(-EXDEV);
 +
-+	rcu_read_lock();
-+	res = __rpc_xprt_switch_has_addr(xps, sap);
-+	rcu_read_unlock();
++	/* Reject dealing with casefold directories. */
++	if (IS_CASEFOLDED(lower_inode)) {
++		pr_err_ratelimited("%s: Can't handle casefolded directory.\n",
++				   __func__);
++		return ERR_PTR(-EREMOTE);
++	}
 +
-+	return res;
-+}
-+
- static
- struct rpc_xprt *xprt_switch_find_next_entry(struct list_head *head,
- 		const struct rpc_xprt *cur)
+ 	if (!igrab(lower_inode))
+ 		return ERR_PTR(-ESTALE);
+ 	inode = iget5_locked(sb, (unsigned long)lower_inode,
 -- 
 2.43.0
 
