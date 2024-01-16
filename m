@@ -1,161 +1,190 @@
-Return-Path: <linux-kernel+bounces-27105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C3D382EA97
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:01:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EA8582EA9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 09:02:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 834521C224F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:01:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ECD651F2106B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:02:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62A471171F;
-	Tue, 16 Jan 2024 08:00:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 233B211717;
+	Tue, 16 Jan 2024 08:01:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fSykwWD9";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fSykwWD9"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cJFrTgMk"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF8E4111A0;
-	Tue, 16 Jan 2024 08:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44CCA11702
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 08:01:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E26D71FB7C;
-	Tue, 16 Jan 2024 08:00:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705392049; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=0u2Cqk/bCVfjutq3X6fAWxyIOfo3XCocNfm+PnBOekg=;
-	b=fSykwWD90wxMKMQqSSsP31XA4zbtF4zOQIHBqMDW6OUrDiaJeGdqUAftcTokfmI4x67fBi
-	NA9/Vh5JtdHO3H1EzMdSSKwsDGyRlJHYw5bqfnpS1PRPUdx4CyQy6Ns37RXbkX5qP9h2wu
-	3ZYXSDOa0+GOJhhwK/cmj9ASQDA54P8=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705392049; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=0u2Cqk/bCVfjutq3X6fAWxyIOfo3XCocNfm+PnBOekg=;
-	b=fSykwWD90wxMKMQqSSsP31XA4zbtF4zOQIHBqMDW6OUrDiaJeGdqUAftcTokfmI4x67fBi
-	NA9/Vh5JtdHO3H1EzMdSSKwsDGyRlJHYw5bqfnpS1PRPUdx4CyQy6Ns37RXbkX5qP9h2wu
-	3ZYXSDOa0+GOJhhwK/cmj9ASQDA54P8=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 90F5013751;
-	Tue, 16 Jan 2024 08:00:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id c/+MIbE3pmXgdQAAD6G6ig
-	(envelope-from <mwilck@suse.com>); Tue, 16 Jan 2024 08:00:49 +0000
-Message-ID: <ff539e4aed4c586d91a2f1ba62658f81203119de.camel@suse.com>
-Subject: Re: [dm-devel] [PATCH v2 0/4] Diskseq support in device-mapper
-From: Martin Wilck <mwilck@suse.com>
-To: Demi Marie Obenour <demi@invisiblethingslab.com>, Alasdair Kergon
- <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
- dm-devel@lists.linux.dev,  Christoph Hellwig <hch@infradead.org>
-Cc: linux-kernel@vger.kernel.org, linux-block@vger.kernel.org, Franck Bui
-	 <fbui@suse.com>
-Date: Tue, 16 Jan 2024 09:00:48 +0100
-In-Reply-To: <ZaWnTTnCTkElYzQy@itl-email>
-References: <20230624230950.2272-1-demi@invisiblethingslab.com>
-	 <c09985f5efa9f2351f1ca22cbb286eff2b00d3ad.camel@suse.com>
-	 <ZaWnTTnCTkElYzQy@itl-email>
-Autocrypt: addr=mwilck@suse.com; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40e7065b692so23483935e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 00:01:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1705392109; x=1705996909; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bbsGWmQ361n86fqb5EvED9myRmOjNXMpdIrnq7x3pKk=;
+        b=cJFrTgMkORcgkjFBgSrgihkujTZOvn0uvYtVN4o2aa174+jRLRx+isopOpMWr88v/x
+         BWKogGNwKJmOLSel6w59LvA3LwHJytepwNr+/YmCA/Nsm2P/3Bz5fCBiyZ3gK/jrIcNx
+         kToS7GtLEqMiHVP+awFCqMh820N8c/gSl1ZyoNTteo55ko2tFdZ4YWnqewAep3Q/rLpq
+         d9ijecfn2G2u8/62DV9yO5qKJFHmuxfMqW3zUcar+7cpI1q058jvTUYDBlsm0E83/7/l
+         4oSaimddm8qXQnMUkZUz7xqyjiPckUwZbV1bb55iMh+pb86irohz61o5DPBm+4hfdanK
+         XeVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705392109; x=1705996909;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bbsGWmQ361n86fqb5EvED9myRmOjNXMpdIrnq7x3pKk=;
+        b=XUFr7QNwRSHst1B/8gIov92Lo3blFLTfSuG8ItZb+lQ2I8fgfDo32cVQ/eejFWs7rS
+         rXnZLntJ6G8DhpE3HqBlpS0udyGaVsSWaBd09Kt+NQmqluUOyKeZDMq4cQfR+878fzjx
+         VaoaHA7WkOTIh/mLD9Fs+LcCv0l23uKnBTtHBBw6uLyEHxO3dkiRaF7fr2rahpU5vVKI
+         bLIiqqzhFSYncFjMo+ZvcmYbgpv6XQAprHuS/0B+b8Vo2rGv92WXPTCKj9wUAewoHmCx
+         +n7Lg/1IVZn6NehPNXnF9V7wxN/mhLNLD12w6KsaeSO02J/wqyDoJcPYiAV15v+nfZ9+
+         p3dQ==
+X-Gm-Message-State: AOJu0Yy5uHnPv5DwkN8nQCqNl4Y5FFOBfSQP7GmlFPkO12QstX+NAEZK
+	kq66vW4G0JTx0LwUWip3Jx8I+qFE6SiAoA==
+X-Google-Smtp-Source: AGHT+IHEVDR57nCdsQnrgKWaiuwI6BrlBa+3Gafle4OC07B48/FwRJh/R2OQX6PrvQsuocnkYYxPDw==
+X-Received: by 2002:a05:600c:2050:b0:40e:49c4:43c7 with SMTP id p16-20020a05600c205000b0040e49c443c7mr3396133wmg.159.1705392109407;
+        Tue, 16 Jan 2024 00:01:49 -0800 (PST)
+Received: from ?IPV6:2a10:bac0:b000:7588:4197:afbd:4d31:1a09? ([2a10:bac0:b000:7588:4197:afbd:4d31:1a09])
+        by smtp.gmail.com with ESMTPSA id j28-20020a05600c1c1c00b0040e6726befcsm14570130wms.10.2024.01.16.00.01.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jan 2024 00:01:49 -0800 (PST)
+Message-ID: <bad09d97-d99b-4231-a481-c14ed0f8d59d@suse.com>
+Date: Tue, 16 Jan 2024 10:01:47 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -4.30
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv5 10/16] x86/tdx: Convert shared memory back to private on
+ kexec
+Content-Language: en-US
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+ Elena Reshetova <elena.reshetova@intel.com>,
+ Jun Nakajima <jun.nakajima@intel.com>,
+ Rick Edgecombe <rick.p.edgecombe@intel.com>,
+ Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish"
+ <ashish.kalra@amd.com>, Sean Christopherson <seanjc@google.com>,
+ "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
+ kexec@lists.infradead.org, linux-coco@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <20231222235209.32143-1-kirill.shutemov@linux.intel.com>
+ <20231222235209.32143-11-kirill.shutemov@linux.intel.com>
+ <89e8722b-661b-4319-8018-06705b366c62@suse.com>
+ <20240116072822.pvzseyqry56eqa4j@box.shutemov.name>
+From: Nikolay Borisov <nik.borisov@suse.com>
+In-Reply-To: <20240116072822.pvzseyqry56eqa4j@box.shutemov.name>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, 2024-01-15 at 16:44 -0500, Demi Marie Obenour wrote:
-> On Mon, Jan 15, 2024 at 06:56:16PM +0100, Martin Wilck wrote:
-> > On Sat, 2023-06-24 at 19:09 -0400, Demi Marie Obenour wrote:
-> > > This work aims to allow userspace to create and destroy device-
-> > > mapper
-> > > devices in a race-free way.
-> >=20
-> > The discussion about this feature seems to have stalled ... will
-> > there
-> > be a v3 of this series any time soon?
->=20
-> I=E2=80=99m still interested in a v3, but it might take a while.=C2=A0 If=
- you are
-> willing and able to do it first, I recommend that you do so.
 
-No, I was just trying to understand the status.
 
->=20
-> > Also, I am wondering what should happen if a device-mapper table is
-> > changed in a SUSPEND/LOAD/RESUME cycle. Such operations can change
-> > the
-> > content of the device, thus I assume that the diskseq should also
-> > change. But AFAICS this wasn't part of your patch set.
-> >=20
-> > In general, whether the content changes in a reload operation
-> > depends
-> > on the target. The multipath target, for example, reloads
-> > frequently
-> > without changing the content of the dm device. An ever-changing
-> > diskseq
-> > wouldn't make a lot of sense for dm-multipath. But I doubt we want
-> > to
-> > start making distinctions on this level, so I guess that diskseq
-> > and
-> > multipath just won't go well together.
->=20
-> Should this be controlled by userspace?
+On 16.01.24 г. 9:28 ч., Kirill A. Shutemov wrote:
 
-Personally, I don't think so, but I guess this deserves a broader
-discussion.
+<snip>
 
-IMO users who want to benefit from the diskseq feature would not want
-to be surprised by device-mapper devices changing under them, and would
-also not want to have some block devices with diskseq semantics and
-others without. Therefore I believe that it's sufficient to be able to
-have some global switch to enable or disable the use of diskseq. But
-I've only learned about this feature pretty recently, so I may easily
-be misunderstanding something.
+>>> @@ -41,6 +44,9 @@
+>>>    static atomic_long_t nr_shared;
+>>> +static atomic_t conversions_in_progress;
+>>> +static bool conversion_allowed = true;
+>>
+>> Given the usage model of this variable, shouldn't it be simply accessed via
+>> READ/WRITE_ONCE macros?
+> 
+> What do you see it changing?
 
-Martin
 
+Serving as documentation that you are accessing a shared variable 
+without an explicit lock (unless I'm missing something). 
+conversion_allowed can be read by multiple threads, no ? And it's 
+written by a single thread?
+
+
+> 
+
+<snip>
+
+>>> +static void tdx_kexec_stop_conversion(bool crash)
+>>> +{
+>>> +	/* Stop new private<->shared conversions */
+>>> +	conversion_allowed = false;
+>>
+>> What's the logic behind this compiler barrier?
+> 
+> Disallow compiler to push the assignment past atomic_read() loop below.
+> Not sure if anything else prevents such reorder without the barrier.
+> 
+> And I don't think WRITE_ONCE() will do the trick. It only prevents
+> multiple writes, but doesn't prevent reorders agains accesses
+> non-READ_ONCE()/WRITE_ONCE() accesses.
+> 
+>>> +	barrier();
+>>> +
+>>> +	/*
+>>> +	 * Crash kernel reaches here with interrupts disabled: can't wait for
+>>> +	 * conversions to finish.
+>>> +	 *
+>>> +	 * If race happened, just report and proceed.
+>>> +	 */
+>>> +	if (!crash) {
+>>> +		unsigned long timeout;
+>>> +
+>>> +		/*
+>>> +		 * Wait for in-flight conversions to complete.
+>>> +		 *
+>>> +		 * Do not wait more than 30 seconds.
+>>> +		 */
+>>> +		timeout = 30 * USEC_PER_SEC;
+>>> +		while (atomic_read(&conversions_in_progress) && timeout--)
+>>> +			udelay(1);
+>>> +	}
+>>> +
+>>> +	if (atomic_read(&conversions_in_progress))
+>>> +		pr_warn("Failed to finish shared<->private conversions\n");
+>>> +}
+>>> +
+>>
+>> <snip>
+>>
+>>> diff --git a/arch/x86/include/asm/x86_init.h b/arch/x86/include/asm/x86_init.h
+>>> index c9503fe2d13a..3196ff20a29e 100644
+>>> --- a/arch/x86/include/asm/x86_init.h
+>>> +++ b/arch/x86/include/asm/x86_init.h
+>>> @@ -154,6 +154,8 @@ struct x86_guest {
+>>>    	int (*enc_status_change_finish)(unsigned long vaddr, int npages, bool enc);
+>>>    	bool (*enc_tlb_flush_required)(bool enc);
+>>>    	bool (*enc_cache_flush_required)(void);
+>>> +	void (*enc_kexec_stop_conversion)(bool crash);
+>>> +	void (*enc_kexec_unshare_mem)(void);
+>>
+>> These are only being initialized in the TDX case, but called in all cases
+>> when CC_ATTR_GUEST_MEM_ENCRYPT is true, which includes AMD. So it would
+>> cause a crash, no ? Shouldn't you also introduce noop handlers initialized
+>> in the default x86_platform struct in arch/x86/kernel/x86_init.c ?
+> 
+> kexec on AMD will not work without them, I think. But noops makes sense
+> anyway. Will fix.
+
+I'm not disputing whether those are needed for AMD or not, that way I 
+see it you make those callbacks mandatory in the case of 
+CC_ATTR_GUEST_MEM_ENCRYPT being present, yet only implement them for 
+TDX. So in the case of AMD they will be NULL and so AMD with kexec 
+enabled (albeit erroneously) will crash, no ?
+
+> 
 
