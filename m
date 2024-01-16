@@ -1,170 +1,130 @@
-Return-Path: <linux-kernel+bounces-27293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6267B82ED69
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:10:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0063782ED72
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 12:12:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1037C285865
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:10:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3BCD2B22F54
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 11:11:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E81151B7F9;
-	Tue, 16 Jan 2024 11:10:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 021E41B803;
+	Tue, 16 Jan 2024 11:11:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XVhsvvYQ"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ehklcKog"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2085.outbound.protection.outlook.com [40.107.92.85])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AD2D1B7EE
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 11:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40e69b3149fso40611845e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 03:10:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705403424; x=1706008224; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dJJy6fD6/lLKmXLx1a8nLqcyCrMSlt89VNd+fRBzGBo=;
-        b=XVhsvvYQv2H3MmfN1xPniSP6gkdNp5mN8u64v2llaj4tVrJixTXcPHtRA4EGaqEpay
-         xUoMp3SNDvqgvi15O1/6CXQp2H9uY5g4NYppEnnrYgk2BAcpE46Puxw2Z8I8v2nQRQ93
-         iPRwHfqMiyJnc1btqCIfFlYsECXaXSGzfXQvHyJj+uHlOtuzeWUAvs6jlskKekhSHpek
-         sXSJKsMCvNosPKmkh23zzPGxNMdZLGNcIrmMYYi4xlvRea4iLT60L+s0r3WKdj/sDY2K
-         YT+yP3VNBmObHQWwVoF3BZJtlEn0h1B5eW3hR3jniH95kCKxueOssgjqGyGo2DGiqQdP
-         OJmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705403424; x=1706008224;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dJJy6fD6/lLKmXLx1a8nLqcyCrMSlt89VNd+fRBzGBo=;
-        b=OrVa1m3uPQZH3SP3rsXL39ldUYTEuBjVtwo+e/2pmNXXSUfdqRDC9MyVPjonu/i2uq
-         /irnNlYW0TLGYzL71Z6XXEXEG8FWCAkgarhOpa2qos0geTav6NThAfnMivea/E8E+5XJ
-         PKuQdoSOV32sz/S2bdNUM6iMdgswCP8AXANJxfjfKLT/lRdvT3MBhkEa8Fd41wtBaGY7
-         JdBzME+IdnfCYBASuS4301Ogup2gK9xIWU2vrAPclQzS4VSk+7ry+e8RAElihv2+F1q9
-         XAISawQOkMBuPGNnsCbwY80d7l2iDCJlH+g5eZ6+YUhhesikjcBMP6iuYDyzhtZKVSXu
-         4TDw==
-X-Gm-Message-State: AOJu0Yw5myPsc93Wpu4aHbrlMnpbYrmDshFlLUGvrL1Ll+2IbNAS1jXv
-	OCCbcug61n2VdX/WTTHjE29HQ1KcJ8jRgQ==
-X-Google-Smtp-Source: AGHT+IEEkCSG4k8XHy6r0V/74OqUmJeKY1nvqmtsrCsVsxsyDA1c5yy/u7DZ68mrLYvI6MgazVKOrw==
-X-Received: by 2002:a05:600c:4d95:b0:40e:5577:17e with SMTP id v21-20020a05600c4d9500b0040e5577017emr4116191wmp.57.1705403423647;
-        Tue, 16 Jan 2024 03:10:23 -0800 (PST)
-Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id iw7-20020a05600c54c700b0040d604dea3bsm18593723wmb.4.2024.01.16.03.10.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jan 2024 03:10:22 -0800 (PST)
-Message-ID: <8bb1cad6-6a85-444a-b881-c03ab0051009@linaro.org>
-Date: Tue, 16 Jan 2024 11:10:21 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B1F91B7ED;
+	Tue, 16 Jan 2024 11:11:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nhs7U8UdGwmnZIGxEvazTR7r8q5Ste6GIBRLL7WwyIHJFbBhoqlZIqUtgBOEba/5XENoRDgIPhCNoTIrPw8DEIKEnu1rg699NXNIHQqu1Vajdz11OcyQ0gupU6MbBv9BSrLaC5GsSN7WsYzFqucGjuSZC6Rob37HQ1xQcgEU3rnOLxPdDtCz4aBgoieKRwY8iMYZyoas9jljVVXtGMWriFimyUPqfhr5sA5XH5WLL+o6rvoRtnYlbtCaAOmVIslkW2aHzqZQ1MdFtLvAdWKIRY+RD1mJUcDfQddUL8fwu7OIlHszRXlFf0Dx3Fu0vokT+YyskPDRwmpViuAB4LgXrw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ntE0upevUUBMg65dUBhcHt2K60qt6418bgwT8nuPgl8=;
+ b=WVjIXnZOtV1zMAOQHsqGjomO7SDmRxE76hSgcWl5t9xv/Pedpod6a22ErZi8U/1YUGEXiqv71Zt3kd71d+fsWspLsNW1Z/bbIWJ5FhV8tjUpQtYcbJulXRYr/k6Lh8UAyPbIPH+NKCiiw6sSwoA2DJQ4Ri6CGZvbX4KIRMs9DNNBWNDywN6fumL/KWKTaY9ie87Cu4UnJNtqlH2SJBmen2w+uj4xbIuW1nY6t4Crhhz902H2fVM3SBuj16d2Otic7enrjRaTH6T/ubZtLbPzMn0VAajhJmgA8hj7OBHRRveba0Y+4tVAVEB1IDNJMD+yJA3w4XN8wG/05VYRGmJnpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=arndb.de smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ntE0upevUUBMg65dUBhcHt2K60qt6418bgwT8nuPgl8=;
+ b=ehklcKogSmFrrsEICRe4R4Iz54oQHKu0NHegte2CI2g2VSw/fW7PeDAmtHDz2ndutFQuyFez7CNu1TYEzEjJkIM5JkvKlpdnz4H7zJoA0ERlfXm3vxXjmHhvw38zxRWxmXY03oqqujOyeOktG3e3cn3E4jHIWoKb5z1a/ArYvUk=
+Received: from CH2PR07CA0042.namprd07.prod.outlook.com (2603:10b6:610:5b::16)
+ by SJ0PR12MB6965.namprd12.prod.outlook.com (2603:10b6:a03:448::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.23; Tue, 16 Jan
+ 2024 11:11:44 +0000
+Received: from DS3PEPF000099DF.namprd04.prod.outlook.com
+ (2603:10b6:610:5b:cafe::79) by CH2PR07CA0042.outlook.office365.com
+ (2603:10b6:610:5b::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.26 via Frontend
+ Transport; Tue, 16 Jan 2024 11:11:43 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS3PEPF000099DF.mail.protection.outlook.com (10.167.17.202) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7202.16 via Frontend Transport; Tue, 16 Jan 2024 11:11:43 +0000
+Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 16 Jan
+ 2024 05:11:41 -0600
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
+ (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 16 Jan
+ 2024 05:11:37 -0600
+Received: from xirdraganc40.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
+ Transport; Tue, 16 Jan 2024 05:11:36 -0600
+From: Dragan Cvetic <dragan.cvetic@amd.com>
+To: <arnd@arndb.de>, <gregkh@linuxfoundation.org>, <michal.simek@xilinx.com>,
+	<linux-arm-kernel@lists.infradead.org>, <robh+dt@kernel.org>,
+	<mark.rutland@arm.com>, <devicetree@vger.kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <git@amd.com>
+Subject: [PATCH 0/2] dt-bindings: misc: xlnx,sd-fec: convert bindings to yaml
+Date: Tue, 16 Jan 2024 11:11:33 +0000
+Message-ID: <20240116111135.3059-1-dragan.cvetic@amd.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/7] ASoC: codecs: lpass-wsa-macro: fix compander volume
- hack
-To: Johan Hovold <johan+linaro@kernel.org>, Mark Brown <broonie@kernel.org>
-Cc: Banajit Goswami <bgoswami@quicinc.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-References: <20240116093903.19403-1-johan+linaro@kernel.org>
- <20240116093903.19403-3-johan+linaro@kernel.org>
-Content-Language: en-US
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20240116093903.19403-3-johan+linaro@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099DF:EE_|SJ0PR12MB6965:EE_
+X-MS-Office365-Filtering-Correlation-Id: efcb0475-e3d9-455d-ce77-08dc1683ec0b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	rkIClw61y65AuhTBpSWVfCbZLZ6Woj1olhelmERdazs31e6cTWnf6rK4nIUt7G5qP0ec94w4ahR4V2qN8Y0vScSSJs1o610uJLmD+6TXQh45Gpy6Q8Xtgz+v3trZrYXzWuTBomulPoxWFla+QzfyiOg7rA1xTWTGT9sBdpCaCgtFpA6QVjwmUWDy6slD7cDW2vKupctIKqCAWUMjnqdmxy8I66JMCA/GVsOoNo+JF1wLV21Mzjnvh0DKeo97Cvve4S0tG+sbLfZNDyAQbGUk7AaWvARrq5bCkCZKySrfnt7IakVe+B22HtOrjdcpYkdO1QpsH/kge6DJwbjiK/LmJDgyIn1IsA7tbPR1XGtOWyEpFTpy4JTZG9SieZc6JcOaDKWTFMiH9rSOXkILcj1NcY4828TvObOvQwhPgcSj9S8NWkQ86uCSkSOY2JCbTxXtTYO5+mK+GR3qnph9+TsP0C+a2y7ttIGQ7UZlWEe6OLnqb1DimgXMZDFROZMu+AF/RNMX5U70MEhz82VtGoBZ4ScMlTQOs1S/Pk4YyoVsy6Y2Uvg6iXm4c4+0+ek20oVyXwR9RXS93nwHwkX8I4RbY8bbCUok+ziJvd77OOuqxj8Y1eIqoNJeHBa6t2sUi/Ag/RLLLTcn0cQc9v7eHHh/OskYqGrJ9Kw27GjxSpd0YmDh2rmJaJPcVoMaeATh4Ws/hEQzqJIgziPAOuTPdOnSqZTuH+Gv5x5Tl+RDY2pI3jkB7wd2XOOQ7In2KzxCdoi2h53392A/JDiNm1pnZO/dJA==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(39860400002)(396003)(346002)(230922051799003)(1800799012)(451199024)(64100799003)(82310400011)(186009)(46966006)(36840700001)(40470700004)(82740400003)(36860700001)(336012)(47076005)(83380400001)(36756003)(40460700003)(356005)(81166007)(40480700001)(70206006)(54906003)(70586007)(8676002)(8936002)(316002)(110136005)(5660300002)(4744005)(44832011)(4326008)(1076003)(26005)(2616005)(6666004)(478600001)(2906002)(426003)(86362001)(41300700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2024 11:11:43.5553
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: efcb0475-e3d9-455d-ce77-08dc1683ec0b
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS3PEPF000099DF.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6965
 
-Thanks Johan for this patch,
+This patchset converts AMD (Xilinx) sd-fec bindings to yaml format,
+so it can validate dt-entries as well as any future additions to yaml.
+Conversion txt to yamal is done "one to one", no new changes has been made
+in DT binding file.
+Convert sd-fec DT binding file extension from .txt to .yaml in
+the MAINTAINERS file
 
-On 16/01/2024 09:38, Johan Hovold wrote:
-> The LPASS WSA macro codec driver is updating the digital gain settings
-> behind the back of user space on DAPM events if companding has been
-> enabled.
-> 
-> As compander control is exported to user space, this can result in the
-> digital gain setting being incremented (or decremented) every time the
-> sound server is started and the codec suspended depending on what the
-> UCM configuration looks like.
-> 
-> Soon enough playback will become distorted (or too quiet).
-> 
-> This is specifically a problem on the Lenovo ThinkPad X13s as this
-> bypasses the limit for the digital gain setting that has been set by the
-> machine driver.
-> 
-> Fix this by simply dropping the compander gain hack. If someone cares
-> about modelling the impact of the compander setting this can possibly be
-> done by exporting it as a volume control later.
-> 
-This is not a hack, wsa codec requires gain to be programmed after the 
-clk is enabled for that particular interpolator.
+Dragan Cvetic (2):
+  dt-bindings: misc: xlnx,sd-fec: convert bindings to yaml
+  MAINTAINERS: Update sd-fec documentation file from txt to yaml
 
-However I agree with you on programming the gain that is different to 
-what user set it.
+ .../devicetree/bindings/misc/xlnx,sd-fec.txt  |  58 --------
+ .../devicetree/bindings/misc/xlnx,sd-fec.yaml | 132 ++++++++++++++++++
+ MAINTAINERS                                   |   2 +-
+ 3 files changed, 133 insertions(+), 59 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/misc/xlnx,sd-fec.txt
+ create mode 100644 Documentation/devicetree/bindings/misc/xlnx,sd-fec.yaml
 
-This is because of unimplemented or half baked implementation of half-db 
-feature of gain control in this codec.
+-- 
+2.17.1
 
-We can clean that half baked implementation for now and still continue 
-to program the gain values after the clks are enabled.
-
-lets remove spkr_gain_offset and associated code paths in this codec, 
-which should fix the issue that you have reported and still do the right 
-thing of programming gain after clks are enabled.
-
-thanks,
-Srini
-
-
-> Fixes: 2c4066e5d428 ("ASoC: codecs: lpass-wsa-macro: add dapm widgets and route")
-> Cc: stable@vger.kernel.org      # 5.11
-> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> ---
->   sound/soc/codecs/lpass-wsa-macro.c | 10 ----------
->   1 file changed, 10 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
-> index 7e21cec3c2fb..7de221464d47 100644
-> --- a/sound/soc/codecs/lpass-wsa-macro.c
-> +++ b/sound/soc/codecs/lpass-wsa-macro.c
-> @@ -1583,8 +1583,6 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
->   	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
->   	u16 gain_reg;
->   	u16 reg;
-> -	int val;
-> -	int offset_val = 0;
->   	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
->   
->   	if (w->shift == WSA_MACRO_COMP1) {
-> @@ -1623,11 +1621,7 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
->   					CDC_WSA_RX1_RX_PATH_MIX_SEC0,
->   					CDC_WSA_RX_PGA_HALF_DB_MASK,
->   					CDC_WSA_RX_PGA_HALF_DB_ENABLE);
-> -			offset_val = -2;
->   		}
-> -		val = snd_soc_component_read(component, gain_reg);
-> -		val += offset_val;
-> -		snd_soc_component_write(component, gain_reg, val);
->   		wsa_macro_config_ear_spkr_gain(component, wsa,
->   						event, gain_reg);
->   		break;
-> @@ -1654,10 +1648,6 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
->   					CDC_WSA_RX1_RX_PATH_MIX_SEC0,
->   					CDC_WSA_RX_PGA_HALF_DB_MASK,
->   					CDC_WSA_RX_PGA_HALF_DB_DISABLE);
-> -			offset_val = 2;
-> -			val = snd_soc_component_read(component, gain_reg);
-> -			val += offset_val;
-> -			snd_soc_component_write(component, gain_reg, val);
->   		}
->   		wsa_macro_config_ear_spkr_gain(component, wsa,
->   						event, gain_reg);
 
