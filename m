@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-28332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DF3182FCFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:36:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9815A82FD00
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:36:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26D651F2B739
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:36:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98B261C2713A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:36:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A77134F61E;
-	Tue, 16 Jan 2024 22:06:38 +0000 (UTC)
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.135])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064AC52F65;
+	Tue, 16 Jan 2024 22:07:01 +0000 (UTC)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6883C482C5;
-	Tue, 16 Jan 2024 22:06:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.126.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A277C50257;
+	Tue, 16 Jan 2024 22:06:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.126.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705442798; cv=none; b=ncLpNUDP6rVBA7je8M67ZQTVg8omVdLPoziGLSyX90r/VpwOWxt3s6mqvmgHzhp0h8/RkXKc/57DoI/OWjgTM/t0zLvvt0qDCRVuDXdF2s0xPt0p3BLH/tI8sd5OydaR7/oYC/0Kag4lytsj+VYUOEwh/8vZ8mbt3kJ/cBVFPlE=
+	t=1705442820; cv=none; b=Pa2pDR8DIZwPkdeQRtUqNpoCYQEkbN0WZH43+rWD2r7K11ktUNCIvDcABHxokwNjJZSN8uI2qVrc8HSp2GIDbBFK2cSY69FJciwS4yaGgZRqVe5GzLn+ia2Q9TsZTnIsparGPWaXCkwWXs9+WJlEBylVBuIiQC4O3rsjyj5vJmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705442798; c=relaxed/simple;
-	bh=qk5bZBH+v41bJbF9eA7PUNh+z+ew2nxhcrsQeadaNNY=;
+	s=arc-20240116; t=1705442820; c=relaxed/simple;
+	bh=j6+7rgEBCA/c/X5mKHo3VbMlssDcyBdbuCJWJNRxt8Y=;
 	h=Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-	 References:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	 X-Provags-ID:X-Spam-Flag:UI-OutboundReport; b=HxBuy0+K+r3q8eiBESNUBRDIZ60i7EYGZb4IIUpwsSyDiMDyxH+VUDFWwZU371urm5vaqqC+K2mrmuzZuMCWxNnjGE+plE6rQ8w7OP0PsnjDf0v2zQxaXk9NIdvQiwO8ciGgJXmqVwHBFA3WotFalX6FHkCQe+MEkssbwgrkROI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de; spf=pass smtp.mailfrom=valentinobst.de; arc=none smtp.client-ip=212.227.126.135
+	 References:MIME-Version:Content-Transfer-Encoding:X-Provags-ID:
+	 X-Spam-Flag:UI-OutboundReport; b=XBc9f+D7lub7wMlqyrAllmU6s/1UEOYCQRR7ozyQu0EG3KYHSoHFS7NFzgrOmBLEtOtSVQHa2bscmiOTC5KFZJDqO72hg91Rku1TZo1pgOjxME8Qpkx0vdLYXVvz5X7vL/T5HO3YL4VjtdzAEbfAAiZ61p10sjB7qhZBeMPLFM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de; spf=pass smtp.mailfrom=valentinobst.de; arc=none smtp.client-ip=212.227.126.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=valentinobst.de
 Received: from localhost.localdomain ([217.245.156.100]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MTRAS-1rZe8B0H0e-00TkmV; Tue, 16 Jan 2024 23:06:23 +0100
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MaIvV-1rc6xa1LD3-00WIzb; Tue, 16 Jan 2024 23:06:43 +0100
 From: Valentin Obst <kernel@valentinobst.de>
 To: Miguel Ojeda <ojeda@kernel.org>,
 	Alex Gaynor <alex.gaynor@gmail.com>,
@@ -45,9 +45,9 @@ Cc: Boqun Feng <boqun.feng@gmail.com>,
 	rust-for-linux@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Valentin Obst <kernel@valentinobst.de>
-Subject: [PATCH 06/13] rust: str: move SAFETY comment in front of unsafe block
-Date: Tue, 16 Jan 2024 23:06:08 +0100
-Message-ID: <20240116220615.168083-1-kernel@valentinobst.de>
+Subject: [PATCH 07/13] rust: kernel: unify spelling of refcount in docs
+Date: Tue, 16 Jan 2024 23:06:34 +0100
+Message-ID: <20240116220634.168103-1-kernel@valentinobst.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116160141.165951-1-kernel@valentinobst.de>
 References: <20240116160141.165951-1-kernel@valentinobst.de>
@@ -57,51 +57,108 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:92bNKdsjs75qSuvDF2FfcB++cPal267HLhMmtY/xJxJoC3ADGN1
- Q0SezTBfAlV6TObTXq/zXit0+qvLYh5/dYlHlk1bPM2kICVcDSNmVON061S5cgGZpoknMuR
- a2yEumtbq/wshozvCHePnlTDJGeXEJGfhNEevVJRwW1ruSQWCtm32mt7xQq3WCo1NvzPaih
- rL/R6VUX7Dn8WKCH7eupQ==
+X-Provags-ID: V03:K1:LZw9oJjc57o5/lxghWGfTXEHpI9wO52N1Q7vBXUMuSrIikpUuFA
+ /wRPeTCC2FC5I/fWxcg7HujN9BJ+9cfiyDvjerjofCYWK++qkNsZyn95dq7U3woXNxmTGEO
+ I9HM7AYgD+VwsB3weGkdVoiOaZj99wNY/JsAqO3Wb5AmsQIsuznp679kqB5sOzqosRwkfmb
+ X12P/4799wzyUNlPKdcGA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:IDkEWhURD7c=;ReOjbrZ1lRUgApOj8G512ld2rTl
- aQs7HB5kgSZXS6lHwfPaeXaHxoZ2OpWlmXyb04o8nQo8QtRcdjzvERRCOyv6t2vpknYmWf/Rh
- z9cjszLazIMHfX4PE5pQssyfLVD5v4XaTzMazV2Voo9juG8U/oOATNg2uwGnvlGjlxo6YUR9K
- Hb9o53W2yCkumbzLM3gqrtGJZeJVO8cmcwwl28KDQBXh/YEWWWAtiWp41rHq2auHVAlVSyIZo
- YrHjJpgOa1g7+Qr06o4UMyHj3/SNxEe77QCwCrHy0FTttlRPh3fS1DLmW4P5ai83VHK2IOnRP
- YoB0iJ1eHGHwfgIvPfqrd/j6EJUm0aKjPlyXdY86kh+YUk6OZhYv7hLvUCoNxbAiDxu8zJeSM
- SQzQw1wPlP6Ktlpl4eCCw2yAoCk8POJN0lWSlPRFDxldxkzDiCHLXQ/V8Vay6S/kQRWz9mt6e
- ibwo6WzLSqYg4x4WxPAfZJhMUamd7ige1FWWYijTTUJazH0nJiSTVWfYipaul6+e1wPq/S6rv
- NUuT+PUF+cAKZlvqx5/pF1uad1auLfgdtawVH+4sAyT6TljbD6aBEJ8Whcbn37FyjjRH0T4XI
- Z0tjlVKjGzxAnFEClmooSG3Yrosh3gr26aA8nxichmw1Cbd3MppzpmSmZJc1P0mB5RZ4m7rmK
- JURAwDyOG/0fz/jgwCz6LaU7Op+TqtRNIk9byzpOz2o8eeOGVpECgUaUOIz0ANaLiWWHzRq6S
- 1pcMfC5HUmvEM/NY2UkCoN9rPpZwFAJ9Yr1E4O1RTClipec0ViW3v7qWABY1vbUSRcitcOx2n
- wvIt3M4HoHMTJxrcOS+j/f6nbFt1Q5rtZGR9er3yrixeDnKbelUM+SUYtu1z+qPzHV3sMnpqF
- r50BBcY5rmvXpBw==
+UI-OutboundReport: notjunk:1;M01:P0:B7paRzsauwk=;7Zg8OGMbyonRRdQLeSvE8EbvRuH
+ DeuAgOrBxtUqEl++ypVX6kVQ42yPvKWxVh3lkhsKTLG4+5vxbEnD0htObVnBgt36h8eVG3byo
+ n2TadqXG+CErGNXT0FtGoJ9RBDmoWvmcUvLxx5k8vcbhkQA8IsM3pTqDkNoor/LoTQqLVI/lu
+ EJWbunYfwA6XLGkvfgR2KD7V9vz+KCD96d7XzvL6Xg3nOHlcpO0uX9M8oXMzz8xOitzFu3Aro
+ Qw8yMkMjVpkQ9QrGeOoa2FhbJEl+db7cqc7DvoXmg0n/rpo3Y6ktWsKpOwnLh+zCZ2AagYH62
+ LqMEjwilo5mugSIspBAKutImXdlEJDrD3zYn4xdlpaf0JPsxNghUh5I/NdFRQMOb9b/6ImMXj
+ FuZELfBjJrBxB6OakEpfZa7jO83kWJiVKUyWutSybzCPJKxtErGUvhzIsrVug/0A3tkKtkyJy
+ qwMMLd15SBoskdXmlKgs2KySrFANzkr5IUsb8wgW6jZRBzrgpiszzN2MzhVGMJ6HlKeTV4/YH
+ kklnuK+2JB3Uz4b+FQL+1RwWL0y+4NuFSMlmeRaFRiPqc90CeBXh6ZYWl3fXQNCckdv9VsVfA
+ vTZRaQeJUxoqEffd3LJUG/vZTGlSMXOHy9EtQPpqLu5YKSJTp31hMqoc0AsVWUPfuM+YzrIp9
+ hNq4uIQliNqQ8SoOaHht2ZhgMbps9P9PTIDsU2dRUtDPw79H9qUxyNcP+EG0P37+7mDUxAkVv
+ unIzN7nSuTm+LXfMClaBN/tY6CCUAFrRxD7QwClEPJ3c8p386XurE6YxeRqWuY8uLwTzxNsYr
+ OX2jpxIiz9Wbw2cqQjlLNmHBqLVvskIoxZ9bh4zLCa4c3Lx2mP9+r+r8Es7vsUMSM5ZfqoOB0
+ Qrywc77cH789l9Q==
 
-SAFETY comments should immediately precede the unsafe block they
-justify. Move assignment to `bar` past comment as it is safe.
+Replace instances of 'ref-count[ed]' with 'refcount[ed]' to increase
+consistency within the Rust documentation. The latter form is used more
+widely in the rest of the kernel:
+
+```console
+$ rg '(\*|//).*?\srefcount(|ed)[\s,.]' | wc -l
+1605
+$ rg '(\*|//).*?\sref-count(|ed)[\s,.]' | wc -l
+43
+```
+
+(numbers are for Commit 052d534373b7)
 
 Signed-off-by: Valentin Obst <kernel@valentinobst.de>
 ---
- rust/kernel/str.rs | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ rust/kernel/sync/arc.rs | 8 ++++----
+ rust/kernel/task.rs     | 4 ++--
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/rust/kernel/str.rs b/rust/kernel/str.rs
-index 843ffeec9b3e..fec5c4314758 100644
---- a/rust/kernel/str.rs
-+++ b/rust/kernel/str.rs
-@@ -191,9 +191,9 @@ pub fn to_str(&self) -> Result<&str, core::str::Utf8Error> {
-     /// ```
-     /// # use kernel::c_str;
-     /// # use kernel::str::CStr;
-+    /// let bar = c_str!("ツ");
-     /// // SAFETY: String literals are guaranteed to be valid UTF-8
-     /// // by the Rust compiler.
--    /// let bar = c_str!("ツ");
-     /// assert_eq!(unsafe { bar.as_str_unchecked() }, "ツ");
-     /// ```
-     #[inline]
+diff --git a/rust/kernel/sync/arc.rs b/rust/kernel/sync/arc.rs
+index 77cdbcf7bd2e..6c46b1affca5 100644
+--- a/rust/kernel/sync/arc.rs
++++ b/rust/kernel/sync/arc.rs
+@@ -56,7 +56,7 @@
+ ///     b: u32,
+ /// }
+ ///
+-/// // Create a ref-counted instance of `Example`.
++/// // Create a refcounted instance of `Example`.
+ /// let obj = Arc::try_new(Example { a: 10, b: 20 })?;
+ ///
+ /// // Get a new pointer to `obj` and increment the refcount.
+@@ -510,7 +510,7 @@ fn deref(&self) -> &Self::Target {
+ /// # test().unwrap();
+ /// ```
+ ///
+-/// In the following example we first allocate memory for a ref-counted `Example` but we don't
++/// In the following example we first allocate memory for a refcounted `Example` but we don't
+ /// initialise it on allocation. We do initialise it later with a call to [`UniqueArc::write`],
+ /// followed by a conversion to `Arc<Example>`. This is particularly useful when allocation happens
+ /// in one context (e.g., sleepable) and initialisation in another (e.g., atomic):
+@@ -560,7 +560,7 @@ impl<T> UniqueArc<T> {
+     /// Tries to allocate a new [`UniqueArc`] instance.
+     pub fn try_new(value: T) -> Result<Self, AllocError> {
+         Ok(Self {
+-            // INVARIANT: The newly-created object has a ref-count of 1.
++            // INVARIANT: The newly-created object has a refcount of 1.
+             inner: Arc::try_new(value)?,
+         })
+     }
+@@ -574,7 +574,7 @@ pub fn try_new_uninit() -> Result<UniqueArc<MaybeUninit<T>>, AllocError> {
+             data <- init::uninit::<T, AllocError>(),
+         }? AllocError))?;
+         Ok(UniqueArc {
+-            // INVARIANT: The newly-created object has a ref-count of 1.
++            // INVARIANT: The newly-created object has a refcount of 1.
+             // SAFETY: The pointer from the `Box` is valid.
+             inner: unsafe { Arc::from_inner(Box::leak(inner).into()) },
+         })
+diff --git a/rust/kernel/task.rs b/rust/kernel/task.rs
+index 9451932d5d86..818ac51b06b6 100644
+--- a/rust/kernel/task.rs
++++ b/rust/kernel/task.rs
+@@ -23,7 +23,7 @@ macro_rules! current {
+ ///
+ /// All instances are valid tasks created by the C portion of the kernel.
+ ///
+-/// Instances of this type are always ref-counted, that is, a call to `get_task_struct` ensures
++/// Instances of this type are always refcounted, that is, a call to `get_task_struct` ensures
+ /// that the allocation remains valid at least until the matching call to `put_task_struct`.
+ ///
+ /// # Examples
+@@ -147,7 +147,7 @@ pub fn wake_up(&self) {
+     }
+ }
+ 
+-// SAFETY: The type invariants guarantee that `Task` is always ref-counted.
++// SAFETY: The type invariants guarantee that `Task` is always refcounted.
+ unsafe impl crate::types::AlwaysRefCounted for Task {
+     fn inc_ref(&self) {
+         // SAFETY: The existence of a shared reference means that the refcount is nonzero.
 -- 
 2.43.0
 
