@@ -1,47 +1,51 @@
-Return-Path: <linux-kernel+bounces-26619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-26620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D70D82E43B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:10:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EB08D82E43D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 01:11:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EEA2282B8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:10:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB0C9281404
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 00:11:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05500111B7;
-	Tue, 16 Jan 2024 00:09:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8310E11C84;
+	Tue, 16 Jan 2024 00:09:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GMYoitJb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JcoSQjGq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 501B0111A9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F7C71171D;
+	Tue, 16 Jan 2024 00:09:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF137C433C7;
 	Tue, 16 Jan 2024 00:08:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67833C43390;
-	Tue, 16 Jan 2024 00:08:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705363739;
-	bh=/f1Zgeu+hdFveqlt48/Hnif/Fd8kezIBjlnUsIjQvWc=;
+	s=k20201202; t=1705363740;
+	bh=F8cQYJNmRjzaPNfz9yNzoxnEefYU7R3F5sQHw9Bcsjg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GMYoitJb7wvZ8YlnAkk8pXbH6mg5yQ6dFfZe2dhbrGIjEH4jLjAlz0q/g/6Shqv4T
-	 CkqS2ish69HfxxPmW55uDuISJ1+9K+1k2SE5+/2MC0FUlxFeHwWJfFztt9FG+LAy6n
-	 VczzuVr+kHLOGOXTPGnUEItbt0odpIGi5+xl/DeWNTGRY2XaIP+t3TJxu5MbEJF2Ew
-	 W56JWBfEd277LI2TmqS5YDcTwKFRKlZ3zecQuCJVbKgBZyDhpKXDRXHmOe7Srzezod
-	 a7E4pjJ1wrtLeybCeHBiBF+R7WyTF7uYXG8xoyRpPllnWzIyrrKa8aMCR3YhtGiMaB
-	 SDryrIobt5o1Q==
+	b=JcoSQjGqdTkrwb6JtHBgUiVoORGGHMkH7cf7LFnwldrLgzb+E2Cx8And6U5Mcl/N1
+	 0EmlS8z245MZKbtE843qOuATFKg3DjqMM4N1Ew3hR8VGREkHZ6wNjGuQ23ZZjM2foF
+	 g2LWGPeKra+3tSr17jELfCkItwOAiUThH53eaA9iJ6xW0o5ql9PuBctW0QC/RUyulp
+	 J7SSjm+ftuRRG0PkCAlz5sL7IYH0LzqyXx90C9ENg8pDKLlHTSoa5gv93ueOZfyutC
+	 HuNAJckBDDQQpjCccteHWb+vhen5aWvuU9t7xmvlvxofh6l5bsVcjW7Dn93trHzK8V
+	 o6BoIfn1baM+A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Vincent Guittot <vincent.guittot@linaro.org>,
+	Imran Khan <imran.f.khan@oracle.com>,
+	Aaron Lu <aaron.lu@intel.com>,
 	Ingo Molnar <mingo@kernel.org>,
-	Lukasz Luba <lukasz.luba@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Borislav Petkov <bp@alien8.de>,
 	Sasha Levin <sashal@kernel.org>,
-	rafael@kernel.org
-Subject: [PATCH AUTOSEL 6.7 7/8] energy_model: Use a fixed reference frequency
-Date: Mon, 15 Jan 2024 19:08:19 -0500
-Message-ID: <20240116000838.212299-7-sashal@kernel.org>
+	mingo@redhat.com,
+	juri.lelli@redhat.com
+Subject: [PATCH AUTOSEL 6.7 8/8] sched/fair: Fix tg->load when offlining a CPU
+Date: Mon, 15 Jan 2024 19:08:20 -0500
+Message-ID: <20240116000838.212299-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116000838.212299-1-sashal@kernel.org>
 References: <20240116000838.212299-1-sashal@kernel.org>
@@ -58,59 +62,274 @@ Content-Transfer-Encoding: 8bit
 
 From: Vincent Guittot <vincent.guittot@linaro.org>
 
-[ Upstream commit 15cbbd1d317e07b4e5c6aca5d4c5579539a82784 ]
+[ Upstream commit f60a631ab9ed5df15e446269ea515f2b8948ba0c ]
 
-The last item of a performance domain is not always the performance point
-that has been used to compute CPU's capacity. This can lead to different
-target frequency compared with other part of the system like schedutil and
-would result in wrong energy estimation.
+When a CPU is taken offline, the contribution of its cfs_rqs to task_groups'
+load may remain and will negatively impact the calculation of the share of
+the online CPUs.
 
-A new arch_scale_freq_ref() is available to return a fixed and coherent
-frequency reference that can be used when computing the CPU's frequency
-for an level of utilization. Use this function to get this reference
-frequency.
+To fix this bug, clear the contribution of an offlining CPU to task groups'
+load and skip its contribution while it is inactive.
 
-Energy model is never used without defining arch_scale_freq_ref() but
-can be compiled. Define a default arch_scale_freq_ref() returning 0
-in such case.
+Here's the reproducer of the anomaly, by Imran Khan:
 
+	"So far I have encountered only one rather lengthy way of reproducing this issue,
+	which is as follows:
+
+	1. Take a KVM guest (booted with 4 CPUs and can be scaled up to 124 CPUs) and
+	   create 2 custom cgroups: /sys/fs/cgroup/cpu/test_group_1 and /sys/fs/cgroup/
+	   cpu/test_group_2
+
+	2. Assign a CPU intensive workload to each of these cgroups and start the
+	   workload.
+
+	For my tests I am using following app:
+
+	int main(int argc, char *argv[])
+	{
+		unsigned long count, i, val;
+		if (argc != 2) {
+		      printf("usage: ./a.out <number of random nums to generate> \n");
+		      return 0;
+		}
+
+		count = strtoul(argv[1], NULL, 10);
+
+		printf("Generating %lu random numbers \n", count);
+		for (i = 0; i < count; i++) {
+			val = rand();
+			val = val % 2;
+			//usleep(1);
+		}
+		printf("Generated %lu random numbers \n", count);
+		return 0;
+	}
+
+	Also since the system is booted with 4 CPUs, in order to completely load the
+	system I am also launching 4 instances of same test app under:
+
+	   /sys/fs/cgroup/cpu/
+
+	3. We can see that both of the cgroups get similar CPU time:
+
+        # systemd-cgtop --depth 1
+	Path                                 Tasks    %CPU  Memory  Input/s    Output/s
+	/                                      659      -     5.5G        -        -
+	/system.slice                            -      -     5.7G        -        -
+	/test_group_1                            4      -        -        -        -
+	/test_group_2                            3      -        -        -        -
+	/user.slice                             31      -    56.5M        -        -
+
+	Path                                 Tasks   %CPU   Memory  Input/s    Output/s
+	/                                      659  394.6     5.5G        -        -
+	/test_group_2                            3   65.7        -        -        -
+	/user.slice                             29   55.1    48.0M        -        -
+	/test_group_1                            4   47.3        -        -        -
+	/system.slice                            -    2.2     5.7G        -        -
+
+	Path                                 Tasks  %CPU    Memory  Input/s    Output/s
+	/                                      659  394.8     5.5G        -        -
+	/test_group_1                            4   62.9        -        -        -
+	/user.slice                             28   44.9    54.2M        -        -
+	/test_group_2                            3   44.7        -        -        -
+	/system.slice                            -    0.9     5.7G        -        -
+
+	Path                                 Tasks  %CPU    Memory  Input/s     Output/s
+	/                                      659  394.4     5.5G        -        -
+	/test_group_2                            3   58.8        -        -        -
+	/test_group_1                            4   51.9        -        -        -
+	/user.slice                              30   39.3    59.6M        -        -
+	/system.slice                            -    1.9     5.7G        -        -
+
+	Path                                 Tasks  %CPU     Memory  Input/s    Output/s
+	/                                      659  394.7     5.5G        -        -
+	/test_group_1                            4   60.9        -        -        -
+	/test_group_2                            3   57.9        -        -        -
+	/user.slice                             28   43.5    36.9M        -        -
+	/system.slice                            -    3.0     5.7G        -        -
+
+	Path                                 Tasks  %CPU     Memory  Input/s     Output/s
+	/                                      659  395.0     5.5G        -        -
+	/test_group_1                            4   66.8        -        -        -
+	/test_group_2                            3   56.3        -        -        -
+	/user.slice                             29   43.1    51.8M        -        -
+	/system.slice                            -    0.7     5.7G        -        -
+
+	4. Now move systemd-udevd to one of these test groups, say test_group_1, and
+	   perform scale up to 124 CPUs followed by scale down back to 4 CPUs from the
+	   host side.
+
+	5. Run the same workload i.e 4 instances of CPU hogger under /sys/fs/cgroup/cpu
+	   and one instance of  CPU hogger each in /sys/fs/cgroup/cpu/test_group_1 and
+	   /sys/fs/cgroup/test_group_2.
+
+	It can be seen that test_group_1 (the one where systemd-udevd was moved) is getting
+	much less CPU time than the test_group_2, even though at this point of time both of
+	these groups have only CPU hogger running:
+
+        # systemd-cgtop --depth 1
+	Path                                   Tasks   %CPU   Memory  Input/s   Output/s
+	/                                      1219     -     5.4G        -        -
+	/system.slice                           -       -     5.6G        -        -
+	/test_group_1                           4       -        -        -        -
+	/test_group_2                           3       -        -        -        -
+	/user.slice                            26       -    91.3M        -        -
+
+	Path                                   Tasks  %CPU     Memory  Input/s   Output/s
+	/                                      1221  394.3     5.4G        -        -
+	/test_group_2                             3   82.7        -        -        -
+	/test_group_1                             4   14.3        -        -        -
+	/system.slice                             -    0.8     5.6G        -        -
+	/user.slice                              26    0.4    91.2M        -        -
+
+	Path                                   Tasks  %CPU    Memory  Input/s    Output/s
+	/                                      1221  394.6     5.4G        -        -
+	/test_group_2                             3   67.4        -        -        -
+	/system.slice                             -   24.6     5.6G        -        -
+	/test_group_1                             4   12.5        -        -        -
+	/user.slice                              26    0.4    91.2M        -        -
+
+	Path                                  Tasks  %CPU    Memory  Input/s    Output/s
+	/                                     1221  395.2     5.4G        -        -
+	/test_group_2                            3   60.9        -        -        -
+	/system.slice                            -   27.9     5.6G        -        -
+	/test_group_1                            4   12.2        -        -        -
+	/user.slice                             26    0.4    91.2M        -        -
+
+	Path                                  Tasks  %CPU    Memory  Input/s    Output/s
+	/                                     1221  395.2     5.4G        -        -
+	/test_group_2                            3   69.4        -        -        -
+	/test_group_1                            4   13.9        -        -        -
+	/user.slice                             28    1.6    92.0M        -        -
+	/system.slice                            -    1.0     5.6G        -        -
+
+	Path                                  Tasks  %CPU    Memory  Input/s    Output/s
+	/                                      1221  395.6     5.4G        -        -
+	/test_group_2                             3   59.3        -        -        -
+	/test_group_1                             4   14.1        -        -        -
+	/user.slice                              28    1.3    92.2M        -        -
+	/system.slice                             -    0.7     5.6G        -        -
+
+	Path                                  Tasks  %CPU    Memory  Input/s    Output/s
+	/                                      1221  395.5     5.4G        -        -
+	/test_group_2                            3   67.2        -        -        -
+	/test_group_1                            4   11.5        -        -        -
+	/user.slice                             28    1.3    92.5M        -        -
+	/system.slice                            -    0.6     5.6G        -        -
+
+	Path                                  Tasks  %CPU    Memory  Input/s    Output/s
+	/                                      1221  395.1     5.4G        -        -
+	/test_group_2                             3   76.8        -        -        -
+	/test_group_1                             4   12.9        -        -        -
+	/user.slice                              28    1.3    92.8M        -        -
+	/system.slice                             -    1.2     5.6G        -        -
+
+	From sched_debug data it can be seen that in bad case the load.weight of per-CPU
+	sched entities corresponding to test_group_1 has reduced significantly and
+	also load_avg of test_group_1 remains much higher than that of test_group_2,
+	even though systemd-udevd stopped running long time back and at this point of
+	time both cgroups just have the CPU hogger app as running entity."
+
+[ mingo: Added details from the original discussion, plus minor edits to the patch. ]
+
+Reported-by: Imran Khan <imran.f.khan@oracle.com>
+Tested-by: Imran Khan <imran.f.khan@oracle.com>
+Tested-by: Aaron Lu <aaron.lu@intel.com>
 Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Tested-by: Lukasz Luba <lukasz.luba@arm.com>
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-Link: https://lore.kernel.org/r/20231211104855.558096-5-vincent.guittot@linaro.org
+Reviewed-by: Imran Khan <imran.f.khan@oracle.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Link: https://lore.kernel.org/r/20231223111545.62135-1-vincent.guittot@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/energy_model.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/sched/fair.c | 52 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
 
-diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-index b9caa01dfac4..c19e7effe764 100644
---- a/include/linux/energy_model.h
-+++ b/include/linux/energy_model.h
-@@ -224,7 +224,7 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
- 				unsigned long max_util, unsigned long sum_util,
- 				unsigned long allowed_cpu_cap)
- {
--	unsigned long freq, scale_cpu;
-+	unsigned long freq, ref_freq, scale_cpu;
- 	struct em_perf_state *ps;
- 	int cpu;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 44b5262b6657..a07ef7284528 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4098,6 +4098,10 @@ static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
+ 	if (cfs_rq->tg == &root_task_group)
+ 		return;
  
-@@ -241,11 +241,11 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
- 	 */
- 	cpu = cpumask_first(to_cpumask(pd->cpus));
- 	scale_cpu = arch_scale_cpu_capacity(cpu);
--	ps = &pd->table[pd->nr_perf_states - 1];
-+	ref_freq = arch_scale_freq_ref(cpu);
- 
- 	max_util = map_util_perf(max_util);
- 	max_util = min(max_util, allowed_cpu_cap);
--	freq = map_util_freq(max_util, ps->frequency, scale_cpu);
-+	freq = map_util_freq(max_util, ref_freq, scale_cpu);
- 
++	/* rq has been offline and doesn't contribute to the share anymore: */
++	if (!cpu_active(cpu_of(rq_of(cfs_rq))))
++		return;
++
  	/*
- 	 * Find the lowest performance state of the Energy Model above the
+ 	 * For migration heavy workloads, access to tg->load_avg can be
+ 	 * unbound. Limit the update rate to at most once per ms.
+@@ -4114,6 +4118,49 @@ static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
+ 	}
+ }
+ 
++static inline void clear_tg_load_avg(struct cfs_rq *cfs_rq)
++{
++	long delta;
++	u64 now;
++
++	/*
++	 * No need to update load_avg for root_task_group, as it is not used.
++	 */
++	if (cfs_rq->tg == &root_task_group)
++		return;
++
++	now = sched_clock_cpu(cpu_of(rq_of(cfs_rq)));
++	delta = 0 - cfs_rq->tg_load_avg_contrib;
++	atomic_long_add(delta, &cfs_rq->tg->load_avg);
++	cfs_rq->tg_load_avg_contrib = 0;
++	cfs_rq->last_update_tg_load_avg = now;
++}
++
++/* CPU offline callback: */
++static void __maybe_unused clear_tg_offline_cfs_rqs(struct rq *rq)
++{
++	struct task_group *tg;
++
++	lockdep_assert_rq_held(rq);
++
++	/*
++	 * The rq clock has already been updated in
++	 * set_rq_offline(), so we should skip updating
++	 * the rq clock again in unthrottle_cfs_rq().
++	 */
++	rq_clock_start_loop_update(rq);
++
++	rcu_read_lock();
++	list_for_each_entry_rcu(tg, &task_groups, list) {
++		struct cfs_rq *cfs_rq = tg->cfs_rq[cpu_of(rq)];
++
++		clear_tg_load_avg(cfs_rq);
++	}
++	rcu_read_unlock();
++
++	rq_clock_stop_loop_update(rq);
++}
++
+ /*
+  * Called within set_task_rq() right before setting a task's CPU. The
+  * caller only guarantees p->pi_lock is held; no other assumptions,
+@@ -4410,6 +4457,8 @@ static inline bool skip_blocked_update(struct sched_entity *se)
+ 
+ static inline void update_tg_load_avg(struct cfs_rq *cfs_rq) {}
+ 
++static inline void clear_tg_offline_cfs_rqs(struct rq *rq) {}
++
+ static inline int propagate_entity_load_avg(struct sched_entity *se)
+ {
+ 	return 0;
+@@ -12415,6 +12464,9 @@ static void rq_offline_fair(struct rq *rq)
+ 
+ 	/* Ensure any throttled groups are reachable by pick_next_task */
+ 	unthrottle_offline_cfs_rqs(rq);
++
++	/* Ensure that we remove rq contribution to group share: */
++	clear_tg_offline_cfs_rqs(rq);
+ }
+ 
+ #endif /* CONFIG_SMP */
 -- 
 2.43.0
 
