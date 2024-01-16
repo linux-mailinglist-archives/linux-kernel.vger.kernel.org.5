@@ -1,345 +1,154 @@
-Return-Path: <linux-kernel+bounces-27607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3F4782F2D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:04:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7170582F2D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:06:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC6531C237BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:04:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E31A128569F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:06:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F4591CA97;
-	Tue, 16 Jan 2024 17:04:20 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B062A1CA89;
-	Tue, 16 Jan 2024 17:04:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCCC21CA9F;
+	Tue, 16 Jan 2024 17:06:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="EmY52/eF"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C8901CA89;
+	Tue, 16 Jan 2024 17:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705424658; cv=none; b=T5hlxraMnuGIPRsZCCarMdQtNOo5JzF+YdFtbz1zW4j95tO2FCPtD6l3t+rmAb5WPqmwdcX1tJA0kUzI5+nrEbro8opbdpkWGOj5FaIqEcbnNVnMUBeh9HWG6q6CnbpLhzaotdhcykkQY/m/ctwiz01gOZhefisb695nNfXw0Vc=
+	t=1705424777; cv=none; b=Z+dHEtUGMpRdYhceRnPOMpcqhzSKn/yk+eQq65sT2iqDPir8udBZMCheD/H8sowuShfMsNWmMCoUtIP06sduoyu/IHfbTiE0FRmBjIDqRBcGQmplKN2XO8g8JvJ1clZtOVZ7DF/X28Rsn3VEOSJ/oftJudLJs/NR2fxlxUOsKZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705424658; c=relaxed/simple;
-	bh=7v2Vng/QlBCThCRogsk01ysllYBjGdtj3KZrJW3DEsU=;
-	h=Received:Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
-	 MIME-Version:Content-Transfer-Encoding; b=n7Pn3CGm5JimAjkkHHrNJyWYvtN4jg6srBlh2E9I3F1QvhtqBAM28tp6ASeJ+fgQn2sL6AumRr98DAhB/6P58yZN/dfuJmX0mFAPzKdVlc8U3tyMLoJaYshNMF9LHdju4yfRI+k8aXyAUk7TeaX5DbIfMEpcVe2EvQvi3cUOr5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; none
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 158092F4;
-	Tue, 16 Jan 2024 09:05:00 -0800 (PST)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B1BC03F73F;
-	Tue, 16 Jan 2024 09:04:11 -0800 (PST)
-From: Mark Rutland <mark.rutland@arm.com>
-To: linux-kernel@vger.kernel.org,
-	Hector Martin <marcan@marcan.st>,
-	Marc Zyngier <maz@kernel.org>,
-	Ian Rogers <irogers@google.com>
-Cc: acme@redhat.com,
-	james.clark@arm.com,
-	john.g.garry@oracle.com,
-	leo.yan@linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-perf-users@vger.kernel.org,
-	mark.rutland@arm.com,
-	mike.leach@linaro.org,
-	namhyung@kernel.org,
-	suzuki.poulose@arm.com,
-	tmricht@linux.ibm.com,
-	will@kernel.org
-Subject: [PATCH] perf print-events: make is_event_supported() more robust
-Date: Tue, 16 Jan 2024 17:03:48 +0000
-Message-Id: <20240116170348.463479-1-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.30.2
+	s=arc-20240116; t=1705424777; c=relaxed/simple;
+	bh=hOhScMHFg3gAHygDBlOtJfPi//nUjBk2KcM+TPrxUhU=;
+	h=Received:DKIM-Signature:Message-ID:Date:MIME-Version:User-Agent:
+	 Subject:Content-Language:To:Cc:References:From:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding:X-GND-Sasl; b=sUa0cuXlM8Hg2cyOEyfCl7YYCVnTklM4cqPxLxMYnm3zWDf3bv3kKM60kJ06kS3MCPq5BPAX6EuAKDHx96Ke/XZn2D8+2NMR6MENmW9m8n/BxZDWQstKTDD7alBv6pl87U/ZBv45y7k7yEOvUzQlqVoCQ6nfkDf14s0xBIW32x0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=EmY52/eF
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 56CE41BF204;
+	Tue, 16 Jan 2024 17:06:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1705424767;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9HbZN4CyG8XR5HbXWl1OlbE6KwGeSWI/unoisp6ImNs=;
+	b=EmY52/eFthuRUhpVhsbjsK+A6rs+RHpeZUlai6n64lBUcnxrMzTld4zvurzDsEkejPiz6G
+	z1DEU4qSG3V8H7LEqRqkhsXTiU4ECLRF3yxZfGi0TcBSPfPq+T2E2VB9gdSC271RsoZnpU
+	spoFhfo/jlaYTHcV6CHzg4+/AFBYXxrp3w418zoK9jPV/fZxjXD2P8G84pn6CUgDbcmNRH
+	R6MWmIVmfSyt+Cn2saJD1E+3OsupJkpf+r3OtdG3r6pgrdae5019MW9yoDGYUcdEuijoCP
+	oR0iN5wpmGm1ZcYCFv6PvNiZq4qJl2r/xM174AtI9KRXkwWib6acok2jWKol/w==
+Message-ID: <b9070fb6-4b85-441e-a863-8fe562408e48@arinc9.com>
+Date: Tue, 16 Jan 2024 20:05:57 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next 6/8] net: dsa: mt7530: simplify
+ mt7530_setup_port6() and change to void
+Content-Language: en-US
+To: Vladimir Oltean <olteanv@gmail.com>
+Cc: Daniel Golle <daniel@makrotopia.org>,
+ Landen Chao <Landen.Chao@mediatek.com>, DENG Qingfang <dqfext@gmail.com>,
+ Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+ Luiz Angelo Daros de Luca <luizluca@gmail.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240113102529.80371-1-arinc.unal@arinc9.com>
+ <20240113102529.80371-7-arinc.unal@arinc9.com>
+ <20240115213720.vxlumsjwrjdkqxsl@skbuf>
+ <7f59d9e6-1653-4a8d-910d-5922452bb9e8@arinc9.com>
+ <20240116134705.mw2a2twoakw5b7jq@skbuf>
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <20240116134705.mw2a2twoakw5b7jq@skbuf>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 
-Currently the perf tool doesn't deteect support for extneded event types
-on Apple M1/M2 systems, and will not auto-expand plain PERF_EVENT_TYPE
-hardware events into per-PMU events. This is due to the detection of
-extended event types not handling mandatory filters required by the
-M1/M2 PMU driver.
+On 16.01.2024 16:47, Vladimir Oltean wrote:
+> On Tue, Jan 16, 2024 at 04:09:18PM +0300, Arınç ÜNAL wrote:
+>> Do you mean by internal port that the port does not have MII pinout? Port 6
+>> of the MT7530 switch do. It is possible to have an external PHY wired to it.
+> 
+> Yes, this is what I meant by internal port. It seems I was wrong to
+> assume it is always connected to GMAC0.
+> 
+> How is the selection done between internal and external wiring?
 
-PMU drivers and the core perf_events code can require that
-perf_event_attr::exclude_* filters are configured in a specific way and
-may reject certain configurations of filters, for example:
+There are two variants of MT7530. One is standalone, the other comes with
+the SoC as a part of the multi-chip module. More information at
+mediatek,mt7530.yaml.
 
-(a) Many PMUs lack support for any event filtering, and require all
-    perf_event_attr::exclude_* bits to be clear. This includes Alpha's
-    CPU PMU, and ARM CPU PMUs prior to the introduction of PMUv2 in
-    ARMv7,
+The standalone one is straightforward. A MAC or a PHY can be wired to the
+MII pinouts of port 5 and 6 on the PCB, just as the relevant MII standard
+describes.
 
-(b) When /proc/sys/kernel/perf_event_paranoid >= 2, the perf core
-    requires that perf_event_attr::exclude_kernel is set.
+On the MT7621 SoCs which include the switch IC, port 6 is wired to GMAC0,
+port 5 is wired to GMAC1. I assume you mean internal and external wiring in
+reference to this case. This is the internal wiring.
 
-(c) The Apple M1/M2 PMU requires that perf_event_attr::exclude_guest is
-    set as the hardware PMU does not count while a guest is running (but
-    might be extended in future to do so).
+The external wiring works by wiring the PHY or MAC to the MII pinouts of
+the SoC's two MACs. Since RX of the switch MAC is wired to TX of the SoC
+MAC and vice versa, the external PHY or MAC must be wired TX to TX and RX
+to RX. Ubiquiti EdgeRouter X SFP is wired this way. The wiring for clock
+pins may need to be mirrored too, I haven't studied the RGMII specification
+that much in detail. This works by not enabling the SoC MAC.
 
-In is_event_supported(), we try to account for cases (a) and (b), first
-attempting to open an event without any filters, and if this fails,
-retrying with perf_event_attr::exclude_kernel set. We do not account for
-case (c), or any other filters that drivers could theoretically require
-to be set.
+> 
+> If external wiring to a PHY is possible, shouldn't the driver accept all
+> 4 RGMII variants with phy_interface_mode_is_rgmii(), because the delays
+> specified in "rgmii-txid", "rgmii-rxid", "rgmii-id" always pertain to
+> the PHY, and thus it doesn't make sense for the MAC to not allow the use
+> of the full spectrum?
 
-Thus is_event_supported() will fail to detect support for any events
-targetting an Apple M1/M2 PMU, even where events would be supported with
-perf_event_attr:::exclude_guest set.
+Great point. I think delays are not supported on port 6. There's only the
+"MT7530 Giga Switch programming guide v0.1" document mentioning setting
+delays on page 8, and it's only for port 5. It is also implemented on
+mt7530_setup_port5():
 
-Since commit:
+/* P5 RGMII RX Clock Control: delay setting for 1000M */
+mt7530_write(priv, MT7530_P5RGMIIRXCR, CSR_RGMII_EDGE_ALIGN);
 
-  82fe2e45cdb00de4 ("perf pmus: Check if we can encode the PMU number in perf_event_attr.type")
+/* Don't set delay in DSA mode */
+if (!dsa_is_dsa_port(priv->ds, 5) &&
+     (interface == PHY_INTERFACE_MODE_RGMII_TXID ||
+      interface == PHY_INTERFACE_MODE_RGMII_ID))
+	tx_delay = 4; /* n * 0.5 ns */
 
-.. we use is_event_supported() to detect support for extended types,
-with the PMU ID encoded into the perf_event_attr::type. As above, on an
-Apple M1/M2 system this will always fail to detect that the event is
-supported, and consequently we fail to detect support for extended types
-even when these are supported, as they have been since commit:
+/* P5 RGMII TX Clock Control: delay x */
+mt7530_write(priv, MT7530_P5RGMIITXCR,
+	     CSR_RGMII_TXC_CFG(0x10 + tx_delay));
 
-  5c816728651ae425 ("arm_pmu: Add PERF_PMU_CAP_EXTENDED_HW_TYPE capability")
+There's only the TX driving mentioned for port 6 on the document. I'm
+guessing port 6 was intended to connect to another TRGMII capable MAC so
+delays were out of the question. TRGMII is just overclocked RGMII to
+provide up to 2Gbps TX/RX, at least in theory. The whole existence of the
+TRGMII interface on Linux is only being used by the MT7621 and MT7623 SoC
+MACs, and port 6 MAC of the MT7530 switch.
 
-Due to this, the perf tool will not automatically expand plain
-PERF_TYPE_HARDWARE events into per-PMU events, even when all the
-necessary kernel support is present.
+> 
+>> So it would make sense to design mt7530_setup_port6() in the sense that
+>> dynamic reconfiguration is possible.
+> 
+> Ok, you mean to keep the dynamic reconfiguration possible rather than
+> redesign to disallow it.
 
-This patch updates is_event_supported() to additionally try opening
-events with perf_event_attr::exclude_guest set, allowing support for
-events to be detected on Apple M1/M2 systems. I beleive that this is
-sufficient for all contemporary CPU PMU drivers, though in future it may
-be necessary to check for other combinations of filter bits.
+Very much so.
 
-I've deliberately changed the check to not expect a specific error code
-for missing filters, as today ;the kernel may return a number of
-different error codes for missing filters (e.g. -EACCESS, -EINVAL, or
--EOPNOTSUPP) depending on why and where the filter configuration is
-rejected, and retrying for any error is more robust.
-
-Note that this does not remove the need for commit:
-
-  a24d9d9dc096fc0d ("perf parse-events: Make legacy events lower priority than sysfs/JSON")
-
-.. which is still necessary so that named-pmu/event/ events work on
-kernels without extended type support, even if the event name happens to
-be the same as a PERF_EVENT_TYPE_HARDWARE event (e.g. as is the case for
-the M1/M2 PMU's 'cycles' and 'instructions' events).
-
-Fixes: 82fe2e45cdb00de4 ("perf pmus: Check if we can encode the PMU number in perf_event_attr.type")
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Hector Martin <marcan@marcan.st>
-Cc: Ian Rogers <irogers@google.com>
-Cc: James Clark <james.clark@arm.com>
-Cc: John Garry <john.g.garry@oracle.com>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Thomas Richter <tmricht@linux.ibm.com>
-Cc: Will Deacon <will@kernel.org>
----
- tools/perf/util/print-events.c | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
-
-Hector, Marc, I'd appreciate if either of you could give this a spin on
-your M1/M2 machines. I've given it local testing with the arm_pmuv3
-driver modified to behave the same as the apple_m1_pmu driver (requiring
-exclude_guest, having a 'cycles' event in sysfs), but that might not
-perfectly replicate your setup.
-
-The patch is based on the 'perf-tools-for-v6.8-1-2024-01-09' tag in the
-perf-tools tree:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git/
-
-.. and I've pushed it out to the 'perf-tools/event-supported-filters'
-branch in my tree:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/
-
-This patch *should* make it possible to do:
-
-	perf stat -e cycles ./workload
-	perf stat -e instructions ./workload
-
-.. with those 'cycles' and 'instructions' events being automatically
-expanded and reported as separate events per-PMU, which is a nice
-quality-of-life improvement.
-
-Comparing before and after this patch:
-
-| # ./perf-before stat -e cycles true
-| 
-|  Performance counter stats for 'true':
-| 
-|      <not counted>      cycles                                                                  (0.00%)
-| 
-|        0.000990250 seconds time elapsed
-| 
-|        0.000934000 seconds user
-|        0.000000000 seconds sys
-| 
-| # ./perf-after stat -e cycles true
-| 
-|  Performance counter stats for 'true':
-| 
-|             965175      armv8_pmuv3_0/cycles/                                                 
-|      <not counted>      armv8_pmuv3_1/cycles/                                                   (0.00%)
-|      <not counted>      armv8_pmuv3_2/cycles/                                                   (0.00%)
-|      <not counted>      armv8_pmuv3_3/cycles/                                                   (0.00%)
-| 
-|        0.000836555 seconds time elapsed
-| 
-|        0.000884000 seconds user
-|        0.000000000 seconds sys
-
-This *shouldn't* change the interpetation of named-pmu events, e.g.
-
-	perf stat -e apple_whichever_pmu/cycles/ ./workload
-
-.. should behave the same as without this patch
-
-Comparing before and after this patch:
-
-| # ./perf-before stat -e armv8_pmuv3_0/cycles/ -e armv8_pmuv3_1/cycles/ -e armv8_pmuv3_2/cycles/ -e armv8_pmuv3_3/cycles/ true
-| 
-|  Performance counter stats for 'true':
-| 
-|      <not counted>      armv8_pmuv3_0/cycles/                                                   (0.00%)
-|      <not counted>      armv8_pmuv3_1/cycles/                                                   (0.00%)
-|      <not counted>      armv8_pmuv3_2/cycles/                                                   (0.00%)
-|             901415      armv8_pmuv3_3/cycles/                                                 
-| 
-|        0.000756590 seconds time elapsed
-| 
-|        0.000811000 seconds user
-|        0.000000000 seconds sys
-| 
-| # ./perf-after stat -e armv8_pmuv3_0/cycles/ -e armv8_pmuv3_1/cycles/ -e armv8_pmuv3_2/cycles/ -e armv8_pmuv3_3/cycles/ true
-| 
-|  Performance counter stats for 'true':
-| 
-|             923314      armv8_pmuv3_0/cycles/                                                 
-|      <not counted>      armv8_pmuv3_1/cycles/                                                   (0.00%)
-|      <not counted>      armv8_pmuv3_2/cycles/                                                   (0.00%)
-|      <not counted>      armv8_pmuv3_3/cycles/                                                   (0.00%)
-| 
-|        0.000782420 seconds time elapsed
-| 
-|        0.000836000 seconds user
-|        0.000000000 seconds sys
-
-One thing I'm still looing into is that this doesn't seem to do anything
-for a default perf stat session, e.g.
-
-	perf stat ./workload
-
-.. doesn't automatically expand the implicitly-created events into per-pmu
-events.
-
-Comparing before and after this patch:
-
-| # ./perf-before stat true
-| 
-|  Performance counter stats for 'true':
-| 
-|               0.42 msec task-clock                       #    0.569 CPUs utilized             
-|                  0      context-switches                 #    0.000 /sec                      
-|                  0      cpu-migrations                   #    0.000 /sec                      
-|                 38      page-faults                      #   89.796 K/sec                     
-|      <not counted>      cycles                                                                  (0.00%)
-|      <not counted>      instructions                                                            (0.00%)
-|      <not counted>      branches                                                                (0.00%)
-|      <not counted>      branch-misses                                                           (0.00%)
-| 
-|        0.000744185 seconds time elapsed
-| 
-|        0.000795000 seconds user
-|        0.000000000 seconds sys
-| 
-| # ./perf-after stat true
-| 
-|  Performance counter stats for 'true':
-| 
-|               0.43 msec task-clock                       #    0.582 CPUs utilized             
-|                  0      context-switches                 #    0.000 /sec                      
-|                  0      cpu-migrations                   #    0.000 /sec                      
-|                 38      page-faults                      #   88.960 K/sec                     
-|      <not counted>      cycles                                                                  (0.00%)
-|      <not counted>      instructions                                                            (0.00%)
-|      <not counted>      branches                                                                (0.00%)
-|      <not counted>      branch-misses                                                           (0.00%)
-| 
-|        0.000734120 seconds time elapsed
-| 
-|        0.000786000 seconds user
-|        0.000000000 seconds sys
-
-Ian, how does that behave on x86? Is that the same, or do the default
-events get expanded?
-
-Thanks,
-Mark.
-
-diff --git a/tools/perf/util/print-events.c b/tools/perf/util/print-events.c
-index b0fc48be623f3..4f67e8f00a4d6 100644
---- a/tools/perf/util/print-events.c
-+++ b/tools/perf/util/print-events.c
-@@ -232,7 +232,6 @@ void print_sdt_events(const struct print_callbacks *print_cb, void *print_state)
- bool is_event_supported(u8 type, u64 config)
- {
- 	bool ret = true;
--	int open_return;
- 	struct evsel *evsel;
- 	struct perf_event_attr attr = {
- 		.type = type,
-@@ -246,20 +245,32 @@ bool is_event_supported(u8 type, u64 config)
- 
- 	evsel = evsel__new(&attr);
- 	if (evsel) {
--		open_return = evsel__open(evsel, NULL, tmap);
--		ret = open_return >= 0;
-+		ret = evsel__open(evsel, NULL, tmap) >= 0;
- 
--		if (open_return == -EACCES) {
-+		if (!ret) {
- 			/*
--			 * This happens if the paranoid value
-+			 * The event may fail to open if the paranoid value
- 			 * /proc/sys/kernel/perf_event_paranoid is set to 2
--			 * Re-run with exclude_kernel set; we don't do that
--			 * by default as some ARM machines do not support it.
--			 *
-+			 * Re-run with exclude_kernel set; we don't do that by
-+			 * default as some ARM machines do not support it.
- 			 */
- 			evsel->core.attr.exclude_kernel = 1;
- 			ret = evsel__open(evsel, NULL, tmap) >= 0;
- 		}
-+
-+		if (!ret) {
-+			/*
-+			 * The event may fail to open if the PMU requires
-+			 * exclude_guest to be set (e.g. as the Apple M1 PMU
-+			 * requires).
-+			 * Re-run with exclude_guest set; we don't do that by
-+			 * default as it's equally legitimate for another PMU
-+			 * driver to require that exclude_guest is clear.
-+			 */
-+			evsel->core.attr.exclude_guest = 1;
-+			ret = evsel__open(evsel, NULL, tmap) >= 0;
-+		}
-+
- 		evsel__delete(evsel);
- 	}
- 
--- 
-2.30.2
-
+Arınç
 
