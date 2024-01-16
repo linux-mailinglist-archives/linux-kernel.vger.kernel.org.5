@@ -1,144 +1,84 @@
-Return-Path: <linux-kernel+bounces-28304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65F9A82FCC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:27:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B33A82FCC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:28:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAC141F2D3A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:27:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3EE31F2D43C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 22:28:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC7E5F545;
-	Tue, 16 Jan 2024 21:30:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98D065F859;
+	Tue, 16 Jan 2024 21:31:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="iZCshsRW"
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="vO2rxY+b"
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BFE95D8F1;
-	Tue, 16 Jan 2024 21:30:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC5CD321A1;
+	Tue, 16 Jan 2024 21:31:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705440623; cv=none; b=daSwaaNY0EzbWz0u99kVyfQPftSKNaX5AIiJM8aIK8OOdj73EDTlWemyM2gqJHSp9RL0QysxH/Vqn8eZWMWkuLjhZzHrwCYIbEw5ECxkqRFOjFXT57Qb2496ggrqPn2uayLz6csY+ao0dk9McSOQYYmMWSpbsza9faIi2/nvkDM=
+	t=1705440672; cv=none; b=mXxW5nXdTvfE+1I8FMer/U/4uByOP/qAt++6dPGxUsnlxu4WV+Ri2Wi+eoJdaMC5ulj0sGGHHrSS+acQwHEgk+MfC47igSZKTgHCG+PDGCzxtPv8Qcnt3lZnzeS5N3SCyQ3UWM3+kORrBVlLOHeBuEANqnW530avkLW+Gu2mwNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705440623; c=relaxed/simple;
-	bh=Ekm1pWojkGVN85gQNWE1XXW2dWBTUCiXzPsg832oXl4=;
-	h=DKIM-Signature:Received:From:To:Cc:Date:Message-Id:X-Mailer:
-	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:
-	 X-SA-Exim-Connect-IP:X-SA-Exim-Mail-From:X-Spam-Checker-Version:
-	 X-Spam-Level:X-Spam-Report:X-Spam-Status:Subject:X-SA-Exim-Version:
-	 X-SA-Exim-Scanned; b=Wp4KJUYKNg8KyLH1xxPlPXMDDj8Ut+kN/SxTeXjHAiDROADSUzRQepKdq439LZqN4NfiizPLkzoV1diDVuNCx1er4IWbvli4PqWPhX8cZmg0nJRMfIw61NTXYZ7L/YDM50HFmnpy00qxqr+mjlKy2PUx4wOhiUEN/do5OJrUshM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=iZCshsRW; arc=none smtp.client-ip=162.243.120.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
-	:From:subject:date:message-id:reply-to;
-	bh=99qxuCnYU+0nTighHkHeSz50qP2ibLYD2/rfjv4LZXY=; b=iZCshsRWGamXZd6WywC48e+8RC
-	fbgHxn6qeLjqo0ZPMrNwzvbuzLpakbp6J+KwYRQqY9i+jHpx/wUeFwN/N+Caejoeaig5+6rMVhF6O
-	PGhV4wv8qGHeJ+HYHr8J7DQXzpHVjSIbATqzUAuMOnhpK2FsvErq8F5jmU5HwWNWqlqE=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:47418 helo=pettiford.lan)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1rPr0c-0002ia-K7; Tue, 16 Jan 2024 16:30:11 -0500
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: gregkh@linuxfoundation.org,
-	jirislaby@kernel.org,
-	jan.kundrat@cesnet.cz,
-	shc_work@mail.ru
-Cc: linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	hugo@hugovil.com,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+	s=arc-20240116; t=1705440672; c=relaxed/simple;
+	bh=hHPKadB+cxGf+RWYJqcFbbEZwSR0CmuDiJSds3CMh4w=;
+	h=DKIM-Signature:Received:Message-ID:Subject:From:To:Cc:Date:
+	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:
+	 User-Agent:MIME-Version:X-malware-bazaar; b=LL1psvRj7zdzzfkqXjF8WwpX084ifHTa+TtuD6BZQSk9mnivz+Hde6GNnhunx85fiQmxxnm4STo5OPYIITHAyR9sHnzArMVmCtU0CNo8uTiNBFgaD3K6/lyulKaPD3ClcxNwI/Iasy5uSI9XAblSIeA7+kM6nK6jIXFFQrzHxfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=vO2rxY+b; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=hHPKadB+cxGf+RWYJqcFbbEZwSR0CmuDiJSds3CMh4w=;
+	t=1705440670; x=1706650270; b=vO2rxY+bfI6lw5xOkXUi3qxqxmGRq/eOK4awugXKqwG8ax2
+	oq+Vq+s3A2y0qJX/tekS7mjpgyVdDOoi9utoeisOKqObpjNlsLhwP8UUm30be2co/0V2pUQbL+PIJ
+	wxINu6FSKWmIfvtVtlptux4/aI+Ual5hy5REfQ262eVH6JNRzID4OsE8FgLMXWEoWlFSoZL4r7oat
+	IzkDai0ARHLtsLl4PPFqjRjv+ys3kz52GdNGlpV7NKcv3a6hM/K2+1AZpulstSz0KZNRb/e3dlve6
+	BuWazURd0elYGfAireFCx9dPcj/CH4olYjFgzHoHdC2Xj9bb435EaKjQvNzG5q7A==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1rPr1W-00000005JF3-2LnA;
+	Tue, 16 Jan 2024 22:31:06 +0100
+Message-ID: <63299fa2af7ae5610d270851a772fcca4ba39c48.camel@sipsolutions.net>
+Subject: Re: [PATCH AUTOSEL 5.10 07/44] wifi: ieee80211: fix PV1 frame
+ control field name
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org, 
 	stable@vger.kernel.org
-Date: Tue, 16 Jan 2024 16:30:01 -0500
-Message-Id: <20240116213001.3691629-5-hugo@hugovil.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240116213001.3691629-1-hugo@hugovil.com>
-References: <20240116213001.3691629-1-hugo@hugovil.com>
+Cc: Liam Kearney <liam.kearney@morsemicro.com>, Jeff Johnson
+	 <quic_jjohnson@quicinc.com>, linux-wireless@vger.kernel.org
+Date: Tue, 16 Jan 2024 22:31:05 +0100
+In-Reply-To: <20240116200044.258335-7-sashal@kernel.org>
+References: <20240116200044.258335-1-sashal@kernel.org>
+	 <20240116200044.258335-7-sashal@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-Subject: [PATCH 4/4] serial: max310x: prevent infinite while() loop in port startup
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
+X-malware-bazaar: not-scanned
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+On Tue, 2024-01-16 at 14:59 -0500, Sasha Levin wrote:
+> From: Liam Kearney <liam.kearney@morsemicro.com>
+>=20
+> [ Upstream commit d3ca4ab4f16eb81dc3e7721251adcba49b229d54 ]
+>=20
+> Update PV1 frame control field TODS to FROMDS to match 802.11 standard
+>=20
 
-If there is a problem after resetting a port, the do/while() loop that
-checks the default value of DIVLSB register may run forever and spam the
-I2C bus.
+Not sure what the point would be in backporting ... this define is
+completely unused :)
 
-Add a delay before each read of DIVLSB, and a maximum number of tries to
-prevent that situation from happening.
-
-Also fail probe if port reset is unsuccessful.
-
-Fixes: 10d8b34a4217 ("serial: max310x: Driver rework")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
----
- drivers/tty/serial/max310x.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index 552e153a24e0..10bf6d75bf9e 100644
---- a/drivers/tty/serial/max310x.c
-+++ b/drivers/tty/serial/max310x.c
-@@ -237,6 +237,10 @@
- #define MAX310x_REV_MASK		(0xf8)
- #define MAX310X_WRITE_BIT		0x80
- 
-+/* Port startup definitions */
-+#define MAX310X_PORT_STARTUP_WAIT_RETRIES	20 /* Number of retries */
-+#define MAX310X_PORT_STARTUP_WAIT_DELAY_MS	10 /* Delay between retries */
-+
- /* Crystal-related definitions */
- #define MAX310X_XTAL_WAIT_RETRIES	20 /* Number of retries */
- #define MAX310X_XTAL_WAIT_DELAY_MS	10 /* Delay between retries */
-@@ -1346,6 +1350,9 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
- 		goto out_clk;
- 
- 	for (i = 0; i < devtype->nr; i++) {
-+		bool started = false;
-+		unsigned int try = 0, val = 0;
-+
- 		/* Reset port */
- 		regmap_write(regmaps[i], MAX310X_MODE2_REG,
- 			     MAX310X_MODE2_RST_BIT);
-@@ -1354,8 +1361,17 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
- 
- 		/* Wait for port startup */
- 		do {
--			regmap_read(regmaps[i], MAX310X_BRGDIVLSB_REG, &ret);
--		} while (ret != 0x01);
-+			msleep(MAX310X_PORT_STARTUP_WAIT_DELAY_MS);
-+			regmap_read(regmaps[i], MAX310X_BRGDIVLSB_REG, &val);
-+
-+			if (val == 0x01)
-+				started = true;
-+		} while (!started && (++try < MAX310X_PORT_STARTUP_WAIT_RETRIES));
-+
-+		if (!started) {
-+			ret = dev_err_probe(dev, -EAGAIN, "port reset failed\n");
-+			goto out_uart;
-+		}
- 
- 		regmap_write(regmaps[i], MAX310X_MODE1_REG, devtype->mode1);
- 	}
--- 
-2.39.2
-
+johannes
 
