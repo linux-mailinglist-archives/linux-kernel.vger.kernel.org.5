@@ -1,159 +1,138 @@
-Return-Path: <linux-kernel+bounces-27424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D142082EFD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:40:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A467082EFE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 14:42:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81D10285380
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:40:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B821C1C233C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 13:42:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 122B41BDCA;
-	Tue, 16 Jan 2024 13:40:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 486161BF30;
+	Tue, 16 Jan 2024 13:42:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="TC/OfzrQ"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Rd8Ppt88"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 261CE1BC5C
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 13:40:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50eac018059so12468465e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 05:40:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1705412417; x=1706017217; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WVJU5jiTzPEUoyMMg2QyayUMBhCdBnwfYp2MyeRq/z0=;
-        b=TC/OfzrQGpqyBds6YEW4Q2fwGt+K64YQTxnNf3nHVxbyBgFU9X6NAvUTE+hqs9cVH2
-         1KiaEZssEWzWjrGXM3xI2C05N2Gi4A436LYmzHYUJBlbLzhzMINPKXnWrI/CGz0Zu5nG
-         iEDd8Jc1q/YWBYr+CNsuMdY4U+ZqeUheZjVqlHA4OMI/UgVF5yN4nCPHBt2mQ9upkdgb
-         KQwY1M7VBSSuKJ6YQ7V1byvGpAlLDOF5L/GGlWKxiU0lOZb3g7CI6MeE+ZxPRciTJwx5
-         bRO1jXZkw+UX5EtOuZh3+DsK6NBPGaXbsF3ZBIY0KzhM0ltvn38Q34gf/ep0kHWGg7Ze
-         kZMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705412417; x=1706017217;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WVJU5jiTzPEUoyMMg2QyayUMBhCdBnwfYp2MyeRq/z0=;
-        b=sh4mu+StqfJKFtkStNY7NhO6dRPJPi3RFYIMIU2X22gXPBQwDOdn0pWjisr8i1kdgY
-         eut95QPLgK6V1v7XKclcVxmCj2bfpG5Q6QfYe/poZA7tzBmIQ3eAGrtSGbdq8AoP3kBJ
-         aVIriwSE2TnI1n31Sd/54mrpui4a+NYBWN5Zg0jhNRWEIrZw/YyMODa6bNyhuui4/I9f
-         QAtPHj6oBRMPZlXtIp9+mihbYwfDz4WrndtPO9N/5VCa1cAhhu6kL3CA1Ek1o/xGIWA4
-         jvPe4OfqKfGdlEgr/ESKEKg7dcCjebU5cVUNe9/XptqxgzfqeSK7Bmvzg+0JR0BHl+qd
-         RS9w==
-X-Gm-Message-State: AOJu0YzSpapPeDlSFcQnE0ugqjBzAOxRDVCFpgEP+j/aMRGRBoDYBEZb
-	YFxs0B/1dnXYiIpIUzS3LecH1FHgbEHU71pKML59fzHihNn02Q==
-X-Google-Smtp-Source: AGHT+IFnnDAhbGcdZty5D9K7fUTZ8B2Sp+Dbtz7dhqILgr6F04ua8VzWoNqKAww00qzCchYrXjpXF5EnABZT6zCkVe8=
-X-Received: by 2002:a19:5e18:0:b0:50e:6d4f:6915 with SMTP id
- s24-20020a195e18000000b0050e6d4f6915mr3325240lfb.47.1705412417104; Tue, 16
- Jan 2024 05:40:17 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C1A71BF26;
+	Tue, 16 Jan 2024 13:42:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40GDfjEm027724;
+	Tue, 16 Jan 2024 07:41:45 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1705412505;
+	bh=VxBu6hTc7ywOegJWteYHT/TCvPqzN88cxPO+F6jKmMM=;
+	h=From:To:CC:Subject:Date;
+	b=Rd8Ppt885MWHWlQgDEy+mSAXBW7wBXHwsTI3QItR97AXcKl1ctZ8mG3ZmZfrU7M+4
+	 enatlivoWXLL2xrV7dqRzdqyDgzq4Ie5JsrkU3hMSIJd44HtPyKj0BsyIlWmnhe912
+	 nnSJwcsGlWtblf5XuKgQCJebpWZk4PNphWgBsvH8=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40GDfi3G026997
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 16 Jan 2024 07:41:45 -0600
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 16
+ Jan 2024 07:41:44 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 16 Jan 2024 07:41:44 -0600
+Received: from localhost (ti.dhcp.ti.com [172.24.227.95] (may be forged))
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40GDfgKd063303;
+	Tue, 16 Jan 2024 07:41:43 -0600
+From: Devarsh Thakkar <devarsht@ti.com>
+To: <jyri.sarha@iki.fi>, <tomi.valkeinen@ideasonboard.com>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+        <tzimmermann@suse.de>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>
+CC: <praneeth@ti.com>, <a-bhatia1@ti.com>, <j-luthra@ti.com>,
+        <devarsht@ti.com>
+Subject: [RFC PATCH 0/3] Add display sharing support in tidss
+Date: Tue, 16 Jan 2024 19:11:39 +0530
+Message-ID: <20240116134142.2092483-1-devarsht@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231024142706.195517-1-hezhongkun.hzk@bytedance.com>
- <CAKEwX=OiNB+pPhb-3Tf7O=F7psKE3EOpwmbPSeLSOyuHpj3i+Q@mail.gmail.com>
- <CACSyD1P6HmH9tSvONnNxYv8P+am_hH2dK3UJQd9_+o6EWkPsXA@mail.gmail.com>
- <CAKEwX=PC3C-PrWAH3XiYGyR4ujqBJQBBX6uRa2jXKCy9VMyRCQ@mail.gmail.com>
- <CACSyD1O7t0+BXUujJ81RAdEys3MUnmpu0sRADLazoyvayx5DLA@mail.gmail.com>
- <CAKEwX=P5AC+ubnunnZr5vMiC6fFU+E_E7jg_FZztWwZRYSxTWQ@mail.gmail.com>
- <CACSyD1Nnc_w3epbt6+EMt7a-4pAzgW1hbE=G5Fy5Tc5R5+uxKw@mail.gmail.com>
- <CAKEwX=NuXR9Ot1eRFsp9n-3Tq9yhjD9up+jyvXeOzQ4xK9kEPA@mail.gmail.com>
- <CAKEwX=Oj2dR6a4-DeccvcVdJ-J7b=83uCWQAf5u7U0sySudnkw@mail.gmail.com>
- <CAJD7tkb2oda=4f0s8w8xn+t_TM1b2Q_otbb86VPQ9R1m2uqDTA@mail.gmail.com>
- <CACSyD1ODCikYLDzO4LkQeDzB4sqDWCULwCdehw9inP-qyw3_Jg@mail.gmail.com>
- <CAJD7tkY=zmGiPoWNjVaVeU+NPxV2t48J5-CxEP9=nBK8nAh0XA@mail.gmail.com>
- <CAKEwX=Na3dg+KZwvtQi-Nj79Am-1tttDw50_qStkobmYGUC6NA@mail.gmail.com>
- <CACSyD1Pp8gkxwTXZuinm6wiZs0e5U2B5oND4rj29dzmRApFjhQ@mail.gmail.com>
- <CAKEwX=OsTQCJd12S3NajRMRy_s3q3yGFpS7S=_3-yOYK6+ezzA@mail.gmail.com> <CACSyD1NgqoFKuHSgdw_bzgK_StsLrNQ+7wHVBqsnHcB-2rD2ow@mail.gmail.com>
-In-Reply-To: <CACSyD1NgqoFKuHSgdw_bzgK_StsLrNQ+7wHVBqsnHcB-2rD2ow@mail.gmail.com>
-From: Zhongkun He <hezhongkun.hzk@bytedance.com>
-Date: Tue, 16 Jan 2024 21:40:05 +0800
-Message-ID: <CACSyD1Np1JbKB9punaigGbJ7y2ZWou1Sr7bczanHv4-1UQZ==A@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: zswap: fix the lack of page lru flag
- in zswap_writeback_entry
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: Yosry Ahmed <yosryahmed@google.com>, akpm@linux-foundation.org, hannes@cmpxchg.org, 
-	sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Chris Li <chrisl@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-> > > >
-> > > > Unless some page flag/readahead expert can confirm that the first
-> > > > option is safe, my vote is on this option. I mean, it's fairly mini=
-mal
-> > > > codewise, no? Just a bunch of plumbing. We can also keep the other
-> > > > call sites intact if we just rename the old versions - something al=
-ong
-> > > > the line of:
-> > > >
-> > > > __read_swap_cache_async_head(..., bool add_to_lru_head)
-> > > > {
-> > > > ...
-> > > > if (add_to_lru_head)
-> > > >   folio_add_lru(folio)
-> > > > else
-> > > >   folio_add_lru_tail(folio);
-> > > > }
-> > > >
-> > > > __read_swap_cache_async(...)
-> > > > {
-> > > >    return __read_swap_cache_async_tail(..., true);
-> > > > }
-> > > >
-> > > > A bit boilerplate? Sure. But this seems safer, and I doubt it's *th=
-at*
-> > > > much more work.
-> > > >
-> > >
-> > > Yes=EF=BC=8C agree. I will try it again.
-> >
-> > Look forward to seeing it! Thanks for your patience and for working on =
-this.
+This adds display sharing support in tidss display driver along with an
+example overlay devicetree file using which can be used to enable display
+sharing on AM62x devices with device manager core i.e. R5F expected to run
+a custom firmware which supports corresponding display sharing
+configuration.
 
-Please forgive me for adding additional information about this patch.
+As resources can be partitioned at different levels a flexible scheme is
+followed while designing devicetree bindings and driver changes keeping in
+mind possible scenarios in which resources can be partitioned and various
+DSS hardware IP's supported across different devices.
 
-I have finished the opt for introducing a folio_add_lru_tail(), but
-there are many
-questions:
-1) A new page can be move to LRU only by lru_add_fn, so
-    folio_add_lru_tail could not add pages to LRU for the following code
-    in folio_batch_move_lru(),which is added by Alex Shi for
-    serializing memcg changes in pagevec_lru_move_fn[1].
+A rebased version of this patch has been tested on AM62P SoC which also
+supports same DSS IP as AM62x and the patch with display sharing
+functionality is already available in vendor-specific kernel source tree
+[1] along with documentation which explains the design [2] and DM firmware
+support [3].
 
-/* block memcg migration while the folio moves between lru */
-        if (move_fn !=3D lru_add_fn && !folio_test_clear_lru(folio))
-            continue;
-To achieve the goal, we need to add a new function like  lru_add_fn
-which does not have the lru flag and folio_add_lru_tail()
-+               if (move_fn !=3D lru_add_fn && move_fn !=3D lru_move_tail_f=
-n_new &&
-+                       !folio_test_clear_lru(folio))
+NOTE1: This is marked as RFC for upstream since AM62P is not yet supported
+in upstream tree and for AM62x SoC which is the target SoC for this patch,
+the dss sharing functionality is not validated on upstream tree due to
+missing OLDI support and display sharing DM firmware support, but we still
+wanted to get some feedback on this.
 
-2)  __read_swap_cache_async has six parameters, so there is no space to
-add a new one, add_to_lru_head.
+NOTE2: This series depends on :
+https://lore.kernel.org/all/20240115125716.560363-1-devarsht@ti.com/
 
-So it seems a bit hacky just for a special case for the reasons above.
+[1] :
+https://git.ti.com/cgit/ti-linux-kernel/ti-linux-kernel/commit/?h=09.01.00.007&id=d805270609cfb6b2e67bd2fd5959d71f48393196 
+https://git.ti.com/cgit/ti-linux-kernel/ti-linux-kernel/commit/?h=09.01.00.007&id=93d751a94cbf9ad07c7f658e78aa510d919d7cd6
+https://git.ti.com/cgit/ti-linux-kernel/ti-linux-kernel/commit/?h=09.01.00.007&id=665c17837dc8bed27e8d63388f8f7f7a85c0cd94
+https://git.ti.com/cgit/ti-linux-kernel/ti-linux-kernel/commit/?h=ti-linux-6.1.y-cicd&id=f8d7f1a9617862af922c6bc10e0765ba4f4857d6
+ 
+[2] :
+https://software-dl.ti.com/processor-sdk-linux/esd/AM62PX/09_01_00_08/exports/docs/linux/Foundational_Components/Kernel/Kernel_Drivers/Display/DSS7.html#driver-features
+(Display Sharing mode feature description)
+https://software-dl.ti.com/processor-sdk-linux/esd/AM62PX/09_01_00_08/exports/docs/linux/How_to_Guides/Target/How_to_enable_display_sharing_between_remotecore_and_Linux.html
+(How To Guide)
+https://software-dl.ti.com/processor-sdk-linux/esd/AM62PX/09_01_00_08/exports/docs/system/Demo_User_Guides/Display_Cluster_User_Guide.html
+(Display Cluster user guide with demo details)
 
-Back to the beginning,  lru_add_drain() is the simplest option=EF=BC=8Cwhic=
-h is common
-below the __read_swap_cache_async(). Please see the function
-swap_cluster_readahead()
-and swap_vma_readahead(), of course it has been batched.
+[3] :
+https://git.ti.com/cgit/processor-firmware/ti-linux-firmware/tree/ti-dm/am62pxx/dss_display_share.wkup-r5f0_0.release.strip.out?h=ti-linux-firmware-next
 
-Or we should  leave this problem alone=EF=BC=8Cbefore we can write back zsw=
-ap
-in batches.
+Devarsh Thakkar (3):
+  dt-bindings: display: ti,am65x-dss: Add support for display sharing
+    mode
+  drm/tidss: Add support for display sharing
+  arm64: dts: ti: k3-am62x: Add overlay to use DSS in display sharing
+    mode
 
-Thanks again.
+ .../bindings/display/ti/ti,am65x-dss.yaml     |  82 ++++++
+ arch/arm64/boot/dts/ti/Makefile               |   1 +
+ .../dts/ti/k3-am62x-sk-dss-shared-mode.dtso   |  23 ++
+ drivers/gpu/drm/tidss/tidss_crtc.c            | 120 ++++++++-
+ drivers/gpu/drm/tidss/tidss_dispc.c           | 254 ++++++++++++++++--
+ drivers/gpu/drm/tidss/tidss_dispc.h           |   2 +-
+ drivers/gpu/drm/tidss/tidss_drv.c             |  33 ++-
+ drivers/gpu/drm/tidss/tidss_drv.h             |   6 +
+ 8 files changed, 481 insertions(+), 40 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am62x-sk-dss-shared-mode.dtso
+
+-- 
+2.34.1
+
 
