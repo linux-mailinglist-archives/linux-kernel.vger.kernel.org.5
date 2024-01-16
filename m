@@ -1,207 +1,283 @@
-Return-Path: <linux-kernel+bounces-27074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC49682EA05
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:27:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53A2B82EA07
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 08:28:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 214F21F23D51
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:27:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5C9628351D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 07:28:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2341610A3F;
-	Tue, 16 Jan 2024 07:27:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D496711181;
+	Tue, 16 Jan 2024 07:28:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="A9PTIkhA"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I85/NEr4"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F2F11700
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 07:27:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-559afecee33so138368a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jan 2024 23:27:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705390049; x=1705994849; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wuBLtt2GZSpGcO9j/EnadY8DR8roytq++vYju0CnFXo=;
-        b=A9PTIkhAmzMktDetCYwbQxVpy8pOMq8fTPK1+vrVQvtQR0SmPq6rWerJz8UftOEAqu
-         bqVTg3k9TFKn8Kuv6l2cmFDYUsUxx/bcSpuJ9qgugy2rcoQYMu6JKSg8yHw1K8r407pM
-         WcZThVTSE7PqdozjELu+rHA/jcIygYhyvSC+dLJR5QIF2I+NbmU3WCOkxYBwBE4gBdYQ
-         tbfSOxgazK0a1GoJnZbGjfaLZikemSUEBJ2xtHg+mvqwheWwbUpYEs0zfnTCMCW8XzNf
-         SFYefl/Pbtqd4/D9R8S0EuIyDiu+zZCjHfPbWcx62u9mZRl3r3TGxSi25IcRHZ5XE/08
-         QmYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705390049; x=1705994849;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wuBLtt2GZSpGcO9j/EnadY8DR8roytq++vYju0CnFXo=;
-        b=gXkYIkwfUH4hbMkDARF3qex69ex8Iqwifd8ezGF3fWP3bxwtmVGs2bwjNxed4H/+ZI
-         Np/OhwVdpSPkKrWHOLHOatftJarrjZKJZ4dYjStEVO8SGxkb7XGBEZQYU6j+3OVl9ADN
-         kAcz/zjxX+8k5B4pnEugOBOn7/3p2mURI2eQVtLPev2YJIyJddjK/i+Jook27Rs43pzY
-         MMNLzmK1fjuraVL8rLUvKZgV77rwTj2hM7+mUfxyUwnS+e75JfTey2mEA+yL+CP6F6sP
-         4AsOluxtH9bStXWqRPGtb+pwHYc+JqruzqdelSOF8Q2zMTBOyk5C65IpKB3a0Wv9oKTc
-         JFJg==
-X-Gm-Message-State: AOJu0YwVbjWS3Qeczj4xxcqtqrn7QvRecOwtldhOUVSamrzuhCkqm0Iz
-	xo34irBRNQ8wtM1WpqlGoqFyTSBOcAk02Q==
-X-Google-Smtp-Source: AGHT+IHdKHkIBgK6L0jIMlQ3v6xRghPzDBEX0+OVS4q0bI64XYK4k9HjphY6IR1YoqAe3wuzYlZfrQ==
-X-Received: by 2002:a50:ee13:0:b0:558:d5ce:dd74 with SMTP id g19-20020a50ee13000000b00558d5cedd74mr2944423eds.34.1705390049307;
-        Mon, 15 Jan 2024 23:27:29 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id fj23-20020a0564022b9700b00557f54cceb6sm6428657edb.4.2024.01.15.23.27.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jan 2024 23:27:28 -0800 (PST)
-Message-ID: <e2310177-0b18-4615-978b-83a4fcd05f6c@linaro.org>
-Date: Tue, 16 Jan 2024 08:27:27 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B2310A24
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 07:28:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705390111; x=1736926111;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=TSolB+oyi3C9hkuFFHhBMz7/4wt57eHKe4pzmzp1U0k=;
+  b=I85/NEr4UHIzjK/2d2WRHMQHNaD9o8jsRdqoxMmtHaSNYSelkYUuakfa
+   CjlG73n8eg6ij8FNeLLdJdBAFB4n+Eo7y2HCrybBfPepiOsYLZvA2BGiv
+   rF+1TkAfVhIoa1Y/FYYeA+BNR0btQDvOt5jHUjCyAi/nrqP0qsk4/tyUO
+   Nof0Taemr8MVVKCuNi+8AHlZmWpGB0C3eRYAhfEwlrN30LhApUO2TrvHj
+   7Z6dlDt3xlQnk5v2s1o0mt9rLHwfZuctBdn3jluxLYxo6ZDEeYd5MEjn2
+   orVIo6YlPnJLFyxW5f8kCxrl6eovsVN/j447MkAOoLt1ChQm2t+c/TILa
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="7145604"
+X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
+   d="scan'208";a="7145604"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 23:28:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="957056194"
+X-IronPort-AV: E=Sophos;i="6.04,198,1695711600"; 
+   d="scan'208";a="957056194"
+Received: from uschumac-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.213.254])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 23:28:25 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+	id A587210A17B; Tue, 16 Jan 2024 10:28:22 +0300 (+03)
+Date: Tue, 16 Jan 2024 10:28:22 +0300
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Nikolay Borisov <nik.borisov@suse.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	Jun Nakajima <jun.nakajima@intel.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	"Kalra, Ashish" <ashish.kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
+	kexec@lists.infradead.org, linux-coco@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv5 10/16] x86/tdx: Convert shared memory back to private
+ on kexec
+Message-ID: <20240116072822.pvzseyqry56eqa4j@box.shutemov.name>
+References: <20231222235209.32143-1-kirill.shutemov@linux.intel.com>
+ <20231222235209.32143-11-kirill.shutemov@linux.intel.com>
+ <89e8722b-661b-4319-8018-06705b366c62@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] ARM: dts: aspeed-g6: Add I3C controller nodes
-Content-Language: en-US
-To: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>, patrick@stwcx.xyz,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
- Andrew Jeffery <andrew@codeconstruct.com.au>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20240116065050.3657049-1-Delphine_CC_Chiu@wiwynn.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240116065050.3657049-1-Delphine_CC_Chiu@wiwynn.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <89e8722b-661b-4319-8018-06705b366c62@suse.com>
 
-On 16/01/2024 07:50, Delphine CC Chiu wrote:
-> Add default device tree settings for the 6 I3C controllers embedded in
-> the aspeed-g6 family SOCs.
+On Mon, Jan 15, 2024 at 12:53:42PM +0200, Nikolay Borisov wrote:
 > 
-> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-> ---
->  arch/arm/boot/dts/aspeed/aspeed-g6.dtsi | 148 ++++++++++++++++++++++++
->  1 file changed, 148 insertions(+)
 > 
-> diff --git a/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
-> index c4d1faade8be..ed5021001e7f 100644
-> --- a/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
-> +++ b/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
-> @@ -13,6 +13,12 @@ / {
->  	interrupt-parent = <&gic>;
->  
->  	aliases {
-> +		i3c0 = &i3c0;
-> +		i3c1 = &i3c1;
-> +		i3c2 = &i3c2;
-> +		i3c3 = &i3c3;
-> +		i3c4 = &i3c4;
-> +		i3c5 = &i3c5;
->  		i2c0 = &i2c0;
->  		i2c1 = &i2c1;
->  		i2c2 = &i2c2;
-> @@ -577,6 +583,13 @@ wdt4: watchdog@1e7850c0 {
->  				status = "disabled";
->  			};
->  
-> +			i3c: bus@1e7a0000 {
-> +				compatible = "simple-bus";
-> +				#address-cells = <1>;
-> +				#size-cells = <1>;
-> +				ranges = <0 0x1e7a0000 0x8000>;
-> +			};
-> +
->  			peci0: peci-controller@1e78b000 {
->  				compatible = "aspeed,ast2600-peci";
->  				reg = <0x1e78b000 0x100>;
-> @@ -1139,3 +1152,138 @@ i2c15: i2c-bus@800 {
->  		status = "disabled";
->  	};
->  };
-> +
-> +&i3c {
-> +	i3c_global: i3cg@0 {
+> On 23.12.23 г. 1:52 ч., Kirill A. Shutemov wrote:
+> > TDX guests allocate shared buffers to perform I/O. It is done by
+> > allocating pages normally from the buddy allocator and converting them
+> > to shared with set_memory_decrypted().
+> > 
+> > The second kernel has no idea what memory is converted this way. It only
+> > sees E820_TYPE_RAM.
+> > 
+> > Accessing shared memory via private mapping is fatal. It leads to
+> > unrecoverable TD exit.
+> > 
+> > On kexec walk direct mapping and convert all shared memory back to
+> > private. It makes all RAM private again and second kernel may use it
+> > normally.
+> > 
+> > The conversion occurs in two steps: stopping new conversions and
+> > unsharing all memory. In the case of normal kexec, the stopping of
+> > conversions takes place while scheduling is still functioning. This
+> > allows for waiting until any ongoing conversions are finished. The
+> > second step is carried out when all CPUs except one are inactive and
+> > interrupts are disabled. This prevents any conflicts with code that may
+> > access shared memory.
+> > 
+> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > Reviewed-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+> > ---
+> >   arch/x86/coco/tdx/tdx.c         | 119 +++++++++++++++++++++++++++++++-
+> >   arch/x86/include/asm/x86_init.h |   2 +
+> >   arch/x86/kernel/crash.c         |   6 ++
+> >   arch/x86/kernel/reboot.c        |  13 ++++
+> >   4 files changed, 138 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+> > index 8a49484a2917..5c64db168edd 100644
+> > --- a/arch/x86/coco/tdx/tdx.c
+> > +++ b/arch/x86/coco/tdx/tdx.c
+> > @@ -6,8 +6,10 @@
+> >   #include <linux/cpufeature.h>
+> >   #include <linux/debugfs.h>
+> > +#include <linux/delay.h>
+> >   #include <linux/export.h>
+> >   #include <linux/io.h>
+> > +#include <linux/kexec.h>
+> >   #include <asm/coco.h>
+> >   #include <asm/tdx.h>
+> >   #include <asm/vmx.h>
+> > @@ -15,6 +17,7 @@
+> >   #include <asm/insn.h>
+> >   #include <asm/insn-eval.h>
+> >   #include <asm/pgtable.h>
+> > +#include <asm/set_memory.h>
+> >   /* MMIO direction */
+> >   #define EPT_READ	0
+> > @@ -41,6 +44,9 @@
+> >   static atomic_long_t nr_shared;
+> > +static atomic_t conversions_in_progress;
+> > +static bool conversion_allowed = true;
+> 
+> Given the usage model of this variable, shouldn't it be simply accessed via
+> READ/WRITE_ONCE macros?
 
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+What do you see it changing?
 
+> > +
+> >   static inline bool pte_decrypted(pte_t pte)
+> >   {
+> >   	return cc_mkdec(pte_val(pte)) == pte_val(pte);
+> > @@ -726,6 +732,14 @@ static bool tdx_tlb_flush_required(bool private)
+> >   static bool tdx_cache_flush_required(void)
+> >   {
+> > +	/*
+> > +	 * Avoid issuing CLFLUSH on set_memory_decrypted() if conversions
+> > +	 * stopped. Otherwise it can race with unshare_all_memory() and trigger
+> > +	 * implicit conversion to shared.
+> > +	 */
+> > +	if (!conversion_allowed)
+> > +		return false;
+> > +
+> >   	/*
+> >   	 * AMD SME/SEV can avoid cache flushing if HW enforces cache coherence.
+> >   	 * TDX doesn't have such capability.
+> > @@ -809,12 +823,25 @@ static bool tdx_enc_status_changed(unsigned long vaddr, int numpages, bool enc)
+> >   static int tdx_enc_status_change_prepare(unsigned long vaddr, int numpages,
+> >   					 bool enc)
+> >   {
+> > +	atomic_inc(&conversions_in_progress);
+> > +
+> > +	/*
+> > +	 * Check after bumping conversions_in_progress to serialize
+> > +	 * against tdx_shutdown().
+> > +	 */
+> > +	if (!conversion_allowed) {
+> > +		atomic_dec(&conversions_in_progress);
+> > +		return -EBUSY;
+> > +	}
+> 
+> nit: Can you make the inc of conversions_in_progress be done here, this
+> eliminated the atomic_dec in case they aren't. Somewhat simplifies the
+> logic.
 
-> +		reg = <0x0 0x1000>;
-> +		compatible = "aspeed,ast2600-i3c-global", "syscon";
+Okay, fair enough. Will change.
 
-There is no such compatible.
+> > +
+> >   	/*
+> >   	 * Only handle shared->private conversion here.
+> >   	 * See the comment in tdx_early_init().
+> >   	 */
+> > -	if (enc && !tdx_enc_status_changed(vaddr, numpages, enc))
+> > +	if (enc && !tdx_enc_status_changed(vaddr, numpages, enc)) {
+> > +		atomic_dec(&conversions_in_progress);
+> >   		return -EIO;
+> > +	}
+> >   	return 0;
+> >   }
+> > @@ -826,17 +853,102 @@ static int tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
+> >   	 * Only handle private->shared conversion here.
+> >   	 * See the comment in tdx_early_init().
+> >   	 */
+> > -	if (!enc && !tdx_enc_status_changed(vaddr, numpages, enc))
+> > +	if (!enc && !tdx_enc_status_changed(vaddr, numpages, enc)) {
+> > +		atomic_dec(&conversions_in_progress);
+> >   		return -EIO;
+> > +	}
+> >   	if (enc)
+> >   		atomic_long_sub(numpages, &nr_shared);
+> >   	else
+> >   		atomic_long_add(numpages, &nr_shared);
+> > +	atomic_dec(&conversions_in_progress);
+> > +
+> >   	return 0;
+> >   }
+> > +static void tdx_kexec_stop_conversion(bool crash)
+> > +{
+> > +	/* Stop new private<->shared conversions */
+> > +	conversion_allowed = false;
+> 
+> What's the logic behind this compiler barrier?
 
-> +	};
-> +
-> +	i3c0: i3c0@2000 {
+Disallow compiler to push the assignment past atomic_read() loop below.
+Not sure if anything else prevents such reorder without the barrier.
 
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+And I don't think WRITE_ONCE() will do the trick. It only prevents
+multiple writes, but doesn't prevent reorders agains accesses
+non-READ_ONCE()/WRITE_ONCE() accesses.
 
-Anyway, please respect DTS coding style for order of properties.
-Compatible is always first.
+> > +	barrier();
+> > +
+> > +	/*
+> > +	 * Crash kernel reaches here with interrupts disabled: can't wait for
+> > +	 * conversions to finish.
+> > +	 *
+> > +	 * If race happened, just report and proceed.
+> > +	 */
+> > +	if (!crash) {
+> > +		unsigned long timeout;
+> > +
+> > +		/*
+> > +		 * Wait for in-flight conversions to complete.
+> > +		 *
+> > +		 * Do not wait more than 30 seconds.
+> > +		 */
+> > +		timeout = 30 * USEC_PER_SEC;
+> > +		while (atomic_read(&conversions_in_progress) && timeout--)
+> > +			udelay(1);
+> > +	}
+> > +
+> > +	if (atomic_read(&conversions_in_progress))
+> > +		pr_warn("Failed to finish shared<->private conversions\n");
+> > +}
+> > +
+> 
+> <snip>
+> 
+> > diff --git a/arch/x86/include/asm/x86_init.h b/arch/x86/include/asm/x86_init.h
+> > index c9503fe2d13a..3196ff20a29e 100644
+> > --- a/arch/x86/include/asm/x86_init.h
+> > +++ b/arch/x86/include/asm/x86_init.h
+> > @@ -154,6 +154,8 @@ struct x86_guest {
+> >   	int (*enc_status_change_finish)(unsigned long vaddr, int npages, bool enc);
+> >   	bool (*enc_tlb_flush_required)(bool enc);
+> >   	bool (*enc_cache_flush_required)(void);
+> > +	void (*enc_kexec_stop_conversion)(bool crash);
+> > +	void (*enc_kexec_unshare_mem)(void);
+> 
+> These are only being initialized in the TDX case, but called in all cases
+> when CC_ATTR_GUEST_MEM_ENCRYPT is true, which includes AMD. So it would
+> cause a crash, no ? Shouldn't you also introduce noop handlers initialized
+> in the default x86_platform struct in arch/x86/kernel/x86_init.c ?
 
-> +		compatible = "aspeed,ast2600-i3c", "syscon";
+kexec on AMD will not work without them, I think. But noops makes sense
+anyway. Will fix.
 
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check W=1` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
-
-Best regards,
-Krzysztof
-
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
