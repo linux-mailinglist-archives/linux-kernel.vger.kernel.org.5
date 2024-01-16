@@ -1,62 +1,72 @@
-Return-Path: <linux-kernel+bounces-27627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82F0982F332
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:30:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 61A2382F341
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 18:34:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2400CB23A11
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:30:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02D85B23A85
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 17:34:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F811CAB9;
-	Tue, 16 Jan 2024 17:30:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725DC1CD0A;
+	Tue, 16 Jan 2024 17:33:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n8mMRdRy"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="oB2T4v4o"
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1BD61CA87;
-	Tue, 16 Jan 2024 17:30:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C96E1CA8C;
+	Tue, 16 Jan 2024 17:33:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705426226; cv=none; b=VilWETcTcbsE5uCaUwqhh6YBULLUH9gMCBiBgQ/OGqZdACGix6IUsojpq8ZyKma+5YV8NWO65QaLjzwujtpECSHX/dyYQqzzsnRHqVV0KAOhbJnF22AbX4idIlEkis1oG2+KgRtZnAit5Izo7gp3QVCmJkLLz4ndIZRmc6w8a8U=
+	t=1705426433; cv=none; b=W1JhDbTc1vQsP1u2fjT4UhzvZrIF75cH5VdhClK2ZmOXKY3Rvi2chVP0mUJp1E0KKncPqtLooogiPhyGmpnjMp+Nm0xB/j+/9QwGpCP/ywuSzwzICy0b5KL87pfFNkLCdCpB3iFtpkBUd01QsvU1jbyLXSWFH+DmnWO+ARz/p6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705426226; c=relaxed/simple;
-	bh=MHbGCgDXoLO32ycO/d98J+MN0cEFtEnVDmEKDb8wMKM=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	s=arc-20240116; t=1705426433; c=relaxed/simple;
+	bh=eO4OQip7Vt8iBukXP9TAx2AYps5FjXjzaKh58KGbU+U=;
+	h=DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=tZJJ/0rUXOdKz2Wm0ZgIznEHSIsG0iRZj0TEwz+gvLgVZ9q4U9aNfLjPSkp5Oa2ZnWfAtDNqOiR9tzjucr+AYGM3E4AkkQIGea1QiW6sFjATIs757y1fb7MQ2slMgDga+k4sLQOlLCjHFCmPjCQhfvifl+dCm5nE0arzCunl4Dg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n8mMRdRy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 429EFC43399;
-	Tue, 16 Jan 2024 17:30:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705426225;
-	bh=MHbGCgDXoLO32ycO/d98J+MN0cEFtEnVDmEKDb8wMKM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n8mMRdRyuQK3x1YDlCIYh4rOrj4/+pme/Xl+Oz+G404d7dUqv++TTe9baz3z89B1p
-	 m1jNEdf7miWbDQ2Jk1lqN2ebccMcFj+zptjgjwnpBfWz2uGLbhfYv1XmtdDvWHJKjJ
-	 n2g3jyYfqTso8XYrVe9Gu67LtKhfyFncXfB1FgtawtMMOpFMIPYc+sW7WyZN4SrLy2
-	 RwaXDubX4IFBdk/9r/aFqWPlGu0Yxtrm5mWm9j8/oMEJbgf72OpBEvudQAWMTlxiqV
-	 eg5JFZr33fDOodbi9vaRudll9qep9HfEsiw2NeXtf5wZfiK93RlGoi/b0RmhDANJwj
-	 5wWjTppvXIO+A==
-Date: Tue, 16 Jan 2024 11:30:23 -0600
-From: Rob Herring <robh@kernel.org>
-To: Petre Rodan <petre.rodan@subdimension.ro>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Subject: Re: [PATCH 2/6] dt-bindings: iio: pressure: honeywell,hsc030pa.yaml
- add sleep-mode
-Message-ID: <20240116173023.GA139792-robh@kernel.org>
-References: <20240110172306.31273-1-petre.rodan@subdimension.ro>
- <20240110172306.31273-3-petre.rodan@subdimension.ro>
- <bc37f7d8-c43f-4751-9216-fc95f439b2f6@linaro.org>
- <ZaDqlmXJD6if1xK7@sunspire>
+	 In-Reply-To:Sender; b=mgt7i0rhcF4NmKvI9Toxh/tR73zBv6sowCCL5cINF4EjskIlMfBvqUfHQUviYLuWFgDcmfseGZiZFbH9fPtRJLLgGyC4TLuD3RXeS+oj9F3j5tJh9CEXol6ZJfoji3rUG4idkpwQJdBc09ecuKeeceQybAXve9D/LddMnlSviGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=oB2T4v4o; arc=none smtp.client-ip=62.89.141.173
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=S+5my9jXWKBreUOHlR6pw/2iHlpnFX5ZhPEFeXmOIzU=; b=oB2T4v4oLxkQEl5he5aGeli2CM
+	22r5wlr+d67aycYttFH91VKhE4z4GFMtZCLZ/t5N5Dy8EnFkFyO35Kx+42NeZjon4az/S7jao3zQt
+	oOc30bwbkfVK/bIYToXwaAZijTrmhqgvTSExU0PZXKz9Y32gME5PiJX6f/o/VOYV8YFOoTBQd5cZR
+	N/U6CgHtJ9kHws5CwSe0OijCh0Y08yklS2uRQzVYk4NnUCpXG4Kgq1QDaW/CY7H1uoe0ZCn6BPK1l
+	dDTU5uHuJNYSfiOyxHFVJdpvoTrZBff9+VvcrIVStbRrfPIka65NVBC0E6aS32uosVxIU6OnOllvV
+	x718UZbw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rPnJN-004gXh-1E;
+	Tue, 16 Jan 2024 17:33:17 +0000
+Date: Tue, 16 Jan 2024 17:33:17 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Casey Schaufler <casey@schaufler-ca.com>
+Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>, brauner@kernel.org,
+	chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+	kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+	zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+	eric.snowberg@oracle.com, dhowells@redhat.com, jarkko@kernel.org,
+	stephen.smalley.work@gmail.com, eparis@parisplace.org,
+	shuah@kernel.org, mic@digikod.net, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+	selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	Roberto Sassu <roberto.sassu@huawei.com>
+Subject: Re: [PATCH v9 13/25] security: Introduce file_release hook
+Message-ID: <20240116173317.GL1674809@ZenIV>
+References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
+ <20240115181809.885385-14-roberto.sassu@huaweicloud.com>
+ <20240115191508.GG1674809@ZenIV>
+ <3b440f064a1ae04d69f7e85f4077f8406c0eac67.camel@huaweicloud.com>
+ <00b7ff22-f213-471a-a604-658a9af80d59@schaufler-ca.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,58 +75,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZaDqlmXJD6if1xK7@sunspire>
+In-Reply-To: <00b7ff22-f213-471a-a604-658a9af80d59@schaufler-ca.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Fri, Jan 12, 2024 at 09:30:30AM +0200, Petre Rodan wrote:
+On Tue, Jan 16, 2024 at 08:51:11AM -0800, Casey Schaufler wrote:
+> On 1/16/2024 12:47 AM, Roberto Sassu wrote:
+> > On Mon, 2024-01-15 at 19:15 +0000, Al Viro wrote:
+> >> On Mon, Jan 15, 2024 at 07:17:57PM +0100, Roberto Sassu wrote:
+> >>> From: Roberto Sassu <roberto.sassu@huawei.com>
+> >>>
+> >>> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
+> >>> the file_release hook.
+> >>>
+> >>> IMA calculates at file close the new digest of the file content and writes
+> >>> it to security.ima, so that appraisal at next file access succeeds.
+> >>>
+> >>> An LSM could implement an exclusive access scheme for files, only allowing
+> >>> access to files that have no references.
+> >> Elaborate that last part, please.
+> > Apologies, I didn't understand that either. Casey?
 > 
-> Hello Krzysztof,
-> 
-> On Wed, Jan 10, 2024 at 09:48:34PM +0100, Krzysztof Kozlowski wrote:
-> > On 10/01/2024 18:22, Petre Rodan wrote:
-> > > Add sleep-mode property present in some custom chips.
-> > > 
-> > > This flag activates a special wakeup sequence prior to conversion.
-> > > 
-> > > Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
-> > > ---
-> > >  .../bindings/iio/pressure/honeywell,hsc030pa.yaml      | 10 ++++++++++
-> > >  1 file changed, 10 insertions(+)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
-> > > index 89977b9f01cf..350da1d6991b 100644
-> > > --- a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
-> > > +++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
-> > > @@ -86,6 +86,15 @@ properties:
-> > >        Maximum pressure value the sensor can measure in pascal.
-> > >        To be specified only if honeywell,pressure-triplet is set to "NA".
-> > > 
-> > > +  honeywell,sleep-mode:
-> > 
-> > "Sleep mode" naming suggests there are choices, like mode foo and mode
-> > bar. Probably you want something like "sleep-between-measurements" or
-> > something matching how does it work.
-> 
-> "sleep mode" is the terminology used by Honeywell and it defines a chip capability.
-> it is present in the HSC/SSC and ABP series of ICs.
-> 
-> other such options (capabilities) include temperature output in the ABP series.
-> 
-> the action the driver needs to perform if this option is present is to provide a
-> wake-up sequence before reading out the conversions.
-> 
-> now regarding a rename of this property, I would vote to leave it as is - for the
-> users to have a 1:1 equivalence of terms between the driver and the datasheet.
-> 
-> I say that because for instance in circuit design when a part symbol and
-> footprint is drawn based on a datasheet it is recommended to keep the same pin
-> notations and the same block diagram as in the datasheet, precisely for this 1:1
-> equivalence, so there is no uncertainty for the end-user.
+> Just a hypothetical notion that if an LSM wanted to implement an
+> exclusive access scheme it might find the proposed hook helpful.
+> I don't have any plan to create such a scheme, nor do I think that
+> a file_release hook would be the only thing you'd need.
 
-At least add a '-en' suffix so it is clear this property enables the 
-mode. We have both flavors (enables and disables). 
-
-Low power modes between samples is pretty common on these devices. We 
-should consider if this should be a common property. Jonathan?
-
-Rob
+Exclusive access to what?  "No more than one opened file with this
+inode at a time"?  It won't serialize IO operations, obviously...
+Details, please.
 
