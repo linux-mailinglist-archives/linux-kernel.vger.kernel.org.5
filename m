@@ -1,74 +1,70 @@
-Return-Path: <linux-kernel+bounces-27016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-27015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3AFC82E92E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 06:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D24AC82E92B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 06:21:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0520B22037
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 05:24:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31E0EB2160B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 05:21:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BCABCA7C;
-	Tue, 16 Jan 2024 05:24:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E263C8831;
+	Tue, 16 Jan 2024 05:21:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="eWWlhb/v"
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2043.outbound.protection.outlook.com [40.107.95.43])
+	dkim=pass (2048-bit key) header.d=siemens.com header.i=@siemens.com header.b="Xi/bOS7N"
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2082.outbound.protection.outlook.com [40.107.7.82])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA6DA848D;
-	Tue, 16 Jan 2024 05:24:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7182B848D;
+	Tue, 16 Jan 2024 05:21:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=siemens.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I51up3kNdary+u1O18YUDT1lp8+4gVfloXN2wo3h88MlFV6x9GlA9QZmcuCRuowNwvzceM0+YT9Pu649x5xZf9g6H/g4Gf51BaC5a2ENslG7NYHcb+tInAmIHPGFOMmyzBKr9ckIIARw4XuFqmCzPoMiKRje0zFPDImxsKvG+ICjz4qmNYzcg1y58EEAwNr7uD0ubzo5uUgcok4JcWqp432oY21aGnHdIQOv3VJtNJLBUrCNyRHB53d8W+5ywH5LJIPaAwtUmLgrVJyELTzP1AZWWgzF/8jCReKVDQeSiGaXI43iT7Wn/AWKiVwVlAAJC8h8BW1hiu1eRKif5tiRwA==
+ b=aaoEU9+XEhRAWhbQndt2EvbfCNMu90od9/LaAGJrm8jog+FnM4ANRZS7onG+UXDD+ojIjRPVrQv2/c5fkDAfx5lhExqrg33/2sZwdtNGZKAUiRrUzq4RKl7nMQrqkGZpk0DC4g+DdOqAh8fW1Czm39ulevMve5wI+kBxTsgprVM0/+CVl0w8YhQd3mVdScoAKihS9/HzZxGunT94c2t0nlYWETtsT2UmlBy7HBK72ibbOCpFjh0zY6IAMX8qH6+AdJD8mDy0OMcSOQ68BKEpJ1vqkt0wr6XDrVAYUmlvLVEYdkqQ/QT+/3ReEIw64BO/93GTfM5FBpe2l9Mp7LL3mA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2Ooqg87qzWaoQ/LeFa2HQ1pgek4zO8RZ/havdmfYR4Q=;
- b=ZpbbovhQDzVLii9wfx7oNV43yfDQKppL/OGBryztitv9aa4gXI6AemB2h9XOubRnt/cE0yKpYfWVtVlp1nrVBrmAJw89BTWz5+Bie0v7nd5GgkoCjTDFeEhfrO38JEY7YIctitvlT478ILhEqzZ4qzjzrbNmC+uCtVyqzbxm37dZr9vUscazvttKijRtl+78jaid0yXMK6KKDu/uB7IweyeeXH2lKLw6fYxnFCm8w/hBzHbEHrVJrxxId++3V2x2hr70wH2+cVQSi3orBV7Xv92O1ePh63HJC7P5mzxOHIRznNDwIDqb5mUX8sJG2Cl3+fD61Gbet0VJLzBzKYDbcQ==
+ bh=mM5EiZ218p5ZKoF4Yw+8FbuM2XLJ5L0Vwx6aU6mrrMU=;
+ b=GHVVIE+El4RpLprn5EKyRmKYvp6lsvENBoFfbT0ZAbOTwFZpDu3R7ygOrQX4Eu7cc3j4ZEZIDnip4MBOuofGDtiVbRre92z/php1D6khvKmsqsLR/koQBgiTqW5FQ9g9AvtOD531Bk0/az17tbS63P18fE/qXZuRlJRY3cix5omb+AYAH8t6B38yyU4r7aF9N+uUAXLlCPzfg/kq8/xo44kgTtBTL+uGsQtSkVbAMkFwllYYsz30Xq4ri/FdL10DoXIP5Ue9pk6pW6bLsEuJYiyEFWRHMl/NgVaZKZU7wStkZukGx+/r84aQTJMHH9HMNAhUYJHhX7ITxQrzaAO8FQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
+ dkim=pass header.d=siemens.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2Ooqg87qzWaoQ/LeFa2HQ1pgek4zO8RZ/havdmfYR4Q=;
- b=eWWlhb/vuKxv5fbECVR/x1SQ+yFX439Gs8yJj3jkAH6ckKsWyyrxaerMgSrqI/n/CF+mgDYo2aeNsuWBP/F/kyHYXRgD6dEYCmXip+HNF5PlA1p2nlki+/xBJeJtSsWlb8LqeaP3hQGh0HIQD+5tbejy9HPz8Gfq6wKePbL60M7HTBJDVbnAAoA04bAoxVunSlYoXzZQ1FTsUuqTsEK149LidIzHMAnzJ0wL3YfnZpilgokTEgDiiCFsCPycwvjiF4Kovzz1Cw8GBV8qHnuuDH8eBd4gjS+xRxXlX7WTiu5Jc0lu2VYdZAvNg4zC13pN//41gOnJUUtEGnhi0nCyVw==
+ bh=mM5EiZ218p5ZKoF4Yw+8FbuM2XLJ5L0Vwx6aU6mrrMU=;
+ b=Xi/bOS7Nf4XpZvWP5L+kBMxY07F8kd0B7si2zfseeEw9PukbMvUn5+6kP4h1d6MRUt2/4HGdrjaaMayyS86zmhX9VMhLs3DpzFRq3Bjrw4nhuHz8Y4yJut3dpiTasSvWOLf7JtCuhO7OPAyaAlg1T7cGingz3wsZQL5Er/7ztubQFFADSXt/VGuRkSBQmeHSp1AziXixXZP4w3G+4fKj7UCIQeHWejTcrFVx7/WVZ4SoLTd1cCSK1z3xadC45caXaHm/qlsFewTHm9h1DQLfE9Y6EmxJtFCueTFZ2kRCgPLO4pheLOxLOQjof32hohIqwPXRhHxKCGMUkJSmGQKgDQ==
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
- by PH7PR12MB8054.namprd12.prod.outlook.com (2603:10b6:510:27f::15) with
+ header.d=none;dmarc=none action=none header.from=siemens.com;
+Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:588::19)
+ by AS1PR10MB5601.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:478::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.29; Tue, 16 Jan
- 2024 05:24:26 +0000
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::ab86:edf7:348:d117]) by BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::ab86:edf7:348:d117%3]) with mapi id 15.20.7181.020; Tue, 16 Jan 2024
- 05:24:26 +0000
-References: <20240115211516.635852-1-ankita@nvidia.com>
- <20240115211516.635852-3-ankita@nvidia.com>
-User-agent: mu4e 1.10.8; emacs 28.2
-From: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-To: ankita@nvidia.com
-Cc: jgg@nvidia.com, alex.williamson@redhat.com, yishaih@nvidia.com,
- shameerali.kolothum.thodi@huawei.com, kevin.tian@intel.com,
- eric.auger@redhat.com, brett.creeley@amd.com, horms@kernel.org,
- aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
- targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
- apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
- anuaggarwal@nvidia.com, mochs@nvidia.com, kvm@vger.kernel.org,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.28; Tue, 16 Jan
+ 2024 05:21:39 +0000
+Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::8d16:7fbb:4964:94fe]) by AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::8d16:7fbb:4964:94fe%3]) with mapi id 15.20.7181.026; Tue, 16 Jan 2024
+ 05:21:39 +0000
+Message-ID: <578aae7c-4069-4071-ba4b-cc86d3b516c1@siemens.com>
+Date: Tue, 16 Jan 2024 06:21:37 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] riscv/efistub: Ensure GP-relative addressing is not used
+Content-Language: en-US
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Palmer Dabbelt <palmer@rivosinc.com>, linux-efi@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v16 2/3] vfio/pci: implement range_intesect_range to
- determine range overlap
-Date: Mon, 15 Jan 2024 21:19:33 -0800
-In-reply-to: <20240115211516.635852-3-ankita@nvidia.com>
-Message-ID: <871qahzw8m.fsf@nvidia.com>
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR21CA0016.namprd21.prod.outlook.com
- (2603:10b6:a03:114::26) To BYAPR12MB2743.namprd12.prod.outlook.com
- (2603:10b6:a03:61::28)
+References: <mhng-8a4a5f85-faf9-405c-95a0-78cd04ec6509@palmer-ri-x1c9>
+ <56b52d4e-9dc0-400c-a141-7e70f5c72afa@siemens.com>
+ <CAMj1kXGR1aQdvej+0drfim-ZP27ZhO9UR_i_PT6F+hsV0UvbJw@mail.gmail.com>
+From: Jan Kiszka <jan.kiszka@siemens.com>
+In-Reply-To: <CAMj1kXGR1aQdvej+0drfim-ZP27ZhO9UR_i_PT6F+hsV0UvbJw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0134.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:b9::8) To AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:20b:588::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,122 +72,140 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|PH7PR12MB8054:EE_
-X-MS-Office365-Filtering-Correlation-Id: ac5933cd-492c-40b8-0750-08dc165367f4
+X-MS-TrafficTypeDiagnostic: AS4PR10MB6181:EE_|AS1PR10MB5601:EE_
+X-MS-Office365-Filtering-Correlation-Id: fbad8732-8d3f-4acb-3db7-08dc1653047d
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	vWoL96bJNHy2DiEv5/sYhjEdy1tPWTa74CgbmS9JOQTe/y94ObYTRllfwi1L3z1/PHIZAu+yg1EIG8KhXeTPbsZrk0Bcgm9thvSRRpXq7n6DAIhOi0iYYjqqv3N/cbkuJ49QbJk7fSjWrXzLhq5h2UNutKeB+8M81rC9GotNd+ITfMdVowUtMSXj9x0i+bnc1x04yrcFASuYWtGiQs6vJEoWxQ5VFPYLY6fQmE9jNYycvlSLkpV9naKkqkOH8P/J+fO4uWiCSMI2yWFz6lzPuEQ6A+KLtwACslbEqS6tGJuDXd7QgzDf15VKTX1GRd97Tjn+p6i/dZ9vLxHCgtDlKgFOhnCm7JClcpZppfRUG9scQWPmDRCFHTSf8FLYvpL8+EotFiEBdnCwMtJeSl1sJzF6lq1R5Rt+mXFhPqBKv860yPcL+SOMRPVu2M+9U8ikzI1+XgXJRMw1foIIUJc2f52jah/TeDPDtBb5Mh22rbt6KLOAp28P7DgwtBICTqPpVUoU7a/hSIPAj013DVZcCgDoZ3d4jNa6P7bUceFq/dOlfM+FkYjnT2VXn5DL2/JOoEbM2FgyPROFtWLdbpfvUO++qr8HuhKub22oAf/HaYQ=
+	WSRTu3UvDO7JFWVyrkfcne2RxoaKc2VrqDPWyaN6gHWJZ2koLv9wz+CIJLrzx50swY5XlpBVWQtKJcwL+BjJ51GbZOrUTaYhkGJ6HM8I/H3ShLh68RqtlTRJi93B3Ayw38IjGHaNSdbo20hklkOARizPQruXqkefY3uxGqYlfYhjiBPGCNeT6Buekwl376Qp4D8g73qoN4I5+9kgfTgkG7AyIRFAkH5Nf6vDUEktYhhtdcsHxBjcaQDW7LIFc2sO0CxJGRhv5q7QlKXvXZhsnnSMeKMKmvyZdH46aaMWDWrENdR77Z2J9EFX9zPspLhBD5+XYCj0hSIreCr4T/mMEKRdrrZG1PFB/tvrBj33u3aDRW9g9mSAQKFFWsGoSZR4D9G+VPXpCxlGcr4rjeuo4dNWVN2E3fQG8GdEioHvvnf8LCxfQ+CtK4qvJWKdCe7gKGA8TnSyjDOgQw0xFTmg9xkz8RFuWERZGCrUSMe4rYYBHhnfQQ6EpTqxkaS19duAlk8qz2l7lUp6x6MYcFRJ+GQRUWB3wmIwfLiAdz1VWM+aKsUg4GnlqEJZ3PLIt9niThvFFzbZ6ZzENpPAXpagQ+HxK92oPdt9ynM4Yi3zNp+BqsPeg0PaMRVIox5pFWI6okL8+vzobB7EBKLOcELG5Q==
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(376002)(396003)(39860400002)(136003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(86362001)(83380400001)(2616005)(5660300002)(6486002)(6506007)(26005)(6512007)(38100700002)(4326008)(2906002)(6666004)(478600001)(966005)(37006003)(66476007)(66946007)(6636002)(8936002)(8676002)(34206002)(66556008)(41300700001)(36756003)(316002);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(396003)(366004)(346002)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(41300700001)(38100700002)(83380400001)(36756003)(31696002)(86362001)(82960400001)(44832011)(66946007)(316002)(66476007)(66556008)(6916009)(2906002)(8936002)(8676002)(4326008)(5660300002)(2616005)(26005)(6486002)(53546011)(6506007)(6512007)(478600001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?BVnx1AgIfiTB322/rrcKXU9ayM1TFrqCW9Sv2vhGvx4awrTwBSoCdc2AtvyF?=
- =?us-ascii?Q?BsKi7HDNFLQIjAEbakrbZ28edB0ICv7Iq/vnWgpZCYFLhCOSovr5CXFtyum3?=
- =?us-ascii?Q?m+576LN6x8pIx2mhdwbIi+l0h+6T4Y9AKG0ZU+eeWYuATHxT5vCeGUu9UBd5?=
- =?us-ascii?Q?JDGp7KQg/87pDW3rJozb8uOIQvXJmYBvlDC2E1E56AS/cUjHM8hjOSD2osxW?=
- =?us-ascii?Q?zUi3parpCB+ec7mJte4cXBdXwUpBCGgTz6/xYrs8QXg5Wx6NxEoAfjnkrJ0z?=
- =?us-ascii?Q?Ddr+Ck3BlR0WnjE6B8iDwqQbsSGkMl1+IkBZAzd3G+1VyVG2SZGY/5ShYRkg?=
- =?us-ascii?Q?oZp140rSb3lliykCcOHVJRoxiy3+fb9ILaKxx4buJzCznI+yg1NP6LkuaMfX?=
- =?us-ascii?Q?hRsftzQSZeRSXHXbKLIWEYVtQjbBEn6g3LvCl/X4uxtUMuSObTWzCp+8ZieP?=
- =?us-ascii?Q?Qwy08ZXUqD9XI8oxBAPHPZXYjI+pwXkUBc99ck4su5dW+e9K0mZemXZj0peA?=
- =?us-ascii?Q?ntWEKmvoEDJV/kh8jvDB6vHcDSSgm1dnwXLHf1RMoyq4xTlI/fQgMk4flE2J?=
- =?us-ascii?Q?ki4mm0pZwfeSud/RbJs9hdaLvZYIcZW/MDbghr2akzOZ38i+ikt1XEn4Jq2a?=
- =?us-ascii?Q?BpcsdH5ga77GfnxkGU4GTHgDZKWib6TXVOJrZo2LMZdsm3l7phGGl5v1vgO+?=
- =?us-ascii?Q?RE+gdKFFIC6FUVxj8YVgLO6hsZ3FGSDNjNHhhIz2++kC1zeGlJjAeRhzGIMx?=
- =?us-ascii?Q?1wRzJJ9i3otQvcT82kKamSaWzxr8lRXG4FH+kNWONYw5tbOhb+0lJIWS0nDK?=
- =?us-ascii?Q?h4lHZ4KjdKVVWEv1BdnhGiDSp2x6pS06xG+OpeF/+esOhvLWl3KtpJ6/aC8L?=
- =?us-ascii?Q?e/F4D6RZ7nhLSgD+yY+n5qrgFNKSW4VuIrGCXhfiZVtTY/CP1lwdrVxhSgpD?=
- =?us-ascii?Q?agw50RhzbgGJn65Wyqz1HJJ3nIpWHsS5CgBctdbJHxK2S5KylYVtf7KOP4jO?=
- =?us-ascii?Q?bkR0QlReqESS3VgC3nNsFz96F/i88yq9VdW4mcDRpCERiUfmc1QHDQnpvpp8?=
- =?us-ascii?Q?PVYQfxJdyBd3AER7x2SmcH3q5a6crq/gB8s1og/B4HTGFlpT6a3zkldYVozf?=
- =?us-ascii?Q?52mCE84dTeNwJZ2Dhk3HW/9MysrgDtTMKGlhH83w3eOOHs1I6CNBEezxduMe?=
- =?us-ascii?Q?m+86cQCnPgFSnUCUQpuvbCS2m4lzyTRGWiL3OBwdaZqga+LJPXhSpFdrCFsh?=
- =?us-ascii?Q?6ODq1z8h+IANMTsUEHJN3eekOOeqrMqmWcf2kCwclSVTLAvzNMIrpmqkY8I+?=
- =?us-ascii?Q?o10m5z9dtG+/ytIPMqj0WIkk4kKB8+979B3X76gWlJiuRESWQZeECkb5t7wD?=
- =?us-ascii?Q?5V0EiMJk0Eq0bMXyD5rhPGb/1e37v61YJ6ZOH4smAyW0o7gf/fGfXL3kTdhy?=
- =?us-ascii?Q?og3/NUWjXotYcvAsiBy2VZAYfYeLC6UtaTmh2Aui20jNffkRv1whspfKDitD?=
- =?us-ascii?Q?TsoNKbJg273mBWJSndg2BPwK4dG1+m1t7gVimG3xrodsieL24aC58UeyIDDE?=
- =?us-ascii?Q?pcq4AdkEKbfcw5XPCLffpr3rk91Z70CFbWQl5cVT?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ac5933cd-492c-40b8-0750-08dc165367f4
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
+	=?utf-8?B?Wk5jVmRXZ3crZkQrY2h1TEpVamxHcTdFTUYwbUEvUzV3SWhKcXBPMis4Y2dq?=
+ =?utf-8?B?cENxVmY0SllTMEY2bjc3RElNdWxaWUNsWER1Y254Zk1YV3hLU1dHczFNalVs?=
+ =?utf-8?B?TnZQVUk0MzVTNnVBQUtoUncyNG12TmRlZEZPMldvSHJNeWJkR1QxM0hldWpt?=
+ =?utf-8?B?UDVDZmw1UkRCWGh3SCtZOHFiQW9jamN4V0w0SnRwNTUxZm5yVWZ1bnNGZ05w?=
+ =?utf-8?B?Ylh4MGl5dmtaVmRQbjNRcDQzamxEMk5TWjRqMnVxc2tJSERyYkQrcHJCbXM4?=
+ =?utf-8?B?ZDJKR1hxNUFEYW5GbmRCOVBpVUJ5YjE1ZjIrUGdBY2FHOENiWDAvajlHdGEv?=
+ =?utf-8?B?UlVwMXkyTmx1OGRrRDdXMzV0ZmZ4YStqZjl2am1oTHJ0R3I2S09ZS3hFa2Qw?=
+ =?utf-8?B?MTJKZXIrNThCMXNmYUM3Yk1ZbUNOdVIzOGlSNG9FRE8wRmRYYmNKV3kyTlpo?=
+ =?utf-8?B?K1hpbG5TYXJqVnJGVDdaZGljWmlSOVA1RFFIZ0FXd3BXTWdjUjh3dkwxL2Rs?=
+ =?utf-8?B?ckZrc055RDF2NitXQndGSW5QRUhseGRJQ3FpY0lwamZuODNSWGlpQk5WN0Vj?=
+ =?utf-8?B?SitTRWVoa2p2eGlHMFRER2doK0htMVJKQkVTVHhtVFFTQ0VESjNxVDZOeXJG?=
+ =?utf-8?B?S3hsZmpQZmpYR0NFa3Z4SzFzcThCZGNaeW9oTnZzdVZ6eUlrdGZ0S3BOS3R0?=
+ =?utf-8?B?SmpQSTNMV3o3L3hMYzJxampmdVhQU0xCaDBZckhaRkd5d20zSElRL2lzYlNa?=
+ =?utf-8?B?a1FKeWpSSEZpL3FLNFhQbVJ5aHBvRk85aHoxQUdiUUh0dndNSHEvY09xMCth?=
+ =?utf-8?B?NCt2RWVJRnFHM3hqU2lYcXkzREtwd2E4d3NIeFllWFJWS1ZGUFZDSkdpRWN6?=
+ =?utf-8?B?NHhCcFpnTjU2OWlKWURLR05LWjZwcTVUckR5NC9XWm5xS0tDSm14VEo5c201?=
+ =?utf-8?B?K05UdlV1M3BDeEtEbURpTG05N2hpWHVBaFcwblJpL0dqUUwxODlZa25QMSs0?=
+ =?utf-8?B?Ry9CYVJKNXpnVWRYbjlzdFE1RU5OQUQzd3NKRmxyakxLamFIYWxNeldDMk16?=
+ =?utf-8?B?eGthYm9VWnBTQ2Z5a09DSEV4T3U3S0QrK1Q2T3pMbm1JYmFEaFVpcnVaQzgw?=
+ =?utf-8?B?ekxrRHFyMkg4dTVKdXZFMi92aUViN1VxSHBDNGJ2NzFEK1ZHSk80UEFHT1g5?=
+ =?utf-8?B?Q214KzdaYkI1NVp3elViTGZDTWZvbDVUdkN1c2J6Y3Y2bTVFcUcySmR2QTNR?=
+ =?utf-8?B?Z2NGR0Y0QUpNa0Ywb0l1UENhYUtqZmRubEpOR1lWZkoveGo4M3A2dnRTNVNP?=
+ =?utf-8?B?SDFpUFlMbU0yRGtBdHgrRG43MTc2K0JudEk3ak1RTkI4dkRZUHFKa2NOSW9p?=
+ =?utf-8?B?QW9xRUV4bk9zTVk5V2c4UDRoQjZEZlVvU253Q0VqZ0VjSnBiY3RxdEcwNloz?=
+ =?utf-8?B?bXI1Q0wvOVBiRm1wbXdCanRKK0ZEb1YrQm9KRmxlZTdINnErN0lOeVFFb3RD?=
+ =?utf-8?B?akJOTVlkYXcvM1BqODJaR0JaZ3FjbmsxR1BHNUhNbXdZUzVxUVppY0lYUVBB?=
+ =?utf-8?B?ajlOOGRBYnR2b29Lb2c1UlpaUGtRdEYyUXEyaklwbDZOelZuTFhEWDZjZmxE?=
+ =?utf-8?B?TnVWS2t1dFc1SEE1aTA3S0RMNGpKSXZnbXNadWtlN0lGYWZodWdXYitmOXVS?=
+ =?utf-8?B?bm5hNTdtMEhxaWppaDhhVC9paFVkY2NUczllUStzc2lZTVQ4R216bWNJcXMw?=
+ =?utf-8?B?M1lnRlRBby94MlRaUzBMeGg4SklmbGI0OVk0QTlIZ3NwejMwUExIMWZpNVBP?=
+ =?utf-8?B?a3M1SzJCRmR4bkZoWVh0K2dET0pQT3dsV3RKYVZSOGJoUFBhbXhiVzBRazZv?=
+ =?utf-8?B?RzVNdEhEcytPa2xUM05IU3pvUzlJSmNiRjVKbENzbHZGeXBsTGgzTndTMEJs?=
+ =?utf-8?B?TlpmVnRtWmJXem5XUm9OVUw1amRldEZqcGRCRWZyMlluQk5FWWNPam1yckdI?=
+ =?utf-8?B?cTh3QlVINW1aeWtBQko5QjRQRCsvY2lIbnVBUExDZS82UG1BRkdFUjFmb3Fz?=
+ =?utf-8?B?Q21odHpZbWJXM1g4TnExSnFVTXdYZmtsRWVZaUJ6RERVdHRPTEEyWFZIMXp1?=
+ =?utf-8?B?ZE1hTnBFOWxYTEwxU293UWtORVV1VUlrWFFINmNOTVVyZlRGSXI5RGluSzd2?=
+ =?utf-8?B?a1E9PQ==?=
+X-OriginatorOrg: siemens.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fbad8732-8d3f-4acb-3db7-08dc1653047d
+X-MS-Exchange-CrossTenant-AuthSource: AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2024 05:24:26.3505
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2024 05:21:39.5044
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sSYm8nAcy4SIZ5ywD5aKEJHUH4a4+wufWseGUZX79xhX8GEZf+fMdLh3hvRzr93YXSjLi90r5bBDQnVZCqYpjQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8054
+X-MS-Exchange-CrossTenant-UserPrincipalName: IImCW02sKuqIvIGcfthuDZTUfmTWeXJSVIN+9u5pII5+WDUfpE1hQdkwye4+Q1UdlJ6BM62U4hXeX84rqP9QMQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR10MB5601
 
-On Mon, 15 Jan, 2024 21:15:15 +0000 <ankita@nvidia.com> wrote:
-> From: Ankit Agrawal <ankita@nvidia.com>
->
-> Add a helper function to determine an overlap between two ranges.
-> If an overlap, the function returns the overlapping offset and size.
->
-> The VFIO PCI variant driver emulates the PCI config space BAR offset
-> registers. These offset may be accessed for read/write with a variety
-> of lengths including sub-word sizes from sub-word offsets. The driver
-> makes use of this helper function to read/write the targeted part of
-> the emulated register.
->
-> This is replicated from Yishai's work in
-> https://lore.kernel.org/all/20231207102820.74820-10-yishaih@nvidia.com
->
-> Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
-> Tested-by: Ankit Agrawal <ankita@nvidia.com>
-> ---
->  drivers/vfio/pci/vfio_pci_config.c | 28 ++++++++++++++++++++++++++++
->  include/linux/vfio_pci_core.h      |  6 ++++++
->  2 files changed, 34 insertions(+)
->
-> diff --git a/drivers/vfio/pci/vfio_pci_config.c b/drivers/vfio/pci/vfio_pci_config.c
-> index 7e2e62ab0869..b77c96fbc4b2 100644
-> --- a/drivers/vfio/pci/vfio_pci_config.c
-> +++ b/drivers/vfio/pci/vfio_pci_config.c
-> @@ -1966,3 +1966,31 @@ ssize_t vfio_pci_config_rw(struct vfio_pci_core_device *vdev, char __user *buf,
->  
->  	return done;
->  }
-> +
-> +bool range_intersect_range(loff_t range1_start, size_t count1,
-> +			   loff_t range2_start, size_t count2,
-> +			   loff_t *start_offset,
-> +			   size_t *intersect_count,
-> +			   size_t *register_offset)
-> +{
-> +	if (range1_start <= range2_start &&
-> +	    range1_start + count1 > range2_start) {
-> +		*start_offset = range2_start - range1_start;
-> +		*intersect_count = min_t(size_t, count2,
-> +					 range1_start + count1 - range2_start);
-> +		*register_offset = 0;
-> +		return true;
-> +	}
-> +
-> +	if (range1_start > range2_start &&
-> +	    range1_start < range2_start + count2) {
-> +		*start_offset = 0;
-> +		*intersect_count = min_t(size_t, count1,
-> +					 range2_start + count2 - range1_start);
-> +		*register_offset = range1_start - range2_start;
-> +		return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +EXPORT_SYMBOL_GPL(range_intersect_range);
+On 15.01.24 18:34, Ard Biesheuvel wrote:
+> On Sat, 13 Jan 2024 at 11:35, Jan Kiszka <jan.kiszka@siemens.com> wrote:
+>>
+>> On 12.01.24 19:56, Palmer Dabbelt wrote:
+>>> On Fri, 12 Jan 2024 10:51:16 PST (-0800), Ard Biesheuvel wrote:
+>>>> Hi Jan,
+>>>>
+>>>> On Fri, 12 Jan 2024 at 19:37, Jan Kiszka <jan.kiszka@siemens.com> wrote:
+>>>>>
+>>>>> From: Jan Kiszka <jan.kiszka@siemens.com>
+>>>>>
+>>>>> The cflags for the RISC-V efistub were missing -mno-relax, thus were
+>>>>> under the risk that the compiler could use GP-relative addressing. That
+>>>>> happened for _edata with binutils-2.41 and kernel 6.1, causing the
+>>>>> relocation to fail due to an invalid kernel_size in handle_kernel_image.
+>>>>> It was not yet observed with newer versions, but that may just be luck.
+>>>>>
+>>>>> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+>>>>> ---
+>>>>>
+>>>>> Something like this should go to stable as well, but we will need
+>>>>> rebased patches.
+>>>>>
+>>>>>  drivers/firmware/efi/libstub/Makefile | 2 +-
+>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/firmware/efi/libstub/Makefile
+>>>>> b/drivers/firmware/efi/libstub/Makefile
+>>>>> index 06964a3c130f..d561d7de46a9 100644
+>>>>> --- a/drivers/firmware/efi/libstub/Makefile
+>>>>> +++ b/drivers/firmware/efi/libstub/Makefile
+>>>>> @@ -28,7 +28,7 @@ cflags-$(CONFIG_ARM)          += -DEFI_HAVE_STRLEN
+>>>>> -DEFI_HAVE_STRNLEN \
+>>>>>                                    -DEFI_HAVE_MEMCHR
+>>>>> -DEFI_HAVE_STRRCHR \
+>>>>>                                    -DEFI_HAVE_STRCMP -fno-builtin
+>>>>> -fpic \
+>>>>>                                    $(call
+>>>>> cc-option,-mno-single-pic-base)
+>>>>> -cflags-$(CONFIG_RISCV)         += -fpic -DNO_ALTERNATIVE
+>>>>> +cflags-$(CONFIG_RISCV)         += -fpic -DNO_ALTERNATIVE -mno-relax
+>>>>
+>>>> Can we detect the presence of these references (via the relocation
+>>>> type)? We already do something similar for ordinary absolute
+>>>> references too.
+>>>
+>>> If there's no `__global_pointer$` symbol then the linker won't make
+>>> GP-relative relaxations (because it doesn't know where GP is).  We
+>>> usually define that symbol in the linker script, but I'm not entierly
+>>> sure how libstub gets its linker script...
+>>>
+>>
+>> The stub seems to be linked together with the rest of the kernel, thus
+>> the regular arch/riscv/kernel/vmlinux.lds.S is used.
+>>
+> 
+> Indeed - the EFI stub is part of the same executable as vmlinux, we
+> just mangle the symbol names to ensure that only code that can be
+> safely called from the EFI stub can be linked to it.
+> 
+> If the effect of -mno-relax is to stop emitting R_RISCV_RELAX
+> relocations, we should perhaps add those to the STUBCOPY_RELOC-y
+> Makefile variable? (in the same file). BTW R_RISCV_HI20 doesn't seem
+> like the right value there to begin with: the idea of that is to
+> disallow ELF relocations that evaluate to expressions that can only be
+> known at runtime (like absolute addresses for global pointer
+> variables)
 
-If this function is being exported, shouldn't the function name follow
-the pattern of having the vfio_pci_core_* prefix like the rest of the
-symbols exported in this file. Something like
-vfio_pci_core_range_intersect_range?
+How to do that best? Simply replace R_RISCV_HI20 with R_RISCV_RELAX?
 
---
-Thanks,
+Jan
 
-Rahul Rameshbabu
+-- 
+Siemens AG, Technology
+Linux Expert Center
+
 
