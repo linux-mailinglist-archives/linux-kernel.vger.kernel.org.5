@@ -1,109 +1,122 @@
-Return-Path: <linux-kernel+bounces-29183-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7821F830A53
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:04:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA5A2830A5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:06:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F613287420
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:04:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C02AB24BB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:06:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F225C2231B;
-	Wed, 17 Jan 2024 16:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4841D2230D;
+	Wed, 17 Jan 2024 16:06:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="XV0Wzw6S"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mytQFnx2"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2200622301;
-	Wed, 17 Jan 2024 16:04:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4E77200C9
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 16:06:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705507448; cv=none; b=YqjTOlBLqO+mdAuIugKYb54ZaL1qG/peqNDWg+gf/J4hPl2mx1ohe8vWcJklLDkBPu23MwYxxjg9Hx9gPd+ToPifz+JKhHqCTdwTPrlG890XzFT85XatS58mCQj4nLaDk/BKBf1CzBfjMQ5cCxoRRnh2YG4s+iG3hv8s+Sr+y2E=
+	t=1705507607; cv=none; b=qfyotcSRoEl4p+0nL9gnjd8QheQCyPmyULa1NGrU6ONmespEvK0ezXT6htqI2r2oV2TrbJEvL7YUJx/yt6wOhvcqt+Pb3Dl7v+3AbbszuWkhdvvajSsoRzaFQP7GkgAxNz50jhSfQytLo+z4EUvRkUaHufiFY2EalUqMG+FYWhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705507448; c=relaxed/simple;
-	bh=60VU2dcIMdN0LnwmSLQHz70ySOYSNvUalPN6aiFFDwE=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=Y6ZIYbADvF358HJJAZER0wkf/rHGoNiANj+iCstQecEh0HPl75zVrnFOxSLosPAiV6E177Bn/FoP1LbOwlNoGoFCjbG6aQhNj6OBjUtBdMm+1d9xsOmfmh/ql27Wouz0UdRsmySxjXJujFvuNm7k/bKIux5V63qc8jWHZztfpBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=XV0Wzw6S; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E489C433F1;
-	Wed, 17 Jan 2024 16:04:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1705507446;
-	bh=60VU2dcIMdN0LnwmSLQHz70ySOYSNvUalPN6aiFFDwE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XV0Wzw6SbMY8QV/wlCcAIDvzFMs9AQvd2F6I1XoO8oaP0hyCSNeB8UjLxFWYGQ6dE
-	 hVN0FqamxWg84g376gpCwTfBEF/cKlihkocEgBX2WRtlV/iJzIwPj+A2bwI3Q6L3+n
-	 7VHWbL4f1f9Uj4XmN/O6X26YVT5js3un7OT+TjE8=
-Date: Wed, 17 Jan 2024 17:04:03 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Johan Hovold <johan@kernel.org>, Sasha Levin <sashal@kernel.org>,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>, hdegoede@redhat.com,
-	fabrice.gasnier@foss.st.com, quic_jackp@quicinc.com,
-	saranya.gopal@intel.com, quic_linyyuan@quicinc.com,
-	andriy.shevchenko@linux.intel.com, minhuadotchen@gmail.com,
-	johan+linaro@kernel.org, robh@kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.7 044/108] usb: typec: ucsi: fix UCSI on buggy
- Qualcomm devices
-Message-ID: <2024011719-riverside-flashcard-0524@gregkh>
-References: <20240116194225.250921-1-sashal@kernel.org>
- <20240116194225.250921-44-sashal@kernel.org>
- <ZaeJ8Sh4JLo5GAQw@hovoldconsulting.com>
- <CAA8EJpoQZc0f2HusJOMa_45bh8Eh=sVg-aOUbNR3S0+oQQQ+MQ@mail.gmail.com>
+	s=arc-20240116; t=1705507607; c=relaxed/simple;
+	bh=YV0Yd1DxtJ1hOcg0HiwZFSRu7k0ypqXImHkV65MOPAg=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
+	 To:Subject:Date:Message-Id:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding; b=nPfpnzX8sXDX2C7j2R9UKSXdq+maN/HA2bJcN1tBP7KPZyZWrar7zyXsIzpbwrPB6iwsgnalIMVabfe6DPwv0dtZB9LAG5Df+laaDanbNaVVxbF4a0IPQdHSCRC/7KtvNP0bBDkEi7h0v7FnZ6lTXs1S9C0MyWrZvPYAS7LK3Fk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mytQFnx2; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-559d0ef3fb5so1120581a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 08:06:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705507603; x=1706112403; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=n6CX3qh7iRcLJLpXEmtL3DIIxLfD0lORaTLC26UZMxQ=;
+        b=mytQFnx2s9HcaRTtGuWx9MrrZ7yvEjN9HG+oo8dlVLetQPTeCrlj4n+hYiMmm63lXH
+         V1fqaEvcFZbRwJkttqJabaio8y472vM5vS309CXpO3jKec6CqHxJNwWdfHpIeK36luI0
+         PtdrUvXyyyJEyoteqLYA1b4ZobsdDanQEeqlElZJVXx1deDCidM1LTY+j9pKyAZRFpb2
+         VG0+tGsVcIdhWObLNlnfEB9KD2vkF+8WVYaty3VkYzq25v7C4qVdMct/TK/Kd84f8ofz
+         6OXBLeNJ1/bgplUNdslS5ZZLIXILn8759JG4cfgHpiKuRgedmF78l/ketRkMsNgRdc6K
+         OnvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705507603; x=1706112403;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n6CX3qh7iRcLJLpXEmtL3DIIxLfD0lORaTLC26UZMxQ=;
+        b=Hbw7atndObKHo8jrLLv1FN0YNiPo7K3jT/rPaS0v+iFjDrXWIbT61H+4qa8osZuGGp
+         qIe3iqTVupJILpz4wt8JS22rEzwdMRJpxnPlG8SgMFYSBXlujDPNdF3NP/tnICUrpUPZ
+         G9kBPdtHMYEe50Cokl/wT4lyCWfNB8oKplPXTuJAGNIJIrqz2Wp1gMd+xOQMavvqVk1e
+         hD/eat2EOqNNVfUMwrcPtE53HMOnyKZOkU4Rc9Zv6GRFi+1m3Q4ZNZickPawH0EX8/9E
+         Gnvp+uOloCWWO8lZxJsFjuVlvbx0WJWpM4eWDfK/cd/Hr2A2mwxuMmiF6R3QKresYu1+
+         QOBg==
+X-Gm-Message-State: AOJu0YyExmm8JKwds63ruD3fI3Ymd1420A+BeqkAaPaHQSQUn3Tz5l/N
+	VLpCTkkY4HzazRinFFXmvcViL5h/o/TkrA==
+X-Google-Smtp-Source: AGHT+IFwpZvKcUOKMboA7WR7jIqj/NeK3WUTgEGUp8+qVlKnmMvG9sTJso6R7D2Eszsi9Oc7CByCXA==
+X-Received: by 2002:a05:6402:134f:b0:559:43aa:4b83 with SMTP id y15-20020a056402134f00b0055943aa4b83mr2750053edw.64.1705507603171;
+        Wed, 17 Jan 2024 08:06:43 -0800 (PST)
+Received: from krzk-bin.. ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id h9-20020a0564020e0900b00559736b84ffsm3012063edh.89.2024.01.17.08.06.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jan 2024 08:06:42 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Vinod Koul <vkoul@kernel.org>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Sanyog Kale <sanyog.r.kale@intel.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	alsa-devel@alsa-project.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] soundwire: stream: add missing const to Documentation
+Date: Wed, 17 Jan 2024 17:06:39 +0100
+Message-Id: <20240117160639.1327266-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA8EJpoQZc0f2HusJOMa_45bh8Eh=sVg-aOUbNR3S0+oQQQ+MQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 17, 2024 at 02:17:40PM +0200, Dmitry Baryshkov wrote:
-> On Wed, 17 Jan 2024 at 10:03, Johan Hovold <johan@kernel.org> wrote:
-> >
-> > On Tue, Jan 16, 2024 at 02:39:10PM -0500, Sasha Levin wrote:
-> > > From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > >
-> > > [ Upstream commit 1d103d6af241dbfc7e11eb9a46dff65db257a37f ]
-> > >
-> > > On sevral Qualcomm platforms (SC8180X, SM8350, SC8280XP) a call to
-> > > UCSI_GET_PDOS for non-PD partners will cause a firmware crash with no
-> > > easy way to recover from it. Since we have no easy way to determine
-> > > whether the partner really has PD support, shortcut UCSI_GET_PDOS on
-> > > such platforms. This allows us to enable UCSI support on such devices.
-> > >
-> > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > > Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > > Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
-> > > Link: https://lore.kernel.org/r/20231025115620.905538-2-dmitry.baryshkov@linaro.org
-> > > Signed-off-by: Bjorn Andersson <andersson@kernel.org>
-> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> >
-> > Correct me if I'm wrong Dmitry, but while the commit message makes this
-> > sound like a fix, it is not needed unless you backport follow-on patches
-> > that enable UCSI on these platforms.
-> >
-> > So this one can be dropped from all stable queues (unless you're
-> > backporting patches that enable new features and that depend on this
-> > one).
-> 
-> Exactly. It didn't have the Fixes: tag. So I'm completely unsure why
-> it ended up in the autosel queue at all.
+Commit 21f4c443731f ("soundwire: stream: constify sdw_port_config when
+adding devices") added const to sdw_port_config argument, but forgot
+documentation.
 
-Based on the text in the subject and in the changelog, it sure looks
-like a bugfix to me!  Perhaps don't write changelogs that say "fix
-SOMETHING on SOMETHING" next time if they really are not a fix :)
+Fixes: 21f4c443731f ("soundwire: stream: constify sdw_port_config when adding devices")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ Documentation/driver-api/soundwire/stream.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-thanks,
+diff --git a/Documentation/driver-api/soundwire/stream.rst b/Documentation/driver-api/soundwire/stream.rst
+index b432a2de45d3..2a794484f62c 100644
+--- a/Documentation/driver-api/soundwire/stream.rst
++++ b/Documentation/driver-api/soundwire/stream.rst
+@@ -324,12 +324,12 @@ framework, this stream state is linked to .hw_params() operation.
+ 
+   int sdw_stream_add_master(struct sdw_bus * bus,
+ 		struct sdw_stream_config * stream_config,
+-		struct sdw_ports_config * ports_config,
++		const struct sdw_ports_config * ports_config,
+ 		struct sdw_stream_runtime * stream);
+ 
+   int sdw_stream_add_slave(struct sdw_slave * slave,
+ 		struct sdw_stream_config * stream_config,
+-		struct sdw_ports_config * ports_config,
++		const struct sdw_ports_config * ports_config,
+ 		struct sdw_stream_runtime * stream);
+ 
+ 
+-- 
+2.34.1
 
-greg k-h
 
