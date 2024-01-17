@@ -1,113 +1,113 @@
-Return-Path: <linux-kernel+bounces-29526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29527-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03CA4830FE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:00:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDE62830FE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:01:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 975A81F25DBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:00:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB15B285AAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:01:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03B2521A12;
-	Wed, 17 Jan 2024 23:00:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 399CD22F17;
+	Wed, 17 Jan 2024 23:00:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YCCjNYVK"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WxeT3GBz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15A2A1E889
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 23:00:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B61286B9;
+	Wed, 17 Jan 2024 23:00:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705532439; cv=none; b=kubmNXuvGLCYiyOCbknjUCW6cIczuRm6+5IY00/Cqb5f6u/eVmvlHYe+zel4GTxbGVbk+95ItOJeZKfCkFFdqmehPQgKZmyo6kmtOci7cfhV15I+E55LBbBEAmBOSuR7H4WvhOXLd8Au69ftNwy/A3I68yq4JqxUc5PAmkyci24=
+	t=1705532450; cv=none; b=i7TNyqKFgHzVHCqyq9nQTayf0JtgxKR67IoJachSoH95ywRnjroZbgTdQ9/fpvXCKjgu3koN3GGPAS+x5wm+7x5Iqk3RvSWUMpitSS/3+RyI/0E5KSiqfODvkdNs10Y0YeEo66l91pOqSGM0GUQx8g6ARv/OM7vJIETjjEyHQI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705532439; c=relaxed/simple;
-	bh=PmFsxi6d9e+Zlb3E4C1SRmLXOx2XOWKkOd3qfavXo9c=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
-	 To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding; b=AN9wViwdhjI80gfV/EaWja+yTvyWFiwRYV6praSD6dt93RYs4Rcrb8DMWvu3N3d1I/+3xTBxcN2meuq05mkfpfKhyguLR+TvZJdOowqCuI0y1iyjhK75oHf8ZwALUEpm+UsYGkRCqQCTQ44YXIsVCqtzw5pKDp3dKn+64BzBAa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YCCjNYVK; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d5dfda4319so19608515ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:00:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705532437; x=1706137237; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7m0N7t1XW7ex4DXEj0WY/wok48BDAnOfTPeDrj1R5vg=;
-        b=YCCjNYVKgMYt3kdgnP9VN9x82JBV/w+2HgkHZR5H1e0KsXjTPQw1qxK0842X+++fXW
-         LiwGvnybk+txfOlHgGihyg8aRxo7kfp38AtID73SJGxiEypKxP+JV3Nz8X48NFgR5JtT
-         PC45RTOF+K96BbIEeZV7cLRPv5aMw4o41f4c24u9XHNg5QfmM5pgAEJvbbSFzXZbpQdD
-         mAZiZsjwg2EozAEHaGIxb/YBLUPeAJyssrwtFwHY6vbn5D0txYCPkFOf0NZna1JFt5he
-         Q36r5ugppUNWzCYubrjdnbrjngHnVVdO9G/3WSOubZ+e2mB2asHgeOBBRKVW5Wzu1DKm
-         P+sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705532437; x=1706137237;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7m0N7t1XW7ex4DXEj0WY/wok48BDAnOfTPeDrj1R5vg=;
-        b=slc4g1mvAIbQUIzRWhNKrR0A7zdCqz32pfI+GrB+3uuXmk6M24XZIz2+GC3qOKdT2o
-         oGaki+ZpRrzagRFdMdq1KNLAqPJjWobJBukV60bxosiqNWmj5ukca9CVHDZkhOoZuT1K
-         EYsOPL7NZtixmjCbI9eglnh5CPFMcCjmsd65OkdmBII8JOh2GF9XFfPhL73DuN0Dwk/C
-         ElAc/lByiTyKxeauR0tXJje27zXkBu2w+UQx8jtIjR6CAJOIZtPdZyZ/itNkUa5bIyYb
-         DNkX7O2Gy7LsQdG/q6fffMfRVZfa/B03gGU0eH+uHeLBe7h5PH7fmyJDWk9kYYX4zTlY
-         n2ag==
-X-Gm-Message-State: AOJu0YyKm9HBVagjR5X5fFtaso3WJbtlDHyqqGr+njSGb3xshvL0BkWZ
-	NWhTbSWYPO8EOkQEeOwgPsBChGgo3oxHs8i2dopygs4X4FnRscOfNl2nPoad
-X-Google-Smtp-Source: AGHT+IFNBgUAqSpqdp6LHvt4RyUJrX42pQdx+maDN9Bq2jOF4HQOREnS0fyNSrZDosS3tCc+gKtx6w==
-X-Received: by 2002:a17:902:db06:b0:1d0:a9fa:5939 with SMTP id m6-20020a170902db0600b001d0a9fa5939mr1446plx.111.1705532436888;
-        Wed, 17 Jan 2024 15:00:36 -0800 (PST)
-Received: from daehojeong-desktop.mtv.corp.google.com ([2620:0:1000:8411:9c1b:9344:efbd:adc1])
-        by smtp.gmail.com with ESMTPSA id e2-20020a170902744200b001d5f5887ae8sm167964plt.10.2024.01.17.15.00.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 15:00:36 -0800 (PST)
-From: Daeho Jeong <daeho43@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	kernel-team@android.com
-Cc: Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH] f2fs-tools: allocate logs after conventional area for HM zoned devices
-Date: Wed, 17 Jan 2024 15:00:32 -0800
-Message-ID: <20240117230032.2312067-1-daeho43@gmail.com>
-X-Mailer: git-send-email 2.43.0.381.gb435a96ce8-goog
+	s=arc-20240116; t=1705532450; c=relaxed/simple;
+	bh=fyXBSC0bnHo3boCpQubXQI92k6WFO1uOlIbnTuqgLD4=;
+	h=Received:DKIM-Signature:Message-ID:Content-Type:MIME-Version:
+	 Content-Transfer-Encoding:In-Reply-To:References:Subject:From:Cc:
+	 To:Date:User-Agent; b=IaBZx9CrwHe7JHXVyjqG3Nf6Glh9LzCsJPfotAucvZiiF8IXXoFV05nMgrIIXp1nac8SrpHABsPiIxnESFWft0xe+fbQwkkYl3TTP8Tn+3b73kytU1JFeWk/T9EO68KQYe1a6wKuy8nrXriUgGCsvAI/40Fhr1T245vaKdzqSWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WxeT3GBz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BAA2C433C7;
+	Wed, 17 Jan 2024 23:00:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705532450;
+	bh=fyXBSC0bnHo3boCpQubXQI92k6WFO1uOlIbnTuqgLD4=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=WxeT3GBztptAaY54E7E/IibQmlI2auDqcjQAJU/gbKcJrpG8pzf4C7/y1Z3dWzZLM
+	 C3E7KEby6UhIR9QxS/hXvDl6n8eBw+MdcCGzH5yULampXTr/OV2rJLG11LvS9RRIYn
+	 YzrKFeKcLsRcvhdr0fNVMSHKSf2pNYsWc1rDfKFpxAjY7Fq70WYgFnxZbaQTF5F5AK
+	 49xUOHmYbNMTvV9nsg29O/JNZUvnx4yb22BH/iUncI2nMgA9h7/UEOvfcq6VTOJbc5
+	 yXO/XavnF5W6YWnqKq5QzKcjtF2A3erD1aVIOVPukufVmT4wvd8LbVFYOul5+8E2zE
+	 tqh93Yr9GR9WQ==
+Message-ID: <c3f239caee806419a8ad0ed45a627947.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240117175448.GB2779523-robh@kernel.org>
+References: <20240112200750.4062441-1-sboyd@kernel.org> <20240112200750.4062441-2-sboyd@kernel.org> <ZaZtbU9hre3YhZam@FVFF77S0Q05N> <434b21afe1899b1567f3617261594842.sboyd@kernel.org> <20240117175448.GB2779523-robh@kernel.org>
+Subject: Re: [PATCH 1/6] arm64: Unconditionally call unflatten_device_tree()
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org, patches@lists.linux.dev, linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Date: Wed, 17 Jan 2024 15:00:48 -0800
+User-Agent: alot/0.10
 
-From: Daeho Jeong <daehojeong@google.com>
+Quoting Rob Herring (2024-01-17 09:54:48)
+> On Tue, Jan 16, 2024 at 05:27:18PM -0800, Stephen Boyd wrote:
+> > Quoting Mark Rutland (2024-01-16 03:51:14)
+> > > Hi Stephen,
+> > >=20
+> > > On Fri, Jan 12, 2024 at 12:07:44PM -0800, Stephen Boyd wrote:
+> > > > Call this function unconditionally so that we can populate an empty=
+ DTB
+> > > > on platforms that don't boot with a firmware provided or builtin DT=
+B.
+> > > > There's no harm in calling unflatten_device_tree() unconditionally.
+> > >=20
+> > > For better or worse, that's not true: there are systems the provide b=
+oth a DTB
+> > > *and* ACPI tables, and we must not consume both at the same time as t=
+hose can
+> > > clash and cause all sorts of problems. In addition, we don't want peo=
+ple being
+> > > "clever" and describing disparate portions of their system in ACPI an=
+d DT.
+> > >=20
+> > > It is a very deliberate choice to not unflatten the DTB when ACPI is =
+in use,
+> > > and I don't think we want to reopen this can of worms.
+> >=20
+> > Hmm ok. I missed this part. Can we knock out the initial_boot_params in
+> > this case so that we don't unflatten a DTB when ACPI is in use?
+>=20
+> You mean so we don't unflatten the boot DTB, but instead unflatten the=20
+> empty one, right? That sounds fine.
 
-Make to allocate logs after conventional area for HM zoned devices to
-spare them for file pinning support.
+Yes. Note, I don't have any ACPI arm64 system on hand to test anything
+with :-(
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
----
- mkfs/f2fs_format.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> Another thing to check is kexec because it will still need the original=20
+> DTB I think. Though if you are doing ACPI boot and kexec'ing, kexec may=20
+> write out everything needed by the next kernel and the empty DTB would=20
+> work just fine.
 
-diff --git a/mkfs/f2fs_format.c b/mkfs/f2fs_format.c
-index f2840c8..91a7f4b 100644
---- a/mkfs/f2fs_format.c
-+++ b/mkfs/f2fs_format.c
-@@ -557,7 +557,8 @@ static int f2fs_prepare_super_block(void)
- 		c.cur_seg[CURSEG_COLD_DATA] = 0;
- 		c.cur_seg[CURSEG_WARM_DATA] = next_zone(CURSEG_COLD_DATA);
- 	} else if (c.zoned_mode) {
--		c.cur_seg[CURSEG_HOT_NODE] = 0;
-+		c.cur_seg[CURSEG_HOT_NODE] = c.zoned_model == F2FS_ZONED_HM ?
-+			c.devices[0].total_segments : 0;
- 		c.cur_seg[CURSEG_WARM_NODE] = next_zone(CURSEG_HOT_NODE);
- 		c.cur_seg[CURSEG_COLD_NODE] = next_zone(CURSEG_WARM_NODE);
- 		c.cur_seg[CURSEG_HOT_DATA] = next_zone(CURSEG_COLD_NODE);
--- 
-2.43.0.381.gb435a96ce8-goog
+Yeah, it looks like dt_is_stub() will keep doing its thing there. The
+empty DTB will have nothing in it and so kexec with ACPI and the empty
+DTB will continue to use ACPI, and then the empty DTB will be added in
+again.
 
+> Of course those users booting with ACPI and then=20
+> kexec'ing to DT boot will be broken. Perhaps that's a feature...
+
+I don't know how this part works. If you kexec to DT boot won't you run
+through startup again and initial_boot_params will have a non-empty DTB
+in it? I'd think this would keep working.
 
