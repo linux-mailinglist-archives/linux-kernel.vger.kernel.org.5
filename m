@@ -1,150 +1,119 @@
-Return-Path: <linux-kernel+bounces-29160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 277BF8309D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:33:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BFCD8309DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:37:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F3881C218A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:33:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5855B1C21A80
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:37:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1395221A0E;
-	Wed, 17 Jan 2024 15:33:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AF3F21A0E;
+	Wed, 17 Jan 2024 15:37:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="juXSqzQD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="axyrveud"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 535D822301;
-	Wed, 17 Jan 2024 15:33:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 894CD1E4AD;
+	Wed, 17 Jan 2024 15:37:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705505617; cv=none; b=aJzuUhLI5r17evmOwyFpC8hazTr1EgPkK7St6up1UAoN+QVtVDbUtWWB2BivM93SN4jXRrYvish7FE2DqxLcR7+yDD9K+w6gyfIXZjDC7SWbA0PcU01aWXXXHvDa9gvCXn54dkEoEtY1tAcAeu30IJbgNiO+SV9omNkvYjSffEk=
+	t=1705505831; cv=none; b=Y20lxr2h+UMh8qnaUga/NJL/DXldH2M/ODb6IQbjbX6vhMk+ZSZIGzto0LuHyo0xRZbh4moo3/YN9QfxcHISPPhHUFlKZrFLXOhRmQhZwGdkfCQnZtWMYmNABodpLbFUH2BXuX6Mb74U2QOIEVab+rS2iN1H/3OU12+qkXdf3Zs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705505617; c=relaxed/simple;
-	bh=w9AyQqO1uvaQ6Pzh2cbYZgNdKf4g5fbaWOyASO2Ljck=;
+	s=arc-20240116; t=1705505831; c=relaxed/simple;
+	bh=gvbgR1lPS4RRalskIGSwmmOuBLyvCrQvi5HwxvEJbmk=;
 	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=bG/2t6SxALJF+kPOqvTyEYpT4Ms1R3p59K0U7XcJg4SKxHpqFUdo6iTxY778++z2ivAQ/VqL8wa8or6e2FvCEgNjPRaVWrrCsE4Sd34sDxJXEeT4pjsVJtntZUCQ0+0utFAfYHD3U/2W/gId/6hMOorCvSXvnWeq+ViEGQJEEPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=juXSqzQD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A92BC433F1;
-	Wed, 17 Jan 2024 15:33:32 +0000 (UTC)
+	 In-Reply-To; b=lIYVsjUOCjpaZGdB6UcsjEh6ONJvBr4XlMn7/lfF2UYr/kA5jdn1y9rdzvq4hDN0mGi4+iVp7qQu2lUhcHJIDGzHD3OoGFFTjqnS2+8lVxTFGfSKrEYrjkCbZSUStuhlgQPw0AW9WpdRiyomNY2/sG8bO95OJ9Yi8jryrq8LSu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=axyrveud; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A865C433F1;
+	Wed, 17 Jan 2024 15:37:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705505616;
-	bh=w9AyQqO1uvaQ6Pzh2cbYZgNdKf4g5fbaWOyASO2Ljck=;
+	s=k20201202; t=1705505830;
+	bh=gvbgR1lPS4RRalskIGSwmmOuBLyvCrQvi5HwxvEJbmk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=juXSqzQD8NPfYymf7Aj8Yebd3glU+iuGGDJqcvvQAcE5Zs9pCkimxetanzpiDujUh
-	 nqWeTzNsoT4tFH+DYJgWg62B9ZBOjzHjnXUwwXRtrHRzaAgzjAsTGTS2oAHPGXgkqY
-	 fcKFw46TPlAgkFJmRBDHZpEG97wqDjNrQylWtYQMQbVemtGuk2SL1McJ3DDC7HfehA
-	 l5K30G3RJ4KW4W1Mx3vyJ53ntWSUhiidBZiIWRoyCnbieV42lb3109NVUirfphnl84
-	 BtEA2ulVgfIuo/rJX8Zk6p2hoV0VUmFRPnvJ14RPqPnTvrRQ5GLDSQiAjqGml2kIkb
-	 pG51k/Q4khj6A==
-Date: Wed, 17 Jan 2024 15:33:29 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Dharma.B@microchip.com
-Cc: alexandre.belloni@bootlin.com, Conor.Dooley@microchip.com,
-	sam@ravnborg.org, bbrezillon@kernel.org,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, Nicolas.Ferre@microchip.com,
-	claudiu.beznea@tuxon.dev, dri-devel@lists.freedesktop.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, lee@kernel.org,
-	thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
-	linux-pwm@vger.kernel.org, Linux4Microchip@microchip.com
-Subject: Re: [PATCH v2 2/3] dt-bindings: atmel,hlcdc: convert pwm bindings to
- json-schema
-Message-ID: <20240117-headlock-edge-56ddb1b273d2@spud>
-References: <20240116113800.82529-1-dharma.b@microchip.com>
- <20240116113800.82529-3-dharma.b@microchip.com>
- <20240116-rising-gap-df4124f191a0@spud>
- <20240116201052544a0791@mail.local>
- <6124f244-23bc-4b84-b678-f7214cf8c48e@microchip.com>
+	b=axyrveudFjsNGFULZQ5BS2xEBkCCBwOEPKf+K6g3I/4oqWzn40woNA7iKoDhXkgNr
+	 B7x1z3LLIvaREzIbvC5LPn/wk8dMCzj0ZFDKT9o5cAmrbVssazfViJqVZjpLI7ZiW8
+	 5DpBZXq6EVb22P/SVDT2iefUdY51YO4YMIzj6RplDZ3cnB/wSg/UzGglfgNWMRHQsk
+	 pp5HKp73YutVD2J5ZDdmR9RkCOD+Pstab6uUv2cb7u74vl04kZnoozGKBmqVlyck9r
+	 pIa8gxd8UfXfgY2LU6U/sLWt8XNnS98T+JMS0e5uDZIpRA4u4mLvHHK0xktw/r8mXx
+	 TMiJgqNPMe7fQ==
+Date: Wed, 17 Jan 2024 09:37:08 -0600
+From: Rob Herring <robh@kernel.org>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, devicetree@vger.kernel.org,
+	Simon Glass <sjg@chromium.org>, Jonathan Corbet <corbet@lwn.net>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nicolas Schier <nicolas@fjasle.eu>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] kbuild: allow 'make dtbs_install' to install
+ primitive DTBs
+Message-ID: <20240117153708.GB2296118-robh@kernel.org>
+References: <20240109120738.346061-1-masahiroy@kernel.org>
+ <20240109120738.346061-5-masahiroy@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="DoTaz71aMjV6NLTq"
-Content-Disposition: inline
-In-Reply-To: <6124f244-23bc-4b84-b678-f7214cf8c48e@microchip.com>
-
-
---DoTaz71aMjV6NLTq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240109120738.346061-5-masahiroy@kernel.org>
 
-On Wed, Jan 17, 2024 at 02:43:00AM +0000, Dharma.B@microchip.com wrote:
-> On 17/01/24 1:40 am, Alexandre Belloni wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know =
-the content is safe
-> >=20
-> > On 16/01/2024 18:03:19+0000, Conor Dooley wrote:
-> >> On Tue, Jan 16, 2024 at 05:07:59PM +0530, Dharma Balasubiramani wrote:
-> >>> Convert device tree bindings for Atmel's HLCDC PWM controller to YAML
-> >>> format.
-> >>>
-> >>> Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
-> >>> ---
-> >>> changelog
-> >>> v1 -> v2
-> >>> - Remove the explicit copyrights.
-> >>> - Modify title (not include words like binding/driver).
-> >>> - Modify description actually describing the hardware and not the dri=
-ver.
-> >>> - Remove pinctrl properties which aren't required.
-> >>> - Drop parent node and it's other sub-device node which are not relat=
-ed here.
-> >>> ---
-> >>>   .../bindings/pwm/atmel,hlcdc-pwm.yaml         | 47 ++++++++++++++++=
-+++
-> >>>   .../bindings/pwm/atmel-hlcdc-pwm.txt          | 29 ------------
-> >>>   2 files changed, 47 insertions(+), 29 deletions(-)
-> >>>   create mode 100644 Documentation/devicetree/bindings/pwm/atmel,hlcd=
-c-pwm.yaml
-> >>>   delete mode 100644 Documentation/devicetree/bindings/pwm/atmel-hlcd=
-c-pwm.txt
-> >>>
-> >>> diff --git a/Documentation/devicetree/bindings/pwm/atmel,hlcdc-pwm.ya=
-ml b/Documentation/devicetree/bindings/pwm/atmel,hlcdc-pwm.yaml
-> >>> new file mode 100644
-> >>> index 000000000000..751122309fa9
-> >>> --- /dev/null
-> >>> +++ b/Documentation/devicetree/bindings/pwm/atmel,hlcdc-pwm.yaml
-> >>> @@ -0,0 +1,47 @@
-> >>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> >>
-> >> The original file has no license, but was originally written by a
-> >> free-electrons employee, so the relicensing here is fine.
-> >>
-> >=20
-> > I confirm relicensing is fine, even assigning the copyright to
-> > Microchip (note that Bootlin is legally the same entity as
-> > free-electrons)
-> Thanks Conor and Alexandre.
-> I will add the copyrights back in v3.
+On Tue, Jan 09, 2024 at 09:07:37PM +0900, Masahiro Yamada wrote:
+> Commit 15d16d6dadf6 ("kbuild: Add generic rule to apply fdtoverlay")
+> introduced the -dtbs syntax to apply overlays during the build process.
+> 
+> However, scripts/Makefile.dtbinst is not aware of the -dtbs syntax,
+> so 'make dtbs_install' installs the files directly added to dtb-y.
+> (Presumably, it was intentional.)
 
-Just to note, in case you misunderstood my original comment here:
-What I said had nothing to do with adding a Microchip copyright assignment
-to the file, but rather about the fact that your patch relicenses the
-binding from GPL v2 to GPL v2 OR BSD 2 Clause.
+Yes. The intent was the Makefile should define what's installed or not. 
+There's 2 reasons to apply overlays in the build. The first is so a DTB 
+can be refactored into a base plus overlay(s) and we keep the original 
+full DTB. The second is to test that overlays actually apply because 
+testing that at boot time in bootloader is a poor experience and we 
+don't want overlays which don't apply to upstream DTs.
 
---DoTaz71aMjV6NLTq
-Content-Type: application/pgp-signature; name="signature.asc"
+Whatever targets you want installed put in dtb-y. Whatever targets are 
+just for testing, put in dtb-. The latter are then enabled with 
+CONFIG_OF_ALL_DTBS.
 
------BEGIN PGP SIGNATURE-----
+> For example, consider this case:
+> 
+>     foo1-dtbs := foo_base.dtb foo_overlay1.dtbo
+>     foo2-dtbs := foo_base.dtb foo_overlay2.dtbo
+>     dtb-y := foo1.dtb foo2.dtb
+> 
+> 'make dtbs_install' only installs foo1.dtb and foo2.dtb. It is suitable
+> when the boot image supports a single hardware configuration, or when
+> the boot loader in use does not support applying overlays.
+> 
+> However, when creating a boot image with multiple board supports, it
+> wastes storage space, as foo1.dtb and foo2.dtb have foo_base.dtb in
+> common.
+> 
+> From a space perspective, a more optimal solution is to install
+> foo_base.dtb, foo_overlay1.dtbo, and foo_overlay2.dtbo, then assemble
+> the final dtb (either foo1.dtb or foo2.dtb) on the boot loader.
+> 
+> This commit adds a new flag, INSTALL_DTBS_PRIMITIVE.
+> 
+> With INSTALL_DTBS_PRIMITIVE=1, 'make dtbs_install' will install primitive
+> files (such as foo_base.dtb, foo_overlay1.dtbo, and foo_overlay2.dtbo in
+> this case).
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZafzSQAKCRB4tDGHoIJi
-0uhWAP9sPtOsSbgjeMwmrPgtE25/rPhVuUYA4EtnZYnFVOomLAEAn6o/t72tp2Hq
-l57Y94vYJTKM0wa2J26KOcSljmIOewo=
-=SrTr
------END PGP SIGNATURE-----
+And not install foo1.dtb and foo2.dtb, right? What if one wants to 
+install everything? Seems like this needs to be a 3-way option.
 
---DoTaz71aMjV6NLTq--
+I'm not really convinced we need this in the first place though.
+
+> 
+> Without INSTALL_DTBS_PRIMITIVE, the current behavior is maintained
+> (foo1.dtb and foo2.dtb will be installed in this case).
 
