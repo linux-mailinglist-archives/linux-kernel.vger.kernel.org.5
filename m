@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-29050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC5668307B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:13:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB81F8307B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:14:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7485D286926
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:13:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50C981F24912
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:14:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7FF9208AA;
-	Wed, 17 Jan 2024 14:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EEA3208AA;
+	Wed, 17 Jan 2024 14:14:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="dL2KlmvA"
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="acUCpYn1"
 Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83880208A0
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 14:13:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16B20208A0
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 14:14:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705500817; cv=none; b=rG/vtGaNw4wxYJvklK2H57T396x9ngX+3+Rw96ZuoKRvi3pifnTSQBOrUU5Gq3DwY6VfmJ4XFj74Fqwtf6/gBK+diZRasSQDPyaTYrvehT8jf3IXJLeSC8YS/HJTykljsG8nRV8EOxw3GTdXwjjBJP1EXUhfOzcvDYq8GVRKQHo=
+	t=1705500873; cv=none; b=XFCcIFcn3XlYRPMJiLYfUIy9hLZWLfZ1/Hln1ZPgr4k9/sdVtgJZh5GOKNXF4H6s33VTAs3YLmRcuoGHzdphVchJcBh6i9KyH5cjOxoaR35QX7zpnKdKHnDTWZAHUxciGhzeF4M+rkIptnXps/c+wJW3ey0gOt4bmPEeK04Wba4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705500817; c=relaxed/simple;
+	s=arc-20240116; t=1705500873; c=relaxed/simple;
 	bh=JB/sO0hUvlGOLAOj/TdazBS735nJBE/uFDOhzWPZTaQ=;
 	h=Received:DKIM-Signature:Received:Received:Received:Received:From:
 	 To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
 	 Content-Transfer-Encoding:Content-Type:X-Proofpoint-GUID:
-	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Virus-Version; b=EUTHSsSMYbpMIcb3h7X7ERAEo/Uw4DNp9ZIigYxfhU4EWfo3sCDiuWbUWPD/X9wNkip9TJT7oJupqlPMYi3SzaQkkaBGHGsvtqmWSG+yNn5xYkBtrlgZiI52OzXjbkYDfB11fibijc7+t29lUVALvDejapmQiqgEYGWVYIliV3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=dL2KlmvA; arc=none smtp.client-ip=67.231.156.173
+	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Virus-Version; b=DEboLzE7NurGQF1Nfrety1H3fMIf2OetiHehmOxwD5DR0N5mLTQDwixk3rU4k2E3Y98dxW/Ytbdt6KTuOBQ20IMbH00yRDzirafjaVAaOfVD04bI3gGmpgQG9ZvZmltLWrWpowkSUy3PImMkGE+SDDsxgtS4JvgGO4gsdKxtU4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=acUCpYn1; arc=none smtp.client-ip=67.231.156.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
 Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40H8gleY012711;
-	Wed, 17 Jan 2024 06:13:06 -0800
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40H8pncr012890;
+	Wed, 17 Jan 2024 06:14:14 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
 	from:to:cc:subject:date:message-id:mime-version
 	:content-transfer-encoding:content-type; s=pfpt0220; bh=9hGHKg1L
-	IZv//WFnLkiKQZa8nyqG4hfZ/wEOZ4zc+O4=; b=dL2KlmvAAJpYKrvD5eJ2B2tI
-	NgqFBzXsqCUx2WQmtV8kLbbOJwFNX4/x9ejgZZTzBfjkgZ4VVT35U1JC+gbrFNJC
-	7wIrLjK02kvg5oZPFCn+jtVqpvhWoSqOcRj7wiRG19FwRR1DBOmDd46ae1r8JCVY
-	CsM9ZIr0g/HvtlhEoxOlt3/nt/clE2+d83TEACUq6i6hHsRUbjKkOHrW6ijXk6ut
-	xtLrfofrgIwhn3A3d4RFyK6/vRdovMrt6S3+G5MhPHNRbxpsMMj3qivf0VWRadzT
-	9QarKn09FMgQfdmwVHr4PJvDdzNUmF7ihekRtH6Ty/AQv0LsvOiIE+4dZV1aew==
+	IZv//WFnLkiKQZa8nyqG4hfZ/wEOZ4zc+O4=; b=acUCpYn118uZDM+VjjXfsvlF
+	nLQwRdSU9GIyvS/xkLSQ+Ad+uYaEAaLR9E3Z9thGT9jQD9nYOVY/jMhkGCpP8jfM
+	8NQAKBmbO7QyPTpXKsxTG2/4OHMyYoXDti88KQMtBwKKby/5CThZZc6R8iQ8JKqz
+	9x31402fO6vCY25qkM5VXfzXT5QNTQfj1qfkyVjlWDBSlt/XdEuXNCLcHjBVDPyn
+	hvx4fFikD/kH89hAFNBImbq1CWa2HSJqfro1ypBc2i6lWqjDzK+BlpWeZRbJ53W9
+	5AmiSOY4n/Wnql8x1hxiTIKXZA+ioXTuEvM6N6NMmekQdK30B6aqyvIANosGcw==
 Received: from dc5-exch01.marvell.com ([199.233.59.181])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3vp0ge38x6-1
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3vp0ge391r-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 06:13:06 -0800 (PST)
+	Wed, 17 Jan 2024 06:14:14 -0800 (PST)
 Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
  (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 17 Jan
- 2024 06:13:04 -0800
+ 2024 06:14:12 -0800
 Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
  (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Wed, 17 Jan 2024 06:13:04 -0800
+ Transport; Wed, 17 Jan 2024 06:14:11 -0800
 Received: from localhost.localdomain (unknown [10.28.36.167])
-	by maili.marvell.com (Postfix) with ESMTP id 598975B6933;
-	Wed, 17 Jan 2024 06:13:01 -0800 (PST)
+	by maili.marvell.com (Postfix) with ESMTP id A15CA5B6932;
+	Wed, 17 Jan 2024 06:14:08 -0800 (PST)
 From: Amit Singh Tomar <amitsinght@marvell.com>
 To: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
 CC: <fenghua.yu@intel.com>, <reinette.chatre@intel.com>, <james.morse@arm.com>,
         <gcherian@marvell.com>, <robh@kernel.org>, <peternewman@google.com>,
-        <dfustini@baylibre.com>, Amit Singh Tomar
-	<amitsinght@marvell.com>
+        <dfustini@baylibre.com>, <jonathan.cameron@huawei.com>,
+        Amit Singh Tomar <amitsinght@marvell.com>
 Subject: [PATCH v1 00/14] ARM: MPAM: add support for priority partitioning control
-Date: Wed, 17 Jan 2024 19:42:43 +0530
-Message-ID: <20240117141257.3063441-1-amitsinght@marvell.com>
+Date: Wed, 17 Jan 2024 19:43:51 +0530
+Message-ID: <20240117141405.3063506-1-amitsinght@marvell.com>
 X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,8 +75,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: NZg4Ft8Wd0ZzYcgnsSD69pCLZOBFlyw9
-X-Proofpoint-ORIG-GUID: NZg4Ft8Wd0ZzYcgnsSD69pCLZOBFlyw9
+X-Proofpoint-GUID: I1Qvg8_aeG6dDMzfE6dDHktllrwixrgS
+X-Proofpoint-ORIG-GUID: I1Qvg8_aeG6dDMzfE6dDHktllrwixrgS
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-01-17_08,2024-01-17_01,2023-05-22_02
