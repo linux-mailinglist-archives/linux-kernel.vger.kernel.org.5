@@ -1,234 +1,141 @@
-Return-Path: <linux-kernel+bounces-29233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0F03830B55
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:39:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FB81830B5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:45:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66DA21F2BE11
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:39:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD3B41F24287
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:45:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB4C224E5;
-	Wed, 17 Jan 2024 16:39:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C876224D3;
+	Wed, 17 Jan 2024 16:45:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EqqdPV2S"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R8rDEUXl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1311224D3
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 16:39:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A8731DFEA
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 16:45:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705509584; cv=none; b=GKZhUHZD8l6IeXSwNf7eSjtXD2udkK5SoJIwA8PGTBRL9cin56bKKgdIRXTLcceUJJxGHJt9rMWL4unkMbPVoRltg/X4EIgLuhhGiVXHajgyyT6ZXFbhsZZN+GKmYRD98gi26NpdsiSQNfPCiz1YE7E89DEvLplHyGbHUvOZLak=
+	t=1705509935; cv=none; b=o65QE7o61WgYAUp4KEu0fMqYabD/KKOvDz/eCoCQXAIrETsPHhNNXW8849M94dMER9jSdYRa70+XQWxhZa2or8RD5YLKw+66Ibq0FqnTBJkSFEVWEaWjLCxX2BHWtjcLXDqT/NDIjprnUjUotdUEfUy2Sx880cV5HrNU0q1AZbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705509584; c=relaxed/simple;
-	bh=M3t4lykNqYhmCjQO4zKq31KhD0/95qJoM+feR8YYTMs=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:Received:
-	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To:User-Agent:
-	 X-Scanned-By; b=BvuFCEWezHYB73SFAE4TjKJ1PgWI2T1xX7gEDlRehIyw2hz3ciwpWsT3Qy85bEfh8DSeKf4BQOKeFG61EXA+biHM/nvYVt0ze+gpiX/HUVBpRCLuelNHlNIgM3pSRWIMbtUHVCrIN4vrGONxKrl5zr14KHh1mrdWjx5Y1EsZYgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EqqdPV2S; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705509582;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9MEKaPLuC4dWjyeAAjRSNgqo7o077s9TgRJfiIfemoI=;
-	b=EqqdPV2SILocvrCJOjjGvYFBEYon/AWGInUeQD1r2FD4592EF7RdGYgkGQ5pd2V5QTPzu0
-	/TmfVmORiJCIlezG1UnS/8h9PeByj2niLp6XWety4Gfhe4TCtF8i3jZYad9nNG751j+m+o
-	1Q4g0DzhskdvxAFe3RaNTK6903yhXs4=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-389-a8vvGCybN5WY-ilt55kkNA-1; Wed,
- 17 Jan 2024 11:39:36 -0500
-X-MC-Unique: a8vvGCybN5WY-ilt55kkNA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 921CE1C29EC6;
-	Wed, 17 Jan 2024 16:39:31 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.121])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 8BF4E3C25;
-	Wed, 17 Jan 2024 16:39:22 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Wed, 17 Jan 2024 17:38:18 +0100 (CET)
-Date: Wed, 17 Jan 2024 17:38:09 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Bernd Edlinger <bernd.edlinger@hotmail.de>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
-	Alexey Dobriyan <adobriyan@gmail.com>,
-	Kees Cook <keescook@chromium.org>,
-	Andy Lutomirski <luto@amacapital.net>,
-	Will Drewry <wad@chromium.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Michal Hocko <mhocko@suse.com>, Serge Hallyn <serge@hallyn.com>,
-	James Morris <jamorris@linux.microsoft.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Yafang Shao <laoar.shao@gmail.com>, Helge Deller <deller@gmx.de>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	Adrian Reber <areber@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>, Jens Axboe <axboe@kernel.dk>,
-	Alexei Starovoitov <ast@kernel.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-	tiozhang <tiozhang@didiglobal.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	"Paulo Alcantara (SUSE)" <pc@manguebit.com>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	YueHaibing <yuehaibing@huawei.com>,
-	Paul Moore <paul@paul-moore.com>, Aleksa Sarai <cyphar@cyphar.com>,
-	Stefan Roesch <shr@devkernel.io>, Chao Yu <chao@kernel.org>,
-	xu xin <xu.xin16@zte.com.cn>, Jeff Layton <jlayton@kernel.org>,
-	Jan Kara <jack@suse.cz>, David Hildenbrand <david@redhat.com>,
-	Dave Chinner <dchinner@redhat.com>, Shuah Khan <shuah@kernel.org>,
-	Zheng Yejian <zhengyejian1@huawei.com>,
-	Elena Reshetova <elena.reshetova@intel.com>,
-	David Windsor <dwindsor@gmail.com>,
-	Mateusz Guzik <mjguzik@gmail.com>, Ard Biesheuvel <ardb@kernel.org>,
-	"Joel Fernandes (Google)" <joel@joelfernandes.org>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Hans Liljestrand <ishkamiel@gmail.com>
-Subject: Re: [PATCH v14] exec: Fix dead-lock in de_thread with ptrace_attach
-Message-ID: <20240117163739.GA32526@redhat.com>
-References: <AM8PR10MB470801D01A0CF24BC32C25E7E40E9@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
- <AM8PR10MB470875B22B4C08BEAEC3F77FE4169@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
- <AS8P193MB1285DF698D7524EDE22ABFA1E4A1A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <AS8P193MB12851AC1F862B97FCE9B3F4FE4AAA@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <AS8P193MB1285FF445694F149B70B21D0E46C2@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <20240116152210.GA12342@redhat.com>
- <AS8P193MB128538BC3833E654F56DA801E4722@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+	s=arc-20240116; t=1705509935; c=relaxed/simple;
+	bh=4MegXCDgR2Hm6ekLa5Z5V+6TsjyBquUqyY7PrvhPYAg=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To; b=WDM1TjQXShz4B3YE2OZ1WElGfcvrw4UH1S6uqx0ChPiOvTLR8Ip9nGja0u9dXQQEm17fGuWhR6hCowWq3tTCqAuNUdcbtcD8GT60UpOiNleoT9bIPT7GzjF8LRYU/uqEVw2aBDctpxYqm8iNFhDVjLhJST0lfr2Nw1Few+SZWo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R8rDEUXl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 676C2C433F1;
+	Wed, 17 Jan 2024 16:45:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705509935;
+	bh=4MegXCDgR2Hm6ekLa5Z5V+6TsjyBquUqyY7PrvhPYAg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=R8rDEUXle8rnkbaWen/weqQwkZHFgq2pyg9itw366gDqGWzdMNt2P0TW1Su8L3Xt+
+	 2LfnjZkDIJJ4HVc9VNUUNOKveu9QQ+ElVUU3FUk0a7n0uYFLaaOqfTBOm3lF8OloH5
+	 SwaEqgKpgeerp7HPY3Mnnqny0L8bI292QMoRqJJyylrKneE0VmyrlijdsMy4PdF6lM
+	 mPflbkumFO2CaT61cslZVLUbt2t84tErvSSZWB5ZeMDVOikOZ7UkMK1Ry5bsR8ytor
+	 qMMDsPw3V8E2WCVEoswahVmaXPs+dtjxbRu2VY+IS53U5M8cOQFVNUYVEw6JyM81pj
+	 2frBa0vxLX3hw==
+Date: Wed, 17 Jan 2024 17:45:31 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Eric Dumazet <edumazet@google.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	Arjan van de Ven <arjan@infradead.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Rik van Riel <riel@surriel.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sebastian Siewior <bigeasy@linutronix.de>,
+	Giovanni Gherdovich <ggherdovich@suse.cz>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v10 04/20] timers: Optimization for
+ timer_base_try_to_set_idle()
+Message-ID: <ZagEK9l06c_7F3pH@localhost.localdomain>
+References: <20240115143743.27827-1-anna-maria@linutronix.de>
+ <20240115143743.27827-5-anna-maria@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <AS8P193MB128538BC3833E654F56DA801E4722@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240115143743.27827-5-anna-maria@linutronix.de>
 
-On 01/17, Bernd Edlinger wrote:
->
-> >>
-> >> The problem happens when a tracer tries to ptrace_attach
-> >> to a multi-threaded process, that does an execve in one of
-> >> the threads at the same time, without doing that in a forked
-> >> sub-process.  That means: There is a race condition, when one
-> >> or more of the threads are already ptraced, but the thread
-> >> that invoked the execve is not yet traced.  Now in this
-> >> case the execve locks the cred_guard_mutex and waits for
-> >> de_thread to complete.  But that waits for the traced
-> >> sibling threads to exit, and those have to wait for the
-> >> tracer to receive the exit signal, but the tracer cannot
-> >> call wait right now, because it is waiting for the ptrace
-> >> call to complete, and this never does not happen.
-> >> The traced process and the tracer are now in a deadlock
-> >> situation, and can only be killed by a fatal signal.
-> >
-> > This looks very confusing to me. And even misleading.
-> >
-> > So IIRC the problem is "simple".
-> >
-> > de_thread() sleeps with cred_guard_mutex waiting for other threads to
-> > exit and pass release_task/__exit_signal.
-> >
-> > If one of the sub-threads is traced, debugger should do ptrace_detach()
-> > or wait() to release this tracee, the killed tracee won't autoreap.
-> >
->
-> Yes. but the tracer has to do its job, and that is ptrace_attach the
-> remaining treads, it does not know that it would avoid a dead-lock
-> when it calls wait(), instead of ptrace_attach.  It does not know
-> that the tracee has just called execve in one of the not yet traced
-> threads.
+Le Mon, Jan 15, 2024 at 03:37:27PM +0100, Anna-Maria Behnsen a écrit :
+> When tick is stopped also the timer base is_idle flag is set. When
+> reentering the timer_base_try_to_set_idle() with the tick stopped, there is
+> no need to check whether the timer base needs to be set idle again. When a
+> timer was enqueued in the meantime, this is already handled by the
+> tick_nohz_next_event() call which was executed before
+> tick_nohz_stop_tick().
+> 
+> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+> ---
+>  kernel/time/tick-sched.c |  2 +-
+>  kernel/time/timer.c      | 11 ++++++++---
+>  2 files changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+> index c6223afc801f..27f1a2ae7f39 100644
+> --- a/kernel/time/tick-sched.c
+> +++ b/kernel/time/tick-sched.c
+> @@ -886,7 +886,7 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
+>  	struct clock_event_device *dev = __this_cpu_read(tick_cpu_device.evtdev);
+>  	unsigned long basejiff = ts->last_jiffies;
+>  	u64 basemono = ts->timer_expires_base;
+> -	bool timer_idle;
+> +	bool timer_idle = ts->tick_stopped;
+>  	u64 expires;
+>  
+>  	/* Make sure we won't be trying to stop it twice in a row. */
+> diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+> index 3a668060692e..2f69a485a070 100644
+> --- a/kernel/time/timer.c
+> +++ b/kernel/time/timer.c
+> @@ -1999,13 +1999,18 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
+>   * timer_base_try_to_set_idle() - Try to set the idle state of the timer bases
+>   * @basej:	base time jiffies
+>   * @basem:	base time clock monotonic
+> - * @idle:	pointer to store the value of timer_base->is_idle
+> + * @idle:	pointer to store the value of timer_base->is_idle on return;
+> + *		*idle contains the information whether tick was already stopped
+>   *
+> - * Returns the tick aligned clock monotonic time of the next pending
+> - * timer or KTIME_MAX if no timer is pending.
+> + * Returns the tick aligned clock monotonic time of the next pending timer or
+> + * KTIME_MAX if no timer is pending. When tick was already stopped KTIME_MAX is
+> + * returned as well.
+>   */
+>  u64 timer_base_try_to_set_idle(unsigned long basej, u64 basem, bool *idle)
+>  {
+> +	if (*idle)
+> +		return KTIME_MAX;
 
-Hmm. I don't understand you.
+Ok now I see the reason behind the behavioural change.
 
-I agree we have a problem which should be fixed. Just the changelog
-looks confusing to me, imo it doesn't explain the race/problem clearly.
+So either:
 
-> > Now. If debugger tries to take the same cred_guard_mutex before
-> > detach/wait we have a deadlock. This is not specific to ptrace_attach(),
-> > proc_pid_attr_write() takes this lock too.
-> >
-> > Right? Or are there other issues?
-> >
->
-> No, proc_pid_attr_write has no problem if it waits for cred_guard_mutex,
-> because it is only called from one of the sibling threads,
+* We remove the old behaviour consisting in clearing base->is_idle if the new
+  next timer is within a jiffy while the tick is stopped. But then the changelog
+  from the previous patch should state that and comments must be clarified.
 
-OK, thanks, I was wrong. I forgot about "A task may only write its own attributes".
-So yes, ptrace_attach() is the only source of problematic mutex_lock() today.
-There were more in the past.
+or:
 
-> >> +		if (unlikely(t->ptrace)
-> >> +		    && (t != tsk->group_leader || !t->exit_state))
-> >> +			unsafe_execve_in_progress = true;
-> >
-> > The !t->exit_state is not right... This sub-thread can already be a zombie
-> > with ->exit_state != 0 but see above, it won't be reaped until the debugger
-> > does wait().
-> >
->
-> I dont think so.
-> de_thread() handles the group_leader different than normal threads.
+* We restore the old behaviour, making things a bit more complicated I guess.
 
-I don't follow...
-
-I didn't say that t is a group leader. I said it can be a zombie sub-thread
-with ->exit_state != 0.
-
-> That means normal threads have to wait for being released from the zombie
-> state by the tracer:
-> sig->notify_count > 0, and de_thread is woken up by __exit_signal
-
-That is what I said before. Debugger should release a zombie sub-thread,
-it won't do __exit_signal() on its own.
-
-> >> +	if (unlikely(unsafe_execve_in_progress)) {
-> >> +		spin_unlock_irq(lock);
-> >> +		sig->exec_bprm = bprm;
-> >> +		mutex_unlock(&sig->cred_guard_mutex);
-> >> +		spin_lock_irq(lock);
-> >
-> > I don't understand why do we need to unlock and lock siglock here...
->
-> That is just a precaution because I did want to release the
-> mutexes exactly in the reverse order as they were acquired.
-
-To me this adds the unnecessary complication.
-
-> > But my main question is why do we need the unsafe_execve_in_progress boolean.
-> > If this patch is correct and de_thread() can drop and re-acquire cread_guard_mutex
-> > when one of the threads is traced, then why can't we do this unconditionally ?
-> >
->
-> I just wanted to keep the impact of the change as small as possible,
-
-But the unsafe_execve_in_progress logic increases the impact and complicates
-the patch.
-
-I think the fix should be as simple as possible. (to be honest, right now
-I don't think this is a right approach).
-
-> including
-> possible performance degradation due to double checking of credentials.
-
-Not sure I understand, but you can add the performance improvements later.
-Not to mention that this should be justified, and the for_other_threads()
-loop added by this patch into de_thread() is not nice performance-wise.
-
-Oleg.
-
+Thanks.
 
