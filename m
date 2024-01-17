@@ -1,176 +1,111 @@
-Return-Path: <linux-kernel+bounces-29437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C979830E37
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 21:51:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52694830E42
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 21:52:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22E93B235F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:51:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80E5C1C216BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:52:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0BC325108;
-	Wed, 17 Jan 2024 20:51:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A01C22511E;
+	Wed, 17 Jan 2024 20:52:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="UXnHuZU1"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JRoZAeaX"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0281D2556D
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 20:51:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74BF925540;
+	Wed, 17 Jan 2024 20:52:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705524674; cv=none; b=qnHSFlvgjJRMDUv7YXG97Z/4e6O9+n70Znis/eEd/rtROxeNPle8BWyqZzZH9gjqtPoUVfSaHAHDexkGzGtUa0fdZ8QS2iHn8LPPlL2wPgtBvYaCM56HrNHEN6H8RADalIif+SQTKzJDvy0Ue3nJJLIB6x2dSr/h+Tt28AIy6X0=
+	t=1705524760; cv=none; b=XOB3dbZQFxQnwIXieOtg+tqtcAvmxRjpz4x24OYLsOcDMZWNCSGv/8rRDcb32qHs8kOR4KgtavgbKFZAR0EuGZA4cXdPc2K9KJ2yS55OYG9DA5f2JAE2Vpk0DbbJ5pueujTLLb4FIJFavOJ+1vQtFyX8GgnMqjjV+lkC0UJpW1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705524674; c=relaxed/simple;
-	bh=KEO+rHwBc2shj6H6ATYkN4mc8w4293/sNHJG3mL1qhA=;
+	s=arc-20240116; t=1705524760; c=relaxed/simple;
+	bh=6bfMGEeSHTd0Kja+faLLkq2SnZ/etT47sRwohLN8FZo=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To; b=N+miv6KxQIj0VR8DKwJY65UOz8d0sEly2rUBXjNsr/o2JDBuSWdj00K+yqeZRusA1/Mku8++IIrz3XTQVOSGQ0il6BaQhkyBGpsAYGTd9Q5MMnUp8r7gNlAU6+myKdrfnHaNUR+qf/fD/7btJDicQHaujMV+TGk2EhYlhbEB7Xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=UXnHuZU1; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d5f4c9c2a6so15697625ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 12:51:11 -0800 (PST)
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=ZHqPC7Xd14zyeSmTkT53rsrZenY1LiMvPzQpD7kOWO/3IdICvdM6eSButj8HhiWhzTbQkHUkoQhM/JSbxOxPR1mPdNjlzhbVB96eKSqm4mXvkA35/q22QEZE3JKFvzD9gzxN+f3d2ibHoeBhQCQz+L5AMPj4PvqkKk/wL82Z1aA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JRoZAeaX; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50e766937ddso13152452e87.3;
+        Wed, 17 Jan 2024 12:52:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705524671; x=1706129471; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=kx/TANifPOtY4pPL6VukQfe4dLtrXERVJTf79pfe/6Q=;
-        b=UXnHuZU1FeBYinM64Q/OMb5UBevLFcUxkhPsMjKqsByNfezM6FioGUaCGtUV/7YNIw
-         6kAspVzNbrz6aM/w+ExFTe3FK8FpF1HDYbPzYfmGThkU4QmyDITK2kh/2yRzcVPqbKwU
-         Iibv2xBxxgBfM8bGgrs2ivA1DKc9vPHSXUong=
+        d=gmail.com; s=20230601; t=1705524756; x=1706129556; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B0+WY0tNWGa27ERQy4ZG2EkS39nDYHw+ks1/5FPGHiM=;
+        b=JRoZAeaXucoHvG470rGnH37DLeyoC/TZLX/mw1qeGP7Qk9PljeIUEtj6BBq5r658Mf
+         kXzfmL6ex70yu+2qswqJwyxXRl5yFYjynFCvvV+k1rfEzrwDq4LCHZUN2nbj5yZw4P6A
+         dGeMT3a0DewW7LmC4LyCfoHBhBG3o2gM1rFEbvPhSPJaDElgg34sj8eVbaiGypCC//4y
+         NFRaWzIGrxheiTkXUjHMc5Evqq3DGjkG+0NtDWkgnJs0xKTGjRI1rkoG6nHV0vt9eQ+n
+         r/p9VcJwAJ+1bNeH/wQoFKGSYxwsUIIBV9aTt2/MP++PRreBz3zegw8AcOWWT/yXIyLo
+         qxsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705524671; x=1706129471;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kx/TANifPOtY4pPL6VukQfe4dLtrXERVJTf79pfe/6Q=;
-        b=gd19wgsYF+gkGbQVWjGxE7T2dV1cWfymR1PiSEllQYFdSpaTinr1fu9GumJx/og/SL
-         KkfNL6V54d4ajs6TI/PiQqgf5YoB3+fFtD8i6Kf/fhFRTl4ttEbm5E8ZKrfJ4OYXi1FE
-         UORon/9uudQZxj6sv9xkH7Jgp9Sy3pCVCbfh1Qxs7Eo+ptfbnEwfhu0Xgh9zSTtg+EZ5
-         pjG5/ifLa4GADZGeVM3fq+1DFiM18P0/FsseQXGKwhILBQKWKto+hOl2DYYGMVFjO6Lf
-         scd2nMpwk+FudO9FYRnmZexYE+ufQENqPgH08+RAzkZSW8nq8wTsfzxOKOBmt/7oSAVf
-         u+sQ==
-X-Gm-Message-State: AOJu0Yw4w7UxK/8YhB/APn6A/9AwXhGzBrN6fyNucxbf9r1eS7pUqWOa
-	5OFyhAIjmgI+fVjvQscBdffssVbIsIru
-X-Google-Smtp-Source: AGHT+IFBazjvV2lR/bEVLRw5mnikVJ9ZApUSi3AOIFGvEer5uS7MyrKkE1kyrimbiHD2zhHX4671mA==
-X-Received: by 2002:a17:902:dacc:b0:1d4:69a5:edbb with SMTP id q12-20020a170902dacc00b001d469a5edbbmr11788701plx.48.1705524671293;
-        Wed, 17 Jan 2024 12:51:11 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id le4-20020a170902fb0400b001d6f2775570sm76695plb.209.2024.01.17.12.51.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 12:51:10 -0800 (PST)
-Date: Wed, 17 Jan 2024 12:51:10 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Paul Moore <paul@paul-moore.com>
-Cc: Lu Yao <yaolu@kylinos.cn>, linux-hardening@vger.kernel.org,
-	jmorris@namei.org, serge@hallyn.com,
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] lsm: Resolve compiling 'security.c' error
-Message-ID: <202401171236.5175FA9FA9@keescook>
-References: <20240117014541.8887-1-yaolu@kylinos.cn>
- <CAHC9VhSs6bxXFCAhw7i5cN=iZtuG3-E8xDBRjyGsop=BrhbmSw@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1705524756; x=1706129556;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B0+WY0tNWGa27ERQy4ZG2EkS39nDYHw+ks1/5FPGHiM=;
+        b=FQelNuismrK0ow7O78IEeyqdmIiFi0sYWQeuTIrxtcekPI10sSeE8EYPIHogpLNaR9
+         l9wdOehYC7Uj9gYO6uXdij6ETYNIgoyBG1r7o0QBg1FrzB4oaaU4EyTDUb/HAX6w9j00
+         rI6m3viM6Y1Z0UEiKTvBy7dMubI3vC1rdB6rqUC1zbb3FV2f0TPB1YKVhFqm8ztqy4n6
+         QZogPNYJTYwSHBpj8GFgglCowqwixB7HkPdmVcKDsesclv1R542UQId3Nqs8+Xvb0mLB
+         k153AjFt/6GcFlo09XzOnS4Gg5CsNygaLdCrp1BA2sZCmjUwNWf3fnr/9/ZIASwQgXt9
+         /b5A==
+X-Gm-Message-State: AOJu0YydveNj34njDtWPTw/5KSN/JxRhRLJK9hX+m2b5Ac+MIUv8waZZ
+	+BJ3Mvnyi9htfl6tNPYIhEHrRBcwEthEn8iJ4IxLJiYvO5g=
+X-Google-Smtp-Source: AGHT+IERGCKjG90zqKMcjx5QoH1qXDA27BquNlg87yXazeyy+nk3QMPVJtsKoa8fI01vr4f95N6nyLncVo4M0d+ULIY=
+X-Received: by 2002:a05:6512:130c:b0:50e:e557:f1c4 with SMTP id
+ x12-20020a056512130c00b0050ee557f1c4mr4760993lfu.0.1705524756375; Wed, 17 Jan
+ 2024 12:52:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHC9VhSs6bxXFCAhw7i5cN=iZtuG3-E8xDBRjyGsop=BrhbmSw@mail.gmail.com>
+References: <20240117083251.53868-1-hector.palacios@digi.com> <20240117083251.53868-2-hector.palacios@digi.com>
+In-Reply-To: <20240117083251.53868-2-hector.palacios@digi.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Wed, 17 Jan 2024 22:51:59 +0200
+Message-ID: <CAHp75Vci=1nAvxRcbkK2SxGWGbQVbzQMTycMt8tZ5snPRTYXOg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] gpio: vf610: add support to DT 'ngpios' property
+To: Hector Palacios <hector.palacios@digi.com>
+Cc: linus.walleij@linaro.org, brgl@bgdev.pl, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, andy@kernel.org, conor+dt@kernel.org, 
+	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, 
+	festevam@gmail.com, linux-imx@nxp.com, stefan@agner.ch, 
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 17, 2024 at 09:32:33AM -0500, Paul Moore wrote:
-> On Tue, Jan 16, 2024 at 8:46 PM Lu Yao <yaolu@kylinos.cn> wrote:
-> >
-> > The following error log is displayed during the current compilation
-> >   > 'security/security.c:810:2: error: ‘memcpy’ offset 32 is
-> >   > out of the bounds [0, 0] [-Werror=array-bounds]'
-> >
-> > GCC version is '10.3.0 (Ubuntu 10.3.0-1ubuntu1~18.04~1)'
+On Wed, Jan 17, 2024 at 10:35=E2=80=AFAM Hector Palacios
+<hector.palacios@digi.com> wrote:
+>
+> Some SoCs, such as i.MX93, don't have all 32 pins available
+> per port. Allow optional generic 'ngpios' property to be
+> specified from the device tree and default to
+> VF610_GPIO_PER_PORT (32) if the property does not exist.
 
-As an aside, Ubuntu 18.04 went out of support back in June 2023, and
-never officially supported gcc 10:
-https://launchpad.net/ubuntu/+source/gcc-10
+..
 
-That said, I still see this error with gcc 10.5 on supported Ubuntu
-releases. I'm surprised this is the first time I've seen this error!
+> +       ret =3D device_property_read_u32(dev, "ngpios", &ngpios);
+> +       if (ret || ngpios > VF610_GPIO_PER_PORT)
+> +               gc->ngpio =3D VF610_GPIO_PER_PORT;
+> +       else
+> +               gc->ngpio =3D (u16)ngpios;
 
-> >
-> > Signed-off-by: Lu Yao <yaolu@kylinos.cn>
-> > ---
-> >  security/security.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> I'm adding the linux-hardening folks to the to To: line as this has
-> now come up multiple times and my best guess is that this is an issue
-> with the struct_size() macro, compiler annotations, or something
-> similar and I suspect they are the experts in that area.  My
-> understanding is that using the struct_size() macro is preferable to
-> open coding the math, as this patch does, but if we have to do
-> something like this to silence the warnings, that's okay with me.
-> 
-> So linux-hardening folks, what do you say?
+This property is being read by the GPIOLIB core. Why do you need to repeat =
+this?
 
-This is a GCC bug -- it thinks nctx_len could be 0, so it gets mad about
-the array bounds.
-
-> 
-> > diff --git a/security/security.c b/security/security.c
-> > index 0144a98d3712..37168f6bee25 100644
-> > --- a/security/security.c
-> > +++ b/security/security.c
-> > @@ -792,7 +792,7 @@ int lsm_fill_user_ctx(struct lsm_ctx __user *uctx, size_t *uctx_len,
-> >         size_t nctx_len;
-> >         int rc = 0;
-> >
-> > -       nctx_len = ALIGN(struct_size(nctx, ctx, val_len), sizeof(void *));
-> > +       nctx_len = ALIGN(sizeof(struct lsm_ctx) + val_len, sizeof(void *));
-> >         if (nctx_len > *uctx_len) {
-> >                 rc = -E2BIG;
-> >                 goto out;
-
-Please don't do this -- it regresses the efforts to make sure we can
-never wrap the math on here. We need to pick one of these two diffs
-instead. The first disables -Warray-bounds for GCC 10.* also (since we
-keep having false positives). The latter silences this 1 particular
-case by explicitly checking nctx_len for 0:
-
-diff --git a/init/Kconfig b/init/Kconfig
-index 8d4e836e1b6b..af4833430aca 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -874,7 +874,7 @@ config GCC11_NO_ARRAY_BOUNDS
- 
- config CC_NO_ARRAY_BOUNDS
- 	bool
--	default y if CC_IS_GCC && GCC_VERSION >= 110000 && GCC11_NO_ARRAY_BOUNDS
-+	default y if CC_IS_GCC && GCC_VERSION >= 100000 && GCC11_NO_ARRAY_BOUNDS
- 
- # Currently, disable -Wstringop-overflow for GCC 11, globally.
- config GCC11_NO_STRINGOP_OVERFLOW
-
-
-
-diff --git a/security/security.c b/security/security.c
-index 0144a98d3712..ab403136958f 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -793,7 +793,7 @@ int lsm_fill_user_ctx(struct lsm_ctx __user *uctx, size_t *uctx_len,
- 	int rc = 0;
- 
- 	nctx_len = ALIGN(struct_size(nctx, ctx, val_len), sizeof(void *));
--	if (nctx_len > *uctx_len) {
-+	if (nctx_len == 0 || nctx_len > *uctx_len) {
- 		rc = -E2BIG;
- 		goto out;
- 	}
-
--- 
-Kees Cook
+--=20
+With Best Regards,
+Andy Shevchenko
 
