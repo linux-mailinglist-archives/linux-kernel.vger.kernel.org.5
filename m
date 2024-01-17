@@ -1,81 +1,81 @@
-Return-Path: <linux-kernel+bounces-29315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81E74830CB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:27:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D5AA830CB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:28:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18E8EB20FF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:27:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0867F1F23E57
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:28:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 087D822F0B;
-	Wed, 17 Jan 2024 18:27:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAF6622F0D;
+	Wed, 17 Jan 2024 18:28:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PVKYpiFJ"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a6hWjJTj"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A36CE22EE0
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 18:27:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C37822EE1
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 18:28:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705516025; cv=none; b=AlJ0rStqArWdvYSWgEZlCQzRJ0tEFiL7Nqka57AZH2dW17GIvLU+8kiejgQDXhs8lOgV2ZnoeyQhEjlc1l+7itGuepbsIdPTQNmaafobujI8uYlYqzh0DwKqAV10Tm3qIklrZ/VYdx4StahvfjCr3H41vpN56xyX66BEsPKhFLQ=
+	t=1705516113; cv=none; b=A999pXZ5+71rvR1Inv6p9MACP7xI9rFumV+NreW8GbIeKgZ6DJdShvVEVOzvsWCLqcArtAiVSmvx+rM2o3o/D6E0Z3w6Rzji09oTH+D6IZVos0tFVhlYw9cSJS9akrPEhp3g7uVJ2qLCDkcxZ9GdRLh/IhUR4pMK8HDYEhSUEi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705516025; c=relaxed/simple;
-	bh=NKRHrSpmwu1CWflJUUX9OhR3Z+lO3CHJlLyiMlQ2Ms4=;
+	s=arc-20240116; t=1705516113; c=relaxed/simple;
+	bh=RXmKq/V46HjlwJmswiDSHgratWSeX1EAcKd7ceIrA6s=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
 	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=AzszYJfBxS1CdePM3Ewb2ZGYR4l2r68LKZIJ5XQbeJ+to2bcdL/cg0zIIl1JEDp4sWfFfI2GgLhrR0eORFbvQqJCLB/EN++HnzqDDE72FhOo1nK/B6ZmLYWb+45amJp1nkPZ9zzsm4YLcEl4lH4No+1cKBiMrEJBn7pZw778rpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PVKYpiFJ; arc=none smtp.client-ip=209.85.221.53
+	 Content-Type:Content-Transfer-Encoding; b=BuNdNop/7VmLqKPJAVQzei+Il13yX0aslSKfZp/5hYXY0c073oemnihIL5irXV6n7rve4zP9aWaQmQEW7JkEtsbni0Q43A0aTe4plAFvZxJwCeyA07jt2ph7BI2IiYats9wTcUzdrL9p8iYD5HKvIIywKTZMyuTWjyGYMmelz0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a6hWjJTj; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33728f82a71so2413506f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:27:03 -0800 (PST)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40e60d74b81so3185955e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:28:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705516022; x=1706120822; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705516109; x=1706120909; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7zQWgPbfKp6YM9aUfoUkYrRudM52sOmWJm/p3sD772Y=;
-        b=PVKYpiFJq+zmwpI+/UqSCgEWU/MvusfHIw92upmpsKvkGyiWreYJ+S1aqrJoMVooFB
-         6uag8Ts7SPGCEuS84A4B9NQs1NPAkUR0Bn2x0H/QQzBv7VNqT96zFAABT05azmEimJt4
-         LcTPOk9CE3SjHhRtWYkL8YSvBSZIfxb3CsqiRT0EoxsydpGM6V/bsglHT0K9h4mflw0O
-         niVzpovDJ5l1FQBPdCKVntpD/XG0OKrf28qpoYmcFGm4vcHQAfSYHPPxvlNiGwgQ0SDr
-         5egiTTWdvyuvWpZVrTBHcOB/5uGDRYcAVW0GFjuRkH8o0sGT9WTKf5Oi3XOg25bXCvbr
-         rlUQ==
+        bh=2YTIWppZOBmL1H/qdXTnDsoCpEw1sXU7s7kj9GmEfng=;
+        b=a6hWjJTjgHlf2L7Di3rO6M4U+kASHcSkR/4/Zf7w2xfj02wsdNz5QD4P6AxKeEq6G7
+         0LJGwpD6hlQ4/+2gisARGtvdp55PZaQdVdNqUnusJilVLUIYWFmaN3RsVRfkO58J34yO
+         vl4pQH4ORURkE3cjk3+5eocLQFwJbLB95RDA6JpbIbtxQbH/XiV2ZmqfyuXtWomemNvK
+         tbgTwktdhgKI8mnsS6a2nYg0j8HY/C8nihfnWCpCynXfNmtcz6UNOfLkDpTVFvwHeCZ0
+         QXAdP1HWlPulyK2b41SSQNhZBQq/fzqb4PIbB91LZzwy66AgO4nyDaKvAqcjnY8nkYsd
+         fOiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705516022; x=1706120822;
+        d=1e100.net; s=20230601; t=1705516109; x=1706120909;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7zQWgPbfKp6YM9aUfoUkYrRudM52sOmWJm/p3sD772Y=;
-        b=KWjIKTWuzMPxzppq1ZR50mXaeP42vQcJvGxIh/0nXCJU46hLene6UOYm60mClZnV/E
-         iM/keQ5WxiB3LbS6Tgsi81OBa91z4sZZVV+GWuGe+7yD8DsUK+RnyJs4bun/n8wZr/fe
-         Pxwo1Ia1cxl6EiWDKJoTGDwQSxBDYpLkoBlfRKPCaxu2rGYZRb4Q105tANVTM90734JQ
-         /j2MZY7b1wtlM53QIfZ8FJWHiiEXRxPl6dHkSbdSGxqY/v7Ov5xz+wuK/MCaP0QE4IVz
-         Cf86EPj+hZ9KsDI34vIJxNDNwFeC/8SRCWPaN1KOFxqLyKVyEzEviUiO+WH1KRhGKmND
-         cCQw==
-X-Gm-Message-State: AOJu0Yyl69xxGoAPIbtKgt4oZeG4J0+gjIgwXW8oloM+ExhtEnrGMCmM
-	6Q9IobgWP5eoJXvbb/9OzvKraR0xG8LZ2QowVvo=
-X-Google-Smtp-Source: AGHT+IFdnC0bev8FKCUUagV9fb50fuvyKdfakd6ZW2v7kea9CH61+ePpb4Manrk974u1JjOoEErUW2Z0nZYBQvx7hpE=
-X-Received: by 2002:adf:f48a:0:b0:337:c536:8516 with SMTP id
- l10-20020adff48a000000b00337c5368516mr159173wro.6.1705516021817; Wed, 17 Jan
- 2024 10:27:01 -0800 (PST)
+        bh=2YTIWppZOBmL1H/qdXTnDsoCpEw1sXU7s7kj9GmEfng=;
+        b=Mnr85IA7qE/+ZN5m0wVDSjJCKgtlPLaXp+w4btw3fxhWKGPH9WN9D6R8YryfjFAu+E
+         gBF+pLxNNGX7Xhn+ugYYdBnIBiU/ffY+Mq7IFWGzFsYivzRzGfcDg4SxpWmiTv5EVbZO
+         KZf79KdgKMhJqZWt4SF9E0Fp/tvfk4Cj6UZmyfvrPnactpHVPb9n1N+iLoSvXLhOldo3
+         Al/W4SqbBnnO2kz2vVdiyNPm5Jtg1YXVgDY1dsHvbFRdcS0Y8OU2XWPQc62/MeJFL6d9
+         KaQdjM4X2hFjnErfZcgjcgiAytE95yAHtz/vDjgPm1HKSknpV2kLwN8YnpUigj5xLBSz
+         +ETg==
+X-Gm-Message-State: AOJu0YyfKddYhf9POuouf70+jWHTTJdYtHbhrMiUFSppTuKuC40X99F0
+	FBY+hIP0Hwz14+AhaxYnDSsjs95b8LAkHb/B3W4=
+X-Google-Smtp-Source: AGHT+IEBNi5qG09aWKVIGebEpdYQKcvYy1/Zs4NTddYCXN5LBWTykzC2D8B21MvTXNKkVrx5cxbkWxUUYO/cZli+noE=
+X-Received: by 2002:a05:600c:3ca3:b0:40e:89e8:107a with SMTP id
+ bg35-20020a05600c3ca300b0040e89e8107amr184597wmb.3.1705516109458; Wed, 17 Jan
+ 2024 10:28:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117031212.1104034-1-nunes.erico@gmail.com> <20240117031212.1104034-5-nunes.erico@gmail.com>
-In-Reply-To: <20240117031212.1104034-5-nunes.erico@gmail.com>
+References: <20240117031212.1104034-1-nunes.erico@gmail.com> <20240117031212.1104034-6-nunes.erico@gmail.com>
+In-Reply-To: <20240117031212.1104034-6-nunes.erico@gmail.com>
 From: Vasily Khoruzhick <anarsoul@gmail.com>
-Date: Wed, 17 Jan 2024 10:26:35 -0800
-Message-ID: <CA+E=qVeWi_RwLUOZJTAa6_Tx3pPTbym5_JtWYJetBiFUXnDQgw@mail.gmail.com>
-Subject: Re: [PATCH v1 4/6] drm/lima: handle spurious timeouts due to high irq latency
+Date: Wed, 17 Jan 2024 10:28:02 -0800
+Message-ID: <CA+E=qVe_5fDsW+_KobwP5+Xg0Tac3Eh3dtVsmM1VSEmiQeH_cQ@mail.gmail.com>
+Subject: Re: [PATCH v1 5/6] drm/lima: remove guilty drm_sched context handling
 To: Erico Nunes <nunes.erico@gmail.com>
 Cc: Qiang Yu <yuq825@gmail.com>, dri-devel@lists.freedesktop.org, 
 	lima@lists.freedesktop.org, 
@@ -89,101 +89,100 @@ Content-Transfer-Encoding: quoted-printable
 On Tue, Jan 16, 2024 at 7:12=E2=80=AFPM Erico Nunes <nunes.erico@gmail.com>=
  wrote:
 >
-> There are several unexplained and unreproduced cases of rendering
-> timeouts with lima, for which one theory is high IRQ latency coming from
-> somewhere else in the system.
-> This kind of occurrence may cause applications to trigger unnecessary
-> resets of the GPU or even applications to hang if it hits an issue in
-> the recovery path.
-> Panfrost already does some special handling to account for such
-> "spurious timeouts", it makes sense to have this in lima too to reduce
-> the chance that it hit users.
+> Marking the context as guilty currently only makes the application which
+> hits a single timeout problem to stop its rendering context entirely.
+> All jobs submitted later are dropped from the guilty context.
+>
+> Lima runs on fairly underpowered hardware for modern standards and it is
+> not entirely unreasonable that a rendering job may time out occasionally
+> due to high system load or too demanding application stack. In this case
+> it would be generally preferred to report the error but try to keep the
+> application going.
+>
+> Other similar embedded GPU drivers don't make use of the guilty context
+> flag. Now that there are reliability improvements to the lima timeout
+> recovery handling, drop the guilty contexts to let the application keep
+> running in this case.
 >
 > Signed-off-by: Erico Nunes <nunes.erico@gmail.com>
 Reviewed-by: Vasily Khoruzhick <anarsoul@gmail.com>
 
 > ---
->  drivers/gpu/drm/lima/lima_sched.c | 32 ++++++++++++++++++++++++++-----
->  drivers/gpu/drm/lima/lima_sched.h |  2 ++
->  2 files changed, 29 insertions(+), 5 deletions(-)
+>  drivers/gpu/drm/lima/lima_ctx.c   | 2 +-
+>  drivers/gpu/drm/lima/lima_ctx.h   | 1 -
+>  drivers/gpu/drm/lima/lima_sched.c | 5 ++---
+>  drivers/gpu/drm/lima/lima_sched.h | 3 +--
+>  4 files changed, 4 insertions(+), 7 deletions(-)
 >
+> diff --git a/drivers/gpu/drm/lima/lima_ctx.c b/drivers/gpu/drm/lima/lima_=
+ctx.c
+> index 8389f2d7d021..0e668fc1e0f9 100644
+> --- a/drivers/gpu/drm/lima/lima_ctx.c
+> +++ b/drivers/gpu/drm/lima/lima_ctx.c
+> @@ -19,7 +19,7 @@ int lima_ctx_create(struct lima_device *dev, struct lim=
+a_ctx_mgr *mgr, u32 *id)
+>         kref_init(&ctx->refcnt);
+>
+>         for (i =3D 0; i < lima_pipe_num; i++) {
+> -               err =3D lima_sched_context_init(dev->pipe + i, ctx->conte=
+xt + i, &ctx->guilty);
+> +               err =3D lima_sched_context_init(dev->pipe + i, ctx->conte=
+xt + i);
+>                 if (err)
+>                         goto err_out0;
+>         }
+> diff --git a/drivers/gpu/drm/lima/lima_ctx.h b/drivers/gpu/drm/lima/lima_=
+ctx.h
+> index 74e2be09090f..5b1063ce968b 100644
+> --- a/drivers/gpu/drm/lima/lima_ctx.h
+> +++ b/drivers/gpu/drm/lima/lima_ctx.h
+> @@ -13,7 +13,6 @@ struct lima_ctx {
+>         struct kref refcnt;
+>         struct lima_device *dev;
+>         struct lima_sched_context context[lima_pipe_num];
+> -       atomic_t guilty;
+>
+>         /* debug info */
+>         char pname[TASK_COMM_LEN];
 > diff --git a/drivers/gpu/drm/lima/lima_sched.c b/drivers/gpu/drm/lima/lim=
 a_sched.c
-> index 66317296d831..9449b81bcd5b 100644
+> index 9449b81bcd5b..496c79713fe8 100644
 > --- a/drivers/gpu/drm/lima/lima_sched.c
 > +++ b/drivers/gpu/drm/lima/lima_sched.c
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0 OR MIT
->  /* Copyright 2017-2019 Qiang Yu <yuq825@gmail.com> */
+> @@ -154,13 +154,12 @@ void lima_sched_task_fini(struct lima_sched_task *t=
+ask)
+>  }
 >
-> +#include <linux/hardirq.h>
->  #include <linux/iosys-map.h>
->  #include <linux/kthread.h>
->  #include <linux/slab.h>
-> @@ -223,10 +224,7 @@ static struct dma_fence *lima_sched_run_job(struct d=
-rm_sched_job *job)
+>  int lima_sched_context_init(struct lima_sched_pipe *pipe,
+> -                           struct lima_sched_context *context,
+> -                           atomic_t *guilty)
+> +                           struct lima_sched_context *context)
+>  {
+>         struct drm_gpu_scheduler *sched =3D &pipe->base;
 >
->         task->fence =3D &fence->base;
+>         return drm_sched_entity_init(&context->base, DRM_SCHED_PRIORITY_N=
+ORMAL,
+> -                                    &sched, 1, guilty);
+> +                                    &sched, 1, NULL);
+>  }
 >
-> -       /* for caller usage of the fence, otherwise irq handler
-> -        * may consume the fence before caller use it
-> -        */
-> -       dma_fence_get(task->fence);
-> +       task->done_fence =3D dma_fence_get(task->fence);
->
->         pipe->current_task =3D task;
->
-> @@ -401,9 +399,33 @@ static enum drm_gpu_sched_stat lima_sched_timedout_j=
-ob(struct drm_sched_job *job
->         struct lima_sched_pipe *pipe =3D to_lima_pipe(job->sched);
->         struct lima_sched_task *task =3D to_lima_task(job);
->         struct lima_device *ldev =3D pipe->ldev;
-> +       struct lima_ip *ip =3D pipe->processor[0];
-> +
-> +       /*
-> +        * If the GPU managed to complete this jobs fence, the timeout is
-> +        * spurious. Bail out.
-> +        */
-> +       if (dma_fence_is_signaled(task->done_fence)) {
-> +               DRM_WARN("%s spurious timeout\n", lima_ip_name(ip));
-> +               return DRM_GPU_SCHED_STAT_NOMINAL;
-> +       }
-> +
-> +       /*
-> +        * Lima IRQ handler may take a long time to process an interrupt
-> +        * if there is another IRQ handler hogging the processing.
-> +        * In order to catch such cases and not report spurious Lima job
-> +        * timeouts, synchronize the IRQ handler and re-check the fence
-> +        * status.
-> +        */
-> +       synchronize_irq(ip->irq);
-> +
-> +       if (dma_fence_is_signaled(task->done_fence)) {
-> +               DRM_WARN("%s unexpectedly high interrupt latency\n", lima=
-_ip_name(ip));
-> +               return DRM_GPU_SCHED_STAT_NOMINAL;
-> +       }
->
->         if (!pipe->error)
-> -               DRM_ERROR("lima job timeout\n");
-> +               DRM_ERROR("%s lima job timeout\n", lima_ip_name(ip));
->
->         drm_sched_stop(&pipe->base, &task->base);
->
+>  void lima_sched_context_fini(struct lima_sched_pipe *pipe,
 > diff --git a/drivers/gpu/drm/lima/lima_sched.h b/drivers/gpu/drm/lima/lim=
 a_sched.h
-> index 6a11764d87b3..34050facb110 100644
+> index 34050facb110..677e908b53f8 100644
 > --- a/drivers/gpu/drm/lima/lima_sched.h
 > +++ b/drivers/gpu/drm/lima/lima_sched.h
-> @@ -29,6 +29,8 @@ struct lima_sched_task {
->         bool recoverable;
->         struct lima_bo *heap;
+> @@ -93,8 +93,7 @@ int lima_sched_task_init(struct lima_sched_task *task,
+>  void lima_sched_task_fini(struct lima_sched_task *task);
 >
-> +       struct dma_fence *done_fence;
-> +
->         /* pipe fence */
->         struct dma_fence *fence;
->  };
+>  int lima_sched_context_init(struct lima_sched_pipe *pipe,
+> -                           struct lima_sched_context *context,
+> -                           atomic_t *guilty);
+> +                           struct lima_sched_context *context);
+>  void lima_sched_context_fini(struct lima_sched_pipe *pipe,
+>                              struct lima_sched_context *context);
+>  struct dma_fence *lima_sched_context_queue_task(struct lima_sched_task *=
+task);
 > --
 > 2.43.0
 >
