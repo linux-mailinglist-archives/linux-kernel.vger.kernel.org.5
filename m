@@ -1,103 +1,110 @@
-Return-Path: <linux-kernel+bounces-29556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13C7C831026
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:43:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B826283102E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:48:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43E1B1C21BEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:43:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DCC12815DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:48:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3FE028DA7;
-	Wed, 17 Jan 2024 23:43:30 +0000 (UTC)
-Received: from mail115-80.sinamail.sina.com.cn (mail115-80.sinamail.sina.com.cn [218.30.115.80])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2291A26AC2;
+	Wed, 17 Jan 2024 23:48:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uxw1g9MW"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2124028DA0
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 23:43:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDD761C11
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 23:48:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705535010; cv=none; b=ECEFWqyUwm3IxlykcAvPNaG83+iIi3dk5Rg6RE99V/JZDejuVIuLOfbluOEBIwRjxXSRZu+TmCEKYen1Du9r3C3o0uFQWqlrSBtD03SRsnlkzMrBimqUIeEG80GByKeKViFzMtKDNQmkV6MX5Zk/ecRDsbC/8feQdgZuhESlz9c=
+	t=1705535305; cv=none; b=gwo7+FzEuSd+gSiLhtAcclbGbmPm0dWmHAa3tqCDb2k0hXkqKnVTfTv7pv84r+V8nSKKFO9hEOssgDOfcmMyMfo9axVP9cGGyyN/R6EihoQqlfJU6jfCcMVrhdGXRUYHA2g1ojdZspQwCUJTgeYddDi5/CXwE6TfDDJI+VDhyjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705535010; c=relaxed/simple;
-	bh=7ElkhRgi1G5t6xj9IeZJpskpCfmhNWVSMnOnS02p4k0=;
-	h=X-SMAIL-HELO:Received:X-Sender:X-Auth-ID:X-SMAIL-MID:X-SMAIL-UIID:
-	 From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding; b=vBQFxAXTN7ATjvGaydyHgVxtVRNygpB0dQdflG/3NsB92tIwd5RF4XmebatePW0GcS2Wjsm9ihKPsyb+LAWxa+KQIi4Z+qSs3R2bTZqorWnuqK/kBIaFl5PZpB9Ryyz3L7FrWRLHWohsi4pdfdz9+firdo0bCUo0X1YiYu9+bv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([116.25.116.10])
-	by sina.com (10.75.12.45) with ESMTP
-	id 65A8661200009086; Wed, 18 Jan 2024 07:43:16 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 65845131457298
-X-SMAIL-UIID: 52380B1C20FA4ED8A66B13FC86A7A2E9-20240118-074316-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+bfde3bef047a81b8fde6@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [net?] KASAN: use-after-free Read in __skb_flow_dissect (3)
-Date: Thu, 18 Jan 2024 07:43:04 +0800
-Message-Id: <20240117234304.1250-1-hdanton@sina.com>
-In-Reply-To: <000000000000498a02060de59162@google.com>
-References: <000000000000498a02060de59162@google.com>
+	s=arc-20240116; t=1705535305; c=relaxed/simple;
+	bh=o/7Dr1KrXaPTWwgbqvtbLp3agio8da0eexlUCdi+K7w=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type; b=K67wcOSuGLS9JeRGyoF4MlOiwkegUL2xUAFLIya2Lfpcq6rEkjt4eLkGFSUMesi/5BITtpTCye690671qWHqOBhMAXsh/uUSI+f1w0xaUc14L0+Rpg5VzqH1s4J9uAj0wAqcwpIlHgOJ/S/yB4JBV4r2svd8qw7os0IUCTbsAcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uxw1g9MW; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a28ab7ae504so1095296366b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:48:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705535302; x=1706140102; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=VCBKt8IzuP6x9scNJoSJcUgrz4a37akazxYAWOrz96o=;
+        b=uxw1g9MWVUCcPP0CpYrws6CY7oOjlfiM6QFyWfqMSDv4QC6WiiJZaGtlPeDLCj2jVr
+         +XByPsD35RogMr4H4//gs2uhKeNok2DjlFtjEyuNe2zB7IoLC/UzbSO1R3tsgW8dp0+9
+         GAglm6oefXT7Eae0pqGc2juEb4YMxvPhjbZkzM4NQKyDa+whVmf2IQ+3Q0K/+sVFivFb
+         Yqftu15VetQJuRZkmDzdlLmQc8mZCO5M1nJ2JcnjwHZNerLayvg6l+LWUiC1z3ZLpE0U
+         /1xKaln4a8i9ln6Tr2gOBZIQT+MfefdT3OCUlIEMF2D+OIZuFnlvNWPIAg4y0v7rrUiE
+         4xUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705535302; x=1706140102;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VCBKt8IzuP6x9scNJoSJcUgrz4a37akazxYAWOrz96o=;
+        b=mh6YHBtZTAHAUnop4GjuF4CwQh7PuTZ9pxunXsY0lgE5n0eviDs5H5Grpj+ceiTmr8
+         ZRXDyGQTbw0Y4Gj06h7YmNu4oljMJ87/rUa3360Bri1jAm844nHsqeaRPpvvvg2cFiSI
+         7MOoTBc/0Ek+eq1HsyfSt0q/vYEzrPdXAubEjFJOgZv4xDtP+BBIK7sfDoLRF/gATK0p
+         RZbRRmjtzitNmk3B+f6MuypszzeQRLy3P+vu1281QAF2Zwbk8/qHL0ezHzKs/aiypRS6
+         7/GsBgK3eKj93KqBFHyejGoKX/PDA1/pKzGGl8eyqXctTyU+a8Q6ukfNmyg4bFMktceJ
+         tOdQ==
+X-Gm-Message-State: AOJu0YxxDrXu8NH92fSypAAA5NlyDkmn0BoJQtM/SWlAOGt/wWJPtpFi
+	USNM8F3cLAS5s1Ma850nd4S6VkaQKfnY+/NUgPdOMCFMpip+
+X-Google-Smtp-Source: AGHT+IHa4FJiq0gIOz5Xu8OFGK5EDo+l00VS9u+UDHJc/7nb2ZqSAqIo5sEY/iucx2Cc8EJZlYP9InkzXT4x1GRvqCg=
+X-Received: by 2002:a17:906:60cb:b0:a26:ee83:8841 with SMTP id
+ f11-20020a17090660cb00b00a26ee838841mr4895563ejk.33.1705535301782; Wed, 17
+ Jan 2024 15:48:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240117-b4-zswap-lock-optimize-v1-0-23f6effe5775@bytedance.com>
+ <CAJD7tkY7Xvjg37EEw2M=uRknphY0pf3ZVpyX2s2QyiJ=Axhihw@mail.gmail.com> <CAF8kJuP4o3Ebg-aYKF9=ftbdu97RnkXnYL-8RuVjYAeXd+ng3A@mail.gmail.com>
+In-Reply-To: <CAF8kJuP4o3Ebg-aYKF9=ftbdu97RnkXnYL-8RuVjYAeXd+ng3A@mail.gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Wed, 17 Jan 2024 15:47:45 -0800
+Message-ID: <CAJD7tkYfo6mNjHQJt4yfVuh55tMyVMRnbeq5ki42tYHBEgP_eA@mail.gmail.com>
+Subject: Re: [PATCH 0/2] mm/zswap: optimize the scalability of zswap rb-tree
+To: Chris Li <chrisl@kernel.org>
+Cc: Chengming Zhou <zhouchengming@bytedance.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org, 
+	Nhat Pham <nphamcs@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 01 Jan 2024 09:18:16 -0800
-> syzbot found the following issue on:
-> 
-> HEAD commit:    f5837722ffec Merge tag 'mm-hotfixes-stable-2023-12-27-15-0..
-> git tree:       upstream
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=122dfc65e80000
+> Currently the xarray patch should have everything it takes to use RCU
+> read lock. However taking out the tree spinlock is more work than
+> previously. If we are going to remove the tree spinlock, I think we
+> should revert back to doing a zswap tree lookup and return the zswap
+> entry with reference increased. The tree mapping can still decouple
+> from the zswap entry reference count drop to zero.  Anyway, my V1 of
+> the xarray patch will not include removing the tree spinlock.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+Interesting. What do you mean by removing the tree spinlock? My
+assumption was that the xarray reduces lock contention because we do
+not need a lock to do lookups, but we still need the lock otherwise.
+Did you have something in mind to completely remove the tree lock?
 
---- x/net/core/flow_dissector.c
-+++ y/net/core/flow_dissector.c
-@@ -1164,9 +1164,11 @@ proto_again:
- 	switch (proto) {
- 	case htons(ETH_P_IP): {
- 		const struct iphdr *iph;
--		struct iphdr _iph;
- 
--		iph = __skb_header_pointer(skb, nhoff, sizeof(_iph), data, hlen, &_iph);
-+		if (pskb_network_may_pull(skb, sizeof(struct iphdr)))
-+			iph = (void *) skb_network_header(skb);
-+		else
-+			iph = NULL;
- 		if (!iph || iph->ihl < 5) {
- 			fdret = FLOW_DISSECT_RET_OUT_BAD;
- 			break;
---- x/net/netfilter/nf_conntrack_core.c
-+++ y/net/netfilter/nf_conntrack_core.c
-@@ -346,9 +346,11 @@ static int ipv4_get_l4proto(const struct
- {
- 	int dataoff = -1;
- 	const struct iphdr *iph;
--	struct iphdr _iph;
- 
--	iph = skb_header_pointer(skb, nhoff, sizeof(_iph), &_iph);
-+	if (pskb_network_may_pull(skb, sizeof(struct iphdr)))
-+		iph = (void *) skb_network_header(skb);
-+	else
-+		iph = NULL;
- 	if (!iph)
- 		return -1;
- 
---
+>
+> > The reason why I think we should wait for the xarray patch(es) is
+> > there is a chance we may see less improvements from splitting the tree
+> > if it was an xarray. If we merge this series first, there is no way to
+> > know.
+> >
+> > Chris, do you intend to send the xarray patch(es) anytime soon?
+>
+> Thanks for the heads up. Let me send it out now.
+
+Awesome, thanks! I assume Chengming can test whether this series
+provides the same benefits with the xarray.
 
