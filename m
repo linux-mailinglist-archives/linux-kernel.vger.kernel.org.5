@@ -1,180 +1,277 @@
-Return-Path: <linux-kernel+bounces-28664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B10FC830192
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:54:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AB25830195
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:55:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06C17B223FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:54:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9F861F25A84
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:55:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70E3812B8F;
-	Wed, 17 Jan 2024 08:54:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A435512B92;
+	Wed, 17 Jan 2024 08:54:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="dC5FEY8h"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CITSQtJz"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 118E011709;
-	Wed, 17 Jan 2024 08:54:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2323E13FEB
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 08:54:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705481682; cv=none; b=rk487NuZ4h2yk3odtZqR7s5I6lhZ+b+4+ON0iTbYRGw3kct51vIgzoOQc9yswVFCH5QzYbWJ7nBAOdJwMOjROeBuFhzq/B97li/W+kRtU6+CyFcxRmt4fHPNJiwiRhxpLc8INEWTSNi4GcfZeGW9MvpnBxQEjdSYRPQ9JIM0IDs=
+	t=1705481695; cv=none; b=Z0lsd+WBO4NL2UNIxn+GWIBI3yCVB2UdaswVne+QBe3jTjpzNQBz9XE43coRXEG8Lw/g6m6IANKsn4pTQ/j3a2dV2ZPj2UaTWvTGZ83KNGKQlJ76HV/0Dr/xccCdN+Wkz777XDEioE4Li7EYoRA1ORMDkxw0W/JtZf38pKIykNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705481682; c=relaxed/simple;
-	bh=f4QbGDSJYtuZVmf60ctHTGnbA2n06axYXnhEzMdSF5M=;
-	h=Received:DKIM-Signature:Received:Received:Received:From:Date:
-	 Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	 Message-ID:X-B4-Tracking:To:CC:X-Mailer:X-Developer-Signature:
-	 X-Developer-Key:X-Originating-IP:X-ClientProxiedBy:X-QCInternal:
-	 X-Proofpoint-Virus-Version:X-Proofpoint-ORIG-GUID:
-	 X-Proofpoint-GUID:X-Proofpoint-Virus-Version:
-	 X-Proofpoint-Spam-Details; b=u9AXld5i534ygQuAbrWPHgKhH2fF85QQMBNLZoxFX8wTSjMt1W6C1kiu9ad3o1nCR4qZCHvxV8aUBsbN2+HDDCwI9clWWkk0FJTjsYxi/cVk6pjkt2T2eg66hDQL1tZgqoHQm/g4/+Z3v+oN2UKEzP+PghlKZnBsw5h7+kROBZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=dC5FEY8h; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40H8RnEx028955;
-	Wed, 17 Jan 2024 08:54:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=GO+
-	73JdFR0409ZwSoh6uI/N0zvTcfdh92fXZFDgQ4BM=; b=dC5FEY8hogpxHkvjTaw
-	d02CEN3NHn6cjuYSHHXY56aA98Cm/Fi1usEHBN+hkw/WitTOeVX2CfWC3Nwk69O+
-	aEnBmrc93AqtWxXSF0FB6o0AK8QQOUnE24oqHm6A+y8+DFfrXRqIeiW4j5i8bDq9
-	A96vyvc2gpAqezjEvatlP5+3+UJhKpR8W8c94CZSYrDgDPpDy8ZWpB4TyC8NHRRT
-	KgKuqM2Ah7AMHL75BuTCLSupI8sE2lMgMcKGB8FZj9MH6hhwTOMC/qgN48rWv/0W
-	dcQPCp8rFbiTV9OAcAZ5C+AopLmB9xy6CxaYiVXfOEpmouGBdGUMFjMYYlSVnUdN
-	oMw==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vnymj1jj1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 08:54:36 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40H8sZvG025178
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 08:54:35 GMT
-Received: from hu-mkshah-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 17 Jan 2024 00:54:33 -0800
-From: Maulik Shah <quic_mkshah@quicinc.com>
-Date: Wed, 17 Jan 2024 14:24:10 +0530
-Subject: [PATCH] soc: qcom: rpmh-rsc: Enhance check for VREG in-flight
- request
+	s=arc-20240116; t=1705481695; c=relaxed/simple;
+	bh=YbhqHgZ8qrRwRRdHssnLB+nFCjalZT7Y0BQbw4Hg2cQ=;
+	h=DKIM-Signature:Received:X-MC-Unique:Received:
+	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
+	 X-Google-Smtp-Source:X-Received:Received:Message-ID:Subject:From:
+	 To:Cc:Date:In-Reply-To:References:Content-Type:
+	 Content-Transfer-Encoding:User-Agent:MIME-Version; b=XSdFrTHgqBL11+Vyez4BBulioW4fofRny8pVvaG3NLLESGQui75pLdmoZO9gF1gxB174JnuPUKGve5sXpo4D6aYcRTF5oWaIfHo7nI98ncGcz61nI3ZcaPlwsYXgExxHj3zofChH25MC5gyUA704O90XGiM4Miy1Iz7jrGAzCtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CITSQtJz; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705481693;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=D00hU3PzeJuPDTbACxnMMgiUCTQ91p211OWtV23tV44=;
+	b=CITSQtJzBH/2f7Hb/EwgPM0O5Y50IvI0kLqw4YBzjtCb9KGCL8iE7Q2crWWOnuePg+hihg
+	+G4jCt6ca9uXjnTkWdfpWs8rVdyto36mTzxWfBiJpGhY8KlKbWXqXzqQtlMAd/a4wl40CJ
+	qAGNVorSdKE5erMTMdvJaRi9sgh59HY=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-473-4gOGecidNkKx1dSDwgcG5g-1; Wed, 17 Jan 2024 03:54:51 -0500
+X-MC-Unique: 4gOGecidNkKx1dSDwgcG5g-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-78315f4f5c2so193790085a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 00:54:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705481691; x=1706086491;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=D00hU3PzeJuPDTbACxnMMgiUCTQ91p211OWtV23tV44=;
+        b=b3KlyOefxC9ScE7ni1/8OMpMUs0cxp/aKR2xuEan2JErHBv1MhKVIT7fkuu0N6XFKs
+         K649gwSUBA5ZgVIWcbi/J3GKRZ9CXAHrx6SaILiOWxTwK2AxVxUwJ6RJVslI8M3g0dYT
+         FNW0QGEGGRmI7u/j/o89x27S/xLUNp4KX+jxpJ8ZkMuj1lnqKGAW9wO/6P3a3Rdvsus0
+         LJOUwaj/1QdTZ5Sh+M5DDW3U1KZq9uyppUudysQlAgM37EtblGCeCRfQthyiIGwn7yKU
+         doUbKgiLTW5G+sL4q3iNk2Ffh2lW0cHyaUSOJdzgoGjBW2rIev39nc+L2TrHi/FhHNNl
+         uEAQ==
+X-Gm-Message-State: AOJu0Yw7NT93mXCM3aoAFO9f52lfxzN7W7p2Hjnf3BjIyr0Kq/oXjqlr
+	ztVNod/4UBAiXjqKXZr71gJqCfa+8+iJPIZtTYGnl+O3tC0m435sfJMKgvWMYkArb/ANXXOZhBa
+	rHIB3HDd1PK77/uqSBILh0WKanJDORM70
+X-Received: by 2002:a05:620a:8019:b0:783:68ab:9ade with SMTP id ee25-20020a05620a801900b0078368ab9ademr1389356qkb.7.1705481690790;
+        Wed, 17 Jan 2024 00:54:50 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH/PfPCNwITnjUQYv8Uu8hwD3Ulky89OHnA+85OkcfyY06xXLEGkkaNflyvHvodm12ON4wvqw==
+X-Received: by 2002:a05:620a:8019:b0:783:68ab:9ade with SMTP id ee25-20020a05620a801900b0078368ab9ademr1389343qkb.7.1705481690454;
+        Wed, 17 Jan 2024 00:54:50 -0800 (PST)
+Received: from pstanner-thinkpadt14sgen1.remote.csb (nat-pool-muc-t.redhat.com. [149.14.88.26])
+        by smtp.gmail.com with ESMTPSA id vr28-20020a05620a55bc00b0078199077d0asm4355821qkn.125.2024.01.17.00.54.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jan 2024 00:54:50 -0800 (PST)
+Message-ID: <1983517bf5d0c98894a7d40fbec353ad75160cb4.camel@redhat.com>
+Subject: Re: [PATCH 01/10] pci: add new set of devres functions
+From: Philipp Stanner <pstanner@redhat.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>, Hans de Goede <hdegoede@redhat.com>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+ <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+ <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Bjorn Helgaas
+ <bhelgaas@google.com>, Sam Ravnborg <sam@ravnborg.org>, dakr@redhat.com,
+ linux-pci@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org,  linux-doc@vger.kernel.org
+Date: Wed, 17 Jan 2024 09:54:47 +0100
+In-Reply-To: <20240116184436.GA101781@bhelgaas>
+References: <20240116184436.GA101781@bhelgaas>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240117-rpmh-rsc-fixes-v1-1-71ee4f8f72a4@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIALGVp2UC/x3LMQqAMAxA0atIZgNtrVq8ijhIjZpBLQmIIL27x
- fHx+S8oCZPCUL0gdLPydRbYuoK4z+dGyEsxOOO8sbZHSceOohFXfkixi76JvWltcAHKlIT+UJ5
- xyvkDuEg4YWAAAAA=
-To: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_eberman@quicinc.com>, <quic_collinsd@quicinc.com>,
-        <quic_lsrao@quicinc.com>, Maulik Shah <quic_mkshah@quicinc.com>
-X-Mailer: b4 0.12.5-dev-2aabd
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1705481672; l=2651;
- i=quic_mkshah@quicinc.com; s=20240109; h=from:subject:message-id;
- bh=f4QbGDSJYtuZVmf60ctHTGnbA2n06axYXnhEzMdSF5M=;
- b=JYjLs6VzoY8/b5HkHEbGgRvYsC+dns8hpv6nILFHEAwmheir4wkPqvHb6FGPjDbu3ppgzjf1V
- XzaTRBl4sBtAJpe0U1Wc8gkP5vd2NEX4b6mAnZkWwlk2Bk/nzx836JI
-X-Developer-Key: i=quic_mkshah@quicinc.com; a=ed25519;
- pk=bd9h5FIIliUddIk8p3BlQWBlzKEQ/YW5V+fe759hTWQ=
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: atof4BzC85dow443VpXvLReZllkH1U0w
-X-Proofpoint-GUID: atof4BzC85dow443VpXvLReZllkH1U0w
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-17_04,2024-01-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 spamscore=0 malwarescore=0 phishscore=0 suspectscore=0
- clxscore=1015 impostorscore=0 lowpriorityscore=0 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2401170060
 
-Each RPMh VREG accelerator resource has 3 or 4 contiguous 4-byte aligned
-addresses associated with it. These control voltage, enable state, mode,
-and in legacy targets, voltage headroom. The current in-flight request
-checking logic looks for exact address matches. Requests for different
-addresses of the same RPMh resource as thus not detected as in-flight.
+On Tue, 2024-01-16 at 12:44 -0600, Bjorn Helgaas wrote:
+> On Mon, Jan 15, 2024 at 03:46:12PM +0100, Philipp Stanner wrote:
+> > PCI's devres API is not extensible to ranged mappings and has
+> > bug-provoking features. Improve that by providing better
+> > alternatives.
+>=20
+> I guess "ranged mappings" means a mapping that doesn't cover an
+> entire
+> BAR?=C2=A0 Maybe there's a way to clarify?
 
-Enhance the in-flight request check for VREG requests by ignoring the
-address offset. This ensures that only one request is allowed to be
-in-flight for a given VREG resource. This is needed to avoid scenarios
-where request commands are carried out by RPMh hardware out-of-order
-leading to LDO regulator over-current protection triggering.
+That's what it's supposed to mean, yes.
+We could give it the longer title "mappings smaller than the whole BAR"
+or something, I guess.
 
-Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
-Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
----
- drivers/soc/qcom/rpmh-rsc.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
-index a021dc71807b..5371d7e3090a 100644
---- a/drivers/soc/qcom/rpmh-rsc.c
-+++ b/drivers/soc/qcom/rpmh-rsc.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (c) 2016-2018, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All rights reserved.
-  */
- 
- #define pr_fmt(fmt) "%s " fmt, KBUILD_MODNAME
-@@ -91,6 +92,15 @@ enum {
- #define CMD_STATUS_ISSUED		BIT(8)
- #define CMD_STATUS_COMPL		BIT(16)
- 
-+#define ACCL_TYPE(addr)			((addr >> 16) & 0xF)
-+#define VREG_ADDR(addr)			(addr & ~0xF)
-+
-+enum {
-+	HW_ACCL_CLK = 0x3,
-+	HW_ACCL_VREG,
-+	HW_ACCL_BUS,
-+};
-+
- /*
-  * Here's a high level overview of how all the registers in RPMH work
-  * together:
-@@ -557,7 +567,15 @@ static int check_for_req_inflight(struct rsc_drv *drv, struct tcs_group *tcs,
- 		for_each_set_bit(j, &curr_enabled, MAX_CMDS_PER_TCS) {
- 			addr = read_tcs_cmd(drv, drv->regs[RSC_DRV_CMD_ADDR], i, j);
- 			for (k = 0; k < msg->num_cmds; k++) {
--				if (addr == msg->cmds[k].addr)
-+				/*
-+				 * Each RPMh VREG accelerator resource has 3 or 4 contiguous 4-byte
-+				 * aligned addresses associated with it. Ignore the offset to check
-+				 * for in-flight VREG requests.
-+				 */
-+				if (HW_ACCL_VREG == ACCL_TYPE(msg->cmds[k].addr) &&
-+				    VREG_ADDR(addr) == VREG_ADDR(msg->cmds[k].addr))
-+					return -EBUSY;
-+				else if (addr == msg->cmds[k].addr)
- 					return -EBUSY;
- 			}
- 		}
+>=20
+> > When the original devres API for PCI was implemented, priority was
+> > given
+> > to the creation of a set of "pural functions" such as
+> > pcim_request_regions(). These functions have bit masks as
+> > parameters to
+> > specify which BARs shall get mapped. Most users, however, only use
+> > those
+> > to mapp 1-3 BARs.
+> > A complete set of "singular functions" does not exist.
+>=20
+> s/mapp/map/
+>=20
+> Rewrap to fill 75 columns or add blank lines between paragraphs.=C2=A0
+> Also
+> below.
+>=20
+> > As functions mapping / requesting multiple BARs at once have
+> > (almost) no
+> > mechanism in C to return the resources to the caller of the plural
+> > function, the devres API utilizes the iomap-table administrated by
+> > the
+> > function pcim_iomap_table().
+> >=20
+> > The entire PCI devres implementation was strongly tied to that
+> > table
+> > which only allows for mapping whole, complete BARs, as the BAR's
+> > index
+> > is used as table index. Consequently, it's not possible to, e.g.,
+> > have a
+> > pcim_iomap_range() function with that mechanism.
+> >=20
+> > An additional problem is that pci-devres has been ipmlemented in a
+> > sort
+> > of "hybrid-mode": Some unmanaged functions have managed
+> > counterparts
+> > (e.g.: pci_iomap() <-> pcim_iomap()), making their managed nature
+> > obvious to the programmer. However, the region-request functions in
+> > pci.c, prefixed with pci_, behave either managed or unmanaged,
+> > depending
+> > on whether pci_enable_device() or pcim_enable_device() has been
+> > called
+> > in advance.
+>=20
+> s/ipmlemented/implemented/
+>=20
+> > This hybrid API is confusing and should be more cleanly separated
+> > by
+> > providing always-managed functions prefixed with pcim_.
+> >=20
+> > Thus, the existing devres API is not desirable because:
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0a) The vast majority of=
+ the users of the plural functions
+> > only
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ever sets =
+a single bit in the bit mask, consequently
+> > making
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 them singu=
+lar functions anyways.
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0b) There is no mechanis=
+m to request / iomap only part of a
+> > BAR.
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0c) The iomap-table mech=
+anism is over-engineered,
+> > complicated and
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 can by def=
+inition not perform bounds checks, thus,
+> > provoking
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memory fau=
+lts: pcim_iomap_table(pdev)[42]
+>=20
+> Not sure what "pcim_iomap_table(pdev)[42]" means.
 
----
-base-commit: 943b9f0ab2cfbaea148dd6ac279957eb08b96904
-change-id: 20240117-rpmh-rsc-fixes-6c43c7051828
+That function currently is implemented with this prototype:
+void __iomem * const *pcim_iomap_table(struct pci_dev *pdev);
 
-Best regards,
--- 
-Maulik Shah <quic_mkshah@quicinc.com>
+And apparently, it's intended to index directly over the function. And
+that's how at least part of the users use it indeed.
+
+Here in drivers/crypto/inside-secure/safexcel.c, L.1919 for example:
+
+	priv->base =3D pcim_iomap_table(pdev)[0];
+
+I've never seen something that wonderful in C ever before, so it's not
+surprising that you weren't sure what I mean....
+
+pcim_iomap_table() can not and does not perform any bounds check. If
+you do
+
+void __iomem *mappy_map_mapface =3D pcim_iomap_table(pdev)[42];
+
+then it will just return random garbage, or it faults. No -EINVAL or
+anything. You won't even get NULL.
+
+That's why this function must die.
+
+
+>=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0d) region-request funct=
+ions being sometimes managed and
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sometimes =
+not is bug-provoking.
+>=20
+> Indent with spaces (not tabs) so it still looks good when "git log"
+> adds spaces to indent.
+>=20
+> > + * Legacy struct storing addresses to whole mapped bars.
+>=20
+> s/bar/BAR/ (several places).
+>=20
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* A region spaning an entir=
+e bar. */
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0PCIM_ADDR_DEVRES_TYPE_REGION=
+,
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* A region spaning an entir=
+e bar, and a mapping for that
+> > whole bar. */
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0PCIM_ADDR_DEVRES_TYPE_REGION=
+_MAPPING,
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/*
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * A mapping within a bar, e=
+ither spaning the whole bar or
+> > just a range.
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Without a requested regio=
+n.
+>=20
+> s/spaning/spanning/ (several places).
+>=20
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (start =3D=3D 0 || len =
+=3D=3D 0) /* that's an unused BAR. */
+>=20
+> s/that/That/
+>=20
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/*
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Ranged mappings don't get=
+ added to the legacy-table,
+> > since the table
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * only ever keeps track of =
+whole BARs.
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> > +
+>=20
+> Spurious blank line.
+
+
+I'll take care of the grammar and spelling stuff in v2.
+
+Thanks,
+P.
+
+>=20
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0devres_add(&pdev->dev, res);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return mapping;
+> > +}
+> > +EXPORT_SYMBOL(pcim_iomap_range);
+>=20
+> Bjorn
+>=20
 
 
