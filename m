@@ -1,95 +1,112 @@
-Return-Path: <linux-kernel+bounces-29074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E76EB8307E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:22:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A45C8307EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:23:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1906B1C23946
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:22:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADFD428624C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:23:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 187B42032C;
-	Wed, 17 Jan 2024 14:22:50 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86E07208AD;
+	Wed, 17 Jan 2024 14:23:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="VMn4qsHi"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C5F620305
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 14:22:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91B28208A0
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 14:23:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705501369; cv=none; b=ZYnJhxd726aEVsOidiYOb2V2bv5PbYCCDadd2w9JvS/S6q2VC47IlfT9nv3jRRrM9XpALaicliAHybkGiPm0Xr9Ou8qILFaBdXUxkNFK/FPVpgs99nv46ocGwjWCCJlBt5ayhOx/xHbYioLYjNQo1aVWNDd/FkSvMQyN0xs/C6c=
+	t=1705501422; cv=none; b=PA7Z5t9jdEkBOXcwyrlXrYwJF0MDSsv7Ramq/egDboOCYPunjyCcHlcDf1n/KA8QnyWf7WCIsk1OAgg6hEYsnMFDvk8DbUWevmHZNSKU4e//y4AkxbyRd/Z2MHcD6a0G3ExPf5RAw5H7Nv3S1gQ/OqbPSg7OM+w1gTK5UDiLLEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705501369; c=relaxed/simple;
-	bh=QPnsa34PIweq9ph04OZHjus2xFdiAhqwHh0IvyGTctk=;
-	h=Received:From:To:Cc:Subject:Date:Message-ID:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding:Content-Type; b=u9xVDMMdqXHTN9pkObX6qBNhAOFiV8B9ErA6/lqVNOWakqgCLPfyh5sQbhpDyaH4s4vpOqcTBsNLQtTfbXxY6OM4A8ydj59OnkMzvNSuF1Turti8khWs5LBPvnKy8cTpjrBXs8n6LrdHFZiokfoAa4RgQdF+eZBfmMLYC01pa28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from i5e860cd7.versanet.de ([94.134.12.215] helo=diego.localnet)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rQ6oK-0008Gl-U3; Wed, 17 Jan 2024 15:22:32 +0100
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+	s=arc-20240116; t=1705501422; c=relaxed/simple;
+	bh=dXOeYu9ggWmzyIC3akHRQqTJ5XlpJZMzEgPrXY4d6mw=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=ZtOqr6OYcMvPO5F13YdtJRBtTJPgK3DrTy41Nx3aUuIw2VSatT59A9rDgfndpGVXF9XZUXMm4ebVwAyV0oKMVwt1qNYLm5oSuLY6vOwwxY2DOxi9tM/bqhvCa7ug7u+/rICTKn/8z4D3BmO4fOu8e5IHFhsuu7glS5fMBrCSTlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=VMn4qsHi; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id F08D07EC;
+	Wed, 17 Jan 2024 15:22:29 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1705501350;
+	bh=dXOeYu9ggWmzyIC3akHRQqTJ5XlpJZMzEgPrXY4d6mw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VMn4qsHi7ppcVV7CoFFLGYd3xK0BxH1krOxGyszjba1Yx6FK/Q7ezXi30c0Xj9/iq
+	 LjwFAQ0S4mgRKeMx8cTtdAF4DcXqrUFyD0XuQVE+uDqtrzfQR/GUIiYztLReCQU9pD
+	 VDNKDVQIEd5Dv7kuNn5paKz9VebqmbHJGGQMVa14=
+Date: Wed, 17 Jan 2024 16:23:43 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 To: Maxime Ripard <mripard@kernel.org>
-Cc: Sandy Huang <hjc@rock-chips.com>, Andy Yan <andy.yan@rock-chips.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, Alex Bee <knaerzche@gmail.com>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
- kernel test robot <lkp@intel.com>
-Subject:
- Re: (subset) [PATCH] drm/rockchip: inno_hdmi: Explicitly include drm_atomic.h
-Date: Wed, 17 Jan 2024 15:22:31 +0100
-Message-ID: <8001861.oDFzTOozpa@diego>
-In-Reply-To: <iuorynvlxp6m6u5hz3yi5d2ibfd3w6pdsm5ajlztjcsjuaczzl@f7jl7vyux2cl>
-References:
- <20240115092434.41695-2-knaerzche@gmail.com> <3186012.MsWZr2WtbB@diego>
- <iuorynvlxp6m6u5hz3yi5d2ibfd3w6pdsm5ajlztjcsjuaczzl@f7jl7vyux2cl>
+Cc: Anatoliy Klymenko <anatoliy.klymenko@amd.com>,
+	maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
+	airlied@gmail.com, daniel@ffwll.ch, michal.simek@amd.com,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] Fixing live video input in ZynqMP DPSUB
+Message-ID: <20240117142343.GD17920@pendragon.ideasonboard.com>
+References: <20240112234222.913138-1-anatoliy.klymenko@amd.com>
+ <6jhwss2wego6yoo5mwmphwawhsj5bbj62gwrzcpapoixwkrkli@g4fbxdooopby>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <6jhwss2wego6yoo5mwmphwawhsj5bbj62gwrzcpapoixwkrkli@g4fbxdooopby>
 
-Am Mittwoch, 17. Januar 2024, 14:47:48 CET schrieb Maxime Ripard:
-> On Wed, Jan 17, 2024 at 10:52:04AM +0100, Heiko St=FCbner wrote:
-> > Hi Maxime,
-> >=20
-> > Am Mittwoch, 17. Januar 2024, 10:46:57 CET schrieb Maxime Ripard:
-> > > On Mon, 15 Jan 2024 10:24:35 +0100, Alex Bee wrote:
-> > > > Commit d3e040f450ec ("drm/rockchip: inno_hdmi: Get rid of mode_set")
-> > > > started using drm_atomic_get_new_connector_state and
-> > > > drm_atomic_get_new_crtc_state which are defined in drm_atomic.h
-> > > > Building does currently only work if CONFIG_OF and CONFIG_DRM_PANEL=
-_BRIDGE
-> > > > are enabled since this will include drm_atomic.h via drm_bridge.h (=
-see
-> > > > drm_of.h).
-> > > >=20
-> > > > [...]
-> > >=20
-> > > Applied to drm/drm-misc (drm-misc-next).
-> >=20
-> > wouldn't have drm-misc-next-fixes been more appropriate?
-> > Because I _think_ the change causing the issue made it in during the
-> > current merge-window?
->=20
-> AFAIK, the offending commit is in drm-misc-next only
+On Mon, Jan 15, 2024 at 09:28:39AM +0100, Maxime Ripard wrote:
+> On Fri, Jan 12, 2024 at 03:42:18PM -0800, Anatoliy Klymenko wrote:
+> > Patches 1/4,2/4,3/4 are minor fixes.
+> > 
+> > DPSUB requires input live video format to be configured.
+> > Patch 4/4: The DP Subsystem requires the input live video format to be
+> > configured. In this patch we are assuming that the CRTC's bus format is fixed
+> > and comes from the device tree. This is a proposed solution, as there are no api
+> > to query CRTC output bus format.
+> > 
+> > Is this a good approach to go with?
+> 
+> I guess you would need to expand a bit on what "live video input" is? Is
+> it some kind of mechanism to bypass memory and take your pixels straight
+> from a FIFO from another device, or something else?
 
-ah, you're of course right. Mistook that for the one in the rk3066_hdmi
-but that was fixed back in november already.
+Yes and no.
 
-So all is well.
+The DPSUB integrates DMA engines, a blending engine (two planes), and a
+DP encoder. The dpsub driver supports all of this, and creates a DRM
+device. The DP encoder hardware always takes its input data from the
+output of the blending engine.
 
-Heiko
+The blending engine can optionally take input data from a bus connected
+to the FPGA fabric, instead of taking it from the DPSUB internal DMA
+engines. When operating in that mode, the dpsub driver exposes the DP
+encoder as a bridge, and internally programs the blending engine to
+disable blending. Typically, the FPGA fabric will then contain a CRTC of
+some sort, with a driver that will acquire the DP encoder bridge as
+usually done.
 
+In this mode of operation, it is typical for the IP cores in FPGA fabric
+to be synthesized with a fixed format (as that saves resources), while
+the DPSUB supports multiple input formats. Bridge drivers in the
+upstream kernel work the other way around, with the bridge hardware
+supporting a limited set of formats, and the CRTC then being programmed
+with whatever the bridges chain needs. Here, the negotiation needs to go
+the other way around, as the CRTC is the limiting factor, not the
+bridge.
 
+Is this explanation clear ?
+
+-- 
+Regards,
+
+Laurent Pinchart
 
