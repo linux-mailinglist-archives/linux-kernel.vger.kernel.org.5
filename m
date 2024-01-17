@@ -1,177 +1,109 @@
-Return-Path: <linux-kernel+bounces-29434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93BB0830E2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 21:48:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 670FA830E31
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 21:50:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 815831C2167C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:48:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 021EA2857AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:50:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56B2F250F8;
-	Wed, 17 Jan 2024 20:48:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 904D3250FE;
+	Wed, 17 Jan 2024 20:50:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MO3CwRkw"
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="y2SQHTgP"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDB8725542
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 20:48:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85FEB250F0
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 20:50:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705524494; cv=none; b=fAX0p1btwD2gR8p9kKvfhdwJ678/2EYV9ixhO21fMQmJvTnhkivlLZhF32HCcS+LzJMcu73E6gbhegj73ICNb8Xje373C6ycNCBYIFsktiNa7CWCoWVkb1eaqiUj5CyIlq4KwK1XYB44e8cRn3248mKI/LFx2LXJ/LABQ5EIxGw=
+	t=1705524601; cv=none; b=rqliAm6eDCo0uI51GXBVlw+FzEudnmYHOPPZEW9hmvPpmQay0XVtBZHcg/Ekti3g4pOeYq7IiL69bqt4n6oHyB4Pw6ewZmt8eUthw+T3BbYUhqtM81Kz9a323inIUaN1ccqb6lvGc4ZsUZjZFnSYr0Exa8pw650wofBzw9ALkp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705524494; c=relaxed/simple;
-	bh=nBSMqib0vx/t6LIPdWb68W3eBAp9SDyqSB85Ypn6WZo=;
+	s=arc-20240116; t=1705524601; c=relaxed/simple;
+	bh=20iD6OBjlb6cJ7O/ya75A9onZtg0SMq1KOfKJJTL9zU=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
 	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type; b=NmjSoQTcjRJqfeD+6axgpuHeU5QjEOHM1ouxGSb3K2XGrMH5/J8FIFnTAs64wpfHi2rsfuqPcLa3F/5OaLP6dtidHe+thK0xdBIu7fgXJmTa4NggKH/UbUlz8sBfzZN6dqxVs1q1elyHCP3VYXZY9QlPc3d1j1cto+LAqZud2Io=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MO3CwRkw; arc=none smtp.client-ip=209.85.128.180
+	 Content-Type; b=rKpSFXsc8UFCxzlATCDHj5U8SzdSerWnbID4mvdMiRXzjEsdkc0KPBT3x7cCeuE46GxOBfxJN1mqbT72LP9CMItMnrR3Snu9qSbaFJrCrA7KM8kgKdITbystBh4eeZXylZ35tdZYOt2BvjhyycpZtEVksAKxHKLIDC5oIgW2foo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=y2SQHTgP; arc=none smtp.client-ip=209.85.219.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5ff6d3504d5so9041387b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 12:48:11 -0800 (PST)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc239f84ba4so1277995276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 12:50:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705524491; x=1706129291; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1705524599; x=1706129399; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8C61/CVBZybL4d7jDWa4SEthmuklcb9ycEMool3g1U8=;
-        b=MO3CwRkwB87dV/GiJbY/21JYmD53/MioyY8fPruE2sVvgTPUfBUGD76RujJNB7oULU
-         A5CdixGRaO8t6xKoLXVJ+kQzF/tyfVbloCkJ5ijV5eXVaT5z3ZVaCssp8rlFGf5X3KTz
-         w1iSai/oWTkh5jJhEXoq1H83TgU9T7TUvCJaiFnwuWkyu8KnlJYxFwvZMcyyXtlr5tGZ
-         kdl5zwKvkl+iFz6skkvSj70CEFKrW5vPIqqbaLZ1dKXK0TDykFyVEAp5NvdcHKGmai4C
-         PYI5ZqVmP1jE6neROwiOZ3NDeGQbHyGnpDbt+FCNuMO2TuZmM/vOs10BBZxSBRPaHmW2
-         j+cQ==
+        bh=oOgLjW6oMidNjG/VSGLYhyD5eLZJxjjB9wMU1cNUdUY=;
+        b=y2SQHTgPPueV+bhIQv98unXOrXpsQhQazJd0GmJeAtJY3shDfvbxqOfpRZ14vF11hI
+         FT6R7DtCPKVEzyFldQFAtDRap11y9nl/g8ra8oQqVLETQ1SP5ak3RstOb5gIKCh8CPeO
+         w8oUeqH8I8Z53SsD4G7b9kM90xRdoWFUIkMScJn2GhSWeTh8d+jcjVHbgiCVyA0AUs4D
+         bC+BlTqdJu1E14zHH6EGH0riI3by/7QpYC6Wsob0tfFL2MAZs4keyXrsuGP1nbXU8wjK
+         YyGraG9cjbf0JhsGYcxaAa54R0sskVQ9msaY4OI7mODIiOSKihcHIvGbqE4o8yK4+dsj
+         Rblw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705524491; x=1706129291;
+        d=1e100.net; s=20230601; t=1705524599; x=1706129399;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=8C61/CVBZybL4d7jDWa4SEthmuklcb9ycEMool3g1U8=;
-        b=jyu8DHmpibISUzkERwrvOSkaZcuMfQHWjaomqOPZG8ZsNKx5/78k01HOYSQZqr8mSy
-         kc8WtN2KZaMrJwQWnpSHQ/IPuJOfSEJYEUo80PuPrWwi5Wlt7rIqnNECjKyorrEliu0A
-         vFTwbjah4MM4hnAV5IYF4i8M9alAQ/cAUWYBpk97PCrIFn9ARGUe0UKK3XIPt3J28TwR
-         Q8+wbu4aAyOlFnOcn/BriO8L/xXegfYs8z+BHAj0qaxytot+NSpkqixh9/l0fyYg10+l
-         I5h1S/C1KxzPyeRGlHBPAC6ITgEj2SC1u2upt7q3YfHdm00bgdKbm53naN+69kLJInPa
-         eARQ==
-X-Gm-Message-State: AOJu0YwnCoiQu+AWGYpcaM8Ds8Nw/MHOASP3qfT8Qct+xd2C5aY1EgQN
-	1POeI8cbggPfoR6XSt3wallPWklZZ3q8GhuphMqxvrHBUeySvg==
-X-Google-Smtp-Source: AGHT+IFH9aLIollE5z7rcJcIrH0LLrrTJJh1FWfQ583YbLbX3/A24BFq7vRO+v64P0FgvpJ1Pg5F4vCYZ+aUakfyk7U=
-X-Received: by 2002:a81:8d45:0:b0:5f9:f9b4:2f20 with SMTP id
- w5-20020a818d45000000b005f9f9b42f20mr6262366ywj.96.1705524490901; Wed, 17 Jan
- 2024 12:48:10 -0800 (PST)
+        bh=oOgLjW6oMidNjG/VSGLYhyD5eLZJxjjB9wMU1cNUdUY=;
+        b=mg6/jcuGnLzg/2RJBZTl6sJEh4GHt3iNztZQgYQI+NE4HUpJ8myuiAm7VQM8lPUGr1
+         Qnd9jaKhm6prXocsqaEeH9tGiKxEXr/FbwosJOxw6AwMeiwuIrU8lgN8oaFJ+/qM1dt3
+         /0GcXN0z2djqRnB1IHGNgibZSfFbxji9BQz/LQ0gApNu1gJKBfuCmNXe3d4PqANenHKp
+         WMQXa7CAkEuDL4P9EDFIneRZRCtrCSVH57QW9+mtzAYXSM2BfFTP7iyUYnuZOKw2t8DK
+         mmfbu+FLYAkYd7zdDo7ZLgum2zO/EVNYrDl/qKlIXgVM3oR5D7eYRDFzjViwRFJNAKCo
+         nU7Q==
+X-Gm-Message-State: AOJu0Yz8HJp+Nszrv/KSVnJ5RI5OvJqzTxMqhP2B+vPKnLkalE/vlwZM
+	C+QX+ss7NH/jCuQ8L18hpwR/aasgzcP7Dj6zvHMjUCwckmYLyA==
+X-Google-Smtp-Source: AGHT+IFihrVH3fldA6xbmvIxlEjNgLwGjLfOCyD7CGXxUzVIOuychoqfZjc2YKXgcnLIYQLLqNOGDmj+MeRrPgGRWw4=
+X-Received: by 2002:a25:b187:0:b0:dc2:4cf5:abf7 with SMTP id
+ h7-20020a25b187000000b00dc24cf5abf7mr743558ybj.101.1705524599463; Wed, 17 Jan
+ 2024 12:49:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117173458.2312669-1-quic_sibis@quicinc.com> <20240117173458.2312669-8-quic_sibis@quicinc.com>
-In-Reply-To: <20240117173458.2312669-8-quic_sibis@quicinc.com>
+References: <20240117194109.21609-1-quic_abhinavk@quicinc.com>
+In-Reply-To: <20240117194109.21609-1-quic_abhinavk@quicinc.com>
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 17 Jan 2024 22:47:59 +0200
-Message-ID: <CAA8EJpo5F==whKMVFgPAM+=DpB+=KzPhKt-poGXuHxy-KSxe8Q@mail.gmail.com>
-Subject: Re: [RFC 7/7] arm64: dts: qcom: x1e80100: Enable LLCC/DDR dvfs
-To: Sibi Sankar <quic_sibis@quicinc.com>
-Cc: sudeep.holla@arm.com, cristian.marussi@arm.com, andersson@kernel.org, 
-	konrad.dybcio@linaro.org, jassisinghbrar@gmail.com, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	quic_rgottimu@quicinc.com, quic_kshivnan@quicinc.com, conor+dt@kernel.org
+Date: Wed, 17 Jan 2024 22:49:48 +0200
+Message-ID: <CAA8EJprGU8E=kM3xqta794HjGAPp7ScuLv_us9KpjrELDKwNcA@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/dpu: check for valid hw_pp in dpu_encoder_helper_phys_cleanup
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc: freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org, 
+	seanpaul@chromium.org, quic_jesszhan@quicinc.com, dan.carpenter@linaro.org, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 17 Jan 2024 at 19:37, Sibi Sankar <quic_sibis@quicinc.com> wrote:
+On Wed, 17 Jan 2024 at 21:41, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
 >
-> Enable LLCC/DDR dvfs through the Qualcomm's SCMI vendor protocol.
-
-Could you please post DT bindings?
-
+> The commit 8b45a26f2ba9 ("drm/msm/dpu: reserve cdm blocks for writeback
+> in case of YUV output") introduced a smatch warning about another
+> conditional block in dpu_encoder_helper_phys_cleanup() which had assumed
+> hw_pp will always be valid which may not necessarily be true.
 >
-> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> Lets fix the other conditional block by making sure hw_pp is valid
+> before dereferencing it.
+>
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Fixes: ae4d721ce100 ("drm/msm/dpu: add an API to reset the encoder related hw blocks")
+> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 > ---
->  arch/arm64/boot/dts/qcom/x1e80100.dtsi | 48 ++++++++++++++++++++++++++
->  1 file changed, 48 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/x1e80100.dtsi b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-> index 6856a206f7fc..3dc6f32fbb4c 100644
-> --- a/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-> @@ -329,6 +329,54 @@ scmi_dvfs: protocol@13 {
->                                 reg = <0x13>;
->                                 #clock-cells = <1>;
->                         };
-> +
-> +                       scmi_vendor: protocol@80 {
-> +                               reg = <0x80>;
-> +
-> +                               memlat {
-
-This doesn't look like a generic node name.
-
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-
-> +
-> +                                       memory@0 {
-> +                                               reg = <0x0>; /* Memory Type DDR */
-> +                                               freq-table-khz = <200000 4224000>;
-> +
-> +                                               monitor-0 {
-> +                                                       qcom,cpulist = <&CPU0 &CPU1 &CPU2 &CPU3 &CPU4 &CPU5 &CPU6 &CPU7 &CPU8 &CPU9 &CPU10 &CPU11>;
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
 
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-> +                                                       qcom,cpufreq-memfreq-tbl = < 999000 547000 >,
-> +                                                                                  < 1440000 768000 >,
-> +                                                                                  < 1671000 1555000 >,
-> +                                                                                  < 2189000 2092000 >,
-> +                                                                                  < 2156000 3187000 >,
-> +                                                                                  < 3860000 4224000 >;
-
-These tables should be rewritten as OPP tables.
-
-
-> +                                               };
-> +
-> +                                               monitor-1 {
-> +                                                       qcom,compute-mon;
-> +                                                       qcom,cpulist = <&CPU0 &CPU1 &CPU2 &CPU3 &CPU4 &CPU5 &CPU6 &CPU7 &CPU8 &CPU9 &CPU10 &CPU11>;
-> +                                                       qcom,cpufreq-memfreq-tbl = < 1440000 200000 >,
-> +                                                                                  < 2189000 768000 >,
-> +                                                                                  < 2156000 1555000 >,
-> +                                                                                  < 3860000 2092000 >;
-> +                                               };
-> +                                       };
-> +
-> +                                       memory@1 {
-> +                                               reg = <0x1>; /* Memory Type LLCC */
-> +                                               freq-table-khz = <300000 1067000>;
-> +
-> +                                               monitor-0 {
-> +                                                       qcom,cpulist = <&CPU0 &CPU1 &CPU2 &CPU3 &CPU4 &CPU5 &CPU6 &CPU7 &CPU8 &CPU9 &CPU10 &CPU11>;
-> +                                                       qcom,cpufreq-memfreq-tbl = < 999000 300000 >,
-> +                                                                                  < 1440000 466000 >,
-> +                                                                                  < 1671000 600000 >,
-> +                                                                                  < 2189000 806000 >,
-> +                                                                                  < 2156000 933000 >,
-> +                                                                                  < 3860000 1066000 >;
-> +                                               };
-> +                                       };
-> +                               };
-> +                       };
->                 };
->         };
->
-> --
-> 2.34.1
->
->
-
-
---
+-- 
 With best wishes
 Dmitry
 
