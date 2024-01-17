@@ -1,254 +1,195 @@
-Return-Path: <linux-kernel+bounces-29220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98D85830B25
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:35:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F8AC830B27
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:36:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFEFF2820DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:35:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15A1B1F23A36
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:36:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF831224D3;
-	Wed, 17 Jan 2024 16:35:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alu.hr header.i=@alu.hr header.b="iNl/Zmpg";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="HrHEWwuM"
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DA37225CC;
+	Wed, 17 Jan 2024 16:35:38 +0000 (UTC)
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02olkn2061.outbound.protection.outlook.com [40.92.48.61])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 400D4224D2;
-	Wed, 17 Jan 2024 16:35:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.235.3
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705509330; cv=none; b=KED0/f2vpjLkgvDskG57GKZxIAvX7PUqpF55mh88RFGpmrW5/0z/c7LsWelHbD+0KMwhod1N7VJie/IIoy8lUAT9CQFFdNlxZws2lT8qiasOP0nu4Deip48jKuuklaZ317JmSGcLpjZTImB/+Rb1b26PY0zw87/9qZymansZIUg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705509330; c=relaxed/simple;
-	bh=Lg4fjwQ0RsegVVSUFk0J1M0jxOQPKcQD+1HOemMkLXw=;
-	h=Received:DKIM-Signature:X-Virus-Scanned:Received:Received:
-	 DKIM-Signature:Message-ID:Date:MIME-Version:User-Agent:Subject:
-	 Content-Language:To:Cc:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=Kq0WJLzmGyhYSZpMOOAPqcSevTBm+CpZFesTnL7FeezYqdX1GtRM1Tc4ziqw4yTXqQs6UEH15c4gPu1igwrTiMbCtAUUMzrCk9hzaErFhzFdcEDFGa9rvk2m+hZqW968LCCVbxm6Bv5cNNBoyVFzJfVgxnxpXu2UP8FUD0D9JAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alu.hr; spf=pass smtp.mailfrom=alu.hr; dkim=pass (2048-bit key) header.d=alu.hr header.i=@alu.hr header.b=iNl/Zmpg; dkim=fail (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=HrHEWwuM reason="signature verification failed"; arc=none smtp.client-ip=161.53.235.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alu.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.hr
-Received: from localhost (localhost [127.0.0.1])
-	by domac.alu.hr (Postfix) with ESMTP id D8F92601A1;
-	Wed, 17 Jan 2024 17:35:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.hr; s=mail;
-	t=1705509321; bh=Lg4fjwQ0RsegVVSUFk0J1M0jxOQPKcQD+1HOemMkLXw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=iNl/ZmpgoS2jzx5d7itltBgCAAxwZu8NoF6X2JJ7hnGcvecGzJOcpp6goT6Qsd8s4
-	 N4offvodEOLVFtDcFJYVjLHbIAMzE3IOqWti+5TJybUbyQdUsP7fajk0NSoCmE2+pb
-	 WnHzuTYHnbEmUdaR7hnlbE9ZS2XtYxP1bzHAWe94qhcSYqZrCAq6/eiETVF/vQHg6P
-	 Uyniu5LwmepT3Q9/sPFMbwM8z60qnts/hCgo9oXmuZFwaV2o6Gv8d8ULLUBT035yLF
-	 GNKByCS/aMuEkOFVe8BNmduwuzx+PvmPsc5ajbb2okw18Vq3RkSTQ8sDrV5iNIKJ7Z
-	 EuRQF5EVhvaFQ==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id ZZk3stcJxdOg; Wed, 17 Jan 2024 17:35:19 +0100 (CET)
-Received: from [10.0.1.190] (unknown [161.53.83.23])
-	by domac.alu.hr (Postfix) with ESMTPSA id 387C06019B;
-	Wed, 17 Jan 2024 17:35:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1705509319; bh=Lg4fjwQ0RsegVVSUFk0J1M0jxOQPKcQD+1HOemMkLXw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=HrHEWwuMqeSVDWoVoNIMCgv4UgKqLRcwjZ+KdZYsqsFpChtIDa1Zck3FgxZQHh9F3
-	 nJpUoNvCTmjIXIFuCBQ8nuEDXnGoUJFhRjf7PzEkLUY8HoXvqluT+vt0YO2KJ5M1Eb
-	 kQquSa0tEbnWdNPk85kbb2vIuqbRYmtyzHTv/1RhaNRYURzJ8UuoW1uOjbLD4psqMF
-	 8FtWwNPthuA1g7iRMgK/Wfp7CSv15NU3kHX3wuaac5VGAO6V/8PZ0YoVo2spTpbpDh
-	 Kbjo/mzwCZGZwVS9yVTapabCJoYH6DZNwIl32O3Z/XUf+Es6SpBxr0KR99FYWnmO9u
-	 hwBWR+bYqDkeQ==
-Message-ID: <ccb8b694-4361-40bc-b7df-528a6616c15b@alu.unizg.hr>
-Date: Wed, 17 Jan 2024 17:35:17 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14617225A4;
+	Wed, 17 Jan 2024 16:35:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.48.61
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705509337; cv=fail; b=cvft3RvZh0uIv36IbtpJcTz2g6pwxcnItCsSFa20Glssu36rdmGHBxEkPvFryh+UH0c+iwnx20ra520o84d5Enh7zk0sMJcMV+HPo+Nfx9Y98Vo6eVK9gaj9CX7bWCXX+uEgWoNjLH1GMG8g7VGFsXZy2ki8N+G86dyxSEbvmFA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705509337; c=relaxed/simple;
+	bh=+D4tWsEoM2OrzLOfxrR+M5scNxOUB9PiqhrItWR9E1k=;
+	h=ARC-Message-Signature:ARC-Authentication-Results:Received:
+	 Received:Message-ID:Date:User-Agent:Subject:To:References:
+	 Content-Language:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:X-TMN:X-ClientProxiedBy:
+	 X-Microsoft-Original-Message-ID:MIME-Version:
+	 X-MS-Exchange-MessageSentRepresentingType:X-MS-PublicTrafficType:
+	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SLBlob-MailProps:X-Microsoft-Antispam:
+	 X-Microsoft-Antispam-Message-Info:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-AuthSource:
+	 X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:
+	 X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=WDeTwsbMbNSoTDDSo4o5ANpUNlJ0xaxlQib1msBoO3HeIH939JrrEM92aery8tcgQzsY92zvvghrqsas15PUdTp3CThbA0HM34yBWqXldyQG3wIaH8lQhRK8YXdigyTHtkztTrtedfbQ7ND8vkm9zt+Trxqv/9SD5j5mKapM9AY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.de; spf=pass smtp.mailfrom=hotmail.de; arc=fail smtp.client-ip=40.92.48.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.de
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z4kN4EALZyLD4Vl/KBT0rksi53wc78xDsgiHEMISoKWrd2OhZ9BLK3cPNZiFFEERUIwKmyD8gXk1/B94K8+SmKPTrg8ZXh4M+p/rZDhGvBMSC40NX7DP04I/bAZiRrrxA9vsuFyiSMxHOhk+aVWJAFesYBWuzRXHfPgab3bIR5e+orVr/V38dMUsuc45gxjbNXeSG/ZnkaFaADjysnQ+1rQ+joJM7K+JJAz9pefHTUDW5F3yRZvO98ohmWempizGZig3+HeEI+HLgt4EiVUnetBunTh0ts7zD7iNQxe2HMLAYz3K2hJH6rPS66SyXFWmR5G3g7lavIUIoDPcmPnocA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ouXI60Rff+AQzOcciXLsiM5+c5RZDDUoHWczm7qxC4k=;
+ b=LxKZWEmNaAm4VxozAo/nKuc6g/Yh+xCXPj6j03DFwNFf4D4fsuvK2aWwL5dqHvQLd9bMYnlQNRPpdTZEsrlj2mphkQiOAtZjxZypyKYiG5S4pvxJyhbpUL8Npe5SMBubaOSEH/u4CynGsJFPvZnY9Lw7X0Y3TZv9a0wGmfWSX792xdu71B2Hq664eapRqvYZeqreEGKDjCz/piYcIVdSa5fHtpLJOr1e6SXh9M+3CKdeodW04vrzYsN8GsNTWsg20LSQ83aDP3k2eUsCF0bbn3ZARGic3AKkETlETIS9zKtEJHAXi+skTEBUnJVwIN1QaUGaSYvwkgGxD3HJvwRWGQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from AS8P193MB1285.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:333::21)
+ by PAXP193MB2042.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:233::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.28; Wed, 17 Jan
+ 2024 16:35:33 +0000
+Received: from AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
+ ([fe80::897e:cfd5:b29b:c611]) by AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
+ ([fe80::897e:cfd5:b29b:c611%6]) with mapi id 15.20.7202.020; Wed, 17 Jan 2024
+ 16:35:33 +0000
+Message-ID:
+ <AS8P193MB1285F065377246F347231567E4722@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+Date: Wed, 17 Jan 2024 17:36:29 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] net: stmmac: Wait a bit for the reset to take effect
+To: Paolo Abeni <pabeni@redhat.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Jiri Pirko <jiri@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>
+References: <AS8P193MB1285DECD77863E02EF45828BE4A1A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+ <AS8P193MB1285EEAFE30C0DE7B201D33CE46C2@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+ <f5ddf800df95cdce32637d41bc1539aed0a7b6f3.camel@redhat.com>
+Content-Language: en-US
+From: Bernd Edlinger <bernd.edlinger@hotmail.de>
+In-Reply-To: <f5ddf800df95cdce32637d41bc1539aed0a7b6f3.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TMN: [hddFFBG+zeoc7G3cKArf9Nqq0weg2ODvoDbEj5En5uZSxhWtH2vUDb18lANsQW+I]
+X-ClientProxiedBy: FR4P281CA0213.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:e4::13) To AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:20b:333::21)
+X-Microsoft-Original-Message-ID:
+ <023b9ecf-0c53-4376-8bbe-231c41b844fb@hotmail.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH AUTOSEL 6.7 021/108] r8169: improve RTL8411b phy-down
- fixup
-Content-Language: en-US
-To: Andrew Lunn <andrew@lunn.ch>, Mirsad Todorovac <mirsad.todorovac@alu.hr>
-Cc: Jakub Kicinski <kuba@kernel.org>, Sasha Levin <sashal@kernel.org>,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- Heiner Kallweit <hkallweit1@gmail.com>,
- Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
- Simon Horman <horms@kernel.org>, "David S . Miller" <davem@davemloft.net>,
- nic_swsd@realtek.com, edumazet@google.com, pabeni@redhat.com,
- netdev@vger.kernel.org
-References: <20240116194225.250921-1-sashal@kernel.org>
- <20240116194225.250921-21-sashal@kernel.org>
- <20240116174315.2629f21c@kernel.org>
- <4523ad21-d06a-4ba2-9b46-974a6093b189@alu.unizg.hr>
- <2c590117-96fa-4e0b-84bd-9e3ea138d93b@lunn.ch>
-From: Mirsad Todorovac <mirsad.todorovac@alu.hr>
-In-Reply-To: <2c590117-96fa-4e0b-84bd-9e3ea138d93b@lunn.ch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8P193MB1285:EE_|PAXP193MB2042:EE_
+X-MS-Office365-Filtering-Correlation-Id: 54380be5-0921-43ec-a8d1-08dc177a52fb
+X-MS-Exchange-SLBlob-MailProps:
+	feAVlmA1hHUZZmI+UTsz2TlcID54zgy25WkyCZRWecTk5rYFuVB3uflnSjqT5MdgM5bnqIEWJMcXyko8/fTOE1N7rU7VRZL1vnMB0LYJbgDYG2QXbnRBXN2X3usLu6cMQUk8NKCYU9PhJoCB0KXeWNcIx3YzQVI40P9g674Dr3JINpKaFNMWW+Ol7Jb3YnJfcmNduN9lQXe4t0TUa3WIa6KQF4LQoiC5cHi6V3a+WcC7Sfa3oRK2rPOhZ3PtwugxzIXm1UbIzcmu/wdw3+XMlYuIcwP8YSopWVPOQA3K/zgOCs69OBvEYt4kt//xfB2cLSfMDkSfph/1AmiqCQnwWoT4ENUiJYeKf7PVW8pkWZWSwF+AvjOPbC+B7jkfXrrr3o2ErnpdFXnjCHxGY6Fwv2KXosJE0O2odeFGsi48YGI7HMNfzlfQEDqGJPOOcoNLJmpIvyzvNYTmmL4zY3CZrDeSFtlPaZPu0wlnkRuESbu5hsfsxCg7fqFA/vCY0T2UAvfAl4AP9pMvd3IZiUIzC63hf30rzKLDMwUieW016eUl8uowHUXPDH9xXxoTnz1pxM+R6ffMAXFIx1nbLNGxJOToew4akJeNvvBAxLlVTd5yKuujJ1hIZtd4c5WJn6Slz1JujlinVLgvM5uc+nanQURx9y6o1Aj0ZKoUsSLIgzQf3GGvsYhm4mRv+0crNLX419bA+pVhBSsOTAg+jjidAA==
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	yrRXuL/1JdTk2RKDOt0HPGxr1poO67UBHEnNBS8ZrGCgvaw3h1ef4mX1Pn8GKkTW+r9RfQva3jPlf6ajhc/3FLB0mniy/wBavHhgmOhu/SBxNMas16aIW9NOBb5SeEsz3QpykMUF71Q2PxnFsn/jKEUpmGYQV84Jg6aGzpWIwXOwKREmHSikCQ7puv2Yt9NSO7TuSBMvSo07Uqg1laRdPlLCyHjvvNE1JSVZHxAZHZ/Utv/N2wcJwrylArn9Zs4/T7VolIInV6eX3bOU2CVhehTNtZBkcHyxjx6yOcio/w6Jn3S91mU7V3t1DLuqqULvbtBLfACVxIws4kws76n1ggQ0jC/CIRqh+UZ85UZHlr/cAFfYsUXbOBgmTtV2F8hY3LaqGQVpJDUQdPlT6u5L4NZIvSsTVx6W2MjoFwz8rBC3uPiYO8dz/wp+ECv3Cr6R0K6UVNfYMFq18VnYFicsk8hHTf88AdNSEFIUEQO5qByNc0zMWek+eVUdwo4vuGjhQ4Mq8+lc4O4ylDN9kXhLG+I7BaXQm8q5SodTpKOaSxRbuQBb6LtCknCmmcXoucNt
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?S1Y1TUVNc28zSCt0aU0vNVZrdUVDQkcxVGhXN0Rvamo2cUJBZ2NacWNJUVps?=
+ =?utf-8?B?MGNLUnBEejVFYVY4ejVBYUFpTDVzY0ZpTXd0c3NLbk9CTmZmY0FHcjJwM2Nn?=
+ =?utf-8?B?dGZsaXFZT0JGS3JiM3Fqcmc0SHlqcWcwOFAvVzkxQm0rUG8vN09objgvaVpi?=
+ =?utf-8?B?MXNxb0dxbWxod3VwZDRNUmFkZG50VDNkbWNxN01VTjZlT2dCVS9ncmRoN0wv?=
+ =?utf-8?B?TUxKQmc4Tm0zWXplT2JsdEdReFBrU1lkR0Rjb1ZJd1hnUFpiZ0svQXlaRWtp?=
+ =?utf-8?B?Nkx1bXRqeXdtRjAwalU3b0c3ZWZUSk45OXVtMVY0M0Z6Q2lWM0dwbHVjTFcw?=
+ =?utf-8?B?N3crck84TEEwSnIzU3J5Y2VxanpnUHVGMUJsa0p0U1lRTTQ4N1NPcmJFeTJG?=
+ =?utf-8?B?dC9pQU1xOW5KdHlORzdqVHJNanNwczlGZTArTG5wdlkvaXBmd0VCSW45aitU?=
+ =?utf-8?B?aDh0WEdJUi9FOXNQNnozR0tQLzJkZDRJZWozdldyUkRSc3d1dWVxelZiYlp2?=
+ =?utf-8?B?c0NaZzdXSGVUZlVQbER3MGRXQWxwbzlYM3BJVlZYUXFleWFuckl1WjBDYmU5?=
+ =?utf-8?B?Q1V2V0paVjFjbUZ2UVNJSk5WRUVoTmZMdkEzTnVDc2JzaUYzd24wK1UrZzR4?=
+ =?utf-8?B?eFMzTStvdHRLWExiMy9WUmZHbVNYclMwZzFOQmlhaDJ2di9aVHNvcjdNVERp?=
+ =?utf-8?B?V3N3STlsVDliYXpIbVhMVVpUNkVES3FPNmFJbjRPdkNkQmhZd0xYOVZsOE1T?=
+ =?utf-8?B?bTNIazBOUEJnQkVoS3lhVXN4WHFwS0ZhNHNZbHVYZkJLR0dwNFZqcTNvYkVk?=
+ =?utf-8?B?cjhyd2ZXUDF2aG9GMUp4d2lvZ0E4Vjdkak9lZ3h0b3JFZmN6RDNGUFhubXJh?=
+ =?utf-8?B?eFJJcmxoUFNlNWxFajZqT1ZFcUpDdFVpV2tlalN4SnEyYytxR0ZDS2ZEeTB6?=
+ =?utf-8?B?czBWL3JJdWNjWlRVWFhiYjZHVS8rSnJ6VHVMNk8xOFFBN1V2ODlFUDdBWUNN?=
+ =?utf-8?B?RUNta0ppb1UxTHFTQXZJVmZOdlFtRFgxQzNrdjBLTlBmN1BzZWtDa2s1Rklx?=
+ =?utf-8?B?dnE2bDFkYlN2Y3NVSjRZVEFJSDVwUVJnb2JHOGRWdXBvcDhIaFd2ZkVoOXBy?=
+ =?utf-8?B?eXpPVFZWWk0xMXlKbFhvYm45NDBndzdnT0N2dUdHbktnOWRsdmErL2wvZGEw?=
+ =?utf-8?B?amIxNHh2OWk5Rk9UaWdZSk1BVlBYY3N2OHpObG4wU0dEN1BqWjhEeDFibG5S?=
+ =?utf-8?B?SXE0SGx2VURiRUx2cTlyZGQzbDI0QzF4ZEJHRnlDV200cjVsUmNSSDRtcFkv?=
+ =?utf-8?B?WmVDTE9CQzh3UjVlMTBDVklseVhCQUhJcjFrRUdQemVsZ0ZFc2ZlQjZXSTgv?=
+ =?utf-8?B?QTlDNnQwRVB5YlVMcTRLSjlFZ0tyMURyWitKZGRpMnFBY21obUo0VEJ1Wk8v?=
+ =?utf-8?B?ZnVlTDl3dHlGaSszSG05VGx1N0hLZWQvcWtCYnJKL09Ma0FMNkhVUndPMXBU?=
+ =?utf-8?B?azNUTXU2am01aDZGaXlZTENrTForOUh1VEpBckhDdkRocFF1c29CZzBhdGtM?=
+ =?utf-8?B?bjdaOStlbWdQVGtwZkVUS04rN0tXWlFLMzZMZlJJRjAzVC9ld0h2V3dKMi91?=
+ =?utf-8?B?TU40RVdneHpjdk1RVFIrYmJPam1nMjdYLzN6S3dlRWJ5VUNhb2l3OTU5Vkl0?=
+ =?utf-8?B?NlpMbjhXSWVIVmFtZVV6d3graDVMTk91VGxQRXFVRXhmeldzUTNYMjFQZ3RU?=
+ =?utf-8?Q?oMkd+/SXYiWJ3wpvVE=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-80ceb.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54380be5-0921-43ec-a8d1-08dc177a52fb
+X-MS-Exchange-CrossTenant-AuthSource: AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2024 16:35:32.9647
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXP193MB2042
 
-On 1/17/24 14:44, Andrew Lunn wrote:
-> On Wed, Jan 17, 2024 at 11:30:53AM +0100, Mirsad Todorovac wrote:
->> On 1/17/24 02:43, Jakub Kicinski wrote:
->>> On Tue, 16 Jan 2024 14:38:47 -0500 Sasha Levin wrote:
->>>> Mirsad proposed a patch to reduce the number of spinlock lock/unlock
->>>> operations and the function code size. This can be further improved
->>>> because the function sets a consecutive register block.
->>>
->>> Clearly a noop and a lot of LoC changed. I vote to drop this from
->>> the backport.
+On 1/16/24 13:22, Paolo Abeni wrote:
 >>
->> Dear Jakub,
+>> Signed-off-by: Bernd Edlinger <bernd.edlinger@hotmail.de>
 >>
->> I will not argue with a senior developer, but please let me plead for the
->> cause.
->>
->> There are a couple of issues here:
->>
->> 1. Heiner's patch generates smaller and faster code, with 100+
->> spin_lock_irqsave()/spin_unlock_restore() pairs less.
->>
->> According to this table:
->>
->> [1] https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/perfbook/perfbook-1c.2023.06.11a.pdf#table.3.1
->>
->> The cost of single lock can be 15.4 - 101.9 ns (for the example CPU),
->> so total savings would be 1709 - 11310 ns. But as the event of PHY power
->> down is not frequent, this might be a insignificant saving indeed.
->>
->> 2. Why I had advertised atomic programming of RTL registers in the first
->> place?
->>
->> The mac_ocp_lock was introduced recently:
->>
->> commit 91c8643578a21e435c412ffbe902bb4b4773e262
->> Author: Heiner Kallweit <hkallweit1@gmail.com>
->> Date:   Mon Mar 6 22:23:15 2023 +0100
->>
->>      r8169: use spinlock to protect mac ocp register access
->>
->>      For disabling ASPM during NAPI poll we'll have to access mac ocp
->>      registers in atomic context. This could result in races because
->>      a mac ocp read consists of a write to register OCPDR, followed
->>      by a read from the same register. Therefore add a spinlock to
->>      protect access to mac ocp registers.
->>
->>      Reviewed-by: Simon Horman <simon.horman@corigine.com>
->>      Tested-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->>      Tested-by: Holger Hoffstätte <holger@applied-asynchrony.com>
->>      Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
->>      Signed-off-by: David S. Miller <davem@davemloft.net>
->>
->> Well, the answer is in the question - the very need for protecting the access
->> to RTL_W(8|16|32) with locks comes from the fact that something was accessing
->> the RTL card asynchronously.
->>
->> Forgive me if this is a stupid question ...
->>
->> Now - do we have a guarantee that the card will not be used asynchronously
->> half-programmed from something else in that case, leading to another spurious
->> lockup?
->>
->> IMHO, shouldn't the entire reprogramming of PHY down recovery of the RTL 8411b
->> be done atomically, under a single spin_lock_irqsave()/spin_unlock_irqrestore()
->> pair?
+>> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 > 
-> Hi Mirsad
+> Please have a better look at the process documentation.
 > 
-> Please take a read of:
+
+Yeah, I'm still new here.  Thanks for your patience...
+
+> No empty lines are allowed in the tag area.
 > 
-> https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+
+Ah, okay, understood.
+
+> A fixes tag is requires, something alike:
 > 
-> Do you think this patch fulfils these criteria? In particularly, "It
-> must either fix a real bug that bothers people...".
+> Fixes: <blamed commit hash> ("<blamed commit title>")
 > 
-> I agree with Heiner, this appears to be just an optimisation,
+> A bisection is not strictly required, you just need to be reasonably
+> confident about the the culprit.
+> 
+> You need to include the relevant target tree into the subj prefix (in
+> this case 'net').
+> 
 
-Hi Andrew,
+The subject line is now:
+"net: stmmac: Wait a bit for the reset to take effect"
 
-Yes, I wasn't aware of the 100 lines limit, and yes, this is not a bug fix,
-but an improvement (optimisation).
+So what exactly should I use here, next time?
 
-I think by this I can join to consensus, this patch is not a candidate for
-backporting. :-/
+> Please include in the recipients list the persons that provided
+> feedback on previous release (Serge is missing).
+> 
+> I'm unsure why/how Andrew landed in the recipients list!?!
+> 
 
-However, I am concerned about the possibility of two kernel threads accessing
-the RTL NIC intermittently attempting to program the NIC over the RTL_(R|W)(8|16|32)
-instructions (which are expanded to readl/writel and assembly).
-
-AFAICS, nothing prevents two (or more) threads to decide in unlikely but
-possible case to program the card at the same time. (Do we have a guard lock
-against this?)
-
-mac_ocp_lock appears to be acquired and released for each RTL_(R|W)(8|16|32),
-with the exception of r8168_mac_ocp_modify().
-
-To be true to the facts, each byte will go to the right port due to address/data
-pairs used in each call - however, I am worried whether there could be a scenario
-like this:
+My mistake, sorry for the spam, Andrew.
 
 
-        CPU 1                                          CPU 2
-
-    start programming NIC
-    programming NIC
-    (preempted in spin_lock_irqsave()
-                                                   start programming NIC
-					          programming NIC
-					          programming NIC
-					          programming NIC
-					          preempted in spin_lock_irqsave()
-    (resume control in spin_unlock_irqrestore()
-    programming NIC
-    programming NIC
-    (preempted in spin_lock_irqsave()
-					          continue programming NIC
-					          programming NIC
-					          programming NIC
-						  end programming NIC
-    (resume control in spin_unlock_irqrestore()
-    programming NIC
-    end programming NIC
-
-Now, every byte, word or longword will come to the right place, thanks to
-RTL_(R|W)(8|16|32) having the address/data pairs - but I worry that this
-jumping from sequence to sequence might confuse the NIC.
-
-I mean, if those latches behind the addresses cause some physical effect, maybe
-the ORDER is also important, not just that every byte, word or longword comes
-to the right address?
-
-r8168_mac_ocp_read()/r8168_mac_ocp_write() guarantee that every piece of
-data will end being read or written at the right address, OK. But this
-does not seem to guarantee the SEQUENTIAL ORDER of the programming.
-
-I mean, if we are dealing with physical hardware like a NIC, the order
-of (especially writing) data might be crucial. 8-/
-
-Am I making any sense?
-
-Are we algorithmically secured that two threads will never attempt to
-write data to NIC hardware registers?
-
-Thanks.
-
-Best regards,
-Mirsad Todorovac
-
-
->       Andrew
-
--- 
-CARNet system engineer
-Faculty of Graphic Arts | Academy of Fine Arts
-University of Zagreb
-
-CARNet sistem inženjer
-Grafički fakultet | Akademija likovnih umjetnosti
-Sveučilište u Zagrebu
-
+Bernd.
 
