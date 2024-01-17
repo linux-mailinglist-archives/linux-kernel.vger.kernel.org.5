@@ -1,180 +1,173 @@
-Return-Path: <linux-kernel+bounces-29000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10AEF830688
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:03:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA57983068C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:04:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01EDF1C21C1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:03:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43DFF287652
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:04:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D84A1EB3F;
-	Wed, 17 Jan 2024 13:03:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A89551EB32;
+	Wed, 17 Jan 2024 13:04:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="G9rI+nq+";
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="G9rI+nq+"
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="YJcMqHZX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Qv238zkP";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="YJcMqHZX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Qv238zkP"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19FE01D541;
-	Wed, 17 Jan 2024 13:03:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7FF91F5E4;
+	Wed, 17 Jan 2024 13:04:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705496623; cv=none; b=SbP+EWe9rU02T1Jhx/ubXBAY72dfBWr4KmfdLveGvN+BDz4sss3EDICO3BAhnUBG6sZn4DbU5jI1STWnWCBHWBOv5x1UJI6XP+geGaF81FObqinm5gQKeRRO2ETYOkAQMJmrHCRyVejD6rrhgj2mZqp1aW5wukaCX4SKWXNeHRE=
+	t=1705496666; cv=none; b=FCpKaNFvY1r3NOQ08aeOTDpFEpcF6ZPHOYIiU+DU8PDFJWAmpZ6nDAnhGGQbVUoiMHuUSgmzv9FTBiVNe+kT+xhLdpiEf5n0I39tsYZS7Xt7PzbSU4g9Xy8uqO73A2DLN43eEMk+eUZyXKAaJ5eYG79Z8u5wva0hT33pGXQ2Po8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705496623; c=relaxed/simple;
-	bh=qQ+6vp4VGyv67J/0qhk1+D+vVpToII5A/94TKdAHneM=;
-	h=DKIM-Signature:Received:Received:DKIM-Signature:Received:
-	 Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:User-Agent:MIME-Version:Content-Transfer-Encoding; b=V19nklbzauADGrz4/5tTHpgM6ySos7ho1DfZtBEVCiF5+DHgEnaFKsyxta5NJqmNIfYJ5gCGSjJeraTNGfsMiOcV1hMB0ao4QM8JIReGjWjCDK6KWx7uSYev7UzhRjtwp7Pwm+KxFz0iDk46D+qnYgZ3T8aEP13kk7djWbuXu4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=G9rI+nq+; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=G9rI+nq+; arc=none smtp.client-ip=96.44.175.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1705496619;
-	bh=qQ+6vp4VGyv67J/0qhk1+D+vVpToII5A/94TKdAHneM=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=G9rI+nq+tqwHZXAyV0JeLHpDJrzo6kT87Rl1hWZ5NJ1NVO5+ZFBpVL0Rwij2Ao7Su
-	 NQxKrF64t65NvHEfYNB/rrueCucvvq3FLUcdqBN5MiMiQHv8AXca7ZE8+e7fW1y+lS
-	 rXhtNfNEwAzsqYv+JfNYMWtdSzQ6ptWTaN0aSFfE=
-Received: from localhost (localhost [127.0.0.1])
-	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 82C3A1281A31;
-	Wed, 17 Jan 2024 08:03:39 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id Br1jjjRF4HNd; Wed, 17 Jan 2024 08:03:39 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1705496619;
-	bh=qQ+6vp4VGyv67J/0qhk1+D+vVpToII5A/94TKdAHneM=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=G9rI+nq+tqwHZXAyV0JeLHpDJrzo6kT87Rl1hWZ5NJ1NVO5+ZFBpVL0Rwij2Ao7Su
-	 NQxKrF64t65NvHEfYNB/rrueCucvvq3FLUcdqBN5MiMiQHv8AXca7ZE8+e7fW1y+lS
-	 rXhtNfNEwAzsqYv+JfNYMWtdSzQ6ptWTaN0aSFfE=
-Received: from [172.20.4.189] (unknown [173.211.218.201])
+	s=arc-20240116; t=1705496666; c=relaxed/simple;
+	bh=1R2HZrvhp3KGom/Ay0gBer7DWNBPzHmKQrXQrLaX39o=;
+	h=Received:DKIM-Signature:DKIM-Signature:DKIM-Signature:
+	 DKIM-Signature:Received:Received:Date:From:To:Cc:Subject:
+	 Message-ID:Reply-To:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:X-Spam-Level:X-Spam-Score:
+	 X-Spamd-Result:X-Spam-Flag; b=nyYNNPM32R3XHoxMdOdhPj42JG5YYVS6k0OkvdgCaxBDpkyCSFwMq8hmlANbJ4DXxavoV4/UrwisYrSiVYGPZGn++1R3sOzeL8hL+SO48z4oeuE3rQsCjKwDJBp9+JTNwtzpnP4deW5gOqQ69Qmuu4WepLQF15Htc99xaMVkHzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=YJcMqHZX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Qv238zkP; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=YJcMqHZX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Qv238zkP; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id BE03012808E8;
-	Wed, 17 Jan 2024 08:03:37 -0500 (EST)
-Message-ID: <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
-Subject: Re: [GIT PULL] bcachefs updates for 6.8
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Theodore Ts'o <tytso@mit.edu>, Kent Overstreet
- <kent.overstreet@linux.dev>
-Cc: Greg KH <greg@kroah.com>, Mark Brown <broonie@kernel.org>, Neal Gompa
-	 <neal@gompa.dev>, Kees Cook <keescook@chromium.org>, Linus Torvalds
-	 <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, Nikolai Kondrashov <spbnick@gmail.com>, 
-	Philip Li <philip.li@intel.com>, Luis Chamberlain <mcgrof@kernel.org>
-Date: Wed, 17 Jan 2024 08:03:35 -0500
-In-Reply-To: <20240117055457.GL911245@mit.edu>
-References: 
-	<xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
-	 <be2fa62f-f4d3-4b1c-984d-698088908ff3@sirena.org.uk>
-	 <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
-	 <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
-	 <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
-	 <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
-	 <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
-	 <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
-	 <2024011532-mortician-region-8302@gregkh>
-	 <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
-	 <20240117055457.GL911245@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2619622255;
+	Wed, 17 Jan 2024 13:04:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705496662;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AlPrrvZB1x28a4WGN8IeT0/QmFSzTIfNiilDMxfO5Rs=;
+	b=YJcMqHZXKlyH/FRfDMmTsYnI9Jm2EclpERipdemOUfe2FCRLEhSP/ewkuS2H+gZ3ip804y
+	lofBlVkomrGQh20iL4Ic626Yl2lVQReKp9sydPGWBr3+pvtPTlCAjk5slDQaDEw9P2XA7W
+	HQ2a/0s+6jzmObw2ecNYHkiah88h3qE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705496662;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AlPrrvZB1x28a4WGN8IeT0/QmFSzTIfNiilDMxfO5Rs=;
+	b=Qv238zkPk06bZ8SrcG2t67z7xrgGu76moeH3+qjPoLlsRMI5TZAisZ0Nx/ARxzEikeOGT5
+	PZZ7W/yh1tUfwmAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705496662;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AlPrrvZB1x28a4WGN8IeT0/QmFSzTIfNiilDMxfO5Rs=;
+	b=YJcMqHZXKlyH/FRfDMmTsYnI9Jm2EclpERipdemOUfe2FCRLEhSP/ewkuS2H+gZ3ip804y
+	lofBlVkomrGQh20iL4Ic626Yl2lVQReKp9sydPGWBr3+pvtPTlCAjk5slDQaDEw9P2XA7W
+	HQ2a/0s+6jzmObw2ecNYHkiah88h3qE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705496662;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AlPrrvZB1x28a4WGN8IeT0/QmFSzTIfNiilDMxfO5Rs=;
+	b=Qv238zkPk06bZ8SrcG2t67z7xrgGu76moeH3+qjPoLlsRMI5TZAisZ0Nx/ARxzEikeOGT5
+	PZZ7W/yh1tUfwmAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E56AB13800;
+	Wed, 17 Jan 2024 13:04:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id aR7eNVXQp2XsZQAAD6G6ig
+	(envelope-from <pvorel@suse.cz>); Wed, 17 Jan 2024 13:04:21 +0000
+Date: Wed, 17 Jan 2024 14:04:20 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Alejandro Colomar <alx@kernel.org>
+Cc: linux-man@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] MAINTAINERS: Add man-pages git trees
+Message-ID: <20240117130420.GA2711070@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+References: <20240117122257.2707637-1-pvorel@suse.cz>
+ <ZafHChsGiKCLh9od@debian>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZafHChsGiKCLh9od@debian>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -0.52
+X-Spamd-Result: default: False [-0.52 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[pvorel@suse.cz];
+	 REPLYTO_EQ_FROM(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.02)[54.25%]
+X-Spam-Flag: NO
 
-On Wed, 2024-01-17 at 00:54 -0500, Theodore Ts'o wrote:
-> On Tue, Jan 16, 2024 at 11:41:25PM -0500, Kent Overstreet wrote:
-> > > > No, it's a leadership/mentorship thing.
-> > > > 
-> > > > And this is something that's always been lacking in kernel
-> > > > culture. Witness the kind of general grousing that goes on at
-> > > > maintainer summits;maintainers complain about being overworked
-> > > > and people not stepping up to help with the grungy
-> > > > responsibilities, while simultaneously we still
-> 
->      <blah blah blah>
-> 
-> > > > Tests and test infrastructure fall into the necessary but not
-> > > > fun category, so they languish.
-> > > 
-> > > No, they fall into the "no company wants to pay someone to do the
-> > > work" category, so it doesn't get done.
-> > > 
-> > > It's not a "leadership" issue, what is the "leadership" supposed
-> > > to do here, refuse to take any new changes unless someone ponys
-> > > up and does the infrastructure and testing work first?  That's
-> > > not going to fly, for valid reasons.
-> 
-> Greg is absolutely right about this.
-> 
-> > But good tools are important beacuse they affect the rate of
-> > everyday development; they're a multiplier on the money everone is
-> > spending on salaries.
-> 
-> Alas, companies don't see it that way.  They take the value that get
-> from Linux for granted, and they only care about the multipler effect
-> of their employees salaries (and sometimes not even that).  They most
-> certainly care about the salutary effects on the entire ecosyustem.
-> At least, I haven't seen any company make funding decisions on that
-> basis.
+> On Wed, Jan 17, 2024 at 01:22:57PM +0100, Petr Vorel wrote:
+> > The maintainer uses both.
 
-Actually, this is partly our fault.  Companies behave exactly like a
-selfish contributor does:
+> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
 
-https://archive.fosdem.org/2020/schedule/event/selfish_contributor/
+> Reviewed-by: Alejandro Colomar <alx@kernel.org>
 
-The question they ask is "if I'm putting money into it, what am I
-getting out of it".  If the answer to that is that it benefits
-everybody, it's basically charity  to the entity being asked (and not
-even properly tax deductible at that), which goes way back behind even
-real charitable donations (which at least have a publicity benefit) and
-you don't even get to speak to anyone about it when you go calling with
-the collecting tin.  If you can say it benefits these 5 tasks your
-current employees are doing, you might have a possible case for the
-engineering budget (you might get in the door but you'll still be
-queuing behind every in-plan budget item).  The best case is if you can
-demonstrate some useful for profit contribution it makes to the actual
-line of business (or better yet could be used to spawn a new line of
-business), so when you're asking for a tool, it has to be usable
-outside the narrow confines of the kernel and you need to be able to
-articulate why it's generally useful (git is a great example, it was
-designed to solve a kernel specific problem, but not it's in use pretty
-much everywhere source control is a thing).
+Thanks!
 
-Somewhere between 2000 and now we seem to have lost our ability to
-frame the argument in the above terms, because the business quid pro
-quo argument was what got us money for stuff we needed and the Linux
-Foundation and the TAB formed, but we're not managing nearly as well
-now.  The environment has hardened against us (we're no longer the new
-shiny) but that's not the whole explanation.
+> (We sent it almost at the same time.  :)
 
-I also have to say, that for all the complaints there's just not any
-open source pull for test tools (there's no-one who's on a mission to
-make them better).  Demanding that someone else do it is proof of this
-(if you cared enough you'd do it yourself).  That's why all our testing
-infrastructure is just some random set of scripts that mostly does what
-I want, because it's the last thing I need to prove the thing I
-actually care about works.
+Ah, sorry for not checking the ML. I should just ask you to add it yourself.
 
-Finally testing infrastructure is how OSDL (the precursor to the Linux
-foundation) got started and got its initial funding, so corporations
-have been putting money into it for decades with not much return (and
-pretty much nothing to show for a unified testing infrastructure ...
-ten points to the team who can actually name the test infrastructure
-OSDL produced) and have finally concluded it's not worth it, making it
-a 10x harder sell now.
+Kind regards,
+Petr
 
-James
+> > ---
+> > Changes v1->v2:
+> > * Add a second tree
 
+> >  MAINTAINERS | 2 ++
+> >  1 file changed, 2 insertions(+)
+
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 391bbb855cbe..3f6a19f3e5e0 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -12833,6 +12833,8 @@ M:	Alejandro Colomar <alx@kernel.org>
+> >  L:	linux-man@vger.kernel.org
+> >  S:	Maintained
+> >  W:	http://www.kernel.org/doc/man-pages
+> > +T:	git git://git.kernel.org/pub/scm/docs/man-pages/man-pages.git
+> > +T:	git git://www.alejandro-colomar.es/src/alx/linux/man-pages/man-pages.git
+
+> >  MANAGEMENT COMPONENT TRANSPORT PROTOCOL (MCTP)
+> >  M:	Jeremy Kerr <jk@codeconstruct.com.au>
+> > -- 
+> > 2.43.0
 
