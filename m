@@ -1,123 +1,124 @@
-Return-Path: <linux-kernel+bounces-29325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 420C6830CCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:38:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA084830CD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:39:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 453471F26759
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:38:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B89D81C24143
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:39:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6390C241E8;
-	Wed, 17 Jan 2024 18:38:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2360623753;
+	Wed, 17 Jan 2024 18:39:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wK+MmexK"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=public-files.de header.i=frank-w@public-files.de header.b="AJgXuF5k"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24FDC241E0
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 18:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FD1D13FFF;
+	Wed, 17 Jan 2024 18:39:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705516682; cv=none; b=XIjr72HMssAnlMJ9SacF346gIUjMb+bLAGUqkYXOzs92sYv91hEreJC/rdgGkg6xLN5LIBciuvPeTCEY8gnAp3x62RCNUqYX1Qbo86wNIt3AEK0MMhay94QDrVA17tBrPIEYr2ox7H8QFQbp8+S/ONU9ustd9pfs+Ep00zo6W4s=
+	t=1705516787; cv=none; b=rIr4dqKBbfYaPTAF/nAbbLQfah+nQn1qH865cD28JXRjOaT79bRRimKcLl2UE5pfRd0DafKGurA9wF8ee8I4zJxTpvDwt5j5x9MY5TaQcgjtX563mFUrDKPv1d1C6Y5mHwxD3Iarg/9P0YywrnkSB/l8raU+pudwpiBmsLkR/gI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705516682; c=relaxed/simple;
-	bh=VogUs+O2o35Jw+1xeHOWy2fYvfe44E3rEqOp3jXLbb4=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=SnJIEatu+YqZyYj9+uRZpGGPKxf2yGhGYOG2ytaTSZ2Ox79NfL9MEqPZoTJqpHT+OEubfjYPjYE4E+ZQTMgytr2wlPeH/GKVTEbw6Uw4cf8flbQg7mQQR5Xzr0Du8aj0MAHmeem2OICwM/eqHnFMFfiGyntYn73rxy4XWAPcK44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wK+MmexK; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-559cef15db5so2218535a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:38:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705516679; x=1706121479; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oZ9Ad+s6yBzRxVHJ5M4g9tE8/3/hZdNx+vJJrLg2cKg=;
-        b=wK+MmexKS4/Qu7hz3S7Sf+FW8l8Ut0fSH3E9Jm3CP44J7d7GSxjXh4hy6QNHO+e5Dr
-         stXd3pt5scPq8JYwPXiAHpo7TddBmC976db40gLx+qQ/tvVgdKFtpKsVtFg77Ly5Eq2J
-         kt3LlVIPENzPLIxo3reB2sPA7Iqy92kK2rz5hnBfdxmZM4DLUWIDyVa4OHCTwtYM/1X2
-         L9a30U82OQq7MeKAmaA0Vnqtve2IOV7uLpVjUbbAeCufwIF5GXcQu4aY/c+Y1qdaKF7v
-         0oDoxWxR0L8bhabA1D+5N5kY9KiiGzVnCgoWwJilPjB30IToW4AiCslWoghoy9EcLTmo
-         ww5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705516679; x=1706121479;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oZ9Ad+s6yBzRxVHJ5M4g9tE8/3/hZdNx+vJJrLg2cKg=;
-        b=c18Zl35BGtCTp86ufSLpuHD9Cp55GSuxxbKn6WzecgVJ0OHVzg/n5hQ7gMDYLIWV6Q
-         eojAMS2gTLzobcpA9PqSOA1kZz7En1m2n4UNWjLbiQ79U5bbcJqeu1xlQy9zfQi2x6PF
-         RNk7M99kauWrk96HZbrNJ6/dKsb7tcC2NJs2Qm6ag5RG7FksS/PYhc/G+3FgRj0uW/+N
-         ZsYuOqGc+osNJO0gAujr8aQgu2Vj+Q4Z1n07hSUd1nof4fuUAddBZ6wlRqozjEN9TCHF
-         8R+61pyC3VAGJDbSGSVXWATWBqiXsRTZvqkCnVeTrsN2nBzJQczEPLhE3smHxuj6f99T
-         cf0w==
-X-Gm-Message-State: AOJu0Yya0WVIK6EXiChuZMs7R0DILVX7lzT7SOgKdX/C1OUrQe2hen5j
-	fpPTBUfG4Nx1F+x/88bfhrbICeVF66n2nYG1NXc36z1Tv2NX438Det0hopxY3SL1M/wsZion5D5
-	ptGFy+bUN0QYMoSe0k81SKH4Y9ece/NsgyKVt
-X-Google-Smtp-Source: AGHT+IF73suJR78qAnn0Rg07XdqYVwiVVAHMHoi+OaeZ5QWjwxFYUUZ1aooiAz4S32/2Ug8YUcNTi/UVIEgmcjoSfIU=
-X-Received: by 2002:a17:906:3c43:b0:a2d:bc66:6af9 with SMTP id
- i3-20020a1709063c4300b00a2dbc666af9mr1381942ejg.11.1705516679163; Wed, 17 Jan
- 2024 10:37:59 -0800 (PST)
+	s=arc-20240116; t=1705516787; c=relaxed/simple;
+	bh=OGTSWYYYIj8c+SD8nKzKyjhCGDqhkunykC0KNhW8ywg=;
+	h=DKIM-Signature:X-UI-Sender-Class:Received:From:To:Cc:Subject:Date:
+	 Message-Id:X-Mailer:MIME-Version:Content-Transfer-Encoding:
+	 X-Provags-ID:X-Spam-Flag:UI-OutboundReport; b=qckoQh81DTd4PQfa9VTvSNwNrxc2zzuBTXnhddFBjmt/og7EmVOnrojHATAvNB395sxEaRy94rjPTLEiUpPUpSnrnyB/Uf9JBG6RcCr0Rlm+QCJ9jOwCTd51kfnNXu/QQtudOTuvGXFBg7N8uVylcK0v3/37mS6oU84RyP9DV7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=public-files.de; spf=pass smtp.mailfrom=public-files.de; dkim=pass (2048-bit key) header.d=public-files.de header.i=frank-w@public-files.de header.b=AJgXuF5k; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=public-files.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=public-files.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=public-files.de;
+	s=s31663417; t=1705516763; x=1706121563; i=frank-w@public-files.de;
+	bh=OGTSWYYYIj8c+SD8nKzKyjhCGDqhkunykC0KNhW8ywg=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=AJgXuF5k8HVQ523E71D9cfqi+mrPAr1Ry4u89Ofc9EUCXkQp8nVePmThzNwSutvJ
+	 +kxSD/6pyyjK+FlsFtinRsq85BS9EiBgM7wsgtO8nTIiSw7/qiUKKm8+DSh7A36Qo
+	 +DErHSq7W2O3ZIfJ18l3wRWo9RkvL4Xo5MSyrPOvOjTSLPhkLoKtYi+mYazdSomtv
+	 rM5GvsORLSpTqgviOJ6PFnrt5rXlhFQrYCbnz4SHLb2ybwz4rS9wR7Ir8/De7p5iu
+	 iSXMhAZZqQ0NN0RIDPsBlY79O1glgLFtJEN7JGk4C8bLNzGOTTRvSIDNdhZtzRqbD
+	 qIxPZrwk3MTnyZhCsA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from frank-G5 ([217.61.151.254]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N1wll-1qy5Br44rZ-012HW0; Wed, 17
+ Jan 2024 19:39:23 +0100
+From: Frank Wunderlich <frank-w@public-files.de>
+To: Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: Frank Wunderlich <frank-w@public-files.de>,
+	Sam Shih <sam.shih@mediatek.com>,
+	Daniel Golle <daniel@makrotopia.org>,
+	linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH v3 0/2] Add reset controller to mt7988 infracfg
+Date: Wed, 17 Jan 2024 19:39:12 +0100
+Message-Id: <20240117183914.62122-1-frank-w@public-files.de>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117-b4-zswap-lock-optimize-v1-0-23f6effe5775@bytedance.com>
-In-Reply-To: <20240117-b4-zswap-lock-optimize-v1-0-23f6effe5775@bytedance.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 17 Jan 2024 10:37:22 -0800
-Message-ID: <CAJD7tkY7Xvjg37EEw2M=uRknphY0pf3ZVpyX2s2QyiJ=Axhihw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] mm/zswap: optimize the scalability of zswap rb-tree
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org, Chris Li <chriscli@google.com>, 
-	Nhat Pham <nphamcs@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ot4r7tklUz8MgmS9LTbACzre8iQs8Hx+z+di0RWtZbnRPLQYiGe
+ tp1PvtXKeDhzaJROf+ij6+lmA+6H+pl3FOxzMBLK7SPSL8D6asAo39bpgigkHGo1ObaFwQU
+ QaTvaZQHDsvd6jeZEeDvbY+JQa61Xb73xO7orc323X1a2PNPAmf8vEHbrKReNfduQhbYFuj
+ ToYdMGed60GurzKf5UWZQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:TNCFqyXqnyM=;cQqBF/HRLDu+oXyy8j8R83GDoir
+ gbD3D6ICYH1whKRxsZtyuJcpVYLadHrticqut6pDQYYGdnCuxLIVMcr5qcoA+hRl1gFuP2+FT
+ 7T6lz5zU+PDmCISN4nWKX/EyAq0e55oFWhwUHZCN4pohOio4fsJ3W73UcYLydm0nk4krnExM6
+ VYewiT7xZi7rt9mMhhQFU84bZvIvbUNUDSEaqo899/4De58JWGW/x0fyWUXh9rndGZ8Cel61n
+ QyULho6zjXygWDA3ZWaJMbWQ6cWqt+pCzJf6CpbZrTE05bMTwL+4lmfO30sv3E3Lg2jrGO733
+ fynr6fBGeCVi3Btbgn60F32f/bq4+aWd5qYJSQqRCCg9zFaZJyMDLCqppq2pCWXn+/0Z0wa4L
+ yTqDxqc3/IGKNvI3qe2QYBBXs+CtFwkaokfgUVHRCP0yETGKNLirMNGhImc73dB5G1EvPWYFF
+ pGr/lJm2i95OrXwhkKZC0dGwYzXJHYtXhrcHtaWF4/Ct+ysma2Nv+CwEk5a2MP2jfHu+NZbfw
+ 7oKl4LJ/ekMzAJO4LnjmNCfbAIlybEzVSK6dgupRC654wlz0hCIPLOJvD43eHLCkluQuZO/HD
+ TdiPWW0qByzycKRQgGuxjIq5EapuINyep9q6xi9NyF2tEMMU4qOK4RySAXqAo9908GmwwZy4B
+ zaq0aHOemzwFvgXpqhl1tW/fOpLgBQ2WyToM4jBBjlyWrxo76zVqcpn15FkXllaaQioGmNYdy
+ EcKhOTBeANZgqt3X5aWgY4d7izw15+a0ippy09zDLBGVe9f2tW90DRIXwTLlmfZtQxs8Gln2i
+ cJYE0nbq6Xe7+Ux+kDrEzNVvJHhU5xMOzifKNVvOtvhp+PP210hHoLLIMBLuHuVCeYzu9lVsL
+ lScfk9ijLw/waxF2wzO97wUC6Sf/ToXtD5PkgjDDQMVQ9kAOv0YMKolmYlFohdYeZ53Ckvtj1
+ RiiUFQ==
 
-On Wed, Jan 17, 2024 at 1:23=E2=80=AFAM Chengming Zhou
-<zhouchengming@bytedance.com> wrote:
->
-> When testing the zswap performance by using kernel build -j32 in a tmpfs
-> directory, I found the scalability of zswap rb-tree is not good, which
-> is protected by the only spinlock. That would cause heavy lock contention
-> if multiple tasks zswap_store/load concurrently.
->
-> So a simple solution is to split the only one zswap rb-tree into multiple
-> rb-trees, each corresponds to SWAP_ADDRESS_SPACE_PAGES (64M). This idea i=
-s
-> from the commit 4b3ef9daa4fc ("mm/swap: split swap cache into 64MB trunks=
-").
->
-> Although this method can't solve the spinlock contention completely, it
-> can mitigate much of that contention. Below is the results of kernel buil=
-d
-> in tmpfs with zswap shrinker enabled:
->
->      linux-next  zswap-lock-optimize
-> real 1m9.181s    1m3.820s
-> user 17m44.036s  17m40.100s
-> sys  7m37.297s   4m54.622s
->
-> So there are clearly improvements. And it's complementary with the ongoin=
-g
-> zswap xarray conversion by Chris. Anyway, I think we can also merge this
-> first, it's complementary IMHO. So I just refresh and resend this for
-> further discussion.
+Infracfg on mt7988 supports reset controller function which is
+needed to get lvts thermal working.
 
-The reason why I think we should wait for the xarray patch(es) is
-there is a chance we may see less improvements from splitting the tree
-if it was an xarray. If we merge this series first, there is no way to
-know.
+Patches are based on clk-next due to recently added mt7988 clock driver:
+https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git
 
-Chris, do you intend to send the xarray patch(es) anytime soon?
+changes:
+ v3:
+   - start resets on RST0 offset (LVTS is RST1)
+   - rename offset constants with MT7988 prefix (else collision with reset=
+h)
+ v2:
+   - change value of constant to 0 from 9
+   - add missing SoB and commit-message for binding-patch
+
+
+Frank Wunderlich (2):
+  dt-bindings: reset: mediatek: add MT7988 reset IDs
+  clk: mediatek: add infracfg reset controller for mt7988
+
+ drivers/clk/mediatek/clk-mt7988-infracfg.c    | 23 +++++++++++++++++++
+ .../reset/mediatek,mt7988-resets.h            |  6 +++++
+ 2 files changed, 29 insertions(+)
+
+=2D-
+2.34.1
+
 
