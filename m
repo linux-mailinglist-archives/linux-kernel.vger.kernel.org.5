@@ -1,146 +1,125 @@
-Return-Path: <linux-kernel+bounces-29265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9C85830BD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:17:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BFC2830BC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:15:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27FB81F2277E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:17:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1ADD828D5BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:15:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5DE22EE3;
-	Wed, 17 Jan 2024 17:17:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B642225D0;
+	Wed, 17 Jan 2024 17:15:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eaHc4hYF"
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="POFlDrid"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53791225AA;
-	Wed, 17 Jan 2024 17:17:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A1B5225AA
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 17:15:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705511842; cv=none; b=YOC5ZAP6vubbg4KhDTMG8/mHSgrZ2E+6u5sk82oh5r0+vUI5gN6BtMUlmizL7XJ6jMhY0sTn5Wz80zK6hnb/7HKGVl+KFPb98WLwkFCpmlB0Bv3eBsJur2oRs+gaDMt+z0CapYAHqVoJxEadFKWRa6rZ44vZmHHPQ5+XONSsDoU=
+	t=1705511717; cv=none; b=H6CfAWrWF6MTYcBWaMBaLsMZ2M5pZCnToEjsuraF5mDNlw43z/7QHaX1SRSuUa1ChI2GWo13EPxUsNjpQHKUOgW3IQV+4mtDgEuIQQ1l7qHlfmehZ7bqXyRyT6x+xJ1sMP96McSfZBMV79hz318BDqb0oJLQkGBox+4JtjQ5iGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705511842; c=relaxed/simple;
-	bh=ejjzp/N6GXN4bKMnwIhWefZoBsy9/Ncj1iYqg76d+58=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Content-Transfer-Encoding:Message-Id:References:To:X-Mailer; b=U6Myn7eTDnErKKIE9rmnICr3FTBA55XgMVdDt/1ynwMTkkf3RsP/fXujkXohpB+FULGlqQJDF3qSD2Wmi6a8MbD/j10SW9AZ4wQRULeXcwu3ei+cFSqeBmp3u+/ul6OD/BWk9cdN+NaXWbuPvL1WvzhQ8FOvNdJyJziPboGyBF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eaHc4hYF; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6d9bba6d773so9618144b3a.1;
-        Wed, 17 Jan 2024 09:17:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705511840; x=1706116640; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TSQYgrBx5fi8DsH2MSKPE2LLO3oMaLJBOPol1630iF8=;
-        b=eaHc4hYF16m7O4UgJrzS8kKbamFWUPlGZeby0bxzJj5hFr3zxxqhr/12REjNdck62D
-         4HDHq7BgBB9Q7uh+fab8sVUuE07it9XeubQMriCkq8ZuRfcMEizw9XoFYXW2QESN/mAQ
-         3MfxixqBRF1rG5hs888O3UErtUMWPZ608Xgf/e26kIx6xnpJm94aED0Z15Vdl6TAhDHq
-         3SpoiyJpraJd072FR8Lx4Q011PCIDHyWTFgJ1CIzy2Et34VuFPoRA2mNYropTHgJ87HP
-         rfqTC1ASkKoOWlQt0WEy8HzwTNi4GN0H6dYoMKBHeTalGW35mGkb8GM/Wql8Cm0R2Uxp
-         xK1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705511840; x=1706116640;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TSQYgrBx5fi8DsH2MSKPE2LLO3oMaLJBOPol1630iF8=;
-        b=u5JHMg0rKTYRZ+bonTWNr3wjT/vzuX4j2TQEy+Uw0TH3hZdE7FQyFr5anN0ny3b4cE
-         njnJNLBZeJLaFI3f212rbUdM7H07TeGlW12H+pDarvHiTv0885moLyj+IpxoLAsaNYlJ
-         xLnxVtQ2CF55dfj+nKScvGp/ZotpxQGxsjJWMKK9pdYEgnalHPhzIcRhfgvHOYY49h4L
-         bK2oE4xEDQ081r/83sxu6r00HzR4dOOJr25Te20rFPQl64DmkQx5oazZZyTxXqSCMh6Z
-         1FEND6CZmvndPMrn0R/MwHp5ngwvItjf0Ii2Dl7WXMSWzYY1liW6wAN603SG43V0VmnD
-         cPuA==
-X-Gm-Message-State: AOJu0YwqJ8CW9ouEI+epYhNL6UEkkksa6sYqiqhYqtZUjqdpyTlV2Zny
-	Cm3zHvN1MNHc0svle2CO8Ch1b9YbLlc=
-X-Google-Smtp-Source: AGHT+IFWTGb9xYZFECeXFelpO983ecVwxf3/NuG3OaByNzdfXT3Bicm/R9UBrTHf/Ukswbi9HSryBA==
-X-Received: by 2002:a05:6a00:10d4:b0:6db:7038:fcc1 with SMTP id d20-20020a056a0010d400b006db7038fcc1mr9849124pfu.11.1705511840490;
-        Wed, 17 Jan 2024 09:17:20 -0800 (PST)
-Received: from smtpclient.apple ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id n13-20020aa7984d000000b006dacbe57efbsm1742854pfq.90.2024.01.17.09.17.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 17 Jan 2024 09:17:20 -0800 (PST)
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1705511717; c=relaxed/simple;
+	bh=T7IslF0lI3yblMUodVhB9tJHIl2XHIH3degOHlEEIZ4=;
+	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:Message-ID:
+	 Date:MIME-Version:User-Agent:Subject:Content-Language:To:Cc:
+	 References:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-Scanned-By; b=LFukDD/KsU25dg+f8k7eo4i2ihmUBYwr+JRC1WqNbhEGkStP0Porfm4G5qK8Drk4JJP4lyEOKst77yc7wEGEtlt2eT9Fj786s9aYX2VTD0NNdMBV8C3dHFaWvjvz//aDndDDzYLU5haPW+TSCiJEp6Fn+3dnWP1q+8zkrl613n0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=POFlDrid; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705511715;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gGm/eLi1COg3Vpc3apSqmPNHHb4PLdH7xLSc6T9224c=;
+	b=POFlDridqg/rsFuOtpj1oakrxzx5nOGKlm4VcJBEye7/Qh07bAxTWJsmaMjKggvs86tRdY
+	/9xdLu2uu/cUHjTCk+IW8CdxGJestkMmEQABb1RQTcBs2gfzqZn+PtkglcwX4FXFx6Gqv8
+	BsRJlk+om9005AZp9PoR5RW8Dv4Rat8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-631-7Yv0cQF3P-OKvQw7cQLm-g-1; Wed, 17 Jan 2024 12:15:11 -0500
+X-MC-Unique: 7Yv0cQF3P-OKvQw7cQLm-g-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0782885CBA5;
+	Wed, 17 Jan 2024 17:15:10 +0000 (UTC)
+Received: from [10.22.16.147] (unknown [10.22.16.147])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id C7E4F2026D6F;
+	Wed, 17 Jan 2024 17:15:07 +0000 (UTC)
+Message-ID: <5ee5bf79-6cdc-4d1b-a19f-f0d5165a5f16@redhat.com>
+Date: Wed, 17 Jan 2024 12:15:07 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
-Subject: Re: [PATCH] afs: Fix missing/incorrect unlocking of RCU read lock
-From: Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <2929034.1705508082@warthog.procyon.org.uk>
-Date: Thu, 18 Jan 2024 01:15:02 +0800
-Cc: Marc Dionne <marc.dionne@auristor.com>,
- linux-afs@lists.infradead.org,
- linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <D21C0923-8182-43A4-A3D0-0DB9DC07F638@gmail.com>
-References: <2929034.1705508082@warthog.procyon.org.uk>
-To: David Howells <dhowells@redhat.com>
-X-Mailer: Apple Mail (2.3774.300.61.1.2)
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
+ partitions
+Content-Language: en-US
+To: Tejun Heo <tj@kernel.org>
+Cc: Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Frederic Weisbecker <frederic@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
+ cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
+ Ryan Phillips <rphillips@redhat.com>, Brent Rowsell <browsell@redhat.com>,
+ Peter Hunt <pehunt@redhat.com>, Cestmir Kalina <ckalina@redhat.com>,
+ Nicolas Saenz Julienne <nsaenz@kernel.org>,
+ Alex Gladkov <agladkov@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>,
+ Phil Auld <pauld@redhat.com>, Paul Gortmaker <paul.gortmaker@windriver.com>,
+ Daniel Bristot de Oliveira <bristot@kernel.org>,
+ Juri Lelli <juri.lelli@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Costa Shulyupin <cshulyup@redhat.com>
+References: <20240117163511.88173-1-longman@redhat.com>
+ <ZagJPoEsLZ6Dg-NG@mtj.duckdns.org>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <ZagJPoEsLZ6Dg-NG@mtj.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
 
-> 2024=E5=B9=B41=E6=9C=8818=E6=97=A5 00:14=EF=BC=8CDavid Howells =
-<dhowells@redhat.com> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> In afs_proc_addr_prefs_show(), we need to unlock the RCU read lock in =
-both
-> places before returning (and not lock it again).
->=20
-> Fixes: f94f70d39cc2 ("afs: Provide a way to configure address =
-priorities")
-> Reported-by: Marc Dionne <marc.dionne@auristor.com>
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: linux-afs@lists.infradead.org
-> cc: linux-fsdevel@vger.kernel.org
-> ---
-> fs/afs/proc.c |    5 +++--
-> 1 file changed, 3 insertions(+), 2 deletions(-)
->=20
-> diff --git a/fs/afs/proc.c b/fs/afs/proc.c
-> index 3bd02571f30d..15eab053af6d 100644
-> --- a/fs/afs/proc.c
-> +++ b/fs/afs/proc.c
-> @@ -166,7 +166,7 @@ static int afs_proc_addr_prefs_show(struct =
-seq_file *m, void *v)
->=20
-> if (!preflist) {
-> seq_puts(m, "NO PREFS\n");
-> - return 0;
-> + goto out;
-> }
->=20
-> seq_printf(m, "PROT SUBNET                                      PRIOR =
-(v=3D%u n=3D%u/%u/%u)\n",
-> @@ -191,7 +191,8 @@ static int afs_proc_addr_prefs_show(struct =
-seq_file *m, void *v)
-> }
-> }
->=20
-> - rcu_read_lock();
-> +out:
-> + rcu_read_unlock();
+On 1/17/24 12:07, Tejun Heo wrote:
+> Hello,
+>
+> On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long wrote:
+>> The first 2 patches are adopted from Federic with minor twists to fix
+>> merge conflicts and compilation issue. The rests are for implementing
+>> the new cpuset.cpus.isolation_full interface which is essentially a flag
+>> to globally enable or disable full CPU isolation on isolated partitions.
+> I think the interface is a bit premature. The cpuset partition feature is
+> already pretty restrictive and makes it really clear that it's to isolate
+> the CPUs. I think it'd be better to just enable all the isolation features
+> by default. If there are valid use cases which can't be served without
+> disabling some isolation features, we can worry about adding the interface
+> at that point.
 
-What about using:
+My current thought is to make isolated partitions act like 
+isolcpus=domain, additional CPU isolation capabilities are optional and 
+can be turned on using isolation_full. However, I am fine with making 
+all these turned on by default if it is the consensus.
 
-	guard(rcu)();
-
-Thanks,
-Alan
-
-> return 0;
-> }
->=20
->=20
+Cheers,
+Longman
 
 
