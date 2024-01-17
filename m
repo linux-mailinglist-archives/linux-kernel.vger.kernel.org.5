@@ -1,71 +1,72 @@
-Return-Path: <linux-kernel+bounces-29381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A60FE830D8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:58:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FFE0830D90
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:59:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA0FE1C21BB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:58:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44AE41F260E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:59:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A379224B26;
-	Wed, 17 Jan 2024 19:57:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1E3924A11;
+	Wed, 17 Jan 2024 19:58:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="Ev3d8dSQ"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="XamRXZ+E"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BF0324B20
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:57:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D430249FE
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:58:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705521474; cv=none; b=NUdje8CYEOYbjyxI3oBNU0/y/U3AkQ6FBY/frSG4CWpljkRmIdwSFOD7X3J0/vOBU1/0ai7NQMj0C2VlJJ9tQMizud3oTXWnpcVXo1fcK69gaOm3ZIi9hsZuGTxBkzs2Cs1JylNU///hrT2ynKAA6MQh14dXqpRJA/wgZPVpsys=
+	t=1705521535; cv=none; b=Y/olUOd5sCpFpGvsctc1ajNiXng8k0/XYokDF1zVPDtvrxyPEVx9lqmKqD+S9fGHHlf16zTslnBMoHD88LMvJ70M3sXzWSGI00Mbv1Jg41ftk4zCZyY0PSceQ7Ji42md/QRCfaEJvvlaLT+JVjd+lUm4LT89TzIEOgEOGHjBdfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705521474; c=relaxed/simple;
-	bh=smggzj2XY8xCbSB+BhVhq+M4oW8/2Hw7UcZ9tnl76rU=;
+	s=arc-20240116; t=1705521535; c=relaxed/simple;
+	bh=D4IE53rJBci7nuFEPZUzedqALbFIgrADBxi29G2OhnQ=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
-	 To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding; b=aV9jiDpyi3IkdCS/QggpPBYxZ085jO6M4L1OMxTrcF1JEgMPj3pLbchHIrxNhoFJX8nMfkyLeZckyRdVKdb25pZPf17SxI4CgSkEgvbQnaX7SxDyPaF3jQz0r9wVF7YUwdtkV6WRNswUCBxpj5Kq2ldtr3WsLIV9Bms64RWU8uc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=Ev3d8dSQ; arc=none smtp.client-ip=209.85.128.48
+	 To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding; b=eBuA4ouvjhLkR7vP90nP9CtlPb68ZU4C0qja7jx5IEbzqwia5weIUCb1Lgsm4Ak56u/V2vsNQfNdZl+hrikVN20Kq1PeUmjYnmqjxTFeT5syPvW+9WuAj5YIk+mtURopP5gNI2u49vEsc33XLQPhVtsgYhDfQlUxJbGo4omt4UU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=XamRXZ+E; arc=none smtp.client-ip=209.85.221.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e76626170so38011235e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:57:52 -0800 (PST)
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-337c25e503fso7431f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:58:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1705521471; x=1706126271; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4waHk4rPmL0zhRklQDdQP442m/73aDCDPB9DqO34yq0=;
-        b=Ev3d8dSQRwP/Chco9XTjrgDh4KtmJzrH/cNeiPhRpF9+f5LU81FVkIivwFciRvnM4k
-         b48cfzy6KlI0hLtiyM8/MxA6Xfr/w4y8QGR3bEwTgqdy1r9wFagM3aGorzIkbRIdv+Pz
-         ZplB2+PPOg8xpjv6p5oY/2iRXpGGC4+BEHbt3GGt2lnU+egShXUrclApZpnlTI/AW/+i
-         Vyfa0auyAQRaI9p+dnHj6TFaQ46TswpsPyDktYPgC5rgEW9rlg/gLp3Vpt/o0GrN6S5e
-         PLzgM1CuAn05H1qGRtTBoAUP4t9Fh+jD+fv079iqcJKOR/co9WTn9i0Xsw5urd38lR/0
-         DAHA==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1705521531; x=1706126331; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OW4Pp+2efBAP38SHF6DygEiJ8WxYEhemir12iniNRbY=;
+        b=XamRXZ+E8cqyo25IyON1+VNNUmMZJCt0xss77+ims9ohtn/LMFKh9sJr7aPGGWLjO9
+         TNHMI+ucxbhmgeFQRTC/p7XrNX8hujndOzgrznLn5uS4tr+NxCzz0wz+V69x8aQRgMH2
+         XoxxIkySIKBE+IyxpTuskC5llckSeqMmjF8G32f3/cEE+VOz4E2h9HZ+28aT8pUwCM1H
+         Wu90dxcbWvUETLy5k2PDVKWCVk9+qzedj7DE50AVSVIqORGRDHx0uoFvdi/4mdRVL970
+         nKhuL6J4SiZkRArOlcJnjMnVCyjh4XsuBPvmbTjUsZ6tyoDY/qjjOVABD5O4C0cq1R5+
+         bhbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705521471; x=1706126271;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4waHk4rPmL0zhRklQDdQP442m/73aDCDPB9DqO34yq0=;
-        b=wv6J1tfqSKOtLDPLSjCoXtwb0+KuNGNgbv1An3s72f2EoP61uum9xgl0Ps8/U35h/c
-         5TsZ3QhgS2PtadBCYAEC/EXVe5DN4+1HHdpdKippbUo3wOvjOnbQi6vm7EJtIZulwh3K
-         lt4Z6rems1Kxi/y9T1KtAGdt968gJWIQBMESUY1kBE+aa+9QXRH0uNpfsfGJF6XsYPFr
-         Ui2i9S1xGU+30lw8gFGqaiVaSSFDpjDLZ9jzvkJcbOsc2RZqNK1I5AX0EQWjcYpXXjw1
-         SCg19DBJ3I2yb0WLe9mGsfZdGKROLizaH2vIVinKlN09AWJPgle1ypXIl16Ar6XvobKt
-         jagQ==
-X-Gm-Message-State: AOJu0Yx6bIZsObJTI02jg7y1p6+bYi3uyv90U2J+zP5/BnESmCgvfYwH
-	gRbb7uzVNmLbIEUSceJbrRaHWf1uFOfGRA==
-X-Google-Smtp-Source: AGHT+IGewKH6iXQvqW/gNXe71KbxVjxmyFIysE2mQ5oQ2US6/f8tzsBa65eObcHKVN6wt2V1gcOMGg==
-X-Received: by 2002:a7b:ce16:0:b0:40e:4618:d9d0 with SMTP id m22-20020a7bce16000000b0040e4618d9d0mr5236201wmc.77.1705521470046;
-        Wed, 17 Jan 2024 11:57:50 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705521531; x=1706126331;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OW4Pp+2efBAP38SHF6DygEiJ8WxYEhemir12iniNRbY=;
+        b=GT4n7KsJXzoIETCcCLdiTPkXz3Si6ieOUiz2xDDDzGnGKBrTaVsk4KpYy7/Uhg9fym
+         2J34oxO/1PNBT2trWn/BCtc6H0+oHR51+3hFYV6tcVPHcGMpYifSqaxa3MEF/8Lil26z
+         Mrhawf4sS3xpqSk86QHWZsUiIoF0mxRDE6aViS3LguyFqJ0B1zBwUlKPRgGBhZ4s7DY7
+         ChYn8reUc2b4aaKzYw2ol5Rs7s346o5Q2r6QwUdk9scAUS5Iq2wr2TfexoOgE2BN/IDK
+         y9fxn5A+JyKCB8DjJLrZMfxyYOL4knr/yartNABLEEwT0+bgqhBXbr+NiT3sERpAozJO
+         3MrA==
+X-Gm-Message-State: AOJu0YzFLI6hZ77APFKNDxuAfFRTE2zM2PxvbU5zgDiWRkBIrT7/NcQ1
+	tMfwRL0onsCdy4f/BF49oQk4gk9PW35O6RyUyUHFK2g0zPY=
+X-Google-Smtp-Source: AGHT+IH+wmAPb2Zr2LBLfBchzsXw9gB43nlluCVXkANox4rQAmtTZpNwwjXk/z5t3IS4Fx7EKEyu2g==
+X-Received: by 2002:a05:600c:30d4:b0:40e:52a6:f5af with SMTP id h20-20020a05600c30d400b0040e52a6f5afmr869311wmn.28.1705521531269;
+        Wed, 17 Jan 2024 11:58:51 -0800 (PST)
 Received: from localhost.localdomain (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
-        by smtp.gmail.com with ESMTPSA id j7-20020a05600c190700b0040e52cac976sm27064749wmq.29.2024.01.17.11.57.49
+        by smtp.gmail.com with ESMTPSA id v21-20020a05600c445500b0040e3bdff98asm27120885wmn.23.2024.01.17.11.58.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 11:57:49 -0800 (PST)
+        Wed, 17 Jan 2024 11:58:50 -0800 (PST)
 From: Alexandre Ghiti <alexghiti@rivosinc.com>
 To: Paul Walmsley <paul.walmsley@sifive.com>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
@@ -75,10 +76,12 @@ To: Paul Walmsley <paul.walmsley@sifive.com>,
 	linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org
 Cc: Alexandre Ghiti <alexghiti@rivosinc.com>
-Subject: [PATCH -fixes 0/2] svnapot fixes
-Date: Wed, 17 Jan 2024 20:57:39 +0100
-Message-Id: <20240117195741.1926459-1-alexghiti@rivosinc.com>
+Subject: [PATCH 1/2] riscv: Fix set_huge_pte_at() for NAPOT mapping
+Date: Wed, 17 Jan 2024 20:57:40 +0100
+Message-Id: <20240117195741.1926459-2-alexghiti@rivosinc.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240117195741.1926459-1-alexghiti@rivosinc.com>
+References: <20240117195741.1926459-1-alexghiti@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,19 +90,81 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-While merging riscv napot and arm64 contpte support, I noticed we did
-not abide by the specification which states that we should clear a
-napot mapping before setting a new one, called "break before make" in
-arm64 (patch 1). And also that we did not add the new hugetlb page size
-added by napot in hugetlb_mask_last_page() (patch 2).
+As stated by the privileged specification, we must clear a NAPOT
+mapping and emit a sfence.vma before setting a new translation.
 
-Alexandre Ghiti (2):
-  riscv: Fix set_huge_pte_at() for NAPOT mapping
-  riscv: Fix hugetlb_mask_last_page() when NAPOT is enabled
+Fixes: 82a1a1f3bfb6 ("riscv: mm: support Svnapot in hugetlb page")
+Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+---
+ arch/riscv/mm/hugetlbpage.c | 42 +++++++++++++++++++++++++++++++++++--
+ 1 file changed, 40 insertions(+), 2 deletions(-)
 
- arch/riscv/mm/hugetlbpage.c | 62 +++++++++++++++++++++++++++++++++++--
- 1 file changed, 60 insertions(+), 2 deletions(-)
-
+diff --git a/arch/riscv/mm/hugetlbpage.c b/arch/riscv/mm/hugetlbpage.c
+index b52f0210481f..24c0179565d8 100644
+--- a/arch/riscv/mm/hugetlbpage.c
++++ b/arch/riscv/mm/hugetlbpage.c
+@@ -177,13 +177,36 @@ pte_t arch_make_huge_pte(pte_t entry, unsigned int shift, vm_flags_t flags)
+ 	return entry;
+ }
+ 
++static void clear_flush(struct mm_struct *mm,
++			unsigned long addr,
++			pte_t *ptep,
++			unsigned long pgsize,
++			unsigned long ncontig)
++{
++	struct vm_area_struct vma = TLB_FLUSH_VMA(mm, 0);
++	unsigned long i, saddr = addr;
++
++	for (i = 0; i < ncontig; i++, addr += pgsize, ptep++)
++		ptep_get_and_clear(mm, addr, ptep);
++
++	flush_tlb_range(&vma, saddr, addr);
++}
++
++/*
++ * When dealing with NAPOT mappings, the privileged specification indicates that
++ * "if an update needs to be made, the OS generally should first mark all of the
++ * PTEs invalid, then issue SFENCE.VMA instruction(s) covering all 4 KiB regions
++ * within the range, [...] then update the PTE(s), as described in Section
++ * 4.2.1.". That's the equivalent of the Break-Before-Make approach used by
++ * arm64.
++ */
+ void set_huge_pte_at(struct mm_struct *mm,
+ 		     unsigned long addr,
+ 		     pte_t *ptep,
+ 		     pte_t pte,
+ 		     unsigned long sz)
+ {
+-	unsigned long hugepage_shift;
++	unsigned long hugepage_shift, pgsize;
+ 	int i, pte_num;
+ 
+ 	if (sz >= PGDIR_SIZE)
+@@ -198,7 +221,22 @@ void set_huge_pte_at(struct mm_struct *mm,
+ 		hugepage_shift = PAGE_SHIFT;
+ 
+ 	pte_num = sz >> hugepage_shift;
+-	for (i = 0; i < pte_num; i++, ptep++, addr += (1 << hugepage_shift))
++	pgsize = 1 << hugepage_shift;
++
++	if (!pte_present(pte)) {
++		for (i = 0; i < pte_num; i++, ptep++, addr += pgsize)
++			set_ptes(mm, addr, ptep, pte, 1);
++		return;
++	}
++
++	if (!pte_napot(pte)) {
++		set_ptes(mm, addr, ptep, pte, 1);
++		return;
++	}
++
++	clear_flush(mm, addr, ptep, pgsize, pte_num);
++
++	for (i = 0; i < pte_num; i++, ptep++, addr += pgsize)
+ 		set_pte_at(mm, addr, ptep, pte);
+ }
+ 
 -- 
 2.39.2
 
