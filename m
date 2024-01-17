@@ -1,91 +1,82 @@
-Return-Path: <linux-kernel+bounces-29117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE31D8308F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:01:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EF04E8308FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:02:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB1851C210EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:01:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DD071C23EF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:02:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5596D210E1;
-	Wed, 17 Jan 2024 15:01:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KkRLHTO6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24C71219F3;
+	Wed, 17 Jan 2024 15:02:11 +0000 (UTC)
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97C8220DC9
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:01:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E701721347;
+	Wed, 17 Jan 2024 15:02:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705503710; cv=none; b=OU39kPFyv8lZWO5YH13lZKARP2EOWtv+wtuAViRgWAb12W0f+viWdGHhzVhkqYGwg06A6tEDAAqrNOrNFB7m9b3LhtdeVR11DqfghRuhvBV6qZ9lv+xkTH/Swv4on6kYtVCd08G8UJpTCM7FgnCkSeFLbXer4uz+A1K5NlaLuc8=
+	t=1705503730; cv=none; b=kCmqLwbD9xuENZ03d9duu+EVtrJLGyD8EW9GCFffS5L+m1dmaEuQ5iNkbmAN8Uz7rKXkxCMR5sLtEOJpeUuch0MrHgKvj+L4JhIb++ZoF3LZ4oUdMZGzZqt+NZNnSLYTijnD5RKMeQ2Uuu6+XNLqutVDb2CdmrS+sgT9KOkv2/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705503710; c=relaxed/simple;
-	bh=RfUJH2v3w6+VOAvYElJdNIPFyq4YLRuWSvqqrp7qYMk=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To; b=o3TdsTtpn2FwQ9lVjHk9LM6NpXENyW2F5VvThXtP5EhqSf0kv2m4lmm6QIYK+Q6otZ8+H51fOUdSLvFqbaAiwU1EvxFaWHl3FsKzwubpcKk+tCB+FaYXkRWOo/BoZFhRxwsJfHrwNuLnnY4etDkfmO2J4CzeVPN3c0/5aW8+dro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KkRLHTO6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8E27C433C7;
-	Wed, 17 Jan 2024 15:01:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705503710;
-	bh=RfUJH2v3w6+VOAvYElJdNIPFyq4YLRuWSvqqrp7qYMk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KkRLHTO69lZT00OU/q0fndB1HqyUJgJ4Q+7fsTe2jd7tTIwa2M0U+B9xuxBOr5JzP
-	 vDNaNEZB0oCI4OFxH8iYhYqnS3gP9bDQZuo1klGg3aJOsRYOsysGngZj5FSBZ7YwU1
-	 Lwvjpb6gar14JqpKvSqTWb9Zz4Mo8lXp/hyMlVdEzRI6CwomLEzmVpk3VszpZC9ury
-	 xtR6MoyZfGhKLr4h5SG2QSCMauaBkfjivjccgiH/G2XlHsYrUX1t3GtUK00QRlkcnJ
-	 oUEsFVXXrtjwdGNDSJoNPNK5JnOegE/HHVpbpD8QIazS/VGcRJk/BYkiDrPevoPYAv
-	 rkjqyaukt3WIg==
-Date: Wed, 17 Jan 2024 16:01:47 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Eric Dumazet <edumazet@google.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	Arjan van de Ven <arjan@infradead.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Rik van Riel <riel@surriel.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Sebastian Siewior <bigeasy@linutronix.de>,
-	Giovanni Gherdovich <ggherdovich@suse.cz>,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v10 01/20] timers: Restructure get_next_timer_interrupt()
-Message-ID: <Zafr2_1Z9h_xov2J@localhost.localdomain>
-References: <20240115143743.27827-1-anna-maria@linutronix.de>
- <20240115143743.27827-2-anna-maria@linutronix.de>
+	s=arc-20240116; t=1705503730; c=relaxed/simple;
+	bh=InjtWWHIK+dxg9+ObW7eBrA9Bb+Q/V/aSLm4A24XvJo=;
+	h=Received:Date:From:To:Cc:Subject:Message-ID:References:
+	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To:
+	 User-Agent; b=IHCP/xoz2BGkkjj42PPn6NVwAcbqKkZb6QyMdvRhuO7d0zn5xgni6odbG92llKC2ATOeGCXfG047qzXEW52JwiAokeORBnlPo5BUpATF5tr7vn+zy3X3TukBG0RDiqf1OcH3vgXIL8BZ0IrDrx19h+buMuNFm9/z3YgsNAbm+jc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 4135968C7B; Wed, 17 Jan 2024 16:02:01 +0100 (CET)
+Date: Wed, 17 Jan 2024 16:02:00 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: John Garry <john.g.garry@oracle.com>
+Cc: Christoph Hellwig <hch@lst.de>, "Darrick J. Wong" <djwong@kernel.org>,
+	axboe@kernel.dk, kbusch@kernel.org, sagi@grimberg.me,
+	jejb@linux.ibm.com, martin.petersen@oracle.com,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+	jack@suse.cz, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
+	ming.lei@redhat.com, jaswin@linux.ibm.com, bvanassche@acm.org
+Subject: Re: [PATCH v2 00/16] block atomic writes
+Message-ID: <20240117150200.GA30112@lst.de>
+References: <20231219151759.GA4468@lst.de> <fff50006-ccd2-4944-ba32-84cbb2dbd1f4@oracle.com> <20231221065031.GA25778@lst.de> <b60e39ce-04bf-4ff9-8879-d9e0cf5d84bd@oracle.com> <20231221121925.GB17956@lst.de> <df2b6c6e-6415-489d-be19-7e2217f79098@oracle.com> <20231221125713.GA24013@lst.de> <9bee0c1c-e657-4201-beb2-f8163bc945c6@oracle.com> <20231221132236.GB26817@lst.de> <6135eab3-50ce-4669-a692-b4221773bb20@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240115143743.27827-2-anna-maria@linutronix.de>
+In-Reply-To: <6135eab3-50ce-4669-a692-b4221773bb20@oracle.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-Le Mon, Jan 15, 2024 at 03:37:24PM +0100, Anna-Maria Behnsen a écrit :
-> get_next_timer_interrupt() contains two parts for the next timer interrupt
-> calculation. Those two parts are separated by forwarding the base
-> clock. But the second part does not depend on the forwarded base
-> clock.
-> 
-> Therefore restructure get_next_timer_interrupt() to keep things together
-> which belong together.
-> 
-> No functional change.
-> 
-> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+On Tue, Jan 16, 2024 at 11:35:47AM +0000, John Garry wrote:
+> As such, we then need to set atomic write unit max = min(queue max 
+> segments, BIO_MAX_VECS) * LBS. That would mean atomic write unit max 256 * 
+> 512 = 128K (for 512B LBS). For a DMA controller of max segments 64, for 
+> example, then we would have 32K. These seem too low.
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+I don't see how this would work if support multiple sectors.
+
+>
+> Alternative I'm thinking that we should just limit to 1x iovec always, and 
+> then atomic write unit max = (min(queue max segments, BIO_MAX_VECS) - 1) * 
+> PAGE_SIZE [ignoring first/last iovec contents]. It also makes support for 
+> non-enterprise NVMe drives more straightforward. If someone wants, they can 
+> introduce support for multi-iovec later, but it would prob require some 
+> more iovec length/alignment rules.
+
+Supporting just a single iovec initially is fine with me, as extending
+that is pretty easy.  Just talk to your potential users that they can
+live with it.
+
+I'd probably still advertise the limits even if it currently always is 1.
+
 
