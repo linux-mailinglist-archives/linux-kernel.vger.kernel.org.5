@@ -1,219 +1,175 @@
-Return-Path: <linux-kernel+bounces-28611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BF518300B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:46:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8835A8300A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:40:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9029BB22F01
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:46:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2038F287D22
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:40:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B7DE125A3;
-	Wed, 17 Jan 2024 07:45:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 596C5BE7D;
+	Wed, 17 Jan 2024 07:40:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eHVFsrVB"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Kd8oihs7"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E82211170B
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:45:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1596ABA39
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:40:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705477528; cv=none; b=TjmTyikMWcUJGiT12CCK9Kf/BNvuniTFjrwSGfWAlWsMGDrVPey3ppvMdIii3k9/vNSTm6OlpzERkgpkkov4hu/AfSGfO0rN6vpUufXZtX7iagKGXHjmFmpPU801uf/1fVfosK8P53JNK5Mix1EyYwcY1ArvrbNyhHJiezNNLgo=
+	t=1705477214; cv=none; b=LN4cI8SGlSNHsqfjmNRliBV0ZZ05ssbvAqK9pzeQDqwQJWoS7UFbSb+AbYuZhhXpJWYmZEEccm6OfUL+6PSuG8vYVeOVQoRdYBrbqbu1Igdnl8l9r+mTaYZfUWSglHgz3MfQe70W8LFEQmwFbsuTXvUweFTSsIi2Hu/mKJ0e28A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705477528; c=relaxed/simple;
-	bh=9zAjop8lN3D6O5NChAL30EJTz4jH0ADlFf8VOAAySZI=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:
-	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
-	 X-Google-Smtp-Source:X-Received:Received:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=NdMp1bKTM1bd0zcaO3Hjf+ABfYd8Fd45A3x1o05YEbW7WPzphZ+UbyreaCIGwpVIOBiCwTPx/4n+CfU3sN/QPeAREJYmQxJcfG8uS7RzEUKbdHj+tw9OCWUE0f/SeFHSmXKr0qLMPz3ZS9SNOvAfNRklOlut86ARvLCOZ5+NS0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eHVFsrVB; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705477525;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GQKf1TFOIk3jRZgYrerpttWoKccvQIBg6Et3VqW5w6c=;
-	b=eHVFsrVBShJCb7iBq6vZzJUk4E3eSH4OJIWtatyE7l0riiFPW0qNSb2n1Mforytzp80eRL
-	X3+J1v2WsQMNXT7gf4Y+UHdjSCXdhdigOLli/OSDS/A1ywO4gSUJhNLfoqE4vp+iYO183K
-	HeCL5liKkMkgSflBGw4Ob8v+DZ0qRSI=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-226-PT1jjxWDO1WrHqg2gJO8KQ-1; Wed, 17 Jan 2024 02:45:19 -0500
-X-MC-Unique: PT1jjxWDO1WrHqg2gJO8KQ-1
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1d4931d651aso111540955ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 23:45:18 -0800 (PST)
+	s=arc-20240116; t=1705477214; c=relaxed/simple;
+	bh=y53jfPvEKjZRcX80MF/OitW3I90VrEzgwnWXJyqzdZ4=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
+	 To:Cc:References:From:Autocrypt:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=hahBPJk088t07NlhlFnV1MwfLGtwAoTVAGxXNtJwPAZy/pRgEeKuPljKoObrGPSsFeBc2mB3D8S64JMzPttN5Q/SoLHaUfm4KgGjQkOQIF/rnz5rPSImxR4ZrNgYDWqVmGI9ltfi8Hrkso+NW+dgPp6hBQ5XqNXh+bJUVrcs8z8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Kd8oihs7; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a2d7e2e7fe0so573934666b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 23:40:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705477211; x=1706082011; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=W5yQW0eWFrxCKeOcAEvivJz+EZ4XlJj+f4zmIZYKQjo=;
+        b=Kd8oihs77nPQaPHX43nQwvQix7sXEXr1By9pOusYIAvoeXnXJQOIymaAz+0YDGc2aG
+         ECbWWYUZVlTjoC/Bm88OdYxViJThNhjyhlR/GNjM8AIegf3moNvVQiE2HewkRjhFCdpE
+         wj21px/rmPUDUEyorRwvnYhHOoN2USiIVy0BiwqL8DyoL6SRSogKqj7PLVjnWKUIXToP
+         ReYeSfsx8Hcik+Thbg/4RYiqBcAuSrgr5HJF1Q5s7AV+LpxIb+r2qFgee4ULezgeJeV6
+         sg3c2agjYx3szU4hbno1eBG5HC/bWu8Gm5T9azLKlHc1u4BhIsJF5XiOKg6uNgGiOkrD
+         yC5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705477518; x=1706082318;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GQKf1TFOIk3jRZgYrerpttWoKccvQIBg6Et3VqW5w6c=;
-        b=DgBTwutpEASo57F1s6B/+F17kFh9B+4M+ddCjz6+Rz2s2R2r/s4ZDiIgvCiinS2Ut2
-         20t833+WCdRwJq5NjH8shqkftf9RhPC66aNkFsDZDde3+G1EmnHipGoARtDHQ5i8ipOr
-         XCWUoVzqRPyafDuFNaVzkk6vlvAucKPnMbbWlA14iHzX6FICDmxVwRXg2xybzrFUJKxj
-         yuvFCJ254MbW+lXOugLda01ZCs+LiOmX9j3dwLrz8unC8YZ9sZALo6i66fUndSZi00t4
-         sHFWmS5+ptpUNbFYlTLniQ4T0uj8wzS/TRPAyzztaFpWaq1lEZbp+rK3AoAWxpcdOVAv
-         X+2w==
-X-Gm-Message-State: AOJu0YxLDmjZiGQ/JdyYhxP0pkrdztUhKRJOxkDj/DTYz9WF4LvNZzxW
-	yL4HRvXlmBpjCEzv7yvee3mXie7hz113tUA6gC1914E78Mh3aBFVCuQkvkh8HdBmmkyRl4Cpw4o
-	7x0B/i0+J1kw667HkdgkJTCr1RCykPX5l
-X-Received: by 2002:a17:902:d489:b0:1d5:f223:a27a with SMTP id c9-20020a170902d48900b001d5f223a27amr1978820plg.39.1705477518142;
-        Tue, 16 Jan 2024 23:45:18 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFhEoP2YVi7iCc6R39IopraMkPNMLCAp9KZ0Dbsx8C4gLDT2Oz18uI3tNeXVMGc70+YfqFMaA==
-X-Received: by 2002:a17:902:d489:b0:1d5:f223:a27a with SMTP id c9-20020a170902d48900b001d5f223a27amr1978803plg.39.1705477517899;
-        Tue, 16 Jan 2024 23:45:17 -0800 (PST)
-Received: from localhost ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id t12-20020a170902bc4c00b001d6f5ac1ad4sm207349plz.43.2024.01.16.23.45.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 23:45:17 -0800 (PST)
-Date: Wed, 17 Jan 2024 15:39:50 +0800
-From: Coiby Xu <coxu@redhat.com>
-To: Ondrej Kozina <okozina@redhat.com>
-Cc: kexec@lists.infradead.org, Milan Broz <gmazyland@gmail.com>, 
-	Thomas Staudt <tstaudt@de.ibm.com>, Daniel P =?utf-8?B?LiBCZXJyYW5nw6k=?= <berrange@redhat.com>, 
-	Kairui Song <ryncsn@gmail.com>, dm-devel@redhat.com, Jan Pazdziora <jpazdziora@redhat.com>, 
-	Pingfan Liu <kernelfans@gmail.com>, Baoquan He <bhe@redhat.com>, Dave Young <dyoung@redhat.com>, 
-	linux-kernel@vger.kernel.org, x86@kernel.org, Dave Hansen <dave.hansen@intel.com>, 
-	Vitaly Kuznetsov <vkuznets@redhat.com>, Vivek Goyal <vgoyal@redhat.com>, 
-	Eric Biederman <ebiederm@xmission.com>
-Subject: Re: Re: [PATCH v2 2/5] crash_dump: save the dm crypt key temporarily
-Message-ID: <isgawrvqwuyaitkxgikkcgw3g5mxt3x3tubgpsy2kqos3t4nwr@soy5s6ypm6nt>
-References: <20240110071522.1308935-1-coxu@redhat.com>
- <20240110071522.1308935-3-coxu@redhat.com>
- <750d9e17-d8b8-44c0-ba47-74a686333a01@redhat.com>
+        d=1e100.net; s=20230601; t=1705477211; x=1706082011;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=W5yQW0eWFrxCKeOcAEvivJz+EZ4XlJj+f4zmIZYKQjo=;
+        b=iQwsTlmIWQMOOICuTDnXQdfCR4u/LYu5NY2458cErR4+PoGnwE6bK0fcSrIKDoLkou
+         Omkc2imaym7xnQgqmm+39U8zmgLsD9ERpklmrVbAaczZhHuPHAOWXhXPg0z+S9ZLxpHR
+         Zan0/JOilGqfvZGBqjF9m9C7JEMmTIDWX6xVoVDs+B+g54f+OPa5Paig467aN34vKKDl
+         ZJHbhJRTqpRDBTFjuXkus7EtrNll4IevDQQueoRj83yhvZdqRI4ERrYIsCrzLT9IKUbD
+         Ro5mcnLdzG5GyCJSfFgcdtMXZUWe1D9cXWBpOUQi6w/T9lLWLKzRptXy3XYbVzn7FzyG
+         wTYg==
+X-Gm-Message-State: AOJu0Yz7YlFAiD7kGr/tv/m1p1nO5atQloEYImZJELiswU3k4bg8y6fo
+	bAvA5ehHjE59PBVG4II86nj5+4BrFxQSNw==
+X-Google-Smtp-Source: AGHT+IFyqt3d1IQmKuo9PtUC3Mv4vRKIrjVJI6y/LaXYSF2mjJEGYphvkmR0yKtBsz2T7v/mi1G1gA==
+X-Received: by 2002:a17:906:b389:b0:a2e:c311:c6fe with SMTP id uh9-20020a170906b38900b00a2ec311c6femr334425ejc.10.1705477211474;
+        Tue, 16 Jan 2024 23:40:11 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id f1-20020a170906c08100b00a28fdd21763sm7457976ejz.134.2024.01.16.23.40.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jan 2024 23:40:11 -0800 (PST)
+Message-ID: <ff85db67-bd18-48fb-9050-81d731e5f402@linaro.org>
+Date: Wed, 17 Jan 2024 08:40:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <750d9e17-d8b8-44c0-ba47-74a686333a01@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm: coresight: Remove pattern match
+ of ETE node name
+Content-Language: en-US
+To: Jinlong Mao <quic_jinlmao@quicinc.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach
+ <mike.leach@linaro.org>, James Clark <james.clark@arm.com>,
+ Leo Yan <leo.yan@linaro.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, Tingwei Zhang <quic_tingweiz@quicinc.com>,
+ Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+ Tao Zhang <quic_taozha@quicinc.com>
+References: <20240116064505.487-1-quic_jinlmao@quicinc.com>
+ <20240116064505.487-2-quic_jinlmao@quicinc.com>
+ <f616989b-2d84-483d-80c4-d3c6eb97b137@arm.com>
+ <69875d89-651e-41ff-a1be-385dcbb15108@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <69875d89-651e-41ff-a1be-385dcbb15108@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 16, 2024 at 11:40:53AM +0100, Ondrej Kozina wrote:
->On 10/01/2024 08:15, Coiby Xu wrote:
->>User space is supposed to write the key description to
->>/sys/kernel/crash_dm_crypt_key so the kernel will read the key and save
->>a temporary copy for later user. User space has 2 minutes at maximum to
->>load the kdump initrd before the key gets wiped. And after kdump
->>retrieves the key, the key will be wiped immediately.
+On 17/01/2024 03:14, Jinlong Mao wrote:
+>>>         - const: arm,embedded-trace-extension
+>>> @@ -55,13 +53,13 @@ examples:
+>>>   # An ETE node without legacy CoreSight connections
+>>>     - |
+>>> -    ete0 {
+>>> +    ete-0 {
 >>
->>Signed-off-by: Coiby Xu <coxu@redhat.com>
->>---
->>  include/linux/crash_core.h   |   7 +-
->>  include/linux/kexec.h        |   4 ++
->>  kernel/Makefile              |   2 +-
->>  kernel/crash_dump_dm_crypt.c | 121 +++++++++++++++++++++++++++++++++++
->>  kernel/ksysfs.c              |  23 ++++++-
->>  5 files changed, 153 insertions(+), 4 deletions(-)
->>  create mode 100644 kernel/crash_dump_dm_crypt.c
+>> Why do we need the number ? why not simply "ete" as Krzysztof suggested ?
 >>
->>diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
->>index 5126a4fecb44..7078eda6418d 100644
->>--- a/include/linux/crash_core.h
->>+++ b/include/linux/crash_core.h
->>@@ -125,6 +125,12 @@ static inline void __init reserve_crashkernel_generic(char *cmdline,
->>  {}
->>  #endif
->>+struct kimage;
->>+
->>+int crash_sysfs_dm_crypt_key_write(const char *key_des, size_t count);
->>+int crash_pass_temp_dm_crypt_key(void **addr, unsigned long *sz);
->>+int crash_load_dm_crypt_key(struct kimage *image);
->>+
->>  /* Alignment required for elf header segment */
->>  #define ELF_CORE_HEADER_ALIGN   4096
->>@@ -140,7 +146,6 @@ extern int crash_exclude_mem_range(struct crash_mem *mem,
->>  extern int crash_prepare_elf64_headers(struct crash_mem *mem, int need_kernel_map,
->>  				       void **addr, unsigned long *sz);
->>-struct kimage;
->>  struct kexec_segment;
->>  #define KEXEC_CRASH_HP_NONE			0
->>diff --git a/include/linux/kexec.h b/include/linux/kexec.h
->>index 6f4626490ebf..bf7ab1e927ef 100644
->>--- a/include/linux/kexec.h
->>+++ b/include/linux/kexec.h
->>@@ -366,6 +366,10 @@ struct kimage {
->>  	void *elf_headers;
->>  	unsigned long elf_headers_sz;
->>  	unsigned long elf_load_addr;
->>+
->>+	/* dm crypt key buffer */
->>+	unsigned long dm_crypt_key_addr;
->>+	unsigned long dm_crypt_key_sz;
->>  };
->>  /* kexec interface functions */
->>diff --git a/kernel/Makefile b/kernel/Makefile
->>index 3947122d618b..48859bf63db5 100644
->>--- a/kernel/Makefile
->>+++ b/kernel/Makefile
->>@@ -119,7 +119,7 @@ obj-$(CONFIG_PERF_EVENTS) += events/
->>  obj-$(CONFIG_USER_RETURN_NOTIFIER) += user-return-notifier.o
->>  obj-$(CONFIG_PADATA) += padata.o
->>-obj-$(CONFIG_CRASH_DUMP) += crash_dump.o
->>+obj-$(CONFIG_CRASH_DUMP) += crash_dump.o crash_dump_dm_crypt.o
->>  obj-$(CONFIG_JUMP_LABEL) += jump_label.o
->>  obj-$(CONFIG_CONTEXT_TRACKING) += context_tracking.o
->>  obj-$(CONFIG_TORTURE_TEST) += torture.o
->>diff --git a/kernel/crash_dump_dm_crypt.c b/kernel/crash_dump_dm_crypt.c
->>new file mode 100644
->>index 000000000000..3a0b0b773598
->>--- /dev/null
->>+++ b/kernel/crash_dump_dm_crypt.c
->>@@ -0,0 +1,121 @@
->>+// SPDX-License-Identifier: GPL-2.0-only
->>+#include <keys/user-type.h>
->>+#include <linux/crash_dump.h>
->>+
->>+static u8 *dm_crypt_key;
->>+static unsigned int dm_crypt_key_size;
->>+
->>+void wipe_dm_crypt_key(void)
->>+{
->>+	if (dm_crypt_key) {
->>+		memset(dm_crypt_key, 0, dm_crypt_key_size * sizeof(u8));
->>+		kfree(dm_crypt_key);
->>+		dm_crypt_key = NULL;
->>+	}
->>+}
->>+
->>+static void _wipe_dm_crypt_key(struct work_struct *dummy)
->>+{
->>+	wipe_dm_crypt_key();
->>+}
->>+
->>+static DECLARE_DELAYED_WORK(wipe_dm_crypt_key_work, _wipe_dm_crypt_key);
->>+
->>+static unsigned __read_mostly wipe_key_delay = 120; /* 2 mins */
->>+
->>+static int crash_save_temp_dm_crypt_key(const char *key_desc, size_t count)
->>+{
->>+	const struct user_key_payload *ukp;
->>+	struct key *key;
->>+
->>+	if (dm_crypt_key) {
->>+		memset(dm_crypt_key, 0, dm_crypt_key_size * sizeof(u8));
->>+		kfree(dm_crypt_key);
->>+	}
->>+
->>+	pr_debug("Requesting key %s", key_desc);
->>+	key = request_key(&key_type_user, key_desc, NULL);
->
->If we don't read the key copy form userspace (my reply to top level 
->message) you could use key_type_logon here.
+> 
+> Hi Suzuki & Krzysztof ,
+> 
+> If name all the ete nodes' name as 'ete', there will be error below when 
+> build images.
+> 
+> arch/arm64/boot/dts/qcom/sm8450.dtsi:301.6-312.4: ERROR 
 
-I'll use key_type_logon, thanks!
+Why are you pasting DTSI for binding? How is it related? Do we talk
+about DTSI here? No, this is a binding patch.
 
--- 
 Best regards,
-Coiby
+Krzysztof
 
 
