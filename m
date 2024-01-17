@@ -1,209 +1,244 @@
-Return-Path: <linux-kernel+bounces-29446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AA91830E62
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 22:09:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD3A9830E63
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 22:11:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F8631C23E2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 21:09:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 868E32850E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 21:11:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2BA125568;
-	Wed, 17 Jan 2024 21:09:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D0325563;
+	Wed, 17 Jan 2024 21:11:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Sc+t+Qz+"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dRarnbm1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89657250ED
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 21:09:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98AD825558;
+	Wed, 17 Jan 2024 21:11:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705525761; cv=none; b=SLTFCUM2IEFkv1bfJ9aDepIm3RVQOlGisLhasJ8nADHNEQstf92RF5l7eWkZUGzTHeTQ3HgFaF5+1ISYaCcFdE+VNk0z3OVLo1gUortT5HRtCSAGueaiwMxg4jiaIJ1lbw/xbXyGguFaNM8I0kLIENMTEr8yqDgON3zPB5JEE9s=
+	t=1705525866; cv=none; b=KobP57a4cf66+wOcM8ocbOHdmMxE4aMse8xBBi9L1A3FPxWKj02gs1P5HkEzGBI4/lv4YBSH4OEnJUs4V5WzrJ/eLvTyQ1Z/ISfkofwzoMZpNWTwiaYpN8y0Uiz9yo5nHME53Pwj+ip8y6Qphs8sV5fsNNEr4Un3rRoJGsV4CVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705525761; c=relaxed/simple;
-	bh=yiczJz5xo+gXi22FZY/cUNQzQjX9NFJDBZPspOkYXH0=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=hydaaLqmMy71NEJg9BxZRqHnwHc3q9OOEkiE7GKGuJnc8EmgtG1XWofsnVAEN4XgA8t5FjeBoEpaslIvc45WBQJKG7vea1SV5QCNfpUBrHjp1yrA4ZoOCp9IBALZedEyg1ejZE69FnupA9Fhhcaq5ypyDb5yt7+vJ7rPEdjfIiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Sc+t+Qz+; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a2ac304e526so1147553166b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 13:09:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1705525755; x=1706130555; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p6IFwG5b0R45jQy9tX/g5mkmRxt1SXH4oxO4wTmDPoQ=;
-        b=Sc+t+Qz+TuqYbt6vDTDQ4WVXw4hs8FbVn9CuVICDAeSDg328oE0R/AozIyAUUxwUM/
-         w4j3tJ9Y17RhUWaw6mEnS9mNDmYVrH4w4hQTPWkx1JtrBtvOFbahyvvsSuhsAnd9SJvU
-         6UsR6B6cdOtrog9o9Us1VMa30xLQjd6ExQMneEeMqZRh1r0trVGTkzjcJdadT+sg4Ch6
-         fHE2wqa5uQ5dDBcN5F7h1UDfYnrT7kZswpy8YSohq7ZH2WB7B6sIl3k493kyarfaeunk
-         J+i1efIhSClniv89gMCu+x7ZbECkVczqZs54dTdWSBoQATPNh1qUkMJUv7Jw6jwyDQ1+
-         clSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705525755; x=1706130555;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p6IFwG5b0R45jQy9tX/g5mkmRxt1SXH4oxO4wTmDPoQ=;
-        b=V2GPlRMCCA28mXwvIxtRCJ777xjYfRq1W80hD8TibKzB1YbLAhS5jWnn9BLSL0YrMp
-         myfjSoQVrL1WG8zzXTofb+XZPh2PN9aWNH1TZlsGl0Or3EQyzmvbqVK3ZWuwZRJF/+w7
-         BJvt69H/WaRvkE3UCL3T+t8wHrg9GtiB94/tPnCOmU4PQTmR0K4f9SfUTFwUQhDMbYyK
-         junFf1K5/J1hsKlH/bHG4UHtvTKTyD8MgX0yEJUwyrenx3/MEudoUETrpfBY9Ca+wGbN
-         OfPsU7biLsJC1E1gCkZR4GPXbs3Pv9Ih5Y9FoxLOM/mAdLPzRAuqvmoryvHzGj7WxUmc
-         QO9w==
-X-Gm-Message-State: AOJu0YyxvCBliqqg9KqFn37PFugx/JSTuo4dAM++LxHwGJwukJy19OPT
-	9zi5Yvj2LKs8Dlpq3ZBCGAq6EWiyFzKonKhdnuRe4Ca2novKmA==
-X-Google-Smtp-Source: AGHT+IGDPHBPAM4q/KJXQev8stoy4X4hPad/fntquzFLGj7qrXFzP1rQLoWdZ+dumTkd2iS1oMJ/YxSLaGiJrXMhNdc=
-X-Received: by 2002:a17:906:4744:b0:a2b:6db2:b8da with SMTP id
- j4-20020a170906474400b00a2b6db2b8damr4809932ejs.32.1705525754821; Wed, 17 Jan
- 2024 13:09:14 -0800 (PST)
+	s=arc-20240116; t=1705525866; c=relaxed/simple;
+	bh=crEbNXwtnLQ/zYOPViojanwrSzcw/HATD8C5YXyuKk8=;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-Id:
+	 X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding; b=Qay7awnwDLP7exdwmXJ83OTfrHd/j1TsSsb42uoeegPfu0Ta4OikNZSdCylxGoOASt/cBpRGENJIoZ2P550yHNQiLaysO8luuMN00SAh70RvpyIpj5IBD9KCwc/Xo8yp0v2PiMsajfKUhsxKwdECapxNN3HVo3Na6guOclyT71c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dRarnbm1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94835C433F1;
+	Wed, 17 Jan 2024 21:11:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705525866;
+	bh=crEbNXwtnLQ/zYOPViojanwrSzcw/HATD8C5YXyuKk8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=dRarnbm1O7aKz/AC+ejABEJqmaFm4U1DFVVICOPx6onvfO09XzSkSEMhuE719lFY3
+	 NwfAjMOrCSYZgRRR5WTVLX8+tmhM1HWBSphVfiEYdeQ4LsrXFiBeccVVAGKyJFOBK+
+	 ZHWeToSJMrDuurR1cxTxmJ8I1q//wntNxgwU7eZgBEGfcZG7iJel8Ic6L6pwGatHZK
+	 DCAIaCAhpgg+eDuY3m7LZqR0LOVrkCmsC2X148/61qcpiaKNtlILHVagVOOpu63/Ck
+	 +QYDIxcEl7WZMP7EbMaG00200dukyCwTnCdQSFP77TrX8Pnc7bgkIXClY7A6CRGPRk
+	 8BPPaESZZt/Wg==
+From: SeongJae Park <sj@kernel.org>
+To: Honggyu Kim <honggyu.kim@sk.com>
+Cc: sj@kernel.org,
+	akpm@linux-foundation.org,
+	apopple@nvidia.com,
+	baolin.wang@linux.alibaba.com,
+	damon@lists.linux.dev,
+	dave.jiang@intel.com,
+	hyeongtak.ji@sk.com,
+	kernel_team@skhynix.com,
+	linmiaohe@huawei.com,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org,
+	lizhijian@cn.fujitsu.com,
+	mathieu.desnoyers@efficios.com,
+	mhiramat@kernel.org,
+	rakie.kim@sk.com,
+	rostedt@goodmis.org,
+	surenb@google.com,
+	yangx.jy@fujitsu.com,
+	ying.huang@intel.com,
+	ziy@nvidia.com
+Subject: Re: [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory
+Date: Wed, 17 Jan 2024 13:11:03 -0800
+Message-Id: <20240117211103.51806-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240117114926.1895-1-honggyu.kim@sk.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1701540918.git.lduncan@suse.com> <dc0006176e90cf3fb90e5b1c1917b54fe07c91cd.1701540918.git.lduncan@suse.com>
- <ZXoOtgVZW_QpkU11@rhel-developer-toolbox-latest> <CAPj3X_W5kOEOapG3F8NETBRzBmrQ1Lfudy7QGmCLXPT3UwUrkw@mail.gmail.com>
- <ZXtlxzVtY3M_WrQ2@rhel-developer-toolbox-latest>
-In-Reply-To: <ZXtlxzVtY3M_WrQ2@rhel-developer-toolbox-latest>
-From: Lee Duncan <lduncan@suse.com>
-Date: Wed, 17 Jan 2024 13:09:03 -0800
-Message-ID: <CAPj3X_VvpuDQGHt2xtBOJB2RNGvFfxQiX0GH0My19G3OP+76QQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] scsi: target: iscsi: handle SCSI immediate commands
-To: Chris Leech <cleech@redhat.com>
-Cc: target-devel@vger.kernel.org, linux-scsi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, dbond@suse.com, hare@suse.de, 
-	michael.christie@oracle.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Apologies for the delay in the reply, but over the
-time to address Chris' two questions about this patch set. See below.
+Hi Honggyu,
 
-On Thu, Dec 14, 2023 at 12:30=E2=80=AFPM Chris Leech <cleech@redhat.com> wr=
-ote:
->
-> On Wed, Dec 13, 2023 at 05:24:54PM -0800, Lee Duncan wrote:
-> > >
-> > > > @@ -1255,14 +1248,15 @@ int iscsit_process_scsi_cmd(struct iscsit_c=
-onn *conn, struct iscsit_cmd *cmd,
-> > > >       /*
-> > > >        * Check the CmdSN against ExpCmdSN/MaxCmdSN here if
-> > > >        * the Immediate Bit is not set, and no Immediate
-> > > > -      * Data is attached.
-> > > > +      * Data is attached. Also skip the check if this is
-> > > > +      * an immediate command.
-> > >
-> > > This comment addition seems redundant, isn't that what the
-> > > "Immediate Bit is not set" already means?
-> >
-> > The spec is confusing with respect to this. The "Immediate Bit" means
-> > an immediate command. These commands are done "now", not queued, and
-> > they do not increment the expected sequence number.
-> >
-> > Immediate data is different, and unfortunately named IMHO. It's when a
-> > PDU supplies the data for the SCSI command in the current PDU instead
-> > of the next PDU.
->
-> I understand the protocol, just trying to make sense of the
-> implementation and what the existing comment meant. And the existing
-> comment already has two conditions in it, even if the code doesn't.
->
-> I think I understand now why this is delaying CmdSN validation when
-> there is immediate data, until after the DataCRC can be checked.
->
-> This comment in iscsit_get_immediate_data, where the delayed processing
-> occurs, also seems to read that "Immediate Bit" is in reference to an
-> immediate command.
->
->   * A PDU/CmdSN carrying Immediate Data passed
->   * DataCRC, check against ExpCmdSN/MaxCmdSN if
->   * Immediate Bit is not set.
->
-> but neither of these locations (before these changes) that mention the
-> "Immediate Bit" in the comments actually check for cmd->immediate_cmd.
->
+On Wed, 17 Jan 2024 20:49:25 +0900 Honggyu Kim <honggyu.kim@sk.com> wrote:
 
-I talked to Chris a bit about this offline, for clarification. I believe I
-understand his concern, and rather than try to assert the patch is
-ok by inspection, I decided to just test it.
+> Hi SeongJae,
+> 
+> Thanks very much for your comments in details.
+> 
+> On Tue, 16 Jan 2024 12:31:59 -0800 SeongJae Park <sj@kernel.org> wrote:
+> 
+> > Thank you so much for this great patches and the above nice test results.  I
+> > believe the test setup and results make sense, and merging a revised version of
+> > this patchset would provide real benefits to the users.
+> 
+> Glad to hear that!
+> 
+> > In a high level, I think it might better to separate DAMON internal changes
+> > from DAMON external changes.
+> 
+> I agree.  I can't guarantee but I can move all the external changes
+> inside mm/damon, but will try that as much as possible.
+> 
+> > For DAMON part changes, I have no big concern other than trivial coding style
+> > level comments.
+> 
+> Sure.  I will fix those.
+> 
+> > For DAMON-external changes that implementing demote_pages() and
+> > promote_pages(), I'm unsure if the implementation is reusing appropriate
+> > functions, and if those are placee in right source file.  Especially, I'm
+> > unsure if vmscan.c is the right place for promotion code.  Also I don't know if
+> > there is a good agreement on the promotion/demotion target node decision.  That
+> > should be because I'm not that familiar with the areas and the files, but I
+> > feel this might because our discussions on the promotion and the demotion
+> > operations are having rooms for being more matured.  Because I'm not very
+> > faimiliar with the part, I'd like to hear others' comments, too.
+> 
+> I would also like to hear others' comments, but this might not be needed
+> if most of external code can be moved to mm/damon.
+> 
+> > To this end, I feel the problem might be able te be simpler, because this
+> > patchset is trying to provide two sophisticated operations, while I think a
+> > simpler approach might be possible.  My humble simpler idea is adding a DAMOS
+> > operation for moving pages to a given node (like sys_move_phy_pages RFC[1]),
+> > instead of the promote/demote.  Because the general pages migration can handle
+> > multiple cases including the promote/demote in my humble assumption.
+> 
+> My initial implementation was similar but I found that it's not accurate
+> enough due to the nature of inaccuracy of DAMON regions.  I saw that
+> many pages were demoted and promoted back and forth because migration
+> target regions include both hot and cold pages together.
+> 
+> So I have implemented the demotion and promotion logics based on the
+> shrink_folio_list, which contains many corner case handling logics for
+> reclaim.
+> 
+> Having the current demotion and promotion logics makes the hot/cold
+> migration pretty accurate as expected.  We made a simple program called
+> "hot_cold" and it receives 2 arguments for hot size and cold size in MB.
+> For example, "hot_cold 200 500" allocates 200MB of hot memory and 500MB
+> of cold memory.  It basically allocates 2 large blocks of memory with
+> mmap, then repeat memset for the initial 200MB to make it accessed in an
+> infinite loop.
+> 
+> Let's say there are 3 nodes in the system and the first node0 and node1
+> are the first tier, and node2 is the second tier.
+> 
+>   $ cat /sys/devices/virtual/memory_tiering/memory_tier4/nodelist
+>   0-1
+> 
+>   $ cat /sys/devices/virtual/memory_tiering/memory_tier22/nodelist
+>   2
+> 
+> Here is the result of partitioning hot/cold memory and I put execution
+> command at the right side of numastat result.  I initially ran each
+> hot_cold program with preferred setting so that they initially allocate
+> memory on one of node0 or node2, but they gradually migrated based on
+> their access frequencies.
+> 
+>   $ numastat -c -p hot_cold
+>   Per-node process memory usage (in MBs) 
+>   PID              Node 0 Node 1 Node 2 Total 
+>   ---------------  ------ ------ ------ ----- 
+>   754 (hot_cold)     1800      0   2000  3800    <- hot_cold 1800 2000 
+>   1184 (hot_cold)     300      0    500   800    <- hot_cold 300 500 
+>   1818 (hot_cold)     801      0   3199  4000    <- hot_cold 800 3200 
+>   30289 (hot_cold)      4      0      5    10    <- hot_cold 3 5 
+>   30325 (hot_cold)     31      0     51    81    <- hot_cold 30 50 
+>   ---------------  ------ ------ ------ ----- 
+>   Total              2938      0   5756  8695
+> 
+> The final node placement result shows that DAMON accurately migrated
+> pages by their hotness for multiple processes.
 
-Turns out that normal PDU traffic for lots of writes generally
-includes "immediate data", and so it was easy to test this.
+What was the result when the corner cases handling logics were not applied?
 
-Testing showed that Immediate Data still works correctly,
-in SCSI Write PDUs. Test was:
-* connect to an iSCSI target
-* Write a bunch of data
-* read back the data
-* disconnect from target and compare data
+And, what are the corner cases handling logic that seemed essential?  I show
+the page granularity active/reference check could indeed provide many
+improvements, but that's only my humble assumption.
 
-In addition, I captured and analyzed the SCSI/iSCSI tcpdump trace,
-and immediate data was present, as expected.
+If the corner cases are indeed better to be applied in page granularity, I
+agree we need some more efforts since DAMON monitoring results are not page
+granularity aware by the design.  Users could increase min_nr_regions to make
+it more accurate, and we have plan to support page granularity monitoring,
+though.  But maybe the overhead could be unacceptable.
 
-One co-worker ran a similar test (just the SCSI/iSCSI trace part),
-and found the same results.
+Ideal solution would be making DAMON more accurate while keeping current level
+of overhead.  We indeed have TODO items for DAMON accuracy improvement, but
+this may take some time that might unacceptable for your case.
 
-> > > >        *
-> > > >        * A PDU/CmdSN carrying Immediate Data can only
-> > > >        * be processed after the DataCRC has passed.
-> > > >        * If the DataCRC fails, the CmdSN MUST NOT
-> > > >        * be acknowledged. (See below)
-> > > >        */
-> > > > -     if (!cmd->immediate_data) {
-> > > > +     if (!cmd->immediate_data && !cmd->immediate_cmd) {
-> > > >               cmdsn_ret =3D iscsit_sequence_cmd(conn, cmd,
-> > > >                                       (unsigned char *)hdr, hdr->cm=
-dsn);
-> > > >               if (cmdsn_ret =3D=3D CMDSN_ERROR_CANNOT_RECOVER)
-> > >
-> > > Are you sure this needs to be checking both conditions here?  I'm
-> > > struggling to understand why CmdSN checking would be bypassed for
-> > > immediate data.  Is this a longstanding bug where the condition shoul=
-d
-> > > have been on immediate_cmd (and only immediate_cmd) instead?
-> >
-> > The immediate data check was there already, and there haven't been any
-> > bugs I know of, so I assumed that part of the code was ok.
-> >
-> > >
-> > > Or is this because of the handling the immediate data with DataCRC ca=
-se
-> > > mentioned?  I do see iscsit_sequence_cmd also being called in
-> > > iscsit_get_immediate_data.
-> >
-> > I will check that but I suspect you are correct.
->
-> Is it correct to skip all of iscsit_sequence_cmd for an immediate
-> command here? You are already skipping iscsit_check_received_cmdsn
-> inside iscsit_sequence_cmd in this patch. If cmd->immediate_cmd is set,
-> where does iscsit_execute_cmd now get called from?
+If that's the case, I think the additional corner handling (or, page gran
+additional access check) could be made as DAMOS filters[1], since DAMOS filters
+can be applied in page granularity, and designed for this kind of handling of
+information that DAMON monitoring results cannot provide.  More specifically,
+we could have filters for promotion-qualifying pages and demotion-qualifying
+pages.  In this way, I think we can keep the action more flexible while the
+filters can be applied in creative ways.
 
-I looked at the code and the SPEC in more detail, and I believe the answer
-is "yes", it is correct.
+[1] https://git.kernel.org/sj/c/98def236f63c66629fb6b2d4b69cecffc5b46539
 
-That function checks the current PDU's sequence number with
-the following tests (and side effects), but not in this order:
-* check that seq# is not larger than maximum
-* check that seq# is not larger than expected
-* check that seq# is not smaller than expected
-* else the seq# is correct, so *SIDE* *EFFECT* increment the
-                                               expected seq# for next PDU
+> 
+> > In more detail, users could decide which is the appropriate node for promotion
+> > or demotion and use the new DAMOS action to do promotion and demotion.  Users
+> > would requested to decide which node is the proper promotion/demotion target
+> > nodes, but that decision wouldn't be that hard in my opinion.
+> > 
+> > For this, 'struct damos' would need to be updated for such argument-dependent
+> > actions, like 'struct damos_filter' is haing a union.
+> 
+> That might be a better solution.  I will think about it.
 
-It turns out that the SPEC allow the sequence number to be
-out of range for immediate commands! So none of the checks
-in iscsit_sequence_check_received_cmndsn() are valid for
-immediate commands, as far as I can see.
+More specifically, I think receiving an address range as the argument might
+more flexible than just NUMA node.  Maybe we can imagine proactively migrating
+cold movable pages from normal zones to movable zones, to avoid normal zone
+memory pressure.
 
->
-> - Chris Leech
->
+> 
+> > In future, we could extend the operation to the promotion and the demotion
+> > after the dicussion around the promotion and demotion is matured, if required.
+> > And assuming DAMON be extended for originating CPU-aware access monitoring, the
+> > new DAMOS action would also cover more use cases such as general NUMA nodes
+> > balancing (extending DAMON for CPU-aware monitoring would required), and some
+> > complex configurations where having both CPU affinity and tiered memory.  I
+> > also think that may well fit with my RFC idea[2] for tiered memory management.
+> > 
+> > Looking forward to opinions from you and others.  I admig I miss many things,
+> > and more than happy to be enlightened.
+> > 
+> > [1] https://lwn.net/Articles/944007/
+> > [2] https://lore.kernel.org/damon/20231112195602.61525-1-sj@kernel.org/
+> 
+> Thanks very much for your comments.  I will need a few more days for the
+> update but will try to address your concerns as much as possible.
+
+No problem, please take your time.  I'm looking forward to the next version :)
+
+
+Thanks,
+SJ
+
+> 
+> Thanks,
+> Honggyu
 
