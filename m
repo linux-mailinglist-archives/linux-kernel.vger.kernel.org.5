@@ -1,125 +1,129 @@
-Return-Path: <linux-kernel+bounces-28514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0010C82FF91
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 05:31:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C42782FF94
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 05:33:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95247B24A3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 04:31:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A807E288BE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 04:33:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9248363D5;
-	Wed, 17 Jan 2024 04:31:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A63DD6FB9;
+	Wed, 17 Jan 2024 04:33:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YleZIGfB"
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aX++13or"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6B106119;
-	Wed, 17 Jan 2024 04:31:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2D575CB0;
+	Wed, 17 Jan 2024 04:33:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705465866; cv=none; b=mU/hxBAL2p2aZMWqbISJg0q05xW2E419+h4KIUQ7DYpHdAyoriBFr63szLjEJACmFwC3nA+tjYwo1m8qilEIH29PluPDjpH1u0aSMbmE8wvpINFeKSPVocg87Y7TnRPHFoijXzZQDfP1KS0G+/4GSwEjhEfhNhWbtSq2NA/bnTw=
+	t=1705465991; cv=none; b=QwNzDborLRRu/1Zr6SHVrG5u7mfJI/xEKZJVAbyTk790FSmCNt4/8FeENqDCs2Ne20GEh5swYc+/FafOuz9yDpwcf/YPkmTJv/FPLNofbCrwyIDQK5+qE4kfGhHDtOjotbtcK2Ebb570kAOz+yk3yk9J8xyDovCY38X3O8R061g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705465866; c=relaxed/simple;
-	bh=12RXVmYofYf/bXk1QHYPI5OizjpwerGZmoWFqY26TmM=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
-	 To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding; b=FMu9mPLkxIC/OMFZiacmfvMIXmomnMDriUVPQUC7A9xBeQH5q1Mzx/+VYa3iPB9TAwVp2hVLodZQcsuhRbvrF6zp3miZYa4QaoPO9a09PtDJeZZ/zLMZoSjrYMhBjI4KPgaZ/taISPD4tkzwWejYheoONoEW5QlHx/AzNkMEXJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YleZIGfB; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5cf6d5117f9so1799134a12.2;
-        Tue, 16 Jan 2024 20:31:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705465864; x=1706070664; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zBjyRu39NyJs+jVOZ9aRQZBCHdu2QXilU5RRwzN9vHo=;
-        b=YleZIGfB88JxNcnYZqMZUq3aZp5X957ZN9qC2v4PBQbwg1CGs3leLO3O/OO2YY+pC2
-         eCmoFk9pX6Z3zQkczPpD6zDXD+sYvO+10RkbD/yso2CuPTN3zO/ZOpT/6pOTlb2g/Ik0
-         Zd5ah3jlXcNFGh346v0ACC2/YaknD91tUzWWNTv9JJOqF4H7JStPxsRhJYPzk0CwHpYX
-         eGP9uREcjx4N21Q82gKJ0KqJamY4E71qND5Keam04CKgxRmjpaPKZcgeL0VeUDjuYETd
-         DiQA1nrYL4TMGB/RJlwr+CE8Np6zduaKtQnU6aZzq1X2v//jCm/5ZSEaQ24IrPVifyMu
-         t97Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705465864; x=1706070664;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zBjyRu39NyJs+jVOZ9aRQZBCHdu2QXilU5RRwzN9vHo=;
-        b=BJUXyPRbPbGl+Z41irH/fHl/lmVotV6xkBYi1VWDQj88FM9xgMmGY0cTpCigOVrX2F
-         +BbuPyqExypR365tS5z9h5Hlmcc1vao4rr77svUTmYYjc0yde0+0grDpkMgQP37b0x08
-         3i6B083o4ga7c7+6fZGo8Ch2dcyMFGyhYzCqVfCkzkfz/TPz/3MdxvESXB0KuH0Yi3KN
-         IPLHz5/3/w10b7cL3BcymezHa3aJhCAlEEIhpkNO+auwiDsu83Ry8phGjVX/O7YoVdr0
-         XXCf4444TMl9x07oDLSuTvgNT77CwGBDgHLXrTWPHy0C/PMIDIM8XJ3WERvpuTONRFq3
-         o2Rw==
-X-Gm-Message-State: AOJu0YxKeaxzr7DV34Yv8jRbK9OoZP83hw0RcCsXiTf9jUrwb+b572+O
-	8mIZiGsmkAokp8kC2cO9Q2Py5zpGAsQ=
-X-Google-Smtp-Source: AGHT+IHnYNmTwXU2oZr/AGurukrgfDR8ezc3peEwT+QL8W08fegh3RJdOnqCiqXqYjLSt2GM/ifn9g==
-X-Received: by 2002:a05:6a20:d491:b0:19b:3390:e22d with SMTP id im17-20020a056a20d49100b0019b3390e22dmr1985379pzb.125.1705465864459;
-        Tue, 16 Jan 2024 20:31:04 -0800 (PST)
-Received: from eldorado.. (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
-        by smtp.gmail.com with ESMTPSA id sd12-20020a17090b514c00b0028cef021d45sm12668523pjb.17.2024.01.16.20.31.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 20:31:03 -0800 (PST)
-From: Florian Fainelli <f.fainelli@gmail.com>
-To: linux-mips@vger.kernel.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] MIPS: Cobalt: Fix missing prototypes
-Date: Tue, 16 Jan 2024 20:30:59 -0800
-Message-Id: <20240117043101.371421-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1705465991; c=relaxed/simple;
+	bh=S4Y+N5roFk3ljK8uuhGxBeghOoBpwMv3omGMxYBhshU=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=S1kLXEW1PFHJhRM1fyZ/36pewz0YHmjibRiQBDUgTQqBx9cU3/cYGJYOxiEopi3Vt8SCMjHFNmuOBQxb0LYXG7c3Y6jQB0hkAH/YUN4Rlhx4+yIISBymD/kmQuKGXJvxX7atHGrVt9va1Zd5CDkyqWxiJ2ISHFe2N1szYuAJB8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aX++13or; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2D3CC433F1;
+	Wed, 17 Jan 2024 04:33:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705465990;
+	bh=S4Y+N5roFk3ljK8uuhGxBeghOoBpwMv3omGMxYBhshU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aX++13orocI0DvGwwJV4MJLk9l8LyX4I+tL+j1tzw4Efm+ckDSm9E82k20c1IguDX
+	 GLVe5GH3u0eeQ8RX/v56Up9qYVPmUTXCg1y0410+6r3FABo6ItLAEJapGsbkzflhl7
+	 T///THcRxnnYTSAQqyaqrwI/R41CzievnOJIK5GHW8/JVVhhGDJH0Id0qlRfObQGwl
+	 fsg261V10HnXFZjScl33OYe3t+EJbhFgbMlNsd0f1gPSzCuZ1ckyIcSwXX/5Fpv5n0
+	 0ggQI//NFBXfQnARvHacOsjv5HIeQ+hzflBFtl5CqQWtfFiOxnYZ5lz2pfVN0Z2Nw8
+	 HAQ5W+6FPEB4A==
+Date: Tue, 16 Jan 2024 20:33:08 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Gaurav Jain <gaurav.jain@nxp.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S . Miller" <davem@davemloft.net>,
+	Horia Geanta <horia.geanta@nxp.com>,
+	Pankaj Gupta <pankaj.gupta@nxp.com>, Varun Sethi <V.Sethi@nxp.com>,
+	Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>,
+	Aisheng Dong <aisheng.dong@nxp.com>,
+	Silvano Di Ninno <silvano.dininno@nxp.com>,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-imx@nxp.com
+Subject: Re: [PATCH] crypto: caam/hash - fix asynchronous hash
+Message-ID: <20240117043308.GA1137@sol.localdomain>
+References: <20240116094405.744466-1-gaurav.jain@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240116094405.744466-1-gaurav.jain@nxp.com>
 
-Fix missing prototypes warnings for cobalt_machine_halt() and
-cobalt_machine_restart() by moving their prototypes to cobalt.h which is
-included by setup.c.
+On Tue, Jan 16, 2024 at 03:14:05PM +0530, Gaurav Jain wrote:
+> ahash_alg->setkey is updated to ahash_nosetkey in ahash.c
+> so updating the handling of setkey in caam driver.
+> 
+> Fixes: 2f1f34c1bf7b ("crypto: ahash - optimize performance when wrapping shash")
+> Signed-off-by: Gaurav Jain <gaurav.jain@nxp.com>
+> ---
+>  drivers/crypto/caam/caamalg_qi2.c | 4 ++--
+>  drivers/crypto/caam/caamhash.c    | 4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/crypto/caam/caamalg_qi2.c b/drivers/crypto/caam/caamalg_qi2.c
+> index a148ff1f0872..93a400e286b4 100644
+> --- a/drivers/crypto/caam/caamalg_qi2.c
+> +++ b/drivers/crypto/caam/caamalg_qi2.c
+> @@ -4571,7 +4571,7 @@ static int caam_hash_cra_init(struct crypto_tfm *tfm)
+>  
+>  	ctx->dev = caam_hash->dev;
+>  
+> -	if (alg->setkey) {
+> +	if (crypto_hash_alg_has_setkey(halg)) {
+>  		ctx->adata.key_dma = dma_map_single_attrs(ctx->dev, ctx->key,
+>  							  ARRAY_SIZE(ctx->key),
+>  							  DMA_TO_DEVICE,
+> @@ -4611,7 +4611,7 @@ static int caam_hash_cra_init(struct crypto_tfm *tfm)
+>  	 * For keyed hash algorithms shared descriptors
+>  	 * will be created later in setkey() callback
+>  	 */
+> -	return alg->setkey ? 0 : ahash_set_sh_desc(ahash);
+> +	return crypto_hash_alg_has_setkey(halg) ? 0 : ahash_set_sh_desc(ahash);
+>  }
+>  
+>  static void caam_hash_cra_exit(struct crypto_tfm *tfm)
+> diff --git a/drivers/crypto/caam/caamhash.c b/drivers/crypto/caam/caamhash.c
+> index 290c8500c247..4d50356b593c 100644
+> --- a/drivers/crypto/caam/caamhash.c
+> +++ b/drivers/crypto/caam/caamhash.c
+> @@ -1804,7 +1804,7 @@ static int caam_hash_cra_init(struct crypto_tfm *tfm)
+>  	} else {
+>  		if (priv->era >= 6) {
+>  			ctx->dir = DMA_BIDIRECTIONAL;
+> -			ctx->key_dir = alg->setkey ? DMA_TO_DEVICE : DMA_NONE;
+> +			ctx->key_dir = crypto_hash_alg_has_setkey(halg) ? DMA_TO_DEVICE : DMA_NONE;
+>  		} else {
+>  			ctx->dir = DMA_TO_DEVICE;
+>  			ctx->key_dir = DMA_NONE;
+> @@ -1862,7 +1862,7 @@ static int caam_hash_cra_init(struct crypto_tfm *tfm)
+>  	 * For keyed hash algorithms shared descriptors
+>  	 * will be created later in setkey() callback
+>  	 */
+> -	return alg->setkey ? 0 : ahash_set_sh_desc(ahash);
+> +	return crypto_hash_alg_has_setkey(halg) ? 0 : ahash_set_sh_desc(ahash);
+>  }
+>  
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- arch/mips/cobalt/setup.c                   | 3 ---
- arch/mips/include/asm/mach-cobalt/cobalt.h | 3 +++
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Thanks.  Did you also consider putting something in struct caam_hash_alg (the
+struct in which this driver embeds its ahash_alg structure) that indicates
+whether the algorithm is an HMAC or not?  Other drivers use that solution.
 
-diff --git a/arch/mips/cobalt/setup.c b/arch/mips/cobalt/setup.c
-index 2e099d55a564..9a266bf78339 100644
---- a/arch/mips/cobalt/setup.c
-+++ b/arch/mips/cobalt/setup.c
-@@ -23,9 +23,6 @@
- 
- #include <cobalt.h>
- 
--extern void cobalt_machine_restart(char *command);
--extern void cobalt_machine_halt(void);
--
- const char *get_system_type(void)
- {
- 	switch (cobalt_board_id) {
-diff --git a/arch/mips/include/asm/mach-cobalt/cobalt.h b/arch/mips/include/asm/mach-cobalt/cobalt.h
-index 5b9fce73f11d..97f9d5e9446d 100644
---- a/arch/mips/include/asm/mach-cobalt/cobalt.h
-+++ b/arch/mips/include/asm/mach-cobalt/cobalt.h
-@@ -19,4 +19,7 @@ extern int cobalt_board_id;
- #define COBALT_BRD_ID_QUBE2    0x5
- #define COBALT_BRD_ID_RAQ2     0x6
- 
-+void cobalt_machine_halt(void);
-+void cobalt_machine_restart(char *command);
-+
- #endif /* __ASM_COBALT_H */
--- 
-2.34.1
-
+- Eric
 
