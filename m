@@ -1,125 +1,145 @@
-Return-Path: <linux-kernel+bounces-28939-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0733F8304E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:06:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69C378304EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:07:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19CCA1C23ECE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:06:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 090E11F24635
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:07:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17F831DFDD;
-	Wed, 17 Jan 2024 12:06:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E62E1DFF6;
+	Wed, 17 Jan 2024 12:07:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dA326Eej"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NLe2U6KU"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 550C81D553;
-	Wed, 17 Jan 2024 12:06:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1394C1DFC7;
+	Wed, 17 Jan 2024 12:07:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705493208; cv=none; b=blckT7YJ6f9cGLpoFA+vTNMy8ElDbhtDEOpeXqdgxZZV3UZmYRjqCh5KxtPN72N6l1dP2iQ6fG1vc+gNrcPEZJsBTqcLBkhsiHLYrftDtKbrUbUPiInLAQE0/fyqe3EWKHURfq13lENwbWlW3iNhim/Cxrc23SxKS+/6aHfq72E=
+	t=1705493250; cv=none; b=cHEcNl6CTzFsZpVTmfBmExOxTY4xvH12+xxyrGZtD8Wh9MduPaD0J/VZn2uPXR++F8BdN+E9YBSH5odbSluQcxVv7Q1/9vh8nzaJGeQh5Imu7uyRRfqGBi+SoyECCMDvvK5egV/rxfdaovTpHroJKV2R/LnEpUg3o71NqYLzHCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705493208; c=relaxed/simple;
-	bh=8nVizYFCDcIj21SkCq635Xj1qvW5+ER+HVXd1fP27Wk=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=q7nPVxpH1foFPf4/gtMEWB2Hke57GhxYF/z87l4vWgzOOTQ/dWl4lX9QGSHrTvPy5SXhsdUuQdgiqlflZUQJwxrcef3G0F03JENWXg60ryiO9C2Rs1MBvUgtczREQqraHIz8X+9Lj9JHeVKgb4mNr7Os/Bo4fzKWyg3NWy65TcE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dA326Eej; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4E46C43390;
-	Wed, 17 Jan 2024 12:06:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705493207;
-	bh=8nVizYFCDcIj21SkCq635Xj1qvW5+ER+HVXd1fP27Wk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dA326EejhCeX3hHoFrzFQ15ZfF5409IQau/qLb+kT8L7yjsOEDPwEQsCOkIC/eJfr
-	 sunY9cLOXP3yr9axVsRaebb4BJHO2DiVdD6YjyCmG1vTovCUDE+TLtWeolSTQoKcAf
-	 sfsiIQZIpuHKMX2WIQYoN6X8Qez7e8KewfW4xjAgQBz2Zug8jNsXghNUqbENmTitXU
-	 be4GDwMBPGvwgXILOC5olLRFpRTw+b9AdcL4VF1xQn3nqxWsHOqmwmlwbNWXumg73E
-	 y7DCJINE6gMxqLT6YYewyMdlTtF+rqHisho/pu5zKB4uDlP/tsA3pq0bjDyEFG0de7
-	 N9NUQ1ndgtp6Q==
-Date: Wed, 17 Jan 2024 13:06:44 +0100
-From: Alejandro Colomar <alx@kernel.org>
-To: Petr Vorel <pvorel@suse.cz>
-Cc: linux-man@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] MAINTAINERS: Add man-pages git tree
-Message-ID: <ZafC1MkKDAK2s6n1@debian>
-References: <20240117091903.2668916-1-pvorel@suse.cz>
+	s=arc-20240116; t=1705493250; c=relaxed/simple;
+	bh=IArXwFvZDoiTHZFdxHm8UwzDHOeQK97yKh7sOEA9mMo=;
+	h=Received:DKIM-Signature:Received:Received:Received:Message-ID:
+	 Date:MIME-Version:User-Agent:Subject:Content-Language:To:CC:
+	 References:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-Originating-IP:X-ClientProxiedBy:X-QCInternal:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-ORIG-GUID:
+	 X-Proofpoint-GUID:X-Proofpoint-Virus-Version:
+	 X-Proofpoint-Spam-Details; b=AH5bj4ZqT/KY2OBuf9PXiff3TdYrJDe+lNwiNrBwY6Y/ys6r9KfHoy8R+OvNTs3nHw4PYQqZsXfDlYXkt+Y1W56yEE8utmBrThKWHh8W0AHXY94cNQNkrogsmLNLRoTGSAqc9Dmeh1/w/HgtES5s3Xav69E47iIbuG4pL2ELJM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=NLe2U6KU; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40HB1CjG019753;
+	Wed, 17 Jan 2024 12:07:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=BzJA2P8XRyRHOryogsZXMMaTvL8nGkxACVkL27cO4B4=; b=NL
+	e2U6KUeSVsrvu42sDH7vyHZ36S9W10/QKzU8hX7jK7drz2dlnsKy4R4AC/9CXGdV
+	9y8zQdLsyzXzT7MliT7lczK+CVsVbvYWHM/b6y5Zi7aXlRQ4j2T0vo+/jJgdNpLG
+	Os5WSXCUjUucC7p3xKfWkmd/aAsR+rPcOtapU0dwGCWKhpRUDTDlhV858L86/qJT
+	jOFT8zzg0gmOfyA1Gkj5arIDx3sW2JMVhkJnRSJPVgd/LMx9cbNlNkMkF5XlDe2z
+	d3Z+mFCrs2YVdbtpVKXRuTGNH/yIQnYoPsl/ZpPqQ6TwCQrrfa/32fHYKOaFjk5P
+	rqjhsolAZ8eqmRzceicg==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vp4ak18h4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 12:07:15 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40HC6wIh002523
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 12:06:58 GMT
+Received: from [10.131.33.37] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 17 Jan
+ 2024 04:06:55 -0800
+Message-ID: <674d8057-94b1-2e8a-a3ce-d8719e978298@quicinc.com>
+Date: Wed, 17 Jan 2024 17:36:52 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="A5ukflp3KcPRO+YT"
-Content-Disposition: inline
-In-Reply-To: <20240117091903.2668916-1-pvorel@suse.cz>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 0/3] firmware: arm_scmi: Register and handle limits change
+ notification
+Content-Language: en-US
+To: Cristian Marussi <cristian.marussi@arm.com>
+CC: <sudeep.holla@arm.com>, <rafael@kernel.org>, <viresh.kumar@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_mdtipton@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>
+References: <20240108140118.1596-1-quic_sibis@quicinc.com>
+ <Zaeg1H9G5jOeOXh2@pluto>
+From: Sibi Sankar <quic_sibis@quicinc.com>
+In-Reply-To: <Zaeg1H9G5jOeOXh2@pluto>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: bxvcGTIC7OcA3Hn2rsZKKOjFdCxbmhMp
+X-Proofpoint-GUID: bxvcGTIC7OcA3Hn2rsZKKOjFdCxbmhMp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-17_06,2024-01-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ mlxlogscore=704 mlxscore=0 impostorscore=0 phishscore=0 adultscore=0
+ malwarescore=0 suspectscore=0 lowpriorityscore=0 priorityscore=1501
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401170087
 
 
---A5ukflp3KcPRO+YT
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 17 Jan 2024 13:06:44 +0100
-From: Alejandro Colomar <alx@kernel.org>
-To: Petr Vorel <pvorel@suse.cz>
-Cc: linux-man@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] MAINTAINERS: Add man-pages git tree
 
-Hi Petr,
+On 1/17/24 15:11, Cristian Marussi wrote:
+> On Mon, Jan 08, 2024 at 07:31:15PM +0530, Sibi Sankar wrote:
+>> This series registers for scmi limits change notifications and adds
+>> perf_notify_support/perf_opp_xlate interfaces which are used by the
+>> scmi cpufreq driver to determine the throttled frequency and apply HW
+>> pressure.
+>>
+> 
+> Hi,
+> 
+> a few initial remarks from the mere SCMI standpoint.
+> 
+> Unlinke most SCMI protocols that expose domains info bits via an
+> *info_get protocol operation, PERF does no do this since (till now) there
+> wasn't a compelling reason (i.e. users)
+> 
+> Ulf recently in his GenPD/SCMI series recently started exposing something
+> and now you need to expose even more, adding also a new xlate ops.
+> 
+> For the sake of simplicity, I think that we could now expose straight
+> away the whole perf_domain_info and embedded structs via the usual *info_get.
+> 
+> After having done that, you can just drop your patch 1 and 2 since you
+> can access the needed info from the cpufreq_driver right away.
+> 
+> Having said, I have already such patch ready (for my internal testing), I
+> wll post it by the end of week after a minor cleanup, if you can bear with me.
+> 
+> Thoughts ?
 
-On Wed, Jan 17, 2024 at 10:19:03AM +0100, Petr Vorel wrote:
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 391bbb855cbe..571749fe9e38 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -12833,6 +12833,7 @@ M:	Alejandro Colomar <alx@kernel.org>
->  L:	linux-man@vger.kernel.org
->  S:	Maintained
->  W:	http://www.kernel.org/doc/man-pages
-> +T:	git git://git.kernel.org/pub/scm/docs/man-pages/man-pages.git
+Ack, just from the naming I initially thought info_get would include
+everything but it just exposed minimal info. We certainly don't want to
+keep adding very similar ops just to expose more such info. I'll re-send
+the remainder of the series after you are done with your patches.
+Thanks.
 
-And there's a secondary tree, at
-<git://www.alejandro-colomar.es/src/alx/linux/man-pages/man-pages.git>
+-Sibi
 
-
-Have a lovely day,
-Alex
-
---=20
-<https://www.alejandro-colomar.es/>
-Looking for a remote C programming job at the moment.
-
---A5ukflp3KcPRO+YT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmWnwtQACgkQnowa+77/
-2zL2WRAAlSk5btdnZKR8yyJNwl99TmlhFVT2IY/B16uGisykpOExbVZs9MvLsrJy
-nNNCtbHVY22UNTjGSFfe1+nZ7Fif2Mnh1qzWhMDIfdablbXcgQC7tgUNZNy/M9/g
-iMNMH6ftzQBQgBxkOES8mNzkPRttQJs8JZxtcrifi6ItIH/e2T3fnDfU0aQF1eVz
-Q9OWOPMEFjQMfSpwsJzwLs9yVlGiDdaDyq32lJ4wwwCusGN0lptNVZBuitBFDcue
-vA0LqeHmYszk6X3Q8d2r2MKHp+9ZmskhNpLotulNZia2fXGseOBPpJmS5sMu0/1s
-LcJpqOI028f6FFXpRUwI5AiA+s9HC7O+U9oTYG8Iz5rfpAFKzVq+jttMcHQafaTj
-bKO2FZZh+AGshz8ctbmEJTTMuu9v+6smhKHY4iS49MOwtJx0G398BimAKuoQAYcp
-2E+za6sy3hddCHRmaMrDz6EMfzOOcTj4m9zrFis1bpvnzp8DXpqNUaRgaKjv6qps
-QmbNbBbd8TF5gmRM/cC7M/jdjeY0bKnTGQTojhjRBR7pLsqZA5Wnxtl7fzHs40Ut
-X4XDVn58L7XIhqPZR1chRMVXqG112F1ELg334Eb2xnkviLST9kTZdl66DziQbaIP
-vWFXTvShYjA1bRjIHGJbrcpxjTdtqRjKXCq+P2TOIDASuIARXDE=
-=lSz2
------END PGP SIGNATURE-----
-
---A5ukflp3KcPRO+YT--
+> 
+> Thanks,
+> Cristian
 
