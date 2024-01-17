@@ -1,262 +1,104 @@
-Return-Path: <linux-kernel+bounces-28617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B5818300C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:50:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5926B8300BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:49:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 249E61C23506
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:50:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC42C1F23D92
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:49:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E28A8C121;
-	Wed, 17 Jan 2024 07:50:29 +0000 (UTC)
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D32521118D;
+	Wed, 17 Jan 2024 07:49:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b="qv9lHJt/"
+Received: from eggs.gnu.org (eggs.gnu.org [209.51.188.92])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 282CBBE68
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:50:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B74BE4B;
+	Wed, 17 Jan 2024 07:49:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.51.188.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705477829; cv=none; b=kEMmua6tM0xmb+J1KUl/waoL6+iXK617F/TxQf/p7LngvC9NloybTyzKBJzVAiQrZ5rzl2LhLOf8ik2Zy3AeTL+GcIWYVRxiyVJ44M3PcKHomoj/1LmzNJll12eo3bqO++GZJ5t/vzdWQAZlaQ48sxueZ0YC+3U9quvn1nag4+s=
+	t=1705477764; cv=none; b=hKjCi18plgl3Ua4jrZdjpCSZ/iv6raFhzJx2+DxHUSWPoEQIOfB8d9aj/uGla99mmFerH3rgxQnFkXR4XM8140skvZ1QAPfRMUMw9uXsv99wdbJnTMJuTFjefSid00kBN6MrzqZ5Y15besEgMzMkyAewGjGaE5OSCzl2zL2wcdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705477829; c=relaxed/simple;
-	bh=1JXndiYp2iQAHGlw0oYGUG+S46QUqzUPAszRxkP/nzc=;
-	h=Received:Received:Received:From:To:CC:Subject:Date:Message-ID:
-	 X-Mailer:MIME-Version:Content-Type:X-Originating-IP:
-	 X-ClientProxiedBy:X-MAIL; b=sHRo/FBNxMgcevqKdIcTEj6EVIAnkmSxCcNSQstXfzba3AUpKxbeE9LM6/s81iccc2gJIBNOBJ43xgfLYJL1Ou6QvvSjAL8iDJVxRKkpPwDKg+gyjtzzGdFWLzYI2oebjuQ3JFPSGtJsk7cWwTACVtobfDgIZRlup2De66L8Zjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 40H7nI9d052752;
-	Wed, 17 Jan 2024 15:49:18 +0800 (+08)
-	(envelope-from Zhiguo.Niu@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TFHrw4tb8z2RvjMG;
-	Wed, 17 Jan 2024 15:42:08 +0800 (CST)
-Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
- BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Wed, 17 Jan 2024 15:49:16 +0800
-From: Zhiguo Niu <zhiguo.niu@unisoc.com>
-To: <peterz@infradead.org>, <mingo@redhat.com>, <will@kernel.org>,
-        <longman@redhat.com>, <boqun.feng@gmail.com>
-CC: <linux-kernel@vger.kernel.org>, <niuzhiguo84@gmail.com>,
-        <zhiguo.niu@unisoc.com>, <ke.wang@unisoc.com>, <xuewen.yan@unisoc.com>
-Subject: [PATCH V2] lockdep: fix deadlock issue between lockdep and rcu
-Date: Wed, 17 Jan 2024 15:48:34 +0800
-Message-ID: <1705477714-10467-1-git-send-email-zhiguo.niu@unisoc.com>
-X-Mailer: git-send-email 1.9.1
+	s=arc-20240116; t=1705477764; c=relaxed/simple;
+	bh=8d7UQZ3WSptWHFlhNw4Hy2Ex+4Po4FsMhRGfHPfpvoI=;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
+	 X-Mailer:MIME-Version:Content-Transfer-Encoding; b=XA1jIfoLUuwX3Iz5oaTLttdg3Udm7sQibT1TK+YaCRRG3HapyoIXl5IP93clNBZU3NHdCfljXgCPgWGZmavovMUF9xmYUpsx0EU2PUdOWV08YdKeMrvOv/l6o1DK+KpeXuVoM6N/sNk6dQjIxU1vAYDgO+Z6UNk5OLQ3Gm8HobM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gnu.org; spf=pass smtp.mailfrom=gnu.org; dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b=qv9lHJt/; arc=none smtp.client-ip=209.51.188.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gnu.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnu.org
+Received: from fencepost.gnu.org ([2001:470:142:3::e])
+	by eggs.gnu.org with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.90_1)
+	(envelope-from <othacehe@gnu.org>)
+	id 1rQ0fl-0000fW-IV; Wed, 17 Jan 2024 02:49:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gnu.org;
+	s=fencepost-gnu-org; h=MIME-Version:Date:Subject:To:From:in-reply-to:
+	references; bh=HN7Dw3OX56V5RguZKzCSaWSIywufEzo+9zsetCtelqs=; b=qv9lHJt/Is2U2Z
+	RMSo183zl+PpsvGmRB0KPlYSDOMl2OhG6pVkcYdoSw1u8kGIV0KePd8+aG4y2n2M4enXQPvNLdf4Y
+	C/IiwFDCkIo3r6eKVxp2jAzGzetait06u7SZ6gKKhN544hFhIPafxiZWOIee69idS1zFJTY2Gx71D
+	c+AhIYSj5RasRfvDgvsFaMW1MuD8lynxN1HiGWimWxUhdjsyZG/sfaOczhmLh2r8wWrAVkzopOxI4
+	NfuXD9VYUBj1GXHSuZUkk8Vl6mkYYJMPTrTUO6TVjhbHZPxEpfRFEWP0OoFIci1MxoScWfrPexmyW
+	qrNFR0/cA0gOxCEW43iQ==;
+From: Mathieu Othacehe <othacehe@gnu.org>
+To: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Li Yang <leoyang.li@nxp.com>,
+	Stefan Wahren <wahrenst@gmx.net>,
+	Christoph Stoidner <c.stoidner@phytec.de>,
+	Wadim Egorov <w.egorov@phytec.de>
+Cc: devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Mathieu Othacehe <othacehe@gnu.org>
+Subject: [PATCH v2 0/2] Add Phytec i.MX93 Segin support
+Date: Wed, 17 Jan 2024 08:49:09 +0100
+Message-ID: <20240117074911.7425-1-othacehe@gnu.org>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
- BJMBX02.spreadtrum.com (10.0.64.8)
-X-MAIL:SHSQR01.spreadtrum.com 40H7nI9d052752
+Content-Transfer-Encoding: 8bit
 
-There is a deadlock scenario between lockdep and rcu when
-rcu nocb feature is enabled, just as following call stack:
+Hello,
 
-     rcuop/x
--000|queued_spin_lock_slowpath(lock = 0xFFFFFF817F2A8A80, val = ?)
--001|queued_spin_lock(inline) // try to hold nocb_gp_lock
--001|do_raw_spin_lock(lock = 0xFFFFFF817F2A8A80)
--002|__raw_spin_lock_irqsave(inline)
--002|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F2A8A80)
--003|wake_nocb_gp_defer(inline)
--003|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F30B680)
--004|__call_rcu_common(inline)
--004|call_rcu(head = 0xFFFFFFC082EECC28, func = ?)
--005|call_rcu_zapped(inline)
--005|free_zapped_rcu(ch = ?)// hold graph lock
--006|rcu_do_batch(rdp = 0xFFFFFF817F245680)
--007|nocb_cb_wait(inline)
--007|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F245680)
--008|kthread(_create = 0xFFFFFF80803122C0)
--009|ret_from_fork(asm)
+This adds support for the Phytec i.MX93 Segin board.
 
-     rcuop/y
--000|queued_spin_lock_slowpath(lock = 0xFFFFFFC08291BBC8, val = 0)
--001|queued_spin_lock()
--001|lockdep_lock()
--001|graph_lock() // try to hold graph lock
--002|lookup_chain_cache_add()
--002|validate_chain()
--003|lock_acquire
--004|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F211D80)
--005|lock_timer_base(inline)
--006|mod_timer(inline)
--006|wake_nocb_gp_defer(inline)// hold nocb_gp_lock
--006|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F2A8680)
--007|__call_rcu_common(inline)
--007|call_rcu(head = 0xFFFFFFC0822E0B58, func = ?)
--008|call_rcu_hurry(inline)
--008|rcu_sync_call(inline)
--008|rcu_sync_func(rhp = 0xFFFFFFC0822E0B58)
--009|rcu_do_batch(rdp = 0xFFFFFF817F266680)
--010|nocb_cb_wait(inline)
--010|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F266680)
--011|kthread(_create = 0xFFFFFF8080363740)
--012|ret_from_fork(asm)
+Thanks,
 
-rcuop/x and rcuop/y are rcu nocb threads with the same nocb gp thread.
-This patch release the graph lock before lockdep call_rcu.
-
-Fixes: a0b0fd53e1e6 ("locking/lockdep: Free lock classes that are no longer in use")
-Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+Signed-off-by: Mathieu Othacehe <othacehe@gnu.org>
 ---
-changes of v2: update patch according to Boqun's suggestions.
----
----
- kernel/locking/lockdep.c | 47 +++++++++++++++++++++++++++++++----------------
- 1 file changed, 31 insertions(+), 16 deletions(-)
+Changes in v2: 
+- Remove useless line
+- Add missing reserved-memory entries
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 151bd3d..ddcaa69 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -6184,25 +6184,27 @@ static struct pending_free *get_pending_free(void)
- static void free_zapped_rcu(struct rcu_head *cb);
- 
- /*
-- * Schedule an RCU callback if no RCU callback is pending. Must be called with
-- * the graph lock held.
-- */
--static void call_rcu_zapped(struct pending_free *pf)
-+* See if we need to queue an RCU callback, must called with
-+* the lockdep lock held, returns false if either we don't have
-+* any pending free or the callback is already scheduled.
-+* Otherwise, a call_rcu() must follow this function call.
-+*/
-+static bool prepare_call_rcu_zapped(struct pending_free *pf)
- {
- 	WARN_ON_ONCE(inside_selftest());
- 
- 	if (list_empty(&pf->zapped))
--		return;
-+		return false;
- 
- 	if (delayed_free.scheduled)
--		return;
-+		return false;
- 
- 	delayed_free.scheduled = true;
- 
- 	WARN_ON_ONCE(delayed_free.pf + delayed_free.index != pf);
- 	delayed_free.index ^= 1;
- 
--	call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
-+	return true;
- }
- 
- /* The caller must hold the graph lock. May be called from RCU context. */
-@@ -6228,6 +6230,7 @@ static void free_zapped_rcu(struct rcu_head *ch)
- {
- 	struct pending_free *pf;
- 	unsigned long flags;
-+	bool need_callback;
- 
- 	if (WARN_ON_ONCE(ch != &delayed_free.rcu_head))
- 		return;
-@@ -6239,14 +6242,17 @@ static void free_zapped_rcu(struct rcu_head *ch)
- 	pf = delayed_free.pf + (delayed_free.index ^ 1);
- 	__free_zapped_classes(pf);
- 	delayed_free.scheduled = false;
-+	need_callback =
-+		prepare_call_rcu_zapped(delayed_free.pf + delayed_free.index);
-+	lockdep_unlock();
-+	raw_local_irq_restore(flags);
- 
- 	/*
--	 * If there's anything on the open list, close and start a new callback.
--	 */
--	call_rcu_zapped(delayed_free.pf + delayed_free.index);
-+	* If there's anything on the open list, close and start a new callback.
-+	*/
-+	if (need_callback)
-+		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
- 
--	lockdep_unlock();
--	raw_local_irq_restore(flags);
- }
- 
- /*
-@@ -6286,6 +6292,7 @@ static void lockdep_free_key_range_reg(void *start, unsigned long size)
- {
- 	struct pending_free *pf;
- 	unsigned long flags;
-+	bool need_callback;
- 
- 	init_data_structures_once();
- 
-@@ -6293,10 +6300,11 @@ static void lockdep_free_key_range_reg(void *start, unsigned long size)
- 	lockdep_lock();
- 	pf = get_pending_free();
- 	__lockdep_free_key_range(pf, start, size);
--	call_rcu_zapped(pf);
-+	need_callback = prepare_call_rcu_zapped(pf);
- 	lockdep_unlock();
- 	raw_local_irq_restore(flags);
--
-+	if (need_callback)
-+		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
- 	/*
- 	 * Wait for any possible iterators from look_up_lock_class() to pass
- 	 * before continuing to free the memory they refer to.
-@@ -6390,6 +6398,7 @@ static void lockdep_reset_lock_reg(struct lockdep_map *lock)
- 	struct pending_free *pf;
- 	unsigned long flags;
- 	int locked;
-+	bool need_callback = false;
- 
- 	raw_local_irq_save(flags);
- 	locked = graph_lock();
-@@ -6398,11 +6407,13 @@ static void lockdep_reset_lock_reg(struct lockdep_map *lock)
- 
- 	pf = get_pending_free();
- 	__lockdep_reset_lock(pf, lock);
--	call_rcu_zapped(pf);
-+	need_callback = prepare_call_rcu_zapped(pf);
- 
- 	graph_unlock();
- out_irq:
- 	raw_local_irq_restore(flags);
-+	if (need_callback)
-+		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
- }
- 
- /*
-@@ -6446,6 +6457,7 @@ void lockdep_unregister_key(struct lock_class_key *key)
- 	struct pending_free *pf;
- 	unsigned long flags;
- 	bool found = false;
-+	bool need_callback = false;
- 
- 	might_sleep();
- 
-@@ -6466,11 +6478,14 @@ void lockdep_unregister_key(struct lock_class_key *key)
- 	if (found) {
- 		pf = get_pending_free();
- 		__lockdep_free_key_range(pf, key, 1);
--		call_rcu_zapped(pf);
-+		need_callback = prepare_call_rcu_zapped(pf);
- 	}
- 	lockdep_unlock();
- 	raw_local_irq_restore(flags);
- 
-+	if (need_callback)
-+		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
-+
- 	/* Wait until is_dynamic_key() has finished accessing k->hash_entry. */
- 	synchronize_rcu();
- }
+v1: https://lore.kernel.org/linux-devicetree/20240116113939.17339-1-othacehe@gnu.org/
+
+Mathieu Othacehe (2):
+  dt-bindings: arm: fsl: Add i.MX93 PHYTEC with Segin
+  arm64: dts: imx93-phycore-segin: Add Phytec i.MX93 Segin
+
+ .../devicetree/bindings/arm/fsl.yaml          |  6 ++
+ arch/arm64/boot/dts/freescale/Makefile        |  1 +
+ .../dts/freescale/imx93-phycore-segin.dts     | 93 +++++++++++++++++++
+ .../boot/dts/freescale/imx93-phycore-som.dtsi | 64 +++++++++++++
+ 4 files changed, 164 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx93-phycore-segin.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx93-phycore-som.dtsi
+
 -- 
-1.9.1
+2.41.0
 
 
