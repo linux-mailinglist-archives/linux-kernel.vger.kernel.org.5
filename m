@@ -1,277 +1,175 @@
-Return-Path: <linux-kernel+bounces-28724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C264830241
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:25:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C49983023E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:24:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2D341F2850B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:25:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5BFA1F27BB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:24:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7994B1CFAC;
-	Wed, 17 Jan 2024 09:23:54 +0000 (UTC)
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3315F14273;
+	Wed, 17 Jan 2024 09:23:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cJ6s8Sas"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BA1C13FFC
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 09:23:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E47231427A
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 09:23:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705483433; cv=none; b=N1aURGFyjOTdDpsbH5mUIcopcZ8Li2LFY0vbRMKzFxpuo8Ea1uBWe2QQWAixKfqN5iBfeh9vrfr1wGPF783VYTzQdM7LM5dQ5xNG0CLuDHxzdoC4JvB+34X2i5Zh1MOD8PEbtMqeLPoREC+CH+mGAIN9MR6A2ASKwRv0xNbmgv0=
+	t=1705483422; cv=none; b=P8l9vorp5V2wxwSErfz5+hiQ+sg4y3/o2HchZHo7kT4kQ+Klrgvg5BPD3dnY8WiAvP6tKCV4J7KeiG5mO16hn7l3pv0bxmwagq4ErOKqA7YPsOmkHmcgamByuKRSNqEclis99t5Ej6cy9/nI5JRhxLX+BxTMj4lPQvRLUNdxWP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705483433; c=relaxed/simple;
-	bh=lWCmSuBadnYIWvHfK92ODIlIKaW1aWLiYyH2QfP4qS0=;
-	h=X-Report-Abuse:From:Date:Subject:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:Message-Id:References:In-Reply-To:To:Cc:
-	 X-Developer-Signature:X-Developer-Key:X-Migadu-Flow; b=XZwrU3vk3mVh7zilWQaYH6PSLT3BuMNrJjVD3b83TIRK4TODJuJaiuQDvYc4FdgfHphuol4l4NKZmOnxYG28RjT0fHlCkO70NDZUVoX6gPOMPKDmBcJU4wRewwSgSjI1xKRa5aKJLfZvqKDwnhUZkw1uOZPMm/hM7rzi4HwAYLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <zhouchengming@bytedance.com>
-Date: Wed, 17 Jan 2024 09:23:19 +0000
-Subject: [PATCH 2/2] mm/zswap: split zswap rb-tree
+	s=arc-20240116; t=1705483422; c=relaxed/simple;
+	bh=eFhjJLQ1A55C6+lODe33Thg8R/JUCeF5rPKuLhvSW90=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
+	 To:Cc:References:From:Autocrypt:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=c5yRGXUGod9Kyaqqc2a0NGxWrBX+grYCLKuVYahyVQfzENtDVKPbVrIC5/fE82XCuH3gStVczZhek3pqnGX2RX1gjHuY2Z4gpQeH1qk86slNvYt5s9U7ePU+O21RfGkUQNZ6Sx52JTDdCyvW4ZK61RIfvqze5XfmQegWEJa1x7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cJ6s8Sas; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a2dda9d67ceso328371666b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 01:23:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705483419; x=1706088219; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XMLgfsLuFxayGKw0bOON88EvvCfc/fzptwa+pnNz6Vo=;
+        b=cJ6s8SasA4oHYmkyar2/leDGTKq9ozNRNenh/mb9bwyBgrvhX8aCLHS6AZOKdyQVfT
+         NMTf9Ov0qgmUL+SerKU7kSf7rDdya+TuNm1VgV7pfwML5CyizqdZ7jiSYQiJ+Het1g4W
+         H9xB0mvjagSEe3lRPafYHjcJbJ1OVKmZwLwVY8BwQxQJKRXnbSKgxKb6jPF3Bm7xOk8n
+         9KDsbu8Du9l96kCDQUnbejqG4zcuPGa3F/jvxp3TlgSaVAu/9cvdclc4lcXnawwW/hrt
+         4S6fLuNpVKb9Bg9lCeSq06zpJWf0cLozFpxFbJic/VXRWJUjU3H8PICAfV0uESceL7v7
+         0GqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705483419; x=1706088219;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XMLgfsLuFxayGKw0bOON88EvvCfc/fzptwa+pnNz6Vo=;
+        b=ZZQT7vl0hN2sLCdUfv7CW6TyId2YnXGRj2PQXbyL9z5l9YDguIfq40WWB5raOjKfpG
+         4hetGcK67ZPyag/Yve26xFzqwLXWXbAgmeIClEwUX/fP7JT0PecOYV/M2hEYJM7jSa9D
+         Znfp/8ue51kAmHlmpvZ6XhlCpDyP+DJJ284pVcxJoh9OT85AtMwCWPo9hvqwzzEiK0k2
+         wvKNVZaXmw/r3QGjgGygaLnN9PsQbzvFV3CJJn/b3biz29UWK1m+Y1CBxLUAzWr6olN9
+         X82M8X9x48QpTQkOX4Orp6FlRW2irJJUDcXr2STRSbOHuRrAaX50d9EG5QzmyAumhDrA
+         lb9A==
+X-Gm-Message-State: AOJu0Yw9qU51MuM9ghUTghdQBaAQj8Pg9SxxMkNiubldSFzLndmnNmiT
+	eqdZWvRIPMJEBrcl1yAmIvReIPxurpjalA==
+X-Google-Smtp-Source: AGHT+IGo5tiZJOVKok9nZQcJpSK5f9AoSO4o4rI2E1tFnIo/02sDS7V0lb79/4WZuLRbpDo+0DFSgg==
+X-Received: by 2002:a17:907:c284:b0:a2c:b1f0:eb5b with SMTP id tk4-20020a170907c28400b00a2cb1f0eb5bmr4489734ejc.43.1705483419088;
+        Wed, 17 Jan 2024 01:23:39 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id f18-20020a170906561200b00a2e99c12ea5sm1286967ejq.157.2024.01.17.01.23.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Jan 2024 01:23:38 -0800 (PST)
+Message-ID: <76ae9e57-091e-429f-97ed-1a1b4f992d79@linaro.org>
+Date: Wed, 17 Jan 2024 10:23:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240117-b4-zswap-lock-optimize-v1-2-23f6effe5775@bytedance.com>
-References: <20240117-b4-zswap-lock-optimize-v1-0-23f6effe5775@bytedance.com>
-In-Reply-To: <20240117-b4-zswap-lock-optimize-v1-0-23f6effe5775@bytedance.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Yosry Ahmed <yosryahmed@google.com>, Chengming Zhou <zhouchengming@bytedance.com>, linux-kernel@vger.kernel.org,
- Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org, Chris Li <chriscli@google.com>, Nhat Pham <nphamcs@gmail.com>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1705483421; l=6988;
- i=zhouchengming@bytedance.com; s=20231204; h=from:subject:message-id;
- bh=lWCmSuBadnYIWvHfK92ODIlIKaW1aWLiYyH2QfP4qS0=;
- b=Tp7gp92PMp6MGPWK007HHErLLXRRti2ol0tPfgAeuf/e7QHzpBZVxtF6qPxzxG+cOwOgSILPL
- u9CHXBpgp53AbUL8faDQ8nGv9D6JVfeVhKjhfFoPEK1liA2cepBCes0
-X-Developer-Key: i=zhouchengming@bytedance.com; a=ed25519;
- pk=xFTmRtMG3vELGJBUiml7OYNdM393WOMv0iWWeQEVVdA=
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: serial: stm32: add power-domains property
+Content-Language: en-US
+To: Valentin CARON <valentin.caron@foss.st.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org
+References: <20240111112450.1727866-1-valentin.caron@foss.st.com>
+ <aae32b47-1bb0-4af0-baf0-836dc91b9427@linaro.org>
+ <1639c6b9-1cca-4f4c-a329-fc4618c572f6@foss.st.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <1639c6b9-1cca-4f4c-a329-fc4618c572f6@foss.st.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Each swapfile has one rb-tree to search the mapping of swp_entry_t to
-zswap_entry, that use a spinlock to protect, which can cause heavy lock
-contention if multiple tasks zswap_store/load concurrently.
+On 17/01/2024 10:21, Valentin CARON wrote:
+> 
+> On 1/15/24 16:05, Krzysztof Kozlowski wrote:
+>> On 11/01/2024 12:24, Valentin Caron wrote:
+>>> Add "power-domains" property in stm32 serial binding to avoid:
+>>>
+>>> serial@40010000: Unevaluated properties are not allowed
+>>> ('power-domains' were unexpected)
+>>>
+>> It would be better if you checked whether it can be part of power domain
+>> or not. What if the DTS is wrong?
+>>
+>> Best regards,
+>> Krzysztof
+>>
+> Hi Krzysztof,
+> 
+> I'm not sure to understand, but if you mean that there is no
+> power-domains properties right now in all stm32mp device trees
+> and so it does not required to add this stm32 serial bindings:
+> 
+> Theses will be upstreamed in the future, and because power-domains
+> property is optional, I can add it right now in stm32 serial binding
+> to anticipate.
 
-Optimize the scalability problem by splitting the zswap rb-tree into
-multiple rb-trees, each corresponds to SWAP_ADDRESS_SPACE_PAGES (64M),
-just like we did in the swap cache address_space splitting.
+No. You used argument: "add because DTS has it" and I want different
+argument: "add because it is the right thing to do because foo and bar".
+If DTS is wrong, then your commit and this explanation is wrong.
 
-Although this method can't solve the spinlock contention completely, it
-can mitigate much of that contention. Below is the results of kernel build
-in tmpfs with zswap shrinker enabled:
+Best regards,
+Krzysztof
 
-     linux-next  zswap-lock-optimize
-real 1m9.181s    1m3.820s
-user 17m44.036s  17m40.100s
-sys  7m37.297s   4m54.622s
-
-So there are clearly improvements.
-
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
----
- include/linux/zswap.h |  4 +--
- mm/swapfile.c         |  2 +-
- mm/zswap.c            | 69 ++++++++++++++++++++++++++++++++-------------------
- 3 files changed, 47 insertions(+), 28 deletions(-)
-
-diff --git a/include/linux/zswap.h b/include/linux/zswap.h
-index eca388229d9a..91895ce1fdbc 100644
---- a/include/linux/zswap.h
-+++ b/include/linux/zswap.h
-@@ -30,7 +30,7 @@ struct zswap_lruvec_state {
- bool zswap_store(struct folio *folio);
- bool zswap_load(struct folio *folio);
- void zswap_invalidate(int type, pgoff_t offset);
--int zswap_swapon(int type);
-+int zswap_swapon(int type, unsigned long nr_pages);
- void zswap_swapoff(int type);
- void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
- void zswap_lruvec_state_init(struct lruvec *lruvec);
-@@ -51,7 +51,7 @@ static inline bool zswap_load(struct folio *folio)
- }
- 
- static inline void zswap_invalidate(int type, pgoff_t offset) {}
--static inline int zswap_swapon(int type)
-+static inline int zswap_swapon(int type, unsigned long nr_pages)
- {
- 	return 0;
- }
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 6c53ea06626b..35aa17b2a2fa 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -3164,7 +3164,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 	if (error)
- 		goto bad_swap_unlock_inode;
- 
--	error = zswap_swapon(p->type);
-+	error = zswap_swapon(p->type, maxpages);
- 	if (error)
- 		goto free_swap_address_space;
- 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index d88faea85978..4a6dbc620c7c 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -239,6 +239,7 @@ struct zswap_tree {
- };
- 
- static struct zswap_tree *zswap_trees[MAX_SWAPFILES];
-+static unsigned int nr_zswap_trees[MAX_SWAPFILES];
- 
- /* RCU-protected iteration */
- static LIST_HEAD(zswap_pools);
-@@ -265,6 +266,10 @@ static bool zswap_has_pool;
- * helpers and fwd declarations
- **********************************/
- 
-+#define swap_zswap_tree(entry)					\
-+	(&zswap_trees[swp_type(entry)][swp_offset(entry)	\
-+		>> SWAP_ADDRESS_SPACE_SHIFT])
-+
- #define zswap_pool_debug(msg, p)				\
- 	pr_debug("%s pool %s/%s\n", msg, (p)->tfm_name,		\
- 		 zpool_get_type((p)->zpools[0]))
-@@ -865,7 +870,7 @@ static enum lru_status shrink_memcg_cb(struct list_head *item, struct list_lru_o
- 	 * until the entry is verified to still be alive in the tree.
- 	 */
- 	swpoffset = swp_offset(entry->swpentry);
--	tree = zswap_trees[swp_type(entry->swpentry)];
-+	tree = swap_zswap_tree(entry->swpentry);
- 	list_lru_isolate(l, item);
- 	/*
- 	 * It's safe to drop the lock here because we return either
-@@ -1494,10 +1499,9 @@ static void zswap_fill_page(void *ptr, unsigned long value)
- bool zswap_store(struct folio *folio)
- {
- 	swp_entry_t swp = folio->swap;
--	int type = swp_type(swp);
- 	pgoff_t offset = swp_offset(swp);
- 	struct page *page = &folio->page;
--	struct zswap_tree *tree = zswap_trees[type];
-+	struct zswap_tree *tree = swap_zswap_tree(swp);
- 	struct zswap_entry *entry, *dupentry;
- 	struct scatterlist input, output;
- 	struct crypto_acomp_ctx *acomp_ctx;
-@@ -1569,7 +1573,7 @@ bool zswap_store(struct folio *folio)
- 		src = kmap_local_page(page);
- 		if (zswap_is_page_same_filled(src, &value)) {
- 			kunmap_local(src);
--			entry->swpentry = swp_entry(type, offset);
-+			entry->swpentry = swp;
- 			entry->length = 0;
- 			entry->value = value;
- 			atomic_inc(&zswap_same_filled_pages);
-@@ -1651,7 +1655,7 @@ bool zswap_store(struct folio *folio)
- 	mutex_unlock(&acomp_ctx->mutex);
- 
- 	/* populate entry */
--	entry->swpentry = swp_entry(type, offset);
-+	entry->swpentry = swp;
- 	entry->handle = handle;
- 	entry->length = dlen;
- 
-@@ -1711,10 +1715,9 @@ bool zswap_store(struct folio *folio)
- bool zswap_load(struct folio *folio)
- {
- 	swp_entry_t swp = folio->swap;
--	int type = swp_type(swp);
- 	pgoff_t offset = swp_offset(swp);
- 	struct page *page = &folio->page;
--	struct zswap_tree *tree = zswap_trees[type];
-+	struct zswap_tree *tree = swap_zswap_tree(swp);
- 	struct zswap_entry *entry;
- 	u8 *dst;
- 
-@@ -1757,7 +1760,7 @@ bool zswap_load(struct folio *folio)
- 
- void zswap_invalidate(int type, pgoff_t offset)
- {
--	struct zswap_tree *tree = zswap_trees[type];
-+	struct zswap_tree *tree = swap_zswap_tree(swp_entry(type, offset));
- 	struct zswap_entry *entry;
- 
- 	/* find */
-@@ -1772,37 +1775,53 @@ void zswap_invalidate(int type, pgoff_t offset)
- 	spin_unlock(&tree->lock);
- }
- 
--int zswap_swapon(int type)
-+int zswap_swapon(int type, unsigned long nr_pages)
- {
--	struct zswap_tree *tree;
-+	struct zswap_tree *trees, *tree;
-+	unsigned int nr, i;
- 
--	tree = kzalloc(sizeof(*tree), GFP_KERNEL);
--	if (!tree) {
-+	nr = DIV_ROUND_UP(nr_pages, SWAP_ADDRESS_SPACE_PAGES);
-+	trees = kvcalloc(nr, sizeof(*tree), GFP_KERNEL);
-+	if (!trees) {
- 		pr_err("alloc failed, zswap disabled for swap type %d\n", type);
- 		return -ENOMEM;
- 	}
- 
--	tree->rbroot = RB_ROOT;
--	spin_lock_init(&tree->lock);
--	zswap_trees[type] = tree;
-+	for (i = 0; i < nr; i++) {
-+		tree = trees + i;
-+		tree->rbroot = RB_ROOT;
-+		spin_lock_init(&tree->lock);
-+	}
-+
-+	nr_zswap_trees[type] = nr;
-+	zswap_trees[type] = trees;
- 	return 0;
- }
- 
- void zswap_swapoff(int type)
- {
--	struct zswap_tree *tree = zswap_trees[type];
--	struct zswap_entry *entry, *n;
-+	struct zswap_tree *trees = zswap_trees[type];
-+	unsigned int i;
- 
--	if (!tree)
-+	if (!trees)
- 		return;
- 
--	/* walk the tree and free everything */
--	spin_lock(&tree->lock);
--	rbtree_postorder_for_each_entry_safe(entry, n, &tree->rbroot, rbnode)
--		zswap_free_entry(entry);
--	tree->rbroot = RB_ROOT;
--	spin_unlock(&tree->lock);
--	kfree(tree);
-+	for (i = 0; i < nr_zswap_trees[type]; i++) {
-+		struct zswap_tree *tree = trees + i;
-+		struct zswap_entry *entry, *n;
-+
-+		/* walk the tree and free everything */
-+		spin_lock(&tree->lock);
-+		rbtree_postorder_for_each_entry_safe(entry, n,
-+						     &tree->rbroot,
-+						     rbnode)
-+			zswap_free_entry(entry);
-+		tree->rbroot = RB_ROOT;
-+		spin_unlock(&tree->lock);
-+	}
-+
-+	kvfree(trees);
-+	nr_zswap_trees[type] = 0;
- 	zswap_trees[type] = NULL;
- }
- 
-
--- 
-b4 0.10.1
 
