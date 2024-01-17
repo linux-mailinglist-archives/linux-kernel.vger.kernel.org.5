@@ -1,211 +1,173 @@
-Return-Path: <linux-kernel+bounces-28739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC253830272
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:38:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 369FA830277
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:40:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D21A11C211C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:38:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E3491C20DB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:40:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D36911401D;
-	Wed, 17 Jan 2024 09:38:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 799C614019;
+	Wed, 17 Jan 2024 09:40:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="MKlhaZku"
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2049.outbound.protection.outlook.com [40.107.8.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cAThuiOm"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4EDC13FFA;
-	Wed, 17 Jan 2024 09:38:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.49
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705484328; cv=fail; b=HWp7MPrjesFVCaeqwD+jrEryd5Q//xd2YGK7oUPoYWyDNtgmX9RHS1DX9kuQxEwmRaoPXFbjDUS060/kqvxJDa+VjI6YIWDDalsBSoVx5KAgFn393fp/3ihqJbGHTH5qn/tsqFdW8y+CEdOXw8fGW4xrGpyDgh0lNc6vZc9cCN4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705484328; c=relaxed/simple;
-	bh=hSWagL5dcx/5OT6R/IWxsNi1gwkL61YE9bkgAs2UJ6g=;
-	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
-	 Received:Received:From:To:CC:Subject:Thread-Topic:Thread-Index:
-	 Date:Message-ID:References:In-Reply-To:Accept-Language:
-	 Content-Language:X-MS-Has-Attach:X-MS-TNEF-Correlator:
-	 x-ms-publictraffictype:x-ms-traffictypediagnostic:
-	 x-ms-office365-filtering-correlation-id:x-ld-processed:
-	 x-ms-exchange-senderadcheck:x-ms-exchange-antispam-relay:
-	 x-microsoft-antispam:x-microsoft-antispam-message-info:
-	 x-forefront-antispam-report:
-	 x-ms-exchange-antispam-messagedata-chunkcount:
-	 x-ms-exchange-antispam-messagedata-0:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-AuthSource:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-originalarrivaltime:
-	 X-MS-Exchange-CrossTenant-fromentityheader:
-	 X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
-	 X-MS-Exchange-CrossTenant-userprincipalname:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=er6l07SQxQT7TynG5rM06TME6cpsqBlgShwjGvyi23oeXHnPcFpB+GcdfKS1crUW9eFzhWQ9yY829f5Ef4FB2sZHE9cK22pGOuNpzhkdNA5KC5KT64ZuJX/xA4rOXTbZDqKENh1JVw+AwlAmPsbsl+yPUFEFwfNCa5Zm01q4fuQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=MKlhaZku; arc=fail smtp.client-ip=40.107.8.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PdHaVjpG2LEtNYMhWv27yofDBpyQdLRwckifI/4ppZPUxVtU1KHF7/3/mf0fUjsF3sfRMq3mHr1ExRSW4KXBwUC+yxQcZ8OaOXqLWa7dMqvXB8xD2qp9/8wS+sECdsEsFmWnJ1rSX8u9jyIFNkFbU+DgIu9QtFPO7jmvIwwpcV1pXhu86ubWKO8kgHF48I714OBz1c3igdFQKrXhCO6pTjCxs1wMAkYf/L9Ojy2+6DsVJOdQshzO41CGNDWDOGUBHJuuykLXyMTNcglgnlPYOEfr8UzS7Mrl340zJf0vLL11qZT3c+PgxgmcH3J1zCIxJzcAFdX0pU3IZ6f9vQ5BmQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IwnMclvjhftzISEw0rNhZQrRIofxZkPsSL1wqhtOzdE=;
- b=kVJKWEIpl9ceqzJHFTxYJJmNMK+gC/7C64NZU1pTHAQOjq7/5Mu+rFkMdX/9lcSRJbeZjdGM0uaSFk7g+2ztHrEihO/SmA3KrzxdZj2ZVss+afXU4QMcXB3OWDzjj0fXTF29MSPR5mf2uiR9CDD9OBEaHkIN4nWd7K6Ng1jERGZzhqXpunbmmjX0nx408j4TJkzrSulCuLzehwANFREKvm7JCbcrxhYUHYxSZSzsGf5jaWJeIjlqzGoTCrubIKPQ2byrOZHGoTYnZgZcrQc/aqtiX8a5y56D1wkOvkS2ji9rWVUx9Y8R9cpX+7Es2yYK/zVe5npAGfkTv2dfr/IEPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IwnMclvjhftzISEw0rNhZQrRIofxZkPsSL1wqhtOzdE=;
- b=MKlhaZkuHHxnTQI0cZawbNjZgQo6fRuL/UFnGMeGMqQBp1rSUCdhO8wIfwNsOk2Y5nfBOz2DYLryp8jhPfU9oK+izRzpikTNKxe1IVRhB+nA2qB9CL0OP9Darwq/VLP5n7vslBkMb7scnsoqvcbVKWkwiVpQ2ptlY8HXm+DUlAs=
-Received: from AS4PR04MB9692.eurprd04.prod.outlook.com (2603:10a6:20b:4fe::20)
- by AM0PR04MB7010.eurprd04.prod.outlook.com (2603:10a6:208:199::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.23; Wed, 17 Jan
- 2024 09:38:43 +0000
-Received: from AS4PR04MB9692.eurprd04.prod.outlook.com
- ([fe80::748a:98f4:59fa:f206]) by AS4PR04MB9692.eurprd04.prod.outlook.com
- ([fe80::748a:98f4:59fa:f206%7]) with mapi id 15.20.7181.022; Wed, 17 Jan 2024
- 09:38:43 +0000
-From: Neeraj Sanjay Kale <neeraj.sanjaykale@nxp.com>
-To: Francesco Dolcini <francesco@dolcini.it>
-CC: "marcel@holtmann.org" <marcel@holtmann.org>, "johan.hedberg@gmail.com"
-	<johan.hedberg@gmail.com>, "luiz.dentz@gmail.com" <luiz.dentz@gmail.com>,
-	Marcel Ziswiler <marcel.ziswiler@toradex.com>, Amitkumar Karwar
-	<amitkumar.karwar@nxp.com>, "linux-bluetooth@vger.kernel.org"
-	<linux-bluetooth@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Sherry Sun <sherry.sun@nxp.com>, Rohit Fule
-	<rohit.fule@nxp.com>
-Subject: Re: [RFC PATCH] Bluetooth: btnxpuart: Fix nxp_setup in case chip is
- powered on late
-Thread-Topic: [RFC PATCH] Bluetooth: btnxpuart: Fix nxp_setup in case chip is
- powered on late
-Thread-Index: AQHaSSj19sN+8TuMTk2XZIqniCJI4Q==
-Date: Wed, 17 Jan 2024 09:38:43 +0000
-Message-ID:
- <AS4PR04MB9692991FC87A8FF21E455BC8E7722@AS4PR04MB9692.eurprd04.prod.outlook.com>
-References: <20240117030501.149114-1-neeraj.sanjaykale@nxp.com>
- <20240117090932.GA3787@francesco-nb>
-In-Reply-To: <20240117090932.GA3787@francesco-nb>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AS4PR04MB9692:EE_|AM0PR04MB7010:EE_
-x-ms-office365-filtering-correlation-id: f4f7fcee-348f-4802-1022-08dc17401862
-x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- qTJPtMGJt0PuEcxfn+jBaKCw/E6SCTN+O5tYTMoZeltz0OFj1/uB/sNxuJaVWAm2WKbKvWDReDiBOwONG83YoiE05UoAb7ydfOKc3dwuuY471jxqUW56Ju2u+Wv2rpGNU/HxbYWJ+g2wUAyw+aSLRVYf/cFYRAjLN4sbWRcACollLWTSwgkcoxgEVqrufwASFIqtpyJO1eU0N0z13ibDozmnEYtDO33ZtoyD41IhIdUu42KtQdjqKYqCx3dw9l16I92zh6cKiNohKx43yfhbYrcJTtKFzfCOGtYm78dUMtz1FBPHDYNHqp7p8yMeiqRnf5ASQRFlngT0BFtQM2tn10LZfrbEYmGWN9Ej+RKWG43Quytmi3n9SkyuczSn6xg0OopSDbyhdNcE4kTFRKMKTI8Wv1gPpIBOeMl04MqJA5tALO6AXcPRb27GCcPkUBHB3v1DEXRYEykqNcdkAQi2FOI3V89+wd5O05VVqdrnDVkCc1QjL5BgrT2+4WPrhmt5YdapFwXxqqf0huudlvZLP3CakJGb4tG0JZFlkPcgnwhPRzNs8Lzwx50tQqiWmvB49FOZ7V+aAhJ4xG6VwKtkx701/XMed1ua8SD0gOKqDUAZORzgr62B0EOYqTUfIjql
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR04MB9692.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(376002)(136003)(396003)(366004)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(66946007)(66556008)(64756008)(66446008)(66476007)(76116006)(4326008)(52536014)(122000001)(8676002)(8936002)(54906003)(6916009)(38100700002)(316002)(9686003)(478600001)(41300700001)(7696005)(6506007)(71200400001)(83380400001)(26005)(38070700009)(2906002)(33656002)(5660300002)(86362001)(55016003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?Io5qTITzwNIWkaL5ZltV5ozkPmFIKJofaUKd4RU5Hs1RA35bWysXAl5Vs7+/?=
- =?us-ascii?Q?Zg/m+t1hvKCHbGryYulZW+8hkqPe3xcYByKcBcUiPpulSA2/9jPoC02ulItc?=
- =?us-ascii?Q?dVRoKro5f03hjAZ81micE1tq9J2HW2pcgiZ/cWuixYeVf1P/qBjy2H4k6Tq3?=
- =?us-ascii?Q?56Rag/kgE6DhQNkztD3tw6sFaOPSrxq7P0y0QCIKLG+Fkn2qs7fnGfji5CId?=
- =?us-ascii?Q?tMZx5t1ObuJAZpY/ByD9dWeEjaJ8rO2Y7Vs+BtqrdeCYWpXBuNyQ8+MXyPSb?=
- =?us-ascii?Q?VY8uSiDBXH72ELQ0OFsribqy5u86S1OyDU+U1cKF7nDisoVnw6vR3dTu8541?=
- =?us-ascii?Q?uS+jzMdmt9C3DgiKuNN9IcL5Jbhbo6uiDsSGkrk6AW1oFu/OlushDgae2Ory?=
- =?us-ascii?Q?wq2inU3ZrI59GOK4OgeqpOkJzuZadas/ftBPp/J5vw6luDrzm00HD7cQSUff?=
- =?us-ascii?Q?UV6jZqOxZKFX8+DCfgbHAqbfGXOhpUiEylDC/CkNHxgVykPEmvLa3bHrrLyX?=
- =?us-ascii?Q?uL3a5c8rRQum93jA+V4byqUmnhcgvgoy3iueyZ805CrfOorFVvOpGLIKy2IQ?=
- =?us-ascii?Q?q4lizbbt8IAo8T9PClSBb7FCFnvnBp+ajyNSlVdZgKU2+f8OEa/xe5QKDzMD?=
- =?us-ascii?Q?gxNjaWYMw6rvzxvalo8AKXNjqdeQ36qxPztpOReyamwiDWkf7WTYWNgIJgkJ?=
- =?us-ascii?Q?z79YKAfsxOIajIITT0nVNyuEFpqWoBH23L3p1wEQv8dd8OaLGcYaixDXFLei?=
- =?us-ascii?Q?ZUwYztanDxr0mhDCcM0KSgK7r/xBfgyCfKnTum/GchzA5EbmQZ8fqzMX3P6t?=
- =?us-ascii?Q?/j3GhFfq2pmhARd3RLtXuxtNUI2NJre2NvIokb5VHp+s1QKSsKzdmEu+nbk4?=
- =?us-ascii?Q?Kg4PyiRhbPPcVnt6XFw35W+Ubgf2wGsoxtwBk6dKTRXyHSwMtCPmj8HCCJ0W?=
- =?us-ascii?Q?nz7m/Cf4Mzag/j7i9aVNXbaBDbOtGt+Pu/U6/8gfCitpki+3XSpbJvh242RU?=
- =?us-ascii?Q?IqrYv5uaf5tsJmZG6QGfdn1gHBFPTjnpBqNP33Goz8+ez/hPIqMn5/Z4R8DV?=
- =?us-ascii?Q?rKk4NQjVXiTqc6fFO3ogh5/tdycy/mjKhldIaWA0txfKRh/VKFM9ABgCmx0+?=
- =?us-ascii?Q?EQSjsQexl0JJLXRypQuDj6ahA3KKJ0dWbDf6d9Y63WT3/YpgOhNfQObWqmOR?=
- =?us-ascii?Q?/Vx9man7Ws04THLGp13bXQhXqmOvpHceF2x0yvwwGbtDdyUSDMjdo+NHujX7?=
- =?us-ascii?Q?GjirPqLfb5cyQzfakD+MsnnU5d4VNioFuBeH4ujh8Ih1EiEhWbmemnI6bUBi?=
- =?us-ascii?Q?nET+m84J/YV9ZQ2lPR0BXPg6rgsd3KX3MJ06eWksRM1j/JQZO5b9f5w5DIBW?=
- =?us-ascii?Q?1Ym/2hnfpfhhD+oUoygl5jz/g07u4Arm9i8p3GWZRaEftGbjJdkHKrouCa3/?=
- =?us-ascii?Q?Cnt4eWtoPCxS8FFvVNwwzcvO065WIpT9q1Fc0jgQgGnPAjt80JTpwfkVXAgt?=
- =?us-ascii?Q?K++SeQ1w4NNJvzm2NtFAUZnP8tcJr9mOuE9WJnClo0hRT4e/KtpE/jeilrXy?=
- =?us-ascii?Q?VUsW6W6jsaYe4xEZxSqX6BpewhFhU4t02x2o35Qe?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3725714264;
+	Wed, 17 Jan 2024 09:40:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705484436; cv=none; b=qkxNL5B4pVZeWnF7WrJg76HGOL5PXnadQUsQScxPT4EkLhJ9+rNfBmSdjRxc16fv5vEAU9N1D0ZCdoLROPHoeFkj7GsP+rWfGnhpYeft91SV/jDpZA8BUuGRl0s81AI4cYBeLd2A0w8jzW0XAjWZCz0RHRXOqXC26ByT8CxtQgQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705484436; c=relaxed/simple;
+	bh=2GsEiOJR8LLt3uVHvWmT0d7TQeor78cxlhGybVEomHQ=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
+	 To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding; b=TvaqvvguWEHr1vDRhF4JL7ap1kSTZUsYexJluRhq7vBfSrvb7WSxtmbDrJfAqZfzcJfJ3942QVUIK36Kwx2x6HJ/iY0jSr/+Qrxq5ScPWLMdw+CgZdEJKoQB7HZMjkodDhotbTsmWzgzBeSdK4x6Zb5PepPQE8SVUirGWDHwwbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cAThuiOm; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40e60e137aaso59058145e9.0;
+        Wed, 17 Jan 2024 01:40:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705484433; x=1706089233; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KuJ0s2JIu9f/6e1MDd/MqOtZxdjhgBwx8nheT4zTYe0=;
+        b=cAThuiOmhqIUzbKyh5S0lHhBg9BuMe7WhQI/lTGwwM1J+d+J97+wrTqcspp3wHi++O
+         MfUrRr2FRt+rk9rQWSvSu8WbzYDFZ2IGfMy1SYjyDmGASaIWIS7F8I2G66tuhUPY9lQO
+         X1cJWZe4AFlK5a0yw5oO8El2F0F4Qtej+jWneVN/VwjM6P3eb7EHGprLkVb8RyHmTJsp
+         u/G4rQuwwVD5DD2d9+hTKC3XQ6PYWDom7ZZJr4TymwhY94J5p3biWnBUs7+d+SSynN2d
+         OLcqllJzXpiF/mwfNq6Dn0/Mn94ynMksZeesqdqz4g2IWuI2ORieuN2Op7KjADRF897M
+         FggA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705484433; x=1706089233;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KuJ0s2JIu9f/6e1MDd/MqOtZxdjhgBwx8nheT4zTYe0=;
+        b=PVmHTgTcwrEaomhN81iJkKB9aT/J2vh1FBxfXi7ALMJGoBiQhekbku/Hes0dxGtlS9
+         ZOUcfvFqkxpmU5FI0p339WfBFCIMu5NavEDA6NucbhAeQx8XQNLtX0gCHrKfeJSjIj3Y
+         JxbxbAx1UnSogWT+II3JcL00sFY3pIfq2U55sU2PmTzsTaP7zgcPT5YvG9j6DVk5KBFs
+         DFoK0vUeRqgGr35k7aem9l71vBbQSID2i55GqSSIKutG8swWQ/l1jIe3v21CKScVF9Sn
+         5m4I5DmLmU8lDhWQ0eEOQcf+n/NuLFFVByrFD9SaXLQYxf62RGfVu0wBkL6aNxHppDUo
+         o75g==
+X-Gm-Message-State: AOJu0Ywa3pd3QMt3O23mhLtKgEbuyzfdZU2ZxYcNM+PRMIahmtbVfqAq
+	KGaAZn1l1ZpqPVgk+IPLe4D+xHr3rA==
+X-Google-Smtp-Source: AGHT+IHEU8b0F97PYYQLYy7w3fgf0rW9Wl0fQOSSic4hOUUlQN2XPOh3FMQ0ZBRLFrA9UUuaPRoAGA==
+X-Received: by 2002:a05:600c:310d:b0:40c:2c40:8c with SMTP id g13-20020a05600c310d00b0040c2c40008cmr4689239wmo.154.1705484432682;
+        Wed, 17 Jan 2024 01:40:32 -0800 (PST)
+Received: from staff-net-cx-3510.intern.ethz.ch (2001-67c-10ec-5784-8000--16b.net6.ethz.ch. [2001:67c:10ec:5784:8000::16b])
+        by smtp.gmail.com with ESMTPSA id p21-20020a05600c359500b0040e3488f16dsm21684766wmq.12.2024.01.17.01.40.31
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 17 Jan 2024 01:40:32 -0800 (PST)
+From: Hao Sun <sunhao.th@gmail.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com,
+	linux-kernel@vger.kernel.org,
+	Hao Sun <sunhao.th@gmail.com>
+Subject: [PATCH] bpf: Refactor ptr alu checking rules to allow alu explicitly
+Date: Wed, 17 Jan 2024 10:40:12 +0100
+Message-ID: <20240117094012.36798-1-sunhao.th@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS4PR04MB9692.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4f7fcee-348f-4802-1022-08dc17401862
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jan 2024 09:38:43.4081
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +KEhh2IiqXkJSRAAYtAdsBtp7DiwjyY9Lmwq64NS3Bdirr1MFFxaCz2798rui/LfBSpoLmKBhomgW3PLtSN+TWFdElpLMEpwiwqntNf74nY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7010
+Content-Transfer-Encoding: 8bit
 
-Hi Francesco,
+Current checking rules are structured to disallow alu on particular ptr
+types explicitly, so default cases are allowed implicitly. This may lead
+to newly added ptr types being allowed unexpectedly. So restruture it to
+allow alu explicitly. The tradeoff is mainly a bit more cases added in
+the switch. The following table from Eduard summarizes the rules:
 
-Thankyou for the review comment.
+        | Pointer type        | Arithmetics allowed |
+        |---------------------+---------------------|
+        | PTR_TO_CTX          | yes                 |
+        | CONST_PTR_TO_MAP    | conditionally       |
+        | PTR_TO_MAP_VALUE    | yes                 |
+        | PTR_TO_MAP_KEY      | yes                 |
+        | PTR_TO_STACK        | yes                 |
+        | PTR_TO_PACKET_META  | yes                 |
+        | PTR_TO_PACKET       | yes                 |
+        | PTR_TO_PACKET_END   | no                  |
+        | PTR_TO_FLOW_KEYS    | conditionally       |
+        | PTR_TO_SOCKET       | no                  |
+        | PTR_TO_SOCK_COMMON  | no                  |
+        | PTR_TO_TCP_SOCK     | no                  |
+        | PTR_TO_TP_BUFFER    | yes                 |
+        | PTR_TO_XDP_SOCK     | no                  |
+        | PTR_TO_BTF_ID       | yes                 |
+        | PTR_TO_MEM          | yes                 |
+        | PTR_TO_BUF          | yes                 |
+        | PTR_TO_FUNC         | yes                 |
+        | CONST_PTR_TO_DYNPTR | yes                 |
 
-> > diff --git a/drivers/bluetooth/btnxpuart.c
-> > b/drivers/bluetooth/btnxpuart.c index 7f88b6f52f26..20a3a5bd5529
-> > 100644
-> > --- a/drivers/bluetooth/btnxpuart.c
-> > +++ b/drivers/bluetooth/btnxpuart.c
-> > @@ -1036,6 +1048,13 @@ static int nxp_setup(struct hci_dev *hdev)
-> >               err =3D nxp_download_firmware(hdev);
-> >               if (err < 0)
-> >                       return err;
-> > +     } else if (!serdev_device_get_cts(nxpdev->serdev)) {
-> > +             /* CTS is high and no bootloader signatures detected */
-> > +             bt_dev_dbg(hdev, "Controller not detected. Will check aga=
-in in %d
-> msec",
-> > +                        NXP_SETUP_RETRY_TIME_MS);
-> > +             schedule_delayed_work(&nxpdev->setup_retry_work,
-> > +                                   msecs_to_jiffies(NXP_SETUP_RETRY_TI=
-ME_MS));
-> > +             return -ENODEV;
-> why not just
->=20
-> return -EPROBE_DEFER;
->=20
-> and remove everything else, no need for any kind of retry or delayed work=
- if
-> the driver core takes care of it.
->=20
-Wouldn't returning -EPROBE_DEFER make more sense in driver probe context?
+The refactored rules are equivalent to the original one. Note that
+PTR_TO_FUNC and CONST_PTR_TO_DYNPTR are not reject here because: (1)
+check_mem_access() rejects load/store on those ptrs, and those ptrs
+with offset passing to calls are rejected check_func_arg_reg_off();
+(2) someone may rely on the verifier not rejecting programs earily.
 
-Here, the driver probe registers an hci interface (hci_register_dev()), and=
- returns success to kernel.
+Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+---
+ kernel/bpf/verifier.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-The hci_register_dev() queues hdev->power_on work at the end, which opens t=
-he hci dev, and ultimately calls this setup function.
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 65f598694d55..861d8d824bb8 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12826,6 +12826,19 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+ 	}
+ 
+ 	switch (base_type(ptr_reg->type)) {
++	case PTR_TO_CTX:
++	case PTR_TO_MAP_VALUE:
++	case PTR_TO_MAP_KEY:
++	case PTR_TO_STACK:
++	case PTR_TO_PACKET_META:
++	case PTR_TO_PACKET:
++	case PTR_TO_TP_BUFFER:
++	case PTR_TO_BTF_ID:
++	case PTR_TO_MEM:
++	case PTR_TO_BUF:
++	case PTR_TO_FUNC:
++	case CONST_PTR_TO_DYNPTR:
++		break;
+ 	case PTR_TO_FLOW_KEYS:
+ 		if (known)
+ 			break;
+@@ -12835,16 +12848,10 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+ 		if (known && smin_val == 0 && opcode == BPF_ADD)
+ 			break;
+ 		fallthrough;
+-	case PTR_TO_PACKET_END:
+-	case PTR_TO_SOCKET:
+-	case PTR_TO_SOCK_COMMON:
+-	case PTR_TO_TCP_SOCK:
+-	case PTR_TO_XDP_SOCK:
++	default:
+ 		verbose(env, "R%d pointer arithmetic on %s prohibited\n",
+ 			dst, reg_type_str(env, ptr_reg->type));
+ 		return -EACCES;
+-	default:
+-		break;
+ 	}
+ 
+ 	/* In case of 'scalar += pointer', dst_reg inherits pointer type and id.
+-- 
+2.34.1
 
-In this patch, we are queueing the same work from the delayed setup_retry_w=
-ork().
-
-Returning -ENODEV (or -EPROBE_DEFER) would only affect hci_dev_open(), whic=
-h is in power_on work context, and not driver probe context.
-
-Perhaps, we should call it hci_retry_power_on() work or something similar?
-
-Please let me know your thoughts on this.
-
-Thanks,
-Neeraj
 
