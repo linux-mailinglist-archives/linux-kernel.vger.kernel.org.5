@@ -1,374 +1,201 @@
-Return-Path: <linux-kernel+bounces-29356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDF5B830D37
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:18:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1C5E830D39
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:18:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72C511F26AA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:18:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 933A61C24B1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:18:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EE79249E0;
-	Wed, 17 Jan 2024 19:18:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E465249EE;
+	Wed, 17 Jan 2024 19:18:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="k29gJPlG";
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="OFeiNcGM"
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Aoc4VMep"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7912D24205;
-	Wed, 17 Jan 2024 19:18:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.235.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF6392421E
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:18:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705519089; cv=none; b=J6MIBgsLYd8RgB01ih9pIXgLTEOf5L4OBe6RqkiV/E0iV6gG/LshkoEjPhkojgo00zWfD8fowkISUh4s7svpXUuz+k10fqp5wZ5Twn/Ic9Ty0BTbINV4yoFNhZYYYn5BkC2TgTYviwfsY0hIE+AVGVq+F8kwPMNtADuvpgOdbd0=
+	t=1705519112; cv=none; b=YFnb+kQPkPLwXrBLiLl+aLXnODgRkXR+4uyAG3q2e2Og0TFL7KZCWjxDFQ7qyQUqHYVIGXe3qCqnDUd/sAd4HI/dHQcu7Y0aFlZk+hUpJbG+0D0BXrnOFCzmpHkTaQHj1AvSHwT1HAlYeQ7i7A1P57ftXo2lONU4kFHQouCDku8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705519089; c=relaxed/simple;
-	bh=kKq/R7Slr9WQYBDkv/f7dUaLlvKEXcOV0LTrW9msMww=;
-	h=Received:DKIM-Signature:X-Virus-Scanned:Received:Received:
-	 DKIM-Signature:Message-ID:Date:MIME-Version:User-Agent:Subject:
-	 Content-Language:To:Cc:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=RkvafWRltmK/tHi2t+jrpH7Wg63Tl1k764r5rLUBQ1FH9fDt+tlktA1ielki+Yva+g3eIl1mJMFwCizVNZnXGJ2xQyR4KdK8cubn/J1yPyDgJL2QI/HrmFQa8veIueB/L7kbHknOxrsMfzSz0AdhUqqNen2D964txSkpoUyKwPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr; spf=pass smtp.mailfrom=alu.unizg.hr; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=k29gJPlG; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=OFeiNcGM; arc=none smtp.client-ip=161.53.235.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
-Received: from localhost (localhost [127.0.0.1])
-	by domac.alu.hr (Postfix) with ESMTP id 8522B601A1;
-	Wed, 17 Jan 2024 20:18:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1705519081; bh=kKq/R7Slr9WQYBDkv/f7dUaLlvKEXcOV0LTrW9msMww=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=k29gJPlGCgA5aXPKggCKOTtD2n9wX1yfPrpIY60iGkuidibjyn/QogKYdyW87PDqc
-	 ZN34sHXod4pbgljUj27OEwmSfK14QllwiUV1b1AKbE0AZcPZiT+3n7XZoo2DVn+UbU
-	 EQK9QQlOHuA2TE8u5fvbfuG/8NF+iSdSLQ7mT4hALM3wpLAMsPd9lqycsDtH5TF/N8
-	 uQ42sJ4KeFk0Q14IoTpJRja9hHifk8KMmTN4kjPdsERng0iHYU0Fm+UukDANJNTsfA
-	 Moqv0QH5xaN6IGM2O3i7wPy1sEiFM23FW9Vg+4HWRL+5/VGNU03PHMNOduPmJBJGEU
-	 f/p0TmClwJCqg==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id SeUNTzMCqVuQ; Wed, 17 Jan 2024 20:17:58 +0100 (CET)
-Received: from [192.168.178.20] (dh207-40-167.xnet.hr [88.207.40.167])
-	by domac.alu.hr (Postfix) with ESMTPSA id 0DC5A6019B;
-	Wed, 17 Jan 2024 20:17:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1705519078; bh=kKq/R7Slr9WQYBDkv/f7dUaLlvKEXcOV0LTrW9msMww=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=OFeiNcGM+p0YmIjrUMsBODGEjMpEcwIAON/EGtmiXys58fQiKWB5uFxGL2d4twlWW
-	 njqOhy/nvv+AtffooGBSnCeeBvBrFv0EIctDy2QnxNhoiS/Ura5IG4hQZvY3Co9ITu
-	 fMTo5SKffmC0k3kTDpRzWQeKPd3hB0Js5d21cK9lqx7iCpZHpg1JAH6X91Bt4EYURr
-	 Nz7qzielGTafsgeRVzGIWYbdlBKyyuUCF6WRXHezIxLtITnhiDJ46nLd7a6l3YsW1w
-	 21yuGQdQfhDcFz9kamziGqF6a4gKkVRXxRMP0iXfbz7Djg96ymm7HCHR8RD3Rh/5n8
-	 JG9vbGDEgwhRA==
-Message-ID: <88ec168b-471a-4c0d-984d-d27cc96404fc@alu.unizg.hr>
-Date: Wed, 17 Jan 2024 20:17:57 +0100
+	s=arc-20240116; t=1705519112; c=relaxed/simple;
+	bh=KXMZLBHc65ghx6GVKoCeeaBBmQtZBXUvyYnNtgLk8Uk=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
+	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:User-Agent; b=fOQZp8+HukkafY+FpVzNMLdyaBGv37N2Ob6ywgVbob462qoF3RRXThRwq4P3CG031ZjQpVssOTyrZaJ1oeGhDesNRJVpB0N4XKfF8UqJBSTUgsamLm6Dx+oUtRtkkIeBlHUQqf55rTkePx6JrZzCpVSJg1vDv6cnrzNxFCWqBAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Aoc4VMep; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e76626170so37621695e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:18:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705519108; x=1706123908; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RY9ElmoBN1yaIqWHYG7QtdZi3QcPx+E4bgcakiLYwTI=;
+        b=Aoc4VMepqGSnmkwi4QUmvhiCZ0gdPanyDlHWsCNUhSXOmN1xRWt+HPA2ExAXzT5OG9
+         mEkJ2hYnln70PnBAu0GlP8eSZvid3Wf/NkoIeMHgTtE0WCGxhJTJjekOpiiAOcjz5+Ch
+         w0UDTOFguuVSsw5cGKCDVIz3wPrFpWI/vOlTYCgHBbQeaFa1W+RlKIkpdOM4+CRvvgQf
+         xbtJkQekg+UEqHplaviHCDSYm/qE4uaJr/EwVdKFkZsZ8iU2YLzK6whRO7NlSXMQf6N9
+         sUqXQTfeZ9U0l+0veTLVnz0MyT1wfGpiokjrWtNzHsVvwQhW3YsxUXYdhoHE4uWiPH/R
+         Afjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705519108; x=1706123908;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RY9ElmoBN1yaIqWHYG7QtdZi3QcPx+E4bgcakiLYwTI=;
+        b=OFKfsskqp591eHKbOjnOgba2O6ChvkGzEAb77vaveNnd54cJNnic38lJ2lj6mBeLG9
+         tnYWAs61nTepRKg8nj564lcz6d1CT9kot+JY9z8/CDs6hAoJ3nzeNPZaktP7M7SofHXh
+         x0tk7LwXxjPq/RIhBYhjjxG4pqczlVzmsBDZfxy/vNJdOGIgCurt33TCaqETa2XA35ij
+         xNaVYusrzWE2TYau+w8EtQyHOaeUAoCUPDOcmxqF8XzZsSWR7hBIHaBDSNtRPCYf9mrW
+         7fe//ss/5rjbJLw1EU6lKnFHaVxJ4HpAI0XL9a4F69e3y/5N5Ky+/SMNFfLRJ9K1d0q6
+         nSQg==
+X-Gm-Message-State: AOJu0YzW56yFsfhvHvtzyjk8bbwV6wtkGp18jHyB7EtnufLZ6nbjld3C
+	XQFoY8FXJfs08bUN2trDaaVf2PYl3VYY
+X-Google-Smtp-Source: AGHT+IF4oL0BAsF+ha3wzXLc42eUoMZFRTm2jnAgJhUc+DjiH4e3oSAEbqgOtj+F3gpV7AEiC56wkA==
+X-Received: by 2002:a7b:ca59:0:b0:40e:76f6:9613 with SMTP id m25-20020a7bca59000000b0040e76f69613mr3246094wml.8.1705519107822;
+        Wed, 17 Jan 2024 11:18:27 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:9c:201:e545:8ceb:c441:7541])
+        by smtp.gmail.com with ESMTPSA id bi13-20020a05600c3d8d00b0040e8800fcf3sm3597189wmb.5.2024.01.17.11.18.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jan 2024 11:18:27 -0800 (PST)
+Date: Wed, 17 Jan 2024 20:18:21 +0100
+From: Marco Elver <elver@google.com>
+To: Alexander Potapenko <glider@google.com>
+Cc: quic_charante@quicinc.com, akpm@linux-foundation.org,
+	aneesh.kumar@linux.ibm.com, dan.j.williams@intel.com,
+	david@redhat.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	mgorman@techsingularity.net, osalvador@suse.de, vbabka@suse.cz,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+	Ilya Leoshkevich <iii@linux.ibm.com>,
+	Nicholas Miehlbradt <nicholas@linux.ibm.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH] mm/sparsemem: fix race in accessing memory_section->usage
+Message-ID: <Zagn_T44RU94dZa7@elver.google.com>
+References: <1697202267-23600-1-git-send-email-quic_charante@quicinc.com>
+ <20240115184430.2710652-1-glider@google.com>
+ <CANpmjNMP802yN0i6puHHKX5E1PZ_6_h1x9nkGHCXZ4DVabxy7A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PROBLEM] Very long .deb package build times for bindeb-pkg build
- target
-Content-Language: en-US
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nicolas Schier <nicolas@fjasle.eu>,
- Mirsad Todorovac <mirsad.todorovac@alu.hr>, linux-kbuild@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <c2adb439-0dea-4de1-996e-5a0caa5c729d@alu.unizg.hr>
- <ZaALOOhEdBP70lDH@bergen.fjasle.eu>
- <827b5e97-a436-47a7-a097-13657bcda948@alu.unizg.hr>
- <CAK7LNAToNP0hFvhzr_gYw6TXMxkJuCN4idWZvqmq3mSTNOHtSQ@mail.gmail.com>
- <b83bf78d-5fb0-4069-a1bb-c6a946b7b23c@alu.unizg.hr>
- <CAK7LNASCuuaO9tx44dbeS=deL-1Lvgy3REyC3FsVhfCmtWdB=w@mail.gmail.com>
- <b2acb406-11cb-4f5e-a924-e1f75a7f674c@alu.unizg.hr>
- <CAK7LNAR73NVGhE_UCwtsSfb6men=D9cy3t-8fPM-m1WaCogdqA@mail.gmail.com>
-From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <CAK7LNAR73NVGhE_UCwtsSfb6men=D9cy3t-8fPM-m1WaCogdqA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNMP802yN0i6puHHKX5E1PZ_6_h1x9nkGHCXZ4DVabxy7A@mail.gmail.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-On 1/16/24 12:21, Masahiro Yamada wrote:
-> On Sun, Jan 14, 2024 at 6:09 AM Mirsad Todorovac
-> <mirsad.todorovac@alu.unizg.hr> wrote:
->>
->> On 1/13/24 16:16, Masahiro Yamada wrote:
->>> On Sat, Jan 13, 2024 at 8:28 PM Mirsad Todorovac
->>> <mirsad.todorovac@alu.unizg.hr> wrote:
->>>>
->>>> On 1/13/24 06:40, Masahiro Yamada wrote:
->>>>> On Fri, Jan 12, 2024 at 7:48 AM Mirsad Todorovac
->>>>> <mirsad.todorovac@alu.unizg.hr> wrote:
->>>>>>
->>>>>> On 11. 01. 2024. 16:37, Nicolas Schier wrote:
->>>>>>> Hi Mirsad,
->>>>>>>
->>>>>>> On Thu 11 Jan 2024 13:22:39 GMT, Mirsad Todorovac wrote:
->>>>>>>> Hi,
->>>>>>>>
->>>>>>>> With this new release, it seems that Debian kernel build uses "xz" in single-
->>>>>>>> threaded mode:
->>>>
->>>> Hi, Masahiro,
->>>>
->>>> Thank you for your reply.
->>>>
->>>>> New release of what?
->>>>
->>>> Forgive me for not being precise. It was the new release of torvalds tree mainline
->>>> kernel 6.7+ (with merge commits up-to-date). I sort of mistakenly assumed that
->>>> I wrote it, but it was declared in some mail on LKML.
->>>
->>> When you report a regression in the kernel code in the future,
->>> please try to do "git bisect" and pin-point an offending commit.
->>>
->>> That is more helpful to figure out how to fix the issue.
->>>
->>> And, you will be sure whether or not the root cause exists
->>> in the kernel.
->>
->> Good point. Thanks.
->>
->> But I did not notice any regression on Ubuntu 22.04 LTS system, and neither on
->> the Ubuntu 22.10 Mantic system which was upgraded. So I assumed it was not related to
->> particular commit, and I did not think of bisect.
->>
->>>> One environment was Ubuntu 23.10 Mantic Minotaur on the desktop at work.
->>>>
->>>> The laptop also has Mantic Minotaur, but for some reason it spawns multithreaded
->>>> dpkg-deb when building packages, unlike desktop which spawned single-threaded "xz".
->>>>
->>>> This is at least what the "top" displayed when turning on "H" (show threads).
->>>>
->>>> On one system (upgraded 23.10 from 22.04 LTS) the same dpkg-deb shows as multi-threaded
->>>> dpkg-deb, while on the other it calls xz which didn't respect XT_OPT=-T0 (visible
->>>> from the copy+paste from top output).
->>>>
->>>> I am perplexed myself.
->>>>
->>>>>>>> Tasks: 484 total,   2 running, 481 sleeping,   0 stopped,   1 zombie
->>>>>>>> %Cpu(s):  2.5 us,  2.2 sy,  6.3 ni, 85.1 id,  2.3 wa,  0.0 hi,  1.7 si,  0.0 st
->>>>>>>> MiB Mem :  64128.3 total,    524.3 free,   5832.0 used,  58540.9 buff/cache
->>>>>>>> MiB Swap:  32760.0 total,  32758.7 free,      1.2 used.  58296.3 avail Mem
->>>>>>>>
->>>>>>>>        PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+
->>>>>>>> COMMAND
->>>>>>>>
->>>>>>>>     978084 marvin    30  10  112440  97792   2432 R 100.0   0.1  29:30.23 xz
->>>>>>>>
->>>>>>>>
->>>>>>>> Before dpkg-deb was using up to 3200% of CPU time on a 16 core SMT CPU.
->>>>>>>>
->>>>>>>> Can it be something with dpkg-deb --thread-max=%n option?
->>>>>>>
->>>>>>> I cannot find any --thread-max option in Linux tree.  Do you call
->>>>>>> dpkg-deb manually or somehow induce a thread maximum?
->>>>>>>
->>>>>>>> Waiting for half an hour just for the build of linux-image-...-dbg package
->>>>>>>> seems like an overkill ...
->>>>>>>
->>>>>>> With current v6.7 release tree I do not see the reported slow-downs
->>>>>>> when building bindeb-pkg; I tested by cross-compiling for arm64 on
->>>>>>> amd64 with CONFIG_MODULE_COMPRESS_XZ=y and =n).
->>>>>>>
->>>>>>> Both take roughly 5mins on my 24-core i9 system.
->>>>>>>
->>>>>>> Kind regards,
->>>>>>> Nicolas
->>>>>>
->>>>>> I am perplexed too, but you can see from the top output the
->>>>>> single-threaded xz with 29:30m processor time.
->>>>>>
->>>>>> On my laptop with the sam Ubuntu 23.10 mantic minotaur, I have
->>>>>> dpkg-deb version 1.20.12 and it shows things like 400% and 3200%
->>>>>> CPU time, so it is working multithreaded.
->>>>>>
->>>>>> On desktop machine with the same Ubuntu 23.10 and the same git
->>>>>> torvalds tree, it starts single-threaded xz from dpkg-deb instead.
->>>>>
->>>>> You built the same mainline git tree on your laptop and desktop.
->>>>> The former runs xz multi-threaded, the latter single-threaded.
->>>>>
->>>>> So, this is not about the kernel code, but about your environment,
->>>>> isn't it?
->>>>
->>>> It should be. Somehow it doesn't behave rationally. To be true to the facts,
->>>> one is 23.10 Mantic Minotaur upgraded from 22.04 LTS, and the other is
->>>> fresh Mantic from install.
->>>>
->>>>> You mentioned you were using Ubuntu 23.10, where
->>>>> dpkg-deb version is 1.22.0
->>>>
->>>> This is correct.
->>>>
->>>>> Your dpkg-deb version, 1.20.12, is too old for Ubuntu 23.10.
->>>>> Is it a self-built one?
->>>>
->>>> Yes, it is the build from Debian 11 source package.
->>>>
->>>> This had the similar rationale because Ubuntu version ran single-threaded.
->>>>
->>>> dpkg-deb from Debian 11 source package worked well for months.
->>>>
->>>>> dpkg-deb usually compresses binary packages, but the default
->>>>> compression type depends on the distro.
->>>>> (It is determined at "./configure" time)
->>>>
->>>> I see. But the home-built dpkg-deb also resorted to running "xz", and
->>>> xz did not recognise XZ_OPT environment variable. Very odd. :-/
->>>
->>> It depends on the environment whether or not dpkg-deb
->>> spawns the external 'xz' command.
->>>
->>> With WITH_LIBLZMA defined, dpkg-deb uses internal code
->>> to compress the data with xz.  [1]
->>>
->>> Without WITH_LIBLZMA, dpkg-deb sparns "xz" processes. [2]
->>>
->>> [1]: https://salsa.debian.org/dpkg-team/dpkg/-/blob/1.20.12/lib/dpkg/compress.c?ref_type=tags#L412
->>> [2]: https://salsa.debian.org/dpkg-team/dpkg/-/blob/1.20.12/lib/dpkg/compress.c?ref_type=tags#L663
->>>
->>> Since you said you saw "xz" in the "ps" command output,
->>> I believe your case is the latter.
->>
->> Thanks for your insight. It is obviously a compile-time define.
->>
->> In previous build the defaults were apparently different. The Debian defaulting to multi-threaded
->> dpkg-deb was the exact reason why I did the hand build in the first place.
->>
->> In the long run, it saved an awful lot of time.
->>
->> But I can't see the logic of enforcing the single-threaded "xz" from dpkg-deg :-/
->>
->>> When dpkg-deb swarns the external "xz" command,
->>> dpkg-deb unsets "XZ_OPT". [3]
->>>
->>> I believe that's why you do not see XZ_OPT propagated.
->>>
->>> [3]: https://salsa.debian.org/dpkg-team/dpkg/-/blob/1.20.12/lib/dpkg/compress.c?ref_type=tags#L643
->>
->> Your insight really casts light on this. Now it is very clear.
->>
->> But IMHO single-threaded 30-min xz compression on a 16-core or 32-SMT machine is kind of weird.
->> I wish there was something we could do about it.
->>
->> The same happened with the rpmbuild with similar defaults on Fedora. :-(
->>
->>>>> On Ubuntu, the default compression type for dpkg-deb is "zstd"
->>>>> (while it is "xz" on Debian)
->>>>>
->>>>> Check "man dpkg-deb" on your Ubuntu machine.
->>>>>
->>>>>      -Zcompress‐type
->>>>>          Specify which compression type to use when building a package.
->>>>>          Allowed values are gzip, xz (since dpkg 1.15.6),
->>>>>          zstd (since dpkg 1.21.18) and none (default is zstd).
->>>>
->>>> Verified. "man dpkg-deb" confirms that.
->>>>
->>>>> You are still allowed to use xz with "make KDEB_COMPRESS=xz deb-pkg".
->>>>> Is this your case?
->>>>
->>>> Somehow, my Mantic's "xz" did not react to the environment variables. Maybe it is
->>>> enchanted? :-/
->>>>> Overall, your report is not sensible.
->>>>
->>>>> You should check what you are seeing.
->>>>
->>>> I was seeing exactly what I copy+pasted (top output). Give me the benefit of doubt
->>>> that I did not falsify copy+paste. Ideally, I should have submitted JPG terminal
->>>> screenshot.
->>>>
->>>> Home-built dpkg-deb worked well on Ubuntu 22.04 LTS and 23.10 (upgraded from 22.04).
->>>> So it was a surprise that it started showing quirks on this new box with fresh 23.10
->>>> from .iso.
->>>>
->>>> But I am only 16 months in the Linux kernel development, so it is probably my fault.
->>>>
->>>> I saw from the output of "ps xewww" that "xz" had "XZ_OPT=-T0", but it refused to obey
->>>> the environment variable.
->>>>
->>>> This is probably worth digging and delving into to find the culprit, but eventually the
->>>> workaround was the script manually prepending "--threads=0" to the parameter list and
->>>> calling system xz:
->>>>
->>>>           /usr/bin/xz --threads=0 "$@"
->>>>
->>>> Certainly, I need to establish "normality" before building complex kernels and applying
->>>> patches or the results will be non-reproducible and useless.
->>>>
->>>> I did the background search on your valuable contributions to the LK, but as we have this
->>>> problem with the vanilla installation of Ubuntu, maybe we can think of something to
->>>> optimise the LK build time?
->>>
->>>
->>> I do not think so.
->>>
->>> There already exists a solution to control the number of threads.
->>>
->>> See "man dpkg-deb"
->>>
->>>      DPKG_DEB_THREADS_MAX
->>>          Sets the maximum number of threads allowed for compressors that
->>>          support multi‐threaded operations (since dpkg 1.21.9).
->>>
->>>          The --threads-max option overrides this value.
->>> By setting this env variable, you should be able to control the multi-threading.
->>>
->>>
->>> However, your dpkg-deb is 1.20.12, so you need to use a newer version.
->>>
->>> You locally hacked builddeb to add --threads-max, but it does not
->>> work for you for the same reason; it requires dpkg 1.21.9+
->>>
->>>     --threads-max=threads
->>>        Sets the maximum number of threads allowed for compressors that support
->>>        multi‐threaded operations (since dpkg 1.21.9).
->>>
->>> Why do you stick to the old home-built dpkg-deb?
->>>
->>> If you use the default dpkg-deb bundled with Ubuntu 23.10,
->>> you will have a better experience.
->>
->> Yes, but I did it because Ubuntu dpkg-deb was single-threaded by default. I did not
->> know so many kbuild options at the time ...
+On Mon, Jan 15, 2024 at 09:34PM +0100, Marco Elver wrote:
+> On Mon, 15 Jan 2024 at 19:44, Alexander Potapenko <glider@google.com> wrote:
+> >
+> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > Cc: Marco Elver <elver@google.com>
+> > Cc: Dmitry Vyukov <dvyukov@google.com>
+> > Cc: kasan-dev@googlegroups.com
+> > Cc: Ilya Leoshkevich <iii@linux.ibm.com>
+> > Cc: Nicholas Miehlbradt <nicholas@linux.ibm.com>
+> >
+> > Hi folks,
+> >
+> > (adding KMSAN reviewers and IBM people who are currently porting KMSAN to other
+> > architectures, plus Paul for his opinion on refactoring RCU)
+> >
+> > this patch broke x86 KMSAN in a subtle way.
+> >
+> > For every memory access in the code instrumented by KMSAN we call
+> > kmsan_get_metadata() to obtain the metadata for the memory being accessed. For
+> > virtual memory the metadata pointers are stored in the corresponding `struct
+> > page`, therefore we need to call virt_to_page() to get them.
+> >
+> > According to the comment in arch/x86/include/asm/page.h, virt_to_page(kaddr)
+> > returns a valid pointer iff virt_addr_valid(kaddr) is true, so KMSAN needs to
+> > call virt_addr_valid() as well.
+> >
+> > To avoid recursion, kmsan_get_metadata() must not call instrumented code,
+> > therefore ./arch/x86/include/asm/kmsan.h forks parts of arch/x86/mm/physaddr.c
+> > to check whether a virtual address is valid or not.
+> >
+> > But the introduction of rcu_read_lock() to pfn_valid() added instrumented RCU
+> > API calls to virt_to_page_or_null(), which is called by kmsan_get_metadata(),
+> > so there is an infinite recursion now. I do not think it is correct to stop that
+> > recursion by doing kmsan_enter_runtime()/kmsan_exit_runtime() in
+> > kmsan_get_metadata(): that would prevent instrumented functions called from
+> > within the runtime from tracking the shadow values, which might introduce false
+> > positives.
+> >
+> > I am currently looking into inlining __rcu_read_lock()/__rcu_read_unlock(), into
+> > KMSAN code to prevent it from being instrumented, but that might require factoring
+> > out parts of kernel/rcu/tree_plugin.h into a non-private header. Do you think this
+> > is feasible?
 > 
+> __rcu_read_lock/unlock() is only outlined in PREEMPT_RCU. Not sure that helps.
 > 
+> Otherwise, there is rcu_read_lock_sched_notrace() which does the bare
+> minimum and is static inline.
 > 
-> No.
-> 
-> The dpkg-deb on Ubuntu works multi-threaded by default.
-> 
-> Just try /usr/bin/dpkg-deb installed by APT, then
-> you will see more than 100% CPU resources used.
-> 
-> 
-> With proper library installed, "./configure" for dpkg
-> should show:
-> 
->    checking for lzma_stream_encoder_mt in -llzma... yes
-> 
-> 
-> With HAVE_LZMA_MT_ENCODER defined, filter_xz_get_cputhreads()
-> returns the number of threads to use.
-> The default is the number of available CPU cores.
-> 
-> [1]: https://salsa.debian.org/dpkg-team/dpkg/-/blob/main/lib/dpkg/compress.c?ref_type=heads#L717
+> Does that help?
 
-I think that 20.04 LTS or 18.04 LTS didn't by default (or I wouldn't have the need to
-build a home-built dpkg-deb in the first place), and it was a big issue back then:
+Hrm, rcu_read_unlock_sched_notrace() can still call
+__preempt_schedule_notrace(), which is again instrumented by KMSAN.
 
-[1] https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=501456
+This patch gets me a working kernel:
 
-[2] https://askubuntu.com/questions/841784/any-way-to-multithread-dpkg-deb
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 4ed33b127821..2d62df462d88 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -2000,6 +2000,7 @@ static inline int pfn_valid(unsigned long pfn)
+ {
+ 	struct mem_section *ms;
+ 	int ret;
++	unsigned long flags;
+ 
+ 	/*
+ 	 * Ensure the upper PAGE_SHIFT bits are clear in the
+@@ -2013,9 +2014,9 @@ static inline int pfn_valid(unsigned long pfn)
+ 	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+ 		return 0;
+ 	ms = __pfn_to_section(pfn);
+-	rcu_read_lock();
++	local_irq_save(flags);
+ 	if (!valid_section(ms)) {
+-		rcu_read_unlock();
++		local_irq_restore(flags);
+ 		return 0;
+ 	}
+ 	/*
+@@ -2023,7 +2024,7 @@ static inline int pfn_valid(unsigned long pfn)
+ 	 * the entire section-sized span.
+ 	 */
+ 	ret = early_section(ms) || pfn_section_valid(ms, pfn);
+-	rcu_read_unlock();
++	local_irq_restore(flags);
+ 
+ 	return ret;
+ }
 
-It was an issue back then already, but on a system with 6+ cores the difference is significant.
-Of course, back then a 4-core/8-thread CPU was a rocket :-)
+Disabling interrupts is a little heavy handed - it also assumes the
+current RCU implementation. There is
+preempt_enable_no_resched_notrace(), but that might be worse because it
+breaks scheduling guarantees.
 
-If I could only teleport this system back to 2000s and use it with those ideas 8-)
+That being said, whatever we do here should be wrapped in some
+rcu_read_lock/unlock_<newvariant>() helper.
 
-Best regards,
-Mirsad
+Is there an existing helper we can use? If not, we need a variant that
+can be used from extremely constrained contexts that can't even call
+into the scheduler. And if we want pfn_valid() to switch to it, it also
+should be fast.
+
+Thanks,
+-- Marco
 
