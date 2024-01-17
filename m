@@ -1,105 +1,113 @@
-Return-Path: <linux-kernel+bounces-29019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE9A2830701
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:23:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFDF8830709
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:25:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 014DE1C21547
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:23:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 748131F25D7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:25:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5DB71F5F3;
-	Wed, 17 Jan 2024 13:23:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA1C01EB55;
+	Wed, 17 Jan 2024 13:24:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O3ltVMKf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="RU13b9Td"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB6FD1F922;
-	Wed, 17 Jan 2024 13:23:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BDC210799;
+	Wed, 17 Jan 2024 13:24:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705497795; cv=none; b=dYd9ZWTS4RzUjDCsB8BMlpqaPY/7o1u9IyV/44unQ7n5OlfpraXyosdjUemBXGu6fhzIyBkQuSAKpbW7GowN6bnZcasc4crHLnHEY+rQbaMD5zmyNlaCwqCDs6DJDM1LEYuBp/TmKvfYAWy9SldK1CkCeFvYrYM3/pX/DoszUTM=
+	t=1705497893; cv=none; b=E7IDz3xEreRRJFITEstqZ1TFLL6xbBLJdlry4EuPecSEUi7ZEESqltv2MMfkPnEcNYUbNNCYfA4OpGAxWKEtp+2rADsTQawPWhfJc7N6QhNeapqY2cvfBy7C8SY/oFRUMmG1C+uMNXRGzIe+j5ktwGItEvmAESIX4dA/DqYQDXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705497795; c=relaxed/simple;
-	bh=RlrKzDkIjIq2TVxqUGllwocF4eW5X7TS+IGUjH/GmNc=;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
-	 X-Mailer:In-Reply-To:References:MIME-Version:Content-Type:
-	 X-Developer-Signature:X-Developer-Key:Content-Transfer-Encoding;
-	b=q0FfiZgHt4Vc2RSaQDcmoxGxp6HRSS9c6cO4XfmCA0epFaf4jITmj1BsaMYmVFw66fA64dlmIHXI0sDQWWPMyP/+1JZYsJ2P9EQ0FJg1fUomEy+/rrtxb5Cjq8tddKnhRueETdGfeVyKWMJ9AlUcWs4eOqfllEatQFXWi8zFa3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O3ltVMKf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D20C4C433F1;
-	Wed, 17 Jan 2024 13:23:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705497794;
-	bh=RlrKzDkIjIq2TVxqUGllwocF4eW5X7TS+IGUjH/GmNc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=O3ltVMKfNpps7jLn6qrK66z9essBMT7uQdldoI41FVeZpP5s2NuWF94UNzHV38/wT
-	 eSR3kJEVj8/SMmxrcnL530OJP5anCDb1EHgDiqc/gAARZRJC480B8q8z59Z7WwSeIX
-	 DB+oikzFQUKuZSAP02ANo7U/oBqLg1y5FFBpZ3ETmZt9FbhUyxA9/VZVVBfUlMF2q6
-	 2wZxrcvQsIBEsb/ZEnid4dpeoYdLdVIDEKUBx2XiuBBLzyJsuV+uxdReK1lNBmNd5p
-	 ZEiB5FssjuGIMYYvlvKzvyzXWfP4UDW3dyNgqbQT7YGeFisVysGjiyqpXFcCxPm+Xt
-	 qshFMsBJy3xXQ==
-From: Christian Brauner <brauner@kernel.org>
-To: jmorris@namei.org,
-	serge@hallyn.com,
-	shuah@kernel.org,
-	mathieu.desnoyers@efficios.com,
-	mic@digikod.net,
-	amir73il@gmail.com,
-	avagin@google.com,
-	Hu Yadi <hu.yadi@h3c.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	linux-api@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	514118380@qq.com
-Subject: Re: [PATCH] selftests/filesystems:fix build error in overlayfs
-Date: Wed, 17 Jan 2024 14:23:02 +0100
-Message-ID: <20240117-strotzen-wegkommen-e7ac317948c6@brauner>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240112074059.29673-1-hu.yadi@h3c.com>
-References: <20240112074059.29673-1-hu.yadi@h3c.com>
+	s=arc-20240116; t=1705497893; c=relaxed/simple;
+	bh=uk0oEvzGdLc3yF4zp2bMI+rdHVz8vGNoe+a81asr5Uo=;
+	h=Received:DKIM-Signature:Received:Received:Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
+	 To:CC:References:From:Organization:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy:
+	 X-Proofpoint-Virus-Version; b=rvOogv/rl6rbSnm4lTjPfnQl2dHl2b82rTgg5wp/03klgDJpWOaz/BnluiPe5FCBbBl2AdZYXUxW+bes+mr0J5L5FmvR6gXbhGm6g9TDyJem7sNViH3pehVnT4XARAbgKblCex9Ng3wXCKPb8U1VT5XmIjjHjqXEn3skLH13VL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=RU13b9Td; arc=none smtp.client-ip=185.132.182.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40H8PCcZ007691;
+	Wed, 17 Jan 2024 14:24:44 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=Te5k9GkTLi4Sq5SrTeZvD0LQS6mMi38YJ0s674SsFqc=; b=RU
+	13b9TdAMAL+P2hVT9WMM/28C2mJy9TDKtLPF7dQtrd4P3e4Pt1RUQJSMDr41RlK9
+	RV5sErUS8kxEXrquN9KVH/+ZHgvwsNTrTIiqObUBoaQOiCP2NdQIMcvMPbnZuwgR
+	VfgJ/2IH715yQAd/QZg0I+DBCfjZtq/sIazsX2uym40aMTB9kuEHeJ3XIR4JPxu5
+	zVcT7MHVytT4J7RonRH6GyWnWayxtGzMNFkA8k1cwk5ZM7Z7aCS6v+vDI3I+smCV
+	24vCYB2S/aYQsZj6SzEqRni5cXv/pTx/mFtU+c5CBoMqb6xrsko6nGUzMuWNjLS0
+	c2ZrrN9OJLH9uJtDQIng==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vkmfym3e4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 14:24:44 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7D7A8100079;
+	Wed, 17 Jan 2024 14:24:43 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6EF5E208D45;
+	Wed, 17 Jan 2024 14:24:43 +0100 (CET)
+Received: from [10.252.22.63] (10.252.22.63) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 17 Jan
+ 2024 14:24:41 +0100
+Message-ID: <96941fae-8341-4834-9283-4f6def47b1f0@foss.st.com>
+Date: Wed, 17 Jan 2024 14:24:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1149; i=brauner@kernel.org; h=from:subject:message-id; bh=RlrKzDkIjIq2TVxqUGllwocF4eW5X7TS+IGUjH/GmNc=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQuv7LjCodESftWD40ivqbiAKabFjaLcl6GP9prV/e29 GLFPnWzjlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgImkrmT4ZyJoU8uQpNmaxel0 cVHEorj7uoES5aWCsgslOFZ9NWuwZPjvU3KIJc5SKcVkv9TsJzqCzFd2vt6vLhwkN81lT1BDxEk 2AA==
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] remoteproc: stm32: Fix sparse warnings
+Content-Language: en-US
+To: Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier
+	<mathieu.poirier@linaro.org>
+CC: <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20240117131817.3338146-1-arnaud.pouliquen@foss.st.com>
+From: Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Organization: STMicroelectronics
+In-Reply-To: <20240117131817.3338146-1-arnaud.pouliquen@foss.st.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-17_08,2024-01-17_01,2023-05-22_02
 
-On Fri, 12 Jan 2024 15:40:59 +0800, Hu Yadi wrote:
-> One build issue comes up due to both mount.h included dev_in_maps.c
+Hi,
+
+On 1/17/24 14:18, Arnaud Pouliquen wrote:
+> Fix warnings reported by sparse using make option "C=1"
 > 
-> In file included from dev_in_maps.c:10:
-> /usr/include/sys/mount.h:35:3: error: expected identifier before numeric constant
->    35 |   MS_RDONLY = 1,  /* Mount read-only.  */
->       |   ^~~~~~~~~
-> In file included from dev_in_maps.c:13:
+> Arnaud Pouliquen (2):
+>   remoteproc: stm32: Fix incorrect type in assignment for va
+>   remoteproc: stm32: Fix incorrect type assignment returned by
+>     stm32_rproc_get_loaded_rsc_tablef
 > 
-> [...]
+>  drivers/remoteproc/stm32_rproc.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> 
+> base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
 
-Applied to the vfs.misc branch of the vfs/vfs.git tree.
-Patches in the vfs.misc branch should appear in linux-next soon.
+I faced an issue with the ST server message that blocked a part
+of the mails associated with this series. Please ignore this series,
+as I will resend it.
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
-
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.misc
-
-[1/1] selftests/filesystems:fix build error in overlayfs
-      https://git.kernel.org/vfs/vfs/c/f67dae6ba174
+Regards
+Arnaud
 
