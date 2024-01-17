@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-28990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8F26830615
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:52:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8668A83061A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:52:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F9DB1F2539D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:52:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E93B28B2B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:52:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3DDD200C3;
-	Wed, 17 Jan 2024 12:51:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22B0120323;
+	Wed, 17 Jan 2024 12:51:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NVeGgeS5"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i1tfevLO"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A891F606;
-	Wed, 17 Jan 2024 12:51:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A07831F934;
+	Wed, 17 Jan 2024 12:51:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705495899; cv=none; b=VyncjEBSnVOc4YI0JkWuzbWSLiZrt9J2tyqA6jOTztAQsrYjnTNJ4KdYn+FJ5Uqb7zgD26jPAGf4yqS+m+XBSkSAQ49QGq+NrifHHsC7tfH10JJMpJWShO1+lxJZ3NVYn2Tu5ltTPcYIqMVcZKw3dxq21JwC2hKJfRVmjGZ31eM=
+	t=1705495901; cv=none; b=bJ7adSoXCMpg2WB1XYIHryKAXDRtiAiZoTrxBfXqmSHBeLdZn2B0JyIOe3niPTdVEJC8IHcPawyq+MyGWzLMce0ltBfA9xtYIHsoiFCLPcmHX+Fk3Fntdy91Y0aRJsQxbyq3rfs4hVJhBH99PgqXg+d3EzinAtCKggE3phRjV1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705495899; c=relaxed/simple;
-	bh=rZdXxZyCEnWFR8TyQNWm4yjCaV4aXUlaTR3kIo+Mdm8=;
+	s=arc-20240116; t=1705495901; c=relaxed/simple;
+	bh=H/rbY7Fk59oQE+dmC0993b4QcnhAD+ZNBlllja1G44A=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
 	 To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding; b=oB0gIxvdKwfHinL6yLFHIwRT0mm0cRR+we6KeXj6fD3kYuipi9cDauAdMf2PPwlkdWIAi7RTPsIrnz0KxT4D3E3zXOanZbyt4uWL6JE3/1f9k3i++60ZgWcVe94R4XwG6I8lVn31c1Zmai/QN+h8LV6mlzajxSnHoeVb29Q0zhc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NVeGgeS5; arc=none smtp.client-ip=209.85.218.52
+	 MIME-Version:Content-Transfer-Encoding; b=jzKJuRcdwekjCkGcUeZNmPT2YXhlGdz9JSZ8i0GqF1I9HhaqSkeRgjKmahFJvACB31Wf0CUFzYzQ7zspXEujV5n1oSw/GktYPOYvkQ/Ajkf+FJ0yDasiAmzZRYAYQaacX6tHQ2CmTFLYMhseyCq70/0HDnt98RkD0VqeDpcl0m4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i1tfevLO; arc=none smtp.client-ip=209.85.167.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a2cea0563cbso756315366b.3;
-        Wed, 17 Jan 2024 04:51:37 -0800 (PST)
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50edf4f478eso9642264e87.3;
+        Wed, 17 Jan 2024 04:51:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705495896; x=1706100696; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705495897; x=1706100697; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=L5ZLiXR5kdUypmrHIYtLlSib8TGB/r6oX4cgy4GCPvM=;
-        b=NVeGgeS5vcNO1UBliZCo2INJvYokLcPWcDfRPBv5SEqmC5WhsAuV71dQUK82LI4Vvr
-         +wF18fZKqXg7JnTPKcO/pJ37X4Dg5J6HBFVAtrof+Q2PivqA2YXI76weNZZ0S53JXntK
-         ujaIw/DEUTv1aFzeKDn3awklYmvvfnepyIKkjK5AxMu3cUP6uHuWKWZg4mqGs0Yhb1zE
-         15AZJqU1xOjGEaqaH9Fswixx5fZ3L8edgCeX7kGh3jufQ+SjCUdc6l1ppcoP1FslKYVx
-         CM7gbpVO6tbBytcZbCFeaO00y0EQXGP9VBOJ+kLlHaI4WdeYuqXo+aDD0hpKZP+ALBjQ
-         HF/Q==
+        bh=Dxr/9CTeqKC0kqg27NYuTzJNXMtNwRstnFwO4ZakeEs=;
+        b=i1tfevLO65lZYhjTUdU+jRL3Jgnf6U4HGzqgW0sX7vkgp0YUaggslAvLqcdkvN5pOa
+         e80OtNA9giqrmPB7ROWOvA0EBxQ59+1kQ05qrImiRJb+p8uU+yV1K8yDAPrkuTGQG7Zk
+         krGg7JKl60g2cPQO+UxdmcbogWIH3RL5WRLM+Mxi0IbQ+xcdBxZZTyM7LTDzhfTXT2Hz
+         Qqk4sMq5nZhq3V6/SQIc732+4tXM7ZJeXbXcYQXPidGrpipTbRk+w4QoAqemehxR36ze
+         Vim7D/wYBmCHgmmzpBylVoqs6GR2Bod1UjAlhxXM0KUXwTm30UrzbL2GHulhGAP29QwU
+         yvKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705495896; x=1706100696;
+        d=1e100.net; s=20230601; t=1705495897; x=1706100697;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=L5ZLiXR5kdUypmrHIYtLlSib8TGB/r6oX4cgy4GCPvM=;
-        b=vNaJfudphuQ/XjYXFOglG1RPerCylx/6ig2WsuLiKcJ93eURm7aE0ANjdUgVzHWA89
-         Xs/42RL8y6Fwj8ZO1MfPSHt7oQQxukBj2HBGWxAu9T/Ocwuklrt0BbeAObeMKppzNBfO
-         YLKwoUDdRozFyxAzAjug/HzuUaoE5/4U3Qvj3Sn+JvjvMhDRwrdOAwoNfaOa+eD7cmja
-         jWkvBOLLyQxK3VICQYdlC0o1GthOfksU0vlHKoWGDIw10CJt83ZEUb+R1Y6B856gP99l
-         CJ+J3crvyA5l20YVifKojkgRKLAddrteW0mphcDW3Nn1d6c+zM+ZFYZmLnaSnyEivBKO
-         NrRw==
-X-Gm-Message-State: AOJu0YzdquyFb4GpSfW7LzKYYOmXCbiuRB7pyVdpHvxbSStT0jnHhPed
-	9K3wDxlJkrCXePP5N+H1PInDUrwG4Fc/jw==
-X-Google-Smtp-Source: AGHT+IF9r/nZwOZ6mVkIlgUhmh2o3dTQNnudOztLr/ghUY3RPJs3BsEw0t1t/thmpn2iH4xPC+l9Dg==
-X-Received: by 2002:a17:906:30c2:b0:a2c:1061:c648 with SMTP id b2-20020a17090630c200b00a2c1061c648mr4343059ejb.9.1705495896169;
-        Wed, 17 Jan 2024 04:51:36 -0800 (PST)
+        bh=Dxr/9CTeqKC0kqg27NYuTzJNXMtNwRstnFwO4ZakeEs=;
+        b=sraO3M0xvd2fQGwGY0BllUAaGSGZIOom1YO7imN4Ny4OY2G08bkCLvBGtcQ3R2DE2t
+         otY6J9MZGD2yVpY8lIzgsbJygR9YJaYRsbXMN+MCuNnNz04EvltQarZW1KWBY5ovAEW5
+         NbqQqTzf0XvLSt4UN9irZbmHzuXKZN4lMpKGBdf2PVdBMCjsuLQRM9mWs1+yupNLRxdb
+         GAlw1ovnUHiTPnZOuLyeffexinhBw1ofVxm5rhDU0MTg/CZAOxeefezjjVnFg9SOrcoY
+         v2IAf+AUKuxDm7iQW1ytNHI1CGedWcjUuBgdq70+sKc7kQm9kLDa+7nsypcrh0c5WDRm
+         sIXg==
+X-Gm-Message-State: AOJu0YxAdwRe5JSMJTFTq+uEFz5d0cmgF5SUSuChAbiIK3uKSoVqRHiI
+	6flGFgnrKaE9p+AVrL6P6JYCRSIQphkd/g==
+X-Google-Smtp-Source: AGHT+IFICzlmz3O5aD9LZKZC1UolRUKxilZ8fz0+2YuV5GXF0TnqIzMceEEHZ7RAPrSgse9mGDeAVQ==
+X-Received: by 2002:a05:6512:1316:b0:50e:bf2f:cfe9 with SMTP id x22-20020a056512131600b0050ebf2fcfe9mr4642193lfu.90.1705495897342;
+        Wed, 17 Jan 2024 04:51:37 -0800 (PST)
 Received: from HYB-hhAwRlzzMZb.ad.analog.com ([5.2.194.157])
-        by smtp.gmail.com with ESMTPSA id t13-20020a17090616cd00b00a2ea45637desm1277247ejd.112.2024.01.17.04.51.35
+        by smtp.gmail.com with ESMTPSA id t13-20020a17090616cd00b00a2ea45637desm1277247ejd.112.2024.01.17.04.51.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 04:51:35 -0800 (PST)
+        Wed, 17 Jan 2024 04:51:36 -0800 (PST)
 From: Dumitru Ceclan <mitrutzceclan@gmail.com>
 To: 
 Cc: Lars-Peter Clausen <lars@metafoo.de>,
@@ -79,9 +79,9 @@ Cc: Lars-Peter Clausen <lars@metafoo.de>,
 	linux-kernel@vger.kernel.org,
 	Ceclan Dumitru <dumitru.ceclan@analog.com>,
 	Dumitru Ceclan <mitrutzceclan@gmail.com>
-Subject: [PATCH v4 3/5] iio: amplifiers: hmc425a: move conversion logic
-Date: Wed, 17 Jan 2024 14:51:12 +0200
-Message-ID: <20240117125124.8326-4-mitrutzceclan@gmail.com>
+Subject: [PATCH v4 4/5] iio: amplifiers: hmc425a: use pointers in match table
+Date: Wed, 17 Jan 2024 14:51:13 +0200
+Message-ID: <20240117125124.8326-5-mitrutzceclan@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20240117125124.8326-1-mitrutzceclan@gmail.com>
 References: <20240117125124.8326-1-mitrutzceclan@gmail.com>
@@ -93,150 +93,99 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Move gain-dB<->code conversion logic from read_raw and write_raw to
-hmc425a_gain_dB_to_code() and hmc425a_code_to_gain_dB().
+Change the match table to use pointers instead of device ids.
+Alignment of the hmc425a_state was changed because of the const
+ specifier for hmc425a_chip_info.
 
 Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
 ---
- drivers/iio/amplifiers/hmc425a.c | 102 ++++++++++++++++++-------------
- 1 file changed, 59 insertions(+), 43 deletions(-)
+ drivers/iio/amplifiers/hmc425a.c | 39 ++++++++++++++++++--------------
+ 1 file changed, 22 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/iio/amplifiers/hmc425a.c b/drivers/iio/amplifiers/hmc425a.c
-index ed4d72922696..e1162a500daf 100644
+index e1162a500daf..b116b54e4206 100644
 --- a/drivers/iio/amplifiers/hmc425a.c
 +++ b/drivers/iio/amplifiers/hmc425a.c
-@@ -56,35 +56,72 @@ static int hmc425a_write(struct iio_dev *indio_dev, u32 value)
- 	return 0;
- }
+@@ -37,11 +37,11 @@ struct hmc425a_chip_info {
+ };
  
-+static int hmc425a_gain_dB_to_code(struct hmc425a_state *st, int val, int val2, int *code)
-+{
-+	struct hmc425a_chip_info *inf = st->chip_info;
-+	int gain, temp;
-+
-+	if (val < 0)
-+		gain = (val * 1000) - (val2 / 1000);
-+	else
-+		gain = (val * 1000) + (val2 / 1000);
-+
-+	if (gain > inf->gain_max || gain < inf->gain_min)
-+		return -EINVAL;
-+
-+	switch (st->type) {
-+	case ID_HMC425A:
-+		*code = ~((abs(gain) / 500) & 0x3F);
-+		return 0;
-+	case ID_HMC540S:
-+		*code = ~((abs(gain) / 1000) & 0xF);
-+		return 0;
-+	case ID_ADRF5740:
-+		temp = (abs(gain) / 2000) & 0xF;
-+		*code = temp & BIT(3) ? temp | BIT(2) : temp;
-+		return 0;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int hmc425a_code_to_gain_dB(struct hmc425a_state *st, int *val, int *val2)
-+{
-+	int code, gain;
-+
-+	code = st->gain;
-+	switch (st->type) {
-+	case ID_HMC425A:
-+		gain = ~code * -500;
-+		break;
-+	case ID_HMC540S:
-+		gain = ~code * -1000;
-+		break;
-+	case ID_ADRF5740:
-+		code = code & BIT(3) ? code & ~BIT(2) : code;
-+		gain = code * -2000;
-+		break;
-+	}
-+
-+	*val = gain / 1000;
-+	*val2 = (gain % 1000) * 1000;
-+
-+	return 0;
-+}
-+
- static int hmc425a_read_raw(struct iio_dev *indio_dev,
- 			    struct iio_chan_spec const *chan, int *val,
- 			    int *val2, long m)
- {
- 	struct hmc425a_state *st = iio_priv(indio_dev);
--	int code, gain = 0;
- 	int ret;
+ struct hmc425a_state {
+-	struct	mutex lock; /* protect sensor state */
+-	struct	hmc425a_chip_info *chip_info;
+-	struct	gpio_descs *gpios;
+-	enum	hmc425a_type type;
+-	u32	gain;
++	struct				mutex lock; /* protect sensor state */
++	const struct			hmc425a_chip_info *chip_info;
++	struct				gpio_descs *gpios;
++	enum				hmc425a_type type;
++	u32				gain;
+ };
  
- 	mutex_lock(&st->lock);
- 	switch (m) {
- 	case IIO_CHAN_INFO_HARDWAREGAIN:
--		code = st->gain;
--
--		switch (st->type) {
--		case ID_HMC425A:
--			gain = ~code * -500;
--			break;
--		case ID_HMC540S:
--			gain = ~code * -1000;
-+		ret = hmc425a_code_to_gain_dB(st, val, val2);
-+		if (ret)
- 			break;
--		case ID_ADRF5740:
--			code = code & BIT(3) ? code & ~BIT(2) : code;
--			gain = code * -2000;
--			break;
--		}
--
--		*val = gain / 1000;
--		*val2 = (gain % 1000) * 1000;
--
- 		ret = IIO_VAL_INT_PLUS_MICRO_DB;
- 		break;
- 	default:
-@@ -100,36 +137,15 @@ static int hmc425a_write_raw(struct iio_dev *indio_dev,
- 			     int val2, long mask)
+ static int hmc425a_write(struct iio_dev *indio_dev, u32 value)
+@@ -58,7 +58,7 @@ static int hmc425a_write(struct iio_dev *indio_dev, u32 value)
+ 
+ static int hmc425a_gain_dB_to_code(struct hmc425a_state *st, int val, int val2, int *code)
  {
- 	struct hmc425a_state *st = iio_priv(indio_dev);
 -	struct hmc425a_chip_info *inf = st->chip_info;
--	int code = 0, gain;
--	int ret;
--
--	if (val < 0)
--		gain = (val * 1000) - (val2 / 1000);
--	else
--		gain = (val * 1000) + (val2 / 1000);
--
--	if (gain > inf->gain_max || gain < inf->gain_min)
--		return -EINVAL;
--
--	switch (st->type) {
--	case ID_HMC425A:
--		code = ~((abs(gain) / 500) & 0x3F);
--		break;
--	case ID_HMC540S:
--		code = ~((abs(gain) / 1000) & 0xF);
--		break;
--	case ID_ADRF5740:
--		code = (abs(gain) / 2000) & 0xF;
--		code = code & BIT(3) ? code | BIT(2) : code;
--		break;
--	}
-+	int code = 0, ret;
++	const struct hmc425a_chip_info *inf = st->chip_info;
+ 	int gain, temp;
  
- 	mutex_lock(&st->lock);
- 	switch (mask) {
- 	case IIO_CHAN_INFO_HARDWAREGAIN:
-+		ret = hmc425a_gain_dB_to_code(st, val, val2, &code);
-+		if (ret)
-+			break;
- 		st->gain = code;
+ 	if (val < 0)
+@@ -187,15 +187,6 @@ static const struct iio_chan_spec hmc425a_channels[] = {
+ 	HMC425A_CHAN(0),
+ };
+ 
+-/* Match table for of_platform binding */
+-static const struct of_device_id hmc425a_of_match[] = {
+-	{ .compatible = "adi,hmc425a", .data = (void *)ID_HMC425A },
+-	{ .compatible = "adi,hmc540s", .data = (void *)ID_HMC540S },
+-	{ .compatible = "adi,adrf5740", .data = (void *)ID_ADRF5740 },
+-	{},
+-};
+-MODULE_DEVICE_TABLE(of, hmc425a_of_match);
 -
- 		ret = hmc425a_write(indio_dev, st->gain);
- 		break;
- 	default:
+ static struct hmc425a_chip_info hmc425a_chip_info_tbl[] = {
+ 	[ID_HMC425A] = {
+ 		.name = "hmc425a",
+@@ -226,6 +217,18 @@ static struct hmc425a_chip_info hmc425a_chip_info_tbl[] = {
+ 	},
+ };
+ 
++/* Match table for of_platform binding */
++static const struct of_device_id hmc425a_of_match[] = {
++	{ .compatible = "adi,hmc425a",
++	  .data = &hmc425a_chip_info_tbl[ID_HMC425A]},
++	{ .compatible = "adi,hmc540s",
++	  .data = &hmc425a_chip_info_tbl[ID_HMC540S]},
++	{ .compatible = "adi,adrf5740",
++	  .data = &hmc425a_chip_info_tbl[ID_ADRF5740]},
++	{},
++};
++MODULE_DEVICE_TABLE(of, hmc425a_of_match);
++
+ static int hmc425a_probe(struct platform_device *pdev)
+ {
+ 	struct iio_dev *indio_dev;
+@@ -237,14 +240,16 @@ static int hmc425a_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	st = iio_priv(indio_dev);
+-	st->type = (uintptr_t)device_get_match_data(&pdev->dev);
+ 
+-	st->chip_info = &hmc425a_chip_info_tbl[st->type];
++	st->chip_info = device_get_match_data(&pdev->dev);
+ 	indio_dev->num_channels = st->chip_info->num_channels;
+ 	indio_dev->channels = st->chip_info->channels;
+ 	indio_dev->name = st->chip_info->name;
+ 	st->gain = st->chip_info->default_gain;
+ 
++	/* Compute index of the acquired chip info in the array */
++	st->type = st->chip_info - hmc425a_chip_info_tbl;
++
+ 	st->gpios = devm_gpiod_get_array(&pdev->dev, "ctrl", GPIOD_OUT_LOW);
+ 	if (IS_ERR(st->gpios))
+ 		return dev_err_probe(&pdev->dev, PTR_ERR(st->gpios),
 -- 
 2.42.0
 
