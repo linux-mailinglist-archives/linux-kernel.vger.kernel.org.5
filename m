@@ -1,161 +1,202 @@
-Return-Path: <linux-kernel+bounces-29474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0914830ECE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 22:52:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1497830ED1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 22:53:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 386571C2221F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 21:52:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EBDD8B24D10
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 21:53:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFC152563C;
-	Wed, 17 Jan 2024 21:52:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67DA92562D;
+	Wed, 17 Jan 2024 21:53:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3sIgyPcK"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eshbwn1b"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A83962562E
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 21:52:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 541B925627
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 21:53:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705528346; cv=none; b=EGEaOM36WkReZ6Mezy6fztNPa8O8r6lnjR/TRANYS+9KRZbc0d05oLDAFrF6PWoY9uALJNTt5u0m1pcwQTrAGz73O99FQ1gaA3qvCcUUsKnQM9NcApUIA7xxBp8fnQTKMkVMmqVkVkuA6HbIOY9rEuGTqtQUN55EKJIc91gS6cM=
+	t=1705528405; cv=none; b=XSBRxl4Fd+s8r4nvJV+h6/FriyN9QGEFaUisdXfscCsjoKmHMXrK5h9rohezDlbmBQzne6mKD8HdYtVvorAWhWjjKBYYP8TB7eAsxGLAfPDbk0fs40bjQs2EECsLffgNNCPeKRxnQ4e47dXCta7CMmem+M3cZ96Cb2VpMFsjyRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705528346; c=relaxed/simple;
-	bh=IvStd2xTfDq5Oo+gHa6tUQKtis3gXAShwVPWtd0rtEA=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=k0HhMwFkcsZXUfDzDB3vEhRnEzuyd9KNE/lcmzCQW7KBUNkQ1UMcixlOdsdt9+TaxrbHyXpAtdvUpVT60/wJRU1UlBHtH8W6eHztmZXHMKmpyYeNgF/mcfmCa35/uJsBXT+JwO7MVrmFukevNZApUZRdzND1BaWDuAr1YmjbwiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3sIgyPcK; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40e4afe9ea7so65975e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 13:52:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705528343; x=1706133143; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fgsNp3I1GyR8LKSkgpTGCtUknvU84IXVbgB3bgHNMiQ=;
-        b=3sIgyPcKFiATnmCr4gLRw1tq9VSn2IP+qZK919eCenod9UkRtlC5P56zGLkxpaCV+a
-         GyNUCuklAVdomTHdJ8fueFCo37kmFcgyDZqVZO3dm8e+pvp6/aUSG1GQMIlttfzzARrA
-         Zgonf58FuhDNAhZvSjarE/i2wJEFF+8BSaoLnSxa0HK9aX6wkhD/UVLOYYAkvFHImCRq
-         7qkjjNHLB4U4ruo4AFbfzvnF8hDU4cEFbRREvWav+eb/jPfQzgP9JN765yd2l/IlP5LU
-         FfFMBdV46pE12wViyfc8np1rRHiOCWv4qnmvigpt2L4P0smNF0AkL6KF8vwqBbnJUYg9
-         EgOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705528343; x=1706133143;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fgsNp3I1GyR8LKSkgpTGCtUknvU84IXVbgB3bgHNMiQ=;
-        b=vyNIIhFdjUnOkES/TPGoZIQHzk0GTc/gPaI5j55prwOsRlaIwEaCrpPQuNZdXPgPHs
-         sYoOTuOOdS2IK+jLP4JLRP6ZR/h3TB/c96WwjcQ/YItVziltXO7y6xhxD8Iah8IywQMB
-         6FJ+kV5WGY5bIDuf5qT7+dPaXRzhn2mff+OPQxY/xEKqq3kePFxAgHP7O4wBE99FIE/k
-         xXqcpiq0q3QRmvqMfqG4+6VWjyABGDGlM3xqbEwEnBhFZyhFtQXvTzXF2H/2tHW4aQMu
-         zsOteJMlrc9lHs3t57KkolLY/Dznj6xAEw2DeREiUdI7vYfQgFOdCzOTqQ1ly5kkMjCy
-         Pc3g==
-X-Gm-Message-State: AOJu0YxG1fW+pd5jQE0aKvNwOkZ2WERJmKUulzPpwNsiYPuMMCdhLDIL
-	Lxdzgj7Vry31brL1mnUWQId/goSqfkEXHR/Klz7cV9M8cgFtuDyslVA/+b5M8ZtmeDrMj6EVjNN
-	7BeHMm6CCq3sh2IUd+umRZ9L6lS4MSTJy+qNK
-X-Google-Smtp-Source: AGHT+IEjpv76xho9RIPvXy4nuNt63b8j9OdHAk+UiuVJdba+peVWPGHxPnwtg0NTkMnxiWXXWBec0vFbBgxMqviuurQ=
-X-Received: by 2002:a05:600c:310b:b0:40e:61cf:af91 with SMTP id
- g11-20020a05600c310b00b0040e61cfaf91mr197767wmo.7.1705528342730; Wed, 17 Jan
- 2024 13:52:22 -0800 (PST)
+	s=arc-20240116; t=1705528405; c=relaxed/simple;
+	bh=f2Ra+sQ7t6rzUkTzQkWh4uqtScQNX1h8QkfWcqdRrm8=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:X-IronPort-AV:Received:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=EfuLVrcIqehqcMbaebrRklKljbazGsVHBDUN+btt+sh/QWfSEbC9fYoySfZ7HCJHamM7v/HEcFeK1o/e6p5kcG7811+SRw6Kr42AyD8RVilkBxnJxPZJ60UIHCkzb1HxgX6PLW723MjnecFANJUUEHNFQwIXbA26VLNQlh8A2JI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eshbwn1b; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705528403; x=1737064403;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=f2Ra+sQ7t6rzUkTzQkWh4uqtScQNX1h8QkfWcqdRrm8=;
+  b=eshbwn1bfobxR2ZTro0mLbiVUXutZq4SJTDmeCpvLKeU2K7WR37Z2T06
+   Bx3YtypcHyWnuaI3GO2A+mtQOTf5Jl9P+U9qtwBmpgzBo8ookGQ5oSGfP
+   wArAm2KCieBdM3sN2SGSDC4Izb4YLbEZ6Yl9Q+fX4cA+AeAOR3D9OkH6Y
+   HHNTL93ZTS95AW2p/bz22xI2sSd3f7YS6wQhe4rvGKTxU7aW6I0wOgJN0
+   QDa+KkNe5pEggWd9aBukEY0YVOQ+w0VDmQHx1kIWdGKLUMBhCeLy5t72b
+   ZydbPjxrFtvoYAUUkp/8pRLHnpFO8MHxLTxpEydu4GrzrdVBm2P0xY+q2
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="13793943"
+X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
+   d="scan'208";a="13793943"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 13:53:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="818630909"
+X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
+   d="scan'208";a="818630909"
+Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 17 Jan 2024 13:53:20 -0800
+Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rQDqX-0002Mm-1P;
+	Wed, 17 Jan 2024 21:53:17 +0000
+Date: Thu, 18 Jan 2024 05:52:21 +0800
+From: kernel test robot <lkp@intel.com>
+To: Lance Yang <ioworker0@gmail.com>, akpm@linux-foundation.org
+Cc: oe-kbuild-all@lists.linux.dev, zokeefe@google.com,
+	songmuchun@bytedance.com, linux-kernel@vger.kernel.org,
+	Lance Yang <ioworker0@gmail.com>
+Subject: Re: [PATCH v1 1/2] mm/madvise: introduce MADV_TRY_COLLAPSE for
+ attempted synchronous hugepage collapse
+Message-ID: <202401180500.SKo0zynj-lkp@intel.com>
+References: <20240117050217.43610-1-ioworker0@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231227180306.6319-1-johan+linaro@kernel.org>
- <ZZ15c1HUQIH2cY5o@google.com> <ZZ1-ehpU-g6i9Qem@hovoldconsulting.com>
- <ZZ2IOQEekFffJoHQ@google.com> <ZZ5RVpL88XNbgKIy@hovoldconsulting.com>
-In-Reply-To: <ZZ5RVpL88XNbgKIy@hovoldconsulting.com>
-From: Doug Anderson <dianders@google.com>
-Date: Wed, 17 Jan 2024 13:52:08 -0800
-Message-ID: <CAD=FV=W61ZHYJADiR1CYgS-aNisDR4KoEA3RW2_8kW3KUd1g5g@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: qca: fix device-address endianness
-To: Johan Hovold <johan@kernel.org>
-Cc: Matthias Kaehlcke <mka@chromium.org>, Johan Hovold <johan+linaro@kernel.org>, 
-	Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, 
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Bjorn Andersson <quic_bjorande@quicinc.com>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, linux-bluetooth@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org, Balakrishna Godavarthi <quic_bgodavar@quicinc.com>, 
-	Stephen Boyd <swboyd@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240117050217.43610-1-ioworker0@gmail.com>
 
-Hi,
+Hi Lance,
 
-On Wed, Jan 10, 2024 at 12:12=E2=80=AFAM Johan Hovold <johan@kernel.org> wr=
-ote:
->
-> > > So the first question is whether there actually is any boot firmware =
-out
-> > > there which passes the BD_ADDR in reverse order?
-> >
-> > Yes, (at least) the boot firmware for sc7180-trogdor devices.
-> >
-> > hexdump -C /proc/device-tree/soc\@0/geniqup\@8c0000/serial\@88c000/blue=
-tooth/local-bd-address
-> > 00000000  8c fd f0 40 15 dc
->
-> Indeed, this should have been LE order.
+kernel test robot noticed the following build warnings:
 
-In case it adds any extra data points, we also do similar with the
-WiFi MAC address and it also seems to be big endian.
+[auto build test WARNING on akpm-mm/mm-everything]
 
-lazor-rev9 /proc/device-tree/soc@0/wifi@18800000 # hexdump -C local-mac-add=
-ress
-00000000  8c fd f0 3e 3e 86                                 |...>>.|
-00000006
+url:    https://github.com/intel-lab-lkp/linux/commits/Lance-Yang/mm-madvise-add-MADV_TRY_COLLAPSE-to-process_madvise/20240117-130450
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20240117050217.43610-1-ioworker0%40gmail.com
+patch subject: [PATCH v1 1/2] mm/madvise: introduce MADV_TRY_COLLAPSE for attempted synchronous hugepage collapse
+config: x86_64-kexec (https://download.01.org/0day-ci/archive/20240118/202401180500.SKo0zynj-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240118/202401180500.SKo0zynj-lkp@intel.com/reproduce)
 
-lazor-rev9 /proc/device-tree/soc@0/wifi@18800000 # ifconfig wlan0 | grep et=
-her
-        ether 8c:fd:f0:3e:3e:86  txqueuelen 1000  (Ethernet)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401180500.SKo0zynj-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   mm/khugepaged.c: In function 'madvise_collapse':
+>> mm/khugepaged.c:2784:28: warning: this statement may fall through [-Wimplicit-fallthrough=]
+    2784 |                         if (cc->is_try) {
+         |                            ^
+   mm/khugepaged.c:2789:17: note: here
+    2789 |                 case SCAN_PMD_NULL:
+         |                 ^~~~
 
 
-> > hciconfig
-> > hci0:   Type: Primary  Bus: UART
-> >         BD Address: 8C:FD:F0:40:15:DC  ACL MTU: 1024:8  SCO MTU: 240:8
-> >         UP RUNNING
-> >         RX bytes:1700 acl:0 sco:0 events:95 errors:0
-> >         TX bytes:128949 acl:0 sco:0 commands:578 errors:0
->
-> And any user space tool overriding the address would currently need to
-> provide the address in reverse order on Qualcomm platforms like this
-> one (e.g. if generating the address for privacy reasons).
->
-> > > > I suggest adding a quirk like 'local-bd-address-msb-quirk' or
-> > > > 'qcom,local-bd-address-msb-quirk' to make sure existing devices kee=
-p
-> > > > working properly.
-> > >
-> > > I don't think that would work. If this is something that we really ne=
-ed
-> > > to handle, then there's probably no way around introducing new
-> > > compatible strings for boot firmware that isn't broken while maintain=
-ing
-> > > the current broken behaviour with respect to 'local-bd-address' for s=
-ome
-> > > of the current ones.
-> >
-> > I think it should work for sc7180-trogdor. For these devices the device=
- tree
-> > is bundled with the kernel image and can be updated. That might not be =
-true
-> > for other devices though.
->
-> Thanks for confirming.
->
-> I'm still hoping we can get away with not having to add quirks to
-> Bluetooth core for broken Qualcomm boot firmware. Let's see if anyone
-> knows of a use case that makes that impossible to avoid.
->
-> Johan
+vim +2784 mm/khugepaged.c
+
+  2702	
+  2703	int madvise_collapse(struct vm_area_struct *vma, struct vm_area_struct **prev,
+  2704			     unsigned long start, unsigned long end, bool is_try)
+  2705	{
+  2706		struct collapse_control *cc;
+  2707		struct mm_struct *mm = vma->vm_mm;
+  2708		unsigned long hstart, hend, addr;
+  2709		int thps = 0, last_fail = SCAN_FAIL;
+  2710		bool mmap_locked = true;
+  2711	
+  2712		BUG_ON(vma->vm_start > start);
+  2713		BUG_ON(vma->vm_end < end);
+  2714	
+  2715		*prev = vma;
+  2716	
+  2717		if (!thp_vma_allowable_order(vma, vma->vm_flags, false, false, false,
+  2718					     PMD_ORDER))
+  2719			return -EINVAL;
+  2720	
+  2721		cc = kmalloc(sizeof(*cc), GFP_KERNEL);
+  2722		if (!cc)
+  2723			return -ENOMEM;
+  2724		cc->is_khugepaged = false;
+  2725		cc->is_try = is_try;
+  2726	
+  2727		mmgrab(mm);
+  2728		lru_add_drain_all();
+  2729	
+  2730		hstart = (start + ~HPAGE_PMD_MASK) & HPAGE_PMD_MASK;
+  2731		hend = end & HPAGE_PMD_MASK;
+  2732	
+  2733		for (addr = hstart; addr < hend; addr += HPAGE_PMD_SIZE) {
+  2734			int result = SCAN_FAIL;
+  2735	
+  2736			if (!mmap_locked) {
+  2737				cond_resched();
+  2738				mmap_read_lock(mm);
+  2739				mmap_locked = true;
+  2740				result = hugepage_vma_revalidate(mm, addr, false, &vma,
+  2741								 cc);
+  2742				if (result  != SCAN_SUCCEED) {
+  2743					last_fail = result;
+  2744					goto out_nolock;
+  2745				}
+  2746	
+  2747				hend = min(hend, vma->vm_end & HPAGE_PMD_MASK);
+  2748			}
+  2749			mmap_assert_locked(mm);
+  2750			memset(cc->node_load, 0, sizeof(cc->node_load));
+  2751			nodes_clear(cc->alloc_nmask);
+  2752			if (IS_ENABLED(CONFIG_SHMEM) && vma->vm_file) {
+  2753				struct file *file = get_file(vma->vm_file);
+  2754				pgoff_t pgoff = linear_page_index(vma, addr);
+  2755	
+  2756				mmap_read_unlock(mm);
+  2757				mmap_locked = false;
+  2758				result = hpage_collapse_scan_file(mm, addr, file, pgoff,
+  2759								  cc);
+  2760				fput(file);
+  2761			} else {
+  2762				result = hpage_collapse_scan_pmd(mm, vma, addr,
+  2763								 &mmap_locked, cc);
+  2764			}
+  2765			if (!mmap_locked)
+  2766				*prev = NULL;  /* Tell caller we dropped mmap_lock */
+  2767	
+  2768	handle_result:
+  2769			switch (result) {
+  2770			case SCAN_SUCCEED:
+  2771			case SCAN_PMD_MAPPED:
+  2772				++thps;
+  2773				break;
+  2774			case SCAN_PTE_MAPPED_HUGEPAGE:
+  2775				BUG_ON(mmap_locked);
+  2776				BUG_ON(*prev);
+  2777				mmap_read_lock(mm);
+  2778				result = collapse_pte_mapped_thp(mm, addr, true);
+  2779				mmap_read_unlock(mm);
+  2780				goto handle_result;
+  2781			/* MADV_TRY_COLLAPSE: fail quickly */
+  2782			case SCAN_ALLOC_HUGE_PAGE_FAIL:
+  2783			case SCAN_CGROUP_CHARGE_FAIL:
+> 2784				if (cc->is_try) {
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
