@@ -1,176 +1,117 @@
-Return-Path: <linux-kernel+bounces-29111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC8BF8308CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:54:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36E718308DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:56:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 810871F25ECB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:54:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C72521F2547F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:56:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23BD1219F9;
-	Wed, 17 Jan 2024 14:52:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fEaoM5zA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ED7A20DD6;
+	Wed, 17 Jan 2024 14:56:25 +0000 (UTC)
+Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CD2820B38;
-	Wed, 17 Jan 2024 14:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30B6420DCB;
+	Wed, 17 Jan 2024 14:56:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705503139; cv=none; b=JsdBGG+t1G+DctDEipGoY1S8MMYFfnJAUt5ZqFtoTh8Kl+hc73MG9ebpHURuAX1y8Vny5kVmRPO0LhO4/qsCEsQMFDWs4YhsV1hfCbSrUycKkh8xJecm7dkVw8/Qb0Wvrc9tqwZn75gzUuPIS2YlfJPwfKVBUZiFemriWWyGnos=
+	t=1705503384; cv=none; b=mvjcgzCt5EzfFjDMV9DilDdoo/1YrqymycI58VW9bntskFF1WzbHfGz5pHu56Vde2F4WHF0gc8UbIGhSDN1qvF3aVnd30FOW1IGewjTrbM8LxSm9J7hcLImC5TSybsfgGF2/G/1QGYGs6+AojG5LUhc08D52aHnZJMGeagDnspg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705503139; c=relaxed/simple;
-	bh=2fMFVmmLcybgOzonSAH/hVLVnteRTXL5AUOqv3OZBKA=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=PSWcgrEOQw7cmfz0S8U4ypeqNLMSp6/pqE/UoecK8jSaYkGDLseLMGdRnOgDcBxC78kGkqwo66M8/fZbu50WTrWDQHs8HevxP8nPE3axr116QNj2LdYOVrfAq1XBY+sj91DjHfYwTruK7AP3x2oKPeyPjVERJy7yJzgtStdyqz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fEaoM5zA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7098C433C7;
-	Wed, 17 Jan 2024 14:52:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705503138;
-	bh=2fMFVmmLcybgOzonSAH/hVLVnteRTXL5AUOqv3OZBKA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fEaoM5zAmPOxyG/9s5w4W0YKD/idcpTs77OU8rQ7lwa8es5pCsvPmquvOvbGahx+d
-	 kKohTXG5rwx5Z+7iEFZiEaQeCwltEY0qdjUdJ5du3iXy92JqZ+NyZN/oIwGZrzw+6b
-	 EzOpQxs7tY3EubXzIUHXu4lCSexXrhNOlbh39AzjPE2IOHuozyBFummBKx1ryl6kSg
-	 kNK0pyzqTKGh0BL4om28Tx3BWAA+JLl/5KTelq+dBHRWS+y0U1E8eq1VUhQrzgWHem
-	 o734PeQOZhScEx6nsxG/EqKZQwuF3oxWn9yvbHxbHXPtRk2dmTEPNfsVviAneY8cKy
-	 3bwk/8C9ervmg==
-Date: Wed, 17 Jan 2024 08:52:16 -0600
-From: Rob Herring <robh@kernel.org>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, devicetree@vger.kernel.org,
-	Simon Glass <sjg@chromium.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Schier <nicolas@fjasle.eu>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] kbuild: simplify dtbs_install by reading the list of
- compiled DTBs
-Message-ID: <20240117145216.GA2296118-robh@kernel.org>
-References: <20240109120738.346061-1-masahiroy@kernel.org>
- <20240109120738.346061-3-masahiroy@kernel.org>
+	s=arc-20240116; t=1705503384; c=relaxed/simple;
+	bh=E56splDASVQAb/oV3isY/95h/YumxoYpMCoUHLwaWCc=;
+	h=Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding; b=IoZrJyZ7aLhVA8Rggjw2bWUmva9TW7wZORK4zWZ7Gp+k2f7R1A4lvWl3/wGBFmGpC9DG+uGvmClwBJG5ae8JOliXY6x9z20NkgjQGlCZLOx3FjNHqRQYtD8l9W3W0cP9WtbyZRNtMQzmRiDxPDTGGYtRCKsTchs1H6wUa2mS8jI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wifirst.fr; spf=fail smtp.mailfrom=wifirst.fr; arc=none smtp.client-ip=212.27.42.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wifirst.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=wifirst.fr
+Received: from localhost.localdomain (unknown [IPv6:2a01:e0a:aa1:d2f0:f6b3:db6:44c:eeef])
+	(Authenticated sender: isaias57@free.fr)
+	by smtp6-g21.free.fr (Postfix) with ESMTPSA id 4ECE77802D6;
+	Wed, 17 Jan 2024 15:56:09 +0100 (CET)
+From: Jean Thomas <jean.thomas@wifirst.fr>
+To: sean.wang@kernel.org,
+	linus.walleij@linaro.org,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	linux-mediatek@lists.infradead.org,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Cc: Jean Thomas <jean.thomas@wifirst.fr>,
+	Daniel Golle <daniel@makrotopia.org>
+Subject: [PATCH v2 2/2] pinctrl: mediatek: mt7981: add additional emmc groups
+Date: Wed, 17 Jan 2024 15:55:47 +0100
+Message-Id: <20240117145547.3354242-1-jean.thomas@wifirst.fr>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240109120738.346061-3-masahiroy@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 09, 2024 at 09:07:35PM +0900, Masahiro Yamada wrote:
-> Retrieve the list of *.dtb(o) files from arch/*/boot/dts/dtbs-list
-> instead of traversing the directory tree again.
+Add new emmc groups in the pinctrl driver for the
+MediaTek MT7981 SoC:
+* emmc reset, with pin 15.
+* emmc 4-bit bus-width, with pins 16 to 19, and 24 to 25.
+* emmc 8-bit bus-width, with pins 16 to 25.
 
-Don't you need dtbs-list in .gitignore?
+The existing emmc_45 group is kept for legacy reasons, even
+if this is the union of emmc_reset and emmc_8 groups.
 
-> 
-> Please note that 'make dtbs_install' installs *.dtb(o) files directly
-> added to dtb-y because scripts/Makefile.dtbinst installs $(dtb-y)
-> without expanding the -dtbs suffix.
-> 
-> This commit preserves this behavior.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  Makefile                 |  2 +-
->  scripts/Kbuild.include   |  6 ------
->  scripts/Makefile.dtbinst | 32 ++++++++++++++++++--------------
->  3 files changed, 19 insertions(+), 21 deletions(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index db7f9e34a24e..dae6825b8082 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1407,7 +1407,7 @@ endif
->  dtbs_check: dtbs
->  
->  dtbs_install:
-> -	$(Q)$(MAKE) $(dtbinst)=$(dtstree) dst=$(INSTALL_DTBS_PATH)
-> +	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.dtbinst obj=$(dtstree)
->  
->  ifdef CONFIG_OF_EARLY_FLATTREE
->  all: dtbs
-> diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
-> index 7778cc97a4e0..2f331879816b 100644
-> --- a/scripts/Kbuild.include
-> +++ b/scripts/Kbuild.include
-> @@ -113,12 +113,6 @@ endef
->  # $(Q)$(MAKE) $(build)=dir
->  build := -f $(srctree)/scripts/Makefile.build obj
->  
-> -###
-> -# Shorthand for $(Q)$(MAKE) -f scripts/Makefile.dtbinst obj=
-> -# Usage:
-> -# $(Q)$(MAKE) $(dtbinst)=dir
-> -dtbinst := -f $(srctree)/scripts/Makefile.dtbinst obj
-> -
->  ###
->  # Shorthand for $(Q)$(MAKE) -f scripts/Makefile.clean obj=
->  # Usage:
-> diff --git a/scripts/Makefile.dtbinst b/scripts/Makefile.dtbinst
-> index 4405d5b67578..67956f6496a5 100644
-> --- a/scripts/Makefile.dtbinst
-> +++ b/scripts/Makefile.dtbinst
-> @@ -8,32 +8,36 @@
->  #   $INSTALL_PATH/dtbs/$KERNELRELEASE
->  # ==========================================================================
->  
-> -src := $(obj)
-> -
->  PHONY := __dtbs_install
->  __dtbs_install:
->  
->  include include/config/auto.conf
->  include $(srctree)/scripts/Kbuild.include
-> -include $(kbuild-file)
->  
-> -dtbs    := $(addprefix $(dst)/, $(dtb-y) $(if $(CONFIG_OF_ALL_DTBS),$(dtb-)))
-> -subdirs := $(addprefix $(obj)/, $(subdir-y) $(subdir-m))
-> -
-> -__dtbs_install: $(dtbs) $(subdirs)
-> -	@:
-> +dst := $(INSTALL_DTBS_PATH)
->  
->  quiet_cmd_dtb_install = INSTALL $@
->        cmd_dtb_install = install -D $< $@
->  
-> -$(dst)/%.dtb: $(obj)/%.dtb
-> +$(dst)/%: $(obj)/%
->  	$(call cmd,dtb_install)
->  
-> -$(dst)/%.dtbo: $(obj)/%.dtbo
-> -	$(call cmd,dtb_install)
-> +dtbs := $(patsubst $(obj)/%,%,$(call read-file, $(obj)/dtbs-list))
->  
-> -PHONY += $(subdirs)
-> -$(subdirs):
-> -	$(Q)$(MAKE) $(dtbinst)=$@ dst=$(if $(CONFIG_ARCH_WANT_FLAT_DTB_INSTALL),$(dst),$(patsubst $(obj)/%,$(dst)/%,$@))
-> +ifdef CONFIG_ARCH_WANT_FLAT_DTB_INSTALL
-> +
-> +define gen_install_rules
-> +$(dst)/%: $(obj)/$(1)%
-> +	$$(call cmd,dtb_install)
-> +endef
-> +
-> +$(foreach d, $(sort $(dir $(dtbs))), $(eval $(call gen_install_rules,$(d))))
-> +
-> +dtbs := $(notdir $(dtbs))
-> +
-> +endif # CONFIG_ARCH_WANT_FLAT_DTB_INSTALL
-> +
-> +__dtbs_install: $(addprefix $(dst)/, $(dtbs))
-> +	@:
->  
->  .PHONY: $(PHONY)
-> -- 
-> 2.40.1
-> 
+Signed-off-by: Jean Thomas <jean.thomas@wifirst.fr>
+Reviewed-by: Daniel Golle <daniel@makrotopia.org>
+---
+ drivers/pinctrl/mediatek/pinctrl-mt7981.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt7981.c b/drivers/pinctrl/mediatek/pinctrl-mt7981.c
+index ca667ed25a4d..ef6123765885 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt7981.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt7981.c
+@@ -700,6 +700,15 @@ static int mt7981_drv_vbus_pins[] = { 14, };
+ static int mt7981_drv_vbus_funcs[] = { 1, };
+
+ /* EMMC */
++static int mt7981_emmc_reset_pins[] = { 15, };
++static int mt7981_emmc_reset_funcs[] = { 2, };
++
++static int mt7981_emmc_4_pins[] = { 16, 17, 18, 19, 24, 25, };
++static int mt7981_emmc_4_funcs[] = { 2, 2, 2, 2, 2, 2, };
++
++static int mt7981_emmc_8_pins[] = { 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, };
++static int mt7981_emmc_8_funcs[] = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, };
++
+ static int mt7981_emmc_45_pins[] = { 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, };
+ static int mt7981_emmc_45_funcs[] = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, };
+
+@@ -854,6 +863,12 @@ static const struct group_desc mt7981_groups[] = {
+ 	PINCTRL_PIN_GROUP("udi", mt7981_udi),
+ 	/* @GPIO(14) DRV_VBUS(1) */
+ 	PINCTRL_PIN_GROUP("drv_vbus", mt7981_drv_vbus),
++	/* @GPIO(15): EMMC_RSTB(2) */
++	PINCTRL_PIN_GROUP("emmc_reset", mt7981_emmc_reset),
++	/* @GPIO(16,17,18,19,24,25): EMMC_DATx, EMMC_CLK, EMMC_CMD */
++	PINCTRL_PIN_GROUP("emmc_4", mt7981_emmc_4),
++	/* @GPIO(16,17,18,19,20,21,22,23,24,25): EMMC_DATx, EMMC_CLK, EMMC_CMD */
++	PINCTRL_PIN_GROUP("emmc_8", mt7981_emmc_8),
+ 	/* @GPIO(15,25): EMMC(2) */
+ 	PINCTRL_PIN_GROUP("emmc_45", mt7981_emmc_45),
+ 	/* @GPIO(16,21): SNFI(3) */
+@@ -957,7 +972,7 @@ static const char *mt7981_i2c_groups[] = { "i2c0_0", "i2c0_1", "u2_phy_i2c",
+ static const char *mt7981_pcm_groups[] = { "pcm", };
+ static const char *mt7981_udi_groups[] = { "udi", };
+ static const char *mt7981_usb_groups[] = { "drv_vbus", };
+-static const char *mt7981_flash_groups[] = { "emmc_45", "snfi", };
++static const char *mt7981_flash_groups[] = { "emmc_reset", "emmc_4", "emmc_8", "emmc_45", "snfi", };
+ static const char *mt7981_ethernet_groups[] = { "smi_mdc_mdio", "gbe_ext_mdc_mdio",
+ 	"wf0_mode1", "wf0_mode3", "mt7531_int", };
+ static const char *mt7981_ant_groups[] = { "ant_sel", };
+--
+2.39.2
 
