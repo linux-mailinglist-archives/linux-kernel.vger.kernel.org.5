@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-29223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5AA5830B2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:36:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 672C1830B32
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:36:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01F0A1C216F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:36:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DA981C243F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:36:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E9D21A13;
-	Wed, 17 Jan 2024 16:36:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F19A208AF;
+	Wed, 17 Jan 2024 16:36:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GDGzkdlQ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EP2svvm2"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1EB2224EF
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 16:36:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 455FE21A01
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 16:36:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705509377; cv=none; b=FmGGA9+OYSDPY5HuTaiD96KfH1nux3+Xm/3DcwohaNKfG0KMY6V2v982Wqiw8E5MYtTN2jn6Qh7tOQ72ii8tkYfedvL3p8o64TMEsfy5GQjc63leXDPh10B9dh5QQQ1Z8wfBCc8jbxjrF5wy0DAIzgVsjr0n4hauEJQocF4pAv0=
+	t=1705509377; cv=none; b=Ijjbr52fUDsTd99eG/Sg+PHsg7wVzfqD0Hc+9y3GAzSTyUHkekWyZZkVt8up1zSrDZqgVdcZEpzsuIFKarfvLzSxuZHM2ynmco6mGKXM6Pgv6hOsWEB/94+RyGaPI+8I2WWZwvp7qkgXgKQc0OJgO7TBEnoLV5xDx+0CcMvWi7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1705509377; c=relaxed/simple;
-	bh=T/btiksz2pjdc/htwRedVgNxpGRbSjdss4lHcMx0Ds4=;
+	bh=cqoNjlPc6YRXzLiB2bCt5YjvjoQjt75FOzIQ4Y3qvrA=;
 	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:From:To:Cc:
 	 Subject:Date:Message-Id:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding:X-Scanned-By; b=CloCn1Y6dmOIn9B/gnlIsZySIZvut7UnhuJyMCdsevYx6ozCUnBE0cUG9Q44FDd2QIn5PRdtPyHSer+nnbo8xAaDELRRyg39Pn/mKwnqYQrPMK+3TRfzTDdVf+8vu4O3ab3uShWBRQMAbZBLG/MYVy2Ie/Mak2wJLch1JcpEoW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GDGzkdlQ; arc=none smtp.client-ip=170.10.129.124
+	 Content-Transfer-Encoding:X-Scanned-By; b=VP4umrV9BiHo0yK2DBtAQ7US8vgAr02RsncOhYuxysAC7W1vlolP7Mr/bTwENWmgGihAfvPiRZ8U9MQq7ba/VEZqjeMM79ZDma9zA3IBw6eSQcwTRd63IQv2BgR/g1kVb01y208yUKUdjyCSixill3oPOO68ONZxuKIuYI6j+xw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EP2svvm2; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705509374;
+	s=mimecast20190719; t=1705509375;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=hMKTEJCLgRjbNlvIEToGyQAyufjPtT3IoQqw3muUhg4=;
-	b=GDGzkdlQtqiQPd72MkC+Si9H1MpKoURC4x+oXk2PuZnUlgcT4uwPjIfe/viMxdG91AZvMx
-	jQL5N5z+Oxkdqqd3m2vq4el4hP3ry3HyOjIkOp0x52iznc4sHOi47AG1wn5wKacWKB+vIs
-	nVDjUmmRw5cAhnrtyIAPOBdNqF35pyU=
+	bh=v6l2z5hmcKTog3XiOuPlPdWnGHwPaZmCTdkb04dCE+c=;
+	b=EP2svvm2TpP9kwnXZhjSw+DOoBhzf/bxMVe+uq8uAE1ptz4zIfCMBRqtMsQCtBnIjPmaMP
+	32fNp0OMB1gZyqDnwL/B8elPrCyCOpWyuMtEZ9UiCO2oloYUOmAYjRRbiCWoS2WtBME+ho
+	OP2PHAm6AcHa+fl2BI0ntnCVSz6HiyY=
 Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
  by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-261-y1ui9Ik_OUyghLE7fiOplw-1; Wed,
- 17 Jan 2024 11:36:09 -0500
-X-MC-Unique: y1ui9Ik_OUyghLE7fiOplw-1
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-292-NamU-_HuOXOPyQsDLH2XPg-1; Wed,
+ 17 Jan 2024 11:36:12 -0500
+X-MC-Unique: NamU-_HuOXOPyQsDLH2XPg-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 11A88383009D;
-	Wed, 17 Jan 2024 16:36:08 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B0F6529AC003;
+	Wed, 17 Jan 2024 16:36:09 +0000 (UTC)
 Received: from llong.com (unknown [10.22.16.147])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 6F72D1121306;
-	Wed, 17 Jan 2024 16:36:06 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 22AAD1121306;
+	Wed, 17 Jan 2024 16:36:08 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Tejun Heo <tj@kernel.org>,
 	Zefan Li <lizefan.x@bytedance.com>,
@@ -92,9 +92,9 @@ Cc: cgroups@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Costa Shulyupin <cshulyup@redhat.com>,
 	Waiman Long <longman@redhat.com>
-Subject: [RFC PATCH 2/8] rcu/nocb: Prepare to change nocb cpumask from CPU-hotplug protected cpuset caller
-Date: Wed, 17 Jan 2024 11:35:05 -0500
-Message-Id: <20240117163511.88173-3-longman@redhat.com>
+Subject: [RFC PATCH 3/8] rcu/no_cb: Add rcu_nocb_enabled() to expose the rcu_nocb state
+Date: Wed, 17 Jan 2024 11:35:06 -0500
+Message-Id: <20240117163511.88173-4-longman@redhat.com>
 In-Reply-To: <20240117163511.88173-1-longman@redhat.com>
 References: <20240117163511.88173-1-longman@redhat.com>
 Precedence: bulk
@@ -106,77 +106,58 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-From: Frederic Weisbecker <frederic@kernel.org>
+Add a new rcu_nocb_enabled() helper to expose the rcu_nocb state
+to other kernel subsystems like cpuset.  That will allow cpuset to
+determine if RCU no-callback can be enabled on isolated CPUs within
+isolated partitions. If so, the corresponding RCU functions can be
+called to enable it when full CPU isolation is requested.
 
-cpusets is going to use the NOCB (de-)offloading interface while
-holding hotplug lock. Therefore pull out the responsibility of protecting
-against concurrent CPU-hotplug changes to the callers of
-rcu_nocb_cpumask_update().
-
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Zefan Li <lizefan.x@bytedance.com>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Phil Auld <pauld@redhat.com>
-Cc: Nicolas Saenz Julienne <nsaenz@kernel.org>
-Cc: Marcelo Tosatti <mtosatti@redhat.com>
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc: Waiman Long <longman@redhat.com>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- kernel/rcu/rcutorture.c | 2 ++
- kernel/rcu/tree_nocb.h  | 4 ++--
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ include/linux/rcupdate.h |  6 ++++++
+ kernel/rcu/tree_nocb.h   | 12 ++++++++++++
+ 2 files changed, 18 insertions(+)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 228a5488eb5e..e935152346ff 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -2139,6 +2139,7 @@ static int rcu_nocb_toggle(void *arg)
- 	do {
- 		r = torture_random(&rand);
- 		cpu = (r >> 1) % (maxcpu + 1);
-+		cpus_read_lock();
- 		if (r & 0x1) {
- 			rcu_nocb_cpumask_update(cpumask_of(cpu), true);
- 			atomic_long_inc(&n_nocb_offload);
-@@ -2146,6 +2147,7 @@ static int rcu_nocb_toggle(void *arg)
- 			rcu_nocb_cpumask_update(cpumask_of(cpu), false);
- 			atomic_long_inc(&n_nocb_deoffload);
- 		}
-+		cpus_read_unlock();
- 		toggle_delay = torture_random(&rand) % toggle_fuzz + toggle_interval;
- 		set_current_state(TASK_INTERRUPTIBLE);
- 		schedule_hrtimeout(&toggle_delay, HRTIMER_MODE_REL);
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index b649344075d2..976d55a3e523 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -120,6 +120,12 @@ void rcu_init(void);
+ extern int rcu_scheduler_active;
+ void rcu_sched_clock_irq(int user);
+ 
++#ifdef CONFIG_RCU_NOCB_CPU
++int rcu_nocb_enabled(struct cpumask *out_mask);
++#else
++static inline int rcu_nocb_enabled(struct cpumask *out_mask) { return 0; }
++#endif
++
+ #ifdef CONFIG_TASKS_RCU_GENERIC
+ void rcu_init_tasks_generic(void);
+ #else
 diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 60b0a15ed6e2..bbcf6f4152a3 100644
+index bbcf6f4152a3..020a347ccd52 100644
 --- a/kernel/rcu/tree_nocb.h
 +++ b/kernel/rcu/tree_nocb.h
-@@ -1301,12 +1301,13 @@ int rcu_nocb_cpumask_update(const struct cpumask *cpumask, bool offload)
- 	int err_cpu;
- 	cpumask_var_t saved_nocb_mask;
+@@ -81,6 +81,18 @@ static int __init parse_rcu_nocb_poll(char *arg)
+ }
+ __setup("rcu_nocb_poll", parse_rcu_nocb_poll);
  
-+	lockdep_assert_cpus_held();
++/*
++ * Return the rcu_nocb state & optionally copy out rcu_nocb_mask.
++ */
++int rcu_nocb_enabled(struct cpumask *out_mask)
++{
++	if (!rcu_state.nocb_is_setup)
++		return 0;
++	if (out_mask)
++		cpumask_copy(out_mask, rcu_nocb_mask);
++	return 1;
++}
 +
- 	if (!alloc_cpumask_var(&saved_nocb_mask, GFP_KERNEL))
- 		return -ENOMEM;
- 
- 	cpumask_copy(saved_nocb_mask, rcu_nocb_mask);
- 
--	cpus_read_lock();
- 	mutex_lock(&rcu_state.barrier_mutex);
- 	for_each_cpu(cpu, cpumask) {
- 		if (offload) {
-@@ -1340,7 +1341,6 @@ int rcu_nocb_cpumask_update(const struct cpumask *cpumask, bool offload)
- 	}
- 
- 	mutex_unlock(&rcu_state.barrier_mutex);
--	cpus_read_unlock();
- 
- 	free_cpumask_var(saved_nocb_mask);
- 
+ /*
+  * Don't bother bypassing ->cblist if the call_rcu() rate is low.
+  * After all, the main point of bypassing is to avoid lock contention
 -- 
 2.39.3
 
