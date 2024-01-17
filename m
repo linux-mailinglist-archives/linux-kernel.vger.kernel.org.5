@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-29105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8FFE8308A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:52:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19C718308B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:53:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 445C81F22F41
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:52:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8350E1F24856
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:53:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09B1D21102;
-	Wed, 17 Jan 2024 14:49:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B6E62232B;
+	Wed, 17 Jan 2024 14:50:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="LCfGoH4F"
-Received: from smtp-fw-9105.amazon.com (smtp-fw-9105.amazon.com [207.171.188.204])
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="l3/Lz/l9"
+Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9091320B34;
-	Wed, 17 Jan 2024 14:49:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.188.204
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 706B121356;
+	Wed, 17 Jan 2024 14:50:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.95.49.90
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705502977; cv=none; b=eLZuqLGytuQspoKhxn6J+nnd/Cplmy6rSfi6Jt5NKDGWFsHrwmVJurWS4/7WQnfGT8dz/80w//WKg3hBkgPnTzJmzDBx0/3PaAj6WqEYFEjTqNYv85Rkdpl0ioIpf/rsGVXfjCoOjqvEgpq39WdPaXCKe/a8jisGgiSiIGMVgtM=
+	t=1705503007; cv=none; b=Tvam91RkCAPbi/UOoIj25TX04liF6/q+IUyVZxdZyEoyYUlgkHuiZOlU3XEvptnZggSNd3yJtRIbcYNp+2BCnlg7zqRzMxMm1gWZl9yqHSD57XJrBRObIGEXMFZjrLe1j4Pe5vk2JMuVcLetcQupRYTZANMyX8HksBS3mmbLL1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705502977; c=relaxed/simple;
-	bh=PmZxqMzEfd8INp526cDPs8IXWEgBpGY9EnUtDCgjWgM=;
+	s=arc-20240116; t=1705503007; c=relaxed/simple;
+	bh=9u6BK+UlFxRilMhNjGBFH3LvV7U2DOlD4K2JyCZ48AU=;
 	h=DKIM-Signature:X-IronPort-AV:Received:Received:Received:
 	 X-Farcaster-Flow-ID:Received:Received:From:To:CC:Subject:Date:
 	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 X-Originating-IP:X-ClientProxiedBy:Content-Type:
-	 Content-Transfer-Encoding; b=KRoqlFlcraforj2JySSOYzTKGaEdHqT3h02v+FisZHGMDCj5GkAtJKGW2TlJqNP+lRWMtyrFxIpRD5502hVGmfut5KFAj+YK+NJ0bZQA/ZUFA+cPU3wvQjqlSNAOYIqjC+kgZoSn9oLYMw7SsjXviNesdiI7CHG3j6vuhzBpuW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.de; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=LCfGoH4F; arc=none smtp.client-ip=207.171.188.204
+	 Content-Transfer-Encoding; b=srAOXl4EnLBNcIrgg1X3C5CcwbR1LXofQV9dKhcwuL+g7Snx0ZZUmc5NBQ2lFVBmUCojeYHwPrY9KPqZW+hWZ3Iy6J6afkeQ4W6nBWJneDcTv6xUdSKAyTu8ul87cZWTfNEktO60pT60Rq10oaM+vsDmdCDDlNREj+IFCbAuHLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.de; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=l3/Lz/l9; arc=none smtp.client-ip=52.95.49.90
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1705502976; x=1737038976;
+  t=1705503006; x=1737039006;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=ruxorAX7sTRaNP9DeVEeTzlVbb3kqSKxCB0MMvWdBXg=;
-  b=LCfGoH4FXi4F4kIrs6qp0UFPXqGbJmU1yG3bAIu0jVVDj5JrF9jEISSM
-   V1RGHZ2Jckk7ccSA4UW3fUUo+9fj+4pjiYOuIYryehcF/DqXCAdG2pGmG
-   gPy/uXy85SSeY5pX74NmKquKI4ed8a2s7rr5Vlyd/IcskswqIVeVbfCDZ
-   g=;
+  bh=V7RkoctXcKrPHqjafH3kK9YvW0BnbS/G0GKRcf3+doU=;
+  b=l3/Lz/l9o2egQ1M+lRh589LVsnsi859F9jtjDq7IZkfSkKNKKKj1y5f4
+   v3wYWJhAjqvF3H+S4rMX7wtHpmSvExNFF11eVB20qHIgREiWsPxBrRcS0
+   1vE4aGM3AWVhRRe/xgDgrMZpgbLs1ct8VUYkWCnHsycc1EruHREPUsPAm
+   I=;
 X-IronPort-AV: E=Sophos;i="6.05,200,1701129600"; 
-   d="scan'208";a="698396273"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-8c5b1df3.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9105.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 14:49:35 +0000
+   d="scan'208";a="380369071"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-8a14c045.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 14:50:01 +0000
 Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan3.pdx.amazon.com [10.39.38.70])
-	by email-inbound-relay-pdx-2c-m6i4x-8c5b1df3.us-west-2.amazon.com (Postfix) with ESMTPS id 6E2D040D43;
-	Wed, 17 Jan 2024 14:49:33 +0000 (UTC)
-Received: from EX19MTAUWB001.ant.amazon.com [10.0.21.151:11385]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.63.213:2525] with esmtp (Farcaster)
- id 8d349bb0-742a-4194-b22b-5d064281ea8f; Wed, 17 Jan 2024 14:49:33 +0000 (UTC)
-X-Farcaster-Flow-ID: 8d349bb0-742a-4194-b22b-5d064281ea8f
+	by email-inbound-relay-pdx-2a-m6i4x-8a14c045.us-west-2.amazon.com (Postfix) with ESMTPS id 1F47E8A896;
+	Wed, 17 Jan 2024 14:49:59 +0000 (UTC)
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.7.35:26388]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.14.60:2525] with esmtp (Farcaster)
+ id 20269b52-e38b-433c-9abe-1cc6bb154dc9; Wed, 17 Jan 2024 14:49:58 +0000 (UTC)
+X-Farcaster-Flow-ID: 20269b52-e38b-433c-9abe-1cc6bb154dc9
 Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 17 Jan 2024 14:49:32 +0000
+ 15.2.1118.40; Wed, 17 Jan 2024 14:49:58 +0000
 Received: from dev-dsk-graf-1a-5ce218e4.eu-west-1.amazon.com (10.253.83.51) by
  EX19D020UWC004.ant.amazon.com (10.13.138.149) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 17 Jan 2024 14:49:29 +0000
+ 15.2.1118.40; Wed, 17 Jan 2024 14:49:54 +0000
 From: Alexander Graf <graf@amazon.com>
 To: <linux-kernel@vger.kernel.org>
 CC: <linux-trace-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
@@ -78,9 +78,9 @@ CC: <linux-trace-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
 	Usama Arif <usama.arif@bytedance.com>, David Woodhouse <dwmw@amazon.co.uk>,
 	Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rob Herring
 	<robh+dt@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v3 14/17] tracing: Add kho serialization of trace events
-Date: Wed, 17 Jan 2024 14:47:01 +0000
-Message-ID: <20240117144704.602-15-graf@amazon.com>
+Subject: [PATCH v3 15/17] tracing: Recover trace events from kexec handover
+Date: Wed, 17 Jan 2024 14:47:02 +0000
+Message-ID: <20240117144704.602-16-graf@amazon.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240117144704.602-1-graf@amazon.com>
 References: <20240117144704.602-1-graf@amazon.com>
@@ -90,26 +90,16 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ClientProxiedBy: EX19D032UWB004.ant.amazon.com (10.13.139.136) To
+X-ClientProxiedBy: EX19D041UWB004.ant.amazon.com (10.13.139.143) To
  EX19D020UWC004.ant.amazon.com (10.13.138.149)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
-Events and thus their parsing handle in ftrace have dynamic IDs that get
-assigned whenever the event is added to the system. If we want to parse
-trace events after kexec, we need to link event IDs back to the original
-trace event that existed before we kexec'ed.
-
-There are broadly 2 paths we could take for that:
-
-  1) Save full event description across KHO, restore after kexec,
-     merge identical trace events into a single identifier.
-  2) Recover the ID of post-kexec added events so they get the same
-     ID after kexec that they had before kexec
-
-This patch implements the second option. It's simpler and thus less
-intrusive. However, it means we can not fully parse affected events
-when the kernel removes or modifies trace events across a kho kexec.
+This patch implements all logic necessary to match a new trace event
+that we add against preserved trace events from kho. If we find a match,
+we give the new trace event the old event's identifier. That way, trace
+read-outs are able to make sense of buffer contents again because the
+parsing code for events looks at the same identifiers.
 
 Signed-off-by: Alexander Graf <graf@amazon.com>
 
@@ -117,165 +107,204 @@ Signed-off-by: Alexander Graf <graf@amazon.com>
 
 v1 -> v2:
 
-  - Leave anything that requires a name in trace.c to keep buffers
-    unnamed entities
-  - Put events as array into a property, use fingerprint instead of
-    names to identify them
-  - Reduce footprint without CONFIG_FTRACE_KHO
-
-v2 -> v3:
-
-  - s/"global_trace"/"global-trace"/
+  - make kho_get_fdt() const
+  - Get events as array from a property, use fingerprint instead of
+    names to identify events
+  - Remove ifdefs
 ---
- kernel/trace/trace.c        |  3 +-
- kernel/trace/trace_output.c | 89 +++++++++++++++++++++++++++++++++++++
- kernel/trace/trace_output.h |  5 +++
- 3 files changed, 96 insertions(+), 1 deletion(-)
+ kernel/trace/trace_output.c | 158 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 156 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index a5d7f5b4c19f..b5a6a2115b75 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -9364,7 +9364,7 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer);
- 
- static int trace_kho_off_tr(struct trace_array *tr)
- {
--	const char *name = tr->name ? tr->name : "global_trace";
-+	const char *name = tr->name ? tr->name : "global-trace";
- 	const void *fdt = kho_get_fdt();
- 	char *path;
- 	int off;
-@@ -10648,6 +10648,7 @@ static int trace_kho_notifier(struct notifier_block *self,
- 
- 	err |= fdt_begin_node(fdt, "ftrace");
- 	err |= fdt_property(fdt, "compatible", compatible, sizeof(compatible));
-+	err |= trace_kho_write_events(fdt);
- 	err |= trace_kho_write_trace_array(fdt, &global_trace);
- 	err |= fdt_end_node(fdt);
- 
 diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-index 3e7fa44dc2b2..7d8815352e20 100644
+index 7d8815352e20..937002a204e1 100644
 --- a/kernel/trace/trace_output.c
 +++ b/kernel/trace/trace_output.c
-@@ -12,6 +12,8 @@
- #include <linux/sched/clock.h>
- #include <linux/sched/mm.h>
- #include <linux/idr.h>
-+#include <linux/kexec.h>
-+#include <linux/crc32.h>
+@@ -24,6 +24,8 @@ DECLARE_RWSEM(trace_event_sem);
  
- #include "trace_output.h"
+ static struct hlist_head event_hash[EVENT_HASHSIZE] __read_mostly;
  
-@@ -669,6 +671,93 @@ int trace_print_lat_context(struct trace_iterator *iter)
- 	return !trace_seq_has_overflowed(s);
++static bool trace_is_kho_event(int type);
++
+ enum print_line_t trace_print_bputs_msg_only(struct trace_iterator *iter)
+ {
+ 	struct trace_seq *s = &iter->seq;
+@@ -784,7 +786,7 @@ static DEFINE_IDA(trace_event_ida);
+ 
+ static void free_trace_event_type(int type)
+ {
+-	if (type >= __TRACE_LAST_TYPE)
++	if (type >= __TRACE_LAST_TYPE && !trace_is_kho_event(type))
+ 		ida_free(&trace_event_ida, type);
  }
  
+@@ -810,6 +812,156 @@ void trace_event_read_unlock(void)
+ 	up_read(&trace_event_sem);
+ }
+ 
++
 +/**
-+ * event2fp - Return fingerprint of an event
-+ * @event: The event to fingerprint
++ * trace_kho_get_map - Return the KHO event map
++ * @pmap: Pointer to a trace map array. Will be filled on success.
++ * @plen: Pointer to the length of the map. Will be filled on success.
++ * @unallocated: True if the event does not have an ID yet
 + *
-+ * For KHO, we need to match events before and after kexec to recover its type
-+ * id. This function returns a hash that combines an event's name, and all of
-+ * its fields' lengths.
++ * Event types are semi-dynamically generated. To ensure that
++ * their identifiers match before and after kexec with KHO,
++ * we store an event map in the KHO DT. Whenever we need the
++ * map, this function provides it.
++ *
++ * The first time we request a map, it also walks through it and
++ * reserves all identifiers so later event registration has find their
++ * identifier already reserved.
 + */
-+static u32 event2fp(struct trace_event *event)
++static int trace_kho_get_map(const struct trace_event_map **pmap, int *plen,
++			     bool unallocated)
 +{
-+	struct ftrace_event_field *field;
-+	struct trace_event_call *call;
-+	struct list_head *head;
-+	const char *name;
-+	u32 crc32 = ~0;
-+
-+	/* Low type numbers are static, nothing to checksum */
-+	if (event->type && event->type < __TRACE_LAST_TYPE)
-+		return event->type;
-+
-+	call = container_of(event, struct trace_event_call, event);
-+	name = trace_event_name(call);
-+	if (name)
-+		crc32 = crc32_le(crc32, name, strlen(name));
-+
-+	head = trace_get_fields(call);
-+	list_for_each_entry(field, head, link)
-+		crc32 = crc32_le(crc32, (char *)&field->size, sizeof(field->size));
-+
-+	return crc32;
-+}
-+
-+struct trace_event_map {
-+	u32 crc32;
-+	u32 type;
-+};
-+
-+static int __maybe_unused _trace_kho_write_events(void *fdt)
-+{
-+	struct trace_event_call *call;
-+	int count = __TRACE_LAST_TYPE - 1;
-+	struct trace_event_map *map;
-+	int err = 0;
++	static const struct trace_event_map *event_map;
++	static int event_map_len;
++	static bool event_map_reserved;
++	const struct trace_event_map *map = NULL;
++	const void *fdt = kho_get_fdt();
++	const char *path = "/ftrace";
++	int off, err, len = 0;
 +	int i;
 +
-+	down_read(&trace_event_sem);
-+	/* Allocate an array that we can place all maps into */
-+	list_for_each_entry(call, &ftrace_events, list)
-+		count++;
++	if (!IS_ENABLED(CONFIG_FTRACE_KHO) || !fdt)
++		return -EINVAL;
 +
-+	map = vmalloc(count * sizeof(*map));
-+	if (!map)
-+		return -ENOMEM;
-+
-+	/* Then fill the array with all crc32 values */
-+	count = 0;
-+	for (i = 1; i < __TRACE_LAST_TYPE; i++)
-+		map[count++] = (struct trace_event_map) {
-+			.crc32 = count,
-+			.type = count,
-+		};
-+
-+	list_for_each_entry(call, &ftrace_events, list) {
-+		struct trace_event *event = &call->event;
-+
-+		map[count++] = (struct trace_event_map) {
-+			.crc32 = event2fp(event),
-+			.type = event->type,
-+		};
++	if (event_map) {
++		map = event_map;
++		len = event_map_len;
 +	}
-+	up_read(&trace_event_sem);
 +
-+	/* And finally write it into a DT variable */
-+	err |= fdt_property(fdt, "events", map, count * sizeof(*map));
++	if (!map) {
++		off = fdt_path_offset(fdt, path);
 +
-+	vfree(map);
-+	return err;
++		if (off < 0) {
++			pr_debug("Could not find '%s' in DT", path);
++			return -EINVAL;
++		}
++
++		err = fdt_node_check_compatible(fdt, off, "ftrace-v1");
++		if (err) {
++			pr_warn("Node '%s' has invalid compatible", path);
++			return -EINVAL;
++		}
++
++		map = fdt_getprop(fdt, off, "events", &len);
++		if (!map)
++			return -EINVAL;
++
++		event_map = map;
++		event_map_len = len;
++	}
++
++	if (unallocated && !event_map_reserved) {
++		/*
++		 * Reserve all IDs in our IDA. We only have a working IDA later
++		 * in boot, so restrict it to when we allocate a dynamic type id
++		 * for an event.
++		 */
++		for (i = 0; i < len; i += sizeof(*map)) {
++			const struct trace_event_map *imap = (void *)map + i;
++
++			if (imap->type < __TRACE_LAST_TYPE)
++				continue;
++			if (ida_alloc_range(&trace_event_ida, imap->type, imap->type,
++					    GFP_KERNEL) != imap->type) {
++				pr_warn("Unable to reserve id %d", imap->type);
++				return -EINVAL;
++			}
++		}
++
++		event_map_reserved = true;
++	}
++
++	*pmap = map;
++	*plen = len;
++
++	return 0;
 +}
 +
-+#ifdef CONFIG_FTRACE_KHO
-+int trace_kho_write_events(void *fdt)
++/**
++ * trace_is_kho_event - returns true if the event type is KHO reserved
++ * @event: the event type to enumerate
++ *
++ * With KHO, we reserve all previous kernel's trace event types in the
++ * KHO DT. Then, when we allocate a type, we just reuse the previous
++ * kernel's value. However, that means we have to keep these type identifiers
++ * reserved across the lifetime of the system, because we may get a new event
++ * that matches the old kernel's event fingerprint. This function is a small
++ * helper that allows us to check whether a type ID is in use by KHO.
++ */
++static bool trace_is_kho_event(int type)
 +{
-+	return _trace_kho_write_events(fdt);
-+}
-+#endif
++	const struct trace_event_map *map = NULL;
++	int len, i;
 +
++	if (trace_kho_get_map(&map, &len, false))
++		return false;
++
++	if (!map)
++		return false;
++
++	for (i = 0; i < len; i += sizeof(*map), map++)
++		if (map->type == type)
++			return true;
++
++	return false;
++}
++
++/**
++ * trace_kho_fill_event_type - restore event type info from KHO
++ * @event: the event to enumerate
++ *
++ * Event types are semi-dynamically generated. To ensure that
++ * their identifiers match before and after kexec with KHO,
++ * let's match up unique fingerprint - either their predetermined
++ * type or their crc32 value - and fill in the respective type
++ * information if we booted with KHO.
++ */
++static bool trace_kho_fill_event_type(struct trace_event *event)
++{
++	const struct trace_event_map *map = NULL;
++	int len = 0, i;
++	u32 crc32;
++
++	if (trace_kho_get_map(&map, &len, !event->type))
++		return false;
++
++	crc32 = event2fp(event);
++
++	for (i = 0; i < len; i += sizeof(*map), map++) {
++		if (map->crc32 == crc32) {
++			if (!map->type)
++				return false;
++
++			event->type = map->type;
++			return true;
++		}
++	}
++
++	pr_debug("Could not find event");
++
++	return false;
++}
 +
  /**
-  * ftrace_find_event - find a registered event
-  * @type: the type of event to look for
-diff --git a/kernel/trace/trace_output.h b/kernel/trace/trace_output.h
-index dca40f1f1da4..07481f295436 100644
---- a/kernel/trace/trace_output.h
-+++ b/kernel/trace/trace_output.h
-@@ -25,6 +25,11 @@ extern enum print_line_t print_event_fields(struct trace_iterator *iter,
- extern void trace_event_read_lock(void);
- extern void trace_event_read_unlock(void);
- extern struct trace_event *ftrace_find_event(int type);
-+#ifdef CONFIG_FTRACE_KHO
-+extern int trace_kho_write_events(void *fdt);
-+#else
-+static inline int trace_kho_write_events(void *fdt) { return -EINVAL; }
-+#endif
+  * register_trace_event - register output for an event type
+  * @event: the event type to register
+@@ -838,7 +990,9 @@ int register_trace_event(struct trace_event *event)
+ 	if (WARN_ON(!event->funcs))
+ 		goto out;
  
- extern enum print_line_t trace_nop_print(struct trace_iterator *iter,
- 					 int flags, struct trace_event *event);
+-	if (!event->type) {
++	if (trace_kho_fill_event_type(event)) {
++		pr_debug("Recovered id=%d", event->type);
++	} else if (!event->type) {
+ 		event->type = alloc_trace_event_type();
+ 		if (!event->type)
+ 			goto out;
 -- 
 2.40.1
 
