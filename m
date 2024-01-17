@@ -1,292 +1,129 @@
-Return-Path: <linux-kernel+bounces-28577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3771E83003F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:47:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDA23830041
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:50:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 500B21C23B10
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 06:47:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91B13288CB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 06:50:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E17A09463;
-	Wed, 17 Jan 2024 06:46:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F0C09463;
+	Wed, 17 Jan 2024 06:50:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jBSWz74y"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="35bbjln8"
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9F418F47;
-	Wed, 17 Jan 2024 06:46:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DA846AA2
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 06:50:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705474012; cv=none; b=bLnf99uQieHxv7Jcg+PZVlr4+hgVssNKr+pP4TAT7pg00CaSE5HYxRHRka49gdaNhwtOgGlSJ0QB9cnOfab5dKn8RAbySjRv5Aemzgf5M9dCYd/nxl3I7GzoXzc2nHC3d2INr9Y+KMspvhwA/aE5Z7lyrwSmqdEx6WjB5LVyqEY=
+	t=1705474215; cv=none; b=UMq/Qo1AvTEusfyBm9y3K0+lovg7DuQ5YaMU7K8jv75UrpTEV+GPXXfZni9TGbazUsvdcJCNgHZ/BJEXAgkAMAfJJfaX0C7+fkz2h3NifvZAhxW94TgnA8dt+IDZAPNNtwuQWToGO99tkajjxzjbpyjOw6sNOFn5mkSttM0b0eI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705474012; c=relaxed/simple;
-	bh=L1+4cpHaNAVqDu2nvNa5bHQAQBMX3SCYFC7ExPfRGR8=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To; b=fRQnhVcAuj1a0ckYvX2iClohm7L0seMqCG9RrqEP/LY9xNpOrhfVtRFddej0i1X03tfym4NuQkKBGHYHObtVNO66Cugqjo85VD4muSwhlK8/tN+8wDJUImG/sFkI5kHfPjevANHbwPWWNPVhkdNBYMtmRxHqfh37RtmuqTjdC3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jBSWz74y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 267E6C433F1;
-	Wed, 17 Jan 2024 06:46:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705474011;
-	bh=L1+4cpHaNAVqDu2nvNa5bHQAQBMX3SCYFC7ExPfRGR8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jBSWz74ymkkxntfCUFRqRsrFuJ8NYeVJuj/MPwcTta/DoEcuVhsplYs4u82t6fnfc
-	 YOgsS+Hq5lxtkTemcU13ADCupRO6e6jxanb8m2pWDbqF/b7MsfMy/FjmIgb80Glm3C
-	 e69C3dvpe9xz9MRKDYQWuneeMHDxy2gct6NMHk055BiYMEeD94Qr104FoFWZHdyrHR
-	 UeZO27Bu2r6k3AVNewTYa3/nHohXQNya0/MBncoeQsex2Gv28am4l9yABim5kzFXco
-	 4i7Q8jxSYkqxdR3UeU4HlRSgD5cAl6Wg5XgC7mVPZ40oB/HJn0soEPUQ8kHotlyQew
-	 1wXm9gWqy+nhQ==
-Date: Wed, 17 Jan 2024 08:46:34 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: Huang Pei <huangpei@loongson.cn>
-Cc: Yajun Deng <yajun.deng@linux.dev>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mm@kvack.org,
-	Bibo Mao <maobibo@loongson.cn>, linux-mips@vger.kernel.org,
-	Paul Burton <paulburton@kernel.org>,
-	Li Xuefeng <lixuefeng@loongson.cn>,
-	Yang Tiezhu <yangtiezhu@loongson.cn>,
-	Gao Juxin <gaojuxin@loongson.cn>,
-	Huacai Chen <chenhuacai@loongson.cn>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-kernel@vger.kernel.org
-Subject: Re: memblock_reserve for unadded region (was: [PATCH] MIPS:
- loongson64: fix boot failure)
-Message-ID: <Zad3ynuuu8S-51eI@kernel.org>
-References: <20231225093025.23215-1-huangpei@loongson.cn>
- <731134fd-4b3d-418c-84ee-80646bffcc01@flygoat.com>
- <ZaZAqMwuql9Y5Gra@kernel.org>
- <20240116122304.qwzy7san2vgspt2x@Board-3A3000>
- <3fc2f75e-d163-1ad1-009a-0e4538011885@linux.dev>
- <20240117030113.gs2fjs6vydthsc6l@Board-3A3000>
- <234ddaeb-5988-858d-6ba1-0fef90fb7a87@linux.dev>
- <20240117035910.453ofvotbvkzje6k@Board-3A3000>
+	s=arc-20240116; t=1705474215; c=relaxed/simple;
+	bh=10k5FWdS7+f6jSsDCvnmImCLwYOIlcEv8RTd3ZEsu38=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type; b=cdoWsxTaAm2p4BuiC5cFnqavoqvUpc1vJo0ror1b+IdIEeCgZ4y80EecFpLUTvr2OdsD8iuHBwz1Wf/5Favd5ZjQG94DsgjhBu5C+8kOSKxQRCNbCkkCKf7nKRvzYl7IXCOfVumXC/Yn9HPt3AsnofCshtfrKqEwisWKggk+NTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=35bbjln8; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-429d2ebdf05so196021cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 22:50:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705474213; x=1706079013; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=k+lCUe/aLkoNnSyzSKT97pRhS1APloZBjgjTg48CWNA=;
+        b=35bbjln88Weoy2298ELbkI/32r95P7+Ar4cjPW/HWGWNvaOuIiZKqsBpHyewa5zYfw
+         eE2OfM0+rHnxobarrxho84kzYdqfLDzW8Ji00eOFqF9m88wjJsqdvHckAR7UzGu6wOdQ
+         m6Q2TstNjQw427l5BIFYoLchGkU0kJ/y336cWaVECf0H0Jm8OOViwGn5+ZQabSuL4Me7
+         KRDz2bFg7ypir4Z6bT5od1gWEZHn9sLBavfSAcCv8B3MPvgu7yL4COFA4WxkI8BFBOwm
+         qAwM4ckJmH87CoubzI2H2/3bCc/hItFIQE4EjUX4/qIThTw5xaGtFyd96I42wY1ttHL2
+         Mvog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705474213; x=1706079013;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=k+lCUe/aLkoNnSyzSKT97pRhS1APloZBjgjTg48CWNA=;
+        b=PHZwf+ez6K/XQf+BTP5sY7hV5pr+gJY8yrMuQzmXzeRDbK9oWIKLA2oubJGJh4hEqT
+         CKF5MtqrYTGa9m4fHHCK+L2NG5+DmbS7xhuDQEoSdBsLrsJbOKfM687AjYZjMI/6lrrn
+         MkFCqxLWY+2nVQJSzKvgM4dZRdeAaVEOpXmGguqBGx9Qe/a6OAPfZc+oQahGmvB2rjdF
+         D4BpofQ3U091Bv67L6ofwA9AZCAbohIeFPsCHBLim5QVbQpUylApgY9+MZQBrERIlNzv
+         Xgngk7BsAnzqgFps+rVfWRc6UCvf9XR4MzJg8rSeoXvlmkpmQqbxzMJgce4HFWoMzJu+
+         TN3A==
+X-Gm-Message-State: AOJu0YxCmrMz9i5Z6livO5LdKKTXxP5Trk3DQbOe52jvl/h3jxzb77jf
+	6vrQxaQKiEczQm5/1eEWsWtw2VdRYGyGlsPyLW3yNefD+loKLkz2+f+mwXHfsf5M5PsCJSOvtMS
+	G/4HzjIQYBxaUhU0auUF/fMbUZzVaUsQrAIBj
+X-Google-Smtp-Source: AGHT+IFag8jwzpRQGZt+uJiKJaDndyScS8ausy4lwebG07OLpiTfL/AkPREjfkJIrHMjxWKmdmJpOnZOQ1RXVr0dPkI=
+X-Received: by 2002:a05:622a:1992:b0:42a:fac:c929 with SMTP id
+ u18-20020a05622a199200b0042a0facc929mr70665qtc.20.1705474213032; Tue, 16 Jan
+ 2024 22:50:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240117035910.453ofvotbvkzje6k@Board-3A3000>
+References: <20240110095532.4776-1-quic_uaggarwa@quicinc.com>
+ <20240117011859.dv5d27cf7qhwxuxf@synopsys.com> <34621658-0626-82cc-a641-3c25af3ea9f3@quicinc.com>
+In-Reply-To: <34621658-0626-82cc-a641-3c25af3ea9f3@quicinc.com>
+From: Kuen-Han Tsai <khtsai@google.com>
+Date: Wed, 17 Jan 2024 14:49:46 +0800
+Message-ID: <CAKzKK0r3P0zbN3ib_qPoGqqbdPSX8YeC=0QwKnZoDbfex8hvHQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] usb: dwc3: gadget: Fix NULL pointer dereference in dwc3_gadget_suspend
+To: UTTKARSH AGGARWAL <quic_uaggarwa@quicinc.com>
+Cc: Thinh Nguyen <Thinh.Nguyen@synopsys.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Jan 17, 2024 at 11:59:10AM +0800, Huang Pei wrote:
-> On Wed, Jan 17, 2024 at 11:17:18AM +0800, Yajun Deng wrote:
-> > 
-> > On 2024/1/17 11:01, Huang Pei wrote:
-> > > On Wed, Jan 17, 2024 at 10:20:00AM +0800, Yajun Deng wrote:
-> > > > On 2024/1/16 20:23, Huang Pei wrote:
-> > > > > On Tue, Jan 16, 2024 at 10:39:04AM +0200, Mike Rapoport wrote:
-> > > > > > On Mon, Jan 15, 2024 at 02:08:21PM +0000, Jiaxun Yang wrote:
-> > > > > > > Hi mm folks,
-> > > > > > > 
-> > > > > > > Just a quick question, what is the expected behavior of memblock_reserve
-> > > > > > > a region that is not added to memblock with memblock_add?
-> > > > > > > 
-> > > > > > > I'm unable to find any documentation about memblock_reserve in comments and
-> > > > > > > boot-time-mm, but as per my understanding to the code, this should be a
-> > > > > > > legit usage?
-> > > > > > Yes, memblock allows reserving memory that was not added to memblock with
-> > > > > > memblock_add().
-> > > > > I think arch/platform specific code should fix this bug, like,
-> > > > > --------------------------------------------------------------------------
-> > > > > //for loongson64
-> > > > > memblock_set_node(0, 1ULL << 44, &memblock.reserved, 0);
-> > > > > 
-> > > > > --------------------------------------------------------------------------
-> > > > > 
-> > > > > or maybe memblock provide something like memblock_reserve_node
-> > > > Hi pei,
-> > > > 
-> > > > Can you test the following patch to see if it fixes this bug?
-> > > > 
-> > > > diff --git a/mm/mm_init.c b/mm/mm_init.c
-> > > > index 2c19f5515e36..97721d99fdce 100644
-> > > > --- a/mm/mm_init.c
-> > > > +++ b/mm/mm_init.c
-> > > > @@ -708,6 +708,9 @@ static void __meminit init_reserved_page(unsigned long
-> > > > pfn, int nid)
-> > > >          pg_data_t *pgdat;
-> > > >          int zid;
-> > > > 
-> > > > +       if (unlikely(nid == NUMA_NO_NODE || nid >= MAX_NUMNODES))
-> > > > +               nid = early_pfn_to_nid(pfn);
-> > > > +
-> > > >          if (early_page_initialised(pfn, nid))
-> > > >                  return;
+Hi Uttkarsh and Thinh,
 
-IMO this will fix the bug. Before 61167ad5fecd we had nid = first_online_node
-for reserved pages that didn't have nid set in memblock.reserved. After
-61167ad5fecd we try to initialize these pages with MAX_NUMNODES and
-obviously crash when accessing node structure.
+>> Call Stack:
+>> CPU1:                             CPU2:
+>> gadget_unbind_driver     dwc3_suspend_common
+>> dw3_gadget_stop           dwc3_gadget_suspend
+>>                                        dwc3_disconnect_gadget
 
-I think that the check for a valid nid should be moved to
-memmap_init_reserved_pages() though. An entire reserved region will have
-nid set to MAX_NUMNODES, so there is no point to check every page in it.
+typo: dw3_gadget_stop/dwc3_gadget_stop
 
-> > > I do not think this fix set the right nid, ONLY arch/platform know that
-> > > nid
+> Do you have the dmesg log of this NULL pointer dereference?
+> Thanks,
+> Thinh
 
-Why does it matter to have the right nid in a reserved page that is not
-part of usable memory?
+We also encountered similar stack traces.
 
-That's true that only arch knows on which node those reserved pages are,
-but core mm does not care about reserved pages that are not in memory.
- 
-> > >   int __meminit early_pfn_to_nid(unsigned long pfn)
-> > > {
-> > > 	static DEFINE_SPINLOCK(early_pfn_lock);
-> > > 	int nid;
-> > > 
-> > > 	spin_lock(&early_pfn_lock);
-> > > 	nid = __early_pfn_to_nid(pfn,
-> > > 			&early_pfnnid_cache);
-> > > 	if (nid < 0)
-> > > 	//!!!first_online_node MAY NOT be the node the pfn belong to!!!
-> > > 		nid = first_online_node;
-> > > 
-> > > 	spin_unlock(&early_pfn_lock);
-> > > 
-> > > 	return
-> > > 		nid;
-> > > }
-> > 
-> > 
-> > Okay, I don't think this bug is caused by commit 61167ad5fecd ("mm: pass nid
-> > to reserve_bootmem_region()"),
-> > 
-> > because even if you revert this commit, it will still get nid by
-> > early_pfn_to_nid(). Did I get that right?
-> 
-> Yes, more accurately, this bug is exposed by commit 61167ad5fecd. My
-> previous fix is based on presumptions that memory_reserve should reserve memory 
-> added by memblock_add{,_node}, if going across this limitation, there need
-> to set the valid nid for reserved memory region.
-> > 
-> > > > 
-> > > > > > > In practical we run into uninitialized nid of reserved block problem, should
-> > > > > > > we fix it
-> > > > > > > in our usage, or on memblock side?
-> > > > > > Apparently it's a bug in memblock :(
-> > > > > > 
-> > > > > > If you revert 61167ad5fecd ("mm: pass nid to reserve_bootmem_region()")
-> > > > > > does the issue disappear?
-> > > > > Yes, I git bisect this commit.
-> > > > > 
-> > > > > But I don't think it is a bug in memblock. IMO, memblock_reserve under
-> > > > > NUMA set nid of reserved region to MAX_NUMNODES, which is the point
-> > > > > that cause the "memblock_get_region_node from memmap_init_reserved_pages "
-> > > > > passing a invalid node id(aka MAX_NUMNODES) to "reserver_bootmem_region
-> > > > > -> init_reserved_page -> early_pfn_to_nid". If arch-specific code DOES NOT
-> > > > > initialize the nid of reserved region(only it know that), or the reserved
-> > > > > region NOT within a memblock added by memblock_add, memblock can not
-> > > > > give a valid node id to the reserved region. Commit 61167ad5fecd ("mm: pass nid to
-> > > > > reserve_bootmem_region()") just reveals the embarrassment case by an
-> > > > > out of bound memory access.
-> > > > > 
-> > > > > > > Thanks
-> > > > > > > 
-> > > > > > > 在 2023/12/25 09:30, Huang Pei 写道:
-> > > > > > > > Since commit 61167ad5fecd("mm: pass nid to reserve_bootmem_region()),
-> > > > > > > > loongson64 booting failed with CONFIG_DEFERRED_STRUCT_PAGE_INIT like
-> > > > > > > > this:
-> > > > > > > > ----------------------------------------------------------------------
-> > > > > > > >     Call Trace:
-> > > > > > > >     [<ffffffff8235d088>] reserve_bootmem_region+0xa8/0x184
-> > > > > > > >     [<ffffffff82333940>] memblock_free_all+0x104/0x2a8
-> > > > > > > >     [<ffffffff8231d8e4>] mem_init+0x84/0x94
-> > > > > > > >     [<ffffffff82330958>] mm_core_init+0xf8/0x308
-> > > > > > > >     [<ffffffff82318c38>] start_kernel+0x43c/0x86c
-> > > > > > > > 
-> > > > > > > >     Code: 10400028  2402fff0  de420000 <dc432880> 0203182b 14600022
-> > > > > > > >     64420070  00003025  24040003
-> > > > > > > > 
-> > > > > > > >     ---[ end trace 0000000000000000 ]---
-> > > > > > > >     Kernel panic - not syncing: Attempted to kill the idle task!
-> > > > > > > >     ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
-> > > > > > > > ----------------------------------------------------------------------
-> > > > > > > > 
-> > > > > > > > The root cause is no memory region "0x0-0x1fffff" paired with
-> > > > > > > > memory-reserved region "0x0-0x1fffff" and "0x0-0xfff", with "memblock
-> > > > > > > > =debug":
-> > > > > > > > 
-> > > > > > > > ----------------------------------------------------------------------
-> > > > > > > >      memory[0x0]     [0x0000000000200000-0x000000000effffff],
-> > > > > > > >      0x000000000ee00000 bytes on node 0 flags: 0x0 !!!!here
-> > > > > > > >      memory[0x1]     [0x0000000090000000-0x00000000fdffffff],
-> > > > > > > >      0x000000006e000000 bytes on node 0 flags: 0x0
-> > > > > > > >      memory[0x2]     [0x0000000100000000-0x000000027fffffff],
-> > > > > > > >      0x0000000180000000 bytes on node 0 flags: 0x0
-> > > > > > > >      memory[0x3]     [0x0000100000000000-0x000010000fffffff],
-> > > > > > > >      0x0000000010000000 bytes on node 1 flags: 0x0
-> > > > > > > >      memory[0x4]     [0x0000100090000000-0x000010027fffffff],
-> > > > > > > >      0x00000001f0000000 bytes on node 1 flags: 0x0
-> > > > > > > >      reserved.cnt  = 0x1f
-> > > > > > > >      reserved[0x0]   [0x0000000000000000-0x000000000190c80a],
-> > > > > > > >      0x000000000190c80b bytes flags: 0x0 !!!!oops 0x0-0x1fffff not in memory[0]
-> > > > > > > >      reserved[0x1]   [0x000000000190c810-0x000000000190eea3],
-> > > > > > > >      0x0000000000002694 bytes flags: 0x0
-> > > > > > > > ----------------------------------------------------------------------
-> > > > > > > > 
-> > > > > > > > It caused memory-reserved region "0x0-0x1fffff" without valid node id
-> > > > > > > > in "memblock_get_region_node" from "memmap_init_reserved_pages", lead to
-> > > > > > > > "reserve_bootmem_region-> init_reserved_page -> early_pfn_to_nid()"
-> > > > > > > > accessing "node_data" out of bound.
-> > > > > > > > 
-> > > > > > > > To fix this bug, we should remove unnecessary memory block reservation.
-> > > > > > > > 
-> > > > > > > > +. no need to reserve 0x0-0x1fffff below kernel loading address, since
-> > > > > > > > it is not registered by "memblock_add_node"
-> > > > > > > > 
-> > > > > > > > +. no need to reserve 0x0-0xfff for exception handling if it is not
-> > > > > > > > registered by "memblock_add" either.
-> > > > > > > > 
-> > > > > > > > Fixes: commit 61167ad5fecd("mm: pass nid to reserve_bootmem_region())
-> > > > > > > > Signed-off-by: Huang Pei <huangpei@loongson.cn>
-> > > > > > > > ---
-> > > > > > > >     arch/mips/kernel/traps.c    | 3 ++-
-> > > > > > > >     arch/mips/loongson64/numa.c | 2 --
-> > > > > > > >     2 files changed, 2 insertions(+), 3 deletions(-)
-> > > > > > > > 
-> > > > > > > > diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-> > > > > > > > index 246c6a6b0261..9b632b4c10c3 100644
-> > > > > > > > --- a/arch/mips/kernel/traps.c
-> > > > > > > > +++ b/arch/mips/kernel/traps.c
-> > > > > > > > @@ -2007,7 +2007,8 @@ unsigned long vi_handlers[64];
-> > > > > > > >     void reserve_exception_space(phys_addr_t addr, unsigned long size)
-> > > > > > > >     {
-> > > > > > > > -	memblock_reserve(addr, size);
-> > > > > > > > +	if(memblock_is_region_memory(addr, size))
-> > > > > > > > +		memblock_reserve(addr, size);
-> > > > > > > >     }
-> > > > > > > >     void __init *set_except_vector(int n, void *addr)
-> > > > > > > > diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
-> > > > > > > > index 8f61e93c0c5b..0f516dde81da 100644
-> > > > > > > > --- a/arch/mips/loongson64/numa.c
-> > > > > > > > +++ b/arch/mips/loongson64/numa.c
-> > > > > > > > @@ -130,8 +130,6 @@ static void __init node_mem_init(unsigned int node)
-> > > > > > > >     			memblock_reserve((node_addrspace_offset | 0xfe000000),
-> > > > > > > >     					 32 << 20);
-> > > > > > > > -		/* Reserve pfn range 0~node[0]->node_start_pfn */
-> > > > > > > > -		memblock_reserve(0, PAGE_SIZE * start_pfn);
-> > > > > > > >     	}
-> > > > > > > >     }
-> > > > > > > -- 
-> > > > > > > ---
-> > > > > > > Jiaxun Yang
-> > > > > > > 
-> > > > > > -- 
-> > > > > > Sincerely yours,
-> > > > > > Mike.
-> 
+[    5.130593][  T100] Unable to handle kernel NULL pointer
+dereference at virtual address 0000000000000028
+[    5.130912][  T100] Call trace:
+[    5.130914][  T100]  dwc3_gadget_suspend+0x88/0xf0
+[    5.130918][  T100]  dwc3_suspend_common+0x58/0x230
+[    5.130921][  T100]  dwc3_runtime_suspend+0x34/0x50
+[    5.130925][  T100]  pm_generic_runtime_suspend+0x40/0x58
+[    5.130928][  T100]  __rpm_callback+0x94/0x3e0
+[    5.130931][  T100]  rpm_suspend+0x2e4/0x720
+[    5.130934][  T100]  __pm_runtime_suspend+0x6c/0x100
+[    5.130937][  T100]  dwc3_runtime_idle+0x48/0x64
+[    5.130941][  T100]  rpm_idle+0x20c/0x310
+[    5.130944][  T100]  pm_runtime_work+0x80/0xac
+[    5.130947][  T100]  process_one_work+0x1e4/0x43c
+[    5.130952][  T100]  worker_thread+0x25c/0x430
+[    5.130956][  T100]  kthread+0x104/0x1d4
+[    5.130959][  T100]  ret_from_fork+0x10/0x20
 
--- 
-Sincerely yours,
-Mike.
+(gdb) list *dwc3_gadget_suspend+0x88
+0xffffffc0089b2318 is in dwc3_gadget_suspend (drivers/usb/dwc3/gadget.c:3729).
+..
+3729            if (dwc->async_callbacks && dwc->gadget_driver->disconnect) {
+..
+
+Thanks,
+Kuen-Han
 
