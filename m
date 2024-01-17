@@ -1,180 +1,210 @@
-Return-Path: <linux-kernel+bounces-28455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B90BC82FEB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 03:15:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A6AA82FEBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 03:17:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 427221F25705
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 02:15:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D2AE1F26388
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 02:17:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5379A67C6F;
-	Wed, 17 Jan 2024 02:14:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="bgVPuA1K"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F79E79CC;
+	Wed, 17 Jan 2024 02:17:41 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31E9B15B7;
-	Wed, 17 Jan 2024 02:14:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78CFB7465;
+	Wed, 17 Jan 2024 02:17:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705457694; cv=none; b=ATO6eTS3UA6rIia9P2ogaMXNdRgIH+sQV9pRhA87XdpUNPp+EYfTICnQCt0aH4mYmbgxODRqJbQRneBgkHiMIeqhtIl0eWhBbxObQsq+eebpd5ktQV8Kayvs8kURZwnru3AEoLo94Q2Kl7GghH7fi99hHPHgth1RlurSkBnSXCo=
+	t=1705457860; cv=none; b=hur9N8zYwSgeszxBx7jECiMXK5Erb68RIoCI8usJwxaM1+qk3n+tx2SITGADM5S0UvNkovMbk0Eegu62ig6jKhxNEzlLGP0gMp6Ptq22oZi4soYV7Sw7QWEFaq7uMU4VgXL1Ybg3OB4jK8CpwbpFQEP9Gd5Wx7fGYepZqpxchxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705457694; c=relaxed/simple;
-	bh=WlYroLN8zk0cT2xYQ519Wg7+h2Smv//csVjWDekZDLo=;
-	h=Received:DKIM-Signature:Received:Received:Received:Message-ID:
-	 Date:MIME-Version:User-Agent:Subject:Content-Language:To:CC:
-	 References:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 X-Originating-IP:X-ClientProxiedBy:X-QCInternal:
-	 X-Proofpoint-Virus-Version:X-Proofpoint-GUID:
-	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Virus-Version:
-	 X-Proofpoint-Spam-Details; b=phUXQeDdozyINZp+dmw/ounaetA5h8t0D7OJ1nsYeqm465niQy0HSy6GqlQoackvbVB3iDUd8gWWHKdF0I4cBXmpYAgsZ7jifQcmi0spNIBucVAdtrnwf7bT4OfpmVSpxEYfLRJcsxtkisjwtm6bduhs7LOdKYoyUaFbFTJUTNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=bgVPuA1K; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40H1RiZK003849;
-	Wed, 17 Jan 2024 02:14:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=0JgvLvRSoE1NiIl5rFnwqikJYRa+NwQLhAd6Lin9niY=; b=bg
-	VPuA1K/aqd8vjBDEEiLmPm6+wTiCj89Sz21pc1hLU1fcVHc5KCh2HI1hOYPBr2r+
-	IoiZ2TIjiiJ4Ef16ELYK3Rj6dmP2d1IlJMnGXCbY0Uc319C6dXhn+4Ss+BAiCeF5
-	wpdAnBCNEufu9SqRm+v0cqkiyNDZfmd8CF6sP0T3qKAIPmthb8K65K7ae2+1EU/9
-	JPrrscN7xcxkKaX1ROnWE7meaoAYRkUzczrq/B3FuEeeusFQx6+2AW1TE6GrTZpy
-	Qw6ckveFPKLpZWNTlkjKwwup/mCuEzL/sN4T6eiHR2yMau8ltoOf4ngVy7/c1WSn
-	9d81XXEPY5eVi1s32/OA==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vnn1qthxq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 02:14:42 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40H2EgFp019998
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 02:14:42 GMT
-Received: from [10.239.133.49] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 16 Jan
- 2024 18:14:37 -0800
-Message-ID: <69875d89-651e-41ff-a1be-385dcbb15108@quicinc.com>
-Date: Wed, 17 Jan 2024 10:14:35 +0800
+	s=arc-20240116; t=1705457860; c=relaxed/simple;
+	bh=jegW/nWdpLJ6lB+mwu+Qfv6Qgp1PNS4pZ2t3/gk/UKQ=;
+	h=Received:Received:Received:Date:From:To:CC:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To:X-Originating-IP:
+	 X-ClientProxiedBy; b=HiQOHB5LGv76uqFqe7Dau6AqrLtv19sDRA+nOkTunRAxuWCTDTYIz0iWLVTG7kVTra7glNAKJU8ZVvMxa3+wxALn5ZVGNKwGIKBLqpGAOU19rqu9jPLazgQIKa3MyPrN9I2o6u0NhLdyLRGOjyNNkEZQXVNSucYVZbk9khszaYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TF8f306JNzGpqH;
+	Wed, 17 Jan 2024 10:17:15 +0800 (CST)
+Received: from kwepemd100002.china.huawei.com (unknown [7.221.188.184])
+	by mail.maildlp.com (Postfix) with ESMTPS id A8699180076;
+	Wed, 17 Jan 2024 10:17:34 +0800 (CST)
+Received: from M910t (10.110.54.157) by kwepemd100002.china.huawei.com
+ (7.221.188.184) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Wed, 17 Jan
+ 2024 10:17:33 +0800
+Date: Wed, 17 Jan 2024 10:17:23 +0800
+From: Changbin Du <changbin.du@huawei.com>
+To: Thomas Richter <tmricht@linux.ibm.com>
+CC: Changbin Du <changbin.du@huawei.com>, Peter Zijlstra
+	<peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de
+ Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
+ Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, Adrian
+ Hunter <adrian.hunter@intel.com>, <linux-kernel@vger.kernel.org>,
+	<linux-perf-users@vger.kernel.org>
+Subject: Re: [PATCH 2/3] perf: script: use capstone disasm engine to show
+ assembly instructions
+Message-ID: <20240117021723.bhxvgha74syz5fbg@M910t>
+References: <20240116113437.1507537-1-changbin.du@huawei.com>
+ <20240116113437.1507537-3-changbin.du@huawei.com>
+ <f81cf759-d5a4-4b46-bd2c-2e11355447a8@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm: coresight: Remove pattern match
- of ETE node name
-Content-Language: en-US
-To: Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach
-	<mike.leach@linaro.org>, James Clark <james.clark@arm.com>,
-        Leo Yan
-	<leo.yan@linaro.org>,
-        Alexander Shishkin
-	<alexander.shishkin@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC: <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Tao Zhang
-	<quic_taozha@quicinc.com>
-References: <20240116064505.487-1-quic_jinlmao@quicinc.com>
- <20240116064505.487-2-quic_jinlmao@quicinc.com>
- <f616989b-2d84-483d-80c4-d3c6eb97b137@arm.com>
-From: Jinlong Mao <quic_jinlmao@quicinc.com>
-In-Reply-To: <f616989b-2d84-483d-80c4-d3c6eb97b137@arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 02NpGnyyBgOoVZrKQnFsgBZhJ9_P5zlE
-X-Proofpoint-ORIG-GUID: 02NpGnyyBgOoVZrKQnFsgBZhJ9_P5zlE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-16_14,2024-01-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- mlxlogscore=999 lowpriorityscore=0 phishscore=0 bulkscore=0
- impostorscore=0 mlxscore=0 priorityscore=1501 spamscore=0 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401170013
+In-Reply-To: <f81cf759-d5a4-4b46-bd2c-2e11355447a8@linux.ibm.com>
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemd100002.china.huawei.com (7.221.188.184)
 
-
-
-On 1/16/2024 5:33 PM, Suzuki K Poulose wrote:
-> On 16/01/2024 06:45, Mao Jinlong wrote:
->> Remove pattern match of ETE node name. Use ete with the number as the
->> name for ete nodes.
->>
->> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
->> ---
->>   .../bindings/arm/arm,embedded-trace-extension.yaml          | 6 ++----
->>   1 file changed, 2 insertions(+), 4 deletions(-)
->>
->> diff --git 
->> a/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml b/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
->> index f725e6940993..ed78cc7ae94a 100644
->> --- 
->> a/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
->> +++ 
->> b/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
->> @@ -22,8 +22,6 @@ description: |
->>     with any optional connection graph as per the coresight bindings.
->>   properties:
->> -  $nodename:
->> -    pattern: "^ete([0-9a-f]+)$"
->>     compatible:
->>       items:
->>         - const: arm,embedded-trace-extension
->> @@ -55,13 +53,13 @@ examples:
->>   # An ETE node without legacy CoreSight connections
->>     - |
->> -    ete0 {
->> +    ete-0 {
+On Tue, Jan 16, 2024 at 03:26:52PM +0100, Thomas Richter wrote:
+> On 1/16/24 12:34, Changbin Du wrote:
+> > Currently, the instructions of samples are shown as raw hex strings
+> > which are hard to read. x86 has a special option '--xed' to disassemble
+> > the hex string via intel XED tool.
+> > 
+> > Here we use capstone as our disassembler engine to give more friendly
+> > instructions. We select libcapstone because capstone can provide more
+> > insn details. Perf will fallback to raw instructions if libcapstone is
+> > not available.
+> > 
+> > The advantages compared to XED tool:
+> >  * Support arm, arm64, x86-32, x86_64 (more could be supported),
+> >    xed only for x86_64.
+> >  * Immediate address operands are shown as symbol+offs.
+> > 
+> > Before:
+> > $ sudo perf record --event intel_pt//u -- ls
+> > $ sudo perf script --insn-trace
+> >             perf 17423 [000] 423271.557970005:      7f2d95f16217 __GI___ioctl+0x7 (/lib/x86_64-linux-gnu/libc-2.27.so) insn: 48 3d 01 f0 ff ff
+> >             perf 17423 [000] 423271.557970005:      7f2d95f1621d __GI___ioctl+0xd (/lib/x86_64-linux-gnu/libc-2.27.so) insn: 73 01
+> >             perf 17423 [000] 423271.557970338:      7f2d95f1621f __GI___ioctl+0xf (/lib/x86_64-linux-gnu/libc-2.27.so) insn: c3
+> >             perf 17423 [000] 423271.557970338:      5593ad3346d7 perf_evsel__enable_cpu+0x97 (/work/linux/tools/perf/perf) insn: 85 c0
+> >             perf 17423 [000] 423271.557970338:      5593ad3346d9 perf_evsel__enable_cpu+0x99 (/work/linux/tools/perf/perf) insn: 75 12
+> >             perf 17423 [000] 423271.557970338:      5593ad3346db perf_evsel__enable_cpu+0x9b (/work/linux/tools/perf/perf) insn: 49 8b 84 24 a8 00 00 00
+> >             perf 17423 [000] 423271.557970338:      5593ad3346e3 perf_evsel__enable_cpu+0xa3 (/work/linux/tools/perf/perf) insn: 48 8b 50 20
+> > 
+> > After:
+> > $ sudo perf script --insn-trace
+> >             perf 17423 [000] 423271.557970005:      7f2d95f16217 __GI___ioctl+0x7 (/lib/x86_64-linux-gnu/libc-2.27.so) insn: cmpq $-0xfff, %rax
+> >             perf 17423 [000] 423271.557970005:      7f2d95f1621d __GI___ioctl+0xd (/lib/x86_64-linux-gnu/libc-2.27.so) insn: jae __GI___ioctl+0x10
+> >             perf 17423 [000] 423271.557970338:      7f2d95f1621f __GI___ioctl+0xf (/lib/x86_64-linux-gnu/libc-2.27.so) insn: retq
+> >             perf 17423 [000] 423271.557970338:      5593ad3346d7 perf_evsel__enable_cpu+0x97 (/work/linux/tools/perf/perf) insn: testl %eax, %eax
+> >             perf 17423 [000] 423271.557970338:      5593ad3346d9 perf_evsel__enable_cpu+0x99 (/work/linux/tools/perf/perf) insn: jne perf_evsel__enable_cpu+0xad
+> >             perf 17423 [000] 423271.557970338:      5593ad3346db perf_evsel__enable_cpu+0x9b (/work/linux/tools/perf/perf) insn: movq 0xa8(%r12), %rax
+> >             perf 17423 [000] 423271.557970338:      5593ad3346e3 perf_evsel__enable_cpu+0xa3 (/work/linux/tools/perf/perf) insn: movq 0x20(%rax), %rdx
+> >             perf 17423 [000] 423271.557970338:      5593ad3346e7 perf_evsel__enable_cpu+0xa7 (/work/linux/tools/perf/perf) insn: cmpl %edx, %ebx
+> >             perf 17423 [000] 423271.557970338:      5593ad3346e9 perf_evsel__enable_cpu+0xa9 (/work/linux/tools/perf/perf) insn: jl perf_evsel__enable_cpu+0x60
+> >             perf 17423 [000] 423271.557970338:      5593ad3346eb perf_evsel__enable_cpu+0xab (/work/linux/tools/perf/perf) insn: xorl %eax, %eax
+> > 
+> > Signed-off-by: Changbin Du <changbin.du@huawei.com>
+> > ---
 > 
-> Why do we need the number ? why not simply "ete" as Krzysztof suggested ?
+> ....
+> 
+> > diff --git a/tools/perf/util/print_insn.c b/tools/perf/util/print_insn.c
+> > new file mode 100644
+> > index 000000000000..c8d9741748cd
+> > --- /dev/null
+> > +++ b/tools/perf/util/print_insn.c
+> > @@ -0,0 +1,118 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Instruction binary disassembler based on capstone.
+> > + *
+> > + * Author(s): Changbin Du <changbin.du@huawei.com>
+> > + */
+> > +#include "print_insn.h"
+> > +#include <stdlib.h>
+> > +#include <string.h>
+> > +#include <stdbool.h>
+> > +#include "util/debug.h"
+> > +#include "util/symbol.h"
+> > +#include "machine.h"
+> > +
+> > +size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp)
+> > +{
+> > +	int printed = 0;
+> > +
+> > +	for (int i = 0; i < sample->insn_len; i++)
+> > +		printed += fprintf(fp, "%02x ", (unsigned char)sample->insn[i]);
+> > +	return printed;
+> > +}
+> > +
+> > +#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> > +#include <capstone/capstone.h>
+> > +
+> > +static int capstone_init(struct machine *machine, csh *cs_handle)
+> > +{
+> > +	cs_arch arch;
+> > +	cs_mode mode;
+> > +
+> > +	if (machine__is(machine, "x86_64")) {
+> > +		arch = CS_ARCH_X86;
+> > +		mode = CS_MODE_64;
+> > +	} else if (machine__normalized_is(machine, "x86")) {
+> > +		arch = CS_ARCH_X86;
+> > +		mode = CS_MODE_32;
+> > +	} else if (machine__normalized_is(machine, "arm64")) {
+> > +		arch = CS_ARCH_ARM64;
+> > +		mode = CS_MODE_ARM;
+> > +	} else if (machine__normalized_is(machine, "arm")) {
+> > +		arch = CS_ARCH_ARM;
+> > +		mode = CS_MODE_ARM + CS_MODE_V8;
+> > +	} else {
+> > +		return -1;
+> > +	}
+> > ...
+> 
+> Did you forgot to support s390? Or was it omitted on intention?
+> Something along the lines will support s390:
+> 
+>  # git diff util/print_insn.c
+> diff --git a/tools/perf/util/print_insn.c b/tools/perf/util/print_insn.c
+> index c8d9741748cd..c5127910c75b 100644
+> --- a/tools/perf/util/print_insn.c
+> +++ b/tools/perf/util/print_insn.c
+> @@ -41,6 +41,9 @@ static int capstone_init(struct machine *machine, csh *cs_handle)
+>         } else if (machine__normalized_is(machine, "arm")) {
+>                 arch = CS_ARCH_ARM;
+>                 mode = CS_MODE_ARM + CS_MODE_V8;
+> +       } else if (machine__normalized_is(machine, "s390x")) {
+> +               arch = CS_ARCH_SYSZ;
+> +               mode = CS_MODE_BIG_ENDIAN;
+>         } else {
+>                 return -1;
+>         }
+>   #
+> 
+> Thanks a lot for including these line in your next version.
+> 
+No problem, thanks.
+
+> -- 
+> Thomas Richter, Dept 3303, IBM s390 Linux Development, Boeblingen, Germany
+> --
+> IBM Deutschland Research & Development GmbH
+> 
+> Vorsitzender des Aufsichtsrats: Wolfgang Wendt
+> 
+> Geschäftsführung: David Faller
+> 
+> Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
 > 
 
-Hi Suzuki & Krzysztof ,
-
-If name all the ete nodes' name as 'ete', there will be error below when 
-build images.
-
-arch/arm64/boot/dts/qcom/sm8450.dtsi:301.6-312.4: ERROR 
-(duplicate_node_names): /ete: Duplicate node name
-arch/arm64/boot/dts/qcom/sm8450.dtsi:314.6-325.4: ERROR 
-(duplicate_node_names): /ete: Duplicate node name
-arch/arm64/boot/dts/qcom/sm8450.dtsi:327.6-338.4: ERROR 
-(duplicate_node_names): /ete: Duplicate node name
-arch/arm64/boot/dts/qcom/sm8450.dtsi:340.6-351.4: ERROR 
-(duplicate_node_names): /ete: Duplicate node name
-arch/arm64/boot/dts/qcom/sm8450.dtsi:353.6-364.4: ERROR 
-(duplicate_node_names): /ete: Duplicate node name
-arch/arm64/boot/dts/qcom/sm8450.dtsi:366.6-377.4: ERROR 
-(duplicate_node_names): /ete: Duplicate node name
-arch/arm64/boot/dts/qcom/sm8450.dtsi:379.6-390.4: ERROR 
-(duplicate_node_names): /ete: Duplicate node name
-
-Thanks
-Jinlong Mao
-
-> 
-> 
+-- 
+Cheers,
+Changbin Du
 
