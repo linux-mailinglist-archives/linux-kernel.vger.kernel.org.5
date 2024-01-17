@@ -1,76 +1,75 @@
-Return-Path: <linux-kernel+bounces-28812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB755830349
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:10:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F47183034F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:12:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56D122887D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:10:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7FBB1F25E6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:12:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B94014295;
-	Wed, 17 Jan 2024 10:09:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 037941429C;
+	Wed, 17 Jan 2024 10:12:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YRIlDdlc"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fR0+ULyh"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D74CE14A97
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:09:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7DA314270
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:12:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705486198; cv=none; b=I0V84LlfpRfR3T1QTCbjox+jjAM/IpOeOoksLNpjfhXHaQ/jDjUnmJV+dK2djnz0Us3ruwCNAAq9p5svNO3OOVSr/YpLQZh7ZmNA+VQtkRLLKm1nplMa1E6k+eBGIaiQPHMSl6HZxl82AgeA4vzfhin+13uehmhJoirBKTpUwho=
+	t=1705486337; cv=none; b=ppJlKok8+9En5ujbrm7OPFzMUKDWrBPfhvvixkUbHPMTIj62SxOdx5LZ7XDmrzZfJI8BNu3lDxuf5wyBI9rQcDprGsJ5xpAUIKv70FpDYZ/eQsoIZBxja9GcMSW3NvLjD1CSLLiuNS2e+GBPLrai5lRKVsLmyYu3DRvp29AI0Dg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705486198; c=relaxed/simple;
-	bh=y1zpHe+bzcLVL02w3qxJowivdvo8Q+4cXta5ESxKUQo=;
+	s=arc-20240116; t=1705486337; c=relaxed/simple;
+	bh=rhgo8anDiEoNehQsFNXFLCGNEdAxInN4EQOHuEaGWUc=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:References:
-	 Content-Language:From:Autocrypt:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=uDmWPES8Hm4OmdwGpciQtXRhaLaeBrTXNIBUcB0Wx7rt189wZfUOC2drgO8carvWUYu4B0CWPKQ0sVWMYJARY03Q+EZgYqPiOw5g4sekBE2QlFMJm4qC/8zRueZlH59CsFGZnGwDsbQk5w8wb7D2F5bqCH5hxyaWB7K84VwoXEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YRIlDdlc; arc=none smtp.client-ip=209.85.208.46
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
+	 To:Cc:References:From:Autocrypt:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=Zab6Ei5XiKIy82JNNteFBnPS8Q+4eEeLAgKnVqJ9hlkKExI/X9nubtZlQjciJCdutR38tuY1LqY5/SQbvS78P+9eQfFhG8dNDAzL/5lr7sVRC7+YTQsaWLSq6vhyp7AQZ+oYISDFXCB8qu/mrtax+ii7y7aAA/wJ70vDNSTZXXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fR0+ULyh; arc=none smtp.client-ip=209.85.167.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55969c01168so4232195a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 02:09:55 -0800 (PST)
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-50ea8fbf261so12993521e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 02:12:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705486194; x=1706090994; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=ts7Y3JMNNwHa3F11G47U7NAl+AwiK6ieVL0o+/Pa9EE=;
-        b=YRIlDdlcWaOjmtxzOeZAStawsR4EuqcEzEHGYJGVHhItKLtbnhuOSYG1ofPXsrKt0C
-         wjLOQXOLPsd8mzSaBrXWjAX/rsHGn21TG6nkyIODA5v+Ak7nYF2BXFbDAYEo8/dmdFXr
-         Og5mfkPxtZYGHWrH9aLFBUJcdCPN3go6yGbbx6oQ3aeFRPEOa9/iVuzXCMkOQkfRSoaw
-         mFBquWPuAR3rzRrjdDi45Tpb8qyowmD+1OHoktCevo6V+gZvhBqLxFsEvKb3zCdkTDTU
-         CG0r07rXbMF1C7t0xCic5puwGBnM4UofIt50kvXXjKBRmQMOQ7Rlc8nW7RkCm/RMZGfP
-         bv8Q==
+        d=linaro.org; s=google; t=1705486334; x=1706091134; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fLz4I1weXAmYca488G/BVTkRV5enYY8Li2toFrdjODE=;
+        b=fR0+ULyh4e8rWIMMpfgYgjUGLlK/Tdv0ieUksJxyK1VJWDjGyEPOXbupa3ZEaF9rPA
+         pxTT0D6E0ISCNt1RvFFNmyEkmZC9h9M3xnnvrWT25Yh7f05S51SZak8fZzIMZDnsyJGj
+         KddH0VKS3W/nG7Oyl38Ytyf1efkjVMBkMWyvoz4a1tmePxdURIlOGYscuBjOl79duwWA
+         BZGWf2zpQ3uU+qvN+1CayIsfr6vI7hE60uUdExybJxj7Q4/R1IAWh5AXX/SuPvfOiPPk
+         abfeXUHj/TgGXWIwhTZij9yCPV9u1p/oP+FJ/dZ0q5pYYzLaof2AvFJuU3NDWB7+Ikdy
+         2EyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705486194; x=1706090994;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ts7Y3JMNNwHa3F11G47U7NAl+AwiK6ieVL0o+/Pa9EE=;
-        b=kbe8sety1k3vi/Y3Ed67nT2TzGRyelAMd5UxYwdKXrPr0SLnWm/uNOH09fXScl0IGX
-         g4ygq30ktgM+vnAndGzA1Az/Xn8z0+FB3xa3IKVVo7xrOYFey1vuVuFjDdV+KBR33SGg
-         0IqnHgd0ZgiSYUOVQLA31RyRzkAvwDM5Eb02vOSzmtpcDlxn2OrmJVmou7uxhcPugY6/
-         krT47VeAt/+rt65gL4WcgbJiWSU/gUajzTRg+dG9a82jbxxi3OWcG1AnJe5N31bWXsPE
-         57Wj6Vqpt3+lB/v7JF+ZfG2XAO4GnM4emYvlJA4yHYTAFtp2wvEFMOvAmBLOnFx0+FyN
-         Ai6w==
-X-Gm-Message-State: AOJu0YyPiRwbzkpcLDzA6UWX1Wi+Way+PUv7REjraLqiONbg1wvkW2sS
-	XPwNkJSyP4R1eCdwoD97+AmRI3dZVhXeIQ==
-X-Google-Smtp-Source: AGHT+IGJO65gj5PopdS5Vfk41IzfVO8BHd8uIXrYfINw2zDIUs3u/SV52wJm0aXwf+ZdeXsCEhMHIg==
-X-Received: by 2002:a17:906:a40e:b0:a2e:82db:8c32 with SMTP id l14-20020a170906a40e00b00a2e82db8c32mr583912ejz.28.1705486194171;
-        Wed, 17 Jan 2024 02:09:54 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705486334; x=1706091134;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fLz4I1weXAmYca488G/BVTkRV5enYY8Li2toFrdjODE=;
+        b=eg0MohDPpdUcZf4BYAniwwuyIbBmeVtyX/0qNYIXxNQfcC8oae4W3JTEPfHjAL8+1x
+         eZSAIkazwHPr5vsuWwa3harmZgX7hRsUKCHO1EtAmi7n20cNSZ4tPJphZAwm+HijLNX7
+         +aaczFAOUwY8+QTvuhwn47qRDB5N9JSTAtvghEzuOKv3y1xPa0379aUsqM6YJxzSwGOl
+         UmRO4yNUs3+HrK4PT/ffZBi4JaP4M47SFpeQUKN2NlwhmmfSfni7sUHb1tJs/5m/i2+T
+         h2nj7NtXRJD2lk4Yp2F8iKtgS/Z0qKETWdqajN/5RbfWRwCJA6IWLh8CnEzKITdwMoLH
+         HqPQ==
+X-Gm-Message-State: AOJu0YwosaBfl8Lh9Qs/rKw1+Iw45Tf3mGOOH2+HEKJhYu06yDMYsxLD
+	LIwiUGGO1SzFMsb282SlHu/2RJRr/e3rbA==
+X-Google-Smtp-Source: AGHT+IGHUS47ntGtAxqgSc16gGw4A7eJz5ipanrm2FHcARnMas7/Pt79IoAoxDaiz42CzBkaXPgCsA==
+X-Received: by 2002:a05:6512:239c:b0:50b:e724:62a8 with SMTP id c28-20020a056512239c00b0050be72462a8mr5089885lfv.92.1705486333780;
+        Wed, 17 Jan 2024 02:12:13 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id b21-20020a17090630d500b00a2c4c23cd12sm7570703ejb.217.2024.01.17.02.09.51
+        by smtp.gmail.com with ESMTPSA id p13-20020a05640243cd00b005597b0380ebsm2312997edc.92.2024.01.17.02.12.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jan 2024 02:09:53 -0800 (PST)
-Message-ID: <5515759b-c7de-4373-8e71-329bfd12cfd8@linaro.org>
-Date: Wed, 17 Jan 2024 11:09:50 +0100
+        Wed, 17 Jan 2024 02:12:13 -0800 (PST)
+Message-ID: <71413ca3-1a14-4eda-ad29-dc5fcbe5afb3@linaro.org>
+Date: Wed, 17 Jan 2024 11:12:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,16 +77,20 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/3] dt-bindings: gpio: vf610: add optional 'ngpios'
-To: Hector Palacios <hector.palacios@digi.com>, linus.walleij@linaro.org,
- brgl@bgdev.pl, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org
-Cc: andy@kernel.org, conor+dt@kernel.org, shawnguo@kernel.org,
- s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
- linux-imx@nxp.com, stefan@agner.ch, linux-gpio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240117094453.100518-1-hector.palacios@digi.com>
- <20240117094453.100518-3-hector.palacios@digi.com>
+Subject: Re: [PATCH 1/3] dt-bindings: rockchip: Add rk809 support for rk817
+ audio codec
 Content-Language: en-US
+To: Tim Lunn <tim@feathertop.org>, Rob Herring <robh@kernel.org>
+Cc: linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Chris Zhong <zyw@rock-chips.com>,
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Lee Jones <lee@kernel.org>, Zhang Qing <zhangqing@rock-chips.com>,
+ linux-kernel@vger.kernel.org
+References: <20240116084618.3112410-1-tim@feathertop.org>
+ <20240116084618.3112410-2-tim@feathertop.org>
+ <20240116193701.GA286794-robh@kernel.org>
+ <64bce36c-468a-43b6-9d8d-0c20fbd53939@feathertop.org>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -133,39 +136,55 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240117094453.100518-3-hector.palacios@digi.com>
+In-Reply-To: <64bce36c-468a-43b6-9d8d-0c20fbd53939@feathertop.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 17/01/2024 10:44, Hector Palacios wrote:
-> Some SoCs, such as i.MX93, don't have all 32 pins available
-> per port. Allow optional generic 'ngpios' property to be
-> specified from the device tree and default to 32 if the
-> property does not exist.
+On 17/01/2024 10:37, Tim Lunn wrote:
+>> You can drop the description.
+> Yes just 1 clock, i will fix this.
+>>
+>>> +
+>>> +  clock-names:
+>>> +    description:
+>>> +      The clock name for the codec clock.
+>> Drop.
+> Just drop the description? I dont think can drop the clock names as the 
+> driver use the name to lookup clock:
+
+Description. But anyway the problem is that adding clocks should be
+separate patch with its own explanation.
+
+
 > 
-> Signed-off-by: Hector Palacios <hector.palacios@digi.com>
+> devm_clk_get(pdev->dev.parent, "mclk");
+>>
+>>> +    items:
+>>> +      - const: mclk
+>>> +
+>>> +  '#sound-dai-cells':
+>>> +    description:
+>>> +      Needed for the interpretation of sound dais.
+>> Common property, don't need the description.
+> Ok
+>>
+>>> +    const: 0
+>>> +
+>>> +  codec:
+>>> +    description: |
+>>> +      The child node for the codec to hold additional properties. If no
+>>> +      additional properties are required for the codec, this node can be
+>>> +      omitted.
+>> Why do you need a child node here? Just put the 1 property in the parent
+>> node.
+> This is how the existing rk817 codec driver was setup. I suppose it was 
+> copied from downstream, where there are more properties than just the 
+> one. I don't know if there was any intention (or need) to implement 
+> those other properties.
+>>
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Please give maintainers chance to review your patches... one patchset
-per day. During merge window maybe rarer.
-
-
----
-
-This is an automated instruction, just in case, because many review tags
-are being ignored. If you know the process, you can skip it (please do
-not feel offended by me posting it here - no bad intentions intended).
-If you do not know the process, here is a short explanation:
-
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
-
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+You need to clearly express ABI requirements in the commit msg.
+Otherwise you will get a review like for new bindings.
 
 Best regards,
 Krzysztof
