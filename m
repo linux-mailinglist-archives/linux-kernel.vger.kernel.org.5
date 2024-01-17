@@ -1,125 +1,180 @@
-Return-Path: <linux-kernel+bounces-28809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEFF483033A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:06:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0198B830345
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:07:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD7011C24D8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:06:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BFA62893BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:07:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 778E51DFC6;
-	Wed, 17 Jan 2024 10:04:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="MpANVDJj"
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 235AD14A90;
+	Wed, 17 Jan 2024 10:06:19 +0000 (UTC)
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6923714AAE
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:04:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0975014282;
+	Wed, 17 Jan 2024 10:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705485869; cv=none; b=tSzR3b7jThsCqy8facplZ4sPBItGqd5sHooHtI65f7hYkXbLITeGLI25wQtwqQaHr4iHy0cCvjS3GgUJ0l8KVw+UcfndhR1qRb/k80yY9u3fWcbNiggedvUXdxAdvh5hb+KD9bfbZJQ06Z/do+1Bg+OcKpf1hmOuqpz9nES4Uq8=
+	t=1705485978; cv=none; b=pQBfCZa5Xvg+AfObSRFSv6xGACocS7axxPOJkr5ptCbNWh+PyPeCVpxWlw5qNQskovfXS3DBdePfN/VsGlXbeMh/t+DPxYKX5k2vm71ED3uHvCjMhC/JeCcwgGD+VEpe+RIkciK5seXZyIcrU9/MnA6DM1rF3lhJc3k2KwU7Sqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705485869; c=relaxed/simple;
-	bh=M3XhB67hkee2VxQJe2LsmfTQvglnPp488Z+xL8kMgwM=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=PRIDf4SWk/CBaGXpYMAgl9Yxg7ozwOGdjfcwSi+krDC4PKj62TICbT7es1nPQSsZHRgQ0b5KUsCOQazWOjQi8WKDd66kzdrO/7VqYBHw0R/CWyt55dSimdRjNmCz8NLF1CZErjZJN+WWreQp/sHbbdnSMR+PUb/i7uEHMJLiWEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=MpANVDJj; arc=none smtp.client-ip=209.85.217.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-467ec031988so1788709137.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 02:04:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1705485866; x=1706090666; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G+HHWHLzcTgUcOMPEyGzQtr3xDzQkbehyO0vABAHV80=;
-        b=MpANVDJjBwwL3qcEEgnkpusl+PNfIjngKTV8RZqRaLEt6rLKxd1IKD4j/wEW7iIAl+
-         40Ssu1VqquIgS5NzxtqgdsI4snLYXNTzSIP/yeM/PYv11N9bNqMw6y3Ue28Fmehey6O3
-         QjgoWvUDkyRN5Rvct3EMTiwjRqnvo0xLkA+fzODtYeYGmW+EokQzPLI1NC9XeohqLYR4
-         DAZ9P+iutjbFK8Q7of12Uu8DaxweAPsNwWLSIT0g7pkJxI/u4izhRAsB934XzvgOHX+T
-         RjSFe5MLvQrINttAZ8gD2TK9Iyva0nesSk+lshoY1aC+QAYIRaRtRFMTj1LcVKTf6hHr
-         f4rg==
+	s=arc-20240116; t=1705485978; c=relaxed/simple;
+	bh=+cxx2b/N2LvNg0nWquPf/YpjQZ5mfMypJFmZWd9uQdc=;
+	h=Received:X-Google-DKIM-Signature:X-Gm-Message-State:
+	 X-Google-Smtp-Source:X-Received:Received:Received:X-Received:
+	 MIME-Version:References:In-Reply-To:From:Date:
+	 X-Gmail-Original-Message-ID:Message-ID:Subject:To:Cc:Content-Type:
+	 Content-Transfer-Encoding; b=tBoWVinOOOmBbgRDjAGq9ns14o2g5VemiOeTCg7rmZ+DoPGbJT7PsjpOlWBwBENr2aJrXQo5971fe1EeRrzwYMMOSZG036+B4NiDk9DNWZ0md+jAn4unqncTkVIeRuCUTpMYFwum1WCYVKGFLnAhp38fGxhzI70iZS0sEa1ZRvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5f68af028afso92131237b3.2;
+        Wed, 17 Jan 2024 02:06:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705485866; x=1706090666;
+        d=1e100.net; s=20230601; t=1705485975; x=1706090775;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=G+HHWHLzcTgUcOMPEyGzQtr3xDzQkbehyO0vABAHV80=;
-        b=sHCTEOYnk668OV6qmLojGqvSOe164M76ca7EOyDr44MS9sU1GgjyR+iH/RsFWBJgk6
-         exgJSard0AOFRZtujwIvayka8CKNbcsmZqweWG2lJiBWuz2e9p6MKhTWq14GsqKMGtZm
-         zwxi0QUlz+K6Pkrx8GTW2n1w0JBNWu1sEvMD0/59KXHSsYp06doLwGU7X7mhSK2Ii30T
-         9HEsXgMe5IS+lvS004rE42Ik7F9yBWt3VQ+876hGyzmdFeJzpxzmusNhwQLU1QF5/pmE
-         vAsYehoxYcrN2UOrXXktkX96W7BLsUudTCFI4Q51dfbQfX3YgrPdAZXsleiDCpD8730I
-         BMYA==
-X-Gm-Message-State: AOJu0YxbqFsbfv8CWrD9UgJZZV2gyQ6Yj0hFfYgikMoR8ovhxONrHifj
-	IX9Gz/zitEa2DRByrA8ADbuuLtpQm+rQuDixCt60pouQJjduLQ==
-X-Google-Smtp-Source: AGHT+IF0cosbn5mIeLL8ecREh032b1Vd1wNpHQo/UCh6/dAr1uuGpRdtZRbNNTp7i2P7nLmOzscBM8EUAIskm/SjBKo=
-X-Received: by 2002:a05:6102:30b1:b0:469:63f3:17dd with SMTP id
- y17-20020a05610230b100b0046963f317ddmr1642416vsd.15.1705485866291; Wed, 17
- Jan 2024 02:04:26 -0800 (PST)
+        bh=ktKDg1Kr1k5upORAnFgj9TjW3VLUUCKOkhGf1ZiTWq0=;
+        b=mFJmS23fQc++YO/zFXRwgtK6yS1H0p2B67RZ2WrktMJuaSr5q5ZP3fK9FDOT2tjwKl
+         wBxJEpMKMTENBQzLKB+5gNSc7haazIGK4bGuaz8TK6YBCOAllduQ84NTI3IvaI6++QIc
+         Jn9Zw2idHIJB3te/cb2s13XR1OdnPUX5xBmcjeUJasUnKZEKoSM1XMoTPqj1T87k84UT
+         qEFtmf+LnWplPEoZ65rE101grFNd28WywjsWwRenMZNh7TkKG/GcnLx82yL3LQKFCtEq
+         DsVssmQvaLX2oXctuwnWlxFux+KEcdc1PABMOxRAIU8+UsGk8aJyLtw/EHJwPn7yFLKd
+         dvxg==
+X-Gm-Message-State: AOJu0YwyXFpO1PtvBCus81+IgUNlnvrvx4eAom/zIY7agMz4xtctefIn
+	TY0sYB6u9Q8JzIdrL/VneoD5tnu31BOVvQ==
+X-Google-Smtp-Source: AGHT+IGvsKro72mIsn7zC0rDold1fCYfQbqHaTRxf3TuiU8P9HI/5ZCiNSd7B6rJpaD3yJoF6v7fBw==
+X-Received: by 2002:a81:e602:0:b0:5ee:65b3:f289 with SMTP id u2-20020a81e602000000b005ee65b3f289mr4814207ywl.3.1705485974739;
+        Wed, 17 Jan 2024 02:06:14 -0800 (PST)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
+        by smtp.gmail.com with ESMTPSA id d4-20020a0ddb04000000b005ff5fc95e34sm982467ywe.55.2024.01.17.02.06.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Jan 2024 02:06:14 -0800 (PST)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5e54d40cca2so83078567b3.3;
+        Wed, 17 Jan 2024 02:06:14 -0800 (PST)
+X-Received: by 2002:a05:690c:fd5:b0:5ee:7299:e2cf with SMTP id
+ dg21-20020a05690c0fd500b005ee7299e2cfmr5153857ywb.52.1705485974135; Wed, 17
+ Jan 2024 02:06:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117094453.100518-1-hector.palacios@digi.com>
-In-Reply-To: <20240117094453.100518-1-hector.palacios@digi.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Wed, 17 Jan 2024 11:04:15 +0100
-Message-ID: <CAMRc=MduNZ63ATVFG9HyrO1GggroeCy7BFtozRmz5dEz0e4-RA@mail.gmail.com>
-Subject: Re: [PATCH v4 0/3] gpio: support i.MX93 truly available GPIO pins
-To: Hector Palacios <hector.palacios@digi.com>
-Cc: linus.walleij@linaro.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, andy@kernel.org, conor+dt@kernel.org, 
-	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, 
-	festevam@gmail.com, linux-imx@nxp.com, stefan@agner.ch, 
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <cover.1704788539.git.ysato@users.sourceforge.jp>
+ <bc794e2165244bd0cee81bc0106f1e2d1bef1613.1704788539.git.ysato@users.sourceforge.jp>
+ <CACRpkdYLsf-uWdMCTpieji7u1-H3oTGojvC4xm7Erox97XJ6RQ@mail.gmail.com> <8734uwwavx.wl-ysato@users.sourceforge.jp>
+In-Reply-To: <8734uwwavx.wl-ysato@users.sourceforge.jp>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 17 Jan 2024 11:06:02 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX_2Tgm2LLM1TgFrkLdokD99gAeKHJWrKy9Y2A+wtf5RA@mail.gmail.com>
+Message-ID: <CAMuHMdX_2Tgm2LLM1TgFrkLdokD99gAeKHJWrKy9Y2A+wtf5RA@mail.gmail.com>
+Subject: Re: [DO NOT MERGE v6 17/37] dt-bindings: interrupt-controller:
+ renesas,sh7751-intc: Add json-schema
+To: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Linus Walleij <linus.walleij@linaro.org>, linux-sh@vger.kernel.org, 
+	Damien Le Moal <dlemoal@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Michael Turquette <mturquette@baylibre.com>, 
+	Stephen Boyd <sboyd@kernel.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Thomas Gleixner <tglx@linutronix.de>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Jiri Slaby <jirislaby@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>, Rich Felker <dalias@libc.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Lee Jones <lee@kernel.org>, 
+	Helge Deller <deller@gmx.de>, Heiko Stuebner <heiko@sntech.de>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
+	Yang Xiwen <forbidden405@foxmail.com>, Sebastian Reichel <sre@kernel.org>, 
+	Randy Dunlap <rdunlap@infradead.org>, Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@suse.cz>, 
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, David Rientjes <rientjes@google.com>, Baoquan He <bhe@redhat.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Guenter Roeck <linux@roeck-us.net>, 
+	Stephen Rothwell <sfr@canb.auug.org.au>, Azeem Shaikh <azeemshaikh38@gmail.com>, 
+	Javier Martinez Canillas <javierm@redhat.com>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Palmer Dabbelt <palmer@rivosinc.com>, Bin Meng <bmeng@tinylab.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Jacky Huang <ychuang3@nuvoton.com>, 
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
+	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+	Sam Ravnborg <sam@ravnborg.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
+	Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>, 
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, linux-ide@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org, 
+	linux-serial@vger.kernel.org, linux-fbdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 17, 2024 at 10:45=E2=80=AFAM Hector Palacios
-<hector.palacios@digi.com> wrote:
->
-> All four GPIO ports of i.MX93 SoC show 32 pins available, but
-> not every port has 32 pins.
-> Add support on the GPIO driver to 'ngpios' property and set
-> the truly available pins on the SoC device tree.
->
-> v4
-> * Remove 'description' from 'npgio' field in bindings as it
->   is a generic one.
->
-> v3
-> * Move DT bindings to a patch of its own
-> * Improve reasoning for adding support in driver
->
-> v2
-> * Add 'ngpios' property to DT binding for proper validation
->
-> Hector Palacios (3):
->       gpio: vf610: add support to DT 'ngpios' property
->       dt-bindings: gpio: vf610: add optional 'ngpios'
->       arm64: dts: imx93: specify available 'ngpios' per GPIO port
->
->  Documentation/devicetree/bindings/gpio/gpio-vf610.yaml | 5 +++++
->  arch/arm64/boot/dts/freescale/imx93.dtsi               | 4 ++++
->  drivers/gpio/gpio-vf610.c                              | 7 ++++++-
->  3 files changed, 15 insertions(+), 1 deletion(-)
->
->
+Hi Sato-san,
 
-Please don't spam the list with new versions less than an hour apart.
-Leave the maintainers at least a couple days to respond. Especially
-during the merge window.
+On Wed, Jan 17, 2024 at 10:46=E2=80=AFAM Yoshinori Sato
+<ysato@users.sourceforge.jp> wrote:
+> On Tue, 09 Jan 2024 21:30:34 +0900,
+> Linus Walleij wrote:
+> > On Tue, Jan 9, 2024 at 9:24=E2=80=AFAM Yoshinori Sato
+> > <ysato@users.sourceforge.jp> wrote:
+> >
+> > > +  renesas,icr-irlm:
+> > > +    $ref: /schemas/types.yaml#/definitions/flag
+> > > +    description: If true four independent interrupt requests mode (I=
+CR.IRLM is 1).
+> > > +
+> > > +  renesas,ipr-map:
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> > > +    description: |
+> > > +      IRQ to IPR mapping definition.
+> > > +      1st - INTEVT code
+> > > +      2nd - Register
+> > > +      3rd - bit index
+> >
+> > (...)
+> >
+> > > +            renesas,ipr-map =3D <0x240 IPRD IPR_B12>, /* IRL0 */
+> > > +                              <0x2a0 IPRD IPR_B8>,  /* IRL1 */
+> > > +                              <0x300 IPRD IPR_B4>,  /* IRL2 */
+> > > +                              <0x360 IPRD IPR_B0>,  /* IRL3 */
+> > (...)
+> >
+> > Is it really necessary to have all this in the device tree?
+> >
+> > You know from the compatible that this is "renesas,sh7751-intc"
+> > and I bet this table will be the same for any sh7751 right?
+> >
+> > Then just put it in a table in the driver instead and skip this from
+> > the device tree and bindings. If more interrupt controllers need
+> > to be supported by the driver, you can simply look up the table from
+> > the compatible string.
+>
+> The SH interrupt controller has the same structure, only this part is dif=
+ferent for each SoC.
+> Currently, we are targeting only the 7751, but in the future we plan to h=
+andle all SoCs.
+> Is it better to differentiate SoC only by compatible?
 
-Bartosz
+Yes, it is better to differentiate SoC only by compatible value.
+
+When you describe all differences explicitly using properties, you
+might discover later that you missed something important, causing
+backwards compatibility issues with old DTBs.
+DT is a stable ABI, while you can always update a driver when needed.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
