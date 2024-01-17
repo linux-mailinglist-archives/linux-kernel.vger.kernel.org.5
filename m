@@ -1,99 +1,239 @@
-Return-Path: <linux-kernel+bounces-28943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57EC48304F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:08:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AE838304FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:10:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 034791F24672
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:08:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F670B2362B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:10:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1959A1DFCF;
-	Wed, 17 Jan 2024 12:08:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 220FB1DFF5;
+	Wed, 17 Jan 2024 12:09:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="jJvF/my5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="U8AlA84k"
+Received: from aposti.net (aposti.net [89.234.176.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 584321DFC7;
-	Wed, 17 Jan 2024 12:08:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BBFC1DFCF;
+	Wed, 17 Jan 2024 12:09:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.234.176.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705493313; cv=none; b=K4Vju3Ae58768Fkuwe9S5KWPrK+WL89kTbBub76UUPkuX7QpeQjIVNG971nC6itRMjDTMe+xQjqnBoGXsxDChX/cP4c0mkGDDEZutxl2X3P4b3NRrsXmcUVDJFOEpcutK6rj1g+Nt+lGsSrrPMWj/Njk4NYckXxLTofSKbWjJHY=
+	t=1705493393; cv=none; b=RABArmMrwK/ZJTd3WK5wTPmmjnNGfLPO+OHmu2yLC2ZXPXWUXHFAQ2G1YScATZWqWIWBY21xy0s3OMxuhbLJSNC/zoOT7riGDuuf+v0ju38qBKohDKd7NJATS2u73BV2Yab0YrXGBeOzonGzJJ5ano6IDHsv93bbz86L8hzpOLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705493313; c=relaxed/simple;
-	bh=sXaUd5luyM2wpUXY6IyzW9hYsNS5vpH7Z25LN3uqAiE=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To; b=mKDbHt/LdAzMBzE78JagoCJrNrvDNUC/eQHmeBGvsK8cUaKot8hRjZTK3CqBFw+m3vyFRYapsXd2U/PJy7/AkEtOrokiZ5F2hy1c0g7+XKKEchhtsbhPaQYgW2bQ4oie8QgZwPtqv1ngOJ9RYKUvJyXArRO2AExhrihegw8kyw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=jJvF/my5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70EC7C433C7;
-	Wed, 17 Jan 2024 12:08:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1705493311;
-	bh=sXaUd5luyM2wpUXY6IyzW9hYsNS5vpH7Z25LN3uqAiE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jJvF/my5ftnX0PWZBsIVdcDY9x5vwQV47w8npJQ8V8jLQNUnT0PnJc8Pw/2SkU7hM
-	 5sADgHolbvMefWZV1GzXpQhq3blGk4sIi2Xk0YolsCpX8yDRvWsYx/4A2TMPi61ii3
-	 1X3kgEqvpAYE1u9Gm7p/rQN0+OOddvx5bURmFakM=
-Date: Wed, 17 Jan 2024 13:08:29 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, x86@kernel.org,
-	Borislav Petkov <bp@suse.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>
-Subject: Re: [PATCH stable] x86/microcode: do not cache microcode if it will
- not be used
-Message-ID: <2024011712-stipend-arena-aeb3@gregkh>
-References: <20240115102202.1321115-1-pbonzini@redhat.com>
- <2024011502-shoptalk-gurgling-61f5@gregkh>
- <CABgObfZ0gpw2-n2d5vyEjuCefOp+3TPyUuMvjScAbae2GKfO0A@mail.gmail.com>
- <2024011543-dropout-alienable-a9e9@gregkh>
- <2024011756-dosage-deviator-6e03@gregkh>
- <CABgObfaiz94fCb2ULDhSE-dKBGnT+qE+pnf=O9+6OavpPTRScQ@mail.gmail.com>
+	s=arc-20240116; t=1705493393; c=relaxed/simple;
+	bh=eAUPGmwVUxQVs8BO6mc3v/3UdbiY25Zj8A255TdtQdY=;
+	h=DKIM-Signature:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+	 References:Autocrypt:Content-Type:Content-Transfer-Encoding:
+	 MIME-Version; b=TB8wtB7GzpmitAwWbVXBzsli0q+CJi80ZmgbVgFo71IIW9kSSWtUTnqXsnYw6FOnlxCRKDhsJW8Adk8zDttBWIB82OANxx7+O0TZR2CSzLkMeNU24OHFJwVXGDunk1KCmi7fLLJkgoabzzEXIcHgqOJ20VUFsPe5tNMXEUY2IUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=U8AlA84k; arc=none smtp.client-ip=89.234.176.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+	s=mail; t=1705493382;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=eAUPGmwVUxQVs8BO6mc3v/3UdbiY25Zj8A255TdtQdY=;
+	b=U8AlA84klRlnjcH59h4TKcN/vh5m4kHbbeoDnBPlx4SFfSyO2UfAU8givJIif68KKEnB4e
+	joC7uWn1VXtL5cOXBoBjAjnfw111Gh4nkicSLgOpJKGRjsWEdUF/crtYEr7ENZpZ+0+6Rr
+	Ic0eHnXR6ZrOLPJHWAuVm9krBvdohdo=
+Message-ID: <35a9d8ae152deea8a79392bb4b2a9b2053daae92.camel@crapouillou.net>
+Subject: Re: [PATCH v3 4/4] Documentation: usb: Document FunctionFS DMABUF
+ API
+From: Paul Cercueil <paul@crapouillou.net>
+To: Vegard Nossum <vegard.nossum@oracle.com>, Greg Kroah-Hartman
+	 <gregkh@linuxfoundation.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
+	Christian =?ISO-8859-1?Q?K=F6nig?=
+	 <christian.koenig@amd.com>, Jonathan Corbet <corbet@lwn.net>
+Cc: Jonathan Cameron <jic23@kernel.org>, Nuno =?ISO-8859-1?Q?S=E1?=
+ <noname.nuno@gmail.com>, Michael Hennerich <Michael.Hennerich@analog.com>, 
+ Andrzej Pietrasiewicz <andrzej.p@collabora.com>, linux-usb@vger.kernel.org,
+ linux-doc@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ linux-media@vger.kernel.org,  dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org
+Date: Wed, 17 Jan 2024 13:09:40 +0100
+In-Reply-To: <9712abdd-cbca-4ad6-b1e9-ff9bf054b278@oracle.com>
+References: <20240108120056.22165-1-paul@crapouillou.net>
+	 <20240108120056.22165-5-paul@crapouillou.net>
+	 <9712abdd-cbca-4ad6-b1e9-ff9bf054b278@oracle.com>
+Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
+ keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZMLQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5UzFZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtNz8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe+rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIPdlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7Urf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KFlBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFCqaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IW
+	YXndJO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN7062DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOtX0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEAAYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmcGu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2zMcLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2cLUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABgObfaiz94fCb2ULDhSE-dKBGnT+qE+pnf=O9+6OavpPTRScQ@mail.gmail.com>
 
-On Wed, Jan 17, 2024 at 12:57:40PM +0100, Paolo Bonzini wrote:
-> On Wed, Jan 17, 2024 at 12:00 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Mon, Jan 15, 2024 at 09:59:23PM +0100, Greg KH wrote:
-> > > On Mon, Jan 15, 2024 at 07:54:59PM +0100, Paolo Bonzini wrote:
-> > > > On Mon, Jan 15, 2024 at 7:35 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > On Mon, Jan 15, 2024 at 11:22:02AM +0100, Paolo Bonzini wrote:
-> > > > > > [ Upstream commit a7939f01672034a58ad3fdbce69bb6c665ce0024 ]
-> > > > >
-> > > > > This really isn't this commit id, sorry.
-> > > >
-> > > > True, that's the point of the mainline kernel where the logic most
-> > > > closely resembles the patch. stable-kernel-rules.rst does not quite
-> > > > say what to do in this case.
-> > >
-> > > Ok, then just say, "this is not upstream" and the rest of your changelog
-> > > is good.  I'll edit it up tomorrow and apply it, thanks.
-> >
-> > Ok, now queued up for 6.6.y, but what about older kernel versions?
-> 
-> 6.6 is where I tested that it works, and I didn't want to put an old
-> kernel version in the "Cc" line, without even testing that a
-> non-upstream patch applies there.
-> 
-> The benefit would be absolutely marginal. People playing with Intel
-> TDX are not going to use old kernels (6.1 counts as old) anyway, for
-> example support for lazy acceptance of memory went into 6.5.
+Hi Vegard,
 
-Fair enough, thanks for the explaination, I'll leave it alone then.
+Le mardi 09 janvier 2024 =C3=A0 14:08 +0100, Vegard Nossum a =C3=A9crit=C2=
+=A0:
+> On 08/01/2024 13:00, Paul Cercueil wrote:
+> > Add documentation for the three ioctls used to attach or detach
+> > externally-created DMABUFs, and to request transfers from/to
+> > previously
+> > attached DMABUFs.
+> >=20
+> > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> >=20
+> > ---
+> > v3: New patch
+> > ---
+> > =C2=A0 Documentation/usb/functionfs.rst | 36
+> > ++++++++++++++++++++++++++++++++
+> > =C2=A0 1 file changed, 36 insertions(+)
+>=20
+> Hi,
+>=20
+> I'd like to point out that this file (usb/functionfs.rst) is
+> currently
+> included by Documentation/subsystem-apis.rst, the top-level file for
+> the
+> "Kernel subsystem documentation" set of books, which describe
+> internal
+> APIs: "These books get into the details of how specific kernel
+> subsystems work from the point of view of a kernel developer".
+>=20
+> However, functionfs.rst (and especially your new additions) are
+> documenting a userspace API, so it really belongs somewhere in
+> Documentation/userspace-api/ -- that's where /proc, /sys, /dev and
+> ioctl
+> descriptions for userspace programmers belong.
 
-greg k-h
+Agreed. Even the original content prior to my additions describe a
+userspace API.
+
+>=20
+> I'm not NAKing the patch -- I just want to draw attention to this
+> discrepancy. Maybe we can separate the kernel-implementation details
+> (stuff about __init sections and stuff) from the new ioctl() info?
+>=20
+> Looking at <https://docs.kernel.org/usb/> I see that there are many
+> other adjacent documents that are also not really documenting kernel
+> implementation details, rough categorization as follows:
+>=20
+> USB support
+> -----------
+>=20
+> - Linux ACM driver v0.16 =3D=3D> admin/user info
+> - Authorizing (or not) your USB devices to connect to the system =3D=3D>=
+=20
+> admin/user info
+> - ChipIdea Highspeed Dual Role Controller Driver =3D> admin/user info
+> - DWC3 driver =3D=3D> driver TODOs (can be moved into source code?)
+> - EHCI driver =3D=3D> technical info + driver details
+> - How FunctionFS works
+> - Linux USB gadget configured through configfs =3D=3D> userspace API +=
+=20
+> implementation
+> - Linux USB HID gadget driver =3D=3D> implementation + userspace API
+> - Multifunction Composite Gadget =3D=3D> technical + user info
+> - Linux USB Printer Gadget Driver =3D=3D> userspace API
+> - Linux Gadget Serial Driver v2.0 =3D=3D> user/admin + userspace API
+> - Linux UVC Gadget Driver =3D=3D> user/admin + userspace API
+> - Gadget Testing =3D=3D> user/admin + userspace API
+> - Infinity Usb Unlimited Readme =3D=3D> user/admin
+> - Mass Storage Gadget (MSG) =3D=3D> user/admin
+> - USB 7-Segment Numeric Display =3D=3D> user/admin
+> - mtouchusb driver =3D=3D> user/admin
+> - OHCI =3D=3D> technical info
+> - USB Raw Gadget =3D=3D> userspace API
+> - USB/IP protocol =3D=3D> technical info
+> - usbmon =3D=3D> user/admin + userspace API
+> - USB serial =3D=3D> user/admin + technical info
+> - USB references
+> - Linux CDC ACM inf
+> - Linux inf
+> - USB devfs drop permissions source
+> - Credits
+>=20
+> By "admin/user info", I mean things that a user would have to do or
+> run
+> (e.g. modprobe + flags) to make use of a driver; "technical info" is
+> more like device specifications (transfer speeds, modes of operation,
+> etc.); "userspace API" is stuff like configfs and ioctls; "driver
+> details" is really implementation details and internal
+> considerations.
+>=20
+> The last ones I don't even really know how to categorize.
+>=20
+> I'm guessing nobody is really enthralled by the idea of splitting
+> Documentation/usb/ up like this?
+>=20
+> =C2=A0=C2=A0 Documentation/admin-guide/usb/
+> =C2=A0=C2=A0 Documentation/driver-api/usb/ (this one actually exists alre=
+ady)
+> =C2=A0=C2=A0 Documentation/userspace-api/usb/
+>=20
+> For the stuff that is _actually_ internal to a specific driver (so
+> not
+> useful for end users, not useful for admins, not generic USB info,
+> and
+> not useful for userspace programmers), I would honestly propose to
+> just
+> move it directly into the driver's source code, or, if the text is
+> obsolete, just get rid of it completely.
+>=20
+> The distinction between user/admin and userspace API is pretty clear
+> (one is for end users, the other is for userspace _programmers_), but
+> it
+> can sometimes be hard to determine whether something falls in one or
+> the
+> other category.
+>=20
+> In any case -- it looks like almost all of the usb/ directory does
+> not
+> document "how specific kernel subsystems work from the point of view
+> of
+> a kernel developer" so maybe we should just move the include to
+> userspace-api/ for now as an obvious improvement (if still not 100%
+> correct):
+>=20
+> diff --git a/Documentation/subsystem-apis.rst=20
+> b/Documentation/subsystem-apis.rst
+> index 2d353fb8ea26..fe972f57bf4c 100644
+> --- a/Documentation/subsystem-apis.rst
+> +++ b/Documentation/subsystem-apis.rst
+> @@ -81,7 +81,6 @@ Storage interfaces
+> =C2=A0=C2=A0=C2=A0=C2=A0 security/index
+> =C2=A0=C2=A0=C2=A0=C2=A0 crypto/index
+> =C2=A0=C2=A0=C2=A0=C2=A0 bpf/index
+> -=C2=A0=C2=A0 usb/index
+> =C2=A0=C2=A0=C2=A0=C2=A0 PCI/index
+> =C2=A0=C2=A0=C2=A0=C2=A0 misc-devices/index
+> =C2=A0=C2=A0=C2=A0=C2=A0 peci/index
+> diff --git a/Documentation/userspace-api/index.rst=20
+> b/Documentation/userspace-api/index.rst
+> index 82f9dbd228f5..e60cd9174ada 100644
+> --- a/Documentation/userspace-api/index.rst
+> +++ b/Documentation/userspace-api/index.rst
+> @@ -41,6 +41,7 @@ Subsystem-specific documentation:
+> =C2=A0=C2=A0=C2=A0=C2=A0 tee
+> =C2=A0=C2=A0=C2=A0=C2=A0 isapnp
+> =C2=A0=C2=A0=C2=A0=C2=A0 dcdbas
+> +=C2=A0=C2=A0 ../usb/index
+>=20
+> =C2=A0 Kernel ABIs: These documents describe the the ABI between the Linu=
+x
+> =C2=A0 kernel and userspace, and the relative stability of these
+> interfaces.
+>=20
+>=20
+> Thoughts?
+
+Makes sense to me. There's definitely some cleanup to be done in the
+USB documentation.
+
+> Vegard
+
+Cheers,
+-Paul
 
