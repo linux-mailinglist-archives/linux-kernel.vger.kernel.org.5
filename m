@@ -1,131 +1,168 @@
-Return-Path: <linux-kernel+bounces-28503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE32A82FF55
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 04:39:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7676F82FF45
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 04:24:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83D2F1F24F6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 03:39:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5049A1C23AAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 03:24:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9780567D;
-	Wed, 17 Jan 2024 03:38:48 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45C074687;
+	Wed, 17 Jan 2024 03:24:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dIlBgVMk"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 324D01C13;
-	Wed, 17 Jan 2024 03:38:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0575C1C0F;
+	Wed, 17 Jan 2024 03:24:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705462728; cv=none; b=Cxk4U7aaQ4YCOjo1ypX/hc7VTybjQJn8d/0P8V5O5BuK0wMRkin8b8jCXSWRJK0ILOaYmSIbBSHqbP8WbcUx+NUE0ZDszBxI6BR0hQwAdm0Gghi2Qs7wPHkp++rRQrd8evX9T40zQ8A8EN282AIqGoRsZxoF0fZFGSCo/pI+KdI=
+	t=1705461858; cv=none; b=OLWEHdQBQdNq9Y58LpJGPG/LVinGl+k/5LzPFyZ05GDHPtUDhdBnFXaO+ZNBBvSePDMx3q5CsLF+Gg9XkjKU7jjhza/r7mn+1km/TG9dzD4lS00x3zaqg8gOE5II1ZMNdX0cbYrIP5CkT3GWOIoiR479nDPJ4QJe2G18PbbJEEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705462728; c=relaxed/simple;
-	bh=DpUHH/MtmlZWirIGpFpniqdoG1uWcNpU8vFuNpinZx4=;
-	h=Received:Received:Received:From:To:Cc:Subject:Date:Message-Id:
-	 X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding:X-CM-TRANSID:X-Coremail-Antispam:
-	 X-CM-SenderInfo; b=N8wvoWiIjCCI8z+MqLHq3poJvzPICMAcyYZWG9M1in9lrGmbt44CHoGs7XHC5/e7wo0sf7aUDuRAITlgKqQfkAWWNvXtHjM/pjOeg2m3Pi+Pz0a8zazxYdioObMf0CgNpe7VyrTXHGEe2VCnYKvPRhVxaNUeW34tVwDm5IX2IQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TFB6762fLz4f3lVm;
-	Wed, 17 Jan 2024 11:23:11 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id E881B1A0171;
-	Wed, 17 Jan 2024 11:23:17 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgAn9g4jSKdlFKhLBA--.54857S6;
-	Wed, 17 Jan 2024 11:23:17 +0800 (CST)
-From: linan666@huaweicloud.com
-To: song@kernel.org,
-	axboe@kernel.dk
-Cc: linux-raid@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linan666@huaweicloud.com,
-	yukuai3@huawei.com,
-	yi.zhang@huawei.com,
-	houtao1@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH v4 2/2] md: don't account sync_io if iostats of the disk is disabled
-Date: Wed, 17 Jan 2024 11:19:46 +0800
-Message-Id: <20240117031946.2324519-3-linan666@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240117031946.2324519-1-linan666@huaweicloud.com>
-References: <20240117031946.2324519-1-linan666@huaweicloud.com>
+	s=arc-20240116; t=1705461858; c=relaxed/simple;
+	bh=lQVzJfW4PzGfq9ar+uuKtn+tGVuy7nvv+1dL8Gzr7hw=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:X-IronPort-AV:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Cc:Subject:Content-Language:To:References:From:
+	 In-Reply-To:Content-Type:Content-Transfer-Encoding; b=Lgos4jtLMTSlnaXpMyC/FR9ngGp7pm9q4E4dQc3a0WB7oIb2pCUOcukdoldDaanVaj6J+yv8Igwi3HSdml+UzPZivzNgWfpLIO3vb/Dw46O2HW1FGpZ+ZtlYQn8EZtsWGVWrbKyyu58rnwnL+vG+Ourn50q57fGnxKsCV9Ax1fE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dIlBgVMk; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705461857; x=1736997857;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=lQVzJfW4PzGfq9ar+uuKtn+tGVuy7nvv+1dL8Gzr7hw=;
+  b=dIlBgVMke2GYF8Gx931wPR1AS887YNQdJIUrm8vNL7oGaA1lbfIZ+f0O
+   BSYkOKM+2zl+N+aRh86Vi6n4wbcmgynCEJbBWSRBMezAvmFK7wQOAAlGv
+   f56nc/q8NnW5t41Lwpg5kwfTGVPlYfwFicdIlvlSZrDQ5Q9TnvVHOdp6N
+   Q0lQasFHcqnTlZAqIh/vXbzzhVLT2ng/cy+SIR45J0A/3csoDt70sq+nx
+   JuWYLAEaS4niRs7RKKGmVCJlKgIX5Hz9/JvHJnEr9JJgmeoeiyoAKjpCr
+   4CBWLeGlmvSKOwDf1obvdmaUyxZws2AQnCkTxkNOnHPRWUCd6oUXbnIMO
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="6814146"
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="6814146"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 19:24:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="777303816"
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="777303816"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.249.171.146]) ([10.249.171.146])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 19:24:12 -0800
+Message-ID: <3ee904e9-8a93-4bd9-8df7-6294885589e4@linux.intel.com>
+Date: Wed, 17 Jan 2024 11:24:10 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, linux-pci@vger.kernel.org,
+ iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v10 0/5] fix vt-d hard lockup when hotplug ATS capable
+ device
+Content-Language: en-US
+To: Ethan Zhao <haifeng.zhao@linux.intel.com>, kevin.tian@intel.com,
+ bhelgaas@google.com, dwmw2@infradead.org, will@kernel.org,
+ robin.murphy@arm.com, lukas@wunner.de
+References: <20231228170206.720675-1-haifeng.zhao@linux.intel.com>
+ <1a2a4069-c737-4a3c-a2f6-cce06823331b@linux.intel.com>
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <1a2a4069-c737-4a3c-a2f6-cce06823331b@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAn9g4jSKdlFKhLBA--.54857S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFWxKF4kKr1xuF15Jr4DCFg_yoW8XrW7pa
-	95AF93A34UXr45Wa4DXryDCa4rW3srKFWUJrW7u3yfXFyaqr9xGF4rXayqqF1DWFWrGFWa
-	v3WjyrZ093W0yr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmK14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-	x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-	Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
-	A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAa
-	c4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzV
-	Aqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S
-	6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxw
-	ACI402YVCY1x02628vn2kIc2xKxwAKzVCY07xG64k0F24l42xK82IYc2Ij64vIr41l4I8I
-	3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxV
-	WUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAF
-	wI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcI
-	k0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j
-	6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU1xhLUUUUU
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
 
-From: Li Nan <linan122@huawei.com>
+On 2024/1/15 15:58, Ethan Zhao wrote:
+> -static int qi_check_fault(struct intel_iommu *iommu, int index, int 
+> wait_index)
+> +static int qi_check_fault(struct intel_iommu *iommu, int index, int 
+> wait_index,
+> +                  pci_dev *target_pdev)
+>   {
+>          u32 fault;
+>          int head, tail;
+> +       u64 iqe_err, ice_sid;
+>          struct q_inval *qi = iommu->qi;
+>          int shift = qi_shift(iommu);
+> 
+>          if (qi->desc_status[wait_index] == QI_ABORT)
+>                  return -EAGAIN;
+> 
+> +       /*
+> +        * If the ATS invalidation target device is gone this moment 
+> (surprise
+> +        * removed, died, no response) don't try this request again. this
+> +        * request will not get valid result anymore. but the request was
+> +        * already submitted to hardware and we predict to get a ITE in
+> +        * followed batch of request, if so, it will get handled then.
+> +        */
 
-If iostats is disabled, disk_stats will not be updated and
-part_stat_read_accum() only returns a constant value. In this case,
-continuing to count sync_io and to check is_mddev_idle() is no longer
-meaningful.
+We can't leave the ITE triggered by this request for the next one, which
+has no context about why this happened. Perhaps move below code down to
+the segment that handles ITEs.
 
-Signed-off-by: Li Nan <linan122@huawei.com>
----
- drivers/md/md.h | 3 ++-
- drivers/md/md.c | 4 ++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+Another concern is about qi_dump_fault(), which pr_err's the fault
+message as long as the register is set. Some faults are predictable,
+such as cache invalidation for surprise-removed devices. Unconditionally
+reporting errors with pr_err() may lead the user to believe that a more
+serious hardware error has occurred. Probably we can refine this part of
+the code as well.
 
-diff --git a/drivers/md/md.h b/drivers/md/md.h
-index 1a4f976951c1..e2d03a7a858c 100644
---- a/drivers/md/md.h
-+++ b/drivers/md/md.h
-@@ -584,7 +584,8 @@ extern void mddev_unlock(struct mddev *mddev);
- 
- static inline void md_sync_acct(struct block_device *bdev, unsigned long nr_sectors)
- {
--	atomic64_add(nr_sectors, &bdev->bd_disk->sync_io);
-+	if (blk_queue_io_stat(bdev->bd_disk->queue))
-+		atomic64_add(nr_sectors, &bdev->bd_disk->sync_io);
- }
- 
- static inline void md_sync_acct_bio(struct bio *bio, unsigned long nr_sectors)
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index a6829ea5b560..919d6affc0ac 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -8502,6 +8502,10 @@ static int is_mddev_idle(struct mddev *mddev, int init)
- 	rcu_read_lock();
- 	rdev_for_each_rcu(rdev, mddev) {
- 		struct gendisk *disk = rdev->bdev->bd_disk;
-+
-+		if (!init && !blk_queue_io_stat(disk->queue))
-+			continue;
-+
- 		curr_events =
- 			(long long)part_stat_read_accum(disk->part0, sectors) -
- 			atomic64_read(&disk->sync_io);
--- 
-2.39.2
+Others look sane to me.
 
+> +       if (target_pdev && !pci_device_is_present(target_pdev))
+> +               return -EINVAL;
+> +
+>          fault = readl(iommu->reg + DMAR_FSTS_REG);
+>          if (fault & (DMA_FSTS_IQE | DMA_FSTS_ITE | DMA_FSTS_ICE))
+>                  qi_dump_fault(iommu, fault);
+> @@ -1315,6 +1327,13 @@ static int qi_check_fault(struct intel_iommu 
+> *iommu, int index, int wait_index)
+>                  tail = readl(iommu->reg + DMAR_IQT_REG);
+>                  tail = ((tail >> shift) - 1 + QI_LENGTH) % QI_LENGTH;
+> 
+> +               /*
+> +                * SID field is valid only when the ITE field is Set in 
+> FSTS_REG
+> +                * see Intel VT-d spec r4.1, section 11.4.9.9
+> +                */
+> +               iqe_err = dmar_readq(iommu->reg + DMAR_IQER_REG);
+> +               ice_sid = DMAR_IQER_REG_ITESID(iqe_err);
+> +
+>                  writel(DMA_FSTS_ITE, iommu->reg + DMAR_FSTS_REG);
+>                  pr_info("Invalidation Time-out Error (ITE) cleared\n");
+> 
+> @@ -1324,6 +1343,16 @@ static int qi_check_fault(struct intel_iommu 
+> *iommu, int index, int wait_index)
+>                          head = (head - 2 + QI_LENGTH) % QI_LENGTH;
+>                  } while (head != tail);
+> 
+> +               /*
+> +                * If got ITE, we need to check if the sid of ITE is the 
+> same as
+> +                * current ATS invalidation target device, if yes, don't 
+> try this
+> +                * request anymore, the target device has a response 
+> time beyound
+> +                * expected. 0 value of ice_sid means old device, no 
+> ice_sid value.
+> +                */
+> +               if (target_pdev && ice_sid && ice_sid ==
+> +                   pci_dev_id(pci_physfn(target_pdev))
+> +                               return -ETIMEDOUT;
+> +
+>                  if (qi->desc_status[wait_index] == QI_ABORT)
+>                          return -EAGAIN;
+>          }
+
+Best regards,
+baolu
 
