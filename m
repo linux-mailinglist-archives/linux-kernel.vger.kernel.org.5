@@ -1,232 +1,137 @@
-Return-Path: <linux-kernel+bounces-28499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E438482FF4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 04:25:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C80182FF4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 04:35:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE71A1C209A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 03:25:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AD4E1C23D95
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 03:35:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77FF646B5;
-	Wed, 17 Jan 2024 03:24:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83C574690;
+	Wed, 17 Jan 2024 03:35:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nr3tdwd+"
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EfAnh+YB"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DF791864;
-	Wed, 17 Jan 2024 03:24:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81B281C11
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 03:35:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705461896; cv=none; b=McgRW+OhRDdwevO9hcZbz3WRFd3S0wRi5TULs1oLLni3CSiZsW/NCuVnnaYWuikGTZzt3gGk0EXmFGq+Vi9n/V3+b6CRPiSn6e6xf1WDSShIbp09AOdp0eO8K6RMWHpI7FexNRkwLmsoNwTUuAj5LMWycQvLZSQHqpjZNfeBSCY=
+	t=1705462533; cv=none; b=CxO2nrAhQ6/f83SygRpp6N+dhIFQqEGV4FK4Lfu/OP0BMAz3JJMpKGCsRKZ0lRm16ctYtAdMefyQKoJsG+DLHK7ESaKtorAO4MV9iz8rVRMaKnqS1xPlkWygcO2sNTCiMejk2taLE8UQIBREJfa8X5wlo19DnFG7T7TEV2AIvvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705461896; c=relaxed/simple;
-	bh=O6UyS1EMd2El1cJhogceDXs4CkCPSiWrYf8da+BURv4=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=Y7TArAbL9Xd174a5mAXKsKdt1bja/5rc/8ntCZd8Did8xGMn8xBovLGeQd+Y6BE6voHCQtDpTwA3e2Sl9RVIaG0UpDl8FmQmTsS3uJU+7lUpRRN33sUWwaaGVpGoQ/m51VyUCzI8q1oI7ivsxdgk2k4/tJI/1hY+WIEpbIh2Lic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nr3tdwd+; arc=none smtp.client-ip=209.85.161.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-59505514213so4692869eaf.0;
-        Tue, 16 Jan 2024 19:24:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705461894; x=1706066694; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hrR0tHpidkGB05XRXnhTobUQZ0agqDLMMD3A5T7XObQ=;
-        b=nr3tdwd+uWj7vdRMTGMZN32aLCGnqoJBLQclPh7e1YbKFEtqTEZwrU3Z3x4Zut5ZLq
-         nY1VLCByfWIUWNnCq8RCuhEzF8zdaVbs9SOwtOFKMYSEjR6aL1NleBKybAtW2P0rrdOi
-         XLPFuirOz5Su4new/bhPZsuLx1T9HB4gbyhjU13ZUUr0MVhIZC0D+ztnRW34xG3FASRH
-         YALeVZ1dW/waFUC3z8R2BrmvWtnKBSYmGGVcGo8SPk10bdiap7tVhoD9kSPHcZQWQyy9
-         W84Jj8kmPLHwcBAKOg42ye3a3vKUmd4m59NkA+yBGWcu41HbaGx0Gitd+FShUaqPSA/g
-         Z8Xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705461894; x=1706066694;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hrR0tHpidkGB05XRXnhTobUQZ0agqDLMMD3A5T7XObQ=;
-        b=jfeU+s071s/hrbHE/wsYi4uwcoFjkBCQb7mU4KjHA2tcV40yI1eOOK2sEBESYPepNb
-         0KL+SNViVjd4oEVq400mJMq7yifiALstK3N1RJiKt/VasA/3R7bQTfEe41USOjOL5oOh
-         W2zlAQYzClNx2YaDTz81w12JCuhOGyfyU3Cl/w4JbG2Mqjzf9SlCg+7P/b8yNjnaVPJO
-         lDS3kJSJMZ1v7oTL2mBcBhKT7yXme+Jj85tnnTRrqcgXFRHH1I/IB9wl5LoyvIhA1pzL
-         8N211pthXtrZ8lJhKvFcj3OEjBu/59KWZsetAje611BMJa7gqEnho3E4lb4DNKGhG0Yx
-         7cbg==
-X-Gm-Message-State: AOJu0YxYeK0GzKnvLFpNIi3/x27AkQEWMQH/Nn0OzKJL2mmoEfD69S7W
-	D7Wfau+TySWsGMvWnDtmlvIs62rsF1UmfQJAK5gw9drE4j2S0k4ygdaU62qXfUhlBx+CGZkf5hW
-	VaOJMCJfbHzckyPDDS5fgHXgapG0=
-X-Google-Smtp-Source: AGHT+IHe61Kn+9uVBZYc7hWtmFOSFgviXZksDl/J4M/jJGlzviJV374++J1MEUvTailaIMHtaCZo+nTHk0X5WxMaD/o=
-X-Received: by 2002:a05:6820:2a15:b0:599:27c8:d7f9 with SMTP id
- dr21-20020a0568202a1500b0059927c8d7f9mr76965oob.8.1705461893991; Tue, 16 Jan
- 2024 19:24:53 -0800 (PST)
+	s=arc-20240116; t=1705462533; c=relaxed/simple;
+	bh=9nDQIlSt6xsOi7mqkg97CDkr7r22IzuP+v40N6vIppI=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:Received:Message-ID:Date:MIME-Version:User-Agent:
+	 Subject:Content-Language:To:Cc:References:From:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding; b=N797rlhKrluc02hsldINGDrgGvgTbHyaeo1aXMr7Sl5G4v7xwxh9BAT2KI46N38Y17tonboDh/LxzgPxQ81ZXdVsE/0SusFuzPaRKCdKvjbMjOR2apN7TH54alAix0frG48nfMuPbjNRJELJuoeD7bRtrCpA5nriBDwJRINlnwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EfAnh+YB; arc=none smtp.client-ip=192.55.52.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705462532; x=1736998532;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=9nDQIlSt6xsOi7mqkg97CDkr7r22IzuP+v40N6vIppI=;
+  b=EfAnh+YByIDbg3afghsVof4R8XNwgQZnewsL1ywNj5z8hMPrO/ZM4qYW
+   pBP/n1Q8YpDsrdbQxdKtIEPjrujGqFJ8C5gQGNtgXKCZz2H4zQLyvqP/a
+   BQ6tTwp0tT1sxHEjPwhJXzoEQzVMrkpOZhZa7fL45I2GC7tod/XCGYRHu
+   ggyxuq65JMkmpnJXpprjVyZu0lfrMZLUEKDygX9PHQDLQXIiqx+S1Gf5L
+   DdxS1mMu/DyOdX/FTfu6uZCfjnGym24TrfWudXM2AP/PtAf74YBKh6+o0
+   nMAwZAH7UiVrfGXEVyBFelpQWW8xyE0dIDRQ4CfN08eCmBJL+yxrD/SQc
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="486213920"
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="486213920"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 19:35:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="18694093"
+Received: from kogunron-mobl1.amr.corp.intel.com (HELO [10.209.49.98]) ([10.209.49.98])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 19:35:30 -0800
+Message-ID: <5539c533-37b2-4b12-a5c5-056881cf8e3c@linux.intel.com>
+Date: Tue, 16 Jan 2024 19:35:30 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240115160600.5444-1-qiujingbao.dlmu@gmail.com>
- <20240115160600.5444-4-qiujingbao.dlmu@gmail.com> <f2b3dff2-ce0d-4ddb-ad61-74abf2c3022d@linaro.org>
- <CAJRtX8QFLoWnJBkepZrbneHX8qZdde=aw+zbdErVC91B=u==MA@mail.gmail.com>
- <007e8c14-13eb-4917-b9da-8d47d6c965c7@linaro.org> <CAJRtX8ROH4R_s1=ML5ka340PAE0SWJKK24yVWHw5gCd+7d9pkA@mail.gmail.com>
- <dfcf74a9-db76-43fe-9261-20bf7a993bc3@linaro.org> <CAJRtX8Tkie+ykLv8L2EgBQcy9tVP5Yz-_J_eHE-9N9hjt+6gkg@mail.gmail.com>
- <f99da95d-a6ab-4646-8ad8-8245e275639e@linaro.org>
-In-Reply-To: <f99da95d-a6ab-4646-8ad8-8245e275639e@linaro.org>
-From: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-Date: Wed, 17 Jan 2024 11:24:43 +0800
-Message-ID: <CAJRtX8Qxvpf_CTJG41U6JC3_qLL9raFxX3LD0LoPNhve=MDyFA@mail.gmail.com>
-Subject: Re: [PATCH v6 3/3] riscv: dts: sophgo: add rtc dt node for CV1800
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: alexandre.belloni@bootlin.com, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, chao.wei@sophgo.com, 
-	unicorn_wang@outlook.com, paul.walmsley@sifive.com, palmer@dabbelt.com, 
-	aou@eecs.berkeley.edu, linux-rtc@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	dlan@gentoo.org, inochiama@outlook.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1 3/4] tsm: Allow for mapping RTMRs to TCG TPM PCRs
+Content-Language: en-US
+To: Dan Williams <dan.j.williams@intel.com>, Samuel Ortiz <sameo@rivosinc.com>
+Cc: linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240114223532.290550-1-sameo@rivosinc.com>
+ <20240114223532.290550-4-sameo@rivosinc.com>
+ <1bbf8d3e-aa94-48c7-a1e4-76f9eefc4af7@linux.intel.com>
+ <65a72c305291f_3b8e29484@dwillia2-xfh.jf.intel.com.notmuch>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <65a72c305291f_3b8e29484@dwillia2-xfh.jf.intel.com.notmuch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 17, 2024 at 12:58=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 16/01/2024 17:29, Jingbao Qiu wrote:
-> > On Wed, Jan 17, 2024 at 12:03=E2=80=AFAM Krzysztof Kozlowski
-> > <krzysztof.kozlowski@linaro.org> wrote:
-> >>
-> >> On 16/01/2024 16:51, Jingbao Qiu wrote:
-> >>>>> CV1800 is a RISCV based SOC that includes an RTC module. The RTC
-> >>>>> module has an OSC oscillator
-> >>>>
-> >>>>
-> >>>> I am not going to read pages of description. Please write concise re=
-plies.
-> >>>
-> >>> Thanks, What I mean is that this hardware includes two functions, RTC
-> >>> and POR. How should I describe their relationship?
-> >>
-> >> Your POR does not need to take any resources, so no need to describe a=
-ny
-> >> relationship.
-> >>
-> >> ...
-> >>
-> >>>>> Your suggestion is, firstly, the por submodule does not have any
-> >>>>> resources, so it should be deleted.
-> >>>>
-> >>>> So where did you delete it? I still see it in this patch.
-> >>>
-> >>> Should I completely delete him? How can a por driver obtain device in=
-formation?
-> >>
-> >> Delete completely.
-> >>
-> >> Device information? What is this? We already agreed you don't have any
-> >> resources for POR.
-> >>
-> >> ....
-> >>
-> >>>> Device is only one thing, not two.
-> >>>>
-> >>>>>                     reg =3D <0x5025000 0x2000>;
-> >>>>>                     interrupts =3D <17 IRQ_TYPE_LEVEL_HIGH>;
-> >>>>>                     clocks =3D <&osc>;
-> >>>>> };
-> >>>>> However, in reality, the POR submodule does not use IRQ and CLK.
-> >>>>> Please do not hesitate to teach. Thanks.
-> >>>>
-> >>>> I expect one device node. How many drivers you have does not matter:=
- you
-> >>>> can instantiate 100 Linux devices in 100 Linux device drivers.
-> >>>
-> >>> I understand what you mean. A device node corresponds to multiple dri=
-vers.
-> >>> Should I completely delete the POR device tree node and add it when
-> >>> submitting the POR driver?
-> >>
-> >> ? I wrote it in previous messages and twice in this thread. Completely
-> >> delete. You do not add it back! Because if you ever intended to add it
-> >> back, it should be added since beginning. I don't understand what
-> >> submitting later would solve.
-> >>
-> >>> If that's the case, how can I explain that the rtc device tree node
-> >>> uses the syscon tag?
-> >>> How can I describe a POR device in DTS? POR is a submodule of RTC, an=
-d
-> >>> it also has corresponding drivers.
-> >>
-> >> I said, there is no need for POR in DTS, because you have nothing ther=
-e.
-> >> Why do you insist on putting it on DTS?
-> >>
-> >>> It's just that his resources are only shared with RTC's Reg.
-> >>
-> >> What resources? Reg? That's not a separate resource.
->
-> I meant, separate from the RTC. I had impression that IO space is shared
-> or mixed with RTC? If it is separate, why it wasn't listed?
->
-> >
-> > I'm very sorry about this.
-> > But I found a binding file that only contains Reg and Compatible.
-> >
-> > rtc@80920000 {
-> > compatible =3D "cirrus,ep9301-rtc";
-> > reg =3D <0x80920000 0x100>;
-> > };
-> >
-> > Link: Documentation/devicetree/bindings/rtc/cirrus,ep9301-rtc.yaml
->
-> And?
->
-> >
-> >>
-> >> To summarize: Drop POR from DTS and never bring it back, unless you co=
-me
-> >> with some different arguments, which you did not say already.
-> >>
-> >
-> > You are right, if there is no por device tree node, how can the por
-> > driver obtain the Reg?
->
-> The same as currently. Does your POR node has reg? No, so according to
-> your logic it cannot obtain address space.
->
-> Children Linux devices share regmap with parent device.
->
 
-Thanks, Power-On-Reset/POR driver requires Reg to complete its functions.
-The compatible of POR is required in DTS to load the corresponding driver.
-The POR driver was not submitted in the patch. However, this patch requires
-the addition of RTC in DTS. Considering the future addition of POR
-driver, I added a POR node.
-I'm not sure why the POR node needs to be deleted, just because it
-only has the compatible attribute?
-Or maybe it's because I didn't submit the POR driver, so I need to
-delete the POR node.
-I found an example.
+On 1/16/24 5:24 PM, Dan Williams wrote:
+> Kuppuswamy Sathyanarayanan wrote:
+>> On 1/14/24 2:35 PM, Samuel Ortiz wrote:
+>>> Many user space and internal kernel subsystems (e.g. the Linux IMA)
+>>> expect a Root of Trust for Storage (RTS) that allows for extending
+>>> and reading measurement registers that are compatible with the TCG TPM
+>>> PCRs layout, e.g. a TPM. In order to allow those components to
+>>> alternatively use a platform TSM as their RTS, a TVM could map the
+>>> available RTMRs to one or more TCG TPM PCRs. Once configured, those PCR
+>>> to RTMR mappings give the kernel TSM layer all the necessary information
+>>> to be a RTS for e.g. the Linux IMA or any other components that expects
+>>> a TCG compliant TPM PCRs layout.
+>>>
+>>> TPM PCR mappings are configured through configfs:
+>>>
+>>> // Create and configure 2 RTMRs
+>>> mkdir /sys/kernel/config/tsm/rtmrs/rtmr0
+>>> mkdir /sys/kernel/config/tsm/rtmrs/rtmr1
+>>> echo 0 > /sys/kernel/config/tsm/rtmrs/rtmr0/index
+>>> echo 1 > /sys/kernel/config/tsm/rtmrs/rtmr1/index
+>>>
+>>> // Map RTMR 0 to PCRs 4, 5, 6, 7 and 8
+>>> echo 4-8 > /sys/kernel/config/tsm/rtmrs/rtmr0/tcg_map
+>>>
+>>> // Map RTMR 1 to PCRs 16, 17 and 18
+>>> echo 16-18 > /sys/kernel/config/tsm/rtmrs/rtmr1/tcg_map
+>> Any information on how this mapping will be used by TPM or IMA ?
+>>
+>> RTMR to PCR mapping is fixed by design, right? If yes, why allow
+>> user to configure it. We can let vendor drivers to configure it, right?
+> I assume the "vendor driver", that publishes the RTMR to the tsm-core,
+> has no idea whether they will be used for PCR emulation, or not. The TPM
+> proxy layer sitting on top of this would know the mapping of which RTMRs
+> are recording a transcript of which PCR extend events. 
 
-st: timer@fffffd00 {
-    compatible =3D "atmel,at91rm9200-st", "syscon", "simple-mfd";
-    reg =3D <0xfffffd00 0x100>;
-    interrupts =3D <1 IRQ_TYPE_LEVEL_HIGH 7>;
-    clocks =3D <&slow_xtal>;
-    watchdog {
-      compatible =3D "atmel,at91rm9200-wdt";
-    };
-};
+My thinking is, since this mapping is ARCH-specific information
+and fixed by design, it makes more sense to hide this detail in the
+vendor driver than letting userspace configure it. If we allow users to
+configure it, there is a chance for incorrect mapping.
 
-Link:arch/arm/boot/dts/microchip/at91rm9200.dtsi:114
+Regarding the TPM proxy, I am still not clear how it is going to use
+this mapping. If we want to provide TPM like feature, it needs a
+special kernel TPM driver, right? Even if we enable TPM support
+with RTMR, I assume it can only support pcr_extend(). Other TPM
+features should be disabled. If yes, since we already have this ABI
+for measurement extension, why again support it via TPM or did
+I misunderstand the use case.
 
-Like this, when the por driver insmod is activated, the por driver can
-obtain the regs of the parent device.
-Thank you again.
+>
+> For IMA the situation is different because that can be a kernel internal
+> configuration flow without need to involve userspace.
+>
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
-Best regards,
-Jingbao Qiu
 
