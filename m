@@ -1,91 +1,49 @@
-Return-Path: <linux-kernel+bounces-28571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76880830029
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:31:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3587283002D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:35:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 154F11F264FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 06:31:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDB5A1F24DE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 06:35:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9473C4404;
-	Wed, 17 Jan 2024 06:31:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="W+zMi+1k"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F25018C1B
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 06:31:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7543B8C1B;
+	Wed, 17 Jan 2024 06:35:30 +0000 (UTC)
+Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E751FAF;
+	Wed, 17 Jan 2024 06:35:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.14.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705473066; cv=none; b=NE4guQ5JI6+CvA4Nh+BoJePstdImT7OsbKo4xt9XR4b4Fux4YfTM7jNhjkeKFXxnSOsk4XFcwlCDp/sJb0FZPutTqDRzOyoZOzxavO9L0aj3wWheOgI4caXJfaqdZmgr84VQMAENsR6PPsSPI4qUG/ajaxMVyHH8Pfn52pP7ZHM=
+	t=1705473330; cv=none; b=Af20X0ChSWRhGukBHpJgVJILTORNxlc80iGKTRCtzXGUnG1RxknZpqkhJJ/3qRuUKkSzWdWBD/u2EPFZKjSeQSWOW0DZJQlzbiAks9NJZ/OwOnW0QJWEPfwO4s6DThw4/Ecw1/DCM65vMoe+q/FrC0i7LJtikdL4CuqF/mo37wU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705473066; c=relaxed/simple;
-	bh=xuqbdmvl9lCw8IH5mVuShkyHEa0QF98r9fLMLUrlE80=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:
-	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
-	 X-Google-Smtp-Source:X-Received:Received:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=Q223QSEEvviUcHykVZpuchS8lyJCSurcCNIDAvub/jpkJZ6/udO4v/MkVMpWEeiqGRwoHVRpJEqIlEPPnO5l3UvYudtwDjU60tB6dzZNYGEE+aMrN1QkFH4qcYAemg238PLsR7FqfkiV1giR47hHGuikJS2TKy3X/e9IkU5dqBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=W+zMi+1k; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705473059;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DxiOO8w88rWledmaRoeFUmYXRXhztfaSOi7NyQWmNYk=;
-	b=W+zMi+1k9OdaVbNYKZ4v7id9snyynYbITKn54GAXpmrrVSpPlOAVb5y3bc+4r3hYI2+qQo
-	bTsis2PruCbM9OeW73jEfUuL8ou98hqXKuutzRQiUPlBU1LlpUf6HcuNbB0elhequ9pGPN
-	Fj0/EbhVwTRHI1jN1ayEhjGRZzYGRR0=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-318-8p9HWv2wMQGpDSzlKEjH3Q-1; Wed, 17 Jan 2024 01:30:57 -0500
-X-MC-Unique: 8p9HWv2wMQGpDSzlKEjH3Q-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-68179ca2e57so18280796d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 22:30:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705473056; x=1706077856;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DxiOO8w88rWledmaRoeFUmYXRXhztfaSOi7NyQWmNYk=;
-        b=T6VwEoOOBDmEt/iFVTSkV3hAOM+jDIhKkn6Nqd3FqN8ecNrQ7q93aJUUSaORs0t7R1
-         yZqgvAiFm/b/ebAZ2Bc8XQ2cnU2ivDeZjgkecagFLSwMNQCkSNZ1zN7z/98NAImoprzw
-         OcfBQ6UNEaiSIVAulE046AmOFUxPlGoULLCOCZJABs79iTiKzdL0SjVqprdMqPn7qTlM
-         gGH25F74hGcMOsH6XtZoC8MhiZbNWQbRUh1wh5O6b3Mcn74ZNqrulquS0E+soEwLi6ur
-         Wjqzcc4jQw4k/0teKe+VBuYKY7+JrFEVSKut+SFw7Rnn1P9JJrWmcbPJjCnsphkt5O9E
-         uh4g==
-X-Gm-Message-State: AOJu0Yw87eMCtBD3e9e4mo/eHq0RXkNoeiKWfxaaimqup4Jq3lNiZ6cn
-	wAp1TY96nHush8y93nl/0t6g/3jKfxiCG54rlEAYL7KqwH7jXecE75j04RPbLpon+VQ5DO2NgMm
-	NaMp2p6mR1dzySk0t+znL63Fh1AEXr2JB
-X-Received: by 2002:ad4:5d6a:0:b0:680:b48c:b54b with SMTP id fn10-20020ad45d6a000000b00680b48cb54bmr11146726qvb.102.1705473056760;
-        Tue, 16 Jan 2024 22:30:56 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG2GplJGaFxrXJ/X+uhNLOl6Slr6TDjgFHOphZ878h+fUERTtk0O6cNXHzF9cPdHxwpi5kdEg==
-X-Received: by 2002:ad4:5d6a:0:b0:680:b48c:b54b with SMTP id fn10-20020ad45d6a000000b00680b48cb54bmr11146717qvb.102.1705473056478;
-        Tue, 16 Jan 2024 22:30:56 -0800 (PST)
-Received: from localhost.localdomain ([151.29.130.8])
-        by smtp.gmail.com with ESMTPSA id t12-20020a0cde0c000000b006816edd1979sm1115431qvk.140.2024.01.16.22.30.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 22:30:56 -0800 (PST)
-Date: Wed, 17 Jan 2024 07:30:52 +0100
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
-	Aaron Tomlin <atomlin@atomlin.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/4] kernel/workqueue: Bind rescuer to unbound
- cpumask for WQ_UNBOUND
-Message-ID: <Zad0HDaH2YxAnqD6@localhost.localdomain>
-References: <20240116161929.232885-1-juri.lelli@redhat.com>
- <20240116161929.232885-3-juri.lelli@redhat.com>
- <ZabPXiT8WoLyLoyk@slm.duckdns.org>
+	s=arc-20240116; t=1705473330; c=relaxed/simple;
+	bh=4WpP0RvtazlSMb2/5wbc9Q7kdkvYUdvnJl4Gn1aF5AA=;
+	h=Received:Date:From:To:Cc:Subject:Message-ID:References:
+	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=sLbp4/e5lbge3kLvgbtxPnnKN7uJmxKGeOmJHPFk+g9TIfT2gy3+HcxoRG3vH1VS7q5IfTG8PVMound3FY3JXLtH2noCVfnfHDMPlQfbaZkFwZrCL0nZm2UbOP30LnFJdpVwGVpSjlmG/jNRQUybQSyR9VDvd64vb1nM9p/cRpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de; spf=pass smtp.mailfrom=c--e.de; arc=none smtp.client-ip=217.10.14.231
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
+Received: by cae.in-ulm.de (Postfix, from userid 1000)
+	id 8A100140327; Wed, 17 Jan 2024 07:35:23 +0100 (CET)
+Date: Wed, 17 Jan 2024 07:35:23 +0100
+From: "Christian A. Ehrhardt" <lk@c--e.de>
+To: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	linux-usb@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Saranya Gopal <saranya.gopal@intel.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC] Fix stuck UCSI controller on DELL
+Message-ID: <Zad1K5V8mhNiiMWl@cae.in-ulm.de>
+References: <20240103100635.57099-1-lk@c--e.de>
+ <ZZadhlh3q9ZInxvU@kuha.fi.intel.com>
+ <ZaV/kwuh2MBNY5d2@cae.in-ulm.de>
+ <34101c32-65cd-4433-974f-23a16f9981fa@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,26 +52,107 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZabPXiT8WoLyLoyk@slm.duckdns.org>
+In-Reply-To: <34101c32-65cd-4433-974f-23a16f9981fa@amd.com>
 
-Hello,
 
-On 16/01/24 08:47, Tejun Heo wrote:
-> On Tue, Jan 16, 2024 at 05:19:27PM +0100, Juri Lelli wrote:
-> > At the time they are created unbound workqueues rescuers currently use
-> > cpu_possible_mask as their affinity, but this can be too wide in case a
-> > workqueue unbound mask has been set as a subset of cpu_possible_mask.
+Hi Mario,
+
+On Tue, Jan 16, 2024 at 09:00:03PM -0600, Mario Limonciello wrote:
+> On 1/15/2024 12:55, Christian A. Ehrhardt wrote:
 > > 
-> > Make new rescuers use their associated workqueue unbound cpumask from
-> > the start.
+> > Hi Heikki,
 > > 
-> > Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
+> > sorry to bother you again with this but I'm afraid there's
+> > a misunderstanding wrt. the nature of the quirk. See below:
+> > 
+> > On Thu, Jan 04, 2024 at 01:59:02PM +0200, Heikki Krogerus wrote:
+> > > Hi Christian,
+> > > 
+> > > On Wed, Jan 03, 2024 at 11:06:35AM +0100, Christian A. Ehrhardt wrote:
+> > > > I have a DELL Latitude 5431 where typec only works somewhat.
+> > > > After the first plug/unplug event the PPM seems to be stuck and
+> > > > commands end with a timeout (GET_CONNECTOR_STATUS failed (-110)).
+> > > > 
+> > > > This patch fixes it for me but according to my reading it is in
+> > > > violation of the UCSI spec. On the other hand searching through
+> > > > the net it appears that many DELL models seem to have timeout problems
+> > > > with UCSI.
+> > > > 
+> > > > Do we want some kind of quirk here? There does not seem to be a quirk
+> > > > framework for this part of the code, yet. Or is it ok to just send the
+> > > > additional ACK in all cases and hope that the PPM will do the right
+> > > > thing?
+> > > 
+> > > We can use DMI quirks. Something like the attached diff (not tested).
+> > > 
+> > > thanks,
+> > > 
+> > > -- 
+> > > heikki
+> > 
+> > > diff --git a/drivers/usb/typec/ucsi/ucsi_acpi.c b/drivers/usb/typec/ucsi/ucsi_acpi.c
+> > > index 6bbf490ac401..7e8b1fcfa024 100644
+> > > --- a/drivers/usb/typec/ucsi/ucsi_acpi.c
+> > > +++ b/drivers/usb/typec/ucsi/ucsi_acpi.c
+> > > @@ -113,18 +113,44 @@ ucsi_zenbook_read(struct ucsi *ucsi, unsigned int offset, void *val, size_t val_
+> > >   	return 0;
+> > >   }
+> > > -static const struct ucsi_operations ucsi_zenbook_ops = {
+> > > -	.read = ucsi_zenbook_read,
+> > > -	.sync_write = ucsi_acpi_sync_write,
+> > > -	.async_write = ucsi_acpi_async_write
+> > > -};
+> > > +static int ucsi_dell_sync_write(struct ucsi *ucsi, unsigned int offset,
+> > > +				const void *val, size_t val_len)
+> > > +{
+> > > +	u64 ctrl = *(u64 *)val;
+> > > +	int ret;
+> > > +
+> > > +	ret = ucsi_acpi_sync_write(ucsi, offset, val, val_len);
+> > > +	if (ret && (ctrl & (UCSI_ACK_CC_CI | UCSI_ACK_CONNECTOR_CHANGE))) {
+> > > +		ctrl= UCSI_ACK_CC_CI | UCSI_ACK_COMMAND_COMPLETE;
+> > > +
+> > > +		dev_dbg(ucsi->dev->parent, "%s: ACK failed\n", __func__);
+> > > +		ret = ucsi_acpi_sync_write(ucsi, UCSI_CONTROL, &ctrl, sizeof(ctrl));
+> > > +	}
+> > 
+> > Unfortunately, this has the logic reversed. The quirk (i.e. the
+> > additional UCSI_ACK_COMMAND_COMPLETE) is required after a _successful_
+> > UCSI_ACK_CONNECTOR_CHANGE. Otherwise, _subsequent_ commands will timeout
+> > (usually the next GET_CONNECTOR_CHANGE).
+> > 
+> > This means the quirk must be applied _before_ we detect any failure.
+> > Consequently, the quirk has the potential to break working systems.
+> > 
+> > Sorry, if that wasn't clear from my original mail. Please let me know
+> > if this changes how you want the quirks handled.
+> > 
+> >       Thanks    Christian
+> > 
 > 
-> Apply 1-2 to wq/for-6.9.
+> For the problematic scenario have you tried to play with it a bit to see if
+> it's too short of a timeout (raise timeout) or to output the response bits
+> to see if anything else surprising is sent?
 
-Thank you!
+It is not a problem with the timeout. Waiting forever in this case
+doesn't help. IMHO this is actually a bug in the PPM, i.e. in Dell's
+bios.
 
-Best,
-Juri
+Sending an ack after the timeout fixes things, though.
+
+> Does it always fail on the same command, or does it happen to a bunch of
+> them?
+
+It always fails on the first command after UCSI_ACK_CC_CI for a
+connector change. However, there might be no such command if the
+next event is a notification.
+
+I did play around with it a bit more and came up with a way to
+probe for the issue:
+
+    https://lore.kernel.orgorg/all/20240116224041.220740-1-lk@c--e.de/   
+
+regards    Christian
+
 
 
