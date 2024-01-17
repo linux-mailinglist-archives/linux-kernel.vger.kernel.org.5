@@ -1,214 +1,138 @@
-Return-Path: <linux-kernel+bounces-28930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98D168304C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:50:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1012B8304C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:49:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19E821F24805
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:50:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F5FF1C243E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:49:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F05FD1DFD7;
-	Wed, 17 Jan 2024 11:50:26 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EAF11DFCA;
-	Wed, 17 Jan 2024 11:50:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2BF41DFD7;
+	Wed, 17 Jan 2024 11:49:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PZ8ySSrW"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7103C1DFC8
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:49:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705492226; cv=none; b=c2HUni/OqN6MUBTWAsSFUq5nckGAoRY4SusA+s4iomhO2RXGXQUZCiuf+fA03DhA053Rp5ti2D8xMdOueAQ+tcITFL3E0BsyLZjOAmf1prFIlthdxjvSIg8tlhBP6Q0Jz88x+g96UKitHIBCF10IAIus2epTtJUrNGLF3MU6e3Q=
+	t=1705492190; cv=none; b=r67ElquOeHRQrPU6p8kWq2pNDGF+KYIlyQtqImOmCIlSKAc0GNmrF6BGhzGeN+oWT+557vhQRPdPsCsrlK0zPbIZ07KnYNWmHf4VzoRYrFB1lSQww+3dJN7nEMAlrqIQaq7HiJgUCd1tYAjs0mtZZi8nMjlSy0BLPnxykRdavvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705492226; c=relaxed/simple;
-	bh=25knBT9VTw+U0/GeKpzOO1VvtIKW+nrpysiNA4cLf18=;
-	h=X-AuditID:From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding:
-	 X-Brightmail-Tracker:X-Brightmail-Tracker:X-CFilter-Loop; b=jaBoJJY6WOTWBdx42fSROUR40/CjRXqoF6ko5EPfiUcJGHNfR0HbAUIyA4xv7DUuDihWJ8MzhzErOJ4YEfZwQmrhJmO5Jci677/LsFSjYob+aWj1lTs4ZIu6LM+K6yC2OOCM5Ctr0MxnCG4siZyZrneH8USd01rIDhEHzeL6ADo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d85ff70000001748-af-65a7bef58307
-From: Honggyu Kim <honggyu.kim@sk.com>
-To: sj@kernel.org
-Cc: akpm@linux-foundation.org,
-	apopple@nvidia.com,
-	baolin.wang@linux.alibaba.com,
-	damon@lists.linux.dev,
-	dave.jiang@intel.com,
-	honggyu.kim@sk.com,
-	hyeongtak.ji@sk.com,
-	kernel_team@skhynix.com,
-	linmiaohe@huawei.com,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org,
-	lizhijian@cn.fujitsu.com,
-	mathieu.desnoyers@efficios.com,
-	mhiramat@kernel.org,
-	rakie.kim@sk.com,
-	rostedt@goodmis.org,
-	surenb@google.com,
-	yangx.jy@fujitsu.com,
-	ying.huang@intel.com,
-	ziy@nvidia.com
-Subject: Re: [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory
-Date: Wed, 17 Jan 2024 20:49:25 +0900
-Message-ID: <20240117114926.1895-1-honggyu.kim@sk.com>
-X-Mailer: git-send-email 2.43.0.windows.1
-In-Reply-To: <20240116203159.52826-1-sj@kernel.org>
-References: <20240116203159.52826-1-sj@kernel.org>
+	s=arc-20240116; t=1705492190; c=relaxed/simple;
+	bh=kY5z25saFdI9aw7FeyrSL42gfsRrieLO5WzEyKAr6WE=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:References:
+	 Content-Language:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=Pd5kar+yqVAtEp+aN0nZoAajP3iuSb1oncsKZMNSUbJdHwFQ6ACU7VVhMLDki/69ZUD1VEzlpb44RwVZvrd/k0C6hAq5AQ2VIEd8JA313yKPHcMjM8DF0imJqmUDvHWVVhoun6UMX7glqyyW7R/15NVOO/v/afYwR3K7av4F6p0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PZ8ySSrW; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50e80d40a41so13929336e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 03:49:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705492186; x=1706096986; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nxPSXuNJ8AUL8NOznZbrLecSi/2kLhBhAre/dygA9TY=;
+        b=PZ8ySSrWwGapa/1KMJlQT7mPhCQVdA1y/JSiwQiAdRM+qZ6dUoKYWUygKbyNzzjGk6
+         0qpVNL6ITvm3MzFEOB8df27RYtH4a6Jce4jMdqnXUQyHwt+625/vp4YMdr3JwgaPXybq
+         xPIe0A4CUMzouJvQKBqSy4D2GbSvV+6ifdZvesuRaxyyN60BKy3jyJHPcLJlzT7Nv+My
+         52CBt+GxfwIffBC1aQQuey3f8dLSIxrcpBwrSqk6dAcXOnZy1LVXCZ4ztAM0XUm0pNki
+         zCdXOitFYLvnJDsxf3Njh6OXMfStdh7aASe4AY7aPRFoG33monsH4hfs391bjTKAEQE2
+         plMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705492186; x=1706096986;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nxPSXuNJ8AUL8NOznZbrLecSi/2kLhBhAre/dygA9TY=;
+        b=Gxxy8nXoScvnQ1yE/02ZgNk0YvUx1Qk5T//I7kD1G165H+pMJ6zWR+KHp9ITcdFUSz
+         yeMbmzjtBtYWD3jHlzpmUoHY9ynAOTVAf5biI8jtwh136PwCq2c+kb2R2d50X3gh0ZVR
+         dBZdEaeSsuneqrgEfxAl134qSKJN0j/Hy84tAnRSIz+Pu3GfwaxfmLmT+jUKtLX1Dy6Z
+         ALe1xiqsT1sHuE+jff8XCy9J6txenJcoX8BZu1P2YZ8WT8UTK9jx+iziGXYm8XbiJyyb
+         45SB1pY4WmS5psZNtlkUzCqxoxgd/SU2utpMJUaXVo6CeOxjRqHnpNsi9OMcTPdp/kR0
+         nQcg==
+X-Gm-Message-State: AOJu0Yyud8FolHZPoUhtl2UizlY2MHBQKlENTA6HzB2rYy4gT4CTXt0P
+	TAyl+UbkuBw5AQAIDC1Un6Hnh4BCwN/RHjTTNW254V4GYIk=
+X-Google-Smtp-Source: AGHT+IHy6JI/EVohyYH/EoKmNFo6jqE894SOm3wbOmN+sb1Pd71wkWp/cNEanbOIXigvY3x3FzvuNw==
+X-Received: by 2002:a05:6512:3907:b0:50e:e888:2c3d with SMTP id a7-20020a056512390700b0050ee8882c3dmr3821308lfu.25.1705492186453;
+        Wed, 17 Jan 2024 03:49:46 -0800 (PST)
+Received: from [172.30.204.250] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id e8-20020a196748000000b0050ee78fd23esm228767lfj.262.2024.01.17.03.49.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Jan 2024 03:49:46 -0800 (PST)
+Message-ID: <9b177f7b-8dbf-4193-9a70-94f7b80f0a87@linaro.org>
+Date: Wed, 17 Jan 2024 12:49:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrAIsWRmVeSWpSXmKPExsXC9ZZnoe63fctTDaYoW8xZv4bNYteNEIv/
-	e48xWjz5/5vV4sTNRjaLzu9LWSwu75rDZnFvzX9WiyPrz7JYrLsFZG0+e4bZYvFyNYt9HQ+Y
-	LA5/fcNkMfnSAjaLF1POMFqcnDWZxWL20XvsDkIe/w9OYvZYevoNm8eGJiDRsu8Wu8eCTaUe
-	LUfesnos3vOSyWPTqk42j02fJrF7nJjxm8Vj50NLjxebZzJ69Da/Y/P4vEkugC+KyyYlNSez
-	LLVI3y6BK+P0qrPMBe90Kha2rGNpYJyu3MXIySEhYCKxbNl6Rhj7+t8jrCA2m4CaxJWXk5hA
-	bBEBQYn+xzOA4lwczAIzWCQu7jkOlhAWCJB4POcMM4jNIqAqMX35OrBmXgEziUsTp7FADNWU
-	eLz9JzuIzSlgLLHv6TWwXiEBI4ln318zQ9QLSpyc+QSsnllAXqJ562xmkGUSAvvYJT59fQQ1
-	SFLi4IobLBMY+Wch6ZmFpGcBI9MqRqHMvLLcxMwcE72MyrzMCr3k/NxNjMB4W1b7J3oH46cL
-	wYcYBTgYlXh4JeYtTxViTSwrrsw9xCjBwawkwutvsCxViDclsbIqtSg/vqg0J7X4EKM0B4uS
-	OK/Rt/IUIYH0xJLU7NTUgtQimCwTB6dUA+PMnKhJYaqddu+W5pqs29XOkd1Rc3NH1Lt0cwbT
-	Ln6zEJXoT+bvWp782ag2fekSPbui7T92+KRfl7362I5BWKD+QPUMr7y0HVeiddoMDix+EBpZ
-	f/O/xa1lD7faO85uc3r/88Z9ycurv0o+3Xw9QO2hLPuvqsu6C/IVbcs/l7b+blObV7QzQUqJ
-	pTgj0VCLuag4EQC9qooJswIAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNIsWRmVeSWpSXmKPExsXCNUNLT/frvuWpBpP36lrMWb+GzWLXjRCL
-	/3uPMVo8+f+b1eLEzUY2i8/PXjNbdD75zmhxeO5JVovO70tZLC7vmsNmcW/Nf1aLI+vPslis
-	uwVkbT57htli8XI1i0PXnrNa7Ot4wGRx+OsbJovJlxawWbyYcobR4uSsySwWs4/eY3cQ8/h/
-	cBKzx9LTb9g8NjQBiZZ9t9g9Fmwq9Wg58pbVY/Gel0wem1Z1snls+jSJ3ePEjN8sHjsfWnq8
-	2DyT0aO3+R2bx7fbHh6LX3xg8vi8SS5AIIrLJiU1J7MstUjfLoEr4/Sqs8wF73QqFrasY2lg
-	nK7cxcjJISFgInH97xFWEJtNQE3iystJTCC2iICgRP/jGUBxLg5mgRksEhf3HAdLCAsESDye
-	c4YZxGYRUJWYvnwdWDOvgJnEpYnTWCCGako83v6THcTmFDCW2Pf0GlivkICRxLPvr5kh6gUl
-	Ts58AlbPLCAv0bx1NvMERp5ZSFKzkKQWMDKtYhTJzCvLTczMMdUrzs6ozMus0EvOz93ECIyy
-	ZbV/Ju5g/HLZ/RCjAAejEg/vgfxlqUKsiWXFlbmHGCU4mJVEeP0NgEK8KYmVValF+fFFpTmp
-	xYcYpTlYlMR5vcJTE4QE0hNLUrNTUwtSi2CyTBycUg2M6+s5N1UFqf9dIZP/4/WZ2OQnvlf3
-	F97QTGWpWnxV85bt2qvWM3bfWPRuupqE/4z/tYEXzqztMdBjzfvXtTu97Xm/9ZFDpaXiF0Pk
-	ZFR1ox/f2dLyaLPFt/tHRJoSM26tjGkTrXunkdDW3jx3ziHxB4x2TqUJjHtS2tmZO5Q+h+eL
-	/u2w4DBTYinOSDTUYi4qTgQA4IDdUa4CAAA=
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] soc: qcom: rpmh-rsc: Enhance check for VREG in-flight
+ request
+To: Maulik Shah <quic_mkshah@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ quic_eberman@quicinc.com, quic_collinsd@quicinc.com, quic_lsrao@quicinc.com
+References: <20240117-rpmh-rsc-fixes-v1-1-71ee4f8f72a4@quicinc.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240117-rpmh-rsc-fixes-v1-1-71ee4f8f72a4@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi SeongJae,
 
-Thanks very much for your comments in details.
 
-On Tue, 16 Jan 2024 12:31:59 -0800 SeongJae Park <sj@kernel.org> wrote:
-
-> Thank you so much for this great patches and the above nice test results.  I
-> believe the test setup and results make sense, and merging a revised version of
-> this patchset would provide real benefits to the users.
-
-Glad to hear that!
-
-> In a high level, I think it might better to separate DAMON internal changes
-> from DAMON external changes.
-
-I agree.  I can't guarantee but I can move all the external changes
-inside mm/damon, but will try that as much as possible.
-
-> For DAMON part changes, I have no big concern other than trivial coding style
-> level comments.
-
-Sure.  I will fix those.
-
-> For DAMON-external changes that implementing demote_pages() and
-> promote_pages(), I'm unsure if the implementation is reusing appropriate
-> functions, and if those are placee in right source file.  Especially, I'm
-> unsure if vmscan.c is the right place for promotion code.  Also I don't know if
-> there is a good agreement on the promotion/demotion target node decision.  That
-> should be because I'm not that familiar with the areas and the files, but I
-> feel this might because our discussions on the promotion and the demotion
-> operations are having rooms for being more matured.  Because I'm not very
-> faimiliar with the part, I'd like to hear others' comments, too.
-
-I would also like to hear others' comments, but this might not be needed
-if most of external code can be moved to mm/damon.
-
-> To this end, I feel the problem might be able te be simpler, because this
-> patchset is trying to provide two sophisticated operations, while I think a
-> simpler approach might be possible.  My humble simpler idea is adding a DAMOS
-> operation for moving pages to a given node (like sys_move_phy_pages RFC[1]),
-> instead of the promote/demote.  Because the general pages migration can handle
-> multiple cases including the promote/demote in my humble assumption.
-
-My initial implementation was similar but I found that it's not accurate
-enough due to the nature of inaccuracy of DAMON regions.  I saw that
-many pages were demoted and promoted back and forth because migration
-target regions include both hot and cold pages together.
-
-So I have implemented the demotion and promotion logics based on the
-shrink_folio_list, which contains many corner case handling logics for
-reclaim.
-
-Having the current demotion and promotion logics makes the hot/cold
-migration pretty accurate as expected.  We made a simple program called
-"hot_cold" and it receives 2 arguments for hot size and cold size in MB.
-For example, "hot_cold 200 500" allocates 200MB of hot memory and 500MB
-of cold memory.  It basically allocates 2 large blocks of memory with
-mmap, then repeat memset for the initial 200MB to make it accessed in an
-infinite loop.
-
-Let's say there are 3 nodes in the system and the first node0 and node1
-are the first tier, and node2 is the second tier.
-
-  $ cat /sys/devices/virtual/memory_tiering/memory_tier4/nodelist
-  0-1
-
-  $ cat /sys/devices/virtual/memory_tiering/memory_tier22/nodelist
-  2
-
-Here is the result of partitioning hot/cold memory and I put execution
-command at the right side of numastat result.  I initially ran each
-hot_cold program with preferred setting so that they initially allocate
-memory on one of node0 or node2, but they gradually migrated based on
-their access frequencies.
-
-  $ numastat -c -p hot_cold
-  Per-node process memory usage (in MBs) 
-  PID              Node 0 Node 1 Node 2 Total 
-  ---------------  ------ ------ ------ ----- 
-  754 (hot_cold)     1800      0   2000  3800    <- hot_cold 1800 2000 
-  1184 (hot_cold)     300      0    500   800    <- hot_cold 300 500 
-  1818 (hot_cold)     801      0   3199  4000    <- hot_cold 800 3200 
-  30289 (hot_cold)      4      0      5    10    <- hot_cold 3 5 
-  30325 (hot_cold)     31      0     51    81    <- hot_cold 30 50 
-  ---------------  ------ ------ ------ ----- 
-  Total              2938      0   5756  8695
-
-The final node placement result shows that DAMON accurately migrated
-pages by their hotness for multiple processes.
-
-> In more detail, users could decide which is the appropriate node for promotion
-> or demotion and use the new DAMOS action to do promotion and demotion.  Users
-> would requested to decide which node is the proper promotion/demotion target
-> nodes, but that decision wouldn't be that hard in my opinion.
+On 1/17/24 09:54, Maulik Shah wrote:
+> Each RPMh VREG accelerator resource has 3 or 4 contiguous 4-byte aligned
+> addresses associated with it. These control voltage, enable state, mode,
+> and in legacy targets, voltage headroom. The current in-flight request
+> checking logic looks for exact address matches. Requests for different
+> addresses of the same RPMh resource as thus not detected as in-flight.
 > 
-> For this, 'struct damos' would need to be updated for such argument-dependent
-> actions, like 'struct damos_filter' is haing a union.
-
-That might be a better solution.  I will think about it.
-
-> In future, we could extend the operation to the promotion and the demotion
-> after the dicussion around the promotion and demotion is matured, if required.
-> And assuming DAMON be extended for originating CPU-aware access monitoring, the
-> new DAMOS action would also cover more use cases such as general NUMA nodes
-> balancing (extending DAMON for CPU-aware monitoring would required), and some
-> complex configurations where having both CPU affinity and tiered memory.  I
-> also think that may well fit with my RFC idea[2] for tiered memory management.
+> Enhance the in-flight request check for VREG requests by ignoring the
+> address offset. This ensures that only one request is allowed to be
+> in-flight for a given VREG resource. This is needed to avoid scenarios
+> where request commands are carried out by RPMh hardware out-of-order
+> leading to LDO regulator over-current protection triggering.
 > 
-> Looking forward to opinions from you and others.  I admig I miss many things,
-> and more than happy to be enlightened.
+> Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
+> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+> ---
+>   drivers/soc/qcom/rpmh-rsc.c | 20 +++++++++++++++++++-
+>   1 file changed, 19 insertions(+), 1 deletion(-)
 > 
-> [1] https://lwn.net/Articles/944007/
-> [2] https://lore.kernel.org/damon/20231112195602.61525-1-sj@kernel.org/
+> diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
+> index a021dc71807b..5371d7e3090a 100644
+> --- a/drivers/soc/qcom/rpmh-rsc.c
+> +++ b/drivers/soc/qcom/rpmh-rsc.c
+> @@ -1,6 +1,7 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   /*
+>    * Copyright (c) 2016-2018, The Linux Foundation. All rights reserved.
+> + * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All rights reserved.
+>    */
+>   
+>   #define pr_fmt(fmt) "%s " fmt, KBUILD_MODNAME
+> @@ -91,6 +92,15 @@ enum {
+>   #define CMD_STATUS_ISSUED		BIT(8)
+>   #define CMD_STATUS_COMPL		BIT(16)
+>   
+> +#define ACCL_TYPE(addr)			((addr >> 16) & 0xF)
+> +#define VREG_ADDR(addr)			(addr & ~0xF)
 
-Thanks very much for your comments.  I will need a few more days for the
-update but will try to address your concerns as much as possible.
+It would be nice to add some #define FNAME GENMASK(x, y) accessed
+with FIELD_GET(FNAME, foobar), so that the code is a bit more
+self-explanatory
 
-Thanks,
-Honggyu
+Konrad
 
