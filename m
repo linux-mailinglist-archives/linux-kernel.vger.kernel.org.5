@@ -1,145 +1,130 @@
-Return-Path: <linux-kernel+bounces-29360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75C0C830D3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:21:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6101C830D42
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:23:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABEDE28CD1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:21:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70F7E1C21DE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:23:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43478249EB;
-	Wed, 17 Jan 2024 19:21:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 999A6249F1;
+	Wed, 17 Jan 2024 19:23:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ukbxDC9A"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="MTp+AzDc"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C9E7241E0
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:21:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33988249E0
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:23:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705519295; cv=none; b=QF9cCH/E1S+PamhUbIAin2ifpaqNcbnpsCGgFqeQNXkCtW+kLtvAKCgMGO9e/ZXxv20Z2BogxzwiKs4bP4Se/RO8Oroa69Zd3ll6sYsm/3aftg4fqxiURyjW59o23m3HOPHLCx8lnlHnwOuKQOueIpYCUBmzdYQ1vWhkta49D1I=
+	t=1705519417; cv=none; b=OZyzhav1L6nA757ub2us5CFQbLSpkXcn0BVokprKHrE+0yp7+5Rt/Tm7F40WHUu2AZJa2sfsnpFCpg8L9QnrY9DOC9aULO6/+Hb0tqtBaezyp/t6jO5hZ5oZo31pnkhrRaSH+q00M+8T2IcDWorpVQKSVk1LFSrWPzd0muIvjMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705519295; c=relaxed/simple;
-	bh=+6PjGw5k2/rxum53I0W97io8g9vZHuH6ioB1XOMaR0A=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=vF6Qtjpd8Z6OAHTyofyuHvG5Zyu3y8UmmQ8tN34JWfe9l1Z73mYKo1RBhriWXeGdBYNEx6WK0+NDL2AjyMpI5+4ZI8VV890nz4JugQw6N93BTKwnHeKjwtCW5551t8wettTgbaH6qyfcyRC2NStScjkMC4QM83icmz8tcxw6rik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ukbxDC9A; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d5ebcbe873so167355ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:21:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705519293; x=1706124093; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aQp9V8Yb7WV1gbNl0kx0pG4yvjrKbCk2B0ZNg/khk8s=;
-        b=ukbxDC9ApwhbUy9e1WKBgNeh8WS5vYOQKsyKbcHVMTAWj27mi+InMc0qbRbY0L2IJ9
-         wE2FqqEMkTh8l76d2si64OYb+gfZ7bduSx/py8LUTq8k9gAhsScWBCOQnCzimlnQFypV
-         7h1YiOeFoqNk+ONt9Exe4fw681N6BojLN3sBmXTwHVr0RK/LjwXTe3nC12wmeNw9at5v
-         ClSPhxPONyiy2h3LVH79aMT/i6qq4x4Y1C3KCrb2yAnps2Ym8UkNlcNIKjVos8Z55R2N
-         /TzEbc92PwgCQS98yPX4UPKeGt+np//il2QpjkEGQbOneJb4ITnqY/3HceNCDejGZeo8
-         VtaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705519293; x=1706124093;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aQp9V8Yb7WV1gbNl0kx0pG4yvjrKbCk2B0ZNg/khk8s=;
-        b=jVYHTOmAiicyGbWpDCk5fzxJ2gMxHyYdsjYLcLnijBr7aR2LaAyzyzQXA+ytBBKOxv
-         w3jthEdWehwdtvdyPdn7QHWjtdif4C49iFDjCUUn8kVRBvjduKriIEWxTT8ts4pKVW8H
-         zYipjiZy7Nu6/Vh2CandEtsRRTQcnTF2mAXScLGBcOerOvXPXht9Ixurx2OisG0CmFnQ
-         egivImJ4m8sCCo7y2qWfgu8t+NVEA21GxQyBHqLGEEh/8s812b/MErEwbl+Vq6ubte+Y
-         ZlvjTBnARzvQRILysjA3yyIBt1qkzGcd7zTRfWog4WRmDKr2YMIzg4nOG5muN1BkS71F
-         4DgA==
-X-Gm-Message-State: AOJu0Yzl36d6buvFVozwHsggl3a9ciht7PAn+tGwEyC0LZsrNcTk8dXJ
-	m9jjJ/sDJ2sx0t2i4D1XGIwyyC3iRABIN7TIfB4ns2Sm4UqAsgc6XosLegZECQwESi46SVpeAaM
-	AU9ueR6G21ZTxc3Vr4YXfuyWvy4TF2kNRYmwnut152uls7cd50w==
-X-Google-Smtp-Source: AGHT+IEFvRGL3Zx/Jzy8jifJ9reRMWCNHJIbrzKWY0KTUzYkSPzPSvbEozYzMARvxThxHC+OY6B7ARG0C18FssSPDYk=
-X-Received: by 2002:a17:902:e803:b0:1d5:a556:7662 with SMTP id
- u3-20020a170902e80300b001d5a5567662mr212787plg.9.1705519293321; Wed, 17 Jan
- 2024 11:21:33 -0800 (PST)
+	s=arc-20240116; t=1705519417; c=relaxed/simple;
+	bh=0fv+js9Ew/OTGfUYa+DH+CiU24lWx9f36G6rrkUfZ3Y=;
+	h=Received:DKIM-Signature:Received:Received:Received:Received:
+	 Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:X-Proofpoint-Virus-Version:
+	 X-Proofpoint-Spam-Details:X-Proofpoint-GUID:
+	 X-Proofpoint-ORIG-GUID; b=Kwqehen5eDSG8wScZMkGPmxs0vH3v7wEJTd62gvIkXQVITD9EkqwF4hUgY+VZiSgtQUgsSC8mlN54nGdPhn3kGhdbGYpK88akRr8Ch1EcGSjEk0Z1E6QODXoIykMbfkHZGREckIUvO4me+Ds/v8Ry91YW7XU6sHjhNlhNgxKHOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=MTp+AzDc; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40HFxD5c029237;
+	Wed, 17 Jan 2024 19:23:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2023-11-20;
+ bh=1F1h/D8LY/Y+1NEma8ji2AuKUSI4RrgJpl+4EbcQmBw=;
+ b=MTp+AzDcOvpBseUjiPQLpAM3Y0Lk3pa7KbOQbFBlajVh/L4hOW3O7lq7tH8m/zBdP3l6
+ HK11YX8rFt0HzJob5wCtDYEq0LdP+5Ei/tiXvgwMkTdQ3kn0hQkRfNJKgFdzX1LBd444
+ KJBUXGfPccv6AVJ0FlgPdPS9L2EK+SABDo9UZ1boe0Sxyd2zFO+Jfwa37ew6VTFmwZd5
+ nq8YYi9XrwgDFYlBaGmeVQijLR2Leu+Jr40Ee9GWAKZoPMS06f4Yvov7+pWdTO5ZOtCO
+ oe31viNVnAeu/o2GEszuQWSVj+5Mh82OTZi09okViyykp+iXReF9YzvGRbX81kBPBm6m zw== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vkha3gtfc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 17 Jan 2024 19:23:31 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40HIPjZW020404;
+	Wed, 17 Jan 2024 19:23:30 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3vkgyaxk7p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 17 Jan 2024 19:23:29 +0000
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40HJNPUk009185;
+	Wed, 17 Jan 2024 19:23:27 GMT
+Received: from ca-dev63.us.oracle.com (ca-dev63.us.oracle.com [10.211.8.221])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3vkgyaxk4u-1;
+	Wed, 17 Jan 2024 19:23:27 +0000
+From: Steve Sistare <steven.sistare@oracle.com>
+To: virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+        Eugenio Perez Martin <eperezma@redhat.com>,
+        Si-Wei Liu <si-wei.liu@oracle.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Steve Sistare <steven.sistare@oracle.com>
+Subject: [PATCH V1] vdpa_sim: reset must not run
+Date: Wed, 17 Jan 2024 11:23:23 -0800
+Message-Id: <1705519403-255169-1-git-send-email-steven.sistare@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117141405.3063506-1-amitsinght@marvell.com> <20240117141405.3063506-2-amitsinght@marvell.com>
-In-Reply-To: <20240117141405.3063506-2-amitsinght@marvell.com>
-From: Peter Newman <peternewman@google.com>
-Date: Wed, 17 Jan 2024 11:21:22 -0800
-Message-ID: <CALPaoChguTrJPtgtxXkNd2sJdFLajWq-CcKeCd__pfuUye+43w@mail.gmail.com>
-Subject: Re: [PATCH v1 01/14] fs/resctrl: group the resource control types for
- schemata list
-To: Amit Singh Tomar <amitsinght@marvell.com>
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	fenghua.yu@intel.com, reinette.chatre@intel.com, james.morse@arm.com, 
-	gcherian@marvell.com, robh@kernel.org, dfustini@baylibre.com, 
-	jonathan.cameron@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-17_12,2024-01-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0 bulkscore=0
+ spamscore=0 mlxlogscore=999 phishscore=0 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401170141
+X-Proofpoint-GUID: IotjSuzEKsbpCZn2C3_nMGOXBDpen5g5
+X-Proofpoint-ORIG-GUID: IotjSuzEKsbpCZn2C3_nMGOXBDpen5g5
 
-Hi Amit,
+vdpasim_do_reset sets running to true, which is wrong, as it allows
+vdpasim_kick_vq to post work requests before the device has been
+configured.  To fix, do not set running until VIRTIO_CONFIG_S_FEATURES_OK
+is set.
 
-On Wed, Jan 17, 2024 at 6:14=E2=80=AFAM Amit Singh Tomar <amitsinght@marvel=
-l.com> wrote:
-> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-> index 3ad308e9e226..125c4b0c2ff7 100644
-> --- a/include/linux/resctrl.h
-> +++ b/include/linux/resctrl.h
-> @@ -249,6 +249,7 @@ struct resctrl_schema {
->         struct list_head                list;
->         char                            name[8];
->         enum resctrl_conf_type          conf_type;
-> +       enum resctrl_ctrl_type          ctrl_type;
+Fixes: 0c89e2a3a9d0 ("vdpa_sim: Implement suspend vdpa op")
+Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
+Reviewed-by: Eugenio Pérez <eperezma@redhat.com>
+---
+ drivers/vdpa/vdpa_sim/vdpa_sim.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I don't see a difference between a conf_type and a ctrl_type other
-than conf_type being used for CDP and ctrl_type being used for DSPRI.
+diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+index be2925d0d283..6304cb0b4770 100644
+--- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
++++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+@@ -160,7 +160,7 @@ static void vdpasim_do_reset(struct vdpasim *vdpasim, u32 flags)
+ 		}
+ 	}
+ 
+-	vdpasim->running = true;
++	vdpasim->running = false;
+ 	spin_unlock(&vdpasim->iommu_lock);
+ 
+ 	vdpasim->features = 0;
+@@ -483,6 +483,7 @@ static void vdpasim_set_status(struct vdpa_device *vdpa, u8 status)
+ 
+ 	mutex_lock(&vdpasim->mutex);
+ 	vdpasim->status = status;
++	vdpasim->running = (status & VIRTIO_CONFIG_S_FEATURES_OK) != 0;
+ 	mutex_unlock(&vdpasim->mutex);
+ }
+ 
+-- 
+2.39.3
 
->         struct rdt_resource             *res;
->         u32                             num_closid;
->  };
-> diff --git a/include/linux/resctrl_types.h b/include/linux/resctrl_types.=
-h
-> index 3897de9c4ecb..b9268ec3ba71 100644
-> --- a/include/linux/resctrl_types.h
-> +++ b/include/linux/resctrl_types.h
-> @@ -57,6 +57,12 @@ enum resctrl_res_level {
->         RDT_NUM_RESOURCES,
->  };
->
-> +enum resctrl_ctrl_type {
-> +       SCHEMA_BASIC =3D 0,
-> +       SCHEMA_DSPRI,
-> +       SCHEMA_NUM_CTRL_TYPE
-> +};
-
-Rather than enumerate every control type on all implementations, I
-would prefer the approach taken in the MPAM resctrl_arch_rmid_read(),
-where the MPAM driver would embed the resctrl_schema into a private
-structure it defines and use container_of() in
-resctrl_arch_update_domains(), which should take a resctrl_schema
-parameter instead of an rdt_resource. Like resctrl_arch_rmid_read(),
-the containing structure would direct the values to the appropriate
-hardware.
-
-I would like to see the MPAM driver owning the enumeration of this
-feature and the common FS code just understanding the control as a
-value that is passed back to the driver if its value is within a
-stated acceptable range.
-
-I think there's still a lot of work that needs to be done in the
-overall design of resctrl to provide general support for controls and
-monitors which do not exist in RDT and these patches provide useful
-information to help us understand the issues.
-
-Thanks!
--Peter
 
