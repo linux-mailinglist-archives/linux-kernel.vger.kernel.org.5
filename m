@@ -1,169 +1,213 @@
-Return-Path: <linux-kernel+bounces-28622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74BAD8300D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:55:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AFBD8300D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:56:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2969E1F25280
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:55:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 341E71C20B45
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:56:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3946EC2E3;
-	Wed, 17 Jan 2024 07:55:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2698C2E3;
+	Wed, 17 Jan 2024 07:56:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BSBvzt7I"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CQxpxPMK"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37169C121;
-	Wed, 17 Jan 2024 07:55:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D9BEC139
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:56:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705478128; cv=none; b=uLvquC2p3BcjfK6Qz8V4tz5FUMHwAonTd5lIzeRpZm8ns7hGtV4BceH5Ep/9ZYh8gT65e2vejNpAV0mjFySm8XLabfTDgyqYEPNmGOxZB9sAZT4G5Iii1Xczs04MAluLX0WfNjFxUs/T4pRk37ATXttKCI/Iiyvd3gQT5f6gMmg=
+	t=1705478186; cv=none; b=sWuHY/2bkFS7WqzQ4Mj08V1Es83Pg5u6vaUQsDBWpRvtJaVlKeG3QknOuoCTPiY+hyXvYbHZPoH/eG0Xv/7V+mPI3Trw9uUxr6eDO6HW7cL8MBX8amsghhpWE2SCGItuPSx2ZXdjfCp23usSZJ6mglo82g82OKmBkU2EikITJlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705478128; c=relaxed/simple;
-	bh=szjRXdH1jflRRWy780XcAW9WPV5amXqQ6ahOmzsm0GE=;
-	h=Received:DKIM-Signature:Received:Received:Received:Message-ID:
-	 Date:MIME-Version:User-Agent:Subject:Content-Language:To:CC:
-	 References:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 X-Originating-IP:X-ClientProxiedBy:X-QCInternal:
-	 X-Proofpoint-Virus-Version:X-Proofpoint-GUID:
-	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Virus-Version:
-	 X-Proofpoint-Spam-Details; b=DdU8OckoSoqgoQovh3PDabLOBJP+qhmWeYbUCNs+ee2vY2e4GAp/aLxKp76jQdsU4xGIwTDauTHt8BtkMsmrMCFG43K418/GNTGydpkJsk8JfriAAwAjMUjtWPm1SXitDbF95mnXiEN+RqypOrY/jj+rQVKtItlcR3dAT7dow08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=BSBvzt7I; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40GNrtWr012376;
-	Wed, 17 Jan 2024 07:55:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=WdlAPSH87H+AJDxhsOz4c0Q3Kc9tVqhZ+0vH6ibMhQg=; b=BS
-	Bvzt7IvoeyxdNOGIoUPi1wggKgrm4ygGOsGqi0jWf90WAGojnLBB6RufO3V74vby
-	CBVVmHnp9lfwXGEEO65mvx3dAvoXTHYQuw56r26U30nj1ZHt8LxG5fIw0EQjVEZB
-	FMY4FuIf5LCftTv6Ku9udGrXFmiOwDJLI8y0fLWQV7y8CtOMynDpW6grjwrceq8I
-	f9f0X3t3tgA5VGD+LmWbOMBqdrHP8zOMN9qVgnT5klRbOIs47Yp6NkzqwO/IHetv
-	M+REZhD04I/lm04R5P0SxgxRrwPnVpoyEKFsOAH3PjLYGc5fAgW88TFytccA+Oau
-	5mWuKFTxewiqZ4fSeEZw==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vnrndaphg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 07:55:15 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40H7tElW009406
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 07:55:14 GMT
-Received: from [10.239.133.49] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 16 Jan
- 2024 23:55:09 -0800
-Message-ID: <34c6fb24-cc97-4cbf-bd22-74d1e27a6595@quicinc.com>
-Date: Wed, 17 Jan 2024 15:55:07 +0800
+	s=arc-20240116; t=1705478186; c=relaxed/simple;
+	bh=euT1eztse3+e3ucSK90Yo+tK6NdtmOo21IkSrJO6XfQ=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
+	 To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding; b=JxoNgIckUL6qtESwNtMOTdAOlWYyKnZ4inhue3q/GRcxrKzmYyC3xN/W5oDNH/Bj082VIgJ08dGi4vV75laMdyOFJevpprzM92Z58LatAQD834tsh04vBD1xFcYkA0s6iLlgXT92IpMpp3VGk9yajhYkwGi17qRTBdvhRYYyr/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CQxpxPMK; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5534dcfdd61so18921305a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 23:56:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705478183; x=1706082983; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/FNavL/OTqrT8QuQmqYgzyRhF/X5aNJJnuSYES95gWA=;
+        b=CQxpxPMK8II4oJF5x7J5sNRHwHg6S6UHF7Gs/mi08Smes6bMtOlgo78Dd60joaltGT
+         aEgJHPg5GeQnN1BJAVqcjRKSrQ9qB0W+DXyMpuwtnBOuoW+ZxiyfFjH8T48UpRhoAyeN
+         qWHZzI5MwI3l1F82l34B4Up6Zrb2+oOv8sprnuM698VzjLxPuYMmStnZIdx8aVjKcIvR
+         sGLIIjyPqSWh3BMghqk2L8seYo1VPvVNPHEgf9pVvCqF2SMxteat+tz3G4mdn+IL/Zjy
+         DNfa2LSTDRx3+NV3RoJ4fGxX9GCGURGq/i25KE38UfyTs2gzRbkV5tU8a9SKTgy7BNOk
+         vrEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705478183; x=1706082983;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/FNavL/OTqrT8QuQmqYgzyRhF/X5aNJJnuSYES95gWA=;
+        b=L0eK5Ge+BaZPpMpq/SW9xLBdJoSdvvFaG7e/HPhRjVPn9X6nGV3qZTorOIYiZi4c5Z
+         j4jOKOOx3NH6wLw25+N51IQgpZm6wYW+HS0sY9bcRZr86wKEOOBJX6FXQ790gZK0wjrb
+         sNZkYkQUTi8vZ3EKMS8gsYm3+n0neIGU+HIUdKuRNjE2Eu7pP2/bo+23iTLb/lsNP1yY
+         daHEY8cLVhr204Nb2JN8SmBRO4rlb47a6rmbG58BVVv/BbJsuUxexXiTOTQ5PhxhuVu1
+         gRjPHi7GRdWbfF2kM/u8vkNxH11S6NcyD3ya+AhyQws/colDeRxoAaASJw7e7GrQkB8i
+         AReA==
+X-Gm-Message-State: AOJu0YyPOlup7bxm07WPPP4mZTZVnlQ2L2ZSobPcRfFMIaJPIEhYXkzf
+	50S1zv0Ga9XllrcqVov0TTJ5vT6rm7iU2zDpMBo4cFUmYQtgxt6baoUoEZ8a+c4=
+X-Google-Smtp-Source: AGHT+IHZ7LpNoKqKOFo0lwT6GfpvlUHssOiVpCXLrPHhVFLIt2m/9etyIrgUMWQITv4qPN0OPi517Q==
+X-Received: by 2002:a05:6402:959:b0:559:4572:72e1 with SMTP id h25-20020a056402095900b00559457272e1mr448379edz.16.1705478182863;
+        Tue, 16 Jan 2024 23:56:22 -0800 (PST)
+Received: from krzk-bin.. ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id fg7-20020a056402548700b005593c83bdafsm3911729edb.45.2024.01.16.23.56.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jan 2024 23:56:22 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Jeremy Kerr <jk@codeconstruct.com.au>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	=?UTF-8?q?Przemys=C5=82aw=20Gaj?= <pgaj@cadence.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Conor Culhane <conor.culhane@silvaco.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Boris Brezillon <bbrezillon@kernel.org>,
+	Nicolas Pitre <npitre@baylibre.com>,
+	linux-i3c@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 1/3] dt-bindings: i3c: drop "master" node name suffix
+Date: Wed, 17 Jan 2024 08:56:16 +0100
+Message-Id: <20240117075618.81932-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm: coresight: Remove pattern match
- of ETE node name
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Suzuki K Poulose
-	<suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>, James Clark
-	<james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin
-	<alexander.shishkin@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC: <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Tao Zhang
-	<quic_taozha@quicinc.com>
-References: <20240116064505.487-1-quic_jinlmao@quicinc.com>
- <20240116064505.487-2-quic_jinlmao@quicinc.com>
- <f616989b-2d84-483d-80c4-d3c6eb97b137@arm.com>
- <69875d89-651e-41ff-a1be-385dcbb15108@quicinc.com>
- <ff85db67-bd18-48fb-9050-81d731e5f402@linaro.org>
- <f74650fd-195f-4b93-a7e0-23b316dd74ad@quicinc.com>
- <5648e6e3-e2b1-4fa3-a0cd-74a0f0c0aa30@linaro.org>
-From: Jinlong Mao <quic_jinlmao@quicinc.com>
-In-Reply-To: <5648e6e3-e2b1-4fa3-a0cd-74a0f0c0aa30@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 329r9XVur4LHJt4sGlE5Jf-_klLmcR1q
-X-Proofpoint-ORIG-GUID: 329r9XVur4LHJt4sGlE5Jf-_klLmcR1q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-17_04,2024-01-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 mlxscore=0 suspectscore=0 mlxlogscore=863 clxscore=1015
- adultscore=0 impostorscore=0 malwarescore=0 bulkscore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401170053
 
+Drop the requirement of "-master" suffix in node names because:
+1. "Master" word is discouraged and MIPI Alliance renamed it to
+   "Controller".
+2. Some devices can operate in Controller (Master) or Target mode, thus
+   the name is not accurate in such cases.
+3. Other buses, like I2C controllers, use simple "i2c".
 
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ Documentation/devicetree/bindings/i3c/aspeed,ast2600-i3c.yaml | 2 +-
+ Documentation/devicetree/bindings/i3c/cdns,i3c-master.yaml    | 2 +-
+ Documentation/devicetree/bindings/i3c/i3c.yaml                | 4 ++--
+ Documentation/devicetree/bindings/i3c/mipi-i3c-hci.yaml       | 2 +-
+ Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml | 2 +-
+ Documentation/devicetree/bindings/i3c/snps,dw-i3c-master.yaml | 2 +-
+ 6 files changed, 7 insertions(+), 7 deletions(-)
 
-On 1/17/2024 3:53 PM, Krzysztof Kozlowski wrote:
-> On 17/01/2024 08:49, Jinlong Mao wrote:
->>
->>
->> On 1/17/2024 3:40 PM, Krzysztof Kozlowski wrote:
->>> On 17/01/2024 03:14, Jinlong Mao wrote:
->>>>>>           - const: arm,embedded-trace-extension
->>>>>> @@ -55,13 +53,13 @@ examples:
->>>>>>     # An ETE node without legacy CoreSight connections
->>>>>>       - |
->>>>>> -    ete0 {
->>>>>> +    ete-0 {
->>>>>
->>>>> Why do we need the number ? why not simply "ete" as Krzysztof suggested ?
->>>>>
->>>>
->>>> Hi Suzuki & Krzysztof ,
->>>>
->>>> If name all the ete nodes' name as 'ete', there will be error below when
->>>> build images.
->>>>
->>>> arch/arm64/boot/dts/qcom/sm8450.dtsi:301.6-312.4: ERROR
->>>
->>> Why are you pasting DTSI for binding? How is it related? Do we talk
->>> about DTSI here? No, this is a binding patch.
->>>
->>
->> Hi Krzysztof,
->>
->> Do you mean the name in DTSI can be different from the name in binding ?
-> 
-> Yes, we do not talk about DTSI here, so I did not suggest anything about
-> DTSI.
+diff --git a/Documentation/devicetree/bindings/i3c/aspeed,ast2600-i3c.yaml b/Documentation/devicetree/bindings/i3c/aspeed,ast2600-i3c.yaml
+index fcc3dbff9c9a..47be5d9a32d4 100644
+--- a/Documentation/devicetree/bindings/i3c/aspeed,ast2600-i3c.yaml
++++ b/Documentation/devicetree/bindings/i3c/aspeed,ast2600-i3c.yaml
+@@ -57,7 +57,7 @@ examples:
+   - |
+     #include <dt-bindings/interrupt-controller/arm-gic.h>
+ 
+-    i3c-master@2000 {
++    i3c@2000 {
+         compatible = "aspeed,ast2600-i3c";
+         reg = <0x2000 0x1000>;
+         #address-cells = <3>;
+diff --git a/Documentation/devicetree/bindings/i3c/cdns,i3c-master.yaml b/Documentation/devicetree/bindings/i3c/cdns,i3c-master.yaml
+index cc40d25358ec..cad6d53d0e2e 100644
+--- a/Documentation/devicetree/bindings/i3c/cdns,i3c-master.yaml
++++ b/Documentation/devicetree/bindings/i3c/cdns,i3c-master.yaml
+@@ -41,7 +41,7 @@ unevaluatedProperties: false
+ 
+ examples:
+   - |
+-    i3c-master@d040000 {
++    i3c@d040000 {
+         compatible = "cdns,i3c-master";
+         clocks = <&coreclock>, <&i3csysclock>;
+         clock-names = "pclk", "sysclk";
+diff --git a/Documentation/devicetree/bindings/i3c/i3c.yaml b/Documentation/devicetree/bindings/i3c/i3c.yaml
+index c816e295d565..c7900a1da8d9 100644
+--- a/Documentation/devicetree/bindings/i3c/i3c.yaml
++++ b/Documentation/devicetree/bindings/i3c/i3c.yaml
+@@ -17,7 +17,7 @@ description: |
+ 
+ properties:
+   $nodename:
+-    pattern: "^i3c-master@[0-9a-f]+$"
++    pattern: "^i3c@[0-9a-f]+$"
+ 
+   "#address-cells":
+     const: 3
+@@ -153,7 +153,7 @@ additionalProperties: true
+ 
+ examples:
+   - |
+-    i3c-master@d040000 {
++    i3c@d040000 {
+         compatible = "cdns,i3c-master";
+         clocks = <&coreclock>, <&i3csysclock>;
+         clock-names = "pclk", "sysclk";
+diff --git a/Documentation/devicetree/bindings/i3c/mipi-i3c-hci.yaml b/Documentation/devicetree/bindings/i3c/mipi-i3c-hci.yaml
+index 5dda8cb44cdb..39bb1a1784c9 100644
+--- a/Documentation/devicetree/bindings/i3c/mipi-i3c-hci.yaml
++++ b/Documentation/devicetree/bindings/i3c/mipi-i3c-hci.yaml
+@@ -43,7 +43,7 @@ unevaluatedProperties: false
+ 
+ examples:
+   - |
+-    i3c-master@a0000000 {
++    i3c@a0000000 {
+       compatible = "mipi-i3c-hci";
+       reg = <0xa0000000 0x2000>;
+       interrupts = <89>;
+diff --git a/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml b/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
+index 133855f11b4f..c56ff77677f1 100644
+--- a/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
++++ b/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
+@@ -48,7 +48,7 @@ unevaluatedProperties: false
+ 
+ examples:
+   - |
+-    i3c-master@a0000000 {
++    i3c@a0000000 {
+         compatible = "silvaco,i3c-master-v1";
+         clocks = <&zynqmp_clk 71>, <&fclk>, <&sclk>;
+         clock-names = "pclk", "fast_clk", "slow_clk";
+diff --git a/Documentation/devicetree/bindings/i3c/snps,dw-i3c-master.yaml b/Documentation/devicetree/bindings/i3c/snps,dw-i3c-master.yaml
+index 7a76fd32962a..c0e805e531be 100644
+--- a/Documentation/devicetree/bindings/i3c/snps,dw-i3c-master.yaml
++++ b/Documentation/devicetree/bindings/i3c/snps,dw-i3c-master.yaml
+@@ -35,7 +35,7 @@ unevaluatedProperties: false
+ 
+ examples:
+   - |
+-    i3c-master@2000 {
++    i3c@2000 {
+         compatible = "snps,dw-i3c-master-1.00a";
+         #address-cells = <3>;
+         #size-cells = <0>;
+-- 
+2.34.1
 
-Ok. I will use 'ete' as the name here.
-
-Thanks
-Jinlong Mao
-
-> 
-> Best regards,
-> Krzysztof
-> 
 
