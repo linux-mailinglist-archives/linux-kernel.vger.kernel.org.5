@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-28596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28597-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BF1083007E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:24:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 97CF0830084
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:28:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95D321F2486D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:24:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20CAE1F2505C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:28:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89E57BA27;
-	Wed, 17 Jan 2024 07:24:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C90BBA4B;
+	Wed, 17 Jan 2024 07:28:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="m3kP9V/+"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gfo9rYzQ"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 382C98BF3
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:24:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 994879473
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:28:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705476255; cv=none; b=P+QeA62ej4OdeVyHUmoNY4yNEV6+pd3N/vTuCQvdBqVTUPJlfLV58d0S3aS7HJ2bnDbPbwcNfeeWGQ0gV/5muezWkfLqrZN2wx+7skfP7nd/E4ZbQtddTrod5UbsyjZxQh2SpAaEmxix9Gwqijd7QwQBrqnW1QjIfLUKrs6jeHs=
+	t=1705476515; cv=none; b=enexvN28UY69A7fD/PNHmKopglVOlAqr3KHXE+z0kGiZTF2FQU2Ywods5i2qVP14BUvLidnaULrDDL8Z4vhF8jpcLggSXm5ugluR2JE3r3ukEa6/J+rpQzD276UAiu0stIteQxDbshwkrifFXQrI+c+5DwranUYtA/Op7tN++K0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705476255; c=relaxed/simple;
-	bh=Id3wi3olBIfysDhLSl9qyngd9s+jR6CUqvJn2Xr67tw=;
+	s=arc-20240116; t=1705476515; c=relaxed/simple;
+	bh=L/4nwExbgQD2MCjwfzD0r2tSI3SEcqWZgrHU609CGnI=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
 	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
 	 To:Cc:References:From:Autocrypt:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=Ch8zmfwQfifp7vHzfTSR3MecldQE/clmDXj6n8YROdgE08RGwdmpRfbmMb/IQGy8rNeIiomgKxam/V+1QRRxpQhGiS6EOAt+fZk6/iWNjjlmmf2D/Nu8xcylVP5Taz/QoTCGgxDvj9WsJcA2n+5djWI4cFXgThqykHuiRmFY7W8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=m3kP9V/+; arc=none smtp.client-ip=209.85.208.46
+	 Content-Transfer-Encoding; b=O5gWK0DQLfu+jY9Tx0Ps33SpyKPMr0/emhCVioXqf00ffWRu7j55YGvNaZGkQK492LWIVlP5hz+V4xwa25NltTFMwudqrgeP9+aZMF0aEGjOWZ9tCWWmfUUgaeBFXXIeIguiAfltpFdKHfSov8e3+rNeOrc1/xf4cnjdPHMCdok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gfo9rYzQ; arc=none smtp.client-ip=209.85.167.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-559cef15db5so891281a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 23:24:14 -0800 (PST)
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-50e78f1f41fso11357029e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 23:28:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705476252; x=1706081052; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1705476511; x=1706081311; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=vOeeLr5Q/SJJfobMWQJMrFz6HgRJncfEoFMxDRaNXQU=;
-        b=m3kP9V/+8n7ZK9jVepPFRJTXpBcR02u4wEHP7wPmBykvIsmGm5Q/gmu9rDV4NAP5YI
-         JBiDdkB7iQBP2w4MBin6ENiCeeoOoP2WB6Jhz6QArtTc0N14boNAyHn3BkTQeYMJFyCH
-         TdLKvKE0Vg8CrYIygdgRwyjrWVZaFOF1kY7yuw+7xfc66kKFE3Nv9fXgvBKFqZl/3Nbf
-         jCSNYsH+Vma20gDxrYLjzVYBXK0BLoAdhdgErwOu+nloUxL0Ml2nmFoxFfSUuHNZqtRw
-         83icy5X8GgDv7CJTDoXf3L6TfJ3/4ITUdIVs6SK7RrRk1Gc71s1qQAmqfyYAs/aKOLx4
-         ow/A==
+        bh=phJlqIJpEW8SqL09qKW+SfxMOx0V7LTY01BjUv6mizw=;
+        b=gfo9rYzQ/WqMd4hz8zb5fjXVhJR99873gDASeDZ7+tK0qnUq0aYwcMPRpL3S0oDYGO
+         c/Jrk0wHxyQDrLccgafmgD3HE7DpIDeH2u2kYwQHdg/o5kBe1qOPsHAHrgAMZRG3NNA1
+         ANrJZeBZ3Bi5MTA97VfPvvQKDxwfISSnBLTzhRUKOUq0txq0Izu/vEBzno3gzblSQVFs
+         DsrgN+G8acDklgChaHxFWND1eoTJy/j9tdnmB2mRbDihdM+kEINu1sGqCVfXFLdloDXd
+         rOb2NZv86uVSjD6/8e46BAm1YMA4VuwQle5raujxWRjmSBuTA6Vy6scmRjFvmQrEbe/P
+         Zt3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705476252; x=1706081052;
+        d=1e100.net; s=20230601; t=1705476511; x=1706081311;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vOeeLr5Q/SJJfobMWQJMrFz6HgRJncfEoFMxDRaNXQU=;
-        b=jPxwSzLWyIwcHeNER1DrMyTXzfb1MVyjiAFXGlBliFn2DgHGMogvzT2WlGRaMLlcHo
-         hvigSevo+zutt9hltqZmJaP+fhDqhATK8se+M8rB/Imwr0O2K4kdmHlNtmsT4vpy1jsq
-         9zoWceVlYPxlwjOCd6fz/cN7PPDd/4dIAQtCwGh0+pUO0MeurMtbsJBi5PQUAs7ZzS+e
-         tpw/bMOiXxjwIiHTr6DRHUIBEzs0mLCbMZD04jaKUSC1HSIVG3f/R+2XH87mibFt9Afx
-         3HXaQeYfnTmTODI/ScUr3wo8pOuIDPOD7WV9rVDrpilZpShbxNt6X+zhTjxxreSb/2K9
-         B0lA==
-X-Gm-Message-State: AOJu0YwWvA5G+rKkBCFil9LcAsjchZL1BJHMBEKv90iCvVAEVpmI/yy4
-	J+bxR/UIJasr3p9y6DlZwROCKhwIgfgI45EEjbkQXBhfATs=
-X-Google-Smtp-Source: AGHT+IF/gu11M5AnhrGIj7RSq6/2aoVcOjcNcUTIP7n9SwU0eKQaaIsT1yOqjLFs0v5VPGq6tmd1KQ==
-X-Received: by 2002:a05:6402:31e4:b0:558:b5d0:e77a with SMTP id dy4-20020a05640231e400b00558b5d0e77amr442788edb.36.1705476252401;
-        Tue, 16 Jan 2024 23:24:12 -0800 (PST)
+        bh=phJlqIJpEW8SqL09qKW+SfxMOx0V7LTY01BjUv6mizw=;
+        b=Mroogsos6uP1SIVkiasczph6XDZ7pGFCw1YWbLDnmIoXYS/owC57WpfotcfLSA002k
+         eXdeqxhXoam4WWj1Ld9AVRmrPUvmv/BZPhoDmC3yLfGa15+HauxJrjFiPXfJ5+mfW91G
+         h4K6h+xfI1uCfbqcTj5mg5IHsE6Im6BoNfqlg1wrL82pEFhD2Jdo2ffdheb7ab6DR4O4
+         bonUMh4YxMXf4Ck3hBeoGz2hcDKy480yo4MYaKdP/pj7kb5YM8fMR28qCX3P16g0BL2p
+         ZFonGQrBH+zCCKAidkU03PYKlFGRxvuejz0on4STAiD4krD4Xbcaac2MYxXh5kmAdbRz
+         E33Q==
+X-Gm-Message-State: AOJu0YygYQ03w3tPFtqEE9JlkAYmGgyM2Vnxo/Fb/udV5WxxnKOvfciW
+	czfLDh5FpMImgm96NaQ/dd1i8HLFUWFkLg==
+X-Google-Smtp-Source: AGHT+IH9hHciuhF5K41Lf06HGxi4+feqNSRkmGOauDu7lDWjSuC7ivZ8xszoHdTF7X88kNfD6edNfA==
+X-Received: by 2002:a19:6915:0:b0:50e:e779:e6f7 with SMTP id e21-20020a196915000000b0050ee779e6f7mr3247493lfc.122.1705476511610;
+        Tue, 16 Jan 2024 23:28:31 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id dj17-20020a05640231b100b00559bb146ecbsm1332043edb.6.2024.01.16.23.24.11
+        by smtp.gmail.com with ESMTPSA id x25-20020a1709064bd900b00a28f54aacf1sm7458859ejv.185.2024.01.16.23.28.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jan 2024 23:24:12 -0800 (PST)
-Message-ID: <70d52400-13b8-4f2f-81e3-0753e77e129f@linaro.org>
-Date: Wed, 17 Jan 2024 08:24:11 +0100
+        Tue, 16 Jan 2024 23:28:31 -0800 (PST)
+Message-ID: <326dd12e-2d52-4d4c-8197-5d35a0c52cf5@linaro.org>
+Date: Wed, 17 Jan 2024 08:28:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,13 +77,25 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ARM: dts: tps65217: add power regulator & backlight
- drivers support
+Subject: Re: [PATCH v6 3/3] riscv: dts: sophgo: add rtc dt node for CV1800
 Content-Language: en-US
-To: Xulin Sun <xulin.sun@windriver.com>, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240117043323.2008454-1-xulin.sun@windriver.com>
+To: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+Cc: alexandre.belloni@bootlin.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, chao.wei@sophgo.com,
+ unicorn_wang@outlook.com, paul.walmsley@sifive.com, palmer@dabbelt.com,
+ aou@eecs.berkeley.edu, linux-rtc@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org, dlan@gentoo.org, inochiama@outlook.com
+References: <20240115160600.5444-1-qiujingbao.dlmu@gmail.com>
+ <20240115160600.5444-4-qiujingbao.dlmu@gmail.com>
+ <f2b3dff2-ce0d-4ddb-ad61-74abf2c3022d@linaro.org>
+ <CAJRtX8QFLoWnJBkepZrbneHX8qZdde=aw+zbdErVC91B=u==MA@mail.gmail.com>
+ <007e8c14-13eb-4917-b9da-8d47d6c965c7@linaro.org>
+ <CAJRtX8ROH4R_s1=ML5ka340PAE0SWJKK24yVWHw5gCd+7d9pkA@mail.gmail.com>
+ <dfcf74a9-db76-43fe-9261-20bf7a993bc3@linaro.org>
+ <CAJRtX8Tkie+ykLv8L2EgBQcy9tVP5Yz-_J_eHE-9N9hjt+6gkg@mail.gmail.com>
+ <f99da95d-a6ab-4646-8ad8-8245e275639e@linaro.org>
+ <CAJRtX8Qxvpf_CTJG41U6JC3_qLL9raFxX3LD0LoPNhve=MDyFA@mail.gmail.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -129,35 +141,162 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240117043323.2008454-1-xulin.sun@windriver.com>
+In-Reply-To: <CAJRtX8Qxvpf_CTJG41U6JC3_qLL9raFxX3LD0LoPNhve=MDyFA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 17/01/2024 05:33, Xulin Sun wrote:
-> Support TPS65217 voltage regulator driver and TPS65217 Backlight driver.
-> And enable them by default. This will avoid below booting failed
-> information:
-> tps65217-pmic: Failed to locate of_node [id: -1]
-> tps65217-bl: Failed to locate of_node [id: -1]
+On 17/01/2024 04:24, Jingbao Qiu wrote:
+> On Wed, Jan 17, 2024 at 12:58 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> On 16/01/2024 17:29, Jingbao Qiu wrote:
+>>> On Wed, Jan 17, 2024 at 12:03 AM Krzysztof Kozlowski
+>>> <krzysztof.kozlowski@linaro.org> wrote:
+>>>>
+>>>> On 16/01/2024 16:51, Jingbao Qiu wrote:
+>>>>>>> CV1800 is a RISCV based SOC that includes an RTC module. The RTC
+>>>>>>> module has an OSC oscillator
+>>>>>>
+>>>>>>
+>>>>>> I am not going to read pages of description. Please write concise replies.
+>>>>>
+>>>>> Thanks, What I mean is that this hardware includes two functions, RTC
+>>>>> and POR. How should I describe their relationship?
+>>>>
+>>>> Your POR does not need to take any resources, so no need to describe any
+>>>> relationship.
+>>>>
+>>>> ...
+>>>>
+>>>>>>> Your suggestion is, firstly, the por submodule does not have any
+>>>>>>> resources, so it should be deleted.
+>>>>>>
+>>>>>> So where did you delete it? I still see it in this patch.
+>>>>>
+>>>>> Should I completely delete him? How can a por driver obtain device information?
+>>>>
+>>>> Delete completely.
+>>>>
+>>>> Device information? What is this? We already agreed you don't have any
+>>>> resources for POR.
+>>>>
+>>>> ....
+>>>>
+>>>>>> Device is only one thing, not two.
+>>>>>>
+>>>>>>>                     reg = <0x5025000 0x2000>;
+>>>>>>>                     interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
+>>>>>>>                     clocks = <&osc>;
+>>>>>>> };
+>>>>>>> However, in reality, the POR submodule does not use IRQ and CLK.
+>>>>>>> Please do not hesitate to teach. Thanks.
+>>>>>>
+>>>>>> I expect one device node. How many drivers you have does not matter: you
+>>>>>> can instantiate 100 Linux devices in 100 Linux device drivers.
+>>>>>
+>>>>> I understand what you mean. A device node corresponds to multiple drivers.
+>>>>> Should I completely delete the POR device tree node and add it when
+>>>>> submitting the POR driver?
+>>>>
+>>>> ? I wrote it in previous messages and twice in this thread. Completely
+>>>> delete. You do not add it back! Because if you ever intended to add it
+>>>> back, it should be added since beginning. I don't understand what
+>>>> submitting later would solve.
+>>>>
+>>>>> If that's the case, how can I explain that the rtc device tree node
+>>>>> uses the syscon tag?
+>>>>> How can I describe a POR device in DTS? POR is a submodule of RTC, and
+>>>>> it also has corresponding drivers.
+>>>>
+>>>> I said, there is no need for POR in DTS, because you have nothing there.
+>>>> Why do you insist on putting it on DTS?
+>>>>
+>>>>> It's just that his resources are only shared with RTC's Reg.
+>>>>
+>>>> What resources? Reg? That's not a separate resource.
+>>
+>> I meant, separate from the RTC. I had impression that IO space is shared
+>> or mixed with RTC? If it is separate, why it wasn't listed?
+>>
+>>>
+>>> I'm very sorry about this.
+>>> But I found a binding file that only contains Reg and Compatible.
+>>>
+>>> rtc@80920000 {
+>>> compatible = "cirrus,ep9301-rtc";
+>>> reg = <0x80920000 0x100>;
+>>> };
+>>>
+>>> Link: Documentation/devicetree/bindings/rtc/cirrus,ep9301-rtc.yaml
+>>
+>> And?
+>>
+>>>
+>>>>
+>>>> To summarize: Drop POR from DTS and never bring it back, unless you come
+>>>> with some different arguments, which you did not say already.
+>>>>
+>>>
+>>> You are right, if there is no por device tree node, how can the por
+>>> driver obtain the Reg?
+>>
+>> The same as currently. Does your POR node has reg? No, so according to
+>> your logic it cannot obtain address space.
+>>
+>> Children Linux devices share regmap with parent device.
+>>
 > 
-> Signed-off-by: Xulin Sun <xulin.sun@windriver.com>
-> ---
->  arch/arm/boot/dts/tps65217.dtsi | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/tps65217.dtsi b/arch/arm/boot/dts/tps65217.dtsi
-> index 0d463de5650f..f412e7476660 100644
-> --- a/arch/arm/boot/dts/tps65217.dtsi
-> +++ b/arch/arm/boot/dts/tps65217.dtsi
-> @@ -13,6 +13,16 @@ &tps {
->  	interrupt-controller;
->  	#interrupt-cells = <1>;
->  
-> +	pmic {
-> +		compatible = "ti,tps65217-pmic";
-> +		status = "okay";
+> Thanks, Power-On-Reset/POR driver requires Reg to complete its functions.
+> The compatible of POR is required in DTS to load the corresponding driver.
 
-Why do you need status here?
+No, it is not needed. I also wrote to in previous messages to keep
+drivers out of this. They are not related to this topic and don't use
+them as arguments.
+
+
+> The POR driver was not submitted in the patch. However, this patch requires
+> the addition of RTC in DTS. Considering the future addition of POR
+
+No. Bindings *MUST BE COMPLETE*, not depend on some other drivers.
+Submit *COMPLETE* bindings for entire hardware. Then submit complete
+DTS. I don't care about the drivers and they do not have to be complete.
+
+
+> driver, I added a POR node.
+> I'm not sure why the POR node needs to be deleted, just because it
+> only has the compatible attribute?
+
+This is like a tenth message and I was explaining it multiple times. Go
+back to previous emails.
+
+> Or maybe it's because I didn't submit the POR driver, so I need to
+> delete the POR node.
+
+Please don't mention drivers anymore in this discussions. It only
+confuses you.
+
+> I found an example.
+> 
+> st: timer@fffffd00 {
+>     compatible = "atmel,at91rm9200-st", "syscon", "simple-mfd";
+>     reg = <0xfffffd00 0x100>;
+>     interrupts = <1 IRQ_TYPE_LEVEL_HIGH 7>;
+>     clocks = <&slow_xtal>;
+>     watchdog {
+>       compatible = "atmel,at91rm9200-wdt";
+>     };
+> };
+> 
+> Link:arch/arm/boot/dts/microchip/at91rm9200.dtsi:114
+> 
+> Like this, when the por driver insmod is activated, the por driver can
+> obtain the regs of the parent device.
+
+Example of what? What is the question? I found a bug in Linux, so can I
+create such bug again?
+
+This discussion is fruitless and tiresome. You are repeating the same
+issues and asking the same questions.
 
 Best regards,
 Krzysztof
