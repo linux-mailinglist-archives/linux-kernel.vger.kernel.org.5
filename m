@@ -1,132 +1,147 @@
-Return-Path: <linux-kernel+bounces-28735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AD46830268
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:35:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC1FC83026A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:35:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C6FD1F21718
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:35:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C4DC28602B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:35:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E041C1426D;
-	Wed, 17 Jan 2024 09:35:16 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B449914AA1;
+	Wed, 17 Jan 2024 09:35:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="djKypmE2"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9154F14A97;
-	Wed, 17 Jan 2024 09:35:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFFD214A97;
+	Wed, 17 Jan 2024 09:35:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705484116; cv=none; b=QmkU1bVJZnxQPRFWggcDRZ00SsXEJR8DzI/+t+6AOidVielj60mTrnLEt5tSpjS/ybok5sbIfpbg/NMo3orMpsVMxpMzOQeR1znmuIZeiWL7UbiXplnsA41C/GGbJWefpnpftYoIADJWtihO9DCVfsRoM93KkMV7tFclFiH7YlQ=
+	t=1705484120; cv=none; b=m/Z8g+2c7nyHnb2NtVxMS3tdsa9H+UJ4gEy0/lB/hcHitFjY0X7crZW5SjDnmy7aHPGGrRE/OXXfgCn2C4zlloedwg2eMglK7VHS7ED12C5VQx/UZENg5iHjs2524jCPxQZEZUpnyW+c1uXHAOR5hg9Xdpr3jNuZiYtxUKbCiGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705484116; c=relaxed/simple;
-	bh=MhLCYMADdYGVjaEBH/w4U5E+UR/EiGHvoQw/szfsRak=;
-	h=Received:Received:Received:Subject:To:Cc:References:From:
-	 Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:X-CM-TRANSID:X-Coremail-Antispam:
-	 X-CM-SenderInfo; b=WUQwS+HoHMZb9pZ7ZvEi+0OLVB+NWVX8zAlLUmsscMrxLqchoBb5iFpaQPm6Kru8+4PZHNpl/xcsGvNNFll4xZKtgELzUrSVcX5M5GJur2wNF5Raus/dP2AqzJhtefl1H6tLL+FktAfpgt6fOD7gZdQyBTncw4AJi7UoSNAsggI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TFLM93x10z4f3k60;
-	Wed, 17 Jan 2024 17:35:01 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id A9F791A0E05;
-	Wed, 17 Jan 2024 17:35:03 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgCXaBFFn6dlc8dmBA--.17489S3;
-	Wed, 17 Jan 2024 17:35:03 +0800 (CST)
-Subject: Re: [PATCH v4 2/2] md: don't account sync_io if iostats of the disk
- is disabled
-To: linan666@huaweicloud.com, song@kernel.org, axboe@kernel.dk
-Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-block@vger.kernel.org, yi.zhang@huawei.com, houtao1@huawei.com,
- yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20240117031946.2324519-1-linan666@huaweicloud.com>
- <20240117031946.2324519-3-linan666@huaweicloud.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <6f9618f1-3656-ccb5-25de-13e98d8f46b9@huaweicloud.com>
-Date: Wed, 17 Jan 2024 17:35:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1705484120; c=relaxed/simple;
+	bh=x0Kcp/pwxTMh/ECqiJKT11P/bFTpgUJY8Nj46rmjhsQ=;
+	h=Received:DKIM-Signature:Received:Received:Received:Message-ID:
+	 Date:MIME-Version:User-Agent:Subject:Content-Language:From:To:CC:
+	 References:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-Originating-IP:X-ClientProxiedBy:X-QCInternal:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-GUID:
+	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Virus-Version:
+	 X-Proofpoint-Spam-Details; b=DSg9alKAL1JkQoCqO4h/HNmgrm2qYS/axFAZYgFGKaZSxpX+qlJ2F2j5ik59cWQQwheJjDb2iXKyGf/yCf6VCRiWesSX0lyMM3q5dRgcwOU6+ygLirDgCKwIbZdDehXw07X/db6KDdt6SJKTdg0a0sLhMqmp1EHzXB+59Q3B4Zw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=djKypmE2; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40H6n0nh000436;
+	Wed, 17 Jan 2024 09:35:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:from:to:cc:references
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=vMOS0DlzBel23A1Z1cIJQ4jSth1nNH9SdwsW3j+1mMY=; b=dj
+	KypmE2zjnI33oLWvCF+4H3OnMNrMKyx3M0PcAiCS3nR7Fx0zvW0HbVIvOFMBr+Ra
+	eKdyZ+UkHGp2O5sGxpgnJ6aR9WXZd/4hl0kn5V6nBzkknrP3HMYZKJc62WglhZeq
+	epTh0hfLhQCWu343un13/FKGynEKOSPadgkxDM0CHmU1phNGeH+WaZSv3sJ8ENym
+	KrI6IuAuEJ49d4w1j0UDIZRx80PCgpqNser2litrmc0IhLXysnhAXBn0nEt9v0Ap
+	Pxx3hov+FJysXrTpBjCgorfTmE4Fc47NiXZt0XpPpFjrzGkt8LV60PoX2xrbI96g
+	oOHtOXWjYfMMWq7MusCA==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vnrndaw1u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 09:35:14 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40H9ZD9N018617
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 09:35:13 GMT
+Received: from [10.218.39.189] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 17 Jan
+ 2024 01:35:11 -0800
+Message-ID: <8ba84432-bd07-3e59-3638-924d5fadec30@quicinc.com>
+Date: Wed, 17 Jan 2024 15:05:07 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240117031946.2324519-3-linan666@huaweicloud.com>
-Content-Type: text/plain; charset=gbk; format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+Subject: Re: [RFC PATCH] usb: dwc3: gadget: Fix NULL pointer dereference in
+ dwc3_gadget_suspend
+Content-Language: en-US
+From: UTTKARSH AGGARWAL <quic_uaggarwa@quicinc.com>
+To: Kuen-Han Tsai <khtsai@google.com>
+CC: Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>
+References: <20240110095532.4776-1-quic_uaggarwa@quicinc.com>
+ <CAKzKK0qJOz_+pNAVAD8Ub6TZ9uhFOzuDC_bws9MVzxNa7RqYhA@mail.gmail.com>
+ <77ffee9a-cd77-6a09-10ee-bdf17bfca5ec@quicinc.com>
+In-Reply-To: <77ffee9a-cd77-6a09-10ee-bdf17bfca5ec@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCXaBFFn6dlc8dmBA--.17489S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7tF1xCFyDuw4fGrWUJFyDAwb_yoW8WFy8pa
-	ykAa4fC34UZr45Ww1DX34UCas5Ww17KFW8ArW7A34fXFyaqr9xGF4SgFWqqF1kWFWrWFWa
-	v3WjyFs09a10yrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-	3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCT
-	nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: _imoAAgSBlqQomJwOPibXrLFUxParQxb
+X-Proofpoint-ORIG-GUID: _imoAAgSBlqQomJwOPibXrLFUxParQxb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-17_04,2024-01-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ lowpriorityscore=0 mlxscore=0 suspectscore=0 mlxlogscore=481 clxscore=1015
+ adultscore=0 impostorscore=0 malwarescore=0 bulkscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401170066
 
-�� 2024/01/17 11:19, linan666@huaweicloud.com д��:
-> From: Li Nan <linan122@huawei.com>
-> 
-> If iostats is disabled, disk_stats will not be updated and
-> part_stat_read_accum() only returns a constant value. In this case,
-> continuing to count sync_io and to check is_mddev_idle() is no longer
-> meaningful.
 
-LGTM
-Reviewed-by: Yu Kuai <yukuai3@huawei.com>
+On 1/17/2024 2:52 PM, UTTKARSH AGGARWAL wrote:
+>
+> On 1/17/2024 12:47 PM, Kuen-Han Tsai wrote:
+>>>          ret = dwc3_gadget_soft_disconnect(dwc);
+>>>          if (ret)
+>>>                  goto err;
+>> For improved readability, we can remove the goto statement and move
+>> the error handling logic here.
+>
+> Hi Kuen-Han,
+>
+> Thanks for the suggestion.
+> Does this looks good to you ?
+>
+>    int ret = dwc3_gadget_soft_disconnect(dwc);if (ret) {        if 
+> (dwc->softconnect)            dwc3_gadget_soft_connect(dwc);
+>
+>        return ret;    }    spin_lock_irqsave(&dwc->lock, flags);    if 
+> (dwc->gadget_driver)  dwc3_disconnect_gadget(dwc); 
+>  spin_unlock_irqrestore(&dwc->lock, flags);
 
-> 
-> Signed-off-by: Li Nan <linan122@huawei.com>
-> ---
->   drivers/md/md.h | 3 ++-
->   drivers/md/md.c | 4 ++++
->   2 files changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/md/md.h b/drivers/md/md.h
-> index 1a4f976951c1..e2d03a7a858c 100644
-> --- a/drivers/md/md.h
-> +++ b/drivers/md/md.h
-> @@ -584,7 +584,8 @@ extern void mddev_unlock(struct mddev *mddev);
->   
->   static inline void md_sync_acct(struct block_device *bdev, unsigned long nr_sectors)
->   {
-> -	atomic64_add(nr_sectors, &bdev->bd_disk->sync_io);
-> +	if (blk_queue_io_stat(bdev->bd_disk->queue))
-> +		atomic64_add(nr_sectors, &bdev->bd_disk->sync_io);
->   }
->   
->   static inline void md_sync_acct_bio(struct bio *bio, unsigned long nr_sectors)
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index a6829ea5b560..919d6affc0ac 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -8502,6 +8502,10 @@ static int is_mddev_idle(struct mddev *mddev, int init)
->   	rcu_read_lock();
->   	rdev_for_each_rcu(rdev, mddev) {
->   		struct gendisk *disk = rdev->bdev->bd_disk;
-> +
-> +		if (!init && !blk_queue_io_stat(disk->queue))
-> +			continue;
-> +
->   		curr_events =
->   			(long long)part_stat_read_accum(disk->part0, sectors) -
->   			atomic64_read(&disk->sync_io);
-> 
+Sorry for the mistake.
+
+int ret = dwc3_gadget_soft_disconnect(dwc);
+
+if (ret) {
+
+       if (dwc->softconnect)
+
+                  dwc3_gadget_soft_connect(dwc);
+
+       return ret;
+
+}
+
+spin_lock_irqsave(&dwc->lock, flags);
+
+if (dwc->gadget_driver)
+
+        dwc3_disconnect_gadget(dwc);
+
+spin_unlock_irqrestore(&dwc->lock, flags);
 
 
