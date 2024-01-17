@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-29492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F779830F50
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:39:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C09D4830F60
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:41:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF480288163
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 22:39:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3AC31C21B36
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 22:41:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5D628DB9;
-	Wed, 17 Jan 2024 22:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E34C2C878;
+	Wed, 17 Jan 2024 22:39:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="yaP5tAWL"
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="QvT9a7T1"
 Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B765A1E87F;
-	Wed, 17 Jan 2024 22:39:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A81B928E12;
+	Wed, 17 Jan 2024 22:39:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705531159; cv=none; b=UHX+Up9ZHkPNO5qvwD2v48Hn8XW4lesJnqq2ldPqYXt57zy0iGLBv6YzeFXXExHJOWCHHlJMfeecLDS53w2vym8ky6qRXTof45UUdRuRjR3XaION9CVgZcLKQxgcdBU/p7XVJm0U3aeODiPsbxdaQsOMz7bBLZltdMU32hN541E=
+	t=1705531162; cv=none; b=tqbYx1GYAhN7cgOLQX0OWJG3xGAUMMweCm7oWkwu8EOz21OtrkSamCeMUSIbab9/WwH4NbrIyv1nStH6rl0aD/jFjwfb2MWd8mJWDlNa2DiTnNZIQXhhQIRWgb8kye4Px0qFzuCf6c6aM01zle48CPPWLNE8FKIMrs1ImYKF/xk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705531159; c=relaxed/simple;
-	bh=osbcnZu5DA0h+pun1zmNRcRDKQbP5ZHhVwCWHvGY9JI=;
+	s=arc-20240116; t=1705531162; c=relaxed/simple;
+	bh=LZipp2J5ODSWKW0/wf/7Dva4c04b2Zu6L2eGbhwCn10=;
 	h=DKIM-Signature:Received:From:To:Cc:Date:Message-Id:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:
 	 X-SA-Exim-Connect-IP:X-SA-Exim-Mail-From:X-Spam-Checker-Version:
 	 X-Spam-Level:X-Spam-Report:X-Spam-Status:Subject:X-SA-Exim-Version:
-	 X-SA-Exim-Scanned; b=XN0MCqVdoXc/9jkl34pxQVJvbxNFhBzvQloqEm3gH725mM2nUpguAnMjYXpx7JF6sxQinuYmd3pSQt7PedKHGrtTjGdB2jK2SCGQmfM8Uph7pkV744oWEJueCkiDpxJKTOR+nQ2f+n1rFWP4SAKJUdb8yjgyM0PNv9v9KmKvFzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=yaP5tAWL; arc=none smtp.client-ip=162.243.120.170
+	 X-SA-Exim-Scanned; b=ILiEsChhTB4ehMRxz+iuxSYfiXZswklO4vze4z+XgWwOFIzMvEWRin9MBOVVnwkSXYO4HoJl4esU6fEPE6xdxE2HxNdjNirAuHsViPlXOnSBFljjbz5s6XG7oEn2NNI07ObAGeCI+J1NttGA5wHwdy/K2JFb3tqpOPzYzETZ2Y4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=QvT9a7T1; arc=none smtp.client-ip=162.243.120.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
 	; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
 	:From:subject:date:message-id:reply-to;
-	bh=mv9W9rcFdDnbUlSuNTZsrKNr62wFAUWK1exqxnohL/s=; b=yaP5tAWLQNAMXbWmQGvs1Hm9EF
-	XE/PhE2/CeOsxWxCWOmv8JZQ2vfS6weWdNxi0aPn3mfRacmypKPGZLy0LTFpJw3t0f2E3oYdljVHz
-	yBzSIZFY7gkVKfwPNHUyhfeN7bOQw4JANbFrChVhbFq97HEEqU5mqhWteTYWdY9KEBPo=;
+	bh=LhqHwlrUyDIZEEL1PofE3YIiu/u+1LniZhq8Y/nggDw=; b=QvT9a7T15RWtfD31JYbBdsLTpI
+	AQCKcgrDWAYTg2qfcOo8Nhb6TXlNDDcMsTSGwe7i3YsEYzzAiD5XbCXZfk+irTB+ZybWBkFOSkog4
+	d+z2A+4id9nq8Ckxhbg5N+GhadZlFSRUs0PIsbTOHCqQRVTDrAN966oBdKP2WZPfl5pg=;
 Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:52924 helo=pettiford.lan)
 	by mail.hugovil.com with esmtpa (Exim 4.92)
 	(envelope-from <hugo@hugovil.com>)
-	id 1rQEYz-000155-Ka; Wed, 17 Jan 2024 17:39:14 -0500
+	id 1rQEZ0-000155-P8; Wed, 17 Jan 2024 17:39:15 -0500
 From: Hugo Villeneuve <hugo@hugovil.com>
 To: gregkh@linuxfoundation.org,
 	jirislaby@kernel.org,
@@ -53,8 +53,8 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-serial@vger.kernel.org,
 	hugo@hugovil.com,
 	Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Date: Wed, 17 Jan 2024 17:38:47 -0500
-Message-Id: <20240117223856.2303475-10-hugo@hugovil.com>
+Date: Wed, 17 Jan 2024 17:38:48 -0500
+Message-Id: <20240117223856.2303475-11-hugo@hugovil.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240117223856.2303475-1-hugo@hugovil.com>
 References: <20240117223856.2303475-1-hugo@hugovil.com>
@@ -71,62 +71,60 @@ X-Spam-Level:
 X-Spam-Report: 
 	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
 	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-Subject: [PATCH 09/18] serial: max310x: simplify probe() and remove() error handling
+Subject: [PATCH 10/18] serial: max310x: add explicit return for some switch default cases
 X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
 X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
 From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-Simplify error handling and only call uart_remove_one_port() if line bit
-is set, instead of having to manually set s->p[i].port.dev to NULL.
+Allows to simplify code by removing the break statement in the default
+switch/case in some functions.
 
 Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 ---
- drivers/tty/serial/max310x.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ drivers/tty/serial/max310x.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index d6219077d23c..9ef146f09d5b 100644
+index 9ef146f09d5b..048ae432ba48 100644
 --- a/drivers/tty/serial/max310x.c
 +++ b/drivers/tty/serial/max310x.c
-@@ -1395,10 +1395,9 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
- 
- 		/* Register port */
- 		ret = uart_add_one_port(&max310x_uart, &s->p[i].port);
--		if (ret) {
--			s->p[i].port.dev = NULL;
-+		if (ret)
- 			goto out_uart;
--		}
-+
- 		set_bit(line, max310x_lines);
- 
- 		/* Go to suspend mode */
-@@ -1433,10 +1432,8 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
- 
- out_uart:
- 	for (i = 0; i < devtype->nr; i++) {
--		if (s->p[i].port.dev) {
-+		if (test_and_clear_bit(s->p[i].port.line, max310x_lines))
- 			uart_remove_one_port(&max310x_uart, &s->p[i].port);
--			clear_bit(s->p[i].port.line, max310x_lines);
--		}
+@@ -483,10 +483,8 @@ static bool max310x_reg_writeable(struct device *dev, unsigned int reg)
+ 	case MAX310X_RXFIFOLVL_REG:
+ 		return false;
+ 	default:
+-		break;
++		return true;
  	}
+-
+-	return true;
+ }
  
- out_clk:
-@@ -1454,8 +1451,10 @@ static void max310x_remove(struct device *dev)
- 		cancel_work_sync(&s->p[i].tx_work);
- 		cancel_work_sync(&s->p[i].md_work);
- 		cancel_work_sync(&s->p[i].rs_work);
--		uart_remove_one_port(&max310x_uart, &s->p[i].port);
--		clear_bit(s->p[i].port.line, max310x_lines);
-+
-+		if (test_and_clear_bit(s->p[i].port.line, max310x_lines))
-+			uart_remove_one_port(&max310x_uart, &s->p[i].port);
-+
- 		s->devtype->power(&s->p[i].port, 0);
+ static bool max310x_reg_volatile(struct device *dev, unsigned int reg)
+@@ -505,10 +503,8 @@ static bool max310x_reg_volatile(struct device *dev, unsigned int reg)
+ 	case MAX310X_REG_1F:
+ 		return true;
+ 	default:
+-		break;
++		return false;
  	}
+-
+-	return false;
+ }
  
+ static bool max310x_reg_precious(struct device *dev, unsigned int reg)
+@@ -520,10 +516,8 @@ static bool max310x_reg_precious(struct device *dev, unsigned int reg)
+ 	case MAX310X_STS_IRQSTS_REG:
+ 		return true;
+ 	default:
+-		break;
++		return false;
+ 	}
+-
+-	return false;
+ }
+ 
+ static bool max310x_reg_noinc(struct device *dev, unsigned int reg)
 -- 
 2.39.2
 
