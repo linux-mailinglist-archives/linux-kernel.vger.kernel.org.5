@@ -1,204 +1,262 @@
-Return-Path: <linux-kernel+bounces-28620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 152C38300CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:54:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B5818300C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:50:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0FBC284723
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:54:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 249E61C23506
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:50:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD862C8E0;
-	Wed, 17 Jan 2024 07:53:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="Y4E0/MfR"
-Received: from out203-205-251-59.mail.qq.com (out203-205-251-59.mail.qq.com [203.205.251.59])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E28A8C121;
+	Wed, 17 Jan 2024 07:50:29 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B47C1BE6B;
-	Wed, 17 Jan 2024 07:53:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.59
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 282CBBE68
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:50:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705478033; cv=none; b=uUuFWaqLFCj+ocjyVV5h9jWZ4AMugvP5A6nWS/m0KXzzo3BXegr42312XdOFuIFMAs6V0c0yrQJ+uU6TOysKGSu7+1SIfkvqg9p5ZfenA2qIaZOvWY9ZvSxbE3LYikoaSSZ1AJXXukDWGe8kYAB5QRsb9LsaEbQaogqYTewGYLY=
+	t=1705477829; cv=none; b=kEMmua6tM0xmb+J1KUl/waoL6+iXK617F/TxQf/p7LngvC9NloybTyzKBJzVAiQrZ5rzl2LhLOf8ik2Zy3AeTL+GcIWYVRxiyVJ44M3PcKHomoj/1LmzNJll12eo3bqO++GZJ5t/vzdWQAZlaQ48sxueZ0YC+3U9quvn1nag4+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705478033; c=relaxed/simple;
-	bh=nQBIfiMdjuXoRVFhHvhcr0wzkugaOIbQV7K82qxMKUQ=;
-	h=DKIM-Signature:Received:X-QQ-mid:Message-ID:X-QQ-XMAILINFO:
-	 X-QQ-XMRINFO:X-OQ-MSGID:Date:MIME-Version:User-Agent:
-	 Content-Language:To:Cc:From:Subject:Content-Type:
-	 Content-Transfer-Encoding; b=Qfu+6gzZkh585qyExRlP4AWhL0eF3tQ2TWBM2wjdb3gbhkkT0gPQhe3CD+O+H3pVNBPvK4O1NTTKc0+suapWOHAlNbWjfNb+eHNrPB5k+v0V9+9S7+XhEXVybq+HgH/8IJxlECKMM7qgv7MsLuIVK4FUinbD433tumyg71eopTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=Y4E0/MfR; arc=none smtp.client-ip=203.205.251.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1705478028;
-	bh=H88yXa+7QlAq2GcfOoSWuyw4EXHKRyO0Rb0v/DyhfrM=;
-	h=Date:To:Cc:From:Subject;
-	b=Y4E0/MfR/sgsy8/ydlsu67vwBZLVIbJsDpwqIJiGoAjmbggy268kngECd3Wwclqk1
-	 WQ19Hh22mRoWbDXN2W06OpKwoO2JhCLPe6/DD3F67axDcViHmggvMgqZh9cFZF5/TP
-	 UXkUtAEM0h9TMu1AeUvk7269UGMzAIy8kuVOaQN8=
-Received: from [192.168.3.231] ([116.128.244.171])
-	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
-	id BE82DAF9; Wed, 17 Jan 2024 15:47:40 +0800
-X-QQ-mid: xmsmtpt1705477660tlh8pq5do
-Message-ID: <tencent_0C621A54ED78C4A1ED4ECA25F87A9619CE09@qq.com>
-X-QQ-XMAILINFO: OLnGMPzD2sDVyWBygWfLrWKTpzeb6UejZtAoI3WoEBPougL/n1DQA5eQtbXaof
-	 QdIu7RaIESJhN17S3AjdqcJN9fAsz8iRoX+Vzd3GgrWGWBf+VPdPP2c+Ds4sUMJklxVGjWlAWs7y
-	 KeRn+vYBa44I0aonijPPSl+xORRM8CMGcQCh6vqZHLvuF/58PZgQ/XFrgJp52tR5QB5ExxtIZy5B
-	 364kcVq3i3bYze5an/bBkLsG4ZOratEO6i/HL1V50nUKI3Ob32iP0U0bAUqak6QLWyCHImn0z3fE
-	 TpXmbbHzI7XPD0kkSvgUPI+FFLKaPd0Ijg3KYPU/hBOnqzlL5Bbtpjdq98V1uBpd0Np9S37kYCdi
-	 QNn9GmtaEW9XZfDS2pnwkI91K4sm+KQz9Rdjc4dI2vnFMAWBV06KclwyWmGccNL2q2vaHL2KakXx
-	 JuZuBAGJT22DIo21y/RcHKKu+BlQNWHfrj7BmL0rYrzgtMnST9rx/deXQCYMd9Hj2KKeFojjp8kl
-	 mNsLZ4V1+08Eb3cyKqzvXPAl253wpY4x2yq8OJ0CuhTPuyIZhPa/1MUKBVBdpMjI2+u/bA6nphJ2
-	 BJ73clzFaubdeNLYD9NPvpVBioNXw+9/Amm743b4Qpw4GCxfqrUg9e5OVxpNRcUzEaLX4uT6Km2x
-	 5clNMrZDMwZQc4qwMmkuRuqQDE6wVVOIpY/WdlAEF2LlIzZkZqK8Pcg0/2QP2fPB7kJZrEvmvzOe
-	 IBWDmcEnhnQLiCImEE2tLstGi/eWOD9t/gUMhwMcmemtQZzC6RfBC8Z+uO9a3tjebWW9DZSkz8qt
-	 T7EiTLgdAGHgT/BFLE/fBtQsaUrvx6tz5fnadmED2mZUA869zoiyMNvR5LjXJvJW1zxIIc4m9JWT
-	 Gs+75/oDvqP3MH/eI3GOjsd0o7mMli1MqkrUSgKRCoG7gu8/jG7LuRl6/28yp0O9pr2yaZf9E6Id
-	 K00SYR4kqgVfcaS1sadkj/613oaJh0+s9fADLb7BN9kGFWx01Y7erEAsNm1OmtAWCfvWcSFpbFv8
-	 CoOH0aTDadjVLcmKTC3EBnhHkeBoc=
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-X-OQ-MSGID: <5ad68cf2-0067-4b4e-bb05-b8098d918f56@foxmail.com>
-Date: Wed, 17 Jan 2024 15:47:40 +0800
+	s=arc-20240116; t=1705477829; c=relaxed/simple;
+	bh=1JXndiYp2iQAHGlw0oYGUG+S46QUqzUPAszRxkP/nzc=;
+	h=Received:Received:Received:From:To:CC:Subject:Date:Message-ID:
+	 X-Mailer:MIME-Version:Content-Type:X-Originating-IP:
+	 X-ClientProxiedBy:X-MAIL; b=sHRo/FBNxMgcevqKdIcTEj6EVIAnkmSxCcNSQstXfzba3AUpKxbeE9LM6/s81iccc2gJIBNOBJ43xgfLYJL1Ou6QvvSjAL8iDJVxRKkpPwDKg+gyjtzzGdFWLzYI2oebjuQ3JFPSGtJsk7cWwTACVtobfDgIZRlup2De66L8Zjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 40H7nI9d052752;
+	Wed, 17 Jan 2024 15:49:18 +0800 (+08)
+	(envelope-from Zhiguo.Niu@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TFHrw4tb8z2RvjMG;
+	Wed, 17 Jan 2024 15:42:08 +0800 (CST)
+Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
+ BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Wed, 17 Jan 2024 15:49:16 +0800
+From: Zhiguo Niu <zhiguo.niu@unisoc.com>
+To: <peterz@infradead.org>, <mingo@redhat.com>, <will@kernel.org>,
+        <longman@redhat.com>, <boqun.feng@gmail.com>
+CC: <linux-kernel@vger.kernel.org>, <niuzhiguo84@gmail.com>,
+        <zhiguo.niu@unisoc.com>, <ke.wang@unisoc.com>, <xuewen.yan@unisoc.com>
+Subject: [PATCH V2] lockdep: fix deadlock issue between lockdep and rcu
+Date: Wed, 17 Jan 2024 15:48:34 +0800
+Message-ID: <1705477714-10467-1-git-send-email-zhiguo.niu@unisoc.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- quwenruo.btrfs@gmx.com
-Cc: chenxiaosong@kylinos.cn, liuzhengyuan@kylinos.cn, huhai@kylinos.cn,
- liuyun01@kylinos.cn, zhangduo@kylinos.cn, liuzhucai@kylinos.cn,
- zhangshida@kylinos.cn
-From: ChenXiaoSong <chenxiaosongemail@foxmail.com>
-Subject: Question about btrfs no space left error and forced readonly
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
+ BJMBX02.spreadtrum.com (10.0.64.8)
+X-MAIL:SHSQR01.spreadtrum.com 40H7nI9d052752
 
-Greetings,
+There is a deadlock scenario between lockdep and rcu when
+rcu nocb feature is enabled, just as following call stack:
 
-We had a btrfs no space left error and forced readonly, the stack trace 
-is [1]. This happened on our kernel release version based on lts 4.19.
+     rcuop/x
+-000|queued_spin_lock_slowpath(lock = 0xFFFFFF817F2A8A80, val = ?)
+-001|queued_spin_lock(inline) // try to hold nocb_gp_lock
+-001|do_raw_spin_lock(lock = 0xFFFFFF817F2A8A80)
+-002|__raw_spin_lock_irqsave(inline)
+-002|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F2A8A80)
+-003|wake_nocb_gp_defer(inline)
+-003|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F30B680)
+-004|__call_rcu_common(inline)
+-004|call_rcu(head = 0xFFFFFFC082EECC28, func = ?)
+-005|call_rcu_zapped(inline)
+-005|free_zapped_rcu(ch = ?)// hold graph lock
+-006|rcu_do_batch(rdp = 0xFFFFFF817F245680)
+-007|nocb_cb_wait(inline)
+-007|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F245680)
+-008|kthread(_create = 0xFFFFFF80803122C0)
+-009|ret_from_fork(asm)
 
-Is there already a fix patch for this issue?
+     rcuop/y
+-000|queued_spin_lock_slowpath(lock = 0xFFFFFFC08291BBC8, val = 0)
+-001|queued_spin_lock()
+-001|lockdep_lock()
+-001|graph_lock() // try to hold graph lock
+-002|lookup_chain_cache_add()
+-002|validate_chain()
+-003|lock_acquire
+-004|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F211D80)
+-005|lock_timer_base(inline)
+-006|mod_timer(inline)
+-006|wake_nocb_gp_defer(inline)// hold nocb_gp_lock
+-006|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F2A8680)
+-007|__call_rcu_common(inline)
+-007|call_rcu(head = 0xFFFFFFC0822E0B58, func = ?)
+-008|call_rcu_hurry(inline)
+-008|rcu_sync_call(inline)
+-008|rcu_sync_func(rhp = 0xFFFFFFC0822E0B58)
+-009|rcu_do_batch(rdp = 0xFFFFFF817F266680)
+-010|nocb_cb_wait(inline)
+-010|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F266680)
+-011|kthread(_create = 0xFFFFFF8080363740)
+-012|ret_from_fork(asm)
 
-Or can anybody please advise on how to debug this further?
+rcuop/x and rcuop/y are rcu nocb threads with the same nocb gp thread.
+This patch release the graph lock before lockdep call_rcu.
 
-Thanks,
-ChenXiaoSong.
+Fixes: a0b0fd53e1e6 ("locking/lockdep: Free lock classes that are no longer in use")
+Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+---
+changes of v2: update patch according to Boqun's suggestions.
+---
+---
+ kernel/locking/lockdep.c | 47 +++++++++++++++++++++++++++++++----------------
+ 1 file changed, 31 insertions(+), 16 deletions(-)
 
-[1]
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328533] ------------[ 
-cut here ]------------
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328594] WARNING: CPU: 
-42 PID: 460094 at fs/btrfs/extent-tree.c:6805 
-__btrfs_free_extent.isra.71+0x65c/0xbd0 [btrfs]
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328595] Modules linked 
-in: rpcsec_gss_krb5 auth_rpcgss nfsv4 dns_resolver nfs lockd grace 
-fscache fuse xt_nat veth nf_conntrack_netlink xt_conntrack br_netfilter 
-bridge sch_htb xt_addrtype xt_set ipt_MASQUERADE xt_mark 
-ip_set_hash_ipportnet ip_set_bitmap_port ip_set_hash_ipportip 
-ip_set_hash_ipport dummy xt_comment iptable_nat nf_nat_ipv4 nf_nat 
-iptable_filter nls_utf8 isofs bonding 8021q garp mrp stp llc ip_set 
-nfnetlink ip_vs_sh ip_vs_wrr ip_vs_rr ip_vs nf_conntrack nf_defrag_ipv6 
-nf_defrag_ipv4 sunrpc amd64_edac_mod edac_mce_amd btrfs xor 
-zstd_decompress zstd_compress raid6_pq libcrc32c kvm_amd ccp kvm 
-irqbypass ipmi_ssif ast ttm drm_kms_helper syscopyarea sysfillrect igb 
-sysimgblt i2c_algo_bit fb_sys_fops pcspkr txgbe sg dca drm i2c_piix4 
-k10temp ipmi_si ipmi_devintf ipmi_msghandler binfmt_misc
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328634]  ip_tables 
-ext4 mbcache jbd2 sd_mod crc32c_intel ahci libahci megaraid_sas libata 
-dm_mirror dm_region_hash dm_log dm_mod
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328647] CPU: 42 PID: 
-460094 Comm: httpWorkerThrea Kdump: loaded Tainted: G        W 
-4.19.90-17.ky10.x86_64 #1
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328648] Hardware name: 
-Sugon H620-G30/65N32-US, BIOS 0SSSX245 06/07/2020
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328656] RIP: 
-0010:__btrfs_free_extent.isra.71+0x65c/0xbd0 [btrfs]
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328659] Code: 44 89 e9 
-ba c8 1a 00 00 48 c7 c6 a0 aa 06 c1 e8 fc ba 09 00 e9 fe fa ff ff 0f 0b 
-44 89 ee 48 c7 c7 68 7c 07 c1 e8 14 e9 2d e5 <0f> 0b e9 ce fa ff ff 41 
-83 f8 29 0f 86 d6 01 00 00 48 8b 7c 24 08
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328660] RSP: 
-0018:ffffae7f9f6e78c8 EFLAGS: 00010286
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328661] RAX: 
-0000000000000000 RBX: 000000000000a0c9 RCX: 0000000000000006
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328662] RDX: 
-0000000000000007 RSI: 0000000000000092 RDI: ffff90a4ffa96850
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328663] RBP: 
-00000470931db000 R08: 000000000210773e R09: 0000000000000004
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328664] R10: 
-00000000ffffffe4 R11: 0000000000000001 R12: ffff909b302e2a80
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328664] R13: 
-00000000ffffffe4 R14: 0000000000000000 R15: 000000000003fc62
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328666] FS: 
-00007f4aedae2700(0000) GS:ffff90a4ffa80000(0000) knlGS:0000000000000000
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328667] CS:  0010 DS: 
-0000 ES: 0000 CR0: 0000000080050033
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328667] CR2: 
-00007efce4073ff0 CR3: 0000006413d3c000 CR4: 00000000003406e0
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328668] Call Trace:
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328682] 
-__btrfs_run_delayed_refs+0x4f8/0x1150 [btrfs]
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328707] 
-btrfs_run_delayed_refs+0xe7/0x1b0 [btrfs]
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328717] 
-btrfs_truncate_inode_items+0xa56/0xeb0 [btrfs]
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328728] 
-btrfs_evict_inode+0x496/0x4f0 [btrfs]
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328733]  evict+0xd2/0x1a0
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328736] 
-__dentry_kill+0xdd/0x180
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328738] 
-dentry_kill+0x4d/0x260
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328740]  dput+0x183/0x200
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328743] __fput+0x118/0x1f0
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328747] 
-task_work_run+0x8a/0xb0
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328750] 
-do_exit+0x2ec/0xbf0
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328753] 
-do_group_exit+0x3a/0xa0
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328755] 
-get_signal+0x13f/0x7a0
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328758] 
-do_signal+0x36/0x610
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328768] 
-exit_to_usermode_loop+0x71/0xe0
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328770] 
-do_syscall_64+0x1a3/0x1d0
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328773] 
-entry_SYSCALL_64_after_hwframe+0x44/0xa9
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328779] RIP: 
-0033:0x7f4b12fae10c
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328785] Code: Bad RIP 
-value.
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328785] RSP: 
-002b:00007f4aedae1550 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328786] RAX: 
-fffffffffffffe00 RBX: 00007f4b0d1914e0 RCX: 00007f4b12fae10c
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328787] RDX: 
-0000000000000000 RSI: 0000000000000080 RDI: 00007f4b0d19150c
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328787] RBP: 
-0000000000000000 R08: 0000000000000000 R09: 0000000794039ff8
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328788] R10: 
-0000000000000000 R11: 0000000000000246 R12: 00007f4b0d1914b8
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328789] R13: 
-0000000000008223 R14: 0000000000000000 R15: 00007f4b0d19150c
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328790] ---[ end trace 
-74a7f2461a0f9473 ]---
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.328961] BTRFS: error 
-(device dm-9) in __btrfs_free_extent:6805: errno=-28 No space left
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.439057] BTRFS info 
-(device dm-9): forced readonly
-Dec  8 15:25:17 pjdhcpaasnap8pn kernel: [13439425.439067] BTRFS: error 
-(device dm-9) in btrfs_run_delayed_refs:2935: errno=-28 No space left
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 151bd3d..ddcaa69 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -6184,25 +6184,27 @@ static struct pending_free *get_pending_free(void)
+ static void free_zapped_rcu(struct rcu_head *cb);
+ 
+ /*
+- * Schedule an RCU callback if no RCU callback is pending. Must be called with
+- * the graph lock held.
+- */
+-static void call_rcu_zapped(struct pending_free *pf)
++* See if we need to queue an RCU callback, must called with
++* the lockdep lock held, returns false if either we don't have
++* any pending free or the callback is already scheduled.
++* Otherwise, a call_rcu() must follow this function call.
++*/
++static bool prepare_call_rcu_zapped(struct pending_free *pf)
+ {
+ 	WARN_ON_ONCE(inside_selftest());
+ 
+ 	if (list_empty(&pf->zapped))
+-		return;
++		return false;
+ 
+ 	if (delayed_free.scheduled)
+-		return;
++		return false;
+ 
+ 	delayed_free.scheduled = true;
+ 
+ 	WARN_ON_ONCE(delayed_free.pf + delayed_free.index != pf);
+ 	delayed_free.index ^= 1;
+ 
+-	call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
++	return true;
+ }
+ 
+ /* The caller must hold the graph lock. May be called from RCU context. */
+@@ -6228,6 +6230,7 @@ static void free_zapped_rcu(struct rcu_head *ch)
+ {
+ 	struct pending_free *pf;
+ 	unsigned long flags;
++	bool need_callback;
+ 
+ 	if (WARN_ON_ONCE(ch != &delayed_free.rcu_head))
+ 		return;
+@@ -6239,14 +6242,17 @@ static void free_zapped_rcu(struct rcu_head *ch)
+ 	pf = delayed_free.pf + (delayed_free.index ^ 1);
+ 	__free_zapped_classes(pf);
+ 	delayed_free.scheduled = false;
++	need_callback =
++		prepare_call_rcu_zapped(delayed_free.pf + delayed_free.index);
++	lockdep_unlock();
++	raw_local_irq_restore(flags);
+ 
+ 	/*
+-	 * If there's anything on the open list, close and start a new callback.
+-	 */
+-	call_rcu_zapped(delayed_free.pf + delayed_free.index);
++	* If there's anything on the open list, close and start a new callback.
++	*/
++	if (need_callback)
++		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
+ 
+-	lockdep_unlock();
+-	raw_local_irq_restore(flags);
+ }
+ 
+ /*
+@@ -6286,6 +6292,7 @@ static void lockdep_free_key_range_reg(void *start, unsigned long size)
+ {
+ 	struct pending_free *pf;
+ 	unsigned long flags;
++	bool need_callback;
+ 
+ 	init_data_structures_once();
+ 
+@@ -6293,10 +6300,11 @@ static void lockdep_free_key_range_reg(void *start, unsigned long size)
+ 	lockdep_lock();
+ 	pf = get_pending_free();
+ 	__lockdep_free_key_range(pf, start, size);
+-	call_rcu_zapped(pf);
++	need_callback = prepare_call_rcu_zapped(pf);
+ 	lockdep_unlock();
+ 	raw_local_irq_restore(flags);
+-
++	if (need_callback)
++		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
+ 	/*
+ 	 * Wait for any possible iterators from look_up_lock_class() to pass
+ 	 * before continuing to free the memory they refer to.
+@@ -6390,6 +6398,7 @@ static void lockdep_reset_lock_reg(struct lockdep_map *lock)
+ 	struct pending_free *pf;
+ 	unsigned long flags;
+ 	int locked;
++	bool need_callback = false;
+ 
+ 	raw_local_irq_save(flags);
+ 	locked = graph_lock();
+@@ -6398,11 +6407,13 @@ static void lockdep_reset_lock_reg(struct lockdep_map *lock)
+ 
+ 	pf = get_pending_free();
+ 	__lockdep_reset_lock(pf, lock);
+-	call_rcu_zapped(pf);
++	need_callback = prepare_call_rcu_zapped(pf);
+ 
+ 	graph_unlock();
+ out_irq:
+ 	raw_local_irq_restore(flags);
++	if (need_callback)
++		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
+ }
+ 
+ /*
+@@ -6446,6 +6457,7 @@ void lockdep_unregister_key(struct lock_class_key *key)
+ 	struct pending_free *pf;
+ 	unsigned long flags;
+ 	bool found = false;
++	bool need_callback = false;
+ 
+ 	might_sleep();
+ 
+@@ -6466,11 +6478,14 @@ void lockdep_unregister_key(struct lock_class_key *key)
+ 	if (found) {
+ 		pf = get_pending_free();
+ 		__lockdep_free_key_range(pf, key, 1);
+-		call_rcu_zapped(pf);
++		need_callback = prepare_call_rcu_zapped(pf);
+ 	}
+ 	lockdep_unlock();
+ 	raw_local_irq_restore(flags);
+ 
++	if (need_callback)
++		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
++
+ 	/* Wait until is_dynamic_key() has finished accessing k->hash_entry. */
+ 	synchronize_rcu();
+ }
+-- 
+1.9.1
 
 
