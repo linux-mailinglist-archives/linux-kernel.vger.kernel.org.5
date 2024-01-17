@@ -1,199 +1,110 @@
-Return-Path: <linux-kernel+bounces-28821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32183830364
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:18:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC3AA830373
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:25:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A8391C24391
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:18:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98F121C23EB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:25:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E08C014A90;
-	Wed, 17 Jan 2024 10:18:31 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B787814A93;
+	Wed, 17 Jan 2024 10:24:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4LowLd/C";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="pfH6KXdN"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57A2314294;
-	Wed, 17 Jan 2024 10:18:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF38E1429A;
+	Wed, 17 Jan 2024 10:24:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705486711; cv=none; b=cn+bVKYwGkVHoNjd3+RmQkLpXK7Gy0eJHP1TvqaZLD/MzM4xoc1DuHiv/Rs3qEDlgXRZV2RjPrWUFhR4V0ECK3jKJoN2HMQ+8dTTb1VohfI0igIp3rQ4suCi3pMqFddIRb8W3yuGn6qQRtAU3oats7UpzUSiUkVeDslbfMQVJ14=
+	t=1705487092; cv=none; b=smRpuxlHQHLrswI6FjHhYQy9JuvJLgbm7D7dDLRJ8G8wIARmErgkJ547GW36tpzULwC59CyLoruIFxjGbsUh9oOeowA6VqnLK+LhtefZFxwN0OFGACafWKw+T4mNonmmX7wfswgKp5TkJi1uu8ky6nvi9Qai+tb2JWGcMmCGzwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705486711; c=relaxed/simple;
-	bh=Ohub29sKX7uj5A7SpyeXufKc7bkC+B2NE7GgGMdiec8=;
-	h=Received:Message-ID:Date:MIME-Version:User-Agent:Subject:
-	 Content-Language:To:References:From:Autocrypt:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding; b=iXG8JoI6mx+Tfj0cFfo1RJal/cvVI076r4MQhnhlR9RChcf2EJamfcZTtg//gQMbqxDpCGjTWXUPaEt9OTwC1ko6PyxXOul21+ylRZydl5RX2L3lftgzxLG2uakVuKZlj7DAbcH9F++CIOYmr9zQO34WRrn9t+mAI+eQcDWyJsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC6E6C433C7;
-	Wed, 17 Jan 2024 10:18:26 +0000 (UTC)
-Message-ID: <b1c6c721-d87b-419f-9019-e57cc933f53f@xs4all.nl>
-Date: Wed, 17 Jan 2024 11:18:24 +0100
+	s=arc-20240116; t=1705487092; c=relaxed/simple;
+	bh=YqEOUrfg8We4Z/uU2D6sdtwX7hJPwc174WZj5eopShE=;
+	h=Date:DKIM-Signature:DKIM-Signature:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=ZKAFhB9hTbNFKaYYHas9RRNjGVX6byF3Tk9cMvCa1IBNMihAHmKdnrWEMX8jLIVnPCUgBydEmsRISm2YHXLSGDBgIlrPF0vCp+YiXIyyg4wpUmKtaxEF47IcWZMT8WN6BM2unirodnoR+VchBaTop2aPlXtAugVOy+tOo3nA5T0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4LowLd/C; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=pfH6KXdN; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 17 Jan 2024 11:24:46 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1705487088;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6wBPLNOGkBTQln7J8+pZY7EWcp+BxJ8kTDDAKHKqHnc=;
+	b=4LowLd/Ctq9/yY2o9Mk2IN7dxb7PoHxtXsmEGqeiOEudD+YT449Frgd7m4wWGY87Mi4MJP
+	bOH73ORPXFrFc39CtbP2LbfVvGWb8YlwujTcBB2ooOz5NjKljqWaF1ftqQC+Qaqnhmix9/
+	FJDjXN/rr3A4C1K04PfPsJ7HGXUUiebFRYJo7wqYTjqVjKWXx6xFGDiJeaGSWIhbXw2Yu9
+	MNuSMiJfEXXvo1K1bDG5bOWAAsw7dBQzg5P8LzTeX8FIp5gKVI5ARXxpL60psIyvuKIH5e
+	xEc6/ISy/o5Yvur+7d+u8Df/bSKWLq1tgoH3qD6XtFm6CnZzkRa8C1/CDtZPNQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1705487088;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6wBPLNOGkBTQln7J8+pZY7EWcp+BxJ8kTDDAKHKqHnc=;
+	b=pfH6KXdNuyuUlu4tjxmYhK4BphXthBi+yKxa1nA/aao7HlZ7Z6pKTnYbI3Qu2PeJqwLgRk
+	OaV0gpKRIQefNCBw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: "Chang, Junxiao" <junxiao.chang@intel.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"rostedt@goodmis.org" <rostedt@goodmis.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Li, Hao3" <hao3.li@intel.com>, "Li, Lili" <lili.li@intel.com>,
+	"Gao, Jianfeng" <jianfeng.gao@intel.com>,
+	"linux-rt-users@vger.kernel.org" <linux-rt-users@vger.kernel.org>
+Subject: Re: RE: [PATCH] printk: nbcon: check uart port is nbcon or not in
+ nbcon_release
+Message-ID: <20240117102446.itexUYMc@linutronix.de>
+References: <20240117065226.4166127-1-junxiao.chang@intel.com>
+ <871qagtlk2.fsf@jogness.linutronix.de>
+ <BN9PR11MB5370065F4E7443FEA156347EEC722@BN9PR11MB5370.namprd11.prod.outlook.com>
+ <87y1cos2dv.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 13/15] media: vivid: add fixed point test controls
-Content-Language: en-US, nl
-To: Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
- tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
- linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
- linuxppc-dev@lists.ozlabs.org
-References: <1700637838-6743-1-git-send-email-shengjiu.wang@nxp.com>
- <1700637838-6743-14-git-send-email-shengjiu.wang@nxp.com>
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <1700637838-6743-14-git-send-email-shengjiu.wang@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87y1cos2dv.fsf@jogness.linutronix.de>
 
-On 22/11/2023 08:23, Shengjiu Wang wrote:
-> Add fixed point test controls, one is for Q4.16 format
-> another one is for Q63 format.
+On 2024-01-17 11:09:24 [+0106], John Ogness wrote:
+> On 2024-01-17, "Chang, Junxiao" <junxiao.chang@intel.com> wrote:
+> > There are several serial ports in one Intel ADL hardware, they are
+> > enumerated as ttyS0, ttyS1, ttyS4, and so on. Multiple console options
+> > might be appended to kernel command line. For example,
+> > "console=ttyS0,115200n8 console=ttyS4,115200n8
+> > console=ttyS5,115200n8".
+> >
+> > In this case, several uarts "cons" pointers are same.
 > 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  drivers/media/test-drivers/vivid/vivid-core.h |  2 ++
->  .../media/test-drivers/vivid/vivid-ctrls.c    | 26 +++++++++++++++++++
->  include/media/v4l2-ctrls.h                    |  3 +++
->  3 files changed, 31 insertions(+)
-> 
-> diff --git a/drivers/media/test-drivers/vivid/vivid-core.h b/drivers/media/test-drivers/vivid/vivid-core.h
-> index cfb8e66083f6..f65465191bc9 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-core.h
-> +++ b/drivers/media/test-drivers/vivid/vivid-core.h
-> @@ -222,6 +222,8 @@ struct vivid_dev {
->  	struct v4l2_ctrl		*boolean;
->  	struct v4l2_ctrl		*int32;
->  	struct v4l2_ctrl		*int64;
-> +	struct v4l2_ctrl		*int32_q16;
-> +	struct v4l2_ctrl		*int64_q63;
->  	struct v4l2_ctrl		*menu;
->  	struct v4l2_ctrl		*string;
->  	struct v4l2_ctrl		*bitmask;
-> diff --git a/drivers/media/test-drivers/vivid/vivid-ctrls.c b/drivers/media/test-drivers/vivid/vivid-ctrls.c
-> index f2b20e25a7a4..2444ea95b285 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-ctrls.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-ctrls.c
-> @@ -38,6 +38,8 @@
->  #define VIVID_CID_U8_PIXEL_ARRAY	(VIVID_CID_CUSTOM_BASE + 14)
->  #define VIVID_CID_S32_ARRAY		(VIVID_CID_CUSTOM_BASE + 15)
->  #define VIVID_CID_S64_ARRAY		(VIVID_CID_CUSTOM_BASE + 16)
-> +#define VIVID_CID_INT_Q4_16		(VIVID_CID_CUSTOM_BASE + 17)
-> +#define VIVID_CID_INT64_Q63		(VIVID_CID_CUSTOM_BASE + 18)
->  
->  #define VIVID_CID_VIVID_BASE		(0x00f00000 | 0xf000)
->  #define VIVID_CID_VIVID_CLASS		(0x00f00000 | 1)
-> @@ -182,6 +184,28 @@ static const struct v4l2_ctrl_config vivid_ctrl_int64 = {
->  	.step = 1,
->  };
->  
-> +static const struct v4l2_ctrl_config vivid_ctrl_int32_q16 = {
-> +	.ops = &vivid_user_gen_ctrl_ops,
-> +	.id = VIVID_CID_INT_Q4_16,
-> +	.name = "Integer 32 Bits Q4.16",
-> +	.type = V4L2_CTRL_TYPE_INTEGER,
-> +	.min = v4l2_ctrl_fp_compose(-16, 0, 16),
-> +	.max = v4l2_ctrl_fp_compose(15, 0xffff, 16),
-> +	.step = 1,
-> +	.fraction_bits = 16,
-> +};
-> +
-> +static const struct v4l2_ctrl_config vivid_ctrl_int64_q63 = {
-> +	.ops = &vivid_user_gen_ctrl_ops,
-> +	.id = VIVID_CID_INT64_Q63,
-> +	.name = "Integer 64 Bits Q63",
-> +	.type = V4L2_CTRL_TYPE_INTEGER64,
-> +	.min = v4l2_ctrl_fp_compose(-1, 0, 63),
-> +	.max = v4l2_ctrl_fp_compose(0, LLONG_MAX, 63),
-> +	.step = 1,
-> +	.fraction_bits = 63,
-> +};
-> +
->  static const struct v4l2_ctrl_config vivid_ctrl_u32_array = {
->  	.ops = &vivid_user_gen_ctrl_ops,
->  	.id = VIVID_CID_U32_ARRAY,
-> @@ -1670,6 +1694,8 @@ int vivid_create_controls(struct vivid_dev *dev, bool show_ccs_cap,
->  	dev->button = v4l2_ctrl_new_custom(hdl_user_gen, &vivid_ctrl_button, NULL);
->  	dev->int32 = v4l2_ctrl_new_custom(hdl_user_gen, &vivid_ctrl_int32, NULL);
->  	dev->int64 = v4l2_ctrl_new_custom(hdl_user_gen, &vivid_ctrl_int64, NULL);
-> +	dev->int32_q16 = v4l2_ctrl_new_custom(hdl_user_gen, &vivid_ctrl_int32_q16, NULL);
-> +	dev->int64_q63 = v4l2_ctrl_new_custom(hdl_user_gen, &vivid_ctrl_int64_q63, NULL);
->  	dev->boolean = v4l2_ctrl_new_custom(hdl_user_gen, &vivid_ctrl_boolean, NULL);
->  	dev->menu = v4l2_ctrl_new_custom(hdl_user_gen, &vivid_ctrl_menu, NULL);
->  	dev->string = v4l2_ctrl_new_custom(hdl_user_gen, &vivid_ctrl_string, NULL);
-> diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
-> index c35514c5bf88..d18fd116238b 100644
-> --- a/include/media/v4l2-ctrls.h
-> +++ b/include/media/v4l2-ctrls.h
-> @@ -1593,4 +1593,7 @@ void v4l2_ctrl_type_op_log(const struct v4l2_ctrl *ctrl);
->   */
->  int v4l2_ctrl_type_op_validate(const struct v4l2_ctrl *ctrl, union v4l2_ctrl_ptr ptr);
->  
-> +/* Composite function for integer and fractional bits */
+> So I ask again. Please explain how this is possible.
 
-This comment needs to be expanded a bit:
+I have here
+| 00:03: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
+| 00:04: ttyS1 at I/O 0x2f8 (irq = 3, base_baud = 115200) is a 16550A
 
-/*
- * Fixed point compose helper define. This helper maps to the value
- * i + f / (1 << fraction_bits).
- */
+and I have
 
-> +#define v4l2_ctrl_fp_compose(i, f, fraction_bits) (((s64)(i) << fraction_bits) + (f))
-> +
->  #endif
+| root        2315  0.0  0.0   5480  1792 ttyS0    Ss+  11:19   0:00 /sbin/agetty -o -p -- \u --keep-baud 115200,57600,38400,9600 - vt220
+| root        2502  0.1  0.0   5480  1792 ttyS1    Ss+  11:20   0:00 /sbin/agetty -o -p -- \u --keep-baud 115200,57600,38400,9600 - vt220
 
-Regards,
+and I can stop both of them without any trouble. 
+Can this be reproduced on an ordinary x86 hardware given they have more
+than one UART (up to four).
+Is any of this ADL hardware upstream?
 
-	Hans
+> John
+
+Sebastian
 
