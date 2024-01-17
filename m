@@ -1,124 +1,110 @@
-Return-Path: <linux-kernel+bounces-28871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F07D830401
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:58:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FFB3830405
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:58:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 751ED1C23F88
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:58:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8BB01F25C1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:58:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 468771CFB9;
-	Wed, 17 Jan 2024 10:58:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFB941CFBF;
+	Wed, 17 Jan 2024 10:58:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="tMgwAN0X"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="RQQGjUrL"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0542E1C688
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:58:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C5D31DDC9;
+	Wed, 17 Jan 2024 10:58:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705489106; cv=none; b=a+n/66jI/1b3QsS4ELLYYfbu7lwp4Mi+bHwcaR3K/3PvO4deMJmkRaTP1lLtvIhSM6acOV5GBICS7kESRaFGpsDSIzY89XXfvR9zvHfyeWtfi3NOlVvlYEwM64TJwZ6TUAsVe48PhTaIzQ52dHPBmK0E9mmT8gOMI+yid9LsUqE=
+	t=1705489126; cv=none; b=ZCrFPPQ+gYJotXjz2trA/QgUB/JJHlXMDi8w3Fr60Djk0puhsaCyUPq+qq6tKVbPx68T1wTVwBhhMiUa2Ve0+K52Mwq/WNQLUcwsPs28VRDoiKxP3Vd5ZkUjl7R6UjsO8bKRWTFJT6w3AHu3fV06yTnbQKA37hHkYGCNMZUja5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705489106; c=relaxed/simple;
-	bh=/7lI1B2ezdJpZing7eGVqikWQmFS6qFYXxnwlupy290=;
-	h=DKIM-Signature:Received:Message-ID:Date:MIME-Version:User-Agent:
-	 Subject:To:References:Content-Language:From:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding; b=kPLJAlPMI7DT9Jq0HZHim9TABOBTgZMG2Heom4vLOUfRH+n2Ydcmp5extjSAQrV5/o4UF3FTGU2bER4lwTsS3hTK76DiPoDVFLJDrzpHizNLaPCT9dt4mK8jROIoygFmO0/43cA4Vx/Mo3g+GpljAE3rBZrTmwLOJzVr9/U7Hm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=tMgwAN0X; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705489103;
-	bh=/7lI1B2ezdJpZing7eGVqikWQmFS6qFYXxnwlupy290=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=tMgwAN0XVR4clizkCEDnib7CoFsCa0hRMJsErRaVWDzYjzOc+/kEVeArCbv4OAkss
-	 rpyyvEjyWbQ5q58V+e3HDrUPMAEkws77pSqguHFBDQveJf1dSibyrnCo59m3br4vcf
-	 7beOB9K/TZmZ/TC9vg3/ObJJLIC7uujE4Rg9LGOz3TUcDF3zfm+iUq19+MqwxEBdWZ
-	 oLAqi4Z4U/tKm4Mfnny72PK7fsdzOhqzZlFxfGG0FH/ORgLOAdcz3xYiWkwut99mwI
-	 sxf+GwNw8OwGDAXsh5Sua/04RN8TS6Ojh7Ezb8MgD6GO1Td9kkHR/CPk7C21yRtRC0
-	 94/E4NOFiPHJg==
-Received: from [100.66.96.193] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: vignesh)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4285F3782021;
-	Wed, 17 Jan 2024 10:58:17 +0000 (UTC)
-Message-ID: <7f123e16-54d7-e25e-63ae-cf6efc31d136@collabora.com>
-Date: Wed, 17 Jan 2024 16:28:15 +0530
+	s=arc-20240116; t=1705489126; c=relaxed/simple;
+	bh=rqQp4uE6GicuSvLRiYYT8pqnRl3MYBl1/Xk05YKSEiM=;
+	h=Received:DKIM-Signature:Received:Received:Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:CC:Subject:
+	 Content-Language:To:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:X-EXCLAIMER-MD-CONFIG; b=liN6blQSOTI71W6I8Mr8u3SaqA4XaoQGuX1Nc5FUSfCGf3nj7NYu/iRCLniyzUUWURH0H/j5z/gooim3FPlPefRdMbH4dMvAx3ma1qOwkl2vw097KgC/Du4/jPLVPimv/x6Y+z8D5Zp2SOqAfFpFXyeLdXFF/1a+rMntpptlPFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=RQQGjUrL; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40HAwXIR124543;
+	Wed, 17 Jan 2024 04:58:33 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1705489113;
+	bh=Fru2H61GUxyYDw7D4NtoctZ/6enUK3Gyr4uPdi0B8n4=;
+	h=Date:CC:Subject:To:References:From:In-Reply-To;
+	b=RQQGjUrLjnEEZHLzjExu40P3QQy2jxWtk/zCZCKniyXYjBOdbd/BqhXMWfNtm/CLE
+	 5IBB0eBUXAyKI6JEIk6gVwuVjV/RvnRi81SyoKpkhLBJ2IpyaBz5fiD9EfTEDwytTV
+	 XuDGkL8ddsCxkSzHCwl8fnl0bcc2ipTfS6TYmaMk=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40HAwXDj046782
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 17 Jan 2024 04:58:33 -0600
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 17
+ Jan 2024 04:58:33 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 17 Jan 2024 04:58:33 -0600
+Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40HAwTtZ073889;
+	Wed, 17 Jan 2024 04:58:29 -0600
+Message-ID: <92ceb1ea-78db-4bc4-af1f-a1690eaca24c@ti.com>
+Date: Wed, 17 Jan 2024 16:28:28 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 0/8] drm/ci: Add support for GPU and display testing
-To: Daniel Stone <daniel@fooishbar.org>,
- Helen Koike <helen.koike@collabora.com>, Dave Airlie <airlied@gmail.com>,
- Sima Vetter <daniel@ffwll.ch>, Daniel Stone <daniels@collabora.com>,
- Emma Anholt <emma@anholt.net>,
- linux-rockchip <linux-rockchip@lists.infradead.org>,
- guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- dri-devel <dri-devel@lists.freedesktop.org>,
- David Heidelberg <david.heidelberg@collabora.com>,
- Rob Clark <robdclark@gmail.com>, linux-mediatek@lists.infradead.org,
- linux-amlogic@lists.infradead.org
-References: <20231220121110.1441160-1-vignesh.raman@collabora.com>
- <CAPj87rOMPioOK0r74vcnVkXusm6Nah6KNUWyxYgpVLdkMNtW2g@mail.gmail.com>
- <ad7cbd59-5264-96e8-5e9b-aafde8028e41@collabora.com>
- <CAPj87rPRRfJmxTev50YqxBizyvzCUhCiymoV_bdqsZ-zvcREfA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+CC: <bhelgaas@google.com>, <lpieralisi@kernel.org>, <kw@linux.com>,
+        <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <linux-pci@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <vigneshr@ti.com>,
+        <afd@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>
+Subject: Re: [PATCH 2/3] dt-bindings: PCI: ti,j721e-pci-*: Add checks for
+ max-link-speed
 Content-Language: en-US
-From: Vignesh Raman <vignesh.raman@collabora.com>
-In-Reply-To: <CAPj87rPRRfJmxTev50YqxBizyvzCUhCiymoV_bdqsZ-zvcREfA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+References: <20240117102526.557006-1-s-vadapalli@ti.com>
+ <20240117102526.557006-3-s-vadapalli@ti.com>
+ <4282b248-cb7f-4486-bde6-105a3aed6be2@linaro.org>
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+In-Reply-To: <4282b248-cb7f-4486-bde6-105a3aed6be2@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Daniel,
 
-On 11/01/24 23:41, Daniel Stone wrote:
-> Hi Vignesh,
+
+On 17/01/24 16:05, Krzysztof Kozlowski wrote:
+> On 17/01/2024 11:25, Siddharth Vadapalli wrote:
+>> Extend the existing compatible based checks for validating and enforcing
+>> the "max-link-speed" property.
 > 
-> On Wed, 10 Jan 2024 at 10:47, Vignesh Raman <vignesh.raman@collabora.com> wrote:
->> On 09/01/24 19:08, Daniel Stone wrote:
->>> A better sequencing would be something like:
->>>     1. add ANX7625 config
->>>     2. refactor _existing_ MTK display jobs to use YAML includes, change
->>> the existing job name, and rename the existing xfail set, remove
->>> IGT_FORCE_DRIVER from the script since it's now set by the job
->>>     3. add MTK Panfrost+PVR GPU jobs with new xfails, add xfail entry to
->>> MAINTAINERS
->>>     4+5: same as 2+3 but for Amlogic
->>>     6+7: same as 2+3 but for Rockchip
->>>
->>> Then the separate rename/update xfail commits just disappear, as does
->>> the removal of IGT_FORCE_DRIVER, because it's just done incrementally
->>> as part of the commits which change the related functionality. It's
->>> extremely important that every change can work standalone, instead of
->>> introducing intermediate breakage which is only fixed in later commits
->>> in the series.
->>
->> Thank you for reviewing the patches. I agree, will follow this sequence
->> and send a v2 version.
-> 
-> Alongside Rob's patch to add msm-specific tests to the runlist, we'd
-> need to add the Panfrost-specific tests. Whilst we're here, we might
-> as well add the vc4/v3d/etnaviv/lima tests so they can use it in
-> future.
-> 
-> Panfrost should also skip kms_.* tests - since it's not a KMS driver,
-> it can't run the KMS tests, so there's no point in trying.
+> Based on what? Driver or hardware? Your entire change suggests you
 
-I will add these tests and update skips file. Sorry missed this before 
-sending v2. I'm rechecking the xfails for the v2 series and will send
-v3 with these changes. Thanks.
+Hardware. The PCIe controller on AM64 SoC supports up to Gen2 link speed while
+the PCIe controllers on other SoCs support Gen3 link speed.
 
+> should just drop it from the binding, because this can be deduced from
+> compatible.
+
+Could you please clarify? Isn't the addition of the checks for "max-link-speed"
+identical to the checks which were added for "num-lanes", both of which are
+Hardware specific?
+
+-- 
 Regards,
-Vignesh
+Siddharth.
 
