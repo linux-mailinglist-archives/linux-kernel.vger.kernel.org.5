@@ -1,114 +1,161 @@
-Return-Path: <linux-kernel+bounces-28733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9649830261
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:35:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D61C0830265
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:35:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 68E031F214F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:35:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D7E31F21589
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:35:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8403C1401E;
-	Wed, 17 Jan 2024 09:34:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7637B14005;
+	Wed, 17 Jan 2024 09:34:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="KdAVQFGo"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="hWuxp5vG"
+Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 742F867C6E;
-	Wed, 17 Jan 2024 09:34:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 137E81428E
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 09:34:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705484091; cv=none; b=C043eFWyUWSCUdHTpCtFrrtUB73pER1HwM99YlvxWi3CsA5KVv1OoRVYdh1r8kgbWbBFmoJbNgrsPJc22XhWu9xMIszAxSMHZiVTuGrMvmYCx69+Z3CXx2LrK/u6WkdEENNyLkHnj5KfJlxT4gNLiEFhVNDuGpY3hMk2FlZ5AXc=
+	t=1705484097; cv=none; b=Oauc59VnfntjHLGHiJgnUU2wYUPkitHNBiP3IoatyFO5tFIUEZqP75mN1zHyEq/ltKl/w1loqmtIs+QM1jqe7lw/dce9thjrUx60hjGJB9rcyOsTeEqn50DwBMSC9ZNWkF0SrqjDDscuuPDcoW7MK32c/2L5icWxRQ/xObneRXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705484091; c=relaxed/simple;
-	bh=orkT7LXixbgsPn4N1XEWMynXnZfNfGpgiHmaG+54rCs=;
-	h=Received:X-Virus-Scanned:Received:DKIM-Signature:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=kLy1m08iwpaMEXHfgRaZOUhNMnKuhr3fjldNW+Ed/I+CrCxJyzbf0XUQOOfcMHVWlfgT22bFO5LHx/n2fv7bcLPs6UNC06Dea1aO4xgm9ucder047xDWGHQfzf4TgRdWCCVQ5/GnYEJp9tAjGp3IS79z4l5YzHPk1RNnxXD/BS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=KdAVQFGo; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 74C1F40E01B2;
-	Wed, 17 Jan 2024 09:34:45 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 99Y-ZDDsaapm; Wed, 17 Jan 2024 09:34:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1705484083; bh=g7EGo61gChdLMP36XWtArwGzH5MicsbmHMpZGITpmKE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KdAVQFGoTvsWN62JBRPJezAYAZfo8NF2KyS2AonnfT+RG0XFDyq8MfgsErfXeU7Gt
-	 Bui+OlYhX5nd4ek3sMMd5eV68mrnAAcrZ1s5ql4H3gbIdld/MM1RzveihPFqHbSBwv
-	 7MFY2oSU7CDbVvkO3n0x4Sv2VBi4PrnmrID92Cm35IWGgYlKIYJ/YIV1bdkoHDFRB4
-	 8DDYPJhsWmJ63kdlCdCgj2SPftoE7SlpSPcxFkSd3MlmFn0UpgOy6csxSIho7jV0WH
-	 6W9HI2eoa3bOc3cXkQ885tvXh8YCaInBNjKf0dLufJkzHROHFQ46Kub2WsGCvV/yDg
-	 Iu5gb2nJ9sKw+XXGwpAgVC1EHo7OHdEinBfVwTVmpphvYSW8eS+pyauYU/ci6ot50a
-	 pdXVqm2/SU1fJWxsn1x2tA0+aZagIqflybxH7Atsy5sIpvpefJBHs4JNo1iJzpgdoO
-	 bEyD0iN3pQ7t7gy+ysHcO8iOTGyQwROfItCc1G8CKRnDD+h6ZqwE5jjadlj2z8hqr0
-	 K79POhg4+w0lNuYjeLHanEmPGI5HkRvoCHLSnIdW5j9pmV5Svhf3ypTWJk4UXg1rSh
-	 OSeS9wz5SVZtC0oefYlC+s5GGubs3hVSMb9nBVWbM7poXtsAc4F1jNGrGo1cvb9tzi
-	 EuzDPL1X0OBKUl4NwVtIQyH4=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9122640E0177;
-	Wed, 17 Jan 2024 09:34:05 +0000 (UTC)
-Date: Wed, 17 Jan 2024 10:34:00 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Michael Roth <michael.roth@amd.com>, x86@kernel.org,
-	kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
-	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org,
-	pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-	jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
-	slp@redhat.com, pgonda@google.com, peterz@infradead.org,
-	srinivas.pandruvada@linux.intel.com, rientjes@google.com,
-	tobin@ibm.com, vbabka@suse.cz, kirill@shutemov.name,
-	ak@linux.intel.com, tony.luck@intel.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-	pankaj.gupta@amd.com, liam.merwick@oracle.com
-Subject: Re: [PATCH v1 11/26] x86/sev: Invalidate pages from the direct map
- when adding them to the RMP table
-Message-ID: <20240117093341.GBZaee9f614RSBhXi0@fat_crate.local>
-References: <20231230161954.569267-1-michael.roth@amd.com>
- <20231230161954.569267-12-michael.roth@amd.com>
- <cb604c37-aeb5-45bd-b6db-246ae724e4ca@intel.com>
- <20240115090948.GBZaT2XKw00PokD-WJ@fat_crate.local>
- <6ecc4517-9a4f-4d7e-a630-2b8357b7be05@intel.com>
+	s=arc-20240116; t=1705484097; c=relaxed/simple;
+	bh=5h5jo0LDbjUDwc963EaETwiGZV4372iYktbYxO7wBYM=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=kVHgqQaiyPFzCpzrSb3tU8uboLoJ77tZ2EInjkiaAoxfj8rsb4eBnuZR8IONvIrC+yyqUFeiipKlYba08RAzEO/eyYwL9zsbfZzjodzwn72yQ1U2d+R2Iq3XVJ2YN/Wvvm/j0NpFqhp/LDoRvzLJiE89o9tF8+y8hghrMYXuxs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=hWuxp5vG; arc=none smtp.client-ip=209.85.160.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-206b77b9f4bso4426334fac.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 01:34:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1705484094; x=1706088894; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aaqWkweUBCMsM9np/mXYoztcvXQRXft4e1IEJ/ozrjU=;
+        b=hWuxp5vGVbqiSAe9z4n+r1gcgTdBJOsKcxGR1oxv7Ukr3gfVNx+OdqpeM7toaJsuA8
+         pmVc69+23ouo0OnaJVS4WjXPmn1Y3dp1l1MXEqZH1bOyhQd4XilryHwL1OpYEkTdHs+C
+         4IC6s7eaX9URzydCPvmwEKEhyQzP+rcD8Lspwub2vXyEmTIt6LqnHUD+6RTfZfTKjHgg
+         L27c/7Iz9GfvGQ6qY9EAg1wZCR1bGmUNYeWRnbg2jUIgMFivGua4PSSdvHAfNFZOVM7d
+         v0DAuF57YjZwlRoW5G2Zlv16bAXi25bp0pflrPrIUja01w3lMprD7HWrhwPW/RZELk7H
+         QiyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705484094; x=1706088894;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aaqWkweUBCMsM9np/mXYoztcvXQRXft4e1IEJ/ozrjU=;
+        b=soKaNOLAqMXv8e6/MUKXCKMZ8nY+H9A7poVN1fDHZvYbbwWoaNrAxkhiJWNp+DYSGC
+         uB+q/aCWd1vEkPN0gtEx65X8QAW0rUUBdEtrYObQIYf5sfhqN+RiiPQVJqYXxW4xz2aM
+         xKrlWVV4CM3OH8fIiyHdCx41t9v4c4bEOvrtARaGiEsX0zgnV+CDhV9DF3oUyih3Oesm
+         a9jdif/vV7Gw3iC/xKH5PoUhZCqASqcikYolJpiNWLjzkwxtmMosejXm/+mSytFMnZUj
+         CUMzN2sKBUULk8evNfCmSxXGgGtIgi88axVpFlIGqUfsu7E0596tA+aipGc+YhpnKmOZ
+         LvOQ==
+X-Gm-Message-State: AOJu0YxV6MBZzVXHh88kkje0otrEwqbPRr6DAF4UK3OCbEFM2Vl9Dq2U
+	77cptK06XgDpaPURF1g7LNuXLjjFQqgXPBuOQFi7rnFllRbSzg==
+X-Google-Smtp-Source: AGHT+IGm/Gep62eql5SAVLRRUU3yliphqjo5z9Qaiuxv+5wKqX7+/u8z+fEIs7Mgr/WikI4re0xS1rdrLaLknoVLY5o=
+X-Received: by 2002:a05:6870:148a:b0:206:9e36:cfed with SMTP id
+ k10-20020a056870148a00b002069e36cfedmr12283657oab.62.1705484094068; Wed, 17
+ Jan 2024 01:34:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <6ecc4517-9a4f-4d7e-a630-2b8357b7be05@intel.com>
+References: <20240117082514.42967-1-cuiyunhui@bytedance.com> <20240117-274e425c51d0deaeca80857d@orel>
+In-Reply-To: <20240117-274e425c51d0deaeca80857d@orel>
+From: yunhui cui <cuiyunhui@bytedance.com>
+Date: Wed, 17 Jan 2024 17:34:43 +0800
+Message-ID: <CAEEQ3wmDyj9S6412b3FCVF6Wu+TRRZco11X5mdEiQ5E2s54sHQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] RISC-V: selftests: fix cbo.c compilation error
+To: Andrew Jones <ajones@ventanamicro.com>
+Cc: shuah@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com, 
+	aou@eecs.berkeley.edu, xiao.w.wang@intel.com, linux-kselftest@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	xuzhipeng.1973@bytedance.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 16, 2024 at 08:21:09AM -0800, Dave Hansen wrote:
-> The problem will be the first time someone sees a regression when their
-> direct-map-fracturing kernel feature (secret pages, SNP host, etc...)
-> collides with some workload that's sensitive to kernel TLB pressure.
+Hi drew=EF=BC=8C
 
-Yeah, and that "workload" will be some microbenchmark crap which people
-would pay too much attention to, without it having any relevance to
-real-world scenarios. Completely hypothetically speaking, ofc.
+On Wed, Jan 17, 2024 at 5:16=E2=80=AFPM Andrew Jones <ajones@ventanamicro.c=
+om> wrote:
+>
+> On Wed, Jan 17, 2024 at 04:25:14PM +0800, Yunhui Cui wrote:
+> > When compiling with -O0, the following error will occur:
+> > cbo.c: In function 'cbo_insn':
+> > cbo.c:43:9: warning: 'asm' operand 1 probably does not match constraint=
+s
+> >    43 |         asm volatile(
+> >       |         ^~~
+> > cbo.c:43:9: warning: 'asm' operand 2 probably does not match constraint=
+s
+> > cbo.c:43:9: error: impossible constraint in 'asm'
+> >
+> > Add __attribute__((optimize("O"))) to fix.
+> >
+> > Fixes: a29e2a48afe3 ("RISC-V: selftests: Add CBO tests")
+> > Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
+> > Suggested-by: Zhipeng Xu <xuzhipeng.1973@bytedance.com>
+> > ---
+> >  tools/testing/selftests/riscv/hwprobe/cbo.c | 11 ++++++-----
+> >  1 file changed, 6 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/riscv/hwprobe/cbo.c b/tools/testin=
+g/selftests/riscv/hwprobe/cbo.c
+> > index 50a2cc8aef38..ff1d8e843d70 100644
+> > --- a/tools/testing/selftests/riscv/hwprobe/cbo.c
+> > +++ b/tools/testing/selftests/riscv/hwprobe/cbo.c
+> > @@ -36,7 +36,7 @@ static void sigill_handler(int sig, siginfo_t *info, =
+void *context)
+> >       regs[0] +=3D 4;
+> >  }
+> >
+> > -static void cbo_insn(char *base, int fn)
+> > +static __always_inline void cbo_insn(char *base, int fn)
+> >  {
+> >       uint32_t insn =3D MK_CBO(fn);
+> >
+> > @@ -47,10 +47,11 @@ static void cbo_insn(char *base, int fn)
+> >       : : "r" (base), "i" (fn), "i" (insn) : "a0", "a1", "memory");
+> >  }
+> >
+> > -static void cbo_inval(char *base) { cbo_insn(base, 0); }
+> > -static void cbo_clean(char *base) { cbo_insn(base, 1); }
+> > -static void cbo_flush(char *base) { cbo_insn(base, 2); }
+> > -static void cbo_zero(char *base)  { cbo_insn(base, 4); }
+> > +#define OPTIMIZE __attribute__((optimize("O")))
+> > +OPTIMIZE static void cbo_inval(char *base) { cbo_insn(base, 0); }
+> > +OPTIMIZE static void cbo_clean(char *base) { cbo_insn(base, 1); }
+> > +OPTIMIZE static void cbo_flush(char *base) { cbo_insn(base, 2); }
+> > +OPTIMIZE static void cbo_zero(char *base)  { cbo_insn(base, 4); }
+> >
+> >  static void test_no_zicbom(void *arg)
+> >  {
+> > --
+> > 2.20.1
+> >
+>
+> Hi Yunhui,
+>
+> Thanks for the bug report, but this isn't the right fix. The real problem
+> is that I didn't ensure operands 1 and 2 match their constraints, just as
+> the warning you discovered says. To do that, I should have made cbo_insn(=
+)
+> a macro and not used the local variable, i.e. ensure 'fn' and 'insn' are
+> indeed constants derived from the 0,1,2,4 constants.
+>
+> I'll send a patch with your reported-by.
+Okay, if you want to use macros to fix it, you can. thanks=EF=BC=81
 
-:-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks=EF=BC=8C
+Yunhui
 
