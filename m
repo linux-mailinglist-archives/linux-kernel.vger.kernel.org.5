@@ -1,173 +1,139 @@
-Return-Path: <linux-kernel+bounces-29554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99BED831023
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:39:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2062D831025
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:41:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39FEF1F27483
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:39:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 526B41C21CC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:41:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94AAD286BD;
-	Wed, 17 Jan 2024 23:39:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ED3428699;
+	Wed, 17 Jan 2024 23:41:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hWhznDBk"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JVwTYqsN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 019EF21A12;
-	Wed, 17 Jan 2024 23:39:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D17AA2561F
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 23:41:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705534768; cv=none; b=POaYoqf2sOqFvmJp7ca0NgGBqFxep2cMRXy2shqTRHxoCE/LufLbSztAgOY+2UmDG9AHPIubGWPuwilJ5c+xO0qPwUNXLEYvJX2G+1H3R38LyzAGUniNH6KvhWkNhgvjqah4tS6baMDc7OMmH8G+wlVcb7rEwvY+f7Ot/qAZalI=
+	t=1705534908; cv=none; b=q0hAFlEy4HxIQ0iBeZPkokmy7D+wwXTwpcq76+c6z9uPHvO/QoBaqonL8OVpv6NmTKkDGgsCCGkvOg41nh/zChIeQiMaoovWi4NWMHId+xV1lEGLV3rY5gb8bZAzlHhZzaIYeP2uasKZrwxlS+DlrJ4wpfA/P5Ca+XopPevshv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705534768; c=relaxed/simple;
-	bh=Ha+Y2jJWGNPZTGT0umJ9IwMknizBN0icFUzmICDOFJc=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:X-IronPort-AV:Received:Received:Date:From:To:Cc:
-	 Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=ltgMxaLTjQtNj3Qh69jrKz3P3kpgCtJMhQu/JgLhKryTe7C+KtNR1JionYtUT5qofKFsTTsWdE/al8i8M6b84hy0WXG/8QlfHjtv8kII1JE6navnDqgT1WnW8wsRMWNGabTkgeS/NvGXbF19kcwiAuueD+Y49wPNUtzmmANvBxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hWhznDBk; arc=none smtp.client-ip=134.134.136.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705534766; x=1737070766;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Ha+Y2jJWGNPZTGT0umJ9IwMknizBN0icFUzmICDOFJc=;
-  b=hWhznDBkYhYHiPF4jqC+DpfjHZVZ3lyqFd0REX1u3w9wpB5CrNzROKFA
-   /9OJBkvb5LH3KRsGEtIg/k/0FPQwMArytWiFNHqWORqhJhB7Ky3zqOX6D
-   NK3XgdZX+8tN19JQ/FomWVd0g7t3jaZtljH759PBgA9gsawDu8ikwPhW6
-   6gt9EPXWaKRUeY/bUEc2xjZFO/IHL7xCuH+VRWZtiAwgnvlAy0TtRCac8
-   iTYZ6zw1aP//uG7JCXNw3YZDp9WDC95iTEB1Bt9du9PsqNxkvGNZL8k8x
-   StabWKcmKsmmkYnvg/4On8yctl/GLnd6E3rENKD3JwRR8qIRh70BvGQY0
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="404068181"
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="404068181"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 15:39:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="818645809"
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="818645809"
-Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 17 Jan 2024 15:39:22 -0800
-Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rQFV9-0002R0-1V;
-	Wed, 17 Jan 2024 23:39:19 +0000
-Date: Thu, 18 Jan 2024 07:38:59 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Christian A. Ehrhardt" <lk@c--e.de>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	linux-usb@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	"Christian A. Ehrhardt" <lk@c--e.de>, Dell.Client.Kernel@dell.com,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Jack Pham <quic_jackp@quicinc.com>,
-	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-	Samuel =?utf-8?B?xIxhdm9q?= <samuel@cavoj.net>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] usb: ucsi_acpi: Quirk to ack a connector change ack
- cmd
-Message-ID: <202401180751.BuI4xr2p-lkp@intel.com>
-References: <20240116224041.220740-4-lk@c--e.de>
+	s=arc-20240116; t=1705534908; c=relaxed/simple;
+	bh=cY79/Cfp9xIflNIDwfUmZ2vm5pn0cwkYXSHLUwKaasQ=;
+	h=Received:DKIM-Signature:Received:X-Gm-Message-State:
+	 X-Google-Smtp-Source:X-Received:MIME-Version:References:
+	 In-Reply-To:From:Date:X-Gmail-Original-Message-ID:Message-ID:
+	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding; b=rxMbIucivtzmKf/E0kOCkER85Cruay17K2ovY+Q4BqbV7koAwEwqN5H1Z3mD+nwEHR26SjvA+BoWeBYi/dPForbFRFa+XJZGEgqjTYuP9lng8ONH60lhADP34i4g8SjZ8hgDu2Pa0X+Ixuxg7ZRtNMXcB+ESyjiYkx7ahYz4RMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JVwTYqsN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95FAFC433A6
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 23:41:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705534908;
+	bh=cY79/Cfp9xIflNIDwfUmZ2vm5pn0cwkYXSHLUwKaasQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=JVwTYqsNhQmI0YoHxpkxpGD41oMoBmdB5gB6csq63I1W8k3eO4j97Q59XcVo+y3J9
+	 p06o/RNx3V4rGt6wYHkHMCFqD+1MtadTpTH7CstvD8mBnOYGppldPi1rDre7hoyooH
+	 xOHFM4HZqRT+olNjR75ncyorWJtChHNy0rGjmjmaxi7SAXs0XTWGWo/WPITTk++I00
+	 3xcKhb6zFSguSfcNla8ajfSCKMuSzkBd9VB76r2idmf9jpOs1PeLjD0yPopxBBmxa+
+	 7jSwy7dIgDNhcZrt1InB7Eoq5PqzFjnOkMaauBmU431Nmw8xwuPRQa74xZTVAyLjtt
+	 DQeEXKfajnkzw==
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2901f9a9d00so39658a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:41:48 -0800 (PST)
+X-Gm-Message-State: AOJu0YzRiRhUMUieFFGAhr+GZRiQCaSRDehqZK2vmQyO2sPRzKO7pbAw
+	RtL+DuC1f+kWN4pI5lAQrwPY4fqPvWkIJP11K+9DKY6qJpsEkx037WwPGYJ2FNPwPfeCzpGfKPr
+	mGxdSNcTIP6LBR8RUl5EkoWktLzpAx3N9aK0R
+X-Google-Smtp-Source: AGHT+IFs7Y9kVpqYyUhwzuMYD6tF9HAEqcY8re5F/bDLJ7v+vAmuGFeD34dRqhpQ93irvy0QmLM3iQHxGmMhGiTY8fI=
+X-Received: by 2002:a17:90a:12ca:b0:28e:89d2:87ba with SMTP id
+ b10-20020a17090a12ca00b0028e89d287bamr43131pjg.12.1705534907954; Wed, 17 Jan
+ 2024 15:41:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240116224041.220740-4-lk@c--e.de>
+References: <20240117-b4-zswap-lock-optimize-v1-0-23f6effe5775@bytedance.com> <CAJD7tkY7Xvjg37EEw2M=uRknphY0pf3ZVpyX2s2QyiJ=Axhihw@mail.gmail.com>
+In-Reply-To: <CAJD7tkY7Xvjg37EEw2M=uRknphY0pf3ZVpyX2s2QyiJ=Axhihw@mail.gmail.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Wed, 17 Jan 2024 15:41:35 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuP4o3Ebg-aYKF9=ftbdu97RnkXnYL-8RuVjYAeXd+ng3A@mail.gmail.com>
+Message-ID: <CAF8kJuP4o3Ebg-aYKF9=ftbdu97RnkXnYL-8RuVjYAeXd+ng3A@mail.gmail.com>
+Subject: Re: [PATCH 0/2] mm/zswap: optimize the scalability of zswap rb-tree
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Chengming Zhou <zhouchengming@bytedance.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org, 
+	Nhat Pham <nphamcs@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Christian,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on usb/usb-testing]
-[also build test WARNING on usb/usb-next usb/usb-linus westeri-thunderbolt/next linus/master v6.7 next-20240117]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Christian-A-Ehrhardt/usb-ucsi-Add-missing-ppm_lock/20240117-064726
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-patch link:    https://lore.kernel.org/r/20240116224041.220740-4-lk%40c--e.de
-patch subject: [PATCH 3/3] usb: ucsi_acpi: Quirk to ack a connector change ack cmd
-config: x86_64-rhel-8.3-rust (https://download.01.org/0day-ci/archive/20240118/202401180751.BuI4xr2p-lkp@intel.com/config)
-compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240118/202401180751.BuI4xr2p-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401180751.BuI4xr2p-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/usb/typec/ucsi/ucsi_acpi.c:132: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * Some Dell laptops expect that an ACK command with the
+Hi Yosry and Chengming,
 
 
-vim +132 drivers/usb/typec/ucsi/ucsi_acpi.c
+On Wed, Jan 17, 2024 at 10:38=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com=
+> wrote:
+>
+> On Wed, Jan 17, 2024 at 1:23=E2=80=AFAM Chengming Zhou
+> <zhouchengming@bytedance.com> wrote:
+> >
+> > When testing the zswap performance by using kernel build -j32 in a tmpf=
+s
+> > directory, I found the scalability of zswap rb-tree is not good, which
+> > is protected by the only spinlock. That would cause heavy lock contenti=
+on
+> > if multiple tasks zswap_store/load concurrently.
+> >
+> > So a simple solution is to split the only one zswap rb-tree into multip=
+le
+> > rb-trees, each corresponds to SWAP_ADDRESS_SPACE_PAGES (64M). This idea=
+ is
+> > from the commit 4b3ef9daa4fc ("mm/swap: split swap cache into 64MB trun=
+ks").
+> >
+> > Although this method can't solve the spinlock contention completely, it
+> > can mitigate much of that contention. Below is the results of kernel bu=
+ild
+> > in tmpfs with zswap shrinker enabled:
+> >
+> >      linux-next  zswap-lock-optimize
+> > real 1m9.181s    1m3.820s
+> > user 17m44.036s  17m40.100s
+> > sys  7m37.297s   4m54.622s
+> >
+> > So there are clearly improvements. And it's complementary with the ongo=
+ing
+> > zswap xarray conversion by Chris. Anyway, I think we can also merge thi=
+s
+> > first, it's complementary IMHO. So I just refresh and resend this for
+> > further discussion.
+>
 
-   130	
-   131	/**
- > 132	 * Some Dell laptops expect that an ACK command with the
-   133	 * UCSI_ACK_CONNECTOR_CHANGE bit set is followed by a (separate)
-   134	 * ACK command that only has the UCSI_ACK_COMMAND_COMPLETE bit set.
-   135	 * If this is not done events are not delivered to OSPM and
-   136	 * subsequent commands will timeout.
-   137	 */
-   138	static int
-   139	ucsi_dell_sync_write(struct ucsi *ucsi, unsigned int offset,
-   140			     const void *val, size_t val_len)
-   141	{
-   142		struct ucsi_acpi *ua = ucsi_get_drvdata(ucsi);
-   143		u64 cmd = *(u64*)val, ack = 0;
-   144		int ret;
-   145	
-   146		if (UCSI_COMMAND(cmd) == UCSI_ACK_CC_CI &&
-   147		    cmd & UCSI_ACK_CONNECTOR_CHANGE)
-   148			ack = UCSI_ACK_CC_CI | UCSI_ACK_COMMAND_COMPLETE;
-   149	
-   150		ret = ucsi_acpi_sync_write(ucsi, offset, val, val_len);
-   151		if (ret != 0)
-   152			return ret;
-   153		if (ack == 0)
-   154			return ret;
-   155	
-   156		if (!ua->dell_quirk_probed) {
-   157			ua->dell_quirk_probed = true;
-   158	
-   159			cmd = UCSI_GET_CAPABILITY;
-   160			ret = ucsi_acpi_sync_write(ucsi, UCSI_CONTROL, &cmd,
-   161						   sizeof(cmd));
-   162			if (ret == 0)
-   163				return ucsi_acpi_sync_write(ucsi, UCSI_CONTROL,
-   164							    &ack, sizeof(ack));
-   165			if (ret != -ETIMEDOUT)
-   166				return ret;
-   167	
-   168			ua->dell_quirk_active = true;
-   169		}
-   170	
-   171		if (!ua->dell_quirk_active)
-   172			return ret;
-   173	
-   174		return ucsi_acpi_sync_write(ucsi, UCSI_CONTROL, &ack, sizeof(ack));
-   175	}
-   176	
+Sorry I have been radio silent busying on a few refreshments of the
+xarray on the recent kernel tree. There is an assertion triggered on
+xarray and the rb tree does not agree with each other. It takes some
+time to debug. I ironed that out, also glad the assert did catch a
+bug.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Currently the xarray patch should have everything it takes to use RCU
+read lock. However taking out the tree spinlock is more work than
+previously. If we are going to remove the tree spinlock, I think we
+should revert back to doing a zswap tree lookup and return the zswap
+entry with reference increased. The tree mapping can still decouple
+from the zswap entry reference count drop to zero.  Anyway, my V1 of
+the xarray patch will not include removing the tree spinlock.
+
+> The reason why I think we should wait for the xarray patch(es) is
+> there is a chance we may see less improvements from splitting the tree
+> if it was an xarray. If we merge this series first, there is no way to
+> know.
+>
+> Chris, do you intend to send the xarray patch(es) anytime soon?
+
+Thanks for the heads up. Let me send it out now.
+
+Chris
 
