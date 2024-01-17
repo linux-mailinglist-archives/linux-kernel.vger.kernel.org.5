@@ -1,228 +1,222 @@
-Return-Path: <linux-kernel+bounces-28601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32165830095
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 36FA4830098
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:38:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD16E1F24D8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:37:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AACF31F24CCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:38:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EA29BE65;
-	Wed, 17 Jan 2024 07:37:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35843BA50;
+	Wed, 17 Jan 2024 07:37:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HCF0Cm4C"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="sY59nySc"
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2114.outbound.protection.outlook.com [40.107.102.114])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A137FBE4C
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:37:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705477059; cv=none; b=dXYR1r4/RYY8nIvr7JC4Pd+35A5cuJ33Hw+STPpwS+0kOv5fc7FZ9ikuCIaM0dgmVhlT8JjSff65cpSrLBeUKrOgLoIhmGu0Y66uL+YpfjVXOkAs11m95potu+u5GkS5OcgV45wbBf78zf05jFljC5MLIex80iuO09ZeOxav0j4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705477059; c=relaxed/simple;
-	bh=1eQ/pqXoQG270ZvRFbCAoZaq95bnLk24Xb2QmOUHtD4=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 To:References:From:Autocrypt:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=g9DP0rSpM3iZmRkhIs2hmu8CzFSo5rhnJ10HzjIQWYuxOauc9qUAZCd/e0Sv8+slVWDCuSvhRJguu9fpjoEGHGhRAz8AUMtwER4yHsCvclMxY7VnsmFCxpNt3hPNJBSIAvH0LVjvtpz/b/YPH0xvcuaz+iSNd5/oUC7iQlDTbaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HCF0Cm4C; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a2ece31f5fdso32752266b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 23:37:37 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9672FCA73;
+	Wed, 17 Jan 2024 07:37:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.114
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705477066; cv=fail; b=fHpwqCzKq4lUUu2FTfzc2o7VhJOGDKPxfyx/AA7WGpyJVYjLZp3b4xOTA9cofPXiL64VDMt4QqRnin5oKZf1H8iuf2iuRmGVyVv7wIaNT6IvNcZc17g+PQ9nKLqN9Ya0HEMzykcIh06evJ1jyMlsfU9FPekobDT0kPg2VCpS3Q0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705477066; c=relaxed/simple;
+	bh=kEprHw+xv8IdFWB17ZSbH5HUyGWXEWM7RHGGnAVlB5I=;
+	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
+	 Received:Received:Date:From:To:cc:Subject:In-Reply-To:Message-ID:
+	 References:Content-Type:X-ClientProxiedBy:MIME-Version:
+	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
+	 X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-AuthSource:
+	 X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+	 X-MS-Exchange-CrossTenant-UserPrincipalName:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=mBct8UeYz1AKMFwtWpF+EC1bE4izgPpPcePi24QL3nZZ2YWzEyRG3uWFl9Dn4xoLOpwrVsPpIQrnyuQmg7L99apqvqxTyIhwGCkq4J6FaNQOCHCiIVH4fT5OrZ9AqhivqJrMuEI/j/BknFXuM0RI94LVfVykCH3fmjxsmPm+15A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=sY59nySc; arc=fail smtp.client-ip=40.107.102.114
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XYzgfgc6L2QT9Q+/1Lvsfc6eSNUGGEfmnpmexzVWrWcviPt/2bGQHlKQrAWXBrMe7oyu7UR/VIeGbmhKX/8up+2npvj3nLvfb3R97DLN5k10l7dWSA88P0r06gi5vngX3/0ww4fMDlqFVi2c6VserA49BIgoCfKRMRTHpku8WAFGoQ+reQKIEYOWRDwIH/7hFnysPGnCsCx950OdUXhKuL5K2KU13wjj1xiBbPa8QEgkszU6hMlo4LcdtcKnwu80Es88CJXptXxXx6JgTenJe9qUTkgFHX2cwRgpsyFwAH18GKP207CYTGKpH98Y7xo1PUlDc0UqF7LCAv3ZDJPB5Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MBFsrqjOK5LJiS1b7YXXGC3gWh4Shb+fImkuncKwHAI=;
+ b=Jf0eokOpUaZTdu6ymg7MQMXHPuU6/ejnSNYA/XQEy71h8ALVPUrWH2Etf6925lXJDiyP9+8aCP6XHP+hEWKesIxz/3eIEWCstlYbqt8v8Ae7dWmHGgiLvncxo/3JxHIhoUZKLeW1LVjQHqaV6HUdRefe87AM8IwFzXxoOTZmWyeH9P9OB2a2zZAIjJ6xP6PGep+ET1xmdQqdbqUmj+me87e6RFskwD/AjVydvKqGy+/HrgkMcstqcdhI8VnyKLLblunMQPqK6rP3Ap7t+cKAwCZpvUOHCoJ6D0dgPPtmuzDxR1c/fDMPquyclrCmx020o05Pr6wSnGeqSHcxrWZJ8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705477056; x=1706081856; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mYY6pYg4hJx8t4EgMJgj47ze8WV3NufoN+cY8Yko8wU=;
-        b=HCF0Cm4CejSuzv7zvWUFGQYwsvykH0eGcUH4QntSC8rdmGwvvNFgtcsWXEy9N+pzJX
-         Pdnopc9wzaQioauFAwZ0M3k0zrm5mxRBXOcWITC8GMkt+3J4YyRxFks2f31PWVhStPoi
-         LGmdggmVnHuEGPnlsF5t9pdrHZjwhbVKcqCSqVWH08WFfI1DFJSLWysw9uHzK05Nglrb
-         raVBDSLMirvGRO2p3QZAjSOiLRRoiqoN0mCVy5aler9/Uqzd3NVxDHCu1SY+A4nk0t+y
-         iBqBIk4TFcKPYP2D0U/smH/Stb+lPxbuMP2Jb2fxmQ1+e71awQNXKKoQi08VCGoHY3lt
-         WsfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705477056; x=1706081856;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mYY6pYg4hJx8t4EgMJgj47ze8WV3NufoN+cY8Yko8wU=;
-        b=cp/lHyZd9mM9ApC2cxT1xcUacF3Z2ZTDQEedzqVGIXAu1Z46sUp096idQPWSMt/cYo
-         WwzIIXce+HSJdSHvzqXtWkeK2pTAeLUKOMdOytPeid2qIFEicBCLIEF2a5Ay4kARFwPT
-         z07uXk7z2kJHqSEXG2tQKJ8IWwIkKuUo7eb3pDCfqDHPOhOuCgaieIV0H6OgoI2emxEw
-         MNYxf5lN17VY5ZAzuLj37GkhEc2SNJqSzF2jSDYKe3GzVC/zs+ztZIEVOjeAeKanRRP9
-         /BATe2oDuka55BI0lvtL/arSH4elj/GJN8ikIgoaA1pE0vd6vK15WXRfswcFHXYboUyT
-         F5iA==
-X-Gm-Message-State: AOJu0YyYJ4uFGgke8u3m4hxHCdLcb56yDwniLola/DgIBFYf55qXB0Q0
-	FTOjS1PE7bXHc79TtnxwzloCCCbDc7sdPA==
-X-Google-Smtp-Source: AGHT+IGI2hc8ONom1x59NxfFXZFzuHKuCXPlvMiNSpZswnyOsMJ0vVpL5nxjhgoEBxbXs1a6lONRLw==
-X-Received: by 2002:a17:907:a609:b0:a2d:89a3:3c17 with SMTP id vt9-20020a170907a60900b00a2d89a33c17mr2601230ejc.110.1705477055857;
-        Tue, 16 Jan 2024 23:37:35 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id bv2-20020a170906b1c200b00a2e81e4876dsm1507299ejb.44.2024.01.16.23.37.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jan 2024 23:37:35 -0800 (PST)
-Message-ID: <5b39c702-c74e-4cd5-accf-b6b8792e65b2@linaro.org>
-Date: Wed, 17 Jan 2024 08:37:32 +0100
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MBFsrqjOK5LJiS1b7YXXGC3gWh4Shb+fImkuncKwHAI=;
+ b=sY59nySc8IzNBr+1n1Ly0d96TG2WsFfmOcNU5oQXbN4wa0JlYeUm6NuyXjO//SoE4RkCnMjBQY7I2/QSff+Ow6YFAFVgptVR9wWTz9z2uWB/FUiL8XcwlKgVF2mI+6C7EIP2M/U6mYiX5si8QNe9sAWVLi/AGvEEMcBA2X0CQAA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from PH0PR01MB8166.prod.exchangelabs.com (2603:10b6:510:293::17) by
+ SJ0PR01MB6333.prod.exchangelabs.com (2603:10b6:a03:293::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7202.23; Wed, 17 Jan 2024 07:37:40 +0000
+Received: from PH0PR01MB8166.prod.exchangelabs.com
+ ([fe80::5549:ab3d:70af:8693]) by PH0PR01MB8166.prod.exchangelabs.com
+ ([fe80::5549:ab3d:70af:8693%7]) with mapi id 15.20.7181.019; Wed, 17 Jan 2024
+ 07:37:40 +0000
+Date: Tue, 16 Jan 2024 23:37:34 -0800 (PST)
+From: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+To: James Clark <james.clark@arm.com>
+cc: linux-perf-users@vger.kernel.org, ilkka@os.amperecomputing.com, 
+    Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+    Arnaldo Carvalho de Melo <acme@kernel.org>, 
+    Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+    Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+    Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
+    Adrian Hunter <adrian.hunter@intel.com>, 
+    Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+    Anup Sharma <anupnewsmail@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf test: Fixed masked error condition in perf data
+ convert test
+In-Reply-To: <20240112120737.1995575-1-james.clark@arm.com>
+Message-ID: <726d2423-13a-010-e72e-8d3366f9c542@os.amperecomputing.com>
+References: <20240112120737.1995575-1-james.clark@arm.com>
+Content-Type: text/plain; format=flowed; charset=US-ASCII
+X-ClientProxiedBy: CH5P223CA0016.NAMP223.PROD.OUTLOOK.COM
+ (2603:10b6:610:1f3::21) To PH0PR01MB8166.prod.exchangelabs.com
+ (2603:10b6:510:293::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] dt-bindings: mfd: atmel,hlcdc: Convert to DT schema
- format
-Content-Language: en-US
-To: Dharma.B@microchip.com, sam@ravnborg.org, bbrezillon@kernel.org,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
- airlied@gmail.com, daniel@ffwll.ch, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- Nicolas.Ferre@microchip.com, alexandre.belloni@bootlin.com,
- claudiu.beznea@tuxon.dev, dri-devel@lists.freedesktop.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, lee@kernel.org, thierry.reding@gmail.com,
- u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org
-References: <20240110102535.246177-1-dharma.b@microchip.com>
- <20240110102535.246177-3-dharma.b@microchip.com>
- <683b7838-9c19-4a51-8ec4-90ac8a8a94ce@linaro.org>
- <a59fe94a-feac-439e-a93d-3a90f7d05de5@microchip.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <a59fe94a-feac-439e-a93d-3a90f7d05de5@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-On 17/01/2024 03:22, Dharma.B@microchip.com wrote:
-> Hi Krzysztof,
-> On 10/01/24 11:31 pm, Krzysztof Kozlowski wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> On 10/01/2024 11:25, Dharma Balasubiramani wrote:
->>> Convert the atmel,hlcdc binding to DT schema format.
->>>
->>> Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
->>> ---
->>>   .../devicetree/bindings/mfd/atmel,hlcdc.yaml  | 106 ++++++++++++++++++
->>>   .../devicetree/bindings/mfd/atmel-hlcdc.txt   |  56 ---------
->>>   2 files changed, 106 insertions(+), 56 deletions(-)
->>>   create mode 100644 Documentation/devicetree/bindings/mfd/atmel,hlcdc.yaml
->>>   delete mode 100644 Documentation/devicetree/bindings/mfd/atmel-hlcdc.txt
->>>
->>> diff --git a/Documentation/devicetree/bindings/mfd/atmel,hlcdc.yaml b/Documentation/devicetree/bindings/mfd/atmel,hlcdc.yaml
->>> new file mode 100644
->>> index 000000000000..555d6faa9104
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/mfd/atmel,hlcdc.yaml
->>
->> This looks not tested, so limited review follows:
-> I acknowledge that I didn't test the patches individually. I appreciate 
-> your understanding. Taken care in v2.
->>
->>> @@ -0,0 +1,106 @@
->>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->>> +# Copyright (C) 2024 Microchip Technology, Inc. and its subsidiaries
->>> +%YAML 1.2
->>> +---
->>> +$id: http://devicetree.org/schemas/mfd/atmel,hlcdc.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: Atmel's HLCDC (High LCD Controller) MFD driver
->>
->> Drop "MFD driver" and rather describe/name the hardware. MFD is Linux
->> term, so I really doubt that's how this was called.
-> Done.
->>
->>> +
->>> +maintainers:
->>> +  - Nicolas Ferre <nicolas.ferre@microchip.com>
->>> +  - Alexandre Belloni <alexandre.belloni@bootlin.com>
->>> +  - Claudiu Beznea <claudiu.beznea@tuxon.dev>
->>> +
->>> +description: |
->>> +  Device-Tree bindings for Atmel's HLCDC (High LCD Controller) MFD driver.
->>
->> Drop
-> Done.
->>
->>> +  The HLCDC IP exposes two subdevices:
->>> +  # a PWM chip: see ../pwm/atmel,hlcdc-pwm.yaml
->>> +  # a Display Controller: see ../display/atmel/atmel,hlcdc-dc.yaml
->>
->> Rephrase to describe hardware. Drop redundant paths.
-> Sure, I will truncate this to "subdevices: a PWM chip and a display 
-> controller." & drop the |.
-> 
-> I added description about those two subdevices below.
-
-Then why do you still keep there comments? # is a comment.
-..
-
-> in v3.
->>
->>> +
->>> +  hlcdc-display-controller:
->>
->> Does anything depend on the name? If not, then just display-controller
-> Got an error "'hlcdc-display-controller' does not match any of the 
-> regexes: 'pinctrl-[0-9]+'" so I retained it in v2,but as conor advised 
-> to have node names generic and we can easily adopt, I will modify it in v3.
-
-That's not a dependency. I was talking about any users of the binding.
-User of a binding is for example: Linux kernel driver, other open-source
-projects, out-of-tree projects.
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR01MB8166:EE_|SJ0PR01MB6333:EE_
+X-MS-Office365-Filtering-Correlation-Id: d90434de-c39d-4c70-e5f5-08dc172f2ef1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	xuW+SRmGP4GcWw2apf645XZRN5hSEzBoVxXrAjmxE9h/GcApd/6tGAe9cOVK7qelhNbaA42CI/x5kFwBNF+6hmwXAsQKv/RVPMj1DMMUf85FVibEs+ja//0OHpTgcsz1sseaDAbU8PkazygIC+e84qHf78y8J3oiyaq9dGs/E2aLw60rA4LMNUmfGl2MVuC4DtJKZry3FshKIbGfHwOQXixOUnpSBfj8omRuWn4KlM2QbugjixP79OOj4EWYs+1X1/9JtkHbRJvdglN7+U33xVSs59IYPweQ4pSOcCFn+M7gntzEpsh6HvGk/FCaOtp+oLY3PO7jLmfCO71v+xNEvslTew5KzddaclKsGq52FmBEclo5NY6/eRBTO341LEgMEKHJ0zWZAIx8NeZrZRtcY/z77PEbIDwKu8b1Ofwq0j9j22injsGy7jHUyo51eCjxDF8WLXHtFsJz/SDOrLaLWrNbLZbDtuJqkULq9+wJ66m0tZwRuYM/70nVYorgc1GvXqZIk3vys4VjRvl21m2pjKItzpHLt91guFaxcssqngk/5E0W3KdDo17U+8B8tgJMzAtZ/KpfEbJI0JCho0hdEY4uYwwq3joetpNYV9zNEjEcHsCw12vV3vqyGrBCf7gM
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB8166.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(396003)(39850400004)(376002)(366004)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(26005)(83380400001)(52116002)(6666004)(6506007)(6512007)(2616005)(38100700002)(5660300002)(7416002)(4326008)(8676002)(41300700001)(2906002)(8936002)(6486002)(478600001)(316002)(6916009)(54906003)(66476007)(66556008)(66946007)(86362001)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?f1/h5CzmmyfG9z6hZhJe+TVBD+U/xdb5TOMs79p5omFNT7omB+gQniGo4VOm?=
+ =?us-ascii?Q?oXz7C9JdqMnw1/f4cZk04Q+JxE+HJJuJL9wmIxsWmdXeFY8z1WGHw+qF9yKQ?=
+ =?us-ascii?Q?EpTCUJ3m4fzjfKL3q+DQwO8iFV+c949b/osiBS0bk9IiZQT32YW9RzFpYvsr?=
+ =?us-ascii?Q?PwHWTqJ6O/p7pErW8Mvh3vZUZ9Yt+iG1ebJxwDDk70xgUD5OPiGT+WLeYt9B?=
+ =?us-ascii?Q?0XTQaJ/AA1JPw722t3et3ETcOy3P9FrvBOhaZvqtn6gJ4wgUwNMyKm2IQ6f1?=
+ =?us-ascii?Q?FvY8hIf9BNmIB81xa/19h+fxQzwEEvTjdFVyHqtubUyMkDsZFFsBKS1CkR/Y?=
+ =?us-ascii?Q?5bPYr84vKpUzocQVRhTSnmlkUGDsLaKO/0ba7oHXWFb2naIXBqMdc/aCHXW/?=
+ =?us-ascii?Q?7Kqr6rvl/sciBAZakERtU/AX2x+p94JGHl+lUK7BqpemKrkXP73EjI4nvxN9?=
+ =?us-ascii?Q?BnslveSmeoyWosGfHc8Sgq0tQ9nCZXiCPunZRNRKD+f80YGrJ1YhOYMdJqBu?=
+ =?us-ascii?Q?J0xJhC/fL4bO1fqlGB6zqGst6aKLBJqzgfyY/hOYqyfamix1qgOh8Vib330d?=
+ =?us-ascii?Q?1loi1trC+qB2xPwKCM26Z3vbPanQ/9sZ4Iv7KuEGPppSPTyaWkejxDz8xy4f?=
+ =?us-ascii?Q?yxS7fl9LwkMZpUlCFV1m7oaNHl3fYeb+AcXpywJ5HGJ8JefwEEqXV2PnvoWw?=
+ =?us-ascii?Q?E7pgKilidORA4duKGWY8yE2bDVviryi7yG3lstBcbiY005+t0MvOjDu9BIYr?=
+ =?us-ascii?Q?bJairBxJ3zo4v7dEexJ7PWDchaFViSRYzTdHYmwe/d7wqTgPSfzDRv4l5bzw?=
+ =?us-ascii?Q?KHprWcgsiSzOMw1r60bZEPQn4v+3vCPfp7KdSgJZC2wHo7bljPIkHMQQIfTg?=
+ =?us-ascii?Q?TvDE/bzl4yT6loWoigrVebtT8TzSFe2A/JZfYbZNCU8uYz9aLzpKUCH3x16K?=
+ =?us-ascii?Q?gLL29uvOJyLtUwoxxnM3udffZEsJY+ncyOz0wNNOHtI1RA+SievzRVPU8fAv?=
+ =?us-ascii?Q?v3rzrnATxilOhp5ryLG9pKmRhgNikll9zWEUb8JA9dngnoeOArsLacp3lKrQ?=
+ =?us-ascii?Q?hjp1pgepdUJLzU4keRMOqHL+ARzoboMZq2P2Ar1RtN39jxc52VCyrqIIuHAr?=
+ =?us-ascii?Q?qidlIWHcdAyy28QLN+cp8D03ddZRzy59lRkS4rnNjnTrL4Zuf6gP/OLPvaCH?=
+ =?us-ascii?Q?JHNqGhXc4SPQ7/frhUbL1/RxGrPoj3KJ4eQ5pGWwPY1sMPLER/I5UxIqkzJT?=
+ =?us-ascii?Q?3IIzzDQYdgLS+SnpDMoO+8AlcHyBcex8cZcXFJ1GsGJZAsgSqYISD0LLCDvV?=
+ =?us-ascii?Q?ZexBa/Ffg8y00868XKhJfqvsYMbJ+CNw76WznhIR1grZnC+HGLuJjgrUEWOe?=
+ =?us-ascii?Q?kUhH0myot+WU55dSEhzynLHZs4oeLc6d87xaWFckiU4YF3pjR7TkMsnTuEBY?=
+ =?us-ascii?Q?3OIuaUt8/sPrDKMeBPdAAzgQDiridfZcG9wb73XFHNljzeYUwwCH/mKkUTz5?=
+ =?us-ascii?Q?xEsmz6EkdFW4MsEbLL856Zk+l26SBQSin/M4P+7Son7BP5CBoCqE1hZBK8aL?=
+ =?us-ascii?Q?/tgnKF/29pK7Ic28RiS7UwO8efV81UFFQbtxDuLjGdwrSAS31ka4e3GE2RhY?=
+ =?us-ascii?Q?UvClBmgC8elu64zFXuzmsWM=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d90434de-c39d-4c70-e5f5-08dc172f2ef1
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB8166.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2024 07:37:39.9600
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: efTHwvZ//eTv7NidAwvv73ceInnEVl87tztyIWOvI47MbD8GJ0tz9TfI8/550Zd7ZSigqjp7Z6smr3cWW85opC+fw8QYq7dBwOtRp+ZP5bMw8vVfoIiEWerGEgCKNPAb
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR01MB6333
 
 
-Best regards,
-Krzysztof
 
+On Fri, 12 Jan 2024, James Clark wrote:
+
+> The test does set -e, so any errors go straight to the exit handler,
+> where it returns err=0 (success). Fix it by leaving err=1 from the
+> beginning and only set the success code if it ran all the way to the end
+> without errors.
+>
+> Also remove the exit code argument from the last exit because it doesn't
+> do anything, it's always replaced by err in the exit handler.
+>
+> Fixes: 68d124182610 ("perf test: Add test validating JSON generated by 'perf data convert --to-json'")
+> Signed-off-by: James Clark <james.clark@arm.com>
+
+Looks good to me.
+
+
+Reviewed-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+
+Cheers, Ilkka
+
+> ---
+> tools/perf/tests/shell/test_perf_data_converter_json.sh | 9 +++++----
+> 1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/perf/tests/shell/test_perf_data_converter_json.sh b/tools/perf/tests/shell/test_perf_data_converter_json.sh
+> index c4f1b59d116f..1781b7215c11 100755
+> --- a/tools/perf/tests/shell/test_perf_data_converter_json.sh
+> +++ b/tools/perf/tests/shell/test_perf_data_converter_json.sh
+> @@ -4,7 +4,7 @@
+>
+> set -e
+>
+> -err=0
+> +err=1
+>
+> shelldir=$(dirname "$0")
+> # shellcheck source=lib/setup_python.sh
+> @@ -36,7 +36,6 @@ test_json_converter_command()
+> 		echo "Perf Data Converter Command to JSON [SUCCESS]"
+> 	else
+> 		echo "Perf Data Converter Command to JSON [FAILED]"
+> -		err=1
+> 		exit
+> 	fi
+> }
+> @@ -49,7 +48,6 @@ validate_json_format()
+> 			echo "The file contains valid JSON format [SUCCESS]"
+> 		else
+> 			echo "The file does not contain valid JSON format [FAILED]"
+> -			err=1
+> 			exit
+> 		fi
+> 	else
+> @@ -62,4 +60,7 @@ validate_json_format()
+> test_json_converter_command
+> validate_json_format
+>
+> -exit ${err}
+> +# Set -e is on, so it was only successful if it ran up to this point.
+> +# Therefore only set err=0 here.
+> +err=0
+> +exit
+> -- 
+> 2.34.1
+>
+>
 
