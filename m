@@ -1,178 +1,159 @@
-Return-Path: <linux-kernel+bounces-28632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09606830115
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:14:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 42F20830117
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:15:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DC33287C55
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:14:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE038287B36
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:15:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B9FFD26B;
-	Wed, 17 Jan 2024 08:14:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9587D11707;
+	Wed, 17 Jan 2024 08:15:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XeRdTyE1"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="YIR6mCeG";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ACBCQ8n3"
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BD7311CAE
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 08:14:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D110D517;
+	Wed, 17 Jan 2024 08:15:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705479274; cv=none; b=subND8NFKQ5VIZPYpThqZMNdRTT7AnrvYUP61el/A4JTr0qptau/nJ4NhyAraUn6VxMQ8EArUFopAguxOJLE06sXdlNeKn1rzYKoXn7Bkqp+rpKwxOb2CzezN1rtbLlAS4MGSVFlelM0W1jKOStZ2scnyzzkYXum3dBCRUIMOBM=
+	t=1705479304; cv=none; b=Ec8eGJKfHqUcDcqTFkr+lL37RP0AcalOhExceOuYKYF+9RlWyoBvHuy970WxNq1ixIei2wn6O/4JSlNkKLICRvmuAJwwBMfe6smj5a+6s+yU7POP5FUf6LJn4In7clC1fQNyTyXoOhNzvF2sZjTImw1k2Wx6VDM84ddmLn45dGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705479274; c=relaxed/simple;
-	bh=cwylxV3kqbnlcPOSuYtKVxfAJcIy43hyojt54L8ZiwI=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 To:Cc:References:From:Autocrypt:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=YkzjiRMoe1CjVK8ZD9ZpteYh0xl1JHs9jqdYBVWuDlsymtaOCWrSByBo5Tn6MC7Zlc33nvTgbKAyXWwvkryPOSG66tWf5xfNkoNUFbi/Z/r7vwuS7DBZSyvD1BzWubTqNHz8shFOJ3ueenBrA0SiR33edeVJNhmRjhQSgi4mAMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XeRdTyE1; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a28fb463a28so1146675766b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 00:14:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705479271; x=1706084071; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hDpy4FmysuOCLPwC25rzziBsH7dgfNI4N60cOk5J0hY=;
-        b=XeRdTyE1HIsc8WTBIj1FJ12xN+nYcYzX2tqHnVLmJo8JcPyayRcBkF1lMVBV4iKZdN
-         eNH18I/XrEBIbRD3weAu2Vz9JlqJ1K5k85QDb8oqQy3DleEkobn0FLGxkGJI5yTV4Smw
-         1pUQEtnp5vvWSSu31vdKp5Hd2ygpKqncrxlpHaVLTBDtz+Wn/HzNWOuVqwz/BPoA+3UC
-         h/723lHr8DL+ygowI8+eEVLCpyGDshmCrwcudIubuQ7ROAQwvOmkfkl5rCXDvVGW+b6c
-         v2Gmie7YfW3na5Uazpdo6jXR7+F8ehiETO1NVVqpzVLo5Qy0vZmBX83/HZDITvopb9KU
-         nsjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705479271; x=1706084071;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hDpy4FmysuOCLPwC25rzziBsH7dgfNI4N60cOk5J0hY=;
-        b=Tpkz8oakqeZ1jKmYclYjdGdk8R7mQox5FLd2nCKfKp7Rs121xRiyKTlBm/QtmhNwAV
-         BEsCc5+NQOLYG7jjcTqfj2XmAyfr95GQu9MfHbZszBa5HJp6XNjDpkMKmY+Bon3IshZ6
-         Vw5fUoiszbXBY+dK28WottvmlVdFKpOXCjB8AxFy14y+4M//BhXrD2eTLWVmkM9OuDpI
-         AoNeFLEi/KXSxBLtUP2RADxomDudoVp/tywoxB7rJLTFmu3MWMzH+0qg3WD4oy7a/slr
-         sWrJ7MYbcfoULAg1VShPC33RLEZ+Q00VXA13y+kjHQEA5+81s3A3AW4T5tC2v9V+h3RV
-         BtmQ==
-X-Gm-Message-State: AOJu0Yxp0Dfe/y2riRWXto4a/Pk3hhtP19BPTnG74mQHs3PA/sTylL4v
-	hA5Z/+q3SpjsfUnhwAct9T+r1lvka3UXAg==
-X-Google-Smtp-Source: AGHT+IHYGk0MY9r65dutpxCNcoZxTZ/UZTTQfaeNdWDK2+dt/mhrciGq1YV7HBqYNegW4K6nXF+bng==
-X-Received: by 2002:a17:906:2b92:b0:a2b:c286:7057 with SMTP id m18-20020a1709062b9200b00a2bc2867057mr3985897ejg.117.1705479270947;
-        Wed, 17 Jan 2024 00:14:30 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id z6-20020a170906668600b00a2327e826ccsm7446573ejo.201.2024.01.17.00.14.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jan 2024 00:14:30 -0800 (PST)
-Message-ID: <b2dd8bcd-1e23-4b68-b7b7-c01b034fc1fe@linaro.org>
-Date: Wed, 17 Jan 2024 09:14:28 +0100
+	s=arc-20240116; t=1705479304; c=relaxed/simple;
+	bh=t4mHHLSq55lGanfkEFrXkLee3Yubj41DA3jrIyijz8Q=;
+	h=Received:Received:DKIM-Signature:DKIM-Signature:X-ME-Sender:
+	 X-ME-Received:X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:
+	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:Content-Transfer-Encoding:
+	 In-Reply-To; b=tK2wzrGz2ENtsQPZRtxnRwE+M8av+ZYQX67RoY3VOmDNaSd0v+SZJsNlp28vQmMf+QwSOmnSsFy7iqboU3icyxOFbtLTkG8HD98Yt2X45OsNPz9SHd0oJrw/wo/5SOEkjkGRk/FalWh4LODdjX2WQB6ouLUj9dizh9fq/qaODS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=YIR6mCeG; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ACBCQ8n3; arc=none smtp.client-ip=64.147.123.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.west.internal (Postfix) with ESMTP id 8E11C3200AFC;
+	Wed, 17 Jan 2024 03:15:00 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Wed, 17 Jan 2024 03:15:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1705479300;
+	 x=1705565700; bh=DtQJWuA9g7T/MEuHRd++pePtePMGPRL7QcNqZkPs70M=; b=
+	YIR6mCeGcpMgn59e6PaNExkhZFV0KHyegf/6VrYkEbj1Df4yTLj++XEWUGtLddr4
+	F6ke5owMmEs/jVsMC4zxTBujtKu69vU2nl4whPSI0bl5+HdopqSwRvdWQ3/cBSeg
+	9db2I8HdbI5h9+XXihdKXe9/a+i/CiLIZjd9x+KMWRSDRgPuipMO/BXliPtEj/vt
+	e4P03N8egay0BV9odWfboGXnlNuwIYsYj4msTWtX4jh5g7g3lmxoNTXdG+K0VLpF
+	PPfrARc7ixJHbK8D+FdjOkSH6mnkBYrKgE2sKlGRZ8cFiPXT3akfqCXxByHmnw7B
+	DBL2n0h7AmP7C/HkVA8wJA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1705479300; x=
+	1705565700; bh=DtQJWuA9g7T/MEuHRd++pePtePMGPRL7QcNqZkPs70M=; b=A
+	CBCQ8n3JaSWnE/DXMcs31oq14PXnKQJh7VWreJlKSGaokb0rwfEkcFlbg7qpRJSJ
+	KhB/HeEOfJxysxl6YEkAHG1qEhXMInLZrk4Ahk2C8Z/HkFYPHH0oM3PA+E5SFYaP
+	1X2yXJJE6UGP74fkYKcRCsKaF0ZD0RDQFGu/sA3nE3NlQCr5xOq2CS36WTv2fa2U
+	pKS5MRN8L0vdmH+3ulqHW0TxdcOAyTOCF+OHsdkKUnonUbPwq/0DxOKyuQp8AAmB
+	5aCJSjKt/slxcHhCltaGCxPbJDvBiJRXnmUooArqa5TG/PXytk2EE7ZEjE4O8f70
+	gM8sN6inoFqmgZQ/UCl+w==
+X-ME-Sender: <xms:g4ynZQsRbyCS2QsubL-srYcRlchAusMF-5LUDRt2Go8_lXnER_TgcA>
+    <xme:g4ynZdc_tCDWey-m9tUoUuIujgcGVqmToGd3JSJcsP40ljhAd3vrOHVZw8GoSs9HE
+    sZ8ST4Do8NJkg>
+X-ME-Received: <xmr:g4ynZbywriHKkvCsmusunxcQRcdUNtUigEIfI3onMQ4ODaMpWsCU8pfrYLuDW15WUv4PzLqOK_3QWMWIGPJQctLvKYcv1qNDBg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdejgedguddukecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepifhr
+    vghgucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepgf
+    ekffeifeeiveekleetjedvtedvtdeludfgvdfhteejjeeiudeltdefffefvdeinecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrh
+    horghhrdgtohhm
+X-ME-Proxy: <xmx:g4ynZTOUXYSPt8vUptm3BQk8QKZ9LtAKLG8JfdsTLQj4JncB0lpJLA>
+    <xmx:g4ynZQ-wRYS9ft0xuPLJoy9YEGB6aRdNoUHD4otRXI1AhoXPVTiMCg>
+    <xmx:g4ynZbUMlL6wWCNrBjjo1rQcBUs7Bls3W9F6O03rLhPtkW3txzZ3bA>
+    <xmx:hIynZR1kRBhTMh8YB-qkv8umlftdJk9muYwsjr_o5rSxPPebsOM-zw>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 17 Jan 2024 03:14:59 -0500 (EST)
+Date: Wed, 17 Jan 2024 09:14:57 +0100
+From: Greg KH <greg@kroah.com>
+To: Yury Norov <yury.norov@gmail.com>
+Cc: Hugo Villeneuve <hugo@hugovil.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the bitmap tree with the tty tree
+Message-ID: <2024011734-subside-attach-53ea@gregkh>
+References: <20240108143627.29ac91fe@canb.auug.org.au>
+ <2024010830-swimsuit-ferment-8b88@gregkh>
+ <20240108115155.f2d2f1e5789d74b90d1b7426@hugovil.com>
+ <CAAH8bW-eLNebwabvvJeos4XbB77p4vGsutkwGtKMxR5-HpzTDA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] dt-bindings: fpga: Convert fpga-region binding to yaml
-Content-Language: en-US
-To: Michal Simek <michal.simek@amd.com>, linux-kernel@vger.kernel.org,
- monstr@monstr.eu, michal.simek@xilinx.com, git@xilinx.com
-Cc: Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Moritz Fischer <mdf@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Tom Rix <trix@redhat.com>, Wu Hao <hao.wu@intel.com>,
- Xu Yilun <yilun.xu@intel.com>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- "open list:FPGA MANAGER FRAMEWORK" <linux-fpga@vger.kernel.org>
-References: <2a48c720bf0efce77d68a0bef10b47671b35506b.1705413862.git.michal.simek@amd.com>
- <3aef2fc5-f213-42e0-9b72-619364ef6c76@linaro.org>
- <66fbb19e-72cc-4fb9-9069-abc351b1525a@amd.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <66fbb19e-72cc-4fb9-9069-abc351b1525a@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAH8bW-eLNebwabvvJeos4XbB77p4vGsutkwGtKMxR5-HpzTDA@mail.gmail.com>
 
-On 17/01/2024 09:07, Michal Simek wrote:
->>> +patternProperties:
->>> +  "@(0|[1-9a-f][0-9a-f]*)$":
->>> +    type: object
->>
->> You put (0|[...) to disallow @0001? I personally would not care, dtc
->> handles this, and the pattern is confusing. Just @[0-9a-z]+$
+On Thu, Jan 11, 2024 at 06:39:49AM -0800, Yury Norov wrote:
+> On Mon, Jan 8, 2024 at 8:52 AM Hugo Villeneuve <hugo@hugovil.com> wrote:
+> >
+> > On Mon, 8 Jan 2024 08:53:40 +0100
+> > Greg KH <greg@kroah.com> wrote:
+> >
+> > > On Mon, Jan 08, 2024 at 02:36:27PM +1100, Stephen Rothwell wrote:
+> > > > Hi all,
+> > > >
+> > > > Today's linux-next merge of the bitmap tree got a conflict in:
+> > > >
+> > > >   drivers/tty/serial/sc16is7xx.c
+> > > >
+> > > > between commits:
+> > > >
+> > > >   8a1060ce9749 ("serial: sc16is7xx: fix invalid sc16is7xx_lines bitfield in case of probe error")
+> > > >   3837a0379533 ("serial: sc16is7xx: improve regmap debugfs by using one regmap per port")
+> > > >
+> > > > from the tty tree and commit:
+> > > >
+> > > >   e63a961be48f ("serial: sc12is7xx: optimize sc16is7xx_alloc_line()")
+> > > >
+> > > > from the bitmap tree.
+> > > >
+> > > > I fixed it up (the former removed the function updated by the latter) and
+> > > > can carry the fix as necessary. This is now fixed as far as linux-next
+> > > > is concerned, but any non trivial conflicts should be mentioned to your
+> > > > upstream maintainer when your tree is submitted for merging.  You may
+> > > > also want to consider cooperating with the maintainer of the conflicting
+> > > > tree to minimise any particularly complex conflicts.
+> > >
+> > > Fix looks coks correct, thanks.
+> >
+> > Yes, I confirm patch:
+> >     e63a961be48f ("serial: sc12is7xx: optimize sc16is7xx_alloc_line()")
+> >
+> > is now obsoleted by patch:
+> >     8a1060ce9749 ("serial: sc16is7xx: fix invalid sc16is7xx_lines
+> > bitfield in case of probe error")
 > 
-> This is actually taken from dtschema/schemas/simple-bus.yaml to allow all nodes 
-> with regs.
+> Hi guys,
 > 
->>
->>> +
->>> +  "^[^@]+$": true
->>
->> I dislike it. How is this binding supposed to be used? If in standalone
->> way, then you allow any property so what's the point of this schema? If
->> fpga-bridge.yaml is referenced by other device-specific binding, then
->> all properties will be evaluated here, so the same: you allow any property.
->>
->> Depending on the usage, this might be just like other generic, common
->> schemas, so end with "additionalPropeties: true".
-> 
-> ok. I am fine with it.
+> I've already sent a pull request that includes the e63a961be48f. If I'll have to
+> re-send it, I'll exclude the obsolete patch. Otherwise, can you adjust the
+> 8a1060ce9749?
 
-But please verify my idea. If it is used standalone, then you should
-drop both above patterns + additionalProps:false. If it is used as
-generic schema referenced by something, then you could keep one pattern
-for object, but actually it is redundant, so I propose to drop them and
-additionalProps:true.
+We can not "adjust" anything, as I can't rebase a public tree, sorry.
 
-Best regards,
-Krzysztof
-
+greg k-h
 
