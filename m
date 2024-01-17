@@ -1,164 +1,141 @@
-Return-Path: <linux-kernel+bounces-29045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B8B383078E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:06:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 330E8830791
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:06:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 551B31C214C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:06:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C71871F22F19
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:06:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BE0120327;
-	Wed, 17 Jan 2024 14:06:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B1120323;
+	Wed, 17 Jan 2024 14:06:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="OhgLN0kj"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Solmpjdy"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9707F2030E
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 14:06:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DD2920309
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 14:06:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705500389; cv=none; b=Twm3IlgI2JvcrndLoVOENLZxEHFTCOL1HQuPUIvV4t9/tdARrdY94fLYqZoyeTxnvSDfXcyfxaHcBVwRUOcz34cxga0yLryVJKYn4tBzmqyfrnRiPjr1a6G0cb7NTiSWmdFgpldAcifrQTf8MqcvVdc0QXHkLHYnsUqxL24XDUU=
+	t=1705500406; cv=none; b=deulytUmTEPk4Qrlb1Gtu5z9Y/UeThjqDGnWb2mF36M3r6IVycvArCb85j20qXTW1RAbBaliMfPcRc9mF6cRJHq/5TYjNEE2KOQpNhn3wr4FO5zDd0SlQsHo0gTuUlsUq5HP8qeFeeiI1cSgLNTnzpB0Ow9Rok/tr8QTtrI6g0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705500389; c=relaxed/simple;
-	bh=PTHnESe9ESqNEunWVFmNfZH+FSFfQXuYiifMq02P0lU=;
-	h=DKIM-Signature:Received:Received:X-UD-Smtp-Session:Date:From:To:
-	 Cc:Subject:Message-ID:Mail-Followup-To:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p9QtekfkjxyNZeVZHKZ/WodAgIPIsZ9mc7rQN3R4llzTUn2EZ+IqPaxXnVEYqrXGoLs52TsCxNNDf/ZtTXjY0Ewu8w2OsqILBSPdmgxu34CSrPWw7cEii38TVxrEfYjpL+F3L/liWHHXj+zUK5AiE6DB8V9ScRfxSMw39IQMNoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=OhgLN0kj; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=PTHn
-	ESe9ESqNEunWVFmNfZH+FSFfQXuYiifMq02P0lU=; b=OhgLN0kj0hggsnUXH9Z5
-	5OFqwSqKMEFsi0HD5vB7WciPWsW6xHDayCrIXdIVaPZuWitUnM2AQ6LJ37XSI+0r
-	p5FIPuDDOOcgPg8MSPrzuvYgF7jAut0ovUaWOdryRmn9M2LssGfn+oX1y0KFbrBh
-	HyZwS0NwH88czRpvQp381nytA2P5o5XH2Vd9vJf4f6JH/3XR/7mCm3H1RFj9nS07
-	OaeuV0kc1t4sRovEC+jBZEMFnxsothywETAz9HWGZEPTZdqmVJE0X29AYDXiQUL/
-	co9GkMh8cqKeEnN+NCxAhdmhzmQ1fGvlGOOtj+mOlY7MAML1YkeMG2CF8PhE44Y1
-	1w==
-Received: (qmail 2768604 invoked from network); 17 Jan 2024 15:06:25 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 17 Jan 2024 15:06:25 +0100
-X-UD-Smtp-Session: l3s3148p1@oo6hwCQPZNBehhtJ
-Date: Wed, 17 Jan 2024 15:06:25 +0100
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: ulf.hansson@linaro.org, takeshi.saito.xv@renesas.com,
-	masaharu.hayakawa.ry@renesas.com, yoshihiro.shimoda.uh@renesas.com,
-	linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: Re: [PATCH v2] mmc: renesas_sdhi: Fix change point of data handling
-Message-ID: <Zafe4do1sMVaV3rh@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Claudiu <claudiu.beznea@tuxon.dev>, ulf.hansson@linaro.org,
-	takeshi.saito.xv@renesas.com, masaharu.hayakawa.ry@renesas.com,
-	yoshihiro.shimoda.uh@renesas.com, linux-mmc@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240117110646.1317843-1-claudiu.beznea.uj@bp.renesas.com>
+	s=arc-20240116; t=1705500406; c=relaxed/simple;
+	bh=TT/hhcFw2pwOouUg6Y3IJsTAXmAlaWLc/QRqI65dSNY=;
+	h=Received:DKIM-Signature:Message-ID:Date:MIME-Version:User-Agent:
+	 Subject:Content-Language:To:References:From:Autocrypt:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding; b=V+GKZT22V0F8ffBS8b8toj/dWlOKQzARmUg0cPne2n+kfQtc0NxdR3iH/rs3GMQFsQKtTk8880QSXAV4X/lELORACnIuCc8AAC1XGBKDZtblVfbf8WUjvxparH2awc0+lVfrdWGQFmsL5x1s1166uExYvm7X7pz/W24BxKfKB9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Solmpjdy; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-35-128.elisa-laajakaista.fi [91.154.35.128])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 02F157EC;
+	Wed, 17 Jan 2024 15:05:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1705500327;
+	bh=TT/hhcFw2pwOouUg6Y3IJsTAXmAlaWLc/QRqI65dSNY=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=SolmpjdyNgU2Vou7cj8KlnhQzMWqQULxn6ngyBRKZsLyK2Nv2EYCJiOhectL7GbUR
+	 QXcFxIi9O5jArnRyWqaJGOuQYhR1XTYws+NhFtWKg1/bIGMLvr15X3soFxMo0J+1H7
+	 nFSXVEaI7GV/etAVzRvAdmGJrPGg14uzMpbDDdpc=
+Message-ID: <98a9f4f1-dd55-47c3-bb1b-07e201b299cd@ideasonboard.com>
+Date: Wed, 17 Jan 2024 16:06:31 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="9kRSAflqCj+rMp96"
-Content-Disposition: inline
-In-Reply-To: <20240117110646.1317843-1-claudiu.beznea.uj@bp.renesas.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] drm: xlnx: zynqmp_dpsub: Make drm bridge discoverable
+Content-Language: en-US
+To: Anatoliy Klymenko <anatoliy.klymenko@amd.com>,
+ laurent.pinchart@ideasonboard.com, maarten.lankhorst@linux.intel.com,
+ mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+ michal.simek@amd.com, dri-devel@lists.freedesktop.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240112234222.913138-1-anatoliy.klymenko@amd.com>
+ <20240112234222.913138-2-anatoliy.klymenko@amd.com>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20240112234222.913138-2-anatoliy.klymenko@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 13/01/2024 01:42, Anatoliy Klymenko wrote:
+> Assign device of node to bridge prior registering it. This will
+> make said bridge discoverable by separate crtc driver.
 
---9kRSAflqCj+rMp96
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I think a few words on why this is needed (and why it wasn't needed 
+before) would be nice.
 
-On Wed, Jan 17, 2024 at 01:06:46PM +0200, Claudiu wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->=20
-> On latest kernel revisions it has been noticed (on a RZ/G3S system) that
-> when booting Linux and root file system is on eMMC, at some point in
-> the booting process, when the systemd applications are started, the
-> "mmc0: tuning execution failed: -5" message is displayed on console.
-> On kernel v6.7-rc5 this is reproducible in 90% of the boots. This was
-> missing on the same system with kernel v6.5.0-rc1. It was also noticed on
-> kernel revisions v6.6-rcX on a RZ/G2UL based system but not on the kernel
-> this fix is based on (v6.7-rc5).
->=20
-> Investigating it on RZ/G3S lead to the conclusion that every time the iss=
-ue
-> is reproduced all the probed TAPs are OK. According to datasheet, when th=
-is
-> happens the change point of data need to be considered for tuning.
->=20
-> Previous code considered the change point of data happens when the content
-> of the SMPCMP register is zero. According to RZ/V2M hardware manual,
-> chapter "Change Point of the Input Data" (as this is the most clear
-> description that I've found about change point of the input data and all
-> RZ hardware manual are similar on this chapter), at the time of tuning,
-> data is captured by the previous and next TAPs and the result is stored in
-> the SMPCMP register (previous TAP in bits 22..16, next TAP in bits 7..0).
-> If there is a mismatch b/w the previous and the next TAPs, it indicates
-> that there is a change point of the input data.
->=20
-> To comply with this, the code checks if this mismatch is present and
-> updates the priv->smpcmp mask.
->=20
-> This change has been checked on the devices with the following DTSes by
-> doing 50 consecutive reboots and checking for the tuning failure message:
-> - r9a08g045s33-smarc.dts
-> - r8a7742-iwg21d-q7.dts
-> - r8a7743-iwg20d-q7.dts
-> - r8a7744-iwg20d-q7.dts
-> - r8a7745-iwg22d-sodimm.dts
-> - r8a77470-iwg23s-sbc.dts
-> - r8a774a1-hihope-rzg2m-ex.dts
-> - r8a774b1-hihope-rzg2n-ex.dts
-> - r8a774c0-ek874.dts
-> - r8a774e1-hihope-rzg2h-ex.dts
-> - r9a07g043u11-smarc-rzg2ul.dts
-> - r9a07g044c2-smarc-rzg2lc.dts
-> - r9a07g044l2-smarc-rzg2l.dts
-> - r9a07g054l2-smarc-rzv2l.dts
->=20
-> On r8a774a1-hihope-rzg2m-ex, even though the hardware manual doesn't say
-> anything special about it in the "Change Point of the Input Data" chapter
-> or SMPCMP register description, it has been noticed that although all TAPs
-> probed in the tuning process are OK the SMPCMP is zero. For this updated
-> the renesas_sdhi_select_tuning() function to use priv->taps in case all
-> TAPs are OK.
->=20
-> Fixes: 5fb6bf51f6d1 ("mmc: renesas_sdhi: improve TAP selection if all TAP=
-s are good")
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Other than that:
 
-Very interesting patch! Please give me a few days to review/test it.
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
+  Tomi
 
---9kRSAflqCj+rMp96
-Content-Type: application/pgp-signature; name="signature.asc"
+> Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+> ---
+>   drivers/gpu/drm/xlnx/zynqmp_dp.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> index a0606fab0e22..d60b7431603f 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> @@ -1721,6 +1721,7 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub)
+>   	bridge->ops = DRM_BRIDGE_OP_DETECT | DRM_BRIDGE_OP_EDID
+>   		    | DRM_BRIDGE_OP_HPD;
+>   	bridge->type = DRM_MODE_CONNECTOR_DisplayPort;
+> +	bridge->of_node = dp->dev->of_node;
+>   	dpsub->bridge = bridge;
+>   
+>   	/*
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmWn3t0ACgkQFA3kzBSg
-KbZDtw//YCGJZH4XsO3R9K/PpKOha0LHIw0wMXNaPvunIqcGbzHimaxi8B0W9Tej
-+ds0L2vV85p/x6V0cOY3YtjVjs8r8rrWuVUSTzfzsjzQx+LPQVIGzOf5hXsZWFTy
-Qfyop9TvZAeW44/xUccJX9pye8D4bohXO9pN1IabKmm5bzvSkohJd63Pg1BmNCuw
-CqOdl7j23LwQmmXw9yu7s1UOZ/9CRAzB0NqAwDyP849TbyFNUAVNCLTGSZXubWcf
-wuze2er2pIPS8O+EPsHyVoqrsFDtwT4v3CUOg/71PPJLJh2PSg+dCZt13eanf2YJ
-mVem6vAD3PBb37mB/xo2v7PXxobVvf55dTdABiPMijKUAOqip7qGh9kYs4ssyj8k
-D5Neriju+g0QhJqf2b5+zTT+6XvBhFdgsKCua/rL7jeH80g6FLIlc4wccc9Xrm/u
-xguV/l9oI7qQU8H3nwtitrKtDCVrALcGpMh0QA4YyLNSiJUiLxBeAx3SZ9sf6w6E
-CKJcG0H6bOpjFC/XonVlGYsewTfpa49NOSe0pwY6os7eyN+hbv1IWzN793lgD+ts
-qaTJBSnYDRcDxVQP6mIofmP6Emgv5BqhQtfYe6lLH6TqRUGsmABHvbW5ahshiDoV
-AQ1fl7RDmYzTrZeetmwbvpJyO3fdzwOBw9qNRTlGF648N1rdJM8=
-=BjW7
------END PGP SIGNATURE-----
-
---9kRSAflqCj+rMp96--
 
