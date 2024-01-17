@@ -1,375 +1,166 @@
-Return-Path: <linux-kernel+bounces-29351-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 750E8830D25
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:10:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5656830D2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:13:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77D5A1C223A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:10:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 678E91C21FF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:13:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FA362421E;
-	Wed, 17 Jan 2024 19:10:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 716452421C;
+	Wed, 17 Jan 2024 19:13:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="C6aNlgK2"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="uIU3qzWg"
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E744B241E0
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:09:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4159A2421E
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:13:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705518602; cv=none; b=Zx3Z8/DQy+xI5Ia8cSc9qYYAW9cnZsR/CWUu6o7KyziUm/6JQgNvQcEYB3JhGMFeVi5w0o6nd8cgKhiNa/6vXqacOP+qKU0Jydho7tLE9RFr4JUHqrZuorOH5TguTYzcxuLa7migYMl8gwipREpigiNs07Cc1+1MigOcai8fLVI=
+	t=1705518804; cv=none; b=AQYLf1GxnuDR3fJUJfJhcakJuFDKcI60qaLV9OnfEUkuePjG8O5HMSPi+t0bXKTbOaQXpax7eXWlZ5GaXF+q5SCr7rxN2YgHMBQ6XkJmDWdxN68bAO3jeumibAkYrLnoqoskeW84OC8EY2yX/yNxot/AtXmYO1n06MtEBWqtcpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705518602; c=relaxed/simple;
-	bh=pOBH5kk4rTVzyMww58JwBtZRXinWstPMBFhlHEVIRHE=;
+	s=arc-20240116; t=1705518804; c=relaxed/simple;
+	bh=1Wc2lCngWybR9QP2B8d+dj4Ww7Dmyi2mHT516O1RWj0=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type; b=OZn6R6vDxN5+HnFgBQpfegZezE2sX41rZKGCutSn5dtABG7yGPTyscwBCgkYdluCm5mn8nwIu9PV3CILFP1M798i4UXJoSL7yovqxaHr4CC7GhBQ8nWa6wDo2wNEJrCdYeEh/wqAvpx31Q1GbPDCAuihNI3q3XyE90j8O6M4WOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=C6aNlgK2; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50eaaf2c7deso12921457e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:09:59 -0800 (PST)
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Autocrypt:Content-Type:Content-Transfer-Encoding:User-Agent:
+	 MIME-Version; b=lynf7hzN2tUqHFLgiuNGZzlTo/AzZCO5ohCD2s16C4lpNAq99W/sQ48u3EMJF7HMT80DxMwaaDaNbEiUR6S+r44vsD/K2a/k52NVhyk7wj6tLow9X1eLGg6iMfl9rWQ759meF/PtnWc3Fvl2O/7Myj17d+golfodcIcYlXp3pLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=uIU3qzWg; arc=none smtp.client-ip=209.85.222.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-7833a51a1aaso652044185a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:13:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705518598; x=1706123398; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NAzAJO3N1I1OhZ284fvmMR+G059lfg2vntURweb1Fq0=;
-        b=C6aNlgK2KCFeKX2M6Xtewg67xtun5EJRmPCerSQINq3ssRC9dfHbeBJ+FcmBvW33Pv
-         kGVIkSHXcKsaWGN6ERTg6ThV/99bXMeGi5FME2hz7+AxBMInxt3NrjJNeYN1iCN9S5hP
-         eC6BwnlV4Ry2n80A+9+rp1NugHYgg6Opdnrg2GM89V/PvkCZAHjBKPgkrBa3MTC1AF87
-         jkmlYVd9E1/3mBpyRXmmQssWi/Rv8fpDZGDFv47P3UvrMPphnHlInJMxDbYuz8sZ3BYV
-         kW/4Mz7siPZb0NBJUI8w9LeRkyiUsqHjxasuWy9XyewhGfpKSbweH6UJRVvUTN517qQa
-         w6xA==
+        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1705518801; x=1706123601; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=bV2ObK4Gn6zBfHyaALWYuYvkHMTPFOM7kyZ+I5+TgvA=;
+        b=uIU3qzWgWQ3KnTpzejJT/4oNC/x/uVfe3GZKXSgQwjkReeghzO63mK6v+8jMDrp6N5
+         djWi85oZL2zfg6nEKn+xKjQ0yPYF3mao83clUY6/xflgfrLpLoOrIZ12/wLq18hECyA1
+         LPSCBxTTh8iHktk/wj5gARJgDqsKf0zD3l/QVky58SUEwUXX3Tn5/daMSLupkreDbcLv
+         WZAwoo/glnJ7da71w0hAo9+kXywoBT+Vxh4S0GoTFsAa9xmJHh05vIjyqyVAoCiv5YDW
+         H4aWjKL4oUoKeSZhwgDdnN2y2MFF4OAeRbFMmDe78ImKuGwIaOeQySQnNXmgOoe/9xIF
+         OA5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705518598; x=1706123398;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NAzAJO3N1I1OhZ284fvmMR+G059lfg2vntURweb1Fq0=;
-        b=KqkwnP0M26jizOVo+YdoHGetD1YjJwDniUY4PyWkLnhC3pGVjxXOyjwu24fxhGJt2i
-         NpQI1fpOi4W+xq5KdhYtFpfa3ym/6X/1N8wqpGNKLKginyoM3n/TqcvtrhH+QibX400i
-         S6dEhP8M7ZfjbPXFCuB5vQyF/D5bpr86tdRbyXi6fqq8Snit9jdpwao7EB11Z4HdYi4F
-         Xh6IuzE22KsHRMRTBpBZ57HysrjqVdfxsOMvQ2FUvvPVvZqIGjSYhPw9QTHn8ejqfrmv
-         4DBQCPjaig1PKLlnLF9Pim0XLBSHaZxznmbygnvHFISmfjaYyJTGn46mOwaBdOxl8BGz
-         VrRg==
-X-Gm-Message-State: AOJu0Yx4FGvne2Eql55dYy69IY/UW1USnuCSHPAyKHpVWvQquXPDApRs
-	lEjDV9ob9FtagUJUXTyPJRaFuDPW/Xrt9b+Ak1BwKFWR6gK26g==
-X-Google-Smtp-Source: AGHT+IGlDOdd3qY094t3cuOIq0BxFxAUEV6oA7vLrb7WTMrXhkU9b2CulrxydgXjlkSNoz4gun1ky/i7gRaQohSADr4=
-X-Received: by 2002:a19:770f:0:b0:50e:ac2a:6b6d with SMTP id
- s15-20020a19770f000000b0050eac2a6b6dmr4104291lfc.119.1705518597942; Wed, 17
- Jan 2024 11:09:57 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705518801; x=1706123601;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bV2ObK4Gn6zBfHyaALWYuYvkHMTPFOM7kyZ+I5+TgvA=;
+        b=YfWvAJf9xZOt69hOpCGgJUebX0QPfQEO4DBQu/hG7a8y/DNklCIVGNQdxnZ9DkYOaM
+         VaafwwKWqQLKpuNsrSIuBnzpmUE8o+421geXd1V/mMaOh3ecg4/JmqSNSeykZuzq/jbz
+         smNOq3o4JGp85ksf1jIQBqwvRfKg82gtCtyFiilGPpnbYkHN6fHDrFFF32rdF9wbOOwy
+         jFs98ibFeRi/E4EOpgsJ1nir+8xhQmedD1CRP7ng3HpRDIbEfftqSJjoQudJ8ofh1lTI
+         xNSmHGXNy4ty7Nlxy4WfpXX0g/0uZFQRjD4IfjQ2rE9zCK7k7fS0Ta0kY0dbPJEvRj3j
+         KByw==
+X-Gm-Message-State: AOJu0YwjuZRlEiQLNqzHLNv5nd/EdsHOOoJGyFUYa9TyfV0rPhCFVVuV
+	i+k5UdNQpxDkG5TmJxp5LvxSxkJKSsOR4g==
+X-Google-Smtp-Source: AGHT+IG73tqD/icOIiDqu1zoHWcRrz4j9u5/SPw8nh8PdpyyAo+kwFkgCZy+NiroIxfP1GwDgXR5Lw==
+X-Received: by 2002:a05:620a:44d1:b0:783:3ea4:e39d with SMTP id y17-20020a05620a44d100b007833ea4e39dmr10686331qkp.146.1705518801111;
+        Wed, 17 Jan 2024 11:13:21 -0800 (PST)
+Received: from nicolas-tpx395.localdomain ([2606:6d00:11:3354::7a9])
+        by smtp.gmail.com with ESMTPSA id i16-20020a05620a249000b007832c2e3b80sm4633406qkn.132.2024.01.17.11.13.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jan 2024 11:13:20 -0800 (PST)
+Message-ID: <e01c9ab69f3e120cdb9b70fbacebbab32d5abba4.camel@ndufresne.ca>
+Subject: Re: [PATCH v3 1/2] arm64: dts: rockchip: Add Hantro G1 VPU support
+ for RK3588
+From: Nicolas Dufresne <nicolas@ndufresne.ca>
+To: Jianfeng Liu <liujianfeng1994@gmail.com>, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, heiko@sntech.de, 
+	ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de, mchehab@kernel.org
+Cc: sfr@canb.auug.org.au, devicetree@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ sigmaris@gmail.com,  knaerzche@gmail.com
+Date: Wed, 17 Jan 2024 14:13:19 -0500
+In-Reply-To: <20231231151112.3994194-2-liujianfeng1994@gmail.com>
+References: <20231231151112.3994194-1-liujianfeng1994@gmail.com>
+	 <20231231151112.3994194-2-liujianfeng1994@gmail.com>
+Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117173458.2312669-1-quic_sibis@quicinc.com> <20240117173458.2312669-4-quic_sibis@quicinc.com>
-In-Reply-To: <20240117173458.2312669-4-quic_sibis@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 17 Jan 2024 21:09:46 +0200
-Message-ID: <CAA8EJpqUgqHfMOZip58yGpt6S3XSBz+9BeXZSL_JmWar_JbO4g@mail.gmail.com>
-Subject: Re: [RFC 3/7] firmware: arm_scmi: Add QCOM vendor protocol
-To: Sibi Sankar <quic_sibis@quicinc.com>
-Cc: sudeep.holla@arm.com, cristian.marussi@arm.com, andersson@kernel.org, 
-	konrad.dybcio@linaro.org, jassisinghbrar@gmail.com, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	quic_rgottimu@quicinc.com, quic_kshivnan@quicinc.com, conor+dt@kernel.org, 
-	Amir Vajid <avajid@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 17 Jan 2024 at 19:36, Sibi Sankar <quic_sibis@quicinc.com> wrote:
->
-> From: Shivnandan Kumar <quic_kshivnan@quicinc.com>
->
-> SCMI QCOM vendor protocol provides interface to communicate with SCMI
-> controller and enable vendor specific features like bus scaling capable
-> of running on it.
->
-> Signed-off-by: Shivnandan Kumar <quic_kshivnan@quicinc.com>
-> Co-developed-by: Ramakrishna Gottimukkula <quic_rgottimu@quicinc.com>
-> Signed-off-by: Ramakrishna Gottimukkula <quic_rgottimu@quicinc.com>
-> Co-developed-by: Amir Vajid <avajid@quicinc.com>
-> Signed-off-by: Amir Vajid <avajid@quicinc.com>
-> Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
-> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+Hi Jianfeng,
+
+Le dimanche 31 d=C3=A9cembre 2023 =C3=A0 23:11 +0800, Jianfeng Liu a =C3=A9=
+crit=C2=A0:
+> This patch enables Hantro G1 video decoder in RK3588's
+> devicetree.
+>=20
+> Tested with FFmpeg v4l2_request code taken from [1]
+> with MPEG2, H.264 and VP8 samples.
+
+In general, we ask submitters to share a fluster [0] score (this is just to
+demonstrate that the integration has been well validated). LibreELEC commun=
+ity
+have patch to enable this ffmpeg fork. I don't expect any surprise here, an=
+d you
+can just reply to my email here.
+
+Alternatively, this test tool is shipped in latest Debian, and with the
+appropriate GStreamer packages you'll be able to run the VP8 and H.264 test=
+s.
+
+Nicolas
+
+[0] https://github.com/fluendo/fluster
+
+>=20
+> [1] https://github.com/LibreELEC/LibreELEC.tv/blob/master/packages/multim=
+edia/ffmpeg/patches/v4l2-request/ffmpeg-001-v4l2-request.patch
+>=20
+> Signed-off-by: Jianfeng Liu <liujianfeng1994@gmail.com>
 > ---
->  drivers/firmware/arm_scmi/Kconfig            |  11 ++
->  drivers/firmware/arm_scmi/Makefile           |   1 +
->  drivers/firmware/arm_scmi/qcom_scmi_vendor.c | 160 +++++++++++++++++++
->  include/linux/qcom_scmi_vendor.h             |  36 +++++
->  4 files changed, 208 insertions(+)
->  create mode 100644 drivers/firmware/arm_scmi/qcom_scmi_vendor.c
->  create mode 100644 include/linux/qcom_scmi_vendor.h
->
-> diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
-> index aa5842be19b2..86b5d6c18ec4 100644
-> --- a/drivers/firmware/arm_scmi/Kconfig
-> +++ b/drivers/firmware/arm_scmi/Kconfig
-> @@ -180,4 +180,15 @@ config ARM_SCMI_POWER_CONTROL
->           called scmi_power_control. Note this may needed early in boot to catch
->           early shutdown/reboot SCMI requests.
->
-> +config QCOM_SCMI_VENDOR_PROTOCOL
-> +       tristate "Qualcomm Technologies, Inc. Qcom SCMI vendor Protocol"
-> +       depends on ARM || ARM64 || COMPILE_TEST
-> +       depends on ARM_SCMI_PROTOCOL
-> +       help
-> +         The SCMI QCOM vendor protocol provides interface to communicate with SCMI
-> +         controller and enable vendor specific features like bus scaling.
+>  arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/=
+dts/rockchip/rk3588s.dtsi
+> index 5fb0baf8a..ab2792162 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> @@ -640,6 +640,26 @@ i2c0: i2c@fd880000 {
+>  		status =3D "disabled";
+>  	};
+> =20
+> +	vpu: video-codec@fdb50000 {
+> +		compatible =3D "rockchip,rk3588-vpu", "rockchip,rk3568-vpu";
+> +		reg =3D <0x0 0xfdb50000 0x0 0x800>;
+> +		interrupts =3D <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH 0>;
+> +		clocks =3D <&cru ACLK_VPU>, <&cru HCLK_VPU>;
+> +		clock-names =3D "aclk", "hclk";
+> +		iommus =3D <&vdpu_mmu>;
+> +		power-domains =3D <&power RK3588_PD_VDPU>;
+> +	};
 > +
-> +         This driver defines the commands or message ID's used for this
-> +         communication and also exposes the ops used by the clients.
+> +	vdpu_mmu: iommu@fdb50800 {
+> +		compatible =3D "rockchip,rk3588-iommu", "rockchip,rk3568-iommu";
+> +		reg =3D <0x0 0xfdb50800 0x0 0x40>;
+> +		interrupts =3D <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH 0>;
+> +		clock-names =3D "aclk", "iface";
+> +		clocks =3D <&cru ACLK_VPU>, <&cru HCLK_VPU>;
+> +		power-domains =3D <&power RK3588_PD_VDPU>;
+> +		#iommu-cells =3D <0>;
+> +	};
 > +
->  endmenu
-> diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
-> index a7bc4796519c..eaeb788b93c6 100644
-> --- a/drivers/firmware/arm_scmi/Makefile
-> +++ b/drivers/firmware/arm_scmi/Makefile
-> @@ -17,6 +17,7 @@ obj-$(CONFIG_ARM_SCMI_PROTOCOL) += scmi-core.o
->  obj-$(CONFIG_ARM_SCMI_PROTOCOL) += scmi-module.o
->
->  obj-$(CONFIG_ARM_SCMI_POWER_CONTROL) += scmi_power_control.o
-> +obj-$(CONFIG_QCOM_SCMI_VENDOR_PROTOCOL) += qcom_scmi_vendor.o
->
->  ifeq ($(CONFIG_THUMB2_KERNEL)$(CONFIG_CC_IS_CLANG),yy)
->  # The use of R7 in the SMCCC conflicts with the compiler's use of R7 as a frame
-> diff --git a/drivers/firmware/arm_scmi/qcom_scmi_vendor.c b/drivers/firmware/arm_scmi/qcom_scmi_vendor.c
-> new file mode 100644
-> index 000000000000..878b99f0d1ef
-> --- /dev/null
-> +++ b/drivers/firmware/arm_scmi/qcom_scmi_vendor.c
-> @@ -0,0 +1,160 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2024, The Linux Foundation. All rights reserved.
-> + */
-> +
-> +#include <linux/qcom_scmi_vendor.h>
-> +
-> +#include "common.h"
-> +
-> +#define        EXTENDED_MSG_ID                 0
-> +#define        SCMI_MAX_TX_RX_SIZE             128
-> +#define        PROTOCOL_PAYLOAD_SIZE           16
-> +#define        SET_PARAM                       0x10
-> +#define        GET_PARAM                       0x11
-> +#define        START_ACTIVITY                  0x12
-> +#define        STOP_ACTIVITY                   0x13
-> +
-> +static int qcom_scmi_set_param(const struct scmi_protocol_handle *ph, void *buf, u64 algo_str,
-> +                              u32 param_id, size_t size)
-> +{
-> +       int ret = -EINVAL;
-> +       struct scmi_xfer *t;
-> +       u32 *msg;
-> +
-> +       if (!ph || !ph->xops)
-> +               return ret;
+>  	vop: vop@fdd90000 {
+>  		compatible =3D "rockchip,rk3588-vop";
+>  		reg =3D <0x0 0xfdd90000 0x0 0x4200>, <0x0 0xfdd95000 0x0 0x1000>;
 
-Drop init of ret, return -EINVAL directly here.
-
-> +
-> +       ret = ph->xops->xfer_get_init(ph, SET_PARAM, size + PROTOCOL_PAYLOAD_SIZE,
-> +                                     SCMI_MAX_TX_RX_SIZE, &t);
-> +       if (ret)
-> +               return ret;
-> +
-> +       msg = t->tx.buf;
-> +       *msg++ = cpu_to_le32(EXTENDED_MSG_ID);
-> +       *msg++ = cpu_to_le32(algo_str & GENMASK(31, 0));
-> +       *msg++ = cpu_to_le32((algo_str & GENMASK(63, 32)) >> 32);
-> +       *msg++ = cpu_to_le32(param_id);
-
-First, this header ops looks like a generic code which can be extracted.
-
-Second, using GENMASK here in the ops doesn't make any sense. The
-values will be limited to u32 anyway.
-
-> +       memcpy(msg, buf, size);
-> +       ret = ph->xops->do_xfer(ph, t);
-> +       ph->xops->xfer_put(ph, t);
-> +
-> +       return ret;
-> +}
-> +
-> +static int qcom_scmi_get_param(const struct scmi_protocol_handle *ph, void *buf, u64 algo_str,
-> +                              u32 param_id, size_t tx_size, size_t rx_size)
-> +{
-> +       int ret = -EINVAL;
-> +       struct scmi_xfer *t;
-> +       u32 *msg;
-> +
-> +       if (!ph || !ph->xops || !buf)
-> +               return ret;
-
-Drop init of ret, return -EINVAL directly here.
-
-> +
-> +       ret = ph->xops->xfer_get_init(ph, GET_PARAM, tx_size + PROTOCOL_PAYLOAD_SIZE,
-> +                                     SCMI_MAX_TX_RX_SIZE, &t);
-> +       if (ret)
-> +               return ret;
-> +
-> +       msg = t->tx.buf;
-> +       *msg++ = cpu_to_le32(EXTENDED_MSG_ID);
-> +       *msg++ = cpu_to_le32(algo_str & GENMASK(31, 0));
-> +       *msg++ = cpu_to_le32((algo_str & GENMASK(63, 32)) >> 32);
-> +       *msg++ = cpu_to_le32(param_id);
-> +       memcpy(msg, buf, tx_size);
-> +       ret = ph->xops->do_xfer(ph, t);
-> +       if (t->rx.len > rx_size) {
-> +               pr_err("SCMI received buffer size %zu is more than expected size %zu\n",
-> +                      t->rx.len, rx_size);
-> +               return -EMSGSIZE;
-> +       }
-> +       memcpy(buf, t->rx.buf, t->rx.len);
-> +       ph->xops->xfer_put(ph, t);
-> +
-> +       return ret;
-> +}
-> +
-> +static int qcom_scmi_start_activity(const struct scmi_protocol_handle *ph,
-> +                                   void *buf, u64 algo_str, u32 param_id, size_t size)
-> +{
-> +       int ret = -EINVAL;
-> +       struct scmi_xfer *t;
-> +       u32 *msg;
-> +
-> +       if (!ph || !ph->xops)
-> +               return ret;
-
-You can guess the comment here.
-
-> +
-> +       ret = ph->xops->xfer_get_init(ph, START_ACTIVITY, size + PROTOCOL_PAYLOAD_SIZE,
-> +                                     SCMI_MAX_TX_RX_SIZE, &t);
-> +       if (ret)
-> +               return ret;
-> +
-> +       msg = t->tx.buf;
-> +       *msg++ = cpu_to_le32(EXTENDED_MSG_ID);
-> +       *msg++ = cpu_to_le32(algo_str & GENMASK(31, 0));
-> +       *msg++ = cpu_to_le32((algo_str & GENMASK(63, 32)) >> 32);
-> +       *msg++ = cpu_to_le32(param_id);
-> +       memcpy(msg, buf, size);
-> +       ret = ph->xops->do_xfer(ph, t);
-> +       ph->xops->xfer_put(ph, t);
-> +
-> +       return ret;
-> +}
-> +
-> +static int qcom_scmi_stop_activity(const struct scmi_protocol_handle *ph, void *buf, u64 algo_str,
-> +                                  u32 param_id, size_t size)
-> +{
-> +       int ret = -EINVAL;
-> +       struct scmi_xfer *t;
-> +       u32 *msg;
-> +
-> +       if (!ph || !ph->xops)
-> +               return ret;
-> +
-> +       ret = ph->xops->xfer_get_init(ph, STOP_ACTIVITY, size + PROTOCOL_PAYLOAD_SIZE,
-> +                                     SCMI_MAX_TX_RX_SIZE, &t);
-> +       if (ret)
-> +               return ret;
-> +
-> +       msg = t->tx.buf;
-> +       *msg++ = cpu_to_le32(EXTENDED_MSG_ID);
-> +       *msg++ = cpu_to_le32(algo_str & GENMASK(31, 0));
-> +       *msg++ = cpu_to_le32((algo_str & GENMASK(63, 32)) >> 32);
-> +       *msg++ = cpu_to_le32(param_id);
-> +       memcpy(msg, buf, size);
-> +       ret = ph->xops->do_xfer(ph, t);
-> +       ph->xops->xfer_put(ph, t);
-> +
-> +       return ret;
-> +}
-> +
-> +static struct qcom_scmi_vendor_ops qcom_proto_ops = {
-> +       .set_param = qcom_scmi_set_param,
-> +       .get_param = qcom_scmi_get_param,
-> +       .start_activity = qcom_scmi_start_activity,
-> +       .stop_activity = qcom_scmi_stop_activity,
-> +};
-> +
-> +static int qcom_scmi_vendor_protocol_init(const struct scmi_protocol_handle *ph)
-> +{
-> +       u32 version;
-> +
-> +       ph->xops->version_get(ph, &version);
-> +
-> +       dev_info(ph->dev, "qcom scmi version %d.%d\n",
-> +                PROTOCOL_REV_MAJOR(version), PROTOCOL_REV_MINOR(version));
-> +
-> +       return 0;
-> +}
-> +
-> +static const struct scmi_protocol qcom_scmi_vendor = {
-> +       .id = QCOM_SCMI_VENDOR_PROTOCOL,
-> +       .owner = THIS_MODULE,
-> +       .instance_init = &qcom_scmi_vendor_protocol_init,
-> +       .ops = &qcom_proto_ops,
-> +};
-> +module_scmi_protocol(qcom_scmi_vendor);
-> +
-> +MODULE_DESCRIPTION("QTI SCMI vendor protocol");
-> +MODULE_LICENSE("GPL");
-> diff --git a/include/linux/qcom_scmi_vendor.h b/include/linux/qcom_scmi_vendor.h
-> new file mode 100644
-> index 000000000000..bde57bb18367
-> --- /dev/null
-> +++ b/include/linux/qcom_scmi_vendor.h
-> @@ -0,0 +1,36 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * QTI SCMI vendor protocol's header
-> + *
-> + * Copyright (c) 2024, The Linux Foundation. All rights reserved.
-> + */
-> +
-> +#ifndef _QCOM_SCMI_VENDOR_H
-> +#define _QCOM_SCMI_VENDOR_H
-> +
-> +#include <linux/bitfield.h>
-> +#include <linux/device.h>
-> +#include <linux/types.h>
-> +
-> +#define QCOM_SCMI_VENDOR_PROTOCOL    0x80
-> +
-> +struct scmi_protocol_handle;
-> +extern struct scmi_device *get_qcom_scmi_device(void);
-> +
-> +/**
-> + * struct qcom_scmi_vendor_ops - represents the various operations provided
-> + *                              by qcom scmi vendor protocol
-> + */
-> +struct qcom_scmi_vendor_ops {
-> +       int (*set_param)(const struct scmi_protocol_handle *ph, void *buf, u64 algo_str,
-> +                        u32 param_id, size_t size);
-> +       int (*get_param)(const struct scmi_protocol_handle *ph, void *buf, u64 algo_str,
-> +                        u32 param_id, size_t tx_size, size_t rx_size);
-> +       int (*start_activity)(const struct scmi_protocol_handle *ph, void *buf, u64 algo_str,
-> +                             u32 param_id, size_t size);
-> +       int (*stop_activity)(const struct scmi_protocol_handle *ph, void *buf, u64 algo_str,
-> +                            u32 param_id, size_t size);
-> +};
-> +
-> +#endif /* _QCOM_SCMI_VENDOR_H */
-> +
-> --
-> 2.34.1
->
->
-
-
--- 
-With best wishes
-Dmitry
 
