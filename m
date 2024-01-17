@@ -1,134 +1,141 @@
-Return-Path: <linux-kernel+bounces-29310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42B01830C93
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:18:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6990830C9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:20:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2FF91F23C8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:18:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7916B1F25045
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:20:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E283F22F05;
-	Wed, 17 Jan 2024 18:17:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDD6922F17;
+	Wed, 17 Jan 2024 18:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NWVdi1j/"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="adFzkfSO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC59C22EE0
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 18:17:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0150422EE0;
+	Wed, 17 Jan 2024 18:19:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705515474; cv=none; b=euD9VQ0SgTGErZSkEZaKro7/lJGDSPvrzjl3Zz7WOLxv8SRaAZCSUKpF+zZk+fNXQSihs8iUB66ojv/gfDCTNQe2j5JOkWQ7RhbBjUImbUTvZ1z9+HxdRmYl29e/ZL9vOyF9YF/NzJv6JiiangbvTnuKJUkOjzWuPE/pWVblJDQ=
+	t=1705515590; cv=none; b=CkqNDY2w/N9BpzN4foTzuOPDgnqvMtHoKv1fQhFtlvjb96LyxXD7XXy1gvAIfMfvXaM3gpdVxikuXZZdWi6nG3zjgAOwl/KgC+XF6g2zPltxaG3iVHK0OZMiHcVsYRhY4enB/jqhWNb+f5bBpKikGqNv6f4YrRzVkykDxchZYb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705515474; c=relaxed/simple;
-	bh=WvQNTcu7rqbJv5yCi1GthboGGdsWbP3S2OLtyEk7dRE=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=m9/ufDk/9And+qvnd/70OWhv3L5lbm/ZgrijzUyEBI0OJZE4mLlLGxcI9y9Djjg1V8xe/uVOdyFWsNNdMUh+yU7V4QD+rUUSuhDNkxnICIlEwID+0sKB1/kTNHWArNl95NelzuxunWljd78MZGOrqExkxRo5mBP7xVRIzVLSXmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NWVdi1j/; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3379e942685so849661f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:17:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705515471; x=1706120271; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mu6LdrycNNgQ08y3UW6a9CSmx2uDyBWPruWDy4r8EMA=;
-        b=NWVdi1j/dBE884TOX3WeNKKe8jFKngzRIHFrCFeKdx4UccbbrJSm6dkmyT97OBgRDD
-         UY7LxgHJ4y0jxos/cguwGpVOnDD866kIB3UfUz0U+87pfw9pWebMLHNB9xLT3nhQs/rp
-         qRZHKbry/oMSI4ilgcv+hV9DNHETy3TE/dIsE7CwdGpo1Lym3G4zfbTVthlB5wdP4eoQ
-         0BZOcbNrh3gyN7sbWDFAYUJgO8HxQG0oZlbto5cecNBD+xQ3DjTPU0vT1UyLnHueGrFa
-         s9tzyLcgqhJToBMnzrbprCFkvBA69CUELmdxuxTVoFqu6HHupMITI07H6JEQ6lCwk357
-         0fCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705515471; x=1706120271;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mu6LdrycNNgQ08y3UW6a9CSmx2uDyBWPruWDy4r8EMA=;
-        b=cSiwhp0QMOL8lXa9f93SRSdscEWWrlRTFZWRBI/M1sQi5vXYy8cP0KsQC54+8KUNon
-         PenkP9AKVIVSL/fQR0JE3lHeG9W0pMukrU14+yctvJrHVKIFPQNBcdvKrjzsDExQLKoI
-         NUtM+W9Y6RGtZ/3cbvRhVGbZcXCppmpZKI3BHU98jCMcXUqfN2f+kFreqmyukC3OtwbQ
-         rnUldeDlQv4RpB/50hpNL9ndJa7MXvT7jOVIKktFY7h3BhCZz6lZKKrDJmKteova/qsc
-         1brUphr989K9/ni0nl2dkY2tXOqH6LbyjTD2nyzDrkHc+6tiLZ1yIvoOvv5o9WCmGMhv
-         9SYg==
-X-Gm-Message-State: AOJu0YzMBGHrQFPxqrRkWMhqer1wmCqHXhHN8hqPrYrh7hx5aOgQuvxq
-	IXljq99s7A/XDVzxfwpoh3kcZiBOSQxLMKpYVJQ=
-X-Google-Smtp-Source: AGHT+IEmrIoZhd1MvIESvU6Yko91IWdxVx2oC+8IxhhdJadrZ5NjRPWqIvMY3kKddOVb1AmvsJizybm09U2UO8cIEAM=
-X-Received: by 2002:adf:fec8:0:b0:337:c50c:27df with SMTP id
- q8-20020adffec8000000b00337c50c27dfmr1311116wrs.4.1705515470923; Wed, 17 Jan
- 2024 10:17:50 -0800 (PST)
+	s=arc-20240116; t=1705515590; c=relaxed/simple;
+	bh=qGlcZRV44crjqbw1JQjmrtKXLKflvsUJg8srLpQ9eco=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To:X-Cookie; b=JPVk6j/BIC9MkBXnO1Fon03MyJMeTIuR2lr/iEgHbopUkyD0sKssYOyy4dbDNMA4mmBVsygeXrpanYgne12YVxHmnkwTP+hpV/q5Rpk7KIEz4Tkis5NlnLHaA3ULtZqseJ2jDzwo05/YA+WCbYUEaxqlbx5oB4tpN6ky+LenneM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=adFzkfSO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B03A2C433C7;
+	Wed, 17 Jan 2024 18:19:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705515589;
+	bh=qGlcZRV44crjqbw1JQjmrtKXLKflvsUJg8srLpQ9eco=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=adFzkfSOVycGp6YJDdZ0RCzxsP3syYVSeLMqqsOZ2+IuVdDJ2F8BeiEZNAE1+G4nF
+	 uwAy1cm7aUll6YGX/rBgIeKNLKAaCuI5SRH0Cz7M9HPA5oXrvwX0jXpLe3F92eTv7T
+	 Ogmf+M5bUkMIe876iFliMxq/yQ00eg0kxxKUTe9WQR8fgsEQ/jj17xF8697FV8TOeT
+	 KnfylJh+dP0/v2DiUa4OVGZ7NUKojv0MbupGpFswIpMRO2dtm+68PJS0BTDts6m6lO
+	 7A9FabHDWunu3/oDuIUv1IZW72VZpvSJeGtaBrmZ49gDYAydA3jj382NAIIRfi13lH
+	 di4hlLX2dmdHQ==
+Date: Wed, 17 Jan 2024 18:19:43 +0000
+From: Mark Brown <broonie@kernel.org>
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: Theodore Ts'o <tytso@mit.edu>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Greg KH <greg@kroah.com>, Neal Gompa <neal@gompa.dev>,
+	Kees Cook <keescook@chromium.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+	Nikolai Kondrashov <spbnick@gmail.com>,
+	Philip Li <philip.li@intel.com>,
+	Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [GIT PULL] bcachefs updates for 6.8
+Message-ID: <c69a3103-ae4d-459a-b5f4-d3bbe2af6fb2@sirena.org.uk>
+References: <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
+ <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
+ <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
+ <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
+ <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
+ <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
+ <2024011532-mortician-region-8302@gregkh>
+ <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
+ <20240117055457.GL911245@mit.edu>
+ <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117031212.1104034-1-nunes.erico@gmail.com> <20240117031212.1104034-3-nunes.erico@gmail.com>
-In-Reply-To: <20240117031212.1104034-3-nunes.erico@gmail.com>
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Date: Wed, 17 Jan 2024 10:17:24 -0800
-Message-ID: <CA+E=qVe2NB+Bj07JmKVdxreVw0bCuv31xzXng=qPX17spBjDWQ@mail.gmail.com>
-Subject: Re: [PATCH v1 2/6] drm/lima: reset async_reset on pp hard reset
-To: Erico Nunes <nunes.erico@gmail.com>
-Cc: Qiang Yu <yuq825@gmail.com>, dri-devel@lists.freedesktop.org, 
-	lima@lists.freedesktop.org, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, christian.koenig@amd.com, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="7aTkAu68BodLGEOk"
+Content-Disposition: inline
+In-Reply-To: <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
+X-Cookie: Nostalgia isn't what it used to be.
 
-On Tue, Jan 16, 2024 at 7:12=E2=80=AFPM Erico Nunes <nunes.erico@gmail.com>=
- wrote:
->
-> Lima pp jobs use an async reset to avoid having to wait for the soft
-> reset right after a job. The soft reset is done at the end of a job and
-> a reset_complete flag is expected to be set at the next job.
-> However, in case the user runs into a job timeout from any application,
-> a hard reset is issued to the hardware. This hard reset clears the
-> reset_complete flag, which causes an error message to show up before the
-> next job.
-> This is probably harmless for the execution but can be very confusing to
-> debug, as it blames a reset timeout on the next application to submit a
-> job.
-> Reset the async_reset flag when doing the hard reset so that we don't
-> get that message.
->
-> Signed-off-by: Erico Nunes <nunes.erico@gmail.com>
-Reviewed-by: Vasily Khoruzhick <anarsoul@gmail.com>
 
-> ---
->  drivers/gpu/drm/lima/lima_pp.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/drivers/gpu/drm/lima/lima_pp.c b/drivers/gpu/drm/lima/lima_p=
-p.c
-> index a5c95bed08c0..a8f8f63b8295 100644
-> --- a/drivers/gpu/drm/lima/lima_pp.c
-> +++ b/drivers/gpu/drm/lima/lima_pp.c
-> @@ -191,6 +191,13 @@ static int lima_pp_hard_reset(struct lima_ip *ip)
->         pp_write(LIMA_PP_PERF_CNT_0_LIMIT, 0);
->         pp_write(LIMA_PP_INT_CLEAR, LIMA_PP_IRQ_MASK_ALL);
->         pp_write(LIMA_PP_INT_MASK, LIMA_PP_IRQ_MASK_USED);
-> +
-> +       /*
-> +        * if there was an async soft reset queued,
-> +        * don't wait for it in the next job
-> +        */
-> +       ip->data.async_reset =3D false;
-> +
->         return 0;
->  }
->
-> --
-> 2.43.0
->
+--7aTkAu68BodLGEOk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Jan 17, 2024 at 08:03:35AM -0500, James Bottomley wrote:
+
+> I also have to say, that for all the complaints there's just not any
+> open source pull for test tools (there's no-one who's on a mission to
+> make them better).  Demanding that someone else do it is proof of this
+> (if you cared enough you'd do it yourself).  That's why all our testing
+> infrastructure is just some random set of scripts that mostly does what
+> I want, because it's the last thing I need to prove the thing I
+> actually care about works.
+
+> Finally testing infrastructure is how OSDL (the precursor to the Linux
+> foundation) got started and got its initial funding, so corporations
+> have been putting money into it for decades with not much return (and
+> pretty much nothing to show for a unified testing infrastructure ...
+> ten points to the team who can actually name the test infrastructure
+> OSDL produced) and have finally concluded it's not worth it, making it
+> a 10x harder sell now.
+
+I think that's a *bit* pessimistic, at least for some areas of the
+kernel - there is commercial stuff going on with kernel testing with
+varying degrees of community engagement (eg, off the top of my head
+Baylibre, Collabora and Linaro all have offerings of various kinds that
+I'm aware of), and some of that does turn into investments in reusable
+things rather than proprietary stuff.  I know that I look at the
+kernelci.org results for my trees, and that I've fixed issues I saw
+purely in there.  kselftest is noticably getting much better over time,
+and LTP is quite active too.  The stuff I'm aware of is more focused
+around the embedded space than the enterprise/server space but it does
+exist.  That's not to say that this is all well resourced and there's no
+problem (far from it), but it really doesn't feel like a complete dead
+loss either.
+
+Some of the issues come from the different questions that people are
+trying to answer with testing, or the very different needs of the
+tests that people want to run - for example one of the reasons
+filesystems aren't particularly well covered for the embedded cases is
+that if your local storage is SD or worse eMMC then heavy I/O suddenly
+looks a lot more demanding and media durability a real consideration.
+
+--7aTkAu68BodLGEOk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWoGj8ACgkQJNaLcl1U
+h9BXrwf/ax2MGFfufapvl5UITLAL098Oq/M/cEtg80e2uwB7x6eMnWfzLW5If0FL
+7TaDVEb9oUXdsBZAVdETKiszFMAVH6+owpWtLGMkd1CWHbsH4OqpzuITEVsfidM0
+YogO4PuLXHCJdoPOogl32UraTyhxJKgYRqy3tr8Mv0UNnA+KpvSgfS/dX7AJOw0h
+KLFxAYjNa3JG6SbHJgS2Fw40YWY1kw1fdt193Div+CCIWgkd0SVwg+jIA7xsakb5
+YDVyHHT3WY5OpUc+5Ay/WeoDxFlFFmS91U457Dokm+/VS5WjYYJWc1eLKGkx6w+X
+otunFRoyx0Y6IoJhrDegDIRv82SVvA==
+=x1fy
+-----END PGP SIGNATURE-----
+
+--7aTkAu68BodLGEOk--
 
