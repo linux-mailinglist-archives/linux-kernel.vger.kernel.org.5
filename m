@@ -1,225 +1,178 @@
-Return-Path: <linux-kernel+bounces-28866-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28867-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44CFD8303F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:54:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 267718303F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:55:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7C431F25AE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:54:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F6841F25B75
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:55:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DB581C695;
-	Wed, 17 Jan 2024 10:53:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9536F1CFB9;
+	Wed, 17 Jan 2024 10:55:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ri0WhxQv"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="Y80toRAW";
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="t+n8lC+5"
+Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 002BB14AA7
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:53:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D735714AA5;
+	Wed, 17 Jan 2024 10:55:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.121.71.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705488838; cv=none; b=mcdfIu2KgLfEeH88lWksZTqRTwKszQinCXryrWg3TH90qf5TI0jaNR0Fr7wSc0zlyW6YBDZs9ShvulqDEPZv0DS7FzMM5q/dSAAChDg8MdnoDjscxsZEB4m7lNTa0FeSpw+WFmNE4LQGwv9gLRySpQUkSCZ0WS2iGXv3uftIYOM=
+	t=1705488922; cv=none; b=NW/09ZXO1kdIMweXFCmWwtk+8i3WS8A6bQwGD3CF+B3Br9R5EAORJFw4Lr2blRYcYAr9CWN4oL+g2N9urTyQb8HqLwv7vwz39fQ87yhuemx5N/TCBeNbGYA3qLfNpvDpQCEMgm2Yv/8SKc2tBqrIPhgir8ZaKQ4cft8QbDM5HXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705488838; c=relaxed/simple;
-	bh=KjhNZ8+fWl254kviZY6+sEbXk9RKty3yOVamx6dSXu4=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 To:Cc:References:From:Autocrypt:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=FEBuMzgOrZbSBlrYDuCI0jnewVQENVEZg6/GNlAl6pPBiP/1u96MKnK7kXUiJHxXYMRxy398hvgxVFjWSsvZhdb01UL5alBD+cAEIZoVIJC3bISXvh/3ir+yGc81XY47ryw/7Kyo/c3O8fUOVadA8l1VxOO7DkhR0HyxN5TmkzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ri0WhxQv; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a2e0be86878so469112666b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 02:53:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705488835; x=1706093635; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Qo8eGWPWRkX/4JThm1Lo2hklyFCe76/3hkhcrBEPdhg=;
-        b=Ri0WhxQv6o6jUyntrCe/v0zVNLiSPGfBdptIoTqdIAMPlLyHYyvES//55hnNfv+Z9H
-         P9sTPQL48Zc38M1n2tRcMF2TpK13y5LAhoRY34EkaAyPXZRyO8M5P70Yrgu4d6E9N/xV
-         skB30LduA8gM6lTgZd23jcooPAgXDdNrSTbvc2Uoz5gTke2w5keYkISNWisXeJMWcx3h
-         RknJ78MYGuEvrQxr3t/CQGHzcLktwjFpfUCmwdqsmmS6adHP8dQfMOWUlofzY0pJNuxX
-         bS4Gjmx+OkgP+fVl4WkzCpMy/u/BJZD9tmFe6E6UnRWwqqNqtZ/nERi4pgVWvugDtRS7
-         FV4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705488835; x=1706093635;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qo8eGWPWRkX/4JThm1Lo2hklyFCe76/3hkhcrBEPdhg=;
-        b=Zc7iqivqtIrVwoODkjkMZcGvo+vpaxlZQup7wBENBlWJ4qCsIg6YezHYhxafnggZgZ
-         XdwC1exkmib5JTFT+y1bg9lKSpJG4+JIrk5aY6zf/8wUZcFtxgk1BalfE0dd08Oan36c
-         kMhl0ie3Wt1ToEoTr1rdxtNAM9fk7g0J2lfeXQAA+iXmq46PyuMqtJGHnTxT4v2t/aJ8
-         GL5Qdw6fXKhal3N2uZ9z1cyiAR7F+wCyZ93kZH947gOQEXB16ACR1SvD+MDFgHqNd6Q+
-         3zOIcq4YPkgzyum5cDs4C1V+CcXfsHiljGrhy2U/v3eUzXsWYjSz2edjLq5C0vqvpLCa
-         qRJw==
-X-Gm-Message-State: AOJu0Yx9pZr9pFcEsi/uGchRjMjhKAa5ZI9Z2kQD3y099j/XZiMaRXiw
-	jZyF5Scq/QjrVbuB00HRd7m0rO4I91BD1g==
-X-Google-Smtp-Source: AGHT+IEsjGUMOVB6JCi8pfFJ0atoqzMLYvj0dJD4f+ZuDyiGP7oOQugPXRhs1ZPq6vyYUEWxMOly0g==
-X-Received: by 2002:a17:906:2f8b:b0:a28:b34d:8694 with SMTP id w11-20020a1709062f8b00b00a28b34d8694mr554688eji.62.1705488835207;
-        Wed, 17 Jan 2024 02:53:55 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id h10-20020a17090619ca00b00a2ed233c313sm591699ejd.168.2024.01.17.02.53.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jan 2024 02:53:54 -0800 (PST)
-Message-ID: <bd3e809f-5d97-428f-9387-a2475c4f0d7d@linaro.org>
-Date: Wed, 17 Jan 2024 11:53:53 +0100
+	s=arc-20240116; t=1705488922; c=relaxed/simple;
+	bh=X7ri6/DC7dQ0k7GmkIF8uzW4YU+DeXLsZrOtnLLUppM=;
+	h=Received:DKIM-Signature:X-Spam-Checker-Version:X-Spam-Level:
+	 X-Spam-Status:Received:DKIM-Signature:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To; b=ehmvPuxaPYzQV4ZxmFiOILtNlKiS1vv8HsDm4smKV7DrH+wNMCS9jzJa0z2qGr4pRWR6FsgGADmxoBVN5CP4IVxZAYV67WLnaHvMfdnwOM4NpWCJv9yXwJ26tf91bsEzUqbABjZNUVDCb5a5wVJKpAKfqEYxypI7y7TV1PcROBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org; spf=pass smtp.mailfrom=codewreck.org; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=Y80toRAW; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=t+n8lC+5; arc=none smtp.client-ip=91.121.71.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
+Received: by nautica.notk.org (Postfix, from userid 108)
+	id D3D05C020; Wed, 17 Jan 2024 11:55:17 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1705488917; bh=QPQ1kHwkpR/bSo/5dfdZfVGrQA0NVwMsugmiUUBqUUA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Y80toRAWRVoIuFVFMKt8O9CH9+xIjHlZIcq0xVi94TZUHBF9cwWdav3kqOXFW9J/U
+	 k8RaIOlzOZc0z/7MJ4MqxnKiO9m0DEQ7TdvvpvcZH44Q1CsJXDOpOfHJaeZrBltCtZ
+	 /ltzVpUFNJpTg75NCLpAVWwTW9IPwiGyXnU+aKDtUbgdmZjb+/mmyg0D3ERy9O3KUL
+	 KeGqo3jtpMDeDZX1JClvR9uGV9vM7BlvpqpEyeeYIXd/mu1sGy8SKUxUKZAo6dhByx
+	 MiTx+tLd2cptwL8pHDLbjQ/gWRnW8h4veeWdpUFffxclpnhYHpYnih2T0l69Ys0XJf
+	 H3NYWSe98cZCw==
+X-Spam-Level: 
+Received: from gaia.codewreck.org (localhost [127.0.0.1])
+	by nautica.notk.org (Postfix) with ESMTPS id 1EC8DC009;
+	Wed, 17 Jan 2024 11:55:12 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1705488916; bh=QPQ1kHwkpR/bSo/5dfdZfVGrQA0NVwMsugmiUUBqUUA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=t+n8lC+5sdDFiHuENr4ruAOhrP5KsC2TfPzE81RyUjeCaSeWq1Dg/N1SuVOBLU2wZ
+	 I01/y48CGIUHlPrJqda07B7OR1HfSzbXAy7LnjE3JBYZx0RJdUQtGBx3QNeGyecCee
+	 d8XqzNq5hdZmQHtk0uAnxxBuVXEUiQcK5k9n0dLNk5rDtC9QSK4F78HD0C4r58yLMq
+	 NlHGvCDqQ9UNxn8MdSvQcxv0gn/OxysVNbNSTao35v8v+r12I3GbnpxD4lyu4p9gr4
+	 1YPEFUO6ItprrRyMSqSKD23o+ZU/dQfP8uTFpNqWozhLSRZeynqlqq8oSkp1cbkm5y
+	 JuP4s6mfnz8zw==
+Received: from localhost (gaia.codewreck.org [local])
+	by gaia.codewreck.org (OpenSMTPD) with ESMTPA id 9ed4a2fc;
+	Wed, 17 Jan 2024 10:55:08 +0000 (UTC)
+Date: Wed, 17 Jan 2024 19:54:53 +0900
+From: Dominique Martinet <asmadeus@codewreck.org>
+To: Jan =?utf-8?B?TMO8YmJl?= <jlu@pengutronix.de>
+Cc: Michael Grzeschik <m.grzeschik@pengutronix.de>,
+	Latchesar Ionkov <lucho@ionkov.net>, linux-usb@vger.kernel.org,
+	Jonathan Corbet <corbet@lwn.net>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	v9fs@lists.linux.dev,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de, Eric Van Hensbergen <ericvh@kernel.org>
+Subject: Re: [PATCH 0/3] usb: gadget: 9pfs transport
+Message-ID: <Zaex_fkKcui7QZd7@codewreck.org>
+References: <20240116-ml-topic-u9p-v1-0-ad8c306f9a4e@pengutronix.de>
+ <ZaZsUQUhSlMPLJg0@codewreck.org>
+ <0aba51a8be0fb165b44ec956bec7a9698a9518a2.camel@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: PCI: ti,j721e-pci-*: Fix check for
- num-lanes
-Content-Language: en-US
-To: Siddharth Vadapalli <s-vadapalli@ti.com>
-Cc: bhelgaas@google.com, lpieralisi@kernel.org, kw@linux.com,
- robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- vigneshr@ti.com, afd@ti.com, srk@ti.com
-References: <20240117102526.557006-1-s-vadapalli@ti.com>
- <20240117102526.557006-2-s-vadapalli@ti.com>
- <28fd561a-7c13-48dc-9995-230dc758f257@linaro.org>
- <a25ea57b-4529-4a4c-9e0b-ccd85b0457d6@ti.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <a25ea57b-4529-4a4c-9e0b-ccd85b0457d6@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0aba51a8be0fb165b44ec956bec7a9698a9518a2.camel@pengutronix.de>
 
-On 17/01/2024 11:47, Siddharth Vadapalli wrote:
-> Hello Krzysztof,
+Jan Lübbe wrote on Tue, Jan 16, 2024 at 04:51:41PM +0100:
+> > So I didn't have time to look at everything through, just want to make
+> > sure, this series allows sharing data from an usb gadget (e.g. some
+> > device with storage) over 9p as an alternative to things like MTP ?
 > 
-> On 17/01/24 16:04, Krzysztof Kozlowski wrote:
->> On 17/01/2024 11:25, Siddharth Vadapalli wrote:
->>> The existing implementation for validating the "num-lanes" property
->>> based on the compatible(s) doesn't enforce it. Fix it by updating the
->>> checks to handle both single-compatible and multi-compatible cases.
->>>
->>> Fixes: b3ba0f6e82cb ("dt-bindings: PCI: ti,j721e-pci-*: Add checks for num-lanes")
->>> Fixes: adc14d44d7cb ("dt-bindings: PCI: ti,j721e-pci-*: Add j784s4-pci-* compatible strings")
->>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
->>> ---
->>>  .../bindings/pci/ti,j721e-pci-ep.yaml         | 26 ++++++++++++++-----
->>>  .../bindings/pci/ti,j721e-pci-host.yaml       | 26 ++++++++++++++-----
->>>  2 files changed, 38 insertions(+), 14 deletions(-)
->>>
->>> diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml
->>> index 97f2579ea908..278e0892f8ac 100644
->>> --- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml
->>> +++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml
->>> @@ -68,8 +68,9 @@ allOf:
->>>    - if:
->>>        properties:
->>>          compatible:
->>
->> Missing contains:, instead of your change.
+> It's the other way around. :) The USB host exports a filesystem, while the
+> gadget on the USB device side makes it mountable. Our main use-case is to use it
+> as an alternative to NFS root booting during the development of embedded Linux
+> devices. NFS root works in many cases, but has some downsides, which make it
+> cumbersome to use in more and more cases.
+
+Oh!
+Okay, this makes a lot more sense. And that'll need a bit more
+explanations in the commits & Documentation/ as you've concluded :)
+
+
+> NFS root needs correctly configured Ethernet interfaces on both the development
+> host and the target device. On the target, this can interfere with the network
+> configuration that is used for the normal device operation (DHCP client, ...).
+> For the host, configuring a NFS (and perhaps DHCP) server can be an obstacle.
 > 
-> I did try the "contains" approach before determining that the implementation in
-> this patch is more suitable. Please consider the following:
+> For target devices which don't have a real Ethernet interface, NFS root would
+> also work with the USB Ethernet gadget, but this increases the complexity
+> further.
 > 
-> For AM64 SoC the primary compatible is "ti,am64-pcie-ep" and fallback compatible
-> is "ti,j721e-pcie-ep". For J7200 SoC the primary compatible is
-> "ti,j7200-pcie-ep" while the fallback compatible is again "ti,j721e-pcie-ep".
+> As many embedded boards have a USB device port anyway, which is used during
+> development for uploading the boot-loader and to flash filesystem images (i.e.
+> via the fastboot protocol), we want to just reuse that single data cable to
+> allow access to the root filesystem as well. 
 > 
-> Therefore, the device-tree nodes for AM64 and J7200 look like:
+> Compared to flashing images, using a network filesystem like NFS and 9P reduces
+> the time between compiling on the host and running the binary on the target, as
+> no flash and reboot cycle is needed. That can get rid of many minutes of waiting
+> over a day. :)
+
+My other hat is on embedded development (dayjob at Atmark Techno[1], the
+only english page linked is about 4 years out of date but I guess it's
+better than no page at all), so I can understand where you're coming
+from -- thanks for the background.
+
+[1] https://www.atmark-techno.com/english
+
+That means I'll actually want to test this, but kind of always busy so
+it might take a few weeks...
+Or better, do you happen to know if qemu can create a USB controller
+that supports OTG so it'll be easy to test for folks with no such
+hardware?
+We've got enough 9p protocols that aren't actually tested on a regular
+basis, it'd be great if we could have something that can run anywhere. 
+
+
+> diod (9pfs server) and the forwarder are on the development host, where the root
+> filesystem is actually stored. The gadget is initialized during boot (or later)
+> on the embedded board. Then the forwarder will find it on the USB bus and start
+> forwarding requests.
 > 
-> AM64:
->     compatible = "ti,am64-pcie-ep", "ti,j721e-pcie-ep";
->     ...
->     num-lanes = 1;
-> 
-> J7200:
->     compatible = "ti,j7200-pcie-ep", "ti,j721e-pcie-ep";
->     ...
->     num-lanes = 4;
-> 
-> This implies that when the check for "num-lanes" is performed on the device-tree
-> node for PCIe in J7200, the fallback compatible of "ti,j721e-pcie-ep" within the
-> AM64's "compatible: contains:" check will match the schema and it will check the
-> existing "num-lanes" being described as "const: 1" against the value in J7200's
-> PCIe node resulting in a warning. 
+> It may seem a bit unusual that in this case the requests come from the device
+> and are handled by the host. The reason is that USB device ports are normally
+> not available on PCs, so a connection in the other direction would not work.
 
-What warning? What did you put to contains?
-
-> Therefore, using "contains" will result in
-> errors if the check has to be performed for device-tree nodes with fallback
-> compatibles. The "items" based approach I have used in this patch ensures that
-> the schema matches *only* when both the primary and fallback compatible are
-> present in the device-tree node.
-
-Long message, but I don't understand it. Why this binding is different
-than all others which rely on contains?
-
->>> +  - if:
->>> +      properties:
->>> +        compatible:
->>> +          items:
->>> +            - const: ti,j784s4-pcie-ep
->>
->> Why? Previous code was correct.
-> 
-> Though I used "patience diff", for some reason the addition of
-> "ti,j721e-pcie-ep" in the check has been treated as the removal of
-> "ti,j784s4-pcie-ep" first followed by adding the same later for generating the
-> diff in this patch. The diff above is equivalent to the addition of:
-
-No, why do you change existing code? It is correct.
+Right, most host PCs won't have OTG available...
+I was also perplexed by the linux foundation (0x1d6b):0x0109 id, that
+might be clearer once it's properly documented -- I'll let someone from
+the usb side chime on this as I have no idea what's appropriate.
 
 
-Best regards,
-Krzysztof
+> In the future, the functionality of the forwarder could be integrated into the
+> 9pfs server. Alternatively, an improved forwarder could also react to udev
+> events of gadgets showing up and forward them to different 9PFS server over the
+> network (when you have multiple target devices connected to one USB host).
 
+Plenty of potential work ahead :)
+Frankly at this stage I don't think it's much simpler than e.g. CDC
+ethernet gadget and mounting nfs over tcp, but with further improvements
+it can definitely get simpler.
+
+
+> Perhaps, the inverse setup (9PFS server on the USB gadget side, mounted on a PC)
+> also would be useful in the future and could share some of this code. Then,
+> you'd have an alternative to MTP.
+
+(Yeah, I'm not actively looking for that -- was just asking because MTP
+has been kind of dead lately and I'm not aware of any potential
+alternative, but I didn't go looking for them either -- let's leave that
+to later)
+
+-- 
+Dominique Martinet | Asmadeus
 
