@@ -1,224 +1,172 @@
-Return-Path: <linux-kernel+bounces-29519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E67E830F8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:52:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7DDF830F8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:53:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45F5D28C3F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 22:52:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 091AA1C23C4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 22:53:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E1EB1E88C;
-	Wed, 17 Jan 2024 22:52:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93BE28DA0;
+	Wed, 17 Jan 2024 22:53:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h2N70P7B"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ADxZOxb5"
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2057.outbound.protection.outlook.com [40.107.95.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FC64286B4;
-	Wed, 17 Jan 2024 22:52:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705531951; cv=none; b=FmEZ607rw+0+aUW+Siyz0FG9W26i8pM7I5rE+rY0QTLtwXcv6v8FDk/Nw2LjAxYKyae8hCBP+kgwDR5jzLE8lCkNwFVrxgAvLb/xBGHskDigJ08YDkHduHhQfje73CSYL88GGyaSJFM7OkVezVLo+MRaI8tZwNreePaY/KDlJEU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705531951; c=relaxed/simple;
-	bh=doFhJfl05v+z3nBhsaH55fnA1hNGIVH9nafMEuRT5eo=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To; b=oREhnQfFsxnu5qOJW2bP30jt6ho5RPPTwGqRtfVnXO1yN7y5GyWdCgyb/NEWiyc/j52R/7MTOSbWMKIdz2aiUrEXGlsCES/xSV9ZG3/WRi0Ehe+L8YIZVJqYc5zS7LPfCE7hqRaU4EcFqtoB/P4hEzY9DqdvmxkMBA5dLjnAEUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h2N70P7B; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2685C433F1;
-	Wed, 17 Jan 2024 22:52:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705531951;
-	bh=doFhJfl05v+z3nBhsaH55fnA1hNGIVH9nafMEuRT5eo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=h2N70P7BMGUXLK6Qr3U4BMXvlsuJHU1R6xM5cjyddSnaOa2/2JVfJNQr+ZVe+OI1B
-	 aZ6/hf2eVLwVTE39E8ZVH6I8bswK1oxMSM9p7xRV9py9Zi4M6vYvMcH5Q+gOZlDD3g
-	 6ig8D406FeoTa7JMVtf0NSFyjahAN2a7sQ3UM+GPGcaqBa7E9wVHcFBQ91fgCuSYdn
-	 CSCYXmrVdWkGTmSh72dcles0VKALlL7+pnupHJPvkjbtjOsXqX1w3q8cT9XqMXvnxs
-	 3j6wNDyoPHJHZl1L1Z1pw5DGeJB9aNnA4NwaJ1Jzs9f3hFJeGDspzaUzsCXZE18JjW
-	 p3D2BIp9kpxyg==
-Date: Wed, 17 Jan 2024 23:52:25 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Lennert Buytenhek <kernel@wantstofly.org>
-Cc: Damien Le Moal <dlemoal@kernel.org>, linux-ide@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: ASMedia ASM1062 (AHCI) hang after "ahci 0000:28:00.0: Using
- 64-bit DMA addresses"
-Message-ID: <ZahaKaV1jlHQ0sUx@x1-carbon>
-References: <ZaZ2PIpEId-rl6jv@wantstofly.org>
- <ZaaQpiW3OOZTSyXw@x1-carbon>
- <ZahDNr97MSPNSHW_@wantstofly.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E0A4288CE;
+	Wed, 17 Jan 2024 22:53:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.57
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705532011; cv=fail; b=ZlM1NE9eXXemq/pqS0KVupPKl9vE9CEunL6+2IFtj8W/1Oe3lawSVK+Uys9oVrUDhcVBj9is64IZiraibYso6FiHgYRrb1W0axvD4QbfYk1WqWOMBepj5XHNDM8psTN8fCQQElJX82aypjCDelTpF8H0x+stj32HpU6Hx6SJdRg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705532011; c=relaxed/simple;
+	bh=CYZUU5p3igAnrxbBrTGSK44bpCkfK/BZ3HGCRH1PQVU=;
+	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
+	 Received:Received:X-MS-Exchange-Authentication-Results:
+	 Received-SPF:Received:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Subject:Content-Language:To:References:From:Autocrypt:
+	 In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-Originating-IP:X-ClientProxiedBy:X-EOPAttributedMessage:
+	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
+	 X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-Id:
+	 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp:
+	 X-MS-Exchange-CrossTenant-AuthSource:
+	 X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=jvCQ2H9p9m52jjN/fEgnjZlYhxFPSsDAi/V2R2Qwc0PYKm6QvRED3tCOeJz+IlYxufrGekakTeZekA5sO+u21lHHhjvgoiFlpObzlW1C2ppoPhnoujtfKFq9lerEOMR2puFJqUN/kCJVfmOq84j2/2RuaaKc9Vq08MOrW3CCedE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=ADxZOxb5; arc=fail smtp.client-ip=40.107.95.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WaBgZyfMei/DocvLJ1TELj1MHDKeUiT/djN4pBM22PePF0BafgXf3m/jIe0mgSfqGf+wQCrlsv1BJJasV68YqdB3KgFzCNeZhmnvYHhD4NcI/Sdk2ncNTvuMKX2PesWeUh1RS1azxC4W3kJCetcxgMA3mMy+kqvb2ZaDKVRUfSxcpU17fYFf2CklQg6jN1GrAzP1j2KVP2Vnwyr15OfoZ8ORh9JHrZO9e2aZUsyQ4zJtplhufxvSoHaQzzghIX97CfdE3JiKdN+gJHk13hGzB/So/Dn6QX0K8WoGoaYv2FHrhLSL6kMyXjENJFj4GcrESSyAL06fC5y97jxRMHueqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uv6QiE986RitkQ7fCY1trenhlqhC7jBwdyFczALjah4=;
+ b=G1PQ+BMlmhGep2NWXNcireY4Zn1ITSOD/b1zGz2yRPiB+AMvHv7WSOQ2pTNdRUrB74/kE3SQ9zWLWwmDWAUSeL+2joY7i4/oPniz6605TQWbNIPau0tUYQaxa/+mq1vHdsR+aAfCEBomrZRZIu+FjiKheS0B7VdqAeZct/hcMfWwSdsswTyxsOZ1UrpZXaQPXRgd/5R/QN5vtbr/ikiTKs0/dGtlo3Iv6IB14g9PbpR/vsu9+0/nFOebSgRrnYOQL9UZWvuBhakLRNYuJMW/aKEMykVGLmV8d2AHCclUXRSvK+m7FaN3oMc3LWJrj5H7t2KutG/gFJ9k44gZ8Jr/og==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uv6QiE986RitkQ7fCY1trenhlqhC7jBwdyFczALjah4=;
+ b=ADxZOxb5p9dvlTxEIFOulk6dH6mTON2tAe9V+FcOf1GaVtDIi5BSQIVx4/zYDTBNh3r6LFQyelaaaId5FQkWxMWlffIXzpqMZvPf9pjiKH+jjZ33yjUwAfThZMgMEwjrzorO7d4W42ovZlAOmADWvJm0kguAOP0HKP5PxMbYlNE=
+Received: from SJ0PR13CA0099.namprd13.prod.outlook.com (2603:10b6:a03:2c5::14)
+ by DS7PR12MB8418.namprd12.prod.outlook.com (2603:10b6:8:e9::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.21; Wed, 17 Jan
+ 2024 22:53:27 +0000
+Received: from SJ1PEPF00001CE8.namprd03.prod.outlook.com
+ (2603:10b6:a03:2c5:cafe::5f) by SJ0PR13CA0099.outlook.office365.com
+ (2603:10b6:a03:2c5::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.8 via Frontend
+ Transport; Wed, 17 Jan 2024 22:53:26 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SJ1PEPF00001CE8.mail.protection.outlook.com (10.167.242.24) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7202.16 via Frontend Transport; Wed, 17 Jan 2024 22:53:26 +0000
+Received: from [10.236.30.70] (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 17 Jan
+ 2024 16:53:25 -0600
+Message-ID: <d2b6dbf3-fe06-4dd7-a893-75da12e8c136@amd.com>
+Date: Wed, 17 Jan 2024 16:53:25 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZahDNr97MSPNSHW_@wantstofly.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PULL REQUEST] i2c-for-6.8-rc1-fixed
+Content-Language: en-US
+To: Wolfram Sang <wsa@kernel.org>, Linus Torvalds
+	<torvalds@linux-foundation.org>, <linux-i2c@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Peter Rosin <peda@axentia.se>, Bartosz
+ Golaszewski <brgl@bgdev.pl>, Andi Shyti <andi.shyti@kernel.org>
+References: <ZahG7xgHJ4Tf8mHI@shikoro>
+From: Kim Phillips <kim.phillips@amd.com>
+Autocrypt: addr=kim.phillips@amd.com; keydata=
+ xsBNBFh3uA4BCACmMh2JZ9f6vavU7XWTg45pl64x61cugDKZ34jiRLohU280rECk+kyXrKGB
+ GdtV5+8tZWhMCyn151/C/OEYIi3CP5DY6wyrjbFkhI8ohqR4VqyC9gWAqD25coTQpOHyt7pd
+ 8EvSBDAuL031gqw5w6JNeqEbMplZeToy5Rgdr1i35MZOzyIaO01H+F2/sOL7qk6pY21y5Flj
+ ojjFT/uWg7eodnOu/BJ1Uem6FaO6ovYSAMOaCs/GpguznsS76ORsH6Jnyp6+e3KlZe/F2M7H
+ 5HWCVsS5np2rf1luDsfHKV7HCd2+4iFRhxjbbulSBRMn7zx16PEGh8ccNwJm9/nwof6jABEB
+ AAHNI0tpbSBQaGlsbGlwcyA8a2ltLnBoaWxsaXBzQGFtZC5jb20+wsCOBBMBCgA4FiEEaBZs
+ 4ROWXWKVJWj8Z9viHdU8iO8FAmHm/zMCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQ
+ Z9viHdU8iO8aXQgAnByD4TUD+xGXXDAkIopwqip2Vfy3qzNhmfzdvLxKxsb6I6Tf1l2pMPGP
+ EHxDPfuQhheyh+iRWrba6flwBGaNriJTFuVpQUGoRcjV11F2cpEbToqv2LGPaXIpc7IxEoRt
+ lg9VKr70XcRePKq4iH5e7wrmzACP9UlvaKlRJl97FTckZIguQQMZe9kqLga1yRDqcQVN5Kj6
+ IP6V8WzRz0qGpVE1GE/vjYH13o2qHrvp9d/zlPBTZFwhNpLBn4JHohyxQ63t7eZ1L4U66Caq
+ jZ0lhdN/psHJWab0SeIIRAG5+WLMcRbx3+LPjzIyrXJSonsm4t5lU3RmGmWwJSunxGDu1s7A
+ TQRYd7gOAQgAp2VJv7J5eaWVdHvazWijdobOXSa13GnV8DXENQLQSSQlxGkLkYa3nDHr6Xjk
+ z2NPFn4cf8GgMd7Bd4p3MR6DbwA4qKE+8ZW2x4XdH///HGDDEI69sDZEzLPXgl/9dv49dxym
+ Q/nuco2KtF4xaMS/mjRsv7Eu5oGH+2+vPKe7L8ykXUh7SJmr0tI2/y9A6MVOPckdenywmKQ+
+ 6R0gw6aL2OeUyWZLS/e/3+0zFmQxeTyHpoJb8cNk/XqUGsBXsTO6y+7fdykpXNCfeJL/bSGE
+ SXgwRROHCnQeKwVbbvEU/e5GZlNnKXoD7u2jyJxt4NTG2c0Jze+W3MPwh1wxzNg6BQARAQAB
+ wsBfBBgBCAAJBQJYd7gOAhsMAAoJEGfb4h3VPIjv33EIAIRVHWqFbAYPZZtYKdwugwzL0FKa
+ X0VbkUvKNG8SQAcdvkKmnSITWrIbecHPQaSqrtl/W8qKD6YFNOC9JNCHEfyLPTxo33WonQpo
+ utm5nbRS1p45Mk65Uu76qhuHMjPnOgbMqmRHgWjIRiNfKm1QD5/3bml08HnJ1PuucuxI4HkK
+ SWR00RE4Jyhxi1ISB3UEQ98iZtobAkTYa3aZ6xCZzd+v+o4CkLDKtS8vrBXpppi/HAeRlL7m
+ waGKsjcegLX8cEHSblIct+9KKjUrE8uZyokt67sTYDlPapVCkhTtKn5O88jXkqA2PgAU6XqP
+ KeUe7zYeAD22yc9K+Ovi7bZ9I5o=
+In-Reply-To: <ZahG7xgHJ4Tf8mHI@shikoro>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CE8:EE_|DS7PR12MB8418:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7c436584-3738-4362-b775-08dc17af1ddf
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	QPNbFIb1sca/QZXAtQ8awXY1jrJ5Occm+wcKRwsZlm8GdUaRWDj9C/HNMznNeiZm+XygSgUloP9otyZ52OfaLpXrL4ri1zjtPg79jq5GAEAOsGcj+cn/fyHinjBZe0gLBCRaBL2w2sNjMLd7maMH9I+RxULkVfaEwN1YXfEDmDBL99Q4pD7mPuOFJaIZ5loMnGAlDA8zOXZUthvvFSzaB3Izu4mCa7RblEvnoyOZuQfsn2KxMKX4ujpF6Jo3fslAKEtr5D5CEXL/83Wxdf99aoSvPisySJS4pFoUebArdERrTJsZcV9dwTJOwZPuG86TwfqaQnpINHiEmXOpM/9tPnRz7Jsteuz0tNqRkPhLqoptu0DnrDPjbL6rNzT/Plvy01eD6AXEkaj7a7wiOW6FqXNVGMadzXNh77tkASQs7yIbr1v0JST5UZPIU+TW1qIR7mdPB+ldEbVdvR6AAL851HP4F2kSy/0RZ9KQTYvDcBuLYQ8cvQ9ufPSQ1+YB7rDg1sgzaAmF7IglkAt5RAosw45n3lLfvw/Pp4f5+NATSZ1emzufoWXhUJ4Gl/OJqz1vaJ5+yb3+bAlppKxQ6jbiuwQEXx6cDEoeQWf+3Mpo4NXqde8oSz6Z8+ef4Xg+/y1K5haEeO65B3x5tfPBkA+ddajdYfsL4aYk8FLy0B8EeiH6Ow6M42wgSjmIJ+K8ayrEWXhyr808iKb3T2JSVtI7xWLOrwNSHAWrtn335rGFYfHiSzPaEAArEpJCKTmAEsUz3ocdJ1/lnebFyYR2LPMtrvNbutUQtrVv707fxswSGsKzUNsL0BGCz3EvMEMryafp
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(376002)(396003)(136003)(230922051799003)(82310400011)(64100799003)(1800799012)(186009)(451199024)(36840700001)(40470700004)(46966006)(53546011)(2616005)(426003)(36756003)(478600001)(31696002)(47076005)(36860700001)(26005)(16526019)(336012)(41300700001)(40480700001)(40460700003)(5660300002)(110136005)(2906002)(70586007)(70206006)(44832011)(8936002)(4744005)(356005)(31686004)(16576012)(8676002)(316002)(81166007)(82740400003)(86362001)(4001150100001)(43740500002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2024 22:53:26.6590
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7c436584-3738-4362-b775-08dc17af1ddf
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ1PEPF00001CE8.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8418
 
-Hello Lennert,
-
-On Wed, Jan 17, 2024 at 11:14:30PM +0200, Lennert Buytenhek wrote:
-> On Tue, Jan 16, 2024 at 03:20:23PM +0100, Niklas Cassel wrote:
+On 1/17/24 3:30 PM, Wolfram Sang wrote:
+> The following changes since commit 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab:
 > 
-> > > On kernel 6.6.x, with an ASMedia ASM1062 (AHCI) controller, on an
+>    Linux 6.7-rc3 (2023-11-26 19:59:33 -0800)
 > 
-> Minor correction to this: lspci says that this is an ASM1062, but it's
-> actually an ASM1061.  I think that the two parts share a PCI device ID,
-> and I've submitted a PCI ID DB change here:
+> are available in the Git repository at:
 > 
-> https://admin.pci-ids.ucw.cz/read/PC/1b21/0612
+>    git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git tags/i2c-for-6.8-rc1-fixed
 
-FWIW, the kernel states that 0x0612 is ASM1062, and 0x0611 is ASM1061:
-https://github.com/torvalds/linux/blob/v6.7/drivers/ata/ahci.c#L603-L604
+i2c-for-6.8-rc1-fixed boots fine.
 
-But that could of course be incorrect.
+Thanks!
 
-
-When you are dumping the LnkCap in the PCI ID DB change request,
-are you dumping the LnkCap for the AHCI controller or the PCI bridge?
-
-(Because you use # lspci -s 27:00.0 in the PCI ID DB change request,
-but # lspci -s 28:00.0 further down in this email.)
-
-(Perhaps the PCI bride only has one PCI lane, but the AHCI controller has two?)
-
-
-> > The DMA mask is set here:
-> > https://github.com/torvalds/linux/blob/v6.7/drivers/ata/ahci.c#L967
-> > 
-> > And should be called using:
-> > hpriv->cap & HOST_CAP_64
-> > https://github.com/torvalds/linux/blob/v6.7/drivers/ata/ahci.c#L1929
-> > 
-> > Where hpriv->cap is capabilities reported by the AHCI controller itself.
-> > So it definitely seems like your controller supports 64-bit addressing.
-> 
-> Perhaps, or maybe it's misreporting its capabilities, as it is an old
-> part (from 2011 or before), and given that it doesn't seem to support
-> 64-bit MSI addressing, either, which for a part with a 64-bit DMA engine
-> would be an odd restriction:
-> 
-> # lspci -s 28:00.0 -vv | grep -A1 MSI:
->         Capabilities: [50] MSI: Enable+ Count=1/1 Maskable- 64bit-
->                 Address: fee00000  Data: 0000
-> #
-
-That just claims that MSIs have to use a 32-bit PCI address.
-
-See e.g.:
-00:02.0 VGA compatible controller: Intel Corporation Haswell-ULT Integrated Graphics Controller (rev 0b) (prog-if 00 [VGA controller])
-  Subsystem: Lenovo Device 3978
-  Flags: bus master, fast devsel, latency 0, IRQ 58
-  Memory at b0000000 (64-bit, non-prefetchable) [size=4M]
-  Memory at a0000000 (64-bit, prefetchable) [size=256M]
-  I/O ports at 4000 [size=64]
-  Expansion ROM at <unassigned> [disabled]
-  Capabilities: [90] MSI: Enable+ Count=1/1 Maskable- 64bit-
-  Capabilities: [d0] Power Management version 2
-  Capabilities: [a4] PCI Advanced Features
-  Kernel driver in use: i915
-
-It has 64-bit BARs, but does not support 64-bit MSIs.
-
-
-> 
-> (I checked the available datasheets, but there is no mention of whether
-> or not the part supports 64-bit DMA.)
-
-If you are curious, hpriv->cap is the HBA capabilities reported by the
-device, see:
-https://www.intel.com/content/dam/www/public/us/en/documents/technical-specifications/serial-ata-ahci-spec-rev1-3-1.pdf
-
-3.1.1 Offset 00h: CAP – HBA Capabilities
-
-Bit 31 - Supports 64-bit Addressing (S64A).
-
-It seems a bit silly that the AHCI controller vendor accidentally set this
-bit to 1.
-
-
-> Per:
-> 
-> 	https://www.asus.com/motherboards-components/motherboards/workstation/pro-ws-wrx80e-sage-se-wifi/helpdesk_bios?model2Name=Pro-WS-WRX80E-SAGE-SE-WIFI
-> 
-> However, some Googling suggests that the ASM106x loads its own firmware
-> from a directly attached SPI flash chip, and there are several versions
-> of this firmware available in the wild, with different versions of the
-> firmware apparently available for legacy IDE mode and for AHCI mode.  If
-> (some of) the AHCI logic is indeed contained inside the firmware, I
-> could see a firmware bug leading to the controller incorrectly presenting
-> itself as being 64-bit DMA capable.
-> 
-> Some poking around in the BIOS image suggests that there is no copy of
-> the ASM106x firmware inside the BIOS image.  In other words, it could be
-> that, even though the machine is running the latest available BIOS, the
-> ASM1061 might be running an older firmware version.
-> 
-> The ASM1061 firmware does not seem to be readable from software via a
-> ROM BAR, and it doesn't seem to readable from software in general (the
-> vendor-supplied DOS .exe updater tool only allows you to erase or
-> update the SPI flash), so I can't check which firmware version it is
-> currently using.
-> 
-> 
-> > If that does not work, perhaps you could try this (completely untested) patch:
-> > (You might need to modify the strings to match the exact strings reported by
-> > your BIOS.)
-> 
-> Thanks for the patch!
-
-Assuming that you just have ASM106x controllers in your system,
-you could also replace it with a simple:
-
-@@ -1799,6 +1823,10 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
-        if (ahci_broken_devslp(pdev))
-                hpriv->flags |= AHCI_HFLAG_NO_DEVSLP;
- 
-+       /* must set flag prior to save config in order to take effect */
-+       hpriv->flags |= AHCI_HFLAG_32BIT_ONLY;
-+
- #ifdef CONFIG_ARM64
-        if (pdev->vendor == PCI_VENDOR_ID_HUAWEI &&
-            pdev->device == 0xa235 &&
-
-
-Just for testing.
-
-
-> 
-> I will do some tests with PCI passthrough to a VM, to see whether, and if
-> it does, exactly how the controller mangles DMA addresses.
-
-Were you running in a VM when testing this?
-(Usually you need to pass through all PCI devices in the same iommu group.)
-
-The errors from your previous email:
-[IO_PAGE_FAULT domain=0x0035 address=0x7fffff00000 flags=0x0000]
-[Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged
-
-could also suggest an iommu issue. Have you tried booting with iommu=off
-and/or amd_iommu=off on the kernel command line?
-(Or temporarily disable the iommu in BIOS.)
-
-
-> 
-> I've also ordered a discrete PCIe card with an ASM1061 chip on it, and I
-> will perform similar tests with that card, to see exactly where the issue
-> is, i.e. whether it is specific to this mainboard or not.
-> 
-> I will follow up once I will have more information.
-
-Looking forward to hear your findings :)
-
-
-Kind regards,
-Niklas
+Kim
 
