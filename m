@@ -1,112 +1,264 @@
-Return-Path: <linux-kernel+bounces-29017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C7708306EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:20:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 947838306FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:23:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFFEC286551
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:20:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACBD91C23CEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:22:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7BB11F5F7;
-	Wed, 17 Jan 2024 13:20:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 961411F604;
+	Wed, 17 Jan 2024 13:22:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A6hDhC3X"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="eD5lBEHg"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2043.outbound.protection.outlook.com [40.107.244.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2734E1EB51;
-	Wed, 17 Jan 2024 13:20:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705497604; cv=none; b=uU3fqMKcRZdYeTCULw3Sl5TpOXtvY5CVI4cm3Mt22xBclGa+PIwE112NknDFSJ9kKILYhD2WrLMBK3khHHLgVCr90uFmrJxuqooeurNkQKfOjb0htVGCfPQla+/ugroKNpkl6Ej7DBJVpwW5WBDTh4/PkVi/5aWE1Px+GUKH46w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705497604; c=relaxed/simple;
-	bh=3HJjddTb9x25iVPLA3FFl8X1AxowEc5UH1z2TvlPNp4=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=KfJ2HYDNtkB/xsQ4JK/zC41lU3WgPPpsBbdXz5HFOpMJMpLbLEH+LW2bPaCajjAFEqqUA1tgKSjn1MgU6Vji5Z5gnLa+4QVvfKbLXbWdFVjMfWdfw+P6JiF8daUmpiVVt490igHDMOXxi/eZs0ZI1GoyxhfRPjw1PshNQNW6XxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A6hDhC3X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 243D0C433F1;
-	Wed, 17 Jan 2024 13:20:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705497602;
-	bh=3HJjddTb9x25iVPLA3FFl8X1AxowEc5UH1z2TvlPNp4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=A6hDhC3XeU6kWuAYuAjXrY4xHQLZLIsRAyqf/KEMGh4Nvcg++xwJZN8vfgQxQP8xP
-	 OPR9sYBXzK6xcqAencr0katYgWM/jyda9PyE+/8F20/1edH+GKiV/5BPBhH/8uAVRA
-	 uofK6EplFMNRlho7doylGIHN5FzuL2Z4vyzy8iwPZw12fv/YLjiRFRvOQUk5jmKL8H
-	 qFictchEY/ESWGfbQwJI8c6cDd2Gy5ALlyUx2oP7DalZXOPkO56Tx6ZhpsSiyw0e7g
-	 r1KZSeZPcjVJpsfTkWaq3nf7OwcMV3kY61b3SHL0tz2Cfq7xoeli08TLPv/+sFEB5F
-	 wnCscJi+xyI4w==
-Date: Wed, 17 Jan 2024 14:19:56 +0100
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Sai Pavan Boddu <sai.pavan.boddu@amd.com>
-Cc: linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, Michal Simek <michal.simek@amd.com>, 
-	Lars-Peter Clausen <lars@metafoo.de>, Wolfram Sang <wsa@kernel.org>
-Subject: Re: [PATCH] i2c: cadence: Avoid fifo clear after start
-Message-ID: <lzvb6oyinlmdrbaat6ayxioca5r2qf7wi3kt63lzorbjytmmbn@wfuz63znrzbr>
-References: <20240105125258.2470397-1-sai.pavan.boddu@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EA011F5E7
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 13:22:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.43
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705497772; cv=fail; b=R7VNY3LHYTSkjMbJSt6vmEXHMW6fR/x3ZBL0qN8MJumcyIG5TocorinWE42nNdqNysZrU/z1JptOfcs0MNQq7ZoMY9s+Cxdq3kTj6RNPYwypyY++mmgTrR6EtMT2T4oVa+Ay1eMhIkaMGlbW+fjJHuPP0B9qClTs2Z206o9+/rk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705497772; c=relaxed/simple;
+	bh=sE2g3AF7AgJnXwHl0lS/WgYQJmiIVNkH4TQPC9xkK7Q=;
+	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
+	 Received:Received:Date:From:To:Cc:Subject:Message-ID:References:
+	 Content-Type:Content-Disposition:In-Reply-To:X-ClientProxiedBy:
+	 MIME-Version:X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
+	 X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-AuthSource:
+	 X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+	 X-MS-Exchange-CrossTenant-UserPrincipalName:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=emejleadCbLdrkJ+urr/eH979gUJYLelFE0HD56lT7/Vsu6lbN2ulrgh09t0zJL3oi4LJf3U1aUolV3RnxAnjK9b/5mTx/tiGldaXq02gVmkbDgHPdyHWPzH9Z1Vk3ULtBjQxrQ+oV63ynwhut1naVlkbLtEQeTSpsrFLUwQaCY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=eD5lBEHg; arc=fail smtp.client-ip=40.107.244.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J7vhKpEuk0DjDt3OxPd0y49HNoCbXQqFONNq/CYj4VHavEtYCJo7pH7NEn4LkOsoWTz9exrAHXKQ0kj7qi7/hFX8Z5FA6cfsIKsaPgCaPKo+bA7MiRH0PXn0riRwDPxzB2IkSDF8IhmNr6OX+gkR1A/+1rConzzH6GMQdckFtm7+2zER7IQuDgzYyqe/rwzQFICkh8O3OLb8/lGcVmU2AiGDKaduPNaRXe2xWA/hPqWZUEDquAefhAmcee7cCzoNSUZFwPIorBEJmY7ZED7eZ9Tk0bamZNG0OaXbfc7MvvA83biWeDnY/6DibFetcEfA7mURZniziXs7WhrH01+8BA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZDyT/81PxUDeA4M5way5h+eZdkx3wiZ6qwptclWV8OU=;
+ b=FfkhxupVUyrtw930NcpS0OsOOoHcTaXzhluLofEjoWDTdeta9aLyEWRVhK1k7Mp1y2/Qc7IhtmfTiiiBEA709xFcxZsGaVioJraoH9lkt6Qf8tyrkZsqkALgodnJ+qvOgMoVVpvjQq7U+IhpvaCfuk/pf9R1tH/daXn2EuApWDofNHXv3HVS7bWxHIy0NZvPjWaH+Db28N1GA7yD3L08Js0TSFjxZYYNYGPK5cZn1iCnz+BSQCh3KKRlM17+22EIYkKKAMXTWOrPeNotptq660e83XOpCEWQTF1ka/xzfGs0YAEZgSeU+lluarmBmfKEKpgvc8eL6Hvx0xtauN5KyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZDyT/81PxUDeA4M5way5h+eZdkx3wiZ6qwptclWV8OU=;
+ b=eD5lBEHgcWuIXxm543H1cTe99gMiWfp6x9+Ex5Kd32okh30PLeDQbl8mhdeOx1HgM6xh0FF5jDz0ICoFWNtb83rtU5MUyPFddmtfa5MOST2BHicsMhAukysrQ3JEchG64bA/PxaIJRU6qEVYhvt/upNjMkXUaECcp9refeLF+2XhJP9CGv4rWXBb07k8T2bbhYBkUUc8WKpYltfPfDXPZgbK2IHIdvxCYnkrHLKGgCUoqbw8tjXgDQ9H+fnbJnupFvkOzMA4YKr/8BD+7B90mKhFNOPcga2SDfCou8yJB1BXEjA0F4ldDQWM22irrkXLfiDANNEZcuSY9vGQgU+UlQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by IA1PR12MB8285.namprd12.prod.outlook.com (2603:10b6:208:3f6::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.23; Wed, 17 Jan
+ 2024 13:22:45 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::96dd:1160:6472:9873]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::96dd:1160:6472:9873%6]) with mapi id 15.20.7181.020; Wed, 17 Jan 2024
+ 13:22:44 +0000
+Date: Wed, 17 Jan 2024 09:22:43 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Ryan Roberts <ryan.roberts@arm.com>
+Cc: "peterx@redhat.com" <peterx@redhat.com>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	James Houghton <jthoughton@google.com>,
+	David Hildenbrand <david@redhat.com>,
+	"Kirill A . Shutemov" <kirill@shutemov.name>,
+	Yang Shi <shy828301@gmail.com>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+	Rik van Riel <riel@surriel.com>,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Mike Rapoport <rppt@kernel.org>, John Hubbard <jhubbard@nvidia.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Andrew Jones <andrew.jones@linux.dev>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+	Mike Kravetz <mike.kravetz@oracle.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	Christoph Hellwig <hch@infradead.org>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v2 06/13] mm/gup: Drop folio_fast_pin_allowed() in hugepd
+ processing
+Message-ID: <20240117132243.GG734935@nvidia.com>
+References: <20240103091423.400294-1-peterx@redhat.com>
+ <20240103091423.400294-7-peterx@redhat.com>
+ <20240115183748.GR734935@nvidia.com>
+ <c60c9d88-33aa-4312-a23c-20206e503b6e@csgroup.eu>
+ <20240116123138.GZ734935@nvidia.com>
+ <44e450cb-5d3f-407e-97a3-024eb936f74b@csgroup.eu>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <44e450cb-5d3f-407e-97a3-024eb936f74b@csgroup.eu>
+X-ClientProxiedBy: BL1PR13CA0268.namprd13.prod.outlook.com
+ (2603:10b6:208:2ba::33) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240105125258.2470397-1-sai.pavan.boddu@amd.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|IA1PR12MB8285:EE_
+X-MS-Office365-Filtering-Correlation-Id: a90389c4-06a8-435f-bdd5-08dc175f63db
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	4RUtPfwdiREM5biYnZTmJsx0ACNp3OKAqnHVEG4+VXWqWm+NgE/AtHbw0z4FBjTqIkCXuhHRFLlGKm8IEc3Z7Ey35oRTx0ECkU5g12t2Ro1XJj4FUj1/GOYJs8py9vqsNY52GAf4kQIUPHVy7DZXf2VFD7F0depxqmIFIzgU6l9gybk/uswdIKU7Zd8y7f50VDSw694lQUjJnpDqAskzA5CKfiKct3sN5KAXbZVKJ9ltCKQT0tSO9oQzsEvicZ41f0k8pVW1UFW7bOA5ZhhbrhgTrRyFThb7vyEkHSzsx3Wz4joBfz7JqA5vqGTL7T4vh2NA4DvZQ/6Bs5Xgc1sPlNWeivgo/cHQH7HGyh5dsBAs3wCLg2FgJ8ypms+wydyN3Vrg0vyEVcK2g7Cah+pXebP4OtutYGwceKnpU/aaPaqrDHpGstf1z4EPrJpTR4uYPJUl8I85QkfX8y1dYjN7BLf+hWlL0K2loUCKyh1/Bb1xPKZyJ8g9g4jB9OQJYaBIWyKizEHkmH72VwaDUydjsIux38tE4x77mkRwPvDxAl6aisRYYiJkPiiFToEJp8bL4DH+54QaU6ADoSzDKBXgF8A+viNivp4VuVfwCuWCTZ/vybHFqPPZQQvUCU0AoLv+cUSUzOgwycguaOF+GWDY6/vX2gMF7vWdLWTjC0yKrvMXFlsU6vY62GxcOUehCVu2
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(39860400002)(346002)(366004)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(5660300002)(2906002)(41300700001)(36756003)(38100700002)(86362001)(33656002)(7416002)(6486002)(966005)(54906003)(6512007)(2616005)(66946007)(110136005)(316002)(66476007)(478600001)(6506007)(66556008)(83380400001)(4326008)(8676002)(8936002)(1076003)(26005)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?UKoIFMwIgo+UP7YkCIUpJly78vCqIGGehMSOnenDhHo9xvv60z5FvHyRuyLg?=
+ =?us-ascii?Q?uHqPA67mf1TDwygj+ayP55jpqpmFdhCv8VI6pPwDM4GuwuSAb0laEi10hPPC?=
+ =?us-ascii?Q?batia6+j//Wl5HtR8yxc32miN2LpnzYn8EzT9x2jXe0TWiXl4eQp9ZXqg9dW?=
+ =?us-ascii?Q?o5gC2i05Rf1HPwP8M5j4eNvGiQDmYtBR2Se6i0L77YHom4MsmV+B6NHkP4kc?=
+ =?us-ascii?Q?AAuUvT+Z95VCfaHM3WwCIzEEIKZfp7slujsD6iDccCWXr5kJPZgguMamI3qC?=
+ =?us-ascii?Q?2QajsFnpbEjGazpMLcKaZHFRKvynBc0+cY/PV6LMbzkD/iHCELC07TztNxjY?=
+ =?us-ascii?Q?YDrybwwqo7DzN58FKLKghN7Z9BnzRxAmIs8tkgXz+YYshm9o6h4uq8GOORxZ?=
+ =?us-ascii?Q?D7v4f88dxvKCleB3Cxo1jZvqZtawQcpJAHlmD5Yc3zD7L46gOeVlHJkiXPbK?=
+ =?us-ascii?Q?D3UKK/XK+eclMeLAzDA6WbZ4ypbIPAQKNvYMyPKCT2hHT6WvSP4mIIkT1w1F?=
+ =?us-ascii?Q?F0U4Vd0ZlOCsjkBBZnKZnb0XwRTSXY7yWnoMhbv3g1vq8tpgscI391PMsdab?=
+ =?us-ascii?Q?x+kH5jJJlxT5uqByKMgDKk1JPeQuuBZCSx+34H+Skm9reES2tiB/LGKXlrf5?=
+ =?us-ascii?Q?bEaM1HstDiu+GPxfN8t+P303I4Ty8nMK7Axcn6g6NCDaEx5v1L1NfLRSk/Gc?=
+ =?us-ascii?Q?P23hqXHSTh517xlf3MB0rzIjXdQDNta7jWNS1L1izNb1Xd7e88YY+403v7zx?=
+ =?us-ascii?Q?tCqMa5LTK/B2V2d9o6OtP2gaZG2VTIbH1EiQ/TME2zp7TfDCOBi9WS+HTB6K?=
+ =?us-ascii?Q?+itNLJQWgtTCVyPaYsyZexsD8mKXy/WVZZGrmszFkxCd0siSs1q5i53rgwCY?=
+ =?us-ascii?Q?nZb8XyjO49GgthVWBSNhz9xSkZsZ/mhXLeQgxsocFLlchYRlYf0U8PVc5Hc2?=
+ =?us-ascii?Q?B7wNFA6J2nwtg8mQf7ORorj4bN+T8JiQ1o7mVKJ+XrXPrIp05g7BaMZxGWjj?=
+ =?us-ascii?Q?jXcREvSWROFWCdoeh6wx86N+AuCDCN0KKB+gD8KgO2l3hpeyKrOtog1zZ8eP?=
+ =?us-ascii?Q?/JricatpSrCtMNE98BvsWUX2BiqXeteeQi2GZR1JzsKsygCalWTgpNi48gaK?=
+ =?us-ascii?Q?QFTuXDHabTDyzNfwbo1BroVpxMHZw1b+1PhQ+6CnxS2S2xXrBWFtPQBbew7T?=
+ =?us-ascii?Q?rgijQRgTVd0rF8W9686GLw+Cuvw5SOxKnra9Mf0E17mrXRyxTColzFkPeb1F?=
+ =?us-ascii?Q?MnudxA7zpNtCQn6+1vYYdjBQ/jNDNU/yY8SgVfWMpKwFzOA1wt52BoAq0KVf?=
+ =?us-ascii?Q?GNb2SAhY43kCqmdrHE8QIu0e7KOOfcHesuKrClRB7mmHkUgw7OtFaF+cKZq2?=
+ =?us-ascii?Q?zXs94xWwRCSK1QgWuKDZ55WqXH+l2h+6ETJYqz0lRnLAvyhIq0QYchCwadpt?=
+ =?us-ascii?Q?OHe2UaH7TO1VH/fi6nptLusm0ZQL/savXJgpZZoDzMCV21LyvUMf6IQ22fUc?=
+ =?us-ascii?Q?cYXbmitxRp5efeL0gbfH+VbSjw5xmmnaaQYO+x+xWGpqehokSuOEiJ8xs7wI?=
+ =?us-ascii?Q?MyKZ9mEg6fWhtTtn3xaEh5TyrmdECxwdOfSB02ix?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a90389c4-06a8-435f-bdd5-08dc175f63db
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2024 13:22:44.5643
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YuRr4k9IImmVkC4BHJkkI+6OMg5e5p1r5rksakFXdof9PPb19nQO7yfpICDwcwtl
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8285
 
-Hi Sai,
-
-sorry, but I'm not really understanding the issue here.
-On Fri, Jan 05, 2024 at 06:22:58PM +0530, Sai Pavan Boddu wrote:
-> Driver unintentionally programs ctrl reg to clear fifo which is
-> happening after start of transaction
-
-what does it mean "unintentionally"?
-
-> this was not the case previously
-> as it was read-modified-write. This issue breaks i2c reads on QEMU as
-> i2c-read is done before guest starts programming ctrl register.
-
-this log can be improved. How about something like
-
-The driver unintentionally programs the control register to clear
-the FIFO, which occurs after the start of the transaction.
-Previously, this was not an issue as it involved
-read-modify-write operations. However, this current issue
-disrupts I2C reads on QEMU, as the I2C read is executed before
-the guest starts programming the control register.
-
-> Fixes: ff0cf7bca6309 ("i2c: cadence: Remove unnecessary register reads")
-> Signed-off-by: Sai Pavan Boddu <sai.pavan.boddu@amd.com>
-> ---
->  drivers/i2c/busses/i2c-cadence.c | 1 +
->  1 file changed, 1 insertion(+)
+On Tue, Jan 16, 2024 at 06:32:32PM +0000, Christophe Leroy wrote:
+> >> hugepd is a page directory dedicated to huge pages, where you have huge
+> >> pages listed instead of regular pages. For instance, on powerpc 32 with
+> >> each PGD entries covering 4Mbytes, a regular page table has 1024 PTEs. A
+> >> hugepd for 512k is a page table with 8 entries.
+> >>
+> >> And for 8Mbytes entries, the hugepd is a page table with only one entry.
+> >> And 2 consecutive PGS entries will point to the same hugepd to cover the
+> >> entire 8Mbytes.
+> > 
+> > That still sounds alot like the ARM thing - except ARM replicates the
+> > entry, you also said PPC relicates the entry like ARM to get to the
+> > 8M?
 > 
-> diff --git a/drivers/i2c/busses/i2c-cadence.c b/drivers/i2c/busses/i2c-cadence.c
-> index de3f58b60dce..6f7d753a8197 100644
-> --- a/drivers/i2c/busses/i2c-cadence.c
-> +++ b/drivers/i2c/busses/i2c-cadence.c
-> @@ -633,6 +633,7 @@ static void cdns_i2c_mrecv(struct cdns_i2c *id)
->  
->  	if (hold_clear) {
->  		ctrl_reg &= ~CDNS_I2C_CR_HOLD;
-> +		ctrl_reg &= ~CDNS_I2C_CR_CLR_FIFO;
+> Is it like ARM ? Not sure. The PTE is not in the PGD it must be in a L2 
+> directory, even for 8M.
 
-I'm wondering whether the whole ctrl_reg should be reset after
-the first write.
+Your diagram looks almost exactly like ARM to me.
 
-Andi
+The key thing is that the address for the L2 Table is *always* formed as:
 
->  		/*
->  		 * In case of Xilinx Zynq SOC, clear the HOLD bit before transfer size
->  		 * register reaches '0'. This is an IP bug which causes transfer size
-> -- 
-> 2.25.1
+   L2 Table Base << 12 + L2 Index << 2 + 00
+
+Then the L2 Descriptor must contains bits indicating the page
+size. The L2 Descriptor is replicated to every 4k entry that the page
+size covers.
+
+The only difference I see is the 8M case which has a page size greater
+than a single L1 entry.
+
+> Yes that's how it works on powerpc. For 8xx we used to do that for both 
+> 8M and 512k pages. Now for 512k pages we do kind of like ARM (which 
+> means replicating the entry 128 times) as that's needed to allow mixing 
+> different page sizes for a given PGD entry.
+
+Right, you want to have granular page sizes or it becomes unusable in
+the general case
+ 
+> But for 8M pages that would mean replicating the entry 2048 times. 
+> That's a bit too much isn't it ?
+
+Indeed, de-duplicating the L2 Table is a neat optimization.
+
+> > So if you imagine a pmd_leaf(), pmd_leaf_size() and a pte_leaf_size()
+> > that would return enough information for both.
 > 
+> pmd_leaf() ? Unless I'm missing something I can't do leaf at PMD (PGD) 
+> level. It must be a two-level process even for pages bigger than a PMD 
+> entry.
+
+Right, this is the normal THP/hugetlb situation on x86/etc. It
+wouldn't apply here since it seems the HW doesn't have a bit in the L1
+descriptor to indicate leaf.
+
+Instead for PPC this hugepd stuff should start to follow Ryan's
+generic work for ARM contig:
+
+https://lore.kernel.org/all/20231218105100.172635-1-ryan.roberts@arm.com/
+
+Specifically the arch implementation:
+
+https://lore.kernel.org/linux-mm/20231218105100.172635-15-ryan.roberts@arm.com/
+
+Ie the arch should ultimately wire up the replication and variable
+page size bits within its implementation of set_ptes(). set_ptes()s
+gets a contiguous run of address and should install it with maximum
+use of the variable page sizes. The core code will start to call
+set_ptes() in more cases as Ryan gets along his project.
+
+For the purposes of GUP, where are are today and where we are going,
+it would be much better to not have a special PPC specific "hugepd"
+parser. Just process each of the 4k replicates one by one like ARM is
+starting with.
+
+The arch would still have to return the correct page address from
+pte_phys() which I think Ryan is doing by having the replicates encode
+the full 4k based address in each entry. The HW will ignore those low
+bits and pte_phys() then works properly. This would work for PPC as
+well, excluding the 8M optimization.
+
+Going forward I'd expect to see some pte_page_size() that returns the
+size bits and GUP can have logic to skip reading replicates.
+
+The advantage of all this is that it stops making the feature special
+and the work Ryan is doing to generically push larger folios into
+set_ptes will become usable on these PPC platforms as well. And we can
+kill the PPC specific hugepd.
+
+Jason
 
