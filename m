@@ -1,162 +1,203 @@
-Return-Path: <linux-kernel+bounces-29072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E95D8307DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:20:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63CD58307E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:21:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A6321C21730
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:20:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CFBB0B24891
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:21:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 678222032A;
-	Wed, 17 Jan 2024 14:20:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="CZgWngmk"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7926B2032C;
+	Wed, 17 Jan 2024 14:21:03 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57C772030D
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 14:20:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BD7D200CB
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 14:21:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705501216; cv=none; b=Mevh5OR4+n7tXkf9/nbtx4XMxzahoyPZtqxIqJf6SYZ6tlf1x0GpITyE1fs3EUHHYBN9G6VBRj2HdDzKnjVqot7b4W7kCRtuDb2PCsdng5i4oVbPZkChYph6h3e+dCx9gp67W3CEKwyUxcpcupy//7W1gYuI9khuuQxRPSfncAE=
+	t=1705501263; cv=none; b=k8rbJOIB2lG/EcqajiD2dIFBjzrs+ySqHqT8LC9MBv1CNMeTrtlvytDXx4B/riAfmwCwuEuK9yFeZ6KDp9KIRinLxcvrXIjl0ofCaX9RKxB4yuvI0g9iR+if70qierPEuK+pkMrCEdTYXibyWmMYYTafqWLUCePEcfvlmlqKI+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705501216; c=relaxed/simple;
-	bh=RYuyVD8z7SUpN/aYIPb2sApEjYrsBcsQ5pU/gaMvOaM=;
-	h=Received:DKIM-Signature:Message-ID:Date:MIME-Version:User-Agent:
-	 Subject:Content-Language:To:References:From:Autocrypt:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding; b=lzuU5yfTtZku8U/JpWc3Am6ujEHK4sQLzT8voPWnHaU2lVf2B2CAHHuP346b9u0zF6AKB5AhKSl+7u4WLZz3HiUJ/r5nWXU9ai7xYYf7GkQHpXJW95luUkN01FyyUgZFEb9+YMR7HpMn+yIYedgakYgmKfxS5mx1Rz7dW6Ulx1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=CZgWngmk; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-35-128.elisa-laajakaista.fi [91.154.35.128])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6873B14F6;
-	Wed, 17 Jan 2024 15:19:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1705501144;
-	bh=RYuyVD8z7SUpN/aYIPb2sApEjYrsBcsQ5pU/gaMvOaM=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=CZgWngmkiTEa/9aZnQVRIaiejZdJLvDtRVwFg70XmOzsUi9WXkXWsFfI5DNsbGr8z
-	 VCzFHPeDprWTZgywcEKkjj6WXBP+MtD7nJHAHFCutBiUpltRm3h5mmnVqYty3e2PSV
-	 XzdJX+sy4KB868sYXDkwdIBhZFQ/M2RNryFSVo0I=
-Message-ID: <beb551c7-bb7e-4cd0-b166-e9aad90c4620@ideasonboard.com>
-Date: Wed, 17 Jan 2024 16:20:10 +0200
+	s=arc-20240116; t=1705501263; c=relaxed/simple;
+	bh=QTt3NxgnO3h06z8kuyBtWXpxxpfLImOSJaHvIQ9Cp4g=;
+	h=Received:Received:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Subject:Content-Language:To:CC:References:From:
+	 In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-Originating-IP:X-ClientProxiedBy; b=IojSjxRDXORDiMfi3F95CriWvin/fLQBU4nQwnpjPFxj8dcWtIUvy6fT84VvqXOXhACfH074NCKEMR7JxxI3U+PsZuqEh277IrALp9gvLhtylw72BYsk9So5ogNpQYsnIsBgl6PH/B9K6ixNlqNAJ/Yl7ZKLJb5IMjma64IQsvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TFSh410xQzsW0k;
+	Wed, 17 Jan 2024 22:20:04 +0800 (CST)
+Received: from dggpeml500004.china.huawei.com (unknown [7.185.36.140])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0DE1414053B;
+	Wed, 17 Jan 2024 22:20:43 +0800 (CST)
+Received: from [10.174.186.25] (10.174.186.25) by
+ dggpeml500004.china.huawei.com (7.185.36.140) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 17 Jan 2024 22:20:38 +0800
+Message-ID: <89fe1503-6d62-90ca-5edb-e11c74846a00@huawei.com>
+Date: Wed, 17 Jan 2024 22:20:32 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] drm: xlnx: zynqmp_dpsub: Don't generate vblank in
- live mode
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [bug report] GICv4.1: VM performance degradation due to not
+ trapping vCPU WFI
 Content-Language: en-US
-To: Anatoliy Klymenko <anatoliy.klymenko@amd.com>,
- laurent.pinchart@ideasonboard.com, maarten.lankhorst@linux.intel.com,
- mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
- michal.simek@amd.com, dri-devel@lists.freedesktop.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240112234222.913138-1-anatoliy.klymenko@amd.com>
- <20240112234222.913138-4-anatoliy.klymenko@amd.com>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20240112234222.913138-4-anatoliy.klymenko@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To: Marc Zyngier <maz@kernel.org>
+CC: <oliver.upton@linux.dev>, <yuzenghui@huawei.com>, <james.morse@arm.com>,
+	<suzuki.poulose@arm.com>, <will@kernel.org>, <catalin.marinas@arm.com>,
+	<wanghaibin.wang@huawei.com>, <kvmarm@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<jiangkunkun@huawei.com>
+References: <a481ef04-ddd2-dfc1-41b1-d2ec45c6a3b5@huawei.com>
+ <86v87t8ras.wl-maz@kernel.org>
+From: "sundongxu (A)" <sundongxu3@huawei.com>
+In-Reply-To: <86v87t8ras.wl-maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500004.china.huawei.com (7.185.36.140)
 
-On 13/01/2024 01:42, Anatoliy Klymenko wrote:
-> Filter out status register against interrupts' mask.
-> Some events are being reported via DP status register, even if
-> corresponding interrupts have been disabled. Avoid processing
-> of such events in interrupt handler context.
+Hi Marc,
 
-The subject talks about vblank and live mode, the the description 
-doesn't. Can you elaborate in the desc a bit about when this is an issue 
-and why it wasn't before?
+Thank you for your reply.
 
-> Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-> ---
->   drivers/gpu/drm/xlnx/zynqmp_dp.c | 11 +++++++++--
->   1 file changed, 9 insertions(+), 2 deletions(-)
+On 2024/1/16 19:13, Marc Zyngier wrote:
+> On Tue, 16 Jan 2024 03:26:08 +0000,
+> "sundongxu (A)" <sundongxu3@huawei.com> wrote:
+>>
+>> Hi Guys,
+>>
+>> We found a problem about GICv4/4.1, for example:
+>> We use QEMU to start a VM (4 vCPUs and 8G memory), VM disk was
+>> configured with virtio, and the network is configured with vhost-net,
+>> the CPU affinity of the vCPU and emulator is as follows, in VM xml:
+>>
+>>   <cputune>
+>>     <vcpupin vcpu='0' cpuset='4'/>
+>>     <vcpupin vcpu='1' cpuset='5'/>
+>>     <vcpupin vcpu='2' cpuset='6'/>
+>>     <vcpupin vcpu='3' cpuset='7'/>
+>>     <emulatorpin cpuset='4,5,6,7'/>
+>>   </cputune>
+>>
+>> Running Mysql in the VM, and sysbench (Mysql benchmark) on the host,
+>> the performance index is tps, the higher the better.
+>> If the host only enabled GICv3, the tps will be around 1400.
+>> If the host enabled GICv4.1, other configurations remain unchanged, the
+>> tps will be around 40.
+>>
+>> We found that when the host enabled GICv4.1, because vSGI is directly
+>> injected to VM, and most time vCPU exclusively occupy the pCPU, vCPU
+>> will not trap when executing the WFI instruction. Then from the host
+>> view, the CPU usage of vCPU0~vCPU3 is almost 100%. When running mysql
+>> service in VM, the vhost-net and qemu processes also need to obtain
+>> enough CPU time, but unfortunately these processes cannot get that much
+>> time (for example, only GICv3 enabled, the cpu usage of vhost-net is
+>> about 43%, but with GICv4.1 enabled, it becomes 0~2%). During the test,
+>> it was found that vhost-net sleeps and wakes up very frequently. When
+>> vhost-net wakes up, it often cannot obtain CPU in time (because of
+>> wake-up preemption check). After waking up, vhost-net will usually run
+>> for a short period of time before going to sleep again.
 > 
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> index d60b7431603f..571c5dbc97e5 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> @@ -1624,8 +1624,16 @@ static irqreturn_t zynqmp_dp_irq_handler(int irq, void *data)
->   	u32 status, mask;
->   
->   	status = zynqmp_dp_read(dp, ZYNQMP_DP_INT_STATUS);
-> +	zynqmp_dp_write(dp, ZYNQMP_DP_INT_STATUS, status);
->   	mask = zynqmp_dp_read(dp, ZYNQMP_DP_INT_MASK);
-> -	if (!(status & ~mask))
-> +
-> +	/*
-> +	 * Status register may report some events, which corresponding interrupts
-> +	 * have been disabled. Filter out those events against interrupts' mask.
-> +	 */
-> +	status &= ~mask;
-> +
-> +	if (!status)
->   		return IRQ_NONE;
->   
->   	/* dbg for diagnostic, but not much that the driver can do */
-> @@ -1634,7 +1642,6 @@ static irqreturn_t zynqmp_dp_irq_handler(int irq, void *data)
->   	if (status & ZYNQMP_DP_INT_CHBUF_OVERFLW_MASK)
->   		dev_dbg_ratelimited(dp->dev, "overflow interrupt\n");
->   
-> -	zynqmp_dp_write(dp, ZYNQMP_DP_INT_STATUS, status);
->   
->   	if (status & ZYNQMP_DP_INT_VBLANK_START)
->   		zynqmp_dpsub_drm_handle_vblank(dp->dpsub);
+> Can you elaborate on this preemption check issue?
 
-Moving the zynqmp_dp_write() is not related to this fix, is it? I think 
-it should be in a separate patch.
+Well, I forgot to post the version of my kernel(5.10).
+I've noticed that the scheduler of mainline kernel is EEVDF, while my
+kernel's scheduler is still CFS. I feel sorry if my report misled you.
 
-  Tomi
+With the CFS scheduler, if vhost-net thread wake-up, the scheduler
+need to check whether vhost-net could preempt vCPU
+(check_preempt_wakeup->wakeup_preempt_entity).
+From my understanding, if vhost-net want to run on CPU，the conditions
+need to meet：
+1. the difference between vhost-net's vruntime and current running
+thread's vruntime exceeds sched_wakeup_granularity_ns (in my host,
+it's 15ms, and the sched_latency_ns is 24ms).
+2. If condition 1 is not met, the CFS scheduler thinks vhost-net
+should not preempt current thread, the vhost-net will be enqueued and
+wait for the tick preempt check. In tick preempt check, the vhost-net
+could run when the growth of current thread vruntime is already higher
+than sched_min_granularity_ns (in my host, it's 10ms), since the last
+time current thread was preempted.
+So, if vhost-net wake-up preemption fails, it needs to wait for a
+while, but in the meantime, maybe vCPU is just running WFI.
+
+Frankly, the sched_wakeup_granularity_ns (default 4ms) and
+sched_wakeup_granularity_ns(default 3ms) are set too high, So I reset
+these parameters to default value and test again. Here is the result:
+If the host enabled GICv3, the tps will be around 1300.
+If the host enabled GICv4.1 with WFI no trapping, the tps will be
+around 235.
+
+I tested the kernel 6.5rc2 (git checkout 752182b24bf4), it has the
+same issue.
+
+And I also tested it in mainline kernel (6.7, with EEVDF), the result
+as below:
+If the host only enabled GICv3, the tps will be around 377.
+If the host enabled GICv4.1 with WFI no trapping, the tps will be
+around 323.
+If the host enabled GICv4.1 with WFI trapping, the tps will be around
+387.
+With host enabled GICv3 the tps is much lower than when the scheduler
+is CFS. Looks like there's a serious issue, but I haven't found it yet.
+
+> 
+>>
+>> If the host enabled GICv4.1, and force vCPU to trap when executing WFI,
+>> the tps will be around 1400.
+>>
+>> On the other hand, when vCPU executes WFI instruction without trapping,
+>> the vcpu wake-up delay will be significantly improved. For example, the
+>> result of running cyclictest in VM:
+>> WFI trap           6us
+>> WFI no trap        2us
+>>
+>> Currently, I add a KVM module parameter to control whether the vCPU
+>> traps (by set or clear HCR_TWI) when executing the WFI instruction with
+>> host enabled GICv4/4.1, and by default, vCPU traps are set.
+>>
+>> Or, it there a better way?
+> 
+> As you foudn out, KVM has an adaptive way of dealing with HCR_TWI,
+> turning it off when the vcpu is alone in the run queue. Which means it
+> doesn't compete with any other thread. How comes the other threads
+> don't register as being runnable?
+
+Actually，other threads is registered as runnable，but they may not get
+CPU immediately. 
+
+> 
+> Effectively, we apply the same principle to vSGIs as to vLPIs, and it
+> was found that this heuristic was pretty beneficial to vLPIs. I'm a
+> bit surprised that vSGIs are so different in their usage pattern.
+
+IMO, the point is hypervisor not trapping vCPU WFI, rather than
+vSGI/vLPI usage pattern.
+
+> 
+> Does it help if you move your "emulatorpin" to some other physical
+> CPUs?
+
+Yes，it does, in kernel 5.10 or 6.5rc1.
+
+Thanks,
+	Dongxu
+> 
+> Thanks,
+> 
+> 	M.
+> 
 
 
