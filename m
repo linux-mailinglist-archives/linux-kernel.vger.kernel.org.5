@@ -1,773 +1,360 @@
-Return-Path: <linux-kernel+bounces-29530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C427830FED
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:03:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18AED830FF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:04:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B01CF1C20949
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:03:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3C8C2816A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:04:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2C7128DA2;
-	Wed, 17 Jan 2024 23:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D31382563F;
+	Wed, 17 Jan 2024 23:04:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D2+33TTS"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Iq+tm3DN"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA33D288CF
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 23:02:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCE7E24B25;
+	Wed, 17 Jan 2024 23:04:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705532576; cv=none; b=jIB9pUUvXoVWtnL2kM+eLb+QhOVQ2drLKC5QtVDucxjz51f8kpb+f9MdwMzX8MLGOvN95f4HYOdzUIOhyoXIpLO+WqW8leEN2V867YaZry94h9oL2DOD/5T0y3xBvshd4Cq43Zcu+yvKWxMFM9raMHqPELBsBVIF6MZny1qep4g=
+	t=1705532664; cv=none; b=DqULi21dzRcHKB26eUT3rxMQAfq5hImIl5jh7WDgpLizyVpSaMjRy0NxKfg09sNXSinJIB6PZYOYPGbqibdnVirTsTm5+4boSe31QxV26oz/KdAq2tim/2xrkolGVaXRooo6jHopXBAh0o0cIZ+P2OtDfCQIMEEiXJ6I81qfH3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705532576; c=relaxed/simple;
-	bh=pa8J9Vq4G1+IXmMPjcRhDOooufRlM01rexSK1CXmC08=;
+	s=arc-20240116; t=1705532664; c=relaxed/simple;
+	bh=wXVonUxeD2ai6nHHr0EMoXrBCxKGe8NKsIPxwhj2VwM=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=FpVhC9S8qrUC17lSPyo6kedl7EmmgeSVX8dLK7amcBdcbDAJjY9aKGVhiJIyQ1JA9Kl2qrNhyEFNtuRC+W/6Gadp3Wi/1WMP2zYT4mDbh9UeYC3fuKSCBZ32fpMx4FWSwksa1rGy0j/UoHCSNmS3YWEWNpjLeoNcSWv6EA7WZ+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D2+33TTS; arc=none smtp.client-ip=209.85.221.42
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Message-ID:X-Google-Original-Message-ID:Date:From:To:Cc:Subject:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=D0lTncGSI0XutDiU8lj2apybDdGYZWbaEoehHHMrZrUHlvfMwYQukdQMyhBDecWVjZ3fc8HySqX/9KYIQxrmOnTaFWJxJzZ+cnEcVhH1sVswzAkUZtkTuDRhUieHeIGtFKRFBr8TekybtVLkHWB63TwlAaT0e5+cih3dh8gDCbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Iq+tm3DN; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-337c7148a71so574546f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:02:53 -0800 (PST)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e8f710d44so2033205e9.3;
+        Wed, 17 Jan 2024 15:04:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705532572; x=1706137372; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SGuwmcM9VZPWGXdP4OLSWh6XXl1zTy0Ln1eSOnA9S5c=;
-        b=D2+33TTSrDXaf/pxISaFuSOHTpwh+5DrWob/LPzSqsikfBMg7aUmq+DS8T4sLfNqzv
-         bdWZH0Fl2R3awRpO9EAF/rJ8FTVqjrF+ehrSZKr+rJoEwRok91bzrI19IzN+dPm3b/v7
-         PQKEDCdtkIjj48LvVL+lJRnnH90l49608QqvMR9gojpCkBstoEh+yF5U/aXzJlSIFA41
-         HuUjAU0h2griOMnaFc1vcHkdU1hGsxfxmFHJ0ToKBF1u/hY2omd/CDvBPwZuJcYFajEj
-         Jm/ttqgwSBn+LsEk/M9sVobQdB52p7NTTFl/Y+O9jxRMknsyXOiZNn7YyaH5eXFWVhqm
-         nbkw==
+        d=gmail.com; s=20230601; t=1705532661; x=1706137461; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=P9Tq0+VI5CEr6uk7/Ro+mbe/sL1gYF6tkxHkvmpyY0Q=;
+        b=Iq+tm3DNpSpnqqHhNATQJuTFwzxEBEojLfeB8tlJF7ffdDy//jsSPEZlXXJsAZIfUm
+         7E0kgUy2a0NrlJY2L3UYiUHlfGEQ5rWfkOs7XzsvsPR4AdISDuR8OLfROFbnpzbZBHjk
+         cgtgxag93wJ7za+Kk8j5u/lrNsoiQV7rVmi3ywrEITNC91f2WsR2WOY9aFUvcD2YlRke
+         I2NguY6UOXFMBO7ogZl9LPSVSUr3/cEz83I8ZoGHWC15IOfKO6BWI+acv7Z6if5x2mM6
+         p0AV+GHi9gnr6FdV2m0zNGlnHVsdX3aJRnHpTxgRj4/XJ2/HppboCUi3i1nFpfaqkZm/
+         mtBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705532572; x=1706137372;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SGuwmcM9VZPWGXdP4OLSWh6XXl1zTy0Ln1eSOnA9S5c=;
-        b=Y1OAD9p6DHIQxt9PxStmTlkgDl++w4LjOM3F3rmzJyQaAHLZBqPl5Xu2OZMx0Rkdb+
-         yHVlpMid37kV/jTgAxi3a9AfQ9FoAeR8evEPtux2W9mSksJlF21bHkbPx1/GtDdHKpA1
-         tFhk5b/JAProcTtXPc2jSPtxkCCoqiiq51Gz9ahe8JteSSNxaUYeqOVaDqUX3Ly4zuAe
-         PbWoCHApoT7QSoypEMFUpCV09qof0ELButSa9JUI8lyMn8XZhOiga457dJjTNxhIgqPr
-         i0Pqe0AH4DnQ/9UvR1YAEaiEcdP6oL7Ebb8kRmBc1/oB0MqMGmZqw3ON4byK3vHLrAQc
-         OJPw==
-X-Gm-Message-State: AOJu0YzqFqFvXz012PPmhL7o37jWW6+U8GqPxEaghrBX8QsOut1BCiwl
-	1nCcKnNxM2CQUBEkMrNzIHIFPMuuMTpuVBcEPTw=
-X-Google-Smtp-Source: AGHT+IEyh6E1JyfbBcOzTS+Ny6+5hFfqk9A29gHGULXKkmlmNFTgNC3fzPVflgGqqVC7nzKQ0rHzhKn1WzGxrF/hVg0=
-X-Received: by 2002:a5d:5887:0:b0:337:c5f5:1f2d with SMTP id
- n7-20020a5d5887000000b00337c5f51f2dmr409309wrf.274.1705532572055; Wed, 17 Jan
- 2024 15:02:52 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705532661; x=1706137461;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P9Tq0+VI5CEr6uk7/Ro+mbe/sL1gYF6tkxHkvmpyY0Q=;
+        b=bskXVdoJDYMC+pKRJN8P9/0t+Ufz/78cLyXslQddkfFyaf6yCj+xZuwvWMog7be3+g
+         Na0y/zAIEiJVENkQ4Q5Kq0pY0YoSwhVFCVWEg39EBCmOjp1qKvbvyhqPow100ILVKSrL
+         01aXKFCifvMV3YcczSvVk5MkM3G/EsBPBxdVYHuyBbBMrOA8SPQ/IhZ5Kr1u3akh+sF7
+         j7GAvJdiGSiUqUI9AoLyOs+XCFcVjvJyk4FTJyHoVztUHTrQ0PABPD+42Qu9W/4u+A8U
+         QmxtZSZgGZsi88ZVbcJy9s1rQRlR4NPofLZlTzpnvL2MwU3K10tQvK/hhiFEeEXq60YQ
+         mucg==
+X-Gm-Message-State: AOJu0YxN9KCZIRvR/LCMGMCXQ21sZ+aYY0wtSqL2E92LsLmgfKw42h27
+	umDg3KXB5u8/LsZRWQQPr8o=
+X-Google-Smtp-Source: AGHT+IE2xjge4UH9rYyWqY52nTgwOx6Sr0Yug2vyNPuBXZRC11gOcQQp4pTRXzBmiNJ+K2nfpB6e2w==
+X-Received: by 2002:a05:600c:6a03:b0:40e:5808:53f9 with SMTP id jj3-20020a05600c6a0300b0040e580853f9mr5086488wmb.73.1705532660659;
+        Wed, 17 Jan 2024 15:04:20 -0800 (PST)
+Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.gmail.com with ESMTPSA id m17-20020adffa11000000b00336c6b77584sm2613221wrr.91.2024.01.17.15.04.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jan 2024 15:04:19 -0800 (PST)
+Message-ID: <65a85cf3.df0a0220.9615c.a798@mx.google.com>
+X-Google-Original-Message-ID: <ZahYwII7E_zAz_X-@Ansuel-xps.>
+Date: Wed, 17 Jan 2024 23:46:24 +0100
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
+	Russell King <linux@armlinux.org.uk>,
+	Andy Gross <agross@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@somainline.org>,
+	Arnd Bergmann <arnd@arndb.de>, Ard Biesheuvel <ardb@kernel.org>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	Nick Hawkins <nick.hawkins@hpe.com>,
+	John Crispin <john@phrozen.org>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] ARM: mach-qcom: fix support for ipq806x
+References: <20221021181016.14740-1-ansuelsmth@gmail.com>
+ <CACRpkdbfvr1pkVb3XhBZLnmn7vy3XyzavwVjW_VmFKTdh3LABQ@mail.gmail.com>
+ <63531543.050a0220.b6bf5.284d@mx.google.com>
+ <CACRpkdbOQq9hUT=d1QBDMmgLaJ1wZ=hd44ciMnjFVgpLCnK8Wg@mail.gmail.com>
+ <6357240c.170a0220.999b2.23d6@mx.google.com>
+ <CACRpkdb4iqazgVerHCPU0VqZKYoB5kJeDSaL+ek67L=2Txem-A@mail.gmail.com>
+ <65a7d352.050a0220.ee5cf.f69f@mx.google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240115092727.888096-1-elver@google.com> <20240115092727.888096-2-elver@google.com>
-In-Reply-To: <20240115092727.888096-2-elver@google.com>
-From: Andrey Konovalov <andreyknvl@gmail.com>
-Date: Thu, 18 Jan 2024 00:02:40 +0100
-Message-ID: <CA+fCnZcx4vnD=xun-tDQS27EUYKd2VLZQ3s4Vnm3sTTpz2WCXw@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/2] stackdepot: make fast paths lock-less again
-To: Marco Elver <elver@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Alexander Potapenko <glider@google.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, kasan-dev@googlegroups.com, 
-	Andi Kleen <ak@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <65a7d352.050a0220.ee5cf.f69f@mx.google.com>
 
-On Mon, Jan 15, 2024 at 10:27=E2=80=AFAM Marco Elver <elver@google.com> wro=
-te:
->
-> With the introduction of the pool_rwlock (reader-writer lock), several
-> fast paths end up taking the pool_rwlock as readers. Furthermore,
-> stack_depot_put() unconditionally takes the pool_rwlock as a writer.
->
-> Despite allowing readers to make forward-progress concurrently,
-> reader-writer locks have inherent cache contention issues, which does
-> not scale well on systems with large CPU counts.
->
-> Rework the synchronization story of stack depot to again avoid taking
-> any locks in the fast paths. This is done by relying on RCU-protected
-> list traversal, and the NMI-safe subset of RCU to delay reuse of freed
-> stack records. See code comments for more details.
->
-> Along with the performance issues, this also fixes incorrect nesting of
-> rwlock within a raw_spinlock, given that stack depot should still be
-> usable from anywhere:
->
->  | [ BUG: Invalid wait context ]
->  | -----------------------------
->  | swapper/0/1 is trying to lock:
->  | ffffffff89869be8 (pool_rwlock){..--}-{3:3}, at: stack_depot_save_flags
->  | other info that might help us debug this:
->  | context-{5:5}
->  | 2 locks held by swapper/0/1:
->  |  #0: ffffffff89632440 (rcu_read_lock){....}-{1:3}, at: __queue_work
->  |  #1: ffff888100092018 (&pool->lock){-.-.}-{2:2}, at: __queue_work  <--=
- raw_spin_lock
->
-> Stack depot usage stats are similar to the previous version after a
-> KASAN kernel boot:
->
->  $ cat /sys/kernel/debug/stackdepot/stats
->  pools: 838
->  allocations: 29865
->  frees: 6604
->  in_use: 23261
->  freelist_size: 1879
->
-> The number of pools is the same as previously. The freelist size is
-> minimally larger, but this may also be due to variance across system
-> boots. This shows that even though we do not eagerly wait for the next
-> RCU grace period (such as with synchronize_rcu() or call_rcu()) after
-> freeing a stack record - requiring depot_pop_free() to "poll" if an
-> entry may be used - new allocations are very likely to happen in later
-> RCU grace periods.
->
-> Fixes: 108be8def46e ("lib/stackdepot: allow users to evict stack traces")
-> Reported-by: Andi Kleen <ak@linux.intel.com>
-> Signed-off-by: Marco Elver <elver@google.com>
-> Cc: Alexander Potapenko <glider@google.com>
-> Cc: Andrey Konovalov <andreyknvl@gmail.com>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> ---
->  lib/stackdepot.c | 329 +++++++++++++++++++++++++++++++----------------
->  1 file changed, 217 insertions(+), 112 deletions(-)
->
-> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-> index 80a8ca24ccc8..db174cc02d34 100644
-> --- a/lib/stackdepot.c
-> +++ b/lib/stackdepot.c
-> @@ -24,6 +24,8 @@
->  #include <linux/mutex.h>
->  #include <linux/percpu.h>
->  #include <linux/printk.h>
-> +#include <linux/rculist.h>
-> +#include <linux/rcupdate.h>
->  #include <linux/refcount.h>
->  #include <linux/slab.h>
->  #include <linux/spinlock.h>
-> @@ -68,12 +70,28 @@ union handle_parts {
->  };
->
->  struct stack_record {
-> -       struct list_head list;          /* Links in hash table or freelis=
-t */
-> +       struct list_head hash_list;     /* Links in the hash table */
->         u32 hash;                       /* Hash in hash table */
->         u32 size;                       /* Number of stored frames */
-> -       union handle_parts handle;
-> +       union handle_parts handle;      /* Constant after initialization =
-*/
->         refcount_t count;
-> -       unsigned long entries[CONFIG_STACKDEPOT_MAX_FRAMES];    /* Frames=
- */
-> +       union {
-> +               unsigned long entries[CONFIG_STACKDEPOT_MAX_FRAMES];    /=
-* Frames */
-> +               struct {
-> +                       /*
-> +                        * An important invariant of the implementation i=
-s to
-> +                        * only place a stack record onto the freelist if=
-f its
-> +                        * refcount is zero. Because stack records with a=
- zero
-> +                        * refcount are never considered as valid, it is =
-safe to
-> +                        * union @entries and freelist management state b=
-elow.
-> +                        * Conversely, as soon as an entry is off the fre=
-elist
-> +                        * and its refcount becomes non-zero, the below m=
-ust not
-> +                        * be accessed until being placed back on the fre=
-elist.
-> +                        */
-> +                       struct list_head free_list;     /* Links in the f=
-reelist */
-> +                       unsigned long rcu_state;        /* RCU cookie */
-> +               };
-> +       };
->  };
->
->  #define DEPOT_STACK_RECORD_SIZE \
-> @@ -113,8 +131,8 @@ static LIST_HEAD(free_stacks);
->   * yet allocated or if the limit on the number of pools is reached.
->   */
->  static bool new_pool_required =3D true;
-> -/* Lock that protects the variables above. */
-> -static DEFINE_RWLOCK(pool_rwlock);
-> +/* The lock must be held when performing pool or free list modifications=
- */
-> +static DEFINE_RAW_SPINLOCK(pool_lock);
->
->  /* Statistics counters for debugfs. */
->  enum depot_counter_id {
-> @@ -276,14 +294,15 @@ int stack_depot_init(void)
->  }
->  EXPORT_SYMBOL_GPL(stack_depot_init);
->
-> -/* Initializes a stack depol pool. */
-> +/*
-> + * Initializes new stack depot @pool, release all its entries to the fre=
-elist,
-> + * and update the list of pools.
-> + */
->  static void depot_init_pool(void *pool)
->  {
->         int offset;
->
-> -       lockdep_assert_held_write(&pool_rwlock);
-> -
-> -       WARN_ON(!list_empty(&free_stacks));
-> +       lockdep_assert_held(&pool_lock);
->
->         /* Initialize handles and link stack records into the freelist. *=
-/
->         for (offset =3D 0; offset <=3D DEPOT_POOL_SIZE - DEPOT_STACK_RECO=
-RD_SIZE;
-> @@ -294,19 +313,31 @@ static void depot_init_pool(void *pool)
->                 stack->handle.offset =3D offset >> DEPOT_STACK_ALIGN;
->                 stack->handle.extra =3D 0;
->
-> -               list_add(&stack->list, &free_stacks);
-> +               /*
-> +                * Stack traces of size 0 are never saved, and we can sim=
-ply use
-> +                * the size field as an indicator if this is a new unused=
- stack
-> +                * record in the freelist.
-> +                */
-> +               stack->size =3D 0;
-> +
-> +               INIT_LIST_HEAD(&stack->hash_list);
-> +               /* Add to the freelist front to prioritize never-used ent=
-ries. */
-> +               list_add(&stack->free_list, &free_stacks);
->                 counters[DEPOT_COUNTER_FREELIST_SIZE]++;
->         }
->
->         /* Save reference to the pool to be used by depot_fetch_stack(). =
-*/
->         stack_pools[pools_num] =3D pool;
-> -       pools_num++;
-> +
-> +       /* Pairs with concurrent READ_ONCE() in depot_fetch_stack(). */
-> +       WRITE_ONCE(pools_num, pools_num + 1);
-> +       ASSERT_EXCLUSIVE_WRITER(pools_num);
->  }
->
->  /* Keeps the preallocated memory to be used for a new stack depot pool. =
-*/
->  static void depot_keep_new_pool(void **prealloc)
->  {
-> -       lockdep_assert_held_write(&pool_rwlock);
-> +       lockdep_assert_held(&pool_lock);
->
->         /*
->          * If a new pool is already saved or the maximum number of
-> @@ -329,17 +360,16 @@ static void depot_keep_new_pool(void **prealloc)
->          * number of pools is reached. In either case, take note that
->          * keeping another pool is not required.
->          */
-> -       new_pool_required =3D false;
-> +       WRITE_ONCE(new_pool_required, false);
->  }
->
-> -/* Updates references to the current and the next stack depot pools. */
-> -static bool depot_update_pools(void **prealloc)
-> +/*
-> + * Try to initialize a new stack depot pool from either a previous or th=
-e
-> + * current pre-allocation, and release all its entries to the freelist.
-> + */
-> +static bool depot_try_init_pool(void **prealloc)
->  {
-> -       lockdep_assert_held_write(&pool_rwlock);
-> -
-> -       /* Check if we still have objects in the freelist. */
-> -       if (!list_empty(&free_stacks))
-> -               goto out_keep_prealloc;
-> +       lockdep_assert_held(&pool_lock);
->
->         /* Check if we have a new pool saved and use it. */
->         if (new_pool) {
-> @@ -348,10 +378,9 @@ static bool depot_update_pools(void **prealloc)
->
->                 /* Take note that we might need a new new_pool. */
->                 if (pools_num < DEPOT_MAX_POOLS)
-> -                       new_pool_required =3D true;
-> +                       WRITE_ONCE(new_pool_required, true);
->
-> -               /* Try keeping the preallocated memory for new_pool. */
-> -               goto out_keep_prealloc;
-> +               return true;
->         }
->
->         /* Bail out if we reached the pool limit. */
-> @@ -368,35 +397,53 @@ static bool depot_update_pools(void **prealloc)
->         }
->
->         return false;
-> -
-> -out_keep_prealloc:
-> -       /* Keep the preallocated memory for a new pool if required. */
-> -       if (*prealloc)
-> -               depot_keep_new_pool(prealloc);
-> -       return true;
->  }
->
-> -/* Allocates a new stack in a stack depot pool. */
-> -static struct stack_record *
-> -depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **pre=
-alloc)
-> +/* Try to find next free usable entry. */
-> +static struct stack_record *depot_pop_free(void)
->  {
->         struct stack_record *stack;
->
-> -       lockdep_assert_held_write(&pool_rwlock);
-> +       lockdep_assert_held(&pool_lock);
->
-> -       /* Update current and new pools if required and possible. */
-> -       if (!depot_update_pools(prealloc))
-> +       if (list_empty(&free_stacks))
->                 return NULL;
->
-> -       /* Check if we have a stack record to save the stack trace. */
-> -       if (list_empty(&free_stacks))
-> +       /*
-> +        * We maintain the invariant that the elements in front are least
-> +        * recently used, and are therefore more likely to be associated =
-with an
-> +        * RCU grace period in the past. Consequently it is sufficient to=
- only
-> +        * check the first entry.
-> +        */
-> +       stack =3D list_first_entry(&free_stacks, struct stack_record, fre=
-e_list);
-> +       if (stack->size && !poll_state_synchronize_rcu(stack->rcu_state))
->                 return NULL;
->
-> -       /* Get and unlink the first entry from the freelist. */
-> -       stack =3D list_first_entry(&free_stacks, struct stack_record, lis=
-t);
-> -       list_del(&stack->list);
-> +       list_del(&stack->free_list);
->         counters[DEPOT_COUNTER_FREELIST_SIZE]--;
->
-> +       return stack;
-> +}
-> +
-> +/* Allocates a new stack in a stack depot pool. */
-> +static struct stack_record *
-> +depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **pre=
-alloc)
-> +{
-> +       struct stack_record *stack;
-> +
-> +       lockdep_assert_held(&pool_lock);
-> +
-> +       /* Check if we have a stack record to save the stack trace. */
-> +       stack =3D depot_pop_free();
-> +       if (!stack) {
-> +               /* No usable entries on the freelist - try to refill the =
-freelist. */
-> +               if (!depot_try_init_pool(prealloc))
-> +                       return NULL;
-> +               stack =3D depot_pop_free();
-> +               if (WARN_ON(!stack))
-> +                       return NULL;
-> +       }
-> +
->         /* Limit number of saved frames to CONFIG_STACKDEPOT_MAX_FRAMES. =
-*/
->         if (size > CONFIG_STACKDEPOT_MAX_FRAMES)
->                 size =3D CONFIG_STACKDEPOT_MAX_FRAMES;
-> @@ -421,37 +468,73 @@ depot_alloc_stack(unsigned long *entries, int size,=
- u32 hash, void **prealloc)
->
->  static struct stack_record *depot_fetch_stack(depot_stack_handle_t handl=
-e)
->  {
-> +       const int pools_num_cached =3D READ_ONCE(pools_num);
->         union handle_parts parts =3D { .handle =3D handle };
->         void *pool;
->         size_t offset =3D parts.offset << DEPOT_STACK_ALIGN;
->         struct stack_record *stack;
->
-> -       lockdep_assert_held(&pool_rwlock);
-> +       lockdep_assert_not_held(&pool_lock);
->
-> -       if (parts.pool_index > pools_num) {
-> +       if (parts.pool_index > pools_num_cached) {
->                 WARN(1, "pool index %d out of bounds (%d) for stack id %0=
-8x\n",
-> -                    parts.pool_index, pools_num, handle);
-> +                    parts.pool_index, pools_num_cached, handle);
->                 return NULL;
->         }
->
->         pool =3D stack_pools[parts.pool_index];
-> -       if (!pool)
-> +       if (WARN_ON(!pool))
->                 return NULL;
->
->         stack =3D pool + offset;
-> +       if (WARN_ON(!refcount_read(&stack->count)))
-> +               return NULL;
-> +
->         return stack;
->  }
->
->  /* Links stack into the freelist. */
->  static void depot_free_stack(struct stack_record *stack)
->  {
-> -       lockdep_assert_held_write(&pool_rwlock);
-> +       unsigned long flags;
-> +
-> +       lockdep_assert_not_held(&pool_lock);
->
-> -       list_add(&stack->list, &free_stacks);
-> +       raw_spin_lock_irqsave(&pool_lock, flags);
-> +       printk_deferred_enter();
-> +
-> +       /*
-> +        * Remove the entry from the hash list. Concurrent list traversal=
- may
-> +        * still observe the entry, but since the refcount is zero, this =
-entry
-> +        * will no longer be considered as valid.
-> +        */
-> +       list_del_rcu(&stack->hash_list);
-> +
-> +       /*
-> +        * Due to being used from constrained contexts such as the alloca=
-tors,
-> +        * NMI, or even RCU itself, stack depot cannot rely on primitives=
- that
-> +        * would sleep (such as synchronize_rcu()) or recursively call in=
-to
-> +        * stack depot again (such as call_rcu()).
-> +        *
-> +        * Instead, get an RCU cookie, so that we can ensure this entry i=
-sn't
-> +        * moved onto another list until the next grace period, and concu=
-rrent
-> +        * RCU list traversal remains safe.
-> +        */
-> +       stack->rcu_state =3D get_state_synchronize_rcu();
-> +
-> +       /*
-> +        * Add the entry to the freelist tail, so that older entries are
-> +        * considered first - their RCU cookie is more likely to no longe=
-r be
-> +        * associated with the current grace period.
-> +        */
-> +       list_add_tail(&stack->free_list, &free_stacks);
->
->         counters[DEPOT_COUNTER_FREELIST_SIZE]++;
->         counters[DEPOT_COUNTER_FREES]++;
->         counters[DEPOT_COUNTER_INUSE]--;
-> +
-> +       printk_deferred_exit();
-> +       raw_spin_unlock_irqrestore(&pool_lock, flags);
->  }
->
->  /* Calculates the hash for a stack. */
-> @@ -479,22 +562,65 @@ int stackdepot_memcmp(const unsigned long *u1, cons=
-t unsigned long *u2,
->
->  /* Finds a stack in a bucket of the hash table. */
->  static inline struct stack_record *find_stack(struct list_head *bucket,
-> -                                            unsigned long *entries, int =
-size,
-> -                                            u32 hash)
-> +                                             unsigned long *entries, int=
- size,
-> +                                             u32 hash, depot_flags_t fla=
-gs)
->  {
-> -       struct list_head *pos;
-> -       struct stack_record *found;
-> +       struct stack_record *stack, *ret =3D NULL;
-> +
-> +       rcu_read_lock();
->
-> -       lockdep_assert_held(&pool_rwlock);
-> +       list_for_each_entry_rcu(stack, bucket, hash_list) {
-> +               if (stack->hash !=3D hash || stack->size !=3D size)
-> +                       continue;
->
-> -       list_for_each(pos, bucket) {
-> -               found =3D list_entry(pos, struct stack_record, list);
-> -               if (found->hash =3D=3D hash &&
-> -                   found->size =3D=3D size &&
-> -                   !stackdepot_memcmp(entries, found->entries, size))
-> -                       return found;
-> +               /*
-> +                * This may race with depot_free_stack() accessing the fr=
-eelist
-> +                * management state unioned with @entries. The refcount i=
-s zero
-> +                * in that case and the below refcount_inc_not_zero() wil=
-l fail.
-> +                */
-> +               if (data_race(stackdepot_memcmp(entries, stack->entries, =
-size)))
-> +                       continue;
-> +
-> +               /*
-> +                * Try to increment refcount. If this succeeds, the stack=
- record
-> +                * is valid and has not yet been freed.
-> +                *
-> +                * If STACK_DEPOT_FLAG_GET is not used, it is undefined b=
-ehavior
-> +                * to then call stack_depot_put() later, and we can assum=
-e that
-> +                * a stack record is never placed back on the freelist.
-> +                */
-> +               if (flags & STACK_DEPOT_FLAG_GET) {
-> +                       if (!refcount_inc_not_zero(&stack->count))
-> +                               continue;
-> +                       smp_mb__after_atomic();
-> +               } else {
-> +                       /*
-> +                        * Pairs with the release implied by list_add_rcu=
-() to
-> +                        * turn the list-pointer access into an acquire; =
-as-is
-> +                        * it only provides dependency-ordering implied b=
-y
-> +                        * READ_ONCE().
-> +                        *
-> +                        * Normally this is not needed, if we were to con=
-tinue
-> +                        * using the stack_record pointer only. But, the =
-pointer
-> +                        * returned here is not actually used to lookup e=
-ntries.
-> +                        * Instead, the handle is returned, from which a =
-pointer
-> +                        * may then be reconstructed in depot_fetch_stack=
-().
-> +                        *
-> +                        * Therefore, it is required to upgrade the order=
-ing
-> +                        * from dependency-ordering only to at least acqu=
-ire to
-> +                        * be able to use the handle as another reference=
- to the
-> +                        * same stack record.
-> +                        */
-> +                       smp_mb();
-> +               }
-> +
-> +               ret =3D stack;
-> +               break;
->         }
-> -       return NULL;
-> +
-> +       rcu_read_unlock();
-> +
-> +       return ret;
->  }
->
->  depot_stack_handle_t stack_depot_save_flags(unsigned long *entries,
-> @@ -508,7 +634,6 @@ depot_stack_handle_t stack_depot_save_flags(unsigned =
-long *entries,
->         struct page *page =3D NULL;
->         void *prealloc =3D NULL;
->         bool can_alloc =3D depot_flags & STACK_DEPOT_FLAG_CAN_ALLOC;
-> -       bool need_alloc =3D false;
->         unsigned long flags;
->         u32 hash;
->
-> @@ -531,31 +656,16 @@ depot_stack_handle_t stack_depot_save_flags(unsigne=
-d long *entries,
->         hash =3D hash_stack(entries, nr_entries);
->         bucket =3D &stack_table[hash & stack_hash_mask];
->
-> -       read_lock_irqsave(&pool_rwlock, flags);
-> -       printk_deferred_enter();
-> -
-> -       /* Fast path: look the stack trace up without full locking. */
-> -       found =3D find_stack(bucket, entries, nr_entries, hash);
-> -       if (found) {
-> -               if (depot_flags & STACK_DEPOT_FLAG_GET)
-> -                       refcount_inc(&found->count);
-> -               printk_deferred_exit();
-> -               read_unlock_irqrestore(&pool_rwlock, flags);
-> +       /* Fast path: look the stack trace up without locking. */
-> +       found =3D find_stack(bucket, entries, nr_entries, hash, depot_fla=
-gs);
-> +       if (found)
->                 goto exit;
-> -       }
-> -
-> -       /* Take note if another stack pool needs to be allocated. */
-> -       if (new_pool_required)
-> -               need_alloc =3D true;
-> -
-> -       printk_deferred_exit();
-> -       read_unlock_irqrestore(&pool_rwlock, flags);
->
->         /*
->          * Allocate memory for a new pool if required now:
->          * we won't be able to do that under the lock.
->          */
-> -       if (unlikely(can_alloc && need_alloc)) {
-> +       if (unlikely(can_alloc && READ_ONCE(new_pool_required))) {
->                 /*
->                  * Zero out zone modifiers, as we don't have specific zon=
-e
->                  * requirements. Keep the flags related to allocation in =
-atomic
-> @@ -569,31 +679,36 @@ depot_stack_handle_t stack_depot_save_flags(unsigne=
-d long *entries,
->                         prealloc =3D page_address(page);
->         }
->
-> -       write_lock_irqsave(&pool_rwlock, flags);
-> +       raw_spin_lock_irqsave(&pool_lock, flags);
->         printk_deferred_enter();
->
-> -       found =3D find_stack(bucket, entries, nr_entries, hash);
-> +       /* Try to find again, to avoid concurrently inserting duplicates.=
- */
-> +       found =3D find_stack(bucket, entries, nr_entries, hash, depot_fla=
-gs);
->         if (!found) {
->                 struct stack_record *new =3D
->                         depot_alloc_stack(entries, nr_entries, hash, &pre=
-alloc);
->
->                 if (new) {
-> -                       list_add(&new->list, bucket);
-> +                       /*
-> +                        * This releases the stack record into the bucket=
- and
-> +                        * makes it visible to readers in find_stack().
-> +                        */
-> +                       list_add_rcu(&new->hash_list, bucket);
->                         found =3D new;
->                 }
-> -       } else {
-> -               if (depot_flags & STACK_DEPOT_FLAG_GET)
-> -                       refcount_inc(&found->count);
-> +       }
-> +
-> +       if (prealloc) {
->                 /*
-> -                * Stack depot already contains this stack trace, but let=
-'s
-> -                * keep the preallocated memory for future.
-> +                * Either stack depot already contains this stack trace, =
-or
-> +                * depot_alloc_stack() did not consume the preallocated m=
-emory.
-> +                * Try to keep the preallocated memory for future.
->                  */
-> -               if (prealloc)
-> -                       depot_keep_new_pool(&prealloc);
-> +               depot_keep_new_pool(&prealloc);
->         }
->
->         printk_deferred_exit();
-> -       write_unlock_irqrestore(&pool_rwlock, flags);
-> +       raw_spin_unlock_irqrestore(&pool_lock, flags);
->  exit:
->         if (prealloc) {
->                 /* Stack depot didn't use this memory, free it. */
-> @@ -618,7 +733,6 @@ unsigned int stack_depot_fetch(depot_stack_handle_t h=
-andle,
->                                unsigned long **entries)
->  {
->         struct stack_record *stack;
-> -       unsigned long flags;
->
->         *entries =3D NULL;
->         /*
-> @@ -630,13 +744,13 @@ unsigned int stack_depot_fetch(depot_stack_handle_t=
- handle,
->         if (!handle || stack_depot_disabled)
->                 return 0;
->
-> -       read_lock_irqsave(&pool_rwlock, flags);
-> -       printk_deferred_enter();
-> -
->         stack =3D depot_fetch_stack(handle);
-> -
-> -       printk_deferred_exit();
-> -       read_unlock_irqrestore(&pool_rwlock, flags);
-> +       /*
-> +        * Should never be NULL, otherwise this is a use-after-put (or ju=
-st a
-> +        * corrupt handle).
-> +        */
-> +       if (WARN(!stack, "corrupt handle or use after stack_depot_put()")=
-)
-> +               return 0;
->
->         *entries =3D stack->entries;
->         return stack->size;
-> @@ -646,29 +760,20 @@ EXPORT_SYMBOL_GPL(stack_depot_fetch);
->  void stack_depot_put(depot_stack_handle_t handle)
->  {
->         struct stack_record *stack;
-> -       unsigned long flags;
->
->         if (!handle || stack_depot_disabled)
->                 return;
->
-> -       write_lock_irqsave(&pool_rwlock, flags);
-> -       printk_deferred_enter();
-> -
->         stack =3D depot_fetch_stack(handle);
-> -       if (WARN_ON(!stack))
-> -               goto out;
-> -
-> -       if (refcount_dec_and_test(&stack->count)) {
-> -               /* Unlink stack from the hash table. */
-> -               list_del(&stack->list);
-> +       /*
-> +        * Should always be able to find the stack record, otherwise this=
- is an
-> +        * unbalanced put attempt (or corrupt handle).
-> +        */
-> +       if (WARN(!stack, "corrupt handle or unbalanced stack_depot_put()"=
-))
-> +               return;
->
-> -               /* Free stack. */
-> +       if (refcount_dec_and_test(&stack->count))
->                 depot_free_stack(stack);
-> -       }
-> -
-> -out:
-> -       printk_deferred_exit();
-> -       write_unlock_irqrestore(&pool_rwlock, flags);
->  }
->  EXPORT_SYMBOL_GPL(stack_depot_put);
->
-> --
-> 2.43.0.275.g3460e3d667-goog
+On Wed, Jan 17, 2024 at 02:17:03PM +0100, Christian Marangi wrote:
+> On Wed, Oct 26, 2022 at 10:19:21AM +0200, Linus Walleij wrote:
+> > On Tue, Oct 25, 2022 at 1:47 AM Christian Marangi <ansuelsmth@gmail.com> wrote:
+> > 
+> > > bad news... yesterday I tested this binding and it's problematic. It
+> > > does work and the router correctly boot...
+> > 
+> > That's actually partly good news :D
+> 
+> Hi,
+> sorry for the necroposting but I got some time and wanted to fix and
+> bisect this for good since IPQ806x is finally in a better shape and is
+> actually modern enough.
+> 
+> > 
+> > > problem is that SMEM is
+> > > broken with such configuration... I assume with this binding, by the
+> > > system view ram starts from 0x42000000 instead of 0x40000000 and this
+> > > cause SMEM to fail probe with the error "SBL didn't init SMEM".
+> > 
+> > We need to fix this.
+> > 
+> 
+> Totally but I think the problem is more deep...
+> 
+> > > This is the location of SMEM entry in ram
+> > >
+> > >                 smem: smem@41000000 {
+> > >                         compatible = "qcom,smem";
+> > >                         reg = <0x41000000 0x200000>;
+> > >                         no-map;
+> > >
+> > >                         hwlocks = <&sfpb_mutex 3>;
+> > >                 };
+> > (...)
+> > > Wonder if you have other ideas about this.
+> > 
+> > So the problem is that the resource is outside of the system RAM?
+> > 
+> > I don't understand why that triggers it since this is per definition not
+> > system RAM, it is SMEM after all. And it is no different in esssence
+> > from any memory mapped IO or other things that are outside of
+> > the system RAM.
+> > 
+> > The SMEM node is special since it is created without children thanks
+> > to the hack in drivers/of/platform.c.
+> > 
+> > Then the driver in drivers/soc/qcom/smem.c
+> > contains things like this:
+> > 
+> >         rmem = of_reserved_mem_lookup(pdev->dev.of_node);
+> >         if (rmem) {
+> >                 smem->regions[0].aux_base = rmem->base;
+> >                 smem->regions[0].size = rmem->size;
+> >         } else {
+> >                 /*
+> >                  * Fall back to the memory-region reference, if we're not a
+> >                  * reserved-memory node.
+> >                  */
+> >                 ret = qcom_smem_resolve_mem(smem, "memory-region",
+> > &smem->regions[0]);
+> >                 if (ret)
+> >                         return ret;
+> >         }
+> > 
+> > However it is treated as memory-mapped IO later:
+> > 
+> >         for (i = 1; i < num_regions; i++) {
+> >                 smem->regions[i].virt_base = devm_ioremap_wc(&pdev->dev,
+> > 
+> > smem->regions[i].aux_base,
+> > 
+> > smem->regions[i].size);
+> >                 if (!smem->regions[i].virt_base) {
+> >                         dev_err(&pdev->dev, "failed to remap %pa\n",
+> > &smem->regions[i].aux_base);
+> >                         return -ENOMEM;
+> >                 }
+> >         }
+> > 
+> > As a first hack I would check:
+> > 
+> > 1. Is it the of_reserved_mem_lookup() or qcom_smem_resolve_smem() stuff
+> >    in drivers/soc/qcom/smem.c that is failing?
+> > 
+> > If yes then:
+> > 
+> > 2. Add a fallback path just using of_iomap(node) for aux_base and size
+> >   with some comment like /* smem is outside of the main memory map */
+> >   and see if that works.
+> >
+> 
+> I think we got confused and we didn't read the code correctly. The
+> error is "SMEM is not initialized by SBL" that is triggered by...
+> 
+> 	header = smem->regions[0].virt_base;
+> 	if (le32_to_cpu(header->initialized) != 1 ||
+> 	    le32_to_cpu(header->reserved)) {
+> 		dev_err(&pdev->dev, "SMEM is not initialized by SBL\n",);
+> 		return -EINVAL;
+> 	}
+> 
+> I verified correctly that aux_base and size are the correct values
+> 0x41000000 and 0x200000. And from what I can see they get correctly
+> iomapped.
+> 
+> Problem is that initialized and reserved have garbage in it. (not random
+> data tho but everytime the same data)
+> 
+> My theory is that somehow the loader is still writing data there but I'm
+> a bit lost on how to verify that. (the fact that the data in those
+> values is always the same with the same compiled image makes me think
+> it's actually just loaded data)
+> 
+> I also tested with disabling the CONFIG_ARM_ATAG_DTB_COMPAT flag but I
+> have the same result.
+> 
+> What I'm using is this memory node
+> 
+> 	memory@0 {
+> 		reg = <0x42000000 0x1e000000>;
+> 		device_type = "memory";
+> 	};
+> 
+> And in chosed I have
+> 
+> 	chosen {
+> 		bootargs = "earlycon";
+>                 linux,usable-memory-range = <0x42000000 0x10000000>;
+> 	};
+> 
+> (the size is different just for the sake of it but it should not cause
+> problem right?)
+> 
+> Maybe there is a way to make the SMEM reclaim those RAM space and reinit
+> it? (it's a workaround tho)
+> 
+> Also with the current situation the kernel panics with... But I assume
+> this is caused by SMEM malfunctioning (the panic happen right after rpm
+> init when the RPM regulators are getting init. Looking at the affected
+> codes maybe it's failing at the "Free unused pages" stage?
+> 
+> [    1.912392] 8<--- cut here ---
+> [    1.912431] Unable to handle kernel NULL pointer dereference at virtual address 00000000
+> [    1.914356] [00000000] *pgd=00000000
+> [    1.922676] Internal error: Oops: 80000007 [#1] SMP ARM
+> [    1.926158] Modules linked in:
+> [    1.931103] CPU: 1 PID: 84 Comm: modprobe Not tainted 6.1.65 #0
+> [    1.934229] Hardware name: Generic DT based system
+> [    1.940045] PC is at 0x0
+> [    1.944902] LR is at release_pages+0x114/0x36c
+> [    1.947595] pc : [<00000000>]    lr : [<c04298dc>]    psr: 40000013
+> [    1.951851] sp : c27abe18  ip : c13cd5c1  fp : c27abe38
+> [    1.958012] r10: 0000009c  r9 : c4018268  r8 : 00000005
+> [    1.963220] r7 : c243f400  r6 : c243f400  r5 : 00000098  r4 : df992b54
+> [    1.968431] r3 : 00000000  r2 : 00000000  r1 : 60000013  r0 : df992b54
+> [    1.975029] Flags: nZcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+> [    1.981543] Control: 10c5787d  Table: 4367806a  DAC: 00000051
+> [    1.988744] Register r0 information: non-slab/vmalloc memory
+> [    1.994472] Register r1 information: non-paged memory
+> [    2.000200] Register r2 information: NULL pointer
+> [    2.005148] Register r3 information: NULL pointer
+> [    2.009834] Register r4 information: non-slab/vmalloc memory
+> [    2.014525] Register r5 information: non-paged memory
+> [    2.020252] Register r6 information: slab kmalloc-1k start c243f400 pointer offset 0 size 1024
+> [    2.025206] Register r7 information: slab kmalloc-1k start c243f400 pointer offset 0 size 1024
+> [    2.033714] Register r8 information: non-paged memory
+> [    2.042301] Register r9 information: non-slab/vmalloc memory
+> [    2.047424] Register r10 information: non-paged memory
+> [    2.053152] Register r11 information: non-slab/vmalloc memory
+> [    2.058100] Register r12 information: non-paged memory
+> [    2.063915] Process modprobe (pid: 84, stack limit = 0x(ptrval))
+> [    2.068953] Stack: (0xc27abe18 to 0xc27ac000)
+> [    2.075115] be00:                                                       00000000 00000000
+> [    2.079378] be20: c147514c ffefffcf 00000000 00000000 0000009c 60000013 dfa12928 dfa12b44
+> [    2.087537] be40: c27abf24 0000009c c4018000 c401800c c27abf0c c27abf24 00000000 000000f8
+> [    2.095697] be60: 00000000 c045b248 ffffffff c27abf0c c35d1400 00000000 c35d1438 c045b4f8
+> [    2.103858] be80: c27abf0c 00002000 00000000 c044fb14 00000000 c0b6c2bc c35d1400 ffffffff
+> [    2.112016] bea0: ffffffff c35a4c0c 00000000 ffffffff 00000000 00001c01 00000000 c3591510
+> [    2.120176] bec0: 00000000 c35d1400 ffffffff c3591510 00000000 c35d1400 00000000 c0458f30
+> [    2.128336] bee0: 00000000 c08f35c8 c36ebf00 c35d1400 00010000 00013fff c35a4c0c 00000000
+> [    2.136496] bf00: ffffffff 00000000 00000101 c35d1400 ffffffff ffffffff c2420501 00000001
+> [    2.144656] bf20: c4018000 c4018000 00000000 00000008 dfde733c dfde7360 dfde7384 dfde73a8
+> [    2.152815] bf40: dfa12a44 dfa12948 dfa129d8 dfa12ad4 c35d1400 00000000 c35d1438 00000698
+> [    2.160976] bf60: c27abf78 c0318a34 c35d1400 c2731000 c35d1438 c0320604 0000ff00 c258ea00
+> [    2.169136] bf80: c2731000 c2456f40 c03002c4 c2456f40 00000000 c0320e0c 000000f8 c0320e6c
+> [    2.177294] bfa0: ffffffff c0300060 ffffffff bed38eb4 ffffffff bed38dcc 00000000 ffffffff
+> [    2.185455] bfc0: ffffffff bed38eb4 00010f60 000000f8 6474e552 00000020 00000000 00000000
+> [    2.193614] bfe0: 6ffffff9 bed38e78 b6f91f1c b6fa4a44 60000010 ffffffff 00000000 00000000
+> [    2.201777]  release_pages from tlb_batch_pages_flush+0x3c/0x70
+> [    2.209927]  tlb_batch_pages_flush from tlb_finish_mmu+0x4c/0x130
+> [    2.215656]  tlb_finish_mmu from exit_mmap+0xec/0x1e0
+> [    2.221903]  exit_mmap from mmput+0x40/0x120
+> [    2.226939]  mmput from do_exit+0x238/0x890
+> [    2.231279]  do_exit from do_group_exit+0x34/0x84
+> [    2.235184]  do_group_exit from __wake_up_parent+0x0/0x18
+> [    2.240053] Code: bad PC value
+> [    2.245556] ---[ end trace 0000000000000000 ]---
+> [    2.248448] Kernel panic - not syncing: Fatal exception
+> [    2.253158] CPU0: stopping
+> [    2.253169] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G      D            6.1.65 #0
+> [    2.253180] Hardware name: Generic DT based system
+> [    2.253189]  unwind_backtrace from show_stack+0x10/0x14
+> [    2.253216]  show_stack from dump_stack_lvl+0x40/0x4c
+> [    2.253249]  dump_stack_lvl from do_handle_IPI+0xf0/0x124
+> [    2.253276]  do_handle_IPI from ipi_handler+0x18/0x20
+> [    2.253293]  ipi_handler from handle_percpu_devid_irq+0x78/0x134
+> [    2.253313]  handle_percpu_devid_irq from generic_handle_domain_irq+0x28/0x38
+> [    2.253338]  generic_handle_domain_irq from gic_handle_irq+0x74/0x88
+> [    2.253361]  gic_handle_irq from generic_handle_arch_irq+0x34/0x44
+> [    2.253391]  generic_handle_arch_irq from call_with_stack+0x18/0x20
+> [    2.253419]  call_with_stack from __irq_svc+0x80/0x98
+> [    2.253438] Exception stack(0xc1401f00 to 0xc1401f48)
+> [    2.253451] 1f00: 00000005 00000000 00000a61 c03128a0 c1408640 00000000 c1404f68 c1404fa4
+> [    2.253461] 1f20: 00000000 c13c9c38 00000000 00000000 c14c1f00 c1401f50 c0307148 c030714c
+> [    2.253467] 1f40: 60000013 ffffffff
+> [    2.253474]  __irq_svc from arch_cpu_idle+0x38/0x3c
+> [    2.253500]  arch_cpu_idle from default_idle_call+0x24/0x34
+> [    2.253526]  default_idle_call from do_idle+0x1ec/0x240
+> [    2.253545]  do_idle from cpu_startup_entry+0x28/0x2c
+> [    2.253559]  cpu_startup_entry from kernel_init+0x0/0x12c
+> [    2.376160] Rebooting in 1 seconds..
 >
 
-From the functional perspective:
+Some followup on this... I manage to enable DEBUG_LL and can have debug
+output from the decompressor...
 
-Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+From what I can see fdt_check_mem_start is not called at all...
 
-Thank you!
+What I'm using with kernel config are:
+CONFIG_ARM_APPENDED_DTB=y
+CONFIG_ARM_ATAG_DTB_COMPAT=y
+And a downstream patch that mangle all the atags and takes only the
+cmdline one.
+
+The load and entry point is:
+0x42208000
+
+With the current setup I have this (I also added some debug log that
+print what is actually passed to do decompress
+
+DTB:0x42AED270 (0x00008BA7)
+Uncompressing Linux...
+40208000 
+4220F10C done, booting the kernel.
+
+Where 40208000 is the value of output_start and 4220F10C is input_data.
+
+And I think this confirm that it's getting loaded in the wrong position
+actually in reserved memory... But how this is possible??? Hope can
+someone help me in this since I wasted the entire day with this and
+didn't manage to make any progress... aside from having fun with the
+head.S assembly code.
+
+-- 
+	Ansuel
 
