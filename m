@@ -1,50 +1,75 @@
-Return-Path: <linux-kernel+bounces-28548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CEAD82FFF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 06:48:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A321782FFF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 06:55:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 293BE1F2662D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 05:48:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30E591F26040
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 05:55:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4B4479F4;
-	Wed, 17 Jan 2024 05:47:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 749648C17;
+	Wed, 17 Jan 2024 05:55:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="JsPUjL9X"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="lCTi0ygw"
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05FDB749A;
-	Wed, 17 Jan 2024 05:47:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F3C779D8
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 05:55:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705470479; cv=none; b=PBBzzuDmz4vQbYZdTbxTdSphMLKbOyuQ4n01J3UtXIP0EMvmd+y9TRAIgugSIoojDH78s1PzlfK8U2oaVeFzDc8ya7bDjXAe+68CuR+v2SNM7c8Q/vojcJvXm67bcxQsqreRlAYsxJrtF0CtDgwEzR2SQJrrM+kbVq+JttWe07I=
+	t=1705470945; cv=none; b=H77Z+4mADAjx+Cc12+w7+Jcph6QIvc2IwwwsdzYInaip6tp8oazE8TxsEJIAiCzyYUDkB+RyKH3WNlMs66qBtSR0lsJPb4W2f9tw+URxJbLrAvEyS/0VXsuXnrI4XfAnx4sqqb08icJQ8HKdk6sWPbJEOeAQOB3+68MUzqU2jfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705470479; c=relaxed/simple;
-	bh=8uEGtBZmVl0AOIoiA1icGHXUq7f/t9VQmHV40n9KkMc=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=deSkdH+UAndL5lLfFgQXmlMLGsG0TSeZjixGpb3Ix4dBEIz+XKVNDU6/e4fJsswnR05e76VPYUZGn7gftsTkb1q3FGl6/P70FpKFmOorFXH4cnB1KoKLVaZX2FPfba8fP8maZnPWAqTr70RtGndaa7PCHz1ZmansxgY86yHhz4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=JsPUjL9X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70BF4C433C7;
-	Wed, 17 Jan 2024 05:47:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1705470478;
-	bh=8uEGtBZmVl0AOIoiA1icGHXUq7f/t9VQmHV40n9KkMc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JsPUjL9XdudU/hVfI8s8Lx9qaAOy56vqZKlDX9Y8fJ8YM1zD2i0TaaZJMo3lNm+GQ
-	 /B1Q0iNx0ew4zwoTJRwHcyJF7d+CSWGvmTNqnWRfWWmy0XsrCDpH0U65mZGWwLKlf8
-	 csC9qKXOjI8U+GtL+CKGZ2gQyfLnjLuz92XAYfI4=
-Date: Wed, 17 Jan 2024 06:47:56 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Hoorad Farrokh <hourrad.f@gmail.com>
-Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: prism2mgmt: Fixed a parentheses coding style
-Message-ID: <2024011713-majorette-abridge-56c9@gregkh>
-References: <ooj7nta3skljhnpwtz3wk37uztyayaewfoz2k2b7bnfivnoqtr@ymml6q24k5y2>
+	s=arc-20240116; t=1705470945; c=relaxed/simple;
+	bh=Cajldxp5L4q+bgoRIKnlBgXzSAKMtR7sfecEvOfpwAs=;
+	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:
+	 Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=Fz9gP3OnA7t4awspExXIn5PzJ2FmmPm9BtEpihu50MzarIinTxhvl82CVK4dJ2Vwq1c2L0B7ZBZEMuHhHKjsv+lqXw/2mxYAkdXZGTZnjLFmPr/34ZiIQdOP7RVSTYrMj3crk+AyyRHhKfbJuUQPBkS7atZYxkl0Qxr0vvO6aqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=lCTi0ygw; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-112-211.bstnma.fios.verizon.net [173.48.112.211])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 40H5sv3E016205
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 00:54:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1705470901; bh=E6Z/eQkBMXHSee05+WcpGSIz4ByCJGYdInYrVxwiAVk=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=lCTi0ygwe47zegAHZboHFyqL3Sd5496YzTJRXwjVrME86O0SGElAaUC1FFlOL73QF
+	 C2WX0qpUXggTBxcZrTHCnD+b7q4VV5CHVW5em+Tm3VCWP8B7y8bkMr2LrC/208YnUJ
+	 HByA2MwQztUOiFI+Y6tkvXLd5nFtoNgFTt87OoxpVZkV3UK36kgNaakybCEELm8L8i
+	 ebttMKfsy7qs+mqakIxV4DuOpAkRlnyigPymnoUORF2A14qORY0nwM8SDVW1yCjAoa
+	 OpJdDQZzJl+nkzuj16Lllw4DAnHaUvhCIXyBUBfIGiSbC7khdXDosihq9XwXXDBsMJ
+	 GNZLM844ywkxg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 89D5315C0278; Wed, 17 Jan 2024 00:54:57 -0500 (EST)
+Date: Wed, 17 Jan 2024 00:54:57 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Greg KH <greg@kroah.com>, Mark Brown <broonie@kernel.org>,
+        Neal Gompa <neal@gompa.dev>, Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Nikolai Kondrashov <spbnick@gmail.com>,
+        Philip Li <philip.li@intel.com>, Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [GIT PULL] bcachefs updates for 6.8
+Message-ID: <20240117055457.GL911245@mit.edu>
+References: <xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
+ <be2fa62f-f4d3-4b1c-984d-698088908ff3@sirena.org.uk>
+ <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
+ <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
+ <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
+ <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
+ <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
+ <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
+ <2024011532-mortician-region-8302@gregkh>
+ <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,65 +78,92 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ooj7nta3skljhnpwtz3wk37uztyayaewfoz2k2b7bnfivnoqtr@ymml6q24k5y2>
+In-Reply-To: <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
 
-On Wed, Jan 17, 2024 at 10:38:13AM +1300, Hoorad Farrokh wrote:
-> Fixed a coding style problem.
-> 
-> Signed-off-by: Hoorad Farrokh <hourrad.f@gmail.com>
-> ---
->  drivers/staging/wlan-ng/prism2mgmt.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/wlan-ng/prism2mgmt.c b/drivers/staging/wlan-ng/prism2mgmt.c
-> index d5737166564e..a1adf69ba9f9 100644
-> --- a/drivers/staging/wlan-ng/prism2mgmt.c
-> +++ b/drivers/staging/wlan-ng/prism2mgmt.c
-> @@ -1288,8 +1288,8 @@ int prism2mgmt_wlansniff(struct wlandevice *wlandev, void *msgp)
->  
->  		/* Set the driver state */
->  		/* Do we want the prism2 header? */
-> -		if ((msg->prismheader.status ==
-> -		     P80211ENUM_msgitem_status_data_ok) &&
-> +		if (msg->prismheader.status ==
-> +		     P80211ENUM_msgitem_status_data_ok &&
->  		    (msg->prismheader.data == P80211ENUM_truth_true)) {
->  			hw->sniffhdr = 0;
->  			wlandev->netdev->type = ARPHRD_IEEE80211_PRISM;
-> -- 
-> 2.42.0
-> 
+On Tue, Jan 16, 2024 at 11:41:25PM -0500, Kent Overstreet wrote:
+> > > No, it's a leadership/mentorship thing.
+> > > 
+> > > And this is something that's always been lacking in kernel culture.
+> > > Witness the kind of general grousing that goes on at maintainer summits;
+> > > maintainers complain about being overworked and people not stepping up
+> > > to help with the grungy responsibilities, while simultaneously we still
 
-Hi,
+     <blah blah blah>
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+> > > Tests and test infrastructure fall into the necessary but not fun
+> > > category, so they languish.
+> > 
+> > No, they fall into the "no company wants to pay someone to do the work"
+> > category, so it doesn't get done.
+> > 
+> > It's not a "leadership" issue, what is the "leadership" supposed to do
+> > here, refuse to take any new changes unless someone ponys up and does
+> > the infrastructure and testing work first?  That's not going to fly, for
+> > valid reasons.
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Greg is absolutely right about this.
 
-- You did not specify a description of why the patch is needed, or
-  possibly, any description at all, in the email body.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/process/submitting-patches.rst for what is needed in
-  order to properly describe the change.
+> But good tools are important beacuse they affect the rate of everyday
+> development; they're a multiplier on the money everone is spending on
+> salaries.
 
-- You sent a patch that has been sent multiple times in the past, and is
-  identical to ones that has been rejected.  Please always look at the
-  mailing list traffic to determine if you are duplicating other
-  people's work.
+Alas, companies don't see it that way.  They take the value that get
+from Linux for granted, and they only care about the multipler effect
+of their employees salaries (and sometimes not even that).  They most
+certainly care about the salutary effects on the entire ecosyustem.
+At least, I haven't seen any company make funding decisions on that
+basis.
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+It's easy enough for you to blame "leadership", but the problem is the
+leaders at the VP and SVP level who control the budgets, not the
+leadership of the maintainers, who are overworked, and who often
+invest in testing themselves, on their own personal time, because they
+don't get adequate support from others.
 
-thanks,
+It's also for that reason why we try to prove that people won't just
+stick around enough for their pet feature (or in the case of ntfs,
+their pet file system) gets into the kernel --- and then disappear.
+For too often, this is what happens, either because they have their
+itch scratched, or their company reassigns them to some other project
+that is important for their company's bottom-line.
 
-greg k-h's patch email bot
+If that person is willing their own personal time, long after work
+hours, to steward their contribution in the absence of corporate
+support, great.  But we need to have that proven to us, or at the very
+least, make sure the feature's long-term maintenace burden is as low
+possible, to mitigate the likelihood that we won't see the new
+engineer after their feature lands upstream.
+
+> Having one common way of running all our functional VM tests, and a
+> common collection of those tests would be a huge win for productivity
+> because _way_ too many developers are still using slow ad hoc testing
+> methods, and a good test runner (ktest) gets the edit/compile/test cycle
+> down to < 1 minute, with the same tests framework for local development
+> and automated testing in the big test cloud...
+
+I'm going to call bullshit on this assertion.  The fact that we have
+multiple ways of running our tests is not the reason why testing takes
+a long time.
+
+If you are going to run stress tests, which is critical for testing
+real file systems, that's going to take at least an hour; more if you
+want to test muliple file system features.  The full regression set
+for ext4, using the common fstests testt suite, takes about 25 hours
+of VM time; and about 2.5 hours of wall clock time since I shard it
+across a dozen VM's.
+
+Yes, w could try to add some unit tests which take much less time
+running tests where fstests is creating a file system, mounting it,
+exercising the code through userspace functions, and then unmounting
+the file system and then checking the file system.  Even if that were
+an adequate replacement for some of the existing fstests, (a) it's not
+a replacement for stress testing, and (b) this would require a vast
+amount of file system specific software engineering investment, and
+where is that going from?
+
+The bottom line is that problem is that having a one common way of
+running our functional VM tests is not even *close* to root cause of
+the problem.
+
+	    	       	  	       - Ted
 
