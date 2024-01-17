@@ -1,73 +1,68 @@
-Return-Path: <linux-kernel+bounces-28599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE53F83008C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:31:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4754B83008A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:31:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19DE41C23CE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:31:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBECD287C67
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:31:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D811EC8DE;
-	Wed, 17 Jan 2024 07:31:37 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACB7DBA56;
+	Wed, 17 Jan 2024 07:31:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="CAER3jUp"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6849ABA4B;
-	Wed, 17 Jan 2024 07:31:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5049D522E;
+	Wed, 17 Jan 2024 07:31:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705476697; cv=none; b=OdSUH2qWl5CV/++u0ABO72pN5vDqUCkVDlpC01FvCOTQw7jSbDBz2BPzq5ulrKmnNUGIpk/zmb6Juh3eiPjzqFt0Rab0Wmf00gSV5N6wkWmlptRlKJFt+3G4Jh0ZgYWCn1/8rf4K9kU0nzlyG1r/M8tzw67XrREiKiPB1gPJOzI=
+	t=1705476692; cv=none; b=pOlnzz7itgmoDKrNF9Tf7pxDFdA84oNU80PDa8Vqa7U3QBGv5mvrjwhvg3jJV2Fh+gD9pCtokmTCplc08dVSzBka2wHHgDoES5cOblJwh0TklExSO7T/s+p5e8M/qLEImbpKXI6NsIKHvRaCYp/T4IkB7hJQ1ldyXj4NlVYKa28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705476697; c=relaxed/simple;
-	bh=6DBmh5VudcgrGyumJ5ceN/k6JjkuLlAOr34rh1d6IVg=;
-	h=X-UUID:X-CID-P-RULE:X-CID-O-INFO:X-CID-INFO:X-CID-META:X-CID-BVR:
-	 X-CID-BAS:X-CID-FACTOR:X-UUID:Received:Received:X-ns-mid:Received:
-	 From:To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding; b=Z+wqSNQ6/0nVLmCAH4qQ7xn3Q8w64f0IxcdyEkUpHqiSz/Vdjlrw5oa0oDGZ8912BM2eDKo/nix+hdpEvdv3eoU50+yujBzBipzgR/AOyGNraMeZ6phA+4KeXvCxf7/tnz40JYEM1+d19nZerW4l6Pe/iU1bv99HEvGAgVk4V4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 98846c88b5f0479da8554ea9b061d516-20240117
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:ba636615-2455-415e-8dd8-38c78f84f03c,IP:20,
-	URL:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-	ION:release,TS:30
-X-CID-INFO: VERSION:1.1.35,REQID:ba636615-2455-415e-8dd8-38c78f84f03c,IP:20,UR
-	L:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:30
-X-CID-META: VersionHash:5d391d7,CLOUDID:dfd7f082-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:2401171531288ICAXGXH,BulkQuantity:0,Recheck:0,SF:38|24|17|19|44|66|1
-	02,TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL
-	:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
-X-UUID: 98846c88b5f0479da8554ea9b061d516-20240117
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 2021478520; Wed, 17 Jan 2024 15:31:27 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 81F37E000EB9;
-	Wed, 17 Jan 2024 15:31:27 +0800 (CST)
-X-ns-mid: postfix-65A7824F-336142280
-Received: from kernel.. (unknown [172.20.15.234])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 05727E000EB9;
-	Wed, 17 Jan 2024 15:31:26 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: dmitry.torokhov@gmail.com,
-	aduggan@synaptics.com,
-	cheiny@synaptics.com
-Cc: linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH v2] Input: synaptics-rmi4: Add a null pointer check to the rmi_driver_probe
-Date: Wed, 17 Jan 2024 15:31:24 +0800
-Message-Id: <20240117073124.143636-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1705476692; c=relaxed/simple;
+	bh=y+v72DxdaWwPawAjkgAWECXv7AEd+Wv5JYD3EdJHzFM=;
+	h=DKIM-Signature:X-IronPort-AV:Received:Received:From:To:Cc:Subject:
+	 Date:Message-ID:Organization:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding:Content-Type; b=SdzdNwB8O+hCplQgfuCyzWjPWxaldcnSAj3PP8G6xqoDFZZa0Qh3F/10j3fyCeA9wqqGAc/gAo6rnOCE9bYPwh//ol4f1R/YTcogdoktp5Joj4JhO2wYgbQGVqXeIEn7Bk2Wxs2q7E7xq5fCAePNHKuOXdObjxRSGTHZSAp3ISg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=CAER3jUp; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1705476689; x=1737012689;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=xNnBrvieWWbB+ps1YZihprwsk4SZEYccvgQBAmcfzPE=;
+  b=CAER3jUpXWSxKdOzxUmedr+N+KshcSljkXqZGZ9A0poHYW7D9WDlGCYh
+   Pd35TZZs0tAojDYRNb76kGFPJfQisuE8PoJavf1ZlIUoT776Lft0hCtYZ
+   iVUOsgS8daisONa3DfW/HAurSa6U7qYRTBxDxYxQz5q2s5Cbz8VAlrbAG
+   +TKwdKzBgVA2IdRqaYwuMf623PPqKSNQG+KjQQfS58zt//lcJCwTg01kv
+   JHknAOfJUdAKv7HnTooOGHpWsgvZeKx0fVySUNlAZZyoPu18+QCdUIPq+
+   vOEHUJ+ai0FYbzym0WCicgZssgIYoSaiVNWE1jHw8FWDBVlmOjQAfg/nI
+   A==;
+X-IronPort-AV: E=Sophos;i="6.05,200,1701126000"; 
+   d="scan'208";a="34930894"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 17 Jan 2024 08:31:26 +0100
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 57C70280075;
+	Wed, 17 Jan 2024 08:31:26 +0100 (CET)
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: Conor Dooley <conor@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Lucas Stach <l.stach@pengutronix.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] dt-bindings: interrupt-controller: fsl, irqsteer: Add power-domains
+Date: Wed, 17 Jan 2024 08:31:26 +0100
+Message-ID: <13433324.uLZWGnKmhe@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <20240111-dullness-blooper-37644405c825@spud>
+References: <20240110094338.472304-1-alexander.stein@ew.tq-group.com> <9230083.CDJkKcVGEf@steina-w> <20240111-dullness-blooper-37644405c825@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,36 +70,106 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-devm_kasprintf() returns a pointer to dynamically allocated memory
-which can be NULL upon failure. Ensure the allocation was successful
-by checking the pointer validity.
+Hi Conor,
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-Suggested-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
-v2: Change title and remove dev_err
----
- drivers/input/rmi4/rmi_driver.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Am Donnerstag, 11. Januar 2024, 17:49:03 CET schrieb Conor Dooley:
+> On Thu, Jan 11, 2024 at 09:59:54AM +0100, Alexander Stein wrote:
+> > Hi Conor,
+> >=20
+> > Am Mittwoch, 10. Januar 2024, 17:09:07 CET schrieb Conor Dooley:
+> > > On Wed, Jan 10, 2024 at 10:43:38AM +0100, Alexander Stein wrote:
+> > > > Some SoC like i.MX8QXP use a power-domain for this IP add it to the
+> > > > supported proerties. Fixes the dtbs_check warning:
+> > > > freescale/imx8qxp-tqma8xqp-mba8xx.dtb: irqsteer@56000000:
+> > > > 'power-domains'
+> > > >=20
+> > > >  does not match any of the regexes: 'pinctrl-[0-9]+'
+> > > >=20
+> > > > from schema $id:
+> > > > http://devicetree.org/schemas/interrupt-controller/fsl,irqsteer.yam=
+l#
+> > > >=20
+> > > > Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+> > > > ---
+> > > >=20
+> > > > Notes:
+> > > >     Please note that both the board dts and the DT node for irqsteer
+> > > >     being
+> > > >     used, are still work-in-progress.
+> > >=20
+> > > The binding doesn't even support the imx8qxp's irqsteer yet, I think
+> > > this should be added alongside support for that SoC. Am I missing
+> > > something?
+> >=20
+> > I'm not sure if any additional SoC support is actually needed. 'fsl,imx-
+> > irqsteer' is available and that's what I use in my WiP. Also imx8mp also
+> > just uses the generic compatible. Only imx8mq uses 'fsl,imx8m-irqsteer'.
+> Why doesn't it used "imx8mq-irqsteer"? Should it not have its own
+> soc-specific compatible?
 
-diff --git a/drivers/input/rmi4/rmi_driver.c b/drivers/input/rmi4/rmi_dri=
-ver.c
-index 258d5fe3d395..8da104e99e7b 100644
---- a/drivers/input/rmi4/rmi_driver.c
-+++ b/drivers/input/rmi4/rmi_driver.c
-@@ -1197,6 +1197,10 @@ static int rmi_driver_probe(struct device *dev)
- 		rmi_driver_set_input_params(rmi_dev, data->input);
- 		data->input->phys =3D devm_kasprintf(dev, GFP_KERNEL,
- 						"%s/input0", dev_name(dev));
-+		if (!data->input->phys) {
-+			retval =3D -ENOMEM;
-+			goto err;
-+		}
- 	}
+I would assume that "fsl,imx8m-irqsteer" is for the whole i.MX8M family. I=
 =20
- 	retval =3D rmi_init_functions(data);
---=20
-2.39.2
+don't think a soc-specific compatible is needed at all. On top I can't see =
+any=20
+difference between i.MX8M and i.MX8/i.MX8X.
+If a soc-specific compatible is preferred, fine by me. But I don't expect a=
+ny=20
+difference despite imx8qxp/imx8qm requiring a power-domain.
+
+Best regards,
+Alexander
+
+> Cheers,
+> Conor.
+>=20
+> > AFAICS the bindings support the different amount of IRQs already.
+> >=20
+> > Best regards,
+> > Alexander
+> >=20
+> > > >  .../devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml | 3
+> > > >  +++
+> > > >  1 file changed, 3 insertions(+)
+> > > >=20
+> > > > diff --git
+> > > > a/Documentation/devicetree/bindings/interrupt-controller/fsl,irqste=
+er.
+> > > > yam
+> > > > l
+> > > > b/Documentation/devicetree/bindings/interrupt-controller/fsl,irqste=
+er.
+> > > > yam
+> > > > l index 20ad4ad82ad64..cb4fcd23627f6 100644
+> > > > ---
+> > > > a/Documentation/devicetree/bindings/interrupt-controller/fsl,irqste=
+er.
+> > > > yam
+> > > > l +++
+> > > > b/Documentation/devicetree/bindings/interrupt-controller/fsl,irqste=
+er.
+> > > > yam
+> > > > l>
+> > > >=20
+> > > > @@ -42,6 +42,9 @@ properties:
+> > > >    clock-names:
+> > > >      const: ipg
+> > > >=20
+> > > > +  power-domains:
+> > > > +    maxItems: 1
+> > > > +
+> > > >=20
+> > > >    interrupt-controller: true
+> > > >   =20
+> > > >    "#interrupt-cells":
+
+
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
+
 
 
