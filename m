@@ -1,146 +1,78 @@
-Return-Path: <linux-kernel+bounces-28639-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28640-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92705830136
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:23:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CBA88830138
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:24:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46A1D1F255EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:23:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7ED4A1F258EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:24:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9157311199;
-	Wed, 17 Jan 2024 08:23:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DB421118D;
+	Wed, 17 Jan 2024 08:24:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UsKxdxpb"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="oOJ/2NXY";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="D0ZpV7qM"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA2CAD26B;
-	Wed, 17 Jan 2024 08:23:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 269B1D26B;
+	Wed, 17 Jan 2024 08:24:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705479796; cv=none; b=QoRQgexRLJkoh04OwToJZ3MuGAmecqPNKkFKixDj6RM7GZ1Eb/Aa9Cfgr+3wkks4eeFvu2kQh5pA74rL0UArezxyS5k3UPnAXtcqNjocIdvRVD7Izloj9AdZcBeU7gZeo5oUHWdnY46Gpln5vWjMjTlMpAf/fTJNovoAwR3Xu/g=
+	t=1705479844; cv=none; b=OO9ckrjye31NGVrQMXVKsaLSQiwF1laU2j4RJ8/cpGrtuoCkzAUyK68HZdcnpE6sRwaHZTLc1+jVcep9FDpKHbsizrC4YHBfxCjtdnadAUi8pVnPbaTjAKhtDWaLfgsXiahfMWphJQ51yBJQku8O88+DYCeyz/iR41GFa4QdHE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705479796; c=relaxed/simple;
-	bh=dTAKx/WvnyQYbWUeQpGK8e4j06ZQKp/QZZb2qlq8/9Q=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:X-IronPort-AV:Received:Message-ID:Date:MIME-Version:
-	 User-Agent:Cc:Subject:Content-Language:To:References:From:
-	 In-Reply-To:Content-Type:Content-Transfer-Encoding; b=iRj22gSkgoKv8KzNgAcduBzItdb9MSATUwflRo53fL/igpUz78Wdg9ExZ9eHmV+9//u9PW6UWbtQXfievrPH7qvdBtk9KKIwvf5gR2o74DgKj1fVgfyTtEWoueB88u42t23GFOqrlAQpax2y6CY4j3AHjZzUMZRYW/a4j2necDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UsKxdxpb; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705479795; x=1737015795;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=dTAKx/WvnyQYbWUeQpGK8e4j06ZQKp/QZZb2qlq8/9Q=;
-  b=UsKxdxpbfwEuSqYha0f0hCigfSsTTZu1EUZolvW8KRDrDnm1MJ5tQJp8
-   9xvVpKmel2vPZXvGEBNsZVvQd2vENJf6F0OScV6CN5Lyw0A80V9UZYdyN
-   1frNDWOc8pluQbieJF+OImizrWFu7ZMXWGZrRNrJ2/I+YfoPclXf/dOLZ
-   1aryYQyaw+7Tki4hXc6TQdpABIz+3AAPdofY0GB7Q0Prs6Xt3sjqhmRvY
-   z9MMQqt0M9MmAIBcadSGfzGZKsNmiHBL9cZkZ8F2e9a/rVfVdImK6ZzmT
-   s3oL8DEK1iMzLGCCaHXQ5fDI07g7nTKs0qTTsuv3HZ80oA3XHDuO9wlZN
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="6863985"
-X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
-   d="scan'208";a="6863985"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 00:21:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="777373768"
-X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
-   d="scan'208";a="777373768"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.249.171.146]) ([10.249.171.146])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 00:20:52 -0800
-Message-ID: <880545b0-82ae-4d3c-b9e5-e623a4c79c5d@linux.intel.com>
-Date: Wed, 17 Jan 2024 16:20:50 +0800
+	s=arc-20240116; t=1705479844; c=relaxed/simple;
+	bh=iUePzbB8NYoCvTcIh+hge5pvpFVFIrDhBmMxgFJcphw=;
+	h=From:DKIM-Signature:DKIM-Signature:To:Cc:Subject:In-Reply-To:
+	 References:Date:Message-ID:MIME-Version:Content-Type; b=BrZNskASQKjpwZxJ2akvTB5GBwo9ChBg3BPwNmepPsPEeAEIq+ROM6sTG8euoLo9KxFq2SUhM47R91iyjc20WZpDyduIpKZ07wKAiBGeG7bh8hlbLPvfDFdSkocnwyviIG/pof2vekpbvNVR7dl56XKb0fsbuGvdQyh8HJYhWJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=oOJ/2NXY; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=D0ZpV7qM; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1705479840;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iUePzbB8NYoCvTcIh+hge5pvpFVFIrDhBmMxgFJcphw=;
+	b=oOJ/2NXYekBGIotxEtql5Rugex2jljT0JAWyVNIVc0tIlmvMa419NfsbNURwM6TmvRva/Y
+	qTtuGnn4F7csZ3wG0ITweoDvcm6vPuMz0G+ppQ//93RtkjCtOcahI2ZZOeAXHBSKsRMjXA
+	eLSPopizFaB0GYhbofTNHolUCJbKkFjEVoeKIl4FYeiXZzwwzEyPTQ0tbxds2gnwZBGfkP
+	D/U2qi0Z/PWOt2u2aEFXTaOGMV+K8GTWiERAK2DlE19nZKKCfkDi0Fonu9z+mRgRAAtfRb
+	U+T9dRhEgQAPcJ4OAAacgJiMhDxTCYU7IiatWm7AmG05zjevCHb5ELR4xk9AGQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1705479840;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iUePzbB8NYoCvTcIh+hge5pvpFVFIrDhBmMxgFJcphw=;
+	b=D0ZpV7qMwilWr3E0PEMjGIK/quaatGP+/AsJ6qCCPesMTgZfS4MbhNY3dz0Iuw1KQTBzP8
+	n8iUFk+oQ/HU5+Ag==
+To: Junxiao Chang <junxiao.chang@intel.com>, bigeasy@linutronix.de,
+ tglx@linutronix.de, rostedt@goodmis.org, linux-kernel@vger.kernel.org
+Cc: hao3.li@intel.com, lili.li@intel.com, jianfeng.gao@intel.com,
+ linux-rt-users@vger.kernel.org
+Subject: Re: [PATCH] printk: nbcon: check uart port is nbcon or not in
+ nbcon_release
+In-Reply-To: <20240117065226.4166127-1-junxiao.chang@intel.com>
+References: <20240117065226.4166127-1-junxiao.chang@intel.com>
+Date: Wed, 17 Jan 2024 09:29:57 +0106
+Message-ID: <871qagtlk2.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, joro@8bytes.org, alex.williamson@redhat.com,
- kevin.tian@intel.com, robin.murphy@arm.com, cohuck@redhat.com,
- eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
- mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
- yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
- shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
- suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- zhenzhong.duan@intel.com, joao.m.martins@oracle.com, xin.zeng@intel.com,
- yan.y.zhao@intel.com
-Subject: Re: [PATCH 8/8] iommu/vt-d: Add set_dev_pasid callback for nested
- domain
-Content-Language: en-US
-To: Jason Gunthorpe <jgg@nvidia.com>, Yi Liu <yi.l.liu@intel.com>
-References: <20231127063428.127436-1-yi.l.liu@intel.com>
- <20231127063428.127436-9-yi.l.liu@intel.com>
- <20240115172213.GM734935@nvidia.com>
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20240115172213.GM734935@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 2024/1/16 1:22, Jason Gunthorpe wrote:
-> On Sun, Nov 26, 2023 at 10:34:28PM -0800, Yi Liu wrote:
-> 
->> +static int intel_nested_set_dev_pasid(struct iommu_domain *domain,
->> +				      struct device *dev, ioasid_t pasid)
->> +{
->> +	struct device_domain_info *info = dev_iommu_priv_get(dev);
->> +	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
->> +	struct intel_iommu *iommu = info->iommu;
->> +	struct dev_pasid_info *dev_pasid;
->> +	unsigned long flags;
->> +	int ret = 0;
->> +
->> +	if (!pasid_supported(iommu))
->> +		return -EOPNOTSUPP;
->> +
->> +	if (iommu->agaw < dmar_domain->s2_domain->agaw)
->> +		return -EINVAL;
->> +
->> +	ret = prepare_domain_attach_device(&dmar_domain->s2_domain->domain, dev);
->> +	if (ret)
->> +		return ret;
->> +
->> +	dev_pasid = kzalloc(sizeof(*dev_pasid), GFP_KERNEL);
->> +	if (!dev_pasid)
->> +		return -ENOMEM;
->> +
->> +	ret = domain_attach_iommu(dmar_domain, iommu);
->> +	if (ret)
->> +		goto err_free;
->> +
->> +	ret = intel_pasid_setup_nested(iommu, dev, pasid, dmar_domain);
->> +	if (ret)
->> +		goto err_detach_iommu;
->> +
->> +	dev_pasid->dev = dev;
->> +	dev_pasid->pasid = pasid;
->> +	spin_lock_irqsave(&dmar_domain->lock, flags);
->> +	list_add(&dev_pasid->link_domain, &dmar_domain->dev_pasids);
->> +	spin_unlock_irqrestore(&dmar_domain->lock, flags);
->> +
->> +	return 0;
->> +err_detach_iommu:
->> +	domain_detach_iommu(dmar_domain, iommu);
->> +err_free:
->> +	kfree(dev_pasid);
->> +	return ret;
->> +}
-> This seems alot longer than I'd think it should be, why isn't it
-> exactly the same code as the other set_dev_pasid's?
+On 2024-01-17, Junxiao Chang <junxiao.chang@intel.com> wrote:
+> Different uart ports might have same console pointer,
 
-Yes. It should be. The only difference is how to configure the pasid
-entry.
+Please explain how this is possible. It would be a major bug.
 
-Best regards,
-baolu
+John
 
