@@ -1,38 +1,62 @@
-Return-Path: <linux-kernel+bounces-28656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E21283016E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:43:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D7900830177
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:46:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDA88287C60
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:43:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FF8228705B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:46:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 501D512B71;
-	Wed, 17 Jan 2024 08:42:58 +0000 (UTC)
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE259134A9;
+	Wed, 17 Jan 2024 08:45:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=infineon.com header.i=@infineon.com header.b="pJlX1sNx"
+Received: from smtp9.infineon.com (smtp9.infineon.com [217.10.52.204])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A16F7B660;
-	Wed, 17 Jan 2024 08:42:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B27DB12B7C;
+	Wed, 17 Jan 2024 08:45:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.52.204
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705480977; cv=none; b=OfkqDngf+yjQCY8EPbZBTBGkTWBe0fzimcKkYq5RCEedRo1QdcwkGyvd2l4OCspPiLUpynIkuwyRpHfcFTSGaiTMKCkXlnYJjes/Gh4vLHM/weLspcH5Fy3BwUv/RGHRE18eN0xoozIS3Y0IoP0HXf2KhkBMFNXIpLpg2bFhOXg=
+	t=1705481159; cv=none; b=mmDUhjHZgNCIrjkT4dpvvJ/BRCIoiu9xWW+89Q81b9q18oEZQv4sXE0AF8ESPC6F2XErSp84VHvTb7A5eqUtSsde6osIn1Eb86GIyCPRAj8gmiz+FsjYuVQtIcSoi2+e2IHF8WYHklNV7ThCfRmYAjUCJUbuIjoEVGI4c23SPNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705480977; c=relaxed/simple;
-	bh=65rm1L1W4mbegq5kIb/sp8DZa7iInALT+eelOlbNwtE=;
-	h=Received:Message-ID:Date:MIME-Version:User-Agent:Subject:
-	 Content-Language:To:Cc:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:X-GND-Sasl; b=t9A1ChTgMNFCtIldA4HXKRSLrHTB4QWW/IvbfQfFYF32gKffed5Cg5PWI1Luf0hRbrQymwpxn+aTa2WfcCRn9VUm9hLP6bcUuU2vfzd5hD2F1pauUZ01J8dAvH60k3aerQYVPkyZCBgpj8P679dS+rppM3Wrccip2gNmwByREg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D0A37C000C;
-	Wed, 17 Jan 2024 08:42:43 +0000 (UTC)
-Message-ID: <bb0e976d-7475-4c42-b87e-bf1af389ba5f@ghiti.fr>
-Date: Wed, 17 Jan 2024 09:42:43 +0100
+	s=arc-20240116; t=1705481159; c=relaxed/simple;
+	bh=L4nGR93Mrx+QGtN/Hr3HuZCR/Enu0i8Qzi3eC48RcM0=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:Received:
+	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:CC:
+	 References:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-Originating-IP:X-ClientProxiedBy; b=KfbVk/6pNPc3dK0VF8c3Hc5QJwh0y+H7/0WOqTK6B90ssmeY2E7s2FFrORRAm85s1Gc72SwLymJxP8OIGZWTF25NFIjfOtZ7+6Qrgdzw7IggQrDRIJgkic2mHOrAUf+Y2MXUSlNce7T/2nfiBPeVQOn+fspo1SghRiBPbTcQH/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infineon.com; spf=pass smtp.mailfrom=infineon.com; dkim=pass (1024-bit key) header.d=infineon.com header.i=@infineon.com header.b=pJlX1sNx; arc=none smtp.client-ip=217.10.52.204
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infineon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infineon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
+  t=1705481157; x=1737017157;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=L4nGR93Mrx+QGtN/Hr3HuZCR/Enu0i8Qzi3eC48RcM0=;
+  b=pJlX1sNxTPMc776Rl8SpBhoS7KJ3qo0TufLM26OWygVNrmnGql3quhEX
+   E/TohT6aHY6RFHkrRED0dSlrl4WtWQn3c7w5eclLC237i6EoQdymCqHnQ
+   muZwuvf7D57MdSJgtcx7zzPUuGsLnxh+JMt4Q0lOT5ubTGaVhMWPzaiJB
+   g=;
+X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="8976963"
+X-IronPort-AV: E=Sophos;i="6.05,200,1701126000"; 
+   d="scan'208";a="8976963"
+Received: from unknown (HELO MUCSE803.infineon.com) ([172.23.29.29])
+  by smtp9.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 09:44:45 +0100
+Received: from MUCSE844.infineon.com (172.23.7.73) by MUCSE803.infineon.com
+ (172.23.29.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 17 Jan
+ 2024 09:44:44 +0100
+Received: from [10.160.240.161] (10.160.240.161) by MUCSE844.infineon.com
+ (172.23.7.73) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 17 Jan
+ 2024 09:44:44 +0100
+Message-ID: <711d659f-3f57-48e4-b5b3-efbc2fe236c8@infineon.com>
+Date: Wed, 17 Jan 2024 09:44:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -40,335 +64,156 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 1/2] riscv: Include riscv_set_icache_flush_ctx prctl
-Content-Language: en-US
-To: Charlie Jenkins <charlie@rivosinc.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Jonathan Corbet <corbet@lwn.net>, Conor Dooley <conor.dooley@microchip.com>,
- =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
- Atish Patra <atishp@atishpatra.org>, Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, Atish Patra <atishp@rivosinc.com>
-References: <20240116-fencei-v8-0-43a42134f021@rivosinc.com>
- <20240116-fencei-v8-1-43a42134f021@rivosinc.com>
-From: Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <20240116-fencei-v8-1-43a42134f021@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH] tpm: make locality handling resilient
+To: "Daniel P. Smith" <dpsmith@apertussolutions.com>, Jason Gunthorpe
+	<jgg@ziepe.ca>, Jarkko Sakkinen <jarkko@kernel.org>, Lino Sanfilippo
+	<l.sanfilippo@kunbus.com>, Sasha Levin <sashal@kernel.org>,
+	<linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: Ross Philipson <ross.philipson@oracle.com>, Kanth Ghatraju
+	<kanth.ghatraju@oracle.com>, Peter Huewe <peterhuewe@gmx.de>
+References: <20240115011546.21193-1-dpsmith@apertussolutions.com>
+From: Alexander Steffen <Alexander.Steffen@infineon.com>
+In-Reply-To: <20240115011546.21193-1-dpsmith@apertussolutions.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-GND-Sasl: alex@ghiti.fr
+X-ClientProxiedBy: MUCSE807.infineon.com (172.23.29.33) To
+ MUCSE844.infineon.com (172.23.7.73)
 
-Hi Charlie,
+On 15.01.2024 02:15, Daniel P. Smith wrote:
+> Commit 933bfc5ad213 introduced the use of a locality counter to control when
+> locality request was actually sent to the TPM. This locality counter created a
+> hard enforcement that the TPM had no active locality at the time of the driver
+> initialization. The reality is that this may not always be the case coupled
+> with the fact that the commit indiscriminately decremented the counter created
+> the condition for integer underflow of the counter. The underflow was triggered
+> by the first pair of request/relinquish calls made in tpm_tis_init_core and all
+> subsequent calls to request/relinquished calls would have the counter flipping
+> between the underflow value and 0. The result is that it appeared all calls to
+> request/relinquish were successful, but they were not. The end result is that
+> the locality that was active when the driver loaded would always remain active,
+> to include after the driver shutdown. This creates a significant issue when
+> using Intel TXT and Locality 2 is active at boot. After the GETSEC[SEXIT]
+> instruction is called, the PCH will close access to Locality 2 MMIO address
+> space, leaving the TPM locked in Locality 2 with no means to relinquish the
+> locality until system reset.
+> 
+> The commit seeks to address this situation through three changes.
 
-On 17/01/2024 03:54, Charlie Jenkins wrote:
-> Support new prctl with key PR_RISCV_SET_ICACHE_FLUSH_CTX to enable
-> optimization of cross modifying code. This prctl enables userspace code
-> to use icache flushing instructions such as fence.i with the guarantee
-> that the icache will continue to be clean after thread migration.
->
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> Reviewed-by: Atish Patra <atishp@rivosinc.com>
+Could you split this up into multiple patches then, so that they can be 
+discussed separately?
+
+> The first is
+> to walk the localities during initialization and close any open localities to
+> ensure the TPM is in the assumed state. Next is to put guards around the
+> counter and the requested locality to ensure they remain within valid values.
+> The last change is to make the request locality functions be consistent in
+> their return values. The functions will either return the locality requested if
+> successful or a negative error code.
+> 
+> Signed-off-by: Daniel P. Smith <dpsmith@apertussolutions.com>
+> Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
+> Reported-by: Kanth Ghatraju <kanth.ghatraju@oracle.com>
+> Fixes: 933bfc5ad213 ("tpm, tpm: Implement usage counter for locality")
 > ---
->   arch/riscv/include/asm/mmu.h         |  4 +++
->   arch/riscv/include/asm/mmu_context.h |  3 ++
->   arch/riscv/include/asm/processor.h   |  7 ++++
->   arch/riscv/include/asm/switch_to.h   | 17 +++++++++
->   arch/riscv/mm/cacheflush.c           | 67 ++++++++++++++++++++++++++++++++++++
->   arch/riscv/mm/context.c              | 14 ++++++--
->   include/uapi/linux/prctl.h           |  6 ++++
->   kernel/sys.c                         |  6 ++++
->   8 files changed, 121 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/mmu.h b/arch/riscv/include/asm/mmu.h
-> index 355504b37f8e..f437b9a7f5b3 100644
-> --- a/arch/riscv/include/asm/mmu.h
-> +++ b/arch/riscv/include/asm/mmu.h
-> @@ -19,6 +19,10 @@ typedef struct {
->   #ifdef CONFIG_SMP
->   	/* A local icache flush is needed before user execution can resume. */
->   	cpumask_t icache_stale_mask;
-> +	/* Force local icache flush on all migrations. */
-> +	bool force_icache_flush;
-> +	/* The most recent cpu a thread in this mm has been migrated to. */
-> +	unsigned int prev_cpu;
-
-
-Why would we need a prev_cpu on mm? Why don't we only need to have a 
-prev_cpu per thread, i.e. per task_struct? It makes little sense to me 
-to have that on mm since it's shared by multiple threads (by 
-definition), so the prev_cpu on mm could be anything.
-
-
->   #endif
->   #ifdef CONFIG_BINFMT_ELF_FDPIC
->   	unsigned long exec_fdpic_loadmap;
-> diff --git a/arch/riscv/include/asm/mmu_context.h b/arch/riscv/include/asm/mmu_context.h
-> index 7030837adc1a..195a2e90f3f9 100644
-> --- a/arch/riscv/include/asm/mmu_context.h
-> +++ b/arch/riscv/include/asm/mmu_context.h
-> @@ -29,6 +29,9 @@ static inline int init_new_context(struct task_struct *tsk,
->   {
->   #ifdef CONFIG_MMU
->   	atomic_long_set(&mm->context.id, 0);
-> +#endif
-> +#ifdef CONFIG_SMP
-> +	mm->context.prev_cpu = tsk->thread.prev_cpu;
->   #endif
->   	return 0;
+>   drivers/char/tpm/tpm-chip.c     |  2 +-
+>   drivers/char/tpm/tpm_tis_core.c | 20 +++++++++++++++-----
+>   include/linux/tpm.h             |  2 ++
+>   3 files changed, 18 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+> index 42b1062e33cd..e7293f85335a 100644
+> --- a/drivers/char/tpm/tpm-chip.c
+> +++ b/drivers/char/tpm/tpm-chip.c
+> @@ -49,7 +49,7 @@ static int tpm_request_locality(struct tpm_chip *chip)
+>                  return rc;
+> 
+>          chip->locality = rc;
+> -       return 0;
+> +       return chip->locality;
 >   }
-> diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
-> index f19f861cda54..1cad05f579ad 100644
-> --- a/arch/riscv/include/asm/processor.h
-> +++ b/arch/riscv/include/asm/processor.h
-> @@ -84,6 +84,10 @@ struct thread_struct {
->   	unsigned long vstate_ctrl;
->   	struct __riscv_v_ext_state vstate;
->   	unsigned long align_ctl;
-> +#ifdef CONFIG_SMP
-> +	bool force_icache_flush;
-> +	unsigned int prev_cpu;
-> +#endif
+> 
+>   static void tpm_relinquish_locality(struct tpm_chip *chip)
+> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+> index 1b350412d8a6..c8b9b0b199dc 100644
+> --- a/drivers/char/tpm/tpm_tis_core.c
+> +++ b/drivers/char/tpm/tpm_tis_core.c
+> @@ -180,7 +180,8 @@ static int tpm_tis_relinquish_locality(struct tpm_chip *chip, int l)
+>          struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+> 
+>          mutex_lock(&priv->locality_count_mutex);
+> -       priv->locality_count--;
+> +       if (priv->locality_count > 0)
+> +               priv->locality_count--;
+>          if (priv->locality_count == 0)
+>                  __tpm_tis_relinquish_locality(priv, l);
+>          mutex_unlock(&priv->locality_count_mutex);
+> @@ -226,18 +227,21 @@ static int __tpm_tis_request_locality(struct tpm_chip *chip, int l)
+>                          tpm_msleep(TPM_TIMEOUT);
+>                  } while (time_before(jiffies, stop));
+>          }
+> -       return -1;
+> +       return -EBUSY;
+>   }
+> 
+>   static int tpm_tis_request_locality(struct tpm_chip *chip, int l)
+>   {
+>          struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+> -       int ret = 0;
+> +       int ret = -EIO;
+> +
+> +       if (l > TPM_MAX_LOCALITY)
+> +               return -EINVAL;
+> 
+>          mutex_lock(&priv->locality_count_mutex);
+>          if (priv->locality_count == 0)
+>                  ret = __tpm_tis_request_locality(chip, l);
+> -       if (!ret)
+> +       if (ret >= 0)
+>                  priv->locality_count++;
+>          mutex_unlock(&priv->locality_count_mutex);
+>          return ret;
+
+This line seems to be the most important change, that fixes the 
+locality_count handling for localities != 0. It could already be 
+sufficient to fix your original problem. I'm not sure all the other 
+changes are really necessary.
+
+> @@ -1108,7 +1112,7 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+>          u32 intmask;
+>          u32 clkrun_val;
+>          u8 rid;
+> -       int rc, probe;
+> +       int rc, probe, locality;
+>          struct tpm_chip *chip;
+> 
+>          chip = tpmm_chip_alloc(dev, &tpm_tis);
+> @@ -1169,6 +1173,12 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+>                  goto out_err;
+>          }
+> 
+> +       /* It is not safe to assume localities are closed on startup */
+> +       for (locality = 0; locality <= TPM_MAX_LOCALITY; locality++) {
+> +               if (check_locality(chip, locality))
+> +                       tpm_tis_relinquish_locality(chip, locality);
+> +       }
+> +
+>          /* Take control of the TPM's interrupt hardware and shut it off */
+>          rc = tpm_tis_read32(priv, TPM_INT_ENABLE(priv->locality), &intmask);
+>          if (rc < 0)
+> diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+> index 4ee9d13749ad..f2651281f02e 100644
+> --- a/include/linux/tpm.h
+> +++ b/include/linux/tpm.h
+> @@ -116,6 +116,8 @@ struct tpm_chip_seqops {
+>          const struct seq_operations *seqops;
 >   };
->   
->   /* Whitelist the fstate from the task_struct for hardened usercopy */
-> @@ -145,6 +149,9 @@ extern int set_unalign_ctl(struct task_struct *tsk, unsigned int val);
->   #define GET_UNALIGN_CTL(tsk, addr)	get_unalign_ctl((tsk), (addr))
->   #define SET_UNALIGN_CTL(tsk, val)	set_unalign_ctl((tsk), (val))
->   
-> +#define RISCV_SET_ICACHE_FLUSH_CTX(arg1, arg2)	riscv_set_icache_flush_ctx(arg1, arg2)
-> +extern int riscv_set_icache_flush_ctx(unsigned long ctx, unsigned long per_thread);
+> 
+> +#define TPM_MAX_LOCALITY               4
 > +
->   #endif /* __ASSEMBLY__ */
->   
->   #endif /* _ASM_RISCV_PROCESSOR_H */
-> diff --git a/arch/riscv/include/asm/switch_to.h b/arch/riscv/include/asm/switch_to.h
-> index f90d8e42f3c7..6a94431dc193 100644
-> --- a/arch/riscv/include/asm/switch_to.h
-> +++ b/arch/riscv/include/asm/switch_to.h
-> @@ -8,6 +8,7 @@
->   
->   #include <linux/jump_label.h>
->   #include <linux/sched/task_stack.h>
-> +#include <linux/mm_types.h>
->   #include <asm/vector.h>
->   #include <asm/cpufeature.h>
->   #include <asm/processor.h>
-> @@ -73,6 +74,17 @@ static __always_inline bool has_fpu(void) { return false; }
->   extern struct task_struct *__switch_to(struct task_struct *,
->   				       struct task_struct *);
->   
-> +static inline bool switch_to_should_flush_icache(struct task_struct *task)
-> +{
-> +	unsigned int cpu = smp_processor_id();
-> +	bool stale_mm = task->mm && (task->mm->context.force_icache_flush &&
-> +				     (cpu != task->mm->context.prev_cpu));
-> +	bool stale_thread = task->thread.force_icache_flush &&
-> +			    (cpu != task->thread.prev_cpu);
-> +
-> +	return stale_mm || stale_thread;
-
-
-Here the test would become:
-
-return ((task->mm && task->mm->context.force_icache_flush) || 
-task->thread.force_icache_flush) && (cpu != task->thread.prev_cpu);
-
-And do we really need to check task->mm is not null?
-
-
-> +}
-> +
->   #define switch_to(prev, next, last)			\
->   do {							\
->   	struct task_struct *__prev = (prev);		\
-> @@ -81,7 +93,12 @@ do {							\
->   		__switch_to_fpu(__prev, __next);	\
->   	if (has_vector())					\
->   		__switch_to_vector(__prev, __next);	\
-> +	if (switch_to_should_flush_icache(__next))	\
-> +		local_flush_icache_all();		\
->   	((last) = __switch_to(__prev, __next));		\
-> +	__next->thread.prev_cpu = smp_processor_id();	\
-> +	if (__next->mm)					\
-> +		__next->mm->context.prev_cpu = smp_processor_id();	\
->   } while (0)
-
-
-And just to make sure I understand this: you moved the test in 
-switch_to() because 2 threads with the same mm could be scheduled one 
-after the other on the same cpu and then switch_mm() would not be called?
-
-
->   
->   #endif /* _ASM_RISCV_SWITCH_TO_H */
-> diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
-> index 55a34f2020a8..ff545f19f07a 100644
-> --- a/arch/riscv/mm/cacheflush.c
-> +++ b/arch/riscv/mm/cacheflush.c
-> @@ -5,6 +5,7 @@
->   
->   #include <linux/acpi.h>
->   #include <linux/of.h>
-> +#include <linux/prctl.h>
->   #include <asm/acpi.h>
->   #include <asm/cacheflush.h>
->   
-> @@ -152,3 +153,69 @@ void __init riscv_init_cbo_blocksizes(void)
->   	if (cboz_block_size)
->   		riscv_cboz_block_size = cboz_block_size;
->   }
-> +
-> +/**
-> + * riscv_set_icache_flush_ctx() - Enable/disable icache flushing instructions in
-> + * userspace.
-> + * @ctx: Set the type of icache flushing instructions permitted/prohibited in
-> + *	 userspace. Supported values described below.
-> + *
-> + * Supported values for ctx:
-> + *
-> + * * %PR_RISCV_CTX_SW_FENCEI_ON: Allow fence.i in userspace.
-> + *
-> + * * %PR_RISCV_CTX_SW_FENCEI_OFF: Disallow fence.i in userspace. When ``scope ==
-> + *   PR_RISCV_SCOPE_PER_PROCESS``, this will effect all threads in a process.
-> + *   Therefore, caution must be taken -- only use this flag when you can
-> + *   guarantee that no thread in the process will emit fence.i from this point
-> + *   onward.
-> + *
-> + * @scope: Set scope of where icache flushing instructions are allowed to be
-> + *	   emitted. Supported values described below.
-> + *
-> + * Supported values for scope:
-> + *
-> + * * PR_RISCV_SCOPE_PER_PROCESS: Ensure the icache of any thread in this process
-> + *                               is coherent with instruction storage upon
-> + *                               migration.
-> + *
-> + * * PR_RISCV_SCOPE_PER_THREAD: Ensure the icache of the current thread is
-> + *                              coherent with instruction storage upon
-> + *                              migration.
-> + *
-> + * When ``scope == PR_RISCV_SCOPE_PER_PROCESS``, all threads in the process are
-> + * permitted to emit icache flushing instructions. Whenever any thread in the
-> + * process is migrated, the corresponding hart's icache will be guaranteed to be
-> + * consistent with instruction storage. Note this does not enforce any
-> + * guarantees outside of migration. If a thread modifies an instruction that
-> + * another thread may attempt to execute, the other thread must still emit an
-> + * icache flushing instruction before attempting to execute the potentially
-> + * modified instruction. This must be performed by the userspace program.
-> + *
-> + * In per-thread context (eg. ``scope == PR_RISCV_SCOPE_PER_THREAD``), only the
-> + * thread calling this function is permitted to emit icache flushing
-> + * instructions. When the thread is migrated, the corresponding hart's icache
-> + * will be guaranteed to be consistent with instruction storage.
-> + *
-> + * On kernels configured without SMP, this function is a nop as migrations
-> + * across harts will not occur.
-> + */
-> +int riscv_set_icache_flush_ctx(unsigned long ctx, unsigned long scope)
-> +{
-> +#ifdef CONFIG_SMP
-> +	switch (ctx) {
-> +	case PR_RISCV_CTX_SW_FENCEI_ON:
-> +		switch (scope) {
-> +		case PR_RISCV_SCOPE_PER_PROCESS:
-> +			current->mm->context.force_icache_flush = true;
-> +			break;
-> +		case PR_RISCV_SCOPE_PER_THREAD:
-> +			current->thread.force_icache_flush = true;
-> +			break;
-> +		default:
-> +			return -EINVAL;
-> +		}
-> +	}
-> +#endif
-> +	return 0;
-> +}
-> diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
-> index 217fd4de6134..b059dc0fae91 100644
-> --- a/arch/riscv/mm/context.c
-> +++ b/arch/riscv/mm/context.c
-> @@ -15,6 +15,7 @@
->   #include <asm/tlbflush.h>
->   #include <asm/cacheflush.h>
->   #include <asm/mmu_context.h>
-> +#include <asm/switch_to.h>
->   
->   #ifdef CONFIG_MMU
->   
-> @@ -297,19 +298,26 @@ static inline void set_mm(struct mm_struct *prev,
->    *
->    * The "cpu" argument must be the current local CPU number.
->    */
-> -static inline void flush_icache_deferred(struct mm_struct *mm, unsigned int cpu)
-> +static inline void flush_icache_deferred(struct mm_struct *mm, unsigned int cpu,
-> +					 struct task_struct *task)
->   {
->   #ifdef CONFIG_SMP
->   	cpumask_t *mask = &mm->context.icache_stale_mask;
->   
->   	if (cpumask_test_cpu(cpu, mask)) {
->   		cpumask_clear_cpu(cpu, mask);
-> +
->   		/*
->   		 * Ensure the remote hart's writes are visible to this hart.
->   		 * This pairs with a barrier in flush_icache_mm.
->   		 */
->   		smp_mb();
-> -		local_flush_icache_all();
-> +
-> +		/*
-> +		 * If cache will be flushed in switch_to, no need to flush here.
-> +		 */
-> +		if (!(task && switch_to_should_flush_icache(task)))
-> +			local_flush_icache_all();
->   	}
->   
->   #endif
-> @@ -332,5 +340,5 @@ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
->   
->   	set_mm(prev, next, cpu);
->   
-> -	flush_icache_deferred(next, cpu);
-> +	flush_icache_deferred(next, cpu, task);
->   }
-> diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
-> index 370ed14b1ae0..524d546d697b 100644
-> --- a/include/uapi/linux/prctl.h
-> +++ b/include/uapi/linux/prctl.h
-> @@ -306,4 +306,10 @@ struct prctl_mm_map {
->   # define PR_RISCV_V_VSTATE_CTRL_NEXT_MASK	0xc
->   # define PR_RISCV_V_VSTATE_CTRL_MASK		0x1f
->   
-> +#define PR_RISCV_SET_ICACHE_FLUSH_CTX	71
-> +# define PR_RISCV_CTX_SW_FENCEI_ON	0
-> +# define PR_RISCV_CTX_SW_FENCEI_OFF	1
-> +# define PR_RISCV_SCOPE_PER_PROCESS	0
-> +# define PR_RISCV_SCOPE_PER_THREAD	1
-> +
->   #endif /* _LINUX_PRCTL_H */
-> diff --git a/kernel/sys.c b/kernel/sys.c
-> index 420d9cb9cc8e..e806a8a67c36 100644
-> --- a/kernel/sys.c
-> +++ b/kernel/sys.c
-> @@ -146,6 +146,9 @@
->   #ifndef RISCV_V_GET_CONTROL
->   # define RISCV_V_GET_CONTROL()		(-EINVAL)
->   #endif
-> +#ifndef RISCV_SET_ICACHE_FLUSH_CTX
-> +# define RISCV_SET_ICACHE_FLUSH_CTX(a, b)	(-EINVAL)
-> +#endif
->   
->   /*
->    * this is where the system-wide overflow UID and GID are defined, for
-> @@ -2739,6 +2742,9 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
->   	case PR_RISCV_V_GET_CONTROL:
->   		error = RISCV_V_GET_CONTROL();
->   		break;
-> +	case PR_RISCV_SET_ICACHE_FLUSH_CTX:
-> +		error = RISCV_SET_ICACHE_FLUSH_CTX(arg2, arg3);
-> +		break;
->   	default:
->   		error = -EINVAL;
->   		break;
->
+>   struct tpm_chip {
+>          struct device dev;
+>          struct device devs;
+> --
+> 2.30.2
+> 
 
