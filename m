@@ -1,117 +1,247 @@
-Return-Path: <linux-kernel+bounces-29112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29113-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36E718308DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:56:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A16868308E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:58:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C72521F2547F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:56:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E440B254C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:58:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ED7A20DD6;
-	Wed, 17 Jan 2024 14:56:25 +0000 (UTC)
-Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18A9920DD1;
+	Wed, 17 Jan 2024 14:58:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SkpTqgTs"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30B6420DCB;
-	Wed, 17 Jan 2024 14:56:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0435420DC9
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 14:58:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705503384; cv=none; b=mvjcgzCt5EzfFjDMV9DilDdoo/1YrqymycI58VW9bntskFF1WzbHfGz5pHu56Vde2F4WHF0gc8UbIGhSDN1qvF3aVnd30FOW1IGewjTrbM8LxSm9J7hcLImC5TSybsfgGF2/G/1QGYGs6+AojG5LUhc08D52aHnZJMGeagDnspg=
+	t=1705503490; cv=none; b=Fa2R0OMpnAUxPiUuM+0KIfN6HYyc8LmfawHPo/yJb3MRKOeDpK7xKpF2WzykTjIY/TyBNcO4ymABniU7ph4WhH+jbI7wWoYYpJnlGRcvM70BhnXHSmPE0YwgianfaIHnmx9F0XLFIGKqjCzxGcUEGf6b9oPEXlj2OYyYGzx34rE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705503384; c=relaxed/simple;
-	bh=E56splDASVQAb/oV3isY/95h/YumxoYpMCoUHLwaWCc=;
-	h=Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding; b=IoZrJyZ7aLhVA8Rggjw2bWUmva9TW7wZORK4zWZ7Gp+k2f7R1A4lvWl3/wGBFmGpC9DG+uGvmClwBJG5ae8JOliXY6x9z20NkgjQGlCZLOx3FjNHqRQYtD8l9W3W0cP9WtbyZRNtMQzmRiDxPDTGGYtRCKsTchs1H6wUa2mS8jI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wifirst.fr; spf=fail smtp.mailfrom=wifirst.fr; arc=none smtp.client-ip=212.27.42.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wifirst.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=wifirst.fr
-Received: from localhost.localdomain (unknown [IPv6:2a01:e0a:aa1:d2f0:f6b3:db6:44c:eeef])
-	(Authenticated sender: isaias57@free.fr)
-	by smtp6-g21.free.fr (Postfix) with ESMTPSA id 4ECE77802D6;
-	Wed, 17 Jan 2024 15:56:09 +0100 (CET)
-From: Jean Thomas <jean.thomas@wifirst.fr>
-To: sean.wang@kernel.org,
-	linus.walleij@linaro.org,
-	matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	linux-mediatek@lists.infradead.org,
-	linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Cc: Jean Thomas <jean.thomas@wifirst.fr>,
-	Daniel Golle <daniel@makrotopia.org>
-Subject: [PATCH v2 2/2] pinctrl: mediatek: mt7981: add additional emmc groups
-Date: Wed, 17 Jan 2024 15:55:47 +0100
-Message-Id: <20240117145547.3354242-1-jean.thomas@wifirst.fr>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1705503490; c=relaxed/simple;
+	bh=oi+iVpi2yYmU+zXarbh88yTKN7zgJG92JdoIuA7p+WE=;
+	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:Message-ID:
+	 Date:MIME-Version:User-Agent:Subject:Content-Language:To:Cc:
+	 References:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-Scanned-By; b=LqRH6I7Fym3W+t7XD8FvrMtJusK72QGUtOAHrMEkiL7CK3FYHI7wImfQcmFf3aKe0RyyLWKR0m3D/jZpN+RijfqgJevHbKT+ARBggWSMFPlyXEeM+HxBl3BAXRYt/Ckw/elUK+QQZVjB/g0AZBnnS6gc3sO56bTMgCUsZxnZTVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SkpTqgTs; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705503486;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4DEnP8y6ow1wZht4vYBQf9dHQVMDU9DH9lh/OONQlnU=;
+	b=SkpTqgTsOWMjuHbmqjrirpGwMNY70BZy/uIBWXy+l0IpVIagMOPUz1vm5G7+wsyqJZULcM
+	Gall+l9ZPbrNE/JjmkO/XQuTc6Ac7qFQC19rCY0gnBCBigSWlTRY/oXfVuwTYqr6wvc0tF
+	EfLdwt+SKfJueui40cGDWfDwQT5D7wA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-646-2WeDHH-SOtSx2ltXGO5nfg-1; Wed, 17 Jan 2024 09:58:04 -0500
+X-MC-Unique: 2WeDHH-SOtSx2ltXGO5nfg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 71B5E836F88;
+	Wed, 17 Jan 2024 14:58:03 +0000 (UTC)
+Received: from [10.22.16.147] (unknown [10.22.16.147])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 7E7FD40C6EB9;
+	Wed, 17 Jan 2024 14:58:02 +0000 (UTC)
+Message-ID: <5a758416-8c70-4a0e-834d-fecf6c95c7d8@redhat.com>
+Date: Wed, 17 Jan 2024 09:58:02 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] lockdep: fix deadlock issue between lockdep and rcu
+Content-Language: en-US
+To: Xuewen Yan <xuewen.yan94@gmail.com>, Boqun Feng <boqun.feng@gmail.com>
+Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, peterz@infradead.org,
+ mingo@redhat.com, will@kernel.org, linux-kernel@vger.kernel.org,
+ niuzhiguo84@gmail.com, ke.wang@unisoc.com, xuewen.yan@unisoc.com
+References: <1705308796-13547-1-git-send-email-zhiguo.niu@unisoc.com>
+ <ZabBHHwZd70IDDxP@boqun-archlinux>
+ <CAB8ipk--3-+K2bhQS_YMTgpxCkZRbX21Lv_x-nT298yx5YTJeg@mail.gmail.com>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <CAB8ipk--3-+K2bhQS_YMTgpxCkZRbX21Lv_x-nT298yx5YTJeg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-Add new emmc groups in the pinctrl driver for the
-MediaTek MT7981 SoC:
-* emmc reset, with pin 15.
-* emmc 4-bit bus-width, with pins 16 to 19, and 24 to 25.
-* emmc 8-bit bus-width, with pins 16 to 25.
 
-The existing emmc_45 group is kept for legacy reasons, even
-if this is the union of emmc_reset and emmc_8 groups.
+On 1/16/24 23:35, Xuewen Yan wrote:
+> On Wed, Jan 17, 2024 at 1:47 AM Boqun Feng <boqun.feng@gmail.com> wrote:
+>> On Mon, Jan 15, 2024 at 04:53:16PM +0800, Zhiguo Niu wrote:
+>>> There is a deadlock scenario between lockdep and rcu when
+>>> rcu nocb feature is enabled, just as following call stack:
+>>>
+>>>       rcuop/x
+>>> -000|queued_spin_lock_slowpath(lock = 0xFFFFFF817F2A8A80, val = ?)
+>>> -001|queued_spin_lock(inline) // try to hold nocb_gp_lock
+>>> -001|do_raw_spin_lock(lock = 0xFFFFFF817F2A8A80)
+>>> -002|__raw_spin_lock_irqsave(inline)
+>>> -002|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F2A8A80)
+>>> -003|wake_nocb_gp_defer(inline)
+>>> -003|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F30B680)
+>>> -004|__call_rcu_common(inline)
+>>> -004|call_rcu(head = 0xFFFFFFC082EECC28, func = ?)
+>>> -005|call_rcu_zapped(inline)
+>>> -005|free_zapped_rcu(ch = ?)// hold graph lock
+>>> -006|rcu_do_batch(rdp = 0xFFFFFF817F245680)
+>>> -007|nocb_cb_wait(inline)
+>>> -007|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F245680)
+>>> -008|kthread(_create = 0xFFFFFF80803122C0)
+>>> -009|ret_from_fork(asm)
+>>>
+>>>       rcuop/y
+>>> -000|queued_spin_lock_slowpath(lock = 0xFFFFFFC08291BBC8, val = 0)
+>>> -001|queued_spin_lock()
+>>> -001|lockdep_lock()
+>>> -001|graph_lock() // try to hold graph lock
+>>> -002|lookup_chain_cache_add()
+>>> -002|validate_chain()
+>>> -003|lock_acquire
+>>> -004|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F211D80)
+>>> -005|lock_timer_base(inline)
+>>> -006|mod_timer(inline)
+>>> -006|wake_nocb_gp_defer(inline)// hold nocb_gp_lock
+>>> -006|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F2A8680)
+>>> -007|__call_rcu_common(inline)
+>>> -007|call_rcu(head = 0xFFFFFFC0822E0B58, func = ?)
+>>> -008|call_rcu_hurry(inline)
+>>> -008|rcu_sync_call(inline)
+>>> -008|rcu_sync_func(rhp = 0xFFFFFFC0822E0B58)
+>>> -009|rcu_do_batch(rdp = 0xFFFFFF817F266680)
+>>> -010|nocb_cb_wait(inline)
+>>> -010|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F266680)
+>>> -011|kthread(_create = 0xFFFFFF8080363740)
+>>> -012|ret_from_fork(asm)
+>>>
+>>> rcuop/x and rcuop/y are rcu nocb threads with the same nocb gp thread.
+>>>
+>> Nice! Looks like you find the root cause ;-) nocb_gp_lock and graph_lock
+>> have an ABBA deadlock due to lockdep's dependency on RCU. I assume this
+>> actually fixes the problem you saw?
+>>
+>> However, I want to suggest a different fix, please see below:
+>>
+>>> This patch release the graph lock before lockdep call_rcu.
+>>>
+>>> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+>>> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+>>> ---
+>>>   kernel/locking/lockdep.c | 38 +++++++++++++++++++++++++-------------
+>>>   1 file changed, 25 insertions(+), 13 deletions(-)
+>>>
+>>> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+>>> index 151bd3d..c1d432a 100644
+>>> --- a/kernel/locking/lockdep.c
+>>> +++ b/kernel/locking/lockdep.c
+>>> @@ -6186,23 +6186,29 @@ static struct pending_free *get_pending_free(void)
+>>>   /*
+>>>    * Schedule an RCU callback if no RCU callback is pending. Must be called with
+>>>    * the graph lock held.
+>>> + *
+>>> + * Return true if graph lock need be released by the caller, otherwise false
+>>> + * means graph lock is released by itself.
+>>>    */
+>>> -static void call_rcu_zapped(struct pending_free *pf)
+>>> +static bool call_rcu_zapped(struct pending_free *pf)
+>>>   {
+>>>        WARN_ON_ONCE(inside_selftest());
+>>>
+>>>        if (list_empty(&pf->zapped))
+>>> -             return;
+>>> +             return true;
+>>>
+>>>        if (delayed_free.scheduled)
+>>> -             return;
+>>> +             return true;
+>>>
+>>>        delayed_free.scheduled = true;
+>>>
+>>>        WARN_ON_ONCE(delayed_free.pf + delayed_free.index != pf);
+>>>        delayed_free.index ^= 1;
+>>>
+>>> +     lockdep_unlock();
+>>>        call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
+>>> +
+>>> +     return false;
+>>>   }
+>>>
+>>>   /* The caller must hold the graph lock. May be called from RCU context. */
+>>> @@ -6228,6 +6234,7 @@ static void free_zapped_rcu(struct rcu_head *ch)
+>>>   {
+>>>        struct pending_free *pf;
+>>>        unsigned long flags;
+>>> +     bool need_unlock;
+>>>
+>>>        if (WARN_ON_ONCE(ch != &delayed_free.rcu_head))
+>>>                return;
+>>> @@ -6243,9 +6250,9 @@ static void free_zapped_rcu(struct rcu_head *ch)
+>>>        /*
+>>>         * If there's anything on the open list, close and start a new callback.
+>>>         */
+>>> -     call_rcu_zapped(delayed_free.pf + delayed_free.index);
+>>> -
+>>> -     lockdep_unlock();
+>>> +     need_unlock = call_rcu_zapped(delayed_free.pf + delayed_free.index);
+>>> +     if (need_unlock)
+>>> +             lockdep_unlock();
+>> Instead of returning a bool to control the unlock, I think it's better
+>> that we refactor the call_rcu_zapped() a bit, so it becomes a
+>> prepare_call_rcu_zapped():
+>>
+>>          // See if we need to queue an RCU callback, must called with
+>>          // the lockdep lock held, returns false if either we don't have
+>>          // any pending free or the callback is already scheduled.
+>>          // Otherwise, a call_rcu() must follow this function call.
+>>          static bool prepare_call_rcu_zapped(struct pending_free *pf)
+>>          {
+>>                  WARN_ON_ONCE(inside_selftest());
+>>
+>>                  if (list_empty(&pf->zapped))
+>>                          return false;
+>>
+>>                  if (delayed_free.scheduled)
+>>                          return false;
+>>
+>>                  delayed_free.scheduled = true;
+>>
+>>                  WARN_ON_ONCE(delayed_free.pf + delayed_free.index != pf);
+>>                  delayed_free.index ^= 1;
+>>
+>>                  return true;
+>>          }
+>>
+>> , and here we can:
+>>
+>>          <lockdep_lock() is called previous>
+>>          need_callback = prepare_call_rcu_zapped(...);
+>>          lockdep_unlock();
+>>          raw_local_irq_restore(flags);
+>>
+>>          if (need_callback)
+>>                  call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
+> Would there be any problems if call_rcu is placed outside the shutdown
+> interrupt?
 
-Signed-off-by: Jean Thomas <jean.thomas@wifirst.fr>
-Reviewed-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/pinctrl/mediatek/pinctrl-mt7981.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+call_rcu() doesn't need to be called with interrupt disabled. In fact, 
+it calls local_irq_save() itself when necessary. So that is perfectly fine.
 
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mt7981.c b/drivers/pinctrl/mediatek/pinctrl-mt7981.c
-index ca667ed25a4d..ef6123765885 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mt7981.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mt7981.c
-@@ -700,6 +700,15 @@ static int mt7981_drv_vbus_pins[] = { 14, };
- static int mt7981_drv_vbus_funcs[] = { 1, };
+Cheers,
+Longman
 
- /* EMMC */
-+static int mt7981_emmc_reset_pins[] = { 15, };
-+static int mt7981_emmc_reset_funcs[] = { 2, };
-+
-+static int mt7981_emmc_4_pins[] = { 16, 17, 18, 19, 24, 25, };
-+static int mt7981_emmc_4_funcs[] = { 2, 2, 2, 2, 2, 2, };
-+
-+static int mt7981_emmc_8_pins[] = { 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, };
-+static int mt7981_emmc_8_funcs[] = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, };
-+
- static int mt7981_emmc_45_pins[] = { 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, };
- static int mt7981_emmc_45_funcs[] = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, };
-
-@@ -854,6 +863,12 @@ static const struct group_desc mt7981_groups[] = {
- 	PINCTRL_PIN_GROUP("udi", mt7981_udi),
- 	/* @GPIO(14) DRV_VBUS(1) */
- 	PINCTRL_PIN_GROUP("drv_vbus", mt7981_drv_vbus),
-+	/* @GPIO(15): EMMC_RSTB(2) */
-+	PINCTRL_PIN_GROUP("emmc_reset", mt7981_emmc_reset),
-+	/* @GPIO(16,17,18,19,24,25): EMMC_DATx, EMMC_CLK, EMMC_CMD */
-+	PINCTRL_PIN_GROUP("emmc_4", mt7981_emmc_4),
-+	/* @GPIO(16,17,18,19,20,21,22,23,24,25): EMMC_DATx, EMMC_CLK, EMMC_CMD */
-+	PINCTRL_PIN_GROUP("emmc_8", mt7981_emmc_8),
- 	/* @GPIO(15,25): EMMC(2) */
- 	PINCTRL_PIN_GROUP("emmc_45", mt7981_emmc_45),
- 	/* @GPIO(16,21): SNFI(3) */
-@@ -957,7 +972,7 @@ static const char *mt7981_i2c_groups[] = { "i2c0_0", "i2c0_1", "u2_phy_i2c",
- static const char *mt7981_pcm_groups[] = { "pcm", };
- static const char *mt7981_udi_groups[] = { "udi", };
- static const char *mt7981_usb_groups[] = { "drv_vbus", };
--static const char *mt7981_flash_groups[] = { "emmc_45", "snfi", };
-+static const char *mt7981_flash_groups[] = { "emmc_reset", "emmc_4", "emmc_8", "emmc_45", "snfi", };
- static const char *mt7981_ethernet_groups[] = { "smi_mdc_mdio", "gbe_ext_mdc_mdio",
- 	"wf0_mode1", "wf0_mode3", "mt7531_int", };
- static const char *mt7981_ant_groups[] = { "ant_sel", };
---
-2.39.2
 
