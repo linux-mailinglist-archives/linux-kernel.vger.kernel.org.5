@@ -1,134 +1,127 @@
-Return-Path: <linux-kernel+bounces-28748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 600D983028C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:43:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE9F483028E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:43:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE1D1B21044
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:43:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 525A92821A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:43:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE4E414017;
-	Wed, 17 Jan 2024 09:42:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7301214281;
+	Wed, 17 Jan 2024 09:43:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=feathertop.org header.i=@feathertop.org header.b="Zs/Wx1v0";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="LILT3mFl"
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MGeP6NWt"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CA8614004;
-	Wed, 17 Jan 2024 09:42:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6558F13FF9;
+	Wed, 17 Jan 2024 09:43:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705484573; cv=none; b=f9K+tdmeEfCTjVIDcKJeh2rsJANzCSwqJULV40o0TWDGWPCDQxDBuRCBDpwtuO8njZCew3iW3BSXUccAaQI38XTRW2j0d2EmMIwuSkYi1MsMoqClIbsq8G4V/NnDJ39EK7iVyv+9u99SToZNEzp6JzLLFRB/y8h9F6z1Zfxy3i4=
+	t=1705484584; cv=none; b=NnKSdHR/94HgUGE5fGzLCBZ3D5aAfT+IgrEvUW9uwcpoaD0+vnhB7tzyT/EIdk2HH94/yUsG6T3wZQgW9WcWQOqKee3OyAWO9Tfb0o+tg5LXFkS7V7m7pfFFgskjHMNGXtILCs+LXDLQQYYe/KBla4moqnTt8LuxlqZ8Ukiz+D0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705484573; c=relaxed/simple;
-	bh=Eb75W8dJ2rW8+fspUYKekijnVMwybRgRp4z8F5SnPAM=;
-	h=Received:Received:DKIM-Signature:DKIM-Signature:X-ME-Sender:
-	 X-ME-Received:X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 To:Cc:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=oWsvNQ/ZE0k54hv5RP0AfBSbw5mEUdtIWgfIPQYWgCP1EULX29Hx1b17SVIr3KLg5aGYwoorbYMpd/KAPgYyubK0/ovKaU0EVAZU36dEKO4CS2qqPKRg8Bj2uMS30YM0834PAso878N1aGozfH4obkzO6JnlYokDspavKZpcD7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=feathertop.org; spf=pass smtp.mailfrom=feathertop.org; dkim=pass (2048-bit key) header.d=feathertop.org header.i=@feathertop.org header.b=Zs/Wx1v0; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=LILT3mFl; arc=none smtp.client-ip=66.111.4.29
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=feathertop.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=feathertop.org
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.nyi.internal (Postfix) with ESMTP id C25115C0129;
-	Wed, 17 Jan 2024 04:42:51 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 17 Jan 2024 04:42:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=feathertop.org;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm2;
-	 t=1705484571; x=1705570971; bh=yA6uNuuiweBkY5mRLJUzBnsYGOl08z4i
-	FjYHtsbmNT8=; b=Zs/Wx1v0xHGI8TFKOWr9hihmS7/BjYyt8er8PT17jd66P8Yt
-	Mi6dC4B7JemNdZZK1moO1LtYHlgnV3zrXjbdDXeimPR1ke0be9JIFgPsCyq2m8tA
-	sTEaGexrFTx0h1zy/OwuRlaO/tif8P2AnNtnFZpYnclMq9amMzgvJINcklW4uyxR
-	lCoRLHy0enaAcXKNJKW/WPSkLmrHd2attjS/zK55v2I/GMIBF+/30ihZrRuG+gc+
-	0/NLcfKHcBVwFybYMkPVQVWuSJaupO/mv1rzLvtYHZJBG6AKEjnZpk7jpZ/gBhuD
-	SNXzE8kwfe56CXTOKxLTjA83PkFDxyRa/i1eqA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1705484571; x=
-	1705570971; bh=yA6uNuuiweBkY5mRLJUzBnsYGOl08z4iFjYHtsbmNT8=; b=L
-	ILT3mFlhRevOz8yHndp9B8RJgbpSyQH7eQdxmrwanUeYIFOlQ5iaDVE6wUz2qYka
-	BgWhyuiJOn2rJfM0AAf7IrytLS02hBSURW022wgFezgtsq+/beoaH/k5aC3nOhgR
-	i7w9qFvEeqG7f3HQKJMZcr3Wlf69FRDIcjuut9kyiNTTiu8dX15TEowySbsPyh7u
-	eoNe6Jh5rrviTs8qM/luRMlKJmd6UMyOela4xWXVU7gZJuUpF7EUVFMb1ZmDmX20
-	h8R4kNfgqjDOdiRpUc60P09au3b3D/C5SB9ULwiCcT5vRKMxEzJjZ1LgozBiNJdV
-	YkF/pb0qezO6NLHpAw4xw==
-X-ME-Sender: <xms:G6GnZRLzbCZztcR577k881FGkkVjiyLHtrvcXCjU77ULZzFemB5rGQ>
-    <xme:G6GnZdLGUzeyasjo17f5hZWXms2pBk4v3SQ-rip9k9LU_94RHbAOrU7HNB8RPYsSq
-    Onqi24y5A>
-X-ME-Received: <xmr:G6GnZZurRDC2jrNIUfsD80lKlckr4pJLpnzSFCB_-IcgICQu94-hk_BGqXYZ7N4e5dudSSAcqYJDRAYSfseIiwxrfhmjfJwkDTXwbw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdejhedgtdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpefvihhm
-    ucfnuhhnnhcuoehtihhmsehfvggrthhhvghrthhophdrohhrgheqnecuggftrfgrthhtvg
-    hrnhepueegfefgveeuiedtheffgfefveejkeetiefhhfdvjeevlefhueekudeuleeghfek
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepthhimh
-    esfhgvrghthhgvrhhtohhprdhorhhg
-X-ME-Proxy: <xmx:G6GnZSa_MSHU8yHzdXTd0md3lkRXwSE_7E3Bm5MIrAMWdFhIT8rL8A>
-    <xmx:G6GnZYZLNjvAEOchyJcJ9lC5OLuOo0u7s34npFb84AC-Oqgle-eImg>
-    <xmx:G6GnZWAoZ1KBE6HNQiNigBVktM1UsR2ZbwhH-nbx6hqW0krnosimpg>
-    <xmx:G6GnZWn1bMtEdEee9wQUIqK9aRp9MyVlvKTOJZdvu_XFSzA73StjgA>
-Feedback-ID: i1f8241ce:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 17 Jan 2024 04:42:47 -0500 (EST)
-Message-ID: <79565cd6-4874-447a-b51f-774c312a02fc@feathertop.org>
-Date: Wed, 17 Jan 2024 20:42:45 +1100
+	s=arc-20240116; t=1705484584; c=relaxed/simple;
+	bh=1HGpAcr+TReo+8xuEK9BrlhmH+ENa6qJUYnqdZLjux0=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=qwAlj1v6pDuyKv7COie1moP/MnTPng7P36HG0waIn2wEd8sq/gnqGfEruPSzm3DYDYjyhaJBPVg4w7baiKnQ0yksFYV5p3bvi+zSEYP12szOwuv4NiFuxIXu9YjaS+c3TCYSIYVLtYLAGg5TLezb1b+y0K0FBgVUffTq6lhtIVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MGeP6NWt; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc2276e7176so1365966276.2;
+        Wed, 17 Jan 2024 01:43:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705484582; x=1706089382; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5flkVV4v4QllZCyX8quSfFdcgNw55yiflJqxfEiOHFU=;
+        b=MGeP6NWtHZ85DXa+20G6s0PKoXmUmckpVnwLVaoAGFVmkrvLgg8MxrdLkAsneZ9NMK
+         wD/OOG4U4RZ/2RV4dzNaMAFrfI+Ukr4/8oZLHsj/ngCcjco4fLaCQ8pYcXizZaaXSw8H
+         IWJcIF0e8aFzkdC+r8s5MAjKyGmBoSldnfqFl4xxbJMLXcWm/36i1cO/MHZB+4xvBEPz
+         83aK1GE1F2y1qzVs4wP4yDkp7WAPs7CA/y+8HUCddsm1FnrQi16IiJ2YaSg8h4T8lBpt
+         xz871ed5kuIOwQVHEnqx+AhZe1EWr1Zab9c456CPFtXStcPyHllFD9ijtTnsXzjfjt6V
+         5VoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705484582; x=1706089382;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5flkVV4v4QllZCyX8quSfFdcgNw55yiflJqxfEiOHFU=;
+        b=q5ynxqkdqlxWLL3NIB0nQDjaLE4zQcrz4wgZkO7YnOAcdngwIjyR2Dc4szJvsZxHD6
+         ONnzkjD7EGULH1orhhELPjb7ur8YOYVPvqzgn/8gqKASOrFFO0StMISD3uRNuNjEbnyD
+         dkmYGu2vGqCv2rTyFV9RSBx0dJeq/EUNAC0FkG0lAz9LAVcfXgCqocJ5cpWnUxnE7Ygj
+         NwO1OE4qnQeuCIxactI1jCQ3PNJ+faR5OQ/5u+aWsgZrxDngaZ0Lk81IRMH3IqNGmQjv
+         +yJd1h0iLmH/XtnVwKMv5C5IauppiTCrCM67GP8K9IYkhv9kDpgk9or9uNETEGtWWpg4
+         cXHQ==
+X-Gm-Message-State: AOJu0Yyan/TYlJa+KIa/mv+7fdegTF73UfvHyYhtFbm5GGACpaHd4iAT
+	EdbLKURnICwPh2Pz56IZh9h0uz4jmds2NKXl0gpHyTI=
+X-Google-Smtp-Source: AGHT+IGHqFDVFbhJYBTCVFE8UVI9UjiwQ5SgebdHzr9cL5W/HlLlCqm9JL7lmFD7YWysTijXgvn3WZGawDWgXvcxwAU=
+X-Received: by 2002:a25:684c:0:b0:dc2:2b41:c8e7 with SMTP id
+ d73-20020a25684c000000b00dc22b41c8e7mr1490428ybc.127.1705484582005; Wed, 17
+ Jan 2024 01:43:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/3] dt-bindings: rockchip: Add support for rk809 audio
- codec
-Content-Language: en-US
-To: Rob Herring <robh@kernel.org>
-Cc: linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, Chris Zhong <zyw@rock-chips.com>,
- Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Lee Jones <lee@kernel.org>, Zhang Qing <zhangqing@rock-chips.com>,
- linux-kernel@vger.kernel.org
-References: <20240116132102.3272682-1-tim@feathertop.org>
- <20240116195246.GA306579-robh@kernel.org>
-From: Tim Lunn <tim@feathertop.org>
-In-Reply-To: <20240116195246.GA306579-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240117094012.36798-1-sunhao.th@gmail.com>
+In-Reply-To: <20240117094012.36798-1-sunhao.th@gmail.com>
+From: Hao Sun <sunhao.th@gmail.com>
+Date: Wed, 17 Jan 2024 10:42:51 +0100
+Message-ID: <CACkBjsZFmYK-j=JDbCLhNEzYELQits5NB79uNa4p3iHmoKwh5w@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Refactor ptr alu checking rules to allow alu explicitly
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 1/17/24 06:52, Rob Herring wrote:
-> On Wed, Jan 17, 2024 at 12:20:59AM +1100, Tim Lunn wrote:
->> Rockchip RK809 shares the same audio codec as the rk817 mfd, it is also
->> using the same rk817_codec driver. However it is missing from the
->> bindings.
->>
->> This series documents the audio codec properties in rockchip,rk809.yaml
->> bindings and updates example.
->>
->> Changes in v2:
->> - Fix vcc-supply warning detected by dt_binding bot
->> - Fix missing include and pinctrl for codec example
-> I just reviewed v1. Please apply those comments. And wait a bit between
-> sending new versions.
+On Wed, Jan 17, 2024 at 10:40=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wrot=
+e:
 >
-Sorry about that, first series was broken as per bot response, but will 
-wait longer in future.
-
-Regards
-    Tim
+> Current checking rules are structured to disallow alu on particular ptr
+> types explicitly, so default cases are allowed implicitly. This may lead
+> to newly added ptr types being allowed unexpectedly. So restruture it to
+> allow alu explicitly. The tradeoff is mainly a bit more cases added in
+> the switch. The following table from Eduard summarizes the rules:
 >
-> Rob
+>         | Pointer type        | Arithmetics allowed |
+>         |---------------------+---------------------|
+>         | PTR_TO_CTX          | yes                 |
+>         | CONST_PTR_TO_MAP    | conditionally       |
+>         | PTR_TO_MAP_VALUE    | yes                 |
+>         | PTR_TO_MAP_KEY      | yes                 |
+>         | PTR_TO_STACK        | yes                 |
+>         | PTR_TO_PACKET_META  | yes                 |
+>         | PTR_TO_PACKET       | yes                 |
+>         | PTR_TO_PACKET_END   | no                  |
+>         | PTR_TO_FLOW_KEYS    | conditionally       |
+>         | PTR_TO_SOCKET       | no                  |
+>         | PTR_TO_SOCK_COMMON  | no                  |
+>         | PTR_TO_TCP_SOCK     | no                  |
+>         | PTR_TO_TP_BUFFER    | yes                 |
+>         | PTR_TO_XDP_SOCK     | no                  |
+>         | PTR_TO_BTF_ID       | yes                 |
+>         | PTR_TO_MEM          | yes                 |
+>         | PTR_TO_BUF          | yes                 |
+>         | PTR_TO_FUNC         | yes                 |
+>         | CONST_PTR_TO_DYNPTR | yes                 |
+>
+> The refactored rules are equivalent to the original one. Note that
+> PTR_TO_FUNC and CONST_PTR_TO_DYNPTR are not reject here because: (1)
+> check_mem_access() rejects load/store on those ptrs, and those ptrs
+> with offset passing to calls are rejected check_func_arg_reg_off();
+> (2) someone may rely on the verifier not rejecting programs earily.
+>
+> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+> ---
+
+Not specifying bpf-next as the target repo as my previous patch is not
+in it yet.
 
