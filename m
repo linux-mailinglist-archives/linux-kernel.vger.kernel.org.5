@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-28687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C44938301DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:04:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77A6B8301D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:04:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D91D1F268EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:04:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C4EE1F26942
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:04:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FE3F14277;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96AC314275;
 	Wed, 17 Jan 2024 09:03:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q/HNpbZG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AEHLmJHo"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D391714002;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D38E614000;
 	Wed, 17 Jan 2024 09:03:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705482224; cv=none; b=XMWWddm21l45L3C4phYvr0qMF4ne/Bx35briSnrqCvdT6ayGEPE1uxThpdfiOz+/YYczly3CPyGMjxAHtkReyn/zUK3QqV6X/Ig5J2NjT/+Nk2ox1q4Nu/LMXdOp+WkgZCIXKWmwMuWDzW0PnCdJto6v1E2r1GhDSwe//MHJdGQ=
+	t=1705482224; cv=none; b=d+FDbz0HTEYvdcl607TSIOP1D21q/puSkew5GBW2YEyD4YfPxRg3v2FJeZXLLgOfxgJNIIB24SMokPzHpT7nlldf/9VvtsLVLlrY5yLzpABcnOSzozASgcsNO3pqDeqBExB/YvQ4GLXrLpsPpzA0Q6N2OUfaSZzRv86eZ5JqPr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1705482224; c=relaxed/simple;
-	bh=l7DGGpCso7bX08YQvGfXDvfIrpjxnzkTzOG8xe3VBVk=;
+	bh=vEtn9XD7xyubHLGGICH9x1XRbBU8Muy2s+oZUo5w6Zc=;
 	h=Received:DKIM-Signature:Received:From:To:Cc:Subject:Date:
 	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding; b=b2L1xI0r05QMH+7VLsztpxk6mfG0IzeRzNEZ3JhHCC9s1XRRMrVbqm5dC0L18jBXnBMZLks/M0JuXMHpKVBsbRPNFOyX19iWL0+oTzrGVq4NDTFhFPWkn4lUZEr8hqC+9w9Slvgfg92qyZlpWTW70jrnq8z6NdUjIHnI0xeXfzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q/HNpbZG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DA95C43390;
+	 Content-Transfer-Encoding; b=b3EnNd+pqpDO/8N/lkolsTjWZ0tUJCWSqnT/OCFw27eHcTSC74WJcRoi60SqPVa1IMk4gyF3k4Y6eKljzM42m8XZ1wrsBvu40xjxOIi5s3ChEd5OJhWvFK1U0RGAJVVF7cR9MZyZRZJba/rKXyjjiRIQIaaTsV4/sGxm8Qbe0vs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AEHLmJHo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F50DC43394;
 	Wed, 17 Jan 2024 09:03:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1705482224;
-	bh=l7DGGpCso7bX08YQvGfXDvfIrpjxnzkTzOG8xe3VBVk=;
+	bh=vEtn9XD7xyubHLGGICH9x1XRbBU8Muy2s+oZUo5w6Zc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=q/HNpbZGrfbAT3q2jXppVUPeibMPSrHpQGFDwjq9X7e77lqAhcVCXQOtPAWynwfsm
-	 0McWzvFtXOpJLL+PgsIuaj7P1Tkwv9Sv9S5lf7jIoL+U2p8LtIJ/Gq+dhu8c/4XDve
-	 J2agzb07jUmA3XTb7fZ7pYeyHrJt+bmysAS+oA10d55K/mOOezsjn+PjqudEHz+Oda
-	 CcosS1+qu5BVsJFVpip0kVWav3TU1jmelziY20pqKvDDgUAmOrD40S1RfVv3udz5sX
-	 NOOQmwLBunfxQSxFZHTRFBe7U8eNYfDIsdQOAZsMFlN8LQoXnhbzsNALsrPrfaiC5g
-	 u98tTjQjFzAPA==
+	b=AEHLmJHoFnVJOtBCMyEqHJ7tYtCFYxtXYlp6KjBLXwAoLviq6KXa2J33VefHQsH5N
+	 RJHheVMGHfnUDlMf1IZhJQ3OTcPa5T5R5r+huyTsxRKJurmZWA6MNfc/Qxulfnr0fR
+	 S+JJH9NETF28J/AAsfq929kjrcK5p0HlY1yguZ2mrZjUd+K5C2GL9DIHYKPvmzgt3s
+	 NxpmdkBj+OLvgzGaPj68JFyRYne7FQeh7tP+Wp1jUMGZDrVmqVqGSs/8cN8rDrPUZ0
+	 VLeuOrCIv6whNLKISOaGRHA/ABShs/L0/X9Wke+QtxFxpsXC4aY0FiBKOKSiZOs1Wl
+	 7cAyQpSy2hITg==
 Received: from johan by xi.lan with local (Exim 4.96.2)
 	(envelope-from <johan+linaro@kernel.org>)
-	id 1rQ1pt-00086W-0L;
+	id 1rQ1pt-00086Y-0d;
 	Wed, 17 Jan 2024 10:03:49 +0100
 From: Johan Hovold <johan+linaro@kernel.org>
 To: Mark Brown <broonie@kernel.org>
@@ -55,11 +55,10 @@ Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	alsa-devel@alsa-project.org,
 	linux-sound@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>,
-	stable@vger.kernel.org
-Subject: [PATCH v2 2/3] ASoC: codecs: lpass-wsa-macro: fix compander volume hack
-Date: Wed, 17 Jan 2024 10:03:30 +0100
-Message-ID: <20240117090331.31111-3-johan+linaro@kernel.org>
+	Johan Hovold <johan+linaro@kernel.org>
+Subject: [PATCH v2 3/3] ASoC: codecs: wcd9335: drop unused gain hack remnant
+Date: Wed, 17 Jan 2024 10:03:31 +0100
+Message-ID: <20240117090331.31111-4-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20240117090331.31111-1-johan+linaro@kernel.org>
 References: <20240117090331.31111-1-johan+linaro@kernel.org>
@@ -71,70 +70,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The LPASS WSA macro codec driver is updating the digital gain settings
-behind the back of user space on DAPM events if companding has been
-enabled.
-
-As compander control is exported to user space, this can result in the
-digital gain setting being incremented (or decremented) every time the
-sound server is started and the codec suspended depending on what the
-UCM configuration looks like.
-
-Soon enough playback will become distorted (or too quiet).
-
-This is specifically a problem on the Lenovo ThinkPad X13s as this
-bypasses the limit for the digital gain setting that has been set by the
-machine driver.
-
-Fix this by simply dropping the compander gain offset hack. If someone
-cares about modelling the impact of the compander setting this can
-possibly be done by exporting it as a volume control later.
+The vendor driver appears to be modifying the gain settings behind the
+back of user space but these hacks never made it upstream except for
+some essentially dead code that adds a constant zero to the current
+settings on DAPM events.
 
 Note that the volume registers still need to be written after enabling
 clocks in order for any prior updates to take effect.
 
-Fixes: 2c4066e5d428 ("ASoC: codecs: lpass-wsa-macro: add dapm widgets and route")
-Cc: stable@vger.kernel.org      # 5.11
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- sound/soc/codecs/lpass-wsa-macro.c | 7 -------
- 1 file changed, 7 deletions(-)
+ sound/soc/codecs/wcd9335.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
-index 7e21cec3c2fb..6ce309980cd1 100644
---- a/sound/soc/codecs/lpass-wsa-macro.c
-+++ b/sound/soc/codecs/lpass-wsa-macro.c
-@@ -1584,7 +1584,6 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
+diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
+index 43c648efd0d9..deb15b95992d 100644
+--- a/sound/soc/codecs/wcd9335.c
++++ b/sound/soc/codecs/wcd9335.c
+@@ -3033,7 +3033,6 @@ static int wcd9335_codec_enable_mix_path(struct snd_soc_dapm_widget *w,
+ {
+ 	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
+ 	u16 gain_reg;
+-	int offset_val = 0;
+ 	int val = 0;
+ 
+ 	switch (w->reg) {
+@@ -3073,7 +3072,6 @@ static int wcd9335_codec_enable_mix_path(struct snd_soc_dapm_widget *w,
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+ 		val = snd_soc_component_read(comp, gain_reg);
+-		val += offset_val;
+ 		snd_soc_component_write(comp, gain_reg, val);
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMD:
+@@ -3294,7 +3292,6 @@ static int wcd9335_codec_enable_interpolator(struct snd_soc_dapm_widget *w,
  	u16 gain_reg;
  	u16 reg;
  	int val;
 -	int offset_val = 0;
- 	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
  
- 	if (w->shift == WSA_MACRO_COMP1) {
-@@ -1623,10 +1622,8 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
- 					CDC_WSA_RX1_RX_PATH_MIX_SEC0,
- 					CDC_WSA_RX_PGA_HALF_DB_MASK,
- 					CDC_WSA_RX_PGA_HALF_DB_ENABLE);
--			offset_val = -2;
- 		}
- 		val = snd_soc_component_read(component, gain_reg);
+ 	if (!(snd_soc_dapm_widget_name_cmp(w, "RX INT0 INTERP"))) {
+ 		reg = WCD9335_CDC_RX0_RX_PATH_CTL;
+@@ -3337,7 +3334,6 @@ static int wcd9335_codec_enable_interpolator(struct snd_soc_dapm_widget *w,
+ 	case SND_SOC_DAPM_POST_PMU:
+ 		wcd9335_config_compander(comp, w->shift, event);
+ 		val = snd_soc_component_read(comp, gain_reg);
 -		val += offset_val;
- 		snd_soc_component_write(component, gain_reg, val);
- 		wsa_macro_config_ear_spkr_gain(component, wsa,
- 						event, gain_reg);
-@@ -1654,10 +1651,6 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
- 					CDC_WSA_RX1_RX_PATH_MIX_SEC0,
- 					CDC_WSA_RX_PGA_HALF_DB_MASK,
- 					CDC_WSA_RX_PGA_HALF_DB_DISABLE);
--			offset_val = 2;
--			val = snd_soc_component_read(component, gain_reg);
--			val += offset_val;
--			snd_soc_component_write(component, gain_reg, val);
- 		}
- 		wsa_macro_config_ear_spkr_gain(component, wsa,
- 						event, gain_reg);
+ 		snd_soc_component_write(comp, gain_reg, val);
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMD:
 -- 
 2.41.0
 
