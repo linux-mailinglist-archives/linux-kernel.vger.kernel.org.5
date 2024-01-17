@@ -1,185 +1,146 @@
-Return-Path: <linux-kernel+bounces-29237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FFB7830B6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:47:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DC1C830B74
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:50:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B15891F28879
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:47:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16A991C21A21
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:50:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B41A224F5;
-	Wed, 17 Jan 2024 16:47:31 +0000 (UTC)
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04olkn2087.outbound.protection.outlook.com [40.92.75.87])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73E35224EE;
+	Wed, 17 Jan 2024 16:50:10 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35410224D4;
-	Wed, 17 Jan 2024 16:47:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.75.87
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705510050; cv=fail; b=HCqb7AuWC03i6p4+dduSlK5aXOg0k+K62v0KlLzbkcEgW/psnSqMgK6RAwSvdiyoVAAI8ILk32EV4DZsBp+BvTd2cLYB+n9XIuCWehrsE2rNbWwWECNIDqeGo8IwC2vkmXtIWSc8Xf7+jGeATMCo/at/uNtGKIoEBSfFSrVyx3E=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705510050; c=relaxed/simple;
-	bh=lw8yCPGvGTxIhhwkbggUJp2ZmzXfKjZV9ansc4iAI9k=;
-	h=ARC-Message-Signature:ARC-Authentication-Results:Received:
-	 Received:Message-ID:Date:User-Agent:Subject:Content-Language:To:Cc:
-	 References:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 X-TMN:X-ClientProxiedBy:X-Microsoft-Original-Message-ID:
-	 MIME-Version:X-MS-Exchange-MessageSentRepresentingType:
-	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
-	 X-MS-Office365-Filtering-Correlation-Id:X-Microsoft-Antispam:
-	 X-Microsoft-Antispam-Message-Info:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:
-	 X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:
-	 X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=l54SYQ5/pYsYbY6XPovdxN4669VuXjsiS+FcZsFFSzmoUFjHCudTF1OO15072wVFG3Sb6gPJca2+MqT5q/G5zXj4Xjncn5mjDs7+RORmyfxpY+Dc1CAMi840MSuL/31Ih+H7lhA6A9+2SJR5Qlb7RlFvD3/OPaqQS1Qw7VYoUIA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.de; spf=pass smtp.mailfrom=hotmail.de; arc=fail smtp.client-ip=40.92.75.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.de
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Eq9Fkaen5QTclbzBoihVQtnngJZlLtc/gbQBVPBwbocrFdCixxmodGyF5p9H6+fCY63mx709a9YUcIx9muZraIEH1NJBWm7meL0vpe+oRCaoYMEXsOuepphfvgYO5QcfANBcGyLan/I74OqUl/BrP1LTplepkTFLlqXzV5QVZ/hRwwb+pQw/CCOKziI8mBipKp1OIPfn2yyKbD8xfwjCJHMDrjvHJvjGZncpHdwWVdSSYkjV8VwC7HKCs0cWurHKS9YUEnxm9ci0qv1eiXaHW/WxHQ3VDo7YDNn8ooI79MvIv4fdQcoDVt2fhuJHPLz0xKVk72Udh6VP+z2/6NT+vA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SON1owT1/DioZ7mRVLuf6NxiZTP1z2I3grXoH7Ns5UA=;
- b=UKFaHDS/uPFRw+psCWLd3jHmv9n0+9W6UWwCz16J+L3xS1ZcbI0pgjuRtZcycU9ESfh2FLsMnvX/5wEEhyOQCam3eceJrOuRvUdFDxkqLKBoL3+PhryQef0reLEU2X9o1tX3WUc2hTfGCarnGNNqHR32s2DGnpQanRogh/DWWSn+9g9DFVZiNBCzZTRpajjgsEgtTq3MvjE5U0QcgvnRFv3d65mCjbxKu1lZPOC7wm/1j4iKRoW1m923GyzZ8iltgDBbFbTHdTYIDX62yQycCBdC2qY0lBiFuuBxZk73wxMLgyQZOTLlyH2hc2umC/6t/HCZAii0vhHwWIS0OIcyaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from AS8P193MB1285.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:333::21)
- by AM8P193MB1202.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:368::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.23; Wed, 17 Jan
- 2024 16:47:26 +0000
-Received: from AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
- ([fe80::897e:cfd5:b29b:c611]) by AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
- ([fe80::897e:cfd5:b29b:c611%6]) with mapi id 15.20.7202.020; Wed, 17 Jan 2024
- 16:47:26 +0000
-Message-ID:
- <AS8P193MB128591BBF397DC664D7D860EE4722@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
-Date: Wed, 17 Jan 2024 17:48:22 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] net: stmmac: Wait a bit for the reset to take effect
-Content-Language: en-US
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin
- <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Jiri Pirko <jiri@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>
-References: <AS8P193MB1285DECD77863E02EF45828BE4A1A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <AS8P193MB1285EEAFE30C0DE7B201D33CE46C2@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <6e33c038-45a7-4941-b5d9-ce5704e13d48@lunn.ch>
-From: Bernd Edlinger <bernd.edlinger@hotmail.de>
-In-Reply-To: <6e33c038-45a7-4941-b5d9-ce5704e13d48@lunn.ch>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TMN: [MK2bao9eRJ0T4QnzDkecUkPazn0jCA7dF9EjOYpb8BBK5ccWsEzCeiclUSefSSOW]
-X-ClientProxiedBy: BEXP281CA0013.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10::23)
- To AS8P193MB1285.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:333::21)
-X-Microsoft-Original-Message-ID:
- <f992bc4a-e871-41a8-bab2-69093e991e4f@hotmail.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ED551E863;
+	Wed, 17 Jan 2024 16:50:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705510210; cv=none; b=DkST+sKnK8eeIIqVB9iqT9mi9M/l/7NHk5y2Ciufe6AGX5KUOxjfBNHPNWJuR9MGq6EIiYbAtzjx2nhaQi7b90nuOvA366N4uvokRBDdkoWaZ1iuih18SklzS7IjOhMKQy9VbJDfWMu+z5k7l/bOfHtPXpJFHOZppiaxPbShheY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705510210; c=relaxed/simple;
+	bh=9UwbAjBITZpX2+JqWcLCFrn2uFADUodbLwB5n/JYW1c=;
+	h=Received:Received:Received:Date:From:To:CC:Subject:Message-ID:
+	 In-Reply-To:References:Organization:X-Mailer:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:X-Originating-IP:
+	 X-ClientProxiedBy; b=tC1hx9hsS9z/EmYoqZ0dHHgW5FA4h7PNHyDRg62ulsyobWfjLforeBC0PFAZ/pKC/Sq1sjmyzBNdfat7kJ2jgeSEmnksQHsWWHcuFx0G7ZLJsN9TxGm3jbdgEcOHllVPu16Mb/zkx2E+RRcuMUWPN8UPRMiqsyHKwS5NPMdDILY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TFWyc0RKnz6K6M1;
+	Thu, 18 Jan 2024 00:47:52 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 833D8140AA7;
+	Thu, 18 Jan 2024 00:50:04 +0800 (CST)
+Received: from localhost (10.48.153.213) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 17 Jan
+ 2024 16:50:04 +0000
+Date: Wed, 17 Jan 2024 16:50:01 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Rob Herring <robh@kernel.org>
+CC: Petre Rodan <petre.rodan@subdimension.ro>, Krzysztof Kozlowski
+	<krzysztof.kozlowski@linaro.org>, <linux-iio@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Jonathan
+ Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>
+Subject: Re: [PATCH 2/6] dt-bindings: iio: pressure: honeywell,hsc030pa.yaml
+ add sleep-mode
+Message-ID: <20240117165001.00003046@Huawei.com>
+In-Reply-To: <20240116173023.GA139792-robh@kernel.org>
+References: <20240110172306.31273-1-petre.rodan@subdimension.ro>
+	<20240110172306.31273-3-petre.rodan@subdimension.ro>
+	<bc37f7d8-c43f-4751-9216-fc95f439b2f6@linaro.org>
+	<ZaDqlmXJD6if1xK7@sunspire>
+	<20240116173023.GA139792-robh@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8P193MB1285:EE_|AM8P193MB1202:EE_
-X-MS-Office365-Filtering-Correlation-Id: 562a42a8-8f36-4410-3360-08dc177bfc49
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	8SBNLY1nKyzAVXv6OjxihSzf9rqgH/0TyM5QwFK63QU1IHZrYfGNGdDeJffgA9ZP5mNWlwZLJsJIFIL4JBUMpu012KjaCy5RKc5JOGVC7cTVg10Qv8JYyOwr7KLcyDqY8TtFu+KgzFDjRnP1lcjMLT9wmiUn2ovO5dRidzx+aWdAk0p1bpBtSQ0jX9vuputB4m4n6u76YJwONy63I073/Q1PU/5C9HuJ7mWYmPkEWPvVpXcub3G2zu9rpQxzEvd4OCKroBtMPCJ7nS9iU89wJCeRzdyMMRcmLqunZPxa8FNo5Zbp0UCKXXLNv2ZpOh8W520SwcgOdB7goT/DvnCXGK0HDBWwXxHdT6+jawn2AJmSP/w/J5ZDwZ6pW+8vhtc/ztjvSeV4k4Hi+03hRzeIB/1+C4gH446A4/1EkjSN8+LzVaajVBKoezCiQ5hIT3+LMm477lswsIt0Y57fC7NY3z/LygKMm8pnNjWYiYvAzOHeaWlAafEve4kuVCc28yi6MnFNtTu5xFabQtJ9TFebnPELYwYcTfjgrkHgab4Kkx+G12Stt5ftThQyjF5Zwe7i
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?dkpyVXJOT1gvalNVNFg1a2Fha0tvOWlCbkdGVjBscERMVnh6V0d1RmFPSlJ5?=
- =?utf-8?B?QlM0cGdCRGxzSUN3enVnNktBaXdGM25uRFZRNmZLMWYwT1YxUGRlRXE5eTZa?=
- =?utf-8?B?bWVOVFpyMUs3SG1qTnpEOTlVSlpUQW9KYXM2eVNiV21QVHF1RlVubit4RVlI?=
- =?utf-8?B?cTdsTWR1eEVQc1BZR21oTDFja0htcS9ueVhzaThZYzUvckhiNmdEa3BnY3pJ?=
- =?utf-8?B?YjBxQnE1WUFIOWVmT1VISnRqZXpzYVUyN1R6a3VzVXV2SUlqa0E3QXh0aXlT?=
- =?utf-8?B?ei9yNDk3L010WHJRaGF4TWszQldaSCtwbHp6My9xazJ6NnVuU3ZrQ3NlTFZZ?=
- =?utf-8?B?aE4vcGZBbGRUTGhxd1NJRVE4YW10Q1A5NTNRR2RMZnVoVmRDZC82dkhMWXd4?=
- =?utf-8?B?N0dLUnp2ZVNUcHhUOFhOamVuQ2VabittSC9IT1Vjc2NJUXBvcVFhVVBFYVhJ?=
- =?utf-8?B?R0gvdlBKQmNhSllRa2ZTa3ZSVmFHQitvcFlucEtkajZMeWxlTjVBN2t5N0k1?=
- =?utf-8?B?S2NEMEhudHJWaDUvV3lhakxSVlFDTy9vYmJmTWRyMjVjTnNPbjN6djRuK1Y3?=
- =?utf-8?B?OEk1MW5pUkJuRTdaNHV3alRZNmZFMXdFSFYyOVRoejQ1a2RadjY4UGlydDFo?=
- =?utf-8?B?T3lIc1lQbmhNU3BHaitZNTZJYlhwTHV0b09SUG1BaWVjQUFqYjZKMDZjbWJI?=
- =?utf-8?B?YjNUZVk4aTB6TThqWXpsNkhJMTJvTUtGeFE5am4za3N4bFVXNmdTWm1rOFV0?=
- =?utf-8?B?ZlFrMU40NTdwQWlyaHk1Z0hlNi82NGhWWEd5VEVaTG1uaEtrbFVxbm1tVzAx?=
- =?utf-8?B?dENUTlF6UGVwdGQ1L2VCTDh4dUhKQ0VwT05HNDRSSUhIRDRtM0dDYS9mUFNO?=
- =?utf-8?B?SkhZVjNhT1ZrWnQ4a0ZzVHR2ZS9CbFJTT0IwTTJpYXIyRHc3TnVTcVJ2Tjd6?=
- =?utf-8?B?ei93MDBxVDNkazFEYVJCTXJ4MVB5UXFiSUliajVSakxBbk5UK3hMd0JOTnNq?=
- =?utf-8?B?ZUQ1SndzbUNJU2Q2Q1haRW03L1k2SWQvb21yNVFaMDV4OEt5b2Q3SUpzUnl5?=
- =?utf-8?B?OEZlaDRwdlFpb1Z1MzBmaGpkTmc0VkRPTTVjZjhtaEp3RVhCVHppZm91NDJs?=
- =?utf-8?B?Z1pQbVhSdmtXM3E5Smd4czViZWh3anNVR2NnMXNrNlVZcWJiOFAyVmlTRVZ3?=
- =?utf-8?B?a3VNYnNnWVhZVGZHZC9xZDFqU08rQ1lyMHlkU2xrcThFb3NlbzJwazlSNzlt?=
- =?utf-8?B?ekszWUtURlI2OTJMd0M2K2dkTTFLVGFUUzVLRU9OYWlIR3pxOUJXZUg0eExH?=
- =?utf-8?B?OHdZNXp2ZWF5dmlmSUFDcXdjUnNZUUhsY1NIMXU5cUpUd09SNUIva29tQ2pO?=
- =?utf-8?B?aFltbnBkaUlZRGt6YldzSGhyVCt1QU1ONEJHYWFkdms1VjRZSFBQT1JJQXps?=
- =?utf-8?B?UVpEZ0xseHRWSFJ0dkY5SWZidTBsblEzOVEwWXBKNlE2MzhObUZEcStQQ1BC?=
- =?utf-8?B?VkE3dDlPTTFQc0E4QllxMGo2NjI4eDlxOFdvYzRRaGhLSVFSaktZbGp2cTdU?=
- =?utf-8?B?UFU4clN4OG9NZm96d0lIRjQ3MllXTHNYVWQ2eHJHck81QWwwS3M2SXlvdkFR?=
- =?utf-8?B?Q2hxTjZvbnNrWlQ3THgvVzVKVytPZnNETDV1REtRK0owbkpEU0NZeHdBMTdD?=
- =?utf-8?B?cjlVMGR4RW1weHF5cWNTaHdtU1g3cnJSOWdXaTg1ejR6NlVIcTlqZ25Ma1lE?=
- =?utf-8?Q?PAqUCCIKA1N3Fl/slY=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-80ceb.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 562a42a8-8f36-4410-3360-08dc177bfc49
-X-MS-Exchange-CrossTenant-AuthSource: AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2024 16:47:26.4878
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8P193MB1202
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500001.china.huawei.com (7.191.163.213) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On 1/16/24 23:35, Andrew Lunn wrote:
-> On Mon, Jan 15, 2024 at 08:21:42PM +0100, Bernd Edlinger wrote:
->> otherwise the synopsys_id value may be read out wrong,
->> because the GMAC_VERSION register might still be in reset
->> state, for at least 1 us after the reset is de-asserted.
->>
->> Add a wait for 10 us before continuing to be on the safe side.
->>
->>> From what have you got that delay value?
->>
->> Just try and error, with very old linux versions and old gcc versions
->> the synopsys_id was read out correctly most of the time (but not always),
->> with recent linux versions and recnet gcc versions it was read out
->> wrongly most of the time, but again not always.
->> I don't have access to the VHDL code in question, so I cannot
->> tell why it takes so long to get the correct values, I also do not
->> have more than a few hardware samples, so I cannot tell how long
->> this timeout must be in worst case.
->> Experimentally I can tell that the register is read several times
->> as zero immediately after the reset is de-asserted
+On Tue, 16 Jan 2024 11:30:23 -0600
+Rob Herring <robh@kernel.org> wrote:
+
+> On Fri, Jan 12, 2024 at 09:30:30AM +0200, Petre Rodan wrote:
+> > 
+> > Hello Krzysztof,
+> > 
+> > On Wed, Jan 10, 2024 at 09:48:34PM +0100, Krzysztof Kozlowski wrote:  
+> > > On 10/01/2024 18:22, Petre Rodan wrote:  
+> > > > Add sleep-mode property present in some custom chips.
+> > > > 
+> > > > This flag activates a special wakeup sequence prior to conversion.
+> > > > 
+> > > > Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
+> > > > ---
+> > > >  .../bindings/iio/pressure/honeywell,hsc030pa.yaml      | 10 ++++++++++
+> > > >  1 file changed, 10 insertions(+)
+> > > > 
+> > > > diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+> > > > index 89977b9f01cf..350da1d6991b 100644
+> > > > --- a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+> > > > +++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+> > > > @@ -86,6 +86,15 @@ properties:
+> > > >        Maximum pressure value the sensor can measure in pascal.
+> > > >        To be specified only if honeywell,pressure-triplet is set to "NA".
+> > > > 
+> > > > +  honeywell,sleep-mode:  
+> > > 
+> > > "Sleep mode" naming suggests there are choices, like mode foo and mode
+> > > bar. Probably you want something like "sleep-between-measurements" or
+> > > something matching how does it work.  
+> > 
+> > "sleep mode" is the terminology used by Honeywell and it defines a chip capability.
+> > it is present in the HSC/SSC and ABP series of ICs.
+> > 
+> > other such options (capabilities) include temperature output in the ABP series.
+> > 
+> > the action the driver needs to perform if this option is present is to provide a
+> > wake-up sequence before reading out the conversions.
+> > 
+> > now regarding a rename of this property, I would vote to leave it as is - for the
+> > users to have a 1:1 equivalence of terms between the driver and the datasheet.
+> > 
+> > I say that because for instance in circuit design when a part symbol and
+> > footprint is drawn based on a datasheet it is recommended to keep the same pin
+> > notations and the same block diagram as in the datasheet, precisely for this 1:1
+> > equivalence, so there is no uncertainty for the end-user.  
 > 
-> Is zero a valid synopsys_id? If its not, maybe do the wait conditional
-> on the first read returning 0?
+> At least add a '-en' suffix so it is clear this property enables the 
+> mode. We have both flavors (enables and disables). 
+> 
+> Low power modes between samples is pretty common on these devices. We 
+> should consider if this should be a common property. Jonathan?
+
+Normally it's a controllable things so we make it dependent on userspace
+interaction (runtime-pm or whether buffered capture is enabled).
+Policy thing so not appropriate in DT.
+
+Here it's different because it's a particular device variant that must work in this
+fashion. Other device variants don't support it at all.
+
+If it weren't for the obscene number of variants this would normally be
+derived from the compatible rather than being in DT at all.
+
+So it's odd and I don't think appropriate for a common property.
+
+Jonathan
+
+> 
+> Rob
 > 
 
-I don't know at all.  And actually, I am more concerned that other registers
-might be unreliable within the first microsecond after reset is de-asserted.
-
-As I mentioned earlier the VHDL source code is obfuscated and I cannot
-tell anything about it, maybe people from synopsys can shed some light
-on the issue.
-
-
-Thanks
-Bernd.
 
