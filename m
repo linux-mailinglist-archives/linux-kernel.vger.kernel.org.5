@@ -1,101 +1,140 @@
-Return-Path: <linux-kernel+bounces-28587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30352830061
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:13:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57223830066
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:14:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D69CB23E71
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:13:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B1FD1F225E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:14:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E25988F6D;
-	Wed, 17 Jan 2024 07:13:09 +0000 (UTC)
-Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00D025CB0;
-	Wed, 17 Jan 2024 07:13:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.74.38.119
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B2CA8F6D;
+	Wed, 17 Jan 2024 07:14:46 +0000 (UTC)
+Received: from sgoci-sdnproxy-4.icoremail.net (sgoci-sdnproxy-4.icoremail.net [129.150.39.64])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABEFF8F47
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:14:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.150.39.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705475589; cv=none; b=D/b/HyI5Za18w6nNW2cRst7gnBkkd6ukBHbvnwMYxnbBZbbt4R2u6aMdrGNUnAU+Z+cmSpK7CtHWrzPnU0MCk4g2hhUR8k610mQYZDgweK9ik+S9qAiuHrS5atCMuqjdSIf8WVA817jJDsfDNSiEk2tn8oWdeTSzIBU2fnAAGyU=
+	t=1705475686; cv=none; b=UZCIltDopxeKFEuAfHew0nKiUPUTi8x+O7dY8W7xzDtbJkloLyv4Vp9KyHf3Oiv6zXBt1tqn95B6+MmrJfrNbKi7cYmbg+Nh0DUwWHpLmgXOSb6zTSmT8d9jzoJym3V6Mny/xOnPFCfdW2prpbBNwe8L5HsFDZiVbKEN5h3z470=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705475589; c=relaxed/simple;
-	bh=VOPRzbPoK6eKabzYFOueNX9M9qUZqA8gbMPhJ2kva4Q=;
-	h=Received:Received:Received:X-Virus-Scanned:Received:Received:From:
-	 To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding; b=N2dtafzipByPov7+iBVpR+a7dqJq6sINxjzQ2hhJUEawBalBS2I4kPxNsx56NN69dQ6WDDqAYIxOMnZBV/2EXbgv3UzLYnzTM+Xnxh5moGufq9Byv5cttkuAGdIE60tIlyIB5A0QS7XOSf/F3gnH6kWoLzeoL0SeB8OryAyChw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=astralinux.ru; spf=pass smtp.mailfrom=astralinux.ru; arc=none smtp.client-ip=217.74.38.119
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=astralinux.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=astralinux.ru
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.astralinux.ru (Postfix) with ESMTP id 506861867522;
-	Wed, 17 Jan 2024 10:13:01 +0300 (MSK)
-Received: from mail.astralinux.ru ([127.0.0.1])
-	by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id DHjOdtHDzmxA; Wed, 17 Jan 2024 10:13:01 +0300 (MSK)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.astralinux.ru (Postfix) with ESMTP id 0096D1866B46;
-	Wed, 17 Jan 2024 10:13:01 +0300 (MSK)
-X-Virus-Scanned: amavisd-new at astralinux.ru
-Received: from mail.astralinux.ru ([127.0.0.1])
-	by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id z5YQWJPYpUoM; Wed, 17 Jan 2024 10:13:00 +0300 (MSK)
-Received: from rbta-msk-lt-106062.astralinux.ru (unknown [62.217.185.39])
-	by mail.astralinux.ru (Postfix) with ESMTPSA id ED2A91863E43;
-	Wed, 17 Jan 2024 10:12:59 +0300 (MSK)
-From: Anastasia Belova <abelova@astralinux.ru>
-To: Markus Mayer <mmayer@broadcom.com>
-Cc: Anastasia Belova <abelova@astralinux.ru>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	linux-pm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org
-Subject: [PATCH] cpufreq: brcmstb-avs-cpufreq: add check for cpufreq_cpu_get's return value
-Date: Wed, 17 Jan 2024 10:12:20 +0300
-Message-Id: <20240117071220.26855-1-abelova@astralinux.ru>
-X-Mailer: git-send-email 2.30.2
+	s=arc-20240116; t=1705475686; c=relaxed/simple;
+	bh=7Y28t4MZ3vmCFNG8OsjOXyi8bkTKzL2h4gy5nyYLaBE=;
+	h=Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding:X-CM-TRANSID:X-Coremail-Antispam:
+	 X-CM-SenderInfo; b=m33PAptXyJiJ22o/INmsEnVGbXOH4OzO912Nq7AU2Beu9aJiVUnKQzz+t6N75kWrcCXVIs3w7sQ9YXGMcsFJliyhYB6xvEGwg/oHXiupUHoJ+SY1/EFJGQAKQz10SNjr8iSzhORS0pMWlmaFyGGmEQmPlM3poeJBQjrRoe3hc44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=129.150.39.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from luzhipeng.223.5.5.5 (unknown [183.159.170.179])
+	by mail-app2 (Coremail) with SMTP id by_KCgDHLK1QfqdlVgI6AA--.30090S2;
+	Wed, 17 Jan 2024 15:14:25 +0800 (CST)
+From: Zhipeng Lu <alexious@zju.edu.cn>
+To: alexious@zju.edu.cn
+Cc: Qiang Yu <yuq825@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Vasily Khoruzhick <anarsoul@gmail.com>,
+	dri-devel@lists.freedesktop.org,
+	lima@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] drm/lima: fix a memleak in lima_heap_alloc
+Date: Wed, 17 Jan 2024 15:13:28 +0800
+Message-Id: <20240117071328.3811480-1-alexious@zju.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:by_KCgDHLK1QfqdlVgI6AA--.30090S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ww4xCw1xuw4kur48AFy5Arb_yoW8XF4rpF
+	Z3CrWayr43Jw4xJrZxJFyDAF15Kws5JFy0kr1UJ39I9wsIyr4vgryrJasagF90qr9rCr13
+	GF1DKr1kuF12kaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9K14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCY02Avz4vE14v_GF4l42xK82IYc2Ij64vIr4
+	1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
+	67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
+	8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
+	wI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
+	v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUYuWlDUUUU
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
 
-cpufreq_cpu_get may return NULL. To avoid NULL-dereference check it
-and return 0 in case of error.
+When lima_vm_map_bo fails, the resources need to be deallocated, or
+there will be memleaks.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
-
-Fixes: de322e085995 ("cpufreq: brcmstb-avs-cpufreq: AVS CPUfreq driver fo=
-r Broadcom STB SoCs")
-Signed-off-by: Anastasia Belova <abelova@astralinux.ru>
+Fixes: 6aebc51d7aef ("drm/lima: support heap buffer creation")
+Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
 ---
- drivers/cpufreq/brcmstb-avs-cpufreq.c | 2 ++
- 1 file changed, 2 insertions(+)
+Changelog:
 
-diff --git a/drivers/cpufreq/brcmstb-avs-cpufreq.c b/drivers/cpufreq/brcm=
-stb-avs-cpufreq.c
-index 35fb3a559ea9..1a1857b0a6f4 100644
---- a/drivers/cpufreq/brcmstb-avs-cpufreq.c
-+++ b/drivers/cpufreq/brcmstb-avs-cpufreq.c
-@@ -481,6 +481,8 @@ static bool brcm_avs_is_firmware_loaded(struct privat=
-e_data *priv)
- static unsigned int brcm_avs_cpufreq_get(unsigned int cpu)
- {
- 	struct cpufreq_policy *policy =3D cpufreq_cpu_get(cpu);
-+	if (!policy)
-+		return 0;
- 	struct private_data *priv =3D policy->driver_data;
-=20
- 	cpufreq_cpu_put(policy);
---=20
-2.30.2
+v2: rearrange the error-handling to ladder tags.
+---
+ drivers/gpu/drm/lima/lima_gem.c | 23 +++++++++++++++--------
+ 1 file changed, 15 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/gpu/drm/lima/lima_gem.c b/drivers/gpu/drm/lima/lima_gem.c
+index 4f9736e5f929..d3d82ee7fb4c 100644
+--- a/drivers/gpu/drm/lima/lima_gem.c
++++ b/drivers/gpu/drm/lima/lima_gem.c
+@@ -75,29 +75,36 @@ int lima_heap_alloc(struct lima_bo *bo, struct lima_vm *vm)
+ 	} else {
+ 		bo->base.sgt = kmalloc(sizeof(*bo->base.sgt), GFP_KERNEL);
+ 		if (!bo->base.sgt) {
+-			sg_free_table(&sgt);
+-			return -ENOMEM;
++			ret = -ENOMEM;
++			goto err_out0;
+ 		}
+ 	}
+ 
+ 	ret = dma_map_sgtable(dev, &sgt, DMA_BIDIRECTIONAL, 0);
+ 	if (ret) {
+-		sg_free_table(&sgt);
+-		kfree(bo->base.sgt);
+-		bo->base.sgt = NULL;
+-		return ret;
++		goto err_out1;
+ 	}
+ 
+ 	*bo->base.sgt = sgt;
+ 
+ 	if (vm) {
+ 		ret = lima_vm_map_bo(vm, bo, old_size >> PAGE_SHIFT);
+-		if (ret)
+-			return ret;
++		if (ret) {
++			goto err_out2;
++		}
+ 	}
+ 
+ 	bo->heap_size = new_size;
+ 	return 0;
++
++err_out2:
++	dma_unmap_sgtable(dev, &sgt, DMA_BIDIRECTIONAL, 0);
++err_out1:
++	kfree(bo->base.sgt);
++	bo->base.sgt = NULL;
++err_out0:
++	sg_free_table(&sgt);
++	return ret;
+ }
+ 
+ int lima_gem_create_handle(struct drm_device *dev, struct drm_file *file,
+-- 
+2.34.1
 
 
