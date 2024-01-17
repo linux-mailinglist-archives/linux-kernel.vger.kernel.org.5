@@ -1,108 +1,80 @@
-Return-Path: <linux-kernel+bounces-29254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D818C830BAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:07:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC14E830BAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:07:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7EBC1C23A0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:07:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 608331F223E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:07:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7545A225D7;
-	Wed, 17 Jan 2024 17:07:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2BBF225CF;
+	Wed, 17 Jan 2024 17:07:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MaBHiyK+"
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="sv22wVEc"
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7800820325;
-	Wed, 17 Jan 2024 17:07:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76759225A8
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 17:07:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705511234; cv=none; b=moOv6IFdqVmHsS/Cyf+sb0pknefDifNxew+cPBn+jt2auHvQAOUUk8Tcw+LoVx/xeiOBjmvKHCX7o9ZOwbUvHhAykIiH9FZTyW9iL63unps1ckafEKujVxmQCMociQ/ZJfuToxaG2tbZNllovSLuNSyNLeRZCtuAx4LNLIVrRnE=
+	t=1705511272; cv=none; b=tukgy5HMdX9AZ3S8LDTWL65lzHCqZCUtXbiWI81c/7RRjlXJnlIcfi5iqokSCj+VcKe9jk2ZfNKKnM8wUZLFBE7e8SMefXJAvbb/c4Z+bjrf0hsWrnWQOWo00t7ftHqs4+bjk2NWKO6nSprzm8UeDn0FjXEPhYysMRkCiC+1JFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705511234; c=relaxed/simple;
-	bh=z6DHV9nI4jMmYcNar205Ahgb8zqKb0GneJ6hFKq7cfE=;
+	s=arc-20240116; t=1705511272; c=relaxed/simple;
+	bh=j4MagUT939h34aJBkbZdvETtPZRr7k3PVF5IEDPhqM4=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Sender:
-	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lkOr9MoMXtf9TfoBtsUu2v0xtT8i6cgNZ+SYtDKD+U9CwHwVu5uu2QtREia2i7oL1EEqMbtsdFUc63awqHW2WrWDLtxfP5TTVMn7BnaF+BZD7O8mT+vhkfO45N6N14zgDK9x1GlOqHvrztoBraAiSw5mKDTmfpQ1deCE4/4zx1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MaBHiyK+; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5ce10b5ee01so8167340a12.1;
-        Wed, 17 Jan 2024 09:07:13 -0800 (PST)
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
+	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=qMAmJzDUjcAFKDApp6I82ipUctwn+6wvqX83YC39t34GR4qcJ50sJRe1Wv+zuU3mzI84Y6LEzodkfsnrwxC9zUkizhpbrr3i38tbj6xTKFdlOIjQq/p3ctAKwKr4KJqE5k255asIX5BaW8Lpg97X2qYjreFCdGDrGQJJc1lwNI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=sv22wVEc; arc=none smtp.client-ip=209.85.219.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-680a13af19bso68123356d6.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 09:07:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705511233; x=1706116033; darn=vger.kernel.org;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1705511268; x=1706116068; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Qc3wJ8un1HLyTnJdIdlaIzF/ByCjBoYDp2Jt1SaaKDA=;
-        b=MaBHiyK+v5MpnxjaJJE5vQUwhO36+Qo4q/DlLTrEeQ3OYTZRDEjCW+il39zPFj6L2W
-         TUyFal5q0AI1ERBiX4rdRo3+4i9e5Vp4Z726J5XKu/k0H0qowGL1kJR1qXZ0H+9J+2CV
-         /BSgtQ3mhfacXWgug1pMNHb2vJPCdNyRfZOVaxGdsrCGCwo6r8yhaLldksK8uh8dd7Kj
-         0NlOqtrUKRz87U38wI3A7nT21MxWnfgoaVl0tcm9Eg7sbWPqW5y0pR2Z+bUL/3u1g0/P
-         fQgMjHmRAPetNdwV0Os46OSmuSp6Yjzi06S+b0KZD9Nj/0bSjvZpi/5FvISMemY6/xaL
-         ehIw==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zWOiEU+kR/KCpSSXoCm9gZI4gFvMUBHX2MKPUoiQ5Zo=;
+        b=sv22wVEc7cPLEpCZcyVLBM5NeXJqZHXi/jIxx9VRVwwJCWMj4Tso6ueb3v08G61Nnj
+         hnO3ECqzNpxd2Qp8B572EKWIpZfBEo98VQlo7dmG2FmlFL+ROvYGZF62x48c38rYqJPe
+         VUn/E02SRb3MESyCaoeUq4cRqQdhomIX51VesKs2bhrEssRvUGcpKB4+U8oBdl850iC1
+         R9nI+UgURpPsWablNqkDXsV6RQThWA8u8+bk6qH582gKzS9YPR/GqJr0QD5TNjv5YlIR
+         V11cYuOlsIY4T+L+tOQNdJN46PiQqcNexvLeo7AWC2kxp5YUVFujgs2aO7fddEH8zJBo
+         saAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705511233; x=1706116033;
+        d=1e100.net; s=20230601; t=1705511268; x=1706116068;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qc3wJ8un1HLyTnJdIdlaIzF/ByCjBoYDp2Jt1SaaKDA=;
-        b=NnBQ1IqybStsvx6HQZ0+NskUoOExPinzHr/td3I0/6+5SlPneI3gs21iAnr/np1hx9
-         fwIc9JLQ8ZjWqAlGcEP62Jznt6gA9I7UTsaQiZ+op+2pDPjQMSPuCXmzQ4PtSAmyVsvE
-         cA8m2u0xwTwKm1XiCr+Rj8bx8qtg6Fb3NyzWlWtDhSP+7JSxFdOnph3fup4n47p+Jtmp
-         hEe+g5jxYzESoG+a+nN6EIEiJKP7jhQN/jeKXUisa5dE2ussfXGYBDHVm0+u69t3Nmjd
-         7SpEpc/YmQC+tCdhHv3qoWYWE3+WOxxTGkh9xLCF568NmA0NvL14nhfs0MbmUg40OBvk
-         jY/A==
-X-Gm-Message-State: AOJu0YwrFeTWDJtubPaL7jG1pNn/GWIO7GRU5Xh9h2qnmwVh5bJEhbq8
-	CnsDNcsI0wxMKN5z6HwOPpg=
-X-Google-Smtp-Source: AGHT+IGMktxjM/qsDQ11rUiNkkQ0XT7nVRjtjMGwgTOrfXbrq9w1emNOsCBSN2+HCjKxTRsLWUaoJQ==
-X-Received: by 2002:a05:6a20:9195:b0:19b:5cbd:efd0 with SMTP id v21-20020a056a20919500b0019b5cbdefd0mr1444939pzd.61.1705511232629;
-        Wed, 17 Jan 2024 09:07:12 -0800 (PST)
-Received: from localhost (dhcp-72-235-13-140.hawaiiantel.net. [72.235.13.140])
-        by smtp.gmail.com with ESMTPSA id lp16-20020a056a003d5000b006d9a0902934sm1662630pfb.70.2024.01.17.09.07.11
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zWOiEU+kR/KCpSSXoCm9gZI4gFvMUBHX2MKPUoiQ5Zo=;
+        b=GWUz7T9PjPsvtDG4llpZy8fB7WJynKfdFVMHRovmM4lfqy+8yJokCwnyk0BIcGfZS2
+         Y6al5OIuQapXgFnNX1KOZQCPAmneud+NXswKq04imNIh0+28HEiieNFwGXzqY5lIp2EE
+         ZdpTfs1WvMw3NPAy4zK4A7hnXar7t4MAvxsPglPiRWeBfMegpRfITz/NWnCYJfFqPf9v
+         zpFqT6caHpj2HlmwXIpSjhFWFyThQ0sjIcbBGT1ucKoTD4C68oyGryC6Yr0z0EqCiEMb
+         1VDCZ2SHwGNFsInmV49U1KfgzVxfzIqUCRtaIyuWrxqficzzgbxuafVw8aEuP0iCBK9o
+         jr7w==
+X-Gm-Message-State: AOJu0YxfFw3UMYSftsSmu00Aa/tE3o9ihjrUDQ7tMb5R2WmK3FMYabJy
+	y/dsxsOk9z/hOtTYNkVl2QpEvp/AJaPW6w==
+X-Google-Smtp-Source: AGHT+IGKmLAGAr22Rl8M9CD8UH3WoTASOM5aKzmuta9xYSt6dGDDsHb2a69hjQdNAE52hYQ/jlJC3w==
+X-Received: by 2002:a0c:dd93:0:b0:681:795c:b5b0 with SMTP id v19-20020a0cdd93000000b00681795cb5b0mr1437318qvk.105.1705511268093;
+        Wed, 17 Jan 2024 09:07:48 -0800 (PST)
+Received: from localhost ([2620:10d:c091:400::5:479b])
+        by smtp.gmail.com with ESMTPSA id qd11-20020ad4480b000000b0067f99a564bfsm5196754qvb.91.2024.01.17.09.07.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 09:07:12 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 17 Jan 2024 07:07:10 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
-	Ryan Phillips <rphillips@redhat.com>,
-	Brent Rowsell <browsell@redhat.com>, Peter Hunt <pehunt@redhat.com>,
-	Cestmir Kalina <ckalina@redhat.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	Alex Gladkov <agladkov@redhat.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>, Phil Auld <pauld@redhat.com>,
-	Paul Gortmaker <paul.gortmaker@windriver.com>,
-	Daniel Bristot de Oliveira <bristot@kernel.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Costa Shulyupin <cshulyup@redhat.com>
-Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
- partitions
-Message-ID: <ZagJPoEsLZ6Dg-NG@mtj.duckdns.org>
-References: <20240117163511.88173-1-longman@redhat.com>
+        Wed, 17 Jan 2024 09:07:47 -0800 (PST)
+Date: Wed, 17 Jan 2024 12:07:43 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Yi Tao <escape@linux.alibaba.com>
+Cc: surenb@google.com, peterz@infradead.org, linux-kernel@vger.kernel.org,
+	Miles Chen <miles.chen@mediatek.com>
+Subject: Re: [PATCH] sched/psi: Fix the bug where the last character is
+ overwritten
+Message-ID: <20240117170743.GD939255@cmpxchg.org>
+References: <a33440f33d42aab66ad4120303ecbe8dca401d5c.1705490349.git.escape@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -111,25 +83,90 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240117163511.88173-1-longman@redhat.com>
+In-Reply-To: <a33440f33d42aab66ad4120303ecbe8dca401d5c.1705490349.git.escape@linux.alibaba.com>
 
-Hello,
+On Wed, Jan 17, 2024 at 07:26:01PM +0800, Yi Tao wrote:
+> The buffer buf in psi_write has only 32 bytes, and to ensure the correct
+> parsing of the string, it needs to be terminated with '\0', which means
+> users can input no more than 31 characters. When the user inputs fewer
+> than 31 characters, buf_size equals nbytes, which causes the last
+> character entered by the user to be overwritten by '\0', affecting the
+> parsing results.
+> 
+> Here is a specific example.
+> 
+> $echo -n "some 500000 1000000" > /proc/pressure/cpu
+> $bash: echo: write error: Invalid argument
+> 
+> Because the last character is overwritten, the value obtained by sscanf
+> parsing is 500000 and 100000; window_us is missing a zero, hence the
+> return of -EINVAL.
+> 
+> The reason 'echo' without the '-n' flag can be parsed correctly is
+> because the last character that gets overwritten is '\n', so it won't
+> return an error.
 
-On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long wrote:
-> The first 2 patches are adopted from Federic with minor twists to fix
-> merge conflicts and compilation issue. The rests are for implementing
-> the new cpuset.cpus.isolation_full interface which is essentially a flag
-> to globally enable or disable full CPU isolation on isolated partitions.
+Good catch. There is actually a history of this code changing back and
+forth. However, it's always assumed the last byte to be \n and cut
+that off. The original version was this:
 
-I think the interface is a bit premature. The cpuset partition feature is
-already pretty restrictive and makes it really clear that it's to isolate
-the CPUs. I think it'd be better to just enable all the isolation features
-by default. If there are valid use cases which can't be served without
-disabling some isolation features, we can worry about adding the interface
-at that point.
+char buf[32];
+buf_size = min(nbytes, (sizeof(buf) - 1) /* 31 */);
+if (copy_from_user(buf, user_buf, buf_size))
+        return -EFAULT;
+buf[buf_size - 1 /* 30 */] = '\0';
 
-Thanks.
+Which expected \n and actually cut off the last copied character. So
+without a newline, the window would have been truncated then already.
 
--- 
-tejun
+It also didn't use the full buffer, which Miles fixed in 4adcdcea717c
+("sched/psi: Correct overly pessimistic size calculation"):
+
+char buf[32];
+buf_size = min(nbytes, (sizeof(buf)) /* 32 */);
+if (copy_from_user(buf, user_buf, buf_size))
+        return -EFAULT;
+buf[buf_size - 1 /* 31 */] = '\0';
+
+but it still cut off that last character, which is either newline or,
+welp, the last character of the window spec. Bad, bad.
+
+It also copies the last input byte just to overwrite it again, which
+is a bit odd.
+
+> Limiting buf_size to no more than 31 and writing '\0' at the position of
+> buf_size can fix this bug.
+> 
+> Signed-off-by: Yi Tao <escape@linux.alibaba.com>
+> ---
+>  kernel/sched/psi.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+> index 7b4aa5809c0f..5ae336e1c2d8 100644
+> --- a/kernel/sched/psi.c
+> +++ b/kernel/sched/psi.c
+> @@ -1523,11 +1523,11 @@ static ssize_t psi_write(struct file *file, const char __user *user_buf,
+>  	if (!nbytes)
+>  		return -EINVAL;
+>  
+> -	buf_size = min(nbytes, sizeof(buf));
+> +	buf_size = min(nbytes, sizeof(buf) - 1);
+>  	if (copy_from_user(buf, user_buf, buf_size))
+>  		return -EFAULT;
+>  
+> -	buf[buf_size - 1] = '\0';
+> +	buf[buf_size] = '\0';
+
+This looks right. It'll leave a newline in the buffer if present, but
+the sscanf() that follows is happy to ignore that.
+
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+
+I'm thinking we should also CC stable. A truncated window is pretty
+difficult to debug, and may not even result in the (ominous) -EINVAL
+if the resulting value is still a valid size. It'll quietly poll for
+very different parameters than requested.
+
+Cc: stable@vger.kernel.org
 
