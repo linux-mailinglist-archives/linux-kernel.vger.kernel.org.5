@@ -1,146 +1,235 @@
-Return-Path: <linux-kernel+bounces-29488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E281830F41
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:38:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A2C6830F3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:37:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C01BAB24BC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 22:38:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A7F62883D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 22:37:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8764425639;
-	Wed, 17 Jan 2024 22:37:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 272BD1E883;
+	Wed, 17 Jan 2024 22:37:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ok3Hd9sQ"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GbTSq3Mj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D69C1E887
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 22:37:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3129A1E514;
+	Wed, 17 Jan 2024 22:37:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705531060; cv=none; b=IsQezfR3ES5Xd1r+tyHXtzBUhoiuvcHSrP3hjL9MGDxiO32ZzXZ5ViWhl6/O0rIus9jZx+BPHvEo4sg+Ga3MuwHz6qlSYP9ANnN/wlv8omwja1UatpMfg8+/n18BSwfii+sZt2faRJ73CI0fqZ4v3L9jL7HErG0vaAl/XbNvwT8=
+	t=1705531058; cv=none; b=CabBVj5AGoqSexZabUlPi6Bcgk6GRA++cAGz4qUiWEvm9ijWUF0oz3ihDW/jIeUXixrmpLuwolq+2yLtCaqe2DBPS78AZPqfRQv7uHuHN5aoVCHFtxSgFooUxIOI6/IIGa1PF4mEmg9ltXyqU+OzVOuGCewuNr/yE4860HvuNBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705531060; c=relaxed/simple;
-	bh=1PCGZ1uJiBtLoi7xA68BT5A/oeoNiduCk3gfJe1K/aI=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Date:
-	 Mime-Version:X-Mailer:Message-ID:Subject:From:To:Cc:Content-Type;
-	b=B8AIgGsLaRjXZXOUxlMYReMC+E6dmx4Ts61j/UlHwbAODnzsGH1/7gHkf3deh0JY1weeNVgbayggDAjJ3b2+7TK6KS7pLObZYeqogLnX3eb5qXmEo46KAdB5uVlg4k7D4bYrGe9BjtMErVkZ4A9z4vpHzbNBDFSdKOMBZ1yvR3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--lokeshgidra.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ok3Hd9sQ; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--lokeshgidra.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbe9e13775aso15760490276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 14:37:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705531058; x=1706135858; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qtcsSAi8pdfsx6Ojh55+8gPZOJc0hPQeptf8eZpqdHg=;
-        b=Ok3Hd9sQ9D7vhb9N5JOxwYsb9vDc0LJN1SJS1xq4O4VOZS2uBDFUwjO/WVsL2aKD/R
-         AwiehzjV6X70hTCPJckxsWBKkIMlTL90o9Gs2fo3jI0fFFc2iUwORnwBLsax728nwZLY
-         d9Zj3meyfeqduY+yfwzNDJ4EOWxpby+mXhysYENtW3aWaq+bDq7jPD1VjEi0vFjs9M6h
-         xf3eB1FTPxav5tzcIC0AcoChW9fYdyw7j63p4HqzrKsf6Pw/Q2HHaFvqzX+WlYt9/ytT
-         RxB2oyW9Tuepnbz6r6l4Y9O67lPGJRaOwZqM5rYsulDx9AyC2sLpm5j0vOZX2xM0TN/v
-         T2Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705531058; x=1706135858;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qtcsSAi8pdfsx6Ojh55+8gPZOJc0hPQeptf8eZpqdHg=;
-        b=ZuJhqkadgtpEkgwXx6332WMZmo3eFMQDU+mXdJaRqCm1qNcvZhbm+AG+e43pVZIjwA
-         pVdo+LxjXx39vSDT4ilO4OSy4bhJ6CK9hMD17nnuyf3rspsXriu9M87/hotB+nxRLC/g
-         /JK1VhnPzZlNimU+8A6t68HfdIv6yfJazI0xC6qLoQJldgaPrWGBYcYsQWjZ0ywPvCrM
-         ALmYo+AkgWzhsjrPPQ5Aw8ZpgiPqKyaJPnssEWlbrOQdQPwx3v/pHquy81h03c+HyLjN
-         z9urdEcIKlUSOB3f3YhkDcchhZ4G2HXPK+UnwICIdGvSQsQKoifW24mJeOTKkkNW1jtP
-         USDA==
-X-Gm-Message-State: AOJu0YwI2eJ6R/xWllwQS/TA1PWlk5I3bF4nGOmxnoOlwrq0AdDnNo6N
-	Cg2S3b0uNFmW/0beC5ZoQAusmtvEy7BAA3xeAeGlfpXO
-X-Google-Smtp-Source: AGHT+IEHkEc2SNjgZpjAMRGfksbyD0+FFJUxQNmhwyp5v2dGwz3Ua29YR2phjpTtpCOeyHZkxZBYOa5Q8VSwmMY5Jw==
-X-Received: from lg.mtv.corp.google.com ([2620:15c:211:202:9c18:2400:c024:5c4e])
- (user=lokeshgidra job=sendgmr) by 2002:a25:81c6:0:b0:dc2:23d8:722d with SMTP
- id n6-20020a2581c6000000b00dc223d8722dmr1380648ybm.13.1705531058526; Wed, 17
- Jan 2024 14:37:38 -0800 (PST)
-Date: Wed, 17 Jan 2024 14:37:29 -0800
+	s=arc-20240116; t=1705531058; c=relaxed/simple;
+	bh=Du2DsE2SN6RqPy+w4U7y+zmiClI0d9lq3FbSw61NJXk=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=esSdZYE47pw+GFMDsxt2ZGpVMwWkitvFZ/VSfQSwL3sqMjxzGooKqCfdciot64UBrz8LPxCtHeBC+kzZ4zNq14R+eHtvTmkyNxD4m/6sNgP9D/i0Q2ixJZr0PmSEaAElPl+2twGbya0T/oZjtzGDdNgkI8L4ZR7BstPMWhIJ26U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GbTSq3Mj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAA47C433C7;
+	Wed, 17 Jan 2024 22:37:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705531058;
+	bh=Du2DsE2SN6RqPy+w4U7y+zmiClI0d9lq3FbSw61NJXk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GbTSq3MjSChvkg5XzajifKr70wcLlaRh1dAzw9fKYb0QaJOCSv7OTeHli8yjHXSz+
+	 PIk6q5Goy5W8MNtk7unn4axTIsjHjn2yMOmx68unRwSbIU+MDzvc87y+fqiLcDS/DL
+	 7KzH1RyPUlvjjTo71VPKvZzB7QzRe2ceKD6kqE1AhqfsrPA5lLm6EZ7ifWK7hVqBvv
+	 cak58pSrBTheYbzSAuIrWAAnjACAjUItLMWexwAYc8+zH0oF0oxjeyfIMLnSJTEZj8
+	 K9Riyxi7L4tXqotQaCHUnSrmzwi0/N/Wt6aRDDpBeHQb0h+FSg9GSipYSFXIIlMLyD
+	 DRgO5NCpa/rnA==
+Date: Wed, 17 Jan 2024 16:37:35 -0600
+From: Rob Herring <robh@kernel.org>
+To: Devarsh Thakkar <devarsht@ti.com>
+Cc: jyri.sarha@iki.fi, tomi.valkeinen@ideasonboard.com, airlied@gmail.com,
+	daniel@ffwll.ch, maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org, tzimmermann@suse.de,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	nm@ti.com, vigneshr@ti.com, kristo@kernel.org, praneeth@ti.com,
+	a-bhatia1@ti.com, j-luthra@ti.com
+Subject: Re: [RFC PATCH 1/3] dt-bindings: display: ti,am65x-dss: Add support
+ for display sharing mode
+Message-ID: <20240117223735.GA3375434-robh@kernel.org>
+References: <20240116134142.2092483-1-devarsht@ti.com>
+ <20240116134142.2092483-2-devarsht@ti.com>
+ <20240117201342.GA3041972-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240117223729.1444522-1-lokeshgidra@google.com>
-Subject: [PATCH] userfaultfd: fix mmap_changing checking in mfill_atomic_hugetlb
-From: Lokesh Gidra <lokeshgidra@google.com>
-To: akpm@linux-foundation.org
-Cc: lokeshgidra@google.com, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, selinux@vger.kernel.org, surenb@google.com, 
-	kernel-team@android.com, aarcange@redhat.com, peterx@redhat.com, 
-	david@redhat.com, axelrasmussen@google.com, bgeffon@google.com, 
-	willy@infradead.org, jannh@google.com, kaleshsingh@google.com, 
-	ngeoffray@google.com
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240117201342.GA3041972-robh@kernel.org>
 
-In mfill_atomic_hugetlb(), mmap_changing isn't being checked
-again if we drop mmap_lock and reacquire it. When the lock is not held,
-mmap_changing could have been incremented. This is also inconsistent
-with the behavior in mfill_atomic().
+On Wed, Jan 17, 2024 at 02:13:42PM -0600, Rob Herring wrote:
+> On Tue, Jan 16, 2024 at 07:11:40PM +0530, Devarsh Thakkar wrote:
+> > Add support for using TI Keystone DSS hardware present in display
+> > sharing mode.
+> > 
+> > TI Keystone DSS hardware supports partitioning of resources between
+> > multiple hosts as it provides separate register space and unique
+> > interrupt line to each host.
+> > 
+> > The DSS hardware can be used in shared mode in such a way that one or
+> > more of video planes can be owned by Linux wherease other planes can be
+> > owned by remote cores.
+> > 
+> > One or more of the video ports can be dedicated exclusively to a
+> > processing core, wherease some of the video ports can be shared between
+> > two hosts too with only one of them having write access.
+> > 
+> > Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+> > ---
+> >  .../bindings/display/ti/ti,am65x-dss.yaml     | 82 +++++++++++++++++++
+> >  1 file changed, 82 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml b/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
+> > index 55e3e490d0e6..d9bc69fbf1fb 100644
+> > --- a/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
+> > +++ b/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
+> > @@ -112,6 +112,86 @@ properties:
+> >        Input memory (from main memory to dispc) bandwidth limit in
+> >        bytes per second
+> >  
+> > +  ti,dss-shared-mode:
+> > +    type: boolean
+> > +    description:
+> > +      TI DSS7 supports sharing of display between multiple hosts
+> > +      as it provides separate register space for display configuration and
+> > +      unique interrupt line to each host.
+> 
+> If you care about line breaks, you need '|'. 
+> 
+> > +      One of the host is provided access to the global display
+> > +      configuration labelled as "common" region of DSS allows that host
+> > +      exclusive access to global registers of DSS while other host can
+> > +      configure the display for it's usage using a separate register
+> > +      space labelled as "common1".
+> > +      The DSS resources can be partitioned in such a way that one or more
+> > +      of the video planes are owned by Linux whereas other video planes
+> 
+> Your h/w can only run Linux?
+> 
+> What if you want to use this same binding to define the configuration to 
+> the 'remote processor'? You can easily s/Linux/the OS/, but it all 
+> should be reworded to describe things in terms of the local processor.
+> 
+> > +      can be owned by a remote core.
+> > +      The video port controlling these planes acts as a shared video port
+> > +      and it can be configured with write access either by Linux or the
+> > +      remote core in which case Linux only has read-only access to that
+> > +      video port.
+> 
+> What is the purpose of this property when all the other properties are 
+> required?
+> 
+> > +
+> > +  ti,dss-shared-mode-planes:
+> > +    description:
+> > +      The video layer that is owned by processing core running Linux.
+> > +      The display driver running from Linux has exclusive write access to
+> > +      this video layer.
+> > +    $ref: /schemas/types.yaml#/definitions/string
+> > +    enum: [vidl, vid]
+> > +
+> > +  ti,dss-shared-mode-vp:
+> > +    description:
+> > +      The video port that is being used in context of processing core
+> > +      running Linux with display susbsytem being used in shared mode.
+> > +      This can be owned either by the processing core running Linux in
+> > +      which case Linux has the write access and the responsibility to
+> > +      configure this video port and the associated overlay manager or
+> > +      it can be shared between core running Linux and a remote core
+> > +      with remote core provided with write access to this video port and
+> > +      associated overlay managers and remote core configures and drives
+> > +      this video port also feeding data from one or more of the
+> > +      video planes owned by Linux, with Linux only having read-only access
+> > +      to this video port and associated overlay managers.
+> > +
+> > +    $ref: /schemas/types.yaml#/definitions/string
+> > +    enum: [vp1, vp2]
+> > +
+> > +  ti,dss-shared-mode-common:
+> > +    description:
+> > +      The DSS register region owned by processing core running Linux.
+> > +    $ref: /schemas/types.yaml#/definitions/string
+> > +    enum: [common, common1]
+> > +
+> > +  ti,dss-shared-mode-vp-owned:
+> > +    description:
+> > +      This tells whether processing core running Linux has write access to
+> > +      the video ports enlisted in ti,dss-shared-mode-vps.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    enum: [0, 1]
+> 
+> This can be boolean. Do writes abort or just get ignored? The latter can 
+> be probed and doesn't need a property.
+> 
+> > +
+> > +  ti,dss-shared-mode-plane-zorder:
+> > +    description:
+> > +      The zorder of the planes owned by Linux.
+> > +      For the scenario where Linux is not having write access to associated
+> > +      video port, this field is just for
+> > +      informational purpose to enumerate the zorder configuration
+> > +      being used by remote core.
+> > +
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    enum: [0, 1]
+> 
+> I don't understand how 0 or 1 defines Z-order.
+> 
+> > +
+> > +dependencies:
+> > +  ti,dss-shared-mode: [ 'ti,dss-shared-mode-planes', 'ti,dss-shared-mode-vp',
+> > +                        'ti,dss-shared-mode-plane-zorder', 'ti,dss-shared-mode-vp-owned']
+> > +  ti,dss-shared-mode-vp: ['ti,dss-shared-mode', 'ti,dss-shared-mode-planes',
+> > +                          'ti,dss-shared-mode-plane-zorder', 'ti,dss-shared-mode-vp-owned']
+> > +  ti,dss-shared-mode-planes: ['ti,dss-shared-mode', 'ti,dss-shared-mode-vp',
+> > +                              'ti,dss-shared-mode-plane-zorder', 'ti,dss-shared-mode-vp-owned']
+> > +  ti,dss-shared-mode-plane-zorder: ['ti,dss-shared-mode-planes', 'ti,dss-shared-mode-vp',
+> > +                                    'ti,dss-shared-mode', 'ti,dss-shared-mode-vp-owned']
+> > +  ti,dss-shared-mode-vp-owned: ['ti,dss-shared-mode-planes', 'ti,dss-shared-mode-vp',
+> > +                                'ti,dss-shared-mode', 'ti,dss-shared-mode-plane-zorder']
+> > +
+> >  allOf:
+> >    - if:
+> >        properties:
+> > @@ -123,6 +203,8 @@ allOf:
+> >          ports:
+> >            properties:
+> >              port@0: false
+> > +            ti,dss-shared-mode-vp:
+> > +            enum: [vp2]
+> 
+> This should throw a warning. You just defined a property called 'enum'.
 
-Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
----
- mm/userfaultfd.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+Indeed it does. Test your bindings before sending.
 
-diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-index 20e3b0d9cf7e..75fcf1f783bc 100644
---- a/mm/userfaultfd.c
-+++ b/mm/userfaultfd.c
-@@ -357,6 +357,7 @@ static __always_inline ssize_t mfill_atomic_hugetlb(
- 					      unsigned long dst_start,
- 					      unsigned long src_start,
- 					      unsigned long len,
-+					      atomic_t *mmap_changing,
- 					      uffd_flags_t flags)
- {
- 	struct mm_struct *dst_mm = dst_vma->vm_mm;
-@@ -472,6 +473,15 @@ static __always_inline ssize_t mfill_atomic_hugetlb(
- 				goto out;
- 			}
- 			mmap_read_lock(dst_mm);
-+			/*
-+			 * If memory mappings are changing because of non-cooperative
-+			 * operation (e.g. mremap) running in parallel, bail out and
-+			 * request the user to retry later
-+			 */
-+			if (mmap_changing && atomic_read(mmap_changing)) {
-+				err = -EAGAIN;
-+				break;
-+			}
- 
- 			dst_vma = NULL;
- 			goto retry;
-@@ -506,6 +516,7 @@ extern ssize_t mfill_atomic_hugetlb(struct vm_area_struct *dst_vma,
- 				    unsigned long dst_start,
- 				    unsigned long src_start,
- 				    unsigned long len,
-+				    atomic_t *mmap_changing,
- 				    uffd_flags_t flags);
- #endif /* CONFIG_HUGETLB_PAGE */
- 
-@@ -622,8 +633,8 @@ static __always_inline ssize_t mfill_atomic(struct mm_struct *dst_mm,
- 	 * If this is a HUGETLB vma, pass off to appropriate routine
- 	 */
- 	if (is_vm_hugetlb_page(dst_vma))
--		return  mfill_atomic_hugetlb(dst_vma, dst_start,
--					     src_start, len, flags);
-+		return  mfill_atomic_hugetlb(dst_vma, dst_start, src_start,
-+					     len, mmap_changing, flags);
- 
- 	if (!vma_is_anonymous(dst_vma) && !vma_is_shmem(dst_vma))
- 		goto out_unlock;
--- 
-2.43.0.429.g432eaa2c6b-goog
-
+./Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml:204:35: [error] empty value in block mapp
+ing (empty-values)                                   
+  CHKDT   Documentation/devicetree/bindings/processed-schema.json
+/home/rob/proj/linux-dt/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml: allOf:0:then:proper
+ties:ports:properties:ti,dss-shared-mode-vp: None is not of type 'object', 'boolean'
+        from schema $id: http://json-schema.org/draft-07/schema#
+/home/rob/proj/linux-dt/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml: allOf:0:then:proper
+ties:ports:properties:enum: ['vp2'] is not of type 'object', 'boolean'
+        from schema $id: http://json-schema.org/draft-07/schema#
+/home/rob/proj/linux-dt/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml: allOf:0:then:proper
+ties:ports:properties: 'enum' should not be valid under {'$ref': '#/definitions/json-schema-prop-names'}
+        hint: A json-schema keyword was found instead of a DT property name.
+        from schema $id: http://devicetree.org/meta-schemas/keywords.yaml# 
+/home/rob/proj/linux-dt/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml: allOf:0:then:proper
+ties:ports:properties:ti,dss-shared-mode-vp: None is not of type 'object', 'boolean'
+        from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/home/rob/proj/linux-dt/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml: allOf:0:then:proper
+ties:ports:properties:enum: ['vp2'] is not of type 'object', 'boolean'
+        from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
 
