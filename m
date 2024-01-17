@@ -1,166 +1,154 @@
-Return-Path: <linux-kernel+bounces-29352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5656830D2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:13:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D57A8830D2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:14:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 678E91C21FF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:13:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30977289A97
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:14:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 716452421C;
-	Wed, 17 Jan 2024 19:13:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A5392421B;
+	Wed, 17 Jan 2024 19:14:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="uIU3qzWg"
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ly00sBkV"
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4159A2421E
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:13:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90D3124204
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:14:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705518804; cv=none; b=AQYLf1GxnuDR3fJUJfJhcakJuFDKcI60qaLV9OnfEUkuePjG8O5HMSPi+t0bXKTbOaQXpax7eXWlZ5GaXF+q5SCr7rxN2YgHMBQ6XkJmDWdxN68bAO3jeumibAkYrLnoqoskeW84OC8EY2yX/yNxot/AtXmYO1n06MtEBWqtcpk=
+	t=1705518850; cv=none; b=eTt6RUVa8loebWXviH0M4C8/0x75WuBRSVLwYs2AVOMVbDus6Nv8hwHPHS7sNdytD65LaAtRFcm8cPFrCfRopxPsA1DErll00zuC9w3noTRXMTKM/SjkNkF2DzVc3pEvsfq/UGoKGOSEPl+9pDNL+2PVrW7wQyXXPUYUwG1X57k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705518804; c=relaxed/simple;
-	bh=1Wc2lCngWybR9QP2B8d+dj4Ww7Dmyi2mHT516O1RWj0=;
+	s=arc-20240116; t=1705518850; c=relaxed/simple;
+	bh=y6Z6zk1OP3Ztsk3udH9WOkGkEr+SuisPK1CMmIxcg6U=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Autocrypt:Content-Type:Content-Transfer-Encoding:User-Agent:
-	 MIME-Version; b=lynf7hzN2tUqHFLgiuNGZzlTo/AzZCO5ohCD2s16C4lpNAq99W/sQ48u3EMJF7HMT80DxMwaaDaNbEiUR6S+r44vsD/K2a/k52NVhyk7wj6tLow9X1eLGg6iMfl9rWQ759meF/PtnWc3Fvl2O/7Myj17d+golfodcIcYlXp3pLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=uIU3qzWg; arc=none smtp.client-ip=209.85.222.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-7833a51a1aaso652044185a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:13:22 -0800 (PST)
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=k2FgAmYbKlIQIL5HV3LN3soj9wpbvfNCdsMg/4VctJm1n+sTHUaaWBOjvauMFeUdF/c8Q2S8nseT3rWEaGjtMabXaaiEg5LPPWzJvqimnMP8c/8Y1LQLkHm/3rhez2lkGNZyS8DK66aFwSylQkmvb31ZV6eGV8qUQHTY9vavzLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ly00sBkV; arc=none smtp.client-ip=209.85.166.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7bc3e297bc9so519006039f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:14:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1705518801; x=1706123601; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=bV2ObK4Gn6zBfHyaALWYuYvkHMTPFOM7kyZ+I5+TgvA=;
-        b=uIU3qzWgWQ3KnTpzejJT/4oNC/x/uVfe3GZKXSgQwjkReeghzO63mK6v+8jMDrp6N5
-         djWi85oZL2zfg6nEKn+xKjQ0yPYF3mao83clUY6/xflgfrLpLoOrIZ12/wLq18hECyA1
-         LPSCBxTTh8iHktk/wj5gARJgDqsKf0zD3l/QVky58SUEwUXX3Tn5/daMSLupkreDbcLv
-         WZAwoo/glnJ7da71w0hAo9+kXywoBT+Vxh4S0GoTFsAa9xmJHh05vIjyqyVAoCiv5YDW
-         H4aWjKL4oUoKeSZhwgDdnN2y2MFF4OAeRbFMmDe78ImKuGwIaOeQySQnNXmgOoe/9xIF
-         OA5g==
+        d=gmail.com; s=20230601; t=1705518848; x=1706123648; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2N7+b+9eTmlV+1hqRRxK5amXtgZFPEj9WEU/LCvJugc=;
+        b=ly00sBkVIEeq0uj2mCmiAq81dV07z8Gsw/vBnuqBrJ6o9iZt1nEUpdh2SRhFJQe7RA
+         +lJLv0gDjX4bMZSFyN96idhf2jhmwXzqvLeUHkBqulTpbMZWaFnho0LyT+mTj27Ei9WQ
+         F2mx1Ztx1xhQpNt3RlvNcnQRq/+yOZquJI8mVTxY4g1Fi6+3oiXo6bFTH4uSnGocyxCp
+         3I6QB7ATvhCjIhPINJftInCHjSiUsqYbyv/kmImXVn5nXd7fF3Ms3N4eT5brHMPIZVXC
+         uRCKLh4ZOx/9AvLIITZ05xh3xYQI8hoYy8CC6h1JrmVwUDI8VKeEjHe+fGhStgUIo60d
+         rTrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705518801; x=1706123601;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bV2ObK4Gn6zBfHyaALWYuYvkHMTPFOM7kyZ+I5+TgvA=;
-        b=YfWvAJf9xZOt69hOpCGgJUebX0QPfQEO4DBQu/hG7a8y/DNklCIVGNQdxnZ9DkYOaM
-         VaafwwKWqQLKpuNsrSIuBnzpmUE8o+421geXd1V/mMaOh3ecg4/JmqSNSeykZuzq/jbz
-         smNOq3o4JGp85ksf1jIQBqwvRfKg82gtCtyFiilGPpnbYkHN6fHDrFFF32rdF9wbOOwy
-         jFs98ibFeRi/E4EOpgsJ1nir+8xhQmedD1CRP7ng3HpRDIbEfftqSJjoQudJ8ofh1lTI
-         xNSmHGXNy4ty7Nlxy4WfpXX0g/0uZFQRjD4IfjQ2rE9zCK7k7fS0Ta0kY0dbPJEvRj3j
-         KByw==
-X-Gm-Message-State: AOJu0YwjuZRlEiQLNqzHLNv5nd/EdsHOOoJGyFUYa9TyfV0rPhCFVVuV
-	i+k5UdNQpxDkG5TmJxp5LvxSxkJKSsOR4g==
-X-Google-Smtp-Source: AGHT+IG73tqD/icOIiDqu1zoHWcRrz4j9u5/SPw8nh8PdpyyAo+kwFkgCZy+NiroIxfP1GwDgXR5Lw==
-X-Received: by 2002:a05:620a:44d1:b0:783:3ea4:e39d with SMTP id y17-20020a05620a44d100b007833ea4e39dmr10686331qkp.146.1705518801111;
-        Wed, 17 Jan 2024 11:13:21 -0800 (PST)
-Received: from nicolas-tpx395.localdomain ([2606:6d00:11:3354::7a9])
-        by smtp.gmail.com with ESMTPSA id i16-20020a05620a249000b007832c2e3b80sm4633406qkn.132.2024.01.17.11.13.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 11:13:20 -0800 (PST)
-Message-ID: <e01c9ab69f3e120cdb9b70fbacebbab32d5abba4.camel@ndufresne.ca>
-Subject: Re: [PATCH v3 1/2] arm64: dts: rockchip: Add Hantro G1 VPU support
- for RK3588
-From: Nicolas Dufresne <nicolas@ndufresne.ca>
-To: Jianfeng Liu <liujianfeng1994@gmail.com>, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, heiko@sntech.de, 
-	ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de, mchehab@kernel.org
-Cc: sfr@canb.auug.org.au, devicetree@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
- linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
- sigmaris@gmail.com,  knaerzche@gmail.com
-Date: Wed, 17 Jan 2024 14:13:19 -0500
-In-Reply-To: <20231231151112.3994194-2-liujianfeng1994@gmail.com>
-References: <20231231151112.3994194-1-liujianfeng1994@gmail.com>
-	 <20231231151112.3994194-2-liujianfeng1994@gmail.com>
-Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+        d=1e100.net; s=20230601; t=1705518848; x=1706123648;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2N7+b+9eTmlV+1hqRRxK5amXtgZFPEj9WEU/LCvJugc=;
+        b=Rn0S+Dsy+/f3WOqRt9V3a7PPGcRPwqnIZTJGtSZXoZ9DK8xhYizwGavBeGuByVAvR8
+         ozuPpv1WmNB4GXpwnXslWOxL6OwFOdd5KZcwgMUGIZ7oa+CIWkNz8UgV2w7fcjWlUftT
+         uiNW4qAErH295wgMB+GSNR8SRHbiwzTHuCJDFWqlpq1EHks3Wi/vg/y6/Dn6zua2qdwq
+         IYycd1aZQX+eIox2dzpRPMOi8f4vg4NpiepOnkP7uyF1XjT69YbaKsQrfK7Zoow6eszX
+         D3H69RKBX4qidkVKARsajO/Q2F3rfZsAOyEVZMrwvdolp48xyBefzBPfaXjCsXH4T2hq
+         +QFQ==
+X-Gm-Message-State: AOJu0YwFQTP1mz56GbUQqUjVb7tnRj9tX68kbv0iPUXFrc32ZcXQkXBd
+	ryAZICExcO5GVsgh9sE1W7YJdRpYlJlw1VGgrr8=
+X-Google-Smtp-Source: AGHT+IH42lhRoe3RkRSLTvfsn0KxrW3p2bPJECxj5UwhVBlSqrKgaSGyCgEg9EaiGlcaWxr1jc5H8HAdoa/R/FK/kqU=
+X-Received: by 2002:a5e:db03:0:b0:7bf:4f07:716b with SMTP id
+ q3-20020a5edb03000000b007bf4f07716bmr4908995iop.22.1705518848512; Wed, 17 Jan
+ 2024 11:14:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <CAKEwX=NLe-N6dLvOVErPSL3Vfw6wqHgcUBQoNRLeWkN6chdvLQ@mail.gmail.com>
+ <20240116133145.12454-1-debug.penguin32@gmail.com>
+In-Reply-To: <20240116133145.12454-1-debug.penguin32@gmail.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Wed, 17 Jan 2024 11:13:57 -0800
+Message-ID: <CAKEwX=PjraCg_NjP4Tnkbv8uqnVw8yJGh-mbuZC02Gp6HMcDBw@mail.gmail.com>
+Subject: Re: [PATCH] mm/zswap: Improve with alloc_workqueue() call
+To: Ronald Monthero <debug.penguin32@gmail.com>
+Cc: sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com, 
+	akpm@linux-foundation.org, chrisl@kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>, 
+	Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Jianfeng,
+On Tue, Jan 16, 2024 at 5:32=E2=80=AFAM Ronald Monthero
+<debug.penguin32@gmail.com> wrote:
 
-Le dimanche 31 d=C3=A9cembre 2023 =C3=A0 23:11 +0800, Jianfeng Liu a =C3=A9=
-crit=C2=A0:
-> This patch enables Hantro G1 video decoder in RK3588's
-> devicetree.
->=20
-> Tested with FFmpeg v4l2_request code taken from [1]
-> with MPEG2, H.264 and VP8 samples.
++ Johannes and Yosry
 
-In general, we ask submitters to share a fluster [0] score (this is just to
-demonstrate that the integration has been well validated). LibreELEC commun=
-ity
-have patch to enable this ffmpeg fork. I don't expect any surprise here, an=
-d you
-can just reply to my email here.
+>
+> The core-api create_workqueue is deprecated, this patch replaces
+> the create_workqueue with alloc_workqueue. The previous
+> implementation workqueue of zswap was a bounded workqueue, this
+> patch uses alloc_workqueue() to create an unbounded workqueue.
+> The WQ_UNBOUND attribute is desirable making the workqueue
+> not localized to a specific cpu so that the scheduler is free
+> to exercise improvisations in any demanding scenarios for
+> offloading cpu time slices for workqueues.
 
-Alternatively, this test tool is shipped in latest Debian, and with the
-appropriate GStreamer packages you'll be able to run the VP8 and H.264 test=
-s.
+nit: extra space between paragraph would be nice.
 
-Nicolas
-
-[0] https://github.com/fluendo/fluster
-
->=20
-> [1] https://github.com/LibreELEC/LibreELEC.tv/blob/master/packages/multim=
-edia/ffmpeg/patches/v4l2-request/ffmpeg-001-v4l2-request.patch
->=20
-> Signed-off-by: Jianfeng Liu <liujianfeng1994@gmail.com>
+> For example if any other workqueues of the same primary cpu
+> had to be served which are WQ_HIGHPRI and WQ_CPU_INTENSIVE.
+> Also Unbound workqueue happens to be more efficient
+> in a system during memory pressure scenarios in comparison
+>  to a bounded workqueue.
+>
+> shrink_wq =3D alloc_workqueue("zswap-shrink",
+>                      WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
+>
+> Overall the change suggested in this patch should be
+> seamless and does not alter the existing behavior,
+> other than the improvisation to be an unbounded workqueue.
+>
+> Signed-off-by: Ronald Monthero <debug.penguin32@gmail.com>
 > ---
->  arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/=
-dts/rockchip/rk3588s.dtsi
-> index 5fb0baf8a..ab2792162 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> @@ -640,6 +640,26 @@ i2c0: i2c@fd880000 {
->  		status =3D "disabled";
->  	};
-> =20
-> +	vpu: video-codec@fdb50000 {
-> +		compatible =3D "rockchip,rk3588-vpu", "rockchip,rk3568-vpu";
-> +		reg =3D <0x0 0xfdb50000 0x0 0x800>;
-> +		interrupts =3D <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH 0>;
-> +		clocks =3D <&cru ACLK_VPU>, <&cru HCLK_VPU>;
-> +		clock-names =3D "aclk", "hclk";
-> +		iommus =3D <&vdpu_mmu>;
-> +		power-domains =3D <&power RK3588_PD_VDPU>;
-> +	};
-> +
-> +	vdpu_mmu: iommu@fdb50800 {
-> +		compatible =3D "rockchip,rk3588-iommu", "rockchip,rk3568-iommu";
-> +		reg =3D <0x0 0xfdb50800 0x0 0x40>;
-> +		interrupts =3D <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH 0>;
-> +		clock-names =3D "aclk", "iface";
-> +		clocks =3D <&cru ACLK_VPU>, <&cru HCLK_VPU>;
-> +		power-domains =3D <&power RK3588_PD_VDPU>;
-> +		#iommu-cells =3D <0>;
-> +	};
-> +
->  	vop: vop@fdd90000 {
->  		compatible =3D "rockchip,rk3588-vop";
->  		reg =3D <0x0 0xfdd90000 0x0 0x4200>, <0x0 0xfdd95000 0x0 0x1000>;
+>  mm/zswap.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index 74411dfdad92..64dbe3e944a2 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -1620,7 +1620,8 @@ static int zswap_setup(void)
+>                 zswap_enabled =3D false;
+>         }
+>
+> -       shrink_wq =3D create_workqueue("zswap-shrink");
+> +       shrink_wq =3D alloc_workqueue("zswap-shrink",
+> +                       WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
 
+Have you benchmarked this to check if there is any regression, just to
+be safe? With an unbounded workqueue, you're gaining scheduling
+flexibility at the cost of cache locality. My intuition is that it
+doesn't matter too much here, but you should probably double check by
+stress testing - run some workload with a relatively small zswap pool
+limit (i.e heavy global writeback), and see if there is any difference
+in performance.
+
+>         if (!shrink_wq)
+>                 goto fallback_fail;
+>
+> --
+> 2.34.1
+>
+
+On a different note, I wonder if it would help to perform synchronous
+reclaim here instead. With our current design, the zswap store failure
+(due to global limit hit) would leave the incoming page going to swap
+instead, creating an LRU inversion. Not sure if that's ideal.
 
