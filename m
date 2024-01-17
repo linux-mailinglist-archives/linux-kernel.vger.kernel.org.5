@@ -1,161 +1,193 @@
-Return-Path: <linux-kernel+bounces-29366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A2D3830D4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:34:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31A82830D50
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:35:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C05B2847E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:34:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32B5C1C21349
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:35:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9A0D249EE;
-	Wed, 17 Jan 2024 19:34:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC72D249F0;
+	Wed, 17 Jan 2024 19:35:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lMhido5r"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b="KC9fgn+y"
+Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EE60249E0
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C90E1249E0;
+	Wed, 17 Jan 2024 19:35:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.147.86
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705520075; cv=none; b=ZhsS9aYwpswE/4uF9FANvp+G7TK4sqeNiuLQN6c9D4nJRbxJg5FzDx/BS1jJweTe8mVK+Or9z02Pbk3w8Vk/z83XfgPUJWCYtKIxRcdXbqjFFsN20TnJoVeotHI5wWm0KeA/+61OB6R//Be0HqeIx0cXeB6ykwdemR8LuSrRldc=
+	t=1705520144; cv=none; b=XULUPQEipaGUOt537HzxU7X99a3tv0UN0d9UJ7ZG1RBj33mIDumX0hX3PQSmQkx2UgI4pvhSrzFyiM8y+hH9kSTdxyoVvVdXSjyPfQqmsAJOvDFIqZJ6oympEMh5BrdIV3Z7Rr6dKbk7CzlmihV6LySbrbcKPncipUebwxPYWYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705520075; c=relaxed/simple;
-	bh=3ImLWZBp9nIQ2j7pMOrWbT8jC8fMp6v2O9PqzjNlKSE=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:X-IronPort-AV:Received:Message-ID:Date:MIME-Version:
-	 User-Agent:Subject:Content-Language:To:Cc:References:From:
-	 Autocrypt:In-Reply-To:Content-Type:Content-Transfer-Encoding; b=pucrV4RmOJHXoFMJmMFEkUvSPIvFeYGRrlEyG2jCj5Uc23D92pYN4aeZXAnOSuuDFXlDgm+7E5xX3U1ezQykZ47UfPKFHQosKebbyR9wYgRsGfXg4RkFDmgmd8+PndDye+3YAagl2qH+vm7OnevGWZVFHA+AdFAIj9SWURaY1iI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lMhido5r; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705520073; x=1737056073;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=3ImLWZBp9nIQ2j7pMOrWbT8jC8fMp6v2O9PqzjNlKSE=;
-  b=lMhido5rwlGoc3iWzxsOFo5wCblHdRpfCKIrg19M6DJeaU5RQZ6hmbXG
-   1rzLZoH0x9NSKLPJRRdgj/wq1NxhML/lIMkdPUlVGNKHumq7w5AtCQK1b
-   Tnd6tWtXVXnD2f3CIG+RKE2irWbIV68vSE0PpTJV8qzXXMZ1wCw/vLI6W
-   Nnc9ZLhVGhFFCP2KGm/M+XRmfCoRD+P8Ksox2CXbpu2mXqAo/FICKdIvK
-   xWSfV4GesHO7x5lRCse6ioX8M1V0HwOJFwEApSL1+aOU6qRl8K1DDDqlY
-   2P0ikK4JLDj63a2kMYkMVYmnXseNbkGTxG7q4tzVQu0qsyv5kJcz4jIJq
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="148580"
-X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
-   d="scan'208";a="148580"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 11:34:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="854779459"
-X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
-   d="scan'208";a="854779459"
-Received: from anushakr-mobl.amr.corp.intel.com (HELO [10.209.71.31]) ([10.209.71.31])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 11:34:28 -0800
-Message-ID: <30cd0be4-705f-4d63-bdad-fc57301e7eda@intel.com>
-Date: Wed, 17 Jan 2024 11:34:41 -0800
+	s=arc-20240116; t=1705520144; c=relaxed/simple;
+	bh=8O6ZpuJktfG7PP+qpivWRnoX8s1X5AAm7DEcq/yXN3A=;
+	h=Received:DKIM-Signature:Received:Received:Received:Date:From:To:
+	 Subject:Message-ID:MIME-Version:Content-Type:Content-Disposition:
+	 X-Proofpoint-GUID:X-Proofpoint-ORIG-GUID:X-HPE-SCL:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details; b=tEQ5IOY+OM9917u+zTHuJVB/TgrDNq/uGRWgf7irMcLezIiDXstWV/arW85srGVoRwYNqfd40L0B3P1yYyVu/BGX5j3MyWcHQfi2xD0O/dKiYeOTlEaNpYWxFMn4/27uoLKErv6f7SCFTEIG0FDrcNJq4fvvJAKsdXiv8NHxRl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com; spf=pass smtp.mailfrom=hpe.com; dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b=KC9fgn+y; arc=none smtp.client-ip=148.163.147.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.com
+Received: from pps.filterd (m0150242.ppops.net [127.0.0.1])
+	by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40HH0uDr020284;
+	Wed, 17 Jan 2024 19:35:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to :
+ subject : message-id : mime-version : content-type; s=pps0720;
+ bh=5NEj7FBKtmppNrd48cW0AoeV3qh+diVhVYhI4Gm/3pA=;
+ b=KC9fgn+yBrtzXiYmu2c4kPQavGuUpPlwe1whyYZX0+gVFHcWseD7Eny7wbDBvHgXPXPV
+ +3/IjU4YGo6i/S4o5mzQBPRdijP34GgNYRuTxfMysAJh6U0O66osoNF7VGFJt+INMY3k
+ F8d71PxjYedjO67tJwXSF8J5Q0DfiA61vIPj6r6NDoZ3Ne3HDymb5HRsjFmKwmjf6EMv
+ MhAIHZn4xmKlNFhQrbCdxoQHOd+PB2wpuGI8antb5EM3hBcTMqmSEGSOQXO4SXBoS+t5
+ 6Z59sbhMYUk5rX0IRglIIsnhXCrBJfSHMJ1CtQxTJhwpvNINlmWJzSnphBcc1MCdX22u Yw== 
+Received: from p1lg14880.it.hpe.com ([16.230.97.201])
+	by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3vphs7agry-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 19:35:03 +0000
+Received: from p1lg14886.dc01.its.hpecorp.net (unknown [10.119.18.237])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by p1lg14880.it.hpe.com (Postfix) with ESMTPS id 37D908005DA;
+	Wed, 17 Jan 2024 19:35:02 +0000 (UTC)
+Received: from hpe.com (unknown [16.231.227.39])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by p1lg14886.dc01.its.hpecorp.net (Postfix) with ESMTPS id A33308005FE;
+	Wed, 17 Jan 2024 19:34:53 +0000 (UTC)
+Date: Wed, 17 Jan 2024 13:34:51 -0600
+From: Dimitri Sivanich <sivanich@hpe.com>
+To: David Woodhouse <dwmw2@infradead.org>, Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, Steve Wahl <steve.wahl@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: DMAR interrupt reservations exceed available resources on 32s Intel
+ SPR
+Message-ID: <Zagr2/NXow4Ptv22@hpe.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/fpu: verify xstate buffer size according with
- requested features
-Content-Language: en-US
-To: Andrei Vagin <avagin@google.com>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- LKML <linux-kernel@vger.kernel.org>
-Cc: x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-References: <20240116234901.3238852-1-avagin@google.com>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <20240116234901.3238852-1-avagin@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Proofpoint-GUID: O8L5LhUTcRVdzynEi5H33LOHC3iCxqM7
+X-Proofpoint-ORIG-GUID: O8L5LhUTcRVdzynEi5H33LOHC3iCxqM7
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-17_12,2024-01-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ mlxscore=0 impostorscore=0 lowpriorityscore=0 mlxlogscore=877 bulkscore=0
+ priorityscore=1501 clxscore=1011 spamscore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401170142
 
-.. adding LKML.  More context here:
+We currently are running Sapphire Rapids systems with 32 sockets. We have
+noticed that on systems of this size we see the following warnings:
+    DMAR-IR: Enabled IRQ remapping in x2apic mode
+    Interrupt reservation exceeds available resources
+    DMAR: Can't request irq
+    DMAR: DRHD 97bfc000: failed to enable fault, interrupt, ret -28
 
-https://lore.kernel.org/all/20240116234901.3238852-1-avagin@google.com/
+There are 10 DMAR units per socket on these systems, so 320 DMAR units.  It
+appears that each is being allocated its own vector on the first cpu, as this
+happens prior to other cpus being started.  At the time that the DMAR vector
+allocations begin, cpu 0 has 186 vectors available (as does the global set),
+and that is the number of DMAR fault interrupts that show up as allocated
+(/proc/interrupts) after boot.
 
-On 1/16/24 15:49, Andrei Vagin wrote:
-> +	/* xstate_size has to fit all requested components. */
-> +	if (fx_sw->xstate_size != fpstate->user_size) {
-> +		int min_xstate_size =
-> +			xstate_calculate_size(fx_sw->xfeatures, false);
-> +
-> +		if (min_xstate_size < 0 ||
-> +		    fx_sw->xstate_size < min_xstate_size ||
-> +		    fx_sw->xstate_size > fpstate->user_size)
-> +			goto setfx;
-> +	}
+As a simple experiment, I patched the kernel to only allocate node 0 DMAR fault
+interrupt vectors while only the boot cpu is running, then to allocate fault
+interrupt vectors for the rest of the DMAR units as cpus on their respective
+nodes are coming up.  With that change, all 320 interrupts were allocated, and
+the interrupt affinity was set to the first cpu on each DMAR's respective node.
 
-The bug here is that the buffer from userspace is garbage and the (XSAVE
-XSTATE_BV) metadata doesn't match the size of the buffer.  Right?
+Does this seem like a sensible approach to fixing this, or is there another
+avenue that we should be looking at?
 
-This proposed fix just checks another piece of user-supplied metadata
-instead: fx_sw->xstate_size.
+For illustrative purposes, here's the patch for the experiment described above:
 
-Can't userspace just provide more bad data there and end up with the
-same problem?
-
-Seems like the real problem here is that the fault_in_readable() doesn't
-match the XRSTOR.  It's going to continue to be a problem as long as we
-don't know what memory XRSTOR tried to access.  We can try all day long
-to precalculate what XRSTOR _will_ do, but that seems a bit silly
-because the CPU knows where the fault happened.  It told us in CR2 and
-all we have to do is plumb that back to fault_in_readable().
-
-It would take a little XSTATE_OP() munging to pass something back other
-than 'err', but that doesn't seem insurmountable.
-
-Anybody have better ideas?
+Index: linux/drivers/iommu/intel/dmar.c
+===================================================================
+--- linux.orig/drivers/iommu/intel/dmar.c
++++ linux/drivers/iommu/intel/dmar.c
+@@ -2055,6 +2055,38 @@ int dmar_set_interrupt(struct intel_iomm
+ 	return ret;
+ }
+ 
++int __init enable_remaining_drhd_fault_handling(int node)
++{
++        struct dmar_drhd_unit *drhd;
++        struct intel_iommu *iommu;
++
++        /*
++         * Enable fault control interrupt.
++         */
++        for_each_iommu(iommu, drhd) {
++                u32 fault_status;
++                int ret;
++                if (iommu->node != node)
++                        continue;
++                ret = dmar_set_interrupt(iommu);
++
++                if (ret) {
++                        pr_err("DRHD %Lx: failed to enable fault, interrupt, ret %d\n",
++                               (unsigned long long)drhd->reg_base_addr, ret);
++                        return -1;
++                }
++
++                /*
++                 * Clear any previous faults.
++                 */
++                dmar_fault(iommu->irq, iommu);
++                fault_status = readl(iommu->reg + DMAR_FSTS_REG);
++                writel(fault_status, iommu->reg + DMAR_FSTS_REG);
++        }
++
++        return 0;
++}
++
+ int __init enable_drhd_fault_handling(void)
+ {
+ 	struct dmar_drhd_unit *drhd;
+@@ -2065,7 +2097,10 @@ int __init enable_drhd_fault_handling(vo
+ 	 */
+ 	for_each_iommu(iommu, drhd) {
+ 		u32 fault_status;
+-		int ret = dmar_set_interrupt(iommu);
++		int ret;
++		if (iommu->node != 0)
++			continue;
++		ret = dmar_set_interrupt(iommu);
+ 
+ 		if (ret) {
+ 			pr_err("DRHD %Lx: failed to enable fault, interrupt, ret %d\n",
+Index: linux/arch/x86/kernel/smpboot.c
+===================================================================
+--- linux.orig/arch/x86/kernel/smpboot.c
++++ linux/arch/x86/kernel/smpboot.c
+@@ -210,6 +210,7 @@ static void smp_callin(void)
+ 	cpumask_set_cpu(cpuid, cpu_callin_mask);
+ }
+ 
++extern int __init enable_remaining_drhd_fault_handling(int cpu);
+ static int cpu0_logical_apicid;
+ static int enable_start_cpu0;
+ /*
+@@ -263,6 +264,7 @@ static void notrace start_secondary(void
+ 
+ 	x86_cpuinit.setup_percpu_clockev();
+ 
++	enable_remaining_drhd_fault_handling(cpu_to_node(smp_processor_id()));
+ 	wmb();
+ 	cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
+ }
 
