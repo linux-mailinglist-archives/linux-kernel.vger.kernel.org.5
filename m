@@ -1,65 +1,65 @@
-Return-Path: <linux-kernel+bounces-29283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E06EC830C1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:37:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6FA1830C1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:37:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7837D28464F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:37:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60D68B23D27
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:37:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4B5724205;
-	Wed, 17 Jan 2024 17:35:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82C2024A0E;
+	Wed, 17 Jan 2024 17:36:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="laJT2/89"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="c2311ITY"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BEC5249E5;
-	Wed, 17 Jan 2024 17:35:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80908249F9;
+	Wed, 17 Jan 2024 17:35:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705512956; cv=none; b=fPRfuHohMFSuYzHWjmx8jQ7nDEEecem3tjAve1iwN/ML0e5k/gUgDzAfJe6AmZYnj/uS71pZ+gn5FCkLqUGTw5uUGr9DtOi5d+gaKxLUojXL/sMNUOf/Po/9FtjMTawjOZY2fAKYmLSQx6HC3YDJnF9OdRRPHV9yZRExaNtthWY=
+	t=1705512960; cv=none; b=neJeqyDOSrwYbhLOcbgXQMudurv8++ut/f+PXugEn8xpiW7LfYG4MBkMhZGV/xaV7BMp3hMdaaGLjV3j6IUuFihRqWbqf5YiIwLKPU4p1IunkPhSiOs+sDN4h0T9+4B7u+WPV8IrCZIDyMkYI0YqhTJ1skhl2vO0iIMIKhye5I4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705512956; c=relaxed/simple;
-	bh=Bl7cpZvHNCeRQRxJV5HheXrtoP53ATyOHPpBzKB+qsk=;
+	s=arc-20240116; t=1705512960; c=relaxed/simple;
+	bh=kawY1lLCz2aCx2qqQ8gP7y9X6nAMC4JCu0MdlhV8NpQ=;
 	h=Received:DKIM-Signature:Received:Received:Received:From:To:CC:
 	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding:Content-Type:
 	 X-Originating-IP:X-ClientProxiedBy:X-QCInternal:
-	 X-Proofpoint-Virus-Version:X-Proofpoint-GUID:
-	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Virus-Version:
-	 X-Proofpoint-Spam-Details; b=Bv7cOF3WVtbYquxoYnHzKMTD1b8QFVsTFEuK1nO+/DW4VmXKiAhG8FrbRskrT4FoOJR3Slw7dRmNK6tfCEsVuTn4npCvaSmlNxIDe2PGNPntBJOfh3gQ4Z69/fCrG4ukYo7yoNWE/lykiEHQAPGld4YWk7Hl/UNQ4kIouWc6rkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=laJT2/89; arc=none smtp.client-ip=205.220.180.131
+	 X-Proofpoint-Virus-Version:X-Proofpoint-ORIG-GUID:
+	 X-Proofpoint-GUID:X-Proofpoint-Virus-Version:
+	 X-Proofpoint-Spam-Details; b=i50duzHuAI21M7v8rsnliVcgOUnT1S3/KphoV9soFIiVaI5OOfw8YP7WBQcyKgfzVN0nOnb/RjhxymXCrSMZucIdREuXK+de880soOHAzRhZFC8+GI2RSZmkc0PMq1ZqoLDTUWS0bPwOFYSbQUBSoEw5IdM1lODEp2LCoYv65l0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=c2311ITY; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40HGRXTj013249;
-	Wed, 17 Jan 2024 17:35:49 GMT
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40HDK62b029941;
+	Wed, 17 Jan 2024 17:35:54 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=wbGU6dH2vL5yDWtcqhS5irxCmsYg1kzr7kU0fvyzb44=; b=la
-	JT2/89FGhtJ/LepBu7pT0OxDFfTlqjPI4QhYpfIak+5JBzRhk9k2lIXsEqJOIgos
-	JQ29D37ybdFxb0CQzvQo6s79Ls44tyqefQYUTisk1kz2HoAYIWxERWnZdaKAvHog
-	iXSTFLlDjSu+0FZCBnAJ2F1BanZpWYbgKHThiwT0xAEca8eGW6Fyy+VpJBCS/qHp
-	5J4kRjUCLD2OkODgEUoTdetMBqgNPmMU5XoSkVSo3OoMyHv9/djg7taMMsOxfhU6
-	4Vh2fZ9Qa+1Rfb8NjZVMc07b/sHmoQ7AUYtmu+2H3ZGGLhxMFQGwprM9fIt2sv5F
-	zyp4jQY2FxGtTlqLtWJA==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vpbav176q-1
+	qcppdkim1; bh=kGxrLeKhAxjSlJWiYSB8dyPIF3yEHkPfJ/KCGZ5FuGU=; b=c2
+	311ITYgqphCgccEBDyllS/xPOEgVlL9JeOW4Z5crP4zqsXQKRPHIvLK1XCZQYeX0
+	yV8BzGF5eMHZenjGI2jtyW+wrKxKhMlqUFlNnL7cMQnckYjgrkhiB7BwIr7gtN6S
+	0dLVwab1I67Gczys0eKlEb5kSRPUhpGzdFhqInaguIpLhfcqpYoWZhbQPrZbvF8V
+	upQsHImgcwrngoMs1t01F3XfHXdvgll/7MgLf0LSQJtC+x4K25c0zno1n3V7OSbd
+	u4IKwcLLjwyDKM5kCF2R7B8hs8T+I8LlzXLtIKrDF/kiNR3gbdj70QOz8v+EWx/o
+	I8z5JoIOIl0O8dFrrnsw==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vp4ak21em-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 17:35:49 +0000 (GMT)
+	Wed, 17 Jan 2024 17:35:53 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40HHZm7O011829
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40HHZrsd015858
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 17:35:48 GMT
+	Wed, 17 Jan 2024 17:35:53 GMT
 Received: from hu-sibis-blr.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 17 Jan 2024 09:35:43 -0800
+ 15.2.1118.40; Wed, 17 Jan 2024 09:35:48 -0800
 From: Sibi Sankar <quic_sibis@quicinc.com>
 To: <sudeep.holla@arm.com>, <cristian.marussi@arm.com>, <andersson@kernel.org>,
         <konrad.dybcio@linaro.org>, <jassisinghbrar@gmail.com>,
@@ -68,9 +68,9 @@ CC: <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <quic_rgottimu@quicinc.com>,
         <quic_kshivnan@quicinc.com>, <quic_sibis@quicinc.com>,
         <conor+dt@kernel.org>
-Subject: [RFC 6/7] arm64: dts: qcom: x1e80100: Enable cpufreq
-Date: Wed, 17 Jan 2024 23:04:57 +0530
-Message-ID: <20240117173458.2312669-7-quic_sibis@quicinc.com>
+Subject: [RFC 7/7] arm64: dts: qcom: x1e80100: Enable LLCC/DDR dvfs
+Date: Wed, 17 Jan 2024 23:04:58 +0530
+Message-ID: <20240117173458.2312669-8-quic_sibis@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240117173458.2312669-1-quic_sibis@quicinc.com>
 References: <20240117173458.2312669-1-quic_sibis@quicinc.com>
@@ -86,146 +86,83 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: uLVX98U71X0zeirJLc-tFa1_gANsn1YQ
-X-Proofpoint-ORIG-GUID: uLVX98U71X0zeirJLc-tFa1_gANsn1YQ
+X-Proofpoint-ORIG-GUID: Ux-GjvOXFqndpwqTxF0gfFpY0edXZbC2
+X-Proofpoint-GUID: Ux-GjvOXFqndpwqTxF0gfFpY0edXZbC2
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-01-17_10,2024-01-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- lowpriorityscore=0 clxscore=1015 priorityscore=1501 phishscore=0
- suspectscore=0 mlxlogscore=758 spamscore=0 malwarescore=0 impostorscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ mlxlogscore=556 mlxscore=0 impostorscore=0 phishscore=0 adultscore=0
+ malwarescore=0 suspectscore=0 lowpriorityscore=0 priorityscore=1501
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2311290000 definitions=main-2401170127
 
-Enable cpufreq on X1E80100 SoCs through the SCMI perf protocol node.
+Enable LLCC/DDR dvfs through the Qualcomm's SCMI vendor protocol.
 
 Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
 ---
- arch/arm64/boot/dts/qcom/x1e80100.dtsi | 27 ++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ arch/arm64/boot/dts/qcom/x1e80100.dtsi | 48 ++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/qcom/x1e80100.dtsi b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-index afdbd27f8346..6856a206f7fc 100644
+index 6856a206f7fc..3dc6f32fbb4c 100644
 --- a/arch/arm64/boot/dts/qcom/x1e80100.dtsi
 +++ b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-@@ -62,6 +62,7 @@ CPU0: cpu@0 {
- 			compatible = "qcom,oryon";
- 			reg = <0x0 0x0>;
- 			enable-method = "psci";
-+			clocks = <&scmi_dvfs 0>;
- 			next-level-cache = <&L2_0>;
- 			power-domains = <&CPU_PD0>;
- 			power-domain-names = "psci";
-@@ -79,6 +80,7 @@ CPU1: cpu@100 {
- 			compatible = "qcom,oryon";
- 			reg = <0x0 0x100>;
- 			enable-method = "psci";
-+			clocks = <&scmi_dvfs 0>;
- 			next-level-cache = <&L2_0>;
- 			power-domains = <&CPU_PD1>;
- 			power-domain-names = "psci";
-@@ -90,6 +92,7 @@ CPU2: cpu@200 {
- 			compatible = "qcom,oryon";
- 			reg = <0x0 0x200>;
- 			enable-method = "psci";
-+			clocks = <&scmi_dvfs 0>;
- 			next-level-cache = <&L2_0>;
- 			power-domains = <&CPU_PD2>;
- 			power-domain-names = "psci";
-@@ -101,6 +104,7 @@ CPU3: cpu@300 {
- 			compatible = "qcom,oryon";
- 			reg = <0x0 0x300>;
- 			enable-method = "psci";
-+			clocks = <&scmi_dvfs 0>;
- 			next-level-cache = <&L2_0>;
- 			power-domains = <&CPU_PD3>;
- 			power-domain-names = "psci";
-@@ -112,6 +116,7 @@ CPU4: cpu@10000 {
- 			compatible = "qcom,oryon";
- 			reg = <0x0 0x10000>;
- 			enable-method = "psci";
-+			clocks = <&scmi_dvfs 1>;
- 			next-level-cache = <&L2_1>;
- 			power-domains = <&CPU_PD4>;
- 			power-domain-names = "psci";
-@@ -129,6 +134,7 @@ CPU5: cpu@10100 {
- 			compatible = "qcom,oryon";
- 			reg = <0x0 0x10100>;
- 			enable-method = "psci";
-+			clocks = <&scmi_dvfs 1>;
- 			next-level-cache = <&L2_1>;
- 			power-domains = <&CPU_PD5>;
- 			power-domain-names = "psci";
-@@ -140,6 +146,7 @@ CPU6: cpu@10200 {
- 			compatible = "qcom,oryon";
- 			reg = <0x0 0x10200>;
- 			enable-method = "psci";
-+			clocks = <&scmi_dvfs 1>;
- 			next-level-cache = <&L2_1>;
- 			power-domains = <&CPU_PD6>;
- 			power-domain-names = "psci";
-@@ -151,6 +158,7 @@ CPU7: cpu@10300 {
- 			compatible = "qcom,oryon";
- 			reg = <0x0 0x10300>;
- 			enable-method = "psci";
-+			clocks = <&scmi_dvfs 1>;
- 			next-level-cache = <&L2_1>;
- 			power-domains = <&CPU_PD7>;
- 			power-domain-names = "psci";
-@@ -162,6 +170,7 @@ CPU8: cpu@20000 {
- 			compatible = "qcom,oryon";
- 			reg = <0x0 0x20000>;
- 			enable-method = "psci";
-+			clocks = <&scmi_dvfs 2>;
- 			next-level-cache = <&L2_2>;
- 			power-domains = <&CPU_PD8>;
- 			power-domain-names = "psci";
-@@ -179,6 +188,7 @@ CPU9: cpu@20100 {
- 			compatible = "qcom,oryon";
- 			reg = <0x0 0x20100>;
- 			enable-method = "psci";
-+			clocks = <&scmi_dvfs 2>;
- 			next-level-cache = <&L2_2>;
- 			power-domains = <&CPU_PD9>;
- 			power-domain-names = "psci";
-@@ -190,6 +200,7 @@ CPU10: cpu@20200 {
- 			compatible = "qcom,oryon";
- 			reg = <0x0 0x20200>;
- 			enable-method = "psci";
-+			clocks = <&scmi_dvfs 2>;
- 			next-level-cache = <&L2_2>;
- 			power-domains = <&CPU_PD10>;
- 			power-domain-names = "psci";
-@@ -201,6 +212,7 @@ CPU11: cpu@20300 {
- 			compatible = "qcom,oryon";
- 			reg = <0x0 0x20300>;
- 			enable-method = "psci";
-+			clocks = <&scmi_dvfs 2>;
- 			next-level-cache = <&L2_2>;
- 			power-domains = <&CPU_PD11>;
- 			power-domain-names = "psci";
-@@ -303,6 +315,21 @@ scm: scm {
- 			interconnects = <&aggre2_noc MASTER_CRYPTO QCOM_ICC_TAG_ALWAYS
- 					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>;
- 		};
+@@ -329,6 +329,54 @@ scmi_dvfs: protocol@13 {
+ 				reg = <0x13>;
+ 				#clock-cells = <1>;
+ 			};
 +
-+		scmi {
-+			compatible = "arm,scmi";
-+			mboxes = <&cpucp_mbox 0>, <&cpucp_mbox 2>;
-+			mbox-names = "tx", "rx";
-+			shmem = <&cpu_scp_lpri0>, <&cpu_scp_lpri1>;
++			scmi_vendor: protocol@80 {
++				reg = <0x80>;
 +
-+			#address-cells = <1>;
-+			#size-cells = <0>;
++				memlat {
++					#address-cells = <1>;
++					#size-cells = <0>;
 +
-+			scmi_dvfs: protocol@13 {
-+				reg = <0x13>;
-+				#clock-cells = <1>;
++					memory@0 {
++						reg = <0x0>; /* Memory Type DDR */
++						freq-table-khz = <200000 4224000>;
++
++						monitor-0 {
++							qcom,cpulist = <&CPU0 &CPU1 &CPU2 &CPU3 &CPU4 &CPU5 &CPU6 &CPU7 &CPU8 &CPU9 &CPU10 &CPU11>;
++							qcom,cpufreq-memfreq-tbl = < 999000 547000 >,
++										   < 1440000 768000 >,
++										   < 1671000 1555000 >,
++										   < 2189000 2092000 >,
++										   < 2156000 3187000 >,
++										   < 3860000 4224000 >;
++						};
++
++						monitor-1 {
++							qcom,compute-mon;
++							qcom,cpulist = <&CPU0 &CPU1 &CPU2 &CPU3 &CPU4 &CPU5 &CPU6 &CPU7 &CPU8 &CPU9 &CPU10 &CPU11>;
++							qcom,cpufreq-memfreq-tbl = < 1440000 200000 >,
++										   < 2189000 768000 >,
++										   < 2156000 1555000 >,
++										   < 3860000 2092000 >;
++						};
++					};
++
++					memory@1 {
++						reg = <0x1>; /* Memory Type LLCC */
++						freq-table-khz = <300000 1067000>;
++
++						monitor-0 {
++							qcom,cpulist = <&CPU0 &CPU1 &CPU2 &CPU3 &CPU4 &CPU5 &CPU6 &CPU7 &CPU8 &CPU9 &CPU10 &CPU11>;
++							qcom,cpufreq-memfreq-tbl = < 999000 300000 >,
++										   < 1440000 466000 >,
++										   < 1671000 600000 >,
++										   < 2189000 806000 >,
++										   < 2156000 933000 >,
++										   < 3860000 1066000 >;
++						};
++					};
++				};
 +			};
-+		};
+ 		};
  	};
  
- 	clk_virt: interconnect-0 {
 -- 
 2.34.1
 
