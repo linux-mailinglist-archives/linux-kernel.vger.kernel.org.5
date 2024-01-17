@@ -1,190 +1,114 @@
-Return-Path: <linux-kernel+bounces-29300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66EC6830C5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:01:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBCF4830C61
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:03:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED9EB2858F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:01:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD1071C21254
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:03:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5505E22F06;
-	Wed, 17 Jan 2024 18:01:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EE2322EF5;
+	Wed, 17 Jan 2024 18:03:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4zGpkU9b"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="S21/C8GO"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB98622EE8
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 18:01:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 841B222318
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 18:03:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705514473; cv=none; b=Nm2yy59sk2K/uw5hSt540Q6Sm3d2I/vUgalJZGBm0BQjx3uKPfak8XkFYHvUxgL0z/ZoJXvegPmHCCInuqqEi6kJrJTQSDTTJtC4ra5/KKWAxNHo45dj3KIBr281+L6CJjkwffPtLh2fzh8/yccwZdCehDt83M0K+OWoKAwwy78=
+	t=1705514594; cv=none; b=UYi5R6qk8aZP3cBLpdUOz/tNdO4YolzDwxhI4emU27ejlhFUrHPvOv2k6CZtiGA2OvbYUYqhy6IekNGCnS/MG8bjjru9ERykugcJMIuCDGYQ7b/4e0WmhARTXlTalybHWQd8u7fVS1aQyu/jgeVReLPwfiLi58rDmOVyfOwycUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705514473; c=relaxed/simple;
-	bh=s9T8+huYkQV4LX5MAw4WwWh3qTHDPgPe4dZl313Xxoo=;
+	s=arc-20240116; t=1705514594; c=relaxed/simple;
+	bh=PF3mblge/X+Hf6n9SxY0sMRIf633kDVBXLyJRgNDNc4=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
 	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=aDzGP7R4D6oLA7nUUtyZe30xO0RDi/stUHq0TxCjvZ1Q9VulHuzxkT9bvFZqvJCXSPPY+tv/bBJc6g4fV8pfqPmfYWX9n7Qw1TMgMURh5NdLgZmXAxMAiARrceaFdHJmpMu7OvudymFVj9ZZJCuKoP5qO1aLWx3l5Rv0Zyvfo5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4zGpkU9b; arc=none smtp.client-ip=209.85.218.53
+	 Content-Type:Content-Transfer-Encoding; b=nma8ZIxBcL6FuUQ8ofbFkGifNf28V30kKaulHYzLItzbBczGDEkG5Hacm8wM+T8rIN2sGf4ga9bcL/xNe5pRI13qziMxx7Ack5g++1t0mTXQsk08qkL6J5FeaiWNvJYVQLkHm/jyCH+cPb/TaJ3/4+3N8gYUBe71SatMbmuBioI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=S21/C8GO; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a2ece31f5fdso107868666b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:01:11 -0800 (PST)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d6f1df9355so121105ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:03:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705514470; x=1706119270; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1705514592; x=1706119392; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=s9T8+huYkQV4LX5MAw4WwWh3qTHDPgPe4dZl313Xxoo=;
-        b=4zGpkU9bG3lEpd84ydZjgq3jM59SZtoU67E1nTPEahah5SAyUR4je9VLa7iNvnaN7B
-         IC9a76mZnd4TVpLDO0oP/MHcCoOq2Be8SwF4MyT6PqwWrDHu/qKZ7LFopLPzRcDaWaHp
-         NdieO/Bu1x34xgTnLVypQ7F52E5hgfLLMl7g3Kjarv6PZ4FdACFjcDz/LP7hydwXrOGV
-         Ghy8Ipy6xJpip2a6LW2nauCEtWmsheC3qEVeLp9vBVvrdWCQll/H18lW5nBTlRIDjyc2
-         LbJRzOOf74H/KsRJ9DuXvTG2UgXKdopzCy/3eyIo6J3CRaWgBaF6jtPXOgEJTwclmCt0
-         LLDQ==
+        bh=jKIkJ8HVuiESr/1rRSa9mU8k54RTWjGhYSPWVBq0UKI=;
+        b=S21/C8GOnkri4U+++W9FcquwT0bNUwqiLKssodG1ezkhXk5nMeI0tKnQ9kb/STR4ZR
+         QbuWIJjkC5EfZ+O7LzlSKeRvhcMM/bx6mijUmLpYivkYXel8MZD90cO1H5rxOn2o9XJa
+         6/MtOE5U3GHQX0U4ebQI8y/005jzq4SUNMG37eU+SF4PpaavdUSOerjhxV026wE5tm2w
+         khxfB3w2ymZ7q3OYa7tv5WkgNGxCBSurVSdLv2uPqDVp5WZeANKbDT+ngfc5iLoJN+BV
+         EIRKSaxsWmSD7x/wHB6hrJ5KdXUZbUH34LrvepDwpvfrVA3luz6FwfgP5M6qI1LknJT9
+         WfTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705514470; x=1706119270;
+        d=1e100.net; s=20230601; t=1705514592; x=1706119392;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=s9T8+huYkQV4LX5MAw4WwWh3qTHDPgPe4dZl313Xxoo=;
-        b=PXGsY5vj0IdyEDDPjsM1zstFspBSD4T2RDyC+hY+g1nW1JgZIEUcjy+tztnO5FAXen
-         bGAbPg+rZ8ttpvwhuAtJHpvyAQRmkwrjtqloRomyIEVuLbyLORCDvlG5eETC6RN6yl2j
-         FFTLjB5/cRgBcFeaxupEJpQJ9Ukhwe3/iZY9GqDWlveRLgQPwHJ4nq95MjiSsg6os7o3
-         8YrzzWBzuFCYXxY18y3mHIzm2t2d4GHn4p/ERVnJP8ef9vbIW9qT7LLYiZn+mk4LJ18O
-         EFHKMpw+v1MhF23f3bN2FhcEoC23Tk7OxUn37pDpyujCzdpiknPSji87r7XLnpac2rZE
-         f8Cw==
-X-Gm-Message-State: AOJu0Ywi4zEG6CjUfIhJ28VQy5tWcPe3niBgl0fLoxFUt1VI2Nhqb3rj
-	kvNRMEkMokFy+X/W4348oY2Btlf48mqqwiAxmrgBzCTR2U0W
-X-Google-Smtp-Source: AGHT+IEcgCFYTo3gSzkKKENWZKwhHSBuhNQViC2TEVlkeUZf94TJjfVYDN08i1bt0NB8RRmuTUfa8jV0G/UE1wVbXWo=
-X-Received: by 2002:a17:907:74b:b0:a2a:b777:b357 with SMTP id
- xc11-20020a170907074b00b00a2ab777b357mr4902988ejb.23.1705514469943; Wed, 17
- Jan 2024 10:01:09 -0800 (PST)
+        bh=jKIkJ8HVuiESr/1rRSa9mU8k54RTWjGhYSPWVBq0UKI=;
+        b=FiHy2OqQkCvtfCwH5WYGT8rwj15GnyMvTMugpS9vX/owYxW9LJsNBl5IZioYCsy9C6
+         CrbxFxHegpX3d/ABVYOmzyvK9Q9V0sdvMhxmhdLGXwaG5P7JCTFMz4Vq/Hw21McV9NGm
+         XT6Alx70QSGqiMo0IaP8jyhvPZdpu82kjIcOF+H7SG3CpsAirPxE/MhEN8Qd4CCeK5C9
+         2j/J0hDBSv5iK/MMJDu71UjZVKShH+fX824DFN4IabX0X8S8fm7/hKs0Z9BRaokA4w8q
+         f+kMt62I1qG8y6/5zBnvJsqv5CsJ0WGpS9waEe9agL41bMPnFXOgipdy4tMVn84HerPx
+         zSQw==
+X-Gm-Message-State: AOJu0Yz2vpl3MBjvC5LQjTc8iCBXuoVxQe51kJEF+CVx9H4FnMZGDhdW
+	9e1jAHcaGQIaF8kGWfiQIn91BeFzlCoJmBlAWtFcjJS0irRiksy+8XArv9QpyrYTAyG6MUksGI5
+	41FfoU5o+RLdv0iT+Y66oOeEBzAos2f7lU/Ay
+X-Google-Smtp-Source: AGHT+IFh86v+PhJTZZIVLlayRBA7EsrDxOfH6lDP3Q4ks+aqgEeV9VUNdJ3AERsfGCIrt+xg+8GcNZjP7UcIEWEO4bI=
+X-Received: by 2002:a17:903:24c:b0:1cc:6fa6:fb4a with SMTP id
+ j12-20020a170903024c00b001cc6fa6fb4amr224768plh.22.1705514591692; Wed, 17 Jan
+ 2024 10:03:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240109011455.1061529-1-almasrymina@google.com>
- <20240109011455.1061529-3-almasrymina@google.com> <5219f2cd-6854-0134-560d-8ae3f363b53f@huawei.com>
- <CAHS8izOtr+jfqQ6xCB3CoN-K_V1-4hPsB4-k5+1z-M3Qy2BbwA@mail.gmail.com>
- <0711845b-c435-251f-0bbc-20b243721c06@huawei.com> <CAHS8izOxvMVGXKpLBvVgyyS5_94WGG8Aca=O_zGMX+db-3gBXg@mail.gmail.com>
- <66bc7b8f-51b6-0d9e-db5b-47e7ee5e9029@huawei.com> <CAHS8izOnhtQGeQ-EFmYjZyZ0eW2LqO0Rrm73eAB2su=UA34yTw@mail.gmail.com>
- <20240116000129.GX734935@nvidia.com> <9c1a6725-c4c3-2bb1-344f-5e71f8ce7e63@huawei.com>
- <20240116121611.GY734935@nvidia.com>
-In-Reply-To: <20240116121611.GY734935@nvidia.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Wed, 17 Jan 2024 10:00:55 -0800
-Message-ID: <CAHS8izPa6ostY7qZUAmm4g8N3rfWoVBK6r5z0_MycxfsEVH4jw@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next v5 2/2] net: add netmem to skb_frag_t
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Yunsheng Lin <linyunsheng@huawei.com>, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Shakeel Butt <shakeelb@google.com>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+References: <20240117141405.3063506-1-amitsinght@marvell.com> <20240117141405.3063506-14-amitsinght@marvell.com>
+In-Reply-To: <20240117141405.3063506-14-amitsinght@marvell.com>
+From: Peter Newman <peternewman@google.com>
+Date: Wed, 17 Jan 2024 10:03:00 -0800
+Message-ID: <CALPaoCjf_A5SOr8L+0WMePW02Pzj9nnPT0JLZ_+232vvfEzGCQ@mail.gmail.com>
+Subject: Re: [PATCH v1 13/14] arm_mpam: Handle resource instances mapped to
+ different controls
+To: Amit Singh Tomar <amitsinght@marvell.com>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	fenghua.yu@intel.com, reinette.chatre@intel.com, james.morse@arm.com, 
+	gcherian@marvell.com, robh@kernel.org, dfustini@baylibre.com, 
+	jonathan.cameron@huawei.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 16, 2024 at 4:16=E2=80=AFAM Jason Gunthorpe <jgg@nvidia.com> wr=
-ote:
+Hi Amit,
+
+On Wed, Jan 17, 2024 at 6:15=E2=80=AFAM Amit Singh Tomar <amitsinght@marvel=
+l.com> wrote:
+
 >
-> On Tue, Jan 16, 2024 at 07:04:13PM +0800, Yunsheng Lin wrote:
-> > On 2024/1/16 8:01, Jason Gunthorpe wrote:
-> > > On Mon, Jan 15, 2024 at 03:23:33PM -0800, Mina Almasry wrote:
-> > >>>> You did not answer my question that I asked here, and ignoring thi=
-s
-> > >>>> question is preventing us from making any forward progress on this
-> > >>>> discussion. What do you expect or want skb_frag_page() to do when
-> > >>>> there is no page in the frag?
-> > >>>
-> > >>> I would expect it to do nothing.
-> > >>
-> > >> I don't understand. skb_frag_page() with an empty implementation jus=
-t
-> > >> results in a compiler error as the function needs to return a page
-> > >> pointer. Do you actually expect skb_frag_page() to unconditionally
-> > >> cast frag->netmem to a page pointer? That was explained as
-> > >> unacceptable over and over again by Jason and Christian as it risks
-> > >> casting devmem to page; completely unacceptable and will get nacked.
-> > >> Do you have a suggestion of what skb_frag_page() should do that will
-> > >> not get nacked by mm?
-> > >
-> > > WARN_ON and return NULL seems reasonable?
-> >
+> +/* Club different resource properties under a class that resctrl uses,
+> + * for instance, L3 cache that supports both CPOR, and DSPRI need to hav=
+e
+> + * knowledge of both cpbm_wd and dspri_wd. This is needed when two contr=
+ols
+> + * are enumerated under differnt RIS Index.
+> + */
+> +static void mpam_enable_club_class_features(struct mpam_class *class,
+> +                                           struct mpam_msc_ris *ris)
 
-That's more or less what I'm thinking.
+It looks like "club" is used as a synonym to "class" here to evade the
+bigger issue that mpam_classes are not defined correctly as DSPRI
+resources should not be in the same mpam_class as the L3 CPOR and CSU
+features.
 
-> > While I am agreed that it may be a nightmare to debug the case of passi=
-ng
-> > a false page into the mm system, but I am not sure what's the point of
-> > returning NULL to caller if the caller is not expecting or handling
-> > the
->
-> You have to return something and NULL will largely reliably crash the
-> thread. The WARN_ON explains in detail why your thread just crashed.
->
+This hardware makes it clear that the definition of mpam_class as all
+resources in a (level x {memory,cache}) needs to be revised.
 
-Agreed.
-
-> > NULL returning[for example, most of mm API called by the networking doe=
-s not
-> > seems to handling NULL as input page], isn't the NULL returning will ma=
-ke
-> > the kernel panic anyway? Doesn't it make more sense to just add a BUG_O=
-N()
-> > depending on some configuration like CONFIG_DEBUG_NET or CONFIG_DEVMEM?
-> > As returning NULL seems to be causing a confusion for the caller of
-> > skb_frag_page() as whether to or how to handle the NULL returning case.
->
-> Possibly, though Linus doesn't like BUG_ON on principle..
->
-> I think the bigger challenge is convincing people that this devmem
-> stuff doesn't just open a bunch of holes in the kernel where userspace
-> can crash it.
->
-
-It does not, and as of right now there are no pending concerns from
-any netdev maintainers regarding mishandled devmem checks at least.
-This is because the devmem series comes with a full audit of
-skb_frag_page() callers [1] and all areas in the net stack attempting
-to access the skb [2].
-
-[1] https://patchwork.kernel.org/project/netdevbpf/patch/20231218024024.351=
-6870-10-almasrymina@google.com/
-[2] https://patchwork.kernel.org/project/netdevbpf/patch/20231218024024.351=
-6870-11-almasrymina@google.com/
-
-> The fact you all are debating what to do with skb_frag_page() suggests
-> to me there isn't confidence...
->
-
-The debate raging on is related to the performance of skb_frag_page(),
-not correctness (and even then, I don't think it's related to
-perf...). Yunsheng would like us to optimize skb_frag_page() using an
-unconditional cast from netmem to page. This in Yunsheng's mind is a
-performance optimization as we don't need to add an if statement
-checking if the netmem is a page. I'm resistant to implement that
-change so far because:
-
-(a) unconditionally casting from netmem to page negates the compiler
-type safety that you and Christian are laying out as a requirement for
-the devmem stuff.
-(b) With likely/unlikely or static branches the check to make sure
-netmem is page is a no-op for existing use cases anyway, so AFAIU,
-there is no perf gain from optimizing it out anyway.
-
-But none of this is related to correctness. Code calling
-skb_frag_page() will fail or crash if it's not handled correctly
-regardless of the implementation details of skb_frag_page(). In the
-devmem series we add support to handle it correctly via [1] & [2].
-
---=20
-Thanks,
-Mina
+-Peter
 
