@@ -1,115 +1,262 @@
-Return-Path: <linux-kernel+bounces-28593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7937830074
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:21:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 145F0830077
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:22:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDDEE1C23953
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:21:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 824471F248DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:22:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1BA1BA50;
-	Wed, 17 Jan 2024 07:21:41 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9995BA26;
+	Wed, 17 Jan 2024 07:22:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="XORaRJgH"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2062.outbound.protection.outlook.com [40.107.94.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB2D8F65;
-	Wed, 17 Jan 2024 07:21:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705476101; cv=none; b=UGpwCkpseiDOI036cgDUWJ2I6O23BB6K6oFCn5iEuoJQeAjmvHmj5SyHXlATxbRykX6s+NlEaS5+uYFb1UJ0KZ05Pp4ANjlhhmVe+lHsrF72IQ8gHg9BnG8bkYN6+fMdV9uoMSQF619y5Xb8jQviZo2Ao+Nx0bkp8IPcjhI3Gsg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705476101; c=relaxed/simple;
-	bh=O85UiwYAkF07o9wiQzUPQRXlOapOHteQzq9bjUp60XQ=;
-	h=X-UUID:X-CID-P-RULE:X-CID-O-INFO:X-CID-INFO:X-CID-META:X-CID-BVR:
-	 X-CID-BAS:X-CID-FACTOR:X-UUID:Received:Received:X-ns-mid:Received:
-	 From:To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding; b=Rwf0tNtcY5iDKf12P6e0fJnZJCHfxqLn4BhU3Eqol39LINr9iJDIpi9XWjSQAbhc53h3nTDMyrMI1NYqQrZmEFSLcHxVpWhKb4/oh6fHYzCgitbNLpemkTwlz45RtCbIlgdM6BleWhq4MHO5VgsJA1bQowPgDGBi6MbpPdULH1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 2a46221058924310b9c594314f2c70d8-20240117
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:e7c0f8e5-df89-401e-9dd4-769b4832632e,IP:10,
-	URL:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-	ION:release,TS:20
-X-CID-INFO: VERSION:1.1.35,REQID:e7c0f8e5-df89-401e-9dd4-769b4832632e,IP:10,UR
-	L:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:20
-X-CID-META: VersionHash:5d391d7,CLOUDID:9f08422f-1ab8-4133-9780-81938111c800,B
-	ulkID:240117152134M9ZOJKSL,BulkQuantity:0,Recheck:0,SF:38|24|17|19|44|66|1
-	02,TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL
-	:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
-X-UUID: 2a46221058924310b9c594314f2c70d8-20240117
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 697907986; Wed, 17 Jan 2024 15:21:33 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 7AFCAE000EB9;
-	Wed, 17 Jan 2024 15:21:33 +0800 (CST)
-X-ns-mid: postfix-65A77FFD-295721259
-Received: from kernel.. (unknown [172.20.15.234])
-	by mail.kylinos.cn (NSMail) with ESMTPA id B043EE000EB9;
-	Wed, 17 Jan 2024 15:21:28 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: horms@verge.net.au,
-	ja@ssi.bg,
-	pablo@netfilter.org,
-	kadlec@netfilter.org,
-	fw@strlen.de,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	lvs-devel@vger.kernel.org,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH net] ipvs: Simplify the allocation of ip_vs_conn slab caches
-Date: Wed, 17 Jan 2024 15:20:45 +0800
-Message-Id: <20240117072045.142215-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3ECF9473
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:22:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.62
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705476136; cv=fail; b=em6REayFn0DTppgibdCCPgpouCkQX4gFhB20KEVJ1VoVlLDOXe/qh6OQtEm1hh6z+3NGd6oLFcrlaGRzzuDcJBPXKItP3IHVZcu6+3g0DR9noaqGBvQP99YAhY7CZU1KnxRqppC7k+u/wiWi4xgrejg1KHxxWJPLdT9GCSpBO7k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705476136; c=relaxed/simple;
+	bh=ks99bXEs/2h1DE0Av1gygKrSQUhUqQ+noMqeuYtg1bo=;
+	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
+	 Received:Received:Message-ID:Date:User-Agent:Subject:
+	 Content-Language:To:Cc:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:X-ClientProxiedBy:MIME-Version:
+	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
+	 X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-AuthSource:
+	 X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+	 X-MS-Exchange-CrossTenant-UserPrincipalName:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=Q84S9tcOzhg1DZpLK3tI2lSIO8AaIbhxVysW3nf9m/rHMd/EVnIEScqTIXQ1PtqpZkkOR55ybSFKDMtPFXeUAm/l/FtjjvrawlDXl0yZcu0Jqddc3ISqHYjwk2UZ7vcpHPYkW/jJ45iylcVtDUpolyqYOM/SDQz3BPWgXSS4SP8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=XORaRJgH; arc=fail smtp.client-ip=40.107.94.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Pe/wvo4kUYtvBkboSy8grGwCiqNVntRE9SVC200+kfMFyd97SVrC4SBZUQKMpmh+yf+vJppLBWvGiUAyDe6g6WuT20NcPK6/FpuRhHEDfEqAdz4cOq7Ck1VXrsIIHBcY6cQuI7Ba0P91iyW0b2DV2Jc3tEHIQD0oVTf4ejMjwOCBHHo3W1khxn/DvUsT2cajaKPLVJhlnNZvkpXq9bUyPVkXmXynzc8yRucqdjCJgeyuEls5BaH5MhFb+GJ33Gnw4yxPgdN1FVbDwQLS17YlsUlB60E4c+cVSgROD/qT/PF+yOIqpTWY77HkE3JDyn/eQuw8g1yJWNccYnJimeT9AA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AYB42w6+sKEuDxnM10nCrDSz+c32bDJfgNRsEcOsJJI=;
+ b=HTSWDuNHELnVsPYS6GFOYJxfYzEwc/Y1FCl0yib0+69oRgCgaplvUdNzI2KstMC18vRlCz9DHcyE1acuFMFlgNuyRk0uUnobCA104UntJ9WNY6cP769mTulGVmzptvQ4MziQIHtqilkecyUXyt1FK8El1z2ZgOO+fJVIBDJ9an80dWfAdoO83kyvHpgQHODrKzAgpCrv7IweKrNrKXJHvsMh2ACPyz8xht3nwkMwJEdPeIID5Jw7VwHFQsqnptlILK7tGH7cGSNjJ6YmeYNp6y9WUjpBOpo8hXh7+I218d7X9+sdg2M2Et58wqufdUvzUa5z5MF4fjO1ydS7/yXeyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AYB42w6+sKEuDxnM10nCrDSz+c32bDJfgNRsEcOsJJI=;
+ b=XORaRJgHHrrDWdUBG7CXJ0F7ZMFb2sbfk6atZP4bXv8yj10ItX6A2rfS7sXbroaGIZl0oW0qdNrze7CVhPlXTIvspm5ZP3AwY0itpKdMjX86yb8wlfU+CAP/4CPz22LWS3sXbYfzx9XemNLbtv7fDFSY4XeB3WBM9tTX4iXLGbM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by SJ2PR12MB9243.namprd12.prod.outlook.com (2603:10b6:a03:578::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.23; Wed, 17 Jan
+ 2024 07:22:11 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::e1fb:4123:48b1:653]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::e1fb:4123:48b1:653%4]) with mapi id 15.20.7159.020; Wed, 17 Jan 2024
+ 07:22:11 +0000
+Message-ID: <560cafbb-ebe3-4605-95db-4923a35183af@amd.com>
+Date: Wed, 17 Jan 2024 08:22:04 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 0/6] drm/lima: fixes and improvements to error recovery
+Content-Language: en-US
+To: Erico Nunes <nunes.erico@gmail.com>, Qiang Yu <yuq825@gmail.com>,
+ dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org
+Cc: anarsoul@gmail.com, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Sumit Semwal <sumit.semwal@linaro.org>,
+ linux-kernel@vger.kernel.org
+References: <20240117031212.1104034-1-nunes.erico@gmail.com>
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20240117031212.1104034-1-nunes.erico@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0359.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:f4::19) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|SJ2PR12MB9243:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3694f414-58e4-4d5c-2557-08dc172d0573
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	M49jUJai8ErjzbK5fp+hwAYZt9nOx6/DFPxTZ/F0b3Y/mw6qs84Q8GY3WOD5jin/ME+XdcdGD/SDYUMt7NX7prTy33sCSSSWbeqJKa/eCcXjstVCZAhu2Y33FlNRm841hYbl1PT77TELb1ZZCQ0aKTKHcNxKea5CnSu2J9WgKl+mYcexQyLw8N5TtJImpyF292KV68cSMVZrtzgWCgmzs0HKpI4mSAVipaiJrq78wLz7qTVsxUEYbRfXJC8qvWAl2aI6lPPTUUKyvqdV3oN6mp4b/sLHZJjZgkAdSy7+LtJ73LDFTjFxFiQdY1SYbi+gPCRRVvvBQPlEPPtRkz3CNjMptuTuCtLD6hoHDE3YwX/QJz/VdZPbjcJDxmmBW1dNPty6dA3tGqzBkMQVmXRYp6wwKYcchwjU0Lz+aELQMJCnGxPgz/bYQOPR/NaC9qRdi2HrPI6jhtB7gkV5dn/MARbuBu3+sgk4c7HqCm3XBfW7HezCAxcoUPeV0sY3VZR5Nz7iianRsHLd/Ef/erBzkQ9RYCmtPn1vO0lXrxwGNTyZ2OWAUNVZ2tMuVbSBh3vD7TnY6DF7R+VLcI3ByZU+5W+gkSNJCM5yHlyyMQMAeoFWpsGHVJAHo1jZcNgiVTbaeVi0WVQ3Uh4FGoOxYlZYaGdCgmaoOHyueKOIozTVXZc=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(396003)(136003)(366004)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(2906002)(7416002)(5660300002)(8676002)(41300700001)(478600001)(4326008)(38100700002)(6486002)(966005)(31696002)(86362001)(2616005)(36756003)(6506007)(26005)(6666004)(6512007)(83380400001)(66946007)(8936002)(54906003)(316002)(66476007)(110136005)(31686004)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?eFpRRm9oVGdudHh5WGt1STlNR1dlZlJxSUpYMWN2eDlUNXdQdEZIdis5QVJk?=
+ =?utf-8?B?bnBTcXNESVVTdzVwWWVQZUozSXVjQ1hUYm44ZTlqTEdHVEIrU1hYQ2xVUDZh?=
+ =?utf-8?B?VFRmS0VBVUtnNWljUWJOV0hLNmg2aWZWSFhBRXpOb1BwRjhDN0VyTm9meXcw?=
+ =?utf-8?B?ZnVyaml6SnJjS1dWS2hYT3VrVHlXWTVidFZrZXllZ2lHSE1BMFkxTGphbmdH?=
+ =?utf-8?B?UTRZOWJ1bHRLVFVxL1Z2NmR0YjVEYnBySEF0djBVeDVHSENEUzY3b0xjbHpE?=
+ =?utf-8?B?R0VoZldLSkd0TDIvRlo1WkVFeGg5SElMOFRNeDlxeHpxT1k5WlF0WEg5Z0pp?=
+ =?utf-8?B?MTFOL05MMDVhQXBRdXdXN1ZIRGY3V20wMjRvejlFeC9OWVVEaDZ3RFgwUkF0?=
+ =?utf-8?B?RVBsZFE2ZGl0M2h0QUJySGNnUTJaakEwYzdFODMrYkFvWmprQmFnWnlwQlNY?=
+ =?utf-8?B?N1M3MlNlSThtazVKMkRmYUJ2ZE5NaXNwSUoxK1U4K2JKRlNBaGY5TDdTWld3?=
+ =?utf-8?B?K0g5RnBhbHFJSDdoUVVlc1FWNlRueFpxeW5WTkRFTjNiZ091blJxMUlITUF5?=
+ =?utf-8?B?bWNhZ3NoTzM1SGM1QkdrM1VNYUVkd3pJb3ROWUVHMTdzcTMrRHdBQy9LdFJV?=
+ =?utf-8?B?TUdHcEtINGRNSGdtYzJJU2RHS2tmcjdkQ1Q3dWFCY2gwMXQvWWxsN1p4NHVh?=
+ =?utf-8?B?NG96VnF5dVdLb0c2ZWFBNGRhWXZtamxHMS9zdkNmTzJjNUJDakhueFp1Qnpa?=
+ =?utf-8?B?MlZmL0R5Q1B4L212dGJUbmdLbnNRNC9KU0prTGFwNWcxTTJSR2Y5bmNROVJo?=
+ =?utf-8?B?TU90SFBveTk2OFlRUzZNWGU3RHpWT2lCNjZ3YmlxMGc4dFUxMHcyMnNzcVJ1?=
+ =?utf-8?B?TXRDRWNuS0xhTkxyY2JVbjBuTDVDUmsvUjFBSkdsZ0NPb25YVGh6eVFBaU94?=
+ =?utf-8?B?SU8rbWtlQVd5WGV5L0JQQ0pyU1dxQ2hvYTZyZXNhZ0tJd0NudGJHWFhqaFBV?=
+ =?utf-8?B?Z1RHS1BoVTBvQjliUndjd0praWVJTlV5Y0NSOG5Wdlk4SmZvL3JlU2RGeG5G?=
+ =?utf-8?B?alpVQThjTmNtcnV5RkFhUmRMMmZLYW9DVUhNdWR1VldGbEZRbFdoSUVubXlz?=
+ =?utf-8?B?bUprL05ucGFHbE15OHNLYTdKU2lYNEwvVUhWVm1BRU9vUWF4a3N3TElLZjBB?=
+ =?utf-8?B?VnZ0NHE0clRLRCtXY0I0YWlQWi9iN2IzZkRvMGVrcWxIZ25icEEzUFhBVURV?=
+ =?utf-8?B?NjlYaVVYbzFtemRldFovYkVoOFdzTUJ1N2NVcENtV3BTUVVidk5jdHRHNUdM?=
+ =?utf-8?B?Tm4vK3F3dVl0SmYrZlo3M1dSU0lxK1dzZ2YyR0Fxekw4MW9MWGQxQWFYazdW?=
+ =?utf-8?B?K2J3bDF5TXJGUm5YRWx6SmhwMWNHMTVJcDFGWXBsVTc2RTh4MHpHbWhlbG0v?=
+ =?utf-8?B?ZExSRzYzMGxOTDNKRzJxcEp6dVNWOFFRVmVxZWhyZmRxcDFaNkF3UmJIRzNM?=
+ =?utf-8?B?YTM1L1lVblV0eUc2dWl1UGY0UEFIR1loWGx4NzRWN0w3eHNHSUhhZEZjU0VX?=
+ =?utf-8?B?MnpGRldFV0JXZDhaTzdMdFdPYW5rejJnZkE5YWZlSUpJc25Xdk9Ic0Nia3RX?=
+ =?utf-8?B?QmFYanNYN3lMWkVDMFZ2ODZvTG5qV3lhNEJ0OGZuVlMzQmFSSjRwWEZKamlP?=
+ =?utf-8?B?elpIdGlhTlRDeGFMc0R0Z050cEkzaUg4Ukt0NTBtU1AvcVRPT2p3cER1Y2hK?=
+ =?utf-8?B?UlM5OHkzMFB1eGlwNFZVcGJiSWFUQnJhYU53STlTckt1YTZsT25TYVhvVis0?=
+ =?utf-8?B?UDZEMlQ4K0ZEcEFzTGZBWENXd1FKbzBNeVRNVnB6TDlFeGJQN2ZqUnBKdVl6?=
+ =?utf-8?B?WnJRdTZFZ2JWK09GSkI1NDNLbU9BVW4wMlVDSExQQkxnT3I0WkhtQlVPSFl6?=
+ =?utf-8?B?TDFBOWxwV3FuMmZhK1JEd2xhMWo3WnlqZDBvVUFxRXNOM3ZvZ2pYVFBvdUhr?=
+ =?utf-8?B?eGlTeEJ6aVVmeWRWQ2hncTNqVkREMHJsWk11cWJEbndlWjBCWmFIeENWRkl0?=
+ =?utf-8?B?dm5jblMwUXp3ZGpLRTdwUHNqdXpHMXNZL1BRL1NWMlRmNEowcUhQZWJKNnhC?=
+ =?utf-8?Q?Qbu4NTpvVpZaPA0mGwu+v/Vqq?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3694f414-58e4-4d5c-2557-08dc172d0573
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2024 07:22:11.4558
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: W6xTe7zTpHG7Q/xfZwZY7lZt25VuvMxvXBRP314Bxl8yuBVS7dlx4ctP4G3gx1aM
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9243
 
-Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-to simplify the creation of SLAB caches.
+Am 17.01.24 um 04:12 schrieb Erico Nunes:
+> There have been reports from users for a long time about applications
+> hitting random "*ERROR* lima job timeout" and the application or GPU
+> becoming unresponsive.
+>
+> This series addresses a number of related bugs, especially in the pp
+> timeout recovery path.
+>
+> Patch 1 fixes a stack trace initially featured in a user report here:
+> https://gitlab.freedesktop.org/mesa/mesa/-/issues/8415
+>
+> Patch 2 fixes a "pp reset time out" message which was fairly confusing
+> at first. Debugging with an application which just submits one single
+> job at a time made it clear that the timeout actually was reported in
+> the application that runs next, even if that is a good application.
+>
+> Patch 3 is one of the most important fixes and stops random "mmu command
+> 2 timeout" ppmmu timeouts that I hit while running my tests. Initially I
+> thought it came from some race condition on running/resetting jobs, but
+> it was actually due to hard resetting live tasks.
+> After setting this there was never a mmu timeout anymore (even after
+> dropping the guilty flag in the upcoming patch, which by itself was
+> actually the easiest reproducer of the ppmmu timeouts).
+>
+> Patch 4 might be debatable, but hopefully we can agree to go with it
+> since it was already discussed in Panfrost here:
+> https://patchwork.freedesktop.org/series/120820/
+> It is actually not that hard to reproduce both "spurious timeout" and
+> "unexpectedly high interrupt latency" by creating an irq which takes a
+> longer than usual to execute, and paired with the issues in timeout
+> recovery this could cause an unrelated application to hang.
+>
+> Patch 5 removes the guilty drm_sched from context handling in lima.
+> Often users report issues with a user-visible effect of "application
+> flipping the last 2 rendered frames":
+> https://gitlab.freedesktop.org/mesa/mesa/-/issues/8410
+> This was ultimately caused because lima sets the guilty flag to a
+> context which causes all further rendering jobs from that context to be
+> dropped.
+> Without the fixes from patches 1-4 it was not possible to just drop the
+> guilty flag as that could trigger the mentioned issues and still hang
+> the GPU by attempting a recovery.
+> After the fixes above it seems to be reliable and survives some fairly
+> torturing tests mentioned below.
+> Other similar GPU drivers like panfrost, v3d don't make use of the
+> guilty context flag. So I think we can drop it for lima too.
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- net/netfilter/ipvs/ip_vs_conn.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Oh, yes please! Thanks so much for that.
 
-diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_c=
-onn.c
-index a743db073887..98d7dbe3d787 100644
---- a/net/netfilter/ipvs/ip_vs_conn.c
-+++ b/net/netfilter/ipvs/ip_vs_conn.c
-@@ -1511,9 +1511,7 @@ int __init ip_vs_conn_init(void)
- 		return -ENOMEM;
-=20
- 	/* Allocate ip_vs_conn slab cache */
--	ip_vs_conn_cachep =3D kmem_cache_create("ip_vs_conn",
--					      sizeof(struct ip_vs_conn), 0,
--					      SLAB_HWCACHE_ALIGN, NULL);
-+	ip_vs_conn_cachep =3D KMEM_CACHE(ip_vs_conn, SLAB_HWCACHE_ALIGN);
- 	if (!ip_vs_conn_cachep) {
- 		kvfree(ip_vs_conn_tab);
- 		return -ENOMEM;
---=20
-2.39.2
+I'm working on removing the guilty handling in amdgpu as well and 
+together this will most likely allow us to completely remove the guilty 
+handling from the scheduler.
+
+In general driver should use the dma_fence error handling instead. That 
+one is well defined and way more reliable.
+
+Feel free to add my acked-by to patch 5.
+
+Thanks,
+Christian.
+
+>
+> Patch 6 is just some debug message cleanup.
+>
+>
+> Some of the tests which I ran with this patchset:
+>
+> - Application which renders normal frames, then frames which /barely/
+> timeout, then frames which legitimely timeout, then frames which timeout
+> enough to trigger the hardware watchdog irq, then goes back to render
+> normal frames. This used to hang the application at first but now
+> survives the entire process repeated indefinitely.
+>
+> - High irq latency from an unrelated source while rendering. I put a
+> mdelay() in the touchscreen driver irq and could cause all "spurious
+> timeout", "unexpectedly high interrupt latency" and actual timeouts.
+> Those are now all reported to dmesg for information and I am no longer
+> able to cause an unrelated application to hang.
+>
+> - Game running with lower configured drm_sched timeout (locally set to
+> 200ms) with other applications triggering timeouts in the background.
+> Different applications trigger resets independently but none of them
+> cause the GPU to hang or the game to stop working.
+>
+>
+> Erico Nunes (6):
+>    drm/lima: fix devfreq refcount imbalance for job timeouts
+>    drm/lima: reset async_reset on pp hard reset
+>    drm/lima: set bus_stop bit before hard reset
+>    drm/lima: handle spurious timeouts due to high irq latency
+>    drm/lima: remove guilty drm_sched context handling
+>    drm/lima: improve some pp debug messages
+>
+>   drivers/gpu/drm/lima/lima_ctx.c   |  2 +-
+>   drivers/gpu/drm/lima/lima_ctx.h   |  1 -
+>   drivers/gpu/drm/lima/lima_pp.c    | 26 +++++++++++++++++---
+>   drivers/gpu/drm/lima/lima_sched.c | 40 ++++++++++++++++++++++++-------
+>   drivers/gpu/drm/lima/lima_sched.h |  5 ++--
+>   5 files changed, 58 insertions(+), 16 deletions(-)
+>
 
 
