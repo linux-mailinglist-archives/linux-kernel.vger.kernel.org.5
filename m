@@ -1,107 +1,197 @@
-Return-Path: <linux-kernel+bounces-29312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2333E830CA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:22:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6FCA830C8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:17:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9ABCB242FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:22:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54B441F22B6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:17:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B5A82374D;
-	Wed, 17 Jan 2024 18:22:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 153D423748;
+	Wed, 17 Jan 2024 18:17:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mailerdienst.de header.i=@mailerdienst.de header.b="x2pbTALC"
-Received: from mxout2.routing.net (mxout2.routing.net [134.0.28.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dNQUQPyK"
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C883A23747;
-	Wed, 17 Jan 2024 18:22:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.0.28.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4C8822EFF
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 18:16:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705515739; cv=none; b=LrsiDYL9v8abxPmWKj5eNqOVsL+oH5YdZ9jSvaWRIbzEiaOQGgx1hQx2aPlyyKu0IYXCvTNH2gz0YpS3EAgYmrEpXawL6abVQox26wLPZDm4B9aT4lzdapln+LW60wMYlEf313r6jbJ/9jHEZgLVXQvYE1HIjaPivK57AfiCEGM=
+	t=1705515420; cv=none; b=NjwWOGOs0xFISPRgi1mwizyzsx4FMGTmDwJB0G4cUIBjyT9KjoOMRSljqR8o/VzGKLG+1X7dSGXTxcKL1K1vG8Q7Do5G8sI6ErPTH/C5en4v9ERSTqlKfhbPO+gAqKRTz1itV8OZEV6IfEqxGDCkSgsrtTJS9rRIxHqPDPx446Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705515739; c=relaxed/simple;
-	bh=3VdOjc3X148qsKr0xLzhVrZ+WN/d9jtjGD8XrGEuK1E=;
-	h=Received:DKIM-Signature:Received:From:To:Cc:Subject:Date:
-	 Message-Id:X-Mailer:MIME-Version:Content-Transfer-Encoding:
-	 X-Mail-ID; b=EPOEJtB8pOMiyuo2x/HBIM5ST9JpxmQXcCz18GtOmSYHJlMYs2Iq/xk82i/iC9XWNClBdmfjsKISsO7HFTAffSC9SYsK8c7wU165Nk7cG3ijT6dtaRE/lnRYYGdXmi8DhkIbEZro09VOygKstz/3ZTKq7LO14z/itCkfVSrdwJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fw-web.de; spf=pass smtp.mailfrom=fw-web.de; dkim=pass (1024-bit key) header.d=mailerdienst.de header.i=@mailerdienst.de header.b=x2pbTALC; arc=none smtp.client-ip=134.0.28.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fw-web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fw-web.de
-Received: from mxbox3.masterlogin.de (unknown [192.168.10.78])
-	by mxout2.routing.net (Postfix) with ESMTP id 452265FC7E;
-	Wed, 17 Jan 2024 18:15:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
-	s=20200217; t=1705515353;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=faaWm9kKMcck2ImmwhnetGgTDP4WHiKRSvb4Y2er2NM=;
-	b=x2pbTALCTpXpjTlSpbqC3CbYw83ZKHbpjyKWCW5LEU1zrgBGHziOM2hEt9jrSmRH9Q+P8E
-	0CYzL4UsE/VqPJTdzPkoa9ZKjGMQSTcnutw/dA+0cJe+4LCSK2d4LKUqDj4A9iqTyjHtAL
-	Md7Tdrl08PIPHBM4nLUnzRQBceXLJes=
-Received: from frank-G5.. (fttx-pool-217.61.151.254.bambit.de [217.61.151.254])
-	by mxbox3.masterlogin.de (Postfix) with ESMTPSA id 367C93601D6;
-	Wed, 17 Jan 2024 18:15:52 +0000 (UTC)
-From: Frank Wunderlich <linux@fw-web.de>
-To: Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: Frank Wunderlich <frank-w@public-files.de>,
-	Sam Shih <sam.shih@mediatek.com>,
-	Daniel Golle <daniel@makrotopia.org>,
-	linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH v3 0/2] Add reset controller to mt7988 infracfg
-Date: Wed, 17 Jan 2024 19:15:43 +0100
-Message-Id: <20240117181545.60355-1-linux@fw-web.de>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1705515420; c=relaxed/simple;
+	bh=PGA5XF8apgvFZl5vCFekKzJo49ntitv3Oa87Rh9Ojwc=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type; b=WsJl1ATark3qddYnbV1iZVascbjbDGsycAWQR2lbmNGxEKG+ZFNfrrPM4P15mso7o6tiQaE3+xvvGQ9Q2Owsp7Qq45HngMlP6jjOAvmVRFCxQwymgMY8dLRnYhW6BdNF1ntWvtGY5BOHb30LEDjKUxwa3Nbk46Spjg5MDO5tx+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dNQUQPyK; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5f2d4aaa2fdso116100757b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:16:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705515417; x=1706120217; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=IYLeQC5slfCvWFFzPxrebDUGGj/LueNwDEYL/EBPrAo=;
+        b=dNQUQPyK+W6ldPQveER0dtG/y4QgWv/W5nHYMKVIRW4PjU4JL4MR4andbSP2PrkEpe
+         0ZGYkzaVJWRRWu+O39ArH+4NIPEIFBpnZIENsKBBgTI01EVjDu442++OubPRG3u6xOkZ
+         3GQRGzo1AdYiUuaaCv8ive2F68LzA/NgIY0ONN4/TsHT5waVyABGQ50sfE8z3DXunpXd
+         tPN49YpdALI8rPMk3RkiRU4QfaMy4JhyBM3vV/5qcca4LU7ECG46ypfatrRJwjQK/0Np
+         VcRn4ML1fxEvSTBHL/7CZK/oGumOTpzQMy0G2CIVwnpR3SmBm4wzOukz4yWmV9qGlEfo
+         VLnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705515417; x=1706120217;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IYLeQC5slfCvWFFzPxrebDUGGj/LueNwDEYL/EBPrAo=;
+        b=w25WucNQm91HOiRJaov/VnQTpwMvUMrrqi3enQ8fmHSKjk56oSx4WhflIKlLtP18PP
+         Z6YoKA+7jYoCfX8fpAiPKzNJU4I957O4VorfPYFs7/rfCp1GkGd6KhoTKEwYyhUDcao0
+         GoYwK1ziMhgq1JFqnP+nntrTwoFxY7Dv+vS3tWVPCNGcfwB2UqvSf4AEolKFEuPMqKUn
+         NDdauUAXS2S2tdgFqAPfYVhNd4EVGJ00sUAkn7WSZecztKnAVp27YH3i6cgMIWRuO/Rf
+         BeXdc/rwD/NjZEP2tAOzPkV3XCvvP9suf3rDagrpEzeOdsLE+aLC4VAEfFTkGGZqFNn3
+         PsAA==
+X-Gm-Message-State: AOJu0YyOyu5tvSIKcjFdl4A5jjUilkBtUYdyJt68UtffOdGiUoLkXqTF
+	dquQVLFURaNjcQGmX2d/WcFN5NEnnwiA+4xEueVirr2WdTQnNA==
+X-Google-Smtp-Source: AGHT+IEiU4sgOHiDuc04/q9jECuMRdLjA17jYKeAeJ4piEglYPHw18T3b/PpQlqA7gfF1SOpcxOh16zWc3G/Lxu8Esg=
+X-Received: by 2002:a0d:cc4e:0:b0:5ff:5d7e:54af with SMTP id
+ o75-20020a0dcc4e000000b005ff5d7e54afmr1969991ywd.105.1705515417633; Wed, 17
+ Jan 2024 10:16:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mail-ID: 2b681597-9b8b-4c5c-8a97-97f5be73149f
+References: <20240117160748.37682-1-brgl@bgdev.pl>
+In-Reply-To: <20240117160748.37682-1-brgl@bgdev.pl>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 17 Jan 2024 20:16:46 +0200
+Message-ID: <CAA8EJpoQfPqoMVyTmUjPs4c1Uc-p4n7zNcG+USNjXX0Svp362w@mail.gmail.com>
+Subject: Re: [PATCH 0/9] PCI: introduce the concept of power sequencing of
+ PCIe devices
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kalle Valo <kvalo@kernel.org>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Heiko Stuebner <heiko@sntech.de>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	=?UTF-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4gUHJhZG8=?= <nfraprado@collabora.com>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Peng Fan <peng.fan@nxp.com>, 
+	Robert Richter <rrichter@amd.com>, Dan Williams <dan.j.williams@intel.com>, 
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Terry Bowman <terry.bowman@amd.com>, 
+	Lukas Wunner <lukas@wunner.de>, Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abel Vesa <abel.vesa@linaro.org>, 
+	linux-wireless@vger.kernel.org, netdev@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-pci@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Frank Wunderlich <frank-w@public-files.de>
+On Wed, 17 Jan 2024 at 18:08, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> The responses to the RFC were rather positive so here's a proper series.
+>
+> During last year's Linux Plumbers we had several discussions centered
+> around the need to power-on PCI devices before they can be detected on
+> the bus.
+>
+> The consensus during the conference was that we need to introduce a
+> class of "PCI slot drivers" that would handle the power-sequencing.
+>
+> After some additional brain-storming with Manivannan and the realization
+> that DT maintainers won't like adding any "fake" nodes not representing
+> actual devices, we decided to reuse existing PCI infrastructure.
+>
+> The general idea is to instantiate platform devices for child nodes of
+> the PCIe port DT node. For those nodes for which a power-sequencing
+> driver exists, we bind it and let it probe. The driver then triggers a
+> rescan of the PCI bus with the aim of detecting the now powered-on
+> device. The device will consume the same DT node as the platform,
+> power-sequencing device. We use device links to make the latter become
+> the parent of the former.
+>
+> The main advantage of this approach is not modifying the existing DT in
+> any way and especially not adding any "fake" platform devices.
 
-Infracfg on mt7988 supports reset controller function which is
-needed to get lvts thermal working.
+I'd still like to see how this can be extended to handle BT power up,
+having a single entity driving both of the BT and WiFI.
 
-Patches are based on clk-next due to recently added mt7988 clock driver:
-https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git
+The device tree changes behave in exactly the opposite way: they
+define regulators for the WiFi device, while the WiFi is not being
+powered by these regulators. Both WiFi and BT are powered by the PMU,
+which in turn consumes all specified regulators.
 
-changes:
- v3:
-   - start resets on RST0 offset (LVTS is RST1)
-   - rename offset constants with MT7988 prefix (else collision with reset.h)
- v2:
-   - change value of constant to 0 from 9
-   - add missing SoB and commit-message for binding-patch
+>
+> Changes since RFC:
+> - move the pwrseq functionality out of the port driver and into PCI core
+> - add support for WCN7850 to the first pwrseq driver (and update bindings)
+> - describe the WLAN modules in sm8550-qrd and sm8650-qrd
+> - rework Kconfig options, drop the defconfig changes from the series as
+>   they are no longer needed
+> - drop the dt-binding changes for PCI vendor codes
+> - extend the DT bindings for ath11k_pci with strict property checking
+> - various minor tweaks and fixes
+>
+> Bartosz Golaszewski (7):
+>   arm64: dts: qcom: qrb5165-rb5: describe the WLAN module of QCA6390
+>   PCI: create platform devices for child OF nodes of the port node
+>   PCI: hold the rescan mutex when scanning for the first time
+>   PCI/pwrseq: add pwrseq core code
+>   dt-bindings: wireless: ath11k: describe QCA6390
+>   dt-bindings: wireless: ath11k: describe WCN7850
+>   PCI/pwrseq: add a pwrseq driver for QCA6390
+>
+> Neil Armstrong (2):
+>   arm64: dts: qcom: sm8550-qrd: add Wifi nodes
+>   arm64: dts: qcom: sm8650-qrd: add Wifi nodes
+>
+>  .../net/wireless/qcom,ath11k-pci.yaml         |  89 ++++++
+>  arch/arm64/boot/dts/qcom/qrb5165-rb5.dts      |  29 ++
+>  arch/arm64/boot/dts/qcom/sm8250.dtsi          |  10 +
+>  arch/arm64/boot/dts/qcom/sm8550-qrd.dts       |  37 +++
+>  arch/arm64/boot/dts/qcom/sm8550.dtsi          |  10 +
+>  arch/arm64/boot/dts/qcom/sm8650-qrd.dts       |  29 ++
+>  arch/arm64/boot/dts/qcom/sm8650.dtsi          |  10 +
+>  drivers/pci/Kconfig                           |   1 +
+>  drivers/pci/Makefile                          |   1 +
+>  drivers/pci/bus.c                             |   9 +-
+>  drivers/pci/probe.c                           |   2 +
+>  drivers/pci/pwrseq/Kconfig                    |  16 ++
+>  drivers/pci/pwrseq/Makefile                   |   4 +
+>  drivers/pci/pwrseq/pci-pwrseq-qca6390.c       | 267 ++++++++++++++++++
+>  drivers/pci/pwrseq/pwrseq.c                   |  82 ++++++
+>  drivers/pci/remove.c                          |   3 +-
+>  include/linux/pci-pwrseq.h                    |  24 ++
+>  17 files changed, 621 insertions(+), 2 deletions(-)
+>  create mode 100644 drivers/pci/pwrseq/Kconfig
+>  create mode 100644 drivers/pci/pwrseq/Makefile
+>  create mode 100644 drivers/pci/pwrseq/pci-pwrseq-qca6390.c
+>  create mode 100644 drivers/pci/pwrseq/pwrseq.c
+>  create mode 100644 include/linux/pci-pwrseq.h
+>
+> --
+> 2.40.1
+>
+>
 
-
-Frank Wunderlich (2):
-  dt-bindings: reset: mediatek: add MT7988 reset IDs
-  clk: mediatek: add infracfg reset controller for mt7988
-
- drivers/clk/mediatek/clk-mt7988-infracfg.c    | 23 +++++++++++++++++++
- .../reset/mediatek,mt7988-resets.h            |  6 +++++
- 2 files changed, 29 insertions(+)
 
 -- 
-2.34.1
-
+With best wishes
+Dmitry
 
