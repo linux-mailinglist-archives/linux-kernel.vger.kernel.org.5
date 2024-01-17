@@ -1,249 +1,173 @@
-Return-Path: <linux-kernel+bounces-28811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7428830347
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:09:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EB755830349
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:10:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 498F12894A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:09:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56D122887D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:10:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC10C1428D;
-	Wed, 17 Jan 2024 10:09:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B94014295;
+	Wed, 17 Jan 2024 10:09:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XQ1QSfd7"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YRIlDdlc"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E50672904;
-	Wed, 17 Jan 2024 10:09:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=134.134.136.65
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705486186; cv=fail; b=K6yeX39HROUTu9M+nzmZn507PFJfnL9MCTqXrLqrs3x0WoSN+VZR63Ij3xRjNuaO+4JEsYdGww9U4Ba2BPxEkTqpyXYG/QNjqDK1DwnbDwXN+FSLzfnNzoyqgCkpsgIQ/dztUfRT/N8BgY9rYikp+Y+rPc75abSeesJ2MMUm0Cc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705486186; c=relaxed/simple;
-	bh=BFTE0xktxBzG6Nl0Cvugp/fPxCHto0RSknsVF/TnDio=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:X-IronPort-AV:Received:Received:Received:Received:
-	 Received:ARC-Message-Signature:ARC-Authentication-Results:Received:
-	 Received:Date:From:To:CC:Subject:Message-ID:References:
-	 Content-Type:Content-Disposition:Content-Transfer-Encoding:
-	 In-Reply-To:X-ClientProxiedBy:MIME-Version:X-MS-PublicTrafficType:
-	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
-	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:
-	 X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-	 X-MS-Exchange-CrossTenant-UserPrincipalName:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-	b=na2X9crUtpJKB2NtOUc8nsG1so8JpzzP2lB0ig4JEl7EExnB2jvGXIhOAtvSK1ej+q6gtVDH2xVqxccLjVRu+4P98qG9cqHeuEaAbMK7dXQ/TQKiLdGmcEqsONTpZv0LzZwcGeOv8icr5vvPL98f+UNYS7Y50RD739MuAZUmd9U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XQ1QSfd7; arc=fail smtp.client-ip=134.134.136.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705486184; x=1737022184;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=BFTE0xktxBzG6Nl0Cvugp/fPxCHto0RSknsVF/TnDio=;
-  b=XQ1QSfd7VIGoRqmYSL7uwU4w4UNEA/UnIacCQb8AC+Nf3AIz95jUsYwW
-   gHT1uCGhs+xeo7nzmxu9qzfT/AKZnFK41ec1D8i+fFbvoSbzLQS4Tea6F
-   vtd/ZyJ7r7U4exUsz5gjQYOjmlpZcMruT7FObxwv6o5jD5BvotmnHtL6l
-   lylVdpYGugg8D+3w1x0BIU4b32wq2X1udDi5SQN5ZPXu+OiDWxor5IHQa
-   kbtzaKikdhE6ksUwJp1OZazHAT2h89juXipAcwdsYYFmlzod0yeEKkc4I
-   nelwR3W8bEBa7Yzs28OvG9FIhYpRi2lieqkMYVt4ryTJO2hO6J/Mqf+MV
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="403888786"
-X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
-   d="scan'208";a="403888786"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 02:09:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="907710590"
-X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
-   d="scan'208";a="907710590"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Jan 2024 02:09:44 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 17 Jan 2024 02:09:43 -0800
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 17 Jan 2024 02:09:42 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 17 Jan 2024 02:09:42 -0800
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.41) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 17 Jan 2024 02:09:42 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E9jbm+887DOGq2wjoa1jdN7JXME/devd67AvBwkMgT7A3vjPc+/6Z6c2lQImhBVCupfVFR0vUYsap0ArMsZTMltXI3RigBLq9mt2TDBmbWla2pjVSdSlwspkM17z2f7fU1NeEcF9ubZ/2wjSrRkFjF1uW3NFYRd2EVhQA8UOZdYXBY45PyKky4o7UJea/QfanNDZ2h2Q7LNBxJkLGBYHn+o0DTV7qZ/wlhd5rK+oHsOlt6TALQggxDLtsNdXFl4do364AXZf/UMboC/qEuZBDWUaCf6MALdk5uMkFjrxICYmxTCG5SuolR4DN2Y0lnBHJlEKJrQ2rZe0AML4J4WHTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=keUD9/2m99F89mcVFXAkPI71Swmarh1KyG6/rz/zJK8=;
- b=E+xRTGVIdJCDuj+Z91PbnGTmD4v5Les72G9oOOEbweDXl+JcLtVHGt0+s+qcEH8GFoAjslsNREzMWBMBQ0oOvMFgxb6rNAtesS99u4w9zgQAyAr1AtV2PquxTGDYGbylZEjW9NbFYhaDqoEP37WtMmv7NCao4ds0YlNFWbBqfnqfo0TRNVt33rfN3KPDygF6/vv6+jMbFwFuuqPNcpo4dIP0iMOKzxLVgUTQ+64MGXc9dByJFtV7Y5VG1bSXaYH/mwY8qUqhxnN+3dtLWoMPHao4xEmXiWQhtVWd/ysgZyFzlIxUCfuOw2mZx0gFIFEtF/g/DFFMvpRzY0aGYUlZ8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN0PR11MB6231.namprd11.prod.outlook.com (2603:10b6:208:3c4::15)
- by CO6PR11MB5585.namprd11.prod.outlook.com (2603:10b6:5:356::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.23; Wed, 17 Jan
- 2024 10:09:35 +0000
-Received: from MN0PR11MB6231.namprd11.prod.outlook.com
- ([fe80::c554:bc40:8b5c:9530]) by MN0PR11MB6231.namprd11.prod.outlook.com
- ([fe80::c554:bc40:8b5c:9530%4]) with mapi id 15.20.7159.013; Wed, 17 Jan 2024
- 10:09:34 +0000
-Date: Wed, 17 Jan 2024 11:09:27 +0100
-From: Maciej =?utf-8?Q?Wiecz=C3=B3r-Retman?= <maciej.wieczor-retman@intel.com>
-To: Reinette Chatre <reinette.chatre@intel.com>
-CC: Fenghua Yu <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
-	<ilpo.jarvinen@linux.intel.com>, <linux-kernel@vger.kernel.org>,
-	<linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH v2 1/4] selftests/resctrl: Add test groups and name L3
- CAT test L3_CAT
-Message-ID: <bhqwsfql6zsjydavi2n7fqc2gd5xg6bssgkom6dabg5hzg46z6@aah7fdfsoynj>
-References: <cover.1702392177.git.maciej.wieczor-retman@intel.com>
- <de2ea86256f0026989e6836f9e731be3667c7afe.1702392177.git.maciej.wieczor-retman@intel.com>
- <65e7aab3-ac50-442e-b559-00f2345c8a29@intel.com>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <65e7aab3-ac50-442e-b559-00f2345c8a29@intel.com>
-X-ClientProxiedBy: FR2P281CA0075.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:9a::17) To MN0PR11MB6231.namprd11.prod.outlook.com
- (2603:10b6:208:3c4::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D74CE14A97
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:09:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705486198; cv=none; b=I0V84LlfpRfR3T1QTCbjox+jjAM/IpOeOoksLNpjfhXHaQ/jDjUnmJV+dK2djnz0Us3ruwCNAAq9p5svNO3OOVSr/YpLQZh7ZmNA+VQtkRLLKm1nplMa1E6k+eBGIaiQPHMSl6HZxl82AgeA4vzfhin+13uehmhJoirBKTpUwho=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705486198; c=relaxed/simple;
+	bh=y1zpHe+bzcLVL02w3qxJowivdvo8Q+4cXta5ESxKUQo=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:References:
+	 Content-Language:From:Autocrypt:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=uDmWPES8Hm4OmdwGpciQtXRhaLaeBrTXNIBUcB0Wx7rt189wZfUOC2drgO8carvWUYu4B0CWPKQ0sVWMYJARY03Q+EZgYqPiOw5g4sekBE2QlFMJm4qC/8zRueZlH59CsFGZnGwDsbQk5w8wb7D2F5bqCH5hxyaWB7K84VwoXEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YRIlDdlc; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55969c01168so4232195a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 02:09:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705486194; x=1706090994; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=ts7Y3JMNNwHa3F11G47U7NAl+AwiK6ieVL0o+/Pa9EE=;
+        b=YRIlDdlcWaOjmtxzOeZAStawsR4EuqcEzEHGYJGVHhItKLtbnhuOSYG1ofPXsrKt0C
+         wjLOQXOLPsd8mzSaBrXWjAX/rsHGn21TG6nkyIODA5v+Ak7nYF2BXFbDAYEo8/dmdFXr
+         Og5mfkPxtZYGHWrH9aLFBUJcdCPN3go6yGbbx6oQ3aeFRPEOa9/iVuzXCMkOQkfRSoaw
+         mFBquWPuAR3rzRrjdDi45Tpb8qyowmD+1OHoktCevo6V+gZvhBqLxFsEvKb3zCdkTDTU
+         CG0r07rXbMF1C7t0xCic5puwGBnM4UofIt50kvXXjKBRmQMOQ7Rlc8nW7RkCm/RMZGfP
+         bv8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705486194; x=1706090994;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ts7Y3JMNNwHa3F11G47U7NAl+AwiK6ieVL0o+/Pa9EE=;
+        b=kbe8sety1k3vi/Y3Ed67nT2TzGRyelAMd5UxYwdKXrPr0SLnWm/uNOH09fXScl0IGX
+         g4ygq30ktgM+vnAndGzA1Az/Xn8z0+FB3xa3IKVVo7xrOYFey1vuVuFjDdV+KBR33SGg
+         0IqnHgd0ZgiSYUOVQLA31RyRzkAvwDM5Eb02vOSzmtpcDlxn2OrmJVmou7uxhcPugY6/
+         krT47VeAt/+rt65gL4WcgbJiWSU/gUajzTRg+dG9a82jbxxi3OWcG1AnJe5N31bWXsPE
+         57Wj6Vqpt3+lB/v7JF+ZfG2XAO4GnM4emYvlJA4yHYTAFtp2wvEFMOvAmBLOnFx0+FyN
+         Ai6w==
+X-Gm-Message-State: AOJu0YyPiRwbzkpcLDzA6UWX1Wi+Way+PUv7REjraLqiONbg1wvkW2sS
+	XPwNkJSyP4R1eCdwoD97+AmRI3dZVhXeIQ==
+X-Google-Smtp-Source: AGHT+IGJO65gj5PopdS5Vfk41IzfVO8BHd8uIXrYfINw2zDIUs3u/SV52wJm0aXwf+ZdeXsCEhMHIg==
+X-Received: by 2002:a17:906:a40e:b0:a2e:82db:8c32 with SMTP id l14-20020a170906a40e00b00a2e82db8c32mr583912ejz.28.1705486194171;
+        Wed, 17 Jan 2024 02:09:54 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id b21-20020a17090630d500b00a2c4c23cd12sm7570703ejb.217.2024.01.17.02.09.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Jan 2024 02:09:53 -0800 (PST)
+Message-ID: <5515759b-c7de-4373-8e71-329bfd12cfd8@linaro.org>
+Date: Wed, 17 Jan 2024 11:09:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6231:EE_|CO6PR11MB5585:EE_
-X-MS-Office365-Filtering-Correlation-Id: b5c13e91-45b0-42c0-89bc-08dc174467c4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IfIpdYahcOefTKmEONbi32I4JC8tc3xZO4wIVpK7+cUf1ZCgonUXawSe1rTEns3Qxp256Sg3XFw1NOAvA0z/HLTySItQtO+qDlwKpch84YiyCMJg91YcJSh81CtJ2xivDOqWDBb0AYhrnfPfePkROrwgldgNjwWg9lS+NRNwH8APULZqGbjWEopSK5r1IQurINKuefZRRPkwlKsMet/gKDuyTlL0tBgVXnHAsEW5zIGI+ccSAJwnT5DCv9pZSXvg1roleJa6SOroQoD0L+nEtBPRowQlV8diJdS8v8rCpZdZzaJ0XXOQDZIYZwIHJpdaefkR6Bt33bFzEy8Ndibngl0Dwu4jdGRFeFoc5oKgMp6ZQzAIVFdUG0qBPAOmtCWn5nKrzYpXwpqBVWFnnAhHfxUoQsdhuipvB5KaaXiWpQ0sv8olJyv36ElYBkkwQmioxjkTP8zfqrRzCsyD9pOmNAO1KkjzoPTdhUs6iW3sX7+e8TNUQHJL0q4qP0vnyyWaWNFAhFwyR8RqR0nln51/FxchV5EVzsBinjNcx+MEZ7WPtKFUpGAu3Z0yeCIh2YZd
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6231.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(346002)(136003)(396003)(366004)(376002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(26005)(83380400001)(38100700002)(33716001)(82960400001)(41300700001)(8936002)(8676002)(6636002)(54906003)(66476007)(66556008)(66946007)(316002)(5660300002)(2906002)(4326008)(6862004)(6666004)(478600001)(6506007)(6512007)(9686003)(53546011)(6486002)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?RxzQEhRb01UpOogcY5FdvOgSMIK0rHwYDGYa9/ARPz5eQPp0f4DayZtOYo?=
- =?iso-8859-1?Q?Rm/xTre4fukCEQUkk+/8949ij+qm0v+NRPqkNOhshlTGBSPuuT4At98a+g?=
- =?iso-8859-1?Q?p0C2FRgB9KZr92jKUEb8TMzJuJ5viXalLjGGCCnKLF/5wX+StUzEn31I3w?=
- =?iso-8859-1?Q?9SfKyWdyA3E9tBjw+tbVqrSnj8tutvCL3cM8SGQKP+2gtyrhVKqCvmRtdG?=
- =?iso-8859-1?Q?LJyRF4jjWyh63cCOvl9XFlmRNiOjE0SpAW+ZbsAhzk8NHyl9r+QQjg+vVn?=
- =?iso-8859-1?Q?kslRwfPaXm853QLvb4I+eD7gt9/jEigdINtV+WsVd3edDZgK6anmp0m9Q2?=
- =?iso-8859-1?Q?jnxJgHgn9BZfI32cUxvUxiP6CAyQQqCutYzAVYQ/r6D12TGE1rAQqmBicd?=
- =?iso-8859-1?Q?7kqJKirl/iSlvuffIbg6g2Lts+1TrfiSatBtkPi4Qhoaxjgk9EHvg8ypYU?=
- =?iso-8859-1?Q?misD3tXkphNMKVNbIBLsydIm4dTBdses913sV4r2og4pmZ8oQXImPZEfb2?=
- =?iso-8859-1?Q?H5uXxV9F3Daumcqnw9TmZZVPao59QbNVms0zgJpgyfAEtFC09J96d1g+2N?=
- =?iso-8859-1?Q?oOMCoT9tlnvA65XfghuozmQjOo5GT5xUJT7GwVElqqR6zUrYK79aJeWfrF?=
- =?iso-8859-1?Q?7F9/gRSKQtetWSmROU/8ilX+J03QiyQyW6hznCN4dy9S1E9uB4rGI4p48e?=
- =?iso-8859-1?Q?9dL9JA9YvmWOy7hbn4zrkiPEN+S6HGpl20jlgtdW6vL4X6BJH11EsEL73s?=
- =?iso-8859-1?Q?I6epFLxD10uzArpT685Dnuot1zFSVLnPJL6rvAizDGHsToQIX+T7/6r8r9?=
- =?iso-8859-1?Q?k7RnyebsVDdgenKR1qeG9neuRp1GK37Oc5WMgi38lHpv3/2Ylsb2DDUUE0?=
- =?iso-8859-1?Q?OrFVDQCzHSZsRVZZcT4v8JtJ4GXw0+6blJPiA+ZqDxBsktcNie9MtaJ4vh?=
- =?iso-8859-1?Q?fhfVu13ETCDR8F2HybO51YNToLaupMNe27nQEDZmzBkOivYlacZNHTcfJo?=
- =?iso-8859-1?Q?y/8F7peSp1sSG6j0em9X3M+h10khBbu7CdwC/paCbAdVJvpSRof7oKMiUa?=
- =?iso-8859-1?Q?92Gzrv5MkM7Gb4k6BMzYkljM8jr97t9iF3t5kqLu1Fqt+c2TABoAa6vFha?=
- =?iso-8859-1?Q?qB7oITemLhAjBeSNyD9emohMIeAtBrtez1pOd93LddhuUTSXuAUEbIvx8O?=
- =?iso-8859-1?Q?hqoFR5HXaRs0zF5JLZ7wPbg3yV75vnxV03kVPfz+hUgSs/Y/dLFwa6sWMp?=
- =?iso-8859-1?Q?XApQqtDdWXf9K1H//mL6pmf+o1z/kKsKuZgWYWSDhVtVzmeqTINAZvS80H?=
- =?iso-8859-1?Q?SYdXvR9CbjCfnEVgsQaPF+OzUZananN6YJ5ZKVgkvpkyRSGU+XEdyOKfKo?=
- =?iso-8859-1?Q?jWG8zoyFNTKFLSi8Z5XpkCmM4gAcUBBBhyYYuzhTbNUSqBXjcEb++tmy3K?=
- =?iso-8859-1?Q?H1odLUDOSHTs1jgJYs547ngB1KkRdfFdjJP/xTv/hZum4d5KJ1SwlYGW7R?=
- =?iso-8859-1?Q?XP68skdScwkXJ7Ve+pVYG3qXENQx2sdcf0qLl/Tr8umDtW76kNOzG4YDlP?=
- =?iso-8859-1?Q?TeiVf5Vj992GRG/122HS0x6l/NmJabaaS9yxzUmCWofy7QLf1wmQ9fNyuG?=
- =?iso-8859-1?Q?bzVMc9aMmMdOJO+K0p5B3BqnmxUlUYC9A6Axwvysq/ZzAEGUF8uIX82X+x?=
- =?iso-8859-1?Q?IUtHyK22IoZDYMPOcAU=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b5c13e91-45b0-42c0-89bc-08dc174467c4
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6231.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2024 10:09:34.8094
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cllBDbjG2j+mcTImWxvkjEJ+FUX0wAdjCSTBVKewab6vO4Om+cMhMQj+FTYcdmFT2vJ1z3EThudE/ioI1Hcn6F8BLE0zbfwhKvFBC0SsjOU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR11MB5585
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/3] dt-bindings: gpio: vf610: add optional 'ngpios'
+To: Hector Palacios <hector.palacios@digi.com>, linus.walleij@linaro.org,
+ brgl@bgdev.pl, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org
+Cc: andy@kernel.org, conor+dt@kernel.org, shawnguo@kernel.org,
+ s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+ linux-imx@nxp.com, stefan@agner.ch, linux-gpio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240117094453.100518-1-hector.palacios@digi.com>
+ <20240117094453.100518-3-hector.palacios@digi.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240117094453.100518-3-hector.palacios@digi.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi,
+On 17/01/2024 10:44, Hector Palacios wrote:
+> Some SoCs, such as i.MX93, don't have all 32 pins available
+> per port. Allow optional generic 'ngpios' property to be
+> specified from the device tree and default to 32 if the
+> property does not exist.
+> 
+> Signed-off-by: Hector Palacios <hector.palacios@digi.com>
 
-On 2024-01-08 at 14:31:50 -0800, Reinette Chatre wrote:
->Hi Maciej,
->
->On 12/12/2023 6:52 AM, Maciej Wieczor-Retman wrote:
->> From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
->> 
->> To select test to run -t parameter can be used. However, -t cat
->> currently maps to L3 CAT test which is confusing after more CAT related
->> tests are added.
->> 
->> Allow selecting tests as groups and call L3 CAT test "L3_CAT", "CAT"
->> group will enable all CAT related tests.
->> 
->> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
->> Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
->> ---
->> Changelog v2:
->> - Move this patch from Ilpo's series here (Ilpo).
->> 
->>  tools/testing/selftests/resctrl/cat_test.c      |  3 ++-
->>  tools/testing/selftests/resctrl/resctrl.h       |  2 ++
->>  tools/testing/selftests/resctrl/resctrl_tests.c | 16 +++++++++++-----
->>  3 files changed, 15 insertions(+), 6 deletions(-)
->> 
->> diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
->> index 24af8310288a..39fc9303b8e8 100644
->> --- a/tools/testing/selftests/resctrl/cat_test.c
->> +++ b/tools/testing/selftests/resctrl/cat_test.c
->> @@ -295,7 +295,8 @@ static int cat_run_test(const struct resctrl_test *test, const struct user_param
->>  }
->>  
->>  struct resctrl_test l3_cat_test = {
->> -	.name = "CAT",
->> +	.name = "L3_CAT",
->> +	.group = "CAT",
->>  	.resource = "L3",
->>  	.feature_check = test_resource_feature_check,
->>  	.run_test = cat_run_test,
->> diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
->> index c54efcf1412a..739e16d08a7b 100644
->> --- a/tools/testing/selftests/resctrl/resctrl.h
->> +++ b/tools/testing/selftests/resctrl/resctrl.h
->> @@ -65,6 +65,7 @@ struct user_params {
->>  /*
->>   * resctrl_test:	resctrl test definition
->>   * @name:		Test name
->> + * @group:		Test group (e.g., L2 and L3 CAT test belong to CAT group), can be NULL
->
->Could you please remove references to L2 CAT test that is not available yet? A
->detailed description of what a test group is will be helpful.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Sure, thanks for catching this!
+Please give maintainers chance to review your patches... one patchset
+per day. During merge window maybe rarer.
 
->Reinette
->
 
--- 
-Kind regards
-Maciej Wieczór-Retman
+---
+
+This is an automated instruction, just in case, because many review tags
+are being ignored. If you know the process, you can skip it (please do
+not feel offended by me posting it here - no bad intentions intended).
+If you do not know the process, here is a short explanation:
+
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions, under or above your Signed-off-by tag. Tag is "received", when
+provided in a message replied to you on the mailing list. Tools like b4
+can help here. However, there's no need to repost patches *only* to add
+the tags. The upstream maintainer will do that for tags received on the
+version they apply.
+
+https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+
+Best regards,
+Krzysztof
+
 
