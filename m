@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-28993-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1781A830620
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:53:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 395218305F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:49:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D85C1C23669
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:53:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E104D1C22CF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:49:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 998A01EB22;
-	Wed, 17 Jan 2024 12:52:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=swemel.ru header.i=@swemel.ru header.b="q4Pb8xR2"
-Received: from mx.swemel.ru (mx.swemel.ru [95.143.211.150])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DC0A1EA66
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 12:52:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.143.211.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33B3F1EA74;
+	Wed, 17 Jan 2024 12:49:39 +0000 (UTC)
+Received: from smtpfb1-g21.free.fr (smtpfb1-g21.free.fr [212.27.42.9])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAD0B1DFF2;
+	Wed, 17 Jan 2024 12:49:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705495933; cv=none; b=J+hVzfwxbskfKK65EstkTY4YZaEpqtg+w/1i7T1lDYiMjRrsozO1NRZMF9Jgm2LCoRhikM/X2xwoS+mx1vcdRNl7096fRcLaBpr/BZmQidk4wkJ7lcd4w9SpykwtpZMDWj5hjPaArP8dD3VFSFmsneAR40kVqtec4gUaSfU3tkE=
+	t=1705495778; cv=none; b=E6TkaBfyOj2OucPdrQMDCgvfRUkoNh0o9H36ArgJT3RYFUvYDSJammDH0OiqoAxZ5XgcWv0PtFWrF9+uDZj8VFcgeULgxdSKi7EpHNCQGTpo/7aVsIjz3fJNhbTpE/RJ34FR41BeYPOjciV0KCXoAjetlJjGEh4e1dCp1koUk1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705495933; c=relaxed/simple;
-	bh=/mrGijzcsXN5iPj8NAqokoHh+7OsAXjyewzktejtc+s=;
-	h=From:DKIM-Signature:To:Cc:Subject:Date:Message-Id:MIME-Version:
-	 Content-Transfer-Encoding; b=q8wUScNUrmF1QXIs6QD1Bu4DaK33I4KEuKVfGBvG1GQRx7BXOBrhwTCUWvDJiQoZeUNsubAyJ5Q8uCgeX9kokrwuUC+9nq0YmbTEfE1pfELqH8wwb52jIXhF6KcKToqKL2w/8uQYiS+7xH3stooBLbYs3VKiQ/SJMw7KZCVoKns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=swemel.ru; spf=pass smtp.mailfrom=swemel.ru; dkim=pass (1024-bit key) header.d=swemel.ru header.i=@swemel.ru header.b=q4Pb8xR2; arc=none smtp.client-ip=95.143.211.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=swemel.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=swemel.ru
-From: Denis Arefev <arefev@swemel.ru>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=swemel.ru; s=mail;
-	t=1705495349;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=pGI0D05eJ+uxsZQGv4OCXwlgzFlgbXKFeDQnZN4BBMo=;
-	b=q4Pb8xR2Le7s8FICVd4sbQMgz/ILE1f1a0DMVmUVvDHP0zXmGR6NPKShbe8iKxeBTxYBnH
-	m46gkMtMTvSER9wjKevQIn83VBQJxErZmdpuLOLtHyID12dGWwrig48GfnBRwMh5N8vkcg
-	jM1ZYPwcuVd8wmhkS+TjDmGKgjcmKFg=
-To: Ian Abbott <abbotti@mev.co.uk>
-Cc: H Hartley Sweeten <hsweeten@visionengravers.com>,
-	linux-kernel@vger.kernel.org (open list),
-	lvc-project@linuxtesting.org
-Subject: [PATCH] comedi: drivers: ni_tio: Fix arithmetic expression overflow
-Date: Wed, 17 Jan 2024 15:42:29 +0300
-Message-Id: <20240117124229.37455-1-arefev@swemel.ru>
+	s=arc-20240116; t=1705495778; c=relaxed/simple;
+	bh=yAVW7ObbCfhbkCbmZjm1w55Iw1QPKOCJ27ZxRHwf7e4=;
+	h=Received:Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
+	 MIME-Version:Content-Transfer-Encoding; b=M8uz3yosHpj8StnMgFawHPweZ4bg/Ac33WAbJwGrpDQksey6bpn/yXULcBXT4Nd9qEdQtzMJ4Kljk8DHN85wk8PRx6z3eauzfD/ih6/+7yUhKT5ACzLCjRlSNPYTCCjS6fE+CU4lHe5t7LOVxpanR9eBxze87mPQnY9Q4IhGlqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wifirst.fr; spf=fail smtp.mailfrom=wifirst.fr; arc=none smtp.client-ip=212.27.42.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wifirst.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=wifirst.fr
+Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
+	by smtpfb1-g21.free.fr (Postfix) with ESMTP id 9BBFBDF8932;
+	Wed, 17 Jan 2024 13:43:16 +0100 (CET)
+Received: from localhost.localdomain (unknown [IPv6:2a01:e0a:aa1:d2f0:f6b3:db6:44c:eeef])
+	(Authenticated sender: isaias57@free.fr)
+	by smtp6-g21.free.fr (Postfix) with ESMTPSA id B2AF778034D;
+	Wed, 17 Jan 2024 13:42:57 +0100 (CET)
+From: Jean Thomas <jean.thomas@wifirst.fr>
+To: sean.wang@kernel.org,
+	linus.walleij@linaro.org,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	linux-mediatek@lists.infradead.org,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Cc: Jean Thomas <jean.thomas@wifirst.fr>
+Subject: [PATCH 1/2] pinctrl: mediatek: mt7981: add additional uart group
+Date: Wed, 17 Jan 2024 13:42:33 +0100
+Message-Id: <20240117124234.3137050-1-jean.thomas@wifirst.fr>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,31 +55,47 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The value of an arithmetic expression period_ns * 1000 is subject
-to overflow due to a failure to cast operands to a larger data
-type before performing arithmetic
+Add uart1_3 (pins 26, 27) group to the pinctrl driver for the
+MediaTek MT7981 SoC.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
-
-Signed-off-by: Denis Arefev <arefev@swemel.ru>
+Signed-off-by: Jean Thomas <jean.thomas@wifirst.fr>
 ---
- drivers/comedi/drivers/ni_tio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pinctrl/mediatek/pinctrl-mt7981.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/comedi/drivers/ni_tio.c b/drivers/comedi/drivers/ni_tio.c
-index da6826d77e60..acc914903c70 100644
---- a/drivers/comedi/drivers/ni_tio.c
-+++ b/drivers/comedi/drivers/ni_tio.c
-@@ -800,7 +800,7 @@ static int ni_tio_set_clock_src(struct ni_gpct *counter,
- 				GI_PRESCALE_X2(counter_dev->variant) |
- 				GI_PRESCALE_X8(counter_dev->variant), bits);
- 	}
--	counter->clock_period_ps = period_ns * 1000;
-+	counter->clock_period_ps = period_ns * 1000UL;
- 	ni_tio_set_sync_mode(counter);
- 	return 0;
- }
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt7981.c b/drivers/pinctrl/mediatek/pinctrl-mt7981.c
+index 7e59a4407859..ca667ed25a4d 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt7981.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt7981.c
+@@ -737,6 +737,9 @@ static int mt7981_uart1_1_funcs[] = { 2, 2, 2, 2, };
+ static int mt7981_uart1_2_pins[] = { 9, 10, };
+ static int mt7981_uart1_2_funcs[] = { 2, 2, };
+ 
++static int mt7981_uart1_3_pins[] = { 26, 27, };
++static int mt7981_uart1_3_funcs[] = { 2, 2, };
++
+ /* UART2 */
+ static int mt7981_uart2_1_pins[] = { 22, 23, 24, 25, };
+ static int mt7981_uart2_1_funcs[] = { 3, 3, 3, 3, };
+@@ -871,6 +874,8 @@ static const struct group_desc mt7981_groups[] = {
+ 	PINCTRL_PIN_GROUP("uart1_1", mt7981_uart1_1),
+ 	/* @GPIO(9,10): UART1(2) */
+ 	PINCTRL_PIN_GROUP("uart1_2", mt7981_uart1_2),
++	/* @GPIO(26,27): UART1(2) */
++	PINCTRL_PIN_GROUP("uart1_3", mt7981_uart1_3),
+ 	/* @GPIO(22,25): UART1(3) */
+ 	PINCTRL_PIN_GROUP("uart2_1", mt7981_uart2_1),
+ 	/* @GPIO(22,24) PTA_EXT(4) */
+@@ -933,7 +938,7 @@ static const struct group_desc mt7981_groups[] = {
+ static const char *mt7981_wa_aice_groups[] = { "wa_aice1", "wa_aice2", "wm_aice1_1",
+ 	"wa_aice3", "wm_aice1_2", };
+ static const char *mt7981_uart_groups[] = { "net_wo0_uart_txd_0", "net_wo0_uart_txd_1",
+-	"net_wo0_uart_txd_2", "uart0", "uart1_0", "uart1_1", "uart1_2", "uart2_0",
++	"net_wo0_uart_txd_2", "uart0", "uart1_0", "uart1_1", "uart1_2", "uart1_3", "uart2_0",
+ 	"uart2_0_tx_rx", "uart2_1", "wm_uart_0", "wm_aurt_1", "wm_aurt_2", };
+ static const char *mt7981_dfd_groups[] = { "dfd", "dfd_ntrst", };
+ static const char *mt7981_wdt_groups[] = { "watchdog", "watchdog1", };
 -- 
-2.25.1
+2.39.2
 
 
