@@ -1,338 +1,297 @@
-Return-Path: <linux-kernel+bounces-29371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16BA6830D5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:39:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76659830D5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:41:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 723D8B20B62
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:39:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D94D21F2531E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:41:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 294FD24A0E;
-	Wed, 17 Jan 2024 19:39:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D96C6249FF;
+	Wed, 17 Jan 2024 19:41:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A5RrOCHq"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="MYIN5P68"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4999024200;
-	Wed, 17 Jan 2024 19:39:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E54124200;
+	Wed, 17 Jan 2024 19:41:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705520373; cv=none; b=aBaaqjt7X2H/t9AzkP2bTzVnzwiJ/d87OhRt45Nc7MoFyeeUhZ0FpXgkKZnepAyk1qWMj32TFkqcnfXje9eP2+IRabnvSxJsRgUGukLbsmok3U/LbX8SENrR5FqCMIrHuMvUlO2fvcIwkJ4xZUSSCMazJlSeXya07ezp7UiRUBE=
+	t=1705520471; cv=none; b=E4As0DBbWDlEevFoIZlSavw/XddP8lfjF3OTo94CbkNsSv7Hu9v1twIxkltUeIIiOsyosYNPbRfaJcHvLqStkEcsleVydOQgDBYgV9svR6OdE5Gor8V10wQDOqlfhTkAP6Z5b6Er/5Sdu01T/Mnf6Nf0EvUS9U4zVztkIYfYzTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705520373; c=relaxed/simple;
-	bh=xUW41l+F6yt3WPTcJFmF0WlaMMfrGbYszW2gpGLTF7c=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 To:Cc:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=MNLEzl73a6xofdvX88jOZW0OPQomJ+vwAoi/OnQw0YIwJHr2Rx3Sr1YEkZY7ItshZxRzqNCfw4rFHVAfCkiqYY2ZWFQkbw7WONwRfHIa9Jbe7ZdL2FCwhjgjAHgaYByWMKab4FThRbe0B8xC59gDG0e4SukC6NM54I50HgwP2gk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A5RrOCHq; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e86a9fc4bso20710575e9.2;
-        Wed, 17 Jan 2024 11:39:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705520369; x=1706125169; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QeuTafQX40/bhE79jlyyxN484RLluokaSda2KNrJ6KI=;
-        b=A5RrOCHqwbhK1AVWjGXTAZruAEXNsic6HA4NbDW9qbxr2arqlruaTzbYaf/HJFI5PW
-         iazMMoxeUwYldJauBXtXSnapYe+Ha2G/8jxjyII9/EF4IoT/HOJXZI6/Lew5uIWqyLBK
-         lI0njmR4Iv7RlfwH7NQi2UtWnAuR5WlrTTu5NLRw7GSUMut5xhtEk+z5RgbnSFtmEsDo
-         gy1ri7SyF+Zb5HUV66KBmpEzU9BC91nZogtC/zpvsfRW97or0bI4nSlkkOH9LerrQPEW
-         OM8eGw2+WvxEXeCEG8IBi7wbPOjB9k+FprT6kB03aUx5t+9oCLRTuhE4QSELxP8UaN9W
-         qudw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705520369; x=1706125169;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QeuTafQX40/bhE79jlyyxN484RLluokaSda2KNrJ6KI=;
-        b=q6Kkt8vXWqpXSuBhRSzbxsfKCSGUPUg7NEnmxDzQpw4Jy549ljoeWOYqXlXveOvebM
-         f9oMZ2Ts0v2f7fNI6MALVa+aQBA44UUGs/qh8e+G9AOYR0Dncm7sLeBwQCVvL5bkphXz
-         SrFOnzncwfGMTlW9nxjbuk0G1qORxmA95YvwBT3s0YGq46GoiozFokwS8uwGuodniI3S
-         x+Pb9Woybsx6OxJYE3tlYxpQI1A5IysHgaHySC0bG/ubJZSj45SLKVZ0TXwmfKOsrh+j
-         zTWcqOly4+9PAV+G0i63++Zyv8q1Qby+//uhBBZOay/by4IBoc7NwTuyihMM7fwLoTWS
-         e11g==
-X-Gm-Message-State: AOJu0YxmHi9K2HdAaYVylU85TAKoL4TEURo1GRLsYtNy0q1nLI0CBWmy
-	OgUpuP/yhqVJRYQSva24MHc=
-X-Google-Smtp-Source: AGHT+IGQ/vgsgMyVvJJZEFczZQRj1bkOBQgeDCIkSAsQdn9ihyhpR1zcD1iO3JBmHov+nZGsYZZC1Q==
-X-Received: by 2002:a05:600c:1392:b0:40e:479d:ce47 with SMTP id u18-20020a05600c139200b0040e479dce47mr4893168wmf.181.1705520369096;
-        Wed, 17 Jan 2024 11:39:29 -0800 (PST)
-Received: from [192.168.0.3] ([69.6.8.124])
-        by smtp.gmail.com with ESMTPSA id y8-20020a5d4ac8000000b00337af95c1d2sm2325448wrs.14.2024.01.17.11.39.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jan 2024 11:39:28 -0800 (PST)
-Message-ID: <c81af808-d836-4054-b596-4a53b05f4c78@gmail.com>
-Date: Wed, 17 Jan 2024 21:39:25 +0200
+	s=arc-20240116; t=1705520471; c=relaxed/simple;
+	bh=bYuD2E9L5kAIqPygLO0nnJJ+T5lKV5RVt+n4QmW2WbA=;
+	h=DKIM-Signature:Received:Message-ID:Subject:From:To:Cc:Date:
+	 In-Reply-To:References:Autocrypt:Content-Type:
+	 Content-Transfer-Encoding:User-Agent:MIME-Version; b=G5Yjk8WdJDYoABzZIHfuchFrw6v2ngeorS+OFlRBKGviMxMkk4bYHiO3cXZS8FXjn1EeHbseQqwbRMxegqZKLEUk18dqzosrh82mTRTvu/zamcCzKzSUAlqqeGV92S/FPyaelGlwnyR5x4tEQkhFOt1YItp0uvez4sbk9KpQzBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=MYIN5P68; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705520468;
+	bh=bYuD2E9L5kAIqPygLO0nnJJ+T5lKV5RVt+n4QmW2WbA=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=MYIN5P68u86ENoTZ3LMrNandBbngqfcpeXIJMf8hajev/wcpmbaK0jApvRbk9irum
+	 U8k2i5zYfNRkciCxg+mk94vysMtq7//t+1euECVUeim2tMJkBHfkgwOcf/Qz+q8gL6
+	 4BWAH2Xis5rLgUxTwLRvADhYY76fDsffxP6ahjeBbBImISIdKbkx8H2DPkhwRx6FRJ
+	 KwRhDydR3v8AG8TPfj/iCURcq/3t/EgURcE28bwjxVwBdLN2aO5hINzaNcjHzuYl7M
+	 lewrkoOqoID2U2SGhBrjopnGL97IVADa6fp7qYwrDZA0Wd5Yf/RnBk9TJInyTzHEs5
+	 irGY6n269wNpw==
+Received: from nicolas-tpx395.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: nicolas)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 3E9E23781FC7;
+	Wed, 17 Jan 2024 19:41:07 +0000 (UTC)
+Message-ID: <cc3944167e6b98470befd575520adb50cb8a45fa.camel@collabora.com>
+Subject: Re: [RCF 1/2] media: videodev2: Add V4L2_FMT_FLAG_ALL_FORMATS flag
+From: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+To: Benjamin Gaignard <benjamin.gaignard@collabora.com>, mchehab@kernel.org,
+  p.zabel@pengutronix.de, hverkuil-cisco@xs4all.nl
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-rockchip@lists.infradead.org, kernel@collabora.com
+Date: Wed, 17 Jan 2024 14:41:03 -0500
+In-Reply-To: <20240111160721.50020-2-benjamin.gaignard@collabora.com>
+References: <20240111160721.50020-1-benjamin.gaignard@collabora.com>
+	 <20240111160721.50020-2-benjamin.gaignard@collabora.com>
+Autocrypt: addr=nicolas.dufresne@collabora.com; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next PATCH RFC v3 1/8] dt-bindings: net: document ethernet
- PHY package nodes
-Content-Language: en-US
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Robert Marko <robert.marko@sartura.hr>, Andrew Lunn <andrew@lunn.ch>,
- Vladimir Oltean <olteanv@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Luo Jie <quic_luoj@quicinc.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Heiner Kallweit <hkallweit1@gmail.com>, Russell King
- <linux@armlinux.org.uk>, Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20231126015346.25208-1-ansuelsmth@gmail.com>
- <20231126015346.25208-2-ansuelsmth@gmail.com>
- <0926ea46-1ce4-4118-a04c-b6badc0b9e15@gmail.com>
- <659aedb1.df0a0220.35691.1853@mx.google.com>
- <0f4ec2ff-4ef7-4667-adef-d065cfbc0a91@gmail.com>
- <65a7210f.df0a0220.d10b2.1162@mx.google.com>
-From: Sergey Ryazanov <ryazanov.s.a@gmail.com>
-In-Reply-To: <65a7210f.df0a0220.d10b2.1162@mx.google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hi Christian,
+Le jeudi 11 janvier 2024 =C3=A0 17:07 +0100, Benjamin Gaignard a =C3=A9crit=
+=C2=A0:
+> Add new flag to allow enumerate all pixels formats when
+> calling VIDIOC_ENUM_FMT ioctl.
+> When this flag is set drivers must ignore the configuration
+> and return the hardware supported pixel formats for the specified queue.
+> This will permit to discover which pixels formats are supported
+> without setting codec-specific information so userland can more easily
+> knows if the driver suit well to what it needs.
+> The main target are stateless decoders so update the documentation
+> about how use this flag.
+>=20
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+>  .../userspace-api/media/v4l/dev-stateless-decoder.rst         | 3 +++
+>  Documentation/userspace-api/media/v4l/vidioc-enum-fmt.rst     | 4 ++++
+>  Documentation/userspace-api/media/videodev2.h.rst.exceptions  | 1 +
+>  drivers/media/v4l2-core/v4l2-ioctl.c                          | 2 +-
+>  include/uapi/linux/videodev2.h                                | 1 +
+>  5 files changed, 10 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/userspace-api/media/v4l/dev-stateless-decoder.=
+rst b/Documentation/userspace-api/media/v4l/dev-stateless-decoder.rst
+> index 35ed05f2695e..b7b650f1a18f 100644
+> --- a/Documentation/userspace-api/media/v4l/dev-stateless-decoder.rst
+> +++ b/Documentation/userspace-api/media/v4l/dev-stateless-decoder.rst
+> @@ -58,6 +58,9 @@ Querying capabilities
+>       default values for these controls being used, and a returned set of=
+ formats
+>       that may not be usable for the media the client is trying to decode=
+.
+> =20
+> +   * If ``V4L2_FMT_FLAG_ALL_FORMATS`` flag is set the driver must enumer=
+ate
+> +     all the supported formats without taking care of codec-dependent co=
+ntrols.
+> +
+>  3. The client may use :c:func:`VIDIOC_ENUM_FRAMESIZES` to detect support=
+ed
+>     resolutions for a given format, passing desired pixel format in
+>     :c:type:`v4l2_frmsizeenum`'s ``pixel_format``.
+> diff --git a/Documentation/userspace-api/media/v4l/vidioc-enum-fmt.rst b/=
+Documentation/userspace-api/media/v4l/vidioc-enum-fmt.rst
+> index 000c154b0f98..db8bc8e29a91 100644
+> --- a/Documentation/userspace-api/media/v4l/vidioc-enum-fmt.rst
+> +++ b/Documentation/userspace-api/media/v4l/vidioc-enum-fmt.rst
+> @@ -227,6 +227,10 @@ the ``mbus_code`` field is handled differently:
+>  	The application can ask to configure the quantization of the capture
+>  	device when calling the :ref:`VIDIOC_S_FMT <VIDIOC_G_FMT>` ioctl with
+>  	:ref:`V4L2_PIX_FMT_FLAG_SET_CSC <v4l2-pix-fmt-flag-set-csc>` set.
+> +    * - ``V4L2_FMT_FLAG_ALL_FORMATS``
+> +      - 0x0200
+> +      - Set by userland application to enumerate all possible pixels for=
+mats
+> +        without taking care of the current configuration.
 
-On 17.01.2024 02:36, Christian Marangi wrote:
-> On Sun, Jan 07, 2024 at 11:49:12PM +0200, Sergey Ryazanov wrote:
->> Hi Christian,
->>
->> On 07.01.2024 20:30, Christian Marangi wrote:
->>> On Sun, Jan 07, 2024 at 08:00:33PM +0200, Sergey Ryazanov wrote:
->>>> On 26.11.2023 03:53, Christian Marangi wrote:
->>>>> Document ethernet PHY package nodes used to describe PHY shipped in
->>>>> bundle of 4-5 PHY. The special node describe a container of PHY that
->>>>> share common properties. This is a generic schema and PHY package
->>>>> should create specialized version with the required additional shared
->>>>> properties.
->>>>>
->>>>> Example are PHY package that have some regs only in one PHY of the
->>>>> package and will affect every other PHY in the package, for example
->>>>> related to PHY interface mode calibration or global PHY mode selection.
->>>>>
->>>>> The PHY package node MUST declare the base address used by the PHY driver
->>>>> for global configuration by calculating the offsets of the global PHY
->>>>> based on the base address of the PHY package and declare the
->>>>> "ethrnet-phy-package" compatible.
->>>>>
->>>>> Each reg of the PHY defined in the PHY package node is absolute and will
->>>>> reference the real address of the PHY on the bus.
->>>>>
->>>>> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
->>>>> ---
->>>>>     .../bindings/net/ethernet-phy-package.yaml    | 75 +++++++++++++++++++
->>>>>     1 file changed, 75 insertions(+)
->>>>>     create mode 100644 Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
->>>>>
->>>>> diff --git a/Documentation/devicetree/bindings/net/ethernet-phy-package.yaml b/Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
->>>>> new file mode 100644
->>>>> index 000000000000..244d4bc29164
->>>>> --- /dev/null
->>>>> +++ b/Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
->>>>> @@ -0,0 +1,75 @@
->>>>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->>>>> +%YAML 1.2
->>>>> +---
->>>>> +$id: http://devicetree.org/schemas/net/ethernet-phy-package.yaml#
->>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>>> +
->>>>> +title: Ethernet PHY Package Common Properties
->>>>> +
->>>>> +maintainers:
->>>>> +  - Christian Marangi <ansuelsmth@gmail.com>
->>>>> +
->>>>> +description:
->>>>> +  This schema describe PHY package as simple container for
->>>>> +  a bundle of PHYs that share the same properties and
->>>>> +  contains the PHYs of the package themself.
->>>>> +
->>>>> +  Each reg of the PHYs defined in the PHY package node is
->>>>> +  absolute and describe the real address of the PHY on the bus.
->>>>> +
->>>>> +properties:
->>>>> +  $nodename:
->>>>> +    pattern: "^ethernet-phy-package(@[a-f0-9]+)?$"
->>>>> +
->>>>> +  compatible:
->>>>> +    const: ethernet-phy-package
->>>>> +
->>>>> +  reg:
->>>>> +    minimum: 0
->>>>> +    maximum: 31
->>>>> +    description:
->>>>> +      The base ID number for the PHY package.
->>>>> +      Commonly the ID of the first PHY in the PHY package.
->>>>> +
->>>>> +      Some PHY in the PHY package might be not defined but
->>>>> +      still exist on the device (just not attached to anything).
->>>>> +      The reg defined in the PHY package node might differ and
->>>>> +      the related PHY might be not defined.
->>>>> +
->>>>> +  '#address-cells':
->>>>> +    const: 1
->>>>> +
->>>>> +  '#size-cells':
->>>>> +    const: 0
->>>>> +
->>>>> +patternProperties:
->>>>> +  ^ethernet-phy(@[a-f0-9]+)?$:
->>>>> +    $ref: ethernet-phy.yaml#
->>>>> +
->>>>> +required:
->>>>> +  - compatible
->>>>> +  - reg
->>>>> +
->>>>> +additionalProperties: true
->>>>> +
->>>>> +examples:
->>>>> +  - |
->>>>> +    mdio {
->>>>> +        #address-cells = <1>;
->>>>> +        #size-cells = <0>;
->>>>> +
->>>>> +        ethernet-phy-package@16 {
->>>>> +            #address-cells = <1>;
->>>>> +            #size-cells = <0>;
->>>>> +            compatible = "ethernet-phy-package";
->>>>> +            reg = <0x16>;
->>>>> +
->>>>> +            ethernet-phy@16 {
->>>>> +              reg = <0x16>;
->>>>> +            };
->>>>> +
->>>>> +            phy4: ethernet-phy@1a {
->>>>> +              reg = <0x1a>;
->>>>> +            };
->>>>> +        };
->>>>> +    };
->>>>
->>>> So, we ended up on a design where we use the predefined compatible string
->>>> 'ethernet-phy-package' to recognize a phy package inside the
->>>> of_mdiobus_register() function. During the V1 discussion, Vladimir came up
->>>> with the idea of 'ranges' property usage [1]. Can we use 'ranges' to
->>>> recognize a phy package in of_mdiobus_register()? IMHO this will give us a
->>>> clear DT solution. I mean 'ranges' clearly indicates that child nodes are in
->>>> the same address range as the parent node. Also we can list all child
->>>> addresses in 'reg' to mark them occupied.
->>>>
->>>>     mdio {
->>>>       ...
->>>>
->>>>       ethernet-phy-package@16 {
->>>>         compatible = "qcom,qca8075";
->>>>         reg = <0x16>, <0x17>, <0x18>, <0x19>, <0x1a>;
->>>>         ranges;
->>>>         ...
->>>>
->>>>         ethernet-phy@16 {
->>>>           reg = <0x16>;
->>>>         };
->>>>
->>>>         ethernet-phy@1a {
->>>>           reg = <0x1a>;
->>>>         };
->>>>       };
->>>>     };
->>>>
->>>> Did you find some issues with the 'ranges' conception?
->>>
->>> Nope it's ok but it might pose some confusion with the idea that the
->>> very first element MUST be THE STARTING ADDR of the PHY package. (people
->>> might think that it's just the list of the PHYs in the package and
->>> remove the hardware unconnected ones... but that would be fault of who
->>> write the DT anyway.)
->>
->> Make sense. I do not insist on addresses listing. Mainly I'm thinking of a
->> proper way to show that child nodes are accessible directly on the parent
->> bus, and introducing the special compatibility string, while we already have
->> the 'ranges' property.
->>
->> But it's good to know Rob's opinion on whether it is conceptually right to
->> use 'ranges' here.
->>
-> 
-> I wonder if something like this might make sense... Thing is that with
-> the ranges property we would have the define the address in the PHY
-> Package node as offsets...
-> 
-> An example would be
-> 
->      mdio {
->          #address-cells = <1>;
->          #size-cells = <0>;
-> 
->          ethernet-phy-package@10 {
->              #address-cells = <1>;
->              #size-cells = <0>;
->              compatible = "qcom,qca807x-package";
->              reg = <0x10>;
->              ranges = <0x0 0x10 0x5>;
-> 
->              qcom,package-mode = "qsgmii";
-> 
->              ethernet-phy@0 {
->                  reg = <0>;
-> 
->                  leds {
-> 
-> 		...
-> 
-> With a PHY Package at 0x10, that span 5 address and the child starts at
-> 0x0 offset.
-> 
-> This way we would be very precise on describing the amount of address
-> used by the PHY Package without having to define the PHY not actually
-> connected.
-> 
-> PHY needs to be at an offset to make sense of the ranges first element
-> property (0x0). With a non offset way we would have to have something
-> like
-> 
-> ranges = <0x10 0x10 0x5>;
-> 
-> With the child and tha parent always matching.
-> 
-> (this is easy to handle in the parsing and probe as we will just
-> calculate the real address based on the base address of the PHY package
-> + offset)
+This is a bit ambiguous regarding if OUTPUT queue FMT is ignored or not. Fr=
+om
+our chat, it is ignored in this implementation. Such if I use MTK VCODEC as=
+ an
+example, using that feature would return:
 
-On one hand it makes sense and looks useful for software development. On 
-another, it looks like a violation of the main DT designing rule, when 
-DT should be used to describe that hardware properties, which can not be 
-learnt from other sources.
+- MM21
+- MT2T
+- MT2R
 
-As far as I understand this specific chip, each of embedded PHYs has its 
-own MDIO bus address and not an offset from a main common address. 
-Correct me please, if I am got it wrong.
+At high level, the use case is to find an easy way to combine the per codec
+profile information and the pixel format, since userspace can only use e.g.
+10bit capability if it knows the associated pixel formats. This implementat=
+ion
+is already useful in my opinion, I'll try and draft a GStreamer change to u=
+se
+it, as I think it will better support the idea. But it has come ceavats.
 
-> I hope Rob can give more feedback about this, is this what you were
-> thinking with the usage of ranges property?
-> 
-> (this has also the bonus point of introducing some validation in the PHY
-> core code to make sure the right amount of PHY are defined in the
-> package by checking if the number of PHY doesn't exceed the value set in
-> ranges.)
+Notably, if you had a userland that implement MT2T (VP9/AV1/HEVC) but not M=
+T2R
+(H264), it would not have an easy API to figure-out. It would still have to
+resort into enumerating formats for each possible codec and codec specific
+compound control configuration.
 
-Yep, I am also would like to hear some clarification from Rob regarding 
-acceptable 'range' property usage and may be some advice on how to 
-specify the size of occupied addresses. Rob?
+An alternative is to make this enumerate "all" for the configure OUTPUT for=
+mat.
+This increase the precision, while still allowing generic code to be used. =
+In
+pseudo code that would be like:
 
---
-Sergey
+for output formats
+  S_FMT(OUTPUT)
+
+  for ALL capture formats
+    store(format)
+
+Where right now we have do do:
+
+
+for output formats
+  S_FMT(OUTPUT)
+
+  S_CTRL(codec_specific_ctl_config_1)
+  for capture formats
+    store(format)
+
+
+  S_CTRL(codec_specific_ctl_config_n)
+  for capture format
+    store(format)
+ =20
+  ...
+
+  S_CTRL(codec_specific_ctl_config_n)
+  for capture formats
+    store(format)
+
+Where each config would demote a specific feature, like 10bit, 422, 444, fi=
+lm-
+grain (posprocessing affect output formats). The posprocessing remains a bi=
+t
+hard to figure-out in both cases though. But in practice, if I use Hantro A=
+V1
+decoder as an example, I'd get something like:
+
+  NV15_4L4
+  P010
+
+Where NV15_4L4 is not available with filmgrain filter, but P010 is always
+available. For my GStreamer use case (template caps) this wouldn't be a pro=
+blem,
+P010 is a well supported format and I strictly need a superset of the suppo=
+rted
+formats.
+
+What I'd really gain is that I don't have to do complicated enumeration log=
+ic
+per codec features.
+
+Nicolas
+
+p.s. It would be logical to update dev-stateless-decoder doc, to mention th=
+is
+enumeration option. Currently it says:
+
+
+   To enumerate the set of supported raw formats, the client calls
+   VIDIOC_ENUM_FMT() on the CAPTURE queue.
+  =20
+      *    The driver must return only the formats supported for the format
+      currently active on the OUTPUT queue.
+  =20
+      *    Depending on the currently set OUTPUT format, the set of support=
+ed
+      raw formats may depend on the value of some codec-dependent controls.=
+ The
+      client is responsible for making sure that these controls are set bef=
+ore
+      querying the CAPTURE queue. Failure to do so will result in the defau=
+lt
+      values for these controls being used, and a returned set of formats t=
+hat
+      may not be usable for the media the client is trying to decode.
+
+
+> =20
+>  Return Value
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions=
+ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> index 3e58aac4ef0b..42d9075b7fc2 100644
+> --- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> +++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> @@ -215,6 +215,7 @@ replace define V4L2_FMT_FLAG_CSC_XFER_FUNC fmtdesc-fl=
+ags
+>  replace define V4L2_FMT_FLAG_CSC_YCBCR_ENC fmtdesc-flags
+>  replace define V4L2_FMT_FLAG_CSC_HSV_ENC fmtdesc-flags
+>  replace define V4L2_FMT_FLAG_CSC_QUANTIZATION fmtdesc-flags
+> +replace define V4L2_FMT_FLAG_ALL_FORMATS fmtdesc-flags
+> =20
+>  # V4L2 timecode types
+>  replace define V4L2_TC_TYPE_24FPS timecode-type
+> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-co=
+re/v4l2-ioctl.c
+> index 33076af4dfdb..22a93d074a5b 100644
+> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+> @@ -1544,7 +1544,7 @@ static int v4l_enum_fmt(const struct v4l2_ioctl_ops=
+ *ops,
+>  		p->mbus_code =3D 0;
+> =20
+>  	mbus_code =3D p->mbus_code;
+> -	memset_after(p, 0, type);
+> +	memset_after(p, 0, flags);
+
+In other similar places, we still clear the flags, and only keep the allowe=
+d
+bits. Maybe we should do this here too to avoid accidental flags going thro=
+ugh ?
+
+That should maybe be under some capability flag, so that userland knows if =
+the
+driver did implement that feature or not. If the driver didn't set that fla=
+g, we
+can then clear it so that userlands not checking that flag would at least g=
+et an
+enumeration response without it.
+
+>  	p->mbus_code =3D mbus_code;
+> =20
+>  	switch (p->type) {
+> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev=
+2.h
+> index 68e7ac178cc2..82d8c8a7fb7f 100644
+> --- a/include/uapi/linux/videodev2.h
+> +++ b/include/uapi/linux/videodev2.h
+> @@ -869,6 +869,7 @@ struct v4l2_fmtdesc {
+>  #define V4L2_FMT_FLAG_CSC_YCBCR_ENC		0x0080
+>  #define V4L2_FMT_FLAG_CSC_HSV_ENC		V4L2_FMT_FLAG_CSC_YCBCR_ENC
+>  #define V4L2_FMT_FLAG_CSC_QUANTIZATION		0x0100
+> +#define V4L2_FMT_FLAG_ALL_FORMATS		0x0200
+> =20
+>  	/* Frame Size and frame rate enumeration */
+>  /*
+
 
