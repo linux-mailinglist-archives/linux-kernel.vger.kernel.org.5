@@ -1,82 +1,121 @@
-Return-Path: <linux-kernel+bounces-28445-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 670F082FE97
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 02:55:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E62AB82FE9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 02:57:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E2D91C2490F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 01:55:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 947D228915B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 01:57:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D2741FAF;
-	Wed, 17 Jan 2024 01:55:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="i2LbIqNG"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70A401385;
-	Wed, 17 Jan 2024 01:55:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6136C17E9;
+	Wed, 17 Jan 2024 01:57:42 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1545F10E9
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 01:57:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705456501; cv=none; b=YgnUz6edHGhGAqMXbkVhYxeBlaWrO/oGiCUP/xJk5zVGUzBr+eOV5EUkn2/yBaseTOgGRX+wZ5yX+7zUY2fGdJ0P7pqlXEyy+AfXWfK+ZCBiBAh5Qd9G6OnQJByakqaFuO+0H+qjgQg1XBagmrcM3mPIl4M6jozLZTrziffbPqc=
+	t=1705456662; cv=none; b=k+B6dg1q/D92196bEDwFu7Cz8ORvby+N9n+A5vNM18Y1/8+Vb+5FawfoHQM/Z3aVSVwBB65o+/Qm//BZJLD/r8Hqixo+R8xTnFchIjPDmTDm35E/w5wh3kmdAGSVQ/8m4AoS8/qKvZ+ZiMpNTA7dZJn8UMklZcxKSXs2Hh5n5uY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705456501; c=relaxed/simple;
-	bh=ClQhewjh6YitxqtuZ+PJn8u9gtQ4R5nstBALVRqBAO8=;
-	h=DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=qNIMlQRss1uCWOMsM8sTsPS3KOCzsEOTvHo+C3S2zcDNOefUFfGL2gizKtEqt1WO4zTgqd5xY+vGrjbQqSdI49Ho/GJnX2C1922K9B3oE399TFmrhwiqJLfkydTTjwh9Sn27dxn0SaAc+9pA8YTdzFOJdcxga1x36G7Vwgq4Gvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=i2LbIqNG; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=JW2WdnUR/LjyRgH7ypAslY0/uBukhqoSGdAA5b8yuZg=; b=i2LbIqNGggcW7t1V71pNjrVgkX
-	LS+JTQVa/8QXKl2ct+ADiXzrU1Qrnyxln9XIeGkucv1DwBZ73sCH1gXikX3CE8NPOZAxGqtz43C3C
-	KUM0SEAkFf4nhdSt7hdtX/cNolWbI7B+b1IjGIyRE6lHXZwMUod6OVXKJgnGKvbNnlvo=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rPv8k-005MzP-PH; Wed, 17 Jan 2024 02:54:50 +0100
-Date: Wed, 17 Jan 2024 02:54:50 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org, Tobias Waldekranz <tobias@waldekranz.com>,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	horms@kernel.org, krzysztof.kozlowski@linaro.org, robh@kernel.org,
-	u.kleine-koenig@pengutronix.de, netdev@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.7 043/108] net: mvmdio: Avoid excessive sleeps
- in polled mode
-Message-ID: <824aec45-e474-455e-b2c6-00e618445c71@lunn.ch>
-References: <20240116194225.250921-1-sashal@kernel.org>
- <20240116194225.250921-43-sashal@kernel.org>
- <20240116174226.52231f8f@kernel.org>
+	s=arc-20240116; t=1705456662; c=relaxed/simple;
+	bh=/SrlWjIMTigyESjz1QsaSHrVg3bHKGkzoomgx993OW4=;
+	h=Received:Received:Message-ID:Date:MIME-Version:User-Agent:Subject:
+	 Content-Language:To:Cc:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=s5Yj1wdyey6D0hEwlVW73iSzTuVO7NXQ6vkIywKN7DOw1vjMY5lXUm/Msam3NDeVRy9aHjDjfkByg/m6bZqK7PzbrMKVaAmhbooflwq2rp+/14PHKtONIG/J7nYSg0kX/RaRj20aD3jV0pJtZRUkUK4COzFrcK+z1LnwcmRQC1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8D5182F4;
+	Tue, 16 Jan 2024 17:58:24 -0800 (PST)
+Received: from [10.57.46.46] (unknown [10.57.46.46])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E4D763F5A1;
+	Tue, 16 Jan 2024 17:57:36 -0800 (PST)
+Message-ID: <46a61123-dd22-46cb-8b2a-15431fcc03f1@arm.com>
+Date: Wed, 17 Jan 2024 01:57:34 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240116174226.52231f8f@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] iommu/vt-d: Check for non-NULL domain on device release
+Content-Language: en-GB
+To: Jason Gunthorpe <jgg@ziepe.ca>, Eric Badger <ebadger@purestorage.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Lu Baolu
+ <baolu.lu@linux.intel.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>,
+ "open list:INTEL IOMMU (VT-d)" <iommu@lists.linux.dev>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20240113181713.1817855-1-ebadger@purestorage.com>
+ <20240116152215.GE50608@ziepe.ca>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20240116152215.GE50608@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 16, 2024 at 05:42:26PM -0800, Jakub Kicinski wrote:
-> On Tue, 16 Jan 2024 14:39:09 -0500 Sasha Levin wrote:
-> > Signed-off-by: Tobias Waldekranz <tobias@waldekranz.com>
-> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+On 2024-01-16 3:22 pm, Jason Gunthorpe wrote:
+> On Sat, Jan 13, 2024 at 10:17:13AM -0800, Eric Badger wrote:
+>> In the kdump kernel, the IOMMU will operate in deferred_attach mode. In
+>> this mode, info->domain may not yet be assigned by the time the
+>> release_device function is called, which leads to the following crash in
+>> the crashkernel:
 > 
-> Andrew and Tobias can override, but vote to drop this.
-> Timing changes can backfire easily on flaky HW.
+> This never worked right? But why are you getting to release in a crash
+> kernel in the first place, that seems kinda weird..
+> 
+>>      BUG: kernel NULL pointer dereference, address: 000000000000003c
+>>      ...
+>>      RIP: 0010:do_raw_spin_lock+0xa/0xa0
+>>      ...
+>>      _raw_spin_lock_irqsave+0x1b/0x30
+>>      intel_iommu_release_device+0x96/0x170
+>>      iommu_deinit_device+0x39/0xf0
+>>      __iommu_group_remove_device+0xa0/0xd0
+>>      iommu_bus_notifier+0x55/0xb0
+>>      notifier_call_chain+0x5a/0xd0
+>>      blocking_notifier_call_chain+0x41/0x60
+>>      bus_notify+0x34/0x50
+>>      device_del+0x269/0x3d0
+>>      pci_remove_bus_device+0x77/0x100
+>>      p2sb_bar+0xae/0x1d0
+>>      ...
+>>      i801_probe+0x423/0x740
+>>
+>> Signed-off-by: Eric Badger <ebadger@purestorage.com>
+> 
+> It should have a fixes line, but I'm not sure what it is..
+> 
+>> ---
+>>   drivers/iommu/intel/iommu.c | 10 ++++++----
+>>   1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> Unfortunately this issue is likely systemic in all the drivers.
 
-It was not intended for stable. It does not have a fixes tag, it was
-not Cc: to stable, etc. Its just an optimisation.  So i agree with
-Jakub, this should be dropped.
+All two of the drivers which support deferred attach, that is.
 
-       Andrew
+> Something I've been thinking about for a while now is to have the
+> option for the core code release to set the driver to a specific
+> releasing domain (probably a blocking or identity global static)
+> 
+> A lot of drivers are open coding this internally in their release
+> functions, like Intel. But it really doesn't deserve to be special.
+
+Either way it shouldn't apply in this case, though. Crash kernels *are* 
+special. The whole point of deferred attach is that we don't disturb 
+anything unless we've got as far as definitely using a given default 
+domain (from which we can infer the relevant client device should have 
+been reset and quiesced). Thus regardless of why release might get 
+called, if a deferred attach never happened then the release should 
+still avoid touching any hardware configuration either.
+
+I'd suggest using dev->iommu->attach_deferred as the condition rather 
+than a NULL domain, to be clear that it's the *only* valid reason to not 
+have a domain at this point.
+
+Thanks,
+Robin.
 
