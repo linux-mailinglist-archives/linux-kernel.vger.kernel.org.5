@@ -1,120 +1,193 @@
-Return-Path: <linux-kernel+bounces-29041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DEC3830770
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:59:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DF5A830774
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:02:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C77F1C248FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:59:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6BB81F2493C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:02:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C55FB200CD;
-	Wed, 17 Jan 2024 13:59:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E0942031A;
+	Wed, 17 Jan 2024 14:02:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="iV516Kmg"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="ngg0ERDa"
+Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20D10200D5
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 13:59:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E93B200C9;
+	Wed, 17 Jan 2024 14:02:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705499989; cv=none; b=la0Tnjs0k555hqGzkmcOPLFtbeJ4fqmMZV0xJTvuy5fpsJFhww7/yRh31Qsdjhza94DoZR7oNNZUZ4cv0kh3vX2/NOyyYOmHl/4PRzOgrIBs+/Sdx1pHnkxNx1o3WARZhv6sPOUMIfZwy25OpetSOIDUgZ07C2ejCTQdthOsL5o=
+	t=1705500131; cv=none; b=nGDByBAw5vlxEslL756Ql5GeZ64pFGuT+9tdbxJ5lrBsWL2J59nDOHVUu2cZOeRRdNoP0Ukkyuts/zpILEtfFKHaC1GJpX7YGoHm/qDXG8BJTRTUFlDdg854VNJNsNzFjBIA9dK0IpFai0KT5aWt9ep4HOq8PxY9iOM24taZ23w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705499989; c=relaxed/simple;
-	bh=ixSvmpnR3QrMMP2UAVH8Rp2h/PXUfvzlhSH5WXrwo8k=;
-	h=DKIM-Signature:Received:Received:X-UD-Smtp-Session:Date:From:To:
-	 Cc:Subject:Message-ID:Mail-Followup-To:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gcBJu8ipybRfBDhDgbin2UUpMLY6Q796PxTsBkIbv/GMPce8OTYQk236GH11DFoTtfXq/lgDj8f0k6nVqw6HACfLKJdVXq2vrfAEQLDM0j3kjqNJvKWNCzHwFrOzc2lsmHjoS+2ME8H9PrtocuTOULw1MJp74wuvO6XuJYPZjnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=iV516Kmg; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=ixSv
-	mpnR3QrMMP2UAVH8Rp2h/PXUfvzlhSH5WXrwo8k=; b=iV516KmgJnuopq3o/lCp
-	BgwbOvgAjc9UBFJI+I9NghYYPhWRHTBkyuj9XzVqfwtNFzErgo/AqTHGBcc8hcvP
-	tEqKJL+6xkW+9LxvjoR+ZrlEcNxo83vAHh313KEbTabz0g043J/Ki1L8mMuTDskA
-	w01DkKJU67SP9N+lrNAvt0juuRjWcThVZxjdUUDII/61ChQ0jMhq7E1zsV4oXdgu
-	KyT2TurxTuCo4ZOpp93npUo6VQXPakUfVY1LNhhFV2wwMnLVma3ZljmAK+ieGrSL
-	ao9DaL8vPQWIOnTZtgEuCiloiGsHhtCtF80xaJHr2H5ntSlgbj+Q8ExYCa79Awtk
-	xA==
-Received: (qmail 2766347 invoked from network); 17 Jan 2024 14:59:44 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 17 Jan 2024 14:59:44 +0100
-X-UD-Smtp-Session: l3s3148p1@SeDAqCQPgpZehhtJ
-Date: Wed, 17 Jan 2024 14:59:44 +0100
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
-	Philippe Schenker <philippe.schenker@toradex.com>,
-	Francesco Dolcini <francesco.dolcini@toradex.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] net: phy: micrel: reset KSZ9x31 when resuming
-Message-ID: <ZafdUGVVwVlp-0Pt@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Andrew Lunn <andrew@lunn.ch>, linux-renesas-soc@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Philippe Schenker <philippe.schenker@toradex.com>,
-	Francesco Dolcini <francesco.dolcini@toradex.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-kernel@vger.kernel.org
-References: <20240109205223.40219-1-wsa+renesas@sang-engineering.com>
- <d9e86b0b-22cd-4055-90e1-44083ffbc05c@lunn.ch>
+	s=arc-20240116; t=1705500131; c=relaxed/simple;
+	bh=R+N96ZQEAfDbhmqKJeIs5t/qX5hk250eLM+kCzB/5uc=;
+	h=DKIM-Signature:X-IronPort-AV:Received:Received:Received:
+	 X-Farcaster-Flow-ID:Received:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Subject:Content-Language:To:CC:References:From:
+	 In-Reply-To:X-Originating-IP:X-ClientProxiedBy:Content-Type:
+	 Content-Transfer-Encoding; b=ePIWMg92TyWC+sJwEkV/OAcgBIKt4zJ9kD0b8l5WUbTGr0mUu8kBEUimhT8VyCkMd+OvEL/ZfEHM3uI3QfJnJ7BvGWENgGYQSbFVArOTYLNQmZPSriOkdGnrr5slBwRf2DtDmAhRF8/JCr9yybJDEwMrsL2s3oN9y+mkl4J73Hk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.de; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=ngg0ERDa; arc=none smtp.client-ip=52.119.213.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1705500130; x=1737036130;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=R+N96ZQEAfDbhmqKJeIs5t/qX5hk250eLM+kCzB/5uc=;
+  b=ngg0ERDacrxyeq9DqzaSjO5gGkJyhaXM7MoZHLdekPWpCMMFgCIXRBCN
+   mLObZHAKGT2xnC2eBpEjvMEk7NgOktZptiFPSuug75QODcQIRbXKkX6Gm
+   0vbyF2GKGwNcz6ud8v3+gTwYAN2NUOXhvP8p01NeeaA1YhZ0E0fdPZOzG
+   g=;
+X-IronPort-AV: E=Sophos;i="6.05,200,1701129600"; 
+   d="scan'208";a="628159042"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-6e7a78d7.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 14:02:08 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan2.iad.amazon.com [10.32.235.34])
+	by email-inbound-relay-iad-1e-m6i4x-6e7a78d7.us-east-1.amazon.com (Postfix) with ESMTPS id 6DBC280774;
+	Wed, 17 Jan 2024 14:02:00 +0000 (UTC)
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.7.35:42529]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.41.57:2525] with esmtp (Farcaster)
+ id e65f03f2-b86e-47d1-8655-6702971ecda1; Wed, 17 Jan 2024 14:01:59 +0000 (UTC)
+X-Farcaster-Flow-ID: e65f03f2-b86e-47d1-8655-6702971ecda1
+Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 17 Jan 2024 14:01:59 +0000
+Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
+ (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 17 Jan
+ 2024 14:01:53 +0000
+Message-ID: <c96203ba-a5b2-4765-9d30-0f4e66c82cd7@amazon.com>
+Date: Wed, 17 Jan 2024 15:01:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="nzwFSGGxwC2b8YVx"
-Content-Disposition: inline
-In-Reply-To: <d9e86b0b-22cd-4055-90e1-44083ffbc05c@lunn.ch>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 07/17] kexec: Add documentation for KHO
+Content-Language: en-US
+To: Rob Herring <robh+dt@kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+	<linux-mm@kvack.org>, <devicetree@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <kexec@lists.infradead.org>,
+	<linux-doc@vger.kernel.org>, <x86@kernel.org>, Eric Biederman
+	<ebiederm@xmission.com>, "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski
+	<luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Steven Rostedt
+	<rostedt@goodmis.org>, Andrew Morton <akpm@linux-foundation.org>, "Mark
+ Rutland" <mark.rutland@arm.com>, Tom Lendacky <thomas.lendacky@amd.com>,
+	Ashish Kalra <ashish.kalra@amd.com>, James Gowans <jgowans@amazon.com>,
+	Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>, <arnd@arndb.de>,
+	<pbonzini@redhat.com>, <madvenka@linux.microsoft.com>, Anthony Yznaga
+	<anthony.yznaga@oracle.com>, Usama Arif <usama.arif@bytedance.com>, "David
+ Woodhouse" <dwmw@amazon.co.uk>, Benjamin Herrenschmidt
+	<benh@kernel.crashing.org>
+References: <20231222193607.15474-1-graf@amazon.com>
+ <20231222195144.24532-1-graf@amazon.com>
+ <20231222195144.24532-2-graf@amazon.com>
+ <CAL_JsqJSYgq7BJnSxwKebEX8e9tL-FG74rT+eLJ4e32kKZC30g@mail.gmail.com>
+From: Alexander Graf <graf@amazon.com>
+In-Reply-To: <CAL_JsqJSYgq7BJnSxwKebEX8e9tL-FG74rT+eLJ4e32kKZC30g@mail.gmail.com>
+X-ClientProxiedBy: EX19D035UWB001.ant.amazon.com (10.13.138.33) To
+ EX19D020UWC004.ant.amazon.com (10.13.138.149)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 
+Ck9uIDAzLjAxLjI0IDE5OjQ4LCBSb2IgSGVycmluZyB3cm90ZToKPgo+IE9uIEZyaSwgRGVjIDIy
+LCAyMDIzIGF0IDEyOjUy4oCvUE0gQWxleGFuZGVyIEdyYWYgPGdyYWZAYW1hem9uLmNvbT4gd3Jv
+dGU6Cj4+IFdpdGggS0hPIGluIHBsYWNlLCBsZXQncyBhZGQgZG9jdW1lbnRhdGlvbiB0aGF0IGRl
+c2NyaWJlcyB3aGF0IGl0IGlzIGFuZAo+PiBob3cgdG8gdXNlIGl0Lgo+Pgo+PiBTaWduZWQtb2Zm
+LWJ5OiBBbGV4YW5kZXIgR3JhZiA8Z3JhZkBhbWF6b24uY29tPgo+PiAtLS0KPj4gICBEb2N1bWVu
+dGF0aW9uL2toby9jb25jZXB0cy5yc3QgICB8IDg4ICsrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrCj4+ICAgRG9jdW1lbnRhdGlvbi9raG8vaW5kZXgucnN0ICAgICAgfCAxOSArKysrKysr
+Cj4+ICAgRG9jdW1lbnRhdGlvbi9raG8vdXNhZ2UucnN0ICAgICAgfCA1NyArKysrKysrKysrKysr
+KysrKysrKysKPj4gICBEb2N1bWVudGF0aW9uL3N1YnN5c3RlbS1hcGlzLnJzdCB8ICAxICsKPj4g
+ICA0IGZpbGVzIGNoYW5nZWQsIDE2NSBpbnNlcnRpb25zKCspCj4+ICAgY3JlYXRlIG1vZGUgMTAw
+NjQ0IERvY3VtZW50YXRpb24va2hvL2NvbmNlcHRzLnJzdAo+PiAgIGNyZWF0ZSBtb2RlIDEwMDY0
+NCBEb2N1bWVudGF0aW9uL2toby9pbmRleC5yc3QKPj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9j
+dW1lbnRhdGlvbi9raG8vdXNhZ2UucnN0Cj4+Cj4+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9u
+L2toby9jb25jZXB0cy5yc3QgYi9Eb2N1bWVudGF0aW9uL2toby9jb25jZXB0cy5yc3QKPj4gbmV3
+IGZpbGUgbW9kZSAxMDA2NDQKPj4gaW5kZXggMDAwMDAwMDAwMDAwLi44ZTRmZThjNTc4NjUKPj4g
+LS0tIC9kZXYvbnVsbAo+PiArKysgYi9Eb2N1bWVudGF0aW9uL2toby9jb25jZXB0cy5yc3QKPj4g
+QEAgLTAsMCArMSw4OCBAQAo+PiArLi4gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAt
+b3ItbGF0ZXIKPj4gKwo+PiArPT09PT09PT09PT09PT09PT09PT09PT0KPj4gK0tleGVjIEhhbmRv
+dmVyIENvbmNlcHRzCj4+ICs9PT09PT09PT09PT09PT09PT09PT09PQo+PiArCj4+ICtLZXhlYyBI
+YW5kT3ZlciAoS0hPKSBpcyBhIG1lY2hhbmlzbSB0aGF0IGFsbG93cyBMaW51eCB0byBwcmVzZXJ2
+ZSBzdGF0ZSAtCj4+ICthcmJpdHJhcnkgcHJvcGVydGllcyBhcyB3ZWxsIGFzIG1lbW9yeSBsb2Nh
+dGlvbnMgLSBhY3Jvc3Mga2V4ZWMuCj4+ICsKPj4gK0l0IGludHJvZHVjZXMgbXVsdGlwbGUgY29u
+Y2VwdHM6Cj4+ICsKPj4gK0tITyBEZXZpY2UgVHJlZQo+PiArLS0tLS0tLS0tLS0tLS0tCj4+ICsK
+Pj4gK0V2ZXJ5IEtITyBrZXhlYyBjYXJyaWVzIGEgS0hPIHNwZWNpZmljIGZsYXR0ZW5lZCBkZXZp
+Y2UgdHJlZSBibG9iIHRoYXQKPj4gK2Rlc2NyaWJlcyB0aGUgc3RhdGUgb2YgdGhlIHN5c3RlbS4g
+RGV2aWNlIGRyaXZlcnMgY2FuIHJlZ2lzdGVyIHRvIEtITyB0bwo+PiArc2VyaWFsaXplIHRoZWly
+IHN0YXRlIGJlZm9yZSBrZXhlYy4gQWZ0ZXIgS0hPLCBkZXZpY2UgZHJpdmVycyBjYW4gcmVhZAo+
+PiArdGhlIGRldmljZSB0cmVlIGFuZCBleHRyYWN0IHByZXZpb3VzIHN0YXRlLgo+IEhvdyBkb2Vz
+IHRoaXMgd29yayB3aXRoIGtleGVjIHdoZW4gdGhlcmUgaXMgYWxzbyB0aGUgRkRUIGZvciB0aGUg
+aC93Pwo+IFRoZSBoL3cgRkRUIGhhcyBhIC9jaG9zZW4gcHJvcGVydHkgcG9pbnRpbmcgdG8gdGhp
+cyBGRFQgYmxvYj8KCgpZZXAsIGV4YWN0bHkuCgoKPgo+PiArCj4+ICtLSE8gb25seSB1c2VzIHRo
+ZSBmZHQgY29udGFpbmVyIGZvcm1hdCBhbmQgbGliZmR0IGxpYnJhcnksIGJ1dCBkb2VzIG5vdAo+
+PiArYWRoZXJlIHRvIHRoZSBzYW1lIHByb3BlcnR5IHNlbWFudGljcyB0aGF0IG5vcm1hbCBkZXZp
+Y2UgdHJlZXMgZG86IFByb3BlcnRpZXMKPj4gK2FyZSBwYXNzZWQgaW4gbmF0aXZlIGVuZGlhbm5l
+c3MgYW5kIHN0YW5kYXJkaXplZCBwcm9wZXJ0aWVzIGxpa2UgYGByZWdzYGAgYW5kCj4+ICtgYHJh
+bmdlc2BgIGRvIG5vdCBleGlzdCwgaGVuY2UgdGhlcmUgYXJlIG5vIGBgIy4uLi1jZWxsc2BgIHBy
+b3BlcnRpZXMuCj4gSSB0aGluayBuYXRpdmUgZW5kaWFubmVzcyBpcyBhc2tpbmcgZm9yIHRyb3Vi
+bGUuIGxpYmZkdCB3b3VsZCBuZWVkCj4gZGlmZmVyZW50IHN3YXAgZnVuY3Rpb25zIGhlcmUgdGhh
+biBlbHNld2hlcmUgaW4gdGhlIGtlcm5lbCBmb3IgZXhhbXBsZQo+IHdoaWNoIHdvdWxkbid0IGV2
+ZW4gd29yay4gU28geW91IGFyZSBqdXN0IGNyb3NzaW5nIHlvdXIgZmluZ2VycyB0aGF0Cj4geW91
+IGFyZW4ndCB1c2luZyBhbnkgbGliZmR0IGZ1bmN0aW9ucyB0aGF0IHN3YXAuIEFuZCB3aGVuIEkg
+c3luYwo+IGR0Yy9saWJmZHQgYW5kIHRoYXQgY2hhbmdlcywgSSBtaWdodCBicmVhayB5b3UuCj4K
+PiBBbHNvLCBpZiB5b3Ugd2FudCB0byBkdW1wIHRoZSBGRFQgYW5kIGRvIGEgZHRjIERUQi0+RFRT
+IHBhc3MsIGl0IGlzCj4gbm90IGdvaW5nIHRvIGJlIHRvbyByZWFkYWJsZSBnaXZlbiB0aGF0IG91
+dHB1dHMgc3dhcHBlZCAzMi1iaXQgdmFsdWVzCj4gZm9yIGFueXRoaW5nIHRoYXQncyBhIDQgYnl0
+ZSBtdWx0aXBsZS4KCgpZZWFoLCBidXQgYmlnIGVuZGlhbiB0aGVzZSBkYXlzIGlzIGp1c3QgYSBj
+b21wbGV0ZSB3YXN0ZSBvZiBicmFpbiBhbmQgCmNwdSBjeWNsZXMgOikuIEFuZCB5ZXMsIEkgZG9u
+J3QgcmVhbGx5IHdhbnQgdG8gdXNlIGFueSBsaWJmZHQgaGVscGVyIApmdW5jdGlvbnMgdG8gcmVh
+ZCBkYXRhLiBJIHVzZSBpdCBvbmx5IHRvIGdpdmUgbWUgdGhlIHJhdyBkYXRhIGFuZCB0YWtlIApp
+dCBmcm9tIHRoZXJlLgoKCj4KPj4gKwo+PiArS0hPIGludHJvZHVjZXMgYSBuZXcgY29uY2VwdCB0
+byBpdHMgZGV2aWNlIHRyZWU6IGBgbWVtYGAgcHJvcGVydGllcy4gQQo+PiArYGBtZW1gYCBwcm9w
+ZXJ0eSBjYW4gaW5zaWRlIGFueSBzdWJub2RlIGluIHRoZSBkZXZpY2UgdHJlZS4gV2hlbiBwcmVz
+ZW50LAo+PiAraXQgY29udGFpbnMgYW4gYXJyYXkgb2YgcGh5c2ljYWwgbWVtb3J5IHJhbmdlcyB0
+aGF0IHRoZSBuZXcga2VybmVsIG11c3QgbWFyawo+PiArYXMgcmVzZXJ2ZWQgb24gYm9vdC4gSXQg
+aXMgcmVjb21tZW5kZWQsIGJ1dCBub3QgcmVxdWlyZWQsIHRvIG1ha2UgdGhlc2UgcmFuZ2VzCj4+
+ICthcyBwaHlzaWNhbGx5IGNvbnRpZ3VvdXMgYXMgcG9zc2libGUgdG8gcmVkdWNlIHRoZSBudW1i
+ZXIgb2YgYXJyYXkgZWxlbWVudHMgOjoKPj4gKwo+PiArICAgIHN0cnVjdCBraG9fbWVtIHsKPj4g
+KyAgICAgICAgICAgIF9fdTY0IGFkZHI7Cj4+ICsgICAgICAgICAgICBfX3U2NCBsZW47Cj4+ICsg
+ICAgfTsKPj4gKwo+PiArQWZ0ZXIgYm9vdCwgZHJpdmVycyBjYW4gY2FsbCB0aGUga2hvIHN1YnN5
+c3RlbSB0byB0cmFuc2ZlciBvd25lcnNoaXAgb2YgbWVtb3J5Cj4+ICt0aGF0IHdhcyByZXNlcnZl
+ZCB2aWEgYSBgYG1lbWBgIHByb3BlcnR5IHRvIHRoZW1zZWx2ZXMgdG8gY29udGludWUgdXNpbmcg
+bWVtb3J5Cj4+ICtmcm9tIHRoZSBwcmV2aW91cyBleGVjdXRpb24uCj4+ICsKPj4gK1RoZSBLSE8g
+ZGV2aWNlIHRyZWUgZm9sbG93cyB0aGUgaW4tTGludXggc2NoZW1hIHJlcXVpcmVtZW50cy4gQW55
+IGVsZW1lbnQgaW4KPj4gK3RoZSBkZXZpY2UgdHJlZSBpcyBkb2N1bWVudGVkIHZpYSBkZXZpY2Ug
+dHJlZSBzY2hlbWEgeWFtbHMgdGhhdCBleHBsYWluIHdoYXQKPj4gK2RhdGEgZ2V0cyB0cmFuc2Zl
+cnJlZC4KPiBJZiB0aGlzIGlzIGFsbCBzZXBhcmF0ZSwgdGhlbiBJIHRoaW5rIHRoZSBzY2hlbWFz
+IHNob3VsZCBiZSB0b28uIEFuZAo+IHRoZW4gZnJvbSBteSAoRFQgbWFpbnRhaW5lcikgcGVyc3Bl
+Y3RpdmUsIHlvdSBjYW4gZG8gd2hhdGV2ZXIgeW91IHdhbnQKPiBoZXJlIChsaWtlIEZJVCBpbWFn
+ZXMpLiBUaGUgZHRzY2hlbWEgdG9vbHMgYXJlIHByZXR0eSBtdWNoIG9ubHkgZ2VhcmVkCj4gZm9y
+ICJub3JtYWwiIERUcy4gQSBjb3VwbGUgb2YgcHJvYmxlbXMgY29tZSB0byBtaW5kLiBZb3UgY2Fu
+J3QgZXhjbHVkZQo+IG9yIGNoYW5nZSBzdGFuZGFyZCBwcm9wZXJ0aWVzLiBUaGUgZGVjb2Rpbmcg
+b2YgdGhlIERUQiB0byBydW4KPiB2YWxpZGF0aW9uIGFzc3VtZXMgYmlnIGVuZGlhbi4gV2UgY291
+bGQgcHJvYmFibHkgc3BsaXQgdGhpbmdzIHVwIGEKPiBiaXQsIGJ1dCB5b3UgbWF5IGJlIGJldHRl
+ciBvZmYganVzdCB1c2luZyBqc29uc2NoZW1hIGRpcmVjdGx5LiBJJ20gbm90Cj4gZXZlbiBzdXJl
+IHJ1bm5pbmcgdmFsaWRhdGlvbiBoZXJlIHdvdWxkIHRoYXQgdmFsdWFibGUuIFlvdSBoYXZlIDEK
+PiBzb3VyY2Ugb2YgY29kZSBnZW5lcmF0aW5nIHRoZSBEVCBhbmQgMSBjb25zdW1lci4gWWVzLCB0
+aGVyZSdzCj4gZGlmZmVyZW50IGtlcm5lbCB2ZXJzaW9ucyB0byBkZWFsIHdpdGgsIGJ1dCBpdCdz
+IG5vdCAxMDBzIG9mIHBlb3BsZQo+IGNyZWF0aW5nIDEwMDBzIG9mIERUcyB3aXRoIDEwMHMgb2Yg
+bm9kZXMuCj4KPiBZb3UgbWlnaHQgbG9vayBhdCB0aGUgbmV0bGluayBzdHVmZiB3aGljaCBpcyB1
+c2luZyBpdHMgb3duIHlhbWwgc3ludGF4Cj4gdG8gZ2VuZXJhdGUgY29kZSBhbmQganNvbnNjaGVt
+YSBpcyB1c2VkIHRvIHZhbGlkYXRlIHRoZSB5YW1sLgoKCkknbSBjdXJyZW50bHkgYSBsb3QgbW9y
+ZSBpbnRlcmVzdGVkIGluIHRoZSBkb2N1bWVudGF0aW9uIGFzcGVjdCB0aGFuIGluIAp0aGUgdmFs
+aWRhdGlvbiwgeWVhaC4gU28gSSB0aGluayBmb3IgdjMsIEknbGwganVzdCB0aHJvdyB0aGUgc2No
+ZW1hcyAKaW50byB0aGUgRG9jdW1lbnRhdGlvbi9raG8gZGlyZWN0b3J5IHdpdGhvdXQgYW55IHZh
+bGlkYXRpb24uIFdlIGNhbiAKd29ycnkgYWJvdXQgdGhhdCBsYXRlciA6KQoKVGhhbmtzIGEgbG90
+IGFnYWluIGZvciB0aGUgcmV2aWV3IQoKCkFsZXgKCgoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2Vu
+dGVyIEdlcm1hbnkgR21iSApLcmF1c2Vuc3RyLiAzOAoxMDExNyBCZXJsaW4KR2VzY2hhZWZ0c2Z1
+ZWhydW5nOiBDaHJpc3RpYW4gU2NobGFlZ2VyLCBKb25hdGhhbiBXZWlzcwpFaW5nZXRyYWdlbiBh
+bSBBbXRzZ2VyaWNodCBDaGFybG90dGVuYnVyZyB1bnRlciBIUkIgMTQ5MTczIEIKU2l0ejogQmVy
+bGluClVzdC1JRDogREUgMjg5IDIzNyA4NzkKCgo=
 
---nzwFSGGxwC2b8YVx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-
-> Does phy_resume() hitting it with a reset clear out the configuration
-> done by config_init() and the interrupt configuration performed by
-> config_intr()?
-
-Hmm, I should have answered your mail first. Instrumentation says you
-are correct. Back to the drawing board :/
-
-
---nzwFSGGxwC2b8YVx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmWn3VAACgkQFA3kzBSg
-KbadWw//c6TmTTvHvJE8yiQ+Wvfd8489Xx9C6/0VMOFczBOsJi4UK0HjuzSpfB4u
-gmx091TZ6ospNwTCNmRXNbByAo5KO8Oq3TYuI9ZDqVkcMT7dbxKYdDXjln/29De1
-DM+BfqWxXuEqGHWhUp8XYNe0F41NljUQ9ZrjgZLtLfDkcqohi8drqn2EyhTv51Bp
-bnp85H2EZm9XBkZikm3IMYqbOgmB+C8S5z1VqosAWHC9aRRiWAStK+H2pyX8s8Zx
-cV8SBoguZfrVQRtWe356w3613Vo6UM/xd83ADMHbhW6kEp3DVvw3ea1SOBtA0aXs
-4GcYAnep6Y9dXFU3Rnx6EG2cE/gKq1Iz6E3vVGdYWJXf4Znxj6ri5jpIL2goxep9
-UrxCGiL8V7VJ33N51zSGOkshI+AMLHLh6NI8QxgAwTROFJJINxnG0xZW5DwMDYuh
-IvlmlhzEaJypnk3Vyssv8GhuKqzFphDXDxZxvkSeXXJEgFzmmw4hDMkyK+chOVCj
-QWbcVGlb9g74CiUCx4wxQbGY7lAr0kmJu41fgzeOI20Qzm5rV4zYoVUy6HV08fLe
-1EjzWcYocUK8KnpESh2/adQKzj1q4X/MBrqcYJt7DPlajicWFl0tci8GF3oEyl25
-txjbl5k5cCMirPFJakFnPHFAGS9lFI3q/ep43uMyBrCfd8p/gQ8=
-=OEz2
------END PGP SIGNATURE-----
-
---nzwFSGGxwC2b8YVx--
 
