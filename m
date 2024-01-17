@@ -1,59 +1,88 @@
-Return-Path: <linux-kernel+bounces-29432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D90D830E25
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 21:43:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE379830E29
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 21:46:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BB601C2153A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:43:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AC361F22D21
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:46:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D442250F7;
-	Wed, 17 Jan 2024 20:43:18 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5433B250E6;
-	Wed, 17 Jan 2024 20:43:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1A50250F4;
+	Wed, 17 Jan 2024 20:46:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aseIdN4+"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8CD524B23
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 20:46:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705524197; cv=none; b=Qd4KW9S4lRfRKpRACvDmgfct7c7DJJtrIB9oTPELIlshWWalysL/Dzgn+QK/ZMlhbBqSqMfzxbEr6e9ggufD26AoE+QFaXh6IASo991tmCZJ9if++ww2QYRSWw99E9ccMLqT1ej486PsvIGcU1ztK9tEBJCZSNdzPqd8sjoQKIo=
+	t=1705524406; cv=none; b=CwXhhkPX79+bwI0X8i9YcpHZqqR/zYxYarwwAyHGLUyjlIruc3qNnpl5v9g5JhFQroRJ7ANx0HRsUFatFSPmbzPld2/7QTz+6JL7cxt6R2PgazwBDrOtKCvmcLOy4hRAFdSkl6xSVNYB3YGcRe/5rwuOBIa4qlhcbE3xbKyhp2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705524197; c=relaxed/simple;
-	bh=CKIqWY6bniHgYHR52mR5xO2X/Aq6Z5AV/erKRUEjfcM=;
-	h=Received:Received:Date:From:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=pYH51PACA0898Cw8pG9/7BhjqWBjTSIW5C1eh5ut9vjH7t8+64K/fa5sMyrh89bXxD2qCOaGy+8Iwo700DAwd8Y379lcaScSFket7bvOq0ThjQ6if6QLloQUIxxNkNpjvlaezUFSlT/yMT3ykHYKHEGG1mxGjmaR9rVUmpr2+D4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6258311FB;
-	Wed, 17 Jan 2024 12:43:59 -0800 (PST)
-Received: from pluto (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 025B53F766;
-	Wed, 17 Jan 2024 12:43:10 -0800 (PST)
-Date: Wed, 17 Jan 2024 20:43:08 +0000
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-	AKASHI Takahiro <takahiro.akashi@linaro.org>,
-	Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH v2 4/6] pinctrl: Implementation of the generic
- scmi-pinctrl driver
-Message-ID: <Zag73Dj_6IT8dB00@pluto>
-References: <20240104-pinctrl-scmi-v2-0-a9bd86ab5a84@nxp.com>
- <20240104-pinctrl-scmi-v2-4-a9bd86ab5a84@nxp.com>
+	s=arc-20240116; t=1705524406; c=relaxed/simple;
+	bh=aaHodGRubbOZjIP65GIQv8uQ5qNxm2iUpK+FYvffHPI=;
+	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:Received:
+	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To:User-Agent:
+	 X-Scanned-By; b=k0zfjVvhsbXjkfsjX4vQXOpJhlGQW6uu9nZmDccHXQ4hNaU7P2jTycoZWdAQighOv5FR8naGQrGIy/1isjaKu+25neJXboG2tzpkzASy1864RueLgwMcpAUr3e+DKXcVNn07A8tnfZo7h+8T3/08LK60caNo+kyy2J3WgBOW0qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aseIdN4+; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705524403;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C70ts/54UEYJcw/lgvKUhzDMrgIQBYpfoUXMj0i2oXk=;
+	b=aseIdN4+tFqNsyacYXK97FbX3XM3xsJNYYR6Pafc3PmOYP5BsXhwhLUW3/dy1BZup28H8a
+	sYiHdQpnqkMYOvP5CLLpYSf4q/9r+xkwxlepJaPtmoczAddiZn1PZr1qAtxknRwXT5eZXZ
+	7/DxxVU1e8O43jd0SboMoNIqd4ZSyPk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-685-PH6-t1Y_NEyaM7Wn0JRY5A-1; Wed, 17 Jan 2024 15:46:35 -0500
+X-MC-Unique: PH6-t1Y_NEyaM7Wn0JRY5A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2AABA106D0F0;
+	Wed, 17 Jan 2024 20:45:36 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.121])
+	by smtp.corp.redhat.com (Postfix) with SMTP id CE04940C6EBC;
+	Wed, 17 Jan 2024 20:45:30 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Wed, 17 Jan 2024 21:44:23 +0100 (CET)
+Date: Wed, 17 Jan 2024 21:44:17 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Dylan Hatch <dylanbhatch@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Kees Cook <keescook@chromium.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Joel Fernandes (Google)" <joel@joelfernandes.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Vincent Whitchurch <vincent.whitchurch@axis.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mike Christie <michael.christie@oracle.com>,
+	David Hildenbrand <david@redhat.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Stefan Roesch <shr@devkernel.io>, Joey Gouly <joey.gouly@arm.com>,
+	Josh Triplett <josh@joshtriplett.org>, Helge Deller <deller@gmx.de>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	Florent Revest <revest@chromium.org>,
+	Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] getrusage: Use trylock when getting sighand lock.
+Message-ID: <20240117204416.GB32526@redhat.com>
+References: <20240117192534.1327608-1-dylanbhatch@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,348 +91,159 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240104-pinctrl-scmi-v2-4-a9bd86ab5a84@nxp.com>
+In-Reply-To: <20240117192534.1327608-1-dylanbhatch@google.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On Thu, Jan 04, 2024 at 06:48:48PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> scmi-pinctrl driver implements pinctrl driver interface and using
-> SCMI protocol to redirect messages from pinctrl subsystem SDK to
-> SCMI platform firmware, which does the changes in HW.
-> 
+Heh ;)
 
-Hi,
+getrusage() should not use ->siglock at all.
 
-a few remarks.
+On my TODO list. I'll try to make a patch this week.
 
-> Co-developed-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+Oleg.
+
+On 01/17, Dylan Hatch wrote:
+>
+> Processes with many threads run the risk of causing a hard lockup if
+> too many threads are calling getrusage() at once. This is because a
+> calling thread with RUSAGE_SELF spins on the sighand lock with irq
+> disabled, and the critical section of getrusage scales linearly with the
+> size of the process. All cpus may end up spinning on the sighand lock
+> for a long time because another thread has the lock and is busy
+> iterating over 250k+ threads.
+>
+> In order to mitigate this, periodically re-enable interrupts while
+> waiting for the sighand lock. This approach lacks the FIFO fairness of a
+> normal spinlock mechanism, but this effect is somewhat contained to
+> different threads within the same process.
+>
+> -- Alternatives Considered --
+>
+> In an earlier version of the above approach, we added a cond_resched()
+> call when disabling interrupts to prevent soft lockups. This solution
+> turned out not to be workable on its own since getrusage() is called
+> from a non-preemptible context in kernel/exit.c, but could possibly be
+> adapted by having an alternate version of getrusage() that can be called
+> from a preemptible context.
+>
+> Another alternative would be to have getruage() itself release the lock
+> and enable interrupts periodically while iterating over large numbers of
+> threads. However, this would be difficult to implement correctly, and
+> the correctness/consistency of the data reported by getrusage() would be
+> questionable.
+>
+> One final alternative might be to add a per-process mutex for callers of
+> getrusage() to acquire before acquiring the sighand lock, or to be used
+> as a total replacement of the sigahnd lock. We haven't fully explored
+> what the implications of this might be.
+>
+> Signed-off-by: Dylan Hatch <dylanbhatch@google.com>
 > ---
->  MAINTAINERS                    |   1 +
->  drivers/pinctrl/Kconfig        |  11 +
->  drivers/pinctrl/Makefile       |   1 +
->  drivers/pinctrl/pinctrl-scmi.c | 524 +++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 537 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 487bff0d44c0..3fe790e90834 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -21314,6 +21314,7 @@ F:	drivers/clk/clk-sc[mp]i.c
->  F:	drivers/cpufreq/sc[mp]i-cpufreq.c
->  F:	drivers/firmware/arm_scmi/
->  F:	drivers/firmware/arm_scpi.c
-> +F:	drivers/pinctrl/pinctrl-scmi.c
->  F:	drivers/pmdomain/arm/
->  F:	drivers/powercap/arm_scmi_powercap.c
->  F:	drivers/regulator/scmi-regulator.c
-> diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-> index 8163a5983166..27b26e428f60 100644
-> --- a/drivers/pinctrl/Kconfig
-> +++ b/drivers/pinctrl/Kconfig
-> @@ -432,6 +432,17 @@ config PINCTRL_ROCKCHIP
->  	help
->            This support pinctrl and GPIO driver for Rockchip SoCs.
->  
-> +config PINCTRL_SCMI
-> +	tristate "Pinctrl driver using SCMI protocol interface"
-> +	depends on ARM_SCMI_PROTOCOL || COMPILE_TEST
-> +	select PINMUX
-> +	select GENERIC_PINCONF
-> +	help
-> +	  This driver provides support for pinctrl which is controlled
-> +	  by firmware that implements the SCMI interface.
-> +	  It uses SCMI Message Protocol to interact with the
-> +	  firmware providing all the pinctrl controls.
+>  include/linux/sched/signal.h | 13 +++++++++++
+>  kernel/signal.c              | 43 ++++++++++++++++++++++++++++++++++++
+>  kernel/sys.c                 |  8 ++++++-
+>  3 files changed, 63 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+> index 3499c1a8b9295..7852f16139965 100644
+> --- a/include/linux/sched/signal.h
+> +++ b/include/linux/sched/signal.h
+> @@ -747,6 +747,19 @@ static inline struct sighand_struct *lock_task_sighand(struct task_struct *task,
+>  	return ret;
+>  }
+>
+> +extern struct sighand_struct *__lock_task_sighand_safe(struct task_struct *task,
+> +							unsigned long *flags);
 > +
->  config PINCTRL_SINGLE
->  	tristate "One-register-per-pin type device tree based pinctrl driver"
->  	depends on OF
-> diff --git a/drivers/pinctrl/Makefile b/drivers/pinctrl/Makefile
-> index 1071f301cc70..ba755ed2d46c 100644
-> --- a/drivers/pinctrl/Makefile
-> +++ b/drivers/pinctrl/Makefile
-> @@ -44,6 +44,7 @@ obj-$(CONFIG_PINCTRL_PIC32)	+= pinctrl-pic32.o
->  obj-$(CONFIG_PINCTRL_PISTACHIO)	+= pinctrl-pistachio.o
->  obj-$(CONFIG_PINCTRL_RK805)	+= pinctrl-rk805.o
->  obj-$(CONFIG_PINCTRL_ROCKCHIP)	+= pinctrl-rockchip.o
-> +obj-$(CONFIG_PINCTRL_SCMI)	+= pinctrl-scmi.o
->  obj-$(CONFIG_PINCTRL_SINGLE)	+= pinctrl-single.o
->  obj-$(CONFIG_PINCTRL_ST) 	+= pinctrl-st.o
->  obj-$(CONFIG_PINCTRL_STMFX) 	+= pinctrl-stmfx.o
-> diff --git a/drivers/pinctrl/pinctrl-scmi.c b/drivers/pinctrl/pinctrl-scmi.c
-> new file mode 100644
-> index 000000000000..146308d27f54
-> --- /dev/null
-> +++ b/drivers/pinctrl/pinctrl-scmi.c
-> @@ -0,0 +1,524 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * System Control and Power Interface (SCMI) Protocol based pinctrl driver
-> + *
-> + * Copyright (C) 2023 EPAM
-> + * Copyright 2023 NXP
-> + */
-
-2023-2024
-
-> +
-> +#include <linux/device.h>
-> +#include <linux/err.h>
-> +#include <linux/module.h>
-> +#include <linux/seq_file.h>
-> +#include <linux/scmi_protocol.h>
-> +#include <linux/slab.h>
-> +
-> +#include <linux/pinctrl/machine.h>
-> +#include <linux/pinctrl/pinconf.h>
-> +#include <linux/pinctrl/pinconf-generic.h>
-> +#include <linux/pinctrl/pinctrl.h>
-> +#include <linux/pinctrl/pinmux.h>
-> +
-> +#include "pinctrl-utils.h"
-> +#include "core.h"
-> +#include "pinconf.h"
-> +
-> +#define DRV_NAME "scmi-pinctrl"
- 
- [snip]
-
-> +static const struct pinmux_ops pinctrl_scmi_pinmux_ops = {
-> +	.request = pinctrl_scmi_request,
-> +	.free = pinctrl_scmi_free,
-> +	.get_functions_count = pinctrl_scmi_get_functions_count,
-> +	.get_function_name = pinctrl_scmi_get_function_name,
-> +	.get_function_groups = pinctrl_scmi_get_function_groups,
-> +	.set_mux = pinctrl_scmi_func_set_mux,
-> +};
-> +
-> +static int pinctrl_scmi_map_pinconf_type(enum pin_config_param param, u8 *type)
+> +static inline struct sighand_struct *lock_task_sighand_safe(struct task_struct *task,
+> +						       unsigned long *flags)
 > +{
-
-Same as in the previous patch, is it reasonable to use the new enum here instead
-of a generic u8 * ?
-
-> +	u8 arg = param;
+> +	struct sighand_struct *ret;
 > +
-> +	switch (arg) {
-> +	case PIN_CONFIG_BIAS_BUS_HOLD:
-> +		*type = SCMI_PIN_BIAS_BUS_HOLD;
-> +		break;
-> +	case PIN_CONFIG_BIAS_DISABLE:
-> +		*type = SCMI_PIN_BIAS_DISABLE;
-> +		break;
-> +	case PIN_CONFIG_BIAS_HIGH_IMPEDANCE:
-> +		*type = SCMI_PIN_BIAS_HIGH_IMPEDANCE;
-> +		break;
-> +	case PIN_CONFIG_BIAS_PULL_DOWN:
-> +		*type = SCMI_PIN_BIAS_PULL_DOWN;
-> +		break;
-> +	case PIN_CONFIG_BIAS_PULL_PIN_DEFAULT:
-> +		*type = SCMI_PIN_BIAS_PULL_DEFAULT;
-> +		break;
-> +	case PIN_CONFIG_BIAS_PULL_UP:
-> +		*type = SCMI_PIN_BIAS_PULL_UP;
-> +		break;
-> +	case PIN_CONFIG_DRIVE_OPEN_DRAIN:
-> +		*type = SCMI_PIN_DRIVE_OPEN_DRAIN;
-> +		break;
-> +	case PIN_CONFIG_DRIVE_OPEN_SOURCE:
-> +		*type = SCMI_PIN_DRIVE_OPEN_SOURCE;
-> +		break;
-> +	case PIN_CONFIG_DRIVE_PUSH_PULL:
-> +		*type = SCMI_PIN_DRIVE_PUSH_PULL;
-> +		break;
-> +	case PIN_CONFIG_DRIVE_STRENGTH:
-> +		*type = SCMI_PIN_DRIVE_STRENGTH;
-> +		break;
-> +	case PIN_CONFIG_DRIVE_STRENGTH_UA:
-> +		*type = SCMI_PIN_DRIVE_STRENGTH;
-> +		break;
-> +	case PIN_CONFIG_INPUT_DEBOUNCE:
-> +		*type = SCMI_PIN_INPUT_DEBOUNCE;
-> +		break;
-> +	case PIN_CONFIG_INPUT_ENABLE:
-> +		*type = SCMI_PIN_INPUT_MODE;
-> +		break;
-> +	case PIN_CONFIG_INPUT_SCHMITT:
-> +		*type = SCMI_PIN_INPUT_SCHMITT;
-> +		break;
-> +	case PIN_CONFIG_INPUT_SCHMITT_ENABLE:
-> +		*type = SCMI_PIN_INPUT_MODE;
-> +		break;
-> +	case PIN_CONFIG_MODE_LOW_POWER:
-> +		*type = SCMI_PIN_LOW_POWER_MODE;
-> +		break;
-> +	case PIN_CONFIG_OUTPUT:
-> +		*type = SCMI_PIN_OUTPUT_VALUE;
-> +		break;
-> +	case PIN_CONFIG_OUTPUT_ENABLE:
-> +		*type = SCMI_PIN_OUTPUT_MODE;
-> +		break;
-> +	case PIN_CONFIG_OUTPUT_IMPEDANCE_OHMS:
-> +		*type = SCMI_PIN_OUTPUT_VALUE;
-> +		break;
-> +	case PIN_CONFIG_POWER_SOURCE:
-> +		*type = SCMI_PIN_POWER_SOURCE;
-> +		break;
-> +	case PIN_CONFIG_SLEW_RATE:
-> +		*type = SCMI_PIN_SLEW_RATE;
-> +		break;
-> +	case SCMI_PIN_OEM_START ... SCMI_PIN_OEM_END:
-> +		*type = param;
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int pinctrl_scmi_pinconf_get(struct pinctrl_dev *pctldev, unsigned int _pin,
-> +				    unsigned long *config)
-> +{
-> +	int ret;
-> +	struct scmi_pinctrl *pmx = pinctrl_dev_get_drvdata(pctldev);
-> +	enum pin_config_param config_type;
-> +	u32 config_value;
-> +	u8 type;
-> +
-> +	if (!config)
-> +		return -EINVAL;
-> +
-> +	config_type = pinconf_to_config_param(*config);
-> +
-> +	ret = pinctrl_scmi_map_pinconf_type(config_type, &type);
-> +	if (ret) {
-> +		dev_err(pmx->dev, "Error map pinconf_type %d\n", ret);
-> +		return ret;
-> +	}
-> +
-
-Issuing a cat /sys/kernel/debug/pictrl/<scmi_dev>/pinconf-pins
-got a string of (adding some debug to print config_type):
-
-[   89.843868] scmi-pinctrl scmi_dev.12: Error map pinconf_type 22 - ret:-95
-[   89.846125] scmi-pinctrl scmi_dev.12: Error map pinconf_type 23 - ret:-95
-
-but I suppose is due to some missing matching definitions in the SCMI
-spec....just a heads up for the future.
-
-> +	ret = pinctrl_ops->config_get(pmx->ph, _pin, PIN_TYPE, type, &config_value);
-> +	if (ret)
-> +		return ret;
-> +
-> +	*config = pinconf_to_config_packed(config_type, config_value);
-> +
-> +	return 0;
-> +}
-> +
-> +static int pinctrl_scmi_pinconf_set(struct pinctrl_dev *pctldev,
-> +				    unsigned int _pin,
-> +				    unsigned long *configs,
-> +				    unsigned int num_configs)
-> +{
-> +	int i, ret;
-> +	struct scmi_pinctrl *pmx = pinctrl_dev_get_drvdata(pctldev);
-> +
-> +	if (!configs || !num_configs)
-> +		return -EINVAL;
-> +
-> +	for (i = 0; i < num_configs; i++) {
-> +		ret = pinctrl_scmi_map_pinconf_type(pinconf_to_config_param(configs[i]),
-> +						    &pmx->config_type[i]);
-> +		if (ret) {
-> +			dev_err(pmx->dev, "Error map pinconf_type %d\n", ret);
-> +			return ret;
-> +		}
-> +		pmx->config_value[i] = pinconf_to_config_argument(configs[i]);
-> +	}
-> +
-
-Are you sure that this pinctrl function cannot be called multiple times
-concurrently ? Because pmx->config_type/value are globally defined for
-the driver so any concurrent call will lead to corruption.
-
-Moreover, you allocate those pmx->config_ arrays in probe as SZ_4K, but
-effectively how many of these are effectively used in reality ?
-
-I mean, we clearly have to address the worst case, which is 256 values by
-the SCMI spec CONFIG_SET definitions, but typically how many configs are
-going to be sent in a call ? because if it is a reasonable small values
-you could just put in on the stack here with a check for overlflow and
-a dynamic allocation to address the special case...this would also solve
-the potential concurrent calls issue described above.
-
-..but I could be missing something about Pinctrl so please explain.
-
-> +	ret = pinctrl_ops->config_set(pmx->ph, _pin, PIN_TYPE, num_configs,
-> +				      pmx->config_type,  pmx->config_value);
-> +	if (ret)
-> +		dev_err(pmx->dev, "Error parsing config %d\n", ret);
-> +
+> +	ret = __lock_task_sighand_safe(task, flags);
+> +	(void)__cond_lock(&task->sighand->siglock, ret);
 > +	return ret;
 > +}
 > +
-> +static int pinctrl_scmi_pinconf_group_set(struct pinctrl_dev *pctldev,
-> +					  unsigned int group,
-> +					  unsigned long *configs,
-> +					  unsigned int num_configs)
+>  static inline void unlock_task_sighand(struct task_struct *task,
+>  						unsigned long *flags)
+>  {
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index 47a7602dfe8df..6d60c73b7ab91 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -1397,6 +1397,49 @@ int zap_other_threads(struct task_struct *p)
+>  	return count;
+>  }
+>
+> +struct sighand_struct *__lock_task_sighand_safe(struct task_struct *tsk,
+> +						unsigned long *flags)
 > +{
-> +	int i, ret;
-> +	struct scmi_pinctrl *pmx =  pinctrl_dev_get_drvdata(pctldev);
+> +	struct sighand_struct *sighand;
+> +	int n;
+> +	bool lock = false;
 > +
-> +	if (!configs || !num_configs)
-> +		return -EINVAL;
+> +again:
+> +	rcu_read_lock();
+> +	local_irq_save(*flags);
+> +	for (n = 0; n < 500; n++) {
+> +		sighand = rcu_dereference(tsk->sighand);
+> +		if (unlikely(sighand == NULL))
+> +			break;
 > +
-> +	for (i = 0; i < num_configs; i++) {
-> +		ret = pinctrl_scmi_map_pinconf_type(pinconf_to_config_param(configs[i]),
-> +						    &pmx->config_type[i]);
-> +		if (ret) {
-> +			dev_err(pmx->dev, "Error map pinconf_type %d\n", ret);
-> +			return ret;
+> +		/*
+> +		 * The downside of this approach is we loose the fairness of
+> +		 * FIFO waiting because the acqusition order between multiple
+> +		 * waiting tasks is effectively random.
+> +		 */
+> +		lock = spin_trylock(&sighand->siglock);
+> +		if (!lock) {
+> +			cpu_relax();
+> +			continue;
 > +		}
-> +		pmx->config_value[i] = pinconf_to_config_argument(configs[i]);
+> +
+> +		/* __lock_task_sighand has context explaining this check. */
+> +		if (likely(sighand == rcu_access_pointer(tsk->sighand)))
+> +			break;
+> +		spin_unlock(&sighand->siglock);
+> +		lock = false;
+> +	}
+> +	rcu_read_unlock();
+> +
+> +	/* Handle pending IRQ */
+> +	if (!lock && sighand) {
+> +		local_irq_restore(*flags);
+> +		goto again;
 > +	}
 > +
-> +	ret = pinctrl_ops->config_set(pmx->ph, group, GROUP_TYPE, num_configs,
-> +				      pmx->config_type, pmx->config_value);
-> +	if (ret)
-> +		dev_err(pmx->dev, "Error parsing config %d", ret);
-> +
-> +	return ret;
-> +};
-> +
-> +static int pinctrl_scmi_pinconf_group_get(struct pinctrl_dev *pctldev,
-> +					  unsigned int group,
-> +					  unsigned long *config)
-> +{
-> +	int ret;
-> +	struct scmi_pinctrl *pmx = pinctrl_dev_get_drvdata(pctldev);
-> +	enum pin_config_param config_type;
-> +	u32 config_value;
-> +	u8 type;
-> +
-> +	if (!config)
-> +		return -EINVAL;
-> +
-> +	config_type = pinconf_to_config_param(*config);
-> +	ret = pinctrl_scmi_map_pinconf_type(config_type, &type);
-
-You dont check ret here ?
-
-> +
-> +	ret = pinctrl_ops->config_get(pmx->ph, group, GROUP_TYPE, type, &config_value);
-> +	if (ret)
-> +		return ret;
-> +
-> +	*config = pinconf_to_config_packed(config_type, config_value);
-> +
-> +	return 0;
+> +	return sighand;
 > +}
 > +
+>  struct sighand_struct *__lock_task_sighand(struct task_struct *tsk,
+>  					   unsigned long *flags)
+>  {
+> diff --git a/kernel/sys.c b/kernel/sys.c
+> index e219fcfa112d8..1b1254a3c506b 100644
+> --- a/kernel/sys.c
+> +++ b/kernel/sys.c
+> @@ -1798,7 +1798,13 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
+>  		goto out;
+>  	}
+>
+> -	if (!lock_task_sighand(p, &flags))
+> +	/*
+> +	 * We use lock_task_sighand_safe here instead of lock_task_sighand
+> +	 * because one process with many threads all calling getrusage may
+> +	 * otherwise cause an NMI watchdog timeout by disabling IRQs for too
+> +	 * long.
+> +	 */
+> +	if (!lock_task_sighand_safe(p, &flags))
+>  		return;
+>
+>  	switch (who) {
+> --
+> 2.43.0.381.gb435a96ce8-goog
+>
 
-Thanks,
-Cristian
 
