@@ -1,135 +1,109 @@
-Return-Path: <linux-kernel+bounces-29182-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29183-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA5A6830A4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:03:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7821F830A53
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:04:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65DFA286DC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:03:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F613287420
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:04:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA09224C0;
-	Wed, 17 Jan 2024 16:02:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F225C2231B;
+	Wed, 17 Jan 2024 16:04:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cg8q5AwX"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="XV0Wzw6S"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A6C62209F
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 16:02:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2200622301;
+	Wed, 17 Jan 2024 16:04:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705507352; cv=none; b=fRErBmNKsZYTjzeSHDzYA5hDA/BB+SVcOMOIMtUkHYM2rrbkqRbxuqplr7Yfpp546zQl2+yYCR3MKqMhmb3bBGxW+RqbBKHEDpMh1Ukl7bi0VQvTn1KNvpglwh1KX9GU+Rb7JXXgetN7nZ1orHOEQ7AamuESuU+U1oLrMz1lHLs=
+	t=1705507448; cv=none; b=YqjTOlBLqO+mdAuIugKYb54ZaL1qG/peqNDWg+gf/J4hPl2mx1ohe8vWcJklLDkBPu23MwYxxjg9Hx9gPd+ToPifz+JKhHqCTdwTPrlG890XzFT85XatS58mCQj4nLaDk/BKBf1CzBfjMQ5cCxoRRnh2YG4s+iG3hv8s+Sr+y2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705507352; c=relaxed/simple;
-	bh=jqy1DdjlJGDyd/SGVsfNqCnPGorjXpxaG+GQG8uwcAo=;
+	s=arc-20240116; t=1705507448; c=relaxed/simple;
+	bh=60VU2dcIMdN0LnwmSLQHz70ySOYSNvUalPN6aiFFDwE=;
 	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To; b=no6iZyvgwcaCZHnM7kAe3fLc409sfpP0vRldo69Bw1MFYGpnN+lfR1qt1TzosvP8XLIFIeYTjP3ciFglR8lu/7s85RbtLTEjI2fITh/S9rmdKjbyPviVSsC/d7jkvQnzO2pL11d2NEFGX0GGptuUmL9YA75xApsI6yFoHxQjGsc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cg8q5AwX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52595C433F1;
-	Wed, 17 Jan 2024 16:02:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705507350;
-	bh=jqy1DdjlJGDyd/SGVsfNqCnPGorjXpxaG+GQG8uwcAo=;
+	 In-Reply-To; b=Y6ZIYbADvF358HJJAZER0wkf/rHGoNiANj+iCstQecEh0HPl75zVrnFOxSLosPAiV6E177Bn/FoP1LbOwlNoGoFCjbG6aQhNj6OBjUtBdMm+1d9xsOmfmh/ql27Wouz0UdRsmySxjXJujFvuNm7k/bKIux5V63qc8jWHZztfpBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=XV0Wzw6S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E489C433F1;
+	Wed, 17 Jan 2024 16:04:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1705507446;
+	bh=60VU2dcIMdN0LnwmSLQHz70ySOYSNvUalPN6aiFFDwE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cg8q5AwXagCTazHnxNumnwrFf+WAgr5sBDZUiY8ezKNAtrKILSqRxMR+CndQ9Ifhh
-	 eNyBTx61B6tDNXVm26Bn/phc+03OQoOr/1U5dbLUq9RzCFMdcUFOS0Y1R9KnzS+Mau
-	 SWNckPA2Wv8SxIkDuCnmGEAXRlyuPCA70xZKwI+g4u4WVDARrKVNThMfwiy7n1OKxP
-	 1p4xF9TYod++8bOnI2ZXjHaZN1Oy5YC3CF1+HIHJ7YSQ2P7MiDLftpLJ+yXkavLd9t
-	 FZtVCtou57+4dsJwoGRlweTS8jzGHfWkEppK2lnZUqDWKAVa4qHF6ps9HQcmP1yKms
-	 ZVMVg8dchurng==
-Date: Wed, 17 Jan 2024 17:02:27 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Eric Dumazet <edumazet@google.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	Arjan van de Ven <arjan@infradead.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Rik van Riel <riel@surriel.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Sebastian Siewior <bigeasy@linutronix.de>,
-	Giovanni Gherdovich <ggherdovich@suse.cz>,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v10 03/20] timers: Move marking timer bases idle into
- tick_nohz_stop_tick()
-Message-ID: <Zaf6E61X_l1Bx6Mu@localhost.localdomain>
-References: <20240115143743.27827-1-anna-maria@linutronix.de>
- <20240115143743.27827-4-anna-maria@linutronix.de>
+	b=XV0Wzw6SbMY8QV/wlCcAIDvzFMs9AQvd2F6I1XoO8oaP0hyCSNeB8UjLxFWYGQ6dE
+	 hVN0FqamxWg84g376gpCwTfBEF/cKlihkocEgBX2WRtlV/iJzIwPj+A2bwI3Q6L3+n
+	 7VHWbL4f1f9Uj4XmN/O6X26YVT5js3un7OT+TjE8=
+Date: Wed, 17 Jan 2024 17:04:03 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Johan Hovold <johan@kernel.org>, Sasha Levin <sashal@kernel.org>,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>, hdegoede@redhat.com,
+	fabrice.gasnier@foss.st.com, quic_jackp@quicinc.com,
+	saranya.gopal@intel.com, quic_linyyuan@quicinc.com,
+	andriy.shevchenko@linux.intel.com, minhuadotchen@gmail.com,
+	johan+linaro@kernel.org, robh@kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 6.7 044/108] usb: typec: ucsi: fix UCSI on buggy
+ Qualcomm devices
+Message-ID: <2024011719-riverside-flashcard-0524@gregkh>
+References: <20240116194225.250921-1-sashal@kernel.org>
+ <20240116194225.250921-44-sashal@kernel.org>
+ <ZaeJ8Sh4JLo5GAQw@hovoldconsulting.com>
+ <CAA8EJpoQZc0f2HusJOMa_45bh8Eh=sVg-aOUbNR3S0+oQQQ+MQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240115143743.27827-4-anna-maria@linutronix.de>
+In-Reply-To: <CAA8EJpoQZc0f2HusJOMa_45bh8Eh=sVg-aOUbNR3S0+oQQQ+MQ@mail.gmail.com>
 
-Le Mon, Jan 15, 2024 at 03:37:26PM +0100, Anna-Maria Behnsen a écrit :
-> @@ -889,12 +884,41 @@ static ktime_t tick_nohz_next_event(struct tick_sched *ts, int cpu)
->  static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
->  {
->  	struct clock_event_device *dev = __this_cpu_read(tick_cpu_device.evtdev);
-> +	unsigned long basejiff = ts->last_jiffies;
->  	u64 basemono = ts->timer_expires_base;
-> -	u64 expires = ts->timer_expires;
-> +	bool timer_idle;
-> +	u64 expires;
->  
->  	/* Make sure we won't be trying to stop it twice in a row. */
->  	ts->timer_expires_base = 0;
->  
-> +	/*
-> +	 * Now the tick should be stopped definitely - so the timer base needs
-> +	 * to be marked idle as well to not miss a newly queued timer.
-> +	 */
-> +	expires = timer_base_try_to_set_idle(basejiff, basemono, &timer_idle);
-> +	if (!timer_idle) {
-> +		/*
-> +		 * Do not clear tick_stopped here when it was already set - it
+On Wed, Jan 17, 2024 at 02:17:40PM +0200, Dmitry Baryshkov wrote:
+> On Wed, 17 Jan 2024 at 10:03, Johan Hovold <johan@kernel.org> wrote:
+> >
+> > On Tue, Jan 16, 2024 at 02:39:10PM -0500, Sasha Levin wrote:
+> > > From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > >
+> > > [ Upstream commit 1d103d6af241dbfc7e11eb9a46dff65db257a37f ]
+> > >
+> > > On sevral Qualcomm platforms (SC8180X, SM8350, SC8280XP) a call to
+> > > UCSI_GET_PDOS for non-PD partners will cause a firmware crash with no
+> > > easy way to recover from it. Since we have no easy way to determine
+> > > whether the partner really has PD support, shortcut UCSI_GET_PDOS on
+> > > such platforms. This allows us to enable UCSI support on such devices.
+> > >
+> > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > > Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > > Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+> > > Link: https://lore.kernel.org/r/20231025115620.905538-2-dmitry.baryshkov@linaro.org
+> > > Signed-off-by: Bjorn Andersson <andersson@kernel.org>
+> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> >
+> > Correct me if I'm wrong Dmitry, but while the commit message makes this
+> > sound like a fix, it is not needed unless you backport follow-on patches
+> > that enable UCSI on these platforms.
+> >
+> > So this one can be dropped from all stable queues (unless you're
+> > backporting patches that enable new features and that depend on this
+> > one).
+> 
+> Exactly. It didn't have the Fixes: tag. So I'm completely unsure why
+> it ended up in the autosel queue at all.
 
-Can that really happen? Looking at __get_next_timer_interrupt(), you're making a
-behavioural change: if base->is_idle was previously set and the next timer is
-now below/equal a jiffy, base->is_idle is not going to be cleared by
-__get_next_timer_interrupt().
+Based on the text in the subject and in the changelog, it sure looks
+like a bugfix to me!  Perhaps don't write changelogs that say "fix
+SOMETHING on SOMETHING" next time if they really are not a fix :)
 
-Therefore you shouldn't observe ts->tick_stopped && !timer_idle
+thanks,
 
-But I'm assuming that behavioural change wasn't intended?
-
-> +		 * will be retained on the next idle iteration when the tick
-> +		 * expired earlier than expected.
-
-I'm a bit confused by this sentence.
-
-> +		 */
-> +		expires = basemono + TICK_NSEC;
-
-Do you need this line?
-
-> @@ -1147,11 +1175,6 @@ void tick_nohz_idle_stop_tick(void)
->  void tick_nohz_idle_retain_tick(void)
->  {
->  	tick_nohz_retain_tick(this_cpu_ptr(&tick_cpu_sched));
-
-Looks like the content of tick_nohz_retain_tick() can move here now.
-
-> -	/*
-> -	 * Undo the effect of get_next_timer_interrupt() called from
-> -	 * tick_nohz_next_event().
-> -	 */
-> -	timer_clear_idle();
->  }
-
-Thanks.
+greg k-h
 
