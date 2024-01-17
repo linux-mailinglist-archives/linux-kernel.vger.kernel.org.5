@@ -1,174 +1,186 @@
-Return-Path: <linux-kernel+bounces-29449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29450-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 185F5830E69
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 22:14:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59F62830E6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 22:14:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C436B283DA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 21:14:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1220EB240D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 21:14:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C6F25568;
-	Wed, 17 Jan 2024 21:14:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="eiqWlZTS"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8EE225563;
+	Wed, 17 Jan 2024 21:14:41 +0000 (UTC)
+Received: from mail.wantstofly.org (hmm.wantstofly.org [213.239.204.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 072862555B;
-	Wed, 17 Jan 2024 21:14:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BF322561B;
+	Wed, 17 Jan 2024 21:14:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.239.204.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705526045; cv=none; b=AhcZTk2EzTEtajS45n5HQX4v4VuSti2OQno8ZP4gEntDEi5W12RD20iow3dJLbSZqkdSZKsFXvWNQmGoftnDSIzb+SP30bCgYJQL/+AdNit5bRBfvB3x00lbHs7arU62AGrRLuhaioQP7r7nSicYAZaoeVc8wJt6fQtMJ4LEBNc=
+	t=1705526081; cv=none; b=DwCB3MzUs6rhDdFlZF9kiv8WkDfHWk56fD9TxMdlw80StJfQmZJYqgKHRTgBH5rUGhM7NzU/DF2ddBD3xYWzhyO5k1kTqcHqc0lEv8+Rt5iJTOMYJxogo5lk2z2FUM366rCU9/UpTYpIwsExB0HHzxM9zBBhtM7NHVzsN97QNF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705526045; c=relaxed/simple;
-	bh=lq7fwNY+8BklN0z0pETnNfRZRTZ+/oGKQ0bwnLkh5PE=;
-	h=Received:DKIM-Signature:Received:Received:Received:From:To:CC:
-	 Subject:Date:Message-ID:X-Mailer:MIME-Version:Content-Type:
-	 X-Originating-IP:X-ClientProxiedBy:X-QCInternal:
-	 X-Proofpoint-Virus-Version:X-Proofpoint-GUID:
-	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Virus-Version:
-	 X-Proofpoint-Spam-Details; b=CCBIJEoBkTi6C6YZIpDDzvwOQ0EUPy9zWMJpQ74wmxs6Uca+l6kgLtaLAs7ZVtedl46f8ATm5QrLQmNPiEsCDre/yhGgrmq5C50kcMzetJsIRGyiPV7Cm0cZghCsVlYYrWH5vZPHAq8z5qlZYJsPjTlTXa0+hGoVGGZUfFjpqT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=eiqWlZTS; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40HLA63A011740;
-	Wed, 17 Jan 2024 21:13:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=bQDgy9xDLgmnYLFuYDo7Y/1XGAsi2c5U1sJTHjU5QmM=; b=ei
-	qWlZTSbn+wlI+Mn4d+EvM2Qy2vRwM350b+H67blizbMmX7Ffl0ElVZrnBIx/ZamN
-	qxRmLm899oQiGjepwzLD0pLlumia0xsukYvgRi19rgKpLj3ZyRi1MNKh4aZps+RN
-	Zd1tEZDpA5hUnw8+TtSlEr+pKFaj1bslAitbFQk3nZXfDCuCrKb0L9fyilrtnYOh
-	h9FKteRp4he18id60rHXanrsSQm0vmX5LPzY27X0wW6AHNvv+xMBwILE1vBZ82M4
-	q7lz0/BX/10F31RSThk1Ehts7CrZsWXWdOGif9HnDCV+A9oZ9aA4svgdQYF7kYL7
-	DMXRcFsV88dEvBTTCSKA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vp6p3t703-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 21:13:38 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40HLDckP023566
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 21:13:38 GMT
-Received: from khsieh-linux1.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 17 Jan 2024 13:13:37 -0800
-From: Kuogee Hsieh <quic_khsieh@quicinc.com>
-To: <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
-        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
-        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
-        <agross@kernel.org>, <dmitry.baryshkov@linaro.org>,
-        <andersson@kernel.org>
-CC: Kuogee Hsieh <quic_khsieh@quicinc.com>, <quic_abhinavk@quicinc.com>,
-        <quic_jesszhan@quicinc.com>, <quic_sbillaka@quicinc.com>,
-        <marijn.suijten@somainline.org>, <freedreno@lists.freedesktop.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3] drm/msm/dp: return correct Colorimetry for DP_TEST_DYNAMIC_RANGE_CEA case
-Date: Wed, 17 Jan 2024 13:13:30 -0800
-Message-ID: <1705526010-597-1-git-send-email-quic_khsieh@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+	s=arc-20240116; t=1705526081; c=relaxed/simple;
+	bh=uZZZcDpaYstX/m9EAYE17yFQT4QDVYHscrtHVl/4fIQ=;
+	h=Received:Date:From:To:Cc:Subject:Message-ID:References:
+	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=J2baWErXdEhW4nDtUSd469MMBuIcn9hrSInQ0N5ysBYAiUaIuv1oLIwy2HrOJw4x4xUK6JPpQojQK5CAT09X0X6jcQWduVXZDbybu8SCxS4jLkGY7b94x58CWRJNLSKmhxc3Cp9a7TDVrNpUlgLLPLuwc+OBC99BBxqRAdZEpcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wantstofly.org; spf=pass smtp.mailfrom=wantstofly.org; arc=none smtp.client-ip=213.239.204.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wantstofly.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wantstofly.org
+Received: by mail.wantstofly.org (Postfix, from userid 1000)
+	id 06BAA7F5DA; Wed, 17 Jan 2024 23:14:30 +0200 (EET)
+Date: Wed, 17 Jan 2024 23:14:30 +0200
+From: Lennert Buytenhek <kernel@wantstofly.org>
+To: Niklas Cassel <cassel@kernel.org>
+Cc: Damien Le Moal <dlemoal@kernel.org>, linux-ide@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: ASMedia ASM1062 (AHCI) hang after "ahci 0000:28:00.0: Using
+ 64-bit DMA addresses"
+Message-ID: <ZahDNr97MSPNSHW_@wantstofly.org>
+References: <ZaZ2PIpEId-rl6jv@wantstofly.org>
+ <ZaaQpiW3OOZTSyXw@x1-carbon>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Fzn28BTqKuncmYkGgN8Wug8X72hDAS6b
-X-Proofpoint-ORIG-GUID: Fzn28BTqKuncmYkGgN8Wug8X72hDAS6b
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-17_12,2024-01-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- phishscore=0 clxscore=1015 priorityscore=1501 bulkscore=0 impostorscore=0
- adultscore=0 mlxlogscore=999 lowpriorityscore=0 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2401170150
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZaaQpiW3OOZTSyXw@x1-carbon>
 
-MSA MISC0 bit 1 to 7 contains Colorimetry Indicator Field.
-dp_link_get_colorimetry_config() returns wrong colorimetry value
-in the DP_TEST_DYNAMIC_RANGE_CEA case in the current implementation.
-Hence fix this problem by having dp_link_get_colorimetry_config()
-return defined CEA RGB colorimetry value in the case of
-DP_TEST_DYNAMIC_RANGE_CEA.
+On Tue, Jan 16, 2024 at 03:20:23PM +0100, Niklas Cassel wrote:
 
-Changes in V2:
--- drop retrieving colorimetry from colorspace
--- drop dr = link->dp_link.test_video.test_dyn_range assignment
+> Hello Lennert,
 
-Changes in V3:
--- move defined MISCr0a Colorimetry vale to dp_reg.h
--- rewording commit title
--- rewording commit text to more precise describe this patch
+Hi Niklas,
 
-Fixes: c943b4948b58 ("drm/msm/dp: add displayPort driver support")
-Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
----
- drivers/gpu/drm/msm/dp/dp_link.c | 12 +++++++-----
- drivers/gpu/drm/msm/dp/dp_reg.h  |  3 +++
- 2 files changed, 10 insertions(+), 5 deletions(-)
+Thanks for your reply!
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_link.c b/drivers/gpu/drm/msm/dp/dp_link.c
-index 98427d4..5284e48 100644
---- a/drivers/gpu/drm/msm/dp/dp_link.c
-+++ b/drivers/gpu/drm/msm/dp/dp_link.c
-@@ -7,6 +7,7 @@
- 
- #include <drm/drm_print.h>
- 
-+#include "dp_reg.h"
- #include "dp_link.h"
- #include "dp_panel.h"
- 
-@@ -1082,7 +1083,7 @@ int dp_link_process_request(struct dp_link *dp_link)
- 
- int dp_link_get_colorimetry_config(struct dp_link *dp_link)
- {
--	u32 cc;
-+	u32 cc = DP_MISC0_COLORIMERY_CFG_LEGACY_RGB;
- 	struct dp_link_private *link;
- 
- 	if (!dp_link) {
-@@ -1096,10 +1097,11 @@ int dp_link_get_colorimetry_config(struct dp_link *dp_link)
- 	 * Unless a video pattern CTS test is ongoing, use RGB_VESA
- 	 * Only RGB_VESA and RGB_CEA supported for now
- 	 */
--	if (dp_link_is_video_pattern_requested(link))
--		cc = link->dp_link.test_video.test_dyn_range;
--	else
--		cc = DP_TEST_DYNAMIC_RANGE_VESA;
-+	if (dp_link_is_video_pattern_requested(link)) {
-+		if (link->dp_link.test_video.test_dyn_range &
-+					DP_TEST_DYNAMIC_RANGE_CEA)
-+			cc = DP_MISC0_COLORIMERY_CFG_CEA_RGB;
-+	}
- 
- 	return cc;
- }
-diff --git a/drivers/gpu/drm/msm/dp/dp_reg.h b/drivers/gpu/drm/msm/dp/dp_reg.h
-index ea85a69..78785ed 100644
---- a/drivers/gpu/drm/msm/dp/dp_reg.h
-+++ b/drivers/gpu/drm/msm/dp/dp_reg.h
-@@ -143,6 +143,9 @@
- #define DP_MISC0_COLORIMETRY_CFG_SHIFT		(0x00000001)
- #define DP_MISC0_TEST_BITS_DEPTH_SHIFT		(0x00000005)
- 
-+#define DP_MISC0_COLORIMERY_CFG_LEGACY_RGB	(0)
-+#define DP_MISC0_COLORIMERY_CFG_CEA_RGB		(0x04)
-+
- #define REG_DP_VALID_BOUNDARY			(0x00000030)
- #define REG_DP_VALID_BOUNDARY_2			(0x00000034)
- 
--- 
-2.7.4
 
+> > On kernel 6.6.x, with an ASMedia ASM1062 (AHCI) controller, on an
+
+Minor correction to this: lspci says that this is an ASM1062, but it's
+actually an ASM1061.  I think that the two parts share a PCI device ID,
+and I've submitted a PCI ID DB change here:
+
+https://admin.pci-ids.ucw.cz/read/PC/1b21/0612
+
+
+> > ASUSTeK Pro WS WRX80E-SAGE SE WIFI mainboard, PCI ID 1b21:0612 and
+> > subsystem ID 1043:858d, I got a total apparent controller hang,
+> > rendering the two attached SATA devices unavailable, that was
+> > immediately preceded by the following kernel messages:
+> > 
+> > [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: Using 64-bit DMA addresses
+> > [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00000 flags=0x0000]
+> > [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00300 flags=0x0000]
+> > [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00380 flags=0x0000]
+> > [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00400 flags=0x0000]
+> > [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00680 flags=0x0000]
+> > [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00700 flags=0x0000]
+> > 
+> > It seems as if the controller has problems with 64-bit DMA addresses,
+> > and the comments around the source of the message in
+> > drivers/iommu/dma-iommu.c seem to point into that same direction:
+> > 
+> >         /*
+> >          * Try to use all the 32-bit PCI addresses first. The original SAC vs.
+> >          * DAC reasoning loses relevance with PCIe, but enough hardware and
+> >          * firmware bugs are still lurking out there that it's safest not to
+> >          * venture into the 64-bit space until necessary.
+> >          *
+> >          * If your device goes wrong after seeing the notice then likely either
+> >          * its driver is not setting DMA masks accurately, the hardware has
+> >          * some inherent bug in handling >32-bit addresses, or not all the
+> >          * expected address bits are wired up between the device and the IOMMU.
+> >          */
+> >         if (dma_limit > DMA_BIT_MASK(32) && dev->iommu->pci_32bit_workaround) {
+> >                 iova = alloc_iova_fast(iovad, iova_len,
+> >                                        DMA_BIT_MASK(32) >> shift, false);
+> >                 if (iova)
+> >                         goto done;
+> > 
+> >                 dev->iommu->pci_32bit_workaround = false;
+> >                 dev_notice(dev, "Using %d-bit DMA addresses\n", bits_per(dma_limit));
+> >         }
+> 
+> The DMA mask is set here:
+> https://github.com/torvalds/linux/blob/v6.7/drivers/ata/ahci.c#L967
+> 
+> And should be called using:
+> hpriv->cap & HOST_CAP_64
+> https://github.com/torvalds/linux/blob/v6.7/drivers/ata/ahci.c#L1929
+> 
+> Where hpriv->cap is capabilities reported by the AHCI controller itself.
+> So it definitely seems like your controller supports 64-bit addressing.
+
+Perhaps, or maybe it's misreporting its capabilities, as it is an old
+part (from 2011 or before), and given that it doesn't seem to support
+64-bit MSI addressing, either, which for a part with a 64-bit DMA engine
+would be an odd restriction:
+
+# lspci -s 28:00.0 -vv | grep -A1 MSI:
+        Capabilities: [50] MSI: Enable+ Count=1/1 Maskable- 64bit-
+                Address: fee00000  Data: 0000
+#
+
+(I checked the available datasheets, but there is no mention of whether
+or not the part supports 64-bit DMA.)
+
+
+> I guess it could be some problem with your BIOS.
+> Have you tried updating your BIOS?
+
+The machine is running the latest BIOS available from the vendor at
+the time of this writing, version 1201:
+
+# dmidecode | grep -A2 "^BIOS Information"
+BIOS Information
+        Vendor: American Megatrends Inc.
+        Version: 1201
+#
+
+Per:
+
+	https://www.asus.com/motherboards-components/motherboards/workstation/pro-ws-wrx80e-sage-se-wifi/helpdesk_bios?model2Name=Pro-WS-WRX80E-SAGE-SE-WIFI
+
+However, some Googling suggests that the ASM106x loads its own firmware
+from a directly attached SPI flash chip, and there are several versions
+of this firmware available in the wild, with different versions of the
+firmware apparently available for legacy IDE mode and for AHCI mode.  If
+(some of) the AHCI logic is indeed contained inside the firmware, I
+could see a firmware bug leading to the controller incorrectly presenting
+itself as being 64-bit DMA capable.
+
+Some poking around in the BIOS image suggests that there is no copy of
+the ASM106x firmware inside the BIOS image.  In other words, it could be
+that, even though the machine is running the latest available BIOS, the
+ASM1061 might be running an older firmware version.
+
+The ASM1061 firmware does not seem to be readable from software via a
+ROM BAR, and it doesn't seem to readable from software in general (the
+vendor-supplied DOS .exe updater tool only allows you to erase or
+update the SPI flash), so I can't check which firmware version it is
+currently using.
+
+
+> If that does not work, perhaps you could try this (completely untested) patch:
+> (You might need to modify the strings to match the exact strings reported by
+> your BIOS.)
+
+Thanks for the patch!
+
+I will do some tests with PCI passthrough to a VM, to see whether, and if
+it does, exactly how the controller mangles DMA addresses.
+
+I've also ordered a discrete PCIe card with an ASM1061 chip on it, and I
+will perform similar tests with that card, to see exactly where the issue
+is, i.e. whether it is specific to this mainboard or not.
+
+I will follow up once I will have more information.
+
+Kind regards,
+Lennert
 
