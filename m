@@ -1,444 +1,171 @@
-Return-Path: <linux-kernel+bounces-29195-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29196-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03204830AA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:13:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 265E2830AB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:13:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A297D28B70A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:13:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FE481F29CDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB48622337;
-	Wed, 17 Jan 2024 16:08:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56C26224DD;
+	Wed, 17 Jan 2024 16:11:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="CKTeIh6F"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VJtyq7rU"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADC7A25555
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 16:08:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 952302231C
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 16:11:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705507724; cv=none; b=V02ozUhUCw/jf9SEJUqgjjuvvPtgPP58sm8csqB4ueiSSJMsSl9inbgvTNz/hLjjbJEnSIewEspbY6VumHO3qBCxckHx5MVxYCz4HyZIL1KdDbdN+kZusFhaFZqgp32cUlKMTRYtKKw7MhGMwAzefEt928nJDfexdtl5T6KgvAA=
+	t=1705507910; cv=none; b=bN1sqq4qXus2GFkMnMF/gLRDIaPhk5uHA0OQIfl3alCKBdv4hYvtbm4U8BKvp8NGs9/zDpSEzbEUTZxKK3521ND0nekH+Kr8ujhpRPtopRoAIY+JQLvOch6ZdPRQb1VFnQozLu9cU1IGyTTH69XgljLXgF5UUhP6GBb/dyKSSWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705507724; c=relaxed/simple;
-	bh=WFyrJs1id+9YZIOtZ6FpABayALnwskaiuM+TVLg1sSM=;
+	s=arc-20240116; t=1705507910; c=relaxed/simple;
+	bh=dQUa+ynEVxPBJ1mLZg+emq2IoeEU/beREy4ePffoRTA=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
-	 To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding; b=Qf9bftM4GxkPZD2QxAdE9+FKOR/C0ftBwsyRyF+CHV3OmEOQvb0QdH+N7JfhNE2d2wJfPiw6San2fkGKf8VnlAN/AQQliuJE2MZnv1k/r8wmEUyCRVMoTco+DVMkfmgCmVk+k8ZYkCy0sNw8acUgFdvR6T20TtvdPogx0oG/H08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=CKTeIh6F; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3376555b756so6254080f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 08:08:42 -0800 (PST)
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=ApuhL9f36lq0ZD5QlRuKDxt5D8D3D9Jmc4sLgovSCO5+HJo56qTT8ZPHHItwvldq4VdWDMtQbkjoj9+aTilD5ORJCVy5oOeVC6vO8HtQa35AWlwRlowjid49WVl8xEsafQnIJZwjZ9W4O6aHrdq3oWVeK0u+Sn+e0z/uBlttTlY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VJtyq7rU; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5cd51c0e8ebso5818655a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 08:11:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1705507721; x=1706112521; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1705507908; x=1706112708; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=csdPOquKgbyta51Uec8uuMPVMGRbxtZFd+25sTlPk8k=;
-        b=CKTeIh6FgfS8dDceOOxEBjqu3PRAv17lJIOP54BEuwvcxXccpqnOLWxOdzt+YDtDG8
-         wWuTkW1p5J/6jBLzu3E2d1gvi2+C1RwvW/DPuCOW/9gUGW1Wyvz3gJ8N+o3x1yV5OCjf
-         jRUcdN4kfjKmjFz+l+B80tyaLZ4A4rVOy2o35bDf0udWi1E5GAa6ePzCNwI0IIDxdlyJ
-         4V2Wf0+mH5BWdGsyDnHKFalAGUWCh0Xr9km5ZzV64RP6uwr4kmpB0ORuSRmrW+MEYzLn
-         feTz4qru4FCDL5M9Em21tWR+fPqH6J7pmHvwQiHbz2GHR4rD6qEWg4+lBlhPhoZ+ILEl
-         PpuQ==
+        bh=drJWjvb+yQYbOubeqxcSCSSS8No8nI+honzyTfQXeuM=;
+        b=VJtyq7rUFgrt0k2pMwGAT+VOygyyxm79vszaYbcwAgera96aijYqrtjXp+EON8HxyI
+         0Q8EotMW5THkk7NSzy1hH0bkPwY7zP1onEnCygKFE9ZMlH1vlR3/9wSiB+gVXOc3nUfA
+         BVgF499nHkHUV73Pxn89sBn/Rrfq39fFfmw4Krq7iO9C97QXC+PmYOEmm+GyJaSvWIhT
+         flJXKq5a77K3Th0q4nx6YNvYF7sazyRhBULlovkqNqXQ6YIRNIY745T1oiVjYhDfslEJ
+         lipBiQQLznPFMvdajPT+/oSKYrfdW+QeLvQviFlIcAG5x1m3eVsDL+pfaEiAbpRRuvKZ
+         10dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705507721; x=1706112521;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1705507908; x=1706112708;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=csdPOquKgbyta51Uec8uuMPVMGRbxtZFd+25sTlPk8k=;
-        b=wAAoVAxFK9GTwPoTrArI7qKE7KOyRrtHmVMSpmDNm49j7Czd2o1HLsHt0d2VNfrCZu
-         VkqyezHRm6HmartLYVRi49dTSE8FTeO49O3uOADK2a/3rBYKJAuFg5ybriJk+ulBZ8JP
-         Vxc1rcUmeJteWqrzSZs7tF4fDUh2k/TfLAxYeF7ovQ/pb86ry7/mqO3ZPnA+Ag/DEEIU
-         yvf8Pr0bptsQ2YCYyAzuR+GF8w0iWyh2uUfZjz8nDNl+mqQZKK/xaI8MKqS5Z94smWR2
-         Szj5FkEbIiquQ7nUGLPi+/hXO7C9uw7bwwbmitmjLh9aXXZPZo1HBLMC4pCA7YRUSsjA
-         AeJA==
-X-Gm-Message-State: AOJu0Yw/BokYxTuNmB/pamJZ5dBa5COEXbUO+D+lRMq4bFYkBPp5TjAy
-	xKeXiksN+Wd/VQhzXE5hkWcHZye+5QkZHf8FaFgzWTlHrloxoxiXqnc8EYseRkM=
-X-Google-Smtp-Source: AGHT+IE8hEEtpTYbJU01ZoUcCZSKPg5Q30PyVE7OMBk7WjjvUlXJokzoqSuozUEKiQC6pE+bjmyMZA==
-X-Received: by 2002:adf:ab09:0:b0:337:7b7a:6540 with SMTP id q9-20020adfab09000000b003377b7a6540mr591631wrc.5.1705507721046;
-        Wed, 17 Jan 2024 08:08:41 -0800 (PST)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:d0b5:43ec:48:baad])
-        by smtp.gmail.com with ESMTPSA id t10-20020a5d6a4a000000b00337b0374a3dsm1972092wrw.57.2024.01.17.08.08.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 08:08:40 -0800 (PST)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Kalle Valo <kvalo@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Chris Morgan <macromorgan@hotmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	=?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= <nfraprado@collabora.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Peng Fan <peng.fan@nxp.com>,
-	Robert Richter <rrichter@amd.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Terry Bowman <terry.bowman@amd.com>,
-	Lukas Wunner <lukas@wunner.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Alex Elder <elder@linaro.org>,
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Abel Vesa <abel.vesa@linaro.org>
-Cc: linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-pci@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH 9/9] PCI/pwrseq: add a pwrseq driver for QCA6390
-Date: Wed, 17 Jan 2024 17:07:48 +0100
-Message-Id: <20240117160748.37682-10-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240117160748.37682-1-brgl@bgdev.pl>
-References: <20240117160748.37682-1-brgl@bgdev.pl>
+        bh=drJWjvb+yQYbOubeqxcSCSSS8No8nI+honzyTfQXeuM=;
+        b=SwI6ymIfu0KGibbb6nEPCulpaomyKiZjxrgIESLUntCBlNlj80uLr3AYvn+IKekH3G
+         Q9iwu8J3vOXG4Rvv7VBMHsBTJ/ZFck9vci52+g+0fCAOigndLILzOALVvQj+RxQODXGL
+         +27hOuy6aCffVfhlGFfI5cL14koSfc0OXXtZcV/9joqY9kP340+8dOc1XgtPvKVum5iR
+         jfvsBlRBO0+bpinhk1TIECt+TAINC4ZvW4WiTDtGEDSMHwucwoWY5WH4g1NOdvaHfTvT
+         rWQiekmDbomLAbsj3sz5menkeEkWze+vkDtULUzB9qiTwOp6Bgrk8E5OGBWRmYLVSVai
+         I/rg==
+X-Gm-Message-State: AOJu0YzFutX3VpohZClv1USj3o9zxAKjqXntHNrRgucn7rSkr9kYpw1s
+	0BtE0CeTihGjtAJgU0wVY3DsLHMPtseJJAnh7WtR3RfQkX7G4A==
+X-Google-Smtp-Source: AGHT+IF/BkPqfcI7s6qu0WKHY8iBQUPv+9/611flmwtBk2+/CmUzDdGw9MwVL258kmnYaNPMuijP+jQO6OHgZTgpXiA=
+X-Received: by 2002:a17:90b:1996:b0:28e:2d7e:7cd6 with SMTP id
+ mv22-20020a17090b199600b0028e2d7e7cd6mr3076285pjb.14.1705507907883; Wed, 17
+ Jan 2024 08:11:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240109125814.3691033-1-tudor.ambarus@linaro.org>
+ <20240109125814.3691033-8-tudor.ambarus@linaro.org> <CAPLW+4=y12fBf47v_HKfBdHTsQJfWo2cwBuFosUKo3xPBqcKJw@mail.gmail.com>
+ <f394e372-dbfd-4fd5-b5c8-23c383cb6cf2@linaro.org>
+In-Reply-To: <f394e372-dbfd-4fd5-b5c8-23c383cb6cf2@linaro.org>
+From: Sam Protsenko <semen.protsenko@linaro.org>
+Date: Wed, 17 Jan 2024 10:11:36 -0600
+Message-ID: <CAPLW+4nc1GDJHZ=-+R1+aEAMzoU_OpAX37Ke84qqg66xbjC9eA@mail.gmail.com>
+Subject: Re: [PATCH v3 07/12] clk: samsung: gs101: add support for cmu_peric0
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: peter.griffin@linaro.org, krzysztof.kozlowski+dt@linaro.org, 
+	gregkh@linuxfoundation.org, mturquette@baylibre.com, sboyd@kernel.org, 
+	robh+dt@kernel.org, conor+dt@kernel.org, andi.shyti@kernel.org, 
+	alim.akhtar@samsung.com, jirislaby@kernel.org, s.nawrocki@samsung.com, 
+	tomasz.figa@gmail.com, cw00.choi@samsung.com, 
+	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	linux-serial@vger.kernel.org, andre.draszik@linaro.org, 
+	kernel-team@android.com, willmcvicker@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Wed, Jan 17, 2024 at 8:49=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro=
+org> wrote:
+>
+> Hi, Sam,
+>
+> Thanks for reviewing the series!
+>
+> On 1/16/24 17:42, Sam Protsenko wrote:
+>
+> cut
+>
+> >> Few clocks are marked as critical because when either of them is
+> >> disabled, the system hangs even if their clock parents are enabled.
+> >>
+> >> Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
+> >> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> >> ---
+> cut
+> >>
+> >> diff --git a/drivers/clk/samsung/clk-gs101.c b/drivers/clk/samsung/clk=
+-gs101.c
+> >> index 782993951fff..f3f0f5feb28d 100644
+> >> --- a/drivers/clk/samsung/clk-gs101.c
+> >> +++ b/drivers/clk/samsung/clk-gs101.c
+>
+> cut
+>
+> >> +static const struct samsung_gate_clock peric0_gate_clks[] __initconst=
+ =3D {
+> >> +       /* Disabling this clock makes the system hang. Mark the clock =
+as critical. */
+> >> +       GATE(CLK_GOUT_PERIC0_PERIC0_CMU_PERIC0_PCLK,
+> >> +            "gout_peric0_peric0_cmu_peric0_pclk", "mout_peric0_bus_us=
+er",
+> >> +            CLK_CON_GAT_CLK_BLK_PERIC0_UID_PERIC0_CMU_PERIC0_IPCLKPOR=
+T_PCLK,
+> >> +            21, CLK_IS_CRITICAL, 0),
+> > Why not just CLK_IGNORE_UNUSED? As I understand this gate clock can be
+>
+> When either of the clocks that I marked as critical is disabled, the
+> system hangs, even if their clock parent is enabled. I tested this by
+> enabling the clock debugfs with write permissions. I prepared-enabled
+> the parent clock to increase their user count so that when the child
+> gets disabled to not disable the parent as well. When disabling the
+> child the system hung, even if its parent was enabled. Thus I considered
+> that the child is critical. I mentioned this in the commit message as
+> well. Please tell if get this wrong.
+>
 
-Add a PCI power sequencing driver that's capable of correctly powering
-up the ath11k module on QCA6390 and WCN7850 using the PCI pwrseq
-functionality.
+Ok, if you already tested this particular clock with CLK_IGNORE_UNUSED
+and it didn't help:
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-[Neil: add support for WCN7850]
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- drivers/pci/pwrseq/Kconfig              |   8 +
- drivers/pci/pwrseq/Makefile             |   1 +
- drivers/pci/pwrseq/pci-pwrseq-qca6390.c | 267 ++++++++++++++++++++++++
- 3 files changed, 276 insertions(+)
- create mode 100644 drivers/pci/pwrseq/pci-pwrseq-qca6390.c
+Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
 
-diff --git a/drivers/pci/pwrseq/Kconfig b/drivers/pci/pwrseq/Kconfig
-index a721a8a955c3..667c9c121f34 100644
---- a/drivers/pci/pwrseq/Kconfig
-+++ b/drivers/pci/pwrseq/Kconfig
-@@ -5,4 +5,12 @@ menu "PCI Power sequencing drivers"
- config PCI_PWRSEQ
- 	bool
- 
-+config PCI_PWRSEQ_QCA6390
-+	tristate "PCI Power Sequencing driver for QCA6390"
-+	select PCI_PWRSEQ
-+	default (ATH11K_PCI && ARCH_QCOM)
-+	help
-+	  Enable support for the PCI power sequencing driver for the
-+	  ath11k module of the QCA6390 WLAN/BT chip.
-+
- endmenu
-diff --git a/drivers/pci/pwrseq/Makefile b/drivers/pci/pwrseq/Makefile
-index 4052b6bb5aa5..5cf8cce01e82 100644
---- a/drivers/pci/pwrseq/Makefile
-+++ b/drivers/pci/pwrseq/Makefile
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- obj-$(CONFIG_PCI_PWRSEQ)		+= pwrseq.o
-+obj-$(CONFIG_PCI_PWRSEQ_QCA6390)	+= pci-pwrseq-qca6390.o
-diff --git a/drivers/pci/pwrseq/pci-pwrseq-qca6390.c b/drivers/pci/pwrseq/pci-pwrseq-qca6390.c
-new file mode 100644
-index 000000000000..cdf3639ea29f
---- /dev/null
-+++ b/drivers/pci/pwrseq/pci-pwrseq-qca6390.c
-@@ -0,0 +1,267 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2023 Linaro Ltd.
-+ */
-+
-+#include <linux/bitmap.h>
-+#include <linux/clk.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/pci-pwrseq.h>
-+#include <linux/platform_device.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/slab.h>
-+#include <linux/types.h>
-+
-+struct pci_pwrseq_qca6390_vreg {
-+	const char *name;
-+	unsigned int load_uA;
-+};
-+
-+struct pci_pwrseq_qca6390_pdata {
-+	struct pci_pwrseq_qca6390_vreg *vregs;
-+	size_t num_vregs;
-+	unsigned int delay_msec;
-+};
-+
-+struct pci_pwrseq_qca6390_ctx {
-+	struct pci_pwrseq pwrseq;
-+	const struct pci_pwrseq_qca6390_pdata *pdata;
-+	struct regulator_bulk_data *regs;
-+	struct gpio_descs *en_gpios;
-+	unsigned long *en_gpios_values;
-+	struct clk *clk;
-+};
-+
-+static struct pci_pwrseq_qca6390_vreg pci_pwrseq_qca6390_vregs[] = {
-+	{
-+		.name = "vddio",
-+		.load_uA = 20000,
-+	},
-+	{
-+		.name = "vddaon",
-+		.load_uA = 100000,
-+	},
-+	{
-+		.name = "vddpmu",
-+		.load_uA = 1250000,
-+	},
-+	{
-+		.name = "vddpcie1",
-+		.load_uA = 35000,
-+	},
-+	{
-+		.name = "vddpcie2",
-+		.load_uA = 15000,
-+	},
-+	{
-+		.name = "vddrfa1",
-+		.load_uA = 200000,
-+	},
-+	{
-+		.name = "vddrfa2",
-+		.load_uA = 400000,
-+	},
-+	{
-+		.name = "vddrfa3",
-+		.load_uA = 400000,
-+	},
-+};
-+
-+static struct pci_pwrseq_qca6390_pdata pci_pwrseq_qca6390_of_data = {
-+	.vregs = pci_pwrseq_qca6390_vregs,
-+	.num_vregs = ARRAY_SIZE(pci_pwrseq_qca6390_vregs),
-+	.delay_msec = 16,
-+};
-+
-+static struct pci_pwrseq_qca6390_vreg pci_pwrseq_wcn7850_vregs[] = {
-+	{
-+		.name = "vdd",
-+	},
-+	{
-+		.name = "vddio",
-+	},
-+	{
-+		.name = "vddio12",
-+	},
-+	{
-+		.name = "vddaon",
-+	},
-+	{
-+		.name = "vdddig",
-+	},
-+	{
-+		.name = "vddrfa1",
-+	},
-+	{
-+		.name = "vddrfa2",
-+	},
-+};
-+
-+static struct pci_pwrseq_qca6390_pdata pci_pwrseq_wcn7850_of_data = {
-+	.vregs = pci_pwrseq_wcn7850_vregs,
-+	.num_vregs = ARRAY_SIZE(pci_pwrseq_wcn7850_vregs),
-+	.delay_msec = 50,
-+};
-+
-+static int pci_pwrseq_qca6390_power_on(struct pci_pwrseq_qca6390_ctx *ctx)
-+{
-+	int ret;
-+
-+	ret = regulator_bulk_enable(ctx->pdata->num_vregs, ctx->regs);
-+	if (ret)
-+		return ret;
-+
-+	ret = clk_prepare_enable(ctx->clk);
-+	if (ret)
-+		return ret;
-+
-+	bitmap_fill(ctx->en_gpios_values, ctx->en_gpios->ndescs);
-+
-+	ret = gpiod_set_array_value_cansleep(ctx->en_gpios->ndescs,
-+					     ctx->en_gpios->desc,
-+					     ctx->en_gpios->info,
-+					     ctx->en_gpios_values);
-+	if (ret) {
-+		regulator_bulk_disable(ctx->pdata->num_vregs, ctx->regs);
-+		return ret;
-+	}
-+
-+	if (ctx->pdata->delay_msec)
-+		msleep(ctx->pdata->delay_msec);
-+
-+	return 0;
-+}
-+
-+static int pci_pwrseq_qca6390_power_off(struct pci_pwrseq_qca6390_ctx *ctx)
-+{
-+	int ret;
-+
-+	bitmap_zero(ctx->en_gpios_values, ctx->en_gpios->ndescs);
-+
-+	ret = gpiod_set_array_value_cansleep(ctx->en_gpios->ndescs,
-+					     ctx->en_gpios->desc,
-+					     ctx->en_gpios->info,
-+					     ctx->en_gpios_values);
-+	if (ret)
-+		return ret;
-+
-+	clk_disable_unprepare(ctx->clk);
-+
-+	return regulator_bulk_disable(ctx->pdata->num_vregs, ctx->regs);
-+}
-+
-+static void devm_pci_pwrseq_qca6390_power_off(void *data)
-+{
-+	struct pci_pwrseq_qca6390_ctx *ctx = data;
-+
-+	pci_pwrseq_qca6390_power_off(ctx);
-+}
-+
-+static int pci_pwrseq_qca6390_probe(struct platform_device *pdev)
-+{
-+	struct pci_pwrseq_qca6390_ctx *ctx;
-+	struct device *dev = &pdev->dev;
-+	int ret, i;
-+
-+	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
-+	if (!ctx)
-+		return -ENOMEM;
-+
-+	ctx->pdata = of_device_get_match_data(dev);
-+	if (!ctx->pdata)
-+		return dev_err_probe(dev, -ENODEV,
-+				     "Failed to obtain platform data\n");
-+
-+	if (ctx->pdata->vregs) {
-+		ctx->regs = devm_kcalloc(dev, ctx->pdata->num_vregs,
-+					 sizeof(*ctx->regs), GFP_KERNEL);
-+		if (!ctx->regs)
-+			return -ENOMEM;
-+
-+		for (i = 0; i < ctx->pdata->num_vregs; i++)
-+			ctx->regs[i].supply = ctx->pdata->vregs[i].name;
-+
-+		ret = devm_regulator_bulk_get(dev, ctx->pdata->num_vregs,
-+					      ctx->regs);
-+		if (ret < 0)
-+			return dev_err_probe(dev, ret,
-+					     "Failed to get all regulators\n");
-+
-+		for (i = 0; i < ctx->pdata->num_vregs; i++) {
-+			if (!ctx->pdata->vregs[1].load_uA)
-+				continue;
-+
-+			ret = regulator_set_load(ctx->regs[i].consumer,
-+						 ctx->pdata->vregs[i].load_uA);
-+			if (ret)
-+				return dev_err_probe(dev, ret,
-+						     "Failed to set vreg load\n");
-+		}
-+	}
-+
-+	ctx->clk = devm_clk_get_optional(dev, NULL);
-+	if (IS_ERR(ctx->clk))
-+		return dev_err_probe(dev, PTR_ERR(ctx->clk),
-+				     "Failed to get clock\n");
-+
-+	ctx->en_gpios = devm_gpiod_get_array_optional(dev, "enable",
-+						      GPIOD_OUT_LOW);
-+	if (IS_ERR(ctx->en_gpios))
-+		return dev_err_probe(dev, PTR_ERR(ctx->en_gpios),
-+				     "Failed to get enable GPIOs\n");
-+
-+	ctx->en_gpios_values = devm_bitmap_zalloc(dev, ctx->en_gpios->ndescs,
-+						  GFP_KERNEL);
-+	if (!ctx->en_gpios_values)
-+		return -ENOMEM;
-+
-+	ret = pci_pwrseq_qca6390_power_on(ctx);
-+	if (ret)
-+		return dev_err_probe(dev, ret,
-+				     "Failed to power on the device\n");
-+
-+	ret = devm_add_action_or_reset(dev, devm_pci_pwrseq_qca6390_power_off,
-+				       ctx);
-+	if (ret)
-+		return ret;
-+
-+	ctx->pwrseq.dev = dev;
-+
-+	ret = devm_pci_pwrseq_device_enable(dev, &ctx->pwrseq);
-+	if (ret)
-+		return dev_err_probe(dev, ret,
-+				     "Failed to register the pwrseq wrapper\n");
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id pci_pwrseq_qca6390_of_match[] = {
-+	{
-+		.compatible = "pci17cb,1101",
-+		.data = &pci_pwrseq_qca6390_of_data,
-+	},
-+	{
-+		.compatible = "pci17cb,1107",
-+		.data = &pci_pwrseq_wcn7850_of_data,
-+	},
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, pci_pwrseq_qca6390_of_match);
-+
-+static struct platform_driver pci_pwrseq_qca6390_driver = {
-+	.driver = {
-+		.name = "pci-pwrseq-qca6390",
-+		.of_match_table = pci_pwrseq_qca6390_of_match,
-+	},
-+	.probe = pci_pwrseq_qca6390_probe,
-+};
-+module_platform_driver(pci_pwrseq_qca6390_driver);
-+
-+MODULE_AUTHOR("Bartosz Golaszewski <bartosz.golaszewski@linaro.org>");
-+MODULE_DESCRIPTION("PCI Power Sequencing module for QCA6390");
-+MODULE_LICENSE("GPL");
--- 
-2.40.1
-
+> > used to disable PCLK (bus clock) provided to the whole CMU_PERIC0.
+> > Aren't there any valid cases for disabling this clock, like during
+> > some PM transitions? For Exynos850 clock driver I marked all clocks of
+>
+> They aren't, because if one switches off any of these clocks that are
+> marked as critical, the system hangs and it will not be able to resume.
+>
+> > this kind as CLK_IGNORE_UNUSED and it works fine. In other words: I'd
+> > say CLK_IS_CRITICAL flag is more "strong" than CLK_IGNORE_UNUSED, and
+> > requires better and more specific explanation, to make sure we are not
+> > abusing it. And I'm not sure this is the case.
+>
+> Is the explanation from the commit message enough?
+> >
+> > The same goes for the rest of clocks marked as CLK_IS_CRITICAL in this
+> > patch. Please check if maybe using CLK_IGNORE_UNUSED makes sense for
+> > any of those as well.
+>
+> I've already checked and all behave as described above.
+>
+> Thanks,
+> ta
 
