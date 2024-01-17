@@ -1,217 +1,131 @@
-Return-Path: <linux-kernel+bounces-28844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FCEC8303A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:31:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE07F830394
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:30:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E46AB24D06
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:31:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97CD82821EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:30:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F3041F940;
-	Wed, 17 Jan 2024 10:29:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A3DD1DFC2;
+	Wed, 17 Jan 2024 10:29:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="odZPxLwN"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="elOe0XkA"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84DC81F5E4;
-	Wed, 17 Jan 2024 10:29:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 821F11DDDE;
+	Wed, 17 Jan 2024 10:29:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705487370; cv=none; b=LxS0++HTPFpRaivkMto1/2ZWiC46LOWw2mzx8Q/xWjieLNCMh1MSzE13TuSA+9fWLFU6U069BkNzQ6uK6MSkOJV/aDD0YJxq7J479uca189UTKh9kWkgWN2QvAnwIdI3d5uPbNLPl/8OHP3jONA61VIy3aPm7+Gu3c7RAfMCiVI=
+	t=1705487349; cv=none; b=V0NocLj50d54JkYNxV6pzVwAsE1EY/fUSmdwdQD7eF4OF66VoTxGXp3SDktfZdcsrWFk1Ks947pv/UBygo9DDz4eMeU9oiEoZgiMVhViTE/SFcYb41y6ZF2AViICv7cKKvYLyVzH/h+WN/pHTFhrzc8n8vVZZNirh3R3UTC01bk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705487370; c=relaxed/simple;
-	bh=zibi+CeC2wCZfnWMWFljfdRRLPyrlidazTLAzNP54qg=;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-Id:
-	 X-Mailer:In-Reply-To:References:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:X-GND-Sasl; b=WH9Lj/GU/QwpC0h/OddOU6/YTidu8VnABwl8B+qcRDzaOBDvaVDoy6qbsASZUvptpf2eW5MgktChIAOeF0OzeU/x3LlY0HiQmgGhlqnY9bylim4aSn5rd+2Iwp4UW3FONCoKcHc4ah/kxWc04Edj0q0x4k5QojgFUaZu1ug3cTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=odZPxLwN; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A70BF40013;
-	Wed, 17 Jan 2024 10:29:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1705487366;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yjRrjFO9xzMYnUQXRfFaph+4p0OC+506r/Lr0Ehs5Xc=;
-	b=odZPxLwNS/O8C6jXnSxhhJ60JjgkngWQQ/eY5wexZSegMJ5Nx0yav2PY8coodDxnMs/Eq2
-	47HXYcrYmnjjuFkHXKRn7TOsXmFldfzWWGkYqoEH7WUp+If83CbHWjCvqBmSiwKaOSU0LR
-	msuhE0QcwhVqkFxGViwLveh6Iy8JyanXNXbotbGuuDXFeywUBpZwYLWXjzOoe2mzRFoEz0
-	OrCziaahxCiGyGuKYpsbP9jqSSyh7LY/FepZEIZeyG1+fT6g7N7FtUrJBTar4/AnAAhUzx
-	71u4tLme7PHMS8TFXl5L1QBCKyzFk89cy13IH+gjH5AtJh07Ei1ik2mesgOLzA==
-From: =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
-To: Daniel Golle <daniel@makrotopia.org>,
-	Landen Chao <Landen.Chao@mediatek.com>,
-	DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Russell King <linux@armlinux.org.uk>
-Cc: =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
-	mithat.guner@xeront.com,
-	erkin.bozoglu@xeront.com,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [RFC PATCH net-next 8/8] net: dsa: mt7530: simplify link operations and force link down on all ports
-Date: Wed, 17 Jan 2024 13:28:38 +0300
-Message-Id: <20240117102838.57445-9-arinc.unal@arinc9.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240117102838.57445-1-arinc.unal@arinc9.com>
-References: <20240117102838.57445-1-arinc.unal@arinc9.com>
+	s=arc-20240116; t=1705487349; c=relaxed/simple;
+	bh=uzs6hr67x0wcN5kmfNYEWgn7qqBTKldWpYNeoxCt1GU=;
+	h=DKIM-Signature:Received:Message-ID:Date:MIME-Version:User-Agent:
+	 Subject:Content-Language:To:Cc:References:From:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding; b=LC/D1DfP3GjAPhw9/4b6BPcDYVaHhSC5ZMBNG5YQKo3ACwbu3iX/wM/WWu/E7tAB5eQ60XhanPDzwBaeW+LV7iZuilKe95Gn08mv8Xn7qasunKsvqEuXGrEJ5uHSOJevsz0nOw+wEJLenUPkUK+ZfdB+VzirkCnnmOWQ3dYj0Es=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=elOe0XkA; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705487346;
+	bh=uzs6hr67x0wcN5kmfNYEWgn7qqBTKldWpYNeoxCt1GU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=elOe0XkAQYBaF2j+quVIDduCoSqMpPA4uttYtiJ8+edcOGA+F7BC3gngIGSXXrdBb
+	 iiEys6qytH/YYkK53Nty5Eg4uKsbqYwazpa2A0AMl2DPtOFLHbO9uCQbHtxIyjvgbT
+	 MIhixDNe1cQbm3cyTx1pCAbadStenTUAtl7gYl7e0s8URZTa+dnmfNOG7qHk0yo1NK
+	 oaIS2Z/V+8NCk1gixwj+yZvNF8SAQmdVgKKfUe1HOAjsox6dl9STPj4ktzL7ou8unL
+	 vPZqnAeyniR3OYZLLhzAnrDqGVLlmUMa4x+NEFhZqCOXGN6JQSogvsvbxqZsjGcHdZ
+	 k1iLtC4R3ZXDQ==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 93BB8378148C;
+	Wed, 17 Jan 2024 10:29:04 +0000 (UTC)
+Message-ID: <cf895498-ef54-4667-a205-cc3150be9a22@collabora.com>
+Date: Wed, 17 Jan 2024 11:29:03 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/7] Allow coreboot modules to autoload and enable
+ cbmem in the arm64 defconfig
+Content-Language: en-US
+To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
+ Tzung-Bi Shih <tzungbi@kernel.org>
+Cc: kernel@collabora.com, chrome-platform@lists.linux.dev,
+ Abhijit Gangurde <abhijit.gangurde@amd.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Arnd Bergmann <arnd@arndb.de>, Bjorn Andersson <quic_bjorande@quicinc.com>,
+ Brian Norris <briannorris@chromium.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Julius Werner <jwerner@chromium.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor
+ <nathan@kernel.org>, Neil Armstrong <neil.armstrong@linaro.org>,
+ Nicolas Schier <nicolas@fjasle.eu>, Nipun Gupta <nipun.gupta@amd.com>,
+ Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>,
+ U mang Jain <umang.jain@ideasonboard.com>, Will Deacon <will@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240112131857.900734-1-nfraprado@collabora.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240112131857.900734-1-nfraprado@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
 
-Currently, the link operations for switch MACs are scattered across
-port_enable, port_disable, phylink_mac_config, phylink_mac_link_up, and
-phylink_mac_link_down.
+Il 12/01/24 14:18, Nícolas F. R. A. Prado ha scritto:
+> 
+> This series adds the missing pieces to the coreboot bus and the module
+> alias generation to allow coreboot modules to be automatically loaded
+> when matching devices are detected.
+> 
+> The configs for cbmem coreboot entries are then enabled in the arm64
+> defconfig, as modules, to allow reading logs from coreboot on arm64
+> Chromebooks, which is useful for debugging the boot process.
+> 
 
-port_enable and port_disable clears the link settings. Move that to
-mt7530_setup() and mt7531_setup_common() which set up the switches. This
-way, the link settings are cleared on all ports at setup, and then only
-once with phylink_mac_link_down() when a link goes down.
+For the entire series:
 
-Force link down on all ports at setup as well. This ensures that only
-active ports will have their link up.
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-Now that the bit for setting the port on force mode is done on
-mt7530_setup() and mt7531_setup_common(), get rid of PMCR_FORCE_MODE_ID()
-which helped determine which bit to use for the switch model.
-
-The "MT7621 Giga Switch Programming Guide v0.3", "MT7531 Reference Manual
-for Development Board v1.0", and "MT7988A Wi-Fi 7 Generation Router
-Platform: Datasheet (Open Version) v0.1" documents show that these bits are
-enabled at reset:
-
-PMCR_IFG_XMIT(1) (not part of PMCR_LINK_SETTINGS_MASK)
-PMCR_MAC_MODE (not part of PMCR_LINK_SETTINGS_MASK)
-PMCR_TX_EN
-PMCR_RX_EN
-PMCR_BACKOFF_EN (not part of PMCR_LINK_SETTINGS_MASK)
-PMCR_BACKPR_EN (not part of PMCR_LINK_SETTINGS_MASK)
-PMCR_TX_FC_EN
-PMCR_RX_FC_EN
-
-Remove the setting of the bits not part of PMCR_LINK_SETTINGS_MASK on
-phylink_mac_config as they're already set.
-
-Suggested-by: Vladimir Oltean <olteanv@gmail.com>
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
----
- drivers/net/dsa/mt7530.c | 30 +++++++++++++++++-------------
- drivers/net/dsa/mt7530.h |  2 --
- 2 files changed, 17 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index e565406d3314..53a9210513e2 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -1017,7 +1017,6 @@ mt7530_port_enable(struct dsa_switch *ds, int port,
- 	priv->ports[port].enable = true;
- 	mt7530_rmw(priv, MT7530_PCR_P(port), PCR_MATRIX_MASK,
- 		   priv->ports[port].pm);
--	mt7530_clear(priv, MT7530_PMCR_P(port), PMCR_LINK_SETTINGS_MASK);
- 
- 	mutex_unlock(&priv->reg_mutex);
- 
-@@ -1037,7 +1036,6 @@ mt7530_port_disable(struct dsa_switch *ds, int port)
- 	priv->ports[port].enable = false;
- 	mt7530_rmw(priv, MT7530_PCR_P(port), PCR_MATRIX_MASK,
- 		   PCR_MATRIX_CLR);
--	mt7530_clear(priv, MT7530_PMCR_P(port), PMCR_LINK_SETTINGS_MASK);
- 
- 	mutex_unlock(&priv->reg_mutex);
- }
-@@ -2240,6 +2238,14 @@ mt7530_setup(struct dsa_switch *ds)
- 	mt7530_mib_reset(ds);
- 
- 	for (i = 0; i < MT7530_NUM_PORTS; i++) {
-+		/* Clear link settings, make all ports operate in force mode,
-+		 * and force link down on all ports. PMCR_FORCE_LNK must be
-+		 * unset to force link down. It is not modified here as it comes
-+		 * unset after reset.
-+		 */
-+		mt7530_clear(priv, MT7530_PMCR_P(i), PMCR_LINK_SETTINGS_MASK);
-+		mt7530_set(priv, MT7530_PMCR_P(i), PMCR_FORCE_MODE);
-+
- 		/* Disable forwarding by default on all ports */
- 		mt7530_rmw(priv, MT7530_PCR_P(i), PCR_MATRIX_MASK,
- 			   PCR_MATRIX_CLR);
-@@ -2342,6 +2348,14 @@ mt7531_setup_common(struct dsa_switch *ds)
- 		     UNU_FFP_MASK);
- 
- 	for (i = 0; i < MT7530_NUM_PORTS; i++) {
-+		/* Clear link settings, make all ports operate in force mode,
-+		 * and force link down on all ports. PMCR_FORCE_LNK must be
-+		 * unset to force link down. It is not modified here as it comes
-+		 * unset after reset.
-+		 */
-+		mt7530_clear(priv, MT7530_PMCR_P(i), PMCR_LINK_SETTINGS_MASK);
-+		mt7530_set(priv, MT7530_PMCR_P(i), MT7531_FORCE_MODE);
-+
- 		/* Disable forwarding by default on all ports */
- 		mt7530_rmw(priv, MT7530_PCR_P(i), PCR_MATRIX_MASK,
- 			   PCR_MATRIX_CLR);
-@@ -2640,23 +2654,13 @@ mt753x_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
- 			  const struct phylink_link_state *state)
- {
- 	struct mt7530_priv *priv = ds->priv;
--	u32 mcr_cur, mcr_new;
- 
- 	if ((port == 5 || port == 6) && priv->info->mac_port_config)
- 		priv->info->mac_port_config(ds, port, mode, state->interface);
- 
--	mcr_cur = mt7530_read(priv, MT7530_PMCR_P(port));
--	mcr_new = mcr_cur;
--	mcr_new &= ~PMCR_LINK_SETTINGS_MASK;
--	mcr_new |= PMCR_IFG_XMIT(1) | PMCR_MAC_MODE | PMCR_BACKOFF_EN |
--		   PMCR_BACKPR_EN | PMCR_FORCE_MODE_ID(priv->id);
--
- 	/* Are we connected to external phy */
- 	if (port == 5 && dsa_is_user_port(ds, 5))
--		mcr_new |= PMCR_EXT_PHY;
--
--	if (mcr_new != mcr_cur)
--		mt7530_write(priv, MT7530_PMCR_P(port), mcr_new);
-+		mt7530_set(priv, MT7530_PMCR_P(port), PMCR_EXT_PHY);
- }
- 
- static void mt753x_phylink_mac_link_down(struct dsa_switch *ds, int port,
-diff --git a/drivers/net/dsa/mt7530.h b/drivers/net/dsa/mt7530.h
-index caae48703547..beda61263e0d 100644
---- a/drivers/net/dsa/mt7530.h
-+++ b/drivers/net/dsa/mt7530.h
-@@ -304,8 +304,6 @@ enum mt7530_vlan_port_acc_frm {
- 					 MT7531_FORCE_DPX | \
- 					 MT7531_FORCE_RX_FC | \
- 					 MT7531_FORCE_TX_FC)
--#define  PMCR_FORCE_MODE_ID(id)		((((id) == ID_MT7531) || ((id) == ID_MT7988)) ?	\
--					 MT7531_FORCE_MODE : PMCR_FORCE_MODE)
- #define  PMCR_LINK_SETTINGS_MASK	(PMCR_TX_EN | PMCR_FORCE_SPEED_1000 | \
- 					 PMCR_RX_EN | PMCR_FORCE_SPEED_100 | \
- 					 PMCR_TX_FC_EN | PMCR_RX_FC_EN | \
--- 
-2.40.1
+> Changes in v2:
+> - Added commits for vpd, memconsole and framebuffer drivers to add them
+>    to the module device table
+> 
+> Nícolas F. R. A. Prado (7):
+>    firmware: coreboot: Generate modalias uevent for devices
+>    firmware: coreboot: Generate aliases for coreboot modules
+>    firmware: google: cbmem: Add to module device table
+>    firmware: google: vpd: Add to module device table
+>    firmware: google: memconsole: Add to module device table
+>    firmware: google: framebuffer: Add to module device table
+>    arm64: defconfig: Enable support for cbmem entries in the coreboot
+>      table
+> 
+>   arch/arm64/configs/defconfig                   |  3 +++
+>   drivers/firmware/google/cbmem.c                |  7 +++++++
+>   drivers/firmware/google/coreboot_table.c       |  9 +++++++++
+>   drivers/firmware/google/framebuffer-coreboot.c |  7 +++++++
+>   drivers/firmware/google/memconsole-coreboot.c  |  7 +++++++
+>   drivers/firmware/google/vpd.c                  |  7 +++++++
+>   include/linux/mod_devicetable.h                |  8 ++++++++
+>   scripts/mod/devicetable-offsets.c              |  3 +++
+>   scripts/mod/file2alias.c                       | 10 ++++++++++
+>   9 files changed, 61 insertions(+)
+> 
 
 
