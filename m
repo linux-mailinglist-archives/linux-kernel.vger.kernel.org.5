@@ -1,40 +1,64 @@
-Return-Path: <linux-kernel+bounces-28891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A952F830443
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:11:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1665583044C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:12:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC8DC1C23CF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:11:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D952286989
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:12:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACB981DDDA;
-	Wed, 17 Jan 2024 11:10:47 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C4881DA4C;
-	Wed, 17 Jan 2024 11:10:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B0431DFC6;
+	Wed, 17 Jan 2024 11:11:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="WGkVx8oP"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5C841DFD7;
+	Wed, 17 Jan 2024 11:11:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705489847; cv=none; b=V2UuJWO00GG/nzvy39kRMC9PO0kVmc9UXVy/SbEM91BOXisMcw7uYYTUGEkrpQaprycQDwXeLNOZGEXSO3wPbv0Tj9SSpT4PKlgRB0cE0HGuysb4EYbpgAgOJ8j2oAdiHIwH50Jx1HHXLB/6aT9PbvWghS6YoowdeN0ooQ14bq0=
+	t=1705489916; cv=none; b=kPhXKSanmgOwq9cxPghOAl0Ca3cmxXDiUbBG3/vioXY9k9uSxSjbt9itBI/OMBMWy8XqwiBj8k8mpGl92GqJ4/APrRY2Sd4qiBLjh9N0My72WbtVTwrTCvzX3g+YayknvEa0Pk1TMdUZ2D/fc5NFjAxt4DFtFwzIXmlGBqjKxgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705489847; c=relaxed/simple;
-	bh=+Vkg04EQ/NJX+jN5XyPGUbM9KQ4RfjqcbzoXRUpVcH4=;
-	h=Received:Received:Message-ID:Date:MIME-Version:User-Agent:Subject:
-	 Content-Language:To:Cc:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=day6cT/YOvmQiAPdiHhUnoqST3SRZLnAlYKIKbWsLxAxOW6CV+o4RmdZvQVAwqjgtEcCWfcMxL6+ZFdfzTA9OI0lG2O00EpdGnVwiIfibBJ064cuWpElCGr0dj9ENN3oWVfNpSFz4YVz2uquGuZCDheyM6QazQdTfu5s404UyAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5A6E311FB;
-	Wed, 17 Jan 2024 03:11:30 -0800 (PST)
-Received: from [10.57.78.6] (unknown [10.57.78.6])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D2C73F5A1;
-	Wed, 17 Jan 2024 03:10:42 -0800 (PST)
-Message-ID: <016627c7-653d-4e1b-8e73-f73e166a7187@arm.com>
-Date: Wed, 17 Jan 2024 11:10:40 +0000
+	s=arc-20240116; t=1705489916; c=relaxed/simple;
+	bh=GnHcBZnjVc0rLES8KEhSGk91E7dxavFJpjAPdYgsG54=;
+	h=Received:DKIM-Signature:Received:Received:Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:CC:Subject:
+	 Content-Language:To:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:X-EXCLAIMER-MD-CONFIG; b=s6WQzliINfeF06U0JnAT3pjvDdr6J4xiULghnVQgHXnXgahBlSPL2LCSdYydkJpAUO53zr2ZCOMuj58FyN6NjDXMY8+8D1fUimzb8+ArcLi6DU/vfUqzTraXu1EBz0pkzJvx3PTtBQOUB+xxChSI9IitTQs0Ptsf25Ld6H4/td8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=WGkVx8oP; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40HBBjPG114712;
+	Wed, 17 Jan 2024 05:11:45 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1705489905;
+	bh=LCsY0X7YUdmmHSQX+auS0l5O0K3VRySj/An42OQmeDg=;
+	h=Date:CC:Subject:To:References:From:In-Reply-To;
+	b=WGkVx8oPR0WQvIU6aza8uJJ56Isyesw4A4ZilcwkjexdrFuvliANVnJC58W/0anHP
+	 hntmVqhfQi1zHY3NWQNHV31DbmeloSGAtHctHgExfGw7x5y8EcLBh/XJHIq5U0YGN0
+	 KeK1XwB3+rogh6NGblR9AtjcopUr5h7ObgrHxBpY=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40HBBjaN067875
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 17 Jan 2024 05:11:45 -0600
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 17
+ Jan 2024 05:11:44 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 17 Jan 2024 05:11:44 -0600
+Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40HBBe4A102136;
+	Wed, 17 Jan 2024 05:11:41 -0600
+Message-ID: <ef9a7718-039c-4eef-915d-c96778d70a0f@ti.com>
+Date: Wed, 17 Jan 2024 16:41:39 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -42,84 +66,137 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 02/23] PM: EM: Extend em_cpufreq_update_efficiencies()
- argument list
+CC: <bhelgaas@google.com>, <lpieralisi@kernel.org>, <kw@linux.com>,
+        <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <linux-pci@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <vigneshr@ti.com>,
+        <afd@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>
+Subject: Re: [PATCH 1/3] dt-bindings: PCI: ti,j721e-pci-*: Fix check for
+ num-lanes
 Content-Language: en-US
-To: Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
- linux-pm@vger.kernel.org, rafael@kernel.org
-Cc: dietmar.eggemann@arm.com, rui.zhang@intel.com,
- amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
- daniel.lezcano@linaro.org, viresh.kumar@linaro.org, len.brown@intel.com,
- pavel@ucw.cz, mhiramat@kernel.org, qyousef@layalina.io, wvw@google.com,
- xuewen.yan94@gmail.com
-References: <20240117095714.1524808-1-lukasz.luba@arm.com>
- <20240117095714.1524808-3-lukasz.luba@arm.com>
-From: Hongyan Xia <hongyan.xia2@arm.com>
-In-Reply-To: <20240117095714.1524808-3-lukasz.luba@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+References: <20240117102526.557006-1-s-vadapalli@ti.com>
+ <20240117102526.557006-2-s-vadapalli@ti.com>
+ <28fd561a-7c13-48dc-9995-230dc758f257@linaro.org>
+ <a25ea57b-4529-4a4c-9e0b-ccd85b0457d6@ti.com>
+ <bd3e809f-5d97-428f-9387-a2475c4f0d7d@linaro.org>
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+In-Reply-To: <bd3e809f-5d97-428f-9387-a2475c4f0d7d@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 17/01/2024 09:56, Lukasz Luba wrote:
-> In order to prepare the code for the modifiable EM perf_state table,
-> make em_cpufreq_update_efficiencies() take a pointer to the EM table
-> as its second argument and modify it to use that new argument instead
-> of the 'table' member of dev->em_pd.
+
+
+On 17/01/24 16:23, Krzysztof Kozlowski wrote:
+> On 17/01/2024 11:47, Siddharth Vadapalli wrote:
+>> Hello Krzysztof,
+>>
+>> On 17/01/24 16:04, Krzysztof Kozlowski wrote:
+>>> On 17/01/2024 11:25, Siddharth Vadapalli wrote:
+>>>> The existing implementation for validating the "num-lanes" property
+>>>> based on the compatible(s) doesn't enforce it. Fix it by updating the
+>>>> checks to handle both single-compatible and multi-compatible cases.
+>>>>
+>>>> Fixes: b3ba0f6e82cb ("dt-bindings: PCI: ti,j721e-pci-*: Add checks for num-lanes")
+>>>> Fixes: adc14d44d7cb ("dt-bindings: PCI: ti,j721e-pci-*: Add j784s4-pci-* compatible strings")
+>>>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+>>>> ---
+>>>>  .../bindings/pci/ti,j721e-pci-ep.yaml         | 26 ++++++++++++++-----
+>>>>  .../bindings/pci/ti,j721e-pci-host.yaml       | 26 ++++++++++++++-----
+>>>>  2 files changed, 38 insertions(+), 14 deletions(-)
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml
+>>>> index 97f2579ea908..278e0892f8ac 100644
+>>>> --- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml
+>>>> +++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml
+>>>> @@ -68,8 +68,9 @@ allOf:
+>>>>    - if:
+>>>>        properties:
+>>>>          compatible:
+>>>
+>>> Missing contains:, instead of your change.
+>>
+>> I did try the "contains" approach before determining that the implementation in
+>> this patch is more suitable. Please consider the following:
+>>
+>> For AM64 SoC the primary compatible is "ti,am64-pcie-ep" and fallback compatible
+>> is "ti,j721e-pcie-ep". For J7200 SoC the primary compatible is
+>> "ti,j7200-pcie-ep" while the fallback compatible is again "ti,j721e-pcie-ep".
+>>
+>> Therefore, the device-tree nodes for AM64 and J7200 look like:
+>>
+>> AM64:
+>>     compatible = "ti,am64-pcie-ep", "ti,j721e-pcie-ep";
+>>     ...
+>>     num-lanes = 1;
+>>
+>> J7200:
+>>     compatible = "ti,j7200-pcie-ep", "ti,j721e-pcie-ep";
+>>     ...
+>>     num-lanes = 4;
+>>
+>> This implies that when the check for "num-lanes" is performed on the device-tree
+>> node for PCIe in J7200, the fallback compatible of "ti,j721e-pcie-ep" within the
+>> AM64's "compatible: contains:" check will match the schema and it will check the
+>> existing "num-lanes" being described as "const: 1" against the value in J7200's
+>> PCIe node resulting in a warning. 
 > 
-> No functional impact.
+> What warning? What did you put to contains?
+
+The warning is:
+num-lanes: expected value is 1
+which it has determined due to the presence of "ti,j721e-pcie-ep" in the first
+check which is only applicable to AM64. The shared fallback compatible here is
+responsible for incorrect checks when using "contains".
+
+Using "contains", the check for "num-lanes" with "const: 1" corresponding to
+AM64 ends up validating against the device-tree node for J7200 since the
+fallback compatible "ti,j721e-pcie-ep" is "contained" in the list of compatibles
+present in the device-tree node. That shouldn't be the case which is why "items"
+is used in this patch to get an exact match.
+
 > 
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
->   kernel/power/energy_model.c | 8 +++-----
->   1 file changed, 3 insertions(+), 5 deletions(-)
+>> Therefore, using "contains" will result in
+>> errors if the check has to be performed for device-tree nodes with fallback
+>> compatibles. The "items" based approach I have used in this patch ensures that
+>> the schema matches *only* when both the primary and fallback compatible are
+>> present in the device-tree node.
 > 
-> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
-> index 8b9dd4a39f63..42486674b834 100644
-> --- a/kernel/power/energy_model.c
-> +++ b/kernel/power/energy_model.c
-> @@ -237,10 +237,10 @@ static int em_create_pd(struct device *dev, int nr_states,
->   	return 0;
->   }
->   
-> -static void em_cpufreq_update_efficiencies(struct device *dev)
-> +static void
-> +em_cpufreq_update_efficiencies(struct device *dev, struct em_perf_state *table)
->   {
->   	struct em_perf_domain *pd = dev->em_pd;
-> -	struct em_perf_state *table;
->   	struct cpufreq_policy *policy;
->   	int found = 0;
->   	int i;
-> @@ -254,8 +254,6 @@ static void em_cpufreq_update_efficiencies(struct device *dev)
->   		return;
->   	}
+> Long message, but I don't understand it. Why this binding is different
+> than all others which rely on contains?
 
-NIT: It's not shown here, but in the check above this line
+This binding is different because of the existence of a shared fallback
+compatible and a shared property being evaluated. In other bindings which use
+contains, either there isn't a shared fallback compatible, or the property which
+is present in device-tree nodes which have the shared fallback compatible isn't
+evaluated.
 
-	if (!_is_cpu_device(dev) || !pd)
+In brief, with the existing device-tree, without any changes, adding "contains"
+will throw warnings due to the incorrect schema matching for validating the
+"num-lanes" property.
 
-The !pd check should be removed because em_cpufreq_update_efficiencies() 
-is only called after doing
+> 
+>>>> +  - if:
+>>>> +      properties:
+>>>> +        compatible:
+>>>> +          items:
+>>>> +            - const: ti,j784s4-pcie-ep
+>>>
+>>> Why? Previous code was correct.
+>>
+>> Though I used "patience diff", for some reason the addition of
+>> "ti,j721e-pcie-ep" in the check has been treated as the removal of
+>> "ti,j784s4-pcie-ep" first followed by adding the same later for generating the
+>> diff in this patch. The diff above is equivalent to the addition of:
+> 
+> No, why do you change existing code? It is correct.
 
-	dev->em_pd->flags |= flags;
+Either a "contains" or an "items" is required to evaluate the "num-lanes"
+property and neither of them are present in the existing code.
 
-So compiler will optimize the !pd out anyway. But this is not directly 
-related to the PR, so just a NIT.
-
->   
-> -	table = pd->table;
-> -
->   	for (i = 0; i < pd->nr_perf_states; i++) {
->   		if (!(table[i].flags & EM_PERF_STATE_INEFFICIENT))
->   			continue;
-> @@ -397,7 +395,7 @@ int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
->   
->   	dev->em_pd->flags |= flags;
->   
-> -	em_cpufreq_update_efficiencies(dev);
-> +	em_cpufreq_update_efficiencies(dev, dev->em_pd->table);
->   
->   	em_debug_create_pd(dev);
->   	dev_info(dev, "EM: created perf domain\n");
-
-Reviewed-by: Hongyan Xia <hongyan.xia2@arm.com>
+-- 
+Regards,
+Siddharth.
 
