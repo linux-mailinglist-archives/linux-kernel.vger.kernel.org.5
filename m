@@ -1,105 +1,111 @@
-Return-Path: <linux-kernel+bounces-29298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13BB1830C5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:00:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7BFF830C5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:01:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6D171F2672C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:00:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E7D3B24316
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:01:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80C1C22EF8;
-	Wed, 17 Jan 2024 18:00:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A878F22EF8;
+	Wed, 17 Jan 2024 18:00:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vHBQgeR8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hayWYpGZ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2BF522EE3;
-	Wed, 17 Jan 2024 18:00:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DAAD22635
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 18:00:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705514423; cv=none; b=IlQgwC+2YthZEW0fV+BCqljSgvkjjQFZScmPdrqS4lKaqNsLfrStVJCtYVyBarmflV9jFXktxHEjs3dFsMhQEV6rW5A17LPmI2/9+NV6rqnJnkIxQZG0IxTO3+hwXfv3mImV+bU/OX2zNyQ29eendif97SdS+769hHtV/5GhPlA=
+	t=1705514454; cv=none; b=WYLxJIz8u1juE6zjfcyVMo+F8VQqlXfqwB1cYql9Kk167UXQBf5vYNV5vAUq11mzJvUx8Hvb2/8VtJ8ssTce/ifAfcDKCQywXqYXClX2pWi8R8LsfBiwsmLe9VG2OdsbVd9PlB1ObmkW+7LB/xK+EM5nUx4iBB5LnN17w3wMWso=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705514423; c=relaxed/simple;
-	bh=F3wR44aqlTQjRSn46zQ8+b3/LFSV04pX0jPfJiM8VIk=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=T76oc1ZbsOpfdjLVZnWVTFGeyHIIZie/WtnnKubpuoLZSsn62M5a457320Z7Rq2EyFYLY2FJUF4Ne/xlKmYo7aGjkZHwZVJyBMU89rT4IKwsPNi8B+mFsx3XH0euTNXbqFtA+Xw6P8/pQRNQtfTPPGs0Tn9M2jLaR32TI/IpvQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vHBQgeR8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EA26C433C7;
-	Wed, 17 Jan 2024 18:00:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705514423;
-	bh=F3wR44aqlTQjRSn46zQ8+b3/LFSV04pX0jPfJiM8VIk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=vHBQgeR8KeUcClZfRqRJRzSUh1GoGZRQGjKV8bvDqQOOHH9lbNEbvnKY3XIPnAxyW
-	 uoO9OgHVDJJm0lUy36LUYbCrFyXNiM8PhV0M97DvLVSgZe9e6OVBMGkRS7l9lf3fK2
-	 YlXxgPiBTej4dK0MrB7V694iOqOAXYTgLQRd4pZT33/Z7tg3BFfR/eHIjKm0/idbjN
-	 PJQNIlw50v7NicWNS6oVCv0M2R7K9OZ4uzIrd1xHqmAsklVOOpWvEP6AOnFgHXQjVg
-	 jJ7wY2NyKoLrMa81FW9BZ2eDLfw2ZTPiRx+tSdQ3F32zHzGG0I9d7N1viSDd0IMs/2
-	 axP+Hl7b4WYjg==
-Date: Wed, 17 Jan 2024 11:00:21 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Sebastian Reichel <sre@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [GIT PULL] power-supply changes for 6.8
-Message-ID: <20240117180021.GA539437@dev-arch.thelio-3990X>
-References: <nqrl5ggszhlzaew6yte6t6uv5cbf4fhl5vd4pfhkitlsbqozvf@w4pttrz6supl>
+	s=arc-20240116; t=1705514454; c=relaxed/simple;
+	bh=8IXAWHXrSjNXM0FpElCzk0WtxnO106w/8hSLLnHdKKc=;
+	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:From:To:Cc:
+	 Subject:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:
+	 X-Scanned-By; b=AYmly08yeJA/f4vRYnt+MHJvFIrWPE3mmm0YBk8b1J57tJuJlQz9fEq8PGmGLy327Q9VpRahNnV6MSkmQce5vDeP2NJFn3XW1EgdqCzi2V2/DAMbaHzItFoDkuzehcsao79qF6vHBN4xkvHnSsqliQ6L4PLKACcvyhOhN/2WWxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hayWYpGZ; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705514451;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=v7mWtbZkBfydRoZ1KTKCUbcKjYFh0CTp/T1jJ9CpJ+g=;
+	b=hayWYpGZna3WrmdhcZPNADL1KR8MdzedixDojumMecmc5zha+wWxbSMNe8i198O59kPcly
+	FomO4OR7JsWaiyOn08H2uoIGUrlSQVZ0dIam9rfhR3UmgWOPTwPYI8XuNwSoW8q9qlqTtS
+	zap26jITBAGdzSSeBCSRjlt/jh+KizQ=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-346-RXAB2irYP0KW7RzaKLEjpw-1; Wed,
+ 17 Jan 2024 13:00:49 -0500
+X-MC-Unique: RXAB2irYP0KW7RzaKLEjpw-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E76851C18CD3;
+	Wed, 17 Jan 2024 18:00:48 +0000 (UTC)
+Received: from localhost.redhat.com (unknown [10.22.34.49])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 7AADA492BC6;
+	Wed, 17 Jan 2024 18:00:48 +0000 (UTC)
+From: Nico Pache <npache@redhat.com>
+To: linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-mm@kvack.org
+Cc: akpm@linux-foundation.org,
+	shuah@kernel.org
+Subject: [PATCH] selftests: mm: Perform some system cleanup before using hugepages
+Date: Wed, 17 Jan 2024 11:00:37 -0700
+Message-ID: <20240117180037.15734-1-npache@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <nqrl5ggszhlzaew6yte6t6uv5cbf4fhl5vd4pfhkitlsbqozvf@w4pttrz6supl>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-Hi Sebastian,
+When running with CATEGORY= (thp | hugetlb) we see a large numbers of
+tests failing. These failures are due to not being able to allocate a
+hugepage and normally occur on memory contrainted systems or when using
+large page sizes.
 
-On Mon, Jan 15, 2024 at 09:43:11PM +0100, Sebastian Reichel wrote:
-> Hi Linus,
-> 
-> The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
-> 
->   Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git tags/for-v6.8
-> 
-> for you to fetch changes up to 05599b5f56b750b5a92ff7f2c081945210816f83:
-> 
->   Merge power-supply fixes for 6.7 cycle (2024-01-14 21:38:31 +0100)
-> 
-> ----------------------------------------------------------------
-> power supply and reset changes for the 6.8 series
-> 
-> * new drivers / features
->   - bq24190: Add support for BQ24296 charger
-> * cleanups
->   - all reset drivers: Stop using module_platform_driver_probe()
->   - gpio-restart: use devm_register_sys_off_handler
->   - pwr-mlxbf: support graceful reboot
->   - cw2015: correct time_to_empty units
->   - qcom-battmgr: Fix driver initialization sequence
->   - bq27xxx: Start/Stop delayed work in suspend/resume
->   - minor cleanups and fixes
+drop_cache and compact_memory before the tests for a higher chance at a
+successful hugepage allocation.
 
-<snip>
+Signed-off-by: Nico Pache <npache@redhat.com>
+---
+ tools/testing/selftests/mm/run_vmtests.sh | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-> Hermes Zhang (2):
->       dt-bindings: power: supply: bq24190: Add BQ24296 compatible
->       power: supply: bq24190_charger: Add support for BQ24296
+diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
+index 246d53a5d7f2..040f27e21f47 100755
+--- a/tools/testing/selftests/mm/run_vmtests.sh
++++ b/tools/testing/selftests/mm/run_vmtests.sh
+@@ -206,6 +206,15 @@ pretty_name() {
+ # Usage: run_test [test binary] [arbitrary test arguments...]
+ run_test() {
+ 	if test_selected ${CATEGORY}; then
++		# On memory constrainted systems some tests can fail to allocate hugepages.
++		# perform some cleanup before the test for a higher success rate.
++		if [ ${CATEGORY} == "thp" ] | [ ${CATEGORY} == "hugetlb" ]; then
++			echo 3 > /proc/sys/vm/drop_caches
++			sleep 2
++			echo 1 > /proc/sys/vm/compact_memory
++			sleep 2
++		fi
++
+ 		local test=$(pretty_name "$*")
+ 		local title="running $*"
+ 		local sep=$(echo -n "$title" | tr "[:graph:][:space:]" -)
+-- 
+2.43.0
 
-This is missing a fix for building with older compilers:
-
-https://lore.kernel.org/20240103-fix-bq24190_charger-vbus_desc-non-const-v1-1-115ddf798c70@kernel.org/
-
-Cheers,
-Nathan
 
