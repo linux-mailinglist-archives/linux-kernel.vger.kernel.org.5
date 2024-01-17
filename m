@@ -1,107 +1,86 @@
-Return-Path: <linux-kernel+bounces-29120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C271F830923
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:06:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DAE0830925
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:06:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64921B23D17
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:06:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCB9F1F2276F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:06:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E242134E;
-	Wed, 17 Jan 2024 15:06:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 662C521352;
+	Wed, 17 Jan 2024 15:06:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dh-electronics.com header.i=@dh-electronics.com header.b="MDJEmvVv"
-Received: from mx4.securetransport.de (mx4.securetransport.de [178.254.6.145])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD33B1E485;
-	Wed, 17 Jan 2024 15:06:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.254.6.145
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kGPQyOd1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9067210FC
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:06:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705503973; cv=none; b=dnFpGkhI3LPaR9Ik3sNcIRe0Zw88gSbQN7YsmnBi2McJI7SXjbhWDUpj4sxPPoVjbSm9C0Ck1RDzfg5Q6/+lQVi6b504PQ6Tzry2sKWu0nltOFHE9AK7ZlaiO5vPc2WS4U8wO8673/F+8cMjYBSkdZKDVOBMyONN33o7el/7UdU=
+	t=1705503997; cv=none; b=L9njxUoBnPWG2nOdqYGL8O9Irdu2C0UVvGf2SQK7NroIrhYBgoVPEqrE9lusEA14H5NrgoIbEz0hkL1FTthOJRKqLOSJXpjfbljjWx5VRv2UiqVZflUe97IOVLbkL51aVimBv/b7e6rg1gyfFHJgm59eOAww4HIikKqkHBMURbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705503973; c=relaxed/simple;
-	bh=0puuW3TJ0FCRviSMs7e5yTWLZRzhlBbPbMaNHCKi2EQ=;
-	h=DKIM-Signature:From:To:CC:Subject:Date:Message-ID:X-klartext:
-	 In-Reply-To:References:MIME-Version:Content-Type; b=LDtqCfPBDa1xaykrWJUG6TWzBVJ+A2GqcFFjAY/DKS/pCwR/MjZlkf+sa40PWDQLzqK3Hwtj1bic+vdMpUcK+H+HWBW8/qz2zEQt1MwgBkP9TZ4KCtFDq6bIN8BQY3hU6/ZF1D3Fk4pBfP5xK9dK57uqTJwRHsfUZW+crQR+ZUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=dh-electronics.com; spf=pass smtp.mailfrom=dh-electronics.com; dkim=pass (2048-bit key) header.d=dh-electronics.com header.i=@dh-electronics.com header.b=MDJEmvVv; arc=none smtp.client-ip=178.254.6.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=dh-electronics.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dh-electronics.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dh-electronics.com;
-	s=dhelectronicscom; t=1705503387;
-	bh=8zEDP540sjwJaBrMK5oZNAb5uebPyAwo3ymgl0om22g=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:From;
-	b=MDJEmvVvjPOMDdAmlvf/L+gbqe/avosXlfx/ll/72v6KZtxWHsyHrUuRGZ2MUempq
-	 ehcjuB8jZS+tdZFgS/R1zeFwA5dgJYrLQKKocgtF2bA4jwrvCLPuoRjD23ABWm+OOW
-	 Q3rfTgicGG915sTiu4xOkORDo54i3EiOT+XB40P8DlFfseAzy3e2rnBAA2CHzaXu6E
-	 mPjVbtdWRs7Hq83gnIdPGILVDVRPtluoQCS+Bw4TWE7t0jokB0GFVp4/WQnytRGjFL
-	 LieTe2jaOOHRNAf57WmOJjGk+H8iDnwAkTAa0IfEqp4u3uJD9I827K9Z+0d2VnKj4V
-	 nhErBTHFZ72tA==
-From: Christoph Niedermaier <cniedermaier@dh-electronics.com>
-To: <crescentcy.hsieh@moxa.com>
-CC: <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>,
-	<LinoSanfilippo@gmx.de>, <lukas@wunner.de>, <linux-kernel@vger.kernel.org>,
-	<linux-serial@vger.kernel.org>, <cniedermaier@dh-electronics.com>,
-	<linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v6 1/2] tty: serial: Cleanup the bit shift with macro
-Date: Wed, 17 Jan 2024 15:56:23 +0100
-Message-ID: <20240117145623.3556-1-cniedermaier@dh-electronics.com>
-X-klartext: yes
-In-Reply-To: <20231201071554.258607-2-crescentcy.hsieh@moxa.com>
-References: <20231201071554.258607-2-crescentcy.hsieh@moxa.com>
+	s=arc-20240116; t=1705503997; c=relaxed/simple;
+	bh=6uZ8t74Do2OpeMaCkJBGUEtBKJZt35DzOnysBEN5OyM=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To; b=e8hJoNPWOhCfKauz9TfTBqgbJ38k9Rp/C1LB3cVFjhUuXNLZ4qlKkub3v0+pUaZwT+b1n2CvaGv6QNsbV/UXiLrNIy8OuGvgAmRLHvKyZyvN9MWhxNSWXqDVHgP7RbVUTntzsQ70F+tWiEv4ehm4raIJD8fepCNlDkwFAFBubbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kGPQyOd1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91687C433F1;
+	Wed, 17 Jan 2024 15:06:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705503997;
+	bh=6uZ8t74Do2OpeMaCkJBGUEtBKJZt35DzOnysBEN5OyM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kGPQyOd1BY+PmGGVY2FMQwmeHL8l0MVk0ntkktLpVL+6+9rIWaFPgGIbaSkU4V3BI
+	 1J9lkCZOjF8C1KCkmL5BOznRoNG5Hcpujdfi1kDGc72Tvh0DnmdgL+7e1yLr5cTvds
+	 7l9vS+srKaV9YEqnXrPmsUxptntRWPmjvN6jIi5caDOLc1UtNzgG3emwFgay4fR6Hl
+	 rIGAe9B9fOXGZPJusekd+N763QMrPFeBgT1HK1b3uSNKGFLBcqeEbyN3CM4c89T6Oc
+	 UxdMm9fSyZGq+hfXLoR+f/RPbnf9U8XU0b0ikZun0glM33oSZtnBYB5piitsKBIP5Z
+	 wJbNFN31zJCLA==
+Date: Wed, 17 Jan 2024 16:06:34 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Eric Dumazet <edumazet@google.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	Arjan van de Ven <arjan@infradead.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Rik van Riel <riel@surriel.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sebastian Siewior <bigeasy@linutronix.de>,
+	Giovanni Gherdovich <ggherdovich@suse.cz>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v10 02/20] timers: Split out get next timer interrupt
+Message-ID: <Zafs-neOXshEXrYz@localhost.localdomain>
+References: <20240115143743.27827-1-anna-maria@linutronix.de>
+ <20240115143743.27827-3-anna-maria@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240115143743.27827-3-anna-maria@linutronix.de>
 
-Hi everyone,
-
-> This patch replaces the bit shift code with "_BITUL()" macro inside
-> "serial_rs485" struct.
+Le Mon, Jan 15, 2024 at 03:37:25PM +0100, Anna-Maria Behnsen a écrit :
+> Split out get_next_timer_interrupt() to be able to extend it and make it
+> reusable for other call sites.
 > 
-> Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
-> ---
->  include/uapi/linux/serial.h | 17 +++++++++--------
->  1 file changed, 9 insertions(+), 8 deletions(-)
+> No functional change.
 > 
-> diff --git a/include/uapi/linux/serial.h b/include/uapi/linux/serial.h
-> index 53bc1af67..6c75ebdd7 100644
-> --- a/include/uapi/linux/serial.h
-> +++ b/include/uapi/linux/serial.h
-> @@ -11,6 +11,7 @@
->  #ifndef _UAPI_LINUX_SERIAL_H
->  #define _UAPI_LINUX_SERIAL_H
->  
-> +#include <linux/const.h>
->  #include <linux/types.h>
->  
->  #include <linux/tty_flags.h>
-> @@ -140,14 +141,14 @@ struct serial_icounter_struct {
->   */
->  struct serial_rs485 {
->  	__u32	flags;
-> -#define SER_RS485_ENABLED		(1 << 0)
-> -#define SER_RS485_RTS_ON_SEND		(1 << 1)
-> -#define SER_RS485_RTS_AFTER_SEND	(1 << 2)
+> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
 
-In the old definition (1 << 3) wasn't used.
-
-> -#define SER_RS485_RX_DURING_TX		(1 << 4)
-> -#define SER_RS485_TERMINATE_BUS		(1 << 5)
-> -#define SER_RS485_ADDRB			(1 << 6)
-> -#define SER_RS485_ADDR_RECV		(1 << 7)
-> -#define SER_RS485_ADDR_DEST		(1 << 8)
-> +#define SER_RS485_ENABLED		_BITUL(0)
-> +#define SER_RS485_RTS_ON_SEND		_BITUL(1)
-> +#define SER_RS485_RTS_AFTER_SEND	_BITUL(2)
-> +#define SER_RS485_RX_DURING_TX		_BITUL(3)
-
-Isn't it a break if number 3 isn't skipped here as well?
-
-Regards
-Christoph
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
