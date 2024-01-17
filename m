@@ -1,185 +1,243 @@
-Return-Path: <linux-kernel+bounces-29336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E266E830CFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:49:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B32A9830CF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:49:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1107E1C23EB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:49:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3ECFC1F227E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:49:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA0E0241FD;
-	Wed, 17 Jan 2024 18:49:20 +0000 (UTC)
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0FD62420F;
+	Wed, 17 Jan 2024 18:49:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IqY0uHy3"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B3E424210;
-	Wed, 17 Jan 2024 18:49:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705517360; cv=none; b=bCs6qhTDa3cCcIL3cnDWRIx00aA2rgibWU5+MNMN7RjXzG4EUBMz6XeblGa7wpacfq9D31jwvYujxGnINdOzYD5Gt3lhlEvYjmFNVzjNcjW4Jd+J68ewp8DlUX6KVSIMSb9eaXK3p/9AB53yBhkU6x5JvXz43+vCjQshTHoRyw4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705517360; c=relaxed/simple;
-	bh=ad3rgJhd0883924xvrWg1RoM1ewVHOOJvoYUwjx2Wgg=;
-	h=Received:X-Google-DKIM-Signature:X-Gm-Message-State:
-	 X-Google-Smtp-Source:X-Received:MIME-Version:References:
-	 In-Reply-To:From:Date:Message-ID:Subject:To:Cc:Content-Type:
-	 Content-Transfer-Encoding; b=hkv5Q8JIAaKQQpksogPYlGQc8ta/ZQvXGp8TBxA55XSKdgvUjFPd7LR3EQVpCIiu525WBPSbHp+2VOyshk3IKjKR703OsGUoW0OjKJp3ng7UWTTwMfBW2IyTjFDRSXwDYXvtydD/Lz/0GcfFV5qMPA+a2G71EgA6Cn8qutk+fAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6dbc2bf4e8dso1659368a34.1;
-        Wed, 17 Jan 2024 10:49:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705517357; x=1706122157;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0bsKv+8TAipZ/9m7Yt0BvIuN2J3MgQ0xrjWeDHKDNCg=;
-        b=dV+NI7PLHE61YMuxyUp0JQx1dH1UVWONEmwCoSmXMw9z8HK3v444XtvOIykXR99qeV
-         bGo9FB2Ws6vLnLqI3OQ85O56O4bf8irj2Z05PuV/sV/eOqLwo3dtEDsrhSmKqI/nHEIc
-         XTfUzPdD6nyWMa/WsupGzE8q8ocVw86miM+8NYT2Swugpd4I52m/3sWP0NcN7Dply7GS
-         mrRgwSvMjIotxNT52T1jBF9QxaljeVtb/oIrmqbBXNbKHnyjjI4anSuvFpF7yXv+OPJD
-         kfz/a1d+4Zg8Dv1CivaTdJD7DoAjZmxdgdvcmJZKkSxr9rRioZiDAXrgQIyX7oAXDS69
-         laGQ==
-X-Gm-Message-State: AOJu0Yyp+udBhTfLHFYl3tAJih7ogYRFPUw6VtcvwMfupkifLTGxV9qb
-	iWQdgtFlM4RaGcyXY/x4OoTWZDGwRRMLhxU/Aow=
-X-Google-Smtp-Source: AGHT+IH1meNg4/ysFiD8RaIr2eXsh3meR0dtLD7wJXTUI2s7cmore6r1p0t/aEKnOM+VDrD2wpWBC5stmGNE2tT5NsE=
-X-Received: by 2002:a4a:a549:0:b0:599:3475:64bb with SMTP id
- s9-20020a4aa549000000b00599347564bbmr1799487oom.1.1705517357432; Wed, 17 Jan
- 2024 10:49:17 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DBAC23761;
+	Wed, 17 Jan 2024 18:49:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.13
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705517354; cv=fail; b=FLEh2SB1fH8MccAYPC5b6dVBBR4H57rYzixXNykmFGn7Qi5D1iYUMIItKhM98gbaugDCwD7tmd6/uT0Mj1qZB5pTDFLfL7rIW5lhdN/w3Ei+hs9luN6wE3UW9T8oU4vi6Al3by/6EXZ23OK9CmouDXExkHlmUPVT+TaBWO58xtM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705517354; c=relaxed/simple;
+	bh=kJJx+UH+G+XpblbF+smh0DFkrhYx/KME+14iGETLYYE=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:X-IronPort-AV:Received:Received:Received:Received:
+	 Received:ARC-Message-Signature:ARC-Authentication-Results:Received:
+	 Received:Message-ID:Date:User-Agent:Subject:Content-Language:To:CC:
+	 References:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-ClientProxiedBy:MIME-Version:X-MS-PublicTrafficType:
+	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-AuthSource:
+	 X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+	 X-MS-Exchange-CrossTenant-UserPrincipalName:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+	b=Hp4R8AfN1nMOajQKb0K7FMIAtrzUJEI35yZoP4WTtK9iHuqE+DOtTf7LEb3yx4BKHJTRXa4f1thuq95POvJF7LuI5lpFOcVLEuLJC8dfNH2Lf3MA+P/QBmMizURDQz1MKcR97cIRGq/x61oIkT6VbrMO4VF2Cqg6qxARRSWUscw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IqY0uHy3; arc=fail smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705517353; x=1737053353;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=kJJx+UH+G+XpblbF+smh0DFkrhYx/KME+14iGETLYYE=;
+  b=IqY0uHy3eZdBvnXPPVR2rhtJQnhRjEU+DB2wOXHMm17lQWudjzhvw9iD
+   /THWgYHjSY2ZVAyuyn5fpk682QfHpXrNojHewkgtsKseH5Be7RoqP2rZ9
+   gXqxBhtt9/CQurc4X6uFhpTgct+Euzx9GKi5j6clakuDUbWKurzgEz8Ye
+   T3iLf9Ps/r4kX9uMUa9QQLbPmjQFOnYkvxd6HI8QgySCdBUB4kbQLiGqW
+   tVokW3nP3JLrsCtk4KS4Z6epYdo/WcJn2zsfcky+N9A5wFJSC7YHF9tJi
+   uzQ3gyRPsgY2DypCuDHNjzjcwXkR2mpHyAxyzOOfijYxqyn9AZrxX64/U
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="7335424"
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="7335424"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 10:49:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="854763125"
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="854763125"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Jan 2024 10:49:11 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 17 Jan 2024 10:49:10 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 17 Jan 2024 10:49:09 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 17 Jan 2024 10:49:09 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 17 Jan 2024 10:49:09 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cd8hCYyPzQt4sD9Bc7soP4VR3YR1x6e6GzXIt4VetOFBi/ZIwgcm+5I0miK5HmicE7JEn/NuHOfh8aOP/QROhgiOwJSDPObaa7zADLeQdur/ydGppmUgPXcVD4keVxEuiWswxoLzOKw77+m9vcLv2Olid+8FJsZvdrMjmEXYhWyliZOUYaclxTO0ZF6eY44FA+0II4W+1I7Dx7yRPS9aE0ywBNmbswtcfvs6mWbLbi0ohiz5RJmPfoX97fiZOgG4UuFkypBijIkC/deWAs/8UvMaGScKgivorMVIqGWIsIuz2n3rhsnPZG2WrXz1F6ScAGDbfqETFl5rUM4Zax6sUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RLM1Kq2Bs2QM7x/KWgx8av+d9pbh9VRrfQADGDXgvOg=;
+ b=ZXNyg2oYra250LgmQHcTo2TeayywRv7eIs9gEhcOufytU5XOgN4rgj1XbQ+6zDzeuH9qai08N1XgkAKXkrs/rLyHEmKq7dZ2wtxmIpvg70WEOqU1kxMy60OiqcRH2KGPMUlkbMnShaWZO1UkA2XAyhEmEs70YgbPaJCW+68oDfpMozpS8/6e3oQPzYkJrW8M4nb2ItY6wccO6HVyl9Btj+G1pJ4b2Ikhizc6bLgwTerCFXaw8MtcXC69Wql7atno2VD+RJ7dh+y+mBfuc5v6JgbbbZ26EqMqlnhslSXTDQfjbyNMLFYX+phnTz1ZaiOuMayQkMWEH00j5LlVd0koGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by IA1PR11MB7367.namprd11.prod.outlook.com (2603:10b6:208:421::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.17; Wed, 17 Jan
+ 2024 18:49:07 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::c903:6ee5:ed69:f4fa]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::c903:6ee5:ed69:f4fa%7]) with mapi id 15.20.7181.018; Wed, 17 Jan 2024
+ 18:49:07 +0000
+Message-ID: <73cea732-3757-4aec-a39c-4f0e50f6fb70@intel.com>
+Date: Wed, 17 Jan 2024 10:49:06 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/4] selftests/resctrl: Add non-contiguous CBMs CAT
+ test
+Content-Language: en-US
+To: =?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?= <maciej.wieczor-retman@intel.com>
+CC: Fenghua Yu <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
+	<ilpo.jarvinen@linux.intel.com>, <linux-kernel@vger.kernel.org>,
+	<linux-kselftest@vger.kernel.org>
+References: <cover.1702392177.git.maciej.wieczor-retman@intel.com>
+ <10c3afd7f62c63db31a3d4af86529144a5d7bbf9.1702392177.git.maciej.wieczor-retman@intel.com>
+ <fd6acf6a-2610-406b-b363-220121a45aee@intel.com>
+ <6v4hgra7bd5nwubcgtbsidmoohrgxdw7no4faa4a54g4vrxo63@c6qnujvwn5ej>
+From: Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <6v4hgra7bd5nwubcgtbsidmoohrgxdw7no4faa4a54g4vrxo63@c6qnujvwn5ej>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4P220CA0012.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:303:115::17) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240106191502.29126-1-quic_manafm@quicinc.com>
- <CAJZ5v0gE6eEpALrfxHvCd5TRqjB+v8pffG4CKLTVXiSvuiWhHg@mail.gmail.com>
- <d7b82fc8-0ed8-80b8-9eb8-c77f9277178f@quicinc.com> <CAJZ5v0g4hnRqRCseRnTjfEF+-2=ZT8U9=2m9FODqh3G8eDd=Sw@mail.gmail.com>
- <921c2f90-fb8b-4e70-9e3d-6e185fec03b6@linaro.org>
-In-Reply-To: <921c2f90-fb8b-4e70-9e3d-6e185fec03b6@linaro.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 17 Jan 2024 19:49:05 +0100
-Message-ID: <CAJZ5v0h+93YBsYsA5rOvzp+b3JMGyjUStHA=J8P7ynv+-ym-4g@mail.gmail.com>
-Subject: Re: [PATCH] thermal/sysfs: Always enable hysteresis write support
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>, Zhang Rui <rui.zhang@intel.com>, 
-	Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|IA1PR11MB7367:EE_
+X-MS-Office365-Filtering-Correlation-Id: 888ae059-78a9-4b00-f164-08dc178cfc32
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LRSXNyTHkZSVJi7POgCKnMXus2kZ1ee8SB0N4lF0oLWcbY34uzWGBK/COE123oGSlu2vklc/yC2NKjVYcfOE5u63mEuh9/n7Tsi5a2ZYho34oS3CPdXPXG32p9eTjKoMA4+TxVt0V84FEujmt6o37hCd/TRKlg6jgMLh4xjslKwT9N/DN2TPtL3weZbZfC1Vh6z+HqpNBN4ZMqyfbhgr8PjU0PV51NjG38uVLs4VAHXnS+FBdhWNqkzHbAKDrRoEwIDY1OIUl92kmX0imtNRXGYX9nmSq5SmzLEONjQ0YHb9recYhehPQpcOgLhznFjanYLlFU5hlmmEhY2r47ImSyGiSSu8aSiyLKtwdLlS724f2gVxsHon4L7HNyEkdY0JqU4RBNqB7IxeJ/+CcSGLu/5YofHUIX56tylvemmplzvdwzO55QT7pCmKxBrFzSrn43/3bX6j20CxtDhDIB99E7dt0CIec9I2rdLU50tHi8piWAwA3CyajHIP7vswyUlbrNPQ7a5cwqO3mpEfC8rHM7hVASR9snh+hs6hY+MuZ+iYFqTFBxnDUrdjLmLG2DkfPqSeNeAHilaprG/KdNQpWwKWdw2b+Jlcs4m0kfR9YHF9CfbGD2s3AmuPaREiLmFs/cz7qQMUYbeVq1NlGk1fog==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(366004)(376002)(396003)(346002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(31686004)(2906002)(478600001)(5660300002)(8936002)(44832011)(4326008)(41300700001)(37006003)(6862004)(6486002)(82960400001)(8676002)(66574015)(66476007)(66946007)(53546011)(66556008)(6506007)(54906003)(31696002)(86362001)(6512007)(36756003)(26005)(316002)(38100700002)(2616005)(83380400001)(6636002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VzloNXNHS0czeFkyKzV4OWFFU25OSWdYbGdYa2NzYWYyZFdsVFFGMnJnZVV5?=
+ =?utf-8?B?L0pkUW01Y1JxMjErZjYyUHhrTjRCdTZldm9zM1owcTFZSURQWjZHNnNNd3Bu?=
+ =?utf-8?B?SW1jcUV2cjlwTGJmSURZQU5WZE5MZTVNZGlYYm1kTGRNNXR4V1VqU2t5cVBw?=
+ =?utf-8?B?SlRhbVorQ2dTUmQ2LzRoZkJIU2JEL0V2eDRRazgyYy9HMjlaSFdxMGluQ3Vk?=
+ =?utf-8?B?M3VTeWJTSkoyVjZELzBKUTZtaVd1TVBFTy9VTzFoUEhNNnZXbXZPUnhuK1Z6?=
+ =?utf-8?B?K0k0aTJ2QzhqbUJhRm0rb3pySktsV2pCZFBZUmdpL1JSTFVsN2VrdGtML3cy?=
+ =?utf-8?B?SUtnNmFLRVp6aGZOVkIyTlVKK3Fnc1JwMUczcS9GbnNja0dPdzF5am5LT1Uv?=
+ =?utf-8?B?SUU5V2pPN3BBbmxMUjZvQnE1eDh1RkFzNU5jOTV6UzV1STJ4QUFuNUdoSDNt?=
+ =?utf-8?B?UlZyUk50R0tEYVNRZnAySGlIcWhTb2krVWpuVkhzK3Y4S3NBTkM2OENQZHFB?=
+ =?utf-8?B?c25zNnRjbjhHbHFNVng4VUg1cC9RK1dzNTQ1TUZXelR0akU4M1ZmWmJJcVZx?=
+ =?utf-8?B?eEVEUG1LWlRPbVZ2SG92U0pxRXZRdTJ2NzdhUTA4V09jVGc3a1F3MXdTVnlC?=
+ =?utf-8?B?MGJiYXE4cGVQOVB2dENCRnArNUk5bDZUSE9sUEdXTE9paG1seVhveDRsMWtD?=
+ =?utf-8?B?aU5vc05LYklzOEY3ZmRlTGY2ZFlCdDhvcHBUMkwzTWZSS3B6S1pyYUZFOGl3?=
+ =?utf-8?B?c2V2UElHY0hSUDNmUy8xTXhqRmhNaXBVazIyZzJhd3lEWmpDanB0c3FRMkt3?=
+ =?utf-8?B?YmxaQTdKaDd1MjdrcTZENzlBZmk1ZC9JbXluVFpJTEdBVlI5MFF4RnhvU0d1?=
+ =?utf-8?B?QUp3amdkUGF3bUJ0enhQb1krQXhrMWxpNExjMW9lUzN1QWJGQ3FCcXh6cEQz?=
+ =?utf-8?B?M3RJaWRnSjFZazVlaVV3REtjbTF6WmdCdWh2a2lyNnRJYzUwaHRmMHgrdVhy?=
+ =?utf-8?B?VkU2Um12Qll4Vyt1N3NqK0hrc0VpMjJJb1BBTWVPdTJTQzhmcG1HdS9QeGF2?=
+ =?utf-8?B?SHlBQXF3elM3ZVd5Vk5zdkc5ckUzNDk3V09IRnhWZ05UTVg0MXNlaHpwcjkz?=
+ =?utf-8?B?a0JycXFtTjBQT0NoU3NTOHVYNHZyK1VvNkp6ay9SRzNpMWR4ejVpVnVWc29r?=
+ =?utf-8?B?SzRRcXBTY0pSckRjL2U4T0ZJL2FlSTlUaE5pYU5BY2xwNVROYVd6ZzEvZEpY?=
+ =?utf-8?B?ckJoY0RybWxScHNZTHFCZ1MzZkJlWGJROVkzZ2ZYMHZ5Mjk1ZVpkeTNiTUwx?=
+ =?utf-8?B?TnNyRVNzWTVCOE52dldsemZjeVJ6ZTFZOHhPK0l4T2l4dkNZT214WUpNZFlX?=
+ =?utf-8?B?S0ZQNkQ1bjZEdlA1eWJUVG5FdndLMmx6VVNCWElsbjN2czNhUUxUWHR4TG1w?=
+ =?utf-8?B?TmZXcm1nNWxqNEFQbzNJZUp5ejVOVHBBY3BHQzVLZmdLMnNsTnQwMzZvdkRN?=
+ =?utf-8?B?NE04eVlQVXZFUHFjWEZZUTR2eHozeGFOZDB4M0JzbmZGTkRBQytER3gvV0Fx?=
+ =?utf-8?B?MGhWbXFUQ3Y0N05UZHJNN0EvOHFiSjdNYUdlZk1oUTdFb3BSeGE5NGJaVng0?=
+ =?utf-8?B?a2xGSEVjQStSMXpnRWt1S1VzOXd2UWRBUzh6bmttSkZ0RXNDdGNUV0FrSTd5?=
+ =?utf-8?B?K1BJOTVNU3VhYTBwTTluYklxc2pqMytqYks1czlsbitZYjk1T3JrOHpTU2Jh?=
+ =?utf-8?B?d3FqNzliWEtoMjEza05xcXo4aUV4ZTZ4L0F6NUFqcUx4bHBrNHVlQlVFQ1g1?=
+ =?utf-8?B?eWl5MHpKajFaM1hQOFg1K1pFM2pIMU1wSHFRUEsrMVBmS2FkVkJLWnh4OUpz?=
+ =?utf-8?B?c2lCbmxpQ3Z3ckxTSkJRMFZXMytOeDdMTjBONUtqK0NPYjUzY0VsZHdIT294?=
+ =?utf-8?B?OHlhbk5kWXFiWVF0aHRpcDZHMUsrcmpSMnE2WUpKbmdlYzhXVVE4K3hjSzRX?=
+ =?utf-8?B?VkNKS01pSlhINXJ3QkY2S2d6WmlSQUxNTXdONkxNM2kzbzlaV1BWa3dIZkg4?=
+ =?utf-8?B?V29ZTzVMRFBBU1d1L1pMSGdqNkk1bUJacFhzbjUwQUNVbW1pL0NGeXIwaEFM?=
+ =?utf-8?B?V0c3T25heTk1QmttU05FZDQ1NWhOYXVlMFBXanYzeDJwblZvUGxLbFVMWmdW?=
+ =?utf-8?B?SkE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 888ae059-78a9-4b00-f164-08dc178cfc32
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2024 18:49:07.4902
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: d/Inqkn9iNXaaofpOn+0yNKOmTJ22gqOX8p8SUwbBTD4ErNi5fpyCRigT9Bwmm02zFtpiGhpwnIAK8CvkNUltsLDZWsLIl8KynVo01zBscI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7367
+X-OriginatorOrg: intel.com
 
-On Wed, Jan 17, 2024 at 5:57=E2=80=AFPM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
-> On 10/01/2024 13:48, Rafael J. Wysocki wrote:
-> > Hi Manaf,
-> >
-> > On Wed, Jan 10, 2024 at 9:17=E2=80=AFAM Manaf Meethalavalappu Pallikunh=
-i
-> > <quic_manafm@quicinc.com> wrote:
-> >>
-> >> Hi Rafael,
-> >>
-> >> On 1/9/2024 7:12 PM, Rafael J. Wysocki wrote:
-> >>
-> >> On Sat, Jan 6, 2024 at 8:16=E2=80=AFPM Manaf Meethalavalappu Pallikunh=
-i
-> >> <quic_manafm@quicinc.com> wrote:
-> >>
-> >> The commit 2e38a2a981b2("thermal/core: Add a generic
-> >> thermal_zone_set_trip() function") adds the support to update
-> >> trip hysteresis even if set_trip_hyst() operation is not defined.
-> >> But during hysteresis attribute creation, if this operation is
-> >> defined then only it enables hysteresis write access. It leads
-> >> to a case where hysteresis sysfs will be read only for a thermal
-> >> zone when its set_trip_hyst() operation is not defined.
-> >>
-> >> Which is by design.
-> >>
-> >> I think it is regression after recent re-work. If a sensor is register=
-ed with thermal framework via thermal_of,
-> >>
-> >> sensor driver doesn't need to know the trip configuration and nothing =
-to do with set_trip_hyst() in driver.
-> >>
-> >> Without this change, if a sensor needs to be monitored from userspace(=
-trip/hysteresis),
-> >
-> > What exactly do you mean by "monitored" here?
-> >
-> >> it is enforcing sensor driver to add  dummy set_trip_hyst() operation.=
- Correct me otherwise
-> >
-> > With the current design, whether or not trip properties can be updated
-> > by user space is a thermal zone property expressed by the presence of
-> > the set_trip_* operations, so yes, whoever registers the thermal zone
-> > needs to provide those so that user space can update the trip
-> > properties.
-> >
-> >> For some thermal zone types (eg. acpi), updating trip hysteresis via
-> >> sysfs might lead to incorrect behavior.
-> >>
-> >> To address this issue, is it okay to  guard  hysteresis write permissi=
-on under CONFIG_THERMAL_WRITABLE_TRIPS defconfig ?
-> >
-> > Not really, because it would affect all of the thermal zones then.
->
-> It seems like there is an inconsistency here with the writable trip
-> points and the writable hysteresis [1].
->
-> My understanding is it does not make sense to have the hysteresis
-> writable even if the driver has a hysteresis dedicated ops. The code
-> allowing to change the hysteresis was done regardless the consistency
-> with the trip temperature change and writable trip points kernel option I=
-MO.
->
-> It would make sense to have:
->
-> if enabled(CONFIG_WRITABLE_TRIP_POINT)
->   -> trip_temp RW
->   -> trip_hyst RW
-> else
->   -> trip temp RO
->   -> trip hyst RO
-> fi
->
-> But if the interface exists since a long time, we may not want to change
-> it, right ?
+Hi Maciej,
 
-If the platform firmware implements hysteresis by changing trip
-temperature (as recommended by the ACPI specification, for example),
-modifying the trip hysteresis via sysfs is simply incorrect and user
-space may not know that.
+On 1/17/2024 12:26 AM, Maciej Wieczór-Retman wrote:
+> On 2024-01-08 at 14:42:11 -0800, Reinette Chatre wrote:
+>> On 12/12/2023 6:52 AM, Maciej Wieczor-Retman wrote:
 
-> However, we can take the opportunity to introduce a new 'user' trip
-> point type in order to let the userspace to have dedicated trip point
-> and receive temperature notifications [2]
->
-> > TBH, the exact scenario in which user space needs to update trip
-> > hysteresis is not particularly clear to me, so can you provide some
-> > more details, please?
->
-> IIUC changing the hysteresis value is useful because the temperature
-> speed will vary given the thermal contribution of the components
-> surrounding the thermal zone, that includes the ambient temperature.
->
-> However, that may apply to slow speed temperature sensor like the skin
-> temperature sensor where we may to do small hysteresis variation.
->
-> The places managed by the kernel have an insane temperature transition
-> speed. The userspace is unable to follow this speed and manage the
-> hysteresis on the fly.
->
-> So that brings us to userspace trip point handling again.
 
-Well, I've already said that whether hysteresis can be modified via
-sysfs is a property of a thermal zone.
+>>> +
+>>> +	if (sparse_masks != ((ecx >> 3) & 1))
+>>> +		return -1;
+>>
+>> Can a message be displayed to support the debugging this test failure?
+> 
+> Sure, that is a very good idea. I'll add ksft_perror() here.
 
-It may as well be a trip property, for example expressed via a (new)
-trip flag set in the trips table used for thermal zone registration.
+I do not think ksft_perror() is appropriate since perror() is for
+system error messages (something that sets errno). Perhaps just
+ksft_print_msg().
+
+>>> +	bit_center = count_bits(full_cache_mask) / 2;
+>>> +	cont_mask = full_cache_mask >> bit_center;
+>>> +
+>>> +	/* Contiguous mask write check. */
+>>> +	snprintf(schemata, sizeof(schemata), "%lx", cont_mask);
+>>> +	ret = write_schemata("", schemata, uparams->cpu, test->resource);
+>>> +	if (ret)
+>>> +		return ret;
+>>
+>> How will user know what failed? I am seeing this single test exercise a few scenarios
+>> and it is not obvious to me if the issue will be clear if this test,
+>> noncont_cat_run_test(), fails.
+> 
+> write_schemata() either succeeds with '0' or errors out with a negative value. If
+> the contiguous mask write fails, write_schemata should print out what was wrong
+> and I believe that the test will report an error rather than failure.
+
+Right. I am trying to understand whether the user will be able to decipher what failed
+in case there is an error. Seems like in this case the user is expected to look at the
+source code of the test to understand what the test was trying to do at the time it
+encountered the failure. In this case user may be "lucky" that this test only has
+one write_schemata() call _not_ followed by a ksft_print_msg() so user can use that
+reasoning to figure out which write_schemata() failed to further dig what test was
+trying to do. 
+
+Reinette
 
