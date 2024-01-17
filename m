@@ -1,100 +1,132 @@
-Return-Path: <linux-kernel+bounces-28568-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28569-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BA45830022
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:29:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 026C3830024
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:30:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B9F11C238C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 06:29:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A81F91F251F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 06:30:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCE278F6D;
-	Wed, 17 Jan 2024 06:27:54 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50B268C1B
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 06:27:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A7FAD26D;
+	Wed, 17 Jan 2024 06:30:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KYQk9dww"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0014FBE49
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 06:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705472874; cv=none; b=oUnC5+vfa7Rrh+At8HDNvlr8YIMzYCQmcy/eYIJvHzIZC+a42Uij3HSIy5rSNOLOIztqC8RR4lXQ+ae1SV01yn6wPd9cYpRq5gDxIcjShp3JTDS2d9jKHpQpmiabFKbX0YnGidhAvnokVjnJGaI9H6Q8rwb80MU7ti9R7NNqvEA=
+	t=1705473026; cv=none; b=OAQPI+Dab2Wi+HWfRNhriRzpmNnVJjXZEHj8tX3lSpvrRUU9A11a6XtUpMuhxvlBg8TSqIqZKn7h3p2UCSTXzXGuJr8VJSilKOg3AI3WK+zI6bc28nevOoIlvPgZ3LTl2FMitYHmEuUXL+z/aTRaHPLjVgUeyQeg4QX1rpvbzi4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705472874; c=relaxed/simple;
-	bh=PYNAmLO4Yra4ku4Ukuk0ZUNkXnXzjyFVCFNdfNPnMAQ=;
-	h=Received:Received:Message-ID:Date:MIME-Version:User-Agent:Subject:
-	 Content-Language:To:Cc:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=swCxONG6J6xk/s6/Tb5hKMkNndKexa2APCSruF+jkCVAdLWPBEEFITTNvrE4AvbniCqjWGMWsswuuf+Fmte4V2VNwFPxedxiKt1O5aS877TbkLnxgFW1CjzMOE1DPZ52P0rrur0QeHM1aXJs15Ijz2G/fBCT5G2b+3h7nvAW86Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 728B42F4;
-	Tue, 16 Jan 2024 22:28:37 -0800 (PST)
-Received: from [10.162.43.8] (a077893.blr.arm.com [10.162.43.8])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4C2603F5A1;
-	Tue, 16 Jan 2024 22:27:47 -0800 (PST)
-Message-ID: <2b81f323-c4b1-4580-8f2f-1654b6c1d016@arm.com>
-Date: Wed, 17 Jan 2024 11:57:44 +0530
+	s=arc-20240116; t=1705473026; c=relaxed/simple;
+	bh=d/+Iqt7FN2V9H5BldHeUcRwFbKJt6MqHvk+5w5dVM70=;
+	h=DKIM-Signature:Received:X-MC-Unique:Received:
+	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
+	 X-Google-Smtp-Source:X-Received:Received:Date:From:To:Cc:Subject:
+	 Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To; b=ekvQ5uDwqCIRrxpxaddmfwnLk24zAB4exy9YE1eiJYDLp3ptx1PVxl7hCzfuacx6SQwBaAOc1mhp/N8h7LUB6mH4RKD5Fh1WjDYxfSMVmT/aBLf/aVJxINSdQRZGCZEsSKsPdjA4/4K8jSxOtZ/vVWk3qlUjtvaJUFEFlw7SPCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KYQk9dww; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705473024;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3SWvsqvo8kKRREIVaq74k7zOkw2lqw8OoQBIc8ZyG6g=;
+	b=KYQk9dwwY9HmEBamOFIC+Dcxi/KLImccbZhSa66rPNnalljHX82FJ0yLNdyGC7bNykDczN
+	om9T/yFa7s3AgXrSzI9hhkGo2bHT+tjnYT4knvRZ0qopsPGrI4mlHwtRAg8PF2HIwuQUt2
+	uGXOUnXaYVRyjIGjoat8J9IPDeAw6Aw=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-433-kIj_0avkMaa1JkFLRNor8Q-1; Wed, 17 Jan 2024 01:30:21 -0500
+X-MC-Unique: kIj_0avkMaa1JkFLRNor8Q-1
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-429d02a63baso80108931cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 22:30:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705473021; x=1706077821;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3SWvsqvo8kKRREIVaq74k7zOkw2lqw8OoQBIc8ZyG6g=;
+        b=IMamS9eR0QuCcR1O/jSeBVFmFjDSbFUlC7Lm0A219ZrxgP8Nl7um1NBGKe7c1ztYGe
+         7d3XA/CXvcPyu6YEEVpI67vu6uL44iafuNCzgT0nZNV4UGpobjD3sDPMTh2jk6LwN482
+         m/qVPy8M1o9g8fAMR1eo5a1QK7QdgCP/+pSa6CZv2HJdXRyvqsEH/x/Iu54t/C8lO65K
+         +0JQMF0HqJV/mjF0ALQpGKv73p1q5/T4aSl3BB2vNr+MRFR2It/NrwWGPu0cvG4RHhvs
+         47clPkLcO+ZkqHTzRbg+JYoDajHtyiOubtfLyrBMwnLAwIZr7DrbpiIkEf8nX1uGs6IL
+         pgfQ==
+X-Gm-Message-State: AOJu0YyLnVMrXY15E0dUM9qWHeHXpbRBcwNMhwJVzc+Me2PErjuFHlfA
+	G8z8fxauIL8bclEL+JeYdLDm5OCGQZwZHCTi0k5432Dw5G7KtRVaupbh3+DH6fGnbTZRT5IkjYF
+	TLCg2W4cAsFPPHzTOQuxwfpoNRl3Uugy/
+X-Received: by 2002:a05:622a:11c9:b0:429:7d0c:6046 with SMTP id n9-20020a05622a11c900b004297d0c6046mr10952481qtk.68.1705473020903;
+        Tue, 16 Jan 2024 22:30:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF+BQy/SCO/b8AjPtrrp1Vd/3GsTEAFv27SNam14tPowsSumiOsAu3SejErD6EszzKJE+6zyw==
+X-Received: by 2002:a05:622a:11c9:b0:429:7d0c:6046 with SMTP id n9-20020a05622a11c900b004297d0c6046mr10952471qtk.68.1705473020527;
+        Tue, 16 Jan 2024 22:30:20 -0800 (PST)
+Received: from localhost.localdomain ([151.29.130.8])
+        by smtp.gmail.com with ESMTPSA id w8-20020ac86b08000000b0042a0effd2d8sm298843qts.36.2024.01.16.22.30.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jan 2024 22:30:20 -0800 (PST)
+Date: Wed, 17 Jan 2024 07:30:16 +0100
+From: Juri Lelli <juri.lelli@redhat.com>
+To: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Tejun Heo <tj@kernel.org>, Aaron Tomlin <atomlin@atomlin.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 4/4] kernel/workqueue: Let rescuers follow unbound wq
+ cpumask changes
+Message-ID: <Zadz-DT6lTdrx7US@localhost.localdomain>
+References: <20240116161929.232885-1-juri.lelli@redhat.com>
+ <20240116161929.232885-5-juri.lelli@redhat.com>
+ <CAJhGHyBuf02mh=ezoua33UNu5QTpwP=qf-WP_C2qVyx_HEtMDg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] mm: vmalloc: Fix a warning in the
- crash_save_vmcoreinfo_init()
-Content-Language: en-US
-To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
- Lorenzo Stoakes <lstoakes@gmail.com>, Christoph Hellwig <hch@infradead.org>,
- Matthew Wilcox <willy@infradead.org>,
- "Liam R . Howlett" <Liam.Howlett@oracle.com>,
- Dave Chinner <david@fromorbit.com>,
- Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
- kernel test robot <lkp@intel.com>
-References: <20240111192329.449189-1-urezki@gmail.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20240111192329.449189-1-urezki@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJhGHyBuf02mh=ezoua33UNu5QTpwP=qf-WP_C2qVyx_HEtMDg@mail.gmail.com>
 
+Hello Lai,
 
-
-On 1/12/24 00:53, Uladzislau Rezki (Sony) wrote:
-> The vmcoreinfo_append_str() function expects "long unsigned int"
-> type as a second argument(0x%lx) to print a beginning of vmalloc
-> start address which is defined as a VMALLOC_START macro.
+On 17/01/24 11:56, Lai Jiangshan wrote:
+> Hello, Juri
 > 
-> For some architectures it can be considered as "int" type, for
-> example m68 generates a compile warning message. To fix it cast
-> a second argument to "unsigned long".
+> On Wed, Jan 17, 2024 at 12:20 AM Juri Lelli <juri.lelli@redhat.com> wrote:
 > 
-> Fixes: 9bdb180b2d ("mm/vmalloc: remove vmap_area_list")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202401120218.y469Puyf-lkp@intel.com/
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> ---
->  kernel/crash_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> > +       /* rescuer needs to respect wq cpumask changes */
+> > +       if (ctx->wq->rescuer) {
+> > +               set_cpus_allowed_ptr(ctx->wq->rescuer->task, ctx->attrs->cpumask);
+> > +               wake_up_process(ctx->wq->rescuer->task);
+> > +       }
+> > +
 > 
-> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-> index b60de490c1fc..49b31e59d3cc 100644
-> --- a/kernel/crash_core.c
-> +++ b/kernel/crash_core.c
-> @@ -748,7 +748,7 @@ static int __init crash_save_vmcoreinfo_init(void)
->  	VMCOREINFO_SYMBOL_ARRAY(swapper_pg_dir);
->  #endif
->  	VMCOREINFO_SYMBOL(_stext);
-> -	vmcoreinfo_append_str("NUMBER(VMALLOC_START)=0x%lx\n", VMALLOC_START);
-> +	vmcoreinfo_append_str("NUMBER(VMALLOC_START)=0x%lx\n", (unsigned long) VMALLOC_START);
->  
->  #ifndef CONFIG_NUMA
->  	VMCOREINFO_SYMBOL(mem_map);
+> What's the reason to wake up the rescuer?
 
-Agree with Christoph - the right place to have this fixed properly is in m68k
-platform while defining VMALLOC_START. But otherwise this fix in itself LGTM.
+I believe we want to wake it up so that it can possibly be moved
+"instantly" to a cpu inside its new cpumask affinity. If we don't wake
+it up it might be sleeping on a cpu outside its affinity which might
+have become isolated and this cpu could be affected by that wakeup if
+that only happens later on when possibly the rescuer needs to perform
+some work.
 
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Does is make more sense to you?
+
+> I support this patch except for the wakeup:
+> Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
+
+Thanks for looking at this!
+
+Juri
+
 
