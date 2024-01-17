@@ -1,43 +1,43 @@
-Return-Path: <linux-kernel+bounces-28504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28503-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8505682FF58
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 04:39:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE32A82FF55
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 04:39:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4F60B252EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 03:39:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83D2F1F24F6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 03:39:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9703B79DF;
-	Wed, 17 Jan 2024 03:38:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9780567D;
+	Wed, 17 Jan 2024 03:38:48 +0000 (UTC)
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3249E1C11;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 324D01C13;
 	Wed, 17 Jan 2024 03:38:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705462729; cv=none; b=Ejq5LMDILmv2UyIRUmp47jLhCPDWKso5tTNWuYqsLpm2L3HYWF/bPqZi8WhkcbzlYP+6grakHnFmTPCILNgrRwpVvvkoYkoAjY3rDEf9l39xsYSPlmh8cg6DCVgEIm1t5N9ZND5DQ/hZ4zRvqfmbrd7HnY6n6yFy2YwOWiGBvzY=
+	t=1705462728; cv=none; b=Cxk4U7aaQ4YCOjo1ypX/hc7VTybjQJn8d/0P8V5O5BuK0wMRkin8b8jCXSWRJK0ILOaYmSIbBSHqbP8WbcUx+NUE0ZDszBxI6BR0hQwAdm0Gghi2Qs7wPHkp++rRQrd8evX9T40zQ8A8EN282AIqGoRsZxoF0fZFGSCo/pI+KdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705462729; c=relaxed/simple;
-	bh=bWVppOX9iw2i92KZSTUkgNoKl6WjTawEwiX2Fo/pd7I=;
+	s=arc-20240116; t=1705462728; c=relaxed/simple;
+	bh=DpUHH/MtmlZWirIGpFpniqdoG1uWcNpU8vFuNpinZx4=;
 	h=Received:Received:Received:From:To:Cc:Subject:Date:Message-Id:
 	 X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding:X-CM-TRANSID:X-Coremail-Antispam:
-	 X-CM-SenderInfo; b=VlyKKHYg9cAtiBZaEtPSffjB47zbsPxBo91vVDV7IVwDx8J2x+WEZRCdBks6VorBeePyGxW9rLMtoGgorIZW/BQbVohsBX1eARFYGGhTD6zcy6TUmsoSqW3sLchwnWkqvoOGsXO0dmrM7JUpZvi13fKcEKrNbumI+GBNvYAQjXA=
+	 X-CM-SenderInfo; b=N8wvoWiIjCCI8z+MqLHq3poJvzPICMAcyYZWG9M1in9lrGmbt44CHoGs7XHC5/e7wo0sf7aUDuRAITlgKqQfkAWWNvXtHjM/pjOeg2m3Pi+Pz0a8zazxYdioObMf0CgNpe7VyrTXHGEe2VCnYKvPRhVxaNUeW34tVwDm5IX2IQ0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TFB672v4Vz4f3lVP;
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TFB6762fLz4f3lVm;
 	Wed, 17 Jan 2024 11:23:11 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 7C5591A0D5E;
+	by mail.maildlp.com (Postfix) with ESMTP id E881B1A0171;
 	Wed, 17 Jan 2024 11:23:17 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgAn9g4jSKdlFKhLBA--.54857S5;
+	by APP1 (Coremail) with SMTP id cCh0CgAn9g4jSKdlFKhLBA--.54857S6;
 	Wed, 17 Jan 2024 11:23:17 +0800 (CST)
 From: linan666@huaweicloud.com
 To: song@kernel.org,
@@ -50,9 +50,9 @@ Cc: linux-raid@vger.kernel.org,
 	yi.zhang@huawei.com,
 	houtao1@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH v4 1/2] md: Fix overflow in is_mddev_idle
-Date: Wed, 17 Jan 2024 11:19:45 +0800
-Message-Id: <20240117031946.2324519-2-linan666@huaweicloud.com>
+Subject: [PATCH v4 2/2] md: don't account sync_io if iostats of the disk is disabled
+Date: Wed, 17 Jan 2024 11:19:46 +0800
+Message-Id: <20240117031946.2324519-3-linan666@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240117031946.2324519-1-linan666@huaweicloud.com>
 References: <20240117031946.2324519-1-linan666@huaweicloud.com>
@@ -63,13 +63,13 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAn9g4jSKdlFKhLBA--.54857S5
-X-Coremail-Antispam: 1UD129KBjvJXoWxXF45Zw1xGw1fur1kXw43ZFb_yoW5AF47pF
-	WUJFyakrW8Xr4Uuw4DZ3yDua4rK34ay3y3KrW7C34aqFySg3ZIgF48GFyYqF1DZFW8ZFW2
-	q34UKFZ0va40qrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmK14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
-	x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+X-CM-TRANSID:cCh0CgAn9g4jSKdlFKhLBA--.54857S6
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFWxKF4kKr1xuF15Jr4DCFg_yoW8XrW7pa
+	95AF93A34UXr45Wa4DXryDCa4rW3srKFWUJrW7u3yfXFyaqr9xGF4rXayqqF1DWFWrGFWa
+	v3WjyrZ093W0yr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUmK14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
+	x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
 	Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
 	A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAa
 	c4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzV
@@ -80,100 +80,51 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxXF45Zw1xGw1fur1kXw43ZFb_yoW5AF47pF
 	WUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAF
 	wI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcI
 	k0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j
-	6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUeYL9UUUUU
+	6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU1xhLUUUUU
 X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
 
 From: Li Nan <linan122@huawei.com>
 
-UBSAN reports this problem:
-
-  UBSAN: Undefined behaviour in drivers/md/md.c:8175:15
-  signed integer overflow:
-  -2147483291 - 2072033152 cannot be represented in type 'int'
-  Call trace:
-   dump_backtrace+0x0/0x310
-   show_stack+0x28/0x38
-   dump_stack+0xec/0x15c
-   ubsan_epilogue+0x18/0x84
-   handle_overflow+0x14c/0x19c
-   __ubsan_handle_sub_overflow+0x34/0x44
-   is_mddev_idle+0x338/0x3d8
-   md_do_sync+0x1bb8/0x1cf8
-   md_thread+0x220/0x288
-   kthread+0x1d8/0x1e0
-   ret_from_fork+0x10/0x18
-
-'curr_events' will overflow when stat accum or 'sync_io' is greater than
-INT_MAX.
-
-Fix it by changing sync_io, last_events and curr_events to 64bit.
+If iostats is disabled, disk_stats will not be updated and
+part_stat_read_accum() only returns a constant value. In this case,
+continuing to count sync_io and to check is_mddev_idle() is no longer
+meaningful.
 
 Signed-off-by: Li Nan <linan122@huawei.com>
-Reviewed-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/md.h        | 4 ++--
- include/linux/blkdev.h | 2 +-
- drivers/md/md.c        | 7 ++++---
- 3 files changed, 7 insertions(+), 6 deletions(-)
+ drivers/md/md.h | 3 ++-
+ drivers/md/md.c | 4 ++++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/md/md.h b/drivers/md/md.h
-index ade83af123a2..1a4f976951c1 100644
+index 1a4f976951c1..e2d03a7a858c 100644
 --- a/drivers/md/md.h
 +++ b/drivers/md/md.h
-@@ -50,7 +50,7 @@ struct md_rdev {
- 
- 	sector_t sectors;		/* Device size (in 512bytes sectors) */
- 	struct mddev *mddev;		/* RAID array if running */
--	int last_events;		/* IO event timestamp */
-+	long long last_events;		/* IO event timestamp */
- 
- 	/*
- 	 * If meta_bdev is non-NULL, it means that a separate device is
-@@ -584,7 +584,7 @@ extern void mddev_unlock(struct mddev *mddev);
+@@ -584,7 +584,8 @@ extern void mddev_unlock(struct mddev *mddev);
  
  static inline void md_sync_acct(struct block_device *bdev, unsigned long nr_sectors)
  {
--	atomic_add(nr_sectors, &bdev->bd_disk->sync_io);
-+	atomic64_add(nr_sectors, &bdev->bd_disk->sync_io);
+-	atomic64_add(nr_sectors, &bdev->bd_disk->sync_io);
++	if (blk_queue_io_stat(bdev->bd_disk->queue))
++		atomic64_add(nr_sectors, &bdev->bd_disk->sync_io);
  }
  
  static inline void md_sync_acct_bio(struct bio *bio, unsigned long nr_sectors)
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 3f8a21cd9233..d28b98adf457 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -170,7 +170,7 @@ struct gendisk {
- 	struct list_head slave_bdevs;
- #endif
- 	struct timer_rand_state *random;
--	atomic_t sync_io;		/* RAID */
-+	atomic64_t sync_io;		/* RAID */
- 	struct disk_events *ev;
- 
- #ifdef CONFIG_BLK_DEV_ZONED
 diff --git a/drivers/md/md.c b/drivers/md/md.c
-index c94373d64f2c..a6829ea5b560 100644
+index a6829ea5b560..919d6affc0ac 100644
 --- a/drivers/md/md.c
 +++ b/drivers/md/md.c
-@@ -8496,14 +8496,15 @@ static int is_mddev_idle(struct mddev *mddev, int init)
- {
- 	struct md_rdev *rdev;
- 	int idle;
--	int curr_events;
-+	long long curr_events;
- 
- 	idle = 1;
+@@ -8502,6 +8502,10 @@ static int is_mddev_idle(struct mddev *mddev, int init)
  	rcu_read_lock();
  	rdev_for_each_rcu(rdev, mddev) {
  		struct gendisk *disk = rdev->bdev->bd_disk;
--		curr_events = (int)part_stat_read_accum(disk->part0, sectors) -
--			      atomic_read(&disk->sync_io);
-+		curr_events =
-+			(long long)part_stat_read_accum(disk->part0, sectors) -
-+			atomic64_read(&disk->sync_io);
- 		/* sync IO will cause sync_io to increase before the disk_stats
- 		 * as sync_io is counted when a request starts, and
- 		 * disk_stats is counted when it completes.
++
++		if (!init && !blk_queue_io_stat(disk->queue))
++			continue;
++
+ 		curr_events =
+ 			(long long)part_stat_read_accum(disk->part0, sectors) -
+ 			atomic64_read(&disk->sync_io);
 -- 
 2.39.2
 
