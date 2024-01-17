@@ -1,55 +1,63 @@
-Return-Path: <linux-kernel+bounces-28540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27C8B82FFDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 06:35:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5919D82FFE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 06:38:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 003DE1C23DC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 05:35:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF97C2891CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 05:38:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CFDB747C;
-	Wed, 17 Jan 2024 05:34:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B70E279C2;
+	Wed, 17 Jan 2024 05:38:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="AmFv18Le"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QQEkDJ9B"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDBAC8F59;
-	Wed, 17 Jan 2024 05:34:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61A6A6AB8;
+	Wed, 17 Jan 2024 05:38:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705469686; cv=none; b=WWmqo1HTcuoLLF9fIVGw/oFvNcdHmQ/iybu6cKlzCZgYAlBIG3vb2SdMqAiebBP6DZkFMsvjI842SAYEc3ocHHdAel1YoXfNG+sf3Tjp0ALSHF/6XHWdjGDWtQKXitPOY8VvrMXKLPxW74Z+JAjzb6owU+h/M4K45Nwzt1Xg9UM=
+	t=1705469890; cv=none; b=kdLf+6CB3AKf2kB2mjJKW0WpoL/kzMRPTWeasNtDky9tPq+tLDtOXwlGdhsIfqfDYvKbJkOf5S0ruzL4HIEFxYah6z267x4btooSs6fZJToEj4YqdFOo4AGppgJKwr74HTG392DXDiIqa+3TIbFidlDoTjgmg0gJNGJsiDG0wB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705469686; c=relaxed/simple;
-	bh=x592FMBNjaV6lXHxwk11ZaeUHrXFxX3mbetxxxrwMOE=;
-	h=DKIM-Signature:Received:Message-ID:Date:MIME-Version:User-Agent:
-	 Cc:Subject:Content-Language:To:References:From:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding; b=kKjCASB9rnDcw4WpV99I0quHwkhpMzjJhUB95yw9TqiF9kplV+t0N2eocVcjXO+QwmPo/sPai+I2+XeEHPLTljoE6YSxfJJ+4ZTSeAVkZl6tetZI6MYqdaM6teecH9DZP9/VsF9vO8q+SQ+ukqXuevd5/dzbQS1QeQGZxjuV7n4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=AmFv18Le; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705469683;
-	bh=x592FMBNjaV6lXHxwk11ZaeUHrXFxX3mbetxxxrwMOE=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=AmFv18Le8nAhy0LOS+nASRMi56aWaAjzEO4NFw0+A96SWbY+cZGe0cXPYFJf7RFuy
-	 S9Pt84Dr61bIVuN/OdikZNVJkEFTSs2FFTvW4u/Qdu+1wnKdkGf5/724N9S0wH6rZt
-	 SD99nZb1rcVV/+fpygC8fsc9n6aB9iHrImJDI0rstoei8M92TURLDSFhu6dJCVaTwn
-	 n9/hGNqFdVdxqd/95Q7RuX+CLU0sYkOyFnk4b7GiKqYv8rWzgxFZ2chwvrBsLsu+GK
-	 rIfFW5cMOB0J5Xr04rPahD96FvDLS9emDRLyYdlthiqtHk08UYW149Z/m9vaXDK+79
-	 EMLOoiLJiBZqw==
-Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 61013378000A;
-	Wed, 17 Jan 2024 05:34:40 +0000 (UTC)
-Message-ID: <d9c99910-364c-4b18-9f26-169c719de29b@collabora.com>
-Date: Wed, 17 Jan 2024 10:34:49 +0500
+	s=arc-20240116; t=1705469890; c=relaxed/simple;
+	bh=srH4A6f1ftjr1JV1Di/wO1iO+t3WVZQRxI0O/xNLAgs=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:X-IronPort-AV:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Subject:From:To:Cc:References:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=m/i/DC57/kSeEQo6kkMPFrVY29ydgsuZYXAlDpHrcGqww5xAMm12MepRPU3k0h6+8z82/RaVsHIPO4EC5MT3XrnWfMgjVTv+cZQNg27AgR0ZG+4efSMrHAt3GjMPuZFThlHySYB+finqkhhu7G1VAwc6bSZ6AFibpp1WUjnolMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QQEkDJ9B; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705469889; x=1737005889;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=srH4A6f1ftjr1JV1Di/wO1iO+t3WVZQRxI0O/xNLAgs=;
+  b=QQEkDJ9BAFQDpFZYTF0pWpHypVxq2X9dISuMYTyRCrbRNk5ULtD/3BSZ
+   1nyhJ4XSScza09jBWEJu4Ihe8/qvW1cNmJqtZB+5X5AJ2OY34JhM73ZJw
+   hIvFwlmHpZs8lY4V7zMsOF9Ww66WG3QhE4ijS8oNfSoFcq1oq3r4lhl2r
+   PKzQqRcXT6u0lZ/3CZVNGT38RRmRQnl4wPR1XgCwwHcMNS5K89wUB3olT
+   001alAANZCj9nO0EXwJ4wCe9joMw+C/5t+sY0gQoemPwruVj6m34zdNV3
+   lj7erNRa4mY83GkremkkX3LzQ4+Nn2zsx2hVF0pQk8SCrT3y2dLtCy3Tn
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="7168805"
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="7168805"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 21:38:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="903415031"
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="903415031"
+Received: from zgao13-mobl1.ccr.corp.intel.com (HELO [10.254.209.39]) ([10.254.209.39])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 21:38:05 -0800
+Message-ID: <dcd27bc8-5eca-41ae-bb86-fd8e657ccfed@linux.intel.com>
+Date: Wed, 17 Jan 2024 13:38:03 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,331 +65,164 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>,
- kernel@collabora.com, linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+Subject: Re: [RFC PATCH v10 0/5] fix vt-d hard lockup when hotplug ATS capable
+ device
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+To: Baolu Lu <baolu.lu@linux.intel.com>, kevin.tian@intel.com,
+ bhelgaas@google.com, dwmw2@infradead.org, will@kernel.org,
+ robin.murphy@arm.com, lukas@wunner.de
+Cc: linux-pci@vger.kernel.org, iommu@lists.linux.dev,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/7] selftests/mm: hugetlb-read-hwpoison: conform test
- to TAP format output
-Content-Language: en-US
-To: Jiaqi Yan <jiaqiyan@google.com>
-References: <20240115073247.1280266-1-usama.anjum@collabora.com>
- <20240115073247.1280266-5-usama.anjum@collabora.com>
- <CACw3F531DPDtQe5PJmH091n9RhK57FhUYR1L45FdjrYBMSUOtQ@mail.gmail.com>
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <CACw3F531DPDtQe5PJmH091n9RhK57FhUYR1L45FdjrYBMSUOtQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+References: <20231228170206.720675-1-haifeng.zhao@linux.intel.com>
+ <1a2a4069-c737-4a3c-a2f6-cce06823331b@linux.intel.com>
+ <3ee904e9-8a93-4bd9-8df7-6294885589e4@linux.intel.com>
+ <42f7848a-0262-4871-b5dc-0e87beebfd11@linux.intel.com>
+In-Reply-To: <42f7848a-0262-4871-b5dc-0e87beebfd11@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 1/16/24 10:07 PM, Jiaqi Yan wrote:
-> On Sun, Jan 14, 2024 at 11:33 PM Muhammad Usama Anjum
-> <usama.anjum@collabora.com> wrote:
->>
->> Conform the layout, informational and status messages to TAP. No
->> functional change is intended other than the layout of output messages.
->>
->> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->> ---
->> Changes in v3:
->> - Use ksft_perror as short hand instead of missing strerror(errno) at
->>   one place
-> 
-> Minor thing: I think we should preserve previous changelogs, right?
-Definately. There was no changes in v2 for this patch. Hence there isn't
-any changelog before this series.
 
-> 
+On 1/17/2024 1:26 PM, Ethan Zhao wrote:
+>
+> On 1/17/2024 11:24 AM, Baolu Lu wrote:
+>> On 2024/1/15 15:58, Ethan Zhao wrote:
+>>> -static int qi_check_fault(struct intel_iommu *iommu, int index, int 
+>>> wait_index)
+>>> +static int qi_check_fault(struct intel_iommu *iommu, int index, int 
+>>> wait_index,
+>>> +                  pci_dev *target_pdev)
+>>>   {
+>>>          u32 fault;
+>>>          int head, tail;
+>>> +       u64 iqe_err, ice_sid;
+>>>          struct q_inval *qi = iommu->qi;
+>>>          int shift = qi_shift(iommu);
+>>>
+>>>          if (qi->desc_status[wait_index] == QI_ABORT)
+>>>                  return -EAGAIN;
+>>>
+>>> +       /*
+>>> +        * If the ATS invalidation target device is gone this moment 
+>>> (surprise
+>>> +        * removed, died, no response) don't try this request again. 
+>>> this
+>>> +        * request will not get valid result anymore. but the 
+>>> request was
+>>> +        * already submitted to hardware and we predict to get a ITE in
+>>> +        * followed batch of request, if so, it will get handled then.
+>>> +        */
 >>
->> Tested this by reverting the patch a08c7193e4f18dc8508f2d07d0de2c5b94cb39a3
->> ("mm/filemap: remove hugetlb special casing in filemap.c") as it has
->> broken the test. The bug report can be found at [1].
->>
->> Tested with proposed fix as well [2].
->>
->> [1] https://lore.kernel.org/all/079335ab-190f-41f7-b832-6ffe7528fd8b@collabora.com
->> [2] https://lore.kernel.org/all/a20e7bdb-7344-306d-e8f5-5ee69af7d5ea@oracle.com
->> ---
->>  .../selftests/mm/hugetlb-read-hwpoison.c      | 116 ++++++++----------
->>  1 file changed, 54 insertions(+), 62 deletions(-)
->>
->> diff --git a/tools/testing/selftests/mm/hugetlb-read-hwpoison.c b/tools/testing/selftests/mm/hugetlb-read-hwpoison.c
->> index ba6cc6f9cabc..23b41b88c6af 100644
->> --- a/tools/testing/selftests/mm/hugetlb-read-hwpoison.c
->> +++ b/tools/testing/selftests/mm/hugetlb-read-hwpoison.c
->> @@ -58,8 +58,8 @@ static bool verify_chunk(char *buf, size_t len, char val)
->>
->>         for (i = 0; i < len; ++i) {
->>                 if (buf[i] != val) {
->> -                       printf(PREFIX ERROR_PREFIX "check fail: buf[%lu] = %u != %u\n",
->> -                               i, buf[i], val);
->> +                       ksft_print_msg(PREFIX ERROR_PREFIX "check fail: buf[%lu] = %u != %u\n",
->> +                                      i, buf[i], val);
->>                         return false;
->>                 }
->>         }
->> @@ -75,21 +75,21 @@ static bool seek_read_hugepage_filemap(int fd, size_t len, size_t wr_chunk_size,
->>         ssize_t total_ret_count = 0;
->>         char val = offset / wr_chunk_size + offset % wr_chunk_size;
->>
->> -       printf(PREFIX PREFIX "init val=%u with offset=0x%lx\n", val, offset);
->> -       printf(PREFIX PREFIX "expect to read 0x%lx bytes of data in total\n",
->> -              expected);
->> +       ksft_print_msg(PREFIX PREFIX "init val=%u with offset=0x%lx\n", val, offset);
->> +       ksft_print_msg(PREFIX PREFIX "expect to read 0x%lx bytes of data in total\n",
->> +                      expected);
->>         if (lseek(fd, offset, SEEK_SET) < 0) {
->> -               perror(PREFIX ERROR_PREFIX "seek failed");
->> +               ksft_perror(PREFIX ERROR_PREFIX "seek failed");
->>                 return false;
->>         }
->>
->>         while (offset + total_ret_count < len) {
->>                 ret_count = read(fd, buf, wr_chunk_size);
->>                 if (ret_count == 0) {
->> -                       printf(PREFIX PREFIX "read reach end of the file\n");
->> +                       ksft_print_msg(PREFIX PREFIX "read reach end of the file\n");
->>                         break;
->>                 } else if (ret_count < 0) {
->> -                       perror(PREFIX ERROR_PREFIX "read failed");
->> +                       ksft_perror(PREFIX ERROR_PREFIX "read failed");
->>                         break;
->>                 }
->>                 ++val;
->> @@ -98,8 +98,8 @@ static bool seek_read_hugepage_filemap(int fd, size_t len, size_t wr_chunk_size,
->>
->>                 total_ret_count += ret_count;
->>         }
->> -       printf(PREFIX PREFIX "actually read 0x%lx bytes of data in total\n",
->> -              total_ret_count);
->> +       ksft_print_msg(PREFIX PREFIX "actually read 0x%lx bytes of data in total\n",
->> +                      total_ret_count);
->>
->>         return total_ret_count == expected;
->>  }
->> @@ -112,15 +112,15 @@ static bool read_hugepage_filemap(int fd, size_t len,
->>         ssize_t total_ret_count = 0;
->>         char val = 0;
->>
->> -       printf(PREFIX PREFIX "expect to read 0x%lx bytes of data in total\n",
->> -              expected);
->> +       ksft_print_msg(PREFIX PREFIX "expect to read 0x%lx bytes of data in total\n",
->> +                      expected);
->>         while (total_ret_count < len) {
->>                 ret_count = read(fd, buf, wr_chunk_size);
->>                 if (ret_count == 0) {
->> -                       printf(PREFIX PREFIX "read reach end of the file\n");
->> +                       ksft_print_msg(PREFIX PREFIX "read reach end of the file\n");
->>                         break;
->>                 } else if (ret_count < 0) {
->> -                       perror(PREFIX ERROR_PREFIX "read failed");
->> +                       ksft_perror(PREFIX ERROR_PREFIX "read failed");
->>                         break;
->>                 }
->>                 ++val;
->> @@ -129,8 +129,8 @@ static bool read_hugepage_filemap(int fd, size_t len,
->>
->>                 total_ret_count += ret_count;
->>         }
->> -       printf(PREFIX PREFIX "actually read 0x%lx bytes of data in total\n",
->> -              total_ret_count);
->> +       ksft_print_msg(PREFIX PREFIX "actually read 0x%lx bytes of data in total\n",
->> +                      total_ret_count);
->>
->>         return total_ret_count == expected;
->>  }
->> @@ -142,14 +142,14 @@ test_hugetlb_read(int fd, size_t len, size_t wr_chunk_size)
->>         char *filemap = NULL;
->>
->>         if (ftruncate(fd, len) < 0) {
->> -               perror(PREFIX ERROR_PREFIX "ftruncate failed");
->> +               ksft_perror(PREFIX ERROR_PREFIX "ftruncate failed");
->>                 return status;
->>         }
->>
->>         filemap = mmap(NULL, len, PROT_READ | PROT_WRITE,
->>                        MAP_SHARED | MAP_POPULATE, fd, 0);
->>         if (filemap == MAP_FAILED) {
->> -               perror(PREFIX ERROR_PREFIX "mmap for primary mapping failed");
->> +               ksft_perror(PREFIX ERROR_PREFIX "mmap for primary mapping failed");
->>                 goto done;
->>         }
->>
->> @@ -162,7 +162,7 @@ test_hugetlb_read(int fd, size_t len, size_t wr_chunk_size)
->>         munmap(filemap, len);
->>  done:
->>         if (ftruncate(fd, 0) < 0) {
->> -               perror(PREFIX ERROR_PREFIX "ftruncate back to 0 failed");
->> +               ksft_perror(PREFIX ERROR_PREFIX "ftruncate back to 0 failed");
->>                 status = TEST_FAILED;
->>         }
->>
->> @@ -179,14 +179,14 @@ test_hugetlb_read_hwpoison(int fd, size_t len, size_t wr_chunk_size,
->>         const unsigned long pagesize = getpagesize();
->>
->>         if (ftruncate(fd, len) < 0) {
->> -               perror(PREFIX ERROR_PREFIX "ftruncate failed");
->> +               ksft_perror(PREFIX ERROR_PREFIX "ftruncate failed");
->>                 return status;
->>         }
->>
->>         filemap = mmap(NULL, len, PROT_READ | PROT_WRITE,
->>                        MAP_SHARED | MAP_POPULATE, fd, 0);
->>         if (filemap == MAP_FAILED) {
->> -               perror(PREFIX ERROR_PREFIX "mmap for primary mapping failed");
->> +               ksft_perror(PREFIX ERROR_PREFIX "mmap for primary mapping failed");
->>                 goto done;
->>         }
->>
->> @@ -201,7 +201,7 @@ test_hugetlb_read_hwpoison(int fd, size_t len, size_t wr_chunk_size,
->>          */
->>         hwp_addr = filemap + len / 2 + pagesize;
->>         if (madvise(hwp_addr, pagesize, MADV_HWPOISON) < 0) {
->> -               perror(PREFIX ERROR_PREFIX "MADV_HWPOISON failed");
->> +               ksft_perror(PREFIX ERROR_PREFIX "MADV_HWPOISON failed");
->>                 goto unmap;
->>         }
->>
->> @@ -228,7 +228,7 @@ test_hugetlb_read_hwpoison(int fd, size_t len, size_t wr_chunk_size,
->>         munmap(filemap, len);
->>  done:
->>         if (ftruncate(fd, 0) < 0) {
->> -               perror(PREFIX ERROR_PREFIX "ftruncate back to 0 failed");
->> +               ksft_perror(PREFIX ERROR_PREFIX "ftruncate back to 0 failed");
->>                 status = TEST_FAILED;
->>         }
->>
->> @@ -240,27 +240,32 @@ static int create_hugetlbfs_file(struct statfs *file_stat)
->>         int fd;
->>
->>         fd = memfd_create("hugetlb_tmp", MFD_HUGETLB);
->> -       if (fd < 0) {
->> -               perror(PREFIX ERROR_PREFIX "could not open hugetlbfs file");
->> -               return -1;
->> -       }
->> +       if (fd < 0)
->> +               ksft_exit_fail_msg(PREFIX ERROR_PREFIX "could not open hugetlbfs file: %s\n",
->> +                                  strerror(errno));
->>
->>         memset(file_stat, 0, sizeof(*file_stat));
->> +
->>         if (fstatfs(fd, file_stat)) {
->> -               perror(PREFIX ERROR_PREFIX "fstatfs failed");
->> -               goto close;
->> +               close(fd);
->> +               ksft_exit_fail_msg(PREFIX ERROR_PREFIX "fstatfs failed: %s\n", strerror(errno));
->>         }
->>         if (file_stat->f_type != HUGETLBFS_MAGIC) {
->> -               printf(PREFIX ERROR_PREFIX "not hugetlbfs file\n");
->> -               goto close;
->> +               close(fd);
->> +               ksft_exit_fail_msg(PREFIX ERROR_PREFIX "not hugetlbfs file\n");
->>         }
->>
->>         return fd;
->> -close:
->> -       close(fd);
->> -       return -1;
->>  }
->>
->> +#define KSFT_PRINT_MSG(status, fmt, ...)                                       \
->> +       do {                                                                    \
->> +               if (status == TEST_SKIPPED)                                     \
->> +                       ksft_test_result_skip(fmt, __VA_ARGS__);                \
->> +               else                                                            \
->> +                       ksft_test_result(status == TEST_PASSED, fmt, __VA_ARGS__); \
->> +       } while (0)
->> +
->>  int main(void)
->>  {
->>         int fd;
->> @@ -273,50 +278,37 @@ int main(void)
->>         };
->>         size_t i;
->>
->> +       ksft_print_header();
->> +       ksft_set_plan(12);
-> 
-> Minor: can this number be calculated, or at least defined as a macro
-> with documents? That would make it easier for reading.
-The number can be calculated to some extent via macro. As all the tests
-don't define a macro for this, I'll prepare one patch for all the tests
-later on.
+>> We can't leave the ITE triggered by this request for the next one, which
+>> has no context about why this happened. Perhaps move below code down to
+>> the segment that handles ITEs.
+>
+> Here, the invalidation request has been issued to hardware but target 
+> device
+>
+> gone, we can't loop and wait for the ITE for this request to happen, 
+> and we
+>
+> bail out here because we hold lock_irqsave lock , the ITE still could 
+> happen
+>
+> with later batch request in the future,  though it is not triggered by 
+> that request,
+>
+> but it could still be cleaned/handled. move it to the fault() segment 
+> ?,there means
 
-> 
->> +
->>         for (i = 0; i < ARRAY_SIZE(wr_chunk_sizes); ++i) {
->> -               printf("Write/read chunk size=0x%lx\n",
->> -                      wr_chunk_sizes[i]);
->> +               ksft_print_msg("Write/read chunk size=0x%lx\n",
->> +                              wr_chunk_sizes[i]);
->>
->>                 fd = create_hugetlbfs_file(&file_stat);
->> -               if (fd < 0)
->> -                       goto create_failure;
->> -               printf(PREFIX "HugeTLB read regression test...\n");
->> +               ksft_print_msg(PREFIX "HugeTLB read regression test...\n");
->>                 status = test_hugetlb_read(fd, file_stat.f_bsize,
->>                                            wr_chunk_sizes[i]);
->> -               printf(PREFIX "HugeTLB read regression test...%s\n",
->> -                      status_to_str(status));
->> +               KSFT_PRINT_MSG(status, PREFIX "HugeTLB read regression test...%s\n",
->> +                              status_to_str(status));
->>                 close(fd);
->> -               if (status == TEST_FAILED)
->> -                       return -1;
->>
->>                 fd = create_hugetlbfs_file(&file_stat);
->> -               if (fd < 0)
->> -                       goto create_failure;
->> -               printf(PREFIX "HugeTLB read HWPOISON test...\n");
->> +               ksft_print_msg(PREFIX "HugeTLB read HWPOISON test...\n");
->>                 status = test_hugetlb_read_hwpoison(fd, file_stat.f_bsize,
->>                                                     wr_chunk_sizes[i], false);
->> -               printf(PREFIX "HugeTLB read HWPOISON test...%s\n",
->> -                      status_to_str(status));
->> +               KSFT_PRINT_MSG(status, PREFIX "HugeTLB read HWPOISON test..%s\n",
->> +                              status_to_str(status));
->>                 close(fd);
->> -               if (status == TEST_FAILED)
->> -                       return -1;
->>
->>                 fd = create_hugetlbfs_file(&file_stat);
->> -               if (fd < 0)
->> -                       goto create_failure;
->> -               printf(PREFIX "HugeTLB seek then read HWPOISON test...\n");
->> +               ksft_print_msg(PREFIX "HugeTLB seek then read HWPOISON test...\n");
->>                 status = test_hugetlb_read_hwpoison(fd, file_stat.f_bsize,
->>                                                     wr_chunk_sizes[i], true);
->> -               printf(PREFIX "HugeTLB seek then read HWPOISON test...%s\n",
->> -                      status_to_str(status));
->> +               KSFT_PRINT_MSG(status, PREFIX "HugeTLB seek then read HWPOISON test...%s\n",
->> +                              status_to_str(status));
->>                 close(fd);
->> -               if (status == TEST_FAILED)
->> -                       return -1;
->>         }
->>
->> -       return 0;
->> -
->> -create_failure:
->> -       printf(ERROR_PREFIX "Abort test: failed to create hugetlbfs file\n");
->> -       return -1;
->> +       ksft_finished();
->>  }
->> --
->> 2.42.0
->>
->>
-> 
-> This version looks good to me. Maybe someone else need to take another
-> look, just add mine:
-> 
-> Reviewed-by: Jiaqi Yan <jiaqiyan@google.com>
-Thanks
+That moment, the ITE was triggered by previous requests, they are not in 
+current
 
-> 
+context, also shouldn't be retried, they have response time over expected.
 
--- 
-BR,
-Muhammad Usama Anjum
+but triggered ITE fault blocks this patch request, we should retry this 
+batch request.
+
+we just clean the fault and retry it.  nothing missed.
+
+
+Thanks,
+
+Ethan
+
+>
+> ITE already happened, no need to check target presence anymore.
+>
+> did I miss something about the context lost ?
+>
+>>
+>> Another concern is about qi_dump_fault(), which pr_err's the fault
+>> message as long as the register is set. Some faults are predictable,
+>> such as cache invalidation for surprise-removed devices. Unconditionally
+>> reporting errors with pr_err() may lead the user to believe that a more
+>> serious hardware error has occurred. Probably we can refine this part of
+>> the code as well.
+>
+> Agree, may refine them in seperated series ?
+>
+> loop and always retry IQE, ICE don't make sense per my understanding.  if
+>
+> IQE happened retry it will always reproduce the fault, because request 
+> is the same.
+>
+> we could fix them together in other patches.
+>
+>
+> Thanks,
+>
+> Ethan
+>
+>>
+>> Others look sane to me.
+>>
+>>> +       if (target_pdev && !pci_device_is_present(target_pdev))
+>>> +               return -EINVAL;
+>>> +
+>>>          fault = readl(iommu->reg + DMAR_FSTS_REG);
+>>>          if (fault & (DMA_FSTS_IQE | DMA_FSTS_ITE | DMA_FSTS_ICE))
+>>>                  qi_dump_fault(iommu, fault);
+>>> @@ -1315,6 +1327,13 @@ static int qi_check_fault(struct intel_iommu 
+>>> *iommu, int index, int wait_index)
+>>>                  tail = readl(iommu->reg + DMAR_IQT_REG);
+>>>                  tail = ((tail >> shift) - 1 + QI_LENGTH) % QI_LENGTH;
+>>>
+>>> +               /*
+>>> +                * SID field is valid only when the ITE field is Set 
+>>> in FSTS_REG
+>>> +                * see Intel VT-d spec r4.1, section 11.4.9.9
+>>> +                */
+>>> +               iqe_err = dmar_readq(iommu->reg + DMAR_IQER_REG);
+>>> +               ice_sid = DMAR_IQER_REG_ITESID(iqe_err);
+>>> +
+>>>                  writel(DMA_FSTS_ITE, iommu->reg + DMAR_FSTS_REG);
+>>>                  pr_info("Invalidation Time-out Error (ITE) 
+>>> cleared\n");
+>>>
+>>> @@ -1324,6 +1343,16 @@ static int qi_check_fault(struct intel_iommu 
+>>> *iommu, int index, int wait_index)
+>>>                          head = (head - 2 + QI_LENGTH) % QI_LENGTH;
+>>>                  } while (head != tail);
+>>>
+>>> +               /*
+>>> +                * If got ITE, we need to check if the sid of ITE is 
+>>> the same as
+>>> +                * current ATS invalidation target device, if yes, 
+>>> don't try this
+>>> +                * request anymore, the target device has a response 
+>>> time beyound
+>>> +                * expected. 0 value of ice_sid means old device, no 
+>>> ice_sid value.
+>>> +                */
+>>> +               if (target_pdev && ice_sid && ice_sid ==
+>>> +                   pci_dev_id(pci_physfn(target_pdev))
+>>> +                               return -ETIMEDOUT;
+>>> +
+>>>                  if (qi->desc_status[wait_index] == QI_ABORT)
+>>>                          return -EAGAIN;
+>>>          }
+>>
+>> Best regards,
+>> baolu
+>
 
