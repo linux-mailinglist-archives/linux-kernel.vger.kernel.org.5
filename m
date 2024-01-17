@@ -1,99 +1,109 @@
-Return-Path: <linux-kernel+bounces-29119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E60A83090E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:03:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 642A9830AEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:22:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 035CF1F264FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:03:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1553B26D18
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:22:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AECC21356;
-	Wed, 17 Jan 2024 15:03:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BBE322329;
+	Wed, 17 Jan 2024 16:22:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="n1mG+MAt"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (1024-bit key) header.d=mev.co.uk header.i=@mev.co.uk header.b="AKAmZKN2"
+Received: from smtp68.iad3b.emailsrvr.com (smtp68.iad3b.emailsrvr.com [146.20.161.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B1420DC9;
-	Wed, 17 Jan 2024 15:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F064414273
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 16:22:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=146.20.161.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705503781; cv=none; b=ShvCXpZcLtuxPV/qPVAu27yNFfvcEoLW/Ss4idR4NUDHajb358FUpjFl5epMmz/9nGYjfLB9dNMejVwE9tKhxHyw84ao5oVo6jDaZB0Y/Al3zyy9sGFY9lVin19ccn0NBA+rpGC4p9KierEzbb5h9O6p+NoPRzO/en8gCV5QHdI=
+	t=1705508542; cv=none; b=j6PnWgXNcGDIwntpKlNnqUJioL2PMKZc0ZlNkJzvxvIqAwtldOpMAkMJqR4gGGzdput00YqgVJyhnWTrLYm+xtnsfZ7JvCTfg/lxgVqEhnYjqI4SumazEcsa5ogbh7r8lEhe1e4oQrzOnEn0bPuLPcPpWz6X50mVAPHvTZ407Q0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705503781; c=relaxed/simple;
-	bh=U30tMly9NPtZKE/JLAer7cPf9aPNHRLrxBNVnRZE3JQ=;
-	h=Received:DKIM-Signature:Received:Received:Received:Received:Date:
-	 From:To:CC:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:X-EXCLAIMER-MD-CONFIG; b=KIc278C4vxcYdceNYCUMct+pbWSNmtHwrqCLbosKlhDr4Td2A8doRAdiPzAUzovB2RCH5QjhVaTELBizJBaZ/k2IisRF9c7ydH95tIhX8Pw+Ro3oRVpcrrvCEIfO163hirzFLAtRlrKT7usiMltJg0DEnAWump7ERQtWo418kJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=n1mG+MAt; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40HF2ahI038819;
-	Wed, 17 Jan 2024 09:02:36 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1705503756;
-	bh=4DKlR/XOa60vrF3LRv1+V3xGI1FNo5diw36Qw9hUvYk=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=n1mG+MAtJict0pt9BdpTauvbJuIkiaD9OHne+EyNTqVoouMvoP4mdHBu2qLYyg3yl
-	 Dk8xmHYMPK80Aa6uqzrOwCT8uLFaGJN5akUIR0sYYSDtjkhgsjSTmAv1n4iWyCjJaG
-	 k1kYvWk59o01beoGg/bGgM/YWkC9YhJbDinXbe2g=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40HF2axQ017179
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 17 Jan 2024 09:02:36 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 17
- Jan 2024 09:02:35 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 17 Jan 2024 09:02:35 -0600
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40HF2ZrE008378;
-	Wed, 17 Jan 2024 09:02:35 -0600
-Date: Wed, 17 Jan 2024 09:02:35 -0600
-From: Nishanth Menon <nm@ti.com>
-To: Wadim Egorov <w.egorov@phytec.de>
-CC: Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        Garrett Giordano
-	<ggiordano@phytec.com>
-Subject: Re: [PATCH 15/16] arm64: dts: ti: phycore*: Clarify GPL-2.0 as
- GPL-2.0-only
-Message-ID: <20240117150235.37sw7ec3hegelno3@maturely>
-References: <20240110140903.4090946-1-nm@ti.com>
- <20240110140903.4090946-16-nm@ti.com>
- <fb8232b1-9708-4b57-b67c-92ec6ccf9fd0@phytec.de>
+	s=arc-20240116; t=1705508542; c=relaxed/simple;
+	bh=bnZ+5AE1obElm/T5IRAf2b28NzvSXqLt1dw/hEtldGM=;
+	h=DKIM-Signature:X-Auth-ID:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Subject:To:Cc:References:Content-Language:From:
+	 Organization:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-Classification-ID; b=rFlDKN/ol6ZqPuuzys6x9fRxz+rIgPOdfMQBIuK6NNui5bkuy2ptuT66YDi/tF51EZYYV+DX43WXMvLad+k36SSOgy0/m2LsdAetajdxcJqoOR1WyQIeFOZgiURd3ziNIgUit3K+SgYwGAi1kCbpJIdk5smElKZbUs+oKtJ5/00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mev.co.uk; spf=pass smtp.mailfrom=mev.co.uk; dkim=pass (1024-bit key) header.d=mev.co.uk header.i=@mev.co.uk header.b=AKAmZKN2; arc=none smtp.client-ip=146.20.161.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mev.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mev.co.uk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+	s=20221208-6x11dpa4; t=1705499554;
+	bh=bnZ+5AE1obElm/T5IRAf2b28NzvSXqLt1dw/hEtldGM=;
+	h=Date:Subject:To:From:From;
+	b=AKAmZKN230qTVMSLPOgahnLAuNg2vrXwP/93fXmTm8YbXaSxkBJ74ISby+OGwfuR+
+	 JwBsca+r2iUaF0ZJoMf+EZdkwuSVgiOBQlozYLqC7D9A4NJUGeIlXaC0cwdKMCl7wv
+	 nYGhWXu+nFPVTTjwBH5Zi1upOpq9X+DAXp2uhS8A=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp1.relay.iad3b.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id DF6EE60097;
+	Wed, 17 Jan 2024 08:52:33 -0500 (EST)
+Message-ID: <d4779143-bb91-4d8e-a336-eeefc3131c05@mev.co.uk>
+Date: Wed, 17 Jan 2024 13:52:32 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <fb8232b1-9708-4b57-b67c-92ec6ccf9fd0@phytec.de>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] comedi: drivers: ni_tio: Fix arithmetic expression
+ overflow
+To: Denis Arefev <arefev@swemel.ru>
+Cc: H Hartley Sweeten <hsweeten@visionengravers.com>,
+ open list <linux-kernel@vger.kernel.org>, lvc-project@linuxtesting.org
+References: <20240117124229.37455-1-arefev@swemel.ru>
+Content-Language: en-GB
+From: Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+In-Reply-To: <20240117124229.37455-1-arefev@swemel.ru>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Classification-ID: 504b7891-3038-4700-bb61-960c5ba746dc-1-1
 
-On 03:29-20240117, Wadim Egorov wrote:
-> Hey Nishanth,
+On 17/01/2024 12:42, Denis Arefev wrote:
+> The value of an arithmetic expression period_ns * 1000 is subject
+> to overflow due to a failure to cast operands to a larger data
+> type before performing arithmetic
 > 
-> I am also okay to have our device trees using the additional MIT license.
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
 > 
+> Signed-off-by: Denis Arefev <arefev@swemel.ru>
+> ---
+>   drivers/comedi/drivers/ni_tio.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/comedi/drivers/ni_tio.c b/drivers/comedi/drivers/ni_tio.c
+> index da6826d77e60..acc914903c70 100644
+> --- a/drivers/comedi/drivers/ni_tio.c
+> +++ b/drivers/comedi/drivers/ni_tio.c
+> @@ -800,7 +800,7 @@ static int ni_tio_set_clock_src(struct ni_gpct *counter,
+>   				GI_PRESCALE_X2(counter_dev->variant) |
+>   				GI_PRESCALE_X8(counter_dev->variant), bits);
+>   	}
+> -	counter->clock_period_ps = period_ns * 1000;
+> +	counter->clock_period_ps = period_ns * 1000UL;
+>   	ni_tio_set_sync_mode(counter);
+>   	return 0;
+>   }
 
-OK - I can respin the series. I take it that I can retain your Acks.
+Looks good, thanks!
+
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+
+Could you resend it and Cc Greg Kroah-Hartman 
+<gregkh@linuxfoundation.org> ?  It's more likely to get applied that way 
+because I don't maintain my own kernel tree for comedi.  Feel free to 
+add my Reviewed-by line.
 
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+
 
