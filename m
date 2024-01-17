@@ -1,271 +1,180 @@
-Return-Path: <linux-kernel+bounces-28454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44BF082FEB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 03:08:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B90BC82FEB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 03:15:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2C5A1C23C27
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 02:08:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 427221F25705
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 02:15:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49C3A1C11;
-	Wed, 17 Jan 2024 02:07:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5379A67C6F;
+	Wed, 17 Jan 2024 02:14:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gAs1fLK5"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="bgVPuA1K"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7BAA17D9
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 02:07:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31E9B15B7;
+	Wed, 17 Jan 2024 02:14:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705457274; cv=none; b=mn55AswA0HSvq+Q9mdR7QDz21Wog07WZnRaBWX18VAwoCwUcQVe7AT7zgSFFDDzf4Iqory/vsdu0MzhMOb8sb3lcmzjC3wAwOrX7ycC4e05cwmfQ0f7eOyqFtqXJmdPKeIie69vx2XRyexSt7/Qsw941dRw+vlB59V/ekNusAIo=
+	t=1705457694; cv=none; b=ATO6eTS3UA6rIia9P2ogaMXNdRgIH+sQV9pRhA87XdpUNPp+EYfTICnQCt0aH4mYmbgxODRqJbQRneBgkHiMIeqhtIl0eWhBbxObQsq+eebpd5ktQV8Kayvs8kURZwnru3AEoLo94Q2Kl7GghH7fi99hHPHgth1RlurSkBnSXCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705457274; c=relaxed/simple;
-	bh=MvDgQ746ZQj3zns1FQX1QH5YMZ8gw9t0/lB20+1RlyI=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=rEP6t04I2Eevam0bounJ/JmkfV+b3SJ22a4fUKGHoCKdZ2cWccsBwuM81BmKV3mJ/l43X0uKF2jaxOMg9XHhuj8zugLVZWfV3X2yGU99LoXC3l3jPQKu4Gnhba+qlUUj/HqBf05l4CoJs4F5rw81QXo7ITttD057/DnYh+GoFNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gAs1fLK5; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40e884de7b9so4227295e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 18:07:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705457271; x=1706062071; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xk5vckSqwRb1btcseiXm1KAIOaiR88MR+jDMsfvoLlU=;
-        b=gAs1fLK57oONyAuiuETxTJRbUKj7LorN4nDLHgFQigiETxYqj9Z6Cd4u5pSchJ+h7y
-         LdZuuGH4FHRDShTQyzDw8/5FQE3mSIKs+3ge90D9FbWKNgTNlMvI3/7cdSwTSKYJsPwL
-         lh2vP/Ltf2dRlA/8PFKeWoqBT9izsXG/gkqY/VZJGPuknXckOKctA8HDZ0/wL+IOMDzh
-         tvzM5cYJ5cYZA7sbDZofMdv1BqrViniNDxSuGHz2SlBOq3ETbm3P4JUs/KawStv1OUgH
-         z3xARjaNFHBMm25JYNNOD0KCx5HA7rIem7xYTtLVuXynKwRc4wvuXunvXXdsVnKVQlw+
-         LK4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705457271; x=1706062071;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Xk5vckSqwRb1btcseiXm1KAIOaiR88MR+jDMsfvoLlU=;
-        b=wRPfIs8J/Ae7grvWQcC09xg4+ZLAaVu0k7/0kRoBt3pCITz0azWZ+HpClqSraielUx
-         gCgr0MpIkeqGnriE6eElNv6Fjs6AGfu1kgHsiESc2yMKi8+4CpSNMJg4adwITIrnUqqK
-         Tjk1y3IjmNWdUxUN+YiVRwWI5/jIjo4LrJUkLGPWUvfiSymWKjJDVJLjn7wTTKBJtzcT
-         bQBhfrcuGmOD36VPMIROi7K+vQJ7/WCSfrOrKKRCdYL4nQ/hlIh7rjTZW3g7pVSRw9Yl
-         f/eekcOypz6vB+Pw+NF61y/YUQTU9bWIgQ8VtdE+VdEKxC4+f3Pv2hDYTNK7ngZ3/OAp
-         96jw==
-X-Gm-Message-State: AOJu0YyRIeYQeplB/QV8qb5NmUI/lsoiiiAAOrT9idIH3r4OWS7udhKg
-	Bh5VxhHLiLFi3FQeFOdZaS2T14rFDuka8IkB2aw=
-X-Google-Smtp-Source: AGHT+IHP2eti1ulQloyUHRUSDb5uoVsghLJLXWZ6tMQ1lQbdTCVdK9/UurRHaZXt8SPvtjiAJHrPMdq8fZbNbYMOIuQ=
-X-Received: by 2002:a05:600c:1713:b0:40e:4d17:b239 with SMTP id
- c19-20020a05600c171300b0040e4d17b239mr3954441wmn.60.1705457270812; Tue, 16
- Jan 2024 18:07:50 -0800 (PST)
+	s=arc-20240116; t=1705457694; c=relaxed/simple;
+	bh=WlYroLN8zk0cT2xYQ519Wg7+h2Smv//csVjWDekZDLo=;
+	h=Received:DKIM-Signature:Received:Received:Received:Message-ID:
+	 Date:MIME-Version:User-Agent:Subject:Content-Language:To:CC:
+	 References:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-Originating-IP:X-ClientProxiedBy:X-QCInternal:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-GUID:
+	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Virus-Version:
+	 X-Proofpoint-Spam-Details; b=phUXQeDdozyINZp+dmw/ounaetA5h8t0D7OJ1nsYeqm465niQy0HSy6GqlQoackvbVB3iDUd8gWWHKdF0I4cBXmpYAgsZ7jifQcmi0spNIBucVAdtrnwf7bT4OfpmVSpxEYfLRJcsxtkisjwtm6bduhs7LOdKYoyUaFbFTJUTNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=bgVPuA1K; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40H1RiZK003849;
+	Wed, 17 Jan 2024 02:14:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=0JgvLvRSoE1NiIl5rFnwqikJYRa+NwQLhAd6Lin9niY=; b=bg
+	VPuA1K/aqd8vjBDEEiLmPm6+wTiCj89Sz21pc1hLU1fcVHc5KCh2HI1hOYPBr2r+
+	IoiZ2TIjiiJ4Ef16ELYK3Rj6dmP2d1IlJMnGXCbY0Uc319C6dXhn+4Ss+BAiCeF5
+	wpdAnBCNEufu9SqRm+v0cqkiyNDZfmd8CF6sP0T3qKAIPmthb8K65K7ae2+1EU/9
+	JPrrscN7xcxkKaX1ROnWE7meaoAYRkUzczrq/B3FuEeeusFQx6+2AW1TE6GrTZpy
+	Qw6ckveFPKLpZWNTlkjKwwup/mCuEzL/sN4T6eiHR2yMau8ltoOf4ngVy7/c1WSn
+	9d81XXEPY5eVi1s32/OA==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vnn1qthxq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 02:14:42 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40H2EgFp019998
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 02:14:42 GMT
+Received: from [10.239.133.49] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 16 Jan
+ 2024 18:14:37 -0800
+Message-ID: <69875d89-651e-41ff-a1be-385dcbb15108@quicinc.com>
+Date: Wed, 17 Jan 2024 10:14:35 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1705308796-13547-1-git-send-email-zhiguo.niu@unisoc.com> <ZabBHHwZd70IDDxP@boqun-archlinux>
-In-Reply-To: <ZabBHHwZd70IDDxP@boqun-archlinux>
-From: Zhiguo Niu <niuzhiguo84@gmail.com>
-Date: Wed, 17 Jan 2024 10:07:39 +0800
-Message-ID: <CAHJ8P3K-mJOwpThm67QshCRM6uhXZhfXT_P=eL=Wr5EcRK9Z4w@mail.gmail.com>
-Subject: Re: [PATCH] lockdep: fix deadlock issue between lockdep and rcu
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, peterz@infradead.org, mingo@redhat.com, 
-	will@kernel.org, longman@redhat.com, linux-kernel@vger.kernel.org, 
-	ke.wang@unisoc.com, xuewen.yan@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm: coresight: Remove pattern match
+ of ETE node name
+Content-Language: en-US
+To: Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach
+	<mike.leach@linaro.org>, James Clark <james.clark@arm.com>,
+        Leo Yan
+	<leo.yan@linaro.org>,
+        Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC: <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Tao Zhang
+	<quic_taozha@quicinc.com>
+References: <20240116064505.487-1-quic_jinlmao@quicinc.com>
+ <20240116064505.487-2-quic_jinlmao@quicinc.com>
+ <f616989b-2d84-483d-80c4-d3c6eb97b137@arm.com>
+From: Jinlong Mao <quic_jinlmao@quicinc.com>
+In-Reply-To: <f616989b-2d84-483d-80c4-d3c6eb97b137@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 02NpGnyyBgOoVZrKQnFsgBZhJ9_P5zlE
+X-Proofpoint-ORIG-GUID: 02NpGnyyBgOoVZrKQnFsgBZhJ9_P5zlE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-16_14,2024-01-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
+ mlxlogscore=999 lowpriorityscore=0 phishscore=0 bulkscore=0
+ impostorscore=0 mlxscore=0 priorityscore=1501 spamscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401170013
 
-Hi Boqun
 
-On Wed, Jan 17, 2024 at 1:47=E2=80=AFAM Boqun Feng <boqun.feng@gmail.com> w=
-rote:
->
-> On Mon, Jan 15, 2024 at 04:53:16PM +0800, Zhiguo Niu wrote:
-> > There is a deadlock scenario between lockdep and rcu when
-> > rcu nocb feature is enabled, just as following call stack:
-> >
-> >      rcuop/x
-> > -000|queued_spin_lock_slowpath(lock =3D 0xFFFFFF817F2A8A80, val =3D ?)
-> > -001|queued_spin_lock(inline) // try to hold nocb_gp_lock
-> > -001|do_raw_spin_lock(lock =3D 0xFFFFFF817F2A8A80)
-> > -002|__raw_spin_lock_irqsave(inline)
-> > -002|_raw_spin_lock_irqsave(lock =3D 0xFFFFFF817F2A8A80)
-> > -003|wake_nocb_gp_defer(inline)
-> > -003|__call_rcu_nocb_wake(rdp =3D 0xFFFFFF817F30B680)
-> > -004|__call_rcu_common(inline)
-> > -004|call_rcu(head =3D 0xFFFFFFC082EECC28, func =3D ?)
-> > -005|call_rcu_zapped(inline)
-> > -005|free_zapped_rcu(ch =3D ?)// hold graph lock
-> > -006|rcu_do_batch(rdp =3D 0xFFFFFF817F245680)
-> > -007|nocb_cb_wait(inline)
-> > -007|rcu_nocb_cb_kthread(arg =3D 0xFFFFFF817F245680)
-> > -008|kthread(_create =3D 0xFFFFFF80803122C0)
-> > -009|ret_from_fork(asm)
-> >
-> >      rcuop/y
-> > -000|queued_spin_lock_slowpath(lock =3D 0xFFFFFFC08291BBC8, val =3D 0)
-> > -001|queued_spin_lock()
-> > -001|lockdep_lock()
-> > -001|graph_lock() // try to hold graph lock
-> > -002|lookup_chain_cache_add()
-> > -002|validate_chain()
-> > -003|lock_acquire
-> > -004|_raw_spin_lock_irqsave(lock =3D 0xFFFFFF817F211D80)
-> > -005|lock_timer_base(inline)
-> > -006|mod_timer(inline)
-> > -006|wake_nocb_gp_defer(inline)// hold nocb_gp_lock
-> > -006|__call_rcu_nocb_wake(rdp =3D 0xFFFFFF817F2A8680)
-> > -007|__call_rcu_common(inline)
-> > -007|call_rcu(head =3D 0xFFFFFFC0822E0B58, func =3D ?)
-> > -008|call_rcu_hurry(inline)
-> > -008|rcu_sync_call(inline)
-> > -008|rcu_sync_func(rhp =3D 0xFFFFFFC0822E0B58)
-> > -009|rcu_do_batch(rdp =3D 0xFFFFFF817F266680)
-> > -010|nocb_cb_wait(inline)
-> > -010|rcu_nocb_cb_kthread(arg =3D 0xFFFFFF817F266680)
-> > -011|kthread(_create =3D 0xFFFFFF8080363740)
-> > -012|ret_from_fork(asm)
-> >
-> > rcuop/x and rcuop/y are rcu nocb threads with the same nocb gp thread.
-> >
->
-> Nice! Looks like you find the root cause ;-) nocb_gp_lock and graph_lock
-> have an ABBA deadlock due to lockdep's dependency on RCU. I assume this
-> actually fixes the problem you saw?
-yes, this deadlock issue can be fixed by this fixes base our test.
->
-> However, I want to suggest a different fix, please see below:
->
-> > This patch release the graph lock before lockdep call_rcu.
-> >
-> > Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-> > Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> > ---
-> >  kernel/locking/lockdep.c | 38 +++++++++++++++++++++++++-------------
-> >  1 file changed, 25 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> > index 151bd3d..c1d432a 100644
-> > --- a/kernel/locking/lockdep.c
-> > +++ b/kernel/locking/lockdep.c
-> > @@ -6186,23 +6186,29 @@ static struct pending_free *get_pending_free(vo=
-id)
-> >  /*
-> >   * Schedule an RCU callback if no RCU callback is pending. Must be cal=
-led with
-> >   * the graph lock held.
-> > + *
-> > + * Return true if graph lock need be released by the caller, otherwise=
- false
-> > + * means graph lock is released by itself.
-> >   */
-> > -static void call_rcu_zapped(struct pending_free *pf)
-> > +static bool call_rcu_zapped(struct pending_free *pf)
-> >  {
-> >       WARN_ON_ONCE(inside_selftest());
-> >
-> >       if (list_empty(&pf->zapped))
-> > -             return;
-> > +             return true;
-> >
-> >       if (delayed_free.scheduled)
-> > -             return;
-> > +             return true;
-> >
-> >       delayed_free.scheduled =3D true;
-> >
-> >       WARN_ON_ONCE(delayed_free.pf + delayed_free.index !=3D pf);
-> >       delayed_free.index ^=3D 1;
-> >
-> > +     lockdep_unlock();
-> >       call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
-> > +
-> > +     return false;
-> >  }
-> >
-> >  /* The caller must hold the graph lock. May be called from RCU context=
- */
-> > @@ -6228,6 +6234,7 @@ static void free_zapped_rcu(struct rcu_head *ch)
-> >  {
-> >       struct pending_free *pf;
-> >       unsigned long flags;
-> > +     bool need_unlock;
-> >
-> >       if (WARN_ON_ONCE(ch !=3D &delayed_free.rcu_head))
-> >               return;
-> > @@ -6243,9 +6250,9 @@ static void free_zapped_rcu(struct rcu_head *ch)
-> >       /*
-> >        * If there's anything on the open list, close and start a new ca=
-llback.
-> >        */
-> > -     call_rcu_zapped(delayed_free.pf + delayed_free.index);
-> > -
-> > -     lockdep_unlock();
-> > +     need_unlock =3D call_rcu_zapped(delayed_free.pf + delayed_free.in=
-dex);
-> > +     if (need_unlock)
-> > +             lockdep_unlock();
->
-> Instead of returning a bool to control the unlock, I think it's better
-> that we refactor the call_rcu_zapped() a bit, so it becomes a
-> prepare_call_rcu_zapped():
->
->         // See if we need to queue an RCU callback, must called with
->         // the lockdep lock held, returns false if either we don't have
->         // any pending free or the callback is already scheduled.
->         // Otherwise, a call_rcu() must follow this function call.
->         static bool prepare_call_rcu_zapped(struct pending_free *pf)
->         {
->                 WARN_ON_ONCE(inside_selftest());
->
->                 if (list_empty(&pf->zapped))
->                         return false;
->
->                 if (delayed_free.scheduled)
->                         return false;
->
->                 delayed_free.scheduled =3D true;
->
->                 WARN_ON_ONCE(delayed_free.pf + delayed_free.index !=3D pf=
-);
->                 delayed_free.index ^=3D 1;
->
->                 return true;
->         }
->
-> , and here we can:
->
->         <lockdep_lock() is called previous>
->         need_callback =3D prepare_call_rcu_zapped(...);
->         lockdep_unlock();
->         raw_local_irq_restore(flags);
->
->         if (need_callback)
->                 call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
->
-> compared to your fix, we don't have a special logic where
-> call_rcu_zapped() can be an unlock in some conditions, which prevents
-> local correctness reasoning.
->
-> Thoughts?
-Thanks for your suggestions, It seems that your modification is more
-reasonable.
-I will modify PATCH v2 according to your suggestion.
-Thanks!
->
-> Regards,
-> Boqun
->
-> >       raw_local_irq_restore(flags);
-> >  }
-> >
-> [...]
+
+On 1/16/2024 5:33 PM, Suzuki K Poulose wrote:
+> On 16/01/2024 06:45, Mao Jinlong wrote:
+>> Remove pattern match of ETE node name. Use ete with the number as the
+>> name for ete nodes.
+>>
+>> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
+>> ---
+>>   .../bindings/arm/arm,embedded-trace-extension.yaml          | 6 ++----
+>>   1 file changed, 2 insertions(+), 4 deletions(-)
+>>
+>> diff --git 
+>> a/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml b/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
+>> index f725e6940993..ed78cc7ae94a 100644
+>> --- 
+>> a/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
+>> +++ 
+>> b/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
+>> @@ -22,8 +22,6 @@ description: |
+>>     with any optional connection graph as per the coresight bindings.
+>>   properties:
+>> -  $nodename:
+>> -    pattern: "^ete([0-9a-f]+)$"
+>>     compatible:
+>>       items:
+>>         - const: arm,embedded-trace-extension
+>> @@ -55,13 +53,13 @@ examples:
+>>   # An ETE node without legacy CoreSight connections
+>>     - |
+>> -    ete0 {
+>> +    ete-0 {
+> 
+> Why do we need the number ? why not simply "ete" as Krzysztof suggested ?
+> 
+
+Hi Suzuki & Krzysztof ,
+
+If name all the ete nodes' name as 'ete', there will be error below when 
+build images.
+
+arch/arm64/boot/dts/qcom/sm8450.dtsi:301.6-312.4: ERROR 
+(duplicate_node_names): /ete: Duplicate node name
+arch/arm64/boot/dts/qcom/sm8450.dtsi:314.6-325.4: ERROR 
+(duplicate_node_names): /ete: Duplicate node name
+arch/arm64/boot/dts/qcom/sm8450.dtsi:327.6-338.4: ERROR 
+(duplicate_node_names): /ete: Duplicate node name
+arch/arm64/boot/dts/qcom/sm8450.dtsi:340.6-351.4: ERROR 
+(duplicate_node_names): /ete: Duplicate node name
+arch/arm64/boot/dts/qcom/sm8450.dtsi:353.6-364.4: ERROR 
+(duplicate_node_names): /ete: Duplicate node name
+arch/arm64/boot/dts/qcom/sm8450.dtsi:366.6-377.4: ERROR 
+(duplicate_node_names): /ete: Duplicate node name
+arch/arm64/boot/dts/qcom/sm8450.dtsi:379.6-390.4: ERROR 
+(duplicate_node_names): /ete: Duplicate node name
+
+Thanks
+Jinlong Mao
+
+> 
+> 
 
