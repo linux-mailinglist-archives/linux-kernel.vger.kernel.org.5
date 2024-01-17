@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-29365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF7E4830D4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:32:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A2D3830D4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:34:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 817381F238AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:32:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C05B2847E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:34:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F90D249ED;
-	Wed, 17 Jan 2024 19:32:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9A0D249EE;
+	Wed, 17 Jan 2024 19:34:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fe71WRyB"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lMhido5r"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5456249E0
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:32:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EE60249E0
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:34:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705519961; cv=none; b=GkUTssn9SlYwFRYSj1IEmnhw0KjgR3pr0Ick6xdfvE2uCMpGk1Ri0WpV0ColVWgD/ALfD/5DZ6/p12aqTVq8v57A52CTRKsuJ8Ok6V0F028saXAbBT02RSiXgmmYuRPsFVV5Nm0QWOPw3Fnvwi2MWsy+AG8W9ea9wzQUxBtInqU=
+	t=1705520075; cv=none; b=ZhsS9aYwpswE/4uF9FANvp+G7TK4sqeNiuLQN6c9D4nJRbxJg5FzDx/BS1jJweTe8mVK+Or9z02Pbk3w8Vk/z83XfgPUJWCYtKIxRcdXbqjFFsN20TnJoVeotHI5wWm0KeA/+61OB6R//Be0HqeIx0cXeB6ykwdemR8LuSrRldc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705519961; c=relaxed/simple;
-	bh=QvqQHYPeITGXtLTPrNEHN+dZrrNa20vk0SDYMEEzQq4=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:Message-ID:
-	 Date:MIME-Version:User-Agent:Subject:Content-Language:To:Cc:
-	 References:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 X-Scanned-By; b=IRff2r3ATOJ/5WkaXxi3XhFD2oJlnwxUUCrNpVm3t9C/DPh7DId/Of5/9mK9U0D/ldFETmEK3wocPkgpPCPCq/FMFUJR4vBP7jDVaopHuULnOIGLn4W4wXDRxTAAocBiuBP/xTCj7yjSU5Hjaviw928sZaC4JtHmciLB6tzY914=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fe71WRyB; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705519958;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bfUgfGTy5yRHGk/lV0Z6rRdd4H0q3HaJTSR3wYzs52E=;
-	b=fe71WRyBxTlp+DXlJthRFj9nUaPQrS8lygIZgqViCnLD3ThMZhFFvb7PWrsJI1Ygoowc5D
-	T6ZS8I8udS3HudbU164lqGaRAeN682GIupkBgAKEaU8bNtmUqIZuZSTuJ5WXkldV9M9BjL
-	wCNVZyRGDE4j66f9Xz4lXFpj+zopSU0=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-515-Gayb9gvBNdCBCNZGvG7HOQ-1; Wed,
- 17 Jan 2024 14:32:35 -0500
-X-MC-Unique: Gayb9gvBNdCBCNZGvG7HOQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0EF1A2806400;
-	Wed, 17 Jan 2024 19:32:35 +0000 (UTC)
-Received: from [10.22.16.147] (unknown [10.22.16.147])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id AE540FEEE;
-	Wed, 17 Jan 2024 19:32:34 +0000 (UTC)
-Message-ID: <72e4a971-96e5-44b7-b348-bbdb68e54b40@redhat.com>
-Date: Wed, 17 Jan 2024 14:32:34 -0500
+	s=arc-20240116; t=1705520075; c=relaxed/simple;
+	bh=3ImLWZBp9nIQ2j7pMOrWbT8jC8fMp6v2O9PqzjNlKSE=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:X-IronPort-AV:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Subject:Content-Language:To:Cc:References:From:
+	 Autocrypt:In-Reply-To:Content-Type:Content-Transfer-Encoding; b=pucrV4RmOJHXoFMJmMFEkUvSPIvFeYGRrlEyG2jCj5Uc23D92pYN4aeZXAnOSuuDFXlDgm+7E5xX3U1ezQykZ47UfPKFHQosKebbyR9wYgRsGfXg4RkFDmgmd8+PndDye+3YAagl2qH+vm7OnevGWZVFHA+AdFAIj9SWURaY1iI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lMhido5r; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705520073; x=1737056073;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=3ImLWZBp9nIQ2j7pMOrWbT8jC8fMp6v2O9PqzjNlKSE=;
+  b=lMhido5rwlGoc3iWzxsOFo5wCblHdRpfCKIrg19M6DJeaU5RQZ6hmbXG
+   1rzLZoH0x9NSKLPJRRdgj/wq1NxhML/lIMkdPUlVGNKHumq7w5AtCQK1b
+   Tnd6tWtXVXnD2f3CIG+RKE2irWbIV68vSE0PpTJV8qzXXMZ1wCw/vLI6W
+   Nnc9ZLhVGhFFCP2KGm/M+XRmfCoRD+P8Ksox2CXbpu2mXqAo/FICKdIvK
+   xWSfV4GesHO7x5lRCse6ioX8M1V0HwOJFwEApSL1+aOU6qRl8K1DDDqlY
+   2P0ikK4JLDj63a2kMYkMVYmnXseNbkGTxG7q4tzVQu0qsyv5kJcz4jIJq
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="148580"
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="148580"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 11:34:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="854779459"
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="854779459"
+Received: from anushakr-mobl.amr.corp.intel.com (HELO [10.209.71.31]) ([10.209.71.31])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 11:34:28 -0800
+Message-ID: <30cd0be4-705f-4d63-bdad-fc57301e7eda@intel.com>
+Date: Wed, 17 Jan 2024 11:34:41 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,56 +65,97 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 3/4] kernel/workqueue: Distinguish between general
- unbound and WQ_SYSFS cpumask changes
+Subject: Re: [PATCH] x86/fpu: verify xstate buffer size according with
+ requested features
 Content-Language: en-US
-To: Tejun Heo <tj@kernel.org>, Juri Lelli <juri.lelli@redhat.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>, Aaron Tomlin
- <atomlin@atomlin.com>, Valentin Schneider <vschneid@redhat.com>,
- linux-kernel@vger.kernel.org
-References: <20240116161929.232885-1-juri.lelli@redhat.com>
- <20240116161929.232885-4-juri.lelli@redhat.com>
- <ZabRlEklmuqwFPj-@slm.duckdns.org> <ZafQwMw8ZKztunMU@localhost.localdomain>
- <ZagKbRlBxZHsKiw5@mtj.duckdns.org>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <ZagKbRlBxZHsKiw5@mtj.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Andrei Vagin <avagin@google.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ LKML <linux-kernel@vger.kernel.org>
+Cc: x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+References: <20240116234901.3238852-1-avagin@google.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzUVEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gKEludGVsIFdvcmsgQWRkcmVzcykgPGRhdmUuaGFuc2VuQGludGVs
+ LmNvbT7CwXgEEwECACIFAlQ+9J0CGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEGg1
+ lTBwyZKwLZUP/0dnbhDc229u2u6WtK1s1cSd9WsflGXGagkR6liJ4um3XCfYWDHvIdkHYC1t
+ MNcVHFBwmQkawxsYvgO8kXT3SaFZe4ISfB4K4CL2qp4JO+nJdlFUbZI7cz/Td9z8nHjMcWYF
+ IQuTsWOLs/LBMTs+ANumibtw6UkiGVD3dfHJAOPNApjVr+M0P/lVmTeP8w0uVcd2syiaU5jB
+ aht9CYATn+ytFGWZnBEEQFnqcibIaOrmoBLu2b3fKJEd8Jp7NHDSIdrvrMjYynmc6sZKUqH2
+ I1qOevaa8jUg7wlLJAWGfIqnu85kkqrVOkbNbk4TPub7VOqA6qG5GCNEIv6ZY7HLYd/vAkVY
+ E8Plzq/NwLAuOWxvGrOl7OPuwVeR4hBDfcrNb990MFPpjGgACzAZyjdmYoMu8j3/MAEW4P0z
+ F5+EYJAOZ+z212y1pchNNauehORXgjrNKsZwxwKpPY9qb84E3O9KYpwfATsqOoQ6tTgr+1BR
+ CCwP712H+E9U5HJ0iibN/CDZFVPL1bRerHziuwuQuvE0qWg0+0SChFe9oq0KAwEkVs6ZDMB2
+ P16MieEEQ6StQRlvy2YBv80L1TMl3T90Bo1UUn6ARXEpcbFE0/aORH/jEXcRteb+vuik5UGY
+ 5TsyLYdPur3TXm7XDBdmmyQVJjnJKYK9AQxj95KlXLVO38lczsFNBFRjzmoBEACyAxbvUEhd
+ GDGNg0JhDdezyTdN8C9BFsdxyTLnSH31NRiyp1QtuxvcqGZjb2trDVuCbIzRrgMZLVgo3upr
+ MIOx1CXEgmn23Zhh0EpdVHM8IKx9Z7V0r+rrpRWFE8/wQZngKYVi49PGoZj50ZEifEJ5qn/H
+ Nsp2+Y+bTUjDdgWMATg9DiFMyv8fvoqgNsNyrrZTnSgoLzdxr89FGHZCoSoAK8gfgFHuO54B
+ lI8QOfPDG9WDPJ66HCodjTlBEr/Cwq6GruxS5i2Y33YVqxvFvDa1tUtl+iJ2SWKS9kCai2DR
+ 3BwVONJEYSDQaven/EHMlY1q8Vln3lGPsS11vSUK3QcNJjmrgYxH5KsVsf6PNRj9mp8Z1kIG
+ qjRx08+nnyStWC0gZH6NrYyS9rpqH3j+hA2WcI7De51L4Rv9pFwzp161mvtc6eC/GxaiUGuH
+ BNAVP0PY0fqvIC68p3rLIAW3f97uv4ce2RSQ7LbsPsimOeCo/5vgS6YQsj83E+AipPr09Caj
+ 0hloj+hFoqiticNpmsxdWKoOsV0PftcQvBCCYuhKbZV9s5hjt9qn8CE86A5g5KqDf83Fxqm/
+ vXKgHNFHE5zgXGZnrmaf6resQzbvJHO0Fb0CcIohzrpPaL3YepcLDoCCgElGMGQjdCcSQ+Ci
+ FCRl0Bvyj1YZUql+ZkptgGjikQARAQABwsFfBBgBAgAJBQJUY85qAhsMAAoJEGg1lTBwyZKw
+ l4IQAIKHs/9po4spZDFyfDjunimEhVHqlUt7ggR1Hsl/tkvTSze8pI1P6dGp2XW6AnH1iayn
+ yRcoyT0ZJ+Zmm4xAH1zqKjWplzqdb/dO28qk0bPso8+1oPO8oDhLm1+tY+cOvufXkBTm+whm
+ +AyNTjaCRt6aSMnA/QHVGSJ8grrTJCoACVNhnXg/R0g90g8iV8Q+IBZyDkG0tBThaDdw1B2l
+ asInUTeb9EiVfL/Zjdg5VWiF9LL7iS+9hTeVdR09vThQ/DhVbCNxVk+DtyBHsjOKifrVsYep
+ WpRGBIAu3bK8eXtyvrw1igWTNs2wazJ71+0z2jMzbclKAyRHKU9JdN6Hkkgr2nPb561yjcB8
+ sIq1pFXKyO+nKy6SZYxOvHxCcjk2fkw6UmPU6/j/nQlj2lfOAgNVKuDLothIxzi8pndB8Jju
+ KktE5HJqUUMXePkAYIxEQ0mMc8Po7tuXdejgPMwgP7x65xtfEqI0RuzbUioFltsp1jUaRwQZ
+ MTsCeQDdjpgHsj+P2ZDeEKCbma4m6Ez/YWs4+zDm1X8uZDkZcfQlD9NldbKDJEXLIjYWo1PH
+ hYepSffIWPyvBMBTW2W5FRjJ4vLRrJSUoEfJuPQ3vW9Y73foyo/qFoURHO48AinGPZ7PC7TF
+ vUaNOTjKedrqHkaOcqB185ahG2had0xnFsDPlx5y
+In-Reply-To: <20240116234901.3238852-1-avagin@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
+.. adding LKML.  More context here:
 
-On 1/17/24 12:12, Tejun Heo wrote:
-> Hello,
->
-> On Wed, Jan 17, 2024 at 02:06:08PM +0100, Juri Lelli wrote:
->>> This looks rather hacky. Can you elaborate how the current code misbehaves
->>> with an example?
->> I was trying to address the fact that ordered unbound workqueues didn't
->> seem to reflect unbound_cpumask changes, e.g.
->>
->> wq_unbound_cpumask=00000003
->>
->> edac-poller              ordered,E  0xffffffff 000000ff      kworker/R-edac-            351 0xffffffff 000000ff
->>
->> vs.
->>
->> edac-poller              ordered,E  00000003                 kworker/R-edac-            349 00000003
->>
->> with the patch applied. But honestly, I'm now also not convinced what
->> I'm proposing is correct, so I'll need to think more about it.
->>
->> Can you please confirm though that ordered unbound workqueues are not
->> "special" for some reason and we would like them to follow
->> unbound_cpumask changes as normal ubound workqueues?
-> They aren't special and should follow the normal unbound workqueue cpumask.
+https://lore.kernel.org/all/20240116234901.3238852-1-avagin@google.com/
 
-My impression is that changing the workqueue cpumask of ordered unbound 
-workqueue may break the ordering guarantee momentarily. I was planning 
-to look into this further to see if that is true when I have time. If it 
-is not a concern, we should certainly apply the global unbound cpumask 
-change to those workqueues as well.
+On 1/16/24 15:49, Andrei Vagin wrote:
+> +	/* xstate_size has to fit all requested components. */
+> +	if (fx_sw->xstate_size != fpstate->user_size) {
+> +		int min_xstate_size =
+> +			xstate_calculate_size(fx_sw->xfeatures, false);
+> +
+> +		if (min_xstate_size < 0 ||
+> +		    fx_sw->xstate_size < min_xstate_size ||
+> +		    fx_sw->xstate_size > fpstate->user_size)
+> +			goto setfx;
+> +	}
 
-Cheers,
-Longman
+The bug here is that the buffer from userspace is garbage and the (XSAVE
+XSTATE_BV) metadata doesn't match the size of the buffer.  Right?
 
+This proposed fix just checks another piece of user-supplied metadata
+instead: fx_sw->xstate_size.
+
+Can't userspace just provide more bad data there and end up with the
+same problem?
+
+Seems like the real problem here is that the fault_in_readable() doesn't
+match the XRSTOR.  It's going to continue to be a problem as long as we
+don't know what memory XRSTOR tried to access.  We can try all day long
+to precalculate what XRSTOR _will_ do, but that seems a bit silly
+because the CPU knows where the fault happened.  It told us in CR2 and
+all we have to do is plumb that back to fault_in_readable().
+
+It would take a little XSTATE_OP() munging to pass something back other
+than 'err', but that doesn't seem insurmountable.
+
+Anybody have better ideas?
 
