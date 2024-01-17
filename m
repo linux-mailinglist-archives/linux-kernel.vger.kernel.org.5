@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-28787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C29EE830308
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:00:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A93AA83030C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:00:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D90D287BF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:00:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B68C1F25558
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:00:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D1931426F;
-	Wed, 17 Jan 2024 09:56:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A06E208D0;
+	Wed, 17 Jan 2024 09:56:54 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F0DA20330;
-	Wed, 17 Jan 2024 09:56:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB815208B7;
+	Wed, 17 Jan 2024 09:56:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705485410; cv=none; b=hVGreAnCYKHR2BS01Lk0o8GaT9QSThHy4LpZDxIUDU/E9DCc0IbrLomLbKtdXundmN+ZmdlGCRGa0IRKtSTfR/XEzetSLHpB3hxwagRtcNVOSPevw+kRVJldEy0zuyzWK9tTcQeigHJKIi6Xn3CC1cWDT1EeU971t5VV07XnPFE=
+	t=1705485413; cv=none; b=helfLxlZbQowl3ZJmEvGjhWy+d8yIKAZu4naFFW6mDrjKH9MvKYY4YAGmy7YP2r3sn6ny1oYcVeWr8Z/kw/21BjVQEeV59SPzpeRxXHRnO5n96W6haFTN/okx2uK/wovzAM/uAB2otZx5WoMdYPI0/qB0WVYBCk+w9oUKm7AuKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705485410; c=relaxed/simple;
-	bh=E4pxe3RRImtC8Ut7P9WZN1KkO+3uAf85aKhvtEdWzPc=;
+	s=arc-20240116; t=1705485413; c=relaxed/simple;
+	bh=8cnn+7VFq5sVj7ty1+iKMGLRgYDbA5jxPD4WOTTGhAo=;
 	h=Received:Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
-	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding; b=ACmDJoj6EjVHDJrak7S4Ktf2LwfCXHeCiHvvYojcOMZE8v3Rc9guSTMe5dMOpkMos/OcX3UIuNcjLC4qrlDsMUXTmENcMQwMAy6OrRc140LSAcYHaTmodVIFsZudYYsqgVjTfmS+6sDyV9jZFBlETF2JMGdutNZbi9PVqvHFFS8=
+	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding; b=nIJN34GWMZntuuXtWfJZsvxwdvXhRujisVx37GSMUsgDCnNUd+ZGCzB7nHUQIZ+B2Sp8JO2FOb5+LbwEHXpFS7rw728TusYkigre4gTItLwZh38ZcPNkieSbo7728ikiX6AYGSjNHuXyBXk6xb4wLh9IpgQ9SRPs9VfAqOiLzPU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D33B5DA7;
-	Wed, 17 Jan 2024 01:57:34 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C268EDA7;
+	Wed, 17 Jan 2024 01:57:37 -0800 (PST)
 Received: from e129166.arm.com (unknown [10.57.90.139])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 09B4D3F5A1;
-	Wed, 17 Jan 2024 01:56:45 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id F06673F5A1;
+	Wed, 17 Jan 2024 01:56:48 -0800 (PST)
 From: Lukasz Luba <lukasz.luba@arm.com>
 To: linux-kernel@vger.kernel.org,
 	linux-pm@vger.kernel.org,
@@ -49,9 +49,9 @@ Cc: lukasz.luba@arm.com,
 	qyousef@layalina.io,
 	wvw@google.com,
 	xuewen.yan94@gmail.com
-Subject: [PATCH v7 17/23] powercap/dtpm_devfreq: Use new Energy Model interface to get table
-Date: Wed, 17 Jan 2024 09:57:08 +0000
-Message-Id: <20240117095714.1524808-18-lukasz.luba@arm.com>
+Subject: [PATCH v7 18/23] drivers/thermal/cpufreq_cooling: Use new Energy Model interface
+Date: Wed, 17 Jan 2024 09:57:09 +0000
+Message-Id: <20240117095714.1524808-19-lukasz.luba@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240117095714.1524808-1-lukasz.luba@arm.com>
 References: <20240117095714.1524808-1-lukasz.luba@arm.com>
@@ -64,105 +64,132 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 Energy Model framework support modifications at runtime of the power
-values. Use the new EM table API which is protected with RCU. Align the
+values. Use the new EM table which is protected with RCU. Align the
 code so that this RCU read section is short.
 
 This change is not expected to alter the general functionality.
 
 Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
 ---
- drivers/powercap/dtpm_devfreq.c | 34 ++++++++++++++++++++++-----------
- 1 file changed, 23 insertions(+), 11 deletions(-)
+ drivers/thermal/cpufreq_cooling.c | 45 +++++++++++++++++++++++++------
+ 1 file changed, 37 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/powercap/dtpm_devfreq.c b/drivers/powercap/dtpm_devfreq.c
-index 612c3b59dd5b..f40bce8176df 100644
---- a/drivers/powercap/dtpm_devfreq.c
-+++ b/drivers/powercap/dtpm_devfreq.c
-@@ -37,11 +37,16 @@ static int update_pd_power_uw(struct dtpm *dtpm)
- 	struct devfreq *devfreq = dtpm_devfreq->devfreq;
- 	struct device *dev = devfreq->dev.parent;
- 	struct em_perf_domain *pd = em_pd_get(dev);
+diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
+index e2cc7bd30862..9d1b1459700d 100644
+--- a/drivers/thermal/cpufreq_cooling.c
++++ b/drivers/thermal/cpufreq_cooling.c
+@@ -91,12 +91,16 @@ struct cpufreq_cooling_device {
+ static unsigned long get_level(struct cpufreq_cooling_device *cpufreq_cdev,
+ 			       unsigned int freq)
+ {
 +	struct em_perf_state *table;
- 
--	dtpm->power_min = pd->table[0].power;
-+	rcu_read_lock();
-+	table = em_perf_state_from_pd(pd);
- 
--	dtpm->power_max = pd->table[pd->nr_perf_states - 1].power;
-+	dtpm->power_min = table[0].power;
- 
-+	dtpm->power_max = table[pd->nr_perf_states - 1].power;
-+
-+	rcu_read_unlock();
- 	return 0;
- }
- 
-@@ -51,20 +56,23 @@ static u64 set_pd_power_limit(struct dtpm *dtpm, u64 power_limit)
- 	struct devfreq *devfreq = dtpm_devfreq->devfreq;
- 	struct device *dev = devfreq->dev.parent;
- 	struct em_perf_domain *pd = em_pd_get(dev);
-+	struct em_perf_state *table;
- 	unsigned long freq;
  	int i;
  
 +	rcu_read_lock();
-+	table = em_perf_state_from_pd(pd);
- 	for (i = 0; i < pd->nr_perf_states; i++) {
--		if (pd->table[i].power > power_limit)
-+		if (table[i].power > power_limit)
++	table = em_perf_state_from_pd(cpufreq_cdev->em);
+ 	for (i = cpufreq_cdev->max_level - 1; i >= 0; i--) {
+-		if (freq > cpufreq_cdev->em->table[i].frequency)
++		if (freq > table[i].frequency)
+ 			break;
+ 	}
++	rcu_read_unlock();
+ 
+ 	return cpufreq_cdev->max_level - i - 1;
+ }
+@@ -104,16 +108,20 @@ static unsigned long get_level(struct cpufreq_cooling_device *cpufreq_cdev,
+ static u32 cpu_freq_to_power(struct cpufreq_cooling_device *cpufreq_cdev,
+ 			     u32 freq)
+ {
++	struct em_perf_state *table;
+ 	unsigned long power_mw;
+ 	int i;
+ 
++	rcu_read_lock();
++	table = em_perf_state_from_pd(cpufreq_cdev->em);
+ 	for (i = cpufreq_cdev->max_level - 1; i >= 0; i--) {
+-		if (freq > cpufreq_cdev->em->table[i].frequency)
++		if (freq > table[i].frequency)
  			break;
  	}
  
--	freq = pd->table[i - 1].frequency;
-+	freq = table[i - 1].frequency;
-+	power_limit = table[i - 1].power;
+-	power_mw = cpufreq_cdev->em->table[i + 1].power;
++	power_mw = table[i + 1].power;
+ 	power_mw /= MICROWATT_PER_MILLIWATT;
 +	rcu_read_unlock();
  
- 	dev_pm_qos_update_request(&dtpm_devfreq->qos_req, freq);
- 
--	power_limit = pd->table[i - 1].power;
--
- 	return power_limit;
+ 	return power_mw;
  }
- 
-@@ -89,8 +97,9 @@ static u64 get_pd_power_uw(struct dtpm *dtpm)
- 	struct device *dev = devfreq->dev.parent;
- 	struct em_perf_domain *pd = em_pd_get(dev);
- 	struct devfreq_dev_status status;
+@@ -121,18 +129,24 @@ static u32 cpu_freq_to_power(struct cpufreq_cooling_device *cpufreq_cdev,
+ static u32 cpu_power_to_freq(struct cpufreq_cooling_device *cpufreq_cdev,
+ 			     u32 power)
+ {
 +	struct em_perf_state *table;
- 	unsigned long freq;
--	u64 power;
-+	u64 power = 0;
+ 	unsigned long em_power_mw;
++	u32 freq;
  	int i;
  
- 	mutex_lock(&devfreq->lock);
-@@ -100,19 +109,22 @@ static u64 get_pd_power_uw(struct dtpm *dtpm)
- 	freq = DIV_ROUND_UP(status.current_frequency, HZ_PER_KHZ);
- 	_normalize_load(&status);
- 
 +	rcu_read_lock();
-+	table = em_perf_state_from_pd(pd);
- 	for (i = 0; i < pd->nr_perf_states; i++) {
- 
--		if (pd->table[i].frequency < freq)
-+		if (table[i].frequency < freq)
- 			continue;
- 
--		power = pd->table[i].power;
-+		power = table[i].power;
- 		power *= status.busy_time;
- 		power >>= 10;
- 
--		return power;
-+		break;
++	table = em_perf_state_from_pd(cpufreq_cdev->em);
+ 	for (i = cpufreq_cdev->max_level; i > 0; i--) {
+ 		/* Convert EM power to milli-Watts to make safe comparison */
+-		em_power_mw = cpufreq_cdev->em->table[i].power;
++		em_power_mw = table[i].power;
+ 		em_power_mw /= MICROWATT_PER_MILLIWATT;
+ 		if (power >= em_power_mw)
+ 			break;
  	}
++	freq = table[i].frequency;
 +	rcu_read_unlock();
  
--	return 0;
-+	return power;
+-	return cpufreq_cdev->em->table[i].frequency;
++	return freq;
  }
  
- static void pd_release(struct dtpm *dtpm)
+ /**
+@@ -262,8 +276,9 @@ static int cpufreq_get_requested_power(struct thermal_cooling_device *cdev,
+ static int cpufreq_state2power(struct thermal_cooling_device *cdev,
+ 			       unsigned long state, u32 *power)
+ {
+-	unsigned int freq, num_cpus, idx;
+ 	struct cpufreq_cooling_device *cpufreq_cdev = cdev->devdata;
++	unsigned int freq, num_cpus, idx;
++	struct em_perf_state *table;
+ 
+ 	/* Request state should be less than max_level */
+ 	if (state > cpufreq_cdev->max_level)
+@@ -272,7 +287,12 @@ static int cpufreq_state2power(struct thermal_cooling_device *cdev,
+ 	num_cpus = cpumask_weight(cpufreq_cdev->policy->cpus);
+ 
+ 	idx = cpufreq_cdev->max_level - state;
+-	freq = cpufreq_cdev->em->table[idx].frequency;
++
++	rcu_read_lock();
++	table = em_perf_state_from_pd(cpufreq_cdev->em);
++	freq = table[idx].frequency;
++	rcu_read_unlock();
++
+ 	*power = cpu_freq_to_power(cpufreq_cdev, freq) * num_cpus;
+ 
+ 	return 0;
+@@ -378,8 +398,17 @@ static unsigned int get_state_freq(struct cpufreq_cooling_device *cpufreq_cdev,
+ #ifdef CONFIG_THERMAL_GOV_POWER_ALLOCATOR
+ 	/* Use the Energy Model table if available */
+ 	if (cpufreq_cdev->em) {
++		struct em_perf_state *table;
++		unsigned int freq;
++
+ 		idx = cpufreq_cdev->max_level - state;
+-		return cpufreq_cdev->em->table[idx].frequency;
++
++		rcu_read_lock();
++		table = em_perf_state_from_pd(cpufreq_cdev->em);
++		freq = table[idx].frequency;
++		rcu_read_unlock();
++
++		return freq;
+ 	}
+ #endif
+ 
 -- 
 2.25.1
 
