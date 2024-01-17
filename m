@@ -1,182 +1,131 @@
-Return-Path: <linux-kernel+bounces-28816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EF3C830358
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:14:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC275830359
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:16:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36ED8288FC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:14:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F9F5B218A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:16:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC851429E;
-	Wed, 17 Jan 2024 10:14:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="rzaUGLT+"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F50614270;
-	Wed, 17 Jan 2024 10:14:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1945414A81;
+	Wed, 17 Jan 2024 10:16:09 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A64F14266;
+	Wed, 17 Jan 2024 10:16:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705486469; cv=none; b=kOToYQ0Jprw8LHODLe5DaGXhEwEIV6XHmOXHJn19f+EoqLDwYK9JHLLqJt4ypRuwXsQtz98EMCCHrfD3toqpMk2fVWBSer8fQjw/YiJMNDZImI08jb17y9AFEIF374+3eh0xcINIG+yVv1N7zjgDWPhL/e9xvZZURRwQZnezpvk=
+	t=1705486568; cv=none; b=a7oGdEVzethumJe6sBDQJueB3sNHE3kFheaGjNECDT+eEe0U1hLI8r0Rwf57Wl4WCH17j6dEKG/N7OOBc70EqDws8U3JI9M+n2UA7ja257ulbroN/EGTtyHvSQzazONF7K+oB56LkZnITq+E4hI4DBH12xxIG3WhEhWSXY/wY2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705486469; c=relaxed/simple;
-	bh=syRL93p3m7lOCFY42/TgG/irGtWwZk2a6EBIxB3AtG8=;
-	h=DKIM-Signature:Received:Message-ID:Date:MIME-Version:User-Agent:
-	 Subject:To:Cc:References:From:Content-Language:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding; b=XKRn91bxOdKcCqXU5p/2uyrxYh1IcZj2+ZRKOMvx0SQXO6iyufByJUeN85FJGAuM3TCBbKmZgXH8d3yLqsm7xPiosMP76V2wlk83CkVLcvuN/69etibuDt2WkursgsdTyo8eCZtX1Dxy3x1UaT7Uvxht7S1ELTyfKeRbFgNroy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=rzaUGLT+; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705486456;
-	bh=syRL93p3m7lOCFY42/TgG/irGtWwZk2a6EBIxB3AtG8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=rzaUGLT+FS5la69XrXwkC7+wXBJfGG2Zc+GHh7DoNXgLDFHIWOBbw3+8xKfqHK5uR
-	 nE80DdCGwRM73OQERoaRk9LHu17/6Xwu8qXbnYKnjjAoh2w5WiGVxrD001I79BLaBt
-	 5Ybnl523C/VQFOnsd7o3YG7AtDy7Uyh73Rq8YqvzHFcQvX2BT/o/v9hw+XhWJm4AXz
-	 0+DYra7WjOGDL/QKOT3p8mCaeEOtOXWA9Rxo43jAEQ+GEfUvCyq81GUgRAP/AA4QSO
-	 m9C9axzdOmjHD8fzZOmFDGlY15LhocM5KNtHRRTR7o5w9f+3Of262HfKzPeRIXEoDX
-	 k/MiMIrqjALDA==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4E6F737811F1;
-	Wed, 17 Jan 2024 10:14:15 +0000 (UTC)
-Message-ID: <720dc418-16f7-473c-b33c-f0c9786c02e2@collabora.com>
-Date: Wed, 17 Jan 2024 11:14:14 +0100
+	s=arc-20240116; t=1705486568; c=relaxed/simple;
+	bh=iPYbxrB9RyA+DzLuG6LUAcCcNNcI6mgcuERiNUVMUEk=;
+	h=Received:Received:Message-ID:Date:MIME-Version:User-Agent:Subject:
+	 Content-Language:To:Cc:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=LFSAiPG+oMAb2LzQpHwMtdjyjbDo/Gq0BDFG/P+QQwP94Q+Cb/Lq5VBFQZ6EskUFak6KITRYVuHxEm4dS6XcBNGurWNS+ymG4uoJ68wBIcQiIOcI4/0cZ2+gjAZLxlQxVR6WBHXW2UFJSUGQU7CMtjGlGOt2fptjfl7RlYgMJMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 17F2D11FB;
+	Wed, 17 Jan 2024 02:16:52 -0800 (PST)
+Received: from [192.168.1.100] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3484E3F5A1;
+	Wed, 17 Jan 2024 02:16:04 -0800 (PST)
+Message-ID: <7861aef3-8c0f-8ab3-6bd5-243eba3200b8@arm.com>
+Date: Wed, 17 Jan 2024 10:16:03 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] arm64: dts: mt8183: Move CrosEC base detection node to
- kukui-based DTs
-To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
- Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Enric Balletbo i Serra <eballetbo@kernel.org>,
- Ikjoon Jang <ikjn@chromium.org>, Stephen Boyd <swboyd@chromium.org>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- kernel@collabora.com
-References: <20240116-mt8183-kukui-cbas-remove-v3-1-055e21406e86@collabora.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3 1/1] perf scripts python: arm-cs-trace-disasm.py: add
+ option to print virtual address
 Content-Language: en-US
-In-Reply-To: <20240116-mt8183-kukui-cbas-remove-v3-1-055e21406e86@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: Ruidong Tian <tianruidong@linux.alibaba.com>, linux-kernel@vger.kernel.org
+Cc: coresight@lists.linaro.org, suzuki.poulose@arm.com,
+ mike.leach@linaro.org, alexander.shishkin@linux.intel.com,
+ linux-arm-kernel@lists.infradead.org, adrian.hunter@intel.com,
+ linux-perf-users@vger.kernel.org, leo.yan@linaro.org, al.grant@arm.com,
+ mathieu.poirier@linaro.org, tor@ti.com, acme@redhat.com
+References: <20231214123304.34087-1-tianruidong@linux.alibaba.com>
+ <20240116020854.56030-1-tianruidong@linux.alibaba.com>
+ <20240116020854.56030-2-tianruidong@linux.alibaba.com>
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <20240116020854.56030-2-tianruidong@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Il 16/01/24 22:38, Nícolas F. R. A. Prado ha scritto:
-> The cbas node is used to describe base detection functionality in the
-> ChromeOS EC, which is used for units that have a detachable keyboard and
-> thus rely on this functionality to switch between tablet and laptop
-> mode.
-> 
-> Despite the original commit having added the cbas node to the
-> mt8183-kukui.dtsi, not all machines that include it are detachables. In
-> fact all machines that include from mt8183-kukui-jacuzzi.dtsi are either
-> clamshells (ie normal laptops) or convertibles, meaning the keyboard can
-> be flipped but not detached. The detection for the keyboard getting
-> flipped is handled by the driver bound to the keyboard-controller node
-> in the EC.
-> 
-> Move the base detection node from the base kukui dtsi to the dtsis where
-> all machines are detachables, and thus actually make use of the node.
-> 
-> Fixes: 4fa8492d1e5b ("arm64: dts: mt8183: add cbas node under cros_ec")
-> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+On 16/01/2024 02:08, Ruidong Tian wrote:
+> arm-cs-trace-disasm just print offset for library dso now:
+> 
+>     0000000000002200 <memcpy>:
+>         2200: d503201f      nop
+>         2204: 8b020024      add     x4, x1, x2
+>         2208: 8b020005      add     x5, x0, x2
+> 
+> Add a option `-a` to print virtual offset other than offset:
+> 
+>     # perf script -s scripts/python/arm-cs-trace-disasm.py -- -d llvm-objdump -a
+>     ...
+>     ffffb4c23200 <memcpy>:
+>         ffffb4c23200: d503201f      nop
+>         ffffb4c23204: 8b020024      add     x4, x1, x2
+>         ffffb4c23208: 8b020005      add     x5, x0, x2
+>     ...
+> 
+> Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
+> Reviewed-by: Leo Yan <leo.yan@linaro.org>
+
+I think your s-o-b should always come last, so these should be the other
+way around.
+
+Also patch 3 is missing on v3 for some reason so you might want to
+resend. No need to send it as a reply to the thread, you can just send
+it as a complete new one.
+
+Thanks
+James
 
 > ---
-> Changes in v3:
-> - Instead of deleting the node in jacuzzi, moved the node from kukui to
->    the dtsis including kukui that are detachables
+>  tools/perf/scripts/python/arm-cs-trace-disasm.py | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
 > 
-> Changes in v2:
-> - Moved cbas node removal to jacuzzi dtsi
-> ---
->   arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi | 4 ++++
->   arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi | 4 ++++
->   arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi  | 4 ++++
->   arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi        | 4 ----
->   4 files changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
-> index b6a9830af269..bfb9e42c8aca 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
-> @@ -360,6 +360,10 @@ pen_eject {
->   };
->   
->   &cros_ec {
-> +	cbas {
-> +		compatible = "google,cros-cbas";
-> +	};
+> diff --git a/tools/perf/scripts/python/arm-cs-trace-disasm.py b/tools/perf/scripts/python/arm-cs-trace-disasm.py
+> index d973c2baed1c..78419498237e 100755
+> --- a/tools/perf/scripts/python/arm-cs-trace-disasm.py
+> +++ b/tools/perf/scripts/python/arm-cs-trace-disasm.py
+> @@ -36,7 +36,10 @@ option_list = [
+>  		    help="Set path to objdump executable file"),
+>  	make_option("-v", "--verbose", dest="verbose",
+>  		    action="store_true", default=False,
+> -		    help="Enable debugging log")
+> +		    help="Enable debugging log"),
+> +	make_option("-a", "--vaddr", dest="vaddr",
+> +			action="store_true", default=False,
+> +			help="Enable virtual address")
+>  ]
+>  
+>  parser = OptionParser(option_list=option_list)
+> @@ -108,6 +111,14 @@ def print_disam(dso_fname, dso_start, start_addr, stop_addr):
+>  			m = disasm_re.search(line)
+>  			if m is None:
+>  				continue
 > +
->   	keyboard-controller {
->   		compatible = "google,cros-ec-keyb-switches";
->   	};
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
-> index 306c95166f3f..5c1bf6a1e475 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
-> @@ -339,6 +339,10 @@ touch_pin_reset: pin_reset {
->   };
->   
->   &cros_ec {
-> +	cbas {
-> +		compatible = "google,cros-cbas";
-> +	};
+> +		# Replace offset with virtual address
+> +		if (options.vaddr == True):
+> +			offset = re.search(r"^\s*([0-9a-fA-F]+)", line).group()
+> +			if offset:
+> +				virt_addr = dso_start + int(offset, 16)
+> +				line = line.replace(offset.lstrip(), "%x" % virt_addr)
 > +
->   	keyboard-controller {
->   		compatible = "google,cros-ec-keyb-switches";
->   	};
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
-> index 382e4c6d7191..0f5fa893a774 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
-> @@ -343,6 +343,10 @@ rst_pin {
->   };
->   
->   &cros_ec {
-> +	cbas {
-> +		compatible = "google,cros-cbas";
-> +	};
-> +
->   	keyboard-controller {
->   		compatible = "google,cros-ec-keyb-switches";
->   	};
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> index 5506de83f61d..66eb099e15f0 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> @@ -937,10 +937,6 @@ usbc_extcon: extcon0 {
->   			google,usb-port-id = <0>;
->   		};
->   
-> -		cbas {
-> -			compatible = "google,cros-cbas";
-> -		};
-> -
->   		typec {
->   			compatible = "google,cros-ec-typec";
->   			#address-cells = <1>;
-> 
-> ---
-> base-commit: 0f067394dd3b2af3263339cf7183bdb6ee0ac1f8
-> change-id: 20240116-mt8183-kukui-cbas-remove-657b62aeced6
-> 
-> Best regards,
-
+>  		print("\t" + line)
+>  
+>  def print_sample(sample):
 
