@@ -1,124 +1,113 @@
-Return-Path: <linux-kernel+bounces-28715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F191383022F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:22:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 714A483022A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:21:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6049EB2535B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:22:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 241141F24E97
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:21:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C880C14009;
-	Wed, 17 Jan 2024 09:21:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="XG3UpAnQ"
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D6F91426E;
+	Wed, 17 Jan 2024 09:21:23 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB017134BD;
-	Wed, 17 Jan 2024 09:21:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90DFC13FFF
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 09:21:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705483307; cv=none; b=qPDgfZLVuW8Mhfb6BEMlKSWoGCsEMnar/B5zH4M82pLdf/wSsSHAxO3gWo/0WyOnHNQkICP2lFow3rmkqrRwK+RiZTgBGRFRqhlSfRoyaSg8SXwGFSXFYhhzHrRQJkuFcMXR0nGOB1LuCcnQ8Qgk6yaaMl0nRf2vPU2S3e1994g=
+	t=1705483282; cv=none; b=KGQZj7MPyWEUOgMsrEFLDpuyF6Ngl/GX46o49h1G1nXH5Xe/3W+vWHTM8dbUTi2fiI3u4uJojaQIpsqt7d7ZJjq1v1y6sCzpzcF68AqhijVAEmqWsMt+cp5a04U+BIgdzAWZjfS1zxYMq2dRGSVnshfbGsFvVljezUysGm53MvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705483307; c=relaxed/simple;
-	bh=W+P7IO36D8CPAvUJClxapgFvmEeQRWVbVRywsFh/heo=;
-	h=Received:DKIM-Signature:Received:Received:Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 To:CC:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy:
-	 X-Proofpoint-Virus-Version; b=UqQEJLO134AvpuOeZ88THxa3VnS9EyXuhGMhuYX/tORPnjU15CJph5fkfpdjiiDOTXLSqfvdlwrNEd8l8IYf0nx9IZr26y/GReE3YOWnxd7cLvK/WnYMGBL2QTJY8RVi37tmUyKjICW7o7XUesb+FlFJz5DApJcp+LhudX8ryGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=XG3UpAnQ; arc=none smtp.client-ip=91.207.212.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40H7HG3b027265;
-	Wed, 17 Jan 2024 10:21:14 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=W+P7IO36D8CPAvUJClxapgFvmEeQRWVbVRywsFh/heo=; b=XG
-	3UpAnQVt7wrCWveSYqIxqrxwWNd8mw+auxgc7IxFPXdGBqHQYxmAVuvlig8YPwaR
-	K6/vdv0fNgCSJkwABEme0e7d9MnwLAetgrR1t3KgSbbixblLlU52Snl6DS0Sexmw
-	PYgarnXflU4WAlbrHtZ5DtLVs+7hAIKiPhN6/yHUNVLD/bl98lumcnl6X+TK8XdU
-	8kH+OSGDqYiuX+pg8eUocBWa4SA7HqhyfKVEoIPfabv9vbnzrYs3/0gvqVJL3M9s
-	Cy2v12033pT9OUi4qOxO0m33XKAQWi9UIIlFJwu5CvLfjzai7FS/dJWUsu7j5AZW
-	q1Pk0hXLtadSfTOP9pgQ==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vnbqc84xe-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 10:21:14 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id F21B810007A;
-	Wed, 17 Jan 2024 10:21:12 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D33E321ED56;
-	Wed, 17 Jan 2024 10:21:12 +0100 (CET)
-Received: from [10.201.21.102] (10.201.21.102) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 17 Jan
- 2024 10:21:12 +0100
-Message-ID: <1639c6b9-1cca-4f4c-a329-fc4618c572f6@foss.st.com>
-Date: Wed, 17 Jan 2024 10:21:11 +0100
+	s=arc-20240116; t=1705483282; c=relaxed/simple;
+	bh=2XWUHbX8JT3cQhfnNQWQueZTLs7LDrMX25Hwg9wJjDM=;
+	h=Received:X-Google-DKIM-Signature:X-Gm-Message-State:
+	 X-Google-Smtp-Source:MIME-Version:X-Received:Date:
+	 X-Google-Appengine-App-Id:X-Google-Appengine-App-Id-Alias:
+	 Message-ID:Subject:From:To:Content-Type; b=A3dUybk9PpAyXsXBkZDGJj3QjlhP/l5loSqpKOZFpMpK0haGzVUtkO6BgYtFE/WCKSg3HiQi/csNJU/VYHWDRuvh0HJEbJ5vtIJiy4VB9yI0xcBCy/0EYT+mvhQLt1PYRhXLEcGb0+hwdzfWIth3J22MOIQiIP9BLWRdypxoo68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7baa6cc3af2so1015598839f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 01:21:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705483281; x=1706088081;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FFh/rsH0XQlYH+i9hmK0u1AnArr98LEzzQ9MnkFrr9c=;
+        b=Nw2pkWA3CZ8QidmOPJL6EAtaYah5HaHKvQV9cHSPKyHOz6mCexaisWdOXWnBuQP5NH
+         7VRL9vB6n/2sG9Bl3IP+BOzNMFS9vn81C5mFsC7CrFg3ZkpHzCYJpsC8KcZmAd7E5q7M
+         ZoIaruAI04b+DG7NFvMC6PguDMXR5IBUqiLH9tPxofDul4PBppA/c1+4UZjjrVf3fbHA
+         NguDj35bGLD98FlnqaANCwegYJdGiHOVUHCJPaTBjOSI0M32jZMCJzLXmTGw5qAlGEC7
+         GJaFhZwt0JsnD44vdZ9bufRf9b771MnNNsXYpdvnwPxN/mXUKrbtFlhSJNg+wEV8ZtB5
+         6r3A==
+X-Gm-Message-State: AOJu0Yy/GnAFQ20WrwegKuY3AKtrhkWfF4b6ZOiDyMCrrTJtex2+VKSe
+	l+M6fF2FFPB6kZFyqXskyBddjDOaTAulZO9q4bYvf1WrZceCgf4=
+X-Google-Smtp-Source: AGHT+IFO/sjBgcgXLZGX2Lb85iONqhAvUeCWMbbHDRfetpnj6ydJHofb32n2Fq3tTiWwVgMgVZhzCD47nFiNoMTshzH+CMPPjzOi
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: serial: stm32: add power-domains property
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Rob Herring
-	<robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20240111112450.1727866-1-valentin.caron@foss.st.com>
- <aae32b47-1bb0-4af0-baf0-836dc91b9427@linaro.org>
-From: Valentin CARON <valentin.caron@foss.st.com>
-In-Reply-To: <aae32b47-1bb0-4af0-baf0-836dc91b9427@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-17_04,2024-01-16_01,2023-05-22_02
+X-Received: by 2002:a05:6e02:214c:b0:361:9684:be1 with SMTP id
+ d12-20020a056e02214c00b0036196840be1mr76728ilv.1.1705483280881; Wed, 17 Jan
+ 2024 01:21:20 -0800 (PST)
+Date: Wed, 17 Jan 2024 01:21:20 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000020a118060f20c5f3@google.com>
+Subject: [syzbot] Monthly mm report (Jan 2024)
+From: syzbot <syzbot+list48ce08ed778c7a25633f@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
+Hello mm maintainers/developers,
 
-On 1/15/24 16:05, Krzysztof Kozlowski wrote:
-> On 11/01/2024 12:24, Valentin Caron wrote:
->> Add "power-domains" property in stm32 serial binding to avoid:
->>
->> serial@40010000: Unevaluated properties are not allowed
->> ('power-domains' were unexpected)
->>
-> It would be better if you checked whether it can be part of power domain
-> or not. What if the DTS is wrong?
->
-> Best regards,
-> Krzysztof
->
-Hi Krzysztof,
+This is a 31-day syzbot report for the mm subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/mm
 
-I'm not sure to understand, but if you mean that there is no
-power-domains properties right now in all stm32mp device trees
-and so it does not required to add this stm32 serial bindings:
+During the period, 2 new issues were detected and 3 were fixed.
+In total, 34 issues are still open and 223 have been fixed so far.
 
-Theses will be upstreamed in the future, and because power-domains
-property is optional, I can add it right now in stm32 serial binding
-to anticipate.
+Some of the still happening issues:
 
-Best regards,
-Valentin
+Ref  Crashes Repro Title
+<1>  7363    Yes   WARNING in ext4_dirty_folio
+                   https://syzkaller.appspot.com/bug?extid=ecab51a4a5b9f26eeaa1
+<2>  607     No    KCSAN: data-race in generic_fillattr / shmem_unlink (3)
+                   https://syzkaller.appspot.com/bug?extid=f682b67a78ce05867e78
+<3>  489     Yes   BUG: bad usercopy in fpa_set
+                   https://syzkaller.appspot.com/bug?extid=cb76c2983557a07cdb14
+<4>  55      Yes   WARNING in __kfence_free (3)
+                   https://syzkaller.appspot.com/bug?extid=59f37b0ab4c558a5357c
+<5>  27      Yes   BUG: unable to handle kernel paging request in list_lru_add
+                   https://syzkaller.appspot.com/bug?extid=2403e3909382fbdeaf6c
+<6>  24      Yes   BUG: unable to handle kernel NULL pointer dereference in __kmap_local_page_prot
+                   https://syzkaller.appspot.com/bug?extid=b18872ea9631b5dcef3b
+<7>  11      No    WARNING in __gup_longterm_locked (2)
+                   https://syzkaller.appspot.com/bug?extid=f2577d8071a92e596253
+<8>  11      Yes   kernel BUG in do_page_mkwrite
+                   https://syzkaller.appspot.com/bug?extid=cfba1abcb2cf7b39a320
+<9>  8       Yes   kernel BUG in filemap_unaccount_folio
+                   https://syzkaller.appspot.com/bug?extid=17a207d226b8a5fb0fd9
+<10> 6       Yes   INFO: rcu detected stall in dput (8)
+                   https://syzkaller.appspot.com/bug?extid=eb9f416500ff134ab699
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
