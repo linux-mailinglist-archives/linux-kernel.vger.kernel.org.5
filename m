@@ -1,127 +1,125 @@
-Return-Path: <linux-kernel+bounces-29266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0AB0830BD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:20:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 459D5830BD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:21:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B6CE1F22FC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:20:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D87661F22C6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:21:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D782222618;
-	Wed, 17 Jan 2024 17:20:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n84nGxTl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84DCF22618;
+	Wed, 17 Jan 2024 17:21:17 +0000 (UTC)
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 222F5225D1;
-	Wed, 17 Jan 2024 17:20:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A34E22609;
+	Wed, 17 Jan 2024 17:21:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705512043; cv=none; b=Y+nldQHgSVjZ+CR6rG/gsrzOmRbQ2ASG1ZnveZX5XRZbYDjYVaf4XjB+3QibZ8VZpfN/HKw0d97Z5d+hirIPPzfAEazMdQlIljNUnIP9hCOhJXOgrQQ/xki32egPajmnUX0MIJ758uz5QTunAf7lpC8rVWPNeDHWACJY1i3ZWdk=
+	t=1705512077; cv=none; b=Tofq8vTlyfcSolZNLejYRBNNadpcvJ/RNPYJnQQQQxzP0mEZN01N9mSC+cfEBB2bYtdpVhaPDBCSOuAHhVCkWEUUA0zt8GszX6Idxe79dONAdkgih/5ZhRXPiyCAEyPUHugP0wsGZK+tD424HXRu0/BVC8ymf/qoP9vEnJUG3Lc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705512043; c=relaxed/simple;
-	bh=PJ+rmEVufpKJK7ECKejpevEIw04o5RmMCUfmqWdgfYA=;
-	h=Received:DKIM-Signature:Received:X-Gm-Message-State:
-	 X-Google-Smtp-Source:X-Received:MIME-Version:References:
-	 In-Reply-To:From:Date:X-Gmail-Original-Message-ID:Message-ID:
-	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding; b=lQ5LUwyv3jq+hB1mLc55iGmnAclxf0vXnVS8T347bxryxYxKJ/6ZRKOC3+RIVt/GzT15Y34JCiUogVKRwzZQEEg41838Hts+cpzhopmCb7iO8sZbDchS9oae2Rr4d4on6DYc3IVeyH6cp8yt0yImlvbfNqc4r8o8WPFwbJtKmr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n84nGxTl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B22A4C43394;
-	Wed, 17 Jan 2024 17:20:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705512042;
-	bh=PJ+rmEVufpKJK7ECKejpevEIw04o5RmMCUfmqWdgfYA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=n84nGxTlQzqYATBfX/bwXAVjLaPoqbuwNMsnqS9bma7YsiFVqFJvMvv21EW+n2O/Y
-	 LFKrGGgJcM+boD/EoHhLprgzUZFltjCK29BETXyD7+uHcD6f8HLtZDvtPjC3zKaWky
-	 TsuKIKZZ5aFeMzZXAvbezlMMvOA0SagXfBHPdG1d8D2wg+YA76e2sABuh6IsQkbUdg
-	 LKp7MNyCY3AelzuHF3wDBYtJ4RMAWUtHsOBs8yFyYOyKpjGtO/zf1n6iNjaGO4vJ5k
-	 AYTR/0ZwefiPrGoAiAkkB5v9yqJecIKVZQ584F93Vk+3nUXLgIm+n58JsoNeLaQ2z/
-	 UlpIMuBO88OIw==
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2cca5d81826so147690561fa.2;
-        Wed, 17 Jan 2024 09:20:42 -0800 (PST)
-X-Gm-Message-State: AOJu0YxvCnijtCXayx2y97uV4NH7u44rkjrIFlkxGy154WMmVV5U2Xv7
-	1rDw3gHyXol3PvN3sK23llTMRO6B8p13U3Mlw0s=
-X-Google-Smtp-Source: AGHT+IGWX8Q7kIeReZ1qlFFAmoXEkNjfJOJA/MMkOeb2LWn3zknnJyvhTG046Opvn1prfXImsNgRRSgq8fIZUlkJ+JQ=
-X-Received: by 2002:a2e:904c:0:b0:2cd:fe3:1f86 with SMTP id
- n12-20020a2e904c000000b002cd0fe31f86mr4393999ljg.80.1705512040844; Wed, 17
- Jan 2024 09:20:40 -0800 (PST)
+	s=arc-20240116; t=1705512077; c=relaxed/simple;
+	bh=0tQpzSPcwZV/BAp/SszbaUM/7gsBsP/zQckGbH5ilbA=;
+	h=Received:Received:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+	 MIME-Version:Content-Transfer-Encoding:Content-Type:
+	 X-Originating-IP:X-ClientProxiedBy; b=EfURtiXllForlDwdIpDDilZD5gMlTxfDbkLvAfuUxKop7jx8jercFEmMRyKZdgfU+rSfWkab5xno2KYJHOWEZ1U1WZBFg0q2wsG6ODpknzdZ1ncFfM5/41ElzsMwWGrJULR6Urjauj6FmyEOBMx5jMRQgXLu+iS8ij2yPcW2ZdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.169) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 17 Jan
+ 2024 20:21:07 +0300
+Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 17 Jan
+ 2024 20:21:07 +0300
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+To: "David S. Miller" <davem@davemloft.net>
+CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, David Ahern
+	<dsahern@kernel.org>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Taehee Yoo
+	<ap420073@gmail.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>,
+	<syzbot+a9400cabb1d784e49abf@syzkaller.appspotmail.com>
+Subject: [PATCH net] ipv6: mcast: fix data-race in ipv6_mc_down / mld_ifc_work
+Date: Wed, 17 Jan 2024 09:21:02 -0800
+Message-ID: <20240117172102.12001-1-n.zhandarovich@fintech.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117111000.12763-1-yangtiezhu@loongson.cn> <20240117111000.12763-4-yangtiezhu@loongson.cn>
-In-Reply-To: <20240117111000.12763-4-yangtiezhu@loongson.cn>
-From: Song Liu <song@kernel.org>
-Date: Wed, 17 Jan 2024 09:20:29 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW6mWoQQ1M-uPE_i+RWv=t5GaVqUDAObWgpEC-PCYSbwHQ@mail.gmail.com>
-Message-ID: <CAPhsuW6mWoQQ1M-uPE_i+RWv=t5GaVqUDAObWgpEC-PCYSbwHQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 3/3] selftests/bpf: Skip callback tests if jit
- is disabled in test_verifier
-To: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
 
-On Wed, Jan 17, 2024 at 3:10=E2=80=AFAM Tiezhu Yang <yangtiezhu@loongson.cn=
-> wrote:
->
-[...]
-> @@ -1622,6 +1624,16 @@ static void do_test_single(struct bpf_test *test, =
-bool unpriv,
->         alignment_prevented_execution =3D 0;
->
->         if (expected_ret =3D=3D ACCEPT || expected_ret =3D=3D VERBOSE_ACC=
-EPT) {
-> +               if (fd_prog < 0 && saved_errno =3D=3D EINVAL && jit_disab=
-led) {
-> +                       for (i =3D 0; i < prog_len; i++, prog++) {
-> +                               if (!insn_is_pseudo_func(prog))
-> +                                       continue;
-> +                               printf("SKIP (callbacks are not allowed i=
-n non-JITed programs)\n");
-> +                               skips++;
-> +                               goto close_fds;
-> +                       }
-> +               }
-> +
+idev->mc_ifc_count can be written over without proper locking.
 
-I would put this chunk above "alignment_prevented_execution =3D 0;".
+Originally found by syzbot [1], fix this issue by encapsulating calls
+to mld_ifc_stop_work() (and mld_gq_stop_work() for good measure) with
+mutex_lock() and mutex_unlock() accordingly as these functions
+should only be called with mc_lock per their declarations.
 
-@@ -1619,6 +1621,16 @@ static void do_test_single(struct bpf_test
-*test, bool unpriv,
-                goto close_fds;
-        }
+[1]
+BUG: KCSAN: data-race in ipv6_mc_down / mld_ifc_work
 
-+       if (fd_prog < 0 && saved_errno =3D=3D EINVAL && jit_disabled) {
-+               for (i =3D 0; i < prog_len; i++, prog++) {
-+                       if (!insn_is_pseudo_func(prog))
-+                               continue;
-+                       printf("SKIP (callbacks are not allowed in
-non-JITed programs)\n");
-+                       skips++;
-+                       goto close_fds;
-+               }
-+       }
+write to 0xffff88813a80c832 of 1 bytes by task 3771 on cpu 0:
+ mld_ifc_stop_work net/ipv6/mcast.c:1080 [inline]
+ ipv6_mc_down+0x10a/0x280 net/ipv6/mcast.c:2725
+ addrconf_ifdown+0xe32/0xf10 net/ipv6/addrconf.c:3949
+ addrconf_notify+0x310/0x980
+ notifier_call_chain kernel/notifier.c:93 [inline]
+ raw_notifier_call_chain+0x6b/0x1c0 kernel/notifier.c:461
+ __dev_notify_flags+0x205/0x3d0
+ dev_change_flags+0xab/0xd0 net/core/dev.c:8685
+ do_setlink+0x9f6/0x2430 net/core/rtnetlink.c:2916
+ rtnl_group_changelink net/core/rtnetlink.c:3458 [inline]
+ __rtnl_newlink net/core/rtnetlink.c:3717 [inline]
+ rtnl_newlink+0xbb3/0x1670 net/core/rtnetlink.c:3754
+ rtnetlink_rcv_msg+0x807/0x8c0 net/core/rtnetlink.c:6558
+ netlink_rcv_skb+0x126/0x220 net/netlink/af_netlink.c:2545
+ rtnetlink_rcv+0x1c/0x20 net/core/rtnetlink.c:6576
+ netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
+ netlink_unicast+0x589/0x650 net/netlink/af_netlink.c:1368
+ netlink_sendmsg+0x66e/0x770 net/netlink/af_netlink.c:1910
+ ...
+
+write to 0xffff88813a80c832 of 1 bytes by task 22 on cpu 1:
+ mld_ifc_work+0x54c/0x7b0 net/ipv6/mcast.c:2653
+ process_one_work kernel/workqueue.c:2627 [inline]
+ process_scheduled_works+0x5b8/0xa30 kernel/workqueue.c:2700
+ worker_thread+0x525/0x730 kernel/workqueue.c:2781
+ ...
+
+Fixes: 2d9a93b4902b ("mld: convert from timer to delayed work")
+Reported-by: syzbot+a9400cabb1d784e49abf@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/all/000000000000994e09060ebcdffb@google.com/
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+---
+ net/ipv6/mcast.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/net/ipv6/mcast.c b/net/ipv6/mcast.c
+index b75d3c9d41bb..bc6e0a0bad3c 100644
+--- a/net/ipv6/mcast.c
++++ b/net/ipv6/mcast.c
+@@ -2722,8 +2722,12 @@ void ipv6_mc_down(struct inet6_dev *idev)
+ 	synchronize_net();
+ 	mld_query_stop_work(idev);
+ 	mld_report_stop_work(idev);
 +
-        alignment_prevented_execution =3D 0;
-
-        if (expected_ret =3D=3D ACCEPT || expected_ret =3D=3D VERBOSE_ACCEP=
-T) {
-
-Other than this,
-
-Acked-by: Song Liu <song@kernel.org>
-
-Thanks,
-Song
++	mutex_lock(&idev->mc_lock);
+ 	mld_ifc_stop_work(idev);
+ 	mld_gq_stop_work(idev);
++	mutex_unlock(&idev->mc_lock);
++
+ 	mld_dad_stop_work(idev);
+ }
+ 
 
