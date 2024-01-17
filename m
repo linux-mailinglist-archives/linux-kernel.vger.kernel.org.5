@@ -1,91 +1,66 @@
-Return-Path: <linux-kernel+bounces-28569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 026C3830024
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:30:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 019DF830028
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:31:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A81F91F251F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 06:30:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F4E62884F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 06:31:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A7FAD26D;
-	Wed, 17 Jan 2024 06:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88C189479;
+	Wed, 17 Jan 2024 06:30:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KYQk9dww"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cOfLQ74h"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0014FBE49
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 06:30:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EF279465;
+	Wed, 17 Jan 2024 06:30:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705473026; cv=none; b=OAQPI+Dab2Wi+HWfRNhriRzpmNnVJjXZEHj8tX3lSpvrRUU9A11a6XtUpMuhxvlBg8TSqIqZKn7h3p2UCSTXzXGuJr8VJSilKOg3AI3WK+zI6bc28nevOoIlvPgZ3LTl2FMitYHmEuUXL+z/aTRaHPLjVgUeyQeg4QX1rpvbzi4=
+	t=1705473052; cv=none; b=GknHx55k08FhrsIR5uYHORmKSZ6r2TNAXFlFxovg3NGcnqV46z/TmgJqOLoa0IJ4NnFaQTdxh3QB+PAbr+P64g7y1fw4THqV+IiqrThgSNBOXtW0DxZUgGluSYKJ4FG+lI+e27cpEtNrg7F9wcj1Y7cA4GvAA4Wrh9M2BnelTtM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705473026; c=relaxed/simple;
-	bh=d/+Iqt7FN2V9H5BldHeUcRwFbKJt6MqHvk+5w5dVM70=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:
-	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
-	 X-Google-Smtp-Source:X-Received:Received:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To; b=ekvQ5uDwqCIRrxpxaddmfwnLk24zAB4exy9YE1eiJYDLp3ptx1PVxl7hCzfuacx6SQwBaAOc1mhp/N8h7LUB6mH4RKD5Fh1WjDYxfSMVmT/aBLf/aVJxINSdQRZGCZEsSKsPdjA4/4K8jSxOtZ/vVWk3qlUjtvaJUFEFlw7SPCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KYQk9dww; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705473024;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3SWvsqvo8kKRREIVaq74k7zOkw2lqw8OoQBIc8ZyG6g=;
-	b=KYQk9dwwY9HmEBamOFIC+Dcxi/KLImccbZhSa66rPNnalljHX82FJ0yLNdyGC7bNykDczN
-	om9T/yFa7s3AgXrSzI9hhkGo2bHT+tjnYT4knvRZ0qopsPGrI4mlHwtRAg8PF2HIwuQUt2
-	uGXOUnXaYVRyjIGjoat8J9IPDeAw6Aw=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-433-kIj_0avkMaa1JkFLRNor8Q-1; Wed, 17 Jan 2024 01:30:21 -0500
-X-MC-Unique: kIj_0avkMaa1JkFLRNor8Q-1
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-429d02a63baso80108931cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 22:30:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705473021; x=1706077821;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3SWvsqvo8kKRREIVaq74k7zOkw2lqw8OoQBIc8ZyG6g=;
-        b=IMamS9eR0QuCcR1O/jSeBVFmFjDSbFUlC7Lm0A219ZrxgP8Nl7um1NBGKe7c1ztYGe
-         7d3XA/CXvcPyu6YEEVpI67vu6uL44iafuNCzgT0nZNV4UGpobjD3sDPMTh2jk6LwN482
-         m/qVPy8M1o9g8fAMR1eo5a1QK7QdgCP/+pSa6CZv2HJdXRyvqsEH/x/Iu54t/C8lO65K
-         +0JQMF0HqJV/mjF0ALQpGKv73p1q5/T4aSl3BB2vNr+MRFR2It/NrwWGPu0cvG4RHhvs
-         47clPkLcO+ZkqHTzRbg+JYoDajHtyiOubtfLyrBMwnLAwIZr7DrbpiIkEf8nX1uGs6IL
-         pgfQ==
-X-Gm-Message-State: AOJu0YyLnVMrXY15E0dUM9qWHeHXpbRBcwNMhwJVzc+Me2PErjuFHlfA
-	G8z8fxauIL8bclEL+JeYdLDm5OCGQZwZHCTi0k5432Dw5G7KtRVaupbh3+DH6fGnbTZRT5IkjYF
-	TLCg2W4cAsFPPHzTOQuxwfpoNRl3Uugy/
-X-Received: by 2002:a05:622a:11c9:b0:429:7d0c:6046 with SMTP id n9-20020a05622a11c900b004297d0c6046mr10952481qtk.68.1705473020903;
-        Tue, 16 Jan 2024 22:30:20 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF+BQy/SCO/b8AjPtrrp1Vd/3GsTEAFv27SNam14tPowsSumiOsAu3SejErD6EszzKJE+6zyw==
-X-Received: by 2002:a05:622a:11c9:b0:429:7d0c:6046 with SMTP id n9-20020a05622a11c900b004297d0c6046mr10952471qtk.68.1705473020527;
-        Tue, 16 Jan 2024 22:30:20 -0800 (PST)
-Received: from localhost.localdomain ([151.29.130.8])
-        by smtp.gmail.com with ESMTPSA id w8-20020ac86b08000000b0042a0effd2d8sm298843qts.36.2024.01.16.22.30.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 22:30:20 -0800 (PST)
-Date: Wed, 17 Jan 2024 07:30:16 +0100
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Tejun Heo <tj@kernel.org>, Aaron Tomlin <atomlin@atomlin.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 4/4] kernel/workqueue: Let rescuers follow unbound wq
- cpumask changes
-Message-ID: <Zadz-DT6lTdrx7US@localhost.localdomain>
-References: <20240116161929.232885-1-juri.lelli@redhat.com>
- <20240116161929.232885-5-juri.lelli@redhat.com>
- <CAJhGHyBuf02mh=ezoua33UNu5QTpwP=qf-WP_C2qVyx_HEtMDg@mail.gmail.com>
+	s=arc-20240116; t=1705473052; c=relaxed/simple;
+	bh=4FqIAA4hFzTfbpQcQsbRrq5DJ0JunmKGhHh0MHds120=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To; b=TWoZR+MH4UI1W4/xvL2u61zJdebAjzRj1Pt7etGXVPIswT7VAzdVxuULN0Q6QKJG/0L+Mpq5+bDF8eGcxFVpnUwefuv/Pofg3WXnb7XI507nbVFFha0XaKZidD/qWW9dCsUeLu3AO9bqXWQEHhU858vce5uE/ACuHdCktAZx3nc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cOfLQ74h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F104C433C7;
+	Wed, 17 Jan 2024 06:30:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705473052;
+	bh=4FqIAA4hFzTfbpQcQsbRrq5DJ0JunmKGhHh0MHds120=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cOfLQ74hMct7mz00H2GwjckM/jb7KjGta5N8xBtaTWUXiZIasBMPe1gJEUVT9fgxE
+	 s9jirP4Nnj0dk/7o2CpzogAD48uTIpuXMcAVKNQD/unHlEy+0CQPnKH1EJa8tPtjrK
+	 odxSZN9s5MEPjo7RUT2KDbvaXoz7tPPQ3O2OzwcFc7dIXUPV+vEZtzK0HFLJk2tY09
+	 Cpz4dKnGEY0V6Qe9KZzAzj6BNO/tkHFHr8svBvg7EjG5jSClvNhHuq/2Ft0odSZQ8w
+	 qv4ZMQQFDmPu1Tkf0U1fGT0jOg7xHxJlRRJJKksJyM4Cn9iDDk3FAhXgrmsIxSWMno
+	 DQmPvs/G/UrQw==
+Date: Wed, 17 Jan 2024 12:00:39 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] dt-bindings: PCI: qcom,pcie-sm8550: move SM8550 to
+ dedicated schema
+Message-ID: <20240117063039.GA8708@thinkpad>
+References: <20240108-dt-bindings-pci-qcom-split-v1-0-d541f05f4de0@linaro.org>
+ <20240108-dt-bindings-pci-qcom-split-v1-1-d541f05f4de0@linaro.org>
+ <20240116144419.GA3856889-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,38 +70,241 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJhGHyBuf02mh=ezoua33UNu5QTpwP=qf-WP_C2qVyx_HEtMDg@mail.gmail.com>
+In-Reply-To: <20240116144419.GA3856889-robh@kernel.org>
 
-Hello Lai,
-
-On 17/01/24 11:56, Lai Jiangshan wrote:
-> Hello, Juri
-> 
-> On Wed, Jan 17, 2024 at 12:20 AM Juri Lelli <juri.lelli@redhat.com> wrote:
-> 
-> > +       /* rescuer needs to respect wq cpumask changes */
-> > +       if (ctx->wq->rescuer) {
-> > +               set_cpus_allowed_ptr(ctx->wq->rescuer->task, ctx->attrs->cpumask);
-> > +               wake_up_process(ctx->wq->rescuer->task);
-> > +       }
+On Tue, Jan 16, 2024 at 08:44:19AM -0600, Rob Herring wrote:
+> On Mon, Jan 08, 2024 at 03:19:14PM +0100, Krzysztof Kozlowski wrote:
+> > The qcom,pcie.yaml binding file containing all possible Qualcomm SoC
+> > PCIe root complexes gets quite complicated with numerous if:then:
+> > conditions customizing clocks, interrupts, regs and resets.  Adding and
+> > reviewing new devices is difficult, so simplify it by having shared
+> > common binding and file with only one group of compatible devices:
+> > 
+> > 1. Copy all common qcom,pcie.yaml properties (so everything except
+> >    supplies) to a new shared qcom,pcie-common.yaml schema.
+> > 2. Move SM8550 PCIe compatible devices to dedicated binding file.
+> > 
+> > This creates equivalent SM8550 schema file, except missing required
+> > compatible which is actually redundant.
+> > 
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > ---
+> >  .../devicetree/bindings/pci/qcom,pcie-common.yaml  |  98 ++++++++++++
+> >  .../devicetree/bindings/pci/qcom,pcie-sm8550.yaml  | 171 +++++++++++++++++++++
+> >  .../devicetree/bindings/pci/qcom,pcie.yaml         |  38 -----
+> >  3 files changed, 269 insertions(+), 38 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie-common.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie-common.yaml
+> > new file mode 100644
+> > index 000000000000..125136176f93
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/pci/qcom,pcie-common.yaml
+> > @@ -0,0 +1,98 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/pci/qcom,pcie-common.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > > +
+> > +title: Qualcomm PCI Express Root Complex Common Properties
+> > +
+> > +maintainers:
+> > +  - Bjorn Andersson <andersson@kernel.org>
+> > +  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > +
+> > +properties:
+> > +  reg:
+> > +    minItems: 4
+> > +    maxItems: 6
+> > +
+> > +  reg-names:
+> > +    minItems: 4
+> > +    maxItems: 6
+> > +
+> > +  interrupts:
+> > +    minItems: 1
+> > +    maxItems: 8
+> > +
+> > +  interrupt-names:
+> > +    minItems: 1
+> > +    maxItems: 8
+> > +
+> > +  iommu-map:
+> > +    minItems: 1
+> > +    maxItems: 16
+> > +
+> > +  clocks:
+> > +    minItems: 3
+> > +    maxItems: 13
+> > +
+> > +  clock-names:
+> > +    minItems: 3
+> > +    maxItems: 13
+> > +
+> > +  dma-coherent: true
+> > +
+> > +  interconnects:
+> > +    maxItems: 2
+> > +
+> > +  interconnect-names:
+> > +    items:
+> > +      - const: pcie-mem
+> > +      - const: cpu-pcie
+> > +
+> > +  phys:
+> > +    maxItems: 1
+> > +
+> > +  phy-names:
+> > +    items:
+> > +      - const: pciephy
+> > +
+> > +  power-domains:
+> > +    maxItems: 1
+> > +
+> > +  resets:
+> > +    minItems: 1
+> > +    maxItems: 12
+> > +
+> > +  reset-names:
+> > +    minItems: 1
+> > +    maxItems: 12
+> > +
+> > +  perst-gpios:
+> > +    description: GPIO controlled connection to PERST# signal
+> > +    maxItems: 1
+> > +
+> > +  wake-gpios:
+> > +    description: GPIO controlled connection to WAKE# signal
+> > +    maxItems: 1
+> > +
+> > +required:
+> > +  - reg
+> > +  - reg-names
+> > +  - interrupt-map-mask
+> > +  - interrupt-map
+> > +  - clocks
+> > +  - clock-names
+> > +
+> > +anyOf:
+> > +  - required:
+> > +      - interrupts
+> > +      - interrupt-names
+> > +      - "#interrupt-cells"
+> > +  - required:
+> > +      - msi-map
+> > +      - msi-map-mask
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/pci/pci-bus.yaml#
+> > +
+> > +additionalProperties: true
+> > diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie-sm8550.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie-sm8550.yaml
+> > new file mode 100644
+> > index 000000000000..b6d025f153bc
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/pci/qcom,pcie-sm8550.yaml
+> > @@ -0,0 +1,171 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/pci/qcom,pcie-sm8550.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Qualcomm SM8550 PCI Express Root Complex
+> > +
+> > +maintainers:
+> > +  - Bjorn Andersson <andersson@kernel.org>
+> > +  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > +
+> > +description:
+> > +  Qualcomm SM8550 SoC (and compatible) PCIe root complex controller is based on
+> > +  the Synopsys DesignWare PCIe IP.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    oneOf:
+> > +      - const: qcom,pcie-sm8550
+> > +      - items:
+> > +          - enum:
+> > +              - qcom,pcie-sm8650
+> > +          - const: qcom,pcie-sm8550
+> > +
+> > +  reg:
+> > +    minItems: 5
+> > +    maxItems: 6
+> > +
+> > +  reg-names:
+> > +    minItems: 5
+> > +    items:
+> > +      - const: parf # Qualcomm specific registers
+> > +      - const: dbi # DesignWare PCIe registers
+> > +      - const: elbi # External local bus interface registers
+> > +      - const: atu # ATU address space
+> > +      - const: config # PCIe configuration space
+> > +      - const: mhi # MHI registers
+> > +
+> > +  clocks:
+> > +    minItems: 7
+> > +    maxItems: 8
+> > +
+> > +  clock-names:
+> > +    minItems: 7
+> > +    items:
+> > +      - const: aux # Auxiliary clock
+> > +      - const: cfg # Configuration clock
+> > +      - const: bus_master # Master AXI clock
+> > +      - const: bus_slave # Slave AXI clock
+> > +      - const: slave_q2a # Slave Q2A clock
+> > +      - const: ddrss_sf_tbu # PCIe SF TBU clock
+> > +      - const: noc_aggr # Aggre NoC PCIe AXI clock
+> > +      - const: cnoc_sf_axi # Config NoC PCIe1 AXI clock
+> > +
+> > +  resets:
+> > +    minItems: 1
+> > +    maxItems: 2
+> > +
+> > +  reset-names:
+> > +    minItems: 1
+> > +    items:
+> > +      - const: pci # PCIe core reset
+> > +      - const: link_down # PCIe link down reset
+> > +
+> > +oneOf:
+> > +  - properties:
+> > +      interrupts:
+> > +        maxItems: 1
+> > +      interrupt-names:
+> > +        items:
+> > +          - const: msi
+> > +
+> > +  - properties:
+> > +      interrupts:
+> > +        minItems: 8
+> > +      interrupt-names:
+> > +        items:
+> > +          - const: msi0
+> > +          - const: msi1
+> > +          - const: msi2
+> > +          - const: msi3
+> > +          - const: msi4
+> > +          - const: msi5
+> > +          - const: msi6
+> > +          - const: msi7
 > 
-> What's the reason to wake up the rescuer?
+> How does a given SoC have 1 or 8 interrupts? I guess it is possible. A 
+> comment here would be helpful.
+> 
 
-I believe we want to wake it up so that it can possibly be moved
-"instantly" to a cpu inside its new cpumask affinity. If we don't wake
-it up it might be sleeping on a cpu outside its affinity which might
-have become isolated and this cpu could be affected by that wakeup if
-that only happens later on when possibly the rescuer needs to perform
-some work.
+No, this is due to kernel developers not able to find out the max MSI numbers
+for each platforms out of the Qcom internal documentation.
 
-Does is make more sense to you?
+Let it be for now, I will try to fetch these numbers to make it accurate later.
 
-> I support this patch except for the wakeup:
-> Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
+- Mani
 
-Thanks for looking at this!
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> 
 
-Juri
-
+-- 
+மணிவண்ணன் சதாசிவம்
 
