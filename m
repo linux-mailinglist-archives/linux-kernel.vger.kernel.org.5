@@ -1,163 +1,176 @@
-Return-Path: <linux-kernel+bounces-29104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0590F8308A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:51:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC8BF8308CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:54:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC7B91C217B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:51:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 810871F25ECB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:54:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BF6322613;
-	Wed, 17 Jan 2024 14:49:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23BD1219F9;
+	Wed, 17 Jan 2024 14:52:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KD7tYHP+"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fEaoM5zA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEE3F225A1
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 14:49:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CD2820B38;
+	Wed, 17 Jan 2024 14:52:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705502954; cv=none; b=W0KyTpklE8u5SKNrvgU/zciwA6YoPakPiCQUB/LlEpulrpXbRkwg3rNMsezsr02yGe0iDmwMiNkQzE4e+DS6o4rjmsGhqROnbUzRpuAIwfZHvcdLuhTLN5MAT2+VXxTmMAr5RCNN+FQM4aC/QrPLXlZP574QaeTvEwHs3MK/Gs4=
+	t=1705503139; cv=none; b=JsdBGG+t1G+DctDEipGoY1S8MMYFfnJAUt5ZqFtoTh8Kl+hc73MG9ebpHURuAX1y8Vny5kVmRPO0LhO4/qsCEsQMFDWs4YhsV1hfCbSrUycKkh8xJecm7dkVw8/Qb0Wvrc9tqwZn75gzUuPIS2YlfJPwfKVBUZiFemriWWyGnos=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705502954; c=relaxed/simple;
-	bh=xbOsZ7hNf9ivXDXTjA3fkk2LMk4yyJfbnqb4EOp2G0o=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 To:Cc:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=OsOdZQKM0Mb/2Sv38OLJnSEUR+6xzos/viNpv0U6RclWUrO+bFnUNoI81vdQPDRbG0v6NaN+resJ7L1BvtVkk9w1c61+h62F0VWpWnR5Hg8++tjnJxyp+oeva6q/Uhb67LZbl/xT2+ieSQN/7HVbyWqOHZ+wEVfFQPJtgjSw6Ek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KD7tYHP+; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a28cc85e6b5so1324638266b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 06:49:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705502950; x=1706107750; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wUp7AtgEUSYNvZ7/fVy0kILGk6FxXL69i5KUD1q97UU=;
-        b=KD7tYHP+aNzQhO/v8Gv6InoamNLudK4Bu9cxQ+vn/k3HfVqP/E1JNP+iskw4JLgUtU
-         Co1rI5XiV6gNnExMeB3S2NqqJ/ZGsCrmbtCxpO4it+pxJbC96bxLyhxN8FB9NmKGbZO2
-         o3yP/aCKX4K4TDq51T7lYwzi3c6QrTr43py2Zz9DwA2h3IwdT1jRKgdH4H4IYs8NpIlO
-         znZ8Dym8DyCwWfUE7qg/KfyLxSODbs+xdiefQnfnRbxLfTM6XuDeY/9V4GkXKoN2xoKV
-         mg/F1IK1wLQjhFeWj8mD/Z/oPl2Wn/OAA32IDY3SIh80GqnWE5R0FgB0Wdyy067xwPkW
-         aFfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705502950; x=1706107750;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wUp7AtgEUSYNvZ7/fVy0kILGk6FxXL69i5KUD1q97UU=;
-        b=tavn2Iy0rB/lpJCftq3ko1gQCI2AA4PO0DGodVJHIx8IWhLRlGj6aM+tCbtNQ7G288
-         0EpGx0ZgJKENVITePnI4B0gL+awZ8wcK0i86H+tDva1slhJxy6mAp9KtvS48t5yJDrpG
-         yYZNpHkZbGruPd5OBA+KT9jl6gmUlOuex3wKQXxJ4CIocmEDPUIjhmQ9Okir0O16+/Hk
-         gg5hJUWtiMdlh1/9D+TquXcCzuwm4J2IppCtSflyfeRIoQy4mMILN2+baufdkxSltZ0Y
-         7Avp27baLYfcTL9dUq4iFVUWngTJpLPs8BEktv87uDveXi8c1fVv5hLxJsSVoEPe7CNS
-         TgCg==
-X-Gm-Message-State: AOJu0Yxvej7Zvmzm6UFfT1/wvuVY0TDCmgCib8/1Qa/5QiHBtjdvV0xS
-	vED0i8PajZ05jsLUCwUAhd0mchQG0gTA+A==
-X-Google-Smtp-Source: AGHT+IGfogk1vyrdo+0VUD+8Wa7WTI0X1CJ1wuka8a695dU1RQlPFwd51cLYisobNRPZgcLdGzCY+A==
-X-Received: by 2002:a17:907:7215:b0:a2c:cf7a:b70b with SMTP id dr21-20020a170907721500b00a2ccf7ab70bmr3242363ejc.145.1705502950157;
-        Wed, 17 Jan 2024 06:49:10 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id o10-20020a170906288a00b00a2a632e4eebsm7758780ejd.119.2024.01.17.06.49.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jan 2024 06:49:09 -0800 (PST)
-Message-ID: <f394e372-dbfd-4fd5-b5c8-23c383cb6cf2@linaro.org>
-Date: Wed, 17 Jan 2024 14:49:07 +0000
+	s=arc-20240116; t=1705503139; c=relaxed/simple;
+	bh=2fMFVmmLcybgOzonSAH/hVLVnteRTXL5AUOqv3OZBKA=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=PSWcgrEOQw7cmfz0S8U4ypeqNLMSp6/pqE/UoecK8jSaYkGDLseLMGdRnOgDcBxC78kGkqwo66M8/fZbu50WTrWDQHs8HevxP8nPE3axr116QNj2LdYOVrfAq1XBY+sj91DjHfYwTruK7AP3x2oKPeyPjVERJy7yJzgtStdyqz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fEaoM5zA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7098C433C7;
+	Wed, 17 Jan 2024 14:52:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705503138;
+	bh=2fMFVmmLcybgOzonSAH/hVLVnteRTXL5AUOqv3OZBKA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fEaoM5zAmPOxyG/9s5w4W0YKD/idcpTs77OU8rQ7lwa8es5pCsvPmquvOvbGahx+d
+	 kKohTXG5rwx5Z+7iEFZiEaQeCwltEY0qdjUdJ5du3iXy92JqZ+NyZN/oIwGZrzw+6b
+	 EzOpQxs7tY3EubXzIUHXu4lCSexXrhNOlbh39AzjPE2IOHuozyBFummBKx1ryl6kSg
+	 kNK0pyzqTKGh0BL4om28Tx3BWAA+JLl/5KTelq+dBHRWS+y0U1E8eq1VUhQrzgWHem
+	 o734PeQOZhScEx6nsxG/EqKZQwuF3oxWn9yvbHxbHXPtRk2dmTEPNfsVviAneY8cKy
+	 3bwk/8C9ervmg==
+Date: Wed, 17 Jan 2024 08:52:16 -0600
+From: Rob Herring <robh@kernel.org>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, devicetree@vger.kernel.org,
+	Simon Glass <sjg@chromium.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nicolas Schier <nicolas@fjasle.eu>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] kbuild: simplify dtbs_install by reading the list of
+ compiled DTBs
+Message-ID: <20240117145216.GA2296118-robh@kernel.org>
+References: <20240109120738.346061-1-masahiroy@kernel.org>
+ <20240109120738.346061-3-masahiroy@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 07/12] clk: samsung: gs101: add support for cmu_peric0
-Content-Language: en-US
-To: Sam Protsenko <semen.protsenko@linaro.org>
-Cc: peter.griffin@linaro.org, krzysztof.kozlowski+dt@linaro.org,
- gregkh@linuxfoundation.org, mturquette@baylibre.com, sboyd@kernel.org,
- robh+dt@kernel.org, conor+dt@kernel.org, andi.shyti@kernel.org,
- alim.akhtar@samsung.com, jirislaby@kernel.org, s.nawrocki@samsung.com,
- tomasz.figa@gmail.com, cw00.choi@samsung.com,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-serial@vger.kernel.org, andre.draszik@linaro.org,
- kernel-team@android.com, willmcvicker@google.com
-References: <20240109125814.3691033-1-tudor.ambarus@linaro.org>
- <20240109125814.3691033-8-tudor.ambarus@linaro.org>
- <CAPLW+4=y12fBf47v_HKfBdHTsQJfWo2cwBuFosUKo3xPBqcKJw@mail.gmail.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <CAPLW+4=y12fBf47v_HKfBdHTsQJfWo2cwBuFosUKo3xPBqcKJw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240109120738.346061-3-masahiroy@kernel.org>
 
-Hi, Sam,
+On Tue, Jan 09, 2024 at 09:07:35PM +0900, Masahiro Yamada wrote:
+> Retrieve the list of *.dtb(o) files from arch/*/boot/dts/dtbs-list
+> instead of traversing the directory tree again.
 
-Thanks for reviewing the series!
+Don't you need dtbs-list in .gitignore?
 
-On 1/16/24 17:42, Sam Protsenko wrote:
-
-cut
-
->> Few clocks are marked as critical because when either of them is
->> disabled, the system hangs even if their clock parents are enabled.
->>
->> Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
->> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->> ---
-cut
->>
->> diff --git a/drivers/clk/samsung/clk-gs101.c b/drivers/clk/samsung/clk-gs101.c
->> index 782993951fff..f3f0f5feb28d 100644
->> --- a/drivers/clk/samsung/clk-gs101.c
->> +++ b/drivers/clk/samsung/clk-gs101.c
-
-cut
-
->> +static const struct samsung_gate_clock peric0_gate_clks[] __initconst = {
->> +       /* Disabling this clock makes the system hang. Mark the clock as critical. */
->> +       GATE(CLK_GOUT_PERIC0_PERIC0_CMU_PERIC0_PCLK,
->> +            "gout_peric0_peric0_cmu_peric0_pclk", "mout_peric0_bus_user",
->> +            CLK_CON_GAT_CLK_BLK_PERIC0_UID_PERIC0_CMU_PERIC0_IPCLKPORT_PCLK,
->> +            21, CLK_IS_CRITICAL, 0),
-> Why not just CLK_IGNORE_UNUSED? As I understand this gate clock can be
-
-When either of the clocks that I marked as critical is disabled, the
-system hangs, even if their clock parent is enabled. I tested this by
-enabling the clock debugfs with write permissions. I prepared-enabled
-the parent clock to increase their user count so that when the child
-gets disabled to not disable the parent as well. When disabling the
-child the system hung, even if its parent was enabled. Thus I considered
-that the child is critical. I mentioned this in the commit message as
-well. Please tell if get this wrong.
-
-> used to disable PCLK (bus clock) provided to the whole CMU_PERIC0.
-> Aren't there any valid cases for disabling this clock, like during
-> some PM transitions? For Exynos850 clock driver I marked all clocks of
-
-They aren't, because if one switches off any of these clocks that are
-marked as critical, the system hangs and it will not be able to resume.
-
-> this kind as CLK_IGNORE_UNUSED and it works fine. In other words: I'd
-> say CLK_IS_CRITICAL flag is more "strong" than CLK_IGNORE_UNUSED, and
-> requires better and more specific explanation, to make sure we are not
-> abusing it. And I'm not sure this is the case.
-
-Is the explanation from the commit message enough?
 > 
-> The same goes for the rest of clocks marked as CLK_IS_CRITICAL in this
-> patch. Please check if maybe using CLK_IGNORE_UNUSED makes sense for
-> any of those as well.
-
-I've already checked and all behave as described above.
-
-Thanks,
-ta
+> Please note that 'make dtbs_install' installs *.dtb(o) files directly
+> added to dtb-y because scripts/Makefile.dtbinst installs $(dtb-y)
+> without expanding the -dtbs suffix.
+> 
+> This commit preserves this behavior.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>  Makefile                 |  2 +-
+>  scripts/Kbuild.include   |  6 ------
+>  scripts/Makefile.dtbinst | 32 ++++++++++++++++++--------------
+>  3 files changed, 19 insertions(+), 21 deletions(-)
+> 
+> diff --git a/Makefile b/Makefile
+> index db7f9e34a24e..dae6825b8082 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1407,7 +1407,7 @@ endif
+>  dtbs_check: dtbs
+>  
+>  dtbs_install:
+> -	$(Q)$(MAKE) $(dtbinst)=$(dtstree) dst=$(INSTALL_DTBS_PATH)
+> +	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.dtbinst obj=$(dtstree)
+>  
+>  ifdef CONFIG_OF_EARLY_FLATTREE
+>  all: dtbs
+> diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
+> index 7778cc97a4e0..2f331879816b 100644
+> --- a/scripts/Kbuild.include
+> +++ b/scripts/Kbuild.include
+> @@ -113,12 +113,6 @@ endef
+>  # $(Q)$(MAKE) $(build)=dir
+>  build := -f $(srctree)/scripts/Makefile.build obj
+>  
+> -###
+> -# Shorthand for $(Q)$(MAKE) -f scripts/Makefile.dtbinst obj=
+> -# Usage:
+> -# $(Q)$(MAKE) $(dtbinst)=dir
+> -dtbinst := -f $(srctree)/scripts/Makefile.dtbinst obj
+> -
+>  ###
+>  # Shorthand for $(Q)$(MAKE) -f scripts/Makefile.clean obj=
+>  # Usage:
+> diff --git a/scripts/Makefile.dtbinst b/scripts/Makefile.dtbinst
+> index 4405d5b67578..67956f6496a5 100644
+> --- a/scripts/Makefile.dtbinst
+> +++ b/scripts/Makefile.dtbinst
+> @@ -8,32 +8,36 @@
+>  #   $INSTALL_PATH/dtbs/$KERNELRELEASE
+>  # ==========================================================================
+>  
+> -src := $(obj)
+> -
+>  PHONY := __dtbs_install
+>  __dtbs_install:
+>  
+>  include include/config/auto.conf
+>  include $(srctree)/scripts/Kbuild.include
+> -include $(kbuild-file)
+>  
+> -dtbs    := $(addprefix $(dst)/, $(dtb-y) $(if $(CONFIG_OF_ALL_DTBS),$(dtb-)))
+> -subdirs := $(addprefix $(obj)/, $(subdir-y) $(subdir-m))
+> -
+> -__dtbs_install: $(dtbs) $(subdirs)
+> -	@:
+> +dst := $(INSTALL_DTBS_PATH)
+>  
+>  quiet_cmd_dtb_install = INSTALL $@
+>        cmd_dtb_install = install -D $< $@
+>  
+> -$(dst)/%.dtb: $(obj)/%.dtb
+> +$(dst)/%: $(obj)/%
+>  	$(call cmd,dtb_install)
+>  
+> -$(dst)/%.dtbo: $(obj)/%.dtbo
+> -	$(call cmd,dtb_install)
+> +dtbs := $(patsubst $(obj)/%,%,$(call read-file, $(obj)/dtbs-list))
+>  
+> -PHONY += $(subdirs)
+> -$(subdirs):
+> -	$(Q)$(MAKE) $(dtbinst)=$@ dst=$(if $(CONFIG_ARCH_WANT_FLAT_DTB_INSTALL),$(dst),$(patsubst $(obj)/%,$(dst)/%,$@))
+> +ifdef CONFIG_ARCH_WANT_FLAT_DTB_INSTALL
+> +
+> +define gen_install_rules
+> +$(dst)/%: $(obj)/$(1)%
+> +	$$(call cmd,dtb_install)
+> +endef
+> +
+> +$(foreach d, $(sort $(dir $(dtbs))), $(eval $(call gen_install_rules,$(d))))
+> +
+> +dtbs := $(notdir $(dtbs))
+> +
+> +endif # CONFIG_ARCH_WANT_FLAT_DTB_INSTALL
+> +
+> +__dtbs_install: $(addprefix $(dst)/, $(dtbs))
+> +	@:
+>  
+>  .PHONY: $(PHONY)
+> -- 
+> 2.40.1
+> 
 
