@@ -1,124 +1,190 @@
-Return-Path: <linux-kernel+bounces-29326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA084830CD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:39:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBBA0830CD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:40:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B89D81C24143
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:39:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 318731F267BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:40:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2360623753;
-	Wed, 17 Jan 2024 18:39:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12AB323755;
+	Wed, 17 Jan 2024 18:40:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=public-files.de header.i=frank-w@public-files.de header.b="AJgXuF5k"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zRdGHYIj"
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FD1D13FFF;
-	Wed, 17 Jan 2024 18:39:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A99434C9F
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 18:40:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705516787; cv=none; b=rIr4dqKBbfYaPTAF/nAbbLQfah+nQn1qH865cD28JXRjOaT79bRRimKcLl2UE5pfRd0DafKGurA9wF8ee8I4zJxTpvDwt5j5x9MY5TaQcgjtX563mFUrDKPv1d1C6Y5mHwxD3Iarg/9P0YywrnkSB/l8raU+pudwpiBmsLkR/gI=
+	t=1705516848; cv=none; b=HO2IV5W/lQ4v7XKxFFfNap+k1iQEOoTT4wvegxnGzznDjpA/zzzMsOli+sr4UqwXbs89k/V4JGhTq5DvhA7oEf/Rc/TJsbdMxnxBkp7pnVDd8thJ3KoGjU1neIJEi4tZKepWvgX2hfzZMT3yaZPHElZm0mrgISrsMAziIkHX7fc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705516787; c=relaxed/simple;
-	bh=OGTSWYYYIj8c+SD8nKzKyjhCGDqhkunykC0KNhW8ywg=;
-	h=DKIM-Signature:X-UI-Sender-Class:Received:From:To:Cc:Subject:Date:
-	 Message-Id:X-Mailer:MIME-Version:Content-Transfer-Encoding:
-	 X-Provags-ID:X-Spam-Flag:UI-OutboundReport; b=qckoQh81DTd4PQfa9VTvSNwNrxc2zzuBTXnhddFBjmt/og7EmVOnrojHATAvNB395sxEaRy94rjPTLEiUpPUpSnrnyB/Uf9JBG6RcCr0Rlm+QCJ9jOwCTd51kfnNXu/QQtudOTuvGXFBg7N8uVylcK0v3/37mS6oU84RyP9DV7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=public-files.de; spf=pass smtp.mailfrom=public-files.de; dkim=pass (2048-bit key) header.d=public-files.de header.i=frank-w@public-files.de header.b=AJgXuF5k; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=public-files.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=public-files.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=public-files.de;
-	s=s31663417; t=1705516763; x=1706121563; i=frank-w@public-files.de;
-	bh=OGTSWYYYIj8c+SD8nKzKyjhCGDqhkunykC0KNhW8ywg=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=AJgXuF5k8HVQ523E71D9cfqi+mrPAr1Ry4u89Ofc9EUCXkQp8nVePmThzNwSutvJ
-	 +kxSD/6pyyjK+FlsFtinRsq85BS9EiBgM7wsgtO8nTIiSw7/qiUKKm8+DSh7A36Qo
-	 +DErHSq7W2O3ZIfJ18l3wRWo9RkvL4Xo5MSyrPOvOjTSLPhkLoKtYi+mYazdSomtv
-	 rM5GvsORLSpTqgviOJ6PFnrt5rXlhFQrYCbnz4SHLb2ybwz4rS9wR7Ir8/De7p5iu
-	 iSXMhAZZqQ0NN0RIDPsBlY79O1glgLFtJEN7JGk4C8bLNzGOTTRvSIDNdhZtzRqbD
-	 qIxPZrwk3MTnyZhCsA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from frank-G5 ([217.61.151.254]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N1wll-1qy5Br44rZ-012HW0; Wed, 17
- Jan 2024 19:39:23 +0100
-From: Frank Wunderlich <frank-w@public-files.de>
-To: Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: Frank Wunderlich <frank-w@public-files.de>,
-	Sam Shih <sam.shih@mediatek.com>,
-	Daniel Golle <daniel@makrotopia.org>,
-	linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH v3 0/2] Add reset controller to mt7988 infracfg
-Date: Wed, 17 Jan 2024 19:39:12 +0100
-Message-Id: <20240117183914.62122-1-frank-w@public-files.de>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1705516848; c=relaxed/simple;
+	bh=jiZKiB5TQckNN9zKjh3rw9Kof7QFp9LD8N+clmDHUxA=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type; b=K/p4ue1i+SARW1jYvO8/IonXSVrKikvXSZCzpcoeaqpjTtRVfeg3owRqRIckQCK37OwhdI55tzpQcIO6MPZuKOcIOqISLRLdMFImxGqkmh88Zp8G3bco0sNN40FtGC7FLBnZnLxqwTkAuLxCgoe3Ga5ooehfXo+4xM9JKnhWa1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zRdGHYIj; arc=none smtp.client-ip=209.85.219.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dbed0710c74so9066661276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:40:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705516845; x=1706121645; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=XQziOnoabwrvBkO8mFhZ12paFF8gmB+VBE+mmqVmTwc=;
+        b=zRdGHYIjl8N3OYfFlWBb7HA641Tr110tzNltbZxstOTf13wuFnSediWtRz2kQvwUQl
+         3bsAuGFubW6YS1urhcQ1PuY83Sem9LfLr8rvX9gpQ1/SasvlMAgGmyKvOssBQscSzONF
+         F+0Dl8cUME5LpQbYqIW36OxzaLmldslU2T8rdIMMkWjNnJ7LMKwGbmo9M8bL7ob4A+w/
+         iM/UFnBSOMoykjUPA/npFmHmeMOVuvLe6jrM3jhb2G5mFtrYUoHaHcEf4+FqgT0jtoNE
+         XYvCm0xNHNzDy2YhC2vx16aK2QEbUpdkQrp9OxbyTmB8zg0CP+fe7J/ytYq/rUgMU+6v
+         5DzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705516845; x=1706121645;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XQziOnoabwrvBkO8mFhZ12paFF8gmB+VBE+mmqVmTwc=;
+        b=CVpNAHRPUH4ipj1tRZOXeq0FF/ptioKpMB4lK2RpvSWpjpHhaW1OQB0sgpYD+26JEN
+         J1bqMpOS2VQC8xK2xFWgE7gd3pg6sxkFiM2bIQ+gUCQWmVeUjcTQCP3/vXTd3sb/RBAl
+         IveWMlE0QxWHA+0BPZixss7yZoEJ/AHgT+I823CIK/Ktmctsf8uCZv9BdGyMNum1tAT5
+         emgKsf3tRovLpqEFXbvl7bWTHKq5abHmnKBBhmf/IgW+uX9bMzgIRXP46BlkQrjA6S7i
+         ndHRKyCnGJeQDOcQgflqbUeaJsQuIuUz0ld0kKCepOj1fcH4rkcaBCFfBeOyz1HF1OVx
+         633g==
+X-Gm-Message-State: AOJu0Yy0hgh2qPT0KXE8sPXL+q2nMO7H3jPICjgnfgH0wn5j5I/+/R6+
+	lHFG/ofjQ3e+TOBkN4wHOReD7Q7RNYjuUDryZZ9lJlKebQKw/g==
+X-Google-Smtp-Source: AGHT+IHdq74t1Y+Nl6vyEDwlZFdSgjbmClgj4fr8wHTyhe+8ffAIpbwrakjCzN/0lvZzUMFqIpr02V6uhYWXgkyC61k=
+X-Received: by 2002:a5b:788:0:b0:dbd:b205:4078 with SMTP id
+ b8-20020a5b0788000000b00dbdb2054078mr5777359ybq.101.1705516845649; Wed, 17
+ Jan 2024 10:40:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ot4r7tklUz8MgmS9LTbACzre8iQs8Hx+z+di0RWtZbnRPLQYiGe
- tp1PvtXKeDhzaJROf+ij6+lmA+6H+pl3FOxzMBLK7SPSL8D6asAo39bpgigkHGo1ObaFwQU
- QaTvaZQHDsvd6jeZEeDvbY+JQa61Xb73xO7orc323X1a2PNPAmf8vEHbrKReNfduQhbYFuj
- ToYdMGed60GurzKf5UWZQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:TNCFqyXqnyM=;cQqBF/HRLDu+oXyy8j8R83GDoir
- gbD3D6ICYH1whKRxsZtyuJcpVYLadHrticqut6pDQYYGdnCuxLIVMcr5qcoA+hRl1gFuP2+FT
- 7T6lz5zU+PDmCISN4nWKX/EyAq0e55oFWhwUHZCN4pohOio4fsJ3W73UcYLydm0nk4krnExM6
- VYewiT7xZi7rt9mMhhQFU84bZvIvbUNUDSEaqo899/4De58JWGW/x0fyWUXh9rndGZ8Cel61n
- QyULho6zjXygWDA3ZWaJMbWQ6cWqt+pCzJf6CpbZrTE05bMTwL+4lmfO30sv3E3Lg2jrGO733
- fynr6fBGeCVi3Btbgn60F32f/bq4+aWd5qYJSQqRCCg9zFaZJyMDLCqppq2pCWXn+/0Z0wa4L
- yTqDxqc3/IGKNvI3qe2QYBBXs+CtFwkaokfgUVHRCP0yETGKNLirMNGhImc73dB5G1EvPWYFF
- pGr/lJm2i95OrXwhkKZC0dGwYzXJHYtXhrcHtaWF4/Ct+ysma2Nv+CwEk5a2MP2jfHu+NZbfw
- 7oKl4LJ/ekMzAJO4LnjmNCfbAIlybEzVSK6dgupRC654wlz0hCIPLOJvD43eHLCkluQuZO/HD
- TdiPWW0qByzycKRQgGuxjIq5EapuINyep9q6xi9NyF2tEMMU4qOK4RySAXqAo9908GmwwZy4B
- zaq0aHOemzwFvgXpqhl1tW/fOpLgBQ2WyToM4jBBjlyWrxo76zVqcpn15FkXllaaQioGmNYdy
- EcKhOTBeANZgqt3X5aWgY4d7izw15+a0ippy09zDLBGVe9f2tW90DRIXwTLlmfZtQxs8Gln2i
- cJYE0nbq6Xe7+Ux+kDrEzNVvJHhU5xMOzifKNVvOtvhp+PP210hHoLLIMBLuHuVCeYzu9lVsL
- lScfk9ijLw/waxF2wzO97wUC6Sf/ToXtD5PkgjDDQMVQ9kAOv0YMKolmYlFohdYeZ53Ckvtj1
- RiiUFQ==
+References: <1705514068-22394-1-git-send-email-quic_khsieh@quicinc.com>
+ <CAA8EJpqO+SWYcCtH1hOVow18ZTbJ=qh0D68CEP1sGObdd3=ciA@mail.gmail.com> <33f9d97d-f0fb-96d7-eea9-c43c3a5a162e@quicinc.com>
+In-Reply-To: <33f9d97d-f0fb-96d7-eea9-c43c3a5a162e@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 17 Jan 2024 20:40:34 +0200
+Message-ID: <CAA8EJppWuUrjzmssh79JT3B4uDcc_WnKGhJoCNiG8NTw9xD6wg@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/msm/dp: correct configure Colorimetry Indicator
+ Field at MISC0
+To: Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc: dri-devel@lists.freedesktop.org, robdclark@gmail.com, sean@poorly.run, 
+	swboyd@chromium.org, dianders@chromium.org, vkoul@kernel.org, daniel@ffwll.ch, 
+	airlied@gmail.com, agross@kernel.org, andersson@kernel.org, 
+	quic_abhinavk@quicinc.com, quic_jesszhan@quicinc.com, 
+	quic_sbillaka@quicinc.com, marijn.suijten@somainline.org, 
+	freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Infracfg on mt7988 supports reset controller function which is
-needed to get lvts thermal working.
+On Wed, 17 Jan 2024 at 20:29, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>
+>
+> On 1/17/2024 10:12 AM, Dmitry Baryshkov wrote:
+> > On Wed, 17 Jan 2024 at 19:54, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+> >> MSA MISC0 bit 1 to 7 contains Colorimetry Indicator Field. At
+> >> current implementation, at DP_TEST_DYNAMIC_RANGE_CEA case the
+> > In the current implementation, in the ... case
+> >
+> >> Colorimetry Indicator Field is mistakenly left shifted one extra
+> >> bit.
+> > This doesn't make sense. You say that the value is mistakenly shifted,
+> > but the shift is still in place in dp_catalog_ctrl_config_misc().
+>
+> The problem is at
+>
+>   link->dp_link.test_video.test_dyn_range =   (bp &
+> DP_TEST_DYNAMIC_RANGE_CEA);   <== this from reading dpcd directly where
+> ==> DP_TEST_DYNAMIC_RANGE_CEA  is   (1 << 3)
+>
+> within dp_catalog_ctrl_config_misc(), cc will be left shift one more bit.
+> so that cc is totally is left shifted 4 bits (bit 4).
+>
+> at misc0, it should be bit 3 set only for CEA_RGB.
 
-Patches are based on clk-next due to recently added mt7988 clock driver:
-https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git
+Yes. But your patch doesn't fix the shift (which is correct). You
+patch fixes the value being written to that field.
 
-changes:
- v3:
-   - start resets on RST0 offset (LVTS is RST1)
-   - rename offset constants with MT7988 prefix (else collision with reset=
-h)
- v2:
-   - change value of constant to 0 from 9
-   - add missing SoB and commit-message for binding-patch
+>
+> >
+> >> This patch return correct value of colorimetry at
+> >> dp_link_get_colorimetry_config() to fix this problem.
+> > See Documentation/process/submitting-patches.rst#_describe_changes
+> >
+> >> Changes in V2:
+> >> -- drop retrieving colorimetry from colorspace
+> >> -- drop dr = link->dp_link.test_video.test_dyn_range assignment
+> >>
+> >> Fixes: c943b4948b58 ("drm/msm/dp: add displayPort driver support")
+> >> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> >> ---
+> >>   drivers/gpu/drm/msm/dp/dp_link.c | 11 ++++++-----
+> >>   drivers/gpu/drm/msm/dp/dp_link.h |  3 +++
+> >>   2 files changed, 9 insertions(+), 5 deletions(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/msm/dp/dp_link.c b/drivers/gpu/drm/msm/dp/dp_link.c
+> >> index 98427d4..2e1bdaf 100644
+> >> --- a/drivers/gpu/drm/msm/dp/dp_link.c
+> >> +++ b/drivers/gpu/drm/msm/dp/dp_link.c
+> >> @@ -1082,7 +1082,7 @@ int dp_link_process_request(struct dp_link *dp_link)
+> >>
+> >>   int dp_link_get_colorimetry_config(struct dp_link *dp_link)
+> >>   {
+> >> -       u32 cc;
+> >> +       u32 cc = DP_MISC0_LEGACY_RGB;
+> >>          struct dp_link_private *link;
+> >>
+> >>          if (!dp_link) {
+> >> @@ -1096,10 +1096,11 @@ int dp_link_get_colorimetry_config(struct dp_link *dp_link)
+> >>           * Unless a video pattern CTS test is ongoing, use RGB_VESA
+> >>           * Only RGB_VESA and RGB_CEA supported for now
+> >>           */
+> >> -       if (dp_link_is_video_pattern_requested(link))
+> >> -               cc = link->dp_link.test_video.test_dyn_range;
+> >> -       else
+> >> -               cc = DP_TEST_DYNAMIC_RANGE_VESA;
+> >> +       if (dp_link_is_video_pattern_requested(link)) {
+> >> +               if (link->dp_link.test_video.test_dyn_range &
+> >> +                                       DP_TEST_DYNAMIC_RANGE_CEA)
+> >> +                       cc = DP_MISC0_CEA_RGB;
+> >> +       }
+> >>
+> >>          return cc;
+> >>   }
+> >> diff --git a/drivers/gpu/drm/msm/dp/dp_link.h b/drivers/gpu/drm/msm/dp/dp_link.h
+> >> index 9dd4dd9..fe8f716 100644
+> >> --- a/drivers/gpu/drm/msm/dp/dp_link.h
+> >> +++ b/drivers/gpu/drm/msm/dp/dp_link.h
+> >> @@ -12,6 +12,9 @@
+> >>   #define DP_TEST_BIT_DEPTH_UNKNOWN 0xFFFFFFFF
+> >>   #define DP_LINK_CAP_ENHANCED_FRAMING (1 << 0)
+> >>
+> >> +#define DP_MISC0_LEGACY_RGB            0
+> >> +#define DP_MISC0_CEA_RGB               0x04
+> > These should go to dp_reg.h and should start with DP_MISC0_COLORIMETRY_CFG
+> >
+> >> +
+> >>   struct dp_link_info {
+> >>          unsigned char revision;
+> >>          unsigned int rate;
+> >> --
+> >> 2.7.4
+> >>
+> >
 
 
-Frank Wunderlich (2):
-  dt-bindings: reset: mediatek: add MT7988 reset IDs
-  clk: mediatek: add infracfg reset controller for mt7988
 
- drivers/clk/mediatek/clk-mt7988-infracfg.c    | 23 +++++++++++++++++++
- .../reset/mediatek,mt7988-resets.h            |  6 +++++
- 2 files changed, 29 insertions(+)
-
-=2D-
-2.34.1
-
+-- 
+With best wishes
+Dmitry
 
