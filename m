@@ -1,103 +1,82 @@
-Return-Path: <linux-kernel+bounces-29006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 569308306A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:09:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCA728306B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:13:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7CD9B21F37
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:09:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC9B91C23D70
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:13:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 434E31EB42;
-	Wed, 17 Jan 2024 13:09:36 +0000 (UTC)
-Received: from proxmox-new.maurer-it.com (proxmox-new.maurer-it.com [94.136.29.106])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85E9A1EB44;
+	Wed, 17 Jan 2024 13:13:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="nvvCh1oj"
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 040A614A87;
-	Wed, 17 Jan 2024 13:09:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.136.29.106
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43CD11D541;
+	Wed, 17 Jan 2024 13:13:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705496975; cv=none; b=p5VF2LDxI0Hj2HIez3jnKW74HzCWBvroXWzmI40+wbgQeSss7sjnk1/OUWIfRDD8NLOBuVVQWNqYxv9ZprB2kPH4ibAOzU0oMDkItoYS4eQ2hFcAK8Jb6OPnWcp1KZVd+zd9ZKw9FY2QCrZB56JQVXhAivzWA0Sf50jwd1POqpA=
+	t=1705497215; cv=none; b=Vd83xKkl7eqggzJIkmw/aQ9JTo75GNrX05TBe8N3V2Qs7J03fW/l28rIXRd10d8uVytidpB9hcxgwdX/Cypfm9AXUW7yRHO0xDva0/HKKyXKZovdIdC29OOud0WD3Ya0BKUnVEF5EuDSyaJeGFDb8owNfNBmLrBH2M2NH7PHhmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705496975; c=relaxed/simple;
-	bh=fYYHB0VyLbRkjnGemOOKTFx4j4HGmAk7y1tiXw6SEAk=;
-	h=Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
-	 References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=q2ilyCGk44g9BHxFuNN22jFfb08b9mGGtGMS4YqPoRXy74+JhkcEkV6wh/ifPiXhAdBUTc+DkwuvyMSD1CtNFJtHYTvP4O4WbrntnTmfzVPya91EUh5uYrGLYbvWGHTbimHfjxz1EsaAIFxaKG0SYdN9MlqS/uLmSQZhh9rnM1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=proxmox.com; spf=pass smtp.mailfrom=proxmox.com; arc=none smtp.client-ip=94.136.29.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=proxmox.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proxmox.com
-Received: from proxmox-new.maurer-it.com (localhost.localdomain [127.0.0.1])
-	by proxmox-new.maurer-it.com (Proxmox) with ESMTP id 69F82457C2;
-	Wed, 17 Jan 2024 14:09:29 +0100 (CET)
-Message-ID: <e8f6bc21-c4e6-40de-838a-d374adb4e888@proxmox.com>
-Date: Wed, 17 Jan 2024 14:09:28 +0100
+	s=arc-20240116; t=1705497215; c=relaxed/simple;
+	bh=kWJBAgPmQlo65pN4xHfEJK8XHR+TwaEYfRJHy1S756Q=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=RTd3YE8Iyy9ZT1jVtejxEHE3G++FzwnltWjN/3UWcC7DFXnPS8gOYsFdk+AO4p9o8cvj+Q/Da2YZH1DOPaS120w3d37iwx2Jc2pLQMhDzeuvC8z6GYMIZMzDUWMDKg0OrRnDnS6Md8neOeYd6sRtlMPZEXQ6Z7N5Frc5BWZ8Ing=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=nvvCh1oj; arc=none smtp.client-ip=74.50.62.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+	by mail5.25mail.st (Postfix) with ESMTPSA id 0F46D60871;
+	Wed, 17 Jan 2024 13:13:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+	s=25mailst; t=1705497206;
+	bh=kWJBAgPmQlo65pN4xHfEJK8XHR+TwaEYfRJHy1S756Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nvvCh1ojRSByih4z4pujUTdTW5CSSakh2B+FqgLc5IfUHQhkK82IeDoAkkmRRrKOw
+	 hA4cZiAkWPaQMLsxx0NpG8ltGjw8VTPCz91Jz3EsybA+EpPVWIdkWXTxzccADG6Ee2
+	 xfZQbLbHnpmMOXifYtUQnHz4OZsKdVyNTp2dBVC/BJR5SCDIk+hPB6/IhSWEfpLbem
+	 a95S9nY6ceQENUistnfewEEH6XX7ChMR6Lm0J+iIKEHxpgA1M2rGQp+Wr1FRju4wQc
+	 /1bsLRqCpY4Ieb7u4NrwUGh1cbgG5EGnhRtxMb6l7tCMNbp2DStAzLZ7K49piiuiic
+	 pDFVo3bZ2JAtA==
+Date: Wed, 17 Jan 2024 15:13:05 +0200
+From: Tony Lindgren <tony@atomide.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+	Russell King <linux@armlinux.org.uk>,
+	linux-arm-kernel@lists.infradead.org, patches@armlinux.org.uk,
+	Paul Walmsley <paul@pwsan.com>,
+	=?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+	Kevin Hilman <khilman@kernel.org>
+Subject: Re: [PATCH 00/13] ARM: OMAP2+: fix a bunch of kernel-doc warnings
+Message-ID: <20240117131305.GP5185@atomide.com>
+References: <20240117011004.22669-1-rdunlap@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Temporary KVM guest hangs connected to KSM and NUMA balancer
-To: Sean Christopherson <seanjc@google.com>
-Cc: kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org
-References: <832697b9-3652-422d-a019-8c0574a188ac@proxmox.com>
- <ZaAQhc13IbWk5j5D@google.com>
- <ef81ff36-64bb-4cfe-ae9b-e3acf47bff24@proxmox.com>
- <Zaa654hwFKba_7pf@google.com>
-Content-Language: en-US
-From: Friedrich Weber <f.weber@proxmox.com>
-In-Reply-To: <Zaa654hwFKba_7pf@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240117011004.22669-1-rdunlap@infradead.org>
 
-On 16/01/2024 18:20, Sean Christopherson wrote:
->> Does this make sense to you? Happy to double-check or run more tests if
->> anything seems off.
->  
-> Ha!  It too me a few minutes to realize what went sideways with v2.  KVM has an
-> in-flight change that switches from host virtual addresses (HVA) to guest physical
-> frame numbers (GFN) for the retry check, commit 8569992d64b8 ("KVM: Use gfn instead
-> of hva for mmu_notifier_retry").
-> 
-> That commit is in the KVM pull request for 6.8, and so v2 is based on top of a
-> branch that contains said commit.  But for better or worse (probably worse), the
-> switch from HVA=GFN didn't change the _names_ of mmu_invalidate_range_{start,end},
-> only the type.  So v2 applies and compiles cleanly on 6.7, but it's subtly broken
-> because checking for a GFN match against an HVA range is all but guaranteed to get
-> false negatives.
+* Randy Dunlap <rdunlap@infradead.org> [240117 01:10]:
+> Fix many kernel-doc warnings in arch/arm/mach-omap2/:
 
-Oof, that's nifty, good catch! I'll pay more attention to the
-base-commit when testing next time. :)
+Thanks for fixing these. These are unlikely to conflict with anything so
+please queue them along with other clean-up:
 
-> If you can try v2 on top of `git://git.kernel.org/pub/scm/virt/kvm/kvm.git next`,
-> that would be helpful to confirm that I didn't screw up something else.
+Acked-by: Tony Lindgren <tony@atomide.com>
 
-Pulled that repository and can confirm:
+Or alternatively let me know if you want me to apply them.
 
-* 1c6d984f ("x86/kvm: Do not try to disable kvmclock if it was not
-enabled", current `next`): reproducer hangs
-* v2 [1] ("KVM: x86/mmu: Retry fault before acquiring mmu_lock if
-mapping is changing") applied on top of 1c6d984f: no hangs anymore
+Regards,
 
-If I understand the discussion on [1] correctly, there might be a v3 --
-if so, I'll happily test that too.
-
-> Thanks very much for reporting back!  I'm pretty sure we would have missed the
-> semantic conflict when backporting the fix to 6.7 and earlier, i.e. you likely
-> saved us from another round of bug reports for various stable trees.
-
-Sure! Thanks a lot for taking a look at this!
-
-Best wishes,
-
-Friedrich
-
-[1] https://lore.kernel.org/all/20240110012045.505046-1-seanjc@google.com/
-
+Tony
 
