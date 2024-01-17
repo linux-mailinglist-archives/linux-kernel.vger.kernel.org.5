@@ -1,175 +1,350 @@
-Return-Path: <linux-kernel+bounces-28721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C49983023E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:24:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D4DA830244
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:25:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5BFA1F27BB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:24:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C33E2284CA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:25:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3315F14273;
-	Wed, 17 Jan 2024 09:23:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cJ6s8Sas"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1175E14003;
+	Wed, 17 Jan 2024 09:25:39 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E47231427A
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 09:23:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42C208821;
+	Wed, 17 Jan 2024 09:25:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705483422; cv=none; b=P8l9vorp5V2wxwSErfz5+hiQ+sg4y3/o2HchZHo7kT4kQ+Klrgvg5BPD3dnY8WiAvP6tKCV4J7KeiG5mO16hn7l3pv0bxmwagq4ErOKqA7YPsOmkHmcgamByuKRSNqEclis99t5Ej6cy9/nI5JRhxLX+BxTMj4lPQvRLUNdxWP0=
+	t=1705483538; cv=none; b=rj5q5tijtwWXAFOaErSsseDr+Z6+Gio7UFgidueYXWNuNIn4S9/hdmT2YMG5pTrTl+UcKdoIz9f8ZFCemdtVb7PN/snmzYeBH2yDfkB7UEO0QyEuagdGzsq+6GnVJR1d8qtyMQWp+6YiGBvEZUdr7/azTFcJRBGbut8S9jZBeh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705483422; c=relaxed/simple;
-	bh=eFhjJLQ1A55C6+lODe33Thg8R/JUCeF5rPKuLhvSW90=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 To:Cc:References:From:Autocrypt:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=c5yRGXUGod9Kyaqqc2a0NGxWrBX+grYCLKuVYahyVQfzENtDVKPbVrIC5/fE82XCuH3gStVczZhek3pqnGX2RX1gjHuY2Z4gpQeH1qk86slNvYt5s9U7ePU+O21RfGkUQNZ6Sx52JTDdCyvW4ZK61RIfvqze5XfmQegWEJa1x7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cJ6s8Sas; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a2dda9d67ceso328371666b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 01:23:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705483419; x=1706088219; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XMLgfsLuFxayGKw0bOON88EvvCfc/fzptwa+pnNz6Vo=;
-        b=cJ6s8SasA4oHYmkyar2/leDGTKq9ozNRNenh/mb9bwyBgrvhX8aCLHS6AZOKdyQVfT
-         NMTf9Ov0qgmUL+SerKU7kSf7rDdya+TuNm1VgV7pfwML5CyizqdZ7jiSYQiJ+Het1g4W
-         H9xB0mvjagSEe3lRPafYHjcJbJ1OVKmZwLwVY8BwQxQJKRXnbSKgxKb6jPF3Bm7xOk8n
-         9KDsbu8Du9l96kCDQUnbejqG4zcuPGa3F/jvxp3TlgSaVAu/9cvdclc4lcXnawwW/hrt
-         4S6fLuNpVKb9Bg9lCeSq06zpJWf0cLozFpxFbJic/VXRWJUjU3H8PICAfV0uESceL7v7
-         0GqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705483419; x=1706088219;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XMLgfsLuFxayGKw0bOON88EvvCfc/fzptwa+pnNz6Vo=;
-        b=ZZQT7vl0hN2sLCdUfv7CW6TyId2YnXGRj2PQXbyL9z5l9YDguIfq40WWB5raOjKfpG
-         4hetGcK67ZPyag/Yve26xFzqwLXWXbAgmeIClEwUX/fP7JT0PecOYV/M2hEYJM7jSa9D
-         Znfp/8ue51kAmHlmpvZ6XhlCpDyP+DJJ284pVcxJoh9OT85AtMwCWPo9hvqwzzEiK0k2
-         wvKNVZaXmw/r3QGjgGygaLnN9PsQbzvFV3CJJn/b3biz29UWK1m+Y1CBxLUAzWr6olN9
-         X82M8X9x48QpTQkOX4Orp6FlRW2irJJUDcXr2STRSbOHuRrAaX50d9EG5QzmyAumhDrA
-         lb9A==
-X-Gm-Message-State: AOJu0Yw9qU51MuM9ghUTghdQBaAQj8Pg9SxxMkNiubldSFzLndmnNmiT
-	eqdZWvRIPMJEBrcl1yAmIvReIPxurpjalA==
-X-Google-Smtp-Source: AGHT+IGo5tiZJOVKok9nZQcJpSK5f9AoSO4o4rI2E1tFnIo/02sDS7V0lb79/4WZuLRbpDo+0DFSgg==
-X-Received: by 2002:a17:907:c284:b0:a2c:b1f0:eb5b with SMTP id tk4-20020a170907c28400b00a2cb1f0eb5bmr4489734ejc.43.1705483419088;
-        Wed, 17 Jan 2024 01:23:39 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id f18-20020a170906561200b00a2e99c12ea5sm1286967ejq.157.2024.01.17.01.23.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jan 2024 01:23:38 -0800 (PST)
-Message-ID: <76ae9e57-091e-429f-97ed-1a1b4f992d79@linaro.org>
-Date: Wed, 17 Jan 2024 10:23:37 +0100
+	s=arc-20240116; t=1705483538; c=relaxed/simple;
+	bh=5kgnAlvlBsiiZ9hTQj2WHgZnMlxZblSiJVehmmU3CLY=;
+	h=Received:Received:Received:From:To:Subject:Date:Message-ID:
+	 X-Mailer:MIME-Version:Content-Transfer-Encoding:Content-Type:
+	 X-Originating-IP:X-ClientProxiedBy:X-MAIL; b=qjhWvArd9hLWLfU2uZVQG7UTO75i2u+8oROACPURH6BBtscZsYxJ4hjV36gRF9wobkbxTw/ZqngRrXirztki8w4W3G0BQILS+8MNrUuA+XPFZ/teWUcenM1Ib0XQqgfo0g/zFW20K13dGiGt/qAHsbLmzx719IpO5Hd8HKUmauk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 40H9Nr92093466;
+	Wed, 17 Jan 2024 17:23:53 +0800 (+08)
+	(envelope-from zhaoyang.huang@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TFKy31gghz2RN2qm;
+	Wed, 17 Jan 2024 17:16:43 +0800 (CST)
+Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
+ BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Wed, 17 Jan 2024 17:23:51 +0800
+From: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
+To: Jens Axboe <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Zhaoyang Huang <huangzhaoyang@gmail.com>, <steve.kang@unisoc.com>
+Subject: [RFC PATCH 1/1] block: introduce activity based ioprio
+Date: Wed, 17 Jan 2024 17:23:48 +0800
+Message-ID: <20240117092348.2873928-1-zhaoyang.huang@unisoc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: serial: stm32: add power-domains property
-Content-Language: en-US
-To: Valentin CARON <valentin.caron@foss.st.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org
-References: <20240111112450.1727866-1-valentin.caron@foss.st.com>
- <aae32b47-1bb0-4af0-baf0-836dc91b9427@linaro.org>
- <1639c6b9-1cca-4f4c-a329-fc4618c572f6@foss.st.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <1639c6b9-1cca-4f4c-a329-fc4618c572f6@foss.st.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ BJMBX01.spreadtrum.com (10.0.64.7)
+X-MAIL:SHSQR01.spreadtrum.com 40H9Nr92093466
 
-On 17/01/2024 10:21, Valentin CARON wrote:
-> 
-> On 1/15/24 16:05, Krzysztof Kozlowski wrote:
->> On 11/01/2024 12:24, Valentin Caron wrote:
->>> Add "power-domains" property in stm32 serial binding to avoid:
->>>
->>> serial@40010000: Unevaluated properties are not allowed
->>> ('power-domains' were unexpected)
->>>
->> It would be better if you checked whether it can be part of power domain
->> or not. What if the DTS is wrong?
->>
->> Best regards,
->> Krzysztof
->>
-> Hi Krzysztof,
-> 
-> I'm not sure to understand, but if you mean that there is no
-> power-domains properties right now in all stm32mp device trees
-> and so it does not required to add this stm32 serial bindings:
-> 
-> Theses will be upstreamed in the future, and because power-domains
-> property is optional, I can add it right now in stm32 serial binding
-> to anticipate.
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-No. You used argument: "add because DTS has it" and I want different
-argument: "add because it is the right thing to do because foo and bar".
-If DTS is wrong, then your commit and this explanation is wrong.
+This commit try to introduce a feature which adjust the request ioprio
+based on the folio's activity. The original idea comes from LRU_GEN
+which provides more precised folio activity than before. This commit try
+to adjust the request's ioprio when certain part of its folios are hot,
+which indicate that this request carry important contents and need be
+scheduled ealier.
 
-Best regards,
-Krzysztof
+This commit is tested via bellowing script[1] on a v6.6 android system and
+get better iowait result[2] when mglru enabled, where
+1. fault_latency.bin is an ebpf based test result which measure all task's
+   iowait latency when scheduled in/out.
+2. costmem generate page fault by mmaping a file and access the VA.
+3. dd generate concurrent vfs io.
+
+[1]
+/fault_latency.bin 1 5 > /data/dd_costmem &
+costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
+costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
+costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
+costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
+dd if=/dev/block/sda of=/data/ddtest bs=1024 count=2048000 &
+dd if=/dev/block/sda of=/data/ddtest1 bs=1024 count=2048000 &
+dd if=/dev/block/sda of=/data/ddtest2 bs=1024 count=2048000 &
+dd if=/dev/block/sda of=/data/ddtest3 bs=1024 count=2048000
+
+[2]
+mainline:
+Summary for 5932.00(ms)
+    All Faults:       1398   235.67 counts/sec
+        Iowait:        553    93.22 counts/sec
+   All latency:    7432948  1253.03 us/ms
+        Iowait:    1321971   222.85 us/ms
+Summary for 6706.00(ms)
+    All Faults:       1921   286.46 counts/sec
+        Iowait:       1273   189.83 counts/sec
+   All latency:   25890252  3860.76 us/ms
+        Iowait:    4468861   666.40 us/ms
+Summary for 5838.00(ms)
+    All Faults:       1580   270.64 counts/sec
+        Iowait:        619   106.03 counts/sec
+   All latency:    6862215  1175.44 us/ms
+        Iowait:    1077616   184.59 us/ms
+Summary for 5916.00(ms)
+    All Faults:       1195   201.99 counts/sec
+        Iowait:        494    83.50 counts/sec
+   All latency:    4555134   769.97 us/ms
+        Iowait:     902513   152.55 us/ms
+Summary for 6229.00(ms)
+    All Faults:       1395   223.95 counts/sec
+        Iowait:        359    57.63 counts/sec
+   All latency:    6091882   977.99 us/ms
+        Iowait:    1251183   200.86 us/ms
+Summary for 6059.00(ms)
+    All Faults:       1201   198.22 counts/sec
+        Iowait:        299    49.35 counts/sec
+   All latency:    5612143   926.25 us/ms
+        Iowait:    1155555   190.72 us/ms
+Summary for 6005.00(ms)
+    All Faults:        847   141.05 counts/sec
+        Iowait:        320    53.29 counts/sec
+   All latency:    5852541   974.61 us/ms
+        Iowait:     433719    72.23 us/ms
+Summary for 5895.00(ms)
+    All Faults:       1039   176.25 counts/sec
+        Iowait:        288    48.85 counts/sec
+   All latency:    4184680   709.87 us/ms
+        Iowait:     686266   116.41 us/ms
+Summary for 6371.00(ms)
+    All Faults:       1176   184.59 counts/sec
+        Iowait:        269    42.22 counts/sec
+   All latency:    6282918   986.17 us/ms
+        Iowait:    1160952   182.22 us/ms
+Summary for 6113.00(ms)
+    All Faults:       1322   216.26 counts/sec
+        Iowait:        281    45.97 counts/sec
+   All latency:    7208880  1179.27 us/ms
+        Iowait:    1336650   218.66 us/ms
+
+commit:
+Summary for 7225.00(ms)
+    All Faults:       1384   191.56 counts/sec
+        Iowait:        285    39.45 counts/sec
+   All latency:    6593081   912.54 us/ms
+        Iowait:     934041   129.28 us/ms
+Summary for 6567.00(ms)
+    All Faults:       1378   209.84 counts/sec
+        Iowait:        167    25.43 counts/sec
+   All latency:    3761554   572.80 us/ms
+        Iowait:     220621    33.60 us/ms
+Summary for 6118.00(ms)
+    All Faults:       1304   213.14 counts/sec
+        Iowait:        268    43.81 counts/sec
+   All latency:    3835332   626.89 us/ms
+        Iowait:     413900    67.65 us/ms
+Summary for 6155.00(ms)
+    All Faults:       1177   191.23 counts/sec
+        Iowait:        185    30.06 counts/sec
+   All latency:    4839084   786.20 us/ms
+        Iowait:     660002   107.23 us/ms
+Summary for 6448.00(ms)
+    All Faults:       1283   198.98 counts/sec
+        Iowait:        353    54.75 counts/sec
+   All latency:    4798334   744.16 us/ms
+        Iowait:    1258045   195.11 us/ms
+Summary for 6179.00(ms)
+    All Faults:       1285   207.96 counts/sec
+        Iowait:        137    22.17 counts/sec
+   All latency:    3668456   593.70 us/ms
+        Iowait:     419731    67.93 us/ms
+Summary for 6165.00(ms)
+    All Faults:       1500   243.31 counts/sec
+        Iowait:        182    29.52 counts/sec
+   All latency:    3357435   544.60 us/ms
+        Iowait:     279828    45.39 us/ms
+Summary for 6270.00(ms)
+    All Faults:       1507   240.35 counts/sec
+        Iowait:        361    57.58 counts/sec
+   All latency:    4428320   706.27 us/ms
+        Iowait:     741304   118.23 us/ms
+Summary for 6597.00(ms)
+    All Faults:       1263   191.45 counts/sec
+        Iowait:        238    36.08 counts/sec
+   All latency:    5115168   775.38 us/ms
+        Iowait:     950482   144.08 us/ms
+Summary for 6503.00(ms)
+    All Faults:       1456   223.90 counts/sec
+        Iowait:        402    61.82 counts/sec
+   All latency:    6782757  1043.02 us/ms
+        Iowait:    1483803   228.17 us/ms
+
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+---
+ block/Kconfig.iosched |  7 +++++
+ block/mq-deadline.c   | 70 +++++++++++++++++++++++++++++++++++--------
+ 2 files changed, 64 insertions(+), 13 deletions(-)
+
+diff --git a/block/Kconfig.iosched b/block/Kconfig.iosched
+index 27f11320b8d1..cd6fcfca7782 100644
+--- a/block/Kconfig.iosched
++++ b/block/Kconfig.iosched
+@@ -44,4 +44,11 @@ config BFQ_CGROUP_DEBUG
+ 	Enable some debugging help. Currently it exports additional stat
+ 	files in a cgroup which can be useful for debugging.
+ 
++config ACTIVITY_BASED_IOPRIO
++	bool "Enable folio activity based ioprio on deadline"
++	depends on LRU_GEN && MQ_IOSCHED_DEADLINE
++	default n
++	help
++	This item enable the feature of adjust request's priority by
++	calculating its folio's activity.
+ endmenu
+diff --git a/block/mq-deadline.c b/block/mq-deadline.c
+index f958e79277b8..dfb43fff2ffe 100644
+--- a/block/mq-deadline.c
++++ b/block/mq-deadline.c
+@@ -15,6 +15,7 @@
+ #include <linux/compiler.h>
+ #include <linux/rbtree.h>
+ #include <linux/sbitmap.h>
++#include <linux/mm_inline.h>
+ 
+ #include <trace/events/block.h>
+ 
+@@ -224,14 +225,42 @@ static void deadline_remove_request(struct request_queue *q,
+ 		q->last_merge = NULL;
+ }
+ 
++static enum dd_prio dd_req_ioprio(struct request *rq)
++{
++	enum dd_prio prio;
++	const u8 ioprio_class = dd_rq_ioclass(rq);
++#ifdef CONFIG_ACTIVITY_BASED_IOPRIO
++	struct bio *bio;
++	struct bio_vec bv;
++	struct bvec_iter iter;
++	struct page *page;
++	int gen = 0;
++	int cnt = 0;
++
++	if (req_op(rq) == REQ_OP_READ) {
++		__rq_for_each_bio(bio, rq) {
++			bio_for_each_bvec(bv, bio, iter) {
++				page = bv.bv_page;
++				gen += PageWorkingset(page) ? 1 : 0;
++				cnt++;
++			}
++		}
++		prio = (gen >= cnt / 2) ? ioprio_class_to_prio[IOPRIO_CLASS_RT] :
++			ioprio_class_to_prio[ioprio_class];
++	} else
++		prio = ioprio_class_to_prio[ioprio_class];
++#else
++	prio = ioprio_class_to_prio[ioprio_class];
++#endif
++	return prio;
++}
++
+ static void dd_request_merged(struct request_queue *q, struct request *req,
+ 			      enum elv_merge type)
+ {
+ 	struct deadline_data *dd = q->elevator->elevator_data;
+-	const u8 ioprio_class = dd_rq_ioclass(req);
+-	const enum dd_prio prio = ioprio_class_to_prio[ioprio_class];
++	const enum dd_prio prio = dd_req_ioprio(req);
+ 	struct dd_per_prio *per_prio = &dd->per_prio[prio];
+-
+ 	/*
+ 	 * if the merge was a front merge, we need to reposition request
+ 	 */
+@@ -248,8 +277,7 @@ static void dd_merged_requests(struct request_queue *q, struct request *req,
+ 			       struct request *next)
+ {
+ 	struct deadline_data *dd = q->elevator->elevator_data;
+-	const u8 ioprio_class = dd_rq_ioclass(next);
+-	const enum dd_prio prio = ioprio_class_to_prio[ioprio_class];
++	const enum dd_prio prio = dd_req_ioprio(next);
+ 
+ 	lockdep_assert_held(&dd->lock);
+ 
+@@ -745,10 +773,30 @@ static int dd_request_merge(struct request_queue *q, struct request **rq,
+ {
+ 	struct deadline_data *dd = q->elevator->elevator_data;
+ 	const u8 ioprio_class = IOPRIO_PRIO_CLASS(bio->bi_ioprio);
+-	const enum dd_prio prio = ioprio_class_to_prio[ioprio_class];
+-	struct dd_per_prio *per_prio = &dd->per_prio[prio];
++	struct dd_per_prio *per_prio;
+ 	sector_t sector = bio_end_sector(bio);
+ 	struct request *__rq;
++#ifdef CONFIG_ACTIVITY_BASED_IOPRIO
++	enum dd_prio prio;
++	struct bio_vec bv;
++	struct bvec_iter iter;
++	struct page *page;
++	int gen = 0;
++	int cnt = 0;
++
++	if (bio_op(bio) == REQ_OP_READ) {
++		bio_for_each_bvec(bv, bio, iter) {
++			page = bv.bv_page;
++			gen += PageWorkingset(page) ? 1 : 0;
++			cnt++;
++		}
++	}
++	prio = (gen >= cnt / 2) ? ioprio_class_to_prio[IOPRIO_CLASS_RT] :
++			ioprio_class_to_prio[ioprio_class];
++#else
++	const enum dd_prio prio = ioprio_class_to_prio[ioprio_class];
++#endif
++	per_prio = &dd->per_prio[prio];
+ 
+ 	if (!dd->front_merges)
+ 		return ELEVATOR_NO_MERGE;
+@@ -798,10 +846,8 @@ static void dd_insert_request(struct blk_mq_hw_ctx *hctx, struct request *rq,
+ 	struct request_queue *q = hctx->queue;
+ 	struct deadline_data *dd = q->elevator->elevator_data;
+ 	const enum dd_data_dir data_dir = rq_data_dir(rq);
+-	u16 ioprio = req_get_ioprio(rq);
+-	u8 ioprio_class = IOPRIO_PRIO_CLASS(ioprio);
+ 	struct dd_per_prio *per_prio;
+-	enum dd_prio prio;
++	enum dd_prio prio = dd_req_ioprio(rq);
+ 
+ 	lockdep_assert_held(&dd->lock);
+ 
+@@ -811,7 +857,6 @@ static void dd_insert_request(struct blk_mq_hw_ctx *hctx, struct request *rq,
+ 	 */
+ 	blk_req_zone_write_unlock(rq);
+ 
+-	prio = ioprio_class_to_prio[ioprio_class];
+ 	per_prio = &dd->per_prio[prio];
+ 	if (!rq->elv.priv[0]) {
+ 		per_prio->stats.inserted++;
+@@ -920,8 +965,7 @@ static void dd_finish_request(struct request *rq)
+ {
+ 	struct request_queue *q = rq->q;
+ 	struct deadline_data *dd = q->elevator->elevator_data;
+-	const u8 ioprio_class = dd_rq_ioclass(rq);
+-	const enum dd_prio prio = ioprio_class_to_prio[ioprio_class];
++	const enum dd_prio prio = dd_req_ioprio(rq);
+ 	struct dd_per_prio *per_prio = &dd->per_prio[prio];
+ 
+ 	/*
+-- 
+2.25.1
 
 
