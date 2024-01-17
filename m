@@ -1,127 +1,106 @@
-Return-Path: <linux-kernel+bounces-29172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DED3830A03
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:48:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38D53830A08
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:51:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC7EE1F24A02
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:48:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88F2CB239D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:50:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AA3522307;
-	Wed, 17 Jan 2024 15:48:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C21321A16;
+	Wed, 17 Jan 2024 15:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="mozzu9K+"
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ehvX45cL"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72D0C22304
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:48:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8260121A0A
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:50:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705506485; cv=none; b=twyspKBitv8QY0eOiUpZ9bJWaq3GQp9SeaCMm4SPyHYzqoAtxbpSWcS0J+713FaB+D5AZr9wWhZDpQMAnXfIbapS8DuttswWJeG5XWzjV6i+ChBiyA3Rq8H+bZMQI6TSROtR1iYTtEZvaH3GTqIOqPXlPvSdco2vcnJ+T8VlhZc=
+	t=1705506651; cv=none; b=sv9L0B790ivGZHPlMp2GUsUDoWoNlYxgFQULFOsqZBhXDWDSBNO9S+JQwwl8Mft8UXT9b4shkwW4PIbkmiC13W66VTbBr4AjnK48D1rcwdpkOO965JkEM0INfMtMvFz16SghppClErMHMfTYQ2+HodP2I1Q0rVK0ZI9xoNbJn38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705506485; c=relaxed/simple;
-	bh=mu7VhaAc515ipMhWdzPtT2TPxqqmKOKMcNFGqTwz8wM=;
+	s=arc-20240116; t=1705506651; c=relaxed/simple;
+	bh=xSYpslgPqu0ADS1KRiqylr9PV+jhOYwPpXOXvMIDDhg=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
-	 To:Cc:In-Reply-To:References:Subject:Message-Id:Date:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:X-Mailer; b=kXg/+bBO5ORgUvOmcHRpGxXQKTvehO+idtKYxUIZuynqBRVRI/Vt/Ub4QPhCV9w0aOlN01SMuDZCYn2QL4jppAyh80aRHLvSoC2ioiZBq6Yso/6haSIM/G1DjyWzp6KtzqjuMXGCeT16aICoFXieb5IBvs8/9SVi5uMbJcYwzTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=mozzu9K+; arc=none smtp.client-ip=209.85.166.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7beeeb1ba87so54389539f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:48:03 -0800 (PST)
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=q31Lrxv1eAoFPfLgdnI+05qf5QhryFqxBuQFLiXQw0HGOzlmzkuLlNrMNqevK2a0cJ1sW4tpj4bsOaSu0tDW4Z1WCKaqe5s8nUoXl9Gta9UMkvo0vR6SpKSqCyKWIdhIOfsPg4q3jz6hJ4qdYFrd79Bme8f4gUFlROz0dq2PmUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ehvX45cL; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-557678c50feso2860705a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:50:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1705506482; x=1706111282; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1705506648; x=1706111448; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MBwQPpl+zXik806WtECeSYlAHrweUHc1hm7lYkwTJFs=;
-        b=mozzu9K+nmHJy5WeFP+F0bOU78P4JJr4xv1z1j4HKBISbL89EbcfFZf+0Xx7H/c2VA
-         kTf9A8Xi++6dB+1h5Xuy9/asxCN+b4PQYI4DcdqjJkS6qUJpyNzF8zBvoEttVWPyN1Fr
-         PkCiGQlXesvlySenB2Wt1BongGGycIn4kVxg9SWqnDqaJFhjltlTEJelguJTD4GzAdYo
-         hg9rD9Fb6gd75W6YrDUNvBvFFiLy4Jwp7TbZrKj7ovSxQ9uSIbSfg/kk8K4RXJK4pUq4
-         2Q0eAlKluaBg9CsFolEkhHbG9ojPdnrWBmeaevZ7aRG+bAA2CWoWyyJX5OMX2IuMUPYB
-         3erw==
+        bh=xSYpslgPqu0ADS1KRiqylr9PV+jhOYwPpXOXvMIDDhg=;
+        b=ehvX45cLWKuXJy+hA0VE10qA2/2w4kq1EXADRNUMJJ5ANDd+M36bdVs2EgV7sw4XNA
+         qXxH4asul2HGqiIT9XOmwI6WRKvJTfpVNDxFb385DrJzWPt8Y3rernVInFvRbbD47jPj
+         cvycaaDUN9xiEEDH5XVFv9aWi+9SN31/lVSk/ahoVNyb5L/l6JadBOkUuPOWdWiwoeA3
+         HzMBzN3HMjsn3FKuml5Qi/E2GGHnh4mfsZu0zGeDb5hVs5tN/Bwgplo8NVWyxSXbwwEo
+         PZ06YB+Kl08zBbvrpEGNrJt3QGHKFRLr0cxICCOhPstTMfgOaL9S6gXwbYqpkSkn/FCb
+         LPyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705506482; x=1706111282;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1705506648; x=1706111448;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MBwQPpl+zXik806WtECeSYlAHrweUHc1hm7lYkwTJFs=;
-        b=U9JEXB4h08Fzmyg+W8xUTo6/LaAUJ+Dbz7TqJb5O4boO5ii0LGXO5tkNrhDjNvDho0
-         /IMkVz3WVbcz7mk+VEiVitruP4ITE4onZ0Pxv83V5esxt+GlzsYYoT0INllaMTKoIxDp
-         /Qwc1tfet142skP9mTZ407vxZHl+PVJ/p8+GYK2xc8+G0v6GRk2KozqTJw6RJanPXJ6/
-         OYe2sIwaNBMNvw8kVrnV+AlPKpjpIks3ZFnzx1VkpGtkBuYrfQ704a5vQm/NEksKkQnP
-         AiZsGwlZxujl7j7ciy3vzTCwqpouetMr0EOGbIMJOoei3zcmumEoDv2jey4wT4T4hkWy
-         P4PQ==
-X-Gm-Message-State: AOJu0YyeUtsLqFtstBO8U6VSzqKJXT9pE8uwySgglkhfemnzmgByQAT0
-	vKbfL9vroYggrz9QdvOk0U9a510LIWUYYQ==
-X-Google-Smtp-Source: AGHT+IFZZGSI3LvvEy+XRSDgw/MUW2O98Sa/T0cEKhvZ1zzsrKqvOW8y4/IMwgbP32kgoihbqtn42w==
-X-Received: by 2002:a6b:5803:0:b0:7bf:4758:2a12 with SMTP id m3-20020a6b5803000000b007bf47582a12mr8519442iob.0.1705506482496;
-        Wed, 17 Jan 2024 07:48:02 -0800 (PST)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id c34-20020a029625000000b0046e4c2f9f5csm482353jai.28.2024.01.17.07.48.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 07:48:01 -0800 (PST)
-From: Jens Axboe <axboe@kernel.dk>
-To: Eric Dumazet <edumazet@google.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org, 
- Eric Dumazet <eric.dumazet@gmail.com>, syzbot <syzkaller@googlegroups.com>, 
- stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
- linux-block@vger.kernel.org, nbd@other.debian.org
-In-Reply-To: <20240112132657.647112-1-edumazet@google.com>
-References: <20240112132657.647112-1-edumazet@google.com>
-Subject: Re: [PATCH net] nbd: always initialize struct msghdr completely
-Message-Id: <170550648165.620853.7074880501945877841.b4-ty@kernel.dk>
-Date: Wed, 17 Jan 2024 08:48:01 -0700
+        bh=xSYpslgPqu0ADS1KRiqylr9PV+jhOYwPpXOXvMIDDhg=;
+        b=WFuY31Yqh+NXGLP+XVshZwNRHMoA4mkzc/ybILhxslNwI3j7vr9Dy/cuza5bxYGHeo
+         e0cnDLo55SGpk+kdlKgAqpwkucGsfrzkfNVkWBmc3WfAAsNVA8li7OT8nRZ4V6ZH8yke
+         gmLQj08shTz1RYAFo+KMY9LrhcHvCaR5WgRD5Ylqfpn2EeWyIFrBTEGj6lTKJkhSVUlZ
+         3y3gusIDKjUavO4IN8pj2bcXd0r5WyKZQ/jxSnPbib3QXnjQlBFr6IkG9NHwTzySytp5
+         zxDcdQ/IeooOnrHZqbYCebMRAr0fhETSdySox17pz0A/t5aaavSaPSadPvtKFpP0kH4w
+         3Olg==
+X-Gm-Message-State: AOJu0Yzeuo3wz2h7PgTwOWjUm9UVbJZ3Bhw+f20uTCxO5ohm/ia+UnPU
+	1Zbtp64e4EMa2YjJ64MhxCJwojuuXhCod+c3gNg=
+X-Google-Smtp-Source: AGHT+IH+mfJ19/KktxfluLxfE5mB/RmmM9caU/WPO9DJMztL3Aa/mXpZ2vFGvUOTe6Z4CcxTCWzNBMhYWWpR3qysM6U=
+X-Received: by 2002:a05:6402:22d3:b0:559:c036:8456 with SMTP id
+ dm19-20020a05640222d300b00559c0368456mr2375075edb.4.1705506647486; Wed, 17
+ Jan 2024 07:50:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.5-dev-2aabd
+References: <CA+uifjNcZbb6=9-o9_cWCMyXRFZPHhyvWS2mys-YhfP9gaJ75w@mail.gmail.com>
+ <97843013-7e06-449c-8418-3890657b2e26@redhat.com>
+In-Reply-To: <97843013-7e06-449c-8418-3890657b2e26@redhat.com>
+From: Karim Manaouil <kmanaouil.dev@gmail.com>
+Date: Wed, 17 Jan 2024 15:50:35 +0000
+Message-ID: <CA+uifjNw0W=EaUHbhq_CN8uOj0H_Yfu9JKSL1=EH6dnYkN3-ng@mail.gmail.com>
+Subject: Re: Debug: mm: meminfo reports 222GiB of AnonPages but sum of RSS in
+ ps is barely 400MiB
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Jan 17, 2024 at 2:15=E2=80=AFPM David Hildenbrand <david@redhat.com=
+> wrote:
 
-On Fri, 12 Jan 2024 13:26:57 +0000, Eric Dumazet wrote:
-> syzbot complains that msg->msg_get_inq value can be uninitialized [1]
-> 
-> struct msghdr got many new fields recently, we should always make
-> sure their values is zero by default.
-> 
-> [1]
->  BUG: KMSAN: uninit-value in tcp_recvmsg+0x686/0xac0 net/ipv4/tcp.c:2571
->   tcp_recvmsg+0x686/0xac0 net/ipv4/tcp.c:2571
->   inet_recvmsg+0x131/0x580 net/ipv4/af_inet.c:879
->   sock_recvmsg_nosec net/socket.c:1044 [inline]
->   sock_recvmsg+0x12b/0x1e0 net/socket.c:1066
->   __sock_xmit+0x236/0x5c0 drivers/block/nbd.c:538
->   nbd_read_reply drivers/block/nbd.c:732 [inline]
->   recv_work+0x262/0x3100 drivers/block/nbd.c:863
->   process_one_work kernel/workqueue.c:2627 [inline]
->   process_scheduled_works+0x104e/0x1e70 kernel/workqueue.c:2700
->   worker_thread+0xf45/0x1490 kernel/workqueue.c:2781
->   kthread+0x3ed/0x540 kernel/kthread.c:388
->   ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
->   ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
-> 
-> [...]
+> Maybe we have something call mmget(mm) but never mmput(mm)? Are you
+> running any OOT drivers or "special" hw?
 
-Applied, thanks!
+That's exactly the reason! I was writing some code to count the number
+of empty page tables in the system
+at any given point in time. I called get_task_mm(), but I forgot to
+call mmput() after that, and thus
+the memory was never released.
 
-[1/1] nbd: always initialize struct msghdr completely
-      commit: 78fbb92af27d0982634116c7a31065f24d092826
+I should have double checked, but thanks to your remark I immediately
+recognised the issue and fixed it
+(maybe I should have posted the code as well and mentioned that in my
+original email).
 
-Best regards,
--- 
-Jens Axboe
-
-
-
+--
+Cheer
+Karim
 
