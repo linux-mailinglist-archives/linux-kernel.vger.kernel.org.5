@@ -1,102 +1,125 @@
-Return-Path: <linux-kernel+bounces-28440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28451-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48CC382FE89
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 02:46:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3A2382FEAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 03:00:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF78E1F24E0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 01:46:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58D25283667
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 02:00:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0117917E9;
-	Wed, 17 Jan 2024 01:46:05 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFF90BA2D;
+	Wed, 17 Jan 2024 01:59:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DdaRLlq7"
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA9081864;
-	Wed, 17 Jan 2024 01:45:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB412B658;
+	Wed, 17 Jan 2024 01:59:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705455964; cv=none; b=AetgyY0t5dXtJKL3zqw/blDihMWkB+G1ZEBaKNT9gkX6gvYzQTbjHE65FWNcSaXz1ceonvhrk+OOkn7gmEGsGrmOB3C8OInC3yftU9klf6804yWnmbnJ+Z4z5dpIRhnm9GUrYI+w5+35gPGMUthlChFinDLSmk78sTmrNpaJEdk=
+	t=1705456762; cv=none; b=F9nuR1qxYp0BzrbXyKPSbfvYFB6b7YYhy9wPC+yOMkWAynMxrUK1MBlww7SQaVkD0D2a0VaqeisOMrTJURWhD5HI2qaBAPuEugyje2YayA7bGaNkFSlAO5RsE+8I5r/PxuUximlfA5cFh1jGg2U+wwgMccQltK4cEWX0T5T+F0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705455964; c=relaxed/simple;
-	bh=fgPwF9xhCsHvun6QMTgmDHGlC69r9M6BgvAyZFblfY0=;
-	h=X-UUID:X-CID-O-RULE:X-CID-RULE:X-CID-O-INFO:X-CID-INFO:X-CID-META:
-	 X-CID-BVR:X-CID-BAS:X-CID-FACTOR:X-UUID:X-User:Received:From:To:Cc:
-	 Subject:Date:Message-Id:X-Mailer:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding; b=PR8HAIYk76xkzgZSgTwbwKg1Nzv9Ap2y2z54sM6KvRJOfvqkydPwGp8RN11gIw7YdkzW9SjsQL0g365WXzXANWdJf9EZ7q6JlZKFAF52ggRZEWI9KT5DT7rB0JFOr04n7gck1H8bnoCaBIIYGkc+6q8Zk5+2Bt6Rq5EEbK4aJ74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 711b0d93f1fa43b4b0a2a28e58723e95-20240117
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:003e1394-ef5b-4aef-aabe-c69c16c4d8b7,IP:5,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-10
-X-CID-INFO: VERSION:1.1.35,REQID:003e1394-ef5b-4aef-aabe-c69c16c4d8b7,IP:5,URL
-	:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:-10
-X-CID-META: VersionHash:5d391d7,CLOUDID:00573e2f-1ab8-4133-9780-81938111c800,B
-	ulkID:240117094108WJOCVTCR,BulkQuantity:1,Recheck:0,SF:38|24|17|19|44|66|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:41,QS:nil,BEC:nil,COL
-	:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR
-X-UUID: 711b0d93f1fa43b4b0a2a28e58723e95-20240117
-X-User: yaolu@kylinos.cn
-Received: from localhost.localdomain [(116.128.244.169)] by mailgw
-	(envelope-from <yaolu@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 298752770; Wed, 17 Jan 2024 09:45:49 +0800
-From: Lu Yao <yaolu@kylinos.cn>
-To: paul@paul-moore.com,
-	jmorris@namei.org,
-	serge@hallyn.com
-Cc: linux-security-module@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lu Yao <yaolu@kylinos.cn>
-Subject: [PATCH] lsm: Resolve compiling 'security.c' error
-Date: Wed, 17 Jan 2024 09:45:41 +0800
-Message-Id: <20240117014541.8887-1-yaolu@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1705456762; c=relaxed/simple;
+	bh=Q7ZAXq45jDLN9Qa5cpxzsBvnQmAbmuhAz4R/pS1S7Tc=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
+	 To:Cc:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=Hk3k7ZREvjhb/EEggJcMlR160ryf0HY6+Aqu6gDQbEyXACrDeS8kJrAiQp6fTPBxd3foaBv5mL8PKt69fOMfiUyDMNyV5quPMdaVXdtULdLG5l+SJKZw2DIZEsZT2sZ+Fk3bGXaU0DM63RtIv4RTT4n7WqUJmLe3RG4eBqeOONM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DdaRLlq7; arc=none smtp.client-ip=209.85.167.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3bd6581bca0so2358572b6e.0;
+        Tue, 16 Jan 2024 17:59:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705456760; x=1706061560; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cRKV7zkrl5aMjYceZld1VkQyBEeoC8GABh+p6k8LCpc=;
+        b=DdaRLlq7TG7yG+euPIxlWh39Ju+MnI8BwcFGSLgWGkW/teMckJT09p6a1kCtGr0CXs
+         xthMrJv5+Imddhwu6vjEpxihwPMhCFvI8iWsrUhqcYR4gQmgvISnD0UNDA5A4f1nh3AK
+         ypxiUnR70Jwp4pFkXpmrjSmvh0e1kUhI6uZ//d2ZWogvrzSai0XGdT8mcOSEx8lBAcTI
+         zuQew772OP2N6M0gIDZK6RAwsVwM5jvSEd4TLwojPbWLadPPkRvrS6CFuB7KaN3Q3ocv
+         a8P36t+Tw5plUD0WHazCbyKoZyDODIxIW1TZL1aC9Lm7os7Kb/kTPCaWCCdaKjSIhGTZ
+         UVbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705456760; x=1706061560;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cRKV7zkrl5aMjYceZld1VkQyBEeoC8GABh+p6k8LCpc=;
+        b=F8fni12oKDFOWFOe+MoJGSax6Lu2XMew6X66fEz2i06KejnWrMS1CTUzVm0AnNXZpW
+         x/Yq+cFmlB9fJJeKhY/hBeptVinK+/1Eu/7SEOgk7jvmeFFLz/RgPIFTCQaU3jnkQXJP
+         W8+aeuFJL8JxjIn8uVg1ekjTf7KEihtgi9/J+Y46fWARQzwR4oFZfl1Yq6EdCBztk3VQ
+         5Am5WmhJj5MvqXsUiB4ACdb5Jt28+H4ehA4dyiFVDLbszPcZmpczLjFacivG9cfMaFZh
+         zB5zZn3zWp4Ny6D5lSa5SirL8X6ukoCfv3iarUOgNBCZ07XJ4Ad3qiFX3I/Qn2rtB0z+
+         p/lA==
+X-Gm-Message-State: AOJu0YyUYNPUUcmiFGeGM+qo43BKh0IQrhy7QMhAguXvF6Y22ECOqqrM
+	92pTvcAECVkWkepGqTYRQ14=
+X-Google-Smtp-Source: AGHT+IEN0a7WRH0HIYyrpMNf9WfGQ+M40O13rxZPDT20TboEI5ZEw6B74hIjaARDAcbE8tiV4Orkzw==
+X-Received: by 2002:a05:6808:2e9b:b0:3bd:7227:745 with SMTP id gt27-20020a0568082e9b00b003bd72270745mr7576546oib.82.1705456759832;
+        Tue, 16 Jan 2024 17:59:19 -0800 (PST)
+Received: from [192.168.54.105] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id e13-20020aa798cd000000b006da105deedesm237836pfm.197.2024.01.16.17.59.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jan 2024 17:59:19 -0800 (PST)
+Message-ID: <a3856ffc-ddb9-4066-8e1d-999c8f7790e8@gmail.com>
+Date: Tue, 16 Jan 2024 22:47:24 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 11/13] rust: kernel: add doclinks with html tags
+Content-Language: en-US
+To: Valentin Obst <kernel@valentinobst.de>, Miguel Ojeda <ojeda@kernel.org>,
+ Alex Gaynor <alex.gaynor@gmail.com>,
+ Wedson Almeida Filho <wedsonaf@gmail.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Benno Lossin <benno.lossin@proton.me>,
+ Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl
+ <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240116160141.165951-1-kernel@valentinobst.de>
+ <20240116231118.168882-1-kernel@valentinobst.de>
+From: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <20240116231118.168882-1-kernel@valentinobst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The following error log is displayed during the current compilation
-  > 'security/security.c:810:2: error: ‘memcpy’ offset 32 is
-  > out of the bounds [0, 0] [-Werror=array-bounds]'
+On 1/16/24 20:11, Valentin Obst wrote:
+> Add doclinks to existing documentation. Use html 'code' tags to add
+> links to items that cannot be linked with the normal syntax.
+> 
+> The use of html tags is a tradeoff between the readability of the
+> documentation's source code and the ergonomics of the generated content.
+> 
+> Signed-off-by: Valentin Obst <kernel@valentinobst.de>
+> ---
+> [...]
+> @@ -14,7 +14,8 @@
+>   
+>   /// Byte string without UTF-8 validity guarantee.
+>   ///
+> -/// `BStr` is simply an alias to `[u8]`, but has a more evident semantical meaning.
+> +/// `BStr` is simply an alias to <code>[[u8]]</code>, but has a more evident
+> +/// semantical meaning.
 
-GCC version is '10.3.0 (Ubuntu 10.3.0-1ubuntu1~18.04~1)'
+Isn't there a way to escape square brackets with backslashes with
+mbBook? Like `\[qux\]` or something? I ask this because this affects the
+readability of the doc comment so if that could be omitted it'll be
+really good.
 
-Signed-off-by: Lu Yao <yaolu@kylinos.cn>
----
- security/security.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/security/security.c b/security/security.c
-index 0144a98d3712..37168f6bee25 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -792,7 +792,7 @@ int lsm_fill_user_ctx(struct lsm_ctx __user *uctx, size_t *uctx_len,
- 	size_t nctx_len;
- 	int rc = 0;
- 
--	nctx_len = ALIGN(struct_size(nctx, ctx, val_len), sizeof(void *));
-+	nctx_len = ALIGN(sizeof(struct lsm_ctx) + val_len, sizeof(void *));
- 	if (nctx_len > *uctx_len) {
- 		rc = -E2BIG;
- 		goto out;
--- 
-2.25.1
-
+>   pub type BStr = [u8];
+>   
+>   /// Creates a new [`BStr`] from a string literal.
+> [...]
 
