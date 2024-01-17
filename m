@@ -1,160 +1,132 @@
-Return-Path: <linux-kernel+bounces-28823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D0CB83036E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:21:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E6ED83035E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:17:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A53AB22266
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:21:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE7F728823A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:17:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44FEA14A87;
-	Wed, 17 Jan 2024 10:21:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41DFA14A87;
+	Wed, 17 Jan 2024 10:17:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="owr485wz"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	dkim=pass (2048-bit key) header.d=8devices.com header.i=@8devices.com header.b="eevvGNsl"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 344F81429B
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:21:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0558A1427E
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:17:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705486871; cv=none; b=Hbu57SFBV95pmHi86rH8dWv8zRMWHy16uBj2oZl3bZveDVc05qFLSGrhSWliJ6wfm0uR0enbp4JJbY9BnGvF0NCaG+ErFsV5FX8OPsuQZB3pMDf+FHDh7kTKr2uojydt1Ljv+KVbzafW23PcCouyZ/4/RJCNCuCjQbjty8RWCdM=
+	t=1705486644; cv=none; b=uxmn5pN/hT+Pluc7YPkXtzhsjpg78HmB7GirlUQ3POd+nqWya+hSSFcJY0YyXgxXP4ojOR9Tt15MGgcz32XphknZyLRA1C5peM4/o6ZW5HkdIDq69Vmt1ieF0HtEVMV3E3ZmLQ0iMo1A/MYzprocSOYEMzQ9ttHNDMW1rGPAaz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705486871; c=relaxed/simple;
-	bh=fA8fOIDmpDf6O1sgGqy94Z1yqgjC5fUGvhAPgezy1N0=;
+	s=arc-20240116; t=1705486644; c=relaxed/simple;
+	bh=754t0uTULSRpJAMac1CD95NbzZnhj+FFC+mGT+l7NBs=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 References:User-agent:From:To:Cc:Subject:Date:In-reply-to:
-	 Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding; b=jtWsY8u+OmOtckkaSvF0m8z67wXVNVWT2WA8wCYXuYsKUUnVoe3QPdfDEgmxLpG9Jl38AWxctd9rxAUdC0VSuwmS3XnSgcpl/QqPNRWDoLxknD8tvyi/Hxd3bJS2zgdhai12c4IMw8ez9hkpxtRM0gpAb69ESgSrf9ecI+NhXho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=owr485wz; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40e7065b692so35883075e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 02:21:08 -0800 (PST)
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
+	 To:Cc:Subject:Date:Message-Id:X-Mailer; b=dKV3F4C/WXkC5LnNsJofHSRkjDX6br4QchzRzhnxukFf3FOSQCCsLXspTpYpb8VeFT1I5cMeOIkAwlZJBCQlo4/0aSXiTzmN4c1RB/abTCh6hAV0/jLpIwH+vXnoer3AQFGIWafbzx+HWYGFhiXnGRMC9zUYPbsOMIvVJaSim84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=8devices.com; spf=pass smtp.mailfrom=8devices.com; dkim=pass (2048-bit key) header.d=8devices.com header.i=@8devices.com header.b=eevvGNsl; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=8devices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8devices.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a28a6cef709so1199195766b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 02:17:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1705486867; x=1706091667; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
-         :subject:cc:to:from:user-agent:references:from:to:cc:subject:date
+        d=8devices.com; s=8devices; t=1705486641; x=1706091441; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5mSVG7D4F/4/rMlg7YZmDmtDRH4U8gyyZuRonzPy+H4=;
-        b=owr485wzoOgCgR7SlEzjfEy+Cl+cdj/22FfX4CcxSFSHtx6Dt5iAJWgkJ0q5VZ9vgr
-         fs7rgRtaCBVN6c42pRwbYb8evWjvVvU3jLcYijFTgLSqyD7vsjSQv1US48gLqli2zy7o
-         sl2nLgXJh+kTaivTGzjvSvkHGKPOSd2xcUPuLxd75bGf2zurL7wwL9l11ceCVYHhu68w
-         705aJgy0G0wQ/dztCtwdFlPA35w1xzpdIey9R5kLsb3qL5K6VgQdN+dVs0IPnEuIsD/p
-         4yALn3JWFMKsLSs6wqC8SE0pSMLj/O3eTYZy9Pb4C7KFFkzApvdDILDlbuOPWRNQDlGI
-         oW1A==
+        bh=hrjlcWfn/pDpqQxIFmiRolfpjezwCtleMfj2jxEGGng=;
+        b=eevvGNsl/Qb3lS8PTmOKBvhbO9UPT+rbpR5GQgPEuB53zNNZMVv7g+kSfgy853/IcG
+         NXralb7aTjJQ+agQkMDmMTZ0RcGMt1th6zWD3TCzGe2JS9GFpaqQcCCCXPjIAi+ZuXVz
+         b9H41hPSuJMSVg0OqvhOYAuSZmQvmF1MdEGBkPbEiRrK1LYciYe7b5cdBajd6AB/1+rc
+         p3WuCESQD27ksH03Y451WxgalSHvyHfv9/M5iEmVB1ZqkZUJyFz173RxMzW+psqFmQNw
+         h8gegC1Njm5QsCrtmdqAj8rViVqGyc6Lysq/QIZpJ+CGwq4O8xXZ70TisNlWA04p316Z
+         3HaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705486867; x=1706091667;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
-         :subject:cc:to:from:user-agent:references:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=5mSVG7D4F/4/rMlg7YZmDmtDRH4U8gyyZuRonzPy+H4=;
-        b=r/MpAnVOiVgvyBISvrE9Yz9DT7obIB1wekNrw/6B8xcXyifEcoGfDO/1MOBzxIHLOY
-         Vzk5wTu+SPabRQwphg3Xl9Lr2w+fx/E/Hnr+StU/s1aFYA835L389HOcqEDh4qIeZPr6
-         Ha799V3GMqqLN0EzHhFnM1UPPSuYIw/F/TqZLAsNOhOxUUwC7sGESyvxHI5feT06b02w
-         tPB7bglqgRJW0YWQK2r5vVGUaOlZcIfQOJEtbuUyDMq1iLjaEutyF0ohRM/fKOADNXay
-         AzHGinAW/Or7Nl0RxzW84oIRAb/g40yFrwlLNISP92M6FGTzSVn+xIAxciHI26OJR5sQ
-         0NbQ==
-X-Gm-Message-State: AOJu0Yzcx0mrL5M07skw4APXZjJo18/RGPkXQqnRU0+8+p/xzG7p7lkn
-	MMZwtlhGxRgn5lDkvaDsvfDqFlg5rNPxgQ==
-X-Google-Smtp-Source: AGHT+IHkPtaUfaJlpb5rgGajtKU+P5rzVz0YPS17UdzuHDV8aXYHDcinmlVZjk1+b215qJd7ggkx8A==
-X-Received: by 2002:a05:600c:22cc:b0:40e:3dcd:2e24 with SMTP id 12-20020a05600c22cc00b0040e3dcd2e24mr4695637wmg.180.1705486867325;
-        Wed, 17 Jan 2024 02:21:07 -0800 (PST)
-Received: from localhost ([2a01:e0a:3c5:5fb1:c1f6:14ce:b96f:2df5])
-        by smtp.gmail.com with ESMTPSA id v13-20020a05600c444d00b0040e526bd5fdsm1894578wmn.1.2024.01.17.02.21.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 02:21:06 -0800 (PST)
-References: <20231222111658.832167-1-jbrunet@baylibre.com>
- <20231222111658.832167-3-jbrunet@baylibre.com>
- <4rdb2be2bfzak3s4uaizthcdcdwdrxnx4kr2sgn527hvsie3pb@gfqciim7yryz>
-User-agent: mu4e 1.10.8; emacs 29.1
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Jerome Brunet <jbrunet@baylibre.com>, Thierry Reding
- <thierry.reding@gmail.com>, Neil Armstrong <neil.armstrong@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Kevin Hilman <khilman@baylibre.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
- linux-pwm@vger.kernel.org, JunYi Zhao <junyi.zhao@amlogic.com>
-Subject: Re: [PATCH v4 2/6] dt-bindings: pwm: amlogic: add new compatible
- for meson8 pwm type
-Date: Wed, 17 Jan 2024 11:16:31 +0100
-In-reply-to: <4rdb2be2bfzak3s4uaizthcdcdwdrxnx4kr2sgn527hvsie3pb@gfqciim7yryz>
-Message-ID: <1jfrywxnu5.fsf@starbuckisacylon.baylibre.com>
+        d=1e100.net; s=20230601; t=1705486641; x=1706091441;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hrjlcWfn/pDpqQxIFmiRolfpjezwCtleMfj2jxEGGng=;
+        b=KlfaC6sSNtLEKVvOmRNRe/RCZHZS+3WkoICzv8IFbx2jRjVaNpbcjb6wL7v6/gENJp
+         mtsTL26lDF/z1Tn0yfL4XRe0FBSAiGicuk4ZgYq/X+QOEccrz8MS+BwPQzyqAfym3kTH
+         d/UqlLkWridQON0Bh+GpswAwqTvBi9liYnCYPhRakbNBDK+Oqmyws47rU9EN+U+ggHUF
+         trc23xzDK2wRk+pvYqiShrIXleB7JqiO1UKX+Oj8Ep2nU4c0DCRNpDyH2ayh4eewbISI
+         d74mnBWNsZEzuZhaQp8izYuJr3AVivkPZG/eHPsNVVuOPtTzP3bDfe4AEoLjZUQxTWSt
+         WGYg==
+X-Gm-Message-State: AOJu0Yy91DY5ZQf3QUj1ypfsV/z0PAMUBCODQiMlMhU9Gc/SRb+OHmf1
+	mnXPx3/Ivdlv4XUMZUIgKF/vqwxSofLI6g==
+X-Google-Smtp-Source: AGHT+IFnNFFKnBL/28HVHLl3XdPWmHosKITeRDNylFga0N9qWEwAjTFEOYHJ+jqRzPMlPYDHaq60+Q==
+X-Received: by 2002:a17:906:2411:b0:a28:fd13:ecd with SMTP id z17-20020a170906241100b00a28fd130ecdmr3558696eja.129.1705486641393;
+        Wed, 17 Jan 2024 02:17:21 -0800 (PST)
+Received: from mantas-MS-7994.8devices.com ([84.15.37.222])
+        by smtp.gmail.com with ESMTPSA id p12-20020a17090653cc00b00a2c56fb5ad5sm7558767ejo.21.2024.01.17.02.17.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 17 Jan 2024 02:17:21 -0800 (PST)
+From: Mantas Pucka <mantas@8devices.com>
+To: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>
+Cc: Mantas Pucka <mantas@8devices.com>,
+	linux-arm-msm@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] clk: qcom: gcc-ipq6018: add qdss_at clock needed for wifi operation
+Date: Wed, 17 Jan 2024 12:17:08 +0200
+Message-Id: <1705486629-25592-1-git-send-email-mantas@8devices.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
 
+Without it system hangs upon wifi firmware load. Bindings already exist
+for it, so add it based on vendor code.
 
-On Wed 17 Jan 2024 at 10:58, Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutr=
-onix.de> wrote:
+Signed-off-by: Mantas Pucka <mantas@8devices.com>
+---
+ drivers/clk/qcom/gcc-ipq6018.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-> [[PGP Signed Part:Undecided]]
-> Hello,
->
-> On Fri, Dec 22, 2023 at 12:16:50PM +0100, Jerome Brunet wrote:
->> diff --git a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml b/Do=
-cumentation/devicetree/bindings/pwm/pwm-amlogic.yaml
->> index a1d382aacb82..eece390114a3 100644
->> --- a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
->> +++ b/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
->> @@ -21,23 +21,35 @@ properties:
->>            - amlogic,meson-g12a-ee-pwm
->>            - amlogic,meson-g12a-ao-pwm-ab
->>            - amlogic,meson-g12a-ao-pwm-cd
->> -          - amlogic,meson-s4-pwm
->> +        deprecated: true
->>        - items:
->>            - const: amlogic,meson-gx-pwm
->>            - const: amlogic,meson-gxbb-pwm
->> +        deprecated: true
->>        - items:
->>            - const: amlogic,meson-gx-ao-pwm
->>            - const: amlogic,meson-gxbb-ao-pwm
->> +        deprecated: true
->>        - items:
->>            - const: amlogic,meson8-pwm
->>            - const: amlogic,meson8b-pwm
->> +        deprecated: true
->
-> I think deprecating the old binding and adding a new compatible should
-> be done in two commits.
+diff --git a/drivers/clk/qcom/gcc-ipq6018.c b/drivers/clk/qcom/gcc-ipq6018.c
+index b366912cd648..7cdaf7751566 100644
+--- a/drivers/clk/qcom/gcc-ipq6018.c
++++ b/drivers/clk/qcom/gcc-ipq6018.c
+@@ -3522,6 +3522,22 @@ static struct clk_branch gcc_prng_ahb_clk = {
+ 	},
+ };
+ 
++static struct clk_branch gcc_qdss_at_clk = {
++	.halt_reg = 0x29024,
++	.clkr = {
++		.enable_reg = 0x29024,
++		.enable_mask = BIT(0),
++		.hw.init = &(struct clk_init_data){
++			.name = "gcc_qdss_at_clk",
++			.parent_hws = (const struct clk_hw *[]){
++				&qdss_at_clk_src.clkr.hw },
++			.num_parents = 1,
++			.flags = CLK_SET_RATE_PARENT | CLK_IS_CRITICAL,
++			.ops = &clk_branch2_ops,
++		},
++	},
++};
++
+ static struct clk_branch gcc_qdss_dap_clk = {
+ 	.halt_reg = 0x29084,
+ 	.clkr = {
+@@ -4361,6 +4377,7 @@ static struct clk_regmap *gcc_ipq6018_clks[] = {
+ 	[GCC_SYS_NOC_PCIE0_AXI_CLK] = &gcc_sys_noc_pcie0_axi_clk.clkr,
+ 	[GCC_PCIE0_PIPE_CLK] = &gcc_pcie0_pipe_clk.clkr,
+ 	[GCC_PRNG_AHB_CLK] = &gcc_prng_ahb_clk.clkr,
++	[GCC_QDSS_AT_CLK] = &gcc_qdss_at_clk.clkr,
+ 	[GCC_QDSS_DAP_CLK] = &gcc_qdss_dap_clk.clkr,
+ 	[GCC_QPIC_AHB_CLK] = &gcc_qpic_ahb_clk.clkr,
+ 	[GCC_QPIC_CLK] = &gcc_qpic_clk.clkr,
+-- 
+2.7.4
 
-Hi Uwe,
-
-There was the same comment on v3 and Krzysztof said it should be done
-like this:
-
-https://lore.kernel.org/linux-pwm/e127dcef-3149-443a-9a8c-d24ef4054f09@lina=
-ro.org
-
-I tend to agree with Krzysztof on this but, as I previously said,
-I don't really mind one way or the other. Just have to pick one.
-
->
->> +      - const: amlogic,meson8-pwm-v2
->> +      - items:
->> +          - enum:
->> +              - amlogic,meson8b-pwm-v2
->> +              - amlogic,meson-gxbb-pwm-v2
->> +              - amlogic,meson-axg-pwm-v2
->> +              - amlogic,meson-g12-pwm-v2
->> +          - const: amlogic,meson8-pwm-v2
->> +      - const: amlogic,meson-s4-pwm
->
-> Best regards
-> Uwe
-
-
---=20
-Jerome
 
