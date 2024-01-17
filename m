@@ -1,82 +1,99 @@
-Return-Path: <linux-kernel+bounces-29118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF04E8308FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:02:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E60A83090E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:03:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DD071C23EF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:02:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 035CF1F264FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:03:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24C71219F3;
-	Wed, 17 Jan 2024 15:02:11 +0000 (UTC)
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AECC21356;
+	Wed, 17 Jan 2024 15:03:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="n1mG+MAt"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E701721347;
-	Wed, 17 Jan 2024 15:02:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B1420DC9;
+	Wed, 17 Jan 2024 15:02:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705503730; cv=none; b=kCmqLwbD9xuENZ03d9duu+EVtrJLGyD8EW9GCFffS5L+m1dmaEuQ5iNkbmAN8Uz7rKXkxCMR5sLtEOJpeUuch0MrHgKvj+L4JhIb++ZoF3LZ4oUdMZGzZqt+NZNnSLYTijnD5RKMeQ2Uuu6+XNLqutVDb2CdmrS+sgT9KOkv2/0=
+	t=1705503781; cv=none; b=ShvCXpZcLtuxPV/qPVAu27yNFfvcEoLW/Ss4idR4NUDHajb358FUpjFl5epMmz/9nGYjfLB9dNMejVwE9tKhxHyw84ao5oVo6jDaZB0Y/Al3zyy9sGFY9lVin19ccn0NBA+rpGC4p9KierEzbb5h9O6p+NoPRzO/en8gCV5QHdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705503730; c=relaxed/simple;
-	bh=InjtWWHIK+dxg9+ObW7eBrA9Bb+Q/V/aSLm4A24XvJo=;
-	h=Received:Date:From:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To:
-	 User-Agent; b=IHCP/xoz2BGkkjj42PPn6NVwAcbqKkZb6QyMdvRhuO7d0zn5xgni6odbG92llKC2ATOeGCXfG047qzXEW52JwiAokeORBnlPo5BUpATF5tr7vn+zy3X3TukBG0RDiqf1OcH3vgXIL8BZ0IrDrx19h+buMuNFm9/z3YgsNAbm+jc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 4135968C7B; Wed, 17 Jan 2024 16:02:01 +0100 (CET)
-Date: Wed, 17 Jan 2024 16:02:00 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: John Garry <john.g.garry@oracle.com>
-Cc: Christoph Hellwig <hch@lst.de>, "Darrick J. Wong" <djwong@kernel.org>,
-	axboe@kernel.dk, kbusch@kernel.org, sagi@grimberg.me,
-	jejb@linux.ibm.com, martin.petersen@oracle.com,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-	jack@suse.cz, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
-	ming.lei@redhat.com, jaswin@linux.ibm.com, bvanassche@acm.org
-Subject: Re: [PATCH v2 00/16] block atomic writes
-Message-ID: <20240117150200.GA30112@lst.de>
-References: <20231219151759.GA4468@lst.de> <fff50006-ccd2-4944-ba32-84cbb2dbd1f4@oracle.com> <20231221065031.GA25778@lst.de> <b60e39ce-04bf-4ff9-8879-d9e0cf5d84bd@oracle.com> <20231221121925.GB17956@lst.de> <df2b6c6e-6415-489d-be19-7e2217f79098@oracle.com> <20231221125713.GA24013@lst.de> <9bee0c1c-e657-4201-beb2-f8163bc945c6@oracle.com> <20231221132236.GB26817@lst.de> <6135eab3-50ce-4669-a692-b4221773bb20@oracle.com>
+	s=arc-20240116; t=1705503781; c=relaxed/simple;
+	bh=U30tMly9NPtZKE/JLAer7cPf9aPNHRLrxBNVnRZE3JQ=;
+	h=Received:DKIM-Signature:Received:Received:Received:Received:Date:
+	 From:To:CC:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:X-EXCLAIMER-MD-CONFIG; b=KIc278C4vxcYdceNYCUMct+pbWSNmtHwrqCLbosKlhDr4Td2A8doRAdiPzAUzovB2RCH5QjhVaTELBizJBaZ/k2IisRF9c7ydH95tIhX8Pw+Ro3oRVpcrrvCEIfO163hirzFLAtRlrKT7usiMltJg0DEnAWump7ERQtWo418kJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=n1mG+MAt; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40HF2ahI038819;
+	Wed, 17 Jan 2024 09:02:36 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1705503756;
+	bh=4DKlR/XOa60vrF3LRv1+V3xGI1FNo5diw36Qw9hUvYk=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=n1mG+MAtJict0pt9BdpTauvbJuIkiaD9OHne+EyNTqVoouMvoP4mdHBu2qLYyg3yl
+	 Dk8xmHYMPK80Aa6uqzrOwCT8uLFaGJN5akUIR0sYYSDtjkhgsjSTmAv1n4iWyCjJaG
+	 k1kYvWk59o01beoGg/bGgM/YWkC9YhJbDinXbe2g=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40HF2axQ017179
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 17 Jan 2024 09:02:36 -0600
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 17
+ Jan 2024 09:02:35 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 17 Jan 2024 09:02:35 -0600
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40HF2ZrE008378;
+	Wed, 17 Jan 2024 09:02:35 -0600
+Date: Wed, 17 Jan 2024 09:02:35 -0600
+From: Nishanth Menon <nm@ti.com>
+To: Wadim Egorov <w.egorov@phytec.de>
+CC: Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        Garrett Giordano
+	<ggiordano@phytec.com>
+Subject: Re: [PATCH 15/16] arm64: dts: ti: phycore*: Clarify GPL-2.0 as
+ GPL-2.0-only
+Message-ID: <20240117150235.37sw7ec3hegelno3@maturely>
+References: <20240110140903.4090946-1-nm@ti.com>
+ <20240110140903.4090946-16-nm@ti.com>
+ <fb8232b1-9708-4b57-b67c-92ec6ccf9fd0@phytec.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <6135eab3-50ce-4669-a692-b4221773bb20@oracle.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <fb8232b1-9708-4b57-b67c-92ec6ccf9fd0@phytec.de>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Tue, Jan 16, 2024 at 11:35:47AM +0000, John Garry wrote:
-> As such, we then need to set atomic write unit max = min(queue max 
-> segments, BIO_MAX_VECS) * LBS. That would mean atomic write unit max 256 * 
-> 512 = 128K (for 512B LBS). For a DMA controller of max segments 64, for 
-> example, then we would have 32K. These seem too low.
+On 03:29-20240117, Wadim Egorov wrote:
+> Hey Nishanth,
+> 
+> I am also okay to have our device trees using the additional MIT license.
+> 
 
-I don't see how this would work if support multiple sectors.
+OK - I can respin the series. I take it that I can retain your Acks.
 
->
-> Alternative I'm thinking that we should just limit to 1x iovec always, and 
-> then atomic write unit max = (min(queue max segments, BIO_MAX_VECS) - 1) * 
-> PAGE_SIZE [ignoring first/last iovec contents]. It also makes support for 
-> non-enterprise NVMe drives more straightforward. If someone wants, they can 
-> introduce support for multi-iovec later, but it would prob require some 
-> more iovec length/alignment rules.
-
-Supporting just a single iovec initially is fine with me, as extending
-that is pretty easy.  Just talk to your potential users that they can
-live with it.
-
-I'd probably still advertise the limits even if it currently always is 1.
-
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
