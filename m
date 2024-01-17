@@ -1,131 +1,121 @@
-Return-Path: <linux-kernel+bounces-28852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEBC88303C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EAE148303C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:41:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 705F91F25580
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:41:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FF701F255B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:41:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81F6D1C28C;
-	Wed, 17 Jan 2024 10:41:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A56C1D697;
+	Wed, 17 Jan 2024 10:41:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="gCJ4kmmz"
-Received: from mout.web.de (mout.web.de [212.227.15.3])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="W8njSpKI"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5971C1DDC9;
-	Wed, 17 Jan 2024 10:41:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68E021D550;
+	Wed, 17 Jan 2024 10:41:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705488078; cv=none; b=ZTRWpdX2ewlZTOozTt2NfoK7t8FrJZBLd2cdCb2DG2/T8d97vyBNYSScBRuSzmEewk1SuRYSKtCJMvLes2zWs/2v0vQTwkDTHdOBTuN7s1Wl02MGHz/pj0dzcMkmHjd8p2+ok7U5PgxrxqS41kBODa3hqssl7zNG2TgWjJyCUC8=
+	t=1705488088; cv=none; b=btklVCe+vzHOKQ4cNpEoikk6h0cFd1K808wYu7czRIA8CRNTpqt1BWIeKN/u9WN6uA3FoJPXONoj5B3uPf7wTYFEGOE5UuF96azodaOtF0jnovkXqTYrPgMoQuxG6srOQbzKzpDQ8diMOT/DKrDw3Nkf7k+ti3A2rWYDrUu1Jss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705488078; c=relaxed/simple;
-	bh=vJqkCYXJxdgrKwi1w2Jjol0tYLSav4W0xcsFJVVuKzs=;
-	h=DKIM-Signature:X-UI-Sender-Class:Received:Message-ID:Date:
-	 MIME-Version:User-Agent:To:References:Subject:Content-Language:
-	 From:Cc:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 X-Provags-ID:X-Spam-Flag:UI-OutboundReport; b=FoKHhy8BjJGAgyFTpJcv40J8qqjujhcTcwjczeW5RzK4PGuaPN5zWvxJIGZYdHg6QMOvrTi2U2ivXsTRREDQpqtFOfhbwWJETla0uSz//0PQhmMaWWTE5heeB11g1Zotsp1MPmelhleEyJuH2B2LhodJj7MTJ+42m5LdERMNYno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=gCJ4kmmz; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1705488019; x=1706092819; i=markus.elfring@web.de;
-	bh=vJqkCYXJxdgrKwi1w2Jjol0tYLSav4W0xcsFJVVuKzs=;
-	h=X-UI-Sender-Class:Date:To:References:Subject:From:Cc:
-	 In-Reply-To;
-	b=gCJ4kmmzLFuW9q10d5VlkqRSXfsWhY1BOy4mZ1KZqwZSmsmcey/Wru0Ji7i6RCu+
-	 5RjDMXuku7/D3SoymJH0hL90nQcJVq06x7EPvwHNQpYUzsFeyLFA1t7qJ2L011T0P
-	 sttEf0pKEjfy+QlGzksncaZ5bM/qRhJ3ACU91tPjFONtt00/nrtZy4tlb/uWC6gnQ
-	 QXTNai0u1aqCLL+4hM4zTmeblB8HEur3q+2xEFrahf3mIQ1PiVeCcQC+4rOiTVX47
-	 3vjodOG6/c1AGm35XGR6Dmrqke/TMy053GHtw6K7Kff0+DDZyJuBRjvf/qktobjRV
-	 T8UjpDuvPD+ByaVPlg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.84.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MF2gW-1rNpMJ2Ney-00Fk11; Wed, 17
- Jan 2024 11:40:19 +0100
-Message-ID: <3e0c7008-417d-4549-ae0a-7f8d26522117@web.de>
-Date: Wed, 17 Jan 2024 11:40:09 +0100
+	s=arc-20240116; t=1705488088; c=relaxed/simple;
+	bh=E3rwFhaOl2j+zeAfDeJ2luuN6OVjKJV3WlO+QINndKM=;
+	h=Received:DKIM-Signature:Received:Received:Received:Received:
+	 Received:Received:Received:Received:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:X-TM-AS-GCONF:
+	 X-Proofpoint-ORIG-GUID:X-Proofpoint-GUID:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details; b=PleJi30lWxtijR04BntWI50NeYLiTebvWtC3yxisKm1Tc02odk03zNix/1SiustUiZm/eWRwMJLEZStb9ywA3Cif1qUylYk+0DRWoEfF30Y7kRt3OtSjvv9XWZb+2rj7QeRyID9ZyGQdrZLkscwj9pAqndpTT+zBrqR12QS9TJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=W8njSpKI; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40HA7DHs015455;
+	Wed, 17 Jan 2024 10:41:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=YHdck/Ra38gjgZwkdUhVLlxKWwPrh4c3UuG1hGT5OpQ=;
+ b=W8njSpKIL/nBQLJyZtQ1x8Iy982B3uxg+9t8ay4kxBeQZj4wUnrmHcgSkevlS6NcCMyy
+ mp5BuWGZ131/NSCbcxFALgv788yKAT6dPcvgpFsqMstLxoulqeOlCqYUIXaVA87D5y9U
+ n+wGl/H7oHF34TaF9VvJ2+YHsYAQiSAh3/aFNbZzSlcce+T9FhAnVA6gZWxFfSYnQetS
+ myK3WWROwmuiE/gvgJ2ttF3zVX8qGG67DL8NJCeznz+3HghfonbSjZclX3fw37lYRPDl
+ ROzwMmhgLrXO1IOxLr6co/gEPv/eIbQfKVTKFqGN1uv9VrMnhLh3VBPVpiAFitCIQrhQ 5w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vpcuy913d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 10:41:20 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40HA86NG018155;
+	Wed, 17 Jan 2024 10:41:19 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vpcuy912p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 10:41:19 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40H8a3sP004908;
+	Wed, 17 Jan 2024 10:41:18 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vm7j1v74m-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 10:41:18 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40HAfDIv27787934
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 17 Jan 2024 10:41:13 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8287020043;
+	Wed, 17 Jan 2024 10:41:13 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id BBD612004B;
+	Wed, 17 Jan 2024 10:41:12 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.88.12])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 17 Jan 2024 10:41:12 +0000 (GMT)
+Date: Wed, 17 Jan 2024 11:41:11 +0100
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Tony Krowiak <akrowiak@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, jjherne@linux.ibm.com, borntraeger@de.ibm.com,
+        pasic@linux.ibm.com, pbonzini@redhat.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, gor@linux.ibm.com
+Subject: Re: [PATCH v4 0/6] s390/vfio-ap: reset queues removed from guest's
+ AP configuration
+Message-ID: <Zaeuxz6+3eqg84+H@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20240115185441.31526-1-akrowiak@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Kunwu Chan <chentao@kylinos.cn>, xen-devel@lists.xenproject.org,
- kernel-janitors@vger.kernel.org
-References: <20240117090018.152031-1-chentao@kylinos.cn>
-Subject: Re: [PATCH v2] x86/xen: Add some null pointer checking to smp.c
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel test robot <lkp@intel.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>, Borislav Petkov
- <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
- =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
- Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-In-Reply-To: <20240117090018.152031-1-chentao@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:JaLRwvXgJjiefll0Tuwas9XKSthWswOnaJewGiQBlyjTcPN9V2f
- hcrT9hCDF4WMQbUTC8k8ldktcIrVPniJAn+SXNC0BsbmiJJp3ojo24Oib8U7MUU+sBdD0Yu
- 9c2+NUGv0VOR/06RxZoAV6HYBZVNQWN89GhXqQ6KI3r7QMKbUFyIENEbq7fU76dv24P0270
- O6iv+fKAQp+KD0B1eJeiw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:YvfY7JRbdYE=;mP4N+bwOpR1xsAuYUabDW0+JE/C
- AE3sP6atgL4o5w8kpHZI1+fNDuODzzspTSsZR7Ts2xw+W8gyXyG1AU9oeO8z2bx51b+YDZxEc
- MbwFGMGq2pX3mvIDaFzbYKAXE/lHYKT/46vU02RCllriNMVeBdckIzK5GJnmy5BhwV9obgmBU
- uMnG0nxdznUdK5vArhi41S8rswOBBjA+p5BXIMTwuElcMviIZDzAgwaafC7M3oRl7yOEhXGTj
- kl387WORzaxMA5yuQk0SH089zXvB0kDj25tXAy50rOLWbGnPMeoU+UBwkwuMUrPR+fLAckcAQ
- 5iezZjgPUvQOJrDOCGqLBm3U0KcSfDlOjBB/zGrIPGKsZ/USoc22ulDNOmT+q7G5NlWoHU2/S
- Q2jcDKj+XSwagdZr3XoaA+ntcEd90yizsoxwOHIdbnKxrYJ2gjeGocUOh1468GgeBXSIBNGB2
- Hc50BeWZWY+7fO7z7MBIYuWNPJTMhx/XS5uYn0x/8yLmq4WZFNc4mMRi4VkGrPHlpi42INqOj
- Iy+FP0U7hHYRqyu5biKL3OMOaiuhvlWKO5uTYiPRinKgQW9YZbbe12zJq4A6Pt+LM1EtpfBfm
- 2r+23QPpCOME0xqwxvqai/69Nhxpxk9+MIVgx4qcnj+YfvhNimWMcfCBBO1s1EtwBmRVEUpgO
- SmQLEwYWfc2cV5bYz1T5thQLt2Noez5tEFErKazzhFyWhoi6R6jbgiAA7IXO3arCEQ9jxYMDF
- W5WS9MZKEiWQ99oQBTjVxcJ1AVBiX3Z+olPFFpLww+Dn/e2q74nF6G/dUQcFSKqFEdWHgJYOe
- ViGCTUON4npiWlzfq/oXAYoWsPa+0AnfUc7bevojJ/udgrqE89563O9spHpPWxCl8KHVFlm4Y
- wfzUoxVF2hfAH6Siuqg7QOkBgCXbJbZKUlgqEx5fjzd8GRqpuO4HdA0YWzg7NHcsdBMym5Xz4
- iEsT4g==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240115185441.31526-1-akrowiak@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Q-VG3TmEKG8OUGkj0jJx4uRmquyQhxs9
+X-Proofpoint-GUID: KmINsdUnpHFeaTKRaqBd64el_x2kS-X-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-17_05,2024-01-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ priorityscore=1501 clxscore=1015 bulkscore=0 phishscore=0 suspectscore=0
+ mlxlogscore=728 adultscore=0 lowpriorityscore=0 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401170075
 
-> kasprintf() returns a pointer to dynamically allocated memory
-> which can be NULL upon failure. Ensure the allocation was successful
-> by checking the pointer validity.
-=E2=80=A6
-> +++ b/arch/x86/xen/smp.c
-> @@ -61,10 +61,14 @@ void xen_smp_intr_free(unsigned int cpu)
->
->  int xen_smp_intr_init(unsigned int cpu)
->  {
-> -	int rc;
-> +	int rc =3D 0;
+On Mon, Jan 15, 2024 at 01:54:30PM -0500, Tony Krowiak wrote:
+..
+>  drivers/s390/crypto/vfio_ap_ops.c     | 268 +++++++++++++++++---------
+>  drivers/s390/crypto/vfio_ap_private.h |  11 +-
+>  2 files changed, 184 insertions(+), 95 deletions(-)
 
-I find the indication of a successful function execution sufficient by
-the statement =E2=80=9Creturn 0;=E2=80=9D at the end.
-How do you think about to omit such an extra variable initialisation?
+Applied with fixups to patches 4 and 5.
 
-
->  	char *resched_name, *callfunc_name, *debug_name;
->
->  	resched_name =3D kasprintf(GFP_KERNEL, "resched%d", cpu);
-> +	if (!resched_name) {
-> +		rc =3D -ENOMEM;
-> +		goto fail;
-> +	}
->  	per_cpu(xen_resched_irq, cpu).name =3D resched_name;
->  	rc =3D bind_ipi_to_irqhandler(XEN_RESCHEDULE_VECTOR,
->  				    cpu,
-
-You propose to apply the same error code in four if branches.
-I suggest to avoid the specification of duplicate assignment statements
-for this purpose.
-How do you think about to use another label like =E2=80=9Ce_nomem=E2=80=9D=
-?
-
-Regards,
-Markus
+Thanks!
 
