@@ -1,143 +1,111 @@
-Return-Path: <linux-kernel+bounces-29157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0DD98309CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A6B0A8309CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:30:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5F041C23CA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:30:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9CD11C20DF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:30:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 309C021A01;
-	Wed, 17 Jan 2024 15:30:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SV7aoLVF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6917A21375;
-	Wed, 17 Jan 2024 15:29:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CD7D21A09;
+	Wed, 17 Jan 2024 15:30:21 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1051E219F8;
+	Wed, 17 Jan 2024 15:30:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705505399; cv=none; b=H+UbTQ+WYF98iTW1ytd/NGw/AQrThTkOJ0uZQ+lDzdXinb75DUeFixXE69uOSvN3GWhC/njIxaxrrLzHf0MoOUkN0SheBHlA/5HjbONjy7Ak+qGNVw+1yl0pVAXfonkVri4zG6VMWL4G77ygEoMsITBLqWO/Z/Pfzp/qArVKUiA=
+	t=1705505421; cv=none; b=qnJ/6NhIc/yNlfkY4d2DLsq8H0Fyiid3lcmu8dGIop6eMlr84rb42taRTM7/XO46C1FFO7kM3QBoHC5Qsz5XzPBydpHG2egXM8yKK6JY5SNHWX4y3Ao1mdHb8+aAz8t8clmN3f24K2Ho2+iiXQqc1d0Fuw5x7m/oQZELLa6wzGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705505399; c=relaxed/simple;
-	bh=p/uuK0NyEDVMxgC3Zyh7F2sRxpkMqVJnd1G6oPdOfVQ=;
-	h=Received:DKIM-Signature:Message-ID:Date:MIME-Version:User-Agent:
-	 Subject:Content-Language:To:Cc:References:From:Autocrypt:
-	 In-Reply-To:Content-Type:Content-Transfer-Encoding; b=kTnY8cK9l8dqxE09njKwZ4GJmGot9uUltTj/6egIIZ7d/V7GunA2fau2rVmt1E2tv2g9o1NdqgPmcZ+tcbT8mWOOYRGmYIRcUC1m41vktTku9/11rIQ6atSasAtVwGSdIoNWmWVI2wr2Hlq3yco2uhE1GX9xIenVdezuPBTX9pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SV7aoLVF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76274C433C7;
-	Wed, 17 Jan 2024 15:29:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705505398;
-	bh=p/uuK0NyEDVMxgC3Zyh7F2sRxpkMqVJnd1G6oPdOfVQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=SV7aoLVFcP2aFf8miTLz4FccCl9DeJEsTWRd+PiC/gz+jZCbiQUMH3qV9nvviPJrB
-	 QZ3roXUSXiHhwqwRKw4pmd59A7Y9KpbQXfIQh2XdXQiy/jBMwuN+8p+PT8mGgz6UT0
-	 TvYKO9h43vdOz5i4N1smoJsSrv7VN0aSh0xP2qRxC0dRKaX5ojd5W+KO9blMUxUI/Q
-	 13xPGSIvBvBu0LsIHhj4E95iBKnulj6olyh5JlV4k0A5Tkqp+7Tdxp0X+TwrxK834i
-	 5SBU8Y/0AagB/rH65MDfSI5/vXuVpyGbxzcxFzk2mDqYS1/aV1fjdLWtSL2McXuuEA
-	 70gW1qK0N0OjA==
-Message-ID: <c7ddec3b-2304-4d7f-80da-0074c1d68cc0@kernel.org>
-Date: Wed, 17 Jan 2024 16:29:52 +0100
+	s=arc-20240116; t=1705505421; c=relaxed/simple;
+	bh=yIx1wkyn02/INYYU+ZhCD2MmJkqNNSXwqwE1qujHHOY=;
+	h=Received:Received:Message-ID:Date:MIME-Version:User-Agent:Subject:
+	 Content-Language:To:Cc:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=eCu5K8jew+n3PzPdot7h0KDvTJ8Wzkq6Sf3RU4WnMjw+bT2G6meXQfaX0D0YlzWJM3j/uUPF2rBWCdrDTVXlFdn3G6PLcIMuaBWojEGaq5/91V0qrDNa5EKSn5Fpisj+R5aLNjQvZhYyy+fEP/CO5MTHq2mSXOExZYuayaOVn10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6550E11FB;
+	Wed, 17 Jan 2024 07:31:04 -0800 (PST)
+Received: from [192.168.1.100] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CFA853F5A1;
+	Wed, 17 Jan 2024 07:30:16 -0800 (PST)
+Message-ID: <19913e91-b055-d767-2cb8-c6bc53671728@arm.com>
+Date: Wed, 17 Jan 2024 15:30:15 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drivers: watchdog: Add ChromeOS EC watchdog
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2] perf data convert: Fix segfault when converting to
+ json on arm64
 Content-Language: en-US
-To: Lukasz Majczak <lma@chromium.org>, Gwendal Grignou
- <gwendal@chromium.org>, Lee Jones <lee@kernel.org>,
- Benson Leung <bleung@chromium.org>, Wim Van Sebroeck
- <wim@linux-watchdog.org>, Tzung-Bi Shih <tzungbi@kernel.org>,
- Radoslaw Biernacki <biernacki@google.com>
-Cc: linux-kernel@vger.kernel.org, chrome-platform@lists.linux.dev,
- linux-watchdog@vger.kernel.org
-References: <20240117102450.4080839-1-lma@chromium.org>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240117102450.4080839-1-lma@chromium.org>
+To: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+ Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>
+References: <20240117071331.59725-1-ilkka@os.amperecomputing.com>
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <20240117071331.59725-1-ilkka@os.amperecomputing.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 17/01/2024 11:24, Lukasz Majczak wrote:
 
-Few more nits:
 
-> This adds EC-based watchdog support for ChromeOS
-
-Please do not use "This commit/patch/change", but imperative mood. See
-longer explanation here:
-https://elixir.bootlin.com/linux/v5.17.1/source/Documentation/process/submitting-patches.rst#L95
-
-> based devices equipped with embedded controller (EC).
+On 17/01/2024 07:13, Ilkka Koskinen wrote:
+> Arm64 doesn't have Model in /proc/cpuinfo and, thus, cpu_desc doesn't get
+> assigned.
 > 
+> Running
+> 	$ perf data convert --to-json perf.data.json
+> 
+> ends up calling output_json_string() with NULL pointer, which causes a
+> segmentation fault.
+> 
+> Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+> ---
+> v1:
+> 	- https://lore.kernel.org/all/20240111232923.8138-1-ilkka@os.amperecomputing.com/
+> v2:
+> 	- Changed the patch based on James's comments.
+> ---
+> tools/perf/util/data-convert-json.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/tools/perf/util/data-convert-json.c b/tools/perf/util/data-convert-json.c
+> index 5bb3c2ba95ca..e8b006c3581f 100644
+> --- a/tools/perf/util/data-convert-json.c
+> +++ b/tools/perf/util/data-convert-json.c
+> @@ -284,7 +284,13 @@ static void output_headers(struct perf_session *session, struct convert_json *c)
+>  	output_json_key_string(out, true, 2, "os-release", header->env.os_release);
+>  	output_json_key_string(out, true, 2, "arch", header->env.arch);
+>  
+> +#if !defined(__aarch64__)
 
-Please use subject prefixes matching the subsystem. You can get them for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching.
+I think this needs to read from header->env.arch, otherwise it won't
+work if you run data convert on another machine.
 
-And not a nit - important:
+I'm assuming that perf data convert is one of the commands that runs on
+a pre-recorded file, rather than a command that creates the perf.data
+file to begin with?
 
-Please use scripts/get_maintainers.pl to get a list of necessary people
-and lists to CC (and consider --no-git-fallback argument). It might
-happen, that command when run on an older kernel, gives you outdated
-entries. Therefore please be sure you base your patches on recent Linux
-kernel.
-
-Tools are doing it automatically, so either you work on some ancient
-tree (don't), on fork of kernel (don't) or ignore some maintainers
-(really don't).
-
-Best regards,
-Krzysztof
-
+> +	/*
+> +	 * arm64 doesn't have Model section in /proc/cpuinfo and, thus, cpu-desc
+> +	 * is not set.
+> +	 */
+>  	output_json_key_string(out, true, 2, "cpu-desc", header->env.cpu_desc);
+> +#endif
+>  	output_json_key_string(out, true, 2, "cpuid", header->env.cpuid);
+>  	output_json_key_format(out, true, 2, "nrcpus-online", "%u", header->env.nr_cpus_online);
+>  	output_json_key_format(out, true, 2, "nrcpus-avail", "%u", header->env.nr_cpus_avail);
 
