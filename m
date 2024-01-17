@@ -1,159 +1,94 @@
-Return-Path: <linux-kernel+bounces-28689-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBC688301DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:05:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A45AB8301DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:06:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67C2C1F2685F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:05:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B37921C246EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:06:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EF49134AC;
-	Wed, 17 Jan 2024 09:05:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF53C13AD8;
+	Wed, 17 Jan 2024 09:05:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CCaJdEiz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="llDiGHEr"
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0E4D13FEB;
-	Wed, 17 Jan 2024 09:05:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5F53134BD
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 09:05:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705482329; cv=none; b=aBgvWQF8RdNFnIqLazCe8NRSK4b0r6EtLXHlaoWUTMRD3AydowMdR2X81ua59qcphXDzW5ZBNz3fMJAuGe9pDuup2x+Fd6XxKROUV4tk/TYU8ZU+7RR23BGmykvGFkNAqZeOssygdQ6Td4SO2n9ENLe1rW86zs09PFv0jbiwDOw=
+	t=1705482358; cv=none; b=Fo7ZACJlCuKwMuglRAXONBCBFkQBDrOQRz2g8oKhRboD+SyYNfisYL5GFhQqiiG6K/+aXce2TMNXex0fJvYrWRZ8S3Am0chjVtXax6L6AhJBxERXSGAB4II99cqEIqSL8qAsi3TTOf9fdgu9ok2cyFp610fvv7dya4tbpLMTMA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705482329; c=relaxed/simple;
-	bh=QjVZzgsoUCIQOhRoRyHOoQyDEOaOpNj7mno8pFnCy3c=;
-	h=Received:DKIM-Signature:Received:Date:Message-ID:From:To:Cc:
-	 Subject:In-Reply-To:References:User-Agent:MIME-Version:
-	 Content-Type:X-SA-Exim-Connect-IP:X-SA-Exim-Rcpt-To:
-	 X-SA-Exim-Mail-From:X-SA-Exim-Scanned; b=lkPvI43QeiddspAfAILUR6V6TGZSTjlHOoQ4fOh7eMtIjs04iL+d6n7Dec152/faGw8xQQkfVC0ozV51ZAAR6wjmf5dfF837TRLV4A9pyau327FfYazXzKgCoSRTjIedbhIlmnkb5hTgAKUXC9Qk90zdAkE/vd+bLFpulyKHOdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CCaJdEiz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36C63C433C7;
-	Wed, 17 Jan 2024 09:05:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705482329;
-	bh=QjVZzgsoUCIQOhRoRyHOoQyDEOaOpNj7mno8pFnCy3c=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=CCaJdEiz9sEN3YsVzKpzPy+g/kw6UwNviLrMNVL62CeC6ug+Li0OtXwrJ6yWvTnTd
-	 I9r8+xPrgoSzhejU/0sIYT41ah6cKHSj4jUyF+hNnioBh3xskm1dwh39hs29j3f3pS
-	 wuM6uy/IEtsMX24fd4H2sKSMLwhjukwM8dYG7fn81elOCCDLUrvKvsAPdV/Oi8bkyH
-	 Jrjds7o46fAqGGviG/t8orQhB9xCCrm/GhPprbBTggJALtvj3zY5zzx6yUspz36Jmr
-	 Q3DFU3jnU5z54sWQFmQVQb5E2X8NKIZ+P/+/guqgzGoB+45gbfCYRwCCt8umkdc3a3
-	 JHxfy4+rP35HA==
-Received: from ip-185-104-136-29.ptr.icomera.net ([185.104.136.29] helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rQ1rS-00CNKU-LA;
-	Wed, 17 Jan 2024 09:05:26 +0000
-Date: Wed, 17 Jan 2024 09:05:25 +0000
-Message-ID: <8734uwxrca.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: linux-kernel@vger.kernel.org,
-	Hector Martin <marcan@marcan.st>,
-	Ian Rogers <irogers@google.com>,
-	acme@redhat.com,
-	james.clark@arm.com,
-	john.g.garry@oracle.com,
-	leo.yan@linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-perf-users@vger.kernel.org,
-	mike.leach@linaro.org,
-	namhyung@kernel.org,
-	suzuki.poulose@arm.com,
-	tmricht@linux.ibm.com,
-	will@kernel.org
-Subject: Re: [PATCH] perf print-events: make is_event_supported() more robust
-In-Reply-To: <20240116170348.463479-1-mark.rutland@arm.com>
-References: <20240116170348.463479-1-mark.rutland@arm.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1705482358; c=relaxed/simple;
+	bh=HUxnOv9lpq6eB86LbK5ELhkcteKhWq8U8LCT6iiiKYA=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=IMr4g6fabUB0FNPFdyUMjXziz8a8b+yKhQM8y4gupVG2DfCdsbhGsUzGtHj61McJDkf1JHX4vR8B3VyZgTzPJtc1rzeru8B7JuvJJfOJNjQxuniqIMCohxD4DXsCpM8dmKgnc5XUkni6sxlzrwdz7OXD7b/DEIMnaYhIQtgmtG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=llDiGHEr; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id AE54C1C0076; Wed, 17 Jan 2024 10:05:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+	t=1705482346;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KeRLwwZ1HDJnAfYZoFbBc2Cb4u4R/zDcUwYKhDNDpog=;
+	b=llDiGHErJ60+mIQNq+XseeLowZVnkAC9O+e+ePqeQydppyXfPTiG/zBdln+9U/Q+MK5hKO
+	VNjZU9osk9N1nmFlcE80uaxDQyF+eFRTTn3MW2Pp/mce2LA7ciWU3+1ywRwOPRny3Cjsqd
+	QzKuOuZVA+/tuRQLlSrvN1Stu3o7FAk=
+Date: Wed, 17 Jan 2024 10:05:46 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Luis =?iso-8859-1?Q?Mu=F1oz?= Fuente <luis.munoz.edu@juntadeandalucia.es>
+Cc: linux-kernel@vger.kernel.org
+Subject: Re: I can't activate term(e) and kill(i) magic SysRq key
+Message-ID: <ZaeYavtu6ZNYvEbB@duo.ucw.cz>
+References: <002cc4da-e502-4c79-97bd-0a8b6cb2630c@juntadeandalucia.es>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.104.136.29
-X-SA-Exim-Rcpt-To: mark.rutland@arm.com, linux-kernel@vger.kernel.org, marcan@marcan.st, irogers@google.com, acme@redhat.com, james.clark@arm.com, john.g.garry@oracle.com, leo.yan@linaro.org, linux-arm-kernel@lists.infradead.org, linux-perf-users@vger.kernel.org, mike.leach@linaro.org, namhyung@kernel.org, suzuki.poulose@arm.com, tmricht@linux.ibm.com, will@kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ugwIjh5IOViM3yow"
+Content-Disposition: inline
+In-Reply-To: <002cc4da-e502-4c79-97bd-0a8b6cb2630c@juntadeandalucia.es>
 
-Hi Mark,
 
-On Tue, 16 Jan 2024 17:03:48 +0000,
-Mark Rutland <mark.rutland@arm.com> wrote:
-> 
-> Currently the perf tool doesn't deteect support for extneded event types
-> on Apple M1/M2 systems, and will not auto-expand plain PERF_EVENT_TYPE
-> hardware events into per-PMU events. This is due to the detection of
-> extended event types not handling mandatory filters required by the
-> M1/M2 PMU driver.
+--ugwIjh5IOViM3yow
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for looking into this.
+Hi!
 
-I've given your patch a go on my M1 box, and it indeed makes things
-substantially better:
+> I try to activate all magic SysRq key options according to:
+> https://www.kernel.org/doc/html/latest/admin-guide/sysrq.html
+> but I can't activate term(e) and kill(i) option, is this option
+> disabled? Thank you
 
-$ sudo ./perf stat -e cycles ~/hackbench 100 process 1000
-Running with 100*40 (== 4000) tasks.
-Time: 3.419
+Some keyboards can't handle required combinations.
 
- Performance counter stats for '/home/maz/hackbench 100 process 1000':
+Best regards,
+								Pavel
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
 
-   174,783,472,090      apple_firestorm_pmu/cycles/                                             (93.10%)
-    39,134,744,813      apple_icestorm_pmu/cycles/                                              (71.86%)
+--ugwIjh5IOViM3yow
+Content-Type: application/pgp-signature; name="signature.asc"
 
-       3.568145595 seconds time elapsed
+-----BEGIN PGP SIGNATURE-----
 
-      12.203084000 seconds user
-      55.135271000 seconds sys
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZaeYagAKCRAw5/Bqldv6
+8oYPAJ0R+/aRaFC3+7pgn54XY+f1KxQChgCfXhTAUXeaL3VtNQ2Y3N/QVCfgwkw=
+=AAtu
+-----END PGP SIGNATURE-----
 
-However, I'm seeing some slightly odd behaviours:
-
-$ sudo ./perf stat -e cycles:k ~/hackbench 100 process 1000
-Running with 100*40 (== 4000) tasks.
-Time: 3.313
-
- Performance counter stats for '/home/maz/hackbench 100 process 1000':
-
-   <not supported>      apple_firestorm_pmu/cycles:k/                                         
-   <not supported>      apple_icestorm_pmu/cycles:k/                                          
-
-       3.467568841 seconds time elapsed
-
-      13.080111000 seconds user
-      53.162099000 seconds sys
-
-I would have expected it to count, but it didn't. For that to work, I
-have to add the 'H' modifier:
-
-$ sudo ./perf stat -e cycles:Hk ~/hackbench 100 process 1000
-Running with 100*40 (== 4000) tasks.
-Time: 3.335
-
- Performance counter stats for '/home/maz/hackbench 100 process 1000':
-
-   183,756,134,397      apple_firestorm_pmu/cycles:Hk/                                          (85.56%)
-    37,302,841,991      apple_icestorm_pmu/cycles:Hk/                                           (72.10%)
-
-       3.490138958 seconds time elapsed
-
-      13.376772000 seconds user
-      53.326289000 seconds sys
-
-But my perf-foo is as basic as it gets, so it is likely that I'm
-missing something.
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+--ugwIjh5IOViM3yow--
 
