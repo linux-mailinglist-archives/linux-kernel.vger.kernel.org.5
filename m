@@ -1,259 +1,234 @@
-Return-Path: <linux-kernel+bounces-29231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D55D4830B4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:38:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0F03830B55
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:39:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED11E1C217DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:38:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66DA21F2BE11
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:39:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D1BF224FA;
-	Wed, 17 Jan 2024 16:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB4C224E5;
+	Wed, 17 Jan 2024 16:39:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MIFeBT5n"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EqqdPV2S"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D61A51E528
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 16:37:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1311224D3
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 16:39:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705509455; cv=none; b=EPrERTu91HNFOhJaydcGKOvPJtDpK9VKuZhifIfpdq2dRIhP8TxkOYEBRInVTAJTJoikBbGJVWYOGnTxpSQ1s0n6A5w3u8DzJ5S05S7PkRnov3tLyz97YvBoJEXXrdlKAIyhVReFSa36EpA5zT3tM3AtP7A43gAJ+5l4BWtOe5Q=
+	t=1705509584; cv=none; b=GKZhUHZD8l6IeXSwNf7eSjtXD2udkK5SoJIwA8PGTBRL9cin56bKKgdIRXTLcceUJJxGHJt9rMWL4unkMbPVoRltg/X4EIgLuhhGiVXHajgyyT6ZXFbhsZZN+GKmYRD98gi26NpdsiSQNfPCiz1YE7E89DEvLplHyGbHUvOZLak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705509455; c=relaxed/simple;
-	bh=quxqBlELDmx/23WoH7bvn2sOo+t/7W8a40DpmJUSCWU=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:
-	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
-	 X-Google-Smtp-Source:X-Received:Received:Received:From:To:Cc:
-	 Subject:In-Reply-To:References:X-Clacks-Overhead:Date:Message-ID:
-	 MIME-Version:Content-Type:Content-Transfer-Encoding; b=JTj4/3QdZFX2xdri53puaeFq8IWntlu5bUhw5bXsdvsIdcjNzXxWmZwYgtNWLTrYoZKNjbesJDAvCU6Yxe4yZYIW3Quy6qJigkrlwWMfseaEc65XnrkpHeH1N39uMxVs/O4KvfbiyVEzfocxNGmRhl/IyF0nPYt+82rMXXQ+PAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MIFeBT5n; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1705509584; c=relaxed/simple;
+	bh=M3t4lykNqYhmCjQO4zKq31KhD0/95qJoM+feR8YYTMs=;
+	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:Received:
+	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To:User-Agent:
+	 X-Scanned-By; b=BvuFCEWezHYB73SFAE4TjKJ1PgWI2T1xX7gEDlRehIyw2hz3ciwpWsT3Qy85bEfh8DSeKf4BQOKeFG61EXA+biHM/nvYVt0ze+gpiX/HUVBpRCLuelNHlNIgM3pSRWIMbtUHVCrIN4vrGONxKrl5zr14KHh1mrdWjx5Y1EsZYgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EqqdPV2S; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705509453;
+	s=mimecast20190719; t=1705509582;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=se4elMsGJU9EC+SNklZxwLpVdn5NqIm93z2voyeARIM=;
-	b=MIFeBT5npyxCyXklulyqUmAopxWJ7MudZyHFKjKkyJwK3Sh2prDN7x2MAJkUAFq0uT7U+W
-	781LDs3g3XQ7p+xFESyHuDu3zk85o2xeEVEE6SSegf6UKg032IYfTmUeNY27ctfQVEvgF6
-	YzxlBgAED3aZch9svmbFWyzQ1HM4XgA=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-426-9rVWlZyXOqOJq6QIJWTumg-1; Wed, 17 Jan 2024 11:37:31 -0500
-X-MC-Unique: 9rVWlZyXOqOJq6QIJWTumg-1
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-55894c36888so3649933a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 08:37:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705509450; x=1706114250;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=se4elMsGJU9EC+SNklZxwLpVdn5NqIm93z2voyeARIM=;
-        b=V3Gpd2kVosRXnVU/k7uxIRPyYV7imQWDiJmSxtJjFiJCjAK5EJQueGMceL7ZRxc/qX
-         acZP3fFkUgXYns5+YNOjyBPPbMN/U6KvKRTeYb35F6Dvkrp8xhJ0/guCvDCitDtUnKac
-         PXsUJZnGc7gcmCGLM/El6q1AYako/dYR41/1+0M2Zo7mp4GAA/imqShcEuEC8xdPumrt
-         Bq/mhsWOTSpacr07jknOeEBHVboSQHvWvrTfCKd48dzH/SPcZcYYTEA42VRFsbNMxYzT
-         4h1PHc6hW3Zl7Q8mmtJfTGgokafJ7RHu4KtxoD6+Q/frNQndfrWVXeNBUEhqKb2JqlIV
-         7NpQ==
-X-Gm-Message-State: AOJu0Yy6SgCI/d0AsoDFvfC3tY0tDE6wL01UL920LfJJMjPvoIw/LSga
-	qCQktYg9Z2j+rlfI7C3zYvzF+miUao2mDTgRQHcXLbGp6tBO6EBM3KyOlzU7b6VTyA3GS02e6XO
-	xDIidu+N5hFAdmHX4i7Gwf5SBvbl1m5PV
-X-Received: by 2002:a05:6402:1247:b0:559:edce:d10c with SMTP id l7-20020a056402124700b00559edced10cmr288429edw.18.1705509450575;
-        Wed, 17 Jan 2024 08:37:30 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEOfrMcGpH3jIhyrQhRuVToqnLSPcbgcfmgpIm4KZwzvqpYdTEe2SVKL/BvprDvAeyDQw9uOQ==
-X-Received: by 2002:a05:6402:1247:b0:559:edce:d10c with SMTP id l7-20020a056402124700b00559edced10cmr288393edw.18.1705509450147;
-        Wed, 17 Jan 2024 08:37:30 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id x9-20020aa7cd89000000b00558e0481b2fsm6868305edv.47.2024.01.17.08.37.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 08:37:29 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 4701F1088A04; Wed, 17 Jan 2024 17:37:29 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, LKML
- <linux-kernel@vger.kernel.org>, Network Development
- <netdev@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, Boqun
- Feng <boqun.feng@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, Eric
- Dumazet <edumazet@google.com>, Frederic Weisbecker <frederic@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
- Gleixner <tglx@linutronix.de>, Waiman Long <longman@redhat.com>, Will
- Deacon <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
- Nakryiko <andrii@kernel.org>, Cong Wang <xiyou.wangcong@gmail.com>, Hao
- Luo <haoluo@google.com>, Jamal Hadi Salim <jhs@mojatatu.com>, Jesper
- Dangaard Brouer <hawk@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Jiri
- Pirko <jiri@resnulli.us>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Ronak
- Doshi <doshir@vmware.com>, Song Liu <song@kernel.org>, Stanislav Fomichev
- <sdf@google.com>, VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
- Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH net-next 15/24] net: Use nested-BH locking for XDP
- redirect.
-In-Reply-To: <20240112174138.tMmUs11o@linutronix.de>
-References: <20231215171020.687342-1-bigeasy@linutronix.de>
- <20231215171020.687342-16-bigeasy@linutronix.de>
- <CAADnVQKJBpvfyvmgM29FLv+KpLwBBRggXWzwKzaCT9U-4bgxjA@mail.gmail.com>
- <87r0iw524h.fsf@toke.dk> <20240112174138.tMmUs11o@linutronix.de>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Wed, 17 Jan 2024 17:37:29 +0100
-Message-ID: <87ttnb6hme.fsf@toke.dk>
+	bh=9MEKaPLuC4dWjyeAAjRSNgqo7o077s9TgRJfiIfemoI=;
+	b=EqqdPV2SILocvrCJOjjGvYFBEYon/AWGInUeQD1r2FD4592EF7RdGYgkGQ5pd2V5QTPzu0
+	/TmfVmORiJCIlezG1UnS/8h9PeByj2niLp6XWety4Gfhe4TCtF8i3jZYad9nNG751j+m+o
+	1Q4g0DzhskdvxAFe3RaNTK6903yhXs4=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-389-a8vvGCybN5WY-ilt55kkNA-1; Wed,
+ 17 Jan 2024 11:39:36 -0500
+X-MC-Unique: a8vvGCybN5WY-ilt55kkNA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 921CE1C29EC6;
+	Wed, 17 Jan 2024 16:39:31 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.121])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 8BF4E3C25;
+	Wed, 17 Jan 2024 16:39:22 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Wed, 17 Jan 2024 17:38:18 +0100 (CET)
+Date: Wed, 17 Jan 2024 17:38:09 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Bernd Edlinger <bernd.edlinger@hotmail.de>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+	Alexey Dobriyan <adobriyan@gmail.com>,
+	Kees Cook <keescook@chromium.org>,
+	Andy Lutomirski <luto@amacapital.net>,
+	Will Drewry <wad@chromium.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@suse.com>, Serge Hallyn <serge@hallyn.com>,
+	James Morris <jamorris@linux.microsoft.com>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Yafang Shao <laoar.shao@gmail.com>, Helge Deller <deller@gmx.de>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Adrian Reber <areber@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>, Jens Axboe <axboe@kernel.dk>,
+	Alexei Starovoitov <ast@kernel.org>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+	tiozhang <tiozhang@didiglobal.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	"Paulo Alcantara (SUSE)" <pc@manguebit.com>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	YueHaibing <yuehaibing@huawei.com>,
+	Paul Moore <paul@paul-moore.com>, Aleksa Sarai <cyphar@cyphar.com>,
+	Stefan Roesch <shr@devkernel.io>, Chao Yu <chao@kernel.org>,
+	xu xin <xu.xin16@zte.com.cn>, Jeff Layton <jlayton@kernel.org>,
+	Jan Kara <jack@suse.cz>, David Hildenbrand <david@redhat.com>,
+	Dave Chinner <dchinner@redhat.com>, Shuah Khan <shuah@kernel.org>,
+	Zheng Yejian <zhengyejian1@huawei.com>,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	David Windsor <dwindsor@gmail.com>,
+	Mateusz Guzik <mjguzik@gmail.com>, Ard Biesheuvel <ardb@kernel.org>,
+	"Joel Fernandes (Google)" <joel@joelfernandes.org>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Hans Liljestrand <ishkamiel@gmail.com>
+Subject: Re: [PATCH v14] exec: Fix dead-lock in de_thread with ptrace_attach
+Message-ID: <20240117163739.GA32526@redhat.com>
+References: <AM8PR10MB470801D01A0CF24BC32C25E7E40E9@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
+ <AM8PR10MB470875B22B4C08BEAEC3F77FE4169@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
+ <AS8P193MB1285DF698D7524EDE22ABFA1E4A1A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+ <AS8P193MB12851AC1F862B97FCE9B3F4FE4AAA@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+ <AS8P193MB1285FF445694F149B70B21D0E46C2@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+ <20240116152210.GA12342@redhat.com>
+ <AS8P193MB128538BC3833E654F56DA801E4722@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AS8P193MB128538BC3833E654F56DA801E4722@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
-
-> On 2024-01-04 20:29:02 [+0100], Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->>=20
->> >> @@ -3925,6 +3926,7 @@ struct sk_buff *tcf_qevent_handle(struct tcf_qe=
-vent *qe, struct Qdisc *sch, stru
->> >>
->> >>         fl =3D rcu_dereference_bh(qe->filter_chain);
->> >>
->> >> +       guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
->> >>         switch (tcf_classify(skb, NULL, fl, &cl_res, false)) {
->> >>         case TC_ACT_SHOT:
->> >>                 qdisc_qstats_drop(sch);
->> >
->> > Here and in all other places this patch adds locks that
->> > will kill performance of XDP, tcx and everything else in networking.
->> >
->> > I'm surprised Jesper and other folks are not jumping in with nacks.
->> > We measure performance in nanoseconds here.
->> > Extra lock is no go.
->> > Please find a different way without ruining performance.
->>=20
->> I'll add that while all this compiles out as no-ops on !PREEMPT_RT, I do
->> believe there are people who are using XDP on PREEMPT_RT kernels and
->> still expect decent performance. And to achieve that it is absolutely
->> imperative that we can amortise expensive operations (such as locking)
->> over multiple packets.
->>=20
->> I realise there's a fundamental trade-off between the amount of
->> amortisation and the latency hit that we take from holding locks for
->> longer, but tuning the batch size (while still keeping some amount of
->> batching) may be a way forward? I suppose Jakub's suggestion in the
->> other part of the thread, of putting the locks around napi->poll(), is a
->> step towards something like this.
+On 01/17, Bernd Edlinger wrote:
 >
-> The RT requirements are usually different. Networking as in CAN might be
-> important but Ethernet could only used for remote communication and so
-> "not" important. People complained that they need to wait for Ethernet
-> to be done until the CAN packet can be injected into the stack.
-> With that expectation you would like to pause Ethernet immediately and
-> switch over the CAN interrupt thread.
+> >>
+> >> The problem happens when a tracer tries to ptrace_attach
+> >> to a multi-threaded process, that does an execve in one of
+> >> the threads at the same time, without doing that in a forked
+> >> sub-process.  That means: There is a race condition, when one
+> >> or more of the threads are already ptraced, but the thread
+> >> that invoked the execve is not yet traced.  Now in this
+> >> case the execve locks the cred_guard_mutex and waits for
+> >> de_thread to complete.  But that waits for the traced
+> >> sibling threads to exit, and those have to wait for the
+> >> tracer to receive the exit signal, but the tracer cannot
+> >> call wait right now, because it is waiting for the ptrace
+> >> call to complete, and this never does not happen.
+> >> The traced process and the tracer are now in a deadlock
+> >> situation, and can only be killed by a fatal signal.
+> >
+> > This looks very confusing to me. And even misleading.
+> >
+> > So IIRC the problem is "simple".
+> >
+> > de_thread() sleeps with cred_guard_mutex waiting for other threads to
+> > exit and pass release_task/__exit_signal.
+> >
+> > If one of the sub-threads is traced, debugger should do ptrace_detach()
+> > or wait() to release this tracee, the killed tracee won't autoreap.
+> >
 >
-> But if someone managed to setup XDP then it is likely to be important.
-> With RT traffic it is usually not the throughput that matters but the
-> latency. You are likely in the position to receive a packet, say every
-> 1ms, and need to respond immediately. XDP would be used to inspect the
-> packet and either hand it over to the stack or process it.
+> Yes. but the tracer has to do its job, and that is ptrace_attach the
+> remaining treads, it does not know that it would avoid a dead-lock
+> when it calls wait(), instead of ptrace_attach.  It does not know
+> that the tracee has just called execve in one of the not yet traced
+> threads.
 
-I am not contesting that latency is important, but it's a pretty
-fundamental trade-off and we don't want to kill throughput entirely
-either. Especially since this is global to the whole kernel; and there
-are definitely people who want to use XDP on an RT kernel and still
-achieve high PPS rates.
+Hmm. I don't understand you.
 
-(Whether those people really strictly speaking need to be running an RT
-kernel is maybe debatable, but it does happen).
+I agree we have a problem which should be fixed. Just the changelog
+looks confusing to me, imo it doesn't explain the race/problem clearly.
 
-> I expected the lock operation (under RT) to always succeeds and not
-> cause any delay because it should not be contended.
-
-A lock does cause delay even when it's not contended. Bear in mind that
-at 10 Gbps line rate, we have a budget of 64 nanoseconds to process each
-packet (for 64-byte packets). So just the atomic op to figure out
-whether there's any contention (around 10ns on the Intel processors I
-usually test on) will blow a huge chunk of the total processing budget.
-We can't actually do the full processing needed in those 64 nanoseconds
-(not to mention the 6.4 nanoseconds we have available at 100Gbps), which
-is why it's essential to amortise as much as we can over multiple
-packets.
-
-This is all back-of-the-envelope calculations, of course. Having some
-actual numbers to look at would be great; I don't suppose you have a
-setup where you can run xdp-bench and see how your patches affect the
-throughput?
-
-> It should only block if something with higher priority preempted the
-> current interrupt thread _and_ also happen to use XDP on the same CPU.
-> In that case (XDP is needed) it would flush the current user out of
-> the locked section before the higher-prio thread could take over.
-> Doing bulk and allowing the low-priority thread to complete would
-> delay the high-priority thread. Maybe I am too pessimistic here and
-> having two XDP programs on one CPU is unlikely to happen.
+> > Now. If debugger tries to take the same cred_guard_mutex before
+> > detach/wait we have a deadlock. This is not specific to ptrace_attach(),
+> > proc_pid_attr_write() takes this lock too.
+> >
+> > Right? Or are there other issues?
+> >
 >
-> Adding the lock on per-NAPI basis would allow to batch packets.
-> Acquiring the lock only if XDP is supported would not block the CAN
-> drivers since they dont't support XDP. But sounds like a hack.
+> No, proc_pid_attr_write has no problem if it waits for cred_guard_mutex,
+> because it is only called from one of the sibling threads,
 
-I chatted with Jesper about this, and he had an idea not too far from
-this: split up the XDP and regular stack processing in two stages, each
-with their individual batching. So whereas right now we're doing
-something like:
+OK, thanks, I was wrong. I forgot about "A task may only write its own attributes".
+So yes, ptrace_attach() is the only source of problematic mutex_lock() today.
+There were more in the past.
 
-run_napi()
-  bh_disable()
-  for pkt in budget:
-    act =3D run_xdp(pkt)
-    if (act =3D=3D XDP_PASS)
-      run_netstack(pkt)  // this is the expensive bit
-  bh_enable()
+> >> +		if (unlikely(t->ptrace)
+> >> +		    && (t != tsk->group_leader || !t->exit_state))
+> >> +			unsafe_execve_in_progress = true;
+> >
+> > The !t->exit_state is not right... This sub-thread can already be a zombie
+> > with ->exit_state != 0 but see above, it won't be reaped until the debugger
+> > does wait().
+> >
+>
+> I dont think so.
+> de_thread() handles the group_leader different than normal threads.
 
-We could instead do:
+I don't follow...
 
-run_napi()
-  bh_disable()
-  for pkt in budget:
-    act =3D run_xdp(pkt)
-    if (act =3D=3D XDP_PASS)
-      add_to_list(pkt, to_stack_list)
-  bh_enable()
-  // sched point
-  bh_disable()
-  for pkt in to_stack_list:
-    run_netstack(pkt)
-  bh_enable()
+I didn't say that t is a group leader. I said it can be a zombie sub-thread
+with ->exit_state != 0.
 
+> That means normal threads have to wait for being released from the zombie
+> state by the tracer:
+> sig->notify_count > 0, and de_thread is woken up by __exit_signal
 
-This would limit the batching that blocks everything to only the XDP
-processing itself, which should limit the maximum time spent in the
-blocking state significantly compared to what we have today. The caveat
-being that rearranging things like this is potentially a pretty major
-refactoring task that needs to touch all the drivers (even if some of
-the logic can be moved into the core code in the process). So not really
-sure if this approach is feasible, TBH.
+That is what I said before. Debugger should release a zombie sub-thread,
+it won't do __exit_signal() on its own.
 
-> Daniel said netkit doesn't need this locking because it is not
-> supporting this redirect and it made me think. Would it work to make
-> the redirect structures part of the bpf_prog-structure instead of
-> per-CPU? My understanding is that eBPF's programs data structures are
-> part of it and contain locking allowing one eBPF program preempt
-> another one.
-> Having the redirect structures part of the program would obsolete
-> locking. Do I miss anything?
+> >> +	if (unlikely(unsafe_execve_in_progress)) {
+> >> +		spin_unlock_irq(lock);
+> >> +		sig->exec_bprm = bprm;
+> >> +		mutex_unlock(&sig->cred_guard_mutex);
+> >> +		spin_lock_irq(lock);
+> >
+> > I don't understand why do we need to unlock and lock siglock here...
+>
+> That is just a precaution because I did want to release the
+> mutexes exactly in the reverse order as they were acquired.
 
-This won't work, unfortunately: the same XDP program can be attached to
-multiple interfaces simultaneously, and for hardware with multiple
-receive queues (which is most of the hardware that supports XDP), it can
-even run simultaneously on multiple CPUs on the same interface. This is
-the reason why this is all being kept in per-CPU variables today.
+To me this adds the unnecessary complication.
 
--Toke
+> > But my main question is why do we need the unsafe_execve_in_progress boolean.
+> > If this patch is correct and de_thread() can drop and re-acquire cread_guard_mutex
+> > when one of the threads is traced, then why can't we do this unconditionally ?
+> >
+>
+> I just wanted to keep the impact of the change as small as possible,
+
+But the unsafe_execve_in_progress logic increases the impact and complicates
+the patch.
+
+I think the fix should be as simple as possible. (to be honest, right now
+I don't think this is a right approach).
+
+> including
+> possible performance degradation due to double checking of credentials.
+
+Not sure I understand, but you can add the performance improvements later.
+Not to mention that this should be justified, and the for_other_threads()
+loop added by this patch into de_thread() is not nice performance-wise.
+
+Oleg.
 
 
