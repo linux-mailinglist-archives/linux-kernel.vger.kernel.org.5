@@ -1,224 +1,138 @@
-Return-Path: <linux-kernel+bounces-28385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A26BD82FDD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 00:48:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1329182FDDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 01:02:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 181701F26F9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jan 2024 23:48:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4ACA28B368
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 00:02:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E7C867C75;
-	Tue, 16 Jan 2024 23:48:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E936B2C9E;
+	Wed, 17 Jan 2024 00:02:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YdYqvvKN"
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CL0HZHXA"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FB5567C66
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 23:48:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B695610F7;
+	Wed, 17 Jan 2024 00:02:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705448916; cv=none; b=hwlJoW2DUD8DwjysqsT/tBLOK2VoiYpxRyCF4N/wI5P6gbcwcpTtDgX5iJNzX93D/UE7QTsXFxLLf6knHSE79NbDu4aYG+4dl4fygVWEnsPZlDth3C3SJzxoXmn3P7e6NcAAqOR03oJlDWH/mQCzdwI6K7BxCoDFg7dviSPm3Q4=
+	t=1705449766; cv=none; b=T9Giux722Vus3l50BThnfa3U92XcP1Ba61cyqSuJfcRr2mlARWqxSTK8Qxu7k42viqP/AinUITkYvNir+PzePKRx0Xx7lBr5gT2nHyO3SSc/NKRxZsDa4uRozD3/biK43pw2LMOJgnT7gZHC241QqrssmMm0YlluAmhNAhPfcOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705448916; c=relaxed/simple;
-	bh=O8Kq4uPVWRZlnIMs1LFsvejHjua+7vRBykNcj6Vhcqo=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=njX/QGKakk/6xvgVUdPsi0O/HPkblCKCKDu1ozuE31yiWDpepP+U4PKMepACEkCbDeAQAFG5DW6j4XfU/Oa/g2nqMHf7EWXRVsjEQgfVStGbepSX+xU1JNKGWbdDlLORwjfp49TQ4cOowjL57E8YZEbnyIbFIo1o/jfYqzJ7+V4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YdYqvvKN; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-429bdb17616so111011cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 15:48:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705448914; x=1706053714; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TcX6td37QRw3Q78lq9NLHvuhZmpzzW+P43xh6D/Stls=;
-        b=YdYqvvKNHRTH0X/2vu0U5CkdwRnoWjDeDO9Evet+PiaE7PQPnh0lEIkDgbTwc41OkM
-         al+iwravePihA9SjBZPRJ/9TsmgDORoA4vJbCLz36bNS2GBFkVKHWkE4D0I7T88yECc4
-         Mnxq1ZVxhpm3EIdis0d74KuKXCW08AagpCwL/PQ3kvqqK+triz0vVLWR6ttY+Dm01WQ/
-         WkBux7YfV9U718Cxx1Sywpa/glejtvh+hVIOdR9CCHwIZSYKyKge5lc4g0rnL18Lxc9Y
-         9pflwdwI+ZH2TYR+JT4gmm8tLlgr7xHfoVMJiPo9NVPG31Qz4IoQkP40jBvmP4P1R+jR
-         guLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705448914; x=1706053714;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TcX6td37QRw3Q78lq9NLHvuhZmpzzW+P43xh6D/Stls=;
-        b=b4F5TIgKLeX5/JOmMQi29wjuoRvvbmugAfCuJXdCiKLixpIGjNBhLjVXRUr/qK5O04
-         GslwZjlWx2CUcx7HHvePLtdL426kpUaWBmhT2Cw07hQA/Pp10kAEFIyk4nR/z/98e7/K
-         JRZkk/qizzaMlaoSaqG9QgLgdUT1zzCgwXyXNZuVNru6XFYgOqJ0H8R3pMfRuO296F7+
-         Lj9g+QRHPV66Tm2XKsBzDMe8ZATciEEIXZcS5cd5hujWTba027R9zss/eKDXaath0EUG
-         250xCYfLDa0gjsGprY6h/ssvAYz8W2qQK2LvvUTS3B+jVnRC+BCbcsgO2wBeoYIav2V4
-         J7zA==
-X-Gm-Message-State: AOJu0YwHa03raMMkbFh2gXmGPwnOwgZICCagKKT6YKZdHbnu/fR5dmOV
-	kM2/KRDgtuz9AS7j/3qFqRSOkvuoc4Kx5KT9KKW5GRxZRbRBPfdJo/pcSeZkTSX6Ng4CvKIaIRO
-	yAIfWFYbdwnw9yUTc9gdJo5dZV41o5g+gfMeJ
-X-Google-Smtp-Source: AGHT+IF175+Y4Kli2T3zqhJiGB1qrctLtKv0qPENb4TsBh8AoPaduA173aWAazUv/IITNOQLJimNwyj4KFTx/iHL+2o=
-X-Received: by 2002:a05:622a:1dc6:b0:429:b532:5075 with SMTP id
- bn6-20020a05622a1dc600b00429b5325075mr51787qtb.22.1705448913924; Tue, 16 Jan
- 2024 15:48:33 -0800 (PST)
+	s=arc-20240116; t=1705449766; c=relaxed/simple;
+	bh=aePeyFduRfjV06agsTSgcBO9WyTyujZeq0WIAUBMi3I=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:X-IronPort-AV:Received:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=k/ybBIi9hWDG8bUFiHl7LjfnWEoJKl3CV/gmHcJ+nH0qC0+I5QmEeTVK17vtkFWRlXTM1LUQQtH4NrGGmOjZ6fcg0SEIkVBN145w70zgKaibx8V5XhnPTW8FxAcGwhaXil4qo8CU1kCZDPFghn+nPqUW66lZ0w3RMfcZZFtnWTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CL0HZHXA; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705449765; x=1736985765;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=aePeyFduRfjV06agsTSgcBO9WyTyujZeq0WIAUBMi3I=;
+  b=CL0HZHXA1eABc1acOnM6dthnsy2TGcXkgHf3C/EsfLk5IeuhsPy/tQjq
+   FcrHydWEe56TsJjBK89Sch122WOlgUTUYA1MX6cSaf51YrzezUrkHbTpp
+   AgQc3KSzTuqezLlfCfxz5Vipn75KthsWJKsovFhvEpgFsAbKkDSqWFnkJ
+   TZ3gRBtw/bXt2vAqTNCX26Ib/6k5dFsS847ObfJSydEAAl6D5ZtaxbWsd
+   Fo5HVhQCWH6fSYFZuSi3YYVGez0s43GskYpQA73ktq795/b0qBKsEDn7/
+   uYHAwsKUMgL+3DMRfuvrTsvbu5IslAYeRV4rDIH0IH+8sQxglkEAsFiJy
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="6732073"
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="6732073"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2024 16:02:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="818331734"
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="818331734"
+Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 16 Jan 2024 16:02:36 -0800
+Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rPtO5-0001Ne-2l;
+	Wed, 17 Jan 2024 00:02:33 +0000
+Date: Wed, 17 Jan 2024 08:02:11 +0800
+From: kernel test robot <lkp@intel.com>
+To: Michael Grzeschik <m.grzeschik@pengutronix.de>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: oe-kbuild-all@lists.linux.dev, v9fs@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-usb@vger.kernel.org, kernel@pengutronix.de,
+	Michael Grzeschik <m.grzeschik@pengutronix.de>
+Subject: Re: [PATCH 1/3] usb: gadget: function: 9pfs
+Message-ID: <202401170734.7rHBG2LF-lkp@intel.com>
+References: <20240116-ml-topic-u9p-v1-1-ad8c306f9a4e@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231111014933.1934562-1-davidai@google.com> <20231111014933.1934562-2-davidai@google.com>
- <865y231jvj.wl-maz@kernel.org> <CAGETcx9-n0z5buWgtLZ+6VxW2jEko1GWzkGtGhFiZEq-x_G4nw@mail.gmail.com>
- <867clpaxel.wl-maz@kernel.org> <CAGETcx_8x4p7WTwqQiVGdtHftVjFUJruXsOXwJXgDi0GdEtLNA@mail.gmail.com>
- <86zfx98tgi.wl-maz@kernel.org>
-In-Reply-To: <86zfx98tgi.wl-maz@kernel.org>
-From: Saravana Kannan <saravanak@google.com>
-Date: Tue, 16 Jan 2024 15:47:57 -0800
-Message-ID: <CAGETcx-sYUAE-Pgnf20ZXR_9WJOZ5FqksL=8i8+9PCLLazy54w@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: cpufreq: add virtual cpufreq device
-To: Marc Zyngier <maz@kernel.org>
-Cc: David Dai <davidai@google.com>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Viresh Kumar <viresh.kumar@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Sudeep Holla <sudeep.holla@arm.com>, Quentin Perret <qperret@google.com>, 
-	Masami Hiramatsu <mhiramat@google.com>, Will Deacon <will@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Oliver Upton <oliver.upton@linux.dev>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Pavan Kondeti <quic_pkondeti@quicinc.com>, Gupta Pankaj <pankaj.gupta@amd.com>, 
-	Mel Gorman <mgorman@suse.de>, kernel-team@android.com, linux-pm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240116-ml-topic-u9p-v1-1-ad8c306f9a4e@pengutronix.de>
 
-On Sat, Jan 13, 2024 at 1:37=E2=80=AFAM Marc Zyngier <maz@kernel.org> wrote=
-:
->
-> On Fri, 12 Jan 2024 22:02:39 +0000,
-> Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > Sorry for the delay in response. Was very busy for a while and then
-> > holidays started.
-> >
-> > On Fri, Dec 8, 2023 at 12:52=E2=80=AFAM Marc Zyngier <maz@kernel.org> w=
-rote:
-> > >
-> > > On Thu, 07 Dec 2023 22:44:36 +0000,
-> > > Saravana Kannan <saravanak@google.com> wrote:
-> > > >
-> > > > On Wed, Nov 15, 2023 at 12:49=E2=80=AFAM Marc Zyngier <maz@kernel.o=
-rg> wrote:
-> > > > >
-> > > > > On Sat, 11 Nov 2023 01:49:29 +0000,
-> > > > > David Dai <davidai@google.com> wrote:
-> > > > > >
-> > > > > > Adding bindings to represent a virtual cpufreq device.
-> > > > > >
-> > > > > > Virtual machines may expose MMIO regions for a virtual cpufreq =
-device
-> > > > > > for guests to read frequency information or to request frequenc=
-y
-> > > > > > selection. The virtual cpufreq device has an individual control=
-ler for
-> > > > > > each frequency domain.
-> > > > >
-> > > > > I would really refrain form having absolute frequencies here. A
-> > > > > virtual machine can be migrated, and there are *zero* guarantees =
-that
-> > > > > the target system has the same clock range as the source.
-> > > > >
-> > > > > This really should be a relative number, much like the capacity. =
-That,
-> > > > > at least, can be migrated across systems.
-> > > >
-> > > > There's nothing in this patch that mandates absolute frequency.
-> > > > In true KVM philosophy, we leave it to the VMM to decide.
-> > >
-> > > This has nothing to do with KVM. It would apply to any execution
-> > > environment, including QEMU in TCG mode.
-> > >
-> > > To quote the original patch:
-> > >
-> > > +    description:
-> > > +      Address and size of region containing frequency controls for e=
-ach of the
-> > > +      frequency domains. Regions for each frequency domain is placed
-> > > +      contiugously and contain registers for controlling DVFS(Dynami=
-c Frequency
-> > > +      and Voltage) characteristics. The size of the region is propor=
-tional to
-> > > +      total number of frequency domains.
-> > >
-> > > What part of that indicates that *relative* frequencies are
-> > > acceptable? The example explicitly uses the opp-v2 binding, which
-> > > clearly is about absolute frequency.
-> >
-> > We can update the doc to make that clearer and update the example too.
-> >
-> > > To reiterate: absolute frequencies are not the right tool for the job=
-,
-> > > and they should explicitly be described as relative in the spec. Not
-> > > left as a "whatev'" option for the execution environment to interpret=
-.
-> >
-> > I think it depends on the use case. If there's no plan to migrate the
-> > VM across different devices, there's no need to do the unnecessary
-> > normalization back and forth.
->
-> VM migration is a given, specially when QEMU is involved. Designing
-> something that doesn't support it is a bug, plain and simple.
+Hi Michael,
 
-I'm not saying this patch series doesn't allow migrating. I'm just
-pointing out that normalization might not always be worth it for a VMM
-to do.
+kernel test robot noticed the following build warnings:
 
-We'll update the example and documentation to used normalize values.
-CPUfreq itself used KHz for the tables and we can't really change that
-when we are emulating CPU freq scaling. Same goes for OPP table DT
-property names.
+[auto build test WARNING on 052d534373b7ed33712a63d5e17b2b6cdbce84fd]
 
-But the values we use can be 0 to 1024 Hz and be normalized.
+url:    https://github.com/intel-lab-lkp/linux/commits/Michael-Grzeschik/usb-gadget-function-9pfs/20240116-095914
+base:   052d534373b7ed33712a63d5e17b2b6cdbce84fd
+patch link:    https://lore.kernel.org/r/20240116-ml-topic-u9p-v1-1-ad8c306f9a4e%40pengutronix.de
+patch subject: [PATCH 1/3] usb: gadget: function: 9pfs
+config: microblaze-randconfig-r132-20240117 (https://download.01.org/0day-ci/archive/20240117/202401170734.7rHBG2LF-lkp@intel.com/config)
+compiler: microblaze-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20240117/202401170734.7rHBG2LF-lkp@intel.com/reproduce)
 
-> > And if we can translate between pCPU frequency and a normalized
-> > frequency, we can do the same for whatever made up frequencies too. In
-> > fact, we plan to do exactly that in our internal use cases for this.
-> > There's nothing here that prevents the VMM from doing that.
-> >
-> > Also, if there are hardware virtualized performance counters (AMU,
-> > CPPC, etc) that are used for frequency normalization, then we have to
-> > use the real frequencies in those devices otherwise the "current
-> > frequency" can be 2 GHz while the max normalized frequency is 1024
-> > KHz. That'll mess up load tracking.
->
-> And that's exactly why this shouldn't be a *frequency*, but a
-> performance scale or some other unit-less coefficient. Just like the
-> big-little capacity.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401170734.7rHBG2LF-lkp@intel.com/
 
-Sorry I wasn't cleared in my explanation. Let me explain it better.
-When performance counters are available, the scheduler uses them to
-compute the current average CPU frequency over a scheduler tick. It
-looks at the performance counters to figure out how many CPU cycles
-have gone by and how much time has gone by and does (delta cycles /
-delta seconds) to compute current CPU freq in Hz. So, when a HW
-virtualized performance counter is available, and the scheduler inside
-the VM uses it to compute the average CPU frequency, the resulting
-frequency is going to be the real physical CPU frequency. And the CPU
-frequency value the scheduler used to compute the PELT load will be
-completely different from the normalized values and the load tracking
-will be completely wrong.
+sparse warnings: (new ones prefixed by >>)
+>> drivers/usb/gadget/function/f_9pfs.c:825:12: sparse: sparse: symbol 'usb9pfs_modinit' was not declared. Should it be static?
+>> drivers/usb/gadget/function/f_9pfs.c:838:13: sparse: sparse: symbol 'usb9pfs_modexit' was not declared. Should it be static?
 
-Using their performance counters inside the VM reduces a lot of MMIO
-access exits to the host or memory accesses. So it makes sense a VM
-might want to use that. I was just trying to say that in that
-situation, a VMM might have a good reason to just use the real
-frequencies inside the VM too.
+vim +/usb9pfs_modinit +825 drivers/usb/gadget/function/f_9pfs.c
 
-In any case, we can update the doc to use normalized values/examples
-and call out this caveat.
+   824	
+ > 825	int __init usb9pfs_modinit(void)
+   826	{
+   827		int ret;
+   828	
+   829		INIT_LIST_HEAD(&usbg_function_list);
+   830	
+   831		ret = usb_function_register(&usb9pfsusb_func);
+   832		if (!ret)
+   833			v9fs_register_trans(&p9_usbg_trans);
+   834	
+   835		return ret;
+   836	}
+   837	
+ > 838	void __exit usb9pfs_modexit(void)
+   839	{
+   840		usb_function_unregister(&usb9pfsusb_func);
+   841		v9fs_unregister_trans(&p9_usbg_trans);
+   842	}
+   843	
 
-Thanks,
-Saravana
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
