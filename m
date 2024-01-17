@@ -1,110 +1,141 @@
-Return-Path: <linux-kernel+bounces-28872-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28873-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FFB3830405
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:58:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E583830408
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:59:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8BB01F25C1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:58:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C22AD1F25AEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:59:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFB941CFBF;
-	Wed, 17 Jan 2024 10:58:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA4951CD3C;
+	Wed, 17 Jan 2024 10:59:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="RQQGjUrL"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IUmbAnsI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C5D31DDC9;
-	Wed, 17 Jan 2024 10:58:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 281B21CF8C
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:59:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705489126; cv=none; b=ZCrFPPQ+gYJotXjz2trA/QgUB/JJHlXMDi8w3Fr60Djk0puhsaCyUPq+qq6tKVbPx68T1wTVwBhhMiUa2Ve0+K52Mwq/WNQLUcwsPs28VRDoiKxP3Vd5ZkUjl7R6UjsO8bKRWTFJT6w3AHu3fV06yTnbQKA37hHkYGCNMZUja5Q=
+	t=1705489168; cv=none; b=f2r3hU1uCviySmob0SjLeVnsv1j/7eJkyL7j8gTH88WiaN3JHFHCBbmoDRzLIXCWc41tq6AW/AbxX4k5BWaOk79pjku5sKQXsXJnr4E+Xm1jVp2DqO13afzWz2De3YXTsLjYF+1xIfZVPdPG1NvcVAYk2b3kWwz5SOqxt+PE9fE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705489126; c=relaxed/simple;
-	bh=rqQp4uE6GicuSvLRiYYT8pqnRl3MYBl1/Xk05YKSEiM=;
-	h=Received:DKIM-Signature:Received:Received:Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:CC:Subject:
-	 Content-Language:To:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:X-EXCLAIMER-MD-CONFIG; b=liN6blQSOTI71W6I8Mr8u3SaqA4XaoQGuX1Nc5FUSfCGf3nj7NYu/iRCLniyzUUWURH0H/j5z/gooim3FPlPefRdMbH4dMvAx3ma1qOwkl2vw097KgC/Du4/jPLVPimv/x6Y+z8D5Zp2SOqAfFpFXyeLdXFF/1a+rMntpptlPFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=RQQGjUrL; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40HAwXIR124543;
-	Wed, 17 Jan 2024 04:58:33 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1705489113;
-	bh=Fru2H61GUxyYDw7D4NtoctZ/6enUK3Gyr4uPdi0B8n4=;
-	h=Date:CC:Subject:To:References:From:In-Reply-To;
-	b=RQQGjUrLjnEEZHLzjExu40P3QQy2jxWtk/zCZCKniyXYjBOdbd/BqhXMWfNtm/CLE
-	 5IBB0eBUXAyKI6JEIk6gVwuVjV/RvnRi81SyoKpkhLBJ2IpyaBz5fiD9EfTEDwytTV
-	 XuDGkL8ddsCxkSzHCwl8fnl0bcc2ipTfS6TYmaMk=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40HAwXDj046782
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 17 Jan 2024 04:58:33 -0600
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 17
- Jan 2024 04:58:33 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 17 Jan 2024 04:58:33 -0600
-Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40HAwTtZ073889;
-	Wed, 17 Jan 2024 04:58:29 -0600
-Message-ID: <92ceb1ea-78db-4bc4-af1f-a1690eaca24c@ti.com>
-Date: Wed, 17 Jan 2024 16:28:28 +0530
+	s=arc-20240116; t=1705489168; c=relaxed/simple;
+	bh=z++aPhqJYmV8VB4OIKDmSI4vg9WbQB6P+vqni7mLX4M=;
+	h=Received:DKIM-Signature:Received:X-Gm-Message-State:
+	 X-Google-Smtp-Source:X-Received:MIME-Version:References:
+	 In-Reply-To:From:Date:X-Gmail-Original-Message-ID:Message-ID:
+	 Subject:To:Cc:Content-Type; b=SXVrJulbw4RJWpHdRvx4EGHERy648gsRK25w0/9dQIivu0GkiTFsKK/wL8rP1uPa7xhyCq6NG0liS+jxL5QKxZlAnYMJrlNUSRYtjUq0aFRb3RYWogUWs/AruW7AcRH3pgPD0Abkrchwc+li0KIabSRmBTFbPoQQfi8kIS27sKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IUmbAnsI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9C97C43609
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:59:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705489167;
+	bh=z++aPhqJYmV8VB4OIKDmSI4vg9WbQB6P+vqni7mLX4M=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=IUmbAnsIE5vCKOMG92SfDaJvvsQbn0Gd9j+ni1Xumo7BbhtLTqu7AKam6IsvwF1b+
+	 Jlcr14KUq6L5ESg5D0E49101sji45b+wC4YBgTE4eZ6IYwvdWD/Tj+f4lTk9GgQ83/
+	 QCQ0CYq8jJJ260HIui8AqoqEC6ls7r8Fv5qED3KcDrKf2XQ545aXrNbZsuK5Hs9B8U
+	 b6yjz0yNnHvvq4qxZ+F39BjZFbivVM+DtSH5lMhzp6Zg0RadvC4r283C4gi1YOBl3A
+	 6ljYXjh8ELhx+2NzE/8ermEEzBtTQZx7CgJVxsO4jX/YTAM2MTHGzRi2fOy/OFX9iI
+	 WZ3rdiK6djkbQ==
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50eabbc3dccso12730743e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 02:59:27 -0800 (PST)
+X-Gm-Message-State: AOJu0YyikwyYQaRkK4a3JEAZnFF4ivBNnMkVmaQDBrPdKhyhl9rIXqO0
+	lyNM3U8yUs4QypNWzfrpUnYmSZ2b39W0zy4aBL4=
+X-Google-Smtp-Source: AGHT+IFxh5QrJ1gWQCd/4YDEkFNTtChPK1g37tz97wiiKd3o0JeZrjXVzdzGAYAydUm+Cs0LLEXbDoyNQCA1Pd1yKTw=
+X-Received: by 2002:a05:6512:33cf:b0:50e:506c:a2b7 with SMTP id
+ d15-20020a05651233cf00b0050e506ca2b7mr2662609lfg.249.1705489165792; Wed, 17
+ Jan 2024 02:59:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC: <bhelgaas@google.com>, <lpieralisi@kernel.org>, <kw@linux.com>,
-        <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <linux-pci@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <vigneshr@ti.com>,
-        <afd@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: Re: [PATCH 2/3] dt-bindings: PCI: ti,j721e-pci-*: Add checks for
- max-link-speed
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-References: <20240117102526.557006-1-s-vadapalli@ti.com>
- <20240117102526.557006-3-s-vadapalli@ti.com>
- <4282b248-cb7f-4486-bde6-105a3aed6be2@linaro.org>
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-In-Reply-To: <4282b248-cb7f-4486-bde6-105a3aed6be2@linaro.org>
+References: <ZZ7YuEexYSaZYmLK@tassilo> <20240111223650.3502633-1-kevinloughlin@google.com>
+ <20240115204634.GHZaWZqsVyU_fvn_RW@fat_crate.local>
+In-Reply-To: <20240115204634.GHZaWZqsVyU_fvn_RW@fat_crate.local>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Wed, 17 Jan 2024 11:59:14 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXH=k26nNyB+LQJ7WUJgbD2f3PREyjCzSngMCGc+72XJ6w@mail.gmail.com>
+Message-ID: <CAMj1kXH=k26nNyB+LQJ7WUJgbD2f3PREyjCzSngMCGc+72XJ6w@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] x86/sev: enforce RIP-relative accesses in early
+ SEV/SME code
+To: Borislav Petkov <bp@alien8.de>
+Cc: Kevin Loughlin <kevinloughlin@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, Michael Kelley <mikelley@microsoft.com>, 
+	Pankaj Gupta <pankaj.gupta@amd.com>, Stephen Rothwell <sfr@canb.auug.org.au>, 
+	Arnd Bergmann <arnd@arndb.de>, Steve Rutherford <srutherford@google.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Hou Wenlong <houwenlong.hwl@antgroup.com>, Vegard Nossum <vegard.nossum@oracle.com>, 
+	Josh Poimboeuf <jpoimboe@kernel.org>, Yuntao Wang <ytcoode@gmail.com>, 
+	Wang Jinchao <wangjinchao@xfusion.com>, David Woodhouse <dwmw@amazon.co.uk>, 
+	Brian Gerst <brgerst@gmail.com>, Hugh Dickins <hughd@google.com>, Joerg Roedel <jroedel@suse.de>, 
+	Randy Dunlap <rdunlap@infradead.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Dionna Glaze <dionnaglaze@google.com>, Brijesh Singh <brijesh.singh@amd.com>, 
+	Michael Roth <michael.roth@amd.com>, 
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, linux-kernel@vger.kernel.org, 
+	llvm@lists.linux.dev, linux-coco@lists.linux.dev, 
+	Ashish Kalra <ashish.kalra@amd.com>, Andi Kleen <ak@linux.intel.com>, 
+	Adam Dunlap <acdunlap@google.com>, Peter Gonda <pgonda@google.com>, Jacob Xu <jacobhxu@google.com>, 
+	Sidharth Telang <sidtelang@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+
+On Mon, 15 Jan 2024 at 21:47, Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Thu, Jan 11, 2024 at 10:36:50PM +0000, Kevin Loughlin wrote:
+> > SEV/SME code can execute prior to page table fixups for kernel
+> > relocation. However, as with global variables accessed in
+> > __startup_64(), the compiler is not required to generate RIP-relative
+> > accesses for SEV/SME global variables, causing certain flavors of SEV
+> > hosts and guests built with clang to crash during boot.
+>
+> So, about that. If I understand my gcc toolchain folks correctly:
+>
+> mcmodel=kernel - everything fits into the high 31 bit of the address
+> space
+>
+> -fPIE/PIC - position independent
+>
+> And supplied both don't make a whole lotta of sense: if you're building
+> position-independent, then mcmodel=kernel would be overridden by the
+> first.
+>
+> I have no clue why clang enabled it...
+>
+> So, *actually* the proper fix here should be not to add this "fixed_up"
+> gunk everywhere but remove mcmodel=kernel from the build and simply do
+> -fPIE/PIC.
+>
+
+Fully agree. All this fiddling with RIP relative references from C
+code is going to be a maintenance burden going forward.
+
+The proper way to do this is use PIC codegen for the objects that
+matter. I had a stab [0] at this a while ago (for the purpose of
+increasing the KASLR range, which requires PIE linking) but I didn't
+pursue it in the end.
+
+On arm64, we use a separate pseudo-namespace for code that can run
+safely at any offset, using the __pi_ prefix (for Position
+Independent). Using symbol prefixing at the linker level, we ensure
+that __pi_ code can only call other __pi_ code, or code that has been
+made available to it via an explicit __pi_ prefixed alias. (Happy to
+elaborate more but we should find a smaller audience - your cc list is
+a tad long). Perhaps this is something we should explore on x86 as
+well (note that the EFI stub does something similar for architectures
+that link the EFI stub into the core kernel rather than into the
+decompressor)
 
 
 
-On 17/01/24 16:05, Krzysztof Kozlowski wrote:
-> On 17/01/2024 11:25, Siddharth Vadapalli wrote:
->> Extend the existing compatible based checks for validating and enforcing
->> the "max-link-speed" property.
-> 
-> Based on what? Driver or hardware? Your entire change suggests you
-
-Hardware. The PCIe controller on AM64 SoC supports up to Gen2 link speed while
-the PCIe controllers on other SoCs support Gen3 link speed.
-
-> should just drop it from the binding, because this can be deduced from
-> compatible.
-
-Could you please clarify? Isn't the addition of the checks for "max-link-speed"
-identical to the checks which were added for "num-lanes", both of which are
-Hardware specific?
-
--- 
-Regards,
-Siddharth.
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/commit/?h=x86-pie&id=4ba81de75d92fafdab2a8a389d1b7791dddf74f3
 
