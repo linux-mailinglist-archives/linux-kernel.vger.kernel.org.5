@@ -1,259 +1,149 @@
-Return-Path: <linux-kernel+bounces-28580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2273A830048
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:51:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4769A83004B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:56:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C31F1F24BF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 06:51:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC8E1B249F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 06:56:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8674D30B;
-	Wed, 17 Jan 2024 06:50:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kErOzRcw"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7783D8F47;
+	Wed, 17 Jan 2024 06:56:38 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECE7FBE6F
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 06:50:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F13E4687
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 06:56:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705474222; cv=none; b=Ckv29p0ccsDKzw50j0VdDcseyIgQDaY93ULuInUFR71mvsuVbtXfFpe83p/U1EZ4d+tz0H9oXA7EcxTuNTSb25y8SOb3ezAR7vYKn7oC4NmNUmLdERV22DyG2nZ6+UKON0UVn/ANj+C+sUxCmWaWo4DTMx14/c3KH4HZ0QsHzbE=
+	t=1705474598; cv=none; b=uOenoSk3THhn4J01HvseG4b0xkCLmiypXWX1a0AGvPNAxBjwDE+6wYKe8mYXRB7E6WVRZn0nqZbjR38wtdFIkAOvwoTVDRCVLXYQ/J/4OJzEAOIb7TKORA+DPh1wmX24RY04V/iMwmqYmF/f5SZ6IriVrJOTo7o8tbpqUbw6Rhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705474222; c=relaxed/simple;
-	bh=bpVpyv7HOoT+GHCUFJlRKMOgkADv3ENViGIc4vsVohM=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 To:Cc:References:From:Autocrypt:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=p5ScTcajIw1/ztaM5aDW5Wj9IDwezfZG3vfQPNpSmmjvrhn2AViAw6UGtTuGrvIBQROEk0NRbqGPc+o2kfuO0xkCA2EGLDbpFWeDKio4W8Vstrt2ryrGAkCGI1QfaBWlY8yWIHbdOaZmKNcopKtwDrbsHtwTxrimjwCRbFDlSlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kErOzRcw; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50e7f58c5fbso14396140e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 22:50:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705474219; x=1706079019; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Tu84ILjbpo9tG7iSVT4BwNUWd2Sw5ljf8qmxMbShI6c=;
-        b=kErOzRcwkWtz5S7xNH2aznccC60c5yoMw0B13+tCCyTgwX1XT4YR6T7adbt9M8goki
-         RU6ImGw/zmZh6v/xfcw2w9VW/BUPP60foyDMjQ/equaQwEUF9ultPUto+gYCDEVxNvQQ
-         uID0OaHngL5nqrgAxtRgQuGtQUVPUwv06NwDkA5+BlT3v7/wd7PXLN0X9geIuC3K4LA8
-         22b3ZbqHEZdI7VJt/9wWZ9fq6rVqRxDRjhuiVXy5EyksHAsu/PuPCUmptCsMUsDOxQwa
-         XiFIzj1LJv4x2UWoOGNhy5eFBp7CcBlDQVd7uUTnoMgHeE/UrNudtkirSAmrdxqoNYnq
-         SpoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705474219; x=1706079019;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tu84ILjbpo9tG7iSVT4BwNUWd2Sw5ljf8qmxMbShI6c=;
-        b=m6JmRqdyYTGzVvHCYTSZpzsqE6sDJO/G070eeU3FGk+P+qsJPA6xCS90PaRqsQn7DR
-         69amsdNQfJhXm+KLrQ/TOvof6yvIwTGlxqtjO166eCTEbm2dUv/TEgQiyI982dSnoHPI
-         2TvKVkbwV2KG8daoq9Lgwehj4J06KOouVUTTb2p6nV/vQkHHGIVyPK3yKhmnkjTwsPjV
-         Qrf338LzO3kXmZgDCElYh1Ts+02+Q98RLVkpSLVHeh/QD7gQE8EC79sZqhnfQOTmpZ83
-         ggg3PknMM/ijLoOix/yINWCMI0P6QqVnHmVgzBEtYXWHzDjEu2507h9qcdPusjZkQmuG
-         pttw==
-X-Gm-Message-State: AOJu0YxBZetQX/O42B57z+AV59LwJA8tFlZiQBJuI5pbm1P/aCprm1oA
-	05Js+8DZ2YuBfOnuX7bfUmS1m5K1VwZIXA==
-X-Google-Smtp-Source: AGHT+IH/3qGTuhGoQGoznooCvQtF/oY6Lfl2JyQ9mkHXargKkkpnjkIwhx7xUmcD9+iPRR20G7f3xw==
-X-Received: by 2002:a05:6512:234a:b0:50e:76eb:ba14 with SMTP id p10-20020a056512234a00b0050e76ebba14mr5968598lfu.32.1705474218779;
-        Tue, 16 Jan 2024 22:50:18 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id s23-20020a170906455700b00a2c70ec1533sm7199279ejq.66.2024.01.16.22.50.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jan 2024 22:50:18 -0800 (PST)
-Message-ID: <ad44d51a-ba64-4a4b-bba9-205faa760c78@linaro.org>
-Date: Wed, 17 Jan 2024 07:50:16 +0100
+	s=arc-20240116; t=1705474598; c=relaxed/simple;
+	bh=4gLXLQ2IUbn664c7mSoZhG8SYyENSexnOQJPs3uwiuk=;
+	h=X-UUID:X-CID-P-RULE:X-CID-O-INFO:X-CID-INFO:X-CID-META:X-CID-BVR:
+	 X-CID-BAS:X-CID-FACTOR:X-UUID:X-User:Received:From:To:Cc:Subject:
+	 Date:Message-Id:X-Mailer:MIME-Version:Content-Transfer-Encoding;
+	b=b/RHAZamwBsQBfAkbcvsA6i9ItL07vENcnffkm9UVyih1M5nHoMtkDhaVE2+4GeEX0Bo7Kamtv0rktJfUpUAeI7Aklaw1dhS1hd6n0wYEsAUl1eHGC7eBZHdjvo8MUdTw45zVsLm/GULs29iCGP3lgEBlOYI0TkG8cpMAPEIEZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: b0b7b37ef2d4489598c09ef941f3e055-20240117
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:c789928d-2a0b-4da7-8aad-28eb354417c7,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-5
+X-CID-INFO: VERSION:1.1.35,REQID:c789928d-2a0b-4da7-8aad-28eb354417c7,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:5d391d7,CLOUDID:cf5e578e-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:2401171451061ZY63EQJ,BulkQuantity:0,Recheck:0,SF:17|19|44|66|38|24|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: b0b7b37ef2d4489598c09ef941f3e055-20240117
+X-User: mengfanhui@kylinos.cn
+Received: from localhost.localdomain [(39.156.73.13)] by mailgw
+	(envelope-from <mengfanhui@kylinos.cn>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 128/128)
+	with ESMTP id 617716359; Wed, 17 Jan 2024 14:51:05 +0800
+From: mengfanhui <mengfanhui@kylinos.cn>
+To: kbusch@kernel.org,
+	axboe@kernel.dk,
+	hch@lst.de
+Cc: linux-kernel@vger.kernel.org,
+	sagi@grimberg.me,
+	linux-nvme@lists.infradead.org,
+	mengfanhui@kylinos.cn
+Subject: [PATCH] nvme-multipath: fix bogus request queue reference put
+Date: Wed, 17 Jan 2024 14:50:43 +0800
+Message-Id: <20240117065043.79192-1-mengfanhui@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/7] dt-bindings: i3c: svc: add compatible string i3c:
- silvaco,i3c-target-v1
-Content-Language: en-US
-To: Frank Li <Frank.li@nxp.com>
-Cc: Conor Dooley <conor@kernel.org>, Conor Dooley
- <conor.dooley@microchip.com>, robh@kernel.org,
- alexandre.belloni@bootlin.com, conor.culhane@silvaco.com,
- gregkh@linuxfoundation.org, imx@lists.linux.dev, jirislaby@kernel.org,
- joe@perches.com, linux-i3c@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
- miquel.raynal@bootlin.com, zbigniew.lukwinski@linux.intel.com,
- devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org
-References: <20240116-bleach-herbicide-48d636967134@wendy>
- <3199c245-3d2d-49e8-951e-2b059de4d683@linaro.org>
- <20240116-achiness-thievish-10a12b3c08cd@wendy>
- <Zaa+cLGVVDSB5MYr@lizhi-Precision-Tower-5810>
- <20240116-retract-conclude-c47a7fc8cb21@spud>
- <ZabVSYgq1Mz3LPpC@lizhi-Precision-Tower-5810>
- <4a9ed1ca-cd13-4b61-af06-a3d7935aeeee@linaro.org>
- <ZabqxHD4wtiPn6ep@lizhi-Precision-Tower-5810>
- <c760b89c-efec-489e-8333-c60b38fb5a47@linaro.org>
- <e54e2b30-03e7-40e3-bb33-dc71de8511a4@linaro.org>
- <ZacCQ1Eysqq5FnA4@lizhi-Precision-Tower-5810>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ZacCQ1Eysqq5FnA4@lizhi-Precision-Tower-5810>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 16/01/2024 23:25, Frank Li wrote:
-> On Tue, Jan 16, 2024 at 10:01:42PM +0100, Krzysztof Kozlowski wrote:
->> On 16/01/2024 21:56, Krzysztof Kozlowski wrote:
->>> On 16/01/2024 21:44, Frank Li wrote:
->>>> On Tue, Jan 16, 2024 at 09:30:24PM +0100, Krzysztof Kozlowski wrote:
->>>>> On 16/01/2024 20:13, Frank Li wrote:
->>>>>> On Tue, Jan 16, 2024 at 06:23:09PM +0000, Conor Dooley wrote:
->>>>>>> On Tue, Jan 16, 2024 at 12:35:44PM -0500, Frank Li wrote:
->>>>>>>> On Tue, Jan 16, 2024 at 09:48:08AM +0000, Conor Dooley wrote:
->>>>>>>>> On Tue, Jan 16, 2024 at 10:33:48AM +0100, Krzysztof Kozlowski wrote:
->>>>>>>>>> On 16/01/2024 10:30, Conor Dooley wrote:
->>>>>>>>>>> On Tue, Jan 16, 2024 at 08:24:20AM +0100, Krzysztof Kozlowski wrote:
->>>>>>>>>>>> On 16/01/2024 03:29, Frank Li wrote:
->>>>>>>>>>>>>>> 	Patches were accepted after discussion, what you ponit to. So I
->>>>>>>>>>>>>>> think everyone agree on the name 'silvaco,i3c-master-v1'.
->>>>>>>>>>>>>>> 	I plan send next version to fix auto build error. Any additional
->>>>>>>>>>>>>>> comments about this?
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> I still do not see how did you address Rob's comment and his point is
->>>>>>>>>>>>>> valid. You just did not reply to it.
->>>>>>>>>>>>>
->>>>>>>>>>>>> See https://lore.kernel.org/imx/ZXCiaKfMYYShoiXK@lizhi-Precision-Tower-5810/
->>>>>>>>>>>>
->>>>>>>>>>>> First of all, that's not the answer to Rob's email, but some other
->>>>>>>>>>>> thread which is 99% ignored by Rob (unless he has filters for
->>>>>>>>>>>> "@Rob"...). Therefore no, it does not count as valid answer.
->>>>>>>>>>>>
->>>>>>>>>>>> Second, explanation does not make sense. There is no argument granting
->>>>>>>>>>>> you exception from SoC specific compatibles.
->>>>>>>>>>>
->>>>>>>>>>> The patch could have been applied two months ago had Frank done as
->>>>>>>>>>> was requested (multiple times). I don't understand the resistance
->>>>>>>>>>> towards doing so given the process has taken way way longer as a result.
->>>>>>>>>>
->>>>>>>>>> I think that Rob's comment was just skipped and original master binding
->>>>>>>>>> was merged without addressing it. I don't want to repeat the same
->>>>>>>>>> process for the "target". Indeed I could point this earlier... if I only
->>>>>>>>>> knew that Rob pointed out that issue.
->>>>>>>>>
->>>>>>>>> Oh I think I got confused here. The context for this mail led me to
->>>>>>>>> think that this was still trying to push the i3c-master-v1 stuff through
->>>>>>>>> and I was commenting on my frustration with the resistance to applying
->>>>>>>>> the feedback received. I didn't realise that this was for another
->>>>>>>>> patch adding a target.
->>>>>>>>>
->>>>>>>>> I think you already said it, but NAK to adding any more compatibles here
->>>>>>>>> until the soc-specific compatible that was asked for for the imx93 is
->>>>>>>>> added.
->>>>>>>>
->>>>>>>> Is it okay for 'silvaco,i3c-target-imx93'?
->>>>>
->>>>> No, because imx93 is product of NXP, not Silvaco.
->>>>>
->>>>> You need regular SoC-block compatibles, just like we have for all other
->>>>> snps, dwc and cdns.
->>>>
->>>> "nxp,imx93-svc-i3c-target" ? 
->>>
->>> Could be, now please point me to patch adding such code to DTS. I would
->>> like to see the real use case for it.
->>
->> Probably I was not clear enough, so let's be more precise: I think you
->> might have troubles pointing to such code, because it just does not
->> exist. It is a bit contradicting to single hardware description, because
->> you want to describe one hardware in two different ways, with two
->> different compatibles.
->>
->> Your commit msg is here empty - it says what  patch is does, which is
->> obvious. Tells nothing about the hardware being described here, which
->> does not help this discussion. This would need solving as well, but main
->> point stays - don't add new compatibles for the same hardware, at least
->> not without valid reason/explanation.
-> 
-> I can improve commt msg. It was similar PCI case (There are two work mode:
-> root complex and endpoint). So there are two kind compatible string for it.
-> 
-> If you think it is good for using two compatible string for two work mode
-> of the same hardware.
+From: Sagi Grimberg <sagi@grimberg.me>
 
-Not really, because compatible describes hardware and it is the same
-hardware here. We do not have two different compatibles for GPIOs being
-input or output.  Or two different compatibles for serial engines (ones
-providing UART, SPI or I2C).
+The mpath disk node takes a reference on the request mpath
+request queue when adding live path to the mpath gendisk.
+However if we connected to an inaccessible path device_add_disk
+is not called, so if we disconnect and remove the mpath gendisk
+we endup putting an reference on the request queue that was
+never taken [1].
 
-> 
-> I can write git commit message like:
-> 
-> dt-bindings: i3c: svc: add compatible string nxp,imx93-svc-i3c-target
-> 
-> silvaco i3c controller is dual mode controller, which can work as master
-> and target mode. All clock, reg, irq are the same for both mode. Add
-> compatible string "nxp,imx93-svc-i3c-target" to let silivaco i3c
-> controller work as target mode.
-> 
-> Of course, alternate method to added a property "mode" to distingiush
-> master and target mode. but old "silvaco,i3c-master-v1" will actually work
-> as dual mode support. Driver structure will become complex.
+Fix that to check if we ever added a live path (using
+NVME_NS_HEAD_HAS_DISK flag) and if not, clear the disk->queue
+reference.
 
-Please send full DTS of user for this, which works for 100%, so we can
-see how it differs from controller mode. If your code snippet from other
-thread is correct, then it would suggest "mode" property or lack of
-children. Maybe lack of children is not enough, if user-space could
-control I3C bus.
+[1]:
+------------[ cut here ]------------
+refcount_t: underflow; use-after-free.
+WARNING: CPU: 1 PID: 1372 at lib/refcount.c:28 refcount_warn_saturate+0xa6/0xf0
+CPU: 1 PID: 1372 Comm: nvme Tainted: G           O      5.7.0-rc2+ #3
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-1ubuntu1 04/01/2014
+RIP: 0010:refcount_warn_saturate+0xa6/0xf0
+RSP: 0018:ffffb29e8053bdc0 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffff8b7a2f4fc060 RCX: 0000000000000007
+RDX: 0000000000000007 RSI: 0000000000000092 RDI: ffff8b7a3ec99980
+RBP: ffff8b7a2f4fc000 R08: 00000000000002e1 R09: 0000000000000004
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: fffffffffffffff2 R14: ffffb29e8053bf08 R15: ffff8b7a320e2da0
+FS:  00007f135d4ca800(0000) GS:ffff8b7a3ec80000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005651178c0c30 CR3: 000000003b650005 CR4: 0000000000360ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ disk_release+0xa2/0xc0
+ device_release+0x28/0x80
+ kobject_put+0xa5/0x1b0
+ nvme_put_ns_head+0x26/0x70 [nvme_core]
+ nvme_put_ns+0x30/0x60 [nvme_core]
+ nvme_remove_namespaces+0x9b/0xe0 [nvme_core]
+ nvme_do_delete_ctrl+0x43/0x5c [nvme_core]
+ nvme_sysfs_delete.cold+0x8/0xd [nvme_core]
+ kernfs_fop_write+0xc1/0x1a0
+ vfs_write+0xb6/0x1a0
+ ksys_write+0x5f/0xe0
+ do_syscall_64+0x52/0x1a0
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Best regards,
-Krzysztof
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: mengfanhui <mengfanhui@kylinos.cn>
+---
+ drivers/nvme/host/multipath.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+index 2dd4137a08b2..3e579e49579c 100644
+--- a/drivers/nvme/host/multipath.c
++++ b/drivers/nvme/host/multipath.c
+@@ -895,6 +895,14 @@ void nvme_mpath_remove_disk(struct nvme_ns_head *head)
+ 	/* make sure all pending bios are cleaned up */
+ 	kblockd_schedule_work(&head->requeue_work);
+ 	flush_work(&head->requeue_work);
++	if (!test_bit(NVME_NSHEAD_DISK_LIVE, &head->flags)) {
++		/*
++		* if device_add_disk wasn't called, prevent
++                * disk release to put a bogus reference on the
++                * request queue
++                */
++		head->disk->queue = NULL;
++	}
+ 	put_disk(head->disk);
+ }
+ 
+-- 
+2.25.1
 
 
