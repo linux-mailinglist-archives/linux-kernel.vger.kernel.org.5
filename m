@@ -1,141 +1,129 @@
-Return-Path: <linux-kernel+bounces-29046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 330E8830791
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:06:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 142C38307A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:09:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C71871F22F19
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:06:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AF821C21DD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:09:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B1120323;
-	Wed, 17 Jan 2024 14:06:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Solmpjdy"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03AD2032C;
+	Wed, 17 Jan 2024 14:09:22 +0000 (UTC)
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DD2920309
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 14:06:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8EF3200DD;
+	Wed, 17 Jan 2024 14:09:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705500406; cv=none; b=deulytUmTEPk4Qrlb1Gtu5z9Y/UeThjqDGnWb2mF36M3r6IVycvArCb85j20qXTW1RAbBaliMfPcRc9mF6cRJHq/5TYjNEE2KOQpNhn3wr4FO5zDd0SlQsHo0gTuUlsUq5HP8qeFeeiI1cSgLNTnzpB0Ow9Rok/tr8QTtrI6g0Y=
+	t=1705500562; cv=none; b=t36JQBRbRcC3NxMuYA7heQUi6fRpofukFrg/3ta/KmWqwafJMpzSdu11RfgZidJxV3BhHrSWa0fWK7dEN0jNNuT0CWSYbY0OGuGcJmswRvZ0EV0FmpLE/fFE6jzvwUOggHLNRmVa+Idup1F9UbOpG7WnJqLL3PjTnqx5VD5/5uI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705500406; c=relaxed/simple;
-	bh=TT/hhcFw2pwOouUg6Y3IJsTAXmAlaWLc/QRqI65dSNY=;
-	h=Received:DKIM-Signature:Message-ID:Date:MIME-Version:User-Agent:
-	 Subject:Content-Language:To:References:From:Autocrypt:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding; b=V+GKZT22V0F8ffBS8b8toj/dWlOKQzARmUg0cPne2n+kfQtc0NxdR3iH/rs3GMQFsQKtTk8880QSXAV4X/lELORACnIuCc8AAC1XGBKDZtblVfbf8WUjvxparH2awc0+lVfrdWGQFmsL5x1s1166uExYvm7X7pz/W24BxKfKB9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Solmpjdy; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-35-128.elisa-laajakaista.fi [91.154.35.128])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 02F157EC;
-	Wed, 17 Jan 2024 15:05:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1705500327;
-	bh=TT/hhcFw2pwOouUg6Y3IJsTAXmAlaWLc/QRqI65dSNY=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=SolmpjdyNgU2Vou7cj8KlnhQzMWqQULxn6ngyBRKZsLyK2Nv2EYCJiOhectL7GbUR
-	 QXcFxIi9O5jArnRyWqaJGOuQYhR1XTYws+NhFtWKg1/bIGMLvr15X3soFxMo0J+1H7
-	 nFSXVEaI7GV/etAVzRvAdmGJrPGg14uzMpbDDdpc=
-Message-ID: <98a9f4f1-dd55-47c3-bb1b-07e201b299cd@ideasonboard.com>
-Date: Wed, 17 Jan 2024 16:06:31 +0200
+	s=arc-20240116; t=1705500562; c=relaxed/simple;
+	bh=lM2ydu1mYi/ifYk43KYS+WDGObFA2FXugqlIuWEB+14=;
+	h=Received:Date:From:To:Subject:User-Agent:In-Reply-To:References:
+	 Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding; b=uG3LX2KdZ1jnDf/qEXIh7FQyAjBdNTjgeV/uQwL2flJx6n0pxK0hr2NuK6S++1NbUSJPNOCkpqrOLyZ7qnIUrDfEVkDdFvWIGh3JfuQs4Iu93WlemVbvCs/QPmBAdYhJQ0U6KJFcL8jIVRy88Kji03ywLmTWDIoCoQIHxvuDNzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_128_GCM_SHA256:128)
+	 (Exim 4.96.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1rQ6bH-0003kO-0n;
+	Wed, 17 Jan 2024 14:09:04 +0000
+Date: Wed, 17 Jan 2024 14:08:56 +0000
+From: Daniel Golle <daniel@makrotopia.org>
+To: linux-mediatek@lists.infradead.org, Jean Thomas <jean.thomas@wifirst.fr>,
+ sean.wang@kernel.org, linus.walleij@linaro.org, matthias.bgg@gmail.com,
+ angelogioacchino.delregno@collabora.com, linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/2] pinctrl: mediatek: mt7981: add additional emmc groups
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20240117124234.3137050-2-jean.thomas@wifirst.fr>
+References: <20240117124234.3137050-1-jean.thomas@wifirst.fr> <20240117124234.3137050-2-jean.thomas@wifirst.fr>
+Message-ID: <B51A9EE5-1C7A-48C9-A546-61C269AD266F@makrotopia.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] drm: xlnx: zynqmp_dpsub: Make drm bridge discoverable
-Content-Language: en-US
-To: Anatoliy Klymenko <anatoliy.klymenko@amd.com>,
- laurent.pinchart@ideasonboard.com, maarten.lankhorst@linux.intel.com,
- mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
- michal.simek@amd.com, dri-devel@lists.freedesktop.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240112234222.913138-1-anatoliy.klymenko@amd.com>
- <20240112234222.913138-2-anatoliy.klymenko@amd.com>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- xsFNBE6ms0cBEACyizowecZqXfMZtnBniOieTuFdErHAUyxVgtmr0f5ZfIi9Z4l+uUN4Zdw2
- wCEZjx3o0Z34diXBaMRJ3rAk9yB90UJAnLtb8A97Oq64DskLF81GCYB2P1i0qrG7UjpASgCA
- Ru0lVvxsWyIwSfoYoLrazbT1wkWRs8YBkkXQFfL7Mn3ZMoGPcpfwYH9O7bV1NslbmyJzRCMO
- eYV258gjCcwYlrkyIratlHCek4GrwV8Z9NQcjD5iLzrONjfafrWPwj6yn2RlL0mQEwt1lOvn
- LnI7QRtB3zxA3yB+FLsT1hx0va6xCHpX3QO2gBsyHCyVafFMrg3c/7IIWkDLngJxFgz6DLiA
- G4ld1QK/jsYqfP2GIMH1mFdjY+iagG4DqOsjip479HCWAptpNxSOCL6z3qxCU8MCz8iNOtZk
- DYXQWVscM5qgYSn+fmMM2qN+eoWlnCGVURZZLDjg387S2E1jT/dNTOsM/IqQj+ZROUZuRcF7
- 0RTtuU5q1HnbRNwy+23xeoSGuwmLQ2UsUk7Q5CnrjYfiPo3wHze8avK95JBoSd+WIRmV3uoO
- rXCoYOIRlDhg9XJTrbnQ3Ot5zOa0Y9c4IpyAlut6mDtxtKXr4+8OzjSVFww7tIwadTK3wDQv
- Bus4jxHjS6dz1g2ypT65qnHen6mUUH63lhzewqO9peAHJ0SLrQARAQABzTBUb21pIFZhbGtl
- aW5lbiA8dG9taS52YWxrZWluZW5AaWRlYXNvbmJvYXJkLmNvbT7CwY4EEwEIADgWIQTEOAw+
- ll79gQef86f6PaqMvJYe9QUCX/HruAIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAKCRD6
- PaqMvJYe9WmFD/99NGoD5lBJhlFDHMZvO+Op8vCwnIRZdTsyrtGl72rVh9xRfcSgYPZUvBuT
- VDxE53mY9HaZyu1eGMccYRBaTLJSfCXl/g317CrMNdY0k40b9YeIX10feiRYEWoDIPQ3tMmA
- 0nHDygzcnuPiPT68JYZ6tUOvAt7r6OX/litM+m2/E9mtp8xCoWOo/kYO4mOAIoMNvLB8vufi
- uBB4e/AvAjtny4ScuNV5c5q8MkfNIiOyag9QCiQ/JfoAqzXRjVb4VZG72AKaElwipiKCWEcU
- R4+Bu5Qbaxj7Cd36M/bI54OrbWWETJkVVSV1i0tghCd6HHyquTdFl7wYcz6cL1hn/6byVnD+
- sR3BLvSBHYp8WSwv0TCuf6tLiNgHAO1hWiQ1pOoXyMEsxZlgPXT+wb4dbNVunckwqFjGxRbl
- Rz7apFT/ZRwbazEzEzNyrBOfB55xdipG/2+SmFn0oMFqFOBEszXLQVslh64lI0CMJm2OYYe3
- PxHqYaztyeXsx13Bfnq9+bUynAQ4uW1P5DJ3OIRZWKmbQd/Me3Fq6TU57LsvwRgE0Le9PFQs
- dcP2071rMTpqTUteEgODJS4VDf4lXJfY91u32BJkiqM7/62Cqatcz5UWWHq5xeF03MIUTqdE
- qHWk3RJEoWHWQRzQfcx6Fn2fDAUKhAddvoopfcjAHfpAWJ+ENc7BTQROprNHARAAx0aat8GU
- hsusCLc4MIxOQwidecCTRc9Dz/7U2goUwhw2O5j9TPqLtp57VITmHILnvZf6q3QAho2QMQyE
- DDvHubrdtEoqaaSKxKkFie1uhWNNvXPhwkKLYieyL9m2JdU+b88HaDnpzdyTTR4uH7wk0bBa
- KbTSgIFDDe5lXInypewPO30TmYNkFSexnnM3n1PBCqiJXsJahE4ZQ+WnV5FbPUj8T2zXS2xk
- 0LZ0+DwKmZ0ZDovvdEWRWrz3UzJ8DLHb7blPpGhmqj3ANXQXC7mb9qJ6J/VSl61GbxIO2Dwb
- xPNkHk8fwnxlUBCOyBti/uD2uSTgKHNdabhVm2dgFNVuS1y3bBHbI/qjC3J7rWE0WiaHWEqy
- UVPk8rsph4rqITsj2RiY70vEW0SKePrChvET7D8P1UPqmveBNNtSS7In+DdZ5kUqLV7rJnM9
- /4cwy+uZUt8cuCZlcA5u8IsBCNJudxEqBG10GHg1B6h1RZIz9Q9XfiBdaqa5+CjyFs8ua01c
- 9HmyfkuhXG2OLjfQuK+Ygd56mV3lq0aFdwbaX16DG22c6flkkBSjyWXYepFtHz9KsBS0DaZb
- 4IkLmZwEXpZcIOQjQ71fqlpiXkXSIaQ6YMEs8WjBbpP81h7QxWIfWtp+VnwNGc6nq5IQDESH
- mvQcsFS7d3eGVI6eyjCFdcAO8eMAEQEAAcLBXwQYAQIACQUCTqazRwIbDAAKCRD6PaqMvJYe
- 9fA7EACS6exUedsBKmt4pT7nqXBcRsqm6YzT6DeCM8PWMTeaVGHiR4TnNFiT3otD5UpYQI7S
- suYxoTdHrrrBzdlKe5rUWpzoZkVK6p0s9OIvGzLT0lrb0HC9iNDWT3JgpYDnk4Z2mFi6tTbq
- xKMtpVFRA6FjviGDRsfkfoURZI51nf2RSAk/A8BEDDZ7lgJHskYoklSpwyrXhkp9FHGMaYII
- m9EKuUTX9JPDG2FTthCBrdsgWYPdJQvM+zscq09vFMQ9Fykbx5N8z/oFEUy3ACyPqW2oyfvU
- CH5WDpWBG0s5BALp1gBJPytIAd/pY/5ZdNoi0Cx3+Z7jaBFEyYJdWy1hGddpkgnMjyOfLI7B
- CFrdecTZbR5upjNSDvQ7RG85SnpYJTIin+SAUazAeA2nS6gTZzumgtdw8XmVXZwdBfF+ICof
- 92UkbYcYNbzWO/GHgsNT1WnM4sa9lwCSWH8Fw1o/3bX1VVPEsnESOfxkNdu+gAF5S6+I6n3a
- ueeIlwJl5CpT5l8RpoZXEOVtXYn8zzOJ7oGZYINRV9Pf8qKGLf3Dft7zKBP832I3PQjeok7F
- yjt+9S+KgSFSHP3Pa4E7lsSdWhSlHYNdG/czhoUkSCN09C0rEK93wxACx3vtxPLjXu6RptBw
- 3dRq7n+mQChEB1am0BueV1JZaBboIL0AGlSJkm23kw==
-In-Reply-To: <20240112234222.913138-2-anatoliy.klymenko@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 13/01/2024 01:42, Anatoliy Klymenko wrote:
-> Assign device of node to bridge prior registering it. This will
-> make said bridge discoverable by separate crtc driver.
 
-I think a few words on why this is needed (and why it wasn't needed 
-before) would be nice.
 
-Other than that:
+On 17 January 2024 12:42:34 UTC, Jean Thomas <jean=2Ethomas@wifirst=2Efr> =
+wrote:
+>Add new emmc groups in the pinctrl driver for the
+>MediaTek MT7981 SoC:
+>* emmc reset, with pin 15=2E
+>* emmc 4-bit bus-width, with pins 16 to 19, and 24 to 25=2E
+>* emmc 8-bit bus-width, with pins 16 to 25=2E
+>
+>The existing emmc_45 group is kept for legacy reasons, even
+>if this is the union of emmc_reset and emmc_8 groups=2E
+>
+>Signed-off-by: Jean Thomas <jean=2Ethomas@wifirst=2Efr>
 
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Reviewed-by: Daniel Golle <daniel@makrotopia=2Eorg>
 
-  Tomi
-
-> Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-> ---
->   drivers/gpu/drm/xlnx/zynqmp_dp.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> index a0606fab0e22..d60b7431603f 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> @@ -1721,6 +1721,7 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub)
->   	bridge->ops = DRM_BRIDGE_OP_DETECT | DRM_BRIDGE_OP_EDID
->   		    | DRM_BRIDGE_OP_HPD;
->   	bridge->type = DRM_MODE_CONNECTOR_DisplayPort;
-> +	bridge->of_node = dp->dev->of_node;
->   	dpsub->bridge = bridge;
->   
->   	/*
-
+>---
+> drivers/pinctrl/mediatek/pinctrl-mt7981=2Ec | 17 ++++++++++++++++-
+> 1 file changed, 16 insertions(+), 1 deletion(-)
+>
+>diff --git a/drivers/pinctrl/mediatek/pinctrl-mt7981=2Ec b/drivers/pinctr=
+l/mediatek/pinctrl-mt7981=2Ec
+>index ca667ed25a4d=2E=2Eef6123765885 100644
+>--- a/drivers/pinctrl/mediatek/pinctrl-mt7981=2Ec
+>+++ b/drivers/pinctrl/mediatek/pinctrl-mt7981=2Ec
+>@@ -700,6 +700,15 @@ static int mt7981_drv_vbus_pins[] =3D { 14, };
+> static int mt7981_drv_vbus_funcs[] =3D { 1, };
+>=20
+> /* EMMC */
+>+static int mt7981_emmc_reset_pins[] =3D { 15, };
+>+static int mt7981_emmc_reset_funcs[] =3D { 2, };
+>+
+>+static int mt7981_emmc_4_pins[] =3D { 16, 17, 18, 19, 24, 25, };
+>+static int mt7981_emmc_4_funcs[] =3D { 2, 2, 2, 2, 2, 2, };
+>+
+>+static int mt7981_emmc_8_pins[] =3D { 16, 17, 18, 19, 20, 21, 22, 23, 24=
+, 25, };
+>+static int mt7981_emmc_8_funcs[] =3D { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, };
+>+
+> static int mt7981_emmc_45_pins[] =3D { 15, 16, 17, 18, 19, 20, 21, 22, 2=
+3, 24, 25, };
+> static int mt7981_emmc_45_funcs[] =3D { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,=
+ };
+>=20
+>@@ -854,6 +863,12 @@ static const struct group_desc mt7981_groups[] =3D {
+> 	PINCTRL_PIN_GROUP("udi", mt7981_udi),
+> 	/* @GPIO(14) DRV_VBUS(1) */
+> 	PINCTRL_PIN_GROUP("drv_vbus", mt7981_drv_vbus),
+>+	/* @GPIO(15): EMMC_RSTB(2) */
+>+	PINCTRL_PIN_GROUP("emmc_reset", mt7981_emmc_reset),
+>+	/* @GPIO(16,17,18,19,24,25): EMMC_DATx, EMMC_CLK, EMMC_CMD */
+>+	PINCTRL_PIN_GROUP("emmc_4", mt7981_emmc_4),
+>+	/* @GPIO(16,17,18,19,20,21,22,23,24,25): EMMC_DATx, EMMC_CLK, EMMC_CMD =
+*/
+>+	PINCTRL_PIN_GROUP("emmc_8", mt7981_emmc_8),
+> 	/* @GPIO(15,25): EMMC(2) */
+> 	PINCTRL_PIN_GROUP("emmc_45", mt7981_emmc_45),
+> 	/* @GPIO(16,21): SNFI(3) */
+>@@ -957,7 +972,7 @@ static const char *mt7981_i2c_groups[] =3D { "i2c0_0"=
+, "i2c0_1", "u2_phy_i2c",
+> static const char *mt7981_pcm_groups[] =3D { "pcm", };
+> static const char *mt7981_udi_groups[] =3D { "udi", };
+> static const char *mt7981_usb_groups[] =3D { "drv_vbus", };
+>-static const char *mt7981_flash_groups[] =3D { "emmc_45", "snfi", };
+>+static const char *mt7981_flash_groups[] =3D { "emmc_reset", "emmc_4", "=
+emmc_8", "emmc_45", "snfi", };
+> static const char *mt7981_ethernet_groups[] =3D { "smi_mdc_mdio", "gbe_e=
+xt_mdc_mdio",
+> 	"wf0_mode1", "wf0_mode3", "mt7531_int", };
+> static const char *mt7981_ant_groups[] =3D { "ant_sel", };
 
