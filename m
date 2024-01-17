@@ -1,123 +1,187 @@
-Return-Path: <linux-kernel+bounces-28899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F91E83045B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:16:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6076E83045E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:16:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF6FB1F23D02
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:16:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78AF61C21748
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:16:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 401C51DDD5;
-	Wed, 17 Jan 2024 11:16:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="AJG9/SSh"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D62E61DDDF;
+	Wed, 17 Jan 2024 11:16:36 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C0271B814;
-	Wed, 17 Jan 2024 11:16:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1ACB1DDD0
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:16:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705490176; cv=none; b=DWZYJPv1HQFSkRZaYDJNgTeyaiGFbPAGmoziSzfjK8XhEe37aQAP0OfH6/n8IpiLb6O41CsfADI/FzgD1CArUQE2OSfgQlfkdnpoiCW9qeCXifqMdHf8/KYKcO6cRV5ibMEK+A5O7kDnjIkp8d9n298WH3yv23yHlUstMoEJY5w=
+	t=1705490196; cv=none; b=cQ96An9+3gGE3FD+A95ysUMrxvnVWmomYMLpqN6EedvzchOMvJzdBu2mEVLplJjB5dyCHE2pX7hA3Cr9AQB47FkrA/cIMiwkkiV8cTkplT1jxAeZctMuWxY388+IkC5AQmJBIy/o+mP39XZVBbl/zcNjLj8lQBA0wjoizIm63fI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705490176; c=relaxed/simple;
-	bh=fnSmosHPC+x/JiwxXYkr5lrP52Jf6CQr3IcKZJn6slY=;
-	h=Received:DKIM-Signature:Received:Received:Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:CC:Subject:
-	 Content-Language:To:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:X-EXCLAIMER-MD-CONFIG; b=OEUsdCCIgOX3V9nuXgNkGBHdlQ5HWUEYrqLmMpiq0cd7EFFcn8BLDlC9azxVjMughVzWdpaXkk35vwXE+FN9x3waJON3jhSc/PXEtUF3uBlkFiQd77CyE3yj3GxDaMex5th7R1vp+pow065LmqNiGsxZD0RgSQmO+p3Klj0gxI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=AJG9/SSh; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40HBFuc8046011;
-	Wed, 17 Jan 2024 05:15:56 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1705490156;
-	bh=oNbdAGa1Ex4tt8z5/1N6Da7Zj6VObjuv7HWDiH8tqo8=;
-	h=Date:CC:Subject:To:References:From:In-Reply-To;
-	b=AJG9/SShq+H50qmdX8ser0mPVUOyjwud1qkGbrF4S6cF4wNah9v63jDCyCCsSLtVC
-	 uSTc29xblaEaUWrqHbYu7OdNKXB+DO5UJ4s5aEVuTPmMvFuI3KD6TI1+HhgxpZa9QD
-	 c4fxGEUsLAzEdLpjXmHytX6DkqHhHmJhFuFBuHSI=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40HBFulM071669
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 17 Jan 2024 05:15:56 -0600
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 17
- Jan 2024 05:15:55 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 17 Jan 2024 05:15:55 -0600
-Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40HBFpTR107080;
-	Wed, 17 Jan 2024 05:15:52 -0600
-Message-ID: <e79a1896-470e-4fba-85b0-f857a4290cbb@ti.com>
-Date: Wed, 17 Jan 2024 16:45:50 +0530
+	s=arc-20240116; t=1705490196; c=relaxed/simple;
+	bh=5qKlaLziljLZ5noa6CzlpJUbxw1PitV5B5D7RLl7cCY=;
+	h=Received:Received:Received:Message-ID:Subject:From:To:Cc:Date:
+	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:
+	 User-Agent:MIME-Version:X-SA-Exim-Connect-IP:X-SA-Exim-Mail-From:
+	 X-SA-Exim-Scanned:X-PTX-Original-Recipient; b=PwMPQlkPgu820fjBYtD7xnDQ4s4Y9BgE5Ffogzl+Wq7rLcqWmlNnMvQ9eU3ZT55bh0sdf7IsHAgVdbPOpkLHu8uNYX9WYIGzVc+QcgAp5fiX3/EzthSWirInkZrD0PxBG+34HPgO0lX60xiD+fl+6Cvf8E4jbXlKvN9lUnT2TOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rQ3tx-0002Yp-2t; Wed, 17 Jan 2024 12:16:09 +0100
+Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rQ3tt-000S1i-0W; Wed, 17 Jan 2024 12:16:05 +0100
+Received: from pza by lupine with local (Exim 4.96)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rQ3ts-0004u3-31;
+	Wed, 17 Jan 2024 12:16:04 +0100
+Message-ID: <568f2bcb1bea01c36f59650d5cc5a84612197f8b.camel@pengutronix.de>
+Subject: Re: [PATCH v3 5/5] i2c: muxes: pca954x: Allow sharing reset GPIO
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>, Krzysztof Kozlowski
+ <krzysztof.kozlowski@linaro.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Srinivas Kandagatla
+ <srinivas.kandagatla@linaro.org>, Banajit Goswami <bgoswami@quicinc.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,  Rob
+ Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Peter Rosin <peda@axentia.se>, Jaroslav Kysela <perex@perex.cz>, Takashi
+ Iwai <tiwai@suse.com>,  "linux-arm-msm@vger.kernel.org"
+ <linux-arm-msm@vger.kernel.org>, "alsa-devel@alsa-project.org"
+ <alsa-devel@alsa-project.org>, "linux-sound@vger.kernel.org"
+ <linux-sound@vger.kernel.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-i2c@vger.kernel.org"
+ <linux-i2c@vger.kernel.org>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Sean Anderson
+ <sean.anderson@seco.com>
+Date: Wed, 17 Jan 2024 12:16:04 +0100
+In-Reply-To: <4c6c5d07-ac53-4da9-93e0-1286ca5eb44b@alliedtelesis.co.nz>
+References: <20240112163608.528453-1-krzysztof.kozlowski@linaro.org>
+	 <20240112163608.528453-6-krzysztof.kozlowski@linaro.org>
+	 <800d202864c1730622a19998728c5a8b576d1931.camel@pengutronix.de>
+	 <4c6c5d07-ac53-4da9-93e0-1286ca5eb44b@alliedtelesis.co.nz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC: <bhelgaas@google.com>, <lpieralisi@kernel.org>, <kw@linux.com>,
-        <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <linux-pci@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <vigneshr@ti.com>,
-        <afd@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: Re: [PATCH 2/3] dt-bindings: PCI: ti,j721e-pci-*: Add checks for
- max-link-speed
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-References: <20240117102526.557006-1-s-vadapalli@ti.com>
- <20240117102526.557006-3-s-vadapalli@ti.com>
- <4282b248-cb7f-4486-bde6-105a3aed6be2@linaro.org>
- <92ceb1ea-78db-4bc4-af1f-a1690eaca24c@ti.com>
- <42f44ecc-c7f4-4209-8cb5-805891c35413@linaro.org>
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-In-Reply-To: <42f44ecc-c7f4-4209-8cb5-805891c35413@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
+On Di, 2024-01-16 at 19:58 +0000, Chris Packham wrote:
+> On 17/01/24 04:18, Philipp Zabel wrote:
+> > On Fr, 2024-01-12 at 17:36 +0100, Krzysztof Kozlowski wrote:
+> > > From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> > >=20
+> > > Some hardware designs with multiple PCA954x devices use a reset GPIO
+> > > connected to all the muxes. Support this configuration by making use =
+of
+> > > the reset controller framework which can deal with the shared reset
+> > > GPIOs. Fall back to the old GPIO descriptor method if the reset
+> > > controller framework is not enabled.
+> > >=20
+> > > Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> > > Acked-by: Peter Rosin <peda@axentia.se>
+> > > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > > Link: https://scanmail.trustwave.com/?c=3D20988&d=3D8p6m5Tfi2yYJWYV9x=
+YGcYnz7UYxB6WTGTPkmGu7b8A&u=3Dhttps%3a%2f%2flore%2ekernel%2eorg%2fr%2f20240=
+108041913%2e7078-1-chris%2epackham%40alliedtelesis%2eco%2enz
+> > > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > >=20
+> > > ---
+> > >=20
+> > > If previous patches are fine, then this commit is independent and cou=
+ld
+> > > be taken via I2C.
+> > >=20
+> > > Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> > > Cc: Bartosz Golaszewski <brgl@bgdev.pl>
+> > > Cc: Sean Anderson <sean.anderson@seco.com>
+> > > ---
+> > >   drivers/i2c/muxes/i2c-mux-pca954x.c | 46 ++++++++++++++++++++++++--=
+---
+> > >   1 file changed, 38 insertions(+), 8 deletions(-)
+> > >=20
+> > > diff --git a/drivers/i2c/muxes/i2c-mux-pca954x.c b/drivers/i2c/muxes/=
+i2c-mux-pca954x.c
+> > > index 2219062104fb..1702e8d49b91 100644
+> > > --- a/drivers/i2c/muxes/i2c-mux-pca954x.c
+> > > +++ b/drivers/i2c/muxes/i2c-mux-pca954x.c
+> > > @@ -49,6 +49,7 @@
+> > >   #include <linux/pm.h>
+> > >   #include <linux/property.h>
+> > >   #include <linux/regulator/consumer.h>
+> > > +#include <linux/reset.h>
+> > >   #include <linux/slab.h>
+> > >   #include <linux/spinlock.h>
+> > >   #include <dt-bindings/mux/mux.h>
+> > > @@ -102,6 +103,9 @@ struct pca954x {
+> > >   	unsigned int irq_mask;
+> > >   	raw_spinlock_t lock;
+> > >   	struct regulator *supply;
+> > > +
+> > > +	struct gpio_desc *reset_gpio;
+> > > +	struct reset_control *reset_cont;
+> > >   };
+> > >  =20
+> > >   /* Provide specs for the MAX735x, PCA954x and PCA984x types we know=
+ about */
+> > > @@ -477,6 +481,35 @@ static int pca954x_init(struct i2c_client *clien=
+t, struct pca954x *data)
+> > >   	return ret;
+> > >   }
+> > >  =20
+> > > +static int pca954x_get_reset(struct device *dev, struct pca954x *dat=
+a)
+> > > +{
+> > > +	data->reset_cont =3D devm_reset_control_get_optional_shared(dev, NU=
+LL);
+> > > +	if (IS_ERR(data->reset_cont))
+> > > +		return dev_err_probe(dev, PTR_ERR(data->reset_cont),
+> > > +				     "Failed to get reset\n");
+> > > +	else if (data->reset_cont)
+> > > +		return 0;
+> > > +
+> > > +	/*
+> > > +	 * fallback to legacy reset-gpios
+> > > +	 */
+> > devm_reset_control_get_optional_shared() won't return NULL if the
+> > "reset-gpios" property is found in the device tree, so the GPIO
+> > fallback is dead code.
+>=20
+> Hmm, I was attempting to handle the case where CONFIG_RESET_GPIO wasn't=
+=20
+> set [...]
+> [...] it looks like we'd get -EPROBE_DEFER. I could change to check
+> for that or just remove the GPIO fallback entirely. Any preference?
 
+I hadn't considered this.
 
-On 17/01/24 16:30, Krzysztof Kozlowski wrote:
-> On 17/01/2024 11:58, Siddharth Vadapalli wrote:
->> On 17/01/24 16:05, Krzysztof Kozlowski wrote:
->>> On 17/01/2024 11:25, Siddharth Vadapalli wrote:
->>>> Extend the existing compatible based checks for validating and enforcing
->>>> the "max-link-speed" property.
->>>
->>> Based on what? Driver or hardware? Your entire change suggests you
->>
->> Hardware. The PCIe controller on AM64 SoC supports up to Gen2 link speed while
->> the PCIe controllers on other SoCs support Gen3 link speed.
->>
->>> should just drop it from the binding, because this can be deduced from
->>> compatible.
->>
->> Could you please clarify? Isn't the addition of the checks for "max-link-speed"
->> identical to the checks which were added for "num-lanes", both of which are
->> Hardware specific?
-> 
-> Compatible defines these values, at least what it looks like from the patch.
+If CONFIG_RESET_GPIO=3Dn, devm_reset_control_get_optional_shared()
+probably shouldn't return -EPROBE_DEFER. If we change that, the GPIO
+fallback here can stay as is.
 
-In this patch, I have added checks for the "max-link-speed" property in the same
-section that "num-lanes" is being evaluated. The values for "max-link-speed" are
-based on the Hardware support and this patch is validating the "max-link-speed"
-property in the device-tree nodes for the devices against the Hardware supported
-values which this patch is adding in the corresponding section. Kindly let me
-know if I misunderstood what you meant to convey.
+The alternative would be to drop the fallback and select RESET_GPIO.
+Using -EPROBE_DEFER for fallback detection is no good, as there could
+be a valid probe deferral if reset-gpio is compiled as a module that
+will be loaded later.
 
--- 
-Regards,
-Siddharth.
+regards
+Philipp
 
