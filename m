@@ -1,85 +1,95 @@
-Return-Path: <linux-kernel+bounces-29025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C99A7830723
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:35:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBAD283072B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:37:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCD7C1C21639
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:35:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57BED1F24C39
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:37:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7DD91F5E7;
-	Wed, 17 Jan 2024 13:35:08 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C4CC1EB52;
+	Wed, 17 Jan 2024 13:37:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="C7VbANkO"
+Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D111EB4D
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 13:35:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5600914A87
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 13:37:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705498508; cv=none; b=n3B9fuxWNIfB1H/0qceRr/zpVGcOPdtq7ihOHHUCK17t7BzpDGqHt0hPgP3EsSnJLzWXkSCH+xHctLltY6xd/mWu344XC/9xKgvTycd8a7BNIgJA9WJ+JL6zJU62VJEoopKhwZB4d+TJEAywvFXmfloM5JAOs7wdBtVzSif03Vg=
+	t=1705498652; cv=none; b=bd65btprVkmtaPmB/itQB3JLvyyFrz/GMX7jYR0rt4p+nCcPyFngSOjLJ6ZucujYWTm9c6k17QJMe5EoKVTFHo0I+AVRsmWpthWIYdz31n/ZC94FpxCX0cE6J9RTTwkKRkAkSnH27R3Le3NBV03McjuJL2iu/OqIs2QCHv0B95g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705498508; c=relaxed/simple;
-	bh=OUMfXeArj0HXVgSvfgSasLkiXApnYxPN3j76HDFRTS4=;
-	h=Received:X-Google-DKIM-Signature:X-Gm-Message-State:
-	 X-Google-Smtp-Source:MIME-Version:X-Received:Date:In-Reply-To:
-	 X-Google-Appengine-App-Id:X-Google-Appengine-App-Id-Alias:
-	 Message-ID:Subject:From:To:Content-Type; b=DkRDcoUsFZrEiqX7W9OkUYGVqegyLiw0vQw6Z0C/PnE3oGCQkGBoKZLLhaT9tIRHaoVTKJrI8Q11q24oYIeyT+gKTDk/MLSwWXJNc8vMVIfYvZ9/fzEmm+cq1+dI6VfvfGI9HiPeU9SIcScRWyXyO6O83A0fArydNywaXba4gBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7bf4ce8405dso216553839f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 05:35:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705498506; x=1706103306;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VZaEyxO71I8qdcKlz7TGqyeN+SJMsm6CO+OgGEYalDo=;
-        b=mzLNcfbpwTjPS0xCroEUhTlJjEKt0id/4rdIx2JcWHZ2ptA/GWTkmaBM0LjQsYMu4r
-         W3n7HxLTuPgDfBQYphjgtMMzhv7Yyz3atNIyD8CEuOY/QPH6re2FydpvSQNsadmSEtYs
-         JF3e+OmMCHnS1KEybZgV7OWYAj7rMAg732takwv3jN+QL2WUxu5tzc3w9I9vKdD2Wh3J
-         SUm5PAdJ3WcHAhf2X0CvjS0Js63pKicL+lOHa11nJYXPBgvoyd+ftVgH9eH1U/svla8P
-         8eDW6MQWl4W5OuARttw+bx6BxtfJDMDA9+XNW3BAE4EtQJLwyUcEP3EwdRmcrYYUq+V3
-         sJ7w==
-X-Gm-Message-State: AOJu0YwcUr2slTyoQTZkvfGGHspZw4vR7jyDjZpQOcIqHa+n53EDMt2x
-	BHXJcPfAThz2lzZPqr+6Rnbqbg1Y7VbFhkR27hu+pGfdMbIu
-X-Google-Smtp-Source: AGHT+IG/osXct4btBMAUb4tjq//ky5reC00Q6e26CjJI3sxj9Aekygxhe/hyVAiz/cD99I+wiZfUovk5e/AvN30yyNF7ia1s+Hzz
+	s=arc-20240116; t=1705498652; c=relaxed/simple;
+	bh=UfsbhrsAmco6AdwOAi9OFiHC26t5vjPYtbU8prb6Xgc=;
+	h=DKIM-Signature:Received:X-QQ-mid:Message-ID:X-QQ-XMAILINFO:
+	 X-QQ-XMRINFO:From:To:Cc:Subject:Date:X-OQ-MSGID:X-Mailer:
+	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding; b=tQIRkAmWdH0OIIryxfElfjOHNGLWgI8Zbzj2ICviEAN64HHwzNu13ShvTemX30u/bkLbd+G8L330iH3LkcJqOA1bQM6CTLpeyTNJGXKY7/TjxXRz2VWQiK00pFv9AbNMihZ24lZ39DTO7QlmisJK3WvzNaYCPWvyKJ3iK0PkYdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=C7VbANkO; arc=none smtp.client-ip=162.62.57.252
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1705498645; bh=LVEn1oixf1BwLM2yzeQ8xANQluGzPCvbuOpLQ+emisY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=C7VbANkOMNG9D/YA3HOgVpQ/E5urMjux0AJJxoGR0RCUbpIf9cjbd4udpbIUVqroD
+	 5JHLS0CHvZhyRXHNHkc7jO00zPQ3b8/WBxLPHXaMYN9BySwj+eMiSLZ8cDXHmMYPSg
+	 eb2KhpGJ64DJCG4mSygJRg9t9mdx6cmDvnTdhseQ=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrszc5-2.qq.com (NewEsmtp) with SMTP
+	id 957B6EEC; Wed, 17 Jan 2024 21:37:23 +0800
+X-QQ-mid: xmsmtpt1705498643tj0reex5a
+Message-ID: <tencent_891761177606DD73662373096203B5C44305@qq.com>
+X-QQ-XMAILINFO: Mdc3TkmnJyI/VlmtfTzmjpgiCurE8enklQdA8Co+VSN6t3Imbd5PSiNZZUfBbF
+	 3SJ4JNjGaRy5jRtjMAit+FoBJLTHAjy7FBZETUFXJrFpQTzJsQ2Zvv1v5kx6lWDFoHIX88z3ax+L
+	 g7F7KVQYji/lSvfvMbKXlC+p4yYOjADuwZl7f7hmgiYUsSdU0qIuEOc7G3F+AF+TjUsmjGfoCsfr
+	 g4yY8AIe3S3f1tmtIM6xnKABZBiBH/bn8jN3DehBrJdmSobWteFVv7eLBMUJGI1vnVsLKR5DRbDx
+	 3ODDoQpQ2/TSNr7pEazuKOyUbP8dLkdWDv1YHDVLEVv19gnmajNRLHTwSEMRCt32WEfgld1Crvbw
+	 mOq5RO3MGtMWfBU3VgsxkTs2VbjmjNki6wUpq3ZKyvgEFXN8L1eprMJaTuihJ5FGjqiYPgKSOVGN
+	 g2/vVYZ8VMa0D6R9Qrc+uEWfZDEgUB/9otZRyOXdwhD8ev2XXKO2gdr8scKyOicWt7cIVWScaLH0
+	 ebhO81JaPeFVbhiU4BdRXgovMoyIt0uXUuib1s+2U9vZMpcRtJYZ3C7VQo16unFKiFnv/V93sYb2
+	 8XA6sk4a6Cd47GxEf0XH6ugrI8rh+Ls4+HfPlIZtaXdU46bZY00NQOhOBv6wvCf2OQ1bgPOiV3fb
+	 9FdLRb2HWs/5rm0TYyw/PL7OjzF2jmQRKdt0cvNnjlcVY2H6NZ2IvGfd1wPMrIgm4CxThoDz6Ghg
+	 RTRZNQfIGTNq365oaMwJ8KV2uRoDDbK9Jjuo9IU9VY8h2j46/TRIzKgS4WhxQrbhIoyirhhQCX93
+	 2o4cPqEw7ei+hd9GtoAjitdIB/UXBr2srwn1RS6EtgTzMDkOcB75sACZmiN8AK8g3K7M3uLa0DFC
+	 vGP6Jf7AzbE5LZi0ggKNA23OashOCHvLraL82MAgAAHSVi2dTiitE83boBL0cHrw==
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+830d9e3fa61968246abd@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [bluetooth?] general protection fault in btintel_read_version
+Date: Wed, 17 Jan 2024 21:37:24 +0800
+X-OQ-MSGID: <20240117133723.2124393-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <000000000000cde441060f230f4f@google.com>
+References: <000000000000cde441060f230f4f@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a02:ce91:0:b0:46e:65a3:48ea with SMTP id
- y17-20020a02ce91000000b0046e65a348eamr349545jaq.0.1705498506228; Wed, 17 Jan
- 2024 05:35:06 -0800 (PST)
-Date: Wed, 17 Jan 2024 05:35:06 -0800
-In-Reply-To: <20240117131417.1132-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a0fcd7060f24505c@google.com>
-Subject: Re: [syzbot] [net?] KASAN: use-after-free Read in __skb_flow_dissect (3)
-From: syzbot <syzbot+bfde3bef047a81b8fde6@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+please test null ptr deref in btintel_read_version
 
-syzbot tried to test the proposed patch but the build/boot failed:
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git 943b9f0ab2cf
 
-net/core/flow_dissector.c:1169:29: error: assignment to 'const struct iphdr *' from incompatible pointer type 'unsigned char *' [-Werror=incompatible-pointer-types]
-
-
-Tested on:
-
-commit:         052d5343 Merge tag 'exfat-for-6.8-rc1' of git://git.ke..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-kernel config:  https://syzkaller.appspot.com/x/.config?x=da1c95d4e55dda83
-dashboard link: https://syzkaller.appspot.com/bug?extid=bfde3bef047a81b8fde6
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=15ed3ab9e80000
+diff --git a/drivers/bluetooth/btintel.c b/drivers/bluetooth/btintel.c
+index cdc5c08824a0..e5b043d96207 100644
+--- a/drivers/bluetooth/btintel.c
++++ b/drivers/bluetooth/btintel.c
+@@ -435,7 +435,7 @@ int btintel_read_version(struct hci_dev *hdev, struct intel_version *ver)
+ 	struct sk_buff *skb;
+ 
+ 	skb = __hci_cmd_sync(hdev, 0xfc05, 0, NULL, HCI_CMD_TIMEOUT);
+-	if (IS_ERR(skb)) {
++	if (IS_ERR_OR_NULL(skb)) {
+ 		bt_dev_err(hdev, "Reading Intel version information failed (%ld)",
+ 			   PTR_ERR(skb));
+ 		return PTR_ERR(skb);
 
 
