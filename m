@@ -1,225 +1,121 @@
-Return-Path: <linux-kernel+bounces-29070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B51B38307D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:19:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D857830800
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:26:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA3141C23E67
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:19:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B6F81F234B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:26:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FDE920330;
-	Wed, 17 Jan 2024 14:18:38 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81A522032F;
+	Wed, 17 Jan 2024 14:26:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="iTM2+qGk"
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B1B22031B
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 14:18:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E78020305
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 14:26:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705501117; cv=none; b=ZnXqOqz11KoS4wxMW0S7ndfKOq2+HjSG4LDLPrrjEFdBOMdSnCx1H8+7xuxXTZXirDF/kiNm428YCZG3FNYY4TTwZliFIvJ7CBDtC0LnW7neFQo3bVkcpeufK4TLk/QK2cvd0UDy3ZUWd/M7v4nicfNwzZivfKSmA1atXFWzKFU=
+	t=1705501565; cv=none; b=GzESjTBA43ZyYL0+B/ycGKPwNqdRFkjR8SRzHtLwAdBigBSXN8019uiDsxFpKII4Wrs0Q9O4nOrOTc4ibiCAXffL+M220M0ten/QC1XKiu45PK/k/AYuwiI+6ZZQ1mCrWH46StLaqi3vSCX0xeD1AK/1lZsFIfH9u3ZlYx1OnaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705501117; c=relaxed/simple;
-	bh=0vI/iw4mkCiFIxi1iYkkIkW0s6RagRQLcWMYC3yha58=;
-	h=Received:Received:Received:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To:X-SA-Exim-Connect-IP:X-SA-Exim-Mail-From:
-	 X-SA-Exim-Scanned:X-PTX-Original-Recipient; b=lOKi5vU5lZwzbT4uWPAyr6eYLzKt5wP2/3jjOwC8u77BmR87PmFpMRnTJYJsye5pDCAP2G2zCrvSdsEizBuYlY12cGacq2h+pdRK//QFdrIK1ut1dz0pluA+QhUd6qmEPvnZFT0WmPsi/lQx7UlA/JuPwInqxPk1ba9SQFDhFvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rQ6kP-0003p0-6z; Wed, 17 Jan 2024 15:18:29 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rQ6kO-000UJe-67; Wed, 17 Jan 2024 15:18:28 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rQ6kO-001mWl-0I;
-	Wed, 17 Jan 2024 15:18:28 +0100
-Date: Wed, 17 Jan 2024 15:18:27 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Trevor Gamblin <tgamblin@baylibre.com>
-Cc: linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	michael.hennerich@analog.com, nuno.sa@analog.com, devicetree@vger.kernel.org, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Subject: Re: [PATCH 2/2] pwm: Add driver for AXI PWM generator
-Message-ID: <rph3di2izoqdlxbj2dzdt7nydvmze373pazeopmim5bny4d7qi@d2fus3wzuhj7>
-References: <20240115201222.1423626-1-tgamblin@baylibre.com>
- <20240115201222.1423626-3-tgamblin@baylibre.com>
- <gbessnmierg5gvdguhwauoe2mxr3krwcfk2afhazrqvz45md64@itbchezepncg>
- <e6fbf553-f2f8-47ea-8781-cf01d37196a5@baylibre.com>
+	s=arc-20240116; t=1705501565; c=relaxed/simple;
+	bh=IZH1c4qN0Nyx3Qk86dKABx77jYlSji40Miq7xcjuCTY=;
+	h=Received:DKIM-Signature:Message-ID:Date:MIME-Version:Subject:
+	 Content-Language:To:Cc:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:X-MBO-RS-META:X-MBO-RS-ID; b=aCsh10J+i2JxIOja5I+BnEsxdO2+z4DG4kUmFnFTOVd1nXaAoLtPf5cDg4Vx5RTevK+cS8UdIt0kL1l6Sdk4sKteGY1s+tM2k46wSOKuWU3LN73QzwyJUCIRtGh0lsIrili3K6tXDzCS3gKvRuGVUKOgMi2mTV0RAclsaNflCXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=iTM2+qGk; arc=none smtp.client-ip=80.241.56.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4TFSfX3cp8z9scX;
+	Wed, 17 Jan 2024 15:18:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+	t=1705501124;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/04+AUA96JyRGSg7FmQ1Co1hzmApsEtK4+LDUq5qS9I=;
+	b=iTM2+qGklqomZrkR34x42hazC6kJ+uog03ScY7x+OSQ+DV8q006tTFpvfLKKULMIBRiWqv
+	27EL7iDbCy3fj06IcW2/nA9snnoZ1mVGwxb0sjVItvJfcbcbrPRzmIIMsCtIUdJHx1utqX
+	iPGZOTjyAMDlsbbhtmX4sji/Tq5cLiwpnleaR9feX9p53K5sKdyyjMYvrIxhWLdTr/XZMS
+	f8kEpLtVb4oZWUy2ygT7u/DRkJRsvxCvHxSRknEkc41Hao6kXYMWU9+9+UEiHAcBWDYEJI
+	etDj9lIp3kF4OjJdtUQlYD0Oy4YxpA22IM/DhB6dTh7upk9IVj0HCzWbAKpyHg==
+Message-ID: <48824a5d-223a-4ad2-b198-5fcb75a9cfde@mailbox.org>
+Date: Wed, 17 Jan 2024 15:18:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="az43kqsaevecs6w2"
-Content-Disposition: inline
-In-Reply-To: <e6fbf553-f2f8-47ea-8781-cf01d37196a5@baylibre.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] drm/atomic: Allow drivers to write their own plane
+ check for async
+Content-Language: de-CH-frami, en-CA
+To: Xaver Hugl <xaver.hugl@gmail.com>, Pekka Paalanen <ppaalanen@gmail.com>
+Cc: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, daniel@ffwll.ch,
+ =?UTF-8?B?TWFyZWsgT2zFocOhaw==?= <maraeo@gmail.com>,
+ linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, kernel-dev@igalia.com,
+ alexander.deucher@amd.com, Joshua Ashton <joshua@froggi.es>,
+ Dave Airlie <airlied@gmail.com>, christian.koenig@amd.com
+References: <20240116045159.1015510-1-andrealmeid@igalia.com>
+ <20240116114522.5b83d8b6@eldfell>
+ <a6099681-1ae9-48ef-99bc-d3c919007413@igalia.com>
+ <20240116151414.10b831e6@eldfell>
+ <47c6866a-34d6-48b1-a977-d21c48d991dc@igalia.com>
+ <CAFZQkGyOQ5Tfu++-cHqgZ9NOJxqxm8cAF5XT18LmisuPAUbXAg@mail.gmail.com>
+ <20240117105509.1984837f@eldfell>
+ <CAFZQkGzite-CZoJcV80kNPe==OWFZa_cR1x3QRKuLd=HdOFw-A@mail.gmail.com>
+From: =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>
+In-Reply-To: <CAFZQkGzite-CZoJcV80kNPe==OWFZa_cR1x3QRKuLd=HdOFw-A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-MBO-RS-META: pgtcyajtxp3yqt1pxr8ffrrr7u18ejhe
+X-MBO-RS-ID: f6b5e7383e43717d63d
+
+On 2024-01-17 13:57, Xaver Hugl wrote:
+> Am Mi., 17. Jan. 2024 um 09:55 Uhr schrieb Pekka Paalanen <ppaalanen@gmail.com>:
+>> Is it important enough to be special-cased, e.g. to be always allowed
+>> with async commits?
+> 
+> I thought so, and sent a patch to dri-devel to make it happen, but
+> there are some
+> concerns about untested driver paths.
+> https://lists.freedesktop.org/archives/dri-devel/2024-January/437511.html
+> 
+>> Now that I think of it, if userspace needs to wait for the in-fence
+>> itself before kicking KMS async, that would defeat much of the async's
+>> point, right? And cases where in-fence is not necessary are so rare
+>> they might not even exist?
+>>
+>> So if driver/hardware cannot do IN_FENCE_FD with async, is there any
+>> use of supporting async to begin with?
+> 
+> KWin never commits a buffer where IN_FENCE_FD would actually delay the
+> pageflip; it's really only used to disable implicit sync, as there's some edge
+> cases where it can wrongly delay the pageflip. The waiting for buffers to become
+> readable on the compositor side isn't really significant in terms of latency.
+> 
+> If hardware doesn't support IN_FENCE_FD with async commits, checking if the
+> fence is already signaled at commit time would thus still make things work, at
+> least for KWin.
+
+That's how IN_FENCE_FD (and implicit sync) is handled anyway, in common code: It waits for all fences to signal before calling into the driver to commit the atomic commit.
+
+I can't see why this wouldn't work with async commits, the same as with synchronous ones, with any driver.
 
 
---az43kqsaevecs6w2
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+-- 
+Earthling Michel Dänzer            |                  https://redhat.com
+Libre software enthusiast          |         Mesa and Xwayland developer
 
-Hello Trevor,
-
-On Wed, Jan 17, 2024 at 07:51:26AM -0500, Trevor Gamblin wrote:
-> On 2024-01-15 16:18, Uwe Kleine-K=F6nig wrote:
-> > On Mon, Jan 15, 2024 at 03:12:21PM -0500, Trevor Gamblin wrote:
-> > > +#define AXI_PWMGEN_TEST_DATA		0x5A0F0081
-> > Is this a documented constant, or just a random (as in xkcd#221) value?
->=20
-> This is just a random (as in xkcd#221) value to write to the scratch
-> register.
-
-Then I suggest to add a comment telling that.
-
-> > > +	period_cnt =3D DIV_ROUND_UP_ULL(state->period * clk_rate_hz, NSEC_P=
-ER_SEC);
-> > The multiplication might overflow. Please use mul_u64_u64_div_u64() (or
-> > one of its variant) and error out on clk_rate_hz > NSEC_PER_SEC.
-> >=20
-> > Also round-up is wrong. I would expect that enabling PWM_DEBUG and
-> > enough testing should tell you that. .apply is supposed to implement the
-> > biggest period not bigger than the requested one. So you have to round
-> > down here.
-> To be clear, I should use mul_u64_u64_div_u64 only, or should I round down
-> afterwards with another function as well?
-
-mul_u64_u64_div_u64() already rounds down.
-
-> > > +	if (period_cnt > UINT_MAX)
-> > > +		return -EINVAL;
-> > That's wrong. Please continue with period_cnd =3D UINT_MAX here.
-> >=20
-> > Instead you should probably error out on period_cnt =3D=3D 0.
-> >=20
-> > > +	pwm->ch_period[ch] =3D period_cnt;
-> > > +	pwm->ch_enabled[ch] =3D state->enabled;
-> > > +	ret =3D regmap_write(regmap, AXI_PWMGEN_CHX_PERIOD(ch), state->enab=
-led ? period_cnt : 0);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	duty_cnt =3D DIV_ROUND_UP_ULL(state->duty_cycle * clk_rate_hz, NSEC=
-_PER_SEC);
-> > > +	ret =3D regmap_write(regmap, AXI_PWMGEN_CHX_DUTY(ch), duty_cnt);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	return regmap_write(regmap, AXI_PWMGEN_REG_CONFIG, AXI_PWMGEN_LOAD_=
-CONFIG);
-> > I assume this means that the writes above are to shadow registers and on
-> > this write they are latched into the hardware. So there is no glitch?!
-> >=20
-> > Does this wait for the currently running period to complete before
-> > switching to the new configuration?
-> >=20
-> > Please document these two hardware properties in a "Limitations"
-> > paragraph at the top of the driver. See other drivers for the format.
->=20
-> The registers are shadow registers and changes don't take effect right aw=
-ay.
-> It also keeps the phase offset in sync between outputs.
-
-I don't understand that. This only makes sense if the different PWMs
-share the same period length, doesn't it?
-
-Please add this to the Limitations paragraph, too.
-
-> > > +static int axi_pwmgen_get_state(struct pwm_chip *chip, struct pwm_de=
-vice *device,
-> > > +				struct pwm_state *state)
-> > > +{
-> > > +	struct axi_pwmgen *pwm =3D to_axi_pwmgen(chip);
-> > > +	unsigned long clk_rate_hz =3D clk_get_rate(pwm->clk);
-> > > +	struct regmap *regmap =3D pwm->regmap;
-> > > +	unsigned int ch =3D device->hwpwm;
-> > > +	u32 cnt;
-> > > +	int ret;
-> > > +
-> > > +	if (!clk_rate_hz) {
-> > > +		dev_err(device->chip->dev, "axi pwm clock has no frequency\n");
-> > > +		return -EINVAL;
-> > > +	}
-> > > +
-> > > +	state->enabled =3D pwm->ch_enabled[ch];
-> > > +
-> > > +	if (state->enabled) {
-> > > +		ret =3D regmap_read(regmap, AXI_PWMGEN_CHX_PERIOD(ch), &cnt);
-> > > +		if (ret)
-> > > +			return ret;
-> > > +	} else {
-> > > +		cnt =3D pwm->ch_period[ch];
-> > > +	}
-> > If state->enabled is false, state->period is (or should) be ignored by
-> > the caller, so there shouldn't be a need to track ch_period.
-> >=20
-> > Also ch_enabled shouldn't be needed. Just reporting
-> > AXI_PWMGEN_CHX_PERIOD(ch) =3D=3D 0 as disabled should work fine?!
-> >=20
-> > I think then you also don't need to artificially limit npwm to four.
-> The only concern I have with not tracking ch_period is that it might not =
-be
-> clear what period to restore after disabling and re-enabling the device,
-> unless I'm missing something.
-
-A consumer that reenables the device should use pwm_apply_* which gets
-the complete state that should be configured. (And for the few other
-cases, this is solved in the core.)
-
-> > > +	pwm->clk =3D devm_clk_get_enabled(&pdev->dev, NULL);
-> > > +	if (IS_ERR(pwm->clk))
-> > > +		return dev_err_probe(&pdev->dev, PTR_ERR(pwm->clk), "failed to get=
- clock\n");
-> > Please call clk_rate_exclusive_get() on pwm->clk and cache the rate in
-> > struct axi_pwmgen.
-> >=20
-> > > +	pwm->chip.dev =3D &pdev->dev;
-> > > +	pwm->chip.ops =3D &axi_pwmgen_pwm_ops;
-> > > +	pwm->chip.base =3D -1;
-> > Don't assign .base.
-> Alright. I will set pwm->chip.atomic as per Sean's comment as well.
-
-Sounds good.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---az43kqsaevecs6w2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWn4bIACgkQj4D7WH0S
-/k54cwf/VyTy7fh72MUwhCHWYDFU0aaQNBu38femzw3/fReWeSnnTuvZUVAzloej
-m6x0XoXw8jiJBDyxKXvSA3OETB94CKLDZc5iuREBneSx0rcKGYPxekzdNqwMgp4l
-5Du7drDCvISRaUWn9mreacHTraxkroHl6XmZ2szEHagKAxx40ZiiV/yuGqMLlS2q
-tuErCfNKVDzMLknNE9qNRRI4+0Qdq2r62u2xFDbQhV3RgfkfKO8g35NrFg1rGlyr
-a/kaWf5WgaSXwbNB6iR0JaLc16I0cSueok3cFZUbIo0dNsXUnYoyul7hfySZEQjG
-GKbW+wQyNyST4rC7PqpiKMFgJ0+1bg==
-=ImPA
------END PGP SIGNATURE-----
-
---az43kqsaevecs6w2--
 
