@@ -1,288 +1,285 @@
-Return-Path: <linux-kernel+bounces-29274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 872FC830BF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:33:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDAB5830BFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:34:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB2AA1F246E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:33:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 858E328D29F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:34:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7691D22EE8;
-	Wed, 17 Jan 2024 17:33:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A408C2263C;
+	Wed, 17 Jan 2024 17:34:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jYdYhYXs"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="dMqTOBpK"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2082.outbound.protection.outlook.com [40.107.92.82])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65DB32261A;
-	Wed, 17 Jan 2024 17:33:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705512810; cv=none; b=o4MPZfacPszcYVbUVM+f5TSFgvqvZZoJsppQ6mocdTNNUhDNBhn3hW5xcEiXRvX/TbUW31FlHuXlpgq0N3Ix4o7H0AJkKB5za1fTgJ6CN/Zbl3OLE8SA1Fg0OGDG+37O3Cqhusd9cEmB9w0tnZ39RJQWFvWkjo0HpXOzdkPaMp8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705512810; c=relaxed/simple;
-	bh=+Wb3+6g4jOz7XRey17y/SlhFbOsOs7Bf2nj0XnSH1wI=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To:X-Cookie; b=oXC3pK1AJ0J8HKjRQGhWUw3YYRFrXD8ZHUOKJSO5v8B2JHD2L7EtmI9UmtwufWxk/N8FQg0IZEj/zTQMk9KWYpuDkSUrTnQ3ggDzMEhou4TDgpVJAEqy70iV77ldz2Mz8c6Zgrkr8/Iffnyn1/TJl4bBhn6/9TaNfFDJslLTajk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jYdYhYXs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACB59C433A6;
-	Wed, 17 Jan 2024 17:33:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705512809;
-	bh=+Wb3+6g4jOz7XRey17y/SlhFbOsOs7Bf2nj0XnSH1wI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jYdYhYXsmCv8kz6vcy4tt0FIjooLELWxNlp3tw6BUlc9nUgUyOIXKRUQqSae7VoKf
-	 uBbQk+WGFhLe6fuhtfZfFZ/4k0rkjFsnU5Lm0SEgoLbtklKYiD74l1woi1K8DTCS1l
-	 BOCTM9vn1V5mhqhj9WIZjJ36ssVaVXjXH2LU4b74k/+q9XLCi/RDD/WHEK7KhoXNpq
-	 uZWQbvHClZ9wy4CmF3kyfcSqpN7IHSuWpbtSfcC1ypPtkXcCGVw0l0ysxR7O6NieOi
-	 9IZa73I1ZQ9Rvrl2Qr8xdTnqlilrP0iN1XttHGUJT/gODtD8OKauvkHQFIvb0wFi/b
-	 0k5kVMzqCmgRA==
-Date: Wed, 17 Jan 2024 17:33:23 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Neal Gompa <neal@gompa.dev>, Kees Cook <keescook@chromium.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-	Nikolai Kondrashov <spbnick@gmail.com>,
-	Philip Li <philip.li@intel.com>,
-	Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [GIT PULL] bcachefs updates for 6.8
-Message-ID: <279c6f69-9af2-4607-b5d1-1acd21f9da8b@sirena.org.uk>
-References: <6pbl6vnzkwdznjqimowfssedtpawsz2j722dgiufi432aldjg4@6vn573zspwy3>
- <202401101625.3664EA5B@keescook>
- <xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
- <be2fa62f-f4d3-4b1c-984d-698088908ff3@sirena.org.uk>
- <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
- <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
- <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
- <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
- <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
- <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F40522EE0;
+	Wed, 17 Jan 2024 17:34:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.82
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705512885; cv=fail; b=p6c6K+UmatjN2fcV5RFRbUoHA5QbVc6DZbn49hSdAanVoXNwWAZO6bhf/qvyjvkUr2oVh6UwFYySm5i/RHftZGWzifnrNLJ2t+8uy9CioNGhsAbjx9pKxQfg4rzsqC1cDtAEbHfcqADR9Q39dC838DWwVh0Kw1IxCkUKXHcK3Uc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705512885; c=relaxed/simple;
+	bh=qUgoo7mnvAnxD8ZdSelSwUU6MLkQSfipDji93D485Ns=;
+	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
+	 Received:Received:Message-ID:Date:User-Agent:Subject:To:Cc:
+	 References:Content-Language:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:X-ClientProxiedBy:MIME-Version:
+	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
+	 X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-AuthSource:
+	 X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+	 X-MS-Exchange-CrossTenant-UserPrincipalName:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=LF/dE5zVERqBea0LbtqMGGuh7mDje11qqzI/hC5c9V4co4tYrDjC6ZMB3PkGJZdwW5PUn/fIgvr6dSPueLkFqMfQTqAp9c+0xHMYwnn3dJm/Y7wcyxuyf69yy/lc6sUocNwFinJdeCh/lBWRi5cJDjRZu8OtsMBlat2GdlNqL1A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=dMqTOBpK; arc=fail smtp.client-ip=40.107.92.82
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S1xcQpDgA+qtSD6OBdUbo7HhXFBOrFUtLWkqCSL+xReYMb7nmYzi2pQhMZf1iQBS2LaQ/D5tW6dbwTwzPG14IYIiKcHlL4NaPwFhTUWVuungO6ofjfpNwFFSK5Z1MbGuho2HQP1CpY8b+hwIer/uOZ3DCYUW+tH06quH6VJ1VabhL347AtLXr3J3MTo69X2lY5+q1TLQg3PokbhkjC9IsKqEpfYzqkIjIHSgtO1LRosVukerd+zdl9/b0oiLPupY36l1Dqui/+4Fg9ABEQXyko61vbXSv2/fdzIPeyCU0hkkDHLWJUguCue9rD99KzWmtuskdXor/iVzAuah8XX9Ng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=C9BkAB7AZcAMVvWqqpCFZpNt2wLA1+y9r8hcBwDw57o=;
+ b=lFDf5g4GZybeegdCa4oBxFHymEkasylvnk4PqHVlhIdVOd+VubEZR1UnZ337etA2coGJ9jP+HZnjfPtstYepiHthv8QA3V8bp2ngwUNeTg+vztz9W9HVxPfnA//xxSYTeCFtoy5a/9XDSJ9ialnTvfhdvY94YV7C9jb7wmFjR5NItzpftmVbN7rWpEYrA+QqdF8lhisb+dYKXJw2obqW3WIXlfa80Kz9vIN/PTT20YOqw0vl6Y2+KZGSHKSnX5fwoaSWD7At+FWNt7toG6sVABNVFa3xFUm5pYIdb76uL45J/PHuIUVydkSTG5YdsKlHA9J8Muf7+aTf6RhgaV7v2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=C9BkAB7AZcAMVvWqqpCFZpNt2wLA1+y9r8hcBwDw57o=;
+ b=dMqTOBpKUCiluSq9dnO2sQjJ4jcdPqic1oHXa/beDn92cmCrhdhJF44qb8n6m1esmF2z2qcH/3SNHkybbUjzgKPQ1gdb3ucr56U1yonGJqz0tsR26zgSUz021PwU+jMMmtMGE/IOIZlP45P2dcCPPqdRSOn3ZHRmUnrSi6aRbQ0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by SA3PR12MB8764.namprd12.prod.outlook.com (2603:10b6:806:31f::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.29; Wed, 17 Jan
+ 2024 17:34:40 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::ce8d:7121:cb06:91ba]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::ce8d:7121:cb06:91ba%4]) with mapi id 15.20.7181.029; Wed, 17 Jan 2024
+ 17:34:40 +0000
+Message-ID: <cc247521-5507-44a2-8ff4-519c7a7b1c79@amd.com>
+Date: Wed, 17 Jan 2024 11:34:37 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] Fix stuck UCSI controller on DELL
+To: "Christian A. Ehrhardt" <lk@c--e.de>, Dell.Client.Kernel@dell.com,
+ "Wang, Crag" <Crag.Wang@dell.com>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+ linux-usb@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Hans de Goede <hdegoede@redhat.com>, Saranya Gopal
+ <saranya.gopal@intel.com>, linux-kernel@vger.kernel.org
+References: <20240103100635.57099-1-lk@c--e.de>
+ <ZZadhlh3q9ZInxvU@kuha.fi.intel.com> <ZaV/kwuh2MBNY5d2@cae.in-ulm.de>
+ <34101c32-65cd-4433-974f-23a16f9981fa@amd.com>
+ <Zad1K5V8mhNiiMWl@cae.in-ulm.de>
+Content-Language: en-US
+From: Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <Zad1K5V8mhNiiMWl@cae.in-ulm.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN6PR04CA0075.namprd04.prod.outlook.com
+ (2603:10b6:805:f2::16) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="lNBJ9/03mTaJ7xAl"
-Content-Disposition: inline
-In-Reply-To: <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
-X-Cookie: Programmers do it bit by bit.
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|SA3PR12MB8764:EE_
+X-MS-Office365-Filtering-Correlation-Id: a8d3e442-badf-42d5-8829-08dc1782957f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Iurv9bLIyCLvHTOPFVUU+2V7OdEEssVVc59QdF5qjCzqn283S7rjV0jjToyivR6Wp4TNMBQQ0pVV6NvtdLyCCvRO7PdHgDbS91nnfBcRbLuUNS+QxJhkvlAL1ZbPkwmRgUsHHnKwhOs3Am1QtW3ozF5Ui7zCdINsSuQYtvY4+4fumZs75JhE5l3i62ZBaFuQ7fA6+v3+2dy+dDDI1Kt7eeJ0iVCUQLrEI2fDnOHjX1IsBX/XQ3ZNhrE8Ay46HS+Xk9FgOkR5alrImIJjJ7AjovNjH4QqkQtHmSDOTZWz7biC1ys2+ayh8PbxWz4fsrmBImLrZCHSbbmQa6DchZoX6H9pOekqPGvvhU/bhvZuxpYMR1+ACM94tfgJ5HLiP/PrcnGHqhrNe1VUswya7+B9l+UicbmomJSXAEVY0TxIFrg+GFLvfOxgZ4jKRUvC/MgI3aChNzTnof8gcENmDH0q1RoD22Oz7ZUI9J08nGOtAXy1l277lqq6a5aiWoSYbz2cJKjeIkyYfzLWfUDtnZmDwk/kcvLTK9Sr29TJVnUmrvElEAilFxuOK0E74i9PVngY+H2TFhw5d9utayd5OE91ZGmBPS68G2/2NWYfDVLyb6C8L2g+kDYbjPmnZGogWmJG
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(346002)(396003)(366004)(39860400002)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(31696002)(2616005)(26005)(6666004)(6506007)(478600001)(53546011)(6512007)(83380400001)(966005)(6486002)(5660300002)(7416002)(2906002)(4326008)(41300700001)(36756003)(8676002)(66556008)(66946007)(54906003)(110136005)(44832011)(316002)(66476007)(8936002)(86362001)(38100700002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?c2U4Uk1mcHNCVTZyQmtVTkFEVDdKK2UvSTlxSTlUdms3QXdZUmxBSWdGM21x?=
+ =?utf-8?B?d3lKTG5yNGlmNWhJZlFEWUE5YW1MT24rWnFHRGcxMlkrNnYrbGlSbDRIYlRP?=
+ =?utf-8?B?bXF3MEtPcG9wYnJiWGdOMEY0THR1VGVjZEIzcHRaUFJMTVcwTVVubHY0Q01o?=
+ =?utf-8?B?NExQZXpBemdjbUJYcmQwVW9MZE9OYy9raS94c1I0S2lwU3piSDZFZWZIUkxi?=
+ =?utf-8?B?K1dZRGRCSDc5cFRtS3hKTCsxdW1ZYm13dEpFeXJYdjFnV3p3THV4NVFWN0Zt?=
+ =?utf-8?B?VkRjV0JtQU1sSitlbk9ndm40K3RsUGZUdUhac2h6WEpUQjFBbHlEWklxK012?=
+ =?utf-8?B?MWMxUWwvMWIvZHVNTEQrKzBzVUEwMldtTjZ4SEVGYnc4SXEycWdOV0tvREFV?=
+ =?utf-8?B?b0JheFo3REo3Z3FiUHEzcE1JNmNVUU5PSStZOEFQS0RDRDFXMGpsRXlueXhH?=
+ =?utf-8?B?M09vZDRsWUdMMnh0anhNdWpxZEY0MDdERjMxSXJvM25VeG9hRHV6ajZuZ2sy?=
+ =?utf-8?B?SUIwekNaRnhmbGdORldSc1k5RGNRM3NkZnNTMVN6Qy9NKzdCMEllcUlBN0FG?=
+ =?utf-8?B?WklLb29qSm44SGZQTkFQU0d3dCs4Y1d1dFh4Lzk4Y3Njb2J1N05qMHd5YU1U?=
+ =?utf-8?B?djQrR21EUURWZERBcFNkYjhPYnJ3dElPdHcxRjNKVXBTb1dMYU1ZZlgwZ21H?=
+ =?utf-8?B?dGI1TVgvZGlPSDd6UkJiZGsrM1orTWV4emNybkJ4bEM1WFdSSW05a3RQamhS?=
+ =?utf-8?B?dVgzR0YvaWF2ZlN1bjZYaExWSXcyNU02OTdLNVNGMmhwTDhaMGQweklZcXV5?=
+ =?utf-8?B?a1R6VTUzMnhySjNWZW9xYVBrWWpHc0lBdGQrb3JoNXVreHpPSmg0QU45aVpM?=
+ =?utf-8?B?c0VlbUJxM0JzakZIUm9nN21uc1VTTTFNbG9VckVWVFhFaWRtak5zOVJUaVNB?=
+ =?utf-8?B?Zy9RUHE0dnljeUxvYjVFeUFBbVVRcm9BZXVVVlNEajVpNFV0bFVqUlA2eGRt?=
+ =?utf-8?B?RlNER2ZFTmVZQ2JDRXlmZ25rVFEzS2plS09KUHJoOThDWnRpRXh4VlMyL1dy?=
+ =?utf-8?B?RWNISU9OMExNM2NYWVc3Wlp1VWFscmFTZnJSMzJlWTNnUk5LT2M5bkt2eml1?=
+ =?utf-8?B?cTRIR0F5UFAxbko2aDZkUUlOZFBBMXRxbkNhdk9BNXljQ0FXZ2tLTzN2bmxS?=
+ =?utf-8?B?NlJ1RlRYRGoyREwrLzNvdW9BSHlJR3ptMEVhcE0zRHIvbE9jeU9QbnJ2ait4?=
+ =?utf-8?B?SWVMbWxnQ1REQnVWS2VrbkpTOTlyZXpVOXFJYjh3cFNtanpYRzRhRkFyNU9i?=
+ =?utf-8?B?NWxtOFg4V2dyZUVXYVBlUkF3ekdVNlU3cWxIWGxhZ3g0Rkd1VzVQNDNJQm8w?=
+ =?utf-8?B?VUxlQlBVSlJkQ3IxdWl4YW5NdzhlejJmU29sQzVNY3d2U2xSTTBpVGxQdC9W?=
+ =?utf-8?B?elZlMmJSQTQ3WlZHL0Z2Q1owY1FySlFGMC8rSnNSWkNrOHRWYzJqVFJmb04v?=
+ =?utf-8?B?amc3dytMek9sclZKMnV4bTkyYnAya0N6S25PQ1hyR0tKR01LdUVKSUk3SWFm?=
+ =?utf-8?B?Z0o5R2hMV3NEVGhyQm1FVUV0RUVJRnU4YVIxQmdiejU1V0p0cWdrOGtCeXlC?=
+ =?utf-8?B?YW5Gdi9TZGNFV1YxMm9IODBPQVRocHFTd3huTit3dmJJdlNZZW9SakxHb2Fm?=
+ =?utf-8?B?RTE1Rms4L0ZHQzRpVUx6UDU3SjA0WEp0Z1dNUVF1UDRTU2RYSWFwQVNWTTB5?=
+ =?utf-8?B?UDI5dGNMazN1UHVHOGdsTThXZ0E1TVRrTXo4VWRmRFlnQkYxd0RJQkg5UFo0?=
+ =?utf-8?B?YlhLTVVHUmtkVWNwcC9EaytXekNweDRINkJIUWdiaCttaVc2cjNTQ3BQeGg5?=
+ =?utf-8?B?WXV3VHloQ1NkeXZhUG52V1FuTTIvaUNmUzJsQmN6NVQ5SzJYM05XNEVHb1hs?=
+ =?utf-8?B?ZnhSQVFWNDJ0aS9WWjBHeThvK3JWa09mNE1welBhTWNuVWFhUnNQR0Y0azlv?=
+ =?utf-8?B?WDIxWXRvdXBtcHY1RklabHppeGc2NFY0R0M4K1JyemZ0SWFQTGVOT3dwOE95?=
+ =?utf-8?B?ZnVFL0NsMlo5aDJVMTFrKzhoZDhTWlBKWURoM0hPM1p2U2NsU0xIZTZTMFk1?=
+ =?utf-8?Q?gzrRRZJur0c9iw3KOh9N1zNQM?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a8d3e442-badf-42d5-8829-08dc1782957f
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2024 17:34:40.2977
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Xe+dSxxmowlDpP+VCvdjaty5uILwVEyfB447rRRSPw0jbjpzPqXg86ehs/RIfhtDajTCFACvB8URPvL64H4HaQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB8764
+
+On 1/17/2024 00:35, Christian A. Ehrhardt wrote:
+> 
+> Hi Mario,
+> 
+> On Tue, Jan 16, 2024 at 09:00:03PM -0600, Mario Limonciello wrote:
+>> On 1/15/2024 12:55, Christian A. Ehrhardt wrote:
+>>>
+>>> Hi Heikki,
+>>>
+>>> sorry to bother you again with this but I'm afraid there's
+>>> a misunderstanding wrt. the nature of the quirk. See below:
+>>>
+>>> On Thu, Jan 04, 2024 at 01:59:02PM +0200, Heikki Krogerus wrote:
+>>>> Hi Christian,
+>>>>
+>>>> On Wed, Jan 03, 2024 at 11:06:35AM +0100, Christian A. Ehrhardt wrote:
+>>>>> I have a DELL Latitude 5431 where typec only works somewhat.
+>>>>> After the first plug/unplug event the PPM seems to be stuck and
+>>>>> commands end with a timeout (GET_CONNECTOR_STATUS failed (-110)).
+>>>>>
+>>>>> This patch fixes it for me but according to my reading it is in
+>>>>> violation of the UCSI spec. On the other hand searching through
+>>>>> the net it appears that many DELL models seem to have timeout problems
+>>>>> with UCSI.
+>>>>>
+>>>>> Do we want some kind of quirk here? There does not seem to be a quirk
+>>>>> framework for this part of the code, yet. Or is it ok to just send the
+>>>>> additional ACK in all cases and hope that the PPM will do the right
+>>>>> thing?
+>>>>
+>>>> We can use DMI quirks. Something like the attached diff (not tested).
+>>>>
+>>>> thanks,
+>>>>
+>>>> -- 
+>>>> heikki
+>>>
+>>>> diff --git a/drivers/usb/typec/ucsi/ucsi_acpi.c b/drivers/usb/typec/ucsi/ucsi_acpi.c
+>>>> index 6bbf490ac401..7e8b1fcfa024 100644
+>>>> --- a/drivers/usb/typec/ucsi/ucsi_acpi.c
+>>>> +++ b/drivers/usb/typec/ucsi/ucsi_acpi.c
+>>>> @@ -113,18 +113,44 @@ ucsi_zenbook_read(struct ucsi *ucsi, unsigned int offset, void *val, size_t val_
+>>>>    	return 0;
+>>>>    }
+>>>> -static const struct ucsi_operations ucsi_zenbook_ops = {
+>>>> -	.read = ucsi_zenbook_read,
+>>>> -	.sync_write = ucsi_acpi_sync_write,
+>>>> -	.async_write = ucsi_acpi_async_write
+>>>> -};
+>>>> +static int ucsi_dell_sync_write(struct ucsi *ucsi, unsigned int offset,
+>>>> +				const void *val, size_t val_len)
+>>>> +{
+>>>> +	u64 ctrl = *(u64 *)val;
+>>>> +	int ret;
+>>>> +
+>>>> +	ret = ucsi_acpi_sync_write(ucsi, offset, val, val_len);
+>>>> +	if (ret && (ctrl & (UCSI_ACK_CC_CI | UCSI_ACK_CONNECTOR_CHANGE))) {
+>>>> +		ctrl= UCSI_ACK_CC_CI | UCSI_ACK_COMMAND_COMPLETE;
+>>>> +
+>>>> +		dev_dbg(ucsi->dev->parent, "%s: ACK failed\n", __func__);
+>>>> +		ret = ucsi_acpi_sync_write(ucsi, UCSI_CONTROL, &ctrl, sizeof(ctrl));
+>>>> +	}
+>>>
+>>> Unfortunately, this has the logic reversed. The quirk (i.e. the
+>>> additional UCSI_ACK_COMMAND_COMPLETE) is required after a _successful_
+>>> UCSI_ACK_CONNECTOR_CHANGE. Otherwise, _subsequent_ commands will timeout
+>>> (usually the next GET_CONNECTOR_CHANGE).
+>>>
+>>> This means the quirk must be applied _before_ we detect any failure.
+>>> Consequently, the quirk has the potential to break working systems.
+>>>
+>>> Sorry, if that wasn't clear from my original mail. Please let me know
+>>> if this changes how you want the quirks handled.
+>>>
+>>>        Thanks    Christian
+>>>
+>>
+>> For the problematic scenario have you tried to play with it a bit to see if
+>> it's too short of a timeout (raise timeout) or to output the response bits
+>> to see if anything else surprising is sent?
+> 
+> It is not a problem with the timeout. Waiting forever in this case
+> doesn't help. IMHO this is actually a bug in the PPM, i.e. in Dell's
+> bios.
+
+"Usually" the PD controller F/W is distributed with the EC, but yes Dell 
+nominally puts everything in a monolithic BIOS package.
+
+> 
+> Sending an ack after the timeout fixes things, though.
+> 
+>> Does it always fail on the same command, or does it happen to a bunch of
+>> them?
+> 
+> It always fails on the first command after UCSI_ACK_CC_CI for a
+> connector change. However, there might be no such command if the
+> next event is a notification.
+> 
+> I did play around with it a bit more and came up with a way to
+> probe for the issue:
+> 
+>      https://lore.kernel.orgorg/all/20240116224041.220740-1-lk@c--e.de/
+
+If some variation of your prob-able workaround is picked up I think it's 
+worth making noise when probed (dev_warn or dev_notice) about this 
+situation that it is being used to workaround a PPM bug.
+
+> 
+> regards    Christian
+> 
+> 
+
++ Dell Client Kernel mailbox
+
+Dell team,
+
+Can you look into this?  It sounds like it should be investigated more 
+closely to see where the impedance mismatch against the spec and real 
+behavior actually lies.
 
 
---lNBJ9/03mTaJ7xAl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jan 15, 2024 at 01:42:53PM -0500, Kent Overstreet wrote:
-> On Fri, Jan 12, 2024 at 06:22:55PM +0000, Mark Brown wrote:
-
-> > This depends a lot on the area of the kernel you're looking at - some
-> > things are very amenable to testing in a VM but there's plenty of code
-> > where you really do want to ensure that at some point you're running
-> > with some actual hardware, ideally as wide a range of it with diverse
-> > implementation decisions as you can manage.  OTOH some things can only
-> > be tested virtually because the hardware doesn't exist yet!
-
-> Surface wise, there are a lot of drivers that need real hardware; but if
-> you look at where the complexity is, the hard complex algorithmic stuff
-> that really needs to be tested thoroughly - that's all essentially
-> library code that doesn't need specific drivers to test.
-
-..
-
-> And if we were better at that, it would be a good nudge towards driver
-> developers to make their stuff easier to test, perhaps by getting a
-> virtualized implementation into qemu, or to make the individual drivers
-> thinner and move heavy logic into easier to test library code.
-
-As Greg indicated with the testing I doubt everyone has infinite budget
-for developing emulation, and I will note that model accuracy and
-performance tend to be competing goals.  When it comes to factoring
-things out into library code that can be a double edged sword - changes
-in the shared code can affect rather more systems than a single driver
-change so really ought to be tested on a wide range of systems.  The
-level of risk from changes does vary widly of course, and you can try to
-have pure software tests for the things you know are relied upon, but
-it can be surprising.
-
-> > Yeah, similar with a lot of the more hardware focused or embedded stuff
-> > - running something on the machine that's in front of you is seldom the
-> > bit that causes substantial issues.  Most of the exceptions I've
-> > personally dealt with involved testing hardware (from simple stuff like
-> > wiring the audio inputs and outputs together to verify that they're
-> > working to attaching fancy test equipment to simulate things or validate
-> > that desired physical parameters are being achieved).
-
-> Is that sort of thing a frequent source of regressions?
-
-> That sounds like the sort of thing that should be a simple table, and
-> not something I would expect to need heavy regression testing - but, my
-> experience with driver development was nearly 15 years ago; not a lot of
-> day to day. How badly are typical kernel refactorings needing regression
-> testing in individual drivers?
-
-General refactorings tend not to be that risky, but once you start doing
-active work on the shared code dealing with the specific thing the risk
-starts to go up and some changes are more risky than others.
-
-> Filesystem development, OTOH, needs _heavy_ regression testing for
-> everything we do. Similarly with mm, scheduler; many subtle interactions
-> going on.
-
-Right, and a lot of factored out code ends up in the same boat - that's
-kind of the issue.
-
-> > > > It's a basic lack of leadership. Yes, the younger engineers are always
-> > > > going to be doing the new and shiny, and always going to want to build
-> > > > something new instead of finishing off the tests or integrating with
-> > > > something existing. Which is why we're supposed to have managers saying
-> > > > "ok, what do I need to prioritize for my team be able to develop
-> > > > effectively".
-
-> > That sounds more like a "(reproducible) tests don't exist" complaint
-> > which is a different thing again to people going off and NIHing fancy
-> > frameworks.
-
-> No, it's a leadership/mentorship thing.
-
-> And this is something that's always been lacking in kernel culture.
-> Witness the kind of general grousing that goes on at maintainer summits;
-> maintainers complain about being overworked and people not stepping up
-> to help with the grungy responsibilities, while simultaneously we still
-> very much have a "fuck off if you haven't proven yourself" attitude
-> towards newcomers. Understandable given the historical realities (this
-> shit is hard and the penalties of fucking up are high, so there does
-> need to be a barrier to entry), but it's left us with some real gaps.
-
-> We don't have enough a people in the senier engineer role who lay out
-> designs and organise people to take on projects that are bigger than one
-> single person can do, or that are necessary but not "fun".
-
-> Tests and test infrastructure fall into the necessary but not fun
-> category, so they languish.
-
-Like Greg said I don't think that's a realistic view of how we can get
-things done here - often the thing with stop energy is that it just
-makes people stop.  In a lot of areas everyone is just really busy and
-struggling to keep up, we make progress on the generic stuff in part by
-accepting that people have limited time and will do what they can with
-everyone building on top of everyone's work.
-
-> > > > Just requisition the damn machines.
-
-> > There's some assumptions there which are true for a lot of people
-> > working on the kernel but not all of them...
-
-> $500 a month for my setup (and this is coming out of my patreon funding
-> right now!). It's a matter of priorities, and being willing to present
-> this as _necessary_ to the people who control the purse strings.
-
-One of the assumptions there is that everyone is doing this in a well
-funded corporate environment focused on upstream.  Even ignoring
-hobbyists and students for example in the embedded world it's fairly
-common to have stuff being upstreamed since people did the work anyway
-for a customer project or internal product but where the customer
-doesn't actually care either way if the code lands anywhere other than
-their product (we might suggest that they should care but that doesn't
-mean that they actually do care).
-
-I'll also note that there's people like me who do things with areas of
-the kernel not urgently related to their current employer's business and
-hence very difficult to justify as a work expense.  With my lab some
-companies have been generous enough to send me test hardware (which I'm
-very greatful for, that's most of the irreplaceable stuff I have) but
-the infrastructure around them and the day to day operating costs are
-all being paid for by me personally.
-
-> > > > I'd also really like to get automated performance testing going too,
-> > > > which would have similar requirements in that jobs would need to be
-> > > > scheduled on specific dedicated machines. I think what you're doing
-> > > > could still build off of some common infrastructure.
-
-> > It does actually - like quite a few test labs mine is based around LAVA,
-> > labgrid is the other popular option (people were actually thinking about
-> > integrating the two recently since labgrid is a bit lower level than
-
-..
-
-> > want to run and what results I expect.  What I've got is *much* more
-> > limited than I'd like, and frankly if I wasn't able to pick up huge
-> > amounts of preexisting work most of this stuff would not be happening.
-
-> That's interesting. Do you have or would you be willing to write an
-> overview of what you've got? The way you describe it I wonder if we've
-> got some commonality.
-
-I was actually thinking about putting together a talk about it, though
-realistically the majority of it is just a very standard LAVA lab which
-is something there's a bunch of presentations/documentation about
-already.
-
-> The short overview of my system: tests are programs that expose
-> subcommends for listing depencies (i.e. virtual machine options, kernel
-> config options) and for listing and running subtests. Tests themselves
-> are shell scripts, with various library code for e.g. standard
-> kernel/vm config options, hooking up tracing, core dump catching, etc.
-
-> The idea is for tests to be entirely self contained and need no outside
-> configuration.
-
-The tests themselves bit sounds like what everyone else is doing - it
-all comes down to running some shell commands in a target environment
-somewhere.  kselftest provides information on which config options it
-needs which would be nice to integrate too.
-
-> and the CI, on top of all that, watches various git repositories and -
-> as you saw - tests every commit, newest to oldest, and provides the
-> results in a git log format.
-
-> The last one, "results in git log format", is _huge_. I don't know why I
-> haven't seen anyone else do that - it was a must-have feature for any
-> system over 10 years ago, and it never appeared so I finally built it
-> myself.
-
-A lot of the automated testing that gets done is too expensive to be
-done per commit, though some does.  I do actually do it myself, but even
-there it's mainly just some very quick smoke tests that get run per
-commit with more tests done on the branch as a whole (with a bit more
-where I can parallise things well).  My stuff is more organised for
-scripting so expected passes are all just elided, I just use LAVA's UI
-if I want to pull the actual jobs for some reason.  I've also see aiaiai
-used for this, though I think the model there was similarly to only get
-told about problems.
-
-> We (inherently!) have lots of issues with tests that only sometimes fail
-> making it hard to know when a regression was introduced, but running all
-> the tests on every commit with a good way to see the results makes this
-> nearly a non issue - that is, with a weak and noisy signal (tests
-> results) we just have to gather enough data and present the results
-> properly to make the signal stand out (which commit(s) were buggy).
-
-Yeah, running for longer and/or more often helps find the hard to
-reproduce things.  There's a bunch of strategies for picking exactly
-what to do there, per commit is certainly a valid one.
-
---lNBJ9/03mTaJ7xAl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWoD2MACgkQJNaLcl1U
-h9CUZQf/Xr237utclK4Iwcpwarn5XOFXPan2c+a4D74Nz9uzDCbqw5tCCVay7YWP
-HfeMCSSswtW8ZLii/6imjAZJFfai5oq6oBcOV4CdJgLzFZ0p7czVRMRTmmKr04wk
-GFp+kykeMhnNRd/lgurMDx7pfjjCFMHYF8r8faJXUkQgCgVJmvMUmw3I5EulacyM
-jC0F72YBlkhM97eVe4qrlmrZrxedb1B06o9xltoqpOW2ItoZEDtHKYapP4KrBY2w
-9E0DVpBBEGEY70+v19VMDejAYvoQUhYPSBaX5QxibzgU39zXvX+34DoGesF6l0Zo
-718dKzGrXI6+3i6TmdLhNdEGEh0FvA==
-=PZJy
------END PGP SIGNATURE-----
-
---lNBJ9/03mTaJ7xAl--
 
