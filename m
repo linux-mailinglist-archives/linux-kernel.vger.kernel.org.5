@@ -1,230 +1,108 @@
-Return-Path: <linux-kernel+bounces-29285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C73AD830C21
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:38:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F3FA830C29
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:40:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43B71B24383
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:37:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 008E5B25187
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:40:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFCEB23748;
-	Wed, 17 Jan 2024 17:36:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F34C22EE4;
+	Wed, 17 Jan 2024 17:40:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="TnGjItSj"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="dSrWPwok"
+Received: from mout.web.de (mout.web.de [212.227.17.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8583E2262F
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 17:36:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8796122EE7;
+	Wed, 17 Jan 2024 17:40:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705512995; cv=none; b=JjjTpkV5mfLh/5QDjlhhrr6BK4BHfI4Rebwz39uLbxRGEnYc30t3DctRH4dhBnYT9SGhG0L3w7fVdJo7n/Oi3XRNDxUAfNaz+Bdtun349Zofxm4NrSEHMXfe/7i7X/s1x5kSLNgxHjbca35QAG9UfG4qaxrpWf7oPKUOd6qajtU=
+	t=1705513245; cv=none; b=uoUv3kSLhhuvt6DqsIYyLNDKPToBxqQXlabHDbjNV044veLoNxHQNMoE4Jej0l/Idg6drVo1WvTrCnxw2jkrsV9E9emVYoefkmJza/X4lL8Ca3kuhqoTp4CatjoNL/GfwpFI03x8vwGtuoaPCfAOhLu+rzlavrzFWV9ZHGofNuQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705512995; c=relaxed/simple;
-	bh=folg2ElNrxOUUq4U0KWUpDt0xv3ff5g3hcaF7Gc9Eg0=;
-	h=Received:DKIM-Signature:Received:Received:Received:Message-ID:
-	 Date:MIME-Version:User-Agent:Subject:Content-Language:To:CC:
-	 References:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 X-Originating-IP:X-ClientProxiedBy:X-QCInternal:
-	 X-Proofpoint-Virus-Version:X-Proofpoint-GUID:
-	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Virus-Version:
-	 X-Proofpoint-Spam-Details; b=bruTBBJCCNd2P2FG9DFOonlcD3j7E4v/6GZPqBpcjdNLnO0E5V10vaCRJ/7C4dPFsQzQ1SLGhk1yXD14m49+1LSuYUNvBtngXYP8mKRH/9ppoOUlctjIzHS7ye8E+oPC5OcSCjYCcwV3JV3ABJVAD1/kjZadHkU6L4syrUj35qI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=TnGjItSj; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40HFwijT032492;
-	Wed, 17 Jan 2024 17:36:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=LfSiUZ91Q3oeiJCjZK72KIEvO+FfTlzQ2mey/Qz8L70=; b=Tn
-	GjItSjdlYa8IWAMFNVbzF/Q61nfeay+RorCY/meHv4TAvJ5r4AQczrDAeWXo5Ts/
-	umuR3HVUL3ooWZGfqc4EYAt2CeYrKdppthfEFT9wDx+/GxNJj3odjiXR5j07f/p2
-	ABdrz27jmFav3JVhTkh8vmYApWV9LjSewBJAJXXAyaRMtNYXRFb7CQqW36k0CKrC
-	EXR9dI58bF3P3gQV7s6bbYOaZpipk4WVkQdl7mEZTgfmADkj8GqSe6B1dLI4bybR
-	j949/xQHmJKiSywPJrnTJ+BO5nM+aNvWvB78r6oguSA7149VrRJJsSUGy0dcQ+Zg
-	Q7MbGzNEBiFLui2R79Ww==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vp6p3srrd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 17:36:22 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40HHaLfw016379
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 17:36:21 GMT
-Received: from [10.71.109.81] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 17 Jan
- 2024 09:36:20 -0800
-Message-ID: <e1f10583-1d5b-fdac-24bf-098a0ba06241@quicinc.com>
-Date: Wed, 17 Jan 2024 09:36:20 -0800
+	s=arc-20240116; t=1705513245; c=relaxed/simple;
+	bh=rJx1rYDQZuvD30dy0a4RC/ZegRq5ZNJx/Z0Ct+LDDC0=;
+	h=DKIM-Signature:X-UI-Sender-Class:Received:Message-ID:Date:
+	 MIME-Version:User-Agent:To:Content-Language:Cc:From:Subject:
+	 Content-Type:Content-Transfer-Encoding:X-Provags-ID:X-Spam-Flag:
+	 UI-OutboundReport; b=ZetlOVuFI3fszMuH7dkxJtb+sE7odvX1JQYN+swCxf4nGaNFyBFKWAjjKNDwuhCRvh2E1VvGEy3lhZ1/KujjXkMZou1WJwiS0A/G9V2wbhuxRNH1Q+kKxAMGByCWSXITlRUF0uVUHyO+vksrgkqpTMPmcaqiz1em+Yn4RaB++8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=dSrWPwok; arc=none smtp.client-ip=212.227.17.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1705513211; x=1706118011; i=markus.elfring@web.de;
+	bh=rJx1rYDQZuvD30dy0a4RC/ZegRq5ZNJx/Z0Ct+LDDC0=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=dSrWPwokwz/d+kHIINY2V96gx2bJ9l8rgsVO1K1VocUcAL7V/hjnDFuorsk5iuF5
+	 1vrNnSflKWHvSBpSuTn1Z8a3wzyuib2gEmRn1XU+jFhJp/oIYuKsLjQlaAJwSA4n4
+	 aUy7evfzRvyp/rx4FXVdm9uHiX+2KoKTD90KN0uj927IYo+Q7dKrdRXdVKZw8yYEG
+	 R+zXuXcuKoU8kaKWwicQDKtCdoeaDqjmf30Q1J+HS4McZeaVyQtPjenI2JBS/R16t
+	 Uc8T5OcnSTLKe8YBPh4ILaOXTkYpeIoHFryHgZffp6jeU8jujLKeWtoAH7yQe1eCz
+	 JH5FOheryPZBC9MJ+g==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.84.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MzCA5-1rDyYr3VEB-00w7rX; Wed, 17
+ Jan 2024 18:40:10 +0100
+Message-ID: <061aef8b-a41f-4346-af6e-560c7594b27b@web.de>
+Date: Wed, 17 Jan 2024 18:40:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH RFC 0/4] Support for Simulated Panels
-Content-Language: en-US
-To: Jani Nikula <jani.nikula@linux.intel.com>,
-        Maxime Ripard
-	<mripard@kernel.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>
-CC: Neil Armstrong <neil.armstrong@linaro.org>,
-        Thomas Zimmermann
-	<tzimmermann@suse.de>,
-        Sam Ravnborg <sam@ravnborg.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>, "Daniel
- Vetter" <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Dmitry Baryshkov
-	<dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@gmail.com>
-References: <20240116-jz-test-sim-panel-v1-0-f9511f46c9c7@quicinc.com>
- <x6wi5xnihnbpqsujjfjfw3ft6njncruta5l3xa44pds5oxmdkw@mmvv4bciy65s>
- <87cyu0qn81.fsf@intel.com>
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <87cyu0qn81.fsf@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: IWY0whpyQ5J1YLHYPDDvzS96nfSpzFIq
-X-Proofpoint-ORIG-GUID: IWY0whpyQ5J1YLHYPDDvzS96nfSpzFIq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-17_10,2024-01-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- phishscore=0 clxscore=1011 priorityscore=1501 bulkscore=0 impostorscore=0
- adultscore=0 mlxlogscore=999 lowpriorityscore=0 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2401170127
+User-Agent: Mozilla Thunderbird
+To: linux-clk@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Michael Turquette <mturquette@baylibre.com>, Rob Herring <robh@kernel.org>,
+ Stephen Boyd <sboyd@kernel.org>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>, Kunwu Chan <chentao@kylinos.cn>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH 0/2] versatile clock: Adjustments for two function
+ implementations
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:C09BDWiDSxoh09TLNFQ2W3BnYJ/zwCfNfzWlMbur2e+atf4cd7v
+ G/NgTSAe2930o7l0OXK+oG6yKC6SzaQkKOiz0QBzoKCb2Y6Vas9L+zQ8zuHZPSLCHh+H9SA
+ FTNrJ4vRnfDfMeiwcay/eTVqY+pzq5JdWILEBNTYbcTT2uz5ZQdMJtmQxl6QswlxOkW4SIa
+ HqHan20J63G3kZIt2LEqA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:uJu5C1X92x4=;iMJLVQLh1hzxY4RtoP8i5QPoAZK
+ S7Jk5OCfDl0Ipfkwj+/eIuRBYT/5LHWyxTDrGcJgtyweQ8DacY829mJ7lq9BX4UDhnFfXiFBn
+ tTvWcewDi03wgNME1y+dLtzvuW/x6Z8KmbN7AFIdvYmvUp0ZP2AXS85SnK8kwO+aNLcb90umC
+ azNcZYxQdu9uD2N40VV1RsW+d/OcsprqudRgqDWtKP6ejfQBz+bS5lAtXfgXIlDujlMpD8JrB
+ bP6Vj9trSrmrAu1mXACwxKF8JAk8KtUf7XrMwQG/f/AjKM1l/iWXjEzvKb+UWM2/UREwypUYx
+ qzsW5ajZdf5mm6QyD08xVLGLC0M4F8yqAn2K8JJUKuLfRRIJy2BQ9zQtG8AKXjZYlr62vUIk9
+ K25MKPhohZ5l5nGljtkExUQ92tRCq56tGjcbfnYlHZoErjqs1wsMkeKSgghiD0tS8OUi+JDHa
+ XYxlHfIBKWfHvS1fYUrsgxNboIR88fhFT6tJDmIc3X7Y4yRlne0A2Xzy6AsngIEWSZ/fHjrTA
+ w+i3W6iP6d86pkpnOVxELW0PgMSdBKgWQ83ktxebfdJOAcMl0OwzxCH3G1BG6YgsjmfMb0Bsd
+ tcV/OznMj9cpZW4M8WEUSTUBC5gFDwmqz3/T/d7BPtLw7ESdVcP7mCDANH1LgODKIxSP9bDkS
+ GpFV2CLCsAaNZa5r3oIWz37OHZEHRmhjg+71IEI2/5gg8jUdDeBDJDn3ZJg1TF8CJLBDHCfqC
+ ovAan16HA2zco9V/J1cVZ1rqkuKbWsZSGQpK77fbFIfkVoXsL0mjV+wOhFY2HlIq2oqCFa1gQ
+ SONj+wXdhx4HwrUaYNQZM9pG7to2HtIdBeQyG+KyXnGc+5ouxbghywCJk3UFaOq5fD4Kiym+d
+ hmspsjzlkkzVESp7A91NXba1+C/fraEzFH1+WAKAbilBIWJ2Rirbz1J4LSVEprQh/ZkFP96J0
+ TfxEKQ==
 
-Hi Jani and Maxime
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 17 Jan 2024 18:30:08 +0100
 
-On 1/17/2024 2:16 AM, Jani Nikula wrote:
-> On Wed, 17 Jan 2024, Maxime Ripard <mripard@kernel.org> wrote:
->> Hi,
->>
->> On Tue, Jan 16, 2024 at 02:22:03PM -0800, Jessica Zhang wrote:
->>> This series introduces a simulated MIPI DSI panel.
->>>
->>> Currently, the only way to validate DSI connectors is with a physical
->>> panel. Since obtaining physical panels for all possible DSI configurations
->>> is logistically infeasible, introduce a way for DSI drivers to simulate a
->>> panel.
->>>
->>> This will be helpful in catching DSI misconfiguration bugs and catching
->>> performance issues for high FPS panels that might not be easily
->>> obtainable.
->>>
->>> For now, the simulated panel driver only supports setting customized
->>> modes via the panel_simlation.mode modparam. Eventually, we would like
->>> to add more customizations (such as configuring DSC, dual DSI, etc.).
->>
->> I think that it's more complicated than it needs to be.
-> 
-> Both too complicated and not complicated enough! :p
-> 
+A few update suggestions were taken into account
+from static source code analysis.
 
-The end goal is to have a framework to be able to validate the display 
-pipeline with MIPI panels of any resolution , DSC/non-DSC, different 
-MIPI flags etc.
+Markus Elfring (2):
+  Return directly after a failed kasprintf() call in of_syscon_icst_setup(=
+)
+  Use common error handling code in icst_clk_setup()
 
-Historically, QC has been having an in-house framework to validate the 
-panels in a simulated way as its logistically not possible to procure 
-every panel from every vendor. This has been working pretty well but its 
-not upstream yet. So we would like to work with the community to work on 
-a model which works for everyone and this RFC was initiated with that in 
-mind.
+ drivers/clk/versatile/clk-icst.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-There is simulation infrastructure in place in upstream for HDMI/DP in 
-the form of chamelium based testing in IGT but no such fwk exists for 
-DSI displays.
+=2D-
+2.43.0
 
-Different MIPI panels and resolutions test out not only the DSI 
-controller but the entire display pipeline as based on resolution, 
-compression and MIPI mode flags different parts of the pipeline can get 
-exercised.
-
->> Why do we need to support (and switch to) both the actual and
->> "simulated" panel?
->>
-
-As per my discussion on IRC with the panel/bridge maintainers and DT 
-maintainers, a simulation panel does not qualify for its own devicetree 
-as its not a real hardware so we needed to come up with a way to have a 
-module which can be attached to the encoder without its own bindings and 
-devicetree. Thats what led to this RFC.
-
->> Wouldn't it be simpler if we had a vkms-like panel that we could either
->> configure from DT or from debugfs that would just be registered the
->> usual way and would be the only panel we register?
-> 
-
-No, we need to have validate actual hardware pipeline with the simulated 
-panel. With vkms, actual display pipeline will not be validated. With 
-incorrect display pipeline misconfigurations arising from different 
-panel combinations, this can easily be caught with any existing IGT CRC 
-testing. In addition, all performance related bugs can also be easily 
-caught by simulating high resolution displays.
-
-> I get the idea of trying to test DSI code without panels, and looking at
-> the goals above, I think your vkms suggestion is going to fall short of
-> those goals.
-> 
-> However, my gut feeling is that creating a simulated panel to catch DSI
-> misconfiguration etc. is going to be insanely complicated, and this
-> series doesn't even scratch the surface.
-> 
-> I guess my questions are, what's the scope here really, are those goals
-> realistic, does more code already exist beyond this skeleton?
-> 
-
-
-This series is only a starting RFC to be able to validate any display 
-mode. This would have to be extended to be able to customize different 
-pieces of the panel. Lets talk about the customizable pieces:
-
-1) Display resolution with timings (drm_display_mode)
-2) Compression/non-compression
-3) Command mode/Video mode
-4) MIPI mode flags
-5) DCS commands for panel enable/disable and other panel sequences
-6) Power-up/Power-down sequence for the panel
-
-Without a physical panel, yes its hard to validate if anything is wrong 
-with (4) OR (5), the display might not come up at all visually. But from 
-our experience, thats only a small portion and the real benefit of this 
-framework will actually be from the validation failures we will catch 
-from (1) to (4).
-
-This RFC only provides a way to customize (1) at the moment as we wanted 
-to get some feedback from the community about the best way which will 
-work for everyone to customize all these parameters.
-
-We are willing to expand this series based on the generic way we agree 
-on to customize other params.
-
-Yes, debugfs is an option too. But typically MIPI displays need some 
-parameters configured to attach the panel to the encoder. So perhaps we 
-can boot the simulation panel with a default resolution passed through 
-command line and then across a modeset switch (1) to (4).
-
-Thanks
-
-Abhinav
-> BR,
-> Jani.
-> 
-> 
-> 
 
