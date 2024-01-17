@@ -1,85 +1,53 @@
-Return-Path: <linux-kernel+bounces-29256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F08F830BB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:09:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 845B9830BB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:09:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FFD91C23C14
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:09:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 358071F22155
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:09:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 939FF225AD;
-	Wed, 17 Jan 2024 17:09:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 018B9225D0;
+	Wed, 17 Jan 2024 17:09:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V4dkHest"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M+jXHZSL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7C3A22337
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 17:09:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42431224FB;
+	Wed, 17 Jan 2024 17:09:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705511345; cv=none; b=CCoVgKxcq5hrJl4HVfL3byU1Bmgp+VXDhrUC7H66TRvU1LMtBT0/LQfTM8gekxUneRYesVDCgL0M55u51CnOAWuuay/Fnj1CCsWBal7s6K4iwCV+ahNqZJ65PeItc+5ff6JI4B/fn6nl9I9axT3qz0IfbyvpTGjZcwu83J6NotI=
+	t=1705511360; cv=none; b=ISkMvfBlgiWEMt2un+rhuy0q8lcTZpaRzuYESOKIkN9QKjI4/w9K5lY86UpnnthjV+SMCdKFEC7kM1PZcpb5rQ/RjK6u2kDC8ROnMbKWoO2v+WeE2pE0PS1yVVRTfXRt9pTlBauHX7rqs2b7qIQ+grGlsU2w5a9MkozFLEx79Tg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705511345; c=relaxed/simple;
-	bh=vJj27+qQMBN/p4eAjghXbtpSrZjAOPtehec33WHDYf8=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Sender:
-	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IEpUe5yeDD1I4NZWy1pB/XCNRSQ927caBPDq4yWReIaZ1tuIR8nI0GISjYhLkKXeV3W4oN0gt+Vz+7B8sztEqu74rRp49GMobQJBmptwK5lcXpIhvmxKNMoAOA2WoEFAiIeZNuRRm7J9dUVRnT5mPs0ma2dhrBpob7CniASMXBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V4dkHest; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d45f182fa2so90628905ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 09:09:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705511344; x=1706116144; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1wnsLwS+TwWx/T5frD/rh1ETL+0OcvA32upbUlIFwbo=;
-        b=V4dkHestDYAbiOi9Qzp5Qgk4hRb+b0KdOVBxhwMH7FuOB30Yp42+PaLg2DpkGPCoKs
-         mJYM+FOLyKguP4yIqS9MpK3mLSGgtIInlbDrSuiUnow2LYyM4H2LcgDBXICleIP6ODv6
-         OGXFrtXkvxnrVvyereDhSzwAxd/sAenpFlfe8WvaPR+N/ZtkEypRePteDmqwiI2+A2GI
-         5tK5vut2dERPXt2E1KIJtZ/YHKTThZaYAa1V3YdFhIxY17pCupmSDXl1V+stwGnybyW1
-         Mv/mPIXl0znd2ujBuiLVm8qzrCVicjBJTeVbR9WPcawAEUvZIocQvHTkhLT+nhwy1V7F
-         8eHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705511344; x=1706116144;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1wnsLwS+TwWx/T5frD/rh1ETL+0OcvA32upbUlIFwbo=;
-        b=uLTXCejM6W8NIvtKEPCqRjyylwFUyC0ywykuE5aKBlFTu3tVKyAE/2YdWjd5Eb8Zpi
-         FkWR79Rbaw7NnlhzLBTa1C+B1KAUUz4zeLOG2z/gbAdsGFyrcDqJAWTMZ40V+IjaavlJ
-         Sbt/ubUzEu7OKPRnv2N5QJz/C0MOmOY3bszmmwMVwF3n1oootbRLYFxgu/Q8CGhrYire
-         +5mHwnxFBefc9h8Xp3UkLJ6RxrCFOkPi+mdSjcmcLXB6iGRbevSzIz2yVIqtr8zl9Dea
-         Hkc7sJKkCGmb3rscd08B6frglVKlOlbq+VGSQ9T6E6KG5zJr9VkQKkFn4doVnpPPMJG0
-         k5yg==
-X-Gm-Message-State: AOJu0YxxM3tjxwlhjsvgO2WLSCPQ9mU5R/no9IgPmihMtAHdbcqD+tIT
-	sMZUAjO7f9FZJ2oxcoVqC8GMYtra5aY=
-X-Google-Smtp-Source: AGHT+IEvi4NDOgygC5T4qpIx88KR+afplTg8jCaKuHadAUdNRjciOFL9SZW//dHwB/pPNQQtLeGcow==
-X-Received: by 2002:a17:902:aa44:b0:1d4:c445:c705 with SMTP id c4-20020a170902aa4400b001d4c445c705mr9499023plr.26.1705511343910;
-        Wed, 17 Jan 2024 09:09:03 -0800 (PST)
-Received: from localhost (dhcp-72-235-13-140.hawaiiantel.net. [72.235.13.140])
-        by smtp.gmail.com with ESMTPSA id ix2-20020a170902f80200b001d6f584ee1esm1087316plb.34.2024.01.17.09.09.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 09:09:03 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 17 Jan 2024 07:09:02 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Audra Mitchell <audra@redhat.com>
-Cc: linux-kernel@vger.kernel.org, jiangshanlai@gmail.com,
-	hirokazu.yamauchi.hk@hitachi.com, ddouwsma@redhat.com,
-	loberman@redhat.com, raquini@redhat.com, rasmus.villemoes@prevas.dk
-Subject: Re: [PATCH v3] workqueue.c: Increase workqueue name length
-Message-ID: <ZagJrod33CPFaXGg@mtj.duckdns.org>
-References: <20231215193954.1785069-1-audra@redhat.com>
- <20240115170822.451231-1-audra@redhat.com>
- <ZabLkep0gOFEyjxH@slm.duckdns.org>
- <Zafm-hkCI4sbOr78@fedora>
+	s=arc-20240116; t=1705511360; c=relaxed/simple;
+	bh=31ia4BHPVzV6at4JXVjCNm7JNSTI1HhyWm9vSSLO+Tg=;
+	h=Received:DKIM-Signature:Date:From:To:Subject:Message-ID:
+	 MIME-Version:Content-Type:Content-Disposition; b=owdPJhdiLaAjayuBa4lIC5DtYWvK/h/2Y3oHs5Yv5PpPAHKrk0SFEWfpYg0Bq1tCwOihELR+fUTyh/x3o4iOUdZHYGLvIJ7urgx21tRLfnzY4vTkkZi+Ism8ZXguHkZ/h0iPcXBbrZwb+r6d7WS2RXh/PL9qIBJNegpXJIrVf9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M+jXHZSL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49629C433F1;
+	Wed, 17 Jan 2024 17:09:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705511359;
+	bh=31ia4BHPVzV6at4JXVjCNm7JNSTI1HhyWm9vSSLO+Tg=;
+	h=Date:From:To:Subject:From;
+	b=M+jXHZSLtK+cSLaHmgoOuITwXrCxy5auWiQGwKRyqpFwqy0EPTubTFzl4KzEc4gXA
+	 d1ju+ikfeH+Et/5ZQfj2WpKcdvoEsH9mWxuCT/weDQal8nm1aD+TdGqKgL5ZcAnpql
+	 FAPv1Frlv3wSJYgGKKr/0FYA0vtOPyweL2gm9QZky1749bNYXZIrhwAul2BT77th9a
+	 Tu4Jr+z2K/2qIP06rOXMIXnFKilzPhwh8v8zyE2Gi25pSy9yrxx74hNnCOJln1b1eH
+	 cLh9q4Tot7/HEk7IKNW2AdFLhtE8kQHrXIeecOyipC43jrNx4MPTjxG5ahkge4lX3o
+	 BT+Ca+DedbiqA==
+Date: Wed, 17 Jan 2024 18:09:15 +0100
+From: Helge Deller <deller@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
+Subject: [GIT PULL] parisc architecture fixes for v6.8-rc1
+Message-ID: <ZagJuxudO7V510hS@p100>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,26 +56,44 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zafm-hkCI4sbOr78@fedora>
 
-Hello,
+Hi Linus,
 
-On Wed, Jan 17, 2024 at 09:40:58AM -0500, Audra Mitchell wrote:
-> Thank you for the response. May I humbly mention that I did find the following
-> while testing my patch:
-> 
-> [    0.120298] workqueue: name exceeds WQ_NAME_LEN (32 chars). Truncating to: events_freezable_power_efficien
-> 
-> In an effort to be thorough, would you like me to submit a patch shortening
-> this? Perhaps to "events_freezable_pwr_efficient"?
-> 
-> To be clear, I am not pushing the change, however, I do want to make sure that
-> the changes being submitted are not causing additional clutter. 
+Please pull a two small fixes for the parisc architecture.
+Both are tagged for stable series.
 
-Oh yeah, please go ahead.
+Ensure power button works on qemu and fix firmware start address
+calculation on machines with 32-bit firmware running a 64-bit Linux kernel.
 
-Thanks.
+Thanks!
+Helge
 
--- 
-tejun
+----------------------------------------------------------------
+The following changes since commit 0dd3ee31125508cd67f7e7172247f05b7fd1753a:
+
+  Linux 6.7 (2024-01-07 12:18:38 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-6.8-rc1
+
+for you to fetch changes up to 6472036581f947109b20664121db1d143e916f0b:
+
+  parisc/power: Fix power soft-off button emulation on qemu (2024-01-07 22:59:16 +0100)
+
+----------------------------------------------------------------
+parisc architecture fixes for kernel v6.8-rc1:
+
+- Fix PDC address calculation with narrow firmware (64-bit kernel
+  on 32-bit firmware)
+- Fix kthread which checks power button get started on qemu too
+
+----------------------------------------------------------------
+Helge Deller (2):
+      parisc/firmware: Fix F-extend for PDC addresses
+      parisc/power: Fix power soft-off button emulation on qemu
+
+ arch/parisc/kernel/firmware.c | 4 ++--
+ drivers/parisc/power.c        | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
