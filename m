@@ -1,186 +1,225 @@
-Return-Path: <linux-kernel+bounces-28865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC8CA8303EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:52:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44CFD8303F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:54:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 600EF287D58
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:52:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7C431F25AE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43FBB1C695;
-	Wed, 17 Jan 2024 10:52:08 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DB581C695;
+	Wed, 17 Jan 2024 10:53:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ri0WhxQv"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28C6C1B81B
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:52:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 002BB14AA7
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:53:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705488727; cv=none; b=f80nzWtVG1AeCSbPkIRcEUUbP0WwTLPkJaxeDMfhf6vQoA+koRaEtYutISL/bxAiw/dVyII9slCneMxBxP1cUSm3a2FiNqXGO+Mrkubw95Q4PDuT8I7uIAAPv6iKhjz6zZ22D0xAFKOVJg6AAvkRlA5hqV5C3RSBvX6/02T59Lw=
+	t=1705488838; cv=none; b=mcdfIu2KgLfEeH88lWksZTqRTwKszQinCXryrWg3TH90qf5TI0jaNR0Fr7wSc0zlyW6YBDZs9ShvulqDEPZv0DS7FzMM5q/dSAAChDg8MdnoDjscxsZEB4m7lNTa0FeSpw+WFmNE4LQGwv9gLRySpQUkSCZ0WS2iGXv3uftIYOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705488727; c=relaxed/simple;
-	bh=wxx/RVt1Ce8dhvHdZDzLvR+TT/ZDvDGUMmcgCbwsodA=;
-	h=Received:Received:Received:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To:X-SA-Exim-Connect-IP:X-SA-Exim-Mail-From:
-	 X-SA-Exim-Scanned:X-PTX-Original-Recipient; b=Cbn6x+iBrqL1aqJD2DEFIJBtmbodMjFoBAKcv2Cvhe+C7WXDHIicJgp/e3Uu1IuYGrk4pjWkbXJOVC9nE6VJnEC5dcQqjZI2d/K1+ZOhfAwS7fVYtmbVX9nbRXYbQPGlB5JqIjKLbageBvtwcL7YsFhT4r+1pIpLm5dsJsRWwtw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rQ3WT-0000Z4-Vr; Wed, 17 Jan 2024 11:51:53 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rQ3WS-000RZ9-OT; Wed, 17 Jan 2024 11:51:52 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rQ3WS-001dbj-28;
-	Wed, 17 Jan 2024 11:51:52 +0100
-Date: Wed, 17 Jan 2024 11:51:52 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Thierry Reding <thierry.reding@gmail.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Kevin Hilman <khilman@baylibre.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-amlogic@lists.infradead.org, linux-pwm@vger.kernel.org, JunYi Zhao <junyi.zhao@amlogic.com>
-Subject: Re: [PATCH v4 2/6] dt-bindings: pwm: amlogic: add new compatible for
- meson8 pwm type
-Message-ID: <b3a5r4gti67zic6egpwnede7niakn54ewfpmxg4ojm6ye2qopx@rke57jcyuveg>
-References: <20231222111658.832167-1-jbrunet@baylibre.com>
- <20231222111658.832167-3-jbrunet@baylibre.com>
- <4rdb2be2bfzak3s4uaizthcdcdwdrxnx4kr2sgn527hvsie3pb@gfqciim7yryz>
- <1jfrywxnu5.fsf@starbuckisacylon.baylibre.com>
+	s=arc-20240116; t=1705488838; c=relaxed/simple;
+	bh=KjhNZ8+fWl254kviZY6+sEbXk9RKty3yOVamx6dSXu4=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
+	 To:Cc:References:From:Autocrypt:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=FEBuMzgOrZbSBlrYDuCI0jnewVQENVEZg6/GNlAl6pPBiP/1u96MKnK7kXUiJHxXYMRxy398hvgxVFjWSsvZhdb01UL5alBD+cAEIZoVIJC3bISXvh/3ir+yGc81XY47ryw/7Kyo/c3O8fUOVadA8l1VxOO7DkhR0HyxN5TmkzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ri0WhxQv; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a2e0be86878so469112666b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 02:53:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705488835; x=1706093635; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Qo8eGWPWRkX/4JThm1Lo2hklyFCe76/3hkhcrBEPdhg=;
+        b=Ri0WhxQv6o6jUyntrCe/v0zVNLiSPGfBdptIoTqdIAMPlLyHYyvES//55hnNfv+Z9H
+         P9sTPQL48Zc38M1n2tRcMF2TpK13y5LAhoRY34EkaAyPXZRyO8M5P70Yrgu4d6E9N/xV
+         skB30LduA8gM6lTgZd23jcooPAgXDdNrSTbvc2Uoz5gTke2w5keYkISNWisXeJMWcx3h
+         RknJ78MYGuEvrQxr3t/CQGHzcLktwjFpfUCmwdqsmmS6adHP8dQfMOWUlofzY0pJNuxX
+         bS4Gjmx+OkgP+fVl4WkzCpMy/u/BJZD9tmFe6E6UnRWwqqNqtZ/nERi4pgVWvugDtRS7
+         FV4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705488835; x=1706093635;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Qo8eGWPWRkX/4JThm1Lo2hklyFCe76/3hkhcrBEPdhg=;
+        b=Zc7iqivqtIrVwoODkjkMZcGvo+vpaxlZQup7wBENBlWJ4qCsIg6YezHYhxafnggZgZ
+         XdwC1exkmib5JTFT+y1bg9lKSpJG4+JIrk5aY6zf/8wUZcFtxgk1BalfE0dd08Oan36c
+         kMhl0ie3Wt1ToEoTr1rdxtNAM9fk7g0J2lfeXQAA+iXmq46PyuMqtJGHnTxT4v2t/aJ8
+         GL5Qdw6fXKhal3N2uZ9z1cyiAR7F+wCyZ93kZH947gOQEXB16ACR1SvD+MDFgHqNd6Q+
+         3zOIcq4YPkgzyum5cDs4C1V+CcXfsHiljGrhy2U/v3eUzXsWYjSz2edjLq5C0vqvpLCa
+         qRJw==
+X-Gm-Message-State: AOJu0Yx9pZr9pFcEsi/uGchRjMjhKAa5ZI9Z2kQD3y099j/XZiMaRXiw
+	jZyF5Scq/QjrVbuB00HRd7m0rO4I91BD1g==
+X-Google-Smtp-Source: AGHT+IEsjGUMOVB6JCi8pfFJ0atoqzMLYvj0dJD4f+ZuDyiGP7oOQugPXRhs1ZPq6vyYUEWxMOly0g==
+X-Received: by 2002:a17:906:2f8b:b0:a28:b34d:8694 with SMTP id w11-20020a1709062f8b00b00a28b34d8694mr554688eji.62.1705488835207;
+        Wed, 17 Jan 2024 02:53:55 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id h10-20020a17090619ca00b00a2ed233c313sm591699ejd.168.2024.01.17.02.53.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Jan 2024 02:53:54 -0800 (PST)
+Message-ID: <bd3e809f-5d97-428f-9387-a2475c4f0d7d@linaro.org>
+Date: Wed, 17 Jan 2024 11:53:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3bhlfpvugwaqjoz5"
-Content-Disposition: inline
-In-Reply-To: <1jfrywxnu5.fsf@starbuckisacylon.baylibre.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] dt-bindings: PCI: ti,j721e-pci-*: Fix check for
+ num-lanes
+Content-Language: en-US
+To: Siddharth Vadapalli <s-vadapalli@ti.com>
+Cc: bhelgaas@google.com, lpieralisi@kernel.org, kw@linux.com,
+ robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ vigneshr@ti.com, afd@ti.com, srk@ti.com
+References: <20240117102526.557006-1-s-vadapalli@ti.com>
+ <20240117102526.557006-2-s-vadapalli@ti.com>
+ <28fd561a-7c13-48dc-9995-230dc758f257@linaro.org>
+ <a25ea57b-4529-4a4c-9e0b-ccd85b0457d6@ti.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <a25ea57b-4529-4a4c-9e0b-ccd85b0457d6@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+On 17/01/2024 11:47, Siddharth Vadapalli wrote:
+> Hello Krzysztof,
+> 
+> On 17/01/24 16:04, Krzysztof Kozlowski wrote:
+>> On 17/01/2024 11:25, Siddharth Vadapalli wrote:
+>>> The existing implementation for validating the "num-lanes" property
+>>> based on the compatible(s) doesn't enforce it. Fix it by updating the
+>>> checks to handle both single-compatible and multi-compatible cases.
+>>>
+>>> Fixes: b3ba0f6e82cb ("dt-bindings: PCI: ti,j721e-pci-*: Add checks for num-lanes")
+>>> Fixes: adc14d44d7cb ("dt-bindings: PCI: ti,j721e-pci-*: Add j784s4-pci-* compatible strings")
+>>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+>>> ---
+>>>  .../bindings/pci/ti,j721e-pci-ep.yaml         | 26 ++++++++++++++-----
+>>>  .../bindings/pci/ti,j721e-pci-host.yaml       | 26 ++++++++++++++-----
+>>>  2 files changed, 38 insertions(+), 14 deletions(-)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml
+>>> index 97f2579ea908..278e0892f8ac 100644
+>>> --- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml
+>>> +++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml
+>>> @@ -68,8 +68,9 @@ allOf:
+>>>    - if:
+>>>        properties:
+>>>          compatible:
+>>
+>> Missing contains:, instead of your change.
+> 
+> I did try the "contains" approach before determining that the implementation in
+> this patch is more suitable. Please consider the following:
+> 
+> For AM64 SoC the primary compatible is "ti,am64-pcie-ep" and fallback compatible
+> is "ti,j721e-pcie-ep". For J7200 SoC the primary compatible is
+> "ti,j7200-pcie-ep" while the fallback compatible is again "ti,j721e-pcie-ep".
+> 
+> Therefore, the device-tree nodes for AM64 and J7200 look like:
+> 
+> AM64:
+>     compatible = "ti,am64-pcie-ep", "ti,j721e-pcie-ep";
+>     ...
+>     num-lanes = 1;
+> 
+> J7200:
+>     compatible = "ti,j7200-pcie-ep", "ti,j721e-pcie-ep";
+>     ...
+>     num-lanes = 4;
+> 
+> This implies that when the check for "num-lanes" is performed on the device-tree
+> node for PCIe in J7200, the fallback compatible of "ti,j721e-pcie-ep" within the
+> AM64's "compatible: contains:" check will match the schema and it will check the
+> existing "num-lanes" being described as "const: 1" against the value in J7200's
+> PCIe node resulting in a warning. 
+
+What warning? What did you put to contains?
+
+> Therefore, using "contains" will result in
+> errors if the check has to be performed for device-tree nodes with fallback
+> compatibles. The "items" based approach I have used in this patch ensures that
+> the schema matches *only* when both the primary and fallback compatible are
+> present in the device-tree node.
+
+Long message, but I don't understand it. Why this binding is different
+than all others which rely on contains?
+
+>>> +  - if:
+>>> +      properties:
+>>> +        compatible:
+>>> +          items:
+>>> +            - const: ti,j784s4-pcie-ep
+>>
+>> Why? Previous code was correct.
+> 
+> Though I used "patience diff", for some reason the addition of
+> "ti,j721e-pcie-ep" in the check has been treated as the removal of
+> "ti,j784s4-pcie-ep" first followed by adding the same later for generating the
+> diff in this patch. The diff above is equivalent to the addition of:
+
+No, why do you change existing code? It is correct.
 
 
---3bhlfpvugwaqjoz5
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Best regards,
+Krzysztof
 
-Hello Jerome,
-
-On Wed, Jan 17, 2024 at 11:16:31AM +0100, Jerome Brunet wrote:
-> On Wed 17 Jan 2024 at 10:58, Uwe Kleine-K=F6nig <u.kleine-koenig@pengutro=
-nix.de> wrote:
-> > [[PGP Signed Part:Undecided]]
-> > Hello,
-> >
-> > On Fri, Dec 22, 2023 at 12:16:50PM +0100, Jerome Brunet wrote:
-> >> diff --git a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml b/=
-Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
-> >> index a1d382aacb82..eece390114a3 100644
-> >> --- a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
-> >> +++ b/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
-> >> @@ -21,23 +21,35 @@ properties:
-> >>            - amlogic,meson-g12a-ee-pwm
-> >>            - amlogic,meson-g12a-ao-pwm-ab
-> >>            - amlogic,meson-g12a-ao-pwm-cd
-> >> -          - amlogic,meson-s4-pwm
-
-Either I still didn't grasp all the details of this change, or removing
-amlogic,meson-s4-pwm in this commit is wrong.
-
-> >> +        deprecated: true
-> >>        - items:
-> >>            - const: amlogic,meson-gx-pwm
-> >>            - const: amlogic,meson-gxbb-pwm
-> >> +        deprecated: true
-> >>        - items:
-> >>            - const: amlogic,meson-gx-ao-pwm
-> >>            - const: amlogic,meson-gxbb-ao-pwm
-> >> +        deprecated: true
-> >>        - items:
-> >>            - const: amlogic,meson8-pwm
-> >>            - const: amlogic,meson8b-pwm
-> >> +        deprecated: true
-> >
-> > I think deprecating the old binding and adding a new compatible should
-> > be done in two commits.
->=20
-> Hi Uwe,
->=20
-> There was the same comment on v3 and Krzysztof said it should be done
-> like this:
->=20
-> https://lore.kernel.org/linux-pwm/e127dcef-3149-443a-9a8c-d24ef4054f09@li=
-naro.org
->=20
-> I tend to agree with Krzysztof on this but, as I previously said,
-> I don't really mind one way or the other. Just have to pick one.
-
-Ah, so the machines that used amlogic,meson-g12a-ee-pwm before are
-supposed to use amlogic,meson-g12-pwm-v2 now. With that understood I
-agree to you and Krzysztof.
-
-I wonder if me not understanding that is a sign that the commit log
-isn't optimal (or if it's only that I didn't properly read it :-).
-Now that I understood the change better, the commit log is
-understandable, but maybe still make it a bit more explicit that it
-introduces a new way to formalize already supported hardware. Something
-like:
-
-	dt-bindings: pwm: amlogic: Add a new binding for meson8 pwm types
-
-	The binding that is used up to now describe which input the PWM
-	channel multiplexer should pick among its possible parents,
-	which are hardcoded in the driver. This isn't a good binding in
-	the sense that it should describe hardware but not usage.
-
-	Add a new binding deprecating the old one that uses clocks in a
-	better way and how clocks are usually used today: The list of
-	clocks describe the inputs of the PWM block as they are realised
-	in hardware.
-
-	So deprecate the old bindings and introduce a compatible per SoC
-	family to replace these.
-
-I think I'd understand that better, but that might be because I wrote
-it and it's subjective?
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---3bhlfpvugwaqjoz5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWnsUcACgkQj4D7WH0S
-/k5jBgf+K4/2nlwNuhl98wP3lhKs9noKvnoecmlxEqzV+HowMVaRvasoTYxpWZst
-F0kE3hWQF654JB/Whvdb9NVMJHUIfvuok6egBVBC7VKtGKR8sUUUD1vc0CnxV1OE
-tosScnl0r/zPXyFWU6xYPzFHVrnndxBwjvneScCkA8W1hx8eLG3B8pFHFTjsxvOg
-gQtlS46eDfnJ9llQDl1N2iZHdOdfAXqFegZB2RCHmIorS1z86x53Wci/tFvYLH6F
-e6Jn0Nwrf6EPHzQK2FCQZOa9BwFJDZ6NiivNXMSzp4RgCSmNEySOlc4XVBoF4Sh7
-hbnETJ5us1luELfbF4oSg2Y3H8c3Vw==
-=iYzS
------END PGP SIGNATURE-----
-
---3bhlfpvugwaqjoz5--
 
