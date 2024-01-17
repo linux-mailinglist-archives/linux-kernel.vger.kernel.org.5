@@ -1,110 +1,91 @@
-Return-Path: <linux-kernel+bounces-29241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08C0C830B7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:52:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9232830B7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:52:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94464B24169
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:52:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42EA22868CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:52:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F9A4224F7;
-	Wed, 17 Jan 2024 16:52:01 +0000 (UTC)
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E595222618;
+	Wed, 17 Jan 2024 16:52:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XGSUNHnx"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8284224D6;
-	Wed, 17 Jan 2024 16:51:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A271222619;
+	Wed, 17 Jan 2024 16:52:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705510320; cv=none; b=sp90fCAdjRGYgLzcDwX+X2+JZnKHN6ZYov+ccuAXPKvzDsP9TNTmbR3XNn5R+aEI7cc9XMQNJ9m8L9A7akyO0zXYCgKLHjSEG72UYlG/wUIm4BimJ1m6noGeQi9IQUTc2DP88ZHRdqmQCfGXRZyOkJaPKQb8dAshAZQdufcTVYs=
+	t=1705510341; cv=none; b=lXMZIQ++7Yo6iZTyebrivSKJpl4/mO9BrRwWGzDjkTkqWsOoNAdYsMjsrmvF2GI+KLoYCEtsnylvd+lhDUiPl0JM+EJOckkvRChBGj6AwRwn8d/9/mtveRnP/5vbAU8p/Q7rntrcPsylOnQgO/tJ7/2+lXVq6PQ60jf/PrLS36A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705510320; c=relaxed/simple;
-	bh=/MO/EiEiyuqafKAOteDF8mFDYGfee9/3z57wVlNcZ+Y=;
-	h=Received:X-Google-DKIM-Signature:X-Gm-Message-State:
-	 X-Google-Smtp-Source:X-Received:Received:Received:X-Received:
-	 MIME-Version:References:In-Reply-To:From:Date:
-	 X-Gmail-Original-Message-ID:Message-ID:Subject:To:Cc:Content-Type:
-	 Content-Transfer-Encoding; b=QY2wmZNkWwLbCv9KMKWaTflz6rF0pNHtwbE7KsuUcvxH0Zn8o3YcfJvV7ZmUsPAxsaL9u7TSjh8RCgs0Eq6ZUWcu33nRo0BjSV+EvrN7/7mEYNOHc4PLbTdC3NjAjAkPxSSwR8SQo4VegY42wJAp5fLjDPKRbvR5/yVunheZP5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=auristor.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=auristor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-559b3ee02adso2393941a12.3;
-        Wed, 17 Jan 2024 08:51:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705510317; x=1706115117;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/MO/EiEiyuqafKAOteDF8mFDYGfee9/3z57wVlNcZ+Y=;
-        b=k9+kXhjRXBiMYEkZECn7Adb0JcXvb5uyEySGhEVz6m7tk7eeOoxVoKvWOjYVWkKn7Q
-         fYnBjNfA8DalfrOpKNdHHxiygxh4zyJI8V5NjCsENCk4ddqw2dsDVq4EpwBk8uakeE9B
-         GeiMnL7DywYxQci3xFMAHHV7yV9+m1UPrz9oJExGMaLtYsEY6T2bgIwZYH7f6VABfEi7
-         WsJLE2ciP7kBCS40+M2MmEu4PoHq4pnQuhSZXADCZUBko4AvljjPT3imazDMFMQL+Mcd
-         qlKTlOGDQXe9mv7Y0ZWmi0dBa5V2XiHsCM/eSXyCYaR9T0QJ05aVVAhn0xPlXktnA54F
-         pvHA==
-X-Gm-Message-State: AOJu0Ywf2S4htSKHcFHbUUxKedqdeuM33Yqy8rhHG5J9xcWanaK8dLdJ
-	X5g14wkcSmq2e1RTMniNmrr9+7Y3bSa3UA==
-X-Google-Smtp-Source: AGHT+IEaOzWXhyWLBy8CSyyXKVdkEUG87Vb1LXXQfW5Y9Ua2bAGMGy4jyKApG1X1Pro4wEVR+GAlow==
-X-Received: by 2002:aa7:da4e:0:b0:559:d09d:8702 with SMTP id w14-20020aa7da4e000000b00559d09d8702mr592930eds.120.1705510316672;
-        Wed, 17 Jan 2024 08:51:56 -0800 (PST)
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
-        by smtp.gmail.com with ESMTPSA id z3-20020aa7c643000000b00559b4df9f06sm2057016edr.65.2024.01.17.08.51.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jan 2024 08:51:56 -0800 (PST)
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-555e07761acso13752596a12.0;
-        Wed, 17 Jan 2024 08:51:56 -0800 (PST)
-X-Received: by 2002:a17:907:1115:b0:a28:f816:c4bb with SMTP id
- qu21-20020a170907111500b00a28f816c4bbmr3124469ejb.117.1705510316339; Wed, 17
- Jan 2024 08:51:56 -0800 (PST)
+	s=arc-20240116; t=1705510341; c=relaxed/simple;
+	bh=d2jotS6S85nxTTQBqPtcjTv2jv17Jyc0FlHJG/EQUQk=;
+	h=DKIM-Signature:Received:Message-ID:Date:MIME-Version:User-Agent:
+	 Subject:Content-Language:To:Cc:References:From:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding; b=Bpikw9Me1pSH12OPx57cOQQJH2qBp/RSSFHWEoMfowdovTfDCWDEQdoI03oBCh0HmH8UfnmLVEOOXXXuTWMk3nvBRluCVubROzriR3zK1uT4ph4zgT7dbruzkTrJOlAPde/wgqRYzMlP5ItN2vK/OelRXw8vijTrudkTVdWhm6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XGSUNHnx; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=5/FGBZFcnL+QZxohlDWVSAVnnE2wpZTP2L5jfNcW670=; b=XGSUNHnxvzjblbQiZd44146i5H
+	kYB1pYXmjWY4HnMMp9wLs8ZhS9c0AFROHRW094BP3jkpEdCG4cSUAielj2s4epNj3L4R/H25GmhlP
+	kz9Rr21gueGIWkngiPyqHx3W1V3tjfujIedBz17sIctEssXnPECuI4fCmwcaUZHGZmpKEQBgYbUyR
+	XIG02o96Lml+lsFamaqWW2JNtc6AjWbAneSBt2jNAwjS72v3KwGITBQL6YVTjc6aD2H7Jxrau5jl7
+	lSuv9ZmhNxhtWoyI2czR8veJl2oGbuqtgh6MCUjhrYbkjR8hJ0ufeuh3mhEwGOzafCqbColFueVgh
+	ex45lRWg==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rQ99G-0008pP-34;
+	Wed, 17 Jan 2024 16:52:18 +0000
+Message-ID: <e6692a04-142c-4df4-83dc-534ab27a55f6@infradead.org>
+Date: Wed, 17 Jan 2024 08:52:16 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <2929034.1705508082@warthog.procyon.org.uk> <2929563.1705508462@warthog.procyon.org.uk>
-In-Reply-To: <2929563.1705508462@warthog.procyon.org.uk>
-From: Marc Dionne <marc.dionne@auristor.com>
-Date: Wed, 17 Jan 2024 12:51:44 -0400
-X-Gmail-Original-Message-ID: <CAB9dFduVrz=-bb8YSmJq4Ec7Nr3K49ubznoTa0sdCyZzkddyRA@mail.gmail.com>
-Message-ID: <CAB9dFduVrz=-bb8YSmJq4Ec7Nr3K49ubznoTa0sdCyZzkddyRA@mail.gmail.com>
-Subject: Re: [PATCH] afs: Fix missing/incorrect unlocking of RCU read lock
-To: David Howells <dhowells@redhat.com>
-Cc: linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/13] ARM: OMAP2+: fix a bunch of kernel-doc warnings
+Content-Language: en-US
+To: Tony Lindgren <tony@atomide.com>
+Cc: linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+ Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org,
+ patches@armlinux.org.uk, Paul Walmsley <paul@pwsan.com>,
+ =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+ Kevin Hilman <khilman@kernel.org>
+References: <20240117011004.22669-1-rdunlap@infradead.org>
+ <20240117131305.GP5185@atomide.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240117131305.GP5185@atomide.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 17, 2024 at 12:21=E2=80=AFPM David Howells <dhowells@redhat.com=
-> wrote:
->
-> David Howells <dhowells@redhat.com> wrote:
->
-> > In afs_proc_addr_prefs_show(), we need to unlock the RCU read lock in b=
-oth
-> > places before returning (and not lock it again).
-> >
-> > Fixes: f94f70d39cc2 ("afs: Provide a way to configure address prioritie=
-s")
-> > Reported-by: Marc Dionne <marc.dionne@auristor.com>
->
-> Actually:
->
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202401172243.cd53d5f6-oliver.sang@=
-intel.com
-> > Signed-off-by: David Howells <dhowells@redhat.com>
-> > cc: linux-afs@lists.infradead.org
-> > cc: linux-fsdevel@vger.kernel.org
->
-> David
 
-The fix looks fine.
 
-Reviewed-by: Marc Dionne <marc.dionne@auristor.com>
+On 1/17/24 05:13, Tony Lindgren wrote:
+> * Randy Dunlap <rdunlap@infradead.org> [240117 01:10]:
+>> Fix many kernel-doc warnings in arch/arm/mach-omap2/:
+> 
+> Thanks for fixing these. These are unlikely to conflict with anything so
+> please queue them along with other clean-up:
+> 
+> Acked-by: Tony Lindgren <tony@atomide.com>
+> 
+> Or alternatively let me know if you want me to apply them.
 
-Marc
+Yes, please go ahead and apply them.
+
+Thanks.
+
+-- 
+#Randy
 
