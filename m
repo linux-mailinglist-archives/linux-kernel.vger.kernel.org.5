@@ -1,160 +1,276 @@
-Return-Path: <linux-kernel+bounces-28668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28669-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C5D383019F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:56:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94CCA8301A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:56:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DB831C24529
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:56:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A9A81F21795
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:56:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4885612B7C;
-	Wed, 17 Jan 2024 08:55:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F8861400A;
+	Wed, 17 Jan 2024 08:55:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qRjASgPQ"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jK6rFsBi"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF47114F64
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 08:55:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39A6D13FF5
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 08:55:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705481716; cv=none; b=tNjWbsXYb2R4KhIa1ktHRtDdhIcYYoqZ2hmodSOobMcMg4kpjan3mQJnWyED3Db1Dbnyw+yrQb8k/QBe/Y6SyWBcLgh3x3FnTBA+MNwyyfb+0kTPM8dJXSPsQVfW5EzDSdF4HQax5PIOIV4/AUXksIH1Apfq5toQvjYR9+wIkTY=
+	t=1705481726; cv=none; b=SRBCXhwLzWlB/frkrx1fXsJ0FazNQumwq7Im9FyA4TDM1Ip1ui2/VdurklsI5SyZZ3LU6cCssGGKrKLkF8K+pkezkfb2otTPVx79QKPljhqEO30svbZ0gKa1pj7LAHbo6mljmaoXTxPVVfyJ5JGSd/Cp5Fazyb4nfwX2JTlh+bQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705481716; c=relaxed/simple;
-	bh=taGcK0Bmw3uFCOTRnu8T62yiz+qod63dPi5Bu5uIxc4=;
+	s=arc-20240116; t=1705481726; c=relaxed/simple;
+	bh=YLcoWIy06Arq4JTfJu2/m7c5pkHFQGM6slJxzCbN+h0=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 To:Cc:References:From:Autocrypt:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=q23B7zeZDdml/giXnQpAO9QCJHKXSu8gK+Q0sD2i6eoeZ3Zh/FNNQ7nian9/ahnPhiucnTuhD4xTLlTx3c4TDu3eqK987rJTipGfB4R9nYXA5KyPiDDeRHY9eXpfsnTm3lTuEYl2e4JZQ/J/NpJuj/T64fzsptUCHGnRQVxPSnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qRjASgPQ; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cca5d81826so140410601fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 00:55:14 -0800 (PST)
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
+	 From:To:Cc:Subject:Message-ID:In-Reply-To:References:X-Mailer:
+	 MIME-Version:Content-Type; b=YD62RFYiMQnvwEtddq4RoMGXFPew0EilEzBGYOqSrO01RowmzD7r3M1nqPX7ZyEouUOSivvcG7yuKgGELbf+AxE7RZYj7i91AiOAp2fsA5suoLaE1VPQcqma0zSeMD9vEw3MU2X4eNga4UV24Mg7vnlW+SzRzmcymyZ9J4ssPK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jK6rFsBi; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50e7e55c0f6so12944471e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 00:55:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705481713; x=1706086513; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SbicIxEVLKASkkXjlMeyfqO175i8K5O8aNW1xewNsKA=;
-        b=qRjASgPQGYiqZFnY2bDrnpey679+CdW47Hm9dE9CM5EU7geTfMyoLgVwYRPpwUIK6Y
-         1IpJASwqJw9et2cpwdnsSdPED7xeZe69zawWpNgXogSU2njuDRryzhA1xK4kiDubNSNn
-         Et2WmKGif+pChCPZS1PpuMnE2kN/3UEMjPDGZVaKSMXgTyv1VR6kuMZgWzl/TdGc3rIo
-         EcpvYhNqo+nrQbwhJGgQ8cBBOaju6GCUViJFjMcsi42NkYfRcplst44zHBvSszY2GVtw
-         yT9B0JQEa4SDs49ux4v6BaMZrT1rB7Oelb+Uv51JPxcy4aHQofSmldEeAk8DDKYJQ4zi
-         hJhg==
+        d=gmail.com; s=20230601; t=1705481721; x=1706086521; darn=vger.kernel.org;
+        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dBhzqek/6fd7CREjB7gj0PgcE8vXqoFMHvhu7g1QD50=;
+        b=jK6rFsBiA/cClNp3zNJr+q+KOGeoLNISHXVkUvkGuSBSCF60P1hUcJvDwbKch0h+pl
+         5mjRXQu1fs0fukpK5oMbVxjcHlnOdvHi98W9dITIkZKV7b2s1TWBEAZwzJtbv7L3PEn5
+         WHHtABY1R+utOmoZ3c0zSiBnalskbI0nO/vm9DYG2NA7yedZOTZ2xigI49U/p4HvSY5E
+         IV4TGzR9xw3T5UulgSVtKoTctWXhivnmol/CgPxjq+5nrzsHWdL3zLgY4bzHVw4pyNpc
+         3HQwFqjjZhM3wBFGSN4yBML+qfAxddI7//y35LDsL6MVo9+SUONmYFhowmXkAYrjUYkv
+         9qng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705481713; x=1706086513;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SbicIxEVLKASkkXjlMeyfqO175i8K5O8aNW1xewNsKA=;
-        b=gyJXCRziXWFvLDkEO3qLEGchYGvThHYUf129LDcqgQ0kH8IAv/ZkXAVmaoxue8qaU4
-         1tGXtur4tPwOxSPSmJL0qBlgZe0aOoWoVEg8dGqfYDSdMNqfGu5wQSJkpyW3B+GFYX3z
-         8Dv5VQJt+DmF5iob5kdFUedPw9Nm/n+fUvOLBs7Ubt65wrn1TxahQlpwisveaEThExUC
-         Z86T/HuTgh2teE68OnfsNcGNple9P+Hdn5k2lpQAheHmelX2V1eEHMuKp3En3D0mJpi/
-         mDHN4Uh6EjORdeuemjlfRL8jHVTFZkKaCV1fYwTWsPSmWE0t3UArLjeo4FTBhg8druoO
-         fjrw==
-X-Gm-Message-State: AOJu0Ywc1zSF5l4iQCQ9YXfGnvres2w9GKyWIKTEyTQYfrFddVX8M55O
-	TH8ZlTfqioah1dkAfVXtsBs0IJVujDnPsz6kkGW29ODIQWg=
-X-Google-Smtp-Source: AGHT+IHq1eYW4RXijDxLWT00CuC+xVFu042CcQf64tNw2Om6tISkKIhe/Pmvt14wg/DlbNiHhgscIQ==
-X-Received: by 2002:a2e:9246:0:b0:2cc:5ab2:7f4f with SMTP id v6-20020a2e9246000000b002cc5ab27f4fmr4337842ljg.103.1705481712805;
-        Wed, 17 Jan 2024 00:55:12 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id ee34-20020a056402292200b00559bb6eef00sm1411734edb.85.2024.01.17.00.55.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jan 2024 00:55:12 -0800 (PST)
-Message-ID: <7b51e7b4-7a08-4a7c-a30c-17447583eff8@linaro.org>
-Date: Wed, 17 Jan 2024 09:55:09 +0100
+        d=1e100.net; s=20230601; t=1705481721; x=1706086521;
+        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dBhzqek/6fd7CREjB7gj0PgcE8vXqoFMHvhu7g1QD50=;
+        b=H/fxDkoVgGWZm0/UCEcWXnDQVmscRhk3p2Ava0YgxzpTEyUzFTufzzD33G7p4z3g4u
+         s7jO3OFVjdW5hU0mqkshsjMCrIMA1Orx/tWM7LLl/0z5CJVX21zg6NtnHD4Oza5/Jn6b
+         /1KsRA0jCpJd0uFhQ4FOVlrBW0gV1UnbrBbdNXmervtX8fEx1wW1OuVV+uxrpiXPxo/8
+         idW3iOHnwFo9InDJPnn3Gl48cYTk38QeIqG2m4osTt1nAATn8yepJzOLMdwIWIqEvPLm
+         lxP2cV5CknY0K1fcvPtL2ATmletU+HFQMFhI1MZVGp7C3CazuGCR4ekFfDfusJCw2RYj
+         WuPA==
+X-Gm-Message-State: AOJu0YzDr3+ngXpTbR9JPHbEnT3C5OuGkBGfMIGCCLi9/MoRDqvxrZQ3
+	8RNlSaOmtfInzuRrZoE2kkI=
+X-Google-Smtp-Source: AGHT+IHhkXxluDe4N7YGLtu2N2AxQtwIH8y92VnGpUGxrLimI7QLF2GoeO0C1Wyx2JopwGlhJsASaQ==
+X-Received: by 2002:ac2:5d23:0:b0:50e:6332:8083 with SMTP id i3-20020ac25d23000000b0050e63328083mr1775703lfb.183.1705481720786;
+        Wed, 17 Jan 2024 00:55:20 -0800 (PST)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id dx5-20020a0565122c0500b0050e7741f582sm180895lfb.161.2024.01.17.00.55.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jan 2024 00:55:20 -0800 (PST)
+Date: Wed, 17 Jan 2024 10:55:09 +0200
+From: Pekka Paalanen <ppaalanen@gmail.com>
+To: Xaver Hugl <xaver.hugl@gmail.com>
+Cc: =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>,
+ dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, kernel-dev@igalia.com,
+ alexander.deucher@amd.com, christian.koenig@amd.com, Simon Ser
+ <contact@emersion.fr>, daniel@ffwll.ch, Daniel Stone
+ <daniel@fooishbar.org>, Marek =?UTF-8?B?T2zFocOhaw==?= <maraeo@gmail.com>,
+ Dave Airlie <airlied@gmail.com>, ville.syrjala@linux.intel.com, Joshua
+ Ashton <joshua@froggi.es>
+Subject: Re: [PATCH 0/2] drm/atomic: Allow drivers to write their own plane
+ check for async
+Message-ID: <20240117105509.1984837f@eldfell>
+In-Reply-To: <CAFZQkGyOQ5Tfu++-cHqgZ9NOJxqxm8cAF5XT18LmisuPAUbXAg@mail.gmail.com>
+References: <20240116045159.1015510-1-andrealmeid@igalia.com>
+	<20240116114522.5b83d8b6@eldfell>
+	<a6099681-1ae9-48ef-99bc-d3c919007413@igalia.com>
+	<20240116151414.10b831e6@eldfell>
+	<47c6866a-34d6-48b1-a977-d21c48d991dc@igalia.com>
+	<CAFZQkGyOQ5Tfu++-cHqgZ9NOJxqxm8cAF5XT18LmisuPAUbXAg@mail.gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] dt-bindings: gpio: vf610: add optional 'ngpios'
-Content-Language: en-US
-To: Hector Palacios <hector.palacios@digi.com>, linus.walleij@linaro.org,
- brgl@bgdev.pl, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org
-Cc: andy@kernel.org, conor+dt@kernel.org, shawnguo@kernel.org,
- s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
- linux-imx@nxp.com, stefan@agner.ch, linux-gpio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240117083251.53868-1-hector.palacios@digi.com>
- <20240117083251.53868-3-hector.palacios@digi.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240117083251.53868-3-hector.palacios@digi.com>
+Content-Type: multipart/signed; boundary="Sig_/uaSCk2iCuPC2HhY2IGqSpLb";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/uaSCk2iCuPC2HhY2IGqSpLb
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-On 17/01/2024 09:32, Hector Palacios wrote:
-> Some SoCs, such as i.MX93, don't have all 32 pins available
-> per port. Allow optional generic 'ngpios' property to be
-> specified from the device tree and default to 32 if the
-> property does not exist.
-> 
-> Signed-off-by: Hector Palacios <hector.palacios@digi.com>
-> ---
+On Tue, 16 Jan 2024 17:10:18 +0100
+Xaver Hugl <xaver.hugl@gmail.com> wrote:
 
-This is a friendly reminder during the review process.
+> My plan is to require support for IN_FENCE_FD at least. If the driver
+> doesn't
+> allow tearing with that, then tearing just doesn't happen.
 
-It seems my or other reviewer's previous comments were not fully
-addressed. Maybe the feedback got lost between the quotes, maybe you
-just forgot to apply it. Please go back to the previous discussion and
-either implement all requested changes or keep discussing them.
+That's an excellent point. I think this is important enough in its own
+right, that it should be called out in the patch series.
 
-Thank you.
+Is it important enough to be special-cased, e.g. to be always allowed
+with async commits?
 
-Best regards,
-Krzysztof
+Now that I think of it, if userspace needs to wait for the in-fence
+itself before kicking KMS async, that would defeat much of the async's
+point, right? And cases where in-fence is not necessary are so rare
+they might not even exist?
 
+So if driver/hardware cannot do IN_FENCE_FD with async, is there any
+use of supporting async to begin with?
+
+> For overlay planes though, it depends on how the compositor prioritizes
+> things.
+> If the compositor prioritizes overlay planes and would like to do tearing
+> if possible,
+> then this patch works.
+
+Ok, I can see that.
+
+> If the compositor prioritizes tearing and would like to do overlay planes
+> if possible,
+> it would have to know that switching to synchronous commits for a single
+> frame,
+> setting up the overlay planes and then switching back to async commits
+> works, and
+> that can't be figured out with TEST_ONLY commits.
+
+I had to ponder a bit why. So I guess the synchronous commit in between
+is because driver/hardware may not be able to enable/disable extra
+planes in async, so you need a synchronous commit to set them up, but
+afterwards updates can tear.
+
+The comment about Intel needing one more synchronous commit when
+switching from sync to async updates comes to mind as well, would that
+be a problem?
+
+> So I think having a CAP or immutable plane property to signal that async
+> commits
+> with overlay and/or cursor planes is supported would be useful.
+
+Async cursor planes a good point, particularly moving them around. I'm
+not too informed about the prior/on-going efforts to allow cursor
+movement more often than refresh rate, I recall something about
+amending atomic commits? How would these interact?
+
+I suppose the kernel still prevents any new async commit while a
+previous commit is not finished, so amending commits would still be
+necessary for cursor plane motion? Or would it, if you time "big
+commits" to finish quickly and then spam async "cursor commits" in the
+mean time?
+
+
+Thanks,
+pq
+
+> Am Di., 16. Jan. 2024 um 14:35 Uhr schrieb Andr=C3=A9 Almeida <
+> andrealmeid@igalia.com>: =20
+>=20
+> > + Joshua
+> >
+> > Em 16/01/2024 10:14, Pekka Paalanen escreveu: =20
+> > > On Tue, 16 Jan 2024 08:50:59 -0300
+> > > Andr=C3=A9 Almeida <andrealmeid@igalia.com> wrote:
+> > > =20
+> > >> Hi Pekka,
+> > >>
+> > >> Em 16/01/2024 06:45, Pekka Paalanen escreveu: =20
+> > >>> On Tue, 16 Jan 2024 01:51:57 -0300
+> > >>> Andr=C3=A9 Almeida <andrealmeid@igalia.com> wrote:
+> > >>> =20
+> > >>>> Hi,
+> > >>>>
+> > >>>> AMD hardware can do more on the async flip path than just the prim=
+ary =20
+> > plane, so =20
+> > >>>> to lift up the current restrictions, this patchset allows drivers =
+to =20
+> > write their =20
+> > >>>> own check for planes for async flips. =20
+> > >>>
+> > >>> Hi,
+> > >>>
+> > >>> what's the userspace story for this, how could userspace know it co=
+uld =20
+> > do more? =20
+> > >>> What kind of userspace would take advantage of this and in what =20
+> > situations? =20
+> > >>>
+> > >>> Or is this not meant for generic userspace? =20
+> > >>
+> > >> Sorry, I forgot to document this. So the idea is that userspace will
+> > >> query what they can do here with DRM_MODE_ATOMIC_TEST_ONLY calls,
+> > >> instead of having capabilities for each prop. =20
+> > >
+> > > That's the theory, but do you have a practical example?
+> > >
+> > > What other planes and props would one want change in some specific use
+> > > case?
+> > >
+> > > Is it just "all or nothing", or would there be room to choose and pick
+> > > which props you change and which you don't based on what the driver
+> > > supports? If the latter, then relying on TEST_ONLY might be yet anoth=
+er
+> > > combinatorial explosion to iterate through.
+> > > =20
+> >
+> > That's a good question, maybe Simon, Xaver or Joshua can share how they
+> > were planning to use this on Gamescope or Kwin.
+> > =20
+> > >
+> > > Thanks,
+> > > pq
+> > > =20
+> > >>>> I'm not sure if adding something new to drm_plane_funcs is the rig=
+ht =20
+> > way to do, =20
+> > >>>> because if we want to expand the other object types (crtc, connect=
+or) =20
+> > we would =20
+> > >>>> need to add their own drm_XXX_funcs, so feedbacks are welcome!
+> > >>>>
+> > >>>>    Andr=C3=A9
+> > >>>>
+> > >>>> Andr=C3=A9 Almeida (2):
+> > >>>>     drm/atomic: Allow drivers to write their own plane check for a=
+sync
+> > >>>>       flips
+> > >>>>     drm/amdgpu: Implement check_async_props for planes
+> > >>>>
+> > >>>>    .../amd/display/amdgpu_dm/amdgpu_dm_plane.c   | 30 +++++++++
+> > >>>>    drivers/gpu/drm/drm_atomic_uapi.c             | 62 =20
+> > ++++++++++++++----- =20
+> > >>>>    include/drm/drm_atomic_uapi.h                 | 12 ++++
+> > >>>>    include/drm/drm_plane.h                       |  5 ++
+> > >>>>    4 files changed, 92 insertions(+), 17 deletions(-)
+> > >>>> =20
+> > >>> =20
+> > > =20
+> > =20
+
+
+--Sig_/uaSCk2iCuPC2HhY2IGqSpLb
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmWnle0ACgkQI1/ltBGq
+qqc0zRAAmsYLm9QbFAy7oGFE5ESCY1Ws0GyM7zBZ9ZbDTOGpyvJT5ShZzao3l/j2
+sDO1wxeC7xW9KhHQGEmJlWMlG+dWv1pXimYEKV0DY5+6e+6WfGA1sGODtn9xKJKd
+hFBnZqMnfvKLeowHBIt/00aJoyqwBXovoWyH59kAqSsh8TIKsyp7G5uwFtSHrJl7
+wiOysCWzlY8db9onusa9LMBgLG+2K/wDm1PDpjUqKDGidY23CMvz+L2afZf92Hl9
+zglYB4UrR9JAVBH88Bi6rhGVMKsidnLpNsPK07ZIvTU8dxlqU5Bxp6zKZmWIOSMF
+weCqzq1CatqKo1WvMKU92rS8wQSSEa+TN0/9JIN8TbOb0k6UJwv3yxJ8VjjRPiV3
+5L3TjjJOqLxzM4j5K4wS6UQvzY/lpecydBiTNesdniMdCpuNcX3TmAlF8zxJin/G
+olK37BM0+4qeEuqRTbYrhDVzmfaASSEzY4i0AgT7Zkk+wYCYReQ0Z6o6wSN570V9
+/H1dWPoQlD60lV/2ZPZTGRmLzo3KIgtrNMFqquuE2eIn02PkWSp78B/MORKAslol
+EYqBIHM3+DBy5LZiA3kZGO0V1Gj1j4/eShzSxx7WoF0X4FIP5OhMd01AQir0n1B1
+h1tk+5WRYgxVja8ZD3ZbySDboTrJw61iD5EFlLA537G9vBSwhRI=
+=JhIu
+-----END PGP SIGNATURE-----
+
+--Sig_/uaSCk2iCuPC2HhY2IGqSpLb--
 
