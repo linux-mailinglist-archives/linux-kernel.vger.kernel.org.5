@@ -1,110 +1,130 @@
-Return-Path: <linux-kernel+bounces-28927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 769488304BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:47:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8972D8304BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:48:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 266AF288F01
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:47:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADBA61C2440C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:48:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A76281DFE1;
-	Wed, 17 Jan 2024 11:47:35 +0000 (UTC)
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50B091DFDF;
+	Wed, 17 Jan 2024 11:47:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EwsqLbLw"
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0554A1DFD1;
-	Wed, 17 Jan 2024 11:47:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37D571D697
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:47:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705492055; cv=none; b=UH7ghQo/AM56xjjwlhY16d1Bbeoib+Hgttnxx+xvNFbd70Gj/NphU8aTFcU5dtQwyIiTAh+2yU5cr0SpG43dEmM7yCu5BGI4CoxsBYi2/zLkmF+Syt5HeZS3OMsmOXXGsh/VdsJo+Xoha95JRY3UT7basoUce4OJN9lFCQKQpiM=
+	t=1705492068; cv=none; b=VESMJNMk945lEsdMD7gU6poSA6Jl2KH2zck8DUZdvbg+18cUuxY3vjhQGWZnKSqQTVsQYoM+tRbvS9MLgXUao+lJa7bQ86/GiC+AgAtqXTmmSXwUv1BrGf5f4WuNAH/ZRsWrY8k6qHrHYunf5Vob9M+xdfBcKAdoGkgMlGP0iXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705492055; c=relaxed/simple;
-	bh=kvkTR7iTyZVPJBT9Sqjw0z5+Ipc3TcSsE7D3hjrE/E4=;
-	h=Received:Date:From:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To:
-	 User-Agent; b=q6ko/VZy9AJOh7bCGu0SMhxo9SYpV7mrpmrlwxU6nXKDs1xvUu55JJ+LH71Tisb3Sq2AiTMF4LtAxHu9bvShiGN98gRJvIHoRHS1vPp+VA0+4kWiZVgxyomw5R9qzjKiEUbcusCOaMTgrsVFdOwrEFciNbNJHawuPQEOh0omcmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1rQ4O1-00035J-2U; Wed, 17 Jan 2024 12:47:13 +0100
-Date: Wed, 17 Jan 2024 12:47:13 +0100
-From: Florian Westphal <fw@strlen.de>
-To: wangkeqi <wangkeqi_chris@163.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	wangkeqi <wangkeqiwang@didiglobal.com>,
-	kernel test robot <oliver.sang@intel.com>, fengwei.yin@intel.com
-Subject: Re: [PATCH net v2] connector: Change the judgment conditions for
- clearing proc_event_num_listeners
-Message-ID: <20240117114713.GA11468@breakpoint.cc>
-References: <20240116015753.209781-1-wangkeqi_chris@163.com>
+	s=arc-20240116; t=1705492068; c=relaxed/simple;
+	bh=Nui8zu8V3ndYddOaheaEne/imbsV07hHxFFahrvH2Sg=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Date:
+	 Mime-Version:X-Mailer:Message-ID:Subject:From:To:Cc:Content-Type;
+	b=NIwt3HVCTMtoeUAR7mruhiK114qTKoCNUjL7qgNXj5v7bmDrYLzj+Vhdh6vN6chZgpY+KybmM7BcAw4utx9vSqXwDtAK+/6CXeg9IZwTJK09kZQcZr2Up62uvzQCTyn/f6zwm+RTbyAFCLgtdayvSwMlLc4LM47o7ZshtHB2+Go=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--badhri.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EwsqLbLw; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--badhri.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-28bc9e1f43eso11160901a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 03:47:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705492065; x=1706096865; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=W4MUqY7qziRkIoVCBAjHtlR0P63yXdlU8r3ZOJ0yHa4=;
+        b=EwsqLbLwrHC+6uec1zex3MPtORgYgWFtDZ6TP9jbVleJwmOBNJmyr49VRSFO3xKtje
+         tGYknPHymYsxUZuWNYD7QahGByjQ8hFrsaaTDJa3YLPSshOgLuHfvBgWdqMHRse4FPVW
+         mtm6xhudADl1OiO6tb1Xi1PSTh9mBlTQgWcxMHrCcERYI5QzBfS8G5YRc1yJcWAqP50Q
+         J4iVDzbXCiI73XO8EP4KFFC8WZ/hYrG8uaViZVgTSYV9hvt3Yb/YvoBvNqtvS42MYLQp
+         p0IOJ/qZpVVGdY4m8NoXLdWY5fm8P8R6ySNszP/bxDBtnjsjaOhM61w89c+A9ymhyN6a
+         LrzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705492065; x=1706096865;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=W4MUqY7qziRkIoVCBAjHtlR0P63yXdlU8r3ZOJ0yHa4=;
+        b=Mn/6kjpNdHwqIfmV+vHV72hnOTajzyA2WvCtUgCQxan+oKTRXag+ri6sqyvfUENlIG
+         iAfrqIkMkMpNpI6R1wfnWGo3W0eI1rIu4qXRYB7GdiDjwQiV2A954Av2dCOdXpWqphhc
+         0mxhSIoH36FEwg19TZun9dQgOiFnsmwZlwtSYc9ssjIa1NRxOz+eRp4UF1A7Uu+dgDBB
+         AVyAAcBbgt12OYo8/gZp5RMzH8jUcTwIquWUxtBCckw9eoxXXm/h/HDJGVpQmgmLX44Y
+         AMPGfTgqaOUOPWci3HdvvCtEWHqM7vMuFW0NCVf2LV37wpXiDIB6I0PjFomXxOVs6qoJ
+         Hn+A==
+X-Gm-Message-State: AOJu0Ywq/HzkZlrGe0KrLqXgAixu5uqw8EW31lRA8pJXDMVvOcHlko4r
+	tZcbuZPZvIm3xTWQEtdw1R+6HL54kU9xNnEsZQ==
+X-Google-Smtp-Source: AGHT+IGbV5MXvSWEBDVzyqZxJqAc/AaSt2OI+WAdKyDsredw51/qTJldbeyuukgdzoqCm1Fy3ggzJuQQK8c=
+X-Received: from badhri.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:6442])
+ (user=badhri job=sendgmr) by 2002:a17:90b:5292:b0:28b:d1dc:8836 with SMTP id
+ si18-20020a17090b529200b0028bd1dc8836mr381586pjb.5.1705492065692; Wed, 17 Jan
+ 2024 03:47:45 -0800 (PST)
+Date: Wed, 17 Jan 2024 11:47:42 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240116015753.209781-1-wangkeqi_chris@163.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240117114742.2587779-1-badhri@google.com>
+Subject: [PATCH v2] Revert "usb: typec: tcpm: fix cc role at port reset"
+From: Badhri Jagan Sridharan <badhri@google.com>
+To: gregkh@linuxfoundation.org, linux@roeck-us.net, 
+	heikki.krogerus@linux.intel.com
+Cc: kyletso@google.com, linux-usb@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, rdbabiera@google.com, amitsd@google.com, 
+	stable@vger.kernel.org, frank.wang@rock-chips.com, 
+	Badhri Jagan Sridharan <badhri@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-wangkeqi <wangkeqi_chris@163.com> wrote:
-> From: wangkeqi <wangkeqiwang@didiglobal.com>
-> 
-> It is inaccurate to judge whether proc_event_num_listeners is
-> cleared by cn_netlink_send_mult returning -ESRCH.
-> In the case of stress-ng netlink-proc, -ESRCH will always be returned,
-> because netlink_broadcast_filtered will return -ESRCH,
-> which may cause stress-ng netlink-proc performance degradation.
-> Therefore, the judgment condition is modified to whether
-> there is a listener.
-> 
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202401112259.b23a1567-oliver.sang@intel.com
-> Fixes: c46bfba133 ("connector: Fix proc_event_num_listeners count not cleared")
-> Signed-off-by: wangkeqi <wangkeqiwang@didiglobal.com>
-> Cc: fengwei.yin@intel.com
-> ---
->  drivers/connector/cn_proc.c   | 6 ++++--
->  drivers/connector/connector.c | 6 ++++++
->  include/linux/connector.h     | 1 +
->  3 files changed, 11 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/connector/cn_proc.c b/drivers/connector/cn_proc.c
-> index 3d5e6d705..b09f74ed3 100644
-> --- a/drivers/connector/cn_proc.c
-> +++ b/drivers/connector/cn_proc.c
-> @@ -108,8 +108,10 @@ static inline void send_msg(struct cn_msg *msg)
->  		filter_data[1] = 0;
->  	}
->  
-> -	if (cn_netlink_send_mult(msg, msg->len, 0, CN_IDX_PROC, GFP_NOWAIT,
-> -			     cn_filter, (void *)filter_data) == -ESRCH)
-> +	if (netlink_has_listeners(get_cdev_nls(), CN_IDX_PROC))
-> +		cn_netlink_send_mult(msg, msg->len, 0, CN_IDX_PROC, GFP_NOWAIT,
-> +			     cn_filter, (void *)filter_data);
-> +	else
->  		atomic_set(&proc_event_num_listeners, 0);
+This reverts commit 1e35f074399dece73d5df11847d4a0d7a6f49434.
 
-How is that serialized vs. cn_proc_mcast_ctl?
+Given that ERROR_RECOVERY calls into PORT_RESET for Hi-Zing
+the CC pins, setting CC pins to default state during PORT_RESET
+breaks error recovery.
 
-1. netlink_has_listeners() returns false
-2.  other core handles PROC_CN_MCAST_LISTEN, atomic_inc called
-3. This core (re)sets counter to 0, but there are listeners, so
-    all functions that do
+4.5.2.2.2.1 ErrorRecovery State Requirements
+The port shall not drive VBUS or VCONN, and shall present a
+high-impedance to ground (above zOPEN) on its CC1 and CC2 pins.
 
- if (atomic_read(&proc_event_num_listeners) < 1)
-    return;
+Hi-Zing the CC pins is the inteded behavior for PORT_RESET.
+CC pins are set to default state after tErrorRecovery in
+PORT_RESET_WAIT_OFF.
 
-will not get enabled/remain disabled.
+4.5.2.2.2.2 Exiting From ErrorRecovery State
+A Sink shall transition to Unattached.SNK after tErrorRecovery.
+A Source shall transition to Unattached.SRC after tErrorRecovery.
 
-Probably better to add cn_netlink_has_listeners() function
-and use that instead of the (inaccurate) counter?
+Cc: stable@vger.kernel.org
+Cc: Frank Wang <frank.wang@rock-chips.com>
+Fixes: 1e35f074399d ("usb: typec: tcpm: fix cc role at port reset")
+Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+---
+ drivers/usb/typec/tcpm/tcpm.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index 5945e3a2b0f7..9d410718eaf4 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -4876,8 +4876,7 @@ static void run_state_machine(struct tcpm_port *port)
+ 		break;
+ 	case PORT_RESET:
+ 		tcpm_reset_port(port);
+-		tcpm_set_cc(port, tcpm_default_state(port) == SNK_UNATTACHED ?
+-			    TYPEC_CC_RD : tcpm_rp_cc(port));
++		tcpm_set_cc(port, TYPEC_CC_OPEN);
+ 		tcpm_set_state(port, PORT_RESET_WAIT_OFF,
+ 			       PD_T_ERROR_RECOVERY);
+ 		break;
+
+base-commit: 933bb7b878ddd0f8c094db45551a7daddf806e00
+-- 
+2.43.0.429.g432eaa2c6b-goog
+
 
