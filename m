@@ -1,138 +1,196 @@
-Return-Path: <linux-kernel+bounces-28910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98CC5830481
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:27:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF668830485
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:27:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C05081C21650
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:27:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DD0A1F24E97
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:27:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02BA21DFC5;
-	Wed, 17 Jan 2024 11:27:15 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BE801DDEB;
+	Wed, 17 Jan 2024 11:27:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hCmspbtP"
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E9FB1DDF1
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:27:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC2F21DDEA
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:27:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705490834; cv=none; b=HdAbHcu/xGgfGOMzKXzCTPqmv1G+lAg2s62zOOJHWfqQhSycNiHBoXNVqcw93IQKqC9mnIoz5jdSyLdeewM1dNspiEGoi+6RUWUrVAgOoJ6OuiZ9/77BaPN7bSqO41SgtXwbXRN6V4HIJ3bkIoHK5zZHpU/xEYBFXiDTSF2tUc8=
+	t=1705490859; cv=none; b=G6GEUypyROpgJ2gpplPEhXHOBCtDj3z7LHRseaDntoe8MZfqg0VDGDhMSZVgFTeA94rl0f5xUm0AX/TY1X9igQnbouE0ZQIEQT3SQQX/Sf3fab5Z0jgdL2LryJgtpW6uVulitJqtiIvJ9wZcmdeHcN0Hbqh0oRI9QTvCIDPsqWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705490834; c=relaxed/simple;
-	bh=jBx3eKRjN7Z9dDzc9bnlFlDn2eT7AJ7HfCKi7xPOw+c=;
-	h=Received:Received:Received:Message-ID:Subject:From:To:Cc:Date:
-	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:
-	 User-Agent:MIME-Version:X-SA-Exim-Connect-IP:X-SA-Exim-Mail-From:
-	 X-SA-Exim-Scanned:X-PTX-Original-Recipient; b=MVB/u5VglfbQI5EFmxcueXyYw696DEhtzfg6eQzs8+JcPSS4xly5GedPqYZQniLsbbGLE/H/4I9AiZhiqiGtmvwY2nPrSbhlirb0eCycKzQiR2fSajTHhXEzJXZTj4i0O2wFUFAm8/uBOAJUAsd4c86mIkuiTeZhVa6j1Liliqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rQ44L-00031s-OS; Wed, 17 Jan 2024 12:26:53 +0100
-Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rQ44I-000S37-Tf; Wed, 17 Jan 2024 12:26:50 +0100
-Received: from pza by lupine with local (Exim 4.96)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rQ44I-00054q-2g;
-	Wed, 17 Jan 2024 12:26:50 +0100
-Message-ID: <5ad7badb85bdece735901a0f6317183b1d628a68.camel@pengutronix.de>
-Subject: Re: [PATCH v3 2/5] reset: Instantiate reset GPIO controller for
- shared reset-gpios
-From: Philipp Zabel <p.zabel@pengutronix.de>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Bjorn Andersson
- <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Srinivas
- Kandagatla <srinivas.kandagatla@linaro.org>, Banajit Goswami
- <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
- <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
- Peter Rosin <peda@axentia.se>, Jaroslav Kysela <perex@perex.cz>,  Takashi
- Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org,
- alsa-devel@alsa-project.org,  linux-sound@vger.kernel.org,
- devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,
- linux-i2c@vger.kernel.org
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Chris Packham
- <chris.packham@alliedtelesis.co.nz>, Sean Anderson <sean.anderson@seco.com>
-Date: Wed, 17 Jan 2024 12:26:50 +0100
-In-Reply-To: <20240112163608.528453-3-krzysztof.kozlowski@linaro.org>
-References: <20240112163608.528453-1-krzysztof.kozlowski@linaro.org>
-	 <20240112163608.528453-3-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	s=arc-20240116; t=1705490859; c=relaxed/simple;
+	bh=1OR+xPZ6Pg7n5BBFW9SfbEotYULYikt0P7tLlgmn9WM=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=li83IV9MQWoLwSQiYMBTVA/X1DgN5TSHr4v5a4GiHdWm/xQKEDOvwGCc4l7iQxQLuWohiSWgxIExV8E7X2jRes3RZFmwNUyawuhr3iFxMJaa71W43wO4j0ufm+aBsMaHG+7MDz1j9zmGWtOQs0V5QMLjYp2O/TAMVapZkT3DqKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hCmspbtP; arc=none smtp.client-ip=209.85.222.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-783045e88a6so809250985a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 03:27:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705490857; x=1706095657; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yX7YAU0jZ00+RmLgD3hlICEdBYU3XjNXhe6NXBaxDVg=;
+        b=hCmspbtP8ajmmpWt2s8MLVUjUDkWRUsDXxlcg076ye1i2tydgjka9Ckeii0bvo63LI
+         sIK7bV8roxYaS9Vsl2ZxCQwhy93LbEJobFWAO5wtQvrIYBcKF3MBCZyWAcBZ7hvNQhCt
+         CCLMkB70cKVWTBE9+op8MUMJlLS3fgia/9WIuwjcz7IsgnqcW8gRJgWNIFy+jjtIxAgt
+         dd6czHZiWqLdXRPbDRDeR0+GMARyeUChBQWNU9MkZq8oCZZjwrDqYeJ/4eXuDHgZ+SE2
+         Ka87Zyb3uausekrEUBKyR9VEoellZr1wGO+jDQNjN/C/J76slf8OA0DkFnqA9TG8ux0O
+         VFlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705490857; x=1706095657;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yX7YAU0jZ00+RmLgD3hlICEdBYU3XjNXhe6NXBaxDVg=;
+        b=WjgJFaxKRra1fmyb4qjN/UjBwO2QPWg0V70F70pUHbdjTh8SepkPzMM4mpL/SdrcaF
+         AhxrM64ShesQtAVC4g4GsIrK5sMye0k1NilAL/g2lxIoCHpvgmJVMsYnN8v+irnNUtNl
+         5MTg21R286L13TTGw0b/pgO1pr8EDOsae5TkSsQWYY+CFmS7xVj3NmX1GCBoWwxP4hI+
+         YOz5B7oW6cZnVuRxS+qehGU+6IOcnjWI+aFnKKtgKupGZwcW6pD8cvVAy5/sV7H+ngEz
+         1x9tZBsvcDLtZd/sP0yLaOwf4oHEDL/EEx02wR6l0CW8NMoMAU0iLKg5zQ3MTBhLFPBo
+         X/Aw==
+X-Gm-Message-State: AOJu0YzzVb16O/bBG67THBVD7k6nEZ4dU1gJdTY9jelJv2ZZBat/7q8a
+	52WZu6kQE8jN/bollIPpnwkocFbhOKauGrGx/Co=
+X-Google-Smtp-Source: AGHT+IHE0yvbhot0VosNjsRVCkFmWT7zswkOjBw+fzEJUuBFrRzSPtNMJIJ5y5vZfZcNgwdhn+bBcyOLmZNGI+U1Py0=
+X-Received: by 2002:ac8:4e96:0:b0:42a:de7:3244 with SMTP id
+ 22-20020ac84e96000000b0042a0de73244mr984144qtp.59.1705490856737; Wed, 17 Jan
+ 2024 03:27:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20240116141138.1245-1-qwjhust@gmail.com> <CACOAw_yL7fLmjLkK29yEb3hgTqoDO2hntOX5LMHmWjZWWix1ig@mail.gmail.com>
+ <CAGFpFsSSg+Xs9TAw8qOadUxj8kYfyc+h3cCu_UJsxXUzMu50vQ@mail.gmail.com> <601da6d0-8e22-4e6f-a791-5db9d5ebc793@oppo.com>
+In-Reply-To: <601da6d0-8e22-4e6f-a791-5db9d5ebc793@oppo.com>
+From: Wenjie Qi <qwjhust@gmail.com>
+Date: Wed, 17 Jan 2024 19:27:26 +0800
+Message-ID: <CAGFpFsT6XyTNPRxrTg+=F_eQ_-cryhdYd-k7rXxy1oJn4F4oLA@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH v1] f2fs: fix NULL pointer dereference in f2fs_submit_page_write()
+To: Yongpeng Yang <yangyongpeng1@oppo.com>
+Cc: jaegeuk@kernel.org, linux-kernel@vger.kernel.org, hustqwj@hust.edu.cn, 
+	linux-f2fs-devel@lists.sourceforge.net, chao@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fr, 2024-01-12 at 17:36 +0100, Krzysztof Kozlowski wrote:
-[...]
->  struct reset_control *
->  __of_reset_control_get(struct device_node *node, const char *id, int ind=
-ex,
->  		       bool shared, bool optional, bool acquired)
->  {
-> +	struct of_phandle_args args =3D {0};
-> +	bool gpio_fallback =3D false;
->  	struct reset_control *rstc;
-> -	struct reset_controller_dev *r, *rcdev;
-> -	struct of_phandle_args args;
-> +	struct reset_controller_dev *rcdev;
->  	int rstc_id;
->  	int ret;
-> =20
-> @@ -839,39 +1028,49 @@ __of_reset_control_get(struct device_node *node, c=
-onst char *id, int index,
->  					 index, &args);
->  	if (ret =3D=3D -EINVAL)
->  		return ERR_PTR(ret);
-> -	if (ret)
-> -		return optional ? NULL : ERR_PTR(ret);
-> +	if (ret) {
+Hello Yongpeng,
+I don't think that's correct.
+If list_empty(&io->io_list) and fio->in_list are true, it will jump to
+the "out" label. This does not enter the judgment process.
+In addition,  __bio_alloc() will ensure that io->bio ! =3D NULL.
 
-I think this should continue to return optional ? NULL : ERR_PTR(ret)
-if !IS_ENABLED(CONFIG_RESET_GPIO), for example by just skipping the
-of_parse_phandle_with_args(). That should allow the GPIO fallback in
-patch 5 to work as expected.
-
-> +		/*
-> +		 * There can be only one reset-gpio for regular devices, so
-> +		 * don't bother with GPIO index.
-> +		 */
-> +		ret =3D of_parse_phandle_with_args(node, "reset-gpios", "#gpio-cells",
-> +						 0, &args);
-> +		if (ret)
-> +			return optional ? NULL : ERR_PTR(ret);
-> =20
-> -	mutex_lock(&reset_list_mutex);
-> -	rcdev =3D NULL;
-> -	list_for_each_entry(r, &reset_controller_list, list) {
-> -		if (args.np =3D=3D r->of_node) {
-> -			rcdev =3D r;
-> -			break;
-> +		gpio_fallback =3D true;
-> +
-> +		ret =3D __reset_add_reset_gpio_device(&args);
-> +		if (ret) {
-> +			rstc =3D ERR_PTR(ret);
-> +			goto out_put;
->  		}
->  	}
-
-regards
-Philipp
+On Wed, Jan 17, 2024 at 6:17=E2=80=AFPM Yongpeng Yang <yangyongpeng1@oppo.c=
+om> wrote:
+>
+> Hello Wenjie,
+> This patch does not prevent the simultaneous truth of
+> list_empty(&io->io_list), fio->in_list, and is_end_zone_blkaddr(sbi,
+> fio->new_blkaddr). NULL pointer dereference error still exists in
+> =E2=80=9Cbio_get(io->bio)=E2=80=9D. Is that correct?
+>
+> On 1/17/2024 9:39 AM, Wenjie Qi wrote:
+> > Hello Daeho,
+> > I don't think moving just the "out" label will work.
+> > If a fio is zone end and in_list =3D 1, that fio is missed without bein=
+g judged.
+> >
+> > On Wed, Jan 17, 2024 at 5:58=E2=80=AFAM Daeho Jeong <daeho43@gmail.com>=
+ wrote:
+> >>
+> >> On Tue, Jan 16, 2024 at 6:13=E2=80=AFAM Wenjie Qi <qwjhust@gmail.com> =
+wrote:
+> >>>
+> >>> BUG: kernel NULL pointer dereference, address: 0000000000000014
+> >>> RIP: 0010:f2fs_submit_page_write+0x6cf/0x780 [f2fs]
+> >>> Call Trace:
+> >>> <TASK>
+> >>> ? show_regs+0x6e/0x80
+> >>> ? __die+0x29/0x70
+> >>> ? page_fault_oops+0x154/0x4a0
+> >>> ? prb_read_valid+0x20/0x30
+> >>> ? __irq_work_queue_local+0x39/0xd0
+> >>> ? irq_work_queue+0x36/0x70
+> >>> ? do_user_addr_fault+0x314/0x6c0
+> >>> ? exc_page_fault+0x7d/0x190
+> >>> ? asm_exc_page_fault+0x2b/0x30
+> >>> ? f2fs_submit_page_write+0x6cf/0x780 [f2fs]
+> >>> ? f2fs_submit_page_write+0x736/0x780 [f2fs]
+> >>> do_write_page+0x50/0x170 [f2fs]
+> >>> f2fs_outplace_write_data+0x61/0xb0 [f2fs]
+> >>> f2fs_do_write_data_page+0x3f8/0x660 [f2fs]
+> >>> f2fs_write_single_data_page+0x5bb/0x7a0 [f2fs]
+> >>> f2fs_write_cache_pages+0x3da/0xbe0 [f2fs]
+> >>> ...
+> >>> It is possible that other threads have added this fio to io->bio
+> >>> and submitted the io->bio before entering f2fs_submit_page_write().
+> >>> At this point io->bio =3D NULL.
+> >>> If is_end_zone_blkaddr(sbi, fio->new_blkaddr) of this fio is true,
+> >>> then an NULL pointer dereference error occurs at bio_get(io->bio).
+> >>> The original code for determining zone end was after "out:",
+> >>> which would have missed some fio who is zone end. I've moved
+> >>>   this code before "skip:" to make sure it's done for each fio.
+> >>>
+> >>> Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
+> >>> ---
+> >>>   fs/f2fs/data.c | 8 ++++----
+> >>>   1 file changed, 4 insertions(+), 4 deletions(-)
+> >>>
+> >>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> >>> index dce8defdf4c7..4f445906db8b 100644
+> >>> --- a/fs/f2fs/data.c
+> >>> +++ b/fs/f2fs/data.c
+> >>> @@ -1080,10 +1080,6 @@ void f2fs_submit_page_write(struct f2fs_io_inf=
+o *fio)
+> >>>          io->last_block_in_bio =3D fio->new_blkaddr;
+> >>>
+> >>>          trace_f2fs_submit_page_write(fio->page, fio);
+> >>> -skip:
+> >>> -       if (fio->in_list)
+> >>> -               goto next;
+> >>> -out:
+> >>>   #ifdef CONFIG_BLK_DEV_ZONED
+> >>>          if (f2fs_sb_has_blkzoned(sbi) && btype < META &&
+> >>>                          is_end_zone_blkaddr(sbi, fio->new_blkaddr)) =
+{
+> >>> @@ -1096,6 +1092,10 @@ void f2fs_submit_page_write(struct f2fs_io_inf=
+o *fio)
+> >>>                  __submit_merged_bio(io);
+> >>>          }
+> >>>   #endif
+> >>> +skip:
+> >>> +       if (fio->in_list)
+> >>> +               goto next;
+> >>> +out:
+> >>
+> >> How about moving only the "out" label instead of the whole block from
+> >> "skip" to "out"?
+> >>
+> >>>          if (is_sbi_flag_set(sbi, SBI_IS_SHUTDOWN) ||
+> >>>                                  !f2fs_is_checkpoint_ready(sbi))
+> >>>                  __submit_merged_bio(io);
+> >>> --
+> >>> 2.34.1
+> >>>
+> >>>
+> >>>
+> >>> _______________________________________________
+> >>> Linux-f2fs-devel mailing list
+> >>> Linux-f2fs-devel@lists.sourceforge.net
+> >>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> >
+> >
+> > _______________________________________________
+> > Linux-f2fs-devel mailing list
+> > Linux-f2fs-devel@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
 
