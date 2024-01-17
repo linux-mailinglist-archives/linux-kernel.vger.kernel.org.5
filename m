@@ -1,642 +1,285 @@
-Return-Path: <linux-kernel+bounces-28967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A570830551
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:31:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A262830558
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:33:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E859DB238C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:31:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A424C1C23E7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:33:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26241DDE9;
-	Wed, 17 Jan 2024 12:31:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E04BB1EA7B;
+	Wed, 17 Jan 2024 12:32:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="NHAKPmKz"
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2080.outbound.protection.outlook.com [40.107.8.80])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="klqpyPhl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E937B1D681
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 12:31:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.80
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705494699; cv=fail; b=tzqzqBj1Yr5mgqYW5QQzLx8Xvwv5iwmACJhzuISflsPYOlL0PrS6nPWegaT6HtBT5q0y8z4en/s0qMwndA1/MO2Ju4W9iEEr+LZMrEZYh7EzZnAwLNmHf32UsiY6f8nyScwwq6HK9xFHXQDc8w5J1qfkU34gYEAaelFGT+z3wPE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705494699; c=relaxed/simple;
-	bh=2pJG83/YWIVPMp9hJPX/vGIwVkp90/W3FJtjOB6twMo=;
-	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
-	 Received:Received:Date:From:To:Cc:Subject:Message-ID:References:
-	 Content-Type:Content-Disposition:In-Reply-To:X-ClientProxiedBy:
-	 MIME-Version:X-MS-Exchange-MessageSentRepresentingType:
-	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
-	 X-MS-Office365-Filtering-Correlation-Id:
-	 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed:
-	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:
-	 X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-	 X-MS-Exchange-CrossTenant-UserPrincipalName:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=o1HHQPvplVVQWgH9jnCtlC3XqEYfTjH59e6//uTY7fwAPAvCi5XgDM/eY2S6gbVUCW+I1ppVKo3YN0uh89FgWn3r9KYnFxBFoJr5FIQITi96J4K6yn03M8VRAB8N2MlcZkZhV/wp2kCq6ELpmLjzFFfL8ddVfwiVO1gQDNi6M6s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=NHAKPmKz; arc=fail smtp.client-ip=40.107.8.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AcZ5k++4gN2YAKtdm8ggzLBZBqRe4lTX5LPTuVpi00jg49w6+nkeLvriQtvZKneq4byaD/jVXNremUxv0LCJQkeYJiOgo1iDE19IX35saYTwykHOxO/vW7aDcZHHODLgg9nmd/Zhv8Cubr2BMiw/Bl0W7vlChK4IepipD5p2dxDQvC6N5jRnahQcUfIs5xBwa78DHnUjdL04+GU41erNeHe8ukZoKUGsAMaaIUJeJzChGPIMq+83oja77WhEmF2KweiPLAVjMQTYYe/pPLaLfkeFEk77Y1JsQE+1Dyy6FcmX4qtaTv9MtIKbipt9o6iH2n7sserLGBEfAZ0kyOCGPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=37CJF9XG2sbshoLH8ZZsuUxeOFjJdczw9aBHmQLosjQ=;
- b=Xz5H1pGOs4GSbyBPHhtDX3CUnBYeQ1zSh/Aufeh989QeEJ/Qf8eCplF/0wG1bDgFHBmpqs1ylUvKVEjCkp6IeLz/+w7NwwmCQNDDlLImp5tmtETdO3aF/EKEcFPTvgLmZ0HXUlZc8OqJTgNKnK4fHG4LLYvOn/LfsoTrarM8IxEe4gokVlAFRGbhHbqhZCbXGtUUbbLUUkTTwHTFc/uP1fHYxy7VGM7l9lTvbOMpAq4PwZhuFiPkXjkQdSMOtKrBHOWnf2IC3v8AGr6sHJHv8rnjs4gK1aHADjHiJ1LMZfYarF7b9RXgb8D9fOVJxLTjXGzYvTPRuYI/v1k8B0DViQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=37CJF9XG2sbshoLH8ZZsuUxeOFjJdczw9aBHmQLosjQ=;
- b=NHAKPmKz/hkc+fMPnTLlt5fVhIs625zRfWLbZpUr5zzCeUYFbpTh3Qflk5QTS29gLeJz4AFKEbnp3MwULFFKHZTc/lxwS7En9WcZdlMzsedEM9YpXNbUvue5hrc0EwWW0ASvr1MBmCC/x8gKsiVrPet+Ock2oZXK1uEFQpWJJUI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from AM6PR04MB5333.eurprd04.prod.outlook.com (2603:10a6:209:4a::22)
- by AS5PR04MB9729.eurprd04.prod.outlook.com (2603:10a6:20b:650::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.28; Wed, 17 Jan
- 2024 12:31:33 +0000
-Received: from AM6PR04MB5333.eurprd04.prod.outlook.com
- ([fe80::4758:835a:b14a:ce80]) by AM6PR04MB5333.eurprd04.prod.outlook.com
- ([fe80::4758:835a:b14a:ce80%5]) with mapi id 15.20.7181.022; Wed, 17 Jan 2024
- 12:31:33 +0000
-Date: Wed, 17 Jan 2024 14:31:29 +0200
-From: Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
-To: Philipp Stanner <pstanner@redhat.com>
-Cc: Lucas Stach <l.stach@pengutronix.de>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>, dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] drm/imx/dcss: have all init functions use devres
-Message-ID: <20240117123129.nympgjpx7645eua5@fsr-ub1664-121.ea.freescale.net>
-References: <20240111101346.15193-2-pstanner@redhat.com>
- <20240111101346.15193-4-pstanner@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240111101346.15193-4-pstanner@redhat.com>
-X-ClientProxiedBy: AM0PR04CA0015.eurprd04.prod.outlook.com
- (2603:10a6:208:122::28) To AM6PR04MB5333.eurprd04.prod.outlook.com
- (2603:10a6:209:4a::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 836E36FBD;
+	Wed, 17 Jan 2024 12:32:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705494767; cv=none; b=l083+iwGzOK9uNqZIXu1u5siLwFVpodWuzAO1TApPFjcM3YpjTGPD4Oz2iweryeyZa+UDRA0ldhHCKMkCKvG7k5lXFGWkZW623TfIxNgTGdVelUWJn4cGi6VazHHDuRYqNIBzlzdTaXThfwcz1owAu4DCfiJoAw6NMNqaL8W1Jk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705494767; c=relaxed/simple;
+	bh=kFseNNDDFXsTkLVOac7dLtXGTxxpxvq33vT+KrKhxBU=;
+	h=Received:DKIM-Signature:Message-ID:Subject:From:To:Cc:Date:
+	 In-Reply-To:References:Autocrypt:Content-Type:
+	 Content-Transfer-Encoding:User-Agent:MIME-Version; b=rWrevRXOd7amdwzrZuKQWRmvystB0ahqwxCYprFnPQfcyg35hkIoj1roLayAyogOeuh4L0e8MPBl7Hapz00BculEn/8TD8GotEFn4uZf4AwKgdcJ3HRXsh7te53Cavh4vw46MzxMEvJQlhED92GW0qqQpmR8Mo5paL3sdUF7Si8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=klqpyPhl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43B46C433F1;
+	Wed, 17 Jan 2024 12:32:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705494767;
+	bh=kFseNNDDFXsTkLVOac7dLtXGTxxpxvq33vT+KrKhxBU=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=klqpyPhlpc3EbsETl7+4DmDsY5IUwFvg/MCE0QAKiPFSGVphBF6x+ocmb8std1NGg
+	 mJtOUmw/Q+GJEHIht8i9KVfGSS6McelzW81m7s/PzMaah8ogJxoxkEd2ONThn7JshL
+	 6If9uvE7jDOldvJdaDDsk7/VnVfw5+BkyJ12YUHHfdB0SZ8jzIXyF4uNYAKUuiq7hx
+	 /diwSKYW7NDxbazw70yhFYJ7LH/foBIXe3QR73imvcW78Q+NFLLb5Kr9Tf5W7hsRw7
+	 JSi03apwvJMaATEXJGjec0pnwtGwRmmKrkTGDu3JKKGdz9VSjgj5M5a8gTqVpfKY/z
+	 H2VuPyOTrHePA==
+Message-ID: <7e1026b829cff2e59bc7edfe29faea5572c841ea.camel@kernel.org>
+Subject: Re: [PATCH 11/20] filelock: convert the IS_* macros to take
+ file_lock_core
+From: Jeff Layton <jlayton@kernel.org>
+To: NeilBrown <neilb@suse.de>
+Cc: Christian Brauner <brauner@kernel.org>, Alexander Viro
+ <viro@zeniv.linux.org.uk>, Eric Van Hensbergen <ericvh@kernel.org>, 
+ Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet
+ <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>,
+ David Howells <dhowells@redhat.com>, Marc Dionne
+ <marc.dionne@auristor.com>, Xiubo Li <xiubli@redhat.com>, Ilya Dryomov
+ <idryomov@gmail.com>, Alexander Aring <aahringo@redhat.com>, David Teigland
+ <teigland@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>, Andreas
+ Gruenbacher <agruenba@redhat.com>, Trond Myklebust
+ <trond.myklebust@hammerspace.com>,  Anna Schumaker <anna@kernel.org>, Chuck
+ Lever <chuck.lever@oracle.com>, Olga Kornievskaia <kolga@netapp.com>, Dai
+ Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,  Jan Kara
+ <jack@suse.cz>, Mark Fasheh <mark@fasheh.com>, Joel Becker
+ <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, Steve French
+ <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>, Ronnie Sahlberg
+ <lsahlber@redhat.com>, Shyam Prasad N <sprasad@microsoft.com>, Namjae Jeon
+ <linkinjeon@kernel.org>, Sergey Senozhatsky <senozhatsky@chromium.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+ linux-kernel@vger.kernel.org, v9fs@lists.linux.dev, 
+ linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+ gfs2@lists.linux.dev,  linux-fsdevel@vger.kernel.org,
+ linux-nfs@vger.kernel.org,  ocfs2-devel@lists.linux.dev,
+ linux-cifs@vger.kernel.org,  samba-technical@lists.samba.org,
+ linux-trace-kernel@vger.kernel.org
+Date: Wed, 17 Jan 2024 07:32:42 -0500
+In-Reply-To: <170544341684.23031.11038222640477022046@noble.neil.brown.name>
+References: <20240116-flsplit-v1-0-c9d0f4370a5d@kernel.org>
+	, <20240116-flsplit-v1-11-c9d0f4370a5d@kernel.org>
+	 <170544341684.23031.11038222640477022046@noble.neil.brown.name>
+Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
+ keydata=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
+	kZWuOsJdJQdmwlWC5L5ln9xgfr/4mOY38B0U=
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB5333:EE_|AS5PR04MB9729:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4a084bb8-8f0a-447a-7cbb-08dc17583d0b
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	bkJn6d95qTwXZxRU6YtU3RQ9RGtDJ94KppTPg2zYYEbMmeP01//S8xM5yJFFDlNdMX9eTu3lwApvy/ciPdAghi2fl1DuXnlZyXptgiyJWZB6de0TRVv6RtMaKQO5y2Zjpb6NvUNNuSwweWJr3jNyx8Ce4WKZh2gWL4hTDpWlAk3AsloziA83Nb3bW5T343UT4J4TBJFoYP3eXtZ6JGa/EjyqmYZangds4t1/528B2XGXEmmIaKIcwdeF0zmV8L52lx97vNxAt3HuV1ZDjXG2b6W4bdLD8j9nek+CyjGpnq43uoRX8s7MnmVghSSPii/mbxBVnwDCTOpju0n7vulovW7zu7uc6U5urUv19BRy7F7/ZgJjtnjs5ugB0+w0Xg2/JkKwrOXlvrIpGqIkkg7Novklxct1yFEpcltBGXqeQ4dGBOGMAmwGFx10wb8RJucSIlLJgSCUOjLkYPRjIcCiof5Xw5E6qPmsh37rOeOwwRQ6xLkD65eAD7FMixfQEYYBPwQZN153gEUcsrsvnau4ihQ2X2Gjql4n0Za1mBYg6HNnd1B5eimdpRGsdgJiELan
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5333.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(136003)(396003)(346002)(376002)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(86362001)(6506007)(6666004)(478600001)(6512007)(9686003)(1076003)(26005)(38100700002)(4326008)(7416002)(2906002)(41300700001)(44832011)(83380400001)(5660300002)(30864003)(8936002)(6486002)(8676002)(54906003)(66476007)(66556008)(66946007)(6916009)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?1CSjCIaCmIJuW2zisYnB8JTaLtVYQ5A0V+OvOUZSKu+5wOIhMJPBTraFtrmp?=
- =?us-ascii?Q?0KYW016d++nDMz0kVtWMx3AdOtaM3ndBp2JNy1jcXJTRRDvS7iU/hlfj++7e?=
- =?us-ascii?Q?E4bA+uJmsrx1HFeJXdsuoPSxRLEtJkVNfhaUk2z85QBy03RnB2YEOg6K1uR6?=
- =?us-ascii?Q?4FeySNUbT0kntYi4ZTlk2z9V8ez4BB9Rq6kMmZe/eCimIUQCFvSuZOPqSgCY?=
- =?us-ascii?Q?au/gvc0Gz9vfeDUtRMsJiRmtf6P01dWXGB7xMumCAvdCYUvh6TRFrDj8dLjR?=
- =?us-ascii?Q?7tnoaKyr23eOUzl1mc7XSSbbXR4iCCZKvndKF1ZwioJYNiDGl6PSBpjmP0rV?=
- =?us-ascii?Q?8/ZcWOFqIo3oJERoyH4pYBF8FRF1eJzhWO+6P87mMeuUUFe+UpQf7hHtujaB?=
- =?us-ascii?Q?ASpNKPvupzL6jsEKsdaLnCAkTum5s/F0Kk16tmkTFbIvfjSkPboU+8eVTgXK?=
- =?us-ascii?Q?hBckYg9W4y0YdpkwydZh/hFRcpShCIOip0Io9uSp7OEy+eHT2QDhS97Bq8x7?=
- =?us-ascii?Q?DSb4TKAsZQEY2RooWYOFwJP9L39RMDrIIjkvycYBVzCLjh2lrH8E9JfHPdtM?=
- =?us-ascii?Q?fdbYoOAs3copMWUbcG/u3aWHYyTuApmu82tZU19TlLpK3nme+4n0SYZzgFG7?=
- =?us-ascii?Q?X51XhdobnhfYMzdOEx9vvRwBZLOWf471/upJPJuASdINt/VIc85sDEcY035w?=
- =?us-ascii?Q?H9QNWWrFCfXfYU0IthDBnANpNhAgIJhuh+KdbHFUwrLt52dpRXlJtd9m3dkm?=
- =?us-ascii?Q?roz2mf2gDFQOCTk4mT1Cd/nBGhkMqR09fCaI9ZCuB68X2SWO/ErdrvM9qq5t?=
- =?us-ascii?Q?md+5hcsV0pvMCd4M7Do+0TblDnOFyLYIxLhOSQE7D2iE5bO6ArWlC/IR4KS2?=
- =?us-ascii?Q?mK9MnHZSiffkxbzelfOFpUqy2ujRm+w50Mcox05tc7Ly9tmR7e0N/hYHG/5b?=
- =?us-ascii?Q?YcxB8QAYm0T+BHme5PO957khvAE4z8weFmK8/yQ63syjlFv3OtFihOeGyr+z?=
- =?us-ascii?Q?JfnU9B8mOXoYeT1x1wpmCiRjiFi4mj3lZAfqDu5aZq2m9EB4GPIlZh6/g4fy?=
- =?us-ascii?Q?Pus4EGGy2pOmcrMFI7aanDFaTOBmoUWiqevu87cEM/teyiqS2zGSvXwTY8lZ?=
- =?us-ascii?Q?/i3TY0bkDUN4J7jQGogEP0TVCUrVUfFa7qBIDlSi4v7a55+KnH4DUaomjkGm?=
- =?us-ascii?Q?hlfOZagLJ2dxZ9QixuDyHqWZI+SsfqBBkz1NImaQYLsD/gBCwEQ5VI6vVs3w?=
- =?us-ascii?Q?tfdYoKdZ7kxoaYkX/n+L3IatwelAaUWv6opXLMpPZgUmMiV72S+cntviXbND?=
- =?us-ascii?Q?RJ35PTQX9Fub7N6Za7nAhBtAEEwTE7LVqX/BqChm7TB60gXKPDa4LFrOuUHH?=
- =?us-ascii?Q?zOmHn/+LaiKUOz4xn77gKPxtzvINdQQuOk0Q0fzWPg6U8GKltFTqWr0Cl5f0?=
- =?us-ascii?Q?s9JJY+b1vpCMw7s6j+xecUQUI5uMuLNr9WvV2YmauVAUeiteDihbsQwvlFH7?=
- =?us-ascii?Q?iaNEb6YCudIzbzDoSwcXsCRz8xXilIaRYwkd/EoZlbBmeRYQQnuR1aPB50Ad?=
- =?us-ascii?Q?9fwoANLf41DBis6nWvcOzch0VAVn7cV6D10YilnevUYJSFhsydW3Wj57OHs+?=
- =?us-ascii?Q?oA=3D=3D?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a084bb8-8f0a-447a-7cbb-08dc17583d0b
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB5333.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2024 12:31:33.0313
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2OzavjIYHBZqDJqTkUeQF/g8Dwj/KYuYyoa6Ghemm3UYxaKMd/QwKn955HTUSnFIX9oX/DXaKlOOAoG9w+PBvA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS5PR04MB9729
 
-Hi Philipp,
+On Wed, 2024-01-17 at 09:16 +1100, NeilBrown wrote:
+> On Wed, 17 Jan 2024, Jeff Layton wrote:
+> > I couldn't get them to work properly as macros, so convert them
+> > to static inlines instead (which is probably better for the type safety
+> > anyway).
+> >=20
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> >  fs/locks.c | 46 +++++++++++++++++++++++++++++++++-------------
+> >  1 file changed, 33 insertions(+), 13 deletions(-)
+> >=20
+> > diff --git a/fs/locks.c b/fs/locks.c
+> > index 770aaa5809ba..eddf4d767d5d 100644
+> > --- a/fs/locks.c
+> > +++ b/fs/locks.c
+> > @@ -70,10 +70,26 @@
+> > =20
+> >  #include <linux/uaccess.h>
+> > =20
+> > -#define IS_POSIX(fl)	(fl->fl_core.fl_flags & FL_POSIX)
+> Used 3 times... once as
+> 	if (IS_POSIX(blocker) && !IS_OFDLCK(blocker))
+> Can an IS_POSIX lock also be IS_OFDLCK ??
+>=20
 
-Several minor comments below.
+Yes. They conflict with one another so they're both considered POSIX
+locks.
 
-On Thu, Jan 11, 2024 at 11:13:47AM +0100, Philipp Stanner wrote:
-> dcss currently allocates and ioremaps quite a few resources in its probe
-> function's call graph. Devres now provides convenient functions which
-> perform the same task but do the cleanup automatically.
-> 
-> Port all memory allocations and ioremap() calls to the devres
-> counterparts.
-> 
-> Signed-off-by: Philipp Stanner <pstanner@redhat.com>
-> ---
->  drivers/gpu/drm/imx/dcss/dcss-blkctl.c | 14 +++-----------
->  drivers/gpu/drm/imx/dcss/dcss-ctxld.c  | 15 ++++-----------
->  drivers/gpu/drm/imx/dcss/dcss-dev.c    | 12 ++----------
->  drivers/gpu/drm/imx/dcss/dcss-dev.h    |  1 -
->  drivers/gpu/drm/imx/dcss/dcss-dpr.c    | 25 ++++++-------------------
->  drivers/gpu/drm/imx/dcss/dcss-drv.c    | 12 +++---------
->  drivers/gpu/drm/imx/dcss/dcss-dtg.c    | 23 ++++-------------------
->  drivers/gpu/drm/imx/dcss/dcss-scaler.c | 24 +++++-------------------
->  drivers/gpu/drm/imx/dcss/dcss-ss.c     | 11 +++--------
->  9 files changed, 30 insertions(+), 107 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/imx/dcss/dcss-blkctl.c b/drivers/gpu/drm/imx/dcss/dcss-blkctl.c
-> index c9b54bb2692d..58e12ec65f80 100644
-> --- a/drivers/gpu/drm/imx/dcss/dcss-blkctl.c
-> +++ b/drivers/gpu/drm/imx/dcss/dcss-blkctl.c
-> @@ -41,15 +41,15 @@ void dcss_blkctl_cfg(struct dcss_blkctl *blkctl)
->  int dcss_blkctl_init(struct dcss_dev *dcss, unsigned long blkctl_base)
->  {
->  	struct dcss_blkctl *blkctl;
-> +	struct device *dev = dcss->dev;
->  
-> -	blkctl = kzalloc(sizeof(*blkctl), GFP_KERNEL);
-> +	blkctl = devm_kzalloc(dev, sizeof(*blkctl), GFP_KERNEL);
->  	if (!blkctl)
->  		return -ENOMEM;
->  
-> -	blkctl->base_reg = ioremap(blkctl_base, SZ_4K);
-> +	blkctl->base_reg = devm_ioremap(dev, blkctl_base, SZ_4K);
->  	if (!blkctl->base_reg) {
->  		dev_err(dcss->dev, "unable to remap BLK CTRL base\n");
-> -		kfree(blkctl);
->  		return -ENOMEM;
->  	}
->  
-> @@ -60,11 +60,3 @@ int dcss_blkctl_init(struct dcss_dev *dcss, unsigned long blkctl_base)
->  
->  	return 0;
->  }
-> -
-> -void dcss_blkctl_exit(struct dcss_blkctl *blkctl)
-> -{
-> -	if (blkctl->base_reg)
-> -		iounmap(blkctl->base_reg);
-> -
-> -	kfree(blkctl);
-> -}
-> diff --git a/drivers/gpu/drm/imx/dcss/dcss-ctxld.c b/drivers/gpu/drm/imx/dcss/dcss-ctxld.c
-> index 3a84cb3209c4..444511d0f382 100644
-> --- a/drivers/gpu/drm/imx/dcss/dcss-ctxld.c
-> +++ b/drivers/gpu/drm/imx/dcss/dcss-ctxld.c
-> @@ -199,10 +199,11 @@ static int dcss_ctxld_alloc_ctx(struct dcss_ctxld *ctxld)
->  
->  int dcss_ctxld_init(struct dcss_dev *dcss, unsigned long ctxld_base)
->  {
-> +	struct device *dev = dcss->dev;
->  	struct dcss_ctxld *ctxld;
->  	int ret;
->  
-> -	ctxld = kzalloc(sizeof(*ctxld), GFP_KERNEL);
-> +	ctxld = devm_kzalloc(dev, sizeof(*ctxld), GFP_KERNEL);
->  	if (!ctxld)
->  		return -ENOMEM;
->  
-> @@ -217,7 +218,7 @@ int dcss_ctxld_init(struct dcss_dev *dcss, unsigned long ctxld_base)
->  		goto err;
->  	}
->  
-> -	ctxld->ctxld_reg = ioremap(ctxld_base, SZ_4K);
-> +	ctxld->ctxld_reg = devm_ioremap(dev, ctxld_base, SZ_4K);
->  	if (!ctxld->ctxld_reg) {
->  		dev_err(dcss->dev, "ctxld: unable to remap ctxld base\n");
->  		ret = -ENOMEM;
-> @@ -226,18 +227,14 @@ int dcss_ctxld_init(struct dcss_dev *dcss, unsigned long ctxld_base)
->  
->  	ret = dcss_ctxld_irq_config(ctxld, to_platform_device(dcss->dev));
->  	if (ret)
-> -		goto err_irq;
-> +		goto err;
->  
->  	dcss_ctxld_hw_cfg(ctxld);
->  
->  	return 0;
->  
-> -err_irq:
-> -	iounmap(ctxld->ctxld_reg);
-> -
->  err:
->  	dcss_ctxld_free_ctx(ctxld);
-> -	kfree(ctxld);
->  
->  	return ret;
->  }
-> @@ -246,11 +243,7 @@ void dcss_ctxld_exit(struct dcss_ctxld *ctxld)
->  {
->  	free_irq(ctxld->irq, ctxld);
->  
-> -	if (ctxld->ctxld_reg)
-> -		iounmap(ctxld->ctxld_reg);
-> -
->  	dcss_ctxld_free_ctx(ctxld);
-> -	kfree(ctxld);
->  }
->  
->  static int dcss_ctxld_enable_locked(struct dcss_ctxld *ctxld)
-> diff --git a/drivers/gpu/drm/imx/dcss/dcss-dev.c b/drivers/gpu/drm/imx/dcss/dcss-dev.c
-> index d448bf1c205e..597e9b7bd4bf 100644
-> --- a/drivers/gpu/drm/imx/dcss/dcss-dev.c
-> +++ b/drivers/gpu/drm/imx/dcss/dcss-dev.c
-> @@ -109,8 +109,6 @@ static int dcss_submodules_init(struct dcss_dev *dcss)
->  	dcss_ctxld_exit(dcss->ctxld);
->  
->  ctxld_err:
-> -	dcss_blkctl_exit(dcss->blkctl);
-> -
->  	dcss_clocks_disable(dcss);
->  
->  	return ret;
-> @@ -124,7 +122,6 @@ static void dcss_submodules_stop(struct dcss_dev *dcss)
->  	dcss_ss_exit(dcss->ss);
->  	dcss_dtg_exit(dcss->dtg);
->  	dcss_ctxld_exit(dcss->ctxld);
-> -	dcss_blkctl_exit(dcss->blkctl);
->  	dcss_clocks_disable(dcss);
->  }
->  
-> @@ -190,7 +187,7 @@ struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
->  		return ERR_PTR(-EBUSY);
->  	}
->  
-> -	dcss = kzalloc(sizeof(*dcss), GFP_KERNEL);
-> +	dcss = devm_kzalloc(dev, sizeof(*dcss), GFP_KERNEL);
->  	if (!dcss)
->  		return ERR_PTR(-ENOMEM);
->  
-> @@ -201,7 +198,7 @@ struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
->  	ret = dcss_clks_init(dcss);
->  	if (ret) {
->  		dev_err(dev, "clocks initialization failed\n");
-> -		goto err;
-> +		return ERR_PTR(ret);
->  	}
->  
->  	dcss->of_port = of_graph_get_port_by_id(dev->of_node, 0);
-> @@ -233,9 +230,6 @@ struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
->  clks_err:
->  	dcss_clks_release(dcss);
->  
-> -err:
-> -	kfree(dcss);
-> -
->  	return ERR_PTR(ret);
->  }
->  
-> @@ -253,8 +247,6 @@ void dcss_dev_destroy(struct dcss_dev *dcss)
->  	dcss_submodules_stop(dcss);
->  
->  	dcss_clks_release(dcss);
-> -
-> -	kfree(dcss);
->  }
->  
->  static int dcss_dev_suspend(struct device *dev)
-> diff --git a/drivers/gpu/drm/imx/dcss/dcss-dev.h b/drivers/gpu/drm/imx/dcss/dcss-dev.h
-> index f27b87c09599..b032e873d227 100644
-> --- a/drivers/gpu/drm/imx/dcss/dcss-dev.h
-> +++ b/drivers/gpu/drm/imx/dcss/dcss-dev.h
-> @@ -104,7 +104,6 @@ extern const struct dev_pm_ops dcss_dev_pm_ops;
->  /* BLKCTL */
->  int dcss_blkctl_init(struct dcss_dev *dcss, unsigned long blkctl_base);
->  void dcss_blkctl_cfg(struct dcss_blkctl *blkctl);
-> -void dcss_blkctl_exit(struct dcss_blkctl *blkctl);
->  
->  /* CTXLD */
->  int dcss_ctxld_init(struct dcss_dev *dcss, unsigned long ctxld_base);
-> diff --git a/drivers/gpu/drm/imx/dcss/dcss-dpr.c b/drivers/gpu/drm/imx/dcss/dcss-dpr.c
-> index df9dab949bf2..d6b2ad5e6977 100644
-> --- a/drivers/gpu/drm/imx/dcss/dcss-dpr.c
-> +++ b/drivers/gpu/drm/imx/dcss/dcss-dpr.c
-> @@ -125,7 +125,8 @@ static void dcss_dpr_write(struct dcss_dpr_ch *ch, u32 val, u32 ofs)
->  	dcss_ctxld_write(dpr->ctxld, dpr->ctx_id, val, ch->base_ofs + ofs);
->  }
->  
-> -static int dcss_dpr_ch_init_all(struct dcss_dpr *dpr, unsigned long dpr_base)
-> +static int dcss_dpr_ch_init_all(struct device *dev, struct dcss_dpr *dpr,
-> +		unsigned long dpr_base)
->  {
->  	struct dcss_dpr_ch *ch;
->  	int i;
-> @@ -135,7 +136,7 @@ static int dcss_dpr_ch_init_all(struct dcss_dpr *dpr, unsigned long dpr_base)
->  
->  		ch->base_ofs = dpr_base + i * 0x1000;
->  
-> -		ch->base_reg = ioremap(ch->base_ofs, SZ_4K);
-> +		ch->base_reg = devm_ioremap(dev, ch->base_ofs, SZ_4K);
->  		if (!ch->base_reg) {
->  			dev_err(dpr->dev, "dpr: unable to remap ch %d base\n",
->  				i);
-> @@ -154,8 +155,9 @@ static int dcss_dpr_ch_init_all(struct dcss_dpr *dpr, unsigned long dpr_base)
->  int dcss_dpr_init(struct dcss_dev *dcss, unsigned long dpr_base)
->  {
->  	struct dcss_dpr *dpr;
-> +	struct device *dev = dcss->dev;
->  
-> -	dpr = kzalloc(sizeof(*dpr), GFP_KERNEL);
-> +	dpr = devm_kzalloc(dev, sizeof(*dpr), GFP_KERNEL);
->  	if (!dpr)
->  		return -ENOMEM;
->  
-> @@ -164,18 +166,8 @@ int dcss_dpr_init(struct dcss_dev *dcss, unsigned long dpr_base)
->  	dpr->ctxld = dcss->ctxld;
->  	dpr->ctx_id = CTX_SB_HP;
->  
-> -	if (dcss_dpr_ch_init_all(dpr, dpr_base)) {
-> -		int i;
-> -
-> -		for (i = 0; i < 3; i++) {
-> -			if (dpr->ch[i].base_reg)
-> -				iounmap(dpr->ch[i].base_reg);
-> -		}
-> -
-> -		kfree(dpr);
-> -
-> +	if (dcss_dpr_ch_init_all(dev, dpr, dpr_base))
->  		return -ENOMEM;
-> -	}
->  
->  	return 0;
->  }
-> @@ -189,12 +181,7 @@ void dcss_dpr_exit(struct dcss_dpr *dpr)
->  		struct dcss_dpr_ch *ch = &dpr->ch[ch_no];
->  
->  		dcss_writel(0, ch->base_reg + DCSS_DPR_SYSTEM_CTRL0);
-> -
-> -		if (ch->base_reg)
-> -			iounmap(ch->base_reg);
->  	}
-> -
-> -	kfree(dpr);
->  }
->  
->  static u32 dcss_dpr_x_pix_wide_adjust(struct dcss_dpr_ch *ch, u32 pix_wide,
-> diff --git a/drivers/gpu/drm/imx/dcss/dcss-drv.c b/drivers/gpu/drm/imx/dcss/dcss-drv.c
-> index b61cec0cc79d..bd3f9d58042c 100644
-> --- a/drivers/gpu/drm/imx/dcss/dcss-drv.c
-> +++ b/drivers/gpu/drm/imx/dcss/dcss-drv.c
-> @@ -51,15 +51,13 @@ static int dcss_drv_platform_probe(struct platform_device *pdev)
->  
->  	of_node_put(remote);
->  
-> -	mdrv = kzalloc(sizeof(*mdrv), GFP_KERNEL);
-> +	mdrv = devm_kzalloc(dev, sizeof(*mdrv), GFP_KERNEL);
->  	if (!mdrv)
->  		return -ENOMEM;
->  
->  	mdrv->dcss = dcss_dev_create(dev, hdmi_output);
-> -	if (IS_ERR(mdrv->dcss)) {
-> -		err = PTR_ERR(mdrv->dcss);
-> -		goto err;
-> -	}
-> +	if (IS_ERR(mdrv->dcss))
-> +		return PTR_ERR(mdrv->dcss);
->  
->  	dev_set_drvdata(dev, mdrv);
->  
-> @@ -75,8 +73,6 @@ static int dcss_drv_platform_probe(struct platform_device *pdev)
->  dcss_shutoff:
->  	dcss_dev_destroy(mdrv->dcss);
->  
-> -err:
-> -	kfree(mdrv);
->  	return err;
->  }
->  
-> @@ -87,8 +83,6 @@ static int dcss_drv_platform_remove(struct platform_device *pdev)
+>=20
+> > -#define IS_FLOCK(fl)	(fl->fl_core.fl_flags & FL_FLOCK)
+> Used once.
+>=20
+> > -#define IS_LEASE(fl)	(fl->fl_core.fl_flags & (FL_LEASE|FL_DELEG|FL_LAY=
+OUT))
+> Used twice.  Either "IS_LEASE" approves things that aren't leases, or
+> FL_LEASE is not set on all leases.... Names could be improved.
+>=20
 
-I think you are on a slightly old kernel version. The remove() callback
-in the latest kernels returns void. Hence the patch does not apply
-cleanly.
+Good point.
 
->  	dcss_kms_detach(mdrv->kms);
->  	dcss_dev_destroy(mdrv->dcss);
->  
-> -	kfree(mdrv);
-> -
->  	return 0;
->  }
->  
-> diff --git a/drivers/gpu/drm/imx/dcss/dcss-dtg.c b/drivers/gpu/drm/imx/dcss/dcss-dtg.c
-> index 30de00540f63..5c0f697587e6 100644
-> --- a/drivers/gpu/drm/imx/dcss/dcss-dtg.c
-> +++ b/drivers/gpu/drm/imx/dcss/dcss-dtg.c
-> @@ -151,8 +151,9 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
->  {
->  	int ret = 0;
->  	struct dcss_dtg *dtg;
-> +	struct device *dev = dcss->dev;
->  
-> -	dtg = kzalloc(sizeof(*dtg), GFP_KERNEL);
-> +	dtg = devm_kzalloc(dev, sizeof(*dtg), GFP_KERNEL);
->  	if (!dtg)
->  		return -ENOMEM;
->  
-> @@ -160,11 +161,10 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
->  	dtg->dev = dcss->dev;
->  	dtg->ctxld = dcss->ctxld;
->  
-> -	dtg->base_reg = ioremap(dtg_base, SZ_4K);
-> +	dtg->base_reg = devm_ioremap(dev, dtg_base, SZ_4K);
->  	if (!dtg->base_reg) {
->  		dev_err(dcss->dev, "dtg: unable to remap dtg base\n");
-> -		ret = -ENOMEM;
-> -		goto err_ioremap;
-> +		return -ENOMEM;
->  	}
->  
->  	dtg->base_ofs = dtg_base;
-> @@ -176,16 +176,6 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
->  		((dtg->alpha << DEFAULT_FG_ALPHA_POS) & DEFAULT_FG_ALPHA_MASK);
->  
->  	ret = dcss_dtg_irq_config(dtg, to_platform_device(dcss->dev));
-> -	if (ret)
-> -		goto err_irq;
-> -
-> -	return 0;
-> -
-> -err_irq:
-> -	iounmap(dtg->base_reg);
-> -
-> -err_ioremap:
-> -	kfree(dtg);
->  
->  	return ret;
->  }
-> @@ -193,11 +183,6 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
->  void dcss_dtg_exit(struct dcss_dtg *dtg)
->  {
->  	free_irq(dtg->ctxld_kick_irq, dtg);
-> -
-> -	if (dtg->base_reg)
-> -		iounmap(dtg->base_reg);
-> -
-> -	kfree(dtg);
->  }
->  
->  void dcss_dtg_sync_set(struct dcss_dtg *dtg, struct videomode *vm)
-> diff --git a/drivers/gpu/drm/imx/dcss/dcss-scaler.c b/drivers/gpu/drm/imx/dcss/dcss-scaler.c
-> index 47852b9dd5ea..ed4d1eb9442e 100644
-> --- a/drivers/gpu/drm/imx/dcss/dcss-scaler.c
-> +++ b/drivers/gpu/drm/imx/dcss/dcss-scaler.c
-> @@ -291,7 +291,7 @@ static void dcss_scaler_write(struct dcss_scaler_ch *ch, u32 val, u32 ofs)
->  	dcss_ctxld_write(scl->ctxld, scl->ctx_id, val, ch->base_ofs + ofs);
->  }
->  
-> -static int dcss_scaler_ch_init_all(struct dcss_scaler *scl,
-> +static int dcss_scaler_ch_init_all(struct device *dev, struct dcss_scaler *scl,
+> > -#define IS_OFDLCK(fl)	(fl->fl_core.fl_flags & FL_OFDLCK)
+>=20
+> used 4 times - a clear winner :-)
+>=20
+> If it would me, I would simply discard these macros and open-code the
+> tests.  I don't think IS_FLOCK() is easier to read for someone who knows
+> the code, and I think IS_LEASE() is actually harder to read for someone
+> who doesn't know the code, as that it does it not really obvious.
+>=20
+> But this is just a suggestion, I won't push it.
+>=20
+> Thanks,
+> NeilBrown
+>=20
+>=20
 
-No need to add 'dev' as an argument to this function. You can use
-'scl->dev'.
+It's a good suggestion, and I considered doing this when I converted
+over the macros to inlines. I may go ahead and make this change for v2.
 
->  				   unsigned long scaler_base)
->  {
->  	struct dcss_scaler_ch *ch;
-> @@ -302,7 +302,7 @@ static int dcss_scaler_ch_init_all(struct dcss_scaler *scl,
->  
->  		ch->base_ofs = scaler_base + i * 0x400;
->  
-> -		ch->base_reg = ioremap(ch->base_ofs, SZ_4K);
-> +		ch->base_reg = devm_ioremap(dev, ch->base_ofs, SZ_4K);
->  		if (!ch->base_reg) {
->  			dev_err(scl->dev, "scaler: unable to remap ch base\n");
->  			return -ENOMEM;
-> @@ -317,8 +317,9 @@ static int dcss_scaler_ch_init_all(struct dcss_scaler *scl,
->  int dcss_scaler_init(struct dcss_dev *dcss, unsigned long scaler_base)
->  {
->  	struct dcss_scaler *scaler;
-> +	struct device *dev = dcss->dev;
+> > +static inline bool IS_POSIX(struct file_lock_core *flc)
+> > +{
+> > +	return flc->fl_flags & FL_POSIX;
+> > +}
+> > +
+> > +static inline bool IS_FLOCK(struct file_lock_core *flc)
+> > +{
+> > +	return flc->fl_flags & FL_FLOCK;
+> > +}
+> > +
+> > +static inline bool IS_OFDLCK(struct file_lock_core *flc)
+> > +{
+> > +	return flc->fl_flags & FL_OFDLCK;
+> > +}
+> > +
+> > +static inline bool IS_LEASE(struct file_lock_core *flc)
+> > +{
+> > +	return flc->fl_flags & (FL_LEASE|FL_DELEG|FL_LAYOUT);
+> > +}
+> > +
+> >  #define IS_REMOTELCK(fl)	(fl->fl_core.fl_pid <=3D 0)
+> > =20
+> >  static bool lease_breaking(struct file_lock *fl)
+> > @@ -761,6 +777,7 @@ static void __locks_insert_block(struct file_lock *=
+blocker,
+> >  					       struct file_lock *))
+> >  {
+> >  	struct file_lock *fl;
+> > +	struct file_lock_core *bflc;
+> >  	BUG_ON(!list_empty(&waiter->fl_core.fl_blocked_member));
+> > =20
+> >  new_blocker:
+> > @@ -773,7 +790,9 @@ static void __locks_insert_block(struct file_lock *=
+blocker,
+> >  	waiter->fl_core.fl_blocker =3D blocker;
+> >  	list_add_tail(&waiter->fl_core.fl_blocked_member,
+> >  		      &blocker->fl_core.fl_blocked_requests);
+> > -	if (IS_POSIX(blocker) && !IS_OFDLCK(blocker))
+> > +
+> > +	bflc =3D &blocker->fl_core;
+> > +	if (IS_POSIX(bflc) && !IS_OFDLCK(bflc))
+> >  		locks_insert_global_blocked(&waiter->fl_core);
+> > =20
+> >  	/* The requests in waiter->fl_blocked are known to conflict with
+> > @@ -998,6 +1017,7 @@ static int posix_locks_deadlock(struct file_lock *=
+caller_fl,
+> >  				struct file_lock *block_fl)
+> >  {
+> >  	int i =3D 0;
+> > +	struct file_lock_core *flc =3D &caller_fl->fl_core;
+> > =20
+> >  	lockdep_assert_held(&blocked_lock_lock);
+> > =20
+> > @@ -1005,7 +1025,7 @@ static int posix_locks_deadlock(struct file_lock =
+*caller_fl,
+> >  	 * This deadlock detector can't reasonably detect deadlocks with
+> >  	 * FL_OFDLCK locks, since they aren't owned by a process, per-se.
+> >  	 */
+> > -	if (IS_OFDLCK(caller_fl))
+> > +	if (IS_OFDLCK(flc))
+> >  		return 0;
+> > =20
+> >  	while ((block_fl =3D what_owner_is_waiting_for(block_fl))) {
+> > @@ -2157,7 +2177,7 @@ static pid_t locks_translate_pid(struct file_lock=
+ *fl, struct pid_namespace *ns)
+> >  	pid_t vnr;
+> >  	struct pid *pid;
+> > =20
+> > -	if (IS_OFDLCK(fl))
+> > +	if (IS_OFDLCK(&fl->fl_core))
+> >  		return -1;
+> >  	if (IS_REMOTELCK(fl))
+> >  		return fl->fl_core.fl_pid;
+> > @@ -2721,19 +2741,19 @@ static void lock_get_status(struct seq_file *f,=
+ struct file_lock *fl,
+> >  	if (repeat)
+> >  		seq_printf(f, "%*s", repeat - 1 + (int)strlen(pfx), pfx);
+> > =20
+> > -	if (IS_POSIX(fl)) {
+> > +	if (IS_POSIX(&fl->fl_core)) {
+> >  		if (fl->fl_core.fl_flags & FL_ACCESS)
+> >  			seq_puts(f, "ACCESS");
+> > -		else if (IS_OFDLCK(fl))
+> > +		else if (IS_OFDLCK(&fl->fl_core))
+> >  			seq_puts(f, "OFDLCK");
+> >  		else
+> >  			seq_puts(f, "POSIX ");
+> > =20
+> >  		seq_printf(f, " %s ",
+> >  			     (inode =3D=3D NULL) ? "*NOINODE*" : "ADVISORY ");
+> > -	} else if (IS_FLOCK(fl)) {
+> > +	} else if (IS_FLOCK(&fl->fl_core)) {
+> >  		seq_puts(f, "FLOCK  ADVISORY  ");
+> > -	} else if (IS_LEASE(fl)) {
+> > +	} else if (IS_LEASE(&fl->fl_core)) {
+> >  		if (fl->fl_core.fl_flags & FL_DELEG)
+> >  			seq_puts(f, "DELEG  ");
+> >  		else
+> > @@ -2748,7 +2768,7 @@ static void lock_get_status(struct seq_file *f, s=
+truct file_lock *fl,
+> >  	} else {
+> >  		seq_puts(f, "UNKNOWN UNKNOWN  ");
+> >  	}
+> > -	type =3D IS_LEASE(fl) ? target_leasetype(fl) : fl->fl_core.fl_type;
+> > +	type =3D IS_LEASE(&fl->fl_core) ? target_leasetype(fl) : fl->fl_core.=
+fl_type;
+> > =20
+> >  	seq_printf(f, "%s ", (type =3D=3D F_WRLCK) ? "WRITE" :
+> >  			     (type =3D=3D F_RDLCK) ? "READ" : "UNLCK");
+> > @@ -2760,7 +2780,7 @@ static void lock_get_status(struct seq_file *f, s=
+truct file_lock *fl,
+> >  	} else {
+> >  		seq_printf(f, "%d <none>:0 ", fl_pid);
+> >  	}
+> > -	if (IS_POSIX(fl)) {
+> > +	if (IS_POSIX(&fl->fl_core)) {
+> >  		if (fl->fl_end =3D=3D OFFSET_MAX)
+> >  			seq_printf(f, "%Ld EOF\n", fl->fl_start);
+> >  		else
+> >=20
+> > --=20
+> > 2.43.0
+> >=20
+> >=20
+>=20
 
-Do you really need this extra variable? Why not use dcss->dev directly?
-It's only used in a couple of places in this function.
-
->  
-> -	scaler = kzalloc(sizeof(*scaler), GFP_KERNEL);
-> +	scaler = devm_kzalloc(dev, sizeof(*scaler), GFP_KERNEL);
->  	if (!scaler)
->  		return -ENOMEM;
->  
-> @@ -327,18 +328,8 @@ int dcss_scaler_init(struct dcss_dev *dcss, unsigned long scaler_base)
->  	scaler->ctxld = dcss->ctxld;
->  	scaler->ctx_id = CTX_SB_HP;
->  
-> -	if (dcss_scaler_ch_init_all(scaler, scaler_base)) {
-> -		int i;
-> -
-> -		for (i = 0; i < 3; i++) {
-> -			if (scaler->ch[i].base_reg)
-> -				iounmap(scaler->ch[i].base_reg);
-> -		}
-> -
-> -		kfree(scaler);
-> -
-> +	if (dcss_scaler_ch_init_all(dev, scaler, scaler_base))
-
-As I mentioned above, dev is already part of dcss_scaler structure.
-
-Thanks,
-Laurentiu
-
->  		return -ENOMEM;
-> -	}
->  
->  	return 0;
->  }
-> @@ -351,12 +342,7 @@ void dcss_scaler_exit(struct dcss_scaler *scl)
->  		struct dcss_scaler_ch *ch = &scl->ch[ch_no];
->  
->  		dcss_writel(0, ch->base_reg + DCSS_SCALER_CTRL);
-> -
-> -		if (ch->base_reg)
-> -			iounmap(ch->base_reg);
->  	}
-> -
-> -	kfree(scl);
->  }
->  
->  void dcss_scaler_ch_enable(struct dcss_scaler *scl, int ch_num, bool en)
-> diff --git a/drivers/gpu/drm/imx/dcss/dcss-ss.c b/drivers/gpu/drm/imx/dcss/dcss-ss.c
-> index 8ddf08da911b..0a8320adc302 100644
-> --- a/drivers/gpu/drm/imx/dcss/dcss-ss.c
-> +++ b/drivers/gpu/drm/imx/dcss/dcss-ss.c
-> @@ -82,8 +82,9 @@ static void dcss_ss_write(struct dcss_ss *ss, u32 val, u32 ofs)
->  int dcss_ss_init(struct dcss_dev *dcss, unsigned long ss_base)
->  {
->  	struct dcss_ss *ss;
-> +	struct device *dev = dcss->dev;
->  
-> -	ss = kzalloc(sizeof(*ss), GFP_KERNEL);
-> +	ss = devm_kzalloc(dev, sizeof(*ss), GFP_KERNEL);
->  	if (!ss)
->  		return -ENOMEM;
->  
-> @@ -91,10 +92,9 @@ int dcss_ss_init(struct dcss_dev *dcss, unsigned long ss_base)
->  	ss->dev = dcss->dev;
->  	ss->ctxld = dcss->ctxld;
->  
-> -	ss->base_reg = ioremap(ss_base, SZ_4K);
-> +	ss->base_reg = devm_ioremap(dev, ss_base, SZ_4K);
->  	if (!ss->base_reg) {
->  		dev_err(dcss->dev, "ss: unable to remap ss base\n");
-> -		kfree(ss);
->  		return -ENOMEM;
->  	}
->  
-> @@ -108,11 +108,6 @@ void dcss_ss_exit(struct dcss_ss *ss)
->  {
->  	/* stop SS */
->  	dcss_writel(0, ss->base_reg + DCSS_SS_SYS_CTRL);
-> -
-> -	if (ss->base_reg)
-> -		iounmap(ss->base_reg);
-> -
-> -	kfree(ss);
->  }
->  
->  void dcss_ss_subsam_set(struct dcss_ss *ss)
-> -- 
-> 2.43.0
-> 
+--=20
+Jeff Layton <jlayton@kernel.org>
 
