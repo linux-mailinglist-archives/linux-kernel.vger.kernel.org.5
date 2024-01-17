@@ -1,136 +1,144 @@
-Return-Path: <linux-kernel+bounces-29276-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29277-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7145B830C00
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:35:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6DB8830C05
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:35:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13843B24933
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:35:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C51B21C215D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:35:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F3D42263A;
-	Wed, 17 Jan 2024 17:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D55E2263E;
+	Wed, 17 Jan 2024 17:35:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="HaTqRKA2"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="MUzzw116"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 380C3225DE
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 17:35:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F80A22615;
+	Wed, 17 Jan 2024 17:35:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705512908; cv=none; b=n5MQszpbXh96dZEM4ARCR27HZTsE9NuxCDsfGc6dXHIhtfpDVJMNUO11siUW6IYam1ITAATayMlb1q45QIdG4iTJoCfctFP9txSLa7oQkcNg1A1L+n8r12x14hJpdWps/CrQ7v6NcI5vy8/nG7oeu3D0O5X31igPHW7erXFG1FY=
+	t=1705512930; cv=none; b=ioGrsxZXDo0lCVxwDjvHIQb6UaCFFfEaPzxdgocozA/VV2BJ2g6cz+R//uNYscZKiFnK045seMZ9bvOJeGupRQiuLTEBWjiWw+HzuM5fizwI+0eyhkrGkG7Zc8EpmQ0qml5/V0PnxUCg2b3ZLKPHU44MZhGz9obqG5l7SEKEdvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705512908; c=relaxed/simple;
-	bh=lqzoX95WO4GKaKEgXr0lsnk6tNZCK832/4Z65BP28p8=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Received:X-Received:MIME-Version:References:In-Reply-To:From:Date:
-	 X-Gmail-Original-Message-ID:Message-ID:Subject:To:Cc:Content-Type:
-	 Content-Transfer-Encoding; b=sPWcDIXNc31udeG3ZHu8K++NRb7wrTrkN1rbH5yT3vlPTMpyoNkzQm/vLaXWjVWyBO6gqaxUzRUADb/HFCjYKNzu7ceQsFNyQGGEkrGDFc4+IgBs69OpIa4jiC4RzVdST9LDO86XpXyk6kEoeF0NdvkfMZ9U6eJ1ugiKmzi7izE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=HaTqRKA2; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cd0f4f306fso132456861fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 09:35:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705512903; x=1706117703; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oMltNFrkMZ6CS156UQXDFciqpUkUbjTQoqkBzQba0M8=;
-        b=HaTqRKA28+83QzABgB00yoVIT1m32GdiER+zkxo0umHyY2RRi/4WduoqyzHh791TxM
-         NCCO+U69FzHdAahX6KLIDw9sQ1BGmRtpzTH+y6LOAqiIEsBbhN5l8Joqi5mADyOu5oYu
-         dby6NKK41v05fSskBddxmrVzA5/s2lGPQ+dDY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705512903; x=1706117703;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oMltNFrkMZ6CS156UQXDFciqpUkUbjTQoqkBzQba0M8=;
-        b=F0M9iPF0UAOk+YTiFWVbBeqR8zcT887Yp+QdkYsg1uYJH+LXYwJamiLz0gie+JqCkq
-         ExsBWNuPLPGg5NEQPim3U4FvhPI1Kgcd59DeTL5fRoT8g31/FCcXx0+kcn/e+oCTbdQO
-         om1CQGwRZxl6yBUXIRkg3v55FJUV3MoFveC1/jHnBPkU/yJeFWkklcOwU5lNluePV6ak
-         jkQkC/1YqMCm2Z3pdcg6O/lIW3qfsR0Lns4RUNbDuo4MiQqTCXXeG5i2bsw87Y6sBqWF
-         L/wN+FenjbLkkY/iBjJ0YKscBql9MRylsXf2y4ubAVsy58lUdxuZ+n4jsmg/yb/lbcsk
-         Nimw==
-X-Gm-Message-State: AOJu0Ywl5aKB1o2CafFadbn936EOUGJxqjpRcjwTrTute9ktO7OdG8M+
-	zxyuLkYQs4+PUgKenVWK0CXbqGjfXTE+FAjDmd4BrubrxMUW
-X-Google-Smtp-Source: AGHT+IFHsDrxqmDIT1lgrS3hMguY6+NhHYycuV4WLDZktRoZ4fxlttmhKfb/zGeJd6mvlR/iXNIyUg==
-X-Received: by 2002:a2e:3c1a:0:b0:2cd:494b:b4aa with SMTP id j26-20020a2e3c1a000000b002cd494bb4aamr4494552lja.30.1705512902810;
-        Wed, 17 Jan 2024 09:35:02 -0800 (PST)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id e5-20020a2e8185000000b002ccbc09230csm1982648ljg.97.2024.01.17.09.35.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jan 2024 09:35:01 -0800 (PST)
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50eb9d41d57so3269e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 09:35:01 -0800 (PST)
-X-Received: by 2002:a05:6512:1318:b0:50e:84b4:2bdc with SMTP id
- x24-20020a056512131800b0050e84b42bdcmr140208lfu.2.1705512900966; Wed, 17 Jan
- 2024 09:35:00 -0800 (PST)
+	s=arc-20240116; t=1705512930; c=relaxed/simple;
+	bh=/1Kqm2lSPbaEzEFnLl/baHfDDbMZGtr3vQCqFOfX6Lk=;
+	h=Received:DKIM-Signature:Received:Received:Received:From:To:CC:
+	 Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding:Content-Type:X-Originating-IP:
+	 X-ClientProxiedBy:X-QCInternal:X-Proofpoint-Virus-Version:
+	 X-Proofpoint-GUID:X-Proofpoint-ORIG-GUID:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details; b=R8z+5ZCuESTTJ4E33pBUaLPUE4LCRn/qoKzPJFPfPTbR1+5/UaDzq6yMWEVZHJJgZQJsSC8O38ZtC54zQccznwncTNnfBLtVM8WY0HWhGhAGw/kQ77X/jgpXxmhfV2NVUB8jAoGWN7n+g7mjpw9s+/G7HkmNm8Yd7Ma7QKSTIy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=MUzzw116; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40HEr64l013711;
+	Wed, 17 Jan 2024 17:35:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=9uvD2xA
+	mOI88ZwP7f+C9FKSk+aNZxYI49Ff+IV//g3o=; b=MUzzw116AaxCgqMRd82oM3r
+	ZjV9UvRv4T4aU8rApzadY8gsylByEWj/uWEpFRADjNQu/MHSyeDSFAK3+9l7Skq7
+	ZDB4KRQn+cDVOAwQDwaKvF9SD/bZdB7Cd6mwzxDDAKA8C4yQ4a6HPzy+H3ZvRsVZ
+	j7FJVJI67YGqaLUfzcwev5HCfKP2q8q/I4YgURwiIank5Q5DKi2hdGxbMBUkzgZ0
+	pqbo5Ao7cEiUj6w8GIA1jSZHqRfGTZoY6/hLjOlv5ZJQ9FxzV3Lhz2AyO2IPg+sz
+	2L42COCZU/oJp6nTaigLefXjflwAYVPiktVZ7mBcqDP30+webFbwEOLfiVP59mQ=
+	=
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vp8gwhhs3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 17:35:20 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40HHZJv5005468
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 17:35:19 GMT
+Received: from hu-sibis-blr.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 17 Jan 2024 09:35:15 -0800
+From: Sibi Sankar <quic_sibis@quicinc.com>
+To: <sudeep.holla@arm.com>, <cristian.marussi@arm.com>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <jassisinghbrar@gmail.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <quic_rgottimu@quicinc.com>,
+        <quic_kshivnan@quicinc.com>, <quic_sibis@quicinc.com>,
+        <conor+dt@kernel.org>
+Subject: [RFC 0/7] firmware: arm_scmi: Qualcomm Vendor Protocol
+Date: Wed, 17 Jan 2024 23:04:51 +0530
+Message-ID: <20240117173458.2312669-1-quic_sibis@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240109120528.1292601-1-treapking@chromium.org> <CAD=FV=WjjH3BCDf-OnX=zdk201uMu+YJvKVBhVmMa4GqNinacw@mail.gmail.com>
-In-Reply-To: <CAD=FV=WjjH3BCDf-OnX=zdk201uMu+YJvKVBhVmMa4GqNinacw@mail.gmail.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Wed, 17 Jan 2024 09:34:44 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=Va-67xojWbm-8MBCxaDG19gQhmNr3V_sBwYUkDkny9GQ@mail.gmail.com>
-Message-ID: <CAD=FV=Va-67xojWbm-8MBCxaDG19gQhmNr3V_sBwYUkDkny9GQ@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/bridge: parade-ps8640: Ensure bridge is suspended
- in .post_disable()
-To: Pin-yen Lin <treapking@chromium.org>
-Cc: Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	dri-devel@lists.freedesktop.org, Sean Paul <seanpaul@chromium.org>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: dEjj_PROBZyYwT8VWUwqWpOgsz2Mdbso
+X-Proofpoint-ORIG-GUID: dEjj_PROBZyYwT8VWUwqWpOgsz2Mdbso
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-17_10,2024-01-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ mlxscore=0 clxscore=1011 priorityscore=1501 mlxlogscore=690 bulkscore=0
+ lowpriorityscore=0 malwarescore=0 phishscore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2401170127
 
-Hi,
+This patch series introduces the Qualcomm SCMI Vendor protocol and adds a
+client driver that interacts with the vendor protocol and passes on the
+required tuneables to start various features running on the SCMI controller.
 
-On Tue, Jan 9, 2024 at 8:52=E2=80=AFAM Doug Anderson <dianders@chromium.org=
-> wrote:
->
-> Hi,
->
-> On Tue, Jan 9, 2024 at 4:05=E2=80=AFAM Pin-yen Lin <treapking@chromium.or=
-g> wrote:
-> >
-> > The ps8640 bridge seems to expect everything to be power cycled at the
-> > disable process, but sometimes ps8640_aux_transfer() holds the runtime
-> > PM reference and prevents the bridge from suspend.
-> >
-> > Prevent that by introducing a mutex lock between ps8640_aux_transfer()
-> > and .post_disable() to make sure the bridge is really powered off.
-> >
-> > Fixes: 826cff3f7ebb ("drm/bridge: parade-ps8640: Enable runtime power m=
-anagement")
-> > Signed-off-by: Pin-yen Lin <treapking@chromium.org>
-> > ---
-> >
-> > Changes in v2:
-> > - Use mutex instead of the completion and autosuspend hack
-> >
-> >  drivers/gpu/drm/bridge/parade-ps8640.c | 16 ++++++++++++++++
-> >  1 file changed, 16 insertions(+)
->
-> This looks OK to me now.
->
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
->
-> I'll let it stew on the mailing list for ~1 week and then land it in
-> drm-misc-fixes unless there are additional comments.
+The series specifically enables (LLCC/DDR) dvfs on X1E80100 SoC by passing
+several tuneables including the IPM ratio (Instructions Per Miss),
+cpu frequency to memory/bus frequency tables, CPU mapping to the vendor
+protocol which in turn will enable the memory latency governor running
+on the SCMI controller.
 
-Pushed to drm-misc-fixes:
+Depends on:
+limits changed notification v2: https://patchwork.kernel.org/project/linux-arm-msm/cover/20240117104116.2055349-1-quic_sibis@quicinc.com/
+Turbo support: https://patchwork.kernel.org/project/linux-arm-msm/cover/20240117110443.2060704-1-quic_sibis@quicinc.com/
 
-26db46bc9c67 drm/bridge: parade-ps8640: Ensure bridge is suspended in
-post_disable()
+Shivnandan Kumar (2):
+  firmware: arm_scmi: Add QCOM vendor protocol
+  soc: qcom: Utilize qcom scmi vendor protocol for bus dvfs
+
+Sibi Sankar (5):
+  dt-bindings: mailbox: qcom: Add CPUCP mailbox controller bindings
+  mailbox: Add support for QTI CPUCP mailbox controller
+  arm64: dts: qcom: x1e80100: Add cpucp mailbox and sram nodes
+  arm64: dts: qcom: x1e80100: Enable cpufreq
+  arm64: dts: qcom: x1e80100: Enable LLCC/DDR dvfs
+
+ .../bindings/mailbox/qcom,cpucp-mbox.yaml     |  51 ++
+ arch/arm64/boot/dts/qcom/x1e80100.dtsi        | 101 ++++
+ drivers/firmware/arm_scmi/Kconfig             |  11 +
+ drivers/firmware/arm_scmi/Makefile            |   1 +
+ drivers/firmware/arm_scmi/qcom_scmi_vendor.c  | 160 ++++++
+ drivers/mailbox/Kconfig                       |   8 +
+ drivers/mailbox/Makefile                      |   2 +
+ drivers/mailbox/qcom-cpucp-mbox.c             | 265 ++++++++++
+ drivers/soc/qcom/Kconfig                      |  10 +
+ drivers/soc/qcom/Makefile                     |   1 +
+ drivers/soc/qcom/qcom_scmi_client.c           | 486 ++++++++++++++++++
+ include/linux/qcom_scmi_vendor.h              |  36 ++
+ 12 files changed, 1132 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mailbox/qcom,cpucp-mbox.yaml
+ create mode 100644 drivers/firmware/arm_scmi/qcom_scmi_vendor.c
+ create mode 100644 drivers/mailbox/qcom-cpucp-mbox.c
+ create mode 100644 drivers/soc/qcom/qcom_scmi_client.c
+ create mode 100644 include/linux/qcom_scmi_vendor.h
+
+-- 
+2.34.1
+
 
