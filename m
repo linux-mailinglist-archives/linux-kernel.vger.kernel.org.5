@@ -1,84 +1,121 @@
-Return-Path: <linux-kernel+bounces-28876-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28C51830419
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:03:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FE9583041C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:04:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A5B71C24052
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:03:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05C3D281BDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:04:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7627C1DA4C;
-	Wed, 17 Jan 2024 11:02:52 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7508315AE0;
-	Wed, 17 Jan 2024 11:02:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A8BE1CD3C;
+	Wed, 17 Jan 2024 11:04:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b="BduyVabK"
+Received: from mail.avm.de (mail.avm.de [212.42.244.94])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2658C1D521;
+	Wed, 17 Jan 2024 11:04:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.42.244.94
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705489372; cv=none; b=iptyWCEcrwHLnBVFn5W0vWI+kjb38UjdB5ibECslheBL/2YGw8eSu82lTz5qyK66gFKtEz4ndagekpx0ivVnDZS23yRtd9Li6JEmHL6ZlAIZKxBWcLSfFYisz+pc897ddT9LujP7uM1tybPglhraMBkmlW/rZy53cAURYw22cxQ=
+	t=1705489476; cv=none; b=u5oPqsumE46/rfF7NHbiRGcKzHGqVSK4r/GaUWmr5lullvRvoHIMUHBKWlJ9sI6HZxs0TB2ABLBG+RJ9RiC+Qd/XniL6kbO69WHJQDRHVGdC/SKnsEuxvhCAZI0L4WzPKpF+wQvJAYj/C9kjw0TuaTXvCDb/Qx0bHlcS9CGTO/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705489372; c=relaxed/simple;
-	bh=qBhxjWTxSMHyxAL2dgWVe/jEhmG0UZFBOtjJ1wFLvDw=;
-	h=Received:Received:Message-ID:Date:MIME-Version:User-Agent:Subject:
-	 To:Cc:References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=eU0mWC7BQyv+VnZLSNcZC2aarhejSI120jPLwOw/v2q5GpwSEitIdIqiFNG5G5hZj+PUwis9Xe7PIKirvbB6JNeo4VJS+Flrqe3y+frxUS6scI8yMtVmSmSuBEeIaJlefh+/SSLdZL2jAnahEshATdO8Cd7GGAUifrel37PJqnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BEA3E11FB;
-	Wed, 17 Jan 2024 03:03:32 -0800 (PST)
-Received: from [10.57.78.6] (unknown [10.57.78.6])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 921E53F5A1;
-	Wed, 17 Jan 2024 03:02:44 -0800 (PST)
-Message-ID: <fa850f73-c83d-47a1-8a0c-558ad532d0d3@arm.com>
-Date: Wed, 17 Jan 2024 11:02:43 +0000
+	s=arc-20240116; t=1705489476; c=relaxed/simple;
+	bh=HrPZYQqbExd63Zfudzoo3ljRavdvSOtyLIQ4Bi8P7Tg=;
+	h=DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To:X-purgate-ID:X-purgate-type:X-purgate-size:
+	 X-purgate-Ad:X-purgate:X-purgate; b=mKPEyIGNcyBCeNDBgSVQrSEu6Ru5wMGoAQ+aQU9iMKmgbM4QdEaZlGgc8mo0yEVZr4rdUFOPCNE1chj/H4SGb/AO7mgKEhHO4LfXZDapID/z86MKxLgRRx73dG7s4tGYDPo3EznFRUG9K5zCv55bm/PNqnZUNrSTfd2r+ZP/oBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de; spf=pass smtp.mailfrom=avm.de; dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b=BduyVabK; arc=none smtp.client-ip=212.42.244.94
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=avm.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
+	t=1705489464; bh=HrPZYQqbExd63Zfudzoo3ljRavdvSOtyLIQ4Bi8P7Tg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BduyVabKK+1Mp1b/en1S1GIVo95XSaKeg9iUV5j3/Qsz3V59bntrKtrf9sWLTgsF+
+	 pJoWe3w/5uMJd4+YAdKrVMuis7UA3GfUwDKAngDQ3QZuJpSsPGO/u2Z/7HQeUJhJhS
+	 jza/09Ri+UW9Bs9/mMCgaA2w2TCm/qTYA6csiq+E=
+Received: from mail-auth.avm.de (unknown [IPv6:2001:bf0:244:244::71])
+	by mail.avm.de (Postfix) with ESMTPS;
+	Wed, 17 Jan 2024 12:04:23 +0100 (CET)
+Date: Wed, 17 Jan 2024 12:04:22 +0100
+From: Nicolas Schier <n.schier@avm.de>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nicolas Schier <nicolas@fjasle.eu>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] kbuild: deb-pkg: show verbose log for direct
+ package builds
+Message-ID: <Zae0NpsCckChoCzW@debian-BULLSEYE-live-builder-AMD64>
+References: <20240113104339.16131-1-masahiroy@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 01/23] PM: EM: Add missing newline for the message log
-To: Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
- linux-pm@vger.kernel.org, rafael@kernel.org
-Cc: dietmar.eggemann@arm.com, rui.zhang@intel.com,
- amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
- daniel.lezcano@linaro.org, viresh.kumar@linaro.org, len.brown@intel.com,
- pavel@ucw.cz, mhiramat@kernel.org, qyousef@layalina.io, wvw@google.com,
- xuewen.yan94@gmail.com
-References: <20240117095714.1524808-1-lukasz.luba@arm.com>
- <20240117095714.1524808-2-lukasz.luba@arm.com>
-Content-Language: en-US
-From: Hongyan Xia <hongyan.xia2@arm.com>
-In-Reply-To: <20240117095714.1524808-2-lukasz.luba@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240113104339.16131-1-masahiroy@kernel.org>
+X-purgate-ID: 149429::1705489463-5855CEB6-63E38E50/0/0
+X-purgate-type: clean
+X-purgate-size: 2019
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
+X-purgate: clean
 
-On 17/01/2024 09:56, Lukasz Luba wrote:
-> Fix missing newline for the string long in the error code path.
+On Sat, Jan 13, 2024 at 07:43:36PM +0900, Masahiro Yamada wrote:
+> When the Debian package build is initiated by Kbuild ('make deb-pkg'
+> or 'make bindeb-pkg'), the log messages are displayed in the short
+> form, which is the Kbuild default.
 > 
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> Otherwise, let's show verbose messages (unless the 'terse' tag is set
+> in DEB_BUILD_OPTION), as suggested by Debian Policy: "The package build
+> should be as verbose as reasonably possible, except where the terse tag
+> is included in DEB_BUILD_OPTIONS." [1]
+> 
+> This is what the Debian kernel also does. [2]
+> 
+> [1]: https://www.debian.org/doc/debian-policy/ch-source.html#main-building-script-debian-rules
+> [2]: https://salsa.debian.org/kernel-team/linux/-/blob/debian/6.7-1_exp1/debian/rules.real#L36
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 > ---
->   kernel/power/energy_model.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
-> index 7b44f5b89fa1..8b9dd4a39f63 100644
-> --- a/kernel/power/energy_model.c
-> +++ b/kernel/power/energy_model.c
-> @@ -250,7 +250,7 @@ static void em_cpufreq_update_efficiencies(struct device *dev)
->   
->   	policy = cpufreq_cpu_get(cpumask_first(em_span_cpus(pd)));
->   	if (!policy) {
-> -		dev_warn(dev, "EM: Access to CPUFreq policy failed");
-> +		dev_warn(dev, "EM: Access to CPUFreq policy failed\n");
->   		return;
->   	}
->   
+> Changes in v2:
+>   - New patch
+> 
+>  scripts/package/debian/rules | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/scripts/package/debian/rules b/scripts/package/debian/rules
+> index 098307780062..697fbfa7595f 100755
+> --- a/scripts/package/debian/rules
+> +++ b/scripts/package/debian/rules
+> @@ -11,6 +11,14 @@ ifneq (,$(filter-out parallel=1,$(filter parallel=%,$(DEB_BUILD_OPTIONS))))
+>      MAKEFLAGS += -j$(NUMJOBS)
+>  endif
+>  
+> +# When KBUILD_VERBOSE is undefined (presumably you are directly working with
+> +# the debianized tree), show verbose logs unless DEB_BUILD_OPTION=terse is set.
+> +ifeq ($(origin KBUILD_VERBOSE),undefined)
+> +    ifeq (,$(filter terse,$(DEB_BUILD_OPTIONS)))
+> +        export KBUILD_VERBOSE := 1
+> +    endif
+> +endif
+> +
+>  revision = $(lastword $(subst -, ,$(shell dpkg-parsechangelog -S Version)))
+>  CROSS_COMPILE ?= $(filter-out $(DEB_BUILD_GNU_TYPE)-, $(DEB_HOST_GNU_TYPE)-)
+>  make-opts = ARCH=$(ARCH) KERNELRELEASE=$(KERNELRELEASE) KBUILD_BUILD_VERSION=$(revision) $(addprefix CROSS_COMPILE=,$(CROSS_COMPILE))
+> -- 
+> 2.40.1
+> 
 
-Reviewed-by: Hongyan Xia <hongyan.xia2@arm.com>
+thanks!
+
+Reviewed-by: Nicolas Schier <n.schier@avm.de>
 
