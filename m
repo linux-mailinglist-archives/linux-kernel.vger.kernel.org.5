@@ -1,193 +1,135 @@
-Return-Path: <linux-kernel+bounces-29367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31A82830D50
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:35:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1532830D55
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:39:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32B5C1C21349
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:35:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D04DB2441F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:39:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC72D249F0;
-	Wed, 17 Jan 2024 19:35:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D38F249F3;
+	Wed, 17 Jan 2024 19:39:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b="KC9fgn+y"
-Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="hzC6adFO"
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C90E1249E0;
-	Wed, 17 Jan 2024 19:35:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.147.86
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 218231E877
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:39:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705520144; cv=none; b=XULUPQEipaGUOt537HzxU7X99a3tv0UN0d9UJ7ZG1RBj33mIDumX0hX3PQSmQkx2UgI4pvhSrzFyiM8y+hH9kSTdxyoVvVdXSjyPfQqmsAJOvDFIqZJ6oympEMh5BrdIV3Z7Rr6dKbk7CzlmihV6LySbrbcKPncipUebwxPYWYs=
+	t=1705520349; cv=none; b=kO0B+80JVqpHKGINO5Nq92m6wLSOn7yQwzBOL5rxAuqSEam9QqVEiMXhTRWB6lB2xBniBIsxVYx0NVWwEM0lsvTULy/OjgJZ5MIMPO1aTlZpuRA1DUDm9Ny/15C4jLcyUIAVFzoimQisHYiRzZKLju2WOSTkam7LjJ7bGkU+YNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705520144; c=relaxed/simple;
-	bh=8O6ZpuJktfG7PP+qpivWRnoX8s1X5AAm7DEcq/yXN3A=;
-	h=Received:DKIM-Signature:Received:Received:Received:Date:From:To:
-	 Subject:Message-ID:MIME-Version:Content-Type:Content-Disposition:
-	 X-Proofpoint-GUID:X-Proofpoint-ORIG-GUID:X-HPE-SCL:
-	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details; b=tEQ5IOY+OM9917u+zTHuJVB/TgrDNq/uGRWgf7irMcLezIiDXstWV/arW85srGVoRwYNqfd40L0B3P1yYyVu/BGX5j3MyWcHQfi2xD0O/dKiYeOTlEaNpYWxFMn4/27uoLKErv6f7SCFTEIG0FDrcNJq4fvvJAKsdXiv8NHxRl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com; spf=pass smtp.mailfrom=hpe.com; dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b=KC9fgn+y; arc=none smtp.client-ip=148.163.147.86
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.com
-Received: from pps.filterd (m0150242.ppops.net [127.0.0.1])
-	by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40HH0uDr020284;
-	Wed, 17 Jan 2024 19:35:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to :
- subject : message-id : mime-version : content-type; s=pps0720;
- bh=5NEj7FBKtmppNrd48cW0AoeV3qh+diVhVYhI4Gm/3pA=;
- b=KC9fgn+yBrtzXiYmu2c4kPQavGuUpPlwe1whyYZX0+gVFHcWseD7Eny7wbDBvHgXPXPV
- +3/IjU4YGo6i/S4o5mzQBPRdijP34GgNYRuTxfMysAJh6U0O66osoNF7VGFJt+INMY3k
- F8d71PxjYedjO67tJwXSF8J5Q0DfiA61vIPj6r6NDoZ3Ne3HDymb5HRsjFmKwmjf6EMv
- MhAIHZn4xmKlNFhQrbCdxoQHOd+PB2wpuGI8antb5EM3hBcTMqmSEGSOQXO4SXBoS+t5
- 6Z59sbhMYUk5rX0IRglIIsnhXCrBJfSHMJ1CtQxTJhwpvNINlmWJzSnphBcc1MCdX22u Yw== 
-Received: from p1lg14880.it.hpe.com ([16.230.97.201])
-	by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3vphs7agry-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 19:35:03 +0000
-Received: from p1lg14886.dc01.its.hpecorp.net (unknown [10.119.18.237])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by p1lg14880.it.hpe.com (Postfix) with ESMTPS id 37D908005DA;
-	Wed, 17 Jan 2024 19:35:02 +0000 (UTC)
-Received: from hpe.com (unknown [16.231.227.39])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by p1lg14886.dc01.its.hpecorp.net (Postfix) with ESMTPS id A33308005FE;
-	Wed, 17 Jan 2024 19:34:53 +0000 (UTC)
-Date: Wed, 17 Jan 2024 13:34:51 -0600
-From: Dimitri Sivanich <sivanich@hpe.com>
-To: David Woodhouse <dwmw2@infradead.org>, Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, Steve Wahl <steve.wahl@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: DMAR interrupt reservations exceed available resources on 32s Intel
- SPR
-Message-ID: <Zagr2/NXow4Ptv22@hpe.com>
+	s=arc-20240116; t=1705520349; c=relaxed/simple;
+	bh=jrjn3NC6NorunAtxuwbpds3Mq7BV0m/tHvQeaRNhu14=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=Fsih3i9bDXlC7MDrEZIqb/4EWCQ0xW/MmuLSIRFMroifDpRPElZVm2wyLBcpGSSZC6NDNEFjpV1dV/za7EQGNqn+scpxVjNInuNt67kkZd0ruQnl+3ca2Y3E/ij8U+zNi+6LAB2KeShw00ha6ND/IZATnHPMkcgnjHbVFl9GOoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=hzC6adFO; arc=none smtp.client-ip=209.85.210.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6dddcf525f0so4017a34.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:39:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1705520347; x=1706125147; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D6jKjCd8cxNvuyTvHeVd3uoTbVR5rb6TebJjLMiKkIw=;
+        b=hzC6adFOW26xtIv6lP8nODmMJFuen1RuNpycs9BQyFsoqvBxCCcWXpxgIuVDpBIHmr
+         ImIWpgUGZ15r2nvq9wlocAa5PXGkSYzTcMlX7kAma1QC6A5WxWVSn1LfOKq4PLYFnGbO
+         Znm5cOY/NsqKrn62yM/ZZ7xa0PGSRv6Sak/m0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705520347; x=1706125147;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D6jKjCd8cxNvuyTvHeVd3uoTbVR5rb6TebJjLMiKkIw=;
+        b=uQ/XNn0Z7DqhYHVZGcm7fRBBjC6QzjLoWSFntyNqK/k3wSk3HiKNSKdWrRN2bSO5j9
+         w2Eg6dLHcoblNhGJ8Kuu0DsTzULDLcEaAC0n7xxPFlOg7oXjlJwjVbik0ueqhhuMyNUO
+         eLAY7JUlPPUMyRX49kKOHDlMmMGv2Ow0Hk0EgiO36YE5KBdKSZu/mgi9/13gadgqd3LB
+         fm9yW1zRWO47VlX6mmARbSmm1wh4gXNgUW/LhO8FT9WS7oX/WyOOZdMXb0mrGrDo00t8
+         fMQ6dJ0jAg92UqwInysPXYBp7YWXqX/OfyFaw5hLKmqF51t5iFJwcSDIOVR9dBlfYdGM
+         bYLA==
+X-Gm-Message-State: AOJu0YyZOqqS/qj5fYv8luRbCDp8LdRCPbMh21vf2OppYoH8gVO+uqaL
+	z52DD49L+2Z+XBxZkVbvuJ8yMJJcwJHSWZAcYrCqB/6++ydq
+X-Google-Smtp-Source: AGHT+IGH9stHtp4vFELGxHWV6sZJ5VLgX2UrJI9VZ6g5lxacI7FFdFqxVb2ZT4UmOppnd/g7oFSkYQYXplKjNDdRHqY=
+X-Received: by 2002:a9d:63ce:0:b0:6db:ff8b:724e with SMTP id
+ e14-20020a9d63ce000000b006dbff8b724emr548346otl.3.1705520347212; Wed, 17 Jan
+ 2024 11:39:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Proofpoint-GUID: O8L5LhUTcRVdzynEi5H33LOHC3iCxqM7
-X-Proofpoint-ORIG-GUID: O8L5LhUTcRVdzynEi5H33LOHC3iCxqM7
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-17_12,2024-01-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- mlxscore=0 impostorscore=0 lowpriorityscore=0 mlxlogscore=877 bulkscore=0
- priorityscore=1501 clxscore=1011 spamscore=0 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2401170142
+References: <20240117103502.1.Ib726a0184913925efc7e99c4d4fc801982e1bc24@changeid>
+In-Reply-To: <20240117103502.1.Ib726a0184913925efc7e99c4d4fc801982e1bc24@changeid>
+From: Hsin-Yi Wang <hsinyi@chromium.org>
+Date: Wed, 17 Jan 2024 11:38:41 -0800
+Message-ID: <CAJMQK-j_gEfZqWppG3oVNWBopH9uVK-NrzXvoSr=ijF2pMycDA@mail.gmail.com>
+Subject: Re: [PATCH] drm/bridge: parade-ps8640: Make sure we drop the AUX
+ mutex in the error case
+To: Douglas Anderson <dianders@chromium.org>
+Cc: dri-devel@lists.freedesktop.org, Andrzej Hajda <andrzej.hajda@intel.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Jonas Karlman <jonas@kwiboo.se>, 
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Pin-yen Lin <treapking@chromium.org>, 
+	Robert Foss <rfoss@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-We currently are running Sapphire Rapids systems with 32 sockets. We have
-noticed that on systems of this size we see the following warnings:
-    DMAR-IR: Enabled IRQ remapping in x2apic mode
-    Interrupt reservation exceeds available resources
-    DMAR: Can't request irq
-    DMAR: DRHD 97bfc000: failed to enable fault, interrupt, ret -28
+On Wed, Jan 17, 2024 at 10:35=E2=80=AFAM Douglas Anderson <dianders@chromiu=
+m.org> wrote:
+>
+> After commit 26db46bc9c67 ("drm/bridge: parade-ps8640: Ensure bridge
+> is suspended in .post_disable()"), if we hit the error case in
+> ps8640_aux_transfer() then we return without dropping the mutex. Fix
+> this oversight.
+>
+> Fixes: 26db46bc9c67 ("drm/bridge: parade-ps8640: Ensure bridge is suspend=
+ed in .post_disable()")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> Sorry for missing this in my review! :( Given that this is really
+> simple and I'd rather the buggy commit not be there for long, if I can
+> get a quick Reviewed-by tag on this patch I'll land it without the
+> typical stewing period.
+>
 
-There are 10 DMAR units per socket on these systems, so 320 DMAR units.  It
-appears that each is being allocated its own vector on the first cpu, as this
-happens prior to other cpus being started.  At the time that the DMAR vector
-allocations begin, cpu 0 has 186 vectors available (as does the global set),
-and that is the number of DMAR fault interrupts that show up as allocated
-(/proc/interrupts) after boot.
+Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
 
-As a simple experiment, I patched the kernel to only allocate node 0 DMAR fault
-interrupt vectors while only the boot cpu is running, then to allocate fault
-interrupt vectors for the rest of the DMAR units as cpus on their respective
-nodes are coming up.  With that change, all 320 interrupts were allocated, and
-the interrupt affinity was set to the first cpu on each DMAR's respective node.
-
-Does this seem like a sensible approach to fixing this, or is there another
-avenue that we should be looking at?
-
-For illustrative purposes, here's the patch for the experiment described above:
-
-Index: linux/drivers/iommu/intel/dmar.c
-===================================================================
---- linux.orig/drivers/iommu/intel/dmar.c
-+++ linux/drivers/iommu/intel/dmar.c
-@@ -2055,6 +2055,38 @@ int dmar_set_interrupt(struct intel_iomm
- 	return ret;
- }
- 
-+int __init enable_remaining_drhd_fault_handling(int node)
-+{
-+        struct dmar_drhd_unit *drhd;
-+        struct intel_iommu *iommu;
-+
-+        /*
-+         * Enable fault control interrupt.
-+         */
-+        for_each_iommu(iommu, drhd) {
-+                u32 fault_status;
-+                int ret;
-+                if (iommu->node != node)
-+                        continue;
-+                ret = dmar_set_interrupt(iommu);
-+
-+                if (ret) {
-+                        pr_err("DRHD %Lx: failed to enable fault, interrupt, ret %d\n",
-+                               (unsigned long long)drhd->reg_base_addr, ret);
-+                        return -1;
-+                }
-+
-+                /*
-+                 * Clear any previous faults.
-+                 */
-+                dmar_fault(iommu->irq, iommu);
-+                fault_status = readl(iommu->reg + DMAR_FSTS_REG);
-+                writel(fault_status, iommu->reg + DMAR_FSTS_REG);
-+        }
-+
-+        return 0;
-+}
-+
- int __init enable_drhd_fault_handling(void)
- {
- 	struct dmar_drhd_unit *drhd;
-@@ -2065,7 +2097,10 @@ int __init enable_drhd_fault_handling(vo
- 	 */
- 	for_each_iommu(iommu, drhd) {
- 		u32 fault_status;
--		int ret = dmar_set_interrupt(iommu);
-+		int ret;
-+		if (iommu->node != 0)
-+			continue;
-+		ret = dmar_set_interrupt(iommu);
- 
- 		if (ret) {
- 			pr_err("DRHD %Lx: failed to enable fault, interrupt, ret %d\n",
-Index: linux/arch/x86/kernel/smpboot.c
-===================================================================
---- linux.orig/arch/x86/kernel/smpboot.c
-+++ linux/arch/x86/kernel/smpboot.c
-@@ -210,6 +210,7 @@ static void smp_callin(void)
- 	cpumask_set_cpu(cpuid, cpu_callin_mask);
- }
- 
-+extern int __init enable_remaining_drhd_fault_handling(int cpu);
- static int cpu0_logical_apicid;
- static int enable_start_cpu0;
- /*
-@@ -263,6 +264,7 @@ static void notrace start_secondary(void
- 
- 	x86_cpuinit.setup_percpu_clockev();
- 
-+	enable_remaining_drhd_fault_handling(cpu_to_node(smp_processor_id()));
- 	wmb();
- 	cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
- }
+>  drivers/gpu/drm/bridge/parade-ps8640.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bri=
+dge/parade-ps8640.c
+> index 166bfc725ef4..14d4dcf239da 100644
+> --- a/drivers/gpu/drm/bridge/parade-ps8640.c
+> +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+> @@ -351,11 +351,13 @@ static ssize_t ps8640_aux_transfer(struct drm_dp_au=
+x *aux,
+>         ret =3D _ps8640_wait_hpd_asserted(ps_bridge, 200 * 1000);
+>         if (ret) {
+>                 pm_runtime_put_sync_suspend(dev);
+> -               return ret;
+> +               goto exit;
+>         }
+>         ret =3D ps8640_aux_transfer_msg(aux, msg);
+>         pm_runtime_mark_last_busy(dev);
+>         pm_runtime_put_autosuspend(dev);
+> +
+> +exit:
+>         mutex_unlock(&ps_bridge->aux_lock);
+>
+>         return ret;
+> --
+> 2.43.0.381.gb435a96ce8-goog
+>
 
