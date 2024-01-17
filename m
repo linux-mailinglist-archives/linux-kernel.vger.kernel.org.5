@@ -1,118 +1,123 @@
-Return-Path: <linux-kernel+bounces-29021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CCF283070F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:26:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64DE1830715
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:27:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D55F28676E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:26:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03B811F24A51
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:27:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5555D1F61F;
-	Wed, 17 Jan 2024 13:26:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFC191F5FD;
+	Wed, 17 Jan 2024 13:27:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GgKePF9Q"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BpX0ZGGL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5786F1EB51
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 13:26:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AE7914A87;
+	Wed, 17 Jan 2024 13:27:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705497972; cv=none; b=U8wFu+PMMDl8A3ivL51IJg2VkBYAJnbbXGN2tNpNFkobr/NJQMVdZ9jI18K8nmpQXOs5yZgFi7d5yH7wBQot962xnw5772APFg0bTW+40ap4Kdso28WaD4XMe/plyAVSJB9hsbF99UOpR3FV41SqZcmxAHSvSnqPTXdPqCbcIoA=
+	t=1705498050; cv=none; b=fgztqRvbPpA1E8hvITjggYZG9nFy1IKHDidP24GFZVwWkmASBuFnBvFXPhnTSvMtJ7hg6CAtQOuphx6qX3ZbVJHpF0e4m3ry0WtrbJiWROX/i6aVJEKut7Mo8n64jXyBCin6ZjXjdTSwApijHXf37t2yt5fc3vYY+0qHVUe9D7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705497972; c=relaxed/simple;
-	bh=OPOoP9UgIckMad4MC0xQT4ogrYoDI41gySdqC4ReyPA=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:
-	 Organization:From:In-Reply-To:References:To:cc:Subject:
-	 MIME-Version:Content-Type:Content-ID:Date:Message-ID:X-Scanned-By;
-	b=IRQhrlvjll8IeJjFS9WcSSB+3P0X9Fq/oMjbqHPTcIP4CUW4lFNV+09xpz174cw+sz/qfzj8tN8iDfmdauhmvNg+SMo4m3eJFUlTTJAPOthFOv8sca/Xq+FWxi1dubaCJYfH9F28VIm9wUtHrKLP6D980AF6ItQ/aGzabtU1KtU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GgKePF9Q; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705497970;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FsSzWO6NIq2VcxMsblj4BWBZVF2ZpmLB+3az7ONnZQM=;
-	b=GgKePF9QlpvrxiyCN+DVRC5N2CPIkK8gwD+XpsxSs/snfTZiCvmFqlaxIma3w1DXrKGwo3
-	WA6+eWh11DWqJPNuUQvtttnmN2q/JzpbKHQ5RbNWjR30UCcai+nlkyz+uzEgcRGvd0+OKH
-	PXen3MyhboRQbq8bz6xe4sUNc8Novc4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-328-Oe-laUu7NUWY9jmEaxHoOQ-1; Wed, 17 Jan 2024 08:26:06 -0500
-X-MC-Unique: Oe-laUu7NUWY9jmEaxHoOQ-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 63A7B867943;
-	Wed, 17 Jan 2024 13:26:02 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.67])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 63FC3492BC6;
-	Wed, 17 Jan 2024 13:25:55 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20240116-flsplit-v1-2-c9d0f4370a5d@kernel.org>
-References: <20240116-flsplit-v1-2-c9d0f4370a5d@kernel.org> <20240116-flsplit-v1-0-c9d0f4370a5d@kernel.org>
-To: Jeff Layton <jlayton@kernel.org>
-cc: Christian Brauner <brauner@kernel.org>,
-    Alexander Viro <viro@zeniv.linux.org.uk>,
-    Eric Van Hensbergen <ericvh@kernel.org>,
-    Latchesar Ionkov <lucho@ionkov.net>,
-    Dominique Martinet <asmadeus@codewreck.org>,
-    Christian Schoenebeck <linux_oss@crudebyte.com>,
-    David Howells <dhowells@redhat.com>,
-    Marc Dionne <marc.dionne@auristor.com>, Xiubo Li <xiubli@redhat.com>,
-    Ilya Dryomov <idryomov@gmail.com>,
-    Alexander Aring <aahringo@redhat.com>,
-    David Teigland <teigland@redhat.com>,
-    Miklos Szeredi <miklos@szeredi.hu>,
-    Andreas Gruenbacher <agruenba@redhat.com>,
-    Trond Myklebust <trond.myklebust@hammerspace.com>,
-    Anna Schumaker <anna@kernel.org>,
-    Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>,
-    Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>,
-    Tom Talpey <tom@talpey.com>, Jan Kara <jack@suse.cz>,
-    Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-    Joseph Qi <joseph.qi@linux.alibaba.com>,
-    Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>,
-    Ronnie Sahlberg <lsahlber@redhat.com>,
-    Shyam Prasad N <sprasad@microsoft.com>,
-    Namjae Jeon <linkinjeon@kernel.org>,
-    Sergey Senozhatsky <senozhatsky@chromium.org>,
-    Steven Rostedt <rostedt@goodmis.org>,
-    Masami Hiramatsu <mhiramat@kernel.org>,
-    Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-    linux-kernel@vger.kernel.org, v9fs@lists.linux.dev,
-    linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-    gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-    linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev,
-    linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-    linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/20] filelock: add coccinelle scripts to move fields to struct file_lock_core
+	s=arc-20240116; t=1705498050; c=relaxed/simple;
+	bh=tywzkYCatCjvmllWPiu8+4g6b7SfayHdRCj5tZxD2aY=;
+	h=Received:DKIM-Signature:From:Date:Subject:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:Message-Id:X-B4-Tracking:To:
+	 Cc:X-Mailer:X-Developer-Signature:X-Developer-Key; b=YU/T4yaRXbrGU3fR+vqf7meorafhrYvUiOS/weYvqGx3W29JPyyYxT6q+DegA2RoYlLW0qjhNK36Lix4NssOKerhhHOu6fUkNJte1YWS6Z/JBwv8dkIcsr61OMYw+feA6adKYYYlpfKsHzieP7mbJeen3BeRvnv9vlJ/YOJJj+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BpX0ZGGL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11054C433C7;
+	Wed, 17 Jan 2024 13:27:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705498049;
+	bh=tywzkYCatCjvmllWPiu8+4g6b7SfayHdRCj5tZxD2aY=;
+	h=From:Date:Subject:To:Cc:From;
+	b=BpX0ZGGLJIc2VX6MAPAWP7z8lbc2pUD9G3GIJvnD/QBB4AJhcD13u0IcVFtRRTs4o
+	 zbbWuwpm7ltx7aX6lqt2fzbRxn0H7X4U6av8iHKDGYe/2OViwBWXEJXP3QuBiLJGf3
+	 h+5suyjX+ZY4w1jyj06d4OQAv3NY1vXoHtx8IUCudYokO5SP/tbXculPc93dj/J3Xg
+	 Z9ntMDKR9BtBuRF4tbJZjQ+qjMSv9fb2Gb/PFLO+w8UctMuTB7kivYkDLVfZO7Vryt
+	 PaW+EmfdbUhc7iW65Izq9gp2izxQQkmjbZE125bGr+Bp1rJBtZWpzK78pCioxxffrl
+	 JAwGSTZkWHlWw==
+From: Benjamin Tissoires <bentiss@kernel.org>
+Date: Wed, 17 Jan 2024 14:27:15 +0100
+Subject: [PATCH] selftests/hid: wacom: fix confidence tests
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2782046.1705497954.1@warthog.procyon.org.uk>
-Date: Wed, 17 Jan 2024 13:25:54 +0000
-Message-ID: <2782047.1705497954@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240117-b4-wip-wacom-tests-fixes-v1-1-f317784f3c36@kernel.org>
+X-B4-Tracking: v=1; b=H4sIALLVp2UC/x3LTQqAIBBA4avErBtQMfq5SrTQmmoWpThRQXT3p
+ OXH4z0glJgEuuKBRCcLhz1DlwWMq9sXQp6ywShjldY1eosXR7zcGDY8SA7BmW8SNG3jK+XJ2Xq
+ GvMdEf8h3P7zvByhu+wJqAAAA
+To: Jiri Kosina <jikos@kernel.org>, 
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
+ Shuah Khan <shuah@kernel.org>, Jason Gerecke <jason.gerecke@wacom.com>
+Cc: linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1705498047; l=2088;
+ i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
+ bh=tywzkYCatCjvmllWPiu8+4g6b7SfayHdRCj5tZxD2aY=;
+ b=IWzV59t4VHpJ7UoQOlD9tX+ULtDRWbwucPyNMZaoHScUQLIkX976SUTV53Af6WvswqS+9spXf
+ VyFYjlDA+cHDmmI1hVitU6gE/ZTGsokN+SQzQIOZ23xfYJPCb+hsILW
+X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
+ pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
 
-Do we need to keep these coccinelle scripts for posterity?  Or can they just
-be included in the patch description of the patch that generates them?
+The device is exported with a fuzz of 4, meaning that the `+ t` here
+is removed by the fuzz algorithm, making those tests failing.
 
-David
+Not sure why, but when I run this locally it was passing, but not in the
+VM.
+
+Link: https://gitlab.freedesktop.org/bentiss/hid/-/jobs/53692957#L3315
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+---
+Over the break the test suite wasn't properly running on my runner,
+and this small issue sneaked in.
+---
+ tools/testing/selftests/hid/tests/test_wacom_generic.py | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/tools/testing/selftests/hid/tests/test_wacom_generic.py b/tools/testing/selftests/hid/tests/test_wacom_generic.py
+index 352fc39f3c6c..b62c7dba6777 100644
+--- a/tools/testing/selftests/hid/tests/test_wacom_generic.py
++++ b/tools/testing/selftests/hid/tests/test_wacom_generic.py
+@@ -880,8 +880,8 @@ class TestDTH2452Tablet(test_multitouch.BaseTest.TestMultitouch, TouchTabletTest
+         does not overlap with other contacts. The value of `t` may be
+         incremented over time to move the point along a linear path.
+         """
+-        x = 50 + 10 * contact_id + t
+-        y = 100 + 100 * contact_id + t
++        x = 50 + 10 * contact_id + t * 11
++        y = 100 + 100 * contact_id + t * 11
+         return test_multitouch.Touch(contact_id, x, y)
+ 
+     def make_contacts(self, n, t=0):
+@@ -902,8 +902,8 @@ class TestDTH2452Tablet(test_multitouch.BaseTest.TestMultitouch, TouchTabletTest
+         tracking_id = contact_ids.tracking_id
+         slot_num = contact_ids.slot_num
+ 
+-        x = 50 + 10 * contact_id + t
+-        y = 100 + 100 * contact_id + t
++        x = 50 + 10 * contact_id + t * 11
++        y = 100 + 100 * contact_id + t * 11
+ 
+         # If the data isn't supposed to be stored in any slots, there is
+         # nothing we can check for in the evdev stream.
+
+---
+base-commit: 80d5a73edcfbd1d8d6a4c2b755873c5d63a1ebd7
+change-id: 20240117-b4-wip-wacom-tests-fixes-298b50bea47f
+
+Best regards,
+-- 
+Benjamin Tissoires <bentiss@kernel.org>
 
 
