@@ -1,109 +1,107 @@
-Return-Path: <linux-kernel+bounces-29208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 642A9830AEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:22:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C271F830923
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:06:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1553B26D18
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:22:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64921B23D17
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:06:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BBE322329;
-	Wed, 17 Jan 2024 16:22:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E242134E;
+	Wed, 17 Jan 2024 15:06:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mev.co.uk header.i=@mev.co.uk header.b="AKAmZKN2"
-Received: from smtp68.iad3b.emailsrvr.com (smtp68.iad3b.emailsrvr.com [146.20.161.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F064414273
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 16:22:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=146.20.161.68
+	dkim=pass (2048-bit key) header.d=dh-electronics.com header.i=@dh-electronics.com header.b="MDJEmvVv"
+Received: from mx4.securetransport.de (mx4.securetransport.de [178.254.6.145])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD33B1E485;
+	Wed, 17 Jan 2024 15:06:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.254.6.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705508542; cv=none; b=j6PnWgXNcGDIwntpKlNnqUJioL2PMKZc0ZlNkJzvxvIqAwtldOpMAkMJqR4gGGzdput00YqgVJyhnWTrLYm+xtnsfZ7JvCTfg/lxgVqEhnYjqI4SumazEcsa5ogbh7r8lEhe1e4oQrzOnEn0bPuLPcPpWz6X50mVAPHvTZ407Q0=
+	t=1705503973; cv=none; b=dnFpGkhI3LPaR9Ik3sNcIRe0Zw88gSbQN7YsmnBi2McJI7SXjbhWDUpj4sxPPoVjbSm9C0Ck1RDzfg5Q6/+lQVi6b504PQ6Tzry2sKWu0nltOFHE9AK7ZlaiO5vPc2WS4U8wO8673/F+8cMjYBSkdZKDVOBMyONN33o7el/7UdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705508542; c=relaxed/simple;
-	bh=bnZ+5AE1obElm/T5IRAf2b28NzvSXqLt1dw/hEtldGM=;
-	h=DKIM-Signature:X-Auth-ID:Received:Message-ID:Date:MIME-Version:
-	 User-Agent:Subject:To:Cc:References:Content-Language:From:
-	 Organization:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 X-Classification-ID; b=rFlDKN/ol6ZqPuuzys6x9fRxz+rIgPOdfMQBIuK6NNui5bkuy2ptuT66YDi/tF51EZYYV+DX43WXMvLad+k36SSOgy0/m2LsdAetajdxcJqoOR1WyQIeFOZgiURd3ziNIgUit3K+SgYwGAi1kCbpJIdk5smElKZbUs+oKtJ5/00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mev.co.uk; spf=pass smtp.mailfrom=mev.co.uk; dkim=pass (1024-bit key) header.d=mev.co.uk header.i=@mev.co.uk header.b=AKAmZKN2; arc=none smtp.client-ip=146.20.161.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mev.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mev.co.uk
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-	s=20221208-6x11dpa4; t=1705499554;
-	bh=bnZ+5AE1obElm/T5IRAf2b28NzvSXqLt1dw/hEtldGM=;
-	h=Date:Subject:To:From:From;
-	b=AKAmZKN230qTVMSLPOgahnLAuNg2vrXwP/93fXmTm8YbXaSxkBJ74ISby+OGwfuR+
-	 JwBsca+r2iUaF0ZJoMf+EZdkwuSVgiOBQlozYLqC7D9A4NJUGeIlXaC0cwdKMCl7wv
-	 nYGhWXu+nFPVTTjwBH5Zi1upOpq9X+DAXp2uhS8A=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp1.relay.iad3b.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id DF6EE60097;
-	Wed, 17 Jan 2024 08:52:33 -0500 (EST)
-Message-ID: <d4779143-bb91-4d8e-a336-eeefc3131c05@mev.co.uk>
-Date: Wed, 17 Jan 2024 13:52:32 +0000
+	s=arc-20240116; t=1705503973; c=relaxed/simple;
+	bh=0puuW3TJ0FCRviSMs7e5yTWLZRzhlBbPbMaNHCKi2EQ=;
+	h=DKIM-Signature:From:To:CC:Subject:Date:Message-ID:X-klartext:
+	 In-Reply-To:References:MIME-Version:Content-Type; b=LDtqCfPBDa1xaykrWJUG6TWzBVJ+A2GqcFFjAY/DKS/pCwR/MjZlkf+sa40PWDQLzqK3Hwtj1bic+vdMpUcK+H+HWBW8/qz2zEQt1MwgBkP9TZ4KCtFDq6bIN8BQY3hU6/ZF1D3Fk4pBfP5xK9dK57uqTJwRHsfUZW+crQR+ZUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=dh-electronics.com; spf=pass smtp.mailfrom=dh-electronics.com; dkim=pass (2048-bit key) header.d=dh-electronics.com header.i=@dh-electronics.com header.b=MDJEmvVv; arc=none smtp.client-ip=178.254.6.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=dh-electronics.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dh-electronics.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dh-electronics.com;
+	s=dhelectronicscom; t=1705503387;
+	bh=8zEDP540sjwJaBrMK5oZNAb5uebPyAwo3ymgl0om22g=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:From;
+	b=MDJEmvVvjPOMDdAmlvf/L+gbqe/avosXlfx/ll/72v6KZtxWHsyHrUuRGZ2MUempq
+	 ehcjuB8jZS+tdZFgS/R1zeFwA5dgJYrLQKKocgtF2bA4jwrvCLPuoRjD23ABWm+OOW
+	 Q3rfTgicGG915sTiu4xOkORDo54i3EiOT+XB40P8DlFfseAzy3e2rnBAA2CHzaXu6E
+	 mPjVbtdWRs7Hq83gnIdPGILVDVRPtluoQCS+Bw4TWE7t0jokB0GFVp4/WQnytRGjFL
+	 LieTe2jaOOHRNAf57WmOJjGk+H8iDnwAkTAa0IfEqp4u3uJD9I827K9Z+0d2VnKj4V
+	 nhErBTHFZ72tA==
+From: Christoph Niedermaier <cniedermaier@dh-electronics.com>
+To: <crescentcy.hsieh@moxa.com>
+CC: <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>,
+	<LinoSanfilippo@gmx.de>, <lukas@wunner.de>, <linux-kernel@vger.kernel.org>,
+	<linux-serial@vger.kernel.org>, <cniedermaier@dh-electronics.com>,
+	<linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v6 1/2] tty: serial: Cleanup the bit shift with macro
+Date: Wed, 17 Jan 2024 15:56:23 +0100
+Message-ID: <20240117145623.3556-1-cniedermaier@dh-electronics.com>
+X-klartext: yes
+In-Reply-To: <20231201071554.258607-2-crescentcy.hsieh@moxa.com>
+References: <20231201071554.258607-2-crescentcy.hsieh@moxa.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] comedi: drivers: ni_tio: Fix arithmetic expression
- overflow
-To: Denis Arefev <arefev@swemel.ru>
-Cc: H Hartley Sweeten <hsweeten@visionengravers.com>,
- open list <linux-kernel@vger.kernel.org>, lvc-project@linuxtesting.org
-References: <20240117124229.37455-1-arefev@swemel.ru>
-Content-Language: en-GB
-From: Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-In-Reply-To: <20240117124229.37455-1-arefev@swemel.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Classification-ID: 504b7891-3038-4700-bb61-960c5ba746dc-1-1
+Content-Type: text/plain
 
-On 17/01/2024 12:42, Denis Arefev wrote:
-> The value of an arithmetic expression period_ns * 1000 is subject
-> to overflow due to a failure to cast operands to a larger data
-> type before performing arithmetic
+Hi everyone,
+
+> This patch replaces the bit shift code with "_BITUL()" macro inside
+> "serial_rs485" struct.
 > 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Signed-off-by: Denis Arefev <arefev@swemel.ru>
+> Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
 > ---
->   drivers/comedi/drivers/ni_tio.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  include/uapi/linux/serial.h | 17 +++++++++--------
+>  1 file changed, 9 insertions(+), 8 deletions(-)
 > 
-> diff --git a/drivers/comedi/drivers/ni_tio.c b/drivers/comedi/drivers/ni_tio.c
-> index da6826d77e60..acc914903c70 100644
-> --- a/drivers/comedi/drivers/ni_tio.c
-> +++ b/drivers/comedi/drivers/ni_tio.c
-> @@ -800,7 +800,7 @@ static int ni_tio_set_clock_src(struct ni_gpct *counter,
->   				GI_PRESCALE_X2(counter_dev->variant) |
->   				GI_PRESCALE_X8(counter_dev->variant), bits);
->   	}
-> -	counter->clock_period_ps = period_ns * 1000;
-> +	counter->clock_period_ps = period_ns * 1000UL;
->   	ni_tio_set_sync_mode(counter);
->   	return 0;
->   }
+> diff --git a/include/uapi/linux/serial.h b/include/uapi/linux/serial.h
+> index 53bc1af67..6c75ebdd7 100644
+> --- a/include/uapi/linux/serial.h
+> +++ b/include/uapi/linux/serial.h
+> @@ -11,6 +11,7 @@
+>  #ifndef _UAPI_LINUX_SERIAL_H
+>  #define _UAPI_LINUX_SERIAL_H
+>  
+> +#include <linux/const.h>
+>  #include <linux/types.h>
+>  
+>  #include <linux/tty_flags.h>
+> @@ -140,14 +141,14 @@ struct serial_icounter_struct {
+>   */
+>  struct serial_rs485 {
+>  	__u32	flags;
+> -#define SER_RS485_ENABLED		(1 << 0)
+> -#define SER_RS485_RTS_ON_SEND		(1 << 1)
+> -#define SER_RS485_RTS_AFTER_SEND	(1 << 2)
 
-Looks good, thanks!
+In the old definition (1 << 3) wasn't used.
 
-Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+> -#define SER_RS485_RX_DURING_TX		(1 << 4)
+> -#define SER_RS485_TERMINATE_BUS		(1 << 5)
+> -#define SER_RS485_ADDRB			(1 << 6)
+> -#define SER_RS485_ADDR_RECV		(1 << 7)
+> -#define SER_RS485_ADDR_DEST		(1 << 8)
+> +#define SER_RS485_ENABLED		_BITUL(0)
+> +#define SER_RS485_RTS_ON_SEND		_BITUL(1)
+> +#define SER_RS485_RTS_AFTER_SEND	_BITUL(2)
+> +#define SER_RS485_RX_DURING_TX		_BITUL(3)
 
-Could you resend it and Cc Greg Kroah-Hartman 
-<gregkh@linuxfoundation.org> ?  It's more likely to get applied that way 
-because I don't maintain my own kernel tree for comedi.  Feel free to 
-add my Reviewed-by line.
+Isn't it a break if number 3 isn't skipped here as well?
 
--- 
--=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
--=( registered in England & Wales.  Regd. number: 02862268.  )=-
--=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
--=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
-
+Regards
+Christoph
 
