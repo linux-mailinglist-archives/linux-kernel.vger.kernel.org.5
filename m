@@ -1,185 +1,152 @@
-Return-Path: <linux-kernel+bounces-29547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5292983100D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:16:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67B67831012
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:19:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A630B2718D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:16:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2026728D850
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:19:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49DEC2556A;
-	Wed, 17 Jan 2024 23:16:07 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E756B25620;
+	Wed, 17 Jan 2024 23:19:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="i66YdexJ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C0D321A12
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 23:16:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B9FF21A12
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 23:19:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705533366; cv=none; b=L7yz4luCE3XeZJbCxAM/IeuY6GMj4Ar1yWMkWyru8lScx0z9ogZb6JAVqm53P9jYOtCQlG5X+QTRLdRUnzzNonj/NDTVpiRzZkNntkiJn5BSFBpvtn4DklHWBNuQiR/IDs7rz+hF1/iQ7zL/OwyxLByOawhI44pIsK/9XsisEUs=
+	t=1705533549; cv=none; b=rAAnLw/ZtXUCDHEctET5iLezg+ZdoIPrJpAsAI7g2y2O7wrHOmPyRvx1qc5Ynn5X1u7mmKZArOdBbwZj0EqGDPQySjMYBxM5gXw9deD8C5clUU+1T483np4fOlS2yqCJ+RovHQj3KyvOODK3xJk/Hy+DieKZZRAxO2ZZ9yOmEPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705533366; c=relaxed/simple;
-	bh=MXgXSUSRkj5FTtY22ALwSoieYFZMVnOdU7O9Eh/hZqc=;
-	h=Received:X-Google-DKIM-Signature:X-Gm-Message-State:
-	 X-Google-Smtp-Source:MIME-Version:X-Received:Date:In-Reply-To:
-	 X-Google-Appengine-App-Id:X-Google-Appengine-App-Id-Alias:
-	 Message-ID:Subject:From:To:Content-Type; b=VAVaPNjce4v01gG3IK+3iCWVgacMACMTApgyUAeqKdGoC1OX2Zkr49BO4QAPhdE+3eFwt8qMYhP08oJ8fECor6ZjDzsyWXqwN8t0Ygh3s3cbQZ+/WzRkF87D1O3hfPxfk3XSK8UpD6fLCldta3Thk7qG4H5FRpgwXpMEhyvjITI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7bf5fe1ca9fso12172039f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:16:04 -0800 (PST)
+	s=arc-20240116; t=1705533549; c=relaxed/simple;
+	bh=nuk6PFQ9+p+9wuWPs1iRr1kUgHqCggJoF6Qj/g7bbpA=;
+	h=DKIM-Signature:Received:X-MC-Unique:Received:
+	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
+	 X-Google-Smtp-Source:X-Received:Received:From:To:Cc:Subject:Date:
+	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Type:Content-Disposition:Content-Transfer-Encoding; b=OFx2/uxmqQWlSW86LyhLlusyW1sGCC4DV0lFmbvOeUrEauSjD6/wOBPJdXU4OnzyLHxNKBQ9UF2C/xU6pz2Qpr50vjNAlAF8RCrFk5xj4OLgTk5jRrbazGmfAOxtQ3iPC3NbyZzO9ADtb0JnCJuof7Dxm5ZvD4GbvQBptg8RVHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=i66YdexJ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705533546;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MojhU4GRzsLWYYfrEcAZeXUgW5CKtIhKDn39POD9PAg=;
+	b=i66YdexJQSYekf9Vcgl8S9Av18P27rA0wljIMJk10DfjG89+E993Yq9Us7zB38D/VBbBxD
+	R5VWMqv7YWBNy3ezTybopzImzT//qoGD52GLLbM34H+ZbeAedGgEMQhlF+5eqAbBGhkvn4
+	2ZLmzGFMvMFLHIfjRja8yvK+z+FKDpQ=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-623-U-J3z6itMWSOq-gNIe3lSw-1; Wed, 17 Jan 2024 18:19:03 -0500
+X-MC-Unique: U-J3z6itMWSOq-gNIe3lSw-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7816bea8d28so35227285a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:19:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705533364; x=1706138164;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1705533542; x=1706138342;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xli7BjuAbrH3jzik/v5HfAex5k/DpyybqIgMJzgK8EU=;
-        b=nVTavbExKm2A3DJ/R/fO4zQpL3ss/6+GPAAtC44Ybvs+dJzwVHOtRfRoLGAjFfnPUP
-         RJuLDxxHyg7YAo5aDWtB+JvJJr0es5yBvuivzWVxoGpl1xPNbFeOJnORo0AKJdXE3RfS
-         N60tOA2Z/6rHq+iU1P9AKJ0s4XGYvrwQosK7CFlKaIBx0GoptNfrNNy68Rua5IXkEbdW
-         rwi5vIWnyEp5zfooH0jY99O0hHtPT6EFjVgCPVvVIVWGtKDXs9v7RKXsEzn0U2mBvkUH
-         Dok8CcH1f4uZoRApOb3c/Orf49D9XrKgNa+aSBFXz1hQP2BZUGYjvnJJZQ49H0/rjiuq
-         Kk0w==
-X-Gm-Message-State: AOJu0YyHArOUjCOQV55mh7LlsWzfoeqb+C6UOrr6TuDt5cZkXf6tXoPH
-	GaD5ly7Xwn3UgRfd7lPJGeBzcZHxmQ2W6aWwa3zCIAj6U9OEKcDRbUzkazFdVsMYOH3hPTtlyoI
-	myC8MC9WjXRSeHWYZ73Ju+ITYP1+dIFFyc6Yjns0ihGwdo5zYwiI/Kx4=
-X-Google-Smtp-Source: AGHT+IGS2gCu38m7wf+cmclweqPOF2orcH3pn1AqggQdX/i9N7N2CpbsfK2i8W6kV+wr6EOgVmHhl7XJZ4oexrG5Et7dWP99/NYe
+        bh=MojhU4GRzsLWYYfrEcAZeXUgW5CKtIhKDn39POD9PAg=;
+        b=Q25Z+1Gi/lFlQP/97KfG5kZGNA+uuuPgcj3in7Yry+EQR/wcRBUd/ZLIzusMASmLqE
+         BhMnKG83RK2T8/48fvmeDZmDOxF1tC8sbaE9r4qoxAwwjhjLMS3FFKar30hfothwTQcV
+         Vq4MRLsMcUUn6MSaL5/L80r3ltR7nC5YUsnJZ6o1uliziHYVFPvglAjDze1U2wqalCAq
+         Z0Rvi5vUaFgDW12FODdtr6nFZam//I5hs+JTaOSQnQ8KMvuFICwmuyShqir471MtANmd
+         N2vghhk72IxWryn/+fuXXNdzqn42mBrGBg9oZKhoOunNGzvMty6R/W8zT8lP9yoxQ98D
+         dutA==
+X-Gm-Message-State: AOJu0Yz6u71HZKWxyeOpjV2szDI3jkLJhPRDK2OhbHTwzl1FUvymxuj5
+	Fl3a1/oOZMSW/k1JxegDZr6uf20AKJIQS0cl7ng4YKt6Z+xsXHmbVaBGL2AmLqpQDhkNYv/y09V
+	btJoVvSF4KXhzU8eydQZsdHvnMouw6w3YTpa7MvkVFfcoDkiZds6bNY7V9OB6UQ==
+X-Received: by 2002:a05:620a:379b:b0:783:4d55:f213 with SMTP id pi27-20020a05620a379b00b007834d55f213mr71708qkn.46.1705533542151;
+        Wed, 17 Jan 2024 15:19:02 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFakd5eBLFBT+acN/2ozZLykVhRcQfrRhtKu2agDe07jWfzkyFdaQDN1NxSrqpEEAU94kza/Q==
+X-Received: by 2002:a05:620a:379b:b0:783:4d55:f213 with SMTP id pi27-20020a05620a379b00b007834d55f213mr71699qkn.46.1705533541923;
+        Wed, 17 Jan 2024 15:19:01 -0800 (PST)
+Received: from LeoBras.redhat.com ([2804:1b3:a803:6ad1:9baf:f024:858c:2fee])
+        by smtp.gmail.com with ESMTPSA id d1-20020a37c401000000b00783189b0aeasm4866671qki.46.2024.01.17.15.18.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jan 2024 15:19:01 -0800 (PST)
+From: Leonardo Bras <leobras@redhat.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Leonardo Bras <leobras@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	John Ogness <john.ogness@linutronix.de>,
+	Tony Lindgren <tony@atomide.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [RESEND RFC PATCH v1 2/2] serial/8250: Avoid getting lock in RT atomic context
+Date: Wed, 17 Jan 2024 20:18:54 -0300
+Message-ID: <ZahgXuNmysj8Ue7U@LeoBras>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <87r0ifful4.ffs@tglx>
+References: <20240116073701.2356171-1-leobras@redhat.com> <20240116073701.2356171-3-leobras@redhat.com> <87r0ifful4.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1515:b0:46e:5018:7945 with SMTP id
- b21-20020a056638151500b0046e50187945mr895jat.3.1705533364334; Wed, 17 Jan
- 2024 15:16:04 -0800 (PST)
-Date: Wed, 17 Jan 2024 15:16:04 -0800
-In-Reply-To: <20240117225112.1186-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005573a1060f2c6e09@google.com>
-Subject: Re: [syzbot] [net?] KASAN: use-after-free Read in __skb_flow_dissect (3)
-From: syzbot <syzbot+bfde3bef047a81b8fde6@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hello,
+On Wed, Jan 17, 2024 at 11:44:55PM +0100, Thomas Gleixner wrote:
+> On Tue, Jan 16 2024 at 04:37, Leonardo Bras wrote:
+> > With PREEMPT_RT enabled, a spin_lock_irqsave() becomes a possibly sleeping
+> > spin_lock(), without preempt_disable() or irq_disable().
+> >
+> > This allows a task T1 to get preempted or interrupted while holding the
+> > port->lock. If the preempting task T2 need the lock, spin_lock() code
+> > will schedule T1 back until it finishes using the lock, and then go back to
+> > T2.
+> >
+> > There is an issue if a T1 holding port->lock is interrupted by an
+> > IRQ, and this IRQ handler needs to get port->lock for writting (printk):
+> > spin_lock() code will try to reschedule the interrupt handler, which is in
+> > atomic context, causing a BUG() for trying to reschedule/sleep in atomic
+> > context.
+> >
+> > So for the case (PREEMPT_RT && in_atomic()) try to get the lock, and if it
+> > fails proceed anyway, just like it's done in oops_in_progress case.
+> 
+> That's just blantantly wrong. The locks are really only to be ignored
+> for the oops case, but not for regular printk.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: use-after-free Read in get_l4proto
+I agree, but the alternative was to have a BUG() due to scheduling in 
+atomic context. This would only ignore the lock if it was already taken 
+anyway.
 
-==================================================================
-BUG: KASAN: use-after-free in ipv4_get_l4proto net/netfilter/nf_conntrack_core.c:358 [inline]
-BUG: KASAN: use-after-free in get_l4proto+0x3f6/0x520 net/netfilter/nf_conntrack_core.c:407
-Read of size 2 at addr ffff88813d890000 by task syz-executor.0/5489
+That being said, I agree it is not the best solution for the issue, and 
+just sent this in the RFC in order to get feedback on what could be done.
 
-CPU: 0 PID: 5489 Comm: syz-executor.0 Not tainted 6.7.0-syzkaller-g82fd5ee9d8a5-dirty #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:488
- kasan_report+0xda/0x110 mm/kasan/report.c:601
- ipv4_get_l4proto net/netfilter/nf_conntrack_core.c:358 [inline]
- get_l4proto+0x3f6/0x520 net/netfilter/nf_conntrack_core.c:407
- nf_conntrack_in+0x1e3/0x1850 net/netfilter/nf_conntrack_core.c:1977
- ipv4_conntrack_local+0x160/0x260 net/netfilter/nf_conntrack_proto.c:229
- nf_hook_entry_hookfn include/linux/netfilter.h:154 [inline]
- nf_hook_slow+0xbb/0x1f0 net/netfilter/core.c:626
- nf_hook+0x386/0x6c0 include/linux/netfilter.h:269
- __ip_local_out+0x33b/0x640 net/ipv4/ip_output.c:118
- ip_local_out+0x2a/0x1a0 net/ipv4/ip_output.c:127
- iptunnel_xmit+0x5b4/0x9b0 net/ipv4/ip_tunnel_core.c:82
- ip_tunnel_xmit+0x1daa/0x33b0 net/ipv4/ip_tunnel.c:831
- ipip_tunnel_xmit+0x3cc/0x4e0 net/ipv4/ipip.c:308
- __netdev_start_xmit include/linux/netdevice.h:4989 [inline]
- netdev_start_xmit include/linux/netdevice.h:5003 [inline]
- xmit_one net/core/dev.c:3547 [inline]
- dev_hard_start_xmit+0x137/0x6d0 net/core/dev.c:3563
- __dev_queue_xmit+0x7b6/0x3ed0 net/core/dev.c:4351
- dev_queue_xmit include/linux/netdevice.h:3171 [inline]
- neigh_connected_output+0x426/0x5d0 net/core/neighbour.c:1592
- neigh_output include/net/neighbour.h:542 [inline]
- ip_finish_output2+0x82d/0x2540 net/ipv4/ip_output.c:235
- __ip_finish_output net/ipv4/ip_output.c:313 [inline]
- __ip_finish_output+0x38b/0x650 net/ipv4/ip_output.c:295
- ip_finish_output+0x31/0x310 net/ipv4/ip_output.c:323
- NF_HOOK_COND include/linux/netfilter.h:303 [inline]
- ip_mc_output+0x1dd/0x6a0 net/ipv4/ip_output.c:420
- dst_output include/net/dst.h:451 [inline]
- ip_local_out+0xaf/0x1a0 net/ipv4/ip_output.c:129
- iptunnel_xmit+0x5b4/0x9b0 net/ipv4/ip_tunnel_core.c:82
- ip_tunnel_xmit+0x1daa/0x33b0 net/ipv4/ip_tunnel.c:831
- ipgre_xmit+0x49b/0x980 net/ipv4/ip_gre.c:665
- __netdev_start_xmit include/linux/netdevice.h:4989 [inline]
- netdev_start_xmit include/linux/netdevice.h:5003 [inline]
- xmit_one net/core/dev.c:3547 [inline]
- dev_hard_start_xmit+0x137/0x6d0 net/core/dev.c:3563
- __dev_queue_xmit+0x7b6/0x3ed0 net/core/dev.c:4351
- dev_queue_xmit include/linux/netdevice.h:3171 [inline]
- __bpf_tx_skb net/core/filter.c:2135 [inline]
- __bpf_redirect_no_mac net/core/filter.c:2165 [inline]
- __bpf_redirect+0x6f1/0xf10 net/core/filter.c:2188
- ____bpf_clone_redirect net/core/filter.c:2459 [inline]
- bpf_clone_redirect+0x2b2/0x420 net/core/filter.c:2431
- ___bpf_prog_run+0x3e44/0xabc0 kernel/bpf/core.c:1986
- __bpf_prog_run512+0xb7/0xf0 kernel/bpf/core.c:2227
- bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
- __bpf_prog_run include/linux/filter.h:651 [inline]
- bpf_prog_run include/linux/filter.h:658 [inline]
- bpf_test_run+0x3d3/0x9c0 net/bpf/test_run.c:423
- bpf_prog_test_run_skb+0xb75/0x1dd0 net/bpf/test_run.c:1056
- bpf_prog_test_run kernel/bpf/syscall.c:4107 [inline]
- __sys_bpf+0x11bf/0x4a00 kernel/bpf/syscall.c:5475
- __do_sys_bpf kernel/bpf/syscall.c:5561 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5559 [inline]
- __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5559
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7fe1ad67cce9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fe1ae3d80c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00007fe1ad79bf80 RCX: 00007fe1ad67cce9
-RDX: 0000000000000028 RSI: 0000000020000080 RDI: 000000000000000a
-RBP: 00007fe1ad6c947a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fe1ad79bf80 R15: 00007ffdca27b398
- </TASK>
+> 
+> I assume that this is not against the latest RT kernel as that should
+> not have that problem at all.
 
-The buggy address belongs to the physical page:
-page:ffffea0004f62400 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x13d890
-flags: 0x57ff00000000000(node=1|zone=2|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 057ff00000000000 ffffea0004f62408 ffffea0004f62408 0000000000000000
-raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner info is not present (never set?)
+I am based on torvalds/linux at master branch, so maybe I am missing some 
+RT-specific patches. Which tree do you recommend me testing?
 
-Memory state around the buggy address:
- ffff88813d88ff00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff88813d88ff80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff88813d890000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                   ^
- ffff88813d890080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff88813d890100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
+> 
+> Thanks,
+> 
+>         tglx
+> 
 
-
-Tested on:
-
-commit:         82fd5ee9 Merge tag 'for-linus-6.8-rc1-tag' of git://gi..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=15b35ba3e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9cd0a945c0f757a8
-dashboard link: https://syzkaller.appspot.com/bug?extid=bfde3bef047a81b8fde6
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=16dc3a57e80000
+Thank you!
+Leo
 
 
