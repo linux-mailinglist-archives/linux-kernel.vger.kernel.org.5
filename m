@@ -1,50 +1,75 @@
-Return-Path: <linux-kernel+bounces-28642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B40C583013D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:25:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAC5F83011B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:15:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4A881C2155B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:25:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CA3B1C21261
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:15:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2D6B11199;
-	Wed, 17 Jan 2024 08:25:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32BC4D272;
+	Wed, 17 Jan 2024 08:15:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kwiboo.se header.i=@kwiboo.se header.b="xlQhiA7G"
-Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="em6GQ10X"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D8B2125A8
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 08:25:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=149.28.215.223
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2371125A4
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 08:15:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705479949; cv=none; b=a04JrAj5vOVlgNwTOTgAXf43ev/s+e+tQFcgKfoeoXCuajiziehcG+E9BvMnTh1lnS/r9K8upyeCmsi5IXw0Was1Ml7gTVOug8OgUALl2MZVWryupBMWyIHAbZPYWXGR82ncLt4FyQ+Pw6RNljsODKQNQrEzt22nPsowa7N1Q+s=
+	t=1705479350; cv=none; b=C1QQRzKGuD1NiF1K8IBmaQnWVKkCcPTSYZPNGZ+SKjH2sg36OBlgKRh9yoqL/NzrIAx1bEn/Ydm0crUISggRNMPtAg7qd+S3oYpOG5Jy1lJ8LzeBGHKU/gs0lA6m0Thfeb1ur2XZpbBbZqHkB/ZoU7hoFkco1Ns5/iAA/Jrc6ms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705479949; c=relaxed/simple;
-	bh=TfMz2o/QaxJDw4HaaHvW7kjkrnz4YNBdFQNoTYYtLVg=;
-	h=DKIM-Signature:Message-ID:Date:MIME-Version:User-Agent:Subject:To:
-	 Cc:References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:X-Report-Abuse-To:X-Report-Abuse:
-	 X-Complaints-To:X-ForwardEmail-Version:X-ForwardEmail-Sender:
-	 X-ForwardEmail-ID; b=nogbzim+/DUFqufuoDeNunbctkv2TezfVQ2G1FY2B3eC23ER6MNMraOdJUiKADL6wWdn2WCu+5vyySAXWFIZa0eipg7ljXDTai7un4btgsJLIxzukZKCG70d7Cf1BHBOK1URWP/XPpLExdhSehL1EUhFCEuceqHsjhTVVSAfNLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kwiboo.se; spf=pass smtp.mailfrom=fe-bounces.kwiboo.se; dkim=pass (2048-bit key) header.d=kwiboo.se header.i=@kwiboo.se header.b=xlQhiA7G; arc=none smtp.client-ip=149.28.215.223
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kwiboo.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fe-bounces.kwiboo.se
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
- h=Content-Transfer-Encoding: Content-Type: In-Reply-To: From: References:
- Cc: To: Subject: MIME-Version: Date: Message-ID; q=dns/txt;
- s=fe-e1b5cab7be; t=1705479944;
- bh=1vqTH2ZOXOceXDQm3/XOnfAbHGHpnxo6jRxIgr/14RE=;
- b=xlQhiA7GVOJk0uxS4PTt1PqY8lX+QgtS0soKR3F9tvjDMgOyNPA2rWA8lYNvsY/8rZshzkx36
- EN7kyjNNgDUx0SvofxSEwk9UEEsKvAGKcdpqxAFz8b1mvaahi+Dn9wITQ3O72tfmIzr+h6uHMtE
- yQTJzQlpC5+qAd5+fg6wyYGpy/aDVYbkuX1iCR7dM/fj1E34U1rOhWIAu2t4KkmWe7UWxT1El2O
- eKj0FcTtoYjOwhmbnARekP6XHyDo1SrKiMdRdV4SICSCtLlO7emGeEggBkfXGqa4pEVkWBx1Mb6
- o1tcRllXY8hXpQs2GnjbZDBFtl/GRDHCPkNBWaGipyJw==
-Message-ID: <852071ad-24e8-40a8-9b10-623abf1dc4bf@kwiboo.se>
-Date: Wed, 17 Jan 2024 09:15:19 +0100
+	s=arc-20240116; t=1705479350; c=relaxed/simple;
+	bh=w3KF19/EuZIsWuhyrPYaIAS/dc4lhe3F1j5PZdvZIYg=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
+	 To:Cc:References:From:Autocrypt:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=FnEob9tASun1HH5EusxL2vQ09m+5itBc2Iqxj8NFAZ6jC3YhwP7ECCuFQcF7LiXfPTFE0szQ1o/mr324PpihVHTHjkWAtgRRlVQFc5eYF+M0H2c+h7ig9UxqdTt6LNEzqkfjfvWKSb0jrbM/Bd8Z7A0w/BHn1zdk5pj5Nk3i25c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=em6GQ10X; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a2eb5c4dad6so40096466b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 00:15:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705479347; x=1706084147; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5JeWvHyd6kBF8niEcD5Gw/h1gpWI38QS+f/nfXrspRM=;
+        b=em6GQ10XfBqKZRzy8fur42fLzKuoKlU61hu18/844HGhvvJH+eGH17bfTa9MY9Maqb
+         YHTFiOJ3DQ415fawOtFxFJ4KiKM66TspZ2Mk3FwM5n5++SbIalcd7p1GHIuBg6/VRwE2
+         f8UkkCXScCBhtfrVGvb/II6oSpYQEcdsINyh3tdE/MxTsU11lyUBIB0zhLDzDx0l4gIv
+         PHfwGeQZ2RiLhuAeLclTsJ5z7yT/mcYwtcc6pjYfr50uRIpnnWOOszjrPuz0uvF4gHMb
+         LcpJ1sfiz1Esvi4ctTkTVn59pRbieQ93leKkKBHaxryFz+8RAIP49p0WuUYJgtQRTRSV
+         Ey6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705479347; x=1706084147;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5JeWvHyd6kBF8niEcD5Gw/h1gpWI38QS+f/nfXrspRM=;
+        b=hlhdKSPEif8oygjsZFwZ8UTtkpoLD/GzyE3ZkanpXIcPUcf4jvt2oD89q/1KdjIsHy
+         GBxJlAtATDegEOfGw5Tsu+CyBazFw5XHDrQbH5Bl8Qe1JzTT0M49SkB2ek3W5VA5PslQ
+         fzrNvCZL+C/RTF8HPeKHta517dWVaxZjbKvzPwmH/72E6+IO8tQwQg46GkTQMjyV8KlQ
+         WcjgqW2NbsdP1sLddGJuRGqQoOakkRswiuHMnD6hkj11ysVbVeslc9ZflfDyvZ4XN96R
+         +tKbpz6rVPfAwh4gXzp4gSQr/ZSfNTTX4ezvNgEvyOPkLCuU6THFDdulAPZAGm1tOMk6
+         gTJg==
+X-Gm-Message-State: AOJu0YwEwQaQTe9eqpOEPDXGxSrv17Gu1KkDkDbEGZW3N4SKKxwcsLQ4
+	csTSCtq108u261J8LENChEc2C84SNOEW1Q==
+X-Google-Smtp-Source: AGHT+IEbBul5RDgIWJZ/ktWTxJVw4Ks4q7eScHfjAdDToYIxKJzG+i0OwZepRdCOg/j8ONcgF3M9Zg==
+X-Received: by 2002:a17:906:1188:b0:a2b:9580:c451 with SMTP id n8-20020a170906118800b00a2b9580c451mr4119477eja.62.1705479347084;
+        Wed, 17 Jan 2024 00:15:47 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id z6-20020a170906668600b00a2327e826ccsm7446573ejo.201.2024.01.17.00.15.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Jan 2024 00:15:46 -0800 (PST)
+Message-ID: <2ea2b401-b75d-4fc8-9281-7fa6fb2babd5@linaro.org>
+Date: Wed, 17 Jan 2024 09:15:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,128 +77,95 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] arm64: dts: rockchip: rock-pi-e: fix location of snps
- properties
-To: Trevor Woerner <twoerner@gmail.com>, "Chen-Yu Tsai" <wens@csie.org>
-Cc: linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org
-References: <20240116204103.29318-1-twoerner@gmail.com>
- <20240116204103.29318-2-twoerner@gmail.com>
- <CAGb2v67KfNR_U_Qz85aqY1D0DKE9mo-X_L8MGvT7cdcZGUHVUg@mail.gmail.com>
- <20240117054705.GA33225@localhost>
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm: fsl: Add i.MX93 PHYTEC with
+ Segin
 Content-Language: en-US
-From: Jonas Karlman <jonas@kwiboo.se>
-In-Reply-To: <20240117054705.GA33225@localhost>
+To: Mathieu Othacehe <othacehe@gnu.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Li Yang <leoyang.li@nxp.com>, Stefan Wahren <wahrenst@gmx.net>,
+ Christoph Stoidner <c.stoidner@phytec.de>, Wadim Egorov <w.egorov@phytec.de>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+References: <20240117074911.7425-1-othacehe@gnu.org>
+ <20240117074911.7425-2-othacehe@gnu.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240117074911.7425-2-othacehe@gnu.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Report-Abuse-To: abuse@forwardemail.net
-X-Report-Abuse: abuse@forwardemail.net
-X-Complaints-To: abuse@forwardemail.net
-X-ForwardEmail-Version: 0.4.40
-X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
- 149.28.215.223
-X-ForwardEmail-ID: 65a78c9bbf6df5afd8d7a76e
+Content-Transfer-Encoding: 7bit
 
-On 2024-01-17 06:47, Trevor Woerner wrote:
-> On Wed 2024-01-17 @ 12:38:39 PM, Chen-Yu Tsai wrote:
->> On Wed, Jan 17, 2024 at 4:41 AM Trevor Woerner <twoerner@gmail.com> wrote:
->>>
->>> A number of snps (Synopsys) properties are not in their correct location.
->>
->> Nope. If you read the snps,dwmac.yaml binding file, you'll see that these
->> properties have been deprecated. They are properties pertaining to the PHY
->> and should be described under the PHY node. Support for reset GPIOs on PHY
->> devices in phylib has been there since v4.16. The snps prefixed properties
->> were deprecated in v5.3.
+On 17/01/2024 08:49, Mathieu Othacehe wrote:
+> Add support for i.MX93 PHYTEC with Segin board.
 > 
-> If that's the case, then the bindings and the drivers are out of sync in both
-> U-Boot and Linux. I discovered this issue while working with older and newer
-> revisions of the rock-pi-e board. The first three spins of the rock-pi-e have
-> the rtl8211e PHY but the last one (v1.21) has the rtl8211f PHY.
-> 
-> With the existing layout nothing works in U-Boot and in Linux the rtl8211e
-> works but not the rtl8211f. With this patch both the rtl8211e and the rtl8211f
-> PHYs work using the exact same device trees on both older and newer rock-pi-e
-> boards in both U-Boot and Linux.
+> Signed-off-by: Mathieu Othacehe <othacehe@gnu.org>
+> ---
+>  Documentation/devicetree/bindings/arm/fsl.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
 
-For linux this is probably related to the same chicken-and-egg reset
-issue outlined at [1]. The phy is not reset before it is probed and
-cannot be probed because it is not reset.
+This is a friendly reminder during the review process.
 
-As for U-Boot the designware/gmac_rockchip ethernet driver may need some
-adjustments to properly integrate with eth-phy uclass to properly reset
-the phy described in a ethernet-phy node before it can be probed.
+It looks like you received a tag and forgot to add it.
 
-Following config options is disabled for rock-pi-e-rk3328 defconfig:
+If you do not know the process, here is a short explanation:
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions, under or above your Signed-off-by tag. Tag is "received", when
+provided in a message replied to you on the mailing list. Tools like b4
+can help here. However, there's no need to repost patches *only* to add
+the tags. The upstream maintainer will do that for tags received on the
+version they apply.
 
-# CONFIG_DM_ETH_PHY is not set
-# CONFIG_PHY_REALTEK is not set
+https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
 
-Also the driver needs to be updated to make use eth-phy uclass for it to
-work correctly. More similar to how the dwc_eth_qos driver works related
-to ethernet phy.
+If a tag was not added on purpose, please state why and what changed.
 
-[1] https://lore.kernel.org/linux-rockchip/47d55aca-bee6-810f-379f-9431649fefa6@kwiboo.se/
-
-Regards,
-Jonas
-
-> 
-> Comparing the rock-pi-e's dts file with the one from the roc-rk3328-cc board,
-> which also uses the layout in this patch, and which also uses the rtl8211e
-> external PHY, is what led me in this direction.
-> 
->>
->> ChenYu
->>
->>> Fixes: b918e81f2145 ("arm64: dts: rockchip: rk3328: Add Radxa ROCK Pi E")
->>> Signed-off-by: Trevor Woerner <twoerner@gmail.com>
->>> ---
->>>  arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts | 10 +++++-----
->>>  1 file changed, 5 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts b/arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts
->>> index 096cfa19036e..0739b8fec86e 100644
->>> --- a/arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts
->>> +++ b/arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts
->>> @@ -150,8 +150,11 @@ &gmac2io {
->>>         phy-mode = "rgmii";
->>>         phy-supply = <&vcc_io>;
->>>         pinctrl-names = "default";
->>> -       pinctrl-0 = <&rgmiim1_pins>;
->>> +       pinctrl-0 = <&rgmiim1_pins>, <&eth_phy_reset_pin>;
->>>         snps,aal;
->>> +       snps,reset-gpio = <&gpio1 RK_PC2 GPIO_ACTIVE_LOW>;
->>> +       snps,reset-active-low;
->>> +       snps,reset-delays-us = <0 10000 50000>;
->>>         snps,rxpbl = <0x4>;
->>>         snps,txpbl = <0x4>;
->>>         tx_delay = <0x26>;
->>> @@ -165,13 +168,10 @@ mdio {
->>>
->>>                 rtl8211: ethernet-phy@1 {
->>>                         reg = <1>;
->>> -                       pinctrl-0 = <&eth_phy_int_pin>, <&eth_phy_reset_pin>;
->>> +                       pinctrl-0 = <&eth_phy_int_pin>;
->>>                         pinctrl-names = "default";
->>>                         interrupt-parent = <&gpio1>;
->>>                         interrupts = <24 IRQ_TYPE_LEVEL_LOW>;
->>> -                       reset-assert-us = <10000>;
->>> -                       reset-deassert-us = <50000>;
->>> -                       reset-gpios = <&gpio1 RK_PC2 GPIO_ACTIVE_LOW>;
->>>                 };
->>>         };
->>>  };
->>> --
->>> 2.43.0.76.g1a87c842ece3
->>>
-> 
-> _______________________________________________
-> Linux-rockchip mailing list
-> Linux-rockchip@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-rockchip
+Best regards,
+Krzysztof
 
 
