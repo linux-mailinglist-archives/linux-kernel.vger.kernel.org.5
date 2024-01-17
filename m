@@ -1,146 +1,121 @@
-Return-Path: <linux-kernel+bounces-29238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DC1C830B74
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:50:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC9A4830B79
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:51:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16A991C21A21
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:50:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62845285E51
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:51:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73E35224EE;
-	Wed, 17 Jan 2024 16:50:10 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FFCB22613;
+	Wed, 17 Jan 2024 16:51:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BspoeQJt"
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ED551E863;
-	Wed, 17 Jan 2024 16:50:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3E3F225CF
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 16:51:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705510210; cv=none; b=DkST+sKnK8eeIIqVB9iqT9mi9M/l/7NHk5y2Ciufe6AGX5KUOxjfBNHPNWJuR9MGq6EIiYbAtzjx2nhaQi7b90nuOvA366N4uvokRBDdkoWaZ1iuih18SklzS7IjOhMKQy9VbJDfWMu+z5k7l/bOfHtPXpJFHOZppiaxPbShheY=
+	t=1705510266; cv=none; b=WN3c49IX424RkDvZemJ7LvFzLaXfhlAR5jjLBvLyBzRMTg0PNoz+E+T0irr0p9gFMxWefWhx7Zgk3cml6w3MjqDXMIDeoQ1kx4qd88cgPWXHH45liK/b9v7TI2Qr25FPSpYY4oOKgO5bJtIQZgD7OFKm0r7LDo+T44V9C/FADbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705510210; c=relaxed/simple;
-	bh=9UwbAjBITZpX2+JqWcLCFrn2uFADUodbLwB5n/JYW1c=;
-	h=Received:Received:Received:Date:From:To:CC:Subject:Message-ID:
-	 In-Reply-To:References:Organization:X-Mailer:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:X-Originating-IP:
-	 X-ClientProxiedBy; b=tC1hx9hsS9z/EmYoqZ0dHHgW5FA4h7PNHyDRg62ulsyobWfjLforeBC0PFAZ/pKC/Sq1sjmyzBNdfat7kJ2jgeSEmnksQHsWWHcuFx0G7ZLJsN9TxGm3jbdgEcOHllVPu16Mb/zkx2E+RRcuMUWPN8UPRMiqsyHKwS5NPMdDILY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TFWyc0RKnz6K6M1;
-	Thu, 18 Jan 2024 00:47:52 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 833D8140AA7;
-	Thu, 18 Jan 2024 00:50:04 +0800 (CST)
-Received: from localhost (10.48.153.213) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 17 Jan
- 2024 16:50:04 +0000
-Date: Wed, 17 Jan 2024 16:50:01 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Rob Herring <robh@kernel.org>
-CC: Petre Rodan <petre.rodan@subdimension.ro>, Krzysztof Kozlowski
-	<krzysztof.kozlowski@linaro.org>, <linux-iio@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Jonathan
- Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>
-Subject: Re: [PATCH 2/6] dt-bindings: iio: pressure: honeywell,hsc030pa.yaml
- add sleep-mode
-Message-ID: <20240117165001.00003046@Huawei.com>
-In-Reply-To: <20240116173023.GA139792-robh@kernel.org>
-References: <20240110172306.31273-1-petre.rodan@subdimension.ro>
-	<20240110172306.31273-3-petre.rodan@subdimension.ro>
-	<bc37f7d8-c43f-4751-9216-fc95f439b2f6@linaro.org>
-	<ZaDqlmXJD6if1xK7@sunspire>
-	<20240116173023.GA139792-robh@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1705510266; c=relaxed/simple;
+	bh=faT2uRrQt3V7tKi/jCpPpD6mGOoqk18135qnLaMNQ6w=;
+	h=Date:DKIM-Signature:X-Report-Abuse:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To:X-Migadu-Flow; b=BCpQc7jnhw52gpz0VMclEX3bIjnAfW/fN6+qwMUFnbyR08WoADN4AdNMJm5n7Mu0GkFWX/ZYQ1mbsoPpTLG5GkBF8cVJ6uhjfc3oyji2jWXU5TExk2Cw2Hi9bIEgSYbl8a1eqdLZGkye4f06ks9BjYe9dQ/oV9qsCKuBxiVCRvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BspoeQJt; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 17 Jan 2024 17:50:28 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705510261;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zsMBTqAbxvDSq34Y8PBcrq1QpEjPS4gVtR8AVs1aPo0=;
+	b=BspoeQJtQ3UPfpuJmKzVnJGZaqu6V2IgvIXmri1tYRZK2y0xcxPjnsCRf7Xs6Hj33dsr19
+	MNRPJ4vUXh4baAxJUXOshQkM6a9UfonXktAjkK426LQgS0DFmZbAQ1G6W9LQlRCO/cssRo
+	KcxndU/YA7T217PRGN6/swdvxkMLfmA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Oliver Upton <oliver.upton@linux.dev>
+To: "sundongxu (A)" <sundongxu3@huawei.com>
+Cc: Marc Zyngier <maz@kernel.org>, yuzenghui@huawei.com,
+	james.morse@arm.com, suzuki.poulose@arm.com, will@kernel.org,
+	catalin.marinas@arm.com, wanghaibin.wang@huawei.com,
+	kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, jiangkunkun@huawei.com
+Subject: Re: [bug report] GICv4.1: VM performance degradation due to not
+ trapping vCPU WFI
+Message-ID: <ZagFVNsA1aLuxorp@linux.dev>
+References: <a481ef04-ddd2-dfc1-41b1-d2ec45c6a3b5@huawei.com>
+ <86v87t8ras.wl-maz@kernel.org>
+ <89fe1503-6d62-90ca-5edb-e11c74846a00@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500001.china.huawei.com (7.191.163.213) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <89fe1503-6d62-90ca-5edb-e11c74846a00@huawei.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, 16 Jan 2024 11:30:23 -0600
-Rob Herring <robh@kernel.org> wrote:
+On Wed, Jan 17, 2024 at 10:20:32PM +0800, sundongxu (A) wrote:
+> On 2024/1/16 19:13, Marc Zyngier wrote:
+> > On Tue, 16 Jan 2024 03:26:08 +0000, "sundongxu (A)" <sundongxu3@huawei.com> wrote:
+> >> We found a problem about GICv4/4.1, for example:
+> >> We use QEMU to start a VM (4 vCPUs and 8G memory), VM disk was
+> >> configured with virtio, and the network is configured with vhost-net,
+> >> the CPU affinity of the vCPU and emulator is as follows, in VM xml:
 
-> On Fri, Jan 12, 2024 at 09:30:30AM +0200, Petre Rodan wrote:
-> > 
-> > Hello Krzysztof,
-> > 
-> > On Wed, Jan 10, 2024 at 09:48:34PM +0100, Krzysztof Kozlowski wrote:  
-> > > On 10/01/2024 18:22, Petre Rodan wrote:  
-> > > > Add sleep-mode property present in some custom chips.
-> > > > 
-> > > > This flag activates a special wakeup sequence prior to conversion.
-> > > > 
-> > > > Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
-> > > > ---
-> > > >  .../bindings/iio/pressure/honeywell,hsc030pa.yaml      | 10 ++++++++++
-> > > >  1 file changed, 10 insertions(+)
-> > > > 
-> > > > diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
-> > > > index 89977b9f01cf..350da1d6991b 100644
-> > > > --- a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
-> > > > +++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
-> > > > @@ -86,6 +86,15 @@ properties:
-> > > >        Maximum pressure value the sensor can measure in pascal.
-> > > >        To be specified only if honeywell,pressure-triplet is set to "NA".
-> > > > 
-> > > > +  honeywell,sleep-mode:  
-> > > 
-> > > "Sleep mode" naming suggests there are choices, like mode foo and mode
-> > > bar. Probably you want something like "sleep-between-measurements" or
-> > > something matching how does it work.  
-> > 
-> > "sleep mode" is the terminology used by Honeywell and it defines a chip capability.
-> > it is present in the HSC/SSC and ABP series of ICs.
-> > 
-> > other such options (capabilities) include temperature output in the ABP series.
-> > 
-> > the action the driver needs to perform if this option is present is to provide a
-> > wake-up sequence before reading out the conversions.
-> > 
-> > now regarding a rename of this property, I would vote to leave it as is - for the
-> > users to have a 1:1 equivalence of terms between the driver and the datasheet.
-> > 
-> > I say that because for instance in circuit design when a part symbol and
-> > footprint is drawn based on a datasheet it is recommended to keep the same pin
-> > notations and the same block diagram as in the datasheet, precisely for this 1:1
-> > equivalence, so there is no uncertainty for the end-user.  
+<snip>
+
+> >>   <cputune>
+> >>     <vcpupin vcpu='0' cpuset='4'/>
+> >>     <vcpupin vcpu='1' cpuset='5'/>
+> >>     <vcpupin vcpu='2' cpuset='6'/>
+> >>     <vcpupin vcpu='3' cpuset='7'/>
+> >>     <emulatorpin cpuset='4,5,6,7'/>
+> >>   </cputune>
+
+</snip>
+
+> > Effectively, we apply the same principle to vSGIs as to vLPIs, and it
+> > was found that this heuristic was pretty beneficial to vLPIs. I'm a
+> > bit surprised that vSGIs are so different in their usage pattern.
 > 
-> At least add a '-en' suffix so it is clear this property enables the 
-> mode. We have both flavors (enables and disables). 
+> IMO, the point is hypervisor not trapping vCPU WFI, rather than
+> vSGI/vLPI usage pattern.
+
+Sure, that's what's affecting your use case, but the logic in the kernel
+came about because improving virtual interrupt injection has been found
+to be generally useful.
+
+> > 
+> > Does it help if you move your "emulatorpin" to some other physical
+> > CPUs?
 > 
-> Low power modes between samples is pretty common on these devices. We 
-> should consider if this should be a common property. Jonathan?
+> Yes，it does, in kernel 5.10 or 6.5rc1.
 
-Normally it's a controllable things so we make it dependent on userspace
-interaction (runtime-pm or whether buffered capture is enabled).
-Policy thing so not appropriate in DT.
+Won't your VM have a poor experience in this configuration regardless of WFx
+traps? The value of vCPU pinning is to *isolate* the vCPU threads from
+noise/overheads of the host and scheduler latencies. Seems to me that
+VMM overhead threads are being forced to take time away from the guest.
 
-Here it's different because it's a particular device variant that must work in this
-fashion. Other device variants don't support it at all.
+Nevertheless, disabling WFI traps isn't going to work well for
+overcommitted scenarios. The thought of tacking on more hacks in KVM has be
+a bit uneasy, perhaps instead we can give userspace an interface to explicitly
+enable/disable WFx traps and let it pick a suitable policy.
 
-If it weren't for the obscene number of variants this would normally be
-derived from the compatible rather than being in DT at all.
-
-So it's odd and I don't think appropriate for a common property.
-
-Jonathan
-
-> 
-> Rob
-> 
-
+-- 
+Thanks,
+Oliver
 
