@@ -1,199 +1,267 @@
-Return-Path: <linux-kernel+bounces-34809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA7AC8387C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:03:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D72F6838803
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:35:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF6701C234F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:03:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5345C1F25B31
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:35:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD2350A6F;
-	Tue, 23 Jan 2024 07:02:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="Q5XO73gX"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4430A55E5E
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:02:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57AA25676F;
+	Tue, 23 Jan 2024 07:34:43 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8484524C1;
+	Tue, 23 Jan 2024 07:34:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705993362; cv=none; b=bt74tbESXCc7+B03/AYZoVnwd0BuqfETeUemhAd0EVIxE0zI6CIVcLPHdBhtJEu5eStCzxf/UOnyOM/oBP5P7lBsiwQu6B6euTKGsVXyqZElWjMcC/Li/Bn5wKzwiTq9XSfebPi/k+ZAgvrPchXeB406FKYyjsYaPH3qIZQPCdE=
+	t=1705995282; cv=none; b=FnH43sm8Heh7aiR18TpPEoxNsKPm6ADsMQYxp6vmhr80LfJo+l2xidQov2DrndkaYPWuA3PKneF4eSRZkIEfLqxj4EocrSzrUgAZP+2kIlFtnIcMpGGzgEAnerQuSPIX74UbCBmXzWIInRgR/xG19sJVkj2Ek8yhIuLn4cx2o6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705993362; c=relaxed/simple;
-	bh=umk0ZPnWTL0b4WUNFY7XpYAosoBwjT3rA5b6SOxM+0U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eidDyF8BkYpsKM2KCcaSXpWkkFSJeYuEhr4/3enJX5BpkiIRhXTLJYQ4rP2W09lEsMN3yIcaldOG+k6lQxTR9DtfRMoFxcq7+NwZ6XYZADLaNlL2mVLCZOMUYcG5HbfATCbWhHETrbPvMpbsXDpxz1ejbRApt9++Ef7aAgkNjoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=Q5XO73gX; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-337d99f9cdfso3505571f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 23:02:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1705993358; x=1706598158; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0HA3HgAJbahgUJBX1gJ3AzroSL9tqmUD02YJ2gg4LNI=;
-        b=Q5XO73gX+U2nlb9u59i4ZhawUFU0/aOalOflTpE5G0EqqxrXQ0v119F96LsSe7ohiC
-         w/u4kj1Ci8lLFZNqnUFSbrr4b80XzBdUisbIdwRPNJ+ZdJIeOGK6XmwimsLH6on8A6mI
-         xBI0d5TqhipvbFwbkY1JL2jHKJtJ8pMmJLxuhriz+B92AlYnYzNE6Foqkg9vyE+lRqOw
-         KHAz4gKoqrm3bqJfo5ytjZF3LT3tr2C0ukmbzPNEPhGMfEaH39UviY+WeHnIiT/F/dZz
-         qXH3kz08EjJ25wWvXLGhAdgdDJcGdCBYraNWjWqo265YOsxQNQk88Ij3bYh0Otz/eiK1
-         3dWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705993358; x=1706598158;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0HA3HgAJbahgUJBX1gJ3AzroSL9tqmUD02YJ2gg4LNI=;
-        b=ZTXnHjTE12sgBhKT9U50L22JlFLoAAUoRHXmg1JSTNjK0M3riiSWuJ3YxczCCqmib4
-         4RkS3eZStx31EyB7ET+sqoz6cXnk3RG+ojpfMHD5nsCi3TSVZnFYFxBDjzBtElktCnTe
-         PogTMr6remA6KGVGNgLyyryV/ovZ85v/PMQEclxNTdeW91Xyvp6vv8Ch2a/b0lVlqViP
-         fqI350KC+abB+wxfmkwg/0911oF8izSjmFk2iGdh/vPGzsIHpNQMBqsH93yo5PgKiBwi
-         nJr2NjjbJCOK3sRERqFg8yh8UgbN6aPTdIJmEsa4tsmapZPecl3gkLJlFfHUSXKyieU8
-         BkmA==
-X-Gm-Message-State: AOJu0YwdsFX8kmq34AZhcowaIRg3xhgAvIWWOvTMOxp+jwJn4Fyp98tf
-	fo1mtG9Jm7tsHGZfnrdQI5oV7J1pasmmDpW3l9xGUMHiEhL/pqimT5LXg0jegc8=
-X-Google-Smtp-Source: AGHT+IFS5K2uIygufmipIXH0vhHz5DAndNr0whIooxvibYTJnGVc1IlHqA+kcq/xwxH4E4Cnt7O3Xg==
-X-Received: by 2002:a05:6000:4cc:b0:339:35a4:7caa with SMTP id h12-20020a05600004cc00b0033935a47caamr1569042wri.54.1705993358156;
-        Mon, 22 Jan 2024 23:02:38 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.135])
-        by smtp.gmail.com with ESMTPSA id q7-20020adffec7000000b0033926505eafsm8410992wrs.32.2024.01.22.23.02.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 23:02:37 -0800 (PST)
-Message-ID: <92db308f-075c-4799-9777-5bc14438ce68@tuxon.dev>
-Date: Tue, 23 Jan 2024 09:02:35 +0200
+	s=arc-20240116; t=1705995282; c=relaxed/simple;
+	bh=j1yl+iSWj2mtbvW4QbXaRCnbp593DbDAuSneOBTuNgc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HJF37lf4lu4wvSmi7llBsMcF5TYxj0sDP782+Qp/m/8r99s/lW7AVKinDDcLClhgnjyJxTdhI3iwBgYYRqdGTH3Nro3fQdGFiZqf/H2M0dLfHsFR8oR2oR118nBUBTHD9/OhhDo68T+Z6QF3rF676BuJLljzqWqLRkBrDIBDaJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [111.9.175.10])
+	by gateway (Coremail) with SMTP id _____8CxSPD+QqdlRQEBAA--.5229S3;
+	Wed, 17 Jan 2024 11:01:18 +0800 (CST)
+Received: from Board-3A3000 (unknown [111.9.175.10])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Axj835Qqdl_JcFAA--.957S2;
+	Wed, 17 Jan 2024 11:01:15 +0800 (CST)
+Date: Wed, 17 Jan 2024 11:01:13 +0800
+From: Huang Pei <huangpei@loongson.cn>
+To: Yajun Deng <yajun.deng@linux.dev>
+Cc: Mike Rapoport <rppt@kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	linux-mm@kvack.org, Bibo Mao <maobibo@loongson.cn>,
+	linux-mips@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
+	Li Xuefeng <lixuefeng@loongson.cn>,
+	Yang Tiezhu <yangtiezhu@loongson.cn>,
+	Gao Juxin <gaojuxin@loongson.cn>,
+	Huacai Chen <chenhuacai@loongson.cn>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-kernel@vger.kernel.org
+Subject: Re: memblock_reserve for unadded region (was: [PATCH] MIPS:
+ loongson64: fix boot failure)
+Message-ID: <20240117030113.gs2fjs6vydthsc6l@Board-3A3000>
+References: <20231225093025.23215-1-huangpei@loongson.cn>
+ <731134fd-4b3d-418c-84ee-80646bffcc01@flygoat.com>
+ <ZaZAqMwuql9Y5Gra@kernel.org>
+ <20240116122304.qwzy7san2vgspt2x@Board-3A3000>
+ <3fc2f75e-d163-1ad1-009a-0e4538011885@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/10] watchdog: rzg2l_wdt: Check return status of
- pm_runtime_put()
-Content-Language: en-US
-To: Guenter Roeck <linux@roeck-us.net>, wim@linux-watchdog.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- geert+renesas@glider.be, magnus.damm@gmail.com, mturquette@baylibre.com,
- sboyd@kernel.org, p.zabel@pengutronix.de, biju.das.jz@bp.renesas.com
-Cc: linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-clk@vger.kernel.org, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240122111115.2861835-1-claudiu.beznea.uj@bp.renesas.com>
- <20240122111115.2861835-4-claudiu.beznea.uj@bp.renesas.com>
- <c857cdd4-459b-41ae-b4bb-0da45e461335@roeck-us.net>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <c857cdd4-459b-41ae-b4bb-0da45e461335@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <3fc2f75e-d163-1ad1-009a-0e4538011885@linux.dev>
+X-CM-TRANSID:AQAAf8Axj835Qqdl_JcFAA--.957S2
+X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW3Xw15Ww1rWr4UtrW5ZFW7WrX_yoW3Wry7pr
+	1fJF12krW8Jr18Xr4Utr15Gr1jvw1Fk3WUXrZrJr18ZFyq9r17Xr18Xr1FgFyDJrW8JF1I
+	qF1DX3WIvw1DAwcCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUU9Eb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6r4j6r4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+	Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_
+	Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
+	CY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8
+	JwCFI7km07C267AKxVWUtVW8ZwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
+	v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
+	67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2
+	IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_
+	Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8HKZJUUUUU==
+X-Gw-Check: 3048a62aa90648ec
 
-
-
-On 22.01.2024 19:31, Guenter Roeck wrote:
-> On 1/22/24 03:11, Claudiu wrote:
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> pm_runtime_put() may return an error code. Check its return status.
->>
->> Fixes: 2cbc5cd0b55f ("watchdog: Add Watchdog Timer driver for RZ/G2L")
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->> ---
->>   drivers/watchdog/rzg2l_wdt.c | 6 +++++-
->>   1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/watchdog/rzg2l_wdt.c b/drivers/watchdog/rzg2l_wdt.c
->> index 4ab9e7c5e771..0554965027cd 100644
->> --- a/drivers/watchdog/rzg2l_wdt.c
->> +++ b/drivers/watchdog/rzg2l_wdt.c
->> @@ -144,9 +144,13 @@ static int rzg2l_wdt_start(struct watchdog_device
->> *wdev)
->>   static int rzg2l_wdt_stop(struct watchdog_device *wdev)
->>   {
->>       struct rzg2l_wdt_priv *priv = watchdog_get_drvdata(wdev);
->> +    int ret;
->>         rzg2l_wdt_reset(priv);
->> -    pm_runtime_put(wdev->parent);
->> +
->> +    ret = pm_runtime_put(wdev->parent);
->> +    if (ret < 0)
->> +        return ret;
->>         return 0;
->>   }
+On Wed, Jan 17, 2024 at 10:20:00AM +0800, Yajun Deng wrote:
 > 
-> A simple
->     return pm_runtime_put();
-> might do.
-
-pm_runtime_put() may return 1 if the device is already suspended though
-this call trace:
-
-pm_runtime_put() ->
-   __pm_runtime_idle() ->
-       rpm_idle() ->
-           rpm_suspend() ->
-               rpm_check_suspend_allowed() [1]
-
-That return value is not considered error thus I wanted to consider it
-here, too.
-
-[1]
-https://elixir.bootlin.com/linux/latest/source/drivers/base/power/runtime.c#L278
-
+> On 2024/1/16 20:23, Huang Pei wrote:
+> > On Tue, Jan 16, 2024 at 10:39:04AM +0200, Mike Rapoport wrote:
+> > > On Mon, Jan 15, 2024 at 02:08:21PM +0000, Jiaxun Yang wrote:
+> > > > Hi mm folks,
+> > > > 
+> > > > Just a quick question, what is the expected behavior of memblock_reserve
+> > > > a region that is not added to memblock with memblock_add?
+> > > > 
+> > > > I'm unable to find any documentation about memblock_reserve in comments and
+> > > > boot-time-mm, but as per my understanding to the code, this should be a
+> > > > legit usage?
+> > > Yes, memblock allows reserving memory that was not added to memblock with
+> > > memblock_add().
+> > I think arch/platform specific code should fix this bug, like,
+> > --------------------------------------------------------------------------
+> > //for loongson64
+> > memblock_set_node(0, 1ULL << 44, &memblock.reserved, 0);
+> > 
+> > --------------------------------------------------------------------------
+> > 
+> > or maybe memblock provide something like memblock_reserve_node
 > 
-> However, one question: Given that pm_runtime_put() returns -ENOSYS if
-> CONFIG_PM is disabled, that means the driver will depend on CONFIG_PM=y.
+> Hi pei,
+> 
+> Can you test the following patch to see if it fixes this bug?
+> 
+> diff --git a/mm/mm_init.c b/mm/mm_init.c
+> index 2c19f5515e36..97721d99fdce 100644
+> --- a/mm/mm_init.c
+> +++ b/mm/mm_init.c
+> @@ -708,6 +708,9 @@ static void __meminit init_reserved_page(unsigned long
+> pfn, int nid)
+>         pg_data_t *pgdat;
+>         int zid;
+> 
+> +       if (unlikely(nid == NUMA_NO_NODE || nid >= MAX_NUMNODES))
+> +               nid = early_pfn_to_nid(pfn);
+> +
+>         if (early_page_initialised(pfn, nid))
+>                 return;
 
-Indeed, the driver depends on CONFIG_PM=y for proper working. It is for
-devices selecting ARCH_RZG2L and RZ/V2M (ARM64 based uarch) which select
-CONFIG_PM=y:
-https://elixir.bootlin.com/linux/latest/source/drivers/soc/renesas/Kconfig#L45
+I do not think this fix set the right nid, ONLY arch/platform know that
+nid
 
-The driver is written with CONFIG_PM=y dependency in mind (e.g. the clocks
-are enabled though runtime PM APIs).
+ int __meminit early_pfn_to_nid(unsigned long pfn)
+{
+	static DEFINE_SPINLOCK(early_pfn_lock);
+	int nid;
 
-> Assuming this is intentional, would it make sense to explicitly declare
-> that dependency in Kconfig ? It doesn't seem to make any sense to build
-> the driver if it won't work anyway.
+	spin_lock(&early_pfn_lock);
+	nid = __early_pfn_to_nid(pfn,
+			&early_pfnnid_cache);
+	if (nid < 0)
+	//!!!first_online_node MAY NOT be the node the pfn belong to!!!
+		nid = first_online_node;  
 
-The dependency exists there for ARCH_RZG2L and RZ/V2M devices but not
-directly and it is not strict (in the sense that we allow to build the
-driver w/o CONFIG_PM (I think this is good to check build on different
-configurations, the COMPILE_TEST is there anyway in [1]) ). E.g.:
+	spin_unlock(&early_pfn_lock);
 
-RENESAS_RZG2LWDT depends on ARCH_RENESAS [1]
-ARCH_RENESAS is the ARMv8 uarch flag [2]
-SOC_RENESAS is set if ARCH_RENESAS [3]
-ARCH_RZG2L is visible only if SOC_RENESAS [4]
-ARCH_RZG2L selects PM [5]
-RZ/V2M selects PM [6]
-
-Please let me know what do you think about it?
-
-Thank you,
-Claudiu Beznea
-
-
-[1]
-https://elixir.bootlin.com/linux/latest/source/drivers/watchdog/Kconfig#L913
-[2]
-https://elixir.bootlin.com/linux/latest/source/arch/arm64/Kconfig.platforms#L273
-[3]
-https://elixir.bootlin.com/linux/latest/source/drivers/soc/renesas/Kconfig#L2
-[4]
-https://elixir.bootlin.com/linux/latest/source/drivers/soc/renesas/Kconfig#L9
-[5]
-https://elixir.bootlin.com/linux/latest/source/drivers/soc/renesas/Kconfig#L45
-[6]
-https://elixir.bootlin.com/linux/latest/source/drivers/soc/renesas/Kconfig#L328
-
+	return
+		nid;
+}
 
 > 
-> Thanks,
-> Guenter
 > 
+> > > > In practical we run into uninitialized nid of reserved block problem, should
+> > > > we fix it
+> > > > in our usage, or on memblock side?
+> > > Apparently it's a bug in memblock :(
+> > > 
+> > > If you revert 61167ad5fecd ("mm: pass nid to reserve_bootmem_region()")
+> > > does the issue disappear?
+> > Yes, I git bisect this commit.
+> > 
+> > But I don't think it is a bug in memblock. IMO, memblock_reserve under
+> > NUMA set nid of reserved region to MAX_NUMNODES, which is the point
+> > that cause the "memblock_get_region_node from memmap_init_reserved_pages "
+> > passing a invalid node id(aka MAX_NUMNODES) to "reserver_bootmem_region
+> > -> init_reserved_page -> early_pfn_to_nid". If arch-specific code DOES NOT
+> > initialize the nid of reserved region(only it know that), or the reserved
+> > region NOT within a memblock added by memblock_add, memblock can not
+> > give a valid node id to the reserved region. Commit 61167ad5fecd ("mm: pass nid to
+> > reserve_bootmem_region()") just reveals the embarrassment case by an
+> > out of bound memory access.
+> > 
+> > > > Thanks
+> > > > 
+> > > > 在 2023/12/25 09:30, Huang Pei 写道:
+> > > > > Since commit 61167ad5fecd("mm: pass nid to reserve_bootmem_region()),
+> > > > > loongson64 booting failed with CONFIG_DEFERRED_STRUCT_PAGE_INIT like
+> > > > > this:
+> > > > > ----------------------------------------------------------------------
+> > > > >    Call Trace:
+> > > > >    [<ffffffff8235d088>] reserve_bootmem_region+0xa8/0x184
+> > > > >    [<ffffffff82333940>] memblock_free_all+0x104/0x2a8
+> > > > >    [<ffffffff8231d8e4>] mem_init+0x84/0x94
+> > > > >    [<ffffffff82330958>] mm_core_init+0xf8/0x308
+> > > > >    [<ffffffff82318c38>] start_kernel+0x43c/0x86c
+> > > > > 
+> > > > >    Code: 10400028  2402fff0  de420000 <dc432880> 0203182b 14600022
+> > > > >    64420070  00003025  24040003
+> > > > > 
+> > > > >    ---[ end trace 0000000000000000 ]---
+> > > > >    Kernel panic - not syncing: Attempted to kill the idle task!
+> > > > >    ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
+> > > > > ----------------------------------------------------------------------
+> > > > > 
+> > > > > The root cause is no memory region "0x0-0x1fffff" paired with
+> > > > > memory-reserved region "0x0-0x1fffff" and "0x0-0xfff", with "memblock
+> > > > > =debug":
+> > > > > 
+> > > > > ----------------------------------------------------------------------
+> > > > >     memory[0x0]     [0x0000000000200000-0x000000000effffff],
+> > > > >     0x000000000ee00000 bytes on node 0 flags: 0x0 !!!!here
+> > > > >     memory[0x1]     [0x0000000090000000-0x00000000fdffffff],
+> > > > >     0x000000006e000000 bytes on node 0 flags: 0x0
+> > > > >     memory[0x2]     [0x0000000100000000-0x000000027fffffff],
+> > > > >     0x0000000180000000 bytes on node 0 flags: 0x0
+> > > > >     memory[0x3]     [0x0000100000000000-0x000010000fffffff],
+> > > > >     0x0000000010000000 bytes on node 1 flags: 0x0
+> > > > >     memory[0x4]     [0x0000100090000000-0x000010027fffffff],
+> > > > >     0x00000001f0000000 bytes on node 1 flags: 0x0
+> > > > >     reserved.cnt  = 0x1f
+> > > > >     reserved[0x0]   [0x0000000000000000-0x000000000190c80a],
+> > > > >     0x000000000190c80b bytes flags: 0x0 !!!!oops 0x0-0x1fffff not in memory[0]
+> > > > >     reserved[0x1]   [0x000000000190c810-0x000000000190eea3],
+> > > > >     0x0000000000002694 bytes flags: 0x0
+> > > > > ----------------------------------------------------------------------
+> > > > > 
+> > > > > It caused memory-reserved region "0x0-0x1fffff" without valid node id
+> > > > > in "memblock_get_region_node" from "memmap_init_reserved_pages", lead to
+> > > > > "reserve_bootmem_region-> init_reserved_page -> early_pfn_to_nid()"
+> > > > > accessing "node_data" out of bound.
+> > > > > 
+> > > > > To fix this bug, we should remove unnecessary memory block reservation.
+> > > > > 
+> > > > > +. no need to reserve 0x0-0x1fffff below kernel loading address, since
+> > > > > it is not registered by "memblock_add_node"
+> > > > > 
+> > > > > +. no need to reserve 0x0-0xfff for exception handling if it is not
+> > > > > registered by "memblock_add" either.
+> > > > > 
+> > > > > Fixes: commit 61167ad5fecd("mm: pass nid to reserve_bootmem_region())
+> > > > > Signed-off-by: Huang Pei <huangpei@loongson.cn>
+> > > > > ---
+> > > > >    arch/mips/kernel/traps.c    | 3 ++-
+> > > > >    arch/mips/loongson64/numa.c | 2 --
+> > > > >    2 files changed, 2 insertions(+), 3 deletions(-)
+> > > > > 
+> > > > > diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+> > > > > index 246c6a6b0261..9b632b4c10c3 100644
+> > > > > --- a/arch/mips/kernel/traps.c
+> > > > > +++ b/arch/mips/kernel/traps.c
+> > > > > @@ -2007,7 +2007,8 @@ unsigned long vi_handlers[64];
+> > > > >    void reserve_exception_space(phys_addr_t addr, unsigned long size)
+> > > > >    {
+> > > > > -	memblock_reserve(addr, size);
+> > > > > +	if(memblock_is_region_memory(addr, size))
+> > > > > +		memblock_reserve(addr, size);
+> > > > >    }
+> > > > >    void __init *set_except_vector(int n, void *addr)
+> > > > > diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
+> > > > > index 8f61e93c0c5b..0f516dde81da 100644
+> > > > > --- a/arch/mips/loongson64/numa.c
+> > > > > +++ b/arch/mips/loongson64/numa.c
+> > > > > @@ -130,8 +130,6 @@ static void __init node_mem_init(unsigned int node)
+> > > > >    			memblock_reserve((node_addrspace_offset | 0xfe000000),
+> > > > >    					 32 << 20);
+> > > > > -		/* Reserve pfn range 0~node[0]->node_start_pfn */
+> > > > > -		memblock_reserve(0, PAGE_SIZE * start_pfn);
+> > > > >    	}
+> > > > >    }
+> > > > -- 
+> > > > ---
+> > > > Jiaxun Yang
+> > > > 
+> > > -- 
+> > > Sincerely yours,
+> > > Mike.
+
 
