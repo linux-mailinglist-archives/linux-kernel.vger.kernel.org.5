@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-29098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29100-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE87B83087F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:49:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D36F83088B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:50:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54AA51F25544
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:49:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD13E1F256AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:50:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB87121102;
-	Wed, 17 Jan 2024 14:48:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C637420DDD;
+	Wed, 17 Jan 2024 14:48:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="IP32Rud+"
-Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="jN46YV6t"
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49200208B0;
-	Wed, 17 Jan 2024 14:48:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0813A224C1;
+	Wed, 17 Jan 2024 14:48:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.21.196.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705502908; cv=none; b=OFn3TMtqviLuaz2gEGMejPUHTCe18VQYrPtr+xESDufEOTpGvl6MtJkMhPJWY0PwY92IjM+f+YWX1ioQCxEPmlnCAG57ij44hjc7sBxqYwv0WXwz7BVcTuyz7hxcGGpb68OlmwuioMkTPTl28zrzcfag0H3gIyzPHUrC+B7lP6A=
+	t=1705502916; cv=none; b=JRoLoPuVWx7APUOShISbFP2aB9rl/dbdYxLrUYiBWsWgSXUVSlXd6A7J9WB6eYtWWVuksXYpUlEkZduL2ue5awL1UNHI+88qAG2M2NRQ4sSYhNbyRppT1q/Ya8BaiC67yMwgt/8EYCsX8j/Cv9mIctiK/n5FN+fnLuGU2jBmelQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705502908; c=relaxed/simple;
-	bh=cQgJ5FMziwF/ZVGk5IQHM8xa8EGbaqSY+PgnjwvFFmY=;
+	s=arc-20240116; t=1705502916; c=relaxed/simple;
+	bh=uLzF0Z9uTDPvWcQaf+vv2VlW4+pVlC+H/Z+T5fMy8ic=;
 	h=DKIM-Signature:X-IronPort-AV:Received:Received:Received:
 	 X-Farcaster-Flow-ID:Received:Received:From:To:CC:Subject:Date:
 	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 X-Originating-IP:X-ClientProxiedBy:Content-Type:
-	 Content-Transfer-Encoding; b=dEckYnWT4M6GG4NHfTPJDjfhS4nmTBIzfAk7/10Yehfh4GxCk6TDNxa+sz/Oy2TVsBhOPShD3PI/6MEF4U63vL5pRHm0fgUVtFaLGWUDlaJBMyu/rhphzQqEYKtKM+zjuZHy/IRCTgE31i7W3IoW8oGuHV1Jh7T94m4OnIWQltU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.de; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=IP32Rud+; arc=none smtp.client-ip=99.78.197.218
+	 Content-Transfer-Encoding; b=CtUoTGWrpXxmwvyXpSxLV+LwHVjbMHJJK4HEAX8cabWbsTmhUoNPi6WuVpivOLGXtqG3rMEU+vm44lmM52iQh35QDc4R0V2ooOL89g42LTQK+q6FulYjrT9wkG7SfvtBFnDb5kl0YogCutLupWHoe/+Ml37yE56y1rRGIstBhI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.de; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=jN46YV6t; arc=none smtp.client-ip=72.21.196.25
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1705502907; x=1737038907;
+  t=1705502915; x=1737038915;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=zs1ZonnNcsxfGweb9JZkXAKdSNx8wyk84dZsk33RDuw=;
-  b=IP32Rud+NCZUHlj0YV+fE8XJxcw36JOSXDNUfoMAvHl3tR32cDlCgC6x
-   89ri9036iVCoCAe4xj9T5S9QR0ktl+R253deLrZ0skiKLnedWAjATXdRc
-   XB3Bspbf6tnLfNMNzUHaNUxXG8Bs7QDDcBcYRk+WdjnYilJTbwEyckCY5
-   o=;
+  bh=5KRHAMu9yU5dNg0w2SWnmdVf58WPdmNSqcv1epJi1fM=;
+  b=jN46YV6tdT92H2gXRLr6yekdbw/klHAhddVKZiJJZLz1fB3y4Qu8wuww
+   yisyQLE5SLNOuM6LyIETZrKjmmvxac1dL5VY14Gl8NcCBrg5wvg0+vdSe
+   rrU+7vEH2K1Ee1TRb4zKwWQRUPj2GXt9HSGFVF7DUg3RArMPsioBw48E/
+   s=;
 X-IronPort-AV: E=Sophos;i="6.05,200,1701129600"; 
-   d="scan'208";a="267408007"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-b1c0e1d0.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 14:48:24 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan3.pdx.amazon.com [10.39.38.70])
-	by email-inbound-relay-pdx-2c-m6i4x-b1c0e1d0.us-west-2.amazon.com (Postfix) with ESMTPS id 4014B80E4C;
-	Wed, 17 Jan 2024 14:48:22 +0000 (UTC)
-Received: from EX19MTAUWB001.ant.amazon.com [10.0.21.151:3455]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.59.34:2525] with esmtp (Farcaster)
- id 15515389-f0a6-44be-bc51-5bd5302b18d0; Wed, 17 Jan 2024 14:48:21 +0000 (UTC)
-X-Farcaster-Flow-ID: 15515389-f0a6-44be-bc51-5bd5302b18d0
+   d="scan'208";a="374981621"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-0aba4706.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 14:48:34 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan2.iad.amazon.com [10.32.235.34])
+	by email-inbound-relay-iad-1e-m6i4x-0aba4706.us-east-1.amazon.com (Postfix) with ESMTPS id D2FBCA25EE;
+	Wed, 17 Jan 2024 14:48:26 +0000 (UTC)
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.7.35:54739]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.24.5:2525] with esmtp (Farcaster)
+ id 5dc96f43-86b0-43d4-b0c2-0f3115bf0b25; Wed, 17 Jan 2024 14:48:26 +0000 (UTC)
+X-Farcaster-Flow-ID: 5dc96f43-86b0-43d4-b0c2-0f3115bf0b25
 Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 17 Jan 2024 14:48:21 +0000
+ 15.2.1118.40; Wed, 17 Jan 2024 14:48:25 +0000
 Received: from dev-dsk-graf-1a-5ce218e4.eu-west-1.amazon.com (10.253.83.51) by
  EX19D020UWC004.ant.amazon.com (10.13.138.149) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 17 Jan 2024 14:48:17 +0000
+ 15.2.1118.40; Wed, 17 Jan 2024 14:48:21 +0000
 From: Alexander Graf <graf@amazon.com>
 To: <linux-kernel@vger.kernel.org>
 CC: <linux-trace-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
@@ -78,9 +78,9 @@ CC: <linux-trace-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
 	Usama Arif <usama.arif@bytedance.com>, David Woodhouse <dwmw@amazon.co.uk>,
 	Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rob Herring
 	<robh+dt@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v3 07/17] kexec: Add documentation for KHO
-Date: Wed, 17 Jan 2024 14:46:54 +0000
-Message-ID: <20240117144704.602-8-graf@amazon.com>
+Subject: [PATCH v3 08/17] arm64: Add KHO support
+Date: Wed, 17 Jan 2024 14:46:55 +0000
+Message-ID: <20240117144704.602-9-graf@amazon.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240117144704.602-1-graf@amazon.com>
 References: <20240117144704.602-1-graf@amazon.com>
@@ -95,231 +95,212 @@ X-ClientProxiedBy: EX19D040UWA004.ant.amazon.com (10.13.139.93) To
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
-With KHO in place, let's add documentation that describes what it is and
-how to use it.
+We now have all bits in place to support KHO kexecs. This patch adds
+awareness of KHO in the kexec file as well as boot path for arm64 and
+adds the respective kconfig option to the architecture so that it can
+use KHO successfully.
 
 Signed-off-by: Alexander Graf <graf@amazon.com>
 
 ---
 
-v2 -> v3:
+v1 -> v2:
 
-  - Fix wording
-  - Add Documentation to MAINTAINERS file
+  - test bot warning fix
+  - Change kconfig option to ARCH_SUPPORTS_KEXEC_KHO
+  - s/kho_reserve_mem/kho_reserve_previous_mem/g
+  - s/kho_reserve/kho_reserve_scratch/g
+  - Remove / reduce ifdefs for kho fdt code
 ---
- Documentation/kho/concepts.rst   | 88 ++++++++++++++++++++++++++++++++
- Documentation/kho/index.rst      | 19 +++++++
- Documentation/kho/usage.rst      | 57 +++++++++++++++++++++
- Documentation/subsystem-apis.rst |  1 +
- MAINTAINERS                      |  1 +
- 5 files changed, 166 insertions(+)
- create mode 100644 Documentation/kho/concepts.rst
- create mode 100644 Documentation/kho/index.rst
- create mode 100644 Documentation/kho/usage.rst
+ arch/arm64/Kconfig        |  3 +++
+ arch/arm64/kernel/setup.c |  2 ++
+ arch/arm64/mm/init.c      |  8 ++++++
+ drivers/of/fdt.c          | 39 ++++++++++++++++++++++++++++
+ drivers/of/kexec.c        | 54 +++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 106 insertions(+)
 
-diff --git a/Documentation/kho/concepts.rst b/Documentation/kho/concepts.rst
-new file mode 100644
-index 000000000000..cb8330bcb06c
---- /dev/null
-+++ b/Documentation/kho/concepts.rst
-@@ -0,0 +1,88 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 8f6cf1221b6a..44d8923d9db4 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -1496,6 +1496,9 @@ config ARCH_SUPPORTS_KEXEC_IMAGE_VERIFY_SIG
+ config ARCH_DEFAULT_KEXEC_IMAGE_VERIFY_SIG
+ 	def_bool y
+ 
++config ARCH_SUPPORTS_KEXEC_KHO
++	def_bool y
 +
-+=======================
-+Kexec Handover Concepts
-+=======================
+ config ARCH_SUPPORTS_CRASH_DUMP
+ 	def_bool y
+ 
+diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+index 417a8a86b2db..9aa05b84d202 100644
+--- a/arch/arm64/kernel/setup.c
++++ b/arch/arm64/kernel/setup.c
+@@ -346,6 +346,8 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
+ 
+ 	paging_init();
+ 
++	kho_reserve_previous_mem();
 +
-+Kexec HandOver (KHO) is a mechanism that allows Linux to preserve state -
-+arbitrary properties as well as memory locations - across kexec.
+ 	acpi_table_upgrade();
+ 
+ 	/* Parse the ACPI tables for possible boot-time configuration */
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index 74c1db8ce271..1a8fc91509af 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -358,6 +358,8 @@ void __init bootmem_init(void)
+ 	 */
+ 	arch_reserve_crashkernel();
+ 
++	kho_reserve_scratch();
 +
-+It introduces multiple concepts:
+ 	memblock_dump_all();
+ }
+ 
+@@ -386,6 +388,12 @@ void __init mem_init(void)
+ 	/* this will put all unused low memory onto the freelists */
+ 	memblock_free_all();
+ 
++	/*
++	 * Now that all KHO pages are marked as reserved, let's flip them back
++	 * to normal pages with accurate refcount.
++	 */
++	kho_populate_refcount();
 +
-+KHO Device Tree
-+---------------
+ 	/*
+ 	 * Check boundaries twice: Some fundamental inconsistencies can be
+ 	 * detected at build time already.
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index bf502ba8da95..f9b9a36fb722 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -1006,6 +1006,42 @@ void __init early_init_dt_check_for_usable_mem_range(void)
+ 		memblock_add(rgn[i].base, rgn[i].size);
+ }
+ 
++/**
++ * early_init_dt_check_kho - Decode info required for kexec handover from DT
++ */
++static void __init early_init_dt_check_kho(void)
++{
++	unsigned long node = chosen_node_offset;
++	u64 kho_start, scratch_start, scratch_size, mem_start, mem_size;
++	const __be32 *p;
++	int l;
 +
-+Every KHO kexec carries a KHO specific flattened device tree blob that
-+describes the state of the system. Device drivers can register to KHO to
-+serialize their state before kexec. After KHO, device drivers can read
-+the device tree and extract previous state.
++	if (!IS_ENABLED(CONFIG_KEXEC_KHO) || (long)node < 0)
++		return;
 +
-+KHO only uses the fdt container format and libfdt library, but does not
-+adhere to the same property semantics that normal device trees do: Properties
-+are passed in native endianness and standardized properties like ``regs`` and
-+``ranges`` do not exist, hence there are no ``#...-cells`` properties.
++	p = of_get_flat_dt_prop(node, "linux,kho-dt", &l);
++	if (l != (dt_root_addr_cells + dt_root_size_cells) * sizeof(__be32))
++		return;
 +
-+KHO introduces a new concept to its device tree: ``mem`` properties. A
-+``mem`` property can be inside any subnode in the device tree. When present,
-+it contains an array of physical memory ranges that the new kernel must mark
-+as reserved on boot. It is recommended, but not required, to make these ranges
-+as physically contiguous as possible to reduce the number of array elements ::
++	kho_start = dt_mem_next_cell(dt_root_addr_cells, &p);
 +
-+    struct kho_mem {
-+            __u64 addr;
-+            __u64 len;
-+    };
++	p = of_get_flat_dt_prop(node, "linux,kho-scratch", &l);
++	if (l != (dt_root_addr_cells + dt_root_size_cells) * sizeof(__be32))
++		return;
 +
-+After boot, drivers can call the kho subsystem to transfer ownership of memory
-+that was reserved via a ``mem`` property to themselves to continue using memory
-+from the previous execution.
++	scratch_start = dt_mem_next_cell(dt_root_addr_cells, &p);
++	scratch_size = dt_mem_next_cell(dt_root_addr_cells, &p);
 +
-+The KHO device tree follows the in-Linux schema requirements. Any element in
-+the device tree is documented via device tree schema yamls that explain what
-+data gets transferred.
++	p = of_get_flat_dt_prop(node, "linux,kho-mem", &l);
++	if (l != (dt_root_addr_cells + dt_root_size_cells) * sizeof(__be32))
++		return;
 +
-+Mem cache
-+---------
++	mem_start = dt_mem_next_cell(dt_root_addr_cells, &p);
++	mem_size = dt_mem_next_cell(dt_root_addr_cells, &p);
 +
-+The new kernel needs to know about all memory reservations, but is unable to
-+parse the device tree yet in early bootup code because of memory limitations.
-+To simplify the initial memory reservation flow, the old kernel passes a
-+preprocessed array of physically contiguous reserved ranges to the new kernel.
++	kho_populate(kho_start, scratch_start, scratch_size, mem_start, mem_size);
++}
 +
-+These reservations have to be separate from architectural memory maps and
-+reservations because they differ on every kexec, while the architectural ones
-+get passed directly between invocations.
+ #ifdef CONFIG_SERIAL_EARLYCON
+ 
+ int __init early_init_dt_scan_chosen_stdout(void)
+@@ -1304,6 +1340,9 @@ void __init early_init_dt_scan_nodes(void)
+ 
+ 	/* Handle linux,usable-memory-range property */
+ 	early_init_dt_check_for_usable_mem_range();
 +
-+The less entries this cache contains, the faster the new kernel will boot.
++	/* Handle kexec handover */
++	early_init_dt_check_kho();
+ }
+ 
+ bool __init early_init_dt_scan(void *params)
+diff --git a/drivers/of/kexec.c b/drivers/of/kexec.c
+index 68278340cecf..59070b09ad45 100644
+--- a/drivers/of/kexec.c
++++ b/drivers/of/kexec.c
+@@ -264,6 +264,55 @@ static inline int setup_ima_buffer(const struct kimage *image, void *fdt,
+ }
+ #endif /* CONFIG_IMA_KEXEC */
+ 
++static int kho_add_chosen(const struct kimage *image, void *fdt, int chosen_node)
++{
++	void *dt = NULL;
++	phys_addr_t dt_mem = 0;
++	phys_addr_t dt_len = 0;
++	phys_addr_t scratch_mem = 0;
++	phys_addr_t scratch_len = 0;
++	void *mem_cache = NULL;
++	phys_addr_t mem_cache_mem = 0;
++	phys_addr_t mem_cache_len = 0;
++	int ret = 0;
 +
-+Scratch Region
-+--------------
++#ifdef CONFIG_KEXEC_KHO
++	dt = image->kho.dt.buffer;
++	dt_mem = image->kho.dt.mem;
++	dt_len = image->kho.dt.bufsz;
 +
-+To boot into kexec, we need to have a physically contiguous memory range that
-+contains no handed over memory. Kexec then places the target kernel and initrd
-+into that region. The new kernel exclusively uses this region for memory
-+allocations before it ingests the mem cache.
++	scratch_mem = kho_scratch_phys;
++	scratch_len = kho_scratch_len;
 +
-+We guarantee that we always have such a region through the scratch region: On
-+first boot, you can pass the ``kho_scratch`` kernel command line option. When
-+it is set, Linux allocates a CMA region of the given size. CMA gives us the
-+guarantee that no handover pages land in that region, because handover
-+pages must be at a static physical memory location and CMA enforces that
-+only movable pages can be located inside.
++	mem_cache = image->kho.mem_cache.buffer;
++	mem_cache_mem = image->kho.mem_cache.mem;
++	mem_cache_len = image->kho.mem_cache.bufsz;
++#endif
 +
-+After KHO kexec, we ignore the ``kho_scratch`` kernel command line option and
-+instead reuse the exact same region that was originally allocated. This allows
-+us to recursively execute any amount of KHO kexecs. Because we used this region
-+for boot memory allocations and as target memory for kexec blobs, some parts
-+of that memory region may be reserved. These reservations are irrenevant for
-+the next KHO, because kexec can overwrite even the original kernel.
++	if (!dt || !mem_cache)
++		goto out;
 +
-+KHO active phase
-+----------------
++	pr_debug("Adding kho metadata to DT");
 +
-+To enable user space based kexec file loader, the kernel needs to be able to
-+provide the device tree that describes the previous kernel's state before
-+performing the actual kexec. The process of generating that device tree is
-+called serialization. When the device tree is generated, some properties
-+of the system may become immutable because they are already written down
-+in the device tree. That state is called the KHO active phase.
-diff --git a/Documentation/kho/index.rst b/Documentation/kho/index.rst
-new file mode 100644
-index 000000000000..5e7eeeca8520
---- /dev/null
-+++ b/Documentation/kho/index.rst
-@@ -0,0 +1,19 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
++	ret = fdt_appendprop_addrrange(fdt, 0, chosen_node, "linux,kho-dt",
++				       dt_mem, dt_len);
++	if (ret)
++		goto out;
 +
-+========================
-+Kexec Handover Subsystem
-+========================
++	ret = fdt_appendprop_addrrange(fdt, 0, chosen_node, "linux,kho-scratch",
++				       scratch_mem, scratch_len);
++	if (ret)
++		goto out;
 +
-+.. toctree::
-+   :maxdepth: 1
++	ret = fdt_appendprop_addrrange(fdt, 0, chosen_node, "linux,kho-mem",
++				       mem_cache_mem, mem_cache_len);
++	if (ret)
++		goto out;
 +
-+   concepts
-+   usage
++out:
++	return ret;
++}
 +
-+.. only::  subproject and html
+ /*
+  * of_kexec_alloc_and_setup_fdt - Alloc and setup a new Flattened Device Tree
+  *
+@@ -412,6 +461,11 @@ void *of_kexec_alloc_and_setup_fdt(const struct kimage *image,
+ 		}
+ 	}
+ 
++	/* Add kho metadata if this is a KHO image */
++	ret = kho_add_chosen(image, fdt, chosen_node);
++	if (ret)
++		goto out;
 +
-+
-+   Indices
-+   =======
-+
-+   * :ref:`genindex`
-diff --git a/Documentation/kho/usage.rst b/Documentation/kho/usage.rst
-new file mode 100644
-index 000000000000..59e82f609f75
---- /dev/null
-+++ b/Documentation/kho/usage.rst
-@@ -0,0 +1,57 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+====================
-+Kexec Handover Usage
-+====================
-+
-+Kexec HandOver (KHO) is a mechanism that allows Linux to preserve state -
-+arbitrary properties as well as memory locations - across kexec.
-+
-+This document expects that you are familiar with the base KHO
-+:ref:`Documentation/kho/concepts.rst <concepts>`. If you have not read
-+them yet, please do so now.
-+
-+Prerequisites
-+-------------
-+
-+KHO is available when the ``CONFIG_KEXEC_KHO`` config option is set to y
-+at compile time. Every KHO producer has its own config option that you
-+need to enable if you would like to preserve their respective state across
-+kexec.
-+
-+To use KHO, please boot the kernel with the ``kho_scratch`` command
-+line parameter set to allocate a scratch region. For example
-+``kho_scratch=512M`` will reserve a 512 MiB scratch region on boot.
-+
-+Perform a KHO kexec
-+-------------------
-+
-+Before you can perform a KHO kexec, you need to move the system into the
-+:ref:`Documentation/kho/concepts.rst <KHO active phase>` ::
-+
-+  $ echo 1 > /sys/kernel/kho/active
-+
-+After this command, the KHO device tree is available in ``/sys/kernel/kho/dt``.
-+
-+Next, load the target payload and kexec into it. It is important that you
-+use the ``-s`` parameter to use the in-kernel kexec file loader, as user
-+space kexec tooling currently has no support for KHO with the user space
-+based file loader ::
-+
-+  # kexec -l Image --initrd=initrd -s
-+  # kexec -e
-+
-+The new kernel will boot up and contain some of the previous kernel's state.
-+
-+For example, if you enabled ``CONFIG_FTRACE_KHO``, the new kernel will contain
-+the old kernel's trace buffers in ``/sys/kernel/debug/tracing/trace``.
-+
-+Abort a KHO exec
-+----------------
-+
-+You can move the system out of KHO active phase again by calling ::
-+
-+  $ echo 1 > /sys/kernel/kho/active
-+
-+After this command, the KHO device tree is no longer available in
-+``/sys/kernel/kho/dt``.
-diff --git a/Documentation/subsystem-apis.rst b/Documentation/subsystem-apis.rst
-index 2d353fb8ea26..7c366337db5d 100644
---- a/Documentation/subsystem-apis.rst
-+++ b/Documentation/subsystem-apis.rst
-@@ -87,3 +87,4 @@ Storage interfaces
-    peci/index
-    wmi/index
-    tee/index
-+   kho/index
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 88bf6730d801..1c48e4ea4005 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11826,6 +11826,7 @@ S:	Maintained
- W:	http://kernel.org/pub/linux/utils/kernel/kexec/
- F:	Documentation/ABI/testing/sysfs-firmware-kho
- F:	Documentation/ABI/testing/sysfs-kernel-kho
-+F:	Documentation/kho/
- F:	include/linux/kexec.h
- F:	include/uapi/linux/kexec.h
- F:	kernel/kexec*
+ 	/* add bootargs */
+ 	if (cmdline) {
+ 		ret = fdt_setprop_string(fdt, chosen_node, "bootargs", cmdline);
 -- 
 2.40.1
 
