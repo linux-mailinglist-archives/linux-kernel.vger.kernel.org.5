@@ -1,67 +1,40 @@
-Return-Path: <linux-kernel+bounces-29127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A83F8830941
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:11:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84300830943
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:11:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 495C22840B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:11:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDBC61F26A02
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FE7D21A1C;
-	Wed, 17 Jan 2024 15:10:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fjdCBTR5"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B82A721347;
-	Wed, 17 Jan 2024 15:10:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895702232C;
+	Wed, 17 Jan 2024 15:10:49 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E9312231D;
+	Wed, 17 Jan 2024 15:10:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705504239; cv=none; b=awGkU0ztWMDKsPubNJDX/ssMLv6Uciv8oznu+KrJqODqYU5PsPsZFyr63QHrHf1v5lCN5uiM8V5Y1Hj05o4PAoxKEfjBu8H3ar43xZhq0Nn/ZztbxsCnpYNKyoIt60h7e0hF5osmQeUxnI3AEd7+LA8zloN9+BLmApCd7iZLxxo=
+	t=1705504248; cv=none; b=cVNcjG74rVIUw3nF/vlF6EqCeXptpJlBbq6zPd/WocYiHCIfDEm1egxdxOx85NgTcr6GXJSmlyg8md/GHEdo4bKx/2KhxBZNmhoD0188upfKAoMSzvH+Ozige0x+sG4jE8arLBd8Ww0jyVNBrbCSRbuNW82zm3fVPQ+sAHwMRXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705504239; c=relaxed/simple;
-	bh=ljl/r7N4mer6GGeIK822hYh6EtKqedkeGnD2+fL8RUs=;
-	h=Received:DKIM-Signature:Received:Received:Received:Message-ID:
-	 Date:MIME-Version:User-Agent:From:Subject:To:CC:References:
-	 Content-Language:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy:
-	 X-QCInternal:X-Proofpoint-Virus-Version:X-Proofpoint-GUID:
-	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Virus-Version:
-	 X-Proofpoint-Spam-Details; b=UImkq70baC3D/Fx3Ln+HNYIXXVmFzJRbYOk9tOe4f6jQTUrSfBAPj5sUMIP5tO/5DzdVNBx7Q3nPvnWSz6I6w1Dx8eK76QztfxkUvobMfkONQqzPyy3x2QXxUx29t5AOFeML2SPIEiL8ROZNei5dDXNJ0LJbxiTvO/uskoZq0tE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=fjdCBTR5; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40HCHxjW021620;
-	Wed, 17 Jan 2024 15:10:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:from:subject:to:cc:references
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=5CHxUFZ0UAnMZavlQhDmkKevw/uLJ0P1vxfIWqalQFU=; b=fj
-	dCBTR5oZZB8BJswD6gPon7YRsXJo1dh7nKi9JBV502mFFiD+Obm9aE8P/51Zc50h
-	9BcFWWWXtR8Kjp3jgeq/0KGPjkQbX85XdzYZHSkQ8B4hhEmRKCQSC8RTWfZN1e/m
-	UrUmCZVM+oTRyWCj4GstprVy1kN24OqApj9+klp4KRLfRxHTQtr5WUyEOjgSSep3
-	5hD2aerGEvJfJeolAcJs4G4yl7iL7H++qONo0eo/FOgefy6WIKK9dG0lwpdd6GoO
-	Ga0tP86BG9vy2YQIrJY474WHihcK/lwaNZWRW15R59aUq1cJqWhjelRnqxnURera
-	xfiThoLiP9ajneKVSvgw==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vp6p3sc7c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 15:10:33 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40HFAWC6028334
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 15:10:32 GMT
-Received: from [10.253.79.191] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 17 Jan
- 2024 07:10:27 -0800
-Message-ID: <2f9aef38-e1b1-4726-89bc-b2c31435984d@quicinc.com>
-Date: Wed, 17 Jan 2024 23:10:27 +0800
+	s=arc-20240116; t=1705504248; c=relaxed/simple;
+	bh=Q/NlXLR1xeVAXg56vYwGreGPuno69G1LnLefxMoUbyI=;
+	h=Received:Received:Message-ID:Date:MIME-Version:User-Agent:Subject:
+	 Content-Language:To:Cc:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=Ji4al3jaTO+jG04Isszb4NfBYk2WcmBWc9HgfYMtf+JPP+RHfZR0oZXGtBjhB68nLazCk/B+wIKiLxbnwg7lWeZK2SLODXvENSyLCz9h9WEesNQ2QHqWXeY2hE1eI/uIlTMa2P0Rp4mKoDNpwpNF4CNPhPCIHd/QTZgt7nv0+5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C7D4111FB;
+	Wed, 17 Jan 2024 07:11:31 -0800 (PST)
+Received: from [10.57.77.97] (unknown [10.57.77.97])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 23AA13F5A1;
+	Wed, 17 Jan 2024 07:10:44 -0800 (PST)
+Message-ID: <75c40710-df97-4d13-ae86-cb39adf3bad3@arm.com>
+Date: Wed, 17 Jan 2024 15:10:42 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,100 +42,238 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-From: Jie Luo <quic_luoj@quicinc.com>
-Subject: Re: [PATCH 1/6] arm64: dts: qcom: ipq9574: Add PPE device tree node
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <quic_kkumarcs@quicinc.com>,
-        <quic_suruchia@quicinc.com>, <quic_soni@quicinc.com>,
-        <quic_pavir@quicinc.com>, <quic_souravp@quicinc.com>,
-        <quic_linchen@quicinc.com>, <quic_leiwei@quicinc.com>
-References: <20240110112059.2498-1-quic_luoj@quicinc.com>
- <20240110112059.2498-2-quic_luoj@quicinc.com>
- <a42718a9-d0f9-47d9-9ee8-fb520ed2a7a8@linaro.org>
- <de0ad768-05fa-4bb1-bcbc-0adb28cb2257@quicinc.com>
- <CAA8EJppeQdB4W8u0ux16pxBBwF_fpt1j-5aC0f849n9_iaaYtQ@mail.gmail.com>
- <6fc9e65a-709a-4923-b0b3-7c460199417a@quicinc.com>
- <1552D7D8-2D1B-4236-A5BF-02B68DC919CB@linaro.org>
-Content-Language: en-US
-In-Reply-To: <1552D7D8-2D1B-4236-A5BF-02B68DC919CB@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [RFC PATCH v1] mm/filemap: Allow arch to request folio size for
+ exec memory
+Content-Language: en-GB
+To: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@redhat.com>, Barry Song <21cnbao@gmail.com>,
+ John Hubbard <jhubbard@nvidia.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+References: <20240111154106.3692206-1-ryan.roberts@arm.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240111154106.3692206-1-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: oVhv2JMGDPimJjoskdVFJDHym3chdDiu
-X-Proofpoint-ORIG-GUID: oVhv2JMGDPimJjoskdVFJDHym3chdDiu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-17_08,2024-01-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- phishscore=0 clxscore=1015 priorityscore=1501 bulkscore=0 impostorscore=0
- adultscore=0 mlxlogscore=999 lowpriorityscore=0 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2401170110
 
-
-
-On 1/12/2024 11:03 PM, Dmitry Baryshkov wrote:
-> On 12 January 2024 16:40:02 EET, Jie Luo <quic_luoj@quicinc.com> wrote:
->>
->>
->> On 1/12/2024 12:06 AM, Dmitry Baryshkov wrote:
->>> On Thu, 11 Jan 2024 at 17:31, Jie Luo <quic_luoj@quicinc.com> wrote:
->>
->>>>
->>>>>
->>>>>> +                    reg = <0x3a000000 0xb00000>;
->>>>>> +                    #address-cells = <1>;
->>>>>> +                    #size-cells = <1>;
->>>>>> +                    ranges;
->>>>>
->>>>> Put after reg.
->>>> Ok.
->>>>
->>>>>
->>>>>> +                    status = "okay";
->>>>>
->>>>> Drop
->>>> Ok.
->>>>
->>>>>
->>>>> All of above comments apply to your entire patchset and all places.
->>>>>
->>>>> Looking at code further, it does not look like suitable for mainline,
->>>>> but copy of downstream code. That's not what we expect upstream. Please
->>>>> go back to your bindings first. Also, I really insist you reaching out
->>>>> to other folks to help you in this process.
->>>>>
->>>>> Best regards,
->>>>> Krzysztof
->>>>>
->>>> We will do internal review of the gaps and update the patches as per
->>>> your comments.
->>>>
->>>> Thanks for the review comments.
->>>
->>>   From the first glance, the bindings do not follow upstream principles.
->>> You have all the settings (tdm, port config, etc) in the DT, while
->>> they should instead go to the driver. Well, unless you expect that the
->>> board might need to override them.
->>>
->> Hi Dmitry,
->> The TuratDM configion varies per SoC type, since the ethernet port capabilities of the SoCs vary. So we will have two different TDM configurations for IPQ5332 and IPQ9574 SoC. The driver also will
->> need to support future SoC, so we choose to configure this from the DTSI. The same reason applies to the port scheduler config as well.
+On 11/01/2024 15:41, Ryan Roberts wrote:
+> Change the readahead config so that if it is being requested for an
+> executable mapping, do a synchronous read of an arch-specified size in a
+> naturally aligned manner.
 > 
-> If it differs from SoC to SoC only, it goes to the driver. Point. No other options. Thank you.
-
-Understand it, Thanks for the advise, will move it to the driver code.
-
+> On arm64 if memory is physically contiguous and naturally aligned to the
+> "contpte" size, we can use contpte mappings, which improves utilization
+> of the TLB. When paired with the "multi-size THP" changes, this works
+> well to reduce dTLB pressure. However iTLB pressure is still high due to
+> executable mappings having a low liklihood of being in the required
+> folio size and mapping alignment, even when the filesystem supports
+> readahead into large folios (e.g. XFS).
 > 
->>
->> Thanks for review comments.
+> The reason for the low liklihood is that the current readahead algorithm
+> starts with an order-2 folio and increases the folio order by 2 every
+> time the readahead mark is hit. But most executable memory is faulted in
+> fairly randomly and so the readahead mark is rarely hit and most
+> executable folios remain order-2. This is observed impirically and
+> confirmed from discussion with a gnu linker expert; in general, the
+> linker does nothing to group temporally accessed text together
+> spacially. Additionally, with the current read-around approach there are
+> no alignment guarrantees between the file and folio. This is
+> insufficient for arm64's contpte mapping requirement (order-4 for 4K
+> base pages).
 > 
+> So it seems reasonable to special-case the read(ahead) logic for
+> executable mappings. The trade-off is performance improvement (due to
+> more efficient storage of the translations in iTLB) vs potential read
+> amplification (due to reading too much data around the fault which won't
+> be used), and the latter is independent of base page size. I've chosen
+> 64K folio size for arm64 which benefits both the 4K and 16K base page
+> size configs and shouldn't lead to any further read-amplification since
+> the old read-around path was (usually) reading blocks of 128K (with the
+> last 32K being async).
+> 
+> Performance Benchmarking
+> ------------------------
+> 
+> The below shows kernel compilation and speedometer javascript benchmarks
+> on Ampere Altra arm64 system. (The contpte patch series is applied in
+> the baseline).
+> 
+> First, confirmation that this patch causes more memory to be contained
+> in 64K folios (this is for all file-backed memory so includes
+> non-executable too):
+> 
+> | File-backed folios      |   Speedometer   |  Kernel Compile |
+> | by size as percentage   |-----------------|-----------------|
+> | of all mapped file mem  | before |  after | before |  after |
+> |=========================|========|========|========|========|
+> |file-thp-aligned-16kB    |    45% |     9% |    46% |     7% |
+> |file-thp-aligned-32kB    |     2% |     0% |     3% |     1% |
+> |file-thp-aligned-64kB    |     3% |    63% |     5% |    80% |
+> |file-thp-aligned-128kB   |    11% |    11% |     0% |     0% |
+> |file-thp-unaligned-16kB  |     1% |     0% |     3% |     1% |
+> |file-thp-unaligned-128kB |     1% |     0% |     0% |     0% |
+> |file-thp-partial         |     0% |     0% |     0% |     0% |
+> |-------------------------|--------|--------|--------|--------|
+> |file-cont-aligned-64kB   |    16% |    75% |     5% |    80% |
+> 
+> The above shows that for both use cases, the amount of file memory
+> backed by 16K folios reduces and the amount backed by 64K folios
+> increases significantly. And the amount of memory that is contpte-mapped
+> significantly increases (last line).
+> 
+> And this is reflected in performance improvement:
+> 
+> Kernel Compilation (smaller is faster):
+> | kernel   |   real-time |   kern-time |   user-time |   peak memory |
+> |----------|-------------|-------------|-------------|---------------|
+> | before   |        0.0% |        0.0% |        0.0% |          0.0% |
+> | after    |       -1.6% |       -2.1% |       -1.7% |          0.0% |
+> 
+> Speedometer (bigger is faster):
+> | kernel   |   runs_per_min |   peak memory |
+> |----------|----------------|---------------|
+> | before   |           0.0% |          0.0% |
+> | after    |           1.3% |          1.0% |
+> 
+> Both benchmarks show a ~1.5% improvement once the patch is applied.
+> 
+> Alternatives
+> ------------
+> 
+> I considered (and rejected for now - but I anticipate this patch will
+> stimulate discussion around what the best approach is) alternative
+> approaches:
+> 
+>   - Expose a global user-controlled knob to set the preferred folio
+>     size; this would move policy to user space and allow (e.g.) setting
+>     it to PMD-size for even better iTLB utilizaiton. But this would add
+>     ABI, and I prefer to start with the simplest approach first. It also
+>     has the downside that a change wouldn't apply to memory already in
+>     the page cache that is in active use (e.g. libc) so we don't get the
+>     same level of utilization as for something that is fixed from boot.
+> 
+>   - Add a per-vma attribute to allow user space to specify preferred
+>     folio size for memory faulted from the range. (we've talked about
+>     such a control in the context of mTHP). The dynamic loader would
+>     then be responsible for adding the annotations. Again this feels
+>     like something that could be added later if value was demonstrated.
+> 
+>   - Enhance MADV_COLLAPSE to collapse to THP sizes less than PMD-size.
+>     This would still require dynamic linker involvement, but would
+>     additionally neccessitate a copy and all memory in the range would
+>     be synchronously faulted in, adding to application load time. It
+>     would work for filesystems that don't support large folios though.
+> 
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> ---
+> 
+> Hi all,
+> 
+> I originally concocted something similar to this, with Matthew's help, as a
+> quick proof of concept hack. Since then I've tried a few different approaches
+> but always came back to this as the simplest solution. I expect this will raise
+> a few eyebrows but given it is providing a real performance win, I hope we can
+> converge to something that can be upstreamed.
+> 
+> This depends on my contpte series to actually set the contiguous bit in the page
+> table.
+> 
+> Thanks,
+> Ryan
+> 
+> 
+>  arch/arm64/include/asm/pgtable.h | 12 ++++++++++++
+>  include/linux/pgtable.h          | 12 ++++++++++++
+>  mm/filemap.c                     | 19 +++++++++++++++++++
+>  3 files changed, 43 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index f5bf059291c3..8f8f3f7eb8d8 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -1143,6 +1143,18 @@ static inline void update_mmu_cache_range(struct vm_fault *vmf,
+>   */
+>  #define arch_wants_old_prefaulted_pte	cpu_has_hw_af
+> 
+> +/*
+> + * Request exec memory is read into pagecache in at least 64K folios. The
+> + * trade-off here is performance improvement due to storing translations more
+> + * effciently in the iTLB vs the potential for read amplification due to reading
+> + * data from disk that won't be used. The latter is independent of base page
+> + * size, so we set a page-size independent block size of 64K. This size can be
+> + * contpte-mapped when 4K base pages are in use (16 pages into 1 iTLB entry),
+> + * and HPA can coalesce it (4 pages into 1 TLB entry) when 16K base pages are in
+> + * use.
+> + */
+> +#define arch_wants_exec_folio_order(void) ilog2(SZ_64K >> PAGE_SHIFT)
+
+Just noticed this errant "void". I originally had this as an inline function,
+but changed it to a macro to align with the other "arch_wants" macros above. So
+I missed it when refactoring. Anyway, it should be benign but I'll fix it in the
+next version, if we keep going in this direction.
+
+> +
+>  static inline bool pud_sect_supported(void)
+>  {
+>  	return PAGE_SIZE == SZ_4K;
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index 170925379534..57090616d09c 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -428,6 +428,18 @@ static inline bool arch_has_hw_pte_young(void)
+>  }
+>  #endif
+> 
+> +#ifndef arch_wants_exec_folio_order
+> +/*
+> + * Returns preferred minimum folio order for executable file-backed memory. Must
+> + * be in range [0, PMD_ORDER]. Negative value implies that the HW has no
+> + * preference and mm will not special-case executable memory in the pagecache.
+> + */
+> +static inline int arch_wants_exec_folio_order(void)
+> +{
+> +	return -1;
+> +}
+> +#endif
+> +
+>  #ifndef arch_check_zapped_pte
+>  static inline void arch_check_zapped_pte(struct vm_area_struct *vma,
+>  					 pte_t pte)
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 67ba56ecdd32..80a76d755534 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -3115,6 +3115,25 @@ static struct file *do_sync_mmap_readahead(struct vm_fault *vmf)
+>  	}
+>  #endif
+> 
+> +	/*
+> +	 * Allow arch to request a preferred minimum folio order for executable
+> +	 * memory. This can often be beneficial to performance if (e.g.) arm64
+> +	 * can contpte-map the folio. Executable memory rarely benefits from
+> +	 * read-ahead anyway, due to its random access nature.
+> +	 */
+> +	if (vm_flags & VM_EXEC) {
+> +		int order = arch_wants_exec_folio_order();
+> +
+> +		if (order >= 0) {
+> +			fpin = maybe_unlock_mmap_for_io(vmf, fpin);
+> +			ra->size = 1UL << order;
+> +			ra->async_size = 0;
+> +			ractl._index &= ~((unsigned long)ra->size - 1);
+> +			page_cache_ra_order(&ractl, ra, order);
+> +			return fpin;
+> +		}
+> +	}
+> +
+>  	/* If we don't want any read-ahead, don't bother */
+>  	if (vm_flags & VM_RAND_READ)
+>  		return fpin;
+> --
+> 2.25.1
+> 
+
 
