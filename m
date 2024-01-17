@@ -1,325 +1,229 @@
-Return-Path: <linux-kernel+bounces-29302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF3C1830C6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:06:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3A30830C6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:07:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10CFE285F97
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:06:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4A19B22E58
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:07:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 843EC22EE4;
-	Wed, 17 Jan 2024 18:06:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 899C122F00;
+	Wed, 17 Jan 2024 18:07:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="cuhwSpt7"
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2059.outbound.protection.outlook.com [40.107.7.59])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="MDcWXaqP"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2044.outbound.protection.outlook.com [40.107.237.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F241B956;
-	Wed, 17 Jan 2024 18:06:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.59
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4FB622EF4;
+	Wed, 17 Jan 2024 18:06:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.44
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705514789; cv=fail; b=fcARPuUxH+9HWn6yTOUKaDZY4yIGEoYv3kEnQ4Me9/QWJ9NC3xgTePBW8RqXUsF8NW2HfP5RYkkbiFkETZYgG1cKt0hCJnSWZasOx7IiGALrO+YFpCQ/3ENSRnFK55BlIwNP+5b2/Fq7tUTJvrQv+pSzkyXBSDQBcZCXk8I20aU=
+	t=1705514820; cv=fail; b=ijepZ0nvjWtvWIkmET+0MQjo751vFe2hvfOmDhTi5eueZ3BoHbbC7oJ4d+VCWHBQqVLDj7dYImaMYUS3lljSvrmgUlRHnsm6AqnsIR/6aBNeRkhOpX+/hZXGrLwis3ZKpUxXgXkezwt8jy49/JEikPWUKOAntG4+Le/mgXHTsMc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705514789; c=relaxed/simple;
-	bh=i8n34s2WQwcNftYiiWqT6lIOFthFitPKtWc+GUQfWkE=;
+	s=arc-20240116; t=1705514820; c=relaxed/simple;
+	bh=TQaozLjRCFewTJvC/mGXo3Jz6+s6X/YaMxV30XLgNrQ=;
 	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
-	 Received:Received:Date:From:To:Cc:Subject:Message-ID:References:
-	 Content-Type:Content-Disposition:In-Reply-To:X-ClientProxiedBy:
-	 MIME-Version:X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
-	 X-MS-Office365-Filtering-Correlation-Id:
-	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:
+	 Received:Received:From:To:CC:Subject:Thread-Topic:Thread-Index:
+	 Date:Message-ID:References:In-Reply-To:Accept-Language:
+	 Content-Language:X-MS-Has-Attach:X-MS-TNEF-Correlator:
+	 x-ms-publictraffictype:x-ms-traffictypediagnostic:
+	 x-ms-office365-filtering-correlation-id:
+	 x-ms-exchange-senderadcheck:x-ms-exchange-antispam-relay:
+	 x-microsoft-antispam:x-microsoft-antispam-message-info:
+	 x-forefront-antispam-report:
+	 x-ms-exchange-antispam-messagedata-chunkcount:
+	 x-ms-exchange-antispam-messagedata-0:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version:X-OriginatorOrg:
 	 X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-	 X-MS-Exchange-CrossTenant-UserPrincipalName:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=XQ/McKDneQc/qTOamya3ZBO1wS0ODei7A25KymAeZFWKnqRgTvFL/0yjBkAur07LaylXfos09wyTTgyqP4oq/lreUrukgJN3jKz3Z5MQk9sBdjMw6VoYIwi8LUkp0hZdDaUiXs7H+IfEJE4daPGAZzCTFi/4QM4hEz7idt0Q79A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=cuhwSpt7; arc=fail smtp.client-ip=40.107.7.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+	 X-MS-Exchange-CrossTenant-AuthSource:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-originalarrivaltime:
+	 X-MS-Exchange-CrossTenant-fromentityheader:
+	 X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
+	 X-MS-Exchange-CrossTenant-userprincipalname:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=RrzMTKuXBPMljZPGFc9QgJdvmOUSrgSiYBJMJa51Wi3V6CmzlZGejjH5OAh+xRmJOjaO93SX+r1BCw91syv88jJR14P/SGC2IumbR1ezEUFwoQOu+gA6dqMZf8pEguyRj0fyUOklUoJZ9gvfEyI4HrR2ourY2mjEcZ8qCO4NyIw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=MDcWXaqP; arc=fail smtp.client-ip=40.107.237.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eFx8bV5Qe5USl+Iwt3jPDix21Izb2cAd4mSLKHY1BYRNV2HXjEXEuNIffneA4z3Vb0b0z8nnSIqSw01LLISHILzcZ9hazac3+/s8j/No++oCwVBNSJSGrSEdmm9j5nVBCVqmhez6Q5CMVCDq1BsbRROb0qEZI6NvP+B3Q3SjX0j++BXMYiKeBKvQ9hK6BjAH2Xo8jb+vX580WoCqyjK1yQooVQSZL/BytQyCj5zzymVBXC4aJv7AbRxe05qf7Syv8nY2wle7Fn6U7DXaG0gBijEIdnjGAlCGTBA+5lS8syinbcfkUzpejwmj7mQr0jjoDph++g/S9J6KoFSV4yy0Qg==
+ b=X0GzTqJ5RfRMfp8LfEtyws+51SjJ4g5XN2N3F7KHi+lqAWaA/GL5bMxOLvX657H7NMY7gYR1n7mHMZdI4qhKFjWawmlLvwp4hUdzBQ+yXOEmWM//I1CoUnnPtRL/ND3HF03ZHdb1S1iXQCTb9lfgEallZiQTsMuBBkp/SrWrrm75GEksr/UfXUZJXgG1U7wgfLyIBag7Z89QbUp+G9nUu6qdUKk3mugcyqsCNjSTstnjgjF6oI0PN2EHkujRaljat8IA8PrJ1Lukij9WInvKeA6kCO+AnRn8mCgUeef/5ZyLgf4xCEbMiFMrdVkZ3pRKn7CTbdOKuIA4rnFNiononA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UYrPdPAbUnM1/oZoRYeg8LwQRiVNYQUQDml4Uo6Xig4=;
- b=oDvOMGxKZ5i0YlGyrLnos5zLOf+ZdnlCqcTg6tAf/jwoiRt2+QsSg/K+T2qRZSV7QvzvlYvacgSmh1nlfuBLVF/xZ3vgZdXwDCXQ8yWm9fx/oh6yid8C/V3DZMchWvyJfHD0c9hwQjgrTqauQQqoUizicNQ4I94VAs7R7jiHaZk63UmcTr6i1m42nXUR3QPQ3ksJnjQLSauUxCW+kfPL0ZZREnlIxdbnVwb4mQTUhrDzVIYuAdcoUrLTqXy+LzYnqxkn/qy2GMPnKEVcKATJErPtxmKJ+oPyQP9ukwZDfqFscTYHym5jJ3k9jtC9EPyGrelwbWBawwqW06w+dfKhwg==
+ bh=xi5ZEyDJEzBLT5uDvnuApPX5nLyzFqyFFoQwIgs7N4U=;
+ b=Lm8cvVgIl2bQSxBoLmaJ3u+WU4lseE87TOcawtjUqUboeMfuGn2MOg4ZdQXVkIVWacqo7WyiExLjYK2l4ju/LM2gRVQVXCfZsSk3BAebkEecE98JQAnq82wAyQZJLtePC4SW0JRDRm5paKboyj/P2uFuYFEfPzfhjj45HkGN0tvS9C8vGxbJPOYUNAfDmKrhUhIulKjWBECOsSHNQgwiDFGVQrnY8nW/BH3jTCvt2b9Nnf7fqUuugDDuKWwptUwmW43IDJEjYmVzVS/zo+vnQlQTtiCWEpeLk5LqEIPm9UOIorCHjl9+3EUoLTxWotXMCo0MUx9qvl1fbmQUVZfnlg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UYrPdPAbUnM1/oZoRYeg8LwQRiVNYQUQDml4Uo6Xig4=;
- b=cuhwSpt734wCOdcstZyoA9hx2iPJEVZ2hUd3xO6O2W+mAQ5IHVzSgeVtknkVNXan4rHa7OkIFCWiH54uaABdKxjwkKd6zemub+QqtHpnpm2LqyTSGHEJY/CrpxRzR5swWNqjFU0AvzjsVRASVvN+iwwgsNkB+qUk8c2ZT9662IE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by VI1PR04MB10027.eurprd04.prod.outlook.com (2603:10a6:800:1e1::21) with
+ bh=xi5ZEyDJEzBLT5uDvnuApPX5nLyzFqyFFoQwIgs7N4U=;
+ b=MDcWXaqPo4+thQnsYtAVRhH3AUQHzwr9mLhG4eimeFuTNOb6K2VgNA54jyzUeNiWLNdUZeQbzgOlkuW2/WgZYt2/AiRW4Dch082axSYwfZ2ZoN4rSa3TR4XfiUTAJW4iT3WGueEuApXthxIOD0dqHnpH5VXcGIQvqyTYY/VI1ik=
+Received: from DS7PR12MB5741.namprd12.prod.outlook.com (2603:10b6:8:70::7) by
+ SN7PR12MB6932.namprd12.prod.outlook.com (2603:10b6:806:260::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.23; Wed, 17 Jan
- 2024 18:06:23 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::b8af:bfe5:dffd:59a9]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::b8af:bfe5:dffd:59a9%4]) with mapi id 15.20.7202.020; Wed, 17 Jan 2024
- 18:06:23 +0000
-Date: Wed, 17 Jan 2024 13:06:15 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Conor Dooley <conor@kernel.org>,
-	Conor Dooley <conor.dooley@microchip.com>, robh@kernel.org,
-	alexandre.belloni@bootlin.com, conor.culhane@silvaco.com,
-	gregkh@linuxfoundation.org, imx@lists.linux.dev,
-	jirislaby@kernel.org, joe@perches.com,
-	linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org, miquel.raynal@bootlin.com,
-	zbigniew.lukwinski@linux.intel.com, devicetree@vger.kernel.org,
-	krzysztof.kozlowski+dt@linaro.org
-Subject: Re: [PATCH v2 2/7] dt-bindings: i3c: svc: add compatible string i3c:
- silvaco,i3c-target-v1
-Message-ID: <ZagXF6vMHVxvZX+6@lizhi-Precision-Tower-5810>
-References: <20240116-retract-conclude-c47a7fc8cb21@spud>
- <ZabVSYgq1Mz3LPpC@lizhi-Precision-Tower-5810>
- <4a9ed1ca-cd13-4b61-af06-a3d7935aeeee@linaro.org>
- <ZabqxHD4wtiPn6ep@lizhi-Precision-Tower-5810>
- <c760b89c-efec-489e-8333-c60b38fb5a47@linaro.org>
- <e54e2b30-03e7-40e3-bb33-dc71de8511a4@linaro.org>
- <ZacCQ1Eysqq5FnA4@lizhi-Precision-Tower-5810>
- <ad44d51a-ba64-4a4b-bba9-205faa760c78@linaro.org>
- <Zaf+Gn6rYstttnrA@lizhi-Precision-Tower-5810>
- <e57d7f34-3abe-4860-8986-0cb7070819a4@linaro.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e57d7f34-3abe-4860-8986-0cb7070819a4@linaro.org>
-X-ClientProxiedBy: BYAPR08CA0024.namprd08.prod.outlook.com
- (2603:10b6:a03:100::37) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.23; Wed, 17 Jan
+ 2024 18:06:56 +0000
+Received: from DS7PR12MB5741.namprd12.prod.outlook.com
+ ([fe80::5f16:a55f:d538:1f2d]) by DS7PR12MB5741.namprd12.prod.outlook.com
+ ([fe80::5f16:a55f:d538:1f2d%7]) with mapi id 15.20.7181.027; Wed, 17 Jan 2024
+ 18:06:56 +0000
+From: "Boddu, Sai Pavan" <sai.pavan.boddu@amd.com>
+To: Andi Shyti <andi.shyti@kernel.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "Simek, Michal"
+	<michal.simek@amd.com>, Lars-Peter Clausen <lars@metafoo.de>, Wolfram Sang
+	<wsa@kernel.org>
+Subject: RE: [PATCH] i2c: cadence: Avoid fifo clear after start
+Thread-Topic: [PATCH] i2c: cadence: Avoid fifo clear after start
+Thread-Index: AQHaSUfcsQJjTnMwH0iIfDUOatck5LDeSs0A
+Date: Wed, 17 Jan 2024 18:06:55 +0000
+Message-ID:
+ <DS7PR12MB5741FC0E92875C8DB7BFEEDFB6722@DS7PR12MB5741.namprd12.prod.outlook.com>
+References: <20240105125258.2470397-1-sai.pavan.boddu@amd.com>
+ <lzvb6oyinlmdrbaat6ayxioca5r2qf7wi3kt63lzorbjytmmbn@wfuz63znrzbr>
+In-Reply-To: <lzvb6oyinlmdrbaat6ayxioca5r2qf7wi3kt63lzorbjytmmbn@wfuz63znrzbr>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DS7PR12MB5741:EE_|SN7PR12MB6932:EE_
+x-ms-office365-filtering-correlation-id: e952f3c3-668d-463d-4a9e-08dc1787175d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 6LuSQH2g1kz7CUdwglnFFJs+eHAOAmpWjGJOerTgt2WEtqNMV0cYvhH4yq6PkulKpx66+Mj1eCOnuwEFUn3TFbDLehYB7gZg0mRWioEe5c+wnxHKA3KR5ChnMlBHxmNVbC/vM4Xd2Z0prTQv35GU7f2br2GLs6aSjsNn6wYL+BCS4k4JUnPAIMwmYlKEyqShouyJGIo63C28hfCX8OWGqobzrlWGFdkJ+XYQWpESbKjE2DRnAHrjvx4sD0gUvfXTNjQSMwnMpJYXIqRHvWijaBRWQsUS/yAl1mmzjEGd7/z3861VlB5bOSN/GbML2UynyWV1F+GQnMcVHH0y5/RMlqfAatPE9PMQ9L9/CaohyBYnv/q8gk1WB17nZ5XvDEt4Rktfblqwak8wqnWHy/vRdIeiZ8v/dgfVCuoZ1d4PqN4tmhlApWu6dRamToBl9BVL9XlO/fNmCDy0pmK0HUueUy1eUIqJt6xMB9s4ebAD/wDdl7/piSu4eIh9NecqcLPk/mQZJaZtjm29P69eA+dUEo5GOx7ZwjsM5JHGcxsAkvHrRex5rWP37JK0q2uZrMSVp92AXHpPpfTt2aCWnZYmBEAYhkZlxKgEU5HGlEqjE6B0ZlUxsD3uZR4MkkMRWtlK
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5741.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(366004)(39860400002)(346002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(26005)(9686003)(7696005)(71200400001)(6506007)(122000001)(83380400001)(5660300002)(52536014)(4326008)(2906002)(8936002)(41300700001)(316002)(478600001)(76116006)(66446008)(54906003)(66946007)(64756008)(6916009)(66556008)(66476007)(8676002)(33656002)(86362001)(38100700002)(38070700009)(55016003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?MxfkmN2Oyr7oXhUTOCj1D1CSniKtuXYFh1FpFB95Ciwbg+x3Do2AgENQmLxd?=
+ =?us-ascii?Q?GM+HXCl0k1B1t/UBnR4PD8gyGLKoG98t+u7XjFMHhuOfymTPfgXreH75o1J/?=
+ =?us-ascii?Q?EeKTdNvT/kk47xHClO1MUeNAOUWZuJNBtTPZnFF5+CKK9QX7DhGR/4oLiy+R?=
+ =?us-ascii?Q?TugIX8U6umTpJ1bwy/xOYg8QwSKDxLSCsKOWhWPoHJ7Kk1exbzXIUtMQo4ZA?=
+ =?us-ascii?Q?h+DtQGdceVV+BEBXrz6EumVn++FuCRAUVcZQf6XjpP1AE2qRHUQFhbmDeh4p?=
+ =?us-ascii?Q?HV1+T5Cz9zPceHTdd2gkPs2Z1IJXngukgaX0XYxtk6WP2VBrBEmOseokoqHw?=
+ =?us-ascii?Q?iGmb9X62PCIvcov5fJIBY+MTDZ67UcquWOlJmb47WF7mrwtCQJE5hHmRDWoI?=
+ =?us-ascii?Q?JSZaEyTMFKik0UImd8Fly70YapEr5n3CMDfKRJbSKTQrbmwt3jhNMD7LaEa/?=
+ =?us-ascii?Q?lLvC66bLJzW6bsfEgDI64q5mVH5hFhJrSRnzDli/Vh2j3QlHtsNHmed3KPQw?=
+ =?us-ascii?Q?Gf1mnxZQUjDWy1SmbZpcS/h2ACM9gQrm6u7+w1D6Jx/0IT+cSDNXO0YAWD2L?=
+ =?us-ascii?Q?82z3wZJXtZsBRJdbS0uRpXJ9r+VIM0L+UoQjcvcAFl6JS3BjnHb10hK8cVf5?=
+ =?us-ascii?Q?SBQroMn6PrN3enYYOW3iGZ8B8wHC8CkzPfSu02wUmo/tHnRbZsXAX+FNGNXf?=
+ =?us-ascii?Q?1UcEcyOd3vvDfqnk7kHXI+DU/Lb/obePQv/h3oWkkSdDbakOFDVC4xezNumJ?=
+ =?us-ascii?Q?kaW+gAiyUFQcI50L96q4fjr5hY0HGNwJHrrCqlpK7Vx13d+F7PGjk/PlJAoX?=
+ =?us-ascii?Q?AOhtf8U48SIdBkSbUWUwyl2d8X8ZY5Zrg3i4G33yrTBWY77qkI7bEX4Usa3x?=
+ =?us-ascii?Q?E5848J5JPwnY9+GaxOAR09nJzkftNQtw/tUF7EBKqHqYDPgPHGOXXjtX1zoo?=
+ =?us-ascii?Q?Edi0fpatmfIdVTIEUH4Nct5ri3ebLKoX23cd1V/Usux3u2lb5aRPJBzZQgqE?=
+ =?us-ascii?Q?k+zbhzpRV1xA7dQZQsdTYvZJwKXD90KF8iOsnVcG4f4LJeyk2hlKLAG5Jhyo?=
+ =?us-ascii?Q?9ohJy+A+APCI1Vbm9hyi48HxSDHqJdKGtr0tYoMrd0zN7xPflE8c7bdVNzs0?=
+ =?us-ascii?Q?gO4qRiMeYbt3mf1E9LTF28iukrngtQpUD2z7Q3LnUfBpczl2k3Da+BfEwBDL?=
+ =?us-ascii?Q?t9567FzZlpV/z9X0LhHev6eYnhVtOx8eM1rgp6bCrPzxpzSnYbZMyLBFWjJ0?=
+ =?us-ascii?Q?zRHTrbWeYqjqo4JhMksZ02+cGvzw/r8zNDHBNNRFV9lPcqF6uT8rQJ9azAxw?=
+ =?us-ascii?Q?Ej1sxpFAKz179fUxmV9Ud4uxkMM2QkyYBguIsqW3D6NodkjSjNxrVozulSUl?=
+ =?us-ascii?Q?JcqkJ96Ikl9WGj7sDA+8JibI2hZrFKbFtwuvU+j+2WK/+n0oBaA/isDlMEBc?=
+ =?us-ascii?Q?gpRjaPPsMgytHtt5vK8bNRPDetwLnko668DbEdxEP5dtrM3qSNvehPFYl5gB?=
+ =?us-ascii?Q?wsb7nJ4cNUMsUqu8ZRvk1uKeuSUscTvUD7vT4m2oCKDtef0QxQ4tiqndN476?=
+ =?us-ascii?Q?CS+VrNKqIBE7V5I7znU=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|VI1PR04MB10027:EE_
-X-MS-Office365-Filtering-Correlation-Id: e125a726-5146-436a-9f7b-08dc178703df
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	2+Y/EG0zl+aTI/qtwv35PLY76buMNSBVFKbFi3/EUcSF4wbdKYDRQl1mSJWOa7w+bZwXnUFB3omFXgzqB3C1FVVxbs/t/4RoyDEjs9n8y6t5rV0s6smv3NybuBh7GX9wTDSGwq5bVrcB9gRMWpzsFXHktvnF+cAZ0G09Ds/GTzaD27msKDuTJyNh81ctUt3ZDlzAgtBbsHWmi29K7Yi+0pavd3F4eCM7VBO4aIOuNs9vSFNhCKo2oxRBDNVmL/KyT+7T+ye4Vyux+fs/fFhU0v5ZZ8zKUQFaS79CFqeRVcPqNkvcbNJ6iZJxeZAoBXIlrwJJR+/3RyAhh9WYREdM1i7RkNXR+3WJqqOCdkeJYfsr6rBh3YW6mSCGuNYnB/NNloDK6miVE4dPqA5R8ZW9BKnqembGW7kLS/rGnXAUMG1bdRY1nRg4KqNLJeT73+wP+H2eZEPkpGmMipqGnqIiKFpaurYzvyCNv/bH8la4d6O7V3vJtL48imrR/Lgg4e4V6Uu6pYeWq4Q7qJrdM1XYBd1IYpp0KAQx0FjNzHBOsEnoiSQaghwydSpCTxs1a46nA5yM3MJ/BgJmRP1iFPrKOwBpafHOwL967S6tH8BCkhUzY4CFjC+FVA5MzrUYzA3wRHn0pKB3BWL/qO1Zhs2ltQ==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(39860400002)(136003)(366004)(376002)(346002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(26005)(6666004)(53546011)(6512007)(52116002)(83380400001)(54906003)(7416002)(41300700001)(5660300002)(4326008)(478600001)(33716001)(6486002)(6916009)(66476007)(316002)(8676002)(66946007)(8936002)(2906002)(66556008)(86362001)(6506007)(38350700005)(38100700002)(9686003)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?JopKBLt8tRYeNAc52epQzKk50kvtO948wrNGpjmH73zmvsGcr6214fva6Goe?=
- =?us-ascii?Q?EvO8F6JC8mdflky9d9DM32wKGoidl4ILxbNz7RP2rbfHDhwT7+qvfV/Udi1x?=
- =?us-ascii?Q?5JaEp2HLUBcLeDSUJubdmsI2GfJGDB28TRHunbGTTHMroPLLdLoRZifIK/xW?=
- =?us-ascii?Q?iX/zr3NRW1VK0I/RUhsiStXg8qnUJzLnvX8cNe/65j4058qYGK4lo2j6ZBlg?=
- =?us-ascii?Q?my2Q5UTvdYgO4wxtpaqpExgOdCzaHc687WVImpaXDMPUblpsbHBaGSv1VWgH?=
- =?us-ascii?Q?eNFL9FFOxCd3y5CzS15JcyeJu03Cm8F/TafpCCzYP+ckpeln75jzngyi6H9v?=
- =?us-ascii?Q?3ri4zOxOFvKCJsZkfZ0O4cxjV4tbSC+4P3de4+3n+tLUWX6nW204K0/rUQwS?=
- =?us-ascii?Q?c0Bw5gHPcbRF4MePmdVUB376gXItdW3DGna+u9TthMmGpvAOd+wkA57p3KeL?=
- =?us-ascii?Q?pf43wUIqvhb5XiI0jIomZNzja1lJnfubdQIkmatMU5Q15Ie6iRi4UKbATiLX?=
- =?us-ascii?Q?PaTu9pa0rvOkL1xHrcG0hapyZy8mAyRqUfLYqfeBSNYdMI3FlTYqA2sg8e/x?=
- =?us-ascii?Q?B0gh0pgnGCJM2yLKPY/cDFNxU2G9Z3lskv0CM3KMKnFDfB6FoGNpaFYJ9za1?=
- =?us-ascii?Q?HUfyF0bbL8wdAP4UwQBETw9gHhzk8TFDBILagvVpl3a2apoVvRyat12MZcxf?=
- =?us-ascii?Q?JQgo4FZkMCqPMKAeB1fARmG5IHt7tQJDLMM5PHdCZ91EdPdXs8f6ws1kJbDh?=
- =?us-ascii?Q?pMYxmA/F1sZjcQs9H+SXem8wADSkU9wM9DwIttB9LKzA1nJQymQclxTjgPtz?=
- =?us-ascii?Q?MKUTfjX1Sshyb5WKkuSRbP5D6IysqDhrLqAjA/m3eHyO/Ug+lXSU1K1qB2Lx?=
- =?us-ascii?Q?QbXqHw8Zo0E3iqKsFiE36gXn2Z+MQsBbS/sHdzNaI2rgs66QVWIX8RkVp2jm?=
- =?us-ascii?Q?ou2NKdKJWxngltBWCA5EC7FWr3+/MfvmxJJ+9sLyYTLel0SIPQhMxQU0DKHe?=
- =?us-ascii?Q?SeH2biN4v45EKe4ZDdcwHwtsle6mDzIgclI1Og3AisJxp/AESZEPsPlAadwF?=
- =?us-ascii?Q?cEqgS9edy72UvUVc3bMYs+RhgjzrbUM9XiuSDqBR8epxmAnmmHeDFioTovhU?=
- =?us-ascii?Q?mA/dkK96yr+M5aHCr/0tpQrE4xSfWf4L+R+xrgqH+uUmAI0eJ5RyC6ySq0//?=
- =?us-ascii?Q?nN4ozpFq5thchtc2i7gIuNFA+HDrvwXz3XaHilRdlX9t4Ne1NoH8nCZi/IrF?=
- =?us-ascii?Q?QsVDM7UIltuAjy+NhjAlat9Ef97LTt57S+UdSICjOF3zidYan4NTrsWrzWcH?=
- =?us-ascii?Q?mZaHfpDpF2/22VVPzV69Cfs4SLIZO0yNhprucsNPLQMB8g+lTE1t6agXFYid?=
- =?us-ascii?Q?AbglzEeFJry/ta+wmwEY32WU+cDyKRyBZg2s0UQfW9KQ2vMmIc1+QMDwuusB?=
- =?us-ascii?Q?12AA6PnmSEPvY+j6soEwhOiIPddKb7aYygYrjn0ypOil2WZij59u4AOtKt0R?=
- =?us-ascii?Q?V5A293hSBlWYkJvYD7Q4m0pY6d0TmVOKXVN8ijAuBoVqgGQ/JjmcI0foDrxK?=
- =?us-ascii?Q?+6+0zF9v0cPHdp4O4PSPSGABDq+MBN1Fyk0GRhps?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e125a726-5146-436a-9f7b-08dc178703df
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-OriginatorOrg: amd.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2024 18:06:23.4576
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5741.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e952f3c3-668d-463d-4a9e-08dc1787175d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jan 2024 18:06:55.6912
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4e+xKmLoxRSq/n35VOBEZwAhJ+HumtLvQGFkwKB+xQuvtFg/+LWBQE5tsBs39TwVtuD0CizeHP2QnPu5J70UMg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB10027
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: h+oTposjRdgH6JyUVTv49DoA3rmbMfp210knoXciK8GT3yrDRR7CaKMqZFe2I66l
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6932
 
-On Wed, Jan 17, 2024 at 06:15:51PM +0100, Krzysztof Kozlowski wrote:
-> On 17/01/2024 17:19, Frank Li wrote:
-> >>
-> >> Not really, because compatible describes hardware and it is the same
-> >> hardware here. We do not have two different compatibles for GPIOs being
-> >> input or output.  Or two different compatibles for serial engines (ones
-> >> providing UART, SPI or I2C).
-> > 
-> > GPIO and UART is simple. Actuall SPI and I2C have two mode, slave and
-> 
-> I talked about serial engines which can be multiple: UART, SPI and I2C.
-> 
-> > master. Many SPI/I2C is dual mode controller. Just seldom use slave mode
-> > at linux side. So you just see master mode SPI/I2C controller in dt-binding
-> > and dts file. So few people upstream slave part to linux kernel community.
-> > They have the exact same problems if support slave mode.
-> > 
-> > PCI is typical example: 
-> > EP mode:  Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> > RC mode:  Documentation/devicetree/bindings/pci/qcom,pcie.yaml
-> > 
-> > Which is the same hardware for two difference compatible string.
-> 
-> That's the only case, I recall.
+Hi Andi,
 
-As my knowledge, yes. 
+>-----Original Message-----
+>From: Andi Shyti <andi.shyti@kernel.org>
+>Sent: Wednesday, January 17, 2024 6:50 PM
+>To: Boddu, Sai Pavan <sai.pavan.boddu@amd.com>
+>Cc: linux-kernel@vger.kernel.org; linux-i2c@vger.kernel.org; linux-arm-
+>kernel@lists.infradead.org; Simek, Michal <michal.simek@amd.com>; Lars-
+>Peter Clausen <lars@metafoo.de>; Wolfram Sang <wsa@kernel.org>
+>Subject: Re: [PATCH] i2c: cadence: Avoid fifo clear after start
+>
+>Hi Sai,
+>
+>sorry, but I'm not really understanding the issue here.
+>On Fri, Jan 05, 2024 at 06:22:58PM +0530, Sai Pavan Boddu wrote:
+>> Driver unintentionally programs ctrl reg to clear fifo which is
+>> happening after start of transaction
+>
+>what does it mean "unintentionally"?
+[Boddu, Sai Pavan] I mean, the previous patch which introduced the issue, w=
+as unintentional.
+>
+>> this was not the case previously
+>> as it was read-modified-write. This issue breaks i2c reads on QEMU as
+>> i2c-read is done before guest starts programming ctrl register.
+>
+>this log can be improved. How about something like
+>
+>The driver unintentionally programs the control register to clear the FIFO=
+,
+>which occurs after the start of the transaction.
+>Previously, this was not an issue as it involved read-modify-write operati=
+ons.
+>However, this current issue disrupts I2C reads on QEMU, as the I2C read is
+>executed before the guest starts programming the control register.
+[Boddu, Sai Pavan] Looks good. I will mention as above.
 
-> 
-> >>
-> >>>
-> >>> I can write git commit message like:
-> >>>
-> >>> dt-bindings: i3c: svc: add compatible string nxp,imx93-svc-i3c-target
-> >>>
-> >>> silvaco i3c controller is dual mode controller, which can work as master
-> >>> and target mode. All clock, reg, irq are the same for both mode. Add
-> >>> compatible string "nxp,imx93-svc-i3c-target" to let silivaco i3c
-> >>> controller work as target mode.
-> >>>
-> >>> Of course, alternate method to added a property "mode" to distingiush
-> >>> master and target mode. but old "silvaco,i3c-master-v1" will actually work
-> >>> as dual mode support. Driver structure will become complex.
-> >>
-> >> Please send full DTS of user for this, which works for 100%, so we can
-> >> see how it differs from controller mode. If your code snippet from other
-> >> thread is correct, then it would suggest "mode" property or lack of
-> >> children. Maybe lack of children is not enough, if user-space could
-> >> control I3C bus.
-> > 
-> > According to current implment, only need change imx93.dtsi's @i3c1's 
-> > compatible string to "silvaco,i3c-target-v1". I attached imx93 dts node for
-> > your reference.
-> > 
-> > 	i3c1: i3c-master@44330000 {                        
-> >                                 compatible = "silvaco,i3c-master-v1"; 
-> > 					     ^^^^ only need change here!
-> 
-> Nope, don't change compatibles of existing nodes. Unreadable and
-> unmanageable code.
+>> Fixes: ff0cf7bca6309 ("i2c: cadence: Remove unnecessary register
+>> reads")
+>> Signed-off-by: Sai Pavan Boddu <sai.pavan.boddu@amd.com>
+>> ---
+>>  drivers/i2c/busses/i2c-cadence.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/i2c/busses/i2c-cadence.c
+>> b/drivers/i2c/busses/i2c-cadence.c
+>> index de3f58b60dce..6f7d753a8197 100644
+>> --- a/drivers/i2c/busses/i2c-cadence.c
+>> +++ b/drivers/i2c/busses/i2c-cadence.c
+>> @@ -633,6 +633,7 @@ static void cdns_i2c_mrecv(struct cdns_i2c *id)
+>>
+>>  	if (hold_clear) {
+>>  		ctrl_reg &=3D ~CDNS_I2C_CR_HOLD;
+>> +		ctrl_reg &=3D ~CDNS_I2C_CR_CLR_FIFO;
+>
+>I'm wondering whether the whole ctrl_reg should be reset after the first w=
+rite.
+[Boddu, Sai Pavan] previous implementation of read-modify-write was good th=
+en ?
 
-It is just show minimize difference.
-
-Normally, it should be.
-
-	i3c1: i3c-master@44330000 {
-		...
-		compatible = "silvaco,i3c-master-v1";
-		...
-		status = disabled;
-	}
-	
-	i3c1-target: i3c-target@44330000 {
-		...
-		compatible = "silvaco,i3c-target-v1";
-		...
-		status = disabled;
-	}
-
-in board dts
-
-@i3c1{
-	status = "okay";
-}
-
-Or
-@i3c1-target{
-	status = "okay";
-}
-> 
-> >    
-> >                                 reg = <0x44330000 0x10000>;                
-> >                                 interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
-> >                                 #address-cells = <3>;                      
-> >                                 #size-cells = <0>;                         
-> >                                 clocks = <&clk IMX93_CLK_BUS_AON>,         
-> >                                          <&clk IMX93_CLK_I3C1_GATE>,       
-> >                                          <&clk IMX93_CLK_I3C1_SLOW>;       
-> >                                 clock-names = "pclk", "fast_clk", "slow_clk";
-> >                                 dmas = <&edma1 6 0 1>, <&edma1 5 0 0>;     
-> >                                 dma-names = "rx", "tx";                    
-> >                                 status = "disabled";                       
-> >                         }; 
-> 
-> That's not a patch for existing file. I did not claim you cannot write
-> such DTS. I claimed you don't have such DTS for upstream...
-
-Yes, it need finialize this topic before handle dts upstream.
-
-> 
-> > 
-> > For master mode:
-> > Unlike i2c. Genenally I3C can auto probe children node like USB can auto
-> > detect attached devices. So I3C master can work without children nodes.
-> > Such as auto load i3c sensor driver according to i3c standard vendor id and
-> > production id.
-> 
-> Then presence of children cannot be used.
-> 
-> > 
-> > For target mode: using configfs to controller I3C.
-> > 
-> > mkdir /sys/kernel/config/i3c_target/functions/tty/t
-> > echo 0x011b > /sys/kernel/config/i3c_target/functions/tty/t/vendor_id
-> > echo 0x1000 > /sys/kernel/config/i3c_target/functions/tty/t/part_id
-> > echo 0x6 > /sys/kernel/config/i3c_target/functions/tty/t/bcr
-> > 
-> > ln -s /sys/kernel/config/i3c_target/functions/tty/t /sys/kernel/config/i3c_target/controllers/44330000.i3c-master/
-> > 
-> > Then you echo test >/dev/ttySI3C0.
-> > 
-> > Unlike USB, user can switch host and gadget mode dymatically. Suppose I3C
-> > only work on one of master or slave mode only, which is static.
-> 
-> I don't understand this. So it can switch dynamically or not?
-
-I3C Protocal allow do that. But no one really do that. 
-
-> 
-> > 
-> > Although it is one hardware, I think it is exculsive multi function device.
-> 
-> Just like serial engines. Do you see there replacing compatibles? No.
-> 
-> > 
-> > Summary: basice two option to distingiush controller and target mode.
-> > 1. by "compatible" string
-> > 2. by "mode"
-> > 
-> > I think 1 is relatively simple and easy to understand.
-> 
-> Eh, if you only saw my comments on people replacing compatibles...
-> Anyway, I stated my reasons, so to reiterate: NAK.
-
-I know it.  Needn't emphase it every time.
-
-Is using "mode" ('controller' and 'target') proptery okay?
-
-Frank
-
-> 
-> Best regards,
-> Krzysztof
-> 
+Regards,
+Sai Pavan
+>
+>Andi
+>
+>>  		/*
+>>  		 * In case of Xilinx Zynq SOC, clear the HOLD bit before transfer
+>size
+>>  		 * register reaches '0'. This is an IP bug which causes transfer
+>> size
+>> --
+>> 2.25.1
+>>
 
