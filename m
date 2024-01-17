@@ -1,112 +1,153 @@
-Return-Path: <linux-kernel+bounces-29162-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 472F18309DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:38:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B5D78309E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:39:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB1AE1F24700
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:38:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA50B1F23D01
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:39:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E789F21A10;
-	Wed, 17 Jan 2024 15:38:28 +0000 (UTC)
-Received: from sgoci-sdnproxy-4.icoremail.net (sgoci-sdnproxy-4.icoremail.net [129.150.39.64])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36C7D21379;
-	Wed, 17 Jan 2024 15:38:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.150.39.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54D6021A0F;
+	Wed, 17 Jan 2024 15:39:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="V9BeD8wj"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D52721A05
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:38:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705505908; cv=none; b=hXmDIgtSZOUMomCAdM09adKj6khfDcaukTCKC8QMPw5u6YMJGjexTMfbzY51EnhVqqGftgLA5MrEklPUX8BnSYpYs4Y6AwMirv0mZy3az/m1ix8AwXoMAMd2IXiwO59aemHk1/ptJGuFl+e7eJmgkBBe795m3jRYcqc7mg4iybY=
+	t=1705505940; cv=none; b=iXkTgGHM8qwq9ZhMt9h8KteDGshhBl/YNMZBTJ/u1xqOF5i3KZMsP/U0ivqFtsoEWWWGhNRl88flkmVVaHcp8MX+A558tFv1JjI5OacsbryMxFuTJqhQmTufKYHzC6xjIgAiNY+EC9TqUlb5kMHWHc10ob4KWGyL9CtFJ63MW+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705505908; c=relaxed/simple;
-	bh=QlbmZ4ud6YNtdBK9dZFHWL3ew6WArzBT1tdPfKW9s+U=;
-	h=Received:From:To:Subject:Date:Message-Id:X-Mailer:X-CM-TRANSID:
-	 X-Coremail-Antispam:X-CM-SenderInfo; b=duOyIQSR3n/b1OJeTFU982N247KDNVFhTQKfAENHOwjOfYtqwXYgBWBdcQD60aCBRYu86gky+XaqL52L6czA+87sveNHpN4FK9sgQ0sb808a4peczUDm0koZ+RcncTm5QD5OKjoP1WQf+d/AE1WYiYEbtTaUGHULOXJMrbieXx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=129.150.39.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from localhost.localdomain (unknown [36.24.98.148])
-	by mail-app2 (Coremail) with SMTP id by_KCgDHdqVi9Kdlv61AAA--.11252S4;
-	Wed, 17 Jan 2024 23:38:10 +0800 (CST)
-From: Lin Ma <linma@zju.edu.cn>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	linma@zju.edu.cn,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v1] vlan: skip nested type that is not IFLA_VLAN_QOS_MAPPING
-Date: Wed, 17 Jan 2024 23:38:10 +0800
-Message-Id: <20240117153810.1197794-1-linma@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:by_KCgDHdqVi9Kdlv61AAA--.11252S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr47ZrWrZF17Kw1xtF43Jrb_yoW8AFW8pF
-	y5GFy7GwsrJF9agFWIqF48XayxZFnrJr18uF1rKa1Fkrn8Kr9rtFWUGFnF9r17ZFZ5Aa43
-	tF1avF4j934DWrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
-	JF0_Jw1lc2xSY4AK67AK6ryrMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-	4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-	67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-	x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
-	z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73Uj
-	IFyTuYvjfU8KZXUUUUU
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+	s=arc-20240116; t=1705505940; c=relaxed/simple;
+	bh=iQ7itby43BSx0xynQMS8ijTGKazjAWAAhMKEoJglSwY=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:Content-Transfer-Encoding:User-Agent:MIME-Version; b=pnYXyzDs8UKIlsT8hQ4D7iQVxLPqKwahVNLO21Gep7lr6/9dky60auLxCRSh5PJkj45QmNCKLYJgl7gVTnXYDgbbC5G6Km4JQIvz143nTvbjIkGQniQzIJiO7J7ASM/IS0Gq0csvB/VRdFdcuoIWcO2R30YAfcOyUnWTGd7DQFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=V9BeD8wj; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40e7065b7bdso40892715e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:38:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705505937; x=1706110737; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=AHIe76/zPrvtJ/ms59RFYFIDBYoX1+fcYvY/MxrSv1s=;
+        b=V9BeD8wjEZYVJ14NKcZQGZqSDKsC87gqyftpYoJuy5DrROpEOp0ZDGD4SXq4h0Yc/6
+         cEHDBIa2Fkp7zZYsyZ+BsOU8FCqm4+HVSL73ddQOxvC/T2JgA6pw7ZweJdLJ39GMZTZP
+         GRjG4w5zJw6qIHYwix35C/OAgilvr85Wn9mTsybr0VSeSc34ullnJ2Y1z48Hmgc7q+26
+         A8YdKuVmA88ovcEmvuUtzcH/P4V4JCfiOMhh00Tv51ce+e88y6+kKVtYPAdjd9FF0uTc
+         7awLmJKZXdSR8BJBDFSUEBgUsPTxXSTOzsXDuf+7VYHUuXZ+nIuVRSFVimnvid5X/c+h
+         UDlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705505937; x=1706110737;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AHIe76/zPrvtJ/ms59RFYFIDBYoX1+fcYvY/MxrSv1s=;
+        b=T2y80fvxUdWs77uiSvDXLtY4Iih7e2d2FLnIB81bUhUcPXS5+SByPFGq2ov0N6BYME
+         Z6A2dL7pO+RnHFJNe8XPp8JQ2TU8rMerexa2s50ts3O9KGArvlVXzvd17pW+8iHXkBp4
+         HozBzpSj3ZZJvvW/R8kyGlQKAiSVMLxcp3Ybo6w2tx+4sIAfAeyqDTlBQi1YY6s5RL8S
+         jdWh0S9Is2NZKhkOCbGCXIsh8vu78V/wgmJdkxU5HF2xZIY9Wq1N4IM+mqnont5CRo4b
+         sKq1nb32MqUaigJNds1bISmUU9L0wSIO3FATLVT3COKi87f7Vqt2KdJgdixR/uWLbBcR
+         Enng==
+X-Gm-Message-State: AOJu0YxrZkLDEEmJFPOrIL4WDJ7Xot708Dtki9p0vivnqeaOe7H/ybOy
+	3isAcJ5DKkMtHzLnLcqXak3mSPAMsk902w==
+X-Google-Smtp-Source: AGHT+IFV/Y/QK8epiDPjRSEGlOZHxAJNe8EwHrV5tZVYNXXzxYIO5ZcLL+4nrYomezsBSeqVAKi/4Q==
+X-Received: by 2002:a05:600c:24d3:b0:40c:3e6b:efe8 with SMTP id 19-20020a05600c24d300b0040c3e6befe8mr3113561wmu.241.1705505937181;
+        Wed, 17 Jan 2024 07:38:57 -0800 (PST)
+Received: from draszik.lan ([80.111.64.44])
+        by smtp.gmail.com with ESMTPSA id n18-20020a05600c501200b0040e77ce8768sm10969236wmr.16.2024.01.17.07.38.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jan 2024 07:38:56 -0800 (PST)
+Message-ID: <026bdf502c0af8260c67a7a851562633a6976031.camel@linaro.org>
+Subject: Re: [PATCH 10/18] tty: serial: samsung: make max_count unsigned int
+From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, Sam Protsenko
+	 <semen.protsenko@linaro.org>
+Cc: krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com, 
+	gregkh@linuxfoundation.org, jirislaby@kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
+	peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
+Date: Wed, 17 Jan 2024 15:38:55 +0000
+In-Reply-To: <b21a54a7-fe13-4a29-8e7e-6b653d5c24ef@linaro.org>
+References: <20240110102102.61587-1-tudor.ambarus@linaro.org>
+	 <20240110102102.61587-11-tudor.ambarus@linaro.org>
+	 <CAPLW+4=YYdUSaaLcsdEyPswC4s6onxuSh24vSfw4xys=sPZG_Q@mail.gmail.com>
+	 <b21a54a7-fe13-4a29-8e7e-6b653d5c24ef@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1-1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
 
-In the vlan_changelink function, a loop is used to parse the nested
-attributes IFLA_VLAN_EGRESS_QOS and IFLA_VLAN_INGRESS_QOS in order to
-obtain the struct ifla_vlan_qos_mapping. These two nested attributes are
-checked in the vlan_validate_qos_map function, which calls
-nla_validate_nested_deprecated with the vlan_map_policy.
+Hi,
 
-However, this deprecated validator applies a LIBERAL strictness, allowing
-the presence of an attribute with the type IFLA_VLAN_QOS_UNSPEC.
-Consequently, the loop in vlan_changelink may parse an attribute of type
-IFLA_VLAN_QOS_UNSPEC and believe it carries a payload of
-struct ifla_vlan_qos_mapping, which is not necessarily true.
+On Wed, 2024-01-17 at 15:21 +0000, Tudor Ambarus wrote:
+>=20
+>=20
+> On 1/16/24 18:21, Sam Protsenko wrote:
+> > On Wed, Jan 10, 2024 at 4:23=E2=80=AFAM Tudor Ambarus <tudor.ambarus@li=
+naro.org> wrote:
+> > >=20
+> > > ``max_count`` negative values are not used. Since ``port->fifosize``
+> > > is an unsigned int, make ``max_count`` the same.
+> > >=20
+> > > Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> > > ---
+> > > =C2=A0drivers/tty/serial/samsung_tty.c | 2 +-
+> > > =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+> > >=20
+> > > diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/sa=
+msung_tty.c
+> > > index 90c49197efc7..dbbe6b8e3ceb 100644
+> > > --- a/drivers/tty/serial/samsung_tty.c
+> > > +++ b/drivers/tty/serial/samsung_tty.c
+> > > @@ -760,8 +760,8 @@ static irqreturn_t s3c24xx_serial_rx_chars_dma(vo=
+id *dev_id)
+> > > =C2=A0static void s3c24xx_serial_rx_drain_fifo(struct s3c24xx_uart_po=
+rt *ourport)
+> > > =C2=A0{
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct uart_port *port =3D=
+ &ourport->port;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int max_count =3D port=
+->fifosize;
+> >=20
+> > What if port->fifosize is 0? Then this code below:
+> >=20
+> > =C2=A0=C2=A0=C2=A0 while (max_count-- > 0) {
+> >=20
+> > would cause int overflow, if max_count is unsigned?
+> >=20
+>=20
+> good catch, Sam!
 
-To address this issue and ensure compatibility, this patch introduces two
-type checks that skip attributes whose type is not IFLA_VLAN_QOS_MAPPING.
+Does it matter, though? As this is a post-decrement, the test is done first=
+, and the
+decrement after. Therefore, it'll still bail out as expected.
 
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
----
- net/8021q/vlan_netlink.c | 4 ++++
- 1 file changed, 4 insertions(+)
+> I'm thinking of amending this and add at the beginning of the method:
+>=20
+> if (!max_count)
+> 	return tty_flip_buffer_push(&port->state->port);
 
-diff --git a/net/8021q/vlan_netlink.c b/net/8021q/vlan_netlink.c
-index 214532173536..a3b68243fd4b 100644
---- a/net/8021q/vlan_netlink.c
-+++ b/net/8021q/vlan_netlink.c
-@@ -118,12 +118,16 @@ static int vlan_changelink(struct net_device *dev, struct nlattr *tb[],
- 	}
- 	if (data[IFLA_VLAN_INGRESS_QOS]) {
- 		nla_for_each_nested(attr, data[IFLA_VLAN_INGRESS_QOS], rem) {
-+			if (nla_type(attr) != IFLA_VLAN_QOS_MAPPING)
-+				continue;
- 			m = nla_data(attr);
- 			vlan_dev_set_ingress_priority(dev, m->to, m->from);
- 		}
- 	}
- 	if (data[IFLA_VLAN_EGRESS_QOS]) {
- 		nla_for_each_nested(attr, data[IFLA_VLAN_EGRESS_QOS], rem) {
-+			if (nla_type(attr) != IFLA_VLAN_QOS_MAPPING)
-+				continue;
- 			m = nla_data(attr);
- 			err = vlan_dev_set_egress_priority(dev, m->from, m->to);
- 			if (err)
--- 
-2.17.1
+This will not help with overflow. It'll still have wrapped around after com=
+pleting the
+while() (always, no matter what start-value max_count had)
+
+Cheers,
+Andre'
 
 
