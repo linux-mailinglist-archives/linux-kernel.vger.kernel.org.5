@@ -1,222 +1,181 @@
-Return-Path: <linux-kernel+bounces-28602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36FA4830098
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:38:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04D6A8300B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:45:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AACF31F24CCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:38:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D488287F37
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:45:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35843BA50;
-	Wed, 17 Jan 2024 07:37:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 147BFC2FD;
+	Wed, 17 Jan 2024 07:45:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="sY59nySc"
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2114.outbound.protection.outlook.com [40.107.102.114])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dK5pX1U7"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9672FCA73;
-	Wed, 17 Jan 2024 07:37:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.114
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705477066; cv=fail; b=fHpwqCzKq4lUUu2FTfzc2o7VhJOGDKPxfyx/AA7WGpyJVYjLZp3b4xOTA9cofPXiL64VDMt4QqRnin5oKZf1H8iuf2iuRmGVyVv7wIaNT6IvNcZc17g+PQ9nKLqN9Ya0HEMzykcIh06evJ1jyMlsfU9FPekobDT0kPg2VCpS3Q0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705477066; c=relaxed/simple;
-	bh=kEprHw+xv8IdFWB17ZSbH5HUyGWXEWM7RHGGnAVlB5I=;
-	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
-	 Received:Received:Date:From:To:cc:Subject:In-Reply-To:Message-ID:
-	 References:Content-Type:X-ClientProxiedBy:MIME-Version:
-	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
-	 X-MS-Office365-Filtering-Correlation-Id:
-	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:
-	 X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-	 X-MS-Exchange-CrossTenant-UserPrincipalName:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=mBct8UeYz1AKMFwtWpF+EC1bE4izgPpPcePi24QL3nZZ2YWzEyRG3uWFl9Dn4xoLOpwrVsPpIQrnyuQmg7L99apqvqxTyIhwGCkq4J6FaNQOCHCiIVH4fT5OrZ9AqhivqJrMuEI/j/BknFXuM0RI94LVfVykCH3fmjxsmPm+15A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=sY59nySc; arc=fail smtp.client-ip=40.107.102.114
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XYzgfgc6L2QT9Q+/1Lvsfc6eSNUGGEfmnpmexzVWrWcviPt/2bGQHlKQrAWXBrMe7oyu7UR/VIeGbmhKX/8up+2npvj3nLvfb3R97DLN5k10l7dWSA88P0r06gi5vngX3/0ww4fMDlqFVi2c6VserA49BIgoCfKRMRTHpku8WAFGoQ+reQKIEYOWRDwIH/7hFnysPGnCsCx950OdUXhKuL5K2KU13wjj1xiBbPa8QEgkszU6hMlo4LcdtcKnwu80Es88CJXptXxXx6JgTenJe9qUTkgFHX2cwRgpsyFwAH18GKP207CYTGKpH98Y7xo1PUlDc0UqF7LCAv3ZDJPB5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MBFsrqjOK5LJiS1b7YXXGC3gWh4Shb+fImkuncKwHAI=;
- b=Jf0eokOpUaZTdu6ymg7MQMXHPuU6/ejnSNYA/XQEy71h8ALVPUrWH2Etf6925lXJDiyP9+8aCP6XHP+hEWKesIxz/3eIEWCstlYbqt8v8Ae7dWmHGgiLvncxo/3JxHIhoUZKLeW1LVjQHqaV6HUdRefe87AM8IwFzXxoOTZmWyeH9P9OB2a2zZAIjJ6xP6PGep+ET1xmdQqdbqUmj+me87e6RFskwD/AjVydvKqGy+/HrgkMcstqcdhI8VnyKLLblunMQPqK6rP3Ap7t+cKAwCZpvUOHCoJ6D0dgPPtmuzDxR1c/fDMPquyclrCmx020o05Pr6wSnGeqSHcxrWZJ8A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MBFsrqjOK5LJiS1b7YXXGC3gWh4Shb+fImkuncKwHAI=;
- b=sY59nySc8IzNBr+1n1Ly0d96TG2WsFfmOcNU5oQXbN4wa0JlYeUm6NuyXjO//SoE4RkCnMjBQY7I2/QSff+Ow6YFAFVgptVR9wWTz9z2uWB/FUiL8XcwlKgVF2mI+6C7EIP2M/U6mYiX5si8QNe9sAWVLi/AGvEEMcBA2X0CQAA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from PH0PR01MB8166.prod.exchangelabs.com (2603:10b6:510:293::17) by
- SJ0PR01MB6333.prod.exchangelabs.com (2603:10b6:a03:293::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7202.23; Wed, 17 Jan 2024 07:37:40 +0000
-Received: from PH0PR01MB8166.prod.exchangelabs.com
- ([fe80::5549:ab3d:70af:8693]) by PH0PR01MB8166.prod.exchangelabs.com
- ([fe80::5549:ab3d:70af:8693%7]) with mapi id 15.20.7181.019; Wed, 17 Jan 2024
- 07:37:40 +0000
-Date: Tue, 16 Jan 2024 23:37:34 -0800 (PST)
-From: Ilkka Koskinen <ilkka@os.amperecomputing.com>
-To: James Clark <james.clark@arm.com>
-cc: linux-perf-users@vger.kernel.org, ilkka@os.amperecomputing.com, 
-    Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-    Arnaldo Carvalho de Melo <acme@kernel.org>, 
-    Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-    Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-    Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
-    Adrian Hunter <adrian.hunter@intel.com>, 
-    Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-    Anup Sharma <anupnewsmail@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf test: Fixed masked error condition in perf data
- convert test
-In-Reply-To: <20240112120737.1995575-1-james.clark@arm.com>
-Message-ID: <726d2423-13a-010-e72e-8d3366f9c542@os.amperecomputing.com>
-References: <20240112120737.1995575-1-james.clark@arm.com>
-Content-Type: text/plain; format=flowed; charset=US-ASCII
-X-ClientProxiedBy: CH5P223CA0016.NAMP223.PROD.OUTLOOK.COM
- (2603:10b6:610:1f3::21) To PH0PR01MB8166.prod.exchangelabs.com
- (2603:10b6:510:293::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77171BE4B
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:45:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705477524; cv=none; b=lRsfQROq5xRsavYkZzdsJu1dc/Oa1lPxqVefONcF9yxHYCmvBQcDMMjQW4m4DKdLolzyJn6iSyEyZq2bytqFs9/hEG8O0FQsyTVw0UeJMcon4wzwkK4HA6xKAPVxPCN7YIdoo6JppV6yNpUFP9b91NHtykgSosoAArELevrcG3g=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705477524; c=relaxed/simple;
+	bh=Shhx/FKoSiVovdNrE+6my8ZiagZjnjMS2WCYpBGzifw=;
+	h=DKIM-Signature:Received:X-MC-Unique:Received:
+	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
+	 X-Google-Smtp-Source:X-Received:Received:Date:From:To:Cc:Subject:
+	 Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=ImslpsbkxJ1YoIfOzKPHKrQXRIadmY4CO8/CE+/BdTXZGPJyzgq1z1ST/qhCF+zZsCwz/Uf5RCdziInr+1LOYFGHWxS+68Ib1HeqDR3lkXqzyH6IjZbHIHCvUnNd7Y8OMZhYuxDWeHb46gZNLCL76nTa+1JZfWYlBtX/GQOKOcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dK5pX1U7; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705477521;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zQRlhXHXvsZ9EW9ID9S6e0YBzlBTE1L+rSpAnIyeWDk=;
+	b=dK5pX1U7a8wtL00MRrphVZx9CjecPMqL3HyCRddhMmF0+moDWFHivbY3JeGFt5EU9hxMnr
+	VIpAq/hdE0gfTIf8u9t2cosJD3wn8uOV8cUwQlPgvWQMeNkOz6Z1ZQ1OE5UTft3AO3iiuD
+	4VOt+ziErtNz93TL7cW53m8csmOGmX0=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-503-F1r4pmLMOOamGkKyAotx1w-1; Wed, 17 Jan 2024 02:45:16 -0500
+X-MC-Unique: F1r4pmLMOOamGkKyAotx1w-1
+Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-6d9b050e9a8so13510824b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 23:45:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705477515; x=1706082315;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zQRlhXHXvsZ9EW9ID9S6e0YBzlBTE1L+rSpAnIyeWDk=;
+        b=by8h7xcnx+9shj1QDwqkLXNBEH/kKnfep5I8OLH4rsZWyAmh1qFf6MmYQGqnEWvM5a
+         bEXqD+O+AM22EgCVQO7wBJ4fFzlze8/oRqoG1vckJKArOh9runO3VSTIPvxSglSN8FBy
+         AXyu6UCNNs9ixhs6DIVKxo5Cq05EesWRD10QBOyJLIr50DriIYa77gfDhdALYESnjJ1+
+         7WtE68nq3QXhCLiaLlDLA70jTmd1PsvCDguPZxWBcT+J0tI7j8iFcGsVM4fVYlNvhPcP
+         QSF5eTtCRlccRDlpqqBMMZ6x6qETHykO4rFnNvEFomqBC0oQ3dozaMivnVeM/0J0kgPj
+         /9Zg==
+X-Gm-Message-State: AOJu0YwFXEonFoI9EnnFzFtRjbxtIEZ4xJlbJONRAfaHmGlNyeCziRDL
+	girnaJRAkVZ+NCBTZ8DIiv0WTzXS8BTzwifZGNjzzdzxtRCVInZGLhWdPUEXr+eoXhajJm3LOmk
+	/ZiwxfIlFs609EbKzITS4YtjXDhi9tQzR
+X-Received: by 2002:a05:6a00:8c7:b0:6d9:9126:cab5 with SMTP id s7-20020a056a0008c700b006d99126cab5mr11556293pfu.57.1705477515216;
+        Tue, 16 Jan 2024 23:45:15 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHGcH2MWUG40J/v2AJAZDVhtAU4GRwWSH/jgWPbD8wsqM8XRIdzMPaD3wvgm9yUXrndNlaftg==
+X-Received: by 2002:a05:6a00:8c7:b0:6d9:9126:cab5 with SMTP id s7-20020a056a0008c700b006d99126cab5mr11556283pfu.57.1705477514814;
+        Tue, 16 Jan 2024 23:45:14 -0800 (PST)
+Received: from localhost ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id y14-20020a056a00190e00b006d9a0902937sm791572pfi.149.2024.01.16.23.45.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jan 2024 23:45:14 -0800 (PST)
+Date: Wed, 17 Jan 2024 15:38:13 +0800
+From: Coiby Xu <coxu@redhat.com>
+To: Ondrej Kozina <okozina@redhat.com>
+Cc: kexec@lists.infradead.org, Milan Broz <gmazyland@gmail.com>, 
+	Thomas Staudt <tstaudt@de.ibm.com>, Daniel P =?utf-8?B?LiBCZXJyYW5nw6k=?= <berrange@redhat.com>, 
+	Kairui Song <ryncsn@gmail.com>, dm-devel@redhat.com, Jan Pazdziora <jpazdziora@redhat.com>, 
+	Pingfan Liu <kernelfans@gmail.com>, Baoquan He <bhe@redhat.com>, Dave Young <dyoung@redhat.com>, 
+	linux-kernel@vger.kernel.org, x86@kernel.org, Dave Hansen <dave.hansen@intel.com>, 
+	Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: Re: [PATCH v2 0/5] Support kdump with LUKS encryption by reusing
+ LUKS volume key
+Message-ID: <qsioibxdey2cbxkpyv2gjg6a77votsg6ld2jp7ocvbiezaylxt@me3kgvu24vbs>
+References: <20240110071522.1308935-1-coxu@redhat.com>
+ <1edc32f2-858b-4afa-a883-2632be6d909e@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR01MB8166:EE_|SJ0PR01MB6333:EE_
-X-MS-Office365-Filtering-Correlation-Id: d90434de-c39d-4c70-e5f5-08dc172f2ef1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	xuW+SRmGP4GcWw2apf645XZRN5hSEzBoVxXrAjmxE9h/GcApd/6tGAe9cOVK7qelhNbaA42CI/x5kFwBNF+6hmwXAsQKv/RVPMj1DMMUf85FVibEs+ja//0OHpTgcsz1sseaDAbU8PkazygIC+e84qHf78y8J3oiyaq9dGs/E2aLw60rA4LMNUmfGl2MVuC4DtJKZry3FshKIbGfHwOQXixOUnpSBfj8omRuWn4KlM2QbugjixP79OOj4EWYs+1X1/9JtkHbRJvdglN7+U33xVSs59IYPweQ4pSOcCFn+M7gntzEpsh6HvGk/FCaOtp+oLY3PO7jLmfCO71v+xNEvslTew5KzddaclKsGq52FmBEclo5NY6/eRBTO341LEgMEKHJ0zWZAIx8NeZrZRtcY/z77PEbIDwKu8b1Ofwq0j9j22injsGy7jHUyo51eCjxDF8WLXHtFsJz/SDOrLaLWrNbLZbDtuJqkULq9+wJ66m0tZwRuYM/70nVYorgc1GvXqZIk3vys4VjRvl21m2pjKItzpHLt91guFaxcssqngk/5E0W3KdDo17U+8B8tgJMzAtZ/KpfEbJI0JCho0hdEY4uYwwq3joetpNYV9zNEjEcHsCw12vV3vqyGrBCf7gM
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB8166.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(396003)(39850400004)(376002)(366004)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(26005)(83380400001)(52116002)(6666004)(6506007)(6512007)(2616005)(38100700002)(5660300002)(7416002)(4326008)(8676002)(41300700001)(2906002)(8936002)(6486002)(478600001)(316002)(6916009)(54906003)(66476007)(66556008)(66946007)(86362001)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?f1/h5CzmmyfG9z6hZhJe+TVBD+U/xdb5TOMs79p5omFNT7omB+gQniGo4VOm?=
- =?us-ascii?Q?oXz7C9JdqMnw1/f4cZk04Q+JxE+HJJuJL9wmIxsWmdXeFY8z1WGHw+qF9yKQ?=
- =?us-ascii?Q?EpTCUJ3m4fzjfKL3q+DQwO8iFV+c949b/osiBS0bk9IiZQT32YW9RzFpYvsr?=
- =?us-ascii?Q?PwHWTqJ6O/p7pErW8Mvh3vZUZ9Yt+iG1ebJxwDDk70xgUD5OPiGT+WLeYt9B?=
- =?us-ascii?Q?0XTQaJ/AA1JPw722t3et3ETcOy3P9FrvBOhaZvqtn6gJ4wgUwNMyKm2IQ6f1?=
- =?us-ascii?Q?FvY8hIf9BNmIB81xa/19h+fxQzwEEvTjdFVyHqtubUyMkDsZFFsBKS1CkR/Y?=
- =?us-ascii?Q?5bPYr84vKpUzocQVRhTSnmlkUGDsLaKO/0ba7oHXWFb2naIXBqMdc/aCHXW/?=
- =?us-ascii?Q?7Kqr6rvl/sciBAZakERtU/AX2x+p94JGHl+lUK7BqpemKrkXP73EjI4nvxN9?=
- =?us-ascii?Q?BnslveSmeoyWosGfHc8Sgq0tQ9nCZXiCPunZRNRKD+f80YGrJ1YhOYMdJqBu?=
- =?us-ascii?Q?J0xJhC/fL4bO1fqlGB6zqGst6aKLBJqzgfyY/hOYqyfamix1qgOh8Vib330d?=
- =?us-ascii?Q?1loi1trC+qB2xPwKCM26Z3vbPanQ/9sZ4Iv7KuEGPppSPTyaWkejxDz8xy4f?=
- =?us-ascii?Q?yxS7fl9LwkMZpUlCFV1m7oaNHl3fYeb+AcXpywJ5HGJ8JefwEEqXV2PnvoWw?=
- =?us-ascii?Q?E7pgKilidORA4duKGWY8yE2bDVviryi7yG3lstBcbiY005+t0MvOjDu9BIYr?=
- =?us-ascii?Q?bJairBxJ3zo4v7dEexJ7PWDchaFViSRYzTdHYmwe/d7wqTgPSfzDRv4l5bzw?=
- =?us-ascii?Q?KHprWcgsiSzOMw1r60bZEPQn4v+3vCPfp7KdSgJZC2wHo7bljPIkHMQQIfTg?=
- =?us-ascii?Q?TvDE/bzl4yT6loWoigrVebtT8TzSFe2A/JZfYbZNCU8uYz9aLzpKUCH3x16K?=
- =?us-ascii?Q?gLL29uvOJyLtUwoxxnM3udffZEsJY+ncyOz0wNNOHtI1RA+SievzRVPU8fAv?=
- =?us-ascii?Q?v3rzrnATxilOhp5ryLG9pKmRhgNikll9zWEUb8JA9dngnoeOArsLacp3lKrQ?=
- =?us-ascii?Q?hjp1pgepdUJLzU4keRMOqHL+ARzoboMZq2P2Ar1RtN39jxc52VCyrqIIuHAr?=
- =?us-ascii?Q?qidlIWHcdAyy28QLN+cp8D03ddZRzy59lRkS4rnNjnTrL4Zuf6gP/OLPvaCH?=
- =?us-ascii?Q?JHNqGhXc4SPQ7/frhUbL1/RxGrPoj3KJ4eQ5pGWwPY1sMPLER/I5UxIqkzJT?=
- =?us-ascii?Q?3IIzzDQYdgLS+SnpDMoO+8AlcHyBcex8cZcXFJ1GsGJZAsgSqYISD0LLCDvV?=
- =?us-ascii?Q?ZexBa/Ffg8y00868XKhJfqvsYMbJ+CNw76WznhIR1grZnC+HGLuJjgrUEWOe?=
- =?us-ascii?Q?kUhH0myot+WU55dSEhzynLHZs4oeLc6d87xaWFckiU4YF3pjR7TkMsnTuEBY?=
- =?us-ascii?Q?3OIuaUt8/sPrDKMeBPdAAzgQDiridfZcG9wb73XFHNljzeYUwwCH/mKkUTz5?=
- =?us-ascii?Q?xEsmz6EkdFW4MsEbLL856Zk+l26SBQSin/M4P+7Son7BP5CBoCqE1hZBK8aL?=
- =?us-ascii?Q?/tgnKF/29pK7Ic28RiS7UwO8efV81UFFQbtxDuLjGdwrSAS31ka4e3GE2RhY?=
- =?us-ascii?Q?UvClBmgC8elu64zFXuzmsWM=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d90434de-c39d-4c70-e5f5-08dc172f2ef1
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB8166.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2024 07:37:39.9600
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: efTHwvZ//eTv7NidAwvv73ceInnEVl87tztyIWOvI47MbD8GJ0tz9TfI8/550Zd7ZSigqjp7Z6smr3cWW85opC+fw8QYq7dBwOtRp+ZP5bMw8vVfoIiEWerGEgCKNPAb
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR01MB6333
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <1edc32f2-858b-4afa-a883-2632be6d909e@redhat.com>
+
+On Tue, Jan 16, 2024 at 11:37:10AM +0100, Ondrej Kozina wrote:
+>Hi Coiby,
+
+Hi Ondrej,
+
+>
+>I've started working on a patchset for systemd utility. I have one 
+>question/suggestion:
+>
+>On 10/01/2024 08:15, Coiby Xu wrote:
+>>LUKS is the standard for Linux disk encryption. Many users choose LUKS
+>>and in some use cases like Confidential VM it's mandated. With kdump
+>>enabled, when the 1st kernel crashes, the system could boot into the
+>>kdump/crash kernel and dump the memory image i.e. /proc/vmcore to a
+>>specified target. Currently, when dumping vmcore to a LUKS
+>>encrypted device, there are two problems,
+>>
+>>  - Kdump kernel may not be able to decrypt the LUKS partition. For some
+>>    machines, a system administrator may not have a chance to enter the
+>>    password to decrypt the device in kdump initramfs after the 1st kernel
+>>    crashes; For cloud confidential VMs, depending on the policy the
+>>    kdump kernel may not be able to unseal the key with TPM and the
+>>    console virtual keyboard is untrusted
+>>
+>>  - LUKS2 by default use the memory-hard Argon2 key derivation function
+>>    which is quite memory-consuming compared to the limited memory reserved
+>>    for kdump. Take Fedora example, by default, only 256M is reserved for
+>>    systems having memory between 4G-64G. With LUKS enabled, ~1300M needs
+>>    to be reserved for kdump. Note if the memory reserved for kdump can't
+>>    be used by 1st kernel i.e. an user sees ~1300M memory missing in the
+>>    1st kernel.
+>>Besides users (at least for Fedora) usually expect kdump to work out of
+>>the box i.e. no manual password input is needed. And it doesn't make
+>>sense to derivate the key again in kdump kernel which seems to be
+>>redundant work.
+>>
+>>This patch set addresses the above issues by reusing the LUKS volume key
+>>in kdump kernel with the help of cryptsetup's new APIs
+>>(--link-vk-to-keyring/--volume-key-keyring). Here is the life cycle of
+>>this kdump copy of LUKS volume key,
+>>
+>>  1. After the 1st kernel loads the initramfs during boot, systemd
+>>     use an user-input passphrase or TPM-sealed key to de-crypt the LUKS
+>>     volume key and then save the volume key to specified keyring
+>>     (using the --link-vk-to-keyring API) and the key will expire within
+>>     specified time.
+>>
+>>  2.  A user space tool (kdump initramfs builder) writes the key description to
+>>     /sys/kernel/crash_dm_crypt_key to inform the 1st kernel to save a
+>>     temporary copy of the volume key while building the kdump initramfs
+>
+>So this volume key copy cached by systemd utility in 1st kernel does 
+>not have to be readable from userspace.
+>
+>>
+>>  3. The kexec_file_load syscall saves the temporary copy of the volume
+>>     key to kdump reserved memory and wipe the copy.
+>>
+>>  4. When the 1st kernel crashes and the kdump initramfs is booted, the kdump
+>>     initramfs asks the kdump kernel to create a user key using the
+>>     key stored in kdump reserved memory by writing the key
+>>     description to /sys/kernel/crash_dm_crypt_key. Then the LUKS
+>>     encrypted devide is unlocked with libcryptsetup's
+>>     --volume-key-keyring API.
+>
+>Unlike here where it has to readable from uspace so that libcryptsetup 
+>can verify the volume key.
+>
+>Is it correct?
+>O.
+
+Oh, my assumed --link-vk-to-keyring only support user key which must be
+wrong. So yes, you are absolutely correct that "volume key copy cached
+by systemd utility in 1st kernel does not have to be readable from
+userspace". Thanks for the suggestion!
 
 
+-- 
+Best regards,
+Coiby
 
-On Fri, 12 Jan 2024, James Clark wrote:
-
-> The test does set -e, so any errors go straight to the exit handler,
-> where it returns err=0 (success). Fix it by leaving err=1 from the
-> beginning and only set the success code if it ran all the way to the end
-> without errors.
->
-> Also remove the exit code argument from the last exit because it doesn't
-> do anything, it's always replaced by err in the exit handler.
->
-> Fixes: 68d124182610 ("perf test: Add test validating JSON generated by 'perf data convert --to-json'")
-> Signed-off-by: James Clark <james.clark@arm.com>
-
-Looks good to me.
-
-
-Reviewed-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
-
-Cheers, Ilkka
-
-> ---
-> tools/perf/tests/shell/test_perf_data_converter_json.sh | 9 +++++----
-> 1 file changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/perf/tests/shell/test_perf_data_converter_json.sh b/tools/perf/tests/shell/test_perf_data_converter_json.sh
-> index c4f1b59d116f..1781b7215c11 100755
-> --- a/tools/perf/tests/shell/test_perf_data_converter_json.sh
-> +++ b/tools/perf/tests/shell/test_perf_data_converter_json.sh
-> @@ -4,7 +4,7 @@
->
-> set -e
->
-> -err=0
-> +err=1
->
-> shelldir=$(dirname "$0")
-> # shellcheck source=lib/setup_python.sh
-> @@ -36,7 +36,6 @@ test_json_converter_command()
-> 		echo "Perf Data Converter Command to JSON [SUCCESS]"
-> 	else
-> 		echo "Perf Data Converter Command to JSON [FAILED]"
-> -		err=1
-> 		exit
-> 	fi
-> }
-> @@ -49,7 +48,6 @@ validate_json_format()
-> 			echo "The file contains valid JSON format [SUCCESS]"
-> 		else
-> 			echo "The file does not contain valid JSON format [FAILED]"
-> -			err=1
-> 			exit
-> 		fi
-> 	else
-> @@ -62,4 +60,7 @@ validate_json_format()
-> test_json_converter_command
-> validate_json_format
->
-> -exit ${err}
-> +# Set -e is on, so it was only successful if it ran up to this point.
-> +# Therefore only set err=0 here.
-> +err=0
-> +exit
-> -- 
-> 2.34.1
->
->
 
