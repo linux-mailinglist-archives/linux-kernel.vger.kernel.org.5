@@ -1,166 +1,161 @@
-Return-Path: <linux-kernel+bounces-29003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CED8830697
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:07:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABEB1830692
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:06:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E8E4287CD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:07:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE8391C2196E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:06:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F67B1EB37;
-	Wed, 17 Jan 2024 13:07:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B229B1EB36;
+	Wed, 17 Jan 2024 13:06:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="EgN/ZODz"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="amq5iLZg"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66B9B1DDC9
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 13:06:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EE3D1EB25
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 13:06:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705496820; cv=none; b=sKrYxCoToF9Tx58rzAX9dx5i5ahE0FJVSE97h+1n17ewu3PWlYswLj1ethYBOMVXzRK+R45m5sTuJhsRRl20hsNd1AJocMKWHGX7RUqMx6wXsafAIaf9MUFaexHEABKm1vbWYCJWI0YATIi2xb2adRGcHZvNABE7Lry41VWzD6Y=
+	t=1705496781; cv=none; b=Xp8EOt6VggiQG0q3aka/ZOL4O8a27JetbiXmTbb1jDv09LkVNidlG1zlXzrFRnHZyJlCMv+tQAYOmeAaTivHbdSp1DQHGQ0Zi9qv3Qnxn6SNhAI6nXCOVq9mUpVhNyzwQfuj4QLqX86W5OTANRIRua09eUO0ekbnA3dDKYwnXJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705496820; c=relaxed/simple;
-	bh=+iccQ9RDRKo+U5kOojUc8XJKb8fhdLp9mgj0tdfmQ0k=;
-	h=Received:X-Virus-Scanned:Received:DKIM-Signature:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=kpNu11zbrkvg5MfmwmyXyHedZcK4rCuWawsjqGWeJqjNdIC5ASclmPVr9xc1peCGjjOcVVTZFoMYVPOjKfsIBDc3o+nliGVgeS7hNk6aGZlDw284IZInuYQHY4BpcNg4g82By8eD9BYyOXHqP9fqWc7FT6gKn6+ZL8egpr5yaAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=EgN/ZODz; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 8187840E01F9;
-	Wed, 17 Jan 2024 13:06:50 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 0UjbuZsisOSy; Wed, 17 Jan 2024 13:06:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1705496808; bh=XtdEgP6dOqkMXgOKRwFSLg/wNuK24wOiZgQ/zzNNgN8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EgN/ZODzUr25dK36lZC4hinfYq3WyZn7sM3FM0/QtznryZKJKHIYoRX5jYsKGU+TM
-	 wnpu4IxCGrerzDsmqTTP00384xIY9c1cB2YkT7fEFJ1Uv/TauCzURZQE/Pyn1jT0Xz
-	 XGLvvbNUz3Niw5zzGVJIDgzsnSa4yvYbeJR2XAlPlSTe2goswsySiC1crcxMn0I7V+
-	 86nzV6682Pos3k6D8iwZeN0QQPQLmXghfjOKU/s4t1JgTgVK1dcKGE1BxMNGjeM+y2
-	 pSEhLepePpTPqscWXMLrzr2dyySlSY24YXeQ+p+7ATNaorcw3NeUFGuVeer1rFP349
-	 /zREIybjklViYwKGK5Bwp9Vu+9CJ03NO+WRfM/TBZL3JGgL26gU7UuqqMyH/TyNdr6
-	 qB2GUx+BqMrWy354WXbvpNPXoTzBjtLJFYZ6aFUi5BKDxF/8ep79xU7H3nPGR/v0Gx
-	 cQQeObpn5VA2YjUbZ5inPvbSerNXQtr1bQFy1JQ1s8EkY2i7H3xEd8bSil/fwzCIul
-	 h6MElaoZ5znMuv4CEbHC/sW03BZ5/daAl2qEVJwjrFOwNhK/MsqJ9bt6meUUKo0KuN
-	 57fBl2DNO3Nkcc9VGpLTygX0Zf8FYEB9qubRYa+PLRlb0/igeW7Ef+krpNAIXx65R0
-	 GFBWdqA3GAqJ0cyAjXak8Hjc=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A7CC840E01A9;
-	Wed, 17 Jan 2024 13:06:03 +0000 (UTC)
-Date: Wed, 17 Jan 2024 14:05:57 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: Kevin Loughlin <kevinloughlin@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Michael Kelley <mikelley@microsoft.com>,
-	Pankaj Gupta <pankaj.gupta@amd.com>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Steve Rutherford <srutherford@google.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Hou Wenlong <houwenlong.hwl@antgroup.com>,
-	Vegard Nossum <vegard.nossum@oracle.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Yuntao Wang <ytcoode@gmail.com>,
-	Wang Jinchao <wangjinchao@xfusion.com>,
-	David Woodhouse <dwmw@amazon.co.uk>,
-	Brian Gerst <brgerst@gmail.com>, Hugh Dickins <hughd@google.com>,
-	Joerg Roedel <jroedel@suse.de>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Brijesh Singh <brijesh.singh@amd.com>,
-	Michael Roth <michael.roth@amd.com>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-	linux-coco@lists.linux.dev, Ashish Kalra <ashish.kalra@amd.com>,
-	Andi Kleen <ak@linux.intel.com>, Adam Dunlap <acdunlap@google.com>,
-	Peter Gonda <pgonda@google.com>, Jacob Xu <jacobhxu@google.com>,
-	Sidharth Telang <sidtelang@google.com>
-Subject: Re: [RFC PATCH v2] x86/sev: enforce RIP-relative accesses in early
- SEV/SME code
-Message-ID: <20240117130557.GDZafQtfRyeVFbBUXA@fat_crate.local>
-References: <ZZ7YuEexYSaZYmLK@tassilo>
- <20240111223650.3502633-1-kevinloughlin@google.com>
- <20240115204634.GHZaWZqsVyU_fvn_RW@fat_crate.local>
- <CAMj1kXH=k26nNyB+LQJ7WUJgbD2f3PREyjCzSngMCGc+72XJ6w@mail.gmail.com>
+	s=arc-20240116; t=1705496781; c=relaxed/simple;
+	bh=KUk5+ghGU1Dz8moEKZE0YTPzqZIlcAHT48h0wD3N06o=;
+	h=DKIM-Signature:Received:X-MC-Unique:Received:
+	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
+	 X-Google-Smtp-Source:X-Received:Received:Date:From:To:Cc:Subject:
+	 Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=JPKdDQU2Q4x9ZiX0pFN8Vaityt8OANS93H+Gwg0C7F4cAdK0L7U5nTTBFEKeDNn6jY9Pa5f0WLZfrZPODbWNZi3/FiQ6knsLRp/1VNo9AxSNZoYXWLnCT+zxyyt4mwySFtH/gF6mlOAVmeZlMeIDN285QItwSj0Xi8uHYnXwye4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=amq5iLZg; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705496778;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZiRAkIYwyF6dllf/mwQhoMSqFIs1r4sZIk6Sk9RII6w=;
+	b=amq5iLZgk2kClDMmT8iErTtxxQ2RSMh3OWzXssW1QU284/FV2BVmclXHTaeMJBL+z6KR1L
+	BRNJdMiYh3Z4ZE96ZOyAzb6B4juiU31U70LBUlSgu7xAVV0ht8CqJGRnH2+4GWqPD+6dPq
+	z/xYyzoYuDW1/xaT/90gO7xszEOVCjs=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-691-EfOO17UzMeOBPQQa0guscg-1; Wed, 17 Jan 2024 08:06:15 -0500
+X-MC-Unique: EfOO17UzMeOBPQQa0guscg-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-78374422f12so60614485a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 05:06:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705496773; x=1706101573;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZiRAkIYwyF6dllf/mwQhoMSqFIs1r4sZIk6Sk9RII6w=;
+        b=MZWAtF64QT9xjEZTZjxv4JbY/zA92FpZqrr28wbUhzSFqh35dw9MRpfnaPNkH16ntu
+         HxuGeqphwsBGQ72TldOlJZdTkdoWYKk3cwL97zoZnv8h+FY/VGBmxA2QoT5w0v0qwLR9
+         rJNWd4+npVkHFQv5MQB1NWqbPiZTPF3oMyLipflUb5l6z6rmSGL8GJQ3p+jAEkcrFug5
+         JxWleCezj2PFBMhoaNcBiN+7fjlZJ2PsyHvp6M2ldGOSV7WaDzJMNx8WKy5uW1kS+zhe
+         nszNvIlZS3KVCcZv169EN3vLrMtnENj7sxkELicskjG+Y0fZ+/+d3hTqGtm2kwmGcVCS
+         zcDg==
+X-Gm-Message-State: AOJu0YySCtQARPWa5B9Fp1o4xrSgzTO9LJeZ3reM5eULvZGC1kDw9jIG
+	7ksy17x27I+ySFkTQUriE6Zxpj7bRs/RpfEDuPjmtcUePxpVNCebBT84+H+HvJcX9/X/1pZuX2G
+	8H7cZ5NLpWLyGvKzvOPCkCD2YT0pgjd28
+X-Received: by 2002:a05:620a:24d1:b0:783:5186:a4c1 with SMTP id m17-20020a05620a24d100b007835186a4c1mr8877052qkn.64.1705496773330;
+        Wed, 17 Jan 2024 05:06:13 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IECWy0fJTxzZUnQCSSIxrbIo9n8C1Lzg7gEFz/eieTQLB+KIyQAL1/f9qlc3IZ84pbdghTylw==
+X-Received: by 2002:a05:620a:24d1:b0:783:5186:a4c1 with SMTP id m17-20020a05620a24d100b007835186a4c1mr8877041qkn.64.1705496773030;
+        Wed, 17 Jan 2024 05:06:13 -0800 (PST)
+Received: from localhost.localdomain ([151.29.130.8])
+        by smtp.gmail.com with ESMTPSA id f14-20020a37ad0e000000b00781b8f4c89asm4470563qkm.43.2024.01.17.05.06.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jan 2024 05:06:12 -0800 (PST)
+Date: Wed, 17 Jan 2024 14:06:08 +0100
+From: Juri Lelli <juri.lelli@redhat.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
+	Aaron Tomlin <atomlin@atomlin.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 3/4] kernel/workqueue: Distinguish between general
+ unbound and WQ_SYSFS cpumask changes
+Message-ID: <ZafQwMw8ZKztunMU@localhost.localdomain>
+References: <20240116161929.232885-1-juri.lelli@redhat.com>
+ <20240116161929.232885-4-juri.lelli@redhat.com>
+ <ZabRlEklmuqwFPj-@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMj1kXH=k26nNyB+LQJ7WUJgbD2f3PREyjCzSngMCGc+72XJ6w@mail.gmail.com>
+In-Reply-To: <ZabRlEklmuqwFPj-@slm.duckdns.org>
 
-On Wed, Jan 17, 2024 at 11:59:14AM +0100, Ard Biesheuvel wrote:
-> Fully agree. All this fiddling with RIP relative references from C
-> code is going to be a maintenance burden going forward.
+On 16/01/24 08:57, Tejun Heo wrote:
+> Hello, Juri.
+> 
+> On Tue, Jan 16, 2024 at 05:19:28PM +0100, Juri Lelli wrote:
+> > Both general unbound cpumask and per-wq (WQ_SYSFS) cpumask changes end
+> > up calling apply_wqattrs_prepare for preparing for the change, but this
+> > doesn't work well for general unbound cpumask changes as current
+> > implementation won't be looking at the new unbound_cpumask.
+> > 
+> > Fix the prepare phase for general unbound cpumask changes by checking
+> > which type of attributes (general vs. WQ_SYSFS) are actually changing.
+> > 
+> > Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
+> > ---
+> >  kernel/workqueue.c | 17 +++++++++++------
+> >  1 file changed, 11 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> > index 3a1d5a67bd66a..2ef6573909070 100644
+> > --- a/kernel/workqueue.c
+> > +++ b/kernel/workqueue.c
+> > @@ -4359,7 +4359,17 @@ apply_wqattrs_prepare(struct workqueue_struct *wq,
+> >  	 * it even if we don't use it immediately.
+> >  	 */
+> >  	copy_workqueue_attrs(new_attrs, attrs);
+> > -	wqattrs_actualize_cpumask(new_attrs, unbound_cpumask);
+> > +
+> > +	/*
+> > +	 * Is the user changing the general unbound_cpumask or is this a
+> > +	 * WQ_SYSFS cpumask change?
+> > +	 */
+> > +	if (attrs == wq->unbound_attrs)
+> > +		cpumask_copy(new_attrs->cpumask, unbound_cpumask);
+> > +	else
+> > +		wqattrs_actualize_cpumask(new_attrs, unbound_cpumask);
+> > +
+> > +	cpumask_and(new_attrs->cpumask, new_attrs->cpumask, cpu_possible_mask);
+> 
+> This looks rather hacky. Can you elaborate how the current code misbehaves
+> with an example?
 
-Yah.
+I was trying to address the fact that ordered unbound workqueues didn't
+seem to reflect unbound_cpumask changes, e.g.
 
-> The proper way to do this is use PIC codegen for the objects that
-> matter.
+wq_unbound_cpumask=00000003
 
-And we have arch/x86/mm/mem_encrypt_identity.c which is supposed to deal
-with stuff running from the ident mappings and PA == VA.
+edac-poller              ordered,E  0xffffffff 000000ff      kworker/R-edac-            351 0xffffffff 000000ff
 
-We could put the rest of those special SEV things there or do a separate
-TU to be built using something like PIE_FLAGS, as in your patch.
+vs. 
 
-> I had a stab [0] at this a while ago (for the purpose of increasing
-> the KASLR range, which requires PIE linking) but I didn't pursue it in
-> the end.
+edac-poller              ordered,E  00000003                 kworker/R-edac-            349 00000003
 
-FWIW, that looks a lot more like a natural kernel code with
-__va_symbol() etc. Definitely better and we talked about it at some
-point already as it does ring a bell.
+with the patch applied. But honestly, I'm now also not convinced what
+I'm proposing is correct, so I'll need to think more about it.
 
-> On arm64, we use a separate pseudo-namespace for code that can run
-> safely at any offset, using the __pi_ prefix (for Position
-> Independent). Using symbol prefixing at the linker level, we ensure
-> that __pi_ code can only call other __pi_ code, or code that has been
-> made available to it via an explicit __pi_ prefixed alias. (Happy to
-> elaborate more but we should find a smaller audience - your cc list is
-> a tad long). Perhaps this is something we should explore on x86 as
-> well (note that the EFI stub does something similar for architectures
-> that link the EFI stub into the core kernel rather than into the
-> decompressor)
+Can you please confirm though that ordered unbound workqueues are not
+"special" for some reason and we would like them to follow
+unbound_cpumask changes as normal ubound workqueues?
 
-Grepping through the tree, is __pi_memcpy one example for that?
+Thanks,
+Juri
 
-It sure looks like it with the alias and all. From a quick scan, that is
-not that bad either. It gives you the clear distinction what that
-symbol is and who can call it.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
 
