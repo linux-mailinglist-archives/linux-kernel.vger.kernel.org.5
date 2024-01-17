@@ -1,126 +1,101 @@
-Return-Path: <linux-kernel+bounces-28585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF5D983005A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:08:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C5B8583005D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:10:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E00CA1C23B2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:08:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7CFD1C23A92
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:10:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D954C8F65;
-	Wed, 17 Jan 2024 07:08:09 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38AE86AA2;
-	Wed, 17 Jan 2024 07:08:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A40108F59;
+	Wed, 17 Jan 2024 07:10:51 +0000 (UTC)
+Received: from zg8tmtu5ljg5lje1ms4xmtka.icoremail.net (zg8tmtu5ljg5lje1ms4xmtka.icoremail.net [159.89.151.119])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3B475CB0
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:10:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.89.151.119
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705475289; cv=none; b=dgZG/q8WVZ/596tEWUCVGt/oE0ixuyiKCkEwxL4mk6O7ZGTc5HvMMgscwyvWL5MKexSy3XD3hRUJdwMwemMKUbk4G2+WU+ihlMqLRIdXpqCZkKqYONtKnyEcNoyUulDc26O1u1l0/w2EL8n4dFJlD2NWC9kY1tNcaSUN+7RwMHA=
+	t=1705475451; cv=none; b=oWUSoHlCYw8cbTaqVy35Rh/t9oNvjF2jB8qwoRpSp6LuEsiaeh6tfU/3GDsBCBOMTzVOPlidhrTj1eGNzCR499ohfDJhRu1BbeZp3+HeVoW8Y1wrNjLZ8mimkX9GNFkDKhqi6SL4XX8h7wSsO237jt51tq3KJiPkuro6Yu+9Hqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705475289; c=relaxed/simple;
-	bh=WXNYjqgzNatwx+1zxT1NT6S8kRttXGSS7rRMRoawxlA=;
-	h=X-UUID:X-CID-P-RULE:X-CID-O-INFO:X-CID-INFO:X-CID-META:X-CID-BVR:
-	 X-CID-BAS:X-CID-FACTOR:X-UUID:Received:Received:X-ns-mid:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:References:
-	 Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=k4faD+T4A/4n6WiwCTIZWHb+5xktyIB2ejZ10ZMncBsnJedNPjObTtgjFExOY3hY6WbRrp6g7hgeUsU/zwMAzXKnkusqXaXhRtk1Xr/b2CgJ7yEZ1WwCvE0xJb47yTE4MA8+m2RZd+sPSqlhFlbI26D7rOKHcpNeW+BO+pIor/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 5125fa9da51240b98565e2c343a33f68-20240117
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:e522f8bc-1ccc-40fb-bf5e-816037eda404,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-5
-X-CID-INFO: VERSION:1.1.35,REQID:e522f8bc-1ccc-40fb-bf5e-816037eda404,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:5d391d7,CLOUDID:b792578e-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:2401170312075O11I267,BulkQuantity:5,Recheck:0,SF:64|66|24|17|19|44|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL
-	:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
-X-UUID: 5125fa9da51240b98565e2c343a33f68-20240117
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 284761598; Wed, 17 Jan 2024 15:08:00 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 5249EE000EB9;
-	Wed, 17 Jan 2024 15:08:00 +0800 (CST)
-X-ns-mid: postfix-65A77CD0-263206224
-Received: from [172.20.15.234] (unknown [172.20.15.234])
-	by mail.kylinos.cn (NSMail) with ESMTPA id B0AC1E000EB9;
-	Wed, 17 Jan 2024 15:07:59 +0800 (CST)
-Message-ID: <3e7945e2-1891-4d86-aef9-e19eaa805721@kylinos.cn>
-Date: Wed, 17 Jan 2024 15:07:59 +0800
+	s=arc-20240116; t=1705475451; c=relaxed/simple;
+	bh=YkIm8CNeK30PQLyTJTvMvjL/91juIuAtd6vXq/Zu7yQ=;
+	h=Received:X-Originating-IP:Date:X-CM-HeaderCharset:From:To:Cc:
+	 Subject:X-Priority:X-Mailer:In-Reply-To:References:
+	 Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:
+	 X-Coremail-Locale:X-CM-TRANSID:X-CM-SenderInfo:
+	 X-Coremail-Antispam; b=DzSQmXL5/EqGWHNOQKbHkkyIOKV1wKaCCzj9mz/wXrBLo2aPFPIMl+QpQmeO/jCyrSXOMMJX4bVIZl1QyqSsPNGWitv8Ft+2UA/8aJFLzgRw4fT+AxwyeoTTUGcQi1qeijTMWW4BGMWqKcN6aTmqQOmvqSejrzc/DY0tTOdtLWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=159.89.151.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from alexious$zju.edu.cn ( [10.190.68.184] ) by
+ ajax-webmail-mail-app3 (Coremail) ; Wed, 17 Jan 2024 15:10:19 +0800
+ (GMT+08:00)
+Date: Wed, 17 Jan 2024 15:10:19 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: alexious@zju.edu.cn
+To: "Qiang Yu" <yuq825@gmail.com>
+Cc: "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
+	"Maxime Ripard" <mripard@kernel.org>,
+	"Thomas Zimmermann" <tzimmermann@suse.de>,
+	"David Airlie" <airlied@gmail.com>,
+	"Daniel Vetter" <daniel@ffwll.ch>,
+	"Vasily Khoruzhick" <anarsoul@gmail.com>,
+	dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] drm/lima: fix a memleak in lima_heap_alloc
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.4-cmXT5 build
+ 20231205(37e20f0e) Copyright (c) 2002-2024 www.mailtech.cn
+ mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
+In-Reply-To: <CAKGbVbswTUYJsZDLWao58MTyt7yAYMMXA5zjeYVBTRvd9X3n0g@mail.gmail.com>
+References: <20240112084750.3729837-1-alexious@zju.edu.cn>
+ <CAKGbVbswTUYJsZDLWao58MTyt7yAYMMXA5zjeYVBTRvd9X3n0g@mail.gmail.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Input: synaptics-rmi4: Fix NULL pointer dereference in
- rmi_driver_probe
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: aduggan@synaptics.com, cheiny@synaptics.com, linux-input@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240116083847.89934-1-chentao@kylinos.cn>
- <ZabU_lsGCuki1dSY@google.com>
-Content-Language: en-US
-From: Kunwu Chan <chentao@kylinos.cn>
-In-Reply-To: <ZabU_lsGCuki1dSY@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <397c98b.49eb.18d1641ad63.Coremail.alexious@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:cC_KCgA3XztcfadlY08uAA--.5780W
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/1tbiAg0DAGWmzmEUIgAEsS
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW7Jw
+	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+	daVFxhVjvjDU=
 
-On 2024/1/17 03:11, Dmitry Torokhov wrote:
-> On Tue, Jan 16, 2024 at 04:38:47PM +0800, Kunwu Chan wrote:
->> devm_kasprintf() returns a pointer to dynamically allocated memory
->> which can be NULL upon failure. Ensure the allocation was successful
->> by checking the pointer validity.
-> 
-> It is perfectly valid to not set "input->phys" and leave it at NULL. So
-> while I agree that having error handling is good I do not believe
-> there's chance for NULL pointer dereference, so please adjust your patch
-> title.
-
-Thanks for your suggestions.
-I'll change patch title to "Input: synaptics-rmi4: Add a null pointer 
-check to the rmi_driver_probe".
-
->>
->> Fixes: 2b6a321da9a2 ("Input: synaptics-rmi4 - add support for Synaptics RMI4 devices")
->> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
->> ---
->>   drivers/input/rmi4/rmi_driver.c | 6 ++++++
->>   1 file changed, 6 insertions(+)
->>
->> diff --git a/drivers/input/rmi4/rmi_driver.c b/drivers/input/rmi4/rmi_driver.c
->> index 258d5fe3d395..d3a601ff51e6 100644
->> --- a/drivers/input/rmi4/rmi_driver.c
->> +++ b/drivers/input/rmi4/rmi_driver.c
->> @@ -1197,6 +1197,12 @@ static int rmi_driver_probe(struct device *dev)
->>   		rmi_driver_set_input_params(rmi_dev, data->input);
->>   		data->input->phys = devm_kasprintf(dev, GFP_KERNEL,
->>   						"%s/input0", dev_name(dev));
->> +		if (!data->input->phys) {
->> +			dev_err(dev, "%s: Failed to allocate memory.\n",
-> 
-> No need to log the error here, memory allocation will already log the
-> failure.
-Thanks, I'll remove the dev_err.
-> 
-> Thanks.
-> 
--- 
-Thanks,
-   Kunwu
-
+PiBUaGFua3MgZm9yIHRoZSBmaXguIEFzIHRoZSBlcnJvciBoYW5kbGluZyBnZXRzIGxvbmdlciBh
+bmQgZHVwbGljYXRlZCwKPiBjb3VsZCB5b3UgcmVhcnJhbmdlIHRoZW0gbGlrZSB0aGUgbGltYV9n
+ZW1fc3VibWl0KCk6Cj4gZXJyX291dDI6Cj4gICAgIGRtYV91bm1hcF9zZ3RhYmxlKGRldiwgJnNn
+dCwgRE1BX0JJRElSRUNUSU9OQUwsIDApOwo+IGVycl9vdXQxOgo+ICAgICBrZnJlZShiby0+YmFz
+ZS5zZ3QpOwo+ICAgICBiby0+YmFzZS5zZ3QgPSBOVUxMOwo+IGVycl9vdXQwOgo+ICAgICBzZ19m
+cmVlX3RhYmxlKCZzZ3QpOwo+ICAgICByZXR1cm4gcmV0Lgo+IAo+IFJlZ2FyZHMsCj4gUWlhbmcK
+PiAKClN1cmUsIEknbGwgc2VuZCBhIHYyIHZlcnNpb24gb2YgdGhpcyBwYXRjaCBsYXRlciBmb2xs
+b3dpbmcgeW91ciBhZHZpc2UuCgpSZWdhcmRzLApaaGlwZW5nCgo+IE9uIEZyaSwgSmFuIDEyLCAy
+MDI0IGF0IDQ6NDnigK9QTSBaaGlwZW5nIEx1IDxhbGV4aW91c0B6anUuZWR1LmNuPiB3cm90ZToK
+PiA+Cj4gPiBXaGVuIGxpbWFfdm1fbWFwX2JvIGZhaWxzLCB0aGUgcmVzb3VyY2VzIG5lZWQgdG8g
+YmUgZGVhbGxvY2F0ZWQsIG9yCj4gPiB0aGVyZSB3aWxsIGJlIG1lbWxlYWtzLgo+ID4KPiA+IEZp
+eGVzOiA2YWViYzUxZDdhZWYgKCJkcm0vbGltYTogc3VwcG9ydCBoZWFwIGJ1ZmZlciBjcmVhdGlv
+biIpCj4gPiBTaWduZWQtb2ZmLWJ5OiBaaGlwZW5nIEx1IDxhbGV4aW91c0B6anUuZWR1LmNuPgo+
+ID4gLS0tCj4gPiAgZHJpdmVycy9ncHUvZHJtL2xpbWEvbGltYV9nZW0uYyB8IDcgKysrKysrLQo+
+ID4gIDEgZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPiA+Cj4g
+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2xpbWEvbGltYV9nZW0uYyBiL2RyaXZlcnMv
+Z3B1L2RybS9saW1hL2xpbWFfZ2VtLmMKPiA+IGluZGV4IDRmOTczNmU1ZjkyOS4uODI0ZWQyMjE0
+MWM3IDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2xpbWEvbGltYV9nZW0uYwo+ID4g
+KysrIGIvZHJpdmVycy9ncHUvZHJtL2xpbWEvbGltYV9nZW0uYwo+ID4gQEAgLTkyLDggKzkyLDEz
+IEBAIGludCBsaW1hX2hlYXBfYWxsb2Moc3RydWN0IGxpbWFfYm8gKmJvLCBzdHJ1Y3QgbGltYV92
+bSAqdm0pCj4gPgo+ID4gICAgICAgICBpZiAodm0pIHsKPiA+ICAgICAgICAgICAgICAgICByZXQg
+PSBsaW1hX3ZtX21hcF9ibyh2bSwgYm8sIG9sZF9zaXplID4+IFBBR0VfU0hJRlQpOwo+ID4gLSAg
+ICAgICAgICAgICAgIGlmIChyZXQpCj4gPiArICAgICAgICAgICAgICAgaWYgKHJldCkgewo+ID4g
+KyAgICAgICAgICAgICAgICAgICAgICAgZG1hX3VubWFwX3NndGFibGUoZGV2LCAmc2d0LCBETUFf
+QklESVJFQ1RJT05BTCwgMCk7Cj4gPiArICAgICAgICAgICAgICAgICAgICAgICBzZ19mcmVlX3Rh
+YmxlKCZzZ3QpOwo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAga2ZyZWUoYm8tPmJhc2Uuc2d0
+KTsKPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGJvLT5iYXNlLnNndCA9IE5VTEw7Cj4gPiAg
+ICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gcmV0Owo+ID4gKyAgICAgICAgICAgICAgIH0K
+PiA+ICAgICAgICAgfQo+ID4KPiA+ICAgICAgICAgYm8tPmhlYXBfc2l6ZSA9IG5ld19zaXplOwo+
+ID4gLS0KPiA+IDIuMzQuMQo+ID4K
 
