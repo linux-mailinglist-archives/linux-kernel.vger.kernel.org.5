@@ -1,147 +1,187 @@
-Return-Path: <linux-kernel+bounces-28736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC1FC83026A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:35:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5676D83026B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:36:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C4DC28602B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:35:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F4821C2116C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:36:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B449914AA1;
-	Wed, 17 Jan 2024 09:35:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 822CB14016;
+	Wed, 17 Jan 2024 09:35:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="djKypmE2"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nRqpWm8E"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFFD214A97;
-	Wed, 17 Jan 2024 09:35:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2D751400A
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 09:35:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705484120; cv=none; b=m/Z8g+2c7nyHnb2NtVxMS3tdsa9H+UJ4gEy0/lB/hcHitFjY0X7crZW5SjDnmy7aHPGGrRE/OXXfgCn2C4zlloedwg2eMglK7VHS7ED12C5VQx/UZENg5iHjs2524jCPxQZEZUpnyW+c1uXHAOR5hg9Xdpr3jNuZiYtxUKbCiGU=
+	t=1705484150; cv=none; b=a/P0FzJRshiLR5GIVU7GXlfmRn0p2T9/mJbPLx2G/UWWsofgLR+UWoAxdW13nwfowrBAp6QG+EJFv0tO7GIVSeOqf5XNPBD/3ocGVLf8F9pvt7E9vxb3GonOsolZ1QRyWXqbi1+tXO9Yq/EqCfyORmRSDUZ6B32T8u62U6RebDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705484120; c=relaxed/simple;
-	bh=x0Kcp/pwxTMh/ECqiJKT11P/bFTpgUJY8Nj46rmjhsQ=;
-	h=Received:DKIM-Signature:Received:Received:Received:Message-ID:
-	 Date:MIME-Version:User-Agent:Subject:Content-Language:From:To:CC:
-	 References:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 X-Originating-IP:X-ClientProxiedBy:X-QCInternal:
-	 X-Proofpoint-Virus-Version:X-Proofpoint-GUID:
-	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Virus-Version:
-	 X-Proofpoint-Spam-Details; b=DSg9alKAL1JkQoCqO4h/HNmgrm2qYS/axFAZYgFGKaZSxpX+qlJ2F2j5ik59cWQQwheJjDb2iXKyGf/yCf6VCRiWesSX0lyMM3q5dRgcwOU6+ygLirDgCKwIbZdDehXw07X/db6KDdt6SJKTdg0a0sLhMqmp1EHzXB+59Q3B4Zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=djKypmE2; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40H6n0nh000436;
-	Wed, 17 Jan 2024 09:35:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:from:to:cc:references
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=vMOS0DlzBel23A1Z1cIJQ4jSth1nNH9SdwsW3j+1mMY=; b=dj
-	KypmE2zjnI33oLWvCF+4H3OnMNrMKyx3M0PcAiCS3nR7Fx0zvW0HbVIvOFMBr+Ra
-	eKdyZ+UkHGp2O5sGxpgnJ6aR9WXZd/4hl0kn5V6nBzkknrP3HMYZKJc62WglhZeq
-	epTh0hfLhQCWu343un13/FKGynEKOSPadgkxDM0CHmU1phNGeH+WaZSv3sJ8ENym
-	KrI6IuAuEJ49d4w1j0UDIZRx80PCgpqNser2litrmc0IhLXysnhAXBn0nEt9v0Ap
-	Pxx3hov+FJysXrTpBjCgorfTmE4Fc47NiXZt0XpPpFjrzGkt8LV60PoX2xrbI96g
-	oOHtOXWjYfMMWq7MusCA==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vnrndaw1u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 09:35:14 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40H9ZD9N018617
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 09:35:13 GMT
-Received: from [10.218.39.189] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 17 Jan
- 2024 01:35:11 -0800
-Message-ID: <8ba84432-bd07-3e59-3638-924d5fadec30@quicinc.com>
-Date: Wed, 17 Jan 2024 15:05:07 +0530
+	s=arc-20240116; t=1705484150; c=relaxed/simple;
+	bh=znmTNnnON1xAmvIdkiTAtEl/30Rg5OxKTetGP2gbTiQ=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=anjeCHR1rLro6QubF/cgrS7t3SrZMi+yki5XIhRUYyHv3xWyHEZw5a4HiWEHOUr2wHf1hy/8cMF3N6JDFoSjMx9Q8nMonOe2czZoOMdu6HRb2mR+fH8DU/is//+fxDCcmaO54Of8dEGuaHLNIxb+EKZjhsHr2B+sQ1wQPCuEACE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nRqpWm8E; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA6FDC433C7;
+	Wed, 17 Jan 2024 09:35:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705484150;
+	bh=znmTNnnON1xAmvIdkiTAtEl/30Rg5OxKTetGP2gbTiQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nRqpWm8EYw+VIG3YTD4htbP4pGw4w17GXw4tJMYQjbYo0+1vtuZgGCSbQXb3x61fR
+	 khkosklsPRQA5w+5hqQJ4RunTLGNza2t2McdEJsgoMDyeTBzKuH9BpT0EoWwOeZw41
+	 gTDTsVgJyp89SPnlANu3nj9FElynHHM+Oz73X9hCD6rmx/ht54iub1PVyNPffNAakq
+	 ZFrMVPNW3ZvWJyRrXz5VfXHUy0ypJdH85kyJYjnnFNccF3MVd36S+le1VP17EUF5O9
+	 Y6Nzhfc84FXT9ZBlbjReVM6KviyzLW1OPTOQT/3hvBdQtSoKAB/mOl62JJNRk0+E6L
+	 HfmLSH9LvpqMQ==
+Date: Wed, 17 Jan 2024 10:35:47 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Dipam Turkar <dipamt1729@gmail.com>
+Cc: maarten.lankhorst@linux.intel.com, tzimmermann@suse.de, 
+	airlied@gmail.com, daniel@ffwll.ch, mairacanal@riseup.net, javierm@redhat.com, 
+	christian.koenig@amd.com, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/1] drm/tests: Add KUnit tests for
+ drm_mode_create_dvi_i_properties()
+Message-ID: <mk34n3vslyf6srydefxubwfst6bgymu27fabtdhopv3fi2hc7y@vpm6naewdorw>
+References: <20240114105337.480807-1-dipamt1729@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [RFC PATCH] usb: dwc3: gadget: Fix NULL pointer dereference in
- dwc3_gadget_suspend
-Content-Language: en-US
-From: UTTKARSH AGGARWAL <quic_uaggarwa@quicinc.com>
-To: Kuen-Han Tsai <khtsai@google.com>
-CC: Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>
-References: <20240110095532.4776-1-quic_uaggarwa@quicinc.com>
- <CAKzKK0qJOz_+pNAVAD8Ub6TZ9uhFOzuDC_bws9MVzxNa7RqYhA@mail.gmail.com>
- <77ffee9a-cd77-6a09-10ee-bdf17bfca5ec@quicinc.com>
-In-Reply-To: <77ffee9a-cd77-6a09-10ee-bdf17bfca5ec@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: _imoAAgSBlqQomJwOPibXrLFUxParQxb
-X-Proofpoint-ORIG-GUID: _imoAAgSBlqQomJwOPibXrLFUxParQxb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-17_04,2024-01-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 mlxscore=0 suspectscore=0 mlxlogscore=481 clxscore=1015
- adultscore=0 impostorscore=0 malwarescore=0 bulkscore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401170066
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="7a4kvqwq7nylyz27"
+Content-Disposition: inline
+In-Reply-To: <20240114105337.480807-1-dipamt1729@gmail.com>
 
 
-On 1/17/2024 2:52 PM, UTTKARSH AGGARWAL wrote:
->
-> On 1/17/2024 12:47 PM, Kuen-Han Tsai wrote:
->>>          ret = dwc3_gadget_soft_disconnect(dwc);
->>>          if (ret)
->>>                  goto err;
->> For improved readability, we can remove the goto statement and move
->> the error handling logic here.
->
-> Hi Kuen-Han,
->
-> Thanks for the suggestion.
-> Does this looks good to you ?
->
->    int ret = dwc3_gadget_soft_disconnect(dwc);if (ret) {        if 
-> (dwc->softconnect)            dwc3_gadget_soft_connect(dwc);
->
->        return ret;    }    spin_lock_irqsave(&dwc->lock, flags);    if 
-> (dwc->gadget_driver)  dwc3_disconnect_gadget(dwc); 
->  spin_unlock_irqrestore(&dwc->lock, flags);
+--7a4kvqwq7nylyz27
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sorry for the mistake.
+Hi,
 
-int ret = dwc3_gadget_soft_disconnect(dwc);
+On Sun, Jan 14, 2024 at 04:23:38PM +0530, Dipam Turkar wrote:
+> Introduce unit tests for the drm_mode_create_dvi_i_properties() function =
+to ensure
+> the proper creation of DVI-I specific connector properties and success if=
+ called=20
+> multiple times.
+>=20
+> Signed-off-by: Dipam Turkar <dipamt1729@gmail.com>
+> ---
+>  drivers/gpu/drm/tests/drm_connector_test.c | 58 ++++++++++++++++++++++
+>  1 file changed, 58 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/tests/drm_connector_test.c b/drivers/gpu/drm=
+/tests/drm_connector_test.c
+> index c66aa2dc8d9d..217c0988171e 100644
+> --- a/drivers/gpu/drm/tests/drm_connector_test.c
+> +++ b/drivers/gpu/drm/tests/drm_connector_test.c
+> @@ -4,6 +4,9 @@
+>   */
+> =20
+>  #include <drm/drm_connector.h>
+> +#include <drm/drm_device.h>
+> +#include <drm/drm_drv.h>
+> +#include <drm/drm_kunit_helpers.h>
+> =20
+>  #include <kunit/test.h>
+> =20
+> @@ -70,7 +73,62 @@ static struct kunit_suite drm_get_tv_mode_from_name_te=
+st_suite =3D {
+>  	.test_cases =3D drm_get_tv_mode_from_name_tests,
+>  };
+> =20
+> +/*
+> + * Test that drm_mode_create_dvi_i_properties() succeeds and
+> + * DVI-I subconnector and select subconectors properties have
+> + * been created.
+> + */
+> +static void drm_test_mode_create_dvi_i_properties(struct kunit *test)
+> +{
+> +	struct drm_device *drm;
+> +	struct device *dev;
+> +
+> +	dev =3D drm_kunit_helper_alloc_device(test);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dev);
+> +
+> +	drm =3D __drm_kunit_helper_alloc_drm_device(test, dev, sizeof(*drm), 0,=
+ DRIVER_MODESET);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, drm);
+> +
+> +	KUNIT_EXPECT_EQ(test, drm_mode_create_dvi_i_properties(drm), 0);
+> +	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, drm->mode_config.dvi_i_select_subcon=
+nector_property);
+> +	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, drm->mode_config.dvi_i_subconnector_=
+property);
+> +}
+> +
+> +/*
+> + * Test that drm_mode_create_dvi_i_properties() doesn't fail if called t=
+wice.
+> + */
+> +static void drm_test_mode_create_dvi_i_properties_repeated(struct kunit =
+*test)
+> +{
+> +	struct drm_device *drm;
+> +	struct device *dev;
+> +
+> +	dev =3D drm_kunit_helper_alloc_device(test);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dev);
+> +
+> +	drm =3D __drm_kunit_helper_alloc_drm_device(test, dev, sizeof(*drm), 0,=
+ DRIVER_MODESET);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, drm);
+> +
+> +	KUNIT_EXPECT_EQ(test, drm_mode_create_dvi_i_properties(drm), 0);
+> +	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, drm->mode_config.dvi_i_select_subcon=
+nector_property);
+> +	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, drm->mode_config.dvi_i_subconnector_=
+property);
+> +
+> +	/* Expect the function to return 0 if called twice. */
+> +	KUNIT_EXPECT_EQ(test, drm_mode_create_dvi_i_properties(drm), 0);
+> +}
+> +
+> +static struct kunit_case drm_mode_create_dvi_i_properties_tests[] =3D {
+> +	KUNIT_CASE(drm_test_mode_create_dvi_i_properties),
+> +	KUNIT_CASE(drm_test_mode_create_dvi_i_properties_repeated),
+> +	{ }
+> +};
+> +
+> +static struct kunit_suite drm_mode_create_dvi_i_properties_test_suite =
+=3D {
+> +	.name =3D "drm_mode_create_dvi_i_properties",
+> +	.test_cases =3D drm_mode_create_dvi_i_properties_tests,
+> +};
+> +
+>  kunit_test_suite(drm_get_tv_mode_from_name_test_suite);
+> +kunit_test_suite(drm_mode_create_dvi_i_properties_test_suite);
 
-if (ret) {
+You should use kunit_test_suites here
 
-       if (dwc->softconnect)
+Maxime
 
-                  dwc3_gadget_soft_connect(dwc);
+--7a4kvqwq7nylyz27
+Content-Type: application/pgp-signature; name="signature.asc"
 
-       return ret;
+-----BEGIN PGP SIGNATURE-----
 
-}
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZaefcgAKCRDj7w1vZxhR
+xboWAQCphb6s5xjeFPpUgmXj/Xhz4QvE4u/AEpVQ3B5C4PKABAD9GOVRjkZDxTsf
+yKBJJ1wi4YkmZlhNTZjd/nx45LN36A4=
+=MDzt
+-----END PGP SIGNATURE-----
 
-spin_lock_irqsave(&dwc->lock, flags);
-
-if (dwc->gadget_driver)
-
-        dwc3_disconnect_gadget(dwc);
-
-spin_unlock_irqrestore(&dwc->lock, flags);
-
+--7a4kvqwq7nylyz27--
 
