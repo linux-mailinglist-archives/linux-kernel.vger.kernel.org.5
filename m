@@ -1,139 +1,103 @@
-Return-Path: <linux-kernel+bounces-29555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2062D831025
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:41:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13C7C831026
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:43:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 526B41C21CC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:41:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43E1B1C21BEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:43:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ED3428699;
-	Wed, 17 Jan 2024 23:41:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JVwTYqsN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3FE028DA7;
+	Wed, 17 Jan 2024 23:43:30 +0000 (UTC)
+Received: from mail115-80.sinamail.sina.com.cn (mail115-80.sinamail.sina.com.cn [218.30.115.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D17AA2561F
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 23:41:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2124028DA0
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 23:43:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705534908; cv=none; b=q0hAFlEy4HxIQ0iBeZPkokmy7D+wwXTwpcq76+c6z9uPHvO/QoBaqonL8OVpv6NmTKkDGgsCCGkvOg41nh/zChIeQiMaoovWi4NWMHId+xV1lEGLV3rY5gb8bZAzlHhZzaIYeP2uasKZrwxlS+DlrJ4wpfA/P5Ca+XopPevshv4=
+	t=1705535010; cv=none; b=ECEFWqyUwm3IxlykcAvPNaG83+iIi3dk5Rg6RE99V/JZDejuVIuLOfbluOEBIwRjxXSRZu+TmCEKYen1Du9r3C3o0uFQWqlrSBtD03SRsnlkzMrBimqUIeEG80GByKeKViFzMtKDNQmkV6MX5Zk/ecRDsbC/8feQdgZuhESlz9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705534908; c=relaxed/simple;
-	bh=cY79/Cfp9xIflNIDwfUmZ2vm5pn0cwkYXSHLUwKaasQ=;
-	h=Received:DKIM-Signature:Received:X-Gm-Message-State:
-	 X-Google-Smtp-Source:X-Received:MIME-Version:References:
-	 In-Reply-To:From:Date:X-Gmail-Original-Message-ID:Message-ID:
-	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding; b=rxMbIucivtzmKf/E0kOCkER85Cruay17K2ovY+Q4BqbV7koAwEwqN5H1Z3mD+nwEHR26SjvA+BoWeBYi/dPForbFRFa+XJZGEgqjTYuP9lng8ONH60lhADP34i4g8SjZ8hgDu2Pa0X+Ixuxg7ZRtNMXcB+ESyjiYkx7ahYz4RMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JVwTYqsN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95FAFC433A6
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 23:41:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705534908;
-	bh=cY79/Cfp9xIflNIDwfUmZ2vm5pn0cwkYXSHLUwKaasQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=JVwTYqsNhQmI0YoHxpkxpGD41oMoBmdB5gB6csq63I1W8k3eO4j97Q59XcVo+y3J9
-	 p06o/RNx3V4rGt6wYHkHMCFqD+1MtadTpTH7CstvD8mBnOYGppldPi1rDre7hoyooH
-	 xOHFM4HZqRT+olNjR75ncyorWJtChHNy0rGjmjmaxi7SAXs0XTWGWo/WPITTk++I00
-	 3xcKhb6zFSguSfcNla8ajfSCKMuSzkBd9VB76r2idmf9jpOs1PeLjD0yPopxBBmxa+
-	 7jSwy7dIgDNhcZrt1InB7Eoq5PqzFjnOkMaauBmU431Nmw8xwuPRQa74xZTVAyLjtt
-	 DQeEXKfajnkzw==
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2901f9a9d00so39658a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:41:48 -0800 (PST)
-X-Gm-Message-State: AOJu0YzRiRhUMUieFFGAhr+GZRiQCaSRDehqZK2vmQyO2sPRzKO7pbAw
-	RtL+DuC1f+kWN4pI5lAQrwPY4fqPvWkIJP11K+9DKY6qJpsEkx037WwPGYJ2FNPwPfeCzpGfKPr
-	mGxdSNcTIP6LBR8RUl5EkoWktLzpAx3N9aK0R
-X-Google-Smtp-Source: AGHT+IFs7Y9kVpqYyUhwzuMYD6tF9HAEqcY8re5F/bDLJ7v+vAmuGFeD34dRqhpQ93irvy0QmLM3iQHxGmMhGiTY8fI=
-X-Received: by 2002:a17:90a:12ca:b0:28e:89d2:87ba with SMTP id
- b10-20020a17090a12ca00b0028e89d287bamr43131pjg.12.1705534907954; Wed, 17 Jan
- 2024 15:41:47 -0800 (PST)
+	s=arc-20240116; t=1705535010; c=relaxed/simple;
+	bh=7ElkhRgi1G5t6xj9IeZJpskpCfmhNWVSMnOnS02p4k0=;
+	h=X-SMAIL-HELO:Received:X-Sender:X-Auth-ID:X-SMAIL-MID:X-SMAIL-UIID:
+	 From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding; b=vBQFxAXTN7ATjvGaydyHgVxtVRNygpB0dQdflG/3NsB92tIwd5RF4XmebatePW0GcS2Wjsm9ihKPsyb+LAWxa+KQIi4Z+qSs3R2bTZqorWnuqK/kBIaFl5PZpB9Ryyz3L7FrWRLHWohsi4pdfdz9+firdo0bCUo0X1YiYu9+bv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([116.25.116.10])
+	by sina.com (10.75.12.45) with ESMTP
+	id 65A8661200009086; Wed, 18 Jan 2024 07:43:16 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 65845131457298
+X-SMAIL-UIID: 52380B1C20FA4ED8A66B13FC86A7A2E9-20240118-074316-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+bfde3bef047a81b8fde6@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] KASAN: use-after-free Read in __skb_flow_dissect (3)
+Date: Thu, 18 Jan 2024 07:43:04 +0800
+Message-Id: <20240117234304.1250-1-hdanton@sina.com>
+In-Reply-To: <000000000000498a02060de59162@google.com>
+References: <000000000000498a02060de59162@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117-b4-zswap-lock-optimize-v1-0-23f6effe5775@bytedance.com> <CAJD7tkY7Xvjg37EEw2M=uRknphY0pf3ZVpyX2s2QyiJ=Axhihw@mail.gmail.com>
-In-Reply-To: <CAJD7tkY7Xvjg37EEw2M=uRknphY0pf3ZVpyX2s2QyiJ=Axhihw@mail.gmail.com>
-From: Chris Li <chrisl@kernel.org>
-Date: Wed, 17 Jan 2024 15:41:35 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuP4o3Ebg-aYKF9=ftbdu97RnkXnYL-8RuVjYAeXd+ng3A@mail.gmail.com>
-Message-ID: <CAF8kJuP4o3Ebg-aYKF9=ftbdu97RnkXnYL-8RuVjYAeXd+ng3A@mail.gmail.com>
-Subject: Re: [PATCH 0/2] mm/zswap: optimize the scalability of zswap rb-tree
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Chengming Zhou <zhouchengming@bytedance.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org, 
-	Nhat Pham <nphamcs@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Yosry and Chengming,
+On Mon, 01 Jan 2024 09:18:16 -0800
+> syzbot found the following issue on:
+> 
+> HEAD commit:    f5837722ffec Merge tag 'mm-hotfixes-stable-2023-12-27-15-0..
+> git tree:       upstream
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=122dfc65e80000
 
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
 
-On Wed, Jan 17, 2024 at 10:38=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com=
-> wrote:
->
-> On Wed, Jan 17, 2024 at 1:23=E2=80=AFAM Chengming Zhou
-> <zhouchengming@bytedance.com> wrote:
-> >
-> > When testing the zswap performance by using kernel build -j32 in a tmpf=
-s
-> > directory, I found the scalability of zswap rb-tree is not good, which
-> > is protected by the only spinlock. That would cause heavy lock contenti=
-on
-> > if multiple tasks zswap_store/load concurrently.
-> >
-> > So a simple solution is to split the only one zswap rb-tree into multip=
-le
-> > rb-trees, each corresponds to SWAP_ADDRESS_SPACE_PAGES (64M). This idea=
- is
-> > from the commit 4b3ef9daa4fc ("mm/swap: split swap cache into 64MB trun=
-ks").
-> >
-> > Although this method can't solve the spinlock contention completely, it
-> > can mitigate much of that contention. Below is the results of kernel bu=
-ild
-> > in tmpfs with zswap shrinker enabled:
-> >
-> >      linux-next  zswap-lock-optimize
-> > real 1m9.181s    1m3.820s
-> > user 17m44.036s  17m40.100s
-> > sys  7m37.297s   4m54.622s
-> >
-> > So there are clearly improvements. And it's complementary with the ongo=
-ing
-> > zswap xarray conversion by Chris. Anyway, I think we can also merge thi=
-s
-> > first, it's complementary IMHO. So I just refresh and resend this for
-> > further discussion.
->
-
-Sorry I have been radio silent busying on a few refreshments of the
-xarray on the recent kernel tree. There is an assertion triggered on
-xarray and the rb tree does not agree with each other. It takes some
-time to debug. I ironed that out, also glad the assert did catch a
-bug.
-
-Currently the xarray patch should have everything it takes to use RCU
-read lock. However taking out the tree spinlock is more work than
-previously. If we are going to remove the tree spinlock, I think we
-should revert back to doing a zswap tree lookup and return the zswap
-entry with reference increased. The tree mapping can still decouple
-from the zswap entry reference count drop to zero.  Anyway, my V1 of
-the xarray patch will not include removing the tree spinlock.
-
-> The reason why I think we should wait for the xarray patch(es) is
-> there is a chance we may see less improvements from splitting the tree
-> if it was an xarray. If we merge this series first, there is no way to
-> know.
->
-> Chris, do you intend to send the xarray patch(es) anytime soon?
-
-Thanks for the heads up. Let me send it out now.
-
-Chris
+--- x/net/core/flow_dissector.c
++++ y/net/core/flow_dissector.c
+@@ -1164,9 +1164,11 @@ proto_again:
+ 	switch (proto) {
+ 	case htons(ETH_P_IP): {
+ 		const struct iphdr *iph;
+-		struct iphdr _iph;
+ 
+-		iph = __skb_header_pointer(skb, nhoff, sizeof(_iph), data, hlen, &_iph);
++		if (pskb_network_may_pull(skb, sizeof(struct iphdr)))
++			iph = (void *) skb_network_header(skb);
++		else
++			iph = NULL;
+ 		if (!iph || iph->ihl < 5) {
+ 			fdret = FLOW_DISSECT_RET_OUT_BAD;
+ 			break;
+--- x/net/netfilter/nf_conntrack_core.c
++++ y/net/netfilter/nf_conntrack_core.c
+@@ -346,9 +346,11 @@ static int ipv4_get_l4proto(const struct
+ {
+ 	int dataoff = -1;
+ 	const struct iphdr *iph;
+-	struct iphdr _iph;
+ 
+-	iph = skb_header_pointer(skb, nhoff, sizeof(_iph), &_iph);
++	if (pskb_network_may_pull(skb, sizeof(struct iphdr)))
++		iph = (void *) skb_network_header(skb);
++	else
++		iph = NULL;
+ 	if (!iph)
+ 		return -1;
+ 
+--
 
