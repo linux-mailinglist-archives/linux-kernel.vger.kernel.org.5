@@ -1,161 +1,138 @@
-Return-Path: <linux-kernel+bounces-28954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85D6283051F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:23:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ED3F83051D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:23:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A234B212F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:23:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DC8428A977
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:23:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 896441DFE8;
-	Wed, 17 Jan 2024 12:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 619D81DFE7;
+	Wed, 17 Jan 2024 12:23:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cxeRzz1p";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jVUZ15yk";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cxeRzz1p";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jVUZ15yk"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UFQH5GGw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45E6F1E89D;
-	Wed, 17 Jan 2024 12:23:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5FF91DFCD;
+	Wed, 17 Jan 2024 12:23:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705494211; cv=none; b=U88HFfRm8vwLcYQAH/tIcGQkgRiHiW02T5On+bC0kKcb5fVKHjytfnGClycr5f0Eg9j29OEuyCz+5udEKei9PHccVW+sQq+lCQuPaD4Rer3kOPXHfYQaPcCZH8EYsw6Fw/naErc179CrHeV2zk9PjcNE+mKrQ75iA3E6H3aHzmw=
+	t=1705494200; cv=none; b=VYU/5OGsiV4kg28zv/Jy4Z2Vk+GrvAqqfH80+50VBieCOKNbZvUs4GutwPmgi1vpZTfooyZEoABEkwekHMOhSWF6IBS8vDcPkH+aJI6wosjosA4gLzPiLHXs50xrSYsiAM2jT0D7MNeRqoy9yCBe5eE1NwBl5g7JkMltuh0oc+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705494211; c=relaxed/simple;
-	bh=Uihxw91v6Hf2KMjiixiJuIJGsDzSTmIKEICPHaC3EO4=;
-	h=Received:DKIM-Signature:DKIM-Signature:DKIM-Signature:
-	 DKIM-Signature:Received:Received:From:To:Cc:Subject:Date:
-	 Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding:
-	 X-Spam-Level:X-Spamd-Bar:X-Rspamd-Server:X-Spamd-Result:
-	 X-Spam-Score:X-Rspamd-Queue-Id:X-Spam-Flag; b=S3nY02hLrCVPrLrKVbvMC0teMYSof4vnB9gRGcf4q6Ryf5wQjg338lK1n4lz+9RI9dxBLqZx+IA8IiI4wsoox1EgHk1MxP63u1Ohie9I8iLsoe0LZ2FYEuLWMeKgm+eHKQDMHNdbyIVwVrB/N2/YJ67o5ELY5ENdy15mFC3LX8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cxeRzz1p; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jVUZ15yk; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cxeRzz1p; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jVUZ15yk; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 42DF91FC0B;
-	Wed, 17 Jan 2024 12:23:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705494208; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=wBFi5EOSqhi2GZ/s3YhGCxOR9Jei6qFUO/vhKFfgYy8=;
-	b=cxeRzz1p6DSQWW+0tfZehSvcSaRcEU2JsJGYthlX6CCD3b85jIF5LotbFWoToykvZEwP0M
-	9T1RnyL9nh0C7hd3kDwbQL+5Rte5/1wY1LDsvAVICCsJd6dIN1yz39ltmJFMNuocCNxv7t
-	RTaX+o10YFoaclDiQ+dVM1tgMSic/vg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705494208;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=wBFi5EOSqhi2GZ/s3YhGCxOR9Jei6qFUO/vhKFfgYy8=;
-	b=jVUZ15ykWc7NZTMTzU8bmrbtzdqqm7X/T5NsPA2IzZ+OvR8JWqwZG1Q0st815seu9lczPy
-	zu9GBLYBRyQ0faBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705494208; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=wBFi5EOSqhi2GZ/s3YhGCxOR9Jei6qFUO/vhKFfgYy8=;
-	b=cxeRzz1p6DSQWW+0tfZehSvcSaRcEU2JsJGYthlX6CCD3b85jIF5LotbFWoToykvZEwP0M
-	9T1RnyL9nh0C7hd3kDwbQL+5Rte5/1wY1LDsvAVICCsJd6dIN1yz39ltmJFMNuocCNxv7t
-	RTaX+o10YFoaclDiQ+dVM1tgMSic/vg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705494208;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=wBFi5EOSqhi2GZ/s3YhGCxOR9Jei6qFUO/vhKFfgYy8=;
-	b=jVUZ15ykWc7NZTMTzU8bmrbtzdqqm7X/T5NsPA2IzZ+OvR8JWqwZG1Q0st815seu9lczPy
-	zu9GBLYBRyQ0faBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 07DB513800;
-	Wed, 17 Jan 2024 12:23:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id KDxkAMDGp2WSVwAAD6G6ig
-	(envelope-from <pvorel@suse.cz>); Wed, 17 Jan 2024 12:23:28 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: linux-man@vger.kernel.org
-Cc: Petr Vorel <pvorel@suse.cz>,
-	Alejandro Colomar <alx@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/1] MAINTAINERS: Add man-pages git trees
-Date: Wed, 17 Jan 2024 13:22:57 +0100
-Message-ID: <20240117122257.2707637-1-pvorel@suse.cz>
+	s=arc-20240116; t=1705494200; c=relaxed/simple;
+	bh=YZKUQP7pybSv+QAUrpSE0TYNn39r1cBS7BCMTvjxRI0=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 X-Mailer:References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=QBb3AxjN08tdhB7quWLPm0BPaWC2HoipdhEPxGXlFrLH3fgwdAOTlkMwVieujqG8J0vDlmz2HB66iUrgyUd4102qPbgHwyHqCLwn7ue15zUh//78CjFvCQN1Gi14ZV+/7iRQB8BtIfajc+LCpmqhYn9sYGobrfWbI8Hk1ikw4fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UFQH5GGw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C22E9C43390;
+	Wed, 17 Jan 2024 12:23:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705494200;
+	bh=YZKUQP7pybSv+QAUrpSE0TYNn39r1cBS7BCMTvjxRI0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UFQH5GGwC69HPbvyS503MTVfSbBkh2uu2rsu0nHv0ZRYFKWfASL+mpd8rIVIHxN55
+	 8PCPHIUlah/24B+li5KDnX/K4ywJNXyJMh2GVSHZGIbtVY31/hClAQqBMcoVG2Rfvn
+	 TmlUFjkSHWtMHI2fQ6JRtC6b6PFzoEDOtfMerBoAk/1Rej54Hn7RvNFS+0aSW4yQFT
+	 0QE5x74pm+W2Mllu59tQeoXJInDTvYYWjzWAtz2mRYPTj9a6urqfgxDuxy6hmahcTk
+	 nEIKtg4CKq9Ri8PDI8N4/wNNGVgaV+NNqUy4fxkRLyKE8voa3UFUxF2TOcM3IAg/Dh
+	 JWaKXNqpr8NXw==
+Date: Wed, 17 Jan 2024 13:23:16 +0100
+From: Alejandro Colomar <alx@kernel.org>
+To: linux-kernel@vger.kernel.org, 
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: Alejandro Colomar <alx@kernel.org>, Petr Vorel <pvorel@suse.cz>, 
+	linux-man@vger.kernel.org
+Subject: [PATCH v2alx] MAINTAINERS: Add man-pages git trees
+Message-ID: <20240117122315.15698-1-alx@kernel.org>
 X-Mailer: git-send-email 2.43.0
+References: <ZafC1MkKDAK2s6n1@debian>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: ***
-X-Spamd-Bar: +++
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=cxeRzz1p;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=jVUZ15yk
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [3.49 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[24.71%]
-X-Spam-Score: 3.49
-X-Rspamd-Queue-Id: 42DF91FC0B
-X-Spam-Flag: NO
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="feewq3knp6aluk7q"
+Content-Disposition: inline
+In-Reply-To: <ZafC1MkKDAK2s6n1@debian>
 
-The maintainer uses both.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+--feewq3knp6aluk7q
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: [PATCH v2alx] MAINTAINERS: Add man-pages git trees
+MIME-Version: 1.0
+
+As the man-pages README documents:
+
+$ sed -n '/^Versions/,/^[^ ]/p' README | head -n-1;
+Versions
+   Distribution
+       <https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/>
+       <https://www.alejandro-colomar.es/share/dist/man-pages/>
+
+   Git
+       <https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/>
+       <https://www.alejandro-colomar.es/src/alx/linux/man-pages/man-pages.=
+git/>
+
+   Online man-pages
+       PDF
+             <https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/book=
+/>
+             <https://www.alejandro-colomar.es/share/dist/man-pages/>
+       HTML
+             <https://man7.org/linux/man-pages/index.html>
+
+Suggested-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Alejandro Colomar <alx@kernel.org>
 ---
-Changes v1->v2:
-* Add a second tree
-
  MAINTAINERS | 2 ++
  1 file changed, 2 insertions(+)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 391bbb855cbe..3f6a19f3e5e0 100644
+index a59214c48e52..e5d90cd0ed8c 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -12833,6 +12833,8 @@ M:	Alejandro Colomar <alx@kernel.org>
+@@ -12749,6 +12749,8 @@ M:	Alejandro Colomar <alx@kernel.org>
  L:	linux-man@vger.kernel.org
  S:	Maintained
  W:	http://www.kernel.org/doc/man-pages
 +T:	git git://git.kernel.org/pub/scm/docs/man-pages/man-pages.git
 +T:	git git://www.alejandro-colomar.es/src/alx/linux/man-pages/man-pages.git
- 
+=20
  MANAGEMENT COMPONENT TRANSPORT PROTOCOL (MCTP)
  M:	Jeremy Kerr <jk@codeconstruct.com.au>
--- 
+--=20
 2.43.0
 
+
+--feewq3knp6aluk7q
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmWnxrQACgkQnowa+77/
+2zL5hA/+MkWH0AyfgzzHw0UxcA9i03PV4E8NVXNBmLnf3ljTFriOpOy1P+yRU17S
+Vclh3Ix1OjKF/ueBJkPjbj4TardvG7PwcVtFGpfl+tm8ZmnZiRtdPnQCE9r0kLO0
+M8TKTJI1x5Zo38s5aJ2z3nDZ1lZyWM/8tD8Xmx+iJaPx5b6uyNN7wChqH2mjvzdV
+0r6WDpkTEOZH8O7b0RsXJ5xgIC5XdIUv6G7IZPjdY525IwOO7PY/KZvCUsF+yQzv
+2O6tXyVnI9cAh1ZG9Y5irmDsh+qhzxkurAJ1u7ULwnjurICEZSJE+4prLnJy9KOd
+rM2uZjbgBrZObDUvjkm/w5BKCB+knbeoDyfWD4PeffT4Av7Hhxbb44cx0clXZVuc
+8Gca9/gGB1uVWiOlVQqziOk+zY6dCcA1Q+c0FV/XLcTQEfScjTwSVGJivyjE+i8x
+fltqSoiVjKgUjEZdGM7IZrAS4mgAGeKw52SvqxvvZ3qK3DMSrSxznVCRrmt2wW1o
+MLRKqvVBpmcp1OlQnxB83HL/cPWwdq20/TIJKetliOQ20cslPz0HDjmXgrKHv284
+sWvhUyHt14VFIlcm3fRhyVBao15B9GlBY73pAWrSJ9B3KUboPk3dNxz2nwzXVTpQ
+pgucOADAziy9AUtjvf4xu90FEXGgLHiMHpkHgRiet+oCe6pKPFo=
+=i4Dr
+-----END PGP SIGNATURE-----
+
+--feewq3knp6aluk7q--
 
