@@ -1,85 +1,113 @@
-Return-Path: <linux-kernel+bounces-29033-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFEDC830747
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:44:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 910DE83074F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:47:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AD4C1C2497F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:44:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A79E1F24A5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:47:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9009A200D6;
-	Wed, 17 Jan 2024 13:44:49 +0000 (UTC)
-Received: from abrecht.li (75-128-16-94.static.cable.fcom.ch [94.16.128.75])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8AC0200D6;
+	Wed, 17 Jan 2024 13:47:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dkrqV21J"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57F96200BF;
-	Wed, 17 Jan 2024 13:44:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.16.128.75
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C767200A4
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 13:47:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705499089; cv=none; b=Z9PwZmMxiHeO0yyqwI3RnnyLHHwXF7M/++vtuBMZ892KGI9Qhil2kfd4ekReMHGOi2ueZxCYZNLZRCOqELjge4rtD5JL6vM+ff5Q5tc5VvlpmoM6cf7JcQJUqBRZLJBfFq9zAahKjvTjWIjAqMHiOL+KtFgYYaRJTxuSAYLap5U=
+	t=1705499271; cv=none; b=DREfBBX9SelEiLmxEjbmbnbZXr9Zfkjt1hlxXJb59b47KBy4um5K7wY03LCfOzGFy+m3c+9Wyc/wzYxFIw80aTAaUwtny5UABqnAZF9jTqlEiAkEBoUQIxDTWDvWu+iDNgOKrNAJSQuvze/fftvD8atJdRt12yhofmVLtNnwrIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705499089; c=relaxed/simple;
-	bh=IkAm2qbtN+PXCKqsmFFI7eY7DInbXy/jfGbcSK753tc=;
-	h=DKIM-Filter:Received:MIME-Version:Date:From:To:Subject:Message-ID:
-	 X-Sender:Content-Type:Content-Transfer-Encoding; b=KjuFwMMxB0o4qD0jtvSRuHLP9YoRg97mrQaI4QNEZeRZc6AVbjm+x/eIKZfHm3Acubc6EnWGbmllEDu22xOtPb8P4tGGDD6errnAgwuaV91tGrts/gACriUpAOi19mFHb7YtXPWnTyAtE5kV4jDj0JmRZgiOQjXayW4Hwx1BPlY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nodmarc.danielabrecht.ch; spf=pass smtp.mailfrom=nodmarc.danielabrecht.ch; arc=none smtp.client-ip=94.16.128.75
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nodmarc.danielabrecht.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nodmarc.danielabrecht.ch
-DKIM-Filter: OpenDKIM Filter v2.11.0 abrecht.li D55C826B920B
-Received: from toucan.dmz.abrecht.li (unknown [IPv6:fc00:4::a3c:111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by abrecht.li (Postfix) with ESMTPSA id D55C826B920B;
-	Wed, 17 Jan 2024 13:44:43 +0000 (UTC)
+	s=arc-20240116; t=1705499271; c=relaxed/simple;
+	bh=I7vQBID3G5sv3NpLhtsULacwm+dYjsLRrcvjaJpRfbA=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=OTknCnux9RUp/c+wPfhEVs+rzvvSLWcTXj3KEGOq3lVNROQMQf9VA9Xge7Qda2qLC6VHx2P7C1aDt3rAII7ZuoYIvT9JtTZa7TXMSxCyMYpEke6ORUBi5R1ltrhZiOjI+Iqt9DGJkTP9rgOImIXZs02o7bIjhr/g3e8C4Dc9/HY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dkrqV21J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53BCEC433F1;
+	Wed, 17 Jan 2024 13:47:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705499270;
+	bh=I7vQBID3G5sv3NpLhtsULacwm+dYjsLRrcvjaJpRfbA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dkrqV21JZeN9qgXIJR2G+aY6Y+oJbhnCx6Nvx0jJ5s2JjH/twuRJEtgzJ/9E6g6L8
+	 1EGg4xYEjyzgsew4qYqCC0y4R6EKZxVl5qTrS6SotGPC/BkItJIq9ZivWUnKZBA0He
+	 M46edCDaA6pRAy6nslj8LI5aQnKb8iKnQiof6ofRPxgbn4MWPySB6LKAyX3AhzSI0g
+	 ZHuc2SLLXObnB9IwL1AulZj1RL74JxsiNqUscCNbW7D1zXnHXb54kcx0eyVrLdPU/Q
+	 cPyPSj1TSSAEllG2btUS9gR96knU92X1ZcDnUeynm+0cS4ACIyIgQKZanR0PkUUyLH
+	 UyK6cmnA/Hnfg==
+Date: Wed, 17 Jan 2024 14:47:48 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>
+Cc: Sandy Huang <hjc@rock-chips.com>, Andy Yan <andy.yan@rock-chips.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	Alex Bee <knaerzche@gmail.com>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org, 
+	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	kernel test robot <lkp@intel.com>
+Subject: Re: Re: (subset) [PATCH] drm/rockchip: inno_hdmi: Explicitly include
+ drm_atomic.h
+Message-ID: <iuorynvlxp6m6u5hz3yi5d2ibfd3w6pdsm5ajlztjcsjuaczzl@f7jl7vyux2cl>
+References: <20240115092434.41695-2-knaerzche@gmail.com>
+ <170548481754.96553.11502916321137598260.b4-ty@kernel.org>
+ <3186012.MsWZr2WtbB@diego>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Wed, 17 Jan 2024 14:44:43 +0100
-From: Daniel Abrecht <linux-sound@nodmarc.danielabrecht.ch>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ASoC: soc-core.c: Add "Unknown" and "Unknown Product" to
- dmi_blacklist
-Message-ID: <7d11d0711ad93f2208efb9ab13fe915b@abrecht.li>
-X-Sender: linux-sound@nodmarc.danielabrecht.ch
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="u5lstoeossw6qgsw"
+Content-Disposition: inline
+In-Reply-To: <3186012.MsWZr2WtbB@diego>
 
-In U-Boot, the default for DMI vendor / product if not set is "Unknown" 
-and "Unknown Product".
-See 
-https://source.denx.de/u-boot/u-boot/-/blob/v2023.10/lib/smbios.c?ref_type=tags#L272
 
-This patch adds them to the dmi_blacklist.
+--u5lstoeossw6qgsw
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Daniel Abrecht <public@danielabrecht.ch>
-Acked-by: Jaroslav Kysela <perex@perex.cz>
----
-  sound/soc/soc-core.c | 2 ++
-  1 file changed, 2 insertions(+)
+On Wed, Jan 17, 2024 at 10:52:04AM +0100, Heiko St=FCbner wrote:
+> Hi Maxime,
+>=20
+> Am Mittwoch, 17. Januar 2024, 10:46:57 CET schrieb Maxime Ripard:
+> > On Mon, 15 Jan 2024 10:24:35 +0100, Alex Bee wrote:
+> > > Commit d3e040f450ec ("drm/rockchip: inno_hdmi: Get rid of mode_set")
+> > > started using drm_atomic_get_new_connector_state and
+> > > drm_atomic_get_new_crtc_state which are defined in drm_atomic.h
+> > > Building does currently only work if CONFIG_OF and CONFIG_DRM_PANEL_B=
+RIDGE
+> > > are enabled since this will include drm_atomic.h via drm_bridge.h (see
+> > > drm_of.h).
+> > >=20
+> > > [...]
+> >=20
+> > Applied to drm/drm-misc (drm-misc-next).
+>=20
+> wouldn't have drm-misc-next-fixes been more appropriate?
+> Because I _think_ the change causing the issue made it in during the
+> current merge-window?
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f8524b5bfb33..aa1a31abbe3a 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1804,6 +1804,8 @@ static const char * const dmi_blacklist[] = {
-  	"Board Manufacturer",
-  	"Board Vendor Name",
-  	"Board Product Name",
-+	"Unknown",
-+	"Unknown Product",
-  	NULL,	/* terminator */
-  };
+AFAIK, the offending commit is in drm-misc-next only
 
--- 
-2.39.2
+Maxime
+
+--u5lstoeossw6qgsw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZafagwAKCRDj7w1vZxhR
+xXhkAP9qKbp1PhY5sD3ZM1K8WsnxJlJs426f+1UdakIgqEihoQEAj9KiTUxV80b6
+7rivJZ/b4AaKhqJN40Qlbi3MigyBHAg=
+=6ZF3
+-----END PGP SIGNATURE-----
+
+--u5lstoeossw6qgsw--
 
