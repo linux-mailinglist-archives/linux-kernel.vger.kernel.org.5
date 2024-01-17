@@ -1,153 +1,131 @@
-Return-Path: <linux-kernel+bounces-29163-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B5D78309E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:39:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BF278309EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:41:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA50B1F23D01
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:39:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29A5D2872E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:41:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54D6021A0F;
-	Wed, 17 Jan 2024 15:39:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 600AE2230A;
+	Wed, 17 Jan 2024 15:41:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="V9BeD8wj"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="RcIv86ss"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D52721A05
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:38:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0839621A19;
+	Wed, 17 Jan 2024 15:41:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705505940; cv=none; b=iXkTgGHM8qwq9ZhMt9h8KteDGshhBl/YNMZBTJ/u1xqOF5i3KZMsP/U0ivqFtsoEWWWGhNRl88flkmVVaHcp8MX+A558tFv1JjI5OacsbryMxFuTJqhQmTufKYHzC6xjIgAiNY+EC9TqUlb5kMHWHc10ob4KWGyL9CtFJ63MW+U=
+	t=1705506091; cv=none; b=UlodXNK2v/G8OGuxU+wGddkdg8NHpAVHd2fCxLpenilclVFC8ay8t0qz/rcxL0qpVEtTRkOp0K4cicDxvEULU/Hs3MtQ+nffwqEUFgkhhzheG4TQ4yt3+9vY5uHXtdjz5AtsvoHS5tS2ssJMJlLcpCmWQt3S3as1WYT7XS4BlgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705505940; c=relaxed/simple;
-	bh=iQ7itby43BSx0xynQMS8ijTGKazjAWAAhMKEoJglSwY=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:Content-Transfer-Encoding:User-Agent:MIME-Version; b=pnYXyzDs8UKIlsT8hQ4D7iQVxLPqKwahVNLO21Gep7lr6/9dky60auLxCRSh5PJkj45QmNCKLYJgl7gVTnXYDgbbC5G6Km4JQIvz143nTvbjIkGQniQzIJiO7J7ASM/IS0Gq0csvB/VRdFdcuoIWcO2R30YAfcOyUnWTGd7DQFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=V9BeD8wj; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40e7065b7bdso40892715e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:38:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705505937; x=1706110737; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=AHIe76/zPrvtJ/ms59RFYFIDBYoX1+fcYvY/MxrSv1s=;
-        b=V9BeD8wjEZYVJ14NKcZQGZqSDKsC87gqyftpYoJuy5DrROpEOp0ZDGD4SXq4h0Yc/6
-         cEHDBIa2Fkp7zZYsyZ+BsOU8FCqm4+HVSL73ddQOxvC/T2JgA6pw7ZweJdLJ39GMZTZP
-         GRjG4w5zJw6qIHYwix35C/OAgilvr85Wn9mTsybr0VSeSc34ullnJ2Y1z48Hmgc7q+26
-         A8YdKuVmA88ovcEmvuUtzcH/P4V4JCfiOMhh00Tv51ce+e88y6+kKVtYPAdjd9FF0uTc
-         7awLmJKZXdSR8BJBDFSUEBgUsPTxXSTOzsXDuf+7VYHUuXZ+nIuVRSFVimnvid5X/c+h
-         UDlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705505937; x=1706110737;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AHIe76/zPrvtJ/ms59RFYFIDBYoX1+fcYvY/MxrSv1s=;
-        b=T2y80fvxUdWs77uiSvDXLtY4Iih7e2d2FLnIB81bUhUcPXS5+SByPFGq2ov0N6BYME
-         Z6A2dL7pO+RnHFJNe8XPp8JQ2TU8rMerexa2s50ts3O9KGArvlVXzvd17pW+8iHXkBp4
-         HozBzpSj3ZZJvvW/R8kyGlQKAiSVMLxcp3Ybo6w2tx+4sIAfAeyqDTlBQi1YY6s5RL8S
-         jdWh0S9Is2NZKhkOCbGCXIsh8vu78V/wgmJdkxU5HF2xZIY9Wq1N4IM+mqnont5CRo4b
-         sKq1nb32MqUaigJNds1bISmUU9L0wSIO3FATLVT3COKi87f7Vqt2KdJgdixR/uWLbBcR
-         Enng==
-X-Gm-Message-State: AOJu0YxrZkLDEEmJFPOrIL4WDJ7Xot708Dtki9p0vivnqeaOe7H/ybOy
-	3isAcJ5DKkMtHzLnLcqXak3mSPAMsk902w==
-X-Google-Smtp-Source: AGHT+IFV/Y/QK8epiDPjRSEGlOZHxAJNe8EwHrV5tZVYNXXzxYIO5ZcLL+4nrYomezsBSeqVAKi/4Q==
-X-Received: by 2002:a05:600c:24d3:b0:40c:3e6b:efe8 with SMTP id 19-20020a05600c24d300b0040c3e6befe8mr3113561wmu.241.1705505937181;
-        Wed, 17 Jan 2024 07:38:57 -0800 (PST)
-Received: from draszik.lan ([80.111.64.44])
-        by smtp.gmail.com with ESMTPSA id n18-20020a05600c501200b0040e77ce8768sm10969236wmr.16.2024.01.17.07.38.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 07:38:56 -0800 (PST)
-Message-ID: <026bdf502c0af8260c67a7a851562633a6976031.camel@linaro.org>
-Subject: Re: [PATCH 10/18] tty: serial: samsung: make max_count unsigned int
-From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>, Sam Protsenko
-	 <semen.protsenko@linaro.org>
-Cc: krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com, 
-	gregkh@linuxfoundation.org, jirislaby@kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
-	peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
-Date: Wed, 17 Jan 2024 15:38:55 +0000
-In-Reply-To: <b21a54a7-fe13-4a29-8e7e-6b653d5c24ef@linaro.org>
-References: <20240110102102.61587-1-tudor.ambarus@linaro.org>
-	 <20240110102102.61587-11-tudor.ambarus@linaro.org>
-	 <CAPLW+4=YYdUSaaLcsdEyPswC4s6onxuSh24vSfw4xys=sPZG_Q@mail.gmail.com>
-	 <b21a54a7-fe13-4a29-8e7e-6b653d5c24ef@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1-1 
+	s=arc-20240116; t=1705506091; c=relaxed/simple;
+	bh=yhlyvGOVc0FW/SQnx8rcyUJVQv4hP/dALX7MtsQQ+R4=;
+	h=Received:DKIM-Signature:Received:Received:Received:Received:
+	 Received:Received:Received:Received:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:X-TM-AS-GCONF:X-Proofpoint-GUID:
+	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Virus-Version:
+	 X-Proofpoint-Spam-Details; b=LWaJlM2tFzdXQfbT1QmX20yuKefnpVeGw/oSFKQOfVkhqUAJRty3A6lYjZy9OEQFJgEgWqcAUAR59+r4nIQW1z1dOeDmdS6J659SCOt9+vsZ+mSw0LX1GIURNBSS7gX2aylCjGGjvqxR8qqZ7QkzSQkC2z2/LlEBj779d6/j124=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=RcIv86ss; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40HFHVnS022560;
+	Wed, 17 Jan 2024 15:41:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=yhlyvGOVc0FW/SQnx8rcyUJVQv4hP/dALX7MtsQQ+R4=;
+ b=RcIv86ssfGnwo+8vgXH6za/DtmLnkrlvEXx6WZga9f9lZ92qwOfSq5Z1kvLti7i7d9cH
+ o8vGYQvU2Y3Vz3iJJaex/O6H0RPcajgSsWIA/AUhQB23G7L/mgvC25GzQW7sDlqbu6Lk
+ enQ6GVqZCqqjB3ibRjLPTzwRE4srOO9w3Xods9rMuyLddMWxWrZ7dBprGr8LdjnBvas9
+ gLe1V/pkimbTwZJj8MjRgjea8Bq2+x25/bv1nKKkBzS9dXjIJrrhjsujVbZEN8Fui5D9
+ RUxAH4W9C5px0nBILGc6UwHVzCg/+QA29WCb+JkWig42jWRUZiSp/uJA97Uvm6t51Bmn 1w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vphdb0r3w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 15:41:18 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40HFJdB0027609;
+	Wed, 17 Jan 2024 15:41:15 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vphdb0qqv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 15:40:39 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40HENKcQ005320;
+	Wed, 17 Jan 2024 15:40:38 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vm7j1wp6g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 15:40:38 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40HFeZ6k18678328
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 17 Jan 2024 15:40:35 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 97A6420043;
+	Wed, 17 Jan 2024 15:40:35 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5840E20040;
+	Wed, 17 Jan 2024 15:40:35 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 17 Jan 2024 15:40:35 +0000 (GMT)
+Date: Wed, 17 Jan 2024 16:40:34 +0100
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Marcos Paulo de Souza <mpdesouza@suse.com>
+Cc: Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>, Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v6 2/3] livepatch: Move tests from lib/livepatch to
+ selftests/livepatch
+Message-ID: <Zaf08hx8fBj6TW5/@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20240112-send-lp-kselftests-v6-0-79f3e9a46717@suse.com>
+ <20240112-send-lp-kselftests-v6-2-79f3e9a46717@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240112-send-lp-kselftests-v6-2-79f3e9a46717@suse.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: _3iYNxT1FOrPnC60Y6LJUFeHWTv9eNKh
+X-Proofpoint-ORIG-GUID: ActasdkG0_3XDYGMQlVTCphXIluTp9p6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-17_09,2024-01-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ mlxlogscore=797 phishscore=0 mlxscore=0 spamscore=0 priorityscore=1501
+ impostorscore=0 adultscore=0 clxscore=1011 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401170114
 
-Hi,
+On Fri, Jan 12, 2024 at 02:43:51PM -0300, Marcos Paulo de Souza wrote:
 
-On Wed, 2024-01-17 at 15:21 +0000, Tudor Ambarus wrote:
->=20
->=20
-> On 1/16/24 18:21, Sam Protsenko wrote:
-> > On Wed, Jan 10, 2024 at 4:23=E2=80=AFAM Tudor Ambarus <tudor.ambarus@li=
-naro.org> wrote:
-> > >=20
-> > > ``max_count`` negative values are not used. Since ``port->fifosize``
-> > > is an unsigned int, make ``max_count`` the same.
-> > >=20
-> > > Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> > > ---
-> > > =C2=A0drivers/tty/serial/samsung_tty.c | 2 +-
-> > > =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
-> > >=20
-> > > diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/sa=
-msung_tty.c
-> > > index 90c49197efc7..dbbe6b8e3ceb 100644
-> > > --- a/drivers/tty/serial/samsung_tty.c
-> > > +++ b/drivers/tty/serial/samsung_tty.c
-> > > @@ -760,8 +760,8 @@ static irqreturn_t s3c24xx_serial_rx_chars_dma(vo=
-id *dev_id)
-> > > =C2=A0static void s3c24xx_serial_rx_drain_fifo(struct s3c24xx_uart_po=
-rt *ourport)
-> > > =C2=A0{
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct uart_port *port =3D=
- &ourport->port;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int max_count =3D port=
-->fifosize;
-> >=20
-> > What if port->fifosize is 0? Then this code below:
-> >=20
-> > =C2=A0=C2=A0=C2=A0 while (max_count-- > 0) {
-> >=20
-> > would cause int overflow, if max_count is unsigned?
-> >=20
->=20
-> good catch, Sam!
+Hi Marcos!
 
-Does it matter, though? As this is a post-decrement, the test is done first=
-, and the
-decrement after. Therefore, it'll still bail out as expected.
+> Having the modules being built as out-of-modules requires changing the
+> currently used 'modprobe' by 'insmod' and adapt the test scripts that
+> check for the kernel message buffer.
 
-> I'm thinking of amending this and add at the beginning of the method:
->=20
-> if (!max_count)
-> 	return tty_flip_buffer_push(&port->state->port);
+Please, correct me if I am wrong, but with this change one would
+require a configured build environment and kernel tree that matches
+running kernel in order to run tests. Is that correct?
 
-This will not help with overflow. It'll still have wrapped around after com=
-pleting the
-while() (always, no matter what start-value max_count had)
-
-Cheers,
-Andre'
-
+Thanks!
 
