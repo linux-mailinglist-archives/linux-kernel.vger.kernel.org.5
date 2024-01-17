@@ -1,187 +1,172 @@
-Return-Path: <linux-kernel+bounces-29363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D169A830D48
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:29:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52AE2830D4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:31:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66F98283644
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:29:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BB0A1C21D4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:31:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD4D249EC;
-	Wed, 17 Jan 2024 19:29:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56252249F4;
+	Wed, 17 Jan 2024 19:31:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AHywwykz"
-Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CKBdo8Ei"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1E7E22EF8
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:29:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 016B9249E0
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:31:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705519783; cv=none; b=PLDUCcTsN0JeyhtMWGQvW/gRrG0ieSsY9hcYMhYnJHuE8XIjCasPBpyICpAa7EYwZF2O/LIiPjUn25dIpm4LbsXI5NmqCLrIbZEZAo/Nqh5s/UMj5OrwFISZwJumThcnFM6RFLaXdhwQJW7ejfPNfxpF/nMmMqI5e8URKIGQsQk=
+	t=1705519891; cv=none; b=dTDrSzIvzg9IV+L1PwTYrnGLDNYMxS7vXZyOuUPuK1M8JraDLkHsXYJfiN01FOslqU+rFVGJsFrM2ZUIPKq8TFTMHLSb5SM3m0+Wh7G0+50vDgjBPFPOrVhGOy7kGu+K06RuX1cRaR8woLLUAXo8mZag/AywRoOmhVJzDnd4dlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705519783; c=relaxed/simple;
-	bh=4ez/Z4yfTa+2hWY1tMDS+MRix3YJpTVOMkTSJWQySQs=;
+	s=arc-20240116; t=1705519891; c=relaxed/simple;
+	bh=GjPXtmoYND+7N3PLDgQwb+J0MCbDB9eK6/RCdKcN2UA=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
 	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=uZ92KH/tna+HrGTkW88iQLCB/JPJNxeWm3/2tEegJDQAHdxYwU/ywP7x8uKNlYQxuFvw0eeHIuxUTeXPpEBLrE7A/G4knyoLIQ+FIiVh9BV2dQsFp4VmOOZCPxPw8jlhSYpoQM/giNF93hGAq4OcZQtOTEfLE3AfD3Ys7CbSVZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AHywwykz; arc=none smtp.client-ip=209.85.166.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7beda2e6794so295082039f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:29:41 -0800 (PST)
+	 Content-Type:Content-Transfer-Encoding; b=eepgUObi37tlujPr6AffyGALlZwqt+s08ptJU1iFB2TYth1pTzAGCFaswmFgZiRsHYWukxnoJXQVZpOWBSU/SjQ025CMy5FNNJOTD2k9y008IPhukWe1QAcWlY2oUvPdpimkeV7FyD5bb5JLNXx2TX6VsLdwzIE41C3q+1/yvYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CKBdo8Ei; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a29c4bbb2f4so1177032066b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:31:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705519781; x=1706124581; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1705519888; x=1706124688; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HwdOXy7SGjLb95yHRM4TBRusWdEvPGWfjIJ+jxRtxVo=;
-        b=AHywwykzuMC3Pe1qWB9QDkHtmBpguR4Q7xygPttlyNY20JDPRaixRElovADYtX2gwS
-         XpaOrr2xfwUa5uuD87u02Nvk3h4kmDgfxohV9loEu/Cr9cKoq9K0OIPVxR4n5Kr/e5VR
-         lmGRhxe8AVVgHQIFjdXGYpX1gLhlAYFlWOM4fSGTRxnBrgdySxNKkpJUB2qXvu8fNrtd
-         pvFEirIjpFN9SUdtgXl+ZLKYDr+DfBei6EmszCKzBbz8eewl7VjFTv+pz5baZ36hKsgx
-         tAYRREOruO3h38ZkQN70hpWkHhSX55i3to8ZggmON9Ux19sE7xYDsV6X9Bn8fILXzDAe
-         fidA==
+        bh=OUMHX6S+0IO5CvL0DocoythkWeWqWs33LQSD4/f8L0Y=;
+        b=CKBdo8EifP+Rj/zTVrDX96GGjBd+Nef9XaiaiBw6HUq5c3N8JqKdDXJ+dBIyRZzzFc
+         yi6ceNt45f7+CiCGjRX8fq29FRiwbQAwXAt1lsmahYU8gznhKkn8XIAjv8zJazBMCgAi
+         3GfvmhGXcMmrxhA9ta0B7lGAVkQih4UF6S5XaQHB/3eERJt/oKW31Gu2+yimY/N42dlF
+         hPVl96X+PBtAr7KC2typrHTzUoXunfVzje8jJtYPNqe1QrotfQI4/3SGpch7+M8IO258
+         v/wEEyn5qvaLRGUcqs+r+j3RAsQbXIeWGjoJqdPcMwcPwcX40/1y02C9p3V/8l+njF59
+         TXvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705519781; x=1706124581;
+        d=1e100.net; s=20230601; t=1705519888; x=1706124688;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HwdOXy7SGjLb95yHRM4TBRusWdEvPGWfjIJ+jxRtxVo=;
-        b=A8hRbHg9uUHQXsIwiZF4Ztkjd8SYEbAo6SV0FxZQ0Pqezf+vpLdwt++sSQ5UB69FIP
-         HbnwTOANKwHrUxqCImCkgl6VF9+b0n6OKAHpjtGTHs+LGJ7QfVseH8Cb8rnaAXGSsG67
-         W2P+TttY6o6Wuh1qcY2MGagJck0vZc+Ek5mXyecdwySEil8nVD4LmGnVLf+cj0uV9lkR
-         fSDSCK/9EWwBpxL/0rv0VOZEJiNlGRCmVIPxIIp2NARz0nb9jmAkprwCoKRFJESFNP4B
-         jooRCsktJOOeHEny/Hdq5zam/934XC7CqFmSc3+6pd6l0N8T9dyZc8ZBmMmJVfuVJnoU
-         oxLw==
-X-Gm-Message-State: AOJu0Yz4gh7jYoZvaAreGVpRCqKyAog9cDqnfcVlr1VXPshJy5Fl5oSJ
-	4IM6NbYfecLC8bcF8y6N37xqRbYrexLfDmbdopw=
-X-Google-Smtp-Source: AGHT+IF+ZHy71HvFx/DWrxMtc91jGIFhsUoG/dWbvXmmATBmGxQTh082HisPIy+9T23OzDXsqA+ntB9TKizShofqL2Q=
-X-Received: by 2002:a5e:d91a:0:b0:7bf:5355:dd23 with SMTP id
- n26-20020a5ed91a000000b007bf5355dd23mr916618iop.6.1705519780874; Wed, 17 Jan
- 2024 11:29:40 -0800 (PST)
+        bh=OUMHX6S+0IO5CvL0DocoythkWeWqWs33LQSD4/f8L0Y=;
+        b=otejIbaQzKpUEJ8Uwr5SToxVoDU/1k38+MQ1iTfqUhWAN/nBEgpYIa7DRivyZj6ivg
+         PSm0G/NNbU4AW/MjRg2dwStv8VTICWnNCojOLxwcM/EWAcrEyvwtbisXwas55bdvaNjR
+         kE1ytd6tHrbacUvfo1KWd5LIbOeSJzGSK/iKssadqhji4j4tKeU3/L6gjE0wlpOrW+vF
+         qFsXJI32/c42tkduiD4W8S6c60hCJv2OFzYilKATFvc2p8/w7lBvnOWC7Se3CdSCy9Zs
+         AnSnhiaoAHXf0kn+g8pbY2IaFKY9EJtjSlT0LTfIKfN5p9ctP2uwvhoaWtQfJbuVYijW
+         PyGQ==
+X-Gm-Message-State: AOJu0YxtXbU5c5h/LifhEcKQLkuwKeXmcBury96pnQBRQSb6Igc+eqAw
+	phfnrVpGUUqtxn1WBAZFMRS4+IwCGf66hilul6yOQKZvfXS7
+X-Google-Smtp-Source: AGHT+IESU8PNUGdO93lxbT3HckP0KLGKpX9LFWXeWklpI+hjGR0SlguYycREh9vBYKKO/sV4r8TYeRv9itfv8v8Dluo=
+X-Received: by 2002:a17:906:2695:b0:a23:1e0d:565b with SMTP id
+ t21-20020a170906269500b00a231e0d565bmr4826659ejc.1.1705519888090; Wed, 17 Jan
+ 2024 11:31:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231024142706.195517-1-hezhongkun.hzk@bytedance.com>
- <CAKEwX=OiNB+pPhb-3Tf7O=F7psKE3EOpwmbPSeLSOyuHpj3i+Q@mail.gmail.com>
- <CACSyD1P6HmH9tSvONnNxYv8P+am_hH2dK3UJQd9_+o6EWkPsXA@mail.gmail.com>
- <CAKEwX=PC3C-PrWAH3XiYGyR4ujqBJQBBX6uRa2jXKCy9VMyRCQ@mail.gmail.com>
- <CACSyD1O7t0+BXUujJ81RAdEys3MUnmpu0sRADLazoyvayx5DLA@mail.gmail.com>
- <CAKEwX=P5AC+ubnunnZr5vMiC6fFU+E_E7jg_FZztWwZRYSxTWQ@mail.gmail.com>
- <CACSyD1Nnc_w3epbt6+EMt7a-4pAzgW1hbE=G5Fy5Tc5R5+uxKw@mail.gmail.com>
- <CAKEwX=NuXR9Ot1eRFsp9n-3Tq9yhjD9up+jyvXeOzQ4xK9kEPA@mail.gmail.com>
- <CAKEwX=Oj2dR6a4-DeccvcVdJ-J7b=83uCWQAf5u7U0sySudnkw@mail.gmail.com>
- <CAJD7tkb2oda=4f0s8w8xn+t_TM1b2Q_otbb86VPQ9R1m2uqDTA@mail.gmail.com>
- <CACSyD1ODCikYLDzO4LkQeDzB4sqDWCULwCdehw9inP-qyw3_Jg@mail.gmail.com>
- <CAJD7tkY=zmGiPoWNjVaVeU+NPxV2t48J5-CxEP9=nBK8nAh0XA@mail.gmail.com>
- <CAKEwX=Na3dg+KZwvtQi-Nj79Am-1tttDw50_qStkobmYGUC6NA@mail.gmail.com>
- <CACSyD1Pp8gkxwTXZuinm6wiZs0e5U2B5oND4rj29dzmRApFjhQ@mail.gmail.com>
- <CAKEwX=OsTQCJd12S3NajRMRy_s3q3yGFpS7S=_3-yOYK6+ezzA@mail.gmail.com>
- <CACSyD1NgqoFKuHSgdw_bzgK_StsLrNQ+7wHVBqsnHcB-2rD2ow@mail.gmail.com>
- <CACSyD1Np1JbKB9punaigGbJ7y2ZWou1Sr7bczanHv4-1UQZ==A@mail.gmail.com>
- <CAJD7tkbfe5duVhN7kJhkQZLCbK48giVZ8LBx=RQDmp80oa2FDA@mail.gmail.com> <CACSyD1PERLG_68OXwzuGH-cqOuS1k8N_fE5Xu-KACZ34UYephw@mail.gmail.com>
-In-Reply-To: <CACSyD1PERLG_68OXwzuGH-cqOuS1k8N_fE5Xu-KACZ34UYephw@mail.gmail.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Wed, 17 Jan 2024 11:29:29 -0800
-Message-ID: <CAKEwX=Ok1SE6X=_mt3fGjUTt5qKvRm329zOPiMg6WRTZsuHRgg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: zswap: fix the lack of page lru flag
- in zswap_writeback_entry
-To: Zhongkun He <hezhongkun.hzk@bytedance.com>
-Cc: Yosry Ahmed <yosryahmed@google.com>, akpm@linux-foundation.org, hannes@cmpxchg.org, 
-	sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com, 
+References: <CAKEwX=NLe-N6dLvOVErPSL3Vfw6wqHgcUBQoNRLeWkN6chdvLQ@mail.gmail.com>
+ <20240116133145.12454-1-debug.penguin32@gmail.com> <CAKEwX=PjraCg_NjP4Tnkbv8uqnVw8yJGh-mbuZC02Gp6HMcDBw@mail.gmail.com>
+In-Reply-To: <CAKEwX=PjraCg_NjP4Tnkbv8uqnVw8yJGh-mbuZC02Gp6HMcDBw@mail.gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Wed, 17 Jan 2024 11:30:50 -0800
+Message-ID: <CAJD7tkb_uC_K7+C3GjVqg1rDRCmUkbHcEw950CkUHG66yokbcg@mail.gmail.com>
+Subject: Re: [PATCH] mm/zswap: Improve with alloc_workqueue() call
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: Ronald Monthero <debug.penguin32@gmail.com>, sjenning@redhat.com, ddstreet@ieee.org, 
+	vitaly.wool@konsulko.com, akpm@linux-foundation.org, chrisl@kernel.org, 
 	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Chris Li <chrisl@kernel.org>, Michal Hocko <mhocko@kernel.org>
+	Johannes Weiner <hannes@cmpxchg.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 17, 2024 at 1:52=E2=80=AFAM Zhongkun He
-<hezhongkun.hzk@bytedance.com> wrote:
+On Wed, Jan 17, 2024 at 11:14=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrot=
+e:
 >
-> > >
-> > > Please forgive me for adding additional information about this patch.
-> > >
-> > > I have finished the opt for introducing a folio_add_lru_tail(), but
-> > > there are many
-> > > questions:
-> > > 1) A new page can be move to LRU only by lru_add_fn, so
-> > >     folio_add_lru_tail could not add pages to LRU for the following c=
-ode
-> > >     in folio_batch_move_lru(),which is added by Alex Shi for
-> > >     serializing memcg changes in pagevec_lru_move_fn[1].
-> > >
-> > > /* block memcg migration while the folio moves between lru */
-> > >         if (move_fn !=3D lru_add_fn && !folio_test_clear_lru(folio))
-> > >             continue;
-> > > To achieve the goal, we need to add a new function like  lru_add_fn
-> > > which does not have the lru flag and folio_add_lru_tail()
-> > > +               if (move_fn !=3D lru_add_fn && move_fn !=3D lru_move_=
-tail_fn_new &&
-> > > +                       !folio_test_clear_lru(folio))
-
-Hmm yeah, I guess it is a bit more plumbing to do. I prefer this
-though - not very fond of hacking current's flag just for a small
-optimization :) And I'd argue this is the "right" thing to do -
-draining the other LRU operation batches just so that we can
-successfully perform an add-to-tail seems hacky and wrong to me.
-
-> > >
-> > > 2)  __read_swap_cache_async has six parameters, so there is no space =
-to
-> > > add a new one, add_to_lru_head.
-
-Matthew's solution seems fine to me, no? i.e using a single flag
-parameter to encapsulate all boolean arguments.
-
-> > >
-> > > So it seems a bit hacky just for a special case for the reasons above=
-.
-> >
-> > It's a lot of plumbing for sure. Adding a flag to current task_struct
-> > is a less-noisy yet-still-hacky solution. I am not saying we should do
-> > it, but it's an option. I am not sure how much task flags we have to
-> > spare.
+> On Tue, Jan 16, 2024 at 5:32=E2=80=AFAM Ronald Monthero
+> <debug.penguin32@gmail.com> wrote:
 >
-> Got it.
-> >
-> > >
-> > > Back to the beginning,  lru_add_drain() is the simplest option=EF=BC=
-=8Cwhich is common
-> > > below the __read_swap_cache_async(). Please see the function
-> > > swap_cluster_readahead()
-> > > and swap_vma_readahead(), of course it has been batched.
-> > >
-> > > Or we should  leave this problem alone=EF=BC=8Cbefore we can write ba=
-ck zswap
-> > > in batches.
-> >
-> > Calling lru_add_drain() for every written back page is an overkill
-> > imo. If we have writeback batching at some point, it may make more
-> > sense then.
->
-> Agree.
-
-Agree. lru_add_drain() does quite a bit, and doing it for every
-written page makes batching less effective. And as argued above, I
-don't think we should do this.
-
-I'm fine with waiting til writeback batching too :) But that will be a
-bigger task.
-
-
+> + Johannes and Yosry
 >
 > >
-> > Adding Michal Hocko was recently complaining [1] about lru_add_drain()
-> > being called unnecessarily elsewhere.
+> > The core-api create_workqueue is deprecated, this patch replaces
+> > the create_workqueue with alloc_workqueue. The previous
+> > implementation workqueue of zswap was a bounded workqueue, this
+> > patch uses alloc_workqueue() to create an unbounded workqueue.
+> > The WQ_UNBOUND attribute is desirable making the workqueue
+> > not localized to a specific cpu so that the scheduler is free
+> > to exercise improvisations in any demanding scenarios for
+> > offloading cpu time slices for workqueues.
 >
-> Got it, thanks.
+> nit: extra space between paragraph would be nice.
+>
+> > For example if any other workqueues of the same primary cpu
+> > had to be served which are WQ_HIGHPRI and WQ_CPU_INTENSIVE.
+> > Also Unbound workqueue happens to be more efficient
+> > in a system during memory pressure scenarios in comparison
+> >  to a bounded workqueue.
 > >
-> > [1]https://lore.kernel.org/linux-mm/ZaD9BNtXZfY2UtVI@tiehlicka/
+> > shrink_wq =3D alloc_workqueue("zswap-shrink",
+> >                      WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
+> >
+> > Overall the change suggested in this patch should be
+> > seamless and does not alter the existing behavior,
+> > other than the improvisation to be an unbounded workqueue.
+> >
+> > Signed-off-by: Ronald Monthero <debug.penguin32@gmail.com>
+> > ---
+> >  mm/zswap.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/mm/zswap.c b/mm/zswap.c
+> > index 74411dfdad92..64dbe3e944a2 100644
+> > --- a/mm/zswap.c
+> > +++ b/mm/zswap.c
+> > @@ -1620,7 +1620,8 @@ static int zswap_setup(void)
+> >                 zswap_enabled =3D false;
+> >         }
+> >
+> > -       shrink_wq =3D create_workqueue("zswap-shrink");
+> > +       shrink_wq =3D alloc_workqueue("zswap-shrink",
+> > +                       WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
+>
+> Have you benchmarked this to check if there is any regression, just to
+> be safe? With an unbounded workqueue, you're gaining scheduling
+> flexibility at the cost of cache locality. My intuition is that it
+> doesn't matter too much here, but you should probably double check by
+> stress testing - run some workload with a relatively small zswap pool
+> limit (i.e heavy global writeback), and see if there is any difference
+> in performance.
+
+I also think this shouldn't make a large difference. The global
+shrinking work is already expensive, and I imagine that it exhausts
+the caches anyway by iterating memcgs. A performance smoketest would
+be reassuring for sure, but I believe it won't make a difference.
+
+Keep in mind that even with WQ_UNBOUND, we prefer the local CPU (see
+wq_select_unbound_cpu()), so it will take more than global writeback
+to observe a difference. The local CPU must not be in
+wq_unbound_cpumask, or CONFIG_DEBUG_WQ_FORCE_RR_CPU should be on.
+
+>
+> >         if (!shrink_wq)
+> >                 goto fallback_fail;
+> >
+> > --
+> > 2.34.1
+> >
+>
+> On a different note, I wonder if it would help to perform synchronous
+> reclaim here instead. With our current design, the zswap store failure
+> (due to global limit hit) would leave the incoming page going to swap
+> instead, creating an LRU inversion. Not sure if that's ideal.
+
+The global shrink path keeps reclaiming until zswap can accept again
+(by default, that means reclaiming 10% of the total limit). I think
+this is too expensive to be done synchronously.
 
