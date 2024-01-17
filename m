@@ -1,144 +1,102 @@
-Return-Path: <linux-kernel+bounces-29036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D25EA830753
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:49:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17D8E83075A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:53:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E3031F250FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:49:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FB5E1C2412B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:53:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EBB7200DE;
-	Wed, 17 Jan 2024 13:49:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A959A200D9;
+	Wed, 17 Jan 2024 13:53:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EWVwH7gv"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="f80FNgBL"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43812200A4
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 13:49:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D0D41E86E;
+	Wed, 17 Jan 2024 13:53:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705499364; cv=none; b=a9phE+n5iQzdWHz7tQCQQod3XSdR24rErxERQ32VC6WlhYxp9lSIqPlkQG8YB8ZFjs9ipLtdnPcVQKidx1RuTjz7v2QOh3sE3N+JapIxpL4c8QKwwDRoTF7w7Gl442vUat2pZgb1jGivx5LkTyf9BWNmjy6iTPNG6qf9J9r3Gig=
+	t=1705499611; cv=none; b=Iq/F7CCyGf2ts5U/BlT8Lk+jKr7kWaTM0M6L11Hw/qUrUVmeG+OH1zpMz1U8VI2Yr3b1/8XKrEG40PzzvzC+EAEXCWw1l+dzaFSZPJd4ExQOVV813PmRs61pFA0bl/uhO81g2VFX9kZiX7rlN1AeMI+XQasiLRauPSVnsbK8sP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705499364; c=relaxed/simple;
-	bh=9tfLMF8D9oKQokbMf8xX4/RpiMIC9oK/PN7AWqeaVyY=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:
-	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
-	 X-Google-Smtp-Source:X-Received:Received:Message-ID:Subject:From:
-	 To:Cc:Date:In-Reply-To:References:Content-Type:
-	 Content-Transfer-Encoding:User-Agent:MIME-Version; b=VQrEakXKLRbq6t4wUk3Psdlbykh3+SETUZs7s+r+51+mCqXdRk6eqb8T12Vc4D0uYZY4QI4AOTrnzkw5yPt32fj5VKcL3zNPSwKIkPcUJzSv6GHSwjwgLMKHpjFcVSaauGtdYVrOaT6AfwoVF9grw1ETVu0JSp8hZmYnc+UVr3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EWVwH7gv; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705499362;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9tfLMF8D9oKQokbMf8xX4/RpiMIC9oK/PN7AWqeaVyY=;
-	b=EWVwH7gvHDAlA8PbWoHoSYARXdTS3Dt5Fr00YRU8F0gpKK2oWH5bCvKgBvJj6OHByy7Dtg
-	Q9jSVe4GApYcUBOT+aqH298cbBXEcAWd3dBryOpYa2ew/mHVRz0ErI6ei8cpTGMEQtjDaX
-	t19pWarC4nEU8PJicd3IeqzYGux0nik=
-Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
- [209.85.219.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-651-cWu-9OIfNeWPKws3EkJ1Wg-1; Wed, 17 Jan 2024 08:49:21 -0500
-X-MC-Unique: cWu-9OIfNeWPKws3EkJ1Wg-1
-Received: by mail-yb1-f198.google.com with SMTP id 3f1490d57ef6-dc227f548a1so292959276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 05:49:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705499360; x=1706104160;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9tfLMF8D9oKQokbMf8xX4/RpiMIC9oK/PN7AWqeaVyY=;
-        b=oH9xCZv1v4yW+9uvMaHyRiIeqonn05+2r69fA9g9a5RyDAc4Zo2ii17CvYTMlYT2BT
-         h0Fr/BbDYh+kSajp4sHtQL7LuvhUIG2hUSJEzQowH74oj9Bt/4Y5qFryt/IZfzEQW68F
-         +EDeotdGj5b19YZzngBmFWeunzGldOw4yEkSaU2vIJcoWWxPlNCfKCIhWuGPKqpnzCNe
-         QxdOE8YJYkptXkoDF4t3f/+jVwj4ljgWbkm+/pYjAYr1pIEflYJbJvAstCV+WRxJw5uI
-         4KSIZ6MZiible0DK0p+ZMEdZDT6R4xaB7GXKP3rxC790lY+PUjrj+IQrhvPCMyjkoSw4
-         we3Q==
-X-Gm-Message-State: AOJu0YxX0L3i20l36vqFpenwGreTSHX0PCqJatFdZTrsHyACcTgola7U
-	ChGQxSP7EfGcubUJOB2IfTnpOb0mLg7T6amldDoCDf/QguzTu5tBZMJ9BKulME13q+C60HDbcLB
-	Al2oqz1IureWmCFeoD35b5wjLsKF7HvLk
-X-Received: by 2002:a25:8148:0:b0:dbc:d44e:4ba5 with SMTP id j8-20020a258148000000b00dbcd44e4ba5mr8480333ybm.3.1705499360517;
-        Wed, 17 Jan 2024 05:49:20 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGkrBjM+COoqsF6GAkOv/uc9j2UsNiTaqG5gnxQZ8JGCa3W1u6QSyFkx6IypdKek1QXtq7gPA==
-X-Received: by 2002:a25:8148:0:b0:dbc:d44e:4ba5 with SMTP id j8-20020a258148000000b00dbcd44e4ba5mr8480312ybm.3.1705499360234;
-        Wed, 17 Jan 2024 05:49:20 -0800 (PST)
-Received: from pstanner-thinkpadt14sgen1.remote.csb (nat-pool-muc-t.redhat.com. [149.14.88.26])
-        by smtp.gmail.com with ESMTPSA id f9-20020a0cf7c9000000b00680c49f8650sm5015703qvo.112.2024.01.17.05.49.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 05:49:19 -0800 (PST)
-Message-ID: <33b7c1a458df27bfb36ea4f53ef1cc7abc2a4897.camel@redhat.com>
-Subject: Re: [PATCH 09/10] pci: devres: remove legacy pcim_release()
-From: Philipp Stanner <pstanner@redhat.com>
-To: andy.shevchenko@gmail.com
-Cc: Jonathan Corbet <corbet@lwn.net>, Hans de Goede <hdegoede@redhat.com>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
- <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Bjorn Helgaas
- <bhelgaas@google.com>, Sam Ravnborg <sam@ravnborg.org>, dakr@redhat.com,
- linux-doc@vger.kernel.org,  linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org,  linux-pci@vger.kernel.org
-Date: Wed, 17 Jan 2024 14:49:16 +0100
-In-Reply-To: <Zab3yr6J1S-2ujT9@surfacebook.localdomain>
-References: <20240115144655.32046-2-pstanner@redhat.com>
-	 <20240115144655.32046-11-pstanner@redhat.com>
-	 <Zab3yr6J1S-2ujT9@surfacebook.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	s=arc-20240116; t=1705499611; c=relaxed/simple;
+	bh=cwpAB4v8MAeBSFfk751SQoNIeFgQACr+c8jRPotmZ/Q=;
+	h=Received:DKIM-Signature:Received:Received:Received:Received:From:
+	 To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding:Content-Type:X-Originating-IP:
+	 X-ClientProxiedBy:X-Proofpoint-Virus-Version; b=FMFeJQ5c52MdHd/eL3BjgDHQ/m83tk4dSfxpXAMIYT2t64lEqFU2oavNfMSxVtSsC7e5owpSqwRcFSG+IKgCoC6Y2mIigJIHCe060S5YF14JBbyCotQJW9aMyfsa7cmShjo8ZMwF7lGF/XNfRHwOgjF+Kny5MJYFuWtHFzfWrzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=f80FNgBL; arc=none smtp.client-ip=185.132.182.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40HBLSrG008575;
+	Wed, 17 Jan 2024 14:53:22 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=selector1; bh=1qNhrPs
+	JgbVSkEdgh8//+X6VT70i4GD3Lsqz0cPBVKE=; b=f80FNgBLPiuFX9L00KgWoBH
+	AvjnRhfZA4IGYB8rWrAAK0EQlOWjhaiSZ9r0VFOUmuNbLZhrnPnuUdqTnd8eouvF
+	yqfjmJRAvzb16mirihHNSjhCK3Vhb80Hmh614Oe4unMrP/ZGXzPlW+RsI+3YgyRx
+	razv3uSTABWJJ+ZHZWmhrIa65fz+sXTLuU7vOzJo5D4wkjuFs81qqJ8TUKZDVGh8
+	9vHJ7LSEa0nX9FhZFSka4eo8F2qvC2wVYnEV6mtQr7jT8tUtjgPA6ZsmoT/EqANk
+	cXNP3JaRNbH7AwSN62SAUZ9gk5JV2ohB6p/+JZmBoprXl5JFr4qOVyqJqr6dHOw=
+	=
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vm4y51rn6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Jan 2024 14:53:22 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0A79E100079;
+	Wed, 17 Jan 2024 14:53:22 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id F417C209BD9;
+	Wed, 17 Jan 2024 14:53:21 +0100 (CET)
+Received: from localhost (10.252.22.63) by SHFDAG1NODE2.st.com (10.75.129.70)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 17 Jan
+ 2024 14:53:21 +0100
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To: Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier
+	<mathieu.poirier@linaro.org>
+CC: <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <arnaud.pouliquen@foss.st.com>
+Subject: [PATCH 0/2] remoteproc: stm32: Fix sparse warnings
+Date: Wed, 17 Jan 2024 14:53:10 +0100
+Message-ID: <20240117135312.3381936-1-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-17_08,2024-01-17_01,2023-05-22_02
 
-On Tue, 2024-01-16 at 23:40 +0200, andy.shevchenko@gmail.com wrote:
-> Mon, Jan 15, 2024 at 03:46:20PM +0100, Philipp Stanner kirjoitti:
-> > Thanks to preceding cleanup steps, pcim_release() is now not needed
-> > anymore and can be replaced by pcim_disable_device(), which is the
-> > exact
-> > counterpart to pcim_enable_device().
-> > This permits removing further parts of the old devres API.
-> >=20
-> > Replace pcim_release() with pcim_disable_device().
-> > Remove the now surplus get_dr() function.
->=20
-> ...
->=20
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0devm_add_action(&pdev->dev, =
-pcim_disable_device, pdev);
->=20
-> No error check?
->=20
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return pci_enable_device(pde=
-v);
->=20
-> Maybe
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret =3D pci_enable_device=
-(...);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (ret)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return ret;
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return devm_add_action_or=
-_reset(...)?
->=20
-> I could think of side effects of this, so perhaps the commit message
-> and/or
-> code needs a comment on why the above proposal can _not_ be used?
->=20
+Fix warnings reported by sparse using make option "C=1"
 
-That proposal can be used, so this was simply a bug.
+Arnaud Pouliquen (2):
+  remoteproc: stm32: Fix incorrect type in assignment for va
+  remoteproc: stm32: Fix incorrect type assignment returned by
+    stm32_rproc_get_loaded_rsc_tablef
 
-P.
+ drivers/remoteproc/stm32_rproc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+
+base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+-- 
+2.25.1
 
 
