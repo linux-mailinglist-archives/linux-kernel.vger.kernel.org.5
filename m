@@ -1,86 +1,145 @@
-Return-Path: <linux-kernel+bounces-28800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F19B830326
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:04:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C5A6830328
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:04:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFB64287C1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:04:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B14F0B2182B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:04:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0D5B1DFD1;
-	Wed, 17 Jan 2024 10:00:09 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8720F1C691;
+	Wed, 17 Jan 2024 10:00:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=feathertop.org header.i=@feathertop.org header.b="JvpBt54a";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cvFTVzur"
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1F141BF4B
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 10:00:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 306901BF5E;
+	Wed, 17 Jan 2024 10:00:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705485609; cv=none; b=pLeaSK6qL/rZg7xNCcG39Qn+0wxfrtBklJMSxINjyATLV7kNT1YQq/66qdtLpKYaKUZY57KUBPMu7V/15SAI9FtU1dnBxVJ3w1CP7znj/uNxKGhI61n7d9wvaA4H+0OVqF5rbVzQnietEOoX0YXAHlzCZD6Te5skXesxM0j4PMM=
+	t=1705485643; cv=none; b=U+6uRCf6nXYbbRiEa2eYZMPpyKJEdph0YsMvxYubw14gXE6rFZOpaBVApxrNt65sEE1Nhg900tgF2jxO5UmyoAR8YHuZx/PQ37VnREgnJpeARzhk1YErasaEhbwGAI4f3pn1Ndm8YYZJ1SMdUx0wOodz1W2lp/OJIccQpyVCZII=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705485609; c=relaxed/simple;
-	bh=V+2etrmWvlbG8txrOcr7VyaNx1VG1Hy4oQA7XD2JAhw=;
-	h=Received:X-Google-DKIM-Signature:X-Gm-Message-State:
-	 X-Google-Smtp-Source:MIME-Version:X-Received:Date:In-Reply-To:
-	 X-Google-Appengine-App-Id:X-Google-Appengine-App-Id-Alias:
-	 Message-ID:Subject:From:To:Content-Type; b=vExzuoZX6hg+n92n2Uf8p3eB1U7hioAoxzXV02++YL+HLWF6MZWy95oxsOWy5iYWjt5T0z9najOYkE0Ru64lxhzKV6a//n2hv4OiEZgt3CDVymMlpzyPOF+Ot2sHeTHVORT3sYfPB2tim7nRTk6gT9LPuDGwdDo/eGWPFkGFEf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3618ed4a2f5so10145995ab.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 02:00:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705485606; x=1706090406;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yEWYXMygqwjqpXLX4r5FFUWm4Vr0B8II2TW/fN+KFgA=;
-        b=s4miIbPpbQibYw0qZojd3qeE2HTCKhsfjN3U2/J1cYbSbJmprjb75TCLa+DEJrTgtO
-         wQp8d3kVtphEVX/yXdjz56r4FN6CB12/bJfSEixuCc3tJxz7BqiMgqPF+cXFjMmfySEL
-         ZaXHlL21vOM3icyruJjguHERJdMvFf9f1WQnhZZImpslmMH4NRHvYBgt3XENz/Zm5Viz
-         L519i5nXWNuhAQnDf/pq8hj00R624vLScX2KWU9QcgnBGtB+MRjpCbAcBQitDAXOVd+0
-         GBex0cfblljgf2GjVSm5oNng35QTHu4+PTVcLMGE2oVZata/o/3IHqKboxhVBB2nE6/P
-         qDjg==
-X-Gm-Message-State: AOJu0Yyeo/pi4pYTx80d2WzQX7EzYokhGDFLgdOvE65Adjmj8JHckGcF
-	JXvpUmgd8Gma4MThLC7TeybUIjfKTxllVnlACJH92tiwgU33
-X-Google-Smtp-Source: AGHT+IFxzxlQiBQcX55AFmPxoteq4urJfMDjyvSOi68dybWh2/wMstcQoWDRkMhtdU1DXGkmkpRcVxbUE2YlVxE0/SEPmN1ghQFF
+	s=arc-20240116; t=1705485643; c=relaxed/simple;
+	bh=KusKkWjyuO1cEco8hpxaoHX9JXHM6jzWbE3XdG32MQA=;
+	h=Received:Received:DKIM-Signature:DKIM-Signature:X-ME-Sender:
+	 X-ME-Received:X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
+	 To:Cc:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=m5aDw3pBkq5hby3rAmE142sPd8Td934nSNKy0BSV6wrv2KUHhPkwxffehSrfOEmo+TdLRDhXF+8xHabKXM6y+w3C1HZ9WdygSHPihel2IyWZJ764xgxJBFHO+QYpWND5ZSre1TcsD+ZnMHKwN9jJDDtuGcW18y80WgCdehvABnY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=feathertop.org; spf=pass smtp.mailfrom=feathertop.org; dkim=pass (2048-bit key) header.d=feathertop.org header.i=@feathertop.org header.b=JvpBt54a; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cvFTVzur; arc=none smtp.client-ip=66.111.4.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=feathertop.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=feathertop.org
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.nyi.internal (Postfix) with ESMTP id 547D45C01F0;
+	Wed, 17 Jan 2024 05:00:41 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 17 Jan 2024 05:00:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=feathertop.org;
+	 h=cc:cc:content-transfer-encoding:content-type:content-type
+	:date:date:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=fm2;
+	 t=1705485641; x=1705572041; bh=/wyX6Sl7+DhZnU3Q0TqpgZ3lJgja7hsu
+	xIwI/YnreAM=; b=JvpBt54aNxPc5eIOC7IKmqJ3Y4pxs9Rlf5XtSozN/z/0N0XV
+	kuqOyw6w2rJAatrWdgZLk+ooBcgtJUUyovzEcGZHsgmAM0H0701C3vFy9mTzU50Z
+	19WBRw3E8mRPSVPIpj80xlQpsIegCytRR5FtaWq2OMIU39akxyBv4KWlU9Vm2/RW
+	xlQyNVfAJE/HxyY21QjSwQIfFCkU6Z/oOg50PxnqsLf3UEyVoMhyO+mRqy4B2sgq
+	HuuP1Cf7Z5GgM2QYVRcTG0O9DVyNzzCTl6Xmbw2Vg8Gucp5qq7Mz4irKjqSis96O
+	lYHOZqdJf8L4BjV4livP2K6ZpmLdM2UniLjLGA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1705485641; x=
+	1705572041; bh=/wyX6Sl7+DhZnU3Q0TqpgZ3lJgja7hsuxIwI/YnreAM=; b=c
+	vFTVzureYHhCJuSVko6WtERLnqRTShzXpzB2EdnaW2Cj/lFRnoP8S5JJ0nvCGTtG
+	BHciWEVNMh19U8/lthQMIG/7hDgvXYmx/om5Z/5A6wze2qvoCchx8LDYiWy867f7
+	158Vl8ewpW61ripRPI/CA5C8cKo5EgLlfS2lIbyvflcAK83Ge+UKtr5gOO9Sniam
+	Wfs12RODG/ECucnjTeHs8DWljWuhzwBFWEZuJeyG15j3rQ4GrXLL0aAv1BZl/RlM
+	vzXXzTwMktF/lO18QHPNUqQ8HyIqmrqn8SE122RWhC8+Fp2D1XITQT2XCBpi1+qb
+	gZBlcN+5xNI99+UYapNmA==
+X-ME-Sender: <xms:SaWnZZ4VGqcYzFGAA4wQ6hkZVFvoHSJFJokORoeLiU3BJzC7hIsD8A>
+    <xme:SaWnZW5EJc-FiJ4bXlMsxgewY6jLSNBE2Q7Dp17PGDFPZ3DIJp4727mKaZ9m6a0Q9
+    10mpiPNuA>
+X-ME-Received: <xmr:SaWnZQdPIR-xv10WFcVshrLLLhEhc6TLr68Z95bpSO3RW4MSKtN85kjPWBMTUhpwUoDaOoC4QI_BDbT9Ynm8s95v60g3ELC74RN2WQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdejhedgtdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtvdejnecuhfhrohhmpefvihhm
+    ucfnuhhnnhcuoehtihhmsehfvggrthhhvghrthhophdrohhrgheqnecuggftrfgrthhtvg
+    hrnhepheehgfelhfffgeefkefgjeelkeduleefvefhgfekgfetfeetvdeigeekjedvffeh
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepthhimh
+    esfhgvrghthhgvrhhtohhprdhorhhg
+X-ME-Proxy: <xmx:SaWnZSJchl_9uHWzSN1NMwcq6K9xhadlAIzeLRGfWJ-IrYkjMPlwRQ>
+    <xmx:SaWnZdKKlwoTakPSyYUrD1zponkriQ-b0cxjzYdoLe4u9HtgLAqoGg>
+    <xmx:SaWnZbxjvT9A0ozhruPW0bwUuPbxgxYeT8ZscIadExV41FvHAV-P6Q>
+    <xmx:SaWnZaB1HhecaFQtqLxw-BRxH-UOeqx6igLxfYm9XMsPFlN-aciL4w>
+Feedback-ID: i1f8241ce:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 17 Jan 2024 05:00:36 -0500 (EST)
+Message-ID: <792fb886-beac-44fd-a8d5-82187baf9c62@feathertop.org>
+Date: Wed, 17 Jan 2024 21:00:36 +1100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:180d:b0:35f:9ada:73a8 with SMTP id
- a13-20020a056e02180d00b0035f9ada73a8mr1265663ilv.2.1705485606163; Wed, 17 Jan
- 2024 02:00:06 -0800 (PST)
-Date: Wed, 17 Jan 2024 02:00:06 -0800
-In-Reply-To: <5746181.DvuYhMxLoT@ripper>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b9996f060f214f9f@google.com>
-Subject: Re: [syzbot] [btrfs?] memory leak in corrupted
-From: syzbot <syzbot+ebe64cc5950868e77358@syzkaller.appspotmail.com>
-To: b.a.t.m.a.n@lists.open-mesh.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, sven@narfation.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/3] dt-bindings: rockchip: rk809 fix existing example
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, Chris Zhong <zyw@rock-chips.com>,
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Zhang Qing <zhangqing@rock-chips.com>, linux-kernel@vger.kernel.org
+References: <20240116132102.3272682-1-tim@feathertop.org>
+ <20240116132102.3272682-3-tim@feathertop.org>
+ <3d4d8fc4-2b57-454e-a7f7-637309590cc3@linaro.org>
+From: Tim Lunn <tim@feathertop.org>
+In-Reply-To: <3d4d8fc4-2b57-454e-a7f7-637309590cc3@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello,
+Hi Krzysztof,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
-
-Reported-and-tested-by: syzbot+ebe64cc5950868e77358@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         a67d6793 batman-adv: mcast: fix memory leak on deletin..
-git tree:       git://git.open-mesh.org/linux-merge.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=100a3dcde80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=87c229fb8ad5e9a0
-dashboard link: https://syzkaller.appspot.com/bug?extid=ebe64cc5950868e77358
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Note: no patches were applied.
-Note: testing is done by a robot and is best-effort only.
+On 1/17/24 18:43, Krzysztof Kozlowski wrote:
+> On 16/01/2024 14:21, Tim Lunn wrote:
+>> Fix typo in the example specifying wrong compatible string for rk809.
+>> Remove additional vccX-supply properties that dont exist on rk809.
+>>
+>> Signed-off-by: Tim Lunn <tim@feathertop.org>
+>>
+>> ---
+>>
+>> Changes in v2:
+>> - Fix vcc-supply warning detected by dt_binding bot
+>>
+>>   Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml | 7 ++-----
+>>   1 file changed, 2 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml b/Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml
+>> index bac2e751e2f2..9b9d670708ce 100644
+>> --- a/Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml
+>> +++ b/Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml
+>> @@ -154,8 +154,8 @@ examples:
+>>           #address-cells = <1>;
+>>           #size-cells = <0>;
+>>   
+>> -        rk808: pmic@1b {
+>> -            compatible = "rockchip,rk808";
+>> +        rk809: pmic@1b {
+> Drop label.
+>
+Yep, will fix.
+> Best regards,
+> Krzysztof
+>
 
