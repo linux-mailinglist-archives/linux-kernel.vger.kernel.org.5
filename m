@@ -1,172 +1,120 @@
-Return-Path: <linux-kernel+bounces-29364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52AE2830D4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:31:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF7E4830D4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:32:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BB0A1C21D4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:31:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 817381F238AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:32:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56252249F4;
-	Wed, 17 Jan 2024 19:31:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F90D249ED;
+	Wed, 17 Jan 2024 19:32:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CKBdo8Ei"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fe71WRyB"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 016B9249E0
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:31:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5456249E0
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:32:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705519891; cv=none; b=dTDrSzIvzg9IV+L1PwTYrnGLDNYMxS7vXZyOuUPuK1M8JraDLkHsXYJfiN01FOslqU+rFVGJsFrM2ZUIPKq8TFTMHLSb5SM3m0+Wh7G0+50vDgjBPFPOrVhGOy7kGu+K06RuX1cRaR8woLLUAXo8mZag/AywRoOmhVJzDnd4dlU=
+	t=1705519961; cv=none; b=GkUTssn9SlYwFRYSj1IEmnhw0KjgR3pr0Ick6xdfvE2uCMpGk1Ri0WpV0ColVWgD/ALfD/5DZ6/p12aqTVq8v57A52CTRKsuJ8Ok6V0F028saXAbBT02RSiXgmmYuRPsFVV5Nm0QWOPw3Fnvwi2MWsy+AG8W9ea9wzQUxBtInqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705519891; c=relaxed/simple;
-	bh=GjPXtmoYND+7N3PLDgQwb+J0MCbDB9eK6/RCdKcN2UA=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=eepgUObi37tlujPr6AffyGALlZwqt+s08ptJU1iFB2TYth1pTzAGCFaswmFgZiRsHYWukxnoJXQVZpOWBSU/SjQ025CMy5FNNJOTD2k9y008IPhukWe1QAcWlY2oUvPdpimkeV7FyD5bb5JLNXx2TX6VsLdwzIE41C3q+1/yvYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CKBdo8Ei; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a29c4bbb2f4so1177032066b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:31:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705519888; x=1706124688; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OUMHX6S+0IO5CvL0DocoythkWeWqWs33LQSD4/f8L0Y=;
-        b=CKBdo8EifP+Rj/zTVrDX96GGjBd+Nef9XaiaiBw6HUq5c3N8JqKdDXJ+dBIyRZzzFc
-         yi6ceNt45f7+CiCGjRX8fq29FRiwbQAwXAt1lsmahYU8gznhKkn8XIAjv8zJazBMCgAi
-         3GfvmhGXcMmrxhA9ta0B7lGAVkQih4UF6S5XaQHB/3eERJt/oKW31Gu2+yimY/N42dlF
-         hPVl96X+PBtAr7KC2typrHTzUoXunfVzje8jJtYPNqe1QrotfQI4/3SGpch7+M8IO258
-         v/wEEyn5qvaLRGUcqs+r+j3RAsQbXIeWGjoJqdPcMwcPwcX40/1y02C9p3V/8l+njF59
-         TXvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705519888; x=1706124688;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OUMHX6S+0IO5CvL0DocoythkWeWqWs33LQSD4/f8L0Y=;
-        b=otejIbaQzKpUEJ8Uwr5SToxVoDU/1k38+MQ1iTfqUhWAN/nBEgpYIa7DRivyZj6ivg
-         PSm0G/NNbU4AW/MjRg2dwStv8VTICWnNCojOLxwcM/EWAcrEyvwtbisXwas55bdvaNjR
-         kE1ytd6tHrbacUvfo1KWd5LIbOeSJzGSK/iKssadqhji4j4tKeU3/L6gjE0wlpOrW+vF
-         qFsXJI32/c42tkduiD4W8S6c60hCJv2OFzYilKATFvc2p8/w7lBvnOWC7Se3CdSCy9Zs
-         AnSnhiaoAHXf0kn+g8pbY2IaFKY9EJtjSlT0LTfIKfN5p9ctP2uwvhoaWtQfJbuVYijW
-         PyGQ==
-X-Gm-Message-State: AOJu0YxtXbU5c5h/LifhEcKQLkuwKeXmcBury96pnQBRQSb6Igc+eqAw
-	phfnrVpGUUqtxn1WBAZFMRS4+IwCGf66hilul6yOQKZvfXS7
-X-Google-Smtp-Source: AGHT+IESU8PNUGdO93lxbT3HckP0KLGKpX9LFWXeWklpI+hjGR0SlguYycREh9vBYKKO/sV4r8TYeRv9itfv8v8Dluo=
-X-Received: by 2002:a17:906:2695:b0:a23:1e0d:565b with SMTP id
- t21-20020a170906269500b00a231e0d565bmr4826659ejc.1.1705519888090; Wed, 17 Jan
- 2024 11:31:28 -0800 (PST)
+	s=arc-20240116; t=1705519961; c=relaxed/simple;
+	bh=QvqQHYPeITGXtLTPrNEHN+dZrrNa20vk0SDYMEEzQq4=;
+	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:Message-ID:
+	 Date:MIME-Version:User-Agent:Subject:Content-Language:To:Cc:
+	 References:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-Scanned-By; b=IRff2r3ATOJ/5WkaXxi3XhFD2oJlnwxUUCrNpVm3t9C/DPh7DId/Of5/9mK9U0D/ldFETmEK3wocPkgpPCPCq/FMFUJR4vBP7jDVaopHuULnOIGLn4W4wXDRxTAAocBiuBP/xTCj7yjSU5Hjaviw928sZaC4JtHmciLB6tzY914=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fe71WRyB; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705519958;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bfUgfGTy5yRHGk/lV0Z6rRdd4H0q3HaJTSR3wYzs52E=;
+	b=fe71WRyBxTlp+DXlJthRFj9nUaPQrS8lygIZgqViCnLD3ThMZhFFvb7PWrsJI1Ygoowc5D
+	T6ZS8I8udS3HudbU164lqGaRAeN682GIupkBgAKEaU8bNtmUqIZuZSTuJ5WXkldV9M9BjL
+	wCNVZyRGDE4j66f9Xz4lXFpj+zopSU0=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-515-Gayb9gvBNdCBCNZGvG7HOQ-1; Wed,
+ 17 Jan 2024 14:32:35 -0500
+X-MC-Unique: Gayb9gvBNdCBCNZGvG7HOQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0EF1A2806400;
+	Wed, 17 Jan 2024 19:32:35 +0000 (UTC)
+Received: from [10.22.16.147] (unknown [10.22.16.147])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id AE540FEEE;
+	Wed, 17 Jan 2024 19:32:34 +0000 (UTC)
+Message-ID: <72e4a971-96e5-44b7-b348-bbdb68e54b40@redhat.com>
+Date: Wed, 17 Jan 2024 14:32:34 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAKEwX=NLe-N6dLvOVErPSL3Vfw6wqHgcUBQoNRLeWkN6chdvLQ@mail.gmail.com>
- <20240116133145.12454-1-debug.penguin32@gmail.com> <CAKEwX=PjraCg_NjP4Tnkbv8uqnVw8yJGh-mbuZC02Gp6HMcDBw@mail.gmail.com>
-In-Reply-To: <CAKEwX=PjraCg_NjP4Tnkbv8uqnVw8yJGh-mbuZC02Gp6HMcDBw@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 17 Jan 2024 11:30:50 -0800
-Message-ID: <CAJD7tkb_uC_K7+C3GjVqg1rDRCmUkbHcEw950CkUHG66yokbcg@mail.gmail.com>
-Subject: Re: [PATCH] mm/zswap: Improve with alloc_workqueue() call
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: Ronald Monthero <debug.penguin32@gmail.com>, sjenning@redhat.com, ddstreet@ieee.org, 
-	vitaly.wool@konsulko.com, akpm@linux-foundation.org, chrisl@kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Johannes Weiner <hannes@cmpxchg.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 3/4] kernel/workqueue: Distinguish between general
+ unbound and WQ_SYSFS cpumask changes
+Content-Language: en-US
+To: Tejun Heo <tj@kernel.org>, Juri Lelli <juri.lelli@redhat.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>, Aaron Tomlin
+ <atomlin@atomlin.com>, Valentin Schneider <vschneid@redhat.com>,
+ linux-kernel@vger.kernel.org
+References: <20240116161929.232885-1-juri.lelli@redhat.com>
+ <20240116161929.232885-4-juri.lelli@redhat.com>
+ <ZabRlEklmuqwFPj-@slm.duckdns.org> <ZafQwMw8ZKztunMU@localhost.localdomain>
+ <ZagKbRlBxZHsKiw5@mtj.duckdns.org>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <ZagKbRlBxZHsKiw5@mtj.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-On Wed, Jan 17, 2024 at 11:14=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrot=
-e:
->
-> On Tue, Jan 16, 2024 at 5:32=E2=80=AFAM Ronald Monthero
-> <debug.penguin32@gmail.com> wrote:
->
-> + Johannes and Yosry
->
-> >
-> > The core-api create_workqueue is deprecated, this patch replaces
-> > the create_workqueue with alloc_workqueue. The previous
-> > implementation workqueue of zswap was a bounded workqueue, this
-> > patch uses alloc_workqueue() to create an unbounded workqueue.
-> > The WQ_UNBOUND attribute is desirable making the workqueue
-> > not localized to a specific cpu so that the scheduler is free
-> > to exercise improvisations in any demanding scenarios for
-> > offloading cpu time slices for workqueues.
->
-> nit: extra space between paragraph would be nice.
->
-> > For example if any other workqueues of the same primary cpu
-> > had to be served which are WQ_HIGHPRI and WQ_CPU_INTENSIVE.
-> > Also Unbound workqueue happens to be more efficient
-> > in a system during memory pressure scenarios in comparison
-> >  to a bounded workqueue.
-> >
-> > shrink_wq =3D alloc_workqueue("zswap-shrink",
-> >                      WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
-> >
-> > Overall the change suggested in this patch should be
-> > seamless and does not alter the existing behavior,
-> > other than the improvisation to be an unbounded workqueue.
-> >
-> > Signed-off-by: Ronald Monthero <debug.penguin32@gmail.com>
-> > ---
-> >  mm/zswap.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/mm/zswap.c b/mm/zswap.c
-> > index 74411dfdad92..64dbe3e944a2 100644
-> > --- a/mm/zswap.c
-> > +++ b/mm/zswap.c
-> > @@ -1620,7 +1620,8 @@ static int zswap_setup(void)
-> >                 zswap_enabled =3D false;
-> >         }
-> >
-> > -       shrink_wq =3D create_workqueue("zswap-shrink");
-> > +       shrink_wq =3D alloc_workqueue("zswap-shrink",
-> > +                       WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
->
-> Have you benchmarked this to check if there is any regression, just to
-> be safe? With an unbounded workqueue, you're gaining scheduling
-> flexibility at the cost of cache locality. My intuition is that it
-> doesn't matter too much here, but you should probably double check by
-> stress testing - run some workload with a relatively small zswap pool
-> limit (i.e heavy global writeback), and see if there is any difference
-> in performance.
 
-I also think this shouldn't make a large difference. The global
-shrinking work is already expensive, and I imagine that it exhausts
-the caches anyway by iterating memcgs. A performance smoketest would
-be reassuring for sure, but I believe it won't make a difference.
-
-Keep in mind that even with WQ_UNBOUND, we prefer the local CPU (see
-wq_select_unbound_cpu()), so it will take more than global writeback
-to observe a difference. The local CPU must not be in
-wq_unbound_cpumask, or CONFIG_DEBUG_WQ_FORCE_RR_CPU should be on.
-
+On 1/17/24 12:12, Tejun Heo wrote:
+> Hello,
 >
-> >         if (!shrink_wq)
-> >                 goto fallback_fail;
-> >
-> > --
-> > 2.34.1
-> >
->
-> On a different note, I wonder if it would help to perform synchronous
-> reclaim here instead. With our current design, the zswap store failure
-> (due to global limit hit) would leave the incoming page going to swap
-> instead, creating an LRU inversion. Not sure if that's ideal.
+> On Wed, Jan 17, 2024 at 02:06:08PM +0100, Juri Lelli wrote:
+>>> This looks rather hacky. Can you elaborate how the current code misbehaves
+>>> with an example?
+>> I was trying to address the fact that ordered unbound workqueues didn't
+>> seem to reflect unbound_cpumask changes, e.g.
+>>
+>> wq_unbound_cpumask=00000003
+>>
+>> edac-poller              ordered,E  0xffffffff 000000ff      kworker/R-edac-            351 0xffffffff 000000ff
+>>
+>> vs.
+>>
+>> edac-poller              ordered,E  00000003                 kworker/R-edac-            349 00000003
+>>
+>> with the patch applied. But honestly, I'm now also not convinced what
+>> I'm proposing is correct, so I'll need to think more about it.
+>>
+>> Can you please confirm though that ordered unbound workqueues are not
+>> "special" for some reason and we would like them to follow
+>> unbound_cpumask changes as normal ubound workqueues?
+> They aren't special and should follow the normal unbound workqueue cpumask.
 
-The global shrink path keeps reclaiming until zswap can accept again
-(by default, that means reclaiming 10% of the total limit). I think
-this is too expensive to be done synchronously.
+My impression is that changing the workqueue cpumask of ordered unbound 
+workqueue may break the ordering guarantee momentarily. I was planning 
+to look into this further to see if that is true when I have time. If it 
+is not a concern, we should certainly apply the global unbound cpumask 
+change to those workqueues as well.
+
+Cheers,
+Longman
+
 
