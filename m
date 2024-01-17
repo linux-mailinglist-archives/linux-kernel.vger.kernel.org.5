@@ -1,113 +1,118 @@
-Return-Path: <linux-kernel+bounces-29020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFDF8830709
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:25:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CCF283070F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:26:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 748131F25D7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:25:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D55F28676E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:26:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA1C01EB55;
-	Wed, 17 Jan 2024 13:24:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5555D1F61F;
+	Wed, 17 Jan 2024 13:26:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="RU13b9Td"
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GgKePF9Q"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BDC210799;
-	Wed, 17 Jan 2024 13:24:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5786F1EB51
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 13:26:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705497893; cv=none; b=E7IDz3xEreRRJFITEstqZ1TFLL6xbBLJdlry4EuPecSEUi7ZEESqltv2MMfkPnEcNYUbNNCYfA4OpGAxWKEtp+2rADsTQawPWhfJc7N6QhNeapqY2cvfBy7C8SY/oFRUMmG1C+uMNXRGzIe+j5ktwGItEvmAESIX4dA/DqYQDXw=
+	t=1705497972; cv=none; b=U8wFu+PMMDl8A3ivL51IJg2VkBYAJnbbXGN2tNpNFkobr/NJQMVdZ9jI18K8nmpQXOs5yZgFi7d5yH7wBQot962xnw5772APFg0bTW+40ap4Kdso28WaD4XMe/plyAVSJB9hsbF99UOpR3FV41SqZcmxAHSvSnqPTXdPqCbcIoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705497893; c=relaxed/simple;
-	bh=uk0oEvzGdLc3yF4zp2bMI+rdHVz8vGNoe+a81asr5Uo=;
-	h=Received:DKIM-Signature:Received:Received:Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 To:CC:References:From:Organization:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy:
-	 X-Proofpoint-Virus-Version; b=rvOogv/rl6rbSnm4lTjPfnQl2dHl2b82rTgg5wp/03klgDJpWOaz/BnluiPe5FCBbBl2AdZYXUxW+bes+mr0J5L5FmvR6gXbhGm6g9TDyJem7sNViH3pehVnT4XARAbgKblCex9Ng3wXCKPb8U1VT5XmIjjHjqXEn3skLH13VL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=RU13b9Td; arc=none smtp.client-ip=185.132.182.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40H8PCcZ007691;
-	Wed, 17 Jan 2024 14:24:44 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=Te5k9GkTLi4Sq5SrTeZvD0LQS6mMi38YJ0s674SsFqc=; b=RU
-	13b9TdAMAL+P2hVT9WMM/28C2mJy9TDKtLPF7dQtrd4P3e4Pt1RUQJSMDr41RlK9
-	RV5sErUS8kxEXrquN9KVH/+ZHgvwsNTrTIiqObUBoaQOiCP2NdQIMcvMPbnZuwgR
-	VfgJ/2IH715yQAd/QZg0I+DBCfjZtq/sIazsX2uym40aMTB9kuEHeJ3XIR4JPxu5
-	zVcT7MHVytT4J7RonRH6GyWnWayxtGzMNFkA8k1cwk5ZM7Z7aCS6v+vDI3I+smCV
-	24vCYB2S/aYQsZj6SzEqRni5cXv/pTx/mFtU+c5CBoMqb6xrsko6nGUzMuWNjLS0
-	c2ZrrN9OJLH9uJtDQIng==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vkmfym3e4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 14:24:44 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7D7A8100079;
-	Wed, 17 Jan 2024 14:24:43 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6EF5E208D45;
-	Wed, 17 Jan 2024 14:24:43 +0100 (CET)
-Received: from [10.252.22.63] (10.252.22.63) by SHFDAG1NODE2.st.com
- (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 17 Jan
- 2024 14:24:41 +0100
-Message-ID: <96941fae-8341-4834-9283-4f6def47b1f0@foss.st.com>
-Date: Wed, 17 Jan 2024 14:24:40 +0100
+	s=arc-20240116; t=1705497972; c=relaxed/simple;
+	bh=OPOoP9UgIckMad4MC0xQT4ogrYoDI41gySdqC4ReyPA=;
+	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:
+	 Organization:From:In-Reply-To:References:To:cc:Subject:
+	 MIME-Version:Content-Type:Content-ID:Date:Message-ID:X-Scanned-By;
+	b=IRQhrlvjll8IeJjFS9WcSSB+3P0X9Fq/oMjbqHPTcIP4CUW4lFNV+09xpz174cw+sz/qfzj8tN8iDfmdauhmvNg+SMo4m3eJFUlTTJAPOthFOv8sca/Xq+FWxi1dubaCJYfH9F28VIm9wUtHrKLP6D980AF6ItQ/aGzabtU1KtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GgKePF9Q; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705497970;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FsSzWO6NIq2VcxMsblj4BWBZVF2ZpmLB+3az7ONnZQM=;
+	b=GgKePF9QlpvrxiyCN+DVRC5N2CPIkK8gwD+XpsxSs/snfTZiCvmFqlaxIma3w1DXrKGwo3
+	WA6+eWh11DWqJPNuUQvtttnmN2q/JzpbKHQ5RbNWjR30UCcai+nlkyz+uzEgcRGvd0+OKH
+	PXen3MyhboRQbq8bz6xe4sUNc8Novc4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-328-Oe-laUu7NUWY9jmEaxHoOQ-1; Wed, 17 Jan 2024 08:26:06 -0500
+X-MC-Unique: Oe-laUu7NUWY9jmEaxHoOQ-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 63A7B867943;
+	Wed, 17 Jan 2024 13:26:02 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.67])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 63FC3492BC6;
+	Wed, 17 Jan 2024 13:25:55 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <20240116-flsplit-v1-2-c9d0f4370a5d@kernel.org>
+References: <20240116-flsplit-v1-2-c9d0f4370a5d@kernel.org> <20240116-flsplit-v1-0-c9d0f4370a5d@kernel.org>
+To: Jeff Layton <jlayton@kernel.org>
+cc: Christian Brauner <brauner@kernel.org>,
+    Alexander Viro <viro@zeniv.linux.org.uk>,
+    Eric Van Hensbergen <ericvh@kernel.org>,
+    Latchesar Ionkov <lucho@ionkov.net>,
+    Dominique Martinet <asmadeus@codewreck.org>,
+    Christian Schoenebeck <linux_oss@crudebyte.com>,
+    David Howells <dhowells@redhat.com>,
+    Marc Dionne <marc.dionne@auristor.com>, Xiubo Li <xiubli@redhat.com>,
+    Ilya Dryomov <idryomov@gmail.com>,
+    Alexander Aring <aahringo@redhat.com>,
+    David Teigland <teigland@redhat.com>,
+    Miklos Szeredi <miklos@szeredi.hu>,
+    Andreas Gruenbacher <agruenba@redhat.com>,
+    Trond Myklebust <trond.myklebust@hammerspace.com>,
+    Anna Schumaker <anna@kernel.org>,
+    Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>,
+    Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>,
+    Tom Talpey <tom@talpey.com>, Jan Kara <jack@suse.cz>,
+    Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+    Joseph Qi <joseph.qi@linux.alibaba.com>,
+    Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>,
+    Ronnie Sahlberg <lsahlber@redhat.com>,
+    Shyam Prasad N <sprasad@microsoft.com>,
+    Namjae Jeon <linkinjeon@kernel.org>,
+    Sergey Senozhatsky <senozhatsky@chromium.org>,
+    Steven Rostedt <rostedt@goodmis.org>,
+    Masami Hiramatsu <mhiramat@kernel.org>,
+    Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+    linux-kernel@vger.kernel.org, v9fs@lists.linux.dev,
+    linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+    gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+    linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+    linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+    linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/20] filelock: add coccinelle scripts to move fields to struct file_lock_core
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] remoteproc: stm32: Fix sparse warnings
-Content-Language: en-US
-To: Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier
-	<mathieu.poirier@linaro.org>
-CC: <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20240117131817.3338146-1-arnaud.pouliquen@foss.st.com>
-From: Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Organization: STMicroelectronics
-In-Reply-To: <20240117131817.3338146-1-arnaud.pouliquen@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-17_08,2024-01-17_01,2023-05-22_02
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2782046.1705497954.1@warthog.procyon.org.uk>
+Date: Wed, 17 Jan 2024 13:25:54 +0000
+Message-ID: <2782047.1705497954@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-Hi,
+Do we need to keep these coccinelle scripts for posterity?  Or can they just
+be included in the patch description of the patch that generates them?
 
-On 1/17/24 14:18, Arnaud Pouliquen wrote:
-> Fix warnings reported by sparse using make option "C=1"
-> 
-> Arnaud Pouliquen (2):
->   remoteproc: stm32: Fix incorrect type in assignment for va
->   remoteproc: stm32: Fix incorrect type assignment returned by
->     stm32_rproc_get_loaded_rsc_tablef
-> 
->  drivers/remoteproc/stm32_rproc.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> 
-> base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+David
 
-I faced an issue with the ST server message that blocked a part
-of the mails associated with this series. Please ignore this series,
-as I will resend it.
-
-Regards
-Arnaud
 
