@@ -1,81 +1,48 @@
-Return-Path: <linux-kernel+bounces-29153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CFAB8309B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:27:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D71C58309C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:28:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F46E1C21AD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:27:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A397B23EF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:27:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC1522327;
-	Wed, 17 Jan 2024 15:26:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35A62219FA;
+	Wed, 17 Jan 2024 15:27:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ejyni71h"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RFjT9711"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66A1E2231D
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:26:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 130CB219F1;
+	Wed, 17 Jan 2024 15:27:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705505206; cv=none; b=XPwCW+w6oMei9p1BSy8Bt4UeMP8MGah73uQfOuvsMB42bcb/m/+4dAhyoSUJLa/bQYJ+bGxVIPE/6H4NYjBhZJ/b50QXIgZI8/l+ShoPM+9xD/UR4tp1cWlpDyHb3QF3vbj5XeBbK1rBDBKHLPta69KAEHDz4AzcOC9zyOc8UBA=
+	t=1705505271; cv=none; b=pmjH6Tm29ttPUUV9IB8iU2XSwHmjjMt+4DHPXyR+0soxs5G+W5oKy+lDynViQFEbYfo0i0dKvsaRpcV4qeA+sYydGtjWTsx1l11Hcm5zKLSviR97EV2FyayIO9t2FBj3ilzjpNQ6ghL8JI46NurzreJr4PIbsOoffJvokZHJPhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705505206; c=relaxed/simple;
-	bh=uol4Wkl6bT4uLERdk8KIHsyvO2BIE5KygFwHXUQrR3w=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:
-	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
-	 X-Google-Smtp-Source:X-Received:Received:Message-ID:Date:
-	 MIME-Version:User-Agent:Subject:Content-Language:To:Cc:References:
-	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding; b=kCxPtb9RCrj2ek20mM8MxnyRiPT+NNNB8W0R6rj/QFTLsaQ363CK1AWSy9tc3Blzy6msbyeUbVJ+1HY8tJRMHP6eXp/vsmUwApDPerBGsVojmTe1jQlarIt4rqkxBrmUg1CMv5OxMwwXV0In5oNUJ6+7WZdQWu0ODcE3WnztrIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ejyni71h; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705505203;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q3igXpz0jLYNpd2wAR8zuEeppoJCF74coEtZektTXQ8=;
-	b=Ejyni71h1teKSxaSBDnwrmjTunCJKUWCv/xM22ULYyXSKt+CWROijveg9261ATeYgIdLFB
-	ZyhoH5I3m5rIXNY7qysXar5QbuT2ysOV+CHXObZMn16YDNbQ7W0XYQwKe2ekXfDciO5CrX
-	7YuOvvRO0iUvRN7EfFx9HbAZNeOEyjw=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-340-xy0M_y_hOgGUfY0eOWQx0Q-1; Wed, 17 Jan 2024 10:26:40 -0500
-X-MC-Unique: xy0M_y_hOgGUfY0eOWQx0Q-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a29bb25df84so426649166b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:26:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705505199; x=1706109999;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q3igXpz0jLYNpd2wAR8zuEeppoJCF74coEtZektTXQ8=;
-        b=toDkC4S9H0gAOW1BOEW6c8VYcvmyuky+CwWx/H7PKG5xyrymi2QaKqRB12d8oWGMdg
-         2Jm+FedZ+GMPYpvt82AUrx/CPXY3z+wETazOkZOB32t4rlxlIxPBbpc8K7vs/Dy9pDhu
-         WF73kxaY5Uhxhppd8/1taWd+ylP2HZMoNjri4o9aN3jXlibEqPN+NQ/FKAY2whBPL0ij
-         jDI3qo2mrdWojtIMVG83dHTWh8dFUQpa/Sldqt75/9XczkfbKLMGroXssh446xmMWys/
-         CJJ0/k3BfSx8/1KfELBD8zC1l9OScJ9XMeyq651bC/d8BDBLXcO4nrQ2kZIBHDBYySOj
-         FL4Q==
-X-Gm-Message-State: AOJu0Yz8lFbxd5z4QmaqOa4VqsxNtNxztxwpLBnWy8fOBrzuBoDI1XSi
-	rY3WdvGOUK2Zoz+ByLKh8Vf1k6S9RFFS3eKeQOIuSyvhFW48vnlwBmJAWmaBm6Ib+pkCQw1Pfjs
-	kpzZzqcG45mvoBiFjJbPNrS0lHEnmaR+m
-X-Received: by 2002:a17:906:4756:b0:a1f:a0f1:ec60 with SMTP id j22-20020a170906475600b00a1fa0f1ec60mr4657351ejs.14.1705505199161;
-        Wed, 17 Jan 2024 07:26:39 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFzGC4HE1nk4PyXljKqlVraEewSzZEQUd0rZqD6w/i823EW7w1nYdsR7qSI/BGtJg49PIweYg==
-X-Received: by 2002:a17:906:4756:b0:a1f:a0f1:ec60 with SMTP id j22-20020a170906475600b00a1fa0f1ec60mr4657338ejs.14.1705505198728;
-        Wed, 17 Jan 2024 07:26:38 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id g6-20020a170906c18600b00a2a9ddd15b8sm8023610ejz.173.2024.01.17.07.26.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jan 2024 07:26:38 -0800 (PST)
-Message-ID: <8d77246d-ec1f-4106-8a33-b6e93bdbab45@redhat.com>
-Date: Wed, 17 Jan 2024 16:26:37 +0100
+	s=arc-20240116; t=1705505271; c=relaxed/simple;
+	bh=7rsy74VeGwTe0B1dy6yYekBf1JL2mUmizeBzF7JRZZ4=;
+	h=Received:DKIM-Signature:Message-ID:Date:MIME-Version:User-Agent:
+	 Subject:Content-Language:To:Cc:References:From:Autocrypt:
+	 In-Reply-To:Content-Type:Content-Transfer-Encoding; b=GwXX5mD/t5RotuMplZnNBhTfp2D+O4/zH52TThcTUZVlkifrNbrpy08f98gk4sR17iZXRr79QR4fBDrROXHkjfQSWqBIFqEXOsKKCpL24yBVQuQF7+0c4fiD5lQQ3aGDlZjlRc/fWnmMH+xwJmjnPVfrv59hKE0BBw0GuFAK9ZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RFjT9711; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1548EC433C7;
+	Wed, 17 Jan 2024 15:27:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705505270;
+	bh=7rsy74VeGwTe0B1dy6yYekBf1JL2mUmizeBzF7JRZZ4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=RFjT9711zMlwkVrRQbwDAqwTR93aUfjvEgRLecV1TUI9SWDzuXudu2PHtKYjGPoQ7
+	 31ARPLXG/aBYFfWZsKukFm1gqlVMpeAVHUxgfHIa/058S3gB/raJocOS0SZfG76qOy
+	 MEYb8yQuHh3oKozXt5EruVStfuZZX9RWAAgb8bVGl5GSijr9TGVO2irxweca6hdAqt
+	 Cvkj4QKVInzUZ7L24t7obIZWOAllM13CXJObPGzvLeknxm5xKw7s5HjKByYqeTpxOx
+	 nayPZ5JmwGWpwXaVGWmCRSvo+pn+vSXYC37i5Ow1dboHRxOuRw3bdwHi8YIcoiPX0p
+	 xjwchsaeUrX8g==
+Message-ID: <8afd7bda-a600-4abb-95fc-ee70c6f89749@kernel.org>
+Date: Wed, 17 Jan 2024 16:27:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,240 +50,386 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Implement per-key keyboard backlight as auxdisplay?
-Content-Language: en-US, nl
-To: Werner Sembach <wse@tuxedocomputers.com>, Pavel Machek <pavel@ucw.cz>,
- Jani Nikula <jani.nikula@linux.intel.com>, jikos@kernel.org,
- Jelle van der Waa <jelle@vdwaa.nl>
-Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Lee Jones
- <lee@kernel.org>, linux-kernel@vger.kernel.org,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- linux-input@vger.kernel.org, ojeda@kernel.org, linux-leds@vger.kernel.org
-References: <20231011190017.1230898-1-wse@tuxedocomputers.com>
- <ZSe1GYLplZo5fsAe@duo.ucw.cz>
- <0440ed38-c53b-4aa1-8899-969e5193cfef@tuxedocomputers.com>
- <ZSf9QneKO/8IzWhd@duo.ucw.cz>
- <a244a00d-6be4-44bc-9d41-6f9df14de8ee@tuxedocomputers.com>
- <ZSk16iTBmZ2fLHZ0@duo.ucw.cz>
- <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
- <ZSmg4tqXiYiX18K/@duo.ucw.cz>
- <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
- <87sf61bm8t.fsf@intel.com> <ZVvHG/Q+V6kCnfKZ@duo.ucw.cz>
- <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
- <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com>
- <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
- <4222268b-ff44-4b7d-bf11-e350594bbe24@redhat.com>
- <ac02143c-d417-49e5-9c6e-150cbda71ba7@tuxedocomputers.com>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <ac02143c-d417-49e5-9c6e-150cbda71ba7@tuxedocomputers.com>
+Subject: Re: [PATCH] drivers: watchdog: Add ChromeOS EC watchdog
+Content-Language: en-US
+To: Lukasz Majczak <lma@chromium.org>, Gwendal Grignou
+ <gwendal@chromium.org>, Lee Jones <lee@kernel.org>,
+ Benson Leung <bleung@chromium.org>, Wim Van Sebroeck
+ <wim@linux-watchdog.org>, Tzung-Bi Shih <tzungbi@kernel.org>,
+ Radoslaw Biernacki <biernacki@google.com>
+Cc: linux-kernel@vger.kernel.org, chrome-platform@lists.linux.dev,
+ linux-watchdog@vger.kernel.org
+References: <20240117102450.4080839-1-lma@chromium.org>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240117102450.4080839-1-lma@chromium.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hi Werner,
-
-Once again, sorry for the very slow response here.
-
-On 11/27/23 11:59, Werner Sembach wrote:
-> Hi Hans,
+On 17/01/2024 11:24, Lukasz Majczak wrote:
+> This adds EC-based watchdog support for ChromeOS
+> based devices equipped with embedded controller (EC).
 > 
-> Am 22.11.23 um 19:34 schrieb Hans de Goede:
->> Hi Werner,
-> [snip]
->>>>> Another idea I want to throw in the mix:
->>>>>
->>>>> Maybe the kernel is not the right place to implement this at all. RGB stuff is not at all standardized and every vendor is doing completely different interfaces, which does not fit the kernel userpsace apis desire to be uniformal and fixed. e.g. Auxdisplay might fit static setting of RGB values, but it does not fit the snake-effect mode, or the raindrops mode, or the 4-different-colors-in-the-edges-breathing-and-color-cycling mode.
->>>>>
->>>>> So my current idea: Implement these keyboards as a single zone RGB kbd_backlight in the leds interface to have something functional out of the box, but make it runtime disable-able if something like https://gitlab.com/CalcProgrammer1/OpenRGB wants to take over more fine granular control from userspace via hidraw.
->>>> That sounds like a good approach to me. We are seeing the same with game controllers where steam and wine/proton also sometimes use hidraw mode to get access to all the crazy^W interesting features.
->>>>
->>>> That would mean that all we need to standardize and the kernel <-> userspace API level is adding a standard way to disable the single zone RGB kbd_backlight support in the kernel.
->>> I would suggest a simple "enable" entry. Default is 1. When set to 0 the kernel driver no longer does anything.
->> I'm not in favor of using "enable" as sysfs attribute for this,
->> I would like to see a more descriptive name, how about:
->>
->> "disable_kernel_kbd_backlight_support"
->>
->> And then maybe also have the driver actually unregister
->> the LED class device ?
->>
->> Or just make the support inactive when writing 1 to
->> this and allow re-enabling it by writing 0?
+> Signed-off-by: Lukasz Majczak <lma@chromium.org>
+> ---
+>  MAINTAINERS                                   |   6 +
+>  drivers/mfd/cros_ec_dev.c                     |   9 +
+>  drivers/watchdog/Kconfig                      |  15 +
+>  drivers/watchdog/Makefile                     |   3 +
+>  drivers/watchdog/cros_ec_wdt.c                | 303 ++++++++++++++++++
+>  .../linux/platform_data/cros_ec_commands.h    |  78 ++---
+>  6 files changed, 370 insertions(+), 44 deletions(-)
+>  create mode 100644 drivers/watchdog/cros_ec_wdt.c
 > 
-> Unregistering would mean that it can't be reenabled without module reload/reboot?
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 391bbb855cbe..55cd626a525f 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4952,6 +4952,12 @@ R:	Sami Kyöstilä <skyostil@chromium.org>
+>  S:	Maintained
+>  F:	drivers/platform/chrome/cros_hps_i2c.c
+>  
+> +CHROMEOS EC WATCHDOG
+> +M:	Lukasz Majczak <lma@chromium.org>
+> +L:	chrome-platform@lists.linux.dev
+> +S:	Maintained
+> +F:	drivers/watchdog/cros_ec_wdt.c
+> +
+>  CHRONTEL CH7322 CEC DRIVER
+>  M:	Joe Tessler <jrt@google.com>
+>  L:	linux-media@vger.kernel.org
+> diff --git a/drivers/mfd/cros_ec_dev.c b/drivers/mfd/cros_ec_dev.c
+> index 79d393b602bf..60fe831cf30a 100644
+> --- a/drivers/mfd/cros_ec_dev.c
+> +++ b/drivers/mfd/cros_ec_dev.c
+> @@ -91,6 +91,10 @@ static const struct mfd_cell cros_usbpd_notify_cells[] = {
+>  	{ .name = "cros-usbpd-notify", },
+>  };
+>  
+> +static const struct mfd_cell cros_ec_wdt_cells[] = {
+> +	{ .name = "cros-ec-wdt-drv", }
+> +};
+> +
+>  static const struct cros_feature_to_cells cros_subdevices[] = {
+>  	{
+>  		.id		= EC_FEATURE_CEC,
+> @@ -107,6 +111,11 @@ static const struct cros_feature_to_cells cros_subdevices[] = {
+>  		.mfd_cells	= cros_usbpd_charger_cells,
+>  		.num_cells	= ARRAY_SIZE(cros_usbpd_charger_cells),
+>  	},
+> +	{
+> +		.id		= EC_FEATURE_HANG_DETECT,
+> +		.mfd_cells	= cros_ec_wdt_cells,
+> +		.num_cells	= ARRAY_SIZE(cros_ec_wdt_cells),
+> +	},
+>  };
+>  
+>  static const struct mfd_cell cros_ec_platform_cells[] = {
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index 7d22051b15a2..1da4be661be8 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -2251,4 +2251,19 @@ config KEEMBAY_WATCHDOG
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called keembay_wdt.
+>  
+> +#
+> +# ChromeOS EC-based Watchdog
+> +#
 
-Yes.
+Drop comment, useless, copies what's below.
 
-> I would prefer that the userspace driver could easily give back control to the leds interface.
+> +
+> +config CROS_EC_WATCHDOG
+> +	tristate "ChromeOS EC-based watchdog driver"
+> +	select WATCHDOG_CORE
+> +	depends on CROS_EC
+> +	help
+> +	  This is the watchdog driver for ChromeOS devices equipped with EC.
+> +	  The EC watchdog - when enabled - expects to be kicked within a given
+> +	  time (default set to 30 seconds) otherwise it will simple reboot
+> +	  the AP. Priori to that it can also send an event (configurable timeout)
+> +	  about upcoming reboot.
 
-Hmm, the problem here is that leaving a non-working LED class device
-behind may confuse things like upower.
+Instead you could say what will be the name of the module.
 
-So maybe the disable_kbd_backlight_support sysfs attr should
-not sit under /sys/class/leds/foobar::kbd_backlight, but rather
-it should sit under the sysfs dir of the parent-device ?
+> +
+>  endif # WATCHDOG
+> diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
+> index 7cbc34514ec1..8295c209ddb0 100644
+> --- a/drivers/watchdog/Makefile
+> +++ b/drivers/watchdog/Makefile
+> @@ -234,3 +234,6 @@ obj-$(CONFIG_MENZ069_WATCHDOG) += menz69_wdt.o
+>  obj-$(CONFIG_RAVE_SP_WATCHDOG) += rave-sp-wdt.o
+>  obj-$(CONFIG_STPMIC1_WATCHDOG) += stpmic1_wdt.o
+>  obj-$(CONFIG_SL28CPLD_WATCHDOG) += sl28cpld_wdt.o
+> +
+> +# Cros EC watchdog
 
-So if we are talking [USB|I2C]-HID keyboards and userspace
-using hidraw to takeover kbd_backlight control through,
-then have "disable_kbd_backlight_support" sit under
-/sys/bus/hid/devices/0003:xxxx:xxxx.xxxx/disable_kbd_backlight_support
+Drop comment.
 
-and then re-register the LED class device for the keyboard
-when 0 gets written to disable_kbd_backlight_support ?
+Also, are you sure you placed it in appropriate place, not just at the
+end of both files?
 
-That seems better to me then leaving a non-working LED
-class device behind and this will not require any changes
-to the LED subsystem.
+> +obj-$(CONFIG_CROS_EC_WATCHDOG) += cros_ec_wdt.o
+> diff --git a/drivers/watchdog/cros_ec_wdt.c b/drivers/watchdog/cros_ec_wdt.c
+> new file mode 100644
+> index 000000000000..b461c0613269
+> --- /dev/null
+> +++ b/drivers/watchdog/cros_ec_wdt.c
+> @@ -0,0 +1,303 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +#include <linux/slab.h>
+> +#include <linux/err.h>
+> +#include <linux/of_device.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_data/cros_ec_commands.h>
+> +#include <linux/platform_data/cros_ec_proto.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/watchdog.h>
+> +#include <linux/uaccess.h>
+> +
+> +#define CROS_EC_WATCHDOG_DEFAULT_TIME 30 /* seconds */
+> +
+> +#define DEV_NAME "cros-ec-wdt-dev"
+
+Drop unused defines.
+
+> +#define DRV_NAME "cros-ec-wdt-drv"
+> +
+> +static int cros_ec_wdt_ping(struct watchdog_device *wdd);
+> +static int cros_ec_wdt_start(struct watchdog_device *wdd);
+> +static int cros_ec_wdt_stop(struct watchdog_device *wdd);
+> +static int cros_ec_wdt_set_timeout(struct watchdog_device *wdd, unsigned int t);
+> +
+
+..
+
+> +
+> +static int cros_ec_wdt_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	/* We need to get a reference to cros_ec_devices
+> +	 * (provides communication layer) which is a parent of
+> +	 * the cros-ec-dev (our parent)
+> +	 */
+> +	struct cros_ec_device *cros_ec = dev_get_drvdata(dev->parent->parent);
+> +	int ret = 0;
+> +	uint32_t bootstatus;
+> +
+> +	if (!cros_ec) {
+> +		ret = -ENODEV;
+> +		dev_err_probe(dev, ret, "There is no coresponding EC device!");
+
+Syntax is return dev_err_probe
+
+> +		return ret;
+> +	}
+> +
+> +	cros_ec_wdd.parent = &pdev->dev;
+> +	wd_data.cros_ec = cros_ec;
+> +	wd_data.wdd = &cros_ec_wdd;
+> +	wd_data.start_on_resume = false;
+> +	wd_data.keepalive_on = false;
+> +	wd_data.wdd->timeout = CROS_EC_WATCHDOG_DEFAULT_TIME;
+> +
+> +	watchdog_stop_on_reboot(&cros_ec_wdd);
+> +	watchdog_stop_on_unregister(&cros_ec_wdd);
+> +	watchdog_set_drvdata(&cros_ec_wdd, &wd_data);
+> +	platform_set_drvdata(pdev, &wd_data);
+> +
+> +	/* Get current AP boot status */
+> +	ret = cros_ec_wdt_send_hang_detect(&wd_data, EC_HANG_DETECT_CMD_GET_STATUS, 0,
+> +					   &bootstatus);
+> +	if (ret < 0) {
+> +		dev_err_probe(dev, ret, "Couldn't get AP boot status from EC");
+
+Syntax is return dev_err_probe
+
+> +		return ret;
+> +	}
+> +
+> +	/*
+> +	 * If bootstatus is not EC_HANG_DETECT_AP_BOOT_NORMAL
+> +	 * it mens EC has rebooted the AP due to watchdog timeout.
+> +	 * Lets translate it to watchdog core status code.
+> +	 */
+> +	if (bootstatus != EC_HANG_DETECT_AP_BOOT_NORMAL)
+> +		wd_data.wdd->bootstatus = WDIOF_CARDRESET;
+> +
+> +	ret = watchdog_register_device(&cros_ec_wdd);
+> +	if (ret < 0)
+> +		dev_err_probe(dev, ret, "Couldn't get AP boot status from EC");
+
+Syntax is return dev_err_probe
+
+> +
+> +	return ret;
+
+return 0
+
+> +}
+> +
+> +static int cros_ec_wdt_remove(struct platform_device *pdev)
+> +{
+> +	struct cros_ec_wdt_data *wd_data = platform_get_drvdata(pdev);
+> +
+> +	watchdog_unregister_device(wd_data->wdd);
+> +
+> +	return 0;
+> +}
+> +
+> +static void cros_ec_wdt_shutdown(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct cros_ec_wdt_data *wd_data = platform_get_drvdata(pdev);
+> +	int ret;
+> +
+> +	/*
+> +	 * Clean only bootstatus flag.
+> +	 * EC wdt is are already stopped by watchdog framework.
+> +	 */
+> +	ret = cros_ec_wdt_send_hang_detect(wd_data,
+> +					   EC_HANG_DETECT_CMD_CLEAR_STATUS, 0, NULL);
+> +	if (ret < 0)
+> +		dev_err(dev, "%s failed (%d)", __func__, ret);
+> +
+> +	watchdog_unregister_device(wd_data->wdd);
+> +}
+> +
+> +static int __maybe_unused cros_ec_wdt_suspend(struct platform_device *pdev, pm_message_t state)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct cros_ec_wdt_data *wd_data = platform_get_drvdata(pdev);
+> +	int ret;
+> +
+> +	if (watchdog_active(wd_data->wdd)) {
+> +		ret = cros_ec_wdt_send_hang_detect(wd_data,
+> +						   EC_HANG_DETECT_CMD_CANCEL, 0, NULL);
+> +		if (ret < 0)
+> +			dev_err(dev, "%s failed (%d)", __func__, ret);
+> +		wd_data->start_on_resume = true;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused cros_ec_wdt_resume(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct cros_ec_wdt_data *wd_data = platform_get_drvdata(pdev);
+> +	int ret;
+> +
+> +	/* start_on_resume is only set if watchdog was active
+> +	 * when device was going to sleep
+> +	 */
+> +	if (wd_data->start_on_resume) {
+> +		/* On resume we just need to setup a EC watchdog the same way as
+
+Use comment style from Linux coding style.
+
+> +		 * in cros_ec_wdt_start(). When userspace resumes from suspend
+> +		 * the watchdog app should just start petting the watchdog again.
+> +		 */
+> +		ret = cros_ec_wdt_start(wd_data->wdd);
+> +		if (ret < 0)
+> +			dev_err(dev, "%s failed (%d)", __func__, ret);
+
+That's not really helpful. This applies everywhere. You have all over
+the place debugging prints with __func__. This is not useful pattern.
+Print something useful, not function name.
+
+> +
+> +		wd_data->start_on_resume = false;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static struct platform_driver cros_ec_wdt_driver = {
+> +	.probe		= cros_ec_wdt_probe,
+> +	.remove		= cros_ec_wdt_remove,
+> +	.shutdown	= cros_ec_wdt_shutdown,
+> +	.suspend	= pm_ptr(cros_ec_wdt_suspend),
+> +	.resume		= pm_ptr(cros_ec_wdt_resume),
+> +	.driver		= {
+> +		.name	= DRV_NAME,
+> +	},
+> +};
+> +
+> +module_platform_driver(cros_ec_wdt_driver);
+> +
+> +MODULE_ALIAS("platform:" DRV_NAME);
+
+You should not need MODULE_ALIAS() in normal cases. If you need it,
+usually it means your device ID table is wrong (e.g. misses either
+entries or MODULE_DEVICE_TABLE()). MODULE_ALIAS() is not a substitute
+for incomplete ID table.
 
 
->>> Questions:
->>>
->>> - Should the driver try to reset the settings to boot default? Or just leave the device in the current state? With the former I could see issues that they keyboard is flashing when changing from kernelspace control to userspace control. With the later the burden on bringing the device to a know state lies with the userspace driver.
->> My vote would go to leave the state as is. Even if the hw
->> does not support state readback, then the userspace code
->> can readback the state before writing 1 to
->> "disable_kernel_kbd_backlight_support"
-> ack
->>
->>> - Should this be a optional entry that only shows up on drivers supporting it, or could this implemented in a generic way affecting all current led entries?
->> IMHO this should be optional. If we go with the variant
->> where writing 1 to "disable_kernel_kbd_backlight_support"
->> just disables support and 0 re-enables it then I guess
->> we could have support for this in the LED-core, enabled
->> by a flag set by the driver.
->>
->> If we go with unregistering the led class device,
->> then this needs to be mostly handled in the driver.
->>
->> Either way the kernel driver should know about this even
->> if it is mostly handled in the LED core so that e.g.
->> it does not try to restore settings on resume from suspend.
-> 
-> So a generic implementation would still require all current led drivers to be touched?
-> 
-> For the sake of simplicity I would then prefer the optional variant.
+> +MODULE_DESCRIPTION("Cros EC Watchdog Device Driver");
+> +MODULE_LICENSE("GPL");
+> diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+> index 7dae17b62a4d..35a7a2d32819 100644
+> --- a/include/linux/platform_data/cros_ec_commands.h
+> +++ b/include/linux/platform_data/cros_ec_commands.h
+> @@ -3961,60 +3961,50 @@ struct ec_response_i2c_passthru {
+>  } __ec_align1;
+>  
+>  /*****************************************************************************/
+> -/* Power button hang detect */
+> -
+> +/* AP hang detect */
 
-See above, I think we need to put the sysfs-attr to disable
-the kernel's builtin kbd-backlight support in the parents
-sysfs-dir and then actually unregister the LED class device,
-this way we don't need any LED subsytem changes at all.
+I don't understand how this change is related to the new driver. This
+entire hunk is confusing.
 
->>> - I guess UPower integration for the userspace driver could be archived with https://www.kernel.org/doc/html/latest/leds/uleds.html however this limited to brightness atm, so when accent colors actually come to UPower this would also need some expansion to be able to pass a preferred color to the userspace driver (regardless of what that driver is then doing with that information).
->> Using uleds is an interesting suggestion, but upower atm
->> does not support LED class kbd_backlight devices getting
->> hot-plugged. It only scans for them once at boot.
->>
->> Jelle van der Waa (a colleague of mine, added to the Cc)
->> has indicated he is interested in maybe working on fixing
->> this upower short-coming as a side project, once his
->> current side-projects are finished.
-> Nice to hear.
->>
->>> On a different note: This approach does currently not cover the older EC controlled 3 zone keyboards from clevo. Here only the kernel has access access to the device so the kernel driver has to expose all functionality somehow. Should this be done by an arbitrarily designed platform device?
->> Interesting question, this reminds there was a discussion
->> about how to handle zoned keyboards using plain LED class
->> APIs here:
->>
->> https://lore.kernel.org/linux-leds/544484b9-c0ac-2fd0-1f41-8fa94cb94d4b@redhat.com/
->>
->> Basically the idea discussed there is to create
->> separate multi-color LED sysfs devices for each zone,
->> using :rgb:kbd_zoned_backlight-xxx as postfix, e.g. :
->>
->>   :rgb:kbd_zoned_backlight-left
->>   :rgb:kbd_zoned_backlight-middle
->>   :rgb:kbd_zoned_backlight-right
->>   :rgb:kbd_zoned_backlight-wasd
->>
->> As postfixes for the 4 per zone LED class devices
->> and then teach upower to just treat this as
->> a single kbd-backlight for the existing upower
->> DBUS API and maybe later extend the DBUS API.
->>
->> Would something like this work for the Clevo
->> case you are describing?
-> 
-> Not entirely as some concept for the special modes would still be required.
 
-Right, that can be done with some custom sysfs attr added
-to the LED class device, like how dell-laptop.c sets
-the .groups member of the "dell::kbd_backlight"
-"struct led_classdev kbd_led" to add some extra
-sysfs_attr to configure the timeout after which
-the kbd_backlight automatically turns off when
-no keys are pressed.
-
-> Also it would be nice to be able to set the whole keyboard with a singular file access so that the keyboard changes at once and not zone by zone.
-
-That is an interesting point. This could be implemented
-by adding an "enable_atomic_commit" sysfs attr to
-all 4:
-
-   :rgb:kbd_zoned_backlight-left
-   :rgb:kbd_zoned_backlight-middle
-   :rgb:kbd_zoned_backlight-right
-   :rgb:kbd_zoned_backlight-wasd
-
-LED class devices, which is backed by only
-1 variable in the kernel (so changing it
-in one place changes it everywhere) and
-then also have a "commit" sysfs attr and
-writing say "1" to that will then commit
-all changes at once.
-
-So normally changes are still applied directly
-(for compatibility with the usual sysfs API),
-but then when "enable_atomic_commit" is set to 1,
-writes only update in kernel variables and then
-once "commit" is written all changes are send
-out in 1 go.
-
-I think we had the same issue where there was
-a single WMI call to change all zones at once
-(and having some sort of atomic API was desirable)
-the last time the suggestion to use 4 LED class
-devices for zoned kbds:
-
-   :rgb:kbd_zoned_backlight-left
-   :rgb:kbd_zoned_backlight-middle
-   :rgb:kbd_zoned_backlight-right
-   :rgb:kbd_zoned_backlight-wasd
-
-came up, so we could start a new:
-
-Documentation/ABI/testing/sysfs-class-led-zoned-kbd-backlight
-
-document extending the standard:
-
-Documentation/ABI/testing/sysfs-class-led
-
-which documents both using the:
-
-   :rgb:kbd_zoned_backlight-left
-   :rgb:kbd_zoned_backlight-middle
-   :rgb:kbd_zoned_backlight-right
-   :rgb:kbd_zoned_backlight-wasd
-
-suffixes there, as well as document some sort
-of atomically change all 4 zones at once API.
-
-Werner, if this sounds like something which would
-work for you, then it would probably be best to
-first submit a RFC patch introducing a:
-
-Documentation/ABI/testing/sysfs-class-led-zoned-kbd-backlight
-
-and then first discuss that with the LED subsys
-maintainers, so that we have buy-in from the LED
-subsys maintainers before you start actually
-implementing this.
-
-I'll reply to your "I also stumbled across a new Problem"
-in another reply as it seems best to start a separate
-thread for this.
-
-Regards,
-
-Hans
-
+Best regards,
+Krzysztof
 
 
