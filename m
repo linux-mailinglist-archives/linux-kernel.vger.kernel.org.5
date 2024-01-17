@@ -1,315 +1,163 @@
-Return-Path: <linux-kernel+bounces-29109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DAB98308C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:53:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0590F8308A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:51:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 086BAB2582F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:53:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC7B91C217B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:51:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45A0223757;
-	Wed, 17 Jan 2024 14:50:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BF6322613;
+	Wed, 17 Jan 2024 14:49:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="jkl3iEhx"
-Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KD7tYHP+"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBA442232C;
-	Wed, 17 Jan 2024 14:50:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.220
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEE3F225A1
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 14:49:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705503010; cv=none; b=jFdl5+M4UOQbB3Ke1UKv/VLhW8hucAcP6zkErbhrFZjW6asPUs4Y/bfzp5VcXk6EjOv/gCx5yHQMVCd67UQaDNu0JSI0GJ8R+YmALLHReb7EGhXxrCHLH1WX/JfmLBaTOjTMulWAoCMPxvyGbpGgWR0V+gK2HS3VqsIaVbBcLHo=
+	t=1705502954; cv=none; b=W0KyTpklE8u5SKNrvgU/zciwA6YoPakPiCQUB/LlEpulrpXbRkwg3rNMsezsr02yGe0iDmwMiNkQzE4e+DS6o4rjmsGhqROnbUzRpuAIwfZHvcdLuhTLN5MAT2+VXxTmMAr5RCNN+FQM4aC/QrPLXlZP574QaeTvEwHs3MK/Gs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705503010; c=relaxed/simple;
-	bh=M4xsVfV/+F5mriFinfpf39EQh3DfNKpLBBjzXyGsAmE=;
-	h=DKIM-Signature:X-IronPort-AV:Received:Received:Received:
-	 X-Farcaster-Flow-ID:Received:Received:From:To:CC:Subject:Date:
-	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 X-Originating-IP:X-ClientProxiedBy:Content-Type:
-	 Content-Transfer-Encoding; b=V4beWm6oODMo1Fu7ViIY8cN6IGdw8FrEuwTCnIu4wvZAK9N2H7Usl4ji79+d3qSgjLHUvpx0XE8AmcNLYpgKYh5OIe4ddZVAMeQ9mfvI+zyFN0BSkL6w2fFrte6RvuqieSBuhi/YpRvGtdMCgkb/9auFr1LA+gIp5fEleCfAh6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.de; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=jkl3iEhx; arc=none smtp.client-ip=99.78.197.220
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
+	s=arc-20240116; t=1705502954; c=relaxed/simple;
+	bh=xbOsZ7hNf9ivXDXTjA3fkk2LMk4yyJfbnqb4EOp2G0o=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
+	 To:Cc:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=OsOdZQKM0Mb/2Sv38OLJnSEUR+6xzos/viNpv0U6RclWUrO+bFnUNoI81vdQPDRbG0v6NaN+resJ7L1BvtVkk9w1c61+h62F0VWpWnR5Hg8++tjnJxyp+oeva6q/Uhb67LZbl/xT2+ieSQN/7HVbyWqOHZ+wEVfFQPJtgjSw6Ek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KD7tYHP+; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a28cc85e6b5so1324638266b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 06:49:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1705503008; x=1737039008;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=tPlYmxW2bD4g5p/4BZUhVQG9FE6x6xhR8RJRJRx13Io=;
-  b=jkl3iEhxFN0r8FVHPk+eTNYHtb7St1LRYKDU5CIMW5vvgeIJ3hUKqvc3
-   iFGAX1F5bNZiHNpeHFFNpqfzln+edLxuQUeloqqehxwEOsFd7AtrnmwuY
-   LJVLBqoDmAUI+WnguZjWKFxMUitYysZm4zo5BlTovRnkZexvLdFs9kV5m
-   I=;
-X-IronPort-AV: E=Sophos;i="6.05,200,1701129600"; 
-   d="scan'208";a="58930648"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-21d8d9f4.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 14:50:08 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
-	by email-inbound-relay-pdx-2a-m6i4x-21d8d9f4.us-west-2.amazon.com (Postfix) with ESMTPS id 1DF7988A4B;
-	Wed, 17 Jan 2024 14:50:07 +0000 (UTC)
-Received: from EX19MTAUWC001.ant.amazon.com [10.0.21.151:3171]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.0.206:2525] with esmtp (Farcaster)
- id b53c9c00-2d51-410c-8d2a-13bacadca1c2; Wed, 17 Jan 2024 14:50:06 +0000 (UTC)
-X-Farcaster-Flow-ID: b53c9c00-2d51-410c-8d2a-13bacadca1c2
-Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 17 Jan 2024 14:50:06 +0000
-Received: from dev-dsk-graf-1a-5ce218e4.eu-west-1.amazon.com (10.253.83.51) by
- EX19D020UWC004.ant.amazon.com (10.13.138.149) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 17 Jan 2024 14:50:02 +0000
-From: Alexander Graf <graf@amazon.com>
-To: <linux-kernel@vger.kernel.org>
-CC: <linux-trace-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<kexec@lists.infradead.org>, <linux-doc@vger.kernel.org>, <x86@kernel.org>,
-	Eric Biederman <ebiederm@xmission.com>, "H . Peter Anvin" <hpa@zytor.com>,
-	Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-	Steven Rostedt <rostedt@goodmis.org>, Andrew Morton
-	<akpm@linux-foundation.org>, Mark Rutland <mark.rutland@arm.com>, "Tom
- Lendacky" <thomas.lendacky@amd.com>, Ashish Kalra <ashish.kalra@amd.com>,
-	James Gowans <jgowans@amazon.com>, Stanislav Kinsburskii
-	<skinsburskii@linux.microsoft.com>, <arnd@arndb.de>, <pbonzini@redhat.com>,
-	<madvenka@linux.microsoft.com>, Anthony Yznaga <anthony.yznaga@oracle.com>,
-	Usama Arif <usama.arif@bytedance.com>, David Woodhouse <dwmw@amazon.co.uk>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v3 17/17] Documentation: KHO: Add ftrace bindings
-Date: Wed, 17 Jan 2024 14:47:04 +0000
-Message-ID: <20240117144704.602-18-graf@amazon.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240117144704.602-1-graf@amazon.com>
-References: <20240117144704.602-1-graf@amazon.com>
+        d=linaro.org; s=google; t=1705502950; x=1706107750; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wUp7AtgEUSYNvZ7/fVy0kILGk6FxXL69i5KUD1q97UU=;
+        b=KD7tYHP+aNzQhO/v8Gv6InoamNLudK4Bu9cxQ+vn/k3HfVqP/E1JNP+iskw4JLgUtU
+         Co1rI5XiV6gNnExMeB3S2NqqJ/ZGsCrmbtCxpO4it+pxJbC96bxLyhxN8FB9NmKGbZO2
+         o3yP/aCKX4K4TDq51T7lYwzi3c6QrTr43py2Zz9DwA2h3IwdT1jRKgdH4H4IYs8NpIlO
+         znZ8Dym8DyCwWfUE7qg/KfyLxSODbs+xdiefQnfnRbxLfTM6XuDeY/9V4GkXKoN2xoKV
+         mg/F1IK1wLQjhFeWj8mD/Z/oPl2Wn/OAA32IDY3SIh80GqnWE5R0FgB0Wdyy067xwPkW
+         aFfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705502950; x=1706107750;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wUp7AtgEUSYNvZ7/fVy0kILGk6FxXL69i5KUD1q97UU=;
+        b=tavn2Iy0rB/lpJCftq3ko1gQCI2AA4PO0DGodVJHIx8IWhLRlGj6aM+tCbtNQ7G288
+         0EpGx0ZgJKENVITePnI4B0gL+awZ8wcK0i86H+tDva1slhJxy6mAp9KtvS48t5yJDrpG
+         yYZNpHkZbGruPd5OBA+KT9jl6gmUlOuex3wKQXxJ4CIocmEDPUIjhmQ9Okir0O16+/Hk
+         gg5hJUWtiMdlh1/9D+TquXcCzuwm4J2IppCtSflyfeRIoQy4mMILN2+baufdkxSltZ0Y
+         7Avp27baLYfcTL9dUq4iFVUWngTJpLPs8BEktv87uDveXi8c1fVv5hLxJsSVoEPe7CNS
+         TgCg==
+X-Gm-Message-State: AOJu0Yxvej7Zvmzm6UFfT1/wvuVY0TDCmgCib8/1Qa/5QiHBtjdvV0xS
+	vED0i8PajZ05jsLUCwUAhd0mchQG0gTA+A==
+X-Google-Smtp-Source: AGHT+IGfogk1vyrdo+0VUD+8Wa7WTI0X1CJ1wuka8a695dU1RQlPFwd51cLYisobNRPZgcLdGzCY+A==
+X-Received: by 2002:a17:907:7215:b0:a2c:cf7a:b70b with SMTP id dr21-20020a170907721500b00a2ccf7ab70bmr3242363ejc.145.1705502950157;
+        Wed, 17 Jan 2024 06:49:10 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id o10-20020a170906288a00b00a2a632e4eebsm7758780ejd.119.2024.01.17.06.49.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Jan 2024 06:49:09 -0800 (PST)
+Message-ID: <f394e372-dbfd-4fd5-b5c8-23c383cb6cf2@linaro.org>
+Date: Wed, 17 Jan 2024 14:49:07 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ClientProxiedBy: EX19D041UWB004.ant.amazon.com (10.13.139.143) To
- EX19D020UWC004.ant.amazon.com (10.13.138.149)
-Content-Type: text/plain; charset="us-ascii"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 07/12] clk: samsung: gs101: add support for cmu_peric0
+Content-Language: en-US
+To: Sam Protsenko <semen.protsenko@linaro.org>
+Cc: peter.griffin@linaro.org, krzysztof.kozlowski+dt@linaro.org,
+ gregkh@linuxfoundation.org, mturquette@baylibre.com, sboyd@kernel.org,
+ robh+dt@kernel.org, conor+dt@kernel.org, andi.shyti@kernel.org,
+ alim.akhtar@samsung.com, jirislaby@kernel.org, s.nawrocki@samsung.com,
+ tomasz.figa@gmail.com, cw00.choi@samsung.com,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-serial@vger.kernel.org, andre.draszik@linaro.org,
+ kernel-team@android.com, willmcvicker@google.com
+References: <20240109125814.3691033-1-tudor.ambarus@linaro.org>
+ <20240109125814.3691033-8-tudor.ambarus@linaro.org>
+ <CAPLW+4=y12fBf47v_HKfBdHTsQJfWo2cwBuFosUKo3xPBqcKJw@mail.gmail.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <CAPLW+4=y12fBf47v_HKfBdHTsQJfWo2cwBuFosUKo3xPBqcKJw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-We introduced KHO into Linux: A framework that allows Linux to pass
-metadata and memory across kexec from Linux to Linux. KHO reuses fdt
-as file format and shares a lot of the same properties of firmware-to-
-Linux boot formats: It needs a stable, documented ABI that allows for
-forward and backward compatibility as well as versioning.
+Hi, Sam,
 
-As first user of KHO, we introduced ftrace which can now preserve
-trace contents across kexec, so you can use the post-kexec kernel to
-read traces from the pre-kexec kernel.
+Thanks for reviewing the series!
 
-This patch adds ftrace schemas similar to "device" device tree ones to
-a new kho bindings directory. This allows us to force contributors to
-document the data that moves across KHO kexecs and catch breaking change
-during review.
+On 1/16/24 17:42, Sam Protsenko wrote:
 
-Signed-off-by: Alexander Graf <graf@amazon.com>
+cut
 
----
+>> Few clocks are marked as critical because when either of them is
+>> disabled, the system hangs even if their clock parents are enabled.
+>>
+>> Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
+>> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+>> ---
+cut
+>>
+>> diff --git a/drivers/clk/samsung/clk-gs101.c b/drivers/clk/samsung/clk-gs101.c
+>> index 782993951fff..f3f0f5feb28d 100644
+>> --- a/drivers/clk/samsung/clk-gs101.c
+>> +++ b/drivers/clk/samsung/clk-gs101.c
 
-v2 -> v3:
+cut
 
-  - Fix make dt_binding_check
-  - Add descriptions for each object
-  - s/trace_flags/trace-flags/
-  - s/global_trace/global-trace/
-  - Make all additionalProperties false
-  - Change subject to reflect subsysten (dt-bindings)
-  - Fix indentation
-  - Remove superfluous examples
-  - Convert to 64bit syntax
-  - Move to kho directory
----
- .../kho/bindings/ftrace/ftrace-array.yaml     | 38 ++++++++++++
- .../kho/bindings/ftrace/ftrace-cpu.yaml       | 43 +++++++++++++
- Documentation/kho/bindings/ftrace/ftrace.yaml | 62 +++++++++++++++++++
- 3 files changed, 143 insertions(+)
- create mode 100644 Documentation/kho/bindings/ftrace/ftrace-array.yaml
- create mode 100644 Documentation/kho/bindings/ftrace/ftrace-cpu.yaml
- create mode 100644 Documentation/kho/bindings/ftrace/ftrace.yaml
+>> +static const struct samsung_gate_clock peric0_gate_clks[] __initconst = {
+>> +       /* Disabling this clock makes the system hang. Mark the clock as critical. */
+>> +       GATE(CLK_GOUT_PERIC0_PERIC0_CMU_PERIC0_PCLK,
+>> +            "gout_peric0_peric0_cmu_peric0_pclk", "mout_peric0_bus_user",
+>> +            CLK_CON_GAT_CLK_BLK_PERIC0_UID_PERIC0_CMU_PERIC0_IPCLKPORT_PCLK,
+>> +            21, CLK_IS_CRITICAL, 0),
+> Why not just CLK_IGNORE_UNUSED? As I understand this gate clock can be
 
-diff --git a/Documentation/kho/bindings/ftrace/ftrace-array.yaml b/Documentation/kho/bindings/ftrace/ftrace-array.yaml
-new file mode 100644
-index 000000000000..aa0007595b95
---- /dev/null
-+++ b/Documentation/kho/bindings/ftrace/ftrace-array.yaml
-@@ -0,0 +1,38 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/kho/ftrace/ftrace-array.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Ftrace trace array
-+
-+maintainers:
-+  - Alexander Graf <graf@amazon.com>
-+
-+description: |
-+  Ftrace can create and expose multiple different trace instances, see
-+  https://docs.kernel.org/trace/ftrace.html#instances. Each instance is
-+  backed by a single trace array which contains all information about where
-+  the corresponding trace buffers are located and how they are configured.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - ftrace,array-v1
-+
-+  trace-flags:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      Bitmap of all the trace flags that were enabled in the trace array at the
-+      point of serialization.
-+
-+patternProperties:
-+  cpu[0-9a-f]*:
-+    $ref: ftrace-cpu.yaml#
-+    description: Trace buffer location for each CPU
-+
-+required:
-+  - compatible
-+  - trace-flags
-+
-+additionalProperties: false
-diff --git a/Documentation/kho/bindings/ftrace/ftrace-cpu.yaml b/Documentation/kho/bindings/ftrace/ftrace-cpu.yaml
-new file mode 100644
-index 000000000000..95dec1c94fc3
---- /dev/null
-+++ b/Documentation/kho/bindings/ftrace/ftrace-cpu.yaml
-@@ -0,0 +1,43 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/kho/ftrace/ftrace-cpu.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Ftrace per-CPU ring buffer contents
-+
-+maintainers:
-+  - Alexander Graf <graf@amazon.com>
-+
-+description: |
-+  An ftrace trace array contains a ring buffers for each CPU. This
-+  object describes the buffers of such a single CPU. It describes which
-+  CPU it was used in and which memory was backing the ring buffer.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - ftrace,cpu-v1
-+
-+  cpu:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      CPU number of the CPU that this ring buffer belonged to when it was
-+      serialized.
-+
-+  mem:
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    description: |
-+      Array of { u64 phys_addr, u64 len } elements that describe a list of ring
-+      buffer pages. Each page consists of two elements. The first element
-+      describes the location of the struct buffer_page that contains metadata
-+      for a given ring buffer page, such as the ring's head indicator. The
-+      second element points to the ring buffer data page which contains the raw
-+      trace data.
-+
-+required:
-+  - compatible
-+  - cpu
-+  - mem
-+
-+additionalProperties: false
-diff --git a/Documentation/kho/bindings/ftrace/ftrace.yaml b/Documentation/kho/bindings/ftrace/ftrace.yaml
-new file mode 100644
-index 000000000000..4a7308be8dbf
---- /dev/null
-+++ b/Documentation/kho/bindings/ftrace/ftrace.yaml
-@@ -0,0 +1,62 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/kho/ftrace/ftrace.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Ftrace core data
-+
-+maintainers:
-+  - Alexander Graf <graf@amazon.com>
-+
-+description: |
-+  Ftrace can serialize its current trace buffers across kexec through KHO.
-+  For each instance, it preserves the backing ring buffers. It also
-+  preserves event ID associations. The post-KHO kernel can then consume
-+  these bits to reassemble trace data (not configuration!) for each trace
-+  instance and that way expose pre-KHO traces in post-KHO ftrace files.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - ftrace-v1
-+
-+  events:
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    description:
-+      Array of { u32 crc, u32 type } elements. Each element contains a unique
-+      identifier for an event, followed by the identifier that this event had
-+      in the previous kernel's trace buffers.
-+
-+# Every subnode has to be a trace array
-+patternProperties:
-+  ^(?!compatible|events)$:
-+    $ref: ftrace-array.yaml#
-+    description: Trace array description for each trace instance
-+
-+required:
-+  - compatible
-+  - events
-+
-+additionalProperties: true
-+
-+examples:
-+  - |
-+    ftrace {
-+      compatible = "ftrace-v1";
-+      events = < 1 1 2 2 3 3 >;
-+
-+      global-trace {
-+        compatible = "ftrace,array-v1";
-+        trace-flags = < 0x3354601 >;
-+
-+        cpu0 {
-+          compatible = "ftrace,cpu-v1";
-+          cpu = < 0x00 >;
-+          mem = /bits/ 64 < 0x101000000 0x38
-+	                    0x101000100 0x1000
-+	                    0x101000038 0x38
-+	                    0x101002000 0x1000 >;
-+        };
-+      };
-+    };
--- 
-2.40.1
+When either of the clocks that I marked as critical is disabled, the
+system hangs, even if their clock parent is enabled. I tested this by
+enabling the clock debugfs with write permissions. I prepared-enabled
+the parent clock to increase their user count so that when the child
+gets disabled to not disable the parent as well. When disabling the
+child the system hung, even if its parent was enabled. Thus I considered
+that the child is critical. I mentioned this in the commit message as
+well. Please tell if get this wrong.
 
+> used to disable PCLK (bus clock) provided to the whole CMU_PERIC0.
+> Aren't there any valid cases for disabling this clock, like during
+> some PM transitions? For Exynos850 clock driver I marked all clocks of
 
+They aren't, because if one switches off any of these clocks that are
+marked as critical, the system hangs and it will not be able to resume.
 
+> this kind as CLK_IGNORE_UNUSED and it works fine. In other words: I'd
+> say CLK_IS_CRITICAL flag is more "strong" than CLK_IGNORE_UNUSED, and
+> requires better and more specific explanation, to make sure we are not
+> abusing it. And I'm not sure this is the case.
 
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
+Is the explanation from the commit message enough?
+> 
+> The same goes for the rest of clocks marked as CLK_IS_CRITICAL in this
+> patch. Please check if maybe using CLK_IGNORE_UNUSED makes sense for
+> any of those as well.
 
+I've already checked and all behave as described above.
 
-
+Thanks,
+ta
 
