@@ -1,94 +1,142 @@
-Return-Path: <linux-kernel+bounces-28750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 784B1830297
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:45:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 525D88302D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:52:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12B761F21654
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:45:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1D532833F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:52:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CA2D1426D;
-	Wed, 17 Jan 2024 09:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="IfmK3vmT"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B98EA14003;
-	Wed, 17 Jan 2024 09:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5124014294;
+	Wed, 17 Jan 2024 09:52:13 +0000 (UTC)
+Received: from sakura.ysato.name (ik1-413-38519.vs.sakura.ne.jp [153.127.30.23])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C183C121;
+	Wed, 17 Jan 2024 09:52:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=153.127.30.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705484708; cv=none; b=MY5wK3C2YnbPant2rsMsfuE2uiRsFCIpYThqcFLTGRByZ9k5MkIT4w6Hk4ALgXhHF/E+VgFTuY0qxwQJfsHg1hIkcvrNp3MDrOvya/OZpHQIFLhrwB6xn4ltxIdQyhrNTGqesKJ07uJk2dYrHpB0NSW7o2zLK6zm9cLHh396EQo=
+	t=1705485132; cv=none; b=M4adgzi1hG1usKcyB4kqG9/kwNwRlp3nDN7PLdd1sb00XhdmRDyNSB0qvtsl6irfSqQWkCj533oBaRgQGc/y2U5rGRTq4ZY4cYj0ThEjFK2kigfMw/YqUe+eFTxR+zD9BPKFRE6aeIA9U2LYR/PkDkHFf+DZQUIbT+qodrbObzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705484708; c=relaxed/simple;
-	bh=fACrlXOcrK6BDar3ZmQKohMwBmQrwFlqbx59S/4PHYA=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=d0Asfox5inZPdyHYptrGc8Ow2UXdJ1kWgUrDFmNfaaOoXQUpq2VL9U0FnnCTseEuZCWRWgkfscPsBBGL4+T0bdSz2rPLIvadR4y3/Sb56aAFlJ8KNofuCUFBPm7LwIF/efZysRNIl38fUqOj5vGYWu3ReVEYAYYnYjnLVsw5Zp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=IfmK3vmT; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6E6F97E2;
-	Wed, 17 Jan 2024 10:43:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1705484634;
-	bh=fACrlXOcrK6BDar3ZmQKohMwBmQrwFlqbx59S/4PHYA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IfmK3vmTDAmf4XV/feDfL33G+rbYdIeDECl8fxjQOKj9pQkoaNQjyMdX+s/6q9kHU
-	 cV7KcYWye9TYDFOPqPFTkf1tL4Xln+Q7V/8Os77T6wjlurfJz1DD+TUW5SP06cNFRK
-	 8y8ojhXT3lj17+xqtWcAvdh0WWwqmKnCHL/kt1ZM=
-Date: Wed, 17 Jan 2024 11:45:07 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Bo Liu <liubo03@inspur.com>
-Cc: sakari.ailus@linux.intel.com, mchehab@kernel.org,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: i2c: mt9v032: convert to use maple tree register
- cache
-Message-ID: <20240117094507.GC17920@pendragon.ideasonboard.com>
-References: <20240117031105.3054-1-liubo03@inspur.com>
+	s=arc-20240116; t=1705485132; c=relaxed/simple;
+	bh=1fXBZ0F6PnMKVX2UfbVlTh+qiCRuwH+ropgNz+S7/3U=;
+	h=Received:Date:Message-ID:From:To:Cc:Subject:In-Reply-To:
+	 References:User-Agent:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding; b=FxE1DC7yEPQFQNKcmXiDnPvG9hh8Q8cvzW8JWCwkrxWo+lorRcrwqGDsNuzDswhe1doQfOYD8y/DNnQtF55GXZsQVRFJEWUdgvPpPU+dqznIOZR8M9bnNnzgfwBOz17bpCHHQF+M/swi6+1uTot+kAXpmsc6D2KkI3+3XioX8j0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=users.sourceforge.jp; spf=fail smtp.mailfrom=users.sourceforge.jp; arc=none smtp.client-ip=153.127.30.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=users.sourceforge.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=users.sourceforge.jp
+Received: from SIOS1075.ysato.ml (al128006.dynamic.ppp.asahi-net.or.jp [111.234.128.6])
+	by sakura.ysato.name (Postfix) with ESMTPSA id B272C1C00D1;
+	Wed, 17 Jan 2024 18:46:10 +0900 (JST)
+Date: Wed, 17 Jan 2024 18:46:10 +0900
+Message-ID: <8734uwwavx.wl-ysato@users.sourceforge.jp>
+From: Yoshinori Sato <ysato@users.sourceforge.jp>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-sh@vger.kernel.org,	Damien Le Moal <dlemoal@kernel.org>,	Rob
+ Herring <robh+dt@kernel.org>,	Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>,	Conor Dooley <conor+dt@kernel.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,	Michael Turquette
+ <mturquette@baylibre.com>,	Stephen Boyd <sboyd@kernel.org>,	Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>,	Maxime Ripard
+ <mripard@kernel.org>,	Thomas Zimmermann <tzimmermann@suse.de>,	David Airlie
+ <airlied@gmail.com>,	Daniel Vetter <daniel@ffwll.ch>,	Thomas Gleixner
+ <tglx@linutronix.de>,	Lorenzo Pieralisi <lpieralisi@kernel.org>,	Krzysztof
+ =?ISO-8859-2?Q?Wilczy=F1ski?= <kw@linux.com>,	Bjorn Helgaas
+ <bhelgaas@google.com>,	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,	Magnus Damm <magnus.damm@gmail.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,	Lee Jones
+ <lee@kernel.org>,	Helge Deller <deller@gmx.de>,	Heiko Stuebner
+ <heiko@sntech.de>,	Jernej Skrabec <jernej.skrabec@gmail.com>,	Chris Morgan
+ <macromorgan@hotmail.com>,	Yang Xiwen <forbidden405@foxmail.com>,	Sebastian
+ Reichel <sre@kernel.org>,	Randy Dunlap <rdunlap@infradead.org>,	Arnd
+ Bergmann <arnd@arndb.de>,	Vlastimil Babka <vbabka@suse.cz>,	Hyeonggon Yoo
+ <42.hyeyoo@gmail.com>,	David Rientjes <rientjes@google.com>,	Baoquan He
+ <bhe@redhat.com>,	Andrew Morton <akpm@linux-foundation.org>,	Guenter Roeck
+ <linux@roeck-us.net>,	Stephen Rothwell <sfr@canb.auug.org.au>,	Azeem Shaikh
+ <azeemshaikh38@gmail.com>,	Javier Martinez Canillas <javierm@redhat.com>,
+	Max Filippov <jcmvbkbc@gmail.com>,	Palmer Dabbelt <palmer@rivosinc.com>,
+	Bin Meng <bmeng@tinylab.org>,	Jonathan Corbet <corbet@lwn.net>,	Jacky Huang
+ <ychuang3@nuvoton.com>,	Lukas Bulwahn <lukas.bulwahn@gmail.com>,	Biju Das
+ <biju.das.jz@bp.renesas.com>,	Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?=
+ <u.kleine-koenig@pengutronix.de>,	Sam Ravnborg <sam@ravnborg.org>,	Sergey
+ Shtylyov <s.shtylyov@omp.ru>,	Michael Karcher
+ <kernel@mkarcher.dialup.fu-berlin.de>,	Laurent Pinchart
+ <laurent.pinchart+renesas@ideasonboard.com>,	linux-ide@vger.kernel.org,
+	devicetree@vger.kernel.org,	linux-kernel@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,	linux-clk@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,	linux-pci@vger.kernel.org,
+	linux-serial@vger.kernel.org,	linux-fbdev@vger.kernel.org
+Subject: Re: [DO NOT MERGE v6 17/37] dt-bindings: interrupt-controller: renesas,sh7751-intc: Add json-schema
+In-Reply-To: <CACRpkdYLsf-uWdMCTpieji7u1-H3oTGojvC4xm7Erox97XJ6RQ@mail.gmail.com>
+References: <cover.1704788539.git.ysato@users.sourceforge.jp>
+	<bc794e2165244bd0cee81bc0106f1e2d1bef1613.1704788539.git.ysato@users.sourceforge.jp>
+	<CACRpkdYLsf-uWdMCTpieji7u1-H3oTGojvC4xm7Erox97XJ6RQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?ISO-8859-4?Q?Goj=F2?=) APEL-LB/10.8 EasyPG/1.0.0
+ Emacs/28.2 (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240117031105.3054-1-liubo03@inspur.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 16, 2024 at 10:11:05PM -0500, Bo Liu wrote:
-> The maple tree register cache is based on a much more modern data structure
-> than the rbtree cache and makes optimisation choices which are probably
-> more appropriate for modern systems than those made by the rbtree cache.
-> 
-> Signed-off-by: Bo Liu <liubo03@inspur.com>
+On Tue, 09 Jan 2024 21:30:34 +0900,
+Linus Walleij wrote:
+>=20
+> Hi Yoshinori,
+>=20
+> thanks for your patch!
+>=20
+> On Tue, Jan 9, 2024 at 9:24=E2=80=AFAM Yoshinori Sato
+> <ysato@users.sourceforge.jp> wrote:
+>=20
+> > +  renesas,icr-irlm:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description: If true four independent interrupt requests mode (ICR=
+IRLM is 1).
+> > +
+> > +  renesas,ipr-map:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> > +    description: |
+> > +      IRQ to IPR mapping definition.
+> > +      1st - INTEVT code
+> > +      2nd - Register
+> > +      3rd - bit index
+>=20
+> (...)
+>=20
+> > +            renesas,ipr-map =3D <0x240 IPRD IPR_B12>, /* IRL0 */
+> > +                              <0x2a0 IPRD IPR_B8>,  /* IRL1 */
+> > +                              <0x300 IPRD IPR_B4>,  /* IRL2 */
+> > +                              <0x360 IPRD IPR_B0>,  /* IRL3 */
+> (...)
+>=20
+> Is it really necessary to have all this in the device tree?
+>=20
+> You know from the compatible that this is "renesas,sh7751-intc"
+> and I bet this table will be the same for any sh7751 right?
+>=20
+> Then just put it in a table in the driver instead and skip this from
+> the device tree and bindings. If more interrupt controllers need
+> to be supported by the driver, you can simply look up the table from
+> the compatible string.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+The SH interrupt controller has the same structure, only this part is diffe=
+rent for each SoC.
+Currently, we are targeting only the 7751, but in the future we plan to han=
+dle all SoCs.
+Is it better to differentiate SoC only by compatible?
 
-> ---
->  drivers/media/i2c/mt9v032.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/i2c/mt9v032.c b/drivers/media/i2c/mt9v032.c
-> index 3ca76eeae7ff..6dfbd1c56c22 100644
-> --- a/drivers/media/i2c/mt9v032.c
-> +++ b/drivers/media/i2c/mt9v032.c
-> @@ -988,7 +988,7 @@ static const struct regmap_config mt9v032_regmap_config = {
->  	.reg_bits = 8,
->  	.val_bits = 16,
->  	.max_register = 0xff,
-> -	.cache_type = REGCACHE_RBTREE,
-> +	.cache_type = REGCACHE_MAPLE,
->  };
->  
->  /* -----------------------------------------------------------------------------
+> Yours,
+> Linus Walleij
+>=20
 
--- 
-Regards,
-
-Laurent Pinchart
+--=20
+Yosinori Sato
 
