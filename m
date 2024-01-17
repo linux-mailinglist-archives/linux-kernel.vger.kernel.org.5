@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-29137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C399183095B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:14:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BACD6830961
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:14:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48FE9B23C97
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:14:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F4121F21892
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:14:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD8E823742;
-	Wed, 17 Jan 2024 15:12:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 003212375D;
+	Wed, 17 Jan 2024 15:12:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ImRlAvB2"
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rWgK3Gdz"
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 954C822EE9
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:12:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8A0D23745
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:12:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705504343; cv=none; b=sla/G92/nmKr92sYhzejByRUNWniD+wxzXrhJjbz7EvPPWMyCMPwf+gbg3dSohSieAZ7bCcvJD9mHCoBFlxP3ePz2hGn81FvLuU9vTW2I20q+gy1+LwfNYPwLHFBItXsyeXTRlYvHTxgTNes0NmKEqHR9j+E/JEH9TdXwlq05f0=
+	t=1705504345; cv=none; b=bvBeFNxg826ohOE7LFoTc3ksru2Fv5zqIA4P4rp+Up/HFzQEU65yKpEVCfNx9JPnxls2VwE3OzgPL6uR5EkaTdeWuRfDQWLcuhjGm9e5umDnkirIujZ9FPf2XXnIsv7ijNiuzkEF63oTLX8KSxwJqixHeuoPieix+hix/oscGV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705504343; c=relaxed/simple;
-	bh=CEoOOu3lx1F0t2DXMRp7Dd+POoFYCjzJbOK7DJcvqdM=;
+	s=arc-20240116; t=1705504345; c=relaxed/simple;
+	bh=GCZrQDHaMa0VPIX4o4j8+CDBJ3xXXLP0Tb/HGEhCxls=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
 	 To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding; b=RTPp+4FPHl7SweKoFnNlR/kmnLOO+QbNZ3bYAuzM/NJZ1IrkV4PBaJgmGxKn2Tle7gu+I9diLXIvgw/jEgNv1FW8aEyWy34hZk19kizfoez+U513WpMzL9At06m9VJRFkK5r3pO7ps22gGHvi380C/Dv5huySoiyws53WcEgb3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ImRlAvB2; arc=none smtp.client-ip=209.85.222.174
+	 MIME-Version:Content-Transfer-Encoding; b=EcUSKs/bIz7nWD4/PHTvx+7yv43JxeJ+iXkzqatwhjgQvqGjwJt0I86yVWqCngX1UwuQjBx37YcH/3y5EhMsIFWQXFHT0K30TqVZW75jPdVzwhb6w8lFbt0ZePSq+vbNEls95xIvhtMJkxUDKd2FRf0uGdQu2CMS2IBhrC/GHUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rWgK3Gdz; arc=none smtp.client-ip=209.85.160.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-78324e302d4so773324785a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:12:21 -0800 (PST)
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-429c00bf0efso42480851cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:12:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705504340; x=1706109140; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1705504343; x=1706109143; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jvT4DYI0xpteMdP3q2s5kHm3KTUWGSKMdy7WHIRX+6Q=;
-        b=ImRlAvB2VX2WoNVjVFkfAx2s7RCaWtKacz9r5L6xihfvPiTJ2k9Jke0HVphWCK1XDx
-         A3SRXZ1jdXTet/Ehp5MCjuDir0QX5kI3IEDABQwtvBLMKMwQxgMgV7HO4i3vQVHmKCGr
-         ppPA+SpLOyaVzQyWbAQROpeKG3RGadgMobg7ep1jSTbIp8UEDNgroZR23oSmdoxguDvi
-         GDf7oubtV+UJYuRf9Qb8AftsyxqofTE6kE8qpnNE8HNLoXV60FUALJpY825YZVHMjmTo
-         vD4QEDp+A8dsAtynAKDB1DX9GqOrvWpHqCR7N7aHvuAMfroH3NfuXqR0G0jG+1rV6xr6
-         CHfQ==
+        bh=ixH1kcICmlswgGdL4OCIid5fgK6X+yz0saxJFyTHsOI=;
+        b=rWgK3GdzTzArrviW7WadgwybrfuFdRWkr/vi3LRCs0Msc2VwyXdiSWOiBbmX8a5Lti
+         kj2a9/PR7wJuH9MfqepJVjszeufZglTz8R4gtdihi62Zd5l+l5UobnYdv7f2V+eoWv4u
+         I+lAOOQD66+4ydV1XH0b3AFtB6fiKSeFzaBlmaNC3x1nFD8+a0H/p6MXeVo7/BXyrKSg
+         4pIo2L/q3GAtfLTdZ+xY430BZ8d2hB7GZgzdvC9AT/nky5XCKbeKYEcjF9l09uoNTu0o
+         z1Dn5KI/pXNSggJt6d1d8kQi/C6tgvPDVDxtiY75OrWLO/o2UEAgrKDjBU0cRDloakhp
+         wNbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705504340; x=1706109140;
+        d=1e100.net; s=20230601; t=1705504343; x=1706109143;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jvT4DYI0xpteMdP3q2s5kHm3KTUWGSKMdy7WHIRX+6Q=;
-        b=DZT/hD3L95XfmiGAqbIUtfeFinktQ+p9Pofejj+6q+8RQKlx06PMe9Ao5+2ipWkL3a
-         iJktpnS+Nbq2wlYDeNbqCHP8xfx0f/n8RcWks6k5f65eAnbDuX2a2ZUi0lfpjRK2MA5h
-         rOdpPlCiTSHGn2QnBUbYRT2J9Zci6ALmhnyF3d+Z8wh2QLYorX5EgKxVPa7ZVjgGYoBW
-         3IH/JOiVZ36bQcSXGhORIWpQurpd73g+aXzM8HnDtqqOjDC29nw3xMnpCwDerniqkv+C
-         GMMsL6beMDDGVMPRCAR63Snez4KWrbGQUdn4H0xMor351bd00eezdxrnMzqlWPHB8ASH
-         nwdA==
-X-Gm-Message-State: AOJu0YzCJpLsO+nvzVBJObuCsUmxYxFGp1vpyCwcrifCD0TEmlhafL3e
-	c11sUODnzBWpx4g/rIrr7KOF186TCQQTVQ==
-X-Google-Smtp-Source: AGHT+IH39mkNRZQTB7lr0OTpjPsUCqmf9g+mw8wVtjmr6UAff5u+AAbQ2wJeHKe/MhvIiKUuawEWmw==
-X-Received: by 2002:a05:620a:10b4:b0:783:4e8a:6b19 with SMTP id h20-20020a05620a10b400b007834e8a6b19mr7348059qkk.14.1705504340607;
-        Wed, 17 Jan 2024 07:12:20 -0800 (PST)
+        bh=ixH1kcICmlswgGdL4OCIid5fgK6X+yz0saxJFyTHsOI=;
+        b=Xb+uUHNSHCURCkIiBuP4ulJG9GTyncwVGMLHcuTIuMNxt/NlEBuV/OQTyrNVmA1jD4
+         sdGlFTWtD+0TpIEUc+lTYoF3nmm7dflfUcNba5dmn2dULYogB2VStBHP6kOPwARF2iso
+         Ox45rvc8Rs+LM0ji/wyi8UA/qvB6hO/5XPeYdmZ5AR8lulgWHtUZZUGMbM9K+iBF1ulx
+         pLQFT0e42e4ywj3HOIF3D7hCJJMDEDEeJdW9lgo6jlg/XgsJzTNj9QzwKbkzC9ItZ9Gf
+         DcpA8PI7kmLCLSG0ASJacSjiS2u27aM+r1FofPt5yy6cTibR9QnkanYFE6YbaXwMXfKk
+         46lA==
+X-Gm-Message-State: AOJu0Yz0EW8lOYJT0YAea1fEf2vpwOLPaTMhBCgSbu2KMO4Z8U8pORmU
+	I0o1D9W1EFk8FGgMqsJd9+wI8GeLCPzR1g==
+X-Google-Smtp-Source: AGHT+IGKpZZkvxd3eMsUpIls7FJA2Nl5Ug6PcJy3m/KUNJ109oGm7KrlaXZDhPDpTPidr1LTLydhHA==
+X-Received: by 2002:ac8:578a:0:b0:42a:733:c26b with SMTP id v10-20020ac8578a000000b0042a0733c26bmr3066083qta.54.1705504342921;
+        Wed, 17 Jan 2024 07:12:22 -0800 (PST)
 Received: from krzk-bin.. ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id m7-20020a05620a24c700b007816cf21f7asm4519337qkn.76.2024.01.17.07.12.18
+        by smtp.gmail.com with ESMTPSA id m7-20020a05620a24c700b007816cf21f7asm4519337qkn.76.2024.01.17.07.12.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 07:12:20 -0800 (PST)
+        Wed, 17 Jan 2024 07:12:22 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	Banajit Goswami <bgoswami@quicinc.com>,
@@ -78,9 +78,9 @@ To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	linux-sound@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 2/3] ASoC: codecs: wcd938x: skip printing deferred probe failuers
-Date: Wed, 17 Jan 2024 16:12:07 +0100
-Message-Id: <20240117151208.1219755-2-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 3/3] ASoC: codecs: wcd934x: drop unneeded regulator include
+Date: Wed, 17 Jan 2024 16:12:08 +0100
+Message-Id: <20240117151208.1219755-3-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240117151208.1219755-1-krzysztof.kozlowski@linaro.org>
 References: <20240117151208.1219755-1-krzysztof.kozlowski@linaro.org>
@@ -92,30 +92,26 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Probe calls wcd938x_populate_dt_data() which already prints all the
-error cases with dev_err_probe(), so skip the additional dev_err().
+Driver does not use any regulator code, so drop redundant include of
+regulator/consumer.h header.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/codecs/wcd938x.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/codecs/wcd934x.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
-index 0aaf494844aa..54a21d2f5c40 100644
---- a/sound/soc/codecs/wcd938x.c
-+++ b/sound/soc/codecs/wcd938x.c
-@@ -3587,10 +3587,8 @@ static int wcd938x_probe(struct platform_device *pdev)
- 	mutex_init(&wcd938x->micb_lock);
- 
- 	ret = wcd938x_populate_dt_data(wcd938x, dev);
--	if (ret) {
--		dev_err(dev, "%s: Fail to obtain platform data\n", __func__);
-+	if (ret)
- 		return ret;
--	}
- 
- 	ret = wcd938x_add_slave_components(wcd938x, dev, &match);
- 	if (ret)
+diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
+index 1b6e376f3833..6813268e6a19 100644
+--- a/sound/soc/codecs/wcd934x.c
++++ b/sound/soc/codecs/wcd934x.c
+@@ -13,7 +13,6 @@
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
+-#include <linux/regulator/consumer.h>
+ #include <linux/slab.h>
+ #include <linux/slimbus.h>
+ #include <sound/pcm_params.h>
 -- 
 2.34.1
 
