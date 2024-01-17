@@ -1,240 +1,345 @@
-Return-Path: <linux-kernel+bounces-28895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4C8583044E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:13:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB8F8830450
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:13:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A1921F25F1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:13:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95E69287270
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 11:13:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94EAD1DDCB;
-	Wed, 17 Jan 2024 11:12:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38D961DFCB;
+	Wed, 17 Jan 2024 11:13:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="aMCb1y/k"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="WbLLT37o"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A872F1DDCF
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:12:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0E321DFC5;
+	Wed, 17 Jan 2024 11:13:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705489968; cv=none; b=tUdy83j33tEybbdB9U5K3MdEyD2kyPd6ErrZ15Tq50e/RFXBGklY51d4/FL/wvmMfSARBYeeiCIW4qTgWVQmWA/9txCFXVWjdrTCL7/bquAe7g4nwUyvLezpW37OyZC+7LNWfm9jDcDvSkIRwUNlGzh6w3LCf+dVE4204KP51/w=
+	t=1705490001; cv=none; b=Y/o841nOPdkfP/ghoAJYXfI9FcOyiXiM1uj0yG6ZjY5DKf90EkDN5r4GOl1bqtSX0KbNq8JBiq04wzOx4grnvIELe9Ch68+qbPA/r/tIkJxMqrUvsTG7UJm7n/2GzW65tVs0DQQzBn0UVSztM1FJ6D5L7P8I+9V4/HmjseHS3pQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705489968; c=relaxed/simple;
-	bh=RuGCaJSXBiJ0//hsmZaWSf72Mp5fLLf9i+OWOkaFlGs=;
+	s=arc-20240116; t=1705490001; c=relaxed/simple;
+	bh=yNmbS2rm1gVQ6BoLKI8WLxSJclqu+BjfpDsyvlIRZdA=;
 	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding; b=rC4EA+PS7peOqhCyMKRJfDXvHxgkbwq0VdGfzeSA1Al9Kn5ShSRUpDKfDLdy2n/aVj25c/gNJYmGgWWOBBBq8fyZvT+xouGVCZXPmEP/ZbPdR5zuKvjI2M5KCw6PBfTjfoHD35JxbOEUkHES+DeFAB2y+CTE31K4inbHQXmjxfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=aMCb1y/k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9C85C433C7;
-	Wed, 17 Jan 2024 11:12:47 +0000 (UTC)
+	 MIME-Version:Content-Type:Content-Disposition; b=qzq2f/MaxunHaw27cQGTAkUohnWWW6YHrbKdGqrS3wIR4jt4SVGwLoqE9MJAvnDzwhA36J26ca098FhVqHVm9L5b8pKhChIbrWBXJBTDVrEL/5ZCwCTdI0T320+e8wMkIV+2iFtPfKlFXSHE4uVq/kLNhKHCBMmfJf8ym9iOTr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=WbLLT37o; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72516C433F1;
+	Wed, 17 Jan 2024 11:13:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1705489968;
-	bh=RuGCaJSXBiJ0//hsmZaWSf72Mp5fLLf9i+OWOkaFlGs=;
+	s=korg; t=1705490000;
+	bh=yNmbS2rm1gVQ6BoLKI8WLxSJclqu+BjfpDsyvlIRZdA=;
 	h=Date:From:To:Cc:Subject:From;
-	b=aMCb1y/kR4PsjfT8ejXuUf4UcHmPWnB/0Rz199+RnpSvm9yiLbIEgwbgUAjlEEyeA
-	 J+36fjRkhtKj/OA3eYNKm9Fm57K2etb23rCF1U/dzYD4ITOGPSRsoJ36KanH8cx8qB
-	 cfc4m4sQzjTCKi9bk4ffD9Se5E9CxMulTyUq7k1I=
-Date: Wed, 17 Jan 2024 12:12:45 +0100
+	b=WbLLT37okwBFN+GKdxdHw7lARjGUAvVSdnsdN7uOZBcuo4XrrVGWRJ66pIIG1hPey
+	 6Hyjtvc6iFPVDFs+TEyskFGtIKW9PvAks10DQ7X3HVBnNYvnkabRTrPMk0QYfUaWez
+	 t11wpNJaDvlcX/WFItcdGbTMzhOwYcrvhpvotaQI=
+Date: Wed, 17 Jan 2024 12:13:18 +0100
 From: Greg KH <gregkh@linuxfoundation.org>
 To: Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
-	Saravana Kannan <saravanak@google.com>
-Subject: [GIT PULL] Driver core changes for 6.8-rc1
-Message-ID: <Zae2LeqyFdjqb8mV@kroah.com>
+	Andrew Morton <akpm@linux-foundation.org>,
+	Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: [GIT PULL] Staging driver updates for 6.8-rc1
+Message-ID: <Zae2Tg065gd6rQUV@kroah.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 
-The following changes since commit 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab:
+The following changes since commit 98b1cc82c4affc16f5598d4fa14b1858671b2263:
 
-  Linux 6.7-rc3 (2023-11-26 19:59:33 -0800)
+  Linux 6.7-rc2 (2023-11-19 15:02:14 -0800)
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-6.8-rc1
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-6.8-rc1
 
-for you to fetch changes up to e3977e0609a07d86406029fceea0fd40d7849368:
+for you to fetch changes up to 0a46c21c21c1f1c9a65e29eaae243d0f240bbd6b:
 
-  Revert "kernfs: convert kernfs_idr_lock to an irq safe raw spinlock" (2024-01-11 11:51:27 +0100)
+  Staging: rtl8192e: Rename variable OpMode (2024-01-04 14:34:51 +0100)
 
 ----------------------------------------------------------------
-Driver core changes for 6.8-rc1
+Staging driver changes for 6.8-rc1
 
-Here are the set of driver core and kernfs changes for 6.8-rc1.  Nothing
-major in here this release cycle, just lots of small cleanups and some
-tweaks on kernfs that in the very end, got reverted and will come back
-in a safer way next release cycle.
+Here is the "big" set of staging driver changes for 6.8-rc1.  It's not
+really that big this release cycle, not much happened except for 186
+patches of coding style cleanups.  The majority was in the rtl8192e
+driver, but there are other smaller changes in a few other staging
+drivers, full details in the shortlog.
 
-Included in here are:
-  - more driver core 'const' cleanups and fixes
-  - fw_devlink=rpm is now the default behavior
-  - kernfs tiny changes to remove some string functions
-  - cpu handling in the driver core is updated to work better on many
-    systems that add topologies and cpus after booting
-  - other minor changes and cleanups
-
-All of the cpu handling patches have been acked by the respective
-maintainers and are coming in here in one series.  Everything has been
-in linux-next for a while with no reported issues.
+All of these have been in linux-next for a while with no reported
+issues.
 
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ----------------------------------------------------------------
-Ahelenia Ziemiańska (1):
-      kernfs: fix reference to renamed function
+Bagas Sanjaya (2):
+      MAINTAINERS: Mark VME subsystem as orphan
+      drivers: staging: vme_user: Describe VME_BUS and VME_TSI148
 
-Al Viro (1):
-      kernfs: d_obtain_alias(NULL) will do the right thing...
+Dan Carpenter (1):
+      staging: vc04_services: remove unnecessary NULL check
 
-Alexander Graf (1):
-      initramfs: Expose retained initrd as sysfs file
+Dipendra Khadka (1):
+      drivers: staging: rtl8712: Fixes spelling mistake in rtl871x_mp_phy_regdef.h
 
-Andrea Righi (1):
-      kernfs: convert kernfs_idr_lock to an irq safe raw spinlock
+Gary Rookard (43):
+      staging: rtl8192e: renamed variable HTMcsToDataRate
+      staging: rtl8192e: renamed variable TXCountToDataRate
+      staging: rtl8192e: renamed variable IsHTHalfNmodeAPs
+      staging: rtl8192e: renamed variable HTIOTPeerDetermine
+      staging: rtl8192e: renamed variable HTIOTActIsMgntUseCCK6M
+      staging: rtl8192e: renamed variable nMcsRate
+      staging: rtl8192e: renamed variable bCurBW40MHz
+      staging: rtl8192e: renamed variable nDataRate
+      staging: rtl8192e: renamed variable bRegShortGI20MHz
+      staging: rtl8192e: renamed variable bRegShortGI40MHz
+      staging: rtl8192e: renamed variable bRegBW40MHz
+      staging: rtl8192e: renamed variable bRegSuppCCK
+      staging: rtl8192e: renamed variable nAMSDU_MaxSize
+      staging: rtl8192e: renamed variable bAMSDU_Support
+      staging: rtl8192e: renamed variable bAMPDUEnable
+      staging: rtl8192e: renamed variable AMPDU_Factor
+      staging: rtl8192e: renamed variable MPDU_Density
+      staging: rtl8192e: renamed variable bTxEnableFwCalcDur
+      staging: rtl8192e: renamed variable bCurShortGI40MHz
+      staging: rtl8192e: renamed variable bCurShortGI20MHz
+      staging: rtl8192e: renamed variable CCKOFDMRate
+      staging: rtl8192e: renamed variable HTIOTActIsCCDFsync
+      staging: rtl8192e: renamed variable IOTPeer
+      staging: rtl8192e: rename variable HTIOTActDetermineRaFunc
+      staging: rtl8192e: rename variable HTResetIOTSetting
+      staging: rtl8192e: rename variable HTConstructCapabilityElement
+      staging: rtl8192e: rename variable HTConstructRT2RTAggElement
+      staging: rtl8192e: rename variable HT_PickMCSRate
+      staging: rtl8192e: rename variable posHTCap
+      staging: rtl8192e: rename variable IsEncrypt
+      staging: rtl8192e: rename variable bAssoc
+      staging: rtl8192e: rename variable HTSetConnectBwMode
+      staging: rtl8192e: rename variable HTOnAssocRsp
+      staging: rtl8192e: rename variable HTInitializeHTInfo
+      staging: rtl8192e: rename variable pHT
+      staging: rtl8192e: rename variable pCapELE
+      staging: rtl8192e: rename variable HTGetHighestMCSRate
+      staging: rtl8192e: renamed variable HTFilterMCSRate
+      staging: rtl8192e: rename variable HTInitializeBssDesc
+      staging: rtl8192e: rename variable HTResetSelfAndSavePeerSetting
+      staging: rtl8192e: rename variable HTCCheck
+      staging: rtl8192e: rename variable HTSetConnectBwModeCallback
+      staging: rtl8192e: rename variable ePeerHTSpecVer
 
-Andy Shevchenko (1):
-      device property: Implement device_is_big_endian()
+Pavan Bobba (11):
+      staging: vt6655: Type encoding info dropped from variable name "qwBSSTimestamp"
+      staging: vt6655: Type encoding info dropped from variable name "qwTSFOffset"
+      staging: vt6655: Type encoding info dropped from function name "CARDqGetTSFOffset"
+      staging: vt6655: Type encoding info dropped from function name "CARDbSetBeaconPeriod"
+      staging: vt6655: Type encoding info dropped from variable name "wBeaconInterval"
+      staging: vt6655: Type encoding info dropped from variable name "qwNextTBTT"
+      staging: vt6655: Type encoding info dropped from function name "CARDqGetNextTBTT"
+      staging: vt6655: Type encoding info dropped from function name "CARDbRadioPowerOff"
+      staging: vt6655: Type encoding info dropped from function name "CARDvSafeResetTx"
+      staging: vt6655: Type encoding info dropped from variable name "pCurrTD"
+      staging: vt6655: Type encoding info dropped from variable name "apTailTD"
 
-Christophe JAILLET (2):
-      base: soc: Remove usage of the deprecated ida_simple_xx() API
-      software node: Remove usage of the deprecated ida_simple_xx() API
+Philipp Hortmann (57):
+      staging: rtl8192e: Remove unused return value of rtl92e_set_channel()
+      staging: rtl8192e: Change parameter "ch" of set_chan() to u8
+      staging: rtl8192e: Unwind pointer to pointer to rtl92e_set_channel()
+      staging: rtl8192e: Remove equation that results in constant for chnl_plan
+      staging: rtl8192e: Remove constant variable chnl_plan
+      staging: rtl8192e: Remove unused variable eeprom_chnl_plan
+      staging: rtl8192e: Remove equation to check limits of channel
+      staging: rtl8192e: Remove check if channel_array[channel_plan].len != 0
+      staging: rtl8192e: Remove switch for a constant in dot11d_channel_map()
+      staging: rtl8192e: Remove constant index from channel_array[]
+      staging: rtl8192e: Remove unexecuted rtllib_extract_country_ie()
+      staging: rtl8192e: Remove unused function dot11d_update_country()
+      staging: rtl8192e: Remove IS_DOT11D_ENABLE(ieee)
+      staging: rtl8192e: Remove unused function dot11d_scan_complete()
+      staging: rtl8192e: Remove unused function dot11d_reset()
+      staging: rtl8192e: Remove unused macros IS_EQUAL_CIE_SRC and friends
+      staging: rtl8192e: Remove unused function copy_mac_addr()
+      staging: rtl8192e: Remove unused variable dot11d_info->state
+      staging: rtl8192e: Remove unused variables from struct rt_dot11d_info
+      staging: rtl8192e: Remove unused variable country_watchdog
+      staging: rtl8192e: Remove unused variable global_domain
+      staging: rtl8192e: Remove unused function dot11d_init()
+      staging: rtl8192e: Remove unused struct chnl_txpow_triple
+      staging: rtl8192e: Remove unused variable bss_start_channel
+      staging: rtl8192e: Remove unused interrupt for IMR_BcnInt
+      staging: rtl8192e: Remove unused function rtllib_get_beacon()
+      staging: rtl8192e: Remove unused timer beacon_timer
+      staging: rtl8192e: Remove unused function rtllib_send_beacon()
+      staging: rtl8192e: Remove unused function rtllib_get_beacon_()
+      staging: rtl8192e: Remove unused function rtllib_probe_resp()
+      staging: rtl8192e: Remove unused function HTConstructInfoElement()
+      staging: rtl8192e: Remove function rtl92e_update_rx_pkt_timestamp()
+      staging: rtl8192e: Remove function rtllib_update_active_chan_map()
+      staging: rtl8192e: Remove variable channel_map
+      staging: rtl8192e: Remove variable dot11d_info
+      staging: rtl8192e: Remove function dot11d_channel_map()
+      staging: rtl8192e: Remove files dot11d.c and dot11d.h
+      staging: rtl8192e: Remove unused struct iw_range_with_scan_capa
+      staging: rtl8192e: Remove variable ht_info->reg_bw_40mhz
+      staging: rtl8192e: Remove variable ht_info->reg_supp_cck
+      staging: rtl8192e: Remove variable ht_info->reg_short_gi_20mhz
+      staging: rtl8192e: Remove variable ht_info->reg_short_gi_40mhz
+      staging: rtl8192e: Remove variable ForcedAMPDUMode
+      staging: rtl8192e: Remove variable ForcedAMSDUMode
+      staging: rtl8192e: Remove equation with pPeerHTCap->DssCCk
+      staging: rtl8192e: Remove variable ht_info->bCurSuppCCK
+      staging: rtl8192e: Remove struct ht_info_ele SelfHTInfo
+      staging: rtl8192e: Remove variable bCurrent_AMSDU_Support
+      staging: rtl8192e: Remove unused variable nMaxAMSDUSize
+      staging: rtl8192e: Remove constant variable self_mimo_ps
+      staging: rtl8192e: Remove constant variable peer_mimo_ps
+      staging: rtl8192e: Remove constant variable forced_short_gi
+      staging: rtl8192e: Remove unused variable ht_info->amsdu_support
+      staging: rtl8192e: Remove variable ht_info->mpdu_density
+      staging: rtl8192e: Remove variable ht_info->RT2RT_HT_Mode
+      staging: rtl8192e: Remove constant variable reg_rt2rt_aggregation
+      staging: rtl8192e: Remove constant variable reg_rx_reorder_enable
 
-Greg Kroah-Hartman (8):
-      driver core: make device_is_dependent() static
-      Merge tag 'device_is_big_endian-6.8-rc1' into driver-core-next
-      driver core: bus: make bus_sort_breadthfirst() take a const pointer
-      driver core: bus: constantify subsys_register() calls
-      driver core: container: make container_subsys const
-      driver core: mark remaining local bus_type variables as const
-      EDAC: constantify the struct bus_type usage
-      PM: clk: make pm_clk_add_notifier() take a const pointer
+Piro Yang (2):
+      staging: vme_user: Fix the issue of return the wrong error code
+      staging: vme_user: print more detailed infomation when an error occurs
 
-Gregory Price (1):
-      base/node.c: initialize the accessor list before registering
+Ryan England (1):
+      staging: rtl8712: fix open parentheses alignment
 
-James Morse (13):
-      arch_topology: Make register_cpu_capacity_sysctl() tolerant to late CPUs
-      x86: intel_epb: Don't rely on link order
-      ACPI: Move ACPI_HOTPLUG_CPU to be disabled on arm64 and riscv
-      drivers: base: Use present CPUs in GENERIC_CPU_DEVICES
-      drivers: base: Allow parts of GENERIC_CPU_DEVICES to be overridden
-      drivers: base: Implement weak arch_unregister_cpu()
-      drivers: base: Move cpu_dev_init() after node_dev_init()
-      drivers: base: Print a warning instead of panic() when register_cpu() fails
-      arm64: setup: Switch over to GENERIC_CPU_DEVICES using arch_register_cpu()
-      x86/topology: Switch over to GENERIC_CPU_DEVICES
-      LoongArch: Switch over to GENERIC_CPU_DEVICES
-      LoongArch: Use the __weak version of arch_unregister_cpu()
-      riscv: Switch over to GENERIC_CPU_DEVICES
+Stefan Wahren (3):
+      staging: vchiq_core: Make vchiq_dump_service_state static
+      staging: vchiq_core: Shorten bulk TX/RX pending dump
+      staging: vchiq_arm: move state dump to debugfs
 
-Jing Xia (1):
-      class: fix use-after-free in class_register()
+Tree Davies (57):
+      Staging: rtl8192e: Rename variable bSendDELBA
+      Staging: rtl8192e: Rename variable bCurrentAMPDUEnable
+      Staging: rtl8192e: Rename variable bAddBaReqInProgress
+      Staging: rtl8192e: Rename variable bAddBaReqDelayed
+      Staging: rtl8192e: Rename variable bUsingBa
+      Staging: rtl8192e: Rename variable bOverwritePending
+      Staging: rtl8192e: Rename variable bDisable_AddBa
+      Staging: rtl8192e: Rename variable pTxTs
+      Staging: rtl8192e: Rename variable BAReq
+      Staging: rtl8192e: Rename variable Delba
+      Staging: rtl8192e: Rename variable TSpec
+      Staging: rtl8192e: Rename variable TxAdmittedBARecord
+      Staging: rtl8192e: Rename variable TxPendingBARecord
+      Staging: rtl8192e: Rename variable pDialogToken
+      Staging: rtl8192e: Rename variable pTsCommonInfo
+      Staging: rtl8192e: Rename variable TxCurSeq
+      Staging: rtl8192e: Rename variable TsAddBaTimer
+      Staging: rtl8192e: Rename variable DelbaParamSet
+      Staging: rtl8192e: Rename variable pBaParamSet
+      Staging: rtl8192e: Rename variable pBaTimeoutVal
+      Staging: rtl8192e: Rename variable pAdmittedBA
+      Staging: rtl8192e: Rename variable TsCommonInfo
+      Staging: rtl8192e: Remove variable bFirstSeg
+      Staging: rtl8192e: Remove variable bLastSeg
+      Staging: rtl8192e: Remove variable bEncrypt
+      Staging: rtl8192e: Remove variable macId
+      Staging: rtl8192e: rename linked list reference: List
+      Staging: rtl8192e: Rename array variable RxTsRecord
+      Staging: rtl8192e: Rename array variable TxTsRecord
+      Staging: rtl8192e: Rename variable ucTSID
+      Staging: rtl8192e: Rename variable pDelBaParamSet
+      Staging: rtl8192e: Rename variable pBaStartSeqCtrl
+      Staging: rtl8192e: Remove unnecessary braces from MgntQuery_MgntFrameTxRate()
+      Staging: rtl8192e: Remove unnecessary parenthesis in rtllib_association_req()
+      Staging: rtl8192e: Remove unnecessary parenthesis in rtllib_rx_assoc_resp()
+      Staging: rtl8192e: Remove unnecessary parenthesis in rtllib_ap_sec_type()
+      Staging: rtl8192e: Remove unnecessary parenthesis in rtllib_association_req()
+      Staging: rtl8192e: Fixup multiple assinment in init_mgmt_queue()
+      Staging: rtl8192e: Fix statement broken across 2 lines in rtllib_rx_assoc_resp()
+      Staging: rtl8192e: Fix function definition broken across multiple lines
+      Staging: rtl8192e: Fixup statement broken across 2 lines in rtllib_softmac_xmit()
+      Staging: rtl8192e: Fixup statement broken across 2 lines in rtllib_softmac_new_net()
+      Staging: rtl8192e: Rename function rtllib_MFIE_Brate()
+      Staging: rtl8192e: Rename function rtllib_MFIE_Grate()
+      Staging: rtl8192e: Rename function rtllib_WMM_Info()
+      Staging: rtl8192e: Rename function rtllib_TURBO_Info()
+      Staging: rtl8192e: Rename variable QueryRate
+      Staging: rtl8192e: Rename variable BasicRate
+      Staging: rtl8192e: Rename variable skb_waitQ
+      Staging: rtl8192e: Rename variable bInitState
+      Staging: rtl8192e: Rename function rtllib_DisableNetMonitorMode()
+      Staging: rtl8192e: Rename variable bUsed
+      Staging: rtl8192e: Rename variable NumTxOkInPeriod
+      Staging: rtl8192e: Rename variable NumRxOkInPeriod
+      Staging: rtl8192e: Rename function rtllib_EnableNetMonitorMode()
+      Staging: rtl8192e: Rename variable bIsAggregateFrame
+      Staging: rtl8192e: Rename variable OpMode
 
-Kees Cook (3):
-      kernfs: Convert kernfs_walk_ns() from strlcpy() to strscpy()
-      kernfs: Convert kernfs_name_locked() from strlcpy() to strscpy()
-      kernfs: Convert kernfs_path_from_node_locked() from strlcpy() to strscpy()
+Umang Jain (8):
+      staging: vc04_services: vchiq_core: Log through struct vchiq_instance
+      staging: vc04_services: Do not pass NULL to vchiq_log_error()
+      staging: vc04_services: Drop vchiq_log_error() in favour of dev_err
+      staging: vc04_services: Drop vchiq_log_warning() in favour of dev_warn
+      staging: vc04_services: Drop vchiq_log_trace() in favour of dev_dbg
+      staging: vc04_services: Drop vchiq_log_debug() in favour of dev_dbg
+      staging: vc04_services: vchiq_arm: Use %p to log pointer address
+      staging: vc04_services: vchiq_dev: Use %p to log pointer address
 
-Max Kellermann (2):
-      kernel/cgroup: use kernfs_create_dir_ns()
-      fs/kernfs/dir: obey S_ISGID
-
-Mukesh Ojha (1):
-      fs/sysfs/dir.c : Fix typo in comment
-
-Randy Dunlap (2):
-      driver core: class: fix Excess kernel-doc description warning
-      driver core: device.h: fix Excess kernel-doc description warning
-
-Russell King (Oracle) (8):
-      x86/topology: remove arch_*register_cpu() exports
-      Loongarch: remove arch_*register_cpu() exports
-      drivers: base: add arch_cpu_is_hotpluggable()
-      arm64: convert to arch_cpu_is_hotpluggable()
-      x86/topology: use weak version of arch_unregister_cpu()
-      x86/topology: convert to use arch_cpu_is_hotpluggable()
-      LoongArch: convert to use arch_cpu_is_hotpluggable()
-      riscv: convert to use arch_cpu_is_hotpluggable()
-
-Sakari Ailus (3):
-      acpi: property: Let args be NULL in __acpi_node_get_property_reference
-      software node: Let args be NULL in software_node_get_reference_args
-      device property: fwnode_property_get_reference_args allows NULL args now
-
-Saravana Kannan (1):
-      driver core: Enable fw_devlink=rpm by default
-
-Tejun Heo (1):
-      Revert "kernfs: convert kernfs_idr_lock to an irq safe raw spinlock"
-
-Uwe Kleine-König (2):
-      driver core: Emit reason for pending deferred probe
-      driver core: Better advertise dev_err_probe()
-
- Documentation/ABI/testing/sysfs-firmware-initrd |  8 ++++
- Documentation/admin-guide/kernel-parameters.txt |  5 +-
- arch/arm64/Kconfig                              |  1 +
- arch/arm64/include/asm/cpu.h                    |  1 -
- arch/arm64/kernel/setup.c                       | 13 +-----
- arch/loongarch/Kconfig                          |  2 +
- arch/loongarch/kernel/topology.c                | 42 +----------------
- arch/riscv/Kconfig                              |  1 +
- arch/riscv/kernel/setup.c                       | 18 +------
- arch/x86/Kconfig                                |  2 +
- arch/x86/include/asm/cpu.h                      |  4 --
- arch/x86/kernel/cpu/intel_epb.c                 |  2 +-
- arch/x86/kernel/topology.c                      | 33 +------------
- drivers/acpi/Kconfig                            |  1 -
- drivers/acpi/acpi_processor.c                   | 18 -------
- drivers/acpi/property.c                         |  4 ++
- drivers/base/arch_topology.c                    | 38 ++++++++++-----
- drivers/base/auxiliary.c                        |  2 +-
- drivers/base/bus.c                              |  8 ++--
- drivers/base/class.c                            |  1 +
- drivers/base/container.c                        |  2 +-
- drivers/base/core.c                             | 13 +++---
- drivers/base/cpu.c                              | 39 ++++++++++++----
- drivers/base/dd.c                               |  2 +-
- drivers/base/init.c                             |  2 +-
- drivers/base/isa.c                              |  2 +-
- drivers/base/memory.c                           |  2 +-
- drivers/base/node.c                             | 11 +++--
- drivers/base/power/clock_ops.c                  |  2 +-
- drivers/base/power/domain.c                     |  2 +-
- drivers/base/property.c                         |  1 +
- drivers/base/soc.c                              |  6 +--
- drivers/base/swnode.c                           | 11 +++--
- drivers/edac/edac_device.h                      |  2 +-
- drivers/edac/edac_device_sysfs.c                |  2 +-
- drivers/edac/edac_module.c                      |  4 +-
- drivers/edac/edac_pci_sysfs.c                   |  2 +-
- fs/kernfs/dir.c                                 | 62 +++++++++++++++----------
- fs/kernfs/file.c                                |  2 +-
- fs/kernfs/mount.c                               |  3 --
- fs/sysfs/dir.c                                  |  2 +-
- include/linux/container.h                       |  2 +-
- include/linux/cpu.h                             |  5 ++
- include/linux/device.h                          |  8 ++--
- include/linux/device/bus.h                      |  2 +-
- include/linux/device/class.h                    |  2 -
- include/linux/edac.h                            |  4 +-
- include/linux/pm_clock.h                        |  4 +-
- include/linux/property.h                        | 26 +++++++++++
- init/initramfs.c                                | 18 ++++++-
- kernel/cgroup/cgroup-v1.c                       |  2 +-
- kernel/cgroup/cgroup.c                          | 35 +++-----------
- kernel/cgroup/cpuset.c                          |  2 +-
- 53 files changed, 234 insertions(+), 254 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-firmware-initrd
+ CREDITS                                            |   8 +
+ MAINTAINERS                                        |   5 +-
+ drivers/staging/rtl8192e/Makefile                  |   1 -
+ drivers/staging/rtl8192e/dot11d.c                  | 165 -----
+ drivers/staging/rtl8192e/dot11d.h                  |  84 ---
+ drivers/staging/rtl8192e/rtl8192e/r8192E_cmdpkt.c  |   4 +-
+ drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c     |  41 +-
+ drivers/staging/rtl8192e/rtl8192e/r8192E_phy.c     |  12 +-
+ drivers/staging/rtl8192e/rtl8192e/r8192E_phy.h     |   2 +-
+ drivers/staging/rtl8192e/rtl8192e/rtl_core.c       | 101 +---
+ drivers/staging/rtl8192e/rtl8192e/rtl_core.h       |  11 -
+ drivers/staging/rtl8192e/rtl8192e/rtl_dm.c         |  22 +-
+ drivers/staging/rtl8192e/rtl8192e/rtl_wx.c         |  22 -
+ drivers/staging/rtl8192e/rtl819x_BAProc.c          | 226 +++----
+ drivers/staging/rtl8192e/rtl819x_HT.h              |  35 +-
+ drivers/staging/rtl8192e/rtl819x_HTProc.c          | 371 +++++-------
+ drivers/staging/rtl8192e/rtl819x_Qos.h             |   2 +-
+ drivers/staging/rtl8192e/rtl819x_TS.h              |  22 +-
+ drivers/staging/rtl8192e/rtl819x_TSProc.c          | 156 ++---
+ drivers/staging/rtl8192e/rtllib.h                  |  71 +--
+ drivers/staging/rtl8192e/rtllib_module.c           |   2 +-
+ drivers/staging/rtl8192e/rtllib_rx.c               |  82 +--
+ drivers/staging/rtl8192e/rtllib_softmac.c          | 387 ++----------
+ drivers/staging/rtl8192e/rtllib_softmac_wx.c       |  11 +-
+ drivers/staging/rtl8192e/rtllib_tx.c               |  66 +-
+ drivers/staging/rtl8192e/rtllib_wx.c               |   2 +-
+ drivers/staging/rtl8712/os_intfs.c                 |   3 +-
+ drivers/staging/rtl8712/rtl8712_efuse.c            |   9 +-
+ drivers/staging/rtl8712/rtl8712_recv.c             |   3 +-
+ drivers/staging/rtl8712/rtl8712_xmit.c             |  60 +-
+ drivers/staging/rtl8712/rtl871x_cmd.c              | 159 ++---
+ drivers/staging/rtl8712/rtl871x_cmd.h              |  37 +-
+ drivers/staging/rtl8712/rtl871x_ioctl_linux.c      | 203 +++----
+ drivers/staging/rtl8712/rtl871x_mp_phy_regdef.h    |   2 +-
+ drivers/staging/vc04_services/interface/TODO       |   5 -
+ .../vc04_services/interface/vchiq_arm/vchiq_arm.c  | 271 +++------
+ .../vc04_services/interface/vchiq_arm/vchiq_arm.h  |   7 -
+ .../interface/vchiq_arm/vchiq_connected.c          |   8 +-
+ .../interface/vchiq_arm/vchiq_connected.h          |   4 +-
+ .../vc04_services/interface/vchiq_arm/vchiq_core.c | 664 +++++++++------------
+ .../vc04_services/interface/vchiq_arm/vchiq_core.h |  54 +-
+ .../interface/vchiq_arm/vchiq_debugfs.c            |  10 +
+ .../vc04_services/interface/vchiq_arm/vchiq_dev.c  | 113 ++--
+ drivers/staging/vme_user/Kconfig                   |  22 +-
+ drivers/staging/vme_user/vme.c                     |   4 +-
+ drivers/staging/vt6655/card.c                      |  90 +--
+ drivers/staging/vt6655/card.h                      |  18 +-
+ drivers/staging/vt6655/device.h                    |   4 +-
+ drivers/staging/vt6655/device_main.c               |  18 +-
+ drivers/staging/vt6655/rxtx.c                      |   2 +-
+ 50 files changed, 1261 insertions(+), 2420 deletions(-)
+ delete mode 100644 drivers/staging/rtl8192e/dot11d.c
+ delete mode 100644 drivers/staging/rtl8192e/dot11d.h
 
