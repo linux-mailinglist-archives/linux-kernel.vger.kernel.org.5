@@ -1,151 +1,85 @@
-Return-Path: <linux-kernel+bounces-29024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CC79830721
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:34:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C99A7830723
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:35:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 182FD288628
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:34:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCD7C1C21639
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:35:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DCF31F602;
-	Wed, 17 Jan 2024 13:33:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="WqG/cYfy"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7DD91F5E7;
+	Wed, 17 Jan 2024 13:35:08 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D091F93E
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 13:33:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D111EB4D
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 13:35:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705498437; cv=none; b=qGF0IC9LoY5EQb+dgI6XgM+/Is0Kb80KXMkkzR7rZfpZsYvnaClJ3EGokfaIRAnfrakx8nU/NrYbeyZM1KAt3T4TjIdg8fh1ykCueo6L9waYGuk/S7krrOVNGHMt3n/UMv9wZLr4kINLuGTjlK/eG0PY0cqxh5C32kOSIAEB3Ms=
+	t=1705498508; cv=none; b=n3B9fuxWNIfB1H/0qceRr/zpVGcOPdtq7ihOHHUCK17t7BzpDGqHt0hPgP3EsSnJLzWXkSCH+xHctLltY6xd/mWu344XC/9xKgvTycd8a7BNIgJA9WJ+JL6zJU62VJEoopKhwZB4d+TJEAywvFXmfloM5JAOs7wdBtVzSif03Vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705498437; c=relaxed/simple;
-	bh=UuGDO1lyqxltJpJigP1D6FUEJ5ufFBGRIcN6zcBWCBg=;
-	h=DKIM-Signature:Received:Received:X-UD-Smtp-Session:Date:From:To:
-	 Cc:Subject:Message-ID:Mail-Followup-To:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z04CrbKKYFvj8Dqa7iAPuYTf3R8zOZqWcw9SfQ9SRg+i34VdIwayiypIcBhFhZD/K3ORMTrpUZPuxmQSmpHvZXGoZroKcO8rFmogqEAPUU5qoIsqNM6IsfWhlISMve0cTZuSWa9ETj5f2M4wZMndAUYALl5NsBQ4D1rxIuvMDr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=WqG/cYfy; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=j+/z
-	k1oyP0DIGmWY/Ymmxrp820m0TdG3XCUMKbXxxXc=; b=WqG/cYfyYiWDoJerc38f
-	w67UvjoDvt2U+wI0Tg39bNYR40H5zIxwqr8tEog2Sa2xZLYraYvNLeZ2ojmDB0dl
-	7m0/X/OHalyQuLSfugnq/GcTQWXwyrGKjVoqtvVZ+KfPWUqjxNtda/mcRx2UWMrW
-	1jjCVyGQ6NRvI/TUO7vqkEtDzzWL4JTa+hi2x5jVHoZwhx0ptcmgPruMBBptUYiA
-	AiF/ttuCJ7iT1ySbANmXoRr5p+g/91AGJgMTbwws3R1+6VHsHjAZmtEtT4rK/pgF
-	zj33HtTcKmQ7ROlePpk7z0OAld39pGUY3EYEnQAB9H9Z1Yqqcli0kLMeq/ei1IKc
-	pg==
-Received: (qmail 2759525 invoked from network); 17 Jan 2024 14:33:53 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 17 Jan 2024 14:33:53 +0100
-X-UD-Smtp-Session: l3s3148p1@cRVKTCQPsM5ehhtJ
-Date: Wed, 17 Jan 2024 14:33:53 +0100
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Francesco Dolcini <francesco@dolcini.it>
-Cc: linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
-	Francesco Dolcini <francesco.dolcini@toradex.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] net: phy: micrel: reset KSZ9x31 when resuming
-Message-ID: <ZafXQS1_4fHpEzL0@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Francesco Dolcini <francesco@dolcini.it>,
-	linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
-	Francesco Dolcini <francesco.dolcini@toradex.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-kernel@vger.kernel.org
-References: <20240109205223.40219-1-wsa+renesas@sang-engineering.com>
- <20240109232838.GA3626@francesco-nb>
+	s=arc-20240116; t=1705498508; c=relaxed/simple;
+	bh=OUMfXeArj0HXVgSvfgSasLkiXApnYxPN3j76HDFRTS4=;
+	h=Received:X-Google-DKIM-Signature:X-Gm-Message-State:
+	 X-Google-Smtp-Source:MIME-Version:X-Received:Date:In-Reply-To:
+	 X-Google-Appengine-App-Id:X-Google-Appengine-App-Id-Alias:
+	 Message-ID:Subject:From:To:Content-Type; b=DkRDcoUsFZrEiqX7W9OkUYGVqegyLiw0vQw6Z0C/PnE3oGCQkGBoKZLLhaT9tIRHaoVTKJrI8Q11q24oYIeyT+gKTDk/MLSwWXJNc8vMVIfYvZ9/fzEmm+cq1+dI6VfvfGI9HiPeU9SIcScRWyXyO6O83A0fArydNywaXba4gBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7bf4ce8405dso216553839f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 05:35:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705498506; x=1706103306;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VZaEyxO71I8qdcKlz7TGqyeN+SJMsm6CO+OgGEYalDo=;
+        b=mzLNcfbpwTjPS0xCroEUhTlJjEKt0id/4rdIx2JcWHZ2ptA/GWTkmaBM0LjQsYMu4r
+         W3n7HxLTuPgDfBQYphjgtMMzhv7Yyz3atNIyD8CEuOY/QPH6re2FydpvSQNsadmSEtYs
+         JF3e+OmMCHnS1KEybZgV7OWYAj7rMAg732takwv3jN+QL2WUxu5tzc3w9I9vKdD2Wh3J
+         SUm5PAdJ3WcHAhf2X0CvjS0Js63pKicL+lOHa11nJYXPBgvoyd+ftVgH9eH1U/svla8P
+         8eDW6MQWl4W5OuARttw+bx6BxtfJDMDA9+XNW3BAE4EtQJLwyUcEP3EwdRmcrYYUq+V3
+         sJ7w==
+X-Gm-Message-State: AOJu0YwcUr2slTyoQTZkvfGGHspZw4vR7jyDjZpQOcIqHa+n53EDMt2x
+	BHXJcPfAThz2lzZPqr+6Rnbqbg1Y7VbFhkR27hu+pGfdMbIu
+X-Google-Smtp-Source: AGHT+IG/osXct4btBMAUb4tjq//ky5reC00Q6e26CjJI3sxj9Aekygxhe/hyVAiz/cD99I+wiZfUovk5e/AvN30yyNF7ia1s+Hzz
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="o+uq2DgmSJF8bKpv"
-Content-Disposition: inline
-In-Reply-To: <20240109232838.GA3626@francesco-nb>
+X-Received: by 2002:a02:ce91:0:b0:46e:65a3:48ea with SMTP id
+ y17-20020a02ce91000000b0046e65a348eamr349545jaq.0.1705498506228; Wed, 17 Jan
+ 2024 05:35:06 -0800 (PST)
+Date: Wed, 17 Jan 2024 05:35:06 -0800
+In-Reply-To: <20240117131417.1132-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a0fcd7060f24505c@google.com>
+Subject: Re: [syzbot] [net?] KASAN: use-after-free Read in __skb_flow_dissect (3)
+From: syzbot <syzbot+bfde3bef047a81b8fde6@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot tried to test the proposed patch but the build/boot failed:
+
+net/core/flow_dissector.c:1169:29: error: assignment to 'const struct iphdr *' from incompatible pointer type 'unsigned char *' [-Werror=incompatible-pointer-types]
 
 
---o+uq2DgmSJF8bKpv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Tested on:
 
-Hi Francesco,
+commit:         052d5343 Merge tag 'exfat-for-6.8-rc1' of git://git.ke..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+kernel config:  https://syzkaller.appspot.com/x/.config?x=da1c95d4e55dda83
+dashboard link: https://syzkaller.appspot.com/bug?extid=bfde3bef047a81b8fde6
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=15ed3ab9e80000
 
-> - Philippe, email address is no longer valid.
-
-OK, thanks for the heads up.
-
-> Therefore is not straightforward to provide valuable feedback to you
-> now.
-
-Thanks for answering anyhow.
-
-> > +static int ksz9x31_resume(struct phy_device *phydev)
-> > +{
-> > +	phy_device_reset(phydev, 1);
-> > +	phy_device_reset(phydev, 0);
->=20
-> Is something like that fine?
-> Don't we need to reconfigure the ethernet phy completely on resume
-> if we do reset it? kszphy_config_reset() is taking care of something,
-> but I think that the phy being reset on resume is not handled
-> correctly.
-
-If the interface is up before suspending, then suspend will assert the
-reset-line. If the interface is disabled before suspending, then close
-will assert the reset line. Deassertion will happen on resume/open.
-
-So, unless I am overlooking something, my code does not really add
-something new. It only makes sure that the reset line always gets
-asserted before deasserting. Because in the case that the interface has
-never been up before, there is no instance which could assert reset. Or,
-at least, I could not find one.
-
-Makes sense? Tests work fine here, at least.
-
-All the best,
-
-   Wolfram
-
-
---o+uq2DgmSJF8bKpv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmWn1z0ACgkQFA3kzBSg
-KbYxJQ//YiEtiH+Msn59O98tHTnBrLaLiXG4UvgPdri2v9taDZJrHBkzfAxINtfE
-58YzOaveDxfCs3Q+YdwsyhwTNaBlHe3jeMQjeiS6xABJIjlmYcuqcfdt+03xvFdV
-zjMwnR8jH2wjDVbDBuzz2cQhQOaY9atsluMBe4z5tyKDecYs1WzH+/rLEmgjMdxU
-zmPIGa8+XawTh7PCEn1448VsakTrSTOIRBlfkh0ppXV5C5t0wU4gdVd7aEPLb46o
-8vmcbEFX6+uICU2yoUqKx++GGswWo5QF//wYTCwX6xhF9QoK5db9YnD30vp3I3re
-x2hkuFMA3BNWLLLuPV8T7rr6sj2/c1d8Lby3drQhSrSHV6S2ffH8iYZWDP67syyr
-Ar7xgImw/WLM4RQLrzlzY4vR10WQXNw23B3z4s5jPj1r0gegJAOdj3DC7pAVGByu
-SOAy5LwITRqliE8B/+nLoJRF/DQqnoenk5RO2vwgkUoxGsdjHJ20NX9NJnw3u6g6
-ceGEME6+smxdqgOj5UYCoQAP2puwNTo0V9eAFvQhouHg+3vPQjmwdhxpSPINaXbr
-Kgm0ykfq3c5vGagWTKvhqnPhAt80ekDYBR9neIh0KdHj8I/hDugvydxGZKHpajQ3
-z9RG2jjFbthPfnRKvegAafK49LkiOPcqjwQf6IalIkB3zf0foIA=
-=MOoA
------END PGP SIGNATURE-----
-
---o+uq2DgmSJF8bKpv--
 
