@@ -1,56 +1,40 @@
-Return-Path: <linux-kernel+bounces-28956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D002830524
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:26:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 574B4830517
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:20:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6F851F23338
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:26:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA66128A3D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 12:20:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B52C1DFE8;
-	Wed, 17 Jan 2024 12:26:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="ahjmqSdd"
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 265B91DDFF;
-	Wed, 17 Jan 2024 12:26:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.48.224.245
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 641411DFEB;
+	Wed, 17 Jan 2024 12:20:17 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 164381DFCD;
+	Wed, 17 Jan 2024 12:20:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705494379; cv=none; b=jkvzeucYVHsj/ptBcQ+ClXroSbWwn4zjBVWyLbV1uZfyznwLHeMSOBVRy4QHAAZIEaE9x4zOt2rFqxIt03Cb9FXyqR9w79vG2ZflsSMy0DksYKfk0UDc8BmhCvWzcR2bVXJSPkvet/AB/kFSelylpUHFsP3L+kaTeUVi+axzdQA=
+	t=1705494017; cv=none; b=hT44F0an2852AIoy2Qp3GsutMMkHUFoLXP0RO3UwFMLQWuqJ6pCFpdVCErAcTWtQhyd11P9tyOczSnI3R4rQYsKcdoID79L5gmnk7cTXkzmyy1yN7Oot22Iqom9VdL8HFDe3UwL7gAHlsgPmB19xbqHyHJ0Fa10D3aQUdxFd5uA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705494379; c=relaxed/simple;
-	bh=dKEbtr22JSoM2eDC7MVGxfwSL8ybqJWGhJQldTcN6lQ=;
-	h=Received:DKIM-Filter:DKIM-Signature:Received:Message-ID:Date:
-	 MIME-Version:User-Agent:Subject:Content-Language:To:References:
-	 From:Autocrypt:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-	b=t1eulXJAieSskbliYP4erwpwzUZK2tnTSS/ZdjbtNAQ63ZENHvrpNO1/4imK2Q5DjsVTG+J1wSjgYcHGVg6J2klF734+rNtMV4XKeEGtDr6HH5qZ0twgJlaiabjnl+2+/0pT81vEH2vK8G9W/VzkvgYGkHxNLIY9WHp3CRzgAuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=perex.cz; spf=pass smtp.mailfrom=perex.cz; dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b=ahjmqSdd; arc=none smtp.client-ip=77.48.224.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=perex.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perex.cz
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 617D93347;
-	Wed, 17 Jan 2024 13:20:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 617D93347
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1705494017; bh=gqVNwJd9myQDNzn0BB/yVFVboWoPFQOlC3FiaBFsGzk=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=ahjmqSddrDRceTKPhmKEq0cJFidxd4tm0nuAI3QjmBiZu8tjQYF4NjS/ptOt/eegV
-	 aTm7vS0427H638/hfYKlh8gTylT0mPmmjMXSB5i1UyX1YSPgZvG0G8rmfAA83WxF/j
-	 dtFNShBzABakwI8scjP0YzuToMYgJRAlufB/y2jQ=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: perex)
-	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Wed, 17 Jan 2024 13:20:11 +0100 (CET)
-Message-ID: <473c1c2b-3426-4ec7-8319-dd08f3ae5a0c@perex.cz>
-Date: Wed, 17 Jan 2024 13:20:09 +0100
+	s=arc-20240116; t=1705494017; c=relaxed/simple;
+	bh=wZhbyFNn4JqJb0pkLFRCR7iXvHOOBQbUVu4GjXo16/U=;
+	h=Received:Received:Message-ID:Date:MIME-Version:User-Agent:
+	 Content-Language:To:From:Subject:Content-Type:
+	 Content-Transfer-Encoding; b=GnmSg8Gm+uk1G7Y8v+j21qNOJTep/HqPFz4LKb6uAq7hOTJnCiAYD6K83pk7d+03sv9eGZwwUIXShmG81QQephpz1HgOgCdsqNoH5RiAzBeAmPzmHxQPflaKIlqhHiSCJj/rKD9Qgs3Rz3fdm01wmHXZraPSFXgnqSsWQyAlMlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8262C11FB;
+	Wed, 17 Jan 2024 04:21:00 -0800 (PST)
+Received: from [10.1.26.46] (e133047.arm.com [10.1.26.46])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C77F3F766;
+	Wed, 17 Jan 2024 04:20:13 -0800 (PST)
+Message-ID: <cde50a18-7c09-4d00-b3b8-32da2992c952@arm.com>
+Date: Wed, 17 Jan 2024 12:20:11 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,97 +42,46 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: soc-core.c: Add "Unknown" and "Unknown Product" to
- dmi_blacklist
 Content-Language: en-US
-To: Daniel Abrecht <linux-sound@nodmarc.danielabrecht.ch>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <78a54997daea2b327ad59d495bc33851@abrecht.li>
-From: Jaroslav Kysela <perex@perex.cz>
-Autocrypt: addr=perex@perex.cz; keydata=
- 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
-In-Reply-To: <78a54997daea2b327ad59d495bc33851@abrecht.li>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: linux-kernel@vger.kernel.org, axboe@kernel.dk, bvanassche@acm.org,
+ linux-block@vger.kernel.org, corbet@lwn.net
+From: Christian Loehle <christian.loehle@arm.com>
+Subject: [PATCH] Documentation: block: ioprio: Update schedulers
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 17. 01. 24 13:14, Daniel Abrecht wrote:
-> In U-Boot, the default for DMI vendor / product if not set is "Unknown"
-> and "Unknown Product".
-> See
-> https://source.denx.de/u-boot/u-boot/-/blob/v2023.10/lib/smbios.c?ref_type=tags#L272
-> 
-> This patch adds them to the dmi_blacklist.
-> 
-> Signed-off-by: Daniel Abrecht <public@danielabrecht.ch>
+This doc hasn't been touched in a while, in the meantime some
+new io schedulers were added (e.g. all of mq), some with ioprio
+support.
 
-I think that there's a whitespace issue, but for the contents:
+Signed-off-by: Christian Loehle <christian.loehle@arm.com>
+---
+ Documentation/block/ioprio.rst | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Acked-by: Jaroslav Kysela <perex@perex.cz>
-
-
-> ---
->    sound/soc/soc-core.c | 2 ++
->    1 file changed, 2 insertions(+)
-> 
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index f8524b5bfb33..aa1a31abbe3a 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -1804,6 +1804,8 @@ static const char * const dmi_blacklist[] = {
->        "Board Manufacturer",
->        "Board Vendor Name",
->        "Board Product Name",
-> +    "Unknown",
-> +    "Unknown Product",
->        NULL,    /* terminator */
->    };
-> 
-
+diff --git a/Documentation/block/ioprio.rst b/Documentation/block/ioprio.rst
+index a25c6d5df87b..5410308888d2 100644
+--- a/Documentation/block/ioprio.rst
++++ b/Documentation/block/ioprio.rst
+@@ -9,14 +9,14 @@ Intro
+ With the introduction of cfq v3 (aka cfq-ts or time sliced cfq), basic io
+ priorities are supported for reads on files.  This enables users to io nice
+ processes or process groups, similar to what has been possible with cpu
+-scheduling for ages.  This document mainly details the current possibilities
+-with cfq; other io schedulers do not support io priorities thus far.
++scheduling for ages. Support for io priorities is io scheduler dependent and
++currently supported by bfq, mq-deadline and cfq.
+ 
+ Scheduling classes
+ ------------------
+ 
+-CFQ implements three generic scheduling classes that determine how io is
+-served for a process.
++Three generic scheduling classes are implemented for io priorities that
++determine how io is served for a process.
+ 
+ IOPRIO_CLASS_RT: This is the realtime io class. This scheduling class is given
+ higher priority than any other in the system, processes from this class are
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
-
+2.34.1
 
