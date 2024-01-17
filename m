@@ -1,166 +1,234 @@
-Return-Path: <linux-kernel+bounces-29177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB074830A1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:55:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EECC5830A22
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:56:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED09C2879C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:55:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8216A2876E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:56:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69B5A22327;
-	Wed, 17 Jan 2024 15:55:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E2A422301;
+	Wed, 17 Jan 2024 15:56:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dvk8/f8/"
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cRiBZ2Es"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42F3321A16;
-	Wed, 17 Jan 2024 15:55:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CE3820307;
+	Wed, 17 Jan 2024 15:56:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705506904; cv=none; b=ci2eReWfEnlpfOxRwYCqtU9OvOB4vc6PE4IX4CaelxH3hPLQe1WVwIQ3J/whNY14G0sVmeL+pfl3A9NKHcq6iZ8Q0rjp9grWDA6Wvn1i/sQheoXkGC0emu1wjE4vv4IfdTCb1cpUzcao2eqbbg7JkZiVx7gYG/bRQt5G9CayfL0=
+	t=1705506997; cv=none; b=Z4mWQswt3DxQo1JN5c0aQMDMqT7j+vL4vIU2DT+iF5MARLlTpILb3Zd6V+npXipks6Q4fuK52qtOtdIWH/bJTHL3vVN84xVeZiLrj6CGOTDFEXd1mxMjifXpSaTrkTjZqXEW/uYgqH4Y8WkVNUS5hAcNjuJAenShfbAk3ic0gUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705506904; c=relaxed/simple;
-	bh=ttGJe8J4pcxRkey779Yd+cZv874UqM4wsN7cskxubio=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
-	 From:To:Cc:Message-ID:In-Reply-To:References:Subject:Mime-Version:
-	 Content-Type:Content-Transfer-Encoding; b=ajkBXDmtS7H1Aeo9qSlleNT4HpF/k3t2gUJEsoSuXfZvSWyDb1ws88+Jzn5U3hyAg3RrA0RxYOOqSLb6YGatWOziav9SP444p1Y8oRNfz7VRhpZufQaCkHdlv0SsznfrWdOWmtGaAi9uQSSaFVCHc7SMQhGpqernvnDtiDy6OqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dvk8/f8/; arc=none smtp.client-ip=209.85.219.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-680b1335af6so93855216d6.1;
-        Wed, 17 Jan 2024 07:55:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705506902; x=1706111702; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ttGJe8J4pcxRkey779Yd+cZv874UqM4wsN7cskxubio=;
-        b=dvk8/f8/2jB5aZe7zNFkQZ/ejUppjaKbdR/8nxkSG79U+tturBRm51To2SWPC9sHGe
-         aLpDeRpPDva5Q0oYTZnGS54EcmdZDVfhAUXyYfrs8vhfOoQbNKX4q5c+9GonWpsJjcM2
-         +CWJicwLzn7dYvNLztnqu3Njwrf4isYiAvnReX0FvhvZDV16bUDb4CtKS3zTEKC9Lbvb
-         rSrZmPAZLxwDqrGU1TZZiT7geGb3b2DSTtO1NTPXSyzigj7uq7MNmv1P6OM8RhsCPbsk
-         qkwTdM0ojsgQ/dTXVn2p2AG+F7UCvQqAOP4TVkyFyMZB7LvuW1eTkKTVGAK5vF85Vrqh
-         0T1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705506902; x=1706111702;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ttGJe8J4pcxRkey779Yd+cZv874UqM4wsN7cskxubio=;
-        b=jFebSC/WUErS27Edax5RA+EhrAF0vwHYVek/+QFQAKaIZaWCF3H8XBPWdsbQoo3rvy
-         +ZM0c1RxlXtSL/83PqDXRER20WQ7hYPlhtcrxGR48p46HRlO3fvNaknK2gaghfqhCWdj
-         J/DBwc6ZAH85hlfYtnUPpUjkQnT1efgzNSof26kdtXBm+g1azd+FfSsjwd7BO6rG7mS2
-         BOOg0KOMrTwjVktGwvP9woVzb+kMWeng4I5R+1Cpr2SnFcwW9/RtOp58lThKC3tJVeh8
-         +JlTu9yM+NuQtg/GBkhG8Rn0YoBYiISNxkJJabPJ1v8CCMuLbwp8Yex+RJUD2Gns2R+Y
-         7Q4A==
-X-Gm-Message-State: AOJu0YxKCxIrLyS4IzAwpKXJXaIo3n3gnLAf7ZgNUZowLjG/ngnGAYBz
-	xVsIcbAWrVDihVWYWgjlEiA=
-X-Google-Smtp-Source: AGHT+IFUKgLAXPaJ1GM7ZGPSYyL9MUqnyevX9UQH1PtY6537DD4fa9EPrz350Q+gOCYQG6L2WQwC/w==
-X-Received: by 2002:a0c:dd11:0:b0:681:698e:17d8 with SMTP id u17-20020a0cdd11000000b00681698e17d8mr1348439qvk.52.1705506902051;
-        Wed, 17 Jan 2024 07:55:02 -0800 (PST)
-Received: from localhost (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
-        by smtp.gmail.com with ESMTPSA id v20-20020ad448d4000000b006817069492bsm1407241qvx.70.2024.01.17.07.55.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 07:55:01 -0800 (PST)
-Date: Wed, 17 Jan 2024 10:55:01 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Martin KaFai Lau <martin.lau@linux.dev>, 
- =?UTF-8?B?SsO2cm4tVGhvcmJlbiBIaW56?= <j-t.hinz@alumni.tu-berlin.de>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Shuah Khan <shuah@kernel.org>, 
- Arnd Bergmann <arnd@arndb.de>, 
- Deepa Dinamani <deepa.kernel@gmail.com>, 
- bpf@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- netdev@vger.kernel.org, 
- linux-kselftest@vger.kernel.org
-Message-ID: <65a7f855821cc_6d500294d0@willemb.c.googlers.com.notmuch>
-In-Reply-To: <51fd5249-140a-4f1b-b20e-703f159e88a3@linux.dev>
-References: <20240115134110.11624-1-j-t.hinz@alumni.tu-berlin.de>
- <65a69e1be51ef_380df0294d9@willemb.c.googlers.com.notmuch>
- <51fd5249-140a-4f1b-b20e-703f159e88a3@linux.dev>
-Subject: Re: [PATCH bpf-next] bpf: Allow setting SO_TIMESTAMPING* with
- bpf_setsockopt()
+	s=arc-20240116; t=1705506997; c=relaxed/simple;
+	bh=ptXYt1hCdovZz/ffSWT9gyAHt7rRwgYj2ew+MlFtyNY=;
+	h=Received:DKIM-Signature:Received:X-Gm-Message-State:
+	 X-Google-Smtp-Source:X-Received:MIME-Version:References:
+	 In-Reply-To:From:Date:X-Gmail-Original-Message-ID:Message-ID:
+	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding; b=sVnndRH+Hq+Ry+Rox91iKmcIBCOwK6TRiGM7xKjXq/H9lCS0EV/b9g9+EO4/iNnzG4G5q0SxyYMSpxFuC3nwTxNSk9Hu8YbZHdRYne7Eqh9oLYSfHQt7FidAEhG2xnt8j4Vrmxyv9G4fu3ZxZa4IE5tQNxfS11QnSLFrqVUcRt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cRiBZ2Es; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 650B9C43601;
+	Wed, 17 Jan 2024 15:56:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705506997;
+	bh=ptXYt1hCdovZz/ffSWT9gyAHt7rRwgYj2ew+MlFtyNY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=cRiBZ2Es/hp4k2N4q8iUn7Gg6G7WRx6Enx6NzwR0pvs1Uo+PJaPHaN7erZz9hslNv
+	 oJ7sqEw1Gm4XNo9zvyHyBuflt9WlyERaBGdNjvStedufPMloODdbHhUJirOzDWC+8X
+	 zVp4JrJ/gaV0VdW1ge5sqw0homVaw3Vc/e2SizUHaye7MACpqpVvpFCg/vFe6MBz1u
+	 bgnYht1IvQbsvC5pfXFx6HqJc0SdU7EZMACNFbDBzeekUAJ687dDajvzJw2G1QTSiI
+	 bwYUDUdmE4eHB+SBxhjQhqYhK29d3CioXGWhhlWOuEMZFh0a6Eu7tsz6DzSkSNNYQr
+	 KPpk+usdP0Kqg==
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50ec948ad31so11276732e87.2;
+        Wed, 17 Jan 2024 07:56:37 -0800 (PST)
+X-Gm-Message-State: AOJu0YzWD9/Dct5pest4iAUijEa90G58xOFRaUsuO6kR0Y1rO4pFgJCT
+	ZJlfroB3Gt/d/gCXKG5Ek4bq8c3VIvyjTDpKmA==
+X-Google-Smtp-Source: AGHT+IGaf7OO/QIwbRtFIzzCYIwu/CbtDrVi9rgtHOA0Oa7uryO/EzrtchbYZmaVI0oi/aGjQ3nl2bIJQVjlGNvIzlI=
+X-Received: by 2002:a05:6512:b87:b0:50e:a9db:9b89 with SMTP id
+ b7-20020a0565120b8700b0050ea9db9b89mr5288051lfv.13.1705506995412; Wed, 17 Jan
+ 2024 07:56:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+MIME-Version: 1.0
+References: <20231116172859.393744-1-sjg@chromium.org> <20231208150042.GA1278773-robh@kernel.org>
+ <CAPnjgZ2i4gvgiUeHPOfHuOdBooV4e=QQEq6iMo0JbDwOS6dCwA@mail.gmail.com>
+ <CAL_Jsq+xMZ8yz4H9D59uCSyX4h5W+4ruGF++=wVA=msXz+Y01A@mail.gmail.com>
+ <CAPnjgZ1uW8T6woXSqFUNm301=W3zBYOrADREkrz=DuwSW87qZg@mail.gmail.com>
+ <20231214172702.GA617226-robh@kernel.org> <CAPnjgZ2oJSGPO91Y_aLbe+v250WFrND4n3T0mOvhERYidVu=eQ@mail.gmail.com>
+ <CAFLszTizRRVbRO6_ygE2X-Lp5dENWSc4uMGL5GPJAFGAbRdCyQ@mail.gmail.com>
+In-Reply-To: <CAFLszTizRRVbRO6_ygE2X-Lp5dENWSc4uMGL5GPJAFGAbRdCyQ@mail.gmail.com>
+From: Rob Herring <robh@kernel.org>
+Date: Wed, 17 Jan 2024 09:56:22 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+j7_KZtQ2ENq9+vsw0LOZF=spu293_G=AxOmBM+m_f-g@mail.gmail.com>
+Message-ID: <CAL_Jsq+j7_KZtQ2ENq9+vsw0LOZF=spu293_G=AxOmBM+m_f-g@mail.gmail.com>
+Subject: Re: [PATCH v6 1/3] dt-bindings: mtd: partitions: Add binman compatible
+To: Simon Glass <sjg@chromium.org>
+Cc: devicetree@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>, 
+	linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>, 
+	Michael Walle <mwalle@kernel.org>, U-Boot Mailing List <u-boot@lists.denx.de>, 
+	Conor Dooley <conor+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Pratyush Yadav <ptyadav@amazon.de>, 
+	=?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Martin KaFai Lau wrote:
-> On 1/16/24 7:17 AM, Willem de Bruijn wrote:
-> > J=C3=B6rn-Thorben Hinz wrote:
-> >> A BPF application, e.g., a TCP congestion control, might benefit fro=
-m or
-> >> even require precise (=3Dhardware) packet timestamps. These timestam=
-ps are
-> >> already available through __sk_buff.hwtstamp and
-> >> bpf_sock_ops.skb_hwtstamp, but could not be requested: BPF programs =
-were
-> >> not allowed to set SO_TIMESTAMPING* on sockets.
-> =
+On Thu, Jan 4, 2024 at 3:54=E2=80=AFPM Simon Glass <sjg@chromium.org> wrote=
+:
+>
+> Hi Rob,
+>
+> On Thu, Dec 14, 2023 at 2:09=E2=80=AFPM Simon Glass <sjg@chromium.org> wr=
+ote:
+> >
+> > Hi Rob,
+> >
+> > On Thu, 14 Dec 2023 at 10:27, Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Fri, Dec 08, 2023 at 03:58:10PM -0700, Simon Glass wrote:
+> > > > Hi Rob,
+> > > >
+> > > > On Fri, 8 Dec 2023 at 14:56, Rob Herring <robh@kernel.org> wrote:
+> > > > >
+> > > > > On Fri, Dec 8, 2023 at 11:47=E2=80=AFAM Simon Glass <sjg@chromium=
+org> wrote:
+> > > > > >
+> > > > > > Hi Rob,
+> > > > > >
+> > > > > > On Fri, 8 Dec 2023 at 08:00, Rob Herring <robh@kernel.org> wrot=
+e:
+> > > > > > >
+> > > > > > > On Thu, Nov 16, 2023 at 10:28:50AM -0700, Simon Glass wrote:
+> > > > > > > > Add a compatible string for binman, so we can extend fixed-=
+partitions
+> > > > > > > > in various ways.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Simon Glass <sjg@chromium.org>
+> > > > > > > > ---
+> > > > > > > >
+> > > > > > > > (no changes since v5)
+> > > > > > > >
+> > > > > > > > Changes in v5:
+> > > > > > > > - Add #address/size-cells and parternProperties
+> > > > > > > > - Drop $ref to fixed-partitions.yaml
+> > > > > > > > - Drop 'select: false'
+> > > > > > > >
+> > > > > > > > Changes in v4:
+> > > > > > > > - Change subject line
+> > > > > > > >
+> > > > > > > > Changes in v3:
+> > > > > > > > - Drop fixed-partition additional compatible string
+> > > > > > > > - Drop fixed-partitions from the example
+> > > > > > > > - Mention use of compatible instead of label
+> > > > > > > >
+> > > > > > > > Changes in v2:
+> > > > > > > > - Drop mention of 'enhanced features' in fixed-partitions.y=
+aml
+> > > > > > > > - Mention Binman input and output properties
+> > > > > > > > - Use plain partition@xxx for the node name
+> > > > > > > >
+> > > > > > > >  .../bindings/mtd/partitions/binman.yaml       | 68 +++++++=
+++++++++++++
+> > > > > > > >  .../bindings/mtd/partitions/partitions.yaml   |  1 +
+> > > > > > > >  MAINTAINERS                                   |  5 ++
+> > > > > > > >  3 files changed, 74 insertions(+)
+> > > > > > > >  create mode 100644 Documentation/devicetree/bindings/mtd/p=
+artitions/binman.yaml
+> > > > > > > >
+> > > > > > > > diff --git a/Documentation/devicetree/bindings/mtd/partitio=
+ns/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.ya=
+ml
+> > > > > > > > new file mode 100644
+> > > > > > > > index 000000000000..329217550a98
+> > > > > > > > --- /dev/null
+> > > > > > > > +++ b/Documentation/devicetree/bindings/mtd/partitions/binm=
+an.yaml
+> > > > > > > > @@ -0,0 +1,68 @@
+> > > > > > > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > > > > > > +# Copyright 2023 Google LLC
+> > > > > > > > +
+> > > > > > > > +%YAML 1.2
+> > > > > > > > +---
+> > > > > > > > +$id: http://devicetree.org/schemas/mtd/partitions/binman.y=
+aml#
+> > > > > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > > > > > +
+> > > > > > > > +title: Binman firmware layout
+> > > > > > > > +
+> > > > > > > > +maintainers:
+> > > > > > > > +  - Simon Glass <sjg@chromium.org>
+> > > > > > > > +
+> > > > > > > > +description: |
+> > > > > > > > +  The binman node provides a layout for firmware, used whe=
+n packaging firmware
+> > > > > > > > +  from multiple projects. It is based on fixed-partitions,=
+ with some
+> > > > > > > > +  extensions, but uses 'compatible' to indicate the conten=
+ts of the node, to
+> > > > > > > > +  avoid perturbing or confusing existing installations whi=
+ch use 'label' for a
+> > > > > > > > +  particular purpose.
+> > > > > > > > +
+> > > > > > > > +  Binman supports properties used as inputs to the firmwar=
+e-packaging process,
+> > > > > > > > +  such as those which control alignment of partitions. Thi=
+s binding addresses
+> > > > > > > > +  these 'input' properties. For example, it is common for =
+the 'reg' property
+> > > > > > > > +  (an 'output' property) to be set by Binman, based on the=
+ alignment requested
+> > > > > > > > +  in the input.
+> > > > > > > > +
+> > > > > > > > +  Once processing is complete, input properties have mostl=
+y served their
+> > > > > > > > +  purpose, at least until the firmware is repacked later, =
+e.g. due to a
+> > > > > > > > +  firmware update. The 'fixed-partitions' binding should p=
+rovide enough
+> > > > > > > > +  information to read the firmware at runtime, including d=
+ecompression if
+> > > > > > > > +  needed.
+> > > > > > >
+> > > > > > > How is this going to work exactly? binman reads these nodes a=
+nd then
+> > > > > > > writes out 'fixed-partitions' nodes. But then you've lost the=
+ binman
+> > > > > > > specifc parts needed for repacking.
+> > > > > >
+> > > > > > No, they are the same node. I do want the extra information to =
+stick
+> > > > > > around. So long as it is compatible with fixed-partition as wel=
+l, this
+> > > > > > should work OK.
+> > > > >
+> > > > > How can it be both? The partitions node compatible can be either
+> > > > > 'fixed-partitions' or 'binman'.
+> > > >
+> > > > Can we not allow it to be both? I have tried to adjust things in
+> > > > response to feedback but perhaps the feedback was leading me down t=
+he
+> > > > wrong path?
+> > >
+> > > Sure, but then the schema has to and that means extending
+> > > fixed-partitions.
+> >
+> > Can we cross that bridge later? There might be resistance to it. I'm
+> > not sure. For now, perhaps just a binman compatible works well enough
+> > to make progress.
+>
+> Is there any way to make progress on this? I would like to have
+> software which doesn't understand the binman compatible to at least be
+> able to understand the fixed-partition compatible. Is that acceptable?
 
-> This patch only uses the SOF_TIMESTAMPING_RX_HARDWARE in the selftest. =
-How about =
+There's only 2 ways that it can work. Either binman writes out
+fixed-partition nodes dropping/replacing anything only defined for
+binman or fixed-partition is extended to include what binman needs.
 
-> others? e.g. the SOF_TIMESTAMPING_TX_* that will affect the sk->sk_erro=
-r_queue =
-
-> which seems not good. If rx tstamp is useful, tx tstamp should be usefu=
-l also?
-
-Good point. Or should not be allowed to be set from BPF.
-
-That significantly changes process behavior, e.g., by returning POLLERR.
- =
-
-> >>
-> >> Enable BPF programs to actively request the generation of timestamps=
-
-> >> from a stream socket. The also required ioctl(SIOCSHWTSTAMP) on the
-> >> network device must still be done separately, in user space.
-> =
-
-> hmm... so both ioctl(SIOCSHWTSTAMP) of the netdevice and the =
-
-> SOF_TIMESTAMPING_RX_HARDWARE of the sk must be done?
-> =
-
-> I likely miss something. When skb is created in the driver rx path, the=
- sk is =
-
-> not known yet though. How the SOF_TIMESTAMPING_RX_HARDWARE of the sk af=
-fects the =
-
-> skb_shinfo(skb)->hwtstamps?
-
-Indeed it does not seem to do anything in the datapath.
-
-Requesting SOF_TIMESTAMPING_RX_SOFTWARE will call net_enable_timestamp
-to start timestamping packets.
-
-But SOF_TIMESTAMPING_RX_HARDWARE does not so thing.
-
-Drivers do use it in ethtool get_ts_info to signal hardware
-capabilities. But those must be configured using the ioctl.
-
-It is there more for consistency with the other timestamp recording
-options, I suppose.
-
+Rob
 
