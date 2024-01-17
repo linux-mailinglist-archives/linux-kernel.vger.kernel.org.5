@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-29349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14E3A830D21
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:06:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1BA6830D23
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:07:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B761CB2336E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:06:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82A5BB25E54
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:07:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5E6249F7;
-	Wed, 17 Jan 2024 19:06:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D58EB249FF;
+	Wed, 17 Jan 2024 19:06:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="weY0IrWF"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ORwyB35h"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08ACA2374F;
-	Wed, 17 Jan 2024 19:06:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D670B250E6;
+	Wed, 17 Jan 2024 19:06:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705518367; cv=none; b=Y8FDV9yyP/0sRH1BRA4Fok1Oi9SiYCA0r5zY7lNhdNCvkN/nHW7gPWHv7n6ewc1SRNAvVbH9CpnKtkeSlpa+tsJ3LHGFRGPC0ANCZxiJ1/0ST1eSPF0l5qKC3mbE4hfLxUDFkvBSZ6kvRGuDSzE1fYnkbJ1MY8Sw03FL8lCkyU0=
+	t=1705518373; cv=none; b=SM+UrC4Q3EWF4uPS78a6V3oaEp+1X4XpXh1JGYiZl5Qig/reeVOnSdl2WuiV/oc+FegCHvh0sj/r+Vv61m9HF8djt8bpDfshPdJCEx3RWcxgqts3GemT5m6FzHa2SLihJSk0OUSe40HFxXmKevZI0lu6IGXApcr5LssTLIhQJpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705518367; c=relaxed/simple;
-	bh=8uW78FpceoDVMKHRzTpjOfMZqXDYMEkFZx5jYlY1Ks4=;
+	s=arc-20240116; t=1705518373; c=relaxed/simple;
+	bh=7YAKPQ9tYWmvfAcseobwrvrV34TmrklbQkwFX2veRSg=;
 	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:
 	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
-	 In-Reply-To:To:Cc:X-Mailer; b=S9+UbWIcV+GJStt0RUzS0PLDTLtXGdBELjg3TQl5aBRbDNsGcle8Bs8qsMBAgekGEc61hnppSfAVUlua8b1vHPq67vyF9jbOxqKM5F0GHPLRDgD5iHTI3KSIw7pXUaBU2u9T4y6wxHRPA/noB8Y6CDOaci5FAOIreWDMBh/5U+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=weY0IrWF; arc=none smtp.client-ip=46.235.227.194
+	 In-Reply-To:To:Cc:X-Mailer; b=Ki5DRS2t505FXzPZkMRkqdsUWQuU9LqoDwStLmduyW6X0QJUolCJfz1Ytf1FTZQIm/PAFLbv+mRGyZ119PPZtH/61RdtPJI3aAXD6XgrgjRTv072PztweAdkV4CEQ933CoWYIWEfdlNqOC1B9ssIDuF8Mi8LGYQzU6bwVkrzrqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ORwyB35h; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705518364;
-	bh=8uW78FpceoDVMKHRzTpjOfMZqXDYMEkFZx5jYlY1Ks4=;
+	s=mail; t=1705518370;
+	bh=7YAKPQ9tYWmvfAcseobwrvrV34TmrklbQkwFX2veRSg=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=weY0IrWFly7FK94biWblsIMljyLeyE7f97DsZfo+eEoCHWV23WEyYtjfC9ds76q1K
-	 OKfZUVJYnDBiML2LtL1DfbOHura1s7t3c9u0TmPs/rUqmkbwmS9iBCYGX8pOJDNxdv
-	 2Umw5J6tZFu4gIfU574PqqpKQ+wB0bdVQ94PLshs0D6y/Y1KpSro4ziPEo2Rwq5xY3
-	 oEwm001TVgICvSURaDo33Ca1jdCQOa7IW7T15tqbHdfc0LT/RfXbYN1CQnEGScuIZQ
-	 m9igRryqDl+a7qasYe2cOfDrFa6PtofhEW6nF3SGrQitCSaM/A4D2bodY2YEViQcHe
-	 eCMOIkeYD/UAg==
+	b=ORwyB35hhAm9kLf8Bcd4HROoAmtgxqxmS2ACAQ3fMDQGcNkW2bMbpuzV+ZJ5HxfpD
+	 DgAY4TMzhNP4tMx939kuxoUA+F9xlD9veVlaQg4tWJiRsBCsOmBIkRGzN+hCYE7k6x
+	 DVjsw7r6MSfnrTTzQzk+Y9s2tdeuvcgvQJoZRHMdPrki05SHAIUfJNbz0iXuO/7fc/
+	 mgjeG7NuuLZyX2a3WZVDL8s2UEnuznork+NcgqPbtL39ZBcHT5hnLTHqIG31x89TLz
+	 jiSZiPUltHzQnngZFxZxJeyJwLWx2hPufU4p3uo56YXb2CJDicn3CZ93w4Zn6ndz+z
+	 WTUBtWQUORmaw==
 Received: from [192.168.0.47] (zone.collabora.co.uk [167.235.23.81])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 14526378000E;
-	Wed, 17 Jan 2024 19:05:58 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E08823782033;
+	Wed, 17 Jan 2024 19:06:04 +0000 (UTC)
 From: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-Date: Wed, 17 Jan 2024 16:03:24 -0300
-Subject: [PATCH v3 3/4] firmware: coreboot: Replace tag with id table in
- driver struct
+Date: Wed, 17 Jan 2024 16:03:25 -0300
+Subject: [PATCH v3 4/4] arm64: defconfig: Enable support for cbmem entries
+ in the coreboot table
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,7 +60,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240117-coreboot-mod-defconfig-v3-3-049565a27bba@collabora.com>
+Message-Id: <20240117-coreboot-mod-defconfig-v3-4-049565a27bba@collabora.com>
 References: <20240117-coreboot-mod-defconfig-v3-0-049565a27bba@collabora.com>
 In-Reply-To: <20240117-coreboot-mod-defconfig-v3-0-049565a27bba@collabora.com>
 To: Tzung-Bi Shih <tzungbi@kernel.org>
@@ -76,169 +76,31 @@ Cc: Arnd Bergmann <arnd@arndb.de>, Brian Norris <briannorris@chromium.org>,
  =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
 X-Mailer: b4 0.12.4
 
-Switch the plain 'tag' field in struct coreboot_driver for the newly
-created coreboot_device_id struct, which also contains a tag field and
-has the benefit of allowing modalias generation, and update all coreboot
-drivers accordingly.
+Enable the cbmem driver and dependencies in order to support reading
+cbmem entries from the coreboot table, which are used to store logs from
+coreboot on arm64 Chromebooks, and provide useful information for
+debugging the boot process on those devices.
 
-While at it, also add the id table for each driver to the module device
-table to allow automatically loading the module.
-
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 ---
- drivers/firmware/google/cbmem.c                |  8 +++++++-
- drivers/firmware/google/coreboot_table.c       | 11 ++++++++++-
- drivers/firmware/google/coreboot_table.h       |  3 ++-
- drivers/firmware/google/framebuffer-coreboot.c |  8 +++++++-
- drivers/firmware/google/memconsole-coreboot.c  |  8 +++++++-
- drivers/firmware/google/vpd.c                  |  8 +++++++-
- 6 files changed, 40 insertions(+), 6 deletions(-)
+ arch/arm64/configs/defconfig | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/firmware/google/cbmem.c b/drivers/firmware/google/cbmem.c
-index 88e587ba1e0d..c2bffdc352a3 100644
---- a/drivers/firmware/google/cbmem.c
-+++ b/drivers/firmware/google/cbmem.c
-@@ -114,6 +114,12 @@ static int cbmem_entry_probe(struct coreboot_device *dev)
- 	return 0;
- }
- 
-+static const struct coreboot_device_id cbmem_ids[] = {
-+	{ .tag = LB_TAG_CBMEM_ENTRY },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(coreboot, cbmem_ids);
-+
- static struct coreboot_driver cbmem_entry_driver = {
- 	.probe = cbmem_entry_probe,
- 	.drv = {
-@@ -121,7 +127,7 @@ static struct coreboot_driver cbmem_entry_driver = {
- 		.owner = THIS_MODULE,
- 		.dev_groups = dev_groups,
- 	},
--	.tag = LB_TAG_CBMEM_ENTRY,
-+	.id_table = cbmem_ids,
- };
- module_coreboot_driver(cbmem_entry_driver);
- 
-diff --git a/drivers/firmware/google/coreboot_table.c b/drivers/firmware/google/coreboot_table.c
-index c1b9a9e8e8ed..33971cf33112 100644
---- a/drivers/firmware/google/coreboot_table.c
-+++ b/drivers/firmware/google/coreboot_table.c
-@@ -28,8 +28,17 @@ static int coreboot_bus_match(struct device *dev, struct device_driver *drv)
- {
- 	struct coreboot_device *device = CB_DEV(dev);
- 	struct coreboot_driver *driver = CB_DRV(drv);
-+	const struct coreboot_device_id *id;
- 
--	return device->entry.tag == driver->tag;
-+	if (!driver->id_table)
-+		return 0;
-+
-+	for (id = driver->id_table; id->tag; id++) {
-+		if (device->entry.tag == id->tag)
-+			return 1;
-+	}
-+
-+	return 0;
- }
- 
- static int coreboot_bus_probe(struct device *dev)
-diff --git a/drivers/firmware/google/coreboot_table.h b/drivers/firmware/google/coreboot_table.h
-index d814dca33a08..86427989c57f 100644
---- a/drivers/firmware/google/coreboot_table.h
-+++ b/drivers/firmware/google/coreboot_table.h
-@@ -13,6 +13,7 @@
- #define __COREBOOT_TABLE_H
- 
- #include <linux/device.h>
-+#include <linux/mod_devicetable.h>
- 
- /* Coreboot table header structure */
- struct coreboot_table_header {
-@@ -93,7 +94,7 @@ struct coreboot_driver {
- 	int (*probe)(struct coreboot_device *);
- 	void (*remove)(struct coreboot_device *);
- 	struct device_driver drv;
--	u32 tag;
-+	const struct coreboot_device_id *id_table;
- };
- 
- /* Register a driver that uses the data from a coreboot table. */
-diff --git a/drivers/firmware/google/framebuffer-coreboot.c b/drivers/firmware/google/framebuffer-coreboot.c
-index 5c84bbebfef8..07c458bf64ec 100644
---- a/drivers/firmware/google/framebuffer-coreboot.c
-+++ b/drivers/firmware/google/framebuffer-coreboot.c
-@@ -80,13 +80,19 @@ static void framebuffer_remove(struct coreboot_device *dev)
- 	platform_device_unregister(pdev);
- }
- 
-+static const struct coreboot_device_id framebuffer_ids[] = {
-+	{ .tag = CB_TAG_FRAMEBUFFER },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(coreboot, framebuffer_ids);
-+
- static struct coreboot_driver framebuffer_driver = {
- 	.probe = framebuffer_probe,
- 	.remove = framebuffer_remove,
- 	.drv = {
- 		.name = "framebuffer",
- 	},
--	.tag = CB_TAG_FRAMEBUFFER,
-+	.id_table = framebuffer_ids,
- };
- module_coreboot_driver(framebuffer_driver);
- 
-diff --git a/drivers/firmware/google/memconsole-coreboot.c b/drivers/firmware/google/memconsole-coreboot.c
-index 74b5286518ee..24c97a70aa80 100644
---- a/drivers/firmware/google/memconsole-coreboot.c
-+++ b/drivers/firmware/google/memconsole-coreboot.c
-@@ -96,13 +96,19 @@ static void memconsole_remove(struct coreboot_device *dev)
- 	memconsole_exit();
- }
- 
-+static const struct coreboot_device_id memconsole_ids[] = {
-+	{ .tag = CB_TAG_CBMEM_CONSOLE },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(coreboot, memconsole_ids);
-+
- static struct coreboot_driver memconsole_driver = {
- 	.probe = memconsole_probe,
- 	.remove = memconsole_remove,
- 	.drv = {
- 		.name = "memconsole",
- 	},
--	.tag = CB_TAG_CBMEM_CONSOLE,
-+	.id_table = memconsole_ids,
- };
- module_coreboot_driver(memconsole_driver);
- 
-diff --git a/drivers/firmware/google/vpd.c b/drivers/firmware/google/vpd.c
-index ee6e08c0592b..8e4216714b29 100644
---- a/drivers/firmware/google/vpd.c
-+++ b/drivers/firmware/google/vpd.c
-@@ -306,13 +306,19 @@ static void vpd_remove(struct coreboot_device *dev)
- 	kobject_put(vpd_kobj);
- }
- 
-+static const struct coreboot_device_id vpd_ids[] = {
-+	{ .tag = CB_TAG_VPD },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(coreboot, vpd_ids);
-+
- static struct coreboot_driver vpd_driver = {
- 	.probe = vpd_probe,
- 	.remove = vpd_remove,
- 	.drv = {
- 		.name = "vpd",
- 	},
--	.tag = CB_TAG_VPD,
-+	.id_table = vpd_ids,
- };
- module_coreboot_driver(vpd_driver);
- 
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 361c31b5d064..49121133f045 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -255,6 +255,9 @@ CONFIG_INTEL_STRATIX10_RSU=m
+ CONFIG_MTK_ADSP_IPC=m
+ CONFIG_QCOM_QSEECOM=y
+ CONFIG_QCOM_QSEECOM_UEFISECAPP=y
++CONFIG_GOOGLE_FIRMWARE=y
++CONFIG_GOOGLE_CBMEM=m
++CONFIG_GOOGLE_COREBOOT_TABLE=m
+ CONFIG_EFI_CAPSULE_LOADER=y
+ CONFIG_IMX_SCU=y
+ CONFIG_IMX_SCU_PD=y
 
 -- 
 2.43.0
