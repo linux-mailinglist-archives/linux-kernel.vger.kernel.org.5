@@ -1,129 +1,184 @@
-Return-Path: <linux-kernel+bounces-28403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EACD82FE1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 01:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 933F082FE27
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 02:02:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 005BD1C23D37
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 00:57:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7381A1C24110
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 01:02:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF7E729A9;
-	Wed, 17 Jan 2024 00:57:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E64mj0od"
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0511E138C;
+	Wed, 17 Jan 2024 01:02:28 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7BFE1864;
-	Wed, 17 Jan 2024 00:57:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E379610E9
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 01:02:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705453023; cv=none; b=kWf7Mphq2AwAg14/8O0mq7R+U8YjjLNgllCU53HCOChaMLNVp6Af7mwBP7voGTu20/ljn2pYzaisMsPBPR1ExQCjBchVP+L16xBWsjZKVPgBRVulGijwyNT6Gn4Sh38FN9ugjDC4Hn4mFOUyfJ/G7dlwfMZ/s50TnMXV1ntl46M=
+	t=1705453347; cv=none; b=nLnqNdcyOR/XoQWMDUgKdgaZcvtPemwbD8NMf3hM8Yq0ratLnfEnYBia1xNBquFG3gdej2cw5kGFpri6SNDEz+NyKCpKOTaVi3s7wV4ksTjyv08rdC8c7GIgLPTD3XnLpis0HvZMNNfA2hYtpetS1ZZhJjlupVismbn0GUXlIlE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705453023; c=relaxed/simple;
-	bh=7UnTX34HgoTW8uGNTwh9hFEKB90kOA7xqoZPARdreAs=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=IXk3SPeE29CpdgYnVzmzo8CMwgn7MVnNnNE6uEcmNyLP78UwO4Y3zJl23rPEffHBb63KneqeK4JOeHFBdnoTPsvsKv7wUIezwtiUef5ExurfAIGtfysNy/6uZX0WGIni2T4vWqMTyGgu6kt9W+IdAyhGNEZHcFeJYH3JlW4ivy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E64mj0od; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5ff45c65e60so16507697b3.0;
-        Tue, 16 Jan 2024 16:57:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705453020; x=1706057820; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TVfHRGPq7HAXiyMA7XV/TGLk0DnxIq01kbXRuv/O/ow=;
-        b=E64mj0odq9ZBqTkTh8TQMf68Xyo6yDo7sVGvvmTCgTNQNtgVDEIfb3T7KuIaXEmAXd
-         zdO9jAEqhb5eC2Qmx6QFBYT4IcW5/WhedTStI9KBA/KrDZvFd1rBfBMqm6Ncv6z/+769
-         einTNwQKUCKoFSxahCzYjkAJbudM9AwNVNdoi1IV1KB5ovb2LVmlj3b4SUc3szxX8hmy
-         ciCRBIvI1jAFHMVLlByy/tg/fbG/ADsEmEU+ADkkXsmt70zI8GVyf8ysI5zlNHimIGzk
-         0EGbkWXeasqWt6eTRyUTKiDMTsts65w60agbmz77KdMpxjtJl6y97he1yi7xcGqcKvrt
-         h8QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705453020; x=1706057820;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TVfHRGPq7HAXiyMA7XV/TGLk0DnxIq01kbXRuv/O/ow=;
-        b=CFyURjkLnaeK2r/MPqRFquQrRj9iR4p3/ER7bDEiktdNDzJh1ijm6zvwcr6IoE8h0o
-         Ofyn6ONUOjrnNpNTfUpAjnyYRaYGZL5qB6DKYPHXJ6HAMNrMoyz+QJcZNxao2z1IuhC9
-         XC7GdRZXHnrsBRruGZsFkGq6JF4x2+YgQ24FtaXyIAvrB/rvk0MT/lC3aUba4NfckkAN
-         eA1CD01DCqcdrsDmfgqghr8/LDhWOfLWxZj1WxgXcdawnrOgkP5aOKyNzrnnylo8f76y
-         vf4+q+z6GneMV4HkWnR9rKT2wl4qbsTV+H9fd5Id5UZtaMIt9+OkfFGbDzkN8PvFfRMl
-         pLnQ==
-X-Gm-Message-State: AOJu0YxFeKHZWghbxUG7+t2yFx8KwoabjwRHQGXcNhIDZBGx+Nj9yG59
-	xVpFJGPgyyENDzh+1QZWKOTNRFkA1gyvyvECKhc=
-X-Google-Smtp-Source: AGHT+IGigEhBpdfQpWMLnXZuKaV0ImQrIyAxLwoEGhEwLq+Lx9fsG0/tSS2wEL2dcx7AgQau4oPFzlb0JKuXXrhP7q4=
-X-Received: by 2002:a05:690c:fd5:b0:5f8:420e:468b with SMTP id
- dg21-20020a05690c0fd500b005f8420e468bmr5417368ywb.45.1705453020659; Tue, 16
- Jan 2024 16:57:00 -0800 (PST)
+	s=arc-20240116; t=1705453347; c=relaxed/simple;
+	bh=mIVlDBEqzyTiH3zn66mWsFtkIbDIh+J6mb4Dut3+6so=;
+	h=Received:Received:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Subject:To:CC:References:Content-Language:From:
+	 In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-Originating-IP:X-ClientProxiedBy; b=pmgWKQbSExzCyVx2i7Y157ceDavjQ53AyV3WbC7yNS9NNyiLTp374ExopmAXikkhTiqzI+TGqkU4nKBEEuIJulPvbbCT6KytfovmI0bh/6S8WuHeU8rHGviBvxuBF00jiioBBSNWCCgvn5Mkp7/BmpNTDfPek/2l93FJX51f6j4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TF6xv0JTHzvV2y;
+	Wed, 17 Jan 2024 09:00:51 +0800 (CST)
+Received: from dggpemm100001.china.huawei.com (unknown [7.185.36.93])
+	by mail.maildlp.com (Postfix) with ESMTPS id 4B64E18006C;
+	Wed, 17 Jan 2024 09:02:15 +0800 (CST)
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 17 Jan 2024 09:02:14 +0800
+Message-ID: <3089af79-c5fd-4c13-a1e1-cb9f67d4ea4f@huawei.com>
+Date: Wed, 17 Jan 2024 09:02:14 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240112091128.3868059-1-foxywang@tencent.com>
- <ZaFor2Lvdm4O2NWa@google.com> <CAN35MuSkQf0XmBZ5ZXGhcpUCGD-kKoyTv9G7ya4QVD1xiqOxLg@mail.gmail.com>
- <72edaedc-50d7-415e-9c45-f17ffe0c1c23@linux.ibm.com> <Zaa1omCaDQOxxy2j@google.com>
-In-Reply-To: <Zaa1omCaDQOxxy2j@google.com>
-From: Yi Wang <up2wing@gmail.com>
-Date: Wed, 17 Jan 2024 08:56:49 +0800
-Message-ID: <CAN35MuRKMW+-qrf0Sv-tsiZ71_-C_DJAMhu=HhtP8RnTVW-PsA@mail.gmail.com>
-Subject: Re: [PATCH] KVM: irqchip: synchronize srcu only if needed
-To: Sean Christopherson <seanjc@google.com>
-Cc: Christian Borntraeger <borntraeger@linux.ibm.com>, pbonzini@redhat.com, tglx@linutronix.de, 
-	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, 
-	hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	wanpengli@tencent.com, Yi Wang <foxywang@tencent.com>, 
-	Oliver Upton <oliver.upton@linux.dev>, Marc Zyngier <maz@kernel.org>, 
-	Anup Patel <anup@brainfault.org>, Atish Patra <atishp@atishpatra.org>, 
-	Janosch Frank <frankja@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Jan 17, 2024 at 12:58=E2=80=AFAM Sean Christopherson <seanjc@google=
-com> wrote:
->
-> On Tue, Jan 16, 2024, Christian Borntraeger wrote:
-> >
-> >
-
-...
-
-> >
-> > I would be fine with wasted memory.
->
-> +1.  If we really, really want to avoid the negligible memory overhead, w=
-e could
-> pre-configure a static global table and directly use that as the dummy ta=
-ble (and
-> exempt it from being freed by free_irq_routing_table()).
-
-Thanks for the suggestion! Well, in my opinion it may be better to fix
-the current issue
-and I'm glad to send another patch to optimize this.
-
-> > The only question is does it have a functional impact or can we simply =
-ignore
-> > the dummy routing.
->
-> Given the lack of sanity checks on kvm->irq_routing, I'm pretty sure the =
-only way
-> for there to be functional impact is if there's a latent NULL pointer der=
-ef hiding
-> somewhere.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm: memory: move mem_cgroup_charge() into
+ alloc_anon_folio()
+To: kernel test robot <lkp@intel.com>, Andrew Morton
+	<akpm@linux-foundation.org>, <linux-kernel@vger.kernel.org>
+CC: <oe-kbuild-all@lists.linux.dev>, Linux Memory Management List
+	<linux-mm@kvack.org>, <ryan.roberts@arm.com>, Matthew Wilcox
+	<willy@infradead.org>, David Hildenbrand <david@redhat.com>
+References: <20240116071302.2282230-1-wangkefeng.wang@huawei.com>
+ <202401170535.2TfJ7u74-lkp@intel.com>
+Content-Language: en-US
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <202401170535.2TfJ7u74-lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
 
 
---=20
----
-Best wishes
-Yi Wang
+
+On 2024/1/17 5:26, kernel test robot wrote:
+> Hi Kefeng,
+> 
+> kernel test robot noticed the following build errors:
+> 
+> [auto build test ERROR on akpm-mm/mm-everything]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Kefeng-Wang/mm-memory-move-mem_cgroup_charge-into-alloc_anon_folio/20240116-151640
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+> patch link:    https://lore.kernel.org/r/20240116071302.2282230-1-wangkefeng.wang%40huawei.com
+> patch subject: [PATCH] mm: memory: move mem_cgroup_charge() into alloc_anon_folio()
+> config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20240117/202401170535.2TfJ7u74-lkp@intel.com/config)
+> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240117/202401170535.2TfJ7u74-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202401170535.2TfJ7u74-lkp@intel.com/
+> 
+> All error/warnings (new ones prefixed by >>):
+> 
+
+
+thanks, will fix built on !CONFIG_TRANSPARENT_HUGEPAGE
+
+>     mm/memory.c: In function 'alloc_anon_folio':
+>>> mm/memory.c:4223:31: error: 'vma' undeclared (first use in this function); did you mean 'vmf'?
+>      4223 |         return folio_prealloc(vma->vm_mm, vma, vmf->address, true);
+>           |                               ^~~
+>           |                               vmf
+>     mm/memory.c:4223:31: note: each undeclared identifier is reported only once for each function it appears in
+>>> mm/memory.c:4224:1: warning: control reaches end of non-void function [-Wreturn-type]
+>      4224 | }
+>           | ^
+> 
+> 
+> vim +4223 mm/memory.c
+> 
+>    4153	
+>    4154	static struct folio *alloc_anon_folio(struct vm_fault *vmf)
+>    4155	{
+>    4156	#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>    4157		struct vm_area_struct *vma = vmf->vma;
+>    4158		unsigned long orders;
+>    4159		struct folio *folio;
+>    4160		unsigned long addr;
+>    4161		pte_t *pte;
+>    4162		gfp_t gfp;
+>    4163		int order;
+>    4164	
+>    4165		/*
+>    4166		 * If uffd is active for the vma we need per-page fault fidelity to
+>    4167		 * maintain the uffd semantics.
+>    4168		 */
+>    4169		if (unlikely(userfaultfd_armed(vma)))
+>    4170			goto fallback;
+>    4171	
+>    4172		/*
+>    4173		 * Get a list of all the (large) orders below PMD_ORDER that are enabled
+>    4174		 * for this vma. Then filter out the orders that can't be allocated over
+>    4175		 * the faulting address and still be fully contained in the vma.
+>    4176		 */
+>    4177		orders = thp_vma_allowable_orders(vma, vma->vm_flags, false, true, true,
+>    4178						  BIT(PMD_ORDER) - 1);
+>    4179		orders = thp_vma_suitable_orders(vma, vmf->address, orders);
+>    4180	
+>    4181		if (!orders)
+>    4182			goto fallback;
+>    4183	
+>    4184		pte = pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
+>    4185		if (!pte)
+>    4186			return ERR_PTR(-EAGAIN);
+>    4187	
+>    4188		/*
+>    4189		 * Find the highest order where the aligned range is completely
+>    4190		 * pte_none(). Note that all remaining orders will be completely
+>    4191		 * pte_none().
+>    4192		 */
+>    4193		order = highest_order(orders);
+>    4194		while (orders) {
+>    4195			addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
+>    4196			if (pte_range_none(pte + pte_index(addr), 1 << order))
+>    4197				break;
+>    4198			order = next_order(&orders, order);
+>    4199		}
+>    4200	
+>    4201		pte_unmap(pte);
+>    4202	
+>    4203		/* Try allocating the highest of the remaining orders. */
+>    4204		gfp = vma_thp_gfp_mask(vma);
+>    4205		while (orders) {
+>    4206			addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
+>    4207			folio = vma_alloc_folio(gfp, order, vma, addr, true);
+>    4208			if (folio) {
+>    4209				if (mem_cgroup_charge(folio, vma->vm_mm, gfp)) {
+>    4210					folio_put(folio);
+>    4211					goto next;
+>    4212				}
+>    4213				folio_throttle_swaprate(folio, gfp);
+>    4214				clear_huge_page(&folio->page, vmf->address, 1 << order);
+>    4215				return folio;
+>    4216			}
+>    4217	next:
+>    4218			order = next_order(&orders, order);
+>    4219		}
+>    4220	
+>    4221	fallback:
+>    4222	#endif
+>> 4223		return folio_prealloc(vma->vm_mm, vma, vmf->address, true);
+>> 4224	}
+>    4225	
+> 
 
