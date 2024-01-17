@@ -1,76 +1,75 @@
-Return-Path: <linux-kernel+bounces-29532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F129830FF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:04:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 033AD830FF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:05:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C74F5B21A36
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:04:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 980A11F253B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:05:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EAED28DA9;
-	Wed, 17 Jan 2024 23:04:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E0A28DB1;
+	Wed, 17 Jan 2024 23:05:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="k+GkIeKE"
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="inIwrTMr"
+Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EB6924B36
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 23:04:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE52328DA1
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 23:05:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705532668; cv=none; b=VzBnKqh8GhJvldkQlYm0SdcJ1mDb02nmhm6Ttv+dmyIzL1d6RyUWz+IH9Dgr8wsL5ctxGExNp1wtzw19JtVikiI64VyBY/YVPzPCK6LUoQpM1aasYc3zscuMfWqRnCqhnu6xckVYFFjByeBKCimrkZcnJTWZHnHFtFzQS9VrEFk=
+	t=1705532727; cv=none; b=n47aNyPaegvyWD+mbb2koDb3DS2B/G5V2+LqLXKMDgbccNP3FWxXrnOkWfhqRQMXsMMcob8OZj6B4UuHmbYO/CfNLMQOHdtAPWOXYvExeCYnlNWflh3fNqPDoofxZnRrqfOlJVT076t/dc+4VMujqPXL73wQFuZTRNVoxJXcQcg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705532668; c=relaxed/simple;
-	bh=nIy8rn2sGR7SXFwc4gKM4r8s3RaW0NqpXIxGO0LCCnY=;
+	s=arc-20240116; t=1705532727; c=relaxed/simple;
+	bh=kvRMcs2AJiiR5G0vH3bSAe9+o9cJGPIsxUiD+6tp9po=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
 	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
 	 To:Cc:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=IY9X2ByhBI8rXqGItF4S/zYaAQ4pYpU9kcIUscMTlmY1z9MU9yfXFXy4KO2a1w7UzLqWLvoJ6lncfzjEKQ3aI7+o1v+rKdll0ZiL2adNDzUsm2QP+hsoHSoSVziiQDI939HILwEMHVVDcTwfkBpp8OaDAvhwgY7XzIZGb8QBHS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=k+GkIeKE; arc=none smtp.client-ip=209.85.166.51
+	 Content-Transfer-Encoding; b=e2rYsJ4Xl36wF+Z95OcjY4b0vLMuc+vovMJ45an3tNnbAfy3Al76+30jurpZ059g7o+TRC2vibCJRq2vXDyy4j/NMuXsoo8Q4nJZXQYv+9TPK0wzcWRyaMcdVAgNINiUPSqgw3P+YHnpXz8xLmxg9E1kLNbUTN46Mro4iRY/35o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=inIwrTMr; arc=none smtp.client-ip=209.85.166.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7bb06f56fe9so111254039f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:04:24 -0800 (PST)
+Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7bb5be6742fso111879839f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:05:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1705532663; x=1706137463; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1705532724; x=1706137524; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=sKiOkgpupfu/xZ9c0nKrOyJ57HTRtTh2I6NcqVJ0RnM=;
-        b=k+GkIeKEvVE2429hv2MldemFuNZhPw825xqk8LcstJ0oCQZwHAOdw95MKPrsg2nZrv
-         8vWp453T9KwTbTR+ao3syDa1iE0tqAJ3hYh4a3GnLfGQl5byNgcAP9K1XIseihni1rbB
-         vWplUTd+uBwI8BFo0TADaKeS0Nwc5WmqIsmN0RuUujg8+E5SSqOdPfUUvVB1JKDcocjZ
-         Is25ESyzwWqncUgPWS4cIMTMl+VWOmEfs6Kc6cQpGcH45KfqkPY+2M636xD+B68hiuin
-         j3Es1ef5Ui3xkBXLEhLaUltX+nVWuTyxze3bZOQ8GBHI1umGfoVVqdrufMA6qAerficW
-         te/A==
+        bh=RZimxNNYUhQiGc9CSi8XOIRdijUq2WzHdtfDAUowK1o=;
+        b=inIwrTMrllL8TPNROGPZwgFajAwytZTfbx8BOWkcTeocaum8CuBzu62uaVYU3xfMbj
+         vNtyxVF2cPMB0e1bPD5IBhX2skJttV629bOG61ik9eOsqriHdegtSd1pKNloPo2Yv8Ge
+         /e2lyR0vLwmMovy/S9H4SpeCiG5zCewR5A23EtPaXIDmCuoK9ihItdlw9xleK9NV2Qoe
+         RSkTPpMCEdbmYjsYRcqJAGGT3Z9mBQ41PmfXhbua97KOxbRJXrEsi0OG3YJsUB6pe20D
+         qajkMAxB+Nw8w4PbhdVYdVyXbpFuhWKABzsh8dW8YbU06uRrie3+eaZttThWAK4QaYJ4
+         p0lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705532663; x=1706137463;
+        d=1e100.net; s=20230601; t=1705532724; x=1706137524;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sKiOkgpupfu/xZ9c0nKrOyJ57HTRtTh2I6NcqVJ0RnM=;
-        b=nQzzLv9ioggPfVlngVUF5Nplidklyn0xwGYQhFnl39Ix+brM7Jz8i7b2Tu42LK11wA
-         XHGOo0TSJGeI/DC/5iBS5CdoC+qpXZk9YsYDYPKKs7jG1IrvGt8plNc3Y7s6LOGHQB0U
-         l1vo7nLG79tNaUT2k9UVK3P66EPBQyI+IqdLdG6z7urZ9tYoalgr1M8QVodeiGGLOzey
-         nhmsQShP2mZRS81JsNzDT33xGCAfGId/m810WVlRctAszoS+o/FZAMRPZ19aI8alCkRq
-         flHFmJBGQsn2n5SLo6e3C7/g+f57mmoweofkF4C7hL1uRzCRPQv12W9mXRmBAAg63zAV
-         5OnA==
-X-Gm-Message-State: AOJu0Yz1ERFNAsYql+Pu+sjHoWKPUXu7QXP8PkV4DGL+z7fTWa9wg8Ne
-	WRYgwkOHjDdmzYeZ+47pZQWNB26ozS4SIsSNCrJu+faMTyIBe8d1YI7B11lnUNhDJ2jtIigi1i+
-	PUms=
-X-Google-Smtp-Source: AGHT+IEUZWtCW1i58OmCKzwJnxtc2X4O+gs7VjFKChLEza/hxLiwtaf8lMHNtIyt5gy4nBKaSN4SLw==
-X-Received: by 2002:a5e:d70c:0:b0:7be:edbc:629f with SMTP id v12-20020a5ed70c000000b007beedbc629fmr94956iom.0.1705532663485;
-        Wed, 17 Jan 2024 15:04:23 -0800 (PST)
+        bh=RZimxNNYUhQiGc9CSi8XOIRdijUq2WzHdtfDAUowK1o=;
+        b=B70JK5vUny63lU1ITNDwb7GEmYQnuFPtnTrLo4UerAH1N26UuSXAzjXMfYShLf3idD
+         xAhVwgFmqM6gvUqn5R+0k7WFKt824WIMi1aKgceJ25hOfQbOy/exyY52eEfQpNnKhgs2
+         1ylV5V+JyXfimFTVTtLNsMo12F76uzuK3gTe0k5OUWr7KGRalmiqsvkB5TWbcGU4hr/H
+         TdjIoDnwESBGbfwWFCzb48L3TLOUg2NlF+wUSHhZPRHcIM22Px2RQP1KMZ/h+Z12+iO5
+         NRM0dcUrtVs9WbImuRUrWzy/f7NbdqrHZOTUGToCyRzn7MKobxs7l0ZtRtWCPlmgYrRW
+         pZSQ==
+X-Gm-Message-State: AOJu0YxM6UxOOMJd4vHKcjWhvneBExLUKe0jZdtvciANsXxlZE1fJtNF
+	Y/XqLL1OBmWbJkBmwhu1dc5yJUYnAamM5fVtfBwZ21bS/mFClSJYyOljda/VwZw=
+X-Google-Smtp-Source: AGHT+IFfcanp4yy9KLRbZV8wShUBiBUjvwVbwxbFFZ0iAIyyuRY5gaT5NA4w3qGsCB10QXT+7StGhA==
+X-Received: by 2002:a5d:97d7:0:b0:7bf:356b:7a96 with SMTP id k23-20020a5d97d7000000b007bf356b7a96mr77714ios.2.1705532723830;
+        Wed, 17 Jan 2024 15:05:23 -0800 (PST)
 Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id s11-20020a056638258b00b0046dda6b83c1sm670895jat.25.2024.01.17.15.04.22
+        by smtp.gmail.com with ESMTPSA id s11-20020a056638258b00b0046dda6b83c1sm670895jat.25.2024.01.17.15.05.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jan 2024 15:04:22 -0800 (PST)
-Message-ID: <0a626e1a-939a-44e5-bb82-0275c19f7143@kernel.dk>
-Date: Wed, 17 Jan 2024 16:04:22 -0700
+        Wed, 17 Jan 2024 15:05:23 -0800 (PST)
+Message-ID: <9677a5bc-b867-4350-9848-6a726dc9d573@kernel.dk>
+Date: Wed, 17 Jan 2024 16:05:22 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,157 +77,56 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6] io_uring: Statistics of the true utilization of sq
- threads.
+Subject: Re: PROBLEM: BLKPG_DEL_PARTITION with GENHD_FL_NO_PART used to return
+ ENXIO, now returns EINVAL
 Content-Language: en-US
-To: Xiaobing Li <xiaobing.li@samsung.com>
-Cc: asml.silence@gmail.com, linux-kernel@vger.kernel.org,
- io-uring@vger.kernel.org, kun.dou@samsung.com, peiwei.li@samsung.com,
- joshi.k@samsung.com, kundan.kumar@samsung.com, wenwen.chen@samsung.com,
- ruyi.zhang@samsung.com
-References: <e117f6e0-a8bc-4068-8bce-65a7c4e129cf@kernel.dk>
- <CGME20240117084516epcas5p2f0961781ff761ac3a3794c5ea80df45f@epcas5p2.samsung.com>
- <20240117083706.11766-1-xiaobing.li@samsung.com>
+To: Yu Kuai <yukuai1@huaweicloud.com>, Christoph Hellwig <hch@infradead.org>,
+ Allison Karlitskaya <allison.karlitskaya@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+ "yukuai (C)" <yukuai3@huawei.com>
+References: <CAOYeF9VsmqKMcQjo1k6YkGNujwN-nzfxY17N3F-CMikE1tYp+w@mail.gmail.com>
+ <ZaZesiKpbMEiiTrf@infradead.org>
+ <210deda9-5439-244a-0ce2-af9dc8e5d7fe@huaweicloud.com>
+ <592625f7-36d7-02e0-2ee6-8211334aa0f9@huaweicloud.com>
 From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240117083706.11766-1-xiaobing.li@samsung.com>
+In-Reply-To: <592625f7-36d7-02e0-2ee6-8211334aa0f9@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 1/17/24 1:37 AM, Xiaobing Li wrote:
-> On 1/12/24 2:58 AM, Jens Axboe wrote:
->> On 1/11/24 6:12 PM, Xiaobing Li wrote:
->>> On 1/10/24 16:15 AM, Jens Axboe wrote:
->>>> On 1/10/24 2:05 AM, Xiaobing Li wrote:
->>>>> On 1/5/24 04:02 AM, Pavel Begunkov wrote:
->>>>>> On 1/3/24 05:49, Xiaobing Li wrote:
->>>>>>> On 12/30/23 9:27 AM, Pavel Begunkov wrote:
->>>>>>>> Why it uses jiffies instead of some task run time?
->>>>>>>> Consequently, why it's fine to account irq time and other
->>>>>>>> preemption? (hint, it's not)
->>>>>>>>
->>>>>>>> Why it can't be done with userspace and/or bpf? Why
->>>>>>>> can't it be estimated by checking and tracking
->>>>>>>> IORING_SQ_NEED_WAKEUP in userspace?
->>>>>>>>
->>>>>>>> What's the use case in particular? Considering that
->>>>>>>> one of the previous revisions was uapi-less, something
->>>>>>>> is really fishy here. Again, it's a procfs file nobody
->>>>>>>> but a few would want to parse to use the feature.
->>>>>>>>
->>>>>>>> Why it just keeps aggregating stats for the whole
->>>>>>>> life time of the ring? If the workload changes,
->>>>>>>> that would either totally screw the stats or would make
->>>>>>>> it too inert to be useful. That's especially relevant
->>>>>>>> for long running (days) processes. There should be a
->>>>>>>> way to reset it so it starts counting anew.
->>>>>>>
->>>>>>> Hi, Jens and Pavel,
->>>>>>> I carefully read the questions you raised.
->>>>>>> First of all, as to why I use jiffies to statistics time, it
->>>>>>> is because I have done some performance tests and found that
->>>>>>> using jiffies has a relatively smaller loss of performance
->>>>>>> than using task run time. Of course, using task run time is
->>>>>>
->>>>>> How does taking a measure for task runtime looks like? I expect it to
->>>>>> be a simple read of a variable inside task_struct, maybe with READ_ONCE,
->>>>>> in which case the overhead shouldn't be realistically measurable. Does
->>>>>> it need locking?
->>>>>
->>>>> The task runtime I am talking about is similar to this:
->>>>> start = get_system_time(current);
->>>>> do_io_part();
->>>>> sq->total_time += get_system_time(current) - start;
->>>>
->>>> Not sure what get_system_time() is, don't see that anywhere.
->>>>
->>>>> Currently, it is not possible to obtain the execution time of a piece of 
->>>>> code by a simple read of a variable inside task_struct. 
->>>>> Or do you have any good ideas?
->>>>
->>>> I must be missing something, because it seems like all you need is to
->>>> read task->stime? You could possible even make do with just logging busy
->>>> loop time, as getrusage(RUSAGE_THREAD, &stat) from userspace would then
->>>> give you the total time.
->>>>
->>>> stat.ru_stime would then be the total time, the thread ran, and
->>>> 1 - (above_busy_stime / stat.ru_stime) would give you the time the
->>>> percentage of time the thread ran and did useful work (eg not busy
->>>> looping.
->>>
->>> getrusage can indeed get the total time of the thread, but this
->>> introduces an extra function call, which is relatively more
->>> complicated than defining a variable. In fact, recording the total
->>> time of the loop and the time of processing the IO part can achieve
->>> our observation purpose. Recording only two variables will have less
->>> impact on the existing performance, so why not  choose a simpler and
->>> effective method.
+On 1/16/24 6:46 AM, Yu Kuai wrote:
+> Hi,
+> 
+> ? 2024/01/16 21:23, Yu Kuai ??:
+>> Hi, Christoph
 >>
->> I'm not opposed to exposing both of them, it does make the API simpler.
->> If we can call it an API... I think the main point was using task->stime
->> for it rather than jiffies etc.
+>> ? 2024/01/16 18:47, Christoph Hellwig ??:
+>>> Hi Allison,
+>>>
+>>> please try this minimal fix.  I need to double check if we historically
+>>> returned ENXIO or EINVAL for adding / resizing partitions, which would
+>>> make things more complicated.  Or maybe you already have data for that
+>>> at hand?
+>>>
+>>> diff --git a/block/ioctl.c b/block/ioctl.c
+>>> index 9c73a763ef8838..f2028e39767821 100644
+>>> --- a/block/ioctl.c
+>>> +++ b/block/ioctl.c
+>>> @@ -21,7 +21,7 @@ static int blkpg_do_ioctl(struct block_device *bdev,
+>>>       sector_t start, length;
+>>>       if (disk->flags & GENHD_FL_NO_PART)
+>>> -        return -EINVAL;
+>>> +        return -ENXIO;
+>>
+>> I think this might not be a proper fix, the reason if that before this
+>> condition is added, -ENXIO is returned from bdev_del_partition(). And
+>> there are also some other error number like -EACCES,-EFAULT following,
+>> so this change will still make changes for user in other cases.
 > 
-> Hi, Jens and Pavel
-> I modified the code according to your opinions.
-> 
-> I got the total time of the sqpoll thread through getrusage. 
-> eg?
-> 
-> fdinfo.c:
-> +long sq_total_time = 0;
-> +long sq_work_time = 0;
-> if (has_lock && (ctx->flags & IORING_SETUP_SQPOLL)) {
-> 	struct io_sq_data *sq = ctx->sq_data;
-> 
-> 	sq_pid = sq->task_pid;
-> 	sq_cpu = sq->sq_cpu;
-> +	struct rusage r;
-> +	getrusage(sq->thread, RUSAGE_SELF, &r);
-> +	sq_total_time = r.ru_stime.tv_sec * 1000000 + r.ru_stime.tv_usec;
-> +	sq_work_time = sq->work_time;
-> }
-> 
-> seq_printf(m, "SqThread:\t%d\n", sq_pid);
-> seq_printf(m, "SqThreadCpu:\t%d\n", sq_cpu);
-> +seq_printf(m, "SqTotalTime:\t%ldus\n", sq_total_time);
-> +seq_printf(m, "SqWorkTime:\t%ldus\n", sq_work_time);
-> seq_printf(m, "UserFiles:\t%u\n", ctx->nr_user_files);
-> 
-> The working time of the sqpoll thread is obtained through ktime_get().
-> eg?
-> 
-> sqpoll.c:
-> +ktime_t start, diff;
-> +start = ktime_get();
-> list_for_each_entry(ctx, &sqd->ctx_list, sqd_list) {
-> 	int ret = __io_sq_thread(ctx, cap_entries);
-> 
-> 	if (!sqt_spin && (ret > 0 || !wq_list_empty(&ctx->iopoll_list)))
-> 		sqt_spin = true;
-> }
-> if (io_run_task_work())
-> 	sqt_spin = true;
-> 
-> +diff = ktime_sub(ktime_get(), start);
-> +if (sqt_spin == true)
-> +	sqd->work_time += ktime_to_us(diff);
-> 
-> The test results are as follows:
-> Every 2.0s: cat /proc/9230/fdinfo/6 | grep -E Sq
-> SqMask: 0x3
-> SqHead: 3197153
-> SqTail: 3197153
-> CachedSqHead:   3197153
-> SqThread:       9231
-> SqThreadCpu:    11
-> SqTotalTime:    92215321us
-> SqWorkTime:     15106578us
-> 
-> Do you think this solution work?
+> Please ignore the patch from last email. Sorry for the noise...
+> bdev_resize_partition() will also return -ENXIO if partition does't
+> exist. So the right patch should be following:
 
-Possibly, can you send an actual patch? Would be easier to review that
-way. Bonus points for crafting test cases that can help vet that it
-calculates the right thing (eg test case that does 50% idle, 25% idle,
-75% idle, that kind of thing).
+Can you send this out as a proper patch?
 
 -- 
 Jens Axboe
