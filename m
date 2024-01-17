@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-29348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E3CA830D1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:06:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14E3A830D21
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:06:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 176431C24351
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:06:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B761CB2336E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:06:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB262249E0;
-	Wed, 17 Jan 2024 19:06:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5E6249F7;
+	Wed, 17 Jan 2024 19:06:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="GXop1/AP"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="weY0IrWF"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C59924B2D;
-	Wed, 17 Jan 2024 19:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08ACA2374F;
+	Wed, 17 Jan 2024 19:06:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705518362; cv=none; b=IlFgx7P/jSQHNJItg6rSQr8qauL4st7v4kbqDLJdi41/4ub7BfDKuSaxmFpEYLy49GKeTL/6kTvL4dp7JUvqT47r3nUeWlpgwh4mNB+eHCbSLLVry5dDs1qPDc/U54h96L0T9+d9/9J1LTBKWninydN7VHhPwJRvLuRnG1qJxr4=
+	t=1705518367; cv=none; b=Y8FDV9yyP/0sRH1BRA4Fok1Oi9SiYCA0r5zY7lNhdNCvkN/nHW7gPWHv7n6ewc1SRNAvVbH9CpnKtkeSlpa+tsJ3LHGFRGPC0ANCZxiJ1/0ST1eSPF0l5qKC3mbE4hfLxUDFkvBSZ6kvRGuDSzE1fYnkbJ1MY8Sw03FL8lCkyU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705518362; c=relaxed/simple;
-	bh=eOeOU3x614lsawB+rslBo/giR4eO6xhTQjWM2UWOobU=;
+	s=arc-20240116; t=1705518367; c=relaxed/simple;
+	bh=8uW78FpceoDVMKHRzTpjOfMZqXDYMEkFZx5jYlY1Ks4=;
 	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:
 	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
-	 In-Reply-To:To:Cc:X-Mailer; b=RBS3V0wFOT+XXY9evCpDm4JHeNE6zcdVylpAfkLMuCFEeesy7A1DDC2TgUZoZ95ECOZFQGTKT3erSE7WjhWm90hOFQ7uuc4vIQXSwqLrD1YRAS7C4rbH8VHyiXzGB2/Qkz+D5dvGDid0Jj3IyHUe0mM5xkYRkpJLJb7QvUyhswI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=GXop1/AP; arc=none smtp.client-ip=46.235.227.194
+	 In-Reply-To:To:Cc:X-Mailer; b=S9+UbWIcV+GJStt0RUzS0PLDTLtXGdBELjg3TQl5aBRbDNsGcle8Bs8qsMBAgekGEc61hnppSfAVUlua8b1vHPq67vyF9jbOxqKM5F0GHPLRDgD5iHTI3KSIw7pXUaBU2u9T4y6wxHRPA/noB8Y6CDOaci5FAOIreWDMBh/5U+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=weY0IrWF; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705518358;
-	bh=eOeOU3x614lsawB+rslBo/giR4eO6xhTQjWM2UWOobU=;
+	s=mail; t=1705518364;
+	bh=8uW78FpceoDVMKHRzTpjOfMZqXDYMEkFZx5jYlY1Ks4=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=GXop1/APn+/hjPS2SlNEWm1M7m5jGZ1Ar+IYRFjIvHr/W5ryRiPW/BokDnimXt5lp
-	 PZM1pHH/SPsEMdYfu95Zg1/K8gN6V1W2A9p069azSnp3M0upE4yFSjd8wl7jloLaxn
-	 5HNjMw5QlU81epDaBPj27tbGAxMpY4T+WmKau4Jc+8cBE+hZjqhh2LwgNWqppEotCh
-	 N0BZnvm+h0G7Wl1FGNsJ1ep7fVIxNdyN+qkoGy+PCO6b23lwVI/5U7uqOCnDc9ZmRq
-	 tSfr+OtvQOXYZLzIhEq1fjkQd+lgAYWA4V0R/WEADLmiDAgRNfTP8eyBOb2U2AeCW4
-	 ZU6KttHP/8QbQ==
+	b=weY0IrWFly7FK94biWblsIMljyLeyE7f97DsZfo+eEoCHWV23WEyYtjfC9ds76q1K
+	 OKfZUVJYnDBiML2LtL1DfbOHura1s7t3c9u0TmPs/rUqmkbwmS9iBCYGX8pOJDNxdv
+	 2Umw5J6tZFu4gIfU574PqqpKQ+wB0bdVQ94PLshs0D6y/Y1KpSro4ziPEo2Rwq5xY3
+	 oEwm001TVgICvSURaDo33Ca1jdCQOa7IW7T15tqbHdfc0LT/RfXbYN1CQnEGScuIZQ
+	 m9igRryqDl+a7qasYe2cOfDrFa6PtofhEW6nF3SGrQitCSaM/A4D2bodY2YEViQcHe
+	 eCMOIkeYD/UAg==
 Received: from [192.168.0.47] (zone.collabora.co.uk [167.235.23.81])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 6DD643782066;
-	Wed, 17 Jan 2024 19:05:53 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 14526378000E;
+	Wed, 17 Jan 2024 19:05:58 +0000 (UTC)
 From: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-Date: Wed, 17 Jan 2024 16:03:23 -0300
-Subject: [PATCH v3 2/4] firmware: coreboot: Generate aliases for coreboot
- modules
+Date: Wed, 17 Jan 2024 16:03:24 -0300
+Subject: [PATCH v3 3/4] firmware: coreboot: Replace tag with id table in
+ driver struct
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,7 +60,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240117-coreboot-mod-defconfig-v3-2-049565a27bba@collabora.com>
+Message-Id: <20240117-coreboot-mod-defconfig-v3-3-049565a27bba@collabora.com>
 References: <20240117-coreboot-mod-defconfig-v3-0-049565a27bba@collabora.com>
 In-Reply-To: <20240117-coreboot-mod-defconfig-v3-0-049565a27bba@collabora.com>
 To: Tzung-Bi Shih <tzungbi@kernel.org>
@@ -76,74 +76,169 @@ Cc: Arnd Bergmann <arnd@arndb.de>, Brian Norris <briannorris@chromium.org>,
  =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
 X-Mailer: b4 0.12.4
 
-Generate aliases for coreboot modules to allow automatic module probing.
+Switch the plain 'tag' field in struct coreboot_driver for the newly
+created coreboot_device_id struct, which also contains a tag field and
+has the benefit of allowing modalias generation, and update all coreboot
+drivers accordingly.
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+While at it, also add the id table for each driver to the module device
+table to allow automatically loading the module.
+
 Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 ---
- include/linux/mod_devicetable.h   |  8 ++++++++
- scripts/mod/devicetable-offsets.c |  3 +++
- scripts/mod/file2alias.c          | 10 ++++++++++
- 3 files changed, 21 insertions(+)
+ drivers/firmware/google/cbmem.c                |  8 +++++++-
+ drivers/firmware/google/coreboot_table.c       | 11 ++++++++++-
+ drivers/firmware/google/coreboot_table.h       |  3 ++-
+ drivers/firmware/google/framebuffer-coreboot.c |  8 +++++++-
+ drivers/firmware/google/memconsole-coreboot.c  |  8 +++++++-
+ drivers/firmware/google/vpd.c                  |  8 +++++++-
+ 6 files changed, 40 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
-index f458469c5ce5..24e0dcfde809 100644
---- a/include/linux/mod_devicetable.h
-+++ b/include/linux/mod_devicetable.h
-@@ -960,4 +960,12 @@ struct vchiq_device_id {
- 	char name[32];
- };
- 
-+/**
-+ * struct coreboot_device_id - Identifies a coreboot table entry
-+ * @tag: tag ID
-+ */
-+struct coreboot_device_id {
-+	__u32 tag;
-+};
-+
- #endif /* LINUX_MOD_DEVICETABLE_H */
-diff --git a/scripts/mod/devicetable-offsets.c b/scripts/mod/devicetable-offsets.c
-index e91a3c38143b..518200813d4e 100644
---- a/scripts/mod/devicetable-offsets.c
-+++ b/scripts/mod/devicetable-offsets.c
-@@ -274,5 +274,8 @@ int main(void)
- 	DEVID(vchiq_device_id);
- 	DEVID_FIELD(vchiq_device_id, name);
- 
-+	DEVID(coreboot_device_id);
-+	DEVID_FIELD(coreboot_device_id, tag);
-+
+diff --git a/drivers/firmware/google/cbmem.c b/drivers/firmware/google/cbmem.c
+index 88e587ba1e0d..c2bffdc352a3 100644
+--- a/drivers/firmware/google/cbmem.c
++++ b/drivers/firmware/google/cbmem.c
+@@ -114,6 +114,12 @@ static int cbmem_entry_probe(struct coreboot_device *dev)
  	return 0;
  }
-diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
-index 4829680a0a6d..5d1c61fa5a55 100644
---- a/scripts/mod/file2alias.c
-+++ b/scripts/mod/file2alias.c
-@@ -1494,6 +1494,15 @@ static int do_vchiq_entry(const char *filename, void *symval, char *alias)
- 	return 1;
+ 
++static const struct coreboot_device_id cbmem_ids[] = {
++	{ .tag = LB_TAG_CBMEM_ENTRY },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(coreboot, cbmem_ids);
++
+ static struct coreboot_driver cbmem_entry_driver = {
+ 	.probe = cbmem_entry_probe,
+ 	.drv = {
+@@ -121,7 +127,7 @@ static struct coreboot_driver cbmem_entry_driver = {
+ 		.owner = THIS_MODULE,
+ 		.dev_groups = dev_groups,
+ 	},
+-	.tag = LB_TAG_CBMEM_ENTRY,
++	.id_table = cbmem_ids,
+ };
+ module_coreboot_driver(cbmem_entry_driver);
+ 
+diff --git a/drivers/firmware/google/coreboot_table.c b/drivers/firmware/google/coreboot_table.c
+index c1b9a9e8e8ed..33971cf33112 100644
+--- a/drivers/firmware/google/coreboot_table.c
++++ b/drivers/firmware/google/coreboot_table.c
+@@ -28,8 +28,17 @@ static int coreboot_bus_match(struct device *dev, struct device_driver *drv)
+ {
+ 	struct coreboot_device *device = CB_DEV(dev);
+ 	struct coreboot_driver *driver = CB_DRV(drv);
++	const struct coreboot_device_id *id;
+ 
+-	return device->entry.tag == driver->tag;
++	if (!driver->id_table)
++		return 0;
++
++	for (id = driver->id_table; id->tag; id++) {
++		if (device->entry.tag == id->tag)
++			return 1;
++	}
++
++	return 0;
  }
  
-+/* Looks like: coreboot:tN */
-+static int do_coreboot_entry(const char *filename, void *symval, char *alias)
-+{
-+	DEF_FIELD(symval, coreboot_device_id, tag);
-+	sprintf(alias, "coreboot:t%08X", tag);
-+
-+	return 1;
-+}
-+
- /* Does namelen bytes of name exactly match the symbol? */
- static bool sym_is(const char *name, unsigned namelen, const char *symbol)
- {
-@@ -1575,6 +1584,7 @@ static const struct devtable devtable[] = {
- 	{"ishtp", SIZE_ishtp_device_id, do_ishtp_entry},
- 	{"cdx", SIZE_cdx_device_id, do_cdx_entry},
- 	{"vchiq", SIZE_vchiq_device_id, do_vchiq_entry},
-+	{"coreboot", SIZE_coreboot_device_id, do_coreboot_entry},
+ static int coreboot_bus_probe(struct device *dev)
+diff --git a/drivers/firmware/google/coreboot_table.h b/drivers/firmware/google/coreboot_table.h
+index d814dca33a08..86427989c57f 100644
+--- a/drivers/firmware/google/coreboot_table.h
++++ b/drivers/firmware/google/coreboot_table.h
+@@ -13,6 +13,7 @@
+ #define __COREBOOT_TABLE_H
+ 
+ #include <linux/device.h>
++#include <linux/mod_devicetable.h>
+ 
+ /* Coreboot table header structure */
+ struct coreboot_table_header {
+@@ -93,7 +94,7 @@ struct coreboot_driver {
+ 	int (*probe)(struct coreboot_device *);
+ 	void (*remove)(struct coreboot_device *);
+ 	struct device_driver drv;
+-	u32 tag;
++	const struct coreboot_device_id *id_table;
  };
  
- /* Create MODULE_ALIAS() statements.
+ /* Register a driver that uses the data from a coreboot table. */
+diff --git a/drivers/firmware/google/framebuffer-coreboot.c b/drivers/firmware/google/framebuffer-coreboot.c
+index 5c84bbebfef8..07c458bf64ec 100644
+--- a/drivers/firmware/google/framebuffer-coreboot.c
++++ b/drivers/firmware/google/framebuffer-coreboot.c
+@@ -80,13 +80,19 @@ static void framebuffer_remove(struct coreboot_device *dev)
+ 	platform_device_unregister(pdev);
+ }
+ 
++static const struct coreboot_device_id framebuffer_ids[] = {
++	{ .tag = CB_TAG_FRAMEBUFFER },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(coreboot, framebuffer_ids);
++
+ static struct coreboot_driver framebuffer_driver = {
+ 	.probe = framebuffer_probe,
+ 	.remove = framebuffer_remove,
+ 	.drv = {
+ 		.name = "framebuffer",
+ 	},
+-	.tag = CB_TAG_FRAMEBUFFER,
++	.id_table = framebuffer_ids,
+ };
+ module_coreboot_driver(framebuffer_driver);
+ 
+diff --git a/drivers/firmware/google/memconsole-coreboot.c b/drivers/firmware/google/memconsole-coreboot.c
+index 74b5286518ee..24c97a70aa80 100644
+--- a/drivers/firmware/google/memconsole-coreboot.c
++++ b/drivers/firmware/google/memconsole-coreboot.c
+@@ -96,13 +96,19 @@ static void memconsole_remove(struct coreboot_device *dev)
+ 	memconsole_exit();
+ }
+ 
++static const struct coreboot_device_id memconsole_ids[] = {
++	{ .tag = CB_TAG_CBMEM_CONSOLE },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(coreboot, memconsole_ids);
++
+ static struct coreboot_driver memconsole_driver = {
+ 	.probe = memconsole_probe,
+ 	.remove = memconsole_remove,
+ 	.drv = {
+ 		.name = "memconsole",
+ 	},
+-	.tag = CB_TAG_CBMEM_CONSOLE,
++	.id_table = memconsole_ids,
+ };
+ module_coreboot_driver(memconsole_driver);
+ 
+diff --git a/drivers/firmware/google/vpd.c b/drivers/firmware/google/vpd.c
+index ee6e08c0592b..8e4216714b29 100644
+--- a/drivers/firmware/google/vpd.c
++++ b/drivers/firmware/google/vpd.c
+@@ -306,13 +306,19 @@ static void vpd_remove(struct coreboot_device *dev)
+ 	kobject_put(vpd_kobj);
+ }
+ 
++static const struct coreboot_device_id vpd_ids[] = {
++	{ .tag = CB_TAG_VPD },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(coreboot, vpd_ids);
++
+ static struct coreboot_driver vpd_driver = {
+ 	.probe = vpd_probe,
+ 	.remove = vpd_remove,
+ 	.drv = {
+ 		.name = "vpd",
+ 	},
+-	.tag = CB_TAG_VPD,
++	.id_table = vpd_ids,
+ };
+ module_coreboot_driver(vpd_driver);
+ 
 
 -- 
 2.43.0
