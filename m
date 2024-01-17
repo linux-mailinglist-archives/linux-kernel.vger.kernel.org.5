@@ -1,118 +1,166 @@
-Return-Path: <linux-kernel+bounces-29176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95D2B830A17
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:54:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB074830A1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 16:55:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 216A71F24C6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:54:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED09C2879C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 15:55:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 509CC21A1A;
-	Wed, 17 Jan 2024 15:54:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69B5A22327;
+	Wed, 17 Jan 2024 15:55:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uHiRt8Mb"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dvk8/f8/"
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 245CB22304
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:54:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42F3321A16;
+	Wed, 17 Jan 2024 15:55:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705506885; cv=none; b=BcOOXpnNK5NCLEISG+nKsmnAmw50gFw/IrbBOq4tdq9Wdf43IjqWV/XR3dlGxAbi7WJvbf8dLF1sBfc9OY4fZ2ssWR/VxRqmO+UvTkw5K9utglA8bv7P+sB6Ujby1J5tkAnfDFLLhxdLRnsNvVFs9SSjyUxJL8iS3BzI0+nVRdk=
+	t=1705506904; cv=none; b=ci2eReWfEnlpfOxRwYCqtU9OvOB4vc6PE4IX4CaelxH3hPLQe1WVwIQ3J/whNY14G0sVmeL+pfl3A9NKHcq6iZ8Q0rjp9grWDA6Wvn1i/sQheoXkGC0emu1wjE4vv4IfdTCb1cpUzcao2eqbbg7JkZiVx7gYG/bRQt5G9CayfL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705506885; c=relaxed/simple;
-	bh=49vf+BpN/oETUapYPVcYitq7u/0YiGOHDP9V1nj0+yo=;
+	s=arc-20240116; t=1705506904; c=relaxed/simple;
+	bh=ttGJe8J4pcxRkey779Yd+cZv874UqM4wsN7cskxubio=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-	 To:Cc:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding; b=qu/sba6ngPaAKhnUFlC5OP0leAAehOB/S+N64+tt5pYTip+QUo6brench/1FF4TGyZuOZMpwStM4z+vagGO9jXUOPZq77le/wxsbBbgrWIaJirGobi6cnZDvU5EYuwKdZ0x7FIOV68Pa7H9s0S6AuCMdT+nHwgUUHujffnbmqcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uHiRt8Mb; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-559b3ee02adso2311506a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:54:43 -0800 (PST)
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
+	 From:To:Cc:Message-ID:In-Reply-To:References:Subject:Mime-Version:
+	 Content-Type:Content-Transfer-Encoding; b=ajkBXDmtS7H1Aeo9qSlleNT4HpF/k3t2gUJEsoSuXfZvSWyDb1ws88+Jzn5U3hyAg3RrA0RxYOOqSLb6YGatWOziav9SP444p1Y8oRNfz7VRhpZufQaCkHdlv0SsznfrWdOWmtGaAi9uQSSaFVCHc7SMQhGpqernvnDtiDy6OqQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dvk8/f8/; arc=none smtp.client-ip=209.85.219.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-680b1335af6so93855216d6.1;
+        Wed, 17 Jan 2024 07:55:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705506882; x=1706111682; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=49vf+BpN/oETUapYPVcYitq7u/0YiGOHDP9V1nj0+yo=;
-        b=uHiRt8MbYh8mhnsUxVrjOKlF2cY5eGgjmqLzvPT8hPOnETN2S3/7S+btFTsZmO3nH1
-         6wwi4ceGW17K4ZhKIinIM/VvjH0vXMhCc8EljU5p2aQ0FziivJ+XCiW4VPFL65QR1dvx
-         SHP1tp56XGtcUHYf/GJYgk9RfOpOEQPC9P07SuEkLrzDYukZ7Onz8sPjA+1UGDHLxZXn
-         rug4DS9Y9jJa4APUWCkpSFoAOdmeacRz1Zu0TaStv/ocM6kvb72gHv42A84ppT4jwvbD
-         RdJiGj66b9+Vd6G3i/L7z7+/KoaFRzoz58Uj2hdP6DBqS3RLuAsEetfDdz+fKGJT60Jg
-         zcVg==
+        d=gmail.com; s=20230601; t=1705506902; x=1706111702; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ttGJe8J4pcxRkey779Yd+cZv874UqM4wsN7cskxubio=;
+        b=dvk8/f8/2jB5aZe7zNFkQZ/ejUppjaKbdR/8nxkSG79U+tturBRm51To2SWPC9sHGe
+         aLpDeRpPDva5Q0oYTZnGS54EcmdZDVfhAUXyYfrs8vhfOoQbNKX4q5c+9GonWpsJjcM2
+         +CWJicwLzn7dYvNLztnqu3Njwrf4isYiAvnReX0FvhvZDV16bUDb4CtKS3zTEKC9Lbvb
+         rSrZmPAZLxwDqrGU1TZZiT7geGb3b2DSTtO1NTPXSyzigj7uq7MNmv1P6OM8RhsCPbsk
+         qkwTdM0ojsgQ/dTXVn2p2AG+F7UCvQqAOP4TVkyFyMZB7LvuW1eTkKTVGAK5vF85Vrqh
+         0T1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705506882; x=1706111682;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=49vf+BpN/oETUapYPVcYitq7u/0YiGOHDP9V1nj0+yo=;
-        b=QRHCRLH2JCt1jy0ehkxalpaIdHDC23ygwmU5zPlKpMQrwCJ3r/EBf/xHjmk/5wZjXu
-         qAYbIdwB1izTj+eFi+wf2yZuW3mShARA3hMIvvKNQlxwsOf9Ji7+R+0Mwb7V2sNjtIH5
-         E3wt+03IoNMJX3U5HPXKImcHYrEKxgJkLczE03PPMo/1o4Pc82fqUBJsAnofHd+E4p5j
-         zGa5/kIZUYd53pgbgkQZx6iQFNsZjyK7WT8xca0AHNcamaiovLOeFv2oqguWoUnsYUZ1
-         era3MHDgz1aVkcYLX/fgn9UThsPlfRzGYmOLD9KU+qK6pl/I5c/KFyL9NwGw7WZl6/mx
-         0xdQ==
-X-Gm-Message-State: AOJu0Yyo9nvWDfPR2TuJrXVxc8J8QrRY+d9pW3qZ2oq7pdVto1JN8mCZ
-	b2mpZA4g1KRsFk30Yi3ZqnlF1JMmuE39dQ==
-X-Google-Smtp-Source: AGHT+IGye7pbtQWvVfDwC7ZW36CQBQuuWLcxa1MEUgj6X5ZSj80Wvx9AMAf4VkoIMk+v2cfW+8ihVQ==
-X-Received: by 2002:a05:6402:3134:b0:559:52a0:f5dc with SMTP id dd20-20020a056402313400b0055952a0f5dcmr1835531edb.69.1705506882411;
-        Wed, 17 Jan 2024 07:54:42 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id ez6-20020a056402450600b0055803202e83sm8262579edb.67.2024.01.17.07.54.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jan 2024 07:54:42 -0800 (PST)
-Message-ID: <97c3579d-d6e3-475f-9f90-d4a2b3e25e86@linaro.org>
-Date: Wed, 17 Jan 2024 15:54:40 +0000
+        d=1e100.net; s=20230601; t=1705506902; x=1706111702;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ttGJe8J4pcxRkey779Yd+cZv874UqM4wsN7cskxubio=;
+        b=jFebSC/WUErS27Edax5RA+EhrAF0vwHYVek/+QFQAKaIZaWCF3H8XBPWdsbQoo3rvy
+         +ZM0c1RxlXtSL/83PqDXRER20WQ7hYPlhtcrxGR48p46HRlO3fvNaknK2gaghfqhCWdj
+         J/DBwc6ZAH85hlfYtnUPpUjkQnT1efgzNSof26kdtXBm+g1azd+FfSsjwd7BO6rG7mS2
+         BOOg0KOMrTwjVktGwvP9woVzb+kMWeng4I5R+1Cpr2SnFcwW9/RtOp58lThKC3tJVeh8
+         +JlTu9yM+NuQtg/GBkhG8Rn0YoBYiISNxkJJabPJ1v8CCMuLbwp8Yex+RJUD2Gns2R+Y
+         7Q4A==
+X-Gm-Message-State: AOJu0YxKCxIrLyS4IzAwpKXJXaIo3n3gnLAf7ZgNUZowLjG/ngnGAYBz
+	xVsIcbAWrVDihVWYWgjlEiA=
+X-Google-Smtp-Source: AGHT+IFUKgLAXPaJ1GM7ZGPSYyL9MUqnyevX9UQH1PtY6537DD4fa9EPrz350Q+gOCYQG6L2WQwC/w==
+X-Received: by 2002:a0c:dd11:0:b0:681:698e:17d8 with SMTP id u17-20020a0cdd11000000b00681698e17d8mr1348439qvk.52.1705506902051;
+        Wed, 17 Jan 2024 07:55:02 -0800 (PST)
+Received: from localhost (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
+        by smtp.gmail.com with ESMTPSA id v20-20020ad448d4000000b006817069492bsm1407241qvx.70.2024.01.17.07.55.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jan 2024 07:55:01 -0800 (PST)
+Date: Wed, 17 Jan 2024 10:55:01 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Martin KaFai Lau <martin.lau@linux.dev>, 
+ =?UTF-8?B?SsO2cm4tVGhvcmJlbiBIaW56?= <j-t.hinz@alumni.tu-berlin.de>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ Shuah Khan <shuah@kernel.org>, 
+ Arnd Bergmann <arnd@arndb.de>, 
+ Deepa Dinamani <deepa.kernel@gmail.com>, 
+ bpf@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org
+Message-ID: <65a7f855821cc_6d500294d0@willemb.c.googlers.com.notmuch>
+In-Reply-To: <51fd5249-140a-4f1b-b20e-703f159e88a3@linux.dev>
+References: <20240115134110.11624-1-j-t.hinz@alumni.tu-berlin.de>
+ <65a69e1be51ef_380df0294d9@willemb.c.googlers.com.notmuch>
+ <51fd5249-140a-4f1b-b20e-703f159e88a3@linux.dev>
+Subject: Re: [PATCH bpf-next] bpf: Allow setting SO_TIMESTAMPING* with
+ bpf_setsockopt()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/18] tty: serial: samsung: make max_count unsigned int
-Content-Language: en-US
-To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
- Sam Protsenko <semen.protsenko@linaro.org>
-Cc: krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
- gregkh@linuxfoundation.org, jirislaby@kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
- peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
-References: <20240110102102.61587-1-tudor.ambarus@linaro.org>
- <20240110102102.61587-11-tudor.ambarus@linaro.org>
- <CAPLW+4=YYdUSaaLcsdEyPswC4s6onxuSh24vSfw4xys=sPZG_Q@mail.gmail.com>
- <b21a54a7-fe13-4a29-8e7e-6b653d5c24ef@linaro.org>
- <026bdf502c0af8260c67a7a851562633a6976031.camel@linaro.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <026bdf502c0af8260c67a7a851562633a6976031.camel@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+Martin KaFai Lau wrote:
+> On 1/16/24 7:17 AM, Willem de Bruijn wrote:
+> > J=C3=B6rn-Thorben Hinz wrote:
+> >> A BPF application, e.g., a TCP congestion control, might benefit fro=
+m or
+> >> even require precise (=3Dhardware) packet timestamps. These timestam=
+ps are
+> >> already available through __sk_buff.hwtstamp and
+> >> bpf_sock_ops.skb_hwtstamp, but could not be requested: BPF programs =
+were
+> >> not allowed to set SO_TIMESTAMPING* on sockets.
+> =
 
+> This patch only uses the SOF_TIMESTAMPING_RX_HARDWARE in the selftest. =
+How about =
 
-On 1/17/24 15:38, André Draszik wrote:
->>>> +       unsigned int max_count = port->fifosize;
->>> What if port->fifosize is 0? Then this code below:
->>>
->>>     while (max_count-- > 0) {
->>>
->>> would cause int overflow, if max_count is unsigned?
->>>
->> good catch, Sam!
-> Does it matter, though? As this is a post-decrement, the test is done first, and the
-> decrement after. Therefore, it'll still bail out as expected.
+> others? e.g. the SOF_TIMESTAMPING_TX_* that will affect the sk->sk_erro=
+r_queue =
 
-Indeed, it doesn't. This reminds me of stop replying to emails at the
-end of the day :)
+> which seems not good. If rx tstamp is useful, tx tstamp should be usefu=
+l also?
 
-Cheers Andre'!
-ta
+Good point. Or should not be allowed to be set from BPF.
+
+That significantly changes process behavior, e.g., by returning POLLERR.
+ =
+
+> >>
+> >> Enable BPF programs to actively request the generation of timestamps=
+
+> >> from a stream socket. The also required ioctl(SIOCSHWTSTAMP) on the
+> >> network device must still be done separately, in user space.
+> =
+
+> hmm... so both ioctl(SIOCSHWTSTAMP) of the netdevice and the =
+
+> SOF_TIMESTAMPING_RX_HARDWARE of the sk must be done?
+> =
+
+> I likely miss something. When skb is created in the driver rx path, the=
+ sk is =
+
+> not known yet though. How the SOF_TIMESTAMPING_RX_HARDWARE of the sk af=
+fects the =
+
+> skb_shinfo(skb)->hwtstamps?
+
+Indeed it does not seem to do anything in the datapath.
+
+Requesting SOF_TIMESTAMPING_RX_SOFTWARE will call net_enable_timestamp
+to start timestamping packets.
+
+But SOF_TIMESTAMPING_RX_HARDWARE does not so thing.
+
+Drivers do use it in ethtool get_ts_info to signal hardware
+capabilities. But those must be configured using the ioctl.
+
+It is there more for consistency with the other timestamp recording
+options, I suppose.
+
 
