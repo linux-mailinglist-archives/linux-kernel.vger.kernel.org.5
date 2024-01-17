@@ -1,262 +1,168 @@
-Return-Path: <linux-kernel+bounces-28594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 145F0830077
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:22:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C313C83007C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 08:23:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 824471F248DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:22:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19F17287C3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:23:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9995BA26;
-	Wed, 17 Jan 2024 07:22:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E986BA4B;
+	Wed, 17 Jan 2024 07:22:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="XORaRJgH"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2062.outbound.protection.outlook.com [40.107.94.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Em/bewgX"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3ECF9473
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.62
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705476136; cv=fail; b=em6REayFn0DTppgibdCCPgpouCkQX4gFhB20KEVJ1VoVlLDOXe/qh6OQtEm1hh6z+3NGd6oLFcrlaGRzzuDcJBPXKItP3IHVZcu6+3g0DR9noaqGBvQP99YAhY7CZU1KnxRqppC7k+u/wiWi4xgrejg1KHxxWJPLdT9GCSpBO7k=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705476136; c=relaxed/simple;
-	bh=ks99bXEs/2h1DE0Av1gygKrSQUhUqQ+noMqeuYtg1bo=;
-	h=ARC-Message-Signature:ARC-Authentication-Results:DKIM-Signature:
-	 Received:Received:Message-ID:Date:User-Agent:Subject:
-	 Content-Language:To:Cc:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:X-ClientProxiedBy:MIME-Version:
-	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
-	 X-MS-Office365-Filtering-Correlation-Id:
-	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:
-	 X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-	 X-MS-Exchange-CrossTenant-UserPrincipalName:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped; b=Q84S9tcOzhg1DZpLK3tI2lSIO8AaIbhxVysW3nf9m/rHMd/EVnIEScqTIXQ1PtqpZkkOR55ybSFKDMtPFXeUAm/l/FtjjvrawlDXl0yZcu0Jqddc3ISqHYjwk2UZ7vcpHPYkW/jJ45iylcVtDUpolyqYOM/SDQz3BPWgXSS4SP8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=XORaRJgH; arc=fail smtp.client-ip=40.107.94.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Pe/wvo4kUYtvBkboSy8grGwCiqNVntRE9SVC200+kfMFyd97SVrC4SBZUQKMpmh+yf+vJppLBWvGiUAyDe6g6WuT20NcPK6/FpuRhHEDfEqAdz4cOq7Ck1VXrsIIHBcY6cQuI7Ba0P91iyW0b2DV2Jc3tEHIQD0oVTf4ejMjwOCBHHo3W1khxn/DvUsT2cajaKPLVJhlnNZvkpXq9bUyPVkXmXynzc8yRucqdjCJgeyuEls5BaH5MhFb+GJ33Gnw4yxPgdN1FVbDwQLS17YlsUlB60E4c+cVSgROD/qT/PF+yOIqpTWY77HkE3JDyn/eQuw8g1yJWNccYnJimeT9AA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AYB42w6+sKEuDxnM10nCrDSz+c32bDJfgNRsEcOsJJI=;
- b=HTSWDuNHELnVsPYS6GFOYJxfYzEwc/Y1FCl0yib0+69oRgCgaplvUdNzI2KstMC18vRlCz9DHcyE1acuFMFlgNuyRk0uUnobCA104UntJ9WNY6cP769mTulGVmzptvQ4MziQIHtqilkecyUXyt1FK8El1z2ZgOO+fJVIBDJ9an80dWfAdoO83kyvHpgQHODrKzAgpCrv7IweKrNrKXJHvsMh2ACPyz8xht3nwkMwJEdPeIID5Jw7VwHFQsqnptlILK7tGH7cGSNjJ6YmeYNp6y9WUjpBOpo8hXh7+I218d7X9+sdg2M2Et58wqufdUvzUa5z5MF4fjO1ydS7/yXeyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AYB42w6+sKEuDxnM10nCrDSz+c32bDJfgNRsEcOsJJI=;
- b=XORaRJgHHrrDWdUBG7CXJ0F7ZMFb2sbfk6atZP4bXv8yj10ItX6A2rfS7sXbroaGIZl0oW0qdNrze7CVhPlXTIvspm5ZP3AwY0itpKdMjX86yb8wlfU+CAP/4CPz22LWS3sXbYfzx9XemNLbtv7fDFSY4XeB3WBM9tTX4iXLGbM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by SJ2PR12MB9243.namprd12.prod.outlook.com (2603:10b6:a03:578::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.23; Wed, 17 Jan
- 2024 07:22:11 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653%4]) with mapi id 15.20.7159.020; Wed, 17 Jan 2024
- 07:22:11 +0000
-Message-ID: <560cafbb-ebe3-4605-95db-4923a35183af@amd.com>
-Date: Wed, 17 Jan 2024 08:22:04 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/6] drm/lima: fixes and improvements to error recovery
-Content-Language: en-US
-To: Erico Nunes <nunes.erico@gmail.com>, Qiang Yu <yuq825@gmail.com>,
- dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org
-Cc: anarsoul@gmail.com, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Sumit Semwal <sumit.semwal@linaro.org>,
- linux-kernel@vger.kernel.org
-References: <20240117031212.1104034-1-nunes.erico@gmail.com>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20240117031212.1104034-1-nunes.erico@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0359.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:f4::19) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15806C2E6
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 07:22:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705476177; cv=none; b=j1qoIWdLyxMaaLbC/rL54g8DccFJjTtMYYUF139aiq4ftxafXbWQkZlNZB/2G35XWk5aM1VY7K7VZ+l5JHfsaALKPRD5PYYdaqoVaNZqlExpyMfrOhJaxSWuvqDRKSA+ryP+ddp/gReptn88bepM8udvGq2UMt0xcCqh/Dc2aHg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705476177; c=relaxed/simple;
+	bh=tQ9ArgiEIxDhZiS+bkgzgrxh5erJCH0nJTQEtIK/eEo=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
+	 To:Cc:References:From:Autocrypt:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=uiqLymTgBd8OacrxZtpNy6h8TrfZgOz1pq9YaY0sJJHj3kXyufexYdqpp21kEafaS2qKXeHosiQG1Mre0tdk8BYaRnMCTbg6DZpNgWng7wdXIgldlnTtejK/YJEEBmlXcZB/uF/yht7L4KSOZoB291vfKc6zTBG7UEggJ3pdK30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Em/bewgX; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2cd1a1c5addso124748971fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 23:22:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705476174; x=1706080974; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SOYHVbiUAnjjQrw6HsFcyiBwIfZXDGBhM5yuxq5BenE=;
+        b=Em/bewgXnZV/S6jk3dKi9cybwRALWAiDgjvmm59gMgAN6MUK/AQnvEAvBoePFnOZ0s
+         1Zt9Xh92tfs4ltHNeQMV68y0VUwnk0mOMHtF5d9S+2Qxt9/c0p3gUDJFH4BzwVezYBS7
+         B27kOzBIkcAA+IRzOyvTay9eM/ARyCUx7QG56fqZ3pSm4RqEDh0lwb0qZUYqwUVBZeLy
+         d+LCVGJRv41IwabgFD5lsmXUZSyn7foQ9wfHgfISqgWJZQht3kVq60RN1vJ88T+ub30X
+         N2tYYk+fue+U6e0Dc5MjwsGN/TDcpue94cT3EYH1N2JThnqCqjhhU1kc/UqG8AIlP5rC
+         Z4Yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705476174; x=1706080974;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SOYHVbiUAnjjQrw6HsFcyiBwIfZXDGBhM5yuxq5BenE=;
+        b=XP2kAFXOghucHckTyWcedmiX6zYQ688dqeBbcTyik63iUn9P8GYsE1xDuCY81SpmJ/
+         xFHztTzMw3MS8/PvuSCxNpI9z3/kfy3pPtTyvjg0f8MaPw5TG/3uBdpWimtsiAX/hgwF
+         ezvpB9WQaQats8YiTKUpFK3a/qQ4jA1Qs6lk0O1AhE4kQ57W0IitQNFF4Oh1v7vWv2uy
+         YfCIZdKjOxs6zqqD2iUDZYlSj8wrNODxlV7kCo7mYfrFFFdG6ibfI+wNSyZnvxlvW8LT
+         +zF8yJvTNvwfq+EHQGTRQkPiksBUjkG25wPfAr4ezzgnnwgNAmlsHxAIlExuXVnTQvYJ
+         ryyw==
+X-Gm-Message-State: AOJu0Yx807uzHrhcUZfN3qr+OeGadvvdqpSFxf871ucAn7vXFcAPnFXB
+	UV1SC59qfXr0f4urOCxqVPzj3cNvwI/6Ng==
+X-Google-Smtp-Source: AGHT+IHVcF0qeMEpqs7uSkwl1gujCZSqpe2AEHAv6VCSRq3gAHW9c+mFiHiyS4ZxEJ6pJzQ5249ZBw==
+X-Received: by 2002:a2e:bd87:0:b0:2cd:cfdb:c2b3 with SMTP id o7-20020a2ebd87000000b002cdcfdbc2b3mr2415461ljq.101.1705476174083;
+        Tue, 16 Jan 2024 23:22:54 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id dj17-20020a05640231b100b00559bb146ecbsm1332043edb.6.2024.01.16.23.22.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jan 2024 23:22:53 -0800 (PST)
+Message-ID: <18300e5d-364c-4d62-b460-781dc44b8f9c@linaro.org>
+Date: Wed, 17 Jan 2024 08:22:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|SJ2PR12MB9243:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3694f414-58e4-4d5c-2557-08dc172d0573
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	M49jUJai8ErjzbK5fp+hwAYZt9nOx6/DFPxTZ/F0b3Y/mw6qs84Q8GY3WOD5jin/ME+XdcdGD/SDYUMt7NX7prTy33sCSSSWbeqJKa/eCcXjstVCZAhu2Y33FlNRm841hYbl1PT77TELb1ZZCQ0aKTKHcNxKea5CnSu2J9WgKl+mYcexQyLw8N5TtJImpyF292KV68cSMVZrtzgWCgmzs0HKpI4mSAVipaiJrq78wLz7qTVsxUEYbRfXJC8qvWAl2aI6lPPTUUKyvqdV3oN6mp4b/sLHZJjZgkAdSy7+LtJ73LDFTjFxFiQdY1SYbi+gPCRRVvvBQPlEPPtRkz3CNjMptuTuCtLD6hoHDE3YwX/QJz/VdZPbjcJDxmmBW1dNPty6dA3tGqzBkMQVmXRYp6wwKYcchwjU0Lz+aELQMJCnGxPgz/bYQOPR/NaC9qRdi2HrPI6jhtB7gkV5dn/MARbuBu3+sgk4c7HqCm3XBfW7HezCAxcoUPeV0sY3VZR5Nz7iianRsHLd/Ef/erBzkQ9RYCmtPn1vO0lXrxwGNTyZ2OWAUNVZ2tMuVbSBh3vD7TnY6DF7R+VLcI3ByZU+5W+gkSNJCM5yHlyyMQMAeoFWpsGHVJAHo1jZcNgiVTbaeVi0WVQ3Uh4FGoOxYlZYaGdCgmaoOHyueKOIozTVXZc=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(396003)(136003)(366004)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(2906002)(7416002)(5660300002)(8676002)(41300700001)(478600001)(4326008)(38100700002)(6486002)(966005)(31696002)(86362001)(2616005)(36756003)(6506007)(26005)(6666004)(6512007)(83380400001)(66946007)(8936002)(54906003)(316002)(66476007)(110136005)(31686004)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?eFpRRm9oVGdudHh5WGt1STlNR1dlZlJxSUpYMWN2eDlUNXdQdEZIdis5QVJk?=
- =?utf-8?B?bnBTcXNESVVTdzVwWWVQZUozSXVjQ1hUYm44ZTlqTEdHVEIrU1hYQ2xVUDZh?=
- =?utf-8?B?VFRmS0VBVUtnNWljUWJOV0hLNmg2aWZWSFhBRXpOb1BwRjhDN0VyTm9meXcw?=
- =?utf-8?B?ZnVyaml6SnJjS1dWS2hYT3VrVHlXWTVidFZrZXllZ2lHSE1BMFkxTGphbmdH?=
- =?utf-8?B?UTRZOWJ1bHRLVFVxL1Z2NmR0YjVEYnBySEF0djBVeDVHSENEUzY3b0xjbHpE?=
- =?utf-8?B?R0VoZldLSkd0TDIvRlo1WkVFeGg5SElMOFRNeDlxeHpxT1k5WlF0WEg5Z0pp?=
- =?utf-8?B?MTFOL05MMDVhQXBRdXdXN1ZIRGY3V20wMjRvejlFeC9OWVVEaDZ3RFgwUkF0?=
- =?utf-8?B?RVBsZFE2ZGl0M2h0QUJySGNnUTJaakEwYzdFODMrYkFvWmprQmFnWnlwQlNY?=
- =?utf-8?B?N1M3MlNlSThtazVKMkRmYUJ2ZE5NaXNwSUoxK1U4K2JKRlNBaGY5TDdTWld3?=
- =?utf-8?B?K0g5RnBhbHFJSDdoUVVlc1FWNlRueFpxeW5WTkRFTjNiZ091blJxMUlITUF5?=
- =?utf-8?B?bWNhZ3NoTzM1SGM1QkdrM1VNYUVkd3pJb3ROWUVHMTdzcTMrRHdBQy9LdFJV?=
- =?utf-8?B?TUdHcEtINGRNSGdtYzJJU2RHS2tmcjdkQ1Q3dWFCY2gwMXQvWWxsN1p4NHVh?=
- =?utf-8?B?NG96VnF5dVdLb0c2ZWFBNGRhWXZtamxHMS9zdkNmTzJjNUJDakhueFp1Qnpa?=
- =?utf-8?B?MlZmL0R5Q1B4L212dGJUbmdLbnNRNC9KU0prTGFwNWcxTTJSR2Y5bmNROVJo?=
- =?utf-8?B?TU90SFBveTk2OFlRUzZNWGU3RHpWT2lCNjZ3YmlxMGc4dFUxMHcyMnNzcVJ1?=
- =?utf-8?B?TXRDRWNuS0xhTkxyY2JVbjBuTDVDUmsvUjFBSkdsZ0NPb25YVGh6eVFBaU94?=
- =?utf-8?B?SU8rbWtlQVd5WGV5L0JQQ0pyU1dxQ2hvYTZyZXNhZ0tJd0NudGJHWFhqaFBV?=
- =?utf-8?B?Z1RHS1BoVTBvQjliUndjd0praWVJTlV5Y0NSOG5Wdlk4SmZvL3JlU2RGeG5G?=
- =?utf-8?B?alpVQThjTmNtcnV5RkFhUmRMMmZLYW9DVUhNdWR1VldGbEZRbFdoSUVubXlz?=
- =?utf-8?B?bUprL05ucGFHbE15OHNLYTdKU2lYNEwvVUhWVm1BRU9vUWF4a3N3TElLZjBB?=
- =?utf-8?B?VnZ0NHE0clRLRCtXY0I0YWlQWi9iN2IzZkRvMGVrcWxIZ25icEEzUFhBVURV?=
- =?utf-8?B?NjlYaVVYbzFtemRldFovYkVoOFdzTUJ1N2NVcENtV3BTUVVidk5jdHRHNUdM?=
- =?utf-8?B?Tm4vK3F3dVl0SmYrZlo3M1dSU0lxK1dzZ2YyR0Fxekw4MW9MWGQxQWFYazdW?=
- =?utf-8?B?K2J3bDF5TXJGUm5YRWx6SmhwMWNHMTVJcDFGWXBsVTc2RTh4MHpHbWhlbG0v?=
- =?utf-8?B?ZExSRzYzMGxOTDNKRzJxcEp6dVNWOFFRVmVxZWhyZmRxcDFaNkF3UmJIRzNM?=
- =?utf-8?B?YTM1L1lVblV0eUc2dWl1UGY0UEFIR1loWGx4NzRWN0w3eHNHSUhhZEZjU0VX?=
- =?utf-8?B?MnpGRldFV0JXZDhaTzdMdFdPYW5rejJnZkE5YWZlSUpJc25Xdk9Ic0Nia3RX?=
- =?utf-8?B?QmFYanNYN3lMWkVDMFZ2ODZvTG5qV3lhNEJ0OGZuVlMzQmFSSjRwWEZKamlP?=
- =?utf-8?B?elpIdGlhTlRDeGFMc0R0Z050cEkzaUg4Ukt0NTBtU1AvcVRPT2p3cER1Y2hK?=
- =?utf-8?B?UlM5OHkzMFB1eGlwNFZVcGJiSWFUQnJhYU53STlTckt1YTZsT25TYVhvVis0?=
- =?utf-8?B?UDZEMlQ4K0ZEcEFzTGZBWENXd1FKbzBNeVRNVnB6TDlFeGJQN2ZqUnBKdVl6?=
- =?utf-8?B?WnJRdTZFZ2JWK09GSkI1NDNLbU9BVW4wMlVDSExQQkxnT3I0WkhtQlVPSFl6?=
- =?utf-8?B?TDFBOWxwV3FuMmZhK1JEd2xhMWo3WnlqZDBvVUFxRXNOM3ZvZ2pYVFBvdUhr?=
- =?utf-8?B?eGlTeEJ6aVVmeWRWQ2hncTNqVkREMHJsWk11cWJEbndlWjBCWmFIeENWRkl0?=
- =?utf-8?B?dm5jblMwUXp3ZGpLRTdwUHNqdXpHMXNZL1BRL1NWMlRmNEowcUhQZWJKNnhC?=
- =?utf-8?Q?Qbu4NTpvVpZaPA0mGwu+v/Vqq?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3694f414-58e4-4d5c-2557-08dc172d0573
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2024 07:22:11.4558
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: W6xTe7zTpHG7Q/xfZwZY7lZt25VuvMxvXBRP314Bxl8yuBVS7dlx4ctP4G3gx1aM
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9243
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/6] dt-bindings: PCI: qcom,pcie-sm8450: move SM8450 to
+ dedicated schema
+Content-Language: en-US
+To: Rob Herring <robh@kernel.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Manivannan Sadhasivam <mani@kernel.org>,
+ linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240108-dt-bindings-pci-qcom-split-v1-0-d541f05f4de0@linaro.org>
+ <20240108-dt-bindings-pci-qcom-split-v1-2-d541f05f4de0@linaro.org>
+ <20240116144832.GA3862516-robh@kernel.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240116144832.GA3862516-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Am 17.01.24 um 04:12 schrieb Erico Nunes:
-> There have been reports from users for a long time about applications
-> hitting random "*ERROR* lima job timeout" and the application or GPU
-> becoming unresponsive.
->
-> This series addresses a number of related bugs, especially in the pp
-> timeout recovery path.
->
-> Patch 1 fixes a stack trace initially featured in a user report here:
-> https://gitlab.freedesktop.org/mesa/mesa/-/issues/8415
->
-> Patch 2 fixes a "pp reset time out" message which was fairly confusing
-> at first. Debugging with an application which just submits one single
-> job at a time made it clear that the timeout actually was reported in
-> the application that runs next, even if that is a good application.
->
-> Patch 3 is one of the most important fixes and stops random "mmu command
-> 2 timeout" ppmmu timeouts that I hit while running my tests. Initially I
-> thought it came from some race condition on running/resetting jobs, but
-> it was actually due to hard resetting live tasks.
-> After setting this there was never a mmu timeout anymore (even after
-> dropping the guilty flag in the upcoming patch, which by itself was
-> actually the easiest reproducer of the ppmmu timeouts).
->
-> Patch 4 might be debatable, but hopefully we can agree to go with it
-> since it was already discussed in Panfrost here:
-> https://patchwork.freedesktop.org/series/120820/
-> It is actually not that hard to reproduce both "spurious timeout" and
-> "unexpectedly high interrupt latency" by creating an irq which takes a
-> longer than usual to execute, and paired with the issues in timeout
-> recovery this could cause an unrelated application to hang.
->
-> Patch 5 removes the guilty drm_sched from context handling in lima.
-> Often users report issues with a user-visible effect of "application
-> flipping the last 2 rendered frames":
-> https://gitlab.freedesktop.org/mesa/mesa/-/issues/8410
-> This was ultimately caused because lima sets the guilty flag to a
-> context which causes all further rendering jobs from that context to be
-> dropped.
-> Without the fixes from patches 1-4 it was not possible to just drop the
-> guilty flag as that could trigger the mentioned issues and still hang
-> the GPU by attempting a recovery.
-> After the fixes above it seems to be reliable and survives some fairly
-> torturing tests mentioned below.
-> Other similar GPU drivers like panfrost, v3d don't make use of the
-> guilty context flag. So I think we can drop it for lima too.
+On 16/01/2024 15:48, Rob Herring wrote:
+>> +        clock-names:
+>> +          items:
+>> +            - const: pipe # PIPE clock
+>> +            - const: pipe_mux # PIPE MUX
+>> +            - const: phy_pipe # PIPE output clock
+>> +            - const: ref # REFERENCE clock
+>> +            - const: aux # Auxiliary clock
+>> +            - const: cfg # Configuration clock
+>> +            - const: bus_master # Master AXI clock
+>> +            - const: bus_slave # Slave AXI clock
+>> +            - const: slave_q2a # Slave Q2A clock
+>> +            - const: ddrss_sf_tbu # PCIe SF TBU clock
+>> +            - const: aggre1 # Aggre NoC PCIe1 AXI clock
+> 
+> Almost the same list. Combine them and just make the 11th entry "enum: 
+> [aggre0, aggre1]".
 
-Oh, yes please! Thanks so much for that.
+Sure.
 
-I'm working on removing the guilty handling in amdgpu as well and 
-together this will most likely allow us to completely remove the guilty 
-handling from the scheduler.
-
-In general driver should use the dma_fence error handling instead. That 
-one is well defined and way more reliable.
-
-Feel free to add my acked-by to patch 5.
-
-Thanks,
-Christian.
-
->
-> Patch 6 is just some debug message cleanup.
->
->
-> Some of the tests which I ran with this patchset:
->
-> - Application which renders normal frames, then frames which /barely/
-> timeout, then frames which legitimely timeout, then frames which timeout
-> enough to trigger the hardware watchdog irq, then goes back to render
-> normal frames. This used to hang the application at first but now
-> survives the entire process repeated indefinitely.
->
-> - High irq latency from an unrelated source while rendering. I put a
-> mdelay() in the touchscreen driver irq and could cause all "spurious
-> timeout", "unexpectedly high interrupt latency" and actual timeouts.
-> Those are now all reported to dmesg for information and I am no longer
-> able to cause an unrelated application to hang.
->
-> - Game running with lower configured drm_sched timeout (locally set to
-> 200ms) with other applications triggering timeouts in the background.
-> Different applications trigger resets independently but none of them
-> cause the GPU to hang or the game to stop working.
->
->
-> Erico Nunes (6):
->    drm/lima: fix devfreq refcount imbalance for job timeouts
->    drm/lima: reset async_reset on pp hard reset
->    drm/lima: set bus_stop bit before hard reset
->    drm/lima: handle spurious timeouts due to high irq latency
->    drm/lima: remove guilty drm_sched context handling
->    drm/lima: improve some pp debug messages
->
->   drivers/gpu/drm/lima/lima_ctx.c   |  2 +-
->   drivers/gpu/drm/lima/lima_ctx.h   |  1 -
->   drivers/gpu/drm/lima/lima_pp.c    | 26 +++++++++++++++++---
->   drivers/gpu/drm/lima/lima_sched.c | 40 ++++++++++++++++++++++++-------
->   drivers/gpu/drm/lima/lima_sched.h |  5 ++--
->   5 files changed, 58 insertions(+), 16 deletions(-)
->
+Best regards,
+Krzysztof
 
 
