@@ -1,140 +1,158 @@
-Return-Path: <linux-kernel+bounces-28519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D600A82FF9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 05:39:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E03182FF9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 05:41:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A01BB23CFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 04:39:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74631286BA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 04:41:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 384B363A5;
-	Wed, 17 Jan 2024 04:38:55 +0000 (UTC)
-Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89101749C;
+	Wed, 17 Jan 2024 04:41:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SzNF3lQ/"
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED13733C5;
-	Wed, 17 Jan 2024 04:38:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E253611A
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 04:41:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705466334; cv=none; b=Vk3JBkCZ0jYRms4TzZekGk/FBnxFHatz4degYGrgE79WxenDIqMsg9t4+K0/jeBb7vyUOOFrZH2hz2by6+ItkhC+HAk/795MSUrE1kINWsif71svjlHJTEQbTwP4IvFU0AcZZs98VqH/eBLHc2eMOVTeuFRF0CtYOVkzmgC+cdk=
+	t=1705466494; cv=none; b=kjaL2J8ofom8z8+OFiyDQGkc6OVHoXbCxi9ACW+TzXmPbE/BWUcSc7T/BIhLsGU5JYJaiJ374w7Xeh54aWhhCXQ/Es/pFSVmgC8Jp2QMfdOJ7GKmDuMyYzJSmerGdC7mHW8nWR7yvTmfOHywFenNBF1o8Q8j7c0jxgNNruL9Xgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705466334; c=relaxed/simple;
-	bh=OiO46qZq0Is2mnUaJvP4RWs7zVxEhEoqYSm44EehkgI=;
-	h=Received:X-Google-DKIM-Signature:X-Gm-Message-State:
-	 X-Google-Smtp-Source:X-Received:Received:Received:X-Received:
-	 MIME-Version:References:In-Reply-To:Reply-To:From:Date:
-	 X-Gmail-Original-Message-ID:Message-ID:Subject:To:Cc:Content-Type:
-	 Content-Transfer-Encoding; b=kbduiDGIT90Fbj8Fjl7GiuVWL+xZmapV28gkH9zd8/bKP8Ra4kAkyNWtE4uzuga/98bH8oVzQvzo2ITFuCrcLfIOHt4BD8cq9oOnAv5le+gdOTYO0DhdCPAM2STbJZuhXGidC+QWlLIgfuRkzvTzjnwGYSMTEfnJSOrxhyuHaPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=csie.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=csie.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5986f790b64so4993210eaf.3;
-        Tue, 16 Jan 2024 20:38:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705466332; x=1706071132;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xWM2eCTSdv+ykArKWuxIaHFUHWUoGfAR11YwSin65Ss=;
-        b=cTY+Nb1v5meKuIqMTveM42v0RdZIRQ9h7zDXu79rJ0wfPNRqBTl2gNRxnZJrq1AHqr
-         UtBztrWPvOxAVhL1Eir241mTgt6x2TM2gtSRnTjKYJrkjRUwrhFsTAJI3UFc5uBUI21I
-         r87pCgyAY2k5/O9u6XErr8R27Vi/L/sYD43XZUoSDWKFowW0gI2De9YTISOKKhsorvsu
-         uXqLIVyW144y7wGo3Z2ZmYoWo8bVXzV+zvuPO2rPKUOQkBILhsndX/9BOzXg82RZbhdX
-         dMUfzsilvmyWfkBVONURuod4KfK35tILx/Yh/CX7lbws17w3frRgoIDzyWR4Iyge+kaL
-         pqUg==
-X-Gm-Message-State: AOJu0YwxMxdFwAGgELtOpMfIDbJfVwGn86BebisfH45WX6Z5f93zGOOn
-	2IcEwHzi3/kD+1idFtrkx/0saAtNxj4=
-X-Google-Smtp-Source: AGHT+IGHDJ8a8HOSRPJRWP5tFhCevJ9+R7B4pV2bhD5NQFlFC0HV5nuk/DGRxj8bc7OHOrCArlyOYw==
-X-Received: by 2002:a4a:1781:0:b0:593:f906:614f with SMTP id 123-20020a4a1781000000b00593f906614fmr4494191ooe.4.1705466331774;
-        Tue, 16 Jan 2024 20:38:51 -0800 (PST)
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com. [209.85.210.48])
-        by smtp.gmail.com with ESMTPSA id b22-20020a4ad896000000b005990885b67esm761937oov.34.2024.01.16.20.38.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jan 2024 20:38:51 -0800 (PST)
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6dc20b4595bso7172901a34.0;
-        Tue, 16 Jan 2024 20:38:51 -0800 (PST)
-X-Received: by 2002:a05:6359:29c7:b0:175:9fdb:8345 with SMTP id
- qf7-20020a05635929c700b001759fdb8345mr5167276rwb.10.1705466330959; Tue, 16
- Jan 2024 20:38:50 -0800 (PST)
+	s=arc-20240116; t=1705466494; c=relaxed/simple;
+	bh=Qzr9zg1+p1Bd/iMhIuiKvCHy5JjGHYMzisOT7Tym+yw=;
+	h=Date:DKIM-Signature:X-Report-Abuse:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To:X-Migadu-Flow; b=QQsxq57cnoAVU2YOJPRE2hXH7f03RLop8cFU/vA25LC8cFHj8mhONRld7HEmCTQhGu3SwIkgJK1JX8NFRZ8u4PesF//M2/Sb7DRqGinoMPEAtkusLAZLRsu5/yqfGqLyIZH5NFrAtyZHiRrxNJDBafqcePH4OZb9hBGZERvYp3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SzNF3lQ/; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 16 Jan 2024 23:41:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705466489;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sT2xs/iTZQyQPumh74lkYawLrjrkx0mF5IFfdjGo1zU=;
+	b=SzNF3lQ/ViYDUhvlSgoOFXyhd3+jDTorTlpocWhQR8xkbF+WF94sAuj9E2lLXMJL+39Isg
+	2tdhwB/cyNg3Y2yCuOE3rdqyWaLkjB7uKuxCJNoQd7ae/eePU+a80SCCZjvjeWtcCmXaZ8
+	Kapt/e8Acj1dfKALRwhQtgrnQh+4IB0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Greg KH <greg@kroah.com>
+Cc: Mark Brown <broonie@kernel.org>, Neal Gompa <neal@gompa.dev>, 
+	Kees Cook <keescook@chromium.org>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, Nikolai Kondrashov <spbnick@gmail.com>, 
+	Philip Li <philip.li@intel.com>, Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [GIT PULL] bcachefs updates for 6.8
+Message-ID: <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
+References: <202401101625.3664EA5B@keescook>
+ <xlynx7ydht5uixtbkrg6vgt7likpg5az76gsejfgluxkztukhf@eijjqp4uxnjk>
+ <be2fa62f-f4d3-4b1c-984d-698088908ff3@sirena.org.uk>
+ <gaxigrudck7pr3iltgn3fp5cdobt3ieqjwohrnkkmmv67fctla@atcpcc4kdr3o>
+ <f8023872-662f-4c3f-9f9b-be73fd775e2c@sirena.org.uk>
+ <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
+ <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
+ <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
+ <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
+ <2024011532-mortician-region-8302@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240116204103.29318-1-twoerner@gmail.com> <20240116204103.29318-2-twoerner@gmail.com>
-In-Reply-To: <20240116204103.29318-2-twoerner@gmail.com>
-Reply-To: wens@csie.org
-From: Chen-Yu Tsai <wens@csie.org>
-Date: Wed, 17 Jan 2024 12:38:39 +0800
-X-Gmail-Original-Message-ID: <CAGb2v67KfNR_U_Qz85aqY1D0DKE9mo-X_L8MGvT7cdcZGUHVUg@mail.gmail.com>
-Message-ID: <CAGb2v67KfNR_U_Qz85aqY1D0DKE9mo-X_L8MGvT7cdcZGUHVUg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arm64: dts: rockchip: rock-pi-e: fix location of snps properties
-To: Trevor Woerner <twoerner@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2024011532-mortician-region-8302@gregkh>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Jan 17, 2024 at 4:41=E2=80=AFAM Trevor Woerner <twoerner@gmail.com>=
- wrote:
->
-> A number of snps (Synopsys) properties are not in their correct location.
+On Mon, Jan 15, 2024 at 09:13:01PM +0100, Greg KH wrote:
+> On Mon, Jan 15, 2024 at 01:42:53PM -0500, Kent Overstreet wrote:
+> > > That sounds more like a "(reproducible) tests don't exist" complaint
+> > > which is a different thing again to people going off and NIHing fancy
+> > > frameworks.
+> > 
+> > No, it's a leadership/mentorship thing.
+> > 
+> > And this is something that's always been lacking in kernel culture.
+> > Witness the kind of general grousing that goes on at maintainer summits;
+> > maintainers complain about being overworked and people not stepping up
+> > to help with the grungy responsibilities, while simultaneously we still
+> > very much have a "fuck off if you haven't proven yourself" attitude
+> > towards newcomers. Understandable given the historical realities (this
+> > shit is hard and the penalties of fucking up are high, so there does
+> > need to be a barrier to entry), but it's left us with some real gaps.
+> > 
+> > We don't have enough a people in the senier engineer role who lay out
+> > designs and organise people to take on projects that are bigger than one
+> > single person can do, or that are necessary but not "fun".
+> > 
+> > Tests and test infrastructure fall into the necessary but not fun
+> > category, so they languish.
+> 
+> No, they fall into the "no company wants to pay someone to do the work"
+> category, so it doesn't get done.
+> 
+> It's not a "leadership" issue, what is the "leadership" supposed to do
+> here, refuse to take any new changes unless someone ponys up and does
+> the infrastructure and testing work first?  That's not going to fly, for
+> valid reasons.
+> 
+> And as proof of this, we have had many real features, that benefit
+> everyone, called out as "please, companies, pay for this to be done, you
+> all want it, and so do we!" and yet, no one does it.  One real example
+> is the RT work, it has a real roadmap, people to do the work, a tiny
+> price tag, yet almost no one sponsoring it.  Yes, for that specific
+> issue it's slowly getting there and better, but it is one example of how
+> you view of this might not be all that correct.
 
-Nope. If you read the snps,dwmac.yaml binding file, you'll see that these
-properties have been deprecated. They are properties pertaining to the PHY
-and should be described under the PHY node. Support for reset GPIOs on PHY
-devices in phylib has been there since v4.16. The snps prefixed properties
-were deprecated in v5.3.
+Well, what's so special about any of those features? What's special
+about the RT work? The list of features and enhancements we want is
+never ending.
 
-ChenYu
+But good tools are important beacuse they affect the rate of everyday
+development; they're a multiplier on the money everone is spending on
+salaries.
 
-> Fixes: b918e81f2145 ("arm64: dts: rockchip: rk3328: Add Radxa ROCK Pi E")
-> Signed-off-by: Trevor Woerner <twoerner@gmail.com>
-> ---
->  arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts b/arch/arm=
-64/boot/dts/rockchip/rk3328-rock-pi-e.dts
-> index 096cfa19036e..0739b8fec86e 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts
-> +++ b/arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts
-> @@ -150,8 +150,11 @@ &gmac2io {
->         phy-mode =3D "rgmii";
->         phy-supply =3D <&vcc_io>;
->         pinctrl-names =3D "default";
-> -       pinctrl-0 =3D <&rgmiim1_pins>;
-> +       pinctrl-0 =3D <&rgmiim1_pins>, <&eth_phy_reset_pin>;
->         snps,aal;
-> +       snps,reset-gpio =3D <&gpio1 RK_PC2 GPIO_ACTIVE_LOW>;
-> +       snps,reset-active-low;
-> +       snps,reset-delays-us =3D <0 10000 50000>;
->         snps,rxpbl =3D <0x4>;
->         snps,txpbl =3D <0x4>;
->         tx_delay =3D <0x26>;
-> @@ -165,13 +168,10 @@ mdio {
->
->                 rtl8211: ethernet-phy@1 {
->                         reg =3D <1>;
-> -                       pinctrl-0 =3D <&eth_phy_int_pin>, <&eth_phy_reset=
-_pin>;
-> +                       pinctrl-0 =3D <&eth_phy_int_pin>;
->                         pinctrl-names =3D "default";
->                         interrupt-parent =3D <&gpio1>;
->                         interrupts =3D <24 IRQ_TYPE_LEVEL_LOW>;
-> -                       reset-assert-us =3D <10000>;
-> -                       reset-deassert-us =3D <50000>;
-> -                       reset-gpios =3D <&gpio1 RK_PC2 GPIO_ACTIVE_LOW>;
->                 };
->         };
->  };
-> --
-> 2.43.0.76.g1a87c842ece3
->
+In everyday development, the rate at which we can run tests and verify
+the corectness of the code we're working on is more often than not _the_
+limiting factor on rate of development. It's a particularly big deal for
+getting new people up to speed, and for work that crosses subsystems.
+
+
+> And you will see that we now have the infrastructure in places for this.
+> The great kunit testing framework, the kselftest framework, and the
+> stuff tying it all together is there.  All it takes is people actually
+> using it to write their tests, which is slowly happening.
+> 
+> So maybe, the "leadership" here is working, but in a nice organic way of
+> "wouldn't it be nice if you cleaned that out-of-tree unit test framework
+> up and get it merged" type of leadership, not mandates-from-on-high that
+> just don't work.  So organic you might have missed it :)
+
+Things are moving in the right direction; the testing track at Plumber's
+was exciting to see.
+
+Kselftests is not there yet, though. Those tests could all be runnable
+with a single command - and _most_ of what's needed is there, the kernel
+config dependencies are listed out, but we're still lacking a
+testrunner.
+
+I've been trying to get someone interested in hooking them up to ktest
+(my ktest, not that other thing), so that we'd have one common
+testrunner for running anything that can be a VM test. Similarly with
+blktests, mmtests, et cetera.
+
+Having one common way of running all our functional VM tests, and a
+common collection of those tests would be a huge win for productivity
+because _way_ too many developers are still using slow ad hoc testing
+methods, and a good test runner (ktest) gets the edit/compile/test cycle
+down to < 1 minute, with the same tests framework for local development
+and automated testing in the big test cloud...
 
