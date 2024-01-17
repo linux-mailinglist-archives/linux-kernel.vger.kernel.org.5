@@ -1,143 +1,115 @@
-Return-Path: <linux-kernel+bounces-29461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B460830E95
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 22:24:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E288830E99
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 22:24:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 283CF286888
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 21:24:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C29F91F2678D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 21:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C78922557F;
-	Wed, 17 Jan 2024 21:23:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80A7628699;
+	Wed, 17 Jan 2024 21:24:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="h6m3Cvnd"
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="BGG+EdFE"
+Received: from mout.web.de (mout.web.de [212.227.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8759E25569
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 21:23:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2716B2557E;
+	Wed, 17 Jan 2024 21:24:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705526617; cv=none; b=NycFoxosUSmH3YBuna/Uazdq5SVIYz0Cjmy4ut08KFT0DjccHF/+1CfTaV0hcyQ0DfN/H2H4oyCvYaBM/22v5ME9Xobwbo83Zq8We/2zJu28hDqwcqoyJReejw06d6amSpeQSFGq4pCP6XnXvo+jDFqy+ZVwz+r/cWCp9XmBRj4=
+	t=1705526665; cv=none; b=rpN1WFLBa3Z/qMzHXDLWm2icTYNvkackySp4IjX4EygP8CGUP3R9Y0QUz8dGjuDg9NdvNHbML9XF66CjVNsDMDt81l65nXgMJl1NjmRTv2i+AC4Tg3K07XxMBxApnvuNmKU1EeycqYH3oQApfj+7HOFOiBDcKC08jMw8iXFlyc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705526617; c=relaxed/simple;
-	bh=93LlwyHyTkQO2KrqYA5lB0CVoPPZAC3B0Z1WLjl1+Ww=;
-	h=Message-ID:DKIM-Signature:Date:MIME-Version:Subject:
-	 Content-Language:To:Cc:References:X-Report-Abuse:From:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding:X-Migadu-Flow; b=ZKcN2w7nFP0G2ClptLw1tKyuPLdhug7/aEqeFe54/ZjtgcwXdRaJFZA9qhOyLr6XGbh1nNZpym0Sm2Lve4SNWOPiGYJRBCEOf5Zt4F5AWchgesgQfhRvRYTPY0FtkmLJ+kb8l1KwDhIw75jkzo2xdKlscGEMNRGr/RHApHpo4Jg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=h6m3Cvnd; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <73235f05-8474-4341-b70b-34bd0e6dfac5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705526613;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ct5ToPw3LUaNOoDO1thQP66v+Llmlbh3AXHo2CAPhSc=;
-	b=h6m3CvndLIJ5uzrmzBqR1nJWilSirVxV4yW+4QLzpTzKLqgIyNSmf14X7yh2YdXJREN8jX
-	i/xsrAeU6zEK0x6m8rcAy1E4gxL0gxMcC6UGQXrSJUXqewmGBjkv8WNuBSNwmJLVk5Ceuf
-	eWkXKO6Nc2SIe0RB69QFBga8uc1sZK0=
-Date: Wed, 17 Jan 2024 13:23:25 -0800
+	s=arc-20240116; t=1705526665; c=relaxed/simple;
+	bh=rr/O9OnzgwSihYNKoOt11Ezoi6TqX6d/sDWn041aOvs=;
+	h=DKIM-Signature:X-UI-Sender-Class:Received:Message-ID:Date:
+	 MIME-Version:User-Agent:To:Cc:References:Subject:Content-Language:
+	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-Provags-ID:X-Spam-Flag:UI-OutboundReport; b=FkdD4ASWocptS/NXd+I++UCOThhYG9aa2go5UhowvFWqpu6P4OOJlKYzseho0lrwLV8TT+F6bIlLTH9/KoOcGIGVs/UtShhDzpnt/WMiEv+rIt9ncG1K3uf0DC1iSqVzVo92EjEVxDDTVCDiBlK44WxgvTkLAgazBHAPqXS96Eo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=BGG+EdFE; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1705526647; x=1706131447; i=markus.elfring@web.de;
+	bh=rr/O9OnzgwSihYNKoOt11Ezoi6TqX6d/sDWn041aOvs=;
+	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
+	 In-Reply-To;
+	b=BGG+EdFEdB8o5/ex2syX84gzb69X81Shks8euCQc0X9v9MbRC1vbOpTOiaPnyuxC
+	 cZjBGrpCqia9b7VjGAGIfUFjkK9jBPv/C2I3oGBlHmPk8nB6+t8D2tP8sPiGMD92j
+	 LAlsLDfxgOiICCRVl9wFFsDY9hsmLimWFvkK3xH/TMbTDM3MSj+pts6rrCCsLOMSY
+	 hjXh+K59ayhfuXnXyw6avRCCLqg3RWLaOpjXQxQXUq+TZkuAuaqrFHPBUSw8vv//C
+	 0bHZ7Yg8Ah5P6j3+9yXE47rFzSRVKgNZsKFKPZJh/aG/vMJcKKHTgBtDG+otqtnSb
+	 6ZY2icE3bNgfh3o1ug==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.84.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1M8Bw1-1rVSRo2gIV-005OhR; Wed, 17
+ Jan 2024 22:24:07 +0100
+Message-ID: <4934093b-86c0-4889-a5e9-0f9d63fd528c@web.de>
+Date: Wed, 17 Jan 2024 22:24:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] bpf: Allow setting SO_TIMESTAMPING* with
- bpf_setsockopt()
-Content-Language: en-US
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- =?UTF-8?Q?J=C3=B6rn-Thorben_Hinz?= <j-t.hinz@alumni.tu-berlin.de>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Deepa Dinamani <deepa.kernel@gmail.com>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20240115134110.11624-1-j-t.hinz@alumni.tu-berlin.de>
- <65a69e1be51ef_380df0294d9@willemb.c.googlers.com.notmuch>
- <51fd5249-140a-4f1b-b20e-703f159e88a3@linux.dev>
- <65a7f855821cc_6d500294d0@willemb.c.googlers.com.notmuch>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <65a7f855821cc_6d500294d0@willemb.c.googlers.com.notmuch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+To: Kunwu Chan <chentao@kylinos.cn>, linux-scsi@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, "James E. J. Bottomley"
+ <jejb@linux.ibm.com>, "Manoj N. Kumar" <manoj@linux.ibm.com>,
+ "Matthew R. Ochs" <mrochs@linux.ibm.com>,
+ Uma Krishnan <ukrishn@linux.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Kunwu Chan <kunwu.chan@hotmail.com>
+References: <20231127025127.1545877-1-chentao@kylinos.cn>
+Subject: Re: [PATCH] scsi: cxlflash: Fix null pointer dereference in
+ ocxlflash_get_fd
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20231127025127.1545877-1-chentao@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:iqDmz8NJdlIeTl5UAA2WHvmAFHU+jenQ98f6n/XdkUaFyhUHwsC
+ 82FLB4xRI0gLxyUZOIVJvbwzbZtUe/ml/htrM4aPHr/VJ3hgKb8/Tp4b4qJLNOtyLQWKz3b
+ 20kMtwa7IcmJOcYEcjxI8G0NFWkGHCyLjOeU0EmAaRw5Dj71S+U8njmuZW7Al/9sF0rgY53
+ EiCBtnbiK/VfOl1+fD5rw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:PBqwc8dxBqM=;FLyDzZb62/ebRUi/Ah3sVBl6gCB
+ gNk1emMMlYhJdlu6UjSnn2UOrPQfVSM4HqQPqYQn2UqpHObhR+Y2UEidTb3K8WHSXfEK6JWjz
+ zeJKTDjK8hlG+IVoZGBHbP1fXJXH1u/edn0U5LKlFiK8Ci2rXXUIsay3Mcwhc39gWIv5XgQjD
+ JaTiyX4FXaR3dkp9R+B5cCH+GwuO//2Aunw69FURHE/jbKlpJxj0UDi6NGsqq3d/rYn0RNYcD
+ v5NBH4ks6kVfEOcrpXMyjmH6MLh0I6LE3EZID/hboIkhqM8Mcwv0fQBSamLX4j9kSCuqdBC3/
+ TOzvDOTuGSIxSvMS5oZmRvoA9cMK4wgWDabX/U3m6pPnzXJmpwcXwUn6VHNZWfYi/REdXGjU2
+ w+mCR5LRTZ2YseYWR44FuVzxcnAiqGCaH9RoZAp6eWMAMcb7PeDQzM45dgZqBw+EhWPNmblQX
+ RKipQz96zxASADZ9tnAjOHOZPm8YEGhOvjt7vILrFzovnmmgNEGjpCZyT/rlSHLyVAG4e7eq8
+ 03LeiH46gF/ZhEfD6P/FJsIxk65LIOqIsxkU+aGORXUK27mWF7Iv8CIplAI9PmJrUKZWzJkd2
+ aCnix+Qq0eoyl57ic3woBwRlDaKo6nxkqNrUsrzc4sPaRkFP+sAUpE1YX0T0CnPbwHQj9ZVv0
+ 60SoAP59bbB58k9ohrd3j1CXA3Qn/PC4P2oxiVN/BWFoyDIGSMIIQp3g95+XWZn6G2vpfPYUZ
+ JF7sTKCFUhO2AcDqYr0jZ5vDnPuc7kkfEjfYOZ3J5H9kSBlUQXyvUNW6ZfHu6Djwc8TKCdVQf
+ ch1LxZd5dQWU9QjPYM0FptNYTYKvThVGWEi3mLnfZcHCMYEkROxpz+ahlx9A6APBSSrvZ7hwJ
+ mO2hEafkniq95XSGJc+kE4JyV4fqc+a6On98usyFTx+9zgc8Tq8XjXkfdCR9apa+qmthYde41
+ x0md6w==
 
-On 1/17/24 7:55 AM, Willem de Bruijn wrote:
-> Martin KaFai Lau wrote:
->> On 1/16/24 7:17 AM, Willem de Bruijn wrote:
->>> Jörn-Thorben Hinz wrote:
->>>> A BPF application, e.g., a TCP congestion control, might benefit from or
->>>> even require precise (=hardware) packet timestamps. These timestamps are
->>>> already available through __sk_buff.hwtstamp and
->>>> bpf_sock_ops.skb_hwtstamp, but could not be requested: BPF programs were
->>>> not allowed to set SO_TIMESTAMPING* on sockets.
->>
->> This patch only uses the SOF_TIMESTAMPING_RX_HARDWARE in the selftest. How about
->> others? e.g. the SOF_TIMESTAMPING_TX_* that will affect the sk->sk_error_queue
->> which seems not good. If rx tstamp is useful, tx tstamp should be useful also?
-> 
-> Good point. Or should not be allowed to be set from BPF.
-> 
-> That significantly changes process behavior, e.g., by returning POLLERR.
->   
->>>>
->>>> Enable BPF programs to actively request the generation of timestamps
->>>> from a stream socket. The also required ioctl(SIOCSHWTSTAMP) on the
->>>> network device must still be done separately, in user space.
->>
->> hmm... so both ioctl(SIOCSHWTSTAMP) of the netdevice and the
->> SOF_TIMESTAMPING_RX_HARDWARE of the sk must be done?
->>
->> I likely miss something. When skb is created  in the driver rx path, the sk is
->> not known yet though. How the SOF_TIMESTAMPING_RX_HARDWARE of the sk affects the
->> skb_shinfo(skb)->hwtstamps?
-> 
-> Indeed it does not seem to do anything in the datapath.
-> 
-> Requesting SOF_TIMESTAMPING_RX_SOFTWARE will call net_enable_timestamp
-> to start timestamping packets.
-> 
-> But SOF_TIMESTAMPING_RX_HARDWARE does not so thing.
-> 
-> Drivers do use it in ethtool get_ts_info to signal hardware
-> capabilities. But those must be configured using the ioctl.
-> 
-> It is there more for consistency with the other timestamp recording
-> options, I suppose.
-> 
+> kasprintf() returns a pointer to dynamically allocated memory
+> which can be NULL upon failure.
+=E2=80=A6
+> +++ b/drivers/scsi/cxlflash/ocxl_hw.c
+> @@ -1231,6 +1231,11 @@ static struct file *ocxlflash_get_fd(void *ctx_co=
+okie,
+>  		fops =3D (struct file_operations *)&ocxl_afu_fops;
+>
+>  	name =3D kasprintf(GFP_KERNEL, "ocxlflash:%d", ctx->pe);
+> +	if (!name) {
+> +		rc =3D -ENOMEM;
+> +		dev_err(dev, "%s: kasprintf allocation failed\n", __func__);
+> +		goto err2;
+> +	}
+=E2=80=A6
 
-Thanks for the explanation on the SOF_TIMESTAMPING_RX_{HARDWARE,SOFTWARE}.
+How do you think about to omit the extra error message?
 
-__sk_buff.hwtstamp should have the NIC rx timestamp then as long as the NIC is 
-ioctl configured.
-
-Jorn, do you need RX_SOFTWARE? From looking at net_timestamp_set(), any socket 
-requested RX_SOFTWARE should be enough to get a skb->tstamp for all skbs. A 
-workaround is to manually create a socket and turn on RX_SOFTWARE.
-
-It will still be nice to get proper bpf_setsockopt() support for RX_SOFTWARE but 
-it should be considered together with how SO_TIMESTAMPING_TX_* should work in 
-bpf prog considering the TX tstamping does not have a workaround solution like 
-RX_SOFTWARE.
-
-It is probably cleaner to have a separate bit in sk->sk_tsflags for bpf such 
-that the bpf prog won't be affected by the userspace turning it on/off and it 
-won't change the userspace's expectation also (e.g. sk_error_queue and POLLERR).
-
-The part that needs more thoughts in the tx tstamp is how to notify the bpf prog 
-to consume it. Potentially the kernel can involve a bpf prog to collect the tx 
-timestamp when the bpf bit in sk->sk_tsflags is set. An example on how TCP-CC is 
-using it will help to think of the approach here.
-
+Regards,
+Markus
 
