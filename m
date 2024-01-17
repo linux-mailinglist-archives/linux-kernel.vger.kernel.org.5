@@ -1,95 +1,107 @@
-Return-Path: <linux-kernel+bounces-29026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBAD283072B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:37:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D660283072D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:37:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57BED1F24C39
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:37:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62AB3B2250A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:37:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C4CC1EB52;
-	Wed, 17 Jan 2024 13:37:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E0381F944;
+	Wed, 17 Jan 2024 13:37:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="C7VbANkO"
-Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NUXOzdNo"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5600914A87
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 13:37:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9769C1F933;
+	Wed, 17 Jan 2024 13:37:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705498652; cv=none; b=bd65btprVkmtaPmB/itQB3JLvyyFrz/GMX7jYR0rt4p+nCcPyFngSOjLJ6ZucujYWTm9c6k17QJMe5EoKVTFHo0I+AVRsmWpthWIYdz31n/ZC94FpxCX0cE6J9RTTwkKRkAkSnH27R3Le3NBV03McjuJL2iu/OqIs2QCHv0B95g=
+	t=1705498658; cv=none; b=atiBCb6R5xDDUzpoYs3D17Uh0U4W9dSrqgQN9UIt/abKkLf+RATmYyB5ILp1p5StDQOSC5UcDAAxjgp694XFxQAM/PhS4ojnrdOC5WWucdCnQ2rdKhwqt8grtxdMFfKJNjnUwyPRyo2RsIZrI3W6p8PU+tGEDx087NA4goUIhF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705498652; c=relaxed/simple;
-	bh=UfsbhrsAmco6AdwOAi9OFiHC26t5vjPYtbU8prb6Xgc=;
-	h=DKIM-Signature:Received:X-QQ-mid:Message-ID:X-QQ-XMAILINFO:
-	 X-QQ-XMRINFO:From:To:Cc:Subject:Date:X-OQ-MSGID:X-Mailer:
-	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding; b=tQIRkAmWdH0OIIryxfElfjOHNGLWgI8Zbzj2ICviEAN64HHwzNu13ShvTemX30u/bkLbd+G8L330iH3LkcJqOA1bQM6CTLpeyTNJGXKY7/TjxXRz2VWQiK00pFv9AbNMihZ24lZ39DTO7QlmisJK3WvzNaYCPWvyKJ3iK0PkYdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=C7VbANkO; arc=none smtp.client-ip=162.62.57.252
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1705498645; bh=LVEn1oixf1BwLM2yzeQ8xANQluGzPCvbuOpLQ+emisY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=C7VbANkOMNG9D/YA3HOgVpQ/E5urMjux0AJJxoGR0RCUbpIf9cjbd4udpbIUVqroD
-	 5JHLS0CHvZhyRXHNHkc7jO00zPQ3b8/WBxLPHXaMYN9BySwj+eMiSLZ8cDXHmMYPSg
-	 eb2KhpGJ64DJCG4mSygJRg9t9mdx6cmDvnTdhseQ=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrszc5-2.qq.com (NewEsmtp) with SMTP
-	id 957B6EEC; Wed, 17 Jan 2024 21:37:23 +0800
-X-QQ-mid: xmsmtpt1705498643tj0reex5a
-Message-ID: <tencent_891761177606DD73662373096203B5C44305@qq.com>
-X-QQ-XMAILINFO: Mdc3TkmnJyI/VlmtfTzmjpgiCurE8enklQdA8Co+VSN6t3Imbd5PSiNZZUfBbF
-	 3SJ4JNjGaRy5jRtjMAit+FoBJLTHAjy7FBZETUFXJrFpQTzJsQ2Zvv1v5kx6lWDFoHIX88z3ax+L
-	 g7F7KVQYji/lSvfvMbKXlC+p4yYOjADuwZl7f7hmgiYUsSdU0qIuEOc7G3F+AF+TjUsmjGfoCsfr
-	 g4yY8AIe3S3f1tmtIM6xnKABZBiBH/bn8jN3DehBrJdmSobWteFVv7eLBMUJGI1vnVsLKR5DRbDx
-	 3ODDoQpQ2/TSNr7pEazuKOyUbP8dLkdWDv1YHDVLEVv19gnmajNRLHTwSEMRCt32WEfgld1Crvbw
-	 mOq5RO3MGtMWfBU3VgsxkTs2VbjmjNki6wUpq3ZKyvgEFXN8L1eprMJaTuihJ5FGjqiYPgKSOVGN
-	 g2/vVYZ8VMa0D6R9Qrc+uEWfZDEgUB/9otZRyOXdwhD8ev2XXKO2gdr8scKyOicWt7cIVWScaLH0
-	 ebhO81JaPeFVbhiU4BdRXgovMoyIt0uXUuib1s+2U9vZMpcRtJYZ3C7VQo16unFKiFnv/V93sYb2
-	 8XA6sk4a6Cd47GxEf0XH6ugrI8rh+Ls4+HfPlIZtaXdU46bZY00NQOhOBv6wvCf2OQ1bgPOiV3fb
-	 9FdLRb2HWs/5rm0TYyw/PL7OjzF2jmQRKdt0cvNnjlcVY2H6NZ2IvGfd1wPMrIgm4CxThoDz6Ghg
-	 RTRZNQfIGTNq365oaMwJ8KV2uRoDDbK9Jjuo9IU9VY8h2j46/TRIzKgS4WhxQrbhIoyirhhQCX93
-	 2o4cPqEw7ei+hd9GtoAjitdIB/UXBr2srwn1RS6EtgTzMDkOcB75sACZmiN8AK8g3K7M3uLa0DFC
-	 vGP6Jf7AzbE5LZi0ggKNA23OashOCHvLraL82MAgAAHSVi2dTiitE83boBL0cHrw==
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+830d9e3fa61968246abd@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bluetooth?] general protection fault in btintel_read_version
-Date: Wed, 17 Jan 2024 21:37:24 +0800
-X-OQ-MSGID: <20240117133723.2124393-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000cde441060f230f4f@google.com>
-References: <000000000000cde441060f230f4f@google.com>
+	s=arc-20240116; t=1705498658; c=relaxed/simple;
+	bh=juf1VSzmc/rX2xUCMcfOl74VIpM9SShaFHnSA69/YO4=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:Received:Received:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=GqaUobSaLF3xC3wDQirRGR1VuD+S/jGs96Pnh3FmmETXZ/WQysn8fyAw683nYqjoppQvuU339V8cmlQOyk3ZTSol7OCdt3PSyq6LduilpHuE2N8+bPEXf8BeRvWWqfrq4f/PVHW+vwqJ2d1Wt0nSga7YMwlnx0XEsyss2aLzk1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NUXOzdNo; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705498657; x=1737034657;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=juf1VSzmc/rX2xUCMcfOl74VIpM9SShaFHnSA69/YO4=;
+  b=NUXOzdNoB4vHx4uV5WOeVz7Tk6TdpylVK0WCUqbB3oOOZs4i1Xibsc62
+   c5GbURCMaOqo/rngHIomWP8IdOJazJX9pubQGUEVv7F1q3YRY75DDeBBb
+   t1TbJL3YSHwQNDBwvZY0zI14mCdjpclq1f0sEpdTP2D7lFrbnvQab1xKD
+   hSAVG6OwlV9wYTt38YYAc6ac3ncjQMbeE/iepctygzet2yMcgF58kl21e
+   H5SZvqrxnkErKoihHp5JwbcX/c5uoso8cRe+yEwvWgy0ISZsHA7jxWQGe
+   w6nfYl7AWV2yYQAi3/GM46CbraWS1pZj4kRnVHhhxy9X52e08dpd3Wzf4
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10955"; a="6883501"
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="6883501"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 05:37:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,200,1701158400"; 
+   d="scan'208";a="35999"
+Received: from lewbarto-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.39.118])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 05:37:30 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+	id 9E5A710A515; Wed, 17 Jan 2024 16:37:27 +0300 (+03)
+Date: Wed, 17 Jan 2024 16:37:27 +0300
+From: kirill.shutemov@linux.intel.com
+To: mhklinux@outlook.com
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+	haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+	luto@kernel.org, peterz@infradead.org, akpm@linux-foundation.org,
+	urezki@gmail.com, hch@infradead.org, lstoakes@gmail.com,
+	thomas.lendacky@amd.com, ardb@kernel.org, jroedel@suse.de,
+	seanjc@google.com, rick.p.edgecombe@intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com,
+	linux-kernel@vger.kernel.org, linux-coco@lists.linux.dev,
+	linux-hyperv@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v4 1/3] x86/hyperv: Use slow_virt_to_phys() in page
+ transition hypervisor callback
+Message-ID: <20240117133727.3zzwifnunmgklotw@box.shutemov.name>
+References: <20240116022008.1023398-1-mhklinux@outlook.com>
+ <20240116022008.1023398-2-mhklinux@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240116022008.1023398-2-mhklinux@outlook.com>
 
-please test null ptr deref in btintel_read_version
+On Mon, Jan 15, 2024 at 06:20:06PM -0800, mhkelley58@gmail.com wrote:
+> From: Michael Kelley <mhklinux@outlook.com>
+> 
+> In preparation for temporarily marking pages not present during a
+> transition between encrypted and decrypted, use slow_virt_to_phys()
+> in the hypervisor callback. As long as the PFN is correct,
+> slow_virt_to_phys() works even if the leaf PTE is not present.
+> The existing functions that depend on vmalloc_to_page() all
+> require that the leaf PTE be marked present, so they don't work.
+> 
+> Update the comments for slow_virt_to_phys() to note this broader usage
+> and the requirement to work even if the PTE is not marked present.
+> 
+> Signed-off-by: Michael Kelley <mhklinux@outlook.com>
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git 943b9f0ab2cf
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-diff --git a/drivers/bluetooth/btintel.c b/drivers/bluetooth/btintel.c
-index cdc5c08824a0..e5b043d96207 100644
---- a/drivers/bluetooth/btintel.c
-+++ b/drivers/bluetooth/btintel.c
-@@ -435,7 +435,7 @@ int btintel_read_version(struct hci_dev *hdev, struct intel_version *ver)
- 	struct sk_buff *skb;
- 
- 	skb = __hci_cmd_sync(hdev, 0xfc05, 0, NULL, HCI_CMD_TIMEOUT);
--	if (IS_ERR(skb)) {
-+	if (IS_ERR_OR_NULL(skb)) {
- 		bt_dev_err(hdev, "Reading Intel version information failed (%ld)",
- 			   PTR_ERR(skb));
- 		return PTR_ERR(skb);
-
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
