@@ -1,68 +1,215 @@
-Return-Path: <linux-kernel+bounces-29451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29452-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B1CA830E79
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 22:19:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DC30830E7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 22:20:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC0BC1F2557F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 21:19:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CCDAEB21921
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 21:19:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4506C25572;
-	Wed, 17 Jan 2024 21:19:10 +0000 (UTC)
-Received: from gentwo.org (gentwo.org [62.72.0.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEE4025573;
+	Wed, 17 Jan 2024 21:19:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OJYY9NBv";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kObKjIwg";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OJYY9NBv";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kObKjIwg"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3793250E8;
-	Wed, 17 Jan 2024 21:19:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.72.0.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AB1C25560;
+	Wed, 17 Jan 2024 21:19:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705526349; cv=none; b=EAFZVareZa3T/NEMOL+B7CDwI1yrNd2YBddexNI4gV0GbZ/ddq9dJ6WsnXeFgmLaEzFsZ+WCFRPyXa3dXeqv0ab43vqgyO3TpfUo83qVpi0P1ePuY8BrI+vM0cb8WlvwAy4ksWG5jxkc8tEY8NTqdnK64hnP6+6ue/9tHwhoD1U=
+	t=1705526392; cv=none; b=JpN7deHHzkNsGvHGcV4Mo/ahs7bWfQOkGLQ607w3SB4d0oAB/CTyk1FhKr9bMhSW8lf7yL/MstksarGfR5/n6plbdSp3gO/HQNfkTN4J/94tqioEAW8AXth07Vvx5CPNAb/5cGRIyWhqn6yUoPwZNKa0jrLtgTSbqWaB5Hf8Vbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705526349; c=relaxed/simple;
-	bh=ttyDCLNNMgQEc8e9KdahxH70xGwli3IpEIEtIx9HpG4=;
-	h=Received:Received:Date:From:To:cc:Subject:In-Reply-To:Message-ID:
-	 References:MIME-Version:Content-Type; b=kTf2ERbQvhj4Hv6od3qD7zwvk/sQ1GXKcyJl8kfLvthqEbVli3SPRfWZo/4b1qi2pNueQc7oxG1/hM1e//jzvWozJSiJQ/EgSt+5R3vcm8Epr2P4FszZEoKATYC9fnVbVNtUxPJH2Z7YVpSzunxhlzYnycxjmg1X5tiZjh8uRrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com; spf=fail smtp.mailfrom=linux.com; arc=none smtp.client-ip=62.72.0.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.com
-Received: by gentwo.org (Postfix, from userid 1003)
-	id 99A0E40A8B; Wed, 17 Jan 2024 13:19:06 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-	by gentwo.org (Postfix) with ESMTP id 972ED40A85;
-	Wed, 17 Jan 2024 13:19:06 -0800 (PST)
-Date: Wed, 17 Jan 2024 13:19:06 -0800 (PST)
-From: "Christoph Lameter (Ampere)" <cl@linux.com>
-To: Mihai Carabas <mihai.carabas@oracle.com>
-cc: linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, 
-    linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-    catalin.marinas@arm.com, will@kernel.org, tglx@linutronix.de, 
-    mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com, 
-    pbonzini@redhat.com, wanpengli@tencent.com, vkuznets@redhat.com, 
-    rafael@kernel.org, daniel.lezcano@linaro.org, akpm@linux-foundation.org, 
-    pmladek@suse.com, peterz@infradead.org, dianders@chromium.org, 
-    npiggin@gmail.com, rick.p.edgecombe@intel.com, joao.m.martins@oracle.com, 
-    juerg.haefliger@canonical.com, mic@digikod.net, arnd@arndb.de, 
-    ankur.a.arora@oracle.com
-Subject: Re: [PATCH v2] Enable haltpoll for arm64
-In-Reply-To: <1700488898-12431-1-git-send-email-mihai.carabas@oracle.com>
-Message-ID: <96ed7928-b979-672c-9551-1739e00ca148@linux.com>
-References: <1700488898-12431-1-git-send-email-mihai.carabas@oracle.com>
+	s=arc-20240116; t=1705526392; c=relaxed/simple;
+	bh=GJAIZItic+J9cysod3HZGR/+95ATJtUKrFgTrnaqnPU=;
+	h=Received:DKIM-Signature:DKIM-Signature:DKIM-Signature:
+	 DKIM-Signature:Received:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Subject:Content-Language:To:Cc:References:From:
+	 In-Reply-To:Content-Type:Content-Transfer-Encoding:X-Spamd-Result:
+	 X-Rspamd-Server:X-Rspamd-Queue-Id:X-Spam-Level:X-Spam-Score:
+	 X-Spam-Flag; b=OEYS3XUM1JN0Ri6tNhsEJs1s1hmYq0vDIJgfKU48HIh4anFvSvbCoMQx9Rk4dQwOV8y26mhWMY2UNzVYQ0jQ1iRyeqwC70be6tqIN4v1qSFkbvnZUZvdTk4lxN+SVTSp3b2bkRBDpgCL0uZtQ+X0BT7QnQUyBhXa3NRa48GLuiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OJYY9NBv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kObKjIwg; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OJYY9NBv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kObKjIwg; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 120AC1F394;
+	Wed, 17 Jan 2024 21:19:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705526389; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aOtedWW5sk9kt63tDi6gSElkilzVJDdT0NMSpAQS/1Q=;
+	b=OJYY9NBv1bUyR2dMiRPiaaMkvRffU/O4BZAzbdJEuyBPdGkWnHAtmP7v1ltBoSTraaHh1/
+	ImNvZ9QehZB6rlY9f8gpMC8EWTUFJoBy4ZLmy0LW8bUCuMJTOmRw63V0QoteEgDe+cZro0
+	8rW4jXXJQ8RT1pUhqtUTv2ysXAE0t6s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705526389;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aOtedWW5sk9kt63tDi6gSElkilzVJDdT0NMSpAQS/1Q=;
+	b=kObKjIwgI1BB9Njw7QUL8zq5ZRqPzRq/ZpD7khMQkesgkCGuVDgfTUgf43xmTTmxM5ujYx
+	6CPJMV7mUuR7TJAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705526389; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aOtedWW5sk9kt63tDi6gSElkilzVJDdT0NMSpAQS/1Q=;
+	b=OJYY9NBv1bUyR2dMiRPiaaMkvRffU/O4BZAzbdJEuyBPdGkWnHAtmP7v1ltBoSTraaHh1/
+	ImNvZ9QehZB6rlY9f8gpMC8EWTUFJoBy4ZLmy0LW8bUCuMJTOmRw63V0QoteEgDe+cZro0
+	8rW4jXXJQ8RT1pUhqtUTv2ysXAE0t6s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705526389;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aOtedWW5sk9kt63tDi6gSElkilzVJDdT0NMSpAQS/1Q=;
+	b=kObKjIwgI1BB9Njw7QUL8zq5ZRqPzRq/ZpD7khMQkesgkCGuVDgfTUgf43xmTTmxM5ujYx
+	6CPJMV7mUuR7TJAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D439F13808;
+	Wed, 17 Jan 2024 21:19:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id H41qM3REqGVvAwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 17 Jan 2024 21:19:48 +0000
+Message-ID: <f1e43327-30ce-4a73-8a24-c813a516f97f@suse.cz>
+Date: Wed, 17 Jan 2024 22:19:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 1/4] fs/locks: Fix file lock cache accounting, again
+Content-Language: en-US
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+ Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>,
+ Shakeel Butt <shakeelb@google.com>, Roman Gushchin
+ <roman.gushchin@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
+ Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+ Vasily Averin <vasily.averin@linux.dev>, Michal Koutny <mkoutny@suse.com>,
+ Waiman Long <longman@redhat.com>, Muchun Song <muchun.song@linux.dev>,
+ Jiri Kosina <jikos@kernel.org>, cgroups@vger.kernel.org, linux-mm@kvack.org
+References: <cover.1705507931.git.jpoimboe@kernel.org>
+ <ac84a832feba5418e1b58d1c7f3fe6cc7bc1de58.1705507931.git.jpoimboe@kernel.org>
+ <6667b799702e1815bd4e4f7744eddbc0bd042bb7.camel@kernel.org>
+ <20240117193915.urwueineol7p4hg7@treble>
+ <CAHk-=wg_CoTOfkREgaQQA6oJ5nM9ZKYrTn=E1r-JnvmQcgWpSg@mail.gmail.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <CAHk-=wg_CoTOfkREgaQQA6oJ5nM9ZKYrTn=E1r-JnvmQcgWpSg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=OJYY9NBv;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=kObKjIwg
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 MIME_GOOD(-0.10)[text/plain];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[18];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 120AC1F394
+X-Spam-Level: 
+X-Spam-Score: -3.30
+X-Spam-Flag: NO
 
-On Mon, 20 Nov 2023, Mihai Carabas wrote:
+On 1/17/24 21:20, Linus Torvalds wrote:
+> On Wed, 17 Jan 2024 at 11:39, Josh Poimboeuf <jpoimboe@kernel.org> wrote:
+>>
+>> That's a good point.  If the microbenchmark isn't likely to be even
+>> remotely realistic, maybe we should just revert the revert until if/when
+>> somebody shows a real world impact.
+>>
+>> Linus, any objections to that?
+> 
+> We use SLAB_ACCOUNT for much more common allocations like queued
+> signals, so I would tend to agree with Jeff that it's probably just
+> some not very interesting microbenchmark that shows any file locking
+> effects from SLAB_ALLOC, not any real use.
+> 
+> That said, those benchmarks do matter. It's very easy to say "not
+> relevant in the big picture" and then the end result is that
+> everything is a bit of a pig.
+> 
+> And the regression was absolutely *ENORMOUS*. We're not talking "a few
+> percent". We're talking a 33% regression that caused the revert:
+> 
+>    https://lore.kernel.org/lkml/20210907150757.GE17617@xsang-OptiPlex-9020/
+> 
+> I wish our SLAB_ACCOUNT wasn't such a pig. Rather than account every
+> single allocation, it would be much nicer to account at a bigger
+> granularity, possibly by having per-thread counters first before
+> falling back to the obj_cgroup_charge. Whatever.
 
-> This patchset enables the usage of haltpoll governer on arm64. This is
-> specifically interesting for KVM guests by reducing the IPC latencies.
+Counters are one thing (afaik some batching happens on the memcg side via
+"stocks"), but another is associating the memcg with the allocated objects
+in slab pages, so kmem_cache_free() knows which counter to decrement. We'll
+have to see where the overhead is today.
 
-Any updates on this one? We see good improvements with this patchset using 
-a variety of loads on Ampere platforms.
+If there's overhead due to calls between mm/slub.c and mm/memcontrol.c we
+can now reduce that with SLAB gone.
+
+> It's kind of stupid to have a benchmark that just allocates and
+> deallocates a file lock in quick succession spend lots of time
+> incrementing and decrementing cgroup charges for that repeated
+> alloc/free.
+> 
+> However, that problem with SLAB_ACCOUNT is not the fault of file
+> locking, but more of a slab issue.
+> 
+> End result: I think we should bring in Vlastimil and whoever else is
+> doing SLAB_ACCOUNT things, and have them look at that side.
+
+Roman and Shakeel are already Cc'd. Roman recently did
+https://lore.kernel.org/lkml/20231019225346.1822282-1-roman.gushchin@linux.dev/
+which is mentioned in the cover letter and was merged in 6.7, but cover says
+it didn't help much, too bad. So is it still 33% or how much?
+
+> And then just enable SLAB_ACCOUNT for file locks. But very much look
+> at silly costs in SLAB_ACCOUNT first, at least for trivial
+> "alloc/free" patterns..
+> 
+> Vlastimil? Who would be the best person to look at that SLAB_ACCOUNT
+> thing? See commit 3754707bcc3e (Revert "memcg: enable accounting for
+> file lock caches") for the history here.
+> 
+>                  Linus
+
 
