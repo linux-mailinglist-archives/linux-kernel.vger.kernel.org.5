@@ -1,154 +1,374 @@
-Return-Path: <linux-kernel+bounces-29355-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29356-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 672C8830D34
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:16:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDF5B830D37
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:18:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E4911C21BF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:16:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72C511F26AA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:18:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ADB6249F2;
-	Wed, 17 Jan 2024 19:16:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EE79249E0;
+	Wed, 17 Jan 2024 19:18:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="r6ve5zD7"
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="k29gJPlG";
+	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="OFeiNcGM"
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72C3524212
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:16:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7912D24205;
+	Wed, 17 Jan 2024 19:18:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.235.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705518988; cv=none; b=gmjVp/uozAa9mkwU+/DEKj9Jray0NN+7C32Qj3uBR4vzll9cMHTF0OhyMh0v7DqC9x/UmEss9rTEuQryMY/Q8gta4HEusqBW2ZcRQGHpVgQr+BvVRZQ23QX81ue3zNjNiXvx0IrdEb9P37k4oVaunMAeALe8f+w6Ny3+DbS3v4c=
+	t=1705519089; cv=none; b=J6MIBgsLYd8RgB01ih9pIXgLTEOf5L4OBe6RqkiV/E0iV6gG/LshkoEjPhkojgo00zWfD8fowkISUh4s7svpXUuz+k10fqp5wZ5Twn/Ic9Ty0BTbINV4yoFNhZYYYn5BkC2TgTYviwfsY0hIE+AVGVq+F8kwPMNtADuvpgOdbd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705518988; c=relaxed/simple;
-	bh=onTL7TdnsjCvGHXrMKju4hSwOmvPGySD2hbEt0TfeAk=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Autocrypt:Content-Type:Content-Transfer-Encoding:User-Agent:
-	 MIME-Version; b=e/dOGbm9EysUHV343rZwZn4zvxBMYK7LScmWju6+6/xKz9tRylVcXA6whX1Y/ZhY8Q4CmnStqtdXBo7lnjtHeSiRzR/SVU9m2mdWbQW28TskoD4iGBI92jajHLm/4M1KJtVUZ9Wzkm2ZBGASRJmVLrmPhHZVWVkXFfDikt02T6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=r6ve5zD7; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7831aacdaffso1086267885a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:16:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1705518985; x=1706123785; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ogRg9OKr3TtBbn27PlJROK+uQ9hsjKmTfDTYT7Icesk=;
-        b=r6ve5zD7XL5lGTrFPgUoYMrgUUsSu46MDsPFnbxGIUbhBKTeKucgvcZoDNm5EGquxD
-         e5WZn+tgw0v0gHy1F3u+eIR7SUVHxXpcxvSgOBcesiazMT7MpZEmRvahJNFyXw139Yl1
-         wpln0KIj9+gjPVPMPOiITGViltvWEKmUM5dmmwHSvX02O+/Z0DCUdykP+aYOXH+fURUE
-         tuHfGE8xmELy77KFNSXyvFcwaKMu8Skd1jVVDg6SZCELA3/iSQd6Metl/3SDf3zW0IKO
-         By59lQtbAUHL+U6xDFZi7CKnmWgBFseW6+MJURIV42aylBAX/qYuzan0PBw/QCdjzllP
-         u/SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705518985; x=1706123785;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ogRg9OKr3TtBbn27PlJROK+uQ9hsjKmTfDTYT7Icesk=;
-        b=HWYOe5/MSvA8Sq9/7kWG31k+3XzVnsgJnvlnhHFRnhvgpIS2wFKEYscAscRSk0E8Xo
-         N26P3HncKpx/WmeHhMWXA3IVtDplgeiXB+QKW9RXvSEpePYcEMcQBeNvjQNNZw4biWL6
-         GyHJCVJPq6Ayeij7CQf4sEigG0NZswbgJICoiL+PNx34WtoN3tx9RmWV4iaLIDgpUAld
-         X8FWNJ04NxlU453caUsqq6CdPnmBVHHNmJlg0qz0K8PjgaplWT5JAJ49JZXj6PkHgx6p
-         REzN1ZPu5e60Y7lT44krFaSjfwF2+ugPxrjU/u6SnUG0Eb+NP2KOVFEDpreT3ww376uw
-         Gi7g==
-X-Gm-Message-State: AOJu0YzRLrHS3iECsGJCEaC8zn6akwYrSWnW8PBLNxxDel3Axv22u63x
-	LtZKQtp1yVVWDqN73Jw3BQp9ztPcdVeT1g==
-X-Google-Smtp-Source: AGHT+IExD4ARxCYdtDNLXXKK3wVBqruhp2TE7y6AV1ldpW1kqPOB4yyOE9by3LE6Xo8IHL6TwnwP5g==
-X-Received: by 2002:a05:620a:4551:b0:783:3423:c76d with SMTP id u17-20020a05620a455100b007833423c76dmr12230144qkp.1.1705518985398;
-        Wed, 17 Jan 2024 11:16:25 -0800 (PST)
-Received: from nicolas-tpx395.localdomain ([2606:6d00:11:3354::7a9])
-        by smtp.gmail.com with ESMTPSA id w9-20020a05620a148900b0078322355fb7sm4715898qkj.20.2024.01.17.11.16.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 11:16:25 -0800 (PST)
-Message-ID: <5490507acc121113e52a8cdddb155fddf6dbb374.camel@ndufresne.ca>
-Subject: Re: [PATCH v3 0/2] [v3]Add hantro g1 video decoder support for
- RK3588
-From: Nicolas Dufresne <nicolas@ndufresne.ca>
-To: Jianfeng Liu <liujianfeng1994@gmail.com>, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, heiko@sntech.de, 
-	ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de, mchehab@kernel.org
-Cc: sfr@canb.auug.org.au, devicetree@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
- linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
- sigmaris@gmail.com,  knaerzche@gmail.com, Ezequiel Garcia
- <elezegarcia@gmail.com>
-Date: Wed, 17 Jan 2024 14:16:24 -0500
-In-Reply-To: <20231231151112.3994194-1-liujianfeng1994@gmail.com>
-References: <20231231151112.3994194-1-liujianfeng1994@gmail.com>
-Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+	s=arc-20240116; t=1705519089; c=relaxed/simple;
+	bh=kKq/R7Slr9WQYBDkv/f7dUaLlvKEXcOV0LTrW9msMww=;
+	h=Received:DKIM-Signature:X-Virus-Scanned:Received:Received:
+	 DKIM-Signature:Message-ID:Date:MIME-Version:User-Agent:Subject:
+	 Content-Language:To:Cc:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=RkvafWRltmK/tHi2t+jrpH7Wg63Tl1k764r5rLUBQ1FH9fDt+tlktA1ielki+Yva+g3eIl1mJMFwCizVNZnXGJ2xQyR4KdK8cubn/J1yPyDgJL2QI/HrmFQa8veIueB/L7kbHknOxrsMfzSz0AdhUqqNen2D964txSkpoUyKwPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr; spf=pass smtp.mailfrom=alu.unizg.hr; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=k29gJPlG; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=OFeiNcGM; arc=none smtp.client-ip=161.53.235.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
+Received: from localhost (localhost [127.0.0.1])
+	by domac.alu.hr (Postfix) with ESMTP id 8522B601A1;
+	Wed, 17 Jan 2024 20:18:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1705519081; bh=kKq/R7Slr9WQYBDkv/f7dUaLlvKEXcOV0LTrW9msMww=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=k29gJPlGCgA5aXPKggCKOTtD2n9wX1yfPrpIY60iGkuidibjyn/QogKYdyW87PDqc
+	 ZN34sHXod4pbgljUj27OEwmSfK14QllwiUV1b1AKbE0AZcPZiT+3n7XZoo2DVn+UbU
+	 EQK9QQlOHuA2TE8u5fvbfuG/8NF+iSdSLQ7mT4hALM3wpLAMsPd9lqycsDtH5TF/N8
+	 uQ42sJ4KeFk0Q14IoTpJRja9hHifk8KMmTN4kjPdsERng0iHYU0Fm+UukDANJNTsfA
+	 Moqv0QH5xaN6IGM2O3i7wPy1sEiFM23FW9Vg+4HWRL+5/VGNU03PHMNOduPmJBJGEU
+	 f/p0TmClwJCqg==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id SeUNTzMCqVuQ; Wed, 17 Jan 2024 20:17:58 +0100 (CET)
+Received: from [192.168.178.20] (dh207-40-167.xnet.hr [88.207.40.167])
+	by domac.alu.hr (Postfix) with ESMTPSA id 0DC5A6019B;
+	Wed, 17 Jan 2024 20:17:57 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1705519078; bh=kKq/R7Slr9WQYBDkv/f7dUaLlvKEXcOV0LTrW9msMww=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=OFeiNcGM+p0YmIjrUMsBODGEjMpEcwIAON/EGtmiXys58fQiKWB5uFxGL2d4twlWW
+	 njqOhy/nvv+AtffooGBSnCeeBvBrFv0EIctDy2QnxNhoiS/Ura5IG4hQZvY3Co9ITu
+	 fMTo5SKffmC0k3kTDpRzWQeKPd3hB0Js5d21cK9lqx7iCpZHpg1JAH6X91Bt4EYURr
+	 Nz7qzielGTafsgeRVzGIWYbdlBKyyuUCF6WRXHezIxLtITnhiDJ46nLd7a6l3YsW1w
+	 21yuGQdQfhDcFz9kamziGqF6a4gKkVRXxRMP0iXfbz7Djg96ymm7HCHR8RD3Rh/5n8
+	 JG9vbGDEgwhRA==
+Message-ID: <88ec168b-471a-4c0d-984d-d27cc96404fc@alu.unizg.hr>
+Date: Wed, 17 Jan 2024 20:17:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PROBLEM] Very long .deb package build times for bindeb-pkg build
+ target
+Content-Language: en-US
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nicolas Schier <nicolas@fjasle.eu>,
+ Mirsad Todorovac <mirsad.todorovac@alu.hr>, linux-kbuild@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <c2adb439-0dea-4de1-996e-5a0caa5c729d@alu.unizg.hr>
+ <ZaALOOhEdBP70lDH@bergen.fjasle.eu>
+ <827b5e97-a436-47a7-a097-13657bcda948@alu.unizg.hr>
+ <CAK7LNAToNP0hFvhzr_gYw6TXMxkJuCN4idWZvqmq3mSTNOHtSQ@mail.gmail.com>
+ <b83bf78d-5fb0-4069-a1bb-c6a946b7b23c@alu.unizg.hr>
+ <CAK7LNASCuuaO9tx44dbeS=deL-1Lvgy3REyC3FsVhfCmtWdB=w@mail.gmail.com>
+ <b2acb406-11cb-4f5e-a924-e1f75a7f674c@alu.unizg.hr>
+ <CAK7LNAR73NVGhE_UCwtsSfb6men=D9cy3t-8fPM-m1WaCogdqA@mail.gmail.com>
+From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <CAK7LNAR73NVGhE_UCwtsSfb6men=D9cy3t-8fPM-m1WaCogdqA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Le dimanche 31 d=C3=A9cembre 2023 =C3=A0 23:11 +0800, Jianfeng Liu a =C3=A9=
-crit=C2=A0:
-> This is the v3 version of this series adding hantro g1 video decoder
-> support for rk3588.
->=20
-> RK3588 has Hantro G1 video decoder known as VDPU121 in TRM of RK3588 whic=
-h
-> is capable to decode MPEG2/H.264/VP8 up to 1920x1088. This vpu ip is also
-> found in RK3568.
+On 1/16/24 12:21, Masahiro Yamada wrote:
+> On Sun, Jan 14, 2024 at 6:09 AM Mirsad Todorovac
+> <mirsad.todorovac@alu.unizg.hr> wrote:
+>>
+>> On 1/13/24 16:16, Masahiro Yamada wrote:
+>>> On Sat, Jan 13, 2024 at 8:28 PM Mirsad Todorovac
+>>> <mirsad.todorovac@alu.unizg.hr> wrote:
+>>>>
+>>>> On 1/13/24 06:40, Masahiro Yamada wrote:
+>>>>> On Fri, Jan 12, 2024 at 7:48 AM Mirsad Todorovac
+>>>>> <mirsad.todorovac@alu.unizg.hr> wrote:
+>>>>>>
+>>>>>> On 11. 01. 2024. 16:37, Nicolas Schier wrote:
+>>>>>>> Hi Mirsad,
+>>>>>>>
+>>>>>>> On Thu 11 Jan 2024 13:22:39 GMT, Mirsad Todorovac wrote:
+>>>>>>>> Hi,
+>>>>>>>>
+>>>>>>>> With this new release, it seems that Debian kernel build uses "xz" in single-
+>>>>>>>> threaded mode:
+>>>>
+>>>> Hi, Masahiro,
+>>>>
+>>>> Thank you for your reply.
+>>>>
+>>>>> New release of what?
+>>>>
+>>>> Forgive me for not being precise. It was the new release of torvalds tree mainline
+>>>> kernel 6.7+ (with merge commits up-to-date). I sort of mistakenly assumed that
+>>>> I wrote it, but it was declared in some mail on LKML.
+>>>
+>>> When you report a regression in the kernel code in the future,
+>>> please try to do "git bisect" and pin-point an offending commit.
+>>>
+>>> That is more helpful to figure out how to fix the issue.
+>>>
+>>> And, you will be sure whether or not the root cause exists
+>>> in the kernel.
+>>
+>> Good point. Thanks.
+>>
+>> But I did not notice any regression on Ubuntu 22.04 LTS system, and neither on
+>> the Ubuntu 22.10 Mantic system which was upgraded. So I assumed it was not related to
+>> particular commit, and I did not think of bisect.
+>>
+>>>> One environment was Ubuntu 23.10 Mantic Minotaur on the desktop at work.
+>>>>
+>>>> The laptop also has Mantic Minotaur, but for some reason it spawns multithreaded
+>>>> dpkg-deb when building packages, unlike desktop which spawned single-threaded "xz".
+>>>>
+>>>> This is at least what the "top" displayed when turning on "H" (show threads).
+>>>>
+>>>> On one system (upgraded 23.10 from 22.04 LTS) the same dpkg-deb shows as multi-threaded
+>>>> dpkg-deb, while on the other it calls xz which didn't respect XT_OPT=-T0 (visible
+>>>> from the copy+paste from top output).
+>>>>
+>>>> I am perplexed myself.
+>>>>
+>>>>>>>> Tasks: 484 total,   2 running, 481 sleeping,   0 stopped,   1 zombie
+>>>>>>>> %Cpu(s):  2.5 us,  2.2 sy,  6.3 ni, 85.1 id,  2.3 wa,  0.0 hi,  1.7 si,  0.0 st
+>>>>>>>> MiB Mem :  64128.3 total,    524.3 free,   5832.0 used,  58540.9 buff/cache
+>>>>>>>> MiB Swap:  32760.0 total,  32758.7 free,      1.2 used.  58296.3 avail Mem
+>>>>>>>>
+>>>>>>>>        PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+
+>>>>>>>> COMMAND
+>>>>>>>>
+>>>>>>>>     978084 marvin    30  10  112440  97792   2432 R 100.0   0.1  29:30.23 xz
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> Before dpkg-deb was using up to 3200% of CPU time on a 16 core SMT CPU.
+>>>>>>>>
+>>>>>>>> Can it be something with dpkg-deb --thread-max=%n option?
+>>>>>>>
+>>>>>>> I cannot find any --thread-max option in Linux tree.  Do you call
+>>>>>>> dpkg-deb manually or somehow induce a thread maximum?
+>>>>>>>
+>>>>>>>> Waiting for half an hour just for the build of linux-image-...-dbg package
+>>>>>>>> seems like an overkill ...
+>>>>>>>
+>>>>>>> With current v6.7 release tree I do not see the reported slow-downs
+>>>>>>> when building bindeb-pkg; I tested by cross-compiling for arm64 on
+>>>>>>> amd64 with CONFIG_MODULE_COMPRESS_XZ=y and =n).
+>>>>>>>
+>>>>>>> Both take roughly 5mins on my 24-core i9 system.
+>>>>>>>
+>>>>>>> Kind regards,
+>>>>>>> Nicolas
+>>>>>>
+>>>>>> I am perplexed too, but you can see from the top output the
+>>>>>> single-threaded xz with 29:30m processor time.
+>>>>>>
+>>>>>> On my laptop with the sam Ubuntu 23.10 mantic minotaur, I have
+>>>>>> dpkg-deb version 1.20.12 and it shows things like 400% and 3200%
+>>>>>> CPU time, so it is working multithreaded.
+>>>>>>
+>>>>>> On desktop machine with the same Ubuntu 23.10 and the same git
+>>>>>> torvalds tree, it starts single-threaded xz from dpkg-deb instead.
+>>>>>
+>>>>> You built the same mainline git tree on your laptop and desktop.
+>>>>> The former runs xz multi-threaded, the latter single-threaded.
+>>>>>
+>>>>> So, this is not about the kernel code, but about your environment,
+>>>>> isn't it?
+>>>>
+>>>> It should be. Somehow it doesn't behave rationally. To be true to the facts,
+>>>> one is 23.10 Mantic Minotaur upgraded from 22.04 LTS, and the other is
+>>>> fresh Mantic from install.
+>>>>
+>>>>> You mentioned you were using Ubuntu 23.10, where
+>>>>> dpkg-deb version is 1.22.0
+>>>>
+>>>> This is correct.
+>>>>
+>>>>> Your dpkg-deb version, 1.20.12, is too old for Ubuntu 23.10.
+>>>>> Is it a self-built one?
+>>>>
+>>>> Yes, it is the build from Debian 11 source package.
+>>>>
+>>>> This had the similar rationale because Ubuntu version ran single-threaded.
+>>>>
+>>>> dpkg-deb from Debian 11 source package worked well for months.
+>>>>
+>>>>> dpkg-deb usually compresses binary packages, but the default
+>>>>> compression type depends on the distro.
+>>>>> (It is determined at "./configure" time)
+>>>>
+>>>> I see. But the home-built dpkg-deb also resorted to running "xz", and
+>>>> xz did not recognise XZ_OPT environment variable. Very odd. :-/
+>>>
+>>> It depends on the environment whether or not dpkg-deb
+>>> spawns the external 'xz' command.
+>>>
+>>> With WITH_LIBLZMA defined, dpkg-deb uses internal code
+>>> to compress the data with xz.  [1]
+>>>
+>>> Without WITH_LIBLZMA, dpkg-deb sparns "xz" processes. [2]
+>>>
+>>> [1]: https://salsa.debian.org/dpkg-team/dpkg/-/blob/1.20.12/lib/dpkg/compress.c?ref_type=tags#L412
+>>> [2]: https://salsa.debian.org/dpkg-team/dpkg/-/blob/1.20.12/lib/dpkg/compress.c?ref_type=tags#L663
+>>>
+>>> Since you said you saw "xz" in the "ps" command output,
+>>> I believe your case is the latter.
+>>
+>> Thanks for your insight. It is obviously a compile-time define.
+>>
+>> In previous build the defaults were apparently different. The Debian defaulting to multi-threaded
+>> dpkg-deb was the exact reason why I did the hand build in the first place.
+>>
+>> In the long run, it saved an awful lot of time.
+>>
+>> But I can't see the logic of enforcing the single-threaded "xz" from dpkg-deg :-/
+>>
+>>> When dpkg-deb swarns the external "xz" command,
+>>> dpkg-deb unsets "XZ_OPT". [3]
+>>>
+>>> I believe that's why you do not see XZ_OPT propagated.
+>>>
+>>> [3]: https://salsa.debian.org/dpkg-team/dpkg/-/blob/1.20.12/lib/dpkg/compress.c?ref_type=tags#L643
+>>
+>> Your insight really casts light on this. Now it is very clear.
+>>
+>> But IMHO single-threaded 30-min xz compression on a 16-core or 32-SMT machine is kind of weird.
+>> I wish there was something we could do about it.
+>>
+>> The same happened with the rpmbuild with similar defaults on Fedora. :-(
+>>
+>>>>> On Ubuntu, the default compression type for dpkg-deb is "zstd"
+>>>>> (while it is "xz" on Debian)
+>>>>>
+>>>>> Check "man dpkg-deb" on your Ubuntu machine.
+>>>>>
+>>>>>      -Zcompress‐type
+>>>>>          Specify which compression type to use when building a package.
+>>>>>          Allowed values are gzip, xz (since dpkg 1.15.6),
+>>>>>          zstd (since dpkg 1.21.18) and none (default is zstd).
+>>>>
+>>>> Verified. "man dpkg-deb" confirms that.
+>>>>
+>>>>> You are still allowed to use xz with "make KDEB_COMPRESS=xz deb-pkg".
+>>>>> Is this your case?
+>>>>
+>>>> Somehow, my Mantic's "xz" did not react to the environment variables. Maybe it is
+>>>> enchanted? :-/
+>>>>> Overall, your report is not sensible.
+>>>>
+>>>>> You should check what you are seeing.
+>>>>
+>>>> I was seeing exactly what I copy+pasted (top output). Give me the benefit of doubt
+>>>> that I did not falsify copy+paste. Ideally, I should have submitted JPG terminal
+>>>> screenshot.
+>>>>
+>>>> Home-built dpkg-deb worked well on Ubuntu 22.04 LTS and 23.10 (upgraded from 22.04).
+>>>> So it was a surprise that it started showing quirks on this new box with fresh 23.10
+>>>> from .iso.
+>>>>
+>>>> But I am only 16 months in the Linux kernel development, so it is probably my fault.
+>>>>
+>>>> I saw from the output of "ps xewww" that "xz" had "XZ_OPT=-T0", but it refused to obey
+>>>> the environment variable.
+>>>>
+>>>> This is probably worth digging and delving into to find the culprit, but eventually the
+>>>> workaround was the script manually prepending "--threads=0" to the parameter list and
+>>>> calling system xz:
+>>>>
+>>>>           /usr/bin/xz --threads=0 "$@"
+>>>>
+>>>> Certainly, I need to establish "normality" before building complex kernels and applying
+>>>> patches or the results will be non-reproducible and useless.
+>>>>
+>>>> I did the background search on your valuable contributions to the LK, but as we have this
+>>>> problem with the vanilla installation of Ubuntu, maybe we can think of something to
+>>>> optimise the LK build time?
+>>>
+>>>
+>>> I do not think so.
+>>>
+>>> There already exists a solution to control the number of threads.
+>>>
+>>> See "man dpkg-deb"
+>>>
+>>>      DPKG_DEB_THREADS_MAX
+>>>          Sets the maximum number of threads allowed for compressors that
+>>>          support multi‐threaded operations (since dpkg 1.21.9).
+>>>
+>>>          The --threads-max option overrides this value.
+>>> By setting this env variable, you should be able to control the multi-threading.
+>>>
+>>>
+>>> However, your dpkg-deb is 1.20.12, so you need to use a newer version.
+>>>
+>>> You locally hacked builddeb to add --threads-max, but it does not
+>>> work for you for the same reason; it requires dpkg 1.21.9+
+>>>
+>>>     --threads-max=threads
+>>>        Sets the maximum number of threads allowed for compressors that support
+>>>        multi‐threaded operations (since dpkg 1.21.9).
+>>>
+>>> Why do you stick to the old home-built dpkg-deb?
+>>>
+>>> If you use the default dpkg-deb bundled with Ubuntu 23.10,
+>>> you will have a better experience.
+>>
+>> Yes, but I did it because Ubuntu dpkg-deb was single-threaded by default. I did not
+>> know so many kbuild options at the time ...
+> 
+> 
+> 
+> No.
+> 
+> The dpkg-deb on Ubuntu works multi-threaded by default.
+> 
+> Just try /usr/bin/dpkg-deb installed by APT, then
+> you will see more than 100% CPU resources used.
+> 
+> 
+> With proper library installed, "./configure" for dpkg
+> should show:
+> 
+>    checking for lzma_stream_encoder_mt in -llzma... yes
+> 
+> 
+> With HAVE_LZMA_MT_ENCODER defined, filter_xz_get_cputhreads()
+> returns the number of threads to use.
+> The default is the number of available CPU cores.
+> 
+> [1]: https://salsa.debian.org/dpkg-team/dpkg/-/blob/main/lib/dpkg/compress.c?ref_type=heads#L717
 
-The only concern I have is that we rejected enabling this VPU on RK3399, si=
-nce
-having two H.264 decoders was confusing userspace softwares at the time, ca=
-using
-the slow one to be picked sometimes. I know the selection is not fully
-implemented in GStreamer either, not sure for LibreELEC ffmpeg fork, Chromi=
-um or
-Cros-codec.
+I think that 20.04 LTS or 18.04 LTS didn't by default (or I wouldn't have the need to
+build a home-built dpkg-deb in the first place), and it was a big issue back then:
 
-Of course, its not a problem now, but only when someone provides an rkvdec2
-driver that enables the much more capable HW decoder. Shall we hold on H.26=
-4
-mainline for now ?
+[1] https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=501456
 
-Nicolas
+[2] https://askubuntu.com/questions/841784/any-way-to-multithread-dpkg-deb
 
->=20
-> Test results from fluster can be found from thread of v2[1][2].
->=20
-> [1] https://lore.kernel.org/all/CAAXNxMT3f68-ptM7Crhrfmn7iwTyJc9pwz4Beob+=
-5beVODaSHQ@mail.gmail.com
-> [2] https://lore.kernel.org/all/20231230153159.3748580-1-liujianfeng1994@=
-gmail.com
->=20
->=20
-> Changes in v3:
->  - Drop code in hantro_drv.c because hantro g1 vpu in rk3588 is compatibl=
-e
-> with the one in rk3568, only adding devicetree node should work.
->  - Change devicetree node name to video-codec@fdb50000 to match the reg
-> address.
->  - Add dt-bindings rockchip,rk3588-vpu compatible with rockchip,rk3568-vp=
-u
->  - Link to v2: https://lore.kernel.org/all/20231228131617.3411561-1-liuji=
-anfeng1994@gmail.com
->=20
-> Jianfeng Liu (2):
->   arm64: dts: rockchip: Add Hantro G1 VPU support for RK3588
->   dt-bindings: media: rockchip-vpu: Add rk3588 vpu compatible string
->=20
->  .../bindings/media/rockchip-vpu.yaml          |  3 +++
->  arch/arm64/boot/dts/rockchip/rk3588s.dtsi     | 20 +++++++++++++++++++
->  2 files changed, 23 insertions(+)
->=20
+It was an issue back then already, but on a system with 6+ cores the difference is significant.
+Of course, back then a 4-core/8-thread CPU was a rocket :-)
 
+If I could only teleport this system back to 2000s and use it with those ideas 8-)
+
+Best regards,
+Mirsad
 
