@@ -1,105 +1,143 @@
-Return-Path: <linux-kernel+bounces-28555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA42583000D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:17:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DBCD830014
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 07:23:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CA1EB241AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 06:17:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 489721F2503C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 06:23:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1605DB662;
-	Wed, 17 Jan 2024 06:17:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48B588F44;
+	Wed, 17 Jan 2024 06:23:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O1v2tJE8"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="BCbHnMm1"
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFF12B647
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 06:17:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3445D28FC;
+	Wed, 17 Jan 2024 06:23:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705472271; cv=none; b=piimt+ICQ1nEBOjbrS3V2Ft0eJJjLz+0P7CQQccLsaDWgR4C8QzTqp4GMjRhucrm5EDrfw+K5O9GDKvK8DasAGW8tPcvqNqsBgnsSRmEycU6vbe/A78ANj2zkHiO7PBUvHdMMiYKVsZmFb6hl+2/6cF21r79CYWCSaO+lOMq4uk=
+	t=1705472608; cv=none; b=FoLkzFl0gQxNShaGL+Gyzc1uAS/zkMoJoSfpbtPTq7KpJh1JV4ZTtS3lxE8gW0anD1kO4Ww3wv7LivvssaW1FFtLI08kjhfUlDlT+CtiAF+kxmtrebUUn1jQk6ctoIOuYP1JPdby/DiPDGtilktXilpYixUsWKChWeRsl8VMAgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705472271; c=relaxed/simple;
-	bh=9HbbufgCpeF1Z72M682Qsrwsj1hDdBuxzZl+OJESr+A=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=BXxRJVkILH9sFpikVtVKWZxOWhf6+WuVZecU2p2XzOfTKmLNSSexASGNi9EPVAVEIz7zR53hqls75OtL0fN80HM8HwfCkdu1ARWbF4VN8i7wLay+LwKFRlAtfSBOLTKoTFs7DDkCsR6p2NCjk5vJaPWWAela2RwmqSIk8Sw9/do=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=O1v2tJE8; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e80046264so24920395e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jan 2024 22:17:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705472267; x=1706077067; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RIh/mdSxC+QwbifziEsMcuiyyKp0fbIFDG5Z0ia7now=;
-        b=O1v2tJE8GB/4VFndIAYyHfqcCjHb6epVbi3HQ7bfwThuSe2hVJv85W73zKE/LXddLt
-         pWnoUOldQdryZsL+20SZIo46nsG1yZgBiAmuRI0QGKdicmNn1TVMIjU9OhJFBhsAc3ls
-         vUlLhcWxBfiQoU16m8kgtTEKo86zlICCvw8237pOIWgwaRdc3DRjxVKsXKq7sZ1wfY9f
-         Uce+GSqn5OfWVEh2tJAiT3JT3MEyq6ms7d6gRRJMz6A3+8ego7KhEwBIa/wvt8lfp7fL
-         Ul724rwXgv7KGBFO06IgvuvE+eP3zfCZVAhlHPaKEuy2ObVxJz6S2gjhdqxgKzruttCB
-         5s/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705472267; x=1706077067;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RIh/mdSxC+QwbifziEsMcuiyyKp0fbIFDG5Z0ia7now=;
-        b=nKGCPJrHZse3uY9RJ7qMaUhtHxnnv5e5bUowFjVAy1I1a+OMA67jme81bec2Llw1wP
-         67WxzNC/UIIggqj2U+yxm2gKRRnJPMCNtiZnILmPHrrgvkM4qdF3VFxXmHz+jdhDs01w
-         NjOFRYylu8pYZ6eEpT5WCGFX66AZnIjaW/4S20iLPuaWUg2tztJhzGxdgNEwvM7P6Ouk
-         nk79PekZK1Zqwd4NzoF1xmlZOcF27VmrJWFmdf+d0L8MNcxL3Z7DNjd9dtsdMWRjuXJa
-         +SGVzPcUPcZdbE4uDkH4N7eSTxwPQso8O92GCXFYNoi9BGlwRRKKLlfT6XYdjT+ERpgX
-         Mh9w==
-X-Gm-Message-State: AOJu0YxAi+qcuFkczQkuqg9gj2e1+5+lYoJTeYKWAapp+27j21KezEkl
-	RKhmmTRmcEuQEEwB9c129uFh+IL7ywd7WQ==
-X-Google-Smtp-Source: AGHT+IEjNToRxgw9nShUjPn8KuIT4SgjhM1xOslW2JtRdjLTz9PVVr6v+9Nx51Fkr36WQYPXiuV3Kw==
-X-Received: by 2002:a05:600c:138a:b0:40e:4800:c91f with SMTP id u10-20020a05600c138a00b0040e4800c91fmr4422019wmf.9.1705472267266;
-        Tue, 16 Jan 2024 22:17:47 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id h5-20020a05600c314500b0040e5e21cd7bsm21036545wmo.11.2024.01.16.22.17.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 22:17:46 -0800 (PST)
-Date: Wed, 17 Jan 2024 09:17:43 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Hoorad Farrokh <hourrad.f@gmail.com>
-Cc: gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: prism2mgmt: Removed unnecessary parentheses in
- if statment
-Message-ID: <1f875e5c-34ad-44bf-bcaf-241ec393a6e9@moroto.mountain>
-References: <so663sd33rgvgzufcxe4oc666os2gq5nrdinqaqquksrkvnr3c@odkxhcxhb3ux>
+	s=arc-20240116; t=1705472608; c=relaxed/simple;
+	bh=YmgAmQESRGyO7hObIG4VdMuhpU1Rmm5n8BlSEhK+Ci0=;
+	h=Received:DKIM-Signature:Received:Received:Received:Received:From:
+	 To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding:Content-Type:X-Proofpoint-GUID:
+	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Virus-Version; b=fGh6V9v0qtafcOhVWZAjiJPLUQTcquJgXazybkmgo+eUSs28u/bhljSaG/BX9Kej+yA+tHJO9VGlK87q3BdFZlvA4BhZaj1HqMVQjnKrNf39tkhB5E67KUeS1l7kixeNUTIScqtbqawzjEVTVuMkJk1XqsolLkJ4NTguKsW62WY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=BCbHnMm1; arc=none smtp.client-ip=67.231.148.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40GI9O2R002942;
+	Tue, 16 Jan 2024 22:23:15 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=pfpt0220; bh=VjLXAwL3
+	3gDx/5/BzSqYEdBdLVkV4tNSMniS7zSywuI=; b=BCbHnMm1caokDrn29icWtAcD
+	ZvqvHUzs5RUy+dUbOGFvXd6zTEgBl5pCXinu0R7yE6qO9cOBjQo3ZWM9rRZDzOq8
+	KHMaGF+TyZFO1Ru8wvU3HKD7SjIypd8s7ysSTX9oFU88aklCM5x3b0i9r/o8kofJ
+	0xpNl4M0oDsnHL3tt8pP6efYVpSw8STLkNgVimkMOCJaM1Qp9dNmWtmt97V6ePb/
+	mqoOrvugzdfa8aK8zZxWIfvq95K72rj0F1iF1l2EyyjT4CVRLknsjA6vZ/23yx3y
+	D1praCRRcIpv8FEarZmWPJYEmhhYMhK5Ro61xtcambSwFQjoxRlwSmrrXG7oYA==
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3vnxu1jd6g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jan 2024 22:23:14 -0800 (PST)
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 16 Jan
+ 2024 22:23:13 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Tue, 16 Jan 2024 22:23:13 -0800
+Received: from localhost.localdomain (unknown [10.111.135.16])
+	by maili.marvell.com (Postfix) with ESMTP id A6A803F7044;
+	Tue, 16 Jan 2024 22:23:12 -0800 (PST)
+From: Jenishkumar Maheshbhai Patel <jpatel2@marvell.com>
+To: <marcin.s.wojtas@gmail.com>, <linux@armlinux.org.uk>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC: Jenishkumar Maheshbhai Patel <jpatel2@marvell.com>
+Subject: [net v2 PATCH 1/1] net: mvpp2: clear BM pool before initialization
+Date: Tue, 16 Jan 2024 22:23:10 -0800
+Message-ID: <20240117062310.2030408-1-jpatel2@marvell.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <so663sd33rgvgzufcxe4oc666os2gq5nrdinqaqquksrkvnr3c@odkxhcxhb3ux>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: j9pVR1av0e7_aP6TpQx_f3QT-tsmk5w3
+X-Proofpoint-ORIG-GUID: j9pVR1av0e7_aP6TpQx_f3QT-tsmk5w3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-17_02,2024-01-16_01,2023-05-22_02
 
-On Wed, Jan 17, 2024 at 07:11:17PM +1300, Hoorad Farrokh wrote:
-> Fixed a Linux coding style problem.
-> 
-> Reported by checkpatch:
-> 
-> CHECK: Unnecessary parentheses around 'msg->prismheader.status ==
->                      P80211ENUM_msgitem_status_data_ok'
-> 
-> Signed-off-by: Hoorad Farrokh <hourrad.f@gmail.com>
+Register value persist after booting the kernel using
+kexec which results in kernel panic. Thus clear the
+BM pool registers before initialisation to fix the issue.
 
-Just ignore these warnings.
+Fixes: 3f518509dedc ("ethernet: Add new driver for Marvell Armada 375 network unit")
+Signed-off-by: Jenishkumar Maheshbhai Patel <jpatel2@marvell.com>
+---
+v1-v2:
+-Move comments outside the loop
+-remove unrequired brances.
 
-https://lore.kernel.org/all/?q=prism2mgmt_wlansniff+Unnecessary+parentheses
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 25 +++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-regards,
-dan carpenter
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+index 820b1fabe297..49d9960f9ce8 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+@@ -614,12 +614,37 @@ static void mvpp23_bm_set_8pool_mode(struct mvpp2 *priv)
+ 	mvpp2_write(priv, MVPP22_BM_POOL_BASE_ADDR_HIGH_REG, val);
+ }
+ 
++/* Cleanup pool before actual initialization in the OS */
++static void mvpp2_bm_pool_cleanup(struct mvpp2 *priv, int pool_id)
++{
++	u32 val;
++	int i;
++	/* Drain the BM from all possible residues left by firmware */
++	for (i = 0; i < MVPP2_BM_POOL_SIZE_MAX; i++)
++		mvpp2_read(priv, MVPP2_BM_PHY_ALLOC_REG(pool_id));
++	/* Stop the BM pool */
++	val = mvpp2_read(priv, MVPP2_BM_POOL_CTRL_REG(pool_id));
++	val |= MVPP2_BM_STOP_MASK;
++	mvpp2_write(priv, MVPP2_BM_POOL_CTRL_REG(pool_id), val);
++	/* Mask BM all interrupts */
++	mvpp2_write(priv, MVPP2_BM_INTR_MASK_REG(pool_id), 0);
++	/* Clear BM cause register */
++	mvpp2_write(priv, MVPP2_BM_INTR_CAUSE_REG(pool_id), 0);
++}
++
+ static int mvpp2_bm_init(struct device *dev, struct mvpp2 *priv)
+ {
+ 	enum dma_data_direction dma_dir = DMA_FROM_DEVICE;
+ 	int i, err, poolnum = MVPP2_BM_POOLS_NUM;
+ 	struct mvpp2_port *port;
+ 
++	if (priv->percpu_pools)
++		poolnum = mvpp2_get_nrxqs(priv) * 2;
++
++	/* Clean up the pool state in case it contains stale state */
++	for (i = 0; i < poolnum; i++)
++		mvpp2_bm_pool_cleanup(priv, i);
++
+ 	if (priv->percpu_pools) {
+ 		for (i = 0; i < priv->port_count; i++) {
+ 			port = priv->port_list[i];
+-- 
+2.25.1
 
 
