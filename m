@@ -1,154 +1,97 @@
-Return-Path: <linux-kernel+bounces-29353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D57A8830D2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:14:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 557A8830D31
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:16:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30977289A97
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:14:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 078611F25460
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:16:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A5392421B;
-	Wed, 17 Jan 2024 19:14:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFE04249E5;
+	Wed, 17 Jan 2024 19:16:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ly00sBkV"
-Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="pgJgK4b/"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90D3124204
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:14:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C92DA24208;
+	Wed, 17 Jan 2024 19:16:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705518850; cv=none; b=eTt6RUVa8loebWXviH0M4C8/0x75WuBRSVLwYs2AVOMVbDus6Nv8hwHPHS7sNdytD65LaAtRFcm8cPFrCfRopxPsA1DErll00zuC9w3noTRXMTKM/SjkNkF2DzVc3pEvsfq/UGoKGOSEPl+9pDNL+2PVrW7wQyXXPUYUwG1X57k=
+	t=1705518963; cv=none; b=LKZbiHXO3fyUx6JhCLyHjr6YFt2mTXPbnmjDbMD+IAnIQxSa9GOYNEBg+LK+HgTpNmZX6qt2/uB5GxQxGzxyhcTer3FhJ9U27T/G1ARrY6n13FI8AFQwLXpZlyVPU0pCvRX3wSFjj/7FwdxZiaBGkCPk6uNiWmnouUro3jOA6cU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705518850; c=relaxed/simple;
-	bh=y6Z6zk1OP3Ztsk3udH9WOkGkEr+SuisPK1CMmIxcg6U=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=k2FgAmYbKlIQIL5HV3LN3soj9wpbvfNCdsMg/4VctJm1n+sTHUaaWBOjvauMFeUdF/c8Q2S8nseT3rWEaGjtMabXaaiEg5LPPWzJvqimnMP8c/8Y1LQLkHm/3rhez2lkGNZyS8DK66aFwSylQkmvb31ZV6eGV8qUQHTY9vavzLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ly00sBkV; arc=none smtp.client-ip=209.85.166.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7bc3e297bc9so519006039f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:14:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705518848; x=1706123648; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2N7+b+9eTmlV+1hqRRxK5amXtgZFPEj9WEU/LCvJugc=;
-        b=ly00sBkVIEeq0uj2mCmiAq81dV07z8Gsw/vBnuqBrJ6o9iZt1nEUpdh2SRhFJQe7RA
-         +lJLv0gDjX4bMZSFyN96idhf2jhmwXzqvLeUHkBqulTpbMZWaFnho0LyT+mTj27Ei9WQ
-         F2mx1Ztx1xhQpNt3RlvNcnQRq/+yOZquJI8mVTxY4g1Fi6+3oiXo6bFTH4uSnGocyxCp
-         3I6QB7ATvhCjIhPINJftInCHjSiUsqYbyv/kmImXVn5nXd7fF3Ms3N4eT5brHMPIZVXC
-         uRCKLh4ZOx/9AvLIITZ05xh3xYQI8hoYy8CC6h1JrmVwUDI8VKeEjHe+fGhStgUIo60d
-         rTrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705518848; x=1706123648;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2N7+b+9eTmlV+1hqRRxK5amXtgZFPEj9WEU/LCvJugc=;
-        b=Rn0S+Dsy+/f3WOqRt9V3a7PPGcRPwqnIZTJGtSZXoZ9DK8xhYizwGavBeGuByVAvR8
-         ozuPpv1WmNB4GXpwnXslWOxL6OwFOdd5KZcwgMUGIZ7oa+CIWkNz8UgV2w7fcjWlUftT
-         uiNW4qAErH295wgMB+GSNR8SRHbiwzTHuCJDFWqlpq1EHks3Wi/vg/y6/Dn6zua2qdwq
-         IYycd1aZQX+eIox2dzpRPMOi8f4vg4NpiepOnkP7uyF1XjT69YbaKsQrfK7Zoow6eszX
-         D3H69RKBX4qidkVKARsajO/Q2F3rfZsAOyEVZMrwvdolp48xyBefzBPfaXjCsXH4T2hq
-         +QFQ==
-X-Gm-Message-State: AOJu0YwFQTP1mz56GbUQqUjVb7tnRj9tX68kbv0iPUXFrc32ZcXQkXBd
-	ryAZICExcO5GVsgh9sE1W7YJdRpYlJlw1VGgrr8=
-X-Google-Smtp-Source: AGHT+IH42lhRoe3RkRSLTvfsn0KxrW3p2bPJECxj5UwhVBlSqrKgaSGyCgEg9EaiGlcaWxr1jc5H8HAdoa/R/FK/kqU=
-X-Received: by 2002:a5e:db03:0:b0:7bf:4f07:716b with SMTP id
- q3-20020a5edb03000000b007bf4f07716bmr4908995iop.22.1705518848512; Wed, 17 Jan
- 2024 11:14:08 -0800 (PST)
+	s=arc-20240116; t=1705518963; c=relaxed/simple;
+	bh=dcPXYXWEcF3z5rXsUj9EOE0H1lS77aogWQRAD35Z/zQ=;
+	h=DKIM-Signature:Received:Received:From:To:Cc:Subject:Date:
+	 Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding; b=VM46wnCuOtcboxvY3ArNY7woQm5UVsKUmFcCWfbtJX9MEbijnUjKVnE3r4U1huGSQ2itpM3H/MwcVDDD984KK5lE0k2jBJIB+EtbVRGzF8iCj9IZzkVdLyGBxkdvaCATBW4KDnrLyGzHDviJ5UQqT5v9thhMcxhkaRrgUBtO31g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=pgJgK4b/; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705518960;
+	bh=dcPXYXWEcF3z5rXsUj9EOE0H1lS77aogWQRAD35Z/zQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=pgJgK4b/5ftpOH55deO1U5jaBi9IC48uVHb7G+uKGemRxroFj4vYhOrJdKhV2/lMq
+	 eMI50j81ykz0Mfv/SZHt9q1KVpRVqPdvnmLQiSzQ4RgQ7WYLiH5C5gQnySklRMnCbz
+	 Z5R7PMetOqksbi8kbsesKOJ21kdIT2osxc7hAKyYtkJ2OPl8S02nl99bb2OtaGxFhf
+	 SYjjDV00tAHkDAnPKD3vyb9E1UqpsK2PLafG8kAlMulPWlKYRVYqHmILXREWVl1kuE
+	 GC6tf07lDiiVJqiyD7PgY2h8gLTzsHywjsY6jAazpD+JbmVvL/rpa6u2W9hTcZuvjL
+	 d9MWXuJeR22Hw==
+Received: from jupiter.universe (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sre)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E28E8378000E;
+	Wed, 17 Jan 2024 19:15:59 +0000 (UTC)
+Received: by jupiter.universe (Postfix, from userid 1000)
+	id 83DA1480C4D; Wed, 17 Jan 2024 20:15:59 +0100 (CET)
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: Heiko Stuebner <heiko@sntech.de>,
+	linux-rockchip@lists.infradead.org
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Sebastian Reichel <sebastian.reichel@collabora.com>,
+	kernel@collabora.com
+Subject: [PATCH v1 1/1] arm64: dts: rockchip: rk3588-evb1: mark system power controller
+Date: Wed, 17 Jan 2024 20:14:48 +0100
+Message-ID: <20240117191555.86138-1-sebastian.reichel@collabora.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAKEwX=NLe-N6dLvOVErPSL3Vfw6wqHgcUBQoNRLeWkN6chdvLQ@mail.gmail.com>
- <20240116133145.12454-1-debug.penguin32@gmail.com>
-In-Reply-To: <20240116133145.12454-1-debug.penguin32@gmail.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Wed, 17 Jan 2024 11:13:57 -0800
-Message-ID: <CAKEwX=PjraCg_NjP4Tnkbv8uqnVw8yJGh-mbuZC02Gp6HMcDBw@mail.gmail.com>
-Subject: Re: [PATCH] mm/zswap: Improve with alloc_workqueue() call
-To: Ronald Monthero <debug.penguin32@gmail.com>
-Cc: sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com, 
-	akpm@linux-foundation.org, chrisl@kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>, 
-	Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 16, 2024 at 5:32=E2=80=AFAM Ronald Monthero
-<debug.penguin32@gmail.com> wrote:
+Mark the primary PMIC as system-power-controller, so that the
+system properly shuts down on poweroff.
 
-+ Johannes and Yosry
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+---
+ arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
->
-> The core-api create_workqueue is deprecated, this patch replaces
-> the create_workqueue with alloc_workqueue. The previous
-> implementation workqueue of zswap was a bounded workqueue, this
-> patch uses alloc_workqueue() to create an unbounded workqueue.
-> The WQ_UNBOUND attribute is desirable making the workqueue
-> not localized to a specific cpu so that the scheduler is free
-> to exercise improvisations in any demanding scenarios for
-> offloading cpu time slices for workqueues.
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts b/arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts
+index 7075366ec85c..fd665dfda55d 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts
+@@ -590,6 +590,7 @@ pmic@0 {
+ 			    <&rk806_dvs2_null>, <&rk806_dvs3_null>;
+ 		pinctrl-names = "default";
+ 		spi-max-frequency = <1000000>;
++		system-power-controller;
+ 
+ 		vcc1-supply = <&vcc5v0_sys>;
+ 		vcc2-supply = <&vcc5v0_sys>;
+-- 
+2.43.0
 
-nit: extra space between paragraph would be nice.
-
-> For example if any other workqueues of the same primary cpu
-> had to be served which are WQ_HIGHPRI and WQ_CPU_INTENSIVE.
-> Also Unbound workqueue happens to be more efficient
-> in a system during memory pressure scenarios in comparison
->  to a bounded workqueue.
->
-> shrink_wq =3D alloc_workqueue("zswap-shrink",
->                      WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
->
-> Overall the change suggested in this patch should be
-> seamless and does not alter the existing behavior,
-> other than the improvisation to be an unbounded workqueue.
->
-> Signed-off-by: Ronald Monthero <debug.penguin32@gmail.com>
-> ---
->  mm/zswap.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 74411dfdad92..64dbe3e944a2 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -1620,7 +1620,8 @@ static int zswap_setup(void)
->                 zswap_enabled =3D false;
->         }
->
-> -       shrink_wq =3D create_workqueue("zswap-shrink");
-> +       shrink_wq =3D alloc_workqueue("zswap-shrink",
-> +                       WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
-
-Have you benchmarked this to check if there is any regression, just to
-be safe? With an unbounded workqueue, you're gaining scheduling
-flexibility at the cost of cache locality. My intuition is that it
-doesn't matter too much here, but you should probably double check by
-stress testing - run some workload with a relatively small zswap pool
-limit (i.e heavy global writeback), and see if there is any difference
-in performance.
-
->         if (!shrink_wq)
->                 goto fallback_fail;
->
-> --
-> 2.34.1
->
-
-On a different note, I wonder if it would help to perform synchronous
-reclaim here instead. With our current design, the zswap store failure
-(due to global limit hit) would leave the incoming page going to swap
-instead, creating an LRU inversion. Not sure if that's ideal.
 
