@@ -1,123 +1,149 @@
-Return-Path: <linux-kernel+bounces-29022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64DE1830715
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:27:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50BC483071E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 14:33:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03B811F24A51
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:27:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEB65288549
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 13:33:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFC191F5FD;
-	Wed, 17 Jan 2024 13:27:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A700F1F5E7;
+	Wed, 17 Jan 2024 13:33:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BpX0ZGGL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V0rVryi4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AE7914A87;
-	Wed, 17 Jan 2024 13:27:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E94E41EB20;
+	Wed, 17 Jan 2024 13:33:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705498050; cv=none; b=fgztqRvbPpA1E8hvITjggYZG9nFy1IKHDidP24GFZVwWkmASBuFnBvFXPhnTSvMtJ7hg6CAtQOuphx6qX3ZbVJHpF0e4m3ry0WtrbJiWROX/i6aVJEKut7Mo8n64jXyBCin6ZjXjdTSwApijHXf37t2yt5fc3vYY+0qHVUe9D7M=
+	t=1705498425; cv=none; b=N76UF5w6ITX9b7MOs42p2pQwcFt+lZ05VXS2lTu1ZLVFRBKVkFMfoBqvM9ynL1kHQMg8uiUtL64zQECbN4DJjmqGpqdj5aJCg51Dt5bvwA9DHjkvdhu6UVD7SGTWrR+HFKh+9rXgaM47rbjkjELq1CwMj+dgoUjMjNsPUarPEzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705498050; c=relaxed/simple;
-	bh=tywzkYCatCjvmllWPiu8+4g6b7SfayHdRCj5tZxD2aY=;
-	h=Received:DKIM-Signature:From:Date:Subject:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:Message-Id:X-B4-Tracking:To:
-	 Cc:X-Mailer:X-Developer-Signature:X-Developer-Key; b=YU/T4yaRXbrGU3fR+vqf7meorafhrYvUiOS/weYvqGx3W29JPyyYxT6q+DegA2RoYlLW0qjhNK36Lix4NssOKerhhHOu6fUkNJte1YWS6Z/JBwv8dkIcsr61OMYw+feA6adKYYYlpfKsHzieP7mbJeen3BeRvnv9vlJ/YOJJj+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BpX0ZGGL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11054C433C7;
-	Wed, 17 Jan 2024 13:27:27 +0000 (UTC)
+	s=arc-20240116; t=1705498425; c=relaxed/simple;
+	bh=OV2rywvnygBbIkqLOT9BjIcfYgGpS25LBhRJ/xr4F8I=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=aWjnNDavsJnYTHdskjvth83pTYH56hbRQIBaSsPglmdgO8KhgFXHF6WY9/JHogLciPSomD3j9GFr9CUer0gQw6q663KhwVhZlq8oWXHSr1BuPJ+cjSdi4ucigvt4s0Sz9dHBkHdKKhB7i7QeKfSaPHeEVnztPGSyU3RrmmIgPHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V0rVryi4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F55CC433C7;
+	Wed, 17 Jan 2024 13:33:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705498049;
-	bh=tywzkYCatCjvmllWPiu8+4g6b7SfayHdRCj5tZxD2aY=;
-	h=From:Date:Subject:To:Cc:From;
-	b=BpX0ZGGLJIc2VX6MAPAWP7z8lbc2pUD9G3GIJvnD/QBB4AJhcD13u0IcVFtRRTs4o
-	 zbbWuwpm7ltx7aX6lqt2fzbRxn0H7X4U6av8iHKDGYe/2OViwBWXEJXP3QuBiLJGf3
-	 h+5suyjX+ZY4w1jyj06d4OQAv3NY1vXoHtx8IUCudYokO5SP/tbXculPc93dj/J3Xg
-	 Z9ntMDKR9BtBuRF4tbJZjQ+qjMSv9fb2Gb/PFLO+w8UctMuTB7kivYkDLVfZO7Vryt
-	 PaW+EmfdbUhc7iW65Izq9gp2izxQQkmjbZE125bGr+Bp1rJBtZWpzK78pCioxxffrl
-	 JAwGSTZkWHlWw==
-From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Wed, 17 Jan 2024 14:27:15 +0100
-Subject: [PATCH] selftests/hid: wacom: fix confidence tests
+	s=k20201202; t=1705498424;
+	bh=OV2rywvnygBbIkqLOT9BjIcfYgGpS25LBhRJ/xr4F8I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=V0rVryi4dFAQbbrNXrJvCFAuLba+m2Zi+QemNPCh6meiGFXyZQBjjNLTVCrvjQUJ3
+	 p1iFHyacx1dCV3o5f717K/Ra2YDMDtdn6iYo/em4SJMPKA/KyyfPO7d7LDp8uzP3kV
+	 M7yqDUL4lEaXGj4wx9IHhiuAg1dJxqrSYZ0eJYqGQq2Llum0qNnn6cAPi7YY+BRnuG
+	 bQg9q57F96ID0bNDnUBYBEo8A0sWYgU+i8/3ysJ3TtoLYrDq4uxpYnJRYQVHInzH/9
+	 8VA83mT1nAVUAYMuc7TS9+yaRfzNSwPdPReTyw8cX6Q4+4hZRzGof19jOfii3ULgHK
+	 HkMegeKnw9cCw==
+Date: Wed, 17 Jan 2024 14:33:40 +0100
+From: Alejandro Colomar <alx@kernel.org>
+To: Petr Vorel <pvorel@suse.cz>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	linux-man@vger.kernel.org
+Subject: Re: [PATCH v2alx] MAINTAINERS: Add man-pages git trees
+Message-ID: <ZafXNac8p8CKk1_U@debian>
+References: <ZafC1MkKDAK2s6n1@debian>
+ <20240117122315.15698-1-alx@kernel.org>
+ <20240117130705.GB2711070@pevik>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240117-b4-wip-wacom-tests-fixes-v1-1-f317784f3c36@kernel.org>
-X-B4-Tracking: v=1; b=H4sIALLVp2UC/x3LTQqAIBBA4avErBtQMfq5SrTQmmoWpThRQXT3p
- OXH4z0glJgEuuKBRCcLhz1DlwWMq9sXQp6ywShjldY1eosXR7zcGDY8SA7BmW8SNG3jK+XJ2Xq
- GvMdEf8h3P7zvByhu+wJqAAAA
-To: Jiri Kosina <jikos@kernel.org>, 
- Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
- Shuah Khan <shuah@kernel.org>, Jason Gerecke <jason.gerecke@wacom.com>
-Cc: linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1705498047; l=2088;
- i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=tywzkYCatCjvmllWPiu8+4g6b7SfayHdRCj5tZxD2aY=;
- b=IWzV59t4VHpJ7UoQOlD9tX+ULtDRWbwucPyNMZaoHScUQLIkX976SUTV53Af6WvswqS+9spXf
- VyFYjlDA+cHDmmI1hVitU6gE/ZTGsokN+SQzQIOZ23xfYJPCb+hsILW
-X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
- pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="kbBG7tvQqalPsVWF"
+Content-Disposition: inline
+In-Reply-To: <20240117130705.GB2711070@pevik>
 
-The device is exported with a fuzz of 4, meaning that the `+ t` here
-is removed by the fuzz algorithm, making those tests failing.
 
-Not sure why, but when I run this locally it was passing, but not in the
-VM.
+--kbBG7tvQqalPsVWF
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 17 Jan 2024 14:33:40 +0100
+From: Alejandro Colomar <alx@kernel.org>
+To: Petr Vorel <pvorel@suse.cz>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	linux-man@vger.kernel.org
+Subject: Re: [PATCH v2alx] MAINTAINERS: Add man-pages git trees
 
-Link: https://gitlab.freedesktop.org/bentiss/hid/-/jobs/53692957#L3315
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
----
-Over the break the test suite wasn't properly running on my runner,
-and this small issue sneaked in.
----
- tools/testing/selftests/hid/tests/test_wacom_generic.py | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Hi,
 
-diff --git a/tools/testing/selftests/hid/tests/test_wacom_generic.py b/tools/testing/selftests/hid/tests/test_wacom_generic.py
-index 352fc39f3c6c..b62c7dba6777 100644
---- a/tools/testing/selftests/hid/tests/test_wacom_generic.py
-+++ b/tools/testing/selftests/hid/tests/test_wacom_generic.py
-@@ -880,8 +880,8 @@ class TestDTH2452Tablet(test_multitouch.BaseTest.TestMultitouch, TouchTabletTest
-         does not overlap with other contacts. The value of `t` may be
-         incremented over time to move the point along a linear path.
-         """
--        x = 50 + 10 * contact_id + t
--        y = 100 + 100 * contact_id + t
-+        x = 50 + 10 * contact_id + t * 11
-+        y = 100 + 100 * contact_id + t * 11
-         return test_multitouch.Touch(contact_id, x, y)
- 
-     def make_contacts(self, n, t=0):
-@@ -902,8 +902,8 @@ class TestDTH2452Tablet(test_multitouch.BaseTest.TestMultitouch, TouchTabletTest
-         tracking_id = contact_ids.tracking_id
-         slot_num = contact_ids.slot_num
- 
--        x = 50 + 10 * contact_id + t
--        y = 100 + 100 * contact_id + t
-+        x = 50 + 10 * contact_id + t * 11
-+        y = 100 + 100 * contact_id + t * 11
- 
-         # If the data isn't supposed to be stored in any slots, there is
-         # nothing we can check for in the evdev stream.
+On Wed, Jan 17, 2024 at 02:07:05PM +0100, Petr Vorel wrote:
+> Hi,
+>=20
+> > As the man-pages README documents:
+>=20
+> > $ sed -n '/^Versions/,/^[^ ]/p' README | head -n-1;
+> > Versions
+> >    Distribution
+> >        <https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/>
+> nit: Shouldn't this be kernel.org instead of mirrors.edge.kernel.org?
 
----
-base-commit: 80d5a73edcfbd1d8d6a4c2b755873c5d63a1ebd7
-change-id: 20240117-b4-wip-wacom-tests-fixes-298b50bea47f
+I actually don't know.  Was wondering, because kernel.org redirects
+there, but didn't know which subdomain I should document.  If it should
+have no subdomain, would you mind sending a patch?  Thanks!
 
-Best regards,
--- 
-Benjamin Tissoires <bentiss@kernel.org>
+>=20
+> >        <https://www.alejandro-colomar.es/share/dist/man-pages/>
+>=20
+> >    Git
+> >        <https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/>
+> >        <https://www.alejandro-colomar.es/src/alx/linux/man-pages/man-pa=
+ges.git/>
+>=20
+> >    Online man-pages
+> >        PDF
+> >              <https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/=
+book/>
+> >              <https://www.alejandro-colomar.es/share/dist/man-pages/>
+> >        HTML
+> >              <https://man7.org/linux/man-pages/index.html>
+>=20
+> > Suggested-by: Petr Vorel <pvorel@suse.cz>
+> > Signed-off-by: Alejandro Colomar <alx@kernel.org>
+>=20
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
+Thanks!
+
+Have a lovely day,
+Alex
+
+>=20
+> @Andrew: whoever is going to mere, please take this commit
+> instead of mine.
+
+--=20
+<https://www.alejandro-colomar.es/>
+Looking for a remote C programming job at the moment.
+
+--kbBG7tvQqalPsVWF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmWn1zQACgkQnowa+77/
+2zIzPg/7BLzwynFsoslvUuPYXIo53GSoHzH02N04NIbbo59xrkan1MgKbDT8oJzX
+xLlZqKK3cX8PzfIGlCo7dMgxpDP1kstwQcsQVrllFKmpK+IvpabVyRlBvdnlcGE1
+O1U+rcsPz1ZuiYLLfyTwtRuYsTNgXicNsJvqZnOj3D7s3x3cryDrirdRj49QzEEz
+A9O24npTmeYIUy+sgOWYYD0f8EUDtuB8EaZriTpM7wtYcuOpGfIX1COWzo3J/H6V
+k4zICgI9Mw0FRvknNhx6PEHFy1p7rOmmxDsFMmGvtdsI6vSoltjeiuYqtic4hVNs
+GKdEHg1TW9euuC48AdXNfPti5Jm6E1ViH687ZrbP0GSsg9dPy1raYD0t5txqybSD
+02E7oiBM7UkGYhLZvahAoUfElAbDN6uRG4p1t8SEcsw3xNy56I6vbSmmEz/B2hr6
+wF66itnOYa6Avr1K+WtrPCVrpDOtxDLnaBCCEg2+1FhoJ79RMAPMAKaL8XF8zwZz
+SiifCxdnZOtXOvZm8m3/UOyPzxuXLWcw4+NnSCKApPYf7mCXZXU480bXRY1rv38I
+n5sObQoQ38X1Z7ZrC3oCnhZ0LBwhL4sGwXrUS9BSMgLa3aELaA0Ye9zfcxVY8Nz3
+tKxlqpZx50q948ZVKCUy51SesVpr4hA0lZHZ+GLJYkwcB6ZARgQ=
+=xXJU
+-----END PGP SIGNATURE-----
+
+--kbBG7tvQqalPsVWF--
 
