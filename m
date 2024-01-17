@@ -1,142 +1,114 @@
-Return-Path: <linux-kernel+bounces-29373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FFD5830D61
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:41:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE178830D64
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 20:42:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1A082869E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:41:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F10B91C21B5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 19:42:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF27F249F8;
-	Wed, 17 Jan 2024 19:41:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B352B249FD;
+	Wed, 17 Jan 2024 19:42:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="cX6cMa77"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gvqs+3t8"
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5DC024219;
-	Wed, 17 Jan 2024 19:41:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FE1249EC
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 19:42:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705520505; cv=none; b=K8cMMB/ZBPKcq3dyuy2pnIf63L/VXDxMtdPaj+87+kEff5txQdZpC7l8T7woWRTL3qWUyah7gS7nOOPZ88y7b05JF2lPjsz0NoCEMMma2lh5ofez++TuuEoF0WPEg/ewojOslQZICt2x6R6P8blxfBaCIZJuGnS9IaYG8G4mr88=
+	t=1705520555; cv=none; b=fNYGyCXBFMu9PcmNX4Qe4VEDSB8mTLcbJBa2nJ4sfnXP6p4dM/lf60TcYY7eaCF8b4S5JYa7jfEGL7rSLhiQlrl48dZzZorXknMn4N0OgZwBAzlgy2WDJtbXTLiG5RcwPzYCA0L16MUizj2Yf9Ha+1VXZ2qVYTrg1Lnr3TI1AXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705520505; c=relaxed/simple;
-	bh=IfQsDAI713oUm5a00BgWmkEPHr/qiVQCw8L2XfGiuUc=;
-	h=Received:DKIM-Signature:Received:Received:Received:From:To:CC:
-	 Subject:Date:Message-ID:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding:Content-Type:X-Originating-IP:
-	 X-ClientProxiedBy:X-QCInternal:X-Proofpoint-Virus-Version:
-	 X-Proofpoint-ORIG-GUID:X-Proofpoint-GUID:
-	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details; b=tP1xN8RDp4MoHUXYzbXnCnNBmVY8awPACS8WkvIPjT2EvVDc7TLVCguP9CjX63vcr2ll4DjbIc+kc76EniCIRJZY66Uele1SX6hTrUYprSqdW39sC7luiRjJSp1ANphEco+NgvMDDUxzB9ur4IXGLGf5Ht98GJd6v7xtVflIkiM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=cX6cMa77; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40HIxHQT020532;
-	Wed, 17 Jan 2024 19:41:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=qcppdkim1; bh=ZVWYmck
-	PM3hIKmZsejv1kkzPD7OwHpx0Kfnkkqy7j8I=; b=cX6cMa77fwPbOXGHdNfwONt
-	OnCNT7NaM1MSDcMGowJAn1qLip4hUe2JNTggjfg6fBghFWfrkPFNgEY+oLjFatDt
-	8fqlL7PyY0+gLQ//3cYpNLSzmKXrenE1awml/rtF8VeIGYMZbU+kHC+trmVpL7m6
-	uzWhn/6wAs7h6qsKSgZ5g54D55vO/W3qBV+cZMLAoaMCQdXtaJ6pjOcR8VMh7nC+
-	XNW5DLhpPXo++U0YokS6tV9C/T1D0VmzeG/Rs/x6Y6JCTScxtrw2xUBfuoNubOkZ
-	tRNsVOa3mtix/yToMle/e9ZoH2ASL9m5mpeHAAT9akUUifRXTMumuNgoKO7yt7w=
-	=
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vp4ak2anc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 19:41:23 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40HJfMpT025024
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 19:41:22 GMT
-Received: from abhinavk-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 17 Jan 2024 11:41:22 -0800
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-To: <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov
-	<dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten
-	<marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>, "Daniel
- Vetter" <daniel@ffwll.ch>
-CC: <dri-devel@lists.freedesktop.org>, <seanpaul@chromium.org>,
-        <quic_jesszhan@quicinc.com>, <dan.carpenter@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm/msm/dpu: check for valid hw_pp in dpu_encoder_helper_phys_cleanup
-Date: Wed, 17 Jan 2024 11:41:09 -0800
-Message-ID: <20240117194109.21609-1-quic_abhinavk@quicinc.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1705520555; c=relaxed/simple;
+	bh=nHukp7ABSGZgox+voQNgZSwLeGnZqG7L9T1fJ25Rnh4=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Sender:
+	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BTVrZRnKCXBvYN6q/EqLzclncM2KIzwedOMXGl3ARevTF7PlQnwfekvJDPqLTXd3anT3sHe4oz5rFzijQrBprgVZmpArdpgd9S4Xf182OMCPKu+1PQ0nsNhb9j82yKnGnuzxu3dEr29hGLOegezbm/PrcQ4vsJkGrfxBwWR8kwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gvqs+3t8; arc=none smtp.client-ip=209.85.161.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-598a5448ef5so4424332eaf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 11:42:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705520552; x=1706125352; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ViFOzshsdI0neEHKP5+T/Kud83KXCwEJkLxP8fjCi9Y=;
+        b=Gvqs+3t83Iqq3QEuKfbnRb40FuzSM1nYmFdltCkNUGLD/SHChh8ygtL7eDhGJQC4F0
+         /V2lp4TnFx3wHqkfNb5uF1fEjPzXJku2LFTfKycPpCA0OkPZY3L1OlN699tRrd5iVsJD
+         ldv5N3RdVPVw4nnuqmdApEqbLcTHxEohRzzPq7RLetFpRQgTZOgODNnkHjNSoj/SclwS
+         sMntLH6qmCGa4nFB7gj+wBm8fT5J6NXGT4KlKR4H6lCRGIjDJOgtkixnVdM/SEfBxj4H
+         KHugDJOpe36vm2zyUL4M22NuwLtma8c37N8RfI0RDNN2oOrltI6T9uFttRkYyAvljGRH
+         t2JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705520552; x=1706125352;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ViFOzshsdI0neEHKP5+T/Kud83KXCwEJkLxP8fjCi9Y=;
+        b=gbZlRTGjuzPYifnTw2i7Loxm4HTqORoFdyoEjMQ7NGUQFjMFuvqDhjlBfvzT+KVL4l
+         t0MNX5zXb9mSJ4HD12mQz+QJTEWDobt6YGyCwEojM4uYGFSuVHc/C279y+SUQWNObqIJ
+         QM3nxPzETYRQUwD54Bmw4LQfXQ45jpDXo/OFVEc52/0lQGUlzdH2OU6sORBdf8rRb/PH
+         +B4n7T8kdyIvUuJ4n4S17anS/Q+pLVITdr6pDEkOF3y0TNoYQNb10SPdxE9AnnmpZGR3
+         +71UrapMHAKXik/o+FR9MlfgArfQJJ59eziHNWJZxdtaqABWLW0dWQsDVrgpovHR2pCK
+         GPFQ==
+X-Gm-Message-State: AOJu0YxdoABlUFMdjpx3Ow7ECv6gbTlIlXN44Hxz731TOas29mV/qg2r
+	SIroo0Awn6lblKeyFsChFS4=
+X-Google-Smtp-Source: AGHT+IEkZ6A0SVWHrplsXqg9e1EHz1I2sQTfnYGourX2+NwbKELbeBuu8qDYTs4RHTAymlGeMVEsJA==
+X-Received: by 2002:a05:6358:9b47:b0:175:bfd4:8d6c with SMTP id k7-20020a0563589b4700b00175bfd48d6cmr11587810rwa.40.1705520552496;
+        Wed, 17 Jan 2024 11:42:32 -0800 (PST)
+Received: from localhost (dhcp-72-235-13-140.hawaiiantel.net. [72.235.13.140])
+        by smtp.gmail.com with ESMTPSA id w26-20020aa7859a000000b006dad993d91csm1821882pfn.129.2024.01.17.11.42.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jan 2024 11:42:32 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 17 Jan 2024 09:42:31 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Juri Lelli <juri.lelli@redhat.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Aaron Tomlin <atomlin@atomlin.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 3/4] kernel/workqueue: Distinguish between general
+ unbound and WQ_SYSFS cpumask changes
+Message-ID: <Zagtpw-JQvdpFseh@slm.duckdns.org>
+References: <20240116161929.232885-1-juri.lelli@redhat.com>
+ <20240116161929.232885-4-juri.lelli@redhat.com>
+ <ZabRlEklmuqwFPj-@slm.duckdns.org>
+ <ZafQwMw8ZKztunMU@localhost.localdomain>
+ <ZagKbRlBxZHsKiw5@mtj.duckdns.org>
+ <72e4a971-96e5-44b7-b348-bbdb68e54b40@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: n72C_yJR_WzB7FsquKyumU7Se7cL4-FO
-X-Proofpoint-GUID: n72C_yJR_WzB7FsquKyumU7Se7cL4-FO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-17_12,2024-01-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
- mlxlogscore=899 mlxscore=0 impostorscore=0 phishscore=0 adultscore=0
- malwarescore=0 suspectscore=0 lowpriorityscore=0 priorityscore=1501
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401170143
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <72e4a971-96e5-44b7-b348-bbdb68e54b40@redhat.com>
 
-The commit 8b45a26f2ba9 ("drm/msm/dpu: reserve cdm blocks for writeback
-in case of YUV output") introduced a smatch warning about another
-conditional block in dpu_encoder_helper_phys_cleanup() which had assumed
-hw_pp will always be valid which may not necessarily be true.
+Hello,
 
-Lets fix the other conditional block by making sure hw_pp is valid
-before dereferencing it.
+On Wed, Jan 17, 2024 at 02:32:34PM -0500, Waiman Long wrote:
+> My impression is that changing the workqueue cpumask of ordered unbound
+> workqueue may break the ordering guarantee momentarily. I was planning to
 
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Fixes: ae4d721ce100 ("drm/msm/dpu: add an API to reset the encoder related hw blocks")
-Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Ah, you're right. Changing cpumask would require changing the dfl_pwq and
+that can introduce extra concurrency and break ordering and it's exempt from
+unbound_cpumask updates. We likely need to add a mechanism for updating
+ordered wq's so that the new pwq doesn't become until the previous one is
+drained.
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-index 83380bc92a00..282d84c872f2 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-@@ -2072,7 +2072,7 @@ void dpu_encoder_helper_phys_cleanup(struct dpu_encoder_phys *phys_enc)
- 	}
- 
- 	/* reset the merge 3D HW block */
--	if (phys_enc->hw_pp->merge_3d) {
-+	if (phys_enc->hw_pp && phys_enc->hw_pp->merge_3d) {
- 		phys_enc->hw_pp->merge_3d->ops.setup_3d_mode(phys_enc->hw_pp->merge_3d,
- 				BLEND_3D_NONE);
- 		if (phys_enc->hw_ctl->ops.update_pending_flush_merge_3d)
-@@ -2103,7 +2103,7 @@ void dpu_encoder_helper_phys_cleanup(struct dpu_encoder_phys *phys_enc)
- 	if (phys_enc->hw_wb)
- 		intf_cfg.wb = phys_enc->hw_wb->idx;
- 
--	if (phys_enc->hw_pp->merge_3d)
-+	if (phys_enc->hw_pp && phys_enc->hw_pp->merge_3d)
- 		intf_cfg.merge_3d = phys_enc->hw_pp->merge_3d->idx;
- 
- 	if (ctl->ops.reset_intf_cfg)
+Thanks.
+
 -- 
-2.40.1
-
+tejun
 
