@@ -1,100 +1,159 @@
-Return-Path: <linux-kernel+bounces-29295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36782830C4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:55:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D5C3830C56
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 18:58:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CD861C21D54
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:55:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7BB61F266A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 17:58:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D15323748;
-	Wed, 17 Jan 2024 17:54:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8A7F22EF3;
+	Wed, 17 Jan 2024 17:58:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WGqGmlE2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YBRJKlLR"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C496E2231B;
-	Wed, 17 Jan 2024 17:54:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 944162261D
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 17:58:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705514091; cv=none; b=dJTSgyLyNWlaN0FHlhHbNgj3fTeTMA9MTt3rabK2lrrlrWmD4zrnQWcCbREvcbRgnV3xwwaUTAa8vfBMz0RBD8sPaaCYeq2aMK/jxBmzTGScbq8aaJ4ou/vtleI1/KVR7R1E9SkrJgkB1qyZnUtaAxN0ovzv6BM2Euf+nlZgqMs=
+	t=1705514304; cv=none; b=KKG+DVxPK7cI5dsZKgxa5mbbjaKz3gdCvz0rS+Y2dkfrGhPglkpUaSQnAyjWU/YgVFBcDahDuH5DdS+/nzUhNuj5PNIsPGUpdw4U7TnSvrOUQJVsVJ0EOaW3lD0//jbZdmbHx+xN4SHLehglBzfvOzitKnJw/1O6RXJjyJHaKHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705514091; c=relaxed/simple;
-	bh=J77FS0Bpoh8nK3y4ULhNSS2rlyTKBjXxlnteilrvwrU=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=PL1eijc303G9Wl0aIu3ZkIZzAqiS/kKlbrtKWIF74RxAskpoXjtqEGDxSyW0VCa2+7kJw6Zqa6owxU/A/W6wxJlUUU5nWuI6xpRbpTn20bIYmYmb69hUxLn72MfS7GXYE/UajNrwAlZYJiWXSi8l+Hx9epio/LXq3ljdRKTIMr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WGqGmlE2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18862C433C7;
-	Wed, 17 Jan 2024 17:54:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705514091;
-	bh=J77FS0Bpoh8nK3y4ULhNSS2rlyTKBjXxlnteilrvwrU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WGqGmlE25dqAiZWRrRkWSXIKygA+vpQOQvudOI4smF0yF+9MoHfmQC6PyBFpSWkBk
-	 ssQBsIwrkcHj36bazih+ox4UPvJsDWBBoqrvC2nO1FQLqFxRRrSD3aOUfQXqWqyqnl
-	 /zgabKW7Dzp1RbLxvTi0UlZcqiRrV6DRYoYe4Fg4yCDru891/7Zz14jA3v25IFJXt/
-	 +f1Cjw8QPDdc68I8RiydMsFMZdDk5o+Kg+LyFCj9Oit8z1bJ4a9EsNZTwJcJPKCxV2
-	 EQt9YTer5GBiuziU4DiiskqBKqRkDm5xAJPvTFLaCAlyXTHrDUDHQXJOnyL8EKGHq0
-	 cK7aTGGHvFV9g==
-Date: Wed, 17 Jan 2024 11:54:48 -0600
-From: Rob Herring <robh@kernel.org>
-To: Stephen Boyd <sboyd@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev, linux-um@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com,
-	linux-kselftest@vger.kernel.org, devicetree@vger.kernel.org,
-	Frank Rowand <frowand.list@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 1/6] arm64: Unconditionally call unflatten_device_tree()
-Message-ID: <20240117175448.GB2779523-robh@kernel.org>
-References: <20240112200750.4062441-1-sboyd@kernel.org>
- <20240112200750.4062441-2-sboyd@kernel.org>
- <ZaZtbU9hre3YhZam@FVFF77S0Q05N>
- <434b21afe1899b1567f3617261594842.sboyd@kernel.org>
+	s=arc-20240116; t=1705514304; c=relaxed/simple;
+	bh=5/WheQCY1GfJ9JRKjt4HIIR4VyIIs5pvPXBbl33C4XU=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=Ei46QYNtSiifuotYIR/ReggaQr1lTvWUrEIzX1DFviYbNwy+gU3dEfKhuvKH5GolEfkMiKTJiM7hxhDlis3dvi0XyOKASG3WBD10LPa6cE1OYmb7eRHrTIuDbQ7zKA1uQUYINQ5ML66ngLB4XxOsxV+C21OvfZL+11rWKCnFPxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YBRJKlLR; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40e87d07c07so15920485e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 09:58:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705514301; x=1706119101; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2N3wMQ1N8kNumoIXaU/Gd0BY/kYZ+3Wuem2jd4aYAMY=;
+        b=YBRJKlLR8YWSKn3NQ1RH8uogA9tsv76rCbb3LGnqY2Z/e603tmA7J22PSGv+YJPvac
+         4uFl47h3dKkyj5na/b/eZnlid5DQ59JbixvTAt8uiuarLdhBpm3k6lxHh+zWRGu721RU
+         6adW8uxXfF2xXidY2CbuVkmbt9ChSB9aq0aTLCuashXRfc/BUOVA8vToUdnUVdZcIEkK
+         pKorm4N9Xlw9yv1vH2WabhCDfL1rdJmgl7da20InfYZMLsaNbcIGp+VdO1iW9PV19enM
+         m9ZX589GtPgDMdBmoaKfVZxHK9VkyPHoowaeQVdAqGwFvA+n25ltMpuWuxeBIPc2yJb3
+         lh6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705514301; x=1706119101;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2N3wMQ1N8kNumoIXaU/Gd0BY/kYZ+3Wuem2jd4aYAMY=;
+        b=QCnA6YVZCe3d7yzvOFPFxQtQ9IJwEv5PtmLFbrtltwPMdQbJDe9MDeNK1HChFnEfV7
+         PGiDXshPOnfQpo5qVVKcp05KnfILkHTptmGdHv4Sq/STKr/7xCRBN3kYO3WA1Numy+Qm
+         opWkffRRpjMk9YoH1j0Ie1A7YZoNpERUD7yk8wYSyMb+p8lETQrXRJt7ZUjO4AFFs9oR
+         /fU36jpiIKaZnAETR4Vihy9uD/kA9+NtlqUpK7BN7dNiJ0iA7/ZvmqIkeCDLq03gtSva
+         Gs/IZ09iE+/j1/dY8o+xu614lIaYwHQ2Ioi09tXk3xprtdQWVvDHPYvxTvs/X15+Ot1n
+         LA3Q==
+X-Gm-Message-State: AOJu0YzKIY1Uu0R9wplyR9HoqrtzsTB4TVqJb9ES/0WzP/p2A+roTOpX
+	/4ZqNvggvkQBEgg+IOHMoJe57h1Qc3kFSmt9xux3Rkx5puBK
+X-Google-Smtp-Source: AGHT+IFED+aI0emD0hl4/wfw/EziOFuIQI8+L+gsJORCcs4u++apT1Vz0NxW16XidB8y+pyynVAXW8iYYI/0nNgDwO4=
+X-Received: by 2002:a05:600c:21ce:b0:40e:5b60:9ef3 with SMTP id
+ x14-20020a05600c21ce00b0040e5b609ef3mr5800539wmj.41.1705514300624; Wed, 17
+ Jan 2024 09:58:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <434b21afe1899b1567f3617261594842.sboyd@kernel.org>
+References: <20231024142706.195517-1-hezhongkun.hzk@bytedance.com>
+ <CAKEwX=OiNB+pPhb-3Tf7O=F7psKE3EOpwmbPSeLSOyuHpj3i+Q@mail.gmail.com>
+ <CACSyD1P6HmH9tSvONnNxYv8P+am_hH2dK3UJQd9_+o6EWkPsXA@mail.gmail.com>
+ <CAKEwX=PC3C-PrWAH3XiYGyR4ujqBJQBBX6uRa2jXKCy9VMyRCQ@mail.gmail.com>
+ <CACSyD1O7t0+BXUujJ81RAdEys3MUnmpu0sRADLazoyvayx5DLA@mail.gmail.com>
+ <CAKEwX=P5AC+ubnunnZr5vMiC6fFU+E_E7jg_FZztWwZRYSxTWQ@mail.gmail.com>
+ <CACSyD1Nnc_w3epbt6+EMt7a-4pAzgW1hbE=G5Fy5Tc5R5+uxKw@mail.gmail.com>
+ <CAKEwX=NuXR9Ot1eRFsp9n-3Tq9yhjD9up+jyvXeOzQ4xK9kEPA@mail.gmail.com>
+ <CAKEwX=Oj2dR6a4-DeccvcVdJ-J7b=83uCWQAf5u7U0sySudnkw@mail.gmail.com>
+ <CAJD7tkb2oda=4f0s8w8xn+t_TM1b2Q_otbb86VPQ9R1m2uqDTA@mail.gmail.com>
+ <CACSyD1ODCikYLDzO4LkQeDzB4sqDWCULwCdehw9inP-qyw3_Jg@mail.gmail.com>
+ <CAJD7tkY=zmGiPoWNjVaVeU+NPxV2t48J5-CxEP9=nBK8nAh0XA@mail.gmail.com>
+ <CAKEwX=Na3dg+KZwvtQi-Nj79Am-1tttDw50_qStkobmYGUC6NA@mail.gmail.com>
+ <CACSyD1Pp8gkxwTXZuinm6wiZs0e5U2B5oND4rj29dzmRApFjhQ@mail.gmail.com>
+ <CAKEwX=OsTQCJd12S3NajRMRy_s3q3yGFpS7S=_3-yOYK6+ezzA@mail.gmail.com>
+ <CACSyD1NgqoFKuHSgdw_bzgK_StsLrNQ+7wHVBqsnHcB-2rD2ow@mail.gmail.com>
+ <CACSyD1Np1JbKB9punaigGbJ7y2ZWou1Sr7bczanHv4-1UQZ==A@mail.gmail.com>
+ <CAJD7tkbfe5duVhN7kJhkQZLCbK48giVZ8LBx=RQDmp80oa2FDA@mail.gmail.com>
+ <CACSyD1PERLG_68OXwzuGH-cqOuS1k8N_fE5Xu-KACZ34UYephw@mail.gmail.com> <CAJD7tkYu5Nm4DETjE1DvwuhAq=C6V=Pv9dx9W_oBw=ihwwTuQg@mail.gmail.com>
+In-Reply-To: <CAJD7tkYu5Nm4DETjE1DvwuhAq=C6V=Pv9dx9W_oBw=ihwwTuQg@mail.gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Wed, 17 Jan 2024 09:57:44 -0800
+Message-ID: <CAJD7tkasktc68qtDE=9v6uZ-tvEyf-6X11B88bpisb+0x4gzHg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm: zswap: fix the lack of page lru flag
+ in zswap_writeback_entry
+To: Zhongkun He <hezhongkun.hzk@bytedance.com>
+Cc: Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org, hannes@cmpxchg.org, 
+	sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Chris Li <chrisl@kernel.org>, Michal Hocko <mhocko@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 16, 2024 at 05:27:18PM -0800, Stephen Boyd wrote:
-> Quoting Mark Rutland (2024-01-16 03:51:14)
-> > Hi Stephen,
-> > 
-> > On Fri, Jan 12, 2024 at 12:07:44PM -0800, Stephen Boyd wrote:
-> > > Call this function unconditionally so that we can populate an empty DTB
-> > > on platforms that don't boot with a firmware provided or builtin DTB.
-> > > There's no harm in calling unflatten_device_tree() unconditionally.
-> > 
-> > For better or worse, that's not true: there are systems the provide both a DTB
-> > *and* ACPI tables, and we must not consume both at the same time as those can
-> > clash and cause all sorts of problems. In addition, we don't want people being
-> > "clever" and describing disparate portions of their system in ACPI and DT.
-> > 
-> > It is a very deliberate choice to not unflatten the DTB when ACPI is in use,
-> > and I don't think we want to reopen this can of worms.
-> 
-> Hmm ok. I missed this part. Can we knock out the initial_boot_params in
-> this case so that we don't unflatten a DTB when ACPI is in use?
+On Wed, Jan 17, 2024 at 9:53=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
+>
+> On Wed, Jan 17, 2024 at 1:53=E2=80=AFAM Zhongkun He
+> <hezhongkun.hzk@bytedance.com> wrote:
+> >
+> > > >
+> > > > Please forgive me for adding additional information about this patc=
+h.
+> > > >
+> > > > I have finished the opt for introducing a folio_add_lru_tail(), but
+> > > > there are many
+> > > > questions:
+> > > > 1) A new page can be move to LRU only by lru_add_fn, so
+> > > >     folio_add_lru_tail could not add pages to LRU for the following=
+ code
+> > > >     in folio_batch_move_lru(),which is added by Alex Shi for
+> > > >     serializing memcg changes in pagevec_lru_move_fn[1].
+> > > >
+> > > > /* block memcg migration while the folio moves between lru */
+> > > >         if (move_fn !=3D lru_add_fn && !folio_test_clear_lru(folio)=
+)
+> > > >             continue;
+> > > > To achieve the goal, we need to add a new function like  lru_add_fn
+> > > > which does not have the lru flag and folio_add_lru_tail()
+> > > > +               if (move_fn !=3D lru_add_fn && move_fn !=3D lru_mov=
+e_tail_fn_new &&
+> > > > +                       !folio_test_clear_lru(folio))
+> > > >
+> > > > 2)  __read_swap_cache_async has six parameters, so there is no spac=
+e to
+> > > > add a new one, add_to_lru_head.
+> > > >
+> > > > So it seems a bit hacky just for a special case for the reasons abo=
+ve.
+> > >
+> > > It's a lot of plumbing for sure. Adding a flag to current task_struct
+> > > is a less-noisy yet-still-hacky solution. I am not saying we should d=
+o
+> > > it, but it's an option. I am not sure how much task flags we have to
+> > > spare.
+> >
+> > Got it.
+>
+> Actually this won't really work. Writebak can be asynchronous, so
+> there would be no logical place to unset the flag.
 
-You mean so we don't unflatten the boot DTB, but instead unflatten the 
-empty one, right? That sounds fine.
+Scratch that. We would only need the flag to be set until
+folio_add_lru() is called (in __read_swap_cache_async()) -- so it can
+work.
 
-Another thing to check is kexec because it will still need the original 
-DTB I think. Though if you are doing ACPI boot and kexec'ing, kexec may 
-write out everything needed by the next kernel and the empty DTB would 
-work just fine. Of course those users booting with ACPI and then 
-kexec'ing to DT boot will be broken. Perhaps that's a feature...
-
-Rob
+I am not sure if it's worth it though or if it's even acceptable. It
+seems like current->flags are short of space.
 
