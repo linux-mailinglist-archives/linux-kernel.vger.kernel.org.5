@@ -1,161 +1,132 @@
-Return-Path: <linux-kernel+bounces-28734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-28735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D61C0830265
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:35:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AD46830268
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 10:35:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D7E31F21589
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:35:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C6FD1F21718
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 09:35:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7637B14005;
-	Wed, 17 Jan 2024 09:34:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="hWuxp5vG"
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E041C1426D;
+	Wed, 17 Jan 2024 09:35:16 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 137E81428E
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 09:34:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9154F14A97;
+	Wed, 17 Jan 2024 09:35:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705484097; cv=none; b=Oauc59VnfntjHLGHiJgnUU2wYUPkitHNBiP3IoatyFO5tFIUEZqP75mN1zHyEq/ltKl/w1loqmtIs+QM1jqe7lw/dce9thjrUx60hjGJB9rcyOsTeEqn50DwBMSC9ZNWkF0SrqjDDscuuPDcoW7MK32c/2L5icWxRQ/xObneRXQ=
+	t=1705484116; cv=none; b=QmkU1bVJZnxQPRFWggcDRZ00SsXEJR8DzI/+t+6AOidVielj60mTrnLEt5tSpjS/ybok5sbIfpbg/NMo3orMpsVMxpMzOQeR1znmuIZeiWL7UbiXplnsA41C/GGbJWefpnpftYoIADJWtihO9DCVfsRoM93KkMV7tFclFiH7YlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705484097; c=relaxed/simple;
-	bh=5h5jo0LDbjUDwc963EaETwiGZV4372iYktbYxO7wBYM=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=kVHgqQaiyPFzCpzrSb3tU8uboLoJ77tZ2EInjkiaAoxfj8rsb4eBnuZR8IONvIrC+yyqUFeiipKlYba08RAzEO/eyYwL9zsbfZzjodzwn72yQ1U2d+R2Iq3XVJ2YN/Wvvm/j0NpFqhp/LDoRvzLJiE89o9tF8+y8hghrMYXuxs4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=hWuxp5vG; arc=none smtp.client-ip=209.85.160.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-206b77b9f4bso4426334fac.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 01:34:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1705484094; x=1706088894; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aaqWkweUBCMsM9np/mXYoztcvXQRXft4e1IEJ/ozrjU=;
-        b=hWuxp5vGVbqiSAe9z4n+r1gcgTdBJOsKcxGR1oxv7Ukr3gfVNx+OdqpeM7toaJsuA8
-         pmVc69+23ouo0OnaJVS4WjXPmn1Y3dp1l1MXEqZH1bOyhQd4XilryHwL1OpYEkTdHs+C
-         4IC6s7eaX9URzydCPvmwEKEhyQzP+rcD8Lspwub2vXyEmTIt6LqnHUD+6RTfZfTKjHgg
-         L27c/7Iz9GfvGQ6qY9EAg1wZCR1bGmUNYeWRnbg2jUIgMFivGua4PSSdvHAfNFZOVM7d
-         v0DAuF57YjZwlRoW5G2Zlv16bAXi25bp0pflrPrIUja01w3lMprD7HWrhwPW/RZELk7H
-         QiyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705484094; x=1706088894;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aaqWkweUBCMsM9np/mXYoztcvXQRXft4e1IEJ/ozrjU=;
-        b=soKaNOLAqMXv8e6/MUKXCKMZ8nY+H9A7poVN1fDHZvYbbwWoaNrAxkhiJWNp+DYSGC
-         uB+q/aCWd1vEkPN0gtEx65X8QAW0rUUBdEtrYObQIYf5sfhqN+RiiPQVJqYXxW4xz2aM
-         xKrlWVV4CM3OH8fIiyHdCx41t9v4c4bEOvrtARaGiEsX0zgnV+CDhV9DF3oUyih3Oesm
-         a9jdif/vV7Gw3iC/xKH5PoUhZCqASqcikYolJpiNWLjzkwxtmMosejXm/+mSytFMnZUj
-         CUMzN2sKBUULk8evNfCmSxXGgGtIgi88axVpFlIGqUfsu7E0596tA+aipGc+YhpnKmOZ
-         LvOQ==
-X-Gm-Message-State: AOJu0YxV6MBZzVXHh88kkje0otrEwqbPRr6DAF4UK3OCbEFM2Vl9Dq2U
-	77cptK06XgDpaPURF1g7LNuXLjjFQqgXPBuOQFi7rnFllRbSzg==
-X-Google-Smtp-Source: AGHT+IGm/Gep62eql5SAVLRRUU3yliphqjo5z9Qaiuxv+5wKqX7+/u8z+fEIs7Mgr/WikI4re0xS1rdrLaLknoVLY5o=
-X-Received: by 2002:a05:6870:148a:b0:206:9e36:cfed with SMTP id
- k10-20020a056870148a00b002069e36cfedmr12283657oab.62.1705484094068; Wed, 17
- Jan 2024 01:34:54 -0800 (PST)
+	s=arc-20240116; t=1705484116; c=relaxed/simple;
+	bh=MhLCYMADdYGVjaEBH/w4U5E+UR/EiGHvoQw/szfsRak=;
+	h=Received:Received:Received:Subject:To:Cc:References:From:
+	 Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:X-CM-TRANSID:X-Coremail-Antispam:
+	 X-CM-SenderInfo; b=WUQwS+HoHMZb9pZ7ZvEi+0OLVB+NWVX8zAlLUmsscMrxLqchoBb5iFpaQPm6Kru8+4PZHNpl/xcsGvNNFll4xZKtgELzUrSVcX5M5GJur2wNF5Raus/dP2AqzJhtefl1H6tLL+FktAfpgt6fOD7gZdQyBTncw4AJi7UoSNAsggI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TFLM93x10z4f3k60;
+	Wed, 17 Jan 2024 17:35:01 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id A9F791A0E05;
+	Wed, 17 Jan 2024 17:35:03 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgCXaBFFn6dlc8dmBA--.17489S3;
+	Wed, 17 Jan 2024 17:35:03 +0800 (CST)
+Subject: Re: [PATCH v4 2/2] md: don't account sync_io if iostats of the disk
+ is disabled
+To: linan666@huaweicloud.com, song@kernel.org, axboe@kernel.dk
+Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-block@vger.kernel.org, yi.zhang@huawei.com, houtao1@huawei.com,
+ yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20240117031946.2324519-1-linan666@huaweicloud.com>
+ <20240117031946.2324519-3-linan666@huaweicloud.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <6f9618f1-3656-ccb5-25de-13e98d8f46b9@huaweicloud.com>
+Date: Wed, 17 Jan 2024 17:35:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117082514.42967-1-cuiyunhui@bytedance.com> <20240117-274e425c51d0deaeca80857d@orel>
-In-Reply-To: <20240117-274e425c51d0deaeca80857d@orel>
-From: yunhui cui <cuiyunhui@bytedance.com>
-Date: Wed, 17 Jan 2024 17:34:43 +0800
-Message-ID: <CAEEQ3wmDyj9S6412b3FCVF6Wu+TRRZco11X5mdEiQ5E2s54sHQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] RISC-V: selftests: fix cbo.c compilation error
-To: Andrew Jones <ajones@ventanamicro.com>
-Cc: shuah@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com, 
-	aou@eecs.berkeley.edu, xiao.w.wang@intel.com, linux-kselftest@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	xuzhipeng.1973@bytedance.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240117031946.2324519-3-linan666@huaweicloud.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgCXaBFFn6dlc8dmBA--.17489S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tF1xCFyDuw4fGrWUJFyDAwb_yoW8WFy8pa
+	ykAa4fC34UZr45Ww1DX34UCas5Ww17KFW8ArW7A34fXFyaqr9xGF4SgFWqqF1kWFWrWFWa
+	v3WjyFs09a10yrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+	3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCT
+	nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Hi drew=EF=BC=8C
+ÔÚ 2024/01/17 11:19, linan666@huaweicloud.com Ð´µÀ:
+> From: Li Nan <linan122@huawei.com>
+> 
+> If iostats is disabled, disk_stats will not be updated and
+> part_stat_read_accum() only returns a constant value. In this case,
+> continuing to count sync_io and to check is_mddev_idle() is no longer
+> meaningful.
 
-On Wed, Jan 17, 2024 at 5:16=E2=80=AFPM Andrew Jones <ajones@ventanamicro.c=
-om> wrote:
->
-> On Wed, Jan 17, 2024 at 04:25:14PM +0800, Yunhui Cui wrote:
-> > When compiling with -O0, the following error will occur:
-> > cbo.c: In function 'cbo_insn':
-> > cbo.c:43:9: warning: 'asm' operand 1 probably does not match constraint=
-s
-> >    43 |         asm volatile(
-> >       |         ^~~
-> > cbo.c:43:9: warning: 'asm' operand 2 probably does not match constraint=
-s
-> > cbo.c:43:9: error: impossible constraint in 'asm'
-> >
-> > Add __attribute__((optimize("O"))) to fix.
-> >
-> > Fixes: a29e2a48afe3 ("RISC-V: selftests: Add CBO tests")
-> > Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
-> > Suggested-by: Zhipeng Xu <xuzhipeng.1973@bytedance.com>
-> > ---
-> >  tools/testing/selftests/riscv/hwprobe/cbo.c | 11 ++++++-----
-> >  1 file changed, 6 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/riscv/hwprobe/cbo.c b/tools/testin=
-g/selftests/riscv/hwprobe/cbo.c
-> > index 50a2cc8aef38..ff1d8e843d70 100644
-> > --- a/tools/testing/selftests/riscv/hwprobe/cbo.c
-> > +++ b/tools/testing/selftests/riscv/hwprobe/cbo.c
-> > @@ -36,7 +36,7 @@ static void sigill_handler(int sig, siginfo_t *info, =
-void *context)
-> >       regs[0] +=3D 4;
-> >  }
-> >
-> > -static void cbo_insn(char *base, int fn)
-> > +static __always_inline void cbo_insn(char *base, int fn)
-> >  {
-> >       uint32_t insn =3D MK_CBO(fn);
-> >
-> > @@ -47,10 +47,11 @@ static void cbo_insn(char *base, int fn)
-> >       : : "r" (base), "i" (fn), "i" (insn) : "a0", "a1", "memory");
-> >  }
-> >
-> > -static void cbo_inval(char *base) { cbo_insn(base, 0); }
-> > -static void cbo_clean(char *base) { cbo_insn(base, 1); }
-> > -static void cbo_flush(char *base) { cbo_insn(base, 2); }
-> > -static void cbo_zero(char *base)  { cbo_insn(base, 4); }
-> > +#define OPTIMIZE __attribute__((optimize("O")))
-> > +OPTIMIZE static void cbo_inval(char *base) { cbo_insn(base, 0); }
-> > +OPTIMIZE static void cbo_clean(char *base) { cbo_insn(base, 1); }
-> > +OPTIMIZE static void cbo_flush(char *base) { cbo_insn(base, 2); }
-> > +OPTIMIZE static void cbo_zero(char *base)  { cbo_insn(base, 4); }
-> >
-> >  static void test_no_zicbom(void *arg)
-> >  {
-> > --
-> > 2.20.1
-> >
->
-> Hi Yunhui,
->
-> Thanks for the bug report, but this isn't the right fix. The real problem
-> is that I didn't ensure operands 1 and 2 match their constraints, just as
-> the warning you discovered says. To do that, I should have made cbo_insn(=
-)
-> a macro and not used the local variable, i.e. ensure 'fn' and 'insn' are
-> indeed constants derived from the 0,1,2,4 constants.
->
-> I'll send a patch with your reported-by.
-Okay, if you want to use macros to fix it, you can. thanks=EF=BC=81
+LGTM
+Reviewed-by: Yu Kuai <yukuai3@huawei.com>
 
-Thanks=EF=BC=8C
-Yunhui
+> 
+> Signed-off-by: Li Nan <linan122@huawei.com>
+> ---
+>   drivers/md/md.h | 3 ++-
+>   drivers/md/md.c | 4 ++++
+>   2 files changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/md/md.h b/drivers/md/md.h
+> index 1a4f976951c1..e2d03a7a858c 100644
+> --- a/drivers/md/md.h
+> +++ b/drivers/md/md.h
+> @@ -584,7 +584,8 @@ extern void mddev_unlock(struct mddev *mddev);
+>   
+>   static inline void md_sync_acct(struct block_device *bdev, unsigned long nr_sectors)
+>   {
+> -	atomic64_add(nr_sectors, &bdev->bd_disk->sync_io);
+> +	if (blk_queue_io_stat(bdev->bd_disk->queue))
+> +		atomic64_add(nr_sectors, &bdev->bd_disk->sync_io);
+>   }
+>   
+>   static inline void md_sync_acct_bio(struct bio *bio, unsigned long nr_sectors)
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index a6829ea5b560..919d6affc0ac 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -8502,6 +8502,10 @@ static int is_mddev_idle(struct mddev *mddev, int init)
+>   	rcu_read_lock();
+>   	rdev_for_each_rcu(rdev, mddev) {
+>   		struct gendisk *disk = rdev->bdev->bd_disk;
+> +
+> +		if (!init && !blk_queue_io_stat(disk->queue))
+> +			continue;
+> +
+>   		curr_events =
+>   			(long long)part_stat_read_accum(disk->part0, sectors) -
+>   			atomic64_read(&disk->sync_io);
+> 
+
 
