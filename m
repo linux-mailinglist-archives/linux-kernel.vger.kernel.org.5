@@ -1,110 +1,155 @@
-Return-Path: <linux-kernel+bounces-29557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B826283102E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:48:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F9D8831034
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:50:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DCC12815DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:48:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCAFC2811B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:50:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2291A26AC2;
-	Wed, 17 Jan 2024 23:48:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A14D4288D5;
+	Wed, 17 Jan 2024 23:50:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uxw1g9MW"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mdEA0SIJ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDD761C11
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 23:48:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2553928DA2;
+	Wed, 17 Jan 2024 23:50:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705535305; cv=none; b=gwo7+FzEuSd+gSiLhtAcclbGbmPm0dWmHAa3tqCDb2k0hXkqKnVTfTv7pv84r+V8nSKKFO9hEOssgDOfcmMyMfo9axVP9cGGyyN/R6EihoQqlfJU6jfCcMVrhdGXRUYHA2g1ojdZspQwCUJTgeYddDi5/CXwE6TfDDJI+VDhyjA=
+	t=1705535427; cv=none; b=VgmdRnSkf+lrEq/bvEG2HI4afHAVR4xm5xQNsV1V3u3oSP8jlnWxz9Jb47sTZwI5NqO9OAzxbIFFv6zlKLzZvYQSNTDJztCgOYLoKzvPiGgA8b9FOBlNOqqJ3693hu7OKDZqLxnDy5o/nzinCpfbT8/lbzJ3f3fP7zBq9f9t1Ws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705535305; c=relaxed/simple;
-	bh=o/7Dr1KrXaPTWwgbqvtbLp3agio8da0eexlUCdi+K7w=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type; b=K67wcOSuGLS9JeRGyoF4MlOiwkegUL2xUAFLIya2Lfpcq6rEkjt4eLkGFSUMesi/5BITtpTCye690671qWHqOBhMAXsh/uUSI+f1w0xaUc14L0+Rpg5VzqH1s4J9uAj0wAqcwpIlHgOJ/S/yB4JBV4r2svd8qw7os0IUCTbsAcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uxw1g9MW; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a28ab7ae504so1095296366b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:48:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705535302; x=1706140102; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VCBKt8IzuP6x9scNJoSJcUgrz4a37akazxYAWOrz96o=;
-        b=uxw1g9MWVUCcPP0CpYrws6CY7oOjlfiM6QFyWfqMSDv4QC6WiiJZaGtlPeDLCj2jVr
-         +XByPsD35RogMr4H4//gs2uhKeNok2DjlFtjEyuNe2zB7IoLC/UzbSO1R3tsgW8dp0+9
-         GAglm6oefXT7Eae0pqGc2juEb4YMxvPhjbZkzM4NQKyDa+whVmf2IQ+3Q0K/+sVFivFb
-         Yqftu15VetQJuRZkmDzdlLmQc8mZCO5M1nJ2JcnjwHZNerLayvg6l+LWUiC1z3ZLpE0U
-         /1xKaln4a8i9ln6Tr2gOBZIQT+MfefdT3OCUlIEMF2D+OIZuFnlvNWPIAg4y0v7rrUiE
-         4xUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705535302; x=1706140102;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VCBKt8IzuP6x9scNJoSJcUgrz4a37akazxYAWOrz96o=;
-        b=mh6YHBtZTAHAUnop4GjuF4CwQh7PuTZ9pxunXsY0lgE5n0eviDs5H5Grpj+ceiTmr8
-         ZRXDyGQTbw0Y4Gj06h7YmNu4oljMJ87/rUa3360Bri1jAm844nHsqeaRPpvvvg2cFiSI
-         7MOoTBc/0Ek+eq1HsyfSt0q/vYEzrPdXAubEjFJOgZv4xDtP+BBIK7sfDoLRF/gATK0p
-         RZbRRmjtzitNmk3B+f6MuypszzeQRLy3P+vu1281QAF2Zwbk8/qHL0ezHzKs/aiypRS6
-         7/GsBgK3eKj93KqBFHyejGoKX/PDA1/pKzGGl8eyqXctTyU+a8Q6ukfNmyg4bFMktceJ
-         tOdQ==
-X-Gm-Message-State: AOJu0YxxDrXu8NH92fSypAAA5NlyDkmn0BoJQtM/SWlAOGt/wWJPtpFi
-	USNM8F3cLAS5s1Ma850nd4S6VkaQKfnY+/NUgPdOMCFMpip+
-X-Google-Smtp-Source: AGHT+IHa4FJiq0gIOz5Xu8OFGK5EDo+l00VS9u+UDHJc/7nb2ZqSAqIo5sEY/iucx2Cc8EJZlYP9InkzXT4x1GRvqCg=
-X-Received: by 2002:a17:906:60cb:b0:a26:ee83:8841 with SMTP id
- f11-20020a17090660cb00b00a26ee838841mr4895563ejk.33.1705535301782; Wed, 17
- Jan 2024 15:48:21 -0800 (PST)
+	s=arc-20240116; t=1705535427; c=relaxed/simple;
+	bh=vA/lVruIhcqs1iF8s5CGZ0Yh0/2pqLuM2zH9Xl5+LMk=;
+	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
+	 X-IronPort-AV:Received:Received:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To; b=VbYWysflFiemBwffQETR3JGxP6xIt34ms21SidcNaLlF7Md78KFVBrpnzeONutqeKik5UsVR9A3aWYfh2fGGiYRaHnFfrU+wOdsSu3D7SJVxchJ1nHbodiqY2HWKXDkgaM4psr933N28/940yDpl9jTPJEBBbLBgICHUHi2+WEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mdEA0SIJ; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705535426; x=1737071426;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vA/lVruIhcqs1iF8s5CGZ0Yh0/2pqLuM2zH9Xl5+LMk=;
+  b=mdEA0SIJXVPT10H9EonAQAKCElUbjuqDiu6Rcx5BEvXOhdV9kBXOYHRp
+   CbOKfMHXHD3DWIWMhbrZjxVvGVQbCg7cXUodcRB4MZfsq7Tu0m6fHGK1j
+   PDKwBOp7GNCCNWHHzRP+rq16yb/Rldh1qOxmV8QuNB4kRF8H3cBPXzB6f
+   QcPuAonWAnB6XwgQCVFSA1aAEWXKVWj+RdxIYzPmZkMhI5TPQumaObfHw
+   /08WrjXgfGmN5g106R54gjSyuFxeAIk9JC8uDTRlCjl7Ki6/6P4O0VZY/
+   Bb3pq3YgGpEofs/v/60IScUqsTRLIgMdtsRVLMyXUTcjbBpXiHgp+lOa/
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="7014415"
+X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
+   d="scan'208";a="7014415"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 15:50:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
+   d="scan'208";a="26612682"
+Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 17 Jan 2024 15:50:22 -0800
+Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rQFfn-0002RC-2J;
+	Wed, 17 Jan 2024 23:50:19 +0000
+Date: Thu, 18 Jan 2024 07:49:37 +0800
+From: kernel test robot <lkp@intel.com>
+To: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	Jens Wiklander <jens.wiklander@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	op-tee@lists.trustedfirmware.org, devicetree@vger.kernel.org,
+	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Subject: Re: [PATCH 4/4] remoteproc: stm32: Add support of an OP-TEE TA to
+ load the firmware
+Message-ID: <202401180740.1ud9PJYn-lkp@intel.com>
+References: <20240115135249.296822-5-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117-b4-zswap-lock-optimize-v1-0-23f6effe5775@bytedance.com>
- <CAJD7tkY7Xvjg37EEw2M=uRknphY0pf3ZVpyX2s2QyiJ=Axhihw@mail.gmail.com> <CAF8kJuP4o3Ebg-aYKF9=ftbdu97RnkXnYL-8RuVjYAeXd+ng3A@mail.gmail.com>
-In-Reply-To: <CAF8kJuP4o3Ebg-aYKF9=ftbdu97RnkXnYL-8RuVjYAeXd+ng3A@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 17 Jan 2024 15:47:45 -0800
-Message-ID: <CAJD7tkYfo6mNjHQJt4yfVuh55tMyVMRnbeq5ki42tYHBEgP_eA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] mm/zswap: optimize the scalability of zswap rb-tree
-To: Chris Li <chrisl@kernel.org>
-Cc: Chengming Zhou <zhouchengming@bytedance.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org, 
-	Nhat Pham <nphamcs@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240115135249.296822-5-arnaud.pouliquen@foss.st.com>
 
-> Currently the xarray patch should have everything it takes to use RCU
-> read lock. However taking out the tree spinlock is more work than
-> previously. If we are going to remove the tree spinlock, I think we
-> should revert back to doing a zswap tree lookup and return the zswap
-> entry with reference increased. The tree mapping can still decouple
-> from the zswap entry reference count drop to zero.  Anyway, my V1 of
-> the xarray patch will not include removing the tree spinlock.
+Hi Arnaud,
 
-Interesting. What do you mean by removing the tree spinlock? My
-assumption was that the xarray reduces lock contention because we do
-not need a lock to do lookups, but we still need the lock otherwise.
-Did you have something in mind to completely remove the tree lock?
+kernel test robot noticed the following build warnings:
 
->
-> > The reason why I think we should wait for the xarray patch(es) is
-> > there is a chance we may see less improvements from splitting the tree
-> > if it was an xarray. If we merge this series first, there is no way to
-> > know.
-> >
-> > Chris, do you intend to send the xarray patch(es) anytime soon?
->
-> Thanks for the heads up. Let me send it out now.
+[auto build test WARNING on remoteproc/rproc-next]
+[also build test WARNING on robh/for-next linus/master v6.7 next-20240117]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Awesome, thanks! I assume Chengming can test whether this series
-provides the same benefits with the xarray.
+url:    https://github.com/intel-lab-lkp/linux/commits/Arnaud-Pouliquen/remoteproc-Add-TEE-support/20240115-215613
+base:   git://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git rproc-next
+patch link:    https://lore.kernel.org/r/20240115135249.296822-5-arnaud.pouliquen%40foss.st.com
+patch subject: [PATCH 4/4] remoteproc: stm32: Add support of an OP-TEE TA to load the firmware
+config: mips-randconfig-r112-20240117 (https://download.01.org/0day-ci/archive/20240118/202401180740.1ud9PJYn-lkp@intel.com/config)
+compiler: clang version 18.0.0git (https://github.com/llvm/llvm-project 9bde5becb44ea071f5e1fa1f5d4071dc8788b18c)
+reproduce: (https://download.01.org/0day-ci/archive/20240118/202401180740.1ud9PJYn-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401180740.1ud9PJYn-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+   drivers/remoteproc/tee_remoteproc.c:82:26: sparse: sparse: symbol 'tee_rproc_ctx' was not declared. Should it be static?
+   drivers/remoteproc/tee_remoteproc.c:166:24: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *rsc_va @@     got void [noderef] __iomem * @@
+   drivers/remoteproc/tee_remoteproc.c:166:24: sparse:     expected void *rsc_va
+   drivers/remoteproc/tee_remoteproc.c:166:24: sparse:     got void [noderef] __iomem *
+>> drivers/remoteproc/tee_remoteproc.c:233:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *rsc_va @@
+   drivers/remoteproc/tee_remoteproc.c:233:31: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/remoteproc/tee_remoteproc.c:233:31: sparse:     got void *rsc_va
+   drivers/remoteproc/tee_remoteproc.c: note: in included file (through include/linux/preempt.h, include/linux/spinlock.h, include/linux/mmzone.h, ...):
+   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
+
+vim +233 drivers/remoteproc/tee_remoteproc.c
+
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  215  
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  216  int tee_rproc_stop(struct tee_rproc *trproc)
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  217  {
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  218  	struct tee_ioctl_invoke_arg arg;
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  219  	struct tee_param param[MAX_TEE_PARAM_ARRY_MEMBER];
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  220  	int ret;
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  221  
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  222  	prepare_args(trproc, TA_RPROC_FW_CMD_STOP_FW, &arg, param, 0);
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  223  
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  224  	ret = tee_client_invoke_func(tee_rproc_ctx->tee_ctx, &arg, param);
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  225  	if (ret < 0 || arg.ret != 0) {
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  226  		dev_err(tee_rproc_ctx->dev,
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  227  			"TA_RPROC_FW_CMD_STOP_FW invoke failed TEE err: %x, ret:%x\n",
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  228  			arg.ret, ret);
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  229  		if (!ret)
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  230  			ret = -EIO;
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  231  	}
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  232  	if (trproc->rsc_va)
+6805d1065198e1 Arnaud Pouliquen 2024-01-15 @233  		iounmap(trproc->rsc_va);
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  234  	trproc->rsc_va = NULL;
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  235  
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  236  	return ret;
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  237  }
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  238  EXPORT_SYMBOL_GPL(tee_rproc_stop);
+6805d1065198e1 Arnaud Pouliquen 2024-01-15  239  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
