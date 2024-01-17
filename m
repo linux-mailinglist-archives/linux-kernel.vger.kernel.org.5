@@ -1,307 +1,228 @@
-Return-Path: <linux-kernel+bounces-29528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-29529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0EE5830FE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:02:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E4E5830FEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jan 2024 00:03:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3DE61C213A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:02:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2B1DB256E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jan 2024 23:02:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A07E725620;
-	Wed, 17 Jan 2024 23:02:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45C1F22F17;
+	Wed, 17 Jan 2024 23:02:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VMZudiZg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yg6XmowG"
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9298F1E887;
-	Wed, 17 Jan 2024 23:02:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEE3B1E869
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 23:02:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705532541; cv=none; b=CVLTmWl2cZhFf7UnUohxXUMBgXIxKV5kbKTq0fq8DZ0W2we50pGV5e3DnVQUCpQ8Xttt9+eusyiyq2yeGFcVe95i6PWn0aHSFiJsnZDZmLcxb8oZhhelmfnYDh0Xb6bOX32HHG4rgkPvjHfWc5wuVfIsHsr/xH6RBmtmfT9s1Po=
+	t=1705532570; cv=none; b=rqWXfT9a1KUZ3zOrS24TX2stF7tTwGRXy7iMetUew0Ah9fsovuYbZjBHwYLLwstqFsPlQk9ct2ovsMYPwNdOixIezU3mSabVpwPdtH3293OsVE5oYXZVAN2Pzg84qPTFq40atvRyDagpr+BnMINRWe7khRE7WIYHY7GPdzls5pQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705532541; c=relaxed/simple;
-	bh=EEaOWIQCKiNs0G7awm38MrLvuxsW7kkHPyGIYQAExc8=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=WqCPE72F24l/3au/yo7v9fKqFxc0GgzAvwyLporcJdHhbpcAZnoadMqfX6K8vNtwqPZeuuJxF5Rwc3fyA3vTPhanOCXRI9ncvDxON8K+jsp8+3kPDs1zpxxRRAIiHdhFr5JlXHie4LgHUrloZBLWoDHve6/d9XC/t+QxNqV9aew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VMZudiZg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD880C433F1;
-	Wed, 17 Jan 2024 23:02:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705532541;
-	bh=EEaOWIQCKiNs0G7awm38MrLvuxsW7kkHPyGIYQAExc8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VMZudiZgyYEq96AWE863jZo71NKFWuy2kbxxgUA5x1m5z7jP8wjsIli5P5H3gqCKH
-	 lTjrfdE56u3CayU8Admms40W1QAAFK/wVmGQm7t+BYnIF3cA6XM2Bno3No+On7DZsZ
-	 kOQ/C40V+rDEhsBmbWRXuJK3wVVP/Ww3Nn0Mxw8ZVO+7UcRVbZ+NUzne4a7JQaZ9W+
-	 gRoEk/MjqUJNpZoVSU/BVTQlHPInvKy5UwCn6d24Ykhdw9eqzq5ZEkGnjxx0PRSGx/
-	 bhsQSI0lKIK92hIuyKp510ZbS/VLXuUiWEjX5xupsYbZAqEZ0GrrX+BLFrd+JCh8el
-	 SQFJa5fjgb0AQ==
-Date: Wed, 17 Jan 2024 23:02:09 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Atish Patra <atishp@atishpatra.org>
-Cc: Yu Chien Peter Lin <peterlin@andestech.com>, acme@kernel.org,
-	adrian.hunter@intel.com, ajones@ventanamicro.com,
-	alexander.shishkin@linux.intel.com, andre.przywara@arm.com,
-	anup@brainfault.org, aou@eecs.berkeley.edu, conor+dt@kernel.org,
-	conor.dooley@microchip.com, devicetree@vger.kernel.org,
-	dminus@andestech.com, evan@rivosinc.com, geert+renesas@glider.be,
-	guoren@kernel.org, heiko@sntech.de, irogers@google.com,
-	jernej.skrabec@gmail.com, jolsa@kernel.org, jszhang@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	locus84@andestech.com, magnus.damm@gmail.com, mark.rutland@arm.com,
-	mingo@redhat.com, n.shubin@yadro.com, namhyung@kernel.org,
-	palmer@dabbelt.com, paul.walmsley@sifive.com, peterz@infradead.org,
-	prabhakar.mahadev-lad.rj@bp.renesas.com, rdunlap@infradead.org,
-	robh+dt@kernel.org, samuel@sholland.org, sunilvl@ventanamicro.com,
-	tglx@linutronix.de, tim609@andestech.com, uwu@icenowy.me,
-	wens@csie.org, will@kernel.org, ycliang@andestech.com,
-	inochiama@outlook.com, chao.wei@sophgo.com,
-	unicorn_wang@outlook.com, wefu@redhat.com
-Subject: Re: [PATCH v7 07/16] RISC-V: Move T-Head PMU to CPU feature
- alternative framework
-Message-ID: <20240117-viewpoint-likeness-b64a622d313a@spud>
-References: <20240110073917.2398826-1-peterlin@andestech.com>
- <20240110073917.2398826-8-peterlin@andestech.com>
- <CAOnJCUKY8H+pvgTWW5zkfm8O4WR-OWOKmyPTcMjUZBCC5RaLWQ@mail.gmail.com>
- <20240116-cherub-revival-5d32cc5f1fd0@spud>
- <CAOnJCU+DvoV08n5LLv-yrPOnUKNEQU9w344UBJ4Ou5-2LJwrrw@mail.gmail.com>
- <20240117-coil-iphone-47988070aa6f@spud>
- <CAOnJCUKYa7P9tgKk4c=Xsoia1bGu+ZL9KrY3hL6DNiXz+EmGug@mail.gmail.com>
+	s=arc-20240116; t=1705532570; c=relaxed/simple;
+	bh=R6Z768pxNr5yyVGSluCeuT3pGLf2eU2IFAhfg14PA5g=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=nnCPLxYkc+7uaxK0XBeM2aL/Y2ehXKRj9XzHn0p0NeGDxZR+NgVgBAiqMvWYDLt6C7jBvOxTY9sDdVJXph4JeqlwRbgDi8JxSrgC3cs808KxodQ1P+4IMKShOXkHjdETU89OUejNtp+rg3/ftWtjHWWcdNOshe8eTEYiN+P7X+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yg6XmowG; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-337c4f0f9daso828355f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jan 2024 15:02:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705532567; x=1706137367; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XVVQzIfswVI0WmMOjZbZ5Dux+OT+J5EfPrfiCiPsc9s=;
+        b=Yg6XmowGYF/UCiVrVp8Q0l1ueVqZkC33fT49S121eGEs+CxsgJ8nXBLSYIzQEX+Fhd
+         LpmYCeALYCYOzH+MZ+zGhy0qS6X5zFWQvhlj05/92evkLCt7THz/UpwR7KcaDezEcVLL
+         f9o3fOSLY0eQjaVIB9d3BuUjJWb03AeQsQhxlWDWw318FQP4XDUjCH1UIYaBX018jgJc
+         avEqn1f/Sd1C4pYnEBC9LtMCkQ7kd/RbAKHwzDEYTbkTdnr7DbOQq8SxfNKvyjX1Fvt6
+         XdeHU1ey/RCXDjuXSjj+IChAU7Z4hM/5IV7O+GUw95yQLqmuOqFk97obzt91ffDAMAqN
+         hAkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705532567; x=1706137367;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XVVQzIfswVI0WmMOjZbZ5Dux+OT+J5EfPrfiCiPsc9s=;
+        b=Z8JhDyZ22M2OAVBUYxI3O2qtDBwopL2vL/55cWpvM92/+UPGbwZ4FSwy/D8CwS1GW2
+         ZSwc+0BiXFL2/LkEjyx1XdA27CumPs3Dt1ELnFC1oNLdPJmU+yXgouug3Dqc8XVsTzGN
+         6SHLbZiDB8pfiJ0ySoAeff2qSUrNDINxj4Ybuym1G5Lr6zK9+vtis6ncLvXj+BY5uKVz
+         /mDLgDpALz7Kz7RLYm4hef5ou+5HnABKlCFOyJdvjBHWPTHLQ2Nrsmxxq/TJPeHkWOAC
+         cv1NyHM4X3hY2PXK4/GEK5UyZLygpLu0abZBsC2UM+ooKeE29mZ2DZP+2syhK55kNgM0
+         KA8Q==
+X-Gm-Message-State: AOJu0YxGfBPZ5b8f7kUQBrjNdEVLNmq1TcaNveQbNN1IOh2EyZUX+0f2
+	2PQRlDPa9j+bsU+8SrxHxCn4BVpqU7xfQNdFlz8=
+X-Google-Smtp-Source: AGHT+IGKXhri/qncW9CJmeZeQxGwRCvCoOF9C5QFwqE6RccIiypikFPUjckqIIkg7HskriVt/1PbKzgwijKxkc/ZQZg=
+X-Received: by 2002:a5d:6446:0:b0:337:bebc:3f4a with SMTP id
+ d6-20020a5d6446000000b00337bebc3f4amr1662482wrw.81.1705532566755; Wed, 17 Jan
+ 2024 15:02:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="F8Iq+MRPdffgNb/f"
-Content-Disposition: inline
-In-Reply-To: <CAOnJCUKYa7P9tgKk4c=Xsoia1bGu+ZL9KrY3hL6DNiXz+EmGug@mail.gmail.com>
-
-
---F8Iq+MRPdffgNb/f
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20240115092727.888096-1-elver@google.com>
+In-Reply-To: <20240115092727.888096-1-elver@google.com>
+From: Andrey Konovalov <andreyknvl@gmail.com>
+Date: Thu, 18 Jan 2024 00:02:35 +0100
+Message-ID: <CA+fCnZfUiB67N_csOQuUMoLQ97WChaBm+FHdntmD63sL8xueyA@mail.gmail.com>
+Subject: Re: [PATCH RFC 1/2] stackdepot: add stats counters exported via debugfs
+To: Marco Elver <elver@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Alexander Potapenko <glider@google.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, kasan-dev@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 17, 2024 at 02:32:59PM -0800, Atish Patra wrote:
-> On Wed, Jan 17, 2024 at 1:17=E2=80=AFAM Conor Dooley <conor@kernel.org> w=
-rote:
-> >
-> > On Wed, Jan 17, 2024 at 12:58:21AM -0800, Atish Patra wrote:
-> > > On Tue, Jan 16, 2024 at 4:16=E2=80=AFPM Conor Dooley <conor@kernel.or=
-g> wrote:
-> > > >
-> > > > On Tue, Jan 16, 2024 at 12:55:41PM -0800, Atish Patra wrote:
-> > > > > On Tue, Jan 9, 2024 at 11:40=E2=80=AFPM Yu Chien Peter Lin
-> > > > > <peterlin@andestech.com> wrote:
-> > > > > >
-> > > > > > The custom PMU extension aims to support perf event sampling pr=
-ior
-> > > > > > to the ratification of Sscofpmf. Instead of diverting the bits =
-and
-> > > > > > register reserved for future standard, a set of custom register=
-s is
-> > > > > > added.  Hence, we may consider it as a CPU feature rather than =
-an
-> > > > > > erratum.
-> > > > > >
-> > > > >
-> > > > > I don't think we should do that. Any custom implementation that
-> > > > > violates the standard RISC-V spec should
-> > > > > be an errata not a feature.
-> > > > > As per my understanding, a vendor can call an extension custom ISA
-> > > > > extension if the same feature is not available
-> > > > > in the standard ISA extensions or the mechanism is completely
-> > > > > different. It must also not violate any standard spec as well.
-> > > > >
-> > > > > In this case, a standard sscofpmf is already available. Moreover,=
- both
-> > > > > Andes and T-head extensions violate the standard
-> > > > > spec by reusing local interrupt numbers (17(Thead) & 18(Andes)) w=
-hich
-> > > > > are clearly specified as reserved for standard local interrupts
-> > > > > in the AIA specification.
-> > > >
-> > > > I disagree with you here. The Andes implementation predated (IIRC t=
-hat
-> > > > is what was said in replies to an earlier revision) the Sscofpmf
-> > > > extension and certainly predates the AIA specification. I would be =
-on
-> > > > board with this line of thinking if someone comes along in 2030 with
-> > > > "Zbb but with this one tweak" or where something flies entirely in =
-the
-> > > > face of the standard (like the IOCP cache stuff). The relevant sect=
-ion
-> > > > in the AIA spec seems to say:
-> > > > | Interrupt causes that are standardized by the Privileged Architec=
-ture
-> > > > | have major identities in the range 0=E2=80=9315, while numbers 16=
- and higher are
-> > > > | officially available for platform standards or for custom use.
-> > > > | The Advanced Interrupt Architecture claims further authority over
-> > > > | identity numbers in the ranges 16=E2=80=9323 and 32=E2=80=9347, l=
-eaving numbers in the
-> > > > | range 24=E2=80=9331 and all major identities 48 and higher still =
-free for custom
-> > > > | use.
-> > > > I don't see how that can be problematic given the Andes implemtation
-> > > > dates from before AIA was a thing. It would be silly to say that be=
-cause
-> > > > an optional extension later came along and took over something prev=
-iously
-> > > > allowed for indiscriminate custom use, that support for that custom
-> > > > extension is not permitted.
-> > > >
-> > >
-> > > AIA is not some optional extension. It defines the RISC-V interrupt
-> > > architecture going forward and will be the default implementation
-> > > in the future.
-> >
-> > I don't get you here. It is clearly optional - most (all?) existing
-> > systems do not have it and certainly none did when this was designed.
->=20
-> That's the current situation. I was saying AIA is not "some" optional ext=
-ension
-> which most implementations will ignore in the future. In the future, I
-> expect most platforms will implement AIA.
+On Mon, Jan 15, 2024 at 10:27=E2=80=AFAM Marco Elver <elver@google.com> wro=
+te:
+>
+> Add a few basic stats counters for stack depot that can be used to derive=
+ if
+> stack depot is working as intended. This is a snapshot of the new stats a=
+fter
+> booting a system with a KASAN-enabled kernel:
+>
+>  $ cat /sys/kernel/debug/stackdepot/stats
+>  pools: 838
+>  allocations: 29861
+>  frees: 6561
+>  in_use: 23300
+>  freelist_size: 1840
+>
+> Generally, "pools" should be well below the max; once the system is boote=
+d,
+> "in_use" should remain relatively steady.
+>
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+>  lib/stackdepot.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+>
+> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+> index a0be5d05c7f0..80a8ca24ccc8 100644
+> --- a/lib/stackdepot.c
+> +++ b/lib/stackdepot.c
+> @@ -14,6 +14,7 @@
+>
+>  #define pr_fmt(fmt) "stackdepot: " fmt
+>
+> +#include <linux/debugfs.h>
+>  #include <linux/gfp.h>
+>  #include <linux/jhash.h>
+>  #include <linux/kernel.h>
+> @@ -115,6 +116,23 @@ static bool new_pool_required =3D true;
+>  /* Lock that protects the variables above. */
+>  static DEFINE_RWLOCK(pool_rwlock);
+>
+> +/* Statistics counters for debugfs. */
+> +enum depot_counter_id {
+> +       DEPOT_COUNTER_ALLOCS,
+> +       DEPOT_COUNTER_FREES,
+> +       DEPOT_COUNTER_INUSE,
+> +       DEPOT_COUNTER_FREELIST_SIZE,
+> +       DEPOT_COUNTER_COUNT,
+> +};
+> +static long counters[DEPOT_COUNTER_COUNT];
+> +static const char *const counter_names[] =3D {
+> +       [DEPOT_COUNTER_ALLOCS]          =3D "allocations",
+> +       [DEPOT_COUNTER_FREES]           =3D "frees",
+> +       [DEPOT_COUNTER_INUSE]           =3D "in_use",
+> +       [DEPOT_COUNTER_FREELIST_SIZE]   =3D "freelist_size",
+> +};
+> +static_assert(ARRAY_SIZE(counter_names) =3D=3D DEPOT_COUNTER_COUNT);
+> +
+>  static int __init disable_stack_depot(char *str)
+>  {
+>         return kstrtobool(str, &stack_depot_disabled);
+> @@ -277,6 +295,7 @@ static void depot_init_pool(void *pool)
+>                 stack->handle.extra =3D 0;
+>
+>                 list_add(&stack->list, &free_stacks);
+> +               counters[DEPOT_COUNTER_FREELIST_SIZE]++;
+>         }
+>
+>         /* Save reference to the pool to be used by depot_fetch_stack(). =
+*/
+> @@ -376,6 +395,7 @@ depot_alloc_stack(unsigned long *entries, int size, u=
+32 hash, void **prealloc)
+>         /* Get and unlink the first entry from the freelist. */
+>         stack =3D list_first_entry(&free_stacks, struct stack_record, lis=
+t);
+>         list_del(&stack->list);
+> +       counters[DEPOT_COUNTER_FREELIST_SIZE]--;
+>
+>         /* Limit number of saved frames to CONFIG_STACKDEPOT_MAX_FRAMES. =
+*/
+>         if (size > CONFIG_STACKDEPOT_MAX_FRAMES)
+> @@ -394,6 +414,8 @@ depot_alloc_stack(unsigned long *entries, int size, u=
+32 hash, void **prealloc)
+>          */
+>         kmsan_unpoison_memory(stack, DEPOT_STACK_RECORD_SIZE);
+>
+> +       counters[DEPOT_COUNTER_ALLOCS]++;
+> +       counters[DEPOT_COUNTER_INUSE]++;
+>         return stack;
+>  }
+>
+> @@ -426,6 +448,10 @@ static void depot_free_stack(struct stack_record *st=
+ack)
+>         lockdep_assert_held_write(&pool_rwlock);
+>
+>         list_add(&stack->list, &free_stacks);
+> +
+> +       counters[DEPOT_COUNTER_FREELIST_SIZE]++;
+> +       counters[DEPOT_COUNTER_FREES]++;
+> +       counters[DEPOT_COUNTER_INUSE]--;
+>  }
+>
+>  /* Calculates the hash for a stack. */
+> @@ -690,3 +716,30 @@ unsigned int stack_depot_get_extra_bits(depot_stack_=
+handle_t handle)
+>         return parts.extra;
+>  }
+>  EXPORT_SYMBOL(stack_depot_get_extra_bits);
+> +
+> +static int stats_show(struct seq_file *seq, void *v)
+> +{
+> +       /*
+> +        * data race ok: These are just statistics counters, and approxim=
+ate
+> +        * statistics are ok for debugging.
+> +        */
+> +       seq_printf(seq, "pools: %d\n", data_race(pools_num));
+> +       for (int i =3D 0; i < DEPOT_COUNTER_COUNT; i++)
+> +               seq_printf(seq, "%s: %ld\n", counter_names[i], data_race(=
+counters[i]));
+> +
+> +       return 0;
+> +}
+> +DEFINE_SHOW_ATTRIBUTE(stats);
+> +
+> +static int depot_debugfs_init(void)
+> +{
+> +       struct dentry *dir;
+> +
+> +       if (stack_depot_disabled)
+> +               return 0;
+> +
+> +       dir =3D debugfs_create_dir("stackdepot", NULL);
+> +       debugfs_create_file("stats", 0444, dir, NULL, &stats_fops);
+> +       return 0;
+> +}
+> +late_initcall(depot_debugfs_init);
+> --
+> 2.43.0.275.g3460e3d667-goog
+>
 
-In the future all platforms may, but I don't think that that is
-particularly important here. The systems that we are talking about at
-the moment do not have AIA. If there are AIA capable systems produced
-using Andes' IP, one would hope that they implement Sscopmf (or w/e the
-forgettable extension name is). :fingers_crossed:
-
-> > The wording above from the AIA spec implies that using 16 and above used
-> > to be okay for platform specifics (and I think the relevant section of
-> > the priv spec was "Machine Interrupt Registers" which says the same).
->=20
-> As your quote also described above, AIA spec says (which overrides the
-> priv spec)
->=20
-> "The Advanced Interrupt Architecture claims further authority over
-> identity numbers in the ranges 16=E2=80=9323 and 32=E2=80=9347,
-> leaving numbers in the range 24=E2=80=9331 and all major identities 48 and
-> higher still free for custom use."
->=20
-> That means any implementation can be treated as custom (as per AIA
-> spec) if they choose a local interrupt
-> only in between 24-31 or > 48. Now if we choose to ignore the AIA spec
-> and go with the old priv spec statement to
-> decide if a custom implementation violated the standard encoding
-> space, that's a different argument. That means we have
-> to allow any future vendor implementation that violates as well as
-> long as they claim that they designed their chip before
-> AIA was ratified.
-
-I don't see what the problem with that is. It is completely unreasonable
-to render custom extensions that used the resources available to them at
-the time invalid for use in the kernel (unless branded as an erratum)
-because later on standard extensions co-opted those resources for its
-own usage.
-
-> > New extensions coming along should not be allowed to block kernel
-> > support for platform specifics that predated their use of permitted
-> > "resources".
-> >
-> > > IMO, this will be a slippery slope if we start
-> > > supporting custom implementations to override interrupt ID definitions
-> > > via custom cpu features. T-head implementation works perfectly fine as
-> > > an errata and I don't understand why
-> > > there is a push to make it a cpu feature.
-> >
-> > I don't mind leaving the existing implementation (T-Head) using this,
-> > but I will NAK any additions.
-> >
->=20
-> That would be an ideal case where we won't require any additions
-> because all RISC-V vendor implementations
-> comply with the spec. In reality, we may not have that luxury ;)
-
-Where we have no other choice but to use marchid et al for detecting
-issues with a vendors implementation, then I have no problem with it.
-If you look at any of the threads where I have objected to the use of
-them, it's been specifically for the detection of features, not for
-their use in dealing with implementation issues (like the sifive sfence
-issues).
-
-> > > We should try to improve the
-> > > ecosystem for future platforms rather than bending
-> > > backwards to support older implementations.
-> >
-> > This is hardly "bending backwards".
-> >
-> > > I understand the push to brand this as a custom extension if current
-> > > errata/alternative can't support it. But I don't think that's the case
-> > > here though. Please correct me if I am wrong.
-> > >
-> > > > I may well be missing something here though, you clearly know these
-> > > > specs better than I do, but from what I have read I disagree.
-> > > >
-> > > > > Please implementation Andes PMU support as an errata as well simi=
-lar to T-head
-> > > >
-> > > > I certainly _do not_ want to see things like this detected via look=
-up
-> > > > tables of marchid and co in the kernel unless it is absolutely requ=
-ired.
-> > > > We have standard probing mechanisms for feature detection (because =
-to me
-> > > > this _is_ a feature) and they should be used. Additionally, we defi=
-ne what
-> > > > entries in the DT properties mean, and if it is convenient to put
-> > > > "psuedo" extensions into the DT, then we should do so. Getting away=
- from
-> > > > being tied to what RVI decrees was one of the goals of the new
-> > > > properties after all, so that we could use a standard mechanism of =
-DT
-> > > > probing for things like this.
-> > > >
-> > >
-> > > Yes. That's a perfectly valid mechanism for actual custom/vendor ISA =
-extensions.
-> > > I'm sure we'll have many of those, which will be leveraged via pseudo
-> > > extensions in the DT.
-> > > However, these shouldn't co-exist with standard ISA extensions in the
-> > > namespace in riscv_isa_ext and/or hwprobe.
-> > > The vendor-specific extensions should be defined under a
-> > > vendor-specific namespace.
-> > > This was another issue with this series as well. I didn't raise this
-> > > topic earlier because I don't think overriding interrupt
-> > > identities qualifies for a custom ISA extension
-> > >
->=20
-> Any thoughts on vendor specific namespace to avoid mixing standard ISA
-> extensions with vendor specific ones ?
-
-I don't really care for how it is exposed in hwprobe, you should ask
-those responsible for the hwprobe interface what they think.
-
-If you mean on the DT side, one of the stated goals of the new
-properties was to put RVI's extensions and vendor extensions on a equal
-footing.
-
-Dunno if that answers your question,
-Conor.
-
---F8Iq+MRPdffgNb/f
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZahccQAKCRB4tDGHoIJi
-0kv9AP9TxIdMgQSwChm7gr0th6+GD7/vtd+563x1cqsqrCmrFAEAxtcZBvLyiuvq
-hPS74gvqKeANHfOVoqHlhm9QSmXPlAM=
-=xsB5
------END PGP SIGNATURE-----
-
---F8Iq+MRPdffgNb/f--
+Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
 
